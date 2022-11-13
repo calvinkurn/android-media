@@ -19,12 +19,10 @@ import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import java.util.Locale
-import kotlinx.android.synthetic.main.layout_init_register_other_method_bottomsheet.loader_socmed
-import kotlinx.android.synthetic.main.layout_init_register_other_method_bottomsheet.tv_message_socmed
 
 class OtherMethodBottomSheet(val state: OtherMethodState<DiscoverData?>): BottomSheetUnify() {
 
-    private var binding: LayoutInitRegisterOtherMethodBottomsheetBinding? = null
+    private var viewBinding: LayoutInitRegisterOtherMethodBottomsheetBinding? = null
     private var onGoogleClickedListener: () -> Unit = {}
     private var onEmailClickedListener: () -> Unit = {}
 
@@ -33,9 +31,9 @@ class OtherMethodBottomSheet(val state: OtherMethodState<DiscoverData?>): Bottom
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        binding = LayoutInitRegisterOtherMethodBottomsheetBinding.inflate(layoutInflater, container, false)
+        viewBinding = LayoutInitRegisterOtherMethodBottomsheetBinding.inflate(layoutInflater, container, false)
         setTitle(context?.getString(R.string.other_method_title) ?: "")
-        setChild(binding?.root)
+        setChild(viewBinding?.root)
 
         return super.onCreateView(inflater, container, savedInstanceState)
     }
@@ -60,15 +58,15 @@ class OtherMethodBottomSheet(val state: OtherMethodState<DiscoverData?>): Bottom
     }
 
     private fun showLoading() {
-        binding?.socmedContainer?.apply {
-            tv_message_socmed.hide()
-            loader_socmed.show()
+        viewBinding?.socmedContainer?.apply {
+            viewBinding?.socmedContainer?.hide()
+            viewBinding?.loaderSocmed?.show()
         }
     }
 
     private fun showSuccess(discoverData: DiscoverData?) {
         discoverData?.let {
-            binding?.socmedContainer?.removeAllViews()
+            viewBinding?.socmedContainer?.removeAllViews()
             context?.let {
 
                 val layoutParams = LinearLayout.LayoutParams(
@@ -109,7 +107,7 @@ class OtherMethodBottomSheet(val state: OtherMethodState<DiscoverData?>): Bottom
 
                     //set action
                     setDiscoverOnClickListener(provider, buttonSocmed)
-                    binding?.socmedContainer?.run {
+                    viewBinding?.socmedContainer?.run {
                         addView(buttonSocmed, childCount, layoutParams)
                     }
                 }
@@ -118,11 +116,11 @@ class OtherMethodBottomSheet(val state: OtherMethodState<DiscoverData?>): Bottom
     }
 
     private fun showFailed(message: String?) {
-        binding?.socmedContainer?.apply {
-            tv_message_socmed.show()
-            loader_socmed.hide()
+        viewBinding?.socmedContainer?.apply {
+            viewBinding?.tvMessageSocmed?.show()
+            viewBinding?.loaderSocmed?.hide()
 
-            tv_message_socmed.text = message
+            viewBinding?.tvMessageSocmed?.text = message
         }
     }
 

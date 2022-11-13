@@ -14,6 +14,7 @@ import android.view.MenuInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import androidx.appcompat.widget.Toolbar
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
@@ -44,10 +45,13 @@ import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.localizationchooseaddress.domain.mapper.TokonowWarehouseMapper
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.mvcwidget.MvcData
+import com.tokopedia.mvcwidget.trackers.MvcSource
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.common.constants.ShareComponentConstants
 import com.tokopedia.tokofood.common.domain.response.CartTokoFoodBottomSheet
@@ -60,6 +64,7 @@ import com.tokopedia.tokofood.common.presentation.view.BaseTokofoodActivity
 import com.tokopedia.tokofood.common.presentation.viewmodel.MultipleFragmentsViewModel
 import com.tokopedia.tokofood.common.util.Constant
 import com.tokopedia.tokofood.common.util.TokofoodErrorLogger
+import com.tokopedia.tokofood.common.util.TokofoodExt.addAndReturnImpressionListener
 import com.tokopedia.tokofood.common.util.TokofoodExt.getGlobalErrorType
 import com.tokopedia.tokofood.common.util.TokofoodExt.getSuccessUpdateResultPair
 import com.tokopedia.tokofood.common.util.TokofoodExt.setBackIconUnify
@@ -71,6 +76,7 @@ import com.tokopedia.tokofood.feature.merchant.common.util.MerchantShareComponen
 import com.tokopedia.tokofood.feature.merchant.di.DaggerMerchantPageComponent
 import com.tokopedia.tokofood.feature.merchant.domain.model.response.TokoFoodMerchantProfile
 import com.tokopedia.tokofood.feature.merchant.domain.model.response.TokoFoodTickerDetail
+import com.tokopedia.tokofood.feature.merchant.domain.model.response.TokoFoodTopBanner
 import com.tokopedia.tokofood.feature.merchant.presentation.adapter.MerchantPageCarouselAdapter
 import com.tokopedia.tokofood.feature.merchant.presentation.adapter.ProductListAdapter
 import com.tokopedia.tokofood.feature.merchant.presentation.bottomsheet.CategoryFilterBottomSheet
@@ -91,9 +97,11 @@ import com.tokopedia.tokofood.feature.merchant.presentation.model.MerchantShareC
 import com.tokopedia.tokofood.feature.merchant.presentation.model.ProductListItem
 import com.tokopedia.tokofood.feature.merchant.presentation.model.ProductUiModel
 import com.tokopedia.tokofood.feature.merchant.presentation.model.VariantWrapperUiModel
+import com.tokopedia.tokofood.feature.merchant.presentation.mvc.TokofoodMerchantMvcTrackerImpl
 import com.tokopedia.tokofood.feature.merchant.presentation.viewholder.MerchantCarouseItemViewHolder
 import com.tokopedia.tokofood.feature.merchant.presentation.viewholder.ProductCardViewHolder
 import com.tokopedia.tokofood.feature.merchant.presentation.viewmodel.MerchantPageViewModel
+import com.tokopedia.tokofood.feature.purchase.promopage.presentation.TokoFoodPromoFragment
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.TokoFoodPurchaseFragment
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -173,6 +181,7 @@ class MerchantPageFragment : BaseMultiFragment(),
     // TODO: move states to view model
     private var merchantId: String = ""
     private var productId: String = ""
+    private var currentPromoName: String? = null
 
     private var universalShareBottomSheet: UniversalShareBottomSheet? = null
     private var merchantInfoBottomSheet: MerchantInfoBottomSheet? = null
@@ -185,6 +194,9 @@ class MerchantPageFragment : BaseMultiFragment(),
 
     private var cartDataUpdateJob: Job? = null
     private var uiEventUpdateJob: Job? = null
+
+    private var mvcImpressHolder: ImpressHolder? = null
+    private var mvcOnScrollChangeListener: ViewTreeObserver.OnScrollChangedListener? = null
 
     override fun getFragmentToolbar(): Toolbar? = binding?.toolbarMerchantPage
 
@@ -256,6 +268,8 @@ class MerchantPageFragment : BaseMultiFragment(),
     override fun onDestroyView() {
         super.onDestroyView()
         binding = null
+        currentPromoName = null
+        removeCurrentMvcScrollChangedListener()
     }
 
     override fun onStart() {
@@ -675,6 +689,10 @@ class MerchantPageFragment : BaseMultiFragment(),
                 }
             }
         })
+
+        viewModel.mvcLiveData.observe(viewLifecycleOwner) {
+            renderMvc(it)
+        }
     }
 
     private fun logExceptionToServerLogger(
@@ -922,6 +940,59 @@ class MerchantPageFragment : BaseMultiFragment(),
             this.setTextDescription(tickerData.subtitle)
             this.show()
         }
+    }
+
+    private fun renderMvc(mvcData: MvcData?) {
+        binding?.mvcTokofoodMerchantPage?.run {
+            if (mvcData == null) {
+                hide()
+            } else {
+                show()
+                renderMvcData(mvcData)
+                currentPromoName = mvcData.animatedInfoList?.firstOrNull()?.title
+                setMvcImpressionHandling(currentPromoName.orEmpty())
+                renderMvcImageBackground()
+            }
+        }
+    }
+
+    private fun renderMvcData(mvcData: MvcData) {
+        binding?.mvcTokofoodMerchantPage?.setData(
+            mvcData = mvcData,
+            shopId = merchantId,
+            source = MvcSource.TOKOFOOD,
+            startActivityForResultFunction = ::goToPromoPage,
+            mvcTrackerImpl = TokofoodMerchantMvcTrackerImpl()
+        )
+    }
+
+    private fun renderMvcImageBackground() {
+        try {
+            binding?.mvcTokofoodMerchantPage?.imageCouponBackground?.setImageResource(
+                com.tokopedia.tokofood.R.drawable.ic_mvc_tokofood_background
+            )
+        } catch (ex: Exception) {
+            Timber.e(ex)
+        }
+    }
+
+    private fun setMvcImpressionHandling(promoName: String) {
+        removeCurrentMvcScrollChangedListener()
+        mvcImpressHolder = ImpressHolder()
+        val onScrollChangedListener = mvcImpressHolder?.let { impressHolder ->
+            binding?.mvcTokofoodMerchantPage?.addAndReturnImpressionListener(impressHolder) {
+                merchantPageAnalytics.impressPromoMvc(promoName, merchantId)
+            }
+        }
+        mvcOnScrollChangeListener = onScrollChangedListener
+    }
+
+    private fun removeCurrentMvcScrollChangedListener() {
+        mvcOnScrollChangeListener?.let {
+            binding?.mvcTokofoodMerchantPage?.viewTreeObserver?.removeOnScrollChangedListener(it)
+        }
+        mvcOnScrollChangeListener = null
+        mvcImpressHolder = null
     }
 
     private fun renderMerchantProfile(merchantProfile: TokoFoodMerchantProfile) {
@@ -1556,6 +1627,16 @@ class MerchantPageFragment : BaseMultiFragment(),
         } catch (ex: Exception) {
             Timber.e(ex)
         }
+    }
+
+    private fun goToPromoPage() {
+        merchantPageAnalytics.clickPromoMvc(currentPromoName.orEmpty(), merchantId)
+        navigateToNewFragment(
+            TokoFoodPromoFragment.createInstance(
+                SOURCE,
+                merchantId
+            )
+        )
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

@@ -6,12 +6,10 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.databinding.ViewProductFeaturedBinding
 import com.tokopedia.play.ui.product.ProductBasicViewHolder
-import com.tokopedia.play.ui.productfeatured.adapter.ProductFeaturedAdapter
 import com.tokopedia.play.ui.productfeatured.itemdecoration.ProductFeaturedItemDecoration
 import com.tokopedia.play.ui.view.carousel.adapter.ProductCarouselAdapter
 import com.tokopedia.play.ui.view.carousel.viewholder.ProductCarouselViewHolder
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
-import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 
 /**
  * Created by kenny.hadisaputra on 06/07/22
@@ -24,6 +22,12 @@ class ProductCarouselUiView(
     private val context = binding.root.context
 
     private val impressionSet = mutableSetOf<String>()
+
+    private val scrollListener = object: RecyclerView.OnScrollListener(){
+        override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+            if (newState == RecyclerView.SCROLL_STATE_IDLE) sendImpression()
+        }
+    }
 
     private val adapter = ProductCarouselAdapter(
         listener = object : ProductBasicViewHolder.Listener {
@@ -58,12 +62,6 @@ class ProductCarouselUiView(
             }
         }
     )
-
-    private val scrollListener = object: RecyclerView.OnScrollListener(){
-        override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-            if (newState == RecyclerView.SCROLL_STATE_IDLE) sendImpression()
-        }
-    }
 
     private val layoutManager = object : LinearLayoutManager(context, RecyclerView.HORIZONTAL, false) {
         override fun onLayoutCompleted(state: RecyclerView.State?) {
@@ -126,10 +124,6 @@ class ProductCarouselUiView(
         binding.root.gone()
     }
 
-    fun cleanUp() {
-        binding.rvProductFeatured.removeOnScrollListener(scrollListener)
-    }
-
     private fun getPlaceholder() = List(3) { PlayProductUiModel.Placeholder }
 
     private fun invalidateItemDecorations() {
@@ -166,6 +160,10 @@ class ProductCarouselUiView(
             }
         }
         return emptyMap()
+    }
+
+    fun cleanUp() {
+        binding.rvProductFeatured.removeOnScrollListener(scrollListener)
     }
 
     interface Listener {

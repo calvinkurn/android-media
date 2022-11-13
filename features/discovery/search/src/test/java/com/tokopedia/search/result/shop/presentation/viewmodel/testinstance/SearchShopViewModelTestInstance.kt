@@ -1,5 +1,6 @@
 package com.tokopedia.search.result.shop.presentation.viewmodel.testinstance
 
+import com.google.gson.Gson
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.filter.common.data.DataValue
 import com.tokopedia.filter.common.data.DynamicFilterModel
@@ -8,7 +9,9 @@ import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
 import com.tokopedia.search.jsonToObject
 import com.tokopedia.search.result.cpmJSONObject
+import com.tokopedia.search.result.cpmJsonString
 import com.tokopedia.search.result.notCpmShopJsonObject
+import com.tokopedia.search.result.notCpmShopJsonString
 import com.tokopedia.search.result.shop.domain.model.SearchShopModel
 import com.tokopedia.topads.sdk.domain.model.CpmModel
 
@@ -70,8 +73,8 @@ internal val moreAceSearchShopWithRecommendationWithoutNextPage = SearchShopMode
         totalShop = 6
 )
 
-internal val cpmModel = CpmModel(cpmJSONObject)
-internal val notCpmShopModel = CpmModel(notCpmShopJsonObject)
+internal val cpmModel = Gson().fromJson(cpmJsonString, CpmModel::class.java)
+internal val notCpmShopModel = Gson().fromJson(notCpmShopJsonString, CpmModel::class.java)
 
 internal val searchShopQuickFilterModel = "searchshop/quickfilter/quick-filter-response.json".jsonToObject<SearchShopModel.FilterSort>()
 internal val searchShopModel = SearchShopModel(aceSearchShopWithNextPage, cpmModel, searchShopQuickFilterModel)

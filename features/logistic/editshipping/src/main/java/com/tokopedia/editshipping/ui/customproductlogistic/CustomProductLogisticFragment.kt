@@ -166,7 +166,7 @@ class CustomProductLogisticFragment : BaseDaggerFragment(), CPLItemAdapter.CPLIt
                         } else {
                             coachMark.hideCoachMark()
                             coachMarkItems.getOrNull(currentIndex)?.anchorView?.let { item ->
-                                binding.svShippingEditor.smoothScrollTo(0, item.bottom)
+                                binding.svShippingEditor.smoothScrollTo(0, item.top)
                             }
                             coachMark.showCoachMark(coachMarkItems, null, currentIndex)
                         }
@@ -177,7 +177,7 @@ class CustomProductLogisticFragment : BaseDaggerFragment(), CPLItemAdapter.CPLIt
                 }
                 // manual scroll to first item
                 coachMarkItems.getOrNull(1)?.anchorView?.let { rv ->
-                    binding.svShippingEditor.smoothScrollTo(0, rv.bottom)
+                    binding.svShippingEditor.smoothScrollTo(0, rv.top)
                     coachMark.showCoachMark(coachMarkItems, null, 1)
                 }
             }

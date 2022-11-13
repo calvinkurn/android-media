@@ -509,7 +509,7 @@ class EditShippingFragment : Fragment(), EditShippingViewListener {
                         override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
                             coachMark.hideCoachMark()
                             coachMarkItems.getOrNull(currentIndex)?.anchorView?.let { item ->
-                                scrollView?.smoothScrollTo(0, item.bottom)
+                                scrollView?.smoothScrollTo(0, item.top)
                             }
                             coachMark.showCoachMark(coachMarkItems, null, currentIndex)
                         }
@@ -520,7 +520,7 @@ class EditShippingFragment : Fragment(), EditShippingViewListener {
 
                     // manual scroll to first item
                     coachMarkItems.firstOrNull()?.anchorView?.let { rv ->
-                        scrollView?.smoothScrollTo(0, rv.bottom)
+                        scrollView?.smoothScrollTo(0, rv.top)
                         coachMark.showCoachMark(coachMarkItems)
                     }
                 }

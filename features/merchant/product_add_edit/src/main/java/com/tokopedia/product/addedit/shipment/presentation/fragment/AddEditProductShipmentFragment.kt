@@ -98,6 +98,7 @@ class AddEditProductShipmentFragment:
     private var mainLayout: ViewGroup? = null
 
     private var tfWeightAmount: TextFieldUnify? = null
+    private var tickerShipmentDescription: Ticker? = null
     private var shipperServicesIds: ArrayList<Long>? = arrayListOf()
 
     private var radiosInsurance: RadioGroup? = null
@@ -196,6 +197,8 @@ class AddEditProductShipmentFragment:
         } else {
             hideShipment()
         }
+
+        setupShipmentDescriptionTicker()
 
         initObservers()
 
@@ -305,6 +308,7 @@ class AddEditProductShipmentFragment:
 
     private fun setupViews() {
         tfWeightAmount = binding.weightInputLayout.tfWeightAmount
+        tickerShipmentDescription = binding.weightInputLayout.tickerWeight
 
         radiosInsurance = binding.insuranceInputLayout.radiosInsurance
         radioRequiredInsurance = binding.insuranceInputLayout.radioRequiredInsurance
@@ -548,6 +552,11 @@ class AddEditProductShipmentFragment:
         tickerInsurance?.setDescriptionClick {
             ShipmentInsuranceBottomSheet().show(childFragmentManager)
         }
+    }
+
+
+    private fun setupShipmentDescriptionTicker() {
+        tickerShipmentDescription?.setTextDescription(context?.resources?.getString(R.string.label_shipment_weight_ticker).toString())
     }
 
     fun sendDataBack() {

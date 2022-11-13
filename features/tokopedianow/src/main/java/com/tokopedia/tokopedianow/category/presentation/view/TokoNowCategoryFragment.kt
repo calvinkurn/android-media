@@ -519,7 +519,7 @@ class TokoNowCategoryFragment:
 
     override fun onAllCategoryClicked() { }
 
-    override fun onCategoryClicked(position: Int, categoryId: String, headerName: String) { }
+    override fun onCategoryClicked(position: Int, categoryId: String, headerName: String, categoryName: String) { }
 
     override fun onCategoryImpression(data: TokoNowCategoryGridUiModel) { }
 
