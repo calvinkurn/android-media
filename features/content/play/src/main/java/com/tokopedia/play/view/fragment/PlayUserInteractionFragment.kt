@@ -890,6 +890,8 @@ class PlayUserInteractionFragment @Inject constructor(
 
                     viewLifecycleOwner.lifecycleScope.launch(dispatchers.immediate) { invalidateChatListBounds() }
                 }
+
+                renderFollowPopUp(prevState?.isPopUp, state.isPopUp, state.bottomInsets)
             }
         }
     }
@@ -995,10 +997,6 @@ class PlayUserInteractionFragment @Inject constructor(
                     }
                     HideCoachMarkWinnerEvent -> {
                         interactiveResultView?.hideCoachMark()
-                    }
-                    is ShowPopUp -> {
-                        PlayFollowBottomSheet.getOrCreate(childFragmentManager)
-                            .show(childFragmentManager)
                     }
                 }
             }
@@ -1935,6 +1933,13 @@ class PlayUserInteractionFragment @Inject constructor(
                 playViewModel.submitAction(OpenKebabAction)
             }
         }
+    }
+
+    private fun renderFollowPopUp(prevState: Boolean?, state: Boolean,
+                                  bottomInsets: Map<BottomInsetsType, BottomInsetsState>) {
+        if (prevState != state && state && !bottomInsets.isAnyShown)
+            PlayFollowBottomSheet.getOrCreate(childFragmentManager)
+                .show(childFragmentManager)
     }
 
     companion object {

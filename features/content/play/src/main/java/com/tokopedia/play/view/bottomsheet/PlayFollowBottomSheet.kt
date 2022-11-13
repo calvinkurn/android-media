@@ -12,6 +12,7 @@ import com.tokopedia.play.databinding.PlayFollowBottomSheetBinding
 import com.tokopedia.play.view.fragment.PlayFragment
 import com.tokopedia.play.view.fragment.PlayUserInteractionFragment
 import com.tokopedia.play.view.uimodel.action.ClickPartnerNameAction
+import com.tokopedia.play.view.uimodel.action.DismissFollowPopUp
 import com.tokopedia.play.view.uimodel.action.PlayViewerNewAction
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play_common.databinding.BottomSheetHeaderBinding
@@ -92,6 +93,12 @@ class PlayFollowBottomSheet @Inject constructor() : BottomSheetUnify() {
     fun show(fragmentManager: FragmentManager){
         if(isAdded || isVisible) return
         show(fragmentManager, TAG)
+    }
+
+    override fun dismiss() {
+        super.dismiss()
+
+        playViewModel.submitAction(DismissFollowPopUp)
     }
 
     override fun onDestroyView() {

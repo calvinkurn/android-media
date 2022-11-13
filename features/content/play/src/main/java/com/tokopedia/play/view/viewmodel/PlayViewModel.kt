@@ -197,6 +197,8 @@ class PlayViewModel @AssistedInject constructor(
     /** Needed to decide whether we need to call setResult() or no when leaving play room */
     private val _isChannelReportLoaded = MutableStateFlow(false)
 
+    private val _isPopup = MutableStateFlow(false)
+
     private val _winnerBadgeUiState = combine(
         _leaderboard, _bottomInsets, _status, _channelDetail, _leaderboardUserBadgeState
     ) { leaderboard, bottomInsets, status, channelDetail, leaderboardUserBadgeState ->
@@ -317,10 +319,11 @@ class PlayViewModel @AssistedInject constructor(
         _loadingBuy,
         _addressUiState,
         _featuredProducts.distinctUntilChanged(),
+        _isPopup,
     ) { channelDetail, interactive, partner, winnerBadge, bottomInsets,
         like, totalView, rtn, title, tagItems,
         status, quickReply, selectedVariant, isLoadingBuy, address,
-        featuredProducts ->
+        featuredProducts, isPopup ->
         PlayViewerNewUiState(
             channel = channelDetail,
             interactive = interactive,
@@ -338,6 +341,7 @@ class PlayViewModel @AssistedInject constructor(
             isLoadingBuy = isLoadingBuy,
             address = address,
             featuredProducts = featuredProducts,
+            isPopUp = isPopup,
         )
     }.stateIn(
         viewModelScope,
@@ -963,6 +967,7 @@ class PlayViewModel @AssistedInject constructor(
             is SelectVariantOptionAction -> handleSelectVariantOption(action.option)
             PlayViewerNewAction.AutoOpenInteractive -> handleAutoOpen()
             is SendWarehouseId -> handleWarehouse(action.id, action.isOOC)
+            DismissFollowPopUp -> _isPopup.update { false }
         }
     }
 
@@ -2618,14 +2623,15 @@ class PlayViewModel @AssistedInject constructor(
         val config = channelData.channelDetail.popupConfig
         val shouldShow = _partnerInfo.value.status is PlayPartnerFollowStatus.Followable &&
             ( _partnerInfo.value.status as? PlayPartnerFollowStatus.Followable)?.followStatus != PartnerFollowableStatus.Followed
-            && !bottomInsets.isAnyShown && !isFreezeOrBanned
-            && playPreference.isFollowPopup(streamerId) && config.isEnabled
+            && !isFreezeOrBanned && playPreference.isFollowPopup(streamerId) && config.isEnabled
 
         if (shouldShow) {
             viewModelScope.launch(dispatchers.computation){
                 delay(config.duration)
                 if (!shouldShow) return@launch
-                _uiEvent.emit(ShowPopUp(config))
+                _isPopup.update {
+                    shouldShow
+                }
             }
         }
 
