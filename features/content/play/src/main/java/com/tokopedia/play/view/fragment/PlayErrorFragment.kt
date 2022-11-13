@@ -176,7 +176,9 @@ class PlayErrorFragment @Inject constructor(
             errorDescription.text = config.description
             errorAction.text = config.btnTitle
             setActionClickListener {
-                config.appLink
+                activity?.let { activity ->
+                    RouteManager.route(activity, config.appLink)
+                }
             }
         }
         container.show()
