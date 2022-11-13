@@ -32,9 +32,7 @@ open class PlayVideoPlayer(val context: Context) {
 
     var maxDurationCellularInSeconds: Int? = null
 
-    private val trackSelector = DefaultTrackSelector(context).apply {
-        parameters = DefaultTrackSelector.ParametersBuilder(context).setForceLowestBitrate(shouldForceLowest).build()
-    }
+    private val trackSelector = DefaultTrackSelector(context)
 
     private val exoPlayer: SimpleExoPlayer = SimpleExoPlayer.Builder(context)
         .setTrackSelector(trackSelector)
@@ -69,6 +67,10 @@ open class PlayVideoPlayer(val context: Context) {
         val mediaSource = getMediaSourceBySource(context, Uri.parse(videoUrl), shouldCache)
 
         exoPlayer.playWhenReady = true
+        trackSelector.apply {
+            parameters = DefaultTrackSelector.ParametersBuilder(context)
+                .setForceLowestBitrate(shouldForceLowest).build()
+        }
         exoPlayer.prepare(mediaSource,true, false)
     }
 
