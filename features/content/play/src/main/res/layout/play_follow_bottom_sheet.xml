@@ -65,7 +65,7 @@
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toEndOf="@id/iv_badge"
             app:layout_constraintTop_toTopOf="parent"
-            app:layout_goneMarginStart="0dp"
+            app:layout_goneMarginStart="@dimen/unify_space_8"
             app:typographyType="body_2"
             app:typographyWeight="bold"
             tools:text="Rockbros Indonesia Rockbros Indonesia Rockbros Indonesia Rockbros Indonesia" />
