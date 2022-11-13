@@ -17,14 +17,15 @@ import androidx.core.view.NestedScrollingChildHelper
 import androidx.core.view.NestedScrollingParent
 import androidx.core.view.NestedScrollingParentHelper
 import androidx.core.view.ViewCompat
-import com.tokopedia.home_component.R
+import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
 import kotlin.math.abs
 
 @SuppressLint("DrawAllocation")
 open class SimpleSwipeRefreshLayout @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
-    defStyle: Int = 0
+    defStyle: Int = Int.ZERO
 ) : ViewGroup(context, attrs, defStyle), NestedScrollingParent, NestedScrollingChild {
 
     private var canChildScrollUp = false
@@ -51,21 +52,13 @@ open class SimpleSwipeRefreshLayout @JvmOverloads constructor(
      * @param triggerOffSetTop : The offset in pixels from the top of this view at which the progress indicator should
      *         come to rest after a successful swipe gesture.
      */
-    var triggerOffSetTop = 0
-        private set
+    private var triggerOffSetTop = 0
 
     /**
      * @param maxOffSetTop : The maximum distance in pixels that the refresh indicator can be pulled
      *        beyond its resting position.
      */
-    var maxOffSetTop = 0
-        private set
-
-    /**
-     * @param overlay Whether to overlay the indicator on top of the content or not
-     */
-    var overlay = true
-        private set
+    private var maxOffSetTop = 0
 
     private var downX = 0F
     private var downY = 0F
@@ -78,8 +71,8 @@ open class SimpleSwipeRefreshLayout @JvmOverloads constructor(
     private val onProgressListeners: MutableCollection<(Float) -> Unit> = mutableListOf()
     private val onTriggerListeners: MutableCollection<() -> Unit> = mutableListOf()
 
-    var mNestedScrollingParentHelper: NestedScrollingParentHelper
-    var mNestedScrollingChildHelper: NestedScrollingChildHelper
+    private var mNestedScrollingParentHelper: NestedScrollingParentHelper
+    private var mNestedScrollingChildHelper: NestedScrollingChildHelper
     private val mParentScrollConsumed = IntArray(2)
     private val mParentOffsetInWindow = IntArray(2)
     private var mNestedScrollInProgress = false
@@ -88,38 +81,27 @@ open class SimpleSwipeRefreshLayout @JvmOverloads constructor(
         private const val STICKY_FACTOR = 0.66F
         private const val STICKY_MULTIPLIER = 0.75F
         private const val ROLL_BACK_DURATION = 300L
-        const val DEFAULT_INDICATOR_TARGET = 33f
+        private const val DEFAULT_INDICATOR_TARGET = 33f
+        private const val MINIMUM_PROGRESS = 0f
+        private const val MAXIMUM_PROGRESS = 1f
+        private const val MINIMUM_OFFSET = 0f
+        private const val FACTOR_ACCELERATE = 2f
+        private const val DOUBLE_HEIGHT_TRIGGER_TIMES = 2
+        private const val DIRECTION_TOP = -1
     }
 
     init {
-        context.theme.obtainStyledAttributes(
-            attrs,
-            R.styleable.SimpleSwipeRefreshLayout,
-            defStyle,
-            0
-        ).let {
-            val defaultValue = TypedValue.applyDimension(
-                TypedValue.COMPLEX_UNIT_DIP,
-                DEFAULT_INDICATOR_TARGET,
-                context.resources.displayMetrics
-            ).toInt()
+        val defaultValue = TypedValue.applyDimension(
+            TypedValue.COMPLEX_UNIT_DIP,
+            DEFAULT_INDICATOR_TARGET,
+            context.resources.displayMetrics
+        ).toInt()
 
-            triggerOffSetTop = it.getDimensionPixelOffset(
-                R.styleable.SimpleSwipeRefreshLayout_trigger_offset_top_swipe,
-                defaultValue
-            )
-            maxOffSetTop = it.getDimensionPixelOffset(
-                R.styleable.SimpleSwipeRefreshLayout_max_offset_top_swipe,
-                defaultValue * 2
-            )
+        triggerOffSetTop = defaultValue
+        maxOffSetTop = defaultValue * DOUBLE_HEIGHT_TRIGGER_TIMES
 
-            if (maxOffSetTop <= triggerOffSetTop)
-                maxOffSetTop = triggerOffSetTop * 2
+        layoutIconPullRefreshView?.maxOffsetTop(maxOffSetTop)
 
-            layoutIconPullRefreshView?.maxOffsetTop(maxOffSetTop)
-            overlay = it.getBoolean(R.styleable.SimpleSwipeRefreshLayout_indicator_overlay, overlay)
-            it.recycle()
-        }
         mNestedScrollingParentHelper = NestedScrollingParentHelper(this)
         mNestedScrollingChildHelper = NestedScrollingChildHelper(this)
         isNestedScrollingEnabled = true
@@ -129,13 +111,13 @@ open class SimpleSwipeRefreshLayout @JvmOverloads constructor(
 
     override fun onFinishInflate() {
         super.onFinishInflate()
-        contentChildView = ChildView(getChildAt(0))
+        contentChildView = ChildView(getChildAt(Int.ZERO))
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
         fun measureChild(childView: ChildView, widthMeasureSpec: Int, heightMeasureSpec: Int) {
-            measureChildWithMargins(childView.view, widthMeasureSpec, 0, heightMeasureSpec, 0)
+            measureChildWithMargins(childView.view, widthMeasureSpec, Int.ZERO, heightMeasureSpec, Int.ZERO)
         }
         measureChild(contentChildView, widthMeasureSpec, heightMeasureSpec)
     }
@@ -152,14 +134,6 @@ open class SimpleSwipeRefreshLayout @JvmOverloads constructor(
         val right: Int = left + contentView.measuredWidth
         val bottom: Int = contentView.measuredHeight
 
-        contentChildView = contentChildView.copy(
-            positionAttr = PositionAttr(
-                left = left,
-                top = top,
-                right = right,
-                bottom = bottom
-            )
-        )
         contentView.layout(left, top, right, bottom)
     }
 
@@ -169,7 +143,7 @@ open class SimpleSwipeRefreshLayout @JvmOverloads constructor(
         }
 
         fun checkIfScrolledFurther(ev: MotionEvent, dy: Float, dx: Float) =
-            if (!contentChildView.view.canScrollVertically(-1)) {
+            if (!contentChildView.view.canScrollVertically(DIRECTION_TOP)) {
                 ev.y > downY && abs(dy) > abs(dx)
             } else {
                 false
@@ -196,6 +170,7 @@ open class SimpleSwipeRefreshLayout @JvmOverloads constructor(
         return shouldStealTouchEvents
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     override fun onTouchEvent(event: MotionEvent): Boolean {
         if (!isEnabled || isRefreshing || currentState == State.ROLLING || mNestedScrollInProgress || canChildScrollUp()) {
             return false
@@ -210,7 +185,7 @@ open class SimpleSwipeRefreshLayout @JvmOverloads constructor(
         parent.requestDisallowInterceptTouchEvent(true)
         when (event.action) {
             MotionEvent.ACTION_MOVE -> {
-                offsetY = (event.y - downY) * (1 - STICKY_FACTOR * STICKY_MULTIPLIER)
+                offsetY = (event.y - downY) * (Int.ONE - STICKY_FACTOR * STICKY_MULTIPLIER)
                 notify = true
                 move()
             }
@@ -230,15 +205,12 @@ open class SimpleSwipeRefreshLayout @JvmOverloads constructor(
         val triggerOffset: Float =
             if (offsetY > triggerOffSetTop) offsetY else triggerOffSetTop.toFloat()
 
-        ValueAnimator.ofFloat(0F, 1F).apply {
+        ValueAnimator.ofFloat(MINIMUM_PROGRESS, MAXIMUM_PROGRESS).apply {
             duration = ROLL_BACK_DURATION
-            interpolator = DecelerateInterpolator(2f)
-            addUpdateListener {
-                positionChildren(triggerOffset * animatedValue as Float)
-            }
+            interpolator = DecelerateInterpolator(FACTOR_ACCELERATE)
             addListener(object : AnimatorListenerAdapter() {
                 override fun onAnimationEnd(animation: Animator?) {
-                    offsetY = triggerOffset.toFloat()
+                    offsetY = triggerOffset
                 }
             })
             start()
@@ -247,8 +219,8 @@ open class SimpleSwipeRefreshLayout @JvmOverloads constructor(
 
     private fun move() {
         val pullFraction: Float =
-            if (offsetY == 0F) 0F else if (triggerOffSetTop > offsetY) offsetY / triggerOffSetTop else 1F
-        offsetY = offsetY.coerceIn(0f, maxOffSetTop.toFloat())
+            if (offsetY == MINIMUM_OFFSET) MINIMUM_OFFSET else if (triggerOffSetTop > offsetY) offsetY / triggerOffSetTop else 1F
+        offsetY = offsetY.coerceIn(MINIMUM_OFFSET, maxOffSetTop.toFloat())
 
         onProgressListeners.forEach { it(pullFraction) }
         lastPullFraction = pullFraction
@@ -257,9 +229,9 @@ open class SimpleSwipeRefreshLayout @JvmOverloads constructor(
         layoutIconPullRefreshView?.offsetView(offsetY)
 
 
-        ValueAnimator.ofFloat(0F, 1F).apply {
+        ValueAnimator.ofFloat(MINIMUM_PROGRESS, MAXIMUM_PROGRESS).apply {
             duration = ROLL_BACK_DURATION
-            interpolator = DecelerateInterpolator(2f)
+            interpolator = DecelerateInterpolator(FACTOR_ACCELERATE)
             addUpdateListener {
             }
             addListener(object : AnimatorListenerAdapter() {
@@ -272,31 +244,25 @@ open class SimpleSwipeRefreshLayout @JvmOverloads constructor(
 
     open fun stopRefreshing() {
         val rollBackOffset = if (offsetY > triggerOffSetTop) offsetY - triggerOffSetTop else offsetY
-        val triggerOffset = if (rollBackOffset != offsetY) triggerOffSetTop else 0
+        val triggerOffset = if (rollBackOffset != offsetY) triggerOffSetTop else Int.ZERO
 
-        ValueAnimator.ofFloat(1F, 0F).apply {
+        ValueAnimator.ofFloat(MAXIMUM_PROGRESS, MINIMUM_PROGRESS).apply {
             duration = ROLL_BACK_DURATION
-            interpolator = DecelerateInterpolator(2f)
+            interpolator = DecelerateInterpolator(FACTOR_ACCELERATE)
             addListener(object : AnimatorListenerAdapter() {
                 override fun onAnimationEnd(animation: Animator?) {
-                    if (notify && triggerOffset != 0 && currentState == State.ROLLING) {
+                    if (notify && triggerOffset != Int.ZERO && currentState == State.ROLLING) {
                         currentState = State.TRIGGERING
                         isRefreshing = true
                         offsetY = triggerOffset.toFloat()
                         onTriggerListeners.forEach { it() }
                     } else {
                         currentState = State.IDLE
-                        offsetY = 0f
+                        offsetY = MINIMUM_OFFSET
                     }
                 }
             })
             start()
-        }
-    }
-
-    private fun positionChildren(offset: Float) {
-        if (!overlay) {
-            contentChildView.view.y = contentChildView.positionAttr.top + offset
         }
     }
 
@@ -311,14 +277,6 @@ open class SimpleSwipeRefreshLayout @JvmOverloads constructor(
     open fun setOnRefreshListener(listener: () -> Unit) {
         layoutIconPullRefreshView?.startRefreshing()
         onTriggerListeners.add(listener)
-    }
-
-    fun addTriggerListener(onTriggerListener: () -> Unit) {
-        onTriggerListeners.add(onTriggerListener)
-    }
-
-    fun removeOnTriggerListener(onTriggerListener: () -> Unit) {
-        onTriggerListeners.remove(onTriggerListener)
     }
 
     override fun checkLayoutParams(p: ViewGroup.LayoutParams?) = null != p && p is LayoutParams
@@ -345,19 +303,12 @@ open class SimpleSwipeRefreshLayout @JvmOverloads constructor(
         TRIGGERING
     }
 
-    data class ChildView(val view: View, val positionAttr: PositionAttr = PositionAttr())
-    data class PositionAttr(
-        val left: Int = 0,
-        val top: Int = 0,
-        val right: Int = 0,
-        val bottom: Int = 0,
-        val height: Int = 0
-    )
+    data class ChildView(val view: View)
 
     // NestedScrollingParent
     override fun onStartNestedScroll(child: View, target: View, nestedScrollAxes: Int): Boolean {
         return (isEnabled && currentState != State.ROLLING && !isRefreshing
-            && nestedScrollAxes and ViewCompat.SCROLL_AXIS_VERTICAL != 0)
+            && nestedScrollAxes and ViewCompat.SCROLL_AXIS_VERTICAL != Int.ZERO)
     }
 
     override fun onNestedScrollAccepted(child: View, target: View, axes: Int) {
@@ -365,29 +316,29 @@ open class SimpleSwipeRefreshLayout @JvmOverloads constructor(
         mNestedScrollingParentHelper.onNestedScrollAccepted(child, target, axes)
         // Dispatch up to the nested parent
         startNestedScroll(axes and ViewCompat.SCROLL_AXIS_VERTICAL)
-        offsetY = 0f
+        offsetY = MINIMUM_OFFSET
         mNestedScrollInProgress = true
     }
 
     override fun onNestedPreScroll(target: View, dx: Int, dy: Int, consumed: IntArray) {
         // If we are in the middle of consuming, a scroll, then we want to move the spinner back up
         // before allowing the list to scroll
-        if (dy > 0 && offsetY > 0) {
+        if (dy > Int.ZERO && offsetY > Int.ZERO) {
             if (dy > offsetY) {
-                consumed[1] = dy - offsetY.toInt()
-                offsetY = 0f
+                consumed[Int.ONE] = dy - offsetY.toInt()
+                offsetY = MINIMUM_OFFSET
             } else {
                 offsetY -= dy.toFloat()
-                consumed[1] = dy
+                consumed[Int.ONE] = dy
             }
             move()
         }
 
         // Now let our nested parent consume the leftovers
         val parentConsumed: IntArray = mParentScrollConsumed
-        if (dispatchNestedPreScroll(dx - consumed[0], dy - consumed[1], parentConsumed, null)) {
-            consumed[0] += parentConsumed[0]
-            consumed[1] += parentConsumed[1]
+        if (dispatchNestedPreScroll(dx - consumed[Int.ZERO], dy - consumed[Int.ONE], parentConsumed, null)) {
+            consumed[Int.ZERO] += parentConsumed[Int.ZERO]
+            consumed[Int.ONE] += parentConsumed[Int.ONE]
         }
     }
 
@@ -399,12 +350,12 @@ open class SimpleSwipeRefreshLayout @JvmOverloads constructor(
         mNestedScrollingParentHelper.onStopNestedScroll(target)
         mNestedScrollInProgress = false
         // Finish the Indicator for nested scrolling if we ever consumed any unconsumed nested scroll
-        if (offsetY > 0) {
+        if (offsetY > Int.ZERO) {
             notify = true
             currentState = State.ROLLING
             layoutIconPullRefreshView?.stopRefreshing(false)
             stopRefreshing()
-            offsetY = 0f
+            offsetY = MINIMUM_OFFSET
         }
         // Dispatch up our nested parent
         stopNestedScroll()
@@ -426,8 +377,8 @@ open class SimpleSwipeRefreshLayout @JvmOverloads constructor(
         // 'offset in window 'functionality to see if we have been moved from the event.
         // This is a decent indication of whether we should take over the event stream or not.
         val dy: Int = dyUnconsumed + mParentOffsetInWindow[1]
-        if (dy < 0 && !canChildScrollUp()) {
-            offsetY += Math.abs(dy).toFloat()
+        if (dy < Int.ZERO && !canChildScrollUp()) {
+            offsetY += abs(dy).toFloat()
             move()
         }
     }
