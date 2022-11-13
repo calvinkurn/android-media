@@ -11,8 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="@color/Unify_Background"
-        android:descendantFocusability="blocksDescendants"
-        app:layout_type="content">
+        android:descendantFocusability="blocksDescendants">
 
         <com.tokopedia.home.beranda.presentation.view.customview.NestedRecyclerView
             android:id="@+id/home_fragment_recycler_view"
