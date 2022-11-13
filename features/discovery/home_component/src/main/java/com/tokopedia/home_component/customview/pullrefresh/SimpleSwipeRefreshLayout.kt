@@ -219,7 +219,7 @@ open class SimpleSwipeRefreshLayout @JvmOverloads constructor(
 
     private fun move() {
         val pullFraction: Float =
-            if (offsetY == MINIMUM_OFFSET) MINIMUM_OFFSET else if (triggerOffSetTop > offsetY) offsetY / triggerOffSetTop else 1F
+            if (offsetY == MINIMUM_OFFSET) MINIMUM_PROGRESS else if (triggerOffSetTop > offsetY) offsetY / triggerOffSetTop else MAXIMUM_PROGRESS
         offsetY = offsetY.coerceIn(MINIMUM_OFFSET, maxOffSetTop.toFloat())
 
         onProgressListeners.forEach { it(pullFraction) }
