@@ -10,6 +10,7 @@ import android.view.animation.AccelerateDecelerateInterpolator
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.tokopedia.home_component.R
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
@@ -109,7 +110,7 @@ class LayoutIconPullRefreshView : ConstraintLayout, LayoutIconPullRefreshListene
 
     override fun stopRefreshing(isAfterRefresh: Boolean) {
         if ((offsetY < maxOffset && progressRefresh < MAXIMUM_PROGRESS_REFRESH) || isAfterRefresh) {
-            setLayoutHeight(HEIGHT_LOADING, 0) { containerIconPullRefresh?.gone() }
+            setLayoutHeight(HEIGHT_LOADING, Int.ZERO) { containerIconPullRefresh?.gone() }
         }
     }
 
