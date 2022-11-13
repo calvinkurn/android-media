@@ -1035,7 +1035,6 @@ class PlayViewModel @AssistedInject constructor(
         updateChannelStatus()
         updateLiveChannelChatHistory(channelData)
         updateChannelInfo(channelData)
-        handleFollowPopUp(channelData)
         sendInitialLog()
     }
 
@@ -1133,7 +1132,7 @@ class PlayViewModel @AssistedInject constructor(
     }
 
     private fun updateChannelInfo(channelData: PlayChannelData) {
-        updatePartnerInfo(channelData.partnerInfo)
+        updatePartnerInfo(channelData)
         if (!channelData.status.channelStatus.statusType.isFreeze) {
             updateLikeAndTotalViewInfo(channelData.likeInfo, channelData.id)
         }
@@ -1360,7 +1359,8 @@ class PlayViewModel @AssistedInject constructor(
      * Update channel data
      */
 
-    private fun updatePartnerInfo(partnerInfo: PlayPartnerInfo) {
+    private fun updatePartnerInfo(channelData: PlayChannelData) {
+        val partnerInfo = channelData.partnerInfo
         val isNeedToBeShown = if(userSession.isLoggedIn) partnerInfo.id.toString() != userSession.shopId && partnerInfo.id.toString() != userSession.userId else true
         if (partnerInfo.status !is PlayPartnerFollowStatus.NotFollowable && isNeedToBeShown) {
             viewModelScope.launchCatchError(block = {
@@ -1368,7 +1368,9 @@ class PlayViewModel @AssistedInject constructor(
 
                 val result = if(isFollowing) PartnerFollowableStatus.Followed else PartnerFollowableStatus.NotFollowed
                 _partnerInfo.setValue { copy(status = PlayPartnerFollowStatus.Followable(result)) }
-            }, onError = {})
+            }, onError = {}).invokeOnCompletion {
+                handleFollowPopUp(channelData)
+            }
         } else {
             _partnerInfo.setValue { copy(status = PlayPartnerFollowStatus.NotFollowable) }
         }
