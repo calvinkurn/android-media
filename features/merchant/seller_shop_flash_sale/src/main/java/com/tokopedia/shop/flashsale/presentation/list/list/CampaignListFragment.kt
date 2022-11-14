@@ -510,9 +510,10 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         binding?.run {
             if (isNearExpirePackageAvailable) {
                 tgExpireValue.visible()
-                viewModel.timeToFlipCountdown().start()
+                viewModel.startAnimationOfWarningQuota()
             } else {
                 tgExpireValue.gone()
+                viewModel.stopAnimationOfWarningQuota()
             }
             tgQuotaValue.run {
                 text = if (totalRemainingQuota.isMoreThanZero()) {

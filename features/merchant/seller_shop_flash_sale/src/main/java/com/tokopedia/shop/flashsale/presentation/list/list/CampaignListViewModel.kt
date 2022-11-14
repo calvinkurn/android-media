@@ -49,7 +49,7 @@ class CampaignListViewModel @Inject constructor(
 ) : BaseViewModel(dispatchers.main) {
 
     companion object {
-        const val TIMER_FOR_FLIP = 5000L
+        const val TIMER_FOR_FLIP = 7000L
     }
 
     private val _campaigns = MutableLiveData<Result<CampaignMeta>>()
@@ -88,6 +88,22 @@ class CampaignListViewModel @Inject constructor(
     private var drafts: List<CampaignUiModel> = emptyList()
     private var campaignId: Long = 0
     private var thumbnailImageUrl = ""
+
+    private val timerForToFlip by lazy {
+        launchCatchError(
+            dispatchers.io,
+            block = {
+                while (isActive) {
+                    val currentValue = _timeFlip.value?:1
+                    _timeFlip.postValue(currentValue+1)
+                    delay(TIMER_FOR_FLIP)
+                }
+            },
+            onError = {
+                _timeFlip.postValue(1)
+            }
+        )
+    }
 
     fun getCampaigns(
         rows: Int,
@@ -283,20 +299,14 @@ class CampaignListViewModel @Inject constructor(
         return vpsPackages.size
     }
 
-    fun timeToFlipCountdown() : Job {
-        return launchCatchError(
-            dispatchers.io,
-            block = {
-                while (isActive) {
-                    val currentValue = _timeFlip.value?:1
-                    _timeFlip.postValue(currentValue+1)
-                    delay(TIMER_FOR_FLIP)
-                }
-            },
-            onError = {
-                _timeFlip.postValue(1)
-            }
-        )
+    fun startAnimationOfWarningQuota(){
+        if(!timerForToFlip.isActive)
+        timerForToFlip.start()
+    }
+
+    fun stopAnimationOfWarningQuota(){
+        if(timerForToFlip.isActive)
+        timerForToFlip.cancel()
     }
 
 }
