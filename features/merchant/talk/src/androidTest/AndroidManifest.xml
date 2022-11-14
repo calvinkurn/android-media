@@ -26,5 +26,24 @@
                     android:pathPattern="@string/path_product_talk" />
             </intent-filter>
         </activity>
+        <activity
+            android:name="com.tokopedia.talk.stub.feature.inbox.presentation.activity.TalkInboxActivityStub"
+            android:label="@string/title_talk_discuss"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"
+            android:windowSoftInputMode="adjustResize|stateHidden"
+            android:exported="false">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:scheme="@string/internal_scheme"
+                    android:host="@string/host_global"
+                    android:pathPattern="@string/path_inbox_talk" />
+            </intent-filter>
+        </activity>
     </application>
 </manifest>

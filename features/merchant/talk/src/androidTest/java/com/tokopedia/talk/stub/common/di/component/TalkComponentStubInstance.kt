@@ -1,7 +1,6 @@
 package com.tokopedia.talk.stub.common.di.component
 
 import android.app.Application
-import com.tokopedia.talk.stub.common.di.DaggerTalkComponentStub
 
 object TalkComponentStubInstance {
     private var talkComponent: TalkComponentStub? = null
