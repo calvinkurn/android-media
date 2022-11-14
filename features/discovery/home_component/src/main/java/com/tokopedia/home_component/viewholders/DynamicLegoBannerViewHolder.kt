@@ -40,8 +40,7 @@ import com.tokopedia.unifycomponents.DividerUnify
 class DynamicLegoBannerViewHolder(itemView: View,
                                   val legoListener: DynamicLegoBannerListener?,
                                   val homeComponentListener: HomeComponentListener?,
-                                  val parentRecyclerViewPool: RecyclerView.RecycledViewPool? = null,
-                                  private val cardInteraction: Boolean = false
+                                  val parentRecyclerViewPool: RecyclerView.RecycledViewPool? = null
 ): AbstractViewHolder<DynamicLegoBannerDataModel>(itemView) {
     private var isCacheData = false
     private var isUsingPaddingStyle = false
@@ -98,7 +97,7 @@ class DynamicLegoBannerViewHolder(itemView: View,
                     adapterPosition + 1,
                     isCacheData,
                     isUsingPaddingStyle,
-                    cardInteraction
+                    element.cardInteraction
             )
             var marginValue = 0
             var marginBottom = 0
@@ -180,14 +179,15 @@ class DynamicLegoBannerViewHolder(itemView: View,
 
         companion object {
             private val LEGO_SQUARE = R.layout.layout_dynamic_lego_item
-            private val LEGO_LANDSCAPE = R.layout.layout_dynamic_lego_landscape
-            private val LEGO_LANDSCAPE_NON_RADIUS = R.layout.layout_dynamic_lego_landscape_non_radius
+            private val LEGO_SQUARE_PADDING = R.layout.layout_dynamic_lego_item
+            private val LEGO_LANDSCAPE_PADDING = R.layout.layout_dynamic_lego_landscape
+            private val LEGO_LANDSCAPE = R.layout.layout_dynamic_lego_landscape_non_radius
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LegoItemViewHolder {
             val v = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
             val viewHolder = LegoItemViewHolder(v)
-            if(viewType == LEGO_LANDSCAPE){
+            if(viewType == LEGO_LANDSCAPE_PADDING){
                 viewHolder.cardUnify.animateOnPress = if(cardInteraction) CardUnify2.ANIMATE_OVERLAY_BOUNCE else CardUnify2.ANIMATE_OVERLAY
             }
             else if(viewType == LEGO_SQUARE){
@@ -201,12 +201,12 @@ class DynamicLegoBannerViewHolder(itemView: View,
 
         override fun getItemViewType(position: Int): Int {
             return if (layout == DynamicChannelLayout.LAYOUT_LEGO_4_IMAGE && isUsingPaddingStyle)
-                LEGO_LANDSCAPE
+                LEGO_LANDSCAPE_PADDING
             else if (layout == DynamicChannelLayout.LAYOUT_LEGO_2_IMAGE && isUsingPaddingStyle)
-                LEGO_LANDSCAPE
+                LEGO_LANDSCAPE_PADDING
             else if (layout == DynamicChannelLayout.LAYOUT_LEGO_4_IMAGE
                     || layout == DynamicChannelLayout.LAYOUT_LEGO_2_IMAGE)
-                LEGO_LANDSCAPE_NON_RADIUS
+                LEGO_LANDSCAPE
             else LEGO_SQUARE
         }
 
@@ -268,7 +268,7 @@ class DynamicLegoBannerViewHolder(itemView: View,
                     }
                 }
             }
-            if(getItemViewType(position) == LEGO_LANDSCAPE) holder.itemView.setOnClickListener(clickListener)
+            if(getItemViewType(position) == LEGO_LANDSCAPE_PADDING) holder.itemView.setOnClickListener(clickListener)
             else holder.imageView.setOnClickListener(clickListener)
         }
 
