@@ -78,6 +78,7 @@ class CategoryProductCardsGqlRepository @Inject constructor() : BaseRepository()
             val dataItem = DataItem()
             componentsItem.position = index
             componentsItem.parentComponentId = componentId
+            componentsItem.parentComponentName = productComponentName
             when (productComponentName) {
                 ComponentNames.CategoryBestSeller.componentName -> {
                     componentsItem.name = ComponentNames.ProductCardCarouselItem.componentName

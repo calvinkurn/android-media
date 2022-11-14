@@ -32,6 +32,7 @@ class CategoryBestSellerViewHolder (itemView: View, val fragment: Fragment) : Ab
     private lateinit var categoryBestSellerViewModel: CategoryBestSellerViewModel
     private val carouselRecyclerViewDecorator = CarouselProductCardItemDecorator(fragment.context?.resources?.getDimensionPixelSize(R.dimen.dp_12))
     private var backgroundImage: ImageView = itemView.findViewById(R.id.background_image)
+    private var componentsItem : ComponentsItem? = null
 
     init {
         linearLayoutManager.initialPrefetchItemCount = 4
@@ -51,6 +52,9 @@ class CategoryBestSellerViewHolder (itemView: View, val fragment: Fragment) : Ab
     override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
         super.setUpObservers(lifecycleOwner)
         lifecycleOwner?.let { lifecycle ->
+            categoryBestSellerViewModel.getComponentData().observe(lifecycle, {
+                componentsItem = it
+            })
             categoryBestSellerViewModel.getProductCarouselItemsListData().observe(lifecycle, { item ->
                 if(item.isNotEmpty())
                     addCardHeader(item[0].lihatSemua)
@@ -78,6 +82,18 @@ class CategoryBestSellerViewHolder (itemView: View, val fragment: Fragment) : Ab
         }
     }
 
+    override fun removeObservers(lifecycleOwner: LifecycleOwner?) {
+        super.removeObservers(lifecycleOwner)
+        lifecycleOwner?.let {
+            categoryBestSellerViewModel.getComponentData().removeObservers(it)
+            categoryBestSellerViewModel.getProductCarouselItemsListData().removeObservers(it)
+            categoryBestSellerViewModel.getBackgroundImage().removeObservers(it)
+            categoryBestSellerViewModel.syncData.removeObservers(it)
+            categoryBestSellerViewModel.getProductCardMaxHeight().removeObservers(it)
+            categoryBestSellerViewModel.getProductLoadState().removeObservers(it)
+        }
+    }
+
     private fun addDefaultItemDecorator() {
         if (mProductCarouselRecyclerView.itemDecorationCount > 0)
             mProductCarouselRecyclerView.removeItemDecorationAt(0)
@@ -95,7 +111,7 @@ class CategoryBestSellerViewHolder (itemView: View, val fragment: Fragment) : Ab
         val lihatSemuaDataItem = DataItem(title = lihatSemua?.header,
                 subtitle = lihatSemua?.subheader, btnApplink = lihatSemua?.applink)
         val lihatSemuaComponentData = ComponentsItem(
-                name = ComponentsList.CategoryBestSeller.componentName,
+                name = componentsItem?.name ?: ComponentsList.CategoryBestSeller.componentName,
                 data = listOf(lihatSemuaDataItem))
         mHeaderView.addView(CustomViewCreator.getCustomViewObject(itemView.context,
                 ComponentsList.LihatSemua, lihatSemuaComponentData, fragment))
