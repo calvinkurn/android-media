@@ -3,7 +3,6 @@ package com.tokopedia.privacycenter.main.section.accountlinking
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.privacycenter.R
 import com.tokopedia.privacycenter.common.PrivacyCenterStateResult
@@ -31,7 +30,7 @@ class AccountLinkingSection(
     override fun initObservers() {
         lifecycleOwner?.let {
             viewModel.accountLinkingState.observe(lifecycleOwner) {
-                when(it) {
+                when (it) {
                     is PrivacyCenterStateResult.Loading -> {
                         showShimmering(true)
                     }
@@ -55,7 +54,6 @@ class AccountLinkingSection(
 
     private fun showStatusAccountLinked(isLinked: Boolean, phoneNumber: String = "", linkedTime: String = "") {
         sectionViewBinding.apply {
-            root.show()
             textDetail.showWithCondition(!isLinked)
             icAccountLinked.showWithCondition(isLinked)
 
@@ -69,7 +67,6 @@ class AccountLinkingSection(
                 sectionViewBinding.root.context?.getString(R.string.account_linking_label_account_unlinked)
             }
         }
-
     }
 
     private fun showOnFailed(throwable: Throwable?) {
@@ -82,7 +79,7 @@ class AccountLinkingSection(
     }
 
     override fun onButtonDirectionClick(view: View) {
-        //none
+        // none
     }
 
     companion object {

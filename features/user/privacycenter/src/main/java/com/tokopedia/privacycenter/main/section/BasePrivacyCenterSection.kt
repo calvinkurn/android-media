@@ -71,7 +71,6 @@ abstract class BasePrivacyCenterSection(context: Context?) {
         sectionViewBinding?.root?.hide()
         sectionBaseViewBinding.apply {
             loadingView.root.hide()
-            sectionContent.hide()
             baseSection.show()
         }
 
@@ -91,4 +90,3 @@ abstract class BasePrivacyCenterSection(context: Context?) {
         sectionBaseViewBinding.sectionLocalLoad.hide()
     }
 }
-
