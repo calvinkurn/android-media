@@ -20,6 +20,7 @@ import com.tokopedia.topchat.common.util.Utils.setTextMakeHyperlink
 import com.tokopedia.topchat.databinding.FragmentBubbleChatActivationGuideBinding
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import timber.log.Timber
+import java.util.*
 
 class BubbleChatActivationGuideFragment: Fragment() {
 
@@ -64,7 +65,8 @@ class BubbleChatActivationGuideFragment: Fragment() {
             ) {
                 val bubbleChatHelpPageUrl = String.format("%s?url=%s",
                     ApplinkConst.WEBVIEW,
-                    BubbleChat.Url.BUBBLE_CHAT_HELP_PAGE_URL
+                    BubbleChat.Url.BUBBLE_CHAT_HELP_PAGE_URL,
+                    Locale.getDefault()
                 )
                 RouteManager.route(context, bubbleChatHelpPageUrl)
             }
