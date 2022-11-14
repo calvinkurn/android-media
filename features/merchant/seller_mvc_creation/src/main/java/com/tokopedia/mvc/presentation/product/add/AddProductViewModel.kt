@@ -270,7 +270,7 @@ class AddProductViewModel @Inject constructor(
             updateProductAsSelected(productIdToAdd, currentState.products)
         }
 
-        val updatedProductIds = updatedProducts.filter { it.isSelected }.map { it.id }.toSet()
+        val updatedProductIds = currentState.selectedProductsIds + updatedProducts.filter { it.isSelected }.map { it.id }.toSet()
 
         _uiState.update {
             it.copy(
