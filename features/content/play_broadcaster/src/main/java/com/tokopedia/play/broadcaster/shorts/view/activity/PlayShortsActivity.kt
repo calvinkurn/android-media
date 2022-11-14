@@ -3,6 +3,7 @@ package com.tokopedia.play.broadcaster.shorts.view.activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.View
 import androidx.activity.viewModels
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
@@ -145,9 +146,14 @@ class PlayShortsActivity : BaseActivity() {
          */
 
         if (prev?.config?.shortsId?.isEmpty() == true && curr.config.shortsId.isNotEmpty() && curr.media.mediaUri.isEmpty()) {
+            binding.loader.visibility = View.GONE
             openMediaPicker()
         } else if (prev?.media?.mediaUri?.isEmpty() == true && curr.media.mediaUri.isNotEmpty()) {
+            binding.loader.visibility = View.GONE
             openPreparation()
+        }
+        else if(curr.config.shortsId.isEmpty()) {
+            binding.loader.visibility = View.VISIBLE
         }
     }
 

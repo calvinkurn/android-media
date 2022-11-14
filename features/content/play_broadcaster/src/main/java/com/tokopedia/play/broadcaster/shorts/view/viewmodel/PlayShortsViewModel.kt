@@ -274,7 +274,7 @@ class PlayShortsViewModel @Inject constructor(
             }
 
             /** Will call real GQL here */
-            delay(2000)
+            delay(1000)
 
             _titleForm.update {
                 it.copy(

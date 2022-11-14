@@ -228,8 +228,6 @@ class PlayShortsPreparationFragment @Inject constructor(
             navIcon = IconUnify.CLOSE
             setCustomizeContentColor(ContentColor.TRANSPARENT, false)
         }
-
-        /** TODO: setup title max character after getConfig */
     }
 
     private fun setupListener() {
@@ -395,6 +393,7 @@ class PlayShortsPreparationFragment @Inject constructor(
                     binding.formTitle.setTitle(viewModel.title)
                 }
                 binding.formTitle.setLoading(false)
+                /** TODO: setup title max character after getConfig */
             }
             PlayShortsTitleFormUiState.State.Loading -> {
                 hideKeyboard()
