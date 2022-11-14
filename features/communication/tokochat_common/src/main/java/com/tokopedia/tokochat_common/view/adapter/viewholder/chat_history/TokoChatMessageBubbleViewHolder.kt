@@ -12,7 +12,6 @@ import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.tokochat_common.R
 import com.tokopedia.tokochat_common.databinding.TokochatItemMessageBubbleBinding
 import com.tokopedia.tokochat_common.databinding.TokochatPartialMessageBubbleBinding
-import com.tokopedia.tokochat_common.util.TokoChatViewUtil.getOppositeMargin
 import com.tokopedia.tokochat_common.view.adapter.viewholder.binder.TokoChatMessageBubbleViewHolderBinder
 import com.tokopedia.tokochat_common.view.adapter.viewholder.binder.TokoChatMessageBubbleViewHolderBinder.generateLeftBg
 import com.tokopedia.tokochat_common.view.adapter.viewholder.binder.TokoChatMessageBubbleViewHolderBinder.generateRightBg
@@ -28,7 +27,6 @@ open class TokoChatMessageBubbleViewHolder(
     private val binding: TokochatItemMessageBubbleBinding? by viewBinding()
     private val messageBubbleBinding: TokochatPartialMessageBubbleBinding? by viewBinding()
 
-    private val topMarginOpposite: Float = getOppositeMargin(itemView.context)
     private val bubbleToScreenMargin: Float = itemView.context?.resources?.getDimension(
         com.tokopedia.unifyprinciples.R.dimen.unify_space_12
     ) ?: 0f
@@ -108,7 +106,7 @@ open class TokoChatMessageBubbleViewHolder(
 
     private fun bindMargin(message: TokoChatMessageBubbleUiModel) {
         if (message.isSender) {
-            binding?.tokochatLayoutBubbleContainer?.setMargin(0, topMarginOpposite.toInt(), 0, 0)
+            binding?.tokochatLayoutBubbleContainer?.setMargin(0, 0, 0, 0)
         } else {
             binding?.tokochatLayoutBubbleContainer?.setMargin(0, 0, 0, 0)
         }
