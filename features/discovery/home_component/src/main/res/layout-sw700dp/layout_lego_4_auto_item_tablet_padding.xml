@@ -79,7 +79,7 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_marginVertical="8dp"
-                    android:layout_marginEnd="8dp"
+                    android:layout_marginEnd="4dp"
                     android:adjustViewBounds="true"
                     android:contentDescription="@string/content_desc_lego_image"
                     android:scaleType="fitCenter"

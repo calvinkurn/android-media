@@ -19,7 +19,7 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/item_name"
-            android:layout_width="81dp"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:maxLines="2"
             android:ellipsize="end"
@@ -30,6 +30,8 @@
             app:typographyWeight="bold"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/item_image"
+            app:layout_constraintHorizontal_bias="0"
             tools:text="TITLE"/>
 
         <com.tokopedia.unifyprinciples.Typography
@@ -44,7 +46,7 @@
             app:typographyWeight="reguler"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="@+id/item_name"
-            app:layout_constraintEnd_toEndOf="@id/item_name"
+            app:layout_constraintEnd_toStartOf="@id/item_image"
             tools:text="test"/>
 
         <com.tokopedia.unifycomponents.ImageUnify
@@ -53,7 +55,7 @@
             android:layout_height="match_parent"
             android:scaleType="fitCenter"
             android:adjustViewBounds="true"
-            android:layout_marginEnd="8dp"
+            android:layout_marginEnd="4dp"
             android:layout_marginVertical="8dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
