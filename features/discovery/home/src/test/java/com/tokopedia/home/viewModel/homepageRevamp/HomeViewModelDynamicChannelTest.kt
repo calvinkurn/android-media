@@ -234,10 +234,14 @@ class HomeViewModelDynamicChannelTest{
 
     @ExperimentalCoroutinesApi
     @Test
-    fun `given job still active when refresh home data then hide pull refresh`(){
-        getHomeUseCase.givenGetHomeDataReturn(HomeDynamicChannelModel(list = listOf(
-                DynamicChannelLoadingModel()
-        )))
+    fun `given job still active when refresh home data then hide pull refresh`() {
+        getHomeUseCase.givenGetHomeDataReturn(
+            HomeDynamicChannelModel(
+                list = listOf(
+                    DynamicChannelLoadingModel()
+                )
+            )
+        )
         homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase)
         val mockGetHomeDataJob = mockk<Job>(relaxed = true)
         homeViewModel.getHomeDataJob = mockGetHomeDataJob
@@ -250,10 +254,14 @@ class HomeViewModelDynamicChannelTest{
 
     @ExperimentalCoroutinesApi
     @Test
-    fun `given job not active when refresh home data then pull refresh still animate`(){
-        getHomeUseCase.givenGetHomeDataReturn(HomeDynamicChannelModel(list = listOf(
-                DynamicChannelLoadingModel()
-        )))
+    fun `given job not active when refresh home data then pull refresh still animate`() {
+        getHomeUseCase.givenGetHomeDataReturn(
+            HomeDynamicChannelModel(
+                list = listOf(
+                    DynamicChannelLoadingModel()
+                )
+            )
+        )
         homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase)
         val mockGetHomeDataJob = mockk<Job>(relaxed = true)
         homeViewModel.getHomeDataJob = mockGetHomeDataJob
@@ -264,10 +272,14 @@ class HomeViewModelDynamicChannelTest{
 
     @ExperimentalCoroutinesApi
     @Test
-    fun `given flow home data completed when refresh home data then hide pull refresh`(){
-        getHomeUseCase.givenGetHomeDataReturn(HomeDynamicChannelModel(list = listOf(
-                DynamicChannelLoadingModel()
-        )))
+    fun `given flow home data completed when refresh home data then hide pull refresh`() {
+        getHomeUseCase.givenGetHomeDataReturn(
+            HomeDynamicChannelModel(
+                list = listOf(
+                    DynamicChannelLoadingModel()
+                )
+            )
+        )
         homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase)
         val mockHomeDataModel = mockk<HomeDynamicChannelModel>(relaxed = true)
         homeViewModel.homeDataModel = mockHomeDataModel

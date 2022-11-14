@@ -32,6 +32,7 @@ class LayoutIconPullRefreshView : ConstraintLayout, LayoutIconPullRefreshListene
             }
         }
     }
+
     constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(
         context,
         attrs,
@@ -56,7 +57,7 @@ class LayoutIconPullRefreshView : ConstraintLayout, LayoutIconPullRefreshListene
         private const val MAXIMUM_HEIGHT_SCROLL = 120
         private const val HEIGHT_LOADING = 64
         private const val MAXIMUM_PROGRESS_REFRESH = 1
-        private const val TIME_DURATION_ANIMATION_HEIGHT : Long = 300
+        private const val TIME_DURATION_ANIMATION_HEIGHT: Long = 300
         private const val HEIGHT_LAYOUT_GONE = 0
         private const val TYPE_WHITE = 0
         private const val TYPE_GREEN = 1
@@ -71,7 +72,8 @@ class LayoutIconPullRefreshView : ConstraintLayout, LayoutIconPullRefreshListene
     }
 
     private fun initWithAttrs(context: Context, attributeSet: AttributeSet) {
-        val attributeArray = context.obtainStyledAttributes(attributeSet, R.styleable.LayoutIconPullRefreshView)
+        val attributeArray =
+            context.obtainStyledAttributes(attributeSet, R.styleable.LayoutIconPullRefreshView)
         val colorType = attributeArray.getInt(
             R.styleable.LayoutIconPullRefreshView_color_type,
             TYPE_WHITE
@@ -82,10 +84,20 @@ class LayoutIconPullRefreshView : ConstraintLayout, LayoutIconPullRefreshListene
 
     private fun setColorPullRefresh(colorType: Int) {
         if (colorType == TYPE_WHITE) {
-            pullRefreshIcon?.setColorFilter(ContextCompat.getColor(context, com.tokopedia.home_component.R.color.dms_white_pull_refresh))
+            pullRefreshIcon?.setColorFilter(
+                ContextCompat.getColor(
+                    context,
+                    com.tokopedia.home_component.R.color.dms_white_pull_refresh
+                )
+            )
             loaderPullRefresh?.type = LoaderUnify.TYPE_DECORATIVE_WHITE
-        } else if(colorType == TYPE_GREEN) {
-            pullRefreshIcon?.setColorFilter(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500))
+        } else if (colorType == TYPE_GREEN) {
+            pullRefreshIcon?.setColorFilter(
+                ContextCompat.getColor(
+                    context,
+                    com.tokopedia.unifyprinciples.R.color.Unify_GN500
+                )
+            )
             loaderPullRefresh?.type = LoaderUnify.TYPE_DECORATIVE
         }
     }
