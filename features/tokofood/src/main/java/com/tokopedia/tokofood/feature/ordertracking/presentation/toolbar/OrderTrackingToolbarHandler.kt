@@ -1,7 +1,6 @@
 package com.tokopedia.tokofood.feature.ordertracking.presentation.toolbar
 
 import android.app.Activity
-import android.graphics.drawable.ColorDrawable
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
