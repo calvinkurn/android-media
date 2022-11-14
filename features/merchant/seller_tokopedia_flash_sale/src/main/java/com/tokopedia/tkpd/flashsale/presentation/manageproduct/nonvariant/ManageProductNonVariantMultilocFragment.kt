@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_IDLE
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.campaign.base.BaseCampaignManageProductDetailFragment
 import com.tokopedia.campaign.components.bottomsheet.bulkapply.view.ProductBulkApplyBottomSheet
@@ -108,7 +109,9 @@ class ManageProductNonVariantMultilocFragment :
                         price = discountSetup.price
                         discount = discountSetup.discount
                     }
-                    view?.post { inputAdapter.notifyItemChanged(indexEdited) }
+                    if (rvManageProductDetail?.isComputingLayout == false && rvManageProductDetail?.scrollState == SCROLL_STATE_IDLE) {
+                        rvManageProductDetail?.adapter?.notifyItemChanged(indexEdited)
+                    }
                 }
             }
             val newProduct = it.copy(warehouses = warehouses)
