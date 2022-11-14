@@ -7,14 +7,19 @@ import com.tokopedia.flight.airport.presentation.model.FlightAirport
 import com.tokopedia.flight.airport.presentation.model.FlightAirportModel
 import com.tokopedia.flight.airport.presentation.model.FlightCountryAirportModel
 import javax.inject.Inject
+import javax.inject.Named
 
 /**
  * Created by nabillasabbaha on 05/03/19.
  */
-class FlightAirportMapper @Inject constructor() {
+class FlightAirportMapper @Inject constructor(
+    @Named(NAMED_POPULAR_AIRPORT)
+    private val popularAirportName: String
+) {
 
-    private companion object {
-        const val POPULAR_AIRPORT = "POPULAR"
+    companion object {
+        private const val POPULAR_AIRPORT = "POPULAR"
+        const val NAMED_POPULAR_AIRPORT = "popular_airport"
     }
 
     fun groupingPopularCity(entities: List<FlightPopularCityEntity>): MutableMap<String, List<FlightAirport>> {
@@ -142,7 +147,7 @@ class FlightAirportMapper @Inject constructor() {
             if (it.key == POPULAR_AIRPORT) {
                 val popularAirport = FlightCountryAirportModel(
                     POPULAR_AIRPORT,
-                    "Bandara Popular",
+                    popularAirportName,
                     mutableListOf()
                 )
                 visitables.add(popularAirport)

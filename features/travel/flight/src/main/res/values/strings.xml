@@ -425,4 +425,5 @@ di tempatmu.</string>
     <string name="flight_order_detail_title">Daftar Transaksi</string>
 
     <string name="flight_default_error_img_url">https://images.tokopedia.net/img/android/res/singleDpi/ic_digital_checkout_failed_transaction.png</string>
+    <string name="flight_popular_airport_label">Bandara Popular</string>
 </resources>
