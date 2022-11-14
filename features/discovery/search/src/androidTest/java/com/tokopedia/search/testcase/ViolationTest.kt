@@ -22,7 +22,7 @@ import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
-class ViolationTest {
+open class ViolationTest {
 
     @get:Rule
     val activityRule = IntentsTestRule(

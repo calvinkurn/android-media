@@ -71,22 +71,6 @@ class BroadMatchNoResultIDGenerator {
         Espresso.onView(ViewMatchers.withId(recyclerViewId))
             .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
 
-        val productListAdapter = recyclerView.getProductListAdapter()
-        val broadMatchViewModelPosition = productListAdapter.itemList.getBroadMatchViewModelPosition()
-
-        Espresso.onView(ViewMatchers.withId(recyclerViewId)).perform(
-            RecyclerViewActions.actionOnItemAtPosition<BroadMatchViewHolder>(
-                broadMatchViewModelPosition,
-                clickChildViewWithId(R.id.searchBroadMatchSeeMore)
-            )
-        )
-        Espresso.onView(ViewMatchers.withId(recyclerViewId)).perform(
-            RecyclerViewActions.actionOnItemAtPosition<BroadMatchViewHolder>(
-                broadMatchViewModelPosition,
-                clickChildViewWithId(R.id.searchBroadMatchList)
-            )
-        )
-
         IDGeneratorHelper.scrollAndPrintView(recyclerView)
     }
 

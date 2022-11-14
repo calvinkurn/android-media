@@ -69,11 +69,6 @@ class EmptySearchProductIDGenerator {
         Espresso.onView(ViewMatchers.withId(recyclerViewId))
             .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
 
-        val productListAdapter = recyclerView.getProductListAdapter()
-        val emptySearchProductViewModelPosition = productListAdapter.itemList.getEmptySearchProductViewModelPosition()
-
-        assertEmptySearchProductViewModelIsShown(emptySearchProductViewModelPosition)
-
         IDGeneratorHelper.scrollAndPrintView(recyclerView)
     }
 

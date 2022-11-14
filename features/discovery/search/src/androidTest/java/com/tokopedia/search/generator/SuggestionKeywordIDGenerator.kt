@@ -70,16 +70,6 @@ class SuggestionKeywordIDGenerator {
         Espresso.onView(ViewMatchers.withId(recyclerViewId))
             .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
 
-        val productListAdapter = recyclerView.getProductListAdapter()
-        val suggestionViewModelPosition = productListAdapter.itemList.getSuggestionViewModelPosition()
-
-        Espresso.onView(ViewMatchers.withId(recyclerViewId)).perform(
-            RecyclerViewActions.actionOnItemAtPosition<SuggestionViewHolder>(
-                suggestionViewModelPosition,
-                ViewActions.click()
-            )
-        )
-
         IDGeneratorHelper.scrollAndPrintView(recyclerView)
     }
 

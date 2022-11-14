@@ -79,11 +79,6 @@ class SearchInTokopediaIDGenerator {
             .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
 
         IDGeneratorHelper.scrollAndPrintView(recyclerView)
-
-        Espresso.onView(ViewMatchers.withId(R.id.searchResultGlobalSearchInTokopediaTitle))
-            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-        Espresso.onView(ViewMatchers.withId(R.id.searchResultGlobalSearchInTokopediaButton))
-            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
     }
 
     @After

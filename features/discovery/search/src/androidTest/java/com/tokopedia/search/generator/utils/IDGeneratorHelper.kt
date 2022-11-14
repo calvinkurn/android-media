@@ -49,6 +49,8 @@ object IDGeneratorHelper {
     }
 
     fun scrollAndPrintView(recyclerView: RecyclerView?) {
+        Thread.sleep(1000)
+
         val visitableList = recyclerView.getProductListAdapter().itemList
 
         visitableList.forEachIndexed { index, visitable ->

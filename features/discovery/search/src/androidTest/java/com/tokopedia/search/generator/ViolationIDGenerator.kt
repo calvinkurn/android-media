@@ -77,15 +77,6 @@ class ViolationIDGenerator {
         Espresso.onView(ViewMatchers.withId(recyclerViewId))
             .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
 
-        Espresso.onView(ViewMatchers.withId(R.id.searchResultViolationProductsEmptySearchImage))
-            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-        Espresso.onView(ViewMatchers.withId(R.id.searchResultViolationProductsEmptySearchTitle))
-            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-        Espresso.onView(ViewMatchers.withId(R.id.searchResultViolationProductsEmptySearchMessage))
-            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-        Espresso.onView(ViewMatchers.withId(R.id.buttonSearchResultViolationProductsEmpty))
-            .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
-
         IDGeneratorHelper.scrollAndPrintView(recyclerView)
     }
 

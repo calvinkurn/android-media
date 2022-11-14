@@ -70,16 +70,6 @@ class TopNavCardIDGenerator {
         Espresso.onView(ViewMatchers.withId(recyclerViewId))
             .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
 
-        val productListAdapter = recyclerView.getProductListAdapter()
-        val globalNavViewModelPosition = productListAdapter.itemList.getGlobalNavViewModelPosition()
-
-        Espresso.onView(ViewMatchers.withId(recyclerViewId)).perform(
-            RecyclerViewActions.actionOnItemAtPosition<GlobalNavViewHolder>(
-                globalNavViewModelPosition,
-                clickChildViewWithId(R.id.globalNavCardItemCardView)
-            )
-        )
-
         IDGeneratorHelper.scrollAndPrintView(recyclerView)
     }
 
