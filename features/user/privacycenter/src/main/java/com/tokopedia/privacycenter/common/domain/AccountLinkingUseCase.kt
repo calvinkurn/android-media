@@ -39,7 +39,7 @@ class AccountLinkingUseCase @Inject constructor(
         val phoneNumber = userSessionInterface.phoneNumber
 
         return if (linkedStatus.isNotEmpty() && linkedStatus.first().status == KEY_ACCOUNT_LINKED) {
-            val linkedTime = formatDateLocalTimezone(response.accountsLinkerStatus.linkStatus.first().linkedTime)
+            val linkedTime = response.accountsLinkerStatus.linkStatus.first().linkedTime.formatDateLocalTimezone()
             PrivacyCenterStateResult.Success(AccountLinkingStatus(true, phoneNumber, linkedTime))
         } else {
             PrivacyCenterStateResult.Success(AccountLinkingStatus(false))

@@ -15,6 +15,7 @@
     <string name="account_linking_label_account_linked">+%1$s - Tersambung %2$s</string>
     <string name="account_linking_label_account_unlinked">Belum tersambung</string>
     <string name="account_linking_subtitle_failed">Klik ikon di samping buat coba lagi.</string>
+    <string name="account_linking_skip_for_now">Lewatin Dulu</string>
 
     <!--Account Linking Webview-->
     <string name="account_linking_label_link_account_menu_skip">Lewati</string>

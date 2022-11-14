@@ -32,7 +32,7 @@ class LinkAccountWebviewFragment: BaseSessionWebViewFragment() {
 
     private fun checkForStatusQuery(url: String): Boolean {
         return try {
-            val status = Uri.parse(url).getQueryParameter(KEY_STATUS) ?: ""
+            val status = Uri.parse(url).getQueryParameter(KEY_STATUS).orEmpty()
             activity?.setResult(Activity.RESULT_OK, Intent().apply {
                 putExtra(ApplinkConstInternalGlobal.PARAM_STATUS, status)
             })
@@ -82,7 +82,7 @@ class LinkAccountWebviewFragment: BaseSessionWebViewFragment() {
     }
 
     fun checkPageFinished() {
-        val mUrl = getWebView().url ?: ""
+        val mUrl = getWebView().url.orEmpty()
         when {
             mUrl.contains(TokopediaUrl.Companion.getInstance().GOJEK_OTP, ignoreCase = true) -> {
                 // Check gojek accounts page, show toolbar

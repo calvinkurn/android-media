@@ -9,16 +9,16 @@ private const val LANGUAGE_CODE = "id"
 private const val COUNTRY_CODE = "ID"
 private const val LOCAL_DATE_FORMAT = "dd MMM yyyy"
 
-fun formatDateLocalTimezone(mDate: String): String {
+fun String.formatDateLocalTimezone(): String {
     return try {
         val date = SimpleDateFormat(SERVER_DATE_FORMAT, getIndonesiaLocale())
         date.timeZone = TimeZone.getTimeZone(TIMEZONE_UTC)
         SimpleDateFormat(
             LOCAL_DATE_FORMAT,
             getIndonesiaLocale()
-        ).format(date.parse(mDate) ?: "")
+        ).format(date.parse(this) ?: "")
     } catch (_: Exception) {
-        mDate
+        this
     }
 }
 

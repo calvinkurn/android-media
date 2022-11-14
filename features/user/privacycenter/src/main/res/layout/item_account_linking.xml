@@ -52,11 +52,11 @@
         app:layout_constraintTop_toTopOf="@+id/name_partner"
         android:text="@string/account_linking_text_detail_unlinked" />
 
-    <com.tokopedia.unifycomponents.ImageUnify
+    <com.tokopedia.iconunify.IconUnify
         android:id="@+id/ic_account_linked"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/ic_right_arrow"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        app:icon_name="CHEVRON_RIGHT"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/description_account_linking"
         app:layout_constraintEnd_toEndOf="parent"

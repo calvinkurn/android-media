@@ -39,6 +39,8 @@ class LinkAccountWebViewActivity: BaseSimpleWebViewActivity(), HasComponent<Priv
         private const val LINK_ACC_PATH = "account-link/v1/gojek-auth"
         private const val LINK_ACCOUNT_WEBVIEW_REQUEST = 100
 
+        private const val KEY_SUCCESS = "success"
+
         private fun getAccountLinkUrl(): String =
             TokopediaUrl.Companion.getInstance().ACCOUNTS.plus(LINK_ACC_PATH)
 
@@ -49,7 +51,7 @@ class LinkAccountWebViewActivity: BaseSimpleWebViewActivity(), HasComponent<Priv
         }
 
         fun getSuccessUrl(uri: Uri): Uri {
-            return uri.buildUpon().appendQueryParameter(QUERY_PAGE, "success").build()
+            return uri.buildUpon().appendQueryParameter(QUERY_PAGE, KEY_SUCCESS).build()
         }
 
         fun gotoSuccessPage(activity: FragmentActivity?, redirectionApplink: String) {
@@ -126,7 +128,7 @@ class LinkAccountWebViewActivity: BaseSimpleWebViewActivity(), HasComponent<Priv
         inflater.inflate(R.menu.menu_link_account, menu)
 
         val item = menu.findItem(R.id.menu_link_account_skip)
-        val s = SpannableString("Lewatin Dulu")
+        val s = SpannableString(this.getString(R.string.account_linking_skip_for_now))
         s.setSpan(ForegroundColorSpan(
             ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_G500)
         ), 0, s.length, 0)
@@ -135,8 +137,8 @@ class LinkAccountWebViewActivity: BaseSimpleWebViewActivity(), HasComponent<Priv
     }
 
     override fun getNewFragment(): Fragment {
-        var url = intent.getStringExtra(KEY_URL) ?: ""
-        val source = intent.getStringExtra(ApplinkConstInternalGlobal.PARAM_SOURCE) ?: ""
+        var url = intent.getStringExtra(KEY_URL).orEmpty()
+        val source = intent.getStringExtra(ApplinkConstInternalGlobal.PARAM_SOURCE).orEmpty()
 
         if(url.isEmpty()) {
             val redirection = intent.getStringExtra(ApplinkConstInternalGlobal.PARAM_LD) ?: ApplinkConst.HOME

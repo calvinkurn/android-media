@@ -157,6 +157,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalTopAds.TOPADS_DASHBOAR
 import com.tokopedia.applink.internal.ApplinkConstInternalTravel.INTERNAL_FLIGHT
 import com.tokopedia.applink.internal.ApplinkConstInternalTravel.INTERNAL_HOTEL
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.ACCOUNT_LINKING_WEBVIEW
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.ADD_BOD
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.ADD_EMAIL
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.ADD_NAME_REGISTER
@@ -566,7 +567,8 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({ it.startsWith(CHANGE_INACTIVE_PHONE) }, DF_BASE, R.string.title_update_inactive_phone))
             add(DFP({
                 it.startsWithPattern(PRIVACY_CENTER) ||
-                it.startsWithPattern(CONSENT_WITHDRAWAL_NEW)
+                it.startsWithPattern(CONSENT_WITHDRAWAL_NEW) ||
+                it.startsWithPattern(ACCOUNT_LINKING_WEBVIEW)
             }, DF_USER_PRIVACYCENTER, R.string.title_privacy_center))
 
             // Media
