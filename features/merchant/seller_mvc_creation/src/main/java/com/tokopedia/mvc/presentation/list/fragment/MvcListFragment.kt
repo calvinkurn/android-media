@@ -9,7 +9,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.campaign.delegates.HasPaginatedList
 import com.tokopedia.campaign.delegates.HasPaginatedListImpl
 import com.tokopedia.mvc.databinding.SmvcFragmentMvcListBinding
-import com.tokopedia.mvc.presentation.list.adapter.DummyAdapter
+import com.tokopedia.mvc.presentation.list.adapter.VouchersAdapter
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
 class MvcListFragment: BaseDaggerFragment(), HasPaginatedList by HasPaginatedListImpl() {
@@ -38,7 +38,7 @@ class MvcListFragment: BaseDaggerFragment(), HasPaginatedList by HasPaginatedLis
 
     private fun SmvcFragmentMvcListBinding.setupView() {
         rvVoucher.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
-        rvVoucher.adapter = DummyAdapter().apply {
+        rvVoucher.adapter = VouchersAdapter().apply {
             setDataList(List(100) {
                 it.toString() + it.toString()
             })
@@ -54,7 +54,7 @@ class MvcListFragment: BaseDaggerFragment(), HasPaginatedList by HasPaginatedLis
     }
 
     private fun getDataList(page: Int, pageSize: Int) {
-        val aaa = binding?.rvVoucher?.adapter as? DummyAdapter
+        val aaa = binding?.rvVoucher?.adapter as? VouchersAdapter
         aaa?.addDataList(List(pageSize) {
             it.toString() + it.toString()
         })

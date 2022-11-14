@@ -6,19 +6,19 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.mvc.databinding.SmvcItemVoucherBinding
 
-class DummyAdapter: RecyclerView.Adapter<DummyAdapter.CriteriaViewHolder>() {
+class VouchersAdapter: RecyclerView.Adapter<VouchersViewHolder>() {
 
     private var data: MutableList<String> = mutableListOf()
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CriteriaViewHolder {
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): VouchersViewHolder {
         val binding = SmvcItemVoucherBinding.inflate(LayoutInflater.from(parent.context),
             parent, false)
-        return CriteriaViewHolder(binding)
+        return VouchersViewHolder(binding)
     }
 
     override fun getItemCount() = data.size
 
-    override fun onBindViewHolder(holder: CriteriaViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: VouchersViewHolder, position: Int) {
         data.getOrNull(position)?.let { menu ->
             holder.bind(menu)
         }
@@ -32,14 +32,5 @@ class DummyAdapter: RecyclerView.Adapter<DummyAdapter.CriteriaViewHolder>() {
     fun addDataList(newData: List<String>) {
         data.addAll(newData)
         notifyItemRangeChanged(Int.ZERO, newData.size)
-    }
-
-    inner class CriteriaViewHolder(private val binding: SmvcItemVoucherBinding) :
-        RecyclerView.ViewHolder(binding.root) {
-
-        fun bind(title: String) {
-            val numberText = "${adapterPosition.inc()}."
-            binding.headerContent.tfStatusTitle.text = numberText + title
-        }
     }
 }

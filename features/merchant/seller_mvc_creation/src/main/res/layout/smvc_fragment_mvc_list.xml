@@ -14,7 +14,7 @@
         android:id="@+id/searchBar"
         app:search_bar_show_icon="false"
         android:layout_marginTop="12dp"
-        android:layout_marginHorizontal="12dp"
+        android:layout_marginHorizontal="16dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 
@@ -28,6 +28,8 @@
         android:id="@+id/rvVoucher"
         android:layout_weight="1"
         android:layout_marginTop="8dp"
+        android:layout_marginBottom="-6dp"
+        android:layout_marginHorizontal="12dp"
         android:layout_width="match_parent"
         android:layout_height="0dp"/>
 
