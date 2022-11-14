@@ -298,6 +298,7 @@ class AddEditProductPreviewViewModel @Inject constructor(
             val productModel = it
             val imageUrlOrPathList = addressPicture.mapIndexed { index, urlOrPath ->
                 if (!isPictureEdited[index]) {
+                    //took url from model instead from params because originalUrl in params was edited by media picker
                     productModel.detailInputModel.pictureList[index].urlOriginal
                 } else {
                     urlOrPath
