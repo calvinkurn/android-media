@@ -18,7 +18,7 @@ import com.tokopedia.home_component.visitable.Lego4AutoItem
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.unifyprinciples.Typography
 
-class Lego4AutoComponentViewHolder(v: View): RecyclerView.ViewHolder(v) {
+class Lego4AutoComponentViewHolder(private val v: View): RecyclerView.ViewHolder(v) {
     private val itemLayout: ConstraintLayout = v.findViewById(R.id.item_lego_auto)
     private val itemImage: ImageView = v.findViewById(R.id.item_image)
     private val itemName: Typography = v.findViewById(R.id.item_name)
@@ -37,12 +37,12 @@ class Lego4AutoComponentViewHolder(v: View): RecyclerView.ViewHolder(v) {
         if (item.grid.backColor.isNotEmpty()) {
             itemLayout.setGradientBackground(arrayListOf(item.grid.backColor))
         }
-        itemLayout.addOnImpressionListener(item.impressHolder){
+        v.rootView.addOnImpressionListener(item.impressHolder){
             if (!isCacheData) {
                 listener?.onLegoItemImpressed(channelModel, item.grid, adapterPosition, parentPosition)
             }
         }
-        itemLayout.setOnClickListener {
+        v.rootView.setOnClickListener {
             listener?.onLegoItemClicked(channelModel, item.grid, adapterPosition, parentPosition)
         }
     }
