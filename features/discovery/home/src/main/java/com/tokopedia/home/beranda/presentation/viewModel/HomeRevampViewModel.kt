@@ -159,7 +159,7 @@ open class HomeRevampViewModel @Inject constructor(
     @FlowPreview
     private val homeFlowDynamicChannel: Flow<HomeDynamicChannelModel?> = homeUseCase.get().getHomeDataFlow().flowOn(homeDispatcher.get().io)
 
-    private var getHomeDataJob: Job? = null
+    var getHomeDataJob: Job? = null
 
     init {
         _isRequestNetworkLiveData.value = Event(true)

@@ -17,10 +17,13 @@ import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.FlowPreview
+import kotlinx.coroutines.Job
 import org.junit.Assert
 import org.junit.Rule
 import org.junit.Test
 
+@OptIn(FlowPreview::class)
 @ExperimentalCoroutinesApi
 class HomeViewModelDynamicChannelTest{
     @get:Rule
@@ -227,5 +230,51 @@ class HomeViewModelDynamicChannelTest{
         homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase)
         homeViewModel.removeViewHolderAtPosition(selectedPosition)
         Assert.assertTrue(homeViewModel.homeDataModel.list.size == mockList.size)
+    }
+
+    @ExperimentalCoroutinesApi
+    @Test
+    fun `given job still active when refresh home data then hide pull refresh`(){
+        getHomeUseCase.givenGetHomeDataReturn(HomeDynamicChannelModel(list = listOf(
+                DynamicChannelLoadingModel()
+        )))
+        homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase)
+        val mockGetHomeDataJob = mockk<Job>(relaxed = true)
+        homeViewModel.getHomeDataJob = mockGetHomeDataJob
+        every { homeViewModel.getHomeDataJob?.isActive } returns true
+        homeViewModel.refreshHomeData()
+        homeViewModel.hideShowLoading.observeOnce {
+            Assert.assertTrue(it)
+        }
+    }
+
+    @ExperimentalCoroutinesApi
+    @Test
+    fun `given job not active when refresh home data then pull refresh still animate`(){
+        getHomeUseCase.givenGetHomeDataReturn(HomeDynamicChannelModel(list = listOf(
+                DynamicChannelLoadingModel()
+        )))
+        homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase)
+        val mockGetHomeDataJob = mockk<Job>(relaxed = true)
+        homeViewModel.getHomeDataJob = mockGetHomeDataJob
+        every { homeViewModel.getHomeDataJob?.isActive } returns false
+        homeViewModel.refreshHomeData()
+        Assert.assertNull(homeViewModel.hideShowLoading.value)
+    }
+
+    @ExperimentalCoroutinesApi
+    @Test
+    fun `given flow home data completed when refresh home data then hide pull refresh`(){
+        getHomeUseCase.givenGetHomeDataReturn(HomeDynamicChannelModel(list = listOf(
+                DynamicChannelLoadingModel()
+        )))
+        homeViewModel = createHomeViewModel(getHomeUseCase = getHomeUseCase)
+        val mockHomeDataModel = mockk<HomeDynamicChannelModel>(relaxed = true)
+        homeViewModel.homeDataModel = mockHomeDataModel
+        every { homeViewModel.homeDataModel.flowCompleted } returns false
+        homeViewModel.refreshHomeData()
+        homeViewModel.hideShowLoading.observeOnce {
+            Assert.assertTrue(it)
+        }
     }
 }
