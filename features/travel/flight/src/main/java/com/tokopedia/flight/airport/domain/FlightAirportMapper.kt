@@ -6,7 +6,6 @@ import com.tokopedia.flight.airport.data.source.entity.FlightPopularCityEntity
 import com.tokopedia.flight.airport.presentation.model.FlightAirport
 import com.tokopedia.flight.airport.presentation.model.FlightAirportModel
 import com.tokopedia.flight.airport.presentation.model.FlightCountryAirportModel
-import java.util.*
 import javax.inject.Inject
 
 /**
@@ -14,19 +13,26 @@ import javax.inject.Inject
  */
 class FlightAirportMapper @Inject constructor() {
 
+    private companion object {
+        const val POPULAR_AIRPORT = "POPULAR"
+    }
+
     fun groupingPopularCity(entities: List<FlightPopularCityEntity>): MutableMap<String, List<FlightAirport>> {
         val listCountry = mutableMapOf<String, List<FlightAirport>>()
 
+        listCountry[POPULAR_AIRPORT] = getPopularAirport(entities)
+
         entities.map {
             val flightAirport = FlightAirport(
-                    it.countryId,
-                    it.countryName,
-                    it.cityId,
-                    it.airportCode,
-                    it.cityCode,
-                    it.cityName,
-                    it.airportName
+                it.countryId,
+                it.countryName,
+                it.cityId,
+                it.airportCode,
+                it.cityCode,
+                it.cityName,
+                it.airportName
             )
+
             if (!listCountry.containsKey(it.countryId)) {
                 listCountry.put(it.countryId, mutableListOf())
             }
@@ -37,6 +43,26 @@ class FlightAirportMapper @Inject constructor() {
             listCountry.set(it.countryId, listNewAirport)
         }
         return listCountry
+    }
+
+    private fun getPopularAirport(entities: List<FlightPopularCityEntity>): List<FlightAirport> {
+        val listPopularAirports = mutableListOf<FlightAirport>()
+        entities.forEach {
+            if (it.isPopular) {
+                listPopularAirports.add(
+                    FlightAirport(
+                        it.countryId,
+                        it.countryName,
+                        it.cityId,
+                        it.airportCode,
+                        it.cityCode,
+                        it.cityName,
+                        it.airportName
+                    )
+                )
+            }
+        }
+        return listPopularAirports
     }
 
     fun groupingSuggestion(entities: List<FlightAirportSuggestionEntity>): MutableMap<String, List<FlightAirport>> {
@@ -56,39 +82,42 @@ class FlightAirportMapper @Inject constructor() {
 
             if (itemSuggestion.airports.isEmpty()) {
                 flightAirportinOneCountry.add(
-                        FlightAirport(
-                                itemSuggestion.countryId,
-                                itemSuggestion.countryName[0].value,
-                                itemSuggestion.code,
-                                itemSuggestion.code,
-                                itemSuggestion.code,
-                                itemSuggestion.cityName[0].value,
-                                itemSuggestion.name[0].value)
+                    FlightAirport(
+                        itemSuggestion.countryId,
+                        itemSuggestion.countryName[0].value,
+                        itemSuggestion.code,
+                        itemSuggestion.code,
+                        itemSuggestion.code,
+                        itemSuggestion.cityName[0].value,
+                        itemSuggestion.name[0].value
+                    )
                 )
             } else {
                 flightAirportinOneCountry.add(
-                        FlightAirport(
-                                itemSuggestion.countryId,
-                                itemSuggestion.countryName[0].value,
-                                itemSuggestion.code,
-                                "",
-                                itemSuggestion.code,
-                                itemSuggestion.cityName[0].value,
-                                itemSuggestion.name[0].value,
-                                airportArray)
+                    FlightAirport(
+                        itemSuggestion.countryId,
+                        itemSuggestion.countryName[0].value,
+                        itemSuggestion.code,
+                        "",
+                        itemSuggestion.code,
+                        itemSuggestion.cityName[0].value,
+                        itemSuggestion.name[0].value,
+                        airportArray
+                    )
                 )
             }
 
             itemSuggestion.airports.map {
                 flightAirportinOneCountry.add(
-                        FlightAirport(
-                                itemSuggestion.countryId,
-                                itemSuggestion.countryName[0].value,
-                                itemSuggestion.code,
-                                it.id,
-                                itemSuggestion.code,
-                                itemSuggestion.cityName[0].value,
-                                it.name[0].value)
+                    FlightAirport(
+                        itemSuggestion.countryId,
+                        itemSuggestion.countryName[0].value,
+                        itemSuggestion.code,
+                        it.id,
+                        itemSuggestion.code,
+                        itemSuggestion.cityName[0].value,
+                        it.name[0].value
+                    )
                 )
             }
 
@@ -110,11 +139,21 @@ class FlightAirportMapper @Inject constructor() {
         mapAirport.map {
             val flightAirportList: List<FlightAirport> = it.value
 
-            val countryAirportViewModel = FlightCountryAirportModel(
+            if (it.key == POPULAR_AIRPORT) {
+                val popularAirport = FlightCountryAirportModel(
+                    POPULAR_AIRPORT,
+                    "Bandara Popular",
+                    mutableListOf()
+                )
+                visitables.add(popularAirport)
+            } else {
+                val countryAirportViewModel = FlightCountryAirportModel(
                     flightAirportList[0].countryId,
                     flightAirportList[0].countryName,
-                    mutableListOf())
-            visitables.add(countryAirportViewModel)
+                    mutableListOf()
+                )
+                visitables.add(countryAirportViewModel)
+            }
 
             flightAirportList.map { airport ->
                 val airportViewModel = FlightAirportModel()
@@ -127,7 +166,6 @@ class FlightAirportMapper @Inject constructor() {
                 airportViewModel.cityAirports = airport.airports
                 return@map visitables.add(airportViewModel)
             }
-
         }
         return visitables
     }
