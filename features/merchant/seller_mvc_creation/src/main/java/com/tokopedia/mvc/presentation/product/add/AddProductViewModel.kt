@@ -361,6 +361,7 @@ class AddProductViewModel @Inject constructor(
         _uiState.update {
             it.copy(
                 isLoading = true,
+                page = NumberConstant.FIRST_PAGE,
                 products = emptyList(),
                 selectedSort = selectedSort
             )
@@ -373,6 +374,7 @@ class AddProductViewModel @Inject constructor(
         _uiState.update {
             it.copy(
                 isLoading = true,
+                page = NumberConstant.FIRST_PAGE,
                 products = emptyList(),
                 selectedWarehouseLocation = selectedWarehouse
             )
@@ -385,6 +387,7 @@ class AddProductViewModel @Inject constructor(
         _uiState.update {
             it.copy(
                 isLoading = true,
+                page = NumberConstant.FIRST_PAGE,
                 products = emptyList(),
                 selectedShopShowcase = selectedShopShowcases
             )
@@ -397,6 +400,7 @@ class AddProductViewModel @Inject constructor(
         _uiState.update {
             it.copy(
                 isLoading = true,
+                page = NumberConstant.FIRST_PAGE,
                 products = emptyList(),
                 selectedCategories = selectedCategories
             )

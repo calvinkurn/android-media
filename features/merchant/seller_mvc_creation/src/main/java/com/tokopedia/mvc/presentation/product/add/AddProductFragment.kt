@@ -12,6 +12,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.campaign.components.adapter.CompositeAdapter
+import com.tokopedia.campaign.components.adapter.DelegateAdapterItem
 import com.tokopedia.campaign.components.adapter.LoadingDelegateAdapter
 import com.tokopedia.campaign.components.bottomsheet.selection.entity.MultipleSelectionItem
 import com.tokopedia.campaign.components.bottomsheet.selection.entity.SingleSelectionItem
@@ -192,7 +193,6 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
             is AddProductEffect.LoadNextPageSuccess -> {
                 val hasNextPage = effect.currentPageItems.size == PAGE_SIZE
                 notifyLoadResult(hasNextPage)
-                productAdapter.submit(effect.allItems)
             }
             is AddProductEffect.ShowSortBottomSheet -> {
                 showSortBottomSheet(effect.selectedSort, effect.sortOptions)
@@ -211,26 +211,50 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
 
 
     private fun handleUiState(uiState: AddProductUiState) {
-        binding?.loader?.isVisible = uiState.isLoading
+        renderLoadingState(uiState.isLoading)
+
+        renderSelectAllCheckbox(uiState)
+        renderMaxProductSelection(uiState.voucherCreationMetadata?.maxProduct.orZero())
+
+        //Filter
+        renderSortChips(uiState.selectedSort)
+        renderWarehouseLocationChips(uiState.selectedWarehouseLocation)
+        renderCategoryChips(uiState.selectedCategories)
+        renderShopShowcaseChips(uiState.selectedShopShowcase)
+
+        renderList(uiState.products)
+        renderEmptyState(uiState.totalProducts, uiState.isLoading)
+
+        renderBottomSection(uiState)
+    }
+
+    private fun renderMaxProductSelection(maxProductSelection : Int) {
         binding?.tpgMaxProductSelection?.text = getString(
             R.string.smvc_placeholder_max_selected_product,
-            uiState.voucherCreationMetadata?.maxProduct.orZero()
+            maxProductSelection
         )
+
+    }
+
+    private fun renderLoadingState(isLoading: Boolean) {
+        binding?.loader?.isVisible = isLoading
+    }
+
+    private fun renderList(products: List<DelegateAdapterItem> ) {
+        productAdapter.submit(products)
+
+        if (products.isEmpty()) {
+            resetPaging()
+        }
+    }
+
+    private fun renderBottomSection(uiState: AddProductUiState) {
         binding?.tpgSelectedProductCount?.text = getString(
             R.string.smvc_placeholder_selected_product_count,
             uiState.selectedProductsIds.size,
             uiState.totalProducts.orZero()
         )
         binding?.btnAddProduct?.isEnabled = uiState.selectedProductsIds.isNotEmpty()
-
-        //productAdapter.submit(uiState.products)
-
-        renderSortChips(uiState.selectedSort)
-        renderWarehouseLocationChips(uiState.selectedWarehouseLocation)
-        renderCategoryChips(uiState.selectedCategories)
-        renderShopShowcaseChips(uiState.selectedShopShowcase)
-        renderCheckbox(uiState)
-        renderEmptyState(uiState.totalProducts, uiState.isLoading)
     }
 
     private fun renderEmptyState(totalProducts: Int, isLoading : Boolean) {
@@ -242,7 +266,7 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
         binding?.emptyStateAddProduct?.isVisible = totalProducts.isZero() && !isLoading
     }
 
-    private fun renderCheckbox(uiState: AddProductUiState) {
+    private fun renderSelectAllCheckbox(uiState: AddProductUiState) {
         val checkboxWording = if (uiState.selectedProductsIds.isEmpty()) {
             getString(R.string.smvc_select_all)
         } else {

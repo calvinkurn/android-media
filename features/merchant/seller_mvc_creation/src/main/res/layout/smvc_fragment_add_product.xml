@@ -68,6 +68,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         android:layout_margin="16dp"
+        android:visibility="gone"
         tools:visibility="visible"
         app:unifyEmptyStateTitle="@string/smvc_empty_state_no_product_title"
         app:unifyEmptyStateDescription="@string/smvc_empty_state_no_product_description"
