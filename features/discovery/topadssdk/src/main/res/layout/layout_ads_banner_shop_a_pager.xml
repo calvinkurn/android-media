@@ -103,6 +103,34 @@
             tools:text="Follow"
             tools:visibility="visible"/>
 
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/topAdsFlashSaleTimerPrefixText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="8dp"
+            android:text="@string/topads_sdk_sale_ends_in"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@id/topAdsFlashSaleTimer"
+            app:layout_constraintEnd_toStartOf="@+id/topAdsFlashSaleTimer"
+            app:layout_constraintTop_toTopOf="@+id/topAdsFlashSaleTimer"
+            app:typographyType="display_3"
+            tools:visibility="visible" />
+
+        <com.tokopedia.unifycomponents.timer.TimerUnifySingle
+            android:id="@+id/topAdsFlashSaleTimer"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="16dp"
+            android:visibility="gone"
+            app:layout_constraintBottom_toBottomOf="@id/linearLayoutMerchantVoucher"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/linearLayoutMerchantVoucher"
+            app:timer_unify_single_showClockIcon="true"
+            app:timer_unify_single_textWidth="full_radius"
+            app:timer_unify_single_type="auto"
+            app:timer_unify_single_variant="main"
+            tools:visibility="visible" />
+
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.recyclerview.widget.RecyclerView
