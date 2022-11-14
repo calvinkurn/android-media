@@ -350,7 +350,9 @@
       "eventCategory": "content feed timeline - video",
       "eventLabel": ".* - .* - .*",
       "businessUnit": "content",
-      "currentSite": "tokopediamarketplace"
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".*",
+      "userId": ".*"
     },
     {
       "event": "clickHomepage",
@@ -358,7 +360,9 @@
       "eventCategory": "content feed timeline - video",
       "eventLabel": ".* - .* - .*",
       "businessUnit": "content",
-      "currentSite": "tokopediamarketplace"
+      "currentSite": "tokopediamarketplace",
+      "sessionIris": ".*",
+      "userId": ".*"
     }
   ]
 }
