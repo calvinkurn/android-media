@@ -131,7 +131,7 @@ private fun NestSortFilterItem(sortFilter: SortFilter) {
             NestTypography(text = sortFilter.title, textStyle = NestTheme.typography.display2.copy(color = textColor))
             Spacer(modifier = Modifier.width(10.dp))
             Icon(
-                painter = painterResource(id = R.drawable.ic_chevron_down),
+                painter = painterResource(id = R.drawable.ic_chevron_down_8dp),
                 contentDescription = "Dropdown Icon",
                 tint = chevronColor
             )
