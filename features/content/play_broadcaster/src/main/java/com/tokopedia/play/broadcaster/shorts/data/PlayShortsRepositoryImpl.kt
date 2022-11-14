@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.content.common.ui.model.TermsAndConditionUiModel
 import com.tokopedia.content.common.usecase.GetWhiteListNewUseCase
+import com.tokopedia.play.broadcaster.domain.usecase.CreateChannelUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.GetConfigurationUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.PlayBroadcastUpdateChannelUseCase
 import com.tokopedia.play.broadcaster.shorts.domain.PlayShortsRepository
@@ -19,15 +20,39 @@ import javax.inject.Inject
 class PlayShortsRepositoryImpl @Inject constructor(
     private val getWhiteListNewUseCase: GetWhiteListNewUseCase,
     private val getConfigurationUseCase: GetConfigurationUseCase,
+    private val createChannelUseCase: CreateChannelUseCase,
     private val updateChannelUseCase: PlayBroadcastUpdateChannelUseCase,
     private val mapper: PlayShortsMapper,
     private val dispatchers: CoroutineDispatchers
 ) : PlayShortsRepository {
 
     override suspend fun getAccountList(): List<ContentAccountUiModel> = withContext(dispatchers.io) {
-        val response = getWhiteListNewUseCase.execute(type = GetWhiteListNewUseCase.WHITELIST_ENTRY_POINT)
+        /** TODO: uncomment this later */
+//        val response = getWhiteListNewUseCase.execute(type = GetWhiteListNewUseCase.WHITELIST_ENTRY_POINT)
+//
+//        return@withContext mapper.mapAuthorList(response)
 
-        return@withContext mapper.mapAuthorList(response)
+
+        listOf(
+            ContentAccountUiModel(
+                id = "123",
+                name = "Akun Shop",
+                iconUrl = "",
+                badge = "",
+                type = "content-shop",
+                hasUsername = true,
+                hasAcceptTnc = true,
+            ),
+            ContentAccountUiModel(
+                id = "456",
+                name = "Akun UGC",
+                iconUrl = "",
+                badge = "",
+                type = "content-user",
+                hasUsername = true,
+                hasAcceptTnc = true,
+            )
+        )
     }
 
     override suspend fun getShortsConfiguration(
@@ -47,7 +72,18 @@ class PlayShortsRepositoryImpl @Inject constructor(
     }
 
     override suspend fun createShorts(authorId: String, authorType: String): String = withContext(dispatchers.io) {
-        TODO("Not yet implemented")
+        delay(1000)
+        return@withContext "123"
+
+        /** TODO: will uncomment this later */
+//        val response = createChannelUseCase.apply {
+//            params = CreateChannelUseCase.createParams(
+//                authorId = authorId,
+//                authorType = authorType
+//            )
+//        }.executeOnBackground()
+//
+//        return@withContext response.id
     }
 
     override suspend fun uploadTitle(title: String, shortsId: String, authorId: String) {
