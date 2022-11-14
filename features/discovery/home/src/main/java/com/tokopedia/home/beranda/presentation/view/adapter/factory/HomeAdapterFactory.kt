@@ -122,28 +122,7 @@ import com.tokopedia.home_component.viewholders.SpecialReleaseViewHolder
 import com.tokopedia.home_component.viewholders.VpsWidgetViewHolder
 import com.tokopedia.home_component.viewholders.MissionWidgetViewHolder
 import com.tokopedia.home_component.viewholders.Lego4ProductViewHolder
-import com.tokopedia.home_component.visitable.BannerDataModel
-import com.tokopedia.home_component.visitable.CampaignWidgetDataModel
-import com.tokopedia.home_component.visitable.CategoryNavigationDataModel
-import com.tokopedia.home_component.visitable.CategoryWidgetV2DataModel
-import com.tokopedia.home_component.visitable.CueCategoryDataModel
-import com.tokopedia.home_component.visitable.DynamicIconComponentDataModel
-import com.tokopedia.home_component.visitable.DynamicLegoBannerDataModel
-import com.tokopedia.home_component.visitable.DynamicLegoBannerSixAutoDataModel
-import com.tokopedia.home_component.visitable.FeaturedBrandDataModel
-import com.tokopedia.home_component.visitable.FeaturedShopDataModel
-import com.tokopedia.home_component.visitable.Lego4AutoDataModel
-import com.tokopedia.home_component.visitable.MerchantVoucherDataModel
-import com.tokopedia.home_component.visitable.MixLeftDataModel
-import com.tokopedia.home_component.visitable.MixTopDataModel
-import com.tokopedia.home_component.visitable.ProductHighlightDataModel
-import com.tokopedia.home_component.visitable.QuestWidgetModel
-import com.tokopedia.home_component.visitable.RecommendationListCarouselDataModel
-import com.tokopedia.home_component.visitable.ReminderWidgetModel
-import com.tokopedia.home_component.visitable.SpecialReleaseDataModel
-import com.tokopedia.home_component.visitable.VpsDataModel
-import com.tokopedia.home_component.visitable.MissionWidgetListDataModel
-import com.tokopedia.home_component.visitable.Lego4ProductDataModel
+import com.tokopedia.home_component.visitable.*
 import com.tokopedia.play.widget.PlayWidgetViewHolder
 import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
 import com.tokopedia.quest_widget.listeners.QuestWidgetCallbacks
@@ -435,6 +414,10 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
 
     override fun type(lego4ProductDataModel: Lego4ProductDataModel): Int {
         return Lego4ProductViewHolder.LAYOUT
+    }
+
+    override fun type(mixLeftPaddingDataModel: MixLeftPaddingDataModel): Int {
+        return 1
     }
 
     private fun getDynamicChannelLayoutFromType(layout: String): Int {
