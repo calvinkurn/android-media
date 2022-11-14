@@ -69,7 +69,10 @@ abstract class BasePrivacyCenterSection(context: Context?) {
 
     fun showLocalLoad(title: String = "", description: String = "", onRetryClick: (View) -> Unit) {
         sectionViewBinding?.root?.hide()
-        showShimmering(false)
+        sectionBaseViewBinding.apply {
+            loadingView.root.hide()
+            sectionContent.hide()
+        }
 
         sectionBaseViewBinding.sectionLocalLoad.apply {
             localLoadTitle = title.ifEmpty {
