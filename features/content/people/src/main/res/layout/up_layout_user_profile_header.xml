@@ -309,7 +309,7 @@
             android:id="@+id/profile_tabs"
             layout="@layout/up_layout_user_profile_tabs" />
 
-        <include layout="@layout/up_shimmer_user_post" />
+        <include layout="@layout/up_shimmer_user_feed" />
 
         <com.tokopedia.unifycomponents.LocalLoad
             android:id="@+id/global_error_content"
