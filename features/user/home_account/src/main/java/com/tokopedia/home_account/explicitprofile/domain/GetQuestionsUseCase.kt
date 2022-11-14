@@ -38,6 +38,7 @@ class GetQuestionsUseCase @Inject constructor(
                   }
                   sections {
                     sectionID
+                    maxAnswer
                     layout
                     property {
                       title

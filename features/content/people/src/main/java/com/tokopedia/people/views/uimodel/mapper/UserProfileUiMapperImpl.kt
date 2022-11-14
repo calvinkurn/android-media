@@ -36,8 +36,8 @@ class UserProfileUiMapperImpl @Inject constructor() : UserProfileUiMapper {
                 channelLink = LinkUiModel(
                     webLink = response.profileHeader.profile.liveplaychannel.liveplaychannellink.weblink,
                     appLink = response.profileHeader.profile.liveplaychannel.liveplaychannellink.applink,
-                )
-            )
+                ),
+            ),
         )
     }
 
@@ -61,7 +61,7 @@ class UserProfileUiMapperImpl @Inject constructor() : UserProfileUiMapper {
 
     override fun mapUpdateReminder(response: VideoPostReimderModel): MutationUiModel {
         return with(response.playToggleChannelReminder) {
-            if(header.status == SUCCESS_UPDATE_REMINDER_CODE) MutationUiModel.Success(header.message)
+            if (header.status == SUCCESS_UPDATE_REMINDER_CODE) MutationUiModel.Success(header.message)
             else MutationUiModel.Error(header.message)
         }
     }
