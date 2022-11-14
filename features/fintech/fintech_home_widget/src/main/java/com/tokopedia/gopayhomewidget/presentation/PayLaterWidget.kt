@@ -22,13 +22,14 @@ import javax.inject.Inject
 class PayLaterWidget @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
-    @AttrRes defStyleAttr: Int = 0,
+    @AttrRes defStyleAttr: Int = 0
 ) : BaseCustomView(context, attrs, defStyleAttr) {
 
     val applink = 1
     val webLink = 2
     private var payLaterWidgetListener: PayLaterWidgetListener? = null
     private lateinit var layoutGopayBinding: LayoutGopayHomeWidgetBinding
+    private var caseMap = HashMap<Int, String>()
 
     @Inject
     lateinit var analyticsUpload: AnalyticsUpload
@@ -51,6 +52,35 @@ class PayLaterWidget @JvmOverloads constructor(
         layoutGopayBinding =
             LayoutGopayHomeWidgetBinding.inflate(LayoutInflater.from(context), this, true)
         this.visibility = GONE
+
+        generateCaseMap()
+    }
+
+    /**
+     * Function to populate map
+     */
+    private fun generateCaseMap() {
+        caseMap[11] = DUE_DATE
+        caseMap[12] = FIRST_GRACE
+        caseMap[13] = FITH_GRACE
+        caseMap[50] = D5_DUE_DATE
+        caseMap[51] = D2_DUE_DATE
+        caseMap[52] = D1_DUE_DATE
+        caseMap[53] = D0_DUE_DATE
+        caseMap[34] = DROP_OFF
+        caseMap[32] = REJECTED
+    }
+
+    /**
+     * Function which returns case value
+     * @param caseNumber  case key so map returns value accordingly
+     */
+    private fun getCaseDetail(caseNumber: Int): String? {
+        return if (caseMap.containsKey(caseNumber)) {
+            caseMap[caseNumber]
+        } else {
+            caseNumber.toString()
+        }
     }
 
     fun setPayLaterWidgetListener(payLaterWidgetListener: PayLaterWidgetListener) {
@@ -67,7 +97,8 @@ class PayLaterWidget @JvmOverloads constructor(
         if (payLaterWidgetData.isShow == true) {
             analyticsUpload.sendWidgetAnalyticsEvent(
                 AnalyticsEventGenerator.WidgetImpressionAnalytics(
-                    payLaterWidgetData.caseType.toString()
+                    getCaseDetail(payLaterWidgetData.caseType ?: 0) ?: "",
+                    payLaterWidgetData.gatewayCode ?: ""
                 )
             )
             this.visibility = VISIBLE
@@ -80,11 +111,9 @@ class PayLaterWidget @JvmOverloads constructor(
             layoutGopayBinding.proccedToGopay.text = payLaterWidgetData.button?.buttonName
 
             initListner(payLaterWidgetData)
+        } else {
+            this.visibility = GONE
         }
-        else {
-           this.visibility = GONE
-        }
-
     }
 
     private fun initListner(payLaterWidgetData: PayLaterWidgetData) {
@@ -116,8 +145,9 @@ class PayLaterWidget @JvmOverloads constructor(
                 closeHomeWidget()
                 analyticsUpload.sendWidgetAnalyticsEvent(
                     AnalyticsEventGenerator.WidgetCtaClickedButton(
-                        payLaterWidgetData.caseType.toString(),
-                        button.appsUrl ?: ""
+                        getCaseDetail(payLaterWidgetData.caseType ?: 0) ?: "",
+                        button.appsUrl ?: "",
+                        payLaterWidgetData.gatewayCode ?: ""
                     )
                 )
                 RouteManager.route(context, button.appsUrl)
@@ -126,8 +156,9 @@ class PayLaterWidget @JvmOverloads constructor(
                 closeHomeWidget()
                 analyticsUpload.sendWidgetAnalyticsEvent(
                     AnalyticsEventGenerator.WidgetCtaClickedButton(
-                        payLaterWidgetData.caseType.toString(),
-                        button.webUrl ?: ""
+                        getCaseDetail(payLaterWidgetData.caseType ?: 0) ?: "",
+                        button.webUrl ?: "",
+                        payLaterWidgetData.gatewayCode ?: ""
                     )
                 )
                 val webViewAppLink =
@@ -141,4 +172,15 @@ class PayLaterWidget @JvmOverloads constructor(
         payLaterWidgetListener?.onClosePayLaterWidget()
     }
 
+    companion object {
+        const val DUE_DATE = "Due Date"
+        const val FIRST_GRACE = "1st Grace"
+        const val FITH_GRACE = "5th Grace"
+        const val D5_DUE_DATE = "D-5 Due Date"
+        const val D2_DUE_DATE = "D-2 Due Date"
+        const val D1_DUE_DATE = "D-1 Due Date"
+        const val D0_DUE_DATE = "D-0 Due Date"
+        const val DROP_OFF = "Drop Off (Continue Apply)"
+        const val REJECTED = "Rejected KYC (Can Reapply)"
+    }
 }
