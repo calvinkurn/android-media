@@ -30,6 +30,7 @@ import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.data.mapper.AddAddressMapper
 import com.tokopedia.logisticCommon.data.response.DistrictItem
 import com.tokopedia.logisticCommon.data.response.KeroGetAddressResponse
+import com.tokopedia.logisticCommon.util.GmsHelper
 import com.tokopedia.logisticCommon.util.LogisticUserConsentHelper
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_ADDRESS_ID
@@ -149,8 +150,15 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        checkGmsAvailability()
         prepareData()
         initObserver()
+    }
+
+    private fun checkGmsAvailability() {
+        context?.let {
+            viewModel.isGmsAvailable = GmsHelper.detectGmsAvailability(it)
+        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -411,7 +419,9 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
 
                 cardAddressNegative.root.setOnClickListener {
                     AddNewAddressRevampAnalytics.onClickAturPinpointNegative(userSession.userId)
-                    checkKotaKecamatan()
+                    if (viewModel.isGmsAvailable) {
+                        checkKotaKecamatan()
+                    }
                 }
 
                 formAddressNegative.etKotaKecamatan.textFieldInput.setText(currentKotaKecamatan)
@@ -497,7 +507,9 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
                 cardAddressNegative.run {
                     root.setOnClickListener {
                         EditAddressRevampAnalytics.onClickAturPinPoint(userSession.userId)
-                        checkKotaKecamatan()
+                        if (viewModel.isGmsAvailable) {
+                            checkKotaKecamatan()
+                        }
                     }
                     btnChangeNegative.visibility = View.VISIBLE
                     btnArrow.visibility = View.GONE
@@ -551,10 +563,16 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
             binding?.run {
                 formattedAddress = "${data.districtName}, ${data.cityName}, ${data.provinceName}"
                 cardAddressPinpoint.run {
-                    btnChange.visibility = View.VISIBLE
-                    btnChange.setOnClickListener {
-                        goToPinpointPage()
-                        EditAddressRevampAnalytics.onClickAturPinPoint(userSession.userId)
+                    context?.let {
+                        if (viewModel.isGmsAvailable) {
+                            btnChange.visible()
+                            btnChange.setOnClickListener {
+                                goToPinpointPage()
+                                EditAddressRevampAnalytics.onClickAturPinPoint(userSession.userId)
+                            }
+                        } else {
+                            btnChange.gone()
+                        }
                     }
                     tvPinpointTitle.visibility = View.VISIBLE
                     addressDistrict.text = formattedAddress
@@ -960,14 +978,18 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
 
     private fun setupNegativePinpointCard() {
         binding?.run {
-            if (!isPinpoint) {
-                cardAddressNegative.icLocation.setImage(IconUnify.LOCATION_OFF)
-                cardAddressNegative.addressDistrict.text =  if (isEdit) getString(R.string.tv_pinpoint_not_defined_edit) else context?.let { HtmlLinkHelper(it, getString(R.string.tv_pinpoint_not_defined)).spannedString }
-            }
-            else {
-                cardAddressNegative.icLocation.setImage(IconUnify.LOCATION)
-                cardAddressNegative.addressDistrict.text = if (isEdit) getString(R.string.tv_pinpoint_defined_edit) else context?.let { HtmlLinkHelper(it, getString(R.string.tv_pinpoint_defined)).spannedString }
-                cardAddressNegative.btnChangeNegative.text = getString(R.string.change_pinpoint_positive_text)
+            if (viewModel.isGmsAvailable) {
+                if (!isPinpoint) {
+                    cardAddressNegative.icLocation.setImage(IconUnify.LOCATION_OFF)
+                    cardAddressNegative.addressDistrict.text =  if (isEdit) getString(R.string.tv_pinpoint_not_defined_edit) else context?.let { HtmlLinkHelper(it, getString(R.string.tv_pinpoint_not_defined)).spannedString }
+                }
+                else {
+                    cardAddressNegative.icLocation.setImage(IconUnify.LOCATION)
+                    cardAddressNegative.addressDistrict.text = if (isEdit) getString(R.string.tv_pinpoint_defined_edit) else context?.let { HtmlLinkHelper(it, getString(R.string.tv_pinpoint_defined)).spannedString }
+                    cardAddressNegative.btnChangeNegative.text = getString(R.string.change_pinpoint_positive_text)
+                }
+            } else {
+                cardAddressNegative.root.gone()
             }
         }
     }

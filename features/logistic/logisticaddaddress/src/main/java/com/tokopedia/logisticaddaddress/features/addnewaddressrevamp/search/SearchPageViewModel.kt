@@ -19,6 +19,7 @@ class SearchPageViewModel @Inject constructor(private val repo: KeroRepository,
                                               private val autoCompleteMapper: AutoCompleteMapper) : ViewModel() {
 
     private var saveAddressDataModel = SaveAddressDataModel()
+    var isGmsAvailable: Boolean = false
 
     private val _autoCompleteList = MutableLiveData<Result<Place>>()
     val autoCompleteList: LiveData<Result<Place>>
