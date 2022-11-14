@@ -64,19 +64,19 @@ class UserProfileShopRecomViewModelTest {
     private val mockOwnFollow = followInfoBuilder.buildFollowInfo(
         userID = mockOwnUserId,
         encryptedUserID = mockOwnUserId,
-        status = true
+        status = true,
     )
     private val mockOtherNotFollow = followInfoBuilder.buildFollowInfo(
         userID = mockOtherUserId,
         encryptedUserID = mockOtherUserId,
-        status = true
+        status = true,
     )
 
     private val robot = UserProfileViewModelRobot(
         username = mockOwnUserId,
         repo = mockRepo,
         dispatcher = testDispatcher,
-        userSession = mockUserSession
+        userSession = mockUserSession,
     )
 
     private val shopActionFollow = ShopFollowAction.Follow
@@ -293,7 +293,7 @@ class UserProfileShopRecomViewModelTest {
                 } else {
                     it
                 }
-            }
+            },
         )
 
         coEvery { mockUserSession.isLoggedIn } returns true
@@ -352,7 +352,7 @@ class UserProfileShopRecomViewModelTest {
                 } else {
                     it
                 }
-            }
+            },
         )
 
         coEvery { mockUserSession.isLoggedIn } returns true
@@ -409,7 +409,7 @@ class UserProfileShopRecomViewModelTest {
                 } else {
                     it
                 }
-            }
+            },
         )
         coEvery { mockUserSession.isLoggedIn } returns true
         coEvery { mockRepo.getProfile(mockOwnUserId) } returns mockOwnProfile
@@ -466,7 +466,7 @@ class UserProfileShopRecomViewModelTest {
                 } else {
                     it
                 }
-            }
+            },
         )
         coEvery { mockUserSession.isLoggedIn } returns true
         coEvery { mockRepo.getProfile(mockOwnUserId) } returns mockOwnProfile
@@ -521,7 +521,7 @@ class UserProfileShopRecomViewModelTest {
                 } else {
                     it
                 }
-            }
+            },
         )
 
         coEvery { mockUserSession.isLoggedIn } returns true
@@ -580,7 +580,7 @@ class UserProfileShopRecomViewModelTest {
                 } else {
                     it
                 }
-            }
+            },
         )
 
         coEvery { mockUserSession.isLoggedIn } returns true
@@ -637,7 +637,7 @@ class UserProfileShopRecomViewModelTest {
                 } else {
                     it
                 }
-            }
+            },
         )
         coEvery { mockUserSession.isLoggedIn } returns true
         coEvery { mockRepo.getProfile(mockOwnUserId) } returns mockOwnProfile
@@ -694,7 +694,7 @@ class UserProfileShopRecomViewModelTest {
                 } else {
                     it
                 }
-            }
+            },
         )
         coEvery { mockUserSession.isLoggedIn } returns true
         coEvery { mockRepo.getProfile(mockOwnUserId) } returns mockOwnProfile
@@ -770,7 +770,7 @@ class UserProfileShopRecomViewModelTest {
                 } else {
                     it
                 }
-            }
+            },
         )
 
         coEvery { mockUserSession.isLoggedIn } returns true
@@ -804,7 +804,7 @@ class UserProfileShopRecomViewModelTest {
                 } else {
                     it
                 }
-            }
+            },
         )
 
         coEvery { mockUserSession.isLoggedIn } returns true
@@ -838,7 +838,7 @@ class UserProfileShopRecomViewModelTest {
                 } else {
                     it
                 }
-            }
+            },
         )
 
         coEvery { mockUserSession.isLoggedIn } returns true
@@ -872,7 +872,7 @@ class UserProfileShopRecomViewModelTest {
                 } else {
                     it
                 }
-            }
+            },
         )
 
         coEvery { mockUserSession.isLoggedIn } returns true
@@ -906,7 +906,7 @@ class UserProfileShopRecomViewModelTest {
                 } else {
                     it
                 }
-            }
+            },
         )
 
         coEvery { mockUserSession.isLoggedIn } returns true
@@ -940,7 +940,7 @@ class UserProfileShopRecomViewModelTest {
                 } else {
                     it
                 }
-            }
+            },
         )
 
         coEvery { mockUserSession.isLoggedIn } returns true
@@ -974,7 +974,7 @@ class UserProfileShopRecomViewModelTest {
                 } else {
                     it
                 }
-            }
+            },
         )
 
         coEvery { mockUserSession.isLoggedIn } returns true
@@ -1008,7 +1008,7 @@ class UserProfileShopRecomViewModelTest {
                 } else {
                     it
                 }
-            }
+            },
         )
 
         coEvery { mockUserSession.isLoggedIn } returns true

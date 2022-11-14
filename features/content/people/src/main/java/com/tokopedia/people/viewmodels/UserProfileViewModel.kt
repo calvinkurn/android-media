@@ -149,8 +149,8 @@ class UserProfileViewModel @AssistedInject constructor(
         viewModelScope.launchCatchError(block = {
             loadShopRecom(nextCursor)
         }, onError = {
-            _uiEvent.emit(UserProfileUiEvent.ErrorLoadNextPageShopRecom(it))
-        })
+                _uiEvent.emit(UserProfileUiEvent.ErrorLoadNextPageShopRecom(it))
+            },)
     }
 
     /**
@@ -337,7 +337,7 @@ class UserProfileViewModel @AssistedInject constructor(
                     nextCursor = result.nextCursor,
                     title = result.title,
                     loadNextPage = result.loadNextPage,
-                    items = it.items + result.items
+                    items = it.items + result.items,
                 )
             }
         } else _shopRecom.update { ShopRecomUiModel() }

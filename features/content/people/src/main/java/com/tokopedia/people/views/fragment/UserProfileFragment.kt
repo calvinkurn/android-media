@@ -263,7 +263,8 @@ class UserProfileFragment @Inject constructor(
                     }
 
                     override fun clickCloseIcon() {}
-                },)
+                },
+                )
             }
         }
     }
@@ -959,7 +960,8 @@ class UserProfileFragment @Inject constructor(
         )
         LinkerManager.getInstance().executeShareRequest(
             LinkerUtils.createShareRequest(
-                0, linkerShareData,
+                0,
+                linkerShareData,
                 object : ShareCallback {
                     override fun urlCreated(linkerShareData: LinkerShareResult?) {
                         context?.let {
