@@ -57,7 +57,6 @@ class AddProductViewModel @Inject constructor(
         when(event) {
             is AddProductEvent.FetchRequiredData -> {
                 getProductsAndProductsMetadata(event.action, event.promoType)
-                getSortAndCategoryFilter()
                 getShopShowcases()
             }
             is AddProductEvent.LoadPage -> handleLoadPage(event.page)
@@ -96,11 +95,16 @@ class AddProductViewModel @Inject constructor(
 
                 val defaultWarehouse = sellerWarehouses.firstOrNull() ?: return@launchCatchError
 
+                val productMetaParams = ProductListMetaUseCase.Param(defaultWarehouse.warehouseId)
+                val productListMeta = getProductListMetaUseCase.execute(productMetaParams)
+
                 _uiState.update {
                     it.copy(
                         voucherCreationMetadata = metadata,
                         warehouses = sellerWarehouses,
-                        selectedWarehouseLocation = defaultWarehouse
+                        selectedWarehouseLocation = defaultWarehouse,
+                        sortOptions = productListMeta.sortOptions,
+                        categoryOptions = productListMeta.categoryOptions,
                     )
                 }
 
@@ -419,26 +423,6 @@ class AddProductViewModel @Inject constructor(
         getProducts()
     }
 
-    private fun getSortAndCategoryFilter() {
-        launchCatchError(
-            dispatchers.io,
-            block = {
-
-                val param = ProductListMetaUseCase.Param(0)
-                val productListMeta = getProductListMetaUseCase.execute(param)
-
-                _uiState.update {
-                    it.copy(
-                        sortOptions = productListMeta.sortOptions,
-                        categoryOptions = productListMeta.categoryOptions,
-                    )
-                }
-            },
-            onError = { error ->
-                _uiState.update { it.copy(error = error) }
-            }
-        )
-    }
 
     private fun getShopShowcases() {
         launchCatchError(
