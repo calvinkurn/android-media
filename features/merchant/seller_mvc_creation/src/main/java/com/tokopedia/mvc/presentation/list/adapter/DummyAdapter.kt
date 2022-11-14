@@ -4,14 +4,14 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.mvc.databinding.SmvcDummyBinding
+import com.tokopedia.mvc.databinding.SmvcItemVoucherBinding
 
 class DummyAdapter: RecyclerView.Adapter<DummyAdapter.CriteriaViewHolder>() {
 
     private var data: MutableList<String> = mutableListOf()
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): CriteriaViewHolder {
-        val binding = SmvcDummyBinding.inflate(LayoutInflater.from(parent.context),
+        val binding = SmvcItemVoucherBinding.inflate(LayoutInflater.from(parent.context),
             parent, false)
         return CriteriaViewHolder(binding)
     }
@@ -34,12 +34,12 @@ class DummyAdapter: RecyclerView.Adapter<DummyAdapter.CriteriaViewHolder>() {
         notifyItemRangeChanged(Int.ZERO, newData.size)
     }
 
-    inner class CriteriaViewHolder(private val binding: SmvcDummyBinding) :
+    inner class CriteriaViewHolder(private val binding: SmvcItemVoucherBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(title: String) {
             val numberText = "${adapterPosition.inc()}."
-            binding.tvText.text = numberText + title
+            binding.headerContent.tfStatusTitle.text = numberText + title
         }
     }
 }

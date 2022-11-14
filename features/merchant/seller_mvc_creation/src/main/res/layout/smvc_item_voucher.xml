@@ -11,13 +11,21 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <include layout="@layout/smvc_item_voucher_header"/>
+        <include
+            android:id="@+id/headerContent"
+            layout="@layout/smvc_item_voucher_header"/>
 
-        <include layout="@layout/smvc_item_voucher_data"/>
+        <include
+            android:id="@+id/mainInfoContent"
+            layout="@layout/smvc_item_voucher_data"/>
 
-        <include layout="@layout/smvc_item_voucher_header"/>
+        <include
+            android:id="@+id/periodContent"
+            layout="@layout/smvc_item_voucher_period"/>
 
-        <include layout="@layout/smvc_item_voucher_header"/>
+        <include
+            android:id="@+id/periodStats"
+            layout="@layout/smvc_item_voucher_stats"/>
 
     </androidx.appcompat.widget.LinearLayoutCompat>
 
