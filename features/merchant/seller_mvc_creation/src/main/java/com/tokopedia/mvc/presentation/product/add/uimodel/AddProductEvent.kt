@@ -6,6 +6,7 @@ import com.tokopedia.mvc.domain.entity.ShopShowcase
 import com.tokopedia.mvc.domain.entity.Warehouse
 import com.tokopedia.mvc.domain.entity.enums.PromoType
 import com.tokopedia.mvc.domain.entity.enums.VoucherAction
+import com.tokopedia.stability.patch.annotaion.Add
 
 sealed class AddProductEvent {
     data class FetchRequiredData(val action: VoucherAction, val promoType: PromoType) : AddProductEvent()
@@ -24,5 +25,6 @@ sealed class AddProductEvent {
     data class ApplyCategoryFilter(val selectedCategories: List<ProductCategoryOption>) : AddProductEvent()
     data class ApplyShowCaseFilter(val selectedShowCases: List<ShopShowcase>) : AddProductEvent()
     data class ApplySortFilter(val selectedSort: ProductSortOptions) : AddProductEvent()
+    data class SearchProduct(val searchKeyword : String) : AddProductEvent()
     object ConfirmAddProduct : AddProductEvent()
 }

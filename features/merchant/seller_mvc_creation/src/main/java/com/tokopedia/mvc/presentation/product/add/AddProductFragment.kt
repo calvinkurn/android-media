@@ -144,7 +144,8 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
         binding?.searchBar?.searchBarTextField?.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                 resetPaging()
-                viewModel.processEvent(AddProductEvent.LoadPage(NumberConstant.FIRST_PAGE))
+                val searchKeyword = binding?.searchBar?.searchBarTextField?.text.toString().trim()
+                viewModel.processEvent(AddProductEvent.SearchProduct(searchKeyword))
                 return@setOnEditorActionListener false
             }
             return@setOnEditorActionListener false
@@ -296,7 +297,7 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
         } else {
             locationChips.type = ChipsUnify.TYPE_SELECTED
             val warehouseName = if (selectedWarehouse.warehouseType == WarehouseType.DEFAULT_WAREHOUSE_LOCATION) {
-                getString(R.string.smvc_location)
+                getString(R.string.smvc_seller_location)
             } else {
                 selectedWarehouse.warehouseName
             }
@@ -523,7 +524,7 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
             showcasesOptions
         )
 
-        bottomSheet.setBottomSheetTitle(getString(R.string.smvc_category))
+        bottomSheet.setBottomSheetTitle(getString(R.string.smvc_showcase))
 
         showcaseFilterAdapter.setOnItemClicked { newItem ->
             bottomSheet.getBottomsheetView()?.btnApply?.enable()

@@ -2,6 +2,7 @@ package com.tokopedia.mvc.presentation.product.add.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.RelativeLayout
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.campaign.components.adapter.DelegateAdapter
@@ -10,9 +11,11 @@ import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.splitByThousand
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
-import com.tokopedia.mvc.domain.entity.Product
 import com.tokopedia.mvc.R
 import com.tokopedia.mvc.databinding.SmvcItemProductBinding
+import com.tokopedia.mvc.domain.entity.Product
+import com.tokopedia.mvc.util.extension.grayscale
+import com.tokopedia.mvc.util.extension.resetGrayscale
 import com.tokopedia.unifyprinciples.Typography
 
 class ProductDelegateAdapter(
@@ -44,19 +47,46 @@ class ProductDelegateAdapter(
         fun bind(item: Product) {
             with(binding) {
                 checkbox.setOnCheckedChangeListener(null)
-                imgProduct.loadImage(item.picture)
-                tpgProductName.text = item.name
-                tpgSku.setSku(item)
-                tpgStock.text = binding.tpgStock.context.getString(R.string.smvc_placeholder_total_stock, item.stock.splitByThousand())
-                tpgSoldCount.text = binding.tpgSoldCount.context.getString(R.string.smvc_placeholder_product_sold_count, item.txStats.sold.splitByThousand())
-                tpgPrice.setPrice(item)
+
                 tpgIneligibleReason.setIneligibleReason(item)
+
+                imgProduct.loadRemoteImageUrl(item)
+
+                tpgProductName.text = item.name
+                tpgProductName.isEnabled = item.isEligible
+
+                tpgSku.setSku(item)
+                tpgSku.isEnabled = item.isEligible
+
+                tpgStock.text = binding.tpgStock.context.getString(R.string.smvc_placeholder_total_stock, item.stock.splitByThousand())
+                tpgStock.isEnabled = item.isEligible
+
+                tpgSoldCount.text = binding.tpgSoldCount.context.getString(R.string.smvc_placeholder_product_sold_count, item.txStats.sold.splitByThousand())
+                tpgSoldCount.isEnabled = item.isEligible
+
+                tpgPrice.setPrice(item)
+                tpgPrice.isEnabled = item.isEligible
+
                 layoutVariant.setVariantCount(item)
+                layoutVariant.isEnabled = item.isEligible
+
+                separator.isEnabled = item.isEligible
+
                 checkbox.isChecked = item.isSelected
                 checkbox.setOnCheckedChangeListener { _, isChecked ->
                     onCheckboxClick(adapterPosition, isChecked)
                 }
-                checkbox.isEnabled = item.enableCheckbox
+                checkbox.isEnabled = item.enableCheckbox && item.isEligible
+            }
+        }
+
+        private fun ImageView.loadRemoteImageUrl(item: Product) {
+            loadImage(item.picture)
+
+            if (item.isEligible) {
+                resetGrayscale()
+            } else {
+                grayscale()
             }
         }
 

@@ -76,6 +76,7 @@ class AddProductViewModel @Inject constructor(
             is AddProductEvent.ApplyWarehouseLocationFilter -> handleApplyWarehouseLocationFilter(event.selectedWarehouseLocation)
             is AddProductEvent.ApplyShowCaseFilter -> handleApplyShopShowcasesFilter(event.selectedShowCases)
             is AddProductEvent.ApplySortFilter -> handleApplySortFilter(event.selectedSort)
+            is AddProductEvent.SearchProduct -> handleSearchProduct(event.searchKeyword)
         }
     }
 
@@ -155,7 +156,7 @@ class AddProductViewModel @Inject constructor(
                     benefitMax = 500_000,
                     benefitPercent = 0,
                     BenefitType.NOMINAL,
-                    PromoType.CASHBACK,
+                    PromoType.FREE_SHIPPING,
                     isLockToProduct = true,
                     minPurchase = 50_000,
                     productIds = currentPageParentProductsIds
@@ -227,7 +228,7 @@ class AddProductViewModel @Inject constructor(
     private fun handleCheckAllProduct() = launch(dispatchers.computation) {
         val maxProductSelection = currentState.voucherCreationMetadata?.maxProduct.orZero()
         val selectedProducts = currentState.products.mapIndexed { index, product ->
-            if (index < maxProductSelection) {
+            if (index < maxProductSelection && product.isEligible) {
                 product.copy(isSelected = true, enableCheckbox = true)
             } else {
                 product.copy(isSelected = false, enableCheckbox = false)
@@ -351,6 +352,19 @@ class AddProductViewModel @Inject constructor(
                 selectedWarehouseLocation = Warehouse(0, "", WarehouseType.DEFAULT_WAREHOUSE_LOCATION),
                 selectedShopShowcase = emptyList(),
                 selectedSort = ProductSortOptions("DEFAULT", "", "DESC")
+            )
+        }
+
+        getProducts()
+    }
+
+    private fun handleSearchProduct(searchKeyword : String) {
+        _uiState.update {
+            it.copy(
+                isLoading = true,
+                page = NumberConstant.FIRST_PAGE,
+                products = emptyList(),
+                searchKeyword = searchKeyword
             )
         }
 
