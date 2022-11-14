@@ -13,6 +13,11 @@ interface PlayShortsAccountManager {
     ): ContentAccountUiModel
 
     fun isAllowChangeAccount(
-        accountList: List<ContentAccountUiModel>,
+        accountList: List<ContentAccountUiModel>
     ): Boolean
+
+    fun switchAccount(
+        accountList: List<ContentAccountUiModel>,
+        currentAccountType: String
+    ): ContentAccountUiModel
 }

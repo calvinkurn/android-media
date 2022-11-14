@@ -2,12 +2,12 @@ package com.tokopedia.play.broadcaster.shorts.data
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
+import com.tokopedia.content.common.ui.model.TermsAndConditionUiModel
 import com.tokopedia.content.common.usecase.GetWhiteListNewUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.GetConfigurationUseCase
 import com.tokopedia.play.broadcaster.shorts.domain.PlayShortsRepository
 import com.tokopedia.play.broadcaster.shorts.ui.mapper.PlayShortsMapper
 import com.tokopedia.play.broadcaster.shorts.ui.model.PlayShortsConfigUiModel
-import com.tokopedia.play.broadcaster.ui.model.ConfigurationUiModel
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -18,7 +18,7 @@ class PlayShortsRepositoryImpl @Inject constructor(
     private val getWhiteListNewUseCase: GetWhiteListNewUseCase,
     private val getConfigurationUseCase: GetConfigurationUseCase,
     private val mapper: PlayShortsMapper,
-    private val dispatchers: CoroutineDispatchers,
+    private val dispatchers: CoroutineDispatchers
 ) : PlayShortsRepository {
 
     override suspend fun getAccountList(): List<ContentAccountUiModel> = withContext(dispatchers.io) {
@@ -33,10 +33,13 @@ class PlayShortsRepositoryImpl @Inject constructor(
     ): PlayShortsConfigUiModel = withContext(dispatchers.io) {
         val response = getConfigurationUseCase.execute(authorId, authorType)
 
-
         /** TODO: change this with mapper implementation later */
         PlayShortsConfigUiModel(
             shortsId = "123",
+            tncList = List(2) {
+                TermsAndConditionUiModel(desc = "Desc $it")
+            },
+            maxTitleCharacter = 24
         )
     }
 

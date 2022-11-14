@@ -5,13 +5,13 @@ package com.tokopedia.play.broadcaster.shorts.ui.model.event
  */
 data class PlayShortsUiEvent(
     val toaster: PlayShortsToaster,
-    val bottomSheet: PlayShortsBottomSheet,
+    val bottomSheet: PlayShortsBottomSheet
 ) {
     companion object {
         val Empty: PlayShortsUiEvent
             get() = PlayShortsUiEvent(
                 toaster = PlayShortsToaster.Unknown,
-                bottomSheet = PlayShortsBottomSheet.Unknown,
+                bottomSheet = PlayShortsBottomSheet.Unknown
             )
     }
 }
@@ -22,7 +22,11 @@ sealed interface PlayShortsToaster {
 
     data class ErrorSubmitTitle(
         val throwable: Throwable,
-        val onRetry: () -> Unit,
+        val onRetry: () -> Unit
+    ) : PlayShortsToaster
+
+    data class ErrorSwitchAccount(
+        val throwable: Throwable
     ) : PlayShortsToaster
 }
 
@@ -33,6 +37,8 @@ sealed interface PlayShortsBottomSheet {
     object UGCOnboarding : PlayShortsBottomSheet
 
     object NoEligibleAccount : PlayShortsBottomSheet
+
+    object SellerNotEligible : PlayShortsBottomSheet
 
     object SwitchAccount : PlayShortsBottomSheet
 }

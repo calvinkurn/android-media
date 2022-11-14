@@ -26,7 +26,6 @@ import com.tokopedia.play.broadcaster.shorts.ui.model.state.PlayShortsUiState
 import com.tokopedia.play.broadcaster.shorts.view.fragment.PlayShortsPreparationFragment
 import com.tokopedia.play.broadcaster.shorts.view.fragment.base.PlayShortsBaseFragment
 import com.tokopedia.play.broadcaster.shorts.view.viewmodel.PlayShortsViewModel
-import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play_common.util.extension.withCache
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
@@ -65,7 +64,7 @@ class PlayShortsActivity : BaseActivity() {
 
     override fun onAttachFragment(fragment: Fragment) {
         super.onAttachFragment(fragment)
-        when(fragment) {
+        when (fragment) {
             is UGCOnboardingParentFragment -> {
                 fragment.setListener(object : UGCOnboardingParentFragment.Listener {
                     override fun onSuccess() {
@@ -98,7 +97,7 @@ class PlayShortsActivity : BaseActivity() {
     }
 
     override fun onBackPressed() {
-        if(isBackPressedOverridden()) return
+        if (isBackPressedOverridden()) return
         super.onBackPressed()
     }
 
@@ -145,16 +144,15 @@ class PlayShortsActivity : BaseActivity() {
          * Need to put validation here so render page only run once
          */
 
-        if(prev?.shortsId?.isEmpty() == true && curr.shortsId.isNotEmpty() && curr.media.mediaUri.isEmpty()) {
+        if (prev?.config?.shortsId?.isEmpty() == true && curr.config.shortsId.isNotEmpty() && curr.media.mediaUri.isEmpty()) {
             openMediaPicker()
-        }
-        else if(prev?.media?.mediaUri?.isEmpty() == true && curr.media.mediaUri.isNotEmpty()){
+        } else if (prev?.media?.mediaUri?.isEmpty() == true && curr.media.mediaUri.isNotEmpty()) {
             openPreparation()
         }
     }
 
     private fun renderBottomSheet(bottomSheet: PlayShortsBottomSheet) {
-        when(bottomSheet) {
+        when (bottomSheet) {
             is PlayShortsBottomSheet.UGCOnboarding -> {
                 showUGCOnboardingBottomSheet()
             }
@@ -191,7 +189,7 @@ class PlayShortsActivity : BaseActivity() {
             .commit()
     }
 
-    private fun showUGCOnboardingBottomSheet(){
+    private fun showUGCOnboardingBottomSheet() {
         val existingFragment = supportFragmentManager.findFragmentByTag(UGCOnboardingParentFragment.TAG)
         if (existingFragment is UGCOnboardingParentFragment && existingFragment.isVisible) return
 

@@ -14,6 +14,7 @@ import com.google.android.exoplayer2.upstream.*
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.content.common.types.ContentCommonUserType
 import com.tokopedia.content.common.ui.bottomsheet.ContentAccountTypeBottomSheet
+import com.tokopedia.content.common.ui.bottomsheet.SellerTncBottomSheet
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.content.common.ui.toolbar.ContentColor
 import com.tokopedia.content.common.util.coachmark.ContentCoachMarkConfig
@@ -37,7 +38,6 @@ import com.tokopedia.play.broadcaster.shorts.view.custom.DynamicPreparationMenu
 import com.tokopedia.play.broadcaster.shorts.view.fragment.base.PlayShortsBaseFragment
 import com.tokopedia.play.broadcaster.shorts.view.manager.idle.PlayShortsIdleManager
 import com.tokopedia.play.broadcaster.shorts.view.viewmodel.PlayShortsViewModel
-import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
@@ -184,14 +184,21 @@ class PlayShortsPreparationFragment @Inject constructor(
                 childFragment.setData(viewModel.accountList)
                 childFragment.setOnAccountClickListener(object : ContentAccountTypeBottomSheet.Listener {
                     override fun onAccountClick(contentAccount: ContentAccountUiModel) {
-                        if(contentAccount.id == viewModel.selectedAccount.id) return
+                        if (contentAccount.id == viewModel.selectedAccount.id) return
 
-                        if(viewModel.isFormFilled) {
+                        if (viewModel.isFormFilled) {
                             showSwitchAccountConfirmationDialog(contentAccount)
-                        }
-                        else {
+                        } else {
                             viewModel.submitAction(PlayShortsAction.SwitchAccount)
                         }
+                    }
+                })
+            }
+            is SellerTncBottomSheet -> {
+                childFragment.initViews(viewModel.tncList)
+                childFragment.setListener(object : SellerTncBottomSheet.Listener {
+                    override fun clickCloseIcon() {
+                        /** TODO: need to handle this? */
                     }
                 })
             }
@@ -232,12 +239,13 @@ class PlayShortsPreparationFragment @Inject constructor(
                     activity?.onBackPressed()
                 }
 
-                if(viewModel.isAllowChangeAccount) {
+                if (viewModel.isAllowChangeAccount) {
                     setOnAccountClickListener {
                         viewModel.submitAction(PlayShortsAction.ClickSwitchAccount)
                     }
+                } else {
+                    setOnBackClickListener(null)
                 }
-                else setOnBackClickListener(null)
             }
 
             root.setOnClickListener {
@@ -350,7 +358,7 @@ class PlayShortsPreparationFragment @Inject constructor(
         prev: PlayShortsUiState?,
         curr: PlayShortsUiState
     ) {
-        if(prev?.accountList == curr.accountList) return
+        if (prev?.selectedAccount == curr.selectedAccount) return
 
         with(binding.toolbar) {
             title = getString(R.string.play_shorts_toolbar_title)
@@ -442,14 +450,23 @@ class PlayShortsPreparationFragment @Inject constructor(
                     }
                 )
             }
+            is PlayShortsToaster.ErrorSwitchAccount -> {
+                toaster.showError(
+                    toasterData.throwable,
+                    duration = Toaster.LENGTH_SHORT
+                )
+            }
             else -> {}
         }
     }
 
     private fun renderBottomSheet(bottomSheet: PlayShortsBottomSheet) {
-        when(bottomSheet) {
+        when (bottomSheet) {
             is PlayShortsBottomSheet.SwitchAccount -> {
                 showSwitchAccountBottomSheet()
+            }
+            is PlayShortsBottomSheet.SellerNotEligible -> {
+                showSellerNotEligibleBottomSheet()
             }
             else -> {}
         }
@@ -502,14 +519,20 @@ class PlayShortsPreparationFragment @Inject constructor(
             switchAccountConfirmationDialog = DialogUnify(requireContext(), DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply {
                 setTitle(
                     getString(
-                        if(selectedAccount.isShop) R.string.play_shorts_switch_account_to_shop_title
-                        else R.string.play_shorts_switch_account_to_user_title
+                        if (selectedAccount.isShop) {
+                            R.string.play_shorts_switch_account_to_shop_title
+                        } else {
+                            R.string.play_shorts_switch_account_to_user_title
+                        }
                     )
                 )
                 setDescription(
                     getString(
-                        if(selectedAccount.isShop) R.string.play_shorts_switch_account_to_shop_description
-                        else R.string.play_shorts_switch_account_to_user_description
+                        if (selectedAccount.isShop) {
+                            R.string.play_shorts_switch_account_to_shop_description
+                        } else {
+                            R.string.play_shorts_switch_account_to_user_description
+                        }
                     )
                 )
                 setPrimaryCTAText(getString(R.string.play_shorts_switch_account_cancel))
@@ -518,8 +541,11 @@ class PlayShortsPreparationFragment @Inject constructor(
                 }
                 setSecondaryCTAText(
                     getString(
-                        if(selectedAccount.isShop) R.string.play_shorts_switch_account_to_shop_confirm
-                        else R.string.play_shorts_switch_account_to_user_confirm
+                        if (selectedAccount.isShop) {
+                            R.string.play_shorts_switch_account_to_shop_confirm
+                        } else {
+                            R.string.play_shorts_switch_account_to_user_confirm
+                        }
                     )
                 )
                 setSecondaryCTAClickListener {
@@ -536,6 +562,12 @@ class PlayShortsPreparationFragment @Inject constructor(
 
     private fun showSwitchAccountBottomSheet() {
         ContentAccountTypeBottomSheet
+            .getFragment(childFragmentManager, requireActivity().classLoader)
+            .show(childFragmentManager)
+    }
+
+    private fun showSellerNotEligibleBottomSheet() {
+        SellerTncBottomSheet
             .getFragment(childFragmentManager, requireActivity().classLoader)
             .show(childFragmentManager)
     }

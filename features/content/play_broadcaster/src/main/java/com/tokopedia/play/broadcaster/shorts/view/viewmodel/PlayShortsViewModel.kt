@@ -5,10 +5,12 @@ import androidx.lifecycle.viewModelScope
 import com.google.android.exoplayer2.ExoPlayer
 import com.tokopedia.content.common.producttag.util.extension.combine
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
+import com.tokopedia.content.common.ui.model.TermsAndConditionUiModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play.broadcaster.shorts.domain.PlayShortsRepository
 import com.tokopedia.play.broadcaster.shorts.domain.manager.PlayShortsAccountManager
 import com.tokopedia.play.broadcaster.shorts.factory.PlayShortsMediaSourceFactory
+import com.tokopedia.play.broadcaster.shorts.ui.model.PlayShortsConfigUiModel
 import com.tokopedia.play.broadcaster.shorts.ui.model.PlayShortsMediaUiModel
 import com.tokopedia.play.broadcaster.shorts.ui.model.action.PlayShortsAction
 import com.tokopedia.play.broadcaster.shorts.ui.model.event.PlayShortsBottomSheet
@@ -37,12 +39,12 @@ class PlayShortsViewModel @Inject constructor(
     private val sharedPref: HydraSharedPreferences,
     private val exoPlayer: ExoPlayer,
     private val mediaSourceFactory: PlayShortsMediaSourceFactory,
-    private val accountManager: PlayShortsAccountManager,
+    private val accountManager: PlayShortsAccountManager
 ) : ViewModel() {
 
     /** Public Getter */
     val shortsId: String
-        get() = _shortsId.value
+        get() = _config.value.shortsId
 
     val title: String
         get() = _titleForm.value.title
@@ -56,6 +58,7 @@ class PlayShortsViewModel @Inject constructor(
 
     val isAllMandatoryMenuChecked: Boolean
         get() = _titleForm.value.title.isNotEmpty()
+
     /** TODO: uncomment this later */
 //            && _productSectionList.value.any { it.products.isNotEmpty() }
 
@@ -70,13 +73,16 @@ class PlayShortsViewModel @Inject constructor(
 
     val isFormFilled: Boolean
         get() = _titleForm.value.title.isNotEmpty() ||
-                _productSectionList.value.isNotEmpty() ||
-                _coverForm.value.coverUri.isNotEmpty()
+            _productSectionList.value.isNotEmpty() ||
+            _coverForm.value.coverUri.isNotEmpty()
 
+    val tncList: List<TermsAndConditionUiModel>
+        get() = _config.value.tncList
+
+    private val _config = MutableStateFlow(PlayShortsConfigUiModel.Empty)
     private val _media = MutableStateFlow(PlayShortsMediaUiModel.create(exoPlayer))
     private val _accountList = MutableStateFlow<List<ContentAccountUiModel>>(emptyList())
     private val _selectedAccount = MutableStateFlow(ContentAccountUiModel.Empty)
-    private val _shortsId = MutableStateFlow("")
     private val _menuList = MutableStateFlow<List<DynamicPreparationMenu>>(emptyList())
     private val _productSectionList = MutableStateFlow<List<ProductTagSectionUiModel>>(emptyList())
 
@@ -111,16 +117,16 @@ class PlayShortsViewModel @Inject constructor(
     }
 
     val uiState: Flow<PlayShortsUiState> = combine(
-        _shortsId,
+        _config,
         _media,
         _accountList,
         _selectedAccount,
         _menuListUiState,
         _titleForm,
         _coverForm
-    ) { shortsId, media, accountList, selectedAccount, menuListUiState, titleForm, coverForm ->
+    ) { config, media, accountList, selectedAccount, menuListUiState, titleForm, coverForm ->
         PlayShortsUiState(
-            shortsId = shortsId,
+            config = config,
             media = media,
             accountList = accountList,
             selectedAccount = selectedAccount,
@@ -153,6 +159,7 @@ class PlayShortsViewModel @Inject constructor(
 
             /** Account */
             is PlayShortsAction.ClickSwitchAccount -> handleClickSwitchAccount()
+            is PlayShortsAction.SwitchAccount -> handleSwitchAccount()
 
             /** Title Form */
             is PlayShortsAction.OpenTitleForm -> handleOpenTitleForm()
@@ -179,17 +186,15 @@ class PlayShortsViewModel @Inject constructor(
             _accountList.update { accountList }
             _selectedAccount.update { bestEligibleAccount }
 
-            if(bestEligibleAccount.isUnknown) {
+            if (bestEligibleAccount.isUnknown) {
                 _uiEvent.oneTimeUpdate {
                     it.copy(bottomSheet = PlayShortsBottomSheet.NoEligibleAccount)
                 }
-            }
-            else if(bestEligibleAccount.isUser && !bestEligibleAccount.hasAcceptTnc){
+            } else if (bestEligibleAccount.isUser && !bestEligibleAccount.hasAcceptTnc) {
                 _uiEvent.oneTimeUpdate {
                     it.copy(bottomSheet = PlayShortsBottomSheet.UGCOnboarding)
                 }
-            }
-            else {
+            } else {
                 getConfiguration()
             }
         }) {
@@ -228,6 +233,29 @@ class PlayShortsViewModel @Inject constructor(
             it.copy(
                 bottomSheet = PlayShortsBottomSheet.SwitchAccount
             )
+        }
+    }
+
+    private fun handleSwitchAccount() {
+        viewModelScope.launchCatchError(block = {
+            val newSelectedAccount = accountManager.switchAccount(_accountList.value, _selectedAccount.value.type)
+
+            if (newSelectedAccount.isShop && !newSelectedAccount.hasAcceptTnc) {
+                _uiEvent.oneTimeUpdate {
+                    it.copy(bottomSheet = PlayShortsBottomSheet.SellerNotEligible)
+                }
+            } else if (newSelectedAccount.isUser && !newSelectedAccount.hasAcceptTnc) {
+                _uiEvent.oneTimeUpdate {
+                    it.copy(bottomSheet = PlayShortsBottomSheet.UGCOnboarding)
+                }
+            } else {
+                getConfiguration()
+                _selectedAccount.update { newSelectedAccount }
+            }
+        }) { throwable ->
+            _uiEvent.oneTimeUpdate {
+                it.copy(toaster = PlayShortsToaster.ErrorSwitchAccount(throwable))
+            }
         }
     }
 
@@ -309,11 +337,13 @@ class PlayShortsViewModel @Inject constructor(
 
         val config = repo.getShortsConfiguration(account.id, account.type)
 
-        _shortsId.update {
-            if(config.shortsId.isEmpty()) {
-                repo.createShorts(account.id, account.type)
+        _config.update {
+            if (config.shortsId.isEmpty()) {
+                val shortsId = repo.createShorts(account.id, account.type)
+                config.copy(shortsId = shortsId)
+            } else {
+                config
             }
-            else config.shortsId
         }
     }
 

@@ -2,8 +2,8 @@ package com.tokopedia.play.broadcaster.shorts.domain.manager
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.content.common.types.ContentCommonUserType.TYPE_USER
 import com.tokopedia.content.common.types.ContentCommonUserType.TYPE_SHOP
+import com.tokopedia.content.common.types.ContentCommonUserType.TYPE_USER
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.content.common.util.orUnknown
 import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
@@ -15,14 +15,13 @@ import javax.inject.Inject
  */
 class PlayShortsAccountManagerImpl @Inject constructor(
     private val sharedPref: HydraSharedPreferences,
-    private val dispatchers: CoroutineDispatchers,
+    private val dispatchers: CoroutineDispatchers
 ) : PlayShortsAccountManager {
 
     override suspend fun getBestEligibleAccount(
         accountList: List<ContentAccountUiModel>,
         preferredAccountType: String
     ): ContentAccountUiModel = withContext(dispatchers.io) {
-
         val lastSelectedAccount = sharedPref.getLastSelectedAccount()
 
         val selectedAccountType = when {
@@ -33,35 +32,41 @@ class PlayShortsAccountManagerImpl @Inject constructor(
 
         val account = accountList.firstOrNull { it.type == selectedAccountType || selectedAccountType.isEmpty() }.orUnknown()
 
-        val finalAccount = if(isAccountEligible(account))
+        val finalAccount = if (isAccountEligible(account)) {
             account
-        else switchAccount(accountList, account.type)
+        } else {
+            switchAccount(accountList, account.type)
+        }
 
-        if(isAccountEligible(finalAccount))
+        if (isAccountEligible(finalAccount)) {
             finalAccount
-        else
+        } else {
             ContentAccountUiModel.Empty
+        }
     }
 
     override fun isAllowChangeAccount(accountList: List<ContentAccountUiModel>): Boolean {
-        return if(GlobalConfig.isSellerApp()) false
-        else accountList.size > 1
+        return if (GlobalConfig.isSellerApp()) {
+            false
+        } else {
+            accountList.size > 1
+        }
     }
 
-    private fun isAccountEligible(account: ContentAccountUiModel): Boolean {
-        return !account.isUnknown && (account.isUser || (account.isShop && account.hasAcceptTnc))
-    }
-
-    private fun switchAccount(
+    override fun switchAccount(
         accountList: List<ContentAccountUiModel>,
-        selectedAccountType: String,
+        currentAccountType: String
     ): ContentAccountUiModel {
-        val switchAccountType = when(selectedAccountType) {
+        val switchAccountType = when (currentAccountType) {
             TYPE_USER -> TYPE_SHOP
             TYPE_SHOP -> TYPE_USER
             else -> ""
         }
 
         return accountList.firstOrNull { it.type == switchAccountType }.orUnknown()
+    }
+
+    private fun isAccountEligible(account: ContentAccountUiModel): Boolean {
+        return !account.isUnknown && (account.isUser || (account.isShop && account.hasAcceptTnc))
     }
 }
