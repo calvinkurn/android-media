@@ -265,7 +265,7 @@ class PlayViewModel @AssistedInject constructor(
             val vouchers = voucher.voucher.voucherList.filterIsInstance<PlayVoucherUiModel.Merchant>()
             if(game.game !is GameUiModel.Unknown && isInteractiveAllowed)
                 add(EngagementUiModel.Game(game = game.game))
-            if(vouchers.isNotEmpty())
+            if(vouchers.isNotEmpty() && vouchers.firstOrNull { it.highlighted } != null)
                 add(EngagementUiModel.Promo(info = vouchers.first { it.highlighted }, size = vouchers.size - 1))
         },
     )
