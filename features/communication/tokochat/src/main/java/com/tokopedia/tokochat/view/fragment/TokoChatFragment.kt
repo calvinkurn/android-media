@@ -123,7 +123,6 @@ class TokoChatFragment : TokoChatBaseFragment<TokochatChatroomFragmentBinding>()
     private fun initializeChatRoom(savedInstanceState: Bundle?) {
         initializeChatProfile()
         initGroupBooking(savedInstanceState)
-        loadTransactionWidget()
     }
 
     override fun onStart() {
@@ -389,10 +388,7 @@ class TokoChatFragment : TokoChatBaseFragment<TokochatChatroomFragmentBinding>()
                 )
             }
         }
-        headerUiModel?.let { header ->
-            setupToolbarData(header)
-            showHeader()
-        }
+        loadTransactionWidget()
     }
 
     private fun observeMemberLeft() {
@@ -421,6 +417,7 @@ class TokoChatFragment : TokoChatBaseFragment<TokochatChatroomFragmentBinding>()
             appLink = tokoChatOrderProgress.uri
         )
         baseBinding?.tokochatTransactionOrder?.updateTransactionWidget(orderProgressUiModel)
+
     }
 
     private fun setShowTransactionWidget(tokoChatOrderProgress: TokoChatOrderProgressResponse.TokoChatOrderProgress) {
@@ -443,6 +440,11 @@ class TokoChatFragment : TokoChatBaseFragment<TokochatChatroomFragmentBinding>()
             this,
             orderProgressUiModel
         )
+
+        headerUiModel?.let { header ->
+            setupToolbarData(header)
+            showHeader()
+        }
     }
 
     private fun observeLiveChannel() {
@@ -526,6 +528,18 @@ class TokoChatFragment : TokoChatBaseFragment<TokochatChatroomFragmentBinding>()
                         showMaskingPhoneNumberBottomSheet(headerUiModel.phoneNumber)
                     }
                 }
+            }
+        }
+    }
+
+    private fun updateCallIcon() {
+        getTokoChatHeader()?.run {
+            val callMenu = findViewById<IconUnify>(com.tokopedia.tokochat_common.R.id.tokochat_icon_header_menu)
+
+            callMenu.run {
+                isEnabled = false
+                isClickable = false
+                setImage(IconUnify.CALL, com.tokopedia.unifyprinciples.R.color.Unify_NN300)
             }
         }
     }
