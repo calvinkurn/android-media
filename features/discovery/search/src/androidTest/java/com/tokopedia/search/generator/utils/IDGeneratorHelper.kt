@@ -10,6 +10,7 @@ import com.tokopedia.test.application.id_generator.FileWriter
 import com.tokopedia.test.application.id_generator.PrintCondition
 import com.tokopedia.test.application.id_generator.ViewHierarchyPrinter
 import com.tokopedia.test.application.id_generator.writeGeneratedViewIds
+import com.tokopedia.search.BuildConfig
 
 object IDGeneratorHelper {
     private val printConditions = listOf(
@@ -33,8 +34,14 @@ object IDGeneratorHelper {
         }
     ) + printConditions
 
-    private val viewPrinter = ViewHierarchyPrinter(printConditions)
-    private val rootViewPrinter = ViewHierarchyPrinter(rootPrintCondition)
+    private val viewPrinter = ViewHierarchyPrinter(
+        printConditions,
+        packageName = BuildConfig.LIBRARY_PACKAGE_NAME,
+    )
+    private val rootViewPrinter = ViewHierarchyPrinter(
+        rootPrintCondition,
+        packageName = BuildConfig.LIBRARY_PACKAGE_NAME,
+    )
     private val fileWriter = FileWriter()
     private val savedFileName = mutableListOf<String>()
 

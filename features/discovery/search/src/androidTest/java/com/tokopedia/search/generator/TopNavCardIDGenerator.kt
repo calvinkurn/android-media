@@ -1,65 +1,15 @@
 package com.tokopedia.search.generator
 
-import android.app.Activity
-import android.app.Instrumentation
-import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso
-import androidx.test.espresso.IdlingRegistry
-import androidx.test.espresso.IdlingResource
 import androidx.test.espresso.assertion.ViewAssertions
-import androidx.test.espresso.contrib.RecyclerViewActions
-import androidx.test.espresso.intent.Intents
-import androidx.test.espresso.intent.matcher.IntentMatchers
-import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers
-import androidx.test.platform.app.InstrumentationRegistry
-import com.tokopedia.search.*
-import com.tokopedia.search.RecyclerViewHasItemIdlingResource
-import com.tokopedia.search.SearchMockModelConfig
-import com.tokopedia.search.clickChildViewWithId
-import com.tokopedia.search.createIntent
-import com.tokopedia.search.disableOnBoarding
+import com.tokopedia.search.QUERY_PARAMS_WITH_KEYWORD
 import com.tokopedia.search.generator.utils.IDGeneratorHelper
-import com.tokopedia.search.getGlobalNavViewModelPosition
-import com.tokopedia.search.getProductListAdapter
-import com.tokopedia.search.result.presentation.view.activity.SearchActivity
-import com.tokopedia.search.result.product.globalnavwidget.GlobalNavViewHolder
-import com.tokopedia.test.application.util.setupGraphqlMockResponse
-import org.junit.After
-import org.junit.Before
-import org.junit.Rule
 import org.junit.Test
 
-class TopNavCardIDGenerator {
-
-    @get:Rule
-    val activityRule = IntentsTestRule(SearchActivity::class.java, false, false)
-
-    private val context = InstrumentationRegistry.getInstrumentation().targetContext
-    private val recyclerViewId = R.id.recyclerview
-    private var recyclerView: RecyclerView? = null
-    private var recyclerViewIdlingResource: IdlingResource? = null
-
-    @Before
-    fun setUp() {
-        setupGraphqlMockResponse(SearchMockModelConfig(com.tokopedia.search.test.R.raw.search_product_response_keyword_kfc))
-
-        disableOnBoarding(context)
-
-        activityRule.launchActivity(createIntent())
-
-        setupIdlingResource()
-
-        Intents.intending(IntentMatchers.isInternal())
-            .respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
-    }
-
-    private fun setupIdlingResource() {
-        recyclerView = activityRule.activity.findViewById(recyclerViewId)
-        recyclerViewIdlingResource = RecyclerViewHasItemIdlingResource(recyclerView)
-
-        IdlingRegistry.getInstance().register(recyclerViewIdlingResource)
-    }
+class TopNavCardIDGenerator: BaseIDGenerator() {
+    override val queryParam: String = QUERY_PARAMS_WITH_KEYWORD
+    override val mockModel: Int = com.tokopedia.search.test.R.raw.search_product_response_keyword_kfc
 
     @Test
     fun generateTopNavCardID() {
@@ -71,10 +21,5 @@ class TopNavCardIDGenerator {
             .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
 
         IDGeneratorHelper.scrollAndPrintView(recyclerView)
-    }
-
-    @After
-    fun tearDown() {
-        IdlingRegistry.getInstance().unregister(recyclerViewIdlingResource)
     }
 }
