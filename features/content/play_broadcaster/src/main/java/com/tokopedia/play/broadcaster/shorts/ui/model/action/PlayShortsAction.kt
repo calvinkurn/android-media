@@ -14,6 +14,7 @@ sealed interface PlayShortsAction {
 
     /** Media */
     data class SetMedia(val mediaUri: String) : PlayShortsAction
+    object StartMedia : PlayShortsAction
     object StopMedia : PlayShortsAction
     object ReleaseMedia : PlayShortsAction
 

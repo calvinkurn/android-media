@@ -133,7 +133,9 @@ class PlayShortsViewModel @Inject constructor(
         when (action) {
             is PlayShortsAction.PreparePage -> handlePreparePage(action.preferredAccountType)
 
+            /** Media */
             is PlayShortsAction.SetMedia -> handleSetMedia(action.mediaUri)
+            is PlayShortsAction.StartMedia -> handleStartMedia()
             is PlayShortsAction.StopMedia -> handleStopMedia()
             is PlayShortsAction.ReleaseMedia -> handleReleaseMedia()
 
@@ -186,18 +188,24 @@ class PlayShortsViewModel @Inject constructor(
         _media.update {
             val mediaSource = mediaSourceFactory.create(mediaUri)
             it.exoPlayer.prepare(mediaSource)
-            it.exoPlayer.playWhenReady = true
 
             it.copy(mediaUri = mediaUri)
         }
     }
 
+    private fun handleStartMedia() {
+        _media.value.exoPlayer.playWhenReady = true
+    }
+
     private fun handleStopMedia() {
-        _media.value.exoPlayer.stop()
+        _media.value.exoPlayer.playWhenReady = false
     }
 
     private fun handleReleaseMedia() {
-        _media.value.exoPlayer.release()
+        _media.value.exoPlayer.apply {
+            stop()
+            release()
+        }
     }
 
     private fun handleOpenTitleForm() {
