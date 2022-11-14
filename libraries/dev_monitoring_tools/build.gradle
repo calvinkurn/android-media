@@ -20,10 +20,10 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.logger)
 
     implementation rootProject.ext.tkpdInternalLibDependencies.betaNotif
-    implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
 
     implementation rootProject.ext.debugToolsDependencies.tooLargeTool
     implementation rootProject.ext.serviceDependencies.anrWatchDogs
+    debugImplementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     debugImplementation (rootProject.ext.debugToolsDependencies.leakPublisher){
         exclude group:'com.google.firebase'
     }
