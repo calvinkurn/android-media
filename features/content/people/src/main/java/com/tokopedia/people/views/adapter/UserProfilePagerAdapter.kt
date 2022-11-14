@@ -95,7 +95,11 @@ class UserProfilePagerAdapter(
     override fun createFragment(position: Int): Fragment {
         val currentFragment = listFragment[position]
         return when (currentFragment.key) {
-            FRAGMENT_KEY_FEEDS -> UserProfileFeedFragment()
+            FRAGMENT_KEY_FEEDS -> UserProfileFeedFragment.getFragment(
+                fragmentManager = fragmentManager,
+                classLoader = fragmentActivity.classLoader,
+                bundle = Bundle()
+            )
             FRAGMENT_KEY_VIDEO -> UserProfileVideoFragment.getFragment(
                 fragmentManager = fragmentManager,
                 classLoader = fragmentActivity.classLoader,
