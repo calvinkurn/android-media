@@ -31,7 +31,7 @@ object ChannelStyleUtil {
             }
             val size = map[KEY_BORDER_STYLE]
             size?.let {
-                return if(it.isBlank()) it else BORDER_STYLE_BLEEDING
+                return it.ifBlank { BORDER_STYLE_BLEEDING }
             }
         } catch (e: Exception) {
             return BORDER_STYLE_BLEEDING
