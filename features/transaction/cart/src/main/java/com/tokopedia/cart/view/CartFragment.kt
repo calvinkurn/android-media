@@ -2776,9 +2776,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener,
     private fun renderCartAvailableItems(cartData: CartData) {
         if (cartData.availableSection.availableGroupGroups.isNotEmpty()) {
             val availableShopList = CartUiModelMapper.mapAvailableShopUiModel(cartData)
-            availableShopList.forEach {
-                checkBoAffordability(it)
-            }
             cartAdapter.addItems(availableShopList)
         }
     }

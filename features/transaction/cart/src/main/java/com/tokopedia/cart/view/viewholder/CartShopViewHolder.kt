@@ -46,10 +46,6 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
     }
 
     fun bindUpdatedWeight(cartShopHolderData: CartShopHolderData) {
-        if (binding.tvShopName.text.isEmpty()) {
-            // workaround for unrendered binding
-            bindData(cartShopHolderData)
-        }
         renderMaximumWeight(cartShopHolderData)
         cartShopHolderData.isNeedToRefreshWeight = false
         renderBoAfford(cartShopHolderData)
@@ -448,7 +444,7 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
             binding.apply {
                 val boAffordability = cartShopHolderData.boAffordability
                 when (boAffordability.state) {
-                    CartShopBoAffordabilityState.LOADING -> {
+                    CartShopBoAffordabilityState.FIRST_LOAD, CartShopBoAffordabilityState.LOADING -> {
                         textBoAffordability.gone()
                         arrowBoAffordability.gone()
                         largeLoaderBoAffordability.show()
@@ -504,6 +500,9 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
                     CartShopBoAffordabilityState.EMPTY -> {
                         layoutBoAffordability.gone()
                     }
+                }
+                if (boAffordability.state == CartShopBoAffordabilityState.FIRST_LOAD) {
+                    actionListener.checkBoAffordability(cartShopHolderData)
                 }
             }
         } else {
