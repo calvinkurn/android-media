@@ -532,7 +532,9 @@ class VoucherDetailFragment : BaseDetailFragment(), DownloadHelper.DownloadHelpe
     private fun showUniversalBottomSheet(voucherUiModel: VoucherUiModel) {
         universalBottomSheet = UniversalShareBottomSheet.createInstance().apply {
             setOgImageUrl(voucherUiModel.imageSquare)
-            setBroadcastChannel(BroadcastChannelType.BLAST_PROMO, voucherUiModel.id.toString())
+            this@VoucherDetailFragment.context?.let {
+                setBroadcastChannel(it, BroadcastChannelType.BLAST_PROMO, voucherUiModel.id.toString())
+            }
             init(object: ShareBottomsheetListener {
                 override fun onShareOptionClicked(shareModel: ShareModel) {
                     context?.let {
