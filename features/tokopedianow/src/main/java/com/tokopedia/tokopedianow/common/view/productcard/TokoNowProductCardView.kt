@@ -30,6 +30,7 @@ import com.tokopedia.tokopedianow.common.model.TokoNowProductCardViewUiModel
 import com.tokopedia.tokopedianow.common.util.ViewUtil.getDpFromDimen
 import com.tokopedia.tokopedianow.common.util.ViewUtil.safeParseColor
 import com.tokopedia.tokopedianow.databinding.LayoutTokopedianowProductCardViewBinding
+import com.tokopedia.tokopedianow.similarproduct.activity.TokoNowSimilarProductActivity
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.ProgressBarUnify
 import com.tokopedia.unifyprinciples.Typography
@@ -108,7 +109,8 @@ class TokoNowProductCardView @JvmOverloads constructor(
             )
             initSimilarProductTypography(
                 isOos = model.isOos(),
-                isShown = model.isSimilarProductShown
+                isShown = model.isSimilarProductShown,
+                productId = model.productId
             )
             initProgressBar(
                 isFlashSale = model.isFlashSale(),
@@ -220,7 +222,8 @@ class TokoNowProductCardView @JvmOverloads constructor(
 
     private fun LayoutTokopedianowProductCardViewBinding.initSimilarProductTypography(
         isOos: Boolean,
-        isShown: Boolean
+        isShown: Boolean,
+        productId: String
     ) {
         similarProductTypography.showIfWithBlock(isShown && isOos) {
             adjustChevronIcon(
@@ -233,6 +236,10 @@ class TokoNowProductCardView @JvmOverloads constructor(
                     )
                 )
             )
+            setOnClickListener {
+                val intent = TokoNowSimilarProductActivity.createNewIntent(context, productId)
+                context.startActivity(intent)
+            }
         }
     }
 
