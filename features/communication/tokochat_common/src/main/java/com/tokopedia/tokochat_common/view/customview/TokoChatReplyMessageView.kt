@@ -156,6 +156,12 @@ class TokoChatReplyMessageView : ConstraintLayout, LifecycleObserver {
         }
     }
 
+    fun setTracker(trackOnClickComposeArea: () -> Unit) {
+        composeArea?.setOnFocusChangeListener { _, _ ->
+            trackOnClickComposeArea()
+        }
+    }
+
     companion object {
         val LAYOUT = R.layout.tokochat_partial_message_area
     }

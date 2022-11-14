@@ -14,8 +14,6 @@ class TokoChatGeneralUnavailableBottomSheet: BottomSheetUnify() {
 
     private var binding by autoClearedNullable<TokochatGeneralUnavailableBottomsheetBinding>()
 
-    private var tracking: (() -> Unit)? = null
-
     private var buttonAction: (() -> Unit)? = null
 
     override fun onCreateView(
@@ -51,7 +49,6 @@ class TokoChatGeneralUnavailableBottomSheet: BottomSheetUnify() {
 
     private fun setBottomSheetButton() {
         binding?.tokochatBsBtnUnavailableGeneral?.setOnClickListener {
-            tracking?.invoke()
             buttonAction?.invoke()
         }
     }
@@ -64,11 +61,7 @@ class TokoChatGeneralUnavailableBottomSheet: BottomSheetUnify() {
         }
     }
 
-    fun setListener(
-        tracking: () -> Unit,
-        buttonAction: () -> Unit
-    ) {
-        this.tracking = tracking
+    fun setListener(buttonAction: () -> Unit) {
         this.buttonAction = buttonAction
     }
 
