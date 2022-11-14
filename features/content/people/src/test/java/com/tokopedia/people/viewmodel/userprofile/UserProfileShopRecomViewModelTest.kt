@@ -63,19 +63,19 @@ class UserProfileShopRecomViewModelTest {
     private val mockOwnFollow = followInfoBuilder.buildFollowInfo(
         userID = mockOwnUserId,
         encryptedUserID = mockOwnUserId,
-        status = true,
+        status = true
     )
     private val mockOtherNotFollow = followInfoBuilder.buildFollowInfo(
         userID = mockOtherUserId,
         encryptedUserID = mockOtherUserId,
-        status = true,
+        status = true
     )
 
     private val robot = UserProfileViewModelRobot(
         username = mockOwnUserId,
         repo = mockRepo,
         dispatcher = testDispatcher,
-        userSession = mockUserSession,
+        userSession = mockUserSession
     )
 
     private val shopActionFollow = ShopFollowAction.Follow
@@ -150,7 +150,7 @@ class UserProfileShopRecomViewModelTest {
                 submitAction(UserProfileAction.LoadProfile(isRefresh = true))
             } andThen {
                 robot.viewModel.isShopRecomShow.assertTrue()
-                shopRecom.items.size equalTo 10
+                shopRecom.items.size equalTo mockShopRecomIsShown.items.size
                 shopRecom equalTo mockShopRecomIsShown
             }
         }
@@ -171,7 +171,7 @@ class UserProfileShopRecomViewModelTest {
                 submitAction(UserProfileAction.LoadNextPageShopRecom)
             } andThen {
                 robot.viewModel.isShopRecomShow.assertTrue()
-                shopRecom.items.size equalTo 20
+                shopRecom.items.size equalTo mockShopRecomIsShown.items.size * 2
             }
         }
     }
@@ -192,7 +192,7 @@ class UserProfileShopRecomViewModelTest {
                 submitAction(UserProfileAction.LoadNextPageShopRecom)
             } andThen {
                 robot.viewModel.isShopRecomShow.assertTrue()
-                shopRecom.items.size equalTo 10
+                shopRecom.items.size equalTo mockShopRecomIsShown.items.size
             }
         }
     }
@@ -287,9 +287,12 @@ class UserProfileShopRecomViewModelTest {
     fun `when user want to unfollow type shop but item not found`() {
         val mockShopRecomIsShownBeforeUnfollow = mockShopRecomIsShownTypeShop.copy(
             items = mockShopRecomIsShownTypeShop.items.map {
-                if (it.id == mockItemId) it.copy(state = ShopRecomFollowState.FOLLOW)
-                else it
-            },
+                if (it.id == mockItemId) {
+                    it.copy(state = ShopRecomFollowState.FOLLOW)
+                } else {
+                    it
+                }
+            }
         )
 
         coEvery { mockUserSession.isLoggedIn } returns true
@@ -304,8 +307,11 @@ class UserProfileShopRecomViewModelTest {
                 submitAction(UserProfileAction.ClickFollowButtonShopRecom(11253))
             } andThen {
                 shopRecom.items.forEach { item ->
-                    if (item.id == mockItemId) item.state equalTo ShopRecomFollowState.FOLLOW
-                    else item.state equalTo ShopRecomFollowState.UNFOLLOW
+                    if (item.id == mockItemId) {
+                        item.state equalTo ShopRecomFollowState.FOLLOW
+                    } else {
+                        item.state equalTo ShopRecomFollowState.UNFOLLOW
+                    }
                 }
             }
         }
@@ -326,8 +332,11 @@ class UserProfileShopRecomViewModelTest {
                 submitAction(UserProfileAction.ClickFollowButtonShopRecom(mockItemId))
             } andThen {
                 shopRecom.items.forEach { item ->
-                    if (item.id == mockItemId) item.state equalTo ShopRecomFollowState.FOLLOW
-                    else item.state equalTo ShopRecomFollowState.UNFOLLOW
+                    if (item.id == mockItemId) {
+                        item.state equalTo ShopRecomFollowState.FOLLOW
+                    } else {
+                        item.state equalTo ShopRecomFollowState.UNFOLLOW
+                    }
                 }
             }
         }
@@ -337,9 +346,12 @@ class UserProfileShopRecomViewModelTest {
     fun `when user success unfollow type shop`() {
         val mockShopRecomIsShownBeforeUnfollow = mockShopRecomIsShownTypeShop.copy(
             items = mockShopRecomIsShownTypeShop.items.map {
-                if (it.id == mockItemId) it.copy(state = ShopRecomFollowState.FOLLOW)
-                else it
-            },
+                if (it.id == mockItemId) {
+                    it.copy(state = ShopRecomFollowState.FOLLOW)
+                } else {
+                    it
+                }
+            }
         )
 
         coEvery { mockUserSession.isLoggedIn } returns true
@@ -355,8 +367,11 @@ class UserProfileShopRecomViewModelTest {
                 submitAction(UserProfileAction.ClickFollowButtonShopRecom(mockItemId))
             } andThen {
                 shopRecom.items.forEach { item ->
-                    if (item.id == mockItemId) item.state equalTo ShopRecomFollowState.UNFOLLOW
-                    else item.state equalTo ShopRecomFollowState.UNFOLLOW
+                    if (item.id == mockItemId) {
+                        item.state equalTo ShopRecomFollowState.UNFOLLOW
+                    } else {
+                        item.state equalTo ShopRecomFollowState.UNFOLLOW
+                    }
                 }
             }
         }
@@ -388,9 +403,12 @@ class UserProfileShopRecomViewModelTest {
     fun `when user fail unfollow type shop then return mutation error`() {
         val mockShopRecomIsShownBeforeUnfollow = mockShopRecomIsShownTypeShop.copy(
             items = mockShopRecomIsShownTypeShop.items.map {
-                if (it.id == mockItemId) it.copy(state = ShopRecomFollowState.FOLLOW)
-                else it
-            },
+                if (it.id == mockItemId) {
+                    it.copy(state = ShopRecomFollowState.FOLLOW)
+                } else {
+                    it
+                }
+            }
         )
         coEvery { mockUserSession.isLoggedIn } returns true
         coEvery { mockRepo.getProfile(mockOwnUserId) } returns mockOwnProfile
@@ -405,8 +423,11 @@ class UserProfileShopRecomViewModelTest {
                 submitAction(UserProfileAction.ClickFollowButtonShopRecom(mockItemId))
             } andThen { state, events ->
                 state.shopRecom.items.forEach { item ->
-                    if (item.id == mockItemId) item.state equalTo ShopRecomFollowState.FOLLOW
-                    else item.state equalTo ShopRecomFollowState.UNFOLLOW
+                    if (item.id == mockItemId) {
+                        item.state equalTo ShopRecomFollowState.FOLLOW
+                    } else {
+                        item.state equalTo ShopRecomFollowState.UNFOLLOW
+                    }
                 }
                 events.last().assertEvent(UserProfileUiEvent.ErrorFollowUnfollow("any error"))
             }
@@ -439,9 +460,12 @@ class UserProfileShopRecomViewModelTest {
     fun `when user fail unfollow type shop then throw exception`() {
         val mockShopRecomIsShownBeforeUnfollow = mockShopRecomIsShownTypeShop.copy(
             items = mockShopRecomIsShownTypeShop.items.map {
-                if (it.id == mockItemId) it.copy(state = ShopRecomFollowState.FOLLOW)
-                else it
-            },
+                if (it.id == mockItemId) {
+                    it.copy(state = ShopRecomFollowState.FOLLOW)
+                } else {
+                    it
+                }
+            }
         )
         coEvery { mockUserSession.isLoggedIn } returns true
         coEvery { mockRepo.getProfile(mockOwnUserId) } returns mockOwnProfile
@@ -456,8 +480,11 @@ class UserProfileShopRecomViewModelTest {
                 submitAction(UserProfileAction.ClickFollowButtonShopRecom(mockItemId))
             } andThen { state, events ->
                 state.shopRecom.items.forEach { item ->
-                    if (item.id == mockItemId) item.state equalTo ShopRecomFollowState.FOLLOW
-                    else item.state equalTo ShopRecomFollowState.UNFOLLOW
+                    if (item.id == mockItemId) {
+                        item.state equalTo ShopRecomFollowState.FOLLOW
+                    } else {
+                        item.state equalTo ShopRecomFollowState.UNFOLLOW
+                    }
                 }
                 events.last().assertEvent(UserProfileUiEvent.ErrorFollowUnfollow("any error"))
             }
@@ -488,9 +515,12 @@ class UserProfileShopRecomViewModelTest {
     fun `when user want to unfollow type buyer but item not found`() {
         val mockShopRecomIsShownBeforeUnfollow = mockShopRecomIsShownTypeBuyer.copy(
             items = mockShopRecomIsShownTypeBuyer.items.map {
-                if (it.id == mockItemId) it.copy(state = ShopRecomFollowState.FOLLOW)
-                else it
-            },
+                if (it.id == mockItemId) {
+                    it.copy(state = ShopRecomFollowState.FOLLOW)
+                } else {
+                    it
+                }
+            }
         )
 
         coEvery { mockUserSession.isLoggedIn } returns true
@@ -505,8 +535,11 @@ class UserProfileShopRecomViewModelTest {
                 submitAction(UserProfileAction.ClickFollowButtonShopRecom(11253))
             } andThen {
                 shopRecom.items.forEach { item ->
-                    if (item.id == mockItemId) item.state equalTo ShopRecomFollowState.FOLLOW
-                    else item.state equalTo ShopRecomFollowState.UNFOLLOW
+                    if (item.id == mockItemId) {
+                        item.state equalTo ShopRecomFollowState.FOLLOW
+                    } else {
+                        item.state equalTo ShopRecomFollowState.UNFOLLOW
+                    }
                 }
             }
         }
@@ -527,8 +560,11 @@ class UserProfileShopRecomViewModelTest {
                 submitAction(UserProfileAction.ClickFollowButtonShopRecom(mockItemId))
             } andThen {
                 shopRecom.items.forEach { item ->
-                    if (item.id == mockItemId) item.state equalTo ShopRecomFollowState.FOLLOW
-                    else item.state equalTo ShopRecomFollowState.UNFOLLOW
+                    if (item.id == mockItemId) {
+                        item.state equalTo ShopRecomFollowState.FOLLOW
+                    } else {
+                        item.state equalTo ShopRecomFollowState.UNFOLLOW
+                    }
                 }
             }
         }
@@ -538,9 +574,12 @@ class UserProfileShopRecomViewModelTest {
     fun `when user success unfollow type buyer`() {
         val mockShopRecomIsShownBeforeUnfollow = mockShopRecomIsShownTypeBuyer.copy(
             items = mockShopRecomIsShownTypeBuyer.items.map {
-                if (it.id == mockItemId) it.copy(state = ShopRecomFollowState.FOLLOW)
-                else it
-            },
+                if (it.id == mockItemId) {
+                    it.copy(state = ShopRecomFollowState.FOLLOW)
+                } else {
+                    it
+                }
+            }
         )
 
         coEvery { mockUserSession.isLoggedIn } returns true
@@ -556,8 +595,11 @@ class UserProfileShopRecomViewModelTest {
                 submitAction(UserProfileAction.ClickFollowButtonShopRecom(mockItemId))
             } andThen {
                 shopRecom.items.forEach { item ->
-                    if (item.id == mockItemId) item.state equalTo ShopRecomFollowState.UNFOLLOW
-                    else item.state equalTo ShopRecomFollowState.UNFOLLOW
+                    if (item.id == mockItemId) {
+                        item.state equalTo ShopRecomFollowState.UNFOLLOW
+                    } else {
+                        item.state equalTo ShopRecomFollowState.UNFOLLOW
+                    }
                 }
             }
         }
@@ -589,9 +631,12 @@ class UserProfileShopRecomViewModelTest {
     fun `when user fail unfollow type buyer then return mutation error`() {
         val mockShopRecomIsShownBeforeUnfollow = mockShopRecomIsShownTypeBuyer.copy(
             items = mockShopRecomIsShownTypeBuyer.items.map {
-                if (it.id == mockItemId) it.copy(state = ShopRecomFollowState.FOLLOW)
-                else it
-            },
+                if (it.id == mockItemId) {
+                    it.copy(state = ShopRecomFollowState.FOLLOW)
+                } else {
+                    it
+                }
+            }
         )
         coEvery { mockUserSession.isLoggedIn } returns true
         coEvery { mockRepo.getProfile(mockOwnUserId) } returns mockOwnProfile
@@ -606,8 +651,11 @@ class UserProfileShopRecomViewModelTest {
                 submitAction(UserProfileAction.ClickFollowButtonShopRecom(mockItemId))
             } andThen { state, events ->
                 state.shopRecom.items.forEach { item ->
-                    if (item.id == mockItemId) item.state equalTo ShopRecomFollowState.FOLLOW
-                    else item.state equalTo ShopRecomFollowState.UNFOLLOW
+                    if (item.id == mockItemId) {
+                        item.state equalTo ShopRecomFollowState.FOLLOW
+                    } else {
+                        item.state equalTo ShopRecomFollowState.UNFOLLOW
+                    }
                 }
                 events.last().assertEvent(UserProfileUiEvent.ErrorFollowUnfollow("any error"))
             }
@@ -640,9 +688,12 @@ class UserProfileShopRecomViewModelTest {
     fun `when user fail unfollow type buyer then throw exception`() {
         val mockShopRecomIsShownBeforeUnfollow = mockShopRecomIsShownTypeBuyer.copy(
             items = mockShopRecomIsShownTypeBuyer.items.map {
-                if (it.id == mockItemId) it.copy(state = ShopRecomFollowState.FOLLOW)
-                else it
-            },
+                if (it.id == mockItemId) {
+                    it.copy(state = ShopRecomFollowState.FOLLOW)
+                } else {
+                    it
+                }
+            }
         )
         coEvery { mockUserSession.isLoggedIn } returns true
         coEvery { mockRepo.getProfile(mockOwnUserId) } returns mockOwnProfile
@@ -657,8 +708,11 @@ class UserProfileShopRecomViewModelTest {
                 submitAction(UserProfileAction.ClickFollowButtonShopRecom(mockItemId))
             } andThen { state, events ->
                 state.shopRecom.items.forEach { item ->
-                    if (item.id == mockItemId) item.state equalTo ShopRecomFollowState.FOLLOW
-                    else item.state equalTo ShopRecomFollowState.UNFOLLOW
+                    if (item.id == mockItemId) {
+                        item.state equalTo ShopRecomFollowState.FOLLOW
+                    } else {
+                        item.state equalTo ShopRecomFollowState.UNFOLLOW
+                    }
                 }
                 events.last().assertEvent(UserProfileUiEvent.ErrorFollowUnfollow("any error"))
             }
@@ -701,7 +755,7 @@ class UserProfileShopRecomViewModelTest {
             } recordState {
                 submitAction(UserProfileAction.RemoveShopRecomItem(123))
             } andThen {
-                shopRecom.items.size equalTo 10
+                shopRecom.items.size equalTo mockShopRecomIsShown.items.size
             }
         }
     }
@@ -710,9 +764,12 @@ class UserProfileShopRecomViewModelTest {
     fun `when user want to follow type shop but loading state is loading_follow`() {
         val mockShopRecomIsShownBeforeUnfollow = mockShopRecomIsShownTypeShop.copy(
             items = mockShopRecomIsShownTypeShop.items.map {
-                if (it.id == mockItemId) it.copy(state = ShopRecomFollowState.LOADING_FOLLOW)
-                else it
-            },
+                if (it.id == mockItemId) {
+                    it.copy(state = ShopRecomFollowState.LOADING_FOLLOW)
+                } else {
+                    it
+                }
+            }
         )
 
         coEvery { mockUserSession.isLoggedIn } returns true
@@ -727,8 +784,11 @@ class UserProfileShopRecomViewModelTest {
                 submitAction(UserProfileAction.ClickFollowButtonShopRecom(mockItemId))
             } andThen {
                 shopRecom.items.forEach { item ->
-                    if (item.id == mockItemId) item.state equalTo ShopRecomFollowState.LOADING_FOLLOW
-                    else item.state equalTo ShopRecomFollowState.UNFOLLOW
+                    if (item.id == mockItemId) {
+                        item.state equalTo ShopRecomFollowState.LOADING_FOLLOW
+                    } else {
+                        item.state equalTo ShopRecomFollowState.UNFOLLOW
+                    }
                 }
             }
         }
@@ -738,9 +798,12 @@ class UserProfileShopRecomViewModelTest {
     fun `when user want to unfollow type shop but loading state is loading_follow`() {
         val mockShopRecomIsShownBeforeUnfollow = mockShopRecomIsShownTypeShop.copy(
             items = mockShopRecomIsShownTypeShop.items.map {
-                if (it.id == mockItemId) it.copy(state = ShopRecomFollowState.LOADING_FOLLOW)
-                else it
-            },
+                if (it.id == mockItemId) {
+                    it.copy(state = ShopRecomFollowState.LOADING_FOLLOW)
+                } else {
+                    it
+                }
+            }
         )
 
         coEvery { mockUserSession.isLoggedIn } returns true
@@ -755,8 +818,11 @@ class UserProfileShopRecomViewModelTest {
                 submitAction(UserProfileAction.ClickFollowButtonShopRecom(mockItemId))
             } andThen {
                 shopRecom.items.forEach { item ->
-                    if (item.id == mockItemId) item.state equalTo ShopRecomFollowState.LOADING_FOLLOW
-                    else item.state equalTo ShopRecomFollowState.UNFOLLOW
+                    if (item.id == mockItemId) {
+                        item.state equalTo ShopRecomFollowState.LOADING_FOLLOW
+                    } else {
+                        item.state equalTo ShopRecomFollowState.UNFOLLOW
+                    }
                 }
             }
         }
@@ -766,9 +832,12 @@ class UserProfileShopRecomViewModelTest {
     fun `when user want to follow type shop but loading state is loading_unfollow`() {
         val mockShopRecomIsShownBeforeUnfollow = mockShopRecomIsShownTypeShop.copy(
             items = mockShopRecomIsShownTypeShop.items.map {
-                if (it.id == mockItemId) it.copy(state = ShopRecomFollowState.LOADING_UNFOLLOW)
-                else it
-            },
+                if (it.id == mockItemId) {
+                    it.copy(state = ShopRecomFollowState.LOADING_UNFOLLOW)
+                } else {
+                    it
+                }
+            }
         )
 
         coEvery { mockUserSession.isLoggedIn } returns true
@@ -783,8 +852,11 @@ class UserProfileShopRecomViewModelTest {
                 submitAction(UserProfileAction.ClickFollowButtonShopRecom(mockItemId))
             } andThen {
                 shopRecom.items.forEach { item ->
-                    if (item.id == mockItemId) item.state equalTo ShopRecomFollowState.LOADING_UNFOLLOW
-                    else item.state equalTo ShopRecomFollowState.UNFOLLOW
+                    if (item.id == mockItemId) {
+                        item.state equalTo ShopRecomFollowState.LOADING_UNFOLLOW
+                    } else {
+                        item.state equalTo ShopRecomFollowState.UNFOLLOW
+                    }
                 }
             }
         }
@@ -794,9 +866,12 @@ class UserProfileShopRecomViewModelTest {
     fun `when user want to unfollow type shop but loading state is loading_unfollow`() {
         val mockShopRecomIsShownBeforeUnfollow = mockShopRecomIsShownTypeShop.copy(
             items = mockShopRecomIsShownTypeShop.items.map {
-                if (it.id == mockItemId) it.copy(state = ShopRecomFollowState.LOADING_UNFOLLOW)
-                else it
-            },
+                if (it.id == mockItemId) {
+                    it.copy(state = ShopRecomFollowState.LOADING_UNFOLLOW)
+                } else {
+                    it
+                }
+            }
         )
 
         coEvery { mockUserSession.isLoggedIn } returns true
@@ -811,8 +886,11 @@ class UserProfileShopRecomViewModelTest {
                 submitAction(UserProfileAction.ClickFollowButtonShopRecom(mockItemId))
             } andThen {
                 shopRecom.items.forEach { item ->
-                    if (item.id == mockItemId) item.state equalTo ShopRecomFollowState.LOADING_UNFOLLOW
-                    else item.state equalTo ShopRecomFollowState.UNFOLLOW
+                    if (item.id == mockItemId) {
+                        item.state equalTo ShopRecomFollowState.LOADING_UNFOLLOW
+                    } else {
+                        item.state equalTo ShopRecomFollowState.UNFOLLOW
+                    }
                 }
             }
         }
@@ -822,9 +900,12 @@ class UserProfileShopRecomViewModelTest {
     fun `when user want to follow type buyer but loading state is loading_follow`() {
         val mockShopRecomIsShownBeforeUnfollow = mockShopRecomIsShownTypeBuyer.copy(
             items = mockShopRecomIsShownTypeBuyer.items.map {
-                if (it.id == mockItemId) it.copy(state = ShopRecomFollowState.LOADING_FOLLOW)
-                else it
-            },
+                if (it.id == mockItemId) {
+                    it.copy(state = ShopRecomFollowState.LOADING_FOLLOW)
+                } else {
+                    it
+                }
+            }
         )
 
         coEvery { mockUserSession.isLoggedIn } returns true
@@ -839,8 +920,11 @@ class UserProfileShopRecomViewModelTest {
                 submitAction(UserProfileAction.ClickFollowButtonShopRecom(mockItemId))
             } andThen {
                 shopRecom.items.forEach { item ->
-                    if (item.id == mockItemId) item.state equalTo ShopRecomFollowState.LOADING_FOLLOW
-                    else item.state equalTo ShopRecomFollowState.UNFOLLOW
+                    if (item.id == mockItemId) {
+                        item.state equalTo ShopRecomFollowState.LOADING_FOLLOW
+                    } else {
+                        item.state equalTo ShopRecomFollowState.UNFOLLOW
+                    }
                 }
             }
         }
@@ -850,9 +934,12 @@ class UserProfileShopRecomViewModelTest {
     fun `when user want to unfollow type buyer but loading state is loading_follow`() {
         val mockShopRecomIsShownBeforeUnfollow = mockShopRecomIsShownTypeBuyer.copy(
             items = mockShopRecomIsShownTypeBuyer.items.map {
-                if (it.id == mockItemId) it.copy(state = ShopRecomFollowState.LOADING_FOLLOW)
-                else it
-            },
+                if (it.id == mockItemId) {
+                    it.copy(state = ShopRecomFollowState.LOADING_FOLLOW)
+                } else {
+                    it
+                }
+            }
         )
 
         coEvery { mockUserSession.isLoggedIn } returns true
@@ -867,8 +954,11 @@ class UserProfileShopRecomViewModelTest {
                 submitAction(UserProfileAction.ClickFollowButtonShopRecom(mockItemId))
             } andThen {
                 shopRecom.items.forEach { item ->
-                    if (item.id == mockItemId) item.state equalTo ShopRecomFollowState.LOADING_FOLLOW
-                    else item.state equalTo ShopRecomFollowState.UNFOLLOW
+                    if (item.id == mockItemId) {
+                        item.state equalTo ShopRecomFollowState.LOADING_FOLLOW
+                    } else {
+                        item.state equalTo ShopRecomFollowState.UNFOLLOW
+                    }
                 }
             }
         }
@@ -878,9 +968,12 @@ class UserProfileShopRecomViewModelTest {
     fun `when user want to follow type buyer but loading state is loading_unfollow`() {
         val mockShopRecomIsShownBeforeUnfollow = mockShopRecomIsShownTypeBuyer.copy(
             items = mockShopRecomIsShownTypeBuyer.items.map {
-                if (it.id == mockItemId) it.copy(state = ShopRecomFollowState.LOADING_UNFOLLOW)
-                else it
-            },
+                if (it.id == mockItemId) {
+                    it.copy(state = ShopRecomFollowState.LOADING_UNFOLLOW)
+                } else {
+                    it
+                }
+            }
         )
 
         coEvery { mockUserSession.isLoggedIn } returns true
@@ -895,8 +988,11 @@ class UserProfileShopRecomViewModelTest {
                 submitAction(UserProfileAction.ClickFollowButtonShopRecom(mockItemId))
             } andThen {
                 shopRecom.items.forEach { item ->
-                    if (item.id == mockItemId) item.state equalTo ShopRecomFollowState.LOADING_UNFOLLOW
-                    else item.state equalTo ShopRecomFollowState.UNFOLLOW
+                    if (item.id == mockItemId) {
+                        item.state equalTo ShopRecomFollowState.LOADING_UNFOLLOW
+                    } else {
+                        item.state equalTo ShopRecomFollowState.UNFOLLOW
+                    }
                 }
             }
         }
@@ -906,9 +1002,12 @@ class UserProfileShopRecomViewModelTest {
     fun `when user want to unfollow type buyer but loading state is loading_unfollow`() {
         val mockShopRecomIsShownBeforeUnfollow = mockShopRecomIsShownTypeBuyer.copy(
             items = mockShopRecomIsShownTypeBuyer.items.map {
-                if (it.id == mockItemId) it.copy(state = ShopRecomFollowState.LOADING_UNFOLLOW)
-                else it
-            },
+                if (it.id == mockItemId) {
+                    it.copy(state = ShopRecomFollowState.LOADING_UNFOLLOW)
+                } else {
+                    it
+                }
+            }
         )
 
         coEvery { mockUserSession.isLoggedIn } returns true
@@ -923,8 +1022,11 @@ class UserProfileShopRecomViewModelTest {
                 submitAction(UserProfileAction.ClickFollowButtonShopRecom(mockItemId))
             } andThen {
                 shopRecom.items.forEach { item ->
-                    if (item.id == mockItemId) item.state equalTo ShopRecomFollowState.LOADING_UNFOLLOW
-                    else item.state equalTo ShopRecomFollowState.UNFOLLOW
+                    if (item.id == mockItemId) {
+                        item.state equalTo ShopRecomFollowState.LOADING_UNFOLLOW
+                    } else {
+                        item.state equalTo ShopRecomFollowState.UNFOLLOW
+                    }
                 }
             }
         }
