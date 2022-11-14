@@ -46,7 +46,7 @@ import com.tokopedia.unifyprinciples.R as unifyR
 
 class UserProfileVideoFragment @Inject constructor(
     private val viewModelFactoryCreator: UserProfileViewModelFactory.Creator,
-    private val userSession: UserSessionInterface
+    private val userSession: UserSessionInterface,
 ) : TkpdBaseV4Fragment(), AdapterCallback, UserPostBaseAdapter.PlayWidgetCallback {
 
     private val gridLayoutManager by lazy(LazyThreadSafetyMode.NONE) {
@@ -60,7 +60,7 @@ class UserProfileVideoFragment @Inject constructor(
     private val viewModel: UserProfileViewModel by activityViewModels {
         viewModelFactoryCreator.create(
             this,
-            requireArguments().getString(EXTRA_USERNAME) ?: ""
+            requireArguments().getString(EXTRA_USERNAME) ?: "",
         )
     }
 
@@ -73,7 +73,7 @@ class UserProfileVideoFragment @Inject constructor(
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         _binding = UpFragmentVideoBinding.inflate(inflater, container, false)
         return binding.root
@@ -126,6 +126,10 @@ class UserProfileVideoFragment @Inject constructor(
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.uiEvent.collect { event ->
                 when (event) {
+                    is UserProfileUiEvent.EmptyLoadFirstVideoPosts -> {
+                        if (viewModel.isSelfProfile) emptyPostSelf() else emptyPostVisitor()
+                        binding.userVideoContainer.displayedChild = PAGE_EMPTY
+                    }
                     is UserProfileUiEvent.SuccessUpdateReminder -> {
                         mAdapter.notifyItemChanged(event.position)
                         view?.showToast(event.message)
@@ -249,7 +253,7 @@ class UserProfileVideoFragment @Inject constructor(
         if (userSession.isLoggedIn.not()) {
             startActivityForResult(
                 RouteManager.getIntent(activity, ApplinkConst.LOGIN),
-                REQUEST_CODE_LOGIN_TO_SET_REMINDER
+                REQUEST_CODE_LOGIN_TO_SET_REMINDER,
             )
         } else {
             submitAction(UserProfileAction.ClickUpdateReminder(false))
@@ -259,7 +263,7 @@ class UserProfileVideoFragment @Inject constructor(
     override fun updatePlayWidgetLatestData(
         channelId: String,
         totalView: String,
-        isReminderSet: Boolean
+        isReminderSet: Boolean,
     ) {
         mAdapter.updatePlayWidgetLatestData(channelId, totalView, isReminderSet)
     }
@@ -275,12 +279,12 @@ class UserProfileVideoFragment @Inject constructor(
         fun getFragment(
             fragmentManager: FragmentManager,
             classLoader: ClassLoader,
-            bundle: Bundle
+            bundle: Bundle,
         ): UserProfileVideoFragment {
             val oldInstance = fragmentManager.findFragmentByTag(TAG) as? UserProfileVideoFragment
             return oldInstance ?: fragmentManager.fragmentFactory.instantiate(
                 classLoader,
-                UserProfileVideoFragment::class.java.name
+                UserProfileVideoFragment::class.java.name,
             ).apply {
                 arguments = bundle
             } as UserProfileVideoFragment
