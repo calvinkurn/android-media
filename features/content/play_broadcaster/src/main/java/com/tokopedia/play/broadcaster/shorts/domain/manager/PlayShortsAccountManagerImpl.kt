@@ -1,6 +1,7 @@
 package com.tokopedia.play.broadcaster.shorts.domain.manager
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.content.common.types.ContentCommonUserType.TYPE_USER
 import com.tokopedia.content.common.types.ContentCommonUserType.TYPE_SHOP
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
@@ -40,6 +41,11 @@ class PlayShortsAccountManagerImpl @Inject constructor(
             finalAccount
         else
             ContentAccountUiModel.Empty
+    }
+
+    override fun isAllowChangeAccount(accountList: List<ContentAccountUiModel>): Boolean {
+        return if(GlobalConfig.isSellerApp()) false
+        else accountList.size > 1
     }
 
     private fun isAccountEligible(account: ContentAccountUiModel): Boolean {

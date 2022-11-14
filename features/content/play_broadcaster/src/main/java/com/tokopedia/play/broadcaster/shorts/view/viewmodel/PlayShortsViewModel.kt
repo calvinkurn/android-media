@@ -56,10 +56,22 @@ class PlayShortsViewModel @Inject constructor(
 
     val isAllMandatoryMenuChecked: Boolean
         get() = _titleForm.value.title.isNotEmpty()
+    /** TODO: uncomment this later */
 //            && _productSectionList.value.any { it.products.isNotEmpty() }
+
+    val isAllowChangeAccount: Boolean
+        get() = accountManager.isAllowChangeAccount(_accountList.value)
+
+    val accountList: List<ContentAccountUiModel>
+        get() = _accountList.value
 
     val selectedAccount: ContentAccountUiModel
         get() = _selectedAccount.value
+
+    val isFormFilled: Boolean
+        get() = _titleForm.value.title.isNotEmpty() ||
+                _productSectionList.value.isNotEmpty() ||
+                _coverForm.value.coverUri.isNotEmpty()
 
     private val _media = MutableStateFlow(PlayShortsMediaUiModel.create(exoPlayer))
     private val _accountList = MutableStateFlow<List<ContentAccountUiModel>>(emptyList())
@@ -139,6 +151,9 @@ class PlayShortsViewModel @Inject constructor(
             is PlayShortsAction.StopMedia -> handleStopMedia()
             is PlayShortsAction.ReleaseMedia -> handleReleaseMedia()
 
+            /** Account */
+            is PlayShortsAction.ClickSwitchAccount -> handleClickSwitchAccount()
+
             /** Title Form */
             is PlayShortsAction.OpenTitleForm -> handleOpenTitleForm()
             is PlayShortsAction.SubmitTitle -> handleSubmitTitle(action.title)
@@ -205,6 +220,14 @@ class PlayShortsViewModel @Inject constructor(
         _media.value.exoPlayer.apply {
             stop()
             release()
+        }
+    }
+
+    private fun handleClickSwitchAccount() {
+        _uiEvent.oneTimeUpdate {
+            it.copy(
+                bottomSheet = PlayShortsBottomSheet.SwitchAccount
+            )
         }
     }
 

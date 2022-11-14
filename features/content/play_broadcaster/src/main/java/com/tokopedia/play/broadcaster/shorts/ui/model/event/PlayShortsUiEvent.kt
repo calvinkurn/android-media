@@ -33,4 +33,6 @@ sealed interface PlayShortsBottomSheet {
     object UGCOnboarding : PlayShortsBottomSheet
 
     object NoEligibleAccount : PlayShortsBottomSheet
+
+    object SwitchAccount : PlayShortsBottomSheet
 }

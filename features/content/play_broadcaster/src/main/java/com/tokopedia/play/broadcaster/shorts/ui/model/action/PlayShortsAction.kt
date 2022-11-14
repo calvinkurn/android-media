@@ -18,6 +18,10 @@ sealed interface PlayShortsAction {
     object StopMedia : PlayShortsAction
     object ReleaseMedia : PlayShortsAction
 
+    /** Account */
+    object ClickSwitchAccount : PlayShortsAction
+    object SwitchAccount : PlayShortsAction
+
     /** Title Form */
     object OpenTitleForm : PlayShortsAction
 
