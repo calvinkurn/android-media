@@ -69,14 +69,16 @@ object MacroInteration {
         device.waitForIdle(IDLE_DURATION)
     }
 
-    fun interactColumnInCompose(contentDescription:String) {
+    fun columnFlingInteraction(contentDescription:String) {
         val instrumentation = InstrumentationRegistry.getInstrumentation()
         val device = UiDevice.getInstance(instrumentation)
         val column = device.findObject(By.desc(contentDescription))
         column.setGestureMargin(device.displayWidth / 5)
+        column.fling(Direction.DOWN)
+        device.waitForIdle()
     }
 
-    fun waitforColumnInCompose(contentDescription:String){
+    fun waitForComposeContent(contentDescription:String){
         val instrumentation = InstrumentationRegistry.getInstrumentation()
         val device = UiDevice.getInstance(instrumentation)
         val column = device.findObject(By.desc(contentDescription))

@@ -213,14 +213,10 @@ object MacroIntent {
 
         const val COLUMN_TAG = "product_report_column"
 
-        fun getStartupIntent(): Intent {
+        fun getIntent(): Intent {
             val intent = Intent("com.tokopedia.internal.VIEW")
             intent.data = Uri.parse("tokopedia-android-internal://marketplace/product-report/5468977597/?dffallbackurl=https%3A%2F%2Fm.tokopedia.com%2F11530573-tammamstore%2Fkemeja-pria-pendek%2Freport%2F")
             return intent
-        }
-
-        fun getFrameTimingIntent(): Intent {
-            return getStartupIntent().apply { addFlags(Intent.FLAG_ACTIVITY_NEW_TASK) }
         }
     }
 }

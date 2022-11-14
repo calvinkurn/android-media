@@ -1,13 +1,11 @@
-package com.tkpd.macrobenchmark.test.product_report
+package com.tkpd.macrobenchmark.test.report
 
 import androidx.benchmark.macro.StartupMode
 import androidx.test.filters.LargeTest
 import androidx.test.filters.SdkSuppress
 import com.tkpd.macrobenchmark.base.BaseStartupBenchmark
-import com.tkpd.macrobenchmark.util.MacroDevOps
 import com.tkpd.macrobenchmark.util.MacroIntent
 import com.tkpd.macrobenchmark.util.MacroInteration
-import org.junit.Before
 import org.junit.runner.RunWith
 import org.junit.runners.Parameterized
 
@@ -22,13 +20,17 @@ import org.junit.runners.Parameterized
 @SdkSuppress(minSdkVersion = 29)
 @RunWith(Parameterized::class)
 class ProductReportStartupBenchmark(startupMode: StartupMode): BaseStartupBenchmark(startupMode) {
+    override fun setupMock() {
+    }
 
-    override fun getIntent() = MacroIntent.ProductReport.getStartupIntent()
+    override fun setupEnvironment() {
+    }
 
-    override fun traceName() = "product_report_trace"
+    override fun getIntent() = MacroIntent.ProductReport.getIntent()
+
+    override fun traceName() = ""
 
     override fun waitUntil() {
-        Thread.sleep(5000)
-        MacroInteration.waitforColumnInCompose(MacroIntent.ProductReport.COLUMN_TAG)
+        MacroInteration.waitForComposeContent(MacroIntent.ProductReport.COLUMN_TAG)
     }
 }
