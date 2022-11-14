@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.databinding.FragmentTokofoodOrderTrackingBinding
 import com.tokopedia.tokofood.feature.ordertracking.domain.constants.OrderStatusType
