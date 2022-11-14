@@ -15,7 +15,6 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.loader.loadImage
-import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.privacycenter.R
 import com.tokopedia.privacycenter.common.PrivacyCenterConst.ERROR_NETWORK_IMAGE
 import com.tokopedia.privacycenter.common.PrivacyCenterStateResult
@@ -212,18 +211,20 @@ class ConsentWithdrawalFragment : BaseDaggerFragment(), ConsentWithdrawalListene
         isActive: Boolean,
         data: ConsentPurposeItemDataModel
     ) {
-        val intent = when (TransactionType.map(data.consentStatus)) {
-            TransactionType.OPT_IN -> {
-                RouteManager.getIntent(context, data.optIntAppLink)
-            }
-            TransactionType.OPT_OUT -> {
-                RouteManager.getIntent(context, data.optIntAppLink)
-            }
-            else -> null
-        }
 
-        intent?.let {
-            startActivity(it)
+        TransactionType.map(data.consentStatus)?.also {
+            val intent = when (it) {
+                TransactionType.OPT_IN -> {
+                    RouteManager.getIntent(context, data.optIntAppLink)
+                }
+                TransactionType.OPT_OUT -> {
+                    RouteManager.getIntent(context, data.optIntAppLink)
+                }
+            }
+
+            intent?.let {
+                startActivity(it)
+            }
         }
     }
 
