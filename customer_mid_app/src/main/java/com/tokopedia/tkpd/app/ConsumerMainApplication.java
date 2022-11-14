@@ -140,7 +140,9 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
     private static final String ENABLE_ASYNC_AB_TEST = "android_enable_async_abtest";
     private final String LEAK_CANARY_TOGGLE_SP_NAME = "mainapp_leakcanary_toggle";
     private final String LEAK_CANARY_TOGGLE_KEY = "key_leakcanary_toggle";
+    private final String STRICT_MODE_LEAK_PUBLISHER_TOGGLE_KEY = "key_strict_mode_leak_publisher_toggle";
     private final boolean LEAK_CANARY_DEFAULT_TOGGLE = true;
+    private final boolean STRICT_MODE_LEAK_PUBLISHER_DEFAULT_TOGGLE = false;
 
     GratificationSubscriber gratificationSubscriber;
 
@@ -415,7 +417,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         devMonitoring.initCrashMonitoring();
         devMonitoring.initANRWatcher();
         devMonitoring.initTooLargeTool(ConsumerMainApplication.this);
-        devMonitoring.initLeakCanary(getLeakCanaryToggleValue(), this);
+        devMonitoring.initLeakCanary(getLeakCanaryToggleValue(), getStrictModeLeakPublisherToggleValue(), this);
 
         DeviceInfo.getAdsIdSuspend(ConsumerMainApplication.this, new Function1<String, Unit>() {
             @Override
@@ -432,6 +434,10 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
 
     private boolean getLeakCanaryToggleValue() {
         return getSharedPreferences(LEAK_CANARY_TOGGLE_SP_NAME, MODE_PRIVATE).getBoolean(LEAK_CANARY_TOGGLE_KEY, LEAK_CANARY_DEFAULT_TOGGLE);
+    }
+
+    private boolean getStrictModeLeakPublisherToggleValue() {
+        return getSharedPreferences(LEAK_CANARY_TOGGLE_SP_NAME, MODE_PRIVATE).getBoolean(STRICT_MODE_LEAK_PUBLISHER_TOGGLE_KEY, STRICT_MODE_LEAK_PUBLISHER_DEFAULT_TOGGLE);
     }
 
     private void initLogManager() {

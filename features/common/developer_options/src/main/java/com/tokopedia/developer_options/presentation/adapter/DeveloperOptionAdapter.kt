@@ -49,6 +49,7 @@ class DeveloperOptionAdapter(
         const val KEYWORD_VIEW_IRIS_SAVE_LOG = "View Iris Save Log"
         const val KEYWORD_VIEW_IRIS_SEND_LOG = "View Iris Send Log"
         const val KEYWORD_ENABLE_LEAK_CANARY = "Enable Leak Canary"
+        const val KEYWORD_ENABLE_STRICT_MODE_LEAK_CANARY = "Enable Strict Mode"
         const val KEYWORD_REMOTE_CONFIG_EDITOR = "Remote Config Editor"
         const val KEYWORD_ROUTE_MANAGER = "Try RouteManager.route"
         const val KEYWORD_VIEW_APPLINK_LIST = "View Applink List"
@@ -133,6 +134,7 @@ class DeveloperOptionAdapter(
             KEYWORD_VIEW_IRIS_SEND_LOG
         )),
         LeakCanaryUiModel(listOf(KEYWORD_ENABLE_LEAK_CANARY)),
+        StrictModeLeakPublisherUiModel(listOf(KEYWORD_ENABLE_STRICT_MODE_LEAK_CANARY)),
         RemoteConfigEditorUiModel(listOf(KEYWORD_REMOTE_CONFIG_EDITOR)),
         RouteManagerUiModel(listOf(KEYWORD_ROUTE_MANAGER, KEYWORD_VIEW_APPLINK_LIST)),
         LoggingToServerUiModel(listOf(
