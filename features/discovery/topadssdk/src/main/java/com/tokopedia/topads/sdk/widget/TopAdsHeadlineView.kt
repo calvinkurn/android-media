@@ -29,9 +29,13 @@ class TopAdsHeadlineView @JvmOverloads constructor(context: Context, attrs: Attr
     : FrameLayout(context, attrs, defStyleAttr) {
 
     @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
+    var viewModelFactory: ViewModelProvider.Factory? = null
     private val topAdsHeadlineViewModel by lazy {
-        val vm = ViewModelProvider(context as AppCompatActivity, viewModelFactory).get(TopAdsHeadlineViewModel::class.java)
+        val vm = viewModelFactory?.let {
+            ViewModelProvider(context as AppCompatActivity,
+                it
+            ).get(TopAdsHeadlineViewModel::class.java)
+        }
         WeakReference(vm)
     }
 

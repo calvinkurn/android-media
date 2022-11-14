@@ -44,10 +44,14 @@ class TopAdsImageView : AppCompatImageView {
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
     @Inject
-    lateinit var viewModelFactory: ViewModelProvider.Factory
+    var viewModelFactory: ViewModelProvider.Factory? = null
 
     private val topAdsImageViewViewModel by lazy {
-        val vm = ViewModelProvider(context as AppCompatActivity, viewModelFactory).get(TopAdsImageViewViewModel::class.java)
+        val vm = viewModelFactory?.let {
+            ViewModelProvider(context as AppCompatActivity,
+                it
+            ).get(TopAdsImageViewViewModel::class.java)
+        }
         WeakReference(vm)
     }
 
