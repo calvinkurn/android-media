@@ -183,14 +183,16 @@ class PlayShortsViewModel @Inject constructor(
             val accountList = repo.getAccountList()
             val bestEligibleAccount = accountManager.getBestEligibleAccount(accountList, preferredAccountType)
 
-            _accountList.update { accountList }
-            _selectedAccount.update { bestEligibleAccount }
-
             if (bestEligibleAccount.isUnknown) {
                 _uiEvent.oneTimeUpdate {
                     it.copy(bottomSheet = PlayShortsBottomSheet.NoEligibleAccount)
                 }
-            } else if (bestEligibleAccount.isUser && !bestEligibleAccount.hasAcceptTnc) {
+            }
+
+            _accountList.update { accountList }
+            setSelectedAccount(bestEligibleAccount)
+
+            if (bestEligibleAccount.isUser && !bestEligibleAccount.hasAcceptTnc) {
                 _uiEvent.oneTimeUpdate {
                     it.copy(bottomSheet = PlayShortsBottomSheet.UGCOnboarding(bestEligibleAccount.hasUsername))
                 }
@@ -250,7 +252,7 @@ class PlayShortsViewModel @Inject constructor(
                 }
             } else {
                 getConfiguration()
-                _selectedAccount.update { newSelectedAccount }
+                setSelectedAccount(newSelectedAccount)
             }
         }) { throwable ->
             _uiEvent.oneTimeUpdate {
@@ -344,6 +346,11 @@ class PlayShortsViewModel @Inject constructor(
                 config
             }
         }
+    }
+
+    private fun setSelectedAccount(account: ContentAccountUiModel) {
+        _selectedAccount.update { account }
+        sharedPref.setLastSelectedAccountType(account.type)
     }
 
     private fun setupPreparationMenu() {

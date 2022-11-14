@@ -22,11 +22,11 @@ class PlayShortsAccountManagerImpl @Inject constructor(
         accountList: List<ContentAccountUiModel>,
         preferredAccountType: String
     ): ContentAccountUiModel = withContext(dispatchers.io) {
-        val lastSelectedAccount = sharedPref.getLastSelectedAccount()
+        val lastSelectedAccountType = sharedPref.getLastSelectedAccountType()
 
         val selectedAccountType = when {
             preferredAccountType.isNotEmpty() -> preferredAccountType
-            lastSelectedAccount.isNotEmpty() -> lastSelectedAccount
+            lastSelectedAccountType.isNotEmpty() -> lastSelectedAccountType
             else -> ""
         }
 
