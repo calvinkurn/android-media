@@ -3,63 +3,63 @@
         "data": {
             "pdpGetLayout": {
                 "name": "test custom layout",
-                "pdpSession": "{\"sid\":9361157,\"sd\":\"honestyshop88\",\"cat\":{\"id\":3055},\"pid\":1411449586,\"cp\":{\"id\":-10000,\"s\":true,\"sp\":true},\"opr\":5980000,\"pr\":4590000,\"mo\":1,\"pn\":\"New Iphone x 256 GB Silver Black - Hitam\",\"purl\":\"https://www.tokopedia.com/honestyshop88/new-iphone-x-256-gb-silver-black-hitam\",\"st\":63,\"cn\":\"new\",\"it\":true,\"li\":4,\"ln\":\"test custom layout\",\"w\":0.5,\"sf\":{},\"nid\":1,\"cr\":127,\"v\":1,\"vd\":{\"1414921089\":{\"cp\":{\"id\":-10000,\"s\":true,\"sp\":true},\"s\":71,\"ib\":true,\"p\":4590000,\"whid\":9486581,\"mo\":1},\"1414921090\":{\"cp\":{\"id\":-10000,\"s\":true,\"sp\":true},\"s\":63,\"ib\":true,\"p\":4590000,\"whid\":9486581,\"mo\":1}},\"pi\":1414921090,\"pse\":1,\"ps\":\"ACTIVE\",\"fc\":[\"upcoming_deals\",\"paylater_cicilan\",\"shipment_v2\",\"cod\",\"shop_voucher\",\"fulfillment\",\"product_info\",\"pet_disclaimer\"]}",
+                "pdpSession": "{\"sid\":6690355,\"sd\":\"h4jj45\",\"cat\":{\"id\":3965},\"pid\":6961809872,\"cp\":{},\"opr\":150000,\"pr\":150000,\"mo\":1,\"pn\":\"Prod Sample Size Manually Picked_Varant2Lv\",\"purl\":\"https://www.tokopedia.com/h4jj45/prod-sample-size-manually-picked-varant2lv\",\"cn\":\"new\",\"li\":4,\"ln\":\"test custom layout\",\"w\":0.175,\"vo\":175,\"sf\":{},\"nid\":1,\"v\":1,\"vd\":{\"6961809885\":{\"cp\":{},\"s\":100,\"ib\":true,\"p\":150000,\"whid\":6899088,\"mo\":1},\"6961809886\":{\"cp\":{},\"s\":100,\"ib\":true,\"p\":150000,\"whid\":6899088,\"mo\":1},\"6961809887\":{\"cp\":{},\"s\":100,\"ib\":true,\"p\":150000,\"whid\":6899088,\"mo\":1},\"6961809889\":{\"cp\":{},\"s\":100,\"ib\":true,\"p\":150000,\"whid\":6899088,\"mo\":1},\"6961809890\":{\"cp\":{},\"s\":100,\"ib\":true,\"p\":150000,\"whid\":6899088,\"mo\":1},\"6961809891\":{\"cp\":{},\"s\":100,\"ib\":true,\"p\":150000,\"whid\":6899088,\"mo\":1},\"6961809892\":{\"cp\":{},\"s\":100,\"ib\":true,\"p\":150000,\"whid\":6899088,\"mo\":1},\"6961809893\":{\"cp\":{},\"s\":100,\"ib\":true,\"p\":150000,\"whid\":6899088,\"mo\":1},\"6961809894\":{\"cp\":{},\"s\":100,\"ib\":true,\"p\":150000,\"whid\":6899088,\"mo\":1},\"6961809895\":{\"cp\":{},\"s\":100,\"ib\":true,\"p\":150000,\"whid\":6899088,\"mo\":1},\"6961809896\":{\"cp\":{},\"s\":100,\"ib\":true,\"p\":150000,\"whid\":6899088,\"mo\":1},\"6961809897\":{\"cp\":{},\"s\":100,\"ib\":true,\"p\":150000,\"whid\":6899088,\"mo\":1},\"6961809898\":{\"cp\":{},\"s\":100,\"ib\":true,\"p\":150000,\"whid\":6899088,\"mo\":1},\"6961809899\":{\"cp\":{},\"s\":100,\"ib\":true,\"p\":150000,\"whid\":6899088,\"mo\":1},\"6961809900\":{\"cp\":{},\"s\":100,\"ib\":true,\"p\":150000,\"whid\":6899088,\"mo\":1}},\"pi\":6961809872,\"pse\":1,\"ps\":\"ACTIVE\",\"ipr\":true,\"fc\":[\"upcoming_deals\",\"paylater_cicilan\",\"dt_info\",\"shipment_v2\",\"cod\",\"shop_voucher\",\"fulfillment\",\"product_info\",\"pet_disclaimer\"]}",
                 "basicInfo": {
                     "shopMultilocation": {
                         "isReroute": false,
-                        "cityName": "Jakarta Barat",
+                        "cityName": "Jakarta Selatan",
                         "eduLink": {
                             "appLink": "tokopedia://product-edu/1"
                         }
                     },
                     "isGiftable": false,
                     "isTokoNow": false,
-                    "shopName": "Honesty Shop 88",
-                    "productID": "1414921090",
-                    "shopID": "9361157",
+                    "shopName": "h4jJ45",
+                    "productID": "6961809872",
+                    "shopID": "6690355",
                     "minOrder": 1,
-                    "maxOrder": 63,
-                    "weight": 500,
+                    "maxOrder": 0,
+                    "weight": 175,
                     "weightUnit": "GRAM",
                     "status": "ACTIVE",
-                    "url": "https://www.tokopedia.com/honestyshop88/new-iphone-x-256-gb-silver-black-hitam",
-                    "sku": "Black256GB",
+                    "url": "https://www.tokopedia.com/h4jj45/prod-sample-size-manually-picked-varant2lv",
+                    "sku": "",
                     "needPrescription": false,
                     "catalogID": "0",
                     "isLeasing": false,
                     "isBlacklisted": false,
-                    "totalStockFmt": "134",
-                    "defaultMediaURL": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/5/11/530dd0df-9755-4816-ab2b-678bbe407c43.jpg",
+                    "totalStockFmt": "1.500",
+                    "defaultMediaURL": "https://images.tokopedia.net/img/cache/700/VqbcmM/2022/11/14/3f2ce853-4a16-4b72-bf47-ae829e4f1b7f.jpg",
                     "menu": {
-                        "id": "0",
-                        "name": "",
-                        "url": ""
+                        "id": "21136500",
+                        "name": "hajarbos",
+                        "url": "https://www.tokopedia.com/h4jj45/etalase/hajarbos"
                     },
                     "category": {
-                        "id": "3055",
-                        "name": "iOS",
-                        "title": "iOS",
-                        "breadcrumbURL": "https://www.tokopedia.com/p/handphone-tablet/handphone/ios",
+                        "id": "3965",
+                        "name": "Multimedia",
+                        "title": "Multimedia",
+                        "breadcrumbURL": "https://www.tokopedia.com/p/komputer-laptop/software/multimedia",
                         "isAdult": false,
                         "isKyc": false,
-                        "lastUpdateCategory": "09/12/2020 18:57:30",
+                        "lastUpdateCategory": "14/11/2022 21:31:36",
                         "detail": [
                             {
-                                "id": "65",
-                                "name": "Handphone \u0026 Tablet",
-                                "breadcrumbURL": "https://www.tokopedia.com/p/handphone-tablet",
+                                "id": "297",
+                                "name": "Komputer \u0026 Laptop",
+                                "breadcrumbURL": "https://www.tokopedia.com/p/komputer-laptop",
                                 "isAdult": false
                             },
                             {
-                                "id": "24",
-                                "name": "Handphone",
-                                "breadcrumbURL": "https://www.tokopedia.com/p/handphone-tablet/handphone",
+                                "id": "3842",
+                                "name": "Software",
+                                "breadcrumbURL": "https://www.tokopedia.com/p/komputer-laptop/software",
                                 "isAdult": false
                             },
                             {
-                                "id": "3055",
-                                "name": "iOS",
-                                "breadcrumbURL": "https://www.tokopedia.com/p/handphone-tablet/handphone/ios",
+                                "id": "3965",
+                                "name": "Multimedia",
+                                "breadcrumbURL": "https://www.tokopedia.com/p/komputer-laptop/software/multimedia",
                                 "isAdult": false
                             }
                         ]
@@ -71,16 +71,16 @@
                         "url": ""
                     },
                     "txStats": {
-                        "transactionSuccess": "216",
-                        "transactionReject": "11",
-                        "countSold": "210",
-                        "paymentVerified": "216",
-                        "itemSoldFmt": "210"
+                        "transactionSuccess": "0",
+                        "transactionReject": "0",
+                        "countSold": "0",
+                        "paymentVerified": "0",
+                        "itemSoldFmt": ""
                     },
                     "stats": {
-                        "countReview": "127",
-                        "countTalk": "57",
-                        "rating": 5
+                        "countReview": "0",
+                        "countTalk": "0",
+                        "rating": 0
                     }
                 },
                 "components": [
@@ -99,73 +99,69 @@
                                 "media": [
                                     {
                                         "type": "image",
-                                        "URLOriginal": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/5/11/530dd0df-9755-4816-ab2b-678bbe407c43.jpg",
-                                        "URLThumbnail": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2021/5/11/530dd0df-9755-4816-ab2b-678bbe407c43.jpg",
-                                        "URL300": "https://images.tokopedia.net/img/cache/300/VqbcmM/2021/5/11/530dd0df-9755-4816-ab2b-678bbe407c43.jpg",
+                                        "URLOriginal": "https://images.tokopedia.net/img/cache/700/VqbcmM/2022/11/14/3f2ce853-4a16-4b72-bf47-ae829e4f1b7f.jpg",
+                                        "URLThumbnail": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2022/11/14/3f2ce853-4a16-4b72-bf47-ae829e4f1b7f.jpg",
+                                        "URL300": "https://images.tokopedia.net/img/cache/300/VqbcmM/2022/11/14/3f2ce853-4a16-4b72-bf47-ae829e4f1b7f.jpg",
                                         "description": "",
                                         "videoURLAndroid": "",
                                         "isAutoplay": false,
-                                        "variantOptionID": "0"
+                                        "variantOptionID": "0",
+                                        "URLMaxRes": "https://images.tokopedia.net/img/cache/700/VqbcmM/2022/11/14/3f2ce853-4a16-4b72-bf47-ae829e4f1b7f.jpg"
+                                    },
+                                    {
+                                        "type": "video",
+                                        "URLOriginal": "https://images.tokopedia.net/img/cache/700/VqbcmM/2022/11/14/3f2ce853-4a16-4b72-bf47-ae829e4f1b7f.jpg",
+                                        "URLThumbnail": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2022/11/14/3f2ce853-4a16-4b72-bf47-ae829e4f1b7f.jpg",
+                                        "URL300": "",
+                                        "description": "",
+                                        "videoURLAndroid": "https://vod.tokopedia.com/view/adaptive.m3u8?id=85a649e063ed71ed8f8136a5e8aa0102",
+                                        "isAutoplay": false,
+                                        "variantOptionID": "0",
+                                        "URLMaxRes": "https://images.tokopedia.net/img/cache/700/VqbcmM/2022/11/14/3f2ce853-4a16-4b72-bf47-ae829e4f1b7f.jpg"
                                     },
                                     {
                                         "type": "image",
-                                        "URLOriginal": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/3/17/f5d3e85f-3740-4045-bde0-73770add3718.jpg",
-                                        "URLThumbnail": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2021/3/17/f5d3e85f-3740-4045-bde0-73770add3718.jpg",
-                                        "URL300": "https://images.tokopedia.net/img/cache/300/VqbcmM/2021/3/17/f5d3e85f-3740-4045-bde0-73770add3718.jpg",
+                                        "URLOriginal": "https://images.tokopedia.net/img/cache/700/VqbcmM/2022/11/14/216cb667-c308-4cc7-8ec2-c90505789a12.jpg",
+                                        "URLThumbnail": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2022/11/14/216cb667-c308-4cc7-8ec2-c90505789a12.jpg",
+                                        "URL300": "https://images.tokopedia.net/img/cache/300/VqbcmM/2022/11/14/216cb667-c308-4cc7-8ec2-c90505789a12.jpg",
                                         "description": "",
                                         "videoURLAndroid": "",
                                         "isAutoplay": false,
-                                        "variantOptionID": "0"
+                                        "variantOptionID": "0",
+                                        "URLMaxRes": "https://images.tokopedia.net/img/cache/700/VqbcmM/2022/11/14/216cb667-c308-4cc7-8ec2-c90505789a12.jpg"
                                     },
                                     {
                                         "type": "image",
-                                        "URLOriginal": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/3/17/53637df0-2586-4023-96b2-79e92a2099fe.jpg",
-                                        "URLThumbnail": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2021/3/17/53637df0-2586-4023-96b2-79e92a2099fe.jpg",
-                                        "URL300": "https://images.tokopedia.net/img/cache/300/VqbcmM/2021/3/17/53637df0-2586-4023-96b2-79e92a2099fe.jpg",
+                                        "URLOriginal": "https://images.tokopedia.net/img/cache/700/VqbcmM/2022/11/14/7819d064-7c55-435f-ab04-55ea57f842cb.jpg",
+                                        "URLThumbnail": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2022/11/14/7819d064-7c55-435f-ab04-55ea57f842cb.jpg",
+                                        "URL300": "https://images.tokopedia.net/img/cache/300/VqbcmM/2022/11/14/7819d064-7c55-435f-ab04-55ea57f842cb.jpg",
                                         "description": "",
                                         "videoURLAndroid": "",
                                         "isAutoplay": false,
-                                        "variantOptionID": "0"
+                                        "variantOptionID": "0",
+                                        "URLMaxRes": "https://images.tokopedia.net/img/cache/700/VqbcmM/2022/11/14/7819d064-7c55-435f-ab04-55ea57f842cb.jpg"
                                     },
                                     {
                                         "type": "image",
-                                        "URLOriginal": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/9/15/fd32c007-6805-47b8-86f3-a2cee4be9323.jpg",
-                                        "URLThumbnail": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2021/9/15/fd32c007-6805-47b8-86f3-a2cee4be9323.jpg",
-                                        "URL300": "https://images.tokopedia.net/img/cache/300/VqbcmM/2021/9/15/fd32c007-6805-47b8-86f3-a2cee4be9323.jpg",
+                                        "URLOriginal": "https://images.tokopedia.net/img/cache/700/VqbcmM/2022/11/14/8f342702-c6e7-4106-8080-e078aad2df0c.jpg",
+                                        "URLThumbnail": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2022/11/14/8f342702-c6e7-4106-8080-e078aad2df0c.jpg",
+                                        "URL300": "https://images.tokopedia.net/img/cache/300/VqbcmM/2022/11/14/8f342702-c6e7-4106-8080-e078aad2df0c.jpg",
                                         "description": "",
                                         "videoURLAndroid": "",
                                         "isAutoplay": false,
-                                        "variantOptionID": "0"
+                                        "variantOptionID": "0",
+                                        "URLMaxRes": "https://images.tokopedia.net/img/cache/700/VqbcmM/2022/11/14/8f342702-c6e7-4106-8080-e078aad2df0c.jpg"
                                     },
                                     {
                                         "type": "image",
-                                        "URLOriginal": "https://images.tokopedia.net/img/cache/700/VqbcmM/2021/9/15/5b53dd16-a226-41d9-a1c4-96b5913d04c9.jpg",
-                                        "URLThumbnail": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2021/9/15/5b53dd16-a226-41d9-a1c4-96b5913d04c9.jpg",
-                                        "URL300": "https://images.tokopedia.net/img/cache/300/VqbcmM/2021/9/15/5b53dd16-a226-41d9-a1c4-96b5913d04c9.jpg",
+                                        "URLOriginal": "https://images.tokopedia.net/img/cache/700/VqbcmM/2022/11/14/7bca40fd-4cbb-4879-888d-ec6824e05755.png",
+                                        "URLThumbnail": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2022/11/14/7bca40fd-4cbb-4879-888d-ec6824e05755.png",
+                                        "URL300": "https://images.tokopedia.net/img/cache/300/VqbcmM/2022/11/14/7bca40fd-4cbb-4879-888d-ec6824e05755.png",
                                         "description": "",
                                         "videoURLAndroid": "",
                                         "isAutoplay": false,
-                                        "variantOptionID": "0"
-                                    },
-                                    {
-                                        "type": "image",
-                                        "URLOriginal": "https://images.tokopedia.net/img/cache/700/VqbcmM/2020/12/9/d220ef0a-8426-4da7-a31c-8d0bf9e74a6a.jpg",
-                                        "URLThumbnail": "https://images.tokopedia.net/img/cache/700/VqbcmM/2020/12/9/d220ef0a-8426-4da7-a31c-8d0bf9e74a6a.jpg",
-                                        "URL300": "https://images.tokopedia.net/img/cache/700/VqbcmM/2020/12/9/d220ef0a-8426-4da7-a31c-8d0bf9e74a6a.jpg",
-                                        "description": "Putih",
-                                        "videoURLAndroid": "",
-                                        "isAutoplay": false,
-                                        "variantOptionID": "82715912"
-                                    },
-                                    {
-                                        "type": "image",
-                                        "URLOriginal": "https://images.tokopedia.net/img/cache/700/VqbcmM/2020/12/9/f92a41aa-82a6-400b-9358-fc649554a8ee.jpg",
-                                        "URLThumbnail": "https://images.tokopedia.net/img/cache/700/VqbcmM/2020/12/9/f92a41aa-82a6-400b-9358-fc649554a8ee.jpg",
-                                        "URL300": "https://images.tokopedia.net/img/cache/700/VqbcmM/2020/12/9/f92a41aa-82a6-400b-9358-fc649554a8ee.jpg",
-                                        "description": "Hitam",
-                                        "videoURLAndroid": "",
-                                        "isAutoplay": false,
-                                        "variantOptionID": "82715913"
+                                        "variantOptionID": "0",
+                                        "URLMaxRes": "https://images.tokopedia.net/img/cache/700/VqbcmM/2022/11/14/7bca40fd-4cbb-4879-888d-ec6824e05755.png"
                                     }
                                 ],
                                 "videos": [],
@@ -193,33 +189,33 @@
                         "type": "product_content",
                         "data": [
                             {
-                                "name": "New Iphone x 256 GB Silver Black - Hitam",
-                                "parentName": "New Iphone x 256 GB Silver Black",
+                                "name": "Prod Sample Size Manually Picked_Varant2Lv",
+                                "parentName": "Prod Sample Size Manually Picked_Varant2Lv",
                                 "isCOD": false,
                                 "price": {
-                                    "value": 4590000
+                                    "value": 150000
                                 },
                                 "campaign": {
-                                    "campaignID": "-10000",
+                                    "campaignID": "0",
                                     "campaignType": "0",
-                                    "campaignTypeName": "Diskon Terbatas",
-                                    "percentageAmount": 23,
-                                    "originalPrice": 5980000,
-                                    "discountedPrice": 4590000,
-                                    "stock": 63,
+                                    "campaignTypeName": "",
+                                    "percentageAmount": 0,
+                                    "originalPrice": 0,
+                                    "discountedPrice": 0,
+                                    "stock": 0,
                                     "stockSoldPercentage": 0,
                                     "threshold": 0,
-                                    "startDate": "2022-03-16 14:19:21",
-                                    "endDate": "2023-03-16 14:14:21",
-                                    "endDateUnix": "1678950861",
+                                    "startDate": "",
+                                    "endDate": "",
+                                    "endDateUnix": "0",
                                     "appLinks": "",
                                     "isAppsOnly": false,
-                                    "isActive": true,
+                                    "isActive": false,
                                     "hideGimmick": false,
                                     "isCheckImei": false,
                                     "isUsingOvo": false,
-                                    "background": "#D74049,#F56958",
-                                    "campaignIdentifier": 2,
+                                    "background": "",
+                                    "campaignIdentifier": 0,
                                     "paymentInfoWording": ""
                                 },
                                 "thematicCampaign": {
@@ -230,12 +226,12 @@
                                 },
                                 "stock": {
                                     "useStock": true,
-                                    "value": "63",
+                                    "value": "0",
                                     "stockWording": ""
                                 },
                                 "variant": {
                                     "isVariant": true,
-                                    "parentID": "1411449586"
+                                    "parentID": "6961809872"
                                 },
                                 "wholesale": [],
                                 "isCashback": {
@@ -246,8 +242,8 @@
                                     "isActive": false,
                                     "preorderInDays": 0
                                 },
-                                "isTradeIn": true,
-                                "isOS": false,
+                                "isTradeIn": false,
+                                "isOS": true,
                                 "isPowerMerchant": true,
                                 "isWishlist": false
                             }
@@ -274,6 +270,11 @@
                         "data": []
                     },
                     {
+                        "name": "global_bundling",
+                        "type": "product_bundling",
+                        "data": []
+                    },
+                    {
                         "name": "product_bundling",
                         "type": "product_bundling",
                         "data": []
@@ -284,35 +285,103 @@
                         "data": [
                             {
                                 "errorCode": 0,
-                                "parentID": "1411449586",
-                                "defaultChild": "1414921090",
-                                "sizeChart": "",
-                                "maxFinalPrice": 4590000,
+                                "parentID": "6961809872",
+                                "defaultChild": "6961809885",
+                                "sizeChart": "https://ecs7.tokopedia.net/img/VqbcmM/2022/11/14/7bca40fd-4cbb-4879-888d-ec6824e05755.png",
+                                "maxFinalPrice": 150000,
                                 "variants": [
                                     {
-                                        "productVariantID": "25130920",
+                                        "productVariantID": "134172911",
                                         "variantID": "1",
                                         "name": "warna",
                                         "identifier": "colour",
                                         "option": [
                                             {
-                                                "productVariantOptionID": "82715912",
+                                                "productVariantOptionID": "523723404",
                                                 "variantUnitValueID": "1",
                                                 "value": "Putih",
                                                 "hex": "#ffffff",
                                                 "picture": {
-                                                    "url": "https://ecs7.tokopedia.net/img/cache/700/VqbcmM/2020/12/9/d220ef0a-8426-4da7-a31c-8d0bf9e74a6a.jpg",
-                                                    "url100": "https://ecs7.tokopedia.net/img/cache/100-square/VqbcmM/2020/12/9/d220ef0a-8426-4da7-a31c-8d0bf9e74a6a.jpg"
+                                                    "url": "",
+                                                    "url100": ""
                                                 }
                                             },
                                             {
-                                                "productVariantOptionID": "82715913",
-                                                "variantUnitValueID": "2",
-                                                "value": "Hitam",
-                                                "hex": "#000000",
+                                                "productVariantOptionID": "523723405",
+                                                "variantUnitValueID": "5",
+                                                "value": "Biru",
+                                                "hex": "#1d6cbb",
                                                 "picture": {
-                                                    "url": "https://ecs7.tokopedia.net/img/cache/700/VqbcmM/2020/12/9/f92a41aa-82a6-400b-9358-fc649554a8ee.jpg",
-                                                    "url100": "https://ecs7.tokopedia.net/img/cache/100-square/VqbcmM/2020/12/9/f92a41aa-82a6-400b-9358-fc649554a8ee.jpg"
+                                                    "url": "",
+                                                    "url100": ""
+                                                }
+                                            },
+                                            {
+                                                "productVariantOptionID": "523723406",
+                                                "variantUnitValueID": "9",
+                                                "value": "Merah",
+                                                "hex": "#ff0016",
+                                                "picture": {
+                                                    "url": "",
+                                                    "url100": ""
+                                                }
+                                            }
+                                        ]
+                                    },
+                                    {
+                                        "productVariantID": "134172912",
+                                        "variantID": "29",
+                                        "name": "ukuran",
+                                        "identifier": "size",
+                                        "option": [
+                                            {
+                                                "productVariantOptionID": "523723407",
+                                                "variantUnitValueID": "455",
+                                                "value": "S",
+                                                "hex": "",
+                                                "picture": {
+                                                    "url": "",
+                                                    "url100": ""
+                                                }
+                                            },
+                                            {
+                                                "productVariantOptionID": "523723408",
+                                                "variantUnitValueID": "456",
+                                                "value": "M",
+                                                "hex": "",
+                                                "picture": {
+                                                    "url": "",
+                                                    "url100": ""
+                                                }
+                                            },
+                                            {
+                                                "productVariantOptionID": "523723409",
+                                                "variantUnitValueID": "457",
+                                                "value": "L",
+                                                "hex": "",
+                                                "picture": {
+                                                    "url": "",
+                                                    "url100": ""
+                                                }
+                                            },
+                                            {
+                                                "productVariantOptionID": "523723410",
+                                                "variantUnitValueID": "458",
+                                                "value": "XL",
+                                                "hex": "",
+                                                "picture": {
+                                                    "url": "",
+                                                    "url100": ""
+                                                }
+                                            },
+                                            {
+                                                "productVariantOptionID": "523723411",
+                                                "variantUnitValueID": "459",
+                                                "value": "XXL",
+                                                "hex": "",
+                                                "picture": {
+                                                    "url": "",
+                                                    "url100": ""
                                                 }
                                             }
                                         ]
@@ -320,54 +389,56 @@
                                 ],
                                 "children": [
                                     {
-                                        "productID": "1414921089",
-                                        "price": 4590000,
+                                        "productID": "6961809885",
+                                        "price": 150000,
                                         "priceFmt": "Rp 0",
-                                        "sku": "Silver256GB",
+                                        "sku": "",
                                         "optionID": [
-                                            82715912
+                                            523723404,
+                                            523723407
                                         ],
                                         "optionName": [
-                                            "Putih"
+                                            "Putih",
+                                            "S"
                                         ],
-                                        "productName": "New Iphone x 256 GB Silver Black - Putih",
-                                        "productURL": "https://www.tokopedia.com/honestyshop88/new-iphone-x-256-gb-silver-black-putih",
+                                        "productName": "Prod Sample Size Manually Picked_Varant2Lv - Putih, S",
+                                        "productURL": "https://www.tokopedia.com/h4jj45/prod-sample-size-manually-picked-varant2lv-putih-s",
                                         "isCOD": false,
                                         "isWishlist": false,
                                         "picture": {
-                                            "url": "https://images.tokopedia.net/img/cache/700/VqbcmM/2020/12/9/d220ef0a-8426-4da7-a31c-8d0bf9e74a6a.jpg",
-                                            "url200": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2020/12/9/d220ef0a-8426-4da7-a31c-8d0bf9e74a6a.jpg"
+                                            "url": "https://images.tokopedia.net/img/cache/700/VqbcmM/2022/11/14/3f2ce853-4a16-4b72-bf47-ae829e4f1b7f.jpg",
+                                            "url200": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2022/11/14/3f2ce853-4a16-4b72-bf47-ae829e4f1b7f.jpg"
                                         },
                                         "stock": {
-                                            "stock": "71",
+                                            "stock": "100",
                                             "isBuyable": true,
                                             "stockWording": "",
                                             "stockWordingHTML": "",
                                             "minimumOrder": "1",
-                                            "maximumOrder": "71",
-                                            "stockFmt": "Stok: 71",
+                                            "maximumOrder": "100",
+                                            "stockFmt": "Stok: 100",
                                             "stockCopy": ""
                                         },
                                         "campaignInfo": {
-                                            "campaignID": "-10000",
+                                            "campaignID": "0",
                                             "campaignType": "0",
-                                            "campaignTypeName": "Diskon Terbatas",
-                                            "campaignIdentifier": 2,
-                                            "background": "#D74049,#F56958",
-                                            "discountPercentage": 23,
-                                            "originalPrice": 5980000,
-                                            "discountPrice": 4590000,
-                                            "stock": 71,
+                                            "campaignTypeName": "",
+                                            "campaignIdentifier": 0,
+                                            "background": "",
+                                            "discountPercentage": 0,
+                                            "originalPrice": 0,
+                                            "discountPrice": 0,
+                                            "stock": 0,
                                             "stockSoldPercentage": 0,
-                                            "startDate": "2022-03-16 14:19:21",
-                                            "endDateUnix": "1678950861",
+                                            "startDate": "",
+                                            "endDateUnix": "0",
                                             "appLinks": "",
                                             "isAppsOnly": false,
-                                            "isActive": true,
+                                            "isActive": false,
                                             "hideGimmick": false,
                                             "isCheckImei": false,
                                             "isUsingOvo": false,
-                                            "minOrder": 1
+                                            "minOrder": 0
                                         },
                                         "thematicCampaign": {
                                             "campaignName": "",
@@ -377,54 +448,823 @@
                                         }
                                     },
                                     {
-                                        "productID": "1414921090",
-                                        "price": 4590000,
+                                        "productID": "6961809886",
+                                        "price": 150000,
                                         "priceFmt": "Rp 0",
-                                        "sku": "Black256GB",
+                                        "sku": "",
                                         "optionID": [
-                                            82715913
+                                            523723404,
+                                            523723408
                                         ],
                                         "optionName": [
-                                            "Hitam"
+                                            "Putih",
+                                            "M"
                                         ],
-                                        "productName": "New Iphone x 256 GB Silver Black - Hitam",
-                                        "productURL": "https://www.tokopedia.com/honestyshop88/new-iphone-x-256-gb-silver-black-hitam",
+                                        "productName": "Prod Sample Size Manually Picked_Varant2Lv - Putih, M",
+                                        "productURL": "https://www.tokopedia.com/h4jj45/prod-sample-size-manually-picked-varant2lv-putih-m",
                                         "isCOD": false,
                                         "isWishlist": false,
                                         "picture": {
-                                            "url": "https://images.tokopedia.net/img/cache/700/VqbcmM/2020/12/9/f92a41aa-82a6-400b-9358-fc649554a8ee.jpg",
-                                            "url200": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2020/12/9/f92a41aa-82a6-400b-9358-fc649554a8ee.jpg"
+                                            "url": "https://images.tokopedia.net/img/cache/700/VqbcmM/2022/11/14/3f2ce853-4a16-4b72-bf47-ae829e4f1b7f.jpg",
+                                            "url200": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2022/11/14/3f2ce853-4a16-4b72-bf47-ae829e4f1b7f.jpg"
                                         },
                                         "stock": {
-                                            "stock": "63",
+                                            "stock": "100",
                                             "isBuyable": true,
                                             "stockWording": "",
                                             "stockWordingHTML": "",
                                             "minimumOrder": "1",
-                                            "maximumOrder": "63",
-                                            "stockFmt": "Stok: 63",
+                                            "maximumOrder": "100",
+                                            "stockFmt": "Stok: 100",
                                             "stockCopy": ""
                                         },
                                         "campaignInfo": {
-                                            "campaignID": "-10000",
+                                            "campaignID": "0",
                                             "campaignType": "0",
-                                            "campaignTypeName": "Diskon Terbatas",
-                                            "campaignIdentifier": 2,
-                                            "background": "#D74049,#F56958",
-                                            "discountPercentage": 23,
-                                            "originalPrice": 5980000,
-                                            "discountPrice": 4590000,
-                                            "stock": 63,
+                                            "campaignTypeName": "",
+                                            "campaignIdentifier": 0,
+                                            "background": "",
+                                            "discountPercentage": 0,
+                                            "originalPrice": 0,
+                                            "discountPrice": 0,
+                                            "stock": 0,
                                             "stockSoldPercentage": 0,
-                                            "startDate": "2022-03-16 14:19:21",
-                                            "endDateUnix": "1678950861",
+                                            "startDate": "",
+                                            "endDateUnix": "0",
                                             "appLinks": "",
                                             "isAppsOnly": false,
-                                            "isActive": true,
+                                            "isActive": false,
                                             "hideGimmick": false,
                                             "isCheckImei": false,
                                             "isUsingOvo": false,
-                                            "minOrder": 1
+                                            "minOrder": 0
+                                        },
+                                        "thematicCampaign": {
+                                            "campaignName": "",
+                                            "icon": "",
+                                            "background": "",
+                                            "additionalInfo": ""
+                                        }
+                                    },
+                                    {
+                                        "productID": "6961809887",
+                                        "price": 150000,
+                                        "priceFmt": "Rp 0",
+                                        "sku": "",
+                                        "optionID": [
+                                            523723404,
+                                            523723409
+                                        ],
+                                        "optionName": [
+                                            "Putih",
+                                            "L"
+                                        ],
+                                        "productName": "Prod Sample Size Manually Picked_Varant2Lv - Putih, L",
+                                        "productURL": "https://www.tokopedia.com/h4jj45/prod-sample-size-manually-picked-varant2lv-putih-l",
+                                        "isCOD": false,
+                                        "isWishlist": false,
+                                        "picture": {
+                                            "url": "https://images.tokopedia.net/img/cache/700/VqbcmM/2022/11/14/3f2ce853-4a16-4b72-bf47-ae829e4f1b7f.jpg",
+                                            "url200": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2022/11/14/3f2ce853-4a16-4b72-bf47-ae829e4f1b7f.jpg"
+                                        },
+                                        "stock": {
+                                            "stock": "100",
+                                            "isBuyable": true,
+                                            "stockWording": "",
+                                            "stockWordingHTML": "",
+                                            "minimumOrder": "1",
+                                            "maximumOrder": "100",
+                                            "stockFmt": "Stok: 100",
+                                            "stockCopy": ""
+                                        },
+                                        "campaignInfo": {
+                                            "campaignID": "0",
+                                            "campaignType": "0",
+                                            "campaignTypeName": "",
+                                            "campaignIdentifier": 0,
+                                            "background": "",
+                                            "discountPercentage": 0,
+                                            "originalPrice": 0,
+                                            "discountPrice": 0,
+                                            "stock": 0,
+                                            "stockSoldPercentage": 0,
+                                            "startDate": "",
+                                            "endDateUnix": "0",
+                                            "appLinks": "",
+                                            "isAppsOnly": false,
+                                            "isActive": false,
+                                            "hideGimmick": false,
+                                            "isCheckImei": false,
+                                            "isUsingOvo": false,
+                                            "minOrder": 0
+                                        },
+                                        "thematicCampaign": {
+                                            "campaignName": "",
+                                            "icon": "",
+                                            "background": "",
+                                            "additionalInfo": ""
+                                        }
+                                    },
+                                    {
+                                        "productID": "6961809889",
+                                        "price": 150000,
+                                        "priceFmt": "Rp 0",
+                                        "sku": "",
+                                        "optionID": [
+                                            523723404,
+                                            523723410
+                                        ],
+                                        "optionName": [
+                                            "Putih",
+                                            "XL"
+                                        ],
+                                        "productName": "Prod Sample Size Manually Picked_Varant2Lv - Putih, XL",
+                                        "productURL": "https://www.tokopedia.com/h4jj45/prod-sample-size-manually-picked-varant2lv-putih-xl",
+                                        "isCOD": false,
+                                        "isWishlist": false,
+                                        "picture": {
+                                            "url": "https://images.tokopedia.net/img/cache/700/VqbcmM/2022/11/14/3f2ce853-4a16-4b72-bf47-ae829e4f1b7f.jpg",
+                                            "url200": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2022/11/14/3f2ce853-4a16-4b72-bf47-ae829e4f1b7f.jpg"
+                                        },
+                                        "stock": {
+                                            "stock": "100",
+                                            "isBuyable": true,
+                                            "stockWording": "",
+                                            "stockWordingHTML": "",
+                                            "minimumOrder": "1",
+                                            "maximumOrder": "100",
+                                            "stockFmt": "Stok: 100",
+                                            "stockCopy": ""
+                                        },
+                                        "campaignInfo": {
+                                            "campaignID": "0",
+                                            "campaignType": "0",
+                                            "campaignTypeName": "",
+                                            "campaignIdentifier": 0,
+                                            "background": "",
+                                            "discountPercentage": 0,
+                                            "originalPrice": 0,
+                                            "discountPrice": 0,
+                                            "stock": 0,
+                                            "stockSoldPercentage": 0,
+                                            "startDate": "",
+                                            "endDateUnix": "0",
+                                            "appLinks": "",
+                                            "isAppsOnly": false,
+                                            "isActive": false,
+                                            "hideGimmick": false,
+                                            "isCheckImei": false,
+                                            "isUsingOvo": false,
+                                            "minOrder": 0
+                                        },
+                                        "thematicCampaign": {
+                                            "campaignName": "",
+                                            "icon": "",
+                                            "background": "",
+                                            "additionalInfo": ""
+                                        }
+                                    },
+                                    {
+                                        "productID": "6961809890",
+                                        "price": 150000,
+                                        "priceFmt": "Rp 0",
+                                        "sku": "",
+                                        "optionID": [
+                                            523723404,
+                                            523723411
+                                        ],
+                                        "optionName": [
+                                            "Putih",
+                                            "XXL"
+                                        ],
+                                        "productName": "Prod Sample Size Manually Picked_Varant2Lv - Putih, XXL",
+                                        "productURL": "https://www.tokopedia.com/h4jj45/prod-sample-size-manually-picked-varant2lv-putih-xxl",
+                                        "isCOD": false,
+                                        "isWishlist": false,
+                                        "picture": {
+                                            "url": "https://images.tokopedia.net/img/cache/700/VqbcmM/2022/11/14/3f2ce853-4a16-4b72-bf47-ae829e4f1b7f.jpg",
+                                            "url200": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2022/11/14/3f2ce853-4a16-4b72-bf47-ae829e4f1b7f.jpg"
+                                        },
+                                        "stock": {
+                                            "stock": "100",
+                                            "isBuyable": true,
+                                            "stockWording": "",
+                                            "stockWordingHTML": "",
+                                            "minimumOrder": "1",
+                                            "maximumOrder": "100",
+                                            "stockFmt": "Stok: 100",
+                                            "stockCopy": ""
+                                        },
+                                        "campaignInfo": {
+                                            "campaignID": "0",
+                                            "campaignType": "0",
+                                            "campaignTypeName": "",
+                                            "campaignIdentifier": 0,
+                                            "background": "",
+                                            "discountPercentage": 0,
+                                            "originalPrice": 0,
+                                            "discountPrice": 0,
+                                            "stock": 0,
+                                            "stockSoldPercentage": 0,
+                                            "startDate": "",
+                                            "endDateUnix": "0",
+                                            "appLinks": "",
+                                            "isAppsOnly": false,
+                                            "isActive": false,
+                                            "hideGimmick": false,
+                                            "isCheckImei": false,
+                                            "isUsingOvo": false,
+                                            "minOrder": 0
+                                        },
+                                        "thematicCampaign": {
+                                            "campaignName": "",
+                                            "icon": "",
+                                            "background": "",
+                                            "additionalInfo": ""
+                                        }
+                                    },
+                                    {
+                                        "productID": "6961809891",
+                                        "price": 150000,
+                                        "priceFmt": "Rp 0",
+                                        "sku": "",
+                                        "optionID": [
+                                            523723405,
+                                            523723407
+                                        ],
+                                        "optionName": [
+                                            "Biru",
+                                            "S"
+                                        ],
+                                        "productName": "Prod Sample Size Manually Picked_Varant2Lv - Biru, S",
+                                        "productURL": "https://www.tokopedia.com/h4jj45/prod-sample-size-manually-picked-varant2lv-biru-s",
+                                        "isCOD": false,
+                                        "isWishlist": false,
+                                        "picture": {
+                                            "url": "https://images.tokopedia.net/img/cache/700/VqbcmM/2022/11/14/3f2ce853-4a16-4b72-bf47-ae829e4f1b7f.jpg",
+                                            "url200": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2022/11/14/3f2ce853-4a16-4b72-bf47-ae829e4f1b7f.jpg"
+                                        },
+                                        "stock": {
+                                            "stock": "100",
+                                            "isBuyable": true,
+                                            "stockWording": "",
+                                            "stockWordingHTML": "",
+                                            "minimumOrder": "1",
+                                            "maximumOrder": "100",
+                                            "stockFmt": "Stok: 100",
+                                            "stockCopy": ""
+                                        },
+                                        "campaignInfo": {
+                                            "campaignID": "0",
+                                            "campaignType": "0",
+                                            "campaignTypeName": "",
+                                            "campaignIdentifier": 0,
+                                            "background": "",
+                                            "discountPercentage": 0,
+                                            "originalPrice": 0,
+                                            "discountPrice": 0,
+                                            "stock": 0,
+                                            "stockSoldPercentage": 0,
+                                            "startDate": "",
+                                            "endDateUnix": "0",
+                                            "appLinks": "",
+                                            "isAppsOnly": false,
+                                            "isActive": false,
+                                            "hideGimmick": false,
+                                            "isCheckImei": false,
+                                            "isUsingOvo": false,
+                                            "minOrder": 0
+                                        },
+                                        "thematicCampaign": {
+                                            "campaignName": "",
+                                            "icon": "",
+                                            "background": "",
+                                            "additionalInfo": ""
+                                        }
+                                    },
+                                    {
+                                        "productID": "6961809892",
+                                        "price": 150000,
+                                        "priceFmt": "Rp 0",
+                                        "sku": "",
+                                        "optionID": [
+                                            523723405,
+                                            523723408
+                                        ],
+                                        "optionName": [
+                                            "Biru",
+                                            "M"
+                                        ],
+                                        "productName": "Prod Sample Size Manually Picked_Varant2Lv - Biru, M",
+                                        "productURL": "https://www.tokopedia.com/h4jj45/prod-sample-size-manually-picked-varant2lv-biru-m",
+                                        "isCOD": false,
+                                        "isWishlist": false,
+                                        "picture": {
+                                            "url": "https://images.tokopedia.net/img/cache/700/VqbcmM/2022/11/14/3f2ce853-4a16-4b72-bf47-ae829e4f1b7f.jpg",
+                                            "url200": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2022/11/14/3f2ce853-4a16-4b72-bf47-ae829e4f1b7f.jpg"
+                                        },
+                                        "stock": {
+                                            "stock": "100",
+                                            "isBuyable": true,
+                                            "stockWording": "",
+                                            "stockWordingHTML": "",
+                                            "minimumOrder": "1",
+                                            "maximumOrder": "100",
+                                            "stockFmt": "Stok: 100",
+                                            "stockCopy": ""
+                                        },
+                                        "campaignInfo": {
+                                            "campaignID": "0",
+                                            "campaignType": "0",
+                                            "campaignTypeName": "",
+                                            "campaignIdentifier": 0,
+                                            "background": "",
+                                            "discountPercentage": 0,
+                                            "originalPrice": 0,
+                                            "discountPrice": 0,
+                                            "stock": 0,
+                                            "stockSoldPercentage": 0,
+                                            "startDate": "",
+                                            "endDateUnix": "0",
+                                            "appLinks": "",
+                                            "isAppsOnly": false,
+                                            "isActive": false,
+                                            "hideGimmick": false,
+                                            "isCheckImei": false,
+                                            "isUsingOvo": false,
+                                            "minOrder": 0
+                                        },
+                                        "thematicCampaign": {
+                                            "campaignName": "",
+                                            "icon": "",
+                                            "background": "",
+                                            "additionalInfo": ""
+                                        }
+                                    },
+                                    {
+                                        "productID": "6961809893",
+                                        "price": 150000,
+                                        "priceFmt": "Rp 0",
+                                        "sku": "",
+                                        "optionID": [
+                                            523723405,
+                                            523723409
+                                        ],
+                                        "optionName": [
+                                            "Biru",
+                                            "L"
+                                        ],
+                                        "productName": "Prod Sample Size Manually Picked_Varant2Lv - Biru, L",
+                                        "productURL": "https://www.tokopedia.com/h4jj45/prod-sample-size-manually-picked-varant2lv-biru-l",
+                                        "isCOD": false,
+                                        "isWishlist": false,
+                                        "picture": {
+                                            "url": "https://images.tokopedia.net/img/cache/700/VqbcmM/2022/11/14/3f2ce853-4a16-4b72-bf47-ae829e4f1b7f.jpg",
+                                            "url200": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2022/11/14/3f2ce853-4a16-4b72-bf47-ae829e4f1b7f.jpg"
+                                        },
+                                        "stock": {
+                                            "stock": "100",
+                                            "isBuyable": true,
+                                            "stockWording": "",
+                                            "stockWordingHTML": "",
+                                            "minimumOrder": "1",
+                                            "maximumOrder": "100",
+                                            "stockFmt": "Stok: 100",
+                                            "stockCopy": ""
+                                        },
+                                        "campaignInfo": {
+                                            "campaignID": "0",
+                                            "campaignType": "0",
+                                            "campaignTypeName": "",
+                                            "campaignIdentifier": 0,
+                                            "background": "",
+                                            "discountPercentage": 0,
+                                            "originalPrice": 0,
+                                            "discountPrice": 0,
+                                            "stock": 0,
+                                            "stockSoldPercentage": 0,
+                                            "startDate": "",
+                                            "endDateUnix": "0",
+                                            "appLinks": "",
+                                            "isAppsOnly": false,
+                                            "isActive": false,
+                                            "hideGimmick": false,
+                                            "isCheckImei": false,
+                                            "isUsingOvo": false,
+                                            "minOrder": 0
+                                        },
+                                        "thematicCampaign": {
+                                            "campaignName": "",
+                                            "icon": "",
+                                            "background": "",
+                                            "additionalInfo": ""
+                                        }
+                                    },
+                                    {
+                                        "productID": "6961809894",
+                                        "price": 150000,
+                                        "priceFmt": "Rp 0",
+                                        "sku": "",
+                                        "optionID": [
+                                            523723405,
+                                            523723410
+                                        ],
+                                        "optionName": [
+                                            "Biru",
+                                            "XL"
+                                        ],
+                                        "productName": "Prod Sample Size Manually Picked_Varant2Lv - Biru, XL",
+                                        "productURL": "https://www.tokopedia.com/h4jj45/prod-sample-size-manually-picked-varant2lv-biru-xl",
+                                        "isCOD": false,
+                                        "isWishlist": false,
+                                        "picture": {
+                                            "url": "https://images.tokopedia.net/img/cache/700/VqbcmM/2022/11/14/3f2ce853-4a16-4b72-bf47-ae829e4f1b7f.jpg",
+                                            "url200": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2022/11/14/3f2ce853-4a16-4b72-bf47-ae829e4f1b7f.jpg"
+                                        },
+                                        "stock": {
+                                            "stock": "100",
+                                            "isBuyable": true,
+                                            "stockWording": "",
+                                            "stockWordingHTML": "",
+                                            "minimumOrder": "1",
+                                            "maximumOrder": "100",
+                                            "stockFmt": "Stok: 100",
+                                            "stockCopy": ""
+                                        },
+                                        "campaignInfo": {
+                                            "campaignID": "0",
+                                            "campaignType": "0",
+                                            "campaignTypeName": "",
+                                            "campaignIdentifier": 0,
+                                            "background": "",
+                                            "discountPercentage": 0,
+                                            "originalPrice": 0,
+                                            "discountPrice": 0,
+                                            "stock": 0,
+                                            "stockSoldPercentage": 0,
+                                            "startDate": "",
+                                            "endDateUnix": "0",
+                                            "appLinks": "",
+                                            "isAppsOnly": false,
+                                            "isActive": false,
+                                            "hideGimmick": false,
+                                            "isCheckImei": false,
+                                            "isUsingOvo": false,
+                                            "minOrder": 0
+                                        },
+                                        "thematicCampaign": {
+                                            "campaignName": "",
+                                            "icon": "",
+                                            "background": "",
+                                            "additionalInfo": ""
+                                        }
+                                    },
+                                    {
+                                        "productID": "6961809895",
+                                        "price": 150000,
+                                        "priceFmt": "Rp 0",
+                                        "sku": "",
+                                        "optionID": [
+                                            523723405,
+                                            523723411
+                                        ],
+                                        "optionName": [
+                                            "Biru",
+                                            "XXL"
+                                        ],
+                                        "productName": "Prod Sample Size Manually Picked_Varant2Lv - Biru, XXL",
+                                        "productURL": "https://www.tokopedia.com/h4jj45/prod-sample-size-manually-picked-varant2lv-biru-xxl",
+                                        "isCOD": false,
+                                        "isWishlist": false,
+                                        "picture": {
+                                            "url": "https://images.tokopedia.net/img/cache/700/VqbcmM/2022/11/14/3f2ce853-4a16-4b72-bf47-ae829e4f1b7f.jpg",
+                                            "url200": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2022/11/14/3f2ce853-4a16-4b72-bf47-ae829e4f1b7f.jpg"
+                                        },
+                                        "stock": {
+                                            "stock": "100",
+                                            "isBuyable": true,
+                                            "stockWording": "",
+                                            "stockWordingHTML": "",
+                                            "minimumOrder": "1",
+                                            "maximumOrder": "100",
+                                            "stockFmt": "Stok: 100",
+                                            "stockCopy": ""
+                                        },
+                                        "campaignInfo": {
+                                            "campaignID": "0",
+                                            "campaignType": "0",
+                                            "campaignTypeName": "",
+                                            "campaignIdentifier": 0,
+                                            "background": "",
+                                            "discountPercentage": 0,
+                                            "originalPrice": 0,
+                                            "discountPrice": 0,
+                                            "stock": 0,
+                                            "stockSoldPercentage": 0,
+                                            "startDate": "",
+                                            "endDateUnix": "0",
+                                            "appLinks": "",
+                                            "isAppsOnly": false,
+                                            "isActive": false,
+                                            "hideGimmick": false,
+                                            "isCheckImei": false,
+                                            "isUsingOvo": false,
+                                            "minOrder": 0
+                                        },
+                                        "thematicCampaign": {
+                                            "campaignName": "",
+                                            "icon": "",
+                                            "background": "",
+                                            "additionalInfo": ""
+                                        }
+                                    },
+                                    {
+                                        "productID": "6961809896",
+                                        "price": 150000,
+                                        "priceFmt": "Rp 0",
+                                        "sku": "",
+                                        "optionID": [
+                                            523723406,
+                                            523723407
+                                        ],
+                                        "optionName": [
+                                            "Merah",
+                                            "S"
+                                        ],
+                                        "productName": "Prod Sample Size Manually Picked_Varant2Lv - Merah, S",
+                                        "productURL": "https://www.tokopedia.com/h4jj45/prod-sample-size-manually-picked-varant2lv-merah-s",
+                                        "isCOD": false,
+                                        "isWishlist": false,
+                                        "picture": {
+                                            "url": "https://images.tokopedia.net/img/cache/700/VqbcmM/2022/11/14/3f2ce853-4a16-4b72-bf47-ae829e4f1b7f.jpg",
+                                            "url200": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2022/11/14/3f2ce853-4a16-4b72-bf47-ae829e4f1b7f.jpg"
+                                        },
+                                        "stock": {
+                                            "stock": "100",
+                                            "isBuyable": true,
+                                            "stockWording": "",
+                                            "stockWordingHTML": "",
+                                            "minimumOrder": "1",
+                                            "maximumOrder": "100",
+                                            "stockFmt": "Stok: 100",
+                                            "stockCopy": ""
+                                        },
+                                        "campaignInfo": {
+                                            "campaignID": "0",
+                                            "campaignType": "0",
+                                            "campaignTypeName": "",
+                                            "campaignIdentifier": 0,
+                                            "background": "",
+                                            "discountPercentage": 0,
+                                            "originalPrice": 0,
+                                            "discountPrice": 0,
+                                            "stock": 0,
+                                            "stockSoldPercentage": 0,
+                                            "startDate": "",
+                                            "endDateUnix": "0",
+                                            "appLinks": "",
+                                            "isAppsOnly": false,
+                                            "isActive": false,
+                                            "hideGimmick": false,
+                                            "isCheckImei": false,
+                                            "isUsingOvo": false,
+                                            "minOrder": 0
+                                        },
+                                        "thematicCampaign": {
+                                            "campaignName": "",
+                                            "icon": "",
+                                            "background": "",
+                                            "additionalInfo": ""
+                                        }
+                                    },
+                                    {
+                                        "productID": "6961809897",
+                                        "price": 150000,
+                                        "priceFmt": "Rp 0",
+                                        "sku": "",
+                                        "optionID": [
+                                            523723406,
+                                            523723408
+                                        ],
+                                        "optionName": [
+                                            "Merah",
+                                            "M"
+                                        ],
+                                        "productName": "Prod Sample Size Manually Picked_Varant2Lv - Merah, M",
+                                        "productURL": "https://www.tokopedia.com/h4jj45/prod-sample-size-manually-picked-varant2lv-merah-m",
+                                        "isCOD": false,
+                                        "isWishlist": false,
+                                        "picture": {
+                                            "url": "https://images.tokopedia.net/img/cache/700/VqbcmM/2022/11/14/3f2ce853-4a16-4b72-bf47-ae829e4f1b7f.jpg",
+                                            "url200": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2022/11/14/3f2ce853-4a16-4b72-bf47-ae829e4f1b7f.jpg"
+                                        },
+                                        "stock": {
+                                            "stock": "100",
+                                            "isBuyable": true,
+                                            "stockWording": "",
+                                            "stockWordingHTML": "",
+                                            "minimumOrder": "1",
+                                            "maximumOrder": "100",
+                                            "stockFmt": "Stok: 100",
+                                            "stockCopy": ""
+                                        },
+                                        "campaignInfo": {
+                                            "campaignID": "0",
+                                            "campaignType": "0",
+                                            "campaignTypeName": "",
+                                            "campaignIdentifier": 0,
+                                            "background": "",
+                                            "discountPercentage": 0,
+                                            "originalPrice": 0,
+                                            "discountPrice": 0,
+                                            "stock": 0,
+                                            "stockSoldPercentage": 0,
+                                            "startDate": "",
+                                            "endDateUnix": "0",
+                                            "appLinks": "",
+                                            "isAppsOnly": false,
+                                            "isActive": false,
+                                            "hideGimmick": false,
+                                            "isCheckImei": false,
+                                            "isUsingOvo": false,
+                                            "minOrder": 0
+                                        },
+                                        "thematicCampaign": {
+                                            "campaignName": "",
+                                            "icon": "",
+                                            "background": "",
+                                            "additionalInfo": ""
+                                        }
+                                    },
+                                    {
+                                        "productID": "6961809898",
+                                        "price": 150000,
+                                        "priceFmt": "Rp 0",
+                                        "sku": "",
+                                        "optionID": [
+                                            523723406,
+                                            523723409
+                                        ],
+                                        "optionName": [
+                                            "Merah",
+                                            "L"
+                                        ],
+                                        "productName": "Prod Sample Size Manually Picked_Varant2Lv - Merah, L",
+                                        "productURL": "https://www.tokopedia.com/h4jj45/prod-sample-size-manually-picked-varant2lv-merah-l",
+                                        "isCOD": false,
+                                        "isWishlist": false,
+                                        "picture": {
+                                            "url": "https://images.tokopedia.net/img/cache/700/VqbcmM/2022/11/14/3f2ce853-4a16-4b72-bf47-ae829e4f1b7f.jpg",
+                                            "url200": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2022/11/14/3f2ce853-4a16-4b72-bf47-ae829e4f1b7f.jpg"
+                                        },
+                                        "stock": {
+                                            "stock": "100",
+                                            "isBuyable": true,
+                                            "stockWording": "",
+                                            "stockWordingHTML": "",
+                                            "minimumOrder": "1",
+                                            "maximumOrder": "100",
+                                            "stockFmt": "Stok: 100",
+                                            "stockCopy": ""
+                                        },
+                                        "campaignInfo": {
+                                            "campaignID": "0",
+                                            "campaignType": "0",
+                                            "campaignTypeName": "",
+                                            "campaignIdentifier": 0,
+                                            "background": "",
+                                            "discountPercentage": 0,
+                                            "originalPrice": 0,
+                                            "discountPrice": 0,
+                                            "stock": 0,
+                                            "stockSoldPercentage": 0,
+                                            "startDate": "",
+                                            "endDateUnix": "0",
+                                            "appLinks": "",
+                                            "isAppsOnly": false,
+                                            "isActive": false,
+                                            "hideGimmick": false,
+                                            "isCheckImei": false,
+                                            "isUsingOvo": false,
+                                            "minOrder": 0
+                                        },
+                                        "thematicCampaign": {
+                                            "campaignName": "",
+                                            "icon": "",
+                                            "background": "",
+                                            "additionalInfo": ""
+                                        }
+                                    },
+                                    {
+                                        "productID": "6961809899",
+                                        "price": 150000,
+                                        "priceFmt": "Rp 0",
+                                        "sku": "",
+                                        "optionID": [
+                                            523723406,
+                                            523723410
+                                        ],
+                                        "optionName": [
+                                            "Merah",
+                                            "XL"
+                                        ],
+                                        "productName": "Prod Sample Size Manually Picked_Varant2Lv - Merah, XL",
+                                        "productURL": "https://www.tokopedia.com/h4jj45/prod-sample-size-manually-picked-varant2lv-merah-xl",
+                                        "isCOD": false,
+                                        "isWishlist": false,
+                                        "picture": {
+                                            "url": "https://images.tokopedia.net/img/cache/700/VqbcmM/2022/11/14/3f2ce853-4a16-4b72-bf47-ae829e4f1b7f.jpg",
+                                            "url200": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2022/11/14/3f2ce853-4a16-4b72-bf47-ae829e4f1b7f.jpg"
+                                        },
+                                        "stock": {
+                                            "stock": "100",
+                                            "isBuyable": true,
+                                            "stockWording": "",
+                                            "stockWordingHTML": "",
+                                            "minimumOrder": "1",
+                                            "maximumOrder": "100",
+                                            "stockFmt": "Stok: 100",
+                                            "stockCopy": ""
+                                        },
+                                        "campaignInfo": {
+                                            "campaignID": "0",
+                                            "campaignType": "0",
+                                            "campaignTypeName": "",
+                                            "campaignIdentifier": 0,
+                                            "background": "",
+                                            "discountPercentage": 0,
+                                            "originalPrice": 0,
+                                            "discountPrice": 0,
+                                            "stock": 0,
+                                            "stockSoldPercentage": 0,
+                                            "startDate": "",
+                                            "endDateUnix": "0",
+                                            "appLinks": "",
+                                            "isAppsOnly": false,
+                                            "isActive": false,
+                                            "hideGimmick": false,
+                                            "isCheckImei": false,
+                                            "isUsingOvo": false,
+                                            "minOrder": 0
+                                        },
+                                        "thematicCampaign": {
+                                            "campaignName": "",
+                                            "icon": "",
+                                            "background": "",
+                                            "additionalInfo": ""
+                                        }
+                                    },
+                                    {
+                                        "productID": "6961809900",
+                                        "price": 150000,
+                                        "priceFmt": "Rp 0",
+                                        "sku": "",
+                                        "optionID": [
+                                            523723406,
+                                            523723411
+                                        ],
+                                        "optionName": [
+                                            "Merah",
+                                            "XXL"
+                                        ],
+                                        "productName": "Prod Sample Size Manually Picked_Varant2Lv - Merah, XXL",
+                                        "productURL": "https://www.tokopedia.com/h4jj45/prod-sample-size-manually-picked-varant2lv-merah-xxl",
+                                        "isCOD": false,
+                                        "isWishlist": false,
+                                        "picture": {
+                                            "url": "https://images.tokopedia.net/img/cache/700/VqbcmM/2022/11/14/3f2ce853-4a16-4b72-bf47-ae829e4f1b7f.jpg",
+                                            "url200": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2022/11/14/3f2ce853-4a16-4b72-bf47-ae829e4f1b7f.jpg"
+                                        },
+                                        "stock": {
+                                            "stock": "100",
+                                            "isBuyable": true,
+                                            "stockWording": "",
+                                            "stockWordingHTML": "",
+                                            "minimumOrder": "1",
+                                            "maximumOrder": "100",
+                                            "stockFmt": "Stok: 100",
+                                            "stockCopy": ""
+                                        },
+                                        "campaignInfo": {
+                                            "campaignID": "0",
+                                            "campaignType": "0",
+                                            "campaignTypeName": "",
+                                            "campaignIdentifier": 0,
+                                            "background": "",
+                                            "discountPercentage": 0,
+                                            "originalPrice": 0,
+                                            "discountPrice": 0,
+                                            "stock": 0,
+                                            "stockSoldPercentage": 0,
+                                            "startDate": "",
+                                            "endDateUnix": "0",
+                                            "appLinks": "",
+                                            "isAppsOnly": false,
+                                            "isActive": false,
+                                            "hideGimmick": false,
+                                            "isCheckImei": false,
+                                            "isUsingOvo": false,
+                                            "minOrder": 0
                                         },
                                         "thematicCampaign": {
                                             "campaignName": "",
@@ -445,7 +1285,7 @@
                                 "icon": "https://ecs7.tokopedia.net/pdp/info/icon/pdp-paylatercicilan@3x.png",
                                 "title": "Paylater \u0026 Cicilan",
                                 "isApplink": true,
-                                "applink": "tokopedia://fintech/paylater?category=iOS\u0026price=4590000.000000\u0026productID=1414921090\u0026productURL=https%3A%2F%2Fwww.tokopedia.com%2Fhonestyshop88%2Fnew-iphone-x-256-gb-silver-black-hitam",
+                                "applink": "tokopedia://fintech/paylater?category=Multimedia\u0026price=150000.000000\u0026productID=6961809872\u0026productURL=https%3A%2F%2Fwww.tokopedia.com%2Fh4jj45%2Fprod-sample-size-manually-picked-varant2lv",
                                 "lightIcon": "https://ecs7.tokopedia.net/pdp/info/icon/pdp-paylatercicilan@3x.png",
                                 "darkIcon": "https://ecs7.tokopedia.net/pdp/info/icon/pdp-paylatercicilan@3x.png",
                                 "content": []
@@ -457,199 +1297,129 @@
                         "type": "product_detail",
                         "data": [
                             {
-                                "title": "Spesifikasi produk",
+                                "title": "Detail produk",
+                                "content": [
+                                    {
+                                        "title": "Kondisi",
+                                        "subtitle": "Baru",
+                                        "applink": "",
+                                        "infoLink": "",
+                                        "icon": "",
+                                        "showAtFront": true,
+                                        "isAnnotation": false,
+                                        "showAtBottomsheet": true
+                                    },
+                                    {
+                                        "title": "Berat Satuan",
+                                        "subtitle": "100 - 175 g",
+                                        "applink": "",
+                                        "infoLink": "tokopedia://product-edu/5",
+                                        "icon": "12",
+                                        "showAtFront": false,
+                                        "isAnnotation": false,
+                                        "showAtBottomsheet": true
+                                    },
+                                    {
+                                        "title": "Min. Pemesanan",
+                                        "subtitle": "1 Buah",
+                                        "applink": "",
+                                        "infoLink": "",
+                                        "icon": "",
+                                        "showAtFront": true,
+                                        "isAnnotation": false,
+                                        "showAtBottomsheet": true
+                                    },
+                                    {
+                                        "title": "Kategori",
+                                        "subtitle": "Multimedia",
+                                        "applink": "tokopedia://category/3965",
+                                        "infoLink": "",
+                                        "icon": "",
+                                        "showAtFront": false,
+                                        "isAnnotation": false,
+                                        "showAtBottomsheet": true
+                                    },
+                                    {
+                                        "title": "Etalase",
+                                        "subtitle": "hajarbos",
+                                        "applink": "tokopedia://shop/6690355/etalase/21136500",
+                                        "infoLink": "",
+                                        "icon": "",
+                                        "showAtFront": true,
+                                        "isAnnotation": false,
+                                        "showAtBottomsheet": true
+                                    },
+                                    {
+                                        "title": "Deskripsi",
+                                        "subtitle": "\nSepatu Sneakers Pria boshajjar Kanvas \n\n- Model simple\n- Nyaman Digunakan\n- Tersedia warna hitam, biru, orange\n- Sole PVC (injection shoes) yang nyaman dan awet untuk digunakan sehari-hari\n\nBahan:\nUpper: Semi Leather (kulit tidak pecah-pecah)\nSole: Premium Rubber Sole\n\nEdisi terbatas dari boshajjar dengan model baru dan trendy untukmu. Didesain untk bisa dipakai\ndalam berbagai acara. Sangat nyaman saat dipakai sehingga dapat menunjang penampilan dan kepercayaan dirimu.\n\n",
+                                        "applink": "",
+                                        "infoLink": "",
+                                        "icon": "",
+                                        "showAtFront": true,
+                                        "isAnnotation": false,
+                                        "showAtBottomsheet": true
+                                    },
+                                    {
+                                        "title": "Cara Klaim",
+                                        "subtitle": "Hubungi Merek",
+                                        "applink": "",
+                                        "infoLink": "",
+                                        "icon": "",
+                                        "showAtFront": false,
+                                        "isAnnotation": true,
+                                        "showAtBottomsheet": true
+                                    },
+                                    {
+                                        "title": "Merek",
+                                        "subtitle": "The Bride Dept",
+                                        "applink": "",
+                                        "infoLink": "",
+                                        "icon": "",
+                                        "showAtFront": false,
+                                        "isAnnotation": true,
+                                        "showAtBottomsheet": true
+                                    },
+                                    {
+                                        "title": "Periode Garansi",
+                                        "subtitle": "12 Bulan",
+                                        "applink": "",
+                                        "infoLink": "",
+                                        "icon": "",
+                                        "showAtFront": false,
+                                        "isAnnotation": true,
+                                        "showAtBottomsheet": true
+                                    },
+                                    {
+                                        "title": "Tahun Rilis",
+                                        "subtitle": "2022",
+                                        "applink": "",
+                                        "infoLink": "",
+                                        "icon": "",
+                                        "showAtFront": false,
+                                        "isAnnotation": true,
+                                        "showAtBottomsheet": true
+                                    },
+                                    {
+                                        "title": "Tipe Garansi",
+                                        "subtitle": "Garansi Merek (Resmi)",
+                                        "applink": "",
+                                        "infoLink": "",
+                                        "icon": "",
+                                        "showAtFront": false,
+                                        "isAnnotation": true,
+                                        "showAtBottomsheet": true
+                                    }
+                                ],
                                 "catalogBottomsheet": {
-                                    "actionTitle": "Baca Selengkapnya",
-                                    "bottomSheetTitle": "Spesifikasi produk",
-                                    "param": "{\"type\": 1, \"experiment_id\": \"var\"}"
+                                    "actionTitle": "",
+                                    "bottomSheetTitle": "",
+                                    "param": ""
                                 },
                                 "bottomsheet": {
                                     "actionTitle": "Baca Selengkapnya",
-                                    "bottomSheetTitle": "Deskripsi produk",
-                                    "param": "{\"type\": 2, \"experiment_id\": \"var\"}"
-                                },
-                                "content": [
-                                    {
-                                      "title": "Kondisi",
-                                      "subtitle": "Baru",
-                                      "applink": "",
-                                      "showAtFront": true,
-                                      "isAnnotation": false,
-                                      "icon": "",
-                                      "infoLink": "",
-                                      "showAtBottomsheet": true
-                                    },
-                                    {
-                                      "title": "Min. Pemesanan",
-                                      "subtitle": "1 Pcs",
-                                      "applink": "",
-                                      "showAtFront": false,
-                                      "isAnnotation": false,
-                                      "icon": "",
-                                      "infoLink": "",
-                                      "showAtBottomsheet": true
-                                    },
-                                    {
-                                      "title": "Tipe Garansi",
-                                      "subtitle": "Garansi Merek",
-                                      "applink": "",
-                                      "showAtFront": false,
-                                      "isAnnotation": true,
-                                      "icon": "",
-                                      "infoLink": "",
-                                      "showAtBottomsheet": true
-                                    },
-                                    {
-                                      "title": "Periode Garansi",
-                                      "subtitle": "12 Bualn",
-                                      "applink": "",
-                                      "showAtFront": false,
-                                      "isAnnotation": true,
-                                      "icon": "",
-                                      "infoLink": "",
-                                      "showAtBottomsheet": true
-                                    },
-                                    {
-                                      "title": "Cara Klaim",
-                                      "subtitle": "Hubungi Penjual",
-                                      "applink": "",
-                                      "showAtFront": false,
-                                      "isAnnotation": false,
-                                      "icon": "",
-                                      "infoLink": "",
-                                      "showAtBottomsheet": true
-                                    },
-                                    {
-                                      "title": "Ukuran Layar",
-                                      "subtitle": "6.1 Inch",
-                                      "applink": "",
-                                      "showAtFront": true,
-                                      "isAnnotation": false,
-                                      "icon": "",
-                                      "infoLink": "",
-                                      "showAtBottomsheet": false
-                                    },
-                                    {
-                                      "title": "Katalog",
-                                      "subtitle": "Samsung Galaxy S22",
-                                      "applink": "tokopedia://catalog/samsung-74497/samsung-galaxy-s22",
-                                      "showAtFront": false,
-                                      "isAnnotation": false,
-                                      "icon": "",
-                                      "infoLink": "",
-                                      "showAtBottomsheet": true
-                                    },
-                                    {
-                                      "title": "Memory Internal",
-                                      "subtitle": "128GB",
-                                      "applink": "",
-                                      "showAtFront": true,
-                                      "isAnnotation": false,
-                                      "icon": "",
-                                      "infoLink": "",
-                                      "showAtBottomsheet": false
-                                    },
-                                    {
-                                      "title": "RAM",
-                                      "subtitle": "8GB, 16GB",
-                                      "applink": "",
-                                      "showAtFront": true,
-                                      "isAnnotation": false,
-                                      "icon": "",
-                                      "infoLink": "",
-                                      "showAtBottomsheet": false
-                                    },
-                                    {
-                                      "title": "Baterai",
-                                      "subtitle": "Li-Ion 3700 mAh, non-removeable adsf asdf asdf asdf asdf asdf asdfa sfdsa",
-                                      "applink": "",
-                                      "showAtFront": true,
-                                      "isAnnotation": false,
-                                      "icon": "",
-                                      "infoLink": "",
-                                      "showAtBottomsheet": true
-                                    },
-                                    {
-                                      "title": "GSM",
-                                      "subtitle": "3G, 4G, 5G",
-                                      "applink": "",
-                                      "showAtFront": false,
-                                      "isAnnotation": true,
-                                      "icon": "",
-                                      "infoLink": "asfasdf",
-                                      "showAtBottomsheet": true
-                                    },
-                                    {
-                                      "title": "Memory Internal",
-                                      "subtitle": "128GB",
-                                      "applink": "",
-                                      "showAtFront": false,
-                                      "isAnnotation": false,
-                                      "icon": "",
-                                      "infoLink": "",
-                                      "showAtBottomsheet": true
-                                    },
-                                    {
-                                      "title": "Etalase",
-                                      "subtitle": "Samsung",
-                                      "applink": "tokopedia://idigitalid/etalase/samsung",
-                                      "showAtFront": true,
-                                      "isAnnotation": false,
-                                      "icon": "",
-                                      "infoLink": "",
-                                      "showAtBottomsheet": true
-                                    },
-                                    {
-                                      "title": "RAM",
-                                      "subtitle": "16GB",
-                                      "applink": "",
-                                      "showAtFront": false,
-                                      "isAnnotation": false,
-                                      "icon": "",
-                                      "infoLink": "",
-                                      "showAtBottomsheet": true
-                                    },
-                                    {
-                                      "title": "Resolusi",
-                                      "subtitle": "768x1024",
-                                      "applink": "",
-                                      "showAtFront": false,
-                                      "isAnnotation": false,
-                                      "icon": "",
-                                      "infoLink": "",
-                                      "showAtBottomsheet": true
-                                    },
-                                    {
-                                      "title": "Garansi",
-                                      "subtitle": "1 Tahun",
-                                      "applink": "",
-                                      "showAtFront": false,
-                                      "isAnnotation": false,
-                                      "icon": "",
-                                      "infoLink": "",
-                                      "showAtBottomsheet": true
-                                    },
-                                    {
-                                      "title": "Mode In",
-                                      "subtitle": "China",
-                                      "applink": "",
-                                      "showAtFront": false,
-                                      "isAnnotation": false,
-                                      "icon": "",
-                                      "infoLink": "",
-                                      "showAtBottomsheet": true
-                                    },
-                                    {
-                                      "title": "Deskripsi",
-                                      "subtitle": "- 'asdfas' dfasdIMEI AMAN SUDAH TERDAFTAR DI KEMENPERIN \n\n- 3UTOOLS 100 HIJAU \n- BH 100 ( KARENA BARANG BARU ) \n- UNIT SEGEL GREEN PEEL\n- NO MODEL M \n- ICLOUD AMAN BEBAS RESET\n- UNIT ORIGINAL 100% BISA DICEK DI WEBSITE RESMI APPLE ( CEK COVERAGE APPLE )\n\nIsi Box \n- UNIT\n- BUKU PANDUAN \n- STICKER APPLE \n- CHARGER \n- HEADSET \n\nBonus \n- SOFTCASE BEBAS PILIH \n- ANTI GORES\n\niPhone X 256Gb Original\n- Truetone On\n- Faceid On\n- 3utools hijau 100%\n- Baterai Health 100%\n\nDeskripsi IPHONE X 256 GB SILVER BLACK GARANSI TOKO 1 TAHUN\nALL OPERATOR\nSebelum order silakan dibaca terlebih dahulu\nReady warna SILVER BLACK\n-Iphone 100% ORIGINAL\n-New segel, Fullset.\n-Barang yang di terima tersegel utuh dusnya\n-Mohon untuk menanyakan ready warna stok sebelum order\n\nKONDISI dan KELENGKAPAN :\n+ Kondisi original 100% (bukan replika/imitasi)\n+ Mesin : 100% Normal\n+ Kondisi Fisik : new 100% Mulus,\n+ Mesin 100% bersegel.\n+ IMEI dan ICLOUD AMAN\n+ FU ( bisa semua kartu gsm indonesia maupun mancanegara )\n+ FULLSET TERSEGEL (dus, buku panduan, headset, charger, kabel data)\n+ Face ID Garansi 3 Bulan\n\nKETENTUAN GARANSI :\n1. Segel harus dalam kondisi utuh, tidak boleh rusak atau terindikasi pernah dibongkar.\n2. Aksesoris [charger, headset, kabel data] harus dalam keadaan baik.\n3. Harap menjaga kondisi handphone dalam kondisi mulus tidak lecet / cacat fisik, lengkap dan segel utuh selama masa garansi.\n\nGARANSI HANGUS APABILA\n1. Segel bolong/lepas/sobek yang terindikasi pernah dibongkar.\n2. Body lecet / gompal bekas jatuh.\n3. LCD pecah / rusak karena kesalahan pemakaian.\n4. Handphone terkena cairan ataupun terbakar.\n\n* Dengan membeli maka kami anggap anda telah membaca dan menyetujui ketentuan kami\nKepuasan Pembeli Adalah Prioritas Kami \nSelamat Berbelanja Di Honesty Shop Bossku",
-                                      "applink": "",
-                                      "showAtFront": true,
-                                      "isAnnotation": false,
-                                      "icon": "",
-                                      "infoLink": "",
-                                      "showAtBottomsheet": true
-                                    }
-                                ]
+                                    "bottomSheetTitle": "Detail produk",
+                                    "param": "{}"
+                                }
                             }
                         ]
                     },
@@ -707,6 +1477,21 @@
                         "name": "obat_keras",
                         "type": "custom_info",
                         "data": []
+                    },
+                    {
+                        "name": "info_obat_keras",
+                        "type": "info",
+                        "data": [
+                            {
+                                "icon": "https://ecs7.tokopedia.net/pdp/info/icon/Obat_keras.png",
+                                "title": "Obat ini perlu resep dokter",
+                                "isApplink": true,
+                                "applink": "",
+                                "lightIcon": "https://images.tokopedia.net/img/pdp/info/icon/light/obat_keras.png",
+                                "darkIcon": "https://images.tokopedia.net/img/pdp/info/icon/dark/obat_keras.png",
+                                "content": []
+                            }
+                        ]
                     },
                     {
                         "name": "pet_disclaimer",
@@ -816,21 +1601,140 @@
                         ]
                     },
                     {
-                        "name": "imei",
-                        "type": "custom_info",
+                        "name": "product_detail",
+                        "type": "product_detail",
                         "data": [
                             {
-                                "icon": "https://images.tokopedia.net/img/pdp/info/icon/sinyal_aktif.png",
-                                "title": "Status sinyal aktif",
-                                "isApplink": true,
-                                "applink": "https://www.tokopedia.com/help/article/status-sinyal-tokopedia",
-                                "separator": "top",
-                                "description": "Bisa terhubung ke jaringan operator Indonesia.",
-                                "lightIcon": "https://images.tokopedia.net/img/pdp/info/icon/light/signal_active.png",
-                                "darkIcon": "https://images.tokopedia.net/img/pdp/info/icon/dark/signal_active.png",
-                                "label": []
+                                "title": "Detail produk",
+                                "content": [
+                                    {
+                                        "title": "Kondisi",
+                                        "subtitle": "Baru",
+                                        "applink": "",
+                                        "infoLink": "",
+                                        "icon": "",
+                                        "showAtFront": true,
+                                        "isAnnotation": false,
+                                        "showAtBottomsheet": true
+                                    },
+                                    {
+                                        "title": "Berat Satuan",
+                                        "subtitle": "100 - 175 g",
+                                        "applink": "",
+                                        "infoLink": "tokopedia://product-edu/5",
+                                        "icon": "12",
+                                        "showAtFront": false,
+                                        "isAnnotation": false,
+                                        "showAtBottomsheet": true
+                                    },
+                                    {
+                                        "title": "Min. Pemesanan",
+                                        "subtitle": "1 Buah",
+                                        "applink": "",
+                                        "infoLink": "",
+                                        "icon": "",
+                                        "showAtFront": true,
+                                        "isAnnotation": false,
+                                        "showAtBottomsheet": true
+                                    },
+                                    {
+                                        "title": "Kategori",
+                                        "subtitle": "Multimedia",
+                                        "applink": "tokopedia://category/3965",
+                                        "infoLink": "",
+                                        "icon": "",
+                                        "showAtFront": false,
+                                        "isAnnotation": false,
+                                        "showAtBottomsheet": true
+                                    },
+                                    {
+                                        "title": "Etalase",
+                                        "subtitle": "hajarbos",
+                                        "applink": "tokopedia://shop/6690355/etalase/21136500",
+                                        "infoLink": "",
+                                        "icon": "",
+                                        "showAtFront": true,
+                                        "isAnnotation": false,
+                                        "showAtBottomsheet": true
+                                    },
+                                    {
+                                        "title": "Deskripsi",
+                                        "subtitle": "\nSepatu Sneakers Pria boshajjar Kanvas \n\n- Model simple\n- Nyaman Digunakan\n- Tersedia warna hitam, biru, orange\n- Sole PVC (injection shoes) yang nyaman dan awet untuk digunakan sehari-hari\n\nBahan:\nUpper: Semi Leather (kulit tidak pecah-pecah)\nSole: Premium Rubber Sole\n\nEdisi terbatas dari boshajjar dengan model baru dan trendy untukmu. Didesain untk bisa dipakai\ndalam berbagai acara. Sangat nyaman saat dipakai sehingga dapat menunjang penampilan dan kepercayaan dirimu.\n\n",
+                                        "applink": "",
+                                        "infoLink": "",
+                                        "icon": "",
+                                        "showAtFront": true,
+                                        "isAnnotation": false,
+                                        "showAtBottomsheet": true
+                                    },
+                                    {
+                                        "title": "Cara Klaim",
+                                        "subtitle": "Hubungi Merek",
+                                        "applink": "",
+                                        "infoLink": "",
+                                        "icon": "",
+                                        "showAtFront": false,
+                                        "isAnnotation": true,
+                                        "showAtBottomsheet": true
+                                    },
+                                    {
+                                        "title": "Merek",
+                                        "subtitle": "The Bride Dept",
+                                        "applink": "",
+                                        "infoLink": "",
+                                        "icon": "",
+                                        "showAtFront": false,
+                                        "isAnnotation": true,
+                                        "showAtBottomsheet": true
+                                    },
+                                    {
+                                        "title": "Periode Garansi",
+                                        "subtitle": "12 Bulan",
+                                        "applink": "",
+                                        "infoLink": "",
+                                        "icon": "",
+                                        "showAtFront": false,
+                                        "isAnnotation": true,
+                                        "showAtBottomsheet": true
+                                    },
+                                    {
+                                        "title": "Tahun Rilis",
+                                        "subtitle": "2022",
+                                        "applink": "",
+                                        "infoLink": "",
+                                        "icon": "",
+                                        "showAtFront": false,
+                                        "isAnnotation": true,
+                                        "showAtBottomsheet": true
+                                    },
+                                    {
+                                        "title": "Tipe Garansi",
+                                        "subtitle": "Garansi Merek (Resmi)",
+                                        "applink": "",
+                                        "infoLink": "",
+                                        "icon": "",
+                                        "showAtFront": false,
+                                        "isAnnotation": true,
+                                        "showAtBottomsheet": true
+                                    }
+                                ],
+                                "catalogBottomsheet": {
+                                    "actionTitle": "",
+                                    "bottomSheetTitle": "",
+                                    "param": ""
+                                },
+                                "bottomsheet": {
+                                    "actionTitle": "Baca Selengkapnya",
+                                    "bottomSheetTitle": "Detail produk",
+                                    "param": "{}"
+                                }
                             }
                         ]
+                    },
+                    {
+                        "name": "imei",
+                        "type": "custom_info",
+                        "data": []
                     },
                     {
                         "name": "most_helpful_review",
@@ -950,6 +1854,16 @@
                     {
                         "name": "info_donation",
                         "type": "custom_info",
+                        "data": []
+                    },
+                    {
+                        "name": "pdp_8_vertical",
+                        "type": "product_list_vertical",
+                        "data": []
+                    },
+                    {
+                        "name": "navigation",
+                        "type": "navigation",
                         "data": []
                     }
                 ]
