@@ -24,8 +24,8 @@ object Lego4AutoTabletConfiguration {
 
     fun getLayout(context: Context?, borderStyle: String): Int {
         val isUsingPadding = borderStyle == ChannelStyleUtil.BORDER_STYLE_PADDING
-        val tabletLayout = if(isUsingPadding) LAYOUT_TABLET_PADDING else LAYOUT_TABLET_PADDING
-        val mobileLayout = if(isUsingPadding) LAYOUT_MOBILE_PADDING else LAYOUT_MOBILE_PADDING
+        val tabletLayout = if(isUsingPadding) LAYOUT_TABLET_PADDING else LAYOUT_TABLET
+        val mobileLayout = if(isUsingPadding) LAYOUT_MOBILE_PADDING else LAYOUT_MOBILE
         context?.let {
             return if (DeviceScreenInfo.isTablet(context)) {
                 tabletLayout
