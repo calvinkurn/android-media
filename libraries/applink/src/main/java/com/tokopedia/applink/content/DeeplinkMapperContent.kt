@@ -29,7 +29,7 @@ object DeeplinkMapperContent {
      * This method keeps the query parameters intact on the deeplink
      */
     fun getProfileDeeplink(deepLink: String): String {
-        return if (GlobalConfig.isSellerApp()) ""
+        return if (GlobalConfig.isSellerApp()) getProfileSellerAppDeepLink()
         else getRegisteredNavigation(deepLink)
     }
 
@@ -86,5 +86,12 @@ object DeeplinkMapperContent {
 
     private fun handleNavigationPlay(uri: Uri): String {
         return "${ApplinkConstInternalContent.INTERNAL_PLAY}/${uri.lastPathSegment}"
+    }
+
+    /**
+     * For easier hansel purpose
+     */
+    private fun getProfileSellerAppDeepLink(): String {
+        return ApplinkConstInternalContent.INTERNAL_FEATURE_PREVENTION
     }
 }
