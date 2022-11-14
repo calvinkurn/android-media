@@ -7,6 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
+import com.tokopedia.common_compose.extensions.tag
 import com.tokopedia.common_compose.principles.NestTypography
 import com.tokopedia.common_compose.principles.getString
 import com.tokopedia.common_compose.ui.NestTheme
@@ -14,7 +15,6 @@ import com.tokopedia.report.R
 import com.tokopedia.report.data.model.ProductReportReason
 import com.tokopedia.report.view.fragment.models.ProductReportUiEvent
 import com.tokopedia.report.view.fragment.models.ProductReportUiState
-import com.tokopedia.report.view.fragment.unify_components.tag
 
 /**
  * Created by yovi.putra on 07/09/22"

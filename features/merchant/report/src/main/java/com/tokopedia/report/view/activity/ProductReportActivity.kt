@@ -15,7 +15,6 @@ import com.tokopedia.report.data.constant.GeneralConstant
 import com.tokopedia.report.data.model.ProductReportReason
 import com.tokopedia.report.data.util.MerchantReportTracking
 import com.tokopedia.report.di.DaggerMerchantReportComponent
-import com.tokopedia.report.view.adapter.ReportReasonAdapter
 import com.tokopedia.report.view.fragment.ProductReportScreen
 import com.tokopedia.report.view.fragment.models.ProductReportUiEvent
 import com.tokopedia.report.view.util.extensions.argsExtraString
@@ -23,7 +22,7 @@ import com.tokopedia.report.view.viewmodel.ProductReportViewModel
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
-class ProductReportActivity : AppCompatActivity(), ReportReasonAdapter.OnReasonClick {
+class ProductReportActivity : AppCompatActivity() {
 
     private val tracking by lazy { MerchantReportTracking() }
 
@@ -73,13 +72,9 @@ class ProductReportActivity : AppCompatActivity(), ReportReasonAdapter.OnReasonC
 
     private fun onScrollTop(reason: ProductReportReason) {
         tracking.eventReportReason(reason.strLabel)
-        scrollToTop()
     }
 
-    override fun scrollToTop() {
-    }
-
-    override fun gotoForm(reason: ProductReportReason) {
+    private fun gotoForm(reason: ProductReportReason) {
         tracking.eventReportReason(reason.strLabel)
         val intent = ProductReportFormActivity.createIntent(this, reason, productId)
         startActivityForResult(intent, REQ_CODE_GO_FORM)
