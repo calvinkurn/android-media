@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokochat_common.databinding.TokochatMaskingPhoneNumberBottomsheetBinding
 import com.tokopedia.tokochat_common.util.TokoChatUrlUtil.IV_MASKING_PHONE_NUMBER
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -43,7 +44,7 @@ class MaskingPhoneNumberBottomSheet : BottomSheetUnify() {
     }
 
     private fun setupViews() {
-        binding?.tokochatIvMaskingPhoneNumber?.setImageUrl(IV_MASKING_PHONE_NUMBER)
+        binding?.tokochatIvMaskingPhoneNumber?.loadImage(IV_MASKING_PHONE_NUMBER)
         setDriverCallBtn()
         setCloseBottomSheet()
     }
