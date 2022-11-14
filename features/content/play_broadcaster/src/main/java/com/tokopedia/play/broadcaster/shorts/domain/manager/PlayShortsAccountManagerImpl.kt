@@ -63,7 +63,7 @@ class PlayShortsAccountManagerImpl @Inject constructor(
             else -> ""
         }
 
-        return accountList.firstOrNull { it.type == switchAccountType || switchAccountType.isEmpty()}.orUnknown()
+        return accountList.firstOrNull { it.type == switchAccountType || switchAccountType.isEmpty() }.orUnknown()
     }
 
     private fun isAccountEligible(account: ContentAccountUiModel): Boolean {

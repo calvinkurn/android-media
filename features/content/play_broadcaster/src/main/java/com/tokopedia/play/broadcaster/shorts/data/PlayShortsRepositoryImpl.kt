@@ -32,17 +32,17 @@ class PlayShortsRepositoryImpl @Inject constructor(
 //
 //        return@withContext mapper.mapAuthorList(response)
 
-
+        delay(1000)
         listOf(
-            ContentAccountUiModel(
-                id = "123",
-                name = "Akun Shop",
-                iconUrl = "",
-                badge = "",
-                type = "content-shop",
-                hasUsername = true,
-                hasAcceptTnc = true,
-            ),
+//            ContentAccountUiModel(
+//                id = "123",
+//                name = "Akun Shop",
+//                iconUrl = "",
+//                badge = "",
+//                type = "content-shop",
+//                hasUsername = true,
+//                hasAcceptTnc = true,
+//            ),
             ContentAccountUiModel(
                 id = "456",
                 name = "Akun UGC",
