@@ -352,7 +352,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     private lateinit var remoteConfig: RemoteConfig
     private lateinit var userSession: UserSessionInterface
     private lateinit var root: FrameLayout
-    private lateinit var refreshLayout: ParentIconSwipeRefreshLayout
+    private var refreshLayout: ParentIconSwipeRefreshLayout? = null
     private lateinit var onEggScrollListener: RecyclerView.OnScrollListener
     private lateinit var irisAnalytics: Iris
     private lateinit var irisSession: IrisSession
@@ -835,9 +835,9 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 //and makes refresh layout think we can't scroll up (which actually can! we only disable
 //scroll so that feed recommendation section can scroll its content)
         if (recyclerView.computeVerticalScrollOffset() == VERTICAL_SCROLL_FULL_BOTTOM_OFFSET) {
-            refreshLayout.setCanChildScrollUp(false)
+            refreshLayout?.setCanChildScrollUp(false)
         } else {
-            refreshLayout.setCanChildScrollUp(true)
+            refreshLayout?.setCanChildScrollUp(true)
         }
         if (recyclerView.canScrollVertically(RV_DIRECTION_TOP)) {
             navToolbar?.showShadow(lineShadow = true)
@@ -1022,13 +1022,13 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     private fun initRefreshLayout() {
-        refreshLayout.post {
+        refreshLayout?.post {
             /*
              * set notification gimmick
              */
             navToolbar?.setBadgeCounter(IconList.ID_NOTIFICATION, NOTIFICATION_NUMBER_DEFAULT)
         }
-        refreshLayout.setOnRefreshListener { onRefresh() }
+        refreshLayout?.setOnRefreshListener { onRefresh() }
     }
 
     private fun subscribeHome() {
@@ -1469,9 +1469,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     override fun onPageDragStateChanged(isDragged: Boolean) {
-        if (this::refreshLayout.isInitialized) {
-            refreshLayout.isEnabled = !isDragged
-        }
+        refreshLayout?.isEnabled = !isDragged
     }
 
     override fun onPromoClick(position: Int, slidesModel: BannerSlidesModel) { // tracking handler
@@ -1678,11 +1676,11 @@ open class HomeRevampFragment : BaseDaggerFragment(),
     }
 
     private fun showLoading() {
-        refreshLayout.isRefreshing = true
+        refreshLayout?.isRefreshing = true
     }
 
     private fun hideLoading() {
-        refreshLayout.isRefreshing = false
+        refreshLayout?.isRefreshing = false
         homeRecyclerView?.isEnabled = true
     }
 
@@ -2223,11 +2221,11 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         val floatingEggButtonFragment = floatingEggButtonFragment
         floatingEggButtonFragment?.setOnDragListener(object : FloatingEggButtonFragment.OnDragListener {
             override fun onDragStart() {
-                refreshLayout.setCanChildScrollUp(true)
+                refreshLayout?.setCanChildScrollUp(true)
             }
 
             override fun onDragEnd() {
-                refreshLayout.setCanChildScrollUp(false)
+                refreshLayout?.setCanChildScrollUp(false)
             }
         })
     }
@@ -2616,7 +2614,7 @@ open class HomeRevampFragment : BaseDaggerFragment(),
 
     override fun pullRefreshIconCaptured(view: LayoutIconPullRefreshView?) {
         view?.let {
-            refreshLayout.setContentChildViewPullRefresh(it)
+            refreshLayout?.setContentChildViewPullRefresh(it)
         }
     }
 }

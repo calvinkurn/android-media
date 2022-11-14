@@ -107,7 +107,7 @@ open class SimpleSwipeRefreshLayout @JvmOverloads constructor(
         isNestedScrollingEnabled = true
     }
 
-    private lateinit var contentChildView: ChildView
+    private var contentChildView: ChildView? = null
 
     override fun onFinishInflate() {
         super.onFinishInflate()
@@ -117,9 +117,17 @@ open class SimpleSwipeRefreshLayout @JvmOverloads constructor(
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
         fun measureChild(childView: ChildView, widthMeasureSpec: Int, heightMeasureSpec: Int) {
-            measureChildWithMargins(childView.view, widthMeasureSpec, Int.ZERO, heightMeasureSpec, Int.ZERO)
+            measureChildWithMargins(
+                childView.view,
+                widthMeasureSpec,
+                Int.ZERO,
+                heightMeasureSpec,
+                Int.ZERO
+            )
         }
-        measureChild(contentChildView, widthMeasureSpec, heightMeasureSpec)
+        contentChildView?.let {
+            measureChild(it, widthMeasureSpec, heightMeasureSpec)
+        }
     }
 
     override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {
@@ -127,8 +135,8 @@ open class SimpleSwipeRefreshLayout @JvmOverloads constructor(
     }
 
     private fun layoutContentView() {
-        val contentView = contentChildView.view
-        val lp = contentView.layoutParams as LayoutParams
+        val contentView = contentChildView?.view
+        val lp = contentView?.layoutParams as LayoutParams
         val left: Int = paddingLeft + lp.leftMargin
         val top: Int = lp.topMargin
         val right: Int = left + contentView.measuredWidth
@@ -143,7 +151,7 @@ open class SimpleSwipeRefreshLayout @JvmOverloads constructor(
         }
 
         fun checkIfScrolledFurther(ev: MotionEvent, dy: Float, dx: Float) =
-            if (!contentChildView.view.canScrollVertically(DIRECTION_TOP)) {
+            if (contentChildView?.view?.canScrollVertically(DIRECTION_TOP) == false) {
                 ev.y > downY && abs(dy) > abs(dx)
             } else {
                 false
@@ -336,7 +344,13 @@ open class SimpleSwipeRefreshLayout @JvmOverloads constructor(
 
         // Now let our nested parent consume the leftovers
         val parentConsumed: IntArray = mParentScrollConsumed
-        if (dispatchNestedPreScroll(dx - consumed[Int.ZERO], dy - consumed[Int.ONE], parentConsumed, null)) {
+        if (dispatchNestedPreScroll(
+                dx - consumed[Int.ZERO],
+                dy - consumed[Int.ONE],
+                parentConsumed,
+                null
+            )
+        ) {
             consumed[Int.ZERO] += parentConsumed[Int.ZERO]
             consumed[Int.ONE] += parentConsumed[Int.ONE]
         }
