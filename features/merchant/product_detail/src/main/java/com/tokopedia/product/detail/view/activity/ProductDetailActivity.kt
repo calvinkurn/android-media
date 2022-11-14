@@ -26,8 +26,6 @@ import com.tokopedia.product.detail.view.fragment.DynamicProductDetailFragment
 import com.tokopedia.product.detail.view.fragment.ProductVideoDetailFragment
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
-import timber.log.Timber
-
 
 /**
  * For navigating to this class
