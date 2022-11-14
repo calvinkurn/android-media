@@ -16,4 +16,7 @@
     <string name="epharmacy_quantity_weight_text">"%s Barang (%s)"</string>
     <string name="epharmacy_upload_success_text">Berhasil Upload Foto Resep</string>
     <string name="epharmacy_upload_title_view_only">Foto Resep Dokter</string>
+    <string name="epharmacy_reminder_title">Yaah, belum ada dokter yang tersedia saat ini</string>
+    <string name="epharmacy_reminder_description">Semua dokter mungkin sedang sibuk. Silakan hubungi dokter di 06:00 – 20:00 WIB.</string>
+    <string name="epharmacy_reminder_button_text">Ingatkan Saya</string>
 </resources>
