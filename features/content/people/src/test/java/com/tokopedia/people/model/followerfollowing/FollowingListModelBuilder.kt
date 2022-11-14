@@ -34,14 +34,14 @@ class FollowingListModelBuilder {
                                 liveplaychannellink = Link(
                                     applink = "applink live $it",
                                     weblink = "weblink live $it",
-                                )
-                            )
+                                ),
+                            ),
                         ),
                         isFollow = isFollow,
                     )
                 },
                 newCursor = cursor,
-            )
+            ),
         )
     }
 }

@@ -19,7 +19,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.viewpager.widget.ViewPager
-import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
@@ -53,7 +52,7 @@ import com.tokopedia.feedplus.view.di.FeedInjector
 import com.tokopedia.feedplus.view.presenter.FeedPlusContainerViewModel
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
-import com.tokopedia.imagepicker_insta.common.BundleData
+import com.tokopedia.content.common.types.BundleData
 import com.tokopedia.imagepicker_insta.common.trackers.TrackerProvider
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.hide
@@ -399,7 +398,10 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
 
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
         super.setUserVisibleHint(isVisibleToUser)
-        if (!isVisibleToUser) hideAllFab()
+        if (!isVisibleToUser) {
+            hideAllFab()
+            coachMarkHelper.dismissAllCoachMark()
+        }
     }
 
     override fun onHiddenChanged(hidden: Boolean) {
@@ -412,10 +414,10 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     @JvmOverloads
     fun goToExplore(shouldResetCategory: Boolean = false) {
         if (canGoToExplore()) {
-            viewPager?.currentItem = pagerAdapter.contentExploreIndex
+            viewPager?.currentItem = pagerAdapter.getContentExploreIndex()
 
             if (shouldResetCategory) {
-                pagerAdapter.contentExplore?.onCategoryReset()
+                pagerAdapter.getContentExplore()?.onCategoryReset()
             }
         }
     }
@@ -726,7 +728,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     }
 
     private fun canGoToExplore(): Boolean {
-        return pagerAdapter.isContextExploreExist
+        return pagerAdapter.isContextExploreExist()
     }
 
     fun hideAllFab() {

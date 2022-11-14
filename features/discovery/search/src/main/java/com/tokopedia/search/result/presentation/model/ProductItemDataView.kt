@@ -29,7 +29,7 @@ class ProductItemDataView : ImpressHolder(), Visitable<ProductListTypeFactory> {
     var ratingString: String = ""
     var price: String = ""
     var priceInt = 0
-    var priceRange: String? = null
+    var priceRange: String = ""
     var shopID: String = ""
     var shopName: String = ""
     var shopCity: String = ""
@@ -183,6 +183,7 @@ class ProductItemDataView : ImpressHolder(), Visitable<ProductListTypeFactory> {
             item.topadsTag = topAds.tag
             item.productName = topAds.product.name
             item.price = topAds.product.priceFormat
+            item.priceRange = topAds.product.priceRange
             item.priceInt = CurrencyFormatHelper.convertRupiahToInt(topAds.product.priceFormat)
             item.shopCity = topAds.shop.location
             item.imageUrl = topAds.product.image.s_ecs
