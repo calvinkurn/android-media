@@ -354,17 +354,22 @@ fun getShareMessage(context: Context, voucher: VoucherUiModel, shopName: String,
                     String.format(
                     context.getString(R.string.mvc_share_message_public).toBlankOrString(),
                     voucher.typeFormatted,
-                    formattedShopName))
+                    formattedShopName
+                    )
+                )
                 append("\n")
                 append(shareUrl)
             }.toString()
         } else {
             StringBuilder().apply {
-                append(String.format(
+                append(
+                    String.format(
                     context.getString(R.string.mvc_share_message_private).toBlankOrString(),
                     voucher.typeFormatted,
                     voucher.code,
-                    formattedShopName))
+                    formattedShopName
+                    )
+                )
                 append("\n")
                 append(shareUrl)
             }.toString()

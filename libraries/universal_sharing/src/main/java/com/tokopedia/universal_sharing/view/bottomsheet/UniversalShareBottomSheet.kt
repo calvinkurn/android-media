@@ -1246,11 +1246,14 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
 
     fun setBroadcastChannel(context: Context, type: BroadcastChannelType, id: String) {
         isShowTickerList = true
-        tickerListAdapter.addItem(BroadcastChannelModel(
+        tickerListAdapter.addItem(
+            BroadcastChannelModel(
             id = id, type = type,
             title = context.getString(com.tokopedia.universal_sharing.R.string.title_broadcast),
             description = context.getString(com.tokopedia.universal_sharing.R.string.description_broadcast),
-            imageResDrawable = com.tokopedia.universal_sharing.R.drawable.ic_broadcast))
+            imageResDrawable = com.tokopedia.universal_sharing.R.drawable.ic_broadcast
+            )
+        )
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
