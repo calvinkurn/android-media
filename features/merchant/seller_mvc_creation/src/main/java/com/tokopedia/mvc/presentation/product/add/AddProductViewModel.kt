@@ -133,50 +133,24 @@ class AddProductViewModel @Inject constructor(
                 val currentPageParentProductsResponse = productsResponse.products
                 val currentPageParentProductsIds = currentPageParentProductsResponse.map { product -> product.id }
 
-                val nextSelectedProductSize = currentState.selectedProductsIds.size + AddProductFragment.PAGE_SIZE
-                val isBelowMaximumProductSelection = nextSelectedProductSize <= currentState.voucherCreationMetadata?.maxProduct.orZero()
-                val enableAutoSelect = currentState.isSelectAllActive && isBelowMaximumProductSelection
+                val validatedParentProducts = validateProducts(currentPageParentProductsIds)
+                val updatedParentProducts = combineParentProductDataWithVariant(
+                    currentPageParentProductsResponse,
+                    currentState.selectedProductsIds,
+                    validatedParentProducts
+                )
 
-                val selectedProductIds = if (enableAutoSelect) {
-                    //If select all active, products from new page should be auto checked
-                    currentState.selectedProductsIds + currentPageParentProductsIds
-                } else {
-                    currentState.selectedProductsIds
-                }
+                val allParentProducts = currentState.products + updatedParentProducts
+                val selectedParentProductIds = allParentProducts.filter { it.isSelected }.map { it.id }.toSet()
 
+                _uiEffect.emit(AddProductEffect.LoadNextPageSuccess(updatedParentProducts, allParentProducts))
                 _uiState.update {
                     it.copy(
                         isLoading = false,
-                        selectedProductsIds = selectedProductIds,
+                        products = allParentProducts,
+                        selectedProductsIds = selectedParentProductIds,
+                        totalProducts = productsResponse.total
                     )
-                }
-
-                val voucherValidationParam = VoucherValidationPartialUseCase.Param(
-                    benefitIdr = 25_000,
-                    benefitMax = 500_000,
-                    benefitPercent = 0,
-                    BenefitType.NOMINAL,
-                    PromoType.FREE_SHIPPING,
-                    isLockToProduct = true,
-                    minPurchase = 50_000,
-                    productIds = currentPageParentProductsIds
-                )
-
-
-                val voucherValidationResponse = voucherValidationPartialUseCase.execute(voucherValidationParam)
-
-                val updatedProducts = combineParentProductDataWithVariant(
-                    currentPageParentProductsResponse,
-                    voucherValidationResponse.validationProduct,
-                    isBelowMaximumProductSelection
-                )
-
-
-                val allProducts = currentState.products + updatedProducts
-                _uiEffect.emit(AddProductEffect.LoadNextPageSuccess(updatedProducts, allProducts))
-
-                _uiState.update {
-                    it.copy(products = allProducts, totalProducts = productsResponse.total)
                 }
 
             },
@@ -187,25 +161,48 @@ class AddProductViewModel @Inject constructor(
 
     }
 
+    private suspend fun validateProducts(currentPageParentProductIds: List<Long>): List<VoucherValidationResult.ValidationProduct> {
+        val voucherValidationParam = VoucherValidationPartialUseCase.Param(
+            benefitIdr = 25_000,
+            benefitMax = 500_000,
+            benefitPercent = 0,
+            BenefitType.NOMINAL,
+            PromoType.FREE_SHIPPING,
+            isLockToProduct = true,
+            minPurchase = 50_000,
+            productIds = currentPageParentProductIds
+        )
+
+
+        return voucherValidationPartialUseCase.execute(voucherValidationParam).validationProduct
+    }
 
     private fun combineParentProductDataWithVariant(
         currentPageParentProduct: List<Product>,
-        validatedProducts: List<VoucherValidationResult.ValidationProduct>,
-        isBelowMaxSelection: Boolean
+        selectedProductIds: Set<Long>,
+        validatedProducts: List<VoucherValidationResult.ValidationProduct>
     ): List<Product> {
+
+        val nextSelectedProductSize = selectedProductIds.size + AddProductFragment.PAGE_SIZE
+        val isBelowMaximumProductSelection = nextSelectedProductSize <= currentState.voucherCreationMetadata?.maxProduct.orZero()
+        val shouldAutomaticallyAddToProductSelection = currentState.isSelectAllActive && isBelowMaximumProductSelection
+
         val formattedProducts = currentPageParentProduct.map { product ->
 
             val matchedProduct = findValidatedProduct(product.id, validatedProducts)
             val variants = matchedProduct?.variant?.map { Product.Variant(it.productId) }
-            val isProductAlreadyOnSelection = product.id in currentState.selectedProductsIds
+            val isEligible = matchedProduct?.isEligible.orTrue()
+
+            val isProductAlreadyOnSelection = product.id in selectedProductIds
+            val isSelected = isProductAlreadyOnSelection || (shouldAutomaticallyAddToProductSelection && isEligible)
 
             product.copy(
-                isEligible = matchedProduct?.isEligible.orTrue(),
+                isEligible = isEligible,
                 ineligibleReason = matchedProduct?.reason.orEmpty(),
                 originalVariants = variants.orEmpty(),
                 modifiedVariants = variants.orEmpty(),
-                isSelected = isProductAlreadyOnSelection,
-                enableCheckbox = isBelowMaxSelection
+                isSelected = isSelected,
+                enableCheckbox = isBelowMaximumProductSelection && isEligible
             )
         }
 
@@ -235,7 +232,7 @@ class AddProductViewModel @Inject constructor(
             }
         }
 
-        val selectedProductIds = selectedProducts.filter { it.isSelected }.map { it.id }
+        val selectedProductIds = selectedProducts.filter { it.isSelected }.map { it.id }.toSet()
 
         _uiState.update {
             it.copy(
@@ -251,7 +248,7 @@ class AddProductViewModel @Inject constructor(
         _uiState.update {
             it.copy(
                 isSelectAllActive = false,
-                selectedProductsIds = emptyList(),
+                selectedProductsIds = emptySet(),
                 products = disabledProducts
             )
         }
@@ -270,7 +267,7 @@ class AddProductViewModel @Inject constructor(
             updateProductAsSelected(productIdToAdd, currentState.products)
         }
 
-        val updatedProductIds = updatedProducts.filter { it.isSelected }.map { it.id }
+        val updatedProductIds = updatedProducts.filter { it.isSelected }.map { it.id }.toSet()
 
         _uiState.update {
             it.copy(
@@ -316,7 +313,7 @@ class AddProductViewModel @Inject constructor(
             }
         }
 
-        val updatedSelectedProducts = currentState.selectedProductsIds.toMutableList()
+        val updatedSelectedProducts = currentState.selectedProductsIds.toMutableSet()
         updatedSelectedProducts.remove(productIdToDelete)
 
         _uiState.update {

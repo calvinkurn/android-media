@@ -17,7 +17,7 @@ data class AddProductUiState(
     val products: List<Product> = emptyList(),
     val voucherCreationMetadata: VoucherCreationMetadata? = null,
     val warehouses: List<Warehouse> = emptyList(),
-    val selectedProductsIds: List<Long> = emptyList(),
+    val selectedProductsIds: Set<Long> = emptySet(),
     val isSelectAllActive: Boolean = false,
     val sortOptions: List<ProductSortOptions> = emptyList(),
     val categoryOptions: List<ProductCategoryOption> = emptyList(),
