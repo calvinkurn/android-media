@@ -1,4 +1,4 @@
-package com.tokopedia.productcard.test.utils.generator
+package com.tokopedia.productcard.test.generator.utils
 
 import android.view.View
 import android.view.ViewGroup
