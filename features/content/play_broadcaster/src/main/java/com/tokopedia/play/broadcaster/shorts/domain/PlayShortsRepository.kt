@@ -20,4 +20,10 @@ interface PlayShortsRepository {
         authorId: String,
         authorType: String,
     ): String
+
+    suspend fun uploadTitle(
+        title: String,
+        shortsId: String,
+        authorId: String,
+    )
 }

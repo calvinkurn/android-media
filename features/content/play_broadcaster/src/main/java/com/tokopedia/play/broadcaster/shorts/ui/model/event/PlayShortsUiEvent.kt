@@ -20,7 +20,7 @@ sealed interface PlayShortsToaster {
 
     object Unknown : PlayShortsToaster
 
-    data class ErrorSubmitTitle(
+    data class ErrorUploadTitle(
         val throwable: Throwable,
         val onRetry: () -> Unit
     ) : PlayShortsToaster

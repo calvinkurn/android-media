@@ -163,7 +163,7 @@ class PlayShortsViewModel @Inject constructor(
 
             /** Title Form */
             is PlayShortsAction.OpenTitleForm -> handleOpenTitleForm()
-            is PlayShortsAction.SubmitTitle -> handleSubmitTitle(action.title)
+            is PlayShortsAction.UploadTitle -> handleUploadTitle(action.title)
             is PlayShortsAction.CloseTitleForm -> handleCloseTitleForm()
 
             /** Cover Form */
@@ -263,7 +263,7 @@ class PlayShortsViewModel @Inject constructor(
         _titleForm.update { it.copy(state = PlayShortsTitleFormUiState.State.Editing) }
     }
 
-    private fun handleSubmitTitle(title: String) {
+    private fun handleUploadTitle(title: String) {
         viewModelScope.launchCatchError(block = {
             if (_titleForm.value.state == PlayShortsTitleFormUiState.State.Loading) return@launchCatchError
 
@@ -273,8 +273,7 @@ class PlayShortsViewModel @Inject constructor(
                 )
             }
 
-            /** Will call real GQL here */
-            delay(1000)
+            repo.uploadTitle(title, shortsId, selectedAccount.id)
 
             _titleForm.update {
                 it.copy(
@@ -292,8 +291,8 @@ class PlayShortsViewModel @Inject constructor(
 
             _uiEvent.oneTimeUpdate {
                 it.copy(
-                    toaster = PlayShortsToaster.ErrorSubmitTitle(throwable) {
-                        submitAction(PlayShortsAction.SubmitTitle(title = title))
+                    toaster = PlayShortsToaster.ErrorUploadTitle(throwable) {
+                        submitAction(PlayShortsAction.UploadTitle(title = title))
                     }
                 )
             }

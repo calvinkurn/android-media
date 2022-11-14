@@ -273,7 +273,7 @@ class PlayShortsPreparationFragment @Inject constructor(
                 }
 
                 override fun onTitleSaved(view: TitleFormView, title: String) {
-                    viewModel.submitAction(PlayShortsAction.SubmitTitle(title))
+                    viewModel.submitAction(PlayShortsAction.UploadTitle(title))
                 }
             })
 
@@ -439,7 +439,7 @@ class PlayShortsPreparationFragment @Inject constructor(
 
     private fun renderToaster(toasterData: PlayShortsToaster) {
         when (toasterData) {
-            is PlayShortsToaster.ErrorSubmitTitle -> {
+            is PlayShortsToaster.ErrorUploadTitle -> {
                 toaster.showError(
                     toasterData.throwable,
                     duration = Toaster.LENGTH_LONG,

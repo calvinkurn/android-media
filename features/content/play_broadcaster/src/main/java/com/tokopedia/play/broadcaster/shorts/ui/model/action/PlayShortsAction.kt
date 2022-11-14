@@ -25,7 +25,7 @@ sealed interface PlayShortsAction {
     /** Title Form */
     object OpenTitleForm : PlayShortsAction
 
-    data class SubmitTitle(
+    data class UploadTitle(
         val title: String
     ) : PlayShortsAction
 

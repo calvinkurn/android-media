@@ -5,9 +5,11 @@ import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.content.common.ui.model.TermsAndConditionUiModel
 import com.tokopedia.content.common.usecase.GetWhiteListNewUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.GetConfigurationUseCase
+import com.tokopedia.play.broadcaster.domain.usecase.PlayBroadcastUpdateChannelUseCase
 import com.tokopedia.play.broadcaster.shorts.domain.PlayShortsRepository
 import com.tokopedia.play.broadcaster.shorts.ui.mapper.PlayShortsMapper
 import com.tokopedia.play.broadcaster.shorts.ui.model.PlayShortsConfigUiModel
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -17,6 +19,7 @@ import javax.inject.Inject
 class PlayShortsRepositoryImpl @Inject constructor(
     private val getWhiteListNewUseCase: GetWhiteListNewUseCase,
     private val getConfigurationUseCase: GetConfigurationUseCase,
+    private val updateChannelUseCase: PlayBroadcastUpdateChannelUseCase,
     private val mapper: PlayShortsMapper,
     private val dispatchers: CoroutineDispatchers
 ) : PlayShortsRepository {
@@ -45,5 +48,22 @@ class PlayShortsRepositoryImpl @Inject constructor(
 
     override suspend fun createShorts(authorId: String, authorType: String): String = withContext(dispatchers.io) {
         TODO("Not yet implemented")
+    }
+
+    override suspend fun uploadTitle(title: String, shortsId: String, authorId: String) {
+        withContext(dispatchers.io) {
+            delay(1000)
+
+            /** TODO: will uncomment this later */
+//            updateChannelUseCase.apply {
+//                setQueryParams(
+//                    PlayBroadcastUpdateChannelUseCase.createUpdateTitleRequest(
+//                        channelId = shortsId,
+//                        authorId = authorId,
+//                        title = title
+//                    )
+//                )
+//            }.executeOnBackground()
+        }
     }
 }
