@@ -20,7 +20,6 @@
         android:resizeableActivity="true"
         android:requestLegacyExternalStorage="true"
         tools:ignore="GoogleAppIndexingWarning">
-
         <activity
             android:name=".MainActivity"
             android:exported="true">
