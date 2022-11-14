@@ -49,6 +49,7 @@ import com.tokopedia.mvc.presentation.product.add.uimodel.AddProductUiState
 import com.tokopedia.mvc.util.constant.NumberConstant
 import com.tokopedia.mvc.R
 import com.tokopedia.mvc.databinding.SmvcFragmentAddProductBinding
+import com.tokopedia.mvc.domain.entity.Product
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -81,7 +82,7 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
 
     private val productAdapter by lazy {
         CompositeAdapter.Builder()
-            .add(ProductDelegateAdapter(onItemClick, onCheckboxClick))
+            .add(ProductDelegateAdapter(onItemClick, onCheckboxClick, onVariantClick))
             .add(LoadingDelegateAdapter())
             .build()
     }
@@ -373,6 +374,8 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
     private val onItemClick: (Int) -> Unit = { selectedItemPosition ->
         val selectedItem = productAdapter.getItems()[selectedItemPosition]
         val selectedItemId = (selectedItem.id() as? Long).orZero()
+
+        viewModel.processEvent(AddProductEvent.AddProductToSelection(selectedItemId))
     }
 
 
@@ -385,6 +388,16 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
         } else {
             viewModel.processEvent(AddProductEvent.RemoveProductFromSelection(selectedItemId))
         }
+    }
+
+    private val onVariantClick: (Int) -> Unit = { selectedItemPosition ->
+        val selectedItem = productAdapter.getItems()[selectedItemPosition]
+        val selectedParentProduct = (selectedItem as? Product)
+
+        selectedParentProduct?.run {
+            viewModel.processEvent(AddProductEvent.TapVariant(this))
+        }
+
     }
 
     private fun showSortBottomSheet(

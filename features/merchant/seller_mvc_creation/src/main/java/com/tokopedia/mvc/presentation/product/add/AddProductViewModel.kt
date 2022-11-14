@@ -76,6 +76,7 @@ class AddProductViewModel @Inject constructor(
             is AddProductEvent.ApplyShowCaseFilter -> handleApplyShopShowcasesFilter(event.selectedShowCases)
             is AddProductEvent.ApplySortFilter -> handleApplySortFilter(event.selectedSort)
             is AddProductEvent.SearchProduct -> handleSearchProduct(event.searchKeyword)
+            is AddProductEvent.TapVariant -> {}
         }
     }
 
@@ -193,7 +194,17 @@ class AddProductViewModel @Inject constructor(
         val formattedProducts = currentPageParentProduct.map { product ->
 
             val matchedProduct = findValidatedProduct(product.id, validatedProducts)
-            val variants = matchedProduct?.variant?.map { Product.Variant(it.productId) }
+            val variants = matchedProduct?.variant?.map {
+                Product.Variant(
+                    it.productId,
+                    it.productName,
+                    it.price,
+                    it.stock,
+                    it.isEligible,
+                    it.reason
+                )
+            }
+
             val isEligible = matchedProduct?.isEligible.orTrue()
 
             val isProductAlreadyOnSelection = product.id in selectedProductIds

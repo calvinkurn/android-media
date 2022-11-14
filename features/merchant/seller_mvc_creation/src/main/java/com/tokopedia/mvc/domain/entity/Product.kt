@@ -38,7 +38,14 @@ data class Product(
 
     data class Warehouse(val id: Long)
 
-    data class Variant(val variantProductId : Long)
+    data class Variant(
+        val variantProductId: Long,
+        val productName: String,
+        val price: Long,
+        val stock: Int,
+        val isEligible: Boolean,
+        val reason: String
+    )
 
     override fun id() = id
 }

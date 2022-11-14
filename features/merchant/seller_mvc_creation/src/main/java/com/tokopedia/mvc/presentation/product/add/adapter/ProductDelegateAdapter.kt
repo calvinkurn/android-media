@@ -20,7 +20,8 @@ import com.tokopedia.unifyprinciples.Typography
 
 class ProductDelegateAdapter(
     private val onItemClick: (Int) -> Unit,
-    private val onCheckboxClick: (Int, Boolean) -> Unit
+    private val onCheckboxClick: (Int, Boolean) -> Unit,
+    private val onVariantClick: (Int) -> Unit
 ) : DelegateAdapter<Product, ProductDelegateAdapter.ViewHolder>(
     Product::class.java
 ) {
@@ -41,7 +42,8 @@ class ProductDelegateAdapter(
     inner class ViewHolder(private val binding : SmvcItemProductBinding) : RecyclerView.ViewHolder(binding.root) {
 
         init {
-            binding.root.setOnClickListener { onItemClick(adapterPosition) }
+            binding.root.setOnClickListener { onItemClick(bindingAdapterPosition) }
+            binding.layoutVariant.setOnClickListener { onVariantClick(bindingAdapterPosition) }
         }
 
         fun bind(item: Product) {
@@ -74,7 +76,7 @@ class ProductDelegateAdapter(
 
                 checkbox.isChecked = item.isSelected
                 checkbox.setOnCheckedChangeListener { _, isChecked ->
-                    onCheckboxClick(adapterPosition, isChecked)
+                    onCheckboxClick(bindingAdapterPosition, isChecked)
                 }
                 checkbox.isEnabled = item.enableCheckbox && item.isEligible
             }

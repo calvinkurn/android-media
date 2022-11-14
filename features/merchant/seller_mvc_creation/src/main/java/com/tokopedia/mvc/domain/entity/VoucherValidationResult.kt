@@ -52,7 +52,12 @@ data class VoucherValidationResult(
         val variant: List<ProductVariant>
     ) {
         data class ProductVariant(
-            val productId: Long
+            val productId: Long,
+            val productName: String,
+            val price: Long,
+            val stock: Int,
+            val isEligible: Boolean,
+            val reason: String
         )
     }
 }

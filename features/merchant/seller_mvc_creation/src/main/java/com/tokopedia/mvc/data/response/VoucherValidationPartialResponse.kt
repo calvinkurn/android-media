@@ -2,6 +2,7 @@ package com.tokopedia.mvc.data.response
 
 
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.mvc.domain.entity.VoucherValidationResult
 
 data class VoucherValidationPartialResponse(
     @SerializedName("VoucherValidationPartial")
@@ -9,46 +10,22 @@ data class VoucherValidationPartialResponse(
 ) {
     data class VoucherValidationPartial(
         @SerializedName("data")
-        val data: Data = Data(),
+        val `data`: Data = Data(),
         @SerializedName("header")
         val header: Header = Header()
     ) {
         data class Data(
             @SerializedName("available_month")
-            val availableMonth: List<AvailableMonth> = listOf(),
+            val availableMonth: List<VoucherValidationResult.AvailableMonth> = listOf(),
             @SerializedName("total_available_quota")
             val totalAvailableQuota: Int = 0,
             @SerializedName("validation_date")
-            val validationDate: List<ValidationDate> = listOf(),
+            val validationDate: List<VoucherValidationResult.ValidationDate> = listOf(),
             @SerializedName("validation_error")
             val validationError: ValidationError = ValidationError(),
             @SerializedName("validation_product")
             val validationProduct: List<ValidationProduct> = listOf()
         ) {
-            data class ValidationDate(
-                @SerializedName("date_end")
-                val dateEnd: String = "",
-                @SerializedName("date_start")
-                val dateStart: String = "",
-                @SerializedName("hour_end")
-                val hourEnd: String = "",
-                @SerializedName("hour_start")
-                val hourStart: String = "",
-                @SerializedName("total_live_time")
-                val totalLiveTime: String = "",
-                @SerializedName("available")
-                val available: Boolean = false,
-                @SerializedName("not_available_reason")
-                val notAvailableReason: String = "",
-                @SerializedName("type")
-                val type: Int = 0
-            )
-            data class AvailableMonth(
-                @SerializedName("month")
-                val month: String = "",
-                @SerializedName("available")
-                val available: Boolean = false,
-            )
             data class ValidationError(
                 @SerializedName("benefit_idr")
                 val benefitIdr: String = "",
@@ -98,11 +75,25 @@ data class VoucherValidationPartialResponse(
                 @SerializedName("reason")
                 val reason: String = "",
                 @SerializedName("variant")
-                val variant: List<ProductVariant> = listOf()
+                val variant: List<Variant> = listOf()
             ) {
-                data class ProductVariant(
+                data class Variant(
+                    @SerializedName("is_eligible")
+                    val isEligible: Boolean = false,
+                    @SerializedName("price")
+                    val price: String = "",
+                    @SerializedName("price_fmt")
+                    val priceFmt: String = "",
                     @SerializedName("product_id")
-                    val productId: Long = 0
+                    val productId: Long = 0,
+                    @SerializedName("product_name")
+                    val productName: String = "",
+                    @SerializedName("reason")
+                    val reason: String = "",
+                    @SerializedName("sku")
+                    val sku: String = "",
+                    @SerializedName("stock")
+                    val stock: Int = 0
                 )
             }
         }

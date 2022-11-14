@@ -1,5 +1,6 @@
 package com.tokopedia.mvc.data.mapper
 
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.mvc.data.response.VoucherValidationPartialResponse
 import com.tokopedia.mvc.domain.entity.VoucherValidationResult
 import javax.inject.Inject
@@ -63,7 +64,18 @@ class VoucherValidationPartialMapper @Inject constructor() {
 
     private fun VoucherValidationPartialResponse.VoucherValidationPartial.Data.toValidationProduct(): List<VoucherValidationResult.ValidationProduct> {
         return this.validationProduct.map {
-            val variants = it.variant.map { VoucherValidationResult.ValidationProduct.ProductVariant(it.productId) }
+
+            val variants = it.variant.map {
+                VoucherValidationResult.ValidationProduct.ProductVariant(
+                    it.productId,
+                    it.productName,
+                    it.price.toLongOrZero(),
+                    it.stock,
+                    it.isEligible,
+                    it.reason
+                )
+            }
+
             VoucherValidationResult.ValidationProduct(
                 it.isEligible,
                 it.isVariant,

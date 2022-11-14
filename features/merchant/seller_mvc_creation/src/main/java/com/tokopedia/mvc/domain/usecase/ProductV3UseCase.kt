@@ -11,14 +11,14 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.mvc.data.mapper.ProductV3Mapper
 import com.tokopedia.mvc.data.request.ProductV3ExtraInfo
 import com.tokopedia.mvc.data.request.ProductV3Options
-import com.tokopedia.mvc.data.response.ProductListResponse
 import com.tokopedia.mvc.data.response.ProductV3Response
+import com.tokopedia.mvc.domain.entity.VariantResult
 import javax.inject.Inject
 
 class ProductV3UseCase @Inject constructor(
     private val repository: GraphqlRepository,
     private val mapper: ProductV3Mapper,
-) : GraphqlUseCase<String>(repository) {
+) : GraphqlUseCase<VariantResult>(repository) {
 
     init {
         setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
@@ -85,7 +85,7 @@ class ProductV3UseCase @Inject constructor(
         override fun getTopOperationName(): String = OPERATION_NAME
     }
 
-    suspend fun execute(param: Param): String {
+    suspend fun execute(param: Param): VariantResult {
         val request = buildRequest(param)
         val response = repository.response(listOf(request))
         val data = response.getSuccessData<ProductV3Response>()
@@ -97,12 +97,12 @@ class ProductV3UseCase @Inject constructor(
             REQUEST_PARAM_PRODUCT_ID to param.productId.toString(),
             REQUEST_PARAM_OPTIONS to ProductV3Options(stats = true, txStats = true, variant = true),
             REQUEST_PARAM_EXTRA_INFO to ProductV3ExtraInfo(event = true),
-            REQUEST_PARAM_WAREHOUSE_ID to param.warehouseId
+            REQUEST_PARAM_WAREHOUSE_ID to param.warehouseId.toString()
         )
 
         return GraphqlRequest(
             query,
-            ProductListResponse::class.java,
+            ProductV3Response::class.java,
             params
         )
     }
@@ -110,7 +110,7 @@ class ProductV3UseCase @Inject constructor(
 
     data class Param(
         val productId: Long,
-        val warehouseId: String,
+        val warehouseId: Long,
     )
 
 
