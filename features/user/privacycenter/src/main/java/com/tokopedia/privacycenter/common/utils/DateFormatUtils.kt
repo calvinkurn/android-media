@@ -16,7 +16,7 @@ fun String.formatDateLocalTimezone(): String {
         SimpleDateFormat(
             LOCAL_DATE_FORMAT,
             getIndonesiaLocale()
-        ).format(date.parse(this) ?: "")
+        ).format(date.parse(this) as Date)
     } catch (_: Exception) {
         this
     }
