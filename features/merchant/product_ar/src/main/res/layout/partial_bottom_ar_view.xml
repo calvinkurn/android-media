@@ -92,7 +92,7 @@
             android:layout_marginStart="4dp"
             android:ellipsize="end"
             android:maxLines="1"
-            android:textColor="@color/Unify_N700_68"
+            android:textColor="@color/Unify_NN400"
             android:visibility="gone"
             app:layout_constraintEnd_toStartOf="@+id/btn_atc_ar"
             app:layout_constraintHorizontal_bias="0"

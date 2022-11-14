@@ -218,7 +218,7 @@ class ProductArComparisonFragment : BaseDaggerFragment(), ComparissonHelperListe
         activity?.let { activity ->
             navToolbar?.run {
                 setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_BACK)
-                setToolbarTitle("")
+                setToolbarTitle(context.getString(R.string.txt_bs_comparison_title))
                 setupToolbarWithStatusBar(activity, NavToolbar.Companion.StatusBar.STATUS_BAR_LIGHT)
             }
         }

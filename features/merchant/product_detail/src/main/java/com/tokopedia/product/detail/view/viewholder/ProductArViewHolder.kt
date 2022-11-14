@@ -30,7 +30,7 @@ class ProductArViewHolder(
         showOrHideElement(element.message)
 
         itemView.setBackgroundColor(ContextCompat.getColor(view.context,
-                com.tokopedia.unifyprinciples.R.color.Unify_GN100))
+                com.tokopedia.unifyprinciples.R.color.Unify_GN50))
         imgCustom?.loadImage(element.imageUrl)
         txtMessage?.text = element.message
         itemView.setOnClickListener {
