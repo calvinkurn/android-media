@@ -42,8 +42,9 @@ class ShopRecomWidget : ConstraintLayout, LifecycleObserver, ShopRecomWidgetCall
         LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
     }
 
+    private var nextCursor: String = ""
     private val mAdapterShopRecom: ShopRecomAdapter by lazy(LazyThreadSafetyMode.NONE) {
-        ShopRecomAdapter(this) { mListener?.onShopRecomLoadingNextPage() }
+        ShopRecomAdapter(this) { mListener?.onShopRecomLoadingNextPage(nextCursor) }
     }
 
     init {
@@ -65,8 +66,10 @@ class ShopRecomWidget : ConstraintLayout, LifecycleObserver, ShopRecomWidgetCall
     fun setData(
         headerTitle: String,
         shopRecomItem: List<ShopRecomUiModelItem>,
-        loadNextPage: Boolean = false
+        loadNextPage: Boolean = false,
+        nextCursor: String,
     ) = with(binding) {
+        this@ShopRecomWidget.nextCursor = nextCursor
         txtHeaderShopRecom.text = headerTitle
         val model = buildList {
             addAll(shopRecomItem.map { ShopRecomAdapter.Model.ShopRecomWidget(it) })
@@ -114,8 +117,8 @@ class ShopRecomWidget : ConstraintLayout, LifecycleObserver, ShopRecomWidgetCall
         mListener?.onShopRecomItemImpress(item, postPosition)
     }
 
-    override fun onShopRecomLoadingNextPage() {
-        mListener?.onShopRecomLoadingNextPage()
+    override fun onShopRecomLoadingNextPage(nextCursor: String) {
+        mListener?.onShopRecomLoadingNextPage(nextCursor)
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)

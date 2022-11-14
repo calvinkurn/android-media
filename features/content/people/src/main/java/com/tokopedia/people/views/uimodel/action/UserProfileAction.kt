@@ -23,7 +23,7 @@ sealed interface UserProfileAction {
         val isActive: Boolean,
     ) : UserProfileAction
 
-    object LoadNextPageShopRecom : UserProfileAction
+    data class LoadNextPageShopRecom(val nextCurSor: String) : UserProfileAction
 
     object RemoveReminderActivityResult : UserProfileAction
 }

@@ -595,7 +595,7 @@ class UserProfileFragment @Inject constructor(
 
         val shopRecom = value.shopRecom
 
-        mainBinding.shopRecommendation.setData(shopRecom.title, shopRecom.items, shopRecom.loadNextPage)
+        mainBinding.shopRecommendation.setData(shopRecom.title, shopRecom.items, shopRecom.loadNextPage, shopRecom.nextCursor)
 
         if (value.shopRecom.items.isEmpty()) mainBinding.shopRecommendation.showEmptyShopRecom()
         else mainBinding.shopRecommendation.showContentShopRecom()
@@ -854,8 +854,8 @@ class UserProfileFragment @Inject constructor(
         }
     }
 
-    override fun onShopRecomLoadingNextPage() {
-        viewModel.submitAction(UserProfileAction.LoadNextPageShopRecom)
+    override fun onShopRecomLoadingNextPage(nextCursor: String) {
+        viewModel.submitAction(UserProfileAction.LoadNextPageShopRecom(nextCursor))
     }
 
     override fun onRetryPageLoad(pageNumber: Int) {

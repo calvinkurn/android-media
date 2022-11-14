@@ -157,7 +157,6 @@ class FeedViewModel @Inject constructor(
         get() = _feedWidgetLatestData
 
     private var currentCursor = ""
-    private var shopRecomNextCursor = ""
     private val pagingHandler: PagingHandler = PagingHandler()
 
     fun sendReport(
@@ -292,7 +291,6 @@ class FeedViewModel @Inject constructor(
 
     fun getFeedFirstPage() {
         pagingHandler.resetPage()
-        shopRecomNextCursor = ""
         currentCursor = ""
         launchCatchError(block = {
             val results = withContext(baseDispatcher.io) {
@@ -831,11 +829,11 @@ class FeedViewModel @Inject constructor(
     /**
      * Shop Recommendation Widget
      */
-    fun getShopRecomWidget() {
+    fun getShopRecomWidget(nextCursor: String = "") {
         launchCatchError(baseDispatcher.io, block = {
-            val request = requestShopRecomWidget(shopRecomNextCursor)
+            val request = requestShopRecomWidget(nextCursor)
             if (request.shopRecomUiModel.isShown) {
-                if (shopRecomNextCursor.isEmpty()) _shopRecom.emit(ShopRecomWidgetModel())
+//                if (nextCursor.isEmpty()) _shopRecom.emit(ShopRecomWidgetModel())
                 _shopRecom.setValue {
                     copy(
                         shopRecomUiModel = shopRecomUiModel.copy(
@@ -849,9 +847,7 @@ class FeedViewModel @Inject constructor(
                     )
                 }
             } else _shopRecom.emit(ShopRecomWidgetModel())
-            shopRecomNextCursor = request.shopRecomUiModel.nextCursor
         }, onError = {
-            shopRecomNextCursor = ""
             if (_shopRecom.value.onError.isNotEmpty()) return@launchCatchError
             _shopRecom.update { data ->
                 data.copy(

@@ -91,7 +91,6 @@ class UserProfileViewModel @AssistedInject constructor(
         get() = _profileWhitelist.value.hasAcceptTnc.not()
 
     val isShopRecomShow: Boolean get() = _shopRecom.value.isShown
-    private var shopRecomNextCursor: String = ""
 
     var ugcOnboardingOpenFrom: Int = 0
 
@@ -133,7 +132,7 @@ class UserProfileViewModel @AssistedInject constructor(
             is UserProfileAction.RemoveReminderActivityResult -> handleRemoveReminderActivityResult()
             is UserProfileAction.ClickFollowButtonShopRecom -> handleClickFollowButtonShopRecom(action.itemID)
             is UserProfileAction.RemoveShopRecomItem -> handleRemoveShopRecomItem(action.itemID)
-            is UserProfileAction.LoadNextPageShopRecom -> handleLoadNextPageShopRecom()
+            is UserProfileAction.LoadNextPageShopRecom -> handleLoadNextPageShopRecom(action.nextCurSor)
         }
     }
 
@@ -146,9 +145,9 @@ class UserProfileViewModel @AssistedInject constructor(
         }
     }
 
-    private fun handleLoadNextPageShopRecom() {
+    private fun handleLoadNextPageShopRecom(nextCursor: String) {
         viewModelScope.launchCatchError(block = {
-            loadShopRecom(shopRecomNextCursor)
+            loadShopRecom(nextCursor)
         }, onError = {
             _uiEvent.emit(UserProfileUiEvent.ErrorLoadNextPageShopRecom(it))
         })
@@ -332,7 +331,6 @@ class UserProfileViewModel @AssistedInject constructor(
     private suspend fun loadShopRecom(cursor: String = "") {
         val result = repo.getShopRecom(cursor)
         if (result.isShown) {
-            shopRecomNextCursor = result.nextCursor
             _shopRecom.setValue {
                 copy(
                     isShown = result.isShown,
@@ -342,7 +340,7 @@ class UserProfileViewModel @AssistedInject constructor(
                     items = items + result.items
                 )
             }
-        } else _shopRecom.emit(ShopRecomUiModel())
+        } else _shopRecom.setValue { ShopRecomUiModel() }
     }
 
     companion object {
