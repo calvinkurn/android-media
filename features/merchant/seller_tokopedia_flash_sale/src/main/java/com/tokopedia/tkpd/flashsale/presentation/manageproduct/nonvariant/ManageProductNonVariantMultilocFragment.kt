@@ -103,12 +103,12 @@ class ManageProductNonVariantMultilocFragment :
         product?.let {
             val warehouses = inputAdapter.getDataList()
             warehouses.onEachIndexed { indexEdited, warehouse ->
-                if (warehouse.isDilayaniTokopedia && indexEdited != index) {
+                if (warehouse.isDilayaniTokopedia && indexEdited != index && warehouses.getOrNull(index)?.isDilayaniTokopedia == true) {
                     warehouse.discountSetup.apply {
                         price = discountSetup.price
                         discount = discountSetup.discount
                     }
-                    inputAdapter.notifyItemChanged(indexEdited)
+                    view?.post { inputAdapter.notifyItemChanged(indexEdited) }
                 }
             }
             val newProduct = it.copy(warehouses = warehouses)
