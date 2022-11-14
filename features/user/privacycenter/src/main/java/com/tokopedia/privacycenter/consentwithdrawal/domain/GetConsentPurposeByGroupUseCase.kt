@@ -23,7 +23,7 @@ class GetConsentPurposeByGroupUseCase @Inject constructor(
             PrivacyCenterStateResult.Success(response.consentGroup)
         } else {
             PrivacyCenterStateResult.Fail(
-                MessageErrorException(response.consentGroup.errorMessages.toString())
+                Throwable(response.consentGroup.errorMessages.toString())
             )
         }
     }
