@@ -7,9 +7,11 @@ import com.tokopedia.content.common.producttag.util.extension.combine
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play.broadcaster.shorts.domain.PlayShortsRepository
+import com.tokopedia.play.broadcaster.shorts.domain.manager.PlayShortsAccountManager
 import com.tokopedia.play.broadcaster.shorts.factory.PlayShortsMediaSourceFactory
 import com.tokopedia.play.broadcaster.shorts.ui.model.PlayShortsMediaUiModel
 import com.tokopedia.play.broadcaster.shorts.ui.model.action.PlayShortsAction
+import com.tokopedia.play.broadcaster.shorts.ui.model.event.PlayShortsBottomSheet
 import com.tokopedia.play.broadcaster.shorts.ui.model.event.PlayShortsToaster
 import com.tokopedia.play.broadcaster.shorts.ui.model.event.PlayShortsUiEvent
 import com.tokopedia.play.broadcaster.shorts.ui.model.state.PlayShortsCoverFormUiState
@@ -34,7 +36,8 @@ class PlayShortsViewModel @Inject constructor(
     private val repo: PlayShortsRepository,
     private val sharedPref: HydraSharedPreferences,
     private val exoPlayer: ExoPlayer,
-    private val mediaSourceFactory: PlayShortsMediaSourceFactory
+    private val mediaSourceFactory: PlayShortsMediaSourceFactory,
+    private val accountManager: PlayShortsAccountManager,
 ) : ViewModel() {
 
     /** Public Getter */
@@ -123,7 +126,7 @@ class PlayShortsViewModel @Inject constructor(
         setupPreparationMenu()
 
         /** TODO: for mocking purpose, delete this later */
-        submitAction(PlayShortsAction.SetMedia("/storage/emulated/0/Movies/VID_20221110_141411.mp4"))
+//        submitAction(PlayShortsAction.SetMedia("/storage/emulated/0/Movies/VID_20221110_141411.mp4"))
     }
 
     fun submitAction(action: PlayShortsAction) {
@@ -153,16 +156,27 @@ class PlayShortsViewModel @Inject constructor(
 
     private fun handlePreparePage(preferredAccountType: String) {
         viewModelScope.launchCatchError(block = {
-            val lastSelectedAccount = sharedPref.getLastSelectedAccount()
-
-            val selectedAccount = when {
-                preferredAccountType.isNotEmpty() -> preferredAccountType
-                lastSelectedAccount.isNotEmpty() -> lastSelectedAccount
-                else -> ""
-            }
-
             val accountList = repo.getAccountList()
+            val bestEligibleAccount = accountManager.getBestEligibleAccount(accountList, preferredAccountType)
+
+            _accountList.update { accountList }
+            _selectedAccount.update { bestEligibleAccount }
+
+            if(bestEligibleAccount.isUnknown) {
+                _uiEvent.oneTimeUpdate {
+                    it.copy(bottomSheet = PlayShortsBottomSheet.NoEligibleAccount)
+                }
+            }
+            else if(bestEligibleAccount.isUser && !bestEligibleAccount.hasAcceptTnc){
+                _uiEvent.oneTimeUpdate {
+                    it.copy(bottomSheet = PlayShortsBottomSheet.UGCOnboarding)
+                }
+            }
+            else {
+                getConfiguration()
+            }
         }) {
+            /** TODO: handle global page error like the one in broadcaster */
         }
     }
 
@@ -257,6 +271,19 @@ class PlayShortsViewModel @Inject constructor(
 
     private fun handleClickNext() {
         /** TODO: handle this */
+    }
+
+    private suspend fun getConfiguration() {
+        val account = _selectedAccount.value
+
+        val config = repo.getShortsConfiguration(account.id, account.type)
+
+        _shortsId.update {
+            if(config.shortsId.isEmpty()) {
+                repo.createShorts(account.id, account.type)
+            }
+            else config.shortsId
+        }
     }
 
     private fun setupPreparationMenu() {

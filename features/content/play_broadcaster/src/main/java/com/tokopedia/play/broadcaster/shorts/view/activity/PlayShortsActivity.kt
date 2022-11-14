@@ -4,11 +4,13 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import androidx.activity.viewModels
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
+import com.tokopedia.content.common.onboarding.view.fragment.UGCOnboardingParentFragment
 import com.tokopedia.content.common.types.ContentCommonUserType
 import com.tokopedia.picker.common.MediaPicker
 import com.tokopedia.picker.common.PageSource
@@ -19,11 +21,14 @@ import com.tokopedia.play.broadcaster.databinding.ActivityPlayShortsBinding
 import com.tokopedia.play.broadcaster.shorts.di.DaggerPlayShortsComponent
 import com.tokopedia.play.broadcaster.shorts.di.PlayShortsModule
 import com.tokopedia.play.broadcaster.shorts.ui.model.action.PlayShortsAction
+import com.tokopedia.play.broadcaster.shorts.ui.model.event.PlayShortsBottomSheet
 import com.tokopedia.play.broadcaster.shorts.ui.model.state.PlayShortsUiState
 import com.tokopedia.play.broadcaster.shorts.view.fragment.PlayShortsPreparationFragment
 import com.tokopedia.play.broadcaster.shorts.view.fragment.base.PlayShortsBaseFragment
 import com.tokopedia.play.broadcaster.shorts.view.viewmodel.PlayShortsViewModel
+import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play_common.util.extension.withCache
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
@@ -52,11 +57,44 @@ class PlayShortsActivity : BaseActivity() {
         setupBinding()
         setupObserver()
 
-        val preferredAccountType = intent.getStringExtra(ContentCommonUserType.KEY_AUTHOR_TYPE).orEmpty()
-        viewModel.submitAction(PlayShortsAction.PreparePage(preferredAccountType))
+        viewModel.submitAction(PlayShortsAction.PreparePage(getPreferredAccountType()))
 
         /** For mocking purpose */
-        openPreparation()
+//        openPreparation()
+    }
+
+    override fun onAttachFragment(fragment: Fragment) {
+        super.onAttachFragment(fragment)
+        when(fragment) {
+            is UGCOnboardingParentFragment -> {
+                fragment.setListener(object : UGCOnboardingParentFragment.Listener {
+                    override fun onSuccess() {
+                        /** TODO: handle tracker & handle reload */
+                    }
+
+                    override fun impressTncOnboarding() {
+                        /** TODO: handle tracker */
+                    }
+
+                    override fun impressCompleteOnboarding() {
+                        /** TODO: handle tracker */
+                    }
+
+                    override fun clickNextOnTncOnboarding() {
+                        /** TODO: handle tracker */
+                    }
+
+                    override fun clickNextOnCompleteOnboarding() {
+                        /** TODO: handle tracker */
+                    }
+
+                    override fun clickCloseIcon() {
+                        /** TODO: handle tracker */
+                        finish()
+                    }
+                })
+            }
+        }
     }
 
     override fun onBackPressed() {
@@ -91,6 +129,12 @@ class PlayShortsActivity : BaseActivity() {
                 renderPage(it.prevValue, it.value)
             }
         }
+
+        lifecycleScope.launchWhenStarted {
+            viewModel.uiEvent.collect {
+                renderBottomSheet(it.bottomSheet)
+            }
+        }
     }
 
     private fun renderPage(
@@ -101,22 +145,29 @@ class PlayShortsActivity : BaseActivity() {
          * Need to put validation here so render page only run once
          */
 
-        /**
-         * shortsId != null && mediaUri == null -> MediaPicker
-         * shortsId != null && mediaUri != null -> Preparation
-         */
-        when {
-            curr.shortsId.isNotEmpty() && curr.media.mediaUri.isEmpty() -> {
-                openMediaPicker()
+        if(prev?.shortsId?.isEmpty() == true && curr.shortsId.isNotEmpty() && curr.media.mediaUri.isEmpty()) {
+            openMediaPicker()
+        }
+        else if(prev?.media?.mediaUri?.isEmpty() == true && curr.media.mediaUri.isNotEmpty()){
+            openPreparation()
+        }
+    }
+
+    private fun renderBottomSheet(bottomSheet: PlayShortsBottomSheet) {
+        when(bottomSheet) {
+            is PlayShortsBottomSheet.UGCOnboarding -> {
+                showUGCOnboardingBottomSheet()
             }
-            curr.shortsId.isNotEmpty() && curr.media.mediaUri.isNotEmpty() -> {
-                openPreparation()
+            is PlayShortsBottomSheet.NoEligibleAccount -> {
+                showNoEligibleAccountBottomSheet()
             }
+            else -> {}
         }
     }
 
     private fun openMediaPicker() {
         val intent = MediaPicker.intent(this) {
+            /** TODO: need to decide this pageSource based on our analytics */
             pageSource(PageSource.Unknown)
             minVideoDuration(1000)
             maxVideoDuration(90000)
@@ -140,12 +191,40 @@ class PlayShortsActivity : BaseActivity() {
             .commit()
     }
 
+    private fun showUGCOnboardingBottomSheet(){
+        val existingFragment = supportFragmentManager.findFragmentByTag(UGCOnboardingParentFragment.TAG)
+        if (existingFragment is UGCOnboardingParentFragment && existingFragment.isVisible) return
+
+        val bundle = Bundle().apply {
+            putInt(
+                UGCOnboardingParentFragment.KEY_ONBOARDING_TYPE,
+                UGCOnboardingParentFragment.getOnboardingType(hasUsername = viewModel.selectedAccount.hasUsername)
+            )
+        }
+        supportFragmentManager.beginTransaction()
+            .add(UGCOnboardingParentFragment::class.java, bundle, UGCOnboardingParentFragment.TAG)
+            .commit()
+    }
+
+    private fun showNoEligibleAccountBottomSheet() {
+        /** TODO: show bottosheet based on :
+         * 1. if preferred account is shop -> show shop bottomsheet
+         * 2. if preferred account is user -> show user bottomsheet not eligible (need to confirm this)
+         * 3. else -> show shop bottomsheet (need to confirm this)
+         */
+        println("PLAY_SHORTS : showNoEligibleAccountBottomSheet")
+    }
+
+    private fun getPreferredAccountType(): String {
+        return intent.getStringExtra(ContentCommonUserType.KEY_AUTHOR_TYPE).orEmpty()
+    }
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
         if (requestCode == MEDIA_PICKER_REQ) {
             if (resultCode == RESULT_OK) {
-                val data = MediaPicker.result(data)
+                val mediaUri = MediaPicker.result(data).originalPaths.getOrNull(0).orEmpty()
+                viewModel.submitAction(PlayShortsAction.SetMedia(mediaUri))
             } else {
                 finish()
             }

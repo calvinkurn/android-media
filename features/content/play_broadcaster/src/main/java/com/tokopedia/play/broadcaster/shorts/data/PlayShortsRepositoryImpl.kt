@@ -6,6 +6,7 @@ import com.tokopedia.content.common.usecase.GetWhiteListNewUseCase
 import com.tokopedia.play.broadcaster.domain.usecase.GetConfigurationUseCase
 import com.tokopedia.play.broadcaster.shorts.domain.PlayShortsRepository
 import com.tokopedia.play.broadcaster.shorts.ui.mapper.PlayShortsMapper
+import com.tokopedia.play.broadcaster.shorts.ui.model.PlayShortsConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.ConfigurationUiModel
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
@@ -24,5 +25,22 @@ class PlayShortsRepositoryImpl @Inject constructor(
         val response = getWhiteListNewUseCase.execute(type = GetWhiteListNewUseCase.WHITELIST_ENTRY_POINT)
 
         return@withContext mapper.mapAuthorList(response)
+    }
+
+    override suspend fun getShortsConfiguration(
+        authorId: String,
+        authorType: String
+    ): PlayShortsConfigUiModel = withContext(dispatchers.io) {
+        val response = getConfigurationUseCase.execute(authorId, authorType)
+
+
+        /** TODO: change this with mapper implementation later */
+        PlayShortsConfigUiModel(
+            shortsId = "123",
+        )
+    }
+
+    override suspend fun createShorts(authorId: String, authorType: String): String = withContext(dispatchers.io) {
+        TODO("Not yet implemented")
     }
 }
