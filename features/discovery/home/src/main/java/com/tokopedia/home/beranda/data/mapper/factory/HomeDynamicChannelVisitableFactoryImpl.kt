@@ -13,6 +13,8 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_ch
 import com.tokopedia.home.beranda.presentation.view.analytics.HomeTrackingUtils
 import com.tokopedia.home.util.ServerTimeOffsetUtil
 import com.tokopedia.home_component.model.ReminderEnum
+import com.tokopedia.home_component.util.ChannelStyleUtil.BORDER_STYLE_PADDING
+import com.tokopedia.home_component.util.ChannelStyleUtil.parseBorderStyle
 import com.tokopedia.home_component.util.ChannelStyleUtil.parseDividerSize
 import com.tokopedia.home_component.visitable.*
 import com.tokopedia.quest_widget.data.QuestData
@@ -110,7 +112,12 @@ class HomeDynamicChannelVisitableFactoryImpl(
                     createRecommendationListCarouselComponent(channel, position, isCache)
                 }
                 DynamicHomeChannel.Channels.LAYOUT_MIX_LEFT -> {
-                    createMixLeftComponent(channel, position, isCache)
+                    val borderStyle = channel.styleParam.parseBorderStyle()
+                    if (borderStyle == BORDER_STYLE_PADDING) {
+                        createMixLeftPaddingComponent(channel, position, isCache)
+                    } else {
+                        createMixLeftComponent(channel, position, isCache)
+                    }
                 }
                 DynamicHomeChannel.Channels.LAYOUT_PRODUCT_HIGHLIGHT -> {
                     createProductHighlightComponent(channel, position, isCache)
@@ -312,6 +319,14 @@ class HomeDynamicChannelVisitableFactoryImpl(
 
     private fun createMixLeftComponent(channel: DynamicHomeChannel.Channels, verticalPosition: Int, isCache: Boolean) {
         visitableList.add(mappingMixLeftComponent(
+                channel, isCache, verticalPosition
+        ))
+        context?.let { HomeTrackingUtils.homeDiscoveryWidgetImpression(it,
+                visitableList.size, channel) }
+    }
+
+    private fun createMixLeftPaddingComponent(channel: DynamicHomeChannel.Channels, verticalPosition: Int, isCache: Boolean) {
+        visitableList.add(mappingMixLeftPaddingComponent(
                 channel, isCache, verticalPosition
         ))
         context?.let { HomeTrackingUtils.homeDiscoveryWidgetImpression(it,
@@ -540,6 +555,15 @@ class HomeDynamicChannelVisitableFactoryImpl(
                                         isCache: Boolean,
                                         verticalPosition: Int): Visitable<*> {
         return MixLeftDataModel(
+                channelModel = DynamicChannelComponentMapper.mapHomeChannelToComponent(channel, verticalPosition),
+                isCache = isCache
+        )
+    }
+
+    private fun mappingMixLeftPaddingComponent(channel: DynamicHomeChannel.Channels,
+                                        isCache: Boolean,
+                                        verticalPosition: Int): Visitable<*> {
+        return MixLeftPaddingDataModel(
                 channelModel = DynamicChannelComponentMapper.mapHomeChannelToComponent(channel, verticalPosition),
                 isCache = isCache
         )

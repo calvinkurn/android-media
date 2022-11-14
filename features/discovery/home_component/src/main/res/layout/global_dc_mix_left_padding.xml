@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/home_component_divider_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:layout_height="8dp"
+        android:visibility="gone"
+        tools:background="@color/Unify_Static_Black"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <com.tokopedia.home_component.customview.DynamicChannelHeaderView
+        android:id="@+id/home_component_header_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/home_component_divider_header" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_product_mix_left_padding"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clipToPadding="false"
+        android:paddingStart="@dimen/home_banner_mix_margin_start"
+        android:paddingEnd="8dp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/home_component_header_view"
+        tools:listitem="@layout/home_banner_item_flashsale_carousel"
+        tools:orientation="horizontal"
+        tools:spanCount="3" />
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/home_component_divider_footer"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:layout_height="8dp"
+        android:visibility="gone"
+        tools:background="@color/Unify_B500"
+        app:layout_constraintTop_toBottomOf="@id/rv_product_mix_left_padding"
+        app:layout_constraintBottom_toBottomOf="parent"
+        tools:visibility="visible" />
+</androidx.constraintlayout.widget.ConstraintLayout>
