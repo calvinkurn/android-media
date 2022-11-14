@@ -52,7 +52,7 @@ class SharingComponentTracker @Inject constructor(private val userSession : User
         )
     }
 
-    fun sendShareVoucherBottomSheetDismissClickEvent(voucherId : String, trackerId: String) {
+    fun sendShareVoucherBottomSheetDismissClickEvent(voucherId: String, trackerId: String) {
         val payload = mapOf(
             VoucherCreationAnalyticConstant.Key.EVENT to "clickCommunication",
             VoucherCreationAnalyticConstant.Key.EVENT_ACTION to "click - close share button sheet",
@@ -81,7 +81,7 @@ class SharingComponentTracker @Inject constructor(private val userSession : User
         )
     }
 
-    fun sendSelectVoucherShareChannelClickEvent(selectedChannel: String, voucherId : String, trackerId: String, imageType: String) {
+    fun sendSelectVoucherShareChannelClickEvent(selectedChannel: String, voucherId: String, trackerId: String, imageType: String) {
         val payload = mapOf(
             VoucherCreationAnalyticConstant.Key.EVENT to "clickCommunication",
             VoucherCreationAnalyticConstant.Key.EVENT_ACTION to "click - sharing channel",

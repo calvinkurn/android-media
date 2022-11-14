@@ -1,6 +1,5 @@
 package com.tokopedia.vouchercreation.common.utils
 
-import android.app.Activity
 import android.content.Context
 import android.graphics.drawable.GradientDrawable
 import android.text.InputType
@@ -30,7 +29,6 @@ import com.tokopedia.unifycomponents.TextFieldUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.universal_sharing.constants.ImageGeneratorConstants
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
-import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.utils.date.toDate
 import com.tokopedia.vouchercreation.R
@@ -39,7 +37,6 @@ import com.tokopedia.vouchercreation.common.consts.VoucherTypeConst
 import com.tokopedia.vouchercreation.common.extension.parseTo
 import com.tokopedia.vouchercreation.product.create.domain.entity.CouponType
 import com.tokopedia.vouchercreation.product.create.domain.entity.DiscountType
-import com.tokopedia.vouchercreation.product.share.SharingComponentInstanceBuilder
 import com.tokopedia.vouchercreation.shop.detail.view.fragment.VoucherDetailFragment
 import com.tokopedia.vouchercreation.shop.voucherlist.domain.model.ShopBasicDataResult
 import com.tokopedia.vouchercreation.shop.voucherlist.model.ui.VoucherUiModel
