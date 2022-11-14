@@ -54,14 +54,14 @@ class MerchantPageViewModelTest : MerchantPageViewModelTestFixture() {
         viewModel.isStickyBarVisible = expectedIsStickyBarVisible
         viewModel.merchantData = expectedMerchantData
 
-        assertEquals(viewModel.productListItems, expectedProductListItems)
-        assertEquals(viewModel.selectedProducts, expectedSelectedProducts)
-        assertEquals(viewModel.isAddressManuallyUpdated, expectedIsAddressManuallyUpdated)
-        assertEquals(viewModel.isProductDetailBottomSheetVisible, expectedIsProductDetailBottomSheetVisible)
-        assertEquals(viewModel.filterList, expectedFilterList)
-        assertEquals(viewModel.filterNameSelected, expectedFilterNameSelected)
-        assertEquals(viewModel.isStickyBarVisible, expectedIsStickyBarVisible)
-        assertEquals(viewModel.merchantData, expectedMerchantData)
+        assertEquals(expectedProductListItems, viewModel.productListItems)
+        assertEquals(expectedSelectedProducts, viewModel.selectedProducts)
+        assertEquals(expectedIsAddressManuallyUpdated, viewModel.isAddressManuallyUpdated)
+        assertEquals(expectedIsProductDetailBottomSheetVisible, viewModel.isProductDetailBottomSheetVisible)
+        assertEquals(expectedFilterList, viewModel.filterList)
+        assertEquals(expectedFilterNameSelected, viewModel.filterNameSelected)
+        assertEquals(expectedIsStickyBarVisible, viewModel.isStickyBarVisible)
+        assertEquals(expectedMerchantData, viewModel.merchantData)
     }
 
     @Test
