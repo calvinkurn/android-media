@@ -140,7 +140,7 @@ class AddProductViewModel @Inject constructor(
                 )
 
                 val allParentProducts = currentState.products + updatedParentProducts
-                val selectedParentProductIds = allParentProducts.filter { it.isSelected }.map { it.id }.toSet()
+                val selectedParentProductIds = currentState.selectedProductsIds + allParentProducts.filter { it.isSelected }.map { it.id }
 
                 _uiEffect.emit(AddProductEffect.LoadNextPageSuccess(updatedParentProducts, allParentProducts))
                 _uiState.update {
