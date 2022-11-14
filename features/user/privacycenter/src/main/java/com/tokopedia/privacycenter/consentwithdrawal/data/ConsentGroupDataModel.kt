@@ -4,29 +4,29 @@ import com.google.gson.annotations.SerializedName
 
 data class GetConsentGroupListDataModel(
     @SerializedName("GetConsentGroupList")
-    var consentGroupList: ConsentGroupListDataModel = ConsentGroupListDataModel()
+    val consentGroupList: ConsentGroupListDataModel = ConsentGroupListDataModel()
 )
 
 data class ConsentGroupListDataModel(
     @SerializedName("success")
-    var success: Boolean = false,
+    val success: Boolean = false,
     @SerializedName("refId")
-    var refId: String = "",
+    val refId: String = "",
     @SerializedName("errorMessages")
-    var errorMessages: List<String> = listOf(),
+    val errorMessages: List<String> = listOf(),
     @SerializedName("groups")
-    var groups: List<ConsentGroupDataModel> = listOf()
+    val groups: List<ConsentGroupDataModel> = listOf()
 )
 
 data class ConsentGroupDataModel(
     @SerializedName("id")
-    var id: String = "0",
+    val id: String = "0",
     @SerializedName("groupTitle")
-    var groupTitle: String = "",
+    val groupTitle: String = "",
     @SerializedName("groupSubtitle")
-    var groupSubtitle: String = "",
+    val groupSubtitle: String = "",
     @SerializedName("groupImg")
-    var groupImage: String = "",
+    val groupImage: String = "",
     @SerializedName("priority")
-    var priority: Int = 0
+    val priority: Int = 0
 )

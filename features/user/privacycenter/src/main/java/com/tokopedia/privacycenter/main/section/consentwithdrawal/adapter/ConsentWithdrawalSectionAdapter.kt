@@ -1,4 +1,4 @@
-package com.tokopedia.privacycenter.main.section.consentwithdrawal
+package com.tokopedia.privacycenter.main.section.consentwithdrawal.adapter
 
 import com.tokopedia.adapterdelegate.BaseAdapter
 import com.tokopedia.privacycenter.consentwithdrawal.data.ConsentGroupDataModel

@@ -2,6 +2,7 @@ package com.tokopedia.privacycenter.main
 
 import android.widget.LinearLayout
 import com.tokopedia.privacycenter.main.section.BasePrivacyCenterSection
+import com.tokopedia.privacycenter.main.section.accountlinking.AccountLinkingSection
 import com.tokopedia.privacycenter.main.section.consentwithdrawal.ConsentWithdrawalSection
 import com.tokopedia.privacycenter.main.section.dummy.DummySection
 import com.tokopedia.privacycenter.main.section.recommendation.RecommendationSection
@@ -12,6 +13,7 @@ import com.tokopedia.privacycenter.main.section.recommendation.RecommendationSec
 
 interface PrivacyCenterSectionDelegate {
     val recommendationSection: RecommendationSection
+    val accountLinkingSection: AccountLinkingSection
     val dummySection: DummySection
     val consentWithdrawalSection: ConsentWithdrawalSection
 }
@@ -26,6 +28,7 @@ class PrivacyCenterSection constructor(
          * list position will reflect with section index
          */
         return mutableMapOf(
+            AccountLinkingSection.TAG to delegate.accountLinkingSection,
             RecommendationSection.TAG to delegate.recommendationSection,
             DummySection.TAG to delegate.dummySection,
             ConsentWithdrawalSection.TAG to delegate.consentWithdrawalSection,

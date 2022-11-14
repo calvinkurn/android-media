@@ -467,4 +467,11 @@ object ApplinkConstInternalUserPlatform {
      **/
     const val PRIVACY_CENTER = "$NEW_INTERNAL_USER/privacy-center"
 
+    /**
+     * com.tokopedia.privacyaccount.accountlinking.LinkAccountWebViewActivity
+     * @Applink : tokopedia-android-internal://user/account-linking-webview
+     * @param   : [com.tokopedia.applink.internal.ApplinkConstInternalGlobal.PARAM_LD]
+     **/
+    const val ACCOUNT_LINKING_WEBVIEW = "${NEW_INTERNAL_USER}/account-linking-webview"
+
 }
