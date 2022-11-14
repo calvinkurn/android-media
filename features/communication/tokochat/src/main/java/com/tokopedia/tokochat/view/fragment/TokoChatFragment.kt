@@ -126,7 +126,6 @@ class TokoChatFragment : TokoChatBaseFragment<TokochatChatroomFragmentBinding>()
     private fun initializeChatRoom(savedInstanceState: Bundle?) {
         initializeChatProfile()
         initGroupBooking(savedInstanceState)
-        loadTransactionWidget()
     }
 
     override fun onStart() {
@@ -291,8 +290,10 @@ class TokoChatFragment : TokoChatBaseFragment<TokochatChatroomFragmentBinding>()
             viewModel.updateOrderTransactionStatus.collect {
                 when (it) {
                     is Success -> {
+                        val state = it.data.tokochatOrderProgress.state
+                        updateCallIcon(state)
                         updateShowTransactionWidget(it.data.tokochatOrderProgress)
-                        if (it.data.tokochatOrderProgress.state !in listOf(
+                        if (state !in listOf(
                                 OrderStatusType.CANCELLED,
                                 OrderStatusType.COMPLETED
                             )
@@ -409,10 +410,7 @@ class TokoChatFragment : TokoChatBaseFragment<TokochatChatroomFragmentBinding>()
                 )
             }
         }
-        headerUiModel?.let { header ->
-            setupToolbarData(header)
-            showHeader()
-        }
+        loadTransactionWidget()
     }
 
     private fun observeMemberLeft() {
@@ -441,6 +439,7 @@ class TokoChatFragment : TokoChatBaseFragment<TokochatChatroomFragmentBinding>()
             appLink = tokoChatOrderProgress.uri
         )
         baseBinding?.tokochatTransactionOrder?.updateTransactionWidget(orderProgressUiModel)
+
     }
 
     private fun setShowTransactionWidget(tokoChatOrderProgress: TokoChatOrderProgressResponse.TokoChatOrderProgress) {
@@ -463,6 +462,11 @@ class TokoChatFragment : TokoChatBaseFragment<TokochatChatroomFragmentBinding>()
             this,
             orderProgressUiModel
         )
+
+        headerUiModel?.let { header ->
+            setupToolbarData(header)
+            showHeader()
+        }
     }
 
     private fun observeLiveChannel() {
@@ -538,19 +542,50 @@ class TokoChatFragment : TokoChatBaseFragment<TokochatChatroomFragmentBinding>()
             }
 
             callMenu.run {
-                setImage(IconUnify.CALL)
+                val isCallIconDisabled = getOrderState() in listOf(OrderStatusType.COMPLETED, OrderStatusType.CANCELLED)
 
-                setOnClickListener {
-                    if (headerUiModel.phoneNumber.isNotEmpty()) {
-                        tokoChatAnalytics.clickCallButtonFromChatRoom(
-                            getOrderState(),
-                            tkpdOrderId,
-                            channelId,
-                            source,
-                            TokoChatAnalyticsConstants.BUYER
-                        )
-                        showMaskingPhoneNumberBottomSheet(headerUiModel.phoneNumber)
+                if (isCallIconDisabled) {
+                    isEnabled = false
+                    isClickable = false
+                    setImage(IconUnify.CALL, com.tokopedia.unifyprinciples.R.color.Unify_NN300)
+                } else {
+                    isEnabled = true
+                    isClickable = true
+                    setImage(IconUnify.CALL)
+
+                    setOnClickListener {
+                        if (headerUiModel.phoneNumber.isNotEmpty()) {
+                            tokoChatAnalytics.clickCallButtonFromChatRoom(
+                                getOrderState(),
+                                tkpdOrderId,
+                                channelId,
+                                source,
+                                TokoChatAnalyticsConstants.BUYER
+                            )
+                            showMaskingPhoneNumberBottomSheet(headerUiModel.phoneNumber)
+                        }
                     }
+                }
+            }
+        }
+    }
+
+    private fun updateCallIcon(orderState: String) {
+        val isCompletedOrder = getOrderState() in listOf(OrderStatusType.COMPLETED, OrderStatusType.CANCELLED)
+        val isSameOrderStatus = orderState == getOrderState()
+
+        if (isCompletedOrder) {
+
+            if (isSameOrderStatus) return
+
+            getTokoChatHeader()?.run {
+                val callMenu =
+                    findViewById<IconUnify>(com.tokopedia.tokochat_common.R.id.tokochat_icon_header_menu)
+
+                callMenu.run {
+                    isEnabled = false
+                    isClickable = false
+                    setImage(IconUnify.CALL, com.tokopedia.unifyprinciples.R.color.Unify_NN300)
                 }
             }
         }
