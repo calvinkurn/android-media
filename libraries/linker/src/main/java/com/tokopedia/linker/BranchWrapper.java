@@ -105,7 +105,7 @@ public class BranchWrapper implements WrapperInterface {
                         context, linkerShareRequest.getShareCallbackInterface(),
                         ((LinkerShareData) linkerShareRequest.getDataObj()).getUserData());
             }
-            else if (false){
+            else if (isFDLActivated(context)){
                 generateFirebaseLink(((LinkerShareData) linkerShareRequest.getDataObj()).getLinkerData(),
                         context, linkerShareRequest.getShareCallbackInterface(),
                         ((LinkerShareData) linkerShareRequest.getDataObj()).getUserData());
