@@ -52,7 +52,8 @@ class Lego4AutoBannerViewHolder (itemView: View,
         ChannelWidgetUtil.validateHomeComponentDivider(
             channelModel = element.channelModel,
             dividerTop = binding?.homeComponentDividerHeader,
-            dividerBottom = binding?.homeComponentDividerFooter
+            dividerBottom = binding?.homeComponentDividerFooter,
+            useBottomPadding = true
         )
     }
 

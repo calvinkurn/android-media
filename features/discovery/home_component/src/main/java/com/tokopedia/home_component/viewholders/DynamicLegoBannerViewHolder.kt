@@ -25,6 +25,7 @@ import com.tokopedia.home_component.listener.HomeComponentListener
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.model.DynamicChannelLayout
+import com.tokopedia.home_component.util.ChannelStyleUtil
 import com.tokopedia.home_component.util.ChannelWidgetUtil
 import com.tokopedia.home_component.util.DynamicChannelTabletConfiguration
 import com.tokopedia.home_component.util.FPM_DYNAMIC_LEGO_BANNER
@@ -71,7 +72,8 @@ class DynamicLegoBannerViewHolder(itemView: View,
         ChannelWidgetUtil.validateHomeComponentDivider(
             channelModel = element.channelModel,
             dividerTop = itemView.findViewById<DividerUnify>(R.id.home_component_divider_header),
-            dividerBottom = itemView.findViewById<DividerUnify>(R.id.home_component_divider_footer)
+            dividerBottom = itemView.findViewById<DividerUnify>(R.id.home_component_divider_footer),
+            useBottomPadding = element.channelModel.channelConfig.borderStyle==ChannelStyleUtil.BORDER_STYLE_BLEEDING
         )
     }
 
