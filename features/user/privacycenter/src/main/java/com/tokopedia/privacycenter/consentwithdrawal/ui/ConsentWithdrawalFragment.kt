@@ -14,8 +14,10 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.privacycenter.R
+import com.tokopedia.privacycenter.common.PrivacyCenterConst.ERROR_NETWORK_IMAGE
 import com.tokopedia.privacycenter.common.PrivacyCenterStateResult
 import com.tokopedia.privacycenter.common.di.PrivacyCenterComponent
 import com.tokopedia.privacycenter.consentwithdrawal.common.TransactionType
@@ -265,6 +267,10 @@ class ConsentWithdrawalFragment : BaseDaggerFragment(), ConsentWithdrawalListene
             consentPurposeList.hide()
             consentWithdrawalLoading.root.hide()
             consentWithdrawalErrorPage.apply {
+                consentErrorPageImage.loadImage(ERROR_NETWORK_IMAGE) {
+                    useCache(true)
+                }
+
                 consentErrorPageBackHome.setOnClickListener {
                     val intent = RouteManager.getIntent(context, ApplinkConst.HOME)
                     startActivity(intent)

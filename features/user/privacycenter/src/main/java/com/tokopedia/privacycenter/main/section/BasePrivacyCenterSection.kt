@@ -77,11 +77,9 @@ abstract class BasePrivacyCenterSection(context: Context?) {
             localLoadTitle = title.ifEmpty {
                 context?.resources?.getString(R.string.privacy_center_error_network_title).orEmpty()
             }
-            localLoadDescription = description.ifEmpty {
-                context?.resources?.getString(R.string.privacy_center_error_network_detail).orEmpty()
-            }
+            localLoadDescription = description
             refreshBtn?.setOnClickListener {
-                progressState = true
+                this.hide()
                 onRetryClick.invoke(it)
             }
         }.show()
