@@ -18,6 +18,7 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.people.Resources
 import com.tokopedia.people.Success
 import com.tokopedia.people.data.UserProfileRepository
+import com.tokopedia.people.model.UserFeedPostsModel
 import com.tokopedia.people.model.UserPostModel
 import com.tokopedia.people.views.uimodel.action.UserProfileAction
 import com.tokopedia.people.views.uimodel.event.UserProfileUiEvent
@@ -45,13 +46,15 @@ class UserProfileViewModel @AssistedInject constructor(
         fun create(username: String): UserProfileViewModel
     }
 
+    /** feeds posts **/
+    private val feedPostsContent = MutableLiveData<Resources<UserFeedPostsModel>>()
+    val feedPostsContentLiveData: LiveData<Resources<UserFeedPostsModel>> get() = feedPostsContent
+    private val feedsPostsError = MutableLiveData<Throwable>()
+    val feedsPostsErrorLiveData: LiveData<Throwable> get() = feedsPostsError
+
+    /** play video **/
     private val playPostContent = MutableLiveData<Resources<UserPostModel>>()
     val playPostContentLiveData: LiveData<Resources<UserPostModel>> get() = playPostContent
-
-    /**
-     * play video will be moved to dedicated fragment when
-     * developing another tab user profile eventually. so gonna leave as is for now
-     * */
     private val userPostError = MutableLiveData<Throwable>()
     val userPostErrorLiveData: LiveData<Throwable> get() = userPostError
 
@@ -128,6 +131,7 @@ class UserProfileViewModel @AssistedInject constructor(
     fun submitAction(action: UserProfileAction) {
         when (action) {
             is UserProfileAction.LoadProfile -> handleLoadProfile(action.isRefresh)
+            is UserProfileAction.LoadFeedPosts -> handleLoadFeedPosts(action.cursor)
             is UserProfileAction.LoadPlayVideo -> handleLoadPlayVideo(action.cursor)
             is UserProfileAction.ClickFollowButton -> handleClickFollowButton(action.isFromLogin)
             is UserProfileAction.ClickUpdateReminder -> handleClickUpdateReminder(action.isFromLogin)
@@ -146,6 +150,18 @@ class UserProfileViewModel @AssistedInject constructor(
         }) {
             _uiEvent.emit(UserProfileUiEvent.ErrorLoadProfile(it))
         }
+    }
+
+    private fun handleLoadFeedPosts(cursor: String) {
+        viewModelScope.launchCatchError(
+            block = {
+                val data = repo.getFeedPosts(profileUserID, cursor)
+                feedPostsContent.value = Success(data)
+            },
+            onError = {
+                feedsPostsError.value = it
+            },
+        )
     }
 
     private fun handleLoadPlayVideo(cursor: String) {

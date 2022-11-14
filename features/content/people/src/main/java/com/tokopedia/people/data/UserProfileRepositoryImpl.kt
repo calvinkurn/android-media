@@ -18,6 +18,7 @@ import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomUiModel
 import com.tokopedia.people.domains.*
 import com.tokopedia.people.model.ProfileFollowerListBase
 import com.tokopedia.people.model.ProfileFollowingListBase
+import com.tokopedia.people.model.UserFeedPostsModel
 import com.tokopedia.people.model.UserPostModel
 import com.tokopedia.people.views.uimodel.mapper.UserProfileUiMapper
 import com.tokopedia.people.views.uimodel.profile.FollowInfoUiModel
@@ -47,6 +48,7 @@ class UserProfileRepositoryImpl @Inject constructor(
     private val getFollowerListUseCase: GetFollowerListUseCase,
     private val getFollowingListUseCase: GetFollowingListUseCase,
     private val getUserProfileTabUseCase: GetUserProfileTabUseCase,
+    private val getUserProfileFeedPostsUseCase: GetUserProfileFeedPostsUseCase,
 ) : UserProfileRepository {
 
     override suspend fun getProfile(username: String): ProfileUiModel {
@@ -94,6 +96,15 @@ class UserProfileRepositoryImpl @Inject constructor(
             val result = videoPostReminderUseCase.executeOnBackground(channelId, isActive)
 
             mapper.mapUpdateReminder(result)
+        }
+    }
+
+    override suspend fun getFeedPosts(userID: String, cursor: String): UserFeedPostsModel {
+        return withContext(dispatcher.io) {
+            return@withContext getUserProfileFeedPostsUseCase.executeOnBackground(
+                userID = userID,
+                cursor = cursor,
+            )
         }
     }
 

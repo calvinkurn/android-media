@@ -5,6 +5,7 @@ import com.tokopedia.feedcomponent.people.model.MutationUiModel
 import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomUiModel
 import com.tokopedia.people.model.ProfileFollowerListBase
 import com.tokopedia.people.model.ProfileFollowingListBase
+import com.tokopedia.people.model.UserFeedPostsModel
 import com.tokopedia.people.model.UserPostModel
 import com.tokopedia.people.views.uimodel.profile.FollowInfoUiModel
 import com.tokopedia.people.views.uimodel.profile.ProfileTabUiModel
@@ -30,6 +31,11 @@ interface UserProfileRepository {
         channelId: String,
         isActive: Boolean,
     ): MutationUiModel
+
+    suspend fun getFeedPosts(
+        userID: String,
+        cursor: String,
+    ): UserFeedPostsModel
 
     suspend fun getPlayVideo(
         username: String,
