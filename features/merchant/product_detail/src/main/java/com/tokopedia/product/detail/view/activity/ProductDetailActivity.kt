@@ -26,6 +26,7 @@ import com.tokopedia.product.detail.view.fragment.DynamicProductDetailFragment
 import com.tokopedia.product.detail.view.fragment.ProductVideoDetailFragment
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
+import timber.log.Timber
 
 
 /**
@@ -139,6 +140,11 @@ open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityIn
         pageLoadTimePerformanceMonitoring?.stopRenderPerformanceMonitoring()
         pageLoadTimePerformanceMonitoring?.stopMonitoring()
         productDetailLoadTimeMonitoringListener?.onStopPltListener()
+    }
+
+    fun stopPLTRenderPageAndMonitoringP1(isVariant: Boolean) {
+        stopMonitoringPltRenderPage(isVariant = isVariant)
+        stopMonitoringP1()
     }
 
     fun getPltPerformanceResultData(): PltPerformanceData? = pageLoadTimePerformanceMonitoring?.getPltPerformanceData()
