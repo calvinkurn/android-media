@@ -330,10 +330,15 @@ class RechargeHomepageAdapterTypeFactory(
                 parent,
                 listener
             )
-            RechargeHomepageMyBillsWidgetViewHolder.LAYOUT -> RechargeHomepageMyBillsWidgetViewHolder(parent)
-            RechargeHomepageMyBillsEntryPointWidgetViewHolder.LAYOUT -> RechargeHomepageMyBillsEntryPointWidgetViewHolder(parent)
+            RechargeHomepageMyBillsWidgetViewHolder.LAYOUT -> RechargeHomepageMyBillsWidgetViewHolder(
+                parent,
+                listener
+            )
+            RechargeHomepageMyBillsEntryPointWidgetViewHolder.LAYOUT -> RechargeHomepageMyBillsEntryPointWidgetViewHolder(
+                parent,
+                listener
+            )
             else -> super.createViewHolder(parent, type)
         }
     }
-
 }

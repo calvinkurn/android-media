@@ -16,7 +16,7 @@ import com.tokopedia.digital.home.model.RechargeHomepageMyBillsWidgetModel
 import com.tokopedia.digital.home.model.RechargeHomepageSections
 import com.tokopedia.digital.home.presentation.adapter.RechargeHomepageMyBillsAdapterTypeFactory
 import com.tokopedia.digital.home.presentation.adapter.decoration.RechargeItemSpaceDecorator
-import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.digital.home.presentation.listener.RechargeHomepageItemListener
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.dpToPx
@@ -24,17 +24,18 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.Label
-
+import com.tokopedia.unifyprinciples.Typography
 
 /**
  * created by @bayazidnasir on 20/10/2022
  */
 
 class RechargeHomepageMyBillsWidgetViewHolder(
-    itemView: View
-): AbstractViewHolder<RechargeHomepageMyBillsWidgetModel>(itemView) {
+    itemView: View,
+    val listener: RechargeHomepageItemListener
+) : AbstractViewHolder<RechargeHomepageMyBillsWidgetModel>(itemView) {
 
-    companion object{
+    companion object {
         @LayoutRes
         val LAYOUT = R.layout.view_recharge_home_my_bills
 
@@ -55,6 +56,7 @@ class RechargeHomepageMyBillsWidgetViewHolder(
         } else {
             binding.shimmerMyBills.root.visible()
             binding.container.gone()
+            listener.loadRechargeSectionData(element.visitableId())
         }
     }
 
@@ -62,7 +64,6 @@ class RechargeHomepageMyBillsWidgetViewHolder(
         binding: ViewRechargeHomeMyBillsBinding,
         section: RechargeHomepageSections.Section
     ) {
-
         val itemList = mutableListOf<Visitable<RechargeHomepageMyBillsAdapterTypeFactory>>()
         val newItems = section.items.map { RechargeHomepageMyBillsWidgetModel.RechargeHomepageMyBillsItemModel(it) }
 
@@ -83,7 +84,7 @@ class RechargeHomepageMyBillsWidgetViewHolder(
 
     class RechargeHomepageMyBillsItemViewHolder(
         itemView: View
-    ): AbstractViewHolder<RechargeHomepageMyBillsWidgetModel.RechargeHomepageMyBillsItemModel>(itemView) {
+    ) : AbstractViewHolder<RechargeHomepageMyBillsWidgetModel.RechargeHomepageMyBillsItemModel>(itemView) {
 
         companion object {
             @LayoutRes
@@ -110,8 +111,8 @@ class RechargeHomepageMyBillsWidgetViewHolder(
         private fun renderProductInfo(
             binding: ViewRechargeHomeMyBillsItemBinding,
             element: RechargeHomepageSections.Item
-        ){
-            with(binding){
+        ) {
+            with(binding) {
                 tvProductDetailName.text = element.subtitle
                 tvProductDetailCategory.text = element.title
                 tvProductDetailNumber.text = element.content
@@ -127,7 +128,7 @@ class RechargeHomepageMyBillsWidgetViewHolder(
         }
 
         private fun Label.setLabelColor(style: String) {
-            val type = when(style) {
+            val type = when (style) {
                 LABEL_TEAL -> Label.GENERAL_TEAL
                 LABEL_ORANGE -> Label.GENERAL_ORANGE
                 LABEL_RED -> Label.GENERAL_RED
@@ -147,7 +148,7 @@ class RechargeHomepageMyBillsWidgetViewHolder(
 
     class RechargeHomepageMyBillsLastItemViewHolder(
         itemView: View
-    ): AbstractViewHolder<RechargeHomepageMyBillsWidgetModel.RechargeHomepageMyBillsLastItemModel>(itemView) {
+    ) : AbstractViewHolder<RechargeHomepageMyBillsWidgetModel.RechargeHomepageMyBillsLastItemModel>(itemView) {
 
         companion object {
             @LayoutRes
@@ -156,7 +157,7 @@ class RechargeHomepageMyBillsWidgetViewHolder(
 
         override fun bind(element: RechargeHomepageMyBillsWidgetModel.RechargeHomepageMyBillsLastItemModel) {
             val binding = ContentRechargeHomepageMyBillsLastItemBinding.bind(itemView)
-            with(binding){
+            with(binding) {
                 imgBackground.loadImage(element.items.mediaUrl)
                 tvTitle.text = element.items.title
                 containerCta.setOnClickListener {

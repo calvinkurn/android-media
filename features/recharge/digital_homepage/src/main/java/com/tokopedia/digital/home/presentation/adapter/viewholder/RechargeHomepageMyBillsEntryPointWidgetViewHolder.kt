@@ -7,6 +7,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.digital.home.R
 import com.tokopedia.digital.home.databinding.ViewRechargeHomeMyBillsEntrypointBinding
 import com.tokopedia.digital.home.model.RechargeHomepageMyBillsEntryPointModel
+import com.tokopedia.digital.home.presentation.listener.RechargeHomepageItemListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
@@ -16,7 +17,8 @@ import com.tokopedia.media.loader.loadImage
  */
 
 class RechargeHomepageMyBillsEntryPointWidgetViewHolder(
-    itemView: View
+    itemView: View,
+    val listener: RechargeHomepageItemListener
 ) : AbstractViewHolder<RechargeHomepageMyBillsEntryPointModel>(itemView) {
 
     companion object {
@@ -44,6 +46,7 @@ class RechargeHomepageMyBillsEntryPointWidgetViewHolder(
         } else {
             binding.containerContent.gone()
             binding.containerShimmer.visible()
+            listener.loadRechargeSectionData(element.visitableId())
         }
     }
 }
