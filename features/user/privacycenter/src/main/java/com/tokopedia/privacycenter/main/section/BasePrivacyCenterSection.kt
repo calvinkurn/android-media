@@ -7,11 +7,13 @@ import androidx.lifecycle.LifecycleOwner
 import androidx.viewbinding.ViewBinding
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.privacycenter.R
 import com.tokopedia.privacycenter.databinding.SectionBaseBinding
 
 abstract class BasePrivacyCenterSection(context: Context?) {
 
-    protected abstract val sectionViewBinding: ViewBinding
+    protected abstract val sectionViewBinding: ViewBinding?
     protected abstract val sectionTextTitle: String?
     protected abstract val sectionTextDescription: String?
     protected abstract val isShowDirectionButton: Boolean
@@ -30,16 +32,20 @@ abstract class BasePrivacyCenterSection(context: Context?) {
 
         sectionBaseViewBinding.apply {
             sectionTitle.text = sectionTextTitle.orEmpty()
-            sectionSubtitle.text = sectionTextDescription.orEmpty()
-            sectionContent.addView(sectionViewBinding.root)
+            sectionSubtitle.apply {
+                text = sectionTextDescription
+            }.showWithCondition(sectionTextDescription?.isNotEmpty() == true)
+
+            if (sectionViewBinding != null) {
+                sectionContent.addView(sectionViewBinding?.root)
+            }
         }
     }
 
     private fun initDirectionButton() {
-        sectionBaseViewBinding.sectionButtonDirection.apply {
-            if (isShowDirectionButton) show() else hide()
-
-            setOnClickListener {
+        sectionBaseViewBinding.sectionButtonDirection.showWithCondition(isShowDirectionButton)
+        sectionBaseViewBinding.sectionHeader.setOnClickListener {
+            if (isShowDirectionButton) {
                 onButtonDirectionClick(it)
             }
         }
@@ -54,33 +60,34 @@ abstract class BasePrivacyCenterSection(context: Context?) {
     }
 
     fun showShimmering(isLoading: Boolean) {
-        if (isLoading) {
-            sectionViewBinding.root.hide()
-            sectionBaseViewBinding.apply {
-                baseSection.hide()
-                loadingView.root.show()
-            }
-        } else {
-            sectionViewBinding.root.show()
-            sectionBaseViewBinding.apply {
-                baseSection.show()
-                loadingView.root.hide()
-            }
+        sectionViewBinding?.root?.showWithCondition(!isLoading)
+        sectionBaseViewBinding.apply {
+            baseSection.showWithCondition(!isLoading)
+            loadingView.root.showWithCondition(isLoading)
         }
     }
 
-    fun showLocalLoad(title: String, description: String, onRetryClick: (View) -> Unit) {
-        sectionViewBinding.root.hide()
-        showShimmering(false)
+    fun showLocalLoad(title: String = "", description: String = "", onRetryClick: (View) -> Unit) {
+        sectionViewBinding?.root?.hide()
+        sectionBaseViewBinding.apply {
+            loadingView.root.hide()
+            sectionContent.hide()
+        }
 
         sectionBaseViewBinding.sectionLocalLoad.apply {
-            localLoadTitle = title
+            localLoadTitle = title.ifEmpty {
+                context?.resources?.getString(R.string.privacy_center_error_network_title).orEmpty()
+            }
             localLoadDescription = description
             refreshBtn?.setOnClickListener {
-                progressState = true
+                this.hide()
                 onRetryClick.invoke(it)
             }
         }.show()
+    }
+
+    fun hideLocalLoad() {
+        sectionBaseViewBinding.sectionLocalLoad.hide()
     }
 }
 

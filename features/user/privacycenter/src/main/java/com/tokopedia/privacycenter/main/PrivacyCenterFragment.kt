@@ -13,6 +13,7 @@ import com.tokopedia.privacycenter.common.*
 import com.tokopedia.privacycenter.common.di.PrivacyCenterComponent
 import com.tokopedia.privacycenter.databinding.FragmentPrivacyCenterBinding
 import com.tokopedia.privacycenter.main.section.consentwithdrawal.ConsentWithdrawalSection
+import com.tokopedia.privacycenter.main.section.consentwithdrawal.ConsentWithdrawalSectionViewModel
 import com.tokopedia.privacycenter.main.section.dummy.DummySection
 import com.tokopedia.unifycomponents.isUsingNightModeResources
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -31,11 +32,11 @@ class PrivacyCenterFragment : BaseDaggerFragment(), AppBarLayout.OnOffsetChanged
         )
     }
 
-//    private val viewModelConsentSection by lazy {
-//        ViewModelProvider(this, viewModelFactory).get(
-//            ConsentWithdrawalViewModel::class.java
-//        )
-//    }
+    private val viewModelConsentWithdrawalSection by lazy {
+        ViewModelProvider(this, viewModelFactory).get(
+            ConsentWithdrawalSectionViewModel::class.java
+        )
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -43,14 +44,14 @@ class PrivacyCenterFragment : BaseDaggerFragment(), AppBarLayout.OnOffsetChanged
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentPrivacyCenterBinding.inflate(inflater, container, false)
+        privacyCenterSection = PrivacyCenterSection(binding?.rootContent, PrivacyCenterSectionDelegateImpl())
+        privacyCenterSection?.renderSections()
         return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initToolbar()
-        privacyCenterSection = PrivacyCenterSection(binding?.rootContent, PrivacyCenterSectionDelegateImpl())
-        privacyCenterSection?.renderSections()
     }
 
     override fun onStart() {
@@ -78,10 +79,10 @@ class PrivacyCenterFragment : BaseDaggerFragment(), AppBarLayout.OnOffsetChanged
         binding?.appbar?.removeOnOffsetChangedListener(this)
     }
 
-    override fun onDestroy() {
+    override fun onDestroyView() {
+        super.onDestroyView()
         privacyCenterSection?.removeAllViews()
         privacyCenterSection = null
-        super.onDestroy()
     }
 
     override fun getScreenName(): String {
@@ -125,9 +126,8 @@ class PrivacyCenterFragment : BaseDaggerFragment(), AppBarLayout.OnOffsetChanged
         override val dummySection: DummySection = DummySection(context)
         override val consentWithdrawalSection: ConsentWithdrawalSection = ConsentWithdrawalSection(
             context,
-//            viewModelConsentSection
+            viewModelConsentWithdrawalSection
         )
-
     }
 
     companion object {

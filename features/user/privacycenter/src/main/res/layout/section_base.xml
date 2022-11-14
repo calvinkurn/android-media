@@ -7,7 +7,7 @@
 
     <include
         android:id="@+id/loadingView"
-        layout="@layout/layout_shimmering"
+        layout="@layout/section_shimmering"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:visibility="gone"
@@ -24,38 +24,48 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/loadingView">
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/sectionTitle"
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/sectionHeader"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingHorizontal="16dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:typographyType="display_2"
-            app:typographyWeight="bold"
-            tools:text="Section Titile" />
-
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/sectionSubtitle"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:paddingHorizontal="16dp"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/sectionTitle"
-            app:typographyType="display_3"
-            tools:text="Lorem ipsum dolor sit amet" />
+            app:layout_constraintEnd_toEndOf="parent">
 
-        <com.tokopedia.iconunify.IconUnify
-            android:id="@+id/sectionButtonDirection"
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_marginEnd="16dp"
-            app:icon_name="CHEVRON_RIGHT"
-            app:layout_constraintBottom_toBottomOf="@id/sectionSubtitle"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/sectionTitle" />
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/sectionTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="16dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:typographyType="display_2"
+                app:typographyWeight="bold"
+                tools:text="Section Titile" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/sectionSubtitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingHorizontal="16dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/sectionTitle"
+                app:typographyType="display_3"
+                tools:text="Lorem ipsum dolor sit amet" />
+
+            <com.tokopedia.iconunify.IconUnify
+                android:id="@+id/sectionButtonDirection"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_marginEnd="16dp"
+                app:icon_name="CHEVRON_RIGHT"
+                app:layout_constraintBottom_toBottomOf="@id/sectionSubtitle"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/sectionTitle" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/sectionContentLayout"
@@ -65,31 +75,15 @@
             android:paddingVertical="8dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/sectionSubtitle">
+            app:layout_constraintTop_toBottomOf="@+id/sectionHeader">
 
-            <!--
-                Why Nested Here ?
-                To fix issue when child is used RecyclerView.
-                And also don't forget to put this in RecyclerView for showing all item and disable nested scroll
-
-                android:nestedScrollingEnabled="false"
-                android:overScrollMode="never"
-
-                If you not used RecyclerView in child, you can use ConstrainLayout or FrameLayout to wrap your child.
-            -->
-            <androidx.core.widget.NestedScrollView
+            <FrameLayout
+                android:id="@+id/sectionContent"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <FrameLayout
-                    android:id="@+id/sectionContent"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
-
-            </androidx.core.widget.NestedScrollView>
+                app:layout_constraintTop_toTopOf="parent"/>
 
             <com.tokopedia.unifycomponents.LocalLoad
                 android:id="@+id/sectionLocalLoad"

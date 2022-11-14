@@ -5,7 +5,9 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
+import com.tokopedia.privacycenter.consentwithdrawal.viewmodel.ConsentWithdrawalViewModel
 import com.tokopedia.privacycenter.main.PrivacyCenterViewModel
+import com.tokopedia.privacycenter.main.section.consentwithdrawal.ConsentWithdrawalSectionViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -22,9 +24,15 @@ abstract class PrivacyCenterViewModelModule {
     @ViewModelKey(PrivacyCenterViewModel::class)
     internal abstract fun bindPrivacyCenterViewModel(viewModel: PrivacyCenterViewModel): ViewModel
 
-//    @Binds
-//    @IntoMap
-//    @ActivityScope
-//    @ViewModelKey(ConsentWithdrawalViewModel::class)
-//    abstract fun provideConsentWithdrawalViewModel(viewModel: ConsentWithdrawalViewModel): ViewModel
+    @Binds
+    @IntoMap
+    @ActivityScope
+    @ViewModelKey(ConsentWithdrawalSectionViewModel::class)
+    abstract fun provideConsentWithdrawalSectionViewModel(viewModel: ConsentWithdrawalSectionViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ActivityScope
+    @ViewModelKey(ConsentWithdrawalViewModel::class)
+    abstract fun provideConsentWithdrawalViewModel(viewModel: ConsentWithdrawalViewModel): ViewModel
 }
