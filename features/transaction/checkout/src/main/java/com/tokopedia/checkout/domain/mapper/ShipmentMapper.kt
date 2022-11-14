@@ -6,10 +6,8 @@ import com.tokopedia.checkout.data.model.response.shipmentaddressform.Cod
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.CrossSellBottomSheet
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.CrossSellInfoData
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.CrossSellOrderSummary
-import com.tokopedia.checkout.data.model.response.shipmentaddressform.EthicalDrugResponse
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.FreeShipping
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.FreeShippingGeneral
-import com.tokopedia.checkout.data.model.response.shipmentaddressform.ImageUpload
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.NewUpsell
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.ShipmentAddressFormDataResponse
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.ShipmentInformation
@@ -47,8 +45,10 @@ import com.tokopedia.logisticcart.shipping.model.ShipProd
 import com.tokopedia.logisticcart.shipping.model.ShopShipment
 import com.tokopedia.logisticcart.shipping.model.ShopTypeInfoData
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
-import com.tokopedia.purchase_platform.common.feature.ethicaldrug.EthicalDrugDataModel
+import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.model.EthicalDrugDataModel
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.response.EpharmacyEnablerResponse
+import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.response.EthicalDrugResponse
+import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.response.ImageUploadResponse
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnBottomSheetModel
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnButtonModel
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnDataItemModel
@@ -152,7 +152,7 @@ class ShipmentMapper @Inject constructor() {
         }
     }
 
-    private fun mapEpharmacyData(imageUpload: ImageUpload): EpharmacyData {
+    private fun mapEpharmacyData(imageUpload: ImageUploadResponse): EpharmacyData {
         return EpharmacyData(
             showImageUpload = imageUpload.showImageUpload,
             uploadText = imageUpload.text,

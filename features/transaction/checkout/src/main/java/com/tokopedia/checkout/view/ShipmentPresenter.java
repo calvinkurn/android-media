@@ -109,7 +109,7 @@ import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceCheckout;
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceProductCartMapData;
 import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException;
-import com.tokopedia.purchase_platform.common.feature.ethicaldrug.UploadPrescriptionUiModel;
+import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.model.UploadPrescriptionUiModel;
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnBottomSheetModel;
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnButtonModel;
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnDataItemModel;
@@ -771,10 +771,12 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 cartShipmentAddressFormData.getEpharmacyData().getUploadText(),
                 cartShipmentAddressFormData.getEpharmacyData().getLeftIconUrl(),
                 cartShipmentAddressFormData.getEpharmacyData().getCheckoutId(),
-                0, false,
+                new ArrayList<>(),
+                0,"", false,
                 cartShipmentAddressFormData.getEpharmacyData().getFrontEndValidation(),
                 cartShipmentAddressFormData.getEpharmacyData().getConsultationFlow(),
                 cartShipmentAddressFormData.getEpharmacyData().getRejectedWording(),
+                false,
                 false
         ));
 
