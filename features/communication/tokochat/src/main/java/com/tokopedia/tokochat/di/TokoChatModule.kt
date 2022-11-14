@@ -2,6 +2,7 @@ package com.tokopedia.tokochat.di
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
+import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.tokochat.data.repository.TokoChatImageRepository
 import com.tokopedia.tokochat.data.repository.api.TokoChatDownloadImageApi
 import com.tokopedia.tokochat.data.repository.api.TokoChatImageApi
@@ -13,13 +14,13 @@ import dagger.Provides
 @Module
 object TokoChatModule {
 
-    @TokoChatScope
+    @ActivityScope
     @Provides
     fun provideUserSessionInterface(@ApplicationContext context: Context): UserSessionInterface {
         return UserSession(context)
     }
 
-    @TokoChatScope
+    @ActivityScope
     @Provides
     fun provideTokoChatImageRepository(
         tokoChatImageApi: TokoChatImageApi,

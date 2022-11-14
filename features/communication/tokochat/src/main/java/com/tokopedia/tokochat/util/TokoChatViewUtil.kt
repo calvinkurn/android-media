@@ -66,7 +66,7 @@ object TokoChatViewUtil {
         return File(getInternalCacheDirectory().absolutePath, fileName + JPEG_EXT)
     }
 
-    private fun getInternalCacheDirectory(): File {
+    fun getInternalCacheDirectory(): File {
         val directory = File(GlobalConfig.INTERNAL_CACHE_DIR, TOKOCHAT_RELATIVE_PATH)
         if (!directory.exists()) {
             directory.mkdirs()

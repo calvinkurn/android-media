@@ -116,4 +116,117 @@ class TokoChatAnalytics @Inject constructor() {
         )
         tracking.sendGeneralEvent(mapData)
     }
+
+    fun clickChatFromPushNotif(
+        channelId: String,
+        orderId: String,
+        templateKey: String,
+        role: String,
+        source: String
+    ) {
+        val mapData = mapOf(
+            TrackAppUtils.EVENT to TokoChatAnalyticsConstants.CLICK_COMMUNICATION,
+            TrackAppUtils.EVENT_ACTION to TokoChatAnalyticsConstants.CLICK_CHAT_FROM_PUSH_NOTIF_TOKOCHAT,
+            TrackAppUtils.EVENT_CATEGORY to TokoChatAnalyticsConstants.PUSH_NOTIFICATION_CHAT,
+            TrackAppUtils.EVENT_LABEL to "$channelId - $orderId - $templateKey - $role - $source",
+            TokoChatAnalyticsConstants.TRACKER_ID to TokoChatAnalyticsConstants.TRACKER_ID_39067,
+            TokoChatAnalyticsConstants.BUSSINESS_UNIT to TokoChatAnalyticsConstants.COMMUNICATION,
+            TokoChatAnalyticsConstants.CURRENT_SITE to TokoChatAnalyticsConstants.TOKOPEDIA_MARKETPLACE,
+        )
+        tracking.sendGeneralEvent(mapData)
+    }
+
+    fun clickTextField(
+        channelId: String,
+        role: String,
+        source: String
+    ) {
+        val mapData = mapOf(
+            TrackAppUtils.EVENT to TokoChatAnalyticsConstants.CLICK_COMMUNICATION,
+            TrackAppUtils.EVENT_ACTION to TokoChatAnalyticsConstants.CLICK_TEXT_FIELD,
+            TrackAppUtils.EVENT_CATEGORY to TokoChatAnalyticsConstants.TOKOCHAT_DETAIL,
+            TrackAppUtils.EVENT_LABEL to "$channelId - $role - $source",
+            TokoChatAnalyticsConstants.TRACKER_ID to TokoChatAnalyticsConstants.TRACKER_ID_39070,
+            TokoChatAnalyticsConstants.BUSSINESS_UNIT to TokoChatAnalyticsConstants.COMMUNICATION,
+            TokoChatAnalyticsConstants.CURRENT_SITE to TokoChatAnalyticsConstants.TOKOPEDIA_MARKETPLACE,
+        )
+        tracking.sendGeneralEvent(mapData)
+    }
+
+    fun impressOnTicker(
+        channelId: String,
+        role: String,
+        source: String
+    ) {
+        val mapData = mapOf(
+            TrackAppUtils.EVENT to TokoChatAnalyticsConstants.VIEW_COMMUNICATION_IRIS,
+            TrackAppUtils.EVENT_ACTION to TokoChatAnalyticsConstants.TICKER_IMPRESSION,
+            TrackAppUtils.EVENT_CATEGORY to TokoChatAnalyticsConstants.TOKOCHAT_DETAIL,
+            TrackAppUtils.EVENT_LABEL to "$channelId - $role - $source",
+            TokoChatAnalyticsConstants.TRACKER_ID to TokoChatAnalyticsConstants.TRACKER_ID_39076,
+            TokoChatAnalyticsConstants.BUSSINESS_UNIT to TokoChatAnalyticsConstants.COMMUNICATION,
+            TokoChatAnalyticsConstants.CURRENT_SITE to TokoChatAnalyticsConstants.TOKOPEDIA_MARKETPLACE,
+        )
+        tracking.sendGeneralEvent(mapData)
+    }
+
+    fun impressOnImageAttachment(
+        attachmentId: String,
+        orderStatus: String,
+        orderId: String,
+        channelId: String,
+        role: String,
+        source: String
+    ) {
+        val mapData = mapOf(
+            TrackAppUtils.EVENT to TokoChatAnalyticsConstants.VIEW_COMMUNICATION_IRIS,
+            TrackAppUtils.EVENT_ACTION to TokoChatAnalyticsConstants.IMPRESSION_ON_IMAGE_ATTACHMENT,
+            TrackAppUtils.EVENT_CATEGORY to TokoChatAnalyticsConstants.TOKOCHAT_DETAIL,
+            TrackAppUtils.EVENT_LABEL to "$attachmentId - $orderStatus - $orderId - $channelId - $source - $role",
+            TokoChatAnalyticsConstants.TRACKER_ID to TokoChatAnalyticsConstants.TRACKER_ID_39077,
+            TokoChatAnalyticsConstants.BUSSINESS_UNIT to TokoChatAnalyticsConstants.COMMUNICATION,
+            TokoChatAnalyticsConstants.CURRENT_SITE to TokoChatAnalyticsConstants.TOKOPEDIA_MARKETPLACE,
+        )
+        tracking.sendGeneralEvent(mapData)
+    }
+
+    fun clickImageAttachment(
+        attachmentId: String,
+        orderStatus: String,
+        orderId: String,
+        channelId: String,
+        role: String,
+        source: String
+    ) {
+        val mapData = mapOf(
+            TrackAppUtils.EVENT to TokoChatAnalyticsConstants.CLICK_COMMUNICATION,
+            TrackAppUtils.EVENT_ACTION to TokoChatAnalyticsConstants.CLICK_ON_IMAGE_ATTACHMENT,
+            TrackAppUtils.EVENT_CATEGORY to TokoChatAnalyticsConstants.TOKOCHAT_DETAIL,
+            TrackAppUtils.EVENT_LABEL to "$attachmentId - $orderStatus - $orderId - $channelId - $source - $role",
+            TokoChatAnalyticsConstants.TRACKER_ID to TokoChatAnalyticsConstants.TRACKER_ID_39078,
+            TokoChatAnalyticsConstants.BUSSINESS_UNIT to TokoChatAnalyticsConstants.COMMUNICATION,
+            TokoChatAnalyticsConstants.CURRENT_SITE to TokoChatAnalyticsConstants.TOKOPEDIA_MARKETPLACE,
+        )
+        tracking.sendGeneralEvent(mapData)
+    }
+
+    fun impressOnImagePreview(
+        attachmentId: String,
+        orderStatus: String,
+        orderId: String,
+        channelId: String,
+        role: String,
+        source: String
+    ) {
+        val mapData = mapOf(
+            TrackAppUtils.EVENT to TokoChatAnalyticsConstants.VIEW_COMMUNICATION_IRIS,
+            TrackAppUtils.EVENT_ACTION to TokoChatAnalyticsConstants.IMPRESSION_ON_IMAGE_PREVIEW,
+            TrackAppUtils.EVENT_CATEGORY to TokoChatAnalyticsConstants.TOKOCHAT_DETAIL,
+            TrackAppUtils.EVENT_LABEL to "$attachmentId - $orderStatus - $orderId - $channelId - $source - $role",
+            TokoChatAnalyticsConstants.TRACKER_ID to TokoChatAnalyticsConstants.TRACKER_ID_39079,
+            TokoChatAnalyticsConstants.BUSSINESS_UNIT to TokoChatAnalyticsConstants.COMMUNICATION,
+            TokoChatAnalyticsConstants.CURRENT_SITE to TokoChatAnalyticsConstants.TOKOPEDIA_MARKETPLACE,
+        )
+        tracking.sendGeneralEvent(mapData)
+    }
 }
