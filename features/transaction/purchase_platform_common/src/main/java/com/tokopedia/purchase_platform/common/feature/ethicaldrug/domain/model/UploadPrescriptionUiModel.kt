@@ -10,13 +10,13 @@ data class UploadPrescriptionUiModel(
     var leftIconUrl: String? = "",
     var checkoutId: String? = "",
 
-    var prescriptionIds : ArrayList<String> = arrayListOf(),
+    var prescriptionIds: ArrayList<String> = arrayListOf(),
     var uploadedImageCount: Int? = 0,
-    var descriptionText : String? = "",
+    var descriptionText: String? = "",
     var isError: Boolean = false,
     var frontEndValidation: Boolean = false,
     var consultationFlow: Boolean = false,
     var rejectedWording: String = "",
     var hasInvalidPrescription: Boolean = false,
-    var isOcc : Boolean = false,
+    var isOcc: Boolean = false,
 ) : Parcelable

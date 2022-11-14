@@ -6,8 +6,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.animation.CycleInterpolator
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.purchase_platform.common.R
-import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.purchase_platform.common.databinding.ItemUploadPrescriptionBinding
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.model.UploadPrescriptionUiModel
 
@@ -23,7 +27,6 @@ class UploadPrescriptionViewHolder(
         @JvmStatic
         val ITEM_VIEW_UPLOAD = R.layout.item_upload_prescription
         const val EPharmacyAppLink = "tokopedia://epharmacy/"
-        const val EPharmacyCountImageUrl = "https://images.tokopedia.net/img/android/res/singleDpi/epharmacy_sucess_image_uploaded_count.png"
         private const val VIBRATION_ANIMATION_DURATION = 1250
         private const val VIBRATION_ANIMATION_TRANSLATION_X = -10
         private const val VIBRATION_ANIMATION_CYCLE = 4f
@@ -60,13 +63,19 @@ class UploadPrescriptionViewHolder(
                 .setDuration(VIBRATION_ANIMATION_DURATION.toLong())
                 .setInterpolator(CycleInterpolator(VIBRATION_ANIMATION_CYCLE))
                 .setListener(object : Animator.AnimatorListener {
-                    override fun onAnimationStart(animator: Animator) {}
+                    override fun onAnimationStart(animator: Animator) {
+                        /* no-op */
+                    }
                     override fun onAnimationEnd(animator: Animator) {
-
+                        /* no-op */
                     }
 
-                    override fun onAnimationCancel(animator: Animator) {}
-                    override fun onAnimationRepeat(animator: Animator) {}
+                    override fun onAnimationCancel(animator: Animator) {
+                        /* no-op */
+                    }
+                    override fun onAnimationRepeat(animator: Animator) {
+                        /* no-op */
+                    }
                 })
                 .start()
         } else {
