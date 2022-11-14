@@ -223,7 +223,7 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
         )
         binding?.btnAddProduct?.isEnabled = uiState.selectedProductsIds.isNotEmpty()
 
-        productAdapter.submit(uiState.products)
+        //productAdapter.submit(uiState.products)
 
         renderSortChips(uiState.selectedSort)
         renderWarehouseLocationChips(uiState.selectedWarehouseLocation)
@@ -381,8 +381,7 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
         sortAdapter.setOnItemClicked { newItem ->
             sortAdapter.markAsSelected(newItem)
 
-            val selectedItem = sortAdapter.getSelectedItem() ?: return@setOnItemClicked
-            viewModel.processEvent(AddProductEvent.ApplySortFilter(ProductSortOptions(selectedItem.id, selectedItem.name, selectedItem.direction)))
+            viewModel.processEvent(AddProductEvent.ApplySortFilter(ProductSortOptions(newItem.id, newItem.name, newItem.direction)))
 
             bottomSheet.dismiss()
         }

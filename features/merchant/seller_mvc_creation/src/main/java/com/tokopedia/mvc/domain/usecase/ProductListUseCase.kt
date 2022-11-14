@@ -105,6 +105,10 @@ class ProductListUseCase @Inject constructor(
             filter.add(GoodsFilterInput("keyword", listOf(param.searchKeyword)))
         }
 
+        if (param.showcaseIds.isNotEmpty()) {
+            filter.add(GoodsFilterInput("menu", param.showcaseIds.map { it.toString() }))
+        }
+
         val sort = GoodsSortInput(param.sortId, param.sortDirection)
         val params = mapOf(
             REQUEST_PARAM_SHOP_ID to shopId,
@@ -128,6 +132,7 @@ class ProductListUseCase @Inject constructor(
         val page: Int,
         val pageSize: Int,
         val categoryIds: List<Long>,
+        val showcaseIds : List<Long>,
         val sortId : String,
         val sortDirection:String,
         val extraInfo: List<String> = listOf("view")

@@ -82,10 +82,6 @@ class ProductSortAdapter : RecyclerView.Adapter<ProductSortAdapter.ViewHolder>()
         submit(newList)
     }
 
-    fun getSelectedItem(): SingleSelectionItem? {
-        return snapshot().find { it.isSelected }
-    }
-
     private fun snapshot(): List<SingleSelectionItem> {
         return differ.currentList
     }

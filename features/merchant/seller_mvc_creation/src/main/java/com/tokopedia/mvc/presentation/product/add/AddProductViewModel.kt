@@ -31,9 +31,8 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import kotlinx.coroutines.isActive
+import kotlinx.coroutines.launch
 import javax.inject.Inject
-import kotlin.math.max
 
 class AddProductViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
@@ -92,7 +91,7 @@ class AddProductViewModel @Inject constructor(
                 val metadataDeferred = async { getInitiateVoucherPageUseCase.execute(metadataParam) }
 
                 val sellerWarehouses = sellerWarehousesDeferred.await()
-                val metadata = metadataDeferred.await().copy(maxProduct = 10)
+                val metadata = metadataDeferred.await()
 
                 val defaultWarehouse = sellerWarehouses.firstOrNull() ?: return@launchCatchError
 
@@ -122,6 +121,7 @@ class AddProductViewModel @Inject constructor(
                     searchKeyword = currentState.searchKeyword,
                     warehouseId = currentState.selectedWarehouseLocation.warehouseId,
                     categoryIds = currentState.selectedCategories.map { it.id.toLong() },
+                    showcaseIds = currentState.selectedShopShowcase.map { it.id },
                     page = currentState.page,
                     pageSize = AddProductFragment.PAGE_SIZE,
                     sortId = currentState.selectedSort.id,
@@ -132,7 +132,7 @@ class AddProductViewModel @Inject constructor(
                 val currentPageParentProductsResponse = productsResponse.products
                 val currentPageParentProductsIds = currentPageParentProductsResponse.map { product -> product.id }
 
-                val nextSelectedProductSize = currentState.selectedProductsIds.size + 10
+                val nextSelectedProductSize = currentState.selectedProductsIds.size + AddProductFragment.PAGE_SIZE
                 val isBelowMaximumProductSelection = nextSelectedProductSize <= currentState.voucherCreationMetadata?.maxProduct.orZero()
                 val enableAutoSelect = currentState.isSelectAllActive && isBelowMaximumProductSelection
 
@@ -224,7 +224,7 @@ class AddProductViewModel @Inject constructor(
         getProducts()
     }
 
-    private fun handleCheckAllProduct() {
+    private fun handleCheckAllProduct() = launch(dispatchers.computation) {
         val maxProductSelection = currentState.voucherCreationMetadata?.maxProduct.orZero()
         val selectedProducts = currentState.products.mapIndexed { index, product ->
             if (index < maxProductSelection) {
@@ -245,7 +245,7 @@ class AddProductViewModel @Inject constructor(
         }
     }
 
-    private fun handleUncheckAllProduct() {
+    private fun handleUncheckAllProduct() = launch(dispatchers.computation) {
         val disabledProducts = currentState.products.map { it.copy(isSelected = false, enableCheckbox = true) }
         _uiState.update {
             it.copy(
@@ -256,7 +256,7 @@ class AddProductViewModel @Inject constructor(
         }
     }
 
-    private fun handleAddProductToSelection(productIdToAdd: Long) {
+    private fun handleAddProductToSelection(productIdToAdd: Long) = launch(dispatchers.computation) {
         val maxProductSelection = currentState.voucherCreationMetadata?.maxProduct.orZero()
         val newSelectedProductCountAfterSelection = currentState.selectedProductsIds.size.inc()
         val isReachedMaxSelection = newSelectedProductCountAfterSelection == maxProductSelection
@@ -299,7 +299,7 @@ class AddProductViewModel @Inject constructor(
         }
     }
 
-    private fun handleRemoveProductFromSelection(productIdToDelete: Long) {
+    private fun handleRemoveProductFromSelection(productIdToDelete: Long) = launch(dispatchers.computation) {
         val updatedProducts = currentState.products.map {
             if (it.id == productIdToDelete) {
 
