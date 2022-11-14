@@ -21,6 +21,7 @@ import io.mockk.mockk
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import org.mockito.ArgumentMatchers.anyString
 
 class UserProfileShopRecomViewModelTest {
 
@@ -168,7 +169,7 @@ class UserProfileShopRecomViewModelTest {
                 submitAction(UserProfileAction.LoadProfile(isRefresh = true))
             }
             it.recordState {
-                submitAction(UserProfileAction.LoadNextPageShopRecom)
+                submitAction(UserProfileAction.LoadNextPageShopRecom(anyString()))
             } andThen {
                 robot.viewModel.isShopRecomShow.assertTrue()
                 shopRecom.items.size equalTo mockShopRecomIsShown.items.size * 2
@@ -189,7 +190,7 @@ class UserProfileShopRecomViewModelTest {
             }
             it.recordState {
                 coEvery { mockRepo.getShopRecom("") } throws mockException
-                submitAction(UserProfileAction.LoadNextPageShopRecom)
+                submitAction(UserProfileAction.LoadNextPageShopRecom(anyString()))
             } andThen {
                 robot.viewModel.isShopRecomShow.assertTrue()
                 shopRecom.items.size equalTo mockShopRecomIsShown.items.size
