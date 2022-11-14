@@ -1,5 +1,6 @@
 package com.tokopedia.tokochat_common.view.uimodel
 
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.tokochat_common.view.uimodel.base.TokoChatSendableBaseUiModel
 
 /**
@@ -18,6 +19,7 @@ open class TokoChatImageBubbleUiModel protected constructor(
         private set
     var isImageReady: Boolean = builder.isImageReady
         private set
+    val impressHolder = ImpressHolder()
 
     fun updateImageData(imagePath: String, status: Boolean) {
         this.imagePath = imagePath
