@@ -3,6 +3,7 @@ package com.tokopedia.graphql.data.repository;
 import android.text.TextUtils;
 import android.util.Log;
 
+import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
@@ -106,7 +107,17 @@ public class GraphqlRepositoryImpl implements GraphqlRepository {
                     } catch (JsonSyntaxException jse) {
                         LoggingUtils.logGqlSuccessRate(operationName, "0");
                         jse.printStackTrace();
-                        LoggingUtils.logGqlParseError("json", Log.getStackTraceString(jse), String.valueOf(requests));
+                        ArrayList<Map<String, Object>> listRequestVariables = new ArrayList<>();
+                        for (int j = 0; j < requests.size(); j++) {
+                            listRequestVariables.add(requests.get(j).getVariables());
+                        }
+                        LoggingUtils.logGqlParseError(
+                                "json",
+                                Log.getStackTraceString(jse),
+                                String.valueOf(requests),
+                                response.getOriginalResponse().toString(),
+                                new Gson().toJson(listRequestVariables)
+                        );
                     } catch (Exception e) {
                         e.printStackTrace();
                         //Just to avoid any accidental data loss
@@ -164,7 +175,17 @@ public class GraphqlRepositoryImpl implements GraphqlRepository {
             }
         } catch (JsonSyntaxException jse) {
             LoggingUtils.logGqlSuccessRate(operationName, "0");
-            LoggingUtils.logGqlParseError("json", Log.getStackTraceString(jse), String.valueOf(requests));
+            ArrayList<Map<String, Object>> listRequestVariables = new ArrayList<>();
+            for (int j = 0; j < requests.size(); j++) {
+                listRequestVariables.add(requests.get(j).getVariables());
+            }
+            LoggingUtils.logGqlParseError(
+                    "json",
+                    Log.getStackTraceString(jse),
+                    String.valueOf(requests),
+                    "",
+                    new Gson().toJson(listRequestVariables)
+            );
         } catch (Exception e) {
             e.printStackTrace();
         }

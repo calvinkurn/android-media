@@ -3,7 +3,9 @@ package com.tokopedia.graphql.util
 import android.util.Log
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Constants.Companion.MAX_LENGTH_PER_ITEM
 import com.tokopedia.logger.utils.Priority
+import kotlin.math.min
 
 object LoggingUtils {
     const val DEFAULT_RESP_SIZE_THRES = 10000L
@@ -42,14 +44,20 @@ object LoggingUtils {
     }
 
     @JvmStatic
-    fun logGqlParseError(type: String, err: String, request: String) {
+    fun logGqlParseError(type: String, err: String, request: String, response: String, params: String) {
+        val splitResponse = response.chunked(MAX_LENGTH_PER_ITEM)
         ServerLogger.log(
             Priority.P1, "GQL_PARSE_ERROR",
             mapOf(
                 "type" to type,
                 "err" to err.take(Const.GQL_ERROR_MAX_LENGTH).trim(),
-                "req" to request.take(Const.GQL_ERROR_MAX_LENGTH).trim()
-            )
+                "req" to request.take(Const.GQL_ERROR_MAX_LENGTH).trim(),
+                "params" to params
+            ).toMutableMap().apply {
+                splitResponse.forEachIndexed { i, response ->
+                    put("response_$i", response)
+                }
+            }
         )
     }
 

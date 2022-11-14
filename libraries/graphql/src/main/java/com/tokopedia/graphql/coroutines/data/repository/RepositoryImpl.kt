@@ -1,6 +1,7 @@
 package com.tokopedia.graphql.coroutines.data.repository
 
 import android.util.Log
+import com.google.gson.Gson
 import com.google.gson.JsonSyntaxException
 import com.tokopedia.graphql.CommonUtils
 import com.tokopedia.graphql.GraphqlConstant
@@ -101,7 +102,11 @@ open class RepositoryImpl @Inject constructor(private val graphqlCloudDataStore:
                 LoggingUtils.logGqlParseError(
                     "json",
                     Log.getStackTraceString(jse),
-                    requests.toString()
+                    requests.toString(),
+                    jsonElement.toString(),
+                    Gson().toJson(requests.map {
+                        it.variables
+                    })
                 )
                 jse.printStackTrace()
             } catch (e: Exception) {
@@ -163,7 +168,15 @@ open class RepositoryImpl @Inject constructor(private val graphqlCloudDataStore:
             }
         } catch (jse: JsonSyntaxException) {
             LoggingUtils.logGqlSuccessRate(operationName, "0")
-            LoggingUtils.logGqlParseError("json", Log.getStackTraceString(jse), requests.toString())
+            LoggingUtils.logGqlParseError(
+                "json",
+                Log.getStackTraceString(jse),
+                requests.toString(),
+                "",
+                Gson().toJson(requests.map {
+                    it.variables
+                })
+            )
             jse.printStackTrace()
         } catch (e: Exception) {
             e.printStackTrace()
