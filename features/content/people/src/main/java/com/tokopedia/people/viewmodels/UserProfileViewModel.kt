@@ -156,6 +156,10 @@ class UserProfileViewModel @AssistedInject constructor(
         viewModelScope.launchCatchError(
             block = {
                 val data = repo.getFeedPosts(profileUserID, cursor)
+                if (cursor.isEmpty() && data.feedXProfileGetProfilePosts.posts.isEmpty()) {
+                    _uiEvent.emit(UserProfileUiEvent.EmptyLoadFirstFeedPosts)
+                    return@launchCatchError
+                }
                 feedPostsContent.value = Success(data)
             },
             onError = {
@@ -168,11 +172,11 @@ class UserProfileViewModel @AssistedInject constructor(
         viewModelScope.launchCatchError(
             block = {
                 val data = repo.getPlayVideo(profileUserID, cursor)
-                if (data != null) {
-                    playPostContent.value = Success(data)
-                } else {
-                    throw NullPointerException("data is null")
+                if (cursor.isEmpty() && data.playGetContentSlot.data.isEmpty()) {
+                    _uiEvent.emit(UserProfileUiEvent.EmptyLoadFirstVideoPosts)
+                    return@launchCatchError
                 }
+                playPostContent.value = Success(data)
             },
             onError = {
                 userPostError.value = it
