@@ -43,7 +43,7 @@ class TopAdsImageView : AppCompatImageView {
 
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(context, attrs, defStyleAttr)
 
-    @Inject
+    @JvmField @Inject
     var viewModelFactory: ViewModelProvider.Factory? = null
 
     private val topAdsImageViewViewModel by lazy {

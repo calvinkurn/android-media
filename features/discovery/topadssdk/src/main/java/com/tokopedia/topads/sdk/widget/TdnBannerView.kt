@@ -31,7 +31,7 @@ class TdnBannerView : FrameLayout {
     private var singleTdnView: SingleTdnView? = null
     private var tdnBannerResponseListener: TdnBannerResponseListener? = null
 
-    @Inject
+    @JvmField @Inject
     var viewModelFactory: ViewModelProvider.Factory? = null
 
     private val topAdsImageViewViewModel by lazy {
