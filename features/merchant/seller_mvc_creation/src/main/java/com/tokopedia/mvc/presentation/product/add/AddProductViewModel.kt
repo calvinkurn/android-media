@@ -18,6 +18,7 @@ import com.tokopedia.mvc.domain.usecase.GetInitiateVoucherPageUseCase
 import com.tokopedia.mvc.domain.usecase.GetShopWarehouseLocationUseCase
 import com.tokopedia.mvc.domain.usecase.ProductListMetaUseCase
 import com.tokopedia.mvc.domain.usecase.ProductListUseCase
+import com.tokopedia.mvc.domain.usecase.ProductV3UseCase
 import com.tokopedia.mvc.domain.usecase.ShopShowcasesByShopIDUseCase
 import com.tokopedia.mvc.domain.usecase.VoucherValidationPartialUseCase
 import com.tokopedia.mvc.presentation.product.add.uimodel.AddProductEffect
@@ -41,7 +42,8 @@ class AddProductViewModel @Inject constructor(
     private val getProductListMetaUseCase: ProductListMetaUseCase,
     private val getProductsUseCase: ProductListUseCase,
     private val getInitiateVoucherPageUseCase: GetInitiateVoucherPageUseCase,
-    private val voucherValidationPartialUseCase: VoucherValidationPartialUseCase
+    private val voucherValidationPartialUseCase: VoucherValidationPartialUseCase,
+    private val productV3UseCase: ProductV3UseCase
 ) : BaseViewModel(dispatchers.main) {
 
     private val _uiState = MutableStateFlow(AddProductUiState())
@@ -76,10 +78,9 @@ class AddProductViewModel @Inject constructor(
             is AddProductEvent.ApplyShowCaseFilter -> handleApplyShopShowcasesFilter(event.selectedShowCases)
             is AddProductEvent.ApplySortFilter -> handleApplySortFilter(event.selectedSort)
             is AddProductEvent.SearchProduct -> handleSearchProduct(event.searchKeyword)
-            is AddProductEvent.TapVariant -> {}
+            is AddProductEvent.TapVariant -> handleTapVariant(event.parentProduct)
         }
     }
-
 
     private fun getProductsAndProductsMetadata(action: VoucherAction, promoType: PromoType, ) {
         launchCatchError(
@@ -434,6 +435,10 @@ class AddProductViewModel @Inject constructor(
         getProducts()
     }
 
+    private fun handleTapVariant(parentProduct: Product) {
+        getVariantDetail(parentProduct)
+        //_uiEffect.tryEmit(AddProductEffect.ShowVariantBottomSheet(parentProduct))
+    }
 
     private fun getShopShowcases() {
         launchCatchError(
@@ -442,6 +447,33 @@ class AddProductViewModel @Inject constructor(
                 val shopShowcases = getShopShowcasesByShopIDUseCase.execute()
                 val sellerCreatedShowcasesOnly = shopShowcases.filter { shopShowcase -> shopShowcase.type != NumberConstant.ID_TOKOPEDIA_CREATED_SHOWCASE_TYPE }
                 _uiState.update { it.copy(shopShowcases = sellerCreatedShowcasesOnly) }
+            },
+            onError = { error ->
+                _uiState.update { it.copy(error = error) }
+            }
+        )
+    }
+
+    private fun getVariantDetail(selectedParentProduct : Product) {
+        launchCatchError(
+            dispatchers.io,
+            block = {
+                val params = ProductV3UseCase.Param(selectedParentProduct.id, 0 )
+                val response = productV3UseCase.execute(params)
+
+                val selections = response.selections
+                val updatedVariantNames = response.products.map { variant ->
+                    val variantName = variant.combinations.mapIndexed { index, combination ->
+                        selections[index].options[combination].value
+                    }
+
+                    val formattedVariantName = variantName.joinToString(separator = " | ") { it  }
+
+                    variant.copy(variantName = formattedVariantName)
+                }
+
+
+                println(updatedVariantNames)
             },
             onError = { error ->
                 _uiState.update { it.copy(error = error) }

@@ -208,6 +208,10 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
             is AddProductEffect.ShowWarehouseLocationBottomSheet -> {
                 showWarehouseBottomSheet(effect.selectedWarehouse, effect.warehouses)
             }
+            is AddProductEffect.ShowVariantBottomSheet -> {
+                val selectedParentProduct = effect.selectedParentProduct
+                val variants = 0
+            }
         }
     }
 
