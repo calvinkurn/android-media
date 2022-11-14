@@ -9,6 +9,7 @@ import com.tokopedia.digital.home.databinding.ViewRechargeHomeMyBillsEntrypointB
 import com.tokopedia.digital.home.model.RechargeHomepageMyBillsEntryPointModel
 import com.tokopedia.digital.home.presentation.listener.RechargeHomepageItemListener
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
 
@@ -36,7 +37,9 @@ class RechargeHomepageMyBillsEntryPointWidgetViewHolder(
             with(binding) {
                 tvTitle.text = sectionItem.content
                 tvSubtitle.text = sectionItem.attributes.soldValue
-                labelWidget.text = sectionItem.subtitle
+                labelWidget.shouldShowWithAction(sectionItem.subtitle.isNotEmpty()) {
+                    labelWidget.text = sectionItem.subtitle
+                }
                 ivProductIcon.loadImage(sectionItem.mediaUrl)
             }
 
