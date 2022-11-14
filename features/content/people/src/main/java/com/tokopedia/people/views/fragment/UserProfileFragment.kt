@@ -337,6 +337,7 @@ class UserProfileFragment @Inject constructor(
             viewModel.uiEvent.collect { event ->
                 when (event) {
                     is UserProfileUiEvent.SuccessLoadTabs -> {
+                        binding.viewFlipper.displayedChild = PAGE_CONTENT
                         if (event.isEmptyContent) {
                             if (viewModel.isSelfProfile) emptyPostSelf() else emptyPostVisitor()
                             mainBinding.userPostContainer.displayedChild = PAGE_EMPTY
@@ -346,6 +347,7 @@ class UserProfileFragment @Inject constructor(
                         }
                     }
                     is UserProfileUiEvent.ErrorGetProfileTab -> {
+                        binding.viewFlipper.displayedChild = PAGE_CONTENT
                         if (binding.swipeRefreshLayout.isRefreshing) {
                             binding.swipeRefreshLayout.isRefreshing = false
                         }
@@ -459,8 +461,6 @@ class UserProfileFragment @Inject constructor(
         }
         binding.headerProfile.title = curr.name
         binding.headerProfile.alpha = 1F
-
-        binding.viewFlipper.displayedChild = PAGE_CONTENT
     }
 
     private fun renderButtonAction(
