@@ -33,7 +33,7 @@
     <string name="flight_search_filter_baggage_label">Gratis Bagasi</string>
     <string name="flight_search_filter_meal_label">In-flight Meal</string>
     <string name="flight_classes_toolbar_title">Kelas penerbangan</string>
-    <string name="flight_labe_all_airport">Semua Bandara</string>
+    <string name="flight_labe_all_airport">Semua Bandara di %s</string>
     <string name="flight_dashboard_adult_passenger">Dewasa</string>
     <string name="flight_dashboard_adult_children">Anak</string>
     <string name="flight_dashboard_adult_infant">Bayi</string>
