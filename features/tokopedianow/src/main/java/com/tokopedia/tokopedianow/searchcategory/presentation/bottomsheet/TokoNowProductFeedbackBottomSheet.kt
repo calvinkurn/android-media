@@ -1,11 +1,14 @@
 package com.tokopedia.tokopedianow.searchcategory.presentation.bottomsheet
 
+import android.app.Activity
+import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
@@ -22,6 +25,7 @@ import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
+
 
 class TokoNowProductFeedbackBottomSheet : BottomSheetUnify() {
 
@@ -91,6 +95,9 @@ class TokoNowProductFeedbackBottomSheet : BottomSheetUnify() {
                 override fun afterTextChanged(p0: Editable?) {}
             })
             val hintColor = ResourcesCompat.getColor(resources,com.tokopedia.unifyprinciples.R.color.Unify_NN400,null)
+            textInputLayout.isHintEnabled = false
+            textInputLayout.isHintAnimationEnabled = false
+            editText.hint = context?.resources?.getString(R.string.tokopedianow_feedback_bottomsheet_input_hint)
             editText.setHintTextColor(hintColor)
         }
     }
@@ -167,6 +174,10 @@ class TokoNowProductFeedbackBottomSheet : BottomSheetUnify() {
     }
 
     private fun getNavigationBarHeight() : Int{
+        if(Build.VERSION.SDK_INT < Build.VERSION_CODES.R){
+            val imm = activity?.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
+            imm.hideSoftInputFromWindow(view?.windowToken, 0)
+        }
         val resources = context?.resources
         val resourceId:Int = resources?.getIdentifier("navigation_bar_height", "dimen", "android").toZeroIfNull()
         return if (resourceId > 0) {
