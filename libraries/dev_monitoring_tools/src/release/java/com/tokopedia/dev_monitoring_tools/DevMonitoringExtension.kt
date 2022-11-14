@@ -2,7 +2,7 @@ package com.tokopedia.dev_monitoring_tools
 
 object DevMonitoringExtension {
 
-    fun initLeakCanary(enable: Boolean = true) {
+    fun initLeakCanary(enable: Boolean = true, application:Application) {
         /* no-op */
     }
 }
