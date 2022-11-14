@@ -23,7 +23,7 @@ class CategoryEmptyProductTest: CategoryTestFixtures(), EmptyProductTestHelper.C
     }
 
     override fun `Given first page product list is empty`(feedbackFieldToggle:Boolean) {
-        var emptyProductModel = "category/emptyproduct/empty-product.json".jsonToObject<CategoryModel>()
+        val emptyProductModel = "category/emptyproduct/empty-product.json".jsonToObject<CategoryModel>()
         if(feedbackFieldToggle)
             emptyProductModel.feedbackFieldToggle.tokonowFeedbackFieldToggle.data.isActive = true
         `Given get category first page use case will be successful`(emptyProductModel)
