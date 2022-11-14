@@ -9,7 +9,9 @@ import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokofood.R
+import com.tokopedia.tokofood.common.constants.ImageUrl
 import com.tokopedia.tokofood.databinding.DriverCallBottomsheetBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -38,7 +40,6 @@ class DriverCallBottomSheet : BottomSheetUnify() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setDriverPhoneNumber()
-        setTitle(getString(com.tokopedia.tokofood.R.string.driver_call_title_bottomsheet))
         setupViews()
     }
 
@@ -52,20 +53,21 @@ class DriverCallBottomSheet : BottomSheetUnify() {
     private fun setupViews() {
         binding?.run {
             if (isCallable == true) {
-                tvDriverCallTitle.text = getString(com.tokopedia.tokofood.R.string.driver_call_enabled_title_bottomsheet)
-                tvDriverCallDesc.text = getString(com.tokopedia.tokofood.R.string.driver_call_enabled_desc_bottomsheet)
-                btnDriverCall.show()
+                tokofoodIvMaskingPhoneNumber.loadImage(ImageUrl.OrderTracking.IV_MASKING_PHONE_NUMBER)
+                tokofoodTvMaskingPhoneNumberTitle.text = getString(com.tokopedia.tokofood.R.string.driver_call_enabled_title_bottomsheet)
+                tokofoodTvMaskingPhoneNumberDesc.text = getString(com.tokopedia.tokofood.R.string.driver_call_enabled_desc_bottomsheet)
+                tokofoodBtnMaskingPhoneNumber.show()
                 setDriverCallBtn()
             } else {
-                tvDriverCallTitle.text = getString(com.tokopedia.tokofood.R.string.driver_call_disabled_title_bottomsheet)
-                tvDriverCallDesc.text = getString(com.tokopedia.tokofood.R.string.driver_call_disabled_desc_bottomsheet)
-                btnDriverCall.hide()
+                tokofoodTvMaskingPhoneNumberTitle.text = getString(com.tokopedia.tokofood.R.string.driver_call_disabled_title_bottomsheet)
+                tokofoodTvMaskingPhoneNumberDesc.text = getString(com.tokopedia.tokofood.R.string.driver_call_disabled_desc_bottomsheet)
+                tokofoodBtnMaskingPhoneNumber.hide()
             }
         }
     }
 
     private fun setDriverCallBtn() {
-        binding?.btnDriverCall?.setOnClickListener {
+        binding?.tokofoodBtnMaskingPhoneNumber?.setOnClickListener {
             tracking?.invoke()
             driverPhoneNumber?.let { driverPhoneNumber ->
                 driverCallToIntent(driverPhoneNumber)
