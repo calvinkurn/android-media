@@ -17,9 +17,9 @@
         android:id="@+id/button_send"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_lvl4"
-        android:layout_marginEnd="@dimen/spacing_lvl4"
-        android:layout_marginBottom="@dimen/spacing_lvl4"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp"
         android:enabled="false"
         android:text="@string/feedback_form_button_send" />
 </LinearLayout>

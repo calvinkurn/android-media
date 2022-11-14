@@ -3439,7 +3439,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                         UploadPrescriptionUiModel uploadPrescriptionUiModel = (UploadPrescriptionUiModel) shipmentDataList.get(i);
                         if (epharmacyError) {
                             if (firstFoundPosition == 0) {
-                                showToastNormal(getActivity().getString(R.string.message_error_prescription_not_found));
+                                showToastNormal(getActivity().getString(com.tokopedia.purchase_platform.common.R.string.pp_epharmacy_message_error_prescription_not_found));
                                 firstFoundPosition = i;
                             }
                             uploadPrescriptionUiModel.setError(true);

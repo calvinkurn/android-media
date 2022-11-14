@@ -42,7 +42,8 @@ import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiUseCase
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
-import com.tokopedia.purchase_platform.common.feature.ethicaldrug.UploadPrescriptionUiModel
+import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.model.UploadPrescriptionUiModel
+import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.usecase.GetPrescriptionIdsUseCase
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnBottomSheetModel
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnDataItemModel
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnProductItemModel
@@ -245,7 +246,7 @@ class ShipmentPresenterCheckoutTest {
 
         val mockContext = mockk<Activity>()
         val errorMessage = "error"
-        every { mockContext.getString(R.string.default_request_error_unknown_short) } returns errorMessage
+        every { mockContext.getString(com.tokopedia.abstraction.R.string.default_request_error_unknown_short) } returns errorMessage
         every { mockContext.getString(R.string.message_error_checkout_empty) } returns errorMessage
         every { view.activityContext } returns mockContext
 
