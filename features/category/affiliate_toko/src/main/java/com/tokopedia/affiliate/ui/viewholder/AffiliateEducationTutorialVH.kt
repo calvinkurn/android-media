@@ -2,8 +2,11 @@ package com.tokopedia.affiliate.ui.viewholder
 
 import android.view.View
 import androidx.annotation.LayoutRes
+import androidx.cardview.widget.CardView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.affiliate.PAGE_EDUCATION_TUTORIAL
+import com.tokopedia.affiliate.interfaces.AffiliateEducationTopicTutorialClickInterface
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEducationTutorialUiModel
 import com.tokopedia.affiliate_toko.R
 import com.tokopedia.kotlin.extensions.view.hide
@@ -13,7 +16,8 @@ import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 
 class AffiliateEducationTutorialVH(
-    itemView: View
+    itemView: View,
+    private val affiliateEducationTopicTutorialClickInterface: AffiliateEducationTopicTutorialClickInterface?
 ) : AbstractViewHolder<AffiliateEducationTutorialUiModel>(itemView) {
 
     companion object {
@@ -41,6 +45,13 @@ class AffiliateEducationTutorialVH(
                         itemView.context,
                         com.tokopedia.unifyprinciples.R.color.Unify_N0
                     )
+                )
+            }
+        } else {
+            itemView.findViewById<CardView>(R.id.cv_tutorial_topic)?.setOnClickListener {
+                affiliateEducationTopicTutorialClickInterface?.onCardClick(
+                    PAGE_EDUCATION_TUTORIAL,
+                    element?.articleTopic?.id.toString()
                 )
             }
         }

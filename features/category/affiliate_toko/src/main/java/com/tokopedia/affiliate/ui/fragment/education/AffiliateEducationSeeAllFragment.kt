@@ -15,9 +15,10 @@ import com.tokopedia.affiliate.PAGE_EDUCATION_EVENT
 import com.tokopedia.affiliate.adapter.AffiliateAdapter
 import com.tokopedia.affiliate.adapter.AffiliateAdapterFactory
 import com.tokopedia.affiliate.di.DaggerAffiliateComponent
-import com.tokopedia.affiliate.ui.activity.AffiliateEducationSeeAllActivity
+import com.tokopedia.affiliate.interfaces.AffiliateEducationSeeAllCardClickInterface
 import com.tokopedia.affiliate.viewmodel.AffiliateEducationSeeAllViewModel
 import com.tokopedia.affiliate_toko.R
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelFragment
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.basemvvm.viewmodel.ViewModelProviderFactory
@@ -26,14 +27,20 @@ import com.tokopedia.unifyprinciples.Typography
 import javax.inject.Inject
 
 class AffiliateEducationSeeAllFragment :
-    BaseViewModelFragment<AffiliateEducationSeeAllViewModel>() {
+    BaseViewModelFragment<AffiliateEducationSeeAllViewModel>(),
+    AffiliateEducationSeeAllCardClickInterface {
 
     private var educationVM: AffiliateEducationSeeAllViewModel? = null
     private var pageType: String? = null
+    private var categoryId: String? = null
     private var page: String? = null
     private var loadMoreTriggerListener: EndlessRecyclerViewScrollListener? = null
     private val seeAllAdapter by lazy {
-        AffiliateAdapter(AffiliateAdapterFactory())
+        AffiliateAdapter(
+            AffiliateAdapterFactory(
+                educationSeeAllCardClickInterface = this
+            )
+        )
     }
     private var hasMoreData = true
 
@@ -43,10 +50,12 @@ class AffiliateEducationSeeAllFragment :
 
     companion object {
         private const val PARAM_PAGE_TYPE = "param_page_type"
-        fun newInstance(pageType: String?): Fragment {
+        private const val PARAM_CATEGORY_ID = "param_category_id"
+        fun newInstance(pageType: String?, categoryID: String?): Fragment {
             return AffiliateEducationSeeAllFragment().apply {
                 arguments = Bundle().apply {
                     putString(PARAM_PAGE_TYPE, pageType)
+                    putString(PARAM_CATEGORY_ID, categoryID)
                 }
             }
         }
@@ -63,13 +72,15 @@ class AffiliateEducationSeeAllFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        pageType = arguments?.getString(AffiliateEducationSeeAllActivity.PARAM_PAGE_TYPE)
+        pageType = arguments?.getString(PARAM_PAGE_TYPE)
+        categoryId = arguments?.getString(PARAM_CATEGORY_ID)
         page = when (pageType) {
             PAGE_EDUCATION_EVENT -> getString(R.string.affiliate_event)
             PAGE_EDUCATION_ARTICLE -> getString(R.string.affiliate_artikel)
-            else -> ""
+            else -> getString(R.string.affiliate_artikel)
         }
-        educationVM?.fetchSeeAllData(pageType)
+        educationVM?.fetchSeeAllData(pageType, categoryId)
+
         val layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         loadMoreTriggerListener = getEndlessRecyclerViewListener(layoutManager)
 
@@ -91,7 +102,7 @@ class AffiliateEducationSeeAllFragment :
 
     private fun setObservers() {
         educationVM?.getEducationSeeAllData()?.observe(viewLifecycleOwner) {
-            seeAllAdapter.setVisitables(it)
+            seeAllAdapter.addMoreData(it)
             loadMoreTriggerListener?.updateStateAfterGetData()
         }
 
@@ -113,8 +124,8 @@ class AffiliateEducationSeeAllFragment :
     ): EndlessRecyclerViewScrollListener {
         return object : EndlessRecyclerViewScrollListener(recyclerViewLayoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                if (!hasMoreData) {
-                    educationVM?.fetchSeeAllData(pageType)
+                if (hasMoreData) {
+                    educationVM?.fetchSeeAllData(pageType, categoryId)
                 }
             }
         }
@@ -138,5 +149,22 @@ class AffiliateEducationSeeAllFragment :
             .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
             .build()
             .injectEducationSeeMoreFragment(this)
+    }
+
+    override fun onCardClick(pageType: String, slug: String) {
+        context?.let {
+            RouteManager.route(
+                it,
+                getArticleEventUrl(
+                    slug,
+                    if (pageType == PAGE_EDUCATION_EVENT) getString(R.string.affiliate_event)
+                    else getString(R.string.affiliate_artikel)
+                )
+            )
+        }
+    }
+
+    private fun getArticleEventUrl(slug: String, title: String): String {
+        return "tokopedia://webview?titlebar=true&title=$title&url=https://affiliate.tokopedia.com/edu/$slug?navigation=hide"
     }
 }

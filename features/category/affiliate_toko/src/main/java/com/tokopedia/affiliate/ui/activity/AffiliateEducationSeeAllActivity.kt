@@ -14,12 +14,15 @@ class AffiliateEducationSeeAllActivity :
 
     companion object {
         const val PARAM_PAGE_TYPE = "param_page_type"
+        const val PARAM_CATEGORY_ID = "param_category_id"
         fun createIntent(
             context: Context,
-            pageType: String?
+            pageType: String?,
+            categoryId: String?
         ): Intent {
             val intent = Intent(context, AffiliateEducationSeeAllActivity::class.java)
             intent.putExtra(PARAM_PAGE_TYPE, pageType)
+            intent.putExtra(PARAM_CATEGORY_ID, categoryId)
             return intent
         }
     }
@@ -30,15 +33,15 @@ class AffiliateEducationSeeAllActivity :
         supportActionBar?.hide()
     }
 
-    override fun getNewFragment(): Fragment? {
+    override fun getNewFragment(): Fragment {
         return getAffiliateEducationSeeAllFragment()
     }
 
-    private fun getAffiliateEducationSeeAllFragment(): Fragment? {
-        intent?.getStringExtra(PARAM_PAGE_TYPE)?.let {
-            return AffiliateEducationSeeAllFragment.newInstance(it)
-        }
-        return null
+    private fun getAffiliateEducationSeeAllFragment(): Fragment {
+        return AffiliateEducationSeeAllFragment.newInstance(
+            intent?.getStringExtra(PARAM_PAGE_TYPE),
+            intent?.getStringExtra(PARAM_CATEGORY_ID),
+        )
     }
 
     private fun initInject() {

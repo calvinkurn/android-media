@@ -7,12 +7,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.affiliate.adapter.AffiliateAdapter
 import com.tokopedia.affiliate.adapter.AffiliateAdapterFactory
+import com.tokopedia.affiliate.interfaces.AffiliateEducationTopicTutorialClickInterface
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEducationArticleTopicRVUiModel
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEducationArticleTopicUiModel
 import com.tokopedia.affiliate_toko.R
 
 class AffiliateEducationArticleTopicRVVH(
-    itemView: View
+    itemView: View,
+    private val affiliateEducationTopicTutorialClickInterface: AffiliateEducationTopicTutorialClickInterface?
 ) : AbstractViewHolder<AffiliateEducationArticleTopicRVUiModel>(itemView) {
 
     private var articleTopicAdapter: AffiliateAdapter? = null
@@ -25,7 +27,11 @@ class AffiliateEducationArticleTopicRVVH(
 
     override fun bind(element: AffiliateEducationArticleTopicRVUiModel?) {
         articleTopicAdapter =
-            AffiliateAdapter(AffiliateAdapterFactory())
+            AffiliateAdapter(
+                AffiliateAdapterFactory(
+                    affiliateEducationTopicTutorialClickInterface = affiliateEducationTopicTutorialClickInterface
+                )
+            )
         val rvArticleTopic = itemView.findViewById<RecyclerView>(R.id.rv_education_article_topic)
         val rvLayoutManager =
             LinearLayoutManager(itemView.context, RecyclerView.HORIZONTAL, false)

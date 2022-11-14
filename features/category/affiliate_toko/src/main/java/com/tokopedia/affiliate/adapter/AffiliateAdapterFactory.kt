@@ -5,8 +5,12 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.affiliate.interfaces.AddSocialInterface
 import com.tokopedia.affiliate.interfaces.AffiliateDatePickerRangeChangeInterface
+import com.tokopedia.affiliate.interfaces.AffiliateEducationBannerClickInterface
+import com.tokopedia.affiliate.interfaces.AffiliateEducationEventArticleClickInterface
 import com.tokopedia.affiliate.interfaces.AffiliateEducationLearnClickInterface
-import com.tokopedia.affiliate.interfaces.AffiliateEducationSeeMoreClickInterface
+import com.tokopedia.affiliate.interfaces.AffiliateEducationSeeAllCardClickInterface
+import com.tokopedia.affiliate.interfaces.AffiliateEducationSocialCTAClickInterface
+import com.tokopedia.affiliate.interfaces.AffiliateEducationTopicTutorialClickInterface
 import com.tokopedia.affiliate.interfaces.AffiliateInfoClickInterfaces
 import com.tokopedia.affiliate.interfaces.AffiliatePerformaClickInterfaces
 import com.tokopedia.affiliate.interfaces.AffiliatePerformanceChipClick
@@ -109,8 +113,12 @@ class AffiliateAdapterFactory(
     private var bottomNavBarClickListener: AffiliateBottomNavBarInterface? = null,
     private var affiliateInfoClickInterfaces: AffiliateInfoClickInterfaces? = null,
     private var affiliatePerformanceChipClick: AffiliatePerformanceChipClick? = null,
-    private var affiliateEducationSeeMoreClickInterface: AffiliateEducationSeeMoreClickInterface? = null,
-    private var affiliateEducationLearnClickInterface: AffiliateEducationLearnClickInterface? = null
+    private var affiliateEducationEventArticleClickInterface: AffiliateEducationEventArticleClickInterface? = null,
+    private var affiliateEducationLearnClickInterface: AffiliateEducationLearnClickInterface? = null,
+    private var affiliateEducationTopicTutorialClickInterface: AffiliateEducationTopicTutorialClickInterface? = null,
+    private var educationSocialCTAClickInterface: AffiliateEducationSocialCTAClickInterface? = null,
+    private var educationSeeAllCardClickInterface: AffiliateEducationSeeAllCardClickInterface? = null,
+    private var educationBannerClickInterface: AffiliateEducationBannerClickInterface? = null
 ) :
     BaseAdapterTypeFactory(), AffiliateAdapterTypeFactory {
 
@@ -143,19 +151,19 @@ class AffiliateAdapterFactory(
             AffiliateProductMetricVH.LAYOUT -> AffiliateProductMetricVH(parent)
             AffiliatePerformanceChipRVVH.LAYOUT -> AffiliatePerformanceChipRVVH(parent, affiliatePerformanceChipClick)
             AffiliatePerformanceChipVH.LAYOUT -> AffiliatePerformanceChipVH(parent, affiliatePerformanceChipClick)
-            AffiliateEducationBannerItemVH.LAYOUT -> AffiliateEducationBannerItemVH(parent)
-            AffiliateEducationArticleTopicRVVH.LAYOUT -> AffiliateEducationArticleTopicRVVH(parent)
-            AffiliateEducationArticleTopicVH.LAYOUT -> AffiliateEducationArticleTopicVH(parent)
-            AffiliateEducationEventRVVH.LAYOUT -> AffiliateEducationEventRVVH(parent, affiliateEducationSeeMoreClickInterface = affiliateEducationSeeMoreClickInterface)
-            AffiliateEducationEventVH.LAYOUT -> AffiliateEducationEventVH(parent)
-            AffiliateEducationArticleRVVH.LAYOUT -> AffiliateEducationArticleRVVH(parent, affiliateEducationSeeMoreClickInterface = affiliateEducationSeeMoreClickInterface)
-            AffiliateEducationArticleVH.LAYOUT -> AffiliateEducationArticleVH(parent)
-            AffiliateEducationTutorialRVVH.LAYOUT -> AffiliateEducationTutorialRVVH(parent)
-            AffiliateEducationTutorialVH.LAYOUT -> AffiliateEducationTutorialVH(parent)
-            AffiliateEducationSocialRVVH.LAYOUT -> AffiliateEducationSocialRVVH(parent)
-            AffiliateEducationSocialVH.LAYOUT -> AffiliateEducationSocialVH(parent)
-            AffiliateEducationLearnVH.LAYOUT -> AffiliateEducationLearnVH(parent, affiliateEducationLearnClickInterface = affiliateEducationLearnClickInterface)
-            AffiliateEducationSeeAllVH.LAYOUT -> AffiliateEducationSeeAllVH(parent)
+            AffiliateEducationBannerItemVH.LAYOUT -> AffiliateEducationBannerItemVH(parent, educationBannerClickInterface)
+            AffiliateEducationArticleTopicRVVH.LAYOUT -> AffiliateEducationArticleTopicRVVH(parent, affiliateEducationTopicTutorialClickInterface)
+            AffiliateEducationArticleTopicVH.LAYOUT -> AffiliateEducationArticleTopicVH(parent, affiliateEducationTopicTutorialClickInterface)
+            AffiliateEducationEventRVVH.LAYOUT -> AffiliateEducationEventRVVH(parent, affiliateEducationEventArticleClickInterface)
+            AffiliateEducationEventVH.LAYOUT -> AffiliateEducationEventVH(parent, affiliateEducationEventArticleClickInterface)
+            AffiliateEducationArticleRVVH.LAYOUT -> AffiliateEducationArticleRVVH(parent, affiliateEducationEventArticleClickInterface)
+            AffiliateEducationArticleVH.LAYOUT -> AffiliateEducationArticleVH(parent, affiliateEducationEventArticleClickInterface)
+            AffiliateEducationTutorialRVVH.LAYOUT -> AffiliateEducationTutorialRVVH(parent, affiliateEducationTopicTutorialClickInterface)
+            AffiliateEducationTutorialVH.LAYOUT -> AffiliateEducationTutorialVH(parent, affiliateEducationTopicTutorialClickInterface)
+            AffiliateEducationSocialRVVH.LAYOUT -> AffiliateEducationSocialRVVH(parent, educationSocialCTAClickInterface)
+            AffiliateEducationSocialVH.LAYOUT -> AffiliateEducationSocialVH(parent,educationSocialCTAClickInterface)
+            AffiliateEducationLearnVH.LAYOUT -> AffiliateEducationLearnVH(parent, affiliateEducationLearnClickInterface)
+            AffiliateEducationSeeAllVH.LAYOUT -> AffiliateEducationSeeAllVH(parent, educationSeeAllCardClickInterface)
             else -> super.createViewHolder(parent, type)
         }
     }

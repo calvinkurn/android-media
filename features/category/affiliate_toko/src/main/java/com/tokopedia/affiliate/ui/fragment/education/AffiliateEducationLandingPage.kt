@@ -1,6 +1,5 @@
 package com.tokopedia.affiliate.ui.fragment.education
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,23 +7,34 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.affiliate.AFFILIATE_HELP_URL
+import com.tokopedia.affiliate.AFFILIATE_HELP_URL_WEBVIEW
+import com.tokopedia.affiliate.PAGE_EDUCATION_ARTICLE
+import com.tokopedia.affiliate.PAGE_EDUCATION_EVENT
 import com.tokopedia.affiliate.adapter.AffiliateAdapter
 import com.tokopedia.affiliate.adapter.AffiliateAdapterFactory
-import com.tokopedia.affiliate.di.AffiliateComponent
 import com.tokopedia.affiliate.di.DaggerAffiliateComponent
+import com.tokopedia.affiliate.interfaces.AffiliateEducationBannerClickInterface
+import com.tokopedia.affiliate.interfaces.AffiliateEducationEventArticleClickInterface
 import com.tokopedia.affiliate.interfaces.AffiliateEducationLearnClickInterface
-import com.tokopedia.affiliate.interfaces.AffiliateEducationSeeMoreClickInterface
+import com.tokopedia.affiliate.interfaces.AffiliateEducationSocialCTAClickInterface
+import com.tokopedia.affiliate.interfaces.AffiliateEducationTopicTutorialClickInterface
+import com.tokopedia.affiliate.ui.activity.AffiliateActivity
 import com.tokopedia.affiliate.ui.activity.AffiliateEducationSeeAllActivity
-import com.tokopedia.affiliate.ui.activity.AffiliateWebViewActivity
 import com.tokopedia.affiliate.viewmodel.AffiliateEducationLandingViewModel
 import com.tokopedia.affiliate_toko.R
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelFragment
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
+import com.tokopedia.searchbar.navigation_component.NavToolbar
+import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
+import com.tokopedia.searchbar.navigation_component.icons.IconList
+import com.tokopedia.unifyprinciples.Typography
 import javax.inject.Inject
 
 class AffiliateEducationLandingPage : BaseViewModelFragment<AffiliateEducationLandingViewModel>(),
-    AffiliateEducationSeeMoreClickInterface, AffiliateEducationLearnClickInterface {
+    AffiliateEducationEventArticleClickInterface, AffiliateEducationLearnClickInterface,
+    AffiliateEducationTopicTutorialClickInterface, AffiliateEducationSocialCTAClickInterface,
+    AffiliateEducationBannerClickInterface {
 
     private var eduViewModel: AffiliateEducationLandingViewModel? = null
 
@@ -45,14 +55,11 @@ class AffiliateEducationLandingPage : BaseViewModelFragment<AffiliateEducationLa
     }
 
     override fun initInject() {
-        getComponent().injectEducationLandingPage(this)
-    }
-
-    private fun getComponent(): AffiliateComponent =
         DaggerAffiliateComponent
             .builder()
             .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
-            .build()
+            .build().injectEducationLandingPage(this)
+    }
 
     companion object {
         fun getFragmentInstance() = AffiliateEducationLandingPage()
@@ -68,12 +75,24 @@ class AffiliateEducationLandingPage : BaseViewModelFragment<AffiliateEducationLa
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        view.findViewById<NavToolbar>(R.id.edukasi_navToolbar)?.run {
+            viewLifecycleOwner.lifecycle.addObserver(this)
+            setIcon(IconBuilder().addIcon(IconList.ID_NAV_GLOBAL) {})
+            getCustomViewContentView()?.findViewById<Typography>(R.id.navbar_tittle)?.text =
+                getString(R.string.affiliate_edukasi)
+            setOnBackButtonClickListener {
+                (activity as? AffiliateActivity)?.handleBackButton(false)
+            }
+        }
         eduViewModel?.getEducationPageData()?.observe(viewLifecycleOwner) {
             val adapter =
                 AffiliateAdapter(
                     AffiliateAdapterFactory(
-                        affiliateEducationSeeMoreClickInterface = this,
-                        affiliateEducationLearnClickInterface = this
+                        affiliateEducationEventArticleClickInterface = this,
+                        affiliateEducationLearnClickInterface = this,
+                        affiliateEducationTopicTutorialClickInterface = this,
+                        educationSocialCTAClickInterface = this,
+                        educationBannerClickInterface = this
                     )
                 )
             adapter.setVisitables(it)
@@ -81,23 +100,60 @@ class AffiliateEducationLandingPage : BaseViewModelFragment<AffiliateEducationLa
         }
     }
 
-    override fun onSeeMoreClickInterface(pageType: String) {
+    override fun onSeeMoreClick(pageType: String, categoryId: String) {
         context?.let {
-            startActivity(AffiliateEducationSeeAllActivity.createIntent(it, pageType))
+            startActivity(AffiliateEducationSeeAllActivity.createIntent(it, pageType, categoryId))
+        }
+    }
+
+    override fun onDetailClick(pageType: String, slug: String) {
+        context?.let {
+            RouteManager.route(
+                it,
+                getArticleEventUrl(
+                    slug,
+                    if (pageType == PAGE_EDUCATION_EVENT) getString(R.string.affiliate_event)
+                    else getString(R.string.affiliate_artikel)
+                )
+            )
         }
     }
 
     override fun onKamusClick() {
         context?.let {
-            startActivity(AffiliateWebViewActivity.createIntent(it, AFFILIATE_HELP_URL))
+            startActivity(
+                AffiliateEducationSeeAllActivity.createIntent(
+                    it,
+                    PAGE_EDUCATION_ARTICLE,
+                    "171841"
+                )
+            )
         }
     }
 
     override fun onBantuanClick() {
         context?.let {
-            startActivity(AffiliateWebViewActivity.createIntent(it, AFFILIATE_HELP_URL))
+            RouteManager.route(it, AFFILIATE_HELP_URL_WEBVIEW)
         }
     }
 
+    override fun onCardClick(pageType: String, categoryId: String) {
+        context?.let {
+            startActivity(AffiliateEducationSeeAllActivity.createIntent(it, pageType, categoryId))
+        }
+    }
 
+    private fun getArticleEventUrl(slug: String, title: String): String {
+        return "tokopedia://webview?titlebar=true&title=$title&url=https://affiliate.tokopedia.com/edu/$slug?navigation=hide"
+    }
+
+    override fun onSocialClick(channel: String, url: String) {
+        // TODO Redirect user to affiliate social page
+    }
+
+    override fun onBannerClick(url: String) {
+        context?.let {
+            RouteManager.route(it, url)
+        }
+    }
 }

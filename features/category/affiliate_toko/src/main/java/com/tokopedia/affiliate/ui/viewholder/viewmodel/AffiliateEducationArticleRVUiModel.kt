@@ -5,8 +5,8 @@ import com.tokopedia.affiliate.adapter.AffiliateAdapterTypeFactory
 import com.tokopedia.affiliate.model.response.AffiliateEducationArticleCardsResponse
 
 class AffiliateEducationArticleRVUiModel(
-    val articleList:
-    List<AffiliateEducationArticleCardsResponse.CardsArticle.Data.CardsItem.Article?>?
+    val article:
+    AffiliateEducationArticleCardsResponse.CardsArticle.Data.CardsItem?
 ) : Visitable<AffiliateAdapterTypeFactory> {
 
     override fun type(typeFactory: AffiliateAdapterTypeFactory): Int {

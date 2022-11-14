@@ -5,6 +5,7 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.affiliate.PAGE_EDUCATION_ARTICLE
 import com.tokopedia.affiliate.PAGE_EDUCATION_EVENT
+import com.tokopedia.affiliate.interfaces.AffiliateEducationSeeAllCardClickInterface
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEducationSeeAllUiModel
 import com.tokopedia.affiliate_toko.R
 import com.tokopedia.media.loader.loadImage
@@ -12,7 +13,8 @@ import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 
 class AffiliateEducationSeeAllVH(
-    itemView: View
+    itemView: View,
+    private val seeAllCardClickInterface: AffiliateEducationSeeAllCardClickInterface?
 ) : AbstractViewHolder<AffiliateEducationSeeAllUiModel>(itemView) {
 
     companion object {
@@ -45,5 +47,11 @@ class AffiliateEducationSeeAllVH(
                 }
                 else -> ""
             }
+        itemView.findViewById<View>(R.id.see_all_container)?.setOnClickListener {
+            seeAllCardClickInterface?.onCardClick(
+                element?.pageType.orEmpty(),
+                element?.article?.slug.orEmpty()
+            )
+        }
     }
 }

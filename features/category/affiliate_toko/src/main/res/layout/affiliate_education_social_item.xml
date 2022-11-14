@@ -71,7 +71,7 @@
                 app:typographyType="small" />
 
             <com.tokopedia.unifycomponents.UnifyButton
-                android:id="@+id/button_share_follow"
+                android:id="@+id/button_social_follow"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_margin="8dp"

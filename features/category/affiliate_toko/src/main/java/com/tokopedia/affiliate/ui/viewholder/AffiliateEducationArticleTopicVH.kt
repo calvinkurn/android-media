@@ -9,6 +9,8 @@ import com.google.android.material.shape.MaterialShapeDrawable
 import com.google.android.material.shape.ShapeAppearanceModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.affiliate.PAGE_EDUCATION_ARTICLE_TOPIC
+import com.tokopedia.affiliate.interfaces.AffiliateEducationTopicTutorialClickInterface
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEducationArticleTopicUiModel
 import com.tokopedia.affiliate_toko.R
 import com.tokopedia.media.loader.loadImage
@@ -16,7 +18,8 @@ import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 
 class AffiliateEducationArticleTopicVH(
-    itemView: View
+    itemView: View,
+    private val affiliateEducationTopicTutorialClickInterface: AffiliateEducationTopicTutorialClickInterface?
 ) : AbstractViewHolder<AffiliateEducationArticleTopicUiModel>(itemView) {
 
     companion object {
@@ -54,6 +57,12 @@ class AffiliateEducationArticleTopicVH(
         itemView.findViewById<ImageUnify>(R.id.ic_article_topic)
             .loadImage(element?.articleTopic?.icon?.url)
         itemView.findViewById<Typography>(R.id.tv_article_topic).text = element?.articleTopic?.title
+        itemView.findViewById<CardView>(R.id.cv_artice_topic).setOnClickListener {
+            affiliateEducationTopicTutorialClickInterface?.onCardClick(
+                PAGE_EDUCATION_ARTICLE_TOPIC,
+                element?.articleTopic?.id.toString()
+            )
+        }
         ViewCompat.setBackground(
             itemView.findViewById<CardView>(R.id.cv_artice_topic),
             customCornerShape

@@ -47,14 +47,25 @@ class AffiliateEducationLandingViewModel @Inject constructor(
         launchCatchError(block = {
             val educationBanners = educationBannerUseCase.getEducationBanners()
             val educationCategories = educationCategoryUseCase.getEducationCategoryTree()
-            val educationArticleCards = educationArticleCardsUseCase.getEducationArticleCards(0, limit = 4)
-            convertToVisitable(educationBanners, educationCategories, educationArticleCards)
+            val educationEventCards = educationArticleCardsUseCase.getEducationArticleCards(
+                0, limit = 4, filter = "highlighted"
+            )
+            val educationArticleCards = educationArticleCardsUseCase.getEducationArticleCards(
+                0, limit = 4
+            )
+            convertToVisitable(
+                educationBanners,
+                educationCategories,
+                educationEventCards,
+                educationArticleCards
+            )
         }, onError = { Timber.e(it) })
     }
 
     private fun convertToVisitable(
         educationBannerResponse: AffiliateEducationBannerResponse,
         educationCategoryResponse: AffiliateEducationCategoryResponse,
+        educationEventCards: AffiliateEducationArticleCardsResponse,
         educationArticleCards: AffiliateEducationArticleCardsResponse
     ) {
         val tempList = mutableListOf<Visitable<AffiliateAdapterTypeFactory>>()
@@ -71,9 +82,11 @@ class AffiliateEducationLandingViewModel @Inject constructor(
                     AffiliateEducationArticleTopicRVUiModel(articleTopics)
                 )
             }
+            educationEventCards.cardsArticle?.data?.cards?.let {
+                tempList.add(AffiliateEducationEventRVUiModel(it[0]))
+            }
             educationArticleCards.cardsArticle?.data?.cards?.let {
-                tempList.add(AffiliateEducationEventRVUiModel(it[0]?.articles))
-                tempList.add(AffiliateEducationArticleRVUiModel(it[0]?.articles))
+                tempList.add(AffiliateEducationArticleRVUiModel(it[0]))
             }
             if (tutorial?.isNotEmpty() == true) {
                 tutorial.add(
@@ -92,33 +105,36 @@ class AffiliateEducationLandingViewModel @Inject constructor(
                 listOf(
                     AffiliateEducationSocialData(
                         socialChannel = "Instagram",
-                        followCount = "12.3k Followers",
+                        followCount = "91k Followers",
                         headerImage = "https://images.unsplash.com/photo-1519638399535-1b036603ac77?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8YW5pbWV8ZW58MHx8MHx8&auto=format&fit=crop&w=800&q=60",
-                        icon = IconUnify.INSTAGRAM
+                        icon = IconUnify.INSTAGRAM,
+                        url = "https://www.instagram.com/tokopediaffiliate"
                     ),
                     AffiliateEducationSocialData(
                         socialChannel = "Facebook",
-                        followCount = "12.3k Followers",
+                        followCount = "1k Members",
                         headerImage = "https://images.unsplash.com/photo-1519638399535-1b036603ac77?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8YW5pbWV8ZW58MHx8MHx8&auto=format&fit=crop&w=800&q=60",
-                        icon = IconUnify.FACEBOOK
+                        icon = IconUnify.FACEBOOK,
+                        url = "https://www.facebook.com/groups/akademikreatortokopedia"
                     ),
                     AffiliateEducationSocialData(
                         socialChannel = "Telegram",
-                        followCount = "12.3k Followers",
+                        followCount = "11k Members",
                         headerImage = "https://images.unsplash.com/photo-1519638399535-1b036603ac77?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8YW5pbWV8ZW58MHx8MHx8&auto=format&fit=crop&w=800&q=60",
-                        icon = IconUnify.TELEGRAM
+                        icon = IconUnify.TELEGRAM,
+                        url = "https://t.me/+shJRVBgfGXc1MzZl"
                     ),
                     AffiliateEducationSocialData(
                         socialChannel = "Youtube",
-                        followCount = "12.3k Followers",
+                        followCount = "1k Subscribers",
                         headerImage = "https://images.unsplash.com/photo-1519638399535-1b036603ac77?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8YW5pbWV8ZW58MHx8MHx8&auto=format&fit=crop&w=800&q=60",
-                        icon = IconUnify.YOUTUBE
+                        icon = IconUnify.YOUTUBE,
+                        url = "https://www.youtube.com/c/AkademiKreatorTokopedia"
                     )
                 )
             )
         )
         tempList.add(AffiliateEducationLearnUiModel())
-
         educationPageData.value = tempList
     }
 

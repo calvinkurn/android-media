@@ -12,17 +12,23 @@ import com.google.android.material.shape.RoundedCornerTreatment
 import com.google.android.material.shape.ShapeAppearanceModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.affiliate.interfaces.AffiliateEducationSocialCTAClickInterface
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEducationSocialUiModel
 import com.tokopedia.affiliate_toko.R
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
 
 class AffiliateEducationSocialVH(
-    itemView: View
+    itemView: View,
+    private val socialCTAClickInterface: AffiliateEducationSocialCTAClickInterface?
 ) : AbstractViewHolder<AffiliateEducationSocialUiModel>(itemView) {
 
     companion object {
+
+        private const val ROUND_RADIUS = 0.5f
+
         @JvmField
         @LayoutRes
         var LAYOUT = R.layout.affiliate_education_social_item
@@ -32,7 +38,7 @@ class AffiliateEducationSocialVH(
         val shape = ShapeAppearanceModel
             .builder()
             .setAllCorners(RoundedCornerTreatment())
-            .setAllCornerSizes(RelativeCornerSize(0.5f))
+            .setAllCornerSizes(RelativeCornerSize(ROUND_RADIUS))
             .build()
         MaterialShapeDrawable(shape).apply {
             this.fillColor = ColorStateList(
@@ -60,5 +66,11 @@ class AffiliateEducationSocialVH(
             itemView.findViewById<CardView>(R.id.social_icon_container),
             roundedShape
         )
+        itemView.findViewById<UnifyButton>(R.id.button_social_follow)?.setOnClickListener {
+            socialCTAClickInterface?.onSocialClick(
+                element?.socialItem?.socialChannel.orEmpty(),
+                element?.socialItem?.url.orEmpty()
+            )
+        }
     }
 }

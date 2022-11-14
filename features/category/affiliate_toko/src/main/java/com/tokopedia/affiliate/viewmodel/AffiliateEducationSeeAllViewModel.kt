@@ -3,8 +3,6 @@ package com.tokopedia.affiliate.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.affiliate.PAGE_EDUCATION_ARTICLE
-import com.tokopedia.affiliate.PAGE_EDUCATION_EVENT
 import com.tokopedia.affiliate.adapter.AffiliateAdapterTypeFactory
 import com.tokopedia.affiliate.model.response.AffiliateEducationArticleCardsResponse
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEducationSeeAllUiModel
@@ -12,6 +10,7 @@ import com.tokopedia.affiliate.usecase.AffiliateEducationArticleCardsUseCase
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -25,11 +24,15 @@ class AffiliateEducationSeeAllViewModel @Inject constructor(
     private val totalCount = MutableLiveData<Int>()
     private val hasMoreData = MutableLiveData<Boolean>()
 
-    fun fetchSeeAllData(pageType: String?) {
+    fun fetchSeeAllData(pageType: String?, categoryID: String?) {
         launchCatchError(block = {
             val educationArticleCards =
-                educationArticleCardsUseCase.getEducationArticleCards(0, offset = offset)
+                educationArticleCardsUseCase.getEducationArticleCards(
+                    categoryID.toIntOrZero(),
+                    offset = offset
+                )
             convertToVisitable(educationArticleCards, pageType)
+
         }, onError = { Timber.e(it) })
     }
 
@@ -45,13 +48,11 @@ class AffiliateEducationSeeAllViewModel @Inject constructor(
                 tempList.add(
                     AffiliateEducationSeeAllUiModel(
                         data,
-                        if (pageType == PAGE_EDUCATION_EVENT) PAGE_EDUCATION_EVENT else PAGE_EDUCATION_ARTICLE
+                        pageType.orEmpty()
                     )
                 )
             }
         }
-
-
         educationPageData.value = tempList
     }
 

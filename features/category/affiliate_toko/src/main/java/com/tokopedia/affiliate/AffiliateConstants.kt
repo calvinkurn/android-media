@@ -9,7 +9,10 @@ const val AFFILIATE_REGISTER_REQUEST_CODE = 1024
 const val AFFILIATE_REQUEST_CODE_LOGOUT = 1025
 const val LINK_HISTORY_BUTTON_CLICKED = 403
 const val AFFILIATE_HELP_URL = "https://affiliate.tokopedia.com/help?navigation=hide"
-const val AFFILIATE_TANDC_URL = "https://www.tokopedia.com/help/article/syarat-ketentuan-tokopedia-affiliate"
+const val AFFILIATE_HELP_URL_WEBVIEW =
+    "tokopedia://webview?titlebar=true&url=https://affiliate.tokopedia.com/help?navigation=hide"
+const val AFFILIATE_TANDC_URL =
+    "https://www.tokopedia.com/help/article/syarat-ketentuan-tokopedia-affiliate"
 const val AFFILIATE_LIHAT_KATEGORI = "tokopedia://affiliate/help"
 const val AFFILIATE_APP_LINK = "tokopedia://affiliate"
 const val PAGE_ZERO = 0
@@ -24,22 +27,38 @@ const val MEDIUM = 14
 const val EXTRA_MEDIUM = 16
 const val LARGE = 18
 const val EXTRA_LARGER = 20
-val bodyTypoMap = mapOf(EXTRA_MEDIUM to Typography.DISPLAY_1, MEDIUM to Typography.DISPLAY_2, SMALL to Typography.DISPLAY_3)
-val headerTypoMap = mapOf(SMALL to Typography.DISPLAY_3, MEDIUM to Typography.DISPLAY_2, EXTRA_MEDIUM to Typography.DISPLAY_1,LARGE to Typography.HEADING_3,EXTRA_LARGER to Typography.HEADING_2)
+val bodyTypoMap = mapOf(
+    EXTRA_MEDIUM to Typography.DISPLAY_1,
+    MEDIUM to Typography.DISPLAY_2,
+    SMALL to Typography.DISPLAY_3
+)
+val headerTypoMap = mapOf(
+    SMALL to Typography.DISPLAY_3,
+    MEDIUM to Typography.DISPLAY_2,
+    EXTRA_MEDIUM to Typography.DISPLAY_1,
+    LARGE to Typography.HEADING_3,
+    EXTRA_LARGER to Typography.HEADING_2
+)
 
-const val ON_BOARDING_TUTORIAL_IMAGE_1 = "https://images.tokopedia.net/img/android/res/singleDpi/affiliate_onboaring_first_image.png"
-const val ON_BOARDING_TUTORIAL_IMAGE_2 = "https://images.tokopedia.net/img/android/res/singleDpi/affiliate_onboaring_second_image.png"
-const val ON_BOARDING_TUTORIAL_IMAGE_3 = "https://images.tokopedia.net/img/android/res/singleDpi/affiliate_onboaring_third_image.png"
+const val ON_BOARDING_TUTORIAL_IMAGE_1 =
+    "https://images.tokopedia.net/img/android/res/singleDpi/affiliate_onboaring_first_image.png"
+const val ON_BOARDING_TUTORIAL_IMAGE_2 =
+    "https://images.tokopedia.net/img/android/res/singleDpi/affiliate_onboaring_second_image.png"
+const val ON_BOARDING_TUTORIAL_IMAGE_3 =
+    "https://images.tokopedia.net/img/android/res/singleDpi/affiliate_onboaring_third_image.png"
 
 const val AFFILIATE_SPLASH_TIME = 4000L
 
 const val PROJECT_ID = 20
 
-const val WITHDRAWAL_APPLINK_STAGING = "tokopedia://webview?titlebar=false&url=https://affiliate-staging.tokopedia.com/portal/withdrawal"
+const val WITHDRAWAL_APPLINK_STAGING =
+    "tokopedia://webview?titlebar=false&url=https://affiliate-staging.tokopedia.com/portal/withdrawal"
 
-const val WITHDRAWAL_APPLINK_PROD = "tokopedia://webview?titlebar=false&url=https://affiliate.tokopedia.com/portal/withdrawal"
+const val WITHDRAWAL_APPLINK_PROD =
+    "tokopedia://webview?titlebar=false&url=https://affiliate.tokopedia.com/portal/withdrawal"
 
-const val APP_LINK_DESTINATION = "https://1002-staging-feature.tokopedia.com/portal/withdrawal?module=affiliate"
+const val APP_LINK_DESTINATION =
+    "https://1002-staging-feature.tokopedia.com/portal/withdrawal?module=affiliate"
 
 const val QUERY_CONST = "titlebar=false"
 
@@ -47,15 +66,19 @@ val uri = String.format("%s?%s?url=%s", ApplinkConst.WEBVIEW, QUERY_CONST, APP_L
 
 const val APP_LINK_PARAMS_KYC = "projectId=$PROJECT_ID"
 
-val APP_LINK_KYC = "${ApplinkConst.KYC_NO_PARAM}?$APP_LINK_PARAMS_KYC&${ApplinkConstInternalGlobal.PARAM_CALL_BACK}=$uri"
+val APP_LINK_KYC =
+    "${ApplinkConst.KYC_NO_PARAM}?$APP_LINK_PARAMS_KYC&${ApplinkConstInternalGlobal.PARAM_CALL_BACK}=$uri"
 
 const val AFFILIATE_MICRO_SITE_LINK = "https://affiliate.tokopedia.com/"
 
-const val AFFILIATE_INSTAGRAM_REGEX = "(?:(?:http|https):\\/\\/)?(www.)?(instagram.com|instagr.am|instagr.com)\\/[\\w-_@.]+"
+const val AFFILIATE_INSTAGRAM_REGEX =
+    "(?:(?:http|https):\\/\\/)?(www.)?(instagram.com|instagr.am|instagr.com)\\/[\\w-_@.]+"
 
-const val AFFILIATE_YT_REGEX = "(?:(?:http|https):\\/\\/)?(www.)?(youtube\\.com)\\/((user|channel|c|id)\\/)?[\\w-_@.]+"
+const val AFFILIATE_YT_REGEX =
+    "(?:(?:http|https):\\/\\/)?(www.)?(youtube\\.com)\\/((user|channel|c|id)\\/)?[\\w-_@.]+"
 
-const val AFFILIATE_TIKTOK_REGEX = "(?:(?:http|https):\\/\\/)?((www|vt).)?(tiktok\\.com)\\/[\\w-_@.]+"
+const val AFFILIATE_TIKTOK_REGEX =
+    "(?:(?:http|https):\\/\\/)?((www|vt).)?(tiktok\\.com)\\/[\\w-_@.]+"
 
 const val AFFILIATE_TWITTER_REGEX = "(?:(?:http|https):\\/\\/)?(www.)?(twitter.com)\\/[\\w-_@.]+"
 
@@ -164,3 +187,5 @@ const val PAGE_TYPE_SHOP = "shop"
 
 const val PAGE_EDUCATION_EVENT = "education_event"
 const val PAGE_EDUCATION_ARTICLE = "education_article"
+const val PAGE_EDUCATION_ARTICLE_TOPIC = "education_article_topic"
+const val PAGE_EDUCATION_TUTORIAL = "education_tutorial"
