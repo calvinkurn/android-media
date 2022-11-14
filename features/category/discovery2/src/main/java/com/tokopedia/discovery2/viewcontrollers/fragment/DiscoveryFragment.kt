@@ -800,6 +800,7 @@ class DiscoveryFragment :
     private fun setupBackgroundForHeader(data: PageInfo?) {
 //Todo::        add condition here
         if (data?.identifier == "deals") {
+            hasColouredHeader = true
             activity?.let { navToolbar.setupToolbarWithStatusBar(it) }
             if(isLightThemeStatusBar == true) {
                 navToolbar.hideShadow()
@@ -808,9 +809,10 @@ class DiscoveryFragment :
                 navToolbar.showShadow(true)
             }
             appBarLayout.elevation = 0f
-            hasColouredHeader = true
             val colorDrawable = ColorDrawable(Color.parseColor("#ce9b2c"))
             chooseAddressWidget?.background = colorDrawable
+//            Todo:: Add condition if addressWidget is shown only then update.
+            chooseAddressWidget?.updateWidget()
             appBarLayout.setBackgroundColor(Color.parseColor("#ce9b2c"))
             setupNavScrollListener()
         } else {
