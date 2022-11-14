@@ -184,14 +184,6 @@ class PlayShortsPreparationFragment @Inject constructor(
                     }
                 })
             }
-            is SellerTncBottomSheet -> {
-                childFragment.initViews(viewModel.tncList)
-                childFragment.setListener(object : SellerTncBottomSheet.Listener {
-                    override fun clickCloseIcon() {
-                        /** TODO: need to handle this? */
-                    }
-                })
-            }
         }
     }
 
@@ -454,9 +446,6 @@ class PlayShortsPreparationFragment @Inject constructor(
             is PlayShortsBottomSheet.SwitchAccount -> {
                 showSwitchAccountBottomSheet()
             }
-            is PlayShortsBottomSheet.SellerNotEligible -> {
-                showSellerNotEligibleBottomSheet()
-            }
             else -> {}
         }
     }
@@ -551,12 +540,6 @@ class PlayShortsPreparationFragment @Inject constructor(
 
     private fun showSwitchAccountBottomSheet() {
         ContentAccountTypeBottomSheet
-            .getFragment(childFragmentManager, requireActivity().classLoader)
-            .show(childFragmentManager)
-    }
-
-    private fun showSellerNotEligibleBottomSheet() {
-        SellerTncBottomSheet
             .getFragment(childFragmentManager, requireActivity().classLoader)
             .show(childFragmentManager)
     }

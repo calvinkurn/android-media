@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.content.common.onboarding.view.fragment.UGCOnboardingParentFragment
 import com.tokopedia.content.common.types.ContentCommonUserType
+import com.tokopedia.content.common.ui.bottomsheet.SellerTncBottomSheet
 import com.tokopedia.picker.common.MediaPicker
 import com.tokopedia.picker.common.PageSource
 import com.tokopedia.picker.common.types.ModeType
@@ -58,9 +59,6 @@ class PlayShortsActivity : BaseActivity() {
         setupObserver()
 
         viewModel.submitAction(PlayShortsAction.PreparePage(getPreferredAccountType()))
-
-        /** For mocking purpose */
-//        openPreparation()
     }
 
     override fun onAttachFragment(fragment: Fragment) {
@@ -69,7 +67,11 @@ class PlayShortsActivity : BaseActivity() {
             is UGCOnboardingParentFragment -> {
                 fragment.setListener(object : UGCOnboardingParentFragment.Listener {
                     override fun onSuccess() {
-                        /** TODO: handle tracker & handle reload */
+                        /** TODO: handle tracker */
+                        if(getCurrentFragment() == null)
+                            viewModel.submitAction(PlayShortsAction.PreparePage(getPreferredAccountType()))
+                        else
+                            viewModel.submitAction(PlayShortsAction.SwitchAccount)
                     }
 
                     override fun impressTncOnboarding() {
@@ -90,9 +92,15 @@ class PlayShortsActivity : BaseActivity() {
 
                     override fun clickCloseIcon() {
                         /** TODO: handle tracker */
-                        if (getCurrentFragment() == null) {
-                            finish()
-                        }
+                        if (getCurrentFragment() == null) finish()
+                    }
+                })
+            }
+            is SellerTncBottomSheet -> {
+                fragment.initViews(viewModel.tncList)
+                fragment.setListener(object : SellerTncBottomSheet.Listener {
+                    override fun clickCloseIcon() {
+                        if(getCurrentFragment() == null) finish()
                     }
                 })
             }
@@ -167,6 +175,9 @@ class PlayShortsActivity : BaseActivity() {
             is PlayShortsBottomSheet.NoEligibleAccount -> {
                 showNoEligibleAccountBottomSheet()
             }
+            is PlayShortsBottomSheet.SellerNotEligible -> {
+                showSellerNotEligibleBottomSheet()
+            }
             else -> {}
         }
     }
@@ -219,6 +230,12 @@ class PlayShortsActivity : BaseActivity() {
          * 3. else -> show shop bottomsheet (need to confirm this)
          */
         println("PLAY_SHORTS : showNoEligibleAccountBottomSheet")
+    }
+
+    private fun showSellerNotEligibleBottomSheet() {
+        SellerTncBottomSheet
+            .getFragment(supportFragmentManager, classLoader)
+            .show(supportFragmentManager)
     }
 
     private fun getPreferredAccountType(): String {
