@@ -510,10 +510,10 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
         binding?.run {
             if (isNearExpirePackageAvailable) {
                 tgExpireValue.visible()
-                viewModel.startAnimationOfWarningQuota()
+                startAnimationOfWarningQuota()
             } else {
                 tgExpireValue.gone()
-                viewModel.stopAnimationOfWarningQuota()
+                stopAnimationOfWarningQuota()
             }
             tgQuotaValue.run {
                 text = if (totalRemainingQuota.isMoreThanZero()) {
@@ -554,6 +554,20 @@ class CampaignListFragment : BaseSimpleListFragment<CampaignAdapter, CampaignUiM
                     routeToYourShopFlashSaleQuotaPage()
                 }
             }
+        }
+    }
+
+    private fun startAnimationOfWarningQuota(){
+        val isTimerForFlipRunning = viewModel.isTimerForFlipRunning()
+        if (!isTimerForFlipRunning) {
+            viewModel.startAnimationOfWarningQuota()
+        }
+    }
+
+    private fun stopAnimationOfWarningQuota(){
+        val isTimerForFlipRunning = viewModel.isTimerForFlipRunning()
+        if (isTimerForFlipRunning){
+            viewModel.stopAnimationOfWarningQuota()
         }
     }
 
