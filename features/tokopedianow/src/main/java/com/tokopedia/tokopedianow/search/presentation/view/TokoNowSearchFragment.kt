@@ -1,6 +1,7 @@
 package com.tokopedia.tokopedianow.search.presentation.view
 
 import android.os.Bundle
+import android.os.Parcelable
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -21,7 +22,7 @@ import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
 import com.tokopedia.searchbar.data.HintData
-import com.tokopedia.tokopedianow.category.presentation.view.TokoNowCategoryFragment
+import com.tokopedia.tokopedianow.common.model.TokoNowProductCardCarouselItemUiModel
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.CLICK_ATC_SRP_PRODUCT_TOKONOW
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.CLICK_SRP_PRODUCT_TOKONOW
@@ -39,8 +40,6 @@ import com.tokopedia.tokopedianow.search.presentation.listener.BroadMatchListene
 import com.tokopedia.tokopedianow.search.presentation.listener.CTATokoNowHomeListener
 import com.tokopedia.tokopedianow.search.presentation.listener.CategoryJumperListener
 import com.tokopedia.tokopedianow.search.presentation.listener.SuggestionListener
-import com.tokopedia.tokopedianow.search.presentation.model.BroadMatchDataView
-import com.tokopedia.tokopedianow.search.presentation.model.BroadMatchItemDataView
 import com.tokopedia.tokopedianow.search.presentation.model.CategoryJumperDataView
 import com.tokopedia.tokopedianow.search.presentation.model.SuggestionDataView
 import com.tokopedia.tokopedianow.search.presentation.typefactory.SearchTypeFactoryImpl
@@ -370,7 +369,10 @@ class TokoNowSearchFragment :
 
     override fun getRecyclerViewPool() = recycledViewPool
 
-    override fun onBroadMatchItemImpressed(broadMatchItemDataView: BroadMatchItemDataView) {
+    override fun onBroadMatchItemImpressed(
+        broadMatchItemDataView: TokoNowProductCardCarouselItemUiModel,
+        broadMatchIndex: Int
+    ) {
         val trackingQueue = trackingQueue ?: return
 
         SearchTracking.sendBroadMatchImpressionEvent(
@@ -378,29 +380,47 @@ class TokoNowSearchFragment :
             broadMatchItemDataView = broadMatchItemDataView,
             keyword = getViewModel().query,
             userId = getUserId(),
+            position = broadMatchIndex
         )
     }
 
-    override fun onBroadMatchItemClicked(broadMatchItemDataView: BroadMatchItemDataView) {
+    override fun onBroadMatchItemClicked(
+        broadMatchItemDataView: TokoNowProductCardCarouselItemUiModel,
+        broadMatchIndex: Int
+    ) {
         SearchTracking.sendBroadMatchClickEvent(
             broadMatchItemDataView = broadMatchItemDataView,
             keyword = getViewModel().query,
             userId = getUserId(),
+            position = broadMatchIndex
         )
-
-        RouteManager.route(context, broadMatchItemDataView.applink)
+        RouteManager.route(context, broadMatchItemDataView.appLink)
     }
 
     override fun onBroadMatchItemATCNonVariant(
-        broadMatchItemDataView: BroadMatchItemDataView,
+        broadMatchItemDataView: TokoNowProductCardCarouselItemUiModel,
         quantity: Int,
         broadMatchIndex: Int,
     ) {
-        getViewModel().onViewATCBroadMatchItem(broadMatchItemDataView, quantity, broadMatchIndex)
+        getViewModel().onViewATCBroadMatchItem(broadMatchItemDataView, quantity, broadMatchIndex, false)
     }
 
+    override fun onBroadMatchItemATCNonVariantAnimationFinished(
+        broadMatchItemDataView: TokoNowProductCardCarouselItemUiModel,
+        quantity: Int,
+        broadMatchIndex: Int
+    ) {
+        getViewModel().onViewATCBroadMatchItemAnimationFinished(broadMatchItemDataView, quantity, broadMatchIndex, true)
+    }
+
+    override fun onSaveCarouselScrollState(adapterPosition: Int, state: Parcelable?) {
+        carouselScrollState[adapterPosition] = state
+    }
+
+    override fun onGetCarouselScrollState(adapterPosition: Int): Parcelable? = carouselScrollState[adapterPosition]
+
     private fun sendATCBroadMatchTrackingEvent(
-        atcTrackingData: Triple<Int, String, BroadMatchItemDataView>
+        atcTrackingData: Triple<Int, String, TokoNowProductCardCarouselItemUiModel>
     ) {
         val (quantity, _, broadMatchItemDataView) = atcTrackingData
 
@@ -412,18 +432,16 @@ class TokoNowSearchFragment :
         )
     }
 
-    override fun onBroadMatchSeeAllClicked(broadMatchDataView: BroadMatchDataView) {
-        SearchTracking.sendBroadMatchSeeAllClickEvent(broadMatchDataView, getViewModel().query)
+    override fun onBroadMatchSeeAllClicked(title: String, appLink: String) {
+        SearchTracking.sendBroadMatchSeeAllClickEvent(title, getViewModel().query)
 
-        val applink = getBroadMatchSeeAllApplink(broadMatchDataView)
-
-        RouteManager.route(context, applink)
+        RouteManager.route(context, getBroadMatchSeeAllApplink(appLink))
     }
 
-    private fun getBroadMatchSeeAllApplink(broadMatchDataView: BroadMatchDataView) =
-        if (broadMatchDataView.applink.startsWith(ApplinkConst.TokopediaNow.SEARCH))
-            modifyApplinkToSearchResult(broadMatchDataView.applink)
-        else broadMatchDataView.applink
+    private fun getBroadMatchSeeAllApplink(appLink: String) =
+        if (appLink.startsWith(ApplinkConst.TokopediaNow.SEARCH))
+            modifyApplinkToSearchResult(appLink)
+        else appLink
 
     override fun onSeeMoreClick(data: RecommendationCarouselData, applink: String) {
         SearchTracking.sendRecommendationSeeAllClickEvent(getViewModel().query)

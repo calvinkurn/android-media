@@ -1,26 +1,46 @@
 package com.tokopedia.tokopedianow.search.presentation.listener
 
+import android.os.Parcelable
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.tokopedianow.search.presentation.model.BroadMatchDataView
-import com.tokopedia.tokopedianow.search.presentation.model.BroadMatchItemDataView
+import com.tokopedia.tokopedianow.common.model.TokoNowProductCardCarouselItemUiModel
 
 interface BroadMatchListener {
 
     fun getRecyclerViewPool(): RecyclerView.RecycledViewPool
 
-    fun onBroadMatchItemImpressed(broadMatchItemDataView: BroadMatchItemDataView)
+    fun onBroadMatchItemImpressed(
+        broadMatchItemDataView: TokoNowProductCardCarouselItemUiModel,
+        broadMatchIndex: Int
+    )
 
-    fun onBroadMatchItemClicked(broadMatchItemDataView: BroadMatchItemDataView)
+    fun onBroadMatchItemClicked(
+        broadMatchItemDataView: TokoNowProductCardCarouselItemUiModel,
+        broadMatchIndex: Int
+    )
 
     fun onBroadMatchItemATCNonVariant(
-        broadMatchItemDataView: BroadMatchItemDataView,
+        broadMatchItemDataView: TokoNowProductCardCarouselItemUiModel,
         quantity: Int,
         broadMatchIndex: Int,
     )
 
-    fun onSaveCarouselScrollPosition(adapterPosition: Int, scrollPosition: Int)
+    fun onBroadMatchItemATCNonVariantAnimationFinished(
+        broadMatchItemDataView: TokoNowProductCardCarouselItemUiModel,
+        quantity: Int,
+        broadMatchIndex: Int,
+    )
 
-    fun onGetCarouselScrollPosition(adapterPosition: Int): Int
+    fun onSaveCarouselScrollState(
+        adapterPosition: Int,
+        state: Parcelable?
+    )
 
-    fun onBroadMatchSeeAllClicked(broadMatchDataView: BroadMatchDataView)
+    fun onGetCarouselScrollState(
+        adapterPosition: Int
+    ): Parcelable?
+
+    fun onBroadMatchSeeAllClicked(
+        title: String,
+        appLink: String
+    )
 }

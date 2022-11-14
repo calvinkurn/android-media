@@ -12,6 +12,8 @@ import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstant
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.CURRENT_SITE_TOKOPEDIA_MARKET_PLACE
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.SCREEN_NAME_TOKONOW_OOC
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalytics
+import com.tokopedia.tokopedianow.common.model.TokoNowProductCardCarouselItemUiModel
+import com.tokopedia.tokopedianow.common.util.TrackerUtil.getTrackerPosition
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.CLICK_ADD_QUANTITY
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.CLICK_APPLY_CATEGORY_FILTER
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.CLICK_APPLY_FILTER
@@ -39,8 +41,6 @@ import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Category.TOKON
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Misc.TOKONOW_BROAD_MATCH
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Misc.TOKONOW_OOC_SCREEN_NAME
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Misc.TOKONOW_SEARCH_PRODUCT_ORGANIC
-import com.tokopedia.tokopedianow.search.presentation.model.BroadMatchDataView
-import com.tokopedia.tokopedianow.search.presentation.model.BroadMatchItemDataView
 import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst
 import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst.ECommerce.ACTION_FIELD
 import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst.ECommerce.ADD
@@ -498,9 +498,10 @@ object SearchTracking {
 
     fun sendBroadMatchImpressionEvent(
         trackingQueue: TrackingQueue,
-        broadMatchItemDataView: BroadMatchItemDataView,
+        broadMatchItemDataView: TokoNowProductCardCarouselItemUiModel,
         keyword: String,
         userId: String,
+        position: Int
     ) {
         val map = DataLayer.mapOf(
             EVENT, PRODUCT_VIEW,
@@ -513,7 +514,7 @@ object SearchTracking {
             ECOMMERCE, DataLayer.mapOf(
                 CURRENCYCODE, IDR,
                 IMPRESSIONS, DataLayer.listOf(
-                    broadMatchItemDataView.getAsImpressionClickObjectDataLayer()
+                    broadMatchItemDataView.getAsImpressionClickObjectDataLayer(position)
                 )
             )
         ) as HashMap<String, Any>
@@ -521,30 +522,31 @@ object SearchTracking {
         trackingQueue.putEETracking(map)
     }
 
-    private fun BroadMatchItemDataView.getAsImpressionClickObjectDataLayer(): Any {
+    private fun TokoNowProductCardCarouselItemUiModel.getAsImpressionClickObjectDataLayer(position: Int): Any {
         return getAsObjectDataLayerMap().also {
             it.putAll(DataLayer.mapOf(
                 "list", TOKONOW_BROAD_MATCH,
-                "position", position,
+                "position", position.getTrackerPosition().toString(),
             ))
         }
     }
 
-    private fun BroadMatchItemDataView.getAsObjectDataLayerMap(): MutableMap<String, Any> {
+    private fun TokoNowProductCardCarouselItemUiModel.getAsObjectDataLayerMap(): MutableMap<String, Any> {
         return DataLayer.mapOf(
             "brand", SearchCategoryTrackingConst.Misc.NONE_OTHER,
             "category", SearchCategoryTrackingConst.Misc.NONE_OTHER,
             "id", id,
-            "name", name,
-            "price", price,
+            "name", productCardModel.name,
+            "price", productCardModel.price,
             "variant", SearchCategoryTrackingConst.Misc.NONE_OTHER,
         )
     }
 
     fun sendBroadMatchClickEvent(
-        broadMatchItemDataView: BroadMatchItemDataView,
+        broadMatchItemDataView: TokoNowProductCardCarouselItemUiModel,
         keyword: String,
         userId: String,
+        position: Int
     ) {
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
             DataLayer.mapOf(
@@ -559,7 +561,7 @@ object SearchTracking {
                     CLICK, DataLayer.mapOf(
                         ACTION_FIELD, DataLayer.mapOf(LIST, TOKONOW_BROAD_MATCH),
                         PRODUCTS, DataLayer.listOf(
-                            broadMatchItemDataView.getAsImpressionClickObjectDataLayer()
+                            broadMatchItemDataView.getAsImpressionClickObjectDataLayer(position)
                         )
                     ),
                 )
@@ -567,13 +569,13 @@ object SearchTracking {
         )
     }
 
-    fun sendBroadMatchSeeAllClickEvent(broadMatchDataView: BroadMatchDataView, keyword: String) {
+    fun sendBroadMatchSeeAllClickEvent(title: String, keyword: String) {
         sendGeneralEvent(
             DataLayer.mapOf(
                 EVENT, EVENT_CLICK_TOKONOW,
                 EVENT_ACTION, CLICK_BROADMATCH_LIHAT_SEMUA,
                 EVENT_CATEGORY, TOKONOW_SEARCH_RESULT,
-                EVENT_LABEL, "$keyword - ${broadMatchDataView.keyword}",
+                EVENT_LABEL, "$keyword - $title",
                 KEY_BUSINESS_UNIT, BUSINESS_UNIT_PHYSICAL_GOODS,
                 KEY_CURRENT_SITE, CURRENT_SITE_TOKOPEDIA_MARKET_PLACE,
             )
@@ -581,7 +583,7 @@ object SearchTracking {
     }
 
     fun sendBroadMatchAddToCartEvent(
-        broadMatchItemDataView: BroadMatchItemDataView,
+        broadMatchItemDataView: TokoNowProductCardCarouselItemUiModel,
         keyword: String,
         userId: String,
         quantity: Int,
@@ -607,12 +609,12 @@ object SearchTracking {
         )
     }
 
-    private fun BroadMatchItemDataView.getAsATCObjectDataLayer(quantity: Int): Any {
+    private fun TokoNowProductCardCarouselItemUiModel.getAsATCObjectDataLayer(quantity: Int): Any {
         return getAsObjectDataLayerMap().also {
             it.putAll(DataLayer.mapOf(
                 "dimension40", TOKONOW_BROAD_MATCH,
                 "quantity", quantity,
-                "shop_id", shop.id,
+                "shop_id", productCardModel.productId,
                 "category_id", SearchCategoryTrackingConst.Misc.NONE_OTHER,
             ))
         }

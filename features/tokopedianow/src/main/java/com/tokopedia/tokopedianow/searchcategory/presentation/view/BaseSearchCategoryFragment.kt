@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.os.Parcelable
 import android.util.SparseIntArray
 import android.view.LayoutInflater
 import android.view.View
@@ -163,6 +164,7 @@ abstract class BaseSearchCategoryFragment:
     protected var statusBarBackground: View? = null
     protected var headerBackground: AppCompatImageView? = null
     protected var loaderUnify: LoaderUnify? = null
+    protected var carouselScrollState = mutableMapOf<Int, Parcelable?>()
     protected val carouselScrollPosition = SparseIntArray()
     protected val recycledViewPool = RecyclerView.RecycledViewPool()
 
