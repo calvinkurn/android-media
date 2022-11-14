@@ -33,18 +33,10 @@ import com.tokopedia.play.util.observer.DistinctObserver
 import com.tokopedia.play.util.withCache
 import com.tokopedia.play.view.contract.PlayFragmentContract
 import com.tokopedia.play.view.type.*
-import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
 import com.tokopedia.play.view.uimodel.OpenApplinkUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
-import com.tokopedia.play.view.uimodel.action.AtcProductAction
-import com.tokopedia.play.view.uimodel.action.AtcProductVariantAction
-import com.tokopedia.play.view.uimodel.action.BuyProductAction
-import com.tokopedia.play.view.uimodel.action.BuyProductVariantAction
-import com.tokopedia.play.view.uimodel.action.ClickCloseLeaderboardSheetAction
-import com.tokopedia.play.view.uimodel.action.RefreshLeaderboard
-import com.tokopedia.play.view.uimodel.action.SelectVariantOptionAction
-import com.tokopedia.play.view.uimodel.action.SendUpcomingReminder
-import com.tokopedia.play.view.uimodel.action.RetryGetTagItemsAction
+import com.tokopedia.play.view.uimodel.PlayVoucherUiModel
+import com.tokopedia.play.view.uimodel.action.*
 import com.tokopedia.play.view.viewcomponent.*
 import com.tokopedia.play.view.uimodel.recom.PlayEmptyBottomSheetInfoUiModel
 import com.tokopedia.play.view.uimodel.event.*
@@ -245,7 +237,7 @@ class PlayBottomSheetFragment @Inject constructor(
 
     override fun onRefreshButtonClicked(view: PlayGameLeaderboardViewComponent) {
         newAnalytic.clickRefreshLeaderBoard(
-            interactiveId = playViewModel.interactiveData.id,
+            interactiveId = playViewModel.gameData.id,
             shopId = playViewModel.partnerId.toString(),
             channelId = playViewModel.channelId
         )
@@ -253,7 +245,7 @@ class PlayBottomSheetFragment @Inject constructor(
     }
 
     override fun onRefreshButtonImpressed(view: PlayGameLeaderboardViewComponent) {
-        newAnalytic.impressRefreshLeaderBoard(shopId = playViewModel.partnerId.toString(), interactiveId = playViewModel.interactiveData.id, channelId = playViewModel.channelId)
+        newAnalytic.impressRefreshLeaderBoard(shopId = playViewModel.partnerId.toString(), interactiveId = playViewModel.gameData.id, channelId = playViewModel.channelId)
     }
 
     override fun onLeaderBoardImpressed(
@@ -271,23 +263,37 @@ class PlayBottomSheetFragment @Inject constructor(
         playViewModel.hideCouponSheet()
     }
 
-    override fun onVouchersImpressed(view: ShopCouponSheetViewComponent, vouchers: List<MerchantVoucherUiModel>) {
-        trackImpressedVoucher(vouchers)
+    override fun onVouchersImpressed(view: ShopCouponSheetViewComponent, voucherId: String) {
+        if (playViewModel.bottomInsets.isCouponSheetsShown) newAnalytic.impressVoucherBottomSheet(voucherId)
     }
 
-    override fun onCopyVoucherCodeClicked(view: ShopCouponSheetViewComponent, voucher: MerchantVoucherUiModel) {
+    override fun onCopyVoucherCodeClicked(view: ShopCouponSheetViewComponent, voucher: PlayVoucherUiModel.Merchant) {
         copyToClipboard(content = voucher.code)
         doShowToaster(
             bottomSheetType = BottomInsetsType.CouponSheet,
             toasterType = Toaster.TYPE_NORMAL,
             message = getString(R.string.play_voucher_code_copied),
-            actionText = getString(R.string.play_action_ok),
+            actionText = getString(R.string.play_action_lihat),
+            actionClickListener = {
+                newAnalytic.clickToasterPrivate(voucherId = voucher.id)
+                playViewModel.submitAction(OpenCart)
+            }
         )
-        analytic.clickCopyVoucher(voucher)
+        newAnalytic.impressToasterPrivate(voucher.id)
+        newAnalytic.clickCopyVoucher(voucher.id)
     }
 
-    override fun onVoucherScrolled(view: ShopCouponSheetViewComponent, lastPositionViewed: Int) {
-        analytic.scrollMerchantVoucher(lastPositionViewed)
+    override fun onVoucherItemClicked(
+        view: ShopCouponSheetViewComponent,
+        voucher: PlayVoucherUiModel.Merchant
+    ) {
+        doShowToaster(
+            bottomSheetType = BottomInsetsType.CouponSheet,
+            toasterType = Toaster.TYPE_NORMAL,
+            message = getString(R.string.play_voucher_public),
+        )
+        newAnalytic.impressToasterPublic()
+        newAnalytic.clickToasterPublic()
     }
 
     fun showVariantSheet(
@@ -457,6 +463,7 @@ class PlayBottomSheetFragment @Inject constructor(
             val productSheetState = it[BottomInsetsType.ProductSheet]
             val variantSheetState = it[BottomInsetsType.VariantSheet]
             val leaderboardSheetState = it[BottomInsetsType.LeaderboardSheet]
+            val couponSheetState = it[BottomInsetsType.CouponSheet]
 
             if (productSheetState != null && !productSheetState.isPreviousStateSame) {
                 when (productSheetState) {
@@ -472,6 +479,12 @@ class PlayBottomSheetFragment @Inject constructor(
                 when (leaderboardSheetState) {
                     is BottomInsetsState.Hidden -> if (!it.isAnyShown) playFragment.onBottomInsetsViewHidden()
                     is BottomInsetsState.Shown -> pushParentPlayBySheetHeight(leaderboardSheetState.estimatedInsetsHeight)
+                }
+            }
+            else if (couponSheetState != null && !couponSheetState.isPreviousStateSame) {
+                when (couponSheetState) {
+                    is BottomInsetsState.Hidden -> if (!it.isAnyShown) playFragment.onBottomInsetsViewHidden()
+                    is BottomInsetsState.Shown -> pushParentPlayBySheetHeight(couponSheetState.estimatedInsetsHeight)
                 }
             }
 
@@ -695,10 +708,6 @@ class PlayBottomSheetFragment @Inject constructor(
         playViewModel.submitAction(SendUpcomingReminder(productSectionUiModel))
     }
 
-    private fun trackImpressedVoucher(vouchers: List<MerchantVoucherUiModel> = couponSheetView.getVisibleVouchers()) {
-        if (playViewModel.bottomInsets.isCouponSheetsShown) productAnalyticHelper.trackImpressedVouchers(vouchers)
-    }
-
     override fun onInformationClicked(
         view: ProductSheetViewComponent
     ) {
@@ -735,7 +744,6 @@ class PlayBottomSheetFragment @Inject constructor(
                 voucherList = tagItem.voucher.voucherList,
                 title = bottomSheetTitle,
             )
-            productAnalyticHelper.sendImpressedProductSheets()
         } else {
             productSheetView.showEmpty(emptyBottomSheetInfoUi)
         }
