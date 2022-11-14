@@ -98,7 +98,6 @@ class AddProductViewModel @Inject constructor(
 
                 _uiState.update {
                     it.copy(
-                        isLoading = false,
                         voucherCreationMetadata = metadata,
                         warehouses = sellerWarehouses,
                         selectedWarehouseLocation = defaultWarehouse
@@ -109,7 +108,7 @@ class AddProductViewModel @Inject constructor(
 
             },
             onError = { error ->
-                _uiState.update { it.copy(isLoading = false, error = error) }
+                _uiState.update { it.copy(error = error) }
             }
         )
     }
@@ -436,7 +435,7 @@ class AddProductViewModel @Inject constructor(
                 }
             },
             onError = { error ->
-                _uiState.update { it.copy(isLoading = false, error = error) }
+                _uiState.update { it.copy(error = error) }
             }
         )
     }
@@ -450,7 +449,7 @@ class AddProductViewModel @Inject constructor(
                 _uiState.update { it.copy(shopShowcases = sellerCreatedShowcasesOnly) }
             },
             onError = { error ->
-                _uiState.update { it.copy(isLoading = false, error = error) }
+                _uiState.update { it.copy(error = error) }
             }
         )
     }
