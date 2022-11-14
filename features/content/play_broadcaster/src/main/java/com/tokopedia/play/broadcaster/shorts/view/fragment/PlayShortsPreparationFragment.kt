@@ -132,17 +132,7 @@ class PlayShortsPreparationFragment @Inject constructor(
                     override fun isEligibleForPin(): Boolean = false
 
                     override fun getSelectedAccount(): ContentAccountUiModel {
-                        /** TODO: for mocking purpose, gonna delete this later */
-                        return ContentAccountUiModel(
-                            id = userSession.userId,
-                            type = ContentCommonUserType.TYPE_USER,
-                            name = "Jonathan Darwin",
-                            iconUrl = "",
-                            badge = "",
-                            hasUsername = true,
-                            hasAcceptTnc = true
-                        )
-//                        return viewModel.selectedAccount
+                        return viewModel.selectedAccount
                     }
 
                     override fun creationId(): String {
