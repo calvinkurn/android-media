@@ -54,8 +54,8 @@ class LayoutIconPullRefreshView : ConstraintLayout, LayoutIconPullRefreshListene
     private var heightLayoutScroll: Int = 0
 
     companion object {
-        private const val MAXIMUM_HEIGHT_SCROLL = 120
-        private const val HEIGHT_LOADING = 64
+        private const val MAXIMUM_HEIGHT_SCROLL = 200
+        private const val HEIGHT_LOADING = 120
         private const val MAXIMUM_PROGRESS_REFRESH = 1
         private const val TIME_DURATION_ANIMATION_HEIGHT: Long = 300
         private const val HEIGHT_LAYOUT_GONE = 0
@@ -152,7 +152,7 @@ class LayoutIconPullRefreshView : ConstraintLayout, LayoutIconPullRefreshListene
 
     private fun positionChildren() {
         if (offsetY > HEIGHT_LAYOUT_GONE) {
-            heightLayoutScroll = ((offsetY / maxOffset) * MAXIMUM_HEIGHT_SCROLL).roundToInt()
+            heightLayoutScroll = (progressRefresh * MAXIMUM_HEIGHT_SCROLL).roundToInt()
             containerIconPullRefresh?.visible()
             val layoutParams = containerIconPullRefresh?.layoutParams
             layoutParams?.height = heightLayoutScroll
