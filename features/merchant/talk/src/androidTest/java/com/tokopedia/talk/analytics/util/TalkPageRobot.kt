@@ -13,7 +13,6 @@ import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.rule.ActivityTestRule
 import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.cassavatest.hasAllSuccess
-import com.tokopedia.test.application.util.InstrumentationAuthHelper
 
 class TalkPageRobot {
 
@@ -23,7 +22,7 @@ class TalkPageRobot {
 
     fun clickAction(idView: Int) {
         onView(withId(idView)).check(ViewAssertions.matches(isDisplayed()))
-                .perform(ViewActions.click())
+            .perform(ViewActions.click())
     }
 
     infix fun assertTest(action: TalkPageRobot.() -> Unit) = TalkPageRobot().apply(action)
@@ -55,32 +54,8 @@ class TalkPageRobot {
     }
 }
 
-fun pauseTestFor(milliseconds: Long) {
-    try {
-        Thread.sleep(milliseconds)
-    } catch (e: InterruptedException) {
-        e.printStackTrace()
-    }
-}
-
 fun actionTest(action: TalkPageRobot.() -> Unit) = TalkPageRobot().apply(action)
 
 fun intendingIntent() {
     Intents.intending(IntentMatchers.anyIntent()).respondWith(Instrumentation.ActivityResult(Activity.RESULT_OK, null))
-}
-
-fun fakeLogin() {
-    InstrumentationAuthHelper.loginInstrumentationTestUser1()
-}
-
-fun clearLogin() {
-    InstrumentationAuthHelper.clearUserSession()
-}
-
-fun waitForData() {
-    Thread.sleep(5000L)
-}
-
-fun waitForTrackerSent() {
-    Thread.sleep(4000L)
 }
