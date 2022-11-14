@@ -18,14 +18,12 @@ data class BundleDetail(
         val bundleMinOrder: Int = 0,
         @SerializedName("bundle_name")
         val bundleName: String = "",
-        @SuppressLint("Invalid Data Type")
         @SerializedName("bundle_original_price")
-        val bundleOriginalPrice: Long = 0,
+        val bundleOriginalPrice: Double = 0.0,
         @SerializedName("bundle_original_price_fmt")
         val bundleOriginalPriceFmt: String = "",
-        @SuppressLint("Invalid Data Type")
         @SerializedName("bundle_price")
-        val bundlePrice: Long = 0,
+        val bundlePrice: Double = 0.0,
         @SerializedName("bundle_price_fmt")
         val bundlePriceFmt: String = "",
         @SerializedName("bundle_qty")
