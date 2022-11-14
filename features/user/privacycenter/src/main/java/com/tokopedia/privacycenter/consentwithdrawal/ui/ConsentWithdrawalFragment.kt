@@ -19,7 +19,7 @@ import com.tokopedia.privacycenter.R
 import com.tokopedia.privacycenter.common.PrivacyCenterConst.ERROR_NETWORK_IMAGE
 import com.tokopedia.privacycenter.common.PrivacyCenterStateResult
 import com.tokopedia.privacycenter.common.di.PrivacyCenterComponent
-import com.tokopedia.privacycenter.consentwithdrawal.common.TransactionType
+import com.tokopedia.privacycenter.consentwithdrawal.common.ConsentWithdrawalConst
 import com.tokopedia.privacycenter.consentwithdrawal.data.ConsentPurposeDataModel
 import com.tokopedia.privacycenter.consentwithdrawal.data.ConsentPurposeItemDataModel
 import com.tokopedia.privacycenter.consentwithdrawal.data.SubmitConsentDataModel
@@ -91,7 +91,7 @@ class ConsentWithdrawalFragment : BaseDaggerFragment(), ConsentWithdrawalListene
                 is PrivacyCenterStateResult.Fail -> {
                     view?.let { v -> Toaster.build(v, it.error.message.toString()).show() }
                 }
-                is PrivacyCenterStateResult.Loading -> { }
+                is PrivacyCenterStateResult.Loading -> {}
                 is PrivacyCenterStateResult.Success -> {
                     onSuccessSubmitConsentPreference(it.data)
                 }
@@ -212,19 +212,14 @@ class ConsentWithdrawalFragment : BaseDaggerFragment(), ConsentWithdrawalListene
         data: ConsentPurposeItemDataModel
     ) {
 
-        TransactionType.map(data.consentStatus)?.also {
-            val intent = when (it) {
-                TransactionType.OPT_IN -> {
-                    RouteManager.getIntent(context, data.optIntAppLink)
-                }
-                TransactionType.OPT_OUT -> {
-                    RouteManager.getIntent(context, data.optIntAppLink)
-                }
-            }
+        val intent = if (data.consentStatus == ConsentWithdrawalConst.OPT_IN) {
+            RouteManager.getIntent(context, data.optIntAppLink)
+        } else {
+            RouteManager.getIntent(context, data.optIntAppLink)
+        }
 
-            intent?.let {
-                startActivity(it)
-            }
+        intent?.let {
+            startActivity(it)
         }
     }
 
@@ -233,12 +228,11 @@ class ConsentWithdrawalFragment : BaseDaggerFragment(), ConsentWithdrawalListene
         isActive: Boolean,
         data: ConsentPurposeItemDataModel
     ) {
-        val transactionType =
-            if (TransactionType.map(data.consentStatus) == TransactionType.OPT_IN) {
-                TransactionType.OPT_OUT
-            } else {
-                TransactionType.OPT_IN
-            }
+        val transactionType = if (data.consentStatus == ConsentWithdrawalConst.OPT_IN) {
+            ConsentWithdrawalConst.OPT_OUT
+        } else {
+            ConsentWithdrawalConst.OPT_IN
+        }
 
         if (isActive) {
             showDialog {

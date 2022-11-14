@@ -6,12 +6,10 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.privacycenter.common.PrivacyCenterStateResult
-import com.tokopedia.privacycenter.consentwithdrawal.common.TransactionType
 import com.tokopedia.privacycenter.consentwithdrawal.data.ConsentPurposeGroupDataModel
 import com.tokopedia.privacycenter.consentwithdrawal.data.PurposesParam
 import com.tokopedia.privacycenter.consentwithdrawal.data.SubmitConsentDataModel
 import com.tokopedia.privacycenter.consentwithdrawal.data.SubmitConsentPurposeReq
-import com.tokopedia.privacycenter.consentwithdrawal.domain.GetConsentGroupListUseCase
 import com.tokopedia.privacycenter.consentwithdrawal.domain.GetConsentPurposeByGroupUseCase
 import com.tokopedia.privacycenter.consentwithdrawal.domain.SubmitConsentPreferenceUseCase
 import javax.inject.Inject
@@ -46,7 +44,7 @@ class ConsentWithdrawalViewModel @Inject constructor(
 
     fun submitConsentPreference(
         purposeID: String,
-        transactionType: TransactionType
+        transactionType: String
     ) {
         _submitConsentPreference.value = PrivacyCenterStateResult.Loading()
         launchCatchError(coroutineContext, {
@@ -54,7 +52,7 @@ class ConsentWithdrawalViewModel @Inject constructor(
                 SubmitConsentPurposeReq(
                     PurposesParam(
                         purposeID = purposeID,
-                        transactionType = transactionType.alias,
+                        transactionType = transactionType,
                     )
                 )
             )
