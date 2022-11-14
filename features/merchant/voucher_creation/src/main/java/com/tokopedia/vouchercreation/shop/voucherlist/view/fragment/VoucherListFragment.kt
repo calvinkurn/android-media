@@ -265,8 +265,9 @@ class VoucherListFragment :
 
     private fun onItemShareClick(shareModel: ShareModel, voucher: VoucherUiModel, shopDomain: String) {
         val formattedShopName = MethodChecker.fromHtml(shopBasicData?.shopName ?: "").toString()
-        val shareUrl = "${TokopediaUrl.getInstance().WEB}${shopDomain}"
-        val linkerShareData = DataMapper.getLinkerShareData(LinkerData().apply {
+        val shareUrl = "${TokopediaUrl.getInstance().WEB}$shopDomain"
+        val linkerShareData = DataMapper.getLinkerShareData(
+            LinkerData().apply {
             type = LinkerData.MERCHANT_VOUCHER
             uri = shareUrl
             id = voucher.id.toString()
@@ -276,9 +277,12 @@ class VoucherListFragment :
                 ogImageUrl = shareModel.ogImgUrl
             }
             deepLink = UriUtil.buildUri(ApplinkConst.SHOP, userSession.shopId)
-        })
+        }
+        )
         LinkerManager.getInstance().executeShareRequest(
-            LinkerUtils.createShareRequest(0, linkerShareData, object : ShareCallback {
+            LinkerUtils.createShareRequest(
+                0, linkerShareData,
+                object : ShareCallback {
                 override fun urlCreated(linkerShareData: LinkerShareResult?) {
                     linkerShareData?.url?.let { url ->
                         context?.let { context ->
@@ -291,7 +295,8 @@ class VoucherListFragment :
                 }
 
                 override fun onError(linkerError: LinkerError?) {}
-            })
+            }
+            )
         )
         sharingComponentTracker.sendSelectVoucherShareChannelClickEvent(
             shareModel.channel.orEmpty(),

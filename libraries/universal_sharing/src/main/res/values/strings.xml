@@ -55,5 +55,6 @@
     <string name="ticker_free">Gratis</string>
     <string name="title_broadcast">Lewat Broadcast</string>
     <string name="description_broadcast">Sebar promo langsung ke tepat sasaran</string>
+    <string name="content_icon_broadcast">icon broadcast</string>
 
 </resources>

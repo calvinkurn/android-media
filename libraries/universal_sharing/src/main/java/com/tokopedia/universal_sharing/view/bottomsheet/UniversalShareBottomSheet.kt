@@ -1245,9 +1245,8 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
             id = id, type = type,
             title = getString(R.string.title_broadcast),
             description = getString(R.string.description_broadcast),
-            imageResDrawable= com.tokopedia.universal_sharing.R.drawable.ic_broadcast))
+            imageResDrawable = com.tokopedia.universal_sharing.R.drawable.ic_broadcast))
     }
-
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
@@ -1285,7 +1284,9 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
     }
 
     private fun openBroadcastPage(id: String, type: Int) {
-        RouteManager.route(context,
-            String.format("%s?url=%s", ApplinkConst.WEBVIEW, "https://www.tokopedia.com/broadcast-chat/create/content?id=$id&type=$type"))
+        RouteManager.route(
+            context,
+            String.format(Locale.getDefault(), "%s?url=%s", ApplinkConst.WEBVIEW, "https://www.tokopedia.com/broadcast-chat/create/content?id=$id&type=$type")
+        )
     }
 }
