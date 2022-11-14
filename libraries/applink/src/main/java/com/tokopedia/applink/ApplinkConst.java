@@ -760,7 +760,7 @@ public interface ApplinkConst {
     }
 
     interface TokoChat {
-        String PARAM_SOURCE = "source";
+        String PARAM_SOURCE = "tokochatSource";
         String ORDER_ID_GOJEK = "orderIdGojek";
         String ORDER_ID_TKPD = "orderIdTkpd";
 
