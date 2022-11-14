@@ -39,7 +39,7 @@
             android:id="@+id/txt_unavailable_product"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:textColor="@color/Neutral_N600"
+            android:textColor="@color/Unify_NN600"
             app:layout_constraintBottom_toBottomOf="@+id/btn_atc_ar"
             app:layout_constraintEnd_toStartOf="@+id/btn_atc_ar"
             app:layout_constraintStart_toStartOf="parent"
@@ -54,7 +54,7 @@
             android:id="@+id/txt_stock_ar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/Unify_N700_96"
+            android:textColor="@color/Unify_NN950"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:typographyType="small"
@@ -64,7 +64,7 @@
             android:id="@+id/txt_main_price_ar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/Unify_N700_96"
+            android:textColor="@color/Unify_NN950"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/txt_stock_ar"
             app:typographyType="body_1"
@@ -112,7 +112,7 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:unifyButtonSize="medium"
+            app:unifyButtonSize="small"
             tools:text="+ Keranjang" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>

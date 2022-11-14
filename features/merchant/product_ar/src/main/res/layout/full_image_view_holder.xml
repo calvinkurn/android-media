@@ -22,7 +22,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:typographyType="body_2"
+        app:typographyType="display_2"
         android:textColor="@color/Unify_Static_White"
         android:layout_marginBottom="8dp"
         tools:text="Warna 1"/>

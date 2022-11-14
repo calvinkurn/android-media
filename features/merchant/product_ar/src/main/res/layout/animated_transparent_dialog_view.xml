@@ -10,6 +10,6 @@
     android:text="@string/message_face_not_detected"
     android:textAlignment="center"
     android:textColor="@color/Unify_Static_White"
-    app:typographyType="body_2"
+    app:typographyType="display_2"
     tools:textColor="@color/Unify_Static_Black" />
 
