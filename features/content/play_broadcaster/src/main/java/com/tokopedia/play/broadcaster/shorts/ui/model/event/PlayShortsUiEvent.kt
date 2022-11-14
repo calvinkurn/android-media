@@ -34,7 +34,7 @@ sealed interface PlayShortsBottomSheet {
 
     object Unknown : PlayShortsBottomSheet
 
-    object UGCOnboarding : PlayShortsBottomSheet
+    data class UGCOnboarding(val hasUsername: Boolean) : PlayShortsBottomSheet
 
     object NoEligibleAccount : PlayShortsBottomSheet
 

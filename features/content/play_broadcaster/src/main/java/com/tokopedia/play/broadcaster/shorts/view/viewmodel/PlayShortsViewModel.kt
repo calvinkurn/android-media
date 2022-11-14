@@ -192,7 +192,7 @@ class PlayShortsViewModel @Inject constructor(
                 }
             } else if (bestEligibleAccount.isUser && !bestEligibleAccount.hasAcceptTnc) {
                 _uiEvent.oneTimeUpdate {
-                    it.copy(bottomSheet = PlayShortsBottomSheet.UGCOnboarding)
+                    it.copy(bottomSheet = PlayShortsBottomSheet.UGCOnboarding(bestEligibleAccount.hasUsername))
                 }
             } else {
                 getConfiguration()
@@ -246,7 +246,7 @@ class PlayShortsViewModel @Inject constructor(
                 }
             } else if (newSelectedAccount.isUser && !newSelectedAccount.hasAcceptTnc) {
                 _uiEvent.oneTimeUpdate {
-                    it.copy(bottomSheet = PlayShortsBottomSheet.UGCOnboarding)
+                    it.copy(bottomSheet = PlayShortsBottomSheet.UGCOnboarding(newSelectedAccount.hasUsername))
                 }
             } else {
                 getConfiguration()

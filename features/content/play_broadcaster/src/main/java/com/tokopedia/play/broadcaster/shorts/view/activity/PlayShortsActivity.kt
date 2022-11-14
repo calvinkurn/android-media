@@ -90,7 +90,9 @@ class PlayShortsActivity : BaseActivity() {
 
                     override fun clickCloseIcon() {
                         /** TODO: handle tracker */
-                        finish()
+                        if (getCurrentFragment() == null) {
+                            finish()
+                        }
                     }
                 })
             }
@@ -160,7 +162,7 @@ class PlayShortsActivity : BaseActivity() {
     private fun renderBottomSheet(bottomSheet: PlayShortsBottomSheet) {
         when (bottomSheet) {
             is PlayShortsBottomSheet.UGCOnboarding -> {
-                showUGCOnboardingBottomSheet()
+                showUGCOnboardingBottomSheet(bottomSheet.hasUsername)
             }
             is PlayShortsBottomSheet.NoEligibleAccount -> {
                 showNoEligibleAccountBottomSheet()
@@ -195,14 +197,14 @@ class PlayShortsActivity : BaseActivity() {
             .commit()
     }
 
-    private fun showUGCOnboardingBottomSheet() {
+    private fun showUGCOnboardingBottomSheet(hasUsername: Boolean) {
         val existingFragment = supportFragmentManager.findFragmentByTag(UGCOnboardingParentFragment.TAG)
         if (existingFragment is UGCOnboardingParentFragment && existingFragment.isVisible) return
 
         val bundle = Bundle().apply {
             putInt(
                 UGCOnboardingParentFragment.KEY_ONBOARDING_TYPE,
-                UGCOnboardingParentFragment.getOnboardingType(hasUsername = viewModel.selectedAccount.hasUsername)
+                UGCOnboardingParentFragment.getOnboardingType(hasUsername = hasUsername)
             )
         }
         supportFragmentManager.beginTransaction()
