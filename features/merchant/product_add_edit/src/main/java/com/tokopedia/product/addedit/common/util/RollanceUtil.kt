@@ -2,13 +2,13 @@ package com.tokopedia.product.addedit.common.util
 
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 
-object RollenceUtil {
-    const val HAMPERS_AB_TEST_KEY = "picker_image_android"
-    private const val IMAGE_PICKER_AB_TEST_VALUE_ENABLED = "image_picker"
+object RollanceUtil {
+    const val MEDIA_PICKER_AB_TEST_KEY = "android_revampeditor"
+    private const val IMAGE_PICKER_AB_TEST_VALUE_ENABLED = "android_revampeditor"
 
     fun getImagePickerRollence(): Boolean{
         return RemoteConfigInstance.getInstance().abTestPlatform
-            .getString(HAMPERS_AB_TEST_KEY, "")
+            .getString(MEDIA_PICKER_AB_TEST_KEY, "")
             .equals(IMAGE_PICKER_AB_TEST_VALUE_ENABLED, ignoreCase = false)
     }
 

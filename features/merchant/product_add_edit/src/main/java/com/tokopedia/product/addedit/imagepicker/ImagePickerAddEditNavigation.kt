@@ -28,7 +28,7 @@ import com.tokopedia.user.session.UserSession
 import java.io.File
 
 object ImagePickerAddEditNavigation {
-    const val NONE_VIDEO_UPLOAD =0
+    private const val NONE_VIDEO_UPLOAD =0
     fun getIntent(context: Context, imageUrlOrPathList: List<String>, maxImageCount: Int, isAdding: Boolean): Intent {
         val builder = createImagePickerBuilder(context, ArrayList(imageUrlOrPathList), maxImageCount)
         val intent = RouteManager.getIntent(context, ApplinkConstInternalGlobal.IMAGE_PICKER)
@@ -38,25 +38,21 @@ object ImagePickerAddEditNavigation {
         return intent
     }
 
-    fun getIntent(context: Context, maxImageCount: Int, imageFile : ArrayList<String> = arrayListOf()): Intent {
-        val filesImage = arrayListOf<File>()
-        imageFile.forEach {uri ->
-            filesImage.add(File(uri))
-        }
+    fun getIntent(context: Context, maxImageCount: Int, source : PageSource, imageFile : ArrayList<String> = arrayListOf()): Intent {
         return MediaPicker.intentWithGalleryFirst(context) {
-            pageSource(PageSource.AddEditProduct)
+            pageSource(source)
             multipleSelectionMode()
             modeType(ModeType.IMAGE_ONLY)
             maxMediaItem(maxImageCount)
             maxVideoItem(NONE_VIDEO_UPLOAD)
             cameraRatio(CameraRatio.Square)
-            includeMedias(filesImage)
-            withEditor(true)
-        }.apply {
-            putExtra(EXTRA_EDITOR_PARAM, EditorParam().apply {
-                autoCropRatio = ImageRatioType.RATIO_1_1
-                editorToolsList = arrayListOf(BRIGHTNESS, CONTRAST, CROP, ROTATE, REMOVE_BACKGROUND, WATERMARK)
-            })
+            includeMedias(imageFile)
+            withEditor {
+                autoCrop1to1()
+                createDefaultEditorTools()
+                withRemoveBackground()
+                withWatermark()
+            }
         }
     }
 
@@ -65,8 +61,10 @@ object ImagePickerAddEditNavigation {
 
         return RouteManager.getIntent(context, ApplinkConstInternalMedia.INTERNAL_MEDIA_EDITOR).apply {
             putExtra(EXTRA_EDITOR_PARAM, EditorParam().apply {
-                autoCropRatio = ImageRatioType.RATIO_1_1
-                editorToolsList = arrayListOf(BRIGHTNESS, CONTRAST, CROP, ROTATE, REMOVE_BACKGROUND, WATERMARK)
+                autoCrop1to1()
+                createDefaultEditorTools()
+                withRemoveBackground()
+                withWatermark()
             })
         }.apply {
             putExtra(EXTRA_INTENT_EDITOR, editorImageSource)
@@ -75,7 +73,7 @@ object ImagePickerAddEditNavigation {
 
     fun resultExtrasEditor(data: Intent?): PickerResult {
         return data?.getParcelableExtra<EditorResult>(RESULT_INTENT_EDITOR)?.let {
-             PickerResult(it.originalPaths, editedImages = it.editedImages)
+            PickerResult(it.originalPaths, editedImages = it.editedImages)
         } ?: PickerResult()
     }
 
@@ -85,21 +83,21 @@ object ImagePickerAddEditNavigation {
             R.drawable.product_add_edit_ic_image_placeholder
         }
         return ImagePickerBuilder.getSquareImageBuilder(context)
-                .apply {
-                    this.title = context.getString(R.string.action_pick_photo)
-                    this.maxFileSizeInKB = AddEditProductConstants.MAX_PRODUCT_IMAGE_SIZE_IN_KB
-                    this.imagePickerEditorBuilder = ImagePickerEditorBuilder.getSimpleEditBuilder().apply {
-                        belowMinResolutionErrorMessage = context.getString(R.string.error_image_under_x_resolution, DEFAULT_MIN_RESOLUTION, DEFAULT_MIN_RESOLUTION)
-                        imageTooLargeErrorMessage = context.getString(R.string.error_image_too_large, AddEditProductConstants.MAX_PRODUCT_IMAGE_SIZE_IN_MB)
-                        convertToWebp = false
-                    }
-                    this.imagePickerMultipleSelectionBuilder = ImagePickerMultipleSelectionBuilder(
-                            usePrimaryImageString = true,
-                            maximumNoPick = maxImageCount,
-                            initialSelectedImagePathList = selectedImagePathList ?: arrayListOf(),
-                            placeholderImagePathResList = ArrayList(listPlaceholderImage)
-                    )
+            .apply {
+                this.title = context.getString(R.string.action_pick_photo)
+                this.maxFileSizeInKB = AddEditProductConstants.MAX_PRODUCT_IMAGE_SIZE_IN_KB
+                this.imagePickerEditorBuilder = ImagePickerEditorBuilder.getSimpleEditBuilder().apply {
+                    belowMinResolutionErrorMessage = context.getString(R.string.error_image_under_x_resolution, DEFAULT_MIN_RESOLUTION, DEFAULT_MIN_RESOLUTION)
+                    imageTooLargeErrorMessage = context.getString(R.string.error_image_too_large, AddEditProductConstants.MAX_PRODUCT_IMAGE_SIZE_IN_MB)
+                    convertToWebp = false
                 }
+                this.imagePickerMultipleSelectionBuilder = ImagePickerMultipleSelectionBuilder(
+                    usePrimaryImageString = true,
+                    maximumNoPick = maxImageCount,
+                    initialSelectedImagePathList = selectedImagePathList ?: arrayListOf(),
+                    placeholderImagePathResList = ArrayList(listPlaceholderImage)
+                )
+            }
             .withWatermarkEditor()
             .withRemoveBackgroundEditor()
     }

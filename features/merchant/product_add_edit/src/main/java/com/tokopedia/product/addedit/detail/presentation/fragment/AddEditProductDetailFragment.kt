@@ -40,6 +40,7 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.picker.common.MediaPicker
+import com.tokopedia.picker.common.PageSource
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringConstants.ADD_EDIT_PRODUCT_DETAIL_PLT_NETWORK_METRICS
 import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringConstants.ADD_EDIT_PRODUCT_DETAIL_PLT_PREPARE_METRICS
@@ -116,6 +117,10 @@ import com.tokopedia.product.addedit.shipment.presentation.fragment.AddEditProdu
 import com.tokopedia.product.addedit.specification.presentation.activity.AddEditProductSpecificationActivity
 import com.tokopedia.product.addedit.tooltip.model.NumericWithDescriptionTooltipModel
 import com.tokopedia.product.addedit.tooltip.presentation.TooltipBottomSheet
+import com.tokopedia.product.addedit.tracking.MediaImprovementTracker
+import com.tokopedia.product.addedit.tracking.MediaImprovementTracker.ADD_PRODUCT_ENTRY_POINT
+import com.tokopedia.product.addedit.tracking.MediaImprovementTracker.EDIT_PRODUCT_ENTRY_POINT
+import com.tokopedia.product.addedit.tracking.MediaImprovementTracker.sendTrackerImprovementOfMediaPicker
 import com.tokopedia.product.addedit.tracking.ProductAddMainTracking
 import com.tokopedia.product.addedit.tracking.ProductEditMainTracking
 import com.tokopedia.product.addedit.variant.presentation.activity.AddEditProductVariantDetailActivity
@@ -1410,20 +1415,24 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
         val isAdding = viewModel.isAdding || !isEditing
         val maxProductPhotoCount = viewModel.getMaxProductPhotos()
 
-        // tracking
-        if (isEditing) {
-            ProductEditMainTracking.trackAddPhoto(shopId)
-        } else {
-            ProductAddMainTracking.trackAddPhoto(shopId)
-        }
-        //if(RollenceUtil.getImagePickerRollence()) {
+        if(RollanceUtil.getImagePickerRollence()) {
+            val pageSource = if(!isEditing) PageSource.AddProduct else PageSource.EditProduct
+            doTracking(isEditing)
             val intent = ImagePickerAddEditNavigation.getIntent(
                 ctx,
                 maxProductPhotoCount,
+                pageSource,
                 ArrayList(imageUrlOrPathList)
             )
             startActivityForResult(intent, REQUEST_CODE_IMAGE_IMPROVEMENT)
-        /*} else {
+        } else {
+            // tracking
+            if (isEditing) {
+                ProductEditMainTracking.trackAddPhoto(shopId)
+            } else {
+                ProductAddMainTracking.trackAddPhoto(shopId)
+            }
+
             val intent = ImagePickerAddEditNavigation.getIntent(
                 ctx,
                 ArrayList(imageUrlOrPathList),
@@ -1431,8 +1440,23 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
                 isAdding
             )
             startActivityForResult(intent, REQUEST_CODE_IMAGE)
-        }*/
+        }
+    }
 
+    private fun doTracking(isEdit : Boolean){
+        val userId = UserSession(context).userId
+        val shopId = UserSession(context).shopId
+        if(isEdit){
+            MediaImprovementTracker.sendTrackerImprovementOfMediaPicker(
+                "${MediaImprovementTracker.EDIT_PRODUCT_ENTRY_POINT}-$userId-$shopId",
+                userId
+            )
+        } else {
+            MediaImprovementTracker.sendTrackerImprovementOfMediaPicker(
+                "${MediaImprovementTracker.ADD_PRODUCT_ENTRY_POINT}-$userId-$shopId",
+                userId
+            )
+        }
     }
 
     private fun setupProductSubmitButtonViews() {

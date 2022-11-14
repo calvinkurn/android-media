@@ -30,6 +30,7 @@ import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.picker.common.MediaPicker
+import com.tokopedia.picker.common.PageSource
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringConstants.ADD_EDIT_PRODUCT_VARIANT_PLT_NETWORK_METRICS
 import com.tokopedia.product.addedit.analytics.AddEditProductPerformanceMonitoringConstants.ADD_EDIT_PRODUCT_VARIANT_PLT_PREPARE_METRICS
@@ -545,15 +546,16 @@ class AddEditProductVariantFragment :
 
     override fun onItemClicked(position: Int) {
         viewModel.clickedVariantPhotoItemPosition = position
-        showImagePicker()
+        showImagePicker(position)
     }
 
-    private fun showImagePicker(){
-        //if(RollenceUtil.getImagePickerRollence()) {
-            showImagePickerForVariant()
-        /*} else {
+    private fun showImagePicker(position: Int){
+        if(RollanceUtil.getImagePickerRollence()) {
+            doTracking()
+            showImagePickerForVariant(position)
+        } else {
             showPhotoVariantPicker()
-        }*/
+        }
     }
 
     private fun resetVariantValueSection(layoutPosition: Int) {
@@ -580,14 +582,14 @@ class AddEditProductVariantFragment :
 
                 REQUEST_CODE_SIZECHART_IMAGE_MEDIA_PICKER -> {
                     val imageUrlOrPathList = MediaPicker.result(data)
-                    imageUrlOrPathList.editedImages.forEach {
+                    viewModel.cleanUrlOrPathPicture(imageUrlOrPathList)?.let {
                         viewModel.updateSizechart(it)
                     }
                 }
 
                 REQUEST_CODE_EDITOR_SIZECHART_IMAGE_MEDIA_PICKER -> {
                     val imageUrlOrPathList = ImagePickerAddEditNavigation.resultExtrasEditor(data)
-                    imageUrlOrPathList.editedImages.forEach {
+                   viewModel.cleanUrlOrPathPicture(imageUrlOrPathList)?.let {
                         viewModel.updateSizechart(it)
                     }
                 }
@@ -602,7 +604,7 @@ class AddEditProductVariantFragment :
 
                 REQUEST_CODE_VARIANT_PHOTO_IMAGE_MEDIA_PICKER -> {
                     val imageResultPicker = MediaPicker.result(data)
-                    imageResultPicker.editedImages.firstOrNull()?.let {
+                    viewModel.cleanUrlOrPathPicture(imageResultPicker)?.let {
                         val position = viewModel.clickedVariantPhotoItemPosition.orZero()
                         variantPhotoAdapter?.updateImageData(it, position)
                     }
@@ -1055,11 +1057,13 @@ class AddEditProductVariantFragment :
         startActivityForResult(intent, REQUEST_CODE_VARIANT_PHOTO_IMAGE)
     }
 
-    private fun showImagePickerForVariant() {
+    private fun showImagePickerForVariant(position: Int) {
         val ctx = context ?: return
+        val pageSourceState = variantPhotoAdapter?.getAddOrEditPickerState(position)?:return
         val intent = ImagePickerAddEditNavigation.getIntent(
             ctx,
-            MAX_IMAGE_VARIANT
+            MAX_IMAGE_VARIANT,
+            pageSourceState
         )
         startActivityForResult(intent, REQUEST_CODE_VARIANT_PHOTO_IMAGE_MEDIA_PICKER)
     }
@@ -1367,19 +1371,38 @@ class AddEditProductVariantFragment :
     }
 
     fun showImagePickerVariantSizeGuide(){
-        //if(RollenceUtil.getImagePickerRollence()) {
+        if(RollanceUtil.getImagePickerRollence()) {
+            doTracking()
             showImagePickerSizeGuide()
-        /*} else {
+        } else {
             showSizechartPicker()
-        }*/
+        }
     }
 
     fun showImageEditorVariantSizeGuide(){
-        //if(RollenceUtil.getImagePickerRollence()) {
+        if(RollanceUtil.getImagePickerRollence()) {
+            doTracking()
             showEditorImagePickerSizeGuide()
-        /*} else {
+        } else {
             showEditorSizechartPicker()
-        }*/
+        }
+    }
+
+    private fun doTracking(){
+        val userId = UserSession(context).userId
+        val shopId = UserSession(context).shopId
+        val isEdit = viewModel.isEditMode.value ?: false
+        if(isEdit){
+            MediaImprovementTracker.sendTrackerImprovementOfMediaPicker(
+                "${MediaImprovementTracker.EDIT_VARIANT_ENTRY_POINT}-$userId-$shopId",
+                userId
+            )
+        } else {
+            MediaImprovementTracker.sendTrackerImprovementOfMediaPicker(
+                "${MediaImprovementTracker.ADD_VARIANT_ENTRY_POINT}-$userId-$shopId",
+                userId
+            )
+        }
     }
 
     private fun removeVariant() {
@@ -1415,7 +1438,8 @@ class AddEditProductVariantFragment :
         val ctx = context ?: return
         val intent = ImagePickerAddEditNavigation.getIntent(
             ctx,
-            MAX_IMAGE_VARIANT
+            MAX_IMAGE_VARIANT,
+            PageSource.EditVariant
         )
         startActivityForResult(intent, REQUEST_CODE_SIZECHART_IMAGE_MEDIA_PICKER)
     }

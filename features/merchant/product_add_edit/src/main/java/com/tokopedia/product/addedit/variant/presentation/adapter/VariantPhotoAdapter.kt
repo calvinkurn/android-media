@@ -3,6 +3,7 @@ package com.tokopedia.product.addedit.variant.presentation.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.picker.common.PageSource
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.variant.presentation.model.VariantPhoto
 import com.tokopedia.product.addedit.variant.presentation.adapter.viewholder.VariantPhotoViewHolder
@@ -62,6 +63,12 @@ class VariantPhotoAdapter(private val onItemClickedListener: OnItemClickListener
             this.items[position] = VariantPhoto(variantName, imageUrlOrPath)
             notifyItemChanged(position)
         }
+    }
+
+    fun getAddOrEditPickerState(position: Int): PageSource {
+        return if (this.items[position].picID.isEmpty())
+            PageSource.AddVariant
+        else PageSource.EditVariant
     }
 
     override fun onItemClicked(position: Int) {
