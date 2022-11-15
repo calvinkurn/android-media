@@ -432,7 +432,6 @@
       "eventLabel": "\\d+ - \\d+ - (live|vod)",
       "items": [
         {
-
           "shop_id": ".*",
           "quantity": "\\d+(.\\d+)?",
           "category_id": ".*",
