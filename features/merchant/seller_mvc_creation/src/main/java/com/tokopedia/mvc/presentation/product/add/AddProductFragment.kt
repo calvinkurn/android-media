@@ -59,6 +59,7 @@ import com.tokopedia.mvc.util.constant.NumberConstant
 import com.tokopedia.mvc.R
 import com.tokopedia.mvc.databinding.SmvcFragmentAddProductBinding
 import com.tokopedia.mvc.domain.entity.Product
+import com.tokopedia.mvc.domain.entity.ShopData
 import com.tokopedia.mvc.domain.entity.enums.BenefitType
 import com.tokopedia.mvc.presentation.share.LinkerDataGenerator
 import com.tokopedia.mvc.presentation.share.SharingComponentInstanceBuilder
@@ -244,9 +245,12 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
                 val selectedParentProduct = effect.selectedParentProduct
                 val variants = 0
             }
-            is AddProductEffect.FinishPage -> {
-
-                displayShareBottomSheet("Unilever", "UNVR", effect.selectedParentProducts, effect.selectedParentProductImageUrls)
+            is AddProductEffect.ConfirmAddProduct -> {
+                displayShareBottomSheet(
+                    effect.selectedParentProducts,
+                    effect.selectedParentProductImageUrls,
+                    effect.shop
+                )
             }
         }
     }
@@ -607,10 +611,9 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
     }
 
     private fun displayShareBottomSheet(
-        shopName: String,
-        shopDomain: String,
         selectedProducts: List<Product>,
-        selectedProductImageUrls: List<String>
+        selectedProductImageUrls: List<String>,
+        shop: ShopData
     ) {
         val voucherStartDate = Date()
         val voucherEndDate = Date()
@@ -618,7 +621,7 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
         val endDate = voucherEndDate.formatTo(DateConstant.DATE_YEAR_PRECISION)
         val endHour = voucherEndDate.formatTo(DateConstant.TIME_MINUTE_PRECISION)
 
-        val formattedShopName = MethodChecker.fromHtml(shopName).toString()
+        val formattedShopName = MethodChecker.fromHtml(shop.name).toString()
         val title = String.format(
             getString(R.string.smvc_placeholder_share_component_outgoing_title),
             formattedShopName
@@ -638,7 +641,7 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
             voucherEndTime = voucherEndDate,
             promoType = PromoType.CASHBACK,
             benefitType = BenefitType.NOMINAL,
-            shopLogo = "",
+            shopLogo = shop.logo,
             shopName = formattedShopName,
             discountAmount = 500_000,
             discountAmountMax = 1_000_000,
@@ -654,7 +657,7 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
                     shareModel,
                     title,
                     description,
-                    shopDomain
+                    shop.domain
                 )
             },
             onCloseOptionClicked = {

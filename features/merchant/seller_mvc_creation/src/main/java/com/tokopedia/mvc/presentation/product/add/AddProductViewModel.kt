@@ -19,6 +19,7 @@ import com.tokopedia.mvc.domain.usecase.GetShopWarehouseLocationUseCase
 import com.tokopedia.mvc.domain.usecase.ProductListMetaUseCase
 import com.tokopedia.mvc.domain.usecase.ProductListUseCase
 import com.tokopedia.mvc.domain.usecase.ProductV3UseCase
+import com.tokopedia.mvc.domain.usecase.ShopBasicDataUseCase
 import com.tokopedia.mvc.domain.usecase.ShopShowcasesByShopIDUseCase
 import com.tokopedia.mvc.domain.usecase.VoucherValidationPartialUseCase
 import com.tokopedia.mvc.presentation.product.add.uimodel.AddProductEffect
@@ -43,7 +44,8 @@ class AddProductViewModel @Inject constructor(
     private val getProductsUseCase: ProductListUseCase,
     private val getInitiateVoucherPageUseCase: GetInitiateVoucherPageUseCase,
     private val voucherValidationPartialUseCase: VoucherValidationPartialUseCase,
-    private val productV3UseCase: ProductV3UseCase
+    private val productV3UseCase: ProductV3UseCase,
+    private val shopBasicDataUseCase: ShopBasicDataUseCase
 ) : BaseViewModel(dispatchers.main) {
 
     private val _uiState = MutableStateFlow(AddProductUiState())
@@ -503,14 +505,33 @@ class AddProductViewModel @Inject constructor(
     }
 
 
-    private fun handleConfirmAddProduct() = launch(dispatchers.computation) {
-        val selectedProducts = currentState.products.filter { it.isSelected }
-        val topSellingProductImageUrls = selectedProducts
-            .filter { it.isSelected }
-            .sortedByDescending { it.txStats.sold }
-            .map { it.picture }
+    private fun handleConfirmAddProduct() {
+        launchCatchError(
+            dispatchers.io,
+            block = {
+                val response = shopBasicDataUseCase.execute()
 
-        _uiEffect.tryEmit(AddProductEffect.FinishPage(selectedProducts, topSellingProductImageUrls))
+                val selectedProducts = currentState.products.filter { it.isSelected }
+                val topSellingProductImageUrls = selectedProducts
+                    .filter { it.isSelected }
+                    .sortedByDescending { it.txStats.sold }
+                    .map { it.picture }
+
+                _uiEffect.tryEmit(
+                    AddProductEffect.ConfirmAddProduct(
+                        selectedProducts,
+                        topSellingProductImageUrls,
+                        response
+                    )
+                )
+
+            },
+            onError = { error ->
+                _uiState.update { it.copy(error = error) }
+            }
+        )
+
+
     }
 
 }
