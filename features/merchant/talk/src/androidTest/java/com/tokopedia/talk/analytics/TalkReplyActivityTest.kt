@@ -2,7 +2,7 @@ package com.tokopedia.talk.analytics
 
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.action.ViewActions.closeSoftKeyboard
-import androidx.test.espresso.action.ViewActions.typeText
+import androidx.test.espresso.action.ViewActions.replaceText
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers
@@ -55,7 +55,7 @@ class TalkReplyActivityTest : TalkCassavaTestFixture() {
     }
 
     private fun typingToReplyTalk() {
-        onView(ViewMatchers.withId(R.id.replyEditText)).perform(typeText(SENT_TO_REPLY_TEXT), closeSoftKeyboard())
+        onView(ViewMatchers.withId(R.id.replyEditText)).perform(replaceText(SENT_TO_REPLY_TEXT), closeSoftKeyboard())
         onView(ViewMatchers.withId(R.id.replyEditText)).check(matches(withText(SENT_TO_REPLY_TEXT)))
     }
 
