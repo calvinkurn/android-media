@@ -6,6 +6,7 @@
     <string name="editor_tool_rotate">Putar</string>
     <string name="editor_tool_remove_background">Hapus Latar</string>
     <string name="editor_tool_watermark">Watermark</string>
+    <string name="editor_tool_add_logo">Logo Toko</string>
 
     <!-- Content description -->
     <string name="cd_img_preview">image preview</string>
