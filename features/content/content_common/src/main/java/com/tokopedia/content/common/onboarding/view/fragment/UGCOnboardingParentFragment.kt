@@ -132,5 +132,10 @@ class UGCOnboardingParentFragment : TkpdBaseV4Fragment() {
         const val VALUE_ONBOARDING_TYPE_COMPLETE = 1
         const val VALUE_ONBOARDING_TYPE_TNC = 2
         const val VALUE_UNKNOWN = 0
+
+        fun getOnboardingType(hasUsername: Boolean): Int {
+            return if(hasUsername) VALUE_ONBOARDING_TYPE_TNC
+            else VALUE_ONBOARDING_TYPE_COMPLETE
+        }
     }
 }

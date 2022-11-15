@@ -7,7 +7,7 @@ import com.tokopedia.adapterdelegate.BaseDiffUtilAdapter
  */
 class DynamicPreparationMenuAdapter(
     onClick: (DynamicPreparationMenu) -> Unit
-) : BaseDiffUtilAdapter<DynamicPreparationMenu>() {
+) : BaseDiffUtilAdapter<DynamicPreparationMenuAdapter.Item>() {
 
     init {
         delegatesManager
@@ -15,16 +15,21 @@ class DynamicPreparationMenuAdapter(
     }
 
     override fun areItemsTheSame(
-        oldItem: DynamicPreparationMenu,
-        newItem: DynamicPreparationMenu
+        oldItem: DynamicPreparationMenuAdapter.Item,
+        newItem: DynamicPreparationMenuAdapter.Item
     ): Boolean {
-        return oldItem.menuId == newItem.menuId
+        return oldItem.data.menuId == newItem.data.menuId
     }
 
     override fun areContentsTheSame(
-        oldItem: DynamicPreparationMenu,
-        newItem: DynamicPreparationMenu
+        oldItem: DynamicPreparationMenuAdapter.Item,
+        newItem: DynamicPreparationMenuAdapter.Item
     ): Boolean {
         return oldItem == newItem
     }
+
+    data class Item(
+        val data: DynamicPreparationMenu,
+        val isShow: Boolean
+    )
 }

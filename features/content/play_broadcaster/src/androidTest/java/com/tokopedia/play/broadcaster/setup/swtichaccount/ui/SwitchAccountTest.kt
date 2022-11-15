@@ -111,7 +111,7 @@ class SwitchAccountTest {
     fun test_switchAccountBuyerHaveDraft() {
         coEvery { mockRepo.getAccountList() } returns accountListResponse().reversed()
         coEvery {
-            mockHydraSharedPreferences.getLastSelectedAccount()
+            mockHydraSharedPreferences.getLastSelectedAccountType()
         } returns ContentCommonUserType.TYPE_USER
         coEvery {
             mockDataStore.getSetupDataStore().getTitle()

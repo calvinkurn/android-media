@@ -274,6 +274,7 @@
     <string name="play_bro_banner_shorts_coachmark_description">Buat video hingga 90 detik tentang produk jualanmu supaya banyak pembeli tertarik!</string>
     
     <!-- Shorts -->
+    <string name="play_shorts_toolbar_title">Buat video sebagai</string>
     <string name="play_shorts_preparation_coachmark_title">Mau ceritain pengalaman belanjamu?</string>
     <string name="play_shorts_preparation_coachmark_description">Bikin judul yang menarik dan tambahkan produk terkait supaya videomu ramai ditonton!</string>
 
@@ -281,7 +282,15 @@
     <string name="play_shorts_exit_confirmation_description">Persiapan yang sudah kamu buat akan hilang.</string>
     <string name="play_shorts_exit_confirmation_continue">Lanjut Persiapan</string>
     <string name="play_shorts_exit_confirmation_exit">Keluar</string>
-    
+
+    <string name="play_shorts_switch_account_to_shop_title">Yakin mau ganti ke akun tokomu?</string>
+    <string name="play_shorts_switch_account_to_shop_description">Persiapan di akun ini akan hilang. Kamu mungkin ulang prosesnya di akun toko.</string>
+    <string name="play_shorts_switch_account_to_shop_confirm">Ganti ke Akun Toko</string>
+    <string name="play_shorts_switch_account_to_user_title">Yakin mau ganti ke akun pembeli?</string>
+    <string name="play_shorts_switch_account_to_user_description">Persiapan di akun ini akan hilang. Kamu mungkin ulang prosesnya di akun pembeli.</string>
+    <string name="play_shorts_switch_account_to_user_confirm">Ganti ke Akun Pembeli</string>
+    <string name="play_shorts_switch_account_cancel">Batal</string>
+
     <string name="play_shorts_summary_title">Upload Video</string>
     <string name="play_shorts_summary_upload_action">Upload Video</string>
 </resources>

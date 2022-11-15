@@ -1543,7 +1543,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 updateSelectedAccount(
                     getSelectedAccount(
                         selectedType = selectedType,
-                        cacheSelectedType = sharedPref.getLastSelectedAccount(),
+                        cacheSelectedType = sharedPref.getLastSelectedAccountType(),
                         accountList = accountList
                     )
                 )
@@ -1653,7 +1653,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     private fun updateSelectedAccount(selectedAccount: ContentAccountUiModel) {
         _selectedAccount.update { selectedAccount }
-        sharedPref.setLastSelectedAccount(selectedAccount.type)
+        sharedPref.setLastSelectedAccountType(selectedAccount.type)
         hydraConfigStore.setAuthor(selectedAccount)
     }
 

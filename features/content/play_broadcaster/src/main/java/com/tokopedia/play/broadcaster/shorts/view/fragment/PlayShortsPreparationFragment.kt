@@ -1,7 +1,7 @@
 package com.tokopedia.play.broadcaster.shorts.view.fragment
 
-import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,13 +10,11 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import com.google.android.exoplayer2.Player
-import com.google.android.exoplayer2.SimpleExoPlayer
-import com.google.android.exoplayer2.source.ProgressiveMediaSource
 import com.google.android.exoplayer2.upstream.*
-import com.google.android.exoplayer2.util.Util
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.content.common.types.ContentCommonUserType
+import com.tokopedia.content.common.ui.bottomsheet.ContentAccountTypeBottomSheet
+import com.tokopedia.content.common.ui.bottomsheet.SellerTncBottomSheet
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.content.common.ui.toolbar.ContentColor
 import com.tokopedia.content.common.util.coachmark.ContentCoachMarkConfig
@@ -25,18 +23,20 @@ import com.tokopedia.content.common.util.coachmark.ContentCoachMarkSharedPref
 import com.tokopedia.content.common.util.hideKeyboard
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.databinding.FragmentPlayShortsPreparationBinding
 import com.tokopedia.play.broadcaster.setup.product.view.ProductSetupFragment
-import com.tokopedia.play.broadcaster.shorts.factory.PlayShortsMediaSourceFactory
 import com.tokopedia.play.broadcaster.shorts.ui.model.action.PlayShortsAction
+import com.tokopedia.play.broadcaster.shorts.ui.model.event.PlayShortsBottomSheet
 import com.tokopedia.play.broadcaster.shorts.ui.model.event.PlayShortsToaster
 import com.tokopedia.play.broadcaster.shorts.ui.model.state.PlayShortsCoverFormUiState
 import com.tokopedia.play.broadcaster.shorts.ui.model.state.PlayShortsTitleFormUiState
 import com.tokopedia.play.broadcaster.shorts.ui.model.state.PlayShortsUiState
 import com.tokopedia.play.broadcaster.shorts.view.custom.DynamicPreparationMenu
 import com.tokopedia.play.broadcaster.shorts.view.fragment.base.PlayShortsBaseFragment
+import com.tokopedia.play.broadcaster.shorts.view.manager.idle.PlayShortsIdleManager
 import com.tokopedia.play.broadcaster.shorts.view.viewmodel.PlayShortsViewModel
 import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
@@ -60,6 +60,7 @@ class PlayShortsPreparationFragment @Inject constructor(
     private val viewModelFactory: ViewModelProvider.Factory,
     private val userSession: UserSessionInterface,
     private val coachMarkManager: ContentCoachMarkManager,
+    private val idleManager: PlayShortsIdleManager
 ) : PlayShortsBaseFragment() {
 
     override fun getScreenName(): String = "PlayShortsPreparationFragment"
@@ -74,6 +75,7 @@ class PlayShortsPreparationFragment @Inject constructor(
     )
 
     private var exitConfirmationDialog: DialogUnify? = null
+    private var switchAccountConfirmationDialog: DialogUnify? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -90,6 +92,7 @@ class PlayShortsPreparationFragment @Inject constructor(
 
     override fun onStart() {
         super.onStart()
+        viewModel.submitAction(PlayShortsAction.StartMedia)
     }
 
     override fun onStop() {
@@ -105,6 +108,17 @@ class PlayShortsPreparationFragment @Inject constructor(
         setupCoachMark()
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        /** TODO: i think it should be on onDestroy() because
+         * when we navigate to Summary Page, this fragment got destroyed
+         */
+        viewModel.submitAction(PlayShortsAction.ReleaseMedia)
+        coachMarkManager.dismissAllCoachMark()
+        idleManager.clear()
+        _binding = null
+    }
+
     override fun onAttachFragment(childFragment: Fragment) {
         super.onAttachFragment(childFragment)
         when (childFragment) {
@@ -118,17 +132,7 @@ class PlayShortsPreparationFragment @Inject constructor(
                     override fun isEligibleForPin(): Boolean = false
 
                     override fun getSelectedAccount(): ContentAccountUiModel {
-                        /** TODO: for mocking purpose, gonna delete this later */
-                        return ContentAccountUiModel(
-                            id = userSession.userId,
-                            type = ContentCommonUserType.TYPE_USER,
-                            name = "Jonathan Darwin",
-                            iconUrl = "",
-                            badge = "",
-                            hasUsername = true,
-                            hasAcceptTnc = true
-                        )
-//                        return viewModel.selectedAccount
+                        return viewModel.selectedAccount
                     }
 
                     override fun creationId(): String {
@@ -166,14 +170,21 @@ class PlayShortsPreparationFragment @Inject constructor(
                     }
                 })
             }
-        }
-    }
+            is ContentAccountTypeBottomSheet -> {
+                childFragment.setData(viewModel.accountList)
+                childFragment.setOnAccountClickListener(object : ContentAccountTypeBottomSheet.Listener {
+                    override fun onAccountClick(contentAccount: ContentAccountUiModel) {
+                        if (contentAccount.id == viewModel.selectedAccount.id) return
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-        viewModel.submitAction(PlayShortsAction.ReleaseMedia)
-        coachMarkManager.dismissAllCoachMark()
-        _binding = null
+                        if (viewModel.isFormFilled) {
+                            showSwitchAccountConfirmationDialog(contentAccount)
+                        } else {
+                            viewModel.submitAction(PlayShortsAction.SwitchAccount)
+                        }
+                    }
+                })
+            }
+        }
     }
 
     override fun onBackPressed(): Boolean {
@@ -199,14 +210,26 @@ class PlayShortsPreparationFragment @Inject constructor(
             navIcon = IconUnify.CLOSE
             setCustomizeContentColor(ContentColor.TRANSPARENT, false)
         }
-
-        /** TODO: setup title max character after getConfig */
     }
 
     private fun setupListener() {
         with(binding) {
-            toolbar.setOnBackClickListener {
-                activity?.onBackPressed()
+            toolbar.apply {
+                setOnBackClickListener {
+                    activity?.onBackPressed()
+                }
+
+                if (viewModel.isAllowChangeAccount) {
+                    setOnAccountClickListener {
+                        viewModel.submitAction(PlayShortsAction.ClickSwitchAccount)
+                    }
+                } else {
+                    setOnBackClickListener(null)
+                }
+            }
+
+            root.setOnClickListener {
+                idleManager.toggleState()
             }
 
             preparationMenu.setOnMenuClickListener {
@@ -232,7 +255,7 @@ class PlayShortsPreparationFragment @Inject constructor(
                 }
 
                 override fun onTitleSaved(view: TitleFormView, title: String) {
-                    viewModel.submitAction(PlayShortsAction.SubmitTitle(title))
+                    viewModel.submitAction(PlayShortsAction.UploadTitle(title))
                 }
             })
 
@@ -256,6 +279,7 @@ class PlayShortsPreparationFragment @Inject constructor(
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.uiState.withCache().collectLatest {
                 renderMedia(it.prevValue, it.value)
+                renderToolbar(it.prevValue, it.value)
                 renderPreparationMenu(it.prevValue, it.value)
                 renderTitleForm(it.prevValue, it.value)
                 renderCoverForm(it.prevValue, it.value)
@@ -266,6 +290,16 @@ class PlayShortsPreparationFragment @Inject constructor(
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.uiEvent.collect { event ->
                 renderToaster(event.toaster)
+                renderBottomSheet(event.bottomSheet)
+            }
+        }
+
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            idleManager.eventBus.subscribe().collectLatest {
+                when (it) {
+                    PlayShortsIdleManager.State.StandBy -> setupUiStandby()
+                    PlayShortsIdleManager.State.Idle -> setupUiIdle()
+                }
             }
         }
     }
@@ -281,12 +315,35 @@ class PlayShortsPreparationFragment @Inject constructor(
         )
     }
 
+    private fun setupUiStandby() {
+        Log.d("<LOG>", "Standby")
+        binding.preparationMenu.showMenuText(true)
+    }
+
+    private fun setupUiIdle() {
+        Log.d("<LOG>", "Idle")
+        binding.preparationMenu.showMenuText(false)
+    }
+
     private fun renderMedia(
         prev: PlayShortsUiState?,
         curr: PlayShortsUiState
     ) {
-        if(binding.exoPlayer.player == null) {
+        if (binding.exoPlayer.player == null) {
             binding.exoPlayer.player = curr.media.exoPlayer
+        }
+    }
+
+    private fun renderToolbar(
+        prev: PlayShortsUiState?,
+        curr: PlayShortsUiState
+    ) {
+        if (prev?.selectedAccount == curr.selectedAccount) return
+
+        with(binding.toolbar) {
+            title = getString(R.string.play_shorts_toolbar_title)
+            subtitle = curr.selectedAccount.name
+            icon = curr.selectedAccount.iconUrl
         }
     }
 
@@ -318,6 +375,7 @@ class PlayShortsPreparationFragment @Inject constructor(
                     binding.formTitle.setTitle(viewModel.title)
                 }
                 binding.formTitle.setLoading(false)
+                /** TODO: setup title max character after getConfig */
             }
             PlayShortsTitleFormUiState.State.Loading -> {
                 hideKeyboard()
@@ -365,7 +423,7 @@ class PlayShortsPreparationFragment @Inject constructor(
 
     private fun renderToaster(toasterData: PlayShortsToaster) {
         when (toasterData) {
-            is PlayShortsToaster.ErrorSubmitTitle -> {
+            is PlayShortsToaster.ErrorUploadTitle -> {
                 toaster.showError(
                     toasterData.throwable,
                     duration = Toaster.LENGTH_LONG,
@@ -375,12 +433,33 @@ class PlayShortsPreparationFragment @Inject constructor(
                     }
                 )
             }
+            is PlayShortsToaster.ErrorSwitchAccount -> {
+                toaster.showError(
+                    toasterData.throwable,
+                    duration = Toaster.LENGTH_SHORT
+                )
+            }
+            else -> {}
+        }
+    }
+
+    private fun renderBottomSheet(bottomSheet: PlayShortsBottomSheet) {
+        when (bottomSheet) {
+            is PlayShortsBottomSheet.SwitchAccount -> {
+                showSwitchAccountBottomSheet()
+            }
             else -> {}
         }
     }
 
     private fun showMainComponent(isShow: Boolean) {
         binding.groupPreparationMain.showWithCondition(isShow)
+
+        if (isShow) {
+            idleManager.startIdleTimer()
+        } else {
+            idleManager.forceStandByMode()
+        }
     }
 
     private fun showTitleForm(isShow: Boolean) {
@@ -413,6 +492,58 @@ class PlayShortsPreparationFragment @Inject constructor(
         if (exitConfirmationDialog?.isShowing == false) {
             exitConfirmationDialog?.show()
         }
+    }
+
+    private fun showSwitchAccountConfirmationDialog(selectedAccount: ContentAccountUiModel) {
+        if (switchAccountConfirmationDialog == null) {
+            switchAccountConfirmationDialog = DialogUnify(requireContext(), DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply {
+                setTitle(
+                    getString(
+                        if (selectedAccount.isShop) {
+                            R.string.play_shorts_switch_account_to_shop_title
+                        } else {
+                            R.string.play_shorts_switch_account_to_user_title
+                        }
+                    )
+                )
+                setDescription(
+                    getString(
+                        if (selectedAccount.isShop) {
+                            R.string.play_shorts_switch_account_to_shop_description
+                        } else {
+                            R.string.play_shorts_switch_account_to_user_description
+                        }
+                    )
+                )
+                setPrimaryCTAText(getString(R.string.play_shorts_switch_account_cancel))
+                setPrimaryCTAClickListener {
+                    dismiss()
+                }
+                setSecondaryCTAText(
+                    getString(
+                        if (selectedAccount.isShop) {
+                            R.string.play_shorts_switch_account_to_shop_confirm
+                        } else {
+                            R.string.play_shorts_switch_account_to_user_confirm
+                        }
+                    )
+                )
+                setSecondaryCTAClickListener {
+                    dismiss()
+                    viewModel.submitAction(PlayShortsAction.SwitchAccount)
+                }
+            }
+        }
+
+        if (switchAccountConfirmationDialog?.isShowing == false) {
+            switchAccountConfirmationDialog?.show()
+        }
+    }
+
+    private fun showSwitchAccountBottomSheet() {
+        ContentAccountTypeBottomSheet
+            .getFragment(childFragmentManager, requireActivity().classLoader)
+            .show(childFragmentManager)
     }
 
     private fun openProductPicker() {

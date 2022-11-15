@@ -23,6 +23,8 @@ import com.tokopedia.play.broadcaster.data.repository.*
 import com.tokopedia.play.broadcaster.domain.repository.*
 import com.tokopedia.play.broadcaster.shorts.data.PlayShortsRepositoryImpl
 import com.tokopedia.play.broadcaster.shorts.domain.PlayShortsRepository
+import com.tokopedia.play.broadcaster.shorts.domain.manager.PlayShortsAccountManager
+import com.tokopedia.play.broadcaster.shorts.domain.manager.PlayShortsAccountManagerImpl
 import com.tokopedia.play.broadcaster.shorts.ui.mapper.PlayShortsMapper
 import com.tokopedia.play.broadcaster.shorts.ui.mapper.PlayShortsUiMapper
 import com.tokopedia.play.broadcaster.util.bottomsheet.NavigationBarColorDialogCustomizer
@@ -49,6 +51,10 @@ abstract class PlayShortsBindModule {
     @Binds
     @PlayShortsScope
     abstract fun bindPermissionSharedPrefs(sharedPref: HydraSharedPreferences): PermissionSharedPreferences
+
+    @Binds
+    @PlayShortsScope
+    abstract fun bindPlayShortsAccountManager(accountManager: PlayShortsAccountManagerImpl): PlayShortsAccountManager
 
     /** Broadcaster Repository */
     @Binds

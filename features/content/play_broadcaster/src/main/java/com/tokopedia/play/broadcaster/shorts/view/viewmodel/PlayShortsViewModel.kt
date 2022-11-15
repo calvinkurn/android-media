@@ -5,11 +5,15 @@ import androidx.lifecycle.viewModelScope
 import com.google.android.exoplayer2.ExoPlayer
 import com.tokopedia.content.common.producttag.util.extension.combine
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
+import com.tokopedia.content.common.ui.model.TermsAndConditionUiModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play.broadcaster.shorts.domain.PlayShortsRepository
+import com.tokopedia.play.broadcaster.shorts.domain.manager.PlayShortsAccountManager
 import com.tokopedia.play.broadcaster.shorts.factory.PlayShortsMediaSourceFactory
+import com.tokopedia.play.broadcaster.shorts.ui.model.PlayShortsConfigUiModel
 import com.tokopedia.play.broadcaster.shorts.ui.model.PlayShortsMediaUiModel
 import com.tokopedia.play.broadcaster.shorts.ui.model.action.PlayShortsAction
+import com.tokopedia.play.broadcaster.shorts.ui.model.event.PlayShortsBottomSheet
 import com.tokopedia.play.broadcaster.shorts.ui.model.event.PlayShortsOneTimeEvent
 import com.tokopedia.play.broadcaster.shorts.ui.model.event.PlayShortsToaster
 import com.tokopedia.play.broadcaster.shorts.ui.model.event.PlayShortsUiEvent
@@ -38,11 +42,12 @@ class PlayShortsViewModel @Inject constructor(
     private val sharedPref: HydraSharedPreferences,
     private val exoPlayer: ExoPlayer,
     private val mediaSourceFactory: PlayShortsMediaSourceFactory,
+    private val accountManager: PlayShortsAccountManager
 ) : ViewModel() {
 
     /** Public Getter */
     val shortsId: String
-        get() = _shortsId.value
+        get() = _config.value.shortsId
 
     val title: String
         get() = _titleForm.value.title
@@ -56,15 +61,31 @@ class PlayShortsViewModel @Inject constructor(
 
     val isAllMandatoryMenuChecked: Boolean
         get() = _titleForm.value.title.isNotEmpty()
+
+    /** TODO: uncomment this later */
 //            && _productSectionList.value.any { it.products.isNotEmpty() }
+
+    val isAllowChangeAccount: Boolean
+        get() = accountManager.isAllowChangeAccount(_accountList.value)
+
+    val accountList: List<ContentAccountUiModel>
+        get() = _accountList.value
 
     val selectedAccount: ContentAccountUiModel
         get() = _selectedAccount.value
 
+    val isFormFilled: Boolean
+        get() = _titleForm.value.title.isNotEmpty() ||
+            _productSectionList.value.isNotEmpty() ||
+            _coverForm.value.coverUri.isNotEmpty()
+
+    val tncList: List<TermsAndConditionUiModel>
+        get() = _config.value.tncList
+
+    private val _config = MutableStateFlow(PlayShortsConfigUiModel.Empty)
     private val _media = MutableStateFlow(PlayShortsMediaUiModel.create(exoPlayer))
     private val _accountList = MutableStateFlow<List<ContentAccountUiModel>>(emptyList())
     private val _selectedAccount = MutableStateFlow(ContentAccountUiModel.Empty)
-    private val _shortsId = MutableStateFlow("")
     private val _menuList = MutableStateFlow<List<DynamicPreparationMenu>>(emptyList())
     private val _productSectionList = MutableStateFlow<List<ProductTagSectionUiModel>>(emptyList())
     private val _tags = MutableStateFlow<NetworkResult<Set<PlayTagUiModel>>>(NetworkResult.Unknown)
@@ -100,7 +121,7 @@ class PlayShortsViewModel @Inject constructor(
     }
 
     val uiState: Flow<PlayShortsUiState> = combine(
-        _shortsId,
+        _config,
         _media,
         _accountList,
         _selectedAccount,
@@ -108,9 +129,9 @@ class PlayShortsViewModel @Inject constructor(
         _titleForm,
         _coverForm,
         _tags,
-    ) { shortsId, media, accountList, selectedAccount, menuListUiState, titleForm, coverForm, tags ->
+    ) { config, media, accountList, selectedAccount, menuListUiState, titleForm, coverForm, tags ->
         PlayShortsUiState(
-            shortsId = shortsId,
+            config = config,
             media = media,
             accountList = accountList,
             selectedAccount = selectedAccount,
@@ -129,21 +150,26 @@ class PlayShortsViewModel @Inject constructor(
         setupPreparationMenu()
 
         /** TODO: for mocking purpose, delete this later */
-        submitAction(PlayShortsAction.SetMedia("/storage/emulated/0/Movies/VID_20221110_141411.mp4"))
-        _shortsId.value = "123123"
+//        submitAction(PlayShortsAction.SetMedia("/storage/emulated/0/Movies/VID_20221110_141411.mp4"))
     }
 
     fun submitAction(action: PlayShortsAction) {
         when (action) {
             is PlayShortsAction.PreparePage -> handlePreparePage(action.preferredAccountType)
 
+            /** Media */
             is PlayShortsAction.SetMedia -> handleSetMedia(action.mediaUri)
+            is PlayShortsAction.StartMedia -> handleStartMedia()
             is PlayShortsAction.StopMedia -> handleStopMedia()
             is PlayShortsAction.ReleaseMedia -> handleReleaseMedia()
 
+            /** Account */
+            is PlayShortsAction.ClickSwitchAccount -> handleClickSwitchAccount()
+            is PlayShortsAction.SwitchAccount -> handleSwitchAccount()
+
             /** Title Form */
             is PlayShortsAction.OpenTitleForm -> handleOpenTitleForm()
-            is PlayShortsAction.SubmitTitle -> handleSubmitTitle(action.title)
+            is PlayShortsAction.UploadTitle -> handleUploadTitle(action.title)
             is PlayShortsAction.CloseTitleForm -> handleCloseTitleForm()
 
             /** Cover Form */
@@ -164,44 +190,92 @@ class PlayShortsViewModel @Inject constructor(
 
     private fun handlePreparePage(preferredAccountType: String) {
         viewModelScope.launchCatchError(block = {
-            val lastSelectedAccount = sharedPref.getLastSelectedAccount()
+            val accountList = repo.getAccountList()
+            val bestEligibleAccount = accountManager.getBestEligibleAccount(accountList, preferredAccountType)
 
-            val selectedAccount = when {
-                preferredAccountType.isNotEmpty() -> preferredAccountType
-                lastSelectedAccount.isNotEmpty() -> lastSelectedAccount
-                else -> ""
+            if (bestEligibleAccount.isUnknown) {
+                _uiEvent.oneTimeUpdate {
+                    it.copy(bottomSheet = PlayShortsBottomSheet.NoEligibleAccount)
+                }
             }
 
-            val accountList = repo.getAccountList()
+            _accountList.update { accountList }
+            setSelectedAccount(bestEligibleAccount)
+
+            if (bestEligibleAccount.isUser && !bestEligibleAccount.hasAcceptTnc) {
+                _uiEvent.oneTimeUpdate {
+                    it.copy(bottomSheet = PlayShortsBottomSheet.UGCOnboarding(bestEligibleAccount.hasUsername))
+                }
+            } else {
+                getConfiguration()
+            }
         }) {
+            /** TODO: handle global page error like the one in broadcaster */
         }
     }
 
     private fun handleSetMedia(mediaUri: String) {
-        if(mediaUri == _media.value.mediaUri) return
+        if (mediaUri == _media.value.mediaUri) return
 
         _media.update {
             val mediaSource = mediaSourceFactory.create(mediaUri)
             it.exoPlayer.prepare(mediaSource)
-            it.exoPlayer.playWhenReady = true
 
             it.copy(mediaUri = mediaUri)
         }
     }
 
+    private fun handleStartMedia() {
+        _media.value.exoPlayer.playWhenReady = true
+    }
+
     private fun handleStopMedia() {
-        _media.value.exoPlayer.stop()
+        _media.value.exoPlayer.playWhenReady = false
     }
 
     private fun handleReleaseMedia() {
-        _media.value.exoPlayer.release()
+        _media.value.exoPlayer.apply {
+            stop()
+            release()
+        }
+    }
+
+    private fun handleClickSwitchAccount() {
+        _uiEvent.oneTimeUpdate {
+            it.copy(
+                bottomSheet = PlayShortsBottomSheet.SwitchAccount
+            )
+        }
+    }
+
+    private fun handleSwitchAccount() {
+        viewModelScope.launchCatchError(block = {
+            val newSelectedAccount = accountManager.switchAccount(_accountList.value, _selectedAccount.value.type)
+
+            if (newSelectedAccount.isShop && !newSelectedAccount.hasAcceptTnc) {
+                _uiEvent.oneTimeUpdate {
+                    it.copy(bottomSheet = PlayShortsBottomSheet.SellerNotEligible)
+                }
+            } else if (newSelectedAccount.isUser && !newSelectedAccount.hasAcceptTnc) {
+                _uiEvent.oneTimeUpdate {
+                    it.copy(bottomSheet = PlayShortsBottomSheet.UGCOnboarding(newSelectedAccount.hasUsername))
+                }
+            } else {
+                getConfiguration()
+                setSelectedAccount(newSelectedAccount)
+            }
+        }) { throwable ->
+            _uiEvent.oneTimeUpdate {
+                it.copy(toaster = PlayShortsToaster.ErrorSwitchAccount(throwable))
+            }
+        }
     }
 
     private fun handleOpenTitleForm() {
         _titleForm.update { it.copy(state = PlayShortsTitleFormUiState.State.Editing) }
     }
 
-    private fun handleSubmitTitle(title: String) {
+    private fun handleUploadTitle(title: String) {
         viewModelScope.launchCatchError(block = {
             if (_titleForm.value.state == PlayShortsTitleFormUiState.State.Loading) return@launchCatchError
 
@@ -211,8 +285,7 @@ class PlayShortsViewModel @Inject constructor(
                 )
             }
 
-            /** Will call real GQL here */
-            delay(2000)
+            repo.uploadTitle(title, shortsId, selectedAccount.id)
 
             _titleForm.update {
                 it.copy(
@@ -230,8 +303,8 @@ class PlayShortsViewModel @Inject constructor(
 
             _uiEvent.oneTimeUpdate {
                 it.copy(
-                    toaster = PlayShortsToaster.ErrorSubmitTitle(throwable) {
-                        submitAction(PlayShortsAction.SubmitTitle(title = title))
+                    toaster = PlayShortsToaster.ErrorUploadTitle(throwable) {
+                        submitAction(PlayShortsAction.UploadTitle(title = title))
                     }
                 )
             }
@@ -302,6 +375,26 @@ class PlayShortsViewModel @Inject constructor(
             }
             else -> {}
         }
+    }
+
+    private suspend fun getConfiguration() {
+        val account = _selectedAccount.value
+
+        val config = repo.getShortsConfiguration(account.id, account.type)
+
+        _config.update {
+            if (config.shortsId.isEmpty()) {
+                val shortsId = repo.createShorts(account.id, account.type)
+                config.copy(shortsId = shortsId)
+            } else {
+                config
+            }
+        }
+    }
+
+    private fun setSelectedAccount(account: ContentAccountUiModel) {
+        _selectedAccount.update { account }
+        sharedPref.setLastSelectedAccountType(account.type)
     }
 
     private fun setupPreparationMenu() {

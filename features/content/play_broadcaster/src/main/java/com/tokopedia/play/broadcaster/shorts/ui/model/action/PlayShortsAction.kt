@@ -15,13 +15,18 @@ sealed interface PlayShortsAction {
 
     /** Media */
     data class SetMedia(val mediaUri: String) : PlayShortsAction
+    object StartMedia : PlayShortsAction
     object StopMedia : PlayShortsAction
     object ReleaseMedia : PlayShortsAction
+
+    /** Account */
+    object ClickSwitchAccount : PlayShortsAction
+    object SwitchAccount : PlayShortsAction
 
     /** Title Form */
     object OpenTitleForm : PlayShortsAction
 
-    data class SubmitTitle(
+    data class UploadTitle(
         val title: String
     ) : PlayShortsAction
 
