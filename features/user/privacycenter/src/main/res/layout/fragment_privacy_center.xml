@@ -85,7 +85,6 @@
             android:id="@+id/root_content"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginBottom="?attr/actionBarSize"
             android:orientation="vertical" />
 
     </androidx.core.widget.NestedScrollView>
