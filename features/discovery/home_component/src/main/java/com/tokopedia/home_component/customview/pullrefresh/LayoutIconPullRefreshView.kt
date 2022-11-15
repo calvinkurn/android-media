@@ -5,17 +5,16 @@ import android.animation.LayoutTransition
 import android.animation.ValueAnimator
 import android.content.Context
 import android.util.AttributeSet
+import android.util.Log
 import android.view.View
 import android.view.animation.AccelerateDecelerateInterpolator
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.tokopedia.home_component.R
-import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.LoaderUnify
+import com.tokopedia.unifycomponents.toDp
 import kotlin.math.roundToInt
 
 
@@ -54,8 +53,8 @@ class LayoutIconPullRefreshView : ConstraintLayout, LayoutIconPullRefreshListene
     private var heightLayoutScroll: Int = 0
 
     companion object {
-        private const val MAXIMUM_HEIGHT_SCROLL = 200
-        private const val HEIGHT_LOADING = 120
+        private const val MAXIMUM_HEIGHT_SCROLL = 120
+        private const val HEIGHT_LOADING = 52
         private const val MAXIMUM_PROGRESS_REFRESH = 1
         private const val TIME_DURATION_ANIMATION_HEIGHT: Long = 300
         private const val HEIGHT_LAYOUT_GONE = 0
@@ -109,20 +108,29 @@ class LayoutIconPullRefreshView : ConstraintLayout, LayoutIconPullRefreshListene
     override fun offsetView(offset: Float) {
         offsetY = offset
         positionChildren()
-        loaderPullRefresh?.gone()
-        pullRefreshIcon?.show()
+        if (loaderPullRefresh?.isVisible == true) {
+            loaderPullRefresh?.invisible()
+            pullRefreshIcon?.show()
+        }
     }
 
     override fun startRefreshing() {
+        offsetY = 0f
+        progressRefresh = 0f
         containerIconPullRefresh?.visible()
-        setLayoutHeight(heightLayoutScroll, HEIGHT_LOADING) {}
+        setLayoutHeight(
+            heightLayoutScroll.dpToPx(resources.displayMetrics),
+            HEIGHT_LOADING.dpToPx(resources.displayMetrics)
+        ) {}
         loaderPullRefresh?.visible()
-        pullRefreshIcon?.gone()
+        pullRefreshIcon?.invisible()
     }
 
     override fun stopRefreshing(isAfterRefresh: Boolean) {
         if ((offsetY < maxOffset && progressRefresh < MAXIMUM_PROGRESS_REFRESH) || isAfterRefresh) {
-            setLayoutHeight(HEIGHT_LOADING, Int.ZERO) { containerIconPullRefresh?.gone() }
+            setLayoutHeight(HEIGHT_LOADING.dpToPx(resources.displayMetrics), Int.ZERO) {
+                containerIconPullRefresh?.gone()
+            }
         }
     }
 
@@ -145,6 +153,7 @@ class LayoutIconPullRefreshView : ConstraintLayout, LayoutIconPullRefreshListene
     }
 
     override fun progressRefresh(progress: Float) {
+        Log.d("dhabalog", "$progress")
         progressRefresh = progress
         pullRefreshIcon?.scaleX = progress
         pullRefreshIcon?.scaleY = progress
@@ -152,10 +161,13 @@ class LayoutIconPullRefreshView : ConstraintLayout, LayoutIconPullRefreshListene
 
     private fun positionChildren() {
         if (offsetY > HEIGHT_LAYOUT_GONE) {
+            Log.d("dhabalog", "offsetY $offsetY")
             heightLayoutScroll = (progressRefresh * MAXIMUM_HEIGHT_SCROLL).roundToInt()
-            containerIconPullRefresh?.visible()
+            if (containerIconPullRefresh?.isVisible == false) {
+                containerIconPullRefresh?.visible()
+            }
             val layoutParams = containerIconPullRefresh?.layoutParams
-            layoutParams?.height = heightLayoutScroll
+            layoutParams?.height = heightLayoutScroll.dpToPx(resources.displayMetrics)
             containerIconPullRefresh?.layoutParams = layoutParams
         }
     }

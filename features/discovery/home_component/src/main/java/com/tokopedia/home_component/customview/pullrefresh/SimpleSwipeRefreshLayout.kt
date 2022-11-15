@@ -80,8 +80,8 @@ open class SimpleSwipeRefreshLayout @JvmOverloads constructor(
     companion object {
         private const val STICKY_FACTOR = 0.66F
         private const val STICKY_MULTIPLIER = 0.75F
-        private const val ROLL_BACK_DURATION = 300L
-        private const val DEFAULT_INDICATOR_TARGET = 33f
+        private const val ROLL_BACK_DURATION = 0L
+        private const val DEFAULT_INDICATOR_TARGET = 120f
         private const val MINIMUM_PROGRESS = 0f
         private const val MAXIMUM_PROGRESS = 1f
         private const val MINIMUM_OFFSET = 0f
@@ -235,7 +235,6 @@ open class SimpleSwipeRefreshLayout @JvmOverloads constructor(
 
         layoutIconPullRefreshView?.maxOffsetTop(maxOffSetTop)
         layoutIconPullRefreshView?.offsetView(offsetY)
-
 
         ValueAnimator.ofFloat(MINIMUM_PROGRESS, MAXIMUM_PROGRESS).apply {
             duration = ROLL_BACK_DURATION
