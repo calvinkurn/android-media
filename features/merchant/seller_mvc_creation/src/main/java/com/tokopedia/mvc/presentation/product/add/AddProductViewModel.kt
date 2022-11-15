@@ -503,8 +503,14 @@ class AddProductViewModel @Inject constructor(
     }
 
 
-    private fun handleConfirmAddProduct() {
-        _uiEffect.tryEmit(AddProductEffect.FinishPage(currentState.products))
+    private fun handleConfirmAddProduct() = launch(dispatchers.computation) {
+        val selectedProducts = currentState.products.filter { it.isSelected }
+        val topSellingProductImageUrls = selectedProducts
+            .filter { it.isSelected }
+            .sortedByDescending { it.txStats.sold }
+            .map { it.picture }
+
+        _uiEffect.tryEmit(AddProductEffect.FinishPage(selectedProducts, topSellingProductImageUrls))
     }
 
 }

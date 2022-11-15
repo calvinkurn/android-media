@@ -34,5 +34,8 @@ sealed class AddProductEffect {
 
     data class ShowVariantBottomSheet(val selectedParentProduct: Product) : AddProductEffect()
 
-    data class FinishPage(val selectedParentProducts: List<Product>) : AddProductEffect()
+    data class FinishPage(
+        val selectedParentProducts: List<Product>,
+        val selectedParentProductImageUrls: List<String>
+    ) : AddProductEffect()
 }

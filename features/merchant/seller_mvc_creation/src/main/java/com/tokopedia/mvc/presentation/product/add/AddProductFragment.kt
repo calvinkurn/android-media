@@ -246,7 +246,7 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
             }
             is AddProductEffect.FinishPage -> {
 
-                displayShareBottomSheet("Unilever", "UNVR")
+                displayShareBottomSheet("Unilever", "UNVR", effect.selectedParentProducts, effect.selectedParentProductImageUrls)
             }
         }
     }
@@ -606,7 +606,12 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
         bottomSheet.show(childFragmentManager, bottomSheet.tag)
     }
 
-    private fun displayShareBottomSheet(shopName: String, shopDomain: String) {
+    private fun displayShareBottomSheet(
+        shopName: String,
+        shopDomain: String,
+        selectedProducts: List<Product>,
+        selectedProductImageUrls: List<String>
+    ) {
         val voucherStartDate = Date()
         val voucherEndDate = Date()
 
@@ -614,9 +619,16 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
         val endHour = voucherEndDate.formatTo(DateConstant.TIME_MINUTE_PRECISION)
 
         val formattedShopName = MethodChecker.fromHtml(shopName).toString()
-        val title = String.format(getString(R.string.smvc_placeholder_share_component_outgoing_title), formattedShopName)
-        val description = String.format(getString(R.string.smvc_placeholder_share_component_text_description), formattedShopName, endDate, endHour)
-
+        val title = String.format(
+            getString(R.string.smvc_placeholder_share_component_outgoing_title),
+            formattedShopName
+        )
+        val description = String.format(
+            getString(R.string.smvc_placeholder_share_component_text_description),
+            formattedShopName,
+            endDate,
+            endHour
+        )
 
         val imageGeneratorParam = SharingComponentInstanceBuilder.Param(
             voucherId = 1239,
@@ -624,17 +636,13 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
             voucherCode = "UNVRCUAN",
             voucherStartTime = voucherStartDate,
             voucherEndTime = voucherEndDate,
-            PromoType.CASHBACK,
-            BenefitType.NOMINAL,
+            promoType = PromoType.CASHBACK,
+            benefitType = BenefitType.NOMINAL,
             shopLogo = "",
             shopName = formattedShopName,
             discountAmount = 500_000,
             discountAmountMax = 1_000_000,
-            productImageUrls = listOf(
-                "https://ecs7.tokopedia.net/img/cache/200-square/VqbcmM/2022/11/11/7a81d3ad-45fe-4c15-ad2b-e0001b37c692.jpg",
-                "https://ecs7.tokopedia.net/img/cache/200-square/VqbcmM/2022/11/11/7a81d3ad-45fe-4c15-ad2b-e0001b37c692.jpg",
-                "https://ecs7.tokopedia.net/img/cache/200-square/VqbcmM/2022/11/11/7a81d3ad-45fe-4c15-ad2b-e0001b37c692.jpg"
-            )
+            productImageUrls = selectedProductImageUrls
         )
 
         shareComponentBottomSheet = shareComponentInstanceBuilder.build(
