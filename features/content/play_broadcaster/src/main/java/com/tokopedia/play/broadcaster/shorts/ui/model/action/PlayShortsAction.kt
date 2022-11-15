@@ -54,4 +54,6 @@ sealed interface PlayShortsAction {
     data class SelectTag(
         val tag: PlayTagUiModel,
     ) : PlayShortsAction
+
+    object ClickUploadVideo : PlayShortsAction
 }

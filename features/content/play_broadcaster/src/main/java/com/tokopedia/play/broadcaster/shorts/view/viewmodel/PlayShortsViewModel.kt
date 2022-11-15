@@ -2,6 +2,8 @@ package com.tokopedia.play.broadcaster.shorts.view.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.work.OneTimeWorkRequest
+import androidx.work.WorkManager
 import com.google.android.exoplayer2.ExoPlayer
 import com.tokopedia.content.common.producttag.util.extension.combine
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
@@ -9,9 +11,11 @@ import com.tokopedia.content.common.ui.model.TermsAndConditionUiModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play.broadcaster.shorts.domain.PlayShortsRepository
 import com.tokopedia.play.broadcaster.shorts.domain.manager.PlayShortsAccountManager
+import com.tokopedia.play.broadcaster.shorts.domain.worker.PlayShortsUploadWorker
 import com.tokopedia.play.broadcaster.shorts.factory.PlayShortsMediaSourceFactory
 import com.tokopedia.play.broadcaster.shorts.ui.model.PlayShortsConfigUiModel
 import com.tokopedia.play.broadcaster.shorts.ui.model.PlayShortsMediaUiModel
+import com.tokopedia.play.broadcaster.shorts.ui.model.PlayShortsUploadUiModel
 import com.tokopedia.play.broadcaster.shorts.ui.model.action.PlayShortsAction
 import com.tokopedia.play.broadcaster.shorts.ui.model.event.PlayShortsBottomSheet
 import com.tokopedia.play.broadcaster.shorts.ui.model.event.PlayShortsOneTimeEvent
@@ -42,7 +46,8 @@ class PlayShortsViewModel @Inject constructor(
     private val sharedPref: HydraSharedPreferences,
     private val exoPlayer: ExoPlayer,
     private val mediaSourceFactory: PlayShortsMediaSourceFactory,
-    private val accountManager: PlayShortsAccountManager
+    private val accountManager: PlayShortsAccountManager,
+    private val workManager: WorkManager,
 ) : ViewModel() {
 
     /** Public Getter */
@@ -185,6 +190,7 @@ class PlayShortsViewModel @Inject constructor(
             /** Summary */
             is PlayShortsAction.LoadTag -> handleLoadTag()
             is PlayShortsAction.SelectTag -> handleSelectTag(action.tag)
+            is PlayShortsAction.ClickUploadVideo -> handleClickUploadVideo()
         }
     }
 
@@ -374,6 +380,26 @@ class PlayShortsViewModel @Inject constructor(
                 }
             }
             else -> {}
+        }
+    }
+
+    private fun handleClickUploadVideo() {
+        val uploadWorkerInputData = PlayShortsUploadUiModel(
+            shortsId = shortsId,
+            authorId = selectedAccount.id,
+            authorType = selectedAccount.type,
+            mediaUri = _media.value.mediaUri,
+            coverUri = _coverForm.value.coverUri,
+        ).format()
+
+        val uploadWorker = OneTimeWorkRequest.Builder(PlayShortsUploadWorker::class.java)
+            .setInputData(uploadWorkerInputData)
+            .build()
+
+        workManager.beginWith(uploadWorker).enqueue()
+
+        _uiEvent.oneTimeUpdate {
+            it.copy(oneTimeEvent = PlayShortsOneTimeEvent.CloseShortsCreation)
         }
     }
 

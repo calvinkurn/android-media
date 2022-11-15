@@ -91,6 +91,10 @@ class PlayShortsSummaryFragment @Inject constructor(
         binding.icBack.setOnClickListener {
             activity?.onBackPressed()
         }
+
+        binding.btnUploadVideo.setOnClickListener {
+            viewModel.submitAction(PlayShortsAction.ClickUploadVideo)
+        }
     }
 
     private fun setupObserver() {

@@ -1,6 +1,7 @@
 package com.tokopedia.play.broadcaster.shorts.di
 
 import android.content.Context
+import androidx.work.WorkManager
 import com.google.android.exoplayer2.ExoPlayer
 import com.google.android.exoplayer2.Player
 import com.google.android.exoplayer2.SimpleExoPlayer
@@ -78,6 +79,11 @@ class PlayShortsModule(
                     Util.getUserAgent(activityContext, "Tokopedia Android")
                 )
             )
+    }
+
+    @Provides
+    fun provideWorkManager(@ApplicationContext context: Context): WorkManager {
+        return WorkManager.getInstance(context)
     }
 
     /** Play Broadcaster Analytic */

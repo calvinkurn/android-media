@@ -50,4 +50,6 @@ sealed interface PlayShortsOneTimeEvent {
     object Unknown : PlayShortsOneTimeEvent
 
     object GoToSummary : PlayShortsOneTimeEvent
+
+    object CloseShortsCreation : PlayShortsOneTimeEvent
 }

@@ -190,6 +190,9 @@ class PlayShortsActivity : BaseActivity() {
             is PlayShortsOneTimeEvent.GoToSummary -> {
                 openSummaryFragment()
             }
+            is PlayShortsOneTimeEvent.CloseShortsCreation -> {
+                finish()
+            }
             else -> {}
         }
     }
