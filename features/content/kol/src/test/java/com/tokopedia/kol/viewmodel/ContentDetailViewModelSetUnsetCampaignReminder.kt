@@ -2,6 +2,7 @@ package com.tokopedia.kol.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedASGCUpcomingReminderStatus
+import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCampaign
 import com.tokopedia.kol.common.util.ContentDetailResult
 import com.tokopedia.kol.feature.postdetail.domain.ContentDetailRepository
 import com.tokopedia.kol.feature.postdetail.view.viewmodel.ContentDetailViewModel
@@ -34,6 +35,7 @@ class ContentDetailViewModelSetUnsetCampaignReminder {
     )
 
     private val campaignId = 1234L
+    private val id = "1234"
     private val builder = ContentDetailModelBuilder()
 
     @Test
@@ -42,6 +44,7 @@ class ContentDetailViewModelSetUnsetCampaignReminder {
         val isSuccess = true
         val reminderStatus = FeedASGCUpcomingReminderStatus.On(campaignId)
         val expectedResult = builder.getSetUnsetCampaignResponse(campaignId, rowNumber, reminderStatus)
+        val campaign = FeedXCampaign(id = id, reminder = reminderStatus )
 
         coEvery {
             mockRepo.subscribeUpcomingCampaign(
@@ -50,7 +53,7 @@ class ContentDetailViewModelSetUnsetCampaignReminder {
             )
         } returns Pair(isSuccess, "")
 
-        viewModel.setUnsetReminder(campaignId, reminderStatus, rowNumber)
+        viewModel.setUnsetReminder(campaign, rowNumber)
 
         val result = viewModel.asgcReminderButtonStatus.value
 
@@ -65,6 +68,7 @@ class ContentDetailViewModelSetUnsetCampaignReminder {
         val isSuccess = true
         val reminderStatus = FeedASGCUpcomingReminderStatus.On(campaignId)
         val expectedResult = builder.getSetUnsetCampaignResponse(campaignId, rowNumber, reminderStatus)
+        val campaign = FeedXCampaign(id = id, reminder = reminderStatus )
 
         coEvery {
             mockRepo.subscribeUpcomingCampaign(
@@ -73,7 +77,7 @@ class ContentDetailViewModelSetUnsetCampaignReminder {
             )
         } returns Pair(isSuccess, "")
 
-        viewModel.setUnsetReminder(campaignId, reminderStatus, rowNumber)
+        viewModel.setUnsetReminder(campaign, rowNumber)
 
         val result = viewModel.asgcReminderButtonStatus.value
 
@@ -86,6 +90,7 @@ class ContentDetailViewModelSetUnsetCampaignReminder {
     fun `when user click asgc upcoming campaign widget to set unset reminder, given response error, returns error`() {
         val rowNumber = 0
         val reminderStatus = FeedASGCUpcomingReminderStatus.On(campaignId)
+        val campaign = FeedXCampaign(id = id, reminder = reminderStatus )
 
         coEvery {
             mockRepo.subscribeUpcomingCampaign(
@@ -94,7 +99,7 @@ class ContentDetailViewModelSetUnsetCampaignReminder {
             )
         } throws  Throwable()
 
-        viewModel.setUnsetReminder(campaignId, reminderStatus, rowNumber)
+        viewModel.setUnsetReminder(campaign, rowNumber)
 
         val result = viewModel.asgcReminderButtonStatus.value
         Assertions
