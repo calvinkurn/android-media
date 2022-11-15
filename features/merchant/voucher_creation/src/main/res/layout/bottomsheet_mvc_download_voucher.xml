@@ -7,9 +7,9 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvMvcDownloadDescription"
-        android:layout_width="@dimen/layout_lvl0"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/layout_lvl2"
+        android:layout_marginTop="16dp"
         android:text="@string/mvc_download_general"
         android:textColor="@color/light_N700_96"
         app:layout_constraintEnd_toEndOf="parent"
@@ -21,8 +21,8 @@
         android:id="@+id/rvMvcVouchers"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/layout_lvl1"
-        android:layout_marginBottom="@dimen/layout_lvl2"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="16dp"
         app:layout_constraintBottom_toTopOf="@+id/btnMvcDownloadVoucher"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -33,9 +33,9 @@
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btnMvcDownloadVoucher"
-        android:layout_width="@dimen/layout_lvl0"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/layout_lvl3"
+        android:layout_marginBottom="24dp"
         android:text="@string/mvc_download_voucher"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
