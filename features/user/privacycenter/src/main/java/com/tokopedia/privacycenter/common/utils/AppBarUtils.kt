@@ -1,4 +1,4 @@
-package com.tokopedia.privacycenter.common
+package com.tokopedia.privacycenter.common.utils
 
 import android.app.Activity
 import android.graphics.Color

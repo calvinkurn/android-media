@@ -17,17 +17,14 @@ import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.privacycenter.R
 import com.tokopedia.privacycenter.accountlinking.LinkAccountWebviewFragment
 import com.tokopedia.privacycenter.common.di.PrivacyCenterComponent
-import com.tokopedia.privacycenter.common.getDynamicColorStatusBar
-import com.tokopedia.privacycenter.common.getIconBackWithColor
-import com.tokopedia.privacycenter.common.getIdColor
-import com.tokopedia.privacycenter.common.setFitToWindows
-import com.tokopedia.privacycenter.common.setTextStatusBar
+import com.tokopedia.privacycenter.common.utils.*
 import com.tokopedia.privacycenter.databinding.FragmentPrivacyCenterBinding
+import com.tokopedia.privacycenter.databinding.SectionFooterImageBinding
 import com.tokopedia.privacycenter.main.section.accountlinking.AccountLinkingSection
 import com.tokopedia.privacycenter.main.section.accountlinking.AccountLinkingViewModel
-import com.tokopedia.privacycenter.databinding.SectionFooterImageBinding
 import com.tokopedia.privacycenter.main.section.consentwithdrawal.ConsentWithdrawalSection
 import com.tokopedia.privacycenter.main.section.consentwithdrawal.ConsentWithdrawalSectionViewModel
+import com.tokopedia.privacycenter.main.section.dsar.DSARSection
 import com.tokopedia.privacycenter.main.section.dummy.DummySection
 import com.tokopedia.privacycenter.main.section.faqPrivacySection.FaqPrivacySection
 import com.tokopedia.privacycenter.main.section.recommendation.RecommendationSection
@@ -233,6 +230,7 @@ class PrivacyCenterFragment :
             context,
             viewModelConsentWithdrawalSection
         )
+        override val dsarSection: DSARSection = DSARSection(context)
         override val faqPrivacySection: FaqPrivacySection = FaqPrivacySection(context)
         override val tokopediaCareSection: TokopediaCareSection = TokopediaCareSection(context)
     }
