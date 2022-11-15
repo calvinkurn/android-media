@@ -26,14 +26,12 @@ class BroadcasterAddMediasUseCase @Inject constructor(
 
     suspend fun executeOnBackground(
         creationId: String,
-        coverUrl: String,
         source: String,
     ): BroadcasterAddMediasResponse {
         setRequestParams(
             mapOf(
                 PARAM_REQ to mapOf(
                     PARAM_CHANNEL_ID to creationId,
-                    PARAM_COVER_URL to coverUrl,
                     PARAM_SOURCE to source,
                     PARAM_TYPE to DEFAULT_TYPE,
                 )
@@ -47,7 +45,6 @@ class BroadcasterAddMediasUseCase @Inject constructor(
         private const val PARAM_REQ = "req"
 
         private const val PARAM_CHANNEL_ID = "channelID"
-        private const val PARAM_COVER_URL = "coverURL"
         private const val PARAM_SOURCE = "source"
         private const val PARAM_TYPE = "type"
 

@@ -84,7 +84,6 @@ class PlayShortsUploadWorker(
     ): String {
         val result = addMediaUseCase.executeOnBackground(
             creationId = uploadData.shortsId,
-            coverUrl = uploadData.coverUri,
             source = mediaUrl,
         )
 
