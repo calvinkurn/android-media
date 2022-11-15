@@ -34,7 +34,10 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
 class PrivacyCenterFragment : BaseDaggerFragment(),
-    AppBarLayout.OnOffsetChangedListener, AccountLinkingSection.Listener {
+    AppBarLayout.OnOffsetChangedListener,
+    AccountLinkingSection.Listener,
+    RecommendationSection.Listener
+{
 
     private var binding by autoClearedNullable<FragmentPrivacyCenterBinding>()
     private var privacyCenterSection: PrivacyCenterSection? = null
@@ -84,6 +87,9 @@ class PrivacyCenterFragment : BaseDaggerFragment(),
     override fun onStart() {
         super.onStart()
         binding?.appbar?.addOnOffsetChangedListener(this)
+
+        //refresh toggle section recommendation and promo
+        viewModelRecommendationSection.refreshGeolocationPermission()
     }
 
     private fun initToolbar() {
@@ -124,13 +130,6 @@ class PrivacyCenterFragment : BaseDaggerFragment(),
         setUpCollapseToolbar(verticalOffset < OFFSET_CHANGE_COLOR_STATUS_BAR)
     }
 
-    override fun onResume() {
-        super.onResume()
-
-        //refresh toggle section recommendation and promo
-        viewModelRecommendationSection.refreshGeolocationPermission()
-    }
-
     private fun setUpCollapseToolbar(isCollapsed: Boolean) {
         val isExpand = if (isCollapsed) {
             isUsingNightModeResources()
@@ -163,11 +162,16 @@ class PrivacyCenterFragment : BaseDaggerFragment(),
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
-        if (requestCode == REQUEST_LOCATION_PERMISSION) {
-            val isAllowed = grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED
+        when (requestCode) {
+            REQUEST_ACCOUNT_WEBVIEW_REQUEST -> {
+                viewModelAccountLinkingSection.getAccountLinkingStatus()
+            }
+            REQUEST_LOCATION_PERMISSION -> {
+                val isAllowed = grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED
 
-            //change toggle geolocation
-            viewModelRecommendationSection.permissionGeolocationChange(isAllowed)
+                //change toggle geolocation
+                viewModelRecommendationSection.setGeolocationChange(isAllowed)
+            }
         }
     }
 
@@ -179,22 +183,6 @@ class PrivacyCenterFragment : BaseDaggerFragment(),
             ),
             REQUEST_LOCATION_PERMISSION
         )
-    }
-
-
-
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-
-        when(requestCode) {
-            REQUEST_ACCOUNT_WEBVIEW_REQUEST -> {
-                viewModelAccountLinkingSection.getAccountLinkingStatus()
-            }
-        }
     }
 
     override fun onItemAccountLinkingClicked() {

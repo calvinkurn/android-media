@@ -17,7 +17,11 @@ class RecommendationViewModel @Inject constructor(
     private val _isGeolocationAllowed = SingleLiveEvent<Boolean>()
     val isGeolocationAllowed: SingleLiveEvent<Boolean> get() = _isGeolocationAllowed
 
-    fun isShakeShakeAllowed() {
+    init {
+        isShakeShakeAllowed()
+    }
+
+    private fun isShakeShakeAllowed() {
         _isShakeShakeAllowed.value = devicePermissionUseCase.isShakeShakeAllowed()
     }
 
@@ -29,12 +33,11 @@ class RecommendationViewModel @Inject constructor(
         return devicePermissionUseCase.isLocationAllowed()
     }
 
-    fun permissionGeolocationChange(isAllowed: Boolean) {
+    fun setGeolocationChange(isAllowed: Boolean) {
         _isGeolocationAllowed.value = isAllowed
     }
 
     fun refreshGeolocationPermission() {
-        isShakeShakeAllowed()
-        permissionGeolocationChange(isGeolocationAllowed())
+        setGeolocationChange(isGeolocationAllowed())
     }
 }

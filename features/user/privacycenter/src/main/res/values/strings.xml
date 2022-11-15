@@ -31,16 +31,16 @@
     <string name="consent_withdrawal_section_description">Atur fitur apa aja yang boleh akses datamu</string>
 
     <!--Section | Recommendation and promotion-->
-    <string name="recommendation_title">Rekomendasi &amp; promo</string>
-    <string name="recommendation_subtitle">Pakai perangkatmu buat penawaran spesial</string>
-    <string name="recommendation_title_shake_shake">Shake Shake</string>
-    <string name="recommendation_subtitle_shake_shake">Goyang HP untuk dapat promo menarik</string>
-    <string name="recommendation_title_geolocation">Geolokasi</string>
-    <string name="recommendation_subtitle_geolocation">Atur rekomendasi berdasarkan lokasi</string>
-    <string name="recommendation_dialog_title_permission_geolocation">Bagikan lokasimu ke Tokopedia?</string>
-    <string name="recommendation_dialog_description_permission_geolocation">Kami perlu lokasimu biar bisa kasih rekomendasi yang cocok. Aktifkan pengaturan HP untuk membagikan lokasi.</string>
-    <string name="recommendation_dialog_button_primary_permission_geolocation">Bagikan Lokasi</string>
-    <string name="recommendation_dialog_button_secondary_permission_geolocation">Batal</string>
+    <string name="privacy_center_recommendation_title">Rekomendasi &amp; promo</string>
+    <string name="privacy_center_recommendation_subtitle">Pakai perangkatmu buat penawaran spesial</string>
+    <string name="privacy_center_recommendation_title_shake_shake">Shake Shake</string>
+    <string name="privacy_center_recommendation_subtitle_shake_shake">Goyang HP untuk dapat promo menarik</string>
+    <string name="privacy_center_recommendation_title_geolocation">Geolokasi</string>
+    <string name="privacy_center_recommendation_subtitle_geolocation">Atur rekomendasi berdasarkan lokasi</string>
+    <string name="privacy_center_recommendation_dialog_title_permission_geolocation">Bagikan lokasimu ke Tokopedia?</string>
+    <string name="privacy_center_recommendation_dialog_description_permission_geolocation">Kami perlu lokasimu biar bisa kasih rekomendasi yang cocok. Aktifkan pengaturan HP untuk membagikan lokasi.</string>
+    <string name="privacy_center_recommendation_dialog_button_primary_permission_geolocation">Bagikan Lokasi</string>
+    <string name="privacy_center_recommendation_dialog_button_secondary_permission_geolocation">Batal</string>
 
     <!--  CONSENT WITHDRAWAL  -->
     <string name="consent_withdrawal_page_title">Consent Withdrawal</string>

@@ -19,5 +19,4 @@ interface PrivacyCenterComponent {
     fun inject(fragment: LinkAccountWebviewFragment)
     fun inject(fragment: PrivacyCenterFragment)
     fun inject(fragment: ConsentWithdrawalFragment)
-    fun inject(section: RecommendationSection)
 }

@@ -22,11 +22,14 @@ class RecommendationSection (
         fun onRequestLocationPermission()
     }
 
-    override val sectionViewBinding: SectionRecomendationAndPromoBinding = SectionRecomendationAndPromoBinding.inflate(
-        LayoutInflater.from(context)
-    )
-    override val sectionTextTitle: String = context?.getString(R.string.recommendation_title).orEmpty()
-    override val sectionTextDescription: String = context?.getString(R.string.recommendation_subtitle).orEmpty()
+    override val sectionViewBinding: SectionRecomendationAndPromoBinding =
+        SectionRecomendationAndPromoBinding.inflate(
+            LayoutInflater.from(context)
+        )
+    override val sectionTextTitle: String =
+        context?.getString(R.string.privacy_center_recommendation_title).orEmpty()
+    override val sectionTextDescription: String =
+        context?.getString(R.string.privacy_center_recommendation_subtitle).orEmpty()
     override val isShowDirectionButton: Boolean = false
 
     override fun initObservers() {
@@ -75,15 +78,21 @@ class RecommendationSection (
         sectionViewBinding.root.context?.apply {
             val dialog =
                 DialogUnify(this, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
-                    setTitle(getString(R.string.recommendation_dialog_title_permission_geolocation))
-                    setDescription(getString(R.string.recommendation_dialog_description_permission_geolocation))
-                    setPrimaryCTAText(getString(R.string.recommendation_dialog_button_primary_permission_geolocation))
+                    setTitle(
+                        getString(R.string.privacy_center_recommendation_dialog_title_permission_geolocation)
+                    )
+                    setDescription(
+                        getString(R.string.privacy_center_recommendation_dialog_description_permission_geolocation)
+                    )
+                    setPrimaryCTAText(
+                        getString(R.string.privacy_center_recommendation_dialog_button_primary_permission_geolocation)
+                    )
                     setPrimaryCTAClickListener {
                         listener.onRequestLocationPermission()
                         dismiss()
                     }
                     setSecondaryCTAText(
-                        getString(R.string.recommendation_dialog_button_secondary_permission_geolocation)
+                        getString(R.string.privacy_center_recommendation_dialog_button_secondary_permission_geolocation)
                     )
                     setSecondaryCTAClickListener {
                         dismiss()
@@ -97,7 +106,7 @@ class RecommendationSection (
         sectionViewBinding.root.context.let {
             val intent = Intent()
             intent.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
-            val uri = Uri.fromParts("package", it.packageName, null)
+            val uri = Uri.fromParts(PACKAGE, it.packageName, null)
             intent.data = uri
             it.startActivity(intent)
         }
@@ -109,5 +118,6 @@ class RecommendationSection (
 
     companion object {
         const val TAG = "RecommendationAndPromoSection"
+        private const val PACKAGE = "package"
     }
 }
