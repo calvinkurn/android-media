@@ -42,16 +42,16 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         tools:ignore="UnifyComponentUsage"
-        app:cardElevation="@dimen/layout_lvl1">
+        app:cardElevation="8dp">
 
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/buttonSave"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/layout_lvl2"
-            android:layout_marginTop="@dimen/layout_lvl1"
-            android:layout_marginRight="@dimen/layout_lvl2"
-            android:layout_marginBottom="@dimen/layout_lvl1"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginBottom="8dp"
             android:text="@string/action_variant_save" />
 
     </androidx.cardview.widget.CardView>

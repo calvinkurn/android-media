@@ -189,7 +189,7 @@ class WishlistCollectionViewModel @Inject constructor(
     }
 
     companion object {
-        private const val WISHLIST_PAGE_NAME = "wishlist"
-        private const val EMPTY_WISHLIST_PAGE_NAME = "empty_wishlist"
+        private const val WISHLIST_PAGE_NAME = "wlcollection"
+        private const val EMPTY_WISHLIST_PAGE_NAME = "wlcollection_empty"
     }
 }

@@ -46,6 +46,7 @@ import com.tokopedia.play_common.model.mapper.PlayInteractiveLeaderboardMapper
 import com.tokopedia.play_common.model.mapper.PlayInteractiveMapper
 import com.tokopedia.play_common.model.result.ResultState
 import com.tokopedia.play_common.transformer.DefaultHtmlTextTransformer
+import com.tokopedia.play_common.websocket.PlayWebSocket
 import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.test.application.id_generator.FileWriter
 import com.tokopedia.test.application.id_generator.PrintCondition
@@ -77,6 +78,8 @@ class PlayViewerIdGenerator {
     private val repo: PlayViewerRepository = mockk(relaxed = true)
 
     private val decodeHtml = DefaultHtmlTextTransformer()
+
+    private val socket: PlayWebSocket = mockk(relaxed = true)
 
     private val mapper = PlayUiModelMapper(
         productTagMapper = PlayProductTagUiMapper(),
@@ -242,7 +245,7 @@ class PlayViewerIdGenerator {
             resultState = ResultState.Success,
         )
 
-        coEvery { repo.getTagItem(any(), any()) } returns tagItem
+        coEvery { repo.getTagItem(any(), any(), any()) } returns tagItem
         coEvery { repo.getChannels(any(), any()) } returns PagingChannel(
             channelList = listOf(
                 uiModelBuilder.buildChannelData(
@@ -274,7 +277,7 @@ class PlayViewerIdGenerator {
             DaggerPlayTestComponent.builder()
                 .playTestModule(PlayTestModule(targetContext))
                 .baseAppComponent((targetContext.applicationContext as BaseMainApplication).baseAppComponent)
-                .playTestRepositoryModule(PlayTestRepositoryModule(repo))
+                .playTestRepositoryModule(PlayTestRepositoryModule(repo, webSocket = socket))
                 .build()
         )
 
@@ -355,7 +358,7 @@ class PlayViewerIdGenerator {
             DaggerPlayTestComponent.builder()
                 .playTestModule(PlayTestModule(targetContext))
                 .baseAppComponent((targetContext.applicationContext as BaseMainApplication).baseAppComponent)
-                .playTestRepositoryModule(PlayTestRepositoryModule(repo))
+                .playTestRepositoryModule(PlayTestRepositoryModule(repo, socket))
                 .build()
         )
 

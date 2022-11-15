@@ -12,8 +12,8 @@
             android:id="@+id/listUnifyVariantUnits"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_lvl3"
-            android:layout_marginBottom="@dimen/spacing_lvl6"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="32dp"
             android:choiceMode="singleChoice" />
     </ScrollView>
 
@@ -22,10 +22,10 @@
         android:contentDescription="@string/content_desc_buttonSave"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/spacing_lvl4"
-        android:layout_marginTop="@dimen/spacing_lvl3"
-        android:layout_marginRight="@dimen/spacing_lvl4"
-        android:layout_marginBottom="@dimen/spacing_lvl3"
+        android:layout_marginLeft="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="8dp"
         android:text="@string/action_variant_save" />
 
 </LinearLayout>
