@@ -28,7 +28,6 @@ class BroadcasterAddMediasUseCase @Inject constructor(
         creationId: String,
         coverUrl: String,
         source: String,
-        type: Int,
     ): BroadcasterAddMediasResponse {
         setRequestParams(
             mapOf(
@@ -36,7 +35,7 @@ class BroadcasterAddMediasUseCase @Inject constructor(
                     PARAM_CHANNEL_ID to creationId,
                     PARAM_COVER_URL to coverUrl,
                     PARAM_SOURCE to source,
-                    PARAM_TYPE to type
+                    PARAM_TYPE to DEFAULT_TYPE,
                 )
             )
         )
@@ -51,6 +50,8 @@ class BroadcasterAddMediasUseCase @Inject constructor(
         private const val PARAM_COVER_URL = "coverURL"
         private const val PARAM_SOURCE = "source"
         private const val PARAM_TYPE = "type"
+
+        private const val DEFAULT_TYPE = 1
 
         const val QUERY_NAME = "BroadcasterAddMediasUseCaseQuery"
         const val QUERY = """

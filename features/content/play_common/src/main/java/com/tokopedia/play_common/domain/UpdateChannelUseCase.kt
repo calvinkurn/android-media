@@ -50,6 +50,24 @@ class UpdateChannelUseCase(private val graphqlRepository: GraphqlRepository) : U
 
         const val PARAMS_CHANNEL_ID = "channelId"
 
+        fun createUpdateStatusWithActiveMediaRequest(
+            channelId: String,
+            authorId: String,
+            status: PlayChannelStatusType,
+            activeMediaId: String,
+        ): QueryParams {
+            val params = mapOf(
+                PARAMS_CHANNEL_ID to channelId,
+                FieldsToUpdate.ActiveMediaId.fieldName to activeMediaId,
+                FieldsToUpdate.AuthorID.fieldName to authorId,
+                FieldsToUpdate.Status.fieldName to status.value.toLong()
+            )
+            return QueryParamBuilder()
+                .setParams(params)
+                .setFields(listOf(FieldsToUpdate.Status, FieldsToUpdate.AuthorID, FieldsToUpdate.ActiveMediaId))
+                .build()
+        }
+
         fun createUpdateStatusRequest(
                 channelId: String,
                 authorId: String,
