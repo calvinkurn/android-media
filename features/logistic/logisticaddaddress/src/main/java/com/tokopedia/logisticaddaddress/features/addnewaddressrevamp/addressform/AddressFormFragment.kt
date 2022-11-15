@@ -891,7 +891,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
     }
 
     private fun showDistrictRecommendationBottomSheet(isPinpoint: Boolean) {
-        districtBottomSheet = DiscomBottomSheetRevamp(isPinpoint = isPinpoint, isEdit = isEdit)
+        districtBottomSheet = DiscomBottomSheetRevamp(isPinpoint = isPinpoint, isEdit = isEdit, isGmsAvailable = viewModel.isGmsAvailable)
         districtBottomSheet?.setListener(this)
         districtBottomSheet?.show(this.childFragmentManager)
     }

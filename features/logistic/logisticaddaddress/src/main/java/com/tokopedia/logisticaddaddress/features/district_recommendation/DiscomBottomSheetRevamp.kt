@@ -57,7 +57,7 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 import com.tokopedia.utils.permission.PermissionCheckerHelper
 import javax.inject.Inject
 
-class DiscomBottomSheetRevamp(private var isPinpoint: Boolean = false, private var isEdit: Boolean): BottomSheetUnify(),
+class DiscomBottomSheetRevamp(private var isPinpoint: Boolean = false, private var isEdit: Boolean, private var isGmsAvailable: Boolean): BottomSheetUnify(),
     ZipCodeChipsAdapter.ActionListener,
     PopularCityAdapter.ActionListener, DiscomContract.View, DiscomAdapterRevamp.ActionListener{
 
@@ -218,7 +218,7 @@ class DiscomBottomSheetRevamp(private var isPinpoint: Boolean = false, private v
                     adapter = listDistrictAdapter
                 }
 
-                if (isEdit) {
+                if (isEdit && isGmsAvailable) {
                     layoutUseCurrentLoc.visibility = View.VISIBLE
                     dividerUseCurrentLocation.visibility = View.VISIBLE
                 }
