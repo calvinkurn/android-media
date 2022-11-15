@@ -13,6 +13,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
+import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.privacycenter.R
 import com.tokopedia.privacycenter.accountlinking.LinkAccountWebviewFragment
 import com.tokopedia.privacycenter.common.di.PrivacyCenterComponent
@@ -24,6 +25,7 @@ import com.tokopedia.privacycenter.common.setTextStatusBar
 import com.tokopedia.privacycenter.databinding.FragmentPrivacyCenterBinding
 import com.tokopedia.privacycenter.main.section.accountlinking.AccountLinkingSection
 import com.tokopedia.privacycenter.main.section.accountlinking.AccountLinkingViewModel
+import com.tokopedia.privacycenter.databinding.SectionFooterImageBinding
 import com.tokopedia.privacycenter.main.section.consentwithdrawal.ConsentWithdrawalSection
 import com.tokopedia.privacycenter.main.section.consentwithdrawal.ConsentWithdrawalSectionViewModel
 import com.tokopedia.privacycenter.main.section.dummy.DummySection
@@ -43,6 +45,8 @@ class PrivacyCenterFragment :
 
     private var binding by autoClearedNullable<FragmentPrivacyCenterBinding>()
     private var privacyCenterSection: PrivacyCenterSection? = null
+
+    private var bindingImageFooter by autoClearedNullable<SectionFooterImageBinding>()
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -76,6 +80,7 @@ class PrivacyCenterFragment :
         savedInstanceState: Bundle?
     ): View? {
         binding = FragmentPrivacyCenterBinding.inflate(inflater, container, false)
+        bindingImageFooter = SectionFooterImageBinding.inflate(inflater, container, false)
         privacyCenterSection = PrivacyCenterSection(binding?.rootContent, PrivacyCenterSectionDelegateImpl())
         privacyCenterSection?.renderSections()
         return binding?.root
@@ -84,6 +89,14 @@ class PrivacyCenterFragment :
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initToolbar()
+        binding?.rootContent?.addView(bindingImageFooter?.root)
+        loadFooterImage()
+    }
+
+    private fun loadFooterImage() {
+        bindingImageFooter?.imgFooterPrivacyCenter?.loadImageWithoutPlaceholder(
+            getString(R.string.privacy_center_footer_image)
+        )
     }
 
     override fun onStart() {
