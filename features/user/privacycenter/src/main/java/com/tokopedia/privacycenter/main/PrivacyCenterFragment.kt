@@ -207,11 +207,9 @@ class PrivacyCenterFragment :
         startActivityForResult(intent, REQUEST_ACCOUNT_WEBVIEW_REQUEST)
     }
 
-    inner class PrivacyCenterSectionDelegateImpl : PrivacyCenterSectionDelegate {
+    inner class PrivacyCenterSectionDelegateImpl: PrivacyCenterSectionDelegate {
         override val accountLinkingSection: AccountLinkingSection =
             AccountLinkingSection(context, viewModelAccountLinkingSection, this@PrivacyCenterFragment)
-    inner class PrivacyCenterSectionDelegateImpl: PrivacyCenterSectionDelegate {
-        override val tokopediaCareSection: TokopediaCareSection = TokopediaCareSection(context)
         override val dummySection: DummySection = DummySection(context)
         override val recommendationSection: RecommendationSection = RecommendationSection(
             context,
@@ -223,6 +221,7 @@ class PrivacyCenterFragment :
             viewModelConsentWithdrawalSection
         )
         override val faqPrivacySection: FaqPrivacySection = FaqPrivacySection(context)
+        override val tokopediaCareSection: TokopediaCareSection = TokopediaCareSection(context)
     }
 
     companion object {
