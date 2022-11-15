@@ -23,7 +23,7 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="16dp"
         android:text="@string/affiliate_lihat_semua"
-        android:textColor="@color/unify_G500"
+        android:textColor="@color/Unify_GN500"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="body_3"

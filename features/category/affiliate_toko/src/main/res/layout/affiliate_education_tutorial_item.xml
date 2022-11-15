@@ -12,7 +12,7 @@
         android:layout_marginHorizontal="4dp"
         android:layout_marginVertical="8dp"
         android:background="@drawable/affiliate_education_tutorial_card_bg"
-        app:cardBackgroundColor="@color/white"
+        app:cardBackgroundColor="@color/Unify_NN0"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
