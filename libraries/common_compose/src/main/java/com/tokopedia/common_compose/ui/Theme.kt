@@ -2,6 +2,7 @@ package com.tokopedia.common_compose.ui
 
 import android.app.Activity
 import androidx.compose.foundation.isSystemInDarkTheme
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Colors
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Shapes
@@ -18,22 +19,29 @@ import androidx.core.view.WindowCompat
 
 
 private val NestThemeLight = lightColors(
-    primary = NestNN.light._0,
-    onPrimary = NestNN.light._700,
-    primaryVariant = NestNN.light._0,
-    secondary = NestNN.light._0,
+    primary = NestGN.light._500,
+    onPrimary = NestNN.light._0,
+    primaryVariant = NestGN.light._400,
+    secondary = NestBN.light._200,
     surface = NestNN.light._0,
 )
 
 private val NestThemeDark = darkColors(
-    primary = NestNN.dark._0,
-    onPrimary = NestNN.dark._700,
-    secondary = NestNN.dark._0,
-    surface = NestNN.dark._0,
+    primary = NestGN.dark._500,
+    onPrimary = NestNN.dark._0,
+    secondary = NestBN.dark._200,
+    surface = NestNN.dark._0
 )
 
 private val LightElevation = Elevations()
 private val DarkElevation = Elevations(card = 1.dp)
+
+private val NestShape = Shapes(
+    small = RoundedCornerShape(8.dp), // based on NestButton
+    medium = RoundedCornerShape(8.dp), // TBD
+    large = RoundedCornerShape(4.dp) // TBD
+)
+
 
 @Composable
 fun NestTheme(
@@ -54,7 +62,8 @@ fun NestTheme(
         MaterialTheme(
             colors = themeColors,
             typography = OpenSauceTypography,
-            content = content
+            content = content,
+            shapes = NestShape,
         )
     }
 }
