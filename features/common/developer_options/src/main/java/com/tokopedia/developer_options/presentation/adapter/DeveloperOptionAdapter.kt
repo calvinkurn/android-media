@@ -226,8 +226,6 @@ class DeveloperOptionAdapter(
     }
 
     private fun removeSellerAppItems() {
-        removeWidget(StrictModeLeakPublisherUiModel::class.java)
-        removeWidget(LeakCanaryUiModel::class.java)
         removeWidget(AppAuthSecretUiModel::class.java)
     }
 

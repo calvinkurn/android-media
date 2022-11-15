@@ -6,7 +6,11 @@ import com.google.gson.Gson
 import com.tokopedia.config.GlobalConfig
 
 class TokoLeakPublisher(
-    application: Application, gson: Gson, isEnable: Boolean, isEnableStrictMode: Boolean) {
+    application: Application,
+    gson: Gson,
+    isEnable: Boolean,
+    isEnableStrictMode: Boolean
+) {
 
     init {
         val metadata = mapOf<String, Any>(
@@ -15,6 +19,7 @@ class TokoLeakPublisher(
             "App Id" to GlobalConfig.APPLICATION_ID,
             "Build Type" to "debug"
         )
+
         LeakPublisher(
             app = application,
             gson = gson,
