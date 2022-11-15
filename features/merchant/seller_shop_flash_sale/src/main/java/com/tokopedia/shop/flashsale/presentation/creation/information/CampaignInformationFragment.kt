@@ -436,7 +436,6 @@ class CampaignInformationFragment : BaseDaggerFragment() {
             }
 
             switchTeaser.setOnCheckedChangeListener { _, isChecked ->
-                viewModel.setShowTeaser(isChecked)
                 handleSwitchTeaser(isChecked)
             }
 
@@ -904,7 +903,6 @@ class CampaignInformationFragment : BaseDaggerFragment() {
 
         viewModel.setSelectedStartDate(campaignStartDate)
         viewModel.setSelectedEndDate(campaignEndDate)
-        viewModel.setShowTeaser(campaign.useUpcomingWidget)
         viewModel.setSelectedColor(campaign.gradientColor)
         viewModel.setPaymentType(campaign.paymentType)
         viewModel.storeVpsPackage(campaignWithSelectedVpsPackage.vpsPackages)

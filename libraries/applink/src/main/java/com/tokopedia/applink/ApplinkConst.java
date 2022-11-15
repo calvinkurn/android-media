@@ -281,6 +281,7 @@ public interface ApplinkConst {
     String SETTING_PASSWORD = "tokopedia://setting/password";
     String SETTING_PROFILE = "tokopedia://setting/profile";
     String SETTING_ADDRESS = "tokopedia://setting/address";
+    String SETTING_EDIT_ADDRESS = "tokopedia://setting/editaddress/";
 
     String NOTIFICATION = "tokopedia://notification";
     String NOTIFICATION_TROUBLESHOOTER = "tokopedia://notification-troubleshooter";
@@ -542,6 +543,8 @@ public interface ApplinkConst {
         String ADMIN_INVITATION = "sellerapp://shop-admin/invitation-page";
         String ADMIN_ACCEPTED = "sellerapp://shop-admin/accepted-page";
         String ADMIN_REDIRECTION = "sellerapp://shop-admin/redirection-page";
+        String PRODUCT_MANAGE = "sellerapp://product/manage";
+
     }
 
     interface TokopediaNow {

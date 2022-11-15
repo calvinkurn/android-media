@@ -5,6 +5,10 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.PARAM_CALL_BACK
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.PARAM_KYC_TYPE
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.PARAM_PROJECT_ID
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.PARAM_REDIRECT_URL
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kyc_centralized.view.fragment.UserIdentificationInfoFragment
 import com.tokopedia.kyc_centralized.common.KYCConstant
@@ -43,15 +47,15 @@ class UserIdentificationInfoActivity : BaseSimpleActivity() {
     override fun getNewFragment(): Fragment? {
         intent?.data?.let {
             projectId = it.getQueryParameter(
-                ApplinkConstInternalGlobal.PARAM_PROJECT_ID
+                PARAM_PROJECT_ID
             )?.toIntOrZero() ?: KycStatus.DEFAULT.code
-            kycType = it.getQueryParameter(ApplinkConstInternalGlobal.PARAM_KYC_TYPE).orEmpty()
-            callback = it.getQueryParameter(ApplinkConstInternalGlobal.PARAM_CALL_BACK).orEmpty()
-            redirectUrl = it.getQueryParameter(ApplinkConstInternalGlobal.PARAM_REDIRECT_URL).orEmpty()
+            kycType = it.getQueryParameter(PARAM_KYC_TYPE).orEmpty()
+            callback = it.getQueryParameter(PARAM_CALL_BACK).orEmpty()
+            redirectUrl = it.getQueryParameter(PARAM_REDIRECT_URL).orEmpty()
         }
 
         if (kycType.isEmpty()) {
-            kycType = intent?.extras?.getString(ApplinkConstInternalGlobal.PARAM_KYC_TYPE).orEmpty()
+            kycType = intent?.extras?.getString(PARAM_KYC_TYPE).orEmpty()
         }
 
         return UserIdentificationInfoFragment.createInstance(

@@ -16,9 +16,11 @@ import com.tokopedia.abstraction.base.view.listener.StepperListener
 import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.KYC_TYPE_KTP_WITH_SELFIE
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.PARAM_KYC_TYPE
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.PARAM_PROJECT_ID
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
-import com.tokopedia.kyc_centralized.KycUrl.KYC_TYPE_KTP_WITH_SELFIE
 import com.tokopedia.kyc_centralized.R
 import com.tokopedia.kyc_centralized.analytics.UserIdentificationCommonAnalytics
 import com.tokopedia.kyc_centralized.common.KYCConstant
@@ -35,7 +37,8 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 /**
  * @author by alvinatin on 12/11/18.
  */
-abstract class BaseUserIdentificationStepperFragment<T : UserIdentificationStepperModel> : BaseDaggerFragment() {
+abstract class BaseUserIdentificationStepperFragment<T : UserIdentificationStepperModel> :
+    BaseDaggerFragment() {
 
     protected var viewBinding by autoClearedNullable<FragmentUserIdentificationFormBinding>()
     protected var analytics: UserIdentificationCommonAnalytics? = null
@@ -56,14 +59,19 @@ abstract class BaseUserIdentificationStepperFragment<T : UserIdentificationStepp
 
         if (arguments != null && savedInstanceState == null) {
             stepperModel = arguments?.getParcelable(BaseStepperActivity.STEPPER_MODEL_EXTRA)
-            kycType = arguments?.getString(ApplinkConstInternalGlobal.PARAM_KYC_TYPE).orEmpty()
+            kycType = arguments?.getString(PARAM_KYC_TYPE).orEmpty()
         } else if (savedInstanceState != null) {
             stepperModel = savedInstanceState.getParcelable(EXTRA_KYC_STEPPER_MODEL)
         }
 
         if (activity != null) {
-            projectId = activity?.intent?.getIntExtra(ApplinkConstInternalGlobal.PARAM_PROJECT_ID, -1)?: -1
-            allowedSelfie = activity?.intent?.getBooleanExtra(UserIdentificationInfoFragment.ALLOW_SELFIE_FLOW_EXTRA, false)?: false
+            projectId =
+                activity?.intent?.getIntExtra(PARAM_PROJECT_ID, -1)
+                    ?: -1
+            allowedSelfie = activity?.intent?.getBooleanExtra(
+                UserIdentificationInfoFragment.ALLOW_SELFIE_FLOW_EXTRA,
+                false
+            ) ?: false
             analytics = UserIdentificationCommonAnalytics.createInstance(projectId)
         }
 
@@ -75,7 +83,11 @@ abstract class BaseUserIdentificationStepperFragment<T : UserIdentificationStepp
         super.onSaveInstanceState(outState)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         viewBinding = FragmentUserIdentificationFormBinding.inflate(inflater, container, false)
         return viewBinding?.root
     }
@@ -95,14 +107,28 @@ abstract class BaseUserIdentificationStepperFragment<T : UserIdentificationStepp
                 handleKtpImage(data)
             }
         } else if (resultCode == KYCConstant.IS_FILE_IMAGE_TOO_BIG) {
-            NetworkErrorHelper.showRedSnackbar(activity, context?.resources?.getString(R.string.error_text_image_file_too_big).orEmpty())
+            NetworkErrorHelper.showRedSnackbar(
+                activity,
+                context?.resources?.getString(R.string.error_text_image_file_too_big).orEmpty()
+            )
         } else if (resultCode == KYCConstant.IS_FILE_IMAGE_NOT_EXIST) {
-            NetworkErrorHelper.showRedSnackbar(activity, context?.resources?.getString(R.string.error_text_image_cant_be_accessed).orEmpty())
+            NetworkErrorHelper.showRedSnackbar(
+                activity,
+                context?.resources?.getString(R.string.error_text_image_cant_be_accessed).orEmpty()
+            )
         } else if (resultCode == KYCConstant.IS_FILE_LIVENESS_IMAGE_NOT_EXIST) {
-            NetworkErrorHelper.showRedSnackbar(activity, context?.resources?.getString(R.string.error_text_liveness_image_cant_be_accessed).orEmpty())
+            NetworkErrorHelper.showRedSnackbar(
+                activity,
+                context?.resources?.getString(R.string.error_text_liveness_image_cant_be_accessed)
+                    .orEmpty()
+            )
         } else if (resultCode == KYCConstant.NOT_SUPPORT_LIVENESS && requestCode == KYCConstant.REQUEST_CODE_CAMERA_FACE) {
             UserIdentificationFormActivity.isSupportedLiveness = false
-            val intent = createIntent(requireContext(), UserIdentificationCameraFragment.PARAM_VIEW_MODE_FACE, projectId)
+            val intent = createIntent(
+                requireContext(),
+                UserIdentificationCameraFragment.PARAM_VIEW_MODE_FACE,
+                projectId
+            )
             startActivityForResult(intent, KYCConstant.REQUEST_CODE_CAMERA_FACE)
         }
         super.onActivityResult(requestCode, resultCode, data)
@@ -110,12 +136,12 @@ abstract class BaseUserIdentificationStepperFragment<T : UserIdentificationStepp
 
     private fun handleFaceImage(data: Intent) {
         var faceFile = ""
-        if(isKycSelfie) {
+        if (isKycSelfie) {
             stepperModel?.isLiveness = false
-            faceFile = data.getStringExtra(KYCConstant.EXTRA_STRING_IMAGE_RESULT)?: ""
+            faceFile = data.getStringExtra(KYCConstant.EXTRA_STRING_IMAGE_RESULT) ?: ""
         } else {
             stepperModel?.isLiveness = true
-            faceFile = data.getStringExtra(ApplinkConstInternalGlobal.PARAM_FACE_PATH)?: ""
+            faceFile = data.getStringExtra(ApplinkConstInternalGlobal.PARAM_FACE_PATH) ?: ""
         }
         stepperModel?.faceFile = faceFile.toEmptyStringIfNull()
         stepperListener?.goToNextPage(stepperModel)
@@ -145,7 +171,10 @@ abstract class BaseUserIdentificationStepperFragment<T : UserIdentificationStepp
             Typography(it).apply {
                 this.setType(Typography.BODY_2)
                 this.text = text
-                this.layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+                this.layoutParams = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+                )
             }
         }
     }
@@ -157,7 +186,8 @@ abstract class BaseUserIdentificationStepperFragment<T : UserIdentificationStepp
                 val gapWidth = DP_12.dpToPx(resources.displayMetrics)
                 val margin = DP_8.dpToPx(resources.displayMetrics)
                 val span = SpannableString(text)
-                val color = MethodChecker.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N100)
+                val color =
+                    MethodChecker.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N100)
 
                 val bulletSpan: BulletSpan = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                     BulletSpan(gapWidth, color, radius)
@@ -170,7 +200,10 @@ abstract class BaseUserIdentificationStepperFragment<T : UserIdentificationStepp
                 setMargins(this, 0, 0, 0, margin)
                 this.setType(Typography.BODY_2)
                 this.text = span
-                this.layoutParams = LinearLayout.LayoutParams(LinearLayout.LayoutParams.MATCH_PARENT, LinearLayout.LayoutParams.WRAP_CONTENT)
+                this.layoutParams = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.WRAP_CONTENT
+                )
             }
         }
     }
