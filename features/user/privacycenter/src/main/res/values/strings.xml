@@ -61,4 +61,7 @@
     <string name="consent_withdrawal_error_page_back_home">Balik ke Home</string>
     <string name="consent_withdrawal_error_page_try_again">Coba Lagi</string>
 
+    <!--Section | DSAR-->
+    <string name="dsar_section_title">Download data pribadimu</string>
+    <string name="dsar_section_description">Download datamu yang tersimpan di Tokopedia</string>
 </resources>
