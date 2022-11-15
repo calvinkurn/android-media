@@ -35,6 +35,7 @@ import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_ADDRESS_ID
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_DISTRICT_NAME
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_FROM_ADDRESS_FORM
+import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_GMS_AVAILABILITY
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_IS_EDIT
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_IS_POLYGON
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_IS_POSITIVE_FLOW
@@ -125,6 +126,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
         super.onCreate(savedInstanceState)
         arguments?.let {
             isEdit = it.getBoolean(EXTRA_IS_EDIT, false)
+            viewModel.isGmsAvailable = it.getBoolean(EXTRA_GMS_AVAILABILITY, true)
             if (!isEdit) {
                 saveDataModel = it.getParcelable(EXTRA_SAVE_DATA_UI_MODEL)
                 isLatitudeNotEmpty = saveDataModel?.latitude?.isNotEmpty()
@@ -411,7 +413,9 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
 
                 cardAddressNegative.root.setOnClickListener {
                     AddNewAddressRevampAnalytics.onClickAturPinpointNegative(userSession.userId)
-                    checkKotaKecamatan()
+                    if (viewModel.isGmsAvailable) {
+                        checkKotaKecamatan()
+                    }
                 }
 
                 formAddressNegative.etKotaKecamatan.textFieldInput.setText(currentKotaKecamatan)
@@ -497,7 +501,9 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
                 cardAddressNegative.run {
                     root.setOnClickListener {
                         EditAddressRevampAnalytics.onClickAturPinPoint(userSession.userId)
-                        checkKotaKecamatan()
+                        if (viewModel.isGmsAvailable) {
+                            checkKotaKecamatan()
+                        }
                     }
                     btnChangeNegative.visibility = View.VISIBLE
                     btnArrow.visibility = View.GONE
@@ -551,10 +557,16 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
             binding?.run {
                 formattedAddress = "${data.districtName}, ${data.cityName}, ${data.provinceName}"
                 cardAddressPinpoint.run {
-                    btnChange.visibility = View.VISIBLE
-                    btnChange.setOnClickListener {
-                        goToPinpointPage()
-                        EditAddressRevampAnalytics.onClickAturPinPoint(userSession.userId)
+                    context?.let {
+                        if (viewModel.isGmsAvailable) {
+                            btnChange.visible()
+                            btnChange.setOnClickListener {
+                                goToPinpointPage()
+                                EditAddressRevampAnalytics.onClickAturPinPoint(userSession.userId)
+                            }
+                        } else {
+                            btnChange.gone()
+                        }
                     }
                     tvPinpointTitle.visibility = View.VISIBLE
                     addressDistrict.text = formattedAddress
@@ -873,7 +885,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
     }
 
     private fun showDistrictRecommendationBottomSheet(isPinpoint: Boolean) {
-        districtBottomSheet = DiscomBottomSheetRevamp(isPinpoint = isPinpoint, isEdit = isEdit)
+        districtBottomSheet = DiscomBottomSheetRevamp(isPinpoint = isPinpoint, isEdit = isEdit, isGmsAvailable = viewModel.isGmsAvailable)
         districtBottomSheet?.setListener(this)
         districtBottomSheet?.show(this.childFragmentManager)
     }
@@ -960,14 +972,18 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
 
     private fun setupNegativePinpointCard() {
         binding?.run {
-            if (!isPinpoint) {
-                cardAddressNegative.icLocation.setImage(IconUnify.LOCATION_OFF)
-                cardAddressNegative.addressDistrict.text =  if (isEdit) getString(R.string.tv_pinpoint_not_defined_edit) else context?.let { HtmlLinkHelper(it, getString(R.string.tv_pinpoint_not_defined)).spannedString }
-            }
-            else {
-                cardAddressNegative.icLocation.setImage(IconUnify.LOCATION)
-                cardAddressNegative.addressDistrict.text = if (isEdit) getString(R.string.tv_pinpoint_defined_edit) else context?.let { HtmlLinkHelper(it, getString(R.string.tv_pinpoint_defined)).spannedString }
-                cardAddressNegative.btnChangeNegative.text = getString(R.string.change_pinpoint_positive_text)
+            if (viewModel.isGmsAvailable) {
+                if (!isPinpoint) {
+                    cardAddressNegative.icLocation.setImage(IconUnify.LOCATION_OFF)
+                    cardAddressNegative.addressDistrict.text =  if (isEdit) getString(R.string.tv_pinpoint_not_defined_edit) else context?.let { HtmlLinkHelper(it, getString(R.string.tv_pinpoint_not_defined)).spannedString }
+                }
+                else {
+                    cardAddressNegative.icLocation.setImage(IconUnify.LOCATION)
+                    cardAddressNegative.addressDistrict.text = if (isEdit) getString(R.string.tv_pinpoint_defined_edit) else context?.let { HtmlLinkHelper(it, getString(R.string.tv_pinpoint_defined)).spannedString }
+                    cardAddressNegative.btnChangeNegative.text = getString(R.string.change_pinpoint_positive_text)
+                }
+            } else {
+                cardAddressNegative.root.gone()
             }
         }
     }
@@ -1279,6 +1295,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
                     putBoolean(EXTRA_IS_POSITIVE_FLOW, extra.getBoolean(EXTRA_IS_POSITIVE_FLOW))
                     putString(EXTRA_KOTA_KECAMATAN, extra.getString(EXTRA_KOTA_KECAMATAN))
                     putBoolean(EXTRA_IS_EDIT, false)
+                    putBoolean(EXTRA_GMS_AVAILABILITY, extra.getBoolean(EXTRA_GMS_AVAILABILITY))
                     putString(PARAM_SOURCE, extra.getString(PARAM_SOURCE, "") )
                 }
             }
@@ -1292,6 +1309,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
 
                     if (extra != null) {
                         putString(PARAM_SOURCE, extra.getString(PARAM_SOURCE, "") )
+                        putBoolean(EXTRA_GMS_AVAILABILITY, extra.getBoolean(EXTRA_GMS_AVAILABILITY))
                     }
                 }
             }
