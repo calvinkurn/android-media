@@ -199,13 +199,9 @@ class AddProductViewModel @Inject constructor(
             val variants = matchedProduct?.variant?.map {
                 Product.Variant(
                     it.productId,
-                    it.productName,
-                    it.price,
-                    it.stock,
                     it.isEligible,
                     it.reason,
                     isSelected = it.isEligible,
-                    product.picture
                 )
             }
 

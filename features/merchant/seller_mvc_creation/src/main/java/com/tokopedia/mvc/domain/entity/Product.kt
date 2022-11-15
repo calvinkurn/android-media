@@ -49,13 +49,9 @@ data class Product(
     @Parcelize
     data class Variant(
         val variantProductId: Long,
-        val productName: String,
-        val price: Long,
-        val stock: Int,
         val isEligible: Boolean,
         val reason: String,
-        val isSelected: Boolean,
-        val imageUrl: String
+        val isSelected: Boolean
     ) : Parcelable
 
     override fun id() = id
