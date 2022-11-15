@@ -50,6 +50,7 @@ class CampaignListViewModel @Inject constructor(
 
     companion object {
         const val TIMER_FOR_FLIP = 5000L
+        const val DEFAULT_VALUE_OF_ANIMATION = 0
     }
 
     private val _campaigns = MutableLiveData<Result<CampaignMeta>>()
@@ -94,13 +95,13 @@ class CampaignListViewModel @Inject constructor(
             dispatchers.io,
             block = {
                 while (true) { //will always true because is for looping purpose
-                    val currentValue = _timeFlip.value?:0
+                    val currentValue = _timeFlip.value?:DEFAULT_VALUE_OF_ANIMATION
                     _timeFlip.postValue(currentValue+1)
                     delay(TIMER_FOR_FLIP)
                 }
             },
             onError = {
-                _timeFlip.postValue(1)
+                _timeFlip.postValue(DEFAULT_VALUE_OF_ANIMATION)
             }
         )
     }
