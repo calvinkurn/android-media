@@ -27,6 +27,7 @@ import com.tokopedia.privacycenter.main.section.accountlinking.AccountLinkingVie
 import com.tokopedia.privacycenter.main.section.consentwithdrawal.ConsentWithdrawalSection
 import com.tokopedia.privacycenter.main.section.consentwithdrawal.ConsentWithdrawalSectionViewModel
 import com.tokopedia.privacycenter.main.section.dummy.DummySection
+import com.tokopedia.privacycenter.main.section.faqPrivacySection.FaqPrivacySection
 import com.tokopedia.privacycenter.main.section.recommendation.RecommendationSection
 import com.tokopedia.privacycenter.main.section.recommendation.RecommendationViewModel
 import com.tokopedia.unifycomponents.isUsingNightModeResources
@@ -206,18 +207,19 @@ class PrivacyCenterFragment :
     }
 
     inner class PrivacyCenterSectionDelegateImpl : PrivacyCenterSectionDelegate {
+        override val accountLinkingSection: AccountLinkingSection =
+            AccountLinkingSection(context, viewModelAccountLinkingSection, this@PrivacyCenterFragment)
+        override val dummySection: DummySection = DummySection(context)
         override val recommendationSection: RecommendationSection = RecommendationSection(
             context,
             viewModelRecommendationSection,
             this@PrivacyCenterFragment
         )
-        override val accountLinkingSection: AccountLinkingSection =
-            AccountLinkingSection(context, viewModelAccountLinkingSection, this@PrivacyCenterFragment)
-        override val dummySection: DummySection = DummySection(context)
         override val consentWithdrawalSection: ConsentWithdrawalSection = ConsentWithdrawalSection(
             context,
             viewModelConsentWithdrawalSection
         )
+        override val faqPrivacySection: FaqPrivacySection = FaqPrivacySection(context)
     }
 
     companion object {

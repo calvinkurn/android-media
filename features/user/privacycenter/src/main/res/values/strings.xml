@@ -42,6 +42,10 @@
     <string name="privacy_center_recommendation_dialog_button_primary_permission_geolocation">Bagikan Lokasi</string>
     <string name="privacy_center_recommendation_dialog_button_secondary_permission_geolocation">Batal</string>
 
+    <!--Section | FAQ Privacy Section-->
+    <string name="privacy_center_faq_title">Punya pertanyaan seputar privasi?</string>
+    <string name="privacy_center_faq_subtitle">Temukan semua jawabannya disini</string>
+
     <!--  CONSENT WITHDRAWAL  -->
     <string name="consent_withdrawal_page_title">Consent Withdrawal</string>
     <string name="consent_withdrawal_primary_data_usage">Penggunaan data utama</string>
