@@ -668,7 +668,7 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
     }
 
     private fun handleShareOptionSelection(
-        galadrielVoucherId: Long,
+        voucherId: Long,
         shareModel: ShareModel,
         title: String,
         description: String,
@@ -693,7 +693,7 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
         val linkerDataGenerator = LinkerDataGenerator()
         val outgoingDescription = getString(R.string.smvc_share_component_outgoing_text_description)
         val linkerShareData = linkerDataGenerator.generate(
-            galadrielVoucherId,
+            voucherId,
             userSession.shopId,
             shopDomain,
             shareModel,
