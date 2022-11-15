@@ -1801,7 +1801,7 @@ class PlayViewModel @AssistedInject constructor(
             }
         }) {
             _partnerInfo.setValue { (copy(isLoadingFollow = false)) }
-            _uiEvent.emit(ShowErrorEvent(it))
+            _uiEvent.emit(ShowErrorEvent(error = it, action = RetryAction.Follow))
         }
 
         return followAction

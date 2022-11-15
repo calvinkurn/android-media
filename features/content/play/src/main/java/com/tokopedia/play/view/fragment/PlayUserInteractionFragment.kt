@@ -950,9 +950,17 @@ class PlayUserInteractionFragment @Inject constructor(
                                 errCode
                             )
                         }
+
+                        val (actionText, listener) = when (event.action) {
+                            RetryAction.Follow -> Pair(getString(commonR.string.play_interactive_retry), View.OnClickListener { playViewModel.submitAction(PlayViewerNewAction.FollowInteractive) })
+                            else ->  Pair("", View.OnClickListener {} )
+                        }
+
                         doShowToaster(
                             toasterType = Toaster.TYPE_ERROR,
-                            message = errMessage
+                            message = errMessage,
+                            actionText = actionText,
+                            clickListener = listener
                         )
                     }
                     is CopyToClipboardEvent -> copyToClipboard(event.content)
@@ -1316,8 +1324,9 @@ class PlayUserInteractionFragment @Inject constructor(
 
     private fun doShowToaster(
             toasterType: Int = Toaster.TYPE_NORMAL,
-            actionText: String = "",
             message: String,
+            actionText: String = "",
+            clickListener: View.OnClickListener = View.OnClickListener {},
     ) {
         if (toasterBottomMargin == 0) {
             val likeAreaView = likeView.rootView
@@ -1330,7 +1339,8 @@ class PlayUserInteractionFragment @Inject constructor(
                 container,
                 message,
                 type = toasterType,
-                actionText = actionText
+                actionText = actionText,
+                clickListener = clickListener
         ).show()
     }
 
