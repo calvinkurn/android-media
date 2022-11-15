@@ -43,6 +43,21 @@ query FeedXGetActivityProducts(${'$'}req: FeedXGetActivityProductsRequest!){
           bebasOngkirURL
           mods
         }
+        isFollowed
+        contentType
+        campaign{
+          id
+          status
+          name
+          shortName
+          startTime
+          endTime
+          restrictions{
+          label
+          isActive
+          __typename
+          }
+        }
     nextCursor
   }
 }

@@ -1,11 +1,15 @@
 package com.tokopedia.play.analytic
 
+import android.os.Bundle
+import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.play.ui.productsheet.adapter.ProductSheetAdapter
 import com.tokopedia.play.view.type.*
 import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayPartnerInfo
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 import com.tokopedia.track.TrackApp
+import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.trackingoptimizer.model.EventModel
 import com.tokopedia.user.session.UserSessionInterface
@@ -176,36 +180,38 @@ class PlayAnalytic(
     }
 
     fun impressBottomSheetProduct(
-        product: PlayProductUiModel.Product,
-        sectionInfo: ProductSectionUiModel.Section,
-        position: Int,
+        products: Map<ProductSheetAdapter.Item.Product, Int>
     ) {
-        val (eventAction, eventLabel) = when(sectionInfo.config.type) {
-            ProductSectionType.Active -> Pair("impression - product in ongoing section", generateBaseEventLabel(product = product, campaignId = sectionInfo.id))
-            ProductSectionType.Upcoming -> Pair("impression - product in upcoming section", generateBaseEventLabel(product = product, campaignId = sectionInfo.id))
-            else -> Pair("view product", "$mChannelId - ${product.id} - ${mChannelType.value} - product in bottom sheet - is pinned product ${product.isPinned}")
+        if (products.isEmpty()) return
+        val section = products.keys.firstOrNull()?.section?.config?.type ?: ProductSectionType.Unknown
+
+        val (eventAction, eventLabel) = when(section) {
+            ProductSectionType.Active -> Pair("impression - product in ongoing section", generateBaseEventLabel(product = products.keys.firstOrNull()?.product ?: PlayProductUiModel.Product.Empty, campaignId = products.keys.firstOrNull()?.section?.id.orEmpty()))
+            ProductSectionType.Upcoming -> Pair("impression - product in upcoming section", generateBaseEventLabel(product = products.keys.firstOrNull()?.product ?: PlayProductUiModel.Product.Empty, campaignId = products.keys.firstOrNull()?.section?.id.orEmpty()))
+            else -> Pair("view product", "$mChannelId - ${products.keys.firstOrNull()?.product?.id.orEmpty()} - ${mChannelType.value} - product in bottom sheet - is pinned product ${products.keys.firstOrNull()?.product?.isPinned.orFalse()}")
         }
-        trackingQueue.putEETracking(
-            event = EventModel(
-                "productView",
-                KEY_TRACK_GROUP_CHAT_ROOM,
-                eventAction,
-                eventLabel
-            ),
-            enhanceECommerceMap = hashMapOf(
-                "ecommerce" to hashMapOf(
-                    "currencyCode" to "IDR",
-                    "impressions" to mutableListOf<HashMap<String, Any>>().apply {
-                        add(convertProductToHashMapWithList(product, position, "bottom sheet"))
-                    }
-                )
-            ),
-            customDimension = hashMapOf(
-                KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
-                KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
-                KEY_USER_ID to userId,
-                KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT
-            ),
+
+        val items = arrayListOf<Bundle>().apply {
+            products.forEach {
+                add(productsToBundle(it.key.product, it.value, "bottom sheet"))
+            }
+        }
+
+        val dataLayer = Bundle().apply {
+            putString(TrackAppUtils.EVENT, KEY_EVENT_ITEM_LIST)
+            putString(KEY_EVENT_CATEGORY, KEY_TRACK_GROUP_CHAT_ROOM)
+            putString(KEY_EVENT_ACTION, eventAction)
+            putString(KEY_EVENT_LABEL, eventLabel)
+            putString(KEY_CURRENT_SITE, KEY_TRACK_CURRENT_SITE)
+            putString(KEY_SESSION_IRIS, TrackApp.getInstance().gtm.irisSessionId)
+            putString(KEY_USER_ID, userId)
+            putString(KEY_BUSINESS_UNIT, KEY_TRACK_BUSINESS_UNIT)
+            putParcelableArrayList(KEY_EVENT_ITEMS, items)
+            putString(KEY_ITEM_LIST , "/groupchat - bottom sheet")
+        }
+
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
+            KEY_EVENT_ITEM_LIST, dataLayer
         )
     }
 
@@ -596,6 +602,21 @@ class PlayAnalytic(
         )
     }
 
+    private fun productsToBundle(product: PlayProductUiModel.Product, position: Int, sourceFrom: String) : Bundle =
+        Bundle().apply {
+            putString("item_name", product.title)
+            putString("item_id", product.id)
+            putDouble("price", when(product.price) {
+                is DiscountedPrice -> product.price.discountedPriceNumber
+                is OriginalPrice -> product.price.priceNumber
+            })
+            putString("item_brand", "")
+            putString("item_category", "")
+            putString("item_variant", "")
+            putString("dimension40", "/groupchat - $sourceFrom")
+            putInt("index", position)
+        }
+
     private fun convertProductAndShopToHashMapWithList(product: PlayProductUiModel.Product, shopInfo: PlayPartnerInfo, dimension39: String = ""): HashMap<String, Any> {
         return hashMapOf(
             "name" to product.title,
@@ -864,7 +885,9 @@ class PlayAnalytic(
         private const val KEY_PRODUCT_NAME = "productName"
         private const val KEY_PRODUCT_URL = "productUrl"
         private const val KEY_ITEM_LIST = "item_list"
+        private const val KEY_EVENT_ITEM_LIST = "view_item_list"
         private const val KEY_TRACKER_ID = "trackerId"
+        private const val KEY_EVENT_ITEMS = "items"
 
         private const val KEY_TRACK_SCREEN_NAME = "group-chat-room"
         private const val KEY_TRACK_ADD_TO_CART = "addToCart"

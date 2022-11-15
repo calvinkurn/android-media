@@ -118,7 +118,7 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
     @MockK(relaxed = true)
     private lateinit var getShipmentAddressFormV3UseCase: GetShipmentAddressFormV3UseCase
 
-    @MockK
+    @MockK(relaxed = true)
     private lateinit var eligibleForAddressUseCase: EligibleForAddressUseCase
 
     @MockK
@@ -1734,5 +1734,17 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
             ),
             presenter.shipmentNewUpsellModel
         )
+    }
+
+    @Test
+    fun `WHEN presenter detached THEN all usecases is unsubscribed`() {
+        // When
+        presenter.detachView()
+
+        // Then
+        verify {
+            getShipmentAddressFormV3UseCase.cancelJobs()
+            eligibleForAddressUseCase.cancelJobs()
+        }
     }
 }

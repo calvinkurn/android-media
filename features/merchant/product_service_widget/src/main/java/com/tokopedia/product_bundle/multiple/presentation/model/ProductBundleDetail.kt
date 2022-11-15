@@ -6,7 +6,7 @@ class ProductBundleDetail(
     val productId: Long = 0L,
     var selectedVariantId: String? = null,
     val productName: String = "",
-    val productImageUrl: String = "",
+    var productImageUrl: String = "",
     val productQuantity: Int = 0,
     var originalPrice: Double = 0.0,
     var bundlePrice: Double = 0.0,

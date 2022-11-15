@@ -6,12 +6,10 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.play.databinding.ViewProductFeaturedBinding
 import com.tokopedia.play.ui.product.ProductBasicViewHolder
-import com.tokopedia.play.ui.productfeatured.adapter.ProductFeaturedAdapter
 import com.tokopedia.play.ui.productfeatured.itemdecoration.ProductFeaturedItemDecoration
 import com.tokopedia.play.ui.view.carousel.adapter.ProductCarouselAdapter
 import com.tokopedia.play.ui.view.carousel.viewholder.ProductCarouselViewHolder
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
-import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 
 /**
  * Created by kenny.hadisaputra on 06/07/22
@@ -23,7 +21,11 @@ class ProductCarouselUiView(
 
     private val context = binding.root.context
 
-    private val impressionSet = mutableSetOf<String>()
+    private val scrollListener = object: RecyclerView.OnScrollListener(){
+        override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+            if (newState == RecyclerView.SCROLL_STATE_IDLE) sendImpression()
+        }
+    }
 
     private val adapter = ProductCarouselAdapter(
         listener = object : ProductBasicViewHolder.Listener {
@@ -59,12 +61,6 @@ class ProductCarouselUiView(
         }
     )
 
-    private val scrollListener = object: RecyclerView.OnScrollListener(){
-        override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-            if (newState == RecyclerView.SCROLL_STATE_IDLE) sendImpression()
-        }
-    }
-
     private val layoutManager = object : LinearLayoutManager(context, RecyclerView.HORIZONTAL, false) {
         override fun onLayoutCompleted(state: RecyclerView.State?) {
             super.onLayoutCompleted(state)
@@ -89,10 +85,10 @@ class ProductCarouselUiView(
         if (products == adapter.getItems()) return
 
         invalidateItemDecorations()
-        impressionSet.clear()
+
+        sendImpression()
 
         adapter.setItemsAndAnimateChanges(products)
-        sendImpression()
     }
 
     fun scrollToFirstPosition() {
@@ -122,12 +118,10 @@ class ProductCarouselUiView(
         binding.root.visible()
     }
 
+    val isShown = binding.root.isShown
+
     fun hide() {
         binding.root.gone()
-    }
-
-    fun cleanUp() {
-        binding.rvProductFeatured.removeOnScrollListener(scrollListener)
     }
 
     private fun getPlaceholder() = List(3) { PlayProductUiModel.Placeholder }
@@ -140,25 +134,22 @@ class ProductCarouselUiView(
         } catch (ignored: IllegalStateException) {}
     }
 
-    private fun sendImpression() = synchronized(impressionSet) {
+    /**
+     * Expose
+     */
+    private fun sendImpression()  {
         val products = getVisibleProducts()
-        val productsToBeImpressed = products.filter {
-            !impressionSet.contains(it.key.id)
-        }
-        listener.onProductImpressed(this, productsToBeImpressed)
-        productsToBeImpressed.forEach {
-            impressionSet.add(it.key.id)
-        }
+        listener.onProductImpressed(this, products)
     }
 
     /**
      * Analytic Helper
      */
-    private fun getVisibleProducts(): Map<PlayProductUiModel.Product, Int> {
+    fun getVisibleProducts(): Map<PlayProductUiModel.Product, Int> {
         val products = adapter.getItems()
         if (products.isNotEmpty()) {
-            val startPosition = layoutManager.findFirstVisibleItemPosition()
-            val endPosition = layoutManager.findLastVisibleItemPosition()
+            val startPosition = layoutManager.findFirstCompletelyVisibleItemPosition()
+            val endPosition = layoutManager.findLastCompletelyVisibleItemPosition()
             if (startPosition > -1 && endPosition < products.size) {
                 return (startPosition..endPosition)
                     .filter { products[it] is PlayProductUiModel.Product }
@@ -166,6 +157,10 @@ class ProductCarouselUiView(
             }
         }
         return emptyMap()
+    }
+
+    fun cleanUp() {
+        binding.rvProductFeatured.removeOnScrollListener(scrollListener)
     }
 
     interface Listener {

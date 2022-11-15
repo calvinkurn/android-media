@@ -125,6 +125,7 @@ class PlayViewerIdGenerator {
                 castPlayerHelper = mockk(relaxed = true),
                 playShareExperience = mockk(relaxed = true),
                 playLog = mockk(relaxed = true),
+                chatManagerFactory = mockk(relaxed = true),
                 chatStreamsFactory = mockk(relaxed = true),
                 liveRoomMetricsCommon = mockk(relaxed = true),
             )
@@ -151,7 +152,7 @@ class PlayViewerIdGenerator {
                     castAnalyticHelper = mockk(relaxed = true),
                     performanceClassConfig = mockk(relaxed = true),
                     newAnalytic = mockk(relaxed = true),
-                    analyticManagerFactory = mockk(relaxed = true),
+                    analyticManager = mockk(relaxed = true),
                 )
             },
             PlayBottomSheetFragment::class.java to {

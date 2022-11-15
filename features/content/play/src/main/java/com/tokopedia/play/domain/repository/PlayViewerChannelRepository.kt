@@ -4,7 +4,9 @@ import com.tokopedia.play.domain.GetChannelDetailsWithRecomUseCase
 import com.tokopedia.play.view.storage.PlayChannelData
 import com.tokopedia.play.view.type.PlaySource
 import com.tokopedia.play.view.uimodel.mapper.PlayChannelDetailsWithRecomMapper
+import com.tokopedia.play.view.uimodel.PlayChatHistoryUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayChannelStatus
+import com.tokopedia.play_common.model.ui.PlayChatUiModel
 
 interface PlayViewerChannelRepository {
 
@@ -23,4 +25,9 @@ interface PlayViewerChannelRepository {
         val channelData: List<PlayChannelData>,
         val cursor: String,
     )
+
+    suspend fun getChatHistory(
+        channelId: String,
+        cursor: String = "",
+    ): PlayChatHistoryUiModel
 }

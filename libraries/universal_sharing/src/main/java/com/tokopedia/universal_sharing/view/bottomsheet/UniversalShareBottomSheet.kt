@@ -1021,6 +1021,9 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
                 ImageGeneratorConstants.ImageGeneratorSourceId.PDP -> {
                     executePdpContextualImage(shareModel)
                 }
+                ImageGeneratorConstants.ImageGeneratorSourceId.WISHLIST_COLLECTION -> {
+                    executeWishlistCollectionContextualImage(shareModel)
+                }
                 else -> {
                     addImageGeneratorData(ImageGeneratorConstants.ImageGeneratorKeys.PLATFORM, shareModel.platform)
                     addImageGeneratorData(ImageGeneratorConstants.ImageGeneratorKeys.PRODUCT_IMAGE_URL, ogImageUrl)
@@ -1037,6 +1040,21 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
         imageGeneratorParam?.apply {
             this.platform = shareModel.platform
         }
+
+        lifecycleScope.launchCatchError(block = {
+            val result = ImagePolicyUseCase(GraphqlInteractor.getInstance().graphqlRepository)(sourceId)
+            val listOfParams = result.generateImageGeneratorParam(imageGeneratorParam!!)
+            executeImageGeneratorUseCase(sourceId, listOfParams, shareModel)
+        }, onError =  {
+            executeSharingFlow(shareModel)
+        })
+    }
+
+    private fun executeWishlistCollectionContextualImage(shareModel: ShareModel) {
+        if (imageGeneratorParam == null) return
+        imageGeneratorParam?.apply {
+            this.platform = shareModel.platform
+        }
         lifecycleScope.launch {
             val result = ImagePolicyUseCase(GraphqlInteractor.getInstance().graphqlRepository)(sourceId)
             val listOfParams = result.generateImageGeneratorParam(imageGeneratorParam!!)
@@ -1045,7 +1063,9 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
     }
 
     private fun executeMediaImageSharingFlow(shareModel: ShareModel, mediaImageUrl: String) {
-        loaderUnify?.visibility = View.GONE
+        activity?.runOnUiThread {
+            loaderUnify?.visibility = View.GONE
+        }
         preserveImage = true
         shareModel.ogImgUrl = mediaImageUrl
         shareModel.savedImageFilePath = savedImagePath
@@ -1053,7 +1073,9 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
     }
 
     private fun executeSharingFlow(shareModel: ShareModel) {
-        loaderUnify?.visibility = View.GONE
+        activity?.runOnUiThread {
+            loaderUnify?.visibility = View.GONE
+        }
         preserveImage = true
         shareModel.ogImgUrl = transformOgImageURL(ogImageUrl)
         shareModel.savedImageFilePath = savedImagePath
