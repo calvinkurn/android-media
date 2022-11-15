@@ -5,12 +5,14 @@ import com.tokopedia.privacycenter.main.section.BasePrivacyCenterSection
 import com.tokopedia.privacycenter.main.section.accountlinking.AccountLinkingSection
 import com.tokopedia.privacycenter.main.section.consentwithdrawal.ConsentWithdrawalSection
 import com.tokopedia.privacycenter.main.section.dummy.DummySection
+import com.tokopedia.privacycenter.main.section.recommendation.RecommendationSection
 
 /**
  * ## Centralize Privacy Center Sections Initialize
  */
 
 interface PrivacyCenterSectionDelegate {
+    val recommendationSection: RecommendationSection
     val accountLinkingSection: AccountLinkingSection
     val dummySection: DummySection
     val consentWithdrawalSection: ConsentWithdrawalSection
@@ -27,6 +29,7 @@ class PrivacyCenterSection constructor(
          */
         return mutableMapOf(
             AccountLinkingSection.TAG to delegate.accountLinkingSection,
+            RecommendationSection.TAG to delegate.recommendationSection,
             DummySection.TAG to delegate.dummySection,
             ConsentWithdrawalSection.TAG to delegate.consentWithdrawalSection,
         )

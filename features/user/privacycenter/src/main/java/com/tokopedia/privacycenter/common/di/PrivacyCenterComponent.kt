@@ -5,12 +5,14 @@ import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.privacycenter.accountlinking.LinkAccountWebviewFragment
 import com.tokopedia.privacycenter.consentwithdrawal.ui.ConsentWithdrawalFragment
 import com.tokopedia.privacycenter.main.PrivacyCenterFragment
+import com.tokopedia.privacycenter.main.section.recommendation.RecommendationSection
 import dagger.Component
 
 @ActivityScope
 @Component(modules = [
     PrivacyCenterModule::class,
     AccountLinkingModule::class,
+    RecommendationModule::class,
     PrivacyCenterViewModelModule::class
 ], dependencies = [BaseAppComponent::class])
 interface PrivacyCenterComponent {
