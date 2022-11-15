@@ -240,7 +240,8 @@ class AddProductViewModel @Inject constructor(
         val maxProductSelection = currentState.voucherCreationMetadata?.maxProduct.orZero()
         val selectedProducts = currentState.products.mapIndexed { index, product ->
             if (index < maxProductSelection && product.isEligible) {
-                product.copy(isSelected = true, enableCheckbox = true)
+                val eligibleVariantsOnly = product.originalVariants.filter { it.isEligible }.map { it.variantProductId }.toSet()
+                product.copy(isSelected = true, enableCheckbox = true, selectedVariantsIds = eligibleVariantsOnly)
             } else {
                 product.copy(isSelected = false, enableCheckbox = false)
             }
