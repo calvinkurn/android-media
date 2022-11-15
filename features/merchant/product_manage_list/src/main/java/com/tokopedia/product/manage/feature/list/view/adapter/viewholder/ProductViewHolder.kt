@@ -150,6 +150,8 @@ class ProductViewHolder(
             binding?.btnEditStock?.showWithCondition(product.isNotViolation() && product.isNotSuspendLevelTwoUntilFour())
             binding?.btnMoreOptions?.showWithCondition(product.isNotViolation() && product.isNotSuspendLevelTwoUntilFour())
         }
+
+        binding?.btnEditPrice?.isEnabled = product.hasEditPriceAccess()
     }
 
     private fun setupButtonStyle(product: ProductUiModel) {
