@@ -20,8 +20,8 @@
     <com.tokopedia.unifycomponents.Label
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/layout_lvl1"
-        android:layout_marginLeft="@dimen/layout_lvl1"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
         android:text="@string/seller_migration_label_seller_app_only"
         app:labelType="general_light_green"
         app:layout_constraintBottom_toBottomOf="@id/tv_no_variant_title"
@@ -31,9 +31,9 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvNoVariantDescription"
-        android:layout_width="@dimen/layout_lvl0"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/layout_lvl2"
+        android:layout_marginTop="16dp"
         android:textColor="@color/Unify_N700_68"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"

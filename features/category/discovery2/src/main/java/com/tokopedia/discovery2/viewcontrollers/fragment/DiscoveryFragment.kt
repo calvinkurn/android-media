@@ -681,6 +681,10 @@ class DiscoveryFragment :
                         it.data.addToCartDataModel.data.cartId
                     )
                 }else {
+                    analytics.trackEventProductATCTokonow(
+                        it.data.requestParams.requestingComponent,
+                        it.data.addToCartDataModel.data.cartId
+                    )
                     getMiniCart()
                     showToaster(
                         message = it.data.addToCartDataModel.errorMessage.joinToString(separator = ", "),
@@ -698,6 +702,10 @@ class DiscoveryFragment :
 
         discoveryViewModel.miniCartUpdate.observe(viewLifecycleOwner, {
             if(it is Success) {
+                analytics.trackEventProductATCTokonow(
+                    it.data.requestParams.requestingComponent,
+                    it.data.cartId
+                )
                 getMiniCart()
             }else if(it is Fail){
                 if(it.throwable is ResponseErrorException)
@@ -710,9 +718,13 @@ class DiscoveryFragment :
 
         discoveryViewModel.miniCartRemove.observe(viewLifecycleOwner, {
             if(it is Success) {
+                analytics.trackEventProductATCTokonow(
+                    it.data.requestParams.requestingComponent,
+                    it.data.cartId
+                )
                 getMiniCart()
                 showToaster(
-                    message = it.data.second,
+                    message = it.data.message,
                     type = Toaster.TYPE_NORMAL
                 )
             }else if(it is Fail){
