@@ -22,10 +22,12 @@ class EPharmacyChooserBottomSheet : BottomSheetUnify() {
     private var binding by autoClearedNullable<EpharmacyChooserBottomSheetBinding>()
     private var enableImageURL = ""
     private var checkoutId = ""
+    private var consultationWebLink = ""
     companion object {
         fun newInstance(
             enableImageURL: String,
-            checkoutId: String
+            checkoutId: String,
+            consultationWebLink : String
         ): EPharmacyChooserBottomSheet {
             return EPharmacyChooserBottomSheet().apply {
                 showCloseIcon = false
@@ -37,6 +39,7 @@ class EPharmacyChooserBottomSheet : BottomSheetUnify() {
                 arguments = Bundle().apply {
                     putString(ENABLER_IMAGE_URL, enableImageURL)
                     putString(EXTRA_CHECKOUT_ID_STRING, checkoutId)
+                    putString(EXTRA_CONSULTATION_WEB_LINK_STRING, consultationWebLink)
                 }
             }
         }
@@ -79,6 +82,7 @@ class EPharmacyChooserBottomSheet : BottomSheetUnify() {
     private fun extractArguments() {
         enableImageURL = arguments?.getString(ENABLER_IMAGE_URL) ?: ""
         checkoutId = arguments?.getString(EXTRA_CHECKOUT_ID_STRING) ?: ""
+        consultationWebLink = arguments?.getString(EXTRA_CONSULTATION_WEB_LINK_STRING) ?: ""
     }
 
     private fun setupBottomSheetUiData() {
@@ -88,12 +92,8 @@ class EPharmacyChooserBottomSheet : BottomSheetUnify() {
                 chooserUpload.paraSubtitle.text = res.getString(com.tokopedia.epharmacy.R.string.epharmacy_upload_resep_dokter_chooser_subtitle)
                 chooserMiniConsultation.headingTitle.text = res.getString(com.tokopedia.epharmacy.R.string.epharmacy_mini_consult_chooser_title)
                 chooserMiniConsultation.paraSubtitle.text = res.getString(com.tokopedia.epharmacy.R.string.eepharmacy_mini_consult_chooser_subtitle)
-                chooserUpload.stepIcon.let {
-                    it.loadImage(UPLOAD_CHOOSER_IMAGE_URL)
-                }
-                chooserMiniConsultation.stepIcon.let {
-                    it.loadImage(MINI_CONS_CHOOSER_IMAGE_URL)
-                }
+                chooserUpload.stepIcon.loadImage(UPLOAD_CHOOSER_IMAGE_URL)
+                chooserMiniConsultation.stepIcon.loadImage(MINI_CONS_CHOOSER_IMAGE_URL)
                 if (enableImageURL.isNotBlank()) {
                     bottomImageLogo.show()
                     bottomImageLogo.loadImage(enableImageURL)
@@ -120,26 +120,38 @@ class EPharmacyChooserBottomSheet : BottomSheetUnify() {
         RouteManager.getIntent(activity, EPHARMACY_APPLINK).apply {
             putExtra(EXTRA_CHECKOUT_ID_STRING, checkoutId)
         }.also {
-            startActivityForResult(it, EPHARMACY_REQUEST_CODE)
+            startActivityForResult(it, EPHARMACY_UPLOAD_REQUEST_CODE)
         }
     }
 
     private fun miniConsultationAction() {
-        RouteManager.getIntent(activity, EPHARMACY_ATTACH_PRESCRIPTION_APPLINK).apply {
-            putExtra(EXTRA_CHECKOUT_ID_STRING, checkoutId)
-        }.also {
-            startActivityForResult(it, EPHARMACY_MINI_CONSULTATION__CODE)
+        if(consultationWebLink.isNotBlank()){
+            activity?.let { safeContext ->
+                startActivityForResult(RouteManager.getIntent(context,
+                    "tokopedia://webview?url=https://accounts-staging.tokopedia.com/oauth/sandbox/in"),
+                    EPHARMACY_MINI_CONSULTATION_REQUEST_CODE)
+            }
         }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        when(requestCode){
-            EPHARMACY_REQUEST_CODE -> {
-
+        when (requestCode) {
+            EPHARMACY_UPLOAD_REQUEST_CODE -> {
+                Intent().apply {
+                    putStringArrayListExtra(EPHARMACY_PRESCRIPTION_IDS, arrayListOf<String?>().apply {
+                        add("1")
+                        add("2")
+                        add("3")
+                    })
+                    putExtra(EPHARMACY_GROUP_ID,checkoutId)
+                    activity?.setResult(EPHARMACY_UPLOAD_REQUEST_CODE,this)
+                    activity?.finish()
+                }
             }
-            EPHARMACY_MINI_CONSULTATION__CODE -> {
 
+            EPHARMACY_MINI_CONSULTATION_REQUEST_CODE -> {
+                activity?.setResult(EPHARMACY_MINI_CONSULTATION_REQUEST_CODE,null)
             }
         }
         closeBottomSheet()

@@ -31,6 +31,10 @@ class EPharmacyAdapterFactoryImpl(private val ePharmacyListener: EPharmacyListen
         return EPharmacyTickerViewHolder.LAYOUT
     }
 
+    override fun type(data: EPharmacyShimmerDataModel): Int {
+        return EPharmacyShimmerViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
         return when (type){
             EPharmacyStaticInfoViewHolder.LAYOUT -> EPharmacyStaticInfoViewHolder(view)
@@ -38,6 +42,7 @@ class EPharmacyAdapterFactoryImpl(private val ePharmacyListener: EPharmacyListen
             EPharmacyProductViewHolder.LAYOUT -> EPharmacyProductViewHolder(view)
             EPharmacyAttachmentViewHolder.LAYOUT -> EPharmacyAttachmentViewHolder(view,ePharmacyListener)
             EPharmacyTickerViewHolder.LAYOUT -> EPharmacyTickerViewHolder(view)
+            EPharmacyShimmerViewHolder.LAYOUT -> EPharmacyShimmerViewHolder(view)
             else -> super.createViewHolder(view,type)
         }
     }

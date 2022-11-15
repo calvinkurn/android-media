@@ -10,6 +10,7 @@ import com.tokopedia.epharmacy.component.model.EPharmacyAttachmentDataModel
 import com.tokopedia.epharmacy.component.model.EPharmacyDataModel
 import com.tokopedia.epharmacy.component.model.EPharmacyTickerDataModel
 import com.tokopedia.epharmacy.di.qualifier.CoroutineBackgroundDispatcher
+import com.tokopedia.epharmacy.network.response.PrescriptionStatusCount
 import com.tokopedia.epharmacy.utils.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -51,60 +52,35 @@ class EPharmacyPrescriptionAttachmentViewModel @Inject constructor(
     }
 
     private fun mapButtonData(ePharmacyPrepareProductsGroupResponse: EPharmacyPrepareProductsGroupResponse) {
-        var rejectedCount = 0
-        var activeCount = 0
-        var approvedCount = 0
+        val groupStatuses = arrayListOf<Int>()
         ePharmacyPrepareProductsGroupResponse.detailData?.groupsData?.epharmacyGroups?.forEach { group ->
-            if(group?.consultationData?.consultationStatus == EPharmacyConsultationStatus.REJECTED.status
-                || group?.consultationData?.consultationStatus == EPharmacyConsultationStatus.EXPIRED.status){
-                rejectedCount += 1
-            }
-            when (group?.consultationData?.consultationStatus ) {
-                EPharmacyConsultationStatus.REJECTED.status, EPharmacyConsultationStatus.EXPIRED.status -> {
-                    rejectedCount += 1
-                }
-                EPharmacyConsultationStatus.APPROVED.status -> {
-                    approvedCount += 1
-                }
-                EPharmacyConsultationStatus.ACTIVE.status -> {
-                    activeCount += 1
-                }
-            }
+            groupStatuses.add(group?.consultationData?.consultationStatus?:0)
         }
-        renderButtonOnResult(rejectedCount, approvedCount, activeCount)
+        val statusCount = EPharmacyMapper.getPrescriptionCount(groupStatuses)
+        renderButtonOnResult(statusCount,true)
     }
 
-    private fun renderButtonOnResult(rejectedCount: Int, approvedCount : Int , activeCount : Int ) {
-        if(approvedCount > 0 || activeCount > 0){
+    private fun renderButtonOnResult(statusCount : PrescriptionStatusCount, isApi: Boolean = false) {
+        if(statusCount.approved > 0 || statusCount.active > 0){
             _buttonLiveData.postValue(Pair("Lanjut ke Pengiriman","tokopedia://checkout/"))
-        }else if(rejectedCount > 0){
+        }else if(statusCount.rejected > 0){
             _buttonLiveData.postValue(Pair("Lanjut ke Pengiriman",""))
-            _uploadError.postValue(EPharmacyNoDigitalPrescriptionError(true))
+            if(!isApi)
+                _uploadError.postValue(EPharmacyNoDigitalPrescriptionError(true))
         }
     }
 
     fun validateButtonData(ePharmacyAttachmentUiUpdater : EPharmacyAttachmentUiUpdater){
-        var rejectedCount = 0
-        var activeCount = 0
-        var approvedCount = 0
+        val groupStatuses = arrayListOf<Int>()
         ePharmacyAttachmentUiUpdater.mapOfData.forEach {
             if(it.value is EPharmacyAttachmentDataModel){
                 (it.value as EPharmacyAttachmentDataModel).let { model ->
-                    when (model.consultationStatus) {
-                        EPharmacyConsultationStatus.REJECTED.status, EPharmacyConsultationStatus.EXPIRED.status -> {
-                            rejectedCount += 1
-                        }
-                        EPharmacyConsultationStatus.APPROVED.status -> {
-                            approvedCount += 1
-                        }
-                        EPharmacyConsultationStatus.ACTIVE.status -> {
-                            activeCount += 1
-                        }
-                    }
+                    groupStatuses.add(model.consultationStatus ?: 0)
                 }
             }
         }
-        renderButtonOnResult(rejectedCount,approvedCount,activeCount)
+        val statusCount = EPharmacyMapper.getPrescriptionCount(groupStatuses)
+        renderButtonOnResult(statusCount)
     }
 
     private fun mapGroupsDataIntoDataModel(data: EPharmacyPrepareProductsGroupResponse) : EPharmacyDataModel{
@@ -119,7 +95,7 @@ class EPharmacyPrescriptionAttachmentViewModel @Inject constructor(
             if(!group?.shopInfo.isNullOrEmpty()){
                 group?.shopInfo?.forEachIndexed { index, info ->
                     if(info?.products?.isEmpty() != true){
-                        listOfComponents.add(getGroupComponent(group,info,index,
+                        listOfComponents.add(getGroupComponent(group,info,index,EPharmacyMapper.isLastIndex(group.shopInfo,index),
                         EPharmacyMapper.isLastIndex(data.detailData?.groupsData?.epharmacyGroups,indexGroup)))
                     }
                 }
@@ -130,8 +106,8 @@ class EPharmacyPrescriptionAttachmentViewModel @Inject constructor(
 
     private fun getGroupComponent(group: EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup,
                                   info: EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo?,
-                                  index: Int, isLastGroup : Boolean): BaseEPharmacyDataModel {
-        return EPharmacyMapper.mapGroupsToAttachmentComponents(group,info,index,isLastGroup)
+                                  index: Int, isLastShopOfGroup : Boolean, isLastGroup : Boolean): BaseEPharmacyDataModel {
+        return EPharmacyMapper.mapGroupsToAttachmentComponents(group,info,index,isLastShopOfGroup,isLastGroup)
     }
 
     private fun onFailPrepareProductGroup(throwable: Throwable) {

@@ -6,9 +6,6 @@ import com.tokopedia.epharmacy.component.model.EPharmacyStaticInfoDataModel
 
 class EPharmacyAttachmentUiUpdater(var mapOfData: LinkedHashMap<String, BaseEPharmacyDataModel>) {
 
-    init {
-    }
-
     fun updateModel(model: BaseEPharmacyDataModel){
         updateData(model.name(),model)
     }

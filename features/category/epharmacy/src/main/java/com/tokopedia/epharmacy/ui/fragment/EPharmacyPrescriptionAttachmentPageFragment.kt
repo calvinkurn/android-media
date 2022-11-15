@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.common_epharmacy.network.response.EPharmacyItemButtonData
+import com.tokopedia.common_epharmacy.network.response.EPharmacyPrepareProductsGroupResponse
 import com.tokopedia.epharmacy.R
 import com.tokopedia.epharmacy.adapters.EPharmacyAdapter
 import com.tokopedia.epharmacy.adapters.EPharmacyListener
@@ -20,6 +21,7 @@ import com.tokopedia.epharmacy.adapters.factory.EPharmacyAttachmentDetailDiffUti
 import com.tokopedia.epharmacy.component.BaseEPharmacyDataModel
 import com.tokopedia.epharmacy.component.model.EPharmacyAttachmentDataModel
 import com.tokopedia.epharmacy.component.model.EPharmacyDataModel
+import com.tokopedia.epharmacy.component.model.EPharmacyShimmerDataModel
 import com.tokopedia.epharmacy.di.EPharmacyComponent
 import com.tokopedia.epharmacy.utils.*
 import com.tokopedia.epharmacy.viewmodel.EPharmacyPrescriptionAttachmentViewModel
@@ -36,8 +38,6 @@ import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.webview.BaseSimpleWebViewActivity
-import com.tokopedia.webview.KEY_URL
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
@@ -94,10 +94,6 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment() , EPhar
         setUpObservers()
         initViews(view)
         initData()
-    }
-
-    override fun onResume() {
-        super.onResume()
         getData()
     }
 
@@ -127,8 +123,16 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment() , EPhar
     }
 
     private fun getData() {
-        ePharmacyLoader?.show()
+        //ePharmacyLoader?.show()
+        addShimmer()
         ePharmacyPrescriptionAttachmentViewModel.getPrepareProductGroup()
+    }
+
+    private fun addShimmer(){
+        ePharmacyAttachmentUiUpdater.mapOfData.clear()
+        ePharmacyAttachmentUiUpdater.updateModel(EPharmacyShimmerDataModel("shimmer_1","shimmer component"))
+        ePharmacyAttachmentUiUpdater.updateModel(EPharmacyShimmerDataModel("shimmer_2","shimmer component"))
+        updateUi()
     }
 
     private fun setupRecyclerView() {
@@ -173,6 +177,7 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment() , EPhar
 
     private fun onFailGroupData(it: Fail) {
         ePharmacyLoader?.hide()
+        ePharmacyDoneButton?.hide()
         when (it.throwable) {
             is UnknownHostException, is SocketTimeoutException -> setGlobalErrors(GlobalError.NO_CONNECTION)
             is IllegalStateException -> setGlobalErrors(GlobalError.PAGE_FULL)
@@ -198,6 +203,7 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment() , EPhar
 
     private fun onSuccessGroupData(it: Success<EPharmacyDataModel>) {
         ePharmacyLoader?.hide()
+        ePharmacyAttachmentUiUpdater.mapOfData.clear()
         it.data.listOfComponents.forEach { component ->
             ePharmacyAttachmentUiUpdater.updateModel(component)
         }
@@ -257,15 +263,17 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment() , EPhar
                 startPhotoUpload(groupId)
             }
             PrescriptionSourceType.MULTI.type -> {
-                startAttachmentChooser(enablerImage,groupId)
+                startAttachmentChooser(enablerImage,groupId,miniConsultationWebLink)
             }
         }
     }
 
-    private fun startAttachmentChooser(enablerImage : String?, tokoConsultationId : String?) {
+    private fun startAttachmentChooser(enablerImage : String?, tokoConsultationId : String?,
+                                       miniConsultationLink : String?) {
         RouteManager.getIntent(activity,EPHARMACY_CHOOSER_APPLINK).apply {
             putExtra(ENABLER_IMAGE_URL,enablerImage)
             putExtra(EXTRA_CHECKOUT_ID_STRING,tokoConsultationId)
+            putExtra(EXTRA_CONSULTATION_WEB_LINK_STRING,miniConsultationLink)
         }.also {
             startActivityForResult(it,EPHARMACY_CHOOSER_REQUEST_CODE)
         }
@@ -282,7 +290,7 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment() , EPhar
     private fun startMiniConsultation(miniConsultationLink : String?) {
         miniConsultationLink?.let { webLink ->
             activity?.let { safeContext ->
-                RouteManager.route(context,"tokopedia://webview?url=https://accounts-staging.tokopedia.com/oauth/sandbox/in")
+                startActivityForResult(RouteManager.getIntent(context,"tokopedia://webview?url=https://accounts-staging.tokopedia.com/oauth/sandbox/in"), EPHARMACY_MINI_CONSULTATION_REQUEST_CODE)
             }
         }
     }
@@ -290,16 +298,48 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment() , EPhar
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         ePharmacyPrescriptionAttachmentViewModel.validateButtonData(ePharmacyAttachmentUiUpdater)
+
+        fun processUploadRequestData(){
+            data?.let { prescriptionResultIntent ->
+                val prescriptionIds = prescriptionResultIntent.extras?.getStringArrayList(EPHARMACY_PRESCRIPTION_IDS)
+                val groupId = prescriptionResultIntent.extras?.getString(EPHARMACY_GROUP_ID)
+                updateModelForUploadPrescription(prescriptionIds,groupId)
+            }
+        }
+
         when(requestCode){
             EPHARMACY_CHOOSER_REQUEST_CODE -> {
-                showToast("EPHARMACY_CHOOSER_REQUEST_CODE")
+                when (resultCode) {
+                    EPHARMACY_MINI_CONSULTATION_REQUEST_CODE -> {
+                        getData()
+                    }
+                    EPHARMACY_UPLOAD_REQUEST_CODE -> {
+                        processUploadRequestData()
+                    }
+                }
             }
             EPHARMACY_MINI_CONSULTATION_REQUEST_CODE -> {
-                showToast("EPHARMACY_MINI_CONSULTATION_REQUEST_CODE")
+                getData()
             }
             EPHARMACY_UPLOAD_REQUEST_CODE -> {
-                showToast("EPHARMACY_UPLOAD_REQUEST_CODE")
+                processUploadRequestData()
             }
+        }
+    }
+
+    private fun updateModelForUploadPrescription(prescriptionIds: ArrayList<String>?, groupId: String?) {
+        val modelUniqueId = EPharmacyMapper.getUniqueModelName(groupId,0,true)
+        (ePharmacyAttachmentUiUpdater.mapOfData[modelUniqueId] as? EPharmacyAttachmentDataModel)?.copy()?.let {  newModel ->
+            val prescriptionImages = arrayListOf<EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.PrescriptionImage?>()
+            prescriptionIds?.forEach {
+                prescriptionImages.add(EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.PrescriptionImage("",it,"",""))
+            }
+            newModel.prescriptionImages = prescriptionImages
+            ePharmacyAttachmentUiUpdater.updateModel(newModel)
+            ePharmacyPrescriptionAttachmentViewModel.validateButtonData(ePharmacyAttachmentUiUpdater)
+            val buttonData = EPharmacyMapper.prepareCtaData(newModel.prescriptionSource,newModel.tokoConsultationId,newModel.prescriptionImages)
+            newModel.epharmacyButton = buttonData
+            updateUi()
         }
     }
 

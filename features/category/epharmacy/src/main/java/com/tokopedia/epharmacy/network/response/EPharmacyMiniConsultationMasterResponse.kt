@@ -47,3 +47,12 @@ data class EPharmacyMiniConsultationMasterResponse(
         val serverProcessTime: String? = ""
     )
 }
+
+data class PrescriptionStatusCount(
+    @SerializedName("rejected")
+    var rejected: Int = 0,
+    @SerializedName("active")
+    var active: Int = 0,
+    @SerializedName("approved")
+    var approved: Int = 0
+)

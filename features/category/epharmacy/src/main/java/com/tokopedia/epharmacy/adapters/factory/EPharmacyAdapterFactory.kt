@@ -11,6 +11,7 @@ interface EPharmacyAdapterFactory {
     fun type(data : EPharmacyProductDataModel) : Int
     fun type(data : EPharmacyAttachmentDataModel) : Int
     fun type(data : EPharmacyTickerDataModel) : Int
+    fun type(data : EPharmacyShimmerDataModel) : Int
 
     fun createViewHolder(view: View, type: Int): AbstractViewHolder<*>
 }

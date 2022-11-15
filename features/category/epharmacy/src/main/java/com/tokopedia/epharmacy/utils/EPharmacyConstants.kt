@@ -5,6 +5,7 @@ const val EXTRA_CHECKOUT_ID_STRING = "extra_checkout_id_string"
 const val EXTRA_ENTRY_POINT_STRING = "extra_entry_point_string"
 const val EXTRA_SOURCE_STRING = "source"
 const val EXTRA_ORIGIN_STRING = "extra_origin_string"
+const val EXTRA_CONSULTATION_WEB_LINK_STRING = "extra_consultation_web_link_string"
 
 const val DEFAULT_ZERO_VALUE = 0L
 
@@ -15,6 +16,7 @@ const val EPHARMACY_UPLOAD_REQUEST_CODE = 10021
 const val EPHARMACY_CHOOSER_REQUEST_CODE = 10022
 const val EPHARMACY_MINI_CONSULTATION_REQUEST_CODE = 10023
 const val EPHARMACY_PRESCRIPTION_IDS = "epharmacy_prescription_ids"
+const val EPHARMACY_GROUP_ID = "epharmacy_group_id"
 
 const val STATIC_INFO_COMPONENT = "static info component"
 const val PRESCRIPTION_COMPONENT = "prescription component"

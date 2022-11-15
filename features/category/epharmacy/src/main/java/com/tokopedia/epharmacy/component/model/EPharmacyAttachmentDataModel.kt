@@ -15,7 +15,7 @@ data class EPharmacyAttachmentDataModel(val name : String = "", val type : Strin
                                         val prescription: List<EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ConsultationData.Prescription?>?,
                                         val partnerConsultationId: String?,
                                         val tokoConsultationId: String?,
-                                        val prescriptionImages: List<EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.PrescriptionImage?>?,
+                                        var prescriptionImages: List<EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.PrescriptionImage?>?,
                                         val prescriptionSource: List<String?>?,
                                         val consultationSource: EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ConsultationSource?,
                                         var productsIsExpanded : Boolean = false,
