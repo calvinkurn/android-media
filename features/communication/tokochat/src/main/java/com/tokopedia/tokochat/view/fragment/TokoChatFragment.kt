@@ -575,7 +575,7 @@ class TokoChatFragment : TokoChatBaseFragment<TokochatChatroomFragmentBinding>()
     }
 
     private fun updateCallIcon(orderState: String) {
-        val isCompletedOrder = getOrderState() in listOf(OrderStatusType.COMPLETED, OrderStatusType.CANCELLED)
+        val isCompletedOrder = orderState in listOf(OrderStatusType.COMPLETED, OrderStatusType.CANCELLED)
         val isSameOrderStatus = orderState == getOrderState()
 
         if (isCompletedOrder) {
