@@ -105,11 +105,9 @@
         android:layout_height="8dp"
         android:layout_marginTop="16dp"
         android:background="@color/Unify_NN50"
-        app:layout_constraintBottom_toBottomOf="@+id/tpgStock"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tpgSoldCount"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintTop_toBottomOf="@+id/tpgSoldCount" />
 
     <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
         android:id="@+id/checkbox"
@@ -146,23 +144,19 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerView"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="14dp"
+        android:layout_height="360dp"
         android:scrollbars="vertical"
-        app:layout_constraintBottom_toTopOf="@+id/cardUnify2"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/checkbox"
-        tools:itemCount="5"
-        tools:listitem="@layout/smvc_item_variant_product" />
+        app:layout_constraintTop_toBottomOf="@+id/dividerList" />
 
     <com.tokopedia.unifycomponents.CardUnify2
         android:id="@+id/cardUnify2"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/recyclerView">
 
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/btnSelect"

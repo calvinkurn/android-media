@@ -12,8 +12,11 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.campaign.utils.extension.applyPaddingToLastItem
 import com.tokopedia.campaign.utils.extension.attachDividerItemDecoration
 import com.tokopedia.kotlin.extensions.view.applyUnifyBackgroundColor
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.splitByThousand
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.mvc.R
 import com.tokopedia.mvc.databinding.SmvcBottomsheetSelectVariantBinding
 import com.tokopedia.mvc.di.component.DaggerMerchantVoucherCreationComponent
@@ -50,8 +53,6 @@ class SelectVariantBottomSheet : BottomSheetUnify() {
     lateinit var viewModelFactory: ViewModelFactory
 
     private val variantAdapter by lazy { VariantAdapter() }
-
-
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(SelectVariantViewModel::class.java) }
 
@@ -115,6 +116,16 @@ class SelectVariantBottomSheet : BottomSheetUnify() {
             layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
             applyPaddingToLastItem()
             attachDividerItemDecoration()
+            variantAdapter.setOnVariantClick { selectedItemPosition, isSelected ->
+                val selectedVariant = variantAdapter.snapshot()[selectedItemPosition]
+
+                if (isSelected) {
+                    viewModel.processEvent(SelectVariantEvent.AddProductToSelection(selectedVariant.variantProductId))
+                } else {
+                    viewModel.processEvent(SelectVariantEvent.RemoveProductFromSelection(selectedVariant.variantProductId))
+                }
+
+            }
             adapter = variantAdapter
         }
     }
@@ -158,29 +169,55 @@ class SelectVariantBottomSheet : BottomSheetUnify() {
     private fun handleUiState(uiState: SelectVariantUiState) {
         renderLoadingState(uiState.isLoading)
         renderSelectAllCheckbox(uiState)
-        renderList(uiState.parentProduct.modifiedVariants)
+        renderList(uiState)
         renderParentProduct(uiState.parentProduct)
+        renderButton(uiState.parentProduct.modifiedVariants)
+    }
+
+    private fun renderButton(modifiedVariants: List<Product.Variant>) {
+        val selectedProductsSize = modifiedVariants.count { it.isSelected }
+        binding?.btnSelect?.isEnabled = selectedProductsSize.isMoreThanZero()
+
+        val wording = if (selectedProductsSize.isZero()) {
+            getString(R.string.smvc_select)
+        } else {
+            getString(R.string.smvc_placeholder_selected_variant_count, selectedProductsSize)
+        }
+
+        binding?.btnSelect?.text = wording
     }
 
     private fun renderParentProduct(parentProduct: Product) {
         binding?.run {
             tpgProductName.text = parentProduct.name
-            tpgPrice.text = parentProduct.price.min.splitByThousand()
-            tpgStock.text = parentProduct.stock.splitByThousand()
-            tpgSoldCount.text = "lakdfla"
+            tpgPrice.text = if (parentProduct.price.min == parentProduct.price.max) {
+                context?.getString(
+                    R.string.smvc_placeholder_product_price,
+                    parentProduct.price.min.splitByThousand()
+                )
+            } else {
+                context?.getString(
+                    R.string.smvc_placeholder_product_price_range,
+                    parentProduct.price.min.splitByThousand(),
+                    parentProduct.price.max.splitByThousand()
+                )
+            }
+            tpgStock.text = context?.getString(R.string.smvc_placeholder_total_stock, parentProduct.stock.splitByThousand())
+            tpgSoldCount.text = context?.getString(R.string.smvc_placeholder_product_sold_count, parentProduct.txStats.sold.splitByThousand())
+            imgParentProduct.loadImage(parentProduct.picture)
         }
     }
 
-    private fun renderList(variants: List<Product.Variant> ) {
-        variantAdapter.submit(variants)
+    private fun renderList(uiState: SelectVariantUiState) {
+        variantAdapter.submit(uiState.parentProduct.modifiedVariants)
     }
 
     private fun renderSelectAllCheckbox(uiState: SelectVariantUiState) {
-
+        binding?.checkbox?.isChecked = uiState.isSelectAllActive
     }
 
     private fun renderLoadingState(isLoading: Boolean) {
-
+        binding?.loader?.isVisible = isLoading
     }
 
 }

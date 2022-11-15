@@ -8,7 +8,6 @@ import com.tokopedia.mvc.domain.entity.Product
 import com.tokopedia.mvc.domain.entity.ProductCategoryOption
 import com.tokopedia.mvc.domain.entity.ProductSortOptions
 import com.tokopedia.mvc.domain.entity.ShopShowcase
-import com.tokopedia.mvc.domain.entity.Variant
 import com.tokopedia.mvc.domain.entity.VoucherValidationResult
 import com.tokopedia.mvc.domain.entity.Warehouse
 import com.tokopedia.mvc.domain.entity.enums.BenefitType
@@ -19,7 +18,6 @@ import com.tokopedia.mvc.domain.usecase.GetInitiateVoucherPageUseCase
 import com.tokopedia.mvc.domain.usecase.GetShopWarehouseLocationUseCase
 import com.tokopedia.mvc.domain.usecase.ProductListMetaUseCase
 import com.tokopedia.mvc.domain.usecase.ProductListUseCase
-import com.tokopedia.mvc.domain.usecase.ProductV3UseCase
 import com.tokopedia.mvc.domain.usecase.ShopBasicDataUseCase
 import com.tokopedia.mvc.domain.usecase.ShopShowcasesByShopIDUseCase
 import com.tokopedia.mvc.domain.usecase.VoucherValidationPartialUseCase
@@ -45,7 +43,6 @@ class AddProductViewModel @Inject constructor(
     private val getProductsUseCase: ProductListUseCase,
     private val getInitiateVoucherPageUseCase: GetInitiateVoucherPageUseCase,
     private val voucherValidationPartialUseCase: VoucherValidationPartialUseCase,
-    private val productV3UseCase: ProductV3UseCase,
     private val shopBasicDataUseCase: ShopBasicDataUseCase
 ) : BaseViewModel(dispatchers.main) {
 
@@ -207,7 +204,8 @@ class AddProductViewModel @Inject constructor(
                     it.stock,
                     it.isEligible,
                     it.reason,
-                    isSelected = true
+                    isSelected = it.isEligible,
+                    product.picture
                 )
             }
 
@@ -449,8 +447,7 @@ class AddProductViewModel @Inject constructor(
     }
 
     private fun handleTapVariant(parentProduct: Product) {
-        getVariantDetail(parentProduct)
-        //_uiEffect.tryEmit(AddProductEffect.ShowVariantBottomSheet(parentProduct))
+        _uiEffect.tryEmit(AddProductEffect.ShowVariantBottomSheet(parentProduct))
     }
 
     private fun getShopShowcases() {
@@ -467,61 +464,7 @@ class AddProductViewModel @Inject constructor(
         )
     }
 
-    private fun getVariantDetail(selectedParentProduct : Product) {
-        launchCatchError(
-            dispatchers.io,
-            block = {
-                val params = ProductV3UseCase.Param(selectedParentProduct.id, 0 )
-                val response = productV3UseCase.execute(params)
 
-                val selections = response.selections
-                val updatedVariantNames = response.products.map { variant ->
-                    val variantName = variant.combinations.mapIndexed { index, combination ->
-                        selections[index].options[combination].value
-                    }
-
-                    val formattedVariantName = variantName.joinToString(separator = " | ") { it  }
-
-                    variant.copy(variantName = formattedVariantName)
-                }
-
-                val products = currentState.products.map { product ->
-                    if (product.id == selectedParentProduct.id) {
-
-                        //Update variants of the selected parent product
-                        val modified = findUpdatedVariantNames(product, updatedVariantNames)
-
-                        product.copy(modifiedVariants = modified)
-                    } else {
-                        product
-                    }
-                }
-
-                _uiState.update { it.copy(products = products) }
-                _uiEffect.tryEmit(AddProductEffect.ShowVariantBottomSheet(selectedParentProduct, products))
-            },
-            onError = { error ->
-                _uiState.update { it.copy(error = error) }
-            }
-        )
-    }
-
-    private fun findUpdatedVariantNames(originalProduct: Product, variantNames: List<Variant>): List<Product.Variant> {
-        //Update variants of the selected parent product
-        return originalProduct.modifiedVariants.map {
-            val variantNewName = findUpdatedVariantName(it.variantProductId, variantNames)
-            it.copy(productName = variantNewName)
-        }
-
-    }
-
-    private fun findUpdatedVariantName(
-        selectedVariantId: Long,
-        updatedVariants: List<Variant>
-    ): String {
-        val matchedVariant = updatedVariants.find { selectedVariantId == it.variantId }
-        return matchedVariant?.variantName.orEmpty()
-    }
 
     private fun handleConfirmAddProduct() {
         launchCatchError(

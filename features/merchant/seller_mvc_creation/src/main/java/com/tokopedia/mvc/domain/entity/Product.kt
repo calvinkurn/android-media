@@ -54,7 +54,8 @@ data class Product(
         val stock: Int,
         val isEligible: Boolean,
         val reason: String,
-        val isSelected: Boolean
+        val isSelected: Boolean,
+        val imageUrl: String
     ) : Parcelable
 
     override fun id() = id

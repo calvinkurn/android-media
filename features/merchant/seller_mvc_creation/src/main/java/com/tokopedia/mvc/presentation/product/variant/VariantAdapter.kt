@@ -20,11 +20,11 @@ import com.tokopedia.unifyprinciples.Typography
 
 class VariantAdapter : RecyclerView.Adapter<VariantAdapter.ViewHolder>() {
 
-    private var onVariantClick: (Int) -> Unit = {}
+    private var onVariantClick: (Int, Boolean) -> Unit = { _, _ -> }
 
     private val differCallback = object : DiffUtil.ItemCallback<Product.Variant>() {
         override fun areItemsTheSame(oldItem: Product.Variant, newItem: Product.Variant): Boolean {
-            return oldItem.isSelected == newItem.isSelected
+            return oldItem.variantProductId == newItem.variantProductId
         }
 
         override fun areContentsTheSame(oldItem: Product.Variant, newItem: Product.Variant): Boolean {
@@ -48,7 +48,7 @@ class VariantAdapter : RecyclerView.Adapter<VariantAdapter.ViewHolder>() {
         holder.bind(differ.currentList[position])
     }
 
-    fun setOnVariantClick(onVariantClick: (Int) -> Unit) {
+    fun setOnVariantClick(onVariantClick: (Int, Boolean) -> Unit) {
         this.onVariantClick = onVariantClick
     }
 
@@ -56,9 +56,6 @@ class VariantAdapter : RecyclerView.Adapter<VariantAdapter.ViewHolder>() {
         private val binding: SmvcItemVariantProductBinding
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        init {
-            binding.root.setOnClickListener { onVariantClick(bindingAdapterPosition) }
-        }
 
         fun bind(item: Product.Variant) {
             with(binding) {
@@ -84,15 +81,15 @@ class VariantAdapter : RecyclerView.Adapter<VariantAdapter.ViewHolder>() {
                 separator.isEnabled = item.isEligible
 
                 checkbox.isChecked = item.isSelected
-                checkbox.setOnCheckedChangeListener { _, isChecked ->
-                    onVariantClick(bindingAdapterPosition)
+                checkbox.setOnCheckedChangeListener { view, isChecked ->
+                    onVariantClick(bindingAdapterPosition, isChecked)
                 }
                 checkbox.isEnabled = item.isEligible
             }
         }
 
         private fun ImageView.loadRemoteImageUrl(item: Product.Variant) {
-            loadImage("")
+            loadImage(item.imageUrl)
 
             if (item.isEligible) {
                 resetGrayscale()
@@ -103,10 +100,10 @@ class VariantAdapter : RecyclerView.Adapter<VariantAdapter.ViewHolder>() {
 
         private fun Typography.setIneligibleReason(item: Product.Variant) {
             if (item.reason.isNotEmpty()) {
-                visible()
+
                 text = item.reason
             } else {
-                gone()
+
             }
         }
 

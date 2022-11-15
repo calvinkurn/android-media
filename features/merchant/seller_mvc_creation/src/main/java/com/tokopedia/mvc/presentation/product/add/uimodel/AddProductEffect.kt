@@ -33,10 +33,7 @@ sealed class AddProductEffect {
         val selectedWarehouse: Warehouse
     ) : AddProductEffect()
 
-    data class ShowVariantBottomSheet(
-        val selectedParentProduct: Product,
-        val parentProducts: List<Product>
-    ) : AddProductEffect()
+    data class ShowVariantBottomSheet(val selectedParentProduct: Product) : AddProductEffect()
 
     data class ConfirmAddProduct(
         val selectedParentProducts: List<Product>,

@@ -243,7 +243,7 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
                 showWarehouseBottomSheet(effect.selectedWarehouse, effect.warehouses)
             }
             is AddProductEffect.ShowVariantBottomSheet -> {
-                displayVariantBottomSheet(effect.selectedParentProduct, effect.parentProducts)
+                displayVariantBottomSheet(effect.selectedParentProduct)
             }
             is AddProductEffect.ConfirmAddProduct -> {
                 displayShareBottomSheet(
@@ -709,9 +709,8 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
         )
     }
 
-    private fun displayVariantBottomSheet(selectedParentProduct: Product, products: List<Product>) {
-        val updatedProduct = products.find { it.id == selectedParentProduct.id } ?: return
-        val bottomSheet = SelectVariantBottomSheet.newInstance(updatedProduct)
+    private fun displayVariantBottomSheet(selectedParentProduct: Product) {
+        val bottomSheet = SelectVariantBottomSheet.newInstance(selectedParentProduct)
         bottomSheet.setOnSelectButtonClick {  }
         bottomSheet.show(childFragmentManager, bottomSheet.tag)
     }

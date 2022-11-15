@@ -3,6 +3,8 @@ package com.tokopedia.mvc.presentation.product.variant
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.mvc.domain.entity.Product
+import com.tokopedia.mvc.domain.entity.Variant
+import com.tokopedia.mvc.domain.entity.VariantResult
 import com.tokopedia.mvc.domain.usecase.ProductV3UseCase
 import com.tokopedia.mvc.presentation.product.variant.uimodel.SelectVariantEffect
 import com.tokopedia.mvc.presentation.product.variant.uimodel.SelectVariantEvent
@@ -46,60 +48,57 @@ class SelectVariantViewModel @Inject constructor(
         }
     }
 
-   
+
 
     private fun getVariantDetail(selectedParentProduct : Product) {
         launchCatchError(
             dispatchers.io,
             block = {
-                val params = ProductV3UseCase.Param(selectedParentProduct.id, 0)
+                val params = ProductV3UseCase.Param(selectedParentProduct.id, 0 )
                 val response = productV3UseCase.execute(params)
 
-                val selections = response.selections
-                val updatedVariantNames = response.products.map { variant ->
-                    val variantName = variant.combinations.mapIndexed { index, combination ->
-                        selections[index].options[combination].value
-                    }
+                //Update variants of the selected parent product
+                val modifiedVariants = findUpdatedVariantNames(selectedParentProduct, response)
+                val modifiedParentProduct = selectedParentProduct.copy(modifiedVariants = modifiedVariants)
 
-                    val formattedVariantName = variantName.joinToString(separator = " | ") { it  }
-
-                    variant.copy(variantName = formattedVariantName)
-                }
-
-                /*val map = currentState.parentProduct.modifiedVariants.map { originalVariant ->
-                  updatedVariantNames.map { variant ->
-                      if (originalVariant.variantProductId == variant.variantId) {
-                          originalVariant.copy(productName = variant.variantName)
-                      } else {
-                          originalVariant
-                      }
-                  }
-              }
-              val modifiedParentProduct = currentState.parentProduct.copy(modifiedVariants = map)
-              _uiState.update { it.copy(isLoading = false, parentProduct = modifiedParentProduct) }
-            val products = currentState.products.map {
-                if (it.id == selectedParentProduct.id) {
-
-                    val modified = it.modifiedVariants.map {
-
-                    }
-                    it.copy(modifiedVariants = modified)
-                } else {
-                    it
-                }
-            }*/
-
-
-                println(updatedVariantNames)
+                _uiState.update { it.copy(isLoading = false, parentProduct = modifiedParentProduct) }
             },
             onError = { error ->
-                _uiState.update { it.copy(error = error) }
+                _uiState.update { it.copy(isLoading = false, error = error) }
             }
         )
     }
 
+    private fun findUpdatedVariantNames(originalProduct: Product, remoteVariants: VariantResult): List<Product.Variant> {
+        val selections = remoteVariants.selections
+        val updatedVariantNames = remoteVariants.products.map { variant ->
+            val variantName = variant.combinations.mapIndexed { index, combination ->
+                selections[index].options[combination].value
+            }
+            val formattedVariantName = variantName.joinToString(separator = " | ") { it }
+            variant.copy(variantName = formattedVariantName)
+        }
+
+
+        //Update variants of the selected parent product
+        return originalProduct.modifiedVariants.map {
+            val variantNewName = findUpdatedVariantName(it.variantProductId, updatedVariantNames)
+            it.copy(productName = variantNewName)
+        }
+
+    }
+
+    private fun findUpdatedVariantName(
+        selectedVariantId: Long,
+        updatedVariants: List<Variant>
+    ): String {
+        val matchedVariant = updatedVariants.find { selectedVariantId == it.variantId }
+        return matchedVariant?.variantName.orEmpty()
+    }
+
     private fun handleCheckAllProduct() = launch(dispatchers.computation) {
-        val modifiedVariants = currentState.parentProduct.modifiedVariants.map { it.copy(isSelected = true) }
+        val modifiedVariants = currentState.parentProduct.modifiedVariants
+            .map { it.copy(isSelected = it.isEligible) }
         val modifiedParentProduct = currentState.parentProduct.copy(modifiedVariants = modifiedVariants)
 
         _uiState.update {
