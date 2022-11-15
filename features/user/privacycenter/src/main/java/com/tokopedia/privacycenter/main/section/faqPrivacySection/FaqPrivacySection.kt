@@ -11,8 +11,8 @@ import com.tokopedia.url.TokopediaUrl
 
 class FaqPrivacySection(context: Context?) : BasePrivacyCenterSection(context) {
     override val sectionViewBinding: ViewBinding? = null
-    override val sectionTextTitle: String = context?.getString(R.string.faq_title).orEmpty()
-    override val sectionTextDescription: String = context?.getString(R.string.faq_subtitle).orEmpty()
+    override val sectionTextTitle: String = context?.getString(R.string.privacy_center_faq_title).orEmpty()
+    override val sectionTextDescription: String = context?.getString(R.string.privacy_center_faq_subtitle).orEmpty()
     override val isShowDirectionButton: Boolean = true
 
     private val baseContext = context

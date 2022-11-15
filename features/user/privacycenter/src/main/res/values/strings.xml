@@ -12,8 +12,8 @@
     <string name="consent_withdrawal_section_description">Atur fitur apa aja yang boleh akses datamu</string>
 
     <!--Section | FAQ Privacy Section-->
-    <string name="faq_title">Punya pertanyaan seputar privasi?</string>
-    <string name="faq_subtitle">Temukan semua jawabannya disini</string>
+    <string name="privacy_center_faq_title">Punya pertanyaan seputar privasi?</string>
+    <string name="privacy_center_faq_subtitle">Temukan semua jawabannya disini</string>
 
     <!--  CONSENT WITHDRAWAL  -->
     <string name="consent_withdrawal_primary_data_usage">Penggunaan data utama</string>
