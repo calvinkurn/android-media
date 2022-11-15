@@ -118,7 +118,7 @@ class VariantArAdapter(private val listener: ProductArListener,
             } else {
                 txtVariantName.setTextColor(
                         ContextCompat.getColor(itemView.context,
-                                com.tokopedia.unifyprinciples.R.color.Unify_NN400)
+                                com.tokopedia.unifyprinciples.R.color.Unify_NN600)
                 )
             }
         }
