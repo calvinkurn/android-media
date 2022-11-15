@@ -3,6 +3,10 @@ package com.tokopedia.people.views.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.library.baseadapter.AdapterCallback
 import com.tokopedia.library.baseadapter.BaseAdapter
 import com.tokopedia.people.databinding.UpItemUserFeedBinding
@@ -20,11 +24,23 @@ class UserFeedPostsBaseAdapter(
     inner class ViewHolder(private val view: UpItemUserFeedBinding) : BaseVH(view.root) {
 
         override fun bindView(item: Post?, position: Int) {
-            if (item == null) return
+            if (item == null || item.media.isEmpty()) return
+            val firstItem = item.media.first()
 
             view.imageContent.apply {
                 cornerRadius = 0
                 setImageUrl(item.media.first().coverURL)
+            }
+            when (firstItem.type) {
+                MEDIA_TYPE_VIDEO -> {
+                    view.iconType.visible()
+                    view.iconType.setImage(IconUnify.PLAY)
+                }
+                MEDIA_TYPE_IMAGE -> {
+                    view.iconType.showWithCondition(item.media.size > 1)
+                    view.iconType.setImage(IconUnify.SELECT_MULTIPLE)
+                }
+                else -> view.iconType.gone()
             }
         }
     }
@@ -64,5 +80,10 @@ class UserFeedPostsBaseAdapter(
 
     interface FeedPostsCallback {
         fun onFeedPostsClick(appLink: String)
+    }
+
+    companion object {
+        private const val MEDIA_TYPE_IMAGE = "image"
+        private const val MEDIA_TYPE_VIDEO = "video"
     }
 }
