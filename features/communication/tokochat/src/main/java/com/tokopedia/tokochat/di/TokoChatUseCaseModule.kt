@@ -1,20 +1,17 @@
 package com.tokopedia.tokochat.di
 
 import android.content.Context
-import com.gojek.courier.CourierConnection
-import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokochat.tokochat_config_common.di.qualifier.TokoChatQualifier
-import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
-import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokochat.tokochat_config_common.repository.TokoChatRepository
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.tokochat.data.repository.TokoChatImageRepository
 import com.tokopedia.tokochat.domain.usecase.TokoChatChannelUseCase
 import com.tokopedia.tokochat.domain.usecase.TokoChatGetChatHistoryUseCase
 import com.tokopedia.tokochat.domain.usecase.TokoChatGetImageUseCase
 import com.tokopedia.tokochat.domain.usecase.TokoChatMarkAsReadUseCase
-import com.tokopedia.tokochat.domain.usecase.TokoChatMutationProfileUseCase
 import com.tokopedia.tokochat.domain.usecase.TokoChatRegistrationChannelUseCase
 import com.tokopedia.tokochat.domain.usecase.TokoChatSendMessageUseCase
 import com.tokopedia.tokochat_common.util.TokoChatCacheManager
@@ -77,15 +74,6 @@ object TokoChatUseCaseModule {
     internal fun provideTopchatCacheManager(@ApplicationContext context: Context): TokoChatCacheManager {
         val topchatCachePref = context.getSharedPreferences(TokoChatValueUtil.TOKOCHAT_CACHE, Context.MODE_PRIVATE)
         return TokoChatCacheManagerImpl(topchatCachePref)
-    }
-
-    @ActivityScope
-    @Provides
-    fun provideMutationProfileUseCase(
-        @TokoChatQualifier courierConnection: CourierConnection,
-        repository: TokoChatRepository
-    ): TokoChatMutationProfileUseCase {
-        return TokoChatMutationProfileUseCase(courierConnection, repository)
     }
 
     @ActivityScope

@@ -13,22 +13,21 @@ import com.gojek.conversations.groupbooking.ConversationsGroupBookingListener
 import com.gojek.conversations.groupbooking.GroupBookingChannelDetails
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.tokochat.domain.usecase.TokoChatChannelUseCase
-import com.tokopedia.tokochat.domain.usecase.TokoChatGetChatHistoryUseCase
-import com.tokopedia.tokochat.domain.usecase.TokoChatGetTypingUseCase
-import com.tokopedia.tokochat.domain.usecase.TokoChatMarkAsReadUseCase
-import com.tokopedia.tokochat.domain.usecase.TokoChatRegistrationChannelUseCase
-import com.tokopedia.tokochat.domain.usecase.TokoChatSendMessageUseCase
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.tokochat.domain.response.orderprogress.TokoChatOrderProgressResponse
 import com.tokopedia.tokochat.domain.response.orderprogress.param.TokoChatOrderProgressParam
 import com.tokopedia.tokochat.domain.response.ticker.TokochatRoomTickerResponse
-import com.tokopedia.tokochat.domain.usecase.GetTokoChatRoomTickerUseCase
 import com.tokopedia.tokochat.domain.usecase.GetTokoChatBackgroundUseCase
+import com.tokopedia.tokochat.domain.usecase.GetTokoChatRoomTickerUseCase
+import com.tokopedia.tokochat.domain.usecase.TokoChatChannelUseCase
+import com.tokopedia.tokochat.domain.usecase.TokoChatGetChatHistoryUseCase
 import com.tokopedia.tokochat.domain.usecase.TokoChatGetImageUseCase
-import com.tokopedia.tokochat.domain.usecase.TokoChatMutationProfileUseCase
+import com.tokopedia.tokochat.domain.usecase.TokoChatGetTypingUseCase
+import com.tokopedia.tokochat.domain.usecase.TokoChatMarkAsReadUseCase
 import com.tokopedia.tokochat.domain.usecase.TokoChatOrderProgressUseCase
+import com.tokopedia.tokochat.domain.usecase.TokoChatRegistrationChannelUseCase
+import com.tokopedia.tokochat.domain.usecase.TokoChatSendMessageUseCase
 import com.tokopedia.tokochat.util.TokoChatViewUtil.downloadAndSaveByteArrayImage
 import com.tokopedia.tokochat.util.TokoChatViewUtil.getTokoChatPhotoPath
 import com.tokopedia.tokochat_common.util.TokoChatValueUtil
@@ -64,11 +63,10 @@ class TokoChatViewModel @Inject constructor(
     private val getTypingUseCase: TokoChatGetTypingUseCase,
     private val getTokoChatBackgroundUseCase: GetTokoChatBackgroundUseCase,
     private val getTokoChatRoomTickerUseCase: GetTokoChatRoomTickerUseCase,
-    private val profileUseCase: TokoChatMutationProfileUseCase,
     private val getTokoChatOrderProgressUseCase: TokoChatOrderProgressUseCase,
     private val getImageUrlUseCase: TokoChatGetImageUseCase,
     private val dispatcher: CoroutineDispatchers
-): BaseViewModel(dispatcher.main) {
+) : BaseViewModel(dispatcher.main) {
 
     private val _channelDetail = MutableLiveData<Result<GroupBookingChannelDetails>>()
     val channelDetail: LiveData<Result<GroupBookingChannelDetails>>
@@ -159,8 +157,8 @@ class TokoChatViewModel @Inject constructor(
             chatChannelUseCase.getRemoteGroupBookingChannel(channelId, onSuccess = {
                 _channelDetail.postValue(Success(it))
             }, onError = {
-                _channelDetail.postValue(Fail(it))
-            })
+                    _channelDetail.postValue(Fail(it))
+                })
         } catch (throwable: Throwable) {
             _error.value = throwable
         }
@@ -240,8 +238,8 @@ class TokoChatViewModel @Inject constructor(
                 _isChatConnected.postValue(chatChannelUseCase.isChatConnected())
             }
         }, onError = {
-            _isChatConnected.postValue(false)
-        })
+                _isChatConnected.postValue(false)
+            })
     }
 
     fun getTokoChatBackground() {
@@ -250,8 +248,8 @@ class TokoChatViewModel @Inject constructor(
                 _chatBackground.value = Success(it)
             }
         }, onError = {
-            _chatBackground.value = Fail(it)
-        })
+                _chatBackground.value = Fail(it)
+            })
     }
 
     fun loadChatRoomTicker() {
@@ -259,20 +257,12 @@ class TokoChatViewModel @Inject constructor(
             val result = getTokoChatRoomTickerUseCase(TokoChatValueUtil.TOKOFOOD)
             _chatRoomTicker.value = Success(result)
         }, onError = {
-            _chatRoomTicker.value = Fail(it)
-        })
-    }
-
-    fun initializeProfile() {
-        try {
-            profileUseCase.initializeConversationProfile()
-        } catch (throwable: Throwable) {
-            _error.value = throwable
-        }
+                _chatRoomTicker.value = Fail(it)
+            })
     }
 
     fun getUserId(): String {
-        return profileUseCase.getUserId()
+        return registrationChannelUseCase.getUserId()
     }
 
     fun getMemberLeft(): MutableLiveData<String> {
@@ -294,8 +284,8 @@ class TokoChatViewModel @Inject constructor(
             }
             _orderTransactionStatus.value = Success(result)
         }, onError = {
-            _orderTransactionStatus.value = Fail(it)
-        })
+                _orderTransactionStatus.value = Fail(it)
+            })
     }
 
     fun updateOrderStatusParam(orderStatusParam: Pair<String, String>) {
@@ -304,7 +294,7 @@ class TokoChatViewModel @Inject constructor(
 
     private fun fetchOrderStatusUseCase(
         orderId: String,
-        serviceType: String,
+        serviceType: String
     ): Flow<Result<TokoChatOrderProgressResponse>> {
         return flow {
             val result = getTokoChatOrderProgressUseCase(TokoChatOrderProgressParam(orderId, serviceType))
@@ -354,13 +344,13 @@ class TokoChatViewModel @Inject constructor(
                 onImageReady(cachedImage)
             }
         }, onError = {
-            _error.postValue(it)
-            onError()
-        })
+                _error.postValue(it)
+                onError()
+            })
     }
 
     private fun generateImageName(imageId: String, channelId: String): String {
-        return "${imageId}_${channelId}"
+        return "${imageId}_$channelId"
     }
 
     companion object {

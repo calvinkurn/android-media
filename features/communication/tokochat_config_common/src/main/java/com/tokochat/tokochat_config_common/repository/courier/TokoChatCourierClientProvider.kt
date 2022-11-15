@@ -5,6 +5,7 @@ import com.gojek.chuckmqtt.external.MqttChuckConfig
 import com.gojek.chuckmqtt.external.MqttChuckInterceptor
 import com.gojek.courier.CourierConnection
 import com.gojek.courier.analytic.tracker.EventTracker
+import com.gojek.courier.common.AppType
 import com.gojek.courier.config.CourierRemoteConfig
 import com.gojek.courier.di.CourierComponent
 import com.gojek.courier.di.UsernameProvider
@@ -25,23 +26,23 @@ class TokoChatCourierClientProvider @Inject constructor(
     private val courierRemoteConfig: CourierRemoteConfig
 ) {
 
-    // TODO: Change the value after BE ready
     fun getCourierConnection(): CourierConnection {
         val params = CourierComponent.Params(
             context = context,
             gson = gson,
             applicationId = context.packageName,
             retrofit = retrofit,
-            authenticationApiUrl = "v1/token",
+            authenticationApiUrl = AUTHENTICATION_END_POINT,
             usernameProvider = getUsernameProvider(),
             eventTracker = getEventTracker(),
             mqttInterceptors = getMqttInterceptors(),
             debuggingEnabled = BuildConfig.DEBUG,
             courierRemoteConfig = courierRemoteConfig,
-            connectionLifecycle = TokoChatCourierConnectionLifecycle
+            connectionLifecycle = TokoChatCourierConnectionLifecycle,
+            appType = AppType.Tokopedia
         )
 
-       return CourierComponent.getOrCreate(params).courierConnection()
+        return CourierComponent.getOrCreate(params).courierConnection()
     }
 
     private fun getUsernameProvider(): UsernameProvider {
@@ -63,8 +64,12 @@ class TokoChatCourierClientProvider @Inject constructor(
             listOf(
                 MqttChuckInterceptor(context, MqttChuckConfig())
             )
-        } else{
+        } else {
             listOf()
         }
+    }
+
+    companion object {
+        private const val AUTHENTICATION_END_POINT = "v1/token"
     }
 }

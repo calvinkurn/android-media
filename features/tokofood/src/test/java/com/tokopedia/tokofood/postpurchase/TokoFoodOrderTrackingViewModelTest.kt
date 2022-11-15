@@ -7,7 +7,7 @@ import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.tokofood.feature.ordertracking.domain.model.TokoFoodOrderDetailResponse
 import com.tokopedia.tokofood.feature.ordertracking.domain.model.TokoFoodOrderStatusResponse
-import com.tokopedia.tokofood.feature.ordertracking.domain.usecase.TokoChatConfigMutationProfileUseCase
+import com.tokopedia.tokofood.feature.ordertracking.domain.usecase.TokoChatConfigGroupBookingUseCase
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.DriverPhoneNumberUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.viewmodel.TokoFoodOrderTrackingViewModel
 import com.tokopedia.tokofood.utils.JsonResourcesUtil
@@ -454,45 +454,8 @@ class TokoFoodOrderTrackingViewModelTest : TokoFoodOrderTrackingViewModelTestFix
     }
 
     @Test
-    fun `when initializeConversationProfile, this method should be called`() {
-
-        //when
-        viewModel.initializeConversationProfile()
-
-        //then
-        verify {
-            getTokoChatConfigMutationProfileUseCase.initializeConversationProfile()
-        }
-    }
-
-    @Test
-    fun `when initializeConversationProfile, this method should not be called`() {
-
-        val errorException = Throwable()
-
-        every {
-            getTokoChatConfigMutationProfileUseCase.initializeConversationProfile()
-        } throws errorException
-
-        //when
-        viewModel.initializeConversationProfile()
-
-        //then
-        verify {
-            getTokoChatConfigMutationProfileUseCase.initializeConversationProfile()
-        }
-
-        val actualResult =
-            (viewModel.mutationProfile.observeAwaitValue() as Fail).throwable::class.java
-
-        val expectedResult = errorException::class.java
-        assertEquals(expectedResult, actualResult)
-    }
-
-    @Test
     fun `when initGroupBooking, this method should be called`() {
-
-        //given
+        // given
         val groupBookingListener = object : ConversationsGroupBookingListener {
             override fun onGroupBookingChannelCreationError(error: ConversationsNetworkError) {}
 
@@ -502,21 +465,21 @@ class TokoFoodOrderTrackingViewModelTest : TokoFoodOrderTrackingViewModelTestFix
         }
 
         every {
-            getTokoChatConfigMutationProfileUseCase.initGroupBooking(
+            getTokoChatConfigGroupBookingUseCase.initGroupBooking(
                 orderId = ORDER_ID_DUMMY,
-                serviceType = TokoChatConfigMutationProfileUseCase.TOKOFOOD_SERVICE_TYPE,
+                serviceType = TokoChatConfigGroupBookingUseCase.TOKOFOOD_SERVICE_TYPE,
                 conversationsGroupBookingListener = groupBookingListener
             )
         } just Runs
 
-        //when
+        // when
         viewModel.initGroupBooking(ORDER_ID_DUMMY, groupBookingListener)
 
-        //then
+        // then
         verify {
-            getTokoChatConfigMutationProfileUseCase.initGroupBooking(
+            getTokoChatConfigGroupBookingUseCase.initGroupBooking(
                 orderId = ORDER_ID_DUMMY,
-                serviceType = TokoChatConfigMutationProfileUseCase.TOKOFOOD_SERVICE_TYPE,
+                serviceType = TokoChatConfigGroupBookingUseCase.TOKOFOOD_SERVICE_TYPE,
                 conversationsGroupBookingListener = groupBookingListener
             )
         }
@@ -524,8 +487,7 @@ class TokoFoodOrderTrackingViewModelTest : TokoFoodOrderTrackingViewModelTestFix
 
     @Test
     fun `when initGroupBooking, this method should set livedata error`() {
-
-        //given
+        // given
         val errorException = Throwable()
 
         val groupBookingListener = object : ConversationsGroupBookingListener {
@@ -537,21 +499,21 @@ class TokoFoodOrderTrackingViewModelTest : TokoFoodOrderTrackingViewModelTestFix
         }
 
         every {
-            getTokoChatConfigMutationProfileUseCase.initGroupBooking(
+            getTokoChatConfigGroupBookingUseCase.initGroupBooking(
                 orderId = ORDER_ID_DUMMY,
-                serviceType = TokoChatConfigMutationProfileUseCase.TOKOFOOD_SERVICE_TYPE,
+                serviceType = TokoChatConfigGroupBookingUseCase.TOKOFOOD_SERVICE_TYPE,
                 conversationsGroupBookingListener = groupBookingListener
             )
         } throws errorException
 
-        //when
+        // when
         viewModel.initGroupBooking(ORDER_ID_DUMMY, conversationsGroupBookingListener = groupBookingListener)
 
-        //then
+        // then
         verify {
-            getTokoChatConfigMutationProfileUseCase.initGroupBooking(
+            getTokoChatConfigGroupBookingUseCase.initGroupBooking(
                 orderId = ORDER_ID_DUMMY,
-                serviceType = TokoChatConfigMutationProfileUseCase.TOKOFOOD_SERVICE_TYPE,
+                serviceType = TokoChatConfigGroupBookingUseCase.TOKOFOOD_SERVICE_TYPE,
                 conversationsGroupBookingListener = groupBookingListener
             )
         }
@@ -561,26 +523,5 @@ class TokoFoodOrderTrackingViewModelTest : TokoFoodOrderTrackingViewModelTestFix
 
         val expectedResult = errorException::class.java
         assertEquals(expectedResult, actualResult)
-    }
-
-    @Test
-    fun `when getProfileUserId, this method should return string value`() {
-
-        val userId = "12345"
-
-        //given
-        every {
-            getTokoChatConfigMutationProfileUseCase.getUserId()
-        } returns userId
-
-        //when
-        val actualResult = viewModel.getProfileUserId()
-
-        //then
-        verify {
-            getTokoChatConfigMutationProfileUseCase.getUserId()
-        }
-
-        assertEquals(userId, actualResult)
     }
 }

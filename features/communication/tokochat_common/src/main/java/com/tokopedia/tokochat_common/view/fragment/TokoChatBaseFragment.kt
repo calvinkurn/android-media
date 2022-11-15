@@ -55,13 +55,11 @@ abstract class TokoChatBaseFragment<viewBinding : ViewBinding> : BaseDaggerFragm
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        additionalSetup()
         initViews(view, savedInstanceState)
         initObservers()
     }
 
     abstract fun getViewBindingInflate(container: ViewGroup?): viewBinding
-    abstract fun additionalSetup()
     abstract fun initObservers()
     abstract fun onLoadMore()
 
@@ -73,7 +71,9 @@ abstract class TokoChatBaseFragment<viewBinding : ViewBinding> : BaseDaggerFragm
 
     private fun setupChatRoomRecyclerView() {
         baseBinding?.tokochatChatroomRv?.layoutManager = LinearLayoutManager(
-            context, LinearLayoutManager.VERTICAL, false
+            context,
+            LinearLayoutManager.VERTICAL,
+            false
         )
         baseBinding?.tokochatChatroomRv?.setHasFixedSize(true)
         baseBinding?.tokochatChatroomRv?.itemAnimator = null
@@ -88,9 +88,9 @@ abstract class TokoChatBaseFragment<viewBinding : ViewBinding> : BaseDaggerFragm
             baseBinding?.tokochatChatroomRv?.layoutManager?.apply {
                 endlessRecyclerViewScrollListener = object : TokoChatEndlessScrollListener(this) {
                     override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                       if (!isRecyclerViewLoadingMore()) {
-                           onLoadMore()
-                       }
+                        if (!isRecyclerViewLoadingMore()) {
+                            onLoadMore()
+                        }
                     }
                 }
             }
@@ -175,6 +175,8 @@ abstract class TokoChatBaseFragment<viewBinding : ViewBinding> : BaseDaggerFragm
     protected fun isConnectedToNetwork(): Boolean {
         return if (context != null) {
             TokoChatNetworkUtil.isNetworkAvailable(requireContext())
-        } else false
+        } else {
+            false
+        }
     }
 }

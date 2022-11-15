@@ -15,7 +15,7 @@ class TokoChatRegistrationChannelUseCase @Inject constructor(
         repository.getConversationRepository().softDeregisterChannel(channelUrl)
     }
 
-    fun isChatConnected(): Boolean {
-        return repository.getConversationRepository().isChatConnected()
+    fun getUserId(): String {
+        return repository.getConversationRepository().getUserId() ?: ""
     }
 }

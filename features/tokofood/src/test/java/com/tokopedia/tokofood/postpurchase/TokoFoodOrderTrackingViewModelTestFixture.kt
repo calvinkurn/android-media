@@ -42,7 +42,7 @@ abstract class TokoFoodOrderTrackingViewModelTestFixture {
     protected lateinit var getTokoChatUnreadChatCountUseCase: Lazy<GetUnreadChatCountUseCase>
 
     @RelaxedMockK
-    protected lateinit var getTokoChatConfigMutationProfileUseCase: TokoChatConfigMutationProfileUseCase
+    protected lateinit var getTokoChatConfigGroupBookingUseCase: TokoChatConfigGroupBookingUseCase
 
     @RelaxedMockK
     protected lateinit var userSession: UserSessionInterface
@@ -58,7 +58,7 @@ abstract class TokoFoodOrderTrackingViewModelTestFixture {
         MockKAnnotations.init(this)
         tokoFoodOrderDetailMapper = TokoFoodOrderDetailMapper(mockk(relaxed = true), mockk(relaxed = true))
         tokoFoodOrderStatusMapper = TokoFoodOrderStatusMapper()
-        getTokoChatConfigMutationProfileUseCase = TokoChatConfigMutationProfileUseCase(mockk(relaxed = true), mockk(relaxed = true))
+        getTokoChatConfigGroupBookingUseCase = TokoChatConfigGroupBookingUseCase(mockk(relaxed = true))
         viewModel = TokoFoodOrderTrackingViewModel(
             userSession,
             savedStateHandle,
@@ -67,7 +67,7 @@ abstract class TokoFoodOrderTrackingViewModelTestFixture {
             getTokoFoodOrderStatusUseCase,
             getDriverPhoneNumberUseCase,
             getTokoChatUnreadChatCountUseCase
-        ) { getTokoChatConfigMutationProfileUseCase }
+        ) { getTokoChatConfigGroupBookingUseCase }
     }
 
     @After

@@ -7,7 +7,6 @@ import com.tokopedia.tokochat_common.util.TokoChatCacheManager
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import io.mockk.MockKAnnotations
 import io.mockk.impl.annotations.RelaxedMockK
-import io.mockk.mockk
 import io.mockk.unmockkAll
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.FlowPreview
@@ -46,8 +45,6 @@ abstract class TokoChatViewModelTestFixture {
     @RelaxedMockK
     protected lateinit var getTokoChatRoomTickerUseCase: GetTokoChatRoomTickerUseCase
 
-    protected lateinit var profileUseCase: TokoChatMutationProfileUseCase
-
     @RelaxedMockK
     protected lateinit var getTokoChatOrderProgressUseCase: TokoChatOrderProgressUseCase
 
@@ -62,7 +59,6 @@ abstract class TokoChatViewModelTestFixture {
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        profileUseCase = TokoChatMutationProfileUseCase(mockk(relaxed = true), mockk(relaxed = true))
         viewModel = TokoChatViewModel(
             getChannelUseCase,
             getChatHistoryUseCase,
@@ -72,7 +68,6 @@ abstract class TokoChatViewModelTestFixture {
             getTypingUseCase,
             getTokoChatBackgroundUseCase,
             getTokoChatRoomTickerUseCase,
-            profileUseCase,
             getTokoChatOrderProgressUseCase,
             getImageUrlUseCase,
             CoroutineTestDispatchersProvider
