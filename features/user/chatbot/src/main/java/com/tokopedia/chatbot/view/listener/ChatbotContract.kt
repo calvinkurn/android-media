@@ -40,6 +40,8 @@ interface ChatbotContract {
 
         fun openCsat(csatResponse: WebSocketCsatResponse)
 
+        fun isBackAllowed(isBackAllowed: Boolean)
+
         fun onReceiveChatSepratorEvent(chatSepratorUiModel: ChatSepratorUiModel, quickReplyList: List<QuickReplyUiModel>)
 
         fun showErrorToast(it: Throwable)
@@ -58,8 +60,6 @@ interface ChatbotContract {
 
         fun uploadUsingSecureUpload(data: Intent)
 
-        fun uploadUsingOldMechanism(data: Intent)
-
         fun sendInvoiceForArticle()
 
         fun onSuccessGetTickerData(tickerData: TickerData)
@@ -69,8 +69,6 @@ interface ChatbotContract {
         fun onSuccessSubmitCsatRating(msg: String)
 
         fun onSuccessSubmitChatCsat(msg: String)
-
-        fun replyBubbleStateHandler(state: Boolean)
 
         fun visibilityReplyBubble(state: Boolean)
 
@@ -117,13 +115,6 @@ interface ChatbotContract {
         )
 
         fun sendReadEvent(messageId: String)
-
-        fun uploadImages(
-            it: ImageUploadUiModel,
-            messageId: String,
-            opponentId: String,
-            onError: (Throwable, ImageUploadUiModel) -> Unit
-        )
 
         fun destroyWebSocket()
 

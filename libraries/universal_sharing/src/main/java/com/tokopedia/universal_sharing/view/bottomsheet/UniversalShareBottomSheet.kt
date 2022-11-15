@@ -308,9 +308,6 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
     //parent fragment
     private var parentFragmentContainer: Fragment? = null
 
-    //parent fragment lifecycle observer
-    private lateinit var parentFragmentLifecycleObserver: DefaultLifecycleObserver
-
     //Image generator page source ID
     private lateinit var sourceId: String
 
@@ -337,6 +334,15 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
 
     private var  imageGeneratorParam: ImageGeneratorParamModel? = null
 
+    // parent fragment lifecycle observer
+    private val parentFragmentLifecycleObserver by lazy {
+        object : DefaultLifecycleObserver {
+            override fun onDestroy(owner: LifecycleOwner) {
+                removeFile(savedImagePath)
+                super.onDestroy(owner)
+            }
+        }
+    }
 
     @Inject lateinit var extractBranchLinkUseCase: ExtractBranchLinkUseCase
 
@@ -559,17 +565,15 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
         affiliateListener = callback
     }
 
-
     private fun setFragmentLifecycleObserverUniversalSharing(fragment: Fragment) {
         parentFragmentContainer = fragment
-        parentFragmentLifecycleObserver = object : DefaultLifecycleObserver {
-            override fun onDestroy(owner: LifecycleOwner) {
-                removeFile(savedImagePath)
-                parentFragmentContainer?.lifecycle?.removeObserver(parentFragmentLifecycleObserver)
-                super.onDestroy(owner)
-            }
-        }
         parentFragmentContainer?.lifecycle?.addObserver(parentFragmentLifecycleObserver)
+    }
+
+    override fun onDestroy() {
+        parentFragmentContainer?.lifecycle?.removeObserver(parentFragmentLifecycleObserver)
+        parentFragmentContainer = null
+        super.onDestroy()
     }
 
     private fun setupBottomSheetChildView(inflater: LayoutInflater, container: ViewGroup?) {
@@ -1021,6 +1025,9 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
                 ImageGeneratorConstants.ImageGeneratorSourceId.PDP -> {
                     executePdpContextualImage(shareModel)
                 }
+                ImageGeneratorConstants.ImageGeneratorSourceId.WISHLIST_COLLECTION -> {
+                    executeWishlistCollectionContextualImage(shareModel)
+                }
                 else -> {
                     addImageGeneratorData(ImageGeneratorConstants.ImageGeneratorKeys.PLATFORM, shareModel.platform)
                     addImageGeneratorData(ImageGeneratorConstants.ImageGeneratorKeys.PRODUCT_IMAGE_URL, ogImageUrl)
@@ -1044,8 +1051,24 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
         }
     }
 
+    private fun executeWishlistCollectionContextualImage(shareModel: ShareModel) {
+        if (imageGeneratorParam == null) return
+        imageGeneratorParam?.apply {
+            this.platform = shareModel.platform
+        }
+        lifecycleScope.launchCatchError(block = {
+            val result = ImagePolicyUseCase(GraphqlInteractor.getInstance().graphqlRepository)(sourceId)
+            val listOfParams = result.generateImageGeneratorParam(imageGeneratorParam!!)
+            executeImageGeneratorUseCase(sourceId, listOfParams, shareModel)
+        }, onError = {
+            executeSharingFlow(shareModel)
+        })
+    }
+
     private fun executeMediaImageSharingFlow(shareModel: ShareModel, mediaImageUrl: String) {
-        loaderUnify?.visibility = View.GONE
+        activity?.runOnUiThread {
+            loaderUnify?.visibility = View.GONE
+        }
         preserveImage = true
         shareModel.ogImgUrl = mediaImageUrl
         shareModel.savedImageFilePath = savedImagePath
@@ -1053,7 +1076,9 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
     }
 
     private fun executeSharingFlow(shareModel: ShareModel) {
-        loaderUnify?.visibility = View.GONE
+        activity?.runOnUiThread {
+            loaderUnify?.visibility = View.GONE
+        }
         preserveImage = true
         shareModel.ogImgUrl = transformOgImageURL(ogImageUrl)
         shareModel.savedImageFilePath = savedImagePath

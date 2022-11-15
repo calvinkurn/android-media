@@ -6,7 +6,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvMvcViewStartDate"
-        android:layout_width="@dimen/layout_lvl0"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="17 Jan 2020"
         android:textColor="@color/Neutral_N700_96"
@@ -16,7 +16,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvMvcViewStartHour"
-        android:layout_width="@dimen/layout_lvl0"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="08:30 WIB"
         android:textColor="@color/Neutral_N700_96"
@@ -29,8 +29,8 @@
         android:id="@+id/viewMvcDash"
         android:layout_width="@dimen/mvc_dimen_10dp"
         android:layout_height="@dimen/mvc_dimen_1dp"
-        android:layout_marginStart="@dimen/layout_lvl1"
-        android:layout_marginLeft="@dimen/layout_lvl1"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
         android:background="@color/Neutral_N700_96"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/tvMvcViewStartDate"
@@ -38,10 +38,10 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvMvcViewEndDate"
-        android:layout_width="@dimen/layout_lvl0"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/layout_lvl1"
-        android:layout_marginLeft="@dimen/layout_lvl1"
+        android:layout_marginStart="8dp"
+        android:layout_marginLeft="8dp"
         android:text="16 Feb 2020"
         android:textColor="@color/Neutral_N700_96"
         app:layout_constraintEnd_toEndOf="parent"
@@ -51,7 +51,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tvMvcViewEndHour"
-        android:layout_width="@dimen/layout_lvl0"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:text="08:30 WIB"
         android:textColor="@color/Neutral_N700_96"
