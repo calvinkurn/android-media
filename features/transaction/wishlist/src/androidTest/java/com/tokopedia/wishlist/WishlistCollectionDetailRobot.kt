@@ -5,7 +5,6 @@ import androidx.test.espresso.Espresso
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.ViewMatchers
-import timber.log.Timber
 
 class WishlistCollectionDetailRobot {
 
@@ -18,17 +17,17 @@ class WishlistCollectionDetailRobot {
             .perform(RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(index))
     }
 
+    fun scrollRecommendationRecyclerViewToIndex(index: Int) {
+        Espresso.onView(ViewMatchers.withId(com.tokopedia.carouselproductcard.R.id.carouselProductCardRecyclerView))
+            .perform(RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(index))
+    }
+
     fun clickRecommendationRecyclerViewItem(index: Int) {
         Espresso.onView(ViewMatchers.withId(com.tokopedia.carouselproductcard.R.id.carouselProductCardRecyclerView))
             .perform(
                 RecyclerViewActions
                     .actionOnItemAtPosition<RecyclerView.ViewHolder>(index, ViewActions.click())
             )
-    }
-
-    fun scrollRecommendationRecyclerViewToIndex(index: Int) {
-        Espresso.onView(ViewMatchers.withId(com.tokopedia.carouselproductcard.R.id.carouselProductCardRecyclerView))
-            .perform(RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(index))
     }
 }
 
