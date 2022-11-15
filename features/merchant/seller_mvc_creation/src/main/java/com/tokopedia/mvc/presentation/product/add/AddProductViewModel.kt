@@ -302,10 +302,18 @@ class AddProductViewModel @Inject constructor(
         }
     }
 
-    private fun updateProductAsSelected(selectedProductId: Long, products: List<Product>,) : List<Product> {
+    private fun updateProductAsSelected(selectedProductId: Long, products: List<Product>) : List<Product> {
         return products.map {
+
             if (it.id == selectedProductId) {
-                it.copy(isSelected = true, enableCheckbox = true)
+
+                val hasVariants = it.originalVariants.isNotEmpty()
+                if (hasVariants) {
+                    it.copy(isSelected = true, enableCheckbox = true, originalVariants = it.originalVariants, modifiedVariants = it.modifiedVariants)
+                } else {
+                    it.copy(isSelected = true, enableCheckbox = true)
+                }
+
             } else {
                 it
             }
@@ -471,7 +479,6 @@ class AddProductViewModel @Inject constructor(
 
                     variant.copy(variantName = formattedVariantName)
                 }
-
 
                 println(updatedVariantNames)
             },

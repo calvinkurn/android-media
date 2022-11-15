@@ -104,7 +104,8 @@ class ProductDelegateAdapter(
         private fun RelativeLayout.setVariantCount(item: Product) {
             isVisible = item.originalVariants.isNotEmpty()
 
-            if (item.originalVariants.size != item.modifiedVariants.size) {
+            val isVariantUnchanged = item.originalVariants.size == item.modifiedVariants.size
+            if (isVariantUnchanged && item.isSelected) {
                 binding.tpgVariantCount.text = binding.tpgVariantCount.context.getString(
                     R.string.smvc_placeholder_selected_variant_product_count,
                     item.modifiedVariants.size,
