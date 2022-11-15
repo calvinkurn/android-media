@@ -22,6 +22,7 @@ data class PlayShortsUiState(
     val coverForm: PlayShortsCoverFormUiState,
 
     val tags: NetworkResult<Set<PlayTagUiModel>>,
+    val uploadState: PlayShortsUploadUiState,
 )
 
 data class PlayShortsTitleFormUiState(
@@ -74,4 +75,15 @@ data class PlayShortsCoverFormUiState(
     enum class State {
         Editing, Unknown
     }
+}
+
+sealed interface PlayShortsUploadUiState {
+
+    object Unknown : PlayShortsUploadUiState
+
+    object Loading : PlayShortsUploadUiState
+
+    object Success : PlayShortsUploadUiState
+
+    data class Error(val throwable: Throwable) : PlayShortsUploadUiState
 }

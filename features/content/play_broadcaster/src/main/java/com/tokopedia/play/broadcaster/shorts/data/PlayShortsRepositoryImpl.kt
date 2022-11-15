@@ -4,10 +4,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.content.common.ui.model.TermsAndConditionUiModel
 import com.tokopedia.content.common.usecase.GetWhiteListNewUseCase
-import com.tokopedia.play.broadcaster.domain.usecase.CreateChannelUseCase
-import com.tokopedia.play.broadcaster.domain.usecase.GetConfigurationUseCase
-import com.tokopedia.play.broadcaster.domain.usecase.PlayBroadcastUpdateChannelUseCase
-import com.tokopedia.play.broadcaster.domain.usecase.GetRecommendedChannelTagsUseCase
+import com.tokopedia.play.broadcaster.domain.usecase.*
 import com.tokopedia.play.broadcaster.shorts.domain.PlayShortsRepository
 import com.tokopedia.play.broadcaster.shorts.ui.mapper.PlayShortsMapper
 import com.tokopedia.play.broadcaster.shorts.ui.model.PlayShortsConfigUiModel
@@ -26,6 +23,7 @@ class PlayShortsRepositoryImpl @Inject constructor(
     private val createChannelUseCase: CreateChannelUseCase,
     private val updateChannelUseCase: PlayBroadcastUpdateChannelUseCase,
     private val getRecommendedChannelTagsUseCase: GetRecommendedChannelTagsUseCase,
+    private val setChannelTagsUseCase: SetChannelTagsUseCase,
     private val mapper: PlayShortsMapper,
     private val dispatchers: CoroutineDispatchers
 ) : PlayShortsRepository {
@@ -115,5 +113,14 @@ class PlayShortsRepositoryImpl @Inject constructor(
         }.executeOnBackground()
 
         mapper.mapTagRecommendation(response)
+    }
+
+    override suspend fun saveTag(
+        shortsId: String,
+        tags: Set<String>
+    ): Boolean = withContext(dispatchers.io) {
+        setChannelTagsUseCase.apply {
+            setParams(shortsId, tags)
+        }.executeOnBackground().recommendedTags.success
     }
 }

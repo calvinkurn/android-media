@@ -8,9 +8,12 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.databinding.FragmentPlayShortsSummaryBinding
 import com.tokopedia.play.broadcaster.shorts.ui.model.action.PlayShortsAction
+import com.tokopedia.play.broadcaster.shorts.ui.model.event.PlayShortsToaster
 import com.tokopedia.play.broadcaster.shorts.ui.model.state.PlayShortsUiState
+import com.tokopedia.play.broadcaster.shorts.ui.model.state.PlayShortsUploadUiState
 import com.tokopedia.play.broadcaster.shorts.view.fragment.base.PlayShortsBaseFragment
 import com.tokopedia.play.broadcaster.shorts.view.viewmodel.PlayShortsViewModel
 import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagUiModel
@@ -20,6 +23,8 @@ import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.util.PlayToaster
 import com.tokopedia.play_common.util.extension.withCache
 import com.tokopedia.play_common.viewcomponent.viewComponent
+import com.tokopedia.unifycomponents.Toaster
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
@@ -106,6 +111,12 @@ class PlayShortsSummaryFragment @Inject constructor(
                 renderUploadButton(it.prevValue, it.value)
             }
         }
+
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            viewModel.uiEvent.collect { event ->
+                renderToaster(event.toaster)
+            }
+        }
     }
 
     private fun renderCover(
@@ -153,15 +164,50 @@ class PlayShortsSummaryFragment @Inject constructor(
         prev: PlayShortsUiState?,
         curr: PlayShortsUiState
     ) {
-        if (prev?.tags == curr.tags) return
+        if (prev?.tags == curr.tags && prev.uploadState == curr.uploadState) return
 
-        val isTagSelected = if (curr.tags is NetworkResult.Success) {
-            curr.tags.data.firstOrNull { it.isChosen } != null
-        } else {
-            false
+        when(curr.uploadState) {
+            is PlayShortsUploadUiState.Success -> {
+                activity?.finish()
+            }
+            is PlayShortsUploadUiState.Loading -> {
+                binding.btnUploadVideo.isLoading = true
+                binding.btnUploadVideo.isEnabled = false
+            }
+            else -> {
+                /**
+                 * Enabled if :
+                 * 1. Tags available && min. choose 1 tag
+                 * 2. Tag is empty
+                 * 3. Error load tag
+                 */
+                val isButtonEnabled = when(curr.tags) {
+                    is NetworkResult.Success -> {
+                        if(curr.tags.data.isEmpty()) true
+                        else curr.tags.data.firstOrNull { it.isChosen } != null
+                    }
+                    is NetworkResult.Fail -> {
+                        true
+                    }
+                    else -> false
+                }
+
+                binding.btnUploadVideo.isLoading = false
+                binding.btnUploadVideo.isEnabled = isButtonEnabled
+            }
         }
+    }
 
-        binding.btnUploadVideo.isEnabled = isTagSelected
+    private fun renderToaster(toasterData: PlayShortsToaster) {
+        when(toasterData) {
+            is PlayShortsToaster.ErrorUploadMedia -> {
+                toaster.showError(
+                    toasterData.throwable,
+                    duration = Toaster.LENGTH_SHORT
+                )
+            }
+            else -> {}
+        }
     }
 
     companion object {

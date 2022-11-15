@@ -30,6 +30,10 @@ sealed interface PlayShortsToaster {
     data class ErrorSwitchAccount(
         val throwable: Throwable
     ) : PlayShortsToaster
+
+    data class ErrorUploadMedia(
+        val throwable: Throwable
+    ) : PlayShortsToaster
 }
 
 sealed interface PlayShortsBottomSheet {
@@ -50,6 +54,4 @@ sealed interface PlayShortsOneTimeEvent {
     object Unknown : PlayShortsOneTimeEvent
 
     object GoToSummary : PlayShortsOneTimeEvent
-
-    object CloseShortsCreation : PlayShortsOneTimeEvent
 }

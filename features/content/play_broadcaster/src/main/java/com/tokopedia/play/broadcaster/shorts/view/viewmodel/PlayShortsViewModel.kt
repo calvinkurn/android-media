@@ -24,13 +24,16 @@ import com.tokopedia.play.broadcaster.shorts.ui.model.event.PlayShortsUiEvent
 import com.tokopedia.play.broadcaster.shorts.ui.model.state.PlayShortsCoverFormUiState
 import com.tokopedia.play.broadcaster.shorts.ui.model.state.PlayShortsTitleFormUiState
 import com.tokopedia.play.broadcaster.shorts.ui.model.state.PlayShortsUiState
+import com.tokopedia.play.broadcaster.shorts.ui.model.state.PlayShortsUploadUiState
 import com.tokopedia.play.broadcaster.shorts.util.oneTimeUpdate
 import com.tokopedia.play.broadcaster.shorts.view.custom.DynamicPreparationMenu
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagUiModel
+import com.tokopedia.play.broadcaster.util.error.DefaultErrorThrowable
 import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
 import com.tokopedia.play_common.model.result.NetworkResult
+import com.tokopedia.play_common.model.result.map
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -94,6 +97,7 @@ class PlayShortsViewModel @Inject constructor(
     private val _menuList = MutableStateFlow<List<DynamicPreparationMenu>>(emptyList())
     private val _productSectionList = MutableStateFlow<List<ProductTagSectionUiModel>>(emptyList())
     private val _tags = MutableStateFlow<NetworkResult<Set<PlayTagUiModel>>>(NetworkResult.Unknown)
+    private val _uploadState = MutableStateFlow<PlayShortsUploadUiState>(PlayShortsUploadUiState.Unknown)
 
     private val _titleForm = MutableStateFlow(PlayShortsTitleFormUiState.Empty)
     private val _coverForm = MutableStateFlow(PlayShortsCoverFormUiState.Empty)
@@ -134,7 +138,8 @@ class PlayShortsViewModel @Inject constructor(
         _titleForm,
         _coverForm,
         _tags,
-    ) { config, media, accountList, selectedAccount, menuListUiState, titleForm, coverForm, tags ->
+        _uploadState,
+    ) { config, media, accountList, selectedAccount, menuListUiState, titleForm, coverForm, tags, uploadState ->
         PlayShortsUiState(
             config = config,
             media = media,
@@ -143,7 +148,8 @@ class PlayShortsViewModel @Inject constructor(
             menuList = menuListUiState,
             titleForm = titleForm,
             coverForm = coverForm,
-            tags = tags
+            tags = tags,
+            uploadState = uploadState,
         )
     }
 
@@ -384,22 +390,22 @@ class PlayShortsViewModel @Inject constructor(
     }
 
     private fun handleClickUploadVideo() {
-        val uploadWorkerInputData = PlayShortsUploadUiModel(
-            shortsId = shortsId,
-            authorId = selectedAccount.id,
-            authorType = selectedAccount.type,
-            mediaUri = _media.value.mediaUri,
-            coverUri = _coverForm.value.coverUri,
-        ).format()
+        viewModelScope.launchCatchError(block = {
+            if(_uploadState.value is PlayShortsUploadUiState.Loading) return@launchCatchError
 
-        val uploadWorker = OneTimeWorkRequest.Builder(PlayShortsUploadWorker::class.java)
-            .setInputData(uploadWorkerInputData)
-            .build()
+            _uploadState.update { PlayShortsUploadUiState.Loading }
 
-        workManager.beginWith(uploadWorker).enqueue()
+            saveTag()
+            uploadMedia()
 
-        _uiEvent.oneTimeUpdate {
-            it.copy(oneTimeEvent = PlayShortsOneTimeEvent.CloseShortsCreation)
+            _uploadState.update { PlayShortsUploadUiState.Success }
+        }) { throwable ->
+            _uploadState.update { PlayShortsUploadUiState.Error(throwable) }
+            _uiEvent.oneTimeUpdate {
+                it.copy(
+                    toaster = PlayShortsToaster.ErrorUploadMedia(throwable)
+                )
+            }
         }
     }
 
@@ -433,5 +439,36 @@ class PlayShortsViewModel @Inject constructor(
 
             _menuList.update { menuList }
         }) { }
+    }
+
+    private suspend fun saveTag() {
+        val tagState = _tags.value
+        if(tagState is NetworkResult.Success) {
+            val selectedTag = tagState.data.filter { it.isChosen }.map { it.tag }.toSet()
+
+            if(selectedTag.isNotEmpty()) {
+                val result = repo.saveTag(shortsId, selectedTag)
+
+                if(!result) {
+                    throw DefaultErrorThrowable("${DefaultErrorThrowable.DEFAULT_MESSAGE}: Error Tag")
+                }
+            }
+        }
+    }
+
+    private fun uploadMedia() {
+        val uploadWorkerInputData = PlayShortsUploadUiModel(
+            shortsId = shortsId,
+            authorId = selectedAccount.id,
+            authorType = selectedAccount.type,
+            mediaUri = _media.value.mediaUri,
+            coverUri = _coverForm.value.coverUri,
+        ).format()
+
+        val uploadWorker = OneTimeWorkRequest.Builder(PlayShortsUploadWorker::class.java)
+            .setInputData(uploadWorkerInputData)
+            .build()
+
+        workManager.beginWith(uploadWorker).enqueue()
     }
 }

@@ -31,4 +31,9 @@ interface PlayShortsRepository {
     suspend fun getTagRecommendation(
         creationId: String,
     ): Set<PlayTagUiModel>
+
+    suspend fun saveTag(
+        shortsId: String,
+        tags: Set<String>
+    ): Boolean
 }
