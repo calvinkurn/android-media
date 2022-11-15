@@ -13,11 +13,11 @@ import com.tokopedia.privacycenter.main.section.recommendation.RecommendationSec
  */
 
 interface PrivacyCenterSectionDelegate {
-    val faqPrivacySection: FaqPrivacySection
-    val recommendationSection: RecommendationSection
     val accountLinkingSection: AccountLinkingSection
     val dummySection: DummySection
+    val recommendationSection: RecommendationSection
     val consentWithdrawalSection: ConsentWithdrawalSection
+    val faqPrivacySection: FaqPrivacySection
 }
 
 class PrivacyCenterSection constructor(
@@ -30,11 +30,11 @@ class PrivacyCenterSection constructor(
          * list position will reflect with section index
          */
         return mutableMapOf(
-            FaqPrivacySection.TAG to  delegate.faqPrivacySection,
             AccountLinkingSection.TAG to delegate.accountLinkingSection,
-            RecommendationSection.TAG to delegate.recommendationSection,
             DummySection.TAG to delegate.dummySection,
+            RecommendationSection.TAG to delegate.recommendationSection,
             ConsentWithdrawalSection.TAG to delegate.consentWithdrawalSection,
+            FaqPrivacySection.TAG to delegate.faqPrivacySection
         )
     }
 
