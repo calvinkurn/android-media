@@ -2,7 +2,7 @@ package com.tokopedia.mvc.presentation.detail
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.tokopedia.seller_mvc_creation.R
+import com.tokopedia.mvc.R
 
 class VoucherDetailActivity : AppCompatActivity() {
 

@@ -9,14 +9,13 @@ import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.mvc.data.mapper.MerchantPromotionGetMVDataByIDMapper
 import com.tokopedia.mvc.data.response.MerchantPromotionGetMVDataByIDResponse
-import com.tokopedia.mvc.domain.entity.VoucherCreationMetadata
 import com.tokopedia.mvc.domain.entity.VoucherDetailData
 import javax.inject.Inject
 
 class MerchantPromotionGetMVDataByIDUseCase @Inject constructor(
     private val repository: GraphqlRepository,
     private val mapper: MerchantPromotionGetMVDataByIDMapper
-) : GraphqlUseCase<VoucherCreationMetadata>(repository) {
+) : GraphqlUseCase<VoucherDetailData>(repository) {
 
     init {
         setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
@@ -25,6 +24,7 @@ class MerchantPromotionGetMVDataByIDUseCase @Inject constructor(
     companion object {
         private const val REQUEST_PARAM_VOUCHER_ID = "voucher_id"
         private const val REQUEST_PARAM_SOURCE = "source"
+        private const val SOURCE = "fe-mobile"
     }
 
     private val query = object : GqlQueryInterface {
@@ -127,6 +127,6 @@ class MerchantPromotionGetMVDataByIDUseCase @Inject constructor(
 
     data class Param(
         val voucherId: Long,
-        val source: String
+        val source: String = SOURCE
     )
 }

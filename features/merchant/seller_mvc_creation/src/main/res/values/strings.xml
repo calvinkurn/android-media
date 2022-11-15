@@ -12,6 +12,8 @@
     <string name="smvc_placeholder_product_sold_count">Terjual: %d</string>
     <string name="smvc_placeholder_variant_product_count">%d Varian Produk</string>
     <string name="smvc_placeholder_product_price">%s - %s</string>
+
+    <!--Voucher detail page-->
     <string name="smvc_ubah_kupon_label">Ubah Kupon</string>
     <string name="smvc_kuota_terpakai_label">Kuota terpakai</string>
     <string name="smvc_jenis_kupon_label">Jenis Kupon</string>
@@ -31,4 +33,5 @@
     <string name="smvc_daftar_produk_label">Daftar Produk</string>
     <string name="smvc_produk_terdaftar_label">Produk Terdaftar</string>
     <string name="smvc_lihat_produk_label">Lihat Produk</string>
+    <string name="smvc_placeholder_stopped_date">Dihentikan pada %s</string>
 </resources>
