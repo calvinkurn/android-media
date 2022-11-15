@@ -20,6 +20,7 @@ data class EditorParam(
     // setter
     fun withWatermark() = editorToolsList.add(EditorToolType.WATERMARK)
     fun withRemoveBackground() = editorToolsList.add(0, EditorToolType.REMOVE_BACKGROUND)
+    fun withAddLogo() = editorToolsList.add(0, EditorToolType.ADD_LOGO)
     fun autoCrop1to1() = apply {
         setAutoCropRatio(ImageRatioType.RATIO_1_1)
     }

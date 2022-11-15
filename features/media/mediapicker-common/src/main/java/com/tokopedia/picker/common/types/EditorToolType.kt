@@ -26,5 +26,6 @@ annotation class EditorToolType {
         const val ROTATE = 3
         const val REMOVE_BACKGROUND = 4
         const val WATERMARK = 5
+        const val ADD_LOGO = 6
     }
 }
