@@ -4,8 +4,8 @@ import com.google.gson.annotations.SerializedName
 
 data class ProductRecommendationResponse(
 
-	@field:SerializedName("data")
-	val data: Data? = null
+	@field:SerializedName("productRecommendationWidgetSingle")
+	val productRecommendationWidgetSingle: ProductRecommendationWidgetSingle? = null
 )
 
 data class Meta(
@@ -48,9 +48,6 @@ data class Shop(
 )
 
 data class Data(
-
-	@field:SerializedName("productRecommendationWidgetSingle")
-	val productRecommendationWidgetSingle: ProductRecommendationWidgetSingle? = null,
 
 	@field:SerializedName("widgetUrl")
 	val widgetUrl: String? = null,
@@ -143,6 +140,9 @@ data class RecommendationItem(
 
 	@field:SerializedName("price")
 	val price: String? = null,
+
+	@field:SerializedName("slashedPrice")
+	val slashedPrice: String? = null,
 
 	@field:SerializedName("discountPercentage")
 	val discountPercentage: Float = 0F,

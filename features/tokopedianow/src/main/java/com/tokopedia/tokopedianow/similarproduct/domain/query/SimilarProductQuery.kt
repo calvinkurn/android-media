@@ -8,7 +8,7 @@ internal object SimilarProductQuery: GqlQueryInterface {
     const val PARAM_PRODUCT_IDS = "productIDs"
     const val PARAM_PAGE_NAME = "pageName"
 
-    private const val OPERATION_NAME = "productRecommendationSingle"
+    private const val OPERATION_NAME = "productRecommendationWidgetSingle"
 
     override fun getOperationNameList(): List<String> {
         return listOf(OPERATION_NAME)
@@ -16,7 +16,7 @@ internal object SimilarProductQuery: GqlQueryInterface {
 
     override fun getQuery(): String {
         return """
-        query $OPERATION_NAME(${'$'}${PARAM_USER_ID}: String!, ${'$'}${PARAM_PRODUCT_IDS}: String!){
+        query $OPERATION_NAME(${'$'}${PARAM_USER_ID}: Int!, ${'$'}${PARAM_PRODUCT_IDS}: String!){
             $OPERATION_NAME(${PARAM_USER_ID}:${'$'}${PARAM_USER_ID}, ${PARAM_PRODUCT_IDS}:${'$'}${PARAM_PRODUCT_IDS}, ${PARAM_PAGE_NAME}: "now_similar_page",xDevice: "android") {
                 meta {
                   recommendation

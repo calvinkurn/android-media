@@ -13,6 +13,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.kotlin.extensions.view.observe
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.similarproduct.activity.TokoNowSimilarProductActivity.Companion.EXTRA_SIMILAR_PRODUCT_ID
 import com.tokopedia.tokopedianow.similarproduct.analytic.SimilarProductAnalytics
@@ -76,7 +77,7 @@ class TokoNowSimilarProductFragment : Fragment(), SimilarProductViewHolder.Simil
         trackImpression()
 
         arguments?.getString(EXTRA_SIMILAR_PRODUCT_ID, "")?.let {
-            viewModel.getSimilarProductList(userSession.userId,
+            viewModel.getSimilarProductList(userSession.userId.toIntOrZero(),
                 it
             )
         }
@@ -137,25 +138,32 @@ class TokoNowSimilarProductFragment : Fragment(), SimilarProductViewHolder.Simil
     }
 
     private fun observeLiveData() {
-        observe(viewModel.similarProductList){
-            it.forEachIndexed { index, recommendationItem ->
-                run {
-                    recommendationItem?.let { it1 ->
-                        SimilarProductMapper.mapToProductUiModel(
-                            index,
-                            it1
-                        )?.let { it2 ->
-                            productList.add(
-                                it2
-                            )
+        viewModel.similarProductList.observe(viewLifecycleOwner, {
+            if(it.isNotEmpty()) {
+
+                it?.forEachIndexed { index, recommendationItem ->
+                    run {
+                        recommendationItem?.let { it1 ->
+                            SimilarProductMapper.mapToProductUiModel(
+                                index,
+                                it1
+                            )?.let { it2 ->
+                                productList.add(
+                                    it2
+                                )
+                            }
                         }
                     }
                 }
+                //map this list to similar ui model list
+                viewModel.onViewCreated(productList)
             }
-            //map this list to similar ui model list
+            else{
+                // show no products ui
+                bottomSheet?.showEmptyProductListUi()
 
-            viewModel.onViewCreated(productList)
-        }
+            }
+        })
         observe(viewModel.visitableItems) {
             bottomSheet?.items = it
         }

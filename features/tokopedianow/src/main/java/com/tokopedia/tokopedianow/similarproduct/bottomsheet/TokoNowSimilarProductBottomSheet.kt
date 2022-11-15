@@ -109,7 +109,7 @@ class TokoNowSimilarProductBottomSheet : BottomSheetUnify() {
 
     private fun configureBottomSheet() {
         clearContentPadding = true
-        showCloseIcon = false
+        showCloseIcon = true
         isDragable = true
         isHideable = true
         showKnob = true
@@ -125,5 +125,9 @@ class TokoNowSimilarProductBottomSheet : BottomSheetUnify() {
 
     private fun submitList(value: List<Visitable<*>>) {
         adapter.submitList(value)
+    }
+
+    fun showEmptyProductListUi(){
+        binding?.viewFlipper?.displayedChild = 1
     }
 }
