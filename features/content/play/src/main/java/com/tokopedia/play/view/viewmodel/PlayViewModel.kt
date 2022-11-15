@@ -469,6 +469,9 @@ class PlayViewModel @AssistedInject constructor(
     val isTotalViewLoaded: Boolean
         get() = _isChannelReportLoaded.value
 
+    val partnerType: String
+        get() = mChannelData?.partnerInfo?.type?.value ?: ""
+
     private var socketJob: Job? = null
 
     private val _observableChannelInfo = MutableLiveData<PlayChannelInfoUiModel>()

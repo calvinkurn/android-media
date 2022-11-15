@@ -7,8 +7,10 @@ import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.media.loader.loadIcon
 import com.tokopedia.play.R
+import com.tokopedia.play.analytic.PlayNewAnalytic
 import com.tokopedia.play.databinding.PlayFollowBottomSheetBinding
 import com.tokopedia.play.util.withCache
 import com.tokopedia.play.view.fragment.PlayFragment
@@ -21,6 +23,7 @@ import com.tokopedia.play.view.uimodel.event.ShowInfoEvent
 import com.tokopedia.play.view.uimodel.recom.PlayPartnerInfo
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play_common.databinding.BottomSheetHeaderBinding
+import com.tokopedia.play_common.util.addImpressionListener
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
@@ -29,7 +32,7 @@ import javax.inject.Inject
 /**
  * @author by astidhiyaa on 27/10/22
  */
-class PlayFollowBottomSheet @Inject constructor() : BottomSheetUnify() {
+class PlayFollowBottomSheet @Inject constructor(private val analytic: PlayNewAnalytic) : BottomSheetUnify() {
 
     private var _binding: PlayFollowBottomSheetBinding? = null
     private val binding: PlayFollowBottomSheetBinding
@@ -40,6 +43,8 @@ class PlayFollowBottomSheet @Inject constructor() : BottomSheetUnify() {
         get() = _headerBinding!!
 
     private lateinit var playViewModel: PlayViewModel
+
+    private val impressHolder = ImpressHolder()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -77,8 +82,14 @@ class PlayFollowBottomSheet @Inject constructor() : BottomSheetUnify() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             playViewModel.uiEvent.collect { event ->
                 when (event) {
-                    is ShowInfoEvent -> dismiss()
-                    is ShowErrorEvent -> dismiss()
+                    is ShowInfoEvent -> {
+                        analytic.impressToasterPopUp(playViewModel.channelId, playViewModel.channelType.value, isSuccess = true)
+                        dismiss()
+                    }
+                    is ShowErrorEvent -> {
+                        analytic.impressToasterPopUp(playViewModel.channelId, playViewModel.channelType.value, isSuccess = false)
+                        dismiss()
+                    }
                 }
             }
         }
@@ -93,7 +104,12 @@ class PlayFollowBottomSheet @Inject constructor() : BottomSheetUnify() {
     }
 
     private fun setupView() {
+        binding.root.addImpressionListener(impressHolder){
+            analytic.impressFollowPopUp(playViewModel.channelId, playViewModel.channelType.value, playViewModel.partnerType, playViewModel.partnerId.toString())
+        }
+
         headerBinding.ivSheetClose.setOnClickListener {
+            analytic.clickDismissFollowPopUp(playViewModel.channelId, playViewModel.channelType.value, playViewModel.partnerType, playViewModel.partnerId.toString())
             dismiss()
         }
 
@@ -110,10 +126,12 @@ class PlayFollowBottomSheet @Inject constructor() : BottomSheetUnify() {
         binding.tvFollowDesc.text = playViewModel.latestCompleteChannelData.channelDetail.popupConfig.text
 
         binding.clFollowContainer.setOnClickListener {
+            analytic.clickCreatorPopUp(playViewModel.channelId, playViewModel.channelType.value)
             playViewModel.submitAction(ClickPartnerNameAction(partnerInfo.appLink))
         }
 
         binding.btnFollow.setOnClickListener {
+            analytic.clickFollowCreatorPopUp(playViewModel.channelId, playViewModel.channelType.value, playViewModel.partnerType, playViewModel.partnerId.toString())
             playViewModel.submitAction(PlayViewerNewAction.FollowInteractive)
         }
     }
@@ -144,9 +162,10 @@ class PlayFollowBottomSheet @Inject constructor() : BottomSheetUnify() {
         private const val TAG = "PlayFollowBottomSheet"
         fun getOrCreate(
             fragmentManager: FragmentManager,
+            classLoader: ClassLoader,
         ): PlayFollowBottomSheet {
             val oldInstance = fragmentManager.findFragmentByTag(TAG) as? PlayFollowBottomSheet
-            return oldInstance ?: PlayFollowBottomSheet()
+            return oldInstance ?: fragmentManager.fragmentFactory.instantiate(classLoader, PlayFollowBottomSheet::class.java.name) as PlayFollowBottomSheet
         }
     }
 }
