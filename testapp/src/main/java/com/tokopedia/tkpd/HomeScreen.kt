@@ -37,11 +37,11 @@ fun HomeScreen(
                 text = model.urlState,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(vertical = 4.dp)
-                    .background(urlBgColor),
+                    .background(urlBgColor)
+                    .padding(vertical = 2.dp),
                 textAlign = TextAlign.Center,
                 color = MaterialTheme.colors.onPrimary,
-                style = NestTheme.typography.heading5
+                style = NestTheme.typography.heading6
             )
             Column(
                 modifier = Modifier
