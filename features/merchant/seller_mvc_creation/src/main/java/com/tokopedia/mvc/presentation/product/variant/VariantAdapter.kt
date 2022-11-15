@@ -59,32 +59,27 @@ class VariantAdapter : RecyclerView.Adapter<VariantAdapter.ViewHolder>() {
 
         fun bind(item: Product.Variant) {
             with(binding) {
-                checkbox.setOnCheckedChangeListener(null)
+                checkBox.setOnCheckedChangeListener(null)
 
                 tpgIneligibleReason.setIneligibleReason(item)
 
-                imgProduct.loadRemoteImageUrl(item)
+                imgVariant.loadRemoteImageUrl(item)
+                imgVariant.cornerRadius = 12
 
-                tpgProductName.text = item.productName
-                tpgProductName.isEnabled = item.isEligible
-
+                tpgVariantName.text = item.productName
+                tpgVariantName.isEnabled = item.isEligible
 
                 tpgStock.text = binding.tpgStock.context.getString(R.string.smvc_placeholder_total_stock, item.stock.splitByThousand())
                 tpgStock.isEnabled = item.isEligible
 
-                tpgSoldCount.text = binding.tpgSoldCount.context.getString(R.string.smvc_placeholder_product_sold_count, 0)
-                tpgSoldCount.isEnabled = item.isEligible
-
                 tpgPrice.setPrice(item)
                 tpgPrice.isEnabled = item.isEligible
 
-                separator.isEnabled = item.isEligible
-
-                checkbox.isChecked = item.isSelected
-                checkbox.setOnCheckedChangeListener { view, isChecked ->
+                checkBox.isChecked = item.isSelected
+                checkBox.setOnCheckedChangeListener { _, isChecked ->
                     onVariantClick(bindingAdapterPosition, isChecked)
                 }
-                checkbox.isEnabled = item.isEligible
+                checkBox.isEnabled = item.isEligible
             }
         }
 
@@ -100,10 +95,10 @@ class VariantAdapter : RecyclerView.Adapter<VariantAdapter.ViewHolder>() {
 
         private fun Typography.setIneligibleReason(item: Product.Variant) {
             if (item.reason.isNotEmpty()) {
-
+                visible()
                 text = item.reason
             } else {
-
+                gone()
             }
         }
 

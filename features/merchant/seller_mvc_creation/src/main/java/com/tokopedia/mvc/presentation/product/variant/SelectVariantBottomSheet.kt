@@ -33,6 +33,7 @@ class SelectVariantBottomSheet : BottomSheetUnify() {
 
     companion object {
         private const val BUNDLE_KEY_SELECTED_PARENT_PRODUCT_ID = "parent_product"
+        private const val DIVIDER_MARGIN_LEFT = 16
 
         @JvmStatic
         fun newInstance(parentProduct: Product): SelectVariantBottomSheet {
@@ -115,7 +116,7 @@ class SelectVariantBottomSheet : BottomSheetUnify() {
         binding?.recyclerView?.apply {
             layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
             applyPaddingToLastItem()
-            attachDividerItemDecoration()
+            attachDividerItemDecoration(insetLeft = DIVIDER_MARGIN_LEFT)
             variantAdapter.setOnVariantClick { selectedItemPosition, isSelected ->
                 val selectedVariant = variantAdapter.snapshot()[selectedItemPosition]
 
@@ -190,18 +191,6 @@ class SelectVariantBottomSheet : BottomSheetUnify() {
     private fun renderParentProduct(parentProduct: Product) {
         binding?.run {
             tpgProductName.text = parentProduct.name
-            tpgPrice.text = if (parentProduct.price.min == parentProduct.price.max) {
-                context?.getString(
-                    R.string.smvc_placeholder_product_price,
-                    parentProduct.price.min.splitByThousand()
-                )
-            } else {
-                context?.getString(
-                    R.string.smvc_placeholder_product_price_range,
-                    parentProduct.price.min.splitByThousand(),
-                    parentProduct.price.max.splitByThousand()
-                )
-            }
             tpgStock.text = context?.getString(R.string.smvc_placeholder_total_stock, parentProduct.stock.splitByThousand())
             tpgSoldCount.text = context?.getString(R.string.smvc_placeholder_product_sold_count, parentProduct.txStats.sold.splitByThousand())
             imgParentProduct.loadImage(parentProduct.picture)

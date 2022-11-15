@@ -44,21 +44,6 @@
         tools:text="Produk name" />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tpgPrice"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="12dp"
-        android:layout_marginTop="4dp"
-        android:layout_marginEnd="16dp"
-        android:textColor="@color/Unify_NN950"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/imgParentProduct"
-        app:layout_constraintTop_toBottomOf="@+id/tpgProductName"
-        app:typographyType="paragraph_3"
-        app:typographyWeight="bold"
-        tools:text="Rp. 5.000.000" />
-
-    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tpgStock"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -67,7 +52,7 @@
         android:paddingBottom="8dp"
         android:textColor="@color/Unify_NN600"
         app:layout_constraintStart_toEndOf="@+id/imgParentProduct"
-        app:layout_constraintTop_toBottomOf="@+id/tpgPrice"
+        app:layout_constraintTop_toBottomOf="@+id/tpgProductName"
         app:typographyType="paragraph_3"
         tools:text="Total stok: 999" />
 
@@ -88,13 +73,13 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="4dp"
-        android:layout_marginTop="4dp"
         android:layout_marginEnd="16dp"
+        android:layout_marginTop="4dp"
         android:paddingBottom="8dp"
         android:textColor="@color/Unify_NN600"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/separator"
-        app:layout_constraintTop_toBottomOf="@+id/tpgPrice"
+        app:layout_constraintTop_toBottomOf="@+id/tpgProductName"
         app:typographyType="paragraph_3"
         tools:text="Terjual: 999" />
 
