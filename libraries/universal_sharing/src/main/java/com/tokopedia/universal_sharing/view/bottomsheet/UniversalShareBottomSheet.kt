@@ -1044,11 +1044,14 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
         imageGeneratorParam?.apply {
             this.platform = shareModel.platform
         }
-        lifecycleScope.launch {
+
+        lifecycleScope.launchCatchError(block = {
             val result = ImagePolicyUseCase(GraphqlInteractor.getInstance().graphqlRepository)(sourceId)
             val listOfParams = result.generateImageGeneratorParam(imageGeneratorParam!!)
             executeImageGeneratorUseCase(sourceId, listOfParams, shareModel)
-        }
+        }, onError =  {
+            executeSharingFlow(shareModel)
+        })
     }
 
     private fun executeWishlistCollectionContextualImage(shareModel: ShareModel) {

@@ -229,6 +229,7 @@
     {
       "eventAction": "view product",
       "userId": ".*",
+      "clientId": ".*",
       "businessUnit": "play",
       "currentSite": "tokopediamarketplace",
       "event": "view_item_list",
