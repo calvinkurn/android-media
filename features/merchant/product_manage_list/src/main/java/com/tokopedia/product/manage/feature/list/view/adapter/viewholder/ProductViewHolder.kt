@@ -150,7 +150,7 @@ class ProductViewHolder(
             binding?.btnEditStock?.showWithCondition(product.isNotViolation() && product.isNotSuspendLevelTwoUntilFour())
             binding?.btnMoreOptions?.showWithCondition(product.isNotViolation() && product.isNotSuspendLevelTwoUntilFour())
         }
-
+        binding?.btnEditStock?.isEnabled = !product.isShopModerate
         binding?.btnEditPrice?.isEnabled = product.hasEditPriceAccess()
     }
 
