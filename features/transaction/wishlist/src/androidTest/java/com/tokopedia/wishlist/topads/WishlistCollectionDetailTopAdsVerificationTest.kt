@@ -57,7 +57,7 @@ class WishlistCollectionDetailTopAdsVerificationTest {
             val wishlistRecyclerView =
                 activityRule.activity.findViewById<RecyclerView>(R.id.rv_wishlist_collection_detail)
             val wishlistItemCount = wishlistRecyclerView?.adapter?.itemCount ?: 0
-            for (wishlistIndex in 0..wishlistItemCount) {
+            for (wishlistIndex in 0 until wishlistItemCount) {
                 scrollWishlistRecyclerViewToIndex(wishlistIndex)
                 if (isRecommendationCarousel(
                         wishlistRecyclerView.findViewHolderForAdapterPosition(wishlistIndex)
