@@ -4,7 +4,7 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="@dimen/layout_lvl2">
+    android:paddingTop="16dp">
 
     <com.tokopedia.product.manage.feature.filter.presentation.widget.HeaderWidget
         android:id="@+id/filterHeader"
@@ -23,7 +23,7 @@
         android:id="@+id/filterSeeAll"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="@dimen/layout_lvl2"
+        android:paddingTop="16dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/chips" />
 
