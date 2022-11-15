@@ -40,27 +40,27 @@ data class SelectedShipperModel(
             isScheduleDelivery = true
             scheduleDate = scheduleDelivery.scheduleDate
             timeslotId = scheduleDelivery.timeslotId
-            shipperId = scheduleDelivery.deliveryProduct?.shipperId?.toInt() ?: 0
-            shipperProductId = scheduleDelivery.deliveryProduct?.shipperProductId?.toInt() ?: 0
-            shipperPrice = scheduleDelivery.deliveryProduct?.finalPrice?.toInt() ?: 0
-            serviceId = scheduleDelivery.deliveryProduct?.serviceId?.toInt() ?: 0
+            shipperId = scheduleDelivery.deliveryProduct.shipperId.toInt()
+            shipperProductId = scheduleDelivery.deliveryProduct.shipperProductId.toInt()
+            shipperPrice = scheduleDelivery.deliveryProduct.finalPrice.toInt()
+            serviceId = scheduleDelivery.deliveryProduct.serviceId.toInt()
 
-            insurancePrice = scheduleDelivery.deliveryProduct?.insurance?.insurancePrice ?: 0
-            insuranceType = scheduleDelivery.deliveryProduct?.insurance?.insuranceType ?: 0
-            insuranceUsedType = scheduleDelivery.deliveryProduct?.insurance?.insuranceUsedType ?: 0
-            insuranceUsedInfo = scheduleDelivery.deliveryProduct?.insurance?.insuranceUsedInfo
-            insuranceUsedDefault = scheduleDelivery.deliveryProduct?.insurance?.insuranceUsedDefault ?: 0
+            insurancePrice = scheduleDelivery.deliveryProduct.insurance.insurancePrice
+            insuranceType = scheduleDelivery.deliveryProduct.insurance.insuranceType
+            insuranceUsedType = scheduleDelivery.deliveryProduct.insurance.insuranceUsedType
+            insuranceUsedInfo = scheduleDelivery.deliveryProduct.insurance.insuranceUsedInfo
+            insuranceUsedDefault = scheduleDelivery.deliveryProduct.insurance.insuranceUsedDefault
 
-            logPromoCode = scheduleDelivery.deliveryProduct?.promoStacking?.promoCode
-            discountedRate = scheduleDelivery.deliveryProduct?.finalPrice?.toInt() ?: 0
-            shippingRate = scheduleDelivery.deliveryProduct?.realPrice?.toInt() ?: 0
+            logPromoCode = scheduleDelivery.deliveryProduct.promoStacking.promoCode
+            discountedRate = scheduleDelivery.deliveryProduct.finalPrice.toInt()
+            shippingRate = scheduleDelivery.deliveryProduct.realPrice.toInt()
             benefitAmount = 0
             promoTitle = ""
             isHideShipperName = true
-            checksum = scheduleDelivery.deliveryProduct?.checksum
-            ut = scheduleDelivery.deliveryProduct?.ut
-            val onTimeDeliveryData = scheduleDelivery.deliveryProduct?.features?.onTimeDeliveryGuarantee
-            ontimeDelivery = onTimeDeliveryData?.let {
+            checksum = scheduleDelivery.deliveryProduct.checksum
+            ut = scheduleDelivery.deliveryProduct.ut
+            val onTimeDeliveryData = scheduleDelivery.deliveryProduct.features.onTimeDeliveryGuarantee
+            ontimeDelivery = onTimeDeliveryData.let {
                 OntimeDelivery(
                     it.available,
                     it.textLabel ?: "",
@@ -70,14 +70,14 @@ data class SelectedShipperModel(
                     it.iconUrl ?: ""
                 )
             }
-            etaText = scheduleDelivery.deliveryProduct?.textEta
+            etaText = scheduleDelivery.deliveryProduct.textEta
             etaErrorCode = 0
             shipperName = ""
             freeShippingChosenCourierTitle = ""
-            freeShippingMetadata = scheduleDelivery.deliveryProduct?.promoStacking?.freeShippingMetadata ?: ""
-            benefitClass = scheduleDelivery.deliveryProduct?.promoStacking?.benefitClass ?: ""
-            shippingSubsidy = scheduleDelivery.deliveryProduct?.promoStacking?.shippingSubsidy ?: 0
-            boCampaignId = scheduleDelivery.deliveryProduct?.promoStacking?.boCampaignId ?: 0
+            freeShippingMetadata = scheduleDelivery.deliveryProduct.promoStacking.freeShippingMetadata
+            benefitClass = scheduleDelivery.deliveryProduct.promoStacking.benefitClass
+            shippingSubsidy = scheduleDelivery.deliveryProduct.promoStacking.shippingSubsidy
+            boCampaignId = scheduleDelivery.deliveryProduct.promoStacking.boCampaignId
         }
     }
 }
