@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.campaign.components.adapter.DelegateAdapter
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
@@ -106,14 +107,17 @@ class ProductDelegateAdapter(
 
             val isVariantUnchanged = item.originalVariants.size == item.modifiedVariants.size
             if (isVariantUnchanged && item.isSelected) {
-                binding.tpgVariantCount.text = binding.tpgVariantCount.context.getString(
-                    R.string.smvc_placeholder_selected_variant_product_count,
-                    item.modifiedVariants.size,
-                    item.originalVariants.size
+                binding.tpgVariantCount.text = MethodChecker.fromHtml(
+                    binding.tpgVariantCount.context.getString(
+                        R.string.smvc_placeholder_selected_variant_product_count,
+                        item.modifiedVariants.size,
+                        item.originalVariants.size
+                    )
                 )
             } else {
                 binding.tpgVariantCount.text = binding.tpgVariantCount.context.getString(
-                    R.string.smvc_placeholder_variant_product_count,
+                    R.string.smvc_placeholder_modified_variant_product_count,
+                    item.modifiedVariants.size,
                     item.originalVariants.size
                 )
             }

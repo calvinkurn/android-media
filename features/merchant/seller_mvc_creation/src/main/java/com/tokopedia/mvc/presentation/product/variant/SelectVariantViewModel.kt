@@ -43,7 +43,7 @@ class SelectVariantViewModel @Inject constructor(
             SelectVariantEvent.EnableSelectAllCheckbox -> handleCheckAllProduct()
             is SelectVariantEvent.RemoveProductFromSelection -> handleRemoveProductFromSelection(event.variantProductId)
             SelectVariantEvent.TapSelectButton -> {
-                _uiEffect.tryEmit(SelectVariantEffect.ConfirmUpdateVariant(currentState.parentProduct.modifiedVariants))
+                _uiEffect.tryEmit(SelectVariantEffect.ConfirmUpdateVariant(currentState.parentProduct))
             }
         }
     }

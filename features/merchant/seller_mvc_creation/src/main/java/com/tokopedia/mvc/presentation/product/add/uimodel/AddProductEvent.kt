@@ -29,5 +29,5 @@ sealed class AddProductEvent {
     data class SearchProduct(val searchKeyword : String) : AddProductEvent()
     object ConfirmAddProduct : AddProductEvent()
     data class TapVariant(val parentProduct : Product) : AddProductEvent()
-    data class UpdateVariant(val selectedVariants : List<Product>) : AddProductEvent()
+    data class VariantUpdated(val modifiedParentProduct : Product) : AddProductEvent()
 }

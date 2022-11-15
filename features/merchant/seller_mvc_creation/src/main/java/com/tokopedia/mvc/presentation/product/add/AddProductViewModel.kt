@@ -79,7 +79,7 @@ class AddProductViewModel @Inject constructor(
             is AddProductEvent.ApplySortFilter -> handleApplySortFilter(event.selectedSort)
             is AddProductEvent.SearchProduct -> handleSearchProduct(event.searchKeyword)
             is AddProductEvent.TapVariant -> handleTapVariant(event.parentProduct)
-            is AddProductEvent.UpdateVariant -> {}
+            is AddProductEvent.VariantUpdated -> handleVariantUpdated(event.modifiedParentProduct)
         }
     }
 
@@ -450,6 +450,24 @@ class AddProductViewModel @Inject constructor(
         _uiEffect.tryEmit(AddProductEffect.ShowVariantBottomSheet(parentProduct))
     }
 
+    private fun handleVariantUpdated(modifiedParentProduct: Product) {
+        launch(dispatchers.computation) {
+
+            val selectedVariants = modifiedParentProduct.modifiedVariants.filter { it.isSelected }
+
+            val updatedProducts = currentState.products.map { parentProduct ->
+                if (parentProduct.id == modifiedParentProduct.id) {
+                    parentProduct.copy(modifiedVariants = selectedVariants)
+                } else {
+                    parentProduct
+                }
+            }
+
+            _uiState.update { it.copy(products = updatedProducts) }
+        }
+    }
+
+
     private fun getShopShowcases() {
         launchCatchError(
             dispatchers.io,
@@ -463,7 +481,6 @@ class AddProductViewModel @Inject constructor(
             }
         )
     }
-
 
 
     private fun handleConfirmAddProduct() {
@@ -491,8 +508,6 @@ class AddProductViewModel @Inject constructor(
                 _uiState.update { it.copy(error = error) }
             }
         )
-
-
     }
 
 }

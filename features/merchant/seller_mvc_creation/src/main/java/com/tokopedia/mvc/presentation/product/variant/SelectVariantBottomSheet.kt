@@ -48,7 +48,7 @@ class SelectVariantBottomSheet : BottomSheetUnify() {
 
     private var binding by autoClearedNullable<SmvcBottomsheetSelectVariantBinding>()
     private val parentProduct by lazy { arguments?.getParcelable(BUNDLE_KEY_SELECTED_PARENT_PRODUCT_ID) as? Product }
-    private var onSelectButtonClick: (List<Product.Variant>) -> Unit = {}
+    private var onSelectButtonClick: (Product) -> Unit = {}
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -142,7 +142,7 @@ class SelectVariantBottomSheet : BottomSheetUnify() {
     }
 
 
-    fun setOnSelectButtonClick(onSelectButtonClick: (List<Product.Variant>) -> Unit) {
+    fun setOnSelectButtonClick(onSelectButtonClick: (Product) -> Unit) {
         this.onSelectButtonClick = onSelectButtonClick
     }
 
@@ -161,6 +161,7 @@ class SelectVariantBottomSheet : BottomSheetUnify() {
     private fun handleEffect(effect: SelectVariantEffect) {
         when (effect) {
             is SelectVariantEffect.ConfirmUpdateVariant -> {
+                onSelectButtonClick(effect.modifiedParentProduct)
                 dismiss()
             }
         }

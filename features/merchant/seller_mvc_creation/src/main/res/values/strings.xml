@@ -23,7 +23,8 @@
     <string name="smvc_placeholder_product_sku">SKU %s</string>
     <string name="smvc_placeholder_product_sold_count">Terjual: %s</string>
     <string name="smvc_placeholder_variant_product_count">%d Varian Produk</string>
-    <string name="smvc_placeholder_selected_variant_product_count">%d/%d Varian Produk Terpilih</string>
+    <string name="smvc_placeholder_selected_variant_product_count">&lt;b>%d&lt;/b>/%d Varian Produk Terpilih</string>
+    <string name="smvc_placeholder_modified_variant_product_count">%d/%d Varian Produk Terpilih</string>
     <string name="smvc_placeholder_product_price_range">Rp%s - Rp%s</string>
     <string name="smvc_placeholder_product_price">Rp%s</string>
     <string name="smvc_placeholder_total_stock">Total stok: %s</string>
