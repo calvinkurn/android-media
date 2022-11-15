@@ -3,9 +3,6 @@ package com.tokopedia.product.detail.view.viewholder
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.coachmark.CoachMark2
-import com.tokopedia.coachmark.CoachMark2Item
-import com.tokopedia.coachmark.CoachMarkPreference
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
@@ -44,7 +41,6 @@ class OneLinersViewHolder(
     private val iconRightArrow: IconUnify? = view.findViewById(R.id.one_liners_icon_right)
     private val separatorTop: View? = view.findViewById(R.id.one_liners_top_separator)
     private val separatorBottom: View? = view.findViewById(R.id.one_liners_bottom_separator)
-    private val coachMarkIms by lazy(LazyThreadSafetyMode.NONE) { CoachMark2(view.context) }
 
     override fun bind(element: OneLinersDataModel) {
         val content = element.oneLinersContent
