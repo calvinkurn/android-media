@@ -13,6 +13,8 @@ import com.tokopedia.kotlin.extensions.view.applyUnifyBackgroundColor
 import com.tokopedia.mvc.databinding.SmvcFragmentMvcListBinding
 import com.tokopedia.mvc.di.component.DaggerMerchantVoucherCreationComponent
 import com.tokopedia.mvc.presentation.list.adapter.VouchersAdapter
+import com.tokopedia.mvc.presentation.list.constant.MvcListConstant.INITIAL_PAGE
+import com.tokopedia.mvc.presentation.list.constant.MvcListConstant.PAGE_SIZE
 import com.tokopedia.mvc.presentation.list.viewmodel.MvcListViewModel
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
@@ -45,31 +47,33 @@ class MvcListFragment: BaseDaggerFragment(), HasPaginatedList by HasPaginatedLis
         super.onViewCreated(view, savedInstanceState)
         applyUnifyBackgroundColor()
         binding?.setupView()
-        viewModel.dummy()
+        setupObservables()
+    }
+
+    private fun setupObservables() {
+        viewModel.voucherList.observe(viewLifecycleOwner) { vouchers ->
+            val adapter = binding?.rvVoucher?.adapter as? VouchersAdapter
+            adapter?.addDataList(vouchers.map { it.name })
+            notifyLoadResult(vouchers.size >= PAGE_SIZE)
+        }
     }
 
     private fun SmvcFragmentMvcListBinding.setupView() {
         rvVoucher.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
-        rvVoucher.adapter = VouchersAdapter().apply {
-            setDataList(List(100) {
-                it.toString() + it.toString()
-            })
-        }
+        rvVoucher.adapter = VouchersAdapter()
         val config = HasPaginatedList.Config(
-            pageSize = 100,
+            pageSize = PAGE_SIZE,
             onLoadNextPage = {
                 //flashSaleAdapter.addItem(LoadingItem)
             }, onLoadNextPageFinished = {
                 //flashSaleAdapter.removeItem(LoadingItem)
-            })
+            }
+        )
+        viewModel.getVoucherList(INITIAL_PAGE, PAGE_SIZE)
         attachPaging(rvVoucher, config, ::getDataList)
     }
 
     private fun getDataList(page: Int, pageSize: Int) {
-        val aaa = binding?.rvVoucher?.adapter as? VouchersAdapter
-        aaa?.addDataList(List(pageSize) {
-            it.toString() + it.toString()
-        })
-        notifyLoadResult(true)
+        viewModel.getVoucherList(page, pageSize)
     }
 }
