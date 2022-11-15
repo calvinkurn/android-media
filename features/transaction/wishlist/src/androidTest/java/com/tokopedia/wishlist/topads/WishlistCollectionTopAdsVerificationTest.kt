@@ -10,9 +10,10 @@ import com.tokopedia.test.application.assertion.topads.TopAdsAssertion
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupTopAdsDetector
 import com.tokopedia.wishlist.R
-import com.tokopedia.wishlist.getWishlistItemAdapter
+import com.tokopedia.wishlist.adapter
 import com.tokopedia.wishlist.runWishlistCollectionBot
 import com.tokopedia.wishlistcollection.view.activity.WishlistCollectionActivity
+import com.tokopedia.wishlistcollection.view.adapter.WishlistCollectionAdapter
 import com.tokopedia.wishlistcollection.view.adapter.viewholder.WishlistCollectionRecommendationItemViewHolder
 import org.junit.After
 import org.junit.Rule
@@ -51,22 +52,20 @@ class WishlistCollectionTopAdsVerificationTest {
     @Test
     fun testWishlistCollectionTopAds() {
         runWishlistCollectionBot {
-
             loading()
-
             hideCoachmark()
 
             val wishlistCollectionRecyclerView =
                 activityRule.activity.findViewById<RecyclerView>(R.id.rv_wishlist_collection)
             val itemCount = wishlistCollectionRecyclerView.adapter?.itemCount ?: 0
-
             for (index in 0 until itemCount) {
                 scrollWishlistRecyclerViewToIndex(index)
                 if (isRecommendationItem(
                         wishlistCollectionRecyclerView.findViewHolderForAdapterPosition(index)
                     )
                 ) {
-                    val recommendationItem = wishlistCollectionRecyclerView.getWishlistItemAdapter()
+                    val recommendationItem = wishlistCollectionRecyclerView
+                        .adapter<WishlistCollectionAdapter>()
                         .getRecommendationItemAtIndex(index)
                     if (recommendationItem.isTopAds) {
                         topAdsCount++

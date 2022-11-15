@@ -10,6 +10,7 @@ import com.tokopedia.test.application.assertion.topads.TopAdsAssertion
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupTopAdsDetector
 import com.tokopedia.wishlist.R
+import com.tokopedia.wishlist.adapter
 import com.tokopedia.wishlist.runWishlistCollectionDetailBot
 import com.tokopedia.wishlist.view.adapter.WishlistV2Adapter
 import com.tokopedia.wishlist.view.adapter.viewholder.WishlistV2RecommendationCarouselViewHolder
@@ -51,42 +52,27 @@ class WishlistCollectionDetailTopAdsVerificationTest {
     @Test
     fun testWishlistCollectionDetailTopAds() {
         runWishlistCollectionDetailBot {
-
             loading()
-
-            hideKeyboard()
 
             val wishlistRecyclerView =
                 activityRule.activity.findViewById<RecyclerView>(R.id.rv_wishlist_collection_detail)
             val wishlistItemCount = wishlistRecyclerView?.adapter?.itemCount ?: 0
-
             for (wishlistIndex in 0..wishlistItemCount) {
                 scrollWishlistRecyclerViewToIndex(wishlistIndex)
                 if (isRecommendationCarousel(
-                        wishlistRecyclerView.findViewHolderForAdapterPosition(
-                            wishlistIndex
-                        )
+                        wishlistRecyclerView.findViewHolderForAdapterPosition(wishlistIndex)
                     )
                 ) {
-                    val recommendationRecyclerView =
-                        wishlistRecyclerView.findViewHolderForAdapterPosition(wishlistIndex)
-                            ?.itemView
-                            ?.findViewById<RecyclerView>(
-                                com.tokopedia.carouselproductcard.R.id.carouselProductCardRecyclerView
-                            )
-                    val recommendationItemCount =
-                        recommendationRecyclerView?.adapter?.itemCount ?: 0
-                    val recommendationItems = (wishlistRecyclerView?.adapter as? WishlistV2Adapter)
-                        ?.getRecommendationDataAtIndex(wishlistIndex)
-                        ?.recommendationProductCardModelData
+                    val recommendationItems = wishlistRecyclerView
+                        .adapter<WishlistV2Adapter>()
+                        .getRecommendationDataAtIndex(wishlistIndex)
+                        .recommendationProductCardModelData
 
-                    if (recommendationItems != null) {
-                        for (recommendationIndex in 0 until recommendationItemCount) {
-                            if (recommendationItems[recommendationIndex].isTopAds) {
-                                topAdsCount++
-                                scrollRecommendationRecyclerViewToIndex(recommendationIndex)
-                                clickRecommendationRecyclerViewItem(recommendationIndex)
-                            }
+                    for (recommendationIndex in recommendationItems.indices) {
+                        if (recommendationItems[recommendationIndex].isTopAds) {
+                            topAdsCount++
+                            scrollRecommendationRecyclerViewToIndex(recommendationIndex)
+                            clickRecommendationRecyclerViewItem(recommendationIndex)
                         }
                     }
                 }

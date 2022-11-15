@@ -26,15 +26,11 @@ class WishlistCollectionRobot {
     }
 
     fun clickWishlistRecyclerViewItem(index: Int) {
-        try {
-            Espresso.onView(ViewMatchers.withId(R.id.rv_wishlist_collection))
-                .perform(
-                    RecyclerViewActions
-                        .actionOnItemAtPosition<RecyclerView.ViewHolder>(index, ViewActions.click())
-                )
-        } catch (e: PerformException) {
-            Timber.e(e)
-        }
+        Espresso.onView(ViewMatchers.withId(R.id.rv_wishlist_collection))
+            .perform(
+                RecyclerViewActions
+                    .actionOnItemAtPosition<RecyclerView.ViewHolder>(index, ViewActions.click())
+            )
     }
 
     fun scrollWishlistRecyclerViewToIndex(index: Int) {

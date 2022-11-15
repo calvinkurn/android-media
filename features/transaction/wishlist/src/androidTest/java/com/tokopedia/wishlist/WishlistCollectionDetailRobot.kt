@@ -2,7 +2,6 @@ package com.tokopedia.wishlist
 
 import androidx.recyclerview.widget.RecyclerView
 import androidx.test.espresso.Espresso
-import androidx.test.espresso.PerformException
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.contrib.RecyclerViewActions
 import androidx.test.espresso.matcher.ViewMatchers
@@ -14,25 +13,17 @@ class WishlistCollectionDetailRobot {
         Thread.sleep(duration)
     }
 
-    fun hideKeyboard() {
-        Espresso.onView(ViewMatchers.isRoot()).perform(ViewActions.closeSoftKeyboard())
-    }
-
     fun scrollWishlistRecyclerViewToIndex(index: Int) {
         Espresso.onView(ViewMatchers.withId(R.id.rv_wishlist_collection_detail))
             .perform(RecyclerViewActions.scrollToPosition<RecyclerView.ViewHolder>(index))
     }
 
     fun clickRecommendationRecyclerViewItem(index: Int) {
-        try {
-            Espresso.onView(ViewMatchers.withId(com.tokopedia.carouselproductcard.R.id.carouselProductCardRecyclerView))
-                .perform(
-                    RecyclerViewActions
-                        .actionOnItemAtPosition<RecyclerView.ViewHolder>(index, ViewActions.click())
-                )
-        } catch (e: PerformException) {
-            Timber.e(e)
-        }
+        Espresso.onView(ViewMatchers.withId(com.tokopedia.carouselproductcard.R.id.carouselProductCardRecyclerView))
+            .perform(
+                RecyclerViewActions
+                    .actionOnItemAtPosition<RecyclerView.ViewHolder>(index, ViewActions.click())
+            )
     }
 
     fun scrollRecommendationRecyclerViewToIndex(index: Int) {
