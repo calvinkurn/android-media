@@ -24,8 +24,8 @@ import com.tokopedia.common_compose.ui.NestTheme
 fun NestHeader(
     modifier: Modifier = Modifier,
     title: String,
-    showBackNav: Boolean = true,
-    onToolbarBackIconPressed: () -> Unit = {}
+    showBackIcon: Boolean = true,
+    onBackIconPressed: () -> Unit = {}
 ) {
     Surface(
         color = NestTheme.colors.NN._0,
@@ -41,12 +41,12 @@ fun NestHeader(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Spacer(modifier = Modifier.width(16.dp))
-            if (showBackNav) {
+            if (showBackIcon) {
                 IconButton(
                     modifier = Modifier
                         .height(16.dp)
                         .width(18.dp),
-                    onClick = onToolbarBackIconPressed
+                    onClick = onBackIconPressed
                 ) {
                     Icon(
                         imageVector = Icons.Filled.ArrowBack,
@@ -72,7 +72,7 @@ fun NestHeader(
 @Composable
 fun NestHeaderPreview() {
     NestTheme(darkTheme = false) {
-        NestHeader(title = "Tokopedia", showBackNav = false)
+        NestHeader(title = "Tokopedia", showBackIcon = false)
     }
 }
 

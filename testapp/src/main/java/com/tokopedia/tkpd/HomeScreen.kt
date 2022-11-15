@@ -12,7 +12,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.core.graphics.toColorInt
 import com.tokopedia.common_compose.principles.NestButton
 import com.tokopedia.common_compose.principles.NestHeader
 import com.tokopedia.common_compose.ui.NestTheme
@@ -20,7 +19,7 @@ import com.tokopedia.common_compose.ui.NestTheme
 
 @SuppressLint("UnsupportedDarkModeColor")
 @Composable
-fun TestAppHome(
+fun HomeScreen(
     model: MainActivity.Model = MainActivity.Model(),
     onDarkModeChanged: () -> Unit = {},
     onApplinkChanged: (String) -> Unit = {},
@@ -28,15 +27,18 @@ fun TestAppHome(
 ) {
     Surface {
         Column {
-            NestHeader(title = "Tokopedia Test App", showBackNav = false)
-            val urlBgColor =
-                (if (model.urlState.contains("live", true)) "#27ae60" else "#e67e22").toColorInt()
+            NestHeader(title = "Tokopedia Test App", showBackIcon = false)
+            val urlBgColor = if (model.urlState.contains("live", true)) {
+                NestTheme.colors.GN._600
+            } else {
+                NestTheme.colors.YN._600
+            }
             Text(
                 text = model.urlState,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(vertical = 4.dp)
-                    .background(Color(urlBgColor)),
+                    .background(urlBgColor),
                 textAlign = TextAlign.Center,
                 color = MaterialTheme.colors.onPrimary,
                 style = NestTheme.typography.heading5
@@ -109,6 +111,6 @@ fun TestAppHome(
 @Composable
 fun TestAppHomePreview() {
     NestTheme {
-        TestAppHome()
+        HomeScreen()
     }
 }

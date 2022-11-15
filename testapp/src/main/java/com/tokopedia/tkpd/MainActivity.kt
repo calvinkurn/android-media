@@ -36,7 +36,7 @@ class MainActivity : AppCompatActivity() {
         setContent {
             NestTheme {
                 var modelState by remember { model }
-                TestAppHome(
+                HomeScreen(
                     modelState,
                     {
                         val newState = modelState.isDarkModeChecked.not()
