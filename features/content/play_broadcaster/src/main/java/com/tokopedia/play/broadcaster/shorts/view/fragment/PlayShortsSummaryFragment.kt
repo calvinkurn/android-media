@@ -111,7 +111,7 @@ class PlayShortsSummaryFragment @Inject constructor(
         if (prev?.coverForm == curr.coverForm) return
 
         if (curr.coverForm.coverUri.isEmpty()) {
-            binding.ivCover.setImageUrl(curr.mediaUri)
+            binding.ivCover.setImageUrl(curr.media.mediaUri)
         } else {
             binding.ivCover.setImageUrl(curr.coverForm.coverUri)
         }

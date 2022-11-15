@@ -5,7 +5,7 @@ package com.tokopedia.play.broadcaster.shorts.ui.model.event
  */
 data class PlayShortsUiEvent(
     val toaster: PlayShortsToaster,
-    val bottomSheet: PlayShortsBottomSheet
+    val bottomSheet: PlayShortsBottomSheet,
     val oneTimeEvent: PlayShortsOneTimeEvent,
 ) {
     companion object {

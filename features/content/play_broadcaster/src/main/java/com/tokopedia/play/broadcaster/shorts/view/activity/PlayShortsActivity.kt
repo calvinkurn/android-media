@@ -143,8 +143,8 @@ class PlayShortsActivity : BaseActivity() {
         }
 
         lifecycleScope.launchWhenStarted {
-            viewModel.uiEvent.collect {
-                renderBottomSheet(it.bottomSheet)
+            viewModel.uiEvent.collect { event ->
+                renderBottomSheet(event.bottomSheet)
                 renderOneTimeEvent(event.oneTimeEvent)
             }
         }
@@ -180,6 +180,15 @@ class PlayShortsActivity : BaseActivity() {
             }
             is PlayShortsBottomSheet.SellerNotEligible -> {
                 showSellerNotEligibleBottomSheet()
+            }
+            else -> {}
+        }
+    }
+
+    private fun renderOneTimeEvent(oneTimeEvent: PlayShortsOneTimeEvent) {
+        when(oneTimeEvent) {
+            is PlayShortsOneTimeEvent.GoToSummary -> {
+                openSummaryFragment()
             }
             else -> {}
         }
