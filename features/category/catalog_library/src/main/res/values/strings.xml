@@ -1,0 +1,5 @@
+<resources>
+    <string name="catalog_host" translatable="false">catalog</string>
+    <string name="catalog_lihat_semua">Lihat Semua</string>
+    <string name="catalog_homepage_title">Katalog Tokopedia</string>
+</resources>

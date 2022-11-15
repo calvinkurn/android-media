@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@drawable/catalog_most_viral_bg"
+    android:layout_margin="8dp"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <LinearLayout
+        android:id="@+id/catalog_most_viral_item_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_margin="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal" >
+
+            <com.tokopedia.iconunify.IconUnify
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:icon_name="FIRE" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Lagi Viral, nih!"
+                android:layout_gravity="center_vertical"
+                app:typographyType="heading_5"
+                android:textColor="@color/Unify_Static_White"
+                />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/catalog_product_viral_layout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/catalog_viral_product_white_bg"
+            android:layout_marginBottom="8dp"
+            android:orientation="horizontal"
+            android:layout_marginTop="16dp" >
+
+            <com.tokopedia.unifycomponents.ImageUnify
+                android:id="@+id/catalog_product_viral_image"
+                android:layout_width="54dp"
+                android:layout_height="54dp" />
+
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:orientation="vertical" >
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/catalog_product_viral_title"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="Product Title"
+                    android:layout_marginTop="12dp"
+                    android:layout_marginBottom="4dp"
+                    app:typographyType="heading_5"
+                    app:typographyWeight="bold" />
+
+                <com.tokopedia.unifyprinciples.Typography
+                    android:id="@+id/catalog_product_viral_category"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    tools:text="Category"
+                    app:typographyType="body_3" />
+
+            </LinearLayout>
+        </LinearLayout>
+
+    </LinearLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

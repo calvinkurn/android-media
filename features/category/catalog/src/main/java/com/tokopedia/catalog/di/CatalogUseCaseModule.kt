@@ -115,6 +115,7 @@ class CatalogUseCaseModule {
         return CatalogComparisonProductUseCase(catalogComparisonProductRepository)
     }
 
+
     @CatalogScope
     @Provides
     fun providesTrackingQueue(@ApplicationContext context: Context): TrackingQueue = TrackingQueue(context)

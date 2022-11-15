@@ -15,6 +15,7 @@ ext {
             internalReview                  : ":features:common:internal_review",
 
             catalog                         : ":features:category:catalog",
+            catalogLibrary                  : ":features:category:catalog_library",
             commonTradein                   : ":features:category:common_tradein",
             affiliateSDK                   : ":features:category:common_sdk_affiliate_toko",
             commonCategory                  : ":features:category:common_category",
