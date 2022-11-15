@@ -1,5 +1,6 @@
 package com.tokopedia.dilayanitokopedia.home.presentation.fragment
 
+import android.content.ActivityNotFoundException
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
@@ -15,6 +16,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.internal.ApplinkConstInternalDilayaniTokopedia
@@ -90,6 +92,9 @@ class DtHomeFragment : Fragment() {
         const val SOURCE = "dilayanitokopedia"
         const val SOURCE_TRACKING = "dilayanitokopedia page"
 
+
+        private const val EXTRA_URL = "url"
+
     }
 
     @Inject
@@ -118,7 +123,6 @@ class DtHomeFragment : Fragment() {
             typeFactory = DtHomeAdapterTypeFactory(
                 dtView = createDtView(),
                 featuredShopListener = createFeatureShopCallback(),
-
 //                homeTickerListener = this,
 //                tokoNowCategoryGridListener = this,
                 bannerComponentListener = createSlideBannerCallback(),
@@ -136,7 +140,6 @@ class DtHomeFragment : Fragment() {
                 homeTopCarouselListener = createTopCarouselCallback(),
                 homeLeftCarouselListener = createLeftCarouselCallback(),
                 dynamicLegoBannerCallback = createLegoBannerCallback()
-//                playWidgetCoordinator = createPlayWidgetCoordinator()
             ),
             differ = HomeListDiffer()
         )
@@ -200,12 +203,48 @@ class DtHomeFragment : Fragment() {
         binding?.headerCompHolder?.adapter = anchorTabAdapter
     }
 
+
+    /**
+     * TODO - part of click listener
+     */
     private fun anchorTabListener(): DtAnchorTabAdapter.AnchorTabListener {
         return object : DtAnchorTabAdapter.AnchorTabListener {
 
+            /*
+//            ancor tab yang di select
+//            compare dengan current
+//            kalau beda baru scroll
+             */
             override fun onMenuSelected(anchorTabUiModel: AnchorTabUiModel) {
-                anchorTabAdapter?.selectMenu(anchorTabUiModel)
-                
+//                anchorTabAdapter?.selectMenu(anchorTabUiModel)
+//                val visitable = viewModelDtHome.getHomeVisitableList().find {
+//                    val layoutItemUiModel = it
+//                    if(layoutItemUiModel is HomeLayoutItemUiModel)
+////                    (it as ).idUiModel == anchorTabUiModel.id
+//                }
+//                val indexVisitable =  viewModelDtHome.getHomeVisitableList().indexOf()
+//                val position = visitable?.let {
+//                    adapter.findPosition(it)
+//                }
+//                val position = adapter.findPosition())
+//
+//                //get group id
+//                val currentGroupId = anchorTabUiModel.groupId
+//                //compare group id
+//                adapter.data.forEach {it->
+//                    (it as HomeComponentVisitable).visitableId()
+//                }
+//                //find data by group id *
+//                // scroll
+//                val ScreenPosition = (rvHome?.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
+//
+//                Toaster.build(view!!,"to ${anchorTabUiModel.title}. i = $position",Toaster.TYPE_NORMAL).show()
+//
+//                if (position == -1) return
+//                if (position != null) {
+//                    rvHome?.smoothScrollToPosition(position)
+//                }
+
             }
         }
 
@@ -273,12 +312,6 @@ class DtHomeFragment : Fragment() {
     private fun initHint(searchPlaceholder: SearchPlaceholder) {
         searchPlaceholder.data?.let { data ->
             navToolbar?.setupSearchbar(
-//                hints = listOf(
-//                    HintData(
-//                        data.placeholder.orEmpty(),
-//                        data.keyword.orEmpty()
-//                    )
-//                ),
                 hints = listOf(
                     HintData(
                         data.placeholder ?: "", data.keyword
@@ -729,25 +762,30 @@ class DtHomeFragment : Fragment() {
 
     }
 
+    fun getDynamicChannelData(visitable: Visitable<*>, channelModel: ChannelModel, channelPosition: Int) {
+        viewModelDtHome.getDynamicChannelDataOnExpired(visitable, channelModel, channelPosition)
+    }
+
     private fun createTopCarouselCallback(): MixTopComponentListener? {
         return object : MixTopComponentListener {
             override fun onMixTopImpressed(channel: ChannelModel, parentPos: Int) {
+               //no-op
             }
 
             override fun onSeeAllBannerClicked(channel: ChannelModel, applink: String) {
-                TODO("Not yet implemented")
+                onActionLinkClicked(channel.channelHeader.applink)
             }
 
             override fun onMixtopButtonClicked(channel: ChannelModel) {
-                TODO("Not yet implemented")
+                //no-op
             }
 
             override fun onSectionItemClicked(applink: String) {
-                TODO("Not yet implemented")
+                onActionLinkClicked(applink)
             }
 
             override fun onBackgroundClicked(channel: ChannelModel) {
-                TODO("Not yet implemented")
+                onActionLinkClicked(channel.channelHeader.applink)
             }
 
             override fun onProductCardImpressed(
@@ -769,16 +807,18 @@ class DtHomeFragment : Fragment() {
             }
 
             override fun onSeeMoreCardClicked(channel: ChannelModel, applink: String) {
-                TODO("Not yet implemented")
+                onActionLinkClicked(applink)
+
             }
 
         }
     }
 
+    val CLICK_TIME_INTERVAL: Long = 500
+
+    private var mLastClickTime = System.currentTimeMillis()
 
     private fun onActionLinkClicked(actionLink: String, trackingAttribution: String = "") {
-        var mLastClickTime = System.currentTimeMillis()
-        val CLICK_TIME_INTERVAL: Long = 500
 
         val now = System.currentTimeMillis()
         if (now - mLastClickTime < CLICK_TIME_INTERVAL) {
@@ -788,12 +828,22 @@ class DtHomeFragment : Fragment() {
         if (TextUtils.isEmpty(actionLink)) {
             return
         }
-        if (activity != null
-            && RouteManager.isSupportApplink(activity, actionLink)
-        ) {
+        if (activity != null && RouteManager.isSupportApplink(activity, actionLink)) {
             openApplink(actionLink)
         } else {
-//            openWebViewURL(actionLink, activity)
+            openWebViewURL(actionLink, activity)
+        }
+    }
+
+    private fun openWebViewURL(url: String?, context: Context?) {
+        if (!TextUtils.isEmpty(url) && context != null) {
+            val intent = RouteManager.getIntent(context, ApplinkConst.PROMO)
+            intent.putExtra(EXTRA_URL, url)
+            try {
+                startActivity(intent)
+            } catch (exception: ActivityNotFoundException) {
+                exception.printStackTrace()
+            }
         }
     }
 
@@ -1017,6 +1067,7 @@ class DtHomeFragment : Fragment() {
 //                    if (newState == RecyclerView.SCROLL_STATE_IDLE)
 //                        scrollToLastSection()
 
+//                    updateAnchorTabBasedOnScroll()
 
                     updateAfterScrollDown()
                 } else if (scrollDist < -MINIMUM) {
@@ -1039,6 +1090,23 @@ class DtHomeFragment : Fragment() {
                 }
             }
         })
+    }
+
+    /*
+    get current position recyclerview widgets
+    [] scroll : get next position
+    compare current position and next position
+    if current different with next then
+    - select anchor tab
+    - smooth scroll to make sure still visible
+    else no op
+     */
+    private fun updateAnchorTabBasedOnScroll(currentTabUi: AnchorTabUiModel, nexTabUi: AnchorTabUiModel) {
+        val currentPosition = (rvHome?.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
+        if (currentTabUi != nexTabUi) {
+            anchorTabAdapter?.selectMenu(nexTabUi)
+//            binding?.headerCompHolder?.smoothScrollToPosition()
+        }
     }
 
     private fun updateAfterScrollUp() {
@@ -1064,4 +1132,8 @@ class DtHomeFragment : Fragment() {
         binding?.dtViewBackgroundImage?.gone()
 
     }
+
+
+
+
 }

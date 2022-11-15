@@ -65,7 +65,6 @@ class DtHomeAdapterTypeFactory(
     private val homeTopComponentListener: HomeComponentListener? = null,
     private val homeTopCarouselListener: MixTopComponentListener? = null,
     private val homeLeftCarouselListener: MixLeftComponentListener? = null,
-//    private val playWidgetCoordinator: PlayWidgetCoordinator? = null
 ) : BaseAdapterTypeFactory(),
 //    HomeTypeFactory,
     HomeComponentTypeFactory
@@ -190,7 +189,4 @@ class DtHomeAdapterTypeFactory(
         }
     }
 
-//    private fun createPlayWidgetViewHolder(view: View): PlayWidgetViewHolder? {
-//        return playWidgetCoordinator?.let { PlayWidgetViewHolder(view, it) }
-//    }
 }

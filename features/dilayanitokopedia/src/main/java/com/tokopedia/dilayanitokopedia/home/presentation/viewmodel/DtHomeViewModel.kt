@@ -16,6 +16,7 @@ import com.tokopedia.dilayanitokopedia.home.domain.usecase.DtGetHomeLayoutDataUs
 import com.tokopedia.dilayanitokopedia.home.presentation.uimodel.AnchorTabUiModel
 import com.tokopedia.dilayanitokopedia.home.uimodel.HomeLayoutItemUiModel
 import com.tokopedia.dilayanitokopedia.home.uimodel.HomeLayoutListUiModel
+import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
@@ -77,7 +78,7 @@ class DtHomeViewModel @Inject constructor(
         }
     }
 
-    private fun getHomeVisitableList(): List<Visitable<*>> {
+    fun getHomeVisitableList(): List<Visitable<*>> {
         return homeLayoutItemList.mapNotNull { it.layout }
     }
 
@@ -102,7 +103,6 @@ class DtHomeViewModel @Inject constructor(
                 state = DtLayoutState.SHOW
             )
 
-
             _homeLayoutList.postValue(Success(data))
             _menuList.postValue(dataMenuList().mapMenuList(homeLayoutResponse))
 
@@ -119,19 +119,111 @@ class DtHomeViewModel @Inject constructor(
      */
     private fun dataMenuList(): MutableList<AnchorTabUiModel> {
         val anchorTabList = mutableListOf<AnchorTabUiModel>()
-        anchorTabList.add(AnchorTabUiModel(0, "title 1", "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/bo_reg_20k.png", "360"))
-        anchorTabList.add(AnchorTabUiModel(0, "title 2", "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/bo_reg_20k.png", "360"))
-        anchorTabList.add(AnchorTabUiModel(0, "title 3", "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/bo_reg_20k.png", "30"))
-        anchorTabList.add(AnchorTabUiModel(0, "title 4", "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/bo_reg_20k.png", "360"))
-        anchorTabList.add(AnchorTabUiModel(0, "title 5", "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/bo_reg_20k.png", "360"))
-        anchorTabList.add(AnchorTabUiModel(0, "title 6", "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/bo_reg_20k.png", "360"))
-        anchorTabList.add(AnchorTabUiModel(0, "title 7", "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/bo_reg_20k.png", "360"))
-        anchorTabList.add(AnchorTabUiModel(0, "title 8", "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/bo_reg_20k.png", "360"))
-        anchorTabList.add(AnchorTabUiModel(0, "title 9", "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/bo_reg_20k.png", "360"))
-        anchorTabList.add(AnchorTabUiModel(0, "title 10", "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/bo_reg_20k.png", "360"))
-        anchorTabList.add(AnchorTabUiModel(0, "title 11", "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/bo_reg_20k.png", "360"))
-        anchorTabList.add(AnchorTabUiModel(0, "title 12", "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/bo_reg_20k.png", "363"))
-        anchorTabList.add(AnchorTabUiModel(0, "title 13", "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/bo_reg_20k.png", ""))
+
+        anchorTabList.add(
+            AnchorTabUiModel(
+                "",
+                "1: NOW! 2hours 2/11 main header UDC",
+                "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/bo_reg_20k.png",
+                "360"
+            )
+        )
+        anchorTabList.add(
+            AnchorTabUiModel(
+                "",
+                "2: H DT tc_discount_3050 TC",
+                "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/bo_reg_20k.png",
+                "361"
+            )
+        )
+//        anchorTabList.add(
+//            AnchorTabUiModel(
+//                0,
+//                "3 DT tokocabang_discount_5090 TC",
+//                "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/bo_reg_20k.png",
+//                "362"
+//            )
+//        )
+//        anchorTabList.add(
+//            AnchorTabUiModel(
+//                0,
+//                "4 DT tokocabang TC",
+//                "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/bo_reg_20k.png",
+//                "364"
+//            )
+//        )
+//        anchorTabList.add(
+//            AnchorTabUiModel(
+//                0,
+//                "5 DT tokocabang_100k  TC",
+//                "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/bo_reg_20k.png",
+//                "365"
+//            )
+//        )
+//        anchorTabList.add(
+//            AnchorTabUiModel(
+//                0,
+//                "6 DT tc_injection   LC",
+//                "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/bo_reg_20k.png",
+//                "366"
+//            )
+//        )
+//        anchorTabList.add(
+//            AnchorTabUiModel(
+//                0,
+//                "7 DT tokocabang_instant LC",
+//                "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/bo_reg_20k.png",
+//                "367"
+//            )
+//        )
+//        anchorTabList.add(
+//            AnchorTabUiModel(
+//                0,
+//                "title 8",
+//                "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/bo_reg_20k.png",
+//                "360"
+//            )
+//        )
+//        anchorTabList.add(
+//            AnchorTabUiModel(
+//                0,
+//                "title 9",
+//                "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/bo_reg_20k.png",
+//                "360"
+//            )
+//        )
+//        anchorTabList.add(
+//            AnchorTabUiModel(
+//                0,
+//                "title 10",
+//                "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/bo_reg_20k.png",
+//                "360"
+//            )
+//        )
+//        anchorTabList.add(
+//            AnchorTabUiModel(
+//                0,
+//                "title 11",
+//                "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/bo_reg_20k.png",
+//                "360"
+//            )
+//        )
+//        anchorTabList.add(
+//            AnchorTabUiModel(
+//                0,
+//                "title 12",
+//                "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/bo_reg_20k.png",
+//                "363"
+//            )
+//        )
+//        anchorTabList.add(
+//            AnchorTabUiModel(
+//                0,
+//                "title 13",
+//                "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/bo_reg_20k.png",
+//                ""
+//            )
+//        )
 
         return anchorTabList
     }
@@ -176,5 +268,37 @@ class DtHomeViewModel @Inject constructor(
             campaignCode = data.campaignCode.substring(0, 11)
         }
         return "${data.identifier}-${campaignCode}"
+    }
+
+    fun getPositionWidget(listComponent: MutableList<AnchorTabUiModel>?, pinnedComponentId: AnchorTabUiModel): Int {
+        listComponent?.forEachIndexed { index, componentsItem ->
+            if (componentsItem == pinnedComponentId) {
+                return index
+            }
+        }
+        return -1
+    }
+
+    fun getDynamicChannelDataOnExpired(visitable: Visitable<*>, channelModel: ChannelModel, position: Int){
+//        launchCatchError(coroutineContext, block = {
+//            val visitableList = homeUseCase.get().onDynamicChannelExpired(channelModel.groupId)
+//
+//            if(visitableList.isEmpty()){
+//                deleteWidget(visitable, position)
+//            } else {
+//                val lastIndex = position
+//                deleteWidget(visitable, lastIndex)
+//                visitableList.reversed().forEach {
+//                    addWidget(it, lastIndex)
+//                }
+//                _trackingLiveData.postValue(Event(visitableList.filterIsInstance(HomeVisitable::class.java)))
+//            }
+//        }){
+//            deleteWidget(visitable, position)
+//        }
+    }
+
+    private fun deleteWidget(visitable: Visitable<*>?, position: Int) {
+//        homeDataModel.deleteWidgetModel(visitable, position) { _homeLiveDynamicChannel.postValue(homeDataModel) }
     }
 }

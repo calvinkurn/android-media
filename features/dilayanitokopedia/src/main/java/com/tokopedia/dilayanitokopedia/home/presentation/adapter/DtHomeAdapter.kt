@@ -10,10 +10,6 @@ class DtHomeAdapter(
         differ: HomeListDiffer
 ) : BaseDtListAdapter<Visitable<*>, DtHomeAdapterTypeFactory>(typeFactory, differ) {
 
-        init {
-                Timber.d("logging--DtHomeAdapter called")
-
-        }
 
     inline fun <reified T: Visitable<*>> getItem(itemClass: Class<T>): T? {
         return data.find { it.javaClass == itemClass } as T?
