@@ -61,6 +61,7 @@ import com.tokopedia.mvc.databinding.SmvcFragmentAddProductBinding
 import com.tokopedia.mvc.domain.entity.Product
 import com.tokopedia.mvc.domain.entity.ShopData
 import com.tokopedia.mvc.domain.entity.enums.BenefitType
+import com.tokopedia.mvc.presentation.product.variant.SelectVariantBottomSheet
 import com.tokopedia.mvc.presentation.share.LinkerDataGenerator
 import com.tokopedia.mvc.presentation.share.SharingComponentInstanceBuilder
 import com.tokopedia.sortfilter.SortFilterItem
@@ -242,8 +243,7 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
                 showWarehouseBottomSheet(effect.selectedWarehouse, effect.warehouses)
             }
             is AddProductEffect.ShowVariantBottomSheet -> {
-                val selectedParentProduct = effect.selectedParentProduct
-                val variants = 0
+                displayVariantBottomSheet(effect.selectedParentProduct, effect.parentProducts)
             }
             is AddProductEffect.ConfirmAddProduct -> {
                 displayShareBottomSheet(
@@ -707,5 +707,12 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
                 shareCallback
             )
         )
+    }
+
+    private fun displayVariantBottomSheet(selectedParentProduct: Product, products: List<Product>) {
+        val updatedProduct = products.find { it.id == selectedParentProduct.id } ?: return
+        val bottomSheet = SelectVariantBottomSheet.newInstance(updatedProduct)
+        bottomSheet.setOnSelectButtonClick {  }
+        bottomSheet.show(childFragmentManager, bottomSheet.tag)
     }
 }

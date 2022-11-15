@@ -5,6 +5,17 @@
     <string name="smvc_add_product_subtitle">Pilih produk untuk dipasang kupon.</string>
     <string name="smvc_search_product">Cari nama produk</string>
     <string name="smvc_select_all">Pilih Semua</string>
+    <string name="smvc_select">Pilih</string>
+    <string name="smvc_product">Produk</string>
+    <string name="smvc_seller_location">Lokasi Seller</string>
+    <string name="smvc_location">Lokasi</string>
+    <string name="smvc_category">Kategori</string>
+    <string name="smvc_showcase">Etalase</string>
+    <string name="smvc_sort">Urutkan</string>
+    <string name="smvc_update">Ubah</string>
+    <string name="smvc_select_variant">Pilih Varian</string>
+    <string name="smvc_empty_state_no_product_title">Oops, produk nggak ditemukan</string>
+    <string name="smvc_empty_state_no_product_description">Coba gunakan kata kunci lain atau filter yang berbeda, ya.</string>
 
     <string name="smvc_placeholder_max_selected_product">Maks. %d Produk</string>
     <string name="smvc_placeholder_selected_product_count">%d/%d</string>
@@ -18,17 +29,9 @@
     <string name="smvc_placeholder_total_stock">Total stok: %s</string>
     <string name="smvc_placeholder_selected_category_count">%d Kategori</string>
     <string name="smvc_placeholder_selected_showcase_count">%d Etalase</string>
+    <string name="smvc_placeholder_selected_variant_count">Pilih (%d)</string>
+    <string name="smvc_placholder_stock">Stok: %d</string>
 
-    <string name="smvc_empty_state_no_product_title">Oops, produk nggak ditemukan</string>
-    <string name="smvc_empty_state_no_product_description">Coba gunakan kata kunci lain atau filter yang berbeda, ya.</string>
-
-    <string name="smvc_product">Produk</string>
-    <string name="smvc_seller_location">Lokasi Seller</string>
-    <string name="smvc_location">Lokasi</string>
-    <string name="smvc_category">Kategori</string>
-    <string name="smvc_showcase">Etalase</string>
-    <string name="smvc_sort">Urutkan</string>
-    <string name="smvc_update">Ubah</string>
 
     <!--Share Component-->
     <string name="smvc_placeholder_share_component_outgoing_title">Kupon Produk dari %s</string>

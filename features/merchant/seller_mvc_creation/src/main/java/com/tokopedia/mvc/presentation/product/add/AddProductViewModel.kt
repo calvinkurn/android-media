@@ -8,6 +8,7 @@ import com.tokopedia.mvc.domain.entity.Product
 import com.tokopedia.mvc.domain.entity.ProductCategoryOption
 import com.tokopedia.mvc.domain.entity.ProductSortOptions
 import com.tokopedia.mvc.domain.entity.ShopShowcase
+import com.tokopedia.mvc.domain.entity.Variant
 import com.tokopedia.mvc.domain.entity.VoucherValidationResult
 import com.tokopedia.mvc.domain.entity.Warehouse
 import com.tokopedia.mvc.domain.entity.enums.BenefitType
@@ -205,7 +206,8 @@ class AddProductViewModel @Inject constructor(
                     it.price,
                     it.stock,
                     it.isEligible,
-                    it.reason
+                    it.reason,
+                    isSelected = true
                 )
             }
 
@@ -483,20 +485,20 @@ class AddProductViewModel @Inject constructor(
                     variant.copy(variantName = formattedVariantName)
                 }
 
-                /*val products = currentState.products.map {
-                  if (it.id == selectedParentProduct.id) {
+                val products = currentState.products.map { product ->
+                    if (product.id == selectedParentProduct.id) {
 
-                      val modified = it.modifiedVariants.map {
+                        //Update variants of the selected parent product
+                        val modified = findUpdatedVariantNames(product, updatedVariantNames)
 
-                      }
-                      it.copy(modifiedVariants = modified)
-                  } else {
-                      it
-                  }
-              }*/
+                        product.copy(modifiedVariants = modified)
+                    } else {
+                        product
+                    }
+                }
 
-
-                println(updatedVariantNames)
+                _uiState.update { it.copy(products = products) }
+                _uiEffect.tryEmit(AddProductEffect.ShowVariantBottomSheet(selectedParentProduct, products))
             },
             onError = { error ->
                 _uiState.update { it.copy(error = error) }
@@ -504,6 +506,22 @@ class AddProductViewModel @Inject constructor(
         )
     }
 
+    private fun findUpdatedVariantNames(originalProduct: Product, variantNames: List<Variant>): List<Product.Variant> {
+        //Update variants of the selected parent product
+        return originalProduct.modifiedVariants.map {
+            val variantNewName = findUpdatedVariantName(it.variantProductId, variantNames)
+            it.copy(productName = variantNewName)
+        }
+
+    }
+
+    private fun findUpdatedVariantName(
+        selectedVariantId: Long,
+        updatedVariants: List<Variant>
+    ): String {
+        val matchedVariant = updatedVariants.find { selectedVariantId == it.variantId }
+        return matchedVariant?.variantName.orEmpty()
+    }
 
     private fun handleConfirmAddProduct() {
         launchCatchError(
