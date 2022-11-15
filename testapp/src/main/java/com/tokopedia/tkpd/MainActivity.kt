@@ -37,14 +37,14 @@ class MainActivity : AppCompatActivity() {
             NestTheme {
                 var modelState by remember { model }
                 HomeScreen(
-                    modelState,
-                    {
+                    model = modelState,
+                    onDarkModeChanged = {
                         val newState = modelState.isDarkModeChecked.not()
                         setDarkModeAndRecreate(newState)
                         modelState = modelState.copy(isDarkModeChecked = newState)
                     },
-                    { modelState = modelState.copy(applink = it) },
-                    {
+                    onApplinkChanged = { modelState = modelState.copy(applink = it) },
+                    onNavigateTo = {
                         when (it) {
                             HomeDestination.LOGIN -> handleNavigationLogin()
                             HomeDestination.LOGOUT -> handleNavigationLogout()
