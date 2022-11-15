@@ -42,14 +42,15 @@ class ContentDetailViewModelSetUnsetCampaignReminder {
     fun `when user click asgc upcoming campaign widget to set reminder, given response success, check if action is of reminder set, it returns FeedAsgcCampaignResponseModel`() {
         val rowNumber = 0
         val isSuccess = true
-        val reminderStatus = FeedASGCUpcomingReminderStatus.On(campaignId)
-        val expectedResult = builder.getSetUnsetCampaignResponse(campaignId, rowNumber, reminderStatus)
-        val campaign = FeedXCampaign(id = id, reminder = reminderStatus )
+        val reminderStatusInitial = FeedASGCUpcomingReminderStatus.Off(campaignId)
+        val reminderStatusResult = FeedASGCUpcomingReminderStatus.On(campaignId)
+        val expectedResult = builder.getSetUnsetCampaignResponse(campaignId, rowNumber, reminderStatusResult)
+        val campaign = FeedXCampaign(id = id, reminder = reminderStatusInitial)
 
         coEvery {
             mockRepo.subscribeUpcomingCampaign(
                 campaignId,
-                reminderType = FeedASGCUpcomingReminderStatus.On(campaignId)
+                reminderType = reminderStatusInitial
             )
         } returns Pair(isSuccess, "")
 
@@ -66,14 +67,15 @@ class ContentDetailViewModelSetUnsetCampaignReminder {
     fun `when user click asgc upcoming campaign widget to unset reminder, given response success, check if action is of reminder unset, it returns FeedAsgcCampaignResponseModel`() {
         val rowNumber = 0
         val isSuccess = true
-        val reminderStatus = FeedASGCUpcomingReminderStatus.On(campaignId)
-        val expectedResult = builder.getSetUnsetCampaignResponse(campaignId, rowNumber, reminderStatus)
-        val campaign = FeedXCampaign(id = id, reminder = reminderStatus )
+        val reminderStatusInitial = FeedASGCUpcomingReminderStatus.On(campaignId)
+        val reminderStatusResult = FeedASGCUpcomingReminderStatus.Off(campaignId)
+        val expectedResult = builder.getSetUnsetCampaignResponse(campaignId, rowNumber, reminderStatusResult)
+        val campaign = FeedXCampaign(id = id, reminder = reminderStatusInitial )
 
         coEvery {
             mockRepo.subscribeUpcomingCampaign(
                 campaignId,
-                reminderType = FeedASGCUpcomingReminderStatus.On(campaignId)
+                reminderType = reminderStatusInitial
             )
         } returns Pair(isSuccess, "")
 
