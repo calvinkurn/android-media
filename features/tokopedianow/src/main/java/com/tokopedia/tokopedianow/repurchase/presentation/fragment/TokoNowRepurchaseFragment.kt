@@ -13,6 +13,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.LifecycleObserver
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -61,6 +62,7 @@ import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference.SetUserPreferenceData
 import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowRecommendationCarouselUiModel
+import com.tokopedia.tokopedianow.common.util.RecyclerViewGridUtil.addProductItemDecoration
 import com.tokopedia.tokopedianow.common.util.TokoMartRepurchaseErrorLogger
 import com.tokopedia.tokopedianow.common.util.TokoMartRepurchaseErrorLogger.ATC_QUANTITY_ERROR
 import com.tokopedia.tokopedianow.common.util.TokoMartRepurchaseErrorLogger.CHOOSE_ADDRESS_ERROR
@@ -94,8 +96,8 @@ import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseLayo
 import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseProductUiModel
 import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseSortFilterUiModel.SelectedDateFilter
 import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseSortFilterUiModel.SelectedSortFilter
-import com.tokopedia.tokopedianow.repurchase.presentation.view.decoration.RepurchaseGridItemDecoration
 import com.tokopedia.tokopedianow.repurchase.presentation.viewholder.RepurchaseEmptyStateNoHistoryViewHolder.RepurchaseEmptyStateNoHistoryListener
+import com.tokopedia.tokopedianow.repurchase.presentation.viewholder.RepurchaseProductViewHolder
 import com.tokopedia.tokopedianow.repurchase.presentation.viewholder.RepurchaseSortFilterViewHolder.SortFilterListener
 import com.tokopedia.tokopedianow.repurchase.presentation.viewmodel.TokoNowRepurchaseViewModel
 import com.tokopedia.tokopedianow.sortfilter.presentation.activity.TokoNowSortFilterActivity.Companion.REQUEST_CODE_SORT_FILTER_BOTTOMSHEET
@@ -126,7 +128,8 @@ class TokoNowRepurchaseFragment:
         const val SOURCE = "tokonow"
         const val CATEGORY_LEVEL_DEPTH = 1
 
-        private const val GRID_SPAN_COUNT = 2
+        private const val SPAN_COUNT = 3
+        private const val SPAN_FULL_SPACE = 1
 
         fun newInstance(): TokoNowRepurchaseFragment {
             return TokoNowRepurchaseFragment()
@@ -520,13 +523,18 @@ class TokoNowRepurchaseFragment:
     private fun setupRecyclerView() {
         context?.let {
             rvRepurchase?.apply {
+                addProductItemDecoration()
                 adapter = this@TokoNowRepurchaseFragment.adapter
-                layoutManager = object: StaggeredGridLayoutManager(GRID_SPAN_COUNT, VERTICAL) {
-                    override fun supportsPredictiveItemAnimations() = false
-                }.apply {
-                    gapStrategy = StaggeredGridLayoutManager.GAP_HANDLING_NONE
+                layoutManager = GridLayoutManager(context, SPAN_COUNT).apply {
+                    spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
+                        override fun getSpanSize(position: Int): Int {
+                            return when (adapter?.getItemViewType(position)) {
+                                RepurchaseProductViewHolder.LAYOUT -> SPAN_FULL_SPACE
+                                else -> SPAN_COUNT
+                            }
+                        }
+                    }
                 }
-                addItemDecoration(RepurchaseGridItemDecoration())
             }
         }
     }

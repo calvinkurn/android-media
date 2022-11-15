@@ -8,6 +8,7 @@ import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.tokopedianow.repurchase.analytic.RepurchaseAnalytics
 import com.tokopedia.tokopedianow.repurchase.domain.mapper.RepurchaseLayoutMapper.PRODUCT_REPURCHASE
+import com.tokopedia.tokopedianow.repurchase.domain.mapper.RepurchaseLayoutMapper.PRODUCT_REPURCHASE_ANIMATION_FINISHED
 import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseProductUiModel
 import com.tokopedia.tokopedianow.repurchase.presentation.viewholder.RepurchaseProductViewHolder.RepurchaseProductCardListener
 import com.tokopedia.tokopedianow.repurchase.presentation.viewmodel.TokoNowRepurchaseViewModel
@@ -38,6 +39,17 @@ class RepurchaseProductCardListener(
     override fun onAddToCartNonVariant(item: RepurchaseProductUiModel, quantity: Int) {
         if (userSession.isLoggedIn) {
             viewModel.onClickAddToCart(item.id, quantity, PRODUCT_REPURCHASE, item.shopId)
+        } else {
+            RouteManager.route(context, ApplinkConst.LOGIN)
+        }
+    }
+
+    override fun onAddToCartNonVariantAnimationFinished(
+        item: RepurchaseProductUiModel,
+        quantity: Int
+    ) {
+        if (userSession.isLoggedIn) {
+            viewModel.onClickAddToCart(item.id, quantity, PRODUCT_REPURCHASE_ANIMATION_FINISHED, item.shopId)
         } else {
             RouteManager.route(context, ApplinkConst.LOGIN)
         }
