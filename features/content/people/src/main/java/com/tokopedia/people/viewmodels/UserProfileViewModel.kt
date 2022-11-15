@@ -145,6 +145,7 @@ class UserProfileViewModel @AssistedInject constructor(
 
     private fun handleLoadNextPageShopRecom(nextCursor: String) {
         viewModelScope.launchCatchError(block = {
+            if (nextCursor.isEmpty()) return@launchCatchError
             loadShopRecom(nextCursor)
         }, onError = {
                 _uiEvent.emit(UserProfileUiEvent.ErrorLoadNextPageShopRecom(it))
