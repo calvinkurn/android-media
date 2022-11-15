@@ -7,7 +7,7 @@ import com.tokopedia.buyerorderdetail.R
 import com.tokopedia.buyerorderdetail.common.utils.BuyerOrderDetailNavigator
 import com.tokopedia.buyerorderdetail.common.utils.Utils
 import com.tokopedia.buyerorderdetail.databinding.ItemBuyerOrderDetailResolutionBinding
-import com.tokopedia.buyerorderdetail.presentation.model.OrderResolutionUIModel
+import com.tokopedia.buyerorderdetail.presentation.model.OrderResolutionUiModel
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.kotlin.extensions.view.show
@@ -16,8 +16,9 @@ import com.tokopedia.utils.view.binding.viewBinding
 
 class OrderResolutionViewHolder(
     itemView: View?,
-    private val navigator: BuyerOrderDetailNavigator
-) : AbstractViewHolder<OrderResolutionUIModel>(itemView) {
+    private val navigator: BuyerOrderDetailNavigator,
+    private val listener: OrderResolutionViewHolder.OrderResolutionListener
+) : AbstractViewHolder<OrderResolutionUiModel>(itemView) {
 
     companion object {
         val LAYOUT = R.layout.item_buyer_order_detail_resolution
@@ -25,7 +26,7 @@ class OrderResolutionViewHolder(
 
     private val binding by viewBinding<ItemBuyerOrderDetailResolutionBinding>()
 
-    override fun bind(uiModel: OrderResolutionUIModel) {
+    override fun bind(uiModel: OrderResolutionUiModel) {
         binding?.run {
             bindResolutionIcon(uiModel.picture)
             bindResolutionTitle(uiModel.title)
@@ -40,12 +41,12 @@ class OrderResolutionViewHolder(
         }
     }
 
-    override fun bind(element: OrderResolutionUIModel, payloads: MutableList<Any>) {
+    override fun bind(element: OrderResolutionUiModel, payloads: MutableList<Any>) {
         binding?.run {
             payloads.firstOrNull()?.let {
                 if (it is Pair<*, *>) {
                     val (oldItem, newItem) = it
-                    if (oldItem is OrderResolutionUIModel && newItem is OrderResolutionUIModel) {
+                    if (oldItem is OrderResolutionUiModel && newItem is OrderResolutionUiModel) {
                         root.layoutTransition?.enableTransitionType(LayoutTransition.CHANGING)
                         if (oldItem.picture != newItem.picture) {
                             bindResolutionIcon(newItem.picture)
@@ -110,7 +111,9 @@ class OrderResolutionViewHolder(
     }
 
     private fun ItemBuyerOrderDetailResolutionBinding.bindResolutionDeadline(
-        deadlineDateTime: String, backgroundColor: String, showDeadline: Boolean
+        deadlineDateTime: String,
+        backgroundColor: String,
+        showDeadline: Boolean
     ) {
         if (showDeadline) {
             tvDueResponseTitle.show()
@@ -129,10 +132,13 @@ class OrderResolutionViewHolder(
     }
 
     private fun ItemBuyerOrderDetailResolutionBinding.bindListener(redirectPath: String) {
-        root.setOnClickListener { navigator.openAppLink(redirectPath, true) }
+        root.setOnClickListener {
+            navigator.openAppLink(redirectPath, true)
+            listener.onResolutionWidgetClicked()
+        }
     }
 
     interface OrderResolutionListener {
-        fun onResolutionWidgetClicked(redirectPath: String)
+        fun onResolutionWidgetClicked()
     }
 }

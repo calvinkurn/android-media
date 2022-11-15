@@ -21,7 +21,7 @@
         android:id="@+id/tvMvcSocmed"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/layout_lvl2"
+        android:layout_marginStart="16dp"
         android:textColor="@color/Neutral_N700_96"
         app:layout_constraintStart_toEndOf="@+id/icMvcSocmed"
         app:layout_constraintTop_toTopOf="@+id/icMvcSocmed"
@@ -42,7 +42,7 @@
         android:id="@+id/iv_mvc_free"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/spacing_lvl2"
+        android:layout_marginStart="4dp"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="@+id/tvMvcSocmed"
         app:layout_constraintStart_toEndOf="@+id/tvMvcSocmed"
@@ -51,7 +51,7 @@
 
     <View
         android:id="@+id/vMvcHorLine"
-        android:layout_width="@dimen/layout_lvl0"
+        android:layout_width="0dp"
         android:layout_height="@dimen/mvc_dimen_1dp"
         android:background="@color/Neutral_N75"
         app:layout_constraintBottom_toBottomOf="parent"
