@@ -7,9 +7,10 @@ import com.gojek.conversations.utils.ConversationsConstants
 import com.google.gson.GsonBuilder
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.tokochat.R
 import com.tokopedia.tokochat.domain.response.extension.TokoChatExtensionData
 import com.tokopedia.tokochat.domain.response.extension.TokoChatExtensionPayload
-import com.tokopedia.tokochat.R
+import com.tokopedia.tokochat.domain.response.message_data.TokoChatMessageWrapper
 import com.tokopedia.tokochat.util.TokoChatValueUtil.PICTURE
 import com.tokopedia.tokochat.util.TokoChatValueUtil.VOICE_NOTES
 import com.tokopedia.tokochat_common.view.uimodel.TokoChatHeaderDateUiModel
@@ -67,18 +68,22 @@ class TokoChatConversationUiMapper @Inject constructor(
                             resultList.add(it.mapToImageUiModel(extensionData, userId))
                         }
                         VOICE_NOTES -> {
-                            resultList.add(it.mapToMessageBubbleUiModel(
-                                userId = userId,
-                                isNotSupported = true,
-                                context.getString(R.string.tokochat_unsupported_attachment_voice_note)
-                            ))
+                            resultList.add(
+                                it.mapToMessageBubbleUiModel(
+                                    userId = userId,
+                                    isNotSupported = true,
+                                    context.getString(R.string.tokochat_unsupported_attachment_voice_note)
+                                )
+                            )
                         }
                         else -> {
-                            resultList.add(it.mapToMessageBubbleUiModel(
-                                userId = userId,
-                                isNotSupported = true,
-                                context.getString(R.string.tokochat_unsupported_attachment_general)
-                            ))
+                            resultList.add(
+                                it.mapToMessageBubbleUiModel(
+                                    userId = userId,
+                                    isNotSupported = true,
+                                    context.getString(R.string.tokochat_unsupported_attachment_general)
+                                )
+                            )
                         }
                     }
                 }
@@ -122,14 +127,15 @@ class TokoChatConversationUiMapper @Inject constructor(
 
     private fun ConversationsMessage.mapToHeaderDateUiModel(): TokoChatHeaderDateUiModel {
         return TokoChatHeaderDateUiModel(
-            this.createdDate, this.createdTimestamp
+            this.createdDate,
+            this.createdTimestamp
         )
     }
 
     private fun ConversationsMessage.shouldShowHeaderDate(
         lastHeaderDate: TokoChatHeaderDateUiModel?
     ): Boolean {
-       return !sameDay(this.createdTimestamp, lastHeaderDate?.dateTimestamp?: 0)
+        return !sameDay(this.createdTimestamp, lastHeaderDate?.dateTimestamp?: 0)
     }
 
     private fun sameDay(messageTime: Long, previousMessageTime: Long): Boolean {
@@ -144,10 +150,20 @@ class TokoChatConversationUiMapper @Inject constructor(
     }
 
     private fun ConversationsMessage.mapToTickerUiModel(): TokoChatReminderTickerUiModel {
+        val messageWrapper = convertToMessageWrapper(this.messageData)
         return TokoChatReminderTickerUiModel(
-            message = this.messageText,
+            message = messageWrapper?.language?.message?.idID ?: this.messageText,
             tickerType = Int.ZERO
         )
+    }
+
+    private fun convertToMessageWrapper(messageData: String?): TokoChatMessageWrapper? {
+        return try {
+            return gson.fromJson(messageData, TokoChatMessageWrapper::class.java)
+        } catch (throwable: Throwable) {
+            throwable.printStackTrace()
+            null
+        }
     }
 
     private fun convertToExtensionData(data: String?): TokoChatExtensionData? {
@@ -170,7 +186,7 @@ class TokoChatConversationUiMapper @Inject constructor(
         userId: String
     ): TokoChatImageBubbleUiModel {
         return TokoChatImageBubbleUiModel.Builder()
-            .withImageId(data.extensionPayload?.id?: "")
+            .withImageId(data.extensionPayload?.id ?: "")
             .withMessageId(this.messageId)
             .withFromUserId(this.messageSender?.userId ?: "")
             .withMessageTime(this.createdTimestamp)
