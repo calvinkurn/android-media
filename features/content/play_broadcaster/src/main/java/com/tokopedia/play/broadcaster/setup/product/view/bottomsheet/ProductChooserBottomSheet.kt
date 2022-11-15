@@ -10,7 +10,7 @@ import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
+import com.tokopedia.content.common.util.Router
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.play.broadcaster.R
@@ -54,6 +54,7 @@ class ProductChooserBottomSheet @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     private val dialogCustomizer: PlayBroadcastDialogCustomizer,
     private val analyticManager: ProductChooserAnalyticManager,
+    private val router: Router,
 ) : BaseProductSetupBottomSheet(), ProductSortBottomSheet.Listener {
 
     private var _binding: BottomSheetPlayBroProductChooserBinding? = null
@@ -457,7 +458,7 @@ class ProductChooserBottomSheet @Inject constructor(
     private fun handleProductErrorEvent(event: ProductErrorViewComponent.Event) {
         when (event) {
             ProductErrorViewComponent.Event.AddProductClicked -> {
-                RouteManager.route(context, ApplinkConst.PRODUCT_ADD)
+                router.route(context, ApplinkConst.PRODUCT_ADD)
             }
             ProductErrorViewComponent.Event.RetryClicked -> {
                 viewModel.submitAction(ProductSetupAction.RetryFetchProducts)
