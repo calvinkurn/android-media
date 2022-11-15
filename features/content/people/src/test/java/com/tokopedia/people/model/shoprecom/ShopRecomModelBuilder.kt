@@ -17,6 +17,7 @@ class ShopRecomModelBuilder {
             nextCursor = "",
             title = "Toko lain sesuai rekomendasimu",
             items = generateShopItem(type),
+            loadNextPage = true,
         )
     }
 

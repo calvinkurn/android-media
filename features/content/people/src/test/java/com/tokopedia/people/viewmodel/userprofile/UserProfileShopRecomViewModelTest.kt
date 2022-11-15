@@ -172,6 +172,8 @@ class UserProfileShopRecomViewModelTest {
                 submitAction(UserProfileAction.LoadNextPageShopRecom(anyString()))
             } andThen {
                 robot.viewModel.isShopRecomShow.assertTrue()
+                shopRecom.isShown equalTo true
+                shopRecom.loadNextPage equalTo true
                 shopRecom.items.size equalTo mockShopRecomIsShown.items.size * 2
             }
         }
