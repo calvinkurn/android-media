@@ -7,7 +7,7 @@
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/shimmeringBalanceTitle"
-        android:layout_width="@dimen/layout_lvl8"
+        android:layout_width="96dp"
         android:layout_height="@dimen/setting_zero_dp"
         android:gravity="center_vertical"
         app:loader_corner_radius="@dimen/setting_shimmer_radius"
@@ -19,7 +19,7 @@
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/shimmeringBalanceValue"
-        android:layout_width="@dimen/layout_lvl9"
+        android:layout_width="128dp"
         android:layout_height="@dimen/setting_zero_dp"
         android:gravity="center_vertical"
         app:loader_corner_radius="@dimen/setting_shimmer_radius"
@@ -34,13 +34,13 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_begin="@dimen/spacing_lvl4"/>
+        app:layout_constraintGuide_begin="16dp"/>
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guidelineVerticalRight"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_end="@dimen/spacing_lvl4"/>
+        app:layout_constraintGuide_end="16dp"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

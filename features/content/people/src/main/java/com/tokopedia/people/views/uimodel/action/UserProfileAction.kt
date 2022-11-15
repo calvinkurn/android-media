@@ -15,7 +15,7 @@ sealed interface UserProfileAction {
 
     data class ClickFollowButtonShopRecom(val itemID: Long) : UserProfileAction
 
-    data class RemoveShopRecomItem(val itemID: Long,) : UserProfileAction
+    data class RemoveShopRecomItem(val itemID: Long) : UserProfileAction
 
     data class SaveReminderActivityResult(
         val channelId: String,
