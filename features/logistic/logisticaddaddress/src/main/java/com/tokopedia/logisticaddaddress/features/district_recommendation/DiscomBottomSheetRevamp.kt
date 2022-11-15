@@ -35,7 +35,6 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.logisticCommon.data.entity.response.Data
-import com.tokopedia.logisticCommon.util.GmsHelper
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.common.AddressConstants
 import com.tokopedia.logisticaddaddress.databinding.BottomsheetDistcrictReccomendationRevampBinding
@@ -126,7 +125,7 @@ class DiscomBottomSheetRevamp(private var isPinpoint: Boolean = false, private v
 
     private fun setCurrentLocationProvider() {
         context?.let {
-            if (isEdit && GmsHelper.detectGmsAvailability(it)) {
+            if (isEdit && isGmsAvailable) {
                 fusedLocationClient = FusedLocationProviderClient(it)
                 permissionCheckerHelper = PermissionCheckerHelper()
             }

@@ -42,6 +42,7 @@ import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_DISTRICT_ID
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_FROM_ADDRESS_FORM
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_FROM_PINPOINT
+import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_GMS_AVAILABILITY
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_IS_EDIT
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_IS_POLYGON
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_IS_POSITIVE_FLOW
@@ -288,6 +289,7 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
             putExtra(EXTRA_SAVE_DATA_UI_MODEL, viewModel.getAddress())
             putExtra(EXTRA_KOTA_KECAMATAN, currentKotaKecamatan)
             putExtra(PARAM_SOURCE, source)
+            putExtra(EXTRA_GMS_AVAILABILITY, viewModel.isGmsAvailable)
         }
         startActivityForResult(intent, REQUEST_ADDRESS_FORM_PAGE)
     }

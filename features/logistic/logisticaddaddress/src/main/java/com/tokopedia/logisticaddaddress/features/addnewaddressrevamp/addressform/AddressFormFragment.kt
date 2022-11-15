@@ -30,12 +30,12 @@ import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.data.mapper.AddAddressMapper
 import com.tokopedia.logisticCommon.data.response.DistrictItem
 import com.tokopedia.logisticCommon.data.response.KeroGetAddressResponse
-import com.tokopedia.logisticCommon.util.GmsHelper
 import com.tokopedia.logisticCommon.util.LogisticUserConsentHelper
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_ADDRESS_ID
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_DISTRICT_NAME
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_FROM_ADDRESS_FORM
+import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_GMS_AVAILABILITY
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_IS_EDIT
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_IS_POLYGON
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_IS_POSITIVE_FLOW
@@ -126,6 +126,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
         super.onCreate(savedInstanceState)
         arguments?.let {
             isEdit = it.getBoolean(EXTRA_IS_EDIT, false)
+            viewModel.isGmsAvailable = it.getBoolean(EXTRA_GMS_AVAILABILITY, true)
             if (!isEdit) {
                 saveDataModel = it.getParcelable(EXTRA_SAVE_DATA_UI_MODEL)
                 isLatitudeNotEmpty = saveDataModel?.latitude?.isNotEmpty()
@@ -150,15 +151,8 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        checkGmsAvailability()
         prepareData()
         initObserver()
-    }
-
-    private fun checkGmsAvailability() {
-        context?.let {
-            viewModel.isGmsAvailable = GmsHelper.detectGmsAvailability(it)
-        }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -1301,6 +1295,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
                     putBoolean(EXTRA_IS_POSITIVE_FLOW, extra.getBoolean(EXTRA_IS_POSITIVE_FLOW))
                     putString(EXTRA_KOTA_KECAMATAN, extra.getString(EXTRA_KOTA_KECAMATAN))
                     putBoolean(EXTRA_IS_EDIT, false)
+                    putBoolean(EXTRA_GMS_AVAILABILITY, extra.getBoolean(EXTRA_GMS_AVAILABILITY))
                     putString(PARAM_SOURCE, extra.getString(PARAM_SOURCE, "") )
                 }
             }
@@ -1314,6 +1309,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
 
                     if (extra != null) {
                         putString(PARAM_SOURCE, extra.getString(PARAM_SOURCE, "") )
+                        putBoolean(EXTRA_GMS_AVAILABILITY, extra.getBoolean(EXTRA_GMS_AVAILABILITY))
                     }
                 }
             }
