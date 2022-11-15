@@ -32,7 +32,7 @@ class PlayShortsUploadWorker(
 
             /** TODO 3: if no cover, upload cover */
 
-            /** TODO 4: create media  */
+            /** TODO 4: add media  */
 
             /** TODO 5: update channel status to 1 if success, 7 if transcoding failed  */
         }) {
