@@ -68,7 +68,7 @@ class GetProductTagItemSectionUseCase @Inject constructor(
                     available_buttons: AvailableButtons {
                         text
                         color
-                        buttonType
+                        button_type: buttonType
                     }
                   }
                 }
