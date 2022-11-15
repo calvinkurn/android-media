@@ -4,6 +4,7 @@ import com.tokopedia.play.analytic.campaign.PlayCampaignAnalytic
 import com.tokopedia.play.analytic.interactive.PlayInteractiveAnalytic
 import com.tokopedia.play.analytic.like.PlayLikeAnalytic
 import com.tokopedia.play.analytic.partner.PlayPartnerAnalytic
+import com.tokopedia.play.analytic.popup.PlayFollowPopupAnalytic
 import com.tokopedia.play.analytic.share.PlayShareExperienceAnalytic
 import com.tokopedia.play.analytic.socket.PlaySocketAnalytic
 import com.tokopedia.play.analytic.tokonow.PlayTokoNowAnalytic
@@ -25,7 +26,8 @@ class PlayNewAnalytic @Inject constructor(
         shareExperienceAnalytic: PlayShareExperienceAnalytic,
         campaignAnalytic: PlayCampaignAnalytic,
         interactiveAnalytic: PlayInteractiveAnalytic,
-        tokoNowAnalytic: PlayTokoNowAnalytic
+        tokoNowAnalytic: PlayTokoNowAnalytic,
+        playFollowPopupAnalytic: PlayFollowPopupAnalytic,
 ) : PlayPartnerAnalytic by partnerAnalytic,
         PlayLikeAnalytic by likeAnalytic,
         PlaySocketAnalytic by socketAnalytic,
@@ -33,7 +35,8 @@ class PlayNewAnalytic @Inject constructor(
         PlayShareExperienceAnalytic by shareExperienceAnalytic,
         PlayCampaignAnalytic by campaignAnalytic,
         PlayInteractiveAnalytic by interactiveAnalytic,
-        PlayTokoNowAnalytic by tokoNowAnalytic {
+        PlayTokoNowAnalytic by tokoNowAnalytic,
+        PlayFollowPopupAnalytic by playFollowPopupAnalytic {
 
         fun clickLihatToasterAtcPinnedProductCarousel(
                 channelId: String,
