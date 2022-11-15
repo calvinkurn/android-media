@@ -48,9 +48,10 @@ class UserProfileShopRecomViewModelTest {
     private val mockException = commonBuilder.buildException()
     private val mockHasAcceptTnc = profileWhitelistBuilder.buildHasAcceptTnc()
     private val mockShopRecomIsShown = shopRecomBuilder.buildModelIsShown()
+    private val mockShopRecomIsNotShown = shopRecomBuilder.buildModelIsShown(isShown = false)
+    private val mockShopRecomIsShownNoLoadMore = shopRecomBuilder.buildModelIsShown(nextCursor = "")
     private val mockShopRecomIsShownTypeShop = shopRecomBuilder.buildModelIsShown(shopRecomBuilder.typeShop)
     private val mockShopRecomIsShownTypeBuyer = shopRecomBuilder.buildModelIsShown(shopRecomBuilder.typeBuyer)
-    private val mockShopRecomIsNotShown = shopRecomBuilder.buildModelIsNotShown()
     private val mockEmptyShopRecom = shopRecomBuilder.buildEmptyModel()
     private val mockEmptyItemShopRecom = shopRecomBuilder.buildEmptyItemModel()
     private val mockOwnUserId = "1"
@@ -140,6 +141,23 @@ class UserProfileShopRecomViewModelTest {
     }
 
     @Test
+    fun `when user login, self profile, success load shop and isNotShown then it will emit empty data`() {
+        coEvery { mockUserSession.isLoggedIn } returns true
+        coEvery { mockRepo.getProfile(mockOwnUserId) } returns mockOwnProfile
+        coEvery { mockRepo.getFollowInfo(listOf(mockOwnUserId)) } returns mockOwnFollow
+        coEvery { mockRepo.getShopRecom("") } returns mockShopRecomIsNotShown
+
+        robot.use {
+            it.recordState {
+                submitAction(UserProfileAction.LoadProfile(isRefresh = true))
+            } andThen {
+                robot.viewModel.isShopRecomShow.assertFalse()
+                shopRecom equalTo mockShopRecomIsNotShown
+            }
+        }
+    }
+
+    @Test
     fun `when user login, self profile, success load shop and isShown then it will emit the data`() {
         coEvery { mockUserSession.isLoggedIn } returns true
         coEvery { mockRepo.getProfile(mockOwnUserId) } returns mockOwnProfile
@@ -169,11 +187,10 @@ class UserProfileShopRecomViewModelTest {
                 submitAction(UserProfileAction.LoadProfile(isRefresh = true))
             }
             it.recordState {
-                submitAction(UserProfileAction.LoadNextPageShopRecom(anyString()))
+                coEvery { mockRepo.getShopRecom("123") } returns mockShopRecomIsShown
+                submitAction(UserProfileAction.LoadNextPageShopRecom("123"))
             } andThen {
                 robot.viewModel.isShopRecomShow.assertTrue()
-                shopRecom.isShown equalTo true
-                shopRecom.loadNextPage equalTo true
                 shopRecom.items.size equalTo mockShopRecomIsShown.items.size * 2
             }
         }
@@ -191,8 +208,26 @@ class UserProfileShopRecomViewModelTest {
                 submitAction(UserProfileAction.LoadProfile(isRefresh = true))
             }
             it.recordState {
-                coEvery { mockRepo.getShopRecom("") } throws mockException
-                submitAction(UserProfileAction.LoadNextPageShopRecom(anyString()))
+                coEvery { mockRepo.getShopRecom("123") } throws mockException
+                submitAction(UserProfileAction.LoadNextPageShopRecom("123"))
+            } andThen {
+                robot.viewModel.isShopRecomShow.assertTrue()
+                shopRecom.items.size equalTo mockShopRecomIsShown.items.size
+            }
+        }
+    }
+
+    @Test
+    fun `when user login, self profile, load next page shop recom`() {
+        coEvery { mockUserSession.isLoggedIn } returns true
+        coEvery { mockRepo.getProfile(mockOwnUserId) } returns mockOwnProfile
+        coEvery { mockRepo.getFollowInfo(listOf(mockOwnUserId)) } returns mockOwnFollow
+        coEvery { mockRepo.getShopRecom("") } returns mockShopRecomIsShownNoLoadMore
+
+        robot.use {
+            it.recordState {
+                submitAction(UserProfileAction.LoadProfile(isRefresh = true))
+                submitAction(UserProfileAction.LoadNextPageShopRecom(""))
             } andThen {
                 robot.viewModel.isShopRecomShow.assertTrue()
                 shopRecom.items.size equalTo mockShopRecomIsShown.items.size
@@ -372,6 +407,41 @@ class UserProfileShopRecomViewModelTest {
                 shopRecom.items.forEach { item ->
                     if (item.id == mockItemId) {
                         item.state equalTo ShopRecomFollowState.UNFOLLOW
+                    } else {
+                        item.state equalTo ShopRecomFollowState.UNFOLLOW
+                    }
+                }
+            }
+        }
+    }
+
+    @Test
+    fun `when user follow type unknown`() {
+        val mockShopRecomIsShownBeforeUnfollow = mockShopRecomIsShownTypeShop.copy(
+            items = mockShopRecomIsShownTypeShop.items.map {
+                if (it.id == mockItemId) {
+                    it.copy(state = ShopRecomFollowState.FOLLOW, type = 4)
+                } else {
+                    it
+                }
+            },
+        )
+
+        coEvery { mockUserSession.isLoggedIn } returns true
+        coEvery { mockRepo.getProfile(mockOwnUserId) } returns mockOwnProfile
+        coEvery { mockRepo.getFollowInfo(listOf(mockOwnUserId)) } returns mockOwnFollow
+        coEvery { mockRepo.getShopRecom("") } returns mockShopRecomIsShownBeforeUnfollow
+        coEvery { mockRepo.shopFollowUnfollow(mockItemId.toString(), shopActionUnfollow) } returns mockMutationSuccess
+
+        robot.use {
+            it.setup {
+                submitAction(UserProfileAction.LoadProfile(isRefresh = true))
+            } recordState {
+                submitAction(UserProfileAction.ClickFollowButtonShopRecom(mockItemId))
+            } andThen {
+                shopRecom.items.forEach { item ->
+                    if (item.id == mockItemId) {
+                        item.state equalTo ShopRecomFollowState.LOADING_FOLLOW
                     } else {
                         item.state equalTo ShopRecomFollowState.UNFOLLOW
                     }

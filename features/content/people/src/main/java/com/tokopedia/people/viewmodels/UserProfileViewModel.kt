@@ -92,8 +92,6 @@ class UserProfileViewModel @AssistedInject constructor(
 
     val isShopRecomShow: Boolean get() = _shopRecom.value.isShown
 
-    var ugcOnboardingOpenFrom: Int = 0
-
     private val _savedReminderData = MutableStateFlow<SavedReminderData>(SavedReminderData.NoData)
     private val _profileInfo = MutableStateFlow(ProfileUiModel.Empty)
     private val _followInfo = MutableStateFlow(FollowInfoUiModel.Empty)
@@ -160,8 +158,7 @@ class UserProfileViewModel @AssistedInject constructor(
     private fun handleLoadPlayVideo(cursor: String) {
         viewModelScope.launchCatchError(block = {
             val data = repo.getPlayVideo(profileUserID, cursor)
-            if (data != null) playPostContent.value = Success(data)
-            else throw NullPointerException("data is null")
+            playPostContent.value = Success(data)
         }, onError = {
                 userPostError.value = it
             },)

@@ -125,6 +125,8 @@ class UserProfileFragment @Inject constructor(
 
     private lateinit var viewModel: UserProfileViewModel
 
+    private var ugcOnboardingOpenFrom: Int = 0
+
     private val mAdapter: UserPostBaseAdapter by lazy(LazyThreadSafetyMode.NONE) {
         UserPostBaseAdapter(this, this) { cursor ->
             submitAction(UserProfileAction.LoadPlayVideo(cursor))
@@ -231,7 +233,7 @@ class UserProfileFragment @Inject constructor(
                 childFragment.setListener(object : UGCOnboardingParentFragment.Listener {
                     override fun onSuccess() {
                         submitAction(UserProfileAction.LoadProfile())
-                        when (viewModel.ugcOnboardingOpenFrom) {
+                        when (ugcOnboardingOpenFrom) {
                             UGC_ONBOARDING_OPEN_FROM_POST -> goToCreatePostPage()
                             UGC_ONBOARDING_OPEN_FROM_LIVE -> goToCreateLiveStream()
                             else -> {}
@@ -544,7 +546,7 @@ class UserProfileFragment @Inject constructor(
 
                 // TODO onboarding for `Buat Live` will be in the next phase
 //                if (viewModel.needOnboarding) {
-//                    viewModel.ugcOnboardingOpenFrom = UGC_ONBOARDING_OPEN_FROM_LIVE
+//                    ugcOnboardingOpenFrom = UGC_ONBOARDING_OPEN_FROM_LIVE
 //                    openUGCOnboardingBottomSheet()
 //                } else goToCreateLiveStream()
 
@@ -561,7 +563,7 @@ class UserProfileFragment @Inject constructor(
                 mainBinding.fabUp.menuOpen = false
                 userProfileTracker.clickCreatePost(viewModel.profileUserID)
                 if (viewModel.needOnboarding) {
-                    viewModel.ugcOnboardingOpenFrom = UGC_ONBOARDING_OPEN_FROM_POST
+                    ugcOnboardingOpenFrom = UGC_ONBOARDING_OPEN_FROM_POST
                     openUGCOnboardingBottomSheet()
                 } else goToCreatePostPage()
             },
