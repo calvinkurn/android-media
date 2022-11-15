@@ -97,6 +97,10 @@ import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.yout
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.youtubeview.YoutubeViewViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.carouselerrorload.CarouselErrorLoadViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.contentCard.ContentCardItemViewHolder
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.contentCard.ContentCardItemViewModel
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.contentCard.ContentCardViewHolder
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.contentCard.ContentCardViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.explicitwidget.ExplicitWidgetViewHolder
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.explicitwidget.ExplicitWidgetViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.merchantvoucher.DiscoMerchantVoucherViewHolder
@@ -258,6 +262,8 @@ class DiscoveryHomeFactory {
             initializeComponent(ComponentsList.ShopCardInfinite, ::ShopCardInfiniteViewHolder, ::ShopCardInfiniteViewModel)
             initializeComponent(ComponentsList.ExplicitWidget, ::ExplicitWidgetViewHolder, ::ExplicitWidgetViewModel)
             initializeComponent(ComponentsList.ProductBundling, ::ProductBundlingViewHolder,::ProductBundlingViewModel)
+            initializeComponent(ComponentsList.ContentCard, ::ContentCardViewHolder, ::ContentCardViewModel)
+            initializeComponent(ComponentsList.ContentCardItem, ::ContentCardItemViewHolder, ::ContentCardItemViewModel)
 
         }
 
