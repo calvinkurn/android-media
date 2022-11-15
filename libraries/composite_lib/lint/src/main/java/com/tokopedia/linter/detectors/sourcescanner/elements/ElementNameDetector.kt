@@ -4,17 +4,18 @@ import com.android.tools.lint.detector.api.Category
 import com.android.tools.lint.detector.api.Issue
 import com.android.tools.lint.detector.api.JavaContext
 import com.android.tools.lint.detector.api.Severity
+import com.tokopedia.linter.Priority
 import com.tokopedia.linter.detectors.sourcescanner.SourceCodeDetector
 import org.jetbrains.uast.*
 
 object ElementNameDetector {
 
     val PII_DATA_EXPOSURE_ISSUE_ID = "PII Data Exposure"
-    val BRIEF_DESCRIPTION = "Please PII data is not exposed publicly"
+    val BRIEF_DESCRIPTION = "Please make sure PII data is not exposed publicly"
     val EXPLAINATION = "Exposing PII data may introduce data leak"
 
     val CLASS_PII_DATA_EXPOSURE: Issue = Issue.create(
-        id = METHOD_CALL_ISSUE_ID,
+        id = PII_DATA_EXPOSURE_ISSUE_ID,
         briefDescription = BRIEF_DESCRIPTION,
         explanation = EXPLAINATION,
         category = Category.CORRECTNESS,
