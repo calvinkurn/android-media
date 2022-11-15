@@ -308,7 +308,8 @@ class AddProductViewModel @Inject constructor(
 
                 val hasVariants = it.originalVariants.isNotEmpty()
                 if (hasVariants) {
-                    it.copy(isSelected = true, enableCheckbox = true, originalVariants = it.originalVariants, selectedVariantsIds = it.selectedVariantsIds)
+                    val eligibleVariantsOnly = it.originalVariants.filter { it.isEligible }.map { it.variantProductId }.toSet()
+                    it.copy(isSelected = true, enableCheckbox = true, originalVariants = it.originalVariants, selectedVariantsIds = eligibleVariantsOnly)
                 } else {
                     it.copy(isSelected = true, enableCheckbox = true)
                 }
