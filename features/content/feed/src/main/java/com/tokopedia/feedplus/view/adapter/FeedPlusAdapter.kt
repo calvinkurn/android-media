@@ -30,6 +30,7 @@ class FeedPlusAdapter(
     private var list: MutableList<Visitable<*>> = mutableListOf()
     private val emptyModel: EmptyModel = EmptyModel()
     private val loadingMoreModel: LoadingMoreModel = LoadingMoreModel()
+
     private var unsetListener: Boolean = false
     private var recyclerView: RecyclerView? = null
 
