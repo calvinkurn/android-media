@@ -47,6 +47,7 @@ object RepurchaseLayoutMapper {
 
     const val PRODUCT_REPURCHASE = "product_repurchase"
     const val PRODUCT_RECOMMENDATION = "product_recom"
+    const val PRODUCT_REPURCHASE_ANIMATION_FINISHED = "product_repurchase_animation_finished"
 
     private const val DEFAULT_QUANTITY = 0
     private const val DEFAULT_PARENT_ID = "0"
@@ -255,8 +256,6 @@ object RepurchaseLayoutMapper {
     }
 
     fun MutableList<Visitable<*>>.updateProductATCQuantity(miniCart: MiniCartSimplifiedData) {
-//        val variantGroup = miniCart.miniCartItems.groupBy { it.productParentId }
-
         miniCart.miniCartItems.values.map { miniCartItem ->
             if (miniCartItem is MiniCartItem.MiniCartItemProduct) {
                 val productId = miniCartItem.productId
@@ -274,20 +273,18 @@ object RepurchaseLayoutMapper {
 
     fun MutableList<Visitable<*>>.updateDeletedATCQuantity(miniCart: MiniCartSimplifiedData, type: String) {
         when (type) {
-            PRODUCT_REPURCHASE -> {
+            PRODUCT_REPURCHASE_ANIMATION_FINISHED -> {
                 val productList = filterIsInstance<RepurchaseProductUiModel>()
                 val cartProductIds = miniCart.miniCartItems.values.mapNotNull {
                     if (it is MiniCartItem.MiniCartItemProduct) it.productId else null
                 }
-                val deletedProducts = productList.filter { it.id !in cartProductIds }
-//                val variantGroup = miniCart.miniCartItems.groupBy { it.productParentId }
 
+                val deletedProducts = productList.filter { it.id !in cartProductIds }
                 deletedProducts.forEach { model ->
                     val productId = model.id
                     val parentId = model.parentId
 
                     if (parentId != DEFAULT_PARENT_ID) {
-//                        val miniCartItemsWithSameParentId = variantGroup[parentId]
                         val totalQuantity = miniCart.miniCartItems.getMiniCartItemParentProduct(parentId)?.totalQuantity.orZero()
                         if (totalQuantity == DEFAULT_QUANTITY) {
                             updateProductQuantity(productId, DEFAULT_QUANTITY)
@@ -305,15 +302,13 @@ object RepurchaseLayoutMapper {
                     val cartProductIds = miniCart.miniCartItems.values.mapNotNull {
                         if (it is MiniCartItem.MiniCartItemProduct) it.productId else null
                     }
-                    val deletedProducts = layoutUiModel.carouselData.recommendationData.recommendationItemList.filter { it.productId.toString() !in cartProductIds }
-//                    val variantGroup = miniCart.miniCartItems.groupBy { it.productParentId }
 
+                    val deletedProducts = layoutUiModel.carouselData.recommendationData.recommendationItemList.filter { it.productId.toString() !in cartProductIds }
                     deletedProducts.forEach { model ->
                         val productId = model.productId.toString()
                         val parentId = model.parentID.toString()
 
                         if (parentId != DEFAULT_PARENT_ID) {
-//                            val miniCartItemsWithSameParentId = variantGroup[parentId]
                             val totalQuantity = miniCart.miniCartItems.getMiniCartItemParentProduct(parentId)?.totalQuantity.orZero()
                             if (totalQuantity == DEFAULT_QUANTITY) {
                                 updateProductRecomQuantity(productId, DEFAULT_QUANTITY)
@@ -329,23 +324,14 @@ object RepurchaseLayoutMapper {
         }
     }
 
-    private fun MutableList<Visitable<*>>.updateProductQuantity(productId: String, quantity: Int) {
+    fun MutableList<Visitable<*>>.updateProductQuantity(productId: String, quantity: Int) {
         val productList = filterIsInstance<RepurchaseProductUiModel>()
 
         productList.firstOrNull { it.id == productId }?.let {
-            if(!it.isStockEmpty) {
+            if (!it.isStockEmpty) {
                 val index = indexOf(it)
-                val productCard = it.productCard.run {
-                    if (hasVariant()) {
-                        copy(variant = variant?.copy(quantity = quantity))
-                    } else {
-                        copy(
-                            hasAddToCartButton = quantity == DEFAULT_QUANTITY,
-                            nonVariant = nonVariant?.copy(quantity = quantity)
-                        )
-                    }
-                }
-                set(index, it.copy(productCard = productCard))
+                val productCard = it.productCardModel.copy(orderQuantity = quantity)
+                set(index, it.copy(productCardModel = productCard))
             }
         }
     }
