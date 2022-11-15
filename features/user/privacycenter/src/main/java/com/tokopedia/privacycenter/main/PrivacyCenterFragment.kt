@@ -30,6 +30,7 @@ import com.tokopedia.privacycenter.main.section.dummy.DummySection
 import com.tokopedia.privacycenter.main.section.faqPrivacySection.FaqPrivacySection
 import com.tokopedia.privacycenter.main.section.recommendation.RecommendationSection
 import com.tokopedia.privacycenter.main.section.recommendation.RecommendationViewModel
+import com.tokopedia.privacycenter.main.section.tokopediacare.TokopediaCareSection
 import com.tokopedia.unifycomponents.isUsingNightModeResources
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
@@ -206,7 +207,7 @@ class PrivacyCenterFragment :
         startActivityForResult(intent, REQUEST_ACCOUNT_WEBVIEW_REQUEST)
     }
 
-    inner class PrivacyCenterSectionDelegateImpl : PrivacyCenterSectionDelegate {
+    inner class PrivacyCenterSectionDelegateImpl: PrivacyCenterSectionDelegate {
         override val accountLinkingSection: AccountLinkingSection =
             AccountLinkingSection(context, viewModelAccountLinkingSection, this@PrivacyCenterFragment)
         override val dummySection: DummySection = DummySection(context)
@@ -220,6 +221,7 @@ class PrivacyCenterFragment :
             viewModelConsentWithdrawalSection
         )
         override val faqPrivacySection: FaqPrivacySection = FaqPrivacySection(context)
+        override val tokopediaCareSection: TokopediaCareSection = TokopediaCareSection(context)
     }
 
     companion object {
