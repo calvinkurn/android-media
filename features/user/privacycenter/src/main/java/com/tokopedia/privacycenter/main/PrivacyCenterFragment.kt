@@ -33,11 +33,11 @@ import com.tokopedia.unifycomponents.isUsingNightModeResources
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
-class PrivacyCenterFragment : BaseDaggerFragment(),
+class PrivacyCenterFragment :
+    BaseDaggerFragment(),
     AppBarLayout.OnOffsetChangedListener,
     AccountLinkingSection.Listener,
-    RecommendationSection.Listener
-{
+    RecommendationSection.Listener {
 
     private var binding by autoClearedNullable<FragmentPrivacyCenterBinding>()
     private var privacyCenterSection: PrivacyCenterSection? = null
@@ -88,7 +88,10 @@ class PrivacyCenterFragment : BaseDaggerFragment(),
         super.onStart()
         binding?.appbar?.addOnOffsetChangedListener(this)
 
-        //refresh toggle section recommendation and promo
+        /*
+        * refresh on function onStart only for device permission that access hardware user,
+        * so that the UI can be updated as soon as possible when activity come to foreground from onStop
+        * */
         viewModelRecommendationSection.refreshGeolocationPermission()
     }
 
@@ -169,7 +172,7 @@ class PrivacyCenterFragment : BaseDaggerFragment(),
             REQUEST_LOCATION_PERMISSION -> {
                 val isAllowed = grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED
 
-                //change toggle geolocation
+                // change toggle geolocation
                 viewModelRecommendationSection.setGeolocationChange(isAllowed)
             }
         }
@@ -192,7 +195,8 @@ class PrivacyCenterFragment : BaseDaggerFragment(),
     private fun goToAccountLinkingWebview() {
         val intent = RouteManager.getIntent(
             activity,
-            ApplinkConstInternalUserPlatform.ACCOUNT_LINKING_WEBVIEW).apply {
+            ApplinkConstInternalUserPlatform.ACCOUNT_LINKING_WEBVIEW
+        ).apply {
             putExtra(
                 ApplinkConstInternalGlobal.PARAM_LD,
                 LinkAccountWebviewFragment.BACK_BTN_APPLINK
@@ -201,7 +205,7 @@ class PrivacyCenterFragment : BaseDaggerFragment(),
         startActivityForResult(intent, REQUEST_ACCOUNT_WEBVIEW_REQUEST)
     }
 
-    inner class PrivacyCenterSectionDelegateImpl: PrivacyCenterSectionDelegate {
+    inner class PrivacyCenterSectionDelegateImpl : PrivacyCenterSectionDelegate {
         override val recommendationSection: RecommendationSection = RecommendationSection(
             context,
             viewModelRecommendationSection,
