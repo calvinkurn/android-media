@@ -24,51 +24,16 @@ import org.junit.Test
 class ProductCardIDGenerator  {
 
     private lateinit var recyclerViewViewInteraction: ViewInteraction
-    private lateinit var productCardModelMatcherData: List<ProductCardModelMatcher>
     private lateinit var activity: Activity
-    private var recyclerViewId: Int = 0
-    private val recyclerView by lazy { activity.findViewById<RecyclerView>(recyclerViewId) }
-
-    @Test
-    fun testProductCardGrid() {
-        activity = startTestActivity(ProductCardGridActivityTest::class.java.name)
-        recyclerViewId = R.id.productCardGridTestRecyclerView
-
-        recyclerViewViewInteraction = onView(withId(R.id.productCardGridTestRecyclerView))
-        productCardModelMatcherData = productCardGridTestData
-
-        startTest()
+    private val recyclerView by lazy {
+        activity.findViewById<RecyclerView>(R.id.productCardIDGeneratorTestRecyclerView)
     }
 
     @Test
-    fun testProductCardList() {
-        activity = startTestActivity(ProductCardListActivityTest::class.java.name)
-        recyclerViewId = R.id.productCardListTestRecyclerView
+    fun generateProductCardID() {
+        activity = startTestActivity(ProductCardIDGeneratorActivityTest::class.java.name)
 
-        recyclerViewViewInteraction = onView(withId(R.id.productCardListTestRecyclerView))
-        productCardModelMatcherData = productCardListTestData
-
-        startTest()
-    }
-
-    @Test
-    fun testProductCardGridViewStub() {
-        activity = startTestActivity(ProductCardGridViewStubActivityTest::class.java.name)
-        recyclerViewId = R.id.productCardGridTestRecyclerView
-
-        recyclerViewViewInteraction = onView(withId(R.id.productCardGridTestRecyclerView))
-        productCardModelMatcherData = productCardGridViewStubTestData
-
-        startTest()
-    }
-
-    @Test
-    fun testProductCardListViewStub() {
-        activity = startTestActivity(ProductCardListViewStubActivityTest::class.java.name)
-        recyclerViewId = R.id.productCardListTestRecyclerView
-
-        recyclerViewViewInteraction = onView(withId(R.id.productCardListTestRecyclerView))
-        productCardModelMatcherData = productCardListViewStubTestData
+        recyclerViewViewInteraction = onView(withId(R.id.productCardIDGeneratorTestRecyclerView))
 
         startTest()
     }
@@ -83,14 +48,16 @@ class ProductCardIDGenerator  {
     }
 
     private fun startTest() {
-        productCardModelMatcherData.forEachIndexed { index, productCardModelMatcher ->
-            recyclerViewViewInteraction.goToProductCardAtPosition(index)
+        recyclerView.adapter?.let {
+            for (index in 0 until it.itemCount) {
+                recyclerViewViewInteraction.goToProductCardAtPosition(index)
 
-            recyclerView.findViewHolderForAdapterPosition(index)?.let {
-                IDGeneratorHelper.printView(
-                    it,
-                    productCardModelMatcher.productCardModel.productName,
-                )
+                recyclerView.findViewHolderForAdapterPosition(index)?.let { viewHolder ->
+                    IDGeneratorHelper.printView(
+                        viewHolder,
+                        "product card $index",
+                    )
+                }
             }
         }
     }
