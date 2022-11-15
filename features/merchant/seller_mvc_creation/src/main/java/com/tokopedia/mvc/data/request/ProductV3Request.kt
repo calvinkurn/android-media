@@ -9,5 +9,7 @@ data class ProductV3ExtraInfo(
 data class ProductV3Options(
     @SerializedName("stats") val stats: Boolean,
     @SerializedName("txStats") val txStats: Boolean,
-    @SerializedName("variant") val variant: Boolean
+    @SerializedName("variant") val variant: Boolean,
+    @SerializedName("basic") val basic: Boolean,
+    @SerializedName("picture") val picture: Boolean,
 )

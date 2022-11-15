@@ -8,5 +8,7 @@ data class Variant(
     val price: Long,
     val isSelected: Boolean,
     val stockCount: Int,
-    val soldCount: Int
+    val soldCount: Int,
+    val isEligible: Boolean,
+    val reason: String
 )

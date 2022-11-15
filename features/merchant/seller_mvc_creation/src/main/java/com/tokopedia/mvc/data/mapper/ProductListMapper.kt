@@ -24,7 +24,7 @@ class ProductListMapper @Inject constructor() {
                 Product.TxStats(product.txStats.sold),
                 product.warehouse.map { warehouse -> Product.Warehouse(warehouse.id.toLongOrZero()) },
                 product.warehouseCount,
-                modifiedVariants = emptyList(),
+                selectedVariantsIds = emptySet(),
                 isEligible = true,
                 ineligibleReason = "",
                 originalVariants = emptyList(),

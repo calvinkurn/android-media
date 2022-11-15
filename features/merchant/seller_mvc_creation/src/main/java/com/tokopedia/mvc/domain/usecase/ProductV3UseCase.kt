@@ -37,6 +37,12 @@ class ProductV3UseCase @Inject constructor(
            query $OPERATION_NAME(${'$'}productID: String!, ${'$'}options: OptionV3!, ${'$'}extraInfo: ExtraInfoV3, ${'$'}warehouseID: String) {
              $OPERATION_NAME(productID: ${'$'}productID, options: ${'$'}options, extraInfo: ${'$'}extraInfo, warehouseID: ${'$'}warehouseID) {
                status
+               productName
+               price
+               stock
+               pictures {
+                 urlThumbnail
+               }
                stats {
                  countView
                  countReview
@@ -95,7 +101,7 @@ class ProductV3UseCase @Inject constructor(
     private fun buildRequest(param: Param): GraphqlRequest {
         val params = mapOf(
             REQUEST_PARAM_PRODUCT_ID to param.productId.toString(),
-            REQUEST_PARAM_OPTIONS to ProductV3Options(stats = true, txStats = true, variant = true),
+            REQUEST_PARAM_OPTIONS to ProductV3Options(stats = true, txStats = true, variant = true, basic = true, picture = true),
             REQUEST_PARAM_EXTRA_INFO to ProductV3ExtraInfo(event = true),
             REQUEST_PARAM_WAREHOUSE_ID to param.warehouseId.toString()
         )

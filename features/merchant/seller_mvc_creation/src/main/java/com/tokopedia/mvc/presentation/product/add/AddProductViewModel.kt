@@ -79,7 +79,7 @@ class AddProductViewModel @Inject constructor(
             is AddProductEvent.ApplySortFilter -> handleApplySortFilter(event.selectedSort)
             is AddProductEvent.SearchProduct -> handleSearchProduct(event.searchKeyword)
             is AddProductEvent.TapVariant -> handleTapVariant(event.parentProduct)
-            is AddProductEvent.VariantUpdated -> handleVariantUpdated(event.modifiedParentProduct)
+            is AddProductEvent.VariantUpdated -> handleVariantUpdated(event.modifiedParentProductId, event.selectedVariantIds)
         }
     }
 
@@ -218,7 +218,7 @@ class AddProductViewModel @Inject constructor(
                 isEligible = isEligible,
                 ineligibleReason = matchedProduct?.reason.orEmpty(),
                 originalVariants = variants.orEmpty(),
-                modifiedVariants = variants.orEmpty(),
+                selectedVariantsIds = variants?.map { it.variantProductId }?.toSet().orEmpty(),
                 isSelected = isSelected,
                 enableCheckbox = isBelowMaximumProductSelection && isEligible
             )
@@ -312,7 +312,7 @@ class AddProductViewModel @Inject constructor(
 
                 val hasVariants = it.originalVariants.isNotEmpty()
                 if (hasVariants) {
-                    it.copy(isSelected = true, enableCheckbox = true, originalVariants = it.originalVariants, modifiedVariants = it.modifiedVariants)
+                    it.copy(isSelected = true, enableCheckbox = true, originalVariants = it.originalVariants, selectedVariantsIds = it.selectedVariantsIds)
                 } else {
                     it.copy(isSelected = true, enableCheckbox = true)
                 }
@@ -329,7 +329,7 @@ class AddProductViewModel @Inject constructor(
 
                 val hasVariants = it.originalVariants.isNotEmpty()
                 if (hasVariants) {
-                    it.copy(isSelected = false, enableCheckbox = true, originalVariants = it.originalVariants, modifiedVariants = it.originalVariants)
+                    it.copy(isSelected = false, enableCheckbox = true, originalVariants = it.originalVariants, selectedVariantsIds = it.originalVariants.map { it.variantProductId }.toSet())
                 } else {
                     it.copy(isSelected = false, enableCheckbox = true)
                 }
@@ -450,14 +450,12 @@ class AddProductViewModel @Inject constructor(
         _uiEffect.tryEmit(AddProductEffect.ShowVariantBottomSheet(parentProduct))
     }
 
-    private fun handleVariantUpdated(modifiedParentProduct: Product) {
+    private fun handleVariantUpdated(parentProductId: Long, selectedVariantIds : Set<Long>) {
         launch(dispatchers.computation) {
 
-            val selectedVariants = modifiedParentProduct.modifiedVariants.filter { it.isSelected }
-
             val updatedProducts = currentState.products.map { parentProduct ->
-                if (parentProduct.id == modifiedParentProduct.id) {
-                    parentProduct.copy(modifiedVariants = selectedVariants)
+                if (parentProduct.id == parentProductId) {
+                    parentProduct.copy(selectedVariantsIds = selectedVariantIds)
                 } else {
                     parentProduct
                 }

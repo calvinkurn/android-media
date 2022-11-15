@@ -13,11 +13,23 @@ data class ProductV3Response(
         val stats: Stats = Stats(),
         @SerializedName("status")
         val status: String = "",
+        @SerializedName("productName")
+        val productName: String = "",
+        @SerializedName("price")
+        val price: String = "",
+        @SerializedName("pictures")
+        val pictures: List<Picture> = emptyList(),
+        @SerializedName("stock")
+        val stock: Int = 0,
         @SerializedName("txStats")
         val txStats: TxStats = TxStats(),
         @SerializedName("variant")
         val variant: Variant = Variant()
     ) {
+        data class Picture(
+            @SerializedName("urlThumbnail")
+            val urlThumbnail: String = "",
+        )
         data class Stats(
             @SerializedName("countReview")
             val countReview: Int = 0,

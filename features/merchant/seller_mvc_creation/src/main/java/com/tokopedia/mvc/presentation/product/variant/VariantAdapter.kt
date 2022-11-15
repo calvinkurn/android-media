@@ -12,7 +12,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.mvc.R
 import com.tokopedia.mvc.databinding.SmvcItemVariantProductBinding
-import com.tokopedia.mvc.domain.entity.Product
+import com.tokopedia.mvc.domain.entity.Variant
 import com.tokopedia.mvc.util.extension.grayscale
 import com.tokopedia.mvc.util.extension.resetGrayscale
 import com.tokopedia.unifyprinciples.Typography
@@ -22,12 +22,12 @@ class VariantAdapter : RecyclerView.Adapter<VariantAdapter.ViewHolder>() {
 
     private var onVariantClick: (Int, Boolean) -> Unit = { _, _ -> }
 
-    private val differCallback = object : DiffUtil.ItemCallback<Product.Variant>() {
-        override fun areItemsTheSame(oldItem: Product.Variant, newItem: Product.Variant): Boolean {
-            return oldItem.variantProductId == newItem.variantProductId
+    private val differCallback = object : DiffUtil.ItemCallback<Variant>() {
+        override fun areItemsTheSame(oldItem: Variant, newItem: Variant): Boolean {
+            return oldItem.variantId == newItem.variantId
         }
 
-        override fun areContentsTheSame(oldItem: Product.Variant, newItem: Product.Variant): Boolean {
+        override fun areContentsTheSame(oldItem: Variant, newItem: Variant): Boolean {
             return oldItem == newItem
         }
     }
@@ -57,7 +57,7 @@ class VariantAdapter : RecyclerView.Adapter<VariantAdapter.ViewHolder>() {
     ) : RecyclerView.ViewHolder(binding.root) {
 
 
-        fun bind(item: Product.Variant) {
+        fun bind(item: Variant) {
             with(binding) {
                 checkBox.setOnCheckedChangeListener(null)
 
@@ -66,10 +66,10 @@ class VariantAdapter : RecyclerView.Adapter<VariantAdapter.ViewHolder>() {
                 imgVariant.loadRemoteImageUrl(item)
                 imgVariant.cornerRadius = 12
 
-                tpgVariantName.text = item.productName
+                tpgVariantName.text = item.variantName
                 tpgVariantName.isEnabled = item.isEligible
 
-                tpgStock.text = binding.tpgStock.context.getString(R.string.smvc_placeholder_total_stock, item.stock.splitByThousand())
+                tpgStock.text = binding.tpgStock.context.getString(R.string.smvc_placeholder_total_stock, item.stockCount.splitByThousand())
                 tpgStock.isEnabled = item.isEligible
 
                 tpgPrice.setPrice(item)
@@ -83,7 +83,7 @@ class VariantAdapter : RecyclerView.Adapter<VariantAdapter.ViewHolder>() {
             }
         }
 
-        private fun ImageView.loadRemoteImageUrl(item: Product.Variant) {
+        private fun ImageView.loadRemoteImageUrl(item: Variant) {
             loadImage(item.imageUrl)
 
             if (item.isEligible) {
@@ -93,7 +93,7 @@ class VariantAdapter : RecyclerView.Adapter<VariantAdapter.ViewHolder>() {
             }
         }
 
-        private fun Typography.setIneligibleReason(item: Product.Variant) {
+        private fun Typography.setIneligibleReason(item: Variant) {
             if (item.reason.isNotEmpty()) {
                 visible()
                 text = item.reason
@@ -102,7 +102,7 @@ class VariantAdapter : RecyclerView.Adapter<VariantAdapter.ViewHolder>() {
             }
         }
 
-        private fun Typography.setPrice(item: Product.Variant) {
+        private fun Typography.setPrice(item: Variant) {
             text = context.getString(
                 R.string.smvc_placeholder_product_price,
                 item.price.splitByThousand()
@@ -110,11 +110,11 @@ class VariantAdapter : RecyclerView.Adapter<VariantAdapter.ViewHolder>() {
         }
     }
 
-    fun submit(newVariants: List<Product.Variant>) {
+    fun submit(newVariants: List<Variant>) {
         differ.submitList(newVariants)
     }
 
-    fun snapshot(): List<Product.Variant> {
+    fun snapshot(): List<Variant> {
         return differ.currentList
     }
 }

@@ -710,8 +710,8 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
 
     private fun displayVariantBottomSheet(selectedParentProduct: Product) {
         val bottomSheet = SelectVariantBottomSheet.newInstance(selectedParentProduct)
-        bottomSheet.setOnSelectButtonClick { modifiedParentProduct ->
-            viewModel.processEvent(AddProductEvent.VariantUpdated(modifiedParentProduct))
+        bottomSheet.setOnSelectButtonClick { selectedVariantIds ->
+            viewModel.processEvent(AddProductEvent.VariantUpdated(selectedParentProduct.id, selectedVariantIds))
         }
         bottomSheet.show(childFragmentManager, bottomSheet.tag)
     }

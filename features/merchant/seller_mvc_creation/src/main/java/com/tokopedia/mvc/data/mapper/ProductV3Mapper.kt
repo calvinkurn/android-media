@@ -16,20 +16,31 @@ class ProductV3Mapper @Inject constructor() {
             val options = it.options.map { VariantResult.Selection.Option(it.value) }
             VariantResult.Selection(options)
         }
+        val imageUrl = response.getProductV3.pictures.firstOrNull()?.urlThumbnail.orEmpty()
 
-        val products =  variant.products.map {
+        val products = variant.products.map {
             Variant(
                 it.productID.toLongOrZero(),
-                "",
+                variantName = "",
                 it.combination,
-                "",
+                imageUrl,
                 it.price.toLongOrZero(),
-                false,
+                isSelected = false,
                 it.stock,
-                0
+                soldCount = 0,
+                isEligible = true,
+                reason = ""
             )
         }
 
-        return VariantResult(selection, products)
+        return VariantResult(
+            response.getProductV3.productName,
+            response.getProductV3.price.toLongOrZero(),
+            response.getProductV3.stock,
+            response.getProductV3.txStats.itemSold,
+            imageUrl,
+            selection,
+            products
+        )
     }
 }

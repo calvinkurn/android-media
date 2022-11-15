@@ -12,9 +12,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.campaign.utils.extension.applyPaddingToLastItem
 import com.tokopedia.campaign.utils.extension.attachDividerItemDecoration
 import com.tokopedia.kotlin.extensions.view.applyUnifyBackgroundColor
-import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.splitByThousand
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.mvc.R
@@ -48,7 +46,7 @@ class SelectVariantBottomSheet : BottomSheetUnify() {
 
     private var binding by autoClearedNullable<SmvcBottomsheetSelectVariantBinding>()
     private val parentProduct by lazy { arguments?.getParcelable(BUNDLE_KEY_SELECTED_PARENT_PRODUCT_ID) as? Product }
-    private var onSelectButtonClick: (Product) -> Unit = {}
+    private var onSelectButtonClick: (Set<Long>) -> Unit = {}
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -121,9 +119,9 @@ class SelectVariantBottomSheet : BottomSheetUnify() {
                 val selectedVariant = variantAdapter.snapshot()[selectedItemPosition]
 
                 if (isSelected) {
-                    viewModel.processEvent(SelectVariantEvent.AddProductToSelection(selectedVariant.variantProductId))
+                    viewModel.processEvent(SelectVariantEvent.AddProductToSelection(selectedVariant.variantId))
                 } else {
-                    viewModel.processEvent(SelectVariantEvent.RemoveProductFromSelection(selectedVariant.variantProductId))
+                    viewModel.processEvent(SelectVariantEvent.RemoveProductFromSelection(selectedVariant.variantId))
                 }
 
             }
@@ -142,7 +140,7 @@ class SelectVariantBottomSheet : BottomSheetUnify() {
     }
 
 
-    fun setOnSelectButtonClick(onSelectButtonClick: (Product) -> Unit) {
+    fun setOnSelectButtonClick(onSelectButtonClick: (Set<Long>) -> Unit) {
         this.onSelectButtonClick = onSelectButtonClick
     }
 
@@ -161,7 +159,7 @@ class SelectVariantBottomSheet : BottomSheetUnify() {
     private fun handleEffect(effect: SelectVariantEffect) {
         when (effect) {
             is SelectVariantEffect.ConfirmUpdateVariant -> {
-                onSelectButtonClick(effect.modifiedParentProduct)
+                onSelectButtonClick(effect.selectedVariantIds)
                 dismiss()
             }
         }
@@ -172,34 +170,33 @@ class SelectVariantBottomSheet : BottomSheetUnify() {
         renderLoadingState(uiState.isLoading)
         renderSelectAllCheckbox(uiState)
         renderList(uiState)
-        renderParentProduct(uiState.parentProduct)
-        renderButton(uiState.parentProduct.modifiedVariants)
+        renderParentProduct(uiState)
+        renderButton(uiState.selectedVariantIds)
     }
 
-    private fun renderButton(modifiedVariants: List<Product.Variant>) {
-        val selectedProductsSize = modifiedVariants.count { it.isSelected }
-        binding?.btnSelect?.isEnabled = selectedProductsSize.isMoreThanZero()
+    private fun renderButton(selectedVariantIds: Set<Long>) {
+        binding?.btnSelect?.isEnabled = selectedVariantIds.isNotEmpty()
 
-        val wording = if (selectedProductsSize.isZero()) {
+        val wording = if (selectedVariantIds.isEmpty()) {
             getString(R.string.smvc_select)
         } else {
-            getString(R.string.smvc_placeholder_selected_variant_count, selectedProductsSize)
+            getString(R.string.smvc_placeholder_selected_variant_count, selectedVariantIds.size)
         }
 
         binding?.btnSelect?.text = wording
     }
 
-    private fun renderParentProduct(parentProduct: Product) {
+    private fun renderParentProduct(uiState: SelectVariantUiState) {
         binding?.run {
-            tpgProductName.text = parentProduct.name
-            tpgStock.text = context?.getString(R.string.smvc_placeholder_total_stock, parentProduct.stock.splitByThousand())
-            tpgSoldCount.text = context?.getString(R.string.smvc_placeholder_product_sold_count, parentProduct.txStats.sold.splitByThousand())
-            imgParentProduct.loadImage(parentProduct.picture)
+            tpgProductName.text = uiState.parentProductName
+            tpgStock.text = context?.getString(R.string.smvc_placeholder_total_stock, uiState.parentProductStock.splitByThousand())
+            tpgSoldCount.text = context?.getString(R.string.smvc_placeholder_product_sold_count, uiState.parentProductStock.splitByThousand())
+            imgParentProduct.loadImage(uiState.parentProductImageUrl)
         }
     }
 
     private fun renderList(uiState: SelectVariantUiState) {
-        variantAdapter.submit(uiState.parentProduct.modifiedVariants)
+        variantAdapter.submit(uiState.variants)
     }
 
     private fun renderSelectAllCheckbox(uiState: SelectVariantUiState) {

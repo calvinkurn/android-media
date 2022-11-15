@@ -105,19 +105,19 @@ class ProductDelegateAdapter(
         private fun RelativeLayout.setVariantCount(item: Product) {
             isVisible = item.originalVariants.isNotEmpty()
 
-            val isVariantUnchanged = item.originalVariants.size == item.modifiedVariants.size
+            val isVariantUnchanged = item.originalVariants.size == item.selectedVariantsIds.size
             if (isVariantUnchanged && item.isSelected) {
                 binding.tpgVariantCount.text = MethodChecker.fromHtml(
                     binding.tpgVariantCount.context.getString(
                         R.string.smvc_placeholder_selected_variant_product_count,
-                        item.modifiedVariants.size,
+                        item.selectedVariantsIds.size,
                         item.originalVariants.size
                     )
                 )
             } else {
                 binding.tpgVariantCount.text = binding.tpgVariantCount.context.getString(
                     R.string.smvc_placeholder_modified_variant_product_count,
-                    item.modifiedVariants.size,
+                    item.selectedVariantsIds.size,
                     item.originalVariants.size
                 )
             }

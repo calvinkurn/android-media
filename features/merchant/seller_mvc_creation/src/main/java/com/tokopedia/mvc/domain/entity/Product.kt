@@ -22,7 +22,7 @@ data class Product(
     val isEligible: Boolean,
     val ineligibleReason: String,
     val originalVariants: List<Variant>,
-    val modifiedVariants: List<Variant>,
+    val selectedVariantsIds: Set<Long>,
     val isSelected: Boolean,
     val enableCheckbox: Boolean
 ) : DelegateAdapterItem, Parcelable {
