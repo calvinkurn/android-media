@@ -35,6 +35,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.logisticCommon.data.entity.response.Data
+import com.tokopedia.logisticCommon.util.GmsHelper
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.common.AddressConstants
 import com.tokopedia.logisticaddaddress.databinding.BottomsheetDistcrictReccomendationRevampBinding
@@ -115,15 +116,21 @@ class DiscomBottomSheetRevamp(private var isPinpoint: Boolean = false, private v
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if (isEdit) {
-            permissionCheckerHelper = PermissionCheckerHelper()
-        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        fusedLocationClient = FusedLocationProviderClient(requireActivity())
+        setCurrentLocationProvider()
         setViewListener()
+    }
+
+    private fun setCurrentLocationProvider() {
+        context?.let {
+            if (isEdit && GmsHelper.detectGmsAvailability(it)) {
+                fusedLocationClient = FusedLocationProviderClient(it)
+                permissionCheckerHelper = PermissionCheckerHelper()
+            }
+        }
     }
 
     override fun onDetach() {
@@ -178,41 +185,43 @@ class DiscomBottomSheetRevamp(private var isPinpoint: Boolean = false, private v
     }
 
     private fun setupDiscomBottomsheet(viewBinding: BottomsheetDistcrictReccomendationRevampBinding?) {
-        val cityList = resources.getStringArray(R.array.cityList)
-        val chipsLayoutManager = ChipsLayoutManager.newBuilder(viewBinding?.root?.context)
-            .setOrientation(ChipsLayoutManager.HORIZONTAL)
-            .setRowStrategy(ChipsLayoutManager.STRATEGY_DEFAULT)
-            .build()
+        context?.let {
+            val cityList = it.resources.getStringArray(R.array.cityList)
+            val chipsLayoutManager = ChipsLayoutManager.newBuilder(viewBinding?.root?.context)
+                .setOrientation(ChipsLayoutManager.HORIZONTAL)
+                .setRowStrategy(ChipsLayoutManager.STRATEGY_DEFAULT)
+                .build()
 
-        chipsLayoutManagerZipCode = ChipsLayoutManager.newBuilder(viewBinding?.root?.context)
-            .setOrientation(ChipsLayoutManager.HORIZONTAL)
-            .setRowStrategy(ChipsLayoutManager.STRATEGY_DEFAULT)
-            .build()
+            chipsLayoutManagerZipCode = ChipsLayoutManager.newBuilder(viewBinding?.root?.context)
+                .setOrientation(ChipsLayoutManager.HORIZONTAL)
+                .setRowStrategy(ChipsLayoutManager.STRATEGY_DEFAULT)
+                .build()
 
-        viewBinding?.rvChips?.let { ViewCompat.setLayoutDirection(it, ViewCompat.LAYOUT_DIRECTION_LTR) }
+            viewBinding?.rvChips?.let { ViewCompat.setLayoutDirection(it, ViewCompat.LAYOUT_DIRECTION_LTR) }
 
-        popularCityAdapter.cityList = cityList.toMutableList()
+            popularCityAdapter.cityList = cityList.toMutableList()
 
-        viewBinding?.run {
-            rvListDistrict.visibility = View.GONE
-            llZipCode.visibility = View.GONE
-            btnChooseZipcode.visibility = View.GONE
+            viewBinding?.run {
+                rvListDistrict.visibility = View.GONE
+                llZipCode.visibility = View.GONE
+                btnChooseZipcode.visibility = View.GONE
 
-            rvChips.apply {
-                val dist = context.resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_8)
-                layoutManager = chipsLayoutManager
-                adapter = popularCityAdapter
-                addItemDecoration(ChipsItemDecoration(dist))
-            }
+                rvChips.apply {
+                    val dist = context.resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_8)
+                    layoutManager = chipsLayoutManager
+                    adapter = popularCityAdapter
+                    addItemDecoration(ChipsItemDecoration(dist))
+                }
 
-            rvListDistrict.apply {
-                layoutManager = mLayoutManager
-                adapter = listDistrictAdapter
-            }
+                rvListDistrict.apply {
+                    layoutManager = mLayoutManager
+                    adapter = listDistrictAdapter
+                }
 
-            if (isEdit) {
-                layoutUseCurrentLoc.visibility = View.VISIBLE
-                dividerUseCurrentLocation.visibility = View.VISIBLE
+                if (isEdit) {
+                    layoutUseCurrentLoc.visibility = View.VISIBLE
+                    dividerUseCurrentLocation.visibility = View.VISIBLE
+                }
             }
         }
     }
