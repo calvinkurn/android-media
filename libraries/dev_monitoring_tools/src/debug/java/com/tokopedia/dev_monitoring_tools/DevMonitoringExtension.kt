@@ -14,8 +14,8 @@ object DevMonitoringExtension {
         isEnableStrictMode: Boolean = false,
         application: Application
     ) {
-        CoroutineScope(Dispatchers.IO).launch {
-            TokoLeakPublisher.getInstance(application, Gson(), enable,isEnableStrictMode)
+        CoroutineScope(Dispatchers.Main).launch {
+            TokoLeakPublisher.getInstance(application, Gson(), enable, isEnableStrictMode)
         }
     }
 }
