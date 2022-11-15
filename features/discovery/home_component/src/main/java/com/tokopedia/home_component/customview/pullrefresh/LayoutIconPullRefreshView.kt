@@ -5,16 +5,21 @@ import android.animation.LayoutTransition
 import android.animation.ValueAnimator
 import android.content.Context
 import android.util.AttributeSet
-import android.util.Log
+import android.view.HapticFeedbackConstants
 import android.view.View
 import android.view.animation.AccelerateDecelerateInterpolator
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.tokopedia.home_component.R
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.invisible
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.dpToPx
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.LoaderUnify
-import com.tokopedia.unifycomponents.toDp
 import kotlin.math.roundToInt
 
 
@@ -54,9 +59,9 @@ class LayoutIconPullRefreshView : ConstraintLayout, LayoutIconPullRefreshListene
 
     companion object {
         private const val MAXIMUM_HEIGHT_SCROLL = 120
-        private const val HEIGHT_LOADING = 52
+        private const val HEIGHT_LOADING = 60
         private const val MAXIMUM_PROGRESS_REFRESH = 1
-        private const val TIME_DURATION_ANIMATION_HEIGHT: Long = 300
+        private const val TIME_DURATION_ANIMATION_HEIGHT: Long = 200
         private const val HEIGHT_LAYOUT_GONE = 0
         private const val TYPE_WHITE = 0
         private const val TYPE_GREEN = 1
@@ -65,6 +70,7 @@ class LayoutIconPullRefreshView : ConstraintLayout, LayoutIconPullRefreshListene
     init {
         val view = View.inflate(context, R.layout.layout_icon_pull_refresh_view, this)
         containerIconPullRefresh = view.findViewById(R.id.container_icon_pull_refresh)
+        containerIconPullRefresh?.isHapticFeedbackEnabled = true
         pullRefreshIcon = view.findViewById(R.id.progress_pull_refresh)
         containerIconPullRefresh?.layoutTransition?.enableTransitionType(LayoutTransition.CHANGING)
         loaderPullRefresh = view.findViewById(R.id.loader_pull_refresh)
@@ -153,7 +159,9 @@ class LayoutIconPullRefreshView : ConstraintLayout, LayoutIconPullRefreshListene
     }
 
     override fun progressRefresh(progress: Float) {
-        Log.d("dhabalog", "$progress")
+        if (progressRefresh < MAXIMUM_PROGRESS_REFRESH && progress >= MAXIMUM_PROGRESS_REFRESH) {
+            containerIconPullRefresh?.performHapticFeedback(HapticFeedbackConstants.VIRTUAL_KEY)
+        }
         progressRefresh = progress
         pullRefreshIcon?.scaleX = progress
         pullRefreshIcon?.scaleY = progress
@@ -161,7 +169,6 @@ class LayoutIconPullRefreshView : ConstraintLayout, LayoutIconPullRefreshListene
 
     private fun positionChildren() {
         if (offsetY > HEIGHT_LAYOUT_GONE) {
-            Log.d("dhabalog", "offsetY $offsetY")
             heightLayoutScroll = (progressRefresh * MAXIMUM_HEIGHT_SCROLL).roundToInt()
             if (containerIconPullRefresh?.isVisible == false) {
                 containerIconPullRefresh?.visible()
