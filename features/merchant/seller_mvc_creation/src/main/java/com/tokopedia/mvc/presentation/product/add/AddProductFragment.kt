@@ -11,6 +11,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.campaign.components.adapter.CompositeAdapter
 import com.tokopedia.campaign.components.adapter.DelegateAdapterItem
 import com.tokopedia.campaign.components.adapter.LoadingDelegateAdapter
@@ -21,15 +22,23 @@ import com.tokopedia.campaign.components.bottomsheet.selection.single.SingleSele
 import com.tokopedia.campaign.delegates.HasPaginatedList
 import com.tokopedia.campaign.delegates.HasPaginatedListImpl
 import com.tokopedia.campaign.entity.LoadingItem
+import com.tokopedia.campaign.utils.constant.DateConstant
 import com.tokopedia.campaign.utils.extension.applyPaddingToLastItem
 import com.tokopedia.campaign.utils.extension.attachDividerItemDecoration
 import com.tokopedia.campaign.utils.extension.enable
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.applyUnifyBackgroundColor
+import com.tokopedia.kotlin.extensions.view.formatTo
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.linker.LinkerManager
+import com.tokopedia.linker.LinkerUtils
+import com.tokopedia.linker.interfaces.ShareCallback
+import com.tokopedia.linker.model.LinkerError
+import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.mvc.di.component.DaggerMerchantVoucherCreationComponent
 import com.tokopedia.mvc.domain.entity.ProductCategoryOption
 import com.tokopedia.mvc.domain.entity.ProductSortOptions
@@ -50,16 +59,25 @@ import com.tokopedia.mvc.util.constant.NumberConstant
 import com.tokopedia.mvc.R
 import com.tokopedia.mvc.databinding.SmvcFragmentAddProductBinding
 import com.tokopedia.mvc.domain.entity.Product
+import com.tokopedia.mvc.domain.entity.enums.BenefitType
+import com.tokopedia.mvc.presentation.share.LinkerDataGenerator
+import com.tokopedia.mvc.presentation.share.SharingComponentInstanceBuilder
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
+import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
+import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
+import com.tokopedia.universal_sharing.view.model.ShareModel
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.flow.collect
+import java.util.*
 import javax.inject.Inject
 
 class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginatedListImpl() {
 
     companion object {
         const val PAGE_SIZE = 10
+        private const val ONE_FILTER_SELECTED = 1
         private const val BUNDLE_KEY_COUPON_ID = "couponId"
 
         @JvmStatic
@@ -79,6 +97,7 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
     private val categoryChips by lazy { SortFilterItem(getString(R.string.smvc_category)) }
     private val showcaseChips by lazy { SortFilterItem(getString(R.string.smvc_showcase)) }
     private val sortChips by lazy { SortFilterItem(getString(R.string.smvc_sort)) }
+    private var shareComponentBottomSheet : UniversalShareBottomSheet? = null
 
     private val productAdapter by lazy {
         CompositeAdapter.Builder()
@@ -90,6 +109,12 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
+
+    @Inject
+    lateinit var userSession : UserSessionInterface
+
+    @Inject
+    lateinit var shareComponentInstanceBuilder: SharingComponentInstanceBuilder
 
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(AddProductViewModel::class.java) }
@@ -129,6 +154,13 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
         setupSortFilter()
         setupPaging()
         setupSearchBar()
+        setupButton()
+    }
+
+    private fun setupButton() {
+        binding?.btnAddProduct?.setOnClickListener {
+            viewModel.processEvent(AddProductEvent.ConfirmAddProduct)
+        }
     }
 
     private fun setupCheckbox() {
@@ -211,6 +243,10 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
             is AddProductEffect.ShowVariantBottomSheet -> {
                 val selectedParentProduct = effect.selectedParentProduct
                 val variants = 0
+            }
+            is AddProductEffect.FinishPage -> {
+
+                displayShareBottomSheet("Unilever", "UNVR")
             }
         }
     }
@@ -314,7 +350,7 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
         if (selectedShowcases.isEmpty()) {
             showcaseChips.type = ChipsUnify.TYPE_NORMAL
             showcaseChips.selectedItem = arrayListOf(getString(R.string.smvc_showcase))
-        } else if (selectedShowcases.size == 1) {
+        } else if (selectedShowcases.size == ONE_FILTER_SELECTED) {
             val selectedCategory = selectedShowcases.first()
             showcaseChips.type = ChipsUnify.TYPE_SELECTED
             showcaseChips.selectedItem = arrayListOf(selectedCategory.name)
@@ -333,7 +369,7 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
         if (selectedCategories.isEmpty()) {
             categoryChips.type = ChipsUnify.TYPE_NORMAL
             categoryChips.selectedItem = arrayListOf(getString(R.string.smvc_category))
-        } else if (selectedCategories.size == 1) {
+        } else if (selectedCategories.size == ONE_FILTER_SELECTED) {
             val selectedCategory = selectedCategories.first()
             categoryChips.type = ChipsUnify.TYPE_SELECTED
             categoryChips.selectedItem = arrayListOf(selectedCategory.name)
@@ -568,5 +604,97 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
         }
 
         bottomSheet.show(childFragmentManager, bottomSheet.tag)
+    }
+
+    private fun displayShareBottomSheet(shopName: String, shopDomain: String) {
+        val voucherStartDate = Date()
+        val voucherEndDate = Date()
+
+        val endDate = voucherEndDate.formatTo(DateConstant.DATE_YEAR_PRECISION)
+        val endHour = voucherEndDate.formatTo(DateConstant.TIME_MINUTE_PRECISION)
+
+        val formattedShopName = MethodChecker.fromHtml(shopName).toString()
+        val title = String.format(getString(R.string.smvc_placeholder_share_component_outgoing_title), formattedShopName)
+        val description = String.format(getString(R.string.smvc_placeholder_share_component_text_description), formattedShopName, endDate, endHour)
+
+
+        val imageGeneratorParam = SharingComponentInstanceBuilder.Param(
+            voucherId = 1239,
+            isPublic = true,
+            voucherCode = "UNVRCUAN",
+            voucherStartTime = voucherStartDate,
+            voucherEndTime = voucherEndDate,
+            PromoType.CASHBACK,
+            BenefitType.NOMINAL,
+            shopLogo = "",
+            shopName = formattedShopName,
+            discountAmount = 500_000,
+            discountAmountMax = 1_000_000,
+            productImageUrls = listOf(
+                "https://ecs7.tokopedia.net/img/cache/200-square/VqbcmM/2022/11/11/7a81d3ad-45fe-4c15-ad2b-e0001b37c692.jpg",
+                "https://ecs7.tokopedia.net/img/cache/200-square/VqbcmM/2022/11/11/7a81d3ad-45fe-4c15-ad2b-e0001b37c692.jpg",
+                "https://ecs7.tokopedia.net/img/cache/200-square/VqbcmM/2022/11/11/7a81d3ad-45fe-4c15-ad2b-e0001b37c692.jpg"
+            )
+        )
+
+        shareComponentBottomSheet = shareComponentInstanceBuilder.build(
+            imageGeneratorParam,
+            title,
+            onShareOptionsClicked = { shareModel ->
+                handleShareOptionSelection(
+                    imageGeneratorParam.voucherId,
+                    shareModel,
+                    title,
+                    description,
+                    shopDomain
+                )
+            },
+            onCloseOptionClicked = {
+
+            })
+
+        shareComponentBottomSheet?.show(childFragmentManager, shareComponentBottomSheet?.tag)
+    }
+
+    private fun handleShareOptionSelection(
+        galadrielVoucherId: Long,
+        shareModel: ShareModel,
+        title: String,
+        description: String,
+        shopDomain: String
+    ) {
+        val shareCallback = object : ShareCallback {
+            override fun urlCreated(linkerShareData: LinkerShareResult?) {
+                val wording = "$description ${linkerShareData?.shareUri.orEmpty()}"
+                SharingUtil.executeShareIntent(
+                    shareModel,
+                    linkerShareData,
+                    activity,
+                    view,
+                    wording
+                )
+                shareComponentBottomSheet?.dismiss()
+            }
+
+            override fun onError(linkerError: LinkerError?) {}
+        }
+
+        val linkerDataGenerator = LinkerDataGenerator()
+        val outgoingDescription = getString(R.string.smvc_share_component_outgoing_text_description)
+        val linkerShareData = linkerDataGenerator.generate(
+            galadrielVoucherId,
+            userSession.shopId,
+            shopDomain,
+            shareModel,
+            title,
+            outgoingDescription
+        )
+        LinkerManager.getInstance().executeShareRequest(
+            LinkerUtils.createShareRequest(
+                Int.ZERO,
+                linkerShareData,
+                shareCallback
+            )
+        )
     }
 }

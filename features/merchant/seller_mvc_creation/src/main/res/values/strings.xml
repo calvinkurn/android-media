@@ -29,4 +29,10 @@
     <string name="smvc_showcase">Etalase</string>
     <string name="smvc_sort">Urutkan</string>
     <string name="smvc_update">Ubah</string>
+
+    <!--Share Component-->
+    <string name="smvc_placeholder_share_component_outgoing_title">Kupon Produk dari %s</string>
+    <string name="smvc_share_component_outgoing_text_description">Yuk, belanja dan pakai Kupon Produknya sekarang!</string>
+    <string name="smvc_placeholder_share_component_text_description">Dapatkan Kupon Produk %s di \@Tokopedia hingga %s pukul %s WIB hanya untukmu!</string>
+
 </resources>

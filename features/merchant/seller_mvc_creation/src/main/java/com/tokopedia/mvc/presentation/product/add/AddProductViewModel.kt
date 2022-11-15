@@ -65,7 +65,7 @@ class AddProductViewModel @Inject constructor(
             is AddProductEvent.AddProductToSelection -> handleAddProductToSelection(event.productId)
             AddProductEvent.ClearFilter -> handleClearFilter()
             AddProductEvent.ClearSearchBar -> handleClearSearchbar()
-            AddProductEvent.ConfirmAddProduct -> {}
+            AddProductEvent.ConfirmAddProduct -> handleConfirmAddProduct()
             AddProductEvent.DisableSelectAllCheckbox -> handleUncheckAllProduct()
             AddProductEvent.EnableSelectAllCheckbox -> handleCheckAllProduct()
             is AddProductEvent.RemoveProductFromSelection -> handleRemoveProductFromSelection(event.productId)
@@ -79,6 +79,7 @@ class AddProductViewModel @Inject constructor(
             is AddProductEvent.ApplySortFilter -> handleApplySortFilter(event.selectedSort)
             is AddProductEvent.SearchProduct -> handleSearchProduct(event.searchKeyword)
             is AddProductEvent.TapVariant -> handleTapVariant(event.parentProduct)
+            is AddProductEvent.UpdateVariant -> {}
         }
     }
 
@@ -480,6 +481,19 @@ class AddProductViewModel @Inject constructor(
                     variant.copy(variantName = formattedVariantName)
                 }
 
+                /*val products = currentState.products.map {
+                  if (it.id == selectedParentProduct.id) {
+
+                      val modified = it.modifiedVariants.map {
+
+                      }
+                      it.copy(modifiedVariants = modified)
+                  } else {
+                      it
+                  }
+              }*/
+
+
                 println(updatedVariantNames)
             },
             onError = { error ->
@@ -487,4 +501,10 @@ class AddProductViewModel @Inject constructor(
             }
         )
     }
+
+
+    private fun handleConfirmAddProduct() {
+        _uiEffect.tryEmit(AddProductEffect.FinishPage(currentState.products))
+    }
+
 }
