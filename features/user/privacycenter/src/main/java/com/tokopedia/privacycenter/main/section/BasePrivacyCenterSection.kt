@@ -72,17 +72,18 @@ abstract class BasePrivacyCenterSection(context: Context?) {
 
     fun showLocalLoad(title: String = "", description: String = "", onRetryClick: (View) -> Unit) {
         sectionViewBinding?.root?.hide()
-        showShimmering(false)
+        sectionBaseViewBinding.apply {
+            loadingView.root.hide()
+            baseSection.show()
+        }
 
         sectionBaseViewBinding.sectionLocalLoad.apply {
             localLoadTitle = title.ifEmpty {
-                context?.resources?.getString(R.string.error_network_title).orEmpty()
+                context?.resources?.getString(R.string.privacy_center_error_network_title).orEmpty()
             }
-            localLoadDescription = description.ifEmpty {
-                context?.resources?.getString(R.string.error_network_detail).orEmpty()
-            }
+            localLoadDescription = description
             refreshBtn?.setOnClickListener {
-                progressState = true
+                this.hide()
                 onRetryClick.invoke(it)
             }
         }.show()
@@ -92,4 +93,3 @@ abstract class BasePrivacyCenterSection(context: Context?) {
         sectionBaseViewBinding.sectionLocalLoad.hide()
     }
 }
-

@@ -1,4 +1,4 @@
-package com.tokopedia.privacycenter.main.section.consentwithdrawal
+package com.tokopedia.privacycenter.main.section.consentwithdrawal.adapter
 
 import android.view.View
 import android.view.ViewGroup

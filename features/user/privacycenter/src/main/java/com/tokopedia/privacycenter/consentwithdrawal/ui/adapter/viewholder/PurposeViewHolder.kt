@@ -12,7 +12,7 @@ import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.privacycenter.R
-import com.tokopedia.privacycenter.consentwithdrawal.common.TransactionType
+import com.tokopedia.privacycenter.consentwithdrawal.common.ConsentWithdrawalConst
 import com.tokopedia.privacycenter.consentwithdrawal.ui.ConsentWithdrawalListener
 import com.tokopedia.privacycenter.consentwithdrawal.ui.adapter.uimodel.PurposeUiModel
 import com.tokopedia.privacycenter.databinding.ConsentWithdrawalPurposeItemViewBinding
@@ -28,7 +28,7 @@ class PurposeViewHolder(
 
     fun onBind(item: PurposeUiModel) {
         itemViewBinding?.apply {
-            val isActive = item.data.consentStatus == TransactionType.OPT_IN.alias
+            val isActive = item.data.consentStatus == ConsentWithdrawalConst.OPT_IN
             itemTitle.text = item.data.consentTitle
             itemDesc.apply {
                 text = item.data.consentSubtitle.parseAsHtml()
