@@ -27,12 +27,12 @@ class ConsentWithdrawalAdapter(
             }
         }
 
-        return -1
+        return INDEX_NOT_FOUND
     }
 
     fun updatePurposeState(purposeId: String, transactionType: String) {
         val position = getPurposePosition(purposeId)
-        if (position == -1) return
+        if (position == INDEX_NOT_FOUND) return
 
         setItems(
             itemList.mapIndexed { index, consentWithdrawalUiModel ->
@@ -57,5 +57,6 @@ class ConsentWithdrawalAdapter(
 
     companion object {
         const val FIRST_INDEX = 0
+        const val INDEX_NOT_FOUND = -1
     }
 }

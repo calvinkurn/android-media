@@ -24,7 +24,7 @@ class SubmitConsentPreferenceUseCase @Inject constructor(
             PrivacyCenterStateResult.Success(response.data)
         } else {
             PrivacyCenterStateResult.Fail(
-                MessageErrorException(response.data.errorMessages.toString())
+                Throwable(response.data.errorMessages.toString())
             )
         }
     }

@@ -1,7 +1,7 @@
 package com.tokopedia.privacycenter.consentwithdrawal.ui.adapter.uimodel
 
 data class TitleDividerUiModel(
-    var title: String = "",
-    var isDivider: Boolean,
-    var isSmallDivider: Boolean = false
+    val title: String = "",
+    val isDivider: Boolean,
+    val isSmallDivider: Boolean = false
 ) : ConsentWithdrawalUiModel

@@ -1,5 +1,7 @@
 package com.tokopedia.privacycenter.main
 
+import android.Manifest
+import android.content.pm.PackageManager
 import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -8,19 +10,35 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.appbar.AppBarLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.privacycenter.R
-import com.tokopedia.privacycenter.common.*
+import com.tokopedia.privacycenter.accountlinking.LinkAccountWebviewFragment
 import com.tokopedia.privacycenter.common.di.PrivacyCenterComponent
+import com.tokopedia.privacycenter.common.getDynamicColorStatusBar
+import com.tokopedia.privacycenter.common.getIconBackWithColor
+import com.tokopedia.privacycenter.common.getIdColor
+import com.tokopedia.privacycenter.common.setFitToWindows
+import com.tokopedia.privacycenter.common.setTextStatusBar
 import com.tokopedia.privacycenter.databinding.FragmentPrivacyCenterBinding
+import com.tokopedia.privacycenter.main.section.accountlinking.AccountLinkingSection
+import com.tokopedia.privacycenter.main.section.accountlinking.AccountLinkingViewModel
 import com.tokopedia.privacycenter.main.section.consentwithdrawal.ConsentWithdrawalSection
 import com.tokopedia.privacycenter.main.section.consentwithdrawal.ConsentWithdrawalSectionViewModel
 import com.tokopedia.privacycenter.main.section.dummy.DummySection
+import com.tokopedia.privacycenter.main.section.recommendation.RecommendationSection
+import com.tokopedia.privacycenter.main.section.recommendation.RecommendationViewModel
 import com.tokopedia.privacycenter.main.section.faqPrivacySection.FaqPrivacySection
 import com.tokopedia.unifycomponents.isUsingNightModeResources
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
-class PrivacyCenterFragment : BaseDaggerFragment(), AppBarLayout.OnOffsetChangedListener {
+class PrivacyCenterFragment :
+    BaseDaggerFragment(),
+    AppBarLayout.OnOffsetChangedListener,
+    AccountLinkingSection.Listener,
+    RecommendationSection.Listener {
 
     private var binding by autoClearedNullable<FragmentPrivacyCenterBinding>()
     private var privacyCenterSection: PrivacyCenterSection? = null
@@ -33,9 +51,21 @@ class PrivacyCenterFragment : BaseDaggerFragment(), AppBarLayout.OnOffsetChanged
         )
     }
 
+    private val viewModelAccountLinkingSection by lazy {
+        ViewModelProvider(this, viewModelFactory).get(
+            AccountLinkingViewModel::class.java
+        )
+    }
+
     private val viewModelConsentWithdrawalSection by lazy {
         ViewModelProvider(this, viewModelFactory).get(
             ConsentWithdrawalSectionViewModel::class.java
+        )
+    }
+
+    private val viewModelRecommendationSection by lazy {
+        ViewModelProvider(this, viewModelFactory).get(
+            RecommendationViewModel::class.java
         )
     }
 
@@ -58,6 +88,12 @@ class PrivacyCenterFragment : BaseDaggerFragment(), AppBarLayout.OnOffsetChanged
     override fun onStart() {
         super.onStart()
         binding?.appbar?.addOnOffsetChangedListener(this)
+
+        /*
+        * refresh on function onStart only for device permission that access hardware user,
+        * so that the UI can be updated as soon as possible when activity come to foreground from onStop
+        * */
+        viewModelRecommendationSection.refreshGeolocationPermission()
     }
 
     private fun initToolbar() {
@@ -123,7 +159,61 @@ class PrivacyCenterFragment : BaseDaggerFragment(), AppBarLayout.OnOffsetChanged
         }
     }
 
-    inner class PrivacyCenterSectionDelegateImpl: PrivacyCenterSectionDelegate {
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+
+        when (requestCode) {
+            REQUEST_ACCOUNT_WEBVIEW_REQUEST -> {
+                viewModelAccountLinkingSection.getAccountLinkingStatus()
+            }
+            REQUEST_LOCATION_PERMISSION -> {
+                val isAllowed = grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED
+
+                // change toggle geolocation
+                viewModelRecommendationSection.setGeolocationChange(isAllowed)
+            }
+        }
+    }
+
+    override fun onRequestLocationPermission() {
+        requestPermissions(
+            arrayOf(
+                Manifest.permission.ACCESS_COARSE_LOCATION,
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ),
+            REQUEST_LOCATION_PERMISSION
+        )
+    }
+
+    override fun onItemAccountLinkingClicked() {
+        goToAccountLinkingWebview()
+    }
+
+    private fun goToAccountLinkingWebview() {
+        val intent = RouteManager.getIntent(
+            activity,
+            ApplinkConstInternalUserPlatform.ACCOUNT_LINKING_WEBVIEW
+        ).apply {
+            putExtra(
+                ApplinkConstInternalGlobal.PARAM_LD,
+                LinkAccountWebviewFragment.BACK_BTN_APPLINK
+            )
+        }
+        startActivityForResult(intent, REQUEST_ACCOUNT_WEBVIEW_REQUEST)
+    }
+
+    inner class PrivacyCenterSectionDelegateImpl : PrivacyCenterSectionDelegate {
+        override val recommendationSection: RecommendationSection = RecommendationSection(
+            context,
+            viewModelRecommendationSection,
+            this@PrivacyCenterFragment
+        )
+        override val accountLinkingSection: AccountLinkingSection =
+            AccountLinkingSection(context, viewModelAccountLinkingSection, this@PrivacyCenterFragment)
         override val faqPrivacySection: FaqPrivacySection = FaqPrivacySection(context)
         override val dummySection: DummySection = DummySection(context)
         override val consentWithdrawalSection: ConsentWithdrawalSection = ConsentWithdrawalSection(
@@ -134,6 +224,8 @@ class PrivacyCenterFragment : BaseDaggerFragment(), AppBarLayout.OnOffsetChanged
 
     companion object {
         fun newInstance() = PrivacyCenterFragment()
+        private const val REQUEST_LOCATION_PERMISSION = 100
         private const val OFFSET_CHANGE_COLOR_STATUS_BAR = -136
+        private const val REQUEST_ACCOUNT_WEBVIEW_REQUEST = 101
     }
 }
