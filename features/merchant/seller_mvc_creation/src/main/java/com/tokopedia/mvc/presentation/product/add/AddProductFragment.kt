@@ -503,14 +503,13 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
         warehouseFilterAdapter.setOnItemClicked { newItem ->
             warehouseFilterAdapter.markAsSelected(newItem)
 
-            val selectedItem = warehouseFilterAdapter.getSelectedItem() ?: return@setOnItemClicked
-            val warehouseType = if (selectedItem.name == "Shop Location") {
+            val warehouseType = if (newItem.name == "Shop Location") {
                 WarehouseType.DEFAULT_WAREHOUSE_LOCATION
             } else {
                 WarehouseType.WAREHOUSE
             }
 
-            val newlySelectedWarehouse = Warehouse(selectedItem.id.toLong(), selectedItem.name, warehouseType)
+            val newlySelectedWarehouse = Warehouse(newItem.id.toLong(), newItem.name, warehouseType)
             val event = AddProductEvent.ApplyWarehouseLocationFilter(newlySelectedWarehouse)
             viewModel.processEvent(event)
 
