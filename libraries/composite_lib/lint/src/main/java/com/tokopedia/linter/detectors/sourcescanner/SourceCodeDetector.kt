@@ -26,7 +26,7 @@ class SourceCodeDetector : Detector(), Detector.UastScanner {
 
 
     override fun getApplicableUastTypes(): List<Class<out UElement>>? {
-        return listOf(UImportStatement::class.java, UAnnotation::class.java)
+        return listOf(UImportStatement::class.java, UAnnotation::class.java, USimpleNameReferenceExpression::class.java)
     }
 
 

@@ -15,4 +15,8 @@ class ElementDetector(private val context: JavaContext) : UElementHandler() {
     override fun visitAnnotation (node: UAnnotation) {
         AnnotationDetector.checkAnnotation(context,node)
     }
+
+    override fun visitSimpleNameReferenceExpression(node: USimpleNameReferenceExpression) {
+        ElementDetector.checkElementName(context, node)
+    }
 }
