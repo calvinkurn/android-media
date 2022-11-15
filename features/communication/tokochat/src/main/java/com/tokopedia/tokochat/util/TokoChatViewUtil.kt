@@ -9,9 +9,13 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
+import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.tokopedia.config.GlobalConfig
+import com.tokopedia.tokochat_common.util.TokoChatViewUtil.EIGHT_DP
+import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.utils.file.FileUtil
 import java.io.File
 import java.io.InputStream
@@ -106,9 +110,10 @@ object TokoChatViewUtil {
         Handler(Looper.getMainLooper()).post {
             Glide.with(context)
                 .asBitmap()
-                .placeholder(com.tokopedia.tokochat_common.R.drawable.tokochat_bg_image_bubble)
-                .error(com.tokopedia.tokochat_common.R.drawable.tokochat_bg_image_bubble)
+                .placeholder(com.tokopedia.tokochat_common.R.drawable.tokochat_bg_image_bubble_gradient)
+                .error(com.tokopedia.tokochat_common.R.drawable.tokochat_bg_image_bubble_gradient)
                 .load(inputStream.readBytes())
+                .transform(CenterCrop(), RoundedCorners(EIGHT_DP.toPx()))
                 .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                 .listener(getRequestListenerByteArray(inputStream, onError, onDirectLoad))
                 .into(imageView)

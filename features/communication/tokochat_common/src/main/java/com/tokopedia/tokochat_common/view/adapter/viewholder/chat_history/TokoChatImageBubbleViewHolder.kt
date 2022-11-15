@@ -56,13 +56,12 @@ class TokoChatImageBubbleViewHolder(
             bindLayoutGravity(Gravity.START)
             binding?.tokochatLayoutImageBubbleContainer?.background = bgLeft
         }
-        binding?.tokochatImageBubble?.loadImage(R.drawable.tokochat_bg_image_bubble)
+        binding?.tokochatImageBubble?.loadImage(R.drawable.tokochat_bg_image_bubble_gradient)
     }
 
     private fun bindLayoutGravity(gravity: Int) {
-        val containerLp = binding?.tokochatLayoutImageBubble?.layoutParams as LinearLayout.LayoutParams
+        val containerLp = binding?.tokochatLayoutImageBubble as LinearLayout
         containerLp.gravity = gravity
-        binding?.tokochatLayoutImageBubble?.layoutParams = containerLp
     }
 
     private fun bindRetryButton(element: TokoChatImageBubbleUiModel) {
