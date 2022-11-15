@@ -952,7 +952,12 @@ class PlayUserInteractionFragment @Inject constructor(
                         }
 
                         val (actionText, listener) = when (event.action) {
-                            RetryAction.Follow -> Pair(getString(commonR.string.play_interactive_retry), View.OnClickListener { playViewModel.submitAction(PlayViewerNewAction.FollowInteractive) })
+                            RetryAction.Follow -> Pair(getString(commonR.string.play_interactive_retry),
+                                View.OnClickListener {
+                                    newAnalytic.clickRetryToasterPopUp(channelId, channelType = playViewModel.channelType.value)
+                                    playViewModel.submitAction(PlayViewerNewAction.FollowInteractive)
+                                }
+                            )
                             else ->  Pair("", View.OnClickListener {} )
                         }
 
