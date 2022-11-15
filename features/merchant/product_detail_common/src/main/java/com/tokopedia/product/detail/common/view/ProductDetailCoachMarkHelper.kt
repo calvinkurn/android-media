@@ -20,6 +20,7 @@ class ProductDetailCoachMarkHelper(context: Context) {
 
     private var coachMarkView: CoachMark2? = null
     private var coachMarkEverShowing = false
+    private var lastShown = ""
     private val sharedPref: SharedPreferences? by lazy {
         context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
     }
@@ -45,6 +46,7 @@ class ProductDetailCoachMarkHelper(context: Context) {
 
             coachMarkView?.showCoachMark(coachMarkList, null, 0)
             coachMarkEverShowing = true
+            lastShown = PRODUCT_DETAIL_AR_PAGE_COACHMARK
             setCoachMarkState(PRODUCT_DETAIL_AR_PAGE_COACHMARK, true)
         }
     }
@@ -71,6 +73,7 @@ class ProductDetailCoachMarkHelper(context: Context) {
 
             coachMarkView?.showCoachMark(coachMarkList, null, 0)
             coachMarkEverShowing = true
+            lastShown = COACH_MARK_IMS_TAG
             setCoachMarkState(COACH_MARK_IMS_TAG, true)
         }
     }
@@ -97,12 +100,13 @@ class ProductDetailCoachMarkHelper(context: Context) {
 
             coachMarkView?.showCoachMark(coachMarkList, null, 0)
             coachMarkEverShowing = true
+            lastShown = PDP_HAMPERS_COACHMARK_EXTRA
             setCoachMarkState(PDP_HAMPERS_COACHMARK_EXTRA, true)
         }
     }
 
-    fun hideCoachMark() {
-        if (coachMarkView != null && coachMarkView?.isShowing == true) {
+    fun hideCoachMark(key: String) {
+        if (coachMarkView != null && coachMarkView?.isShowing == true && lastShown == key) {
             coachMarkView?.hideCoachMark()
         }
     }
@@ -123,9 +127,9 @@ class ProductDetailCoachMarkHelper(context: Context) {
     }
 
     companion object {
-        private const val PREF_NAME = "pdp_coachmark"
-        private const val PDP_HAMPERS_COACHMARK_EXTRA = "pdp_hampers_coachmark"
-        private const val PRODUCT_DETAIL_AR_PAGE_COACHMARK = "coach_mark_pdp_ar_page"
-        private const val COACH_MARK_IMS_TAG = "pdp_coachmark_ims"
+        const val PREF_NAME = "pdp_coachmark"
+        const val PDP_HAMPERS_COACHMARK_EXTRA = "pdp_hampers_coachmark"
+        const val PRODUCT_DETAIL_AR_PAGE_COACHMARK = "coach_mark_pdp_ar_page"
+        const val COACH_MARK_IMS_TAG = "pdp_coachmark_ims"
     }
 }

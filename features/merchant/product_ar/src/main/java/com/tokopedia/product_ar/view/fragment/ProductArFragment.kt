@@ -280,7 +280,7 @@ class ProductArFragment : Fragment(), ProductArListener, MFEMakeupEngine.MFEMake
     }
 
     private fun observeGlobalError() {
-        viewLifecycleOwner.lifecycleScope.launch {
+        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
             viewModel?.globalErrorState?.collectLatest { data ->
                 when (data.state) {
                     ArGlobalErrorMode.ERROR -> {
@@ -299,7 +299,7 @@ class ProductArFragment : Fragment(), ProductArListener, MFEMakeupEngine.MFEMake
     }
 
     private fun observeAtc() {
-        viewLifecycleOwner.lifecycleScope.launch {
+        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
             viewModel?.addToCartLiveData?.collectLatest { data ->
                 partialBottomArView?.stopLoadingButton()
                 when (data) {
@@ -349,7 +349,7 @@ class ProductArFragment : Fragment(), ProductArListener, MFEMakeupEngine.MFEMake
     }
 
     private fun observeBottomShimmerState() {
-        viewLifecycleOwner.lifecycleScope.launch {
+        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
             viewModel?.bottomLoadingState?.collectLatest {
                 if (it) {
                     binding?.arShimmer?.root?.show()
@@ -362,7 +362,7 @@ class ProductArFragment : Fragment(), ProductArListener, MFEMakeupEngine.MFEMake
     }
 
     private fun observeLoadingState() {
-        viewLifecycleOwner.lifecycleScope.launch {
+        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
             viewModel?.modifaceLoadingState?.collectLatest {
                 if (it) {
                     binding?.arLoader?.show()
@@ -374,7 +374,7 @@ class ProductArFragment : Fragment(), ProductArListener, MFEMakeupEngine.MFEMake
     }
 
     private fun observeModifaceMode() {
-        viewLifecycleOwner.lifecycleScope.launch {
+        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
             viewModel?.modifaceViewState?.collectLatest {
                 if (it.mode == ModifaceViewMode.LIVE) {
                     setupLiveCamera()
@@ -386,7 +386,7 @@ class ProductArFragment : Fragment(), ProductArListener, MFEMakeupEngine.MFEMake
     }
 
     private fun observeAnimatedTextIcon() {
-        viewLifecycleOwner.lifecycleScope.launch {
+        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
             viewModel?.animatedTextIconState?.collectLatest {
                 binding?.animatedTxtIcon1?.run {
                     shouldShowWithAction(it.view1ClickMode != null) {

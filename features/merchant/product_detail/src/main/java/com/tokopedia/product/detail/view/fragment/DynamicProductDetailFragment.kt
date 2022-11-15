@@ -58,8 +58,6 @@ import com.tokopedia.atc_common.data.model.request.AddToCartOcsRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
-import com.tokopedia.coachmark.CoachMark2
-import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.common_tradein.utils.TradeInPDPHelper
 import com.tokopedia.common_tradein.utils.TradeInUtils
 import com.tokopedia.config.GlobalConfig
@@ -140,7 +138,6 @@ import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantCat
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
 import com.tokopedia.product.detail.common.extensions.ifNull
 import com.tokopedia.product.detail.common.showImmediately
-import com.tokopedia.product.detail.common.pref.CoachMarkProductPref
 import com.tokopedia.product.detail.common.showToasterError
 import com.tokopedia.product.detail.common.showToasterSuccess
 import com.tokopedia.product.detail.common.view.AtcVariantListener
@@ -2718,7 +2715,9 @@ open class DynamicProductDetailFragment :
     }
 
     override fun hideArCoachMark() {
-        pdpCoachmarkHelper?.hideCoachMark()
+        pdpCoachmarkHelper?.hideCoachMark(
+            key = ProductDetailCoachMarkHelper.Companion.PRODUCT_DETAIL_AR_PAGE_COACHMARK
+        )
     }
 
     private fun openBottomSheetTopAds() {
