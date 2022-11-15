@@ -8,16 +8,7 @@ import androidx.test.espresso.ViewInteraction
 import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.platform.app.InstrumentationRegistry.getInstrumentation
-import com.tokopedia.productcard.test.ProductCardModelMatcher
 import com.tokopedia.productcard.test.R
-import com.tokopedia.productcard.test.grid.ProductCardGridActivityTest
-import com.tokopedia.productcard.test.grid.ProductCardGridViewStubActivityTest
-import com.tokopedia.productcard.test.grid.productCardGridTestData
-import com.tokopedia.productcard.test.grid.productCardGridViewStubTestData
-import com.tokopedia.productcard.test.list.ProductCardListActivityTest
-import com.tokopedia.productcard.test.list.ProductCardListViewStubActivityTest
-import com.tokopedia.productcard.test.list.productCardListTestData
-import com.tokopedia.productcard.test.list.productCardListViewStubTestData
 import com.tokopedia.productcard.test.generator.utils.IDGeneratorHelper
 import org.hamcrest.Matcher
 import org.junit.Test
@@ -63,6 +54,6 @@ class ProductCardIDGenerator  {
     }
 
     private fun ViewInteraction.goToProductCardAtPosition(position: Int): ViewInteraction {
-        return perform(scrollToPosition<ProductCardGridActivityTest.ViewHolder>(position))
+        return perform(scrollToPosition<ProductCardIDGeneratorActivityTest.BaseTestViewHolder>(position))
     }
 }
