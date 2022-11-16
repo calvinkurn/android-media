@@ -25,6 +25,7 @@ import com.tokopedia.play.broadcaster.shorts.di.PlayShortsModule
 import com.tokopedia.play.broadcaster.shorts.ui.model.action.PlayShortsAction
 import com.tokopedia.play.broadcaster.shorts.ui.model.event.PlayShortsBottomSheet
 import com.tokopedia.play.broadcaster.shorts.ui.model.state.PlayShortsUiState
+import com.tokopedia.play.broadcaster.shorts.view.bottomsheet.ShortsAccountNotEligibleBottomSheet
 import com.tokopedia.play.broadcaster.shorts.view.fragment.PlayShortsPreparationFragment
 import com.tokopedia.play.broadcaster.shorts.view.fragment.base.PlayShortsBaseFragment
 import com.tokopedia.play.broadcaster.shorts.view.viewmodel.PlayShortsViewModel
@@ -104,6 +105,13 @@ class PlayShortsActivity : BaseActivity() {
                     }
                 })
             }
+            is ShortsAccountNotEligibleBottomSheet -> {
+                fragment.setListener(object : ShortsAccountNotEligibleBottomSheet.Listener {
+                    override fun onClose() {
+                        if(getCurrentFragment() == null) finish()
+                    }
+                })
+            }
         }
     }
 
@@ -172,7 +180,7 @@ class PlayShortsActivity : BaseActivity() {
             is PlayShortsBottomSheet.UGCOnboarding -> {
                 showUGCOnboardingBottomSheet(bottomSheet.hasUsername)
             }
-            is PlayShortsBottomSheet.NoEligibleAccount -> {
+            is PlayShortsBottomSheet.AccountNotEligible -> {
                 showNoEligibleAccountBottomSheet()
             }
             is PlayShortsBottomSheet.SellerNotEligible -> {
@@ -230,7 +238,10 @@ class PlayShortsActivity : BaseActivity() {
          * 2. if preferred account is user -> show user bottomsheet not eligible (need to confirm this)
          * 3. else -> show shop bottomsheet (need to confirm this)
          */
-        println("PLAY_SHORTS : showNoEligibleAccountBottomSheet")
+        ShortsAccountNotEligibleBottomSheet
+            .getFragment(supportFragmentManager, classLoader)
+            .show(supportFragmentManager)
+
     }
 
     private fun showSellerNotEligibleBottomSheet() {

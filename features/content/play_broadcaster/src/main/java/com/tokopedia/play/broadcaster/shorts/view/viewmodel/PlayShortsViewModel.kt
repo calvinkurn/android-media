@@ -180,24 +180,17 @@ class PlayShortsViewModel @Inject constructor(
 
     private fun handlePreparePage(preferredAccountType: String) {
         viewModelScope.launchCatchError(block = {
-            val accountList = repo.getAccountList()
+            val accountList = repo.getAccountList().apply {
+                _accountList.update { this }
+            }
             val bestEligibleAccount = accountManager.getBestEligibleAccount(accountList, preferredAccountType)
 
             if (bestEligibleAccount.isUnknown) {
-                _uiEvent.oneTimeUpdate {
-                    it.copy(bottomSheet = PlayShortsBottomSheet.NoEligibleAccount)
-                }
-            }
-
-            _accountList.update { accountList }
-            setSelectedAccount(bestEligibleAccount)
-
-            if (bestEligibleAccount.isUser && !bestEligibleAccount.hasAcceptTnc) {
-                _uiEvent.oneTimeUpdate {
-                    it.copy(bottomSheet = PlayShortsBottomSheet.UGCOnboarding(bestEligibleAccount.hasUsername))
-                }
+                emitEventAccountNotEligible()
+            } else if (bestEligibleAccount.isUser && !bestEligibleAccount.hasAcceptTnc) {
+                emitEventUGCOnboarding(bestEligibleAccount.hasUsername)
             } else {
-                getConfiguration()
+                setupConfiguration(bestEligibleAccount)
             }
         }) {
             /** TODO: handle global page error like the one in broadcaster */
@@ -240,19 +233,17 @@ class PlayShortsViewModel @Inject constructor(
 
     private fun handleSwitchAccount() {
         viewModelScope.launchCatchError(block = {
+            /** TODO: Add loading state */
             val newSelectedAccount = accountManager.switchAccount(_accountList.value, _selectedAccount.value.type)
 
-            if (newSelectedAccount.isShop && !newSelectedAccount.hasAcceptTnc) {
-                _uiEvent.oneTimeUpdate {
-                    it.copy(bottomSheet = PlayShortsBottomSheet.SellerNotEligible)
-                }
+            if(newSelectedAccount.isUnknown) {
+                throw Exception("Account not found")
+            } else if (newSelectedAccount.isShop && !newSelectedAccount.hasAcceptTnc) {
+                emitEventSellerNotEligible()
             } else if (newSelectedAccount.isUser && !newSelectedAccount.hasAcceptTnc) {
-                _uiEvent.oneTimeUpdate {
-                    it.copy(bottomSheet = PlayShortsBottomSheet.UGCOnboarding(newSelectedAccount.hasUsername))
-                }
+                emitEventUGCOnboarding(newSelectedAccount.hasUsername)
             } else {
-                getConfiguration()
-                setSelectedAccount(newSelectedAccount)
+                setupConfiguration(newSelectedAccount)
             }
         }) { throwable ->
             _uiEvent.oneTimeUpdate {
@@ -333,18 +324,14 @@ class PlayShortsViewModel @Inject constructor(
         /** TODO: handle this */
     }
 
-    private suspend fun getConfiguration() {
-        val account = _selectedAccount.value
-
+    private suspend fun getConfiguration(account: ContentAccountUiModel): PlayShortsConfigUiModel {
         val config = repo.getShortsConfiguration(account.id, account.type)
 
-        _config.update {
-            if (config.shortsId.isEmpty()) {
-                val shortsId = repo.createShorts(account.id, account.type)
-                config.copy(shortsId = shortsId)
-            } else {
-                config
-            }
+        return if (config.shortsId.isEmpty()) {
+            val shortsId = repo.createShorts(account.id, account.type)
+            config.copy(shortsId = shortsId)
+        } else {
+            config
         }
     }
 
@@ -363,5 +350,40 @@ class PlayShortsViewModel @Inject constructor(
 
             _menuList.update { menuList }
         }) { }
+    }
+
+    private suspend fun setupConfiguration(account: ContentAccountUiModel) {
+        val config = getConfiguration(account)
+
+        if(config.shortsAllowed) {
+            setSelectedAccount(account)
+            _config.update { config }
+        }
+        else {
+            if(account.isShop) {
+                emitEventSellerNotEligible()
+            }
+            else if(account.isUser) {
+                emitEventAccountNotEligible()
+            }
+        }
+    }
+
+    private fun emitEventSellerNotEligible() {
+        _uiEvent.oneTimeUpdate {
+            it.copy(bottomSheet = PlayShortsBottomSheet.SellerNotEligible)
+        }
+    }
+
+    private fun emitEventAccountNotEligible() {
+        _uiEvent.oneTimeUpdate {
+            it.copy(bottomSheet = PlayShortsBottomSheet.AccountNotEligible)
+        }
+    }
+
+    private fun emitEventUGCOnboarding(hasUsername: Boolean) {
+        _uiEvent.oneTimeUpdate {
+            it.copy(bottomSheet = PlayShortsBottomSheet.UGCOnboarding(hasUsername))
+        }
     }
 }

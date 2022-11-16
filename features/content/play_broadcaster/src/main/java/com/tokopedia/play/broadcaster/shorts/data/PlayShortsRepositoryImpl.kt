@@ -67,7 +67,8 @@ class PlayShortsRepositoryImpl @Inject constructor(
             tncList = List(2) {
                 TermsAndConditionUiModel(desc = "Desc $it")
             },
-            maxTitleCharacter = 24
+            maxTitleCharacter = 24,
+            shortsAllowed = true
         )
     }
 

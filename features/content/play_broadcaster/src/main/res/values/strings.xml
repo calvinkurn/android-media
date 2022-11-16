@@ -292,4 +292,7 @@
     <string name="play_shorts_switch_account_to_user_confirm">Ganti ke Akun Pembeli</string>
     <string name="play_shorts_switch_account_cancel">Batal</string>
 
+    <string name="play_shorts_account_not_eligible_title">Yaah, belum bisa bikin video</string>
+    <string name="play_shorts_account_not_eligible_description">Fitur video dengan pengalaman terbaik sedang disiapkan untukmu. Kami akan kabari jika kamu sudah bisa bikin video, ya!</string>
+
 </resources>
