@@ -7,8 +7,6 @@ import com.tokopedia.common_sdk_affiliate_toko.model.AffiliatePageDetail
 import com.tokopedia.common_sdk_affiliate_toko.model.AffiliateSdkPageSource
 import com.tokopedia.common_sdk_affiliate_toko.usecase.CheckCookieUseCase
 import com.tokopedia.common_sdk_affiliate_toko.usecase.CreateCookieUseCase
-import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateSdkConstant.ATC_PDP_SOURCE
-import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateSdkConstant.ATC_SHOP_SOURCE
 import com.tokopedia.user.session.UserSessionInterface
 import timber.log.Timber
 import javax.inject.Inject
@@ -44,23 +42,22 @@ class AffiliateCookieHelper @Inject constructor(
         affiliateChannel: String,
         affiliatePageDetail: AffiliatePageDetail,
         uuid: String = "",
-        isATC: Boolean = false,
         additionalParam: List<AdditionalParam> = emptyList()
     ) {
         val params = AffiliateCookieParams(
-            if (isATC) this.affiliateUUID else affiliateUUID,
+            affiliateUUID,
             affiliateChannel,
             affiliatePageDetail,
             uuid,
             additionalParam
         )
         when (affiliatePageDetail.source) {
-            is AffiliateSdkPageSource.PDP -> {
+            is AffiliateSdkPageSource.PDP,
+            is AffiliateSdkPageSource.DirectATC -> {
                 if (params.affiliateUUID.isNotEmpty()) {
                     createCookieUseCase.createCookieRequest(
                         params,
-                        userSession.deviceId,
-                        if (isATC) ATC_PDP_SOURCE else ""
+                        userSession.deviceId
                     )
                 }
             }
@@ -69,8 +66,7 @@ class AffiliateCookieHelper @Inject constructor(
                 if (params.affiliateUUID.isNotEmpty()) {
                     createCookieUseCase.createCookieRequest(
                         params,
-                        userSession.deviceId,
-                        if (isATC) ATC_SHOP_SOURCE else ""
+                        userSession.deviceId
                     )
                 } else {
                     try {

@@ -11,3 +11,9 @@ internal object AffiliateSdkConstant {
     const val ATC_SHOP_SOURCE = "shop_page"
     const val ATC_PDP_SOURCE = ""
 }
+
+enum class AffiliateAtcSource(val source: String) {
+    PDP(""),
+    SHOP_PAGE("shop_page"),
+    DISCOVERY_PAGE("discovery_page")
+}
