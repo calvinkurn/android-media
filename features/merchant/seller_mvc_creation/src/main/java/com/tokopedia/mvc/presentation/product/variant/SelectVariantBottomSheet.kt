@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.CompoundButton
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -13,6 +14,7 @@ import com.tokopedia.campaign.utils.extension.applyPaddingToLastItem
 import com.tokopedia.campaign.utils.extension.attachDividerItemDecoration
 import com.tokopedia.kotlin.extensions.view.applyUnifyBackgroundColor
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.splitByThousand
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.mvc.R
@@ -130,11 +132,13 @@ class SelectVariantBottomSheet : BottomSheetUnify() {
     }
 
     private fun setupCheckbox() {
-        binding?.checkbox?.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) {
-                viewModel.processEvent(SelectVariantEvent.EnableSelectAllCheckbox)
-            } else {
-                viewModel.processEvent(SelectVariantEvent.DisableSelectAllCheckbox)
+        binding?.checkbox?.setOnCheckedChangeListener { view, isChecked ->
+            if (view.isClickTriggeredByUserInteraction()) {
+                if (isChecked) {
+                    viewModel.processEvent(SelectVariantEvent.EnableSelectAllCheckbox)
+                } else {
+                    viewModel.processEvent(SelectVariantEvent.DisableSelectAllCheckbox)
+                }
             }
         }
     }
@@ -200,11 +204,33 @@ class SelectVariantBottomSheet : BottomSheetUnify() {
     }
 
     private fun renderSelectAllCheckbox(uiState: SelectVariantUiState) {
-        binding?.checkbox?.isChecked = uiState.isSelectAllActive
+        val selectedVariantCount = uiState.selectedVariantIds.count()
+
+        when {
+            selectedVariantCount.isZero() -> {
+                val isIndeterminate = binding?.checkbox?.getIndeterminate() ?: false
+                if (isIndeterminate) binding?.checkbox?.setIndeterminate(false)
+                binding?.checkbox?.isChecked = false
+            }
+             selectedVariantCount < uiState.variants.size -> {
+                 val isIndeterminate = binding?.checkbox?.getIndeterminate() ?: false
+                 if (!isIndeterminate) binding?.checkbox?.setIndeterminate(true)
+                 binding?.checkbox?.isChecked = true
+            }
+            else -> {
+                val isIndeterminate = binding?.checkbox?.getIndeterminate() ?: false
+                if (isIndeterminate) binding?.checkbox?.setIndeterminate(false)
+                binding?.checkbox?.isChecked = false
+            }
+        }
     }
 
     private fun renderLoadingState(isLoading: Boolean) {
         binding?.loader?.isVisible = isLoading
+    }
+
+    private fun CompoundButton.isClickTriggeredByUserInteraction() : Boolean {
+        return isPressed
     }
 
 }

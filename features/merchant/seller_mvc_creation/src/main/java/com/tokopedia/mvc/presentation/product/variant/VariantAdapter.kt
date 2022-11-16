@@ -13,6 +13,7 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.mvc.R
 import com.tokopedia.mvc.databinding.SmvcItemVariantProductBinding
 import com.tokopedia.mvc.domain.entity.Variant
+import com.tokopedia.mvc.util.constant.NumberConstant
 import com.tokopedia.mvc.util.extension.grayscale
 import com.tokopedia.mvc.util.extension.resetGrayscale
 import com.tokopedia.unifyprinciples.Typography
@@ -64,7 +65,7 @@ class VariantAdapter : RecyclerView.Adapter<VariantAdapter.ViewHolder>() {
                 tpgIneligibleReason.setIneligibleReason(item)
 
                 imgVariant.loadRemoteImageUrl(item)
-                imgVariant.cornerRadius = 12
+                imgVariant.cornerRadius = NumberConstant.IMAGE_VIEW_CORNER_RADIUS
 
                 tpgVariantName.text = item.variantName
                 tpgVariantName.isEnabled = item.isEligible

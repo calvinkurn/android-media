@@ -307,6 +307,7 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
         binding?.recyclerView?.isVisible = totalProducts.isMoreThanZero()
         binding?.cardUnify2?.isVisible = totalProducts.isMoreThanZero()
         binding?.checkbox?.isVisible = totalProducts.isMoreThanZero()
+        binding?.dividerList?.isVisible = totalProducts.isMoreThanZero()
         binding?.tpgSelectAll?.isVisible = totalProducts.isMoreThanZero()
         binding?.tpgMaxProductSelection?.isVisible = totalProducts.isMoreThanZero()
         binding?.emptyStateAddProduct?.isVisible = totalProducts.isZero() && !isLoading
