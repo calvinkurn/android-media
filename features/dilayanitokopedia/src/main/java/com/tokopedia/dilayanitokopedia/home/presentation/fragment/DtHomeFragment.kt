@@ -40,6 +40,8 @@ import com.tokopedia.dilayanitokopedia.home.presentation.adapter.DtHomeAdapter
 import com.tokopedia.dilayanitokopedia.home.presentation.adapter.DtHomeAdapterTypeFactory
 import com.tokopedia.dilayanitokopedia.home.presentation.adapter.anchortabs.AnchorTabsViewHolder
 import com.tokopedia.dilayanitokopedia.home.presentation.adapter.differ.HomeListDiffer
+import com.tokopedia.dilayanitokopedia.home.presentation.listener.DtSlideBannerCallback
+import com.tokopedia.dilayanitokopedia.home.presentation.listener.DtTopCarouselCallback
 import com.tokopedia.dilayanitokopedia.home.presentation.uimodel.AnchorTabUiModel
 import com.tokopedia.dilayanitokopedia.home.presentation.view.listener.DtDynamicLegoBannerCallback
 import com.tokopedia.dilayanitokopedia.home.presentation.view.listener.DtHomeLeftCarouselCallback
@@ -144,6 +146,8 @@ class DtHomeFragment : Fragment() {
             differ = HomeListDiffer()
         )
     }
+
+
 
     private var anchorTabAdapter: DtAnchorTabAdapter? = null
 
@@ -762,57 +766,6 @@ class DtHomeFragment : Fragment() {
 
     }
 
-    fun getDynamicChannelData(visitable: Visitable<*>, channelModel: ChannelModel, channelPosition: Int) {
-        viewModelDtHome.getDynamicChannelDataOnExpired(visitable, channelModel, channelPosition)
-    }
-
-    private fun createTopCarouselCallback(): MixTopComponentListener? {
-        return object : MixTopComponentListener {
-            override fun onMixTopImpressed(channel: ChannelModel, parentPos: Int) {
-               //no-op
-            }
-
-            override fun onSeeAllBannerClicked(channel: ChannelModel, applink: String) {
-                onActionLinkClicked(channel.channelHeader.applink)
-            }
-
-            override fun onMixtopButtonClicked(channel: ChannelModel) {
-                //no-op
-            }
-
-            override fun onSectionItemClicked(applink: String) {
-                onActionLinkClicked(applink)
-            }
-
-            override fun onBackgroundClicked(channel: ChannelModel) {
-                onActionLinkClicked(channel.channelHeader.applink)
-            }
-
-            override fun onProductCardImpressed(
-                channel: ChannelModel,
-                channelGrid: ChannelGrid,
-                adapterPosition: Int,
-                position: Int
-            ) {
-            }
-
-            override fun onProductCardClicked(
-                channel: ChannelModel,
-                channelGrid: ChannelGrid,
-                adapterPosition: Int,
-                position: Int,
-                applink: String
-            ) {
-                onActionLinkClicked(channelGrid.applink)
-            }
-
-            override fun onSeeMoreCardClicked(channel: ChannelModel, applink: String) {
-                onActionLinkClicked(applink)
-
-            }
-
-        }
-    }
 
     val CLICK_TIME_INTERVAL: Long = 500
 
@@ -855,35 +808,15 @@ class DtHomeFragment : Fragment() {
 
 
     private fun createSlideBannerCallback(): BannerComponentListener? {
-        return object : BannerComponentListener {
-            override fun onBannerClickListener(position: Int, channelGrid: ChannelGrid, channelModel: ChannelModel) {
-                if (userSession.isLoggedIn) {
-                    openApplink(channelGrid.applink)
+        return DtSlideBannerCallback.createSlideBannerCallback {
+            onActionLinkClicked(it)
+        }
+    }
 
-                } else {
-//                    openLoginPage()
-                }
-            }
 
-            override fun isMainViewVisible(): Boolean {
-                return true
-            }
-
-            override fun onPromoScrolled(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int) {
-            }
-
-            override fun onPageDragStateChanged(isDrag: Boolean) {
-            }
-
-            override fun onPromoAllClick(channelModel: ChannelModel) {}
-
-            override fun isBannerImpressed(id: String): Boolean {
-                return false
-            }
-
-            override fun onChannelBannerImpressed(channelModel: ChannelModel, parentPosition: Int) {
-            }
-
+    private fun createTopCarouselCallback(): MixTopComponentListener? {
+        return DtTopCarouselCallback().createTopCarouselCallback {
+            onActionLinkClicked(actionLink = it)
         }
     }
 
@@ -1132,8 +1065,6 @@ class DtHomeFragment : Fragment() {
         binding?.dtViewBackgroundImage?.gone()
 
     }
-
-
 
 
 }
