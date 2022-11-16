@@ -233,11 +233,6 @@ class PlayShortsActivity : BaseActivity() {
     }
 
     private fun showNoEligibleAccountBottomSheet() {
-        /** TODO: show bottosheet based on :
-         * 1. if preferred account is shop -> show shop bottomsheet
-         * 2. if preferred account is user -> show user bottomsheet not eligible (need to confirm this)
-         * 3. else -> show shop bottomsheet (need to confirm this)
-         */
         ShortsAccountNotEligibleBottomSheet
             .getFragment(supportFragmentManager, classLoader)
             .show(supportFragmentManager)

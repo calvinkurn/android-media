@@ -44,17 +44,22 @@ class ShortsAccountNotEligibleBottomSheet : BottomSheetUnify() {
         )
         setChild(binding.root)
 
-        isDragable = false
+        showCloseIcon = false
+        isDragable = true
         isSkipCollapseState = true
-        isHideable = false
+        isHideable = true
         isCancelable = false
+        showKnob = true
         overlayClickDismiss = false
+
+        setOnDismissListener {
+            mListener?.onClose()
+        }
     }
 
     private fun setupView() {
         binding.btnOk.setOnClickListener {
             dismiss()
-            mListener?.onClose()
         }
     }
 

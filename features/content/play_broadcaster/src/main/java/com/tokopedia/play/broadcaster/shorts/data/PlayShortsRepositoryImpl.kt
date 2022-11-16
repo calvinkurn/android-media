@@ -40,18 +40,18 @@ class PlayShortsRepositoryImpl @Inject constructor(
                 iconUrl = "",
                 badge = "",
                 type = "content-shop",
-                hasUsername = true,
-                hasAcceptTnc = true,
+                hasUsername = false,
+                hasAcceptTnc = false,
             ),
-            ContentAccountUiModel(
-                id = "456",
-                name = "Akun UGC",
-                iconUrl = "",
-                badge = "",
-                type = "content-user",
-                hasUsername = true,
-                hasAcceptTnc = true,
-            )
+//            ContentAccountUiModel(
+//                id = "456",
+//                name = "Akun UGC",
+//                iconUrl = "",
+//                badge = "",
+//                type = "content-user",
+//                hasUsername = true,
+//                hasAcceptTnc = false,
+//            )
         )
     }
 
