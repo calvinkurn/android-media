@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.mvc.di.scope.MerchantVoucherCreationScope
 import com.tokopedia.mvc.presentation.product.add.AddProductViewModel
+import com.tokopedia.mvc.presentation.product.list.ProductListViewModel
 import com.tokopedia.mvc.presentation.product.variant.SelectVariantViewModel
 import dagger.Binds
 import dagger.multibindings.IntoMap
@@ -26,4 +27,9 @@ abstract class MerchantVoucherCreationViewModelModule {
     @IntoMap
     @ViewModelKey(SelectVariantViewModel::class)
     internal abstract fun provideSelectVariantViewModel(viewModel: SelectVariantViewModel) : ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(ProductListViewModel::class)
+    internal abstract fun provideProductListViewModel(viewModel: ProductListViewModel) : ViewModel
 }

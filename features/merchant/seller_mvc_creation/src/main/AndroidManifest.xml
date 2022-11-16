@@ -4,6 +4,13 @@
 
     <application>
         <activity
+            android:name=".presentation.product.list.ProductListActivity"
+            android:configChanges="orientation"
+            android:exported="false"
+            android:label="@string/smvc_product_list"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White" />
+        <activity
             android:name=".presentation.list.MvcListActivity"
             android:exported="false"
             android:screenOrientation="portrait"

@@ -1,0 +1,25 @@
+package com.tokopedia.mvc.presentation.product.list.uimodel
+
+import com.tokopedia.mvc.domain.entity.Product
+import com.tokopedia.mvc.domain.entity.enums.PromoType
+import com.tokopedia.mvc.domain.entity.enums.VoucherAction
+
+sealed class ProductListEvent {
+    data class FetchProducts(
+        val action: VoucherAction,
+        val promoType: PromoType,
+        val selectedProductIds: List<Long>
+    ) : ProductListEvent()
+
+    object EnableSelectAllCheckbox : ProductListEvent()
+    object DisableSelectAllCheckbox : ProductListEvent()
+    data class AddProductToSelection(val productId: Long) : ProductListEvent()
+    data class RemoveProductFromSelection(val productId: Long) : ProductListEvent()
+    data class RemoveProduct(val productId: Long) : ProductListEvent()
+    object ConfirmAddProduct : ProductListEvent()
+    data class TapVariant(val parentProduct: Product) : ProductListEvent()
+    data class VariantUpdated(
+        val modifiedParentProductId: Long,
+        val selectedVariantIds: Set<Long>
+    ) : ProductListEvent()
+}

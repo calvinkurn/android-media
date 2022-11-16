@@ -33,6 +33,14 @@
     <string name="smvc_placeholder_selected_variant_count">Pilih (%d)</string>
     <string name="smvc_placholder_stock">Stok: %d</string>
 
+    <!--Product List page-->
+    <string name="smvc_product_list">Daftar Produk</string>
+    <string name="smvc_stepper_page_last">Langkah 4 dari 4</string>
+    <string name="smvc_placholder_selected_product_count">%d Produk</string>
+    <string name="smvc_back">Kembali</string>
+    <string name="smvc_continue">Lanjut</string>
+    <string name="smvc_empty_state_no_selected_product_title">Belum ada produk untuk kupon ini</string>
+    <string name="smvc_empty_state_no_selected_product_description">Yuk, tambahkan produkmu terlebih dulu.</string>
 
     <!--Share Component-->
     <string name="smvc_placeholder_share_component_outgoing_title">Kupon Produk dari %s</string>

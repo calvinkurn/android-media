@@ -62,6 +62,7 @@ import com.tokopedia.mvc.databinding.SmvcFragmentAddProductBinding
 import com.tokopedia.mvc.domain.entity.Product
 import com.tokopedia.mvc.domain.entity.ShopData
 import com.tokopedia.mvc.domain.entity.enums.BenefitType
+import com.tokopedia.mvc.presentation.product.list.ProductListActivity
 import com.tokopedia.mvc.presentation.product.variant.SelectVariantBottomSheet
 import com.tokopedia.mvc.presentation.share.LinkerDataGenerator
 import com.tokopedia.mvc.presentation.share.SharingComponentInstanceBuilder
@@ -249,11 +250,13 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
                 displayVariantBottomSheet(effect.selectedParentProduct)
             }
             is AddProductEffect.ConfirmAddProduct -> {
-                displayShareBottomSheet(
+                val selectedParentProductIds = effect.selectedParentProducts.filter { it.isSelected }.map { it.id }
+                ProductListActivity.start(activity ?: return, selectedParentProductIds)
+                /*displayShareBottomSheet(
                     effect.selectedParentProducts,
                     effect.selectedParentProductImageUrls,
                     effect.shop
-                )
+                )*/
             }
         }
     }
