@@ -29,6 +29,8 @@
         app:layout_constraintCircleAngle="45"
         app:layout_constraintCircleRadius="52dp"
         app:layout_constraintCircle="@id/selected_image"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/selected_image"
         app:srcCompat="@drawable/contact_us_ic_circular_cross" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -6,6 +6,7 @@ class ImageGeneratorConstants {
         const val FS_TOKO = "tJHYeb"
         const val RILISAN_SPESIAL = "aaGBeS"
         const val MVC_PRODUCT = "ZmygOT"
+        const val WISHLIST_COLLECTION = "yxIvgB"
     }
     object ImageGeneratorKeys{
         const val PRODUCT_IMAGE_URL = "product_image_url"
@@ -57,6 +58,19 @@ class ImageGeneratorConstants {
         const val PRODUCT_IMAGE_2 = "product_image_2"
         const val PRODUCT_IMAGE_3 = "product_image_3"
         const val AUDIENCE_TARGET = "audience_target"
+
+        // wishlist
+        const val COLLECTION_NAME = "collection_name"
+        const val COLLECTION_OWNER = "collection_owner"
+        const val PRODUCT_IMAGE_4 = "product_image_4"
+        const val PRODUCT_IMAGE_5 = "product_image_5"
+        const val PRODUCT_IMAGE_6 = "product_image_6"
+        const val PRODUCT_PRICE_1 = "product_price_1"
+        const val PRODUCT_PRICE_2 = "product_price_2"
+        const val PRODUCT_PRICE_3 = "product_price_3"
+        const val PRODUCT_PRICE_4 = "product_price_4"
+        const val PRODUCT_PRICE_5 = "product_price_5"
+        const val PRODUCT_PRICE_6 = "product_price_6"
     }
     object ImageGeneratorPlatforms{
         const val WHATSAPP = "wa"
@@ -75,6 +89,7 @@ class ImageGeneratorConstants {
     object VoucherBenefitType{
         const val CASHBACK = "cashback"
         const val GRATIS_ONGKIR = "gratis-ongkir"
+        const val DISCOUNT = "diskon"
     }
     object CashbackType{
         const val PERCENTAGE = "percentage"

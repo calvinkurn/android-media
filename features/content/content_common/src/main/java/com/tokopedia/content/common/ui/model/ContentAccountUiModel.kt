@@ -1,8 +1,15 @@
 package com.tokopedia.content.common.ui.model
 
+import android.os.Parcelable
+import com.tokopedia.content.common.types.ContentCommonUserType.TYPE_SHOP
+import com.tokopedia.content.common.types.ContentCommonUserType.TYPE_USER
+import kotlinx.android.parcel.Parcelize
+
 /**
  * Created By : Jonathan Darwin on April 13, 2022
  */
+
+@Parcelize
 data class ContentAccountUiModel(
     val id: String,
     val name: String,
@@ -11,7 +18,7 @@ data class ContentAccountUiModel(
     val type: String,
     val hasUsername: Boolean,
     val hasAcceptTnc: Boolean,
-) {
+): Parcelable {
     val isUser: Boolean
         get() = type == TYPE_USER
 
@@ -22,9 +29,6 @@ data class ContentAccountUiModel(
         get() = isUser && hasAcceptTnc
 
     companion object {
-        private const val TYPE_USER = "content-user"
-        private const val TYPE_SHOP = "content-shop"
-
         val Empty = ContentAccountUiModel(
             id = "",
             name = "",

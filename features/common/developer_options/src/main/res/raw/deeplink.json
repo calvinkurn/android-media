@@ -1665,6 +1665,11 @@
           "deeplink_variable": ""
      }, 
      {
+          "destination_activity": "com.tokopedia.media.editor.ui.activity.main.EditorActivity", 
+          "deeplink": "tokopedia-android-internal://global/media-editor", 
+          "deeplink_variable": ""
+     }, 
+     {
           "destination_activity": "com.tokopedia.filter.newdynamicfilter.RevampedDynamicFilterActivity", 
           "deeplink": "tokopedia-android-internal://discovery/filter", 
           "deeplink_variable": "ApplinkConstInternalDiscovery.FILTER"
@@ -1995,11 +2000,6 @@
           "deeplink_variable": ""
      }, 
      {
-          "destination_activity": "com.tokopedia.createpost.producttag.view.activity.FeedAutoCompleteActivity", 
-          "deeplink": "tokopedia-android-internal://content/feed_autocomplete.*\\", 
-          "deeplink_variable": ""
-     }, 
-     {
           "destination_activity": "com.tokopedia.createpost.view.activity.CreatePostActivityNew", 
           "deeplink": "tokopedia-android-internal://affiliate/create_post_v2/", 
           "deeplink_variable": "ApplinkConstInternalContent.INTERNAL_AFFILIATE_CREATE_POST_V2"
@@ -2058,6 +2058,11 @@
           "destination_activity": "com.tokopedia.explore.view.activity.HashtagLandingPageActivity", 
           "deeplink": "tokopedia-android-internal://content/explore-hashtag/.*\\/", 
           "deeplink_variable": "ApplinkConstInternalContent.HASHTAG_PAGE"
+     }, 
+     {
+          "destination_activity": "com.tokopedia.content.common.producttag.view.activity.ContentAutoCompleteActivity", 
+          "deeplink": "tokopedia-android-internal://content/product_tag_autocomplete.*\\", 
+          "deeplink_variable": ""
      }, 
      {
           "destination_activity": "com.tokopedia.play.view.activity.PlayActivity", 
@@ -2250,14 +2255,39 @@
           "deeplink_variable": "ApplinkConstInternalPromo.PROMO_DETAIL_DEALS"
      }, 
      {
+          "destination_activity": "com.tokopedia.tokomember_seller_dashboard.view.activity.TokomemberMemberListActivity", 
+          "deeplink": "tokopedia-android-internal://sellerapp/tokomember/member-list", 
+          "deeplink_variable": "ApplinkConstInternalSellerapp.INTERNAL_MEMBER_LIST"
+     }, 
+     {
           "destination_activity": "com.tokopedia.tokomember_seller_dashboard.view.activity.TokomemberMainActivity", 
           "deeplink": "tokopedia-android-internal://sellerapp/tokomember", 
           "deeplink_variable": "ApplinkConstInternalSellerapp.TOKOMEMBER"
      }, 
      {
-          "destination_activity": "com.tokopedia.tokomember_seller_dashboard.view.activity.TokomemberMemberListActivity", 
-          "deeplink": "tokopedia-android-internal://sellerapp/tokomember/member-list", 
-          "deeplink_variable": "ApplinkConstInternalSellerapp.INTERNAL_MEMBER_LIST"
+          "destination_activity": "com.tokopedia.tokomember_seller_dashboard.view.activity.TokomemberMainActivity", 
+          "deeplink": "tokopedia-android-internal://sellerapp/tokomember/program-extension/.*", 
+          "deeplink_variable": ""
+     }, 
+     {
+          "destination_activity": "com.tokopedia.tokomember_seller_dashboard.view.activity.TokomemberMainActivity", 
+          "deeplink": "tokopedia-android-internal://sellerapp/tokomember/program-list", 
+          "deeplink_variable": "ApplinkConstInternalSellerapp.TOKOMEMBER_PROGRAM_LIST"
+     }, 
+     {
+          "destination_activity": "com.tokopedia.tokomember_seller_dashboard.view.activity.TokomemberMainActivity", 
+          "deeplink": "tokopedia-android-internal://sellerapp/tokomember/program-creation", 
+          "deeplink_variable": "ApplinkConstInternalSellerapp.TOKOMEMBER_PROGRAM_CREATION"
+     }, 
+     {
+          "destination_activity": "com.tokopedia.tokomember_seller_dashboard.view.activity.TokomemberMainActivity", 
+          "deeplink": "tokopedia-android-internal://sellerapp/tokomember/coupon-list", 
+          "deeplink_variable": "ApplinkConstInternalSellerapp.TOKOMEMBER_COUPON_LIST"
+     }, 
+     {
+          "destination_activity": "com.tokopedia.tokomember_seller_dashboard.view.activity.TokomemberMainActivity", 
+          "deeplink": "tokopedia-android-internal://sellerapp/tokomember/coupon-creation", 
+          "deeplink_variable": "ApplinkConstInternalSellerapp.TOKOMEMBER_COUPON_CREATION"
      }, 
      {
           "destination_activity": "com.tokopedia.loyalty.view.activity.PromoDetailActivity", 

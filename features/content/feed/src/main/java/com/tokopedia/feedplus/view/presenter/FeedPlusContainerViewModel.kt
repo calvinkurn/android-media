@@ -34,9 +34,17 @@ class FeedPlusContainerViewModel @Inject constructor(
 
     val isShowPostButton: Boolean
         get() = when(val whitelist = whitelistResp.value) {
-            is Success -> whitelist.data.isShopAccountExists || whitelist.data.isUserAccountPostEligible
+            is Success -> whitelist.data.isShopAccountExists || whitelist.data.isBuyerAccountPostEligible
             else -> false
         }
+
+    val isShowLiveButton: Boolean
+        get() = when(val whitelist = whitelistResp.value) {
+            is Success -> whitelist.data.authors.isNotEmpty()
+            else -> false
+        }
+
+    private var isLoading = MutableLiveData<Boolean>()
 
     fun getDynamicTabs() {
         launchCatchError(block = {
@@ -55,12 +63,15 @@ class FeedPlusContainerViewModel @Inject constructor(
 
     fun getWhitelist() {
         viewModelScope.launchCatchError(block = {
-            if(!userSession.isLoggedIn) return@launchCatchError
+            if(!userSession.isLoggedIn || isLoading.value == true) return@launchCatchError
+            isLoading.value = true
 
             val response = repo.getWhitelist()
             whitelistResp.value = Success(getWhitelistDomain(response))
+            isLoading.value = false
         }) {
             whitelistResp.value = Fail(it)
+            isLoading.value = false
         }
     }
 

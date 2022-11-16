@@ -27,7 +27,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:background="@drawable/check_box_bg"/>
+        android:background="@drawable/check_box_bg"
+        android:contentDescription="@string/contact_us_post_item"/>
 
     <View
         android:layout_width="match_parent"

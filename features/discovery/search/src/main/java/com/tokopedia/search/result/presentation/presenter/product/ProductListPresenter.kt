@@ -19,7 +19,6 @@ import com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.SEA
 import com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.SEARCH_PRODUCT_LOAD_MORE_USE_CASE
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel.AddToCartParams
-import com.tokopedia.discovery.common.model.WishlistTrackingModel
 import com.tokopedia.discovery.common.utils.CoachMarkLocalCache
 import com.tokopedia.discovery.common.utils.Dimension90Utils
 import com.tokopedia.filter.common.data.DataValue
@@ -31,7 +30,6 @@ import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.recommendation_widget_common.DEFAULT_VALUE_X_SOURCE
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
-import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.search.analytics.GeneralSearchTrackingModel
 import com.tokopedia.search.analytics.SearchEventTracking
 import com.tokopedia.search.analytics.SearchTracking
@@ -41,22 +39,21 @@ import com.tokopedia.search.result.domain.model.SearchProductModel.ProductLabelG
 import com.tokopedia.search.result.presentation.ProductListSectionContract
 import com.tokopedia.search.result.presentation.mapper.ProductViewModelMapper
 import com.tokopedia.search.result.presentation.mapper.RecommendationViewModelMapper
-import com.tokopedia.search.result.product.broadmatch.BroadMatchDataView
 import com.tokopedia.search.result.presentation.model.ChooseAddressDataView
 import com.tokopedia.search.result.presentation.model.LabelGroupDataView
 import com.tokopedia.search.result.presentation.model.ProductDataView
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.presentation.model.RecommendationTitleDataView
-import com.tokopedia.search.result.product.broadmatch.RelatedDataView
 import com.tokopedia.search.result.presentation.model.SearchProductTitleDataView
 import com.tokopedia.search.result.presentation.model.SearchProductTopAdsImageDataView
-import com.tokopedia.search.result.product.suggestion.SuggestionDataView
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
 import com.tokopedia.search.result.product.DynamicFilterModelProvider
 import com.tokopedia.search.result.product.banned.BannedProductsPresenterDelegate
 import com.tokopedia.search.result.product.banner.BannerPresenterDelegate
+import com.tokopedia.search.result.product.broadmatch.BroadMatchDataView
 import com.tokopedia.search.result.product.broadmatch.BroadMatchPresenter
 import com.tokopedia.search.result.product.broadmatch.BroadMatchPresenterDelegate
+import com.tokopedia.search.result.product.broadmatch.RelatedDataView
 import com.tokopedia.search.result.product.chooseaddress.ChooseAddressPresenterDelegate
 import com.tokopedia.search.result.product.cpm.BannerAdsPresenter
 import com.tokopedia.search.result.product.cpm.BannerAdsPresenterDelegate
@@ -91,9 +88,12 @@ import com.tokopedia.search.result.product.safesearch.SafeSearchPresenter
 import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationPresenterDelegate
 import com.tokopedia.search.result.product.searchintokopedia.SearchInTokopediaDataView
 import com.tokopedia.search.result.product.separator.VerticalSeparator
+import com.tokopedia.search.result.product.suggestion.SuggestionDataView
 import com.tokopedia.search.result.product.suggestion.SuggestionPresenter
 import com.tokopedia.search.result.product.ticker.TickerPresenter
 import com.tokopedia.search.result.product.videowidget.InspirationCarouselVideoDataView
+import com.tokopedia.search.result.product.wishlist.WishlistPresenter
+import com.tokopedia.search.result.product.wishlist.WishlistPresenterDelegate
 import com.tokopedia.search.utils.SchedulersProvider
 import com.tokopedia.search.utils.UrlParamUtils
 import com.tokopedia.search.utils.createSearchProductDefaultFilter
@@ -159,6 +159,7 @@ class ProductListPresenter @Inject constructor(
     private val tickerPresenter: TickerPresenter,
     private val safeSearchPresenter: SafeSearchPresenter,
     private val addToCartUseCase: AddToCartUseCase,
+    wishlistPresenterDelegate: WishlistPresenterDelegate,
 ): BaseDaggerPresenter<ProductListSectionContract.View>(),
     ProductListSectionContract.Presenter,
     Pagination by paginationImpl,
@@ -168,7 +169,8 @@ class ProductListPresenter @Inject constructor(
     InspirationListAtcPresenter by inspirationListAtcPresenterDelegate,
     BroadMatchPresenter by broadMatchDelegate,
     TickerPresenter by tickerPresenter,
-    SafeSearchPresenter by safeSearchPresenter {
+    SafeSearchPresenter by safeSearchPresenter,
+    WishlistPresenter by wishlistPresenterDelegate {
 
     companion object {
         private val generalSearchTrackingRelatedKeywordResponseCodeList = listOf("3", "4", "5", "6")
@@ -438,7 +440,7 @@ class ProductListPresenter @Inject constructor(
         processHeadlineAdsLoadMore(searchProductModel, list)
         processTopAdsImageViewModel(searchParameter, list)
         processInspirationWidgetPosition(searchParameter, list)
-        processInspirationCarouselPosition(searchParameter, list)
+        processInspirationCarouselPosition(list)
         processBannerAndBroadMatchInSamePosition(list)
         bannerDelegate.processBanner(list, productList) { index, banner ->
             list.add(index, banner)
@@ -947,7 +949,7 @@ class ProductListPresenter @Inject constructor(
 
         runCustomMetric(performanceMonitoring, SEARCH_RESULT_PLT_RENDER_LOGIC_INSPIRATION_CAROUSEL) {
             inspirationCarouselDataView = productDataView.inspirationCarouselDataView.toMutableList()
-            processInspirationCarouselPosition(searchParameter, list)
+            processInspirationCarouselPosition(list)
         }
 
         runCustomMetric(performanceMonitoring, SEARCH_RESULT_PLT_RENDER_LOGIC_INSPIRATION_WIDGET) {
@@ -1122,10 +1124,7 @@ class ProductListPresenter @Inject constructor(
             val widgetPosition = data.data.position
             if (widgetPosition <= productList.size) {
                 try {
-                    val productListPosition = maxOf(widgetPosition, 1)
-                    val product = productList[productListPosition - 1]
-                    val addIndex = minOf(widgetPosition, 1)
-                    val visitableIndex = list.indexOf(product) + addIndex
+                    val visitableIndex = getVisitableIndex(list, widgetPosition)
 
                     list.add(visitableIndex, data)
                     inspirationWidgetVisitableIterator.remove()
@@ -1140,35 +1139,49 @@ class ProductListPresenter @Inject constructor(
         }
     }
 
-    private fun processInspirationCarouselPosition(searchParameter: Map<String, Any>, list: MutableList<Visitable<*>>) {
+    private fun getVisitableIndex(list: List<Visitable<*>>, widgetPosition: Int): Int {
+        val productListPosition = maxOf(widgetPosition, 1)
+        val product = productList[productListPosition - 1]
+        val addIndex = minOf(widgetPosition, 1)
+
+        return list.indexOf(product) + addIndex
+    }
+
+    private fun processInspirationCarouselPosition(list: MutableList<Visitable<*>>) {
         if (inspirationCarouselDataView.isEmpty()) return
 
         val inspirationCarouselViewModelIterator = inspirationCarouselDataView.iterator()
         while (inspirationCarouselViewModelIterator.hasNext()) {
             val data = inspirationCarouselViewModelIterator.next()
 
-            if (isInvalidInspirationCarousel(data)) {
+            if (isInvalidInspirationCarouselLayout(data)) {
                 inspirationCarouselViewModelIterator.remove()
                 continue
             }
 
             if (data.position <= productList.size && shouldShowInspirationCarousel(data.layout)) {
-                try {
-                    val inspirationCarouselVisitableList = constructInspirationCarouselVisitableList(data)
-                    val product = productList[data.position - 1]
-                    list.addAll(list.indexOf(product) + 1, inspirationCarouselVisitableList)
-                    inspirationCarouselViewModelIterator.remove()
-                } catch (exception: java.lang.Exception) {
-                    Timber.w(exception)
-                    view.logWarning(UrlParamUtils.generateUrlParamString(searchParameter as Map<String?, Any>), exception)
-                }
+                val inspirationCarouselVisitableList = constructInspirationCarouselVisitableList(data)
+                val visitableIndex = getVisitableIndex(list, data.position)
+
+                list.addAll(visitableIndex, inspirationCarouselVisitableList)
+                inspirationCarouselViewModelIterator.remove()
             }
         }
     }
 
-    private fun isInvalidInspirationCarousel(data: InspirationCarouselDataView): Boolean {
-        if (data.position <= 0) return true
-        return isInvalidInspirationCarouselLayout(data)
+    private fun isInvalidInspirationCarouselLayout(data: InspirationCarouselDataView) : Boolean {
+        return data.isInvalidCarouselChipsLayout()
+            || data.isInvalidCarouselVideoLayout()
+            || data.isInvalidProductBundleLayout()
+    }
+
+    private fun InspirationCarouselDataView.isInvalidCarouselChipsLayout() : Boolean {
+        return layout == SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_CHIPS
+            && isFirstOptionHasNoProducts()
+    }
+
+    private fun InspirationCarouselDataView.isInvalidCarouselVideoLayout() : Boolean {
+        return isVideoLayout() && isFirstOptionHasNoProducts()
     }
 
     private fun InspirationCarouselDataView.isFirstOptionHasNoProducts() : Boolean {
@@ -1176,18 +1189,9 @@ class ProductListPresenter @Inject constructor(
         return firstOption != null && !firstOption.hasProducts()
     }
 
-    private fun InspirationCarouselDataView.isInvalidCarouselVideoLayout() : Boolean {
-        return isVideoLayout() && isFirstOptionHasNoProducts()
-    }
     private fun InspirationCarouselDataView.isInvalidProductBundleLayout() : Boolean {
         return isBundleLayout()
             && (options.size < PRODUCT_BUNDLE_MINIMUM_SIZE || options.size > PRODUCT_BUNDLE_MAXIMUM_SIZE)
-    }
-
-    private fun isInvalidInspirationCarouselLayout(data: InspirationCarouselDataView) : Boolean {
-        return data.isInvalidCarouselChipsLayout()
-            || data.isInvalidCarouselVideoLayout()
-            || data.isInvalidProductBundleLayout()
     }
 
     private fun shouldShowInspirationCarousel(layout: String): Boolean {
@@ -1203,14 +1207,11 @@ class ProductListPresenter @Inject constructor(
                 inspirationListAtcPresenterDelegate.convertInspirationCarouselToInspirationListAtc(data)
             else -> listOf(data)
         }
-    private fun InspirationCarouselDataView.isInvalidCarouselChipsLayout() : Boolean {
-        return layout == SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_CHIPS
-                && isFirstOptionHasNoProducts()
-    }
+
     private fun InspirationCarouselDataView.isDynamicProductLayout() =
-            layout == SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_DYNAMIC_PRODUCT
+        layout == SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_DYNAMIC_PRODUCT
     private fun InspirationCarouselDataView.isVideoLayout() =
-            layout == SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_VIDEO
+        layout == SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_VIDEO
     private fun InspirationCarouselDataView.isBundleLayout() =
         layout == SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_BUNDLE
     private fun InspirationCarouselDataView.isListAtcLayout() =
@@ -1607,93 +1608,6 @@ class ProductListPresenter @Inject constructor(
         val suggestionIsNotEmpty = suggestionModel.suggestion.isNotEmpty()
 
         return isResponseCodeForSuggestion && suggestionIsNotEmpty
-    }
-    //endregion
-
-    //region Wishlist
-    override fun handleWishlistAction(productCardOptionsModel: ProductCardOptionsModel?) {
-        if (isViewNotAttached) return
-        productCardOptionsModel ?: return
-
-        if (productCardOptionsModel.isRecommendation)
-            handleWishlistRecommendationProduct(productCardOptionsModel)
-        else
-            handleWishlistNonRecommendationProduct(productCardOptionsModel)
-    }
-
-    private fun handleWishlistRecommendationProduct(productCardOptionsModel: ProductCardOptionsModel) {
-        val wishlistResult = productCardOptionsModel.wishlistResult
-
-        if (wishlistResult.isUserLoggedIn)
-            handleWishlistRecommendationProductWithLoggedInUser(productCardOptionsModel)
-        else
-            handleWishlistRecommendationProductWithNotLoggedInUser(productCardOptionsModel)
-    }
-
-    private fun handleWishlistRecommendationProductWithLoggedInUser(productCardOptionsModel: ProductCardOptionsModel) {
-        val wishlistResult = productCardOptionsModel.wishlistResult
-
-        if (!wishlistResult.isSuccess) {
-            view.showMessageFailedWishlistAction(wishlistResult)
-        } else {
-            view.trackWishlistRecommendationProductLoginUser(!productCardOptionsModel.isWishlisted)
-            view.updateWishlistStatus(productCardOptionsModel.productId, wishlistResult.isAddWishlist)
-            view.showMessageSuccessWishlistAction(wishlistResult)
-            if (productCardOptionsModel.isTopAds) view.hitWishlistClickUrl(productCardOptionsModel)
-        }
-    }
-
-    private fun handleWishlistRecommendationProductWithNotLoggedInUser(productCardOptionsModel: ProductCardOptionsModel) {
-        view.trackWishlistRecommendationProductNonLoginUser()
-        view.launchLoginActivity(productCardOptionsModel.productId)
-    }
-
-    private fun handleWishlistNonRecommendationProduct(productCardOptionsModel: ProductCardOptionsModel) {
-        val wishlistResult = productCardOptionsModel.wishlistResult
-
-        if (wishlistResult.isUserLoggedIn)
-            handleWishlistNonRecommendationProductWithLoggedInUser(productCardOptionsModel)
-        else
-            handleWishlistNonRecommendationProductWithNotLoggedInUser(productCardOptionsModel)
-    }
-
-    private fun handleWishlistNonRecommendationProductWithLoggedInUser(productCardOptionsModel: ProductCardOptionsModel) {
-        val wishlistResult = productCardOptionsModel.wishlistResult
-
-        if (!wishlistResult.isSuccess) {
-            view.showMessageFailedWishlistAction(wishlistResult)
-        } else {
-            view.trackWishlistProduct(createWishlistTrackingModel(
-                    productCardOptionsModel,
-                    productCardOptionsModel.wishlistResult.isAddWishlist
-            ))
-            view.updateWishlistStatus(productCardOptionsModel.productId, wishlistResult.isAddWishlist)
-            view.showMessageSuccessWishlistAction(wishlistResult)
-            if (productCardOptionsModel.isTopAds) view.hitWishlistClickUrl(productCardOptionsModel)
-        }
-    }
-
-    private fun createWishlistTrackingModel(
-            productCardOptionsModel: ProductCardOptionsModel,
-            isAddWishlist: Boolean,
-    ): WishlistTrackingModel {
-        val wishlistTrackingModel = WishlistTrackingModel()
-
-        wishlistTrackingModel.productId = productCardOptionsModel.productId
-        wishlistTrackingModel.isTopAds = productCardOptionsModel.isTopAds
-        wishlistTrackingModel.keyword = view.queryKey
-        wishlistTrackingModel.isUserLoggedIn = productCardOptionsModel.wishlistResult.isUserLoggedIn
-        wishlistTrackingModel.isAddWishlist = isAddWishlist
-
-        return wishlistTrackingModel
-    }
-
-    private fun handleWishlistNonRecommendationProductWithNotLoggedInUser(productCardOptionsModel: ProductCardOptionsModel) {
-        view.trackWishlistProduct(createWishlistTrackingModel(
-                productCardOptionsModel,
-                !productCardOptionsModel.isWishlisted
-        ))
-        view.launchLoginActivity(productCardOptionsModel.productId)
     }
     //endregion
 

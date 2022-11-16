@@ -177,8 +177,5 @@
                 android:scrollbars="horizontal" />
 
         </RelativeLayout>
-
-
     </ScrollView>
-
 </RelativeLayout>

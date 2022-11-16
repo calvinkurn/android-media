@@ -39,7 +39,7 @@ class ProfileCompletionPhoneVerificationFragment : AddPhoneFragment() {
 
     override fun onSuccessAddPhone(result: AddPhoneResult) {
 	super.dismissLoading()
-	super.storeLocalSession(result.phoneNumber)
+	super.storeLocalSession(result.phoneNumber, true)
 	profileCompletionFragment?.onSuccessEditProfile(ProfileCompletionNewConstants.EDIT_VERIF)
 	Toast.makeText(
 	    activity,
