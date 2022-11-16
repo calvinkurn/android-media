@@ -1285,11 +1285,13 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     @Override
-    public void doValidateUseLogisticPromo(int cartPosition, String cartString, ValidateUsePromoRequest validateUsePromoRequest, String promoCode) {
+    public void doValidateUseLogisticPromo(int cartPosition, String cartString, ValidateUsePromoRequest validateUsePromoRequest, String promoCode, boolean showLoading) {
         setCouponStateChanged(true);
         RequestParams requestParams = RequestParams.create();
         requestParams.putObject(OldValidateUsePromoRevampUseCase.PARAM_VALIDATE_USE, validateUsePromoRequest);
-        getView().setStateLoadingCourierStateAtIndex(cartPosition, true);
+        if (showLoading) {
+            getView().setStateLoadingCourierStateAtIndex(cartPosition, true);
+        }
 
         compositeSubscription.add(
                 validateUsePromoRevampUseCase.createObservable(requestParams)

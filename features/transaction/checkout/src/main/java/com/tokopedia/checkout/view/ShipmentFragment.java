@@ -1168,7 +1168,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     }
                 }
 
-                shipmentPresenter.doValidateUseLogisticPromo(itemPosition, cartString, validateUsePromoRequest, courierItemData.getSelectedShipper().getLogPromoCode());
+                shipmentPresenter.doValidateUseLogisticPromo(itemPosition, cartString, validateUsePromoRequest, courierItemData.getSelectedShipper().getLogPromoCode(), true);
             }
             checkCourierPromo(courierItemData, itemPosition);
             shipmentAdapter.setSelectedCourier(itemPosition, courierItemData, false);
@@ -2153,7 +2153,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     break;
                 }
             }
-            shipmentPresenter.doValidateUseLogisticPromo(cartPosition, cartString, validateUsePromoRequest, promoCode);
+            shipmentPresenter.doValidateUseLogisticPromo(cartPosition, cartString, validateUsePromoRequest, promoCode, true);
         }
     }
 
@@ -3684,9 +3684,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             if (scheduleDeliveryUiModel.isSelected()) {
                 shipmentCartItemModel.setScheduleDate(scheduleDeliveryUiModel.getScheduleDate());
                 shipmentCartItemModel.setTimeslotId(scheduleDeliveryUiModel.getTimeslotId());
-                if (scheduleDeliveryUiModel.getDeliveryProduct() != null) {
-                    shipmentCartItemModel.setValidationMetadata(scheduleDeliveryUiModel.getDeliveryProduct().getValidationMetadata());
-                }
+                shipmentCartItemModel.setValidationMetadata(scheduleDeliveryUiModel.getDeliveryProduct().getValidationMetadata());
             }
             else {
                 shipmentCartItemModel.setScheduleDate("");
@@ -3699,7 +3697,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
             SelectedShipperModel selectedShipperModel = newCourierItemData.getSelectedShipper();
 
-            if (selectedShipperModel.getLogPromoCode() != null) {
+            if (selectedShipperModel.getLogPromoCode() != null && !selectedShipperModel.getLogPromoCode().isEmpty()) {
                 ValidateUsePromoRequest validateUsePromoRequest = generateValidateUsePromoRequest();
                 if (selectedShipperModel.getLogPromoCode() != null && selectedShipperModel.getLogPromoCode().length() > 0) {
                     for (OrdersItem ordersItem : validateUsePromoRequest.getOrders()) {
@@ -3745,7 +3743,13 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                         break;
                     }
                 }
-                shipmentPresenter.doValidateUseLogisticPromo(position, shipmentCartItemModel.getCartString(), validateUsePromoRequest, selectedShipperModel.getLogPromoCode());
+                shipmentPresenter.doValidateUseLogisticPromo(
+                        position,
+                        shipmentCartItemModel.getCartString(),
+                        validateUsePromoRequest,
+                        selectedShipperModel.getLogPromoCode(),
+                        false
+                );
             }
         }
     }
