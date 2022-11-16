@@ -26,16 +26,6 @@
       "userId": ".*"
     },
     {
-      "businessUnit": "play",
-      "eventCategory": "groupchat room",
-      "currentSite": ".*",
-      "event": "clickGroupChat",
-      "userId": ".*",
-      "eventAction": "swipe channel",
-      "eventLabel": ".+",
-      "sessionIris": ".*"
-    },
-    {
       "event": "openScreen",
       "trackerId": "13881",
       "businessUnit": "play",
@@ -141,13 +131,6 @@
       "event": "clickGroupChat",
       "eventCategory": "groupchat room",
       "eventLabel": "\\d+ - (live|vod)",
-      "sessionIris": ".*"
-    },
-    {
-      "eventAction": "scroll merchant voucher",
-      "event": "clickGroupChat",
-      "eventCategory": "groupchat room",
-      "eventLabel": "\\d+ - \\d+",
       "sessionIris": ".*"
     },
     {
@@ -585,16 +568,6 @@
       "businessUnit": "play",
       "isLoggedInStatus": ".*",
       "channel": ".*"
-    },
-    {
-      "eventAction": "impression on private voucher",
-      "event": "viewGroupChatIris",
-      "eventCategory": "groupchat room",
-      "eventLabel": "\\d+ - \\d+ - (live|vod)",
-      "sessionIris": ".*",
-      "currentSite": ".*",
-      "userId": ".*",
-      "businessUnit": "play"
     },
     {
       "eventAction": "click product pinned message",
