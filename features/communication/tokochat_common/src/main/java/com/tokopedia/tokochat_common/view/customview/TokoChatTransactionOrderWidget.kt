@@ -19,7 +19,6 @@ import com.tokopedia.tokochat_common.databinding.TokochatPartialOrderStatusWidge
 import com.tokopedia.tokochat_common.databinding.TokochatTransactionWidgetBinding
 import com.tokopedia.tokochat_common.util.CommonUtil
 import com.tokopedia.tokochat_common.view.uimodel.TokoChatOrderProgressUiModel
-import java.lang.StringBuilder
 
 class TokoChatTransactionOrderWidget : LinearLayout {
 
@@ -53,6 +52,7 @@ class TokoChatTransactionOrderWidget : LinearLayout {
 
     init {
         setupViewBinding()
+        setBringToFrontAndBgColor()
     }
 
     fun getTokoChatOrderProgressUiModel() = tokoChatOrderProgressUiModel
@@ -66,6 +66,40 @@ class TokoChatTransactionOrderWidget : LinearLayout {
             updateOrderThumbnail(orderProgressUiModel.imageUrl)
             tokoChatOrderProgressUiModel = orderProgressUiModel
         }
+    }
+
+    fun showShimmeringWidget() {
+        binding?.tokochatLocalloadErrorTransactionWidget?.hide()
+        partialOrderStatusWidgetBinding?.root?.hide()
+        setupShimmeringOrderStatusBinding()
+    }
+
+    fun showTransactionWidget(
+        listener: Listener?,
+        orderProgressUiModel: TokoChatOrderProgressUiModel?
+    ) {
+        assignFields(listener, orderProgressUiModel)
+        binding?.tokochatLocalloadErrorTransactionWidget?.hide()
+        shimmerOrderStatusWidgetBinding?.root?.hide()
+        partialOrderStatusWidgetBinding?.root?.show()
+        setupPartialOrderStatusBinding()
+        render()
+    }
+
+    fun showLocalLoadTransaction() {
+        partialOrderStatusWidgetBinding?.root?.hide()
+        shimmerOrderStatusWidgetBinding?.root?.hide()
+        binding?.tokochatLocalloadErrorTransactionWidget?.show()
+        setupLocalLoadTransaction()
+    }
+
+    fun hideTransactionLocalLoad() {
+        binding?.tokochatLocalloadErrorTransactionWidget?.hide()
+    }
+
+    private fun setBringToFrontAndBgColor() {
+        bringToFront()
+        setBackgroundColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Background))
     }
 
     private fun updateOrderStatus(newOrderStatus: String) {
@@ -101,31 +135,6 @@ class TokoChatTransactionOrderWidget : LinearLayout {
                 tokoChatOrderProgressUiModel?.orderId
             )
         }
-    }
-
-    fun showShimmeringWidget() {
-        binding?.tokochatLocalloadErrorTransactionWidget?.hide()
-        partialOrderStatusWidgetBinding?.root?.hide()
-        setupShimmeringOrderStatusBinding()
-    }
-
-    fun showTransactionWidget(
-        listener: Listener?,
-        orderProgressUiModel: TokoChatOrderProgressUiModel?
-    ) {
-        assignFields(listener, orderProgressUiModel)
-        binding?.tokochatLocalloadErrorTransactionWidget?.hide()
-        shimmerOrderStatusWidgetBinding?.root?.hide()
-        partialOrderStatusWidgetBinding?.root?.show()
-        setupPartialOrderStatusBinding()
-        render()
-    }
-
-    fun showLocalLoadTransaction() {
-        partialOrderStatusWidgetBinding?.root?.hide()
-        shimmerOrderStatusWidgetBinding?.root?.hide()
-        binding?.tokochatLocalloadErrorTransactionWidget?.show()
-        setupLocalLoadTransaction()
     }
 
     private fun setupLocalLoadTransaction() {
@@ -319,7 +328,8 @@ class TokoChatTransactionOrderWidget : LinearLayout {
 
     private fun renderEstimation() {
         if (tokoChatOrderProgressUiModel?.labelTitle?.isNotBlank() == true &&
-            tokoChatOrderProgressUiModel?.labelValue?.isNotBlank() == true) {
+            tokoChatOrderProgressUiModel?.labelValue?.isNotBlank() == true
+        ) {
             partialOrderStatusWidgetBinding?.tokochatTpEstimateLabel?.text =
                 tokoChatOrderProgressUiModel?.labelTitle.orEmpty()
             partialOrderStatusWidgetBinding?.tokochatTpEstimateValue?.text =
