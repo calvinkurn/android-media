@@ -229,6 +229,7 @@
     {
       "eventAction": "view product",
       "userId": ".*",
+      "clientId": ".*",
       "businessUnit": "play",
       "currentSite": "tokopediamarketplace",
       "event": "view_item_list",
@@ -431,7 +432,6 @@
       "eventLabel": "\\d+ - \\d+ - (live|vod)",
       "items": [
         {
-
           "shop_id": ".*",
           "quantity": "\\d+(.\\d+)?",
           "category_id": ".*",
