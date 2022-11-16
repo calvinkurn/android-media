@@ -2615,7 +2615,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         positionInFeed: Int,
         mediaType: String
     ) {
-        if (card.isTypeVOD)
+        if (card.isTypeVOD || card.isTypeLongVideo)
             feedAnalytics.clickSoundVOD(
                 getFeedTrackerDataModel(
                     feedXCard = card,

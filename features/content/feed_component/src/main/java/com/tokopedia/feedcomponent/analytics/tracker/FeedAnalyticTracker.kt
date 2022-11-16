@@ -2141,7 +2141,7 @@ class FeedAnalyticTracker
         val isFollowed = feedTrackerData.isFollowed
         val mediaType = feedTrackerData.mediaType
         var map = getCommonMap()
-        val type = if (mediaType == TYPE_LONG_VIDEO) TYPE_FEED_X_CARD_POST else TYPE_FEED_X_CARD_PLAY
+        val type = feedTrackerData.postType
         map = map.plus(
                 mutableMapOf(
                         KEY_EVENT_ACTION to String.format(
