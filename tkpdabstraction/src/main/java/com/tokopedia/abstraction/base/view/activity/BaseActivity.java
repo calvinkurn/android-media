@@ -19,6 +19,7 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.play.core.splitcompat.SplitCompat;
 import com.google.firebase.crashlytics.FirebaseCrashlytics;
+import com.tokochat.tokochat_config_common.util.TokoChatConnection;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.R;
 import com.tokopedia.abstraction.base.app.BaseMainApplication;
@@ -342,7 +343,10 @@ public abstract class BaseActivity extends AppCompatActivity implements
 
     protected void removeTokoChat() {
         if (getApplication() instanceof BaseMainApplication) {
-            ((BaseMainApplication) getApplication()).getTokoChatConnection().disconnect();
+            TokoChatConnection tokoChatConnection = ((BaseMainApplication) getApplication()).getTokoChatConnection();
+            if (tokoChatConnection != null) {
+                tokoChatConnection.disconnect();
+            }
         }
     }
 }

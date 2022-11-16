@@ -50,7 +50,7 @@ class TokoChatActivity : TokoChatBaseActivity<TokoChatComponent>() {
         return DaggerTokoChatComponent.builder()
             .baseAppComponent((application as BaseMainApplication).baseAppComponent)
             .tokoChatConfigComponent(
-                (application as BaseMainApplication).tokoChatConnection.tokoChatConfigComponent
+                (application as? BaseMainApplication)?.tokoChatConnection?.tokoChatConfigComponent
             )
             .build().also {
                 tokoChatComponent = it
@@ -84,8 +84,8 @@ class TokoChatActivity : TokoChatBaseActivity<TokoChatComponent>() {
     }
 
     private fun getFragmentBundle(): Bundle {
-        val source = intent.data?.getQueryParameter(ApplinkConst.TokoChat.PARAM_SOURCE)?: ""
-        val gojekOrderId = intent.data?.getQueryParameter(ApplinkConst.TokoChat.ORDER_ID_GOJEK)?: ""
+        val source = intent.data?.getQueryParameter(ApplinkConst.TokoChat.PARAM_SOURCE) ?: ""
+        val gojekOrderId = intent.data?.getQueryParameter(ApplinkConst.TokoChat.ORDER_ID_GOJEK) ?: ""
         val tkpdOrderId = intent.data?.getQueryParameter(ApplinkConst.TokoChat.ORDER_ID_TKPD) ?: ""
         val isFromTokoFoodPostPurchase = intent?.getBooleanExtra(ApplinkConst.TokoChat.IS_FROM_TOKOFOOD_POST_PURCHASE, false) ?: false
         return Bundle().apply {

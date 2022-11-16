@@ -9,13 +9,16 @@ import com.jakewharton.threetenabp.AndroidThreeTen
 import com.tokochat.tokochat_config_common.di.component.DaggerTokoChatConfigComponent
 import com.tokochat.tokochat_config_common.di.component.TokoChatConfigComponent
 import com.tokochat.tokochat_config_common.di.module.TokoChatConfigContextModule
+import com.tokopedia.user.session.UserSession
 
 object TokoChatConnection {
 
     var tokoChatConfigComponent: TokoChatConfigComponent? = null
     var courierConnection: CourierConnection? = null
 
-    fun init(context: Context) {
+    fun init(context: Context): Boolean {
+        if (!UserSession(context).isLoggedIn) return false
+
         // Initialize AndroidThreeTen for Conversation SDK
         AndroidThreeTen.init(context.applicationContext)
 
@@ -31,6 +34,7 @@ object TokoChatConnection {
             ProcessLifecycleOwner.get().lifecycle.addObserver(TokoChatProcessLifecycleObserver())
             tokoChatConfigComponent?.getTokoChatRepository()?.initConversationRepository()
         }
+        return true
     }
 
     fun disconnect() {
