@@ -12,6 +12,7 @@ public interface CMConstant {
         String KEY_CM_PUSH_END_TIME_INTERVAL = "app_cm_push_end_time_interval";
         String KEY_SELLERAPP_CM_ADD_TOKEN_ENABLED = "sellerapp_cm_add_token_enabled";
         String NOTIFICATION_DELETION_INTERVAL_KEY = "cm_notification_deletion_interval";
+        String KEY_GENERAL_PROMPT_TIME_INTERVAL = "android_cm_general_prompt_gap_time_interval";
     }
 
 
