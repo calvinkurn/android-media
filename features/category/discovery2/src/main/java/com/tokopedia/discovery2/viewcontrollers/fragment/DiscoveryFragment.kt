@@ -55,16 +55,16 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Compa
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.CAMPAIGN_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.CATEGORY_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.COMPONENT_ID
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.DYNAMIC_SUBTITLE
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.EMBED_CATEGORY
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.END_POINT
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.PIN_PRODUCT
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.PRODUCT_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.RECOM_PRODUCT_ID
-import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.DYNAMIC_SUBTITLE
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.SHOP_ID
-import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.TARGET_TITLE_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.SOURCE
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.TARGET_COMP_ID
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.TARGET_TITLE_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.VARIANT_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
@@ -156,6 +156,7 @@ class DiscoveryFragment :
     PermissionListener,
     MiniCartWidgetListener {
 
+    private var thematicHeaderColor: String = ""
     private lateinit var navScrollListener: NavRecyclerViewScrollListener
     private var autoScrollSectionID: String? = null
     private var anchorViewHolder: AnchorTabsViewHolder? = null
@@ -368,7 +369,11 @@ class DiscoveryFragment :
                 } else if (scrollDist < -MINIMUM) {
                     if (discoveryViewModel.getAddressVisibilityValue()) {
                         chooseAddressWidget?.show()
-                        chooseAddressWidgetDivider?.show()
+                        if (isLightThemeStatusBar == false) {
+                            chooseAddressWidgetDivider?.show()
+                        } else {
+                            chooseAddressWidgetDivider?.hide()
+                        }
                         shouldShowChooseAddressWidget = true
                     }
                     scrollDist = 0
@@ -418,6 +423,9 @@ class DiscoveryFragment :
                         if(isLightThemeStatusBar != true) {
                             requestStatusBarLight()
                             navToolbar.hideShadow()
+                            if (discoveryViewModel.getAddressVisibilityValue()) {
+                                setupHexBackgroundColor(thematicHeaderColor)
+                            }
                         }
                     }
                 }
@@ -428,6 +436,13 @@ class DiscoveryFragment :
                             requestStatusBarDark()
                             navToolbar.setShowShadowEnabled(true)
                             navToolbar.showShadow(true)
+                            if (discoveryViewModel.getAddressVisibilityValue()) {
+                                context?.let {
+                                    chooseAddressWidget?.background =
+                                        ColorDrawable(it.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_Background))
+                                    chooseAddressWidget?.updateWidget()
+                                }
+                            }
                         }
                     }
                 }
@@ -798,8 +813,7 @@ class DiscoveryFragment :
     }
 
     private fun setupBackgroundForHeader(data: PageInfo?) {
-//Todo::        add condition here
-        if (data?.identifier == "deals") {
+        if (data?.thematicHeader != null) {
             hasColouredHeader = true
             activity?.let { navToolbar.setupToolbarWithStatusBar(it) }
             if(isLightThemeStatusBar == true) {
@@ -809,16 +823,29 @@ class DiscoveryFragment :
                 navToolbar.showShadow(true)
             }
             appBarLayout.elevation = 0f
-            val colorDrawable = ColorDrawable(Color.parseColor("#ce9b2c"))
-            chooseAddressWidget?.background = colorDrawable
-//            Todo:: Add condition if addressWidget is shown only then update.
-            chooseAddressWidget?.updateWidget()
-            appBarLayout.setBackgroundColor(Color.parseColor("#ce9b2c"))
+            if (!data.thematicHeader.color.isNullOrEmpty()) {
+                setupHexBackgroundColor(data.thematicHeader.color)
+            }
             setupNavScrollListener()
         } else {
             hasColouredHeader = false
         }
 
+    }
+
+    private fun setupHexBackgroundColor(color: String){
+        thematicHeaderColor = color
+        try {
+            val colorResource = Color.parseColor(color)
+            if (discoveryViewModel.getAddressVisibilityValue() && isLightThemeStatusBar != false) {
+                chooseAddressWidget?.background = ColorDrawable(colorResource)
+                chooseAddressWidget?.updateWidget()
+                chooseAddressWidgetDivider?.hide()
+            }
+            appBarLayout.setBackgroundColor(colorResource)
+        } catch (e: Exception) {
+            e
+        }
     }
 
     private fun setupNavScrollListener() {
@@ -1681,7 +1708,7 @@ class DiscoveryFragment :
     }
 
     override fun onChangeTextColor(): Int {
-        return if (hasColouredHeader)
+        return if (hasColouredHeader && isLightThemeStatusBar != false)
             com.tokopedia.unifyprinciples.R.color.Unify_Static_White
         else
             com.tokopedia.unifyprinciples.R.color.Unify_N700_96
