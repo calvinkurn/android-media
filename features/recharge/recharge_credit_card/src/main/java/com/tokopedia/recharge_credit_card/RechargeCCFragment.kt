@@ -657,6 +657,7 @@ class RechargeCCFragment :
                             orderClientNumber.operatorId,
                             orderClientNumber.inputNumberActionTypeIndex,
                         )
+                        token = orderClientNumber.token
                     } else {
                         handleCallbackAnySavedNumberCancel()
                     }

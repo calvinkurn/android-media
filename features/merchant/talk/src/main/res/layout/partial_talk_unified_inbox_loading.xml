@@ -7,8 +7,8 @@
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/talk_unified_inbox_chips_loading"
-        android:layout_width="@dimen/layout_lvl9"
-        android:layout_height="@dimen/layout_lvl4"
+        android:layout_width="128dp"
+        android:layout_height="32dp"
         android:layout_marginTop="12dp"
         android:layout_marginStart="14dp"
         app:layout_constraintTop_toTopOf="parent"
@@ -18,10 +18,10 @@
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/talk_unified_inbox_chips_loading_1"
-        android:layout_width="@dimen/layout_lvl9"
-        android:layout_height="@dimen/layout_lvl4"
+        android:layout_width="128dp"
+        android:layout_height="32dp"
         android:layout_marginTop="12dp"
-        android:layout_marginStart="@dimen/layout_lvl1"
+        android:layout_marginStart="8dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toEndOf="@id/talk_unified_inbox_chips_loading"
         app:loader_corner_radius="8dp"
