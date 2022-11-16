@@ -28,6 +28,7 @@ import com.tokopedia.dilayanitokopedia.common.util.CustomLinearLayoutManager
 import com.tokopedia.dilayanitokopedia.common.util.PageInfo
 import com.tokopedia.dilayanitokopedia.common.view.DtView
 import com.tokopedia.dilayanitokopedia.databinding.FragmentDtHomeBinding
+import com.tokopedia.dilayanitokopedia.home.constant.AnchorTabStatus
 import com.tokopedia.dilayanitokopedia.home.constant.HomeStaticLayoutId
 import com.tokopedia.dilayanitokopedia.home.constant.HomeStaticLayoutId.Companion.EMPTY_STATE_OUT_OF_COVERAGE
 import com.tokopedia.dilayanitokopedia.home.di.component.DaggerHomeComponent
@@ -36,7 +37,6 @@ import com.tokopedia.dilayanitokopedia.home.domain.model.SearchPlaceholder
 import com.tokopedia.dilayanitokopedia.home.presentation.adapter.DtAnchorTabAdapter
 import com.tokopedia.dilayanitokopedia.home.presentation.adapter.DtHomeAdapter
 import com.tokopedia.dilayanitokopedia.home.presentation.adapter.DtHomeAdapterTypeFactory
-import com.tokopedia.dilayanitokopedia.home.presentation.adapter.anchortabs.AnchorTabsViewHolder
 import com.tokopedia.dilayanitokopedia.home.presentation.adapter.differ.HomeListDiffer
 import com.tokopedia.dilayanitokopedia.home.presentation.listener.DtDynamicLegoBannerCallback
 import com.tokopedia.dilayanitokopedia.home.presentation.listener.DtLeftCarouselCallback
@@ -71,7 +71,7 @@ import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScrollListener
-import com.tokopedia.unifycomponents.toPx
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
 import com.tokopedia.universal_sharing.view.model.ShareModel
@@ -107,32 +107,18 @@ class DtHomeFragment : Fragment() {
 
     private var rvLayoutManager: CustomLinearLayoutManager? = null
 
-    private var anchorViewHolder: AnchorTabsViewHolder? = null
-
     private var localCacheModel: LocalCacheModel? = null
 
-    private val navBarScrollListener by lazy { createNavBarScrollListener() }
-
     private var chooseAddressWidget: ChooseAddressWidget? = null
+
+    private var statusBarState = AnchorTabStatus.MAXIMIZE
 
     private val adapter by lazy {
         DtHomeAdapter(
             typeFactory = DtHomeAdapterTypeFactory(
                 dtView = createDtView(),
                 featuredShopListener = createFeatureShopCallback(),
-//                homeTickerListener = this,
-//                tokoNowCategoryGridListener = this,
                 bannerComponentListener = createSlideBannerCallback(),
-//                homeProductRecomListener = this,
-//                tokoNowProductCardListener = this,
-//                homeSharingEducationListener = this,
-//                homeEducationalInformationListener = this,
-//                serverErrorListener = this,
-//                tokoNowEmptyStateOocListener = createTokoNowEmptyStateOocListener(),
-//                homeQuestSequenceWidgetListener = createQuestWidgetCallback(),
-//                dynamicLegoBannerCallback = createLegoBannerCallback(),
-//                homeSwitcherListener = createHomeSwitcherListener(),
-//                homeLeftCarouselAtcListener = createLeftCarouselAtcCallback(),
                 homeTopComponentListener = createTopComponentCallback(),
                 homeTopCarouselListener = createTopCarouselCallback(),
                 homeLeftCarouselListener = createLeftCarouselCallback(),
@@ -209,8 +195,25 @@ class DtHomeFragment : Fragment() {
 //            compare dengan current
 //            kalau beda baru scroll
              */
-            override fun onMenuSelected(anchorTabUiModel: AnchorTabUiModel) {
-//                anchorTabAdapter?.selectMenu(anchorTabUiModel)
+            override fun onMenuSelected(anchorTabUiModel: AnchorTabUiModel, position: Int) {
+
+                anchorTabAdapter?.selectMenu(anchorTabUiModel)
+
+
+                Toaster.build(requireView(), "menu ${anchorTabUiModel.title}").show()
+                // get anchor tab menu with position
+                //get visitable from anchor tab
+                // compare visitable id with visitable list - NOTE : visitable have id. can based on channel
+                // get index/position visitable from above compare
+
+                //or second logic
+                // get anchor tab menu with positionn
+                // get visitable from anchor tab
+                // get Index/position from visitable
+                val a = adapter.data[9]
+
+                val scrollPosition = adapter.data.indexOf(anchorTabUiModel.visitable)
+
 //                val visitable = viewModelDtHome.getHomeVisitableList().find {
 //                    val layoutItemUiModel = it
 //                    if(layoutItemUiModel is HomeLayoutItemUiModel)
@@ -234,10 +237,10 @@ class DtHomeFragment : Fragment() {
 //
 //                Toaster.build(view!!,"to ${anchorTabUiModel.title}. i = $position",Toaster.TYPE_NORMAL).show()
 //
-//                if (position == -1) return
-//                if (position != null) {
-//                    rvHome?.smoothScrollToPosition(position)
-//                }
+                if (scrollPosition == -1) return
+                if (scrollPosition != null) {
+                    rvHome?.smoothScrollToPosition(scrollPosition)
+                }
             }
         }
     }
@@ -740,7 +743,7 @@ class DtHomeFragment : Fragment() {
 
     private var mLastClickTime = System.currentTimeMillis()
 
-    private fun onActionLinkClicked(actionLink: String, haveOptionWebView: Boolean = true) {
+    private fun onActionLinkClicked(actionLink: String) {
         val now = System.currentTimeMillis()
         if (now - mLastClickTime < CLICK_TIME_INTERVAL) {
             return
@@ -768,7 +771,7 @@ class DtHomeFragment : Fragment() {
 
     private fun createTopCarouselCallback(): MixTopComponentListener? {
         return DtTopCarouselCallback().createTopCarouselCallback {
-            onActionLinkClicked(actionLink = it, false)
+            onActionLinkClicked(actionLink = it)
         }
     }
 
@@ -834,7 +837,6 @@ class DtHomeFragment : Fragment() {
                         }
 
                         override fun onSwitchToDarkToolbar() {
-//                            navToolbar?.hideShadow()
                         }
 
                         override fun onYposChanged(yOffset: Int) {}
@@ -906,104 +908,62 @@ class DtHomeFragment : Fragment() {
         }
     }
 
+
     private fun initRecyclerScrollListener() {
         binding?.rvHome?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
 
-            var dy = 0
-            var dx = 0
-            var scrollDist = 0
-            val MINIMUM = 25.toPx()
-
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
-                this.dy = dy
-                this.dx = dx
-//                if (dy >= 0) {
-// //                    ivToTop.hide()
-// //                    calculateScrollDepth(recyclerView)
-//                } else if (dy < 0) {
-//                    ivToTop.show()
-//                }
-                scrollDist += dy
-                Timber.d("recyclerScrollListener onScrolled $recyclerView, $dx, $dy")
+
+                /**
+                 *  maximize anchor when scroll up && reach top
+                 */
+                if (dy >= 0) {
+                    if (statusBarState == AnchorTabStatus.MAXIMIZE && recyclerView.scrollState == RecyclerView.SCROLL_STATE_DRAGGING) {
+                        setAnchorTabMinimize()
+                    }
+                }
             }
 
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
-                Timber.d("recyclerScrollListener onScrollStateChanged $recyclerView, $scrollDist, $newState")
 
-                if (scrollDist > MINIMUM) {
-                    Timber.d("recyclerScrollListrecyclerScrollListenerener scrollDown $recyclerView, $scrollDist, $newState")
 
-                    anchorTabAdapter?.setMinimizeIcons()
-//                    chooseAddressWidgetDivider?.hide()
-//                    shouldShowChooseAddressWidget = false
-                    scrollDist = 0
-//                    discoveryViewModel.updateScroll(dx, dy, newState, userPressed)
-//                    if (newState == RecyclerView.SCROLL_STATE_IDLE)
-//                        scrollToLastSection()
-
-//                    updateAnchorTabBasedOnScroll()
-
-                    updateAfterScrollDown()
-                } else if (scrollDist < -MINIMUM) {
-                    Timber.d("recyclerScrollListener scrollUp $recyclerView, $scrollDist, $newState")
-
-//                    if (discoveryViewModel.getAddressVisibilityValue()) {
-
-                    updateAfterScrollUp()
-
-//                        chooseAddressWidgetDivider?.show()
-//                        shouldShowChooseAddressWidget = true
-//                    }
-                    scrollDist = 0
-//                    discoveryViewModel.updateScroll(dx, dy, newState, userPressed)
-//                    if(mAnchorHeaderView.childCount == 0){
-//                        setupObserveAndShowAnchor()
-//                    }
-//                    if (newState == RecyclerView.SCROLL_STATE_IDLE)
-//                        scrollToLastSection()
+                /**
+                 *  minimize anchor when scroll down
+                 */
+                if (!recyclerView.canScrollVertically(-1)) {
+                    if (statusBarState == AnchorTabStatus.MINIMIZE) {
+                        setAnchorTabMaximize()
+                    }
                 }
             }
         })
     }
 
-    /*
-    get current position recyclerview widgets
-    [] scroll : get next position
-    compare current position and next position
-    if current different with next then
-    - select anchor tab
-    - smooth scroll to make sure still visible
-    else no op
-     */
-    private fun updateAnchorTabBasedOnScroll(currentTabUi: AnchorTabUiModel, nexTabUi: AnchorTabUiModel) {
-        val currentPosition = (rvHome?.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
-        if (currentTabUi != nexTabUi) {
-            anchorTabAdapter?.selectMenu(nexTabUi)
-//            binding?.headerCompHolder?.smoothScrollToPosition()
-        }
-    }
-
-    private fun updateAfterScrollUp() {
+    private fun setAnchorTabMaximize() {
         anchorTabAdapter?.setMaximizeIcons()
 
         val transparentUnify = android.R.color.transparent
         val transparentColor = ResourcesCompat.getColor(requireContext().resources, transparentUnify, null)
-
         navToolbar?.setBackgroundColor(transparentColor)
         binding?.headerCompHolder?.setBackgroundColor(transparentColor)
         binding?.chooseAddressWidget?.setBackgroundColor(transparentColor)
         binding?.dtViewBackgroundImage?.visible()
+
+        statusBarState = AnchorTabStatus.MAXIMIZE
     }
 
-    private fun updateAfterScrollDown() {
+    private fun setAnchorTabMinimize() {
+        anchorTabAdapter?.setMinimizeIcons()
+
         val whiteUnify = com.tokopedia.unifyprinciples.R.color.Unify_NN0
         val whiteColor = ResourcesCompat.getColor(requireContext().resources, whiteUnify, null)
-
         navToolbar?.setBackgroundColor(whiteColor)
         binding?.headerCompHolder?.setBackgroundColor(whiteColor)
         binding?.chooseAddressWidget?.setBackgroundColor(whiteColor)
         binding?.dtViewBackgroundImage?.gone()
+
+        statusBarState = AnchorTabStatus.MINIMIZE
     }
 }

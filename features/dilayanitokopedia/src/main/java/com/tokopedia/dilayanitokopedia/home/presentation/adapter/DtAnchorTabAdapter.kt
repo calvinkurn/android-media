@@ -23,7 +23,7 @@ class DtAnchorTabAdapter(private val listener: AnchorTabListener) :
     private var maximizeIcons = true
 
     interface AnchorTabListener {
-        fun onMenuSelected(anchorTabUiModel: AnchorTabUiModel)
+        fun onMenuSelected(anchorTabUiModel: AnchorTabUiModel, position: Int)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): DtAnchorTabViewHolder {
@@ -86,7 +86,7 @@ class DtAnchorTabAdapter(private val listener: AnchorTabListener) :
 
         private fun setListener(anchorTabUiModel: AnchorTabUiModel) {
             binding.root.setOnClickListener {
-                listener.onMenuSelected(anchorTabUiModel)
+                listener.onMenuSelected(anchorTabUiModel, bindingAdapterPosition)
             }
         }
 

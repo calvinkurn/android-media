@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.dilayanitokopedia.common.constant.DtLayoutState
 import com.tokopedia.dilayanitokopedia.common.util.PageInfo
+import com.tokopedia.dilayanitokopedia.home.constant.AnchorTabData
 import com.tokopedia.dilayanitokopedia.home.constant.HomeStaticLayoutId
 import com.tokopedia.dilayanitokopedia.home.domain.mapper.AnchorTabMapper.mapMenuList
 import com.tokopedia.dilayanitokopedia.home.domain.mapper.HomeLayoutMapper.addEmptyStateIntoList
@@ -104,7 +105,7 @@ class DtHomeViewModel @Inject constructor(
             )
 
             _homeLayoutList.postValue(Success(data))
-            _menuList.postValue(dataMenuList().mapMenuList(homeLayoutResponse))
+            _menuList.postValue(dataMenuList().mapMenuList(homeLayoutResponse, getHomeVisitableList()))
 
         }) {
             _homeLayoutList.postValue(Fail(it))
@@ -115,117 +116,10 @@ class DtHomeViewModel @Inject constructor(
 
 
     /**
-     * still dummy, need to change
+     * still dummy, need to update
      */
     private fun dataMenuList(): MutableList<AnchorTabUiModel> {
-        val anchorTabList = mutableListOf<AnchorTabUiModel>()
-
-        anchorTabList.add(
-            AnchorTabUiModel(
-                "",
-                "1: NOW! 2hours 2/11 main header UDC",
-                "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/bo_reg_20k.png",
-                "360"
-            )
-        )
-        anchorTabList.add(
-            AnchorTabUiModel(
-                "",
-                "2: H DT tc_discount_3050 TC",
-                "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/bo_reg_20k.png",
-                "361"
-            )
-        )
-//        anchorTabList.add(
-//            AnchorTabUiModel(
-//                0,
-//                "3 DT tokocabang_discount_5090 TC",
-//                "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/bo_reg_20k.png",
-//                "362"
-//            )
-//        )
-//        anchorTabList.add(
-//            AnchorTabUiModel(
-//                0,
-//                "4 DT tokocabang TC",
-//                "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/bo_reg_20k.png",
-//                "364"
-//            )
-//        )
-//        anchorTabList.add(
-//            AnchorTabUiModel(
-//                0,
-//                "5 DT tokocabang_100k  TC",
-//                "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/bo_reg_20k.png",
-//                "365"
-//            )
-//        )
-//        anchorTabList.add(
-//            AnchorTabUiModel(
-//                0,
-//                "6 DT tc_injection   LC",
-//                "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/bo_reg_20k.png",
-//                "366"
-//            )
-//        )
-//        anchorTabList.add(
-//            AnchorTabUiModel(
-//                0,
-//                "7 DT tokocabang_instant LC",
-//                "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/bo_reg_20k.png",
-//                "367"
-//            )
-//        )
-//        anchorTabList.add(
-//            AnchorTabUiModel(
-//                0,
-//                "title 8",
-//                "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/bo_reg_20k.png",
-//                "360"
-//            )
-//        )
-//        anchorTabList.add(
-//            AnchorTabUiModel(
-//                0,
-//                "title 9",
-//                "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/bo_reg_20k.png",
-//                "360"
-//            )
-//        )
-//        anchorTabList.add(
-//            AnchorTabUiModel(
-//                0,
-//                "title 10",
-//                "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/bo_reg_20k.png",
-//                "360"
-//            )
-//        )
-//        anchorTabList.add(
-//            AnchorTabUiModel(
-//                0,
-//                "title 11",
-//                "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/bo_reg_20k.png",
-//                "360"
-//            )
-//        )
-//        anchorTabList.add(
-//            AnchorTabUiModel(
-//                0,
-//                "title 12",
-//                "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/bo_reg_20k.png",
-//                "363"
-//            )
-//        )
-//        anchorTabList.add(
-//            AnchorTabUiModel(
-//                0,
-//                "title 13",
-//                "https://images.tokopedia.net/img/restriction-engine/bebas-ongkir/bo_reg_20k.png",
-//                ""
-//            )
-//        )
-
-        return anchorTabList
+        return AnchorTabData.getListAnchorTab()
     }
 
     /***
@@ -279,7 +173,7 @@ class DtHomeViewModel @Inject constructor(
         return -1
     }
 
-    fun getDynamicChannelDataOnExpired(visitable: Visitable<*>, channelModel: ChannelModel, position: Int){
+    fun getDynamicChannelDataOnExpired(visitable: Visitable<*>, channelModel: ChannelModel, position: Int) {
 //        launchCatchError(coroutineContext, block = {
 //            val visitableList = homeUseCase.get().onDynamicChannelExpired(channelModel.groupId)
 //
