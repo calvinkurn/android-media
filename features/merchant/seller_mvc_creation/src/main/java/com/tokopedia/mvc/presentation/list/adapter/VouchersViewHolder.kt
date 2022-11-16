@@ -73,6 +73,8 @@ class VouchersViewHolder(
                 tfStatusTitle.text = ""
             }
         }
+        tfVps.isVisible = voucher.isVps
+        tfSubsidy.isVisible = voucher.isSubsidy
         tfStatusTitle.setTextColor(processColor)
         cardIndicator.setCardBackgroundColor(processColor)
         iconMenu.setOnClickListener {

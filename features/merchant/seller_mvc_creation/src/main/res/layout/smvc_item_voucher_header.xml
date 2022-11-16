@@ -27,6 +27,26 @@
         app:typographyWeight="bold"
         tool:text="Dihentikan" />
 
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tfVps"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="11dp"
+        android:textColor="@color/Unify_NN600"
+        app:typographyType="small"
+        app:typographyWeight="bold"
+        android:text="@string/smvc_voucherlist_vps_text" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tfSubsidy"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="11dp"
+        android:textColor="@color/Unify_NN600"
+        app:typographyType="small"
+        app:typographyWeight="bold"
+        android:text="@string/smvc_voucherlist_subsidi_text" />
+
     <com.tokopedia.iconunify.IconUnify
         android:id="@+id/iconMenu"
         app:icon_name="MENU_KEBAB_VERTICAL"
