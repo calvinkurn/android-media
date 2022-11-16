@@ -13,7 +13,7 @@ import com.tokopedia.shop.common.constant.ShopPageConstant
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeProductBundleItemUiModel
 import com.tokopedia.shop.common.widget.bundle.viewholder.MultipleProductBundleListener
 import com.tokopedia.shop.common.widget.model.ShopHomeWidgetLayout
-import com.tokopedia.shop.databinding.ItemShopHomeProductBundleMultipleWidgetBinding
+import com.tokopedia.shop.databinding.ItemShopHomeProductBundleMultipleBinding
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
 import com.tokopedia.utils.view.binding.viewBinding
 
@@ -26,10 +26,10 @@ class ShopHomeProductBundleMultipleViewHolder(
 
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.item_shop_home_product_bundle_multiple_widget
+        val LAYOUT = R.layout.item_shop_home_product_bundle_multiple
     }
 
-    private var viewBinding: ItemShopHomeProductBundleMultipleWidgetBinding? by viewBinding()
+    private var viewBinding: ItemShopHomeProductBundleMultipleBinding? by viewBinding()
     private var productBundleWidgetView: ProductBundleWidgetView? = null
     private var parentMultipleBundle: ShopHomeProductBundleItemUiModel = ShopHomeProductBundleItemUiModel()
     private var widgetTitle: String = String.EMPTY
