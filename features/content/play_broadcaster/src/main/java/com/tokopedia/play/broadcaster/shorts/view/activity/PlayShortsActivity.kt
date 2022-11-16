@@ -191,6 +191,7 @@ class PlayShortsActivity : BaseActivity() {
             pageType(PageType.GALLERY)
             modeType(ModeType.VIDEO_ONLY)
             singleSelectionMode()
+            previewActionText(getString(R.string.play_shorts_next_action_label))
         }
 
         startActivityForResult(intent, MEDIA_PICKER_REQ)
