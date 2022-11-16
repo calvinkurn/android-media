@@ -40,7 +40,7 @@ class PlayShortsRepositoryImpl @Inject constructor(
                 iconUrl = "",
                 badge = "",
                 type = "content-shop",
-                hasUsername = false,
+                hasUsername = true,
                 hasAcceptTnc = false,
             ),
 //            ContentAccountUiModel(
@@ -64,7 +64,7 @@ class PlayShortsRepositoryImpl @Inject constructor(
         /** TODO: change this with mapper implementation later */
         PlayShortsConfigUiModel(
             shortsId = "123",
-            tncList = List(2) {
+            tncList = List(3) {
                 TermsAndConditionUiModel(desc = "Desc $it")
             },
             maxTitleCharacter = 24,

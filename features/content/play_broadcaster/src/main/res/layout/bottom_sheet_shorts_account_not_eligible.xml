@@ -8,7 +8,6 @@
         android:id="@+id/iv_no_account_eligible"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
         android:src="@drawable/ic_shorts_account_not_eligible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

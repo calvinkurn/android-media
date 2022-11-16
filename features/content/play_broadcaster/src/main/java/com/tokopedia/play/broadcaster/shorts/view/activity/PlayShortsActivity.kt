@@ -98,7 +98,10 @@ class PlayShortsActivity : BaseActivity() {
                 })
             }
             is SellerTncBottomSheet -> {
-                fragment.initViews(viewModel.tncList)
+                fragment.initViews(
+                    title = getString(R.string.play_shorts_shop_cant_create_content),
+                    tncList = viewModel.tncList
+                )
                 fragment.setListener(object : SellerTncBottomSheet.Listener {
                     override fun clickCloseIcon() {
                         if(getCurrentFragment() == null) finish()

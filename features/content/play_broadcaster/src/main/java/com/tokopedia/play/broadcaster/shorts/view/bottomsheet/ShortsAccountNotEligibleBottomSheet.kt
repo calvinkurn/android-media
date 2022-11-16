@@ -44,6 +44,7 @@ class ShortsAccountNotEligibleBottomSheet : BottomSheetUnify() {
         )
         setChild(binding.root)
 
+        clearContentPadding = true
         showCloseIcon = false
         isDragable = true
         isSkipCollapseState = true

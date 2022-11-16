@@ -299,7 +299,10 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                 })
             }
             is SellerTncBottomSheet -> {
-                childFragment.initViews(parentViewModel.tncList)
+                childFragment.initViews(
+                    title = getString(com.tokopedia.content.common.R.string.play_bro_tnc_title),
+                    tncList = parentViewModel.tncList
+                )
                 childFragment.setListener(object : SellerTncBottomSheet.Listener {
                     override fun clickCloseIcon() { closeBottomSheet() }
                 })

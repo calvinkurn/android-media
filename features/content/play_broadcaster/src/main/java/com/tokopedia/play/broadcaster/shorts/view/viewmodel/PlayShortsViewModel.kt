@@ -190,7 +190,7 @@ class PlayShortsViewModel @Inject constructor(
             } else if (bestEligibleAccount.isUser && !bestEligibleAccount.hasAcceptTnc) {
                 emitEventUGCOnboarding(bestEligibleAccount.hasUsername)
             } else {
-                setupConfiguration(bestEligibleAccount)
+                setupConfigurationIfEligible(bestEligibleAccount)
             }
         }) {
             /** TODO: handle global page error like the one in broadcaster */
@@ -238,12 +238,10 @@ class PlayShortsViewModel @Inject constructor(
 
             if(newSelectedAccount.isUnknown) {
                 throw Exception("Account not found")
-            } else if (newSelectedAccount.isShop && !newSelectedAccount.hasAcceptTnc) {
-                emitEventSellerNotEligible()
             } else if (newSelectedAccount.isUser && !newSelectedAccount.hasAcceptTnc) {
                 emitEventUGCOnboarding(newSelectedAccount.hasUsername)
             } else {
-                setupConfiguration(newSelectedAccount)
+                setupConfigurationIfEligible(newSelectedAccount)
             }
         }) { throwable ->
             _uiEvent.oneTimeUpdate {
@@ -352,8 +350,15 @@ class PlayShortsViewModel @Inject constructor(
         }) { }
     }
 
-    private suspend fun setupConfiguration(account: ContentAccountUiModel) {
+    private suspend fun setupConfigurationIfEligible(account: ContentAccountUiModel) {
         val config = getConfiguration(account)
+        _config.update { it.copy(tncList = config.tncList) }
+
+        /** Need to check this here since we need tncList */
+        if(account.isShop && !account.hasAcceptTnc) {
+            emitEventSellerNotEligible()
+            return
+        }
 
         if(config.shortsAllowed) {
             setSelectedAccount(account)

@@ -60,11 +60,13 @@ class SellerTncBottomSheet : BottomSheetUnify() {
         isCancelable = false
         overlayClickDismiss = false
         clearContentPadding = true
-        setTitle(getString(R.string.play_bro_tnc_title))
     }
 
-    fun initViews(tncList: List<TermsAndConditionUiModel>): SellerTncBottomSheet {
-        if (isAdded) view?.setTermsAndConditions(tncList)
+    fun initViews(title: String, tncList: List<TermsAndConditionUiModel>): SellerTncBottomSheet {
+        if (isAdded) {
+            setTitle(title)
+            view?.setTermsAndConditions(tncList)
+        }
         return this
     }
 
