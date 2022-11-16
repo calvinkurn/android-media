@@ -31,7 +31,10 @@
       "businessUnit": "play",
       "currentSite": "tokopediamarketplace",
       "isLoggedInStatus": "(true|false)",
-      "screenName": "/group-chat-room/\\d+/(live|vod)/is coachmark (true/false)",
+      "eventAction": "null",
+      "eventCategory": "null",
+      "eventLabel": "null",
+      "screenName": "/group-chat-room/\\d+/(live|vod)/is coachmark (true|false)",
       "sessionIris": ".*",
       "userId": ".*"
     },
