@@ -123,8 +123,8 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
         savedInstanceState: Bundle?
     ): View? {
         _binding = BottomSheetProductDetailInfoBinding.inflate(layoutInflater)
-        getDataParcel()
         initView()
+        getDataParcel()
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
