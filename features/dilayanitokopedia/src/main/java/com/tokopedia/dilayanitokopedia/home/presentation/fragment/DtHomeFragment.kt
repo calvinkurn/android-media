@@ -70,7 +70,7 @@ import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
-import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScrollListener
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
 import com.tokopedia.universal_sharing.view.model.ShareModel
@@ -781,31 +781,6 @@ class DtHomeFragment : Fragment() {
             return height + padding
         }
 
-    private fun createNavBarScrollListener(): NavRecyclerViewScrollListener? {
-        return navToolbar?.let { toolbar ->
-            context?.let { context ->
-                NavRecyclerViewScrollListener(
-                    navToolbar = toolbar,
-                    startTransitionPixel = homeMainToolbarHeight,
-                    toolbarTransitionRangePixel = context.resources.getDimensionPixelSize(R.dimen.tokopedianow_searchbar_transition_range),
-                    navScrollCallback = object : NavRecyclerViewScrollListener.NavScrollCallback {
-                        override fun onAlphaChanged(offsetAlpha: Float) { /* nothing to do */
-                        }
-
-                        override fun onSwitchToLightToolbar() { /* nothing to do */
-                        }
-
-                        override fun onSwitchToDarkToolbar() {
-                        }
-
-                        override fun onYposChanged(yOffset: Int) {}
-                    },
-                    fixedIconColor = NavToolbar.Companion.Theme.TOOLBAR_LIGHT_TYPE
-                )
-            }
-        }
-    }
-
     private fun bindChooseAddressWidget() {
         chooseAddressWidget?.bindChooseAddress(object : ChooseAddressWidget.ChooseAddressWidgetListener {
             override fun onLocalizingAddressUpdatedFromWidget() {
@@ -881,6 +856,8 @@ class DtHomeFragment : Fragment() {
                         setAnchorTabMinimize()
                     }
                 }
+
+                updateAnchorTabWhenScroll(recyclerView)
             }
 
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
@@ -896,6 +873,31 @@ class DtHomeFragment : Fragment() {
                 }
             }
         })
+    }
+
+    private fun updateAnchorTabWhenScroll(recyclerView: RecyclerView) {
+        val visiblePosition = rvLayoutManager?.findFirstCompletelyVisibleItemPosition()
+
+        /**
+         * get visitable position from list adapter
+         * get position from anchor tab using visitable
+         * select and scroll tab anchor from pisition
+         */
+        if (visiblePosition != null) {
+            val visitable = viewModelDtHome.getHomeVisitableList()[visiblePosition]
+
+            val anchorTabUiModel = viewModelDtHome.menuList.value?.find {
+                it.visitable == visitable
+            }
+            val indexAnchorTab = viewModelDtHome.menuList.value?.indexOf(anchorTabUiModel)
+
+            if (anchorTabUiModel != null && indexAnchorTab != null) {
+                anchorTabAdapter?.selectMenu(anchorTabUiModel)
+                binding?.headerCompHolder?.smoothScrollToPosition(indexAnchorTab)
+            }
+            Toaster.build(requireView(), "updateAnchorTabWhenScroll $visiblePosition").show()
+            Timber.d("updateAnchorTabWhenScroll $visiblePosition")
+        }
     }
 
     private fun setAnchorTabMaximize() {
