@@ -911,7 +911,7 @@ class ChatbotFragment :
         manageVideoBubble()
         mapMessageToList(visitable)
         getViewState()?.hideEmptyMessage(visitable)
-        getViewState()?.onCheckToHideQuickReply(visitable)
+//        getViewState()?.onCheckToHideQuickReply(visitable)
     }
 
     private fun manageVideoBubble() {
@@ -1181,24 +1181,6 @@ class ChatbotFragment :
         }
     }
 
-    override fun uploadUsingOldMechanism(data: Intent) {
-        val paths = MediaPicker.result(data)
-        paths.originalPaths.forEach { path ->
-            processImagePathToUpload(path)?.let { imageUploadUiModel ->
-                getViewState()?.onImageUpload(imageUploadUiModel)
-                presenter.uploadImages(
-                    imageUploadUiModel,
-                    messageId,
-                    opponentId,
-                    onErrorImageUpload()
-                )
-            }
-
-        }
-
-    }
-
-
     private fun onErrorImageUpload(): (Throwable, ImageUploadUiModel) -> Unit {
         return { throwable, image ->
             if (view != null) {
@@ -1446,6 +1428,10 @@ class ChatbotFragment :
         getViewState()?.showLiveChatQuickReply(quickReplyList)
     }
 
+    override fun isBackAllowed(isBackAllowed: Boolean) {
+        this.isBackAllowed = isBackAllowed
+    }
+
     override fun updateToolbar(profileName: String?, profileImage: String?, badgeImage: ToolbarAttributes.BadgeImage?) {
         if (activity is ChatbotActivity) {
             (activity as ChatbotActivity).upadateToolbar(profileName, profileImage, badgeImage)
@@ -1512,7 +1498,7 @@ class ChatbotFragment :
     private fun handleImageResendBottomSheet(element: ImageUploadUiModel,bottomSheetPage: BottomSheetUnify) {
         removeDummy(element)
         getViewState()?.onImageUpload(element)
-        presenter.uploadImages(element, messageId, opponentId, onErrorImageUpload())
+        presenter.uploadImageSecureUpload(element, messageId, opponentId, onErrorImageUpload(), element.imageUrl, context)
         bottomSheetPage.dismiss()
     }
 
@@ -1592,6 +1578,7 @@ class ChatbotFragment :
     private fun sendReplyTextForResolutionComponent() {
         if (isStickyButtonClicked) {
             this.isStickyButtonClicked = false
+
             presenter.checkLinkForRedirection(
                 messageId,
                 invoiceRefNum,

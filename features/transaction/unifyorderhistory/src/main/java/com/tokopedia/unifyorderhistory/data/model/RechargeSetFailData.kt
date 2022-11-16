@@ -8,7 +8,7 @@ data class RechargeSetFailData(
     val data: Data = Data()
 ) {
     data class Data(
-        @SerializedName("rechargeSetOrderToFail")
+        @SerializedName("rechargeSetOrderToFailV2")
         val rechargeSetOrderToFail: RechargeSetOrderToFail = RechargeSetOrderToFail()
     ) {
         data class RechargeSetOrderToFail(
