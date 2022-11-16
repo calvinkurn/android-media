@@ -700,7 +700,7 @@ object ShopPageHomeMapper {
                 it.imageId,
                 it.imageUrl,
                 it.bannerType,
-                it.device.toString()
+                it.device
             )
         }
     }
@@ -812,7 +812,7 @@ object ShopPageHomeMapper {
             header.ctaText,
             header.ctaLink,
             header.cover,
-            "",
+            header.ratio,
             header.isAtc,
             header.etalaseId
         )
