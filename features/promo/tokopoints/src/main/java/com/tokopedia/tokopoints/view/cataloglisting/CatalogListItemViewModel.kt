@@ -7,7 +7,6 @@ import com.tokopedia.tokopoints.view.util.ErrorMessage
 import com.tokopedia.tokopoints.view.util.Loading
 import com.tokopedia.tokopoints.view.util.Resources
 import com.tokopedia.tokopoints.view.util.Success
-import java.lang.NullPointerException
 import javax.inject.Inject
 
 class CatalogListItemViewModel @Inject constructor(private val repository: CatalogListingRepository) : CatalogPurchaseRedeemptionViewModel(repository) {
@@ -20,9 +19,7 @@ class CatalogListItemViewModel @Inject constructor(private val repository: Catal
     fun fetchLatestStatus(catalogsIds: List<Int>) {
         launchCatchError(block = {
             val data = repository.fetchLatestStatus(catalogsIds)
-            if (data.catalogStatus != null) { //For detail page we only interested in one item
-                latestStatusLiveData.value = data.catalogStatus.catalogs
-            }
+            latestStatusLiveData.value = data.catalogStatus.catalogs
         }) {}
     }
 
@@ -30,11 +27,8 @@ class CatalogListItemViewModel @Inject constructor(private val repository: Catal
         launchCatchError(block = {
             listCatalogItem.value = Loading()
             val data = repository.getListOfCatalog(categoryId, subCategoryId, pointsRange)
-            if (data?.catalog != null) {
-                listCatalogItem.value = Success(data.catalog)
-            } else {
-                throw NullPointerException()
-            }
+            listCatalogItem.value = Success(data.catalog)
+
         }) {
             listCatalogItem.value = ErrorMessage(it.toString())
         }

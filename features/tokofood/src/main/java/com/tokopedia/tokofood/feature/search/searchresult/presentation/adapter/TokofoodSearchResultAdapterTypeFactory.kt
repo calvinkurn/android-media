@@ -10,6 +10,7 @@ import com.tokopedia.tokofood.common.presentation.adapter.viewholder.TokoFoodCat
 import com.tokopedia.tokofood.common.presentation.adapter.viewholder.TokoFoodCategoryLoadingViewHolder
 import com.tokopedia.tokofood.common.presentation.adapter.viewholder.TokoFoodErrorStateViewHolder
 import com.tokopedia.tokofood.common.presentation.adapter.viewholder.TokoFoodProgressBarViewHolder
+import com.tokopedia.tokofood.common.presentation.listener.TokofoodScrollChangedListener
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodCategoryEmptyStateUiModel
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodCategoryLoadingStateUiModel
 import com.tokopedia.tokofood.feature.home.presentation.uimodel.TokoFoodErrorStateUiModel
@@ -32,7 +33,8 @@ class TokofoodSearchResultAdapterTypeFactory(
     private val emptyStateWithFilterListener: MerchantSearchEmptyWithFilterViewHolder.Listener,
     private val emptyStateWithoutFilterListener: MerchantSearchEmptyWithoutFilterViewHolder.Listener,
     private val searchErrorStateListener: TokofoodSearchErrorStateViewHolder.Listener,
-    private val merchantOOCListener: MerchantSearchOOCViewHolder.Listener
+    private val merchantOOCListener: MerchantSearchOOCViewHolder.Listener,
+    private val tokofoodScrollChangedListener: TokofoodScrollChangedListener
 ) : BaseAdapterTypeFactory(),
     TokoFoodCategoryTypeFactory,
     TokoFoodCommonTypeFactory,
@@ -51,7 +53,7 @@ class TokofoodSearchResultAdapterTypeFactory(
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when(type) {
-            MerchantSearchResultViewHolder.LAYOUT -> MerchantSearchResultViewHolder(view, merchantListListener)
+            MerchantSearchResultViewHolder.LAYOUT -> MerchantSearchResultViewHolder(view, merchantListListener, tokofoodScrollChangedListener)
             TokoFoodProgressBarViewHolder.LAYOUT -> TokoFoodProgressBarViewHolder(view)
             TokoFoodErrorStateViewHolder.LAYOUT -> TokoFoodErrorStateViewHolder(view, errorStateListener)
             TokoFoodCategoryLoadingViewHolder.LAYOUT -> TokoFoodCategoryLoadingViewHolder(view)

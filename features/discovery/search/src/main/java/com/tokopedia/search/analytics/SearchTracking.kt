@@ -3,7 +3,6 @@ package com.tokopedia.search.analytics
 import android.text.TextUtils
 import com.tokopedia.analyticconstant.DataLayer
 import com.tokopedia.discovery.common.analytics.SearchComponentTrackingConst
-import com.tokopedia.discovery.common.model.WishlistTrackingModel
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.iris.util.KEY_SESSION_IRIS
 import com.tokopedia.linker.LinkerConstants
@@ -254,44 +253,6 @@ object SearchTracking {
                 EVENT_CLICK_SEARCH_RESULT,
                 EVENT_CATEGORY_EMPTY_SEARCH,
                 EVENT_ACTION_CLICK_NEW_SEARCH, String.format(Locale.getDefault(),"tab: %s", screenName))
-    }
-
-    @JvmStatic
-    fun eventSuccessWishlistSearchResultProduct(wishlistTrackingModel: WishlistTrackingModel) {
-        val eventTrackingMap: MutableMap<String, Any> = HashMap()
-        eventTrackingMap[SearchTrackingConstant.EVENT] = SearchEventTracking.Event.CLICK_WISHLIST
-        eventTrackingMap[SearchTrackingConstant.EVENT_CATEGORY] = SearchEventTracking.Category.SEARCH_RESULT.toLowerCase()
-        eventTrackingMap[SearchTrackingConstant.EVENT_ACTION] = generateWishlistClickEventAction(wishlistTrackingModel.isAddWishlist, wishlistTrackingModel.isUserLoggedIn)
-        eventTrackingMap[SearchTrackingConstant.EVENT_LABEL] = generateWishlistClickEventLabel(wishlistTrackingModel.productId, wishlistTrackingModel.isTopAds, wishlistTrackingModel.keyword)
-        TrackApp.getInstance().gtm.sendGeneralEvent(eventTrackingMap)
-    }
-
-    private fun generateWishlistClickEventAction(isAddWishlist: Boolean, isLoggedIn: Boolean): String {
-        return (getAddOrRemoveWishlistAction(isAddWishlist)
-                + " - "
-                + SearchEventTracking.Action.MODULE
-                + " - "
-                + getIsLoggedInWishlistAction(isLoggedIn))
-    }
-
-    private fun getAddOrRemoveWishlistAction(isAddWishlist: Boolean): String {
-        return if (isAddWishlist) SearchEventTracking.Action.ADD_WISHLIST else SearchEventTracking.Action.REMOVE_WISHLIST
-    }
-
-    private fun getIsLoggedInWishlistAction(isLoggedIn: Boolean): String {
-        return if (isLoggedIn) SearchEventTracking.Action.LOGIN else SearchEventTracking.Action.NON_LOGIN
-    }
-
-    private fun generateWishlistClickEventLabel(productId: String, isTopAds: Boolean, keyword: String): String {
-        return (productId
-                + " - "
-                + getTopAdsOrGeneralLabel(isTopAds)
-                + " - "
-                + keyword)
-    }
-
-    private fun getTopAdsOrGeneralLabel(isTopAds: Boolean): String {
-        return if (isTopAds) SearchEventTracking.Label.TOPADS else SearchEventTracking.Label.GENERAL
     }
 
     @JvmStatic
