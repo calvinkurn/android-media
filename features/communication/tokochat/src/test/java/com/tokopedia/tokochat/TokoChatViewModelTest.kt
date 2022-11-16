@@ -23,15 +23,14 @@ import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
-class TokoChatViewModelTest: TokoChatViewModelTestFixture() {
+class TokoChatViewModelTest : TokoChatViewModelTestFixture() {
 
     @Test
     fun `when initializeConversationProfileProfile, this method should be called`() {
-
-        //when
+        // when
         viewModel.initializeProfile()
 
-        //then
+        // then
         verify {
             profileUseCase.initializeConversationProfile()
         }
@@ -39,17 +38,16 @@ class TokoChatViewModelTest: TokoChatViewModelTestFixture() {
 
     @Test
     fun `when initializeConversationProfile, this method should not be called`() {
-
         val errorException = Throwable()
 
         every {
             profileUseCase.initializeConversationProfile()
         } throws errorException
 
-        //when
+        // when
         viewModel.initializeProfile()
 
-        //then
+        // then
         verify {
             profileUseCase.initializeConversationProfile()
         }
@@ -62,18 +60,17 @@ class TokoChatViewModelTest: TokoChatViewModelTestFixture() {
 
     @Test
     fun `when getProfileUserId, this method should return string value`() {
-
         val userId = "12345"
 
-        //given
+        // given
         every {
             profileUseCase.getUserId()
         } returns userId
 
-        //when
+        // when
         val actualResult = viewModel.getUserId()
 
-        //then
+        // then
         verify {
             profileUseCase.getUserId()
         }
@@ -86,15 +83,15 @@ class TokoChatViewModelTest: TokoChatViewModelTestFixture() {
         runBlocking {
             val expectedImageUrl = TokoChatUrlUtil.IC_TOKOFOOD_SOURCE
 
-            //given
+            // given
             coEvery {
                 getTokoChatBackgroundUseCase(Unit)
             } returns flowOf(expectedImageUrl)
 
-            //when
+            // when
             viewModel.getTokoChatBackground()
 
-            //then
+            // then
             coVerify {
                 getTokoChatBackgroundUseCase(Unit)
             }
@@ -110,15 +107,15 @@ class TokoChatViewModelTest: TokoChatViewModelTestFixture() {
         runBlocking {
             val errorException = Throwable()
 
-            //given
+            // given
             coEvery {
                 getTokoChatBackgroundUseCase(Unit)
             } throws errorException
 
-            //when
+            // when
             viewModel.getTokoChatBackground()
 
-            //then
+            // then
             coVerify {
                 getTokoChatBackgroundUseCase(Unit)
             }
@@ -141,15 +138,15 @@ class TokoChatViewModelTest: TokoChatViewModelTestFixture() {
                 )
             )
 
-            //given
+            // given
             coEvery {
                 getTokoChatRoomTickerUseCase(TokoChatValueUtil.TOKOFOOD)
             } returns expectedTicker
 
-            //when
+            // when
             viewModel.loadChatRoomTicker()
 
-            //then
+            // then
             coVerify {
                 getTokoChatRoomTickerUseCase(TokoChatValueUtil.TOKOFOOD)
             }
@@ -165,15 +162,15 @@ class TokoChatViewModelTest: TokoChatViewModelTestFixture() {
         runBlocking {
             val errorException = Throwable()
 
-            //given
+            // given
             coEvery {
                 getTokoChatRoomTickerUseCase(TokoChatValueUtil.TOKOFOOD)
             } throws errorException
 
-            //when
+            // when
             viewModel.loadChatRoomTicker()
 
-            //then
+            // then
             coVerify {
                 getTokoChatRoomTickerUseCase(TokoChatValueUtil.TOKOFOOD)
             }
@@ -193,13 +190,13 @@ class TokoChatViewModelTest: TokoChatViewModelTestFixture() {
             )
 
             coEvery {
-                getTokoChatOrderProgressUseCase(TokoChatOrderProgressParam(TKPD_ORDER_ID_DUMMY, TokoChatValueUtil.TOKOFOOD))
+                getTokoChatOrderProgressUseCase(TokoChatOrderProgressParam(TKPD_ORDER_ID_DUMMY, GOJEK_ORDER_ID_DUMMY, TokoChatValueUtil.TOKOFOOD))
             } returns tokoChatOrderProgressResponse
 
-            viewModel.loadOrderCompletedStatus(TKPD_ORDER_ID_DUMMY, TokoChatValueUtil.TOKOFOOD)
+            viewModel.loadOrderCompletedStatus(TokoChatOrderProgressParam(TKPD_ORDER_ID_DUMMY, GOJEK_ORDER_ID_DUMMY, TokoChatValueUtil.TOKOFOOD))
 
             coVerify {
-                getTokoChatOrderProgressUseCase(TokoChatOrderProgressParam(TKPD_ORDER_ID_DUMMY, TokoChatValueUtil.TOKOFOOD))
+                getTokoChatOrderProgressUseCase(TokoChatOrderProgressParam(TKPD_ORDER_ID_DUMMY, GOJEK_ORDER_ID_DUMMY, TokoChatValueUtil.TOKOFOOD))
             }
 
             val actualResult = (viewModel.orderTransactionStatus.value as Success).data
@@ -213,13 +210,13 @@ class TokoChatViewModelTest: TokoChatViewModelTestFixture() {
             val errorException = MessageErrorException()
 
             coEvery {
-                getTokoChatOrderProgressUseCase(TokoChatOrderProgressParam(TKPD_ORDER_ID_DUMMY, TokoChatValueUtil.TOKOFOOD))
+                getTokoChatOrderProgressUseCase(TokoChatOrderProgressParam(TKPD_ORDER_ID_DUMMY, GOJEK_ORDER_ID_DUMMY, TokoChatValueUtil.TOKOFOOD))
             } throws errorException
 
-            viewModel.loadOrderCompletedStatus(TKPD_ORDER_ID_DUMMY, TokoChatValueUtil.TOKOFOOD)
+            viewModel.loadOrderCompletedStatus(TokoChatOrderProgressParam(TKPD_ORDER_ID_DUMMY, GOJEK_ORDER_ID_DUMMY, TokoChatValueUtil.TOKOFOOD))
 
             coVerify {
-                getTokoChatOrderProgressUseCase(TokoChatOrderProgressParam(TKPD_ORDER_ID_DUMMY, TokoChatValueUtil.TOKOFOOD))
+                getTokoChatOrderProgressUseCase(TokoChatOrderProgressParam(TKPD_ORDER_ID_DUMMY, GOJEK_ORDER_ID_DUMMY, TokoChatValueUtil.TOKOFOOD))
             }
 
             val actualResult = (viewModel.orderTransactionStatus.value as Fail).throwable::class.java
@@ -236,14 +233,14 @@ class TokoChatViewModelTest: TokoChatViewModelTestFixture() {
             )
 
             coEvery {
-                getTokoChatOrderProgressUseCase(TokoChatOrderProgressParam(TKPD_ORDER_ID_DUMMY, TokoChatValueUtil.TOKOFOOD))
+                getTokoChatOrderProgressUseCase(TokoChatOrderProgressParam(TKPD_ORDER_ID_DUMMY, GOJEK_ORDER_ID_DUMMY, TokoChatValueUtil.TOKOFOOD))
             } returns tokochatOrderProgressResponse
 
             val result = async {
                 viewModel.updateOrderTransactionStatus.first()
             }
 
-            viewModel.updateOrderStatusParam(TKPD_ORDER_ID_DUMMY to  TokoChatValueUtil.TOKOFOOD)
+            viewModel.updateOrderStatusParam(TokoChatOrderProgressParam(TKPD_ORDER_ID_DUMMY, GOJEK_ORDER_ID_DUMMY, TokoChatValueUtil.TOKOFOOD))
             delay(5000L)
 
             val actualResult = (result.await() as Success).data
@@ -251,7 +248,7 @@ class TokoChatViewModelTest: TokoChatViewModelTestFixture() {
             assertEquals(tokochatOrderProgressResponse, actualResult)
 
             coVerify {
-                getTokoChatOrderProgressUseCase(TokoChatOrderProgressParam(TKPD_ORDER_ID_DUMMY, TokoChatValueUtil.TOKOFOOD))
+                getTokoChatOrderProgressUseCase(TokoChatOrderProgressParam(TKPD_ORDER_ID_DUMMY, GOJEK_ORDER_ID_DUMMY, TokoChatValueUtil.TOKOFOOD))
             }
 
             result.cancel()
@@ -264,21 +261,21 @@ class TokoChatViewModelTest: TokoChatViewModelTestFixture() {
             val errorException = MessageErrorException()
 
             coEvery {
-                getTokoChatOrderProgressUseCase(TokoChatOrderProgressParam(TKPD_ORDER_ID_DUMMY, TokoChatValueUtil.TOKOFOOD))
+                getTokoChatOrderProgressUseCase(TokoChatOrderProgressParam(TKPD_ORDER_ID_DUMMY, GOJEK_ORDER_ID_DUMMY, TokoChatValueUtil.TOKOFOOD))
             } throws errorException
 
             val result = async {
                 viewModel.updateOrderTransactionStatus.first()
             }
 
-            viewModel.updateOrderStatusParam(TKPD_ORDER_ID_DUMMY to TokoChatValueUtil.TOKOFOOD)
+            viewModel.updateOrderStatusParam(TokoChatOrderProgressParam(TKPD_ORDER_ID_DUMMY, GOJEK_ORDER_ID_DUMMY, TokoChatValueUtil.TOKOFOOD))
             delay(5000L)
 
             val actualResult = result.await() as Fail
             TestCase.assertEquals(errorException::class.java, actualResult.throwable::class.java)
 
             coVerify {
-                getTokoChatOrderProgressUseCase(TokoChatOrderProgressParam(TKPD_ORDER_ID_DUMMY, TokoChatValueUtil.TOKOFOOD))
+                getTokoChatOrderProgressUseCase(TokoChatOrderProgressParam(TKPD_ORDER_ID_DUMMY, GOJEK_ORDER_ID_DUMMY, TokoChatValueUtil.TOKOFOOD))
             }
 
             result.cancel()
@@ -293,14 +290,14 @@ class TokoChatViewModelTest: TokoChatViewModelTestFixture() {
             )
 
             coEvery {
-                getTokoChatOrderProgressUseCase(TokoChatOrderProgressParam("", ""))
+                getTokoChatOrderProgressUseCase(TokoChatOrderProgressParam("", "", ""))
             } returns tokochatOrderProgressResponse
 
-            viewModel.updateOrderStatusParam( "" to "")
+            viewModel.updateOrderStatusParam(TokoChatOrderProgressParam("", "", ""))
             delay(5000L)
 
             coVerify(exactly = 0) {
-                getTokoChatOrderProgressUseCase(TokoChatOrderProgressParam("", ""))
+                getTokoChatOrderProgressUseCase(TokoChatOrderProgressParam("", "", ""))
             }
         }
     }

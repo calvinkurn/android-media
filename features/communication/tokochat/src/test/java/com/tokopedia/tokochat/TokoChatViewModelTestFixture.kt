@@ -86,6 +86,7 @@ abstract class TokoChatViewModelTestFixture {
 
     companion object {
         const val TKPD_ORDER_ID_DUMMY = "52af8a53-86cc-40b7-bb98-cc3adde8e32a"
+        const val GOJEK_ORDER_ID_DUMMY = "F-1234567"
 
         const val ORDER_TRACKING_OTW_DESTINATION = "json/orderprogress/order_progress_otw_destination.json"
         const val ORDER_TRACKING_SUCCESS = "json/orderprogress/order_progress_success.json"
