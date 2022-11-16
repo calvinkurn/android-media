@@ -75,7 +75,7 @@ class TokoNowSimilarProductViewModel @Inject constructor(
     }
     fun getSimilarProductList(userId: Int, productIds: String){
         launchCatchError( block = {
-            val response = getSimilarProductUseCase.execute(userId, productIds)
+            val response = getSimilarProductUseCase.execute(userId, "3453436555")
             _similarProductList.postValue(response.productRecommendationWidgetSingle?.data?.recommendation)
         }, onError = {
         })

@@ -22,7 +22,6 @@ import com.tokopedia.tokopedianow.similarproduct.di.component.DaggerSimilarProdu
 import com.tokopedia.tokopedianow.similarproduct.domain.SimilarProductMapper
 import com.tokopedia.tokopedianow.similarproduct.model.SimilarProductUiModel
 import com.tokopedia.tokopedianow.similarproduct.viewholder.SimilarProductViewHolder
-import com.tokopedia.tokopedianow.similarproduct.viewmodel.TokoNowDetailViewModel
 import com.tokopedia.tokopedianow.similarproduct.viewmodel.TokoNowSimilarProductViewModel
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
@@ -50,9 +49,6 @@ class TokoNowSimilarProductFragment : Fragment(), SimilarProductViewHolder.Simil
     @Inject
      lateinit var viewModel : TokoNowSimilarProductViewModel
 
-    @Inject
-     lateinit var detailViewModel : TokoNowDetailViewModel
-
     private val analytics by lazy { SimilarProductAnalytics(userSession) }
 
     private val productList = ArrayList<SimilarProductUiModel>()
@@ -72,7 +68,7 @@ class TokoNowSimilarProductFragment : Fragment(), SimilarProductViewHolder.Simil
 
         observeLiveData()
         super.onViewCreated(view, savedInstanceState)
-        detailViewModel.checkAddressData()
+//        detailViewModel.checkAddressData()
         setupBottomSheet()
         trackImpression()
 
@@ -140,7 +136,7 @@ class TokoNowSimilarProductFragment : Fragment(), SimilarProductViewHolder.Simil
     private fun observeLiveData() {
         viewModel.similarProductList.observe(viewLifecycleOwner, {
             if(it.isNotEmpty()) {
-
+                //map this list to similar ui model list
                 it?.forEachIndexed { index, recommendationItem ->
                     run {
                         recommendationItem?.let { it1 ->
@@ -155,13 +151,11 @@ class TokoNowSimilarProductFragment : Fragment(), SimilarProductViewHolder.Simil
                         }
                     }
                 }
-                //map this list to similar ui model list
                 viewModel.onViewCreated(productList)
             }
             else{
                 // show no products ui
                 bottomSheet?.showEmptyProductListUi()
-
             }
         })
         observe(viewModel.visitableItems) {
