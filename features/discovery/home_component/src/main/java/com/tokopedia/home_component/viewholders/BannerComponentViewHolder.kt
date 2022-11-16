@@ -55,7 +55,6 @@ import com.tokopedia.unifyprinciples.R as RUnify
 class BannerComponentViewHolder(itemView: View,
                                 private val bannerListener: BannerComponentListener?,
                                 private val homeComponentListener: HomeComponentListener?,
-                                private val cardInteraction: Boolean = false
 )
     : AbstractViewHolder<BannerDataModel>(itemView),
         BannerItemListener, CoroutineScope {
@@ -114,7 +113,7 @@ class BannerComponentViewHolder(itemView: View,
                 lastPagePosition = if(isUsingDotsAndInfiniteScroll) Integer.MAX_VALUE else size-1
                 drawIndicators(indicatorLayout, 0, it.channelGrids.size)
                 try {
-                    initBanner(it.convertToBannerItemModel(), element.dimenMarginTop, element.dimenMarginBottom)
+                    initBanner(it.convertToBannerItemModel(), element.dimenMarginTop, element.dimenMarginBottom, element.cardInteraction)
                 } catch (e: NumberFormatException) {
                     e.printStackTrace()
                 }
@@ -140,10 +139,14 @@ class BannerComponentViewHolder(itemView: View,
     }
 
     fun scrollTo(position: Int) {
-        val resources = itemView.context.resources
-        val width = resources.displayMetrics.widthPixels
-        val paddings = 2 * resources.getDimensionPixelSize(R.dimen.home_component_margin_default)
-        rvBanner.smoothScrollBy(width-paddings,0, INTERPOLATOR)
+        if(isUsingDotsAndInfiniteScroll) {
+            val resources = itemView.context.resources
+            val width = resources.displayMetrics.widthPixels
+            val paddings = 2 * resources.getDimensionPixelSize(R.dimen.home_component_margin_default)
+            rvBanner.smoothScrollBy(width-paddings,0, interpolator)
+        } else {
+            rvBanner.smoothScrollToPosition(position)
+        }
     }
 
     private suspend fun autoScrollCoroutine() = withContext(Dispatchers.Main){
@@ -179,10 +182,10 @@ class BannerComponentViewHolder(itemView: View,
         return layoutManager
     }
 
-    private fun initBanner(list: List<BannerItemModel>, dimenMarginTop: Int, dimenMarginBottom: Int){
+    private fun initBanner(list: List<BannerItemModel>, dimenMarginTop: Int, dimenMarginBottom: Int, cardInteraction: Boolean){
         rvBanner.clearOnScrollListeners()
 
-        val snapHelper: SnapHelper = BannerSnapHelper(itemView.context)
+        val snapHelper: SnapHelper = if(isUsingDotsAndInfiniteScroll) CubicBezierSnapHelper(itemView.context) else PagerSnapHelper()
         rvBanner.onFlingListener = null
 
         val layoutParams = rvBanner.layoutParams as ConstraintLayout.LayoutParams
@@ -334,10 +337,10 @@ class BannerComponentViewHolder(itemView: View,
         private const val MARGIN_ZERO = 0
         private const val DOTS_SIZE = 6f
         private const val DOTS_MARGIN = 2f
-        private val INTERPOLATOR = PathInterpolatorCompat.create(.63f, .01f, .29f, 1f)
+        private val interpolator = PathInterpolatorCompat.create(.63f, .01f, .29f, 1f)
     }
 
-    class BannerSnapHelper(private val context: Context): PagerSnapHelper() {
+    class CubicBezierSnapHelper(private val context: Context): PagerSnapHelper() {
         companion object {
             private const val FLING_DURATION = 600
             private const val DX_POS = 0
@@ -360,7 +363,7 @@ class BannerComponentViewHolder(itemView: View,
                     val time = FLING_DURATION
                     action.dx = dx
                     action.dy = dy
-                    action.update(dx, dy, time, INTERPOLATOR)
+                    action.update(dx, dy, time, interpolator)
                 }
             }
         }

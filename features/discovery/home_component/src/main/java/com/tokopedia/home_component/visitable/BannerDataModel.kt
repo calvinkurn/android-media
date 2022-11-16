@@ -13,6 +13,7 @@ data class BannerDataModel(
         val isCache: Boolean = false,
         val dimenMarginTop: Int = com.tokopedia.home_component.R.dimen.home_banner_default_margin_top,
         val dimenMarginBottom: Int = com.tokopedia.home_component.R.dimen.home_banner_default_margin_bottom,
+        val cardInteraction: Boolean = false,
         val enableDotsAndInfiniteScroll: Boolean = false,
         val scrollTransitionDuration: Long = 5000L
 ): ImpressHolder(), HomeComponentVisitable{
