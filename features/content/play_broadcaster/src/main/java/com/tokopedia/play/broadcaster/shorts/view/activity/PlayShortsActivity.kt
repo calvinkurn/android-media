@@ -14,6 +14,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.content.common.onboarding.view.fragment.UGCOnboardingParentFragment
 import com.tokopedia.content.common.types.ContentCommonUserType
 import com.tokopedia.content.common.ui.bottomsheet.SellerTncBottomSheet
+import com.tokopedia.content.common.ui.model.TermsAndConditionUiModel
 import com.tokopedia.picker.common.MediaPicker
 import com.tokopedia.picker.common.PageSource
 import com.tokopedia.picker.common.types.ModeType
@@ -98,10 +99,16 @@ class PlayShortsActivity : BaseActivity() {
                 })
             }
             is SellerTncBottomSheet -> {
-                fragment.initViews(
-                    title = getString(R.string.play_shorts_shop_cant_create_content),
-                    tncList = viewModel.tncList
-                )
+                fragment.setDataSource(object : SellerTncBottomSheet.DataSource {
+                    override fun getTitle(): String {
+                        return getString(R.string.play_shorts_shop_cant_create_content)
+                    }
+
+                    override fun getTermsAndCondition(): List<TermsAndConditionUiModel> {
+                        return viewModel.tncList
+                    }
+                })
+
                 fragment.setListener(object : SellerTncBottomSheet.Listener {
                     override fun clickCloseIcon() {
                         if(getCurrentFragment() == null) finish()
