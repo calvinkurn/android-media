@@ -13,14 +13,15 @@ interface RealTimeRecommendationListener {
         applink: String
     )
 
-    fun onProductRecomNonVariantClick(
+    fun onAddToCartProductNonVariant(
+        channelId: String,
         recomItem: RecommendationItem,
         quantity: Int,
         headerName: String,
         position: String
     )
 
-    fun onRecomProductCardAddVariantClick(
+    fun onAddToCartProductVariantClick(
         data: RecommendationCarouselData,
         recomItem: RecommendationItem,
         adapterPosition: Int

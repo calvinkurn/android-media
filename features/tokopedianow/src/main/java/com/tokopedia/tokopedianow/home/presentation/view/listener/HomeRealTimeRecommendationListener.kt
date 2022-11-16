@@ -31,7 +31,8 @@ class HomeRealTimeRecommendationListener(
         RouteManager.route(context, applink)
     }
 
-    override fun onProductRecomNonVariantClick(
+    override fun onAddToCartProductNonVariant(
+        channelId: String,
         recomItem: RecommendationItem,
         quantity: Int,
         headerName: String,
@@ -39,6 +40,7 @@ class HomeRealTimeRecommendationListener(
     ) {
         if (userSession.isLoggedIn) {
             viewModel.addProductToCart(
+                channelId = channelId,
                 productId = recomItem.productId.toString(),
                 quantity = quantity,
                 shopId = recomItem.shopId.toString(),
@@ -49,7 +51,7 @@ class HomeRealTimeRecommendationListener(
         }
     }
 
-    override fun onRecomProductCardAddVariantClick(
+    override fun onAddToCartProductVariantClick(
         data: RecommendationCarouselData,
         recomItem: RecommendationItem,
         adapterPosition: Int

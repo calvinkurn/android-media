@@ -287,7 +287,8 @@ class RealTimeRecommendationCarouselView @JvmOverloads constructor(
         adapterPosition: Int,
         quantity: Int
     ) {
-        listener?.onProductRecomNonVariantClick(
+        listener?.onAddToCartProductNonVariant(
+            rtrData?.channelId.orEmpty(),
             recomItem,
             quantity,
             data.recommendationData.title,
@@ -301,7 +302,7 @@ class RealTimeRecommendationCarouselView @JvmOverloads constructor(
         recomItem: RecommendationItem,
         adapterPosition: Int
     ) {
-        listener?.onRecomProductCardAddVariantClick(data, recomItem, adapterPosition)
+        listener?.onAddToCartProductVariantClick(data, recomItem, adapterPosition)
     }
 }
 

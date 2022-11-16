@@ -807,7 +807,7 @@ class TokoNowHomeViewModel @Inject constructor(
         productId: String,
         @TokoNowLayoutType type: String
     ) {
-        homeLayoutItemList.getRealTimeRecom(channelId, type)?.let { recomItem ->
+        homeLayoutItemList.getRealTimeRecom(channelId)?.let { recomItem ->
             showRealTimeRecommendationLoading(channelId, type)
             getRealTimeRecommendation(channelId, productId, recomItem.pageName, type)
         }
@@ -844,14 +844,14 @@ class TokoNowHomeViewModel @Inject constructor(
         productId: String,
         @TokoNowLayoutType type: String
     ) {
-        homeLayoutItemList.getRealTimeRecom(channelId, type)?.run {
+        homeLayoutItemList.getRealTimeRecom(channelId)?.run {
             when {
                 shouldFetch() -> {
                     showRealTimeRecommendationProgressBar(channelId, productId, type)
                     getRealTimeRecommendation(channelId, productId, pageName, type)
                 }
                 shouldRefresh(channelId, productId) -> {
-                    getRefreshRealTimeRecommendation(channelId, productId, type)
+                    getRefreshRealTimeRecommendation(channelId, productId)
                 }
             }
         }
@@ -873,7 +873,7 @@ class TokoNowHomeViewModel @Inject constructor(
                 )
             )
 
-            if (recommendationWidgets.first().recommendationItemList.isNotEmpty()) {
+            if (recommendationWidgets.first().recommendationItemList.isNotEmpty() && productId != "3525110198") {
                 homeLayoutItemList.mapRealTimeRecommendation(
                     channelId,
                     productId,
@@ -882,11 +882,7 @@ class TokoNowHomeViewModel @Inject constructor(
                     type
                 )
             } else {
-                homeLayoutItemList.mapLatestRealTimeRecommendation(
-                    channelId,
-                    miniCartSimplifiedData,
-                    type
-                )
+                homeLayoutItemList.mapLatestRealTimeRecommendation(channelId, type)
             }
 
             val data = HomeLayoutListUiModel(
@@ -916,15 +912,10 @@ class TokoNowHomeViewModel @Inject constructor(
         _homeLayoutList.postValue(Success(data))
     }
 
-    private fun getRefreshRealTimeRecommendation(
-        channelId: String,
-        productId: String,
-        @TokoNowLayoutType type: String
-    ) {
+    private fun getRefreshRealTimeRecommendation(channelId: String, productId: String) {
         homeLayoutItemList.mapRefreshRealTimeRecommendation(
             channelId = channelId,
-            productId = productId,
-            type = type
+            productId = productId
         )
 
         val data = HomeLayoutListUiModel(

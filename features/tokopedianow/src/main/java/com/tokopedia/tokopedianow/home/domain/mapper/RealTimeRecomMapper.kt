@@ -35,26 +35,26 @@ object RealTimeRecomMapper {
 
     fun MutableList<HomeLayoutItemUiModel>.mapLatestRealTimeRecommendation(
         channelId: String,
-        miniCartData: MiniCartSimplifiedData?,
         @TokoNowLayoutType type: String
     ) {
-        val realTimeRecom = getRealTimeRecom(channelId, type)
+        val realTimeRecom = getRealTimeRecom(channelId)
         val productId = realTimeRecom?.parentProductId.orEmpty()
         val rtrWidget = realTimeRecom?.widget
 
         if (rtrWidget != null) {
-            mapRealTimeRecommendation(channelId, productId, rtrWidget, miniCartData, type)
+            mapRealTimeRecomState(channelId, productId, RealTimeRecomWidgetState.READY, type)
         } else {
-            mapRealTimeRecomStateIdle(channelId, productId, type)
+            mapRealTimeRecomState(channelId, productId, RealTimeRecomWidgetState.IDLE, type)
         }
     }
 
     fun MutableList<HomeLayoutItemUiModel>.mapRefreshRealTimeRecommendation(
         channelId: String,
-        productId: String,
-        @TokoNowLayoutType type: String
+        productId: String
     ) {
-        when (type) {
+        val realTimeRecom = getRealTimeRecom(channelId)
+
+        when (realTimeRecom?.type) {
             PRODUCT_RECOM -> mapRefreshProductRecomRTR(channelId, productId)
             MIX_LEFT_CAROUSEL_ATC -> mapRefreshLeftAtcRTR(channelId, productId)
         }
@@ -92,15 +92,10 @@ object RealTimeRecomMapper {
         }
     }
 
-    fun MutableList<HomeLayoutItemUiModel>.getRealTimeRecom(
-        channelId: String,
-        @TokoNowLayoutType type: String
-    ): HomeRealTimeRecomUiModel? {
-        return when (type) {
-            PRODUCT_RECOM -> getProductRecomItem(channelId)?.realTimeRecom
-            MIX_LEFT_CAROUSEL_ATC -> getLeftAtcItem(channelId)?.realTimeRecom
-            else -> null
-        }
+    fun MutableList<HomeLayoutItemUiModel>.getRealTimeRecom(channelId: String): HomeRealTimeRecomUiModel? {
+        val productRecom = getProductRecomItem(channelId)?.realTimeRecom
+        val mixLeftAtc = getLeftAtcItem(channelId)?.realTimeRecom
+        return productRecom ?: mixLeftAtc
     }
 
     private fun MutableList<HomeLayoutItemUiModel>.getProductRecomItem(channelId: String): HomeProductRecomUiModel? {
@@ -168,14 +163,6 @@ object RealTimeRecomMapper {
                 mapRealTimeRecomWidgetState(productId, state, item)
             }
         }
-    }
-
-    private fun MutableList<HomeLayoutItemUiModel>.mapRealTimeRecomStateIdle(
-        channelId: String,
-        productId: String,
-        @TokoNowLayoutType type: String
-    ) {
-        mapRealTimeRecomState(channelId, productId, RealTimeRecomWidgetState.IDLE, type)
     }
 
     private fun MutableList<HomeLayoutItemUiModel>.mapLoadingLeftAtcRTR(channelId: String) {

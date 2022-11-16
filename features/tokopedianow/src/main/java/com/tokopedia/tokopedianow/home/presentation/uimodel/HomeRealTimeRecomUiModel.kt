@@ -34,5 +34,7 @@ data class HomeRealTimeRecomUiModel(
         return this.channelId == channelId && this.parentProductId != productId && enabled
     }
 
-    fun shouldFetch() = widget == null && enabled
+    fun shouldFetch(): Boolean {
+        return (widget == null || widgetState != RealTimeRecomWidgetState.READY) && enabled
+    }
 }

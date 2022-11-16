@@ -231,7 +231,11 @@ object LeftCarouselAtcMapper {
         state: RealTimeRecomWidgetState,
         item: HomeLeftCarouselAtcUiModel
     ): HomeLayoutItemUiModel {
-        val realTimeRecom = item.realTimeRecom.copy(parentProductId = productId, widgetState = state)
+        val realTimeRecom = item.realTimeRecom.copy(
+            parentProductId = productId,
+            widgetState = state,
+            carouselState = RecommendationCarouselData.STATE_READY
+        )
         val homeRtrWidgetItem = item.copy(realTimeRecom = realTimeRecom)
         return HomeLayoutItemUiModel(homeRtrWidgetItem, HomeLayoutItemState.LOADED)
     }
