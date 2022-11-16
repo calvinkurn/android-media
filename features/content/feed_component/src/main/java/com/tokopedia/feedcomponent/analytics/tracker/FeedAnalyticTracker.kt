@@ -414,7 +414,7 @@ class FeedAnalyticTracker
                 feedTrackerData.campaignStatus
             ) else
                 KEY_EVENT_LABEL to String.format(
-                    FORMAT_TWO_PARAM,
+                    FORMAT_THREE_PARAM,
                     activityId,
                     feedTrackerData.shopId,
                     feedTrackerData.contentSlotValue,
@@ -1551,14 +1551,16 @@ class FeedAnalyticTracker
                     FORMAT_FIVE_PARAM,
                     activityId,
                     shopId,
-                    product.id,
-                    campaignStatus
+                    feedTrackerData.contentSlotValue,
+                    campaignStatus,
+                    product.id
                 )
         else
             String.format(
-                    FORMAT_THREE_PARAM,
+                    FORMAT_FOUR_PARAM,
                     activityId,
                     shopId,
+                    feedTrackerData.contentSlotValue,
                     product.id
             )
         val postType = getPostType(type, isFollowed, mediaType)
@@ -2124,9 +2126,10 @@ class FeedAnalyticTracker
                     getPostType("", isFollowed , mediaType)
                 ),
                 KEY_EVENT_LABEL to String.format(
-                    FORMAT_TWO_PARAM,
+                    FORMAT_THREE_PARAM,
                     activityId,
-                    feedTrackerData.shopId
+                    feedTrackerData.shopId,
+                    feedTrackerData.contentSlotValue
                 )
             )
         )

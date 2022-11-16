@@ -790,8 +790,8 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
                 feedDetailProductModel.postType,
                 feedDetailProductModel.isFollowed,
                 if (feedDetailProductModel.saleType.isNotEmpty()) "13440" else "",
-                if (feedDetailProductModel.isUpcoming) CAMPAIGN_UPCOMING_TRACKER_SUFFIX else CAMPAIGN_ONGOING_TRACKER_SUFFIX
-
+                if (feedDetailProductModel.isUpcoming) CAMPAIGN_UPCOMING_TRACKER_SUFFIX else CAMPAIGN_ONGOING_TRACKER_SUFFIX,
+                contentSlotValue
             )
             activity?.startActivityForResult(
                 getProductIntent(feedDetailProductModel.id),

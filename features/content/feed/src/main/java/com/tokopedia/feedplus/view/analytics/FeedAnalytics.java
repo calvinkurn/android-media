@@ -413,13 +413,13 @@ public class FeedAnalytics {
             return ASGC;
     }
 
-    public void eventDetailProductClick(ProductEcommerce product, String userId, String shopId, String activityId, String type, boolean isFollowed, String trackerid, String campaignStatus) {
+    public void eventDetailProductClick(ProductEcommerce product, String userId, String shopId, String activityId, String type, boolean isFollowed, String trackerid, String campaignStatus, String contentScore) {
         String eventAction = ACTION_CLICK_PRODUCT+" - " + getPostType(type, isFollowed);
         String eventlabel = "";
         if (campaignStatus.isEmpty()) {
-            eventlabel = activityId + " - " + shopId + " - " + product.getProductId();
+            eventlabel = activityId + " - " + shopId + " - " + contentScore + " - " + product.getProductId();
         } else {
-            eventlabel = activityId + " - " + shopId + " - " + product.getProductId() + " - " + campaignStatus;
+            eventlabel = activityId + " - " + shopId + " - " + contentScore + " - " + campaignStatus + " - " + product.getProductId();
         }
         Map map = DataLayer.mapOf(
                 EVENT_NAME, PRODUCT_CLICK,

@@ -81,7 +81,7 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
         }
     }
     private fun setAdapter() {
-            rvPosttag.adapter = adapter
+        rvPosttag.adapter = adapter
               if (listProducts.isNotEmpty()) {
                 listener?.onTaggedProductCardImpressed(
                     if (postType == TYPE_FEED_X_CARD_PLAY) playChannelId else postId.toString(),
@@ -92,7 +92,7 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
                     mediaType
                 )
                 adapter?.setItemsAndAnimateChanges(mapPostTag(listProducts))
-            }
+              }
     }
 
     private fun mapPostTag(postTagItemList: List<FeedXProduct>): List<ProductPostTagViewModelNew> {
@@ -161,6 +161,7 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
         this.mediaType = productBottomSheetData.mediaType
         this.saleType = productBottomSheetData.saleType
         this.saleStatus = productBottomSheetData.saleStatus
+        dismissedByClosing = false
         show(fragmentManager, "")
     }
 

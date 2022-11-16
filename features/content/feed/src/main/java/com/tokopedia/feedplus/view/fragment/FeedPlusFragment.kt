@@ -2441,7 +2441,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     ) {
         if (products.isNotEmpty()) {
             if (!::productTagBS.isInitialized)
-            productTagBS = ProductItemInfoBottomSheet()
+                productTagBS = ProductItemInfoBottomSheet()
             feedAnalytics.eventTagClicked(
                 getFeedTrackerDataModel(card, positionInFeed = positionInFeed)
             )
