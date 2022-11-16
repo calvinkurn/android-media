@@ -225,7 +225,7 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
             activity?.window?.decorView?.setBackgroundColor(
                 ContextCompat.getColor(
                     it,
-                    com.tokopedia.unifyprinciples.R.color.Unify_Background
+                    com.tokopedia.unifyprinciples.R.color.Unify_N0
                 )
             )
         }
