@@ -37,7 +37,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.PARAM_SOURCE
 import com.tokopedia.logisticCommon.data.constant.LogisticConstant
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.domain.model.Place
-import com.tokopedia.logisticCommon.util.GmsHelper
+import com.tokopedia.logisticCommon.util.MapsAvailabilityHelper
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_DISTRICT_ID
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_FROM_ADDRESS_FORM
@@ -158,7 +158,7 @@ class SearchPageFragment: BaseDaggerFragment(), AutoCompleteListAdapter.AutoComp
 
     private fun checkGms() {
         context?.let {
-            val gmsAvailable = GmsHelper.detectGmsAvailability(it)
+            val gmsAvailable = MapsAvailabilityHelper.isMapsAvailable(it)
             viewModel.isGmsAvailable = gmsAvailable
             if (!gmsAvailable) {
                 goToAddressForm()

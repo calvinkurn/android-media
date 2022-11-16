@@ -45,6 +45,7 @@ import com.tokopedia.logisticCommon.data.constant.AddEditAddressSource
 import com.tokopedia.logisticCommon.data.constant.LogisticConstant
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass
+import com.tokopedia.logisticCommon.util.MapsAvailabilityHelper
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.searchbar.data.HintData
@@ -93,7 +94,6 @@ import com.tokopedia.tokofood.feature.home.presentation.view.listener.TokoFoodHo
 import com.tokopedia.tokofood.feature.home.presentation.view.listener.TokoFoodView
 import com.tokopedia.tokofood.feature.home.presentation.viewmodel.TokoFoodHomeViewModel
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.TokoFoodPurchaseFragment
-import com.tokopedia.tokofood.feature.search.container.presentation.fragment.SearchContainerFragment
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
@@ -803,19 +803,22 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
             localCacheModel = ChooseAddressUtils.getLocalizingAddressData(it)
         }
     }
-
     private fun navigateToSetPinpoint() {
-        val locationPass =  LocationPass().apply {
-            latitude = TOTO_LATITUDE
-            longitude = TOTO_LONGITUDE
+        view?.let {
+            MapsAvailabilityHelper.onMapsAvailableState(it) {
+                val locationPass =  LocationPass().apply {
+                    latitude = TOTO_LATITUDE
+                    longitude = TOTO_LONGITUDE
+                }
+                val intent = RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.GEOLOCATION)
+                val bundle = Bundle().apply {
+                    putParcelable(LogisticConstant.EXTRA_EXISTING_LOCATION, locationPass)
+                    putBoolean(LogisticConstant.EXTRA_IS_FROM_MARKETPLACE_CART, true)
+                }
+                intent.putExtras(bundle)
+                startActivityForResult(intent, REQUEST_CODE_SET_PINPOINT)
+            }
         }
-        val intent = RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.GEOLOCATION)
-        val bundle = Bundle().apply {
-            putParcelable(LogisticConstant.EXTRA_EXISTING_LOCATION, locationPass)
-            putBoolean(LogisticConstant.EXTRA_IS_FROM_MARKETPLACE_CART, true)
-        }
-        intent.putExtras(bundle)
-        startActivityForResult(intent, REQUEST_CODE_SET_PINPOINT)
     }
 
     private fun onResultFromSetPinpoint(resultCode: Int, data: Intent?) {
