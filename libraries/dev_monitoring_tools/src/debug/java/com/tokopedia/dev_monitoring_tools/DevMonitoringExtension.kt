@@ -9,9 +9,13 @@ import kotlinx.coroutines.launch
 
 object DevMonitoringExtension {
 
-    fun initLeakCanary(enable: Boolean = true, application:Application) {
+    fun initLeakCanary(
+        enable: Boolean = true,
+        isEnableStrictMode: Boolean = false,
+        application: Application
+    ) {
         CoroutineScope(Dispatchers.IO).launch {
-            TokoLeakPublisher.getInstance(application, Gson(), enable)
+            TokoLeakPublisher.getInstance(application, Gson(), enable, isEnableStrictMode)
         }
     }
 }

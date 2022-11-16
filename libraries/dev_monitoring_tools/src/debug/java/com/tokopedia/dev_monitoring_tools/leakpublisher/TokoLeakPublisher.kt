@@ -5,7 +5,12 @@ import com.gojek.leak.publisher.LeakPublisher
 import com.google.gson.Gson
 import com.tokopedia.config.GlobalConfig
 
-class TokoLeakPublisher (application: Application, gson: Gson, isEnable: Boolean) {
+class TokoLeakPublisher(
+    application: Application,
+    gson: Gson,
+    isEnable: Boolean,
+    isEnableStrictMode: Boolean
+) {
 
     init {
         val metadata = mapOf<String, Any>(
@@ -14,11 +19,12 @@ class TokoLeakPublisher (application: Application, gson: Gson, isEnable: Boolean
             "App Id" to GlobalConfig.APPLICATION_ID,
             "Build Type" to "debug"
         )
+
         LeakPublisher(
             app = application,
             gson = gson,
             metadata = metadata,
-            isStrictModeEnabled = false,
+            isStrictModeEnabled = isEnableStrictMode,
             isLeakCanaryEnabled = isEnable,
             isObfuscated = false,
             targetPackage = "tkpd",
@@ -33,10 +39,11 @@ class TokoLeakPublisher (application: Application, gson: Gson, isEnable: Boolean
         fun getInstance(
             application: Application,
             gson: Gson,
-            isEnable: Boolean
+            isEnable: Boolean,
+            isEnableStrictMode: Boolean
         ): TokoLeakPublisher {
             return INSTANCE ?: synchronized(this) {
-                INSTANCE ?: TokoLeakPublisher(application, gson, isEnable).also { INSTANCE = it }
+                INSTANCE ?: TokoLeakPublisher(application, gson, isEnable, isEnableStrictMode).also { INSTANCE = it }
             }
         }
     }
