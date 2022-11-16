@@ -105,7 +105,7 @@
             app:layout_constraintTop_toTopOf="@id/bottom_image"
             app:layout_constraintStart_toStartOf="@id/bottom_image"
             app:layout_constraintEnd_toEndOf="@id/bottom_image"
-            visibility="gone"
+            android:visibility="gone"
             />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
