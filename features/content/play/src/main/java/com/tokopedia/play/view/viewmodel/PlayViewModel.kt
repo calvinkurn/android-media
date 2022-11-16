@@ -2626,9 +2626,7 @@ class PlayViewModel @AssistedInject constructor(
     private fun handleFollowPopUp (channelData: PlayChannelData) {
         val streamerId = channelData.partnerInfo.id.toString()
         val config = channelData.channelDetail.popupConfig
-        val shouldShow = _partnerInfo.value.status is PlayPartnerFollowStatus.Followable &&
-            ( _partnerInfo.value.status as? PlayPartnerFollowStatus.Followable)?.followStatus != PartnerFollowableStatus.Followed
-            && !isFreezeOrBanned && playPreference.isFollowPopup(streamerId) && config.isEnabled
+        val shouldShow = !isFreezeOrBanned && playPreference.isFollowPopup(streamerId) && config.isEnabled
 
         if (shouldShow) {
             viewModelScope.launch(dispatchers.computation){
