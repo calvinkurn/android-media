@@ -245,15 +245,18 @@ class AddProductViewModel @Inject constructor(
         val selectedProducts = currentState.products.mapIndexed { index, product ->
             if (index < maxProductSelection && product.isEligible) {
 
-                //If is on search product mode. Only product from search result should be selected
                 val isProductDisplayedOnSearchResult = product.id in currentlyDisplayedProductIds
                 val isSelected = if (isOnSearchMode) {
+                    //If is on search product mode. Only product from search result should be selected
                     isProductDisplayedOnSearchResult
                 } else {
+                    //If we're not in search product mode. Select all loaded products
                     true
                 }
 
+                //To make sure only eligible variant products will be selected
                 val eligibleVariantsOnly = product.originalVariants.filter { it.isEligible }.map { it.variantProductId }.toSet()
+
                 product.copy(isSelected = isSelected, enableCheckbox = true, selectedVariantsIds = eligibleVariantsOnly)
             } else {
                 product
