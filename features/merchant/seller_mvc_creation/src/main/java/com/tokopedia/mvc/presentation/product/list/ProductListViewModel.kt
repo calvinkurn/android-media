@@ -206,7 +206,8 @@ class ProductListViewModel @Inject constructor(
     }
 
     private fun handleTapVariant(parentProduct: Product) {
-        _uiEffect.tryEmit(ProductListEffect.ShowVariantBottomSheet(parentProduct))
+        val selectedProduct = SelectedProduct(parentProduct.id, parentProduct.selectedVariantsIds.toList())
+        _uiEffect.tryEmit(ProductListEffect.ShowVariantBottomSheet(selectedProduct))
     }
 
     private fun handleVariantUpdated(parentProductId: Long, selectedVariantIds : Set<Long>) {

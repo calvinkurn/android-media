@@ -20,7 +20,7 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.mvc.R
 import com.tokopedia.mvc.databinding.SmvcBottomsheetReviewVariantBinding
 import com.tokopedia.mvc.di.component.DaggerMerchantVoucherCreationComponent
-import com.tokopedia.mvc.domain.entity.Product
+import com.tokopedia.mvc.domain.entity.SelectedProduct
 import com.tokopedia.mvc.presentation.product.variant.review.uimodel.ReviewVariantEffect
 import com.tokopedia.mvc.presentation.product.variant.review.uimodel.ReviewVariantEvent
 import com.tokopedia.mvc.presentation.product.variant.review.uimodel.ReviewVariantUiState
@@ -33,24 +33,23 @@ import javax.inject.Inject
 class ReviewVariantBottomSheet: BottomSheetUnify() {
 
     companion object {
-        private const val BUNDLE_KEY_SELECTED_PARENT_PRODUCT_ID = "parent_product"
+        private const val BUNDLE_KEY_SELECTED_PRODUCT = "selected_product"
         private const val DIVIDER_MARGIN_LEFT = 16
+        private const val ONE_VARIANT = 1
 
         @JvmStatic
-        fun newInstance(parentProduct: Product): ReviewVariantBottomSheet {
+        fun newInstance(selectedProduct: SelectedProduct): ReviewVariantBottomSheet {
             return ReviewVariantBottomSheet().apply {
                 arguments = Bundle().apply {
-                    putParcelable(BUNDLE_KEY_SELECTED_PARENT_PRODUCT_ID, parentProduct)
+                    putParcelable(BUNDLE_KEY_SELECTED_PRODUCT, selectedProduct)
                 }
             }
         }
     }
 
     private var binding by autoClearedNullable<SmvcBottomsheetReviewVariantBinding>()
-    private val parentProduct by lazy { arguments?.getParcelable(
-        BUNDLE_KEY_SELECTED_PARENT_PRODUCT_ID
-    ) as? Product }
-    private var onSelectButtonClick: (Set<Long>) -> Unit = {}
+    private val parentProduct by lazy { arguments?.getParcelable(BUNDLE_KEY_SELECTED_PRODUCT) as? SelectedProduct }
+    private var onSaveButtonClick: (Set<Long>) -> Unit = {}
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -153,7 +152,7 @@ class ReviewVariantBottomSheet: BottomSheetUnify() {
 
 
     fun setOnSelectButtonClick(onSelectButtonClick: (Set<Long>) -> Unit) {
-        this.onSelectButtonClick = onSelectButtonClick
+        this.onSaveButtonClick = onSelectButtonClick
     }
 
     private fun observeUiState() {
@@ -171,7 +170,7 @@ class ReviewVariantBottomSheet: BottomSheetUnify() {
     private fun handleEffect(effect: ReviewVariantEffect) {
         when (effect) {
             is ReviewVariantEffect.ConfirmUpdateVariant -> {
-                onSelectButtonClick(effect.selectedVariantIds)
+                onSaveButtonClick(effect.selectedVariantIds)
                 dismiss()
             }
         }
@@ -181,9 +180,14 @@ class ReviewVariantBottomSheet: BottomSheetUnify() {
     private fun handleUiState(uiState: ReviewVariantUiState) {
         renderLoadingState(uiState.isLoading)
         renderSelectAllCheckbox(uiState)
+        renderBulkDelete(uiState.selectedVariantIds)
         renderList(uiState)
         renderParentProduct(uiState)
         renderButton(uiState.selectedVariantIds)
+    }
+
+    private fun renderBulkDelete(selectedVariantIds: Set<Long>) {
+        binding?.iconBulkDelete?.isVisible = selectedVariantIds.count() > ONE_VARIANT
     }
 
     private fun renderButton(selectedVariantIds: Set<Long>) {
@@ -217,6 +221,7 @@ class ReviewVariantBottomSheet: BottomSheetUnify() {
             }
             selectedVariantCount == allVariantsCount -> {
                 binding?.checkbox?.isChecked = true
+                binding?.checkbox?.setIndeterminate(false)
             }
         }
     }

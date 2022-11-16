@@ -2,9 +2,8 @@ package com.tokopedia.mvc.presentation.product.variant.review
 
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.kotlin.extensions.view.removeFirst
-import com.tokopedia.mvc.domain.entity.Product
+import com.tokopedia.mvc.domain.entity.SelectedProduct
 import com.tokopedia.mvc.domain.entity.Variant
 import com.tokopedia.mvc.domain.entity.VariantResult
 import com.tokopedia.mvc.domain.usecase.ProductV3UseCase
@@ -37,8 +36,8 @@ class ReviewVariantViewModel @Inject constructor(
     fun processEvent(event: ReviewVariantEvent) {
         when(event) {
             is ReviewVariantEvent.FetchProductVariants -> {
-                _uiState.update { it.copy(isLoading = true, parentProductId = event.selectedParentProduct.id) }
-                getVariantDetail(event.selectedParentProduct)
+                _uiState.update { it.copy(isLoading = true, parentProductId = event.selectedProduct.parentProductId) }
+                getVariantDetail(event.selectedProduct)
             }
             is ReviewVariantEvent.AddProductToSelection -> handleAddProductToSelection(event.variantProductId)
             ReviewVariantEvent.DisableSelectAllCheckbox -> handleUncheckAllProduct()
@@ -52,29 +51,17 @@ class ReviewVariantViewModel @Inject constructor(
     }
 
 
-    private fun getVariantDetail(selectedParentProduct : Product) {
+    private fun getVariantDetail(selectedProduct : SelectedProduct) {
         launchCatchError(
             dispatchers.io,
             block = {
-                val params = ProductV3UseCase.Param(selectedParentProduct.id, 0)
+                val params = ProductV3UseCase.Param(selectedProduct.parentProductId, 0)
                 val response = productV3UseCase.execute(params)
 
                 val modifiedVariantNames = findUpdatedVariantNames(response)
 
-                val validatedVariants = modifiedVariantNames.map { variant ->
-                    val (isEligible, reason) = isVariantEligible(variant.variantId, selectedParentProduct.originalVariants)
-                    variant.copy(isEligible = isEligible, reason = reason)
-                }
-
-                val updatedVariants = validatedVariants.map {
-                    if (it.variantId in selectedParentProduct.selectedVariantsIds && it.isEligible) {
-                        it.copy(isSelected = true)
-                    } else {
-                        it
-                    }
-                }
-
-                val selectedVariantIds = updatedVariants.filter { it.isSelected }.map { it.variantId }.toSet()
+                val selectedVariants = modifiedVariantNames.filter { it.variantId in selectedProduct.variantProductIds }
+                val selectedVariantIds = selectedVariants.map { it.variantId }.toSet()
 
                 _uiState.update {
                     it.copy(
@@ -84,8 +71,7 @@ class ReviewVariantViewModel @Inject constructor(
                         parentProductPrice = response.parentProductPrice,
                         parentProductSoldCount = response.parentProductSoldCount,
                         parentProductImageUrl = response.parentProductImageUrl,
-                        variants = updatedVariants,
-                        selectedVariantIds = selectedVariantIds
+                        variants = selectedVariants
                     )
                 }
             },
@@ -93,11 +79,6 @@ class ReviewVariantViewModel @Inject constructor(
                 _uiState.update { it.copy(isLoading = false, error = error) }
             }
         )
-    }
-
-    private fun isVariantEligible(variantId : Long, validatedVariants: List<Product.Variant>): Pair<Boolean, String> {
-        val matchedVariant = validatedVariants.find { variant -> variant.variantProductId == variantId }
-        return Pair(matchedVariant?.isEligible.orTrue(), matchedVariant?.reason.orEmpty())
     }
 
     private fun findUpdatedVariantNames(response: VariantResult): List<Variant> {
