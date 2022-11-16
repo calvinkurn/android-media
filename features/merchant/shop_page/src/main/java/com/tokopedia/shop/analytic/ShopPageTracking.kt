@@ -3,6 +3,9 @@ package com.tokopedia.shop.analytic
 import android.os.Bundle
 import android.text.TextUtils
 import com.tokopedia.analyticconstant.DataLayer
+import com.tokopedia.linker.LinkerConstants
+import com.tokopedia.linker.LinkerManager
+import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPage
 import com.tokopedia.shop.analytic.model.CustomDimensionShopPageProduct
@@ -144,6 +147,10 @@ open class ShopPageTracking(
         customDimension[ShopPageTrackingConstant.Key.CAMPAIGN_ID] = campaignId
         customDimension[ShopPageTrackingConstant.Key.VARIANT_ID] = variantId
         TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName, customDimension)
+    }
+
+    fun sendBranchScreenShop(userId: String) {
+        LinkerManager.getInstance().sendEvent(LinkerUtils.createGenericRequest(LinkerConstants.ENUM_EVENT_PAGE_VIEW_STORE, userId))
     }
 
     fun sendOpenScreenAddProduct(shopId: String?, shopType: String) {
