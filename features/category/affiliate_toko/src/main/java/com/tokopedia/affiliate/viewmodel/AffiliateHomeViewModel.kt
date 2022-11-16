@@ -65,6 +65,11 @@ class AffiliateHomeViewModel @Inject constructor(
 
     private var itemTypes = emptyList<ItemTypesItem>()
 
+    companion object {
+        private const val FILTER_LAST_THIRTY_DAYS = "LastThirtyDays"
+        private const val CONVERSION_METRIC = "conversion"
+    }
+
     private fun isAffiliateShopAdpEnabled() =
         RemoteConfigInstance.getInstance().abTestPlatform.getString(
             AFFILIATE_SHOP_ADP,
@@ -99,7 +104,7 @@ class AffiliateHomeViewModel @Inject constructor(
             if (firstTime) {
                 affiliateUserPerformanceUseCase.getAffiliateFilter().let { filters ->
                     filters.data?.getAffiliateDateFilter?.forEach { filter ->
-                        if (filter?.filterType == "LastThirtyDays") {
+                        if (filter?.filterType == FILTER_LAST_THIRTY_DAYS) {
                             filter.filterDescription?.let { selectedDateMessage = it }
                             filter.filterValue?.let { selectedDateValue = it }
                             filter.filterTitle?.let { selectedDateRange = it }
@@ -226,12 +231,13 @@ class AffiliateHomeViewModel @Inject constructor(
                 else -> item.isSelected = lastSelectedChip?.name == item.name
             }
         }
-        if (itemTypesList.isNotEmpty())
+        if (itemTypesList.isNotEmpty()) {
             tempList.add(
                 AffiliatePerformanceChipRVModel(
                     itemTypesList.sortedBy { it.order }
                 )
             )
+        }
     }
 
     private fun getListFromData(
@@ -241,7 +247,7 @@ class AffiliateHomeViewModel @Inject constructor(
         affiliatePerformanceResponse?.getAffiliatePerformance?.data?.userData?.let { userData ->
             userData.metrics = userData.metrics.sortedBy { metrics -> metrics?.order }
             userData.metrics.forEach { metrics ->
-                if (metrics?.order != NO_UI_METRICS && metrics?.metricType != "conversion") {
+                if (metrics?.order != NO_UI_METRICS && metrics?.metricType != CONVERSION_METRIC) {
                     performanceTempList.add(AffiliateUserPerformanceListModel(metrics))
                 }
             }
