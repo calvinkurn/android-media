@@ -71,11 +71,13 @@ class UserProfileUiMapperImpl @Inject constructor() : UserProfileUiMapper {
 
     override fun mapProfileTab(response: UserProfileTabModel): ProfileTabUiModel {
         return with(response.feedXProfileTabs) {
-            val activeTabs = tabs.filter { it.isActive }
+            val expectedTabs = tabs.filter {
+                it.isActive && (it.key == TAB_KEY_FEEDS || it.key == TAB_KEY_VIDEO)
+            }
             ProfileTabUiModel(
-                showTabs = activeTabs.size > 1,
-                tabs = if (activeTabs.isNotEmpty()) {
-                    activeTabs.map {
+                showTabs = expectedTabs.size > 1,
+                tabs = if (expectedTabs.isNotEmpty()) {
+                    expectedTabs.map {
                         ProfileTabUiModel.Tab(
                             title = it.title,
                             key = it.key,
@@ -90,6 +92,8 @@ class UserProfileUiMapperImpl @Inject constructor() : UserProfileUiMapper {
     }
 
     companion object {
+        private const val TAB_KEY_FEEDS = "feeds"
+        private const val TAB_KEY_VIDEO = "video"
         private const val SUCCESS_UPDATE_REMINDER_CODE = 200
     }
 }
