@@ -23,7 +23,7 @@ import com.tokopedia.common_compose.ui.NestTheme
 fun NestTypography(
     text: String,
     modifier: Modifier = Modifier,
-    textStyle: TextStyle = NestTheme.typography.display3.copy(color = NestTheme.colors.NN._600),
+    textStyle: TextStyle = NestTheme.typography.display3,
     maxLines: Int = Int.MAX_VALUE,
     overflow: TextOverflow = TextOverflow.Ellipsis,
     onTextLayout: (TextLayoutResult) -> Unit = {}
@@ -42,7 +42,7 @@ fun NestTypography(
 fun NestTypography(
     text: AnnotatedString,
     modifier: Modifier = Modifier,
-    textStyle: TextStyle = NestTheme.typography.display3.copy(color = NestTheme.colors.NN._600),
+    textStyle: TextStyle = NestTheme.typography.display3,
     maxLines: Int = Int.MAX_VALUE,
     overflow: TextOverflow = TextOverflow.Ellipsis,
     onTextLayout: (TextLayoutResult) -> Unit = {}

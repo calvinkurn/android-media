@@ -1,9 +1,9 @@
 apply plugin: 'com.android.library'
-apply plugin: 'kotlin-kapt'
 apply from: "$rootProject.projectDir/buildconfig/kotlin/core-module.gradle"
 apply plugin: 'io.hansel.preprocessor.module'
 apply plugin: "androidx.navigation.safeargs"
 apply from: '../../../jacoco_task.gradle'
+apply plugin: 'kotlin-kapt'
 
 buildscript {
     repositories {
