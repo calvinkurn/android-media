@@ -423,16 +423,4 @@ class ShipmentPresenterGetShippingRatesTest {
     fun `WHEN get shipping courier view model state before get rates THEN should return null`() {
         assertNull(presenter.getShippingCourierViewModelsState(0))
     }
-
-    @Test
-    fun `WHEN presenter detached THEN all usecases is unsubscribed`() {
-        // When
-        presenter.detachView()
-
-        // Then
-        verify {
-            getRatesUseCase.unsubscribe()
-            getRatesApiUseCase.unsubscribe()
-        }
-    }
 }

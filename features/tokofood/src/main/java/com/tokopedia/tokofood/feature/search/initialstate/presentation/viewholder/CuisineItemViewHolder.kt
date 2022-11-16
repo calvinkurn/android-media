@@ -4,6 +4,7 @@ import android.view.View
 import android.view.ViewTreeObserver
 import androidx.annotation.LayoutRes
 import com.tokopedia.tokofood.R
+import com.tokopedia.tokofood.common.presentation.listener.TokofoodScrollChangedListener
 import com.tokopedia.tokofood.common.presentation.viewholder.CustomPayloadViewHolder
 import com.tokopedia.tokofood.common.util.TokofoodExt.addAndReturnImpressionListener
 import com.tokopedia.tokofood.common.util.TokofoodExt.clickWithDebounce
@@ -12,7 +13,8 @@ import com.tokopedia.tokofood.feature.search.initialstate.presentation.uimodel.C
 
 class CuisineItemViewHolder(
     view: View,
-    private val actionListener: ActionListener
+    private val actionListener: ActionListener,
+    private val tokofoodScrollChangedListener: TokofoodScrollChangedListener
 ) : CustomPayloadViewHolder<CuisineItemUiModel>(view) {
 
     companion object {
@@ -64,10 +66,9 @@ class CuisineItemViewHolder(
         item: CuisineItemUiModel,
         position: Int
     ) {
-        val impressionListener = binding.root.addAndReturnImpressionListener(item) {
+        binding.root.addAndReturnImpressionListener(item, tokofoodScrollChangedListener) {
             actionListener.onImpressCuisineItem(item, position)
         }
-        actionListener.onSetCuisineImpressionListener(impressionListener)
     }
 
     interface ActionListener {

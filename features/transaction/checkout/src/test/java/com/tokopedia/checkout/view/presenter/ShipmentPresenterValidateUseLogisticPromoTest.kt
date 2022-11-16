@@ -38,6 +38,7 @@ import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.just
 import io.mockk.mockkObject
+import io.mockk.verify
 import io.mockk.verifySequence
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -101,7 +102,7 @@ class ShipmentPresenterValidateUseLogisticPromoTest {
     @MockK(relaxed = true)
     private lateinit var getShipmentAddressFormV3UseCase: GetShipmentAddressFormV3UseCase
 
-    @MockK
+    @MockK(relaxed = true)
     private lateinit var eligibleForAddressUseCase: EligibleForAddressUseCase
 
     @MockK
@@ -431,6 +432,21 @@ class ShipmentPresenterValidateUseLogisticPromoTest {
             view.setStateLoadingCourierStateAtIndex(cartPosition, false)
             view.showToastError(DEFAULT_ERROR_MESSAGE_FAIL_APPLY_BBO)
             view.resetCourier(cartPosition)
+        }
+    }
+
+    @Test
+    fun `WHEN validate use with detached view THEN should do nothing`() {
+        // Given
+        val cartPosition = 1
+        presenter.detachView()
+
+        // When
+        presenter.doValidateUseLogisticPromo(cartPosition, "", ValidateUsePromoRequest(), "")
+
+        // Then
+        verify(inverse = true) {
+            view.setStateLoadingCourierStateAtIndex(any(), any())
         }
     }
 }
