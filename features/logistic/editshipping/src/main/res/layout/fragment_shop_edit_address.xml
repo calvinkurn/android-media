@@ -4,6 +4,7 @@
     android:layout_height="match_parent"
     android:id="@+id/swipe_refresh"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:background="@color/Unify_Background"
     android:enabled="false">
 
@@ -149,26 +150,36 @@
                     android:textColor="@color/Unify_R500"
                     android:textSize="12sp" />
 
-                <com.tokopedia.unifyprinciples.Typography
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:id="@+id/layout_pinpoint_preview"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/tv_pinpoint_location"
-                    android:textColor="@color/Unify_N700_68"
-                    app:typographyWeight="bold"
-                    android:layout_marginTop="24dp"
-                    app:typographyType="body_3" />
+                    android:orientation="vertical"
+                    tools:visibility="invisible">
 
-                <com.tokopedia.unifyprinciples.Typography
-                    android:id="@+id/tv_pinpoint_text"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="2dp"
-                    android:layout_marginBottom="@dimen/unify_space_8"
-                    android:textColor="@color/Unify_N700_68"
-                    android:text="@string/tv_pinpoint_desc"
-                    app:typographyType="body_3"/>
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/tv_pinpoint_location"
+                        android:textColor="@color/Unify_N700_68"
+                        app:typographyWeight="bold"
+                        android:layout_marginTop="24dp"
+                        app:typographyType="body_3" />
 
-                <include layout="@layout/item_open_maps_address" />
+                    <com.tokopedia.unifyprinciples.Typography
+                        android:id="@+id/tv_pinpoint_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:layout_marginBottom="@dimen/unify_space_8"
+                        android:textColor="@color/Unify_N700_68"
+                        android:text="@string/tv_pinpoint_desc"
+                        app:typographyType="body_3"/>
+
+                    <include layout="@layout/item_open_maps_address" />
+
+
+                </LinearLayout>
 
                 <com.tokopedia.unifyprinciples.Typography
                     android:id="@+id/tv_transaction_desc"

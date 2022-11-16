@@ -11,6 +11,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
+import android.widget.LinearLayout
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -37,10 +38,12 @@ import com.tokopedia.editshipping.util.EditShippingConstant.EXTRA_LAT
 import com.tokopedia.editshipping.util.EditShippingConstant.EXTRA_LONG
 import com.tokopedia.editshipping.util.EditShippingConstant.EXTRA_WAREHOUSE_DATA
 import com.tokopedia.editshipping.util.ShopEditAddressUtils
+import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.logisticCommon.data.entity.address.DistrictRecommendationAddress
 import com.tokopedia.logisticCommon.data.entity.address.SaveAddressDataModel
 import com.tokopedia.logisticCommon.data.entity.shoplocation.Warehouse
 import com.tokopedia.logisticCommon.util.LogisticUserConsentHelper
+import com.tokopedia.logisticCommon.util.MapsAvailabilityHelper
 import com.tokopedia.logisticCommon.util.getLatLng
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Toaster
@@ -216,8 +219,14 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
         txtShopLocationWatcher = view?.findViewById(R.id.tv_nama_lokasi_watcher)
         tvUserConsent = view?.findViewById(R.id.tv_user_consent)
 
-        mapView = view?.findViewById(R.id.map_view_detail)
-        btnOpenMap = view?.findViewById(R.id.btn_open_map)
+        context?.let {
+            if (MapsAvailabilityHelper.isMapsAvailable(it)) {
+                mapView = view?.findViewById(R.id.map_view_detail)
+                btnOpenMap = view?.findViewById(R.id.btn_open_map)
+            } else {
+                view?.findViewById<LinearLayout>(R.id.layout_pinpoint_preview)?.invisible()
+            }
+        }
     }
 
     private fun initViewModel() {
