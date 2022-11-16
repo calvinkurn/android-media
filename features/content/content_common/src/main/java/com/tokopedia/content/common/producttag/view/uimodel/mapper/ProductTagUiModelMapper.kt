@@ -12,7 +12,9 @@ import javax.inject.Inject
  */
 class ProductTagUiModelMapper @Inject constructor() {
 
-    private val decimalFormat = DecimalFormat("#.#")
+    private val decimalFormat = DecimalFormat("0.0").apply {
+        roundingMode = RoundingMode.CEILING
+    }
 
     fun mapLastTaggedProduct(response: GetFeedLastTaggedProductResponse): PagedDataUiModel<ProductUiModel> {
         return PagedDataUiModel(
@@ -26,7 +28,7 @@ class ProductTagUiModelMapper @Inject constructor() {
                     coverURL = it.coverURL,
                     webLink = it.webLink,
                     appLink = it.appLink,
-                    star = decimalFormat.format(it.star / 20.0).toString(),
+                    star = if(it.star == 0.0) "" else decimalFormat.format(it.star / 20.0).toString(),
                     price = it.price,
                     priceFmt = it.priceFmt,
                     isDiscount = it.isDiscount,
