@@ -20,7 +20,7 @@ import com.tokopedia.unifycomponents.CardUnify2
 @Suppress("unused")
 @SuppressLint("SyntheticAccessor")
 class BannerChannelAdapter(
-    private val itemList: List<BannerItemModel>,
+    private var itemList: List<BannerItemModel>,
     private val bannerItemListener: BannerItemListener,
     private val cardInteraction: Boolean = false,
     private val isUsingInfiniteScroll: Boolean = false,
@@ -36,6 +36,11 @@ class BannerChannelAdapter(
 
     val listCount: Int
         get() = itemList.size
+
+    fun setItemList(newItemList: List<BannerItemModel>) {
+        itemList = newItemList
+        notifyDataSetChanged()
+    }
 
     fun setImageRatio(imageRatio: String) {
         this.imageRatio = imageRatio
