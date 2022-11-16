@@ -20,7 +20,6 @@ import com.tokopedia.tokochat_common.databinding.TokochatPartialOrderStatusWidge
 import com.tokopedia.tokochat_common.databinding.TokochatTransactionWidgetBinding
 import com.tokopedia.tokochat_common.util.CommonUtil
 import com.tokopedia.tokochat_common.view.uimodel.TokoChatOrderProgressUiModel
-import java.lang.StringBuilder
 
 class TokoChatTransactionOrderWidget : LinearLayout {
 
@@ -54,6 +53,7 @@ class TokoChatTransactionOrderWidget : LinearLayout {
 
     init {
         setupViewBinding()
+        setBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Background))
     }
 
     fun getTokoChatOrderProgressUiModel() = tokoChatOrderProgressUiModel
@@ -131,7 +131,6 @@ class TokoChatTransactionOrderWidget : LinearLayout {
 
     private fun setupLocalLoadTransaction() {
         binding?.tokochatLocalloadErrorTransactionWidget?.run {
-            setBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Background))
             bringToFront()
             progressState = false
             refreshBtn?.setOnClickListener {
@@ -322,7 +321,8 @@ class TokoChatTransactionOrderWidget : LinearLayout {
 
     private fun renderEstimation() {
         if (tokoChatOrderProgressUiModel?.labelTitle?.isNotBlank() == true &&
-            tokoChatOrderProgressUiModel?.labelValue?.isNotBlank() == true) {
+            tokoChatOrderProgressUiModel?.labelValue?.isNotBlank() == true
+        ) {
             partialOrderStatusWidgetBinding?.tokochatTpEstimateLabel?.text =
                 tokoChatOrderProgressUiModel?.labelTitle.orEmpty()
             partialOrderStatusWidgetBinding?.tokochatTpEstimateValue?.text =
