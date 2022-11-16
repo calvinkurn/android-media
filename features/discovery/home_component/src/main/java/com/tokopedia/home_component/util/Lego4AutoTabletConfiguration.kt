@@ -16,9 +16,9 @@ object Lego4AutoTabletConfiguration {
     @LayoutRes
     private val LAYOUT_TABLET = R.layout.layout_lego_4_auto_item_tablet
     @LayoutRes
-    private val LAYOUT_MOBILE_PADDING = R.layout.layout_lego_4_auto_item_mobile_padding
+    val LAYOUT_MOBILE_PADDING = R.layout.layout_lego_4_auto_item_mobile_padding
     @LayoutRes
-    private val LAYOUT_TABLET_PADDING = R.layout.layout_lego_4_auto_item_tablet_padding
+    val LAYOUT_TABLET_PADDING = R.layout.layout_lego_4_auto_item_tablet_padding
 
     private const val SPAN_COUNT_2x2 = 2
 
