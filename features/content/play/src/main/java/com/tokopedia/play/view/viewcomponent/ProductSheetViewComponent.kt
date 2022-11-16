@@ -407,6 +407,7 @@ class ProductSheetViewComponent(
         rvProductList.removeItemDecoration(itemDecoration)
         rvProductList.removeOnScrollListener(scrollListener)
         itemDecoration.release()
+        voucherInfo.setupListener(null)
     }
 
     companion object {
