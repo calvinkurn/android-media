@@ -3,8 +3,8 @@ package com.tokopedia.play.analytic
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.play.ui.productsheet.adapter.ProductSheetAdapter
 import com.tokopedia.play.view.type.*
-import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
+import com.tokopedia.play.view.uimodel.PlayVoucherUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayPartnerInfo
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 import com.tokopedia.track.TrackApp
@@ -244,15 +244,6 @@ class PlayAnalytic(
         )
     }
 
-    fun scrollMerchantVoucher(lastPositionViewed: Int) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-                KEY_TRACK_CLICK_GROUP_CHAT,
-                KEY_TRACK_GROUP_CHAT_ROOM,
-                "scroll merchant voucher",
-                "$mChannelId - $lastPositionViewed"
-        )
-    }
-
     fun clickActionProductWithVariant(productId: String, productAction: ProductAction) {
         when(productAction) {
             ProductAction.AddToCart -> clickAtcButtonProductWithVariant(productId)
@@ -454,7 +445,7 @@ class PlayAnalytic(
         )
     }
 
-    fun impressionPrivateVoucher(voucher: MerchantVoucherUiModel) {
+    fun impressionPrivateVoucher(voucher: PlayVoucherUiModel.Merchant) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
                 mapOf(
                         KEY_EVENT to KEY_TRACK_VIEW_GROUP_CHAT_IRIS,
@@ -465,23 +456,6 @@ class PlayAnalytic(
                         KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
                         KEY_USER_ID to userId,
                         KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT
-                )
-        )
-    }
-
-    fun clickCopyVoucher(voucher: MerchantVoucherUiModel) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(
-                mapOf(
-                        KEY_EVENT to KEY_TRACK_CLICK_GROUP_CHAT,
-                        KEY_EVENT_CATEGORY to KEY_TRACK_GROUP_CHAT_ROOM,
-                        KEY_EVENT_ACTION to "click copy on private voucher",
-                        KEY_EVENT_LABEL to "$mChannelId - ${voucher.id} - ${mChannelType.value}",
-                        KEY_CURRENT_SITE to KEY_TRACK_CURRENT_SITE,
-                        KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
-                        KEY_USER_ID to userId,
-                        KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
-                        KEY_CHANNEL to mChannelName,
-                        KEY_IS_LOGGED_IN_STATUS to isLoggedIn,
                 )
         )
     }

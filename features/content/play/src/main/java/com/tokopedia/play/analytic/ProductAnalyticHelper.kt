@@ -2,10 +2,8 @@ package com.tokopedia.play.analytic
 
 import com.tokopedia.play.ui.productsheet.adapter.ProductSheetAdapter
 import com.tokopedia.play.ui.toolbar.model.PartnerType
-import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
-
 
 /**
  * Created by mzennis on 20/04/21.
@@ -22,9 +20,6 @@ class ProductAnalyticHelper(
     //For bottom sheet products
     @TrackingField
     private val impressedBottomSheet = mutableListOf<ProductSheetAdapter.Item.Product>()
-
-    @TrackingField
-    private val impressedVouchers = mutableListOf<MerchantVoucherUiModel>()
 
     private var sectionInfo: ProductSectionUiModel.Section = ProductSectionUiModel.Section.Empty
 
@@ -47,14 +42,6 @@ class ProductAnalyticHelper(
         impressedBottomSheet.addAll(products)
     }
 
-    fun trackImpressedVouchers(vouchers: List<MerchantVoucherUiModel>) {
-        if (vouchers.isNotEmpty()) impressedVouchers.addAll(vouchers)
-    }
-
-    fun sendImpressedProductSheets() {
-        sendImpressedPrivateVoucher()
-    }
-
     /**
      * Send double tracker due to DA request
      */
@@ -68,12 +55,6 @@ class ProductAnalyticHelper(
         if(partner == PartnerType.TokoNow) newAnalytic.impressProductBottomSheetNow(impressedBottomSheet)
         else analytic.impressBottomSheetProduct(impressedBottomSheet)
         impressedBottomSheet.clear()
-    }
-
-    private fun sendImpressedPrivateVoucher() {
-        val voucher = impressedVouchers.distinctBy { it.id }.firstOrNull { it.highlighted }
-        voucher?.let { analytic.impressionPrivateVoucher(it) }
-        impressedVouchers.clear()
     }
 
     private fun getFinalProducts() = impressedProducts
