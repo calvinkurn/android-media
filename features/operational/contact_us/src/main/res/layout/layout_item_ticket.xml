@@ -26,7 +26,6 @@
         android:textColor="@color/Unify_RN500"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:background="@drawable/rounded_rect_yellow"
         tools:text="Dalam Proses" />
 
 

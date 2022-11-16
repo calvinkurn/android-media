@@ -16,7 +16,7 @@
         android:gravity="center"
         android:fontFamily="sans-serif-medium"
         android:text="@string/layanan_prioritas"
-        android:textColor="@color/purple"
+        android:textColor="@color/Unify_PN500"
         app:typographyType="small"
         android:textStyle="normal"
         android:visibility="gone"

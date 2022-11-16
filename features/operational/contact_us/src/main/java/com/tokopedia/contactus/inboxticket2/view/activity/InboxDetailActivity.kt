@@ -481,7 +481,7 @@ class InboxDetailActivity : InboxBaseActivity(), InboxDetailView, ImageUploadAda
     override fun setSubmitButtonEnabled(enabled: Boolean) {
         isSendButtonEnabled = enabled
         if (enabled) {
-            ivSendButton.setColorFilter(
+            ivSendButton?.setColorFilter(
                 ContextCompat.getColor(
                     this,
                     com.tokopedia.unifyprinciples.R.color.Unify_GN500
