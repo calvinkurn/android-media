@@ -10,6 +10,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.library.baseadapter.AdapterCallback
 import com.tokopedia.people.ErrorMessage
@@ -28,7 +29,6 @@ import com.tokopedia.people.views.itemdecoration.GridSpacingItemDecoration
 import com.tokopedia.people.views.uimodel.action.UserProfileAction
 import com.tokopedia.people.views.uimodel.event.UserProfileUiEvent
 import kotlinx.coroutines.flow.collect
-import timber.log.Timber
 import javax.inject.Inject
 
 class UserProfileFeedFragment @Inject constructor(
@@ -160,8 +160,11 @@ class UserProfileFeedFragment @Inject constructor(
         }
     }
 
-    override fun onFeedPostsClick(appLink: String) {
-        Timber.d(appLink)
+    override fun onFeedPostsClick(appLink: String, position: Int) {
+        val intent = RouteManager.getIntent(requireContext(), appLink)
+        intent.putExtra(KEY_SOURCE, VAL_SOURCE)
+        intent.putExtra(KEY_POSITION, position)
+        startActivity(intent)
     }
 
     private fun emptyPostSelf() {
@@ -204,6 +207,9 @@ class UserProfileFeedFragment @Inject constructor(
 
     companion object {
         private const val TAG = "UserProfileFeedFragment"
+        private const val KEY_SOURCE = "source"
+        private const val KEY_POSITION = "position"
+        private const val VAL_SOURCE = "user_profile"
 
         fun getFragment(
             fragmentManager: FragmentManager,
