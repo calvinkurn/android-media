@@ -1,6 +1,5 @@
 package com.tokopedia.people.views.fragment
 
-import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
@@ -135,6 +134,7 @@ class UserProfileFragment @Inject constructor(
     }
 
     private var ugcOnboardingOpenFrom: Int = 0
+    private var viewPagerSelectedPage: Int = 0
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -223,7 +223,7 @@ class UserProfileFragment @Inject constructor(
             is UGCOnboardingParentFragment -> {
                 childFragment.setListener(object : UGCOnboardingParentFragment.Listener {
                     override fun onSuccess() {
-                        submitAction(UserProfileAction.LoadProfile())
+                        viewModel.submitAction(UserProfileAction.LoadProfile())
                         when (ugcOnboardingOpenFrom) {
                             UGC_ONBOARDING_OPEN_FROM_POST -> goToCreatePostPage()
                             UGC_ONBOARDING_OPEN_FROM_LIVE -> goToCreateLiveStream()
@@ -316,7 +316,7 @@ class UserProfileFragment @Inject constructor(
         viewPager.registerOnPageChangeCallback(object : ViewPager2.OnPageChangeCallback() {
             override fun onPageSelected(position: Int) {
                 super.onPageSelected(position)
-                viewModel.viewPagerSelectedPage = position
+                viewPagerSelectedPage = position
             }
         })
     }
@@ -349,7 +349,7 @@ class UserProfileFragment @Inject constructor(
                             if (viewModel.isSelfProfile) emptyPostSelf() else emptyPostVisitor()
                             mainBinding.userPostContainer.displayedChild = PAGE_EMPTY
                         } else {
-                            mainBinding.profileTabs.viewPager.currentItem = viewModel.viewPagerSelectedPage
+                            mainBinding.profileTabs.viewPager.currentItem = viewPagerSelectedPage
                             mainBinding.userPostContainer.displayedChild = PAGE_CONTENT
                         }
                     }

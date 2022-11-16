@@ -94,8 +94,6 @@ class UserProfileViewModel @AssistedInject constructor(
 
     val isShopRecomShow: Boolean get() = _shopRecom.value.isShown
 
-    var viewPagerSelectedPage: Int = 0
-
     private val _savedReminderData = MutableStateFlow<SavedReminderData>(SavedReminderData.NoData)
     private val _profileInfo = MutableStateFlow(ProfileUiModel.Empty)
     private val _followInfo = MutableStateFlow(FollowInfoUiModel.Empty)
