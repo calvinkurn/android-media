@@ -68,6 +68,7 @@ class MerchantPromotionGetMVDataByIDUseCase @Inject constructor(
                       voucher_discount_type_formatted
                       voucher_discount_amt_formatted
                       voucher_discount_amt_max_formatted
+                      voucher_minimum_amt
                       remaning_quota
                       tnc
                       booked_global_quota
@@ -97,7 +98,7 @@ class MerchantPromotionGetMVDataByIDUseCase @Inject constructor(
                     }
                   }
                 }
-    """.trimIndent()
+        """.trimIndent()
 
         override fun getOperationNameList(): List<String> = listOf(OPERATION_NAME)
         override fun getQuery(): String = QUERY
