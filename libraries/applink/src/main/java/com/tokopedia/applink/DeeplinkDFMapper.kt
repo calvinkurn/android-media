@@ -162,6 +162,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.ADD_EMAIL
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.ADD_NAME_REGISTER
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.ADD_NAME_REGISTER_CLEAN_VIEW
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.ADD_PHONE
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.NEW_ADD_PHONE
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.ADD_PIN
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.CHANGE_GENDER
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.CHANGE_NAME
@@ -512,6 +513,7 @@ object DeeplinkDFMapper : CoroutineScope {
             add(DFP({
                 (it.startsWith(SETTING_PROFILE)
                         || it.startsWith(ADD_PHONE)
+                        || it.startsWith(NEW_ADD_PHONE)
                         || it.startsWith(ADD_EMAIL)
                         || it.startsWith(ADD_BOD)
                         || it.startsWithPattern(CHANGE_NAME)
