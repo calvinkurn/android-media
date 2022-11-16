@@ -239,8 +239,9 @@ class ProductSheetViewComponent(
         }
         val merchantVoucher = voucherList.filterIsInstance<PlayVoucherUiModel.Merchant>()
         voucherInfo.showWithCondition(merchantVoucher.isNotEmpty())
-        if (merchantVoucher.isEmpty()) return
-        voucherInfo.setupView(merchantVoucher.first(), merchantVoucher.size)
+        if (merchantVoucher.isNotEmpty()) {
+            voucherInfo.setupView(merchantVoucher.first(), merchantVoucher.size)
+        }
 
         impressionSet.clear()
         sendImpression()
