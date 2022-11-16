@@ -26,7 +26,8 @@ class UserProfilePagerAdapter(
     private val fragmentActivity: FragmentActivity,
     lifecycle: Lifecycle,
     private val tabLayout: TabsUnify,
-    private val viewPager: ViewPager2
+    private val viewPager: ViewPager2,
+    private val onOpenTab: (key: String) -> Unit,
 ) : FragmentStateAdapter(fragmentManager, lifecycle) {
 
     private val listFragment = mutableListOf<ProfileTabUiModel.Tab>()
@@ -80,7 +81,9 @@ class UserProfilePagerAdapter(
     }
 
     private fun addSelectedTab(tab: TabLayout.Tab) {
-        when (listFragment[tab.position].key) {
+        val key = listFragment[tab.position].key
+        onOpenTab(key)
+        when (key) {
             FRAGMENT_KEY_FEEDS -> {
                 tab.setCustomIcon(getIconUnifyDrawable(fragmentActivity, IconUnify.IMAGE, ContextCompat.getColor(fragmentActivity, com.tokopedia.unifyprinciples.R.color.Unify_GN500)))
             }
@@ -110,7 +113,7 @@ class UserProfilePagerAdapter(
     }
 
     companion object {
-        private const val FRAGMENT_KEY_FEEDS = "feeds"
-        private const val FRAGMENT_KEY_VIDEO = "video"
+        const val FRAGMENT_KEY_FEEDS = "feeds"
+        const val FRAGMENT_KEY_VIDEO = "video"
     }
 }

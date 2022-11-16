@@ -58,6 +58,8 @@ import com.tokopedia.people.views.activity.FollowerFollowingListingActivity
 import com.tokopedia.people.views.activity.UserProfileActivity
 import com.tokopedia.people.views.activity.UserProfileActivity.Companion.EXTRA_USERNAME
 import com.tokopedia.people.views.adapter.UserProfilePagerAdapter
+import com.tokopedia.people.views.adapter.UserProfilePagerAdapter.Companion.FRAGMENT_KEY_FEEDS
+import com.tokopedia.people.views.adapter.UserProfilePagerAdapter.Companion.FRAGMENT_KEY_VIDEO
 import com.tokopedia.people.views.uimodel.action.UserProfileAction
 import com.tokopedia.people.views.uimodel.event.UserProfileUiEvent
 import com.tokopedia.people.views.uimodel.profile.ProfileTabUiModel
@@ -124,8 +126,11 @@ class UserProfileFragment @Inject constructor(
             requireActivity(),
             lifecycle,
             mainBinding.profileTabs.tabLayout,
-            mainBinding.profileTabs.viewPager
-        )
+            mainBinding.profileTabs.viewPager,
+        ) {
+            if (it == FRAGMENT_KEY_FEEDS) userProfileTracker.clickFeedTab(viewModel.profileUserID, viewModel.isSelfProfile)
+            else if (it == FRAGMENT_KEY_VIDEO) userProfileTracker.clickVideoTab(viewModel.profileUserID, viewModel.isSelfProfile)
+        }
     }
 
     override fun onCreateView(
