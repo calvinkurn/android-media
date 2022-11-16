@@ -327,6 +327,7 @@ class TokoChatFragment :
 
     private fun observeLoadOrderTransactionStatus() {
         observe(viewModel.orderTransactionStatus) {
+            hideTransactionLocalLoad()
             when (it) {
                 is Success -> {
                     setShowTransactionWidget(it.data.tokochatOrderProgress)
@@ -348,6 +349,10 @@ class TokoChatFragment :
                 }
             }
         }
+    }
+
+    private fun hideTransactionLocalLoad() {
+        baseBinding?.tokochatTransactionOrder?.hideTransactionLocalLoad()
     }
 
     private fun observeTokoChatBackground() {
