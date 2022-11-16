@@ -109,7 +109,7 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        observeData()
+//        observeData()
     }
 
     private fun setupViewModel() {
@@ -193,6 +193,7 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
 
         setShowListener {
             bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED
+            observeData()
         }
     }
 
@@ -244,6 +245,7 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
                 bsProductInfoContainer.setPadding(0, 0, 0, 6.dpToPx(displayMetrics))
                 bsProductInfoContainer.layoutParams?.height = ViewGroup.LayoutParams.WRAP_CONTENT
             }
+            bsProductInfoContainer.requestLayout()
         } catch (_: Throwable) {
         }
     }
