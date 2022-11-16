@@ -170,7 +170,7 @@ class PlayUserInteractionFragment @Inject constructor(
     ) }
     private val productSeeMoreView by viewComponentOrNull(isEagerInit = true) { ProductSeeMoreViewComponent(it, R.id.view_product_see_more, this) }
     private val chooseAddressView by viewComponentOrNull { ChooseAddressViewComponent(it, this, childFragmentManager) }
-    private val engagementCarouselView by viewComponent { EngagementCarouselViewComponent(listener = this, resId = R.id.v_engagement_widget, scope = viewLifecycleOwner.lifecycleScope, container = it) }
+    private val engagementCarouselView by viewComponentOrNull { EngagementCarouselViewComponent(listener = this, resId = R.id.v_engagement_widget, scope = viewLifecycleOwner.lifecycleScope, container = it) }
 
     /**
      * Interactive
@@ -867,9 +867,9 @@ class PlayUserInteractionFragment @Inject constructor(
 
     private fun renderEngagement(prevState: EngagementUiState?, currState: EngagementUiState){
         if(prevState?.shouldShow != currState.shouldShow)
-            engagementCarouselView.rootView.showWithCondition(currState.shouldShow)
+            engagementCarouselView?.rootView?.showWithCondition(currState.shouldShow)
         if(prevState?.data != currState.data)
-            engagementCarouselView.setData(currState.data)
+            engagementCarouselView?.setData(currState.data)
     }
 
     private fun observeUiEvent() {
