@@ -1,6 +1,5 @@
 package com.tokopedia.dilayanitokopedia.home.presentation.fragment
 
-import android.content.ActivityNotFoundException
 import android.content.Context
 import android.os.Build
 import android.os.Bundle
@@ -16,7 +15,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.internal.ApplinkConstInternalDilayaniTokopedia
@@ -40,11 +38,11 @@ import com.tokopedia.dilayanitokopedia.home.presentation.adapter.DtHomeAdapter
 import com.tokopedia.dilayanitokopedia.home.presentation.adapter.DtHomeAdapterTypeFactory
 import com.tokopedia.dilayanitokopedia.home.presentation.adapter.anchortabs.AnchorTabsViewHolder
 import com.tokopedia.dilayanitokopedia.home.presentation.adapter.differ.HomeListDiffer
+import com.tokopedia.dilayanitokopedia.home.presentation.listener.DtDynamicLegoBannerCallback
+import com.tokopedia.dilayanitokopedia.home.presentation.listener.DtLeftCarouselCallback
 import com.tokopedia.dilayanitokopedia.home.presentation.listener.DtSlideBannerCallback
 import com.tokopedia.dilayanitokopedia.home.presentation.listener.DtTopCarouselCallback
 import com.tokopedia.dilayanitokopedia.home.presentation.uimodel.AnchorTabUiModel
-import com.tokopedia.dilayanitokopedia.home.presentation.view.listener.DtDynamicLegoBannerCallback
-import com.tokopedia.dilayanitokopedia.home.presentation.view.listener.DtHomeLeftCarouselCallback
 import com.tokopedia.dilayanitokopedia.home.presentation.viewmodel.DtHomeViewModel
 import com.tokopedia.dilayanitokopedia.home.uimodel.HomeLayoutListUiModel
 import com.tokopedia.discovery.common.constants.SearchApiConst
@@ -94,9 +92,7 @@ class DtHomeFragment : Fragment() {
         const val SOURCE = "dilayanitokopedia"
         const val SOURCE_TRACKING = "dilayanitokopedia page"
 
-
         private const val EXTRA_URL = "url"
-
     }
 
     @Inject
@@ -118,7 +114,6 @@ class DtHomeFragment : Fragment() {
     private val navBarScrollListener by lazy { createNavBarScrollListener() }
 
     private var chooseAddressWidget: ChooseAddressWidget? = null
-
 
     private val adapter by lazy {
         DtHomeAdapter(
@@ -146,8 +141,6 @@ class DtHomeFragment : Fragment() {
             differ = HomeListDiffer()
         )
     }
-
-
 
     private var anchorTabAdapter: DtAnchorTabAdapter? = null
 
@@ -189,7 +182,6 @@ class DtHomeFragment : Fragment() {
          * Remove later
          */
         showLayout()
-
     }
 
     private fun setupChooseAddressWidget() {
@@ -199,14 +191,12 @@ class DtHomeFragment : Fragment() {
     }
 
     private fun initAnchorTabMenu() {
-        //data anchor tab
-
+        // data anchor tab
 
         anchorTabAdapter = DtAnchorTabAdapter(anchorTabListener())
         binding?.headerCompHolder?.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         binding?.headerCompHolder?.adapter = anchorTabAdapter
     }
-
 
     /**
      * TODO - part of click listener
@@ -224,7 +214,7 @@ class DtHomeFragment : Fragment() {
 //                val visitable = viewModelDtHome.getHomeVisitableList().find {
 //                    val layoutItemUiModel = it
 //                    if(layoutItemUiModel is HomeLayoutItemUiModel)
-////                    (it as ).idUiModel == anchorTabUiModel.id
+// //                    (it as ).idUiModel == anchorTabUiModel.id
 //                }
 //                val indexVisitable =  viewModelDtHome.getHomeVisitableList().indexOf()
 //                val position = visitable?.let {
@@ -248,10 +238,8 @@ class DtHomeFragment : Fragment() {
 //                if (position != null) {
 //                    rvHome?.smoothScrollToPosition(position)
 //                }
-
             }
         }
-
     }
 
     private fun setupStatusBar() {
@@ -282,11 +270,8 @@ class DtHomeFragment : Fragment() {
             statusBarBackground = binding?.dtHomeStatusBarBackground
             rvHome = binding?.rvHome
 //            swipeLayout = binding?.swipeRefreshLayout
-
         }
-
     }
-
 
     private fun initNavToolbar() {
         setupTopNavigation()
@@ -318,15 +303,18 @@ class DtHomeFragment : Fragment() {
             navToolbar?.setupSearchbar(
                 hints = listOf(
                     HintData(
-                        data.placeholder ?: "", data.keyword
+                        data.placeholder ?: "",
+                        data.keyword
                             ?: ""
                     )
                 ),
                 applink = if (data.keyword?.isEmpty() != false) {
                     ApplinkConstInternalDiscovery.AUTOCOMPLETE
-                } else PARAM_APPLINK_AUTOCOMPLETE,
+                } else {
+                    PARAM_APPLINK_AUTOCOMPLETE
+                },
                 searchbarClickCallback = { onSearchBarClick() },
-                searchbarImpressionCallback = {},
+                searchbarImpressionCallback = {}
 //                durationAutoTransition = durationAutoTransition,
 //                shouldShowTransition = shouldShowTransition()
             )
@@ -377,8 +365,11 @@ class DtHomeFragment : Fragment() {
                 init(bottomSheetShareListener())
                 setUtmCampaignData(
                     "Dilayani Tokopedia",
-                    if (UserSession(this@DtHomeFragment.requireContext()).userId.isNullOrEmpty()) "0"
-                    else UserSession(this@DtHomeFragment.requireContext()).userId,
+                    if (UserSession(this@DtHomeFragment.requireContext()).userId.isNullOrEmpty()) {
+                        "0"
+                    } else {
+                        UserSession(this@DtHomeFragment.requireContext()).userId
+                    },
                     viewModelDtHome.getShareUTM(pageInfo),
                     "share"
                 )
@@ -407,10 +398,8 @@ class DtHomeFragment : Fragment() {
             override fun onCloseOptionClicked() {
                 TODO("Not yet implemented")
             }
-
         }
     }
-
 
 //    private fun updateShareHomeData(pageIdConstituents: List<String>, isScreenShot: Boolean, thumbNailTitle: String, linkerType: String, id: String = "", url: String = SHARE_HOME_URL) {
 //        shareHomeTokonow?.pageIdConstituents = pageIdConstituents
@@ -426,7 +415,6 @@ class DtHomeFragment : Fragment() {
 //            rvHome?.addOnScrollListener(it)
 //        }
     }
-
 
     private fun isFirstInstall(): Boolean {
 //        context?.let {
@@ -450,9 +438,7 @@ class DtHomeFragment : Fragment() {
         return false
     }
 
-
     private fun getParamDtSRP() = "${SearchApiConst.BASE_SRP_APPLINK}=${ApplinkConstInternalDilayaniTokopedia.SEARCH}"
-
 
     private fun showHomeLayout(data: HomeLayoutListUiModel) {
         rvHome?.post {
@@ -501,8 +487,6 @@ class DtHomeFragment : Fragment() {
 //        showOnBoarding()
 //        getLayoutComponentData()
 //        stopRenderPerformanceMonitoring()
-
-
     }
 
     private fun updateAnchorTab(data: List<AnchorTabUiModel>) {
@@ -553,12 +537,11 @@ class DtHomeFragment : Fragment() {
 //                HomeRemoveAbleWidget(MAIN_QUEST, SharedPreferencesUtil.isQuestAllClaimedRemoved(activity))
 //            )
             viewModelDtHome.getHomeLayout(
-                it,
+                it
 //                removeAbleWidgets
             )
         }
     }
-
 
     private fun showLayout() {
         getHomeLayout()
@@ -579,19 +562,17 @@ class DtHomeFragment : Fragment() {
     }
 
     private fun createLeftCarouselCallback(): MixLeftComponentListener {
-        return DtHomeLeftCarouselCallback(
-            requireContext(),
-//            analytics
-        )
+        return DtLeftCarouselCallback.createLeftCarouselCallback {
+            onActionLinkClicked(it)
+        }
     }
-
 
     private fun createLegoBannerCallback(): DynamicLegoBannerListener? {
         return DtDynamicLegoBannerCallback(
-            requireContext(), viewModelDtHome
+            requireContext(),
+            viewModelDtHome
 //            viewModelTokoNow, userSession, analytics
         )
-
     }
 
     private fun createDtView(): DtView? {
@@ -602,12 +583,12 @@ class DtHomeFragment : Fragment() {
             override fun refreshLayoutPage() = onRefreshLayout()
 
             override fun getScrollState(adapterPosition: Int): Parcelable? {
-                //TODO -update later
+                // TODO -update later
                 return null
             }
 
             override fun saveScrollState(adapterPosition: Int, scrollState: Parcelable?) {
-                //TODO -update later
+                // TODO -update later
             }
 
             override fun saveParallaxState(mapParallaxState: Map<String, Float>) {
@@ -617,7 +598,6 @@ class DtHomeFragment : Fragment() {
             override fun getParallaxState(): Map<String, Float> {
                 TODO("Not yet implemented")
             }
-
         }
     }
 
@@ -646,7 +626,6 @@ class DtHomeFragment : Fragment() {
 //        hideSwitcherCoachMark()
     }
 
-
     private fun onSearchBarClick() {
         RouteManager.route(
             context,
@@ -657,10 +636,8 @@ class DtHomeFragment : Fragment() {
         )
     }
 
-
     private fun getAutoCompleteApplinkPattern() =
         ApplinkConstInternalDiscovery.AUTOCOMPLETE + PARAM_APPLINK_AUTOCOMPLETE + "&" + getParamDtSRP()
-
 
     private fun switchServiceOrLoadLayout() {
         localCacheModel?.apply {
@@ -670,7 +647,6 @@ class DtHomeFragment : Fragment() {
 //            )
         }
     }
-
 
     private fun checkAddressDataAndServiceArea() {
         checkIfChooseAddressWidgetDataUpdated()
@@ -686,11 +662,11 @@ class DtHomeFragment : Fragment() {
 //                    viewModelDtHome.getChooseAddress(SOURCE)
 //                }
 //                warehouseId == 0L -> {
-////                    showEmptyStateNoAddress()
+// //                    showEmptyStateNoAddress()
 //                }
 //                else -> {
         showLayout()
-////                    viewModelTokoNow.trackOpeningScreen(HOMEPAGE_TOKONOW)
+// //                    viewModelTokoNow.trackOpeningScreen(HOMEPAGE_TOKONOW)
 //                }
 //            }
 //        }
@@ -713,7 +689,6 @@ class DtHomeFragment : Fragment() {
         }
         return false
     }
-
 
     private fun setupChooseAddress(data: GetStateChosenAddressResponse) {
         data.let { chooseAddressData ->
@@ -761,18 +736,14 @@ class DtHomeFragment : Fragment() {
 //                    homeCategoryListener.removeViewHolderAtPosition(channelPosition)
                 }
             }
-
         }
-
     }
-
 
     val CLICK_TIME_INTERVAL: Long = 500
 
     private var mLastClickTime = System.currentTimeMillis()
 
-    private fun onActionLinkClicked(actionLink: String, trackingAttribution: String = "") {
-
+    private fun onActionLinkClicked(actionLink: String, haveOptionWebView: Boolean = true) {
         val now = System.currentTimeMillis()
         if (now - mLastClickTime < CLICK_TIME_INTERVAL) {
             return
@@ -783,20 +754,6 @@ class DtHomeFragment : Fragment() {
         }
         if (activity != null && RouteManager.isSupportApplink(activity, actionLink)) {
             openApplink(actionLink)
-        } else {
-            openWebViewURL(actionLink, activity)
-        }
-    }
-
-    private fun openWebViewURL(url: String?, context: Context?) {
-        if (!TextUtils.isEmpty(url) && context != null) {
-            val intent = RouteManager.getIntent(context, ApplinkConst.PROMO)
-            intent.putExtra(EXTRA_URL, url)
-            try {
-                startActivity(intent)
-            } catch (exception: ActivityNotFoundException) {
-                exception.printStackTrace()
-            }
         }
     }
 
@@ -806,17 +763,15 @@ class DtHomeFragment : Fragment() {
         }
     }
 
-
     private fun createSlideBannerCallback(): BannerComponentListener? {
         return DtSlideBannerCallback.createSlideBannerCallback {
             onActionLinkClicked(it)
         }
     }
 
-
     private fun createTopCarouselCallback(): MixTopComponentListener? {
         return DtTopCarouselCallback().createTopCarouselCallback {
-            onActionLinkClicked(actionLink = it)
+            onActionLinkClicked(actionLink = it, false)
         }
     }
 
@@ -851,9 +806,7 @@ class DtHomeFragment : Fragment() {
             ) {
                 TODO("Not yet implemented")
             }
-
         }
-
     }
 
     private val homeMainToolbarHeight: Int
@@ -895,10 +848,7 @@ class DtHomeFragment : Fragment() {
         }
     }
 
-
     private fun bindChooseAddressWidget() {
-
-
         chooseAddressWidget?.bindChooseAddress(object : ChooseAddressWidget.ChooseAddressWidgetListener {
             override fun onLocalizingAddressUpdatedFromWidget() {
                 onRefreshLayout()
@@ -927,11 +877,9 @@ class DtHomeFragment : Fragment() {
             override fun onLocalizingAddressLoginSuccess() { /* to do : nothing */
             }
         })
-
     }
 
     private var coachMark: CoachMark2? = null
-
 
     private fun showCoachMark() {
         val coachMarkList = arrayListOf<CoachMark2Item>().apply {
@@ -961,7 +909,6 @@ class DtHomeFragment : Fragment() {
         }
     }
 
-
     private fun initRecyclerScrollListener() {
         binding?.rvHome?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
 
@@ -975,14 +922,13 @@ class DtHomeFragment : Fragment() {
                 this.dy = dy
                 this.dx = dx
 //                if (dy >= 0) {
-////                    ivToTop.hide()
-////                    calculateScrollDepth(recyclerView)
+// //                    ivToTop.hide()
+// //                    calculateScrollDepth(recyclerView)
 //                } else if (dy < 0) {
 //                    ivToTop.show()
 //                }
                 scrollDist += dy
                 Timber.d("recyclerScrollListener onScrolled $recyclerView, $dx, $dy")
-
             }
 
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
@@ -1055,7 +1001,6 @@ class DtHomeFragment : Fragment() {
     }
 
     private fun updateAfterScrollDown() {
-
         val whiteUnify = com.tokopedia.unifyprinciples.R.color.Unify_NN0
         val whiteColor = ResourcesCompat.getColor(requireContext().resources, whiteUnify, null)
 
@@ -1063,8 +1008,5 @@ class DtHomeFragment : Fragment() {
         binding?.headerCompHolder?.setBackgroundColor(whiteColor)
         binding?.chooseAddressWidget?.setBackgroundColor(whiteColor)
         binding?.dtViewBackgroundImage?.gone()
-
     }
-
-
 }

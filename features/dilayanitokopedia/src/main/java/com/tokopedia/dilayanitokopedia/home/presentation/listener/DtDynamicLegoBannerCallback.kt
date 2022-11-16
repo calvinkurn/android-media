@@ -1,4 +1,4 @@
-package com.tokopedia.dilayanitokopedia.home.presentation.view.listener
+package com.tokopedia.dilayanitokopedia.home.presentation.listener
 
 import android.content.Context
 import com.tokopedia.applink.ApplinkConst
@@ -8,8 +8,6 @@ import com.tokopedia.home_component.listener.DynamicLegoBannerListener
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
-import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
-import com.tokopedia.user.session.UserSessionInterface
 
 class DtDynamicLegoBannerCallback(
     private val context: Context,
