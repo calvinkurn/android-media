@@ -22,7 +22,6 @@ import com.tokopedia.variant_common.use_case.GetProductVariantUseCase
 import com.tokopedia.variant_common.util.VariantCommonMapper
 import kotlinx.coroutines.async
 import kotlinx.coroutines.withContext
-import java.lang.Exception
 import javax.inject.Inject
 
 class PlayViewerTagItemRepositoryImpl @Inject constructor(
@@ -39,6 +38,7 @@ class PlayViewerTagItemRepositoryImpl @Inject constructor(
     override suspend fun getTagItem(
         channelId: String,
         warehouseId: String,
+        partnerName : String,
     ): TagItemUiModel = withContext(dispatchers.io) {
         val response = getProductTagItemsUseCase.apply {
             setRequestParams(GetProductTagItemSectionUseCase.createParam(channelId, warehouseId).parameters)
@@ -47,7 +47,8 @@ class PlayViewerTagItemRepositoryImpl @Inject constructor(
         val productList = mapper.mapProductSection(response.playGetTagsItem.sectionList)
 
         val voucherList = mapper.mapMerchantVouchers(
-            response.playGetTagsItem.voucherList
+            response.playGetTagsItem.voucherList,
+            partnerName
         )
 
         return@withContext TagItemUiModel(
@@ -55,9 +56,7 @@ class PlayViewerTagItemRepositoryImpl @Inject constructor(
                 productSectionList = updateCampaignReminderStatus(productList),
                 canShow = true
             ),
-            voucher = VoucherUiModel(
-                voucherList = voucherList,
-            ),
+            voucher = voucherList,
             maxFeatured = response.playGetTagsItem.config.peekProductCount,
             resultState = ResultState.Success,
             bottomSheetTitle = response.playGetTagsItem.config.bottomSheetTitle
