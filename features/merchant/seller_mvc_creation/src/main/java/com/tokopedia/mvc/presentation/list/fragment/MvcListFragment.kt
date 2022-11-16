@@ -4,9 +4,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.campaign.delegates.HasPaginatedList
 import com.tokopedia.campaign.delegates.HasPaginatedListImpl
 import com.tokopedia.campaign.utils.extension.showToasterError
@@ -82,21 +84,35 @@ class MvcListFragment: BaseDaggerFragment(), HasPaginatedList by HasPaginatedLis
     }
 
     private fun SmvcFragmentMvcListBinding.setupView() {
+        searchBar.clearListener = { loadInitialDataList() }
+        searchBar.searchBarTextField.setOnEditorActionListener { textView, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                loadInitialDataList(textView.text.toString())
+                KeyboardHandler.hideSoftKeyboard(activity)
+            }
+            return@setOnEditorActionListener false
+        }
         rvVoucher.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         rvVoucher.adapter = VouchersAdapter(this@MvcListFragment)
         val config = HasPaginatedList.Config(
             pageSize = PAGE_SIZE,
             onLoadNextPage = {
-                //flashSaleAdapter.addItem(LoadingItem)
+                // TODO: Implement loading
             }, onLoadNextPageFinished = {
-                //flashSaleAdapter.removeItem(LoadingItem)
+                // TODO: Implement loading
             }
         )
-        viewModel.getVoucherList(INITIAL_PAGE, PAGE_SIZE)
+        loadInitialDataList()
         attachPaging(rvVoucher, config, ::getDataList)
     }
 
+    private fun loadInitialDataList(keyword: String = "") {
+        val adapter = binding?.rvVoucher?.adapter as? VouchersAdapter
+        adapter?.clearDataList()
+        viewModel.getVoucherList(keyword, INITIAL_PAGE, PAGE_SIZE)
+    }
+
     private fun getDataList(page: Int, pageSize: Int) {
-        viewModel.getVoucherList(page, pageSize)
+        viewModel.getVoucherList(binding?.searchBar?.searchBarTextField?.text.toString(), page, pageSize)
     }
 }

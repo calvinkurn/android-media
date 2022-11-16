@@ -27,13 +27,15 @@ class VouchersAdapter(
         }
     }
 
-    fun setDataList(newData: List<Voucher>) {
-        data = newData.toMutableList()
-        notifyItemRangeChanged(Int.ZERO, newData.size)
+    fun clearDataList() {
+        val oldDataSize = data.size
+        data = mutableListOf()
+        notifyItemRangeRemoved(Int.ZERO, oldDataSize)
     }
 
     fun addDataList(newData: List<Voucher>) {
+        val oldDataSize = data.size
         data.addAll(newData)
-        notifyItemRangeChanged(Int.ZERO, newData.size)
+        notifyItemRangeInserted(oldDataSize, oldDataSize + newData.size)
     }
 }
