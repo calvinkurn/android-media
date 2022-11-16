@@ -35,8 +35,8 @@
 
         <com.tokopedia.iconunify.IconUnify
             android:id="@+id/icon_text"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
             android:layout_marginStart="12dp"
             app:icon_color_light_disabled="@color/Unify_NN900"
             app:icon_color_light_enable="@color/Unify_NN900"
@@ -56,18 +56,19 @@
             android:textColor="@color/Unify_N700_96"
             app:layout_constraintStart_toEndOf="@id/icon_text"
             app:layout_constraintTop_toTopOf="parent"
-            app:typographyType="display_1" />
+            app:typographyType="display_2" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/learn_dictionary_subtitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
+            android:layout_marginTop="2dp"
             android:text="@string/istilah_dalam_affiliate"
             android:textColor="@color/Unify_N700_68"
             app:layout_constraintStart_toEndOf="@id/icon_text"
             app:layout_constraintTop_toBottomOf="@id/learn_dictionary_title"
-            app:typographyType="display_2" />
+            app:typographyType="display_3" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -79,8 +80,8 @@
 
         <com.tokopedia.iconunify.IconUnify
             android:id="@+id/icon_help"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_width="20dp"
+            android:layout_height="20dp"
             android:layout_marginStart="12dp"
             app:icon_color_light_disabled="@color/Unify_NN900"
             app:icon_color_light_enable="@color/Unify_NN900"
@@ -100,17 +101,18 @@
             android:textColor="@color/Unify_N700_96"
             app:layout_constraintStart_toEndOf="@id/icon_help"
             app:layout_constraintTop_toTopOf="parent"
-            app:typographyType="display_1" />
+            app:typographyType="display_2" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/learn_help_subtitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="12dp"
+            android:layout_marginTop="2dp"
             android:text="@string/bantuan_seputar_tokopedia_affiliate"
             android:textColor="@color/Unify_N700_68"
             app:layout_constraintStart_toEndOf="@id/icon_help"
             app:layout_constraintTop_toBottomOf="@id/learn_help_title"
-            app:typographyType="display_2" />
+            app:typographyType="display_3" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
