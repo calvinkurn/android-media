@@ -47,6 +47,7 @@ import com.tokopedia.feedplus.view.presenter.FeedViewModel
 import com.tokopedia.feedplus.view.subscriber.FeedDetailViewState
 import com.tokopedia.feedplus.view.util.EndlessScrollRecycleListener
 import com.tokopedia.feedplus.view.viewmodel.feeddetail.FeedDetailProductModel
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.linker.interfaces.ShareCallback
 import com.tokopedia.linker.model.LinkerData
@@ -710,7 +711,12 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
         }
     }
 
-    private fun getTrackerCampaignStatusSuffix() = if(saleStatus == FeedDetailProductModel.UPCOMING) CAMPAIGN_UPCOMING_TRACKER_SUFFIX else CAMPAIGN_ONGOING_TRACKER_SUFFIX
+    private fun getTrackerCampaignStatusSuffix() = if (saleStatus.isNotEmpty()) {
+        if (saleStatus == FeedDetailProductModel.UPCOMING)
+            CAMPAIGN_UPCOMING_TRACKER_SUFFIX
+        else
+            CAMPAIGN_ONGOING_TRACKER_SUFFIX
+    } else String.EMPTY
     private fun onAddToCartSuccess() {
         RouteManager.route(requireContext(), ApplinkConstInternalMarketplace.CART)
     }
@@ -776,6 +782,9 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
 
     override fun onGoToProductDetail(feedDetailProductModel: FeedDetailProductModel, adapterPosition: Int) {
         if (activity != null && activity?.applicationContext != null && arguments != null) {
+            val campaignStatus = if (feedDetailProductModel.saleType.isNotEmpty()) {
+                if (feedDetailProductModel.isUpcoming) CAMPAIGN_UPCOMING_TRACKER_SUFFIX else CAMPAIGN_ONGOING_TRACKER_SUFFIX
+            } else String.EMPTY
 
             analytics.eventDetailProductClick(
                 ProductEcommerce(
@@ -790,7 +799,7 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
                 feedDetailProductModel.postType,
                 feedDetailProductModel.isFollowed,
                 if (feedDetailProductModel.saleType.isNotEmpty()) "13440" else "",
-                if (feedDetailProductModel.isUpcoming) CAMPAIGN_UPCOMING_TRACKER_SUFFIX else CAMPAIGN_ONGOING_TRACKER_SUFFIX,
+                campaignStatus,
                 contentSlotValue
             )
             activity?.startActivityForResult(

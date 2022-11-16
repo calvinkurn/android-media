@@ -28,7 +28,6 @@ import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker.Event.P
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker.Screen.MARKETPLACE
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker.Screen.SCREEN_DIMENSION_IS_FEED_EMPTY
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker.Screen.SCREEN_DIMENSION_IS_LOGGED_IN_STATUS
-import com.tokopedia.feedcomponent.data.feedrevamp.FeedXMedia
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
 import com.tokopedia.kotlin.extensions.view.getDigits
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
@@ -81,7 +80,8 @@ class FeedAnalyticTracker
         private const val SGC_VOD_PLAY_RECOM = "sgc play long video recom"
         private const val SGC_IMAGE_RECOM = "sgc image recom"
         private const val ASGC = "asgc"
-        private const val VIDEO = "sgc video"
+        private const val SGC_VIDEO = "sgc video"
+        private const val VIDEO = "video"
         private const val Upcoming = "upcoming"
         private const val ASGC_RECOM = "asgc recom"
         private const val TOPADS = "topads"
@@ -231,14 +231,14 @@ class FeedAnalyticTracker
             LONG_VIDEO_SGC
         else if(type == TYPE_FEED_X_CARD_POST && !isFollowed && isLongVideo(mediaType))
             LONG_VIDEO_SGC_RECOM
-        else if (isVideo(mediaType))
-            VIDEO
+        else if (type == TYPE_FEED_X_CARD_POST && isVideo(mediaType))
+            SGC_VIDEO
         else if(type!= TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT && !isFollowed)
             SGC_IMAGE_RECOM
         else
             SGC_IMAGE
     }
-    private fun isVideo(mediaType: String):Boolean = mediaType == VIDEO
+    private fun isVideo(mediaType: String):Boolean = mediaType == SGC_VIDEO || mediaType == VIDEO
     private fun isLongVideo(mediaType: String):Boolean = mediaType == TYPE_LONG_VIDEO
 
     //    https://docs.google.com/spreadsheets/d/1yFbEMzRj0_VdeVN7KfZIHZlv71uvX38XjfcYw7nPB3c/edit#gid=1359526861
@@ -2123,7 +2123,7 @@ class FeedAnalyticTracker
                     FORMAT_THREE_PARAM,
                     CLICK,
                     "mute",
-                    getPostType("", isFollowed , mediaType)
+                    getPostType(feedTrackerData.postType, isFollowed, mediaType)
                 ),
                 KEY_EVENT_LABEL to String.format(
                     FORMAT_THREE_PARAM,

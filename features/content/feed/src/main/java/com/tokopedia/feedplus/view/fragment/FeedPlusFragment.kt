@@ -126,7 +126,6 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
 import kotlinx.android.synthetic.main.fragment_feed_plus.*
-import kotlinx.coroutines.*
 import timber.log.Timber
 import java.net.ConnectException
 import java.net.SocketTimeoutException
@@ -275,6 +274,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         private const val SHOP_NAME = "shop_name"
         private const val PARAM_SALE_TYPE = "sale_type"
         private const val PARAM_SALE_STATUS = "sale_status"
+        const val PARAM_CONTENT_SLOT_VALUE = "content_slot_value"
         private const val PARAM_TYPE = "author_type"
         private const val TYPE_LONG_VIDEO: String = "long-video"
 
@@ -3338,6 +3338,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
             intent.putExtra(POST_TYPE, type)
             intent.putExtra(PARAM_SALE_TYPE, feedXCard.campaign.name)
             intent.putExtra(PARAM_SALE_STATUS, feedXCard.campaign.status)
+            intent.putExtra(PARAM_CONTENT_SLOT_VALUE, feedXCard.contentScore.firstOrNull()?.value ?: String.EMPTY)
             requireActivity().startActivity(intent)
         }
     }
