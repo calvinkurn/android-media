@@ -567,12 +567,9 @@ class DtHomeFragment : Fragment() {
         }
     }
 
+    // not done yet - should in p1
     private fun createLegoBannerCallback(): DynamicLegoBannerListener? {
-        return DtDynamicLegoBannerCallback(
-            requireContext(),
-            viewModelDtHome
-//            viewModelTokoNow, userSession, analytics
-        )
+        return DtDynamicLegoBannerCallback(requireContext())
     }
 
     private fun createDtView(): DtView? {
