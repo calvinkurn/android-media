@@ -80,7 +80,7 @@ object VpsWidgetTracking : BaseTrackerConst() {
 
     fun sendVpsItemClick(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int, userId: String) {
         getTracker().sendEnhanceEcommerceEvent(
-            Event.SELECT_CONTENT,
+            Event.PROMO_CLICK,
             getVpsItemClick(channelModel, channelGrid, position, userId)
         )
     }
