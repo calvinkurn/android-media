@@ -1,7 +1,10 @@
 package com.tokopedia.common_epharmacy.network.response
 
+import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import kotlinx.parcelize.Parcelize
 
+@Parcelize
 data class EPharmacyMiniConsultationResult(
     @SerializedName("epharmacy_group_id")
     val epharmacyGroupId: String?,
@@ -19,4 +22,4 @@ data class EPharmacyMiniConsultationResult(
     val tokoConsultationId: String?,
     @SerializedName("prescription_images")
     val prescriptionImages: List<EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.PrescriptionImage?>?
-)
+) : Parcelable
