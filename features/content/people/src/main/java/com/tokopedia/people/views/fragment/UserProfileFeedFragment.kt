@@ -17,8 +17,10 @@ import com.tokopedia.people.ErrorMessage
 import com.tokopedia.people.Loading
 import com.tokopedia.people.R
 import com.tokopedia.people.Success
+import com.tokopedia.people.analytic.UserFeedPostImpressCoordinator
 import com.tokopedia.people.analytic.tracker.UserProfileTracker
 import com.tokopedia.people.databinding.UpFragmentFeedBinding
+import com.tokopedia.people.model.Post
 import com.tokopedia.people.viewmodels.UserProfileViewModel
 import com.tokopedia.people.viewmodels.factory.UserProfileViewModelFactory
 import com.tokopedia.people.views.activity.UserProfileActivity
@@ -34,7 +36,8 @@ import javax.inject.Inject
 
 class UserProfileFeedFragment @Inject constructor(
     private val viewModelFactoryCreator: UserProfileViewModelFactory.Creator,
-    private var userProfileTracker: UserProfileTracker,
+    private val userProfileTracker: UserProfileTracker,
+    private val impressCoordinator: UserFeedPostImpressCoordinator,
 ) : TkpdBaseV4Fragment(), AdapterCallback, UserFeedPostsBaseAdapter.FeedPostsCallback {
 
     private val gridLayoutManager by lazy(LazyThreadSafetyMode.NONE) {
@@ -74,6 +77,11 @@ class UserProfileFeedFragment @Inject constructor(
         setupFeedsPosts()
 
         fetchFeedsPosts()
+    }
+
+    override fun onPause() {
+        super.onPause()
+        impressCoordinator.sendTracker { userProfileTracker.sendAll() }
     }
 
     override fun onDestroyView() {
@@ -175,6 +183,19 @@ class UserProfileFeedFragment @Inject constructor(
         intent.putExtra(KEY_SOURCE, VAL_SOURCE)
         intent.putExtra(KEY_POSITION, position)
         startActivity(intent)
+    }
+
+    override fun onImpressFeedPostData(item: Post, position: Int) {
+        impressCoordinator.initiateDataImpress(item) {
+            userProfileTracker.impressionPost(
+                viewModel.profileUserID,
+                viewModel.isSelfProfile,
+                it.id,
+                it.media.first().coverURL,
+                position,
+                it.media.first().type
+            )
+        }
     }
 
     private fun emptyPostSelf() {

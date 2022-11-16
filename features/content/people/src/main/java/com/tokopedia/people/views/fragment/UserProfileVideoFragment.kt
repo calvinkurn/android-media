@@ -19,8 +19,10 @@ import com.tokopedia.people.ErrorMessage
 import com.tokopedia.people.Loading
 import com.tokopedia.people.R
 import com.tokopedia.people.Success
+import com.tokopedia.people.analytic.UserVideoPostImpressCoordinator
 import com.tokopedia.people.analytic.tracker.UserProfileTracker
 import com.tokopedia.people.databinding.UpFragmentVideoBinding
+import com.tokopedia.people.model.PlayPostContentItem
 import com.tokopedia.people.utils.showErrorToast
 import com.tokopedia.people.utils.showToast
 import com.tokopedia.people.viewmodels.UserProfileViewModel
@@ -48,7 +50,8 @@ import com.tokopedia.unifyprinciples.R as unifyR
 class UserProfileVideoFragment @Inject constructor(
     private val viewModelFactoryCreator: UserProfileViewModelFactory.Creator,
     private val userSession: UserSessionInterface,
-    private var userProfileTracker: UserProfileTracker,
+    private val userProfileTracker: UserProfileTracker,
+    private val impressCoordinator: UserVideoPostImpressCoordinator,
 ) : TkpdBaseV4Fragment(), AdapterCallback, UserPostBaseAdapter.PlayWidgetCallback {
 
     private val gridLayoutManager by lazy(LazyThreadSafetyMode.NONE) {
@@ -89,6 +92,11 @@ class UserProfileVideoFragment @Inject constructor(
         setupPlayVideo()
 
         fetchPlayVideo(viewModel.profileUserID)
+    }
+
+    override fun onPause() {
+        super.onPause()
+        impressCoordinator.sendTracker { userProfileTracker.sendAll() }
     }
 
     override fun onDestroyView() {
@@ -281,6 +289,19 @@ class UserProfileVideoFragment @Inject constructor(
         )
         val intent = RouteManager.getIntent(context, appLink)
         startActivityForResult(intent, REQUEST_CODE_PLAY_ROOM)
+    }
+
+    override fun onImpressPlayWidgetData(item: PlayPostContentItem, isLive: Boolean, channelId: String, pos: Int) {
+        impressCoordinator.initiateDataImpress(item) {
+            userProfileTracker.impressionVideo(
+                viewModel.profileUserID,
+                viewModel.isSelfProfile,
+                isLive,
+                channelId,
+                it.coverUrl,
+                pos,
+            )
+        }
     }
 
     companion object {

@@ -28,6 +28,12 @@ open class UserPostBaseAdapter(
             view.findViewById(R.id.play_widget_large_view)
 
         override fun bindView(item: PlayPostContentItem, position: Int) {
+
+            playWidgetCallback.onImpressPlayWidgetData(item,
+                item.isLive,
+                item.id,
+                position
+            )
             setData(this, item)
         }
     }
@@ -141,5 +147,6 @@ open class UserPostBaseAdapter(
         fun updatePostReminderStatus(channelId: String, isActive: Boolean, pos: Int)
         fun updatePlayWidgetLatestData(channelId: String, totalView: String, isReminderSet: Boolean)
         fun onPlayWidgetLargeClick(appLink: String, channelID: String, isLive: Boolean, imageUrl: String, pos: Int)
+        fun onImpressPlayWidgetData(item: PlayPostContentItem, isLive: Boolean, channelId: String, pos: Int)
     }
 }

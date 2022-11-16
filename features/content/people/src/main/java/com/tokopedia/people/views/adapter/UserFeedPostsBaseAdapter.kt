@@ -27,6 +27,7 @@ class UserFeedPostsBaseAdapter(
             if (item == null || item.media.isEmpty()) return
             val firstItem = item.media.first()
 
+            feedPostsWidgetCallback.onImpressFeedPostData(item, position)
             view.imageContent.apply {
                 cornerRadius = 0
                 setImageUrl(item.media.first().coverURL)
@@ -89,6 +90,7 @@ class UserFeedPostsBaseAdapter(
 
     interface FeedPostsCallback {
         fun onFeedPostsClick(appLink: String, itemID: String, imageUrl: String, position: Int, mediaType: String)
+        fun onImpressFeedPostData(item: Post, position: Int)
     }
 
     companion object {
