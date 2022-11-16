@@ -8,6 +8,7 @@
     android:paddingHorizontal="16dp">
 
     <com.tokopedia.unifycomponents.ticker.Ticker
+        android:id="@+id/ticker_sse_error_product_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="8dp"

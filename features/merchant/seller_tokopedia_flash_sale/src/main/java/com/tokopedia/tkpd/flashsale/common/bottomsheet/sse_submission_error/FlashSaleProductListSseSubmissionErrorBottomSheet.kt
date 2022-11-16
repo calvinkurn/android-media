@@ -30,7 +30,6 @@ class FlashSaleProductListSseSubmissionErrorBottomSheet :
     private val productSseErrorSubmissionAdapter by lazy {
         CompositeAdapter.Builder()
             .add(FlashSaleProductListSseSubmissionErrorItemDelegate())
-//            .add(ShimmeringDelegate())
             .add(LoadingDelegateAdapter())
             .build()
     }
@@ -91,7 +90,12 @@ class FlashSaleProductListSseSubmissionErrorBottomSheet :
         isFullpage = true
         setChild(binding?.root)
         setTitle(getString(R.string.stfs_bottomsheet_error_product_submission_sse_list_title))
+        setTickerDescription()
         setupRecyclerView()
+    }
+
+    private fun setTickerDescription() {
+        binding?.tickerSseErrorProductList?.setTextDescription(getString(R.string.stfs_bottomsheet_error_product_submission_sse_list_ticker_description))
     }
 
     private fun getInitialProductListSseSubmissionError() {
