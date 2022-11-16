@@ -124,12 +124,9 @@ class GraphqlRepositoryImpl @Inject constructor(
                 LoggingUtils.logGqlSuccessRate(operationName, "0")
                 LoggingUtils.logGqlParseError(
                     "json",
-                    Log.getStackTraceString(jse),
-                    requests.toString(),
-                    jsonElement.toString(),
-                    Gson().toJson(requests.map {
-                        it.variables
-                    }),
+                    "${jse.message.orEmpty()} at ${jse.stackTrace.firstOrNull()?.toString().orEmpty()}",
+                    requests,
+                    jsonElement.toString()
                 )
                 jse.printStackTrace()
             } catch (e: Exception) {
@@ -192,14 +189,14 @@ class GraphqlRepositoryImpl @Inject constructor(
             }
         } catch (jse: JsonSyntaxException) {
             LoggingUtils.logGqlSuccessRate(operationName, "0")
+            val listCacheResponse = requests.map {
+                graphqlCloudDataStore.cacheManager.get(it.cacheKey())
+            }
             LoggingUtils.logGqlParseError(
                 "json",
-                Log.getStackTraceString(jse),
-                requests.toString(),
-                "",
-                Gson().toJson(requests.map {
-                    it.variables
-                })
+                "${jse.message.orEmpty()} at ${jse.stackTrace.firstOrNull()?.toString().orEmpty()}",
+                requests,
+                listCacheResponse.toString()
             )
             jse.printStackTrace()
         } catch (e: Exception) {

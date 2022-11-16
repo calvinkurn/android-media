@@ -107,16 +107,15 @@ public class GraphqlRepositoryImpl implements GraphqlRepository {
                     } catch (JsonSyntaxException jse) {
                         LoggingUtils.logGqlSuccessRate(operationName, "0");
                         jse.printStackTrace();
-                        ArrayList<Map<String, Object>> listRequestVariables = new ArrayList<>();
-                        for (int j = 0; j < requests.size(); j++) {
-                            listRequestVariables.add(requests.get(j).getVariables());
+                        String firstStackTrace = "";
+                        if(jse.getStackTrace().length > 0) {
+                            firstStackTrace = jse.getStackTrace()[0].toString();
                         }
                         LoggingUtils.logGqlParseError(
                                 "json",
-                                Log.getStackTraceString(jse),
-                                String.valueOf(requests),
-                                response.getOriginalResponse().toString(),
-                                new Gson().toJson(listRequestVariables)
+                                jse.getMessage()+ "at"+ firstStackTrace,
+                                requests,
+                                response.getOriginalResponse().toString()
                         );
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -175,16 +174,21 @@ public class GraphqlRepositoryImpl implements GraphqlRepository {
             }
         } catch (JsonSyntaxException jse) {
             LoggingUtils.logGqlSuccessRate(operationName, "0");
-            ArrayList<Map<String, Object>> listRequestVariables = new ArrayList<>();
-            for (int j = 0; j < requests.size(); j++) {
-                listRequestVariables.add(requests.get(j).getVariables());
+            String firstStackTrace = "";
+            ArrayList<String> listCacheResponse = new ArrayList<>();
+            for (int i = 0; i < requests.size(); i++) {
+                String cacheResponse = mGraphqlCloudDataStore.getCacheManager()
+                        .get(requests.get(i).cacheKey());
+                listCacheResponse.add(cacheResponse);
+            }
+            if(jse.getStackTrace().length > 0) {
+                firstStackTrace = jse.getStackTrace()[0].toString();
             }
             LoggingUtils.logGqlParseError(
                     "json",
-                    Log.getStackTraceString(jse),
-                    String.valueOf(requests),
-                    "",
-                    new Gson().toJson(listRequestVariables)
+                    jse.getMessage() + "at" + firstStackTrace,
+                    requests,
+                    listCacheResponse.toString()
             );
         } catch (Exception e) {
             e.printStackTrace();

@@ -2,10 +2,12 @@ package com.tokopedia.graphql.util
 
 import android.util.Log
 import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.graphql.util.Const.GQL_LONG_RESPONSE_LOG_MAX_LENGTH
+import com.tokopedia.graphql.util.Const.GQL_REQUEST_LOG_MAX_LENGTH
+import com.tokopedia.graphql.util.Const.GQL_SHORTENED_ERROR_LOG_MAX_LENGTH
 import com.tokopedia.logger.ServerLogger
-import com.tokopedia.logger.utils.Constants.Companion.MAX_LENGTH_PER_ITEM
+import com.tokopedia.logger.utils.Constants
 import com.tokopedia.logger.utils.Priority
-import kotlin.math.min
 
 object LoggingUtils {
     const val DEFAULT_RESP_SIZE_THRES = 10000L
@@ -44,19 +46,22 @@ object LoggingUtils {
     }
 
     @JvmStatic
-    fun logGqlParseError(type: String, err: String, request: String, response: String, params: String) {
-        val splitResponse = response.chunked(MAX_LENGTH_PER_ITEM)
+    fun logGqlParseError(type: String, err: String, request: List<GraphqlRequest>, response: String) {
+        val regex = ".*(?=\\)).+\\n.*".toRegex()
+        val listStringRequest = request.map {
+            regex.find(it.query)?.value.orEmpty() to it.variables.toString()
+        }
         ServerLogger.log(
             Priority.P1, "GQL_PARSE_ERROR",
             mapOf(
                 "type" to type,
-                "err" to err.take(Const.GQL_ERROR_MAX_LENGTH).trim(),
-                "req" to request.take(Const.GQL_ERROR_MAX_LENGTH).trim(),
-                "params" to params
+                "err" to err.take(GQL_SHORTENED_ERROR_LOG_MAX_LENGTH).trim(),
+                "req" to listStringRequest.toString().take(GQL_REQUEST_LOG_MAX_LENGTH).trim(),
             ).toMutableMap().apply {
-                splitResponse.forEachIndexed { i, response ->
-                    put("response_$i", response)
-                }
+                response.take(GQL_LONG_RESPONSE_LOG_MAX_LENGTH).chunked(Constants.MAX_LENGTH_PER_ITEM)
+                    .forEachIndexed { index, chunk ->
+                        put("response_${index + 1}", chunk)
+                    }
             }
         )
     }

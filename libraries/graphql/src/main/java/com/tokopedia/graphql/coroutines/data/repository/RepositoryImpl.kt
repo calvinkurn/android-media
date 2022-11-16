@@ -101,12 +101,9 @@ open class RepositoryImpl @Inject constructor(private val graphqlCloudDataStore:
                 LoggingUtils.logGqlSuccessRate(operationName, "0")
                 LoggingUtils.logGqlParseError(
                     "json",
-                    Log.getStackTraceString(jse),
-                    requests.toString(),
-                    jsonElement.toString(),
-                    Gson().toJson(requests.map {
-                        it.variables
-                    })
+                    "${jse.message.orEmpty()} at ${jse.stackTrace.firstOrNull()?.toString().orEmpty()}",
+                    requests,
+                    jsonElement.toString()
                 )
                 jse.printStackTrace()
             } catch (e: Exception) {
@@ -168,15 +165,16 @@ open class RepositoryImpl @Inject constructor(private val graphqlCloudDataStore:
             }
         } catch (jse: JsonSyntaxException) {
             LoggingUtils.logGqlSuccessRate(operationName, "0")
+            val listCacheResponse = requests.map {
+                graphqlCloudDataStore.cacheManager.get(it.cacheKey())
+            }
             LoggingUtils.logGqlParseError(
                 "json",
-                Log.getStackTraceString(jse),
-                requests.toString(),
-                "",
-                Gson().toJson(requests.map {
-                    it.variables
-                })
+                "${jse.message.orEmpty()} at ${jse.stackTrace.firstOrNull()?.toString().orEmpty()}",
+                requests,
+                listCacheResponse.toString()
             )
+            jse.printStackTrace()
             jse.printStackTrace()
         } catch (e: Exception) {
             e.printStackTrace()

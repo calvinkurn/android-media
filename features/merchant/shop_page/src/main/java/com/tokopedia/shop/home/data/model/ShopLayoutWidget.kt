@@ -54,7 +54,7 @@ data class ShopLayoutWidget(
                 @SerializedName("cover")
                 val cover: String = "",
                 @SerializedName("ratio")
-                val ratio: Int = 0,
+                val ratio: String = "",
                 @SerializedName("isATC")
                 val isAtc: Int = 0,
                 @SerializedName("etalaseID")
@@ -205,7 +205,7 @@ data class ShopLayoutWidget(
                     @SerializedName("bannerType")
                     val bannerType: String = "",
                     @SerializedName("device")
-                    val device: Int = 0
+                    val device: String = ""
             )
 
             data class BackgroundGradientColor(
