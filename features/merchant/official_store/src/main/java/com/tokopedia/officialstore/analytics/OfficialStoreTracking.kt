@@ -157,7 +157,7 @@ class OfficialStoreTracking(context: Context) : BaseTrackerConst() {
             putString(TrackerId.KEY, VALUE_TRACKER_ID_CLICK_CATEGORY)
             putParcelableArrayList(Promotion.KEY, promotions)
         }
-        getTracker().sendEnhanceEcommerceEvent(PROMO_CLICK, bundle)
+        getTracker().sendEnhanceEcommerceEvent(SELECT_CONTENT, bundle)
     }
 
     // Row 2
@@ -214,7 +214,7 @@ class OfficialStoreTracking(context: Context) : BaseTrackerConst() {
             putString(TrackerId.KEY, VALUE_TRACKER_ID_CLICK_BANNER)
             putParcelableArrayList(Promotion.KEY, promotions)
         }
-        getTracker().sendEnhanceEcommerceEvent(PROMO_CLICK, bundle)
+        getTracker().sendEnhanceEcommerceEvent(SELECT_CONTENT, bundle)
     }
 
     // Row 4
@@ -324,7 +324,7 @@ class OfficialStoreTracking(context: Context) : BaseTrackerConst() {
             putString(TrackerId.KEY, VALUE_TRACKER_ID_CLICK_FEATURED_BRAND)
             putParcelableArrayList(Promotion.KEY, promotions)
         }
-        getTracker().sendEnhanceEcommerceEvent(PROMO_CLICK, bundle)
+        getTracker().sendEnhanceEcommerceEvent(SELECT_CONTENT, bundle)
     }
 
     // Row 8
@@ -485,7 +485,7 @@ class OfficialStoreTracking(context: Context) : BaseTrackerConst() {
             putString(TrackerId.KEY, VALUE_TRACKER_ID_CLICK_LEGO)
             putParcelableArrayList(Promotion.KEY, promotions)
         }
-        getTracker().sendEnhanceEcommerceEvent(PROMO_CLICK, bundle)
+        getTracker().sendEnhanceEcommerceEvent(SELECT_CONTENT, bundle)
     }
 
     // Row 13
@@ -698,7 +698,7 @@ class OfficialStoreTracking(context: Context) : BaseTrackerConst() {
             putString(TrackerId.KEY, VALUE_TRACKER_ID_CLICK_MIX_LEFT_BANNER)
             putParcelableArrayList(Promotion.KEY, promotions)
         }
-        getTracker().sendEnhanceEcommerceEvent(PROMO_CLICK, bundle)
+        getTracker().sendEnhanceEcommerceEvent(SELECT_CONTENT, bundle)
     }
 
     // Row 28
