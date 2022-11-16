@@ -107,11 +107,6 @@ class ProductDetailInfoBottomSheet : BottomSheetUnify(), ProductDetailInfoListen
         setupViewModel()
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-//        observeData()
-    }
-
     private fun setupViewModel() {
         /**
          * fix crash when open bottom sheet in case of don't keep activity from developer setting
