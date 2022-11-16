@@ -5,6 +5,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
+import android.widget.CompoundButton
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -166,11 +167,13 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
     }
 
     private fun setupCheckbox() {
-        binding?.checkbox?.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) {
-                viewModel.processEvent(AddProductEvent.EnableSelectAllCheckbox)
-            } else {
-                viewModel.processEvent(AddProductEvent.DisableSelectAllCheckbox)
+        binding?.checkbox?.setOnCheckedChangeListener { view, isChecked ->
+            if (view.isClickTriggeredByUserInteraction()) {
+                if (isChecked) {
+                    viewModel.processEvent(AddProductEvent.EnableSelectAllCheckbox)
+                } else {
+                    viewModel.processEvent(AddProductEvent.DisableSelectAllCheckbox)
+                }
             }
         }
     }
@@ -314,6 +317,8 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
     }
 
     private fun renderSelectAllCheckbox(uiState: AddProductUiState) {
+        binding?.checkbox?.isChecked = uiState.isSelectAllActive
+
         val checkboxWording = if (uiState.selectedProductsIds.isEmpty()) {
             getString(R.string.smvc_select_all)
         } else {
@@ -715,5 +720,9 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
             viewModel.processEvent(AddProductEvent.VariantUpdated(selectedParentProduct.id, selectedVariantIds))
         }
         bottomSheet.show(childFragmentManager, bottomSheet.tag)
+    }
+
+    private fun CompoundButton.isClickTriggeredByUserInteraction() : Boolean {
+        return isPressed
     }
 }

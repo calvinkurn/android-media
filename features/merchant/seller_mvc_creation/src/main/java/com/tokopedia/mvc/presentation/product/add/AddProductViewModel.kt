@@ -238,13 +238,25 @@ class AddProductViewModel @Inject constructor(
     }
 
     private fun handleCheckAllProduct() = launch(dispatchers.computation) {
+        val isOnSearchMode = currentState.searchKeyword.isNotEmpty()
+        val currentlyDisplayedProductIds = currentState.products.map { it.id }
+
         val maxProductSelection = currentState.voucherCreationMetadata?.maxProduct.orZero()
         val selectedProducts = currentState.products.mapIndexed { index, product ->
             if (index < maxProductSelection && product.isEligible) {
+
+                //If is on search product mode. Only product from search result should be selected
+                val isProductDisplayedOnSearchResult = product.id in currentlyDisplayedProductIds
+                val isSelected = if (isOnSearchMode) {
+                    isProductDisplayedOnSearchResult
+                } else {
+                    true
+                }
+
                 val eligibleVariantsOnly = product.originalVariants.filter { it.isEligible }.map { it.variantProductId }.toSet()
-                product.copy(isSelected = true, enableCheckbox = true, selectedVariantsIds = eligibleVariantsOnly)
+                product.copy(isSelected = isSelected, enableCheckbox = true, selectedVariantsIds = eligibleVariantsOnly)
             } else {
-                product.copy(isSelected = false, enableCheckbox = false)
+                product
             }
         }
 
@@ -357,6 +369,7 @@ class AddProductViewModel @Inject constructor(
                 isLoading = true,
                 searchKeyword = "",
                 page = NumberConstant.FIRST_PAGE,
+                isSelectAllActive = false,
                 products = emptyList()
             )
         }
