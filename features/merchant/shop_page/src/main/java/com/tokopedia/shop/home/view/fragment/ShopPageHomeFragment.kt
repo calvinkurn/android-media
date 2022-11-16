@@ -1454,8 +1454,9 @@ open class ShopPageHomeFragment : BaseListFragment<Visitable<*>, AdapterTypeFact
         if (listWidgetLayoutToLoad.isNotEmpty()) {
             val widgetUserAddressLocalData = ShopUtil.getShopPageWidgetUserAddressLocalData(context)
                 ?: LocalCacheModel()
+            val widgetsToLoad = viewModel?.excludeProductBundleWidget(listWidgetLayoutToLoad)?: listOf()
             viewModel?.getWidgetContentData(
-                listWidgetLayoutToLoad.toList(),
+                widgetsToLoad,
                 shopId,
                 widgetUserAddressLocalData,
                 isThematicWidgetShown,

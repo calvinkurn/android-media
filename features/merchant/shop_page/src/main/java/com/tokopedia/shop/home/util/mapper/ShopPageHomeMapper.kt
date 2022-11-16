@@ -2,8 +2,12 @@ package com.tokopedia.shop.home.util.mapper
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.productbundlewidget.model.BundleDetailUiModel
+import com.tokopedia.productbundlewidget.model.BundleProductUiModel
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.shop.common.data.model.HomeLayoutData
+import com.tokopedia.shop.common.data.model.ShopPageHeaderDataUiModel
+import com.tokopedia.shop.common.data.model.ShopPageHeaderUiModel
 import com.tokopedia.shop.common.data.source.cloud.model.LabelGroup
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeBundleProductUiModel
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeProductBundleDetailUiModel
@@ -980,7 +984,15 @@ object ShopPageHomeMapper {
                     it.widgetId,
                     it.widgetMasterId,
                     it.widgetType,
-                    it.widgetName
+                    it.widgetName,
+                    ShopPageHeaderUiModel(
+                        data = it.header.data.map {
+                            ShopPageHeaderDataUiModel(
+                                linkType = it.linkType,
+                                linkID = it.linkID
+                            )
+                        }
+                    )
                 )
             }
         )
@@ -1001,6 +1013,9 @@ object ShopPageHomeMapper {
                                 widgetID = it.widgetId,
                                 type = it.widgetType,
                                 name = it.widgetName,
+                                data = it.header.data.map { headerDataUiModel ->
+                                    ShopLayoutWidget.Widget.Data(bundleGroupId = headerDataUiModel.linkID.toString())
+                                }
                         ), myShop, isLoggedIn, isThematicWidgetShown, isEnableDirectPurchase, shopId
                 )?.let{ resModel ->
                     when (resModel) {
@@ -1027,5 +1042,31 @@ object ShopPageHomeMapper {
         shopProductResponse.maximumOrder.takeIf { !it.isZero() } ?:
         shopProductResponse.campaign.customStock.toIntOrZero().takeIf { !it.isZero() } ?:
         shopProductResponse.stock
+    }
+
+    fun mapToShopHomeProductBundleDetailUiModel(bundleDetailUiModel: BundleDetailUiModel): ShopHomeProductBundleDetailUiModel {
+        return ShopHomeProductBundleDetailUiModel(
+            bundleId = bundleDetailUiModel.bundleId,
+            originalPrice = bundleDetailUiModel.originalPrice,
+            displayPrice = bundleDetailUiModel.displayPrice,
+            displayPriceRaw = bundleDetailUiModel.displayPriceRaw,
+            discountPercentage = bundleDetailUiModel.discountPercentage,
+            isPreOrder = bundleDetailUiModel.isPreOrder,
+            isProductsHaveVariant = bundleDetailUiModel.products.firstOrNull()?.hasVariant ?: false,
+            preOrderInfo = bundleDetailUiModel.preOrderInfo,
+            savingAmountWording = bundleDetailUiModel.savingAmountWording,
+            minOrder = bundleDetailUiModel.minOrder,
+            minOrderWording = bundleDetailUiModel.minOrderWording,
+            isSelected = bundleDetailUiModel.isSelected
+        )
+    }
+
+    fun mapToShopHomeBundleProductUiModel(bundleProductUiModel: BundleProductUiModel): ShopHomeBundleProductUiModel {
+        return ShopHomeBundleProductUiModel(
+            productId = bundleProductUiModel.productId,
+            productName = bundleProductUiModel.productName,
+            productImageUrl = bundleProductUiModel.productImageUrl,
+            productAppLink = bundleProductUiModel.productAppLink
+        )
     }
 }
