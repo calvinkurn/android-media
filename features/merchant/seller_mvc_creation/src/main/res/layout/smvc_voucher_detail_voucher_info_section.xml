@@ -75,7 +75,7 @@
             app:typographyWeight="reguler" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tpg_voucher_type"
+            android:id="@+id/tpg_voucher_name"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="50"

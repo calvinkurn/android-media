@@ -34,4 +34,9 @@
     <string name="smvc_produk_terdaftar_label">Produk Terdaftar</string>
     <string name="smvc_lihat_produk_label">Lihat Produk</string>
     <string name="smvc_placeholder_stopped_date">Dihentikan pada %s</string>
+    <string name="smvc_placeholder_voucher_quota">/%d</string>
+    <string name="smvc_voucher_product_label">Kupon Produk</string>
+    <string name="smvc_voucher_store_label">Kupon Toko</string>
+    <string name="smvc_voucher_public_label">Publik</string>
+    <string name="smvc_voucher_private_label">Khusus</string>
 </resources>

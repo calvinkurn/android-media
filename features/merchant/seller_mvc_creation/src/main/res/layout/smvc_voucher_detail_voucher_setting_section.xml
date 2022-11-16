@@ -41,7 +41,7 @@
             app:typographyWeight="reguler" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tpg_tipe_promo"
+            android:id="@+id/tpg_promo_type"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="50"
@@ -109,7 +109,7 @@
             app:typographyWeight="reguler" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tpg_nominal_code"
+            android:id="@+id/tpg_voucher_nominal"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="50"
@@ -143,7 +143,7 @@
             app:typographyWeight="reguler" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tpg_voucher_max_price_deduction_period"
+            android:id="@+id/tpg_voucher_max_price_deduction"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="50"

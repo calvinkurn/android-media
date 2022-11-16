@@ -30,8 +30,8 @@ class MerchantPromotionGetMVDataByIDUseCase @Inject constructor(
     private val query = object : GqlQueryInterface {
         private val OPERATION_NAME = "merchantPromotionGetMVDataByID"
         private val QUERY = """
-              query{
-                $OPERATION_NAME(${'$'}voucher_id: Int, ${'$'}source: String){
+              query $OPERATION_NAME(${'$'}voucher_id: Int!, ${'$'}source: String!){
+                $OPERATION_NAME(voucher_id: ${'$'}voucher_id, source: ${'$'}source){
                     header  {
                       process_time
                       message
@@ -69,7 +69,6 @@ class MerchantPromotionGetMVDataByIDUseCase @Inject constructor(
                       voucher_discount_amt_formatted
                       voucher_discount_amt_max_formatted
                       remaning_quota
-                      voucher_minimum_amt_formatted
                       tnc
                       booked_global_quota
                       confirmed_global_quota

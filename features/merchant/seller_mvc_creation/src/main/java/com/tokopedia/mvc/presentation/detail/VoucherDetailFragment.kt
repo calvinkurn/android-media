@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.mvc.R
-import androidx.lifecycle.observe
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
@@ -20,11 +19,20 @@ import com.tokopedia.mvc.databinding.SmvcVoucherDetailVoucherInfoSectionBinding
 import com.tokopedia.mvc.databinding.SmvcVoucherDetailVoucherSettingSectionBinding
 import com.tokopedia.mvc.databinding.SmvcVoucherDetailVoucherTypeSectionBinding
 import com.tokopedia.mvc.domain.entity.VoucherDetailData
+import com.tokopedia.mvc.util.constant.DiscountTypeConstant
+import com.tokopedia.mvc.util.constant.PromoTypeConstant
+import com.tokopedia.mvc.util.constant.TargetBuyerConstant
+import com.tokopedia.mvc.util.constant.VoucherTargetConstant.VOUCHER_TARGET_PUBLIC
+import com.tokopedia.mvc.util.constant.VoucherTypeConstant
+import com.tokopedia.mvc.util.constant.VoucherTypeConstant.VOUCHER_PRODUCT
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
+import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.utils.date.toDate
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import java.util.Date
+import java.text.SimpleDateFormat
+import java.util.*
 import javax.inject.Inject
 
 class VoucherDetailFragment : BaseDaggerFragment() {
@@ -76,7 +84,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         observeData()
-        getVoucherDetailData(14715615)
+        getVoucherDetailData(14883692)
     }
 
     private fun observeData() {
@@ -94,21 +102,38 @@ class VoucherDetailFragment : BaseDaggerFragment() {
 
     private fun setupView(data: VoucherDetailData) {
         binding?.run {
-            layoutHeader.inflate()
-            layoutVoucherType.inflate()
-            layoutVoucherInfo.inflate()
-            layoutVoucherSetting.inflate()
-            layoutProductList.inflate()
+            layoutHeader.setOnInflateListener { _, view ->
+                headerBinding = SmvcVoucherDetailHeaderSectionBinding.bind(view)
+            }
+            layoutVoucherType.setOnInflateListener { _, view ->
+                voucherTypeBinding = SmvcVoucherDetailVoucherTypeSectionBinding.bind(view)
+            }
+            layoutVoucherInfo.setOnInflateListener { _, view ->
+                voucherInfoBinding = SmvcVoucherDetailVoucherInfoSectionBinding.bind(view)
+            }
+            layoutVoucherSetting.setOnInflateListener { _, view ->
+                voucherSettingBinding = SmvcVoucherDetailVoucherSettingSectionBinding.bind(view)
+            }
+            layoutProductList.setOnInflateListener { _, view ->
+                voucherProductBinding = SmvcVoucherDetailProductSectionBinding.bind(view)
+            }
         }
         setupHeaderSection(data)
+        setupVoucherTypeSection(data)
+        setupVoucherInfoSection(data)
+        setupVoucherSettingSection(data)
     }
 
     private fun setupHeaderSection(data: VoucherDetailData) {
         binding?.run {
             header.headerTitle = data.voucherName
+            if (layoutHeader.parent != null) {
+                layoutHeader.inflate()
+            }
         }
         headerBinding?.run {
             setupVoucherStatus(data)
+            setupVoucherAction(data)
             imgVoucher.setImageUrl(data.voucherImage)
             when (data.isVps) {
                 0 -> {
@@ -126,9 +151,12 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                     }
                 }
             }
-            val availableQuota = data.apply { voucherQuota - remainingQuota }
+            val availableQuota = data.voucherQuota - data.remainingQuota
             tpgUsedVoucherQuota.text = availableQuota.toString()
-            tpgAvailableVoucherQuota.text = data.remainingQuota.toString()
+            tpgAvailableVoucherQuota.text = getString(
+                R.string.smvc_placeholder_voucher_quota,
+                data.remainingQuota
+            )
         }
     }
 
@@ -169,7 +197,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                     btnUbahKupon.invisible()
                     timer.visible()
                     tpgPeriodStop.invisible()
-                    startTimer(Date(data.voucherFinishTime))
+                    startTimer(data.voucherFinishTime.toDate(DateConstant.DATE_WITH_SECOND_PRECISION_ISO_8601))
                 }
                 3 -> {
                     btnUbahKupon.invisible()
@@ -177,7 +205,8 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                     tpgPeriodStop.invisible()
                 }
                 else -> {
-                    val stoppedDate = Date(data.updateTime)
+                    val format = SimpleDateFormat(DateConstant.DATE_WITH_SECOND_PRECISION_ISO_8601, Locale.getDefault())
+                    val stoppedDate = format.parse(data.updateTime)
                     btnUbahKupon.invisible()
                     timer.invisible()
                     tpgPeriodStop.apply {
@@ -195,8 +224,154 @@ class VoucherDetailFragment : BaseDaggerFragment() {
     private fun startTimer(endDate: Date) {
         headerBinding?.run {
             timer.timerFormat = TimerUnifySingle.FORMAT_AUTO
-            timer.timerVariant = TimerUnifySingle.VARIANT_GENERAL
+            timer.timerVariant = TimerUnifySingle.VARIANT_INFORMATIVE
             timer.targetDate = endDate.toCalendar()
+        }
+    }
+
+    private fun setupVoucherTypeSection(data: VoucherDetailData) {
+        binding?.run {
+            if (layoutVoucherType.parent != null) {
+                layoutVoucherType.inflate()
+            }
+        }
+        voucherTypeBinding?.run {
+            tpgVoucherType.text = when (data.voucherType) {
+                VOUCHER_PRODUCT -> getString(R.string.smvc_voucher_product_label)
+                else -> getString(R.string.smvc_voucher_store_label)
+            }
+        }
+    }
+
+    private fun setupVoucherInfoSection(data: VoucherDetailData) {
+        binding?.run {
+            if (layoutVoucherInfo.parent != null) {
+                layoutVoucherInfo.inflate()
+            }
+        }
+        voucherInfoBinding?.run {
+            tpgVoucherTarget.text = if (data.isPublic == VOUCHER_TARGET_PUBLIC) {
+                getString(R.string.smvc_voucher_public_label)
+            } else {
+                getString(R.string.smvc_voucher_private_label)
+            }
+            tpgVoucherName.text = data.voucherName
+            tpgVoucherCode.text = data.voucherCode
+            val format = SimpleDateFormat(DateConstant.DATE_WITH_SECOND_PRECISION_ISO_8601, Locale.getDefault())
+            val startPeriodDate = format.parse(data.voucherStartTime)
+            val endPeriodDate = format.parse(data.voucherFinishTime)
+            if (startPeriodDate != null) {
+                tpgVoucherStartPeriod.text = startPeriodDate.formatTo(DateConstant.DATE_YEAR_WITH_TIME)
+            }
+            if (endPeriodDate != null) {
+                tpgVoucherEndPeriod.text = endPeriodDate.formatTo(DateConstant.DATE_YEAR_WITH_TIME)
+            }
+        }
+    }
+
+    private fun setupVoucherSettingSection(data: VoucherDetailData) {
+        binding?.run {
+            if (layoutVoucherSetting.parent != null) {
+                layoutVoucherSetting.inflate()
+            }
+        }
+
+        voucherSettingBinding?.run {
+            tpgPromoType.setPromoType(data.voucherType)
+            setDeductionType(data)
+            setDeductionAmount(data)
+            setMaxPriceDeduction(data)
+            tpgVoucherQuota.text = data.voucherQuota.toString()
+            tpgVoucherTargetBuyer.setTargetBuyer(data)
+        }
+    }
+
+    private fun Typography.setPromoType(voucherType: Int) {
+        this.text = when(voucherType){
+            PromoTypeConstant.SHIPPING -> "Gratis Ongkir"
+            PromoTypeConstant.DISCOUNT -> "Diskon"
+            else -> "Cashback"
+        }
+    }
+
+    private fun setDeductionType(data: VoucherDetailData) {
+        voucherSettingBinding?.run {
+            llDeductionType.visibility = when(data.voucherType) {
+                PromoTypeConstant.SHIPPING -> View.GONE
+                else -> View.VISIBLE
+            }
+            tpgDeductionType.text = when(data.voucherDiscountType) {
+                DiscountTypeConstant.NOMINAL -> "Nominal"
+                else -> "Persentase"
+            }
+        }
+    }
+
+    private fun setDeductionAmount(data: VoucherDetailData) {
+        voucherSettingBinding?.run {
+            when(data.voucherType) {
+                PromoTypeConstant.SHIPPING -> {
+                    tpgVoucherNominalLabel.text = "Nominal Gratis Ongkir"
+                    tpgVoucherNominal.text = data.voucherDiscountAmount.getCurrencyFormatted()
+                }
+                PromoTypeConstant.CASHBACK -> {
+                    when (data.voucherDiscountType) {
+                        DiscountTypeConstant.NOMINAL ->{
+                            tpgVoucherNominalLabel.text ="Nominal Cashback"
+                            tpgVoucherNominal.text = data.voucherDiscountAmount.getCurrencyFormatted()
+                        }
+                        else -> {
+                            tpgVoucherNominalLabel.text ="Persentase Cashback"
+                            tpgVoucherNominal.text = data.voucherDiscountAmount.getPercentFormatted()
+                        }
+                    }
+                }
+                else -> {
+                    when (data.voucherDiscountType) {
+                        DiscountTypeConstant.NOMINAL ->{
+                            tpgVoucherNominalLabel.text ="Nominal Diskon"
+                            tpgVoucherNominal.text = data.voucherDiscountAmount.getCurrencyFormatted()
+                        }
+                        else -> {
+                            tpgVoucherNominalLabel.text ="Persentase Diskon"
+                            tpgVoucherNominal.text = data.voucherDiscountAmount.getPercentFormatted()
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private fun setMaxPriceDeduction(data: VoucherDetailData) {
+        voucherSettingBinding?.run {
+            when(data.voucherType) {
+                PromoTypeConstant.SHIPPING -> {
+                    llVoucherMaxPriceDeduction.gone()
+                } else -> {
+                    when(data.voucherDiscountType){
+                        DiscountTypeConstant.PERCENTAGE -> {
+                            llVoucherMaxPriceDeduction.visible()
+                            tpgVoucherMaxPriceDeduction.text = data.voucherDiscountAmountMax.getCurrencyFormatted()
+                        }
+                        else -> {
+                            llVoucherMaxPriceDeduction.gone()
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private fun Typography.setMinimumBuy(data: VoucherDetailData) {
+        this.text = data.voucherDiscountAmountMaxFormatted
+    }
+
+    private fun Typography.setTargetBuyer(data: VoucherDetailData) {
+        this.text = when(data.targetBuyer) {
+            TargetBuyerConstant.ALL_USER -> "Semua Pembeli"
+            TargetBuyerConstant.NEW_FOLLOWER -> "Pengikut Baru"
+            TargetBuyerConstant.NEW_USER -> "Pengguna Baru"
+            else -> "Member"
         }
     }
 

@@ -31,7 +31,6 @@ data class VoucherDetailData(
     val voucherDiscountAmountFormatted: String,
     val voucherDiscountAmountMaxFormatted: String,
     val remainingQuota: Long,
-    val voucherMinimumAmpuntFormatted: Long,
     val tnc: String,
     val bookedGlobalQuota: Long,
     val confirmedGlobalQuota: Long,
@@ -57,7 +56,7 @@ data class VoucherDetailData(
 ) {
     data class ProductId(
         val parentProductId: Long,
-        val chilProductId: List<Long>,
+        val chilProductId: List<Long>?,
     )
 }
 

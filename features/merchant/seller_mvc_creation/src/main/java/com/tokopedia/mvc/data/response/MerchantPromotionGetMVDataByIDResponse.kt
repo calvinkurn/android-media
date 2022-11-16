@@ -76,8 +76,6 @@ data class MerchantPromotionGetMVDataByIDResponse(
             val voucherDiscountAmountMaxFormatted: String = "",
             @SerializedName("remaning_quota")
             val remainingQuota: Long = 0,
-            @SerializedName("voucher_minimum_amt_formatted")
-            val voucherMinimumAmountFormatted: Long = 0,
             @SerializedName("tnc")
             val tnc: String = "",
             @SerializedName("booked_global_quota")
@@ -128,7 +126,7 @@ data class MerchantPromotionGetMVDataByIDResponse(
                 val parentProductId: Long = 0,
                 @SuppressLint("Invalid Data Type")
                 @SerializedName("child_product_id")
-                val chilProductId: List<Long> = listOf(),
+                val chilProductId: List<Long>? = listOf(),
             )
         }
 
@@ -136,7 +134,7 @@ data class MerchantPromotionGetMVDataByIDResponse(
             @SerializedName("error_code")
             val errorCode: String = "",
             @SerializedName("messages")
-            val messages: List<String> = listOf(),
+            val messages: List<String>? = listOf(),
             @SerializedName("reason")
             val reason: String = ""
         )
