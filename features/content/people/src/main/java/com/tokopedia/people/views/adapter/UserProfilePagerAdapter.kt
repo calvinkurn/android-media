@@ -71,7 +71,7 @@ class UserProfilePagerAdapter(
     private fun addNewTab(tab: TabLayout.Tab, position: Int) {
         when (listFragment[position].key) {
             FRAGMENT_KEY_FEEDS -> {
-                tab.setCustomIcon(getIconUnifyDrawable(fragmentActivity, IconUnify.FEED))
+                tab.setCustomIcon(getIconUnifyDrawable(fragmentActivity, IconUnify.IMAGE))
             }
             FRAGMENT_KEY_VIDEO -> {
                 tab.setCustomIcon(getIconUnifyDrawable(fragmentActivity, IconUnify.VIDEO))
@@ -82,7 +82,7 @@ class UserProfilePagerAdapter(
     private fun addSelectedTab(tab: TabLayout.Tab) {
         when (listFragment[tab.position].key) {
             FRAGMENT_KEY_FEEDS -> {
-                tab.setCustomIcon(getIconUnifyDrawable(fragmentActivity, IconUnify.FEED, ContextCompat.getColor(fragmentActivity, com.tokopedia.unifyprinciples.R.color.Unify_GN500)))
+                tab.setCustomIcon(getIconUnifyDrawable(fragmentActivity, IconUnify.IMAGE, ContextCompat.getColor(fragmentActivity, com.tokopedia.unifyprinciples.R.color.Unify_GN500)))
             }
             FRAGMENT_KEY_VIDEO -> {
                 tab.setCustomIcon(getIconUnifyDrawable(fragmentActivity, IconUnify.VIDEO, ContextCompat.getColor(fragmentActivity, com.tokopedia.unifyprinciples.R.color.Unify_GN500)))
