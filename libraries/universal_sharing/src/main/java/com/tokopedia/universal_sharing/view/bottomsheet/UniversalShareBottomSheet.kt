@@ -1042,7 +1042,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
 
     private fun executePdpContextualImage(shareModel: ShareModel) {
         if (imageGeneratorParam == null || !(imageGeneratorParam is PdpParamModel)) return
-        (imageGeneratorParam as PdpParamModel?)?.apply {
+        (imageGeneratorParam as? PdpParamModel)?.apply {
             this.platform = shareModel.platform
             this.productImageUrl = transformOgImageURL(ogImageUrl)
         }
