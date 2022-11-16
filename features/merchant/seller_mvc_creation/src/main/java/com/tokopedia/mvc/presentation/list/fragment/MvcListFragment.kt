@@ -1,26 +1,33 @@
 package com.tokopedia.mvc.presentation.list.fragment
 
+import android.graphics.PorterDuff
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.campaign.delegates.HasPaginatedList
 import com.tokopedia.campaign.delegates.HasPaginatedListImpl
 import com.tokopedia.campaign.utils.extension.showToasterError
+import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.applyUnifyBackgroundColor
+import com.tokopedia.mvc.R
 import com.tokopedia.mvc.databinding.SmvcFragmentMvcListBinding
 import com.tokopedia.mvc.di.component.DaggerMerchantVoucherCreationComponent
 import com.tokopedia.mvc.domain.entity.Voucher
+import com.tokopedia.mvc.presentation.bottomsheet.EduCenterBottomSheet
 import com.tokopedia.mvc.presentation.list.adapter.VoucherAdapterListener
 import com.tokopedia.mvc.presentation.list.adapter.VouchersAdapter
 import com.tokopedia.mvc.presentation.list.constant.MvcListConstant.INITIAL_PAGE
 import com.tokopedia.mvc.presentation.list.constant.MvcListConstant.PAGE_SIZE
 import com.tokopedia.mvc.presentation.list.viewmodel.MvcListViewModel
+import com.tokopedia.unifycomponents.SearchBarUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
@@ -84,16 +91,39 @@ class MvcListFragment: BaseDaggerFragment(), HasPaginatedList by HasPaginatedLis
     }
 
     private fun SmvcFragmentMvcListBinding.setupView() {
-        searchBar.clearListener = { loadInitialDataList() }
-        searchBar.searchBarTextField.setOnEditorActionListener { textView, actionId, _ ->
+        header.setupHeader()
+        searchBar.setupSearchBar()
+        rvVoucher.setupRvVoucher()
+    }
+
+    private fun HeaderUnify.setupHeader() {
+        val colorIcon = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950)
+        title = context.getString(R.string.smvc_voucherlist_page_title)
+        addRightIcon(com.tokopedia.iconunify.R.drawable.iconunify_menu_kebab_horizontal).apply {
+            setColorFilter(colorIcon, PorterDuff.Mode.MULTIPLY)
+            setOnClickListener {
+                EduCenterBottomSheet().show(childFragmentManager, "")
+            }
+        }
+        setNavigationOnClickListener {
+            activity?.finish()
+        }
+    }
+
+    private fun SearchBarUnify.setupSearchBar() {
+        clearListener = { loadInitialDataList() }
+        searchBarTextField.setOnEditorActionListener { textView, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                 loadInitialDataList(textView.text.toString())
                 KeyboardHandler.hideSoftKeyboard(activity)
             }
             return@setOnEditorActionListener false
         }
-        rvVoucher.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-        rvVoucher.adapter = VouchersAdapter(this@MvcListFragment)
+    }
+
+    private fun RecyclerView.setupRvVoucher() {
+        layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        adapter = VouchersAdapter(this@MvcListFragment)
         val config = HasPaginatedList.Config(
             pageSize = PAGE_SIZE,
             onLoadNextPage = {
@@ -103,7 +133,7 @@ class MvcListFragment: BaseDaggerFragment(), HasPaginatedList by HasPaginatedLis
             }
         )
         loadInitialDataList()
-        attachPaging(rvVoucher, config, ::getDataList)
+        attachPaging(this, config, ::getDataList)
     }
 
     private fun loadInitialDataList(keyword: String = "") {

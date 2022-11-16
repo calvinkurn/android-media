@@ -14,6 +14,7 @@
     <string name="smvc_placeholder_product_price">%s - %s</string>
 
     <!--Voucher List-->
+    <string name="smvc_voucherlist_page_title">Daftar Kupon</string>
     <string name="smvc_voucherlist_format_desc">%s %s</string>
     <string name="smvc_voucherlist_format_percent_desc">%s %s hingga %s</string>
     <string name="smvc_voucherlist_format_multiperiod">+%d Jadwal Lain</string>
@@ -33,5 +34,9 @@
     <string name="smvc_voucherlist_buyertarget_text">Target</string>
     <string name="smvc_voucherlist_vps_text">Paket Promosi</string>
     <string name="smvc_voucherlist_subsidi_text">Dari Tokopedia</string>
+
+    <!--Common Bottomsheet-->
+    <string name="smvc_bottomsheet_filter_voucher">Filter</string>
+    <string name="smvc_bottomsheet_edu_center">Pusat Edukasi</string>
 
 </resources>
