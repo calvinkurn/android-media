@@ -15,7 +15,7 @@ import java.util.*
  * - app level build.gradle allow us to use `coreLibraryDesugaring` (to support API <26) or
  * - minSdkVersion >= 26
  */
-sealed interface InteractiveUiModel {
+sealed interface GameUiModel {
 
     val id: String
     val title: String
@@ -26,7 +26,7 @@ sealed interface InteractiveUiModel {
         override val title: String,
         override val waitingDuration: Long,
         val status: Status,
-    ) : InteractiveUiModel {
+    ) : GameUiModel {
 
         sealed interface Status {
 
@@ -50,7 +50,7 @@ sealed interface InteractiveUiModel {
         override val waitingDuration: Long,
         val status: Status,
         val listOfChoices: List<QuizChoicesUiModel>,
-    ) : InteractiveUiModel {
+    ) : GameUiModel {
 
         sealed interface Status {
 
@@ -61,7 +61,7 @@ sealed interface InteractiveUiModel {
         }
     }
 
-    object Unknown : InteractiveUiModel {
+    object Unknown : GameUiModel {
         override val id: String
             get() = "0"
 
