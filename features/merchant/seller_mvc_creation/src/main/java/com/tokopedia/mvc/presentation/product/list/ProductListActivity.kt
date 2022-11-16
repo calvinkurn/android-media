@@ -5,16 +5,17 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import com.tokopedia.mvc.R
+import com.tokopedia.mvc.domain.entity.SelectedProduct
 import com.tokopedia.mvc.util.constant.BundleConstant
 
 class ProductListActivity : AppCompatActivity() {
 
     companion object {
-        fun start(context: Context, selectedProductIds: List<Long>) {
+        fun start(context: Context, selectedProducts: List<SelectedProduct>) {
             val bundle = Bundle().apply {
-                putLongArray(
+                putParcelableArrayList(
                     BundleConstant.BUNDLE_KEY_SELECTED_PRODUCT_IDS,
-                    selectedProductIds.toLongArray()
+                    ArrayList(selectedProducts)
                 )
             }
             val starter = Intent(context, ProductListActivity::class.java)
@@ -23,16 +24,17 @@ class ProductListActivity : AppCompatActivity() {
         }
     }
 
-    private val selectedProductIds by lazy {
-        intent?.extras?.getLongArray(BundleConstant.BUNDLE_KEY_SELECTED_PRODUCT_IDS)?.asList().orEmpty()
+    private val selectedProducts by lazy {
+        intent?.extras?.getParcelableArrayList<SelectedProduct>(BundleConstant.BUNDLE_KEY_SELECTED_PRODUCT_IDS)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.smvc_activity_product_list)
 
+        val products = (selectedProducts as? List<SelectedProduct>).orEmpty()
         supportFragmentManager.beginTransaction()
-            .replace(R.id.container, ProductListFragment.newInstance(selectedProductIds))
+            .replace(R.id.container, ProductListFragment.newInstance(products))
             .commit()
     }
 

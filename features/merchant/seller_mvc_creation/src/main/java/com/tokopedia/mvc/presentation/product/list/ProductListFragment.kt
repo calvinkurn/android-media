@@ -24,6 +24,7 @@ import com.tokopedia.mvc.R
 import com.tokopedia.mvc.databinding.SmvcFragmentProductListBinding
 import com.tokopedia.mvc.di.component.DaggerMerchantVoucherCreationComponent
 import com.tokopedia.mvc.domain.entity.Product
+import com.tokopedia.mvc.domain.entity.SelectedProduct
 import com.tokopedia.mvc.domain.entity.enums.PromoType
 import com.tokopedia.mvc.domain.entity.enums.VoucherAction
 import com.tokopedia.mvc.presentation.product.add.AddProductFragment
@@ -42,17 +43,19 @@ class ProductListFragment : BaseDaggerFragment() {
 
     companion object {
         @JvmStatic
-        fun newInstance(selectedParentProductIds: List<Long>): ProductListFragment {
+        fun newInstance(selectedProducts: List<SelectedProduct>): ProductListFragment {
             return ProductListFragment().apply {
                 arguments = Bundle().apply {
-                    putLongArray(BundleConstant.BUNDLE_KEY_SELECTED_PRODUCT_IDS, selectedParentProductIds.toLongArray())
+                    putParcelableArrayList(
+                        BundleConstant.BUNDLE_KEY_SELECTED_PRODUCT_IDS,
+                        ArrayList(selectedProducts)
+                    )
                 }
             }
         }
-
     }
 
-    private val selectedParentProductIds by lazy { arguments?.getLongArray(BundleConstant.BUNDLE_KEY_SELECTED_PRODUCT_IDS)?.asList().orEmpty() }
+    private val selectedParentProducts by lazy { arguments?.getParcelableArrayList<SelectedProduct>(BundleConstant.BUNDLE_KEY_SELECTED_PRODUCT_IDS) }
     private var binding by autoClearedNullable<SmvcFragmentProductListBinding>()
 
     private val productAdapter by lazy {
@@ -98,7 +101,14 @@ class ProductListFragment : BaseDaggerFragment() {
         observeUiEffect()
         observeUiState()
 
-        viewModel.processEvent(ProductListEvent.FetchProducts(VoucherAction.CREATE, PromoType.CASHBACK, selectedParentProductIds))
+
+        viewModel.processEvent(
+            ProductListEvent.FetchProducts(
+                VoucherAction.CREATE,
+                PromoType.CASHBACK,
+                selectedParentProducts?.toList().orEmpty()
+            )
+        )
     }
 
     private fun setupView() {

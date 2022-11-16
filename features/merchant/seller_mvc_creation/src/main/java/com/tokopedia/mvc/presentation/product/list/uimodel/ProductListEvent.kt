@@ -1,6 +1,7 @@
 package com.tokopedia.mvc.presentation.product.list.uimodel
 
 import com.tokopedia.mvc.domain.entity.Product
+import com.tokopedia.mvc.domain.entity.SelectedProduct
 import com.tokopedia.mvc.domain.entity.enums.PromoType
 import com.tokopedia.mvc.domain.entity.enums.VoucherAction
 
@@ -8,7 +9,7 @@ sealed class ProductListEvent {
     data class FetchProducts(
         val action: VoucherAction,
         val promoType: PromoType,
-        val selectedProductIds: List<Long>
+        val selectedProducts: List<SelectedProduct>
     ) : ProductListEvent()
 
     object EnableSelectAllCheckbox : ProductListEvent()

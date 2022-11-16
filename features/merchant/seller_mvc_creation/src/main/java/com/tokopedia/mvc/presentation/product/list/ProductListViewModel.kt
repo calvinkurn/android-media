@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.view.removeFirst
 import com.tokopedia.mvc.domain.entity.Product
+import com.tokopedia.mvc.domain.entity.SelectedProduct
 import com.tokopedia.mvc.domain.entity.enums.PromoType
 import com.tokopedia.mvc.domain.entity.enums.VoucherAction
 import com.tokopedia.mvc.domain.usecase.GetInitiateVoucherPageUseCase
@@ -40,7 +41,7 @@ class ProductListViewModel @Inject constructor(
 
     fun processEvent(event: ProductListEvent) {
         when(event) {
-            is ProductListEvent.FetchProducts -> getProductsAndProductsMetadata(event.action, event.promoType, event.selectedProductIds)
+            is ProductListEvent.FetchProducts -> getProductsAndProductsMetadata(event.action, event.promoType, event.selectedProducts)
             is ProductListEvent.AddProductToSelection -> handleAddProductToSelection(event.productId)
             ProductListEvent.ConfirmAddProduct -> handleConfirmAddProduct()
             ProductListEvent.DisableSelectAllCheckbox -> handleUncheckAllProduct()
@@ -55,7 +56,7 @@ class ProductListViewModel @Inject constructor(
     private fun getProductsAndProductsMetadata(
         action: VoucherAction,
         promoType: PromoType,
-        selectedProductIds: List<Long>
+        selectedProducts: List<SelectedProduct>
     ) {
         launchCatchError(
             dispatchers.io,
@@ -72,7 +73,7 @@ class ProductListViewModel @Inject constructor(
                     pageSize = metadata.maxProduct,
                     sortId = "DEFAULT",
                     sortDirection = "DESC",
-                    productIdInclude = selectedProductIds
+                    productIdInclude = selectedProducts.map { it.parentProductId }
                 )
 
                 val productsResponse = productListUseCase.execute(productListParam)

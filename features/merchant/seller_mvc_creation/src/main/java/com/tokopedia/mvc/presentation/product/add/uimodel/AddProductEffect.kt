@@ -3,6 +3,7 @@ package com.tokopedia.mvc.presentation.product.add.uimodel
 import com.tokopedia.mvc.domain.entity.Product
 import com.tokopedia.mvc.domain.entity.ProductCategoryOption
 import com.tokopedia.mvc.domain.entity.ProductSortOptions
+import com.tokopedia.mvc.domain.entity.SelectedProduct
 import com.tokopedia.mvc.domain.entity.ShopData
 import com.tokopedia.mvc.domain.entity.ShopShowcase
 import com.tokopedia.mvc.domain.entity.Warehouse
@@ -36,7 +37,7 @@ sealed class AddProductEffect {
     data class ShowVariantBottomSheet(val selectedParentProduct: Product) : AddProductEffect()
 
     data class ConfirmAddProduct(
-        val selectedParentProducts: List<Product>,
+        val selectedProducts: List<SelectedProduct>,
         val selectedParentProductImageUrls: List<String>,
         val shop: ShopData
     ) : AddProductEffect()

@@ -250,8 +250,7 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
                 displayVariantBottomSheet(effect.selectedParentProduct)
             }
             is AddProductEffect.ConfirmAddProduct -> {
-                val selectedParentProductIds = effect.selectedParentProducts.filter { it.isSelected }.map { it.id }
-                ProductListActivity.start(activity ?: return, selectedParentProductIds)
+                ProductListActivity.start(activity ?: return, effect.selectedProducts)
                 /*displayShareBottomSheet(
                     effect.selectedParentProducts,
                     effect.selectedParentProductImageUrls,

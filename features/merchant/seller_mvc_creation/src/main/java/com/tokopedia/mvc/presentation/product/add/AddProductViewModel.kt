@@ -8,6 +8,7 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.mvc.domain.entity.Product
 import com.tokopedia.mvc.domain.entity.ProductCategoryOption
 import com.tokopedia.mvc.domain.entity.ProductSortOptions
+import com.tokopedia.mvc.domain.entity.SelectedProduct
 import com.tokopedia.mvc.domain.entity.ShopShowcase
 import com.tokopedia.mvc.domain.entity.VoucherValidationResult
 import com.tokopedia.mvc.domain.entity.Warehouse
@@ -503,10 +504,17 @@ class AddProductViewModel @Inject constructor(
                 val response = shopBasicDataUseCase.execute()
 
                 val selectedProducts = currentState.products.filter { it.isSelected }
-                val topSellingProductImageUrls = selectedProducts
+                    .map { product ->
+                        val parentProductId = product.id
+                        val variantProductIds = product.selectedVariantsIds.toList()
+                        SelectedProduct(parentProductId, variantProductIds)
+                    }
+
+                val topSellingProductImageUrls = currentState.products
                     .filter { it.isSelected }
                     .sortedByDescending { it.txStats.sold }
                     .map { it.picture }
+
 
                 _uiEffect.tryEmit(
                     AddProductEffect.ConfirmAddProduct(
