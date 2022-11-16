@@ -15,6 +15,7 @@ import com.tokopedia.privacycenter.R
 import com.tokopedia.privacycenter.common.PrivacyCenterStateResult
 import com.tokopedia.privacycenter.common.di.DaggerPrivacyCenterComponent
 import com.tokopedia.privacycenter.databinding.PrivacyPolicyBottomSheetBinding
+import com.tokopedia.privacycenter.main.section.privacypolicy.PrivacyPolicyConst.KEY_TITLE
 import com.tokopedia.privacycenter.main.section.privacypolicy.adapter.PrivacyPolicyAdapter
 import com.tokopedia.privacycenter.main.section.privacypolicy.domain.data.PrivacyPolicyDataModel
 import com.tokopedia.privacycenter.main.section.privacypolicy.domain.data.PrivacyPolicyDetailDataModel
@@ -81,20 +82,6 @@ class PrivacyPolicySectionBottomSheet : BottomSheetUnify(), PrivacyPolicyAdapter
         }
 
         viewModel.getPrivacyPolicyAllList()
-
-        // TODO: Remove if already tested with real API
-        onSuccessGetPrivacyPolicyAllList(listOf(
-            PrivacyPolicyDataModel("", "Privacy Policy 2022 - Version 1.0.0."),
-            PrivacyPolicyDataModel("", "Privacy Policy 2022 - Version 1.0.0."),
-            PrivacyPolicyDataModel("", "Privacy Policy 2022 - Version 1.0.0."),
-            PrivacyPolicyDataModel("", "Privacy Policy 2022 - Version 1.0.0."),
-            PrivacyPolicyDataModel("", "Privacy Policy 2022 - Version 1.0.0."),
-            PrivacyPolicyDataModel("", "Privacy Policy 2022 - Version 1.0.0."),
-            PrivacyPolicyDataModel("", "Privacy Policy 2022 - Version 1.0.0."),
-            PrivacyPolicyDataModel("", "Privacy Policy 2022 - Version 1.0.0."),
-            PrivacyPolicyDataModel("", "Privacy Policy 2022 - Version 1.0.0."),
-            PrivacyPolicyDataModel("", "Privacy Policy 2022 - Version 1.0.0."),
-        ))
     }
 
     private fun initObservers() {
@@ -132,7 +119,7 @@ class PrivacyPolicySectionBottomSheet : BottomSheetUnify(), PrivacyPolicyAdapter
     private fun openDetailPrivacyPolicy(title: String, htmlContent: String) {
         val intent = Intent(context, PrivacyPolicyWebViewActivity::class.java).apply {
             putExtras(Bundle().apply {
-                putString(PrivacyPolicyWebViewActivity.KEY_TITLE, title)
+                putString(KEY_TITLE, title)
                 putString(PrivacyPolicyConst.KEY_HTML_CONTENT, htmlContent)
             })
         }

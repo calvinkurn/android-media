@@ -14,6 +14,7 @@ object PrivacyPolicyConst {
     const val RESPONSE_OK = "200"
     const val RESPONSE_SUCCESS = "success"
     const val KEY_HTML_CONTENT = "htmlContent"
+    const val KEY_TITLE = "title"
     const val DEFAULT_TITLE = "Kebijakan Privasi"
 
     val CURRENT_PRIVACY_URL = "${TokopediaUrl.getInstance().WEB}privacy?lang=id"
