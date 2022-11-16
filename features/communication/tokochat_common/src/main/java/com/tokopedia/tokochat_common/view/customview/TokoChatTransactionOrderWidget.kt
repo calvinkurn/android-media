@@ -68,6 +68,35 @@ class TokoChatTransactionOrderWidget : LinearLayout {
         }
     }
 
+    fun showShimmeringWidget() {
+        binding?.tokochatLocalloadErrorTransactionWidget?.hide()
+        partialOrderStatusWidgetBinding?.root?.hide()
+        setupShimmeringOrderStatusBinding()
+    }
+
+    fun showTransactionWidget(
+        listener: Listener?,
+        orderProgressUiModel: TokoChatOrderProgressUiModel?
+    ) {
+        assignFields(listener, orderProgressUiModel)
+        binding?.tokochatLocalloadErrorTransactionWidget?.hide()
+        shimmerOrderStatusWidgetBinding?.root?.hide()
+        partialOrderStatusWidgetBinding?.root?.show()
+        setupPartialOrderStatusBinding()
+        render()
+    }
+
+    fun showLocalLoadTransaction() {
+        partialOrderStatusWidgetBinding?.root?.hide()
+        shimmerOrderStatusWidgetBinding?.root?.hide()
+        binding?.tokochatLocalloadErrorTransactionWidget?.show()
+        setupLocalLoadTransaction()
+    }
+
+    fun hideTransactionLocalLoad() {
+        binding?.tokochatLocalloadErrorTransactionWidget?.hide()
+    }
+
     private fun setBringToFrontAndBgColor() {
         bringToFront()
         setBackgroundColor(MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Background))
@@ -106,31 +135,6 @@ class TokoChatTransactionOrderWidget : LinearLayout {
                 tokoChatOrderProgressUiModel?.orderId
             )
         }
-    }
-
-    fun showShimmeringWidget() {
-        binding?.tokochatLocalloadErrorTransactionWidget?.hide()
-        partialOrderStatusWidgetBinding?.root?.hide()
-        setupShimmeringOrderStatusBinding()
-    }
-
-    fun showTransactionWidget(
-        listener: Listener?,
-        orderProgressUiModel: TokoChatOrderProgressUiModel?
-    ) {
-        assignFields(listener, orderProgressUiModel)
-        binding?.tokochatLocalloadErrorTransactionWidget?.hide()
-        shimmerOrderStatusWidgetBinding?.root?.hide()
-        partialOrderStatusWidgetBinding?.root?.show()
-        setupPartialOrderStatusBinding()
-        render()
-    }
-
-    fun showLocalLoadTransaction() {
-        partialOrderStatusWidgetBinding?.root?.hide()
-        shimmerOrderStatusWidgetBinding?.root?.hide()
-        binding?.tokochatLocalloadErrorTransactionWidget?.show()
-        setupLocalLoadTransaction()
     }
 
     private fun setupLocalLoadTransaction() {
