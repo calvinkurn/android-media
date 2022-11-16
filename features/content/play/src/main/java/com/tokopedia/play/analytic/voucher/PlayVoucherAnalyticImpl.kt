@@ -147,7 +147,7 @@ class PlayVoucherAnalyticImpl @Inject constructor(
             .send()
     }
 
-    override fun clickCopyVoucher(voucherId: String) {
+    override fun clickCopyVoucher(voucherId: String, channelTitle: String) {
         Tracker.Builder()
             .setEvent(KEY_TRACK_CLICK_GROUP_CHAT)
             .setEventAction("click copy on private voucher")
@@ -156,6 +156,8 @@ class PlayVoucherAnalyticImpl @Inject constructor(
             .setBusinessUnit(KEY_TRACK_BUSINESS_UNIT)
             .setCurrentSite(KEY_TRACK_CURRENT_SITE)
             .setCustomProperty(KEY_SESSION_IRIS, sessionIris)
+            .setCustomProperty(KEY_IS_LOGGED_IN_STATUS, userSession.isLoggedIn)
+            .setCustomProperty(KEY_CHANNEL, channelTitle)
             .setUserId(userId)
             .build()
             .send()

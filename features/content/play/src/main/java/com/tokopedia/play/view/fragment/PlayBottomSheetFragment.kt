@@ -279,7 +279,7 @@ class PlayBottomSheetFragment @Inject constructor(
             }
         )
         newAnalytic.impressToasterPrivate(voucher.id)
-        newAnalytic.clickCopyVoucher(voucher.id)
+        newAnalytic.clickCopyVoucher(voucher.id, playViewModel.latestCompleteChannelData.channelDetail.channelInfo.title)
     }
 
     override fun onVoucherItemClicked(
