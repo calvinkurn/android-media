@@ -1,6 +1,5 @@
 package com.tokopedia.tokopedianow.home.presentation.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -944,7 +943,7 @@ class TokoNowHomeViewModel @Inject constructor(
         recomItemList: List<TokoNowProductCardCarouselItemUiModel>,
         productId: String
     ): Int {
-        val product = recomItemList.first { it.id == productId }
+        val product = recomItemList.first { it.productCardModel.productId == productId }
         return recomItemList.indexOf(product)
     }
 

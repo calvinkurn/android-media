@@ -297,7 +297,7 @@ class TokoNowSearchViewModel @Inject constructor (
         updatedProductIndices: MutableList<Int>,
     ) {
         val productCardQuantity = broadMatchItemDataView.productCardModel.orderQuantity
-        val miniCartQuantity = cartService.getProductQuantity(broadMatchItemDataView.id)
+        val miniCartQuantity = cartService.getProductQuantity(broadMatchItemDataView.productCardModel.productId)
 
         if (productCardQuantity != miniCartQuantity) {
             broadMatchItemDataView.productCardModel = broadMatchItemDataView.productCardModel.copy(orderQuantity = miniCartQuantity)
@@ -313,7 +313,7 @@ class TokoNowSearchViewModel @Inject constructor (
         broadMatchIndex: Int,
         hasAnimationFinished: Boolean
     ) {
-        val productId = broadMatchItem.id
+        val productId = broadMatchItem.productCardModel.productId
         val shopId = broadMatchItem.shopId
         val currentQuantity = broadMatchItem.productCardModel.orderQuantity
         hasProductAnimationFinished = hasAnimationFinished
@@ -352,7 +352,7 @@ class TokoNowSearchViewModel @Inject constructor (
         hasProductAnimationFinished = hasAnimationFinished
 
         if (broadMatchItem.productCardModel.orderQuantity != quantity && quantity.isZero()) {
-            val productId = broadMatchItem.id
+            val productId = broadMatchItem.productCardModel.productId
             val shopId = broadMatchItem.shopId
             val currentQuantity = broadMatchItem.productCardModel.orderQuantity
 

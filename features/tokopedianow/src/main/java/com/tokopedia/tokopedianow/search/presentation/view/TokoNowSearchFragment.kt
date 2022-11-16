@@ -157,7 +157,8 @@ class TokoNowSearchFragment :
             ctaTokoNowHomeListener = this,
             recommendationCarouselListener = this,
             broadMatchListener = this,
-            recomWidgetBindPageNameListener = this
+            recomWidgetBindPageNameListener = this,
+            productRecommendationListener = this
     )
 
     override val miniCartWidgetPageName: MiniCartAnalytics.Page

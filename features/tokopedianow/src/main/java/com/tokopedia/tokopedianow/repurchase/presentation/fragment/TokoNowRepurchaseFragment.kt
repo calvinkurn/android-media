@@ -60,7 +60,7 @@ import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalytics
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference.SetUserPreferenceData
 import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
-import com.tokopedia.tokopedianow.common.model.TokoNowRecommendationCarouselUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationOocUiModel
 import com.tokopedia.tokopedianow.common.util.TokoMartRepurchaseErrorLogger
 import com.tokopedia.tokopedianow.common.util.TokoMartRepurchaseErrorLogger.ATC_QUANTITY_ERROR
 import com.tokopedia.tokopedianow.common.util.TokoMartRepurchaseErrorLogger.CHOOSE_ADDRESS_ERROR
@@ -75,8 +75,8 @@ import com.tokopedia.tokopedianow.common.viewholder.TokoNowChooseAddressWidgetVi
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowChooseAddressWidgetViewHolder.TokoNowChooseAddressWidgetListener
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateNoResultViewHolder.TokoNowEmptyStateNoResultListener
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateOocViewHolder
-import com.tokopedia.tokopedianow.common.viewholder.TokoNowRecommendationCarouselViewHolder.TokoNowRecommendationCarouselListener
-import com.tokopedia.tokopedianow.common.viewholder.TokoNowRecommendationCarouselViewHolder.TokonowRecomBindPageNameListener
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowProductRecommendationOocViewHolder.TokoNowRecommendationCarouselListener
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowProductRecommendationOocViewHolder.TokonowRecomBindPageNameListener
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowServerErrorViewHolder.ServerErrorListener
 import com.tokopedia.tokopedianow.databinding.FragmentTokopedianowRepurchaseBinding
 import com.tokopedia.tokopedianow.datefilter.presentation.activity.TokoNowDateFilterActivity.Companion.EXTRA_SELECTED_DATE_FILTER
@@ -289,14 +289,14 @@ class TokoNowRepurchaseFragment:
     }
 
     override fun onBindRecommendationCarousel(
-        model: TokoNowRecommendationCarouselUiModel,
+        model: TokoNowProductRecommendationOocUiModel,
         adapterPosition: Int
     ) {
         // TO-DO :
     }
 
     override fun onImpressedRecommendationCarouselItem(
-        model: TokoNowRecommendationCarouselUiModel?,
+        model: TokoNowProductRecommendationOocUiModel?,
         data: RecommendationCarouselData,
         recomItem: RecommendationItem,
         itemPosition: Int,
@@ -306,7 +306,7 @@ class TokoNowRepurchaseFragment:
     }
 
     override fun onClickRecommendationCarouselItem(
-        model: TokoNowRecommendationCarouselUiModel?,
+        model: TokoNowProductRecommendationOocUiModel?,
         data: RecommendationCarouselData,
         recomItem: RecommendationItem,
         itemPosition: Int,
@@ -320,7 +320,7 @@ class TokoNowRepurchaseFragment:
     }
 
     override fun onATCNonVariantRecommendationCarouselItem(
-        model: TokoNowRecommendationCarouselUiModel?,
+        model: TokoNowProductRecommendationOocUiModel?,
         data: RecommendationCarouselData,
         recomItem: RecommendationItem,
         recommendationCarouselPosition: Int,
@@ -334,7 +334,7 @@ class TokoNowRepurchaseFragment:
     }
 
     override fun onAddVariantRecommendationCarouselItem(
-        model: TokoNowRecommendationCarouselUiModel?,
+        model: TokoNowProductRecommendationOocUiModel?,
         data: RecommendationCarouselData,
         recomItem: RecommendationItem
     ) {

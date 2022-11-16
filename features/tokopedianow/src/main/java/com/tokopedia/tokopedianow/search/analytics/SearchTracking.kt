@@ -535,7 +535,7 @@ object SearchTracking {
         return DataLayer.mapOf(
             "brand", SearchCategoryTrackingConst.Misc.NONE_OTHER,
             "category", SearchCategoryTrackingConst.Misc.NONE_OTHER,
-            "id", id,
+            "id", productCardModel.productId,
             "name", productCardModel.name,
             "price", productCardModel.price,
             "variant", SearchCategoryTrackingConst.Misc.NONE_OTHER,

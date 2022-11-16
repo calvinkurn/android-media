@@ -149,18 +149,24 @@ class TokoNowProductCardCarouselView @JvmOverloads constructor(
 
     fun bindItems(
         items: List<Visitable<*>>,
-        seeMoreUiModel: TokoNowSeeMoreCardCarouselUiModel? = null
+        seeMoreModel: TokoNowSeeMoreCardCarouselUiModel? = null
     ) {
         binding.root.layoutManager = layoutManager
         binding.root.adapter = adapter
-        if (seeMoreUiModel != null && seeMoreUiModel.appLink.isNotBlank()) {
+        if (seeMoreModel != null && seeMoreModel.appLink.isNotBlank()) {
             val newItems = items.toMutableList()
-            newItems.add(seeMoreUiModel)
+            newItems.add(seeMoreModel)
             adapter.submitList(newItems)
         } else {
             adapter.submitList(items)
         }
         restoreInstanceStateToLayoutManager()
+    }
+
+    fun updateItems(
+        items: List<Visitable<*>>
+    ) {
+        adapter.submitList(items)
     }
 
     fun setListener(

@@ -39,7 +39,7 @@ class HomeProductRecomViewHolder(
 
             productRecom.setItems(
                 items = element.productList,
-                seeMoreUiModel = element.seeMoreModel
+                seeMoreModel = element.seeMoreModel
             )
             productRecom.setHeader(
                 header = element.headerModel
@@ -68,7 +68,7 @@ class HomeProductRecomViewHolder(
         listener?.onSeeMoreClicked(
             channelId = channelId,
             appLink = seeMoreUiModel.appLink,
-            headerName = seeMoreUiModel.channelHeaderName
+            headerName = seeMoreUiModel.headerName
         )
     }
 

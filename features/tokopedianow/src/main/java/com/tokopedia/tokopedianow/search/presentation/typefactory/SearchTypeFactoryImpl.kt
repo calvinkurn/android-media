@@ -3,9 +3,10 @@ package com.tokopedia.tokopedianow.search.presentation.typefactory
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.tokopedianow.common.view.TokoNowProductRecommendationView
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateNoResultViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateOocViewHolder
-import com.tokopedia.tokopedianow.common.viewholder.TokoNowRecommendationCarouselViewHolder
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowProductRecommendationOocViewHolder
 import com.tokopedia.tokopedianow.search.presentation.listener.BroadMatchListener
 import com.tokopedia.tokopedianow.search.presentation.listener.CTATokoNowHomeListener
 import com.tokopedia.tokopedianow.search.presentation.listener.CategoryJumperListener
@@ -42,9 +43,10 @@ class SearchTypeFactoryImpl(
     private val suggestionListener: SuggestionListener,
     private val categoryJumperListener: CategoryJumperListener,
     private val ctaTokoNowHomeListener: CTATokoNowHomeListener,
-    recommendationCarouselListener: TokoNowRecommendationCarouselViewHolder.TokoNowRecommendationCarouselListener,
-    private val recomWidgetBindPageNameListener: TokoNowRecommendationCarouselViewHolder.TokonowRecomBindPageNameListener?,
     private val broadMatchListener: BroadMatchListener,
+    recommendationCarouselListener: TokoNowProductRecommendationOocViewHolder.TokoNowRecommendationCarouselListener,
+    recomWidgetBindPageNameListener: TokoNowProductRecommendationOocViewHolder.TokonowRecomBindPageNameListener?,
+    productRecommendationListener: TokoNowProductRecommendationView.TokoNowProductRecommendationListener?
 ): BaseSearchCategoryTypeFactoryImpl(
     tokoNowEmptyStateOocListener,
     chooseAddressListener,
@@ -57,6 +59,7 @@ class SearchTypeFactoryImpl(
     tokoNowEmptyStateNoResultListener,
     recommendationCarouselListener,
     recomWidgetBindPageNameListener,
+    productRecommendationListener
 ), SearchTypeFactory {
 
     override fun type(suggestionDataView: SuggestionDataView): Int {

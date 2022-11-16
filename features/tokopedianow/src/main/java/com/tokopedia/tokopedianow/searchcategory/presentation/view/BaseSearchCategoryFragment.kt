@@ -76,14 +76,16 @@ import com.tokopedia.tokopedianow.common.bottomsheet.TokoNowOnBoard20mBottomShee
 import com.tokopedia.tokopedianow.common.constant.ServiceType.NOW_2H
 import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
-import com.tokopedia.tokopedianow.common.model.TokoNowRecommendationCarouselUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationOocUiModel
 import com.tokopedia.tokopedianow.common.util.TokoNowServiceTypeUtil
 import com.tokopedia.tokopedianow.common.util.TokoNowSharedPreference
 import com.tokopedia.tokopedianow.common.util.TokoNowSwitcherUtil.switchService
+import com.tokopedia.tokopedianow.common.view.TokoNowProductRecommendationView
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateNoResultViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateOocViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowProductCardViewHolder.TokoNowProductCardListener
-import com.tokopedia.tokopedianow.common.viewholder.TokoNowRecommendationCarouselViewHolder
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowProductRecommendationOocViewHolder
+import com.tokopedia.tokopedianow.common.viewmodel.TokoNowProductRecommendationViewModel
 import com.tokopedia.tokopedianow.databinding.FragmentTokopedianowSearchCategoryBinding
 import com.tokopedia.tokopedianow.home.presentation.view.listener.OnBoard20mBottomSheetCallback
 import com.tokopedia.tokopedianow.searchcategory.data.model.QuerySafeModel
@@ -129,8 +131,9 @@ abstract class BaseSearchCategoryFragment:
     SwitcherWidgetListener,
     TokoNowEmptyStateNoResultViewHolder.TokoNowEmptyStateNoResultListener,
     TokoNowProductCardListener,
-    TokoNowRecommendationCarouselViewHolder.TokoNowRecommendationCarouselListener,
-    TokoNowRecommendationCarouselViewHolder.TokonowRecomBindPageNameListener {
+    TokoNowProductRecommendationOocViewHolder.TokoNowRecommendationCarouselListener,
+    TokoNowProductRecommendationOocViewHolder.TokonowRecomBindPageNameListener,
+    TokoNowProductRecommendationView.TokoNowProductRecommendationListener{
 
     companion object {
         private const val SPAN_COUNT = 3
@@ -147,6 +150,9 @@ abstract class BaseSearchCategoryFragment:
 
     @Inject
     lateinit var sharedPref: TokoNowSharedPreference
+
+    @Inject
+    lateinit var productRecomViewModel: TokoNowProductRecommendationViewModel
 
     protected var searchCategoryAdapter: SearchCategoryAdapter? = null
     protected var endlessScrollListener: EndlessRecyclerViewScrollListener? = null
@@ -720,17 +726,19 @@ abstract class BaseSearchCategoryFragment:
         getViewModel().onViewClickCategoryFilterChip(option, isSelected)
     }
 
+    override fun getProductRecommendationViewModel(): TokoNowProductRecommendationViewModel? = productRecomViewModel
+
     private fun updateMiniCartWidget(miniCartSimplifiedData: MiniCartSimplifiedData?) {
         miniCartSimplifiedData ?: return
 
         miniCartWidget?.updateData(miniCartSimplifiedData)
-        recomWidgetViewModel?.updateMiniCartWithPageData(miniCartSimplifiedData)
+        productRecomViewModel.updateMiniCartSimplified(miniCartSimplifiedData)
     }
 
     override fun onCartItemsUpdated(miniCartSimplifiedData: MiniCartSimplifiedData) {
         getViewModel().updateToolbarNotification()
         getViewModel().onViewUpdateCartItems(miniCartSimplifiedData)
-        recomWidgetViewModel?.updateMiniCartWithPageData(miniCartSimplifiedData)
+        productRecomViewModel.updateMiniCartSimplified(miniCartSimplifiedData)
     }
 
     private fun updateMiniCartWidgetVisibility(isVisible: Boolean?) {
@@ -904,18 +912,18 @@ abstract class BaseSearchCategoryFragment:
     }
 
     override fun onBindRecommendationCarousel(
-            element: TokoNowRecommendationCarouselUiModel,
-            adapterPosition: Int,
+        element: TokoNowProductRecommendationOocUiModel,
+        adapterPosition: Int,
     ) {
         getViewModel().onBindRecommendationCarousel(element, adapterPosition)
     }
 
     override fun onImpressedRecommendationCarouselItem(
-            recommendationCarouselDataView: TokoNowRecommendationCarouselUiModel?,
-            data: RecommendationCarouselData,
-            recomItem: RecommendationItem,
-            itemPosition: Int,
-            adapterPosition: Int
+        recommendationCarouselDataView: TokoNowProductRecommendationOocUiModel?,
+        data: RecommendationCarouselData,
+        recomItem: RecommendationItem,
+        itemPosition: Int,
+        adapterPosition: Int
     ) {
         val isOOC = recommendationCarouselDataView?.isOutOfCoverage()?:false
         trackingQueue?.putEETracking(
@@ -934,11 +942,11 @@ abstract class BaseSearchCategoryFragment:
     }
 
     override fun onClickRecommendationCarouselItem(
-            recommendationCarouselDataView: TokoNowRecommendationCarouselUiModel?,
-            data: RecommendationCarouselData,
-            recomItem: RecommendationItem,
-            itemPosition: Int,
-            adapterPosition: Int
+        recommendationCarouselDataView: TokoNowProductRecommendationOocUiModel?,
+        data: RecommendationCarouselData,
+        recomItem: RecommendationItem,
+        itemPosition: Int,
+        adapterPosition: Int
     ) {
         val isOOC = recommendationCarouselDataView?.isOutOfCoverage()?:false
         TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
@@ -962,11 +970,11 @@ abstract class BaseSearchCategoryFragment:
     }
 
     override fun onATCNonVariantRecommendationCarouselItem(
-            recommendationCarouselDataView: TokoNowRecommendationCarouselUiModel?,
-            data: RecommendationCarouselData,
-            recomItem: RecommendationItem,
-            recommendationCarouselPosition: Int,
-            quantity: Int,
+        recommendationCarouselDataView: TokoNowProductRecommendationOocUiModel?,
+        data: RecommendationCarouselData,
+        recomItem: RecommendationItem,
+        recommendationCarouselPosition: Int,
+        quantity: Int,
     ) {
         getViewModel().onViewATCRecommendationItemNonVariant(
                 recommendationItem = recomItem,
@@ -976,7 +984,7 @@ abstract class BaseSearchCategoryFragment:
     }
 
     override fun onAddVariantRecommendationCarouselItem(
-        recommendationCarouselDataView: TokoNowRecommendationCarouselUiModel?,
+        recommendationCarouselDataView: TokoNowProductRecommendationOocUiModel?,
         data: RecommendationCarouselData,
         recomItem: RecommendationItem,
     ) {

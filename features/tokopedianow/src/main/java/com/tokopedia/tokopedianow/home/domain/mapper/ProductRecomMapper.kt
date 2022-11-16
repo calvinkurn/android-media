@@ -26,6 +26,7 @@ object ProductRecomMapper {
         channelGrid: ChannelGrid,
         miniCartData: MiniCartSimplifiedData? = null
     ): TokoNowProductCardViewUiModel = TokoNowProductCardViewUiModel(
+        productId = channelGrid.id,
         imageUrl = channelGrid.imageUrl,
         minOrder = channelGrid.minOrder,
         maxOrder = channelGrid.maxOrder,
@@ -68,7 +69,6 @@ object ProductRecomMapper {
             title = channelModel.name,
             productList = channelModel.channelGrids.map { channelGrid ->
                 TokoNowProductCardCarouselItemUiModel(
-                    id = channelGrid.id,
                     recomType = channelGrid.recommendationType,
                     pageName = channelModel.pageName,
                     productCardModel = mapChannelGridToProductCard(channelGrid, miniCartData),
@@ -81,8 +81,8 @@ object ProductRecomMapper {
                 )
             },
             seeMoreModel = TokoNowSeeMoreCardCarouselUiModel(
-                channelId = channelModel.channelHeader.id,
-                channelHeaderName = channelModel.channelHeader.name,
+                id = channelModel.channelHeader.id,
+                headerName = channelModel.channelHeader.name,
                 appLink = channelModel.channelHeader.applink
             ),
             headerModel = TokoNowDynamicHeaderUiModel(

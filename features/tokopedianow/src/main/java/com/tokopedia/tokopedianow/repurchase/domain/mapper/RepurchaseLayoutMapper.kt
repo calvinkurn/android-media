@@ -18,7 +18,7 @@ import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowChooseAddressWidgetUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateNoResultUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateOocUiModel
-import com.tokopedia.tokopedianow.common.model.TokoNowRecommendationCarouselUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationOocUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowServerErrorUiModel
 import com.tokopedia.tokopedianow.common.util.TokoNowServiceTypeUtil.REPURCHASE_EMPTY_RESOURCE_ID
 import com.tokopedia.tokopedianow.common.util.TokoNowServiceTypeUtil.getServiceTypeRes
@@ -98,7 +98,7 @@ object RepurchaseLayoutMapper {
     }
 
     fun MutableList<Visitable<*>>.addProductRecom(pageName: String, recommendationWidget: RecommendationWidget) {
-        add(TokoNowRecommendationCarouselUiModel(
+        add(TokoNowProductRecommendationOocUiModel(
                 pageName = pageName,
                 carouselData = RecommendationCarouselData(
                     recommendationData = recommendationWidget,
@@ -119,7 +119,7 @@ object RepurchaseLayoutMapper {
 
     fun MutableList<Visitable<*>>.addRecomWidget(pageName: String) {
         add(
-            TokoNowRecommendationCarouselUiModel(
+            TokoNowProductRecommendationOocUiModel(
                 pageName = pageName,
                 isFirstLoad = true,
                 isBindWithPageName = true,
@@ -300,8 +300,8 @@ object RepurchaseLayoutMapper {
                 }
             }
             PRODUCT_RECOMMENDATION -> {
-                firstOrNull { it is TokoNowRecommendationCarouselUiModel }?.let { uiModel ->
-                    val layoutUiModel = uiModel as TokoNowRecommendationCarouselUiModel
+                firstOrNull { it is TokoNowProductRecommendationOocUiModel }?.let { uiModel ->
+                    val layoutUiModel = uiModel as TokoNowProductRecommendationOocUiModel
                     val cartProductIds = miniCart.miniCartItems.values.mapNotNull {
                         if (it is MiniCartItem.MiniCartItemProduct) it.productId else null
                     }
@@ -351,16 +351,16 @@ object RepurchaseLayoutMapper {
     }
 
     private fun MutableList<Visitable<*>>.updateProductRecomQuantity(productId: String, quantity: Int) {
-        firstOrNull { it is TokoNowRecommendationCarouselUiModel }?.let { uiModel ->
+        firstOrNull { it is TokoNowProductRecommendationOocUiModel }?.let { uiModel ->
             val index = indexOf(uiModel)
-            val layoutUiModel = uiModel as TokoNowRecommendationCarouselUiModel
+            val layoutUiModel = uiModel as TokoNowProductRecommendationOocUiModel
             val recommendationData = layoutUiModel.carouselData.recommendationData.copy()
             recommendationData.recommendationItemList.firstOrNull { it.productId.toString() == productId }?.let {
                 it.quantity = quantity
             }
             set(
                 index = index,
-                element = TokoNowRecommendationCarouselUiModel(
+                element = TokoNowProductRecommendationOocUiModel(
                     carouselData = layoutUiModel.carouselData.copy(
                         recommendationData = recommendationData
                     ),

@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.tokopedianow.common.adapter.typefactory.*
 import com.tokopedia.tokopedianow.common.model.*
+import com.tokopedia.tokopedianow.common.view.TokoNowProductRecommendationView
 import com.tokopedia.tokopedianow.common.viewholder.*
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.BannerComponentListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.CategoryFilterListener
@@ -44,15 +45,17 @@ abstract class BaseSearchCategoryTypeFactoryImpl(
     protected val productItemListener: ProductItemListener,
     protected val switcherWidgetListener: SwitcherWidgetListener,
     protected val tokoNowEmptyStateNoResultListener: TokoNowEmptyStateNoResultViewHolder.TokoNowEmptyStateNoResultListener,
-    private val recommendationCarouselListener: TokoNowRecommendationCarouselViewHolder.TokoNowRecommendationCarouselListener,
-    private val recommendationCarouselBindPageNameListener: TokoNowRecommendationCarouselViewHolder.TokonowRecomBindPageNameListener?
+    private val recommendationCarouselListener: TokoNowProductRecommendationOocViewHolder.TokoNowRecommendationCarouselListener,
+    private val recommendationCarouselBindPageNameListener: TokoNowProductRecommendationOocViewHolder.TokonowRecomBindPageNameListener?,
+    private val productRecommendationListener: TokoNowProductRecommendationView.TokoNowProductRecommendationListener?
 ):  BaseAdapterTypeFactory(),
     BaseSearchCategoryTypeFactory,
     TokoNowEmptyStateNoResultTypeFactory,
-    TokoNowRecommendationCarouselTypeFactory,
+    TokoNowProductRecommendationOocTypeFactory,
     TokoNowCategoryGridTypeFactory,
     TokoNowRepurchaseTypeFactory,
-    TokoNowEmptyStateOocTypeFactory{
+    TokoNowEmptyStateOocTypeFactory,
+    TokoNowProductRecommendationTypeFactory{
 
     override fun type(chooseAddressDataView: ChooseAddressDataView) = BaseChooseAddressViewHolder.LAYOUT
 
@@ -76,13 +79,15 @@ abstract class BaseSearchCategoryTypeFactoryImpl(
 
     override fun type(uiModel: TokoNowCategoryGridUiModel): Int = TokoNowCategoryGridViewHolder.LAYOUT
 
-    override fun type(uiModel: TokoNowRecommendationCarouselUiModel): Int = TokoNowRecommendationCarouselViewHolder.LAYOUT
+    override fun type(uiModel: TokoNowProductRecommendationOocUiModel): Int = TokoNowProductRecommendationOocViewHolder.LAYOUT
 
     override fun type(uiModel: TokoNowEmptyStateOocUiModel): Int = TokoNowEmptyStateOocViewHolder.LAYOUT
 
     override fun type(progressBarDataView: ProgressBarDataView): Int = ProgressBarViewHolder.LAYOUT
 
     override fun type(switcherWidgetDataView: SwitcherWidgetDataView): Int = SwitcherWidgetViewHolder.LAYOUT
+
+    override fun type(uiModel: TokoNowProductRecommendationUiModel): Int = TokoNowProductRecommendationViewHolder.LAYOUT
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when(type) {
@@ -120,10 +125,14 @@ abstract class BaseSearchCategoryTypeFactoryImpl(
                 itemView = view,
                 listener = tokoNowEmptyStateOocListener
             )
-            TokoNowRecommendationCarouselViewHolder.LAYOUT -> TokoNowRecommendationCarouselViewHolder(
+            TokoNowProductRecommendationOocViewHolder.LAYOUT -> TokoNowProductRecommendationOocViewHolder(
                 itemView = view,
                 recommendationCarouselListener = recommendationCarouselListener,
                 recommendationCarouselWidgetBindPageNameListener = recommendationCarouselBindPageNameListener
+            )
+            TokoNowProductRecommendationViewHolder.LAYOUT -> TokoNowProductRecommendationViewHolder(
+                itemView = view,
+                listener = productRecommendationListener
             )
             SwitcherWidgetViewHolder.LAYOUT -> SwitcherWidgetViewHolder(
                 itemView = view,

@@ -7,7 +7,7 @@ import com.tokopedia.tokopedianow.common.model.TokoNowProductCardCarouselItemUiM
 class TokoNowProductCardCarouselDiffer: DiffUtil.ItemCallback<Visitable<*>>() {
     override fun areItemsTheSame(oldItem: Visitable<*>, newItem: Visitable<*>): Boolean {
         return if (oldItem is TokoNowProductCardCarouselItemUiModel && newItem is TokoNowProductCardCarouselItemUiModel) {
-            oldItem.id == newItem.id && oldItem.productCardModel?.orderQuantity == newItem.productCardModel?.orderQuantity
+            oldItem.productCardModel.productId == newItem.productCardModel.productId && oldItem.productCardModel.orderQuantity == newItem.productCardModel.orderQuantity
         } else {
             oldItem == newItem
         }

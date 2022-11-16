@@ -35,10 +35,10 @@ class BroadMatchViewHolder(
         binding?.apply {
             setItems(
                 items = element.broadMatchItemModelList,
-                seeMoreUiModel = element.seeMoreModel
+                seeMoreModel = element.seeMoreModel
             )
             setHeader(
-                headerUiModel = element.headerModel
+                headerModel = element.headerModel
             )
             setListener(
                 productCardCarouselListener = this@BroadMatchViewHolder,
@@ -49,19 +49,19 @@ class BroadMatchViewHolder(
 
     private fun ItemTokopedianowBroadmatchBinding.setItems(
         items: List<Visitable<*>>,
-        seeMoreUiModel: TokoNowSeeMoreCardCarouselUiModel? = null
+        seeMoreModel: TokoNowSeeMoreCardCarouselUiModel? = null
     ) {
         productCardCarousel.bindItems(
             items = items,
-            seeMoreUiModel = seeMoreUiModel
+            seeMoreModel  = seeMoreModel
         )
     }
 
     private fun ItemTokopedianowBroadmatchBinding.setHeader(
-        headerUiModel: TokoNowDynamicHeaderUiModel? = null
+        headerModel: TokoNowDynamicHeaderUiModel? = null
     ) {
-        header.showIfWithBlock(headerUiModel != null) {
-            headerUiModel?.apply {
+        header.showIfWithBlock(headerModel != null) {
+            headerModel?.apply {
                 setModel(this)
             }
         }
@@ -125,7 +125,7 @@ class BroadMatchViewHolder(
 
     override fun onSeeMoreClicked(seeMoreUiModel: TokoNowSeeMoreCardCarouselUiModel) {
         listener.onBroadMatchSeeAllClicked(
-            title = seeMoreUiModel.channelHeaderName,
+            title = seeMoreUiModel.headerName,
             appLink = seeMoreUiModel.appLink
         )
     }

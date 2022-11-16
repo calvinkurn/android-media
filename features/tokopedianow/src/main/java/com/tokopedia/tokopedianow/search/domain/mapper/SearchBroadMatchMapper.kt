@@ -24,9 +24,9 @@ object SearchBroadMatchMapper {
             broadMatchItemModelList = otherRelated.productList
                 .map { otherRelatedProduct ->
                     TokoNowProductCardCarouselItemUiModel(
-                        id = otherRelatedProduct.id,
                         appLink = otherRelatedProduct.applink,
                         productCardModel = TokoNowProductCardViewUiModel (
+                            productId = otherRelatedProduct.id,
                             name = otherRelatedProduct.name,
                             price = otherRelatedProduct.priceString,
                             imageUrl = otherRelatedProduct.imageUrl,

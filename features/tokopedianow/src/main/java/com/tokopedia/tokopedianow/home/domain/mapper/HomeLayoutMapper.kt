@@ -37,7 +37,7 @@ import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.SH
 import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowChooseAddressWidgetUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateOocUiModel
-import com.tokopedia.tokopedianow.common.model.TokoNowRecommendationCarouselUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationOocUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowRepurchaseUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowServerErrorUiModel
 import com.tokopedia.tokopedianow.home.constant.HomeLayoutItemState
@@ -135,7 +135,7 @@ object HomeLayoutMapper {
     }
 
     fun MutableList<HomeLayoutItemUiModel>.addProductRecomOoc(recommendationWidget: RecommendationWidget) {
-        val productRecomUiModel = TokoNowRecommendationCarouselUiModel(
+        val productRecomUiModel = TokoNowProductRecommendationOocUiModel(
             pageName = OOC_TOKONOW,
             carouselData = RecommendationCarouselData(
                 recommendationData = recommendationWidget,
@@ -397,18 +397,18 @@ object HomeLayoutMapper {
                 filter { it.layout is HomeProductRecomUiModel }.forEach { homeLayoutItemUiModel->
                     val layout = homeLayoutItemUiModel.layout as HomeProductRecomUiModel
                     val cartProductIds = miniCartData.miniCartItems.values.mapNotNull { if (it is MiniCartItem.MiniCartItemProduct) it.productId else null }
-                    val deletedProducts = layout.productList.filter { it.id !in cartProductIds }
+                    val deletedProducts = layout.productList.filter { it.productCardModel.productId !in cartProductIds }
 
                     deletedProducts.forEach { item ->
                         if (item.parentId != DEFAULT_PARENT_ID) {
                             val totalQuantity = miniCartData.miniCartItems.getMiniCartItemParentProduct(item.parentId)?.totalQuantity.orZero()
                             if (totalQuantity == DEFAULT_QUANTITY) {
-                                updateProductRecomQuantity(item.id, DEFAULT_QUANTITY)
+                                updateProductRecomQuantity(item.productCardModel.productId, DEFAULT_QUANTITY)
                             } else {
-                                updateProductRecomQuantity(item.id, totalQuantity)
+                                updateProductRecomQuantity(item.productCardModel.productId, totalQuantity)
                             }
                         } else {
-                            updateProductRecomQuantity(item.id, DEFAULT_QUANTITY)
+                            updateProductRecomQuantity(item.productCardModel.productId, DEFAULT_QUANTITY)
                         }
                     }
                 }
@@ -484,7 +484,7 @@ object HomeLayoutMapper {
             val layout = homeLayoutItemUiModel.layout
             val uiModel = layout as HomeProductRecomUiModel
             val newRecommendationList = uiModel.productList.toMutableList()
-            val recommendationItem = newRecommendationList.firstOrNull { it.id == productId }
+            val recommendationItem = newRecommendationList.firstOrNull { it.productCardModel.productId == productId }
 
             if (recommendationItem?.productCardModel?.orderQuantity == quantity) return
 
@@ -556,12 +556,12 @@ object HomeLayoutMapper {
         return filter { it.layout is HomeProductRecomUiModel }.firstOrNull { uiModel ->
             val productRecom = uiModel.layout as HomeProductRecomUiModel
             val recommendations = productRecom.productList
-            recommendations.firstOrNull { it.id == productId } != null
+            recommendations.firstOrNull { it.productCardModel.productId == productId } != null
         }?.let { uiModel ->
             val productRecom = uiModel.layout as HomeProductRecomUiModel
             val recommendations = productRecom.productList.toMutableList()
 
-            val product = recommendations.first { it.id == productId }
+            val product = recommendations.first { it.productCardModel.productId == productId }
             val position = recommendations.indexOf(product)
 
             recommendations[position] = product.copy(productCardModel = product.productCardModel.copy(orderQuantity = quantity))

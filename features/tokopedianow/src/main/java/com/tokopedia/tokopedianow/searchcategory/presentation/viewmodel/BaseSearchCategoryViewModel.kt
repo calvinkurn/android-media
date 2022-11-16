@@ -62,7 +62,7 @@ import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference
 import com.tokopedia.tokopedianow.common.domain.usecase.SetUserPreferenceUseCase
 import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateOocUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
-import com.tokopedia.tokopedianow.common.model.TokoNowRecommendationCarouselUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationOocUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowRepurchaseUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateNoResultUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeRepurchaseMapper
@@ -340,7 +340,7 @@ abstract class BaseSearchCategoryViewModel(
             hostSource = DEFAULT_VALUE_SOURCE_SEARCH,
             serviceType = chooseAddressData?.service_type.orEmpty()
         ))
-        visitableList.add(TokoNowRecommendationCarouselUiModel(pageName = OOC_TOKONOW, miniCartSource = miniCartSource))
+        visitableList.add(TokoNowProductRecommendationOocUiModel(pageName = OOC_TOKONOW, miniCartSource = miniCartSource))
     }
 
     protected open fun onGetShopAndWarehouseFailed(throwable: Throwable) {
@@ -463,7 +463,7 @@ abstract class BaseSearchCategoryViewModel(
         visitableList.add(chooseAddressDataView)
         visitableList.add(TokoNowEmptyStateNoResultUiModel(activeFilterList = activeFilterList))
         visitableList.add(
-            TokoNowRecommendationCarouselUiModel(
+            TokoNowProductRecommendationOocUiModel(
                 pageName = TOKONOW_NO_RESULT,
                 keywords = getKeywordForGeneralSearchTracking(),
                 isBindWithPageName = true,
@@ -1240,8 +1240,8 @@ abstract class BaseSearchCategoryViewModel(
     }
 
     open fun onBindRecommendationCarousel(
-            element: TokoNowRecommendationCarouselUiModel,
-            adapterPosition: Int,
+        element: TokoNowProductRecommendationOocUiModel,
+        adapterPosition: Int,
     ) {
         launchCatchError(
                 block = { getRecommendationCarousel(element, adapterPosition) },
@@ -1250,26 +1250,26 @@ abstract class BaseSearchCategoryViewModel(
     }
 
     protected open suspend fun getRecommendationCarousel(
-            element: TokoNowRecommendationCarouselUiModel,
-            adapterPosition: Int,
+        element: TokoNowProductRecommendationOocUiModel,
+        adapterPosition: Int,
     ) {
         if (element.carouselData.state == RecommendationCarouselData.STATE_READY) return
 
         recommendationPositionInVisitableList = adapterPosition
 
-        val getRecommendationRequestParam = createRecommendationRequestParam(element)
-        val recommendationListData =
-                getRecommendationUseCase.getData(getRecommendationRequestParam)
-
-        updateRecommendationList(recommendationListData)
-        updateVisitableListForRecommendationCarousel(element, adapterPosition)
+//        val getRecommendationRequestParam = createRecommendationRequestParam(element)
+//        val recommendationListData =
+//                getRecommendationUseCase.getData(getRecommendationRequestParam)
+//
+//        updateRecommendationList(recommendationListData)
+//        updateVisitableListForRecommendationCarousel(element, adapterPosition)
     }
 
     protected open fun createRecommendationRequestParam(
-            recommendationCarouselDataView: TokoNowRecommendationCarouselUiModel
+            pageName: String
     ) = GetRecommendationRequestParam(
-            pageName = recommendationCarouselDataView.pageName,
-            categoryIds = getRecomCategoryId(recommendationCarouselDataView),
+            pageName = pageName,
+            categoryIds = getRecomCategoryId(pageName),
             xSource = RECOM_WIDGET,
             isTokonow = true,
             pageNumber = PAGE_NUMBER_RECOM_WIDGET,
@@ -1278,7 +1278,7 @@ abstract class BaseSearchCategoryViewModel(
     )
 
     protected open fun getRecomCategoryId(
-            recommendationCarouselDataView: TokoNowRecommendationCarouselUiModel
+            pageName: String
     ) = listOf<String>()
 
     protected open fun getRecomKeywords() = listOf<String>()
@@ -1305,7 +1305,7 @@ abstract class BaseSearchCategoryViewModel(
     }
 
     protected open suspend fun updateVisitableListForRecommendationCarousel(
-        element: TokoNowRecommendationCarouselUiModel,
+        element: TokoNowProductRecommendationOocUiModel,
         adapterPosition: Int,
     ) {
         val recommendationData = recommendationList.firstOrNull() ?: RecommendationWidget()
@@ -1324,7 +1324,7 @@ abstract class BaseSearchCategoryViewModel(
     }
 
     protected open suspend fun getRecommendationCarouselError(
-        element: TokoNowRecommendationCarouselUiModel,
+        element: TokoNowProductRecommendationOocUiModel,
         adapterPosition: Int,
     ) {
         element.carouselData = RecommendationCarouselData(

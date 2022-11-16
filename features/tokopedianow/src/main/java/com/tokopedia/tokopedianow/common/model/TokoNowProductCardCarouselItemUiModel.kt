@@ -21,7 +21,6 @@ data class TokoNowProductCardCarouselItemUiModel(
     /**
      * Mandatory params
      */
-    val id: String,
     var productCardModel: TokoNowProductCardViewUiModel,
 ): Visitable<TokoNowProductCardCarouselTypeFactory>, ImpressHolder() {
     override fun type(typeFactory: TokoNowProductCardCarouselTypeFactory): Int {

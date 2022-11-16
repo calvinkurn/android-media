@@ -80,7 +80,7 @@ class HomeProductRecomCallback(
     ) {
         if (userSession.isLoggedIn) {
             viewModel.addProductToCart(
-                productId = product.id,
+                productId = product.productCardModel.productId,
                 quantity = quantity,
                 shopId = product.shopId,
                 type = TokoNowLayoutType.PRODUCT_RECOM
@@ -97,7 +97,7 @@ class HomeProductRecomCallback(
     ) {
         if (userSession.isLoggedIn) {
             viewModel.addProductToCart(
-                productId = product.id,
+                productId = product.productCardModel.productId,
                 quantity = quantity,
                 shopId = product.shopId,
                 type = TokoNowLayoutType.PRODUCT_RECOM_ANIMATION_FINISHED
@@ -114,7 +114,7 @@ class HomeProductRecomCallback(
         context?.apply {
             AtcVariantHelper.goToAtcVariant(
                 context = this,
-                productId = product.id,
+                productId = product.productCardModel.productId,
                 pageSource = VariantPageSource.TOKONOW_PAGESOURCE,
                 isTokoNow = true,
                 shopId = product.shopId,

@@ -54,8 +54,8 @@ object LeftCarouselMapper {
         if(channelModel.channelHeader.applink.isNotEmpty()) {
             productList.add(
                 TokoNowSeeMoreCardCarouselUiModel(
-                    channelId = channelModel.id,
-                    channelHeaderName = channelModel.channelHeader.name,
+                    id = channelModel.id,
+                    headerName = channelModel.channelHeader.name,
                     appLink = channelModel.channelHeader.applink
                 )
             )
