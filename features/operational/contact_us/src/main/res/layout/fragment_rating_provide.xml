@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <TextView
+    <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/toolbar_textview"
         android:layout_width="match_parent"
         android:layout_height="?actionBarSize"

@@ -1,12 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="contact_us_unread_ticket_background">#66ebffef</color>
-
-    <color name="contact_us_green_250">#42B549</color>
-    <color name="contact_us_green_500">#259b24</color>
-    <color name="contact_us_red_600">#dd191d</color>
-    <color name="contact_us_black_38">#60000000</color>
-
     <color name="contact_us_dms_detail_background">#FFFFFF</color>
     <color name="contact_us_dms_detail_text">#F531353B</color>
     <color name="contact_us_dms_detail_date">#AD31353B</color>
@@ -15,7 +8,6 @@
     <color name="contact_us_dms_detail_header_text">#F531353B</color>
     <color name="contact_us_dms_detail_header_grey">#c4c4c4</color>
     <color name="contact_us_dms_detail_header_divider">#F0F3F7</color>
-    <color name="contact_us_dms_detail_view_txn">#03ac0e</color>
     <color name="contact_us_dms_chatbot_entry">#f531353b</color>
     <color name="contact_us_dms_complain_text">#AD31353B</color>
     <color name="contact_us_dms_complain_bg">#03AC0E</color>
@@ -27,6 +19,8 @@
     <color name="contact_us_dms_transparent">#00000000</color>
     <color name="contact_us_dms_no_ticket_view">#1e000000</color>
     <color name="contact_us_dms_priority_color">#9342ED</color>
+    <color name="contact_us_dms_detail_view_txn">#03AC0E</color>
+    <color name="contact_us_dms_rating_divider">#F3F4F5</color>
 
 
 </resources>
