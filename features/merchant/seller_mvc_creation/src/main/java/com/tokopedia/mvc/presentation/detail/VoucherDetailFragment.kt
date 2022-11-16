@@ -22,6 +22,7 @@ import com.tokopedia.mvc.domain.entity.VoucherDetailData
 import com.tokopedia.mvc.util.constant.DiscountTypeConstant
 import com.tokopedia.mvc.util.constant.PromoTypeConstant
 import com.tokopedia.mvc.util.constant.TargetBuyerConstant
+import com.tokopedia.mvc.util.constant.VoucherStatusConstant
 import com.tokopedia.mvc.util.constant.VoucherTargetConstant.VOUCHER_TARGET_PUBLIC
 import com.tokopedia.mvc.util.constant.VoucherTypeConstant.VOUCHER_PRODUCT
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
@@ -161,20 +162,20 @@ class VoucherDetailFragment : BaseDaggerFragment() {
         headerBinding?.run {
             tpgVoucherStatus.apply {
                 when (data.voucherStatus) {
-                    1 -> {
-                        text = "Mendatang"
+                    VoucherStatusConstant.NOT_STARTED -> {
+                        text = getString(R.string.smvc_status_upcoming_label)
                         setTextColorCompat(com.tokopedia.unifyprinciples.R.color.Unify_NN600)
                     }
-                    2 -> {
-                        text = "Berlangsung"
+                    VoucherStatusConstant.ONGOING  -> {
+                        text = getString(R.string.smvc_status_ongoing_label)
                         setTextColorCompat(com.tokopedia.unifyprinciples.R.color.Green_G500)
                     }
-                    3 -> {
-                        text = "Berakhir"
+                    VoucherStatusConstant.ENDED  -> {
+                        text = getString(R.string.smvc_status_ended_label)
                         setTextColorCompat(com.tokopedia.unifyprinciples.R.color.Unify_NN600)
                     }
-                    4 -> {
-                        text = "Dihentikan"
+                    VoucherStatusConstant.STOPPED  -> {
+                        text = getString(R.string.smvc_status_stopped_label)
                         setTextColorCompat(com.tokopedia.unifyprinciples.R.color.Red_R500)
                     }
                 }
@@ -185,18 +186,18 @@ class VoucherDetailFragment : BaseDaggerFragment() {
     private fun setupVoucherAction(data: VoucherDetailData) {
         headerBinding?.run {
             when (data.voucherStatus) {
-                1 -> {
+                VoucherStatusConstant.NOT_STARTED -> {
                     btnUbahKupon.visible()
                     timer.invisible()
                     tpgPeriodStop.invisible()
                 }
-                2 -> {
+                VoucherStatusConstant.ONGOING -> {
                     btnUbahKupon.invisible()
                     timer.visible()
                     tpgPeriodStop.invisible()
                     startTimer(data.voucherFinishTime.toDate(DateConstant.DATE_WITH_SECOND_PRECISION_ISO_8601))
                 }
-                3 -> {
+                VoucherStatusConstant.ENDED -> {
                     btnUbahKupon.invisible()
                     timer.invisible()
                     tpgPeriodStop.invisible()
@@ -286,9 +287,9 @@ class VoucherDetailFragment : BaseDaggerFragment() {
 
     private fun Typography.setPromoType(voucherType: Int) {
         this.text = when (voucherType) {
-            PromoTypeConstant.SHIPPING -> "Gratis Ongkir"
-            PromoTypeConstant.DISCOUNT -> "Diskon"
-            else -> "Cashback"
+            PromoTypeConstant.SHIPPING -> getString(R.string.smvc_free_shipping_label)
+            PromoTypeConstant.DISCOUNT -> getString(R.string.smvc_discount_label)
+            else -> getString(R.string.smvc_cashback_label)
         }
     }
 
@@ -299,8 +300,8 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                 else -> View.VISIBLE
             }
             tpgDeductionType.text = when (data.voucherDiscountType) {
-                DiscountTypeConstant.NOMINAL -> "Nominal"
-                else -> "Persentase"
+                DiscountTypeConstant.NOMINAL -> getString(R.string.smvc_nominal_label)
+                else -> getString(R.string.smvc_percentage_label)
             }
         }
     }
@@ -309,17 +310,17 @@ class VoucherDetailFragment : BaseDaggerFragment() {
         voucherSettingBinding?.run {
             when (data.voucherType) {
                 PromoTypeConstant.SHIPPING -> {
-                    tpgVoucherNominalLabel.text = "Nominal Gratis Ongkir"
+                    tpgVoucherNominalLabel.text = getString(R.string.smvc_nominal_free_shipping_label)
                     tpgVoucherNominal.text = data.voucherDiscountAmount.getCurrencyFormatted()
                 }
                 PromoTypeConstant.CASHBACK -> {
                     when (data.voucherDiscountType) {
                         DiscountTypeConstant.NOMINAL -> {
-                            tpgVoucherNominalLabel.text = "Nominal Cashback"
+                            tpgVoucherNominalLabel.text = getString(R.string.smvc_nominal_cashback_label)
                             tpgVoucherNominal.text = data.voucherDiscountAmount.getCurrencyFormatted()
                         }
                         else -> {
-                            tpgVoucherNominalLabel.text = "Persentase Cashback"
+                            tpgVoucherNominalLabel.text = getString(R.string.smvc_percentage_cashback_label)
                             tpgVoucherNominal.text = data.voucherDiscountAmount.getPercentFormatted()
                         }
                     }
@@ -327,11 +328,11 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                 else -> {
                     when (data.voucherDiscountType) {
                         DiscountTypeConstant.NOMINAL -> {
-                            tpgVoucherNominalLabel.text = "Nominal Diskon"
+                            tpgVoucherNominalLabel.text = getString(R.string.smvc_nominal_discount_label)
                             tpgVoucherNominal.text = data.voucherDiscountAmount.getCurrencyFormatted()
                         }
                         else -> {
-                            tpgVoucherNominalLabel.text = "Persentase Diskon"
+                            tpgVoucherNominalLabel.text = getString(R.string.smvc_percentage_discount_label)
                             tpgVoucherNominal.text = data.voucherDiscountAmount.getPercentFormatted()
                         }
                     }
@@ -362,10 +363,10 @@ class VoucherDetailFragment : BaseDaggerFragment() {
 
     private fun Typography.setTargetBuyer(data: VoucherDetailData) {
         this.text = when (data.targetBuyer) {
-            TargetBuyerConstant.ALL_USER -> "Semua Pembeli"
-            TargetBuyerConstant.NEW_FOLLOWER -> "Pengikut Baru"
-            TargetBuyerConstant.NEW_USER -> "Pengguna Baru"
-            else -> "Member"
+            TargetBuyerConstant.ALL_USER -> getString(R.string.smvc_all_buyer_label)
+            TargetBuyerConstant.NEW_FOLLOWER -> getString(R.string.smvc_new_follower_label)
+            TargetBuyerConstant.NEW_USER -> getString(R.string.smvc_new_user_label)
+            else -> getString(R.string.smvc_member_label)
         }
     }
 
