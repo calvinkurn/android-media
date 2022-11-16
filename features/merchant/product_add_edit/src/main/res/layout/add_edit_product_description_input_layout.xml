@@ -21,7 +21,7 @@
         android:theme="@style/TextDarkMode"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:layout_marginTop="16dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tvDescription"
         app:text_field_counter="2000"
@@ -31,7 +31,7 @@
     <com.tokopedia.product.addedit.tooltip.presentation.TooltipCardView
         android:id="@+id/layoutDescriptionTips"
         app:text="@string/label_add_product_description_tips"
-        android:layout_marginTop="@dimen/spacing_lvl4"
+        android:layout_marginTop="16dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"

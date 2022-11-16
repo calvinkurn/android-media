@@ -13,7 +13,7 @@
     <com.tokopedia.unifyprinciples.Typography
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/layout_lvl2"
+        android:layout_marginTop="16dp"
         android:textColor="@color/Unify_N700"
         android:gravity="center"
         app:typographyType="heading_3"
@@ -23,7 +23,7 @@
     <com.tokopedia.unifyprinciples.Typography
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/unify_space_12"
+        android:layout_marginTop="12dp"
         android:ellipsize="end"
         android:gravity="center"
         android:textColor="@color/Unify_N700_44"
@@ -33,13 +33,13 @@
     <com.tokopedia.unifycomponents.CardUnify
         app:card_type="clear"
         app:card_background_color="@color/Unify_N50_96"
-        android:layout_marginTop="@dimen/spacing_lvl5"
-        android:layout_marginBottom="@dimen/spacing_lvl5"
+        android:layout_marginTop="24dp"
+        android:layout_marginBottom="24dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:padding="@dimen/spacing_lvl4"
+            android:padding="16dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -74,8 +74,8 @@
                 android:layout_height="wrap_content"
                 android:gravity="start"
                 android:textColor="@color/Unify_N700"
-                android:layout_marginTop="@dimen/unify_space_12"
-                android:layout_marginStart="@dimen/spacing_lvl3"
+                android:layout_marginTop="12dp"
+                android:layout_marginStart="8dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@+id/iconSearch"
                 app:layout_constraintTop_toBottomOf="@+id/titleSpecificationPoints"
@@ -102,8 +102,8 @@
                 android:layout_height="wrap_content"
                 android:gravity="start"
                 android:textColor="@color/Unify_N700"
-                android:layout_marginStart="@dimen/spacing_lvl3"
-                android:layout_marginTop="@dimen/spacing_lvl3"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="1.0"
                 app:layout_constraintStart_toEndOf="@+id/iconSearch"
