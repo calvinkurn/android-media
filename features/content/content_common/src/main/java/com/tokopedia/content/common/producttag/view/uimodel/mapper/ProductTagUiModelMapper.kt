@@ -3,12 +3,16 @@ package com.tokopedia.content.common.producttag.view.uimodel.mapper
 import com.tokopedia.content.common.producttag.model.*
 import com.tokopedia.content.common.producttag.view.uimodel.*
 import com.tokopedia.filter.common.data.DynamicFilterModel
+import java.math.RoundingMode
+import java.text.DecimalFormat
 import javax.inject.Inject
 
 /**
  * Created By : Jonathan Darwin on April 26, 2022
  */
 class ProductTagUiModelMapper @Inject constructor() {
+
+    private val decimalFormat = DecimalFormat("#.#")
 
     fun mapLastTaggedProduct(response: GetFeedLastTaggedProductResponse): PagedDataUiModel<ProductUiModel> {
         return PagedDataUiModel(
@@ -22,7 +26,7 @@ class ProductTagUiModelMapper @Inject constructor() {
                     coverURL = it.coverURL,
                     webLink = it.webLink,
                     appLink = it.appLink,
-                    star = it.star,
+                    star = decimalFormat.format(it.star / 20.0).toString(),
                     price = it.price,
                     priceFmt = it.priceFmt,
                     isDiscount = it.isDiscount,
