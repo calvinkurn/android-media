@@ -876,7 +876,7 @@ class TokoNowHomeViewModel @Inject constructor(
                 )
             )
 
-            if (recommendationWidgets.first().recommendationItemList.isNotEmpty() && productId != "3525110198") {
+            if (recommendationWidgets.first().recommendationItemList.isNotEmpty()) {
                 homeLayoutItemList.mapRealTimeRecommendation(
                     channelId,
                     productId,
