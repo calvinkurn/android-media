@@ -17,6 +17,7 @@ import com.tokopedia.home_component.R
 import com.tokopedia.home_component.customview.DynamicChannelHeaderView
 import com.tokopedia.home_component.customview.HeaderListener
 import com.tokopedia.home_component.customview.ShimmeringImageView
+import com.tokopedia.home_component.customview.util.RoundedCornersTransformation
 import com.tokopedia.home_component.decoration.GridSpacingItemDecoration
 import com.tokopedia.home_component.decoration.clearDecorations
 import com.tokopedia.home_component.listener.DynamicLegoBannerListener
@@ -28,6 +29,7 @@ import com.tokopedia.home_component.util.ChannelStyleUtil
 import com.tokopedia.home_component.util.ChannelWidgetUtil
 import com.tokopedia.home_component.util.DynamicChannelTabletConfiguration
 import com.tokopedia.home_component.util.FPM_DYNAMIC_LEGO_BANNER
+import com.tokopedia.home_component.util.toDpInt
 import com.tokopedia.home_component.visitable.DynamicLegoBannerDataModel
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.toPx
@@ -52,6 +54,7 @@ class DynamicLegoBannerViewHolder(itemView: View,
         private const val SPAN_SPACING_0 = 0
         private const val SPAN_SPACING_ROUNDED = 8f
         private const val SPAN_SPACING_BLEEDING = 10
+        private const val ROUNDED_CORNER_RADIUS = 8f
     }
 
     override fun bind(element: DynamicLegoBannerDataModel) {
@@ -99,38 +102,27 @@ class DynamicLegoBannerViewHolder(itemView: View,
                     isUsingPaddingStyle,
                     element.cardInteraction
             )
-            var marginValue = 0
-            var marginBottom = 0
             recyclerView.clearDecorations()
-
-            //setup for lego 4 banner rollence
-            //need to be deleted after rollence duration end
-            if (element.channelModel.channelConfig.layout == DynamicChannelLayout.LAYOUT_LEGO_4_IMAGE && isUsingPaddingStyle) {
-                if (recyclerView.itemDecorationCount == 0) recyclerView.addItemDecoration(
-                        GridSpacingItemDecoration(DynamicChannelTabletConfiguration.getSpanCountFor2x2(itemView.context), SPAN_SPACING_ROUNDED.toDpInt(), false))
-                marginValue = itemView.resources.getDimension(R.dimen.home_component_margin_default).toInt()
+            //setup for lego rollence
+            val layout = element.channelModel.channelConfig.layout
+            if(layout == DynamicChannelLayout.LAYOUT_LEGO_4_IMAGE || layout == DynamicChannelLayout.LAYOUT_LEGO_2_IMAGE) {
+                val spanCount = if(layout == DynamicChannelLayout.LAYOUT_LEGO_4_IMAGE) {
+                    DynamicChannelTabletConfiguration.getSpanCountFor2x2(itemView.context)
+                } else SPAN_COUNT_2
+                val spacing = if(isUsingPaddingStyle) SPAN_SPACING_ROUNDED.toDpInt() else SPAN_SPACING_BLEEDING
+                if (recyclerView.itemDecorationCount == 0) {
+                    recyclerView.addItemDecoration(GridSpacingItemDecoration(spanCount, spacing, false))
+                }
             }
-            //setup for lego 2 banner rollence
-            //need to be deleted after rollence duration end
-            else if (element.channelModel.channelConfig.layout == DynamicChannelLayout.LAYOUT_LEGO_2_IMAGE && isUsingPaddingStyle) {
-                if (recyclerView.itemDecorationCount == 0) recyclerView.addItemDecoration(
-                        GridSpacingItemDecoration(SPAN_COUNT_2, SPAN_SPACING_ROUNDED.toDpInt(), false))
-                marginValue = itemView.resources.getDimension(R.dimen.home_component_margin_default).toInt()
-            } else if (element.channelModel.channelConfig.layout == DynamicChannelLayout.LAYOUT_LEGO_4_IMAGE
-                    || element.channelModel.channelConfig.layout == DynamicChannelLayout.LAYOUT_LEGO_2_IMAGE) {
-                if (recyclerView.itemDecorationCount == 0) recyclerView.addItemDecoration(
-                        GridSpacingItemDecoration(DynamicChannelTabletConfiguration.getSpanCountFor2x2(itemView.context), SPAN_SPACING_BLEEDING, false))
-                marginValue = 0
-            }
-            marginBottom = marginValue
-            //end setup for lego 4 banner rollence
+            //end for lego rollence
+            val marginValue = if(isUsingPaddingStyle) itemView.resources.getDimension(R.dimen.home_component_margin_default).toInt() else 0
             val marginLayoutParams = recyclerView.layoutParams as ConstraintLayout.LayoutParams
             marginLayoutParams.leftMargin = marginValue
             marginLayoutParams.rightMargin = marginValue
             marginLayoutParams.topToBottom = R.id.home_component_header_view
             recyclerView.layoutParams = marginLayoutParams
             recyclerView.setPadding(
-                0,0,0, marginBottom
+                0,0,0, marginValue
             )
 
         } else {
@@ -179,15 +171,18 @@ class DynamicLegoBannerViewHolder(itemView: View,
 
         companion object {
             private val LEGO_SQUARE = R.layout.layout_dynamic_lego_item
-            private val LEGO_SQUARE_PADDING = R.layout.layout_dynamic_lego_item
-            private val LEGO_LANDSCAPE_PADDING = R.layout.layout_dynamic_lego_landscape
-            private val LEGO_LANDSCAPE = R.layout.layout_dynamic_lego_landscape_non_radius
+            private val LEGO_LANDSCAPE = R.layout.layout_dynamic_lego_landscape
+            private val LEGO_LANDSCAPE_NON_RADIUS = R.layout.layout_dynamic_lego_landscape_non_radius
+            private val POSITION_TOP_LEFT = 0
+            private val POSITION_TOP_RIGHT = 2
+            private val POSITION_BOTTOM_LEFT = 3
+            private val POSITION_BOTTOM_RIGHT = 5
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LegoItemViewHolder {
             val v = LayoutInflater.from(parent.context).inflate(viewType, parent, false)
             val viewHolder = LegoItemViewHolder(v)
-            if(viewType == LEGO_LANDSCAPE_PADDING){
+            if(viewType == LEGO_LANDSCAPE){
                 viewHolder.cardUnify.animateOnPress = if(cardInteraction) CardUnify2.ANIMATE_OVERLAY_BOUNCE else CardUnify2.ANIMATE_OVERLAY
             }
             else if(viewType == LEGO_SQUARE){
@@ -201,19 +196,19 @@ class DynamicLegoBannerViewHolder(itemView: View,
 
         override fun getItemViewType(position: Int): Int {
             return if (layout == DynamicChannelLayout.LAYOUT_LEGO_4_IMAGE && isUsingPaddingStyle)
-                LEGO_LANDSCAPE_PADDING
+                LEGO_LANDSCAPE
             else if (layout == DynamicChannelLayout.LAYOUT_LEGO_2_IMAGE && isUsingPaddingStyle)
-                LEGO_LANDSCAPE_PADDING
+                LEGO_LANDSCAPE
             else if (layout == DynamicChannelLayout.LAYOUT_LEGO_4_IMAGE
                     || layout == DynamicChannelLayout.LAYOUT_LEGO_2_IMAGE)
-                LEGO_LANDSCAPE
+                LEGO_LANDSCAPE_NON_RADIUS
             else LEGO_SQUARE
         }
 
         override fun onBindViewHolder(holder: LegoItemViewHolder, position: Int) {
             try {
                 val grid = grids[position]
-                setLegoViewData(holder, grid)
+                setLegoViewData(holder, grid, position)
                 setLegoClickListener(holder, grid, position)
                 if (!isCacheData) {
                     setLegoImpressionListener(holder)
@@ -224,9 +219,19 @@ class DynamicLegoBannerViewHolder(itemView: View,
 
         }
 
-        private fun setLegoViewData(holder: LegoItemViewHolder, grid: ChannelGrid) {
-            if (layout == DynamicChannelLayout.LAYOUT_LEGO_4_IMAGE) {
-                holder.imageView.loadImage(grid.imageUrl, FPM_DYNAMIC_LEGO_BANNER)
+        private fun setLegoViewData(holder: LegoItemViewHolder, grid: ChannelGrid, position: Int) {
+            if(getItemViewType(position) == LEGO_SQUARE && isUsingPaddingStyle) {
+                val cornerType = when(position) {
+                    POSITION_TOP_LEFT -> RoundedCornersTransformation.CornerType.TOP_LEFT
+                    POSITION_TOP_RIGHT -> RoundedCornersTransformation.CornerType.TOP_RIGHT
+                    POSITION_BOTTOM_LEFT -> RoundedCornersTransformation.CornerType.BOTTOM_LEFT
+                    POSITION_BOTTOM_RIGHT -> RoundedCornersTransformation.CornerType.BOTTOM_RIGHT
+                    else -> null
+                }
+                cornerType?.let {
+                    holder.imageView.loadImageRounded(grid.imageUrl, ROUNDED_CORNER_RADIUS.toDpInt(),
+                        FPM_DYNAMIC_LEGO_BANNER, it)
+                } ?: holder.imageView.loadImage(grid.imageUrl, FPM_DYNAMIC_LEGO_BANNER)
             } else {
                 holder.imageView.loadImage(grid.imageUrl, FPM_DYNAMIC_LEGO_BANNER)
             }
@@ -268,7 +273,7 @@ class DynamicLegoBannerViewHolder(itemView: View,
                     }
                 }
             }
-            if(getItemViewType(position) == LEGO_LANDSCAPE_PADDING) holder.itemView.setOnClickListener(clickListener)
+            if(getItemViewType(position) == LEGO_LANDSCAPE) holder.itemView.setOnClickListener(clickListener)
             else holder.imageView.setOnClickListener(clickListener)
         }
 
