@@ -1,5 +1,6 @@
 package com.tokopedia.home_component.viewholders
 
+import android.content.Context
 import android.graphics.drawable.GradientDrawable
 import android.view.View
 import android.view.ViewGroup
@@ -8,13 +9,14 @@ import androidx.annotation.LayoutRes
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
+import androidx.core.view.animation.PathInterpolatorCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SnapHelper
+import androidx.recyclerview.widget.LinearSmoothScroller
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_component.R
-import com.tokopedia.unifyprinciples.R as RUnify
 import com.tokopedia.home_component.customview.HeaderListener
 import com.tokopedia.home_component.databinding.HomeComponentBannerBinding
 import com.tokopedia.home_component.decoration.BannerChannelDecoration
@@ -43,6 +45,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import kotlin.coroutines.CoroutineContext
+import com.tokopedia.unifyprinciples.R as RUnify
+
 
 /**
  * @author by devarafikry on 11/28/20.
@@ -136,7 +140,10 @@ class BannerComponentViewHolder(itemView: View,
     }
 
     fun scrollTo(position: Int) {
-        rvBanner.smoothScrollToPosition(position)
+        val resources = itemView.context.resources
+        val width = resources.displayMetrics.widthPixels
+        val paddings = 2 * resources.getDimensionPixelSize(R.dimen.home_component_margin_default)
+        rvBanner.smoothScrollBy(width-paddings,0, INTERPOLATOR)
     }
 
     private suspend fun autoScrollCoroutine() = withContext(Dispatchers.Main){
@@ -175,7 +182,7 @@ class BannerComponentViewHolder(itemView: View,
     private fun initBanner(list: List<BannerItemModel>, dimenMarginTop: Int, dimenMarginBottom: Int){
         rvBanner.clearOnScrollListeners()
 
-        val snapHelper: SnapHelper = PagerSnapHelper()
+        val snapHelper: SnapHelper = BannerSnapHelper(itemView.context)
         rvBanner.onFlingListener = null
 
         val layoutParams = rvBanner.layoutParams as ConstraintLayout.LayoutParams
@@ -327,5 +334,35 @@ class BannerComponentViewHolder(itemView: View,
         private const val MARGIN_ZERO = 0
         private const val DOTS_SIZE = 6f
         private const val DOTS_MARGIN = 2f
+        private val INTERPOLATOR = PathInterpolatorCompat.create(.63f, .01f, .29f, 1f)
+    }
+
+    class BannerSnapHelper(private val context: Context): PagerSnapHelper() {
+        companion object {
+            private const val FLING_DURATION = 600
+            private const val DX_POS = 0
+            private const val DY_POS = 1
+        }
+
+        override fun createScroller(layoutManager: RecyclerView.LayoutManager): RecyclerView.SmoothScroller? {
+            if (layoutManager !is RecyclerView.SmoothScroller.ScrollVectorProvider) {
+                return null
+            }
+            return object : LinearSmoothScroller(context) {
+                override fun onTargetFound(
+                    targetView: View,
+                    state: RecyclerView.State,
+                    action: Action
+                ) {
+                    val snapDistances = calculateDistanceToFinalSnap(layoutManager, targetView)
+                    val dx = snapDistances?.get(DX_POS)?:0
+                    val dy = snapDistances?.get(DY_POS)?:0
+                    val time = FLING_DURATION
+                    action.dx = dx
+                    action.dy = dy
+                    action.update(dx, dy, time, INTERPOLATOR)
+                }
+            }
+        }
     }
 }
