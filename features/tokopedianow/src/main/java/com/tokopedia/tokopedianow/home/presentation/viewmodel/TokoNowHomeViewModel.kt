@@ -589,7 +589,10 @@ class TokoNowHomeViewModel @Inject constructor(
      */
     fun getLayoutComponentData(localCacheModel: LocalCacheModel) {
         launchCatchError(block = {
-            homeLayoutItemList.filter { it.state == HomeLayoutItemState.NOT_LOADED }.forEach {
+            val layoutItems = mutableListOf<HomeLayoutItemUiModel>()
+            layoutItems.addAll(homeLayoutItemList)
+
+            layoutItems.filter { it.state == HomeLayoutItemState.NOT_LOADED }.forEach {
                 homeLayoutItemList.setStateToLoading(it)
 
                 when (val item = it.layout) {

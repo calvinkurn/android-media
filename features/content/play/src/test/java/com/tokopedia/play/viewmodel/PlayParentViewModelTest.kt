@@ -8,6 +8,7 @@ import com.tokopedia.play.model.PlayResponseBuilder
 import com.tokopedia.play.robot.parent.andWhen
 import com.tokopedia.play.robot.parent.givenParentViewModelRobot
 import com.tokopedia.play.robot.parent.thenVerify
+import com.tokopedia.play.view.storage.PagingChannel
 import com.tokopedia.play.view.storage.PlayChannelData
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
@@ -33,8 +34,8 @@ class PlayParentViewModelTest {
     @Test
     fun `given there are available channels, when first init, then channels can be retrieved`() {
         val response = responseBuilder.buildChannelDetailsWithRecomResponse()
-        coEvery { repo.getChannelList(any(), any()) } returns PlayViewerChannelRepository.ChannelListResponse(
-            channelData = mapper.map(response, classBuilder.getMapperExtraParams()),
+        coEvery { repo.getChannels(any(), any()) } returns PagingChannel(
+            channelList = mapper.map(response, classBuilder.getMapperExtraParams()),
             cursor = response.channelDetails.meta.cursor,
         )
 
@@ -49,7 +50,7 @@ class PlayParentViewModelTest {
 
     @Test
     fun `given retrieving channel is error, when first init, then channels can not be retrieved`() {
-        coEvery { repo.getChannelList(any(), any()) } throws IllegalStateException("Channel is error")
+        coEvery { repo.getChannels(any(), any()) } throws IllegalStateException("Channel is error")
 
         givenParentViewModelRobot(
             repo = repo,
@@ -78,8 +79,8 @@ class PlayParentViewModelTest {
     fun `given channel data is already stored, when retrieved existing channel id data, then it should return the correct data`() {
         val response = responseBuilder.buildChannelDetailsWithRecomResponse()
         val channelData = mapper.map(response, classBuilder.getMapperExtraParams())
-        coEvery { repo.getChannelList(any(), any()) } returns PlayViewerChannelRepository.ChannelListResponse(
-            channelData = channelData,
+        coEvery { repo.getChannels(any(), any()) } returns PagingChannel(
+            channelList = channelData,
             cursor = response.channelDetails.meta.cursor,
         )
 
@@ -94,8 +95,8 @@ class PlayParentViewModelTest {
     @Test
     fun `given channel data is already stored, when retrieved invalid channel id data, then it should return error`() {
         val response = responseBuilder.buildChannelDetailsWithRecomResponse()
-        coEvery { repo.getChannelList(any(), any()) } returns PlayViewerChannelRepository.ChannelListResponse(
-            channelData = mapper.map(response, classBuilder.getMapperExtraParams()),
+        coEvery { repo.getChannels(any(), any()) } returns PagingChannel(
+            channelList = mapper.map(response, classBuilder.getMapperExtraParams()),
             cursor = response.channelDetails.meta.cursor,
         )
 
@@ -111,8 +112,8 @@ class PlayParentViewModelTest {
     fun `given channel data is already stored, when data is overridden, then it should return newest data`() {
         val response = responseBuilder.buildChannelDetailsWithRecomResponse()
         val mappedData = mapper.map(response, classBuilder.getMapperExtraParams())
-        coEvery { repo.getChannelList(any(), any()) } returns PlayViewerChannelRepository.ChannelListResponse(
-            channelData = mappedData,
+        coEvery { repo.getChannels(any(), any()) } returns PagingChannel(
+            channelList = mappedData,
             cursor = response.channelDetails.meta.cursor,
         )
 

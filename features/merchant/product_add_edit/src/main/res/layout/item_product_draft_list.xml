@@ -5,21 +5,21 @@
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="horizontal"
-    android:padding="@dimen/spacing_lvl3"
+    android:padding="8dp"
     android:baselineAligned="false"
     android:clipChildren="false"
     android:clipToPadding="false">
 
     <RelativeLayout
-        android:layout_width="@dimen/layout_lvl7"
-        android:layout_height="@dimen/layout_lvl7"
-        android:layout_marginStart="@dimen/spacing_lvl3"
-        android:layout_marginEnd="@dimen/unify_space_12">
+        android:layout_width="64dp"
+        android:layout_height="64dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="12dp">
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/ivProduct"
-            android:layout_width="@dimen/layout_lvl7"
-            android:layout_height="@dimen/layout_lvl7"
+            android:layout_width="64dp"
+            android:layout_height="64dp"
             android:layout_centerInParent="true"
             app:srcCompat="@drawable/ic_image_not_available" />
 
@@ -39,28 +39,28 @@
             android:singleLine="true"
             tools:text="Nama Produk"
             android:textColor="@color/Unify_N700"
-            android:textSize="@dimen/unify_font_14" />
+            android:textSize="14sp" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvCompletionPercentage"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/unify_space_12"
+            android:layout_marginTop="12dp"
             android:singleLine="true"
             tools:text="38% complete"
             android:textColor="@color/Unify_N300"
-            android:textSize="@dimen/unify_space_12" />
+            android:textSize="12dp" />
 
         <com.akexorcist.roundcornerprogressbar.RoundCornerProgressBar
             android:id="@+id/pbCompletion"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/layout_lvl1"
+            android:layout_height="8dp"
             app:rcBackgroundColor="@color/Unify_N300"
             app:rcMax="100"
             app:rcProgress="0"
             app:rcProgressColor="@color/Unify_G500"
-            app:rcRadius="@dimen/spacing_lvl2"
-            android:layout_marginTop="@dimen/spacing_lvl1"/>
+            app:rcRadius="4dp"
+            android:layout_marginTop="2dp"/>
 
     </LinearLayout>
 
@@ -69,7 +69,7 @@
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
         android:layout_marginStart="12dp"
-        android:padding="@dimen/spacing_lvl2"
+        android:padding="4dp"
         android:background="@drawable/selectable_white_background"
         android:clickable="true"
         android:focusable="true">

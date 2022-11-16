@@ -1,9 +1,7 @@
 package com.tokopedia.tokopoints.view.cataloglisting
 
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
-import com.tokopedia.tokopoints.view.cataloglisting.CatalogListingRepository
 import com.tokopedia.tokopoints.view.model.TokoPointDetailEntity
-import com.tokopedia.tokopoints.view.model.ValidateCouponBaseEntity
 import com.tokopedia.tokopoints.view.util.CommonConstant
 import io.mockk.*
 import kotlinx.coroutines.runBlocking

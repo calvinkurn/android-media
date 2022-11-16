@@ -28,8 +28,8 @@
         android:id="@+id/btn_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:paddingTop="@dimen/layout_lvl4"
-        android:paddingBottom="@dimen/layout_lvl3"
+        android:paddingTop="32dp"
+        android:paddingBottom="24dp"
         app:layout_constraintTop_toBottomOf="@id/quickEditPriceTextField">
 
         <com.tokopedia.unifycomponents.UnifyButton
