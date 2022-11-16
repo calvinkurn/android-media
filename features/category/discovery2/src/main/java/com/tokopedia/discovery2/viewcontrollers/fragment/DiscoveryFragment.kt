@@ -61,6 +61,8 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Compa
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.PIN_PRODUCT
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.PRODUCT_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.RECOM_PRODUCT_ID
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.DYNAMIC_SUBTITLE
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.QUERY_PARENT
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.SHOP_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.SOURCE
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.TARGET_COMP_ID
@@ -241,6 +243,7 @@ class DiscoveryFragment :
                 bundle.putString(CAMPAIGN_ID, queryParameterMap[CAMPAIGN_ID])
                 bundle.putString(VARIANT_ID, queryParameterMap[VARIANT_ID])
                 bundle.putString(SHOP_ID, queryParameterMap[SHOP_ID])
+                bundle.putString(QUERY_PARENT, queryParameterMap[QUERY_PARENT])
             }
         }
     }
