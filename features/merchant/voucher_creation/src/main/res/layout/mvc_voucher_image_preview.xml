@@ -184,7 +184,7 @@
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/bannerPromoName"
-        android:layout_width="@dimen/layout_lvl0"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:textColor="@color/white"
         android:textStyle="bold"

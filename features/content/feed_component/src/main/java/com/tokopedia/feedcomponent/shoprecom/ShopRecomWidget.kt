@@ -42,8 +42,9 @@ class ShopRecomWidget : ConstraintLayout, LifecycleObserver, ShopRecomWidgetCall
         LinearLayoutManager(context, LinearLayoutManager.HORIZONTAL, false)
     }
 
+    private var nextCursor: String = ""
     private val mAdapterShopRecom: ShopRecomAdapter by lazy(LazyThreadSafetyMode.NONE) {
-        ShopRecomAdapter(this)
+        ShopRecomAdapter(this) { mListener?.onShopRecomLoadingNextPage(nextCursor) }
     }
 
     init {
@@ -61,9 +62,20 @@ class ShopRecomWidget : ConstraintLayout, LifecycleObserver, ShopRecomWidgetCall
         mListener = listener
     }
 
-    fun setData(headerTitle: String, shopRecomItem: List<ShopRecomUiModelItem>) = with(binding) {
+    @OptIn(ExperimentalStdlibApi::class)
+    fun setData(
+        headerTitle: String,
+        shopRecomItem: List<ShopRecomUiModelItem>,
+        loadNextPage: Boolean = false,
+        nextCursor: String,
+    ) = with(binding) {
+        this@ShopRecomWidget.nextCursor = nextCursor
         txtHeaderShopRecom.text = headerTitle
-        mAdapterShopRecom.updateData(shopRecomItem)
+        val model = buildList {
+            addAll(shopRecomItem.map { ShopRecomAdapter.Model.ShopRecomWidget(it) })
+            if (loadNextPage) add(ShopRecomAdapter.Model.Loading)
+        }
+        if (rvShopRecom.isComputingLayout.not()) mAdapterShopRecom.setItemsAndAnimateChanges(model)
     }
 
     fun showLoadingShopRecom() = with(binding) {
@@ -92,12 +104,21 @@ class ShopRecomWidget : ConstraintLayout, LifecycleObserver, ShopRecomWidgetCall
         mListener?.onShopRecomFollowClicked(itemID)
     }
 
-    override fun onShopRecomItemClicked(itemID: Long, appLink: String, imageUrl: String, postPosition: Int) {
+    override fun onShopRecomItemClicked(
+        itemID: Long,
+        appLink: String,
+        imageUrl: String,
+        postPosition: Int
+    ) {
         mListener?.onShopRecomItemClicked(itemID, appLink, imageUrl, postPosition)
     }
 
     override fun onShopRecomItemImpress(item: ShopRecomUiModelItem, postPosition: Int) {
         mListener?.onShopRecomItemImpress(item, postPosition)
+    }
+
+    override fun onShopRecomLoadingNextPage(nextCursor: String) {
+        mListener?.onShopRecomLoadingNextPage(nextCursor)
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)

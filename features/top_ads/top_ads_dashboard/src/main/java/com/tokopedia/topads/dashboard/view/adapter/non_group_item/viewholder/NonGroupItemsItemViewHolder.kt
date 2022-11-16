@@ -10,7 +10,6 @@ import com.tokopedia.kotlin.extensions.view.getResDrawable
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.data.response.nongroupItem.WithoutGroupDataItem
 import com.tokopedia.topads.dashboard.R
-import com.tokopedia.topads.dashboard.R.color.Unify_NN0
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.ACTIVE
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TIDAK_AKTIF
 import com.tokopedia.topads.dashboard.data.constant.TopAdsDashboardConstant.TIDAK_TAMPIL
@@ -90,7 +89,7 @@ class NonGroupItemsItemViewHolder(
                 label?.visibility = View.INVISIBLE
             } else {
                 cardView?.setBackgroundColor(ContextCompat.getColor(view.context,
-                    Unify_NN0
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN0
                 ))
                 imgMenu?.visibility = View.VISIBLE
                 checkBox?.visibility = View.GONE
@@ -114,7 +113,7 @@ class NonGroupItemsItemViewHolder(
 
             if (checkBox?.isChecked == false) {
                 cardView?.setBackgroundColor(ContextCompat.getColor(view.context,
-                    Unify_NN0))
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN0))
             } else {
                 cardView?.setBackgroundColor(ContextCompat.getColor(view.context,
                     com.tokopedia.unifyprinciples.R.color.Unify_B400_20))
@@ -130,7 +129,7 @@ class NonGroupItemsItemViewHolder(
                         com.tokopedia.unifyprinciples.R.color.Unify_B400_20))
                 else
                     cardView?.setBackgroundColor(ContextCompat.getColor(view.context,
-                        Unify_NN0))
+                        com.tokopedia.unifyprinciples.R.color.Unify_NN0))
             }
         }
 

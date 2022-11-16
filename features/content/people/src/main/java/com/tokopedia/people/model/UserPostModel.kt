@@ -5,17 +5,16 @@ import com.tokopedia.library.baseadapter.BaseItem
 
 data class UserPostModel(
     @SerializedName("playGetContentSlot")
-    val playGetContentSlot: PlayGetContentSlot
+    val playGetContentSlot: PlayGetContentSlot,
 )
-
 
 data class PlayGetContentSlot(
     @SerializedName("data")
     val data: MutableList<PlayPostContent>,
 
     @SerializedName("meta")
-    val playGetContentSlot: PlayGetContentSlotMeta
-): BaseItem()
+    val playGetContentSlot: PlayGetContentSlotMeta,
+) : BaseItem()
 
 data class PlayGetContentSlotMeta(
     @SerializedName("is_autoplay")
@@ -25,7 +24,7 @@ data class PlayGetContentSlotMeta(
     val maxAutoplayInCell: Int,
 
     @SerializedName("next_cursor")
-    val nextCursor: String
+    val nextCursor: String,
 )
 
 data class PlayPostContent(
@@ -42,8 +41,8 @@ data class PlayPostContent(
     val id: String,
 
     @SerializedName("items")
-    val items: MutableList<PlayPostContentItem>
-): BaseItem()
+    val items: MutableList<PlayPostContentItem>,
+) : BaseItem()
 
 data class PlayPostContentItem(
     @SerializedName("app_link")
@@ -94,7 +93,7 @@ data class PlayPostContentItem(
 
 data class PlayPostContentItemStats(
     @SerializedName("view")
-    val view: StatsView
+    val view: StatsView,
 )
 
 data class StatsView(
@@ -102,7 +101,7 @@ data class StatsView(
     var value: String,
 
     @SerializedName("formatted")
-    var formatted: String
+    var formatted: String,
 )
 
 data class PlayPostConfigurations(
@@ -113,17 +112,17 @@ data class PlayPostConfigurations(
     val reminder: PostReminder,
 
     @SerializedName("promo_labels")
-    val promoLabels: List<PostPromoLabel>
+    val promoLabels: List<PostPromoLabel>,
 )
 
 data class PostReminder(
     @SerializedName("is_set")
-    var isSet: Boolean
+    var isSet: Boolean,
 )
 
 data class PostPromoLabel(
     @SerializedName("text")
     val text: String,
     @SerializedName("type")
-    val type: String
+    val type: String,
 )

@@ -5,5 +5,5 @@ import org.json.JSONObject
 
 data class LayoutTopAdsAttr(
         @SerializedName("jsonTopAdsDisplayParam")
-        var jsonTopAdsDisplayParam: String
+        var jsonTopAdsDisplayParam: String = ""
 )
