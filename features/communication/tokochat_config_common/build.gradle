@@ -23,9 +23,13 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.akamaiBotLib)
 
     // Gojek dependencies
-    api rootProject.ext.miscDependencies.conversation
+    api (rootProject.ext.miscDependencies.conversation) {
+        exclude group: 'com.gojek.courier', module: 'courier'
+    }
     api rootProject.ext.miscDependencies.courierClient
-    implementation rootProject.ext.miscDependencies.courierMessageAdapter
+    implementation rootProject.ext.miscDependencies.courier
+    implementation rootProject.ext.miscDependencies.gsonMessageAdapter
+    implementation rootProject.ext.miscDependencies.textMessageAdapter
     implementation rootProject.ext.miscDependencies.courierStreamAdapter
     implementation rootProject.ext.miscDependencies.courierAuth
     implementation rootProject.ext.miscDependencies.timerPingSender

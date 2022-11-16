@@ -49,7 +49,7 @@ class TokoFoodOrderTrackingViewModel @Inject constructor(
     private val getTokoFoodOrderStatusUseCase: Lazy<GetTokoFoodOrderStatusUseCase>,
     private val getDriverPhoneNumberUseCase: Lazy<GetDriverPhoneNumberUseCase>,
     private val getUnReadChatCountUseCase: Lazy<GetUnreadChatCountUseCase>,
-    private val tokoChatConfigMutationProfileUseCase: Lazy<TokoChatConfigMutationProfileUseCase>,
+    private val tokoChatConfigGroupBookingUseCase: Lazy<TokoChatConfigGroupBookingUseCase>
 ) : BaseViewModel(coroutineDispatchers.main) {
 
     private val _orderDetailResult = MutableLiveData<Result<OrderDetailResultUiModel>>()
@@ -140,8 +140,8 @@ class TokoFoodOrderTrackingViewModel @Inject constructor(
             this@TokoFoodOrderTrackingViewModel.merchantData = orderDetailResult.merchantData
             _orderDetailResult.value = Success(orderDetailResult)
         }, onError = {
-            _orderDetailResult.value = Fail(it)
-        })
+                _orderDetailResult.value = Fail(it)
+            })
     }
 
     fun fetchDriverPhoneNumber(orderId: String) {
@@ -151,8 +151,8 @@ class TokoFoodOrderTrackingViewModel @Inject constructor(
             }
             _driverPhoneNumber.value = Success(driverPhoneNumberResult)
         }, onError = {
-            _driverPhoneNumber.value = Fail(it)
-        })
+                _driverPhoneNumber.value = Fail(it)
+            })
     }
 
     fun getUnReadChatCount(channelId: String): LiveData<Result<Int>> {
@@ -169,30 +169,18 @@ class TokoFoodOrderTrackingViewModel @Inject constructor(
         }
     }
 
-    fun initializeConversationProfile() {
-        try {
-            tokoChatConfigMutationProfileUseCase.get().initializeConversationProfile()
-            _mutationProfile.value = Success(true)
-        } catch (t: Throwable) {
-            _mutationProfile.value = Fail(t)
-        }
-    }
-
     fun initGroupBooking(
         orderId: String,
         conversationsGroupBookingListener: ConversationsGroupBookingListener
     ) {
         try {
-            tokoChatConfigMutationProfileUseCase.get().initGroupBooking(
-                orderId = orderId, conversationsGroupBookingListener = conversationsGroupBookingListener
+            tokoChatConfigGroupBookingUseCase.get().initGroupBooking(
+                orderId = orderId,
+                conversationsGroupBookingListener = conversationsGroupBookingListener
             )
         } catch (t: Throwable) {
             _mutationProfile.value = Fail(t)
         }
-    }
-
-    fun getProfileUserId(): String {
-        return tokoChatConfigMutationProfileUseCase.get().getUserId()
     }
 
     private fun fetchOrderCompletedLiveTracking(orderId: String) {
@@ -206,8 +194,8 @@ class TokoFoodOrderTrackingViewModel @Inject constructor(
             this@TokoFoodOrderTrackingViewModel.merchantData = orderDetailResult.merchantData
             _orderCompletedLiveTracking.value = Success(orderDetailResult)
         }, onError = {
-            _orderCompletedLiveTracking.value = Fail(it)
-        })
+                _orderCompletedLiveTracking.value = Fail(it)
+            })
     }
 
     private fun fetchOrderStatusUseCase(

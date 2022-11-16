@@ -93,9 +93,9 @@ ext {
     localBroadcastManagerVersion = '1.0.0'
     gojekSSOVersion = '1.0.1-67-0738bd6'
     playIntegrityVersion = '1.0.1'
-    conversationsVersion = '7.6.0'
-    gojekCourierVersion = '0.0.9'
-    gojekCourierClientVersion = '0.0.4.1@aar'
+    conversationsVersion = '7.6.2-5e5a894'
+    gojekCourierVersion = '0.1.4'
+    gojekCourierClientVersion = '0.0.5@aar'
 
     benchmarkTestVersion = '1.0.0'
     testCore = '1.4.0'
@@ -319,9 +319,11 @@ ext {
             dynamicAnimation      : "androidx.dynamicanimation:dynamicanimation:1.0.0",
             playIntegrityApi      : "com.google.android.play:integrity:$playIntegrityVersion",
             conversation          : "com.gojek.android:conversations:$conversationsVersion",
+            courier               : "com.gojek.courier:courier:$gojekCourierVersion",
             chuckMqtt             : "com.gojek.courier:chuck-mqtt:$gojekCourierVersion",
             timerPingSender       : "com.gojek.courier:timer-pingsender:$gojekCourierVersion",
-            courierMessageAdapter : "com.gojek.courier:courier-message-adapter-gson:$gojekCourierVersion",
+            gsonMessageAdapter    : "com.gojek.courier:courier-message-adapter-gson:$gojekCourierVersion",
+            textMessageAdapter    : "com.gojek.courier:courier-message-adapter-text:$gojekCourierVersion",
             courierStreamAdapter  : "com.gojek.courier:courier-stream-adapter-rxjava:$gojekCourierVersion",
             courierAuth           : "com.gojek.courier:courier-auth-http:$gojekCourierVersion",
             courierClient         : "com.gojek.courier:courier-client:$gojekCourierClientVersion"

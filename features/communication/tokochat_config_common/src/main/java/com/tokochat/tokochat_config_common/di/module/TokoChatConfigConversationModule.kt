@@ -37,7 +37,11 @@ object TokoChatConfigConversationModule {
         @TokoChatQualifier courierRemoteConfig: CourierRemoteConfig
     ): CourierConnection {
         val provider = TokoChatCourierClientProvider(
-            context, gson, retrofit, userSession, courierRemoteConfig
+            context,
+            gson,
+            retrofit,
+            userSession,
+            courierRemoteConfig
         )
         return provider.getCourierConnection()
     }
@@ -47,10 +51,14 @@ object TokoChatConfigConversationModule {
     fun provideTokoChatBabbleCourier(
         @TokoChatQualifier courierConnection: CourierConnection,
         courierStateObservable: TokoChatCourierStateObservable,
-        @TokoChatQualifier remoteConfig: RemoteConfig
+        @TokoChatQualifier remoteConfig: RemoteConfig,
+        @TokoChatQualifier userSession: UserSessionInterface
     ): BabbleCourierClient {
         return TokoChatBabbleCourierImpl(
-            courierConnection, courierStateObservable, remoteConfig
+            courierConnection,
+            courierStateObservable,
+            remoteConfig,
+            userSession
         )
     }
 }

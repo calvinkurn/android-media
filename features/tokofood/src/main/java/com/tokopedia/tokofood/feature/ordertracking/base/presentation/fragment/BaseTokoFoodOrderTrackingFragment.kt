@@ -10,7 +10,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.gojek.conversations.groupbooking.ConversationsGroupBookingListener
 import com.gojek.conversations.network.ConversationsNetworkError
-import com.jakewharton.threetenabp.AndroidThreeTen
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -57,7 +56,9 @@ import java.lang.ref.WeakReference
 import javax.inject.Inject
 
 class BaseTokoFoodOrderTrackingFragment :
-    BaseDaggerFragment(), RecyclerViewPollerListener, OrderTrackingListener,
+    BaseDaggerFragment(),
+    RecyclerViewPollerListener,
+    OrderTrackingListener,
     ConversationsGroupBookingListener {
 
     @Inject
@@ -131,8 +132,6 @@ class BaseTokoFoodOrderTrackingFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        AndroidThreeTen.init(context?.applicationContext)
-        initializeChatProfile()
         setupToolbar()
         setupRvOrderTracking()
         fetchOrderDetail()
@@ -206,7 +205,7 @@ class BaseTokoFoodOrderTrackingFragment :
             channelId = channelId,
             source = TokoFoodAnalyticsConstants.TOKOFOOD_SOURCE,
             role = TokoFoodAnalyticsConstants.BUYER,
-            unReadChatCounter = unReadChatCounter,
+            unReadChatCounter = unReadChatCounter
         )
 
         val tokoChatParams = mapOf(
@@ -235,26 +234,18 @@ class BaseTokoFoodOrderTrackingFragment :
         get() = binding?.rvOrderTracking?.recycledViewPool ?: RecyclerView.RecycledViewPool()
 
     override fun onGroupBookingChannelCreationError(error: ConversationsNetworkError) {
-        //No op
+        // No op
         updateUnreadChatCounter(Int.ZERO)
     }
 
     override fun onGroupBookingChannelCreationStarted() {
-        //No op
+        // No op
     }
 
     override fun onGroupBookingChannelCreationSuccess(channelUrl: String) {
         this.channelId = channelUrl
         observeUnreadChatCount(channelId)
     }
-
-    private fun initializeChatProfile() {
-        val userId = viewModel.getProfileUserId()
-        if (userId.isEmpty() || userId.isBlank()) {
-            viewModel.initializeConversationProfile()
-        }
-    }
-
 
     /*
      * initializeUnreadCounter -> when get goFoodOrderNumber
@@ -264,7 +255,7 @@ class BaseTokoFoodOrderTrackingFragment :
     private fun initializeUnreadCounter(goFoodOrderNumber: String) {
         this.goFoodOrderNumber = goFoodOrderNumber
         if (channelId.isBlank()) {
-            viewModel.initGroupBooking(goFoodOrderNumber,this)
+            viewModel.initGroupBooking(goFoodOrderNumber, this)
         } else {
             observeUnreadChatCount(channelId)
         }
@@ -337,7 +328,7 @@ class BaseTokoFoodOrderTrackingFragment :
                         it.data.orderStatusKey,
                         it.data.actionButtonsUiModel,
                         it.data.toolbarLiveTrackingUiModel,
-                        it.data.merchantData,
+                        it.data.merchantData
                     )
                     fetchOrderLiveTracking(orderId)
                 }
@@ -411,7 +402,8 @@ class BaseTokoFoodOrderTrackingFragment :
         )
         driverCallBottomSheet.setTrackingListener {
             tracking.clickCallDriverCtaInBottomSheet(
-                orderId, viewModel.getMerchantData()?.merchantId.orEmpty()
+                orderId,
+                viewModel.getMerchantData()?.merchantId.orEmpty()
             )
         }
         driverCallBottomSheet.show(childFragmentManager)
@@ -484,7 +476,7 @@ class BaseTokoFoodOrderTrackingFragment :
         orderStatus: String,
         actionButtonsUiModel: ActionButtonsUiModel,
         toolbarLiveTrackingUiModel: ToolbarLiveTrackingUiModel,
-        merchantData: MerchantDataUiModel,
+        merchantData: MerchantDataUiModel
     ) {
         binding?.run {
             if (orderStatus in listOf(OrderStatusType.COMPLETED, OrderStatusType.CANCELLED)) {
@@ -632,5 +624,4 @@ class BaseTokoFoodOrderTrackingFragment :
             }
         }
     }
-
 }

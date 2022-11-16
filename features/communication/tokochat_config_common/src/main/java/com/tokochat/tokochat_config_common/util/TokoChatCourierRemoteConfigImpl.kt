@@ -14,7 +14,7 @@ import javax.inject.Inject
 
 class TokoChatCourierRemoteConfigImpl @Inject constructor(
     private val remoteConfig: RemoteConfig
-): CourierRemoteConfig {
+) : CourierRemoteConfig {
 
     /**
      * How many events want to log, relate to tracker
@@ -50,14 +50,15 @@ class TokoChatCourierRemoteConfigImpl @Inject constructor(
     override val connectRetryConfig: ConnectRetryTimeConfig
         get() {
             val maxRetryTimeConfig = remoteConfig.getString(MAX_RETRY_TIME_CONFIG, "10").toIntOrZero()
-            val reconnectTimeFixed = remoteConfig.getString(RECONNECT_TIME_FIXED ,"0").toIntOrZero()
+            val reconnectTimeFixed = remoteConfig.getString(RECONNECT_TIME_FIXED, "0").toIntOrZero()
             val reconnectTimeRandom = remoteConfig.getString(RECONNECT_TIME_RANDOM, "10").toIntOrZero()
             val maxReconnectTime = remoteConfig.getString(MAX_RECONNECT_TIME, "30").toIntOrZero()
             return ConnectRetryTimeConfig(
                 maxRetryTimeConfig,
                 reconnectTimeFixed,
                 reconnectTimeRandom,
-                maxReconnectTime)
+                maxReconnectTime
+            )
         }
 
     /**
@@ -71,7 +72,8 @@ class TokoChatCourierRemoteConfigImpl @Inject constructor(
             return ConnectTimeoutConfig(
                 sslHandshakeTimeOut,
                 sslUpperBoundConnTimeOut,
-                upperBoundCountTimeOut)
+                upperBoundCountTimeOut
+            )
         }
 
     /**
@@ -170,6 +172,16 @@ class TokoChatCourierRemoteConfigImpl @Inject constructor(
         get() = remoteConfig.getBoolean(SHOULD_LOG_USER_PROPERTIES, false)
 
     /**
+     * Enabling Application-Layer Protocol Negotiation (ALPN) Protocol
+     * Transport Layer Security (TLS) extension that allows the application layer to negotiate
+     * which protocol should be performed over a secure connection
+     * in a manner that avoids additional round trips and which is independent of
+     * the application-layer protocols.
+     */
+    override val shouldUseAlpnProtocol: Boolean
+        get() = remoteConfig.getBoolean(SHOULD_USE_ALPN_PROTOCOL, false)
+
+    /**
      * Timer ping sender is only for  foreground
      * If background connection active please use alarm ping sender or work manager ping sender
      */
@@ -213,6 +225,13 @@ class TokoChatCourierRemoteConfigImpl @Inject constructor(
     override val isDeviceIdleModeReceiverEnabled: Boolean
         get() = remoteConfig.getBoolean(IS_DEVICE_IDLE_MODE_RECEIVER_ENABLED, false)
 
+    /**
+     * Enable / Disable Envelope Messages (Represents Byte Array in MQTT Message Courier)
+     * The usage is for end-to-end tracking purposes
+     */
+    override val isMessageEnvelopeEnabled: Boolean
+        get() = remoteConfig.getBoolean(IS_MESSAGE_ENVELOPE_ENABLED, true)
+
     companion object {
         private const val COURIER_EVENT_PROBABILITY = "android_tokochat_courierEventProbability"
         private const val COURIER_KEEP_ALIVE_INTERVAL = "android_tokochat_courierKeepAliveInterval"
@@ -241,6 +260,8 @@ class TokoChatCourierRemoteConfigImpl @Inject constructor(
         private const val SSL_UPPER_BOUND_CONN_TIMEOUT = "android_tokochat_sslUpperBoundConnTimeOut"
         private const val UPPER_BOUND_COUNT_TIMEOUT = "android_tokochat_upperBoundCountTimeOut"
         private const val MAX_RETRY_COUNT = "android_tokochat_maxRetryCount"
+        private const val SHOULD_USE_ALPN_PROTOCOL = "android_should_use_alpn_protocol"
+        private const val IS_MESSAGE_ENVELOPE_ENABLED = "android_is_message_envelope_enabled"
 
         const val SHOULD_TRACK_MESSAGE_RECEIVE_EVENT = "android_tokochat_shouldTrackMessageReceiveEvent"
     }

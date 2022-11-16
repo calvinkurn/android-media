@@ -16,7 +16,6 @@ import com.gojek.conversations.groupbooking.ConversationsGroupBookingListener
 import com.gojek.conversations.groupbooking.GroupBookingChannelDetails
 import com.gojek.conversations.network.ConversationsNetworkError
 import com.google.android.material.snackbar.Snackbar
-import com.jakewharton.threetenabp.AndroidThreeTen
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.iconunify.IconUnify
@@ -75,7 +74,8 @@ import kotlinx.coroutines.flow.collect
 import java.io.File
 import javax.inject.Inject
 
-class TokoChatFragment : TokoChatBaseFragment<TokochatChatroomFragmentBinding>(),
+class TokoChatFragment :
+    TokoChatBaseFragment<TokochatChatroomFragmentBinding>(),
     ConversationsGroupBookingListener,
     TokoChatTypingListener,
     TokoChatReplyTextListener,
@@ -106,17 +106,15 @@ class TokoChatFragment : TokoChatBaseFragment<TokochatChatroomFragmentBinding>()
     private var isFromTokoFoodPostPurchase = false
 
     override var adapter: TokoChatBaseAdapter = TokoChatBaseAdapter(
-        this, this, this
+        this,
+        this,
+        this
     )
 
     override fun getScreenName(): String = TAG
 
     override fun initInjector() {
         getComponent(TokoChatComponent::class.java).inject(this)
-    }
-
-    override fun additionalSetup() {
-        AndroidThreeTen.init(context?.applicationContext)
     }
 
     override fun initViews(view: View, savedInstanceState: Bundle?) {
@@ -128,7 +126,6 @@ class TokoChatFragment : TokoChatBaseFragment<TokochatChatroomFragmentBinding>()
     }
 
     private fun initializeChatRoom(savedInstanceState: Bundle?) {
-        initializeChatProfile()
         initGroupBooking(savedInstanceState)
     }
 
@@ -166,7 +163,8 @@ class TokoChatFragment : TokoChatBaseFragment<TokochatChatroomFragmentBinding>()
 
     private fun setDataFromArguments(savedInstanceState: Bundle?) {
         source = getParamString(
-            ApplinkConst.TokoChat.PARAM_SOURCE, arguments,
+            ApplinkConst.TokoChat.PARAM_SOURCE,
+            arguments,
             savedInstanceState
         )
         tkpdOrderId = getParamString(
@@ -353,7 +351,7 @@ class TokoChatFragment : TokoChatBaseFragment<TokochatChatroomFragmentBinding>()
             when (it) {
                 is Success -> renderBackground(it.data)
                 is Fail -> {
-                    //no op
+                    // no op
                 }
             }
         }
@@ -371,14 +369,14 @@ class TokoChatFragment : TokoChatBaseFragment<TokochatChatroomFragmentBinding>()
 
                     // If the ticker is not in list, manually add ticker
                     if (adapter.getItems().getOrNull(adapter.itemCount - Int.ONE)
-                            !is TokoChatReminderTickerUiModel
+                        !is TokoChatReminderTickerUiModel
                     ) {
                         adapter.addItem(adapter.itemCount, ticker)
                         adapter.notifyItemInserted(adapter.itemCount)
                     }
                 }
                 is Fail -> {
-                    //no op
+                    // no op
                 }
             }
         }
@@ -448,11 +446,9 @@ class TokoChatFragment : TokoChatBaseFragment<TokochatChatroomFragmentBinding>()
             appLink = tokoChatOrderProgress.uri
         )
         baseBinding?.tokochatTransactionOrder?.updateTransactionWidget(orderProgressUiModel)
-
     }
 
     private fun setShowTransactionWidget(tokoChatOrderProgress: TokoChatOrderProgressResponse.TokoChatOrderProgress) {
-
         val orderProgressUiModel = TokoChatOrderProgressUiModel(
             isEnable = tokoChatOrderProgress.enable,
             state = tokoChatOrderProgress.state,
@@ -584,7 +580,6 @@ class TokoChatFragment : TokoChatBaseFragment<TokochatChatroomFragmentBinding>()
         val isSameOrderStatus = orderState == getOrderState()
 
         if (isCompletedOrder) {
-
             if (isSameOrderStatus) return
 
             getTokoChatHeader()?.run {
@@ -627,13 +622,6 @@ class TokoChatFragment : TokoChatBaseFragment<TokochatChatroomFragmentBinding>()
         return when (source) {
             TOKOFOOD -> IC_TOKOFOOD_SOURCE
             else -> ""
-        }
-    }
-
-    private fun initializeChatProfile() {
-        val userId = viewModel.getUserId()
-        if (userId.isEmpty() || userId.isBlank()) {
-            viewModel.initializeProfile()
         }
     }
 
@@ -728,7 +716,9 @@ class TokoChatFragment : TokoChatBaseFragment<TokochatChatroomFragmentBinding>()
 
     override fun trackSeenTicker(element: TokoChatReminderTickerUiModel) {
         tokoChatAnalytics.impressOnTicker(
-            channelId, TokoChatAnalyticsConstants.BUYER, source
+            channelId,
+            TokoChatAnalyticsConstants.BUYER,
+            source
         )
     }
 
@@ -806,7 +796,6 @@ class TokoChatFragment : TokoChatBaseFragment<TokochatChatroomFragmentBinding>()
         }
     }
 
-
     override fun onCloseMaskingPhoneNumberBottomSheet() {
         val state = getOrderState()
         tokoChatAnalytics.clickCloseBottomSheetCallDriver(
@@ -879,25 +868,38 @@ class TokoChatFragment : TokoChatBaseFragment<TokochatChatroomFragmentBinding>()
     ) {
         imageView.addOnImpressionListener(element.impressHolder) {
             tokoChatAnalytics.impressOnImageAttachment(
-                element.imageId, getOrderState(), tkpdOrderId, channelId,
-                TokoChatAnalyticsConstants.BUYER, source
+                element.imageId,
+                getOrderState(),
+                tkpdOrderId,
+                channelId,
+                TokoChatAnalyticsConstants.BUYER,
+                source
             )
         }
     }
 
     override fun onClickImage(element: TokoChatImageBubbleUiModel) {
         tokoChatAnalytics.clickImageAttachment(
-            element.imageId, getOrderState(), tkpdOrderId, channelId,
-            TokoChatAnalyticsConstants.BUYER, source
+            element.imageId,
+            getOrderState(),
+            tkpdOrderId,
+            channelId,
+            TokoChatAnalyticsConstants.BUYER,
+            source
         )
         context?.let {
             val intent = ImageSecurePreviewActivity.getCallingIntent(
-                it, arrayListOf(element.imagePath)
+                it,
+                arrayListOf(element.imagePath)
             )
             startActivity(intent)
             tokoChatAnalytics.impressOnImagePreview(
-                element.imageId, getOrderState(), tkpdOrderId, channelId,
-                TokoChatAnalyticsConstants.BUYER, source
+                element.imageId,
+                getOrderState(),
+                tkpdOrderId,
+                channelId,
+                TokoChatAnalyticsConstants.BUYER,
+                source
             )
         }
     }
@@ -909,7 +911,7 @@ class TokoChatFragment : TokoChatBaseFragment<TokochatChatroomFragmentBinding>()
     private fun logExceptionTokoChat(
         throwable: Throwable,
         errorType: String,
-        description: String,
+        description: String
     ) {
         TokoChatErrorLogger.logExceptionToServerLogger(
             TokoChatErrorLogger.PAGE.TOKOCHAT,
@@ -946,7 +948,9 @@ class TokoChatFragment : TokoChatBaseFragment<TokochatChatroomFragmentBinding>()
             trackOnClickComposeArea = {
                 if (channelId.isNotBlank()) {
                     tokoChatAnalytics.clickTextField(
-                        channelId, TokoChatAnalyticsConstants.BUYER, source
+                        channelId,
+                        TokoChatAnalyticsConstants.BUYER,
+                        source
                     )
                 }
             }
@@ -959,7 +963,7 @@ class TokoChatFragment : TokoChatBaseFragment<TokochatChatroomFragmentBinding>()
         fun getFragment(
             fragmentManager: FragmentManager,
             classLoader: ClassLoader,
-            bundle: Bundle,
+            bundle: Bundle
         ): TokoChatFragment {
             val oldInstance = fragmentManager.findFragmentByTag(TAG) as? TokoChatFragment
             return oldInstance ?: fragmentManager.fragmentFactory.instantiate(
