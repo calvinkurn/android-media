@@ -12,8 +12,8 @@
         android:textAllCaps="true"
         app:typographyWeight="bold"
         app:typographyType="body_3"
-        android:layout_marginTop="@dimen/spacing_lvl4"
-        android:layout_marginStart="@dimen/spacing_lvl4"
+        android:layout_marginTop="16dp"
+        android:layout_marginStart="16dp"
         android:textColor="@color/Unify_N700_68"
         tools:text="Faq"/>
 

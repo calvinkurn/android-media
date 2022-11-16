@@ -19,7 +19,6 @@ import com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.SEA
 import com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.SEARCH_PRODUCT_LOAD_MORE_USE_CASE
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel.AddToCartParams
-import com.tokopedia.discovery.common.model.WishlistTrackingModel
 import com.tokopedia.discovery.common.utils.CoachMarkLocalCache
 import com.tokopedia.discovery.common.utils.Dimension90Utils
 import com.tokopedia.filter.common.data.DataValue
@@ -93,6 +92,8 @@ import com.tokopedia.search.result.product.suggestion.SuggestionDataView
 import com.tokopedia.search.result.product.suggestion.SuggestionPresenter
 import com.tokopedia.search.result.product.ticker.TickerPresenter
 import com.tokopedia.search.result.product.videowidget.InspirationCarouselVideoDataView
+import com.tokopedia.search.result.product.wishlist.WishlistPresenter
+import com.tokopedia.search.result.product.wishlist.WishlistPresenterDelegate
 import com.tokopedia.search.utils.SchedulersProvider
 import com.tokopedia.search.utils.UrlParamUtils
 import com.tokopedia.search.utils.createSearchProductDefaultFilter
@@ -158,6 +159,7 @@ class ProductListPresenter @Inject constructor(
     private val tickerPresenter: TickerPresenter,
     private val safeSearchPresenter: SafeSearchPresenter,
     private val addToCartUseCase: AddToCartUseCase,
+    wishlistPresenterDelegate: WishlistPresenterDelegate,
 ): BaseDaggerPresenter<ProductListSectionContract.View>(),
     ProductListSectionContract.Presenter,
     Pagination by paginationImpl,
@@ -167,7 +169,8 @@ class ProductListPresenter @Inject constructor(
     InspirationListAtcPresenter by inspirationListAtcPresenterDelegate,
     BroadMatchPresenter by broadMatchDelegate,
     TickerPresenter by tickerPresenter,
-    SafeSearchPresenter by safeSearchPresenter {
+    SafeSearchPresenter by safeSearchPresenter,
+    WishlistPresenter by wishlistPresenterDelegate {
 
     companion object {
         private val generalSearchTrackingRelatedKeywordResponseCodeList = listOf("3", "4", "5", "6")
@@ -1605,93 +1608,6 @@ class ProductListPresenter @Inject constructor(
         val suggestionIsNotEmpty = suggestionModel.suggestion.isNotEmpty()
 
         return isResponseCodeForSuggestion && suggestionIsNotEmpty
-    }
-    //endregion
-
-    //region Wishlist
-    override fun handleWishlistAction(productCardOptionsModel: ProductCardOptionsModel?) {
-        if (isViewNotAttached) return
-        productCardOptionsModel ?: return
-
-        if (productCardOptionsModel.isRecommendation)
-            handleWishlistRecommendationProduct(productCardOptionsModel)
-        else
-            handleWishlistNonRecommendationProduct(productCardOptionsModel)
-    }
-
-    private fun handleWishlistRecommendationProduct(productCardOptionsModel: ProductCardOptionsModel) {
-        val wishlistResult = productCardOptionsModel.wishlistResult
-
-        if (wishlistResult.isUserLoggedIn)
-            handleWishlistRecommendationProductWithLoggedInUser(productCardOptionsModel)
-        else
-            handleWishlistRecommendationProductWithNotLoggedInUser(productCardOptionsModel)
-    }
-
-    private fun handleWishlistRecommendationProductWithLoggedInUser(productCardOptionsModel: ProductCardOptionsModel) {
-        val wishlistResult = productCardOptionsModel.wishlistResult
-
-        if (!wishlistResult.isSuccess) {
-            view.showMessageFailedWishlistAction(wishlistResult)
-        } else {
-            view.trackWishlistRecommendationProductLoginUser(!productCardOptionsModel.isWishlisted)
-            view.updateWishlistStatus(productCardOptionsModel.productId, wishlistResult.isAddWishlist)
-            view.showMessageSuccessWishlistAction(wishlistResult)
-            if (productCardOptionsModel.isTopAds) view.hitWishlistClickUrl(productCardOptionsModel)
-        }
-    }
-
-    private fun handleWishlistRecommendationProductWithNotLoggedInUser(productCardOptionsModel: ProductCardOptionsModel) {
-        view.trackWishlistRecommendationProductNonLoginUser()
-        view.launchLoginActivity(productCardOptionsModel.productId)
-    }
-
-    private fun handleWishlistNonRecommendationProduct(productCardOptionsModel: ProductCardOptionsModel) {
-        val wishlistResult = productCardOptionsModel.wishlistResult
-
-        if (wishlistResult.isUserLoggedIn)
-            handleWishlistNonRecommendationProductWithLoggedInUser(productCardOptionsModel)
-        else
-            handleWishlistNonRecommendationProductWithNotLoggedInUser(productCardOptionsModel)
-    }
-
-    private fun handleWishlistNonRecommendationProductWithLoggedInUser(productCardOptionsModel: ProductCardOptionsModel) {
-        val wishlistResult = productCardOptionsModel.wishlistResult
-
-        if (!wishlistResult.isSuccess) {
-            view.showMessageFailedWishlistAction(wishlistResult)
-        } else {
-            view.trackWishlistProduct(createWishlistTrackingModel(
-                    productCardOptionsModel,
-                    productCardOptionsModel.wishlistResult.isAddWishlist
-            ))
-            view.updateWishlistStatus(productCardOptionsModel.productId, wishlistResult.isAddWishlist)
-            view.showMessageSuccessWishlistAction(wishlistResult)
-            if (productCardOptionsModel.isTopAds) view.hitWishlistClickUrl(productCardOptionsModel)
-        }
-    }
-
-    private fun createWishlistTrackingModel(
-            productCardOptionsModel: ProductCardOptionsModel,
-            isAddWishlist: Boolean,
-    ): WishlistTrackingModel {
-        val wishlistTrackingModel = WishlistTrackingModel()
-
-        wishlistTrackingModel.productId = productCardOptionsModel.productId
-        wishlistTrackingModel.isTopAds = productCardOptionsModel.isTopAds
-        wishlistTrackingModel.keyword = view.queryKey
-        wishlistTrackingModel.isUserLoggedIn = productCardOptionsModel.wishlistResult.isUserLoggedIn
-        wishlistTrackingModel.isAddWishlist = isAddWishlist
-
-        return wishlistTrackingModel
-    }
-
-    private fun handleWishlistNonRecommendationProductWithNotLoggedInUser(productCardOptionsModel: ProductCardOptionsModel) {
-        view.trackWishlistProduct(createWishlistTrackingModel(
-                productCardOptionsModel,
-                !productCardOptionsModel.isWishlisted
-        ))
-        view.launchLoginActivity(productCardOptionsModel.productId)
     }
     //endregion
 
