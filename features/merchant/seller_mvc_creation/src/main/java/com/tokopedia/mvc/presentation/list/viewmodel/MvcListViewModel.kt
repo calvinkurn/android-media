@@ -30,7 +30,7 @@ class MvcListViewModel @Inject constructor(
             block = {
                 val param = VoucherListParam.createParam(
                     type = null,
-                    status = HISTORY,
+                    status = NOT_STARTED_AND_ONGOING,
                     sort = VOUCHER_STATUS,
                     target = null,
                     page = page,

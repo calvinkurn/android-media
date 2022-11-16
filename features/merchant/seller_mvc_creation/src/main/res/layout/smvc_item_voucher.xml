@@ -24,7 +24,7 @@
             layout="@layout/smvc_item_voucher_period"/>
 
         <include
-            android:id="@+id/periodStats"
+            android:id="@+id/periodStatsContent"
             layout="@layout/smvc_item_voucher_stats"/>
 
     </androidx.appcompat.widget.LinearLayoutCompat>

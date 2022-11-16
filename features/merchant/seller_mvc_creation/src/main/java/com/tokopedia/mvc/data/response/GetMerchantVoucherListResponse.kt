@@ -74,4 +74,10 @@ data class MerchantVoucherModel(
     val isSubsidy: Int = 0,
     @SerializedName("tnc")
     val tnc: String = "",
+    @SerializedName("is_lock_to_product")
+    val isLockToProduct: Int = 0,
+    @SerializedName("total_child")
+    val totalChild: Int = 0,
+    @SerializedName("target_buyer")
+    val targetBuyer: Int = 0
 )

@@ -125,13 +125,13 @@ annotation class VoucherTarget {
 
 @MustBeDocumented
 @Retention(AnnotationRetention.SOURCE)
-@StringDef(VoucherTargetBuyer.ALL_BUYER, VoucherTargetBuyer.NEW_FOLLOWER, VoucherTargetBuyer.NEW_BUYER, VoucherTargetBuyer.MEMBER)
+@IntDef(VoucherTargetBuyer.ALL_BUYER, VoucherTargetBuyer.NEW_FOLLOWER, VoucherTargetBuyer.NEW_BUYER, VoucherTargetBuyer.MEMBER)
 annotation class VoucherTargetBuyer {
     companion object {
-        const val ALL_BUYER = "0"
-        const val NEW_FOLLOWER = "1"
-        const val NEW_BUYER = "2"
-        const val MEMBER = "3"
+        const val ALL_BUYER = 0
+        const val NEW_FOLLOWER = 1
+        const val NEW_BUYER = 2
+        const val MEMBER = 3
     }
 }
 

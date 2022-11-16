@@ -11,19 +11,20 @@
         android:id="@+id/tfPeriodTitle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:text="@string/smvc_voucherlist_period_title"
         android:textColor="@color/Unify_NN600"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:typographyType="small"
-        android:text="Periode" />
+        app:typographyType="small" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tfPeriodDate"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
         android:textColor="@color/Unify_NN950"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tfPeriodTitle"
         app:typographyType="display_3"
         app:typographyWeight="bold"
         tool:text="16 Okt 2022 - 26 Okt 2022" />

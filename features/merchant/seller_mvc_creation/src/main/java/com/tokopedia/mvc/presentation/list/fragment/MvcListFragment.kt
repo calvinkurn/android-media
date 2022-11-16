@@ -9,9 +9,12 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.campaign.delegates.HasPaginatedList
 import com.tokopedia.campaign.delegates.HasPaginatedListImpl
+import com.tokopedia.campaign.utils.extension.showToasterError
 import com.tokopedia.kotlin.extensions.view.applyUnifyBackgroundColor
 import com.tokopedia.mvc.databinding.SmvcFragmentMvcListBinding
 import com.tokopedia.mvc.di.component.DaggerMerchantVoucherCreationComponent
+import com.tokopedia.mvc.domain.entity.Voucher
+import com.tokopedia.mvc.presentation.list.adapter.VoucherAdapterListener
 import com.tokopedia.mvc.presentation.list.adapter.VouchersAdapter
 import com.tokopedia.mvc.presentation.list.constant.MvcListConstant.INITIAL_PAGE
 import com.tokopedia.mvc.presentation.list.constant.MvcListConstant.PAGE_SIZE
@@ -19,7 +22,8 @@ import com.tokopedia.mvc.presentation.list.viewmodel.MvcListViewModel
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
-class MvcListFragment: BaseDaggerFragment(), HasPaginatedList by HasPaginatedListImpl() {
+class MvcListFragment: BaseDaggerFragment(), HasPaginatedList by HasPaginatedListImpl(),
+    VoucherAdapterListener {
 
     private var binding by autoClearedNullable<SmvcFragmentMvcListBinding>()
     @Inject
@@ -50,17 +54,36 @@ class MvcListFragment: BaseDaggerFragment(), HasPaginatedList by HasPaginatedLis
         setupObservables()
     }
 
+    override fun onVoucherListMoreMenuClicked(voucher: Voucher) {
+        println("more menu")
+    }
+
+    override fun onVoucherListCopyCodeClicked(voucher: Voucher) {
+        println("copy")
+    }
+
+    override fun onVoucherListMultiPeriodClicked(voucher: Voucher) {
+        println("multiperiod")
+    }
+
+    override fun onVoucherListClicked(voucher: Voucher) {
+        println("card")
+    }
+
     private fun setupObservables() {
         viewModel.voucherList.observe(viewLifecycleOwner) { vouchers ->
             val adapter = binding?.rvVoucher?.adapter as? VouchersAdapter
-            adapter?.addDataList(vouchers.map { it.name })
+            adapter?.addDataList(vouchers)
             notifyLoadResult(vouchers.size >= PAGE_SIZE)
+        }
+        viewModel.error.observe(viewLifecycleOwner) {
+            view?.showToasterError(it)
         }
     }
 
     private fun SmvcFragmentMvcListBinding.setupView() {
-        rvVoucher.layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
-        rvVoucher.adapter = VouchersAdapter()
+        rvVoucher.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        rvVoucher.adapter = VouchersAdapter(this@MvcListFragment)
         val config = HasPaginatedList.Config(
             pageSize = PAGE_SIZE,
             onLoadNextPage = {

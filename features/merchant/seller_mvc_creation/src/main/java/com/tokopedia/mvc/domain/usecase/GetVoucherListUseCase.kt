@@ -59,6 +59,9 @@ class GetVoucherListUseCase @Inject constructor(
                         is_vps
                         package_name
                         is_subsidy
+                        is_lock_to_product
+                        total_child
+                        target_buyer
                       }
                     }
                 }

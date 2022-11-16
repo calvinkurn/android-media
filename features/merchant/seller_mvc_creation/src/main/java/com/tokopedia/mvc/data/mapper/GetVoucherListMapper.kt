@@ -1,11 +1,17 @@
 package com.tokopedia.mvc.data.mapper
 
+import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.mvc.data.response.MerchantVoucherModel
 import com.tokopedia.mvc.domain.entity.Voucher
 import javax.inject.Inject
 
 class GetVoucherListMapper @Inject constructor() {
+
+    companion object {
+        private const val DISCOUNT_TYPE_PERCENT = "percent"
+        private const val VALUE_ACTIVE = 1
+    }
 
     fun mapRemoteModelToUiModel(voucherList: List<MerchantVoucherModel>): List<Voucher> {
         return voucherList.map { mapRemoteModelToUiModel(it) }
@@ -22,7 +28,7 @@ class GetVoucherListMapper @Inject constructor() {
                 imageSquare = it.imageSquare,
                 imagePortrait = it.imagePortrait,
                 status = it.voucherStatus,
-                discountTypeFormatted = it.discountTypeFormatted,
+                discountUsingPercent = it.discountTypeFormatted == DISCOUNT_TYPE_PERCENT,
                 discountAmt = it.discountAmt,
                 discountAmtFormatted = it.discountAmtFormatted,
                 discountAmtMax = it.discountAmtMax,
@@ -35,11 +41,14 @@ class GetVoucherListMapper @Inject constructor() {
                 code = it.voucherCode,
                 createdTime = it.createTime,
                 updatedTime = it.updateTime,
-                isPublic = it.isPublic == 1,
-                isVps = it.isVps == 1,
+                isPublic = it.isPublic == VALUE_ACTIVE,
+                isLockToProduct = it.isLockToProduct == VALUE_ACTIVE,
+                isVps = it.isVps == VALUE_ACTIVE,
+                totalChild = it.totalChild,
                 packageName = it.packageName,
-                isSubsidy = it.isSubsidy == 1,
-                tnc = it.tnc
+                isSubsidy = it.isSubsidy == VALUE_ACTIVE,
+                tnc = it.tnc,
+                targetBuyer = it.targetBuyer
             )
         }
 
