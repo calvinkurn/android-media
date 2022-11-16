@@ -71,7 +71,6 @@ import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScrollListener
-import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
 import com.tokopedia.universal_sharing.view.model.ShareModel
@@ -190,56 +189,16 @@ class DtHomeFragment : Fragment() {
     private fun anchorTabListener(): DtAnchorTabAdapter.AnchorTabListener {
         return object : DtAnchorTabAdapter.AnchorTabListener {
 
-            /*
-//            ancor tab yang di select
-//            compare dengan current
-//            kalau beda baru scroll
-             */
             override fun onMenuSelected(anchorTabUiModel: AnchorTabUiModel, position: Int) {
-
                 anchorTabAdapter?.selectMenu(anchorTabUiModel)
-
-
-                Toaster.build(requireView(), "menu ${anchorTabUiModel.title}").show()
-                // get anchor tab menu with position
-                //get visitable from anchor tab
-                // compare visitable id with visitable list - NOTE : visitable have id. can based on channel
-                // get index/position visitable from above compare
-
-                //or second logic
-                // get anchor tab menu with positionn
-                // get visitable from anchor tab
-                // get Index/position from visitable
-                val a = adapter.data[9]
 
                 val scrollPosition = adapter.data.indexOf(anchorTabUiModel.visitable)
 
-//                val visitable = viewModelDtHome.getHomeVisitableList().find {
-//                    val layoutItemUiModel = it
-//                    if(layoutItemUiModel is HomeLayoutItemUiModel)
-// //                    (it as ).idUiModel == anchorTabUiModel.id
-//                }
-//                val indexVisitable =  viewModelDtHome.getHomeVisitableList().indexOf()
-//                val position = visitable?.let {
-//                    adapter.findPosition(it)
-//                }
-//                val position = adapter.findPosition())
-//
-//                //get group id
-//                val currentGroupId = anchorTabUiModel.groupId
-//                //compare group id
-//                adapter.data.forEach {it->
-//                    (it as HomeComponentVisitable).visitableId()
-//                }
-//                //find data by group id *
-//                // scroll
-//                val ScreenPosition = (rvHome?.layoutManager as LinearLayoutManager).findFirstVisibleItemPosition()
-//
-//                Toaster.build(view!!,"to ${anchorTabUiModel.title}. i = $position",Toaster.TYPE_NORMAL).show()
-//
                 if (scrollPosition == -1) return
-                if (scrollPosition != null) {
-                    rvHome?.smoothScrollToPosition(scrollPosition)
+                rvHome?.smoothScrollToPosition(scrollPosition)
+
+                if (statusBarState == AnchorTabStatus.MAXIMIZE) {
+                    setAnchorTabMinimize()
                 }
             }
         }
@@ -908,7 +867,6 @@ class DtHomeFragment : Fragment() {
         }
     }
 
-
     private fun initRecyclerScrollListener() {
         binding?.rvHome?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
 
@@ -927,7 +885,6 @@ class DtHomeFragment : Fragment() {
 
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
-
 
                 /**
                  *  minimize anchor when scroll down
