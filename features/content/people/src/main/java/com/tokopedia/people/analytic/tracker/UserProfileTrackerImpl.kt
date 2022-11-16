@@ -316,7 +316,8 @@ class UserProfileTrackerImpl @Inject constructor(
                 ECOMMERCE to hashMapOf(
                     PROMO_CLICK to hashMapOf(
                         PROMOTIONS to listOf(
-                            convertToPromotion(activityId, imageUrl, videoPosition, FEED_USER_PROFILE_VIDEO),
+                            convertToPromotion(activityId, imageUrl, videoPosition + 1,
+                                "/$FEED_USER_PROFILE_VIDEO"),
                         ),
                     ),
                 ),

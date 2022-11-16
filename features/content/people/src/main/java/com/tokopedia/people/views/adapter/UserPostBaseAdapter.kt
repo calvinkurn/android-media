@@ -12,6 +12,7 @@ import com.tokopedia.people.utils.UserProfileVideoMapper
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
 import com.tokopedia.play.widget.ui.model.reminded
+import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
 import com.tokopedia.play.widget.ui.widget.large.PlayWidgetCardLargeChannelView
 
 open class UserPostBaseAdapter(
@@ -117,7 +118,13 @@ open class UserPostBaseAdapter(
     }
 
     override fun onChannelClicked(view: View, item: PlayWidgetChannelUiModel) {
-        playWidgetCallback.onPlayWidgetLargeClick(item.appLink)
+        playWidgetCallback.onPlayWidgetLargeClick(
+            item.appLink,
+            item.channelId,
+            item.video.isLive && item.channelType == PlayWidgetChannelType.Live,
+            item.video.coverUrl,
+            getItemPosition(item.channelId),
+        )
     }
 
     override fun onToggleReminderChannelClicked(
@@ -133,6 +140,6 @@ open class UserPostBaseAdapter(
     interface PlayWidgetCallback {
         fun updatePostReminderStatus(channelId: String, isActive: Boolean, pos: Int)
         fun updatePlayWidgetLatestData(channelId: String, totalView: String, isReminderSet: Boolean)
-        fun onPlayWidgetLargeClick(appLink: String)
+        fun onPlayWidgetLargeClick(appLink: String, channelID: String, isLive: Boolean, imageUrl: String, pos: Int)
     }
 }

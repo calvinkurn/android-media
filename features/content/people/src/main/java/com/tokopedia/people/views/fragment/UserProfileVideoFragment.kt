@@ -19,6 +19,7 @@ import com.tokopedia.people.ErrorMessage
 import com.tokopedia.people.Loading
 import com.tokopedia.people.R
 import com.tokopedia.people.Success
+import com.tokopedia.people.analytic.tracker.UserProfileTracker
 import com.tokopedia.people.databinding.UpFragmentVideoBinding
 import com.tokopedia.people.utils.showErrorToast
 import com.tokopedia.people.utils.showToast
@@ -47,6 +48,7 @@ import com.tokopedia.unifyprinciples.R as unifyR
 class UserProfileVideoFragment @Inject constructor(
     private val viewModelFactoryCreator: UserProfileViewModelFactory.Creator,
     private val userSession: UserSessionInterface,
+    private var userProfileTracker: UserProfileTracker,
 ) : TkpdBaseV4Fragment(), AdapterCallback, UserPostBaseAdapter.PlayWidgetCallback {
 
     private val gridLayoutManager by lazy(LazyThreadSafetyMode.NONE) {
@@ -268,7 +270,15 @@ class UserProfileVideoFragment @Inject constructor(
         mAdapter.updatePlayWidgetLatestData(channelId, totalView, isReminderSet)
     }
 
-    override fun onPlayWidgetLargeClick(appLink: String) {
+    override fun onPlayWidgetLargeClick(appLink: String, channelID: String, isLive: Boolean, imageUrl: String, pos: Int) {
+        userProfileTracker.clickVideo(
+            viewModel.profileUserID,
+            viewModel.isSelfProfile,
+            isLive,
+            channelID,
+            imageUrl,
+            pos,
+        )
         val intent = RouteManager.getIntent(context, appLink)
         startActivityForResult(intent, REQUEST_CODE_PLAY_ROOM)
     }
