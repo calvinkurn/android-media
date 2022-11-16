@@ -400,7 +400,8 @@ class UserProfileTrackerImpl @Inject constructor(
                 ECOMMERCE to hashMapOf(
                     PROMO_CLICK to hashMapOf(
                         PROMOTIONS to listOf(
-                            convertToPromotion(activityId, imageUrl, postPosition, FEED_USER_PROFILE_POST),
+                            convertToPromotion(activityId, imageUrl, postPosition + 1,
+                                "/$FEED_USER_PROFILE_POST"),
                         ),
                     ),
                 ),

@@ -17,6 +17,7 @@ import com.tokopedia.people.ErrorMessage
 import com.tokopedia.people.Loading
 import com.tokopedia.people.R
 import com.tokopedia.people.Success
+import com.tokopedia.people.analytic.tracker.UserProfileTracker
 import com.tokopedia.people.databinding.UpFragmentFeedBinding
 import com.tokopedia.people.viewmodels.UserProfileViewModel
 import com.tokopedia.people.viewmodels.factory.UserProfileViewModelFactory
@@ -33,6 +34,7 @@ import javax.inject.Inject
 
 class UserProfileFeedFragment @Inject constructor(
     private val viewModelFactoryCreator: UserProfileViewModelFactory.Creator,
+    private var userProfileTracker: UserProfileTracker,
 ) : TkpdBaseV4Fragment(), AdapterCallback, UserFeedPostsBaseAdapter.FeedPostsCallback {
 
     private val gridLayoutManager by lazy(LazyThreadSafetyMode.NONE) {
@@ -160,7 +162,15 @@ class UserProfileFeedFragment @Inject constructor(
         }
     }
 
-    override fun onFeedPostsClick(appLink: String, position: Int) {
+    override fun onFeedPostsClick(appLink: String, itemID: String, imageUrl: String, position: Int, mediaType: String) {
+        userProfileTracker.clickPost(
+            viewModel.profileUserID,
+            viewModel.isSelfProfile,
+            itemID,
+            imageUrl,
+            position,
+            mediaType,
+        )
         val intent = RouteManager.getIntent(requireContext(), appLink)
         intent.putExtra(KEY_SOURCE, VAL_SOURCE)
         intent.putExtra(KEY_POSITION, position)

@@ -179,7 +179,7 @@
       "event": "select_content",
       "eventAction": "click - post",
       "eventCategory": "feed user profile",
-      "eventLabel": ".*  - .* - .* - .*",
+      "eventLabel": ".* - .* - .* - .*",
       "businessUnit": "content",
       "currentSite": "(tokopediamarketplace|tokopediaseller)",
       "promotions": [

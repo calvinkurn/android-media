@@ -30,7 +30,15 @@ class UserFeedPostsBaseAdapter(
             view.imageContent.apply {
                 cornerRadius = 0
                 setImageUrl(item.media.first().coverURL)
-                setOnClickListener { feedPostsWidgetCallback.onFeedPostsClick(item.appLink, position) }
+                setOnClickListener {
+                    feedPostsWidgetCallback.onFeedPostsClick(
+                        item.appLink,
+                        item.id,
+                        firstItem.coverURL,
+                        position,
+                        firstItem.type,
+                    )
+                }
             }
             when (firstItem.type) {
                 MEDIA_TYPE_VIDEO -> {
@@ -80,7 +88,7 @@ class UserFeedPostsBaseAdapter(
     }
 
     interface FeedPostsCallback {
-        fun onFeedPostsClick(appLink: String, position: Int)
+        fun onFeedPostsClick(appLink: String, itemID: String, imageUrl: String, position: Int, mediaType: String)
     }
 
     companion object {
