@@ -116,7 +116,7 @@ class PlayUserInteractionFragment @Inject constructor(
     private val castAnalyticHelper: CastAnalyticHelper,
     private val performanceClassConfig: PerformanceClassConfig,
     private val newAnalytic: PlayNewAnalytic,
-    private val analyticManager: PlayChannelAnalyticManager
+    private val analyticManager: PlayChannelAnalyticManager,
     private val router: Router,
 ) :
         TkpdBaseV4Fragment(),
