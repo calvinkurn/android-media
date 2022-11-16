@@ -64,6 +64,7 @@ class ProductListViewModel @Inject constructor(
                 val metadataParam = GetInitiateVoucherPageUseCase.Param(action, promoType, isVoucherProduct = true)
                 val metadata = getInitiateVoucherPageUseCase.execute(metadataParam)
 
+                val selectedParentProductIds = selectedProducts.map { it.parentProductId }
                 val productListParam = ProductListUseCase.Param(
                     searchKeyword = "",
                     warehouseId = 0,
@@ -73,13 +74,18 @@ class ProductListViewModel @Inject constructor(
                     pageSize = metadata.maxProduct,
                     sortId = "DEFAULT",
                     sortDirection = "DESC",
-                    productIdInclude = selectedProducts.map { it.parentProductId }
+                    productIdInclude = selectedParentProductIds
                 )
 
                 val productsResponse = productListUseCase.execute(productListParam)
 
+                val updatedProducts = productsResponse.products.map { parentProduct ->
+                    val selectedVariants = findSelectedVariantsByParentId(parentProduct.id, selectedProducts)
+                    parentProduct.copy(selectedVariantsIds = selectedVariants)
+                }
+
                 _uiState.update {
-                    it.copy(isLoading = false, products = productsResponse.products)
+                    it.copy(isLoading = false, products = updatedProducts)
                 }
 
             },
@@ -89,6 +95,13 @@ class ProductListViewModel @Inject constructor(
         )
     }
 
+    private fun findSelectedVariantsByParentId(
+        parentProductId: Long,
+        selectedProducts: List<SelectedProduct>
+    ): Set<Long> {
+        val matchedProduct = selectedProducts.find { it.parentProductId == parentProductId }
+        return matchedProduct?.variantProductIds?.toSet().orEmpty()
+    }
 
     private fun handleCheckAllProduct() = launch(dispatchers.computation) {
         val selectedProducts = currentState.products.map { product ->
@@ -238,5 +251,6 @@ class ProductListViewModel @Inject constructor(
             }
         )
     }
+
 
 }
