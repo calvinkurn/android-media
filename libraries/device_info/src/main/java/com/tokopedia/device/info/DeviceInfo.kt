@@ -302,8 +302,16 @@ object DeviceInfo {
 
     private fun setCacheAdsId(context: Context, adsId: String) {
         val sp = context.getSharedPreferences(ADVERTISINGID, Context.MODE_PRIVATE)
-        sp.edit().putString(KEY_ADVERTISINGID, adsId).backgroundCommit()
+        if (enabledBackgroundCommit()) {
+            sp.edit().putString(KEY_ADVERTISINGID, adsId).backgroundCommit()
+        } else {
+            sp.edit().putString(KEY_ADVERTISINGID, adsId).apply()
+        }
         cacheAdsId = adsId
+    }
+
+    private fun enabledBackgroundCommit(): Boolean {
+        return true
     }
 
     @JvmStatic
