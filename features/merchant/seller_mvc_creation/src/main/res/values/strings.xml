@@ -28,5 +28,8 @@
     <string name="smvc_voucherlist_status_ongoing_text">Berlangsung</string>
     <string name="smvc_voucherlist_status_ended_text">Berakhir</string>
     <string name="smvc_voucherlist_status_stopped_text">Dihentikan</string>
+    <string name="smvc_voucherlist_usedquota_text">Kuota Terpakai</string>
+    <string name="smvc_voucherlist_bookedquota_text">Kupon di keranjang</string>
+    <string name="smvc_voucherlist_buyertarget_text">Target</string>
 
 </resources>
