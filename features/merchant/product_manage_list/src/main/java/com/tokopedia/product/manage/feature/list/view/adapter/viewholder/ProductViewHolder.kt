@@ -163,6 +163,9 @@ class ProductViewHolder(
                 if (!product.isShopModerate) {
                     buttonType = UnifyButton.Type.MAIN
                     buttonVariant = UnifyButton.Variant.FILLED
+                } else {
+                    buttonType = UnifyButton.Type.ALTERNATE
+                    buttonVariant = UnifyButton.Variant.GHOST
                 }
             }
         }
