@@ -4,7 +4,6 @@ interface SearchEventTracking {
     interface Event {
         companion object {
             const val SEARCH_RESULT = "clickSearchResult"
-            const val CLICK_WISHLIST = "clickWishlist"
             const val CLICK_TOP_NAV = "clickTopNav"
             const val VIEW_SEARCH_RESULT_IRIS = "viewSearchResultIris"
             const val CLICK_SEARCH_RESULT_IRIS = "clickSearchResultIris"
@@ -37,11 +36,6 @@ interface SearchEventTracking {
             const val CLICK_TAB = "click - tab"
             const val SORT_BY = "sort by"
             const val LONG_PRESS_PRODUCT = "click - long press product"
-            const val ADD_WISHLIST = "add wishlist"
-            const val REMOVE_WISHLIST = "remove wishlist"
-            const val MODULE = "module"
-            const val LOGIN = "login"
-            const val NON_LOGIN = "nonlogin"
             const val GENERAL_SEARCH = "general search"
             const val IMPRESSION_SHOP = "impression - shop"
             const val IMPRESSION_SHOP_ALTERNATIVE = "impression - shop - alternative"
@@ -68,8 +62,6 @@ interface SearchEventTracking {
     interface Label {
         companion object {
             const val KEYWORD_PRODUCT_ID = "Keyword: %s - product id: %s"
-            const val TOPADS = "topads"
-            const val GENERAL = "general"
             const val GENERAL_SEARCH_EVENT_LABEL = "%s|%s|%s|%s|%s|%s|%s"
             const val KEYWORD_FILTER = "keyword: %s - filter: %s"
         }

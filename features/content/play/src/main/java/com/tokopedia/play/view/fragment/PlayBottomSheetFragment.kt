@@ -22,7 +22,6 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayAnalytic
 import com.tokopedia.play.analytic.PlayNewAnalytic
-import com.tokopedia.play.analytic.ProductAnalyticHelper
 import com.tokopedia.play.extensions.isAnyShown
 import com.tokopedia.play.extensions.isCouponSheetsShown
 import com.tokopedia.play.extensions.isKeyboardShown
@@ -101,8 +100,6 @@ class PlayBottomSheetFragment @Inject constructor(
     private val playFragment: PlayFragment
         get() = requireParentFragment() as PlayFragment
 
-    private lateinit var productAnalyticHelper: ProductAnalyticHelper
-
     override fun getScreenName(): String = "Play Bottom Sheet"
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -121,7 +118,6 @@ class PlayBottomSheetFragment @Inject constructor(
         super.onViewCreated(view, savedInstanceState)
         setupView(view)
         setupObserve()
-        initAnalytic()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -183,10 +179,13 @@ class PlayBottomSheetFragment @Inject constructor(
 
     override fun onProductImpressed(
         view: ProductSheetViewComponent,
-        products: List<ProductSheetAdapter.Item.Product>
+        products: Map<ProductSheetAdapter.Item.Product, Int>
     ) {
-        productAnalyticHelper.trackImpressedProductsBottomSheet(products)
-        productAnalyticHelper.sendImpressedBottomSheet(playViewModel.latestCompleteChannelData.partnerInfo.type)
+        if (!playViewModel.bottomInsets.isProductSheetsShown) return
+
+        if (playViewModel.latestCompleteChannelData.partnerInfo.type == PartnerType.TokoNow)
+            newAnalytic.impressProductBottomSheetNow(products)
+        else analytic.impressBottomSheetProduct(products)
     }
 
     private fun onProductCountChanged() {
@@ -321,10 +320,6 @@ class PlayBottomSheetFragment @Inject constructor(
 
         observeUiState()
         observeUiEvent()
-    }
-
-    private fun initAnalytic() {
-        productAnalyticHelper = ProductAnalyticHelper(analytic, newAnalytic)
     }
 
     private fun closeProductSheet() {

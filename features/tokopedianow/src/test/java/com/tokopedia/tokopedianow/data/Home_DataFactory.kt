@@ -45,6 +45,7 @@ import com.tokopedia.tokopedianow.home.domain.model.TickerResponse
 import com.tokopedia.tokopedianow.home.domain.model.Tickers
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutListUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselAtcProductCardSpaceUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselAtcProductCardUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselAtcUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLoadingStateUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeTickerUiModel
@@ -421,12 +422,16 @@ fun createSliderBannerDataModel(
 fun createLeftCarouselAtcDataModel(
     id: String,
     headerName: String,
+    productList: List<Visitable<*>> = listOf(HomeLeftCarouselAtcProductCardSpaceUiModel(
+        channelId = id,
+        channelHeaderName = headerName
+    ))
 ): HomeLeftCarouselAtcUiModel {
     return HomeLeftCarouselAtcUiModel(
         id = id,
         name = "",
         header = TokoNowDynamicHeaderUiModel(title = headerName),
-        productList = listOf(HomeLeftCarouselAtcProductCardSpaceUiModel(channelId = id, channelHeaderName = headerName))
+        productList = productList
     )
 }
 

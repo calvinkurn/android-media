@@ -9,6 +9,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalContent.INTERNAL_AFFIL
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.INTERNAL_FEED_CREATION_PRODUCT_SEARCH
 import com.tokopedia.applink.internal.ApplinkConstInternalContent.INTERNAL_FEED_CREATION_SHOP_SEARCH
 import com.tokopedia.applink.startsWithPattern
+import com.tokopedia.config.GlobalConfig
 
 /**
  * Created by jegul on 2019-11-04
@@ -27,6 +28,11 @@ object DeeplinkMapperContent {
      * Replace "tokopedia" scheme to "tokopedia-android-internal"
      * This method keeps the query parameters intact on the deeplink
      */
+    fun getProfileDeeplink(deepLink: String): String {
+        return if (GlobalConfig.isSellerApp()) getProfileSellerAppDeepLink()
+        else getRegisteredNavigation(deepLink)
+    }
+
     fun getRegisteredNavigation(deeplink: String): String {
         return deeplink.replace(DeeplinkConstant.SCHEME_TOKOPEDIA, DeeplinkConstant.SCHEME_INTERNAL)
     }
@@ -80,5 +86,12 @@ object DeeplinkMapperContent {
 
     private fun handleNavigationPlay(uri: Uri): String {
         return "${ApplinkConstInternalContent.INTERNAL_PLAY}/${uri.lastPathSegment}"
+    }
+
+    /**
+     * For easier hansel purpose
+     */
+    private fun getProfileSellerAppDeepLink(): String {
+        return ApplinkConstInternalContent.INTERNAL_FEATURE_PREVENTION
     }
 }
