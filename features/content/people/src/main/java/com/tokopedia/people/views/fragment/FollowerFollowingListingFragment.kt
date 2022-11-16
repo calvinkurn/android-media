@@ -151,7 +151,8 @@ class FollowerFollowingListingFragment @Inject constructor(
 
             override fun onPageScrollStateChanged(state: Int) {
             }
-        },)
+        },
+        )
     }
 
     private fun setHeader() {

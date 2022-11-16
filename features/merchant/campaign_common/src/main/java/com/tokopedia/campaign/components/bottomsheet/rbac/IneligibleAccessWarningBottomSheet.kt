@@ -4,7 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.tokopedia.campaign.databinding.BottomsheetIneligibleAccessWarningBinding
+import com.tokopedia.campaign.databinding.CampaignCommonBottomsheetIneligibleAccessWarningBinding
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ImageUnify
@@ -28,7 +28,7 @@ class IneligibleAccessWarningBottomSheet : BottomSheetUnify() {
         val button: UnifyButton
     )
 
-    private var binding by autoClearedNullable<BottomsheetIneligibleAccessWarningBinding>()
+    private var binding by autoClearedNullable<CampaignCommonBottomsheetIneligibleAccessWarningBinding>()
     private var onButtonClicked : () -> Unit = {}
     private var customAppearance: Widget.() -> Unit = {}
 
@@ -48,7 +48,7 @@ class IneligibleAccessWarningBottomSheet : BottomSheetUnify() {
     }
 
     private fun setupBottomSheet(inflater: LayoutInflater, container: ViewGroup?) {
-        binding = BottomsheetIneligibleAccessWarningBinding.inflate(inflater, container, false)
+        binding = CampaignCommonBottomsheetIneligibleAccessWarningBinding.inflate(inflater, container, false)
         setChild(binding?.root)
     }
 
@@ -59,13 +59,13 @@ class IneligibleAccessWarningBottomSheet : BottomSheetUnify() {
 
     private fun setupView() {
         binding?.run {
-            imageView.loadImage(DEFAULT_IMAGE_URL)
-            button.setOnClickListener {
+            imageViewIneligibleAccess.loadImage(DEFAULT_IMAGE_URL)
+            btnReadEducationArticle.setOnClickListener {
                 onButtonClicked()
                 dismiss()
             }
 
-            val widget = Widget(imageView, tpgTitle, tpgDescription, button)
+            val widget = Widget(imageViewIneligibleAccess, tpgTitle, tpgDescription, btnReadEducationArticle)
             customAppearance.invoke(widget)
         }
     }

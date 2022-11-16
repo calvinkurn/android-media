@@ -6,7 +6,6 @@ import com.tokopedia.content.common.usecase.GetWhiteListNewUseCase.Companion.WHI
 import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowAction
 import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowUseCase
 import com.tokopedia.feedcomponent.domain.usecase.shoprecom.ShopRecomUseCase
-import com.tokopedia.feedcomponent.domain.usecase.shoprecom.ShopRecomUseCase.Companion.VAL_CURSOR
 import com.tokopedia.feedcomponent.domain.usecase.shoprecom.ShopRecomUseCase.Companion.VAL_LIMIT
 import com.tokopedia.feedcomponent.domain.usecase.shoprecom.ShopRecomUseCase.Companion.VAL_SCREEN_NAME_USER_PROFILE
 import com.tokopedia.feedcomponent.people.mapper.ProfileMutationMapper
@@ -119,14 +118,14 @@ class UserProfileRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getShopRecom(): ShopRecomUiModel = withContext(dispatcher.io) {
+    override suspend fun getShopRecom(cursor: String): ShopRecomUiModel = withContext(dispatcher.io) {
         val result = shopRecomUseCase.executeOnBackground(
             screenName = VAL_SCREEN_NAME_USER_PROFILE,
             limit = VAL_LIMIT,
-            cursor = VAL_CURSOR,
+            cursor = cursor,
         )
 
-        return@withContext shopRecomMapper.mapShopRecom(result)
+        return@withContext shopRecomMapper.mapShopRecom(result, VAL_LIMIT)
     }
 
     override suspend fun shopFollowUnfollow(

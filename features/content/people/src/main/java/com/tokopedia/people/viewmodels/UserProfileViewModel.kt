@@ -94,7 +94,6 @@ class UserProfileViewModel @AssistedInject constructor(
 
     val isShopRecomShow: Boolean get() = _shopRecom.value.isShown
 
-    var ugcOnboardingOpenFrom: Int = 0
     var viewPagerSelectedPage: Int = 0
 
     private val _savedReminderData = MutableStateFlow<SavedReminderData>(SavedReminderData.NoData)
@@ -139,6 +138,7 @@ class UserProfileViewModel @AssistedInject constructor(
             is UserProfileAction.RemoveReminderActivityResult -> handleRemoveReminderActivityResult()
             is UserProfileAction.ClickFollowButtonShopRecom -> handleClickFollowButtonShopRecom(action.itemID)
             is UserProfileAction.RemoveShopRecomItem -> handleRemoveShopRecomItem(action.itemID)
+            is UserProfileAction.LoadNextPageShopRecom -> handleLoadNextPageShopRecom(action.nextCurSor)
             is UserProfileAction.LoadProfileTab -> handleLoadProfileTab()
         }
     }
@@ -182,6 +182,15 @@ class UserProfileViewModel @AssistedInject constructor(
                 userPostError.value = it
             }
         )
+    }
+
+    private fun handleLoadNextPageShopRecom(nextCursor: String) {
+        viewModelScope.launchCatchError(block = {
+            if (nextCursor.isEmpty()) return@launchCatchError
+            loadShopRecom(nextCursor)
+        }, onError = {
+            _uiEvent.emit(UserProfileUiEvent.ErrorLoadNextPageShopRecom(it))
+        },)
     }
 
     private fun handleClickFollowButton(isFromLogin: Boolean) {
@@ -381,11 +390,19 @@ class UserProfileViewModel @AssistedInject constructor(
             })
     }
 
-    private suspend fun loadShopRecom() {
-        viewModelScope.launchCatchError(block = {
-            val result = repo.getShopRecom()
-            _shopRecom.update { if (result.isShown) result else ShopRecomUiModel() }
-        }, onError = { })
+    private suspend fun loadShopRecom(cursor: String = "") {
+        val result = repo.getShopRecom(cursor)
+        if (result.isShown) {
+            _shopRecom.update {
+                it.copy(
+                    isShown = result.isShown,
+                    nextCursor = result.nextCursor,
+                    title = result.title,
+                    loadNextPage = result.loadNextPage,
+                    items = it.items + result.items,
+                )
+            }
+        } else _shopRecom.update { ShopRecomUiModel() }
     }
 
     companion object {

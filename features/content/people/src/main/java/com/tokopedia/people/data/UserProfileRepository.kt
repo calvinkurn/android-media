@@ -42,7 +42,7 @@ interface UserProfileRepository {
         cursor: String,
     ): UserPostModel
 
-    suspend fun getShopRecom(): ShopRecomUiModel
+    suspend fun getShopRecom(cursor: String): ShopRecomUiModel
 
     suspend fun shopFollowUnfollow(
         shopId: String,

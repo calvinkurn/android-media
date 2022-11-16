@@ -1,5 +1,6 @@
 package com.tokopedia.people.views.fragment
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
@@ -133,6 +134,8 @@ class UserProfileFragment @Inject constructor(
         }
     }
 
+    private var ugcOnboardingOpenFrom: Int = 0
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -218,16 +221,15 @@ class UserProfileFragment @Inject constructor(
         super.onAttachFragment(childFragment)
         when (childFragment) {
             is UGCOnboardingParentFragment -> {
-                childFragment.setListener(
-                    object : UGCOnboardingParentFragment.Listener {
-                        override fun onSuccess() {
-                            viewModel.submitAction(UserProfileAction.LoadProfile())
-                            when (viewModel.ugcOnboardingOpenFrom) {
-                                UGC_ONBOARDING_OPEN_FROM_POST -> goToCreatePostPage()
-                                UGC_ONBOARDING_OPEN_FROM_LIVE -> goToCreateLiveStream()
-                                else -> {}
-                            }
+                childFragment.setListener(object : UGCOnboardingParentFragment.Listener {
+                    override fun onSuccess() {
+                        submitAction(UserProfileAction.LoadProfile())
+                        when (ugcOnboardingOpenFrom) {
+                            UGC_ONBOARDING_OPEN_FROM_POST -> goToCreatePostPage()
+                            UGC_ONBOARDING_OPEN_FROM_LIVE -> goToCreateLiveStream()
+                            else -> {}
                         }
+                    }
 
                         override fun impressTncOnboarding() {
                             userProfileTracker.impressionOnBoardingBottomSheetWithUsername(
@@ -506,16 +508,18 @@ class UserProfileFragment @Inject constructor(
             return
         }
 
-        if (value.profileType == ProfileType.Self && value.profileWhitelist.isWhitelist && !fabCreated) {
-            val items = arrayListOf<FloatingButtonItem>()
-            items.add(createLiveFab())
-            items.add(createPostFab())
-            mainBinding.fabUp.addItem(items)
-            mainBinding.fabUserProfile.show()
-            fabCreated = true
-        } else {
-            mainBinding.fabUserProfile.hide()
-        }
+        try {
+            if (value.profileType == ProfileType.Self && value.profileWhitelist.isWhitelist) {
+                if (!fabCreated) {
+                    val items = arrayListOf<FloatingButtonItem>()
+                    items.add(createLiveFab())
+                    items.add(createPostFab())
+                    mainBinding.fabUp.addItem(items)
+                    mainBinding.fabUserProfile.show()
+                    fabCreated = true
+                }
+            } else mainBinding.fabUserProfile.hide()
+        } catch (e: Exception) { }
     }
 
     private fun renderProfileReminder(
@@ -539,21 +543,19 @@ class UserProfileFragment @Inject constructor(
         }
     }
 
+    @OptIn(ExperimentalStdlibApi::class)
     private fun renderShopRecom(
         prev: UserProfileUiState?,
-        value: UserProfileUiState
+        value: UserProfileUiState,
     ) {
         if (prev?.shopRecom == value.shopRecom) return
 
         val shopRecom = value.shopRecom
 
-        mainBinding.shopRecommendation.setData(shopRecom.title, shopRecom.items)
+        mainBinding.shopRecommendation.setData(shopRecom.title, shopRecom.items, shopRecom.loadNextPage, shopRecom.nextCursor)
 
-        if (value.shopRecom.items.isEmpty()) {
-            mainBinding.shopRecommendation.showEmptyShopRecom()
-        } else {
-            mainBinding.shopRecommendation.showContentShopRecom()
-        }
+        if (value.shopRecom.items.isEmpty()) mainBinding.shopRecommendation.showEmptyShopRecom()
+        else mainBinding.shopRecommendation.showContentShopRecom()
     }
 
     private fun renderProfileTab(prev: ProfileTabUiModel?, value: ProfileTabUiModel) {
@@ -574,7 +576,7 @@ class UserProfileFragment @Inject constructor(
 
                 // TODO onboarding for `Buat Live` will be in the next phase
 //                if (viewModel.needOnboarding) {
-//                    viewModel.ugcOnboardingOpenFrom = UGC_ONBOARDING_OPEN_FROM_LIVE
+//                    ugcOnboardingOpenFrom = UGC_ONBOARDING_OPEN_FROM_LIVE
 //                    openUGCOnboardingBottomSheet()
 //                } else goToCreateLiveStream()
 
@@ -591,7 +593,7 @@ class UserProfileFragment @Inject constructor(
                 mainBinding.fabUp.menuOpen = false
                 userProfileTracker.clickCreatePost(viewModel.profileUserID)
                 if (viewModel.needOnboarding) {
-                    viewModel.ugcOnboardingOpenFrom = UGC_ONBOARDING_OPEN_FROM_POST
+                    ugcOnboardingOpenFrom = UGC_ONBOARDING_OPEN_FROM_POST
                     openUGCOnboardingBottomSheet()
                 } else {
                     goToCreatePostPage()
@@ -842,6 +844,10 @@ class UserProfileFragment @Inject constructor(
                 postPosition
             )
         }
+    }
+
+    override fun onShopRecomLoadingNextPage(nextCursor: String) {
+        viewModel.submitAction(UserProfileAction.LoadNextPageShopRecom(nextCursor))
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
