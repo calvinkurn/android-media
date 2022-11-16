@@ -84,6 +84,7 @@ import com.tokopedia.sellerhome.domain.model.ShippingLoc
 import com.tokopedia.sellerhome.view.SellerHomeDiffUtilCallback
 import com.tokopedia.sellerhome.view.activity.SellerHomeActivity
 import com.tokopedia.sellerhome.view.customview.NotificationDotBadge
+import com.tokopedia.sellerhome.view.helper.NewSellerJourneyHelper
 import com.tokopedia.sellerhome.view.model.ShopShareDataUiModel
 import com.tokopedia.sellerhome.view.viewhelper.SellerHomeLayoutManager
 import com.tokopedia.sellerhome.view.viewhelper.ShopShareHelper
@@ -216,6 +217,9 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     @Inject
     lateinit var shopShareHelper: ShopShareHelper
+
+    @Inject
+    lateinit var newSellerJourneyHelper: NewSellerJourneyHelper
 
     private val sellerHomeViewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(SellerHomeViewModel::class.java)
@@ -383,6 +387,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
         this.menu = menu
         showNotificationBadge()
+        setNotificationCoachMarkView()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -2598,6 +2603,12 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                     numberOfPosts
                 )
             }
+        }
+    }
+
+    fun setNotificationCoachMarkView() {
+        menu?.findItem(NOTIFICATION_MENU_ID)?.let {
+            newSellerJourneyHelper.setNotificationView(it.actionView)
         }
     }
 
