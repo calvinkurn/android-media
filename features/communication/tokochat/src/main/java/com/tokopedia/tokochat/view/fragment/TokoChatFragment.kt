@@ -104,6 +104,7 @@ class TokoChatFragment :
     private var tkpdOrderId: String = ""
     private var firstTimeOpen = true
     private var isFromTokoFoodPostPurchase = false
+    private var readModeStartsAt: Long = 0
 
     override var adapter: TokoChatBaseAdapter = TokoChatBaseAdapter(
         this,
@@ -227,12 +228,20 @@ class TokoChatFragment :
             )
         }
         chatSendButton?.setOnClickListener {
-            tokoChatAnalytics.clickSendMessage(
-                channelId,
-                TokoChatAnalyticsConstants.BUYER,
-                source
-            )
-            onSendButtonClicked()
+            if (isChannelReadOnly()) {
+                setupReplySection(
+                    false,
+                    getString(com.tokopedia.tokochat_common.R.string.tokochat_message_closed_chat)
+                )
+                clearReplyBoxMessage()
+            } else {
+                tokoChatAnalytics.clickSendMessage(
+                    channelId,
+                    TokoChatAnalyticsConstants.BUYER,
+                    source
+                )
+                onSendButtonClicked()
+            }
         }
     }
 
@@ -477,11 +486,11 @@ class TokoChatFragment :
                     showUnavailableBottomSheet()
                 } else {
                     // Check if channel is read only
-                    val readModeStartsAt = channel.readModeStartsAt ?: 0
-                    if (channel.readOnly ||
-                        readModeStartsAt > System.currentTimeMillis() &&
-                        readModeStartsAt > 0
-                    ) {
+                    val readModeLong = channel.readModeStartsAt ?: 0
+                    if (readModeLong != 0L) {
+                        readModeStartsAt = readModeLong
+                    }
+                    if (channel.readOnly || isChannelReadOnly()) {
                         // Hide reply component
                         setupReplySection(
                             false,
@@ -494,6 +503,10 @@ class TokoChatFragment :
                 }
             }
         }
+    }
+
+    private fun isChannelReadOnly(): Boolean {
+        return readModeStartsAt < System.currentTimeMillis() && readModeStartsAt > 0
     }
 
     private fun observeChatConnection() {
