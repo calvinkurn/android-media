@@ -147,11 +147,24 @@
             tools:text="10 Varian Produk" />
 
         <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/iconDropdown"
             android:layout_width="24dp"
             android:layout_height="24dp"
             android:layout_alignParentEnd="true"
             app:icon_enable_state="true"
             app:icon_name="CHEVRON_DOWN" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tpgUpdateVariant"
+            android:visibility="gone"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingTop="2dp"
+            android:layout_alignParentEnd="true"
+            android:text="@string/smvc_update"
+            android:textColor="@color/Unify_GN500"
+            app:typographyType="paragraph_3"
+            app:typographyWeight="bold" />
 
     </RelativeLayout>
 

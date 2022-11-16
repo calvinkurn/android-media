@@ -14,7 +14,6 @@ import com.tokopedia.campaign.utils.extension.applyPaddingToLastItem
 import com.tokopedia.campaign.utils.extension.attachDividerItemDecoration
 import com.tokopedia.kotlin.extensions.view.applyUnifyBackgroundColor
 import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.splitByThousand
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.mvc.R
@@ -205,22 +204,18 @@ class SelectVariantBottomSheet : BottomSheetUnify() {
 
     private fun renderSelectAllCheckbox(uiState: SelectVariantUiState) {
         val selectedVariantCount = uiState.selectedVariantIds.count()
+        val allVariantsCount = uiState.variants.count()
 
         when {
-            selectedVariantCount.isZero() -> {
-                val isIndeterminate = binding?.checkbox?.getIndeterminate() ?: false
-                if (isIndeterminate) binding?.checkbox?.setIndeterminate(false)
+            selectedVariantCount == 0 -> {
                 binding?.checkbox?.isChecked = false
             }
-             selectedVariantCount < uiState.variants.size -> {
-                 val isIndeterminate = binding?.checkbox?.getIndeterminate() ?: false
-                 if (!isIndeterminate) binding?.checkbox?.setIndeterminate(true)
-                 binding?.checkbox?.isChecked = true
+            selectedVariantCount < allVariantsCount -> {
+                binding?.checkbox?.setIndeterminate(true)
+                binding?.checkbox?.isChecked = true
             }
-            else -> {
-                val isIndeterminate = binding?.checkbox?.getIndeterminate() ?: false
-                if (isIndeterminate) binding?.checkbox?.setIndeterminate(false)
-                binding?.checkbox?.isChecked = false
+            selectedVariantCount == allVariantsCount -> {
+                binding?.checkbox?.isChecked = true
             }
         }
     }

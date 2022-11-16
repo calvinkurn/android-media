@@ -45,7 +45,7 @@ class ProductDelegateAdapter(
 
         init {
             binding.root.setOnClickListener { onItemClick(bindingAdapterPosition) }
-            binding.layoutVariant.setOnClickListener { onVariantClick(bindingAdapterPosition) }
+            binding.tpgUpdateVariant.setOnClickListener { onVariantClick(bindingAdapterPosition) }
         }
 
         fun bind(item: Product) {
@@ -110,23 +110,35 @@ class ProductDelegateAdapter(
             val updatedVariantCount = item.selectedVariantsIds.count()
             val variantChanged = originalVariantCount != updatedVariantCount
 
-            binding.tpgVariantCount.text = when {
-                item.isSelected && variantChanged -> binding.tpgVariantCount.context.getString(
-                    R.string.smvc_placeholder_modified_variant_product_count,
-                    item.selectedVariantsIds.size,
-                    item.originalVariants.size
-                )
-                item.isSelected -> MethodChecker.fromHtml(
-                    binding.tpgVariantCount.context.getString(
-                        R.string.smvc_placeholder_selected_variant_product_count,
+            when {
+                item.isSelected && variantChanged -> {
+                    binding.iconDropdown.gone()
+                    binding.tpgUpdateVariant.visible()
+                    binding.tpgVariantCount.text = binding.tpgVariantCount.context.getString(
+                        R.string.smvc_placeholder_modified_variant_product_count,
                         item.selectedVariantsIds.size,
                         item.originalVariants.size
                     )
-                )
-                else -> binding.tpgVariantCount.context.getString(
-                    R.string.smvc_placeholder_variant_product_count,
-                    originalVariantCount
-                )
+                }
+                item.isSelected -> {
+                    binding.iconDropdown.visible()
+                    binding.tpgUpdateVariant.gone()
+                    binding.tpgVariantCount.text = MethodChecker.fromHtml(
+                        binding.tpgVariantCount.context.getString(
+                            R.string.smvc_placeholder_selected_variant_product_count,
+                            item.selectedVariantsIds.size,
+                            item.originalVariants.size
+                        )
+                    )
+                }
+                else -> {
+                    binding.iconDropdown.visible()
+                    binding.tpgUpdateVariant.gone()
+                    binding.tpgVariantCount.text = binding.tpgVariantCount.context.getString(
+                        R.string.smvc_placeholder_variant_product_count,
+                        originalVariantCount
+                    )
+                }
             }
         }
 
