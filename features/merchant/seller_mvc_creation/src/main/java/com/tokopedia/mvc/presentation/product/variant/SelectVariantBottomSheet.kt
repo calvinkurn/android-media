@@ -14,6 +14,7 @@ import com.tokopedia.campaign.utils.extension.applyPaddingToLastItem
 import com.tokopedia.campaign.utils.extension.attachDividerItemDecoration
 import com.tokopedia.kotlin.extensions.view.applyUnifyBackgroundColor
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.splitByThousand
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.mvc.R
@@ -207,7 +208,7 @@ class SelectVariantBottomSheet : BottomSheetUnify() {
         val allVariantsCount = uiState.variants.count()
 
         when {
-            selectedVariantCount == 0 -> {
+            selectedVariantCount.isZero() -> {
                 binding?.checkbox?.isChecked = false
             }
             selectedVariantCount < allVariantsCount -> {

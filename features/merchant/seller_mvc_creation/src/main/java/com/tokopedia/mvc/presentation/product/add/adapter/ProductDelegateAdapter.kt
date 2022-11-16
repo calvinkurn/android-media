@@ -121,8 +121,8 @@ class ProductDelegateAdapter(
                     )
                 }
                 item.isSelected -> {
-                    binding.iconDropdown.visible()
-                    binding.tpgUpdateVariant.gone()
+                    binding.iconDropdown.gone()
+                    binding.tpgUpdateVariant.visible()
                     binding.tpgVariantCount.text = MethodChecker.fromHtml(
                         binding.tpgVariantCount.context.getString(
                             R.string.smvc_placeholder_selected_variant_product_count,
