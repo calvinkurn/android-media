@@ -5,7 +5,6 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.RelativeLayout
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.campaign.components.adapter.DelegateAdapter
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
@@ -13,23 +12,23 @@ import com.tokopedia.kotlin.extensions.view.splitByThousand
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.mvc.R
-import com.tokopedia.mvc.databinding.SmvcItemVariantProductReviewBinding
+import com.tokopedia.mvc.databinding.SmvcItemProductListBinding
 import com.tokopedia.mvc.domain.entity.Product
 import com.tokopedia.mvc.util.constant.NumberConstant
 import com.tokopedia.mvc.util.extension.grayscale
 import com.tokopedia.mvc.util.extension.resetGrayscale
 import com.tokopedia.unifyprinciples.Typography
 
-class ProductReviewDelegateAdapter(
+class ProductListDelegateAdapter(
     private val onDeleteProductClick: (Int) -> Unit,
     private val onCheckboxClick: (Int, Boolean) -> Unit,
     private val onVariantClick: (Int) -> Unit
-) : DelegateAdapter<Product, ProductReviewDelegateAdapter.ViewHolder>(
+) : DelegateAdapter<Product, ProductListDelegateAdapter.ViewHolder>(
     Product::class.java
 ) {
 
     override fun createViewHolder(parent: ViewGroup): RecyclerView.ViewHolder {
-        val binding = SmvcItemVariantProductReviewBinding.inflate(
+        val binding = SmvcItemProductListBinding.inflate(
             LayoutInflater.from(parent.context),
             parent,
             false
@@ -41,11 +40,11 @@ class ProductReviewDelegateAdapter(
         viewHolder.bind(item)
     }
 
-    inner class ViewHolder(private val binding : SmvcItemVariantProductReviewBinding) : RecyclerView.ViewHolder(binding.root) {
+    inner class ViewHolder(private val binding : SmvcItemProductListBinding) : RecyclerView.ViewHolder(binding.root) {
 
         init {
             binding.iconDelete.setOnClickListener { onDeleteProductClick(bindingAdapterPosition) }
-            binding.tpgUpdateVariant.setOnClickListener { onVariantClick(bindingAdapterPosition) }
+            binding.layoutVariant.setOnClickListener { onVariantClick(bindingAdapterPosition) }
         }
 
         fun bind(item: Product) {

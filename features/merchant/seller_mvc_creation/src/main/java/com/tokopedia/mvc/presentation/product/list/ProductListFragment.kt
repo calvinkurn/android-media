@@ -28,11 +28,11 @@ import com.tokopedia.mvc.domain.entity.SelectedProduct
 import com.tokopedia.mvc.domain.entity.enums.PromoType
 import com.tokopedia.mvc.domain.entity.enums.VoucherAction
 import com.tokopedia.mvc.presentation.product.add.AddProductFragment
-import com.tokopedia.mvc.presentation.product.list.adapter.ProductReviewDelegateAdapter
+import com.tokopedia.mvc.presentation.product.list.adapter.ProductListDelegateAdapter
 import com.tokopedia.mvc.presentation.product.list.uimodel.ProductListEffect
 import com.tokopedia.mvc.presentation.product.list.uimodel.ProductListEvent
 import com.tokopedia.mvc.presentation.product.list.uimodel.ProductListUiState
-import com.tokopedia.mvc.presentation.product.variant.SelectVariantBottomSheet
+import com.tokopedia.mvc.presentation.product.variant.review.ReviewVariantBottomSheet
 import com.tokopedia.mvc.util.constant.BundleConstant
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -60,7 +60,7 @@ class ProductListFragment : BaseDaggerFragment() {
 
     private val productAdapter by lazy {
         CompositeAdapter.Builder()
-            .add(ProductReviewDelegateAdapter(onDeleteProductClick, onCheckboxClick, onVariantClick))
+            .add(ProductListDelegateAdapter(onDeleteProductClick, onCheckboxClick, onVariantClick))
             .build()
     }
 
@@ -100,7 +100,6 @@ class ProductListFragment : BaseDaggerFragment() {
         setupView()
         observeUiEffect()
         observeUiState()
-
 
         viewModel.processEvent(
             ProductListEvent.FetchProducts(
@@ -247,7 +246,7 @@ class ProductListFragment : BaseDaggerFragment() {
     }
 
     private fun displayVariantBottomSheet(selectedParentProduct: Product) {
-        val bottomSheet = SelectVariantBottomSheet.newInstance(selectedParentProduct)
+        val bottomSheet = ReviewVariantBottomSheet.newInstance(selectedParentProduct)
         bottomSheet.setOnSelectButtonClick { selectedVariantIds ->
             viewModel.processEvent(ProductListEvent.VariantUpdated(selectedParentProduct.id, selectedVariantIds))
         }

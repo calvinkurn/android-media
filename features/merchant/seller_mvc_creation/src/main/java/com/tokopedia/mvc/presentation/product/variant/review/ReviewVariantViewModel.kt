@@ -1,15 +1,16 @@
-package com.tokopedia.mvc.presentation.product.variant
+package com.tokopedia.mvc.presentation.product.variant.review
 
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.orTrue
+import com.tokopedia.kotlin.extensions.view.removeFirst
 import com.tokopedia.mvc.domain.entity.Product
 import com.tokopedia.mvc.domain.entity.Variant
 import com.tokopedia.mvc.domain.entity.VariantResult
 import com.tokopedia.mvc.domain.usecase.ProductV3UseCase
-import com.tokopedia.mvc.presentation.product.variant.uimodel.SelectVariantEffect
-import com.tokopedia.mvc.presentation.product.variant.uimodel.SelectVariantEvent
-import com.tokopedia.mvc.presentation.product.variant.uimodel.SelectVariantUiState
+import com.tokopedia.mvc.presentation.product.variant.review.uimodel.ReviewVariantEffect
+import com.tokopedia.mvc.presentation.product.variant.review.uimodel.ReviewVariantEvent
+import com.tokopedia.mvc.presentation.product.variant.review.uimodel.ReviewVariantUiState
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,33 +20,34 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class SelectVariantViewModel @Inject constructor(
+class ReviewVariantViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     private val productV3UseCase: ProductV3UseCase
 ) : BaseViewModel(dispatchers.main) {
 
-    private val _uiState = MutableStateFlow(SelectVariantUiState())
+    private val _uiState = MutableStateFlow(ReviewVariantUiState())
     val uiState = _uiState.asStateFlow()
 
-    private val _uiEffect = MutableSharedFlow<SelectVariantEffect>(replay = 1)
+    private val _uiEffect = MutableSharedFlow<ReviewVariantEffect>(replay = 1)
     val uiEffect = _uiEffect.asSharedFlow()
 
-    private val currentState: SelectVariantUiState
+    private val currentState: ReviewVariantUiState
         get() = _uiState.value
 
-    fun processEvent(event: SelectVariantEvent) {
+    fun processEvent(event: ReviewVariantEvent) {
         when(event) {
-            is SelectVariantEvent.FetchProductVariants -> {
+            is ReviewVariantEvent.FetchProductVariants -> {
                 _uiState.update { it.copy(isLoading = true, parentProductId = event.selectedParentProduct.id) }
                 getVariantDetail(event.selectedParentProduct)
             }
-            is SelectVariantEvent.AddProductToSelection -> handleAddProductToSelection(event.variantProductId)
-            SelectVariantEvent.DisableSelectAllCheckbox -> handleUncheckAllProduct()
-            SelectVariantEvent.EnableSelectAllCheckbox -> handleCheckAllProduct()
-            is SelectVariantEvent.RemoveProductFromSelection -> handleRemoveProductFromSelection(event.variantProductId)
-            SelectVariantEvent.TapSelectButton -> {
-                _uiEffect.tryEmit(SelectVariantEffect.ConfirmUpdateVariant(currentState.selectedVariantIds))
+            is ReviewVariantEvent.AddProductToSelection -> handleAddProductToSelection(event.variantProductId)
+            ReviewVariantEvent.DisableSelectAllCheckbox -> handleUncheckAllProduct()
+            ReviewVariantEvent.EnableSelectAllCheckbox -> handleCheckAllProduct()
+            is ReviewVariantEvent.RemoveProductFromSelection -> handleRemoveProductFromSelection(event.variantProductId)
+            ReviewVariantEvent.TapSelectButton -> {
+                _uiEffect.tryEmit(ReviewVariantEffect.ConfirmUpdateVariant(currentState.selectedVariantIds))
             }
+            is ReviewVariantEvent.RemoveProduct -> handleRemoveProduct(event.productId)
         }
     }
 
@@ -160,6 +162,21 @@ class SelectVariantViewModel @Inject constructor(
             }
             val selectedVariants = modifiedVariants.filter { it.isSelected }.map { it.variantId }.toSet()
             _uiState.update { it.copy(variants = modifiedVariants, selectedVariantIds = selectedVariants) }
+        }
+    }
+
+    private fun handleRemoveProduct(productIdToDelete: Long) = launch(dispatchers.computation) {
+        val modifiedVariants = currentState.variants.toMutableList()
+        modifiedVariants.removeFirst { it.variantId == productIdToDelete }
+
+        val modifiedVariantProductIds = modifiedVariants.filter { it.isSelected }.map { it.variantId }.toMutableSet()
+        modifiedVariantProductIds.remove(productIdToDelete)
+
+        _uiState.update {
+            it.copy(
+                variants = modifiedVariants,
+                selectedVariantIds = modifiedVariantProductIds
+            )
         }
     }
 

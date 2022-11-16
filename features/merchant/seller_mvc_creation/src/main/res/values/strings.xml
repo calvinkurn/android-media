@@ -13,6 +13,7 @@
     <string name="smvc_showcase">Etalase</string>
     <string name="smvc_sort">Urutkan</string>
     <string name="smvc_update">Ubah</string>
+    <string name="smvc_save">Simpan</string>
     <string name="smvc_select_variant">Pilih Varian</string>
     <string name="smvc_empty_state_no_product_title">Oops, produk nggak ditemukan</string>
     <string name="smvc_empty_state_no_product_description">Coba gunakan kata kunci lain atau filter yang berbeda, ya.</string>
@@ -46,5 +47,7 @@
     <string name="smvc_placeholder_share_component_outgoing_title">Kupon Produk dari %s</string>
     <string name="smvc_share_component_outgoing_text_description">Yuk, belanja dan pakai Kupon Produknya sekarang!</string>
     <string name="smvc_placeholder_share_component_text_description">Dapatkan Kupon Produk %s di \@Tokopedia hingga %s pukul %s WIB hanya untukmu!</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 
 </resources>

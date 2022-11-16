@@ -1,4 +1,4 @@
-package com.tokopedia.mvc.presentation.product.variant.uimodel
+package com.tokopedia.mvc.presentation.product.variant.select.uimodel
 
 import com.tokopedia.mvc.domain.entity.Variant
 

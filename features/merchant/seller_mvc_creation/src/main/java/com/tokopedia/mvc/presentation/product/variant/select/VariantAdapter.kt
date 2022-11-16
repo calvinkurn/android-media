@@ -1,4 +1,4 @@
-package com.tokopedia.mvc.presentation.product.variant
+package com.tokopedia.mvc.presentation.product.variant.select
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

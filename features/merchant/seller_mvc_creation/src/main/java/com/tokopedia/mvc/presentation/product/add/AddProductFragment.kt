@@ -63,7 +63,7 @@ import com.tokopedia.mvc.domain.entity.Product
 import com.tokopedia.mvc.domain.entity.ShopData
 import com.tokopedia.mvc.domain.entity.enums.BenefitType
 import com.tokopedia.mvc.presentation.product.list.ProductListActivity
-import com.tokopedia.mvc.presentation.product.variant.SelectVariantBottomSheet
+import com.tokopedia.mvc.presentation.product.variant.select.SelectVariantBottomSheet
 import com.tokopedia.mvc.presentation.share.LinkerDataGenerator
 import com.tokopedia.mvc.presentation.share.SharingComponentInstanceBuilder
 import com.tokopedia.sortfilter.SortFilterItem

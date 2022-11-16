@@ -1,4 +1,4 @@
-package com.tokopedia.mvc.presentation.product.variant
+package com.tokopedia.mvc.presentation.product.variant.review
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -18,26 +18,27 @@ import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.splitByThousand
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.mvc.R
-import com.tokopedia.mvc.databinding.SmvcBottomsheetSelectVariantBinding
+import com.tokopedia.mvc.databinding.SmvcBottomsheetReviewVariantBinding
 import com.tokopedia.mvc.di.component.DaggerMerchantVoucherCreationComponent
 import com.tokopedia.mvc.domain.entity.Product
-import com.tokopedia.mvc.presentation.product.variant.uimodel.SelectVariantEffect
-import com.tokopedia.mvc.presentation.product.variant.uimodel.SelectVariantEvent
-import com.tokopedia.mvc.presentation.product.variant.uimodel.SelectVariantUiState
+import com.tokopedia.mvc.presentation.product.variant.review.uimodel.ReviewVariantEffect
+import com.tokopedia.mvc.presentation.product.variant.review.uimodel.ReviewVariantEvent
+import com.tokopedia.mvc.presentation.product.variant.review.uimodel.ReviewVariantUiState
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 
-class SelectVariantBottomSheet : BottomSheetUnify() {
+
+class ReviewVariantBottomSheet: BottomSheetUnify() {
 
     companion object {
         private const val BUNDLE_KEY_SELECTED_PARENT_PRODUCT_ID = "parent_product"
         private const val DIVIDER_MARGIN_LEFT = 16
 
         @JvmStatic
-        fun newInstance(parentProduct: Product): SelectVariantBottomSheet {
-            return SelectVariantBottomSheet().apply {
+        fun newInstance(parentProduct: Product): ReviewVariantBottomSheet {
+            return ReviewVariantBottomSheet().apply {
                 arguments = Bundle().apply {
                     putParcelable(BUNDLE_KEY_SELECTED_PARENT_PRODUCT_ID, parentProduct)
                 }
@@ -45,17 +46,18 @@ class SelectVariantBottomSheet : BottomSheetUnify() {
         }
     }
 
-
-    private var binding by autoClearedNullable<SmvcBottomsheetSelectVariantBinding>()
-    private val parentProduct by lazy { arguments?.getParcelable(BUNDLE_KEY_SELECTED_PARENT_PRODUCT_ID) as? Product }
+    private var binding by autoClearedNullable<SmvcBottomsheetReviewVariantBinding>()
+    private val parentProduct by lazy { arguments?.getParcelable(
+        BUNDLE_KEY_SELECTED_PARENT_PRODUCT_ID
+    ) as? Product }
     private var onSelectButtonClick: (Set<Long>) -> Unit = {}
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
-    private val variantAdapter by lazy { VariantAdapter() }
+    private val reviewVariantAdapter by lazy { ReviewVariantAdapter() }
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
-    private val viewModel by lazy { viewModelProvider.get(SelectVariantViewModel::class.java) }
+    private val viewModel by lazy { viewModelProvider.get(ReviewVariantViewModel::class.java) }
 
     init {
         clearContentPadding = true
@@ -78,7 +80,7 @@ class SelectVariantBottomSheet : BottomSheetUnify() {
     }
 
     private fun setupBottomSheet(inflater: LayoutInflater, container: ViewGroup?) {
-        binding = SmvcBottomsheetSelectVariantBinding.inflate(inflater, container, false)
+        binding = SmvcBottomsheetReviewVariantBinding.inflate(inflater, container, false)
         setChild(binding?.root)
         setTitle(getString(R.string.smvc_select_variant))
     }
@@ -90,7 +92,7 @@ class SelectVariantBottomSheet : BottomSheetUnify() {
         observeUiEffect()
         observeUiState()
 
-        viewModel.processEvent(SelectVariantEvent.FetchProductVariants(parentProduct ?: return))
+        viewModel.processEvent(ReviewVariantEvent.FetchProductVariants(parentProduct ?: return))
     }
 
     private fun setupDependencyInjection() {
@@ -107,8 +109,8 @@ class SelectVariantBottomSheet : BottomSheetUnify() {
     }
 
     private fun setupButton() {
-        binding?.btnSelect?.setOnClickListener {
-            viewModel.processEvent(SelectVariantEvent.TapSelectButton)
+        binding?.btnSave?.setOnClickListener {
+            viewModel.processEvent(ReviewVariantEvent.TapSelectButton)
         }
     }
 
@@ -117,17 +119,23 @@ class SelectVariantBottomSheet : BottomSheetUnify() {
             layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
             applyPaddingToLastItem()
             attachDividerItemDecoration(insetLeft = DIVIDER_MARGIN_LEFT)
-            variantAdapter.setOnVariantClick { selectedItemPosition, isSelected ->
-                val selectedVariant = variantAdapter.snapshot()[selectedItemPosition]
+            reviewVariantAdapter.setOnVariantClick { selectedItemPosition, isSelected ->
+                val selectedVariant = reviewVariantAdapter.snapshot()[selectedItemPosition]
 
                 if (isSelected) {
-                    viewModel.processEvent(SelectVariantEvent.AddProductToSelection(selectedVariant.variantId))
+                    viewModel.processEvent(ReviewVariantEvent.AddProductToSelection(selectedVariant.variantId))
                 } else {
-                    viewModel.processEvent(SelectVariantEvent.RemoveProductFromSelection(selectedVariant.variantId))
+                    viewModel.processEvent(ReviewVariantEvent.RemoveProductFromSelection(selectedVariant.variantId))
                 }
 
             }
-            adapter = variantAdapter
+
+            reviewVariantAdapter.setOnDeleteVariantClick { selectedItemPosition ->
+                val selectedVariant = reviewVariantAdapter.snapshot()[selectedItemPosition]
+                viewModel.processEvent(ReviewVariantEvent.RemoveProduct(selectedVariant.variantId))
+            }
+
+            adapter = reviewVariantAdapter
         }
     }
 
@@ -135,9 +143,9 @@ class SelectVariantBottomSheet : BottomSheetUnify() {
         binding?.checkbox?.setOnCheckedChangeListener { view, isChecked ->
             if (view.isClickTriggeredByUserInteraction()) {
                 if (isChecked) {
-                    viewModel.processEvent(SelectVariantEvent.EnableSelectAllCheckbox)
+                    viewModel.processEvent(ReviewVariantEvent.EnableSelectAllCheckbox)
                 } else {
-                    viewModel.processEvent(SelectVariantEvent.DisableSelectAllCheckbox)
+                    viewModel.processEvent(ReviewVariantEvent.DisableSelectAllCheckbox)
                 }
             }
         }
@@ -160,9 +168,9 @@ class SelectVariantBottomSheet : BottomSheetUnify() {
         }
     }
 
-    private fun handleEffect(effect: SelectVariantEffect) {
+    private fun handleEffect(effect: ReviewVariantEffect) {
         when (effect) {
-            is SelectVariantEffect.ConfirmUpdateVariant -> {
+            is ReviewVariantEffect.ConfirmUpdateVariant -> {
                 onSelectButtonClick(effect.selectedVariantIds)
                 dismiss()
             }
@@ -170,7 +178,7 @@ class SelectVariantBottomSheet : BottomSheetUnify() {
     }
 
 
-    private fun handleUiState(uiState: SelectVariantUiState) {
+    private fun handleUiState(uiState: ReviewVariantUiState) {
         renderLoadingState(uiState.isLoading)
         renderSelectAllCheckbox(uiState)
         renderList(uiState)
@@ -179,18 +187,10 @@ class SelectVariantBottomSheet : BottomSheetUnify() {
     }
 
     private fun renderButton(selectedVariantIds: Set<Long>) {
-        binding?.btnSelect?.isEnabled = selectedVariantIds.isNotEmpty()
-
-        val wording = if (selectedVariantIds.isEmpty()) {
-            getString(R.string.smvc_select)
-        } else {
-            getString(R.string.smvc_placeholder_selected_variant_count, selectedVariantIds.size)
-        }
-
-        binding?.btnSelect?.text = wording
+        binding?.btnSave?.isEnabled = selectedVariantIds.isNotEmpty()
     }
 
-    private fun renderParentProduct(uiState: SelectVariantUiState) {
+    private fun renderParentProduct(uiState: ReviewVariantUiState) {
         binding?.run {
             tpgProductName.text = uiState.parentProductName
             tpgStock.text = context?.getString(R.string.smvc_placeholder_total_stock, uiState.parentProductStock.splitByThousand())
@@ -199,11 +199,11 @@ class SelectVariantBottomSheet : BottomSheetUnify() {
         }
     }
 
-    private fun renderList(uiState: SelectVariantUiState) {
-        variantAdapter.submit(uiState.variants)
+    private fun renderList(uiState: ReviewVariantUiState) {
+        reviewVariantAdapter.submit(uiState.variants)
     }
 
-    private fun renderSelectAllCheckbox(uiState: SelectVariantUiState) {
+    private fun renderSelectAllCheckbox(uiState: ReviewVariantUiState) {
         val selectedVariantCount = uiState.selectedVariantIds.count()
         val allVariantsCount = uiState.variants.count()
 
