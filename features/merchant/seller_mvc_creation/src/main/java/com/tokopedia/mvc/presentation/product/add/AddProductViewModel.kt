@@ -3,6 +3,7 @@ package com.tokopedia.mvc.presentation.product.add
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.orTrue
+import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.mvc.domain.entity.Product
 import com.tokopedia.mvc.domain.entity.ProductCategoryOption
@@ -136,12 +137,12 @@ class AddProductViewModel @Inject constructor(
                 )
 
                 val productsResponse = getProductsUseCase.execute(param)
-                val currentPageParentProductsResponse = productsResponse.products
-                val currentPageParentProductsIds = currentPageParentProductsResponse.map { product -> product.id }
+                val nonPreorderParentProducts = productsResponse.products.filter { it.preorder.durationDays.isZero() }
+                val currentPageParentProductsIds = nonPreorderParentProducts.map { product -> product.id }
 
                 val validatedParentProducts = validateProducts(currentPageParentProductsIds)
                 val updatedParentProducts = combineParentProductDataWithVariant(
-                    currentPageParentProductsResponse,
+                    nonPreorderParentProducts,
                     currentState.selectedProductsIds,
                     validatedParentProducts
                 )
