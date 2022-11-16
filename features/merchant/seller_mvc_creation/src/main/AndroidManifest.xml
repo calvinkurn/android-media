@@ -3,6 +3,12 @@
     package="com.tokopedia.mvc">
 
     <application>
+
+        <activity
+            android:name=".common.broadcastchat.BroadCastChatWebViewActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White" />
+
         <activity
             android:name="com.tokopedia.mvc.presentation.detail.VoucherDetailActivity"
             android:exported="false"

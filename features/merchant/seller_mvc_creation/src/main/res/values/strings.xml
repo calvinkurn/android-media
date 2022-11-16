@@ -57,4 +57,5 @@
     <string name="smvc_new_follower_label">Pengikut Baru</string>
     <string name="smvc_new_user_label">Pengguna Baru</string>
     <string name="smvc_member_label">Member</string>
+    <string name="smvc_broadcast_chat_label">Broadcast Chat</string>
 </resources>

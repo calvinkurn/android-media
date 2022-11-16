@@ -19,6 +19,7 @@ import com.tokopedia.mvc.databinding.SmvcVoucherDetailVoucherSettingSectionBindi
 import com.tokopedia.mvc.databinding.SmvcVoucherDetailVoucherTypeSectionBinding
 import com.tokopedia.mvc.di.component.DaggerMerchantVoucherCreationComponent
 import com.tokopedia.mvc.domain.entity.VoucherDetailData
+import com.tokopedia.mvc.util.SharingUtil
 import com.tokopedia.mvc.util.constant.DiscountTypeConstant
 import com.tokopedia.mvc.util.constant.PromoTypeConstant
 import com.tokopedia.mvc.util.constant.TargetBuyerConstant
@@ -114,6 +115,9 @@ class VoucherDetailFragment : BaseDaggerFragment() {
             }
             layoutProductList.setOnInflateListener { _, view ->
                 voucherProductBinding = SmvcVoucherDetailProductSectionBinding.bind(view)
+            }
+            btnBroadcastChat.setOnClickListener {
+                context?.let { ctx -> SharingUtil.shareToBroadCastChat(ctx, 14883692) }
             }
         }
         setupHeaderSection(data)
