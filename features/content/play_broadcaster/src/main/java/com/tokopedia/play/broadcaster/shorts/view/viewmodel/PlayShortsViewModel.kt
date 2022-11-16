@@ -185,13 +185,8 @@ class PlayShortsViewModel @Inject constructor(
             }
             val bestEligibleAccount = accountManager.getBestEligibleAccount(accountList, preferredAccountType)
 
-            if (bestEligibleAccount.isUnknown) {
-                emitEventAccountNotEligible()
-            } else if (bestEligibleAccount.isUser && !bestEligibleAccount.hasAcceptTnc) {
-                emitEventUGCOnboarding(bestEligibleAccount.hasUsername)
-            } else {
-                setupConfigurationIfEligible(bestEligibleAccount)
-            }
+            setupConfigurationIfEligible(bestEligibleAccount)
+
         }) {
             /** TODO: handle global page error like the one in broadcaster */
         }
@@ -236,13 +231,8 @@ class PlayShortsViewModel @Inject constructor(
             /** TODO: Add loading state */
             val newSelectedAccount = accountManager.switchAccount(_accountList.value, _selectedAccount.value.type)
 
-            if(newSelectedAccount.isUnknown) {
-                throw Exception("Account not found")
-            } else if (newSelectedAccount.isUser && !newSelectedAccount.hasAcceptTnc) {
-                emitEventUGCOnboarding(newSelectedAccount.hasUsername)
-            } else {
-                setupConfigurationIfEligible(newSelectedAccount)
-            }
+            setupConfigurationIfEligible(newSelectedAccount)
+
         }) { throwable ->
             _uiEvent.oneTimeUpdate {
                 it.copy(toaster = PlayShortsToaster.ErrorSwitchAccount(throwable))
@@ -354,23 +344,17 @@ class PlayShortsViewModel @Inject constructor(
         val config = getConfiguration(account)
         _config.update { it.copy(tncList = config.tncList) }
 
-        /** Need to check this here since we need tncList */
-        if(account.isShop && !account.hasAcceptTnc) {
+        if (account.isUnknown) {
+            emitEventAccountNotEligible()
+        } else if(account.isShop && (!account.hasAcceptTnc || !config.shortsAllowed)) {
             emitEventSellerNotEligible()
-            return
-        }
-
-        if(config.shortsAllowed) {
-            setSelectedAccount(account)
+        } else if (account.isUser && !account.hasAcceptTnc) {
+            emitEventUGCOnboarding(account.hasUsername)
+        } else if (account.isUser && !config.shortsAllowed){
+            emitEventAccountNotEligible()
+        } else {
             _config.update { config }
-        }
-        else {
-            if(account.isShop) {
-                emitEventSellerNotEligible()
-            }
-            else if(account.isUser) {
-                emitEventAccountNotEligible()
-            }
+            setSelectedAccount(account)
         }
     }
 
