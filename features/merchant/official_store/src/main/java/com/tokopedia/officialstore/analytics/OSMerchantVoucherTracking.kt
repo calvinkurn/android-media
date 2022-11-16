@@ -191,6 +191,6 @@ object OSMerchantVoucherTracking : BaseTrackerConst() {
         bundle.putString(UserId.KEY, element.userId)
         bundle.putString(TrackerId.KEY, VALUE_TRACKER_ID_CLICK_MVC_PRODUCT)
 
-        return Pair(Ecommerce.PRODUCT_CLICK, bundle)
+        return Pair(Event.SELECT_CONTENT, bundle)
     }
 }
