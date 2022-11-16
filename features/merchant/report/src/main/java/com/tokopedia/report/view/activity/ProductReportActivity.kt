@@ -9,6 +9,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewTreeLifecycleOwner
 import androidx.lifecycle.ViewTreeViewModelStoreOwner
+import androidx.savedstate.ViewTreeSavedStateRegistryOwner
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -46,7 +47,7 @@ class ProductReportActivity : AppCompatActivity() {
     private fun setViewTree() {
         ViewTreeLifecycleOwner.set(this.window.decorView, this)
         ViewTreeViewModelStoreOwner.set(this.window.decorView, this)
-        //ViewTreeSavedStateRegistryOwner.set(this.window.decorView, this)
+        ViewTreeSavedStateRegistryOwner.set(this.window.decorView, this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
