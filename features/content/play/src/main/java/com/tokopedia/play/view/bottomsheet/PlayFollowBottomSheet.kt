@@ -126,7 +126,7 @@ class PlayFollowBottomSheet @Inject constructor(private val analytic: PlayNewAna
         binding.tvFollowDesc.text = playViewModel.latestCompleteChannelData.channelDetail.popupConfig.text
 
         binding.clFollowContainer.setOnClickListener {
-            analytic.clickCreatorPopUp(playViewModel.channelId, playViewModel.channelType.value)
+            analytic.clickCreatorPopUp(playViewModel.channelId, playViewModel.channelType.value, playViewModel.partnerType, playViewModel.partnerId.toString())
             playViewModel.submitAction(ClickPartnerNameAction(partnerInfo.appLink))
         }
 

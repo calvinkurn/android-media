@@ -84,12 +84,17 @@ class PlayFollowPopupAnalyticImpl @Inject constructor(
             .send()
     }
 
-    override fun clickCreatorPopUp(channelId: String, channelType: String) {
+    override fun clickCreatorPopUp(
+        channelId: String,
+        channelType: String,
+        partnerType: String,
+        partnerId: String
+    ) {
         Tracker.Builder()
             .setEvent(KEY_TRACK_CLICK_CONTENT)
             .setEventAction("click - creator name follow pop up")
             .setEventCategory(KEY_TRACK_GROUP_CHAT_ROOM)
-            .setEventLabel("$channelId - $channelType")
+            .setEventLabel("$channelId - $channelType - $partnerType - $partnerId")
             .setCustomProperty(KEY_TRACK_TRACKER, "38071")
             .setBusinessUnit(KEY_TRACK_BUSINESS_UNIT)
             .setCurrentSite(KEY_TRACK_CURRENT_SITE)
@@ -100,8 +105,11 @@ class PlayFollowPopupAnalyticImpl @Inject constructor(
     }
 
     override fun impressToasterPopUp(channelId: String, channelType: String, isSuccess: Boolean) {
-        val (eventAction, trackerId) = if(isSuccess) Pair("impression - success follow toaster","38072")
-                                        else Pair("impression - fail follow toaster", "38073")
+        val (eventAction, trackerId) = if (isSuccess) Pair(
+            "impression - success follow toaster",
+            "38072"
+        )
+        else Pair("impression - fail follow toaster", "38073")
 
         Tracker.Builder()
             .setEvent(KEY_TRACK_VIEW_CONTENT_IRIS)
