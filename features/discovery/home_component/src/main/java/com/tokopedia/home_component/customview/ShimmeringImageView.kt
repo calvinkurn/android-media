@@ -1,6 +1,7 @@
 package com.tokopedia.home_component.customview
 
 import android.content.Context
+import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.util.AttributeSet
 import android.view.View
@@ -8,6 +9,8 @@ import android.widget.FrameLayout
 import android.widget.ImageView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.MultiTransformation
+import com.bumptech.glide.load.Transformation
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.load.resource.bitmap.CenterCrop
@@ -16,6 +19,7 @@ import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.tokopedia.analytics.performance.PerformanceMonitoring
 import com.tokopedia.home_component.R
+import com.tokopedia.home_component.customview.util.RoundedCornersTransformation
 import com.tokopedia.unifycomponents.LoaderUnify
 
 class ShimmeringImageView @JvmOverloads constructor(context: Context, private val attrs: AttributeSet? = null, defStyleAttr: Int = 0) :
@@ -64,13 +68,18 @@ class ShimmeringImageView @JvmOverloads constructor(context: Context, private va
         }
     }
 
-    fun loadImageRounded(url: String, radius: Int, fpmItemLabel: String = ""){
+    fun loadImageRounded(url: String, radius: Int, fpmItemLabel: String = "", cornerType: RoundedCornersTransformation.CornerType? = null){
         loaderImageView?.visibility = View.VISIBLE
         imageView?.let {
+            val transformation = cornerType?.let {
+                MultiTransformation(
+                    RoundedCornersTransformation(radius, it)
+                )
+            } ?: RoundedCorners(radius)
             val performanceMonitoring = getPerformanceMonitoring(url, fpmItemLabel)
             Glide.with(context)
                     .load(url)
-                    .transform(CenterCrop(), RoundedCorners(radius))
+                    .transform(CenterCrop(), transformation)
                     .diskCacheStrategy(DiskCacheStrategy.RESOURCE)
                     .listener(object : RequestListener<Drawable>{
                         override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
