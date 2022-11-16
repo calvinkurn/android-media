@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewStub
 import android.widget.LinearLayout
+import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
@@ -130,6 +131,8 @@ class TokoChatTransactionOrderWidget : LinearLayout {
 
     private fun setupLocalLoadTransaction() {
         binding?.tokochatLocalloadErrorTransactionWidget?.run {
+            setBackgroundColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Background))
+            bringToFront()
             progressState = false
             refreshBtn?.setOnClickListener {
                 progressState = true
