@@ -3,6 +3,8 @@ package com.tokopedia.affiliate.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.affiliate.FILTER_HIGHLIGHTED
+import com.tokopedia.affiliate.PAGE_ZERO
 import com.tokopedia.affiliate.adapter.AffiliateAdapterTypeFactory
 import com.tokopedia.affiliate.model.pojo.AffiliateEducationSocialData
 import com.tokopedia.affiliate.model.response.AffiliateEducationArticleCardsResponse
@@ -32,9 +34,10 @@ class AffiliateEducationLandingViewModel @Inject constructor(
 ) : BaseViewModel() {
 
     companion object {
-        private const val TYPE_ARTICLE = 1222L
-        private const val TYPE_EVENT = 1223L
-        private const val TYPE_TUTORIAL = 1224L
+        private const val TYPE_ARTICLE_TOPIC = 1222
+        private const val TYPE_ARTICLE = 1232
+        private const val TYPE_EVENT = 1238
+        private const val TYPE_TUTORIAL = 1224
     }
 
     init {
@@ -48,10 +51,10 @@ class AffiliateEducationLandingViewModel @Inject constructor(
             val educationBanners = educationBannerUseCase.getEducationBanners()
             val educationCategories = educationCategoryUseCase.getEducationCategoryTree()
             val educationEventCards = educationArticleCardsUseCase.getEducationArticleCards(
-                0, limit = 4, filter = "highlighted"
+                TYPE_EVENT, limit = 4, filter = FILTER_HIGHLIGHTED
             )
             val educationArticleCards = educationArticleCardsUseCase.getEducationArticleCards(
-                0, limit = 4
+                TYPE_ARTICLE, limit = 4
             )
             convertToVisitable(
                 educationBanners,
@@ -74,13 +77,12 @@ class AffiliateEducationLandingViewModel @Inject constructor(
         }
         educationCategoryResponse.categoryTree?.let { educationCategories ->
             val categoryGroup =
-                educationCategories.data?.categories?.groupBy { it?.id.orZero() }
-            val articleTopics = categoryGroup?.get(TYPE_ARTICLE)?.get(0)?.children
-            val tutorial = categoryGroup?.get(TYPE_TUTORIAL)?.get(0)?.children?.toMutableList()
+                educationCategories.data?.categories?.groupBy { it?.id?.toInt().orZero() }
+            val articleTopics = categoryGroup?.get(TYPE_ARTICLE_TOPIC)?.getOrNull(0)?.children
+            val tutorial =
+                categoryGroup?.get(TYPE_TUTORIAL)?.getOrNull(0)?.children?.toMutableList()
             if (articleTopics?.isNotEmpty() == true) {
-                tempList.add(
-                    AffiliateEducationArticleTopicRVUiModel(articleTopics)
-                )
+                tempList.add(AffiliateEducationArticleTopicRVUiModel(articleTopics))
             }
             educationEventCards.cardsArticle?.data?.cards?.let {
                 tempList.add(AffiliateEducationEventRVUiModel(it[0]))
@@ -90,14 +92,10 @@ class AffiliateEducationLandingViewModel @Inject constructor(
             }
             if (tutorial?.isNotEmpty() == true) {
                 tutorial.add(
-                    0,
-                    AffiliateEducationCategoryResponse.CategoryTree.CategoryTreeData.CategoriesItem.ChildrenItem(
-                        title = "Yuk pelajari tutorial biar jago promosi!"
-                    )
+                    PAGE_ZERO,
+                    AffiliateEducationCategoryResponse.CategoryTree.CategoryTreeData.CategoriesItem.ChildrenItem()
                 )
-                tempList.add(
-                    AffiliateEducationTutorialRVUiModel(tutorial)
-                )
+                tempList.add(AffiliateEducationTutorialRVUiModel(tutorial))
             }
         }
         tempList.add(
@@ -140,5 +138,4 @@ class AffiliateEducationLandingViewModel @Inject constructor(
 
     fun getEducationPageData(): LiveData<List<Visitable<AffiliateAdapterTypeFactory>>> =
         educationPageData
-
 }

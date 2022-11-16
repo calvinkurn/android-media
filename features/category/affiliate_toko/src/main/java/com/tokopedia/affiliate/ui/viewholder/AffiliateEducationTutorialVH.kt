@@ -40,6 +40,7 @@ class AffiliateEducationTutorialVH(
             itemView.findViewById<Typography>(R.id.tv_tutorial_topic).apply {
                 weightType = Typography.BOLD
                 setWeight(Typography.DISPLAY_3)
+                text = getString(R.string.affiliate_education_tutorial_cover_title)
                 setTextColor(
                     MethodChecker.getColor(
                         itemView.context,

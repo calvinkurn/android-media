@@ -27,12 +27,16 @@ class AffiliateEducationArticleVH(
             .loadImage(element?.article?.thumbnail?.android)
         itemView.findViewById<Typography>(R.id.article_widget_item_title).text =
             element?.article?.title
+        val readMinute = itemView.context.getString(
+            R.string.article_widget_detail_read,
+            element?.article?.attributes?.readTime
+        )
         itemView.findViewById<Typography>(R.id.article_widget_item_detail).text =
             itemView.context.getString(
                 R.string.article_widget_detail,
                 element?.article?.categories?.get(0)?.title,
                 element?.article?.modifiedDate,
-                element?.article?.attributes?.readTime
+                readMinute
             )
         itemView.findViewById<View>(R.id.article_widget_container)?.setOnClickListener {
             affiliateEducationEventArticleClickInterface?.onDetailClick(

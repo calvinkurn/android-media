@@ -32,18 +32,18 @@ class AffiliateEducationSeeAllViewModel @Inject constructor(
                     offset = offset
                 )
             convertToVisitable(educationArticleCards, pageType)
-
         }, onError = { Timber.e(it) })
     }
 
     private fun convertToVisitable(
-        educationArticleCards: AffiliateEducationArticleCardsResponse, pageType: String?
+        educationArticleCards: AffiliateEducationArticleCardsResponse,
+        pageType: String?
     ) {
         val tempList = mutableListOf<Visitable<AffiliateAdapterTypeFactory>>()
         educationArticleCards.cardsArticle?.data?.cards?.let {
-            offset = it[0]?.offset.orZero()
             hasMoreData.value = it[0]?.hasMore
             totalCount.value = it[0]?.totalCount.orZero()
+            offset = it[0]?.offset.orZero()
             it[0]?.articles?.mapNotNull { data ->
                 tempList.add(
                     AffiliateEducationSeeAllUiModel(
@@ -52,6 +52,7 @@ class AffiliateEducationSeeAllViewModel @Inject constructor(
                     )
                 )
             }
+            offset = it[0]?.offset.orZero() + tempList.size
         }
         educationPageData.value = tempList
     }
@@ -61,5 +62,4 @@ class AffiliateEducationSeeAllViewModel @Inject constructor(
 
     fun getTotalCount(): LiveData<Int> = totalCount
     fun hasMoreData(): LiveData<Boolean> = hasMoreData
-
 }

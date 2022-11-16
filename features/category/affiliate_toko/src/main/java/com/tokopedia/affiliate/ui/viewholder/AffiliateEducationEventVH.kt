@@ -29,7 +29,7 @@ class AffiliateEducationEventVH(
         itemView.findViewById<Typography>(R.id.event_category).text =
             element?.event?.categories?.get(0)?.title
         itemView.findViewById<Typography>(R.id.event_title).text = element?.event?.title
-        itemView.findViewById<Typography>(R.id.event_date).text = element?.event?.modifiedDate
+        itemView.findViewById<Typography>(R.id.event_date).text = element?.event?.description
         itemView.findViewById<UnifyButton>(R.id.button_event_detail).setOnClickListener {
             affiliateEducationEventArticleClickInterface?.onDetailClick(
                 PAGE_EDUCATION_EVENT,
