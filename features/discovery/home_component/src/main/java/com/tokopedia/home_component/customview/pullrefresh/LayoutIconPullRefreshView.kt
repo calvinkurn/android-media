@@ -59,7 +59,7 @@ class LayoutIconPullRefreshView : ConstraintLayout, LayoutIconPullRefreshListene
 
     companion object {
         private const val MAXIMUM_HEIGHT_SCROLL = 120
-        private const val HEIGHT_LOADING = 60
+        private const val HEIGHT_LOADING = 56
         private const val MAXIMUM_PROGRESS_REFRESH = 1
         private const val TIME_DURATION_ANIMATION_HEIGHT: Long = 200
         private const val HEIGHT_LAYOUT_GONE = 0
