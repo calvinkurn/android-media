@@ -41,11 +41,18 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
                          private val cartItemAdapterListener: CartItemAdapter.ActionListener,
                          private val compositeSubscription: CompositeSubscription) : RecyclerView.ViewHolder(binding.root) {
 
+    // variable to hold identifier
+    private var cartString: String = ""
+
     private val localCacheHandler: LocalCacheHandler by lazy {
         LocalCacheHandler(itemView.context, KEY_ONBOARDING_ICON_PIN)
     }
 
     fun bindUpdatedWeight(cartShopHolderData: CartShopHolderData) {
+        if (cartString != cartShopHolderData.cartString) {
+            // workaround for different binding
+            bindData(cartShopHolderData)
+        }
         renderMaximumWeight(cartShopHolderData)
         cartShopHolderData.isNeedToRefreshWeight = false
         renderBoAfford(cartShopHolderData)
@@ -66,6 +73,7 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
         renderMaximumWeight(cartShopHolderData)
         renderBoAfford(cartShopHolderData)
         renderGiftingAddOn(cartShopHolderData)
+        cartString = cartShopHolderData.cartString
     }
 
     private fun renderIconPin(cartShopHolderData: CartShopHolderData) {
