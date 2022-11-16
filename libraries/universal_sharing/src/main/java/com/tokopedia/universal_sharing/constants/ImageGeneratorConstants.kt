@@ -89,6 +89,7 @@ class ImageGeneratorConstants {
     object VoucherBenefitType{
         const val CASHBACK = "cashback"
         const val GRATIS_ONGKIR = "gratis-ongkir"
+        const val DISCOUNT = "diskon"
     }
     object CashbackType{
         const val PERCENTAGE = "percentage"
