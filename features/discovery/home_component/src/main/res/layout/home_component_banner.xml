@@ -22,7 +22,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         tools:layout_goneMarginTop="12dp"
-        tools:layout_marginBottom="12dp"/>
+        tools:layout_marginBottom="12dp"
+        app:layout_constraintVertical_bias="0"/>
 
     <LinearLayout
         android:id="@+id/indicator_layout"
@@ -34,6 +35,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/rv_banner"
         android:gravity="center_horizontal"
+        tools:visibility="visible"
         android:paddingTop="8dp"
         android:paddingBottom="12dp"/>
 
