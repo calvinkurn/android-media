@@ -22,11 +22,13 @@ import com.tokopedia.mvc.databinding.SmvcFragmentMvcListBinding
 import com.tokopedia.mvc.di.component.DaggerMerchantVoucherCreationComponent
 import com.tokopedia.mvc.domain.entity.Voucher
 import com.tokopedia.mvc.presentation.bottomsheet.EduCenterBottomSheet
+import com.tokopedia.mvc.presentation.bottomsheet.FilterVoucherBottomSheet
 import com.tokopedia.mvc.presentation.list.adapter.VoucherAdapterListener
 import com.tokopedia.mvc.presentation.list.adapter.VouchersAdapter
 import com.tokopedia.mvc.presentation.list.constant.MvcListConstant.INITIAL_PAGE
 import com.tokopedia.mvc.presentation.list.constant.MvcListConstant.PAGE_SIZE
 import com.tokopedia.mvc.presentation.list.viewmodel.MvcListViewModel
+import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.SearchBarUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
@@ -34,7 +36,10 @@ import javax.inject.Inject
 class MvcListFragment: BaseDaggerFragment(), HasPaginatedList by HasPaginatedListImpl(),
     VoucherAdapterListener {
 
+    private val filterList = ArrayList<SortFilterItem>()
+    private val filterItem by lazy { SortFilterItem("AAA") }
     private var binding by autoClearedNullable<SmvcFragmentMvcListBinding>()
+
     @Inject
     lateinit var viewModel: MvcListViewModel
 
@@ -94,6 +99,20 @@ class MvcListFragment: BaseDaggerFragment(), HasPaginatedList by HasPaginatedLis
         header.setupHeader()
         searchBar.setupSearchBar()
         rvVoucher.setupRvVoucher()
+
+
+        filterList.add(filterItem)
+        sortFilter.apply {
+            addItem(filterList)
+            parentListener = {
+                filterItem.selectedItem = arrayListOf()
+                FilterVoucherBottomSheet().show(childFragmentManager, "")
+            }
+            dismissListener = parentListener
+        }
+
+        filterItem.listener = {  }
+        filterItem.refChipUnify.setChevronClickListener {  }
     }
 
     private fun HeaderUnify.setupHeader() {
