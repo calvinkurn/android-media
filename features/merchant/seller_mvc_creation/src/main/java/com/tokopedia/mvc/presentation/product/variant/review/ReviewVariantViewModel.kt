@@ -40,7 +40,8 @@ class ReviewVariantViewModel @Inject constructor(
                     it.copy(
                         isLoading = true,
                         parentProductId = event.selectedProduct.parentProductId,
-                        isParentProductSelected = event.isParentProductSelected
+                        isParentProductSelected = event.isParentProductSelected,
+                        originalVariantIds = event.selectedProduct.variantProductIds
                     )
                 }
                 getVariantDetail(event.selectedProduct)

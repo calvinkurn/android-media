@@ -11,8 +11,9 @@ data class ReviewVariantUiState(
     val parentProductPrice: Long = 0,
     val parentProductSoldCount: Int = 0,
     val parentProductImageUrl: String = "",
-    val variants: List<Variant> = emptyList(),
+    val originalVariantIds: List<Long> = emptyList(),
     val selectedVariantIds: Set<Long> = emptySet(),
+    val variants: List<Variant> = emptyList(),
     val isSelectAllActive: Boolean = true,
     val error: Throwable? = null
 )
