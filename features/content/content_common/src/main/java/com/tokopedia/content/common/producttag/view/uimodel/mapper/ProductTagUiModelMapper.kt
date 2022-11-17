@@ -5,6 +5,7 @@ import com.tokopedia.content.common.producttag.view.uimodel.*
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import java.math.RoundingMode
 import java.text.DecimalFormat
+import java.text.DecimalFormatSymbols
 import javax.inject.Inject
 
 /**
@@ -12,7 +13,11 @@ import javax.inject.Inject
  */
 class ProductTagUiModelMapper @Inject constructor() {
 
-    private val decimalFormat = DecimalFormat("0.0").apply {
+    private val decimalFormatSymbols = DecimalFormatSymbols().apply {
+        decimalSeparator = PERIOD
+    }
+
+    private val decimalFormat = DecimalFormat(DECIMAL_FORMAT, decimalFormatSymbols).apply {
         roundingMode = RoundingMode.CEILING
     }
 
@@ -206,16 +211,13 @@ class ProductTagUiModelMapper @Inject constructor() {
 
     private fun formatStarRating(star: Double): String {
         return if (star == NO_STAR_RATING) ""
-        else decimalFormat
-            .format(star / STAR_RATING_DIVIDER)
-            .toString()
-            .replace(COMMA, PERIOD)
+        else decimalFormat.format(star / STAR_RATING_DIVIDER).toString()
     }
 
     companion object {
+        private const val DECIMAL_FORMAT = "0.0"
         private const val NO_STAR_RATING = 0.0
         private const val STAR_RATING_DIVIDER = 20.0
-        private const val COMMA = ","
-        private const val PERIOD = "."
+        private const val PERIOD = '.'
     }
 }
