@@ -27,4 +27,5 @@ interface EventPDPComponent {
     fun inject(eventCheckoutFragment: EventCheckoutFragment)
     fun inject(eventPDPFormFragment: EventPDPFormFragment)
     fun inject(eventRedeemFragment: EventRedeemFragment)
+    fun inject(eventRedeemRevampFragment: EventRedeemRevampFragment)
 }
