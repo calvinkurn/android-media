@@ -1,6 +1,5 @@
 package com.tokopedia.play.broadcaster.util.logger
 
-import com.tokopedia.broadcaster.revamp.util.statistic.BroadcasterMetric
 import com.tokopedia.play.broadcaster.data.type.PlaySocketType
 import com.tokopedia.play.broadcaster.pusher.state.PlayBroadcasterState
 import com.tokopedia.play.broadcaster.pusher.statistic.PlayBroadcasterMetric
@@ -22,6 +21,10 @@ interface PlayLogger {
 
     fun logSocketType(
         socketType: PlaySocketType
+    )
+
+    fun logBroadcastError(
+        throwable: Throwable
     )
 
     fun sendAll(channelId: String)
