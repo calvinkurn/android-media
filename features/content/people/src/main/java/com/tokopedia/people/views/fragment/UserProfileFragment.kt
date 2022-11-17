@@ -125,6 +125,8 @@ class UserProfileFragment @Inject constructor(
 
     private lateinit var viewModel: UserProfileViewModel
 
+    private var ugcOnboardingOpenFrom: Int = 0
+
     private val mAdapter: UserPostBaseAdapter by lazy(LazyThreadSafetyMode.NONE) {
         UserPostBaseAdapter(this, this) { cursor ->
             submitAction(UserProfileAction.LoadPlayVideo(cursor))
@@ -231,7 +233,7 @@ class UserProfileFragment @Inject constructor(
                 childFragment.setListener(object : UGCOnboardingParentFragment.Listener {
                     override fun onSuccess() {
                         submitAction(UserProfileAction.LoadProfile())
-                        when (viewModel.ugcOnboardingOpenFrom) {
+                        when (ugcOnboardingOpenFrom) {
                             UGC_ONBOARDING_OPEN_FROM_POST -> goToCreatePostPage()
                             UGC_ONBOARDING_OPEN_FROM_LIVE -> goToCreateLiveStream()
                             else -> {}
@@ -263,7 +265,8 @@ class UserProfileFragment @Inject constructor(
                     }
 
                     override fun clickCloseIcon() {}
-                },)
+                },
+                )
             }
         }
     }
@@ -524,14 +527,18 @@ class UserProfileFragment @Inject constructor(
             prev.profileWhitelist == value.profileWhitelist
         ) return
 
-        if (value.profileType == ProfileType.Self && value.profileWhitelist.isWhitelist && !fabCreated) {
-            val items = arrayListOf<FloatingButtonItem>()
-            items.add(createLiveFab())
-            items.add(createPostFab())
-            mainBinding.fabUp.addItem(items)
-            mainBinding.fabUserProfile.show()
-            fabCreated = true
-        } else mainBinding.fabUserProfile.hide()
+        try {
+            if (value.profileType == ProfileType.Self && value.profileWhitelist.isWhitelist) {
+                if (!fabCreated) {
+                    val items = arrayListOf<FloatingButtonItem>()
+                    items.add(createLiveFab())
+                    items.add(createPostFab())
+                    mainBinding.fabUp.addItem(items)
+                    mainBinding.fabUserProfile.show()
+                    fabCreated = true
+                }
+            } else mainBinding.fabUserProfile.hide()
+        } catch (e: Exception) { }
     }
 
     private fun createLiveFab(): FloatingButtonItem {
@@ -543,7 +550,7 @@ class UserProfileFragment @Inject constructor(
 
                 // TODO onboarding for `Buat Live` will be in the next phase
 //                if (viewModel.needOnboarding) {
-//                    viewModel.ugcOnboardingOpenFrom = UGC_ONBOARDING_OPEN_FROM_LIVE
+//                    ugcOnboardingOpenFrom = UGC_ONBOARDING_OPEN_FROM_LIVE
 //                    openUGCOnboardingBottomSheet()
 //                } else goToCreateLiveStream()
 
@@ -560,7 +567,7 @@ class UserProfileFragment @Inject constructor(
                 mainBinding.fabUp.menuOpen = false
                 userProfileTracker.clickCreatePost(viewModel.profileUserID)
                 if (viewModel.needOnboarding) {
-                    viewModel.ugcOnboardingOpenFrom = UGC_ONBOARDING_OPEN_FROM_POST
+                    ugcOnboardingOpenFrom = UGC_ONBOARDING_OPEN_FROM_POST
                     openUGCOnboardingBottomSheet()
                 } else goToCreatePostPage()
             },
@@ -586,6 +593,7 @@ class UserProfileFragment @Inject constructor(
         }
     }
 
+    @OptIn(ExperimentalStdlibApi::class)
     private fun renderShopRecom(
         prev: UserProfileUiState?,
         value: UserProfileUiState,
@@ -594,7 +602,7 @@ class UserProfileFragment @Inject constructor(
 
         val shopRecom = value.shopRecom
 
-        mainBinding.shopRecommendation.setData(shopRecom.title, shopRecom.items)
+        mainBinding.shopRecommendation.setData(shopRecom.title, shopRecom.items, shopRecom.loadNextPage, shopRecom.nextCursor)
 
         if (value.shopRecom.items.isEmpty()) mainBinding.shopRecommendation.showEmptyShopRecom()
         else mainBinding.shopRecommendation.showContentShopRecom()
@@ -853,6 +861,10 @@ class UserProfileFragment @Inject constructor(
         }
     }
 
+    override fun onShopRecomLoadingNextPage(nextCursor: String) {
+        viewModel.submitAction(UserProfileAction.LoadNextPageShopRecom(nextCursor))
+    }
+
     override fun onRetryPageLoad(pageNumber: Int) {
     }
 
@@ -954,7 +966,8 @@ class UserProfileFragment @Inject constructor(
         )
         LinkerManager.getInstance().executeShareRequest(
             LinkerUtils.createShareRequest(
-                0, linkerShareData,
+                0,
+                linkerShareData,
                 object : ShareCallback {
                     override fun urlCreated(linkerShareData: LinkerShareResult?) {
                         context?.let {

@@ -619,9 +619,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
                 feedFloatingButton.show()
                 showCreatePostOnBoarding()
             } else feedFloatingButton.hide()
-        } catch (e: Exception) {
-            feedFloatingButton.hide()
-        }
+        } catch (e: Exception) { }
     }
 
     private fun createLiveFab(): FloatingButtonItem {

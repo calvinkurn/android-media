@@ -378,6 +378,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         isPausedFragment = true
         pauseBroadcast()
         productTagAnalyticHelper.sendTrackingProduct()
+        parentViewModel.sendLogs()
     }
 
     /**

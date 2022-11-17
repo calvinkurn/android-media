@@ -8,6 +8,7 @@ import com.tokopedia.search.result.presentation.model.FreeOngkirDataView
 import com.tokopedia.search.result.presentation.model.LabelGroupDataView
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView.Option
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView.Option.Product
+import com.tokopedia.search.result.product.wishlist.Wishlistable
 import com.tokopedia.search.utils.getFormattedPositionName
 import com.tokopedia.search.utils.orNone
 
@@ -23,7 +24,7 @@ data class BroadMatchItemDataView(
     val shopName: String = "",
     val badgeItemDataViewList: List<BadgeItemDataView> = listOf(),
     val freeOngkirDataView: FreeOngkirDataView = FreeOngkirDataView(),
-    var isWishlisted: Boolean = false,
+    override var isWishlisted: Boolean = false,
     val position: Int = 0,
     val alternativeKeyword: String = "",
     val isOrganicAds: Boolean = false,
@@ -38,7 +39,13 @@ data class BroadMatchItemDataView(
     val originalPrice: String = "",
     val discountPercentage: Int = 0,
     val externalReference: String = "",
-) : ImpressHolder() {
+) : ImpressHolder(), Wishlistable {
+
+    override fun setWishlist(productID: String, isWishlisted: Boolean) {
+        if (this.id == productID) {
+            this.isWishlisted = isWishlisted
+        }
+    }
 
     private fun asObjectDataLayer(): MutableMap<String, Any> {
         return DataLayer.mapOf(

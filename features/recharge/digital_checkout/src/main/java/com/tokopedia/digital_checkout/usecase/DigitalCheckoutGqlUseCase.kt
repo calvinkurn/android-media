@@ -74,7 +74,7 @@ class DigitalCheckoutGqlUseCase @Inject constructor(graphqlRepository: GraphqlRe
 
         const val QUERY_NAME_RECHARGE_CHECKOUT = "RechargeCheckoutQuery"
         const val QUERY_RECHARGE_CHECKOUT = """
-        mutation RechargeCheckout(${'$'}request: RechargeCheckoutRequestV3!) {
+        mutation rechargeCheckoutV3(${'$'}request: RechargeCheckoutRequestV3!) {
           rechargeCheckoutV3(body: ${'$'}request) {
             meta {
               order_id
@@ -122,5 +122,4 @@ class DigitalCheckoutGqlUseCase @Inject constructor(graphqlRepository: GraphqlRe
         }
     """
     }
-
 }

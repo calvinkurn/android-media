@@ -11,7 +11,6 @@ import com.tokopedia.play.util.isChanged
 import com.tokopedia.play.util.isNotChanged
 import com.tokopedia.play.view.fragment.PlayUserInteractionFragment
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
-import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 import com.tokopedia.play.view.uimodel.state.PlayViewerNewUiState
 import com.tokopedia.play_common.eventbus.EventBus
 import kotlinx.coroutines.CoroutineScope
@@ -23,7 +22,7 @@ import kotlinx.coroutines.launch
  */
 class ProductCarouselUiComponent(
     binding: ViewProductFeaturedBinding,
-    bus: EventBus<Any>,
+    private val bus: EventBus<Any>,
     scope: CoroutineScope,
 ) : UiComponent<PlayViewerNewUiState> {
 
@@ -108,6 +107,10 @@ class ProductCarouselUiComponent(
             !state.value.address.shouldShow
         ) uiView.show()
         else uiView.hide()
+
+        if(state.isChanged { it.tagItems }) {
+            bus.emit(Event.OnUpdated(uiView.getVisibleProducts()))
+        }
     }
 
     override fun onStateChanged(source: LifecycleOwner, event: Lifecycle.Event) {
@@ -119,6 +122,7 @@ class ProductCarouselUiComponent(
 
     sealed interface Event {
         data class OnImpressed(val productMap: Map<PlayProductUiModel.Product, Int>) : Event
+        data class OnUpdated(val productMap: Map<PlayProductUiModel.Product, Int>) : Event
         data class OnClicked(val product: PlayProductUiModel.Product, val position: Int) : Event
 
         data class OnAtcClicked(val product: PlayProductUiModel.Product) : Event
