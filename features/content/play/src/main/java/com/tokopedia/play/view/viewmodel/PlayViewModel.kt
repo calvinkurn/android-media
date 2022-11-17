@@ -2634,7 +2634,7 @@ class PlayViewModel @AssistedInject constructor(
 
         viewModelScope.launch(dispatchers.computation){
             delay(config.duration)
-            val shouldShow = !isFreezeOrBanned && cache && config.isEnabled
+            val shouldShow = !isFreezeOrBanned && cache && config.isEnabled && _partnerInfo.value.needFollow
             if (!shouldShow) return@launch
             _isPopup.update {
                 it.copy(shouldShow = shouldShow, partnerId = streamerId)
