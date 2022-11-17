@@ -1,55 +1,72 @@
 package com.tokopedia.contactus.inboxticket2.view.fragment
 
-import android.annotation.SuppressLint
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.MotionEvent
 import android.view.View
-import android.view.ViewGroup
-import android.widget.TextView
+import android.widget.LinearLayout
 import com.tokopedia.contactus.R
+import com.tokopedia.csat_rating.di.component.DaggerCsatComponent
+import com.tokopedia.csat_rating.di.general.CsatComponentCommon
+import com.tokopedia.csat_rating.di.module.CsatRatingModule
 import com.tokopedia.csat_rating.fragment.BaseFragmentProvideRating
+import com.tokopedia.unifycomponents.BottomSheetUnify
 
 class ContactUsProvideRatingFragment: BaseFragmentProvideRating(){
 
-    private lateinit var mBackButton: TextView
+    private val bottomSheetPage = BottomSheetUnify()
+
 
     companion object {
-        fun newInstance(bundle: Bundle?): ContactUsProvideRatingFragment {
-            val fragment = ContactUsProvideRatingFragment()
+        fun newInstance(bundle: Bundle?): ContactUsProvideRatingFragment2 {
+            val fragment = ContactUsProvideRatingFragment2()
             fragment.arguments = bundle
             return fragment
         }
     }
-
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        val view = inflater.inflate(R.layout.fragment_rating_provide, container, false)
-        mBackButton = view.findViewById(R.id.toolbar_textview)
-        setButtonListener()
-        return view
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        initView()
     }
 
-    @SuppressLint("ClickableViewAccessibility")
-    private fun setButtonListener() {
-        mBackButton.setOnTouchListener { _, event ->
-            val drawableLeft = 0
-            if (event.action == MotionEvent.ACTION_UP) {
-                if (event.rawX <= mBackButton.compoundDrawables[drawableLeft].bounds.width() + mBackButton.paddingLeft) {
-                    activity?.finish()
-                }
-            }
-           true
+    private fun initView() {
+        val viewBottomSheetPage = initBottomSheet()
+
+        bottomSheetPage.apply {
+            showCloseIcon = false
+            setChild(viewBottomSheetPage)
+            showKnob = true
+            clearContentPadding = true
+            isFullpage = true
+        }
+
+        parentFragmentManager.let {
+            bottomSheetPage.show(it, "")
         }
     }
 
+    override fun initInjector() {
+        DaggerCsatComponent.builder()
+            .csatRatingModule(CsatRatingModule())
+            .csatComponentCommon(getComponent(CsatComponentCommon::class.java))
+            .build()
+            .inject(this)
+    }
 
-    override fun getTextHelpTitleId():Int = R.id.txt_help_title
-    override fun getSmilleLayoutId():Int = R.id.smile_layout
-    override fun getSmileSelectedId():Int = R.id.txt_smile_selected
-    override fun getFeedbackQuestionId():Int = R.id.txt_feedback_question
-    override fun getTextFinishedId():Int = R.id.txt_finished
-    override fun getFilterReviewId():Int = R.id.filter_review
+    private fun initBottomSheet(): View? {
+        val view = View.inflate(context, R.layout.bottom_sheet_rating_provide, null).apply {
+            initViews(this)
+        }
 
+        return view
+    }
 
+    private var title: com.tokopedia.unifyprinciples.Typography? = null
+    private var smileLayout: LinearLayout? = null
+
+    private fun initViews(view : View) {
+        title = view.findViewById(R.id.rating_txt_help_title)
+        smileLayout = view.findViewById(R.id.smile_layout)
+        title?.text = viewModel?.csatTitle
+    //    initObserver(smileLayout!!)
+    }
 
 }

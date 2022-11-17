@@ -8,6 +8,7 @@ import android.view.MenuItem
 import android.view.View
 import androidx.fragment.app.Fragment
 import com.google.android.material.snackbar.Snackbar
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.common.network.util.NetworkClient
 import com.tokopedia.contactus.R
@@ -92,6 +93,9 @@ abstract class InboxBaseActivity : BaseSimpleActivity(), InboxBaseView {
 
     private fun executeInjector() {
         component = DaggerInboxComponent.builder()
+            .baseAppComponent(
+                (application as BaseMainApplication).baseAppComponent
+            )
                 .inboxModule(InboxModule(this))
                 .build()
     }
