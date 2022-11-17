@@ -18,10 +18,28 @@ class PlayShortsAccountManagerImpl @Inject constructor(
     private val dispatchers: CoroutineDispatchers
 ) : PlayShortsAccountManager {
 
+    /**
+     * Best Eligible Account Rules:
+     * 1. If user has no account, return empty account
+     * 2. Else if user only has 1 account, return the account
+     * 3. Else, get account by preferred / last selected account
+     * 4. Check account:
+     *    a. Eligible -> return user / shop account
+     *    b. Not Eligible
+     *          i. Switch account
+     *          ii. Check account
+     *              - Eligible -> return user / shop account
+     *              - Not eligible & prev was shop -> return shop account
+     *              - Not eligible & prev was not shop -> return empty account
+     */
     override suspend fun getBestEligibleAccount(
         accountList: List<ContentAccountUiModel>,
         preferredAccountType: String
     ): ContentAccountUiModel = withContext(dispatchers.io) {
+
+        if (accountList.isEmpty()) return@withContext ContentAccountUiModel.Empty
+        if (accountList.size == 1) return@withContext accountList.first()
+
         val lastSelectedAccountType = sharedPref.getLastSelectedAccountType()
 
         val selectedAccountType = when {
@@ -40,6 +58,8 @@ class PlayShortsAccountManagerImpl @Inject constructor(
 
         if (isAccountEligible(finalAccount)) {
             finalAccount
+        } else if (account.isShop) {
+            account
         } else {
             ContentAccountUiModel.Empty
         }

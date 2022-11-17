@@ -23,6 +23,7 @@ import com.tokopedia.content.common.ui.bottomsheet.WarningInfoBottomSheet
 import com.tokopedia.content.common.ui.model.AccountStateInfo
 import com.tokopedia.content.common.ui.model.AccountStateInfoType
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
+import com.tokopedia.content.common.ui.model.TermsAndConditionUiModel
 import com.tokopedia.content.common.ui.toolbar.ContentColor
 import com.tokopedia.content.common.util.coachmark.ContentCoachMarkConfig
 import com.tokopedia.content.common.util.coachmark.ContentCoachMarkManager
@@ -299,7 +300,16 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                 })
             }
             is SellerTncBottomSheet -> {
-                childFragment.initViews(parentViewModel.tncList)
+                childFragment.setDataSource(object : SellerTncBottomSheet.DataSource {
+                    override fun getTitle(): String {
+                        return getString(com.tokopedia.content.common.R.string.play_bro_tnc_title)
+                    }
+
+                    override fun getTermsAndCondition(): List<TermsAndConditionUiModel> {
+                        return parentViewModel.tncList
+                    }
+                })
+
                 childFragment.setListener(object : SellerTncBottomSheet.Listener {
                     override fun clickCloseIcon() { closeBottomSheet() }
                 })
@@ -809,6 +819,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
 
     /** Others */
     private fun showMainComponent(isShow: Boolean) {
+        if (!isShow) binding.toolbarContentCommon.hideCoachMarkSwitchAccount()
         binding.groupPreparationMain.showWithCondition(isShow)
     }
 

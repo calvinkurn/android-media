@@ -34,6 +34,8 @@ import com.tokopedia.play.broadcaster.shorts.ui.model.event.PlayShortsToaster
 import com.tokopedia.play.broadcaster.shorts.ui.model.state.PlayShortsCoverFormUiState
 import com.tokopedia.play.broadcaster.shorts.ui.model.state.PlayShortsTitleFormUiState
 import com.tokopedia.play.broadcaster.shorts.ui.model.state.PlayShortsUiState
+import com.tokopedia.play.broadcaster.shorts.util.animateGone
+import com.tokopedia.play.broadcaster.shorts.util.animateShow
 import com.tokopedia.play.broadcaster.shorts.view.custom.DynamicPreparationMenu
 import com.tokopedia.play.broadcaster.shorts.view.fragment.base.PlayShortsBaseFragment
 import com.tokopedia.play.broadcaster.shorts.view.manager.idle.PlayShortsIdleManager
@@ -295,7 +297,7 @@ class PlayShortsPreparationFragment @Inject constructor(
         }
 
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            idleManager.eventBus.subscribe().collectLatest {
+            idleManager.state.collectLatest {
                 when (it) {
                     PlayShortsIdleManager.State.StandBy -> setupUiStandby()
                     PlayShortsIdleManager.State.Idle -> setupUiIdle()
@@ -318,11 +320,17 @@ class PlayShortsPreparationFragment @Inject constructor(
     private fun setupUiStandby() {
         Log.d("<LOG>", "Standby")
         binding.preparationMenu.showMenuText(true)
+        binding.flBottomBackground.animateShow()
+        binding.flTopBackground.animateShow()
+        binding.flSideBackground.animateShow()
     }
 
     private fun setupUiIdle() {
         Log.d("<LOG>", "Idle")
         binding.preparationMenu.showMenuText(false)
+        binding.flBottomBackground.animateGone()
+        binding.flTopBackground.animateGone()
+        binding.flSideBackground.animateGone()
     }
 
     private fun renderMedia(

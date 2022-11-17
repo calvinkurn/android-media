@@ -72,6 +72,10 @@ class GetWhiteListNewUseCase @Inject constructor(
                     enable
                     has_username
                   }
+                  shortvideo {
+                    enable
+                    has_username
+                  }
                 }
                 error
               }

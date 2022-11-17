@@ -83,6 +83,7 @@
     {
       "event": "view_item_list",
       "eventAction": "view - now product bottomsheet",
+      "clientId":".*",
       "eventCategory": "groupchat room",
       "eventLabel": "\\d+ - \\d+ - (live|vod)",
       "businessUnit": "play",

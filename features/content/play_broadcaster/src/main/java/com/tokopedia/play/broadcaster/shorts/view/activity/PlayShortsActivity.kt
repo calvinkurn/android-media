@@ -14,6 +14,7 @@ import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.content.common.onboarding.view.fragment.UGCOnboardingParentFragment
 import com.tokopedia.content.common.types.ContentCommonUserType
 import com.tokopedia.content.common.ui.bottomsheet.SellerTncBottomSheet
+import com.tokopedia.content.common.ui.model.TermsAndConditionUiModel
 import com.tokopedia.picker.common.MediaPicker
 import com.tokopedia.picker.common.PageSource
 import com.tokopedia.picker.common.types.ModeType
@@ -26,6 +27,7 @@ import com.tokopedia.play.broadcaster.shorts.ui.model.action.PlayShortsAction
 import com.tokopedia.play.broadcaster.shorts.ui.model.event.PlayShortsBottomSheet
 import com.tokopedia.play.broadcaster.shorts.ui.model.event.PlayShortsOneTimeEvent
 import com.tokopedia.play.broadcaster.shorts.ui.model.state.PlayShortsUiState
+import com.tokopedia.play.broadcaster.shorts.view.bottomsheet.ShortsAccountNotEligibleBottomSheet
 import com.tokopedia.play.broadcaster.shorts.view.fragment.PlayShortsPreparationFragment
 import com.tokopedia.play.broadcaster.shorts.view.fragment.PlayShortsSummaryFragment
 import com.tokopedia.play.broadcaster.shorts.view.fragment.base.PlayShortsBaseFragment
@@ -99,9 +101,25 @@ class PlayShortsActivity : BaseActivity() {
                 })
             }
             is SellerTncBottomSheet -> {
-                fragment.initViews(viewModel.tncList)
+                fragment.setDataSource(object : SellerTncBottomSheet.DataSource {
+                    override fun getTitle(): String {
+                        return getString(R.string.play_shorts_shop_cant_create_content)
+                    }
+
+                    override fun getTermsAndCondition(): List<TermsAndConditionUiModel> {
+                        return viewModel.tncList
+                    }
+                })
+
                 fragment.setListener(object : SellerTncBottomSheet.Listener {
                     override fun clickCloseIcon() {
+                        if(getCurrentFragment() == null) finish()
+                    }
+                })
+            }
+            is ShortsAccountNotEligibleBottomSheet -> {
+                fragment.setListener(object : ShortsAccountNotEligibleBottomSheet.Listener {
+                    override fun onClose() {
                         if(getCurrentFragment() == null) finish()
                     }
                 })
@@ -175,7 +193,7 @@ class PlayShortsActivity : BaseActivity() {
             is PlayShortsBottomSheet.UGCOnboarding -> {
                 showUGCOnboardingBottomSheet(bottomSheet.hasUsername)
             }
-            is PlayShortsBottomSheet.NoEligibleAccount -> {
+            is PlayShortsBottomSheet.AccountNotEligible -> {
                 showNoEligibleAccountBottomSheet()
             }
             is PlayShortsBottomSheet.SellerNotEligible -> {
@@ -203,6 +221,7 @@ class PlayShortsActivity : BaseActivity() {
             pageType(PageType.GALLERY)
             modeType(ModeType.VIDEO_ONLY)
             singleSelectionMode()
+            previewActionText(getString(R.string.play_shorts_next_action_label))
         }
 
         startActivityForResult(intent, MEDIA_PICKER_REQ)
@@ -249,12 +268,10 @@ class PlayShortsActivity : BaseActivity() {
     }
 
     private fun showNoEligibleAccountBottomSheet() {
-        /** TODO: show bottosheet based on :
-         * 1. if preferred account is shop -> show shop bottomsheet
-         * 2. if preferred account is user -> show user bottomsheet not eligible (need to confirm this)
-         * 3. else -> show shop bottomsheet (need to confirm this)
-         */
-        println("PLAY_SHORTS : showNoEligibleAccountBottomSheet")
+        ShortsAccountNotEligibleBottomSheet
+            .getFragment(supportFragmentManager, classLoader)
+            .show(supportFragmentManager)
+
     }
 
     private fun showSellerNotEligibleBottomSheet() {

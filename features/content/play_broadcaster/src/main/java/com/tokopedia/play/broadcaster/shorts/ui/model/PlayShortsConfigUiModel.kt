@@ -7,6 +7,7 @@ import com.tokopedia.content.common.ui.model.TermsAndConditionUiModel
  */
 data class PlayShortsConfigUiModel(
     val shortsId: String,
+    val shortsAllowed: Boolean,
     val tncList: List<TermsAndConditionUiModel>,
     val maxTitleCharacter: Int
 ) {
@@ -14,6 +15,7 @@ data class PlayShortsConfigUiModel(
         val Empty: PlayShortsConfigUiModel
             get() = PlayShortsConfigUiModel(
                 shortsId = "",
+                shortsAllowed = false,
                 tncList = emptyList(),
                 maxTitleCharacter = 24
             )

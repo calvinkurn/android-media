@@ -1,6 +1,7 @@
 package com.tokopedia.play.broadcaster.shorts.util
 
 import android.animation.Animator
+import android.animation.ObjectAnimator
 import android.view.View
 
 /**
@@ -9,49 +10,47 @@ import android.view.View
 fun View.animateShow(
     duration: Long = DEFAULT_ANIMATION_DURATION
 ) {
-    if (this.visibility == View.VISIBLE) return
-
-    this.animate()
-        .alpha(1.0f)
-        .setDuration(duration)
-        .setListener(object : Animator.AnimatorListener {
-            override fun onAnimationEnd(animation: Animator?) {
+    ObjectAnimator.ofFloat(this, View.ALPHA, 0f, 1f).apply {
+        this.duration = duration
+        addListener(object : Animator.AnimatorListener {
+            override fun onAnimationStart(p0: Animator?) {
                 this@animateShow.visibility = View.VISIBLE
             }
 
-            override fun onAnimationStart(animation: Animator?) {
-                this@animateShow.visibility = View.GONE
+            override fun onAnimationEnd(p0: Animator?) {
+                this@animateShow.visibility = View.VISIBLE
             }
 
-            override fun onAnimationCancel(animation: Animator?) {}
+            override fun onAnimationCancel(p0: Animator?) {
+            }
 
-            override fun onAnimationRepeat(animation: Animator?) {}
+            override fun onAnimationRepeat(p0: Animator?) {
+            }
         })
-        .start()
+    }.start()
 }
 
 fun View.animateGone(
     duration: Long = DEFAULT_ANIMATION_DURATION
 ) {
-    if (this.visibility == View.GONE) return
-
-    this.animate()
-        .alpha(0.0f)
-        .setDuration(duration)
-        .setListener(object : Animator.AnimatorListener {
-            override fun onAnimationEnd(animation: Animator?) {
-                this@animateGone.visibility = View.GONE
-            }
-
-            override fun onAnimationStart(animation: Animator?) {
+    ObjectAnimator.ofFloat(this, View.ALPHA, 1f, 0f).apply {
+        this.duration = duration
+        addListener(object : Animator.AnimatorListener {
+            override fun onAnimationStart(p0: Animator?) {
                 this@animateGone.visibility = View.VISIBLE
             }
 
-            override fun onAnimationCancel(animation: Animator?) {}
+            override fun onAnimationEnd(p0: Animator?) {
+                this@animateGone.visibility = View.GONE
+            }
 
-            override fun onAnimationRepeat(animation: Animator?) {}
+            override fun onAnimationCancel(p0: Animator?) {
+            }
+
+            override fun onAnimationRepeat(p0: Animator?) {
+            }
         })
-        .start()
+    }.start()
 }
 
-private val DEFAULT_ANIMATION_DURATION = 1000L
+private val DEFAULT_ANIMATION_DURATION = 200L

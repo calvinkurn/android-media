@@ -13,6 +13,8 @@ data class GetBroadcasterAuthorConfigResponse(
         data class GetBroadcasterAuthorConfig(
                 @SerializedName("streamAllowed")
                 val streamAllowed: Boolean = false,
+                @SerializedName("shortVideoAllowed")
+                val shortVideoAllowed: Boolean = false,
                 @SerializedName("config")
                 val config: String = "",
                 @SerializedName("tnc")

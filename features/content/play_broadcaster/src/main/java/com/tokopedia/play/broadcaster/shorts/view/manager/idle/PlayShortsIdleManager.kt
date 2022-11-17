@@ -5,6 +5,9 @@ import com.tokopedia.play.broadcaster.util.eventbus.EventBus
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -15,8 +18,9 @@ class PlayShortsIdleManager @Inject constructor(
     private val dispatchers: CoroutineDispatchers
 ) {
 
-    val eventBus = EventBus<State>()
-    private var state: State = State.StandBy
+    private val _state = MutableStateFlow(State.Unknown)
+    val state: Flow<State>
+        get() = _state
     private var job: Job? = null
 
     fun startIdleTimer() {
@@ -44,7 +48,7 @@ class PlayShortsIdleManager @Inject constructor(
     }
 
     fun toggleState() {
-        when (state) {
+        when (_state.value) {
             State.StandBy -> {
                 forceIdleMode()
             }
@@ -58,13 +62,12 @@ class PlayShortsIdleManager @Inject constructor(
         job?.cancel()
     }
 
-    private fun emitState(state: State) {
-        this.state = state
-        eventBus.emit(this.state)
+    private fun emitState(newState: State) {
+        _state.update { newState }
     }
 
     enum class State {
-        StandBy, Idle
+        Unknown, StandBy, Idle
     }
 
     companion object {

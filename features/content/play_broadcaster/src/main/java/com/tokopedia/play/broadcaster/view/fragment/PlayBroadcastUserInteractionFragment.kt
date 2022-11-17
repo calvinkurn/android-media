@@ -41,7 +41,6 @@ import com.tokopedia.play.broadcaster.ui.state.OnboardingUiModel
 import com.tokopedia.play.broadcaster.ui.state.PinnedMessageUiState
 import com.tokopedia.play.broadcaster.ui.state.QuizFormUiState
 import com.tokopedia.play.broadcaster.util.extension.getDialog
-import com.tokopedia.play.broadcaster.util.extension.showToaster
 import com.tokopedia.play.broadcaster.util.share.PlayShareWrapper
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroInteractiveBottomSheet
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroSelectGameBottomSheet
@@ -64,7 +63,7 @@ import com.tokopedia.play.broadcaster.view.viewmodel.factory.PlayBroadcastViewMo
 import com.tokopedia.play_common.detachableview.FragmentViewContainer
 import com.tokopedia.play_common.detachableview.FragmentWithDetachableView
 import com.tokopedia.play_common.detachableview.detachableView
-import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
+import com.tokopedia.play_common.model.dto.interactive.GameUiModel
 import com.tokopedia.play_common.model.ui.PlayChatUiModel
 import com.tokopedia.play_common.util.event.EventObserver
 import com.tokopedia.play_common.util.extension.hideKeyboard
@@ -423,6 +422,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         isPausedFragment = true
         pauseBroadcast()
         productTagAnalyticHelper.sendTrackingProduct()
+        parentViewModel.sendLogs()
     }
 
     /**
@@ -740,10 +740,10 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                     prevState?.interactiveConfig,
                     state.interactiveConfig
                 )
-                renderInteractiveView(prevState?.interactive, state.interactive)
+                renderInteractiveView(prevState?.game, state.game)
                 renderGameIconView(
-                    prevState?.interactive,
-                    state.interactive,
+                    prevState?.game,
+                    state.game,
                     prevState?.interactiveConfig,
                     state.interactiveConfig,
                     prevState?.onBoarding,
@@ -755,8 +755,8 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                 renderSetupDialog(
                     prevState?.interactiveSetup,
                     state.interactiveSetup,
-                    prevState?.interactive,
-                    state.interactive
+                    prevState?.game,
+                    state.game,
                 )
 
                 if (::exitDialog.isInitialized) {
@@ -920,19 +920,19 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     }
 
     private fun renderInteractiveView(
-        prevState: InteractiveUiModel?,
-        state: InteractiveUiModel
+        prevState: GameUiModel?,
+        state: GameUiModel,
     ) {
         /**
          * Render:
-         * - if interactive has changed <b>or</b>
+         * - if game has changed <b>or</b>
          * - if isPlaying state has changed to not playing
          */
         if (prevState != state) {
             when (state) {
-                is InteractiveUiModel.Giveaway -> renderGiveawayView(state)
-                is InteractiveUiModel.Quiz -> renderQuizView(state)
-                InteractiveUiModel.Unknown -> {
+                is GameUiModel.Giveaway -> renderGiveawayView(state)
+                is GameUiModel.Quiz -> renderQuizView(state)
+                GameUiModel.Unknown -> {
                     interactiveActiveView?.hide()
                     interactiveFinishedView?.hide()
                 }
@@ -941,8 +941,8 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     }
 
     private fun renderGameIconView(
-        prevState: InteractiveUiModel?,
-        state: InteractiveUiModel,
+        prevState: GameUiModel?,
+        state: GameUiModel,
         prevConfig: InteractiveConfigUiModel?,
         config: InteractiveConfigUiModel,
         prevOnboarding: OnboardingUiModel?,
@@ -955,7 +955,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
             return
         }
 
-        if (state !is InteractiveUiModel.Unknown || config.isNoGameActive() || config.availableGameList().isEmpty()) {
+        if (state !is GameUiModel.Unknown || config.isNoGameActive() || config.availableGameList().isEmpty()) {
             gameIconView.hide()
         } else {
             gameIconView.show()
@@ -987,11 +987,11 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
         }
     }
 
-    private fun renderGiveawayView(state: InteractiveUiModel.Giveaway) {
+    private fun renderGiveawayView(state: GameUiModel.Giveaway) {
         when (val status = state.status) {
-            is InteractiveUiModel.Giveaway.Status.Upcoming -> {
+            is GameUiModel.Giveaway.Status.Upcoming -> {
                 interactiveActiveView?.setUpcomingGiveaway(
-                    desc = state.title,
+                    title = state.title,
                     targetTime = status.startTime,
                     onDurationEnd = {
                         parentViewModel.submitAction(PlayBroadcastAction.GiveawayUpcomingEnded)
@@ -1000,9 +1000,9 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                 interactiveActiveView?.show()
                 interactiveFinishedView?.hide()
             }
-            is InteractiveUiModel.Giveaway.Status.Ongoing -> {
+            is GameUiModel.Giveaway.Status.Ongoing -> {
                 interactiveActiveView?.setOngoingGiveaway(
-                    desc = state.title,
+                    title = state.title,
                     targetTime = status.endTime,
                     onDurationEnd = {
                         parentViewModel.submitAction(PlayBroadcastAction.GiveawayOngoingEnded)
@@ -1011,22 +1011,22 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                 interactiveActiveView?.show()
                 interactiveFinishedView?.hide()
             }
-            InteractiveUiModel.Giveaway.Status.Finished -> {
+            GameUiModel.Giveaway.Status.Finished -> {
                 interactiveActiveView?.hide()
 
                 interactiveFinishedView?.setupGiveaway()
                 interactiveFinishedView?.show()
             }
-            InteractiveUiModel.Giveaway.Status.Unknown -> {
+            GameUiModel.Giveaway.Status.Unknown -> {
                 interactiveActiveView?.hide()
                 interactiveFinishedView?.hide()
             }
         }
     }
 
-    private fun renderQuizView(state: InteractiveUiModel.Quiz) {
+    private fun renderQuizView(state: GameUiModel.Quiz) {
         when (val status = state.status) {
-            is InteractiveUiModel.Quiz.Status.Ongoing -> {
+            is GameUiModel.Quiz.Status.Ongoing -> {
                 interactiveActiveView?.setQuiz(
                     question = state.title,
                     targetTime = status.endTime,
@@ -1043,13 +1043,13 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
                 )
                 interactiveFinishedView?.hide()
             }
-            InteractiveUiModel.Quiz.Status.Finished -> {
+            GameUiModel.Quiz.Status.Finished -> {
                 interactiveActiveView?.hide()
 
                 interactiveFinishedView?.setupQuiz()
                 interactiveFinishedView?.show()
             }
-            InteractiveUiModel.Quiz.Status.Unknown -> {
+            GameUiModel.Quiz.Status.Unknown -> {
                 interactiveActiveView?.hide()
                 interactiveFinishedView?.hide()
             }
@@ -1059,17 +1059,16 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
     private fun renderSetupDialog(
         prevSetup: InteractiveSetupUiModel?,
         setup: InteractiveSetupUiModel,
-        prevInteractive: InteractiveUiModel?,
-        interactive: InteractiveUiModel
+        prevGame: GameUiModel?,
+        game: GameUiModel,
     ) {
-        if (prevSetup == setup && prevInteractive == interactive) return
+        if (prevSetup == setup && prevGame == game) return
 
-        // If seller is not going to setup or if there is active interactive
-        // then hide the setup dialog
+        //If seller is not going to setup or if there is active game
+        //then hide the setup dialog
         if (setup.type == GameType.Unknown ||
             setup.type == GameType.Quiz ||
-            interactive !is InteractiveUiModel.Unknown
-        ) {
+            game !is GameUiModel.Unknown) {
             val dialog = InteractiveSetupDialogFragment.get(childFragmentManager)
             if (dialog?.isAdded == true) dialog.dismiss()
         } else {

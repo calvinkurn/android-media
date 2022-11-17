@@ -45,6 +45,17 @@ class SortFilterBottomSheet: BottomSheetUnify() {
 
     companion object {
         private const val SORT_FILTER_BOTTOM_SHEET_TAG = "SORT_FILTER_BOTTOM_SHEET_TAG"
+
+        private const val SORT_FILTER_TITLE_KEY = "sort_filter_title_key"
+
+        @JvmStatic
+        fun createInstance(title: String): SortFilterBottomSheet {
+            return SortFilterBottomSheet().apply {
+                arguments = Bundle().apply {
+                    putString(SORT_FILTER_TITLE_KEY, title)
+                }
+            }
+        }
     }
 
     private var mapParameter: Map<String, String> = mapOf()
@@ -186,7 +197,11 @@ class SortFilterBottomSheet: BottomSheetUnify() {
     private fun initView() {
         initBottomSheetSettings()
 
-        setTitle(getString(R.string.discovery_filter))
+        val bottomSheetTitle =
+            arguments?.getString(SORT_FILTER_TITLE_KEY)?.takeIf { it.isNotBlank() }
+                ?: getString(R.string.discovery_filter)
+
+        setTitle(bottomSheetTitle)
 
         initBottomSheetAction()
 
