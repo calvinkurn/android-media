@@ -4,19 +4,18 @@ import android.app.Activity
 import android.os.Bundle
 import com.google.gson.JsonArray
 import com.tokopedia.analyticconstant.DataLayer
-import com.tokopedia.unifyorderhistory.util.UohConsts.BUSINESS_UNIT_REPLACEE
-import com.tokopedia.unifyorderhistory.util.UohConsts.RECOMMENDATION_LIST_TOPADS_TRACK
-import com.tokopedia.unifyorderhistory.util.UohConsts.RECOMMENDATION_LIST_TRACK
-import com.tokopedia.unifyorderhistory.analytics.data.model.ECommerceAdd
-import com.tokopedia.unifyorderhistory.analytics.data.model.ECommerceAddRecommendation
-import com.tokopedia.unifyorderhistory.analytics.data.model.ECommerceClick
-import com.tokopedia.unifyorderhistory.data.model.UohListOrder
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.trackingoptimizer.TrackingQueue
+import com.tokopedia.unifyorderhistory.analytics.data.model.ECommerceAdd
+import com.tokopedia.unifyorderhistory.analytics.data.model.ECommerceAddRecommendation
+import com.tokopedia.unifyorderhistory.analytics.data.model.ECommerceClick
+import com.tokopedia.unifyorderhistory.data.model.UohListOrder
 import com.tokopedia.unifyorderhistory.util.UohConsts
-import java.util.*
+import com.tokopedia.unifyorderhistory.util.UohConsts.BUSINESS_UNIT_REPLACEE
+import com.tokopedia.unifyorderhistory.util.UohConsts.RECOMMENDATION_LIST_TOPADS_TRACK
+import com.tokopedia.unifyorderhistory.util.UohConsts.RECOMMENDATION_LIST_TRACK
 
 /**
  * Created by fwidjaja on 2019-11-29.
@@ -455,7 +454,7 @@ object UohAnalytics {
         return DataLayer.mapOf(
             ITEM_NAME, recommendationItem.name,
             ITEM_ID, recommendationItem.productId.toString(),
-            PRICE, recommendationItem.price,
+            PRICE, recommendationItem.priceInt,
             ITEM_BRAND, "",
             ITEM_CATEGORY, recommendationItem.categoryBreadcrumbs,
             ITEM_VARIANT, "",

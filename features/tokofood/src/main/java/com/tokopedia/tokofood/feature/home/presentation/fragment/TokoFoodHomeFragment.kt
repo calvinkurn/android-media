@@ -8,6 +8,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -76,6 +77,7 @@ import com.tokopedia.tokofood.feature.home.presentation.adapter.TokoFoodHomeAdap
 import com.tokopedia.tokofood.feature.home.presentation.adapter.TokoFoodHomeAdapterTypeFactory
 import com.tokopedia.tokofood.feature.home.presentation.adapter.TokoFoodListDiffer
 import com.tokopedia.tokofood.common.presentation.adapter.viewholder.TokoFoodErrorStateViewHolder
+import com.tokopedia.tokofood.common.presentation.listener.TokofoodScrollChangedListener
 import com.tokopedia.tokofood.feature.home.presentation.adapter.viewholder.TokoFoodHomeChooseAddressViewHolder
 import com.tokopedia.tokofood.feature.home.presentation.adapter.viewholder.TokoFoodHomeEmptyStateLocationViewHolder
 import com.tokopedia.tokofood.feature.home.presentation.adapter.viewholder.TokoFoodHomeIconsViewHolder
@@ -119,7 +121,8 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
     TokoFoodHomeTickerViewHolder.TokoFoodHomeTickerListener,
     TokoFoodErrorStateViewHolder.TokoFoodErrorStateListener,
     ChooseAddressBottomSheet.ChooseAddressBottomSheetListener,
-    ShareBottomsheetListener {
+    ShareBottomsheetListener,
+    TokofoodScrollChangedListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -153,7 +156,8 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
                 homeIconListener = this,
                 merchantListListener = this,
                 tickerListener = this,
-                errorStateListener = this
+                errorStateListener = this,
+                tokofoodScrollChangedListener = this
             ),
             differ = TokoFoodListDiffer(),
         )
@@ -200,6 +204,7 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
     private var isShowMiniCart = false
     private var isBackFromOtherPage = false
     private var totalScrolled = 0
+    private var onScrollChangedListenerList = mutableListOf<ViewTreeObserver.OnScrollChangedListener>()
     private val spaceZero: Int
         get() = context?.resources?.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_0)
             ?.toInt() ?: 0
@@ -281,6 +286,11 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
         collectJob?.cancel()
         isBackFromOtherPage = true
         super.onStop()
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        removeScrollChangedListener()
     }
 
     override fun getFragmentPage(): Fragment = this
@@ -414,6 +424,10 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
 
     override fun viewOutOfCoverage() {
         onShowOutOfCoverage()
+    }
+
+    override fun onScrollChangedListenerAdded(onScrollChangedListener: ViewTreeObserver.OnScrollChangedListener) {
+        onScrollChangedListenerList.add(onScrollChangedListener)
     }
 
     private fun createLegoBannerCallback(): TokoFoodHomeLegoComponentCallback {
@@ -730,6 +744,12 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
 
     private fun addScrollListener() {
         rvHome?.addOnScrollListener(loadMoreListener)
+    }
+
+    private fun removeScrollChangedListener() {
+        onScrollChangedListenerList.forEach {
+            view?.viewTreeObserver?.removeOnScrollChangedListener(it)
+        }
     }
 
     private fun createLoadMoreListener(): RecyclerView.OnScrollListener {
