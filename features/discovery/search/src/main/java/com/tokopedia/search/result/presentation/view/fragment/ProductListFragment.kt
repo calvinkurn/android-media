@@ -66,13 +66,11 @@ import com.tokopedia.search.di.module.SearchNavigationListenerModule
 import com.tokopedia.search.result.presentation.ProductListSectionContract
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.presentation.model.SearchProductTopAdsImageDataView
-import com.tokopedia.search.result.presentation.model.TickerDataView
 import com.tokopedia.search.result.presentation.view.listener.InspirationCarouselListener
 import com.tokopedia.search.result.presentation.view.listener.ProductListener
 import com.tokopedia.search.result.presentation.view.listener.QuickFilterElevation
 import com.tokopedia.search.result.presentation.view.listener.RedirectionListener
 import com.tokopedia.search.result.presentation.view.listener.SearchNavigationListener
-import com.tokopedia.search.result.presentation.view.listener.TickerListener
 import com.tokopedia.search.result.presentation.view.listener.TopAdsImageViewListener
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactoryImpl
 import com.tokopedia.search.result.product.ClassNameProvider
@@ -92,7 +90,7 @@ import com.tokopedia.search.result.product.emptystate.EmptyStateListenerDelegate
 import com.tokopedia.search.result.product.globalnavwidget.GlobalNavListenerDelegate
 import com.tokopedia.search.result.product.inspirationbundle.InspirationBundleListenerDelegate
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
-import com.tokopedia.search.result.product.inspirationcarousel.analytics.InspirationCarouselTrackingUnification
+import com.tokopedia.search.result.product.inspirationcarousel.analytics.InspirationCarouselTracking
 import com.tokopedia.search.result.product.inspirationcarousel.analytics.InspirationCarouselTrackingUnificationDataMapper.createCarouselTrackingUnificationData
 import com.tokopedia.search.result.product.inspirationlistatc.InspirationListAtcListenerDelegate
 import com.tokopedia.search.result.product.inspirationwidget.InspirationWidgetListenerDelegate
@@ -110,7 +108,6 @@ import com.tokopedia.search.utils.FragmentProvider
 import com.tokopedia.search.utils.SearchIdlingResource
 import com.tokopedia.search.utils.SearchLogger
 import com.tokopedia.search.utils.SmallGridSpanCount
-import com.tokopedia.search.utils.UrlParamUtils
 import com.tokopedia.search.utils.addFilterOrigin
 import com.tokopedia.search.utils.applinkmodifier.ApplinkModifier
 import com.tokopedia.search.utils.applyQuickFilterElevation
@@ -123,7 +120,6 @@ import com.tokopedia.topads.sdk.domain.model.Category
 import com.tokopedia.topads.sdk.domain.model.FreeOngkir
 import com.tokopedia.topads.sdk.domain.model.Product
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
-import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.video_widget.VideoPlayerAutoplay
 import com.tokopedia.video_widget.carousel.VideoCarouselWidgetCoordinator
@@ -172,9 +168,6 @@ class ProductListFragment: BaseDaggerFragment(),
 
     @Inject
     lateinit var iris: Iris
-
-    @Inject
-    lateinit var inspirationCarouselTrackingUnification: InspirationCarouselTrackingUnification
 
     @Inject
     lateinit var remoteConfig: RemoteConfig
@@ -438,7 +431,6 @@ class ProductListFragment: BaseDaggerFragment(),
         val videoCarouselListenerDelegate = VideoCarouselListenerDelegate(
             activity,
             trackingQueue,
-            inspirationCarouselTrackingUnification,
             this,
             this
         )
@@ -491,7 +483,6 @@ class ProductListFragment: BaseDaggerFragment(),
             videoCarouselWidgetCoordinator = videoCarouselWidgetCoordinator,
             inspirationBundleListener = InspirationBundleListenerDelegate(
                 activity,
-                inspirationCarouselTrackingUnification,
                 iris,
                 trackingQueue,
                 this,
@@ -1219,7 +1210,11 @@ class ProductListFragment: BaseDaggerFragment(),
         val products = ArrayList<Any>()
         products.add(product.getInspirationCarouselInfoProductAsObjectDataLayer())
 
-        SearchTracking.trackEventClickInspirationCarouselInfoProduct(product.inspirationCarouselType, queryKey, products)
+        InspirationCarouselTracking.trackEventClickInspirationCarouselInfoProduct(
+            product.inspirationCarouselType,
+            queryKey,
+            products,
+        )
     }
 
     override fun onInspirationCarouselSeeAllClicked(
@@ -1227,7 +1222,7 @@ class ProductListFragment: BaseDaggerFragment(),
     ) {
         redirectionStartActivity(inspirationCarouselDataViewOption.applink, inspirationCarouselDataViewOption.url)
 
-        inspirationCarouselTrackingUnification.trackCarouselClickSeeAll(
+        InspirationCarouselTracking.trackCarouselClickSeeAll(
             queryKey,
             inspirationCarouselDataViewOption,
         )
@@ -1236,7 +1231,7 @@ class ProductListFragment: BaseDaggerFragment(),
     override fun onInspirationCarouselGridBannerClicked(option: InspirationCarouselDataView.Option) {
         redirectionStartActivity(option.bannerApplinkUrl, option.bannerLinkUrl)
 
-        SearchTracking.trackEventClickInspirationCarouselGridBanner(
+        InspirationCarouselTracking.trackEventClickInspirationCarouselGridBanner(
                 option.inspirationCarouselType, queryKey, option.getBannerDataLayer(queryKey), getUserId()
         )
     }
@@ -1247,7 +1242,7 @@ class ProductListFragment: BaseDaggerFragment(),
         val products = ArrayList<Any>()
         products.add(product.getInspirationCarouselInfoProductAsObjectDataLayer())
 
-        SearchTracking.trackImpressionInspirationCarouselInfo(
+        InspirationCarouselTracking.trackImpressionInspirationCarouselInfo(
                 trackingQueue,
                 product.inspirationCarouselType,
                 queryKey,
@@ -1271,26 +1266,26 @@ class ProductListFragment: BaseDaggerFragment(),
         val trackingQueue = trackingQueue ?: return
         val data = createCarouselTrackingUnificationData(product, searchParameter)
 
-        inspirationCarouselTrackingUnification.trackCarouselImpression(trackingQueue, data)
+        InspirationCarouselTracking.trackCarouselImpression(trackingQueue, data)
     }
 
     override fun trackEventImpressionInspirationCarouselListItem(product: InspirationCarouselDataView.Option.Product) {
         val trackingQueue = trackingQueue ?: return
         val data = createCarouselTrackingUnificationData(product, searchParameter)
 
-        inspirationCarouselTrackingUnification.trackCarouselImpression(trackingQueue, data)
+        InspirationCarouselTracking.trackCarouselImpression(trackingQueue, data)
     }
 
     override fun trackEventClickInspirationCarouselGridItem(product: InspirationCarouselDataView.Option.Product) {
         val data = createCarouselTrackingUnificationData(product, searchParameter)
 
-        inspirationCarouselTrackingUnification.trackCarouselClick(data)
+        InspirationCarouselTracking.trackCarouselClick(data)
     }
 
     override fun trackEventClickInspirationCarouselListItem(product: InspirationCarouselDataView.Option.Product) {
         val data = createCarouselTrackingUnificationData(product, searchParameter)
 
-        inspirationCarouselTrackingUnification.trackCarouselClick(data)
+        InspirationCarouselTracking.trackCarouselClick(data)
     }
 
     override fun onInspirationCarouselGridProductImpressed(
@@ -1309,13 +1304,13 @@ class ProductListFragment: BaseDaggerFragment(),
         val data = createCarouselTrackingUnificationData(product, searchParameter)
         val trackingQueue = trackingQueue ?: return
 
-        inspirationCarouselTrackingUnification.trackCarouselImpression(trackingQueue, data)
+        InspirationCarouselTracking.trackCarouselImpression(trackingQueue, data)
     }
 
     override fun trackEventClickInspirationCarouselChipsItem(product: InspirationCarouselDataView.Option.Product) {
         val data = createCarouselTrackingUnificationData(product, searchParameter)
 
-        inspirationCarouselTrackingUnification.trackCarouselClick(data)
+        InspirationCarouselTracking.trackCarouselClick(data)
     }
 
     override fun onInspirationCarouselChipsProductClicked(
@@ -1338,7 +1333,7 @@ class ProductListFragment: BaseDaggerFragment(),
             inspirationCarouselDataViewOption.url
         )
 
-        inspirationCarouselTrackingUnification.trackCarouselClickSeeAll(
+        InspirationCarouselTracking.trackCarouselClickSeeAll(
             queryKey,
             inspirationCarouselDataViewOption,
         )
@@ -1358,7 +1353,7 @@ class ProductListFragment: BaseDaggerFragment(),
     }
 
     override fun trackInspirationCarouselChipsClicked(option: InspirationCarouselDataView.Option) {
-        inspirationCarouselTrackingUnification.trackCarouselClickSeeAll(queryKey, option)
+        InspirationCarouselTracking.trackCarouselClickSeeAll(queryKey, option)
     }
     //endregion
 
