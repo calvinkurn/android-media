@@ -21,5 +21,4 @@ class UserVideoPostImpressCoordinator @Inject constructor() {
         callback.invoke()
         if (!mDataImpress.isNullOrEmpty()) mDataImpress.clear()
     }
-
 }

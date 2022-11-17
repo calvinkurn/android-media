@@ -21,5 +21,4 @@ class UserFeedPostImpressCoordinator @Inject constructor() {
         callback.invoke()
         if (!mDataImpress.isNullOrEmpty()) mDataImpress.clear()
     }
-
 }

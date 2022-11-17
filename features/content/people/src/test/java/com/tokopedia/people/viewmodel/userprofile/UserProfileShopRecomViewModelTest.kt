@@ -21,7 +21,6 @@ import io.mockk.mockk
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
-import org.mockito.ArgumentMatchers.anyString
 
 class UserProfileShopRecomViewModelTest {
 

@@ -72,7 +72,7 @@ class UserFeedPostsBaseAdapter(
     override fun onBindViewHolder(
         holder: RecyclerView.ViewHolder,
         position: Int,
-        payloads: List<Any>
+        payloads: List<Any>,
     ) {
         super.onBindViewHolder(holder, position, payloads)
         if (position == (itemCount - 1) && !isLastPage) onLoadMore(cursor)

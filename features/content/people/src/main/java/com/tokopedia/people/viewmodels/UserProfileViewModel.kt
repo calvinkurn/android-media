@@ -38,7 +38,7 @@ import kotlinx.coroutines.flow.update
 class UserProfileViewModel @AssistedInject constructor(
     @Assisted private val username: String,
     private val repo: UserProfileRepository,
-    private val userSession: UserSessionInterface
+    private val userSession: UserSessionInterface,
 ) : BaseViewModel(Dispatchers.Main) {
 
     @AssistedFactory
@@ -113,7 +113,7 @@ class UserProfileViewModel @AssistedInject constructor(
         _profileType,
         _profileWhitelist,
         _shopRecom,
-        _profileTab
+        _profileTab,
     ) { profileInfo, followInfo, profileType, profileWhitelist, shopRecom, profileTab ->
         UserProfileUiState(
             profileInfo = profileInfo,
@@ -121,7 +121,7 @@ class UserProfileViewModel @AssistedInject constructor(
             profileType = profileType,
             profileWhitelist = profileWhitelist,
             shopRecom = shopRecom,
-            profileTab = profileTab
+            profileTab = profileTab,
         )
     }
 
@@ -145,7 +145,7 @@ class UserProfileViewModel @AssistedInject constructor(
     private fun handleLoadProfile(isRefresh: Boolean) {
         viewModelScope.launchCatchError(block = {
             loadProfileInfo(isRefresh)
-        }) {
+        },) {
             _uiEvent.emit(UserProfileUiEvent.ErrorLoadProfile(it))
         }
     }
@@ -178,7 +178,7 @@ class UserProfileViewModel @AssistedInject constructor(
             },
             onError = {
                 userPostError.value = it
-            }
+            },
         )
     }
 
@@ -187,8 +187,8 @@ class UserProfileViewModel @AssistedInject constructor(
             if (nextCursor.isEmpty()) return@launchCatchError
             loadShopRecom(nextCursor)
         }, onError = {
-            _uiEvent.emit(UserProfileUiEvent.ErrorLoadNextPageShopRecom(it))
-        },)
+                _uiEvent.emit(UserProfileUiEvent.ErrorLoadNextPageShopRecom(it))
+            },)
     }
 
     private fun handleClickFollowButton(isFromLogin: Boolean) {
@@ -216,7 +216,7 @@ class UserProfileViewModel @AssistedInject constructor(
                     _uiEvent.emit(UserProfileUiEvent.ErrorFollowUnfollow(result.message))
                 }
             }
-        }) {
+        },) {
             _uiEvent.emit(UserProfileUiEvent.ErrorFollowUnfollow(""))
         }
     }
@@ -237,24 +237,24 @@ class UserProfileViewModel @AssistedInject constructor(
                             UserProfileUiEvent.SuccessUpdateReminder(result.message, data.position)
                         }
                         is MutationUiModel.Error -> UserProfileUiEvent.ErrorUpdateReminder(Exception(result.message))
-                    }
+                    },
                 )
             }
         }, onError = {
                 _uiEvent.emit(UserProfileUiEvent.ErrorUpdateReminder(it))
-            })
+            },)
     }
 
     private fun handleSaveReminderActivityResult(
         channelId: String,
         position: Int,
-        isActive: Boolean
+        isActive: Boolean,
     ) {
         _savedReminderData.update {
             SavedReminderData.Saved(
                 channelId = channelId,
                 position = position,
-                isActive = isActive
+                isActive = isActive,
             )
         }
     }
@@ -281,7 +281,7 @@ class UserProfileViewModel @AssistedInject constructor(
                 FOLLOW_TYPE_SHOP -> {
                     repo.shopFollowUnfollow(
                         currentItem.id.toString(),
-                        if (currentState == FOLLOW) UnFollow else Follow
+                        if (currentState == FOLLOW) UnFollow else Follow,
                     )
                 }
                 FOLLOW_TYPE_BUYER -> {
@@ -305,7 +305,7 @@ class UserProfileViewModel @AssistedInject constructor(
                                 } else {
                                     it
                                 }
-                            }
+                            },
                         )
                     }
                 }
@@ -317,13 +317,13 @@ class UserProfileViewModel @AssistedInject constructor(
         }, onError = {
                 updateLoadingStateFollowShopRecom(itemId, currentState)
                 _uiEvent.emit(UserProfileUiEvent.ErrorFollowUnfollow(""))
-            })
+            },)
     }
 
     private fun handleLoadProfileTab() {
         viewModelScope.launchCatchError(block = {
             loadProfileTab()
-        }, onError = { })
+        }, onError = { },)
     }
 
     private fun updateLoadingStateFollowShopRecom(itemID: Long, state: ShopRecomFollowState) {
@@ -335,7 +335,7 @@ class UserProfileViewModel @AssistedInject constructor(
                     } else {
                         it
                     }
-                }
+                },
             )
         }
     }
@@ -385,7 +385,7 @@ class UserProfileViewModel @AssistedInject constructor(
             _uiEvent.emit(UserProfileUiEvent.SuccessLoadTabs(result == ProfileTabUiModel()))
         }, onError = {
                 _uiEvent.emit(UserProfileUiEvent.ErrorGetProfileTab(it))
-            })
+            },)
     }
 
     private suspend fun loadShopRecom(cursor: String = "") {

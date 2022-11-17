@@ -29,5 +29,5 @@ sealed interface UserProfileAction {
 
     object RemoveReminderActivityResult : UserProfileAction
 
-    object LoadProfileTab: UserProfileAction
+    object LoadProfileTab : UserProfileAction
 }

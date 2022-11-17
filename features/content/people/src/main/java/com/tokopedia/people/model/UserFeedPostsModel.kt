@@ -77,7 +77,7 @@ data class Post(
     val views: Views,
     @SerializedName("webLink")
     val webLink: String,
-): BaseItem()
+) : BaseItem()
 
 data class Author(
     @SerializedName("id")

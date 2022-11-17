@@ -53,7 +53,7 @@ class UserProfileFeedFragment @Inject constructor(
     private val viewModel: UserProfileViewModel by activityViewModels {
         viewModelFactoryCreator.create(
             this,
-            requireArguments().getString(UserProfileActivity.EXTRA_USERNAME) ?: ""
+            requireArguments().getString(UserProfileActivity.EXTRA_USERNAME) ?: "",
         )
     }
 
@@ -64,7 +64,7 @@ class UserProfileFeedFragment @Inject constructor(
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         _binding = UpFragmentFeedBinding.inflate(inflater, container, false)
         return binding.root
@@ -193,7 +193,7 @@ class UserProfileFeedFragment @Inject constructor(
                 it.id,
                 it.media.first().coverURL,
                 position,
-                it.media.first().type
+                it.media.first().type,
             )
         }
     }
@@ -256,5 +256,4 @@ class UserProfileFeedFragment @Inject constructor(
             } as UserProfileFeedFragment
         }
     }
-
 }

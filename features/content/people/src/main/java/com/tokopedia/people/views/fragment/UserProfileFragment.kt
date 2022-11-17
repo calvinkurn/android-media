@@ -90,7 +90,7 @@ class UserProfileFragment @Inject constructor(
     private var userProfileTracker: UserProfileTracker,
     private val userSession: UserSessionInterface,
     private val feedFloatingButtonManager: FeedFloatingButtonManager,
-    private val impressionCoordinator: ShopRecomImpressCoordinator
+    private val impressionCoordinator: ShopRecomImpressCoordinator,
 ) : TkpdBaseV4Fragment(),
     ShareBottomsheetListener,
     ScreenShotListener,
@@ -116,7 +116,7 @@ class UserProfileFragment @Inject constructor(
     private val viewModel: UserProfileViewModel by activityViewModels {
         viewModelFactoryCreator.create(
             this,
-            requireArguments().getString(EXTRA_USERNAME).orEmpty()
+            requireArguments().getString(EXTRA_USERNAME).orEmpty(),
         )
     }
 
@@ -139,7 +139,7 @@ class UserProfileFragment @Inject constructor(
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         _binding = UpFragmentUserProfileBinding.inflate(inflater, container, false)
         return binding.root
@@ -161,7 +161,7 @@ class UserProfileFragment @Inject constructor(
         mainBinding.appBarUserProfile.addOnOffsetChangedListener(
             AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
                 binding.swipeRefreshLayout.isEnabled = verticalOffset == 0
-            }
+            },
         )
 
         binding.swipeRefreshLayout.setOnRefreshListener {
@@ -175,10 +175,10 @@ class UserProfileFragment @Inject constructor(
         mainBinding.appBarUserProfile.addOnOffsetChangedListener(
             AppBarLayout.OnOffsetChangedListener { _, verticalOffset ->
                 shouldRefreshRecyclerView = verticalOffset == 0
-            }
+            },
         )
         mainBinding.cardUserReminder.clContainer.setBackgroundResource(
-            R.drawable.bg_card_profile_reminder
+            R.drawable.bg_card_profile_reminder,
         )
 
         mainBinding.appBarUserProfile.addOnOffsetChangedListener(feedFloatingButtonManager.offsetListener)
@@ -188,7 +188,7 @@ class UserProfileFragment @Inject constructor(
                 it,
                 this,
                 this,
-                permissionListener = this
+                permissionListener = this,
             )
         }
 
@@ -221,42 +221,43 @@ class UserProfileFragment @Inject constructor(
         super.onAttachFragment(childFragment)
         when (childFragment) {
             is UGCOnboardingParentFragment -> {
-                childFragment.setListener(object : UGCOnboardingParentFragment.Listener {
-                    override fun onSuccess() {
-                        viewModel.submitAction(UserProfileAction.LoadProfile())
-                        when (ugcOnboardingOpenFrom) {
-                            UGC_ONBOARDING_OPEN_FROM_POST -> goToCreatePostPage()
-                            UGC_ONBOARDING_OPEN_FROM_LIVE -> goToCreateLiveStream()
-                            else -> {}
+                childFragment.setListener(
+                    object : UGCOnboardingParentFragment.Listener {
+                        override fun onSuccess() {
+                            viewModel.submitAction(UserProfileAction.LoadProfile())
+                            when (ugcOnboardingOpenFrom) {
+                                UGC_ONBOARDING_OPEN_FROM_POST -> goToCreatePostPage()
+                                UGC_ONBOARDING_OPEN_FROM_LIVE -> goToCreateLiveStream()
+                                else -> {}
+                            }
                         }
-                    }
 
                         override fun impressTncOnboarding() {
                             userProfileTracker.impressionOnBoardingBottomSheetWithUsername(
-                                viewModel.profileUserID
+                                viewModel.profileUserID,
                             )
                         }
 
                         override fun impressCompleteOnboarding() {
                             userProfileTracker.impressionOnBoardingBottomSheetWithoutUsername(
-                                viewModel.profileUserID
+                                viewModel.profileUserID,
                             )
                         }
 
                         override fun clickNextOnTncOnboarding() {
                             userProfileTracker.clickLanjutOnBoardingBottomSheetWithUsername(
-                                viewModel.profileUserID
+                                viewModel.profileUserID,
                             )
                         }
 
                         override fun clickNextOnCompleteOnboarding() {
                             userProfileTracker.clickLanjutOnBoardingBottomSheetWithoutUsername(
-                                viewModel.profileUserID
+                                viewModel.profileUserID,
                             )
                         }
 
                         override fun clickCloseIcon() {}
-                    }
+                    },
                 )
             }
         }
@@ -287,7 +288,7 @@ class UserProfileFragment @Inject constructor(
                 if (!userSession.isLoggedIn) {
                     startActivityForResult(
                         RouteManager.getIntent(activity, ApplinkConst.LOGIN),
-                        REQUEST_CODE_LOGIN_TO_FOLLOW
+                        REQUEST_CODE_LOGIN_TO_FOLLOW,
                     )
                 } else {
                     doFollowUnfollow()
@@ -318,7 +319,7 @@ class UserProfileFragment @Inject constructor(
                 super.onPageSelected(position)
                 viewPagerSelectedPage = position
             }
-        })
+        },)
     }
 
     private fun initObserver() {
@@ -394,7 +395,7 @@ class UserProfileFragment @Inject constructor(
                                     }
                                 }
                                 else -> SERVER_ERROR
-                            }
+                            },
                         )
                     }
                 }
@@ -424,13 +425,13 @@ class UserProfileFragment @Inject constructor(
     /** Render UI */
     private fun renderProfileInfo(
         prev: ProfileUiModel?,
-        curr: ProfileUiModel
+        curr: ProfileUiModel,
     ) {
         if (prev == curr || curr == ProfileUiModel.Empty) return
 
         userProfileTracker.openUserProfile(
             viewModel.profileUserID,
-            live = curr.liveInfo.isLive
+            live = curr.liveInfo.isLive,
         )
 
         if (binding.swipeRefreshLayout.isRefreshing) {
@@ -472,7 +473,7 @@ class UserProfileFragment @Inject constructor(
 
     private fun renderButtonAction(
         prev: UserProfileUiState?,
-        value: UserProfileUiState
+        value: UserProfileUiState,
     ) {
         if (prev?.followInfo == value.followInfo &&
             prev.profileType == value.profileType
@@ -499,7 +500,7 @@ class UserProfileFragment @Inject constructor(
 
     private fun renderCreateContentButton(
         prev: UserProfileUiState?,
-        value: UserProfileUiState
+        value: UserProfileUiState,
     ) {
         if (prev?.followInfo == value.followInfo &&
             prev.profileType == value.profileType &&
@@ -524,7 +525,7 @@ class UserProfileFragment @Inject constructor(
 
     private fun renderProfileReminder(
         prev: UserProfileUiState?,
-        value: UserProfileUiState
+        value: UserProfileUiState,
     ) {
         if (prev?.followInfo == value.followInfo &&
             prev.profileType == value.profileType
@@ -581,7 +582,7 @@ class UserProfileFragment @Inject constructor(
 //                } else goToCreateLiveStream()
 
                 goToCreateLiveStream()
-            }
+            },
         )
     }
 
@@ -598,7 +599,7 @@ class UserProfileFragment @Inject constructor(
                 } else {
                     goToCreatePostPage()
                 }
-            }
+            },
         )
     }
 
@@ -661,9 +662,9 @@ class UserProfileFragment @Inject constructor(
             imgShare.setColorFilter(
                 ContextCompat.getColor(
                     requireContext(),
-                    com.tokopedia.unifyprinciples.R.color.Unify_NN1000
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN1000,
                 ),
-                android.graphics.PorterDuff.Mode.MULTIPLY
+                android.graphics.PorterDuff.Mode.MULTIPLY,
             )
 
             imgShare.setOnClickListener {
@@ -685,9 +686,9 @@ class UserProfileFragment @Inject constructor(
             setColorFilter(
                 ContextCompat.getColor(
                     requireContext(),
-                    com.tokopedia.unifyprinciples.R.color.Unify_NN1000
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN1000,
                 ),
-                android.graphics.PorterDuff.Mode.MULTIPLY
+                android.graphics.PorterDuff.Mode.MULTIPLY,
             )
 
             setOnClickListener {
@@ -742,9 +743,9 @@ class UserProfileFragment @Inject constructor(
             activity?.let {
                 FollowerFollowingListingActivity.getCallingIntent(
                     it,
-                    getFollowersBundle(isFollowers)
+                    getFollowersBundle(isFollowers),
                 )
-            }
+            },
         )
     }
 
@@ -776,7 +777,7 @@ class UserProfileFragment @Inject constructor(
                     VALUE_ONBOARDING_TYPE_COMPLETE
                 } else {
                     VALUE_ONBOARDING_TYPE_TNC
-                }
+                },
             )
         }
         childFragmentManager.beginTransaction()
@@ -816,7 +817,7 @@ class UserProfileFragment @Inject constructor(
     override fun onShopRecomFollowClicked(itemID: Long) {
         userProfileTracker.clickFollowProfileRecommendation(
             viewModel.profileUserID,
-            itemID.toString()
+            itemID.toString(),
         )
         viewModel.submitAction(UserProfileAction.ClickFollowButtonShopRecom(itemID))
     }
@@ -825,13 +826,13 @@ class UserProfileFragment @Inject constructor(
         itemID: Long,
         appLink: String,
         imageUrl: String,
-        postPosition: Int
+        postPosition: Int,
     ) {
         userProfileTracker.clickProfileRecommendation(
             viewModel.profileUserID,
             itemID.toString(),
             imageUrl,
-            postPosition
+            postPosition,
         )
         RouteManager.route(requireContext(), appLink)
     }
@@ -841,7 +842,7 @@ class UserProfileFragment @Inject constructor(
             userProfileTracker.impressionProfileRecommendation(
                 viewModel.profileUserID,
                 shopImpress,
-                postPosition
+                postPosition,
             )
         }
     }
@@ -879,12 +880,12 @@ class UserProfileFragment @Inject constructor(
                     PAGE_NAME_PROFILE,
                     it,
                     viewModel.profileUserID,
-                    FEATURE_SHARE
+                    FEATURE_SHARE,
                 )
             }
             setMetaData(
                 tnTitle = viewModel.displayName,
-                tnImage = viewModel.profileCover
+                tnImage = viewModel.profileCover,
             )
             setOgImageUrl(viewModel.profileCover)
         }
@@ -916,7 +917,7 @@ class UserProfileFragment @Inject constructor(
                 if (shareModel.ogImgUrl != null && shareModel.ogImgUrl?.isNotEmpty() == true) {
                     ogImageUrl = shareModel.ogImgUrl
                 }
-            }
+            },
         )
         LinkerManager.getInstance().executeShareRequest(
             LinkerUtils.createShareRequest(
@@ -931,7 +932,7 @@ class UserProfileFragment @Inject constructor(
                                 linkerShareData,
                                 activity,
                                 view,
-                                shareString
+                                shareString,
                             )
                             // send gtm trackers if you want to
 
@@ -952,8 +953,8 @@ class UserProfileFragment @Inject constructor(
                     override fun onError(linkerError: LinkerError?) {
                         // Most of the error cases are already handled for you. Let me know if you want to add your own error handling.
                     }
-                }
-            )
+                },
+            ),
         )
     }
 
@@ -971,7 +972,7 @@ class UserProfileFragment @Inject constructor(
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
-        grantResults: IntArray
+        grantResults: IntArray,
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         screenShotDetector?.onRequestPermissionsResult(requestCode, grantResults, this)
@@ -1049,12 +1050,12 @@ class UserProfileFragment @Inject constructor(
         fun getFragment(
             fragmentManager: FragmentManager,
             classLoader: ClassLoader,
-            bundle: Bundle
+            bundle: Bundle,
         ): UserProfileFragment {
             val oldInstance = fragmentManager.findFragmentByTag(TAG) as? UserProfileFragment
             return oldInstance ?: fragmentManager.fragmentFactory.instantiate(
                 classLoader,
-                UserProfileFragment::class.java.name
+                UserProfileFragment::class.java.name,
             ).apply {
                 arguments = bundle
             } as UserProfileFragment

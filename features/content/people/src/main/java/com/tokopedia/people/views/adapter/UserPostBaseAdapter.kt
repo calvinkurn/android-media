@@ -18,7 +18,7 @@ import com.tokopedia.play.widget.ui.widget.large.PlayWidgetCardLargeChannelView
 open class UserPostBaseAdapter(
     callback: AdapterCallback,
     val playWidgetCallback: PlayWidgetCallback,
-    val onLoadMore: (cursor: String) -> Unit
+    val onLoadMore: (cursor: String) -> Unit,
 ) : BaseAdapter<PlayPostContentItem>(callback), PlayWidgetCardLargeChannelView.Listener {
 
     var cursor: String = ""
@@ -28,11 +28,11 @@ open class UserPostBaseAdapter(
             view.findViewById(R.id.play_widget_large_view)
 
         override fun bindView(item: PlayPostContentItem, position: Int) {
-
-            playWidgetCallback.onImpressPlayWidgetData(item,
+            playWidgetCallback.onImpressPlayWidgetData(
+                item,
                 item.isLive,
                 item.id,
-                position
+                position,
             )
             setData(this, item)
         }
@@ -41,7 +41,7 @@ open class UserPostBaseAdapter(
     override fun getItemViewHolder(
         parent: ViewGroup,
         inflater: LayoutInflater,
-        viewType: Int
+        viewType: Int,
     ): BaseVH {
         val itemView = LayoutInflater.from(parent.context)
             .inflate(R.layout.up_item_user_post, parent, false)
@@ -81,7 +81,7 @@ open class UserPostBaseAdapter(
 
     private fun addVideoPostReminderClickCallBack(
         channelId: String,
-        isActive: Boolean
+        isActive: Boolean,
     ) {
         val pos = getItemPosition(channelId)
         playWidgetCallback.updatePostReminderStatus(channelId, isActive, pos)
@@ -100,7 +100,7 @@ open class UserPostBaseAdapter(
     fun updatePlayWidgetLatestData(
         channelId: String,
         totalView: String?,
-        isReminderSet: Boolean?
+        isReminderSet: Boolean?,
     ) {
         val selectedData = items
             .filterIsInstance<PlayPostContentItem>()
@@ -135,11 +135,11 @@ open class UserPostBaseAdapter(
 
     override fun onToggleReminderChannelClicked(
         item: PlayWidgetChannelUiModel,
-        reminderType: PlayWidgetReminderType
+        reminderType: PlayWidgetReminderType,
     ) {
         addVideoPostReminderClickCallBack(
             item.channelId,
-            reminderType.reminded
+            reminderType.reminded,
         )
     }
 

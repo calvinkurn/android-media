@@ -41,14 +41,14 @@ class GetUserProfileFeedPostsUseCase @Inject constructor(
         const val QUERY_NAME = "GetUserProfileFeedPostsUseCaseQuery"
         const val QUERY = """
             query FeedXProfileGetProfilePosts(
-                ${"$${KEY_SOURCE_ID}"}: String!, 
-                ${"$${KEY_CURSOR}"}: String!, 
-                ${"$${KEY_LIMIT}"}: Int!
+                ${"$$KEY_SOURCE_ID"}: String!, 
+                ${"$$KEY_CURSOR"}: String!, 
+                ${"$$KEY_LIMIT"}: Int!
             ) {
             feedXProfileGetProfilePosts(req: {
-                ${KEY_SOURCE_ID}: ${"$${KEY_SOURCE_ID}"}, 
-                ${KEY_CURSOR}: ${"$${KEY_CURSOR}"}, 
-                ${KEY_LIMIT}: ${"$${KEY_LIMIT}"}}) {
+                $KEY_SOURCE_ID: ${"$$KEY_SOURCE_ID"}, 
+                $KEY_CURSOR: ${"$$KEY_CURSOR"}, 
+                $KEY_LIMIT: ${"$$KEY_LIMIT"}}) {
                 posts {
                   __typename
                   ... on FeedXCardPost {

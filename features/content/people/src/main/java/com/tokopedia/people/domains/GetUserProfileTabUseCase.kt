@@ -13,7 +13,7 @@ import javax.inject.Inject
  */
 @GqlQuery(GetUserProfileTabUseCase.QUERY_NAME, GetUserProfileTabUseCase.QUERY)
 class GetUserProfileTabUseCase @Inject constructor(
-    graphqlRepository: GraphqlRepository
+    graphqlRepository: GraphqlRepository,
 ) : GraphqlUseCase<UserProfileTabModel>(graphqlRepository) {
 
     init {
@@ -24,7 +24,7 @@ class GetUserProfileTabUseCase @Inject constructor(
 
     suspend fun executeOnBackground(userID: String): UserProfileTabModel {
         val request = mapOf(
-            KEY_USER_ID to userID
+            KEY_USER_ID to userID,
         )
         setRequestParams(request)
 

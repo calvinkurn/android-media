@@ -66,7 +66,7 @@ class UserProfilePagerAdapter(
                 if (tab == null) return
                 addNewTab(tab, tab.position)
             }
-        })
+        },)
     }
 
     private fun addNewTab(tab: TabLayout.Tab, position: Int) {
@@ -101,12 +101,12 @@ class UserProfilePagerAdapter(
             FRAGMENT_KEY_FEEDS -> UserProfileFeedFragment.getFragment(
                 fragmentManager = fragmentManager,
                 classLoader = fragmentActivity.classLoader,
-                bundle = Bundle()
+                bundle = Bundle(),
             )
             FRAGMENT_KEY_VIDEO -> UserProfileVideoFragment.getFragment(
                 fragmentManager = fragmentManager,
                 classLoader = fragmentActivity.classLoader,
-                bundle = Bundle()
+                bundle = Bundle(),
             )
             else -> Fragment()
         }
