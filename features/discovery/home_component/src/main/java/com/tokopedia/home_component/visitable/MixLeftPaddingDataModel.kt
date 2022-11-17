@@ -16,7 +16,7 @@ class MixLeftPaddingDataModel(
     }
 
     override fun equalsWith(b: Any?): Boolean {
-        return if (b is MixLeftDataModel) {
+        return if (b is MixLeftPaddingDataModel) {
             channelModel.channelConfig.createdTimeMillis == b.channelModel.channelConfig.createdTimeMillis
         } else false
     }
