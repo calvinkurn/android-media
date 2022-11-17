@@ -12,6 +12,7 @@ import com.tokopedia.wishlist.util.WishlistV2Consts.ACTION_OPEN_MY_WISHLIST
 import com.tokopedia.wishlist.util.WishlistV2Consts.ACTION_RESET_FILTER
 import com.tokopedia.wishlist.util.WishlistV2Consts.ACTION_SEARCH_ITEM
 import com.tokopedia.wishlist.util.WishlistV2Consts.ACTION_SHOW_SEARCH_BAR
+import com.tokopedia.wishlist.util.WishlistV2Consts.ACTION_UPDATE_COLLECTION
 import com.tokopedia.wishlist.util.WishlistV2Consts.ACTION_UPDATE_COLLECTION_NAME
 import com.tokopedia.wishlist.view.adapter.WishlistV2Adapter
 
@@ -56,6 +57,9 @@ class WishlistCollectionEmptyStateViewHolder(private val binding: WishlistV2Empt
                             }
                             ACTION_BACK_TO_HOME -> {
                                 setSecondaryCTAClickListener { actionListener?.goToHome() }
+                            }
+                            ACTION_UPDATE_COLLECTION -> {
+                                setSecondaryCTAClickListener { actionListener?.goToEditWishlistCollectionPage() }
                             }
                         }
                     }

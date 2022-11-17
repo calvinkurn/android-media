@@ -8,6 +8,7 @@ import com.tokopedia.imagepicker_insta.models.ImageAdapterData
 import com.tokopedia.imagepicker_insta.models.VideoSize
 import com.tokopedia.imagepicker_insta.models.ZoomInfo
 import timber.log.Timber
+import java.io.FileNotFoundException
 import java.util.concurrent.TimeUnit
 
 object VideoUtil {
@@ -50,15 +51,24 @@ object VideoUtil {
         return VideoSize(width, height)
     }
 
-    fun Uri.getImageDimensions(context: Context): VideoSize {
+    fun Uri.getImageDimensions(
+        context: Context,
+        onError: (isFileNotFound: Boolean) -> Unit
+    ): VideoSize {
 
         val options: BitmapFactory.Options = BitmapFactory.Options()
         options.inJustDecodeBounds = true
-        BitmapFactory.decodeStream(
-            context.contentResolver.openInputStream(this),
-            null,
-            options
-        )
+
+        try {
+            BitmapFactory.decodeStream(
+                context.contentResolver.openInputStream(this),
+                null,
+                options
+            )
+        }
+        catch (e: Exception) {
+            onError(e is FileNotFoundException)
+        }
 
         val imageHeight: Int = options.outHeight
         val imageWidth: Int = options.outWidth

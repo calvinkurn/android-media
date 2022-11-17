@@ -6,11 +6,12 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.data.seprator.ChatSepratorUiModel
+import com.tokopedia.chatbot.databinding.ChatbotLiveChatSepratorLayoutBinding
 import com.tokopedia.chatbot.util.ChatBotTimeConverter
 
 class ChatbotLiveChatSeparatorViewHolder(itemView: View) : AbstractViewHolder<ChatSepratorUiModel>(itemView) {
-
-    private val liveChatSeprator: TextView = itemView.findViewById(R.id.chatbot_livechat_seprator)
+    private val view = ChatbotLiveChatSepratorLayoutBinding.bind(itemView)
+    private val liveChatSeprator: TextView = view.chatbotLivechatSeprator
 
     companion object {
 

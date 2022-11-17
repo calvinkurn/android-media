@@ -95,10 +95,11 @@ class InspirationListAtcViewHolder(
             discountPercentage = if (discountPercentage > 0) "$discountPercentage%" else "",
             countSoldRating = ratingAverage,
             labelGroupList = labelGroupDataList.toProductCardModelLabelGroup(),
-            shopLocation = shopLocation,
+            shopLocation = shopLocation.ifEmpty { shopName },
             shopBadgeList = badgeItemDataViewList.toProductCardModelShopBadges(),
             cardInteraction = true,
             hasAddToCartButton = true,
+            isTopAds = isOrganicAds,
         )
     }
 

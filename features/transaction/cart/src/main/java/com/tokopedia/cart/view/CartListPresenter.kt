@@ -1767,13 +1767,13 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
     override fun clearAllBo(clearPromoOrderData: ClearPromoOrderData) {
         clearCacheAutoApplyStackUseCase.setParams(
             ClearPromoRequest(
-            OldClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE,
+                OldClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE,
                 orderData = clearPromoOrderData
-        )
+            )
         )
         compositeSubscription.add(
-                // Do nothing on subscribe
-                clearCacheAutoApplyStackUseCase.createObservable(RequestParams.create()).subscribe()
+            // Do nothing on subscribe
+            clearCacheAutoApplyStackUseCase.createObservable(RequestParams.create()).subscribe()
         )
     }
 
@@ -1802,21 +1802,22 @@ class CartListPresenter @Inject constructor(private val getCartRevampV3UseCase: 
             ClearPromoRequest(
                 serviceId = ClearCacheAutoApplyStackUseCase.PARAM_VALUE_MARKETPLACE,
                 orderData = ClearPromoOrderData(
-                        orders = listOf(
-                                ClearPromoOrder(
-                                        uniqueId = shop.cartString,
-                                        boType = shop.boMetadata.boType,
-                                        codes = mutableListOf(shop.boCode),
-                                        shopId = shop.shopId.toLongOrZero(),
-                                        isPo = shop.isPo,
-                                        poDuration = shop.poDuration,
-                                        warehouseId = shop.warehouseId
-                                )
+                    orders = listOf(
+                        ClearPromoOrder(
+                            uniqueId = shop.cartString,
+                            boType = shop.boMetadata.boType,
+                            codes = mutableListOf(shop.boCode),
+                            shopId = shop.shopId.toLongOrZero(),
+                            isPo = shop.isPo,
+                            poDuration = shop.poDuration,
+                            warehouseId = shop.warehouseId
                         )
+                    )
                 )
-        )
+            )
         )
         compositeSubscription.add(clearCacheAutoApplyStackUseCase.createObservable(RequestParams.EMPTY).subscribe())
+        shop.promoCodes = ArrayList(shop.promoCodes).apply { remove(shop.boCode) }
         shop.boCode = ""
     }
 }

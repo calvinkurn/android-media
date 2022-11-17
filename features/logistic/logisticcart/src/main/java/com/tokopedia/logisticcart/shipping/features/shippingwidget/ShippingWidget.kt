@@ -88,9 +88,9 @@ class ShippingWidget : ConstraintLayout {
     ) {
         binding?.apply {
             if (shipmentCartItemModel.isShippingBorderRed) {
-                containerShippingExperience.setBackgroundResource(R.drawable.checkout_module_bg_rounded_red)
+                containerShippingExperience.setBackgroundResource(com.tokopedia.purchase_platform.common.R.drawable.bg_pp_rounded_red)
             } else {
-                containerShippingExperience.setBackgroundResource(R.drawable.checkout_module_bg_rounded_grey)
+                containerShippingExperience.setBackgroundResource(com.tokopedia.purchase_platform.common.R.drawable.bg_pp_rounded_grey)
             }
             if (shipmentCartItemModel.isTriggerShippingVibrationAnimation) {
                 containerShippingExperience.animate()
@@ -125,7 +125,7 @@ class ShippingWidget : ConstraintLayout {
             layoutStateHasErrorShipping.visible()
             llShippingExperienceStateLoading.root.gone()
             containerShippingExperience.visible()
-            containerShippingExperience.setBackgroundResource(R.drawable.checkout_module_bg_rounded_grey)
+            containerShippingExperience.setBackgroundResource(com.tokopedia.purchase_platform.common.R.drawable.bg_pp_rounded_grey)
         }
     }
 
@@ -134,7 +134,7 @@ class ShippingWidget : ConstraintLayout {
             layoutStateNoSelectedShipping.gone()
             llShippingExperienceStateLoading.root.gone()
             containerShippingExperience.visible()
-            containerShippingExperience.setBackgroundResource(R.drawable.checkout_module_bg_rounded_grey)
+            containerShippingExperience.setBackgroundResource(com.tokopedia.purchase_platform.common.R.drawable.bg_pp_rounded_grey)
         }
     }
 
@@ -581,7 +581,7 @@ class ShippingWidget : ConstraintLayout {
             layoutStateNoSelectedShipping.gone()
             llShippingExperienceStateLoading.root.gone()
             containerShippingExperience.visible()
-            containerShippingExperience.setBackgroundResource(R.drawable.checkout_module_bg_rounded_grey)
+            containerShippingExperience.setBackgroundResource(com.tokopedia.purchase_platform.common.R.drawable.bg_pp_rounded_grey)
             layoutStateHasSelectedNormalShipping.gone()
             layoutStateFailedShipping.gone()
             layoutStateHasErrorShipping.gone()

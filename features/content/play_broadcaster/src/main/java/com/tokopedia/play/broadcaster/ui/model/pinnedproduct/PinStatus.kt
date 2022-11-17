@@ -15,7 +15,12 @@ data class PinProductUiModel(
     val canPin: Boolean,
     val isLoading: Boolean = false,
 ): PinUiModel {
+
     companion object {
-        val Empty = PinProductUiModel(isPinned = false, canPin = false, isLoading = false)
+        val Empty = PinProductUiModel(
+            isPinned = false,
+            canPin = false,
+            isLoading = false,
+        )
     }
 }

@@ -6,6 +6,7 @@ import com.tokopedia.search.di.scope.SearchScope
 import com.tokopedia.search.result.product.SearchParameterProvider
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
 import com.tokopedia.search.result.product.inspirationcarousel.analytics.InspirationCarouselTrackingUnificationDataMapper.createCarouselTrackingUnificationData
+import com.tokopedia.search.utils.SearchIdlingResource
 import com.tokopedia.search.utils.applinkopener.ApplinkOpener
 import com.tokopedia.search.utils.applinkopener.ApplinkOpenerDelegate
 import com.tokopedia.search.utils.contextprovider.ContextProvider
@@ -41,12 +42,16 @@ class InspirationListAtcListenerDelegate @Inject constructor(
 
     override fun onListAtcItemImpressed(product: InspirationCarouselDataView.Option.Product) {
         inspirationListAtcView.trackItemImpress(product)
+        if (product.isOrganicAds) inspirationListAtcView.trackAdsImpress(product)
     }
 
     override fun onListAtcItemAddToCart(
         product: InspirationCarouselDataView.Option.Product,
         type: String,
     ) {
+        SearchIdlingResource.increment()
+
         inspirationListAtcPresenter.onListAtcItemAddToCart(product, type)
+        if (product.isOrganicAds) inspirationListAtcView.trackAdsClick(product)
     }
 }

@@ -33,7 +33,7 @@ class PlayVideoModelBuilder {
                                     view = StatsView(
                                         value = "123",
                                         formatted = "123",
-                                    )
+                                    ),
                                 ),
                                 configurations = PlayPostConfigurations(
                                     hasPromo = false,
@@ -44,18 +44,18 @@ class PlayVideoModelBuilder {
                                 ),
                                 partner = PlayPostContentItem.Partner(
                                     id = "1",
-                                    name = "Siapa Yah"
-                                )
+                                    name = "Siapa Yah",
+                                ),
                             )
-                        }
-                    )
+                        },
+                    ),
                 ),
                 playGetContentSlot = PlayGetContentSlotMeta(
                     isAutoplay = true,
                     maxAutoplayInCell = 30,
                     nextCursor = "",
-                )
-            )
+                ),
+            ),
         )
     }
 }

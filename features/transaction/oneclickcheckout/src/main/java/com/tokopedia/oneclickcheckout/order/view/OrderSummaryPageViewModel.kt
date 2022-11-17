@@ -56,6 +56,7 @@ import com.tokopedia.oneclickcheckout.order.view.processor.OrderSummaryPagePromo
 import com.tokopedia.oneclickcheckout.order.view.processor.ResultRates
 import com.tokopedia.oneclickcheckout.order.view.model.OrderShippingDuration
 import com.tokopedia.purchase_platform.common.constant.AddOnConstant
+import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.model.UploadPrescriptionUiModel
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsDataModel
 import com.tokopedia.purchase_platform.common.feature.gifting.domain.model.SaveAddOnStateResult
 import com.tokopedia.purchase_platform.common.feature.promo.data.request.promolist.PromoRequest
@@ -114,6 +115,8 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
     val addressState: OccMutableLiveData<AddressState> = OccMutableLiveData(AddressState())
 
     val eligibleForAnaRevamp = OccMutableLiveData<OccState<OrderEnableAddressFeature>>(OccState.Loading)
+
+    val uploadPrescriptionUiModel: OccMutableLiveData<UploadPrescriptionUiModel> = OccMutableLiveData(UploadPrescriptionUiModel())
 
     private var getCartJob: Job? = null
     private var debounceJob: Job? = null
@@ -182,6 +185,20 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                 sendPaymentTracker()
             } else {
                 orderTotal.value = orderTotal.value.copy(buttonState = OccButtonState.DISABLE)
+            }
+            if (result.imageUpload.showImageUpload) {
+                var prescriptionIds = cartProcessor.getPrescriptionId(result.imageUpload.checkoutId)
+                uploadPrescriptionUiModel.value = uploadPrescriptionUiModel.value.copy(
+                    showImageUpload = result.imageUpload.showImageUpload,
+                    uploadImageText = result.imageUpload.text,
+                    leftIconUrl = result.imageUpload.leftIconUrl,
+                    checkoutId = result.imageUpload.checkoutId,
+                    prescriptionIds = prescriptionIds.prescriptionIds,
+                    uploadedImageCount = prescriptionIds.prescriptionIds.size,
+                    isError = false,
+                    frontEndValidation = result.imageUpload.frontEndValidation,
+                    isOcc = true,
+                )
             }
         }
     }
@@ -898,6 +915,14 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
 
     fun finalUpdate(onSuccessCheckout: (CheckoutOccResult) -> Unit, skipCheckIneligiblePromo: Boolean) {
         if (orderTotal.value.buttonState == OccButtonState.NORMAL && orderPromo.value.state == OccButtonState.NORMAL && !orderShipment.value.isLoading) {
+            if (uploadPrescriptionUiModel.value.showImageUpload == true &&
+                (uploadPrescriptionUiModel.value.uploadedImageCount ?: 0) < 1 &&
+                uploadPrescriptionUiModel.value.frontEndValidation
+            ) {
+                uploadPrescriptionUiModel.value =
+                    uploadPrescriptionUiModel.value.copy(isError = true)
+                return
+            }
             globalEvent.value = OccGlobalEvent.Loading
             val shop = orderShop.value
             if (orderProfile.value.isValidProfile && orderShipment.value.getRealShipperProductId() > 0) {
@@ -943,8 +968,19 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
 
     private fun doCheckout(products: List<OrderProduct>, shop: OrderShop, profile: OrderProfile, onSuccessCheckout: (CheckoutOccResult) -> Unit) {
         launch(executorDispatchers.immediate) {
-            val (checkoutOccResult, globalEventResult) = checkoutProcessor.doCheckout(validateUsePromoRevampUiModel, orderCart, products, shop, profile,
-                    orderShipment.value, orderPayment.value, orderTotal.value, userSession.userId, generateOspEeBody(emptyList()))
+            val (checkoutOccResult, globalEventResult) = checkoutProcessor.doCheckout(
+                validateUsePromoRevampUiModel,
+                orderCart,
+                products,
+                shop,
+                profile,
+                orderShipment.value,
+                orderPayment.value,
+                orderTotal.value,
+                userSession.userId,
+                generateOspEeBody(emptyList()),
+                uploadPrescriptionUiModel.value.prescriptionIds
+            )
             if (checkoutOccResult != null) {
                 onSuccessCheckout(checkoutOccResult)
             } else if (globalEventResult != null) {
@@ -1054,6 +1090,14 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         }
 
         calculateTotal()
+    }
+
+    fun updatePrescriptionIds(it: ArrayList<String>) {
+        uploadPrescriptionUiModel.value = uploadPrescriptionUiModel.value.copy(
+            prescriptionIds = it,
+            uploadedImageCount = it.size,
+            isError = false,
+        )
     }
 
     private fun setDefaultAddOnState(orderShop: OrderShop, orderProduct: OrderProduct?) {
