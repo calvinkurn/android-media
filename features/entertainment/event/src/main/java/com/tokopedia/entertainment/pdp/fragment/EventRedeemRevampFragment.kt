@@ -10,7 +10,10 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.entertainment.databinding.FragmentEventRedeemRevampBinding
 import com.tokopedia.entertainment.pdp.activity.EventRedeemActivity.Companion.EXTRA_URL_REDEEM
+import com.tokopedia.entertainment.pdp.bottomsheet.EventRedeemRevampBottomSheet
+import com.tokopedia.entertainment.pdp.common.util.EventRedeemMapper.participantToVisitableMapper
 import com.tokopedia.entertainment.pdp.data.redeem.redeemable.Data
+import com.tokopedia.entertainment.pdp.data.redeem.redeemable.Participant
 import com.tokopedia.entertainment.pdp.di.EventPDPComponent
 import com.tokopedia.entertainment.pdp.viewmodel.EventRedeemRevampViewModel
 import com.tokopedia.kotlin.extensions.view.hide
@@ -68,6 +71,7 @@ class EventRedeemRevampFragment : BaseDaggerFragment() {
 
     private fun initalRequest() {
         hideMainLayout()
+        hideGlobalError()
         if (!userSession.isLoggedIn) {
             showGlobalError(isNotLogin = true, isUrlEmpty = false, null)
         } else if (urlRedeem == ""){
@@ -123,6 +127,9 @@ class EventRedeemRevampFragment : BaseDaggerFragment() {
             tgValueTypeTicket.text = redeem.schedule.name
             tgValueDate.text = redeem.schedule.showData
             tgValueSumTicket.text = redeem.quantity.toString()
+            tfRedeem.addOnFocusChangeListener = { _, _ ->
+                showBottomSheet(redeem.redemptions)
+            }
         }
     }
 
@@ -141,21 +148,19 @@ class EventRedeemRevampFragment : BaseDaggerFragment() {
     private fun showGlobalError(isNotLogin: Boolean, isUrlEmpty: Boolean, throwable: Throwable?) {
         context?.let { context ->
             binding?.globalErrorRedeem?.run {
+                errorSecondaryAction.hide()
                 show()
                 if (isNotLogin) {
                     errorTitle.text = context.resources.getString(redeemString.ent_redeem_not_login)
                     errorDescription.text = context.resources.getString(redeemString.ent_redeem_revamp_not_login)
                     errorAction.hide()
-                    errorSecondaryAction.hide()
                 } else if (isUrlEmpty) {
                     errorTitle.text = context.resources.getString(redeemString.ent_redeem_url_null)
                     errorDescription.text = context.resources.getString(redeemString.ent_redeem_revamp_empty_url)
                     errorAction.hide()
-                    errorSecondaryAction.hide()
                 } else {
                     errorTitle.text = ErrorHandler.getErrorMessage(context, throwable)
-                    errorSecondaryAction.hide()
-                    errorAction.setOnClickListener { 
+                    errorAction.setOnClickListener {
                         initalRequest()
                     }
                 }
@@ -206,6 +211,15 @@ class EventRedeemRevampFragment : BaseDaggerFragment() {
             tgTitleRedeem.hide()
             btnRedeem.hide()
             tfRedeem.hide()
+        }
+    }
+
+    private fun showBottomSheet(participants: List<Participant>) {
+        context?.let { context ->
+            val mappedParticipant = participantToVisitableMapper(participants, context)
+            val bottomSheetEventRedeem = EventRedeemRevampBottomSheet.getInstance()
+            bottomSheetEventRedeem.setList(mappedParticipant)
+            bottomSheetEventRedeem.show(childFragmentManager, EventPDPComponent::class.java.simpleName)
         }
     }
 
