@@ -268,8 +268,8 @@ class DigitalAnalytics {
 
         val products: MutableList<Any> = ArrayList()
         products.add(constructProductEnhanceEcommerce(cartDigitalInfoData, productName, categoryId))
-
         val label = String.format(
+            Locale.ROOT,
             "%s - %s - %s - %s",
             cartDigitalInfoData.attributes.categoryName.lowercase(Locale.ROOT),
             cartDigitalInfoData.attributes.operatorName.lowercase(Locale.ROOT),
