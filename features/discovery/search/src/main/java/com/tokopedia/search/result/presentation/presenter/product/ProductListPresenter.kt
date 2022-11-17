@@ -45,7 +45,6 @@ import com.tokopedia.search.result.presentation.model.ProductDataView
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.presentation.model.RecommendationTitleDataView
 import com.tokopedia.search.result.presentation.model.SearchProductTitleDataView
-import com.tokopedia.search.result.presentation.model.SearchProductTopAdsImageDataView
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
 import com.tokopedia.search.result.product.DynamicFilterModelProvider
 import com.tokopedia.search.result.product.banned.BannedProductsPresenterDelegate
@@ -90,6 +89,7 @@ import com.tokopedia.search.result.product.searchintokopedia.SearchInTokopediaDa
 import com.tokopedia.search.result.product.separator.VerticalSeparator
 import com.tokopedia.search.result.product.suggestion.SuggestionDataView
 import com.tokopedia.search.result.product.suggestion.SuggestionPresenter
+import com.tokopedia.search.result.product.tdn.TopAdsImageViewPresenterDelegate
 import com.tokopedia.search.result.product.ticker.TickerPresenter
 import com.tokopedia.search.result.product.videowidget.InspirationCarouselVideoDataView
 import com.tokopedia.search.result.product.wishlist.WishlistPresenter
@@ -103,7 +103,6 @@ import com.tokopedia.search.utils.getValueString
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.topads.sdk.domain.model.CpmData
 import com.tokopedia.topads.sdk.domain.model.CpmModel
-import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.topads.sdk.utils.TopAdsHeadlineHelper
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.unifycomponents.ChipsUnify
@@ -159,6 +158,7 @@ class ProductListPresenter @Inject constructor(
     private val tickerPresenter: TickerPresenter,
     private val safeSearchPresenter: SafeSearchPresenter,
     private val addToCartUseCase: AddToCartUseCase,
+    private val topAdsImageViewPresenterDelegate: TopAdsImageViewPresenterDelegate,
     wishlistPresenterDelegate: WishlistPresenterDelegate,
 ): BaseDaggerPresenter<ProductListSectionContract.View>(),
     ProductListSectionContract.Presenter,
@@ -221,7 +221,6 @@ class ProductListPresenter @Inject constructor(
     private var productList = mutableListOf<Visitable<*>>()
     private var inspirationCarouselDataView = mutableListOf<InspirationCarouselDataView>()
     private var inspirationWidgetVisitable = mutableListOf<InspirationWidgetVisitable>()
-    private var topAdsImageViewModelList = mutableListOf<TopAdsImageViewModel>()
     override val quickFilterList = mutableListOf<Filter>()
     override var dynamicFilterModel: DynamicFilterModel? = null
         private set
@@ -970,9 +969,9 @@ class ProductListPresenter @Inject constructor(
         }
 
         runCustomMetric(performanceMonitoring, SEARCH_RESULT_PLT_RENDER_LOGIC_TDN) {
-            topAdsImageViewModelList =
-                searchProductModel.getTopAdsImageViewModelList().toMutableList()
-
+            topAdsImageViewPresenterDelegate.setTopAdsImageViewModelList(
+                searchProductModel.getTopAdsImageViewModelList()
+            )
             processTopAdsImageViewModel(searchParameter, list)
         }
 
@@ -1283,56 +1282,21 @@ class ProductListPresenter @Inject constructor(
         }
     }
 
-    private fun processTopAdsImageViewModel(searchParameter: Map<String, Any>, list: MutableList<Visitable<*>>) {
-        if (topAdsImageViewModelList.isEmpty()) return
-
-        val topAdsImageViewModelIterator = topAdsImageViewModelList.iterator()
-
-        while (topAdsImageViewModelIterator.hasNext()) {
-            val data = topAdsImageViewModelIterator.next()
-
-            if (data.position <= 0) {
-                topAdsImageViewModelIterator.remove()
-                continue
-            }
-
-            if (data.position <= productList.size) {
-                try {
-                    processTopAdsImageViewModelInPosition(list, data)
-                    topAdsImageViewModelIterator.remove()
-                } catch (exception: java.lang.Exception) {
-                    Timber.w(exception)
-                    view.logWarning(UrlParamUtils.generateUrlParamString(searchParameter as Map<String?, Any>), exception)
-                }
-            }
-        }
-    }
-
-    private fun processTopAdsImageViewModelInPosition(list: MutableList<Visitable<*>>, data: TopAdsImageViewModel) {
-        val isTopPosition = data.position == 1
-        val searchProductTopAdsImageDataView = SearchProductTopAdsImageDataView(data)
-        if (isTopPosition) {
-            val index = getIndexOfTopAdsImageViewModelAtTop(list)
-            list.add(index, searchProductTopAdsImageDataView)
-        } else {
-            val product = productList[data.position - 1]
-            list.add(list.indexOf(product) + 1, searchProductTopAdsImageDataView)
-        }
-    }
-
-    private fun getIndexOfTopAdsImageViewModelAtTop(list: List<Visitable<*>>): Int {
-        var index = 0
-        while (shouldIncrementIndexForTopAdsImageViewModel(index, list)) index++
-        return index
-    }
-
-    private fun shouldIncrementIndexForTopAdsImageViewModel(index: Int, list: List<Visitable<*>>): Boolean {
-        if (index >= list.size) return false
-
-        val visitable = list[index]
-        val isCPMOrProductItem = visitable is CpmDataView || visitable is ProductItemDataView
-
-        return !isCPMOrProductItem
+    private fun processTopAdsImageViewModel(
+        searchParameter: Map<String, Any>,
+        list: MutableList<Visitable<*>>,
+    ) {
+        topAdsImageViewPresenterDelegate.processTopAdsImageViewModel(
+            list,
+            productList,
+            action = { index, topAdsImageView -> list.add(index, topAdsImageView) },
+            { exception ->
+                val paramString = UrlParamUtils.generateUrlParamString(
+                    searchParameter as Map<String?, Any>
+                )
+                view.logWarning(paramString, exception)
+            },
+        )
     }
 
     private fun processFilters(searchProductModel: SearchProductModel) {

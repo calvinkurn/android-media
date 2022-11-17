@@ -36,6 +36,7 @@ import com.tokopedia.search.result.product.safesearch.SafeSearchView
 import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationPreference
 import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationPresenterDelegate
 import com.tokopedia.search.result.product.suggestion.SuggestionPresenter
+import com.tokopedia.search.result.product.tdn.TopAdsImageViewPresenterDelegate
 import com.tokopedia.search.result.product.ticker.TickerPresenterDelegate
 import com.tokopedia.search.result.product.wishlist.WishlistPresenterDelegate
 import com.tokopedia.search.result.product.wishlist.WishlistView
@@ -143,6 +144,7 @@ internal open class ProductListPresenterTestFixtures {
             safeSearchPreference,
             safeSearchView,
         )
+        val topAdsImageViewPresenter = TopAdsImageViewPresenterDelegate()
 
         productListPresenter = ProductListPresenter(
             searchFirstPageUseCase,
@@ -184,6 +186,7 @@ internal open class ProductListPresenterTestFixtures {
             tickerPresenter,
             safeSearchPresenter,
             addToCartUseCase,
+            topAdsImageViewPresenter,
             WishlistPresenterDelegate(wishlistView),
         )
         productListPresenter.attachView(productListView)

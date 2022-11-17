@@ -65,13 +65,11 @@ import com.tokopedia.search.di.module.SearchContextModule
 import com.tokopedia.search.di.module.SearchNavigationListenerModule
 import com.tokopedia.search.result.presentation.ProductListSectionContract
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
-import com.tokopedia.search.result.presentation.model.SearchProductTopAdsImageDataView
 import com.tokopedia.search.result.presentation.view.listener.InspirationCarouselListener
 import com.tokopedia.search.result.presentation.view.listener.ProductListener
 import com.tokopedia.search.result.presentation.view.listener.QuickFilterElevation
 import com.tokopedia.search.result.presentation.view.listener.RedirectionListener
 import com.tokopedia.search.result.presentation.view.listener.SearchNavigationListener
-import com.tokopedia.search.result.presentation.view.listener.TopAdsImageViewListener
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactoryImpl
 import com.tokopedia.search.result.product.ClassNameProvider
 import com.tokopedia.search.result.product.ProductListParameterListener
@@ -100,6 +98,7 @@ import com.tokopedia.search.result.product.performancemonitoring.PerformanceMoni
 import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationListener
 import com.tokopedia.search.result.product.searchintokopedia.SearchInTokopediaListenerDelegate
 import com.tokopedia.search.result.product.suggestion.SuggestionListenerDelegate
+import com.tokopedia.search.result.product.tdn.TopAdsImageViewListenerDelegate
 import com.tokopedia.search.result.product.ticker.TickerListenerDelegate
 import com.tokopedia.search.result.product.videowidget.VideoCarouselListenerDelegate
 import com.tokopedia.search.result.product.violation.ViolationListenerDelegate
@@ -136,7 +135,6 @@ class ProductListFragment: BaseDaggerFragment(),
     InspirationCarouselListener,
     QuickFilterElevation,
     SortFilterBottomSheet.Callback,
-    TopAdsImageViewListener,
     ChooseAddressListener,
     ProductListParameterListener,
     QueryKeyProvider,
@@ -473,7 +471,7 @@ class ProductListFragment: BaseDaggerFragment(),
             inspirationCardListener = inspirationWidgetListenerDelegate,
             searchInTokopediaListener = SearchInTokopediaListenerDelegate(activity),
             changeViewListener = changeView,
-            topAdsImageViewListener = this,
+            topAdsImageViewListener = TopAdsImageViewListenerDelegate(activity),
             chooseAddressListener = this,
             bannerListener = BannerListenerDelegate(iris, activity),
             lastFilterListener = lastFilterListenerDelegate,
@@ -1440,29 +1438,6 @@ class ProductListFragment: BaseDaggerFragment(),
                 productCountText
             )
         }
-    //endregion
-
-    //region TopAdsImageView / TDN
-    override fun onTopAdsImageViewImpressed(
-            className: String?,
-            searchTopAdsImageDataView: SearchProductTopAdsImageDataView,
-    ) {
-        if (className == null || context == null) return
-
-        context?.let {
-            TopAdsUrlHitter(it).hitImpressionUrl(
-                    className,
-                    searchTopAdsImageDataView.topAdsImageViewModel.adViewUrl,
-                    "",
-                    "",
-                    searchTopAdsImageDataView.topAdsImageViewModel.imageUrl
-            )
-        }
-    }
-
-    override fun onTopAdsImageViewClick(searchTopAdsImageDataView: SearchProductTopAdsImageDataView) {
-        RouteManager.route(context, searchTopAdsImageDataView.topAdsImageViewModel.applink)
-    }
     //endregion
 
     override fun onLocalizingAddressSelected() {
