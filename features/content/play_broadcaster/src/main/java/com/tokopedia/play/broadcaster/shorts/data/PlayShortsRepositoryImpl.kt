@@ -59,7 +59,8 @@ class PlayShortsRepositoryImpl @Inject constructor(
 //        val response = createChannelUseCase.apply {
 //            params = CreateChannelUseCase.createParams(
 //                authorId = authorId,
-//                authorType = authorType
+//                authorType = authorType,
+//                type = CreateChannelUseCase.Type.Shorts,
 //            )
 //        }.executeOnBackground()
 //
