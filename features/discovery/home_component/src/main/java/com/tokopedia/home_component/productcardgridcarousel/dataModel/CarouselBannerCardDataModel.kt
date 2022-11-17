@@ -10,6 +10,7 @@ import com.tokopedia.home_component.productcardgridcarousel.typeFactory.CommonCa
 class CarouselBannerCardDataModel(
     val imageUrl: String,
     val horizontalPosition: Int,
+    val gradientColor: ArrayList<String> = arrayListOf(""),
     val listener: CommonProductCardCarouselListener
 ) : Visitable<CommonCarouselProductCardTypeFactory> {
     override fun type(typeFactory: CommonCarouselProductCardTypeFactory): Int {

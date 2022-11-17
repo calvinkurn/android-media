@@ -11,6 +11,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.home_component.R
 import com.tokopedia.home_component.customview.HeaderListener
 import com.tokopedia.home_component.databinding.GlobalDcMixLeftPaddingBinding
+import com.tokopedia.home_component.decoration.SimpleHorizontalLinearLayoutDecoration
 import com.tokopedia.home_component.listener.HomeComponentListener
 import com.tokopedia.home_component.listener.MixLeftComponentListener
 import com.tokopedia.home_component.mapper.ChannelModelMapper
@@ -41,24 +42,20 @@ import kotlinx.coroutines.launch
 /**
  * Created by dhaba
  */
-class MixLeftPaddingComponentViewHolder (itemView: View,
-                                         val mixLeftComponentListener: MixLeftComponentListener?,
-                                         val homeComponentListener: HomeComponentListener?,
-                                         private val parentRecycledViewPool: RecyclerView.RecycledViewPool? = null,
-                                         private val cardInteraction: Boolean = false
+class MixLeftPaddingComponentViewHolder(
+    itemView: View,
+    val mixLeftComponentListener: MixLeftComponentListener?,
+    val homeComponentListener: HomeComponentListener?,
+    private val parentRecycledViewPool: RecyclerView.RecycledViewPool? = null,
+    private val cardInteraction: Boolean = false
 ) : AbstractViewHolder<MixLeftPaddingDataModel>(itemView), CoroutineScope,
     CommonProductCardCarouselListener {
 
     private lateinit var adapter: MixTopComponentAdapter
-
     private val masterJob = SupervisorJob()
-
     override val coroutineContext = masterJob + Dispatchers.Main
-
     private lateinit var layoutManager: LinearLayoutManager
-
     private var isCacheData = false
-
     private var binding: GlobalDcMixLeftPaddingBinding? by viewBinding()
 
     companion object {
@@ -75,9 +72,12 @@ class MixLeftPaddingComponentViewHolder (itemView: View,
         setHeaderComponent(element)
         setChannelDivider(element)
 
-        itemView.addOnImpressionListener(element.channelModel)  {
+        itemView.addOnImpressionListener(element.channelModel) {
             if (!isCacheData)
-                mixLeftComponentListener?.onMixLeftImpressed(element.channelModel, element.channelModel.verticalPosition)
+                mixLeftComponentListener?.onMixLeftImpressed(
+                    element.channelModel,
+                    element.channelModel.verticalPosition
+                )
         }
     }
 
@@ -85,13 +85,33 @@ class MixLeftPaddingComponentViewHolder (itemView: View,
         bind(element)
     }
 
-    override fun onProductCardImpressed(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int) {
+    override fun onProductCardImpressed(
+        channelModel: ChannelModel,
+        channelGrid: ChannelGrid,
+        position: Int
+    ) {
         if (!isCacheData)
-            mixLeftComponentListener?.onProductCardImpressed(channelModel, channelGrid, channelModel.verticalPosition, position)
+            mixLeftComponentListener?.onProductCardImpressed(
+                channelModel,
+                channelGrid,
+                channelModel.verticalPosition,
+                position
+            )
     }
 
-    override fun onProductCardClicked(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int, applink: String) {
-        mixLeftComponentListener?.onProductCardClicked(channelModel, channelGrid, channelModel.verticalPosition, position, applink)
+    override fun onProductCardClicked(
+        channelModel: ChannelModel,
+        channelGrid: ChannelGrid,
+        position: Int,
+        applink: String
+    ) {
+        mixLeftComponentListener?.onProductCardClicked(
+            channelModel,
+            channelGrid,
+            channelModel.verticalPosition,
+            position,
+            applink
+        )
     }
 
     override fun onSeeMoreCardClicked(channel: ChannelModel, applink: String) {
@@ -115,23 +135,33 @@ class MixLeftPaddingComponentViewHolder (itemView: View,
         binding?.rvProductMixLeftPadding?.resetLayout()
         layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
         binding?.rvProductMixLeftPadding?.layoutManager = layoutManager
+        if (binding?.rvProductMixLeftPadding?.itemDecorationCount == 0) binding?.rvProductMixLeftPadding?.addItemDecoration(
+            SimpleHorizontalLinearLayoutDecoration()
+        )
         val typeFactoryImpl = CommonCarouselProductCardTypeFactoryImpl(channel, cardInteraction)
         val listData = mutableListOf<Visitable<*>>()
-        listData.add(CarouselBannerCardDataModel(channel.channelBanner.imageUrl, POSITION_BANNER, this))
+        listData.add(
+            CarouselBannerCardDataModel(
+                channel.channelBanner.imageUrl,
+                POSITION_BANNER,
+                channel.channelBanner.gradientColor,
+                this
+            )
+        )
         val productDataList = convertDataToProductData(channel)
         listData.addAll(productDataList)
 
         launch {
             try {
-                binding?.rvProductMixLeftPadding?.setHeightBasedOnProductCardMaxHeight(productDataList.map {it.productModel})
-            }
-            catch (throwable: Throwable) {
+                binding?.rvProductMixLeftPadding?.setHeightBasedOnProductCardMaxHeight(
+                    productDataList.map { it.productModel })
+            } catch (throwable: Throwable) {
                 throwable.printStackTrace()
             }
         }
 
-        if(channel.channelGrids.isNotEmpty() && channel.channelHeader.applink.isNotEmpty()) {
-            if(channel.channelViewAllCard.id != CarouselViewAllCardViewHolder.DEFAULT_VIEW_ALL_ID && channel.channelViewAllCard.contentType.isNotBlank() && channel.channelViewAllCard.contentType != CarouselViewAllCardViewHolder.CONTENT_DEFAULT) {
+        if (channel.channelGrids.isNotEmpty() && channel.channelHeader.applink.isNotEmpty()) {
+            if (channel.channelViewAllCard.id != CarouselViewAllCardViewHolder.DEFAULT_VIEW_ALL_ID && channel.channelViewAllCard.contentType.isNotBlank() && channel.channelViewAllCard.contentType != CarouselViewAllCardViewHolder.CONTENT_DEFAULT) {
                 listData.add(
                     CarouselViewAllCardDataModel(
                         channel.channelHeader.applink,
@@ -142,12 +172,17 @@ class MixLeftPaddingComponentViewHolder (itemView: View,
                         channel.layout
                     )
                 )
-            }
-            else {
-                listData.add(CarouselSeeMorePdpDataModel(channel.channelHeader.applink, channel.channelHeader.backImage, this))
+            } else {
+                listData.add(
+                    CarouselSeeMorePdpDataModel(
+                        channel.channelHeader.applink,
+                        channel.channelHeader.backImage,
+                        this
+                    )
+                )
             }
         }
-        adapter = MixTopComponentAdapter(listData,typeFactoryImpl)
+        adapter = MixTopComponentAdapter(listData, typeFactoryImpl)
         binding?.rvProductMixLeftPadding?.adapter = adapter
     }
 
@@ -157,7 +192,7 @@ class MixLeftPaddingComponentViewHolder (itemView: View,
     }
 
     private fun convertDataToProductData(channel: ChannelModel): List<CarouselProductCardDataModel> {
-        val list :MutableList<CarouselProductCardDataModel> = mutableListOf()
+        val list: MutableList<CarouselProductCardDataModel> = mutableListOf()
         for (element in channel.channelGrids) {
             list.add(
                 CarouselProductCardDataModel(
@@ -167,7 +202,7 @@ class MixLeftPaddingComponentViewHolder (itemView: View,
                     applink = element.applink,
                     listener = this,
                     componentName = FPM_MIX_LEFT
-            )
+                )
             )
         }
         return list
@@ -180,7 +215,8 @@ class MixLeftPaddingComponentViewHolder (itemView: View,
     }
 
     private suspend fun RecyclerView.setHeightBasedOnProductCardMaxHeight(
-            productCardModelList: List<ProductCardModel>) {
+        productCardModelList: List<ProductCardModel>
+    ) {
         val productCardHeight = getProductCardMaxHeight(productCardModelList)
 
         val carouselLayoutParams = this.layoutParams
@@ -189,18 +225,30 @@ class MixLeftPaddingComponentViewHolder (itemView: View,
     }
 
     private suspend fun getProductCardMaxHeight(productCardModelList: List<ProductCardModel>): Int {
-        val productCardWidth = itemView.context.resources.getDimensionPixelSize(com.tokopedia.productcard.R.dimen.product_card_flashsale_width)
-        return productCardModelList.getMaxHeightForGridView(itemView.context, Dispatchers.Default, productCardWidth)
+        val productCardWidth =
+            itemView.context.resources.getDimensionPixelSize(com.tokopedia.productcard.R.dimen.product_card_flashsale_width)
+        return productCardModelList.getMaxHeightForGridView(
+            itemView.context,
+            Dispatchers.Default,
+            productCardWidth
+        )
     }
 
     private fun setHeaderComponent(element: MixLeftPaddingDataModel) {
         binding?.homeComponentHeaderView?.setChannel(element.channelModel, object : HeaderListener {
             override fun onSeeAllClick(link: String) {
-                mixLeftComponentListener?.onSeeAllBannerClicked(element.channelModel, element.channelModel.channelHeader.applink)
+                mixLeftComponentListener?.onSeeAllBannerClicked(
+                    element.channelModel,
+                    element.channelModel.channelHeader.applink
+                )
             }
 
             override fun onChannelExpired(channelModel: ChannelModel) {
-                homeComponentListener?.onChannelExpired(channelModel, element.channelModel.verticalPosition, element)
+                homeComponentListener?.onChannelExpired(
+                    channelModel,
+                    element.channelModel.verticalPosition,
+                    element
+                )
             }
         })
     }
