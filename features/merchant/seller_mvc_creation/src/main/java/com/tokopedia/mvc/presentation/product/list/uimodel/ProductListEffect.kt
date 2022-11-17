@@ -18,6 +18,9 @@ sealed class ProductListEffect {
         val shop: ShopData
     ) : ProductListEffect()
 
+    data class ShowDeleteProductConfirmationDialog(val productId: Long) : ProductListEffect()
+    data class ShowBulkDeleteProductConfirmationDialog(val toDeleteProductCount: Int) : ProductListEffect()
+
     object ProductDeleted : ProductListEffect()
     data class BulkDeleteProductSuccess(val deletedProductCount : Int) : ProductListEffect()
 }

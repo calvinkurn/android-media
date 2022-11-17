@@ -2,6 +2,7 @@
 <resources>
     <!--Common-->
     <string name="smvc_ok">Oke</string>
+    <string name="smvc_cancel">Batal</string>
 
     <!--Add product page-->
     <string name="smvc_add_product">Tambah Produk</string>
@@ -47,7 +48,14 @@
     <string name="smvc_empty_state_no_selected_product_description">Yuk, tambahkan produkmu terlebih dulu.</string>
     <string name="smvc_placeholder_review_selected_product_count">%d / %d Terpilih</string>
     <string name="smvc_placeholder_bulk_delete_product">%d produk berhasil dihapus.</string>
+    <string name="smvc_placeholder_bulk_delete_product_confirmation">Hapus %d Produk?</string>
+    <string name="smvc_placeholder_bulk_delete_variant_confirmation">Hapus %d Varian?</string>
+    <string name="smvc_delete_variant_description">Kamu bisa menambahkan kembali varian produk yang sudah dihapus nanti.</string>
+    <string name="smvc_delete_product_description">Kamu bisa menambahkan kembali produk yang sudah dihapus nanti.</string>
     <string name="smvc_product_deleted">Produk berhasil dihapus.</string>
+    <string name="smvc_delete_product">Hapus Produk?</string>
+    <string name="smvc_delete_variant">Hapus Varian?</string>
+    <string name="smvc_proceed_delete">Ya, Hapus</string>
 
     <!--Share Component-->
     <string name="smvc_placeholder_share_component_outgoing_title">Kupon Produk dari %s</string>

@@ -35,6 +35,7 @@ import com.tokopedia.mvc.presentation.product.list.adapter.ProductListDelegateAd
 import com.tokopedia.mvc.presentation.product.list.uimodel.ProductListEffect
 import com.tokopedia.mvc.presentation.product.list.uimodel.ProductListEvent
 import com.tokopedia.mvc.presentation.product.list.uimodel.ProductListUiState
+import com.tokopedia.mvc.presentation.product.variant.dialog.DeleteConfirmationDialog
 import com.tokopedia.mvc.presentation.product.variant.review.ReviewVariantBottomSheet
 import com.tokopedia.mvc.util.constant.BundleConstant
 import com.tokopedia.user.session.UserSessionInterface
@@ -125,7 +126,7 @@ class ProductListFragment : BaseDaggerFragment() {
     private fun setupClickListener() {
         binding?.tpgCtaAddProduct?.setOnClickListener { activity?.finish() }
         binding?.iconBulkDelete?.setOnClickListener {
-            viewModel.processEvent(ProductListEvent.BulkDeleteProduct)
+            viewModel.processEvent(ProductListEvent.TapBulkDeleteProduct)
         }
     }
 
@@ -175,14 +176,25 @@ class ProductListFragment : BaseDaggerFragment() {
     private fun handleEffect(effect: ProductListEffect) {
         when (effect) {
             is ProductListEffect.ShowVariantBottomSheet -> {
-                displayVariantBottomSheet(
-                    effect.isParentProductSelected,
-                    effect.selectedProduct,
-                    effect.originalVariantIds
+                displayVariantBottomSheet(effect.isParentProductSelected, effect.selectedProduct, effect.originalVariantIds)
+            }
+            is ProductListEffect.ShowBulkDeleteProductConfirmationDialog -> {
+                DeleteConfirmationDialog.show(
+                    context = activity ?: return,
+                    title = getString(R.string.smvc_placeholder_bulk_delete_product_confirmation, effect.toDeleteProductCount),
+                    description = getString(R.string.smvc_delete_product_description),
+                    primaryButtonTitle = getString(R.string.smvc_proceed_delete),
+                    onPrimaryButtonClick = { viewModel.processEvent(ProductListEvent.ApplyBulkDeleteProduct) }
                 )
             }
-            is ProductListEffect.ConfirmAddProduct -> {
-
+            is ProductListEffect.ShowDeleteProductConfirmationDialog -> {
+                DeleteConfirmationDialog.show(
+                    context = activity ?: return,
+                    title = getString(R.string.smvc_delete_product),
+                    description = getString(R.string.smvc_delete_product_description),
+                    primaryButtonTitle = getString(R.string.smvc_proceed_delete),
+                    onPrimaryButtonClick = { viewModel.processEvent(ProductListEvent.ApplyRemoveProduct(effect.productId)) }
+                )
             }
             is ProductListEffect.BulkDeleteProductSuccess -> {
                 binding?.cardUnify2.showToaster(
@@ -199,6 +211,8 @@ class ProductListFragment : BaseDaggerFragment() {
                     ctaText = getString(R.string.smvc_ok)
                 )
             }
+
+            is ProductListEffect.ConfirmAddProduct -> {}
         }
     }
 
@@ -269,7 +283,7 @@ class ProductListFragment : BaseDaggerFragment() {
         val selectedItem = productAdapter.getItems()[selectedItemPosition]
         val selectedItemId = (selectedItem.id() as? Long).orZero()
 
-        viewModel.processEvent(ProductListEvent.RemoveProduct(selectedItemId))
+        viewModel.processEvent(ProductListEvent.TapRemoveProduct(selectedItemId))
     }
 
     private val onCheckboxClick: (Int, Boolean) -> Unit = { selectedItemPosition, isChecked ->

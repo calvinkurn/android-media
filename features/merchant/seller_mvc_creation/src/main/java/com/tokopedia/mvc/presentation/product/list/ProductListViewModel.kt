@@ -49,8 +49,13 @@ class ProductListViewModel @Inject constructor(
             is ProductListEvent.TapVariant -> handleTapVariant(event.parentProduct)
             is ProductListEvent.VariantUpdated -> handleVariantUpdated(event.modifiedParentProductId, event.selectedVariantIds)
             is ProductListEvent.RemoveProductFromSelection -> handleRemoveProductFromSelection(event.productId)
-            is ProductListEvent.RemoveProduct -> handleRemoveProduct(event.productId)
-            ProductListEvent.BulkDeleteProduct -> handleBulkDeleteProducts()
+            is ProductListEvent.TapRemoveProduct -> _uiEffect.tryEmit(ProductListEffect.ShowDeleteProductConfirmationDialog(event.productId))
+            is ProductListEvent.ApplyRemoveProduct -> handleRemoveProduct(event.productId)
+            ProductListEvent.TapBulkDeleteProduct -> {
+                val productToDeleteCount = currentState.products.count { it.isSelected }
+                _uiEffect.tryEmit(ProductListEffect.ShowBulkDeleteProductConfirmationDialog(productToDeleteCount))
+            }
+            ProductListEvent.ApplyBulkDeleteProduct -> handleBulkDeleteProducts()
         }
     }
 

@@ -13,7 +13,10 @@ sealed class ReviewVariantEvent {
     object DisableSelectAllCheckbox : ReviewVariantEvent()
     data class AddVariantToSelection(val variantProductId: Long) : ReviewVariantEvent()
     data class RemoveVariantFromSelection(val variantProductId: Long) : ReviewVariantEvent()
-    data class RemoveVariant(val productId: Long) : ReviewVariantEvent()
     object TapSelectButton : ReviewVariantEvent()
-    object BulkDeleteVariant : ReviewVariantEvent()
+
+    data class TapRemoveVariant(val variantId: Long) : ReviewVariantEvent()
+    data class ApplyRemoveVariant(val variantId: Long) : ReviewVariantEvent()
+    object TapBulkDeleteVariant : ReviewVariantEvent()
+    object ApplyBulkDeleteVariant : ReviewVariantEvent()
 }

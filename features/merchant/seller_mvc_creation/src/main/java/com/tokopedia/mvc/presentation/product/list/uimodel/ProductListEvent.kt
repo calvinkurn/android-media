@@ -16,12 +16,14 @@ sealed class ProductListEvent {
     object DisableSelectAllCheckbox : ProductListEvent()
     data class AddProductToSelection(val productId: Long) : ProductListEvent()
     data class RemoveProductFromSelection(val productId: Long) : ProductListEvent()
-    data class RemoveProduct(val productId: Long) : ProductListEvent()
+    data class TapRemoveProduct(val productId: Long) : ProductListEvent()
+    data class ApplyRemoveProduct(val productId: Long) : ProductListEvent()
+    object TapBulkDeleteProduct : ProductListEvent()
+    object ApplyBulkDeleteProduct : ProductListEvent()
     object ConfirmAddProduct : ProductListEvent()
     data class TapVariant(val parentProduct: Product) : ProductListEvent()
     data class VariantUpdated(
         val modifiedParentProductId: Long,
         val selectedVariantIds: Set<Long>
     ) : ProductListEvent()
-    object BulkDeleteProduct : ProductListEvent()
 }

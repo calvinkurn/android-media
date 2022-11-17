@@ -23,6 +23,7 @@ import com.tokopedia.mvc.R
 import com.tokopedia.mvc.databinding.SmvcBottomsheetReviewVariantBinding
 import com.tokopedia.mvc.di.component.DaggerMerchantVoucherCreationComponent
 import com.tokopedia.mvc.domain.entity.SelectedProduct
+import com.tokopedia.mvc.presentation.product.variant.dialog.DeleteConfirmationDialog
 import com.tokopedia.mvc.presentation.product.variant.review.uimodel.ReviewVariantEffect
 import com.tokopedia.mvc.presentation.product.variant.review.uimodel.ReviewVariantEvent
 import com.tokopedia.mvc.presentation.product.variant.review.uimodel.ReviewVariantUiState
@@ -129,7 +130,7 @@ class ReviewVariantBottomSheet: BottomSheetUnify() {
         binding?.btnSave?.setOnClickListener {
             viewModel.processEvent(ReviewVariantEvent.TapSelectButton)
         }
-        binding?.iconBulkDelete?.setOnClickListener { viewModel.processEvent(ReviewVariantEvent.BulkDeleteVariant) }
+        binding?.iconBulkDelete?.setOnClickListener { viewModel.processEvent(ReviewVariantEvent.TapBulkDeleteVariant) }
     }
 
     private fun setupList() {
@@ -150,7 +151,7 @@ class ReviewVariantBottomSheet: BottomSheetUnify() {
 
             reviewVariantAdapter.setOnDeleteVariantClick { selectedItemPosition ->
                 val selectedVariant = reviewVariantAdapter.snapshot()[selectedItemPosition]
-                viewModel.processEvent(ReviewVariantEvent.RemoveVariant(selectedVariant.variantId))
+                viewModel.processEvent(ReviewVariantEvent.TapRemoveVariant(selectedVariant.variantId))
             }
 
             adapter = reviewVariantAdapter
@@ -191,6 +192,24 @@ class ReviewVariantBottomSheet: BottomSheetUnify() {
             is ReviewVariantEffect.ConfirmUpdateVariant -> {
                 onSaveButtonClick(effect.selectedVariantIds)
                 dismiss()
+            }
+            is ReviewVariantEffect.ShowBulkDeleteVariantConfirmationDialog -> {
+                DeleteConfirmationDialog.show(
+                    context = activity ?: return,
+                    title = getString(R.string.smvc_placeholder_bulk_delete_variant_confirmation),
+                    description = getString(R.string.smvc_delete_variant_description),
+                    primaryButtonTitle = getString(R.string.smvc_proceed_delete),
+                    onPrimaryButtonClick = { viewModel.processEvent(ReviewVariantEvent.ApplyBulkDeleteVariant) }
+                )
+            }
+            is ReviewVariantEffect.ShowDeleteVariantConfirmationDialog -> {
+                DeleteConfirmationDialog.show(
+                    context = activity ?: return,
+                    title = getString(R.string.smvc_delete_variant),
+                    description = getString(R.string.smvc_delete_variant_description),
+                    primaryButtonTitle = getString(R.string.smvc_proceed_delete),
+                    onPrimaryButtonClick = { viewModel.processEvent(ReviewVariantEvent.ApplyRemoveVariant(effect.productId)) }
+                )
             }
         }
     }

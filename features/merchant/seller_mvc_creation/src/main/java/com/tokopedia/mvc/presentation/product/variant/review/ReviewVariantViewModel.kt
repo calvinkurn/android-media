@@ -47,8 +47,13 @@ class ReviewVariantViewModel @Inject constructor(
             ReviewVariantEvent.DisableSelectAllCheckbox -> handleUncheckAllVariant()
             ReviewVariantEvent.EnableSelectAllCheckbox -> handleCheckAllVariant()
             ReviewVariantEvent.TapSelectButton -> _uiEffect.tryEmit(ReviewVariantEffect.ConfirmUpdateVariant(currentState.selectedVariantIds))
-            is ReviewVariantEvent.RemoveVariant -> handleRemoveVariant(event.productId)
-            is ReviewVariantEvent.BulkDeleteVariant -> handleBulkDeleteVariant()
+            is ReviewVariantEvent.TapBulkDeleteVariant -> {
+                val variantToDeleteCount = currentState.variants.count { it.isSelected }
+                _uiEffect.tryEmit(ReviewVariantEffect.ShowBulkDeleteVariantConfirmationDialog(variantToDeleteCount))
+            }
+            ReviewVariantEvent.ApplyBulkDeleteVariant -> handleBulkDeleteVariant()
+            is ReviewVariantEvent.TapRemoveVariant -> _uiEffect.tryEmit(ReviewVariantEffect.ShowDeleteVariantConfirmationDialog(event.variantId))
+            is ReviewVariantEvent.ApplyRemoveVariant -> handleRemoveVariant(event.variantId)
         }
     }
 
