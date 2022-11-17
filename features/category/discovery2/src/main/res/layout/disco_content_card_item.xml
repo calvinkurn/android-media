@@ -9,7 +9,7 @@
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/iv_benefit_ribbon_left"
         android:layout_width="0dp"
-        android:layout_height="24dp"
+        android:layout_height="28dp"
         android:layout_marginStart="2dp"
         android:layout_marginTop="4dp"
         android:scaleType="fitXY"
@@ -22,7 +22,7 @@
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/iv_benefit_ribbon_right"
         android:layout_width="0dp"
-        android:layout_height="20dp"
+        android:layout_height="24dp"
         android:layout_marginTop="12dp"
         android:scaleType="fitXY"
         android:translationZ="7dp"
@@ -35,7 +35,7 @@
         android:id="@+id/content_card_benefit"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:paddingStart="8dp"
+        android:paddingStart="10dp"
         android:paddingEnd="8dp"
         android:scaleType="fitXY"
         android:textColor="#FFFFFF"
@@ -43,7 +43,7 @@
         app:layout_constraintBottom_toBottomOf="@+id/iv_benefit_ribbon_right"
         app:layout_constraintStart_toStartOf="@+id/content_card_image_container"
         app:layout_constraintTop_toTopOf="@+id/iv_benefit_ribbon_right"
-        app:typographyType="small"
+        app:typographyType="display_3"
         app:typographyWeight="bold" />
 
     <com.tokopedia.unifycomponents.CardUnify
@@ -76,14 +76,14 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="12dp"
-                android:layout_marginTop="8dp"
+                android:layout_marginTop="10dp"
                 android:layout_marginEnd="12dp"
                 android:layout_marginBottom="4dp"
                 android:textColor="@color/Unify_NN950"
                 android:textSize="12sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/content_card_image"
-                app:typographyType="display_3"
+                app:typographyType="display_2"
                 app:typographyWeight="bold"
                 tools:text="Sesuai selera kamu" />
 
@@ -96,21 +96,21 @@
                 android:layout_marginEnd="12dp"
                 android:ellipsize="end"
                 android:gravity="center"
-                android:paddingBottom="12dp"
+                android:paddingBottom="16dp"
                 android:textColor="@color/Unify_NN600"
+                android:visibility="gone"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/content_card_title"
-                app:typographyType="small"
+                app:typographyType="display_3"
                 tools:text="1.000+ promo" />
 
             <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/timer_container_layout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:paddingBottom="12dp"
                 android:layout_marginStart="12dp"
                 android:layout_marginTop="4dp"
-                android:visibility="gone"
+                android:paddingBottom="16dp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/content_card_title">
 
@@ -126,7 +126,7 @@
                     app:layout_constraintEnd_toStartOf="@id/hours_layout"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:typographyType="small"
+                    app:typographyType="display_3"
                     app:typographyWeight="bold"
                     tools:text="Flash Sale Timer" />
 
@@ -139,7 +139,7 @@
                     app:layout_constraintEnd_toStartOf="@id/hours_separator_text_view"
                     app:layout_constraintStart_toEndOf="@id/title_tv"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:typographyType="small"
+                    app:typographyType="display_3"
                     app:typographyWeight="bold" />
 
 
@@ -147,13 +147,14 @@
                     android:id="@+id/hours_separator_text_view"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text=" : "
+                    android:layout_marginStart="2dp"
+                    android:text=":"
                     android:textColor="@color/Unify_RN500"
                     app:layout_constraintBottom_toBottomOf="@id/hours_layout"
                     app:layout_constraintRight_toLeftOf="@id/minutes_layout"
                     app:layout_constraintStart_toEndOf="@id/hours_layout"
                     app:layout_constraintTop_toTopOf="@id/hours_layout"
-                    app:typographyType="small"
+                    app:typographyType="display_3"
                     app:typographyWeight="bold" />
 
 
@@ -161,11 +162,12 @@
                     android:id="@+id/minutes_layout"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_marginStart="2dp"
                     android:textColor="@color/Unify_RN500"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintStart_toEndOf="@id/hours_separator_text_view"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:typographyType="small"
+                    app:typographyType="display_3"
                     app:typographyWeight="bold" />
 
 

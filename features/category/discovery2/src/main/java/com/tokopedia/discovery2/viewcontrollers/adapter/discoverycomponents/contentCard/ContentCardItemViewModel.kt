@@ -28,15 +28,6 @@ class ContentCardItemViewModel(val application: Application, val components: Com
         componentData.value = components
     }
 
-    private fun handleSaleEndSates() {
-        if (Utils.isFutureSale(getStartDate()) ||
-            (Utils.isFutureSaleOngoing(getStartDate(),
-                getEndDate())) || Utils.isSaleOver(getEndDate())) {
-            startTimer()
-        }
-
-    }
-
     fun getTimerData() = mutableTimeDiffModel
 
     fun getTimerText() = mutableTimerText
@@ -70,19 +61,21 @@ class ContentCardItemViewModel(val application: Application, val components: Com
                             application.resources.getString(R.string.discovery_sale_begins_in)
                     } else {
                         mutableTimerText.value =
-                            application.resources.getString(R.string.discovery_sale_ends_on)
+                            application.resources.getString(R.string.discovery_sale_ends_in)
                     }
-                    timeCounter = SaleCountDownTimer(saleTimeMillis, elapsedTime) { timerModel ->
+                    timeCounter = SaleCountDownTimer(saleTimeMillis, elapsedTime, showDays = true) { timerModel ->
                         if (timerModel.timeFinish) {
                             stopTimer()
-                            handleSaleEndSates()
+                            startTimer()
                         }
                         mutableTimeDiffModel.value = timerModel
                     }
                     timeCounter?.start()
                 } else {
-                    mutableTimeDiffModel.value?.hours = 0
-                    mutableTimeDiffModel.value?.minutes = 0
+                    mutableTimerText.value =
+                        application.resources.getString(R.string.discovery_sale_ends_in)
+                    val timerModel = TimerDataModel(hours = 0, minutes = 0)
+                    mutableTimeDiffModel.value = timerModel
                 }
             }
         }

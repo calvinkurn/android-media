@@ -1,26 +1,18 @@
 package com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.contentCard
 
 import android.view.View
-import android.view.ViewGroup
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.Observer
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.discovery2.Constant
+import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.TIME_DISPLAY_FORMAT
-import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.DataItem
 import com.tokopedia.discovery2.databinding.DiscoContentCardItemBinding
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.viewholder.AbstractViewHolder
 import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.media.loader.loadImage
-
-private const val DEFAULT_DESIGN = 2
 
 class ContentCardItemViewHolder(itemView: View, private val fragment: Fragment) :
     AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
@@ -53,9 +45,15 @@ class ContentCardItemViewHolder(itemView: View, private val fragment: Fragment) 
                     }
                 }
             contentCardItemViewModel.getTimerData().observe(it) { timerData ->
-                binding.hoursLayout.text = String.format(TIME_DISPLAY_FORMAT, timerData.hours)
-                binding.minutesLayout.text = String.format(TIME_DISPLAY_FORMAT, timerData.minutes)
-                if (timerData.timeFinish) (fragment as DiscoveryFragment).reSync()
+                if (timerData.days > 0) {
+                    binding.hoursLayout.text = String.format(TIME_DISPLAY_FORMAT, timerData.days)
+                    binding.minutesLayout.text = itemView.context?.getString(R.string.hari)
+                    binding.hoursSeparatorTextView.gone()
+                } else {
+                    binding.hoursLayout.text = String.format(TIME_DISPLAY_FORMAT, timerData.hours)
+                    binding.minutesLayout.text = String.format(TIME_DISPLAY_FORMAT, timerData.minutes)
+                    binding.hoursSeparatorTextView.show()
+                }
             }
             contentCardItemViewModel.getTimerText().observe(it) {
                 binding.titleTv.text = it
@@ -68,6 +66,7 @@ class ContentCardItemViewHolder(itemView: View, private val fragment: Fragment) 
         lifecycleOwner?.let {
             contentCardItemViewModel.getComponentLiveData().removeObservers(it)
             contentCardItemViewModel.stopTimer()
+            contentCardItemViewModel.getTimerText().removeObservers(it)
             contentCardItemViewModel.getTimerData().removeObservers(it)
         }
     }
@@ -75,11 +74,10 @@ class ContentCardItemViewHolder(itemView: View, private val fragment: Fragment) 
     private fun setupImage(itemData: DataItem) {
         with(binding) {
             try {
-                contentCardImage.apply {
-                    loadImage(itemData.product?.imageUrlMobile)
-                }
-            } catch (exception: NumberFormatException) {
-                contentCardImage.hide()
+                contentCardImage.visible()
+                contentCardImage.loadImage(itemData.product?.imageUrlMobile)
+            } catch (exception: Exception) {
+                contentCardImage.invisible()
                 exception.printStackTrace()
             }
         }
@@ -87,14 +85,13 @@ class ContentCardItemViewHolder(itemView: View, private val fragment: Fragment) 
 
     private fun setupData(itemData: DataItem) {
         with(binding) {
-            contentCardTitle.text = itemData.title
-            contentCardHeaderSubtitle.text = itemData.totalItem?.itemCountWording
-            contentCardBenefit.text = itemData.benefit
+            contentCardTitle.text = itemData.title ?: ""
+            contentCardHeaderSubtitle.text = itemData.totalItem?.itemCountWording ?: ""
+            contentCardBenefit.text = itemData.benefit ?: ""
 
             if (!itemData.startDate.isNullOrEmpty() || !itemData.endDate.isNullOrEmpty()) {
                 contentCardHeaderSubtitle.gone()
                 timerContainerLayout.show()
-
             } else {
                 contentCardHeaderSubtitle.show()
                 timerContainerLayout.gone()
