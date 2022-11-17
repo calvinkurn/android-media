@@ -95,11 +95,11 @@ class FeedXCardSubtitlesAnimationHandler(
         invisibleContainer = tempContainer
 
         //increment pos
-        currentPositionSubtitle += 1
+//        currentPositionSubtitle += 1
 
         //reset position
-        if (currentPositionSubtitle == subtitles.size)
-            currentPositionSubtitle = 0
+//        if (currentPositionSubtitle == subtitles.size)
+//            currentPositionSubtitle = 0
     }
 
     private fun reset() {
