@@ -1654,9 +1654,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         else DEFAULT_BEFORE_LIVE_COUNT_DOWN
     }
 
-    fun getShopIconUrl(): String = userSession.shopAvatar
-
-    fun getShopName(): String = userSession.shopName
+    fun getAuthorImage(): String = hydraConfigStore.getAuthor().iconUrl
 
     private fun handleClickPin(product: ProductUiModel){
         viewModelScope.launchCatchError(block = {
