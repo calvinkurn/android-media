@@ -112,13 +112,14 @@ class PlayShortsPreparationFragment @Inject constructor(
 
     override fun onDestroyView() {
         super.onDestroyView()
-        /** TODO: i think it should be on onDestroy() because
-         * when we navigate to Summary Page, this fragment got destroyed
-         */
-        viewModel.submitAction(PlayShortsAction.ReleaseMedia)
         coachMarkManager.dismissAllCoachMark()
         idleManager.clear()
         _binding = null
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        viewModel.submitAction(PlayShortsAction.ReleaseMedia)
     }
 
     override fun onAttachFragment(childFragment: Fragment) {
