@@ -173,10 +173,10 @@ class DynamicLegoBannerViewHolder(itemView: View,
             private val LEGO_SQUARE = R.layout.layout_dynamic_lego_item
             private val LEGO_LANDSCAPE = R.layout.layout_dynamic_lego_landscape
             private val LEGO_LANDSCAPE_NON_RADIUS = R.layout.layout_dynamic_lego_landscape_non_radius
-            private val POSITION_TOP_LEFT = 0
-            private val POSITION_TOP_RIGHT = 2
-            private val POSITION_BOTTOM_LEFT = 3
-            private val POSITION_BOTTOM_RIGHT = 5
+            private const val POSITION_TOP_LEFT = 0
+            private const val POSITION_TOP_RIGHT = 2
+            private const val POSITION_BOTTOM_LEFT = 3
+            private const val POSITION_BOTTOM_RIGHT = 5
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LegoItemViewHolder {
