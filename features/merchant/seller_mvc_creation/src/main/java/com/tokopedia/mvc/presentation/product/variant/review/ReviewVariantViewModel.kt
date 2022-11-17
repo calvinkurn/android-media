@@ -36,17 +36,21 @@ class ReviewVariantViewModel @Inject constructor(
     fun processEvent(event: ReviewVariantEvent) {
         when(event) {
             is ReviewVariantEvent.FetchProductVariants -> {
-                _uiState.update { it.copy(isLoading = true, parentProductId = event.selectedProduct.parentProductId) }
+                _uiState.update {
+                    it.copy(
+                        isLoading = true,
+                        parentProductId = event.selectedProduct.parentProductId,
+                        isParentProductSelected = event.isParentProductSelected
+                    )
+                }
                 getVariantDetail(event.selectedProduct)
             }
-            is ReviewVariantEvent.AddProductToSelection -> handleAddProductToSelection(event.variantProductId)
-            ReviewVariantEvent.DisableSelectAllCheckbox -> handleUncheckAllProduct()
-            ReviewVariantEvent.EnableSelectAllCheckbox -> handleCheckAllProduct()
-            is ReviewVariantEvent.RemoveProductFromSelection -> handleRemoveProductFromSelection(event.variantProductId)
-            ReviewVariantEvent.TapSelectButton -> {
-                _uiEffect.tryEmit(ReviewVariantEffect.ConfirmUpdateVariant(currentState.selectedVariantIds))
-            }
-            is ReviewVariantEvent.RemoveProduct -> handleRemoveProduct(event.productId)
+            is ReviewVariantEvent.AddVariantToSelection -> handleAddVariantToSelection(event.variantProductId)
+            is ReviewVariantEvent.RemoveVariantFromSelection -> handleRemoveVariantFromSelection(event.variantProductId)
+            ReviewVariantEvent.DisableSelectAllCheckbox -> handleUncheckAllVariant()
+            ReviewVariantEvent.EnableSelectAllCheckbox -> handleCheckAllVariant()
+            ReviewVariantEvent.TapSelectButton -> _uiEffect.tryEmit(ReviewVariantEffect.ConfirmUpdateVariant(currentState.selectedVariantIds))
+            is ReviewVariantEvent.RemoveVariant -> handleRemoveVariant(event.productId)
         }
     }
 
@@ -58,10 +62,12 @@ class ReviewVariantViewModel @Inject constructor(
                 val params = ProductV3UseCase.Param(selectedProduct.parentProductId, 0)
                 val response = productV3UseCase.execute(params)
 
-                val modifiedVariantNames = findUpdatedVariantNames(response)
+                val allVariants = findUpdatedVariantNames(response)
+                val selectedVariants = allVariants
+                    .map { it.copy(isSelected = currentState.isParentProductSelected) }
+                    .filter { it.variantId in selectedProduct.variantProductIds }
 
-                val selectedVariants = modifiedVariantNames.filter { it.variantId in selectedProduct.variantProductIds }
-                val selectedVariantIds = selectedVariants.map { it.variantId }.toSet()
+                val selectedVariantIds = selectedVariants.filter { it.isSelected }.map { it.variantId }.toSet()
 
                 _uiState.update {
                     it.copy(
@@ -71,7 +77,8 @@ class ReviewVariantViewModel @Inject constructor(
                         parentProductPrice = response.parentProductPrice,
                         parentProductSoldCount = response.parentProductSoldCount,
                         parentProductImageUrl = response.parentProductImageUrl,
-                        variants = selectedVariants
+                        variants = selectedVariants,
+                        selectedVariantIds = selectedVariantIds
                     )
                 }
             },
@@ -92,32 +99,36 @@ class ReviewVariantViewModel @Inject constructor(
         }
     }
 
-    private fun handleCheckAllProduct() = launch(dispatchers.computation) {
-        val variants = currentState.variants.map { it.copy(isSelected = it.isEligible) }
-        val selectedVariantIds = variants.filter { it.isSelected }.map { it.variantId }.toSet()
+    private fun handleCheckAllVariant() {
+        launch(dispatchers.computation) {
+            val variants = currentState.variants.map { it.copy(isSelected = it.isEligible) }
+            val selectedVariantIds = variants.filter { it.isSelected }.map { it.variantId }.toSet()
 
-        _uiState.update {
-            it.copy(
-                isSelectAllActive = true,
-                variants = variants,
-                selectedVariantIds = selectedVariantIds
-            )
+            _uiState.update {
+                it.copy(
+                    isSelectAllActive = true,
+                    variants = variants,
+                    selectedVariantIds = selectedVariantIds
+                )
+            }
         }
     }
 
-    private fun handleUncheckAllProduct() = launch(dispatchers.computation) {
-        val variants = currentState.variants.map { it.copy(isSelected = false) }
+    private fun handleUncheckAllVariant() {
+        launch(dispatchers.computation) {
+            val variants = currentState.variants.map { it.copy(isSelected = false) }
 
-        _uiState.update {
-            it.copy(
-                isSelectAllActive = false,
-                variants = variants,
-                selectedVariantIds = emptySet()
-            )
+            _uiState.update {
+                it.copy(
+                    isSelectAllActive = false,
+                    variants = variants,
+                    selectedVariantIds = emptySet()
+                )
+            }
         }
     }
 
-    private fun handleAddProductToSelection(variantProductIdToAdd: Long) {
+    private fun handleAddVariantToSelection(variantProductIdToAdd: Long) {
         launch(dispatchers.computation) {
             val modifiedVariants = currentState.variants.map { variant ->
                 if (variantProductIdToAdd == variant.variantId) {
@@ -132,7 +143,7 @@ class ReviewVariantViewModel @Inject constructor(
     }
 
 
-    private fun handleRemoveProductFromSelection(variantProductIdToDelete: Long) {
+    private fun handleRemoveVariantFromSelection(variantProductIdToDelete: Long) {
         launch(dispatchers.computation) {
             val modifiedVariants = currentState.variants.map { variant ->
                 if (variantProductIdToDelete == variant.variantId) {
@@ -146,7 +157,7 @@ class ReviewVariantViewModel @Inject constructor(
         }
     }
 
-    private fun handleRemoveProduct(productIdToDelete: Long) = launch(dispatchers.computation) {
+    private fun handleRemoveVariant(productIdToDelete: Long) = launch(dispatchers.computation) {
         val modifiedVariants = currentState.variants.toMutableList()
         modifiedVariants.removeFirst { it.variantId == productIdToDelete }
 

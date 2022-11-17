@@ -5,7 +5,11 @@ import com.tokopedia.mvc.domain.entity.SelectedProduct
 import com.tokopedia.mvc.domain.entity.ShopData
 
 sealed class ProductListEffect {
-    data class ShowVariantBottomSheet(val selectedProduct: SelectedProduct) : ProductListEffect()
+    data class ShowVariantBottomSheet(
+        val isParentProductSelected: Boolean,
+        val selectedProduct: SelectedProduct
+    ) : ProductListEffect()
+
     data class ConfirmAddProduct(
         val selectedParentProducts: List<Product>,
         val selectedParentProductImageUrls: List<String>,

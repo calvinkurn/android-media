@@ -4,6 +4,7 @@ import com.tokopedia.mvc.domain.entity.Variant
 
 data class ReviewVariantUiState(
     val isLoading: Boolean = true,
+    val isParentProductSelected: Boolean = false,
     val parentProductId: Long = 0,
     val parentProductStock: Int = 0,
     val parentProductName: String = "",

@@ -12,6 +12,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.campaign.utils.extension.applyPaddingToLastItem
 import com.tokopedia.campaign.utils.extension.attachDividerItemDecoration
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.applyUnifyBackgroundColor
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.isZero
@@ -34,13 +35,15 @@ class ReviewVariantBottomSheet: BottomSheetUnify() {
 
     companion object {
         private const val BUNDLE_KEY_SELECTED_PRODUCT = "selected_product"
+        private const val BUNDLE_PARENT_PRODUCT_IS_SELECTED = "is_parent_product_selected"
         private const val DIVIDER_MARGIN_LEFT = 16
         private const val ONE_VARIANT = 1
 
         @JvmStatic
-        fun newInstance(selectedProduct: SelectedProduct): ReviewVariantBottomSheet {
+        fun newInstance(isParentProductSelected: Boolean, selectedProduct: SelectedProduct): ReviewVariantBottomSheet {
             return ReviewVariantBottomSheet().apply {
                 arguments = Bundle().apply {
+                    putBoolean(BUNDLE_PARENT_PRODUCT_IS_SELECTED, isParentProductSelected)
                     putParcelable(BUNDLE_KEY_SELECTED_PRODUCT, selectedProduct)
                 }
             }
@@ -48,6 +51,7 @@ class ReviewVariantBottomSheet: BottomSheetUnify() {
     }
 
     private var binding by autoClearedNullable<SmvcBottomsheetReviewVariantBinding>()
+    private val isParentProductSelected by lazy { arguments?.getBoolean(BUNDLE_PARENT_PRODUCT_IS_SELECTED, false).orFalse() }
     private val parentProduct by lazy { arguments?.getParcelable(BUNDLE_KEY_SELECTED_PRODUCT) as? SelectedProduct }
     private var onSaveButtonClick: (Set<Long>) -> Unit = {}
 
@@ -91,7 +95,12 @@ class ReviewVariantBottomSheet: BottomSheetUnify() {
         observeUiEffect()
         observeUiState()
 
-        viewModel.processEvent(ReviewVariantEvent.FetchProductVariants(parentProduct ?: return))
+        viewModel.processEvent(
+            ReviewVariantEvent.FetchProductVariants(
+                isParentProductSelected,
+                parentProduct ?: return
+            )
+        )
     }
 
     private fun setupDependencyInjection() {
@@ -122,16 +131,16 @@ class ReviewVariantBottomSheet: BottomSheetUnify() {
                 val selectedVariant = reviewVariantAdapter.snapshot()[selectedItemPosition]
 
                 if (isSelected) {
-                    viewModel.processEvent(ReviewVariantEvent.AddProductToSelection(selectedVariant.variantId))
+                    viewModel.processEvent(ReviewVariantEvent.AddVariantToSelection(selectedVariant.variantId))
                 } else {
-                    viewModel.processEvent(ReviewVariantEvent.RemoveProductFromSelection(selectedVariant.variantId))
+                    viewModel.processEvent(ReviewVariantEvent.RemoveVariantFromSelection(selectedVariant.variantId))
                 }
 
             }
 
             reviewVariantAdapter.setOnDeleteVariantClick { selectedItemPosition ->
                 val selectedVariant = reviewVariantAdapter.snapshot()[selectedItemPosition]
-                viewModel.processEvent(ReviewVariantEvent.RemoveProduct(selectedVariant.variantId))
+                viewModel.processEvent(ReviewVariantEvent.RemoveVariant(selectedVariant.variantId))
             }
 
             adapter = reviewVariantAdapter
@@ -184,6 +193,7 @@ class ReviewVariantBottomSheet: BottomSheetUnify() {
         renderList(uiState)
         renderParentProduct(uiState)
         renderButton(uiState.selectedVariantIds)
+        observeVariantDeletion(uiState.variants.count(), uiState.isLoading)
     }
 
     private fun renderBulkDelete(selectedVariantIds: Set<Long>) {
@@ -208,6 +218,8 @@ class ReviewVariantBottomSheet: BottomSheetUnify() {
     }
 
     private fun renderSelectAllCheckbox(uiState: ReviewVariantUiState) {
+        if (uiState.isLoading) return
+
         val selectedVariantCount = uiState.selectedVariantIds.count()
         val allVariantsCount = uiState.variants.count()
 
@@ -232,6 +244,15 @@ class ReviewVariantBottomSheet: BottomSheetUnify() {
 
     private fun CompoundButton.isClickTriggeredByUserInteraction() : Boolean {
         return isPressed
+    }
+
+    private fun observeVariantDeletion(variantCount: Int, isLoading: Boolean) {
+        if (isLoading) return
+
+        if (variantCount.isZero()) {
+            onSaveButtonClick(emptySet())
+            dismiss()
+        }
     }
 
 }

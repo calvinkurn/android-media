@@ -105,7 +105,8 @@ class ProductListViewModel @Inject constructor(
 
     private fun handleCheckAllProduct() = launch(dispatchers.computation) {
         val selectedProducts = currentState.products.map { product ->
-            product.copy(isSelected = true)
+            val allVariantSelected = product.originalVariants.map { it.variantProductId }.toSet()
+            product.copy(isSelected = true, selectedVariantsIds = allVariantSelected)
         }
 
         val selectedProductIds = selectedProducts.filter { it.isSelected }.map { it.id }.toSet()
@@ -146,15 +147,7 @@ class ProductListViewModel @Inject constructor(
         return products.map {
 
             if (it.id == selectedProductId) {
-
-                val hasVariants = it.originalVariants.isNotEmpty()
-                if (hasVariants) {
-                    val eligibleVariantsOnly = it.originalVariants.filter { it.isEligible }.map { it.variantProductId }.toSet()
-                    it.copy(isSelected = true, enableCheckbox = true, originalVariants = it.originalVariants, selectedVariantsIds = eligibleVariantsOnly)
-                } else {
-                    it.copy(isSelected = true, enableCheckbox = true)
-                }
-
+                it.copy(isSelected = true)
             } else {
                 it
             }
@@ -167,13 +160,13 @@ class ProductListViewModel @Inject constructor(
 
                 val hasVariants = it.originalVariants.isNotEmpty()
                 if (hasVariants) {
-                    it.copy(isSelected = false, enableCheckbox = true, originalVariants = it.originalVariants, selectedVariantsIds = it.originalVariants.map { it.variantProductId }.toSet())
+                    it.copy(isSelected = false, selectedVariantsIds = it.originalVariants.map { it.variantProductId }.toSet())
                 } else {
-                    it.copy(isSelected = false, enableCheckbox = true)
+                    it.copy(isSelected = false)
                 }
 
             } else {
-                it.copy(enableCheckbox = true)
+                it
             }
         }
 
@@ -207,24 +200,43 @@ class ProductListViewModel @Inject constructor(
 
     private fun handleTapVariant(parentProduct: Product) {
         val selectedProduct = SelectedProduct(parentProduct.id, parentProduct.selectedVariantsIds.toList())
-        _uiEffect.tryEmit(ProductListEffect.ShowVariantBottomSheet(selectedProduct))
+        _uiEffect.tryEmit(ProductListEffect.ShowVariantBottomSheet(parentProduct.isSelected, selectedProduct))
     }
 
-    private fun handleVariantUpdated(parentProductId: Long, selectedVariantIds : Set<Long>) {
+    private fun handleVariantUpdated(parentProductId: Long, newlySelectedVariantIds : Set<Long>) {
         launch(dispatchers.computation) {
 
-            val updatedProducts = currentState.products.map { parentProduct ->
-                if (parentProduct.id == parentProductId) {
-                    parentProduct.copy(selectedVariantsIds = selectedVariantIds)
-                } else {
-                    parentProduct
-                }
+            val isAllVariantRemoved = newlySelectedVariantIds.isEmpty()
+
+            val updatedProducts = if (isAllVariantRemoved) {
+                removeParentProduct(parentProductId)
+            } else {
+                updateParentProductVariants(parentProductId, currentState.products, newlySelectedVariantIds)
             }
 
             _uiState.update { it.copy(products = updatedProducts) }
         }
     }
 
+    private fun removeParentProduct(parentProductIdToDelete: Long): List<Product> {
+        val modifiedProducts = currentState.products.toMutableList()
+        modifiedProducts.removeFirst { it.id == parentProductIdToDelete }
+        return modifiedProducts
+    }
+
+    private fun updateParentProductVariants(
+        parentProductIdToUpdate: Long,
+        currentProducts: List<Product>,
+        newlySelectedVariantIds: Set<Long>
+    ): List<Product> {
+        return currentProducts.map { parentProduct ->
+            if (parentProduct.id == parentProductIdToUpdate) {
+                parentProduct.copy(selectedVariantsIds = newlySelectedVariantIds)
+            } else {
+                parentProduct
+            }
+        }
+    }
 
     private fun handleConfirmAddProduct() {
         launchCatchError(
