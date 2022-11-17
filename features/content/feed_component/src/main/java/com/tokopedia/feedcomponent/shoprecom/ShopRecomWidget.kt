@@ -67,7 +67,8 @@ class ShopRecomWidget : ConstraintLayout, LifecycleObserver, ShopRecomWidgetCall
         headerTitle: String,
         shopRecomItem: List<ShopRecomUiModelItem>,
         loadNextPage: Boolean = false,
-        nextCursor: String,
+        nextCursor: String = "",
+        isRefresh: Boolean = false,
     ) = with(binding) {
         this@ShopRecomWidget.nextCursor = nextCursor
         txtHeaderShopRecom.text = headerTitle
@@ -76,6 +77,7 @@ class ShopRecomWidget : ConstraintLayout, LifecycleObserver, ShopRecomWidgetCall
             if (loadNextPage) add(ShopRecomAdapter.Model.Loading)
         }
         if (rvShopRecom.isComputingLayout.not()) mAdapterShopRecom.setItemsAndAnimateChanges(model)
+        if (isRefresh && mAdapterShopRecom.itemCount > 0) rvShopRecom.scrollToPosition(0)
     }
 
     fun showLoadingShopRecom() = with(binding) {
