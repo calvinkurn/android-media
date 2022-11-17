@@ -57,7 +57,6 @@ dependencies {
     implementation rootProject.ext.miscDependencies.dagger
     implementation rootProject.ext.networkDependencies.glide
 
-    implementation rootProject.ext.playServicesDependencies.playServiceWearable
     implementation rootProject.ext.miscDependencies.coroutinePlayService
 
     wearApp project(':wearosapp')
