@@ -45,8 +45,8 @@ class FeedXCardSubtitlesAnimationHandler(
 
     private fun animateView() {
         isAnimationStarted = true
-        animateTwoViews(visibleContainer, invisibleContainer)
         setDataIntoViews()
+        animateTwoViews(visibleContainer, invisibleContainer)
     }
 
     private fun setDataIntoViews() {
@@ -59,11 +59,6 @@ class FeedXCardSubtitlesAnimationHandler(
 
         visibleContainer.get()?.text = subtitles[visibleDataPos]
         invisibleContainer.get()?.text = subtitles[invisibleDataPos]
-
-//        currentPositionSubtitle += 1
-//        if (currentPositionSubtitle >= subtitles.size) {
-//            currentPositionSubtitle = 0
-//        }
     }
 
     fun stopAnimation() {
@@ -87,6 +82,24 @@ class FeedXCardSubtitlesAnimationHandler(
                 }
             }
         }, START_DELAY, INTERVAL)
+    }
+
+    private fun afterAnimationComplete() {
+        if (!::subtitles.isInitialized) return
+
+        Log.d("FEED_ANIM", "Animation End, Masuk")
+
+        //switch container reference
+        val tempContainer = visibleContainer
+        visibleContainer = invisibleContainer
+        invisibleContainer = tempContainer
+
+        //increment pos
+        currentPositionSubtitle += 1
+
+        //reset position
+        if (currentPositionSubtitle == subtitles.size)
+            currentPositionSubtitle = 0
     }
 
     private fun reset() {
@@ -135,11 +148,7 @@ class FeedXCardSubtitlesAnimationHandler(
                     }
 
                     override fun onAnimationEnd(animation: Animator?) {
-                        Log.d("FEED_ANIM", "Animation End, Masuk")
-                        currentPositionSubtitle += 1
-                        if (currentPositionSubtitle >= subtitles.size) {
-                            currentPositionSubtitle = 0
-                        }
+                        afterAnimationComplete()
                     }
 
                     override fun onAnimationCancel(animation: Animator?) {
