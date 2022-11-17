@@ -51,11 +51,8 @@ class BigReplyBoxBottomSheet : BottomSheetUnify(), ChatbotSendButtonListener {
         with(chatText) {
             minLine = MINIMUM_NUMBER_OF_LINES
             maxLine = MAXIMUM_NUMBER_OF_LINES
-            val startingText = context?.getString(R.string.chatbot_big_reply_bottom_sheet_starting)
-            val endingText = context?.getString(R.string.chatbot_big_reply_bottom_sheet_ending)
-            val finalText = startingText + hintText + endingText
             labelText.text =  this@BigReplyBoxBottomSheet.labelText
-            setPlaceholder(finalText)
+            setPlaceholder(hintText)
         }
     }
 
