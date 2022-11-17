@@ -4011,10 +4011,10 @@ open class DynamicProductDetailFragment :
     private fun getShareIcon(): Int {
         val isAbTestEnabled = RemoteConfigInstance.getInstance().abTestPlatform.getString(
             RollenceKey.PDP_SHOW_SHARE_AFFILIATE
-        ).equals(RollenceKey.PDP_SHOW_SHARE_AFFILIATE)
+        ) == RollenceKey.PDP_SHOW_SHARE_AFFILIATE
 
-        return if (isAbTestEnabled) IconList.ID_SHARE_AB_TEST
-        else IconList.ID_SHARE
+        if (isAbTestEnabled) return IconList.ID_SHARE_AB_TEST
+        else return IconList.ID_SHARE
     }
 
     private fun getDarkToolbarIconColor(): Int = ContextCompat.getColor(
