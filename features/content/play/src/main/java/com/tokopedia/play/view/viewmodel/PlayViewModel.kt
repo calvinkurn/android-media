@@ -197,7 +197,7 @@ class PlayViewModel @AssistedInject constructor(
     /** Needed to decide whether we need to call setResult() or no when leaving play room */
     private val _isChannelReportLoaded = MutableStateFlow(false)
 
-    private val _isPopup = MutableStateFlow(false)
+    private val _isPopup = MutableStateFlow(FollowPopUpUiState())
 
     private val _winnerBadgeUiState = combine(
         _leaderboard, _bottomInsets, _status, _channelDetail, _leaderboardUserBadgeState
@@ -970,7 +970,11 @@ class PlayViewModel @AssistedInject constructor(
             is SelectVariantOptionAction -> handleSelectVariantOption(action.option)
             PlayViewerNewAction.AutoOpenInteractive -> handleAutoOpen()
             is SendWarehouseId -> handleWarehouse(action.id, action.isOOC)
-            DismissFollowPopUp -> _isPopup.update { false }
+            DismissFollowPopUp -> {
+                _isPopup.update {
+                    it.copy(shouldShow = false)
+                }
+            }
         }
     }
 
@@ -1053,7 +1057,7 @@ class PlayViewModel @AssistedInject constructor(
 
         removeCastSessionListener()
         removeCastStateListener()
-        
+
         resetChannelReportLoadedStatus()
     }
 
@@ -2626,15 +2630,14 @@ class PlayViewModel @AssistedInject constructor(
     private fun handleFollowPopUp (channelData: PlayChannelData) {
         val streamerId = channelData.partnerInfo.id.toString()
         val config = channelData.channelDetail.popupConfig
-        val shouldShow = !isFreezeOrBanned && playPreference.isFollowPopup(streamerId) && config.isEnabled
+        val cache = playPreference.isFollowPopup(streamerId)
 
-        if (shouldShow) {
-            viewModelScope.launch(dispatchers.computation){
-                delay(config.duration)
-                if (!shouldShow) return@launch
-                _isPopup.update {
-                    shouldShow
-                }
+        viewModelScope.launch(dispatchers.computation){
+            delay(config.duration)
+            val shouldShow = !isFreezeOrBanned && cache && config.isEnabled
+            if (!shouldShow) return@launch
+            _isPopup.update {
+                it.copy(shouldShow = shouldShow, partnerId = streamerId)
             }
         }
 
