@@ -46,18 +46,16 @@ object LoggingUtils {
     }
 
     @JvmStatic
-    fun logGqlParseError(type: String, err: String, request: List<GraphqlRequest>, response: String) {
+    fun logGqlParseError(type: String, err: String, request: GraphqlRequest, response: String) {
         val regex = ".*(?=\\)).+\\n.*".toRegex()
-        val listStringRequest = request.map {
-            regex.find(it.query)?.value.orEmpty() to it.variables.toString()
-        }
+        val requestWithParam = regex.find(request.query)?.value.orEmpty() to request.variables.toString()
         ServerLogger.log(
             Priority.P1, "GQL_PARSE_ERROR",
-            mapOf(
+            mutableMapOf(
                 "type" to type,
                 "err" to err.take(GQL_SHORTENED_ERROR_LOG_MAX_LENGTH).trim(),
-                "req" to listStringRequest.toString().take(GQL_REQUEST_LOG_MAX_LENGTH).trim(),
-            ).toMutableMap().apply {
+                "req" to requestWithParam.toString().take(GQL_REQUEST_LOG_MAX_LENGTH).trim(),
+            ).apply {
                 response.take(GQL_LONG_RESPONSE_LOG_MAX_LENGTH).chunked(Constants.MAX_LENGTH_PER_ITEM)
                     .forEachIndexed { index, chunk ->
                         put("response_${index + 1}", chunk)
