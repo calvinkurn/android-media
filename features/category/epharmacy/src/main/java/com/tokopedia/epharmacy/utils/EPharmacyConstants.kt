@@ -77,3 +77,5 @@ enum class EPharmacyConsultationStatus(val status: Int) {
 }
 
 const val EPHARMACY_RX_IMAGE = "https://images.tokopedia.net/img/android/res/singleDpi/epharmacy_sucess_image_uploaded_count.png"
+
+const val EPHARMACY_CHECKOUT_APPLINK = "tokopedia://checkout"
