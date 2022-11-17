@@ -22,7 +22,7 @@ class ShopRecomWidgetCarousel(
     override fun bind(element: ShopRecomWidgetModel?) {
         val data = element?.shopRecomUiModel ?: return
         shopRecomWidgetCarousel.setListener(lifecycleOwner, shopRecomWidgetCallback)
-        shopRecomWidgetCarousel.setData(data.title, data.items, data.loadNextPage, data.nextCursor, data.isRefresh)
+        shopRecomWidgetCarousel.setData(data)
         shopRecomWidgetCarousel.showContentShopRecom()
     }
 
