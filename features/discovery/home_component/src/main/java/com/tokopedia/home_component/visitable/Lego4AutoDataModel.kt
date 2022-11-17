@@ -6,7 +6,8 @@ import com.tokopedia.home_component.model.ChannelModel
 
 data class Lego4AutoDataModel(
         val channelModel: ChannelModel,
-        val isCache: Boolean = false
+        val isCache: Boolean = false,
+        val cardInteraction: Boolean = false
 ): HomeComponentVisitable {
     override fun visitableId(): String? {
         return channelModel.id

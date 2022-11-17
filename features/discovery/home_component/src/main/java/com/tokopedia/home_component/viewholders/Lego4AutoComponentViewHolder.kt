@@ -16,9 +16,11 @@ import com.tokopedia.home_component.util.loadImageNormal
 import com.tokopedia.home_component.util.setGradientBackground
 import com.tokopedia.home_component.visitable.Lego4AutoItem
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
+import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifyprinciples.Typography
 
-class Lego4AutoComponentViewHolder(v: View): RecyclerView.ViewHolder(v) {
+class Lego4AutoComponentViewHolder(private val v: View): RecyclerView.ViewHolder(v) {
+    val cardUnify: CardUnify2 by lazy { v.findViewById(R.id.item_lego_auto_card) }
     private val itemLayout: ConstraintLayout = v.findViewById(R.id.item_lego_auto)
     private val itemImage: ImageView = v.findViewById(R.id.item_image)
     private val itemName: Typography = v.findViewById(R.id.item_name)
@@ -26,7 +28,8 @@ class Lego4AutoComponentViewHolder(v: View): RecyclerView.ViewHolder(v) {
     private val template = "%s %s"
 
 
-    fun bind(item: Lego4AutoItem, parentPosition: Int, listener: Lego4AutoBannerListener?, channelModel: ChannelModel, isCacheData: Boolean) {
+    fun bind(item: Lego4AutoItem, parentPosition: Int, listener: Lego4AutoBannerListener?,
+             channelModel: ChannelModel, isCacheData: Boolean) {
         itemName.text = item.grid.name
         itemImage.loadImageNormal(item.grid.imageUrl)
         itemDesc.text = constructBoldFont(item.grid.benefit.type, item.grid.benefit.value)
@@ -37,12 +40,12 @@ class Lego4AutoComponentViewHolder(v: View): RecyclerView.ViewHolder(v) {
         if (item.grid.backColor.isNotEmpty()) {
             itemLayout.setGradientBackground(arrayListOf(item.grid.backColor))
         }
-        itemLayout.addOnImpressionListener(item.impressHolder){
+        v.rootView.addOnImpressionListener(item.impressHolder){
             if (!isCacheData) {
                 listener?.onLegoItemImpressed(channelModel, item.grid, adapterPosition, parentPosition)
             }
         }
-        itemLayout.setOnClickListener {
+        v.rootView.setOnClickListener {
             listener?.onLegoItemClicked(channelModel, item.grid, adapterPosition, parentPosition)
         }
     }

@@ -523,8 +523,7 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
                             view,
                             legoListener,
                             homeComponentListener,
-                            parentRecycledViewPool,
-                            cardInteraction = true
+                            parentRecycledViewPool
                     )
             RecommendationListCarouselViewHolder.LAYOUT -> viewHolder =
                     RecommendationListCarouselViewHolder(

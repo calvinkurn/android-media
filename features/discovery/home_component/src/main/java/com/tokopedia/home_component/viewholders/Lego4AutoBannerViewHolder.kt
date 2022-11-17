@@ -2,6 +2,7 @@ package com.tokopedia.home_component.viewholders
 
 import android.view.View
 import androidx.annotation.LayoutRes
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -12,6 +13,7 @@ import com.tokopedia.home_component.decoration.GridSpacingItemDecoration
 import com.tokopedia.home_component.listener.HomeComponentListener
 import com.tokopedia.home_component.listener.Lego4AutoBannerListener
 import com.tokopedia.home_component.model.ChannelModel
+import com.tokopedia.home_component.util.ChannelStyleUtil
 import com.tokopedia.home_component.util.ChannelWidgetUtil
 import com.tokopedia.home_component.util.Lego4AutoTabletConfiguration
 import com.tokopedia.home_component.viewholders.adapter.Lego4AutoBannerAdapter
@@ -75,12 +77,22 @@ class Lego4AutoBannerViewHolder (itemView: View,
     }
 
     private fun initItems(element: Lego4AutoDataModel) {
-        adapter = Lego4AutoBannerAdapter(legoListener, adapterPosition, isCacheData)
-        adapter.addData(element)
+        val isUsingPadding = element.channelModel.channelConfig.borderStyle == ChannelStyleUtil.BORDER_STYLE_PADDING
+        adapter = Lego4AutoBannerAdapter(legoListener, adapterPosition, isCacheData, element)
         recyclerView.adapter = adapter
-        adapter.notifyDataSetChanged()
         if (recyclerView.itemDecorationCount == 0) recyclerView.addItemDecoration(
-                GridSpacingItemDecoration(Lego4AutoTabletConfiguration.getSpanCount(itemView.context), Lego4AutoTabletConfiguration.getSpacingSpaceForLego4Auto(), false))
+                GridSpacingItemDecoration(
+                    Lego4AutoTabletConfiguration.getSpanCount(itemView.context),
+                    Lego4AutoTabletConfiguration.getSpacingSpaceForLego4Auto(isUsingPadding),
+                    false
+                )
+        )
+        val marginValue = if(isUsingPadding) itemView.resources.getDimension(R.dimen.home_component_margin_default).toInt() else 0
+        val marginLayoutParams = recyclerView.layoutParams as ConstraintLayout.LayoutParams
+        marginLayoutParams.leftMargin = marginValue
+        marginLayoutParams.rightMargin = marginValue
+        recyclerView.layoutParams = marginLayoutParams
+        recyclerView.setPadding(0,0,0, marginValue)
     }
 
     private fun setHeaderComponent(element: Lego4AutoDataModel) {
