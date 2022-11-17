@@ -63,11 +63,15 @@ class ReviewVariantViewModel @Inject constructor(
             block = {
                 val params = ProductV3UseCase.Param(selectedProduct.parentProductId, 0)
                 val response = productV3UseCase.execute(params)
-
                 val allVariants = findUpdatedVariantNames(response)
+
                 val selectedVariants = allVariants
-                    .map { it.copy(isSelected = currentState.isParentProductSelected) }
-                    .filter { it.variantId in selectedProduct.variantProductIds }
+                    .map {
+                        val selectedOnPreviousSelection = it.variantId in selectedProduct.variantProductIds
+                        val isSelected = currentState.isParentProductSelected || selectedOnPreviousSelection
+                        it.copy(isSelected = isSelected)
+                    }
+                    .filter { it.variantId in currentState.originalVariantIds }
 
                 val selectedVariantIds = selectedVariants.filter { it.isSelected }.map { it.variantId }.toSet()
 

@@ -81,7 +81,11 @@ class ProductListViewModel @Inject constructor(
 
                 val updatedProducts = productsResponse.products.map { parentProduct ->
                     val selectedVariants = findSelectedVariantsByParentId(parentProduct.id, selectedProducts)
-                    parentProduct.copy(selectedVariantsIds = selectedVariants)
+
+                    parentProduct.copy(
+                        originalVariants = toOriginalVariant(parentProduct.id, selectedProducts),
+                        selectedVariantsIds = selectedVariants
+                    )
                 }
 
                 _uiState.update {
@@ -94,6 +98,18 @@ class ProductListViewModel @Inject constructor(
             }
         )
     }
+
+
+    private fun toOriginalVariant(
+        parentProductId: Long,
+        selectedProducts: List<SelectedProduct>
+    ): List<Product.Variant> {
+        val matchedProduct = selectedProducts.find { it.parentProductId == parentProductId }
+        return matchedProduct?.variantProductIds?.map { variantId ->
+            Product.Variant(variantId, isEligible = true, reason = "", isSelected = true)
+        }.orEmpty()
+    }
+
 
     private fun findSelectedVariantsByParentId(
         parentProductId: Long,
