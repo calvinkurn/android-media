@@ -14,6 +14,7 @@ import com.tokopedia.campaign.utils.extension.applyPaddingToLastItem
 import com.tokopedia.campaign.utils.extension.attachDividerItemDecoration
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.applyUnifyBackgroundColor
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.splitByThousand
@@ -193,7 +194,7 @@ class ReviewVariantBottomSheet: BottomSheetUnify() {
         renderBulkDelete(uiState.selectedVariantIds)
         renderList(uiState)
         renderParentProduct(uiState)
-        renderButton(uiState.originalVariantIds.count(), uiState.variants.count())
+        renderButton(uiState.originalVariantIds.count(), uiState.variants.count(), uiState.selectedVariantIds.count())
         observeVariantDeletion(uiState.variants.count(), uiState.isLoading)
     }
 
@@ -201,9 +202,10 @@ class ReviewVariantBottomSheet: BottomSheetUnify() {
         binding?.iconBulkDelete?.isVisible = selectedVariantIds.count() > ONE_VARIANT
     }
 
-    private fun renderButton(originalVariantCount: Int, variantCount: Int) {
+    private fun renderButton(originalVariantCount: Int, variantCount: Int, selectedVariantCount: Int) {
+        val anyVariantSelected = selectedVariantCount.isMoreThanZero()
         val anyVariantDeleted = variantCount != originalVariantCount
-        binding?.btnSave?.isEnabled = anyVariantDeleted
+        binding?.btnSave?.isEnabled = anyVariantDeleted || anyVariantSelected
     }
 
     private fun renderParentProduct(uiState: ReviewVariantUiState) {

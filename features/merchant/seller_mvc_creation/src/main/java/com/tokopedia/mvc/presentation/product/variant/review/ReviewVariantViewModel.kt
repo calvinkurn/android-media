@@ -159,10 +159,10 @@ class ReviewVariantViewModel @Inject constructor(
         }
     }
 
-    private fun handleRemoveVariant(productIdToDelete: Long) {
+    private fun handleRemoveVariant(variantIdToDelete: Long) {
         launch(dispatchers.computation) {
             val modifiedVariants = currentState.variants.toMutableList()
-            modifiedVariants.removeFirst { it.variantId == productIdToDelete }
+            modifiedVariants.removeFirst { it.variantId == variantIdToDelete }
 
             val modifiedVariantProductIds =
                 modifiedVariants.filter { it.isSelected }.map { it.variantId }.toMutableSet()
