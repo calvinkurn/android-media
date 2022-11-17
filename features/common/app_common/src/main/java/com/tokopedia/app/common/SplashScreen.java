@@ -24,6 +24,7 @@ import com.tokopedia.linker.interfaces.DefferedDeeplinkCallback;
 import com.tokopedia.linker.model.LinkerDeeplinkData;
 import com.tokopedia.linker.model.LinkerDeeplinkResult;
 import com.tokopedia.linker.model.LinkerError;
+import com.tokopedia.logger.LogManager;
 import com.tokopedia.logger.ServerLogger;
 import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl;
@@ -76,8 +77,21 @@ public class SplashScreen extends AppCompatActivity {
         return true;
     }
 
-    protected RemoteConfig.Listener getRemoteConfigListener(){
-        return null;
+    private RemoteConfig.Listener getRemoteConfigListener() {
+        return new RemoteConfig.Listener() {
+            @Override
+            public void onComplete(RemoteConfig remoteConfig) {
+                LogManager logManager = LogManager.instance;
+                if (logManager != null) {
+                    logManager.refreshConfig();
+                }
+            }
+
+            @Override
+            public void onError(Exception e) {
+
+            }
+        };
     }
 
     @Override
@@ -96,8 +110,8 @@ public class SplashScreen extends AppCompatActivity {
     }
 
     @NotNull
-    private boolean executeMoveToHomeFlow(boolean status){
-        if(!status){
+    private boolean executeMoveToHomeFlow(boolean status) {
+        if (!status) {
             Map<String, String> messageMap = new HashMap<>();
             messageMap.put("type", "splash_screen");
             messageMap.put("fingerprint", Build.FINGERPRINT);
