@@ -1,9 +1,12 @@
 package com.tokopedia.privacycenter.main
 
 import android.Manifest
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
+import android.net.Uri
 import android.os.Bundle
+import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,7 +20,11 @@ import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.privacycenter.R
 import com.tokopedia.privacycenter.accountlinking.LinkAccountWebviewFragment
 import com.tokopedia.privacycenter.common.di.PrivacyCenterComponent
-import com.tokopedia.privacycenter.common.utils.*
+import com.tokopedia.privacycenter.common.utils.getDynamicColorStatusBar
+import com.tokopedia.privacycenter.common.utils.getIconBackWithColor
+import com.tokopedia.privacycenter.common.utils.getIdColor
+import com.tokopedia.privacycenter.common.utils.setFitToWindows
+import com.tokopedia.privacycenter.common.utils.setTextStatusBar
 import com.tokopedia.privacycenter.databinding.FragmentPrivacyCenterBinding
 import com.tokopedia.privacycenter.databinding.SectionFooterImageBinding
 import com.tokopedia.privacycenter.main.section.accountlinking.AccountLinkingSection
@@ -30,6 +37,7 @@ import com.tokopedia.privacycenter.main.section.faqPrivacySection.FaqPrivacySect
 import com.tokopedia.privacycenter.main.section.recommendation.RecommendationSection
 import com.tokopedia.privacycenter.main.section.recommendation.RecommendationViewModel
 import com.tokopedia.privacycenter.main.section.tokopediacare.TokopediaCareSection
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.isUsingNightModeResources
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
@@ -182,12 +190,31 @@ class PrivacyCenterFragment :
                 viewModelAccountLinkingSection.getAccountLinkingStatus()
             }
             REQUEST_LOCATION_PERMISSION -> {
-                val isAllowed = grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED
+                val isAllowed =
+                    grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED
 
                 // change toggle geolocation
                 viewModelRecommendationSection.setGeolocationChange(isAllowed)
+
+                if (!isAllowed) {
+                    Toaster.build(
+                        requireView(),
+                        getString(R.string.privacy_center_recommendation_dialog_permission_denied),
+                        Toaster.LENGTH_LONG,
+                        Toaster.TYPE_ERROR,
+                        getString(R.string.privacy_center_recommendation_dialog_permission_setting)
+                    ) { goToApplicationDetailActivity() }.show()
+                }
             }
         }
+    }
+
+    private fun goToApplicationDetailActivity() {
+        val intent = Intent()
+        intent.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
+        val uri = Uri.fromParts(PACKAGE, requireActivity().packageName, null)
+        intent.data = uri
+        requireActivity().startActivity(intent)
     }
 
     override fun onRequestLocationPermission() {
@@ -224,6 +251,7 @@ class PrivacyCenterFragment :
         override val recommendationSection: RecommendationSection = RecommendationSection(
             context,
             viewModelRecommendationSection,
+            childFragmentManager,
             this@PrivacyCenterFragment
         )
         override val consentWithdrawalSection: ConsentWithdrawalSection = ConsentWithdrawalSection(
@@ -237,6 +265,7 @@ class PrivacyCenterFragment :
 
     companion object {
         fun newInstance() = PrivacyCenterFragment()
+        private const val PACKAGE = "package"
         private const val REQUEST_LOCATION_PERMISSION = 100
         private const val OFFSET_CHANGE_COLOR_STATUS_BAR = -136
         private const val REQUEST_ACCOUNT_WEBVIEW_REQUEST = 101
