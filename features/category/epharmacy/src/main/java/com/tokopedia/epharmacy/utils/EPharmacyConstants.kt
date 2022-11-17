@@ -22,14 +22,14 @@ const val EPHARMACY_SCREEN_NAME = "epharmacy page"
 
 const val EPHARMACY_TNC_LINK = "https://www.tokopedia.com/help/article/syarat-dan-ketentuan-tokopedia-kesehatan"
 
-enum class EPharmacyButtonKey(val key : String) {
+enum class EPharmacyButtonKey(val key: String) {
     CHECK("epharmacy_check_prescription"),
     RE_UPLOAD("epharmacy_reupload_prescription"),
     DONE("epharmacy_done_prescription"),
     DONE_DISABLED("epharmacy_done_disabled")
 }
 
-enum class EPharmacyPrescriptionStatus(val status : String){
+enum class EPharmacyPrescriptionStatus(val status: String) {
     APPROVED("APPROVED"),
     REJECTED("REJECTED"),
     ACTIVE("ACTIVE"),
@@ -43,3 +43,6 @@ const val MAX_MEDIA_SIZE_PICKER = 4_000_000L
 
 const val ENTRY_POINT_ORDER = "Order"
 const val ENTRY_POINT_CHECKOUT = "Checkout"
+
+const val REMINDER_TYPE = "reminder_type"
+const val CONSULTATION_SOURCE_ID = "consultation_source_id"

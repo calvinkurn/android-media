@@ -10,9 +10,9 @@ import dagger.Component
 @Component(modules = [EPharmacyModule::class, EPharmacyVMModule::class], dependencies = [BaseAppComponent::class])
 interface EPharmacyComponent {
 
-    fun inject(ePharmacyActivity: EPharmacyActivity){}
+    fun inject(ePharmacyActivity: EPharmacyActivity) {}
 
     fun inject(uploadPrescriptionFragment: UploadPrescriptionFragment)
 
-    fun inject(miniConsultationMasterBottomSheetInfo: EpharmacyReminderScreenBottomSheet)
+    fun inject(epharmacyReminderScreenBottomSheet: EpharmacyReminderScreenBottomSheet)
 }

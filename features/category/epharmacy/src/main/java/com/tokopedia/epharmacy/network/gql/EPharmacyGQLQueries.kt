@@ -68,3 +68,18 @@ const val GQL_FETCH_CHECKOUT_DETAILS_QUERY = """
       }
     }
 """
+
+val GQL_EPHARMACY_REMINDER_SCREEN_QUERY = """
+    query SubmitEpharmacyUserReminder(${"$"}reminder_type: Long!,${'$'}params: EpharmacyConsultationInfoParams!) {
+    submitEpharmacyUserReminder(reminder_type: ${"$"}reminder_type, params: ${"$"}params) {
+        header {
+            process_time
+            error_code
+        }
+        data {
+          is_success
+          error
+        }
+    }
+}
+""".trimIndent()

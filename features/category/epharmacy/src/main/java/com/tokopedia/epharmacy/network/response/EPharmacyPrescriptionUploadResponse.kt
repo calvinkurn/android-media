@@ -1,6 +1,5 @@
 package com.tokopedia.epharmacy.network.response
 
-
 import com.google.gson.annotations.SerializedName
 
 data class EPharmacyPrescriptionUploadResponse(
@@ -21,9 +20,9 @@ data class EPharmacyPrescriptionUploadResponse(
     )
 
     data class Header(
-        @SerializedName("code")
+        @SerializedName("code", alternate = ["error_code"])
         val code: Int?,
-        @SerializedName("server_prosess_time")
+        @SerializedName("server_prosess_time", alternate = ["process_time"])
         val serverProsessTime: String?
     )
 }

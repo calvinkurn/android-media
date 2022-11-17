@@ -10,10 +10,14 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.epharmacy.databinding.EpharmacyReminderScreenBottomSheetBinding
 import com.tokopedia.epharmacy.di.DaggerEPharmacyComponent
 import com.tokopedia.epharmacy.di.EPharmacyComponent
+import com.tokopedia.epharmacy.network.request.EPharmacyReminderScreenParam
+import com.tokopedia.epharmacy.utils.CONSULTATION_SOURCE_ID
+import com.tokopedia.epharmacy.utils.REMINDER_TYPE
 import com.tokopedia.epharmacy.viewmodel.EpharmacyReminderBsViewModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.media.loader.loadImageFitCenter
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -24,7 +28,7 @@ class EpharmacyReminderScreenBottomSheet : BottomSheetUnify() {
     private var binding by autoClearedNullable<EpharmacyReminderScreenBottomSheetBinding>()
 
     companion object {
-        fun newInstance(): EpharmacyReminderScreenBottomSheet {
+        fun newInstance(reminderType: Long, consultationSourceId: Long? = null): EpharmacyReminderScreenBottomSheet {
             return EpharmacyReminderScreenBottomSheet().apply {
                 showCloseIcon = false
                 showHeader = false
@@ -32,6 +36,12 @@ class EpharmacyReminderScreenBottomSheet : BottomSheetUnify() {
                 isDragable = true
                 isHideable = true
                 customPeekHeight = 800
+                arguments = Bundle().apply {
+                    putLong(REMINDER_TYPE, reminderType)
+                    if (consultationSourceId != null) {
+                        putLong(CONSULTATION_SOURCE_ID, consultationSourceId)
+                    }
+                }
             }
         }
     }
@@ -72,8 +82,10 @@ class EpharmacyReminderScreenBottomSheet : BottomSheetUnify() {
         viewModel?.reminderLiveData?.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
+                    // add toast here
                 }
                 is Fail -> {
+                    // add toast here for failed case
                 }
             }
         }
@@ -86,9 +98,37 @@ class EpharmacyReminderScreenBottomSheet : BottomSheetUnify() {
                 reminderParentView.errorTitle.text = getString(com.tokopedia.epharmacy.R.string.epharmacy_reminder_title)
                 reminderParentView.errorDescription.text = getString(com.tokopedia.epharmacy.R.string.epharmacy_reminder_description)
                 reminderParentView.errorSecondaryAction.text = getString(com.tokopedia.epharmacy.R.string.epharmacy_reminder_button_text)
+                reminderParentView.setSecondaryActionClickListener {
+                    requestParams()?.let { it1 -> viewModel?.setForReminder(it1) }
+                }
                 reminderParentView.setButtonFull(true)
                 reminderParentView.errorAction.hide()
             }
+        }
+    }
+
+    private fun requestParams(): EPharmacyReminderScreenParam? {
+        val reminderType = arguments?.getLong(REMINDER_TYPE)
+        val consultationSourceId = arguments?.getLong(CONSULTATION_SOURCE_ID)
+        return if (reminderType != null) {
+            EPharmacyReminderScreenParam(
+                input = EPharmacyReminderScreenParam.Input(
+                    reminderType = reminderType,
+                    EPharmacyReminderScreenParam.Input.EpharmacyConsultationInfoParams(
+                        consultationSourceId = consultationSourceId
+                    )
+                )
+            )
+        } else {
+            // need to check for this case
+            showToast("request can't be processed")
+            return null
+        }
+    }
+
+    private fun showToast(message: String) {
+        view?.let { it ->
+            Toaster.build(it, message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
         }
     }
 
