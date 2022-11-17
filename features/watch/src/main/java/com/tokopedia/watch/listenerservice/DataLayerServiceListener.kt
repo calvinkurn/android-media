@@ -14,7 +14,6 @@ import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSession
-import com.tokopedia.watch.TokopediaWatchActivity
 import com.tokopedia.watch.di.DaggerTkpdWatchComponent
 import com.tokopedia.watch.orderlist.model.AcceptBulkOrderModel
 import com.tokopedia.watch.orderlist.model.OrderListModel
@@ -99,10 +98,7 @@ class DataLayerServiceListener: WearableListenerService(), CoroutineScope {
                 }
             }
             MESSAGE_CLIENT_START_ORDER_ACTIVITY -> {
-                startActivity(
-                    Intent(this, TokopediaWatchActivity::class.java)
-                        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                )
+
             }
             MESSAGE_CLIENT_APP_DETECTION -> {
                 messageClient.sendMessage(messageEvent.sourceNodeId, MESSAGE_CLIENT_APP_DETECTION, byteArrayOf())
