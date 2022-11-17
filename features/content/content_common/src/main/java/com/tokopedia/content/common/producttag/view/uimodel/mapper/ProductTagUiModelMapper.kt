@@ -42,11 +42,11 @@ class ProductTagUiModelMapper @Inject constructor() {
                     totalSoldFmt = it.totalSoldFmt,
                     isBebasOngkir = it.isBebasOngkir,
                     bebasOngkirStatus = it.bebasOngkirStatus,
-                    bebasOngkirURL = it.bebasOngkirURL
+                    bebasOngkirURL = it.bebasOngkirURL,
                 )
             },
             hasNextPage = response.data.nextCursor.isNotEmpty(),
-            nextCursor = response.data.nextCursor
+            nextCursor = response.data.nextCursor,
         )
     }
 
@@ -76,13 +76,13 @@ class ProductTagUiModelMapper @Inject constructor() {
                     totalSoldFmt = it.totalSoldFmt,
                     isBebasOngkir = it.isBebasOngkir,
                     bebasOngkirStatus = it.bebasOngkirStatus,
-                    bebasOngkirURL = it.bebasOngkirURL
+                    bebasOngkirURL = it.bebasOngkirURL,
                 )
             },
             nextCursor = response.data.nextCursor,
             state = PagedState.Success(hasNextPage = response.data.products.isNotEmpty()),
             coachmark = response.data.coachmark,
-            isCoachmarkShown = response.data.isCoachmarkShown
+            isCoachmarkShown = response.data.isCoachmarkShown,
         )
     }
 
@@ -117,27 +117,27 @@ class ProductTagUiModelMapper @Inject constructor() {
                         isBebasOngkir = it.freeOngkir.isActive,
                         bebasOngkirStatus = "",
                         bebasOngkirURL = it.freeOngkir.imgUrl,
-                        stock = it.stock
+                        stock = it.stock,
                     )
                 },
                 hasNextPage = response.wrapper.data.products.isNotEmpty(),
-                nextCursor = nextCursor.toString()
+                nextCursor = nextCursor.toString(),
             ),
             header = SearchHeaderUiModel(
                 totalData = response.wrapper.header.totalData,
                 totalDataText = response.wrapper.header.totalDataText,
                 responseCode = response.wrapper.header.responseCode,
                 keywordProcess = response.wrapper.header.keywordProcess,
-                componentId = response.wrapper.header.componentId
+                componentId = response.wrapper.header.componentId,
             ),
             suggestion = SuggestionUiModel(
                 text = response.wrapper.data.suggestion.text,
                 query = response.wrapper.data.suggestion.query,
-                suggestion = response.wrapper.data.suggestion.suggestion
+                suggestion = response.wrapper.data.suggestion.suggestion,
             ),
             ticker = TickerUiModel(
                 text = response.wrapper.data.ticker.text,
-                query = response.wrapper.data.ticker.query
+                query = response.wrapper.data.ticker.query,
             )
         )
     }
@@ -155,18 +155,18 @@ class ProductTagUiModelMapper @Inject constructor() {
                         shopGoldShop = it.shopGoldShop,
                         shopStatus = it.shopStatus,
                         isOfficial = it.isOfficial,
-                        isPMPro = it.isPMPro
+                        isPMPro = it.isPMPro,
                     )
                 },
                 hasNextPage = response.wrapper.shops.isNotEmpty(),
-                nextCursor = nextCursor.toString()
+                nextCursor = nextCursor.toString(),
             ),
             header = SearchHeaderUiModel(
                 totalData = response.wrapper.header.totalData,
                 totalDataText = response.wrapper.header.totalDataText,
                 responseCode = response.wrapper.header.responseCode,
                 keywordProcess = response.wrapper.header.keywordProcess,
-                componentId = param.componentId
+                componentId = param.componentId,
             )
         )
     }
@@ -179,7 +179,7 @@ class ProductTagUiModelMapper @Inject constructor() {
                     name = it.name,
                     icon = it.icon,
                     key = it.key,
-                    value = it.value
+                    value = it.value,
                 )
             }
     }
@@ -200,7 +200,7 @@ class ProductTagUiModelMapper @Inject constructor() {
             shopName = shopInfo.shopCore.name,
             shopGoldShop = shopInfo.goldOS.isGold,
             isOfficial = shopInfo.goldOS.isOfficial == 1,
-            isPMPro = shopInfo.goldOS.isGoldBadge == 1
+            isPMPro = shopInfo.goldOS.isGoldBadge == 1,
         )
     }
 }

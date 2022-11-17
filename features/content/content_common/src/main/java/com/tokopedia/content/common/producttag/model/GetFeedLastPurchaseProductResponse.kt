@@ -7,7 +7,7 @@ import com.google.gson.annotations.SerializedName
  */
 data class GetFeedLastPurchaseProductResponse(
     @SerializedName("feedXGetLastPurchaseProducts")
-    val data: Data = Data()
+    val data: Data = Data(),
 ) {
 
     data class Data(
@@ -21,7 +21,7 @@ data class GetFeedLastPurchaseProductResponse(
         val coachmark: String = "",
 
         @SerializedName("isCoachmarkShown")
-        val isCoachmarkShown: Boolean = false
+        val isCoachmarkShown: Boolean = false,
     )
 
     data class Product(
@@ -92,6 +92,6 @@ data class GetFeedLastPurchaseProductResponse(
         val bebasOngkirStatus: String = "",
 
         @SerializedName("bebasOngkirURL")
-        val bebasOngkirURL: String = ""
+        val bebasOngkirURL: String = "",
     )
 }
