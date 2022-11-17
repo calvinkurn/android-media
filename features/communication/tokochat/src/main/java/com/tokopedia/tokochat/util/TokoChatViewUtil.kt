@@ -13,20 +13,18 @@ import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.tokochat_common.util.TokoChatViewUtil.EIGHT_DP
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.utils.file.FileUtil
 import java.io.File
 import java.io.InputStream
+import javax.inject.Inject
 
-object TokoChatViewUtil {
-
-    private const val TOKOCHAT_RELATIVE_PATH = "/TokoChat"
-    private const val JPEG_EXT = ".jpeg"
+class TokoChatViewUtil @Inject constructor(@ApplicationContext private val context: Context) {
 
     fun downloadAndSaveByteArrayImage(
-        context: Context,
         fileName: String,
         inputStream: InputStream,
         onImageReady: (File?) -> Unit,
@@ -66,18 +64,6 @@ object TokoChatViewUtil {
         return null
     }
 
-    fun getTokoChatPhotoPath(fileName: String): File {
-        return File(getInternalCacheDirectory().absolutePath, fileName + JPEG_EXT)
-    }
-
-    fun getInternalCacheDirectory(): File {
-        val directory = File(GlobalConfig.INTERNAL_CACHE_DIR, TOKOCHAT_RELATIVE_PATH)
-        if (!directory.exists()) {
-            directory.mkdirs()
-        }
-        return directory
-    }
-
     // Handle fail save image and directly load the image
 
     private fun loadByteArrayImage(
@@ -85,7 +71,7 @@ object TokoChatViewUtil {
         imageView: ImageView?,
         inputStream: InputStream,
         onError: () -> Unit,
-        onDirectLoad: () -> Unit,
+        onDirectLoad: () -> Unit
     ) {
         try {
             if (imageView != null) {
@@ -105,7 +91,7 @@ object TokoChatViewUtil {
         imageView: ImageView,
         inputStream: InputStream,
         onError: () -> Unit,
-        onDirectLoad: () -> Unit,
+        onDirectLoad: () -> Unit
     ) {
         Handler(Looper.getMainLooper()).post {
             Glide.with(context)
@@ -148,6 +134,23 @@ object TokoChatViewUtil {
                 closeInputStream(inputStream)
                 return false
             }
+        }
+    }
+
+    companion object {
+        private const val TOKOCHAT_RELATIVE_PATH = "/TokoChat"
+        private const val JPEG_EXT = ".jpeg"
+
+        fun getTokoChatPhotoPath(fileName: String): File {
+            return File(getInternalCacheDirectory().absolutePath, fileName + JPEG_EXT)
+        }
+
+        fun getInternalCacheDirectory(): File {
+            val directory = File(GlobalConfig.INTERNAL_CACHE_DIR, TOKOCHAT_RELATIVE_PATH)
+            if (!directory.exists()) {
+                directory.mkdirs()
+            }
+            return directory
         }
     }
 }
