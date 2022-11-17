@@ -15,8 +15,11 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.campaign.delegates.HasPaginatedList
 import com.tokopedia.campaign.delegates.HasPaginatedListImpl
 import com.tokopedia.campaign.utils.extension.showToasterError
+import com.tokopedia.campaign.utils.extension.slideDown
+import com.tokopedia.campaign.utils.extension.slideUp
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.applyUnifyBackgroundColor
+import com.tokopedia.kotlin.extensions.view.attachOnScrollListener
 import com.tokopedia.mvc.R
 import com.tokopedia.mvc.databinding.SmvcFragmentMvcListBinding
 import com.tokopedia.mvc.databinding.SmvcFragmentMvcListFooterBinding
@@ -105,6 +108,7 @@ class MvcListFragment: BaseDaggerFragment(), HasPaginatedList by HasPaginatedLis
         header.setupHeader()
         searchBar.setupSearchBar()
         rvVoucher.setupRvVoucher()
+        rvVoucher.setupListScroll()
         sortFilter.setupFilter()
     }
 
@@ -112,6 +116,9 @@ class MvcListFragment: BaseDaggerFragment(), HasPaginatedList by HasPaginatedLis
         voucherCreationQuota: VoucherCreationQuota
     ) {
         tfQuotaCounter.text = voucherCreationQuota.quotaUsageFormatted
+        iconInfo.setOnClickListener {
+            redirectToQuotaVoucherPage()
+        }
         btnAddCoupon.setOnClickListener {
             if (voucherCreationQuota.quotaErrorMessage.isEmpty()) {
                 redirectToCreateVoucherPage()
@@ -144,6 +151,15 @@ class MvcListFragment: BaseDaggerFragment(), HasPaginatedList by HasPaginatedLis
                 KeyboardHandler.hideSoftKeyboard(activity)
             }
             return@setOnEditorActionListener false
+        }
+    }
+
+    private fun RecyclerView.setupListScroll() {
+        binding?.footer?.root?.let {
+            attachOnScrollListener(
+                { it.slideDown() },
+                { it.slideUp() }
+            )
         }
     }
 
@@ -188,6 +204,10 @@ class MvcListFragment: BaseDaggerFragment(), HasPaginatedList by HasPaginatedLis
     }
 
     private fun redirectToCreateVoucherPage() {
+        //TODO: create redirection here
+    }
+
+    private fun redirectToQuotaVoucherPage() {
         //TODO: create redirection here
     }
 }

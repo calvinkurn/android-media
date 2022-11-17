@@ -37,6 +37,8 @@
     <string name="smvc_voucherlist_voucher_usage_delimiter">" dari "</string>
     <string name="smvc_voucherlist_error_quota_format">Kupon aktif maks. %d per periode (%d hari)</string>
     <string name="smvc_voucherlist_toaster_actiontext">Oke</string>
+    <string name="smvc_voucherlist_quota_remaining_text">Sisa Kuota</string>
+    <string name="smvc_voucherlist_create_voucher_text">Buat Kupon</string>
 
     <!--Common Bottomsheet-->
     <string name="smvc_bottomsheet_filter_voucher">Filter</string>
