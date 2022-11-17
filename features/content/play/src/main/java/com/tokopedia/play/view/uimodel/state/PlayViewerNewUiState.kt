@@ -129,4 +129,5 @@ data class AddressWidgetUiState(
 
 data class FollowPopUpUiState(
     val shouldShow: Boolean = false,
+    val partnerId: Long = 0L,
 )
