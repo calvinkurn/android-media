@@ -15,6 +15,7 @@ import com.tokopedia.gopayhomewidget.di.component.DaggerPayLaterHomeWidgetCompon
 import com.tokopedia.gopayhomewidget.domain.data.PayLaterButton
 import com.tokopedia.gopayhomewidget.domain.data.PayLaterWidgetData
 import com.tokopedia.gopayhomewidget.presentation.listener.PayLaterWidgetListener
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
@@ -140,12 +141,13 @@ class PayLaterWidget @JvmOverloads constructor(
         payLaterWidgetData: PayLaterWidgetData,
         button: PayLaterButton
     ) {
+        getCaseDetail(payLaterWidgetData.caseType ?: Int.ZERO)
         when (payLaterWidgetData.button?.ctaType) {
             applink -> {
                 closeHomeWidget()
                 analyticsUpload.sendWidgetAnalyticsEvent(
                     AnalyticsEventGenerator.WidgetCtaClickedButton(
-                        getCaseDetail(payLaterWidgetData.caseType ?: 0) ?: "",
+                        getCaseDetail(payLaterWidgetData.caseType ?: Int.ZERO) ?: "",
                         button.appsUrl ?: "",
                         payLaterWidgetData.gatewayCode ?: ""
                     )
@@ -156,7 +158,7 @@ class PayLaterWidget @JvmOverloads constructor(
                 closeHomeWidget()
                 analyticsUpload.sendWidgetAnalyticsEvent(
                     AnalyticsEventGenerator.WidgetCtaClickedButton(
-                        getCaseDetail(payLaterWidgetData.caseType ?: 0) ?: "",
+                        getCaseDetail(payLaterWidgetData.caseType ?: Int.ZERO) ?: "",
                         button.webUrl ?: "",
                         payLaterWidgetData.gatewayCode ?: ""
                     )
