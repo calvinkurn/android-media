@@ -358,6 +358,7 @@ class HomeVisitableFactoryImpl(
                         isCache = isCache,
                         dimenMarginTop = com.tokopedia.home_component.R.dimen.home_banner_default_margin_vertical_design,
                         dimenMarginBottom = com.tokopedia.home_component.R.dimen.home_banner_default_margin_vertical_design,
+                        cardInteraction = true,
                         enableDotsAndInfiniteScroll = HomeComponentRollenceController.isHPBUsingDotsAndInfiniteScroll(),
                         scrollTransitionDuration = HomeComponentRollenceController.getHPBDuration()
                     )
