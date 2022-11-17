@@ -728,6 +728,18 @@ abstract class BaseSearchCategoryFragment:
 
     override fun getProductRecommendationViewModel(): TokoNowProductRecommendationViewModel? = productRecomViewModel
 
+    override fun addToCartProductRecommendation() {
+        getViewModel().refreshMiniCart()
+    }
+
+    override fun updateFromCartProductRecommendation() {
+        getViewModel().refreshMiniCart()
+    }
+
+    override fun removeFromCartProductRecommendation() {
+        getViewModel().refreshMiniCart()
+    }
+
     private fun updateMiniCartWidget(miniCartSimplifiedData: MiniCartSimplifiedData?) {
         miniCartSimplifiedData ?: return
 

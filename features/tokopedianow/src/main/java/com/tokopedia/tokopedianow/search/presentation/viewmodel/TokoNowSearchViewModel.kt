@@ -362,7 +362,6 @@ class TokoNowSearchViewModel @Inject constructor (
                 onSuccessAddToCart = { /* nothing to do */ },
                 onSuccessUpdateCart = { /* nothing to do */ },
                 onSuccessDeleteCart = {
-                    onAddToCartSuccessBroadMatchItem(broadMatchItem, 0)
                     onAddToCartSuccessBroadMatchItem(broadMatchItem, quantity)
                     updateCartMessageSuccess(it.errorMessage.joinToString(separator = ", "))
                     updateToolbarNotification()

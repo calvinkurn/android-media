@@ -26,6 +26,10 @@ class TokoNowProductRecommendationCallback(
         product: TokoNowProductCardCarouselItemUiModel,
         quantity: Int
     ) {
+        viewModel?.updateUi(
+            productId = product.productCardModel.productId,
+            quantity = quantity
+        )
     }
 
     override fun onProductCardQuantityChanged(

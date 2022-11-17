@@ -166,7 +166,7 @@ class TokoNowProductCardCarouselView @JvmOverloads constructor(
     fun updateItems(
         items: List<Visitable<*>>
     ) {
-        adapter.submitList(items)
+        adapter.submitList(ArrayList(items))
     }
 
     fun setListener(

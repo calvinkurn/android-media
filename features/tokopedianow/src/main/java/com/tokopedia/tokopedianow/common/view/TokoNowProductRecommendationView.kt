@@ -8,12 +8,10 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.kotlin.extensions.view.showIfWithBlock
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
-import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.tokopedianow.common.di.component.DaggerCommonComponent
-import com.tokopedia.tokopedianow.common.domain.mapper.ProductRecommendationMapper.mapResponseToProductRecommendation
 import com.tokopedia.tokopedianow.common.listener.TokoNowProductRecommendationCallback
 import com.tokopedia.tokopedianow.common.model.TokoNowDynamicHeaderUiModel
-import com.tokopedia.tokopedianow.common.model.TokoNowProductCardCarouselItemUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationViewUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowSeeMoreCardCarouselUiModel
 import com.tokopedia.tokopedianow.common.view.TokoNowDynamicHeaderView.TokoNowDynamicHeaderListener
 import com.tokopedia.tokopedianow.common.view.productcard.TokoNowProductCardCarouselView.TokoNowProductCardCarouselListener
@@ -30,7 +28,6 @@ class TokoNowProductRecommendationView @JvmOverloads constructor(
 
     private var binding: LayoutTokopedianowProductRecommendationViewBinding
 
-    private var productModels: MutableList<TokoNowProductCardCarouselItemUiModel> = mutableListOf()
     private var viewModel: TokoNowProductRecommendationViewModel? = null
     private var listener: TokoNowProductRecommendationListener? = null
     private var requestParam: GetRecommendationRequestParam? = null
@@ -52,43 +49,57 @@ class TokoNowProductRecommendationView @JvmOverloads constructor(
     }
 
     private fun TokoNowProductRecommendationViewModel.observeRecommendationWidget() {
-        recommendationWidget.observe(context as AppCompatActivity) {
+        productRecommendation.observe(context as AppCompatActivity) {
             when(it) {
                 is Success -> setItems(it.data)
             }
         }
     }
 
-    private fun TokoNowProductRecommendationViewModel.observeMinicartAddToCart() {
+    private fun TokoNowProductRecommendationViewModel.observeMiniCartAdd() {
         miniCartAdd.observe(context as AppCompatActivity) { result ->
             when(result) {
                 is Success -> {
                     Toaster.build(binding.root, result.data.errorMessage.firstOrNull().orEmpty()).show()
-                    val product = productModels.find { it.productCardModel.productId == result.data.data.productId.toString() }
-                    val index = productModels.indexOf(product)
-                    product?.apply {
-                        productModels[index] = product.copy(productCardModel = product.productCardModel.copy(orderQuantity = result.data.data.quantity))
-                    }
-                    binding.productCardCarousel.updateItems(
-                        items = productModels
-                    )
+                    listener?.addToCartProductRecommendation()
                 }
             }
         }
     }
 
+    private fun TokoNowProductRecommendationViewModel.observeMiniCartUpdate() {
+        miniCartUpdate.observe(context as AppCompatActivity) { result ->
+            when(result) {
+                is Success -> {
+                    listener?.updateFromCartProductRecommendation()
+                }
+            }
+        }
+    }
+
+    private fun TokoNowProductRecommendationViewModel.observeMiniCartRemove() {
+        miniCartRemove.observe(context as AppCompatActivity) { result ->
+            when(result) {
+                is Success -> {
+                    Toaster.build(binding.root, result.data.second).show()
+                    listener?.removeFromCartProductRecommendation()
+                }
+            }
+        }
+    }
+
+    private fun TokoNowProductRecommendationViewModel.observeProductModelsUpdate() {
+        productModelsUpdate.observe(context as AppCompatActivity) {
+            binding.productCardCarousel.updateItems(it)
+        }
+    }
+
     private fun setItems(
-        recommendationWidget: RecommendationWidget
+        productRecommendation: TokoNowProductRecommendationViewUiModel
     ) {
-        val productRecommendation = mapResponseToProductRecommendation(
-            recommendationWidget = recommendationWidget,
-            miniCartData = viewModel?.mMiniCartSimplifiedData
-        )
-        productModels.clear()
-        productModels.addAll(productRecommendation.productModels)
         binding.apply {
             productCardCarousel.bindItems(
-                items = productModels,
+                items = productRecommendation.productModels,
                 seeMoreModel = productRecommendation.seeMoreModel
             )
             header.setModel(
@@ -163,7 +174,10 @@ class TokoNowProductRecommendationView @JvmOverloads constructor(
 
             viewModel?.run {
                 observeRecommendationWidget()
-                observeMinicartAddToCart()
+                observeMiniCartAdd()
+                observeMiniCartUpdate()
+                observeMiniCartRemove()
+                observeProductModelsUpdate()
 
                 requestParam?.let { requestParam ->
                     getRecommendationCarousel(requestParam)
@@ -174,5 +188,8 @@ class TokoNowProductRecommendationView @JvmOverloads constructor(
 
     interface TokoNowProductRecommendationListener {
         fun getProductRecommendationViewModel(): TokoNowProductRecommendationViewModel?
+        fun addToCartProductRecommendation()
+        fun removeFromCartProductRecommendation()
+        fun updateFromCartProductRecommendation()
     }
 }
