@@ -590,15 +590,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
         val subtitles = getCTAButtonSubtitle(feedXCard)
 
         if (!subtitles.isNullOrEmpty()) {
-            if (subtitles.size > ONE && animationHandler == null) {
-                animationHandler = FeedXCardSubtitlesAnimationHandler()
-            } else if (animationHandler != null) {
-                animationHandler?.stopAnimation()
-                animationHandler = null
-            }
-
             topAdsProductSubtitleContainer.removeAllViews()
-            subtitles.mapIndexed { index, subtitle ->
+            subtitles.map { subtitle ->
                 val typography = Typography(context)
                 typography.setType(Typography.DISPLAY_3)
                 typography.ellipsize = TextUtils.TruncateAt.END
@@ -612,19 +605,20 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 typography.text = subtitle
 
                 topAdsProductSubtitleContainer.addView(typography)
-
-                if (index == ZERO) {
-                    animationHandler?.firstContainer = WeakReference(typography)
-                } else if (index == ONE) {
-                    animationHandler?.secondContainer = WeakReference(typography)
-                }
             }
 
             // set animation to subtitles
             if (topAdsProductSubtitleContainer.childCount > ONE) {
+                animationHandler = FeedXCardSubtitlesAnimationHandler(
+                    WeakReference(topAdsProductSubtitleContainer.getChildAt(ZERO) as Typography),
+                    WeakReference(topAdsProductSubtitleContainer.getChildAt(ONE) as Typography)
+                )
                 animationHandler?.subtitles = subtitles
                 animationHandler?.checkToCancelTimer()
                 animationHandler?.startTimer()
+            } else if (animationHandler != null) {
+                animationHandler?.stopAnimation()
+                animationHandler = null
             }
 
             topAdsProductSubtitleContainer.show()

@@ -14,10 +14,11 @@ import java.util.*
 /**
  * Created By : Muhammad Furqan on 11/11/22
  */
-class FeedXCardSubtitlesAnimationHandler() {
+class FeedXCardSubtitlesAnimationHandler(
+    val firstContainer: WeakReference<com.tokopedia.unifyprinciples.Typography>,
+    val secondContainer: WeakReference<com.tokopedia.unifyprinciples.Typography>
+) {
 
-    lateinit var firstContainer: WeakReference<com.tokopedia.unifyprinciples.Typography>
-    lateinit var secondContainer: WeakReference<com.tokopedia.unifyprinciples.Typography>
     lateinit var subtitles: List<String>
     private var currentPositionSubtitle = 0
 
