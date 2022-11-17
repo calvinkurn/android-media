@@ -6,6 +6,7 @@ import com.tokopedia.home_component.R
 import com.tokopedia.home_component.databinding.HomeBannerItemBannerBinding
 import com.tokopedia.home_component.productcardgridcarousel.dataModel.CarouselBannerCardDataModel
 import com.tokopedia.home_component.util.setGradientBackground
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.utils.view.binding.viewBinding
 
@@ -27,8 +28,18 @@ class CarouselBannerItemViewHolder(
             animateOnPress =
                 if (cardInteraction) CardUnify2.ANIMATE_OVERLAY_BOUNCE else CardUnify2.ANIMATE_OVERLAY
         }
-        binding?.containerBanner?.setGradientBackground(element.gradientColor)
-        binding?.imageBanner?.setImageUrl(element.imageUrl)
+        binding?.containerBanner?.setGradientBackground(element.channel.channelBanner.gradientColor)
+        binding?.imageBanner?.setImageUrl(element.channel.channelBanner.imageUrl)
+        itemView.setOnClickListener {
+            element.listener.onBannerClicked(
+                element.channel,
+                element.channel.channelBanner.applink,
+                element.channel.verticalPosition
+            )
+        }
+        itemView.addOnImpressionListener(element.channel) {
+            element.listener.onBannerImpressed(element.channel)
+        }
     }
 
     companion object {

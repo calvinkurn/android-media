@@ -12,6 +12,7 @@ import com.tokopedia.home_component.R
 import com.tokopedia.home_component.customview.HeaderListener
 import com.tokopedia.home_component.databinding.GlobalDcMixLeftPaddingBinding
 import com.tokopedia.home_component.decoration.SimpleHorizontalLinearLayoutDecoration
+import com.tokopedia.home_component.listener.BannerMixLeftPaddingListener
 import com.tokopedia.home_component.listener.HomeComponentListener
 import com.tokopedia.home_component.listener.MixLeftComponentListener
 import com.tokopedia.home_component.mapper.ChannelModelMapper
@@ -49,7 +50,7 @@ class MixLeftPaddingComponentViewHolder(
     private val parentRecycledViewPool: RecyclerView.RecycledViewPool? = null,
     private val cardInteraction: Boolean = false
 ) : AbstractViewHolder<MixLeftPaddingDataModel>(itemView), CoroutineScope,
-    CommonProductCardCarouselListener {
+    CommonProductCardCarouselListener, BannerMixLeftPaddingListener {
 
     private lateinit var adapter: MixTopComponentAdapter
     private val masterJob = SupervisorJob()
@@ -142,10 +143,7 @@ class MixLeftPaddingComponentViewHolder(
         val listData = mutableListOf<Visitable<*>>()
         listData.add(
             CarouselBannerCardDataModel(
-                channel.channelBanner.imageUrl,
-                POSITION_BANNER,
-                channel.channelBanner.gradientColor,
-                this
+                channel, this
             )
         )
         val productDataList = convertDataToProductData(channel)
@@ -251,5 +249,16 @@ class MixLeftPaddingComponentViewHolder(
                 )
             }
         })
+    }
+
+    override fun onBannerClicked(channel: ChannelModel, applink: String, parentPos: Int) {
+        mixLeftComponentListener?.onEmptyCardClicked(channel, applink, parentPos)
+    }
+
+    override fun onBannerImpressed(channelModel: ChannelModel) {
+        mixLeftComponentListener?.onImageBannerImpressed(
+            channelModel,
+            channelModel.verticalPosition
+        )
     }
 }
