@@ -63,7 +63,6 @@ class MixLeftPaddingComponentViewHolder(
         @LayoutRes
         val LAYOUT = R.layout.global_dc_mix_left_padding
         private const val FPM_MIX_LEFT = "home_mix_left_padding"
-        private const val POSITION_BANNER = 0
     }
 
     override fun bind(element: MixLeftPaddingDataModel) {
