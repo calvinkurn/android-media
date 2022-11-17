@@ -121,10 +121,11 @@ class CustomProductLogisticFragment : BaseDaggerFragment(), CPLItemAdapter.CPLIt
 
     private fun showOnBoardingCoachmark(data: CustomProductLogisticModel) {
         val whitelabelView = getWhitelabelView()
-        val normalServiceView = getNormalServiceView()
 
-        if (whitelabelView != null || normalServiceView != null) {
+        if (whitelabelView != null) {
             context?.let {
+                val normalServiceView = getNormalServiceView()
+
                 val coachMarkItems = ArrayList<CoachMark2Item>()
                 val coachMark = CoachMark2(it)
 
@@ -148,7 +149,7 @@ class CustomProductLogisticFragment : BaseDaggerFragment(), CPLItemAdapter.CPLIt
                     )
                 }
 
-                whitelabelView?.let { whitelabel ->
+                whitelabelView.let { whitelabel ->
                     coachMarkItems.add(
                         CoachMark2Item(
                             whitelabel,

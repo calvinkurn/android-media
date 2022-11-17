@@ -478,50 +478,57 @@ class EditShippingFragment : Fragment(), EditShippingViewListener {
             if (sharedPref.getCoachMarkState() == true) {
                 if (whitelabelIndex != -1 || normalServiceIndex != -1) {
                     val whitelabelView = fragmentShipingMainLayout?.getChildAt(whitelabelIndex)
-                    val normalServiceView =
-                        fragmentShipingMainLayout?.getChildAt(normalServiceIndex)
-                    val coachMarkItems = ArrayList<CoachMark2Item>()
-                    val coachMark = CoachMark2(it)
+                    if (whitelabelView != null) {
+                        val normalServiceView =
+                            fragmentShipingMainLayout?.getChildAt(normalServiceIndex)
 
-                    normalServiceView?.let { normalService ->
-                        coachMarkItems.add(
-                            CoachMark2Item(
-                                normalService,
-                                getString(R.string.whitelabel_onboarding_title_coachmark),
-                                getString(R.string.whitelabel_onboarding_description_coachmark),
-                                CoachMark2.POSITION_TOP
+                        val coachMarkItems = ArrayList<CoachMark2Item>()
+                        val coachMark = CoachMark2(it)
+
+                        normalServiceView?.let { normalService ->
+                            coachMarkItems.add(
+                                CoachMark2Item(
+                                    normalService,
+                                    getString(R.string.whitelabel_onboarding_title_coachmark),
+                                    getString(R.string.whitelabel_onboarding_description_coachmark),
+                                    CoachMark2.POSITION_TOP
+                                )
                             )
-                        )
-                    }
-
-                    whitelabelView?.let { whitelabel ->
-                        coachMarkItems.add(
-                            CoachMark2Item(
-                                whitelabel,
-                                getString(R.string.whitelabel_instan_title_coachmark),
-                                getString(R.string.whitelabel_instan_description_coachmark),
-                                CoachMark2.POSITION_TOP
-                            )
-                        )
-                    }
-
-                    coachMark.setStepListener(object : CoachMark2.OnStepListener {
-                        override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
-                            coachMark.hideCoachMark()
-                            coachMarkItems.getOrNull(currentIndex)?.anchorView?.let { item ->
-                                scrollView?.smoothScrollTo(0, item.top)
-                            }
-                            coachMark.showCoachMark(coachMarkItems, null, currentIndex)
                         }
-                    })
-                    coachMark.onFinishListener = {
-                        sharedPref.setCoachMarkState(false)
-                    }
 
-                    // manual scroll to first item
-                    coachMarkItems.firstOrNull()?.anchorView?.let { rv ->
-                        scrollView?.smoothScrollTo(0, rv.top)
-                        coachMark.showCoachMark(coachMarkItems)
+                        whitelabelView.let { whitelabel ->
+                            coachMarkItems.add(
+                                CoachMark2Item(
+                                    whitelabel,
+                                    getString(R.string.whitelabel_instan_title_coachmark),
+                                    getString(R.string.whitelabel_instan_description_coachmark),
+                                    CoachMark2.POSITION_TOP
+                                )
+                            )
+                        }
+
+                        coachMark.setStepListener(object : CoachMark2.OnStepListener {
+                            override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
+                                coachMark.hideCoachMark()
+                                coachMarkItems.getOrNull(currentIndex)?.anchorView?.let { item ->
+                                    scrollView?.smoothScrollTo(0, item.top)
+                                }
+                                coachMark.showCoachMark(coachMarkItems, null, currentIndex)
+                            }
+                        })
+                        if (coachMarkItems.size > 1) {
+                            coachMark.onFinishListener = {
+                                sharedPref.setCoachMarkState(false)
+                            }
+                        } else if (coachMarkItems.isNotEmpty()) {
+                            sharedPref.setCoachMarkState(false)
+                        }
+
+                        // manual scroll to first item
+                        coachMarkItems.firstOrNull()?.anchorView?.let { rv ->
+                            scrollView?.smoothScrollTo(0, rv.top)
+                            coachMark.showCoachMark(coachMarkItems)
+                        }
                     }
                 }
             }

@@ -740,8 +740,9 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorItemAdapter.Sh
             if (sharedPref.getCoachMarkState() == true) {
                 Handler(Looper.getMainLooper()).postDelayed({
                     val whitelabelView = getWhitelabelView()
-                    val normalServiceView = getNormalServiceView()
-                    if (whitelabelView != null || normalServiceView != null) {
+                    if (whitelabelView != null) {
+                        val normalServiceView = getNormalServiceView()
+
                         val coachMarkItems = ArrayList<CoachMark2Item>()
                         val coachMark = CoachMark2(it)
 
@@ -756,7 +757,7 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorItemAdapter.Sh
                             )
                         }
 
-                        whitelabelView?.let { whitelabel ->
+                        whitelabelView.let { whitelabel ->
                             coachMarkItems.add(
                                 CoachMark2Item(
                                     whitelabel,
@@ -775,7 +776,11 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorItemAdapter.Sh
                                 coachMark.showCoachMark(coachMarkItems, null, currentIndex)
                             }
                         })
-                        coachMark.onFinishListener = {
+                        if (coachMarkItems.size > 1) {
+                            coachMark.onFinishListener = {
+                                sharedPref.setCoachMarkState(false)
+                            }
+                        } else if (coachMarkItems.isNotEmpty()) {
                             sharedPref.setCoachMarkState(false)
                         }
 

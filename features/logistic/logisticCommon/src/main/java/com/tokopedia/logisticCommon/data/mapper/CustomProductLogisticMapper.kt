@@ -31,14 +31,15 @@ class CustomProductLogisticMapper @Inject constructor() {
                 )
             )
             allShipperService.addAll(mapShipperData(it.shipper, draftShipperServices))
-
-            allShipper.add(
-                ShipperListCPLModel(
-                    it.header,
-                    it.description,
-                    allShipperService
+            allShipperService.takeIf { services -> services.isNotEmpty() }?.let { services ->
+                allShipper.add(
+                    ShipperListCPLModel(
+                        it.header,
+                        it.description,
+                        services
+                    )
                 )
-            )
+            }
         }
         return allShipper
     }
@@ -86,20 +87,22 @@ class CustomProductLogisticMapper @Inject constructor() {
         val allShipperData = mutableListOf<ShipperCPLModel>()
         response.forEach {
             val shipperProductData = it.shipperProduct.filter { product -> !product.uiHidden }
-            val shipperProducts = mapShipperProduct(shipperProductData, draftShipperServices)
-            val isShipperActive = shipperProducts.any { sp -> sp.isActive }
-            val description =
-                shipperProductData.joinToString(" | ") { shipperProduct -> shipperProduct.shipperProductName }
+            shipperProductData.takeIf { products -> products.isNotEmpty() }?.let { products ->
+                val shipperProducts = mapShipperProduct(products, draftShipperServices)
+                val isShipperActive = shipperProducts.any { sp -> sp.isActive }
+                val description =
+                    shipperProductData.joinToString(" | ") { shipperProduct -> shipperProduct.shipperProductName }
 
-            val shipperCplModel = ShipperCPLModel(
-                shipperId = it.shipperId,
-                shipperName = it.shipperName,
-                logo = it.logo,
-                description = description,
-                isActive = isShipperActive,
-                shipperProduct = shipperProducts,
-            )
-            allShipperData.add(shipperCplModel)
+                val shipperCplModel = ShipperCPLModel(
+                    shipperId = it.shipperId,
+                    shipperName = it.shipperName,
+                    logo = it.logo,
+                    description = description,
+                    isActive = isShipperActive,
+                    shipperProduct = shipperProducts,
+                )
+                allShipperData.add(shipperCplModel)
+            }
         }
         return allShipperData
     }
