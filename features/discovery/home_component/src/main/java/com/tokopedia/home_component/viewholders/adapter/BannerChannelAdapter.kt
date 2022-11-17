@@ -62,9 +62,9 @@ class BannerChannelImageViewHolder(itemView: View, val listener: BannerItemListe
 
     fun bind(item: BannerItemModel, imageRatio: String = "") {
         itemView.findViewById<ShimmeringImageView>(R.id.image_banner_homepage).loadImage(item.url)
-        itemView.setOnClickListener { listener.onClick(adapterPosition) }
+        itemView.setOnClickListener { listener.onClick(layoutPosition) }
         itemView.addOnImpressionListener(item) {
-            listener.onImpressed(adapterPosition)
+            listener.onImpressed(layoutPosition)
         }
         if (imageRatio.isNotEmpty()) setRatio(imageRatio)
     }
