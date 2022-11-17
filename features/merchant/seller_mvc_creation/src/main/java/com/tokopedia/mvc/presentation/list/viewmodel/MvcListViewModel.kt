@@ -7,9 +7,8 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.mvc.domain.entity.Voucher
 import com.tokopedia.mvc.domain.entity.VoucherCreationQuota
 import com.tokopedia.mvc.domain.entity.VoucherListParam
-import com.tokopedia.mvc.domain.entity.VoucherSort.Companion.VOUCHER_STATUS
-import com.tokopedia.mvc.domain.entity.VoucherStatus.Companion.HISTORY
-import com.tokopedia.mvc.domain.entity.VoucherStatus.Companion.NOT_STARTED_AND_ONGOING
+import com.tokopedia.mvc.domain.entity.VoucherSort
+import com.tokopedia.mvc.domain.entity.VoucherStatus
 import com.tokopedia.mvc.domain.usecase.GetVoucherListUseCase
 import com.tokopedia.mvc.domain.usecase.GetVoucherQuotaUseCase
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
@@ -36,8 +35,8 @@ class MvcListViewModel @Inject constructor(
             block = {
                 val param = VoucherListParam.createParam(
                     type = null,
-                    status = NOT_STARTED_AND_ONGOING,
-                    sort = VOUCHER_STATUS,
+                    status = listOf(VoucherStatus.NOT_STARTED, VoucherStatus.ONGOING),
+                    sort = VoucherSort.VOUCHER_STATUS,
                     target = null,
                     page = page,
                     perPage = pageSize,

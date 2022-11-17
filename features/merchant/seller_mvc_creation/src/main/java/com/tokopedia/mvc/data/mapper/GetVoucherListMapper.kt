@@ -3,6 +3,8 @@ package com.tokopedia.mvc.data.mapper
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.mvc.data.response.MerchantVoucherModel
 import com.tokopedia.mvc.domain.entity.Voucher
+import com.tokopedia.mvc.domain.entity.VoucherStatus
+import com.tokopedia.mvc.domain.entity.VoucherTargetBuyer
 import javax.inject.Inject
 
 class GetVoucherListMapper @Inject constructor() {
@@ -26,7 +28,8 @@ class GetVoucherListMapper @Inject constructor() {
                 image = it.voucherImage,
                 imageSquare = it.imageSquare,
                 imagePortrait = it.imagePortrait,
-                status = it.voucherStatus,
+                status = VoucherStatus.values().firstOrNull {
+                        value -> value.type == it.voucherStatus } ?: VoucherStatus.PROCESSING,
                 discountUsingPercent = it.discountTypeFormatted == DISCOUNT_TYPE_PERCENT,
                 discountAmt = it.discountAmt,
                 discountAmtFormatted = it.discountAmtFormatted,
@@ -47,7 +50,8 @@ class GetVoucherListMapper @Inject constructor() {
                 packageName = it.packageName,
                 isSubsidy = it.isSubsidy == VALUE_ACTIVE,
                 tnc = it.tnc,
-                targetBuyer = it.targetBuyer
+                targetBuyer = VoucherTargetBuyer.values().firstOrNull {
+                        value -> value.type == it.targetBuyer } ?: VoucherTargetBuyer.ALL_BUYER
             )
         }
 

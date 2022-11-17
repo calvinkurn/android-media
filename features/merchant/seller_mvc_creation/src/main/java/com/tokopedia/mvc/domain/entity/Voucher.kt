@@ -7,12 +7,12 @@ import kotlinx.parcelize.Parcelize
 data class Voucher(
     val id: Int,
     val name: String,
-    @VoucherTypeConst val type: Int,
+    val type: Int,
     val typeFormatted: String,
     val image: String,
     val imageSquare: String,
     val imagePortrait: String,
-    @VoucherStatusConst val status: Int,
+    val status: VoucherStatus,
     val discountUsingPercent: Boolean,
     val discountAmt: Int,
     val discountAmtFormatted: String,
@@ -35,5 +35,5 @@ data class Voucher(
     val packageName: String = "",
     val isSubsidy: Boolean = false,
     val tnc: String = "",
-    @VoucherTargetBuyer val targetBuyer: Int
+    val targetBuyer: VoucherTargetBuyer
 ): Parcelable

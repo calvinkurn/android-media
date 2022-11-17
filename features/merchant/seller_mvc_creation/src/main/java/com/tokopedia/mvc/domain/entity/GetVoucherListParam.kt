@@ -1,7 +1,5 @@
 package com.tokopedia.mvc.domain.entity
 
-import androidx.annotation.IntDef
-import androidx.annotation.StringDef
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.kotlin.extensions.view.ZERO
@@ -21,7 +19,7 @@ data class VoucherListParam (
     var page: Int?,
     @SerializedName("per_page")
     @Expose
-    val perPage: Int? = 10,
+    val perPage: Int? = 0,
     @SerializedName("sort_by")
     @Expose
     val sortBy: String? = null,
@@ -44,127 +42,84 @@ data class VoucherListParam (
     @Expose
     val isLockToProduct: String = "0"
 ) {
-
     companion object {
+        private const val VALUE_DELIMITER = ","
+
         @JvmStatic
         fun createParam(
-            @VoucherTypeConst type: Int? = null,
-            @VoucherStatus status: String,
-            @VoucherSort sort: String? = null,
-            @VoucherTarget target: String? = null,
+            type: VoucherType? = null,
+            status: List<VoucherStatus> = emptyList(),
+            sort: VoucherSort? = null,
+            target: VoucherTarget? = null,
             page: Int? = null,
             perPage: Int? = Int.ZERO,
             voucherName: String? = null
-        ) : VoucherListParam {
+        ): VoucherListParam {
             return VoucherListParam(
-                voucherType = type,
-                voucherStatus = status,
-                isPublic = target,
+                voucherType = type?.type,
+                voucherStatus = status.map { it.type }.joinToString(VALUE_DELIMITER),
+                isPublic = target?.type?.toString(),
                 page = page,
                 perPage = perPage,
-                sortBy = sort,
+                sortBy = sort?.type,
                 isInverted = false,
-                includeSubsidy = VoucherSubsidy.SELLER_AND_TOKOPEDIA,
-                isVps = VoucherVps.ALL,
+                includeSubsidy = VoucherSubsidy.SELLER_AND_TOKOPEDIA.type,
+                isVps = listOf(VoucherVps.VPS, VoucherVps.NON_VPS).joinToString(VALUE_DELIMITER),
                 voucherName = voucherName,
                 targetBuyer = null,
-                isLockToProduct = "1,0"
+                isLockToProduct = listOf(VoucherServiceType.SHOP_VOUCHER.type,
+                    VoucherServiceType.PRODUCT_VOUCHER.type).joinToString(VALUE_DELIMITER)
             )
         }
     }
 }
 
-@MustBeDocumented
-@Retention(AnnotationRetention.SOURCE)
-@IntDef(VoucherTypeConst.FREE_ONGKIR, VoucherTypeConst.DISCOUNT, VoucherTypeConst.CASHBACK)
-annotation class VoucherTypeConst {
-    companion object {
-        const val FREE_ONGKIR = 1
-        const val DISCOUNT = 2
-        const val CASHBACK = 3
-    }
+enum class VoucherServiceType(val type: Int) {
+    SHOP_VOUCHER(0),
+    PRODUCT_VOUCHER(1)
 }
 
-@MustBeDocumented
-@Retention(AnnotationRetention.SOURCE)
-@IntDef(VoucherStatusConst.DELETED, VoucherStatusConst.PROCESSING,
-    VoucherStatusConst.NOT_STARTED, VoucherStatusConst.ONGOING,
-    VoucherStatusConst.ENDED, VoucherStatusConst.STOPPED)
-annotation class VoucherStatusConst {
-    companion object {
-        const val DELETED = -1
-        const val PROCESSING = 0
-        const val NOT_STARTED = 1
-        const val ONGOING = 2
-        const val ENDED = 3
-        const val STOPPED = 4
-    }
+enum class VoucherType(val type: Int) {
+    FREE_ONGKIR(1),
+    DISCOUNT(2),
+    CASHBACK(3)
 }
 
-@MustBeDocumented
-@Retention(AnnotationRetention.SOURCE)
-@StringDef(VoucherStatus.NOT_STARTED, VoucherStatus.ONGOING, VoucherStatus.HISTORY, VoucherStatus.NOT_STARTED_AND_ONGOING)
-annotation class VoucherStatus {
-    companion object {
-        const val NOT_STARTED = "1"
-        const val ONGOING = "2"
-        const val HISTORY = "3,4"
-        const val NOT_STARTED_AND_ONGOING = "1,2"
-    }
+enum class VoucherStatus(val type: Int) {
+    DELETED(-1),
+    PROCESSING(0),
+    NOT_STARTED(1),
+    ONGOING(2),
+    ENDED(3),
+    STOPPED(4)
 }
 
-@MustBeDocumented
-@Retention(AnnotationRetention.SOURCE)
-@StringDef(VoucherTarget.PUBLIC, VoucherTarget.PRIVATE)
-annotation class VoucherTarget {
-    companion object {
-        const val PUBLIC = "1"
-        const val PRIVATE = "0"
-    }
+enum class VoucherTarget(val type: Int) {
+    PUBLIC(1),
+    PRIVATE(0)
 }
 
-@MustBeDocumented
-@Retention(AnnotationRetention.SOURCE)
-@IntDef(VoucherTargetBuyer.ALL_BUYER, VoucherTargetBuyer.NEW_FOLLOWER, VoucherTargetBuyer.NEW_BUYER, VoucherTargetBuyer.MEMBER)
-annotation class VoucherTargetBuyer {
-    companion object {
-        const val ALL_BUYER = 0
-        const val NEW_FOLLOWER = 1
-        const val NEW_BUYER = 2
-        const val MEMBER = 3
-    }
+enum class VoucherTargetBuyer(val type: Int) {
+    ALL_BUYER(0),
+    NEW_FOLLOWER(1),
+    NEW_BUYER(2),
+    MEMBER(3)
 }
 
-@MustBeDocumented
-@Retention(AnnotationRetention.SOURCE)
-@StringDef(VoucherSort.CREATE_TIME, VoucherSort.START_TIME, VoucherSort.FINISH_TIME, VoucherSort.VOUCHER_STATUS)
-annotation class VoucherSort {
-    companion object {
-        const val CREATE_TIME = "create_time"
-        const val START_TIME = "voucher_start_time"
-        const val FINISH_TIME = "voucher_finish_time"
-        const val VOUCHER_STATUS = "voucher_status"
-    }
+enum class VoucherSort(val type: String) {
+    CREATE_TIME("create_time"),
+    START_TIME("voucher_start_time"),
+    FINISH_TIME("voucher_finish_time"),
+    VOUCHER_STATUS("voucher_status")
 }
 
-@MustBeDocumented
-@Retention(AnnotationRetention.SOURCE)
-@IntDef(VoucherSubsidy.SELLER, VoucherSubsidy.TOKOPEDIA, VoucherSubsidy.SELLER_AND_TOKOPEDIA)
-annotation class VoucherSubsidy {
-    companion object {
-        const val SELLER = 0
-        const val TOKOPEDIA = 1
-        const val SELLER_AND_TOKOPEDIA = 2
-    }
+enum class VoucherSubsidy(val type: Int) {
+    SELLER(0),
+    TOKOPEDIA(1),
+    SELLER_AND_TOKOPEDIA(2)
 }
 
-@MustBeDocumented
-@Retention(AnnotationRetention.SOURCE)
-@StringDef(VoucherVps.ALL, VoucherVps.NON_VPS, VoucherVps.VPS)
-annotation class VoucherVps {
-    companion object {
-        const val NON_VPS = "0"
-        const val VPS = "1"
-        const val ALL = "0,1"
-    }
+enum class VoucherVps(val type: Int) {
+    NON_VPS(0),
+    VPS(1)
 }

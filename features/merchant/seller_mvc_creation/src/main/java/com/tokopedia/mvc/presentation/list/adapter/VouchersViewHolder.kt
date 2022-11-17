@@ -14,16 +14,8 @@ import com.tokopedia.mvc.databinding.SmvcItemVoucherHeaderBinding
 import com.tokopedia.mvc.databinding.SmvcItemVoucherPeriodBinding
 import com.tokopedia.mvc.databinding.SmvcItemVoucherStatsBinding
 import com.tokopedia.mvc.domain.entity.Voucher
-import com.tokopedia.mvc.domain.entity.VoucherStatusConst.Companion.DELETED
-import com.tokopedia.mvc.domain.entity.VoucherStatusConst.Companion.ENDED
-import com.tokopedia.mvc.domain.entity.VoucherStatusConst.Companion.NOT_STARTED
-import com.tokopedia.mvc.domain.entity.VoucherStatusConst.Companion.ONGOING
-import com.tokopedia.mvc.domain.entity.VoucherStatusConst.Companion.PROCESSING
-import com.tokopedia.mvc.domain.entity.VoucherStatusConst.Companion.STOPPED
-import com.tokopedia.mvc.domain.entity.VoucherTargetBuyer.Companion.ALL_BUYER
-import com.tokopedia.mvc.domain.entity.VoucherTargetBuyer.Companion.MEMBER
-import com.tokopedia.mvc.domain.entity.VoucherTargetBuyer.Companion.NEW_BUYER
-import com.tokopedia.mvc.domain.entity.VoucherTargetBuyer.Companion.NEW_FOLLOWER
+import com.tokopedia.mvc.domain.entity.VoucherStatus
+import com.tokopedia.mvc.domain.entity.VoucherTargetBuyer
 
 class VouchersViewHolder(
     private val binding: SmvcItemVoucherBinding,
@@ -44,33 +36,29 @@ class VouchersViewHolder(
         val context = root.context
         val processColor: Int
         when (voucher.status) {
-            DELETED -> {
+            VoucherStatus.DELETED -> {
                 processColor = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_RN500)
                 tfStatusTitle.text = context.getString(R.string.smvc_voucherlist_status_deleted_text)
             }
-            PROCESSING -> {
+            VoucherStatus.PROCESSING -> {
                 processColor = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN600)
                 tfStatusTitle.text = context.getString(R.string.smvc_voucherlist_status_processing_text)
             }
-            NOT_STARTED -> {
+            VoucherStatus.NOT_STARTED -> {
                 processColor = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN600)
                 tfStatusTitle.text = context.getString(R.string.smvc_voucherlist_status_notstarted_text)
             }
-            ONGOING -> {
+            VoucherStatus.ONGOING -> {
                 processColor = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
                 tfStatusTitle.text = context.getString(R.string.smvc_voucherlist_status_ongoing_text)
             }
-            ENDED -> {
+            VoucherStatus.ENDED -> {
                 processColor = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN600)
                 tfStatusTitle.text = context.getString(R.string.smvc_voucherlist_status_ended_text)
             }
-            STOPPED -> {
+            VoucherStatus.STOPPED -> {
                 processColor = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_RN500)
                 tfStatusTitle.text = context.getString(R.string.smvc_voucherlist_status_stopped_text)
-            }
-            else -> {
-                processColor = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN600)
-                tfStatusTitle.text = ""
             }
         }
         tfVps.isVisible = voucher.isVps
@@ -134,11 +122,10 @@ class VouchersViewHolder(
 
     private fun getTargetVoucherText(context: Context, voucher: Voucher): String {
         return when (voucher.targetBuyer) {
-            ALL_BUYER -> context.getString(R.string.smvc_voucherlist_target_allbuyer_text)
-            NEW_FOLLOWER -> context.getString(R.string.smvc_voucherlist_target_newfollower_text)
-            NEW_BUYER -> context.getString(R.string.smvc_voucherlist_target_newbuyer_text)
-            MEMBER -> context.getString(R.string.smvc_voucherlist_target_member_text)
-            else -> ""
+            VoucherTargetBuyer.ALL_BUYER -> context.getString(R.string.smvc_voucherlist_target_allbuyer_text)
+            VoucherTargetBuyer.NEW_FOLLOWER -> context.getString(R.string.smvc_voucherlist_target_newfollower_text)
+            VoucherTargetBuyer.NEW_BUYER -> context.getString(R.string.smvc_voucherlist_target_newbuyer_text)
+            VoucherTargetBuyer.MEMBER -> context.getString(R.string.smvc_voucherlist_target_member_text)
         }
     }
 }
