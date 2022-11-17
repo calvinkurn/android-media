@@ -72,10 +72,14 @@ class FeedXCardSubtitlesAnimationHandler(
             if (currentPositionSubtitle == subtitles.size) 0 else currentPositionSubtitle
         val invisibleDataPos =
             if (currentPositionSubtitle + 1 >= subtitles.size) 0 else currentPositionSubtitle + 1
-        currentPositionSubtitle = visibleDataPos
 
         visibleContainer.get()?.text = subtitles[visibleDataPos]
         invisibleContainer.get()?.text = subtitles[invisibleDataPos]
+
+        currentPositionSubtitle += 1
+        if (currentPositionSubtitle >= subtitles.size) {
+            currentPositionSubtitle = 0
+        }
     }
 
     fun stopAnimation() {
@@ -112,14 +116,9 @@ class FeedXCardSubtitlesAnimationHandler(
         //increment pos
         currentPositionSubtitle += 1
 
-        Log.d("FEED_ANIM", "Pertama $currentPositionSubtitle : $subtitles")
-
         //reset position
         if (currentPositionSubtitle == subtitles.size)
             currentPositionSubtitle = 0
-
-        Log.d("FEED_ANIM", "Kedua $currentPositionSubtitle ${subtitles[currentPositionSubtitle]}")
-
     }
 
     private fun reset() {
