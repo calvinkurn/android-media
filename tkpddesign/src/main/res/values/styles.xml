@@ -249,14 +249,6 @@
         <item name="android:isIndicator">true</item>
     </style>
 
-    <style name="RatingBar.XXL" parent="Base.Widget.AppCompat.RatingBar">
-        <item name="android:progressDrawable">@drawable/tkpd_rating_bar_xxl</item>
-        <item name="android:stepSize">1</item>
-        <item name="android:numStars">5</item>
-        <item name="android:minHeight">@dimen/dp_44</item>
-        <item name="android:maxHeight">@dimen/dp_44</item>
-    </style>
-
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
 
     <style name="AppTheme.AppBarOverlayWhite" parent="ThemeOverlay.AppCompat.DayNight" />
@@ -268,15 +260,6 @@
         <item name="actionMenuTextColor">@color/Unify_N600</item>
         <item name="android:textColorSecondary">@color/Unify_N600</item>
         <item name="android:background">@color/Unify_N0</item>
-    </style>
-
-    <style name="RatingBar.Micro" parent="Base.Widget.AppCompat.RatingBar.Small">
-        <item name="android:progressDrawable">@drawable/tkpd_rating_bar_micro</item>
-        <item name="android:stepSize">0.1</item>
-        <item name="android:numStars">5</item>
-        <item name="android:isIndicator">true</item>
-        <item name="android:minHeight">11dp</item>
-        <item name="android:maxHeight">11dp</item>
     </style>
 
     <style name="TransparentBottomSheetDialogTheme" parent="Theme.Design.Light.BottomSheetDialog">

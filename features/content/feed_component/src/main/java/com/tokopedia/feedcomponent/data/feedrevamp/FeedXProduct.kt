@@ -25,6 +25,7 @@ data class FeedXProduct(
         var isCashback: Boolean = false,
         @SerializedName("cashbackFmt")
         var cashbackFmt: String = "",
+        @SerializedName("id")
         var id: String = "",
         @SerializedName("isBebasOngkir")
         var isBebasOngkir: Boolean = false,
