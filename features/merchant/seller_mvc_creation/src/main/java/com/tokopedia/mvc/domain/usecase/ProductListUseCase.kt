@@ -12,7 +12,7 @@ import com.tokopedia.mvc.data.mapper.ProductListMapper
 import com.tokopedia.mvc.data.request.GoodsFilterInput
 import com.tokopedia.mvc.data.request.GoodsSortInput
 import com.tokopedia.mvc.data.response.ProductListResponse
-import com.tokopedia.mvc.domain.entity.Product
+import com.tokopedia.mvc.domain.entity.ProductResult
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
@@ -20,7 +20,7 @@ class ProductListUseCase @Inject constructor(
     private val repository: GraphqlRepository,
     private val mapper: ProductListMapper,
     private val userSession: UserSessionInterface
-) : GraphqlUseCase<List<Product>>(repository) {
+) : GraphqlUseCase<ProductResult>(repository) {
 
     init {
         setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
@@ -37,8 +37,11 @@ class ProductListUseCase @Inject constructor(
     private val query = object : GqlQueryInterface {
         private val OPERATION_NAME = "ProductList"
         private val QUERY = """
-           query ProductList(${'$'}shopID: String!, ${'$'}filter: [GoodsFilterInput], ${'$'}sort: GoodsSortInput, ${'$'}extraInfo: [String], ${'$'}warehouseID: String) {
-              ProductList(shopID: ${'$'}shopID, filter: ${'$'}filter, sort: ${'$'}sort, extraInfo: ${'$'}extraInfo, warehouseID: ${'$'}warehouseID) {
+           query $OPERATION_NAME(${'$'}shopID: String!, ${'$'}filter: [GoodsFilterInput], ${'$'}sort: GoodsSortInput, ${'$'}extraInfo: [String], ${'$'}warehouseID: String) {
+              $OPERATION_NAME(shopID: ${'$'}shopID, filter: ${'$'}filter, sort: ${'$'}sort, extraInfo: ${'$'}extraInfo, warehouseID: ${'$'}warehouseID) {
+                meta {
+                  totalHits
+                }
                 data {
                   id
                   name
@@ -79,7 +82,7 @@ class ProductListUseCase @Inject constructor(
         override fun getTopOperationName(): String = OPERATION_NAME
     }
 
-    suspend fun execute(param: Param): List<Product> {
+    suspend fun execute(param: Param): ProductResult {
         val request = buildRequest(param)
         val response = repository.response(listOf(request))
         val data = response.getSuccessData<ProductListResponse>()
@@ -88,11 +91,24 @@ class ProductListUseCase @Inject constructor(
 
     private fun buildRequest(param: Param): GraphqlRequest {
         val shopId = userSession.shopId
-        val filter = listOf(
+        val filter = mutableListOf(
             GoodsFilterInput("page", listOf(param.page.toString())),
             GoodsFilterInput("pageSize", listOf(param.pageSize.toString())),
             GoodsFilterInput("status", listOf("ACTIVE"))
         )
+
+        if (param.categoryIds.isNotEmpty()) {
+            filter.add(GoodsFilterInput("category", param.categoryIds.map { it.toString() }))
+        }
+
+        if (param.searchKeyword.isNotEmpty()) {
+            filter.add(GoodsFilterInput("keyword", listOf(param.searchKeyword)))
+        }
+
+        if (param.showcaseIds.isNotEmpty()) {
+            filter.add(GoodsFilterInput("menu", param.showcaseIds.map { it.toString() }))
+        }
+
         val sort = GoodsSortInput(param.sortId, param.sortDirection)
         val params = mapOf(
             REQUEST_PARAM_SHOP_ID to shopId,
@@ -111,9 +127,12 @@ class ProductListUseCase @Inject constructor(
 
 
     data class Param(
+        val searchKeyword: String,
         val warehouseId: Long,
         val page: Int,
         val pageSize: Int,
+        val categoryIds: List<Long>,
+        val showcaseIds : List<Long>,
         val sortId : String,
         val sortDirection:String,
         val extraInfo: List<String> = listOf("view")

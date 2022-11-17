@@ -33,8 +33,8 @@ class ProductListMetaUseCase @Inject constructor(
     private val query = object : GqlQueryInterface {
         private val OPERATION_NAME = "ProductListMeta"
         private val QUERY = """
-             query ProductListMeta(${'$'}shopID: String!, ${'$'}warehouseID: String, ${'$'}extraInfo: [String]) {
-                    ProductListMeta(shopID: ${'$'}shopID, warehouseID: ${'$'}warehouseID, extraInfo: ${'$'}extraInfo) {
+             query $OPERATION_NAME(${'$'}shopID: String!, ${'$'}warehouseID: String, ${'$'}extraInfo: [String]) {
+                    $OPERATION_NAME(shopID: ${'$'}shopID, warehouseID: ${'$'}warehouseID, extraInfo: ${'$'}extraInfo) {
                         data {
                             sort {
                                 id
