@@ -56,6 +56,7 @@ class ContactUsProvideRatingActivity : BaseSimpleActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_contact_us)
         initInjector()
         initObserver()
         getValuesFromIntent()
@@ -68,6 +69,9 @@ class ContactUsProvideRatingActivity : BaseSimpleActivity() {
             showKnob = true
             clearContentPadding = true
             isFullpage = true
+            setOnDismissListener {
+                finish()
+            }
         }
         supportFragmentManager.let {
             bottomSheetPage.show(it, "")
