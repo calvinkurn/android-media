@@ -79,15 +79,11 @@ class ReviewVariantViewModel @Inject constructor(
                 val response = productV3UseCase.execute(params)
                 val allVariantsFromRemote = formatVariantNames(response)
 
-                val selectedVariants = allVariantsFromRemote
-                    .map {
-                        val selectedOnPreviousSelection = it.variantId in selectedProduct.variantProductIds
-                        val isSelected = isParentProductSelected || selectedOnPreviousSelection
-                        it.copy(isSelected = isSelected)
-                    }
+                val updatedVariants = allVariantsFromRemote.map { variant ->
+                    shouldSelectVariant(variant, isParentProductSelected, selectedProduct.variantProductIds)
+                }
 
-                val userSelectedVariantsOnly = selectedVariants.filter { it.variantId in originalVariantIds }
-                val selectedVariantIds = userSelectedVariantsOnly.filter { it.isSelected }.map { it.variantId }.toSet()
+                val userSelectedVariantsOnly = updatedVariants.filter { it.variantId in originalVariantIds }
 
                 _uiState.update {
                     it.copy(
@@ -98,7 +94,7 @@ class ReviewVariantViewModel @Inject constructor(
                         parentProductSoldCount = response.parentProductSoldCount,
                         parentProductImageUrl = response.parentProductImageUrl,
                         variants = userSelectedVariantsOnly,
-                        selectedVariantIds = selectedVariantIds
+                        selectedVariantIds = userSelectedVariantsOnly.selectedVariantsOnly()
                     )
                 }
             },
@@ -122,13 +118,12 @@ class ReviewVariantViewModel @Inject constructor(
     private fun handleCheckAllVariant() {
         launch(dispatchers.computation) {
             val variants = currentState.variants.map { it.copy(isSelected = it.isEligible) }
-            val selectedVariantIds = variants.filter { it.isSelected }.map { it.variantId }.toSet()
 
             _uiState.update {
                 it.copy(
                     isSelectAllActive = true,
                     variants = variants,
-                    selectedVariantIds = selectedVariantIds
+                    selectedVariantIds = variants.selectedVariantsOnly()
                 )
             }
         }
@@ -157,8 +152,12 @@ class ReviewVariantViewModel @Inject constructor(
                     variant
                 }
             }
-            val selectedVariants = modifiedVariants.filter { it.isSelected }.map { it.variantId }.toSet()
-            _uiState.update { it.copy(variants = modifiedVariants, selectedVariantIds = selectedVariants) }
+            _uiState.update {
+                it.copy(
+                    variants = modifiedVariants,
+                    selectedVariantIds = modifiedVariants.selectedVariantsOnly()
+                )
+            }
         }
     }
 
@@ -172,8 +171,13 @@ class ReviewVariantViewModel @Inject constructor(
                     variant
                 }
             }
-            val selectedVariants = modifiedVariants.filter { it.isSelected }.map { it.variantId }.toSet()
-            _uiState.update { it.copy(variants = modifiedVariants, selectedVariantIds = selectedVariants) }
+
+            _uiState.update {
+                it.copy(
+                    variants = modifiedVariants,
+                    selectedVariantIds = modifiedVariants.selectedVariantsOnly()
+                )
+            }
         }
     }
 
@@ -212,4 +216,23 @@ class ReviewVariantViewModel @Inject constructor(
         }
     }
 
+    private fun shouldSelectVariant(
+        variant: Variant,
+        isParentProductSelected: Boolean,
+        selectedVariantIds: List<Long>
+    ): Variant {
+        val isSelected = if (isParentProductSelected) {
+            //Select all variant if parent product is selected
+            true
+        } else {
+            //Select variant only if it's previously selected
+            variant.variantId in selectedVariantIds
+        }
+
+        return variant.copy(isSelected = isSelected)
+    }
+
+    private fun List<Variant>.selectedVariantsOnly(): Set<Long> {
+       return filter { it.isSelected }.map { it.variantId }.toSet()
+    }
 }
