@@ -196,7 +196,7 @@ class ReviewVariantBottomSheet: BottomSheetUnify() {
             is ReviewVariantEffect.ShowBulkDeleteVariantConfirmationDialog -> {
                 DeleteConfirmationDialog.show(
                     context = activity ?: return,
-                    title = getString(R.string.smvc_placeholder_bulk_delete_variant_confirmation),
+                    title = getString(R.string.smvc_placeholder_bulk_delete_variant_confirmation, effect.toDeleteProductCount),
                     description = getString(R.string.smvc_delete_variant_description),
                     primaryButtonTitle = getString(R.string.smvc_proceed_delete),
                     onPrimaryButtonClick = { viewModel.processEvent(ReviewVariantEvent.ApplyBulkDeleteVariant) }
