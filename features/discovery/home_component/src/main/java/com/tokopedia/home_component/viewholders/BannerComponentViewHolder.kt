@@ -185,15 +185,17 @@ class BannerComponentViewHolder(itemView: View,
     private fun initBanner(list: List<BannerItemModel>, dimenMarginTop: Int, dimenMarginBottom: Int, cardInteraction: Boolean){
         rvBanner.clearOnScrollListeners()
 
-        val snapHelper: SnapHelper = if(isUsingDotsAndInfiniteScroll) CubicBezierSnapHelper(itemView.context) else PagerSnapHelper()
-        rvBanner.onFlingListener = null
+        if(list.size > 1) {
+            val snapHelper: SnapHelper = if(isUsingDotsAndInfiniteScroll) CubicBezierSnapHelper(itemView.context) else PagerSnapHelper()
+            rvBanner.onFlingListener = null
+            snapHelper.attachToRecyclerView(rvBanner)
+        }
 
         val layoutParams = rvBanner.layoutParams as ConstraintLayout.LayoutParams
         layoutParams.setMargins(MARGIN_ZERO, MARGIN_ZERO, MARGIN_ZERO, itemView.resources.getDimensionPixelOffset(dimenMarginBottom))
         layoutParams.goneTopMargin = itemView.resources.getDimensionPixelOffset(dimenMarginTop)
         rvBanner.layoutParams = layoutParams
 
-        snapHelper.attachToRecyclerView(rvBanner)
         rvBanner.layoutManager = getLayoutManager(list)
         rvBanner.removeAllItemDecoration()
         if (rvBanner.itemDecorationCount == 0) {
