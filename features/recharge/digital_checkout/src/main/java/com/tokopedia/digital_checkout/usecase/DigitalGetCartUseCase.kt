@@ -17,7 +17,7 @@ class DigitalGetCartUseCase @Inject constructor(graphqlRepository: GraphqlReposi
         setGraphqlQuery(DigitalCartQuery())
     }
 
-    fun execute(
+    fun onExecute(
         params: Map<String, Any>,
         onSuccess: (RechargeGetCart.Response) -> Unit,
         onError: (Throwable) -> Unit
