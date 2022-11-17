@@ -4,12 +4,15 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.request.AddToCartMultiParam
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.AtcMultiData
 import com.tokopedia.atc_common.domain.usecase.AddToCartMultiUseCase
+import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCase
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
@@ -24,6 +27,7 @@ import com.tokopedia.unifyorderhistory.util.UohConsts.TDN_ADS_COUNT
 import com.tokopedia.unifyorderhistory.util.UohConsts.TDN_DIMEN_ID
 import com.tokopedia.unifyorderhistory.util.UohConsts.TDN_INVENTORY_ID
 import com.tokopedia.unifyorderhistory.util.UohIdlingResource
+import com.tokopedia.unifyorderhistory.util.UohUtils.asFail
 import com.tokopedia.unifyorderhistory.util.UohUtils.asSuccess
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -35,19 +39,22 @@ import javax.inject.Inject
 /**
  * Created by fwidjaja on 03/07/20.
  */
-class UohListViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
-                                           private val getUohFilterCategoryUseCase: GetUohFilterCategoryUseCase,
-                                           private val uohListUseCase: UohListUseCase,
-                                           private val getRecommendationUseCase: GetRecommendationUseCase,
-                                           private val uohFinishOrderUseCase: UohFinishOrderUseCase,
-                                           private val atcMultiProductsUseCase: AddToCartMultiUseCase,
-                                           private val lsPrintFinishOrderUseCase: LsPrintFinishOrderUseCase,
-                                           private val flightResendEmailUseCase: FlightResendEmailUseCase,
-                                           private val trainResendEmailUseCase: TrainResendEmailUseCase,
-                                           private val rechargeSetFailUseCase: RechargeSetFailUseCase,
-                                           private val topAdsImageViewUseCase: TopAdsImageViewUseCase,
-                                           private val atcUseCase: AddToCartUseCase,
-                                           private val getUohPmsCounterUseCase: GetUohPmsCounterUseCase) : BaseViewModel(dispatcher.main) {
+class UohListViewModel @Inject constructor(
+    dispatcher: CoroutineDispatchers,
+    private val getUohFilterCategoryUseCase: GetUohFilterCategoryUseCase,
+    private val uohListUseCase: UohListUseCase,
+    private val getRecommendationUseCase: GetRecommendationUseCase,
+    private val uohFinishOrderUseCase: UohFinishOrderUseCase,
+    private val atcMultiProductsUseCase: AddToCartMultiUseCase,
+    private val addToCartOccUseCase: AddToCartOccMultiUseCase,
+    private val lsPrintFinishOrderUseCase: LsPrintFinishOrderUseCase,
+    private val flightResendEmailUseCase: FlightResendEmailUseCase,
+    private val trainResendEmailUseCase: TrainResendEmailUseCase,
+    private val rechargeSetFailUseCase: RechargeSetFailUseCase,
+    private val topAdsImageViewUseCase: TopAdsImageViewUseCase,
+    private val atcUseCase: AddToCartUseCase,
+    private val getUohPmsCounterUseCase: GetUohPmsCounterUseCase
+) : BaseViewModel(dispatcher.main) {
 
     private val _filterCategoryResult = MutableLiveData<Result<UohFilterCategory.Data>>()
     val filterCategoryResult: LiveData<Result<UohFilterCategory.Data>>
@@ -68,6 +75,10 @@ class UohListViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
     private val _atcMultiResult = MutableLiveData<Result<AtcMultiData>>()
     val atcMultiResult: LiveData<Result<AtcMultiData>>
         get() = _atcMultiResult
+
+    private val _atcOccMultiResult = MutableLiveData<Result<AddToCartDataModel>>()
+    val atcOccMultiResult: LiveData<Result<AddToCartDataModel>>
+        get() = _atcOccMultiResult
 
     private val _lsPrintFinishOrderResult = MutableLiveData<Result<LsPrintData.Data>>()
     val lsPrintFinishOrderResult: LiveData<Result<LsPrintData.Data>>
@@ -162,10 +173,29 @@ class UohListViewModel @Inject constructor(dispatcher: CoroutineDispatchers,
             }
 
             if (result is Success) {
-                UohAnalytics.clickBeliLagiOnOrderCardMP("", userId, arrayListProducts,
-                        verticalCategory, result.data.atcMulti.buyAgainData.listProducts.firstOrNull()?.cartId.toString())
+                UohAnalytics.clickBeliLagiOnOrderCardMP(
+                    "",
+                    userId,
+                    arrayListProducts,
+                    verticalCategory,
+                    result.data.atcMulti.buyAgainData.listProducts.firstOrNull()?.cartId.toString()
+                )
             }
+            UohIdlingResource.decrement()
+        }
+    }
 
+    fun doAtcOccMulti(atcOccParams: AddToCartOccMultiRequestParams) {
+        UohIdlingResource.increment()
+        launch {
+            val result = addToCartOccUseCase.setParams(atcOccParams).executeOnBackground()
+                .mapToAddToCartDataModel()
+            if (result.isStatusError()) {
+                val errorMessage = result.getAtcErrorMessage() ?: ""
+                _atcOccMultiResult.postValue(MessageErrorException(errorMessage).asFail())
+            } else {
+                _atcOccMultiResult.postValue(result.asSuccess())
+            }
             UohIdlingResource.decrement()
         }
     }

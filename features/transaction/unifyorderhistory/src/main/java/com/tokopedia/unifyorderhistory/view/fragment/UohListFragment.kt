@@ -22,6 +22,7 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.utils.GraphqlHelper
 import com.tokopedia.abstraction.common.utils.view.RefreshHandler
 import com.tokopedia.applink.ApplinkConst
+import com.tokopedia.applink.ApplinkConst.Transaction
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
@@ -103,6 +104,7 @@ import com.tokopedia.unifyorderhistory.data.model.UohTypeData
 import com.tokopedia.unifyorderhistory.databinding.FragmentUohListBinding
 import com.tokopedia.unifyorderhistory.di.DaggerUohListComponent
 import com.tokopedia.unifyorderhistory.di.UohListModule
+import com.tokopedia.unifyorderhistory.domain.mapper.OrderDataMapper
 import com.tokopedia.unifyorderhistory.util.UohConsts
 import com.tokopedia.unifyorderhistory.util.UohConsts.ACTION_FINISH_ORDER
 import com.tokopedia.unifyorderhistory.util.UohConsts.ALL_DATE
@@ -122,7 +124,7 @@ import com.tokopedia.unifyorderhistory.util.UohConsts.EE_PRODUCT_PRICE
 import com.tokopedia.unifyorderhistory.util.UohConsts.END_DATE
 import com.tokopedia.unifyorderhistory.util.UohConsts.E_TIKET
 import com.tokopedia.unifyorderhistory.util.UohConsts.FLIGHT_STATUS_OK
-import com.tokopedia.unifyorderhistory.util.UohConsts.GQL_ATC
+import com.tokopedia.unifyorderhistory.util.UohConsts.GQL_MP_ATC
 import com.tokopedia.unifyorderhistory.util.UohConsts.GQL_FINISH_ORDER
 import com.tokopedia.unifyorderhistory.util.UohConsts.GQL_FLIGHT_EMAIL
 import com.tokopedia.unifyorderhistory.util.UohConsts.GQL_LS_FINISH
@@ -130,6 +132,7 @@ import com.tokopedia.unifyorderhistory.util.UohConsts.GQL_LS_LACAK
 import com.tokopedia.unifyorderhistory.util.UohConsts.GQL_MP_CHAT
 import com.tokopedia.unifyorderhistory.util.UohConsts.GQL_MP_EXTEND
 import com.tokopedia.unifyorderhistory.util.UohConsts.GQL_MP_FINISH
+import com.tokopedia.unifyorderhistory.util.UohConsts.GQL_MP_OCC
 import com.tokopedia.unifyorderhistory.util.UohConsts.GQL_RECHARGE_BATALKAN
 import com.tokopedia.unifyorderhistory.util.UohConsts.GQL_TRACK
 import com.tokopedia.unifyorderhistory.util.UohConsts.GQL_TRAIN_EMAIL
@@ -176,6 +179,7 @@ import com.tokopedia.unifyorderhistory.util.UohConsts.VERTICAL_CATEGORY_TOKOFOOD
 import com.tokopedia.unifyorderhistory.util.UohConsts.VERTICAL_CATEGORY_TRAIN
 import com.tokopedia.unifyorderhistory.util.UohConsts.WAREHOUSE_ID
 import com.tokopedia.unifyorderhistory.util.UohConsts.WEB_LINK_TYPE
+import com.tokopedia.unifyorderhistory.util.UohRollenceUtil
 import com.tokopedia.unifyorderhistory.util.UohUtils
 import com.tokopedia.unifyorderhistory.view.activity.UohListActivity
 import com.tokopedia.unifyorderhistory.view.adapter.UohBottomSheetKebabMenuAdapter
@@ -328,6 +332,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         const val OPEN_ORDER_REQUEST_CODE = 500
     }
 
+    // unused, is this safe to remove? ab test platform will get from util?
     private fun getAbTestPlatform(): AbTestPlatform {
         if (!::remoteConfigInstance.isInitialized) {
             remoteConfigInstance = RemoteConfigInstance(activity?.application)
@@ -506,6 +511,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         observingRecommendationList()
         observingAtc()
         observingAtcMulti()
+        observingAtcOccMulti()
         observingFlightResendEmail()
         observingTrainResendEmail()
         observeTdnBanner()
@@ -809,10 +815,32 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                         ","
                     )
                     if (it.data.atcMulti.buyAgainData.success == 1) {
+                        val product = it.data.atcMulti.buyAgainData.listProducts.getOrNull(0)
                         showToasterAtc(msg, Toaster.TYPE_NORMAL)
+                        if (UohRollenceUtil.isEnableAutoRedirectionToCartOnRepurchase()) {
+                            val intent = RouteManager.getIntent(context, ApplinkConst.CART)
+                            product?.cartId?.let {
+                                intent.putExtra(Transaction.EXTRA_CART_ID, it.toString())
+                            }
+                            startActivity(intent)
+                        }
                     } else {
                         showToaster(msg, Toaster.TYPE_ERROR)
                     }
+                }
+                is Fail -> {
+                    context?.getString(R.string.fail_cancellation)
+                        ?.let { it1 -> showToaster(it1, Toaster.TYPE_ERROR) }
+                }
+            }
+        }
+    }
+
+    private fun observingAtcOccMulti() {
+        uohListViewModel.atcOccMultiResult.observe(viewLifecycleOwner) {
+            when (it) {
+                is Success -> {
+                    RouteManager.route(context, ApplinkConst.OCC)
                 }
                 is Fail -> {
                     context?.getString(R.string.fail_cancellation)
@@ -1888,15 +1916,25 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                             dotMenu.actionType.equals(GQL_MP_CHAT, true) -> {
                                 doChatSeller(dotMenu.appURL, orderData)
                             }
-                            dotMenu.actionType.equals(GQL_ATC, true) -> {
+                            dotMenu.actionType.equals(GQL_MP_ATC, true) -> {
                                 atc(orderData)
+                            }
+                            dotMenu.actionType.equals(GQL_MP_OCC, true) -> {
+                                atcOcc(orderData)
                             }
                             dotMenu.actionType.equals(GQL_MP_FINISH, true) -> {
                                 orderIdNeedUpdated = orderData.orderUUID
-                                doFinishOrder(orderIndex, orderData.verticalStatus, orderData.verticalID)
+                                doFinishOrder(
+                                    orderIndex,
+                                    orderData.verticalStatus,
+                                    orderData.verticalID
+                                )
                             }
                             dotMenu.actionType.equals(GQL_TRACK, true) -> {
-                                val applinkTrack = ApplinkConst.ORDER_TRACKING.replace(REPLACE_ORDER_ID, orderData.verticalID)
+                                val applinkTrack = ApplinkConst.ORDER_TRACKING.replace(
+                                    REPLACE_ORDER_ID,
+                                    orderData.verticalID
+                                )
                                 RouteManager.route(context, applinkTrack)
                             }
                             dotMenu.actionType.equals(GQL_LS_LACAK, true) -> {
@@ -2001,9 +2039,13 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         }
     }
 
-    override fun onActionButtonClicked(order: UohListOrder.Data.UohOrders.Order, index: Int) {
+    override fun onActionButtonClicked(
+        order: UohListOrder.Data.UohOrders.Order,
+        index: Int,
+        buttonIndex: Int
+    ) {
         try {
-            order.metadata.buttons.firstOrNull()?.let { button ->
+            order.metadata.buttons.getOrNull(buttonIndex)?.let { button ->
                 if (button.actionType.equals(TYPE_ACTION_BUTTON_LINK, true)) {
                     handleRouting(button.appURL)
                 } else {
@@ -2012,19 +2054,27 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                             orderIdNeedUpdated = order.orderUUID
                             doFinishOrder(index, order.verticalStatus, order.verticalID)
                         }
-                        button.actionType.equals(GQL_ATC, true) -> {
+                        button.actionType.equals(GQL_MP_ATC, true) -> {
                             atc(order)
                         }
+                        button.actionType.equals(GQL_MP_OCC, true) -> {
+                            atcOcc(order)
+                        }
                         button.actionType.equals(GQL_TRACK, true) -> {
-                            val applinkTrack = ApplinkConst.ORDER_TRACKING.replace(REPLACE_ORDER_ID, order.verticalID)
+                            val applinkTrack = ApplinkConst.ORDER_TRACKING.replace(
+                                REPLACE_ORDER_ID,
+                                order.verticalID
+                            )
                             RouteManager.route(context, applinkTrack)
                         }
                         button.actionType.equals(GQL_LS_FINISH, true) -> {
                             orderIdNeedUpdated = order.orderUUID
-                            val lsFinishOrderBottomSheet = UohLsFinishOrderBottomSheet.newInstance(index, order.verticalID)
+                            val lsFinishOrderBottomSheet =
+                                UohLsFinishOrderBottomSheet.newInstance(index, order.verticalID)
                             if (lsFinishOrderBottomSheet.isAdded || childFragmentManager.isStateSaved) return
 
-                            lsFinishOrderBottomSheet.setListener(object : UohLsFinishOrderBottomSheet.UohLsFinishOrderBottomSheetListener {
+                            lsFinishOrderBottomSheet.setListener(object :
+                                UohLsFinishOrderBottomSheet.UohLsFinishOrderBottomSheetListener {
                                 override fun onClickLsFinishOrder(index: Int, orderId: String) {
                                     currIndexNeedUpdate = index
                                     uohItemAdapter.showLoaderAtIndex(index)
@@ -2226,7 +2276,8 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
             val listParamAtcMulti = arrayListOf<AddToCartMultiParam>()
             for (x in 0 until jsonArray.size()) {
                 val objParam = jsonArray.get(x).asJsonObject
-                listParamAtcMulti.add(AddToCartMultiParam(
+                listParamAtcMulti.add(
+                    AddToCartMultiParam(
                         productId = objParam.get(PRODUCT_ID).asLong,
                         productName = objParam.get(PRODUCT_NAME).asString,
                         productPrice = objParam.get(PRODUCT_PRICE).asLong,
@@ -2235,18 +2286,37 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
                         shopId = objParam.get(SHOP_ID).asInt,
                         custId = objParam.get(CUSTOMER_ID).asInt,
                         warehouseId = objParam.get(WAREHOUSE_ID).asInt
-                ))
+                    )
+                )
             }
 
-            uohListViewModel.doAtcMulti(userSession.userId
-                    ?: "", GraphqlHelper.loadRawString(activity?.resources,
-                com.tokopedia.atc_common.R.raw.mutation_add_to_cart_multi), listParamAtcMulti, orderData.verticalCategory)
+            uohListViewModel.doAtcMulti(
+                userSession.userId ?: "",
+                GraphqlHelper.loadRawString(
+                    activity?.resources,
+                    com.tokopedia.atc_common.R.raw.mutation_add_to_cart_multi
+                ),
+                listParamAtcMulti,
+                orderData.verticalCategory
+            )
+        }
+    }
+
+    private fun atcOcc(orderData: UohListOrder.Data.UohOrders.Order) {
+        if (orderData.metadata.listProducts.isNotEmpty()) {
+            val atcOccParams = OrderDataMapper.mapOrderDataToOccParams(orderData)
+            uohListViewModel.doAtcOccMulti(atcOccParams)
         }
     }
 
     private fun handleRouting(applink: String) {
         if (applink.contains(CREATE_REVIEW_APPLINK)) {
-            startActivityForResult(RouteManager.getIntent(context, URLDecoder.decode(applink, UohConsts.UTF_8)), CREATE_REVIEW_REQUEST_CODE)
+            startActivityForResult(
+                RouteManager.getIntent(
+                    context,
+                    URLDecoder.decode(applink, UohConsts.UTF_8)
+                ), CREATE_REVIEW_REQUEST_CODE
+            )
         } else {
             RouteManager.route(context, URLDecoder.decode(applink, UohConsts.UTF_8))
         }

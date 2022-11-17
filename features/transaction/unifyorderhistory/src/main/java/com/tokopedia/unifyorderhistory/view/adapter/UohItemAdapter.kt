@@ -46,7 +46,7 @@ class UohItemAdapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     interface ActionListener {
         fun onKebabMenuClicked(order: UohListOrder.Data.UohOrders.Order, orderIndex: Int)
         fun onListItemClicked(order: UohListOrder.Data.UohOrders.Order, index: Int)
-        fun onActionButtonClicked(order: UohListOrder.Data.UohOrders.Order, index: Int)
+        fun onActionButtonClicked(order: UohListOrder.Data.UohOrders.Order, index: Int, buttonIndex: Int)
         fun onTickerDetailInfoClicked(url: String)
         fun onEmptyResultResetBtnClicked()
         fun trackViewOrderCard(order: UohListOrder.Data.UohOrders.Order, index: Int)
