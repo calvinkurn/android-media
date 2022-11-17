@@ -34,6 +34,9 @@
     <string name="smvc_voucherlist_buyertarget_text">Target</string>
     <string name="smvc_voucherlist_vps_text">Paket Promosi</string>
     <string name="smvc_voucherlist_subsidi_text">Dari Tokopedia</string>
+    <string name="smvc_voucherlist_voucher_usage_delimiter">" dari "</string>
+    <string name="smvc_voucherlist_error_quota_format">Kupon aktif maks. %d per periode (%d hari)</string>
+    <string name="smvc_voucherlist_toaster_actiontext">Oke</string>
 
     <!--Common Bottomsheet-->
     <string name="smvc_bottomsheet_filter_voucher">Filter</string>

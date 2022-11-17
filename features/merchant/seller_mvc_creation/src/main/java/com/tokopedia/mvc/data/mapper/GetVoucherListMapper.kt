@@ -1,6 +1,5 @@
 package com.tokopedia.mvc.data.mapper
 
-import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.mvc.data.response.MerchantVoucherModel
 import com.tokopedia.mvc.domain.entity.Voucher

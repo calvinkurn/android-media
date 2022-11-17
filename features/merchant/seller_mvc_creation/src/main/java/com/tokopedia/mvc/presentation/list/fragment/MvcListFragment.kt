@@ -19,8 +19,10 @@ import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.applyUnifyBackgroundColor
 import com.tokopedia.mvc.R
 import com.tokopedia.mvc.databinding.SmvcFragmentMvcListBinding
+import com.tokopedia.mvc.databinding.SmvcFragmentMvcListFooterBinding
 import com.tokopedia.mvc.di.component.DaggerMerchantVoucherCreationComponent
 import com.tokopedia.mvc.domain.entity.Voucher
+import com.tokopedia.mvc.domain.entity.VoucherCreationQuota
 import com.tokopedia.mvc.presentation.bottomsheet.EduCenterBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.FilterVoucherBottomSheet
 import com.tokopedia.mvc.presentation.list.adapter.VoucherAdapterListener
@@ -28,6 +30,7 @@ import com.tokopedia.mvc.presentation.list.adapter.VouchersAdapter
 import com.tokopedia.mvc.presentation.list.constant.MvcListConstant.INITIAL_PAGE
 import com.tokopedia.mvc.presentation.list.constant.MvcListConstant.PAGE_SIZE
 import com.tokopedia.mvc.presentation.list.viewmodel.MvcListViewModel
+import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.SearchBarUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -93,26 +96,30 @@ class MvcListFragment: BaseDaggerFragment(), HasPaginatedList by HasPaginatedLis
         viewModel.error.observe(viewLifecycleOwner) {
             view?.showToasterError(it)
         }
+        viewModel.voucherQuota.observe(viewLifecycleOwner) {
+            binding?.footer?.setupVoucherQuota(it)
+        }
     }
 
     private fun SmvcFragmentMvcListBinding.setupView() {
         header.setupHeader()
         searchBar.setupSearchBar()
         rvVoucher.setupRvVoucher()
+        sortFilter.setupFilter()
+    }
 
-
-        filterList.add(filterItem)
-        sortFilter.apply {
-            addItem(filterList)
-            parentListener = {
-                filterItem.selectedItem = arrayListOf()
-                FilterVoucherBottomSheet().show(childFragmentManager, "")
+    private fun SmvcFragmentMvcListFooterBinding.setupVoucherQuota(
+        voucherCreationQuota: VoucherCreationQuota
+    ) {
+        tfQuotaCounter.text = voucherCreationQuota.quotaUsageFormatted
+        btnAddCoupon.setOnClickListener {
+            if (voucherCreationQuota.quotaErrorMessage.isEmpty()) {
+                redirectToCreateVoucherPage()
+            } else {
+                val actionText = getString(R.string.smvc_voucherlist_toaster_actiontext)
+                it.showToasterError(voucherCreationQuota.quotaErrorMessage, actionText)
             }
-            dismissListener = parentListener
         }
-
-        filterItem.listener = {  }
-        filterItem.refChipUnify.setChevronClickListener {  }
     }
 
     private fun HeaderUnify.setupHeader() {
@@ -155,13 +162,32 @@ class MvcListFragment: BaseDaggerFragment(), HasPaginatedList by HasPaginatedLis
         attachPaging(this, config, ::getDataList)
     }
 
+    private fun SortFilter.setupFilter() {
+        filterList.add(filterItem)
+        addItem(filterList)
+        parentListener = {
+            filterItem.selectedItem = arrayListOf()
+            FilterVoucherBottomSheet().show(childFragmentManager, "")
+        }
+        dismissListener = parentListener
+
+
+        filterItem.listener = {  }
+        filterItem.refChipUnify.setChevronClickListener {  }
+    }
+
     private fun loadInitialDataList(keyword: String = "") {
         val adapter = binding?.rvVoucher?.adapter as? VouchersAdapter
         adapter?.clearDataList()
         viewModel.getVoucherList(keyword, INITIAL_PAGE, PAGE_SIZE)
+        viewModel.getVoucherQuota()
     }
 
     private fun getDataList(page: Int, pageSize: Int) {
         viewModel.getVoucherList(binding?.searchBar?.searchBarTextField?.text.toString(), page, pageSize)
+    }
+
+    private fun redirectToCreateVoucherPage() {
+        //TODO: create redirection here
     }
 }
