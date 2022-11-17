@@ -230,30 +230,23 @@ class BannerComponentViewHolder(itemView: View,
     }
 
     override fun onImpressed(position: Int) {
-        channelModel?.let {channel ->
-            channel.selectGridInPosition(position) {
-                onPromoScrolled(position)
+        channelModel?.let { channel ->
+            val realPosition = position % channel.channelGrids.size
+            channel.selectGridInPosition(realPosition) {
+                if (bannerListener?.isMainViewVisible() == true && !isCache && !bannerListener.isBannerImpressed(it.id) && position != -1) {
+                    bannerListener.onPromoScrolled(channel, it, realPosition)
+                }
             }
         }
     }
 
     override fun onClick(position: Int) {
-        channelModel?.let {channel ->
-            channel.selectGridInPosition(position) {
-                bannerListener?.onBannerClickListener(position, it, channel)
+        channelModel?.let { channel ->
+            val realPosition = position % channel.channelGrids.size
+            channel.selectGridInPosition(realPosition) {
+                bannerListener?.onBannerClickListener(realPosition, it, channel)
             }
         }
-    }
-
-    private fun onPromoScrolled(position: Int) {
-        channelModel?.let {channel ->
-            channel.selectGridInPosition(position) {
-                if (bannerListener?.isMainViewVisible() == true && !isCache && !bannerListener.isBannerImpressed(it.id) && position != -1) {
-                    bannerListener.onPromoScrolled(channel, it ,position)
-                }
-            }
-        }
-
     }
 
     private fun onPageDragStateChanged(isDrag: Boolean) {
@@ -323,11 +316,10 @@ class BannerComponentViewHolder(itemView: View,
         }
     }
 
-    private fun ChannelModel.selectGridInPosition(position: Int, action: (ChannelGrid) -> Unit = {}): ChannelGrid? {
-        return if (position != -1 && this.channelGrids.size > position) {
+    private fun ChannelModel.selectGridInPosition(position: Int, action: (ChannelGrid) -> Unit = {}) {
+        if (position != -1 && this.channelGrids.size > position) {
             action.invoke(this.channelGrids[position])
-            this.channelGrids[position]
-        } else null
+        }
     }
 
     companion object {
