@@ -813,19 +813,17 @@ class DiscoveryFragment :
     }
 
     private fun setupBackgroundForHeader(data: PageInfo?) {
-        if (data?.thematicHeader != null) {
+        if (!data?.thematicHeader?.color.isNullOrEmpty()) {
             hasColouredHeader = true
             activity?.let { navToolbar.setupToolbarWithStatusBar(it) }
-            if(isLightThemeStatusBar == true) {
+            if (isLightThemeStatusBar == true) {
                 navToolbar.hideShadow()
-            }else{
+            } else {
                 navToolbar.setShowShadowEnabled(true)
                 navToolbar.showShadow(true)
             }
             appBarLayout.elevation = 0f
-            if (!data.thematicHeader.color.isNullOrEmpty()) {
-                setupHexBackgroundColor(data.thematicHeader.color)
-            }
+            setupHexBackgroundColor(data?.thematicHeader?.color ?: "")
             setupNavScrollListener()
         } else {
             hasColouredHeader = false
