@@ -3,12 +3,14 @@ package com.tokopedia.privacycenter.main.section.activity
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.privacycenter.R
 import com.tokopedia.privacycenter.databinding.SectionActivityBinding
 import com.tokopedia.privacycenter.main.section.BasePrivacyCenterSection
 
-class ActivitySection(context: Context?) : BasePrivacyCenterSection(context) {
+class ActivitySection(private val context: Context?) : BasePrivacyCenterSection(context) {
     override val sectionViewBinding: SectionActivityBinding = SectionActivityBinding.inflate(
         LayoutInflater.from(context)
     )
@@ -19,7 +21,7 @@ class ActivitySection(context: Context?) : BasePrivacyCenterSection(context) {
     override val isShowDirectionButton: Boolean = false
 
     override fun initObservers() {
-        //none
+        // none
     }
 
     override fun onViewRendered() {
@@ -29,7 +31,7 @@ class ActivitySection(context: Context?) : BasePrivacyCenterSection(context) {
     }
 
     override fun onButtonDirectionClick(view: View) {
-        //none
+        // none
     }
 
     private fun setUpView() {
@@ -55,11 +57,14 @@ class ActivitySection(context: Context?) : BasePrivacyCenterSection(context) {
     }
 
     private fun goToShareWishlist() {
-        //direct to share wishlist
+        // direct to share wishlist
     }
 
     private fun goToHistorySearch() {
-        //direct to history search
+        RouteManager.route(
+            context,
+            ApplinkConstInternalUserPlatform.SEARCH_HISTORY
+        )
     }
 
     companion object {
