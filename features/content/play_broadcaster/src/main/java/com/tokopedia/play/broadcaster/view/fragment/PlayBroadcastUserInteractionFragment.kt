@@ -256,7 +256,7 @@ class PlayBroadcastUserInteractionFragment @Inject constructor(
 
     private fun setupView() {
         observeTitle()
-        actionBarLiveView.setShopIcon(parentViewModel.getAuthorImage())
+        actionBarLiveView.setAuthorImage(parentViewModel.getAuthorImage())
 
         ivShareLink.setOnClickListener{
             doCopyShareLink()
