@@ -232,7 +232,7 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
             activity?.setResult(
                 EPHARMACY_MINI_CONSULTATION_REQUEST_CODE,
                 Intent().apply {
-                    putParcelableArrayListExtra("epharmacy_mini_consultation_result", prepareResultForCheckout())
+                    // putParcelableArrayListExtra("epharmacy_mini_consultation_result", prepareResultForCheckout())
                 }
             )
         } else {
@@ -240,7 +240,7 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
         }
     }
 
-    private fun prepareResultForCheckout(): List<EPharmacyMiniConsultationResult> {
+    private fun prepareResultForCheckout(): ArrayList<EPharmacyMiniConsultationResult> {
         val result = arrayListOf<EPharmacyMiniConsultationResult>()
         ePharmacyPrescriptionAttachmentViewModel.ePharmacyPrepareProductsGroupResponseData?.let { response ->
             response.detailData?.groupsData?.epharmacyGroups?.forEach { group ->
@@ -258,6 +258,7 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
                 )
             }
         }
+        return result
     }
 
     private fun disableButton(buttonText: String) {
