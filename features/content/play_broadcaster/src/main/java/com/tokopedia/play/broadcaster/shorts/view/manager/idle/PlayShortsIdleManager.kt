@@ -16,7 +16,7 @@ class PlayShortsIdleManager @Inject constructor(
 ) {
 
     val eventBus = EventBus<State>()
-    private var state: State = State.StandBy
+    private var state: State = State.Unknown
     private var job: Job? = null
 
     fun startIdleTimer() {
@@ -64,7 +64,7 @@ class PlayShortsIdleManager @Inject constructor(
     }
 
     enum class State {
-        StandBy, Idle
+        Unknown, StandBy, Idle
     }
 
     companion object {

@@ -53,4 +53,4 @@ fun View.animateGone(
     }.start()
 }
 
-private val DEFAULT_ANIMATION_DURATION = 1000L
+private val DEFAULT_ANIMATION_DURATION = 200L
