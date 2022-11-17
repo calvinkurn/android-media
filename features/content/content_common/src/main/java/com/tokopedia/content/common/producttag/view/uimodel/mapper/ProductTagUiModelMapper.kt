@@ -28,7 +28,7 @@ class ProductTagUiModelMapper @Inject constructor() {
                     coverURL = it.coverURL,
                     webLink = it.webLink,
                     appLink = it.appLink,
-                    star = if (it.star == 0.0) "" else decimalFormat.format(it.star / 20.0).toString(),
+                    star = if (it.star == NO_STAR_RATING) "" else decimalFormat.format(it.star / STAR_RATING_DIVIDER).toString(),
                     price = it.price,
                     priceFmt = it.priceFmt,
                     isDiscount = it.isDiscount,
@@ -62,7 +62,7 @@ class ProductTagUiModelMapper @Inject constructor() {
                     coverURL = it.coverURL,
                     webLink = it.webLink,
                     appLink = it.appLink,
-                    star = if (it.star == 0.0) "" else decimalFormat.format(it.star / 20.0).toString(),
+                    star = if (it.star == NO_STAR_RATING) "" else decimalFormat.format(it.star / STAR_RATING_DIVIDER).toString(),
                     price = it.price,
                     priceFmt = it.priceFmt,
                     isDiscount = it.isDiscount,
@@ -202,5 +202,10 @@ class ProductTagUiModelMapper @Inject constructor() {
             isOfficial = shopInfo.goldOS.isOfficial == 1,
             isPMPro = shopInfo.goldOS.isGoldBadge == 1,
         )
+    }
+
+    companion object {
+        private const val NO_STAR_RATING = 0.0
+        private const val STAR_RATING_DIVIDER = 20.0
     }
 }
