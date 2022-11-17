@@ -312,17 +312,6 @@ class PlayShortsViewModel @Inject constructor(
         /** TODO: handle this */
     }
 
-    private suspend fun getConfiguration(account: ContentAccountUiModel): PlayShortsConfigUiModel {
-        val config = repo.getShortsConfiguration(account.id, account.type)
-
-        return if (config.shortsId.isEmpty()) {
-            val shortsId = repo.createShorts(account.id, account.type)
-            config.copy(shortsId = shortsId)
-        } else {
-            config
-        }
-    }
-
     private fun setSelectedAccount(account: ContentAccountUiModel) {
         _selectedAccount.update { account }
         sharedPref.setLastSelectedAccountType(account.type)
@@ -341,7 +330,7 @@ class PlayShortsViewModel @Inject constructor(
     }
 
     private suspend fun setupConfigurationIfEligible(account: ContentAccountUiModel) {
-        val config = getConfiguration(account)
+        val config = repo.getShortsConfiguration(account.id, account.type)
         _config.update { it.copy(tncList = config.tncList) }
 
         if (account.isUnknown) {
@@ -353,7 +342,15 @@ class PlayShortsViewModel @Inject constructor(
         } else if (account.isUser && !config.shortsAllowed){
             emitEventAccountNotEligible()
         } else {
-            _config.update { config }
+            val finalConfig = if(config.shortsId.isEmpty()) {
+                val shortsId = repo.createShorts(account.id, account.type)
+                config.copy(shortsId = shortsId)
+            }
+            else {
+                config
+            }
+
+            _config.update { finalConfig }
             setSelectedAccount(account)
         }
     }
