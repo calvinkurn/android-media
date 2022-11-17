@@ -109,7 +109,9 @@ import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceCheckout;
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceProductCartMapData;
 import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException;
+import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.response.GetPrescriptionIdsResponse;
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.model.UploadPrescriptionUiModel;
+import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.usecase.GetPrescriptionIdsUseCase;
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnBottomSheetModel;
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnButtonModel;
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnDataItemModel;
@@ -192,6 +194,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private final UserSessionInterface userSessionInterface;
     private final ShipmentDataConverter shipmentDataConverter;
     private final ReleaseBookingUseCase releaseBookingUseCase;
+    private final GetPrescriptionIdsUseCase prescriptionIdsUseCase;
     private final EPharmacyPrepareProductsGroupUseCase epharmacyUseCase;
     private final OldValidateUsePromoRevampUseCase validateUsePromoRevampUseCase;
     private final EligibleForAddressUseCase eligibleForAddressUseCase;
@@ -251,6 +254,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                              CheckoutAnalyticsCourierSelection checkoutAnalytics,
                              ShipmentDataConverter shipmentDataConverter,
                              ReleaseBookingUseCase releaseBookingUseCase,
+                             GetPrescriptionIdsUseCase prescriptionIdsUseCase,
                              EPharmacyPrepareProductsGroupUseCase epharmacyUseCase,
                              OldValidateUsePromoRevampUseCase validateUsePromoRevampUseCase,
                              Gson gson,
@@ -273,6 +277,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         this.mTrackerShipment = checkoutAnalytics;
         this.shipmentDataConverter = shipmentDataConverter;
         this.releaseBookingUseCase = releaseBookingUseCase;
+        this.prescriptionIdsUseCase = prescriptionIdsUseCase;
         this.epharmacyUseCase = epharmacyUseCase;
         this.validateUsePromoRevampUseCase = validateUsePromoRevampUseCase;
         this.gson = gson;
@@ -779,6 +784,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 false,
                 false
         ));
+        fetchPrescriptionIds(cartShipmentAddressFormData.getEpharmacyData().getShowImageUpload() && !cartShipmentAddressFormData.getEpharmacyData().getConsultationFlow(), cartShipmentAddressFormData.getEpharmacyData().getCheckoutId());
 
         cartData = cartShipmentAddressFormData.getCartData();
     }
@@ -2387,6 +2393,39 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             releaseBookingUseCase
                     .execute(productId)
                     .subscribe(new ReleaseBookingStockSubscriber());
+        }
+    }
+
+    public void fetchPrescriptionIds(boolean isUploadPrescriptionNeeded, String checkoutId) {
+        if (!checkoutId.isEmpty() && isUploadPrescriptionNeeded) {
+            compositeSubscription.add(prescriptionIdsUseCase
+                    .execute(checkoutId)
+                    .subscribe(new Subscriber<GetPrescriptionIdsResponse>() {
+                        @Override
+                        public void onCompleted() {
+                        }
+
+                        @Override
+                        public void onError(Throwable e) {
+                            Timber.d(e);
+                        }
+
+                        @Override
+                        public void onNext(GetPrescriptionIdsResponse getPrescriptionIdsResponse) {
+                            if (getPrescriptionIdsResponse.getDetailData() != null &&
+                                    getPrescriptionIdsResponse.getDetailData().getPrescriptionData() != null &&
+                                    getPrescriptionIdsResponse.getDetailData().getPrescriptionData().getPrescriptions() != null) {
+                                List<GetPrescriptionIdsResponse.EPharmacyCheckoutData.Prescription> prescriptions = getPrescriptionIdsResponse.getDetailData().getPrescriptionData().getPrescriptions();
+                                ArrayList<String> prescriptionIds = new ArrayList<>();
+                                for (GetPrescriptionIdsResponse.EPharmacyCheckoutData.Prescription prescription : prescriptions) {
+                                    prescriptionIds.add(prescription.getPrescriptionId());
+                                }
+                                setPrescriptionIds(prescriptionIds);
+                                uploadPrescriptionUiModel.setError(false);
+                                getView().updateUploadPrescription(uploadPrescriptionUiModel);
+                            }
+                        }
+                    }));
         }
     }
 

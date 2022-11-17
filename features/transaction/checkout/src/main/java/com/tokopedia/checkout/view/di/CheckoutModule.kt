@@ -35,6 +35,7 @@ import com.tokopedia.purchase_platform.common.analytics.EPharmacyAnalytics
 import com.tokopedia.purchase_platform.common.di.PurchasePlatformBaseModule
 import com.tokopedia.purchase_platform.common.di.PurchasePlatformNetworkModule
 import com.tokopedia.purchase_platform.common.feature.editaddress.di.PeopleAddressNetworkModule
+import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.usecase.GetPrescriptionIdsUseCase
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.view.UploadPrescriptionListener
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldValidateUsePromoRevampUseCase
@@ -107,6 +108,7 @@ class CheckoutModule constructor(val shipmentFragment: ShipmentFragment) {
         checkoutAnalytics: CheckoutAnalyticsCourierSelection,
         shipmentDataConverter: ShipmentDataConverter,
         releaseBookingUseCase: ReleaseBookingUseCase,
+        prescriptionIdsUseCase: GetPrescriptionIdsUseCase,
         epharmacyUseCase: EPharmacyPrepareProductsGroupUseCase,
         validateUsePromoRevampUseCase: OldValidateUsePromoRevampUseCase,
         gson: Gson,
@@ -122,7 +124,7 @@ class CheckoutModule constructor(val shipmentFragment: ShipmentFragment) {
             clearCacheAutoApplyStackUseCase,
             stateConverter, shippingCourierConverter, shipmentFragment, userSessionInterface,
             analyticsPurchaseProtection, checkoutAnalytics,
-            shipmentDataConverter, releaseBookingUseCase,
+            shipmentDataConverter, releaseBookingUseCase, prescriptionIdsUseCase,
             epharmacyUseCase, validateUsePromoRevampUseCase, gson,
             executorSchedulers, eligibleForAddressUseCase
         )

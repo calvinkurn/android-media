@@ -117,7 +117,6 @@ class ShipmentCartItemModel(
     var isHasShownCourierError: Boolean = false,
 
     // Epharmacy
-    var supportMiniConsul: Boolean = true,
     var hasEthicalProducts: Boolean = false,
     var prescriptionIds: List<String> = emptyList(),
     var tokoConsultationId: String = "",

@@ -180,6 +180,7 @@ import rx.subscriptions.CompositeSubscription
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
+import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -1403,7 +1404,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener,
 
     override fun onClickEpharmacyInfoCart(enablerLabel: String) {
         activity?.let {
-            RouteManager.route(it, "tokopedia://epharmacy/edu/$enablerLabel/obat_keras_tnc")
+            RouteManager.route(it, "tokopedia://epharmacy/edu/${enablerLabel.lowercase(Locale.ROOT)}/obat_keras_tnc")
         }
     }
 

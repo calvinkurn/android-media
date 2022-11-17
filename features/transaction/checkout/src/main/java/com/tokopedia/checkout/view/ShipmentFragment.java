@@ -686,24 +686,16 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         if (isReloadAfterPriceChangeHigher) {
             delayScrollToFirstShop();
         } else if (hasEpharmacyWidget) {
-            triggerEpharmacyCoachmark(shipmentCartItemModelList);
+            triggerEpharmacyCoachmark(uploadPrescriptionUiModel);
         }
     }
 
-    private void triggerEpharmacyCoachmark(List<ShipmentCartItemModel> shipmentCartItemModelList) {
-        delayScrollToCoachmarkEpharmacySubscription = Observable.just(shipmentCartItemModelList)
+    private void triggerEpharmacyCoachmark(UploadPrescriptionUiModel uploadPrescriptionUiModel) {
+        delayScrollToCoachmarkEpharmacySubscription = Observable.just(uploadPrescriptionUiModel)
                 .delay(1000, TimeUnit.MILLISECONDS)
                 .subscribeOn(Schedulers.io())
-                .map(shipmentCartItemModelList1 -> {
-                    for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModelList1) {
-                        if (shipmentCartItemModel.getSupportMiniConsul()) {
-                            return true;
-                        }
-                    }
-                    return false;
-                })
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribe(new Subscriber<Boolean>() {
+                .subscribe(new Subscriber<UploadPrescriptionUiModel>() {
                     @Override
                     public void onCompleted() {
 
@@ -715,10 +707,10 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     }
 
                     @Override
-                    public void onNext(Boolean needToShowCoachmark) {
+                    public void onNext(UploadPrescriptionUiModel UploadPrescriptionUiModel1) {
                         if (!isUnsubscribed() && ShipmentFragment.this.getActivityContext() != null) {
-                            shipmentPresenter.fetchEpharmacyData();
-                            if (needToShowCoachmark) {
+                            if (UploadPrescriptionUiModel1.getConsultationFlow()) {
+                                shipmentPresenter.fetchEpharmacyData();
                                 if (!CoachMarkPreference.INSTANCE.hasShown(ShipmentFragment.this.getActivityContext(), KEY_PREFERENCE_COACHMARK_EPHARMACY)) {
                                     int uploadPrescriptionPosition = shipmentAdapter.getUploadPrescriptionPosition();
                                     rvShipment.scrollToPosition(uploadPrescriptionPosition);
