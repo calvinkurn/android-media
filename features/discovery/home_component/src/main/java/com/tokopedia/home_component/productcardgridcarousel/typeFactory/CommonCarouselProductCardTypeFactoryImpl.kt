@@ -53,7 +53,7 @@ class CommonCarouselProductCardTypeFactoryImpl(
     }
 
     override fun type(dataModel: CarouselBannerCardDataModel): Int {
-        return 1
+        return CarouselBannerItemViewHolder.LAYOUT
     }
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
@@ -84,6 +84,9 @@ class CommonCarouselProductCardTypeFactoryImpl(
             }
             MissionWidgetItemViewHolder.LAYOUT -> {
                 MissionWidgetItemViewHolder(parent, cardInteraction)
+            }
+            CarouselBannerItemViewHolder.LAYOUT -> {
+                CarouselBannerItemViewHolder(parent, cardInteraction)
             }
             else -> {
                 super.createViewHolder(parent, type)

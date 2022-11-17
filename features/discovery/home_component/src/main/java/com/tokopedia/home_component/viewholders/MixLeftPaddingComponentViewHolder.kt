@@ -26,6 +26,7 @@ import com.tokopedia.home_component.productcardgridcarousel.viewHolder.CarouselV
 import com.tokopedia.home_component.util.ChannelWidgetUtil
 import com.tokopedia.home_component.util.GravitySnapHelper
 import com.tokopedia.home_component.viewholders.adapter.MixLeftAdapter
+import com.tokopedia.home_component.viewholders.adapter.MixTopComponentAdapter
 import com.tokopedia.home_component.visitable.MixLeftPaddingDataModel
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.productcard.ProductCardModel
@@ -48,7 +49,7 @@ class MixLeftPaddingComponentViewHolder (itemView: View,
 ) : AbstractViewHolder<MixLeftPaddingDataModel>(itemView), CoroutineScope,
     CommonProductCardCarouselListener {
 
-    private lateinit var adapter: MixLeftAdapter
+    private lateinit var adapter: MixTopComponentAdapter
 
     private val masterJob = SupervisorJob()
 
@@ -146,7 +147,7 @@ class MixLeftPaddingComponentViewHolder (itemView: View,
                 listData.add(CarouselSeeMorePdpDataModel(channel.channelHeader.applink, channel.channelHeader.backImage, this))
             }
         }
-        adapter = MixLeftAdapter(listData,typeFactoryImpl)
+        adapter = MixTopComponentAdapter(listData,typeFactoryImpl)
         binding?.rvProductMixLeftPadding?.adapter = adapter
     }
 
