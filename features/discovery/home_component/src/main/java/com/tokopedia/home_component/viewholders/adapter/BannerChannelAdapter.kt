@@ -28,14 +28,10 @@ class BannerChannelAdapter(
     private var imageRatio = ""
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BannerChannelImageViewHolder {
-        val layout = if (itemCount > 1) R.layout.layout_banner_channel_item else R.layout.layout_banner_channel_item_full
-        val viewHolder = BannerChannelImageViewHolder(LayoutInflater.from(parent.context).inflate(layout, parent, false), bannerItemListener)
+        val viewHolder = BannerChannelImageViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.layout_banner_channel_item, parent, false), bannerItemListener)
         viewHolder.cardUnify.animateOnPress = if(cardInteraction) CardUnify2.ANIMATE_OVERLAY_BOUNCE else CardUnify2.ANIMATE_OVERLAY
         return viewHolder
     }
-
-    val listCount: Int
-        get() = itemList.size
 
     fun setItemList(newItemList: List<BannerItemModel>) {
         itemList = newItemList
@@ -46,14 +42,6 @@ class BannerChannelAdapter(
         this.imageRatio = imageRatio
     }
 
-    fun getItem(listPosition: Int): BannerItemModel? {
-        return if (listPosition >= 0 && listPosition < itemList.size) {
-            itemList[listPosition]
-        } else {
-            null
-        }
-    }
-
     override fun onBindViewHolder(holder: BannerChannelImageViewHolder, position: Int) {
         if(position != -1) {
             holder.bind(itemList[position % itemList.size], imageRatio)
@@ -61,7 +49,7 @@ class BannerChannelAdapter(
     }
 
     override fun getItemCount(): Int {
-        return if(isUsingInfiniteScroll) Integer.MAX_VALUE else itemList.size
+        return if(isUsingInfiniteScroll && itemList.size > 1) Integer.MAX_VALUE else itemList.size
     }
 }
 
