@@ -38,7 +38,7 @@ class PlayShortsUiMapper @Inject constructor(
         )
 
         return PlayShortsConfigUiModel(
-            shortsId = config.shortsId,
+            shortsId = if(config.draftShortsId == 0) "" else config.draftShortsId.toString(),
             maxTitleCharacter = config.maxTitleCharacter,
             shortsAllowed = response.authorConfig.shortVideoAllowed,
             tncList = response.authorConfig.tnc.map {
