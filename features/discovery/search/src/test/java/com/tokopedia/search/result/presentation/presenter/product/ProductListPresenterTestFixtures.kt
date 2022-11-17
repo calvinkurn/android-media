@@ -38,6 +38,8 @@ import com.tokopedia.search.result.product.samesessionrecommendation.SameSession
 import com.tokopedia.search.result.product.suggestion.SuggestionPresenter
 import com.tokopedia.search.result.product.tdn.TopAdsImageViewPresenterDelegate
 import com.tokopedia.search.result.product.ticker.TickerPresenterDelegate
+import com.tokopedia.search.result.product.wishlist.WishlistPresenterDelegate
+import com.tokopedia.search.result.product.wishlist.WishlistView
 import com.tokopedia.search.shouldBe
 import com.tokopedia.search.utils.SchedulersProvider
 import com.tokopedia.search.utils.applinkmodifier.ApplinkModifier
@@ -87,6 +89,7 @@ internal open class ProductListPresenterTestFixtures {
     protected val chooseAddressView = mockk<ChooseAddressView>(relaxed = true)
     protected val bannedProductsView = mockk<BannedProductsView>(relaxed = true)
     protected val broadMatchView = mockk<BroadMatchView>(relaxed = true)
+    protected val wishlistView = mockk<WishlistView>(relaxed = true)
     protected val inspirationCarouselDynamicProductView =
         mockk<InspirationCarouselDynamicProductView>(relaxed = true)
     protected val testSchedulersProvider = object : SchedulersProvider {
@@ -184,6 +187,7 @@ internal open class ProductListPresenterTestFixtures {
             safeSearchPresenter,
             addToCartUseCase,
             topAdsImageViewPresenter,
+            WishlistPresenterDelegate(wishlistView),
         )
         productListPresenter.attachView(productListView)
     }

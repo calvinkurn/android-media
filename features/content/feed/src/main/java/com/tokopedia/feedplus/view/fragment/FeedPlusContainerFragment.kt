@@ -398,7 +398,10 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
 
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
         super.setUserVisibleHint(isVisibleToUser)
-        if (!isVisibleToUser) hideAllFab()
+        if (!isVisibleToUser) {
+            hideAllFab()
+            coachMarkHelper.dismissAllCoachMark()
+        }
     }
 
     override fun onHiddenChanged(hidden: Boolean) {
@@ -616,9 +619,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
                 feedFloatingButton.show()
                 showCreatePostOnBoarding()
             } else feedFloatingButton.hide()
-        } catch (e: Exception) {
-            feedFloatingButton.hide()
-        }
+        } catch (e: Exception) { }
     }
 
     private fun createLiveFab(): FloatingButtonItem {
