@@ -62,7 +62,7 @@ class PayLaterWidget @JvmOverloads constructor(
     private fun generateCaseMap() {
         caseMap[DUE_DATE_CASE_NUMBER] = DUE_DATE
         caseMap[FIRST_GRACE_CASE_NUMBER] = FIRST_GRACE
-        caseMap[FITH_GRACE_CASE_NUMBER] = FITH_GRACE
+        caseMap[FIFTH_GRACE_CASE_NUMBER] = FIFTH_GRACE
         caseMap[D5_DUE_DATE_CASE_NUMBER] = D5_DUE_DATE
         caseMap[D2_DUE_DATE_CASE_NUMBER] = D2_DUE_DATE
         caseMap[D1_DUE_DATE_CASE_NUMBER] = D1_DUE_DATE
@@ -175,7 +175,7 @@ class PayLaterWidget @JvmOverloads constructor(
     companion object {
         const val DUE_DATE = "Due Date"
         const val FIRST_GRACE = "1st Grace"
-        const val FITH_GRACE = "5th Grace"
+        const val FIFTH_GRACE = "5th Grace"
         const val D5_DUE_DATE = "D-5 Due Date"
         const val D2_DUE_DATE = "D-2 Due Date"
         const val D1_DUE_DATE = "D-1 Due Date"
@@ -184,7 +184,7 @@ class PayLaterWidget @JvmOverloads constructor(
         const val REJECTED = "Rejected KYC (Can Reapply)"
         const val DUE_DATE_CASE_NUMBER = 11
         const val FIRST_GRACE_CASE_NUMBER = 12
-        const val FITH_GRACE_CASE_NUMBER = 13
+        const val FIFTH_GRACE_CASE_NUMBER = 13
         const val D5_DUE_DATE_CASE_NUMBER = 50
         const val D2_DUE_DATE_CASE_NUMBER = 51
         const val D1_DUE_DATE_CASE_NUMBER = 52
