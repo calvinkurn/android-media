@@ -590,12 +590,19 @@ class PostDynamicViewNew @JvmOverloads constructor(
         val subtitles = getCTAButtonSubtitle(feedXCard)
 
         if (!subtitles.isNullOrEmpty()) {
+            if (subtitles.size > ONE && animationHandler == null) {
+                animationHandler = FeedXCardSubtitlesAnimationHandler()
+            } else if (animationHandler != null) {
+                animationHandler?.stopAnimation()
+                animationHandler = null
+            }
+
             topAdsProductSubtitleContainer.removeAllViews()
-            subtitles.map { subtitle ->
+            subtitles.mapIndexed { index, subtitle ->
                 val typography = Typography(context)
                 typography.setType(Typography.DISPLAY_3)
                 typography.ellipsize = TextUtils.TruncateAt.END
-                typography.maxLines = 1
+                typography.maxLines = ONE
                 typography.setTextColor(
                     MethodChecker.getColor(
                         context,
@@ -605,21 +612,19 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 typography.text = subtitle
 
                 topAdsProductSubtitleContainer.addView(typography)
+
+                if (index == ZERO) {
+                    animationHandler?.firstContainer = WeakReference(typography)
+                } else if (index == ONE) {
+                    animationHandler?.secondContainer = WeakReference(typography)
+                }
             }
 
             // set animation to subtitles
-            val subtitleViewsCount = topAdsProductSubtitleContainer.childCount
-            if (subtitleViewsCount > ONE) {
-                animationHandler = FeedXCardSubtitlesAnimationHandler(
-                    WeakReference(topAdsProductSubtitleContainer.getChildAt(0) as Typography),
-                    WeakReference(topAdsProductSubtitleContainer.getChildAt(1) as Typography)
-                )
+            if (topAdsProductSubtitleContainer.childCount > ONE) {
                 animationHandler?.subtitles = subtitles
                 animationHandler?.checkToCancelTimer()
                 animationHandler?.startTimer()
-            } else if (animationHandler != null) {
-                animationHandler?.stopAnimation()
-                animationHandler = null
             }
 
             topAdsProductSubtitleContainer.show()
@@ -2014,12 +2019,10 @@ class PostDynamicViewNew @JvmOverloads constructor(
 
     /**
      * get subtitles from FeedXCard model
-     * only get max 2 subtitles
      */
     private fun getCTAButtonSubtitle(card: FeedXCard) =
         if (card.isTypeProductHighlight && card.cta.subtitle.isNotEmpty())
-            if (card.cta.subtitle.size >= TWO) card.cta.subtitle.subList(ZERO, TWO)
-            else card.cta.subtitle
+            card.cta.subtitle
         else null
 
     override fun onDetachedFromWindow() {
