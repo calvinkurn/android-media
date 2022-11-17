@@ -20,9 +20,10 @@ class PlayShortsAccountManagerImpl @Inject constructor(
 
     /**
      * Best Eligible Account Rules:
-     * 1. If user only has 1 account, return the account
-     * 2. Else, get account by preferred / last selected account
-     * 3. Check account:
+     * 1. If user has no account, return empty account
+     * 2. Else if user only has 1 account, return the account
+     * 3. Else, get account by preferred / last selected account
+     * 4. Check account:
      *    a. Eligible -> return user / shop account
      *    b. Not Eligible
      *          i. Switch account
@@ -35,7 +36,8 @@ class PlayShortsAccountManagerImpl @Inject constructor(
         accountList: List<ContentAccountUiModel>,
         preferredAccountType: String
     ): ContentAccountUiModel = withContext(dispatchers.io) {
-        if(accountList.size == 1) return@withContext accountList.first()
+        if (accountList.isEmpty()) return@withContext ContentAccountUiModel.Empty
+        if (accountList.size == 1) return@withContext accountList.first()
 
         val lastSelectedAccountType = sharedPref.getLastSelectedAccountType()
 
@@ -55,7 +57,7 @@ class PlayShortsAccountManagerImpl @Inject constructor(
 
         if (isAccountEligible(finalAccount)) {
             finalAccount
-        } else if(account.isShop) {
+        } else if (account.isShop) {
             account
         } else {
             ContentAccountUiModel.Empty
