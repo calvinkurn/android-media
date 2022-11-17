@@ -330,12 +330,15 @@ class PlayShortsViewModel @Inject constructor(
     }
 
     private suspend fun setupConfigurationIfEligible(account: ContentAccountUiModel) {
+        if(account.isUnknown) {
+            emitEventAccountNotEligible()
+            return
+        }
+
         val config = repo.getShortsConfiguration(account.id, account.type)
         _config.update { it.copy(tncList = config.tncList) }
 
-        if (account.isUnknown) {
-            emitEventAccountNotEligible()
-        } else if(account.isShop && (!account.hasAcceptTnc || !config.shortsAllowed)) {
+        if(account.isShop && (!account.hasAcceptTnc || !config.shortsAllowed)) {
             emitEventSellerNotEligible()
         } else if (account.isUser && !account.hasAcceptTnc) {
             emitEventUGCOnboarding(account.hasUsername)
