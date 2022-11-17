@@ -40,7 +40,7 @@ import com.tokopedia.wishlistcollection.di.WishlistCollectionModule
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.SOURCE_PDP
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.SRC_WISHLIST_COLLECTION
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.SRC_WISHLIST_COLLECTION_BULK_ADD
-import com.tokopedia.wishlistcollection.view.adapter.BottomSheetCollectionWishlistAdapter
+import com.tokopedia.wishlistcollection.view.adapter.BottomSheetWishlistCollectionAdapter
 import com.tokopedia.wishlistcollection.view.fragment.WishlistCollectionDetailFragment
 import com.tokopedia.wishlistcollection.view.fragment.WishlistCollectionHostBottomSheetFragment
 import com.tokopedia.wishlistcollection.view.viewmodel.BottomSheetAddCollectionViewModel
@@ -57,7 +57,7 @@ import javax.inject.Inject
 class BottomSheetAddCollectionWishlist: BottomSheetUnify(), HasComponent<com.tokopedia.wishlistcollection.di.WishlistCollectionComponent> {
     private var binding by autoClearedNullable<BottomsheetAddWishlistCollectionBinding>()
     private val userSession: UserSessionInterface by lazy { UserSession(activity) }
-    private val collectionAdapter = BottomSheetCollectionWishlistAdapter()
+    private val collectionAdapter = BottomSheetWishlistCollectionAdapter()
     private var actionListener: ActionListener? = null
     private var isProductActive: Boolean = true
     private var toasterErrorMessage: String = ""

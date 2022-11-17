@@ -6,7 +6,6 @@ import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.tokopoints.di.TokoPointScope
 import com.tokopedia.tokopoints.view.model.*
 import com.tokopedia.tokopoints.view.util.CommonConstant
-import com.tokopedia.tokopoints.view.util.CommonConstant.GQLQuery.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.util.*
@@ -49,7 +48,7 @@ class CatalogListingRepository @Inject constructor(@Named(CommonConstant.GQLQuer
         val graphqlRequestPoints = GraphqlRequest(tp_gql_current_Point,
                 TokoPointDetailEntity::class.java, false)
         mGetPointData.addRequest(graphqlRequestPoints)
-        mGetPointData.executeOnBackground().getSuccessData<TokoPointDetailEntity>()
+        mGetPointData.executeOnBackground().getSuccessData<TokoPointDetailEntity?>()
     }
 
 }

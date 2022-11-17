@@ -14,8 +14,8 @@ object ChatbotNewRelicLogger {
         key: String = ChatbotConstant.NewRelic.KEY_CHATBOT_ERROR
     ) {
         val map: MutableMap<String, String> = HashMap()
-        var message = exception?.message
-        var messageContent = (message?.subSequence(
+        val message = exception?.message
+        val messageContent = (message?.subSequence(
             0,
             Math.min(message.length, MAX_LENGTH_FOR_NR_EXCEPTION)
         )).toString()
@@ -38,8 +38,8 @@ object ChatbotNewRelicLogger {
         key: String = ChatbotConstant.NewRelic.KEY_CHATBOT_ERROR
     ) {
         val map: MutableMap<String, String> = HashMap()
-        var message = exception?.message
-        var messageContent = (message?.subSequence(
+        val message = exception?.message
+        val messageContent = (message?.subSequence(
             0,
             Math.min(message.length, MAX_LENGTH_FOR_NR_EXCEPTION)
         )).toString()
@@ -55,12 +55,12 @@ object ChatbotNewRelicLogger {
     }
 
     fun logNewRelicForSocket(
-        exception: Exception
+        exception: Throwable? = null
     ) {
         val map: MutableMap<String, String> = HashMap()
 
-        var message = exception.message
-        var messageContent = (message?.subSequence(
+        val message = exception?.message ?: ""
+        val messageContent = (message.subSequence(
             0,
             Math.min(message.length, MAX_LENGTH_FOR_NR_EXCEPTION)
         )).toString()
@@ -68,7 +68,8 @@ object ChatbotNewRelicLogger {
         map["type"] = "request"
         map["success"] = "false"
         map["exception"] = messageContent
-        ServerLogger.log(Priority.P2, "CHATBOT_SOCKET_EXCEPTION", map)
+        map["socket_error"] = "true"
+        ServerLogger.log(Priority.P2, ChatbotConstant.NewRelic.KEY_CHATBOT_ERROR, map)
     }
 
 
