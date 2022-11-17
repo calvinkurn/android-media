@@ -11,12 +11,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.campaign.utils.constant.DateConstant
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.mvc.R
-import com.tokopedia.mvc.databinding.SmvcFragmentVoucherDetailBinding
-import com.tokopedia.mvc.databinding.SmvcVoucherDetailHeaderSectionBinding
-import com.tokopedia.mvc.databinding.SmvcVoucherDetailProductSectionBinding
-import com.tokopedia.mvc.databinding.SmvcVoucherDetailVoucherInfoSectionBinding
-import com.tokopedia.mvc.databinding.SmvcVoucherDetailVoucherSettingSectionBinding
-import com.tokopedia.mvc.databinding.SmvcVoucherDetailVoucherTypeSectionBinding
+import com.tokopedia.mvc.databinding.*
 import com.tokopedia.mvc.di.component.DaggerMerchantVoucherCreationComponent
 import com.tokopedia.mvc.domain.entity.VoucherDetailData
 import com.tokopedia.mvc.util.SharingUtil
@@ -55,6 +50,9 @@ class VoucherDetailFragment : BaseDaggerFragment() {
     private var voucherInfoBinding by autoClearedNullable<SmvcVoucherDetailVoucherInfoSectionBinding>()
     private var voucherSettingBinding by autoClearedNullable<SmvcVoucherDetailVoucherSettingSectionBinding>()
     private var voucherProductBinding by autoClearedNullable<SmvcVoucherDetailProductSectionBinding>()
+    private var btnState1Binding by autoClearedNullable<SmvcVoucherDetailButtonSectionState1Binding>()
+    private var btnState2Binding by autoClearedNullable<SmvcVoucherDetailButtonSectionState2Binding>()
+    private var btnState3Binding by autoClearedNullable<SmvcVoucherDetailButtonSectionState3Binding>()
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -116,14 +114,12 @@ class VoucherDetailFragment : BaseDaggerFragment() {
             layoutProductList.setOnInflateListener { _, view ->
                 voucherProductBinding = SmvcVoucherDetailProductSectionBinding.bind(view)
             }
-            btnBroadcastChat.setOnClickListener {
-                context?.let { ctx -> SharingUtil.shareToBroadCastChat(ctx, 14883692) }
-            }
         }
         setupHeaderSection(data)
         setupVoucherTypeSection(data)
         setupVoucherInfoSection(data)
         setupVoucherSettingSection(data)
+        setupButtonSection(data)
     }
 
     private fun setupHeaderSection(data: VoucherDetailData) {
@@ -145,7 +141,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                 else -> {
                     labelVoucherSource.apply {
                         visible()
-                        text = "Paket Promosi"
+                        text = context.getString(R.string.smvc_promotion_package_label)
                     }
                     tpgVpsPackage.apply {
                         visible()
@@ -170,15 +166,15 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                         text = getString(R.string.smvc_status_upcoming_label)
                         setTextColorCompat(com.tokopedia.unifyprinciples.R.color.Unify_NN600)
                     }
-                    VoucherStatusConstant.ONGOING  -> {
+                    VoucherStatusConstant.ONGOING -> {
                         text = getString(R.string.smvc_status_ongoing_label)
                         setTextColorCompat(com.tokopedia.unifyprinciples.R.color.Green_G500)
                     }
-                    VoucherStatusConstant.ENDED  -> {
+                    VoucherStatusConstant.ENDED -> {
                         text = getString(R.string.smvc_status_ended_label)
                         setTextColorCompat(com.tokopedia.unifyprinciples.R.color.Unify_NN600)
                     }
-                    VoucherStatusConstant.STOPPED  -> {
+                    VoucherStatusConstant.STOPPED -> {
                         text = getString(R.string.smvc_status_stopped_label)
                         setTextColorCompat(com.tokopedia.unifyprinciples.R.color.Red_R500)
                     }
@@ -207,7 +203,10 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                     tpgPeriodStop.invisible()
                 }
                 else -> {
-                    val format = SimpleDateFormat(DateConstant.DATE_WITH_SECOND_PRECISION_ISO_8601, Locale.getDefault())
+                    val format = SimpleDateFormat(
+                        DateConstant.DATE_WITH_SECOND_PRECISION_ISO_8601,
+                        Locale.getDefault()
+                    )
                     val stoppedDate = format.parse(data.updateTime)
                     btnUbahKupon.invisible()
                     timer.invisible()
@@ -259,11 +258,15 @@ class VoucherDetailFragment : BaseDaggerFragment() {
             }
             tpgVoucherName.text = data.voucherName
             tpgVoucherCode.text = data.voucherCode
-            val format = SimpleDateFormat(DateConstant.DATE_WITH_SECOND_PRECISION_ISO_8601, Locale.getDefault())
+            val format = SimpleDateFormat(
+                DateConstant.DATE_WITH_SECOND_PRECISION_ISO_8601,
+                Locale.getDefault()
+            )
             val startPeriodDate = format.parse(data.voucherStartTime)
             val endPeriodDate = format.parse(data.voucherFinishTime)
             if (startPeriodDate != null) {
-                tpgVoucherStartPeriod.text = startPeriodDate.formatTo(DateConstant.DATE_YEAR_WITH_TIME)
+                tpgVoucherStartPeriod.text =
+                    startPeriodDate.formatTo(DateConstant.DATE_YEAR_WITH_TIME)
             }
             if (endPeriodDate != null) {
                 tpgVoucherEndPeriod.text = endPeriodDate.formatTo(DateConstant.DATE_YEAR_WITH_TIME)
@@ -314,30 +317,39 @@ class VoucherDetailFragment : BaseDaggerFragment() {
         voucherSettingBinding?.run {
             when (data.voucherType) {
                 PromoTypeConstant.SHIPPING -> {
-                    tpgVoucherNominalLabel.text = getString(R.string.smvc_nominal_free_shipping_label)
+                    tpgVoucherNominalLabel.text =
+                        getString(R.string.smvc_nominal_free_shipping_label)
                     tpgVoucherNominal.text = data.voucherDiscountAmount.getCurrencyFormatted()
                 }
                 PromoTypeConstant.CASHBACK -> {
                     when (data.voucherDiscountType) {
                         DiscountTypeConstant.NOMINAL -> {
-                            tpgVoucherNominalLabel.text = getString(R.string.smvc_nominal_cashback_label)
-                            tpgVoucherNominal.text = data.voucherDiscountAmount.getCurrencyFormatted()
+                            tpgVoucherNominalLabel.text =
+                                getString(R.string.smvc_nominal_cashback_label)
+                            tpgVoucherNominal.text =
+                                data.voucherDiscountAmount.getCurrencyFormatted()
                         }
                         else -> {
-                            tpgVoucherNominalLabel.text = getString(R.string.smvc_percentage_cashback_label)
-                            tpgVoucherNominal.text = data.voucherDiscountAmount.getPercentFormatted()
+                            tpgVoucherNominalLabel.text =
+                                getString(R.string.smvc_percentage_cashback_label)
+                            tpgVoucherNominal.text =
+                                data.voucherDiscountAmount.getPercentFormatted()
                         }
                     }
                 }
                 else -> {
                     when (data.voucherDiscountType) {
                         DiscountTypeConstant.NOMINAL -> {
-                            tpgVoucherNominalLabel.text = getString(R.string.smvc_nominal_discount_label)
-                            tpgVoucherNominal.text = data.voucherDiscountAmount.getCurrencyFormatted()
+                            tpgVoucherNominalLabel.text =
+                                getString(R.string.smvc_nominal_discount_label)
+                            tpgVoucherNominal.text =
+                                data.voucherDiscountAmount.getCurrencyFormatted()
                         }
                         else -> {
-                            tpgVoucherNominalLabel.text = getString(R.string.smvc_percentage_discount_label)
-                            tpgVoucherNominal.text = data.voucherDiscountAmount.getPercentFormatted()
+                            tpgVoucherNominalLabel.text =
+                                getString(R.string.smvc_percentage_discount_label)
+                            tpgVoucherNominal.text =
+                                data.voucherDiscountAmount.getPercentFormatted()
                         }
                     }
                 }
@@ -350,11 +362,13 @@ class VoucherDetailFragment : BaseDaggerFragment() {
             when (data.voucherType) {
                 PromoTypeConstant.SHIPPING -> {
                     llVoucherMaxPriceDeduction.gone()
-                } else -> {
+                }
+                else -> {
                     when (data.voucherDiscountType) {
                         DiscountTypeConstant.PERCENTAGE -> {
                             llVoucherMaxPriceDeduction.visible()
-                            tpgVoucherMaxPriceDeduction.text = data.voucherDiscountAmountMax.getCurrencyFormatted()
+                            tpgVoucherMaxPriceDeduction.text =
+                                data.voucherDiscountAmountMax.getCurrencyFormatted()
                         }
                         else -> {
                             llVoucherMaxPriceDeduction.gone()
@@ -371,6 +385,74 @@ class VoucherDetailFragment : BaseDaggerFragment() {
             TargetBuyerConstant.NEW_FOLLOWER -> getString(R.string.smvc_new_follower_label)
             TargetBuyerConstant.NEW_USER -> getString(R.string.smvc_new_user_label)
             else -> getString(R.string.smvc_member_label)
+        }
+    }
+
+    private fun setupButtonSection(data: VoucherDetailData) {
+        binding?.run {
+            when (data.voucherStatus) {
+                VoucherStatusConstant.NOT_STARTED -> {
+                    layoutButton.setOnInflateListener { _, view ->
+                        btnState1Binding = SmvcVoucherDetailButtonSectionState1Binding.bind(view)
+                    }
+                    layoutButton.layoutResource =
+                        R.layout.smvc_voucher_detail_button_section_state_1
+                    if (layoutButton.parent != null) {
+                        layoutButton.inflate()
+                    }
+                }
+                VoucherStatusConstant.ONGOING -> {
+                    layoutButton.setOnInflateListener { _, view ->
+                        btnState2Binding = SmvcVoucherDetailButtonSectionState2Binding.bind(view)
+                    }
+                    layoutButton.layoutResource =
+                        R.layout.smvc_voucher_detail_button_section_state_2
+                    if (layoutButton.parent != null) {
+                        layoutButton.inflate()
+                    }
+                }
+                else -> {
+                    layoutButton.setOnInflateListener { _, view ->
+                        btnState3Binding = SmvcVoucherDetailButtonSectionState3Binding.bind(view)
+                    }
+                    layoutButton.layoutResource =
+                        R.layout.smvc_voucher_detail_button_section_state_3
+                    if (layoutButton.parent != null) {
+                        layoutButton.inflate()
+                    }
+                }
+            }
+        }
+        setupButtonAction()
+    }
+
+    private fun setupButtonAction() {
+        btnState1Binding?.apply {
+            btnThreeDots.setOnClickListener {
+                //TODO:open bottom sheet
+            }
+            btnBroadcastChat.setOnClickListener {
+                context?.let { ctx -> SharingUtil.shareToBroadCastChat(ctx, 14883692) }
+            }
+        }
+        btnState2Binding?.apply {
+            btnThreeDots.setOnClickListener {
+                //TODO:open bottom sheet
+            }
+            btnBroadcastChat.setOnClickListener {
+                context?.let { ctx -> SharingUtil.shareToBroadCastChat(ctx, 14883692) }
+            }
+            btnShare.setOnClickListener {
+                //TODO:open share component
+            }
+        }
+        btnState3Binding?.apply {
+            btnThreeDots.setOnClickListener {
+                //TODO:open bottom sheet
+            }
+            btnDuplicate.setOnClickListener {
+                //TODO:go to summary page
+            }
         }
     }
 

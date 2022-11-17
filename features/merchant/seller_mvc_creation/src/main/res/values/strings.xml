@@ -58,4 +58,7 @@
     <string name="smvc_new_user_label">Pengguna Baru</string>
     <string name="smvc_member_label">Member</string>
     <string name="smvc_broadcast_chat_label">Broadcast Chat</string>
+    <string name="smvc_sharing_label">Bagikan</string>
+    <string name="smvc_duplicate_label">Duplikat</string>
+    <string name="smvc_promotion_package_label">Paket Promosi</string>
 </resources>
