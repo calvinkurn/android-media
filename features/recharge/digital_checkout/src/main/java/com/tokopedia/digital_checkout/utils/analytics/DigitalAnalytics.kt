@@ -149,7 +149,7 @@ class DigitalAnalytics {
                     DigitalCheckoutTrackingConst.CurrencyCode.KEY,
                     DigitalCheckoutTrackingConst.CurrencyCode.IDR,
                     DigitalCheckoutTrackingConst.Label.IMPRESSIONS,
-                    DataLayer.listOf(*fintechProductList.toTypedArray())
+                    listOf(fintechProductList)
                 ),
                 DigitalCheckoutTrackingConst.Label.USER_ID, userId
             )
@@ -175,7 +175,7 @@ class DigitalAnalytics {
                         DigitalCheckoutTrackingConst.Label.ACTION_FIELD,
                         DataLayer.mapOf(DigitalCheckoutTrackingConst.Product.KEY_LIST, "/checkout - ${fintechProduct.info.title} - tebus murah"),
                         DigitalCheckoutTrackingConst.Label.PRODUCTS,
-                        DataLayer.listOf(*fintechProductList.toTypedArray())
+                        listOf(fintechProductList)
                     )
                 ),
                 DigitalCheckoutTrackingConst.Label.USER_ID, userId
@@ -214,7 +214,7 @@ class DigitalAnalytics {
                     DigitalCheckoutTrackingConst.CurrencyCode.KEY,
                     DigitalCheckoutTrackingConst.CurrencyCode.IDR,
                     DigitalCheckoutTrackingConst.Label.IMPRESSIONS,
-                    DataLayer.listOf(*fintechProductList.toTypedArray())
+                    listOf(fintechProductList)
                 ),
                 DigitalCheckoutTrackingConst.Label.USER_ID, userId
             )
@@ -240,7 +240,7 @@ class DigitalAnalytics {
                         DigitalCheckoutTrackingConst.Label.ACTION_FIELD,
                         DataLayer.mapOf(DigitalCheckoutTrackingConst.Product.KEY_LIST, "/checkout - ${fintechProduct.info.title} $position - $CROSSELL_CARD_TYPE"),
                         DigitalCheckoutTrackingConst.Label.PRODUCTS,
-                        DataLayer.listOf(*fintechProductList.toTypedArray())
+                        listOf(fintechProductList)
                     )
                 ),
                 DigitalCheckoutTrackingConst.Label.USER_ID, userId
@@ -271,8 +271,8 @@ class DigitalAnalytics {
 
         val label = String.format(
             "%s - %s - %s - %s",
-            cartDigitalInfoData.attributes.categoryName.toLowerCase(),
-            cartDigitalInfoData.attributes.operatorName.toLowerCase(),
+            cartDigitalInfoData.attributes.categoryName.lowercase(Locale.ROOT),
+            cartDigitalInfoData.attributes.operatorName.lowercase(Locale.ROOT),
             cartDigitalInfoData.channelId,
             cartDigitalInfoData.attributes.autoApplyVoucher.code
         )
@@ -297,7 +297,7 @@ class DigitalAnalytics {
                             DigitalCheckoutTrackingConst.Misc.ACTION_FIELD_STEP1
                         ),
                         DigitalCheckoutTrackingConst.Label.PRODUCTS,
-                        DataLayer.listOf(*products.toTypedArray())
+                        listOf(products)
                     )
                 ),
                 DigitalCheckoutTrackingConst.Label.CURRENTSITE, DigitalCheckoutTrackingConst.Value.RECHARGE_SITE
@@ -341,9 +341,7 @@ class DigitalAnalytics {
                             DigitalCheckoutTrackingConst.Misc.ACTION_FIELD_STEP2
                         ),
                         DigitalCheckoutTrackingConst.Label.PRODUCTS,
-                        DataLayer.listOf(
-                            *products.toTypedArray()
-                        )
+                        listOf(products)
                     )
                 ),
                 DigitalCheckoutTrackingConst.Label.CURRENTSITE, DigitalCheckoutTrackingConst.Value.RECHARGE_SITE
@@ -376,9 +374,7 @@ class DigitalAnalytics {
                             DigitalCheckoutTrackingConst.Misc.ACTION_FIELD_STEP2
                         ),
                         DigitalCheckoutTrackingConst.Label.PRODUCTS,
-                        DataLayer.listOf(
-                            *fintechProductList.toTypedArray()
-                        )
+                        listOf(fintechProductList)
                     )
                 )
             )
@@ -410,9 +406,7 @@ class DigitalAnalytics {
                             DigitalCheckoutTrackingConst.Misc.ACTION_FIELD_STEP2_TEBUS_MURAH
                         ),
                         DigitalCheckoutTrackingConst.Label.PRODUCTS,
-                        DataLayer.listOf(
-                            *fintechProductList.toTypedArray()
-                        )
+                        listOf(fintechProductList)
                     )
                 )
             )
