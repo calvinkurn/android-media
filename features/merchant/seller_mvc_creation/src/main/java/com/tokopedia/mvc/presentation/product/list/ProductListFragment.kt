@@ -17,10 +17,12 @@ import com.tokopedia.campaign.utils.extension.applyPaddingToLastItem
 import com.tokopedia.campaign.utils.extension.attachDividerItemDecoration
 import com.tokopedia.campaign.utils.extension.showToaster
 import com.tokopedia.kotlin.extensions.view.applyUnifyBackgroundColor
+import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.mvc.R
 import com.tokopedia.mvc.databinding.SmvcFragmentProductListBinding
 import com.tokopedia.mvc.di.component.DaggerMerchantVoucherCreationComponent
@@ -183,7 +185,7 @@ class ProductListFragment : BaseDaggerFragment() {
 
             }
             is ProductListEffect.BulkDeleteProductSuccess -> {
-                binding?.root.showToaster(
+                binding?.cardUnify2.showToaster(
                     message = getString(
                         R.string.smvc_placeholder_bulk_delete_product,
                         effect.deletedProductCount
@@ -192,7 +194,7 @@ class ProductListFragment : BaseDaggerFragment() {
                 )
             }
             ProductListEffect.ProductDeleted -> {
-                binding?.root.showToaster(
+                binding?.cardUnify2.showToaster(
                     message = getString(R.string.smvc_product_deleted),
                     ctaText = getString(R.string.smvc_ok)
                 )
@@ -247,7 +249,6 @@ class ProductListFragment : BaseDaggerFragment() {
     private fun renderEmptyState(productCount: Int, isLoading: Boolean) {
         binding?.run {
             recyclerView.isVisible = productCount.isMoreThanZero()
-            cardUnify2.isVisible = productCount.isMoreThanZero()
             checkbox.isVisible = productCount.isMoreThanZero()
             dividerList.isVisible = productCount.isMoreThanZero()
             tpgSelectAll.isVisible = productCount.isMoreThanZero()
@@ -255,6 +256,7 @@ class ProductListFragment : BaseDaggerFragment() {
             tpgCtaAddProduct.isVisible = productCount.isMoreThanZero()
             emptyState.isVisible = productCount.isZero() && !isLoading
             emptyState.emptyStateCTAID.setOnClickListener { activity?.finish() }
+            if (productCount.isZero()) cardUnify2.invisible() else cardUnify2.visible()
         }
     }
 
