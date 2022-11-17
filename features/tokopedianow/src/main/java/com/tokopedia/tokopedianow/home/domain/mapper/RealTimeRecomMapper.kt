@@ -22,14 +22,13 @@ object RealTimeRecomMapper {
 
     fun MutableList<HomeLayoutItemUiModel>.mapRealTimeRecommendation(
         channelId: String,
-        productId: String,
         recomWidget: RecommendationWidget,
         miniCartData: MiniCartSimplifiedData?,
         @TokoNowLayoutType type: String
     ) {
         when (type) {
-            PRODUCT_RECOM -> mapProductRecomRTR(channelId, productId, recomWidget, miniCartData)
-            MIX_LEFT_CAROUSEL_ATC -> mapMixLeftAtcRTR(channelId, productId, recomWidget, miniCartData)
+            PRODUCT_RECOM -> mapProductRecomRTR(channelId, recomWidget, miniCartData)
+            MIX_LEFT_CAROUSEL_ATC -> mapMixLeftAtcRTR(channelId, recomWidget, miniCartData)
         }
     }
 
@@ -93,28 +92,30 @@ object RealTimeRecomMapper {
     }
 
     fun MutableList<HomeLayoutItemUiModel>.getRealTimeRecom(channelId: String): HomeRealTimeRecomUiModel? {
-        val productRecom = getProductRecomItem(channelId)?.realTimeRecom
-        val mixLeftAtc = getLeftAtcItem(channelId)?.realTimeRecom
-        return productRecom ?: mixLeftAtc
+        return getProductRecomItem(channelId)?.realTimeRecom ?: getLeftAtcItem(channelId)?.realTimeRecom
     }
 
     private fun MutableList<HomeLayoutItemUiModel>.getProductRecomItem(channelId: String): HomeProductRecomUiModel? {
-        return map { it.layout }.filterIsInstance<HomeProductRecomUiModel>()
-            .firstOrNull { it.id == channelId }
+        return map { it.layout }.filterIsInstance<HomeProductRecomUiModel>().firstOrNull { it.id == channelId }
     }
 
     private fun MutableList<HomeLayoutItemUiModel>.getLeftAtcItem(channelId: String): HomeLeftCarouselAtcUiModel? {
-        return map { it.layout }.filterIsInstance<HomeLeftCarouselAtcUiModel>()
-            .firstOrNull { it.id == channelId }
+        return map { it.layout }.filterIsInstance<HomeLeftCarouselAtcUiModel>().firstOrNull { it.id == channelId }
     }
 
-    private fun HomeProductRecomUiModel.getRecomItem(productId: String): RecommendationItem? {
+    private fun HomeProductRecomUiModel.getRecomItem(productId: String?): RecommendationItem? {
+        return getProductRecom(productId) ?: getProductRecomRtr(productId)
+    }
+
+    private fun HomeProductRecomUiModel.getProductRecomRtr(productId: String?): RecommendationItem? {
+        return realTimeRecom.widget?.recommendationItemList?.firstOrNull { it.productId.toString() == productId }
+    }
+
+    private fun HomeProductRecomUiModel.getProductRecom(productId: String?): RecommendationItem? {
         return recomWidget.recommendationItemList.firstOrNull { it.productId.toString() == productId }
     }
 
-    private fun HomeLeftCarouselAtcUiModel.getLeftAtcRecomItem(
-        productId: String
-    ): HomeLeftCarouselAtcProductCardUiModel? {
+    private fun HomeLeftCarouselAtcUiModel.getLeftAtcRecomItem(productId: String?): HomeLeftCarouselAtcProductCardUiModel? {
         return productList.filterIsInstance<HomeLeftCarouselAtcProductCardUiModel>()
             .firstOrNull { it.id.toString() == productId }
     }
@@ -183,11 +184,12 @@ object RealTimeRecomMapper {
 
     private fun MutableList<HomeLayoutItemUiModel>.mapProductRecomRTR(
         channelId: String,
-        productId: String,
         recomWidget: RecommendationWidget,
         miniCartData: MiniCartSimplifiedData?
     ) {
         val item = getProductRecomItem(channelId)
+        val realTimeRecom = item?.realTimeRecom
+        val productId = realTimeRecom?.parentProductId
 
         item?.getRecomItem(productId)?.let {
             updateItemById(channelId) {
@@ -198,11 +200,12 @@ object RealTimeRecomMapper {
 
     private fun MutableList<HomeLayoutItemUiModel>.mapMixLeftAtcRTR(
         channelId: String,
-        productId: String,
         recomWidget: RecommendationWidget,
         miniCartData: MiniCartSimplifiedData?
     ) {
         val item = getLeftAtcItem(channelId)
+        val realTimeRecom = item?.realTimeRecom
+        val productId = realTimeRecom?.parentProductId
 
         item?.getLeftAtcRecomItem(productId)?.let {
             updateItemById(channelId) {

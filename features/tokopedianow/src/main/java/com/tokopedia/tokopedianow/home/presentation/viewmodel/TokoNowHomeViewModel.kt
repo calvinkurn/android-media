@@ -879,7 +879,6 @@ class TokoNowHomeViewModel @Inject constructor(
             if (recommendationWidgets.first().recommendationItemList.isNotEmpty()) {
                 homeLayoutItemList.mapRealTimeRecommendation(
                     channelId,
-                    productId,
                     recommendationWidgets.first(),
                     miniCartSimplifiedData,
                     type
