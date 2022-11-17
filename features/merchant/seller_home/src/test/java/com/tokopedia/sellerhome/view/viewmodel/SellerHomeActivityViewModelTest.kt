@@ -3,6 +3,9 @@ package com.tokopedia.sellerhome.view.viewmodel
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.wear.remote.interactions.RemoteActivityHelper
+import com.google.android.gms.wearable.CapabilityClient
+import com.google.android.gms.wearable.NodeClient
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.sellerhome.domain.usecase.GetNotificationUseCase
 import com.tokopedia.sellerhome.domain.usecase.GetShopInfoUseCase
@@ -56,6 +59,15 @@ class SellerHomeActivityViewModelTest {
     @RelaxedMockK
     lateinit var authorizeOrderAccessUseCase: AuthorizeAccessUseCase
 
+    @RelaxedMockK
+    lateinit var capabilityClient: CapabilityClient
+
+    @RelaxedMockK
+    lateinit var nodeClient: NodeClient
+
+    @RelaxedMockK
+    lateinit var remoteActivityHelper: RemoteActivityHelper
+
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
@@ -71,8 +83,18 @@ class SellerHomeActivityViewModelTest {
     }
 
     private fun createViewModel() =
-        SellerHomeActivityViewModel(userSession, getNotificationUseCase, getShopInfoUseCase,
-                sellerAdminUseCase, authorizeChatAccessUseCase, authorizeOrderAccessUseCase, coroutineTestRule.dispatchers)
+        SellerHomeActivityViewModel(
+            userSession,
+            getNotificationUseCase,
+            getShopInfoUseCase,
+            sellerAdminUseCase,
+            authorizeChatAccessUseCase,
+            authorizeOrderAccessUseCase,
+            capabilityClient,
+            nodeClient,
+            remoteActivityHelper,
+            coroutineTestRule.dispatchers
+        )
 
     @Test
     fun `get notifications then returns success result`() {
