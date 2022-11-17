@@ -26,11 +26,10 @@ class BigReplyBoxBottomSheet : BottomSheetUnify(), ChatbotSendButtonListener {
     init {
         isFullpage = false
         isCancelable = false
-        showKnob = false
+        showKnob = true
         showCloseIcon = false
         clearContentPadding = true
         showHeader = false
-        clearContentPadding = true
     }
 
     override fun onCreateView(
@@ -52,8 +51,11 @@ class BigReplyBoxBottomSheet : BottomSheetUnify(), ChatbotSendButtonListener {
         with(chatText) {
             minLine = MINIMUM_NUMBER_OF_LINES
             maxLine = MAXIMUM_NUMBER_OF_LINES
-            labelText.text = this@BigReplyBoxBottomSheet.labelText
-            setPlaceholder(hintText)
+            val startingText = context?.getString(R.string.chatbot_big_reply_bottom_sheet_starting)
+            val endingText = context?.getString(R.string.chatbot_big_reply_bottom_sheet_ending)
+            val finalText = startingText + hintText + endingText
+            labelText.text =  this@BigReplyBoxBottomSheet.labelText
+            setPlaceholder(finalText)
         }
     }
 

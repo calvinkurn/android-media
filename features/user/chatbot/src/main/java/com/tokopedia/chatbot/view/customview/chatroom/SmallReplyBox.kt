@@ -67,7 +67,7 @@ class SmallReplyBox (context: Context, attributeSet: AttributeSet) :
     }
 
     fun showReplyBox() {
-        replyBox?.show()
+        this.show()
     }
 
     fun clearChatText() {
