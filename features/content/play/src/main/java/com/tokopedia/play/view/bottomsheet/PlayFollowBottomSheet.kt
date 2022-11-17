@@ -104,9 +104,7 @@ class PlayFollowBottomSheet @Inject constructor(private val analytic: PlayNewAna
     }
 
     private fun setupView() {
-        binding.root.addImpressionListener(impressHolder){
-            analytic.impressFollowPopUp(playViewModel.channelId, playViewModel.channelType.value, playViewModel.partnerType, playViewModel.partnerId.toString())
-        }
+        analytic.impressFollowPopUp(playViewModel.channelId, playViewModel.channelType.value, playViewModel.partnerType, playViewModel.partnerId.toString())
 
         headerBinding.ivSheetClose.setOnClickListener {
             analytic.clickDismissFollowPopUp(playViewModel.channelId, playViewModel.channelType.value, playViewModel.partnerType, playViewModel.partnerId.toString())
