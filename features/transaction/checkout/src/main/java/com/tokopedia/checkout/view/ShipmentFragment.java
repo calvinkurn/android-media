@@ -3698,6 +3698,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     private void onMiniConsultationResult(Intent data) {
+        ArrayList<EPharmacyMiniConsultationResult> nr = data.getParcelableArrayListExtra("data");
         ArrayList<EPharmacyMiniConsultationResult> results = new ArrayList<>();
         shipmentPresenter.setMiniConsultationResult(results);
     }
@@ -3705,6 +3706,11 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     @Override
     public void updateUploadPrescription(UploadPrescriptionUiModel uploadPrescriptionUiModel) {
         shipmentAdapter.updateUploadPrescription(uploadPrescriptionUiModel);
+    }
+
+    @Override
+    public void onNoValidCheckoutItem() {
+        finish();
     }
 
     @Override

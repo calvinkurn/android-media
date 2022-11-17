@@ -24,7 +24,7 @@ import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiUseCase
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
-import com.tokopedia.purchase_platform.common.feature.ethicaldrug.UploadPrescriptionUiModel
+import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.model.UploadPrescriptionUiModel
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldValidateUsePromoRevampUseCase
 import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
@@ -32,6 +32,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
+import io.mockk.verify
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
@@ -866,7 +867,7 @@ class ShipmentPresenterPrescriptionIdsTest {
     }
 
     @Test
-    fun `GIVEN rejected consultation WHEN set mini consultation result THEN should set error`() {
+    fun `GIVEN rejected consultation in the only order WHEN set mini consultation result THEN should set error`() {
         // Given
         every { view.getShipmentCartItemModelAdapterPositionByUniqueId(any()) } returns 1
         val result = arrayListOf(
@@ -919,15 +920,9 @@ class ShipmentPresenterPrescriptionIdsTest {
         presenter.setMiniConsultationResult(result)
 
         // Then
-        assertEquals(
-            UploadPrescriptionUiModel(
-                hasInvalidPrescription = true,
-                rejectedWording = rejectedWording
-            ),
-            presenter.uploadPrescriptionUiModel
-        )
-        assertEquals(true, presenter.shipmentCartItemModelList[0].isError)
-        assertEquals(rejectedWording, presenter.shipmentCartItemModelList[0].errorTitle)
+        verify {
+            view.onNoValidCheckoutItem()
+        }
     }
 
     @Test

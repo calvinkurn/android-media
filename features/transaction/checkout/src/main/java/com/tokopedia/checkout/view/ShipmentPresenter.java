@@ -2504,11 +2504,15 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
 
     @Override
     public void setMiniConsultationResult(ArrayList<EPharmacyMiniConsultationResult> results) {
-        if (shipmentCartItemModelList != null) {
+        if (shipmentCartItemModelList != null && getView() != null) {
             HashMap<String, Integer> mapPrescriptionCount = new HashMap<>();
             boolean hasInvalidPrescription = false;
+            boolean hasNonEthicalProduct = false;
+            int ethicalProductCount = 0;
+            int errorEthicalProductCount = 0;
             for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModelList) {
                 if (!shipmentCartItemModel.isError() && shipmentCartItemModel.getHasEthicalProducts()) {
+                    ethicalProductCount += 1;
                     boolean updated = false;
                     int position = getView().getShipmentCartItemModelAdapterPositionByUniqueId(shipmentCartItemModel.getCartString());
                     if (position > 0) {
@@ -2542,6 +2546,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                                                 getView().resetCourier(shipmentCartItemModel);
                                                                 updated = true;
                                                                 hasInvalidPrescription = true;
+                                                                errorEthicalProductCount += 1;
                                                                 break;
                                                             } else if (result.getConsultationStatus() != null && result.getConsultationStatus() == 2) {
                                                                 shipmentCartItemModel.setTokoConsultationId(result.getTokoConsultationId());
@@ -2572,16 +2577,23 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                             }
                         }
                     }
+                } else if (!shipmentCartItemModel.isError()) {
+                    hasNonEthicalProduct = true;
                 }
             }
-            int totalPrescription = 0;
-            for (Integer value : mapPrescriptionCount.values()) {
-                totalPrescription += value;
+
+            if (!hasNonEthicalProduct && ethicalProductCount > 0 && ethicalProductCount == errorEthicalProductCount) {
+                getView().onNoValidCheckoutItem();
+            } else {
+                int totalPrescription = 0;
+                for (Integer value : mapPrescriptionCount.values()) {
+                    totalPrescription += value;
+                }
+                uploadPrescriptionUiModel.setError(false);
+                uploadPrescriptionUiModel.setUploadedImageCount(totalPrescription);
+                uploadPrescriptionUiModel.setHasInvalidPrescription(hasInvalidPrescription);
+                getView().updateUploadPrescription(uploadPrescriptionUiModel);
             }
-            uploadPrescriptionUiModel.setError(false);
-            uploadPrescriptionUiModel.setUploadedImageCount(totalPrescription);
-            uploadPrescriptionUiModel.setHasInvalidPrescription(hasInvalidPrescription);
-            getView().updateUploadPrescription(uploadPrescriptionUiModel);
         }
     }
 

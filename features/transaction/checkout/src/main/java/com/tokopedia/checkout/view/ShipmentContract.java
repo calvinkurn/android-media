@@ -194,6 +194,8 @@ public interface ShipmentContract {
         void showPrescriptionReminderDialog();
 
         void updateUploadPrescription(UploadPrescriptionUiModel uploadPrescriptionUiModel);
+
+        void onNoValidCheckoutItem();
     }
 
     interface AnalyticsActionListener {
