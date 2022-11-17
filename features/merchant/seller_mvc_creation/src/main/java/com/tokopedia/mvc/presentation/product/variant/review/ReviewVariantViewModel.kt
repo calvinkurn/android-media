@@ -80,7 +80,13 @@ class ReviewVariantViewModel @Inject constructor(
                 val allVariantsFromRemote = formatVariantNames(response)
 
                 val updatedVariants = allVariantsFromRemote.map { variant ->
-                    shouldSelectVariant(variant, isParentProductSelected, selectedProduct.variantProductIds)
+                    val shouldSelectVariant = shouldSelectVariant(
+                        variant,
+                        isParentProductSelected,
+                        selectedProduct.variantProductIds,
+                        originalVariantIds
+                    )
+                    variant.copy(isSelected = shouldSelectVariant)
                 }
 
                 val userSelectedVariantsOnly = updatedVariants.filter { it.variantId in originalVariantIds }
@@ -219,17 +225,18 @@ class ReviewVariantViewModel @Inject constructor(
     private fun shouldSelectVariant(
         variant: Variant,
         isParentProductSelected: Boolean,
-        selectedVariantIds: List<Long>
-    ): Variant {
-        val isSelected = if (isParentProductSelected) {
-            //Select all variant if parent product is selected
-            true
-        } else {
-            //Select variant only if it's previously selected
-            variant.variantId in selectedVariantIds
-        }
+        selectedVariantIds: List<Long>,
+        originalVariantIds: List<Long>
+    ): Boolean {
+        val isVariantUnchanged = selectedVariantIds.count() == originalVariantIds.count()
+        val isVariantChanged = selectedVariantIds.count() != originalVariantIds.count()
 
-        return variant.copy(isSelected = isSelected)
+        return when {
+            !isParentProductSelected -> false //Disable all variant if parent product is unselected
+            isParentProductSelected && isVariantUnchanged -> true //Select all variant if parent product is selected
+            isParentProductSelected && isVariantChanged -> variant.variantId in selectedVariantIds
+            else -> false
+        }
     }
 
     private fun List<Variant>.selectedVariantsOnly(): Set<Long> {

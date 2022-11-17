@@ -261,7 +261,7 @@ class ProductListViewModel @Inject constructor(
     ): List<Product> {
         return currentProducts.map { parentProduct ->
             if (parentProduct.id == parentProductIdToUpdate) {
-                parentProduct.copy(selectedVariantsIds = newlySelectedVariantIds)
+                parentProduct.copy(isSelected = true, selectedVariantsIds = newlySelectedVariantIds)
             } else {
                 parentProduct
             }
