@@ -5,7 +5,9 @@ import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorProductData
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorProductData.ERROR_PINPOINT_NEEDED
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorServiceData
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.EstimatedTimeArrivalPromo
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ProductData
+import com.tokopedia.logisticcart.R
 import com.tokopedia.logisticcart.datamock.DummyProvider
 import com.tokopedia.logisticcart.shipping.model.Product
 import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData
@@ -15,6 +17,7 @@ import com.tokopedia.logisticcart.shipping.model.ShopShipment
 import com.tokopedia.logisticcart.datamock.DummyProvider.getRatesResponseWithPromo
 import com.tokopedia.logisticcart.datamock.DummyProvider.getShippingDataWithPromoAndPreOrderModel
 import com.tokopedia.logisticcart.datamock.DummyProvider.getShippingDataWithPromoEtaError
+import com.tokopedia.logisticcart.datamock.DummyProvider.getShippingDataWithPromoEtaErrorAndTextEta
 import com.tokopedia.logisticcart.datamock.DummyProvider.getShippingDataWithServiceError
 import com.tokopedia.logisticcart.datamock.DummyProvider.getShippingDataWithServiceUiRatesHidden
 import com.tokopedia.logisticcart.datamock.DummyProvider.getShippingDataWithoutEligibleCourierPromo
@@ -138,6 +141,33 @@ class ShippingDurationPresenterTest {
     }
 
     @Test
+    fun `When load courier recommendation return error id Then view shows no courier page from errorMessage`() {
+
+        val shippingData = ShippingRecommendationData()
+        shippingData.errorId = "503"
+        shippingData.errorMessage = "Error test"
+        presenter.attachView(view)
+
+        // Given
+        every { ratesUseCase.execute(any()) } returns Observable.just(ShippingRecommendationData())
+        every {
+            responseConverter.fillState(any(), shopShipments, any(), 0)
+        } returns shippingData
+
+        // When
+        presenter.loadCourierRecommendation(
+            shipmentDetailData, 0,
+            shopShipments, -1, false, false, "",
+            products, "1479278-30-740525-99367774", false, address, false, 0, "", "", false, false
+        )
+
+        // Then
+        verify {
+            view.showNoCourierAvailable(view.getActivity().getString(R.string.label_no_courier_bottomsheet_message))
+        }
+    }
+
+    @Test
     fun `When load courier recommendation return empty services Then view shows no courier page`() {
         val shippingData = ShippingRecommendationData()
         presenter.attachView(view)
@@ -229,7 +259,7 @@ class ShippingDurationPresenterTest {
         presenter.loadCourierRecommendation(
             shipmentDetailData, 0,
             shopShipments, -1, false, false, "",
-            products, "1479278-30-740525-99367774", true, address, false, 0, "", "", false, true
+            products, "1479278-30-740525-99367774", true, null, false, 0, "", "", false, true
         )
 
         // Then
@@ -496,6 +526,45 @@ class ShippingDurationPresenterTest {
     }
 
     @Test
+    fun `When in checkout and promo has eta error code but no services data Then do nothing`() {
+        // Given
+        val shippingRecommendationData = getShippingDataWithPromoEtaError()
+        shippingRecommendationData.shippingDurationUiModels = listOf()
+        presenter.shippingData = shippingRecommendationData
+
+        // When
+        presenter.convertServiceListToUiModel(
+            shippingRecommendationData.shippingDurationUiModels,
+            shippingRecommendationData.listLogisticPromo,
+            shippingRecommendationData.preOrderModel,
+            false
+        )
+
+        // Then
+        val firstDuration = shippingRecommendationData.shippingDurationUiModels.firstOrNull()
+        assertNull(firstDuration?.isShowShowCase)
+    }
+
+    @Test
+    fun `When in checkout and promo has no eta text but error code is not true Then dont initiate showcase`() {
+        // Given
+        val shippingRecommendationData = getShippingDataWithPromoEtaErrorAndTextEta()
+        presenter.shippingData = shippingRecommendationData
+
+        // When
+        val actual = presenter.convertServiceListToUiModel(
+            shippingRecommendationData.shippingDurationUiModels,
+            shippingRecommendationData.listLogisticPromo,
+            shippingRecommendationData.preOrderModel,
+            false
+        )
+
+        // Then
+        val firstDuration = actual.find { it is ShippingDurationUiModel } as ShippingDurationUiModel
+        assertFalse(firstDuration.isShowShowCase)
+    }
+
+    @Test
     fun `When in occ and promo has eta error code Then dont initiate showcase`() {
         // Given
         val shippingRecommendationData = getShippingDataWithPromoEtaError()
@@ -614,6 +683,33 @@ class ShippingDurationPresenterTest {
             view.onShippingDurationAndRecommendCourierChosen(selectedService.shippingCourierViewModelList,
                 any(), any(), 0, selectedService.serviceData,
                 false)
+        }
+    }
+
+    @Test
+    fun `When year end promotion toggle is on and service not error Then pinpoint error flag is false`() {
+        // Given
+        // selected shipping duration ui model
+        val selectedService =
+            getShippingDataWithPromoAndPreOrderModel().shippingDurationUiModels.first()
+        selectedService.serviceData.error = null
+        every { view.isToogleYearEndPromotionOn() } returns true
+        presenter.attachView(view)
+
+        // When
+        presenter.onChooseDuration(
+            selectedService.shippingCourierViewModelList,
+            0,
+            selectedService.serviceData
+        )
+
+        // Then
+        verify {
+            view.onShippingDurationAndRecommendCourierChosen(
+                selectedService.shippingCourierViewModelList,
+                any(), any(), 0, selectedService.serviceData,
+                false
+            )
         }
     }
 
@@ -740,6 +836,51 @@ class ShippingDurationPresenterTest {
         product.productData.error = ErrorProductData().apply {
             errorId = "1"
             errorMessage = "error"
+        }
+        presenter.attachView(view)
+
+        // When
+        // onChooseDuration
+        presenter.onChooseDuration(selectedService.shippingCourierViewModelList, 0, selectedService.serviceData)
+
+        // Then
+        verify {
+            view.onShippingDurationAndRecommendCourierChosen(selectedService.shippingCourierViewModelList,
+                any(), any(), 0, selectedService.serviceData,
+                false)
+        }
+    }
+
+    @Test
+    fun `When select duration and get selected courier and courier is not error Then pinpoint error flag is false`() {
+        // Given
+        // selected shipping duration ui model
+        val selectedService = getShippingDataWithPromoAndPreOrderModel().shippingDurationUiModels.first()
+        val product = selectedService.shippingCourierViewModelList.first()
+        product.productData.error = null
+        presenter.attachView(view)
+
+        // When
+        // onChooseDuration
+        presenter.onChooseDuration(selectedService.shippingCourierViewModelList, 0, selectedService.serviceData)
+
+        // Then
+        verify {
+            view.onShippingDurationAndRecommendCourierChosen(selectedService.shippingCourierViewModelList,
+                any(), any(), 0, selectedService.serviceData,
+                false)
+        }
+    }
+    
+    @Test
+    fun `When select duration but courier error data not found Then pinpoint error flag is false`() {
+        // Given
+        // selected shipping duration ui model
+        val selectedService = getShippingDataWithPromoAndPreOrderModel().shippingDurationUiModels.first()
+        val product = selectedService.shippingCourierViewModelList.first()
+        product.productData.error = ErrorProductData().apply {
+            errorId = "2"
+            errorMessage = null
         }
         presenter.attachView(view)
 

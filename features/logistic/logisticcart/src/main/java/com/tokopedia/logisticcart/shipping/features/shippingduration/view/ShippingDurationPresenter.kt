@@ -159,7 +159,7 @@ class ShippingDurationPresenter @Inject constructor(
                                 )
 
                                 // tracker
-                                val hasCourierPromo = checkHasCourierPromo()
+                                val hasCourierPromo = checkHasCourierPromo(shippingRecommendationData.shippingDurationUiModels)
                                 if (hasCourierPromo) {
                                     it.sendAnalyticCourierPromo(shippingRecommendationData.shippingDurationUiModels)
                                 }
@@ -258,9 +258,13 @@ class ShippingDurationPresenter @Inject constructor(
         isOcc: Boolean
     ): MutableList<RatesViewModelType> {
         val eligibleServices = shippingDurationUiModels.filter { !it.serviceData.isUiRatesHidden }
+        if (!isOcc && promoUiModel.any { it.etaData.textEta.isEmpty() && it.etaData.errorCode == 1 }) {
+            initiateShowcase(eligibleServices)
+        }
         val uiModelList: MutableList<RatesViewModelType> = mutableListOf<RatesViewModelType>().apply {
             addAll(eligibleServices)
         }
+
         if (promoUiModel.isNotEmpty()) {
             uiModelList.addAll(0, promoUiModel + listOf<RatesViewModelType>(DividerModel()))
         }
@@ -271,21 +275,15 @@ class ShippingDurationPresenter @Inject constructor(
             }
         }
 
-        if (!isOcc) {
-            if (eligibleServices.getOrNull(0)?.etaErrorCode == 1) {
-                uiModelList.add(0, NotifierModel(NotifierModel.TYPE_DEFAULT))
-            }
-            if (promoUiModel.any { it.etaData.textEta.isEmpty() && it.etaData.errorCode == 1 }) {
-                initiateShowcase()
-            }
+        if (!isOcc && eligibleServices.getOrNull(0)?.etaErrorCode == 1) {
+            uiModelList.add(0, NotifierModel(NotifierModel.TYPE_DEFAULT))
         }
-
 
         return uiModelList
     }
 
-    private fun initiateShowcase() {
-        shippingData?.shippingDurationUiModels?.firstOrNull()?.isShowShowCase = true
+    private fun initiateShowcase(services: List<ShippingDurationUiModel>) {
+        services.firstOrNull()?.isShowShowCase = true
     }
 
     private fun getRatesDataFromLogisticPromo(serId: Int): ShippingDurationUiModel? {
@@ -296,8 +294,8 @@ class ShippingDurationPresenter @Inject constructor(
         return null
     }
 
-    fun checkHasCourierPromo(): Boolean {
-        return shippingData?.shippingDurationUiModels?.any { it.serviceData.isPromo == 1 } ?: false
+    fun checkHasCourierPromo(services: List<ShippingDurationUiModel>): Boolean {
+        return services.any { it.serviceData.isPromo == 1 }
     }
 
     override fun onChooseDuration(
