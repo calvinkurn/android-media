@@ -199,6 +199,12 @@ class PlayViewModel @AssistedInject constructor(
 
     private val _isPopup = MutableStateFlow(FollowPopUpUiState())
 
+    private val _followPopUpUiState = combine(_bottomInsets, _isPopup, _partnerInfo) {
+        bottomInsets, popUp, partner -> FollowPopUpUiState(
+            shouldShow = !bottomInsets.isAnyShown && popUp.shouldShow && partner.needFollow
+        )
+    }.flowOn(dispatchers.computation)
+
     private val _winnerBadgeUiState = combine(
         _leaderboard, _bottomInsets, _status, _channelDetail, _leaderboardUserBadgeState
     ) { leaderboard, bottomInsets, status, channelDetail, leaderboardUserBadgeState ->
@@ -319,7 +325,7 @@ class PlayViewModel @AssistedInject constructor(
         _loadingBuy,
         _addressUiState,
         _featuredProducts.distinctUntilChanged(),
-        _isPopup,
+        _followPopUpUiState,
     ) { channelDetail, interactive, partner, winnerBadge, bottomInsets,
         like, totalView, rtn, title, tagItems,
         status, quickReply, selectedVariant, isLoadingBuy, address,

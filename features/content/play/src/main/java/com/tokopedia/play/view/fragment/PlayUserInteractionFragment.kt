@@ -42,6 +42,7 @@ import com.tokopedia.play.extensions.*
 import com.tokopedia.play.gesture.PlayClickTouchListener
 import com.tokopedia.play.ui.component.UiComponent
 import com.tokopedia.play.util.changeConstraint
+import com.tokopedia.play.util.isChanged
 import com.tokopedia.play.util.measureWithTimeout
 import com.tokopedia.play.util.observer.DistinctObserver
 import com.tokopedia.play.util.video.state.BufferSource
@@ -891,7 +892,7 @@ class PlayUserInteractionFragment @Inject constructor(
                     viewLifecycleOwner.lifecycleScope.launch(dispatchers.immediate) { invalidateChatListBounds() }
                 }
 
-                renderFollowPopUp(state.isPopUp, state.partner, state.bottomInsets)
+                if(cachedState.isChanged { it.isPopUp }) renderFollowPopUp(state.isPopUp)
             }
         }
     }
@@ -1950,13 +1951,8 @@ class PlayUserInteractionFragment @Inject constructor(
         }
     }
 
-    private fun renderFollowPopUp(state: FollowPopUpUiState,
-                                  partner: PlayPartnerInfo,
-                                  bottomInsets: Map<BottomInsetsType, BottomInsetsState>) {
-
-        if(partner.id.toString() != state.partnerId) return
-
-        if (state.shouldShow && !bottomInsets.isAnyShown && partner.needFollow)
+    private fun renderFollowPopUp(state: FollowPopUpUiState) {
+        if (state.shouldShow)
             PlayFollowBottomSheet.getOrCreate(childFragmentManager, classLoader = requireActivity().classLoader)
                 .show(childFragmentManager)
     }
