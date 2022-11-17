@@ -3,7 +3,7 @@ package com.tokopedia.mvc.data.mapper
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.mvc.data.response.GetShopWarehouseResponse
 import com.tokopedia.mvc.domain.entity.Warehouse
-import com.tokopedia.mvc.domain.entity.WarehouseType
+import com.tokopedia.mvc.domain.entity.enums.WarehouseType
 import javax.inject.Inject
 
 class GetShopWarehouseMapper @Inject constructor() {

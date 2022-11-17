@@ -106,6 +106,9 @@ dependencies {
     testImplementation rootProject.ext.miscDependencies.coroutineTest
     testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
 
+    //Campaign Common
+    implementation projectOrAar(rootProject.ext.features.campaignCommon)
+
     // UI test
     androidTestImplementation rootProject.ext.testDependencies.espressoCore
     androidTestImplementation rootProject.ext.testDependencies.espressoContrib
