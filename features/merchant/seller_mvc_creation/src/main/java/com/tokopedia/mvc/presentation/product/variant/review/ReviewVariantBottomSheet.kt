@@ -199,14 +199,14 @@ class ReviewVariantBottomSheet: BottomSheetUnify() {
     private fun handleUiState(uiState: ReviewVariantUiState) {
         renderLoadingState(uiState.isLoading)
         renderSelectAllCheckbox(uiState)
-        renderBulkDelete(uiState.selectedVariantIds)
+        renderBulkDeleteIcon(uiState.selectedVariantIds)
         renderList(uiState)
         renderParentProduct(uiState)
         renderButton(uiState.originalVariantIds.count(), uiState.variants.count(), uiState.selectedVariantIds.count())
         observeVariantDeletion(uiState.variants.count(), uiState.isLoading)
     }
 
-    private fun renderBulkDelete(selectedVariantIds: Set<Long>) {
+    private fun renderBulkDeleteIcon(selectedVariantIds: Set<Long>) {
         binding?.iconBulkDelete?.isVisible = selectedVariantIds.count() > ONE_VARIANT
     }
 

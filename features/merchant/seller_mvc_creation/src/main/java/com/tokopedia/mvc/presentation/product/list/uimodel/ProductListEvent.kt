@@ -23,4 +23,5 @@ sealed class ProductListEvent {
         val modifiedParentProductId: Long,
         val selectedVariantIds: Set<Long>
     ) : ProductListEvent()
+    object BulkDeleteProduct : ProductListEvent()
 }

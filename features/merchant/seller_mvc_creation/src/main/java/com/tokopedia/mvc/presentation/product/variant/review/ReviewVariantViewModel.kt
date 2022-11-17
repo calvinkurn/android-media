@@ -211,12 +211,10 @@ class ReviewVariantViewModel @Inject constructor(
             val modifiedVariants = currentState.variants.toMutableList()
             modifiedVariants.removeAll { it.variantId in toBeRemovedVariantIds }
 
-            val modifiedVariantProductIds = modifiedVariants.filter { it.isSelected }.map { it.variantId }.toMutableSet()
-
             _uiState.update {
                 it.copy(
                     variants = modifiedVariants,
-                    selectedVariantIds = modifiedVariantProductIds
+                    selectedVariantIds = modifiedVariants.selectedVariantsOnly()
                 )
             }
         }

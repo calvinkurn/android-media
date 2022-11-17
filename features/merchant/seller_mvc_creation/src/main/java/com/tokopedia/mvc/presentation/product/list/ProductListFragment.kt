@@ -15,6 +15,7 @@ import com.tokopedia.campaign.components.adapter.CompositeAdapter
 import com.tokopedia.campaign.components.adapter.DelegateAdapterItem
 import com.tokopedia.campaign.utils.extension.applyPaddingToLastItem
 import com.tokopedia.campaign.utils.extension.attachDividerItemDecoration
+import com.tokopedia.campaign.utils.extension.showToaster
 import com.tokopedia.kotlin.extensions.view.applyUnifyBackgroundColor
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
@@ -42,6 +43,8 @@ import javax.inject.Inject
 class ProductListFragment : BaseDaggerFragment() {
 
     companion object {
+        private const val ONE_PRODUCT = 1
+
         @JvmStatic
         fun newInstance(selectedProducts: List<SelectedProduct>): ProductListFragment {
             return ProductListFragment().apply {
@@ -114,11 +117,14 @@ class ProductListFragment : BaseDaggerFragment() {
         setupCheckbox()
         setupRecyclerView()
         setupButton()
-        setupCta()
+        setupClickListener()
     }
 
-    private fun setupCta() {
+    private fun setupClickListener() {
         binding?.tpgCtaAddProduct?.setOnClickListener { activity?.finish() }
+        binding?.iconBulkDelete?.setOnClickListener {
+            viewModel.processEvent(ProductListEvent.BulkDeleteProduct)
+        }
     }
 
     private fun setupButton() {
@@ -176,6 +182,21 @@ class ProductListFragment : BaseDaggerFragment() {
             is ProductListEffect.ConfirmAddProduct -> {
 
             }
+            is ProductListEffect.BulkDeleteProductSuccess -> {
+                binding?.root.showToaster(
+                    message = getString(
+                        R.string.smvc_placeholder_bulk_delete_product,
+                        effect.deletedProductCount
+                    ),
+                    ctaText = getString(R.string.smvc_ok)
+                )
+            }
+            ProductListEffect.ProductDeleted -> {
+                binding?.root.showToaster(
+                    message = getString(R.string.smvc_product_deleted),
+                    ctaText = getString(R.string.smvc_ok)
+                )
+            }
         }
     }
 
@@ -184,13 +205,34 @@ class ProductListFragment : BaseDaggerFragment() {
         renderLoadingState(uiState.isLoading)
         renderList(uiState.products)
         renderEmptyState(uiState.products.count(), uiState.isLoading)
-        renderProductCounter(uiState.products.count())
+        renderProductCounter(uiState.products.count(), uiState.selectedProductsIds.count())
+        renderBulkDeleteIcon(uiState.selectedProductsIds.count())
         renderSelectAllCheckbox(uiState)
     }
 
-    private fun renderProductCounter(productCount: Int) {
+    private fun renderBulkDeleteIcon(selectedProductCount: Int) {
+        binding?.iconBulkDelete?.isVisible = selectedProductCount > ONE_PRODUCT
+    }
+
+    private fun renderProductCounter(productCount: Int, selectedProductCount: Int) {
         binding?.tpgSelectedParentProductCount?.text =
             getString(R.string.smvc_placholder_selected_product_count, productCount)
+
+        val selectedProductCountWording = if (selectedProductCount.isZero()) {
+            getString(
+                R.string.smvc_select_all,
+                selectedProductCount,
+                productCount
+            )
+        } else {
+            getString(
+                R.string.smvc_placeholder_review_selected_product_count,
+                selectedProductCount,
+                productCount
+            )
+        }
+
+        binding?.tpgSelectAll?.text = selectedProductCountWording
     }
 
     private fun renderLoadingState(isLoading: Boolean) {

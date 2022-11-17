@@ -3,6 +3,7 @@ package com.tokopedia.mvc.presentation.product.list.uimodel
 import com.tokopedia.mvc.domain.entity.Product
 import com.tokopedia.mvc.domain.entity.SelectedProduct
 import com.tokopedia.mvc.domain.entity.ShopData
+import com.tokopedia.mvc.presentation.product.variant.review.uimodel.ReviewVariantEffect
 
 sealed class ProductListEffect {
     data class ShowVariantBottomSheet(
@@ -16,4 +17,7 @@ sealed class ProductListEffect {
         val selectedParentProductImageUrls: List<String>,
         val shop: ShopData
     ) : ProductListEffect()
+
+    object ProductDeleted : ProductListEffect()
+    data class BulkDeleteProductSuccess(val deletedProductCount : Int) : ProductListEffect()
 }

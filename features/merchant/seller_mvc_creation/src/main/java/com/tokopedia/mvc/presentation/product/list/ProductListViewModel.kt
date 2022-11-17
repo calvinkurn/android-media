@@ -50,6 +50,7 @@ class ProductListViewModel @Inject constructor(
             is ProductListEvent.VariantUpdated -> handleVariantUpdated(event.modifiedParentProductId, event.selectedVariantIds)
             is ProductListEvent.RemoveProductFromSelection -> handleRemoveProductFromSelection(event.productId)
             is ProductListEvent.RemoveProduct -> handleRemoveProduct(event.productId)
+            ProductListEvent.BulkDeleteProduct -> handleBulkDeleteProducts()
         }
     }
 
@@ -125,12 +126,10 @@ class ProductListViewModel @Inject constructor(
             product.copy(isSelected = true, selectedVariantsIds = allVariantSelected)
         }
 
-        val selectedProductIds = selectedProducts.filter { it.isSelected }.map { it.id }.toSet()
-
         _uiState.update {
             it.copy(
                 isSelectAllActive = true,
-                selectedProductsIds = selectedProductIds,
+                selectedProductsIds = selectedProducts.selectedProductsOnly(),
                 products = selectedProducts
             )
         }
@@ -149,11 +148,10 @@ class ProductListViewModel @Inject constructor(
 
     private fun handleAddProductToSelection(productIdToAdd: Long) = launch(dispatchers.computation) {
         val updatedProducts = updateProductAsSelected(productIdToAdd, currentState.products)
-        val updatedProductIds = updatedProducts.filter { it.isSelected }.map { it.id }.toSet()
 
         _uiState.update {
             it.copy(
-                selectedProductsIds = updatedProductIds,
+                selectedProductsIds = updatedProducts.selectedProductsOnly(),
                 products = updatedProducts
             )
         }
@@ -187,14 +185,11 @@ class ProductListViewModel @Inject constructor(
                 }
             }
 
-            val updatedSelectedProducts = currentState.selectedProductsIds.toMutableSet()
-            updatedSelectedProducts.remove(productIdToDelete)
-
             _uiState.update {
                 it.copy(
                     isSelectAllActive = false,
-                    selectedProductsIds = updatedSelectedProducts,
-                    products = updatedProducts
+                    products = updatedProducts,
+                    selectedProductsIds = updatedProducts.selectedProductsOnly(),
                 )
             }
         }
@@ -205,16 +200,15 @@ class ProductListViewModel @Inject constructor(
             val updatedProducts = currentState.products.toMutableList()
             updatedProducts.removeFirst { it.id == productIdToDelete }
 
-            val updatedSelectedProductIds = updatedProducts.filter { it.isSelected }.map { it.id }.toMutableSet()
-            updatedSelectedProductIds.remove(productIdToDelete)
-
             _uiState.update {
                 it.copy(
                     isSelectAllActive = false,
-                    selectedProductsIds = updatedSelectedProductIds,
+                    selectedProductsIds = updatedProducts.selectedProductsOnly(),
                     products = updatedProducts
                 )
             }
+
+            _uiEffect.tryEmit(ProductListEffect.ProductDeleted)
         }
     }
 
@@ -296,4 +290,25 @@ class ProductListViewModel @Inject constructor(
     }
 
 
+    private fun handleBulkDeleteProducts() {
+        launch(dispatchers.computation) {
+            val productIdsToDelete = currentState.products.filter { it.isSelected }.map { it.id }
+
+            val modifiedProducts = currentState.products.toMutableList()
+            modifiedProducts.removeAll { it.id in productIdsToDelete }
+
+            _uiState.update {
+                it.copy(
+                    products = modifiedProducts,
+                    selectedProductsIds = modifiedProducts.selectedProductsOnly()
+                )
+            }
+
+            _uiEffect.tryEmit(ProductListEffect.BulkDeleteProductSuccess(productIdsToDelete.count()))
+        }
+    }
+
+    private fun List<Product>.selectedProductsOnly(): Set<Long> {
+        return filter { it.isSelected }.map { it.id }.toSet()
+    }
 }

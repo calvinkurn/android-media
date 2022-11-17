@@ -1,5 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!--Common-->
+    <string name="smvc_ok">Oke</string>
+
     <!--Add product page-->
     <string name="smvc_add_product">Tambah Produk</string>
     <string name="smvc_add_product_subtitle">Pilih produk untuk dipasang kupon.</string>
@@ -42,6 +45,9 @@
     <string name="smvc_continue">Lanjut</string>
     <string name="smvc_empty_state_no_selected_product_title">Belum ada produk untuk kupon ini</string>
     <string name="smvc_empty_state_no_selected_product_description">Yuk, tambahkan produkmu terlebih dulu.</string>
+    <string name="smvc_placeholder_review_selected_product_count">%d / %d Terpilih</string>
+    <string name="smvc_placeholder_bulk_delete_product">%d produk berhasil dihapus.</string>
+    <string name="smvc_product_deleted">Produk berhasil dihapus.</string>
 
     <!--Share Component-->
     <string name="smvc_placeholder_share_component_outgoing_title">Kupon Produk dari %s</string>
