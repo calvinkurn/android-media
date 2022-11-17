@@ -28,7 +28,7 @@ class ProductTagUiModelMapper @Inject constructor() {
                     coverURL = it.coverURL,
                     webLink = it.webLink,
                     appLink = it.appLink,
-                    star = if (it.star == NO_STAR_RATING) "" else decimalFormat.format(it.star / STAR_RATING_DIVIDER).toString(),
+                    star = formatStarRating(it.star),
                     price = it.price,
                     priceFmt = it.priceFmt,
                     isDiscount = it.isDiscount,
@@ -62,7 +62,7 @@ class ProductTagUiModelMapper @Inject constructor() {
                     coverURL = it.coverURL,
                     webLink = it.webLink,
                     appLink = it.appLink,
-                    star = if (it.star == NO_STAR_RATING) "" else decimalFormat.format(it.star / STAR_RATING_DIVIDER).toString(),
+                    star = formatStarRating(it.star),
                     price = it.price,
                     priceFmt = it.priceFmt,
                     isDiscount = it.isDiscount,
@@ -204,8 +204,18 @@ class ProductTagUiModelMapper @Inject constructor() {
         )
     }
 
+    private fun formatStarRating(star: Double): String {
+        return if (star == NO_STAR_RATING) ""
+        else decimalFormat
+            .format(star / STAR_RATING_DIVIDER)
+            .toString()
+            .replace(COMMA, PERIOD)
+    }
+
     companion object {
         private const val NO_STAR_RATING = 0.0
         private const val STAR_RATING_DIVIDER = 20.0
+        private const val COMMA = ","
+        private const val PERIOD = "."
     }
 }
