@@ -37,15 +37,21 @@ class ReviewVariantBottomSheet: BottomSheetUnify() {
     companion object {
         private const val BUNDLE_KEY_SELECTED_PRODUCT = "selected_product"
         private const val BUNDLE_PARENT_PRODUCT_IS_SELECTED = "is_parent_product_selected"
+        private const val BUNDLE_ORIGINAL_VARIANT_IDS = "original_variant_ids"
         private const val DIVIDER_MARGIN_LEFT = 16
         private const val ONE_VARIANT = 1
 
         @JvmStatic
-        fun newInstance(isParentProductSelected: Boolean, selectedProduct: SelectedProduct): ReviewVariantBottomSheet {
+        fun newInstance(
+            isParentProductSelected: Boolean,
+            selectedProduct: SelectedProduct,
+            originalVariantIds: List<Long>
+        ): ReviewVariantBottomSheet {
             return ReviewVariantBottomSheet().apply {
                 arguments = Bundle().apply {
                     putBoolean(BUNDLE_PARENT_PRODUCT_IS_SELECTED, isParentProductSelected)
                     putParcelable(BUNDLE_KEY_SELECTED_PRODUCT, selectedProduct)
+                    putLongArray(BUNDLE_ORIGINAL_VARIANT_IDS, originalVariantIds.toLongArray())
                 }
             }
         }
@@ -54,6 +60,7 @@ class ReviewVariantBottomSheet: BottomSheetUnify() {
     private var binding by autoClearedNullable<SmvcBottomsheetReviewVariantBinding>()
     private val isParentProductSelected by lazy { arguments?.getBoolean(BUNDLE_PARENT_PRODUCT_IS_SELECTED, false).orFalse() }
     private val parentProduct by lazy { arguments?.getParcelable(BUNDLE_KEY_SELECTED_PRODUCT) as? SelectedProduct }
+    private val originalVariantIds by lazy { arguments?.getLongArray(BUNDLE_ORIGINAL_VARIANT_IDS) }
     private var onSaveButtonClick: (Set<Long>) -> Unit = {}
 
     @Inject
@@ -99,7 +106,8 @@ class ReviewVariantBottomSheet: BottomSheetUnify() {
         viewModel.processEvent(
             ReviewVariantEvent.FetchProductVariants(
                 isParentProductSelected,
-                parentProduct ?: return
+                parentProduct ?: return,
+                originalVariantIds?.toList().orEmpty()
             )
         )
     }

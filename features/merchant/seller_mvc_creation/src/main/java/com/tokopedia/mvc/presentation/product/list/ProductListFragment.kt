@@ -167,7 +167,11 @@ class ProductListFragment : BaseDaggerFragment() {
     private fun handleEffect(effect: ProductListEffect) {
         when (effect) {
             is ProductListEffect.ShowVariantBottomSheet -> {
-                displayVariantBottomSheet(effect.isParentProductSelected, effect.selectedProduct)
+                displayVariantBottomSheet(
+                    effect.isParentProductSelected,
+                    effect.selectedProduct,
+                    effect.originalVariantIds
+                )
             }
             is ProductListEffect.ConfirmAddProduct -> {
 
@@ -245,8 +249,16 @@ class ProductListFragment : BaseDaggerFragment() {
 
     }
 
-    private fun displayVariantBottomSheet(isParentProductSelected: Boolean, selectedProduct: SelectedProduct) {
-        val bottomSheet = ReviewVariantBottomSheet.newInstance(isParentProductSelected, selectedProduct)
+    private fun displayVariantBottomSheet(
+        isParentProductSelected: Boolean,
+        selectedProduct: SelectedProduct,
+        originalVariantIds: List<Long>
+    ) {
+        val bottomSheet = ReviewVariantBottomSheet.newInstance(
+            isParentProductSelected,
+            selectedProduct,
+            originalVariantIds
+        )
         bottomSheet.setOnSelectButtonClick { selectedVariantIds ->
             viewModel.processEvent(ProductListEvent.VariantUpdated(selectedProduct.parentProductId, selectedVariantIds))
         }

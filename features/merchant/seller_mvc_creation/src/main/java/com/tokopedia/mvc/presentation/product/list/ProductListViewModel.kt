@@ -170,53 +170,67 @@ class ProductListViewModel @Inject constructor(
         }
     }
 
-    private fun handleRemoveProductFromSelection(productIdToDelete: Long) = launch(dispatchers.computation) {
-        val updatedProducts = currentState.products.map {
-            if (it.id == productIdToDelete) {
+    private fun handleRemoveProductFromSelection(productIdToDelete: Long) {
+        launch(dispatchers.computation) {
+            val updatedProducts = currentState.products.map {
+                if (it.id == productIdToDelete) {
 
-                val hasVariants = it.originalVariants.isNotEmpty()
-                if (hasVariants) {
-                    it.copy(isSelected = false, selectedVariantsIds = it.originalVariants.map { it.variantProductId }.toSet())
+                    val hasVariants = it.originalVariants.isNotEmpty()
+                    if (hasVariants) {
+                        it.copy(isSelected = false, selectedVariantsIds = it.originalVariants.map { it.variantProductId }.toSet())
+                    } else {
+                        it.copy(isSelected = false)
+                    }
+
                 } else {
-                    it.copy(isSelected = false)
+                    it
                 }
-
-            } else {
-                it
             }
-        }
 
-        val updatedSelectedProducts = currentState.selectedProductsIds.toMutableSet()
-        updatedSelectedProducts.remove(productIdToDelete)
+            val updatedSelectedProducts = currentState.selectedProductsIds.toMutableSet()
+            updatedSelectedProducts.remove(productIdToDelete)
 
-        _uiState.update {
-            it.copy(
-                isSelectAllActive = false,
-                selectedProductsIds = updatedSelectedProducts,
-                products = updatedProducts
-            )
+            _uiState.update {
+                it.copy(
+                    isSelectAllActive = false,
+                    selectedProductsIds = updatedSelectedProducts,
+                    products = updatedProducts
+                )
+            }
         }
     }
 
-    private fun handleRemoveProduct(productIdToDelete: Long) = launch(dispatchers.computation) {
-        val updatedProducts = currentState.products.toMutableList()
-        updatedProducts.removeFirst { it.id == productIdToDelete }
+    private fun handleRemoveProduct(productIdToDelete: Long) {
+        launch(dispatchers.computation) {
+            val updatedProducts = currentState.products.toMutableList()
+            updatedProducts.removeFirst { it.id == productIdToDelete }
 
-        val updatedSelectedProductIds = updatedProducts.filter { it.isSelected }.map { it.id }.toMutableSet()
-        updatedSelectedProductIds.remove(productIdToDelete)
+            val updatedSelectedProductIds = updatedProducts.filter { it.isSelected }.map { it.id }.toMutableSet()
+            updatedSelectedProductIds.remove(productIdToDelete)
 
-        _uiState.update {
-            it.copy(
-                isSelectAllActive = false,
-                selectedProductsIds = updatedSelectedProductIds,
-                products = updatedProducts
-            )
+            _uiState.update {
+                it.copy(
+                    isSelectAllActive = false,
+                    selectedProductsIds = updatedSelectedProductIds,
+                    products = updatedProducts
+                )
+            }
         }
     }
 
     private fun handleTapVariant(parentProduct: Product) {
-        val selectedProduct = SelectedProduct(parentProduct.id, parentProduct.selectedVariantsIds.toList())
-        _uiEffect.tryEmit(ProductListEffect.ShowVariantBottomSheet(parentProduct.isSelected, selectedProduct))
+        launch(dispatchers.computation) {
+            val selectedVariantIds = parentProduct.originalVariants.map { it.variantProductId }.toList()
+            val selectedProduct = SelectedProduct(parentProduct.id, parentProduct.selectedVariantsIds.toList())
+
+            _uiEffect.tryEmit(
+                ProductListEffect.ShowVariantBottomSheet(
+                    parentProduct.isSelected,
+                    selectedProduct,
+                    selectedVariantIds
+                )
+            )
+        }
     }
 
     private fun handleVariantUpdated(parentProductId: Long, newlySelectedVariantIds : Set<Long>) {
@@ -227,7 +241,7 @@ class ProductListViewModel @Inject constructor(
             val updatedProducts = if (isAllVariantRemoved) {
                 removeParentProduct(parentProductId)
             } else {
-                updateParentProductVariants(parentProductId, currentState.products, newlySelectedVariantIds)
+                updateVariants(parentProductId, currentState.products, newlySelectedVariantIds)
             }
 
             _uiState.update { it.copy(products = updatedProducts) }
@@ -240,7 +254,7 @@ class ProductListViewModel @Inject constructor(
         return modifiedProducts
     }
 
-    private fun updateParentProductVariants(
+    private fun updateVariants(
         parentProductIdToUpdate: Long,
         currentProducts: List<Product>,
         newlySelectedVariantIds: Set<Long>

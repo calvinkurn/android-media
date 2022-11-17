@@ -5,7 +5,8 @@ import com.tokopedia.mvc.domain.entity.SelectedProduct
 sealed class ReviewVariantEvent {
     data class FetchProductVariants(
         val isParentProductSelected: Boolean,
-        val selectedProduct: SelectedProduct
+        val selectedProduct: SelectedProduct,
+        val originalVariantIds: List<Long>
     ) : ReviewVariantEvent()
 
     object EnableSelectAllCheckbox : ReviewVariantEvent()

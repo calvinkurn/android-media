@@ -36,15 +36,11 @@ class ReviewVariantViewModel @Inject constructor(
     fun processEvent(event: ReviewVariantEvent) {
         when(event) {
             is ReviewVariantEvent.FetchProductVariants -> {
-                _uiState.update {
-                    it.copy(
-                        isLoading = true,
-                        parentProductId = event.selectedProduct.parentProductId,
-                        isParentProductSelected = event.isParentProductSelected,
-                        originalVariantIds = event.selectedProduct.variantProductIds
-                    )
-                }
-                getVariantDetail(event.selectedProduct)
+                handleFetchProductVariants(
+                    event.originalVariantIds,
+                    event.isParentProductSelected,
+                    event.selectedProduct
+                )
             }
             is ReviewVariantEvent.AddVariantToSelection -> handleAddVariantToSelection(event.variantProductId)
             is ReviewVariantEvent.RemoveVariantFromSelection -> handleRemoveVariantFromSelection(event.variantProductId)
@@ -56,24 +52,42 @@ class ReviewVariantViewModel @Inject constructor(
         }
     }
 
+    private fun handleFetchProductVariants(
+        originalVariantIds: List<Long>,
+        isParentProductSelected: Boolean,
+        selectedProduct: SelectedProduct
+    ) {
+        _uiState.update {
+            it.copy(
+                isLoading = true,
+                parentProductId = selectedProduct.parentProductId,
+                originalVariantIds = originalVariantIds
+            )
+        }
+        getVariantDetail(selectedProduct, isParentProductSelected, originalVariantIds)
+    }
 
-    private fun getVariantDetail(selectedProduct : SelectedProduct) {
+    private fun getVariantDetail(
+        selectedProduct: SelectedProduct,
+        isParentProductSelected: Boolean,
+        originalVariantIds: List<Long>
+    ) {
         launchCatchError(
             dispatchers.io,
             block = {
                 val params = ProductV3UseCase.Param(selectedProduct.parentProductId, 0)
                 val response = productV3UseCase.execute(params)
-                val allVariants = findUpdatedVariantNames(response)
+                val allVariantsFromRemote = formatVariantNames(response)
 
-                val selectedVariants = allVariants
+                val selectedVariants = allVariantsFromRemote
                     .map {
                         val selectedOnPreviousSelection = it.variantId in selectedProduct.variantProductIds
-                        val isSelected = currentState.isParentProductSelected || selectedOnPreviousSelection
+                        val isSelected = isParentProductSelected || selectedOnPreviousSelection
                         it.copy(isSelected = isSelected)
                     }
-                    .filter { it.variantId in currentState.originalVariantIds }
 
-                val selectedVariantIds = selectedVariants.filter { it.isSelected }.map { it.variantId }.toSet()
+                val userSelectedVariantsOnly = selectedVariants.filter { it.variantId in originalVariantIds }
+                val selectedVariantIds = userSelectedVariantsOnly.filter { it.isSelected }.map { it.variantId }.toSet()
 
                 _uiState.update {
                     it.copy(
@@ -83,7 +97,7 @@ class ReviewVariantViewModel @Inject constructor(
                         parentProductPrice = response.parentProductPrice,
                         parentProductSoldCount = response.parentProductSoldCount,
                         parentProductImageUrl = response.parentProductImageUrl,
-                        variants = selectedVariants,
+                        variants = userSelectedVariantsOnly,
                         selectedVariantIds = selectedVariantIds
                     )
                 }
@@ -94,7 +108,7 @@ class ReviewVariantViewModel @Inject constructor(
         )
     }
 
-    private fun findUpdatedVariantNames(response: VariantResult): List<Variant> {
+    private fun formatVariantNames(response: VariantResult): List<Variant> {
         val selections = response.selections
         return response.products.map { variant ->
             val variantName = variant.combinations.mapIndexed { index, combination ->
