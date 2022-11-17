@@ -44,7 +44,7 @@ object DeeplinkMapperUser {
         val callBack = uri.getQueryParameter(PARAM_CALL_BACK).orEmpty()
         val type = uri.getQueryParameter(PARAM_KYC_TYPE).orEmpty()
 
-        val params = mapOf<String, Any>(
+        val params = mapOf(
             PARAM_PROJECT_ID to projectId,
             PARAM_SHOW_INTRO to showIntro,
             PARAM_REDIRECT_URL to redirectUrl,
@@ -55,7 +55,7 @@ object DeeplinkMapperUser {
         val internal =  getRegisteredUserNavigation(deeplink)
         return when {
             internal.startsWith("$KYC_ONLY_BASE?") -> {
-                UriUtil.buildUriAppendParams(KYC_ALA_CARTE, params)
+                UriUtil.buildUri(KYC_ALA_CARTE, params)
             }
             else -> internal
         }
