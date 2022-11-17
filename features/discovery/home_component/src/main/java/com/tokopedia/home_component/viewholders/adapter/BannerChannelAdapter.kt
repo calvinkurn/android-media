@@ -2,6 +2,7 @@ package com.tokopedia.home_component.viewholders.adapter
 
 import android.annotation.SuppressLint
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -60,8 +61,22 @@ class BannerChannelImageViewHolder(itemView: View, val listener: BannerItemListe
 
     val cardUnify: CardUnify2 = itemView.findViewById(R.id.banner_card)
 
+    @SuppressLint("ClickableViewAccessibility")
     fun bind(item: BannerItemModel, imageRatio: String = "") {
         itemView.findViewById<ShimmeringImageView>(R.id.image_banner_homepage).loadImage(item.url)
+        itemView.setOnTouchListener { _, motionEvent ->
+            cardUnify.onTouchEvent(motionEvent)
+            when(motionEvent.action) {
+                MotionEvent.ACTION_DOWN -> {
+                    listener.onLongPress()
+                }
+                MotionEvent.ACTION_UP,
+                MotionEvent.ACTION_CANCEL -> {
+                    listener.onRelease()
+                }
+            }
+            return@setOnTouchListener true
+        }
         itemView.setOnClickListener { listener.onClick(layoutPosition) }
         itemView.addOnImpressionListener(item) {
             listener.onImpressed(layoutPosition)
@@ -80,6 +95,8 @@ class BannerChannelImageViewHolder(itemView: View, val listener: BannerItemListe
 interface BannerItemListener {
     fun onClick(position: Int)
     fun onImpressed(position: Int)
+    fun onLongPress() { }
+    fun onRelease() { }
 }
 
 data class BannerItemModel(val id: Int, val url: String): ImpressHolder()

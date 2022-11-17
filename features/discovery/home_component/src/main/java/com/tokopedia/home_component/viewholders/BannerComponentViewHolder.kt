@@ -249,6 +249,14 @@ class BannerComponentViewHolder(itemView: View,
         }
     }
 
+    override fun onLongPress() {
+        pauseAutoScroll()
+    }
+
+    override fun onRelease() {
+        resumeAutoScroll()
+    }
+
     private fun onPageDragStateChanged(isDrag: Boolean) {
         bannerListener?.onPageDragStateChanged(isDrag)
     }
