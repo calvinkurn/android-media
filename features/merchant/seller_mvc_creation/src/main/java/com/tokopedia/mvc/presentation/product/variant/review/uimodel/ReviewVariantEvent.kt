@@ -14,4 +14,5 @@ sealed class ReviewVariantEvent {
     data class RemoveVariantFromSelection(val variantProductId: Long) : ReviewVariantEvent()
     data class RemoveVariant(val productId: Long) : ReviewVariantEvent()
     object TapSelectButton : ReviewVariantEvent()
+    object BulkDeleteVariant : ReviewVariantEvent()
 }

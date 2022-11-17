@@ -52,6 +52,7 @@ class ReviewVariantViewModel @Inject constructor(
             ReviewVariantEvent.EnableSelectAllCheckbox -> handleCheckAllVariant()
             ReviewVariantEvent.TapSelectButton -> _uiEffect.tryEmit(ReviewVariantEffect.ConfirmUpdateVariant(currentState.selectedVariantIds))
             is ReviewVariantEvent.RemoveVariant -> handleRemoveVariant(event.productId)
+            is ReviewVariantEvent.BulkDeleteVariant -> handleBulkDeleteVariant()
         }
     }
 
@@ -158,18 +159,38 @@ class ReviewVariantViewModel @Inject constructor(
         }
     }
 
-    private fun handleRemoveVariant(productIdToDelete: Long) = launch(dispatchers.computation) {
-        val modifiedVariants = currentState.variants.toMutableList()
-        modifiedVariants.removeFirst { it.variantId == productIdToDelete }
+    private fun handleRemoveVariant(productIdToDelete: Long) {
+        launch(dispatchers.computation) {
+            val modifiedVariants = currentState.variants.toMutableList()
+            modifiedVariants.removeFirst { it.variantId == productIdToDelete }
 
-        val modifiedVariantProductIds = modifiedVariants.filter { it.isSelected }.map { it.variantId }.toMutableSet()
-        modifiedVariantProductIds.remove(productIdToDelete)
+            val modifiedVariantProductIds =
+                modifiedVariants.filter { it.isSelected }.map { it.variantId }.toMutableSet()
 
-        _uiState.update {
-            it.copy(
-                variants = modifiedVariants,
-                selectedVariantIds = modifiedVariantProductIds
-            )
+            _uiState.update {
+                it.copy(
+                    variants = modifiedVariants,
+                    selectedVariantIds = modifiedVariantProductIds
+                )
+            }
+        }
+    }
+
+    private fun handleBulkDeleteVariant() {
+        launch(dispatchers.computation) {
+            val toBeRemovedVariantIds = currentState.variants.filter { it.isSelected }.map { it.variantId }
+
+            val modifiedVariants = currentState.variants.toMutableList()
+            modifiedVariants.removeAll { it.variantId in toBeRemovedVariantIds }
+
+            val modifiedVariantProductIds = modifiedVariants.filter { it.isSelected }.map { it.variantId }.toMutableSet()
+
+            _uiState.update {
+                it.copy(
+                    variants = modifiedVariants,
+                    selectedVariantIds = modifiedVariantProductIds
+                )
+            }
         }
     }
 

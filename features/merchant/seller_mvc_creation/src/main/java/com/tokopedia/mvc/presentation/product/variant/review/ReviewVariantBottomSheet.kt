@@ -14,7 +14,6 @@ import com.tokopedia.campaign.utils.extension.applyPaddingToLastItem
 import com.tokopedia.campaign.utils.extension.attachDividerItemDecoration
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.applyUnifyBackgroundColor
-import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.splitByThousand
@@ -112,15 +111,16 @@ class ReviewVariantBottomSheet: BottomSheetUnify() {
     }
 
     private fun setupView() {
-        setupButton()
+        setupClickListener()
         setupCheckbox()
         setupList()
     }
 
-    private fun setupButton() {
+    private fun setupClickListener() {
         binding?.btnSave?.setOnClickListener {
             viewModel.processEvent(ReviewVariantEvent.TapSelectButton)
         }
+        binding?.iconBulkDelete?.setOnClickListener { viewModel.processEvent(ReviewVariantEvent.BulkDeleteVariant) }
     }
 
     private fun setupList() {
