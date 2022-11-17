@@ -27,9 +27,31 @@ class PlayShortsRepositoryImpl @Inject constructor(
 ) : PlayShortsRepository {
 
     override suspend fun getAccountList(): List<ContentAccountUiModel> = withContext(dispatchers.io) {
-        val response = getWhiteListNewUseCase.execute(type = GetWhiteListNewUseCase.WHITELIST_ENTRY_POINT)
+        listOf(
+            ContentAccountUiModel(
+                id = "123",
+                name = "Shop",
+                iconUrl = "",
+                badge = "",
+                type = "content-shop",
+                hasUsername = true,
+                hasAcceptTnc = true,
+            ),
+            ContentAccountUiModel(
+                id = "456",
+                name = "UGC",
+                iconUrl = "",
+                badge = "",
+                type = "content-user",
+                hasUsername = true,
+                hasAcceptTnc = true,
+            )
+        )
 
-        return@withContext mapper.mapAuthorList(response)
+        /** TODO: will uncomment this later */
+//        val response = getWhiteListNewUseCase.execute(type = GetWhiteListNewUseCase.WHITELIST_ENTRY_POINT)
+//
+//        return@withContext mapper.mapAuthorList(response)
     }
 
     override suspend fun getShortsConfiguration(
