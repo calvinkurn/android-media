@@ -26,7 +26,7 @@ class DigitalAnalytics {
                 TrackAppUtils.EVENT, DigitalCheckoutTrackingConst.Event.CLICK_CHECKOUT,
                 TrackAppUtils.EVENT_CATEGORY, DigitalCheckoutTrackingConst.Category.DIGITAL_CHECKOUT_PAGE,
                 TrackAppUtils.EVENT_ACTION, DigitalCheckoutTrackingConst.Action.CLICK_PROMO,
-                TrackAppUtils.EVENT_LABEL, String.format("%s - %s", categoryName, operatorName),
+                TrackAppUtils.EVENT_LABEL, String.format(Locale.getDefault(), "%s - %s", categoryName, operatorName),
                 DigitalCheckoutTrackingConst.Label.BUSINESS_UNIT, DigitalCheckoutTrackingConst.Value.RECHARGE_BU,
                 DigitalCheckoutTrackingConst.Label.CURRENTSITE, DigitalCheckoutTrackingConst.Value.SITE,
                 DigitalCheckoutTrackingConst.Label.USER_ID, userId
@@ -66,7 +66,7 @@ class DigitalAnalytics {
             TrackAppUtils.EVENT, DigitalCheckoutTrackingConst.Event.CLICK_CHECKOUT,
             TrackAppUtils.EVENT_CATEGORY, DigitalCheckoutTrackingConst.Category.DIGITAL_CHECKOUT_PAGE,
             TrackAppUtils.EVENT_ACTION, actionValue,
-            TrackAppUtils.EVENT_LABEL, String.format("%s - %s", categoryName, operatorName),
+            TrackAppUtils.EVENT_LABEL, String.format(Locale.getDefault(), "%s - %s", categoryName, operatorName),
             DigitalCheckoutTrackingConst.Label.BUSINESS_UNIT, DigitalCheckoutTrackingConst.Value.RECHARGE_BU,
             DigitalCheckoutTrackingConst.Label.CURRENTSITE, DigitalCheckoutTrackingConst.Value.SITE
         )
@@ -149,7 +149,7 @@ class DigitalAnalytics {
                     DigitalCheckoutTrackingConst.CurrencyCode.KEY,
                     DigitalCheckoutTrackingConst.CurrencyCode.IDR,
                     DigitalCheckoutTrackingConst.Label.IMPRESSIONS,
-                    listOf(fintechProductList)
+                    fintechProductList
                 ),
                 DigitalCheckoutTrackingConst.Label.USER_ID, userId
             )
@@ -175,7 +175,7 @@ class DigitalAnalytics {
                         DigitalCheckoutTrackingConst.Label.ACTION_FIELD,
                         DataLayer.mapOf(DigitalCheckoutTrackingConst.Product.KEY_LIST, "/checkout - ${fintechProduct.info.title} - tebus murah"),
                         DigitalCheckoutTrackingConst.Label.PRODUCTS,
-                        listOf(fintechProductList)
+                        fintechProductList
                     )
                 ),
                 DigitalCheckoutTrackingConst.Label.USER_ID, userId
@@ -189,7 +189,7 @@ class DigitalAnalytics {
                 TrackAppUtils.EVENT, DigitalCheckoutTrackingConst.Event.DIGITAL_GENERAL_EVENT,
                 TrackAppUtils.EVENT_CATEGORY, DigitalCheckoutTrackingConst.Category.DIGITAL_CHECKOUT_PAGE,
                 TrackAppUtils.EVENT_ACTION, DigitalCheckoutTrackingConst.Action.UNCHECK_TEBUS_MURAH_ICON,
-                TrackAppUtils.EVENT_LABEL, String.format("%s - %s", categoryName, fintechProduct.info.title),
+                TrackAppUtils.EVENT_LABEL, String.format(Locale.getDefault(), "%s - %s", categoryName, fintechProduct.info.title),
                 DigitalCheckoutTrackingConst.Label.BUSINESS_UNIT, DigitalCheckoutTrackingConst.Value.RECHARGE_BU,
                 DigitalCheckoutTrackingConst.Label.CURRENTSITE, DigitalCheckoutTrackingConst.Value.RECHARGE_SITE,
                 DigitalCheckoutTrackingConst.Label.USER_ID, userId
@@ -214,7 +214,7 @@ class DigitalAnalytics {
                     DigitalCheckoutTrackingConst.CurrencyCode.KEY,
                     DigitalCheckoutTrackingConst.CurrencyCode.IDR,
                     DigitalCheckoutTrackingConst.Label.IMPRESSIONS,
-                    listOf(fintechProductList)
+                    fintechProductList
                 ),
                 DigitalCheckoutTrackingConst.Label.USER_ID, userId
             )
@@ -240,7 +240,7 @@ class DigitalAnalytics {
                         DigitalCheckoutTrackingConst.Label.ACTION_FIELD,
                         DataLayer.mapOf(DigitalCheckoutTrackingConst.Product.KEY_LIST, "/checkout - ${fintechProduct.info.title} $position - $CROSSELL_CARD_TYPE"),
                         DigitalCheckoutTrackingConst.Label.PRODUCTS,
-                        listOf(fintechProductList)
+                        fintechProductList
                     )
                 ),
                 DigitalCheckoutTrackingConst.Label.USER_ID, userId
@@ -269,10 +269,10 @@ class DigitalAnalytics {
         val products: MutableList<Any> = ArrayList()
         products.add(constructProductEnhanceEcommerce(cartDigitalInfoData, productName, categoryId))
         val label = String.format(
-            Locale.ROOT,
+            Locale.getDefault(),
             "%s - %s - %s - %s",
-            cartDigitalInfoData.attributes.categoryName.lowercase(Locale.ROOT),
-            cartDigitalInfoData.attributes.operatorName.lowercase(Locale.ROOT),
+            cartDigitalInfoData.attributes.categoryName.lowercase(Locale.getDefault()),
+            cartDigitalInfoData.attributes.operatorName.lowercase(Locale.getDefault()),
             cartDigitalInfoData.channelId,
             cartDigitalInfoData.attributes.autoApplyVoucher.code
         )
@@ -297,7 +297,7 @@ class DigitalAnalytics {
                             DigitalCheckoutTrackingConst.Misc.ACTION_FIELD_STEP1
                         ),
                         DigitalCheckoutTrackingConst.Label.PRODUCTS,
-                        listOf(products)
+                        products
                     )
                 ),
                 DigitalCheckoutTrackingConst.Label.CURRENTSITE, DigitalCheckoutTrackingConst.Value.RECHARGE_SITE
@@ -313,6 +313,7 @@ class DigitalAnalytics {
         products.add(constructProductEnhanceEcommerce(cartDataInfo, productName, categoryId))
 
         var label = String.format(
+            Locale.getDefault(),
             "%s - %s - %s - %s",
             cartDataInfo.attributes.categoryName.toLowerCase(),
             cartDataInfo.attributes.operatorName.toLowerCase(),
@@ -341,7 +342,7 @@ class DigitalAnalytics {
                             DigitalCheckoutTrackingConst.Misc.ACTION_FIELD_STEP2
                         ),
                         DigitalCheckoutTrackingConst.Label.PRODUCTS,
-                        listOf(products)
+                        products
                     )
                 ),
                 DigitalCheckoutTrackingConst.Label.CURRENTSITE, DigitalCheckoutTrackingConst.Value.RECHARGE_SITE
@@ -374,7 +375,7 @@ class DigitalAnalytics {
                             DigitalCheckoutTrackingConst.Misc.ACTION_FIELD_STEP2
                         ),
                         DigitalCheckoutTrackingConst.Label.PRODUCTS,
-                        listOf(fintechProductList)
+                        fintechProductList
                     )
                 )
             )
@@ -406,7 +407,7 @@ class DigitalAnalytics {
                             DigitalCheckoutTrackingConst.Misc.ACTION_FIELD_STEP2_TEBUS_MURAH
                         ),
                         DigitalCheckoutTrackingConst.Label.PRODUCTS,
-                        listOf(fintechProductList)
+                        fintechProductList
                     )
                 )
             )
