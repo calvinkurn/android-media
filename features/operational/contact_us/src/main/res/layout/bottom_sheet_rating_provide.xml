@@ -50,6 +50,8 @@
         app:typographyType="display_2"
         app:typographyWeight="bold"
         app:layout_constraintTop_toBottomOf="@id/smile_layout"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         tools:text="Memuaskan" />
 
     <View
@@ -77,6 +79,8 @@
         app:typographyWeight="bold"
         app:typographyType="display_1"
         app:layout_constraintTop_toBottomOf="@id/divider"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
         tools:text="Apa yang sebaiknya dipertahankan dari layanan kami?" />
 
     <LinearLayout
@@ -87,9 +91,10 @@
         android:paddingTop="6dp"
         android:paddingBottom="6dp"
         android:showDividers="end"
+        android:id="@+id/filter_layout"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/txt_finished"
+        app:layout_constraintTop_toBottomOf="@+id/txt_feedback_question"
         app:layout_scrollFlags="enterAlways">
 
         <com.tokopedia.contactus.inboxticket2.view.customview.CustomQuickOptionView
@@ -110,7 +115,7 @@
         android:textColor="@color/Unify_N0"
         app:typographyWeight="bold"
         app:typographyType="display_2"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/filter_layout"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 

@@ -30,6 +30,8 @@ class ContactUsRatingViewModel @Inject constructor(
     private var questionList = ArrayList<String>()
     var emojiState : Int = 0
     private set
+    var csatTitle : String = ""
+        private set
     var screenState = MutableLiveData<ScreenState>()
     private set
     var reasonList : ArrayList<BadCsatReasonListItem> = arrayListOf()
@@ -50,6 +52,10 @@ class ContactUsRatingViewModel @Inject constructor(
 
     fun setReasonList(itemsReasonList : ArrayList<BadCsatReasonListItem>){
         reasonList = itemsReasonList
+    }
+
+    fun setCsatTitle(title: String) {
+        csatTitle = title
     }
 
     private fun determineScreenSate(emoji: Int): ScreenState {

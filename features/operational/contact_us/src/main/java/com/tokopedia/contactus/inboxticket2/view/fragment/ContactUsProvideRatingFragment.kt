@@ -65,7 +65,6 @@ class ContactUsProvideRatingFragment: BaseFragmentProvideRating(){
     private fun initViews(view : View) {
         title = view.findViewById(R.id.rating_txt_help_title)
         smileLayout = view.findViewById(R.id.smile_layout)
-        title?.text = viewModel?.csatTitle
     //    initObserver(smileLayout!!)
     }
 
