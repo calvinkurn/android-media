@@ -18,6 +18,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.toBitmap
 import com.tokopedia.kotlin.extensions.view.visible
@@ -55,7 +56,6 @@ import java.io.File
 import javax.inject.Inject
 import kotlin.math.max
 
-
 class DetailEditorFragment @Inject constructor(
     private val viewModelFactory: ViewModelProvider.Factory,
     private val editorDetailAnalytics: EditorDetailAnalytics
@@ -66,7 +66,9 @@ class DetailEditorFragment @Inject constructor(
     WatermarkToolUiComponent.Listener,
     RotateToolUiComponent.Listener,
     CropToolUiComponent.Listener,
-    EditorDetailPreviewWidget.Listener {
+    EditorDetailPreviewWidget.Listener,
+    AddLogoToolUiComponent.Listener
+{
 
     private val viewBinding: FragmentDetailEditorBinding? by viewBinding()
     private val viewModel: DetailEditorViewModel by activityViewModels { viewModelFactory }
@@ -77,6 +79,7 @@ class DetailEditorFragment @Inject constructor(
     private val watermarkComponent by uiComponent { WatermarkToolUiComponent(it, this) }
     private val rotateComponent by uiComponent { RotateToolUiComponent(it, this) }
     private val cropComponent by uiComponent { CropToolUiComponent(it, this) }
+    private val addLogoComponent by uiComponent { AddLogoToolUiComponent(it, this) }
 
     private var data = EditorDetailUiModel()
     private var detailState = EditorUiModel()
@@ -96,6 +99,9 @@ class DetailEditorFragment @Inject constructor(
     // storage variable for watermark case
     private var globalWidth = 0
     private var globalHeight = 0
+
+    private var originalImageWidth = 0
+    private var originalImageHeight = 0
 
     fun isShowDialogConfirmation(): Boolean {
         return isEdited
@@ -283,6 +289,13 @@ class DetailEditorFragment @Inject constructor(
         }
     }
 
+    override fun onLogoChosen(bitmap: Bitmap) {
+        viewBinding?.imgPreviewOverlay?.apply {
+            show()
+            setImageBitmap(bitmap)
+        }
+    }
+
     override fun initObserver() {
         observeIntentUiModel()
         observeIntentUiState()
@@ -441,29 +454,34 @@ class DetailEditorFragment @Inject constructor(
         val url = data.removeBackgroundUrl ?: data.originalUrl
 
         // UI crop & rotate initialize on editor param observe
-        viewBinding?.imgUcropPreview?.apply {
-            when (type) {
-                EditorToolType.BRIGHTNESS -> {
-                    val brightnessValue = data.brightnessValue ?: DEFAULT_VALUE_BRIGHTNESS
-                    setImageView(url, true)
-                    brightnessComponent.setupView(brightnessValue)
-                }
-                // ==========
-                EditorToolType.CONTRAST -> {
-                    val contrastValue = data.contrastValue ?: DEFAULT_VALUE_CONTRAST
-                    setImageView(url, true)
-                    contrastComponent.setupView(contrastValue)
-                }
-                // ==========
-                EditorToolType.REMOVE_BACKGROUND -> {
-                    val removeBgUrl = data.resultUrl ?: url
-                    setImageView(removeBgUrl, false)
-                    removeBgComponent.setupView()
-                }
-                // ==========
-                EditorToolType.WATERMARK -> {
-                    setImageView(url, true)
-                    watermarkComponent.setupView()
+        when (type) {
+            EditorToolType.BRIGHTNESS -> {
+                val brightnessValue = data.brightnessValue ?: DEFAULT_VALUE_BRIGHTNESS
+                setImageView(url, true)
+                brightnessComponent.setupView(brightnessValue)
+            }
+            // ==========
+            EditorToolType.CONTRAST -> {
+                val contrastValue = data.contrastValue ?: DEFAULT_VALUE_CONTRAST
+                setImageView(url, true)
+                contrastComponent.setupView(contrastValue)
+            }
+            // ==========
+            EditorToolType.REMOVE_BACKGROUND -> {
+                val removeBgUrl = data.resultUrl ?: url
+                setImageView(removeBgUrl, false)
+                removeBgComponent.setupView()
+            }
+            // ==========
+            EditorToolType.WATERMARK -> {
+                setImageView(url, true)
+                watermarkComponent.setupView()
+            }
+            // ==========
+            EditorToolType.ADD_LOGO -> {
+                setImageView(url, true) {
+                    // init add logo when image is already done (waiting for image size)
+                    addLogoComponent.setupView(originalImageWidth, originalImageHeight)
                 }
             }
         }
@@ -806,7 +824,7 @@ class DetailEditorFragment @Inject constructor(
         return getImageView()?.drawable?.toBitmap()
     }
 
-    private fun setImageView(url: String, readPreviousValue: Boolean) {
+    private fun setImageView(url: String, readPreviousValue: Boolean, onImageReady: () -> Unit = {}) {
         viewBinding?.imgUcropPreview?.hide()
         viewBinding?.imgViewPreview?.visible()
 
@@ -815,6 +833,9 @@ class DetailEditorFragment @Inject constructor(
             properties = {},
             mediaTarget = MediaBitmapEmptyTarget(
                 onReady = { bitmap ->
+                    originalImageWidth = bitmap.width
+                    originalImageHeight = bitmap.height
+
                     viewBinding?.imgViewPreview?.setImageBitmap(bitmap)
 
                     if (readPreviousValue) {
@@ -829,9 +850,46 @@ class DetailEditorFragment @Inject constructor(
                             WatermarkType.map(data.watermarkMode?.watermarkType)
                         )
                     }
+
+                    setOverlaySize(getDisplayedImageSize(viewBinding?.imgViewPreview, bitmap))
+
+                    onImageReady()
                 },
                 onCleared = {}
             ))
+    }
+
+    private fun setOverlaySize(displaySize: Pair<Float, Float>?) {
+        displaySize?.let {
+            viewBinding?.imgPreviewOverlay?.apply {
+                val lp = layoutParams
+
+                lp.width = it.first.toInt()
+                lp.height = it.second.toInt()
+
+                layoutParams = lp
+            }
+        }
+    }
+
+    private fun getDisplayedImageSize(view: View?, bitmap: Bitmap): Pair<Float, Float>?{
+        if (view == null) return null
+        val imageViewHeight = view.height
+        val imageViewWidth = view.width
+        val bitmapHeight = bitmap.height
+        val bitmapWidth = bitmap.width
+
+        val actualHeight: Float
+        val actualWidth: Float
+        if (imageViewHeight * bitmapWidth <= imageViewWidth * bitmapHeight) {
+            actualWidth = bitmapWidth * imageViewHeight.toFloat() / bitmapHeight
+            actualHeight = imageViewHeight.toFloat()
+        } else {
+            actualHeight = bitmapHeight * imageViewWidth.toFloat() / bitmapWidth
+            actualWidth = imageViewWidth.toFloat()
+        }
+
+        return Pair(actualWidth, actualHeight)
     }
 
     private fun getImagePairRatio(): Pair<Float, Float>? {
