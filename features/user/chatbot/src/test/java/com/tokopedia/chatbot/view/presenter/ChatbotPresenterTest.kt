@@ -52,7 +52,6 @@ import com.tokopedia.chatbot.domain.usecase.GetTickerDataUseCase
 import com.tokopedia.chatbot.domain.usecase.GetTopBotNewSessionUseCase
 import com.tokopedia.chatbot.domain.usecase.SendChatRatingUseCase
 import com.tokopedia.chatbot.domain.usecase.SubmitCsatRatingUseCase
-import com.tokopedia.chatbot.view.data.SocketResponse
 import com.tokopedia.chatbot.view.listener.ChatbotContract
 import com.tokopedia.chatbot.websocket.ChatbotWebSocket
 import com.tokopedia.chatbot.websocket.ChatbotWebSocketAction
@@ -1558,7 +1557,7 @@ class ChatbotPresenterTest {
             view.startNewSession()
         }
         verify {
-            view.blockTyping()
+            view.hideReplyBox()
         }
     }
 
