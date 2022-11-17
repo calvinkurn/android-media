@@ -10,6 +10,9 @@ object HomeComponentRollenceController {
     private var rollenceLego24BannerValue: String = ""
     private var rollenceHPBDurationValue: String = ""
     private var rollenceHPBDotsInfiniteValue: String = ""
+    private const val HPB_DURATION_4S = 4000L
+    private const val HPB_DURATION_5S = 5000L
+    private const val HPB_DURATION_6S = 6000L
 
     fun fetchHomeComponentRollenceValue() {
         rollenceLego24BannerValue = RemoteConfigInstance.getInstance().abTestPlatform.getString(RollenceKey.HOME_COMPONENT_LEGO24BANNER_EXP, RollenceKey.HOME_COMPONENT_LEGO24BANNER_OLD)
@@ -39,9 +42,9 @@ object HomeComponentRollenceController {
 
     fun getHPBDuration(): Long {
         return when(getHPBDurationRollenceValue()) {
-            RollenceKey.HOME_COMPONENT_HPB_DURATION_VARIANT_4S -> 4000L
-            RollenceKey.HOME_COMPONENT_HPB_DURATION_VARIANT_6S -> 6000L
-            else -> 5000L
+            RollenceKey.HOME_COMPONENT_HPB_DURATION_VARIANT_4S -> HPB_DURATION_4S
+            RollenceKey.HOME_COMPONENT_HPB_DURATION_VARIANT_6S -> HPB_DURATION_6S
+            else -> HPB_DURATION_5S
         }
     }
 }
