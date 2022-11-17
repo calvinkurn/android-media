@@ -22,4 +22,5 @@ data class EPharmacyMiniConsultationResult(
     val tokoConsultationId: String?,
     @SerializedName("prescription_images")
     val prescriptionImages: List<EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.PrescriptionImage?>?
+
 ) : Parcelable
