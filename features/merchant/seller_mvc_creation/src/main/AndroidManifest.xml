@@ -12,7 +12,6 @@
             android:name=".presentation.product.add.AddProductActivity"
             android:configChanges="orientation"
             android:exported="false"
-            android:label="@string/smvc_add_product"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White">
         </activity>
