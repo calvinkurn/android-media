@@ -293,7 +293,7 @@ class ChatbotFragment :
     }
 
     override fun onClick(v: View?) {
-        smallReplyBox?.hideReplyBox()
+        smallReplyBox?.hide()
         val id = v?.id
         if (id == getBindingView().chatbotViewHelpRate.btnInactive1.id ||
             id == getBindingView().chatbotViewHelpRate.btnInactive2.id ||
@@ -612,24 +612,23 @@ class ChatbotFragment :
     }
 
     override fun blockTyping() {
-        showReplyBox(false)
+        handleReplyBox(false)
     }
 
     override fun enableTyping() {
-        showReplyBox(true)
+        handleReplyBox(true)
         swipeToRefresh.setMargin(0, 0, 0, 0)
     }
 
-    private fun showReplyBox(toShow: Boolean) {
-        if (toShow) {
+    private fun handleReplyBox(toShowSmallReplyBox: Boolean) {
+        if (toShowSmallReplyBox) {
             getBindingView().addCommentArea.show()
-            smallReplyBox?.showReplyBox()
+            smallReplyBox?.show()
             bigReplyBox?.hide()
 
         } else {
-            getBindingView().addCommentArea.hide()
-            smallReplyBox?.hideReplyBox()
-            bigReplyBox?.hide()
+            smallReplyBox?.hide()
+            bigReplyBox?.show()
         }
     }
 
@@ -793,13 +792,16 @@ class ChatbotFragment :
         }
     }
 
+    /**
+     * Check the first item of the list , if it is of Attachment type 34 , then handle the reply box
+     * */
     private fun processDynamicAttachmentFromHistory(chatroom: ChatroomViewModel) {
-        chatroom.listChat.forEach {
+        chatroom.listChat.getOrNull(0).let {
             if (it !is FallbackAttachmentUiModel) {
-                return@forEach
+                return
             }
             if (it.attachmentType != DYNAMIC_ATTACHMENT)
-                return@forEach
+                return
 
             if (it.attachment is Attachment) {
                 val attachment = it.attachment as Attachment
@@ -817,7 +819,7 @@ class ChatbotFragment :
                         return
 
                 } catch (e: JsonSyntaxException) {
-                    return@forEach
+                    return
                 }
             }
         }
@@ -1109,20 +1111,15 @@ class ChatbotFragment :
     }
 
     override fun setBigReplyBoxTitle(text: String, placeholder: String) {
-        smallReplyBox?.hide()
-        bigReplyBox?.show()
+        handleReplyBox(false)
         bigReplyBox?.setText(text)
         replyBoxBottomSheetPlaceHolder = placeholder
         replyBoxBottomSheetTitle = text
     }
 
-    override fun handleSmallReplyBox(hidden: Boolean) {
+    override fun hideReplyBox() {
         bigReplyBox?.hide()
-        if (hidden) {
-            smallReplyBox?.hideReplyBox()
-        } else {
-            smallReplyBox?.showReplyBox()
-        }
+        smallReplyBox?.hide()
     }
 
     private fun sendAnalyticsForVideoUpload(videoFilePath : String) {
@@ -2045,6 +2042,8 @@ class ChatbotFragment :
 
     override fun getMessageContentFromBottomSheet(msg: String) {
         val startTime = SendableUiModel.generateStartTime()
+
+        enableTyping()
 
         presenter.sendMessage(
             messageId,

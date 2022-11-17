@@ -84,7 +84,7 @@ interface ChatbotContract {
 
         fun setBigReplyBoxTitle(text: String, placeholder: String)
 
-        fun handleSmallReplyBox(hidden: Boolean)
+        fun hideReplyBox()
     }
 
     interface Presenter : BaseChatContract.Presenter<View> {

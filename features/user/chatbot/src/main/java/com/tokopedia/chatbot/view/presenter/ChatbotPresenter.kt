@@ -427,7 +427,10 @@ class ChatbotPresenter @Inject constructor(
     }
 
     private fun handleSmallReplyBoxWS(smallReplyBoxContent: SmallReplyBoxAttribute) {
-        view.handleSmallReplyBox(smallReplyBoxContent.isHidden)
+        if (smallReplyBoxContent.isHidden)
+            view.hideReplyBox()
+        else
+            view.enableTyping()
     }
 
     fun validateHistoryForAttachment34(replyBoxAttribute: ReplyBoxAttribute?): Boolean {
@@ -1051,7 +1054,7 @@ class ChatbotPresenter @Inject constructor(
     }
 
     private fun handleReplyBox(isTypingBlocked: Boolean) {
-        if (isTypingBlocked) view.blockTyping() else view.enableTyping()
+        if (isTypingBlocked) view.hideReplyBox() else view.enableTyping()
     }
 
     private fun handleNewSession(isNewSession: Boolean) {
