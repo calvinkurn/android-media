@@ -31,6 +31,7 @@ import com.tokopedia.logisticCommon.data.mapper.AddAddressMapper
 import com.tokopedia.logisticCommon.data.response.DistrictItem
 import com.tokopedia.logisticCommon.data.response.KeroGetAddressResponse
 import com.tokopedia.logisticCommon.util.LogisticUserConsentHelper
+import com.tokopedia.logisticCommon.util.MapsAvailabilityHelper
 import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_ADDRESS_ID
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_DISTRICT_NAME
@@ -126,7 +127,6 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
         super.onCreate(savedInstanceState)
         arguments?.let {
             isEdit = it.getBoolean(EXTRA_IS_EDIT, false)
-            viewModel.isGmsAvailable = it.getBoolean(EXTRA_GMS_AVAILABILITY, true)
             if (!isEdit) {
                 saveDataModel = it.getParcelable(EXTRA_SAVE_DATA_UI_MODEL)
                 isLatitudeNotEmpty = saveDataModel?.latitude?.isNotEmpty()
@@ -140,9 +140,11 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
                 }
                 isPositiveFlow = it.getBoolean(EXTRA_IS_POSITIVE_FLOW)
                 currentKotaKecamatan = it.getString(EXTRA_KOTA_KECAMATAN)
+                viewModel.isGmsAvailable = it.getBoolean(EXTRA_GMS_AVAILABILITY, true)
             } else {
                 EditAddressRevampAnalytics.onViewEditAddressPageNew(userSession.userId)
                 addressId = it.getString(EXTRA_ADDRESS_ID, "")
+                context?.let { ctx -> viewModel.isGmsAvailable = MapsAvailabilityHelper.isMapsAvailable(ctx) }
             }
             viewModel.source = it.getString(PARAM_SOURCE, "")
         }
@@ -382,6 +384,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
     @SuppressLint("SetTextI18n")
     private fun prepareLayout(data: DistrictItem?) {
         setupLabelChips("Rumah")
+        setupMapsAvailabilityTicker()
         binding?.run {
             if (userSession.name.isNotEmpty() && !userSession.name.contains(toppers, ignoreCase = true)) {
                 formAccount.etNamaPenerima.textFieldInput.setText(userSession.name)
@@ -459,6 +462,14 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
         }
     }
 
+    private fun setupMapsAvailabilityTicker() {
+        if (viewModel.isGmsAvailable) {
+            binding?.tickerMapsUnavailable?.gone()
+        } else {
+            binding?.tickerMapsUnavailable?.visible()
+        }
+    }
+
     private fun setupLabelChips(currentLabel: String) {
         labelAlamatList =  context?.resources?.getStringArray(R.array.labelAlamatList)?.map { Pair(it, it.equals(currentLabel, ignoreCase = true)) }?.toTypedArray() ?: emptyArray()
         labelAlamatChipsAdapter = LabelAlamatChipsAdapter(this)
@@ -472,6 +483,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
     @SuppressLint("SetTextI18n")
     private fun prepareEditLayout(data: KeroGetAddressResponse.Data.KeroGetAddress.DetailAddressResponse) {
         setupLabelChips(data.addrName)
+        setupMapsAvailabilityTicker()
         binding?.formAccount?.run {
             etNamaPenerima.textFieldInput.setText(data.receiverName)
             infoNameLayout.visibility = View.GONE
@@ -1309,7 +1321,6 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
 
                     if (extra != null) {
                         putString(PARAM_SOURCE, extra.getString(PARAM_SOURCE, "") )
-                        putBoolean(EXTRA_GMS_AVAILABILITY, extra.getBoolean(EXTRA_GMS_AVAILABILITY))
                     }
                 }
             }
