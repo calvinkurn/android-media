@@ -1,5 +1,8 @@
 package com.tokopedia.contactus.createticket.fragment;
 
+import static android.app.Activity.RESULT_OK;
+import static com.tokopedia.contactus.createticket.ContactUsConstant.EXTRAS_PARAM_URL;
+
 import android.annotation.TargetApi;
 import android.app.Activity;
 import android.content.Context;
@@ -33,11 +36,6 @@ import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.user.session.UserSession;
 import com.tokopedia.user.session.UserSessionInterface;
 import com.tokopedia.webview.TkpdWebView;
-
-import org.jetbrains.annotations.NotNull;
-
-import static android.app.Activity.RESULT_OK;
-import static com.tokopedia.contactus.createticket.ContactUsConstant.EXTRAS_PARAM_URL;
 
 /**
  * Created by nisie on 8/12/16.

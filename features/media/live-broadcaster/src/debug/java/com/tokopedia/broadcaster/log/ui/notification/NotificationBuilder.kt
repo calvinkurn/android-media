@@ -33,7 +33,11 @@ object NotificationBuilder {
         val intent = Intent(context, NetworkLogActivity::class.java).apply {
             flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
         }
-        val pendingIntent = PendingIntent.getActivity(context, 0, intent, 0)
+        val pendingIntent = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_IMMUTABLE)
+        } else {
+            PendingIntent.getActivity(context, 0, intent, 0)
+        }
         val builder = NotificationCompat.Builder(context, CHANNEL_ID)
             .setContentTitle("(Debug) - Live Broadcaster")
             .setContentText(content)

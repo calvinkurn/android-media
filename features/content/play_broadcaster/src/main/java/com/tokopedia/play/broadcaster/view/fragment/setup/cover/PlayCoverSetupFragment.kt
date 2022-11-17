@@ -540,6 +540,7 @@ class PlayCoverSetupFragment @Inject constructor(
                 override fun <T : ViewModel?> create(modelClass: Class<T>): T {
                     return coverSetupViewModelFactory.create(
                         mDataSource?.getProductList().orEmpty(),
+                        mDataSource?.getAuthorId().orEmpty(),
                         mDataSource?.getChannelId().orEmpty(),
                     ) as T
                 }
@@ -657,6 +658,7 @@ class PlayCoverSetupFragment @Inject constructor(
 
     interface DataSource {
         fun getProductList(): List<ProductUiModel>
+        fun getAuthorId(): String
         fun getChannelId(): String
     }
 }

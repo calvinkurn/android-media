@@ -2,15 +2,16 @@ package com.tokopedia.tokofood.feature.search.initialstate.presentation.viewhold
 
 import android.view.View
 import androidx.annotation.LayoutRes
-import com.tokopedia.kotlin.extensions.view.ViewHintListener
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.tokofood.R
+import com.tokopedia.tokofood.common.presentation.listener.TokofoodScrollChangedListener
 import com.tokopedia.tokofood.common.presentation.viewholder.CustomPayloadViewHolder
+import com.tokopedia.tokofood.common.util.TokofoodExt.addAndReturnImpressionListener
 import com.tokopedia.tokofood.databinding.RecentSearchItemInitialStateBinding
 import com.tokopedia.tokofood.feature.search.initialstate.presentation.uimodel.RecentSearchItemUiModel
 
 class RecentSearchItemViewHolder(view: View,
-                                 private val actionListener: ActionListener
+                                 private val actionListener: ActionListener,
+                                 private val tokofoodScrollChangedListener: TokofoodScrollChangedListener
 ): CustomPayloadViewHolder<RecentSearchItemUiModel>(view) {
 
     companion object {
@@ -78,7 +79,7 @@ class RecentSearchItemViewHolder(view: View,
         item: RecentSearchItemUiModel,
         position: Int
     ) {
-        binding.root.addOnImpressionListener(item) {
+        binding.root.addAndReturnImpressionListener(item, tokofoodScrollChangedListener) {
             actionListener.onImpressionRecentSearch(item, position)
         }
     }

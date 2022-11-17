@@ -58,4 +58,10 @@ abstract class TokomemberViewmodelModule {
     @IntoMap
     @ViewModelKey(TmMemberListViewModel::class)
     abstract fun tmMemberListViewModel(viewModel : TmMemberListViewModel) : ViewModel
+
+    @TokomemberDashScope
+    @Binds
+    @IntoMap
+    @ViewModelKey(TmCouponDetailViewModel::class)
+    abstract fun tmCouponDetailViewModel(viewModel: TmCouponDetailViewModel): ViewModel
 }

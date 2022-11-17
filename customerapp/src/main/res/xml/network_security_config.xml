@@ -7,11 +7,6 @@
             <certificates src="user" />
         </trust-anchors>
     </debug-overrides>
-    <base-config cleartextTrafficPermitted="true">
-        <trust-anchors>
-            <certificates src="system" />
-        </trust-anchors>
-    </base-config>
     <domain-config cleartextTrafficPermitted="true">
         <domain includeSubdomains="false">localhost</domain>
         <domain includeSubdomains="true">172.31.2.144</domain>
@@ -19,6 +14,8 @@
         <domain includeSubdomains="true">wst.laku6.com</domain>
         <domain includeSubdomains="true">gojek.com</domain>
         <domain includeSubdomains="true">grab.com</domain>
+        <domain includeSubdomains="true">35.198.223.102</domain>
+
 
         <!--    Need to be whitelisted for silent verification    -->
         <domain includeSubdomains="false">wso2am-prod-gdhsi-h3g.dhubckh.com</domain>
@@ -27,10 +24,5 @@
         <domain includeSubdomains="false">apigw.xl.co.id</domain>
         <domain includeSubdomains="false">autohe.xl.co.id</domain>
         <domain includeSubdomains="false">gateway.egw.xl.co.id</domain>
-        <domain includeSubdomains="true">https://hansel-testsdk.tokopedia.com</domain>
-        <trust-anchors>
-            <certificates src="user"/>
-            <certificates src="system"/>
-        </trust-anchors>
     </domain-config>
 </network-security-config>

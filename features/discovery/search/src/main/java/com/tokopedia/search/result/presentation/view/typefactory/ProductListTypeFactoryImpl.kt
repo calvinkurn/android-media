@@ -6,18 +6,18 @@ import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactor
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
-import com.tokopedia.search.result.presentation.model.BroadMatchDataView
+import com.tokopedia.search.result.product.broadmatch.BroadMatchDataView
 import com.tokopedia.search.result.presentation.model.ChooseAddressDataView
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.presentation.model.RecommendationItemDataView
 import com.tokopedia.search.result.presentation.model.RecommendationTitleDataView
 import com.tokopedia.search.result.presentation.model.SearchProductTitleDataView
 import com.tokopedia.search.result.presentation.model.SearchProductTopAdsImageDataView
-import com.tokopedia.search.result.presentation.model.SuggestionDataView
+import com.tokopedia.search.result.product.suggestion.SuggestionDataView
 import com.tokopedia.search.result.presentation.model.TickerDataView
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.common.SearchLoadingMoreViewHolder
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.BigGridProductItemViewHolder
-import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.BroadMatchViewHolder
+import com.tokopedia.search.result.product.broadmatch.BroadMatchViewHolder
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.ChooseAddressViewHolder
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.InspirationCarouselViewHolder
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.ListProductItemViewHolder
@@ -26,12 +26,12 @@ import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.SearchProductTitleViewHolder
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.SearchProductTopAdsImageViewHolder
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.SmallGridProductItemViewHolder
-import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.SuggestionViewHolder
+import com.tokopedia.search.result.product.suggestion.SuggestionViewHolder
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.TickerViewHolder
-import com.tokopedia.search.result.presentation.view.listener.BroadMatchListener
+import com.tokopedia.search.result.product.broadmatch.BroadMatchListener
 import com.tokopedia.search.result.presentation.view.listener.InspirationCarouselListener
 import com.tokopedia.search.result.presentation.view.listener.ProductListener
-import com.tokopedia.search.result.presentation.view.listener.SuggestionListener
+import com.tokopedia.search.result.product.suggestion.SuggestionListener
 import com.tokopedia.search.result.presentation.view.listener.TickerListener
 import com.tokopedia.search.result.presentation.view.listener.TopAdsImageViewListener
 import com.tokopedia.search.result.product.banned.BannedProductsEmptySearchDataView
@@ -115,6 +115,7 @@ class ProductListTypeFactoryImpl(
     private val isUsingViewStub: Boolean = false,
     private val sameSessionRecommendationListener: SameSessionRecommendationListener,
     private val recycledViewPool: RecyclerView.RecycledViewPool,
+    private val isSneakPeekEnabled: Boolean = false,
 ) : BaseAdapterTypeFactory(), ProductListTypeFactory {
 
     override fun type(cpmDataView: CpmDataView): Int {
@@ -232,11 +233,11 @@ class ProductListTypeFactoryImpl(
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
             ListProductItemViewHolder.LAYOUT, ListProductItemViewHolder.LAYOUT_WITH_VIEW_STUB ->
-                ListProductItemViewHolder(view, productListener)
+                ListProductItemViewHolder(view, productListener, isSneakPeekEnabled)
             SmallGridProductItemViewHolder.LAYOUT, SmallGridProductItemViewHolder.LAYOUT_WITH_VIEW_STUB ->
-                SmallGridProductItemViewHolder(view, productListener)
+                SmallGridProductItemViewHolder(view, productListener, isSneakPeekEnabled)
             BigGridProductItemViewHolder.LAYOUT ->
-                BigGridProductItemViewHolder(view, productListener)
+                BigGridProductItemViewHolder(view, productListener, isSneakPeekEnabled)
             CpmViewHolder.LAYOUT -> CpmViewHolder(view, bannerAdsListener)
             TickerViewHolder.LAYOUT -> TickerViewHolder(view, tickerListener)
             SuggestionViewHolder.LAYOUT -> SuggestionViewHolder(view, suggestionListener)

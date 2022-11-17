@@ -1,12 +1,15 @@
 package com.tokopedia.play.broadcaster.model
 
 import com.google.gson.Gson
+import com.tokopedia.content.common.types.ContentCommonUserType.TYPE_SHOP
+import com.tokopedia.content.common.types.ContentCommonUserType.TYPE_USER
+import com.tokopedia.content.common.ui.model.ContentAccountUiModel
+import com.tokopedia.content.common.ui.model.TermsAndConditionUiModel
 import com.tokopedia.play.broadcaster.data.model.ProductData
 import com.tokopedia.play.broadcaster.domain.model.CreateLiveStreamChannelResponse
 import com.tokopedia.play.broadcaster.domain.model.GetLiveFollowersResponse
 import com.tokopedia.play.broadcaster.domain.model.GetLiveStatisticsResponse
 import com.tokopedia.play.broadcaster.domain.model.GetProductsByEtalaseResponse
-import com.tokopedia.play.broadcaster.domain.model.interactive.quiz.GetInteractiveQuizChoiceDetailResponse
 import com.tokopedia.play.broadcaster.type.PriceUnknown
 import com.tokopedia.play.broadcaster.type.ProductPrice
 import com.tokopedia.play.broadcaster.type.ProductStock
@@ -16,7 +19,7 @@ import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditSt
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageUiModel
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
 import com.tokopedia.play.broadcaster.view.state.SetupDataState
-import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
+import com.tokopedia.play_common.model.dto.interactive.GameUiModel
 import com.tokopedia.play_common.model.ui.QuizChoicesUiModel
 import java.io.File
 import java.util.*
@@ -33,10 +36,6 @@ class UiModelBuilder {
      */
     fun buildLiveStats(): GetLiveStatisticsResponse.ReportChannelSummary {
         return gson.fromJson(loadJsonToString("mock_live_stats.json"), GetLiveStatisticsResponse.ReportChannelSummary::class.java)
-    }
-
-    fun buildProductsInEtalase(): GetProductsByEtalaseResponse.GetProductListData {
-        return gson.fromJson(loadJsonToString("mock_products_in_etalase.json"), GetProductsByEtalaseResponse::class.java).productList
     }
 
     fun buildCreateLiveStreamGetMedia(): CreateLiveStreamChannelResponse.GetMedia {
@@ -166,15 +165,71 @@ class UiModelBuilder {
         waitingDuration: Long = 0,
         duration: Int = 0,
         choices: List<QuizChoicesUiModel> = emptyList(),
-    ): InteractiveUiModel.Quiz {
-        return InteractiveUiModel.Quiz(
+    ): GameUiModel.Quiz {
+        return GameUiModel.Quiz(
             id = id,
             title = title,
             waitingDuration = waitingDuration,
-            status = InteractiveUiModel.Quiz.Status.Ongoing(Calendar.getInstance().apply {
+            status = GameUiModel.Quiz.Status.Ongoing(Calendar.getInstance().apply {
                 add(Calendar.SECOND, duration)
             }),
             listOfChoices = choices,
         )
+    }
+
+    fun buildAccountListModel(
+        idShop: String = "1234",
+        idBuyer: String = "5678",
+        tncShop: Boolean = true,
+        usernameShop: Boolean = true,
+        tncBuyer: Boolean = true,
+        usernameBuyer: Boolean = true,
+        onlyShop: Boolean = false,
+        onlyBuyer: Boolean = false
+    ): List<ContentAccountUiModel> {
+        return when {
+            onlyShop -> listOf(
+                ContentAccountUiModel(
+                    id = idShop,
+                    type = TYPE_SHOP,
+                    name = "Shop",
+                    iconUrl = "icon.url.shop",
+                    badge = "icon.badge",
+                    hasUsername = usernameShop,
+                    hasAcceptTnc = tncShop
+                )
+            )
+            onlyBuyer -> listOf(
+                ContentAccountUiModel(
+                    id = idBuyer,
+                    type = TYPE_USER,
+                    name = "Buyer",
+                    iconUrl = "icon.url.buyer",
+                    badge = "icon.badge",
+                    hasUsername = usernameBuyer,
+                    hasAcceptTnc = tncBuyer
+                )
+            )
+            else -> listOf(
+                ContentAccountUiModel(
+                    id = idShop,
+                    type = TYPE_SHOP,
+                    name = "Shop",
+                    iconUrl = "icon.url.shop",
+                    badge = "icon.badge",
+                    hasUsername = usernameShop,
+                    hasAcceptTnc = tncShop
+                ),
+                ContentAccountUiModel(
+                    id = idBuyer,
+                    type = TYPE_USER,
+                    name = "Buyer",
+                    iconUrl = "icon.url.buyer",
+                    badge = "icon.badge",
+                    hasUsername = usernameBuyer,
+                    hasAcceptTnc = tncBuyer
+                ),
+            )
+        }
     }
 }

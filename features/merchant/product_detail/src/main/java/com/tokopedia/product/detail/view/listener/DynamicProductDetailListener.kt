@@ -94,6 +94,11 @@ interface DynamicProductDetailListener {
      * OneLinerViewHolder
      */
     fun onImpressStockAssurance(componentTrackDataModel: ComponentTrackDataModel, label: String)
+    fun onClickInformationIconAtStockAssurance(
+        componentTrackDataModel: ComponentTrackDataModel,
+        appLink: String,
+        label: String
+    )
 
     /**
      * ProductDiscussionViewHolder
@@ -165,6 +170,14 @@ interface DynamicProductDetailListener {
     fun onShopCredibilityImpressed(
         countLocation: String,
         componentTrackDataModel: ComponentTrackDataModel
+    )
+
+    /**
+     * [ProductShopAdditionalViewHolder]
+     */
+    fun onLearnButtonShopAdditionalClicked(
+        componentTrackDataModel: ComponentTrackDataModel,
+        eventLabel: String
     )
 
     /**
@@ -284,9 +297,12 @@ interface DynamicProductDetailListener {
      * ProductTickerViewHolder
      */
     fun onTickerShopClicked(
-        tickerTitle: String, tickerType: Int,
+        tickerTitle: String,
+        tickerType: Int,
         componentTrackDataModel: ComponentTrackDataModel?,
-        tickerDescription: String, applink: String, actionType: String,
+        tickerDescription: String,
+        applink: String,
+        actionType: String,
         tickerActionBs: TickerActionBs?
     )
 
@@ -376,6 +392,12 @@ interface DynamicProductDetailListener {
     )
 
     fun onClickCheckBundling(
+        bundleId: String,
+        bundleType: String,
+        componentTrackDataModel: ComponentTrackDataModel
+    )
+
+    fun onClickActionButtonBundling(
         bundleId: String,
         bundleType: String,
         componentTrackDataModel: ComponentTrackDataModel

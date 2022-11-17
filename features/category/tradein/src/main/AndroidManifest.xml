@@ -54,6 +54,6 @@
         <activity
             android:name="com.laku6.tradeinsdk.activities.ButtonDetectionActivity"
             tools:node="merge"
-            android:exported="true"/>
+            android:exported="false"/>
     </application>
 </manifest>

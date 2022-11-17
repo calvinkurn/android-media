@@ -1,7 +1,7 @@
 package com.tokopedia.play.analytic.interactive
 
 import com.tokopedia.play.view.type.PlayChannelType
-import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
+import com.tokopedia.play_common.model.dto.interactive.GameUiModel
 
 /**
  * @author by astidhiyaa on 17/06/22
@@ -9,7 +9,7 @@ import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
 interface PlayInteractiveAnalytic {
     fun clickFollowShopInteractive(
         interactiveId: String,
-        interactiveType: InteractiveUiModel,
+        gameType: GameUiModel,
         shopId: String,
         channelId: String,
         channelType: PlayChannelType,
@@ -17,11 +17,11 @@ interface PlayInteractiveAnalytic {
 
     fun impressFollowShopInteractive(
         shopId: String,
-        interactiveType: InteractiveUiModel,
+        gameType: GameUiModel,
         channelId: String,
     )
 
-    fun clickWinnerBadge(shopId: String, interactiveType: InteractiveUiModel, interactiveId: String,
+    fun clickWinnerBadge(shopId: String, gameType: GameUiModel, interactiveId: String,
                          channelId: String, channelType: PlayChannelType,
     )
 
@@ -65,7 +65,7 @@ interface PlayInteractiveAnalytic {
     fun clickActiveInteractive(
         interactiveId: String,
         shopId: String,
-        interactiveType: InteractiveUiModel,
+        gameType: GameUiModel,
         channelId: String,
     )
 
