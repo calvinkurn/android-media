@@ -31,6 +31,25 @@ class TokoChatHistoryChatViewModelTest : TokoChatViewModelTestFixture() {
     }
 
     @Test
+    fun `when failed to getChatHistory should give throwable in error livedata`() {
+        runBlocking {
+            // Given
+            coEvery {
+                getChatHistoryUseCase(any())
+            } throws throwableDummy
+
+            // When
+            viewModel.getChatHistory(CHANNEL_ID_DUMMY).observeAwaitValue()
+
+            // Then
+            Assert.assertEquals(
+                throwableDummy,
+                viewModel.error.observeAwaitValue()
+            )
+        }
+    }
+
+    @Test
     fun `when loadPreviousMessages should call loadPreviousMessage (from SDK) once`() {
         runBlocking {
             // When
@@ -40,6 +59,25 @@ class TokoChatHistoryChatViewModelTest : TokoChatViewModelTestFixture() {
             coVerify(exactly = 1) {
                 getChatHistoryUseCase.loadPreviousMessage()
             }
+        }
+    }
+
+    @Test
+    fun `when failed to loadPreviousMessages should give throwable in error livedata`() {
+        runBlocking {
+            // Given
+            coEvery {
+                getChatHistoryUseCase.loadPreviousMessage()
+            } throws throwableDummy
+
+            // When
+            viewModel.loadPreviousMessages()
+
+            // Then
+            Assert.assertEquals(
+                throwableDummy,
+                viewModel.error.observeAwaitValue()
+            )
         }
     }
 }

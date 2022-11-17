@@ -103,4 +103,24 @@ class TokoChatConnectionViewModelTest : TokoChatViewModelTestFixture() {
             Assert.assertEquals(dummyJob, viewModel.connectionCheckJob)
         }
     }
+
+    @Test
+    fun `when failed doCheckChatConnection should give throwable on error livedata`() {
+        runBlocking {
+            // Given
+            coEvery {
+                getChannelUseCase.isChatConnected()
+            } throws throwableDummy
+
+            // When
+            viewModel.doCheckChatConnection()
+            Thread.sleep(6000)
+
+            // Then
+            Assert.assertEquals(
+                false,
+                viewModel.isChatConnected.observeAwaitValue()
+            )
+        }
+    }
 }

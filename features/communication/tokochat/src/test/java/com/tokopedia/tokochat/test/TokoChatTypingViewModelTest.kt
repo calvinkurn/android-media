@@ -32,6 +32,25 @@ class TokoChatTypingViewModelTest : TokoChatViewModelTestFixture() {
     }
 
     @Test
+    fun `when failed to getTypingStatus should call give throwable on error livedata`() {
+        runBlocking {
+            // Given
+            coEvery {
+                getTypingUseCase.getTypingStatus()
+            } throws throwableDummy
+
+            // When
+            viewModel.getTypingStatus()
+
+            // Then
+            Assert.assertEquals(
+                throwableDummy,
+                viewModel.error.observeAwaitValue()
+            )
+        }
+    }
+
+    @Test
     fun `when setTypingStatus should call setTypingStatus (from SDK) once`() {
         runBlocking {
             // Given
@@ -48,6 +67,27 @@ class TokoChatTypingViewModelTest : TokoChatViewModelTestFixture() {
     }
 
     @Test
+    fun `when failed to setTypingStatus should call give throwable on error livedata`() {
+        runBlocking {
+            // Given
+            val typingStatusDummy = true
+
+            coEvery {
+                getTypingUseCase.setTypingStatus(any())
+            } throws throwableDummy
+
+            // When
+            viewModel.setTypingStatus(typingStatusDummy)
+
+            // Then
+            Assert.assertEquals(
+                throwableDummy,
+                viewModel.error.observeAwaitValue()
+            )
+        }
+    }
+
+    @Test
     fun `when resetTypingStatus should call resetTypingStatusCallback (from SDK) once`() {
         runBlocking {
             // When
@@ -57,6 +97,25 @@ class TokoChatTypingViewModelTest : TokoChatViewModelTestFixture() {
             coVerify(exactly = 1) {
                 getTypingUseCase.resetTypingStatus()
             }
+        }
+    }
+
+    @Test
+    fun `when failed to resetTypingStatus should call give throwable on error livedata`() {
+        runBlocking {
+            // Given
+            coEvery {
+                getTypingUseCase.resetTypingStatus()
+            } throws throwableDummy
+
+            // When
+            viewModel.resetTypingStatus()
+
+            // Then
+            Assert.assertEquals(
+                throwableDummy,
+                viewModel.error.observeAwaitValue()
+            )
         }
     }
 }

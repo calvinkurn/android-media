@@ -60,24 +60,27 @@ abstract class TokoChatViewModelTestFixture {
     protected lateinit var viewUtil: TokoChatViewUtil
 
     protected lateinit var viewModel: TokoChatViewModel
+    protected val throwableDummy = Throwable("Oops!")
 
     @Before
     fun setup() {
         MockKAnnotations.init(this)
-        viewModel = spyk(TokoChatViewModel(
-            getChannelUseCase,
-            getChatHistoryUseCase,
-            markAsReadUseCase,
-            registrationChannelUseCase,
-            sendMessageUseCase,
-            getTypingUseCase,
-            getTokoChatBackgroundUseCase,
-            getTokoChatRoomTickerUseCase,
-            getTokoChatOrderProgressUseCase,
-            getImageUrlUseCase,
-            viewUtil,
-            CoroutineTestDispatchersProvider
-        ))
+        viewModel = spyk(
+            TokoChatViewModel(
+                getChannelUseCase,
+                getChatHistoryUseCase,
+                markAsReadUseCase,
+                registrationChannelUseCase,
+                sendMessageUseCase,
+                getTypingUseCase,
+                getTokoChatBackgroundUseCase,
+                getTokoChatRoomTickerUseCase,
+                getTokoChatOrderProgressUseCase,
+                getImageUrlUseCase,
+                viewUtil,
+                CoroutineTestDispatchersProvider
+            )
+        )
     }
 
     @After

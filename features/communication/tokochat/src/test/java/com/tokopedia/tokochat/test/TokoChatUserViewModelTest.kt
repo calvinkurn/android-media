@@ -2,6 +2,7 @@ package com.tokopedia.tokochat.test
 
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.tokochat.base.TokoChatViewModelTestFixture
+import com.tokopedia.tokochat.utils.observeAwaitValue
 import io.mockk.coEvery
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
@@ -23,6 +24,25 @@ class TokoChatUserViewModelTest : TokoChatViewModelTestFixture() {
 
             // Then
             Assert.assertEquals(memberLeftLiveDataDummy, result)
+        }
+    }
+
+    @Test
+    fun `when failed to getMemberLeft should give LiveData String of member left`() {
+        runBlocking {
+            // Given
+            coEvery {
+                getChannelUseCase.getMemberLeftLiveData()
+            } throws throwableDummy
+
+            // When
+            viewModel.getMemberLeft()
+
+            // Then
+            Assert.assertEquals(
+                throwableDummy,
+                viewModel.error.observeAwaitValue()
+            )
         }
     }
 
