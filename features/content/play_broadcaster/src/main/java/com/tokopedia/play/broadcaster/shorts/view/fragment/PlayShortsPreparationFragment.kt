@@ -297,7 +297,7 @@ class PlayShortsPreparationFragment @Inject constructor(
         }
 
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            idleManager.eventBus.subscribe().collectLatest {
+            idleManager.state.collectLatest {
                 when (it) {
                     PlayShortsIdleManager.State.StandBy -> setupUiStandby()
                     PlayShortsIdleManager.State.Idle -> setupUiIdle()
