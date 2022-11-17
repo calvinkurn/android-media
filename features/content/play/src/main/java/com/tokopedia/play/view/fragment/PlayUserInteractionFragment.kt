@@ -891,7 +891,7 @@ class PlayUserInteractionFragment @Inject constructor(
                     viewLifecycleOwner.lifecycleScope.launch(dispatchers.immediate) { invalidateChatListBounds() }
                 }
 
-                renderFollowPopUp(state.isPopUp, state.bottomInsets)
+                renderFollowPopUp(state.isPopUp, state.partner, state.bottomInsets)
             }
         }
     }
@@ -1951,9 +1951,12 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     private fun renderFollowPopUp(state: FollowPopUpUiState,
+                                  partner: PlayPartnerInfo,
                                   bottomInsets: Map<BottomInsetsType, BottomInsetsState>) {
 
-        if (state.shouldShow && !bottomInsets.isAnyShown)
+        if(partner.id.toString() != state.partnerId) return
+
+        if (state.shouldShow && !bottomInsets.isAnyShown && partner.needFollow)
             PlayFollowBottomSheet.getOrCreate(childFragmentManager, classLoader = requireActivity().classLoader)
                 .show(childFragmentManager)
     }
