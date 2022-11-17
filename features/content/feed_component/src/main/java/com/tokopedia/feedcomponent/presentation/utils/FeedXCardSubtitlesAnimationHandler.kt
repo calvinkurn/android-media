@@ -1,6 +1,7 @@
 package com.tokopedia.feedcomponent.presentation.utils
 
 import android.animation.Animator
+import android.animation.Animator.AnimatorListener
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.animation.PropertyValuesHolder
@@ -28,23 +29,6 @@ class FeedXCardSubtitlesAnimationHandler(
     private var animatorSet: AnimatorSet? = null
     private var timer: Timer? = null
 
-    private val animListener = object : Animator.AnimatorListener {
-        override fun onAnimationStart(animation: Animator?) {
-
-        }
-
-        override fun onAnimationEnd(animation: Animator?) {
-            afterAnimationComplete()
-        }
-
-        override fun onAnimationCancel(animation: Animator?) {
-        }
-
-        override fun onAnimationRepeat(animation: Animator?) {
-
-        }
-    }
-
     private val onAttachListener = object : View.OnAttachStateChangeListener {
         override fun onViewAttachedToWindow(v: View?) {
             startTimer()
@@ -61,8 +45,8 @@ class FeedXCardSubtitlesAnimationHandler(
 
     private fun animateView() {
         isAnimationStarted = true
-        setDataIntoViews()
         animateTwoViews(visibleContainer, invisibleContainer)
+        setDataIntoViews()
     }
 
     private fun setDataIntoViews() {
@@ -76,10 +60,10 @@ class FeedXCardSubtitlesAnimationHandler(
         visibleContainer.get()?.text = subtitles[visibleDataPos]
         invisibleContainer.get()?.text = subtitles[invisibleDataPos]
 
-        currentPositionSubtitle += 1
-        if (currentPositionSubtitle >= subtitles.size) {
-            currentPositionSubtitle = 0
-        }
+//        currentPositionSubtitle += 1
+//        if (currentPositionSubtitle >= subtitles.size) {
+//            currentPositionSubtitle = 0
+//        }
     }
 
     fun stopAnimation() {
@@ -103,22 +87,6 @@ class FeedXCardSubtitlesAnimationHandler(
                 }
             }
         }, START_DELAY, INTERVAL)
-    }
-
-    private fun afterAnimationComplete() {
-        if (!::subtitles.isInitialized) return
-
-        //switch container reference
-        val tempContainer = visibleContainer
-        visibleContainer = invisibleContainer
-        invisibleContainer = tempContainer
-
-        //increment pos
-        currentPositionSubtitle += 1
-
-        //reset position
-        if (currentPositionSubtitle == subtitles.size)
-            currentPositionSubtitle = 0
     }
 
     private fun reset() {
@@ -161,7 +129,26 @@ class FeedXCardSubtitlesAnimationHandler(
                     PropertyValuesHolder.ofFloat(View.TRANSLATION_Y, dpToPx(16), 0f)
                 val translateAnimObjTwo: ObjectAnimator =
                     ObjectAnimator.ofPropertyValuesHolder(v2, translateAnimPropTwo)
-                translateAnimObjTwo.addListener(animListener)
+
+                translateAnimObjTwo.addListener(object: AnimatorListener {
+                    override fun onAnimationStart(animation: Animator?) {
+                    }
+
+                    override fun onAnimationEnd(animation: Animator?) {
+                        Log.d("FEED_ANIM", "Animation End, Masuk")
+                        currentPositionSubtitle += 1
+                        if (currentPositionSubtitle >= subtitles.size) {
+                            currentPositionSubtitle = 0
+                        }
+                    }
+
+                    override fun onAnimationCancel(animation: Animator?) {
+                    }
+
+                    override fun onAnimationRepeat(animation: Animator?) {
+                    }
+
+                })
 
                 animatorSet = AnimatorSet()
                 animatorSet?.playTogether(
