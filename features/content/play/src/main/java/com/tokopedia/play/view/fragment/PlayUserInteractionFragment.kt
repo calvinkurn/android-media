@@ -892,7 +892,7 @@ class PlayUserInteractionFragment @Inject constructor(
                     viewLifecycleOwner.lifecycleScope.launch(dispatchers.immediate) { invalidateChatListBounds() }
                 }
 
-                if(cachedState.isChanged { it.isPopUp }) renderFollowPopUp(state.isPopUp)
+                if(cachedState.isChanged { it.followPopUp }) renderFollowPopUp(state.followPopUp)
             }
         }
     }

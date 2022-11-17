@@ -197,11 +197,11 @@ class PlayViewModel @AssistedInject constructor(
     /** Needed to decide whether we need to call setResult() or no when leaving play room */
     private val _isChannelReportLoaded = MutableStateFlow(false)
 
-    private val _isPopup = MutableStateFlow(FollowPopUpUiState())
+    private val _isFollowPopUpShown = MutableStateFlow(false)
 
-    private val _followPopUpUiState = combine(_bottomInsets, _isPopup, _partnerInfo) {
+    private val _followPopUpUiState = combine(_bottomInsets, _isFollowPopUpShown, _partnerInfo) {
         bottomInsets, popUp, partner -> FollowPopUpUiState(
-            shouldShow = !bottomInsets.isAnyShown && popUp.shouldShow && partner.needFollow
+            shouldShow = !bottomInsets.isAnyShown && popUp && partner.needFollow
         )
     }.flowOn(dispatchers.computation)
 
@@ -329,7 +329,7 @@ class PlayViewModel @AssistedInject constructor(
     ) { channelDetail, interactive, partner, winnerBadge, bottomInsets,
         like, totalView, rtn, title, tagItems,
         status, quickReply, selectedVariant, isLoadingBuy, address,
-        featuredProducts, isPopup ->
+        featuredProducts, followPopUp ->
         PlayViewerNewUiState(
             channel = channelDetail,
             interactive = interactive,
@@ -347,7 +347,7 @@ class PlayViewModel @AssistedInject constructor(
             isLoadingBuy = isLoadingBuy,
             address = address,
             featuredProducts = featuredProducts,
-            isPopUp = isPopup,
+            followPopUp = followPopUp,
         )
     }.stateIn(
         viewModelScope,
@@ -976,11 +976,7 @@ class PlayViewModel @AssistedInject constructor(
             is SelectVariantOptionAction -> handleSelectVariantOption(action.option)
             PlayViewerNewAction.AutoOpenInteractive -> handleAutoOpen()
             is SendWarehouseId -> handleWarehouse(action.id, action.isOOC)
-            DismissFollowPopUp -> {
-                _isPopup.update {
-                    it.copy(shouldShow = false)
-                }
-            }
+            DismissFollowPopUp -> _isFollowPopUpShown.update { false }
         }
     }
 
@@ -2642,9 +2638,7 @@ class PlayViewModel @AssistedInject constructor(
             delay(config.duration)
             val shouldShow = !isFreezeOrBanned && cache && config.isEnabled
             if (!shouldShow) return@launch
-            _isPopup.update {
-                it.copy(shouldShow = shouldShow, partnerId = streamerId)
-            }
+            _isFollowPopUpShown.update { shouldShow }
         }
 
         playPreference.setFollowPopUp(streamerId)
