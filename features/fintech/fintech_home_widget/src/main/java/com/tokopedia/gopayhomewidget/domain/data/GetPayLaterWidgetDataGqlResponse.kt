@@ -30,8 +30,8 @@ data class PayLaterWidgetData(
     @SerializedName("button")
     @Expose
     val button: PayLaterButton?,
+
     @SerializedName("gateway_code")
-    @Expose
     val gatewayCode: String?
 )
 
