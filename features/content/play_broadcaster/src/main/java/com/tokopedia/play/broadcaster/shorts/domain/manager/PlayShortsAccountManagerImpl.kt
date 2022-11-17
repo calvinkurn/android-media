@@ -36,6 +36,7 @@ class PlayShortsAccountManagerImpl @Inject constructor(
         accountList: List<ContentAccountUiModel>,
         preferredAccountType: String
     ): ContentAccountUiModel = withContext(dispatchers.io) {
+
         if (accountList.isEmpty()) return@withContext ContentAccountUiModel.Empty
         if (accountList.size == 1) return@withContext accountList.first()
 
