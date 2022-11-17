@@ -29,10 +29,10 @@ import com.tokopedia.privacycenter.databinding.FragmentPrivacyCenterBinding
 import com.tokopedia.privacycenter.databinding.SectionFooterImageBinding
 import com.tokopedia.privacycenter.main.section.accountlinking.AccountLinkingSection
 import com.tokopedia.privacycenter.main.section.accountlinking.AccountLinkingViewModel
+import com.tokopedia.privacycenter.main.section.activity.ActivitySection
 import com.tokopedia.privacycenter.main.section.consentwithdrawal.ConsentWithdrawalSection
 import com.tokopedia.privacycenter.main.section.consentwithdrawal.ConsentWithdrawalSectionViewModel
 import com.tokopedia.privacycenter.main.section.dsar.DSARSection
-import com.tokopedia.privacycenter.main.section.dummy.DummySection
 import com.tokopedia.privacycenter.main.section.faqPrivacySection.FaqPrivacySection
 import com.tokopedia.privacycenter.main.section.recommendation.RecommendationSection
 import com.tokopedia.privacycenter.main.section.recommendation.RecommendationViewModel
@@ -247,7 +247,7 @@ class PrivacyCenterFragment :
     inner class PrivacyCenterSectionDelegateImpl: PrivacyCenterSectionDelegate {
         override val accountLinkingSection: AccountLinkingSection =
             AccountLinkingSection(context, viewModelAccountLinkingSection, this@PrivacyCenterFragment)
-        override val dummySection: DummySection = DummySection(context)
+        override val activitySection: ActivitySection = ActivitySection(context)
         override val recommendationSection: RecommendationSection = RecommendationSection(
             context,
             viewModelRecommendationSection,
