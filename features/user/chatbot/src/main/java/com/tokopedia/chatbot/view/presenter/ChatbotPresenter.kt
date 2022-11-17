@@ -5,8 +5,6 @@ import android.content.Intent
 import android.graphics.BitmapFactory
 import android.net.Uri
 import android.text.TextUtils
-import android.util.Log
-import androidx.annotation.VisibleForTesting
 import androidx.annotation.VisibleForTesting
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -113,14 +111,13 @@ import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.CHAT_DIVI
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.OPEN_CSAT
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.QUERY_SOURCE_TYPE
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.UPDATE_TOOLBAR
+import com.tokopedia.chatbot.view.util.Attachment34RenderType
+import com.tokopedia.chatbot.view.util.CheckDynamicAttachmentValidity
 import com.tokopedia.chatbot.websocket.ChatWebSocketResponse
 import com.tokopedia.chatbot.websocket.ChatbotWebSocket
 import com.tokopedia.chatbot.websocket.ChatbotWebSocketAction
 import com.tokopedia.chatbot.websocket.ChatbotWebSocketImpl
 import com.tokopedia.chatbot.websocket.ChatbotWebSocketStateHandler
-import com.tokopedia.chatbot.view.util.Attachment34RenderType
-import com.tokopedia.chatbot.view.util.CheckDynamicAttachmentValidity
-import com.tokopedia.chatbot.view.util.isInDarkMode
 import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -409,7 +406,7 @@ class ChatbotPresenter @Inject constructor(
         }
     }
 
-    private fun getLiveChatQuickReply(pojo: ChatSocketPojo): List<QuickReplyUiModel> {
+    private fun getLiveChatQuickReply(): List<QuickReplyUiModel> {
         val quickReplyListPojo = GsonBuilder().create()
             .fromJson(
                 chatResponse?.attachment?.attributes,

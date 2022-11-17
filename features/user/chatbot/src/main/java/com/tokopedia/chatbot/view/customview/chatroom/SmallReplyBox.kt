@@ -15,8 +15,6 @@ import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.util.ViewUtil
 import com.tokopedia.chatbot.view.customview.reply.ReplyBubbleAreaMessage
 import com.tokopedia.chatbot.view.listener.ChatbotSendButtonListener
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
 
 class SmallReplyBox (context: Context, attributeSet: AttributeSet) :
     ConstraintLayout(context, attributeSet), ChatbotSendButtonListener {
@@ -24,7 +22,7 @@ class SmallReplyBox (context: Context, attributeSet: AttributeSet) :
     private var replyBox: ConstraintLayout? = null
     private var replyBubbleContainer: ReplyBubbleAreaMessage? = null
     private var commentContainer: LinearLayout? = null
-    private var commentEditText: EditText? = null
+    var commentEditText: EditText? = null
     private var addAttachmentMenu: ImageView? = null
     private var guideline: Guideline? = null
     private var sendButton: ImageView? = null
@@ -60,14 +58,6 @@ class SmallReplyBox (context: Context, attributeSet: AttributeSet) :
             sendButton = findViewById(R.id.send_but)
             guideline = findViewById(R.id.guideline_reply_bubble)
         }
-    }
-
-    fun hideReplyBox() {
-        hide()
-    }
-
-    fun showReplyBox() {
-        this.show()
     }
 
     fun clearChatText() {

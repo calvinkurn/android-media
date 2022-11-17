@@ -40,8 +40,6 @@ interface ChatbotContract {
 
         fun openCsat(csatResponse: WebSocketCsatResponse)
 
-        fun isBackAllowed(isBackAllowed: Boolean)
-
         fun onReceiveChatSepratorEvent(chatSepratorUiModel: ChatSepratorUiModel, quickReplyList: List<QuickReplyUiModel>)
 
         fun showErrorToast(it: Throwable)

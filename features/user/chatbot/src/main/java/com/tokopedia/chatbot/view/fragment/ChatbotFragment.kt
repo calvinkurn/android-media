@@ -7,7 +7,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.text.Editable
 import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
@@ -921,7 +920,7 @@ class ChatbotFragment :
         manageVideoBubble()
         mapMessageToList(visitable)
         getViewState()?.hideEmptyMessage(visitable)
-//        getViewState()?.onCheckToHideQuickReply(visitable)
+        getViewState()?.onCheckToHideQuickReply(visitable)
     }
 
     private fun manageVideoBubble() {
@@ -1454,10 +1453,6 @@ class ChatbotFragment :
         getViewState()?.showLiveChatQuickReply(quickReplyList)
     }
 
-    override fun isBackAllowed(isBackAllowed: Boolean) {
-        this.isBackAllowed = isBackAllowed
-    }
-
     override fun updateToolbar(profileName: String?, profileImage: String?, badgeImage: ToolbarAttributes.BadgeImage?) {
         if (activity is ChatbotActivity) {
             (activity as ChatbotActivity).upadateToolbar(profileName, profileImage, badgeImage)
@@ -1734,7 +1729,7 @@ class ChatbotFragment :
 
     private fun hideKeyboard() {
         val imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.hideSoftInputFromWindow(getBindingView().composeArea.newComment.windowToken, 0)
+        imm.hideSoftInputFromWindow(getBindingView().smallReplyBox.commentEditText?.windowToken, 0)
     }
 
     private fun checkReplyBubbleOnboardingStatus() {
