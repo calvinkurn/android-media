@@ -2063,6 +2063,12 @@ class AddEditProductDetailViewModelTest {
     }
 
     @Test
+    fun `when successful transactions is less than 100 and shop type is official store expect no service fee`() {
+        val isFreeOfServiceFee = viewModel.isFreeOfServiceFee(99, ShopStatusLevelDef.LEVEL_OFFICIAL_STORE)
+        assertTrue(isFreeOfServiceFee)
+    }
+
+    @Test
     fun `when successful transactions is 100 and shop type is regular merchant expect no service fee`() {
         val isFreeOfServiceFee = viewModel.isFreeOfServiceFee(100, ShopStatusLevelDef.LEVEL_REGULAR)
         assertTrue(isFreeOfServiceFee)

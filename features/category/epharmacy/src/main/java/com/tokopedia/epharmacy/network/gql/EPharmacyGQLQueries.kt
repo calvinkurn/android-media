@@ -38,8 +38,8 @@ const val GQL_POST_PRESCRIPTION_IDS_QUERY: String = """mutation confirmPrescript
 """
 
 const val GQL_FETCH_CHECKOUT_DETAILS_QUERY = """
-    query GetEpharmacyCheckoutData(${'$'}checkout_id: String!) {
-      getEpharmacyCheckoutData(checkout_id: ${'$'}checkout_id) {
+    query GetEpharmacyCheckoutData(${'$'}checkout_id: String!, ${'$'}source: String!) {
+      getEpharmacyCheckoutData(checkout_id: ${'$'}checkout_id, source: ${'$'}source) {
         data {
           checkout_id
           prescription_images {

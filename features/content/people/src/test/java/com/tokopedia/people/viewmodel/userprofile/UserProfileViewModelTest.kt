@@ -1,7 +1,7 @@
 package com.tokopedia.people.viewmodel.userprofile
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.feedcomponent.data.pojo.shoprecom.ShopRecomUiModel
+import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomUiModel
 import com.tokopedia.people.domains.repository.UserProfileRepository
 import com.tokopedia.people.model.CommonModelBuilder
 import com.tokopedia.people.model.shoprecom.ShopRecomModelBuilder
@@ -62,6 +62,7 @@ class UserProfileViewModelTest {
     private val mockOtherNotFollow = followInfoBuilder.buildFollowInfo(userID = mockOtherUserId, encryptedUserID = mockOtherUserId, status = false)
 
     private val mockHasAcceptTnc = profileWhitelistBuilder.buildHasAcceptTnc()
+    private val mockHasNotAcceptTnc = profileWhitelistBuilder.buildHasNotAcceptTnc()
 
     @Before
     fun setUp() {
@@ -72,12 +73,11 @@ class UserProfileViewModelTest {
         coEvery { mockRepo.getProfile(mockOtherUsername) } returns mockOtherProfile
 
         coEvery { mockRepo.getFollowInfo(listOf(mockUserId)) } returns mockOwnFollow
-        coEvery { mockRepo.getShopRecom() } returns mockShopRecom
+        coEvery { mockRepo.getShopRecom("") } returns mockShopRecom
     }
 
     @Test
     fun `when non-login user load data successfully, it should emit data successfully with type NotLoggedIn`() {
-
         coEvery { mockUserSession.isLoggedIn } returns false
         coEvery { mockUserSession.userId } returns ""
 
@@ -103,7 +103,6 @@ class UserProfileViewModelTest {
 
     @Test
     fun `when user load own data, it should call and emit whitelist data`() {
-
         coEvery { mockUserSession.isLoggedIn } returns true
         coEvery { mockUserSession.userId } returns mockUserId
         coEvery { mockRepo.getWhitelist() } returns mockHasAcceptTnc
@@ -129,8 +128,51 @@ class UserProfileViewModelTest {
     }
 
     @Test
-    fun `when user load others profile and hasnt follow, it should emit follow status unfollow`() {
+    fun `when user load own data, and need to onboarding`() {
+        coEvery { mockUserSession.isLoggedIn } returns true
+        coEvery { mockUserSession.userId } returns mockUserId
+        coEvery { mockRepo.getWhitelist() } returns mockHasAcceptTnc
 
+        val robot = UserProfileViewModelRobot(
+            username = mockOwnUsername,
+            repo = mockRepo,
+            dispatcher = testDispatcher,
+            userSession = mockUserSession,
+        )
+
+        robot.use {
+            it.recordState {
+                submitAction(UserProfileAction.LoadProfile(isRefresh = true))
+            } andThen {
+                it.viewModel.needOnboarding equalTo false
+            }
+        }
+    }
+
+    @Test
+    fun `when user load own data, and no need to onboarding`() {
+        coEvery { mockUserSession.isLoggedIn } returns true
+        coEvery { mockUserSession.userId } returns mockUserId
+        coEvery { mockRepo.getWhitelist() } returns mockHasNotAcceptTnc
+
+        val robot = UserProfileViewModelRobot(
+            username = mockOwnUsername,
+            repo = mockRepo,
+            dispatcher = testDispatcher,
+            userSession = mockUserSession,
+        )
+
+        robot.use {
+            it.recordState {
+                submitAction(UserProfileAction.LoadProfile(isRefresh = true))
+            } andThen {
+                it.viewModel.needOnboarding equalTo true
+            }
+        }
+    }
+
+    @Test
+    fun `when user load others profile and hasnt follow, it should emit follow status unfollow`() {
         coEvery { mockRepo.getFollowInfo(any()) } returns mockOtherNotFollow
 
         val robot = UserProfileViewModelRobot(
@@ -155,7 +197,6 @@ class UserProfileViewModelTest {
 
     @Test
     fun `when user load others profile and alr follow, it should emit status followed`() {
-
         coEvery { mockRepo.getFollowInfo(any()) } returns mockOtherFollowed
 
         val robot = UserProfileViewModelRobot(
@@ -180,7 +221,6 @@ class UserProfileViewModelTest {
 
     @Test
     fun `when user load others profile and failed, it should emit empty profile and all related data`() {
-
         coEvery { mockRepo.getProfile(any()) } throws mockException
         coEvery { mockRepo.getFollowInfo(any()) } returns mockOtherFollowed
 
@@ -206,7 +246,6 @@ class UserProfileViewModelTest {
 
     @Test
     fun `when user load follow status and but hasnt logged in, it should emit status not followed`() {
-
         coEvery { mockRepo.getProfile(any()) } returns mockOtherProfile
         coEvery { mockRepo.getFollowInfo(any()) } throws mockException
         coEvery { mockUserSession.isLoggedIn } returns false

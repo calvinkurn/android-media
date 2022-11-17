@@ -164,7 +164,7 @@ class CouponFilterBottomSheet : BottomSheetUnify() {
     }
 
     private fun showResetMenu() {
-        setAction(getString(R.string.reset)) { onResetFilterApplied() }
+        setAction(getString(R.string.mvc_reset)) { onResetFilterApplied() }
     }
 
     private fun showApplyButton() {

@@ -30,9 +30,15 @@ import com.tokopedia.search.result.product.lastfilter.LastFilterPresenterDelegat
 import com.tokopedia.search.result.product.pagination.PaginationImpl
 import com.tokopedia.search.result.product.productfilterindicator.ProductFilterIndicator
 import com.tokopedia.search.result.product.requestparamgenerator.RequestParamsGenerator
+import com.tokopedia.search.result.product.safesearch.MutableSafeSearchPreference
+import com.tokopedia.search.result.product.safesearch.SafeSearchPresenterDelegate
+import com.tokopedia.search.result.product.safesearch.SafeSearchView
 import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationPreference
 import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationPresenterDelegate
 import com.tokopedia.search.result.product.suggestion.SuggestionPresenter
+import com.tokopedia.search.result.product.ticker.TickerPresenterDelegate
+import com.tokopedia.search.result.product.wishlist.WishlistPresenterDelegate
+import com.tokopedia.search.result.product.wishlist.WishlistView
 import com.tokopedia.search.shouldBe
 import com.tokopedia.search.utils.SchedulersProvider
 import com.tokopedia.search.utils.applinkmodifier.ApplinkModifier
@@ -82,6 +88,7 @@ internal open class ProductListPresenterTestFixtures {
     protected val chooseAddressView = mockk<ChooseAddressView>(relaxed = true)
     protected val bannedProductsView = mockk<BannedProductsView>(relaxed = true)
     protected val broadMatchView = mockk<BroadMatchView>(relaxed = true)
+    protected val wishlistView = mockk<WishlistView>(relaxed = true)
     protected val inspirationCarouselDynamicProductView =
         mockk<InspirationCarouselDynamicProductView>(relaxed = true)
     protected val testSchedulersProvider = object : SchedulersProvider {
@@ -105,6 +112,8 @@ internal open class ProductListPresenterTestFixtures {
         every { className } returns this@ProductListPresenterTestFixtures.className
     }
     protected val applinkModifier = mockk<ApplinkModifier>(relaxed = true)
+    protected val safeSearchPreference = mockk<MutableSafeSearchPreference>(relaxed = true)
+    protected val safeSearchView = mockk<SafeSearchView>(relaxed = true)
 
     protected lateinit var productListPresenter: ProductListPresenter
 
@@ -128,6 +137,11 @@ internal open class ProductListPresenterTestFixtures {
             userSession,
             inspirationListAtcView,
             searchParameterProvider,
+        )
+        val tickerPresenter = TickerPresenterDelegate()
+        val safeSearchPresenter = SafeSearchPresenterDelegate(
+            safeSearchPreference,
+            safeSearchView,
         )
 
         productListPresenter = ProductListPresenter(
@@ -167,6 +181,10 @@ internal open class ProductListPresenterTestFixtures {
                 suggestionPresenter,
             ),
             suggestionPresenter,
+            tickerPresenter,
+            safeSearchPresenter,
+            addToCartUseCase,
+            WishlistPresenterDelegate(wishlistView),
         )
         productListPresenter.attachView(productListView)
     }
@@ -205,6 +223,7 @@ internal open class ProductListPresenterTestFixtures {
                     expectedOrganicProductPosition,
                     "",
                     searchProductModel.getProductListType(),
+                    searchProductModel.isShowButtonAtc,
                 )
                 expectedOrganicProductPosition++
                 organicProductListIndex++
@@ -233,6 +252,7 @@ internal open class ProductListPresenterTestFixtures {
         productItem.productName shouldBe topAdsProduct.product.name
         productItem.applink shouldBe topAdsProduct.applinks
         productItem.customVideoURL shouldBe topAdsProduct.product.customVideoUrl
+        productItem.priceRange shouldBe topAdsProduct.product.priceRange
     }
 
     protected fun Visitable<*>.assertOrganicProduct(
@@ -240,6 +260,7 @@ internal open class ProductListPresenterTestFixtures {
         position: Int,
         expectedPageTitle: String = "",
         productListType: String = "",
+        isShowButtonAtc: Boolean = false,
     ) {
         val productItem = this as ProductItemDataView
 
@@ -264,6 +285,9 @@ internal open class ProductListPresenterTestFixtures {
         productItem.minOrder shouldBe organicProduct.minOrder
         productItem.pageTitle shouldBe expectedPageTitle
         productItem.productListType shouldBe productListType
+        productItem.showButtonAtc shouldBe isShowButtonAtc
+        productItem.parentId shouldBe organicProduct.parentId
+        productItem.priceRange shouldBe organicProduct.priceRange
     }
 
     @Suppress("UNCHECKED_CAST")

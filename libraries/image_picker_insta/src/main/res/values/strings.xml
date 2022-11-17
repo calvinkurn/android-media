@@ -27,6 +27,6 @@
     <string name="imagepicker_coachmark_text">Kini kamu bisa ganti ke Profil toko atau jadi
 pembeli buat nge-posting di Feed!</string>
 
-
+    <string name="imagepicker_media_not_found_error">File tidak ditemukan.</string>
 
 </resources>

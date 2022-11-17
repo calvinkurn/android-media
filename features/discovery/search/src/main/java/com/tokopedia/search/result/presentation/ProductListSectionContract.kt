@@ -15,6 +15,9 @@ import com.tokopedia.search.result.product.broadmatch.BroadMatchPresenter
 import com.tokopedia.search.result.product.cpm.BannerAdsPresenter
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
 import com.tokopedia.search.result.product.pagination.Pagination
+import com.tokopedia.search.result.product.safesearch.SafeSearchPresenter
+import com.tokopedia.search.result.product.ticker.TickerPresenter
+import com.tokopedia.search.result.product.wishlist.WishlistPresenter
 import com.tokopedia.sortfilter.SortFilterItem
 import org.json.JSONArray
 
@@ -38,7 +41,6 @@ interface ProductListSectionContract {
         val lastProductItemPositionFromCache: Int
         fun updateScrollListener()
         val isAnyFilterActive: Boolean
-        fun launchLoginActivity(productId: String?)
         fun showAdultRestriction()
         fun redirectSearchToAnotherPage(applink: String?)
         fun setDefaultLayoutType(defaultView: Int)
@@ -48,13 +50,6 @@ interface ProductListSectionContract {
         fun trackScreenAuthenticated()
         fun reloadData()
         val abTestRemoteConfig: RemoteConfig?
-        fun trackWishlistRecommendationProductLoginUser(isAddWishlist: Boolean)
-        fun trackWishlistRecommendationProductNonLoginUser()
-        fun trackWishlistProduct(wishlistTrackingModel: WishlistTrackingModel)
-        fun updateWishlistStatus(productId: String?, isWishlisted: Boolean)
-        fun hitWishlistClickUrl(productCardOptionsModel: ProductCardOptionsModel)
-        fun showMessageSuccessWishlistAction(wishlistResult: ProductCardOptionsModel.WishlistResult)
-        fun showMessageFailedWishlistAction(wishlistResult: ProductCardOptionsModel.WishlistResult)
         val previousKeyword: String
         val isLandingPage: Boolean
         fun logWarning(message: String?, throwable: Throwable?)
@@ -63,6 +58,9 @@ interface ProductListSectionContract {
         fun sendGTMTrackingProductClick(item: ProductItemDataView, userId: String, suggestedRelatedKeyword: String)
         fun routeToProductDetail(item: ProductItemDataView?, adapterPosition: Int)
         fun sendProductImpressionTrackingEvent(item: ProductItemDataView, suggestedRelatedKeyword: String)
+        fun openAddToCartToaster(message: String, isSuccess: Boolean)
+        fun openVariantBottomSheet(data: ProductItemDataView)
+        fun sendGTMTrackingProductATC(productItemDataView: ProductItemDataView?, cartId: String?)
         fun onQuickFilterSelected(filter: Filter, option: Option)
         fun initFilterController(quickFilterList: List<Filter>)
         fun hideQuickFilterShimmering()
@@ -90,26 +88,29 @@ interface ProductListSectionContract {
         fun applyDropdownQuickFilter(optionList: List<Option>?)
         fun trackEventClickDropdownQuickFilter(filterTitle: String)
         fun trackEventApplyDropdownQuickFilter(optionList: List<Option>?)
+        fun updateSearchBarNotification()
     }
 
     interface Presenter :
         CustomerPresenter<View>,
         Pagination,
         BannerAdsPresenter,
-        BroadMatchPresenter {
+        BroadMatchPresenter,
+        TickerPresenter,
+        SafeSearchPresenter,
+        WishlistPresenter {
 
         fun loadMoreData(searchParameter: Map<String, Any>)
         fun loadData(searchParameter: Map<String, Any>)
         val pageComponentId: String
         val userId: String
         val isUserLoggedIn: Boolean
-        fun onPriceFilterTickerDismissed()
-        val isTickerHasDismissed: Boolean
         fun onViewCreated()
         fun onViewVisibilityChanged(isViewVisible: Boolean, isViewAdded: Boolean)
-        fun handleWishlistAction(productCardOptionsModel: ProductCardOptionsModel?)
         fun onProductImpressed(item: ProductItemDataView?, adapterPosition: Int)
         fun onProductClick(item: ProductItemDataView?, adapterPosition: Int)
+        fun trackProductClick(item: ProductItemDataView)
+        fun onProductAddToCart(item: ProductItemDataView)
         val quickFilterList: List<Filter>
         fun getProductCount(mapParameter: Map<String, String>?)
         fun openFilterPage(searchParameter: Map<String, Any>?)

@@ -21,8 +21,8 @@ import org.junit.runner.RunWith
 /**
  * Created by kenny.hadisaputra on 08/03/22
  */
-@RunWith(AndroidJUnit4ClassRunner::class)
 @CassavaTest
+@RunWith(AndroidJUnit4ClassRunner::class)
 class EtalaseListAnalyticTest {
 
     private val mockRepo: PlayBroadcastRepository = mockk(relaxed = true)
