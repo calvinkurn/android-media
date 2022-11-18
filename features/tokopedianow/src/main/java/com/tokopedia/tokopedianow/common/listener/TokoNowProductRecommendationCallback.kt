@@ -3,11 +3,13 @@ package com.tokopedia.tokopedianow.common.listener
 import android.os.Parcelable
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardCarouselItemUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowSeeMoreCardCarouselUiModel
+import com.tokopedia.tokopedianow.common.view.TokoNowProductRecommendationView.TokoNowProductRecommendationListener
 import com.tokopedia.tokopedianow.common.view.productcard.TokoNowProductCardCarouselView
 import com.tokopedia.tokopedianow.common.viewmodel.TokoNowProductRecommendationViewModel
 
 class TokoNowProductRecommendationCallback(
-    private val viewModel: TokoNowProductRecommendationViewModel?
+    private val viewModel: TokoNowProductRecommendationViewModel?,
+    private val listener: TokoNowProductRecommendationListener?
 ): TokoNowProductCardCarouselView.TokoNowProductCardCarouselListener {
     override fun onProductCardClicked(
         position: Int,
@@ -48,6 +50,7 @@ class TokoNowProductRecommendationCallback(
         position: Int,
         product: TokoNowProductCardCarouselItemUiModel
     ) {
+
     }
 
     override fun onSeeMoreClicked(seeMoreUiModel: TokoNowSeeMoreCardCarouselUiModel) {

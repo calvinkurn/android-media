@@ -27,6 +27,7 @@ import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.coroutines.Result
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -46,6 +47,7 @@ class TokoNowProductRecommendationViewModel @Inject constructor(
 
     private var productModels : MutableList<Visitable<*>> = mutableListOf()
     private var mMiniCartSimplifiedData: MiniCartSimplifiedData? = null
+    private var job: Job? = null
 
     val productRecommendation: LiveData<Result<TokoNowProductRecommendationViewUiModel>>
         get() = _productRecommendation
@@ -66,7 +68,8 @@ class TokoNowProductRecommendationViewModel @Inject constructor(
     fun getRecommendationCarousel(
         requestParam: GetRecommendationRequestParam
     ) {
-        launchCatchError(
+        job?.cancel()
+        job = launchCatchError(
             block = {
                 val result = getRecommendationUseCase.getData(requestParam)
                 if (result.isNotEmpty()) {
@@ -74,10 +77,15 @@ class TokoNowProductRecommendationViewModel @Inject constructor(
                         recommendationWidget = result.first(),
                         miniCartData = mMiniCartSimplifiedData
                     )
-                    productModels.clear()
-                    productModels.addAll(productRecommendation.productModels)
-                    productModels.add(productRecommendation.seeMoreModel)
-                    _productRecommendation.postValue(Success(productRecommendation))
+                    if (productRecommendation.productModels.isEmpty()) {
+                        _productRecommendation.postValue(Fail(Throwable()))
+                    } else {
+                        productModels = productRecommendation.productModels.toMutableList()
+                        if (productRecommendation.seeMoreModel.appLink.isNotEmpty()) {
+                            productModels.add(productRecommendation.seeMoreModel)
+                        }
+                        _productRecommendation.postValue(Success(productRecommendation))
+                    }
                 } else {
                     _productRecommendation.postValue(Fail(Throwable()))
                 }
@@ -267,6 +275,12 @@ class TokoNowProductRecommendationViewModel @Inject constructor(
                 }
                 _productModelsUpdate.postValue(productModels)
             }
+        }
+    }
+
+    fun updateProductRecommendation(requestParam: GetRecommendationRequestParam) {
+        if (job != null) {
+            getRecommendationCarousel(requestParam)
         }
     }
 }

@@ -46,7 +46,6 @@ abstract class BaseSearchCategoryTypeFactoryImpl(
     protected val switcherWidgetListener: SwitcherWidgetListener,
     protected val tokoNowEmptyStateNoResultListener: TokoNowEmptyStateNoResultViewHolder.TokoNowEmptyStateNoResultListener,
     private val recommendationCarouselListener: TokoNowProductRecommendationOocViewHolder.TokoNowRecommendationCarouselListener,
-    private val recommendationCarouselBindPageNameListener: TokoNowProductRecommendationOocViewHolder.TokonowRecomBindPageNameListener?,
     private val productRecommendationListener: TokoNowProductRecommendationView.TokoNowProductRecommendationListener?
 ):  BaseAdapterTypeFactory(),
     BaseSearchCategoryTypeFactory,
@@ -127,8 +126,7 @@ abstract class BaseSearchCategoryTypeFactoryImpl(
             )
             TokoNowProductRecommendationOocViewHolder.LAYOUT -> TokoNowProductRecommendationOocViewHolder(
                 itemView = view,
-                recommendationCarouselListener = recommendationCarouselListener,
-                recommendationCarouselWidgetBindPageNameListener = recommendationCarouselBindPageNameListener
+                recommendationCarouselListener = recommendationCarouselListener
             )
             TokoNowProductRecommendationViewHolder.LAYOUT -> TokoNowProductRecommendationViewHolder(
                 itemView = view,

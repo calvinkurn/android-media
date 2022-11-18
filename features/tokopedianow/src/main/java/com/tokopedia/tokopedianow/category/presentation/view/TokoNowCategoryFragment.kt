@@ -191,7 +191,6 @@ class TokoNowCategoryFragment:
             recommendationCarouselListener = this,
             tokoNowCategoryGridListener = this,
             tokoNowProductCardListener = this,
-            recomWidgetBindPageNameListener = this,
             productRecommendationListener = this
     )
 
@@ -610,6 +609,26 @@ class TokoNowCategoryFragment:
     override fun showDialogAgeRestriction(querySafeModel: QuerySafeModel) {
         if (!querySafeModel.isQuerySafe) {
             AdultManager.showAdultPopUp(this, AR_ORIGIN_TOKONOW_CATEGORY, "${querySafeModel.warehouseId} - ${tokoNowCategoryViewModel.categoryL1.getOrDefaultZeroString()} - ${categoryIdLvl2.getOrDefaultZeroString()} - ${categoryIdLvl3.getOrDefaultZeroString()}")
+        }
+    }
+
+    override fun refreshLayout() {
+        super.refreshLayout()
+
+        productRecomViewModel.updateProductRecommendation(
+            requestParam = getViewModel().createRecommendationRequestParam(
+                pageName = TOKONOW_CLP
+            )
+        )
+    }
+
+    override fun updateProductRecommendation(needToUpdate: Boolean) {
+        if (needToUpdate) {
+            productRecomViewModel.updateProductRecommendation(
+                requestParam = getViewModel().createRecommendationRequestParam(
+                    pageName = TOKONOW_CLP
+                )
+            )
         }
     }
 }

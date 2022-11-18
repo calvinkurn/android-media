@@ -36,7 +36,6 @@ class CategoryTypeFactoryImpl(
     switcherWidgetListener: SwitcherWidgetListener,
     tokoNowEmptyStateNoResultListener: TokoNowEmptyStateNoResultViewHolder.TokoNowEmptyStateNoResultListener,
     recommendationCarouselListener: TokoNowProductRecommendationOocViewHolder.TokoNowRecommendationCarouselListener,
-    recomWidgetBindPageNameListener: TokoNowProductRecommendationOocViewHolder.TokonowRecomBindPageNameListener?,
     productRecommendationListener: TokoNowProductRecommendationView.TokoNowProductRecommendationListener?,
     private val categoryAisleListener: CategoryAisleListener,
     private val tokoNowCategoryGridListener: TokoNowCategoryGridListener,
@@ -52,7 +51,6 @@ class CategoryTypeFactoryImpl(
         switcherWidgetListener,
         tokoNowEmptyStateNoResultListener,
         recommendationCarouselListener,
-        recomWidgetBindPageNameListener,
         productRecommendationListener
 ), CategoryTypeFactory {
 

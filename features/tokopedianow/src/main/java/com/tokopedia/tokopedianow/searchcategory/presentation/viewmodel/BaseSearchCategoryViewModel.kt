@@ -34,6 +34,7 @@ import com.tokopedia.home_component.data.DynamicHomeChannelCommon.Channels
 import com.tokopedia.home_component.mapper.DynamicChannelComponentMapper
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.isZero
+import com.tokopedia.kotlin.extensions.view.removeFirst
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
@@ -65,6 +66,8 @@ import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationOocUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowRepurchaseUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateNoResultUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationViewUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeRepurchaseMapper
 import com.tokopedia.tokopedianow.home.domain.model.GetRepurchaseResponse.RepurchaseData
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.GENERAL_SEARCH
@@ -246,6 +249,9 @@ abstract class BaseSearchCategoryViewModel(
 
     private val updateToolbarNotificationLiveData = MutableLiveData<Boolean>()
     val updateToolbarNotification: LiveData<Boolean> = updateToolbarNotificationLiveData
+
+    private val needToUpdateProductRecommendationMutableLiveData = MutableLiveData<Boolean>()
+    val needToUpdateProductRecommendationLiveData: LiveData<Boolean> = needToUpdateProductRecommendationMutableLiveData
 
     init {
         updateQueryParams()
@@ -798,6 +804,8 @@ abstract class BaseSearchCategoryViewModel(
         updateHeaderBackgroundVisibility(!isEmptyProductList)
 
         showPageContent()
+
+        needToUpdateProductRecommendationMutableLiveData.value = true
     }
 
     protected fun clearVisitableListLiveData() {
@@ -856,6 +864,12 @@ abstract class BaseSearchCategoryViewModel(
         visitableList.remove(loadingMoreModel)
         visitableList.addAll(createContentVisitableList(contentDataView))
         visitableList.addFooter()
+    }
+
+    fun removeProductRecommendationWidget() {
+        visitableList.removeFirst { it is TokoNowProductRecommendationUiModel }
+
+        updateVisitableListLiveData()
     }
 
     open fun onViewOpenFilterPage() {
@@ -1265,7 +1279,7 @@ abstract class BaseSearchCategoryViewModel(
 //        updateVisitableListForRecommendationCarousel(element, adapterPosition)
     }
 
-    protected open fun createRecommendationRequestParam(
+    open fun createRecommendationRequestParam(
             pageName: String
     ) = GetRecommendationRequestParam(
             pageName = pageName,
@@ -1283,13 +1297,6 @@ abstract class BaseSearchCategoryViewModel(
 
     protected open fun getRecomKeywords() = listOf<String>()
 
-    private fun updateRecommendationList(recommendationListData: List<RecommendationWidget>) {
-        recommendationList.clear()
-        recommendationList.addAll(recommendationListData)
-
-        updateRecommendationListQuantity(recommendationList)
-    }
-
     private fun updateRecommendationListQuantity(recommendationList: List<RecommendationWidget>?) {
         recommendationList
                 ?.flatMap(RecommendationWidget::recommendationItemList)
@@ -1302,25 +1309,6 @@ abstract class BaseSearchCategoryViewModel(
         val quantity = cartService.getProductQuantity(productId, parentProductId)
 
         recommendationItem.quantity = quantity
-    }
-
-    protected open suspend fun updateVisitableListForRecommendationCarousel(
-        element: TokoNowProductRecommendationOocUiModel,
-        adapterPosition: Int,
-    ) {
-        val recommendationData = recommendationList.firstOrNull() ?: RecommendationWidget()
-
-        if (recommendationData.recommendationItemList.isEmpty()) {
-            visitableList.remove(element)
-            suspendUpdateVisitableListLiveData()
-        } else {
-            element.carouselData = RecommendationCarouselData(
-                state = RecommendationCarouselData.STATE_READY,
-                recommendationData = recommendationData
-            )
-
-            updateVisitableWithIndex(listOf(adapterPosition))
-        }
     }
 
     protected open suspend fun getRecommendationCarouselError(

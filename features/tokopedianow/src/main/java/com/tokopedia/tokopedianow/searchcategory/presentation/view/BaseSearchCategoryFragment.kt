@@ -13,7 +13,6 @@ import androidx.annotation.DimenRes
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.FragmentManager
-import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
@@ -58,8 +57,6 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
-import com.tokopedia.recommendation_widget_common.presenter.RecomWidgetViewModel
-import com.tokopedia.recommendation_widget_common.viewutil.initRecomWidgetViewModel
 import com.tokopedia.recommendation_widget_common.widget.ProductRecommendationTracking
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
 import com.tokopedia.searchbar.data.HintData
@@ -132,7 +129,6 @@ abstract class BaseSearchCategoryFragment:
     TokoNowEmptyStateNoResultViewHolder.TokoNowEmptyStateNoResultListener,
     TokoNowProductCardListener,
     TokoNowProductRecommendationOocViewHolder.TokoNowRecommendationCarouselListener,
-    TokoNowProductRecommendationOocViewHolder.TokonowRecomBindPageNameListener,
     TokoNowProductRecommendationView.TokoNowProductRecommendationListener{
 
     companion object {
@@ -160,7 +156,6 @@ abstract class BaseSearchCategoryFragment:
     protected var categoryChooserBottomSheet: CategoryChooserBottomSheet? = null
     protected var trackingQueue: TrackingQueue? = null
     protected var gridLayoutManager: GridLayoutManager? = null
-
     protected var container: ConstraintLayout? = null
     protected var navToolbar: NavToolbar? = null
     protected var recyclerView: RecyclerView? = null
@@ -178,21 +173,16 @@ abstract class BaseSearchCategoryFragment:
 
     protected abstract val toolbarPageName: String
 
-    private val recomWidgetViewModel: RecomWidgetViewModel? by initRecomWidgetViewModel()
-
     private val searchCategoryToolbarHeight: Int
         get() {
             val defaultHeight = context?.resources?.getDimensionPixelSize(R.dimen.tokopedianow_default_toolbar_status_height).orZero()
-
             val height = (navToolbar?.height ?: defaultHeight)
             val padding = context?.resources?.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl3).orZero()
-
             return height + padding
         }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         context?.let { trackingQueue = TrackingQueue(it) }
     }
 
@@ -246,6 +236,8 @@ abstract class BaseSearchCategoryFragment:
     private fun updateToolbarNotification(update: Boolean) {
         if(update) navToolbar?.updateNotification()
     }
+
+    protected open fun updateProductRecommendation(needToUpdate: Boolean) { /* override to use this function */ }
 
     protected open val isDisableSearchBarDefaultGtmTracker: Boolean
         get() = false
@@ -303,13 +295,9 @@ abstract class BaseSearchCategoryFragment:
     protected open val disableDefaultShareTracker
         get() = false
 
-    protected open fun onNavToolbarCartClicked() {
+    protected open fun onNavToolbarCartClicked() { /* override to use this function */ }
 
-    }
-
-    protected open fun onNavToolbarShareClicked() {
-
-    }
+    protected open fun onNavToolbarShareClicked() { /* override to use this function */ }
 
     protected fun IconBuilder.addGlobalNav(): IconBuilder =
             if (getViewModel().hasGlobalMenu)
@@ -405,7 +393,7 @@ abstract class BaseSearchCategoryFragment:
         }
     }
 
-    private fun refreshLayout() {
+    protected open fun refreshLayout() {
         resetMovingPosition()
         carouselScrollPosition.clear()
         getViewModel().onViewReloadPage()
@@ -518,38 +506,76 @@ abstract class BaseSearchCategoryFragment:
     private fun Context.getDimensionPixelSize(@DimenRes id: Int) = resources.getDimensionPixelSize(id)
 
     protected open fun observeViewModel() {
-        getViewModel().visitableListLiveData.observe(this::submitList)
-        getViewModel().hasNextPageLiveData.observe(this::updateEndlessScrollListener)
-        getViewModel().isFilterPageOpenLiveData.observe(this::openBottomSheetFilter)
-        getViewModel().dynamicFilterModelLiveData.observe(this::onDynamicFilterModelChanged)
-        getViewModel().productCountAfterFilterLiveData.observe(this::setFilterProductCount)
-        getViewModel().isL3FilterPageOpenLiveData.observe(this::configureL3BottomSheet)
-        getViewModel().shopIdLiveData.observe(this::onShopIdUpdated)
-        getViewModel().miniCartWidgetLiveData.observe(this::updateMiniCartWidget)
-        getViewModel().isShowMiniCartLiveData.observe(this::updateMiniCartWidgetVisibility)
-        getViewModel().updatedVisitableIndicesLiveData.observe(this::notifyAdapterItemChange)
-        getViewModel().successATCMessageLiveData.observe(this::showSuccessATCMessage)
-        getViewModel().errorATCMessageLiveData.observe(this::showErrorATCMessage)
-        getViewModel().isHeaderBackgroundVisibleLiveData.observe(this::updateHeaderBackgroundVisibility)
-        getViewModel().isContentLoadingLiveData.observe(this::updateContentVisibility)
-        getViewModel().quickFilterTrackingLiveData.observe(this::sendTrackingQuickFilter)
-        getViewModel().addToCartTrackingLiveData.observe(this::sendAddToCartTrackingEvent)
-        getViewModel().increaseQtyTrackingLiveData.observe(this::sendIncreaseQtyTrackingEvent)
-        getViewModel().decreaseQtyTrackingLiveData.observe(this::sendDecreaseQtyTrackingEvent)
-        getViewModel().isShowErrorLiveData.observe(this::showNetworkErrorHelper)
-        getViewModel().routeApplinkLiveData.observe(this::routeApplink)
-        getViewModel().deleteCartTrackingLiveData.observe(this::sendDeleteCartTrackingEvent)
-        getViewModel().addToCartRecommendationItemTrackingLiveData.observe(
-                this::sendAddToCartRecommendationTrackingEvent
-        )
-        getViewModel().generalSearchEventLiveData.observe(this::sendTrackingGeneralEvent)
-        getViewModel().addToCartRepurchaseWidgetTrackingLiveData.observe(
-            ::sendAddToCartRepurchaseProductTrackingEvent
-        )
+        getViewModel().visitableListLiveData.observe(::submitList)
+        getViewModel().hasNextPageLiveData.observe(::updateEndlessScrollListener)
+        getViewModel().isFilterPageOpenLiveData.observe(::openBottomSheetFilter)
+        getViewModel().dynamicFilterModelLiveData.observe(::onDynamicFilterModelChanged)
+        getViewModel().productCountAfterFilterLiveData.observe(::setFilterProductCount)
+        getViewModel().isL3FilterPageOpenLiveData.observe(::configureL3BottomSheet)
+        getViewModel().shopIdLiveData.observe(::onShopIdUpdated)
+        getViewModel().miniCartWidgetLiveData.observe(::updateMiniCartWidget)
+        getViewModel().isShowMiniCartLiveData.observe(::updateMiniCartWidgetVisibility)
+        getViewModel().updatedVisitableIndicesLiveData.observe(::notifyAdapterItemChange)
+        getViewModel().successATCMessageLiveData.observe(::showSuccessATCMessage)
+        getViewModel().errorATCMessageLiveData.observe(::showErrorATCMessage)
+        getViewModel().isHeaderBackgroundVisibleLiveData.observe(::updateHeaderBackgroundVisibility)
+        getViewModel().isContentLoadingLiveData.observe(::updateContentVisibility)
+        getViewModel().quickFilterTrackingLiveData.observe(::sendTrackingQuickFilter)
+        getViewModel().addToCartTrackingLiveData.observe(::sendAddToCartTrackingEvent)
+        getViewModel().increaseQtyTrackingLiveData.observe(::sendIncreaseQtyTrackingEvent)
+        getViewModel().decreaseQtyTrackingLiveData.observe(::sendDecreaseQtyTrackingEvent)
+        getViewModel().isShowErrorLiveData.observe(::showNetworkErrorHelper)
+        getViewModel().routeApplinkLiveData.observe(::routeApplink)
+        getViewModel().deleteCartTrackingLiveData.observe(::sendDeleteCartTrackingEvent)
+        getViewModel().addToCartRecommendationItemTrackingLiveData.observe(::sendAddToCartRecommendationTrackingEvent)
+        getViewModel().generalSearchEventLiveData.observe(::sendTrackingGeneralEvent)
+        getViewModel().addToCartRepurchaseWidgetTrackingLiveData.observe(::sendAddToCartRepurchaseProductTrackingEvent)
         getViewModel().oocOpenScreenTrackingEvent.observe(::sendOOCOpenScreenTracking)
         getViewModel().setUserPreferenceLiveData.observe(::setUserPreferenceData)
         getViewModel().querySafeLiveData.observe(::showDialogAgeRestriction)
         getViewModel().updateToolbarNotification.observe(::updateToolbarNotification)
+        getViewModel().needToUpdateProductRecommendationLiveData.observe(::updateProductRecommendation)
+
+        productRecomViewModel.miniCartAdd.observe(viewLifecycleOwner) { result ->
+            when (result) {
+                is Success -> {
+                    showSuccessATCMessage(result.data.errorMessage.joinToString(separator = ", "))
+                    getViewModel().refreshMiniCart()
+                }
+                is Fail -> {
+                    activity?.apply {
+                        showErrorATCMessage(ErrorHandler.getErrorMessage(activity, result.throwable))
+                    }
+                }
+            }
+        }
+
+        productRecomViewModel.miniCartUpdate.observe(viewLifecycleOwner) { result ->
+            when (result) {
+                is Success -> {
+                    getViewModel().refreshMiniCart()
+                }
+                is Fail -> {
+                    activity?.apply {
+                        showErrorATCMessage(ErrorHandler.getErrorMessage(activity, result.throwable))
+                    }
+                }
+            }
+        }
+
+        productRecomViewModel.miniCartRemove.observe(viewLifecycleOwner) { result ->
+            when (result) {
+                is Success -> {
+                    showSuccessATCMessage(result.data.second)
+                    getViewModel().refreshMiniCart()
+                }
+                is Fail -> {
+                    activity?.apply {
+                        showErrorATCMessage(ErrorHandler.getErrorMessage(activity, result.throwable))
+                    }
+                }
+            }
+        }
     }
 
     protected open fun onShopIdUpdated(shopId: String) {
@@ -634,9 +660,7 @@ abstract class BaseSearchCategoryFragment:
         }
     }
 
-    override fun onBannerImpressed(channelModel: ChannelModel, position: Int) {
-
-    }
+    override fun onBannerImpressed(channelModel: ChannelModel, position: Int) { /* override to use this function */ }
 
     override fun openFilterPage() {
         getViewModel().onViewOpenFilterPage()
@@ -728,16 +752,8 @@ abstract class BaseSearchCategoryFragment:
 
     override fun getProductRecommendationViewModel(): TokoNowProductRecommendationViewModel? = productRecomViewModel
 
-    override fun addToCartProductRecommendation() {
-        getViewModel().refreshMiniCart()
-    }
-
-    override fun updateFromCartProductRecommendation() {
-        getViewModel().refreshMiniCart()
-    }
-
-    override fun removeFromCartProductRecommendation() {
-        getViewModel().refreshMiniCart()
+    override fun hideProductRecommendationWidget() {
+        getViewModel().removeProductRecommendationWidget()
     }
 
     private fun updateMiniCartWidget(miniCartSimplifiedData: MiniCartSimplifiedData?) {
@@ -1027,49 +1043,6 @@ abstract class BaseSearchCategoryFragment:
         )
     }
 
-    override fun onMiniCartUpdatedFromRecomWidget(miniCartSimplifiedData: MiniCartSimplifiedData) {
-        getViewModel().refreshMiniCart()
-    }
-
-    override fun onRecomTokonowAtcSuccess(message: String) {
-        showSuccessATCMessage(message)
-    }
-
-    override fun onRecomTokonowAtcFailed(throwable: Throwable) {
-        context?.let {
-            showErrorATCMessage(ErrorHandler.getErrorMessage(it, throwable))
-        }
-    }
-
-    override fun onRecomTokonowAtcNeedToSendTracker(
-        recommendationItem: RecommendationItem
-    ) {
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
-            ProductRecommendationTracking.getAddToCartClickProductTracking(
-                recommendationItem = recommendationItem,
-                position = recommendationItem.position,
-                isLoggedIn = userSession.isLoggedIn,
-                userId = userSession.userId,
-                eventLabel = getEventLabel(false),
-                headerTitle = "",
-                quantity = recommendationItem.quantity,
-                cartId = recommendationItem.cartId,
-                eventAction = getAtcEventAction(false),
-                eventCategory = getEventCategory(false),
-                listValue = getListValue(false, recommendationItem),
-            )
-        )
-    }
-
-    override fun onRecomTokonowDeleteNeedToSendTracker(
-        recommendationItem: RecommendationItem
-    ) {
-    }
-
-    override fun onClickItemNonLoginState() {
-        goToLogin()
-    }
-
     abstract fun getListValue(isOOC: Boolean, recommendationItem: RecommendationItem): String
     abstract fun getImpressionEventAction(isOOC: Boolean): String
     abstract fun getClickEventAction(isOOC: Boolean): String
@@ -1203,19 +1176,6 @@ abstract class BaseSearchCategoryFragment:
                 toasterType = Toaster.TYPE_NORMAL
             )
         }
-    }
-
-    protected open fun goToLogin() {
-        activity?.let {
-            startActivityForResult(
-                RouteManager.getIntent(it, ApplinkConst.LOGIN),
-                REQUEST_CODE_LOGIN
-            )
-        }
-    }
-
-    override fun setViewToLifecycleOwner(observer: LifecycleObserver) {
-        viewLifecycleOwner.lifecycle.addObserver(observer)
     }
 
     protected abstract fun sendOOCOpenScreenTracking(isTracked: Boolean)

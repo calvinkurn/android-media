@@ -18,7 +18,7 @@ import com.tokopedia.tokopedianow.common.view.productcard.TokoNowProductCardCaro
 import com.tokopedia.tokopedianow.common.viewmodel.TokoNowProductRecommendationViewModel
 import com.tokopedia.tokopedianow.databinding.LayoutTokopedianowProductRecommendationViewBinding
 import com.tokopedia.unifycomponents.BaseCustomView
-import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 
 class TokoNowProductRecommendationView @JvmOverloads constructor(
@@ -52,38 +52,7 @@ class TokoNowProductRecommendationView @JvmOverloads constructor(
         productRecommendation.observe(context as AppCompatActivity) {
             when(it) {
                 is Success -> setItems(it.data)
-            }
-        }
-    }
-
-    private fun TokoNowProductRecommendationViewModel.observeMiniCartAdd() {
-        miniCartAdd.observe(context as AppCompatActivity) { result ->
-            when(result) {
-                is Success -> {
-                    Toaster.build(binding.root, result.data.errorMessage.firstOrNull().orEmpty()).show()
-                    listener?.addToCartProductRecommendation()
-                }
-            }
-        }
-    }
-
-    private fun TokoNowProductRecommendationViewModel.observeMiniCartUpdate() {
-        miniCartUpdate.observe(context as AppCompatActivity) { result ->
-            when(result) {
-                is Success -> {
-                    listener?.updateFromCartProductRecommendation()
-                }
-            }
-        }
-    }
-
-    private fun TokoNowProductRecommendationViewModel.observeMiniCartRemove() {
-        miniCartRemove.observe(context as AppCompatActivity) { result ->
-            when(result) {
-                is Success -> {
-                    Toaster.build(binding.root, result.data.second).show()
-                    listener?.removeFromCartProductRecommendation()
-                }
+                is Fail -> hideWidget()
             }
         }
     }
@@ -106,6 +75,10 @@ class TokoNowProductRecommendationView @JvmOverloads constructor(
                 model = productRecommendation.headerModel
             )
         }
+    }
+
+    private fun hideWidget() {
+        listener?.hideProductRecommendationWidget()
     }
 
     /**
@@ -168,15 +141,13 @@ class TokoNowProductRecommendationView @JvmOverloads constructor(
 
             setListener(
                 productCardCarouselListener = TokoNowProductRecommendationCallback(
-                    viewModel = viewModel
+                    viewModel = viewModel,
+                    listener = listener
                 )
             )
 
             viewModel?.run {
                 observeRecommendationWidget()
-                observeMiniCartAdd()
-                observeMiniCartUpdate()
-                observeMiniCartRemove()
                 observeProductModelsUpdate()
 
                 requestParam?.let { requestParam ->
@@ -188,8 +159,6 @@ class TokoNowProductRecommendationView @JvmOverloads constructor(
 
     interface TokoNowProductRecommendationListener {
         fun getProductRecommendationViewModel(): TokoNowProductRecommendationViewModel?
-        fun addToCartProductRecommendation()
-        fun removeFromCartProductRecommendation()
-        fun updateFromCartProductRecommendation()
+        fun hideProductRecommendationWidget()
     }
 }
