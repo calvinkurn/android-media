@@ -20,6 +20,7 @@ import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.getAddToCa
 import com.tokopedia.tokopedianow.home.domain.model.HomeLayoutResponse
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutItemUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProductRecomUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeRealTimeRecomProductUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeRealTimeRecomUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeRealTimeRecomUiModel.RealTimeRecomWidgetState
 
@@ -60,7 +61,7 @@ object ProductRecomMapper {
     fun mapRealTimeRecomData(
         item: HomeProductRecomUiModel,
         recomWidget: RecommendationWidget,
-        parentProduct: RecommendationItem,
+        parentProduct: HomeRealTimeRecomProductUiModel,
         miniCartData: MiniCartSimplifiedData?
     ): HomeLayoutItemUiModel {
         val recommendationItemList = mapCartQuantityToRecomItem(recomWidget, miniCartData)
@@ -71,7 +72,7 @@ object ProductRecomMapper {
         val categoryBreadcrumbs = parentProduct.categoryBreadcrumbs
 
         val realTimeRecom = item.realTimeRecom.copy(
-            parentProductId = parentProduct.productId.toString(),
+            parentProductId = parentProduct.id,
             productImageUrl = parentProduct.imageUrl,
             category = categoryBreadcrumbs.substringAfterLast(CATEGORY_DIVIDER),
             widget = realTimeRecomWidget,

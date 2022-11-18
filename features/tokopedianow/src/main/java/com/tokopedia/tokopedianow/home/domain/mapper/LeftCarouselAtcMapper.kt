@@ -2,7 +2,6 @@ package com.tokopedia.tokopedianow.home.domain.mapper
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home_component.model.ChannelGrid
-import com.tokopedia.home_component.util.ServerTimeOffsetUtil
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
@@ -24,6 +23,7 @@ import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselAtcP
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselAtcProductCardUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselAtcProductCardSeeMoreUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselAtcUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeRealTimeRecomProductUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeRealTimeRecomUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeRealTimeRecomUiModel.RealTimeRecomWidgetState
 
@@ -201,7 +201,7 @@ object LeftCarouselAtcMapper {
     fun mapLeftAtcRTR(
         item: HomeLeftCarouselAtcUiModel,
         recomWidget: RecommendationWidget,
-        parentProduct: HomeLeftCarouselAtcProductCardUiModel,
+        parentProduct: HomeRealTimeRecomProductUiModel,
         miniCartData: MiniCartSimplifiedData?
     ): HomeLayoutItemUiModel {
         val recommendationItemList = mapCartQuantityToRecomItem(recomWidget, miniCartData)
@@ -209,12 +209,11 @@ object LeftCarouselAtcMapper {
             title = DEFAULT_TITLE,
             recommendationItemList = recommendationItemList
         )
-        val productCardModel = parentProduct.productCardModel
         val categoryBreadcrumbs = parentProduct.categoryBreadcrumbs
 
         val realTimeRecom = item.realTimeRecom.copy(
-            parentProductId = parentProduct.id.toString(),
-            productImageUrl = productCardModel.productImageUrl,
+            parentProductId = parentProduct.id,
+            productImageUrl = parentProduct.imageUrl,
             category = categoryBreadcrumbs.substringAfterLast(CATEGORY_DIVIDER),
             widget = realTimeRecomWidget,
             widgetState = RealTimeRecomWidgetState.READY,

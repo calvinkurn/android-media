@@ -1,7 +1,6 @@
 package com.tokopedia.tokopedianow.home.domain.mapper
 
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
-import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.MIX_LEFT_CAROUSEL_ATC
@@ -15,6 +14,7 @@ import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutItemUiMode
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselAtcProductCardUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselAtcUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProductRecomUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeRealTimeRecomProductUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeRealTimeRecomUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeRealTimeRecomUiModel.RealTimeRecomWidgetState
 
@@ -103,21 +103,39 @@ object RealTimeRecomMapper {
         return map { it.layout }.filterIsInstance<HomeLeftCarouselAtcUiModel>().firstOrNull { it.id == channelId }
     }
 
-    private fun HomeProductRecomUiModel.getRecomItem(productId: String?): RecommendationItem? {
+    private fun HomeProductRecomUiModel.getRecomItem(productId: String?): HomeRealTimeRecomProductUiModel? {
         return getProductRecom(productId) ?: getProductRecomRtr(productId)
     }
 
-    private fun HomeProductRecomUiModel.getProductRecomRtr(productId: String?): RecommendationItem? {
-        return realTimeRecom.widget?.recommendationItemList?.firstOrNull { it.productId.toString() == productId }
+    private fun HomeProductRecomUiModel.getProductRecomRtr(productId: String?): HomeRealTimeRecomProductUiModel? {
+        return realTimeRecom.widget?.recommendationItemList?.firstOrNull { it.productId.toString() == productId }?.let {
+            HomeRealTimeRecomProductUiModel(it.productId.toString(), it.imageUrl, it.categoryBreadcrumbs)
+        }
     }
 
-    private fun HomeProductRecomUiModel.getProductRecom(productId: String?): RecommendationItem? {
-        return recomWidget.recommendationItemList.firstOrNull { it.productId.toString() == productId }
+    private fun HomeProductRecomUiModel.getProductRecom(productId: String?): HomeRealTimeRecomProductUiModel? {
+        return recomWidget.recommendationItemList.firstOrNull { it.productId.toString() == productId }?.let {
+            HomeRealTimeRecomProductUiModel(it.productId.toString(), it.imageUrl, it.categoryBreadcrumbs)
+        }
     }
 
-    private fun HomeLeftCarouselAtcUiModel.getLeftAtcRecomItem(productId: String?): HomeLeftCarouselAtcProductCardUiModel? {
-        return productList.filterIsInstance<HomeLeftCarouselAtcProductCardUiModel>()
-            .firstOrNull { it.id.toString() == productId }
+    private fun HomeLeftCarouselAtcUiModel.getLeftAtcRecomItem(productId: String?): HomeRealTimeRecomProductUiModel? {
+        return mapLeftAtcToRtrProduct(productId) ?: mapProductRecomToRtrProduct(productId)
+    }
+
+    private fun HomeLeftCarouselAtcUiModel.mapLeftAtcToRtrProduct(productId: String?): HomeRealTimeRecomProductUiModel? {
+        val productList = productList.filterIsInstance<HomeLeftCarouselAtcProductCardUiModel>()
+        return productList.firstOrNull { it.id.toString() == productId }?.let {
+            val imageUrl = it.productCardModel.productImageUrl
+            HomeRealTimeRecomProductUiModel(it.id.toString(), imageUrl, it.categoryBreadcrumbs)
+        }
+    }
+
+    private fun HomeLeftCarouselAtcUiModel.mapProductRecomToRtrProduct(productId: String?): HomeRealTimeRecomProductUiModel? {
+        val recommendationItemList = realTimeRecom.widget?.recommendationItemList
+        return recommendationItemList?.firstOrNull { it.productId.toString() == productId }?.let {
+            HomeRealTimeRecomProductUiModel(it.productId.toString(), it.imageUrl, it.categoryBreadcrumbs)
+        }
     }
 
     private fun MutableList<HomeLayoutItemUiModel>.mapRefreshLeftAtcRTR(
