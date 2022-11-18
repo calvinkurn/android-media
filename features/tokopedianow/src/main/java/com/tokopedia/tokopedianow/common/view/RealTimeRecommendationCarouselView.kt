@@ -133,6 +133,7 @@ class RealTimeRecommendationCarouselView @JvmOverloads constructor(
         itemView?.apply {
             imageClose.setOnClickListener {
                 listener?.removeRealTimeRecommendation(data)
+                analytics?.trackClickClose(data.parentProductId)
                 hideContent()
             }
             imageClose.show()
