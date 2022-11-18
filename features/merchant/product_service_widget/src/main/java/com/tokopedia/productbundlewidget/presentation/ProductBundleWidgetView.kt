@@ -71,6 +71,14 @@ class ProductBundleWidgetView : BaseCustomView, ProductBundleAdapterListener {
         listener?.onMultipleBundleActionButtonClicked(selectedMultipleBundle, productDetails)
     }
 
+    override fun onMultipleBundleMoreProductClicked(
+        selectedMultipleBundle: BundleDetailUiModel,
+        bundleProductGrouped: List<BundleProductUiModel>
+    ) {
+        RouteManager.route(context, PRODUCT_BUNDLE_APPLINK_WITH_PARAM, BUNDLE_ID_DEFAULT_VALUE,
+            selectedMultipleBundle.bundleId, pageSource)
+    }
+
     override fun onSingleBundleActionButtonClicked(
         selectedBundle: BundleDetailUiModel,
         bundleProducts: BundleProductUiModel

@@ -39,7 +39,7 @@ class ProductBundleMultipleAdapter(
             is ProductBundleMultiplePackageViewHolder ->
                 holder.bind(Pair(bundleDetail.minOrder, bundleProduct), ::onViewImpression, ::onClickImpression)
             is ProductBundleMultiplePackageGroupViewHolder ->
-                holder.bind(bundleProductGrouped, ::onViewImpression, ::onClickImpression)
+                holder.bind(bundleProductGrouped, ::onMoreProductClick)
         }
     }
 
@@ -71,6 +71,13 @@ class ProductBundleMultipleAdapter(
                 position
             )
         }
+    }
+
+    private fun onMoreProductClick() {
+        listener?.onMultipleBundleMoreProductClicked(
+            bundleDetail,
+            bundleProductGrouped
+        )
     }
 
     override fun getItemCount(): Int {
