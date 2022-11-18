@@ -11,6 +11,7 @@ import static com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics.KEY_USER
 import static com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics.SCREEN_NAME_DROP_OFF_ADDRESS;
 import static com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics.SCREEN_NAME_NORMAL_ADDRESS;
 import static com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics.VALUE_TRADE_IN;
+import static com.tokopedia.common_epharmacy.EPharmacyCommonConstantsKt.EPHARMACY_CONSULTATION_RESULT_EXTRA;
 import static com.tokopedia.purchase_platform.common.constant.CartConstant.SCREEN_NAME_CART_NEW_USER;
 import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.EXTRA_IS_FROM_CHECKOUT_CHANGE_ADDRESS;
 import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.EXTRA_IS_FROM_CHECKOUT_SNIPPET;
@@ -3690,7 +3691,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     private void onMiniConsultationResult(Intent data) {
-        ArrayList<EPharmacyMiniConsultationResult> nr = data.getParcelableArrayListExtra("data");
+        ArrayList<EPharmacyMiniConsultationResult> nr = data.getParcelableArrayListExtra(EPHARMACY_CONSULTATION_RESULT_EXTRA);
         ArrayList<EPharmacyMiniConsultationResult> results = new ArrayList<>();
         shipmentPresenter.setMiniConsultationResult(results);
     }
