@@ -4,8 +4,6 @@ import android.content.Context
 import android.graphics.Color
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import android.view.View
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
@@ -16,16 +14,13 @@ import com.tokopedia.recommendation_widget_common.presentation.model.Recommendat
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecomCarouselWidgetBasicListener
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselTokonowListener
-import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselWidgetView
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.analytics.RealTimeRecommendationAnalytics
 import com.tokopedia.tokopedianow.common.listener.RealTimeRecommendationListener
+import com.tokopedia.tokopedianow.databinding.LayoutTokopedianowRealTimeRecommendationBinding
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeRealTimeRecomUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeRealTimeRecomUiModel.RealTimeRecomWidgetState
 import com.tokopedia.unifycomponents.BaseCustomView
-import com.tokopedia.unifycomponents.ImageUnify
-import com.tokopedia.unifycomponents.LoaderUnify
-import com.tokopedia.unifyprinciples.Typography
 
 class RealTimeRecommendationCarouselView @JvmOverloads constructor(
     context: Context,
@@ -34,31 +29,15 @@ class RealTimeRecommendationCarouselView @JvmOverloads constructor(
 ) : BaseCustomView(context, attrs, defStyleAttr), RecomCarouselWidgetBasicListener,
     RecommendationCarouselTokonowListener {
 
-    private var itemView: View? = null
-    private var imageProduct: ImageUnify? = null
-    private var textTitle: Typography? = null
-    private var textRefreshRecommendation: Typography? = null
-    private var imageClose: ImageUnify? = null
-    private var recommendationCarousel: RecommendationCarouselWidgetView? = null
-    private var progressBar: LoaderUnify? = null
-    private var container: ConstraintLayout? = null
-
     var listener: RealTimeRecommendationListener? = null
     var analytics: RealTimeRecommendationAnalytics? = null
 
+    private var itemView: LayoutTokopedianowRealTimeRecommendationBinding? = null
     private var rtrData: HomeRealTimeRecomUiModel? = null
 
     init {
-        itemView = LayoutInflater.from(context)
-            .inflate(R.layout.layout_tokopedianow_real_time_recommendation, this)
-
-        imageProduct = itemView?.findViewById(R.id.image_product)
-        textTitle = itemView?.findViewById(R.id.text_title)
-        textRefreshRecommendation = itemView?.findViewById(R.id.text_refresh_recommendation)
-        imageClose = itemView?.findViewById(R.id.image_close)
-        recommendationCarousel = itemView?.findViewById(R.id.recommendation_carousel)
-        progressBar = itemView?.findViewById(R.id.progress_bar)
-        container = itemView?.findViewById(R.id.container)
+        itemView = LayoutTokopedianowRealTimeRecommendationBinding
+            .inflate(LayoutInflater.from(context), this, true)
     }
 
     fun bind(data: HomeRealTimeRecomUiModel) {
@@ -97,8 +76,10 @@ class RealTimeRecommendationCarouselView @JvmOverloads constructor(
     }
 
     private fun renderTitle(data: HomeRealTimeRecomUiModel) {
-        textTitle?.text = getTitle(data)
-        textTitle?.show()
+        itemView?.apply {
+            textTitle.text = getTitle(data)
+            textTitle.show()
+        }
     }
 
     private fun getTitle(data: HomeRealTimeRecomUiModel?): String? {
@@ -106,33 +87,37 @@ class RealTimeRecommendationCarouselView @JvmOverloads constructor(
     }
 
     private fun renderProductImage(data: HomeRealTimeRecomUiModel) {
-        imageProduct?.loadImage(data.productImageUrl)
-        imageProduct?.show()
+        itemView?.apply {
+            imageProduct.loadImage(data.productImageUrl)
+            imageProduct.show()
+        }
     }
 
     private fun renderRefreshRecommendation(data: HomeRealTimeRecomUiModel) {
-        textRefreshRecommendation?.text = MethodChecker.fromHtml(
-            context.getString(R.string.tokopedianow_refresh_recommendation)
-        )
-        textRefreshRecommendation?.setOnClickListener {
-            onClickRefresh(data)
+        itemView?.apply {
+            textRefreshRecommendation.text = MethodChecker.fromHtml(
+                context.getString(R.string.tokopedianow_refresh_recommendation)
+            )
+            textRefreshRecommendation.setOnClickListener {
+                onClickRefresh(data)
+            }
+            textRefreshRecommendation.show()
         }
-        textRefreshRecommendation?.show()
     }
 
     private fun hideRefreshRecommendation() {
-        textRefreshRecommendation?.hide()
+        itemView?.textRefreshRecommendation?.hide()
     }
 
     private fun onClickRefresh(data: HomeRealTimeRecomUiModel) {
         listener?.refreshRealTimeRecommendation(data)
         analytics?.trackClickRefresh(data.parentProductId)
-        textRefreshRecommendation?.hide()
+        itemView?.textRefreshRecommendation?.hide()
     }
 
     private fun renderRecommendationCarousel(data: HomeRealTimeRecomUiModel) {
         data.widget?.let { widget ->
-            recommendationCarousel?.bind(
+            itemView?.recommendationCarousel?.bind(
                 carouselData = RecommendationCarouselData(
                     recommendationData = widget,
                     state = data.carouselState,
@@ -140,16 +125,18 @@ class RealTimeRecommendationCarouselView @JvmOverloads constructor(
                 basicListener = this,
                 tokonowListener = this
             )
-            recommendationCarousel?.show()
+            itemView?.recommendationCarousel?.show()
         }
     }
 
     private fun renderCloseBtn(data: HomeRealTimeRecomUiModel) {
-        imageClose?.setOnClickListener {
-            listener?.removeRealTimeRecommendation(data)
-            hideContent()
+        itemView?.apply {
+            imageClose.setOnClickListener {
+                listener?.removeRealTimeRecommendation(data)
+                hideContent()
+            }
+            imageClose.show()
         }
-        imageClose?.show()
     }
 
     private fun renderLoadingState() {
@@ -159,32 +146,38 @@ class RealTimeRecommendationCarouselView @JvmOverloads constructor(
     }
 
     private fun setBackgroundColor() {
-        container?.setBackgroundColor(
-            ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN50))
-        container?.show()
+        itemView?.apply {
+            container.setBackgroundColor(
+                ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN50))
+            container.show()
+        }
     }
 
     private fun resetBackgroundColor() {
-        container?.setBackgroundColor(Color.TRANSPARENT)
-        container?.show()
+        itemView?.apply {
+            container.setBackgroundColor(Color.TRANSPARENT)
+            container.show()
+        }
     }
 
     private fun hideContent() {
-        imageProduct?.hide()
-        textTitle?.hide()
-        textRefreshRecommendation?.hide()
-        imageClose?.hide()
-        recommendationCarousel?.hide()
-        progressBar?.hide()
-        container?.hide()
+        itemView?.apply {
+            imageProduct.hide()
+            textTitle.hide()
+            textRefreshRecommendation.hide()
+            imageClose.hide()
+            recommendationCarousel.hide()
+            progressBar.hide()
+            container.hide()
+        }
     }
 
     private fun showProgressBar() {
-        progressBar?.show()
+        itemView?.progressBar?.show()
     }
 
     private fun hideProgressBar() {
-        progressBar?.hide()
+        itemView?.progressBar?.hide()
     }
 
     private fun addImpressionTracker(data: HomeRealTimeRecomUiModel) {
