@@ -10,6 +10,7 @@ import android.view.View
 import android.view.animation.AccelerateDecelerateInterpolator
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
+import androidx.core.view.animation.PathInterpolatorCompat
 import com.tokopedia.home_component.R
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.invisible
@@ -154,7 +155,8 @@ class LayoutIconPullRefreshView : ConstraintLayout, LayoutIconPullRefreshListene
         }
         val set = AnimatorSet()
         set.play(slideAnimator)
-        set.interpolator = AccelerateDecelerateInterpolator()
+//        set.interpolator = AccelerateDecelerateInterpolator()
+        set.interpolator = PathInterpolatorCompat.create(.63f, .01f, .29f, 1f)
         set.start()
     }
 
