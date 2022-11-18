@@ -113,11 +113,11 @@ class HomeDynamicChannelVisitableFactoryImpl(
                 }
                 DynamicHomeChannel.Channels.LAYOUT_MIX_LEFT -> {
                     val borderStyle = channel.styleParam.parseBorderStyle()
-//                    if (borderStyle == BORDER_STYLE_PADDING) {
+                    if (borderStyle == BORDER_STYLE_PADDING) {
                         createMixLeftPaddingComponent(channel, position, isCache)
-//                    } else {
-//                        createMixLeftComponent(channel, position, isCache)
-//                    }
+                    } else {
+                        createMixLeftComponent(channel, position, isCache)
+                    }
                 }
                 DynamicHomeChannel.Channels.LAYOUT_PRODUCT_HIGHLIGHT -> {
                     createProductHighlightComponent(channel, position, isCache)

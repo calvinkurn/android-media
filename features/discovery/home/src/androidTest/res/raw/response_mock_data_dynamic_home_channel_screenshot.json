@@ -5644,6 +5644,123 @@
                             ]
                         }
                     ]
+                },
+                {
+                    "id": 34022,
+                    "group_id": 206,
+                    "galaxy_attribution": "PG",
+                    "persona": "Homeliving",
+                    "brand_id": "",
+                    "category_persona": "1043,999,1045,1052,1270,1042,1372,1368,1038,1011",
+                    "name": "Android Test - Mix Left",
+                    "layout": "left_carousel",
+                    "styleParam": "borderStyle=padding&dividerSize=8",
+                    "type": "inspiration",
+                    "showPromoBadge": true,
+                    "categoryID": "{}",
+                    "perso_type": 17,
+                    "campaignCode": "",
+                    "has_close_button": false,
+                    "header": {
+                        "id": 34261,
+                        "name": "Android Test - Mix Left",
+                        "subtitle": "Berakhir dalam",
+                        "url": "https://www.tokopedia.com/discovery/pengguna-baru?source=home",
+                        "applink": "tokopedia://discovery/pengguna-baru?source=home",
+                        "serverTime": 1595493972,
+                        "expiredTime": "",
+                        "backColor": "",
+                        "backImage": "",
+                        "textColor": ""
+                    },
+                    "grids": [
+                        {
+                            "id": 866484030,
+                            "back_color": "",
+                            "name": "",
+                            "url": "https://www.tokopedia.com/basike-official/basike-in-ear-headphone-audio-plug-3-5mm-length-120cm-mt18-putih?trkid=f%3DP0Cb0_src%3Dsprint-sale_page%3D1_ob%3D17_catid%3D564",
+                            "applink": "tokopedia://product/866484030",
+                            "price": "Rp 10.000",
+                            "slashedPrice": "Rp 59.000",
+                            "discount": "83%",
+                            "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/300-square/product-1/2020/5/25/96439959/96439959_312c8c86-635a-4bf5-80c7-5ed787c5d9f2_700_700",
+                            "label": "Tersedia",
+                            "soldPercentage": 18,
+                            "attribution": "",
+                            "productClickUrl": "",
+                            "impression": "",
+                            "cashback": "",
+                            "isTopads": false,
+                            "freeOngkir": {
+                                "isActive": true,
+                                "imageUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                            },
+                            "productViewCountFormatted": "",
+                            "isOutOfStock": false,
+                            "warehouseID": 0,
+                            "minOrder": 0,
+                            "shop": {
+                                "shopID": 0
+                            },
+                            "labelGroup": [],
+                            "has_buy_button": false,
+                            "rating": 0,
+                            "count_review": 0
+                        },
+                        {
+                            "id": 866484030,
+                            "back_color": "red",
+                            "name": "",
+                            "url": "https://www.tokopedia.com/basike-official/basike-in-ear-headphone-audio-plug-3-5mm-length-120cm-mt18-putih?trkid=f%3DP0Cb0_src%3Dsprint-sale_page%3D1_ob%3D17_catid%3D564",
+                            "applink": "tokopedia://product/866484030",
+                            "price": "Rp 10.000",
+                            "slashedPrice": "Rp 59.000",
+                            "discount": "83%",
+                            "imageUrl": "https://ecs7-p.tokopedia.net/img/cache/300-square/product-1/2020/5/25/96439959/96439959_312c8c86-635a-4bf5-80c7-5ed787c5d9f2_700_700",
+                            "label": "Tersedia",
+                            "soldPercentage": 18,
+                            "attribution": "",
+                            "productClickUrl": "",
+                            "impression": "",
+                            "cashback": "",
+                            "isTopads": false,
+                            "freeOngkir": {
+                                "isActive": true,
+                                "imageUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                            },
+                            "productViewCountFormatted": "",
+                            "isOutOfStock": false,
+                            "warehouseID": 0,
+                            "minOrder": 0,
+                            "shop": {
+                                "shopID": 0
+                            },
+                            "labelGroup": [],
+                            "has_buy_button": false,
+                            "rating": 0,
+                            "count_review": 0
+                        }
+                    ],
+                    "banner": {
+                        "id": 4032,
+                        "title": "",
+                        "description": "",
+                        "url": "https://www.tokopedia.com/discovery/pengguna-baru?source=home",
+                        "back_color": "",
+                        "cta": {
+                            "type": "",
+                            "mode": "",
+                            "text": "",
+                            "coupon_code": ""
+                        },
+                        "applink": "tokopedia://discovery/pengguna-baru?source=home",
+                        "text_color": "",
+                        "image_url": "https://ecs7-p.tokopedia.net/img/cache/240/PYbRbC/2020/7/21/15355103-6e76-48ee-a8bb-c455adecdf47.png",
+                        "attribution": "X_PG_NUZ_Deal Pengguna Baru_July 20",
+                        "gradient_color": [
+                            "red"
+                        ]
+                    }
                 }
             ]
         }
