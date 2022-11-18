@@ -40,12 +40,12 @@ class SearchTypeFactoryImpl(
     productItemListener: ProductItemListener,
     switcherWidgetListener: SwitcherWidgetListener,
     tokoNowEmptyStateNoResultListener: TokoNowEmptyStateNoResultViewHolder.TokoNowEmptyStateNoResultListener,
+    productRecommendationOocListener: TokoNowProductRecommendationOocViewHolder.TokonowRecomBindPageNameListener,
+    productRecommendationListener: TokoNowProductRecommendationView.TokoNowProductRecommendationListener?,
     private val suggestionListener: SuggestionListener,
     private val categoryJumperListener: CategoryJumperListener,
     private val ctaTokoNowHomeListener: CTATokoNowHomeListener,
-    private val broadMatchListener: BroadMatchListener,
-    recommendationCarouselListener: TokoNowProductRecommendationOocViewHolder.TokoNowRecommendationCarouselListener,
-    productRecommendationListener: TokoNowProductRecommendationView.TokoNowProductRecommendationListener?
+    private val broadMatchListener: BroadMatchListener
 ): BaseSearchCategoryTypeFactoryImpl(
     tokoNowEmptyStateOocListener,
     chooseAddressListener,
@@ -56,7 +56,7 @@ class SearchTypeFactoryImpl(
     productItemListener,
     switcherWidgetListener,
     tokoNowEmptyStateNoResultListener,
-    recommendationCarouselListener,
+    productRecommendationOocListener,
     productRecommendationListener
 ), SearchTypeFactory {
 

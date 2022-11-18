@@ -38,14 +38,14 @@ import com.tokopedia.tokopedianow.searchcategory.presentation.viewholder.Switche
 abstract class BaseSearchCategoryTypeFactoryImpl(
     protected val tokoNowEmptyStateOocListener: TokoNowEmptyStateOocViewHolder.TokoNowEmptyStateOocListener,
     protected val chooseAddressListener: ChooseAddressListener,
-    protected val titleListener: TitleListener,
-    protected val bannerListener: BannerComponentListener,
-    protected val quickFilterListener: QuickFilterListener,
-    protected val categoryFilterListener: CategoryFilterListener,
-    protected val productItemListener: ProductItemListener,
-    protected val switcherWidgetListener: SwitcherWidgetListener,
-    protected val tokoNowEmptyStateNoResultListener: TokoNowEmptyStateNoResultViewHolder.TokoNowEmptyStateNoResultListener,
-    private val recommendationCarouselListener: TokoNowProductRecommendationOocViewHolder.TokoNowRecommendationCarouselListener,
+    private val titleListener: TitleListener,
+    private val bannerListener: BannerComponentListener,
+    private val quickFilterListener: QuickFilterListener,
+    private val categoryFilterListener: CategoryFilterListener,
+    private val productItemListener: ProductItemListener,
+    private val switcherWidgetListener: SwitcherWidgetListener,
+    private val tokoNowEmptyStateNoResultListener: TokoNowEmptyStateNoResultViewHolder.TokoNowEmptyStateNoResultListener,
+    private val productRecommendationOocListener: TokoNowProductRecommendationOocViewHolder.TokonowRecomBindPageNameListener,
     private val productRecommendationListener: TokoNowProductRecommendationView.TokoNowProductRecommendationListener?
 ):  BaseAdapterTypeFactory(),
     BaseSearchCategoryTypeFactory,
@@ -126,7 +126,7 @@ abstract class BaseSearchCategoryTypeFactoryImpl(
             )
             TokoNowProductRecommendationOocViewHolder.LAYOUT -> TokoNowProductRecommendationOocViewHolder(
                 itemView = view,
-                recommendationCarouselListener = recommendationCarouselListener
+                recommendationCarouselWidgetBindPageNameListener = productRecommendationOocListener
             )
             TokoNowProductRecommendationViewHolder.LAYOUT -> TokoNowProductRecommendationViewHolder(
                 itemView = view,

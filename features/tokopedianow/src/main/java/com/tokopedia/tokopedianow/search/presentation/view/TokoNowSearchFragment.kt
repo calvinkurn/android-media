@@ -155,8 +155,8 @@ class TokoNowSearchFragment :
             suggestionListener = this,
             categoryJumperListener = this,
             ctaTokoNowHomeListener = this,
-            recommendationCarouselListener = this,
             broadMatchListener = this,
+            productRecommendationOocListener = this,
             productRecommendationListener = this
     )
 
@@ -443,11 +443,11 @@ class TokoNowSearchFragment :
             modifyApplinkToSearchResult(appLink)
         else appLink
 
-    override fun onSeeMoreClick(data: RecommendationCarouselData, applink: String) {
-        SearchTracking.sendRecommendationSeeAllClickEvent(getViewModel().query)
-
-        RouteManager.route(context, applink)
-    }
+//    override fun onSeeMoreClick(data: RecommendationCarouselData, applink: String) {
+//        SearchTracking.sendRecommendationSeeAllClickEvent(getViewModel().query)
+//
+//        RouteManager.route(context, applink)
+//    }
 
     override fun sendOOCOpenScreenTracking(isTracked: Boolean) {
         SearchTracking.sendOOCOpenScreenTracking(userSession.isLoggedIn)

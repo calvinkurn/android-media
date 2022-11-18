@@ -90,7 +90,6 @@ class TokoNowCategoryViewModel @Inject constructor (
         getMiniCartListSimplifiedUseCase,
         cartService,
         getWarehouseUseCase,
-        getRecommendationUseCase,
         setUserPreferenceUseCase,
         chooseAddressWrapper,
         abTestPlatformWrapper,
@@ -182,10 +181,10 @@ class TokoNowCategoryViewModel @Inject constructor (
 
     override fun createFooterVisitableList(): List<Visitable<*>> {
         val recomData = TokoNowProductRecommendationUiModel(
-                pageName = TOKONOW_CLP,
-                miniCartSource = MiniCartSource.TokonowCategoryPage,
-                requestParam = createRecommendationRequestParam(TOKONOW_CLP),
+            requestParam = createProductRecommendationRequestParam(
+                pageName = TOKONOW_CLP
             )
+        )
         return listOf(
             createAisleDataView(),
             recomData

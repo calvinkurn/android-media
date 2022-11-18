@@ -18,7 +18,6 @@ import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.TOKONOW_CLP
-import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.category.analytics.CategoryTracking
@@ -188,9 +187,9 @@ class TokoNowCategoryFragment:
             switcherWidgetListener = this,
             tokoNowEmptyStateNoResultListener = this,
             categoryAisleListener = this,
-            recommendationCarouselListener = this,
             tokoNowCategoryGridListener = this,
             tokoNowProductCardListener = this,
+            productRecommendationOocListener = this,
             productRecommendationListener = this
     )
 
@@ -559,11 +558,11 @@ class TokoNowCategoryFragment:
         )
     }
 
-    override fun onSeeMoreClick(data: RecommendationCarouselData, applink: String) {
-        CategoryTracking.sendRecommendationSeeAllClickEvent(getViewModel().categoryIdTracking)
-
-        RouteManager.route(context, modifySeeMoreRecomApplink(applink))
-    }
+//    override fun onSeeMoreClick(data: RecommendationCarouselData, applink: String) {
+//        CategoryTracking.sendRecommendationSeeAllClickEvent(getViewModel().categoryIdTracking)
+//
+//        RouteManager.route(context, modifySeeMoreRecomApplink(applink))
+//    }
 
     private fun modifySeeMoreRecomApplink(originalApplink: String): String {
         val uri = Uri.parse(originalApplink)
@@ -616,7 +615,7 @@ class TokoNowCategoryFragment:
         super.refreshLayout()
 
         productRecomViewModel.updateProductRecommendation(
-            requestParam = getViewModel().createRecommendationRequestParam(
+            requestParam = getViewModel().createProductRecommendationRequestParam(
                 pageName = TOKONOW_CLP
             )
         )
@@ -625,7 +624,7 @@ class TokoNowCategoryFragment:
     override fun updateProductRecommendation(needToUpdate: Boolean) {
         if (needToUpdate) {
             productRecomViewModel.updateProductRecommendation(
-                requestParam = getViewModel().createRecommendationRequestParam(
+                requestParam = getViewModel().createProductRecommendationRequestParam(
                     pageName = TOKONOW_CLP
                 )
             )

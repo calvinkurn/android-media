@@ -13,6 +13,7 @@ import androidx.annotation.DimenRes
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
@@ -57,8 +58,6 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
-import com.tokopedia.recommendation_widget_common.widget.ProductRecommendationTracking
-import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.helper.ViewHelper
 import com.tokopedia.searchbar.navigation_component.NavToolbar
@@ -73,7 +72,6 @@ import com.tokopedia.tokopedianow.common.bottomsheet.TokoNowOnBoard20mBottomShee
 import com.tokopedia.tokopedianow.common.constant.ServiceType.NOW_2H
 import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
-import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationOocUiModel
 import com.tokopedia.tokopedianow.common.util.TokoNowServiceTypeUtil
 import com.tokopedia.tokopedianow.common.util.TokoNowSharedPreference
 import com.tokopedia.tokopedianow.common.util.TokoNowSwitcherUtil.switchService
@@ -128,8 +126,9 @@ abstract class BaseSearchCategoryFragment:
     SwitcherWidgetListener,
     TokoNowEmptyStateNoResultViewHolder.TokoNowEmptyStateNoResultListener,
     TokoNowProductCardListener,
-    TokoNowProductRecommendationOocViewHolder.TokoNowRecommendationCarouselListener,
-    TokoNowProductRecommendationView.TokoNowProductRecommendationListener{
+    TokoNowProductRecommendationView.TokoNowProductRecommendationListener,
+    TokoNowProductRecommendationOocViewHolder.TokonowRecomBindPageNameListener
+{
 
     companion object {
         private const val SPAN_COUNT = 3
@@ -527,7 +526,6 @@ abstract class BaseSearchCategoryFragment:
         getViewModel().isShowErrorLiveData.observe(::showNetworkErrorHelper)
         getViewModel().routeApplinkLiveData.observe(::routeApplink)
         getViewModel().deleteCartTrackingLiveData.observe(::sendDeleteCartTrackingEvent)
-        getViewModel().addToCartRecommendationItemTrackingLiveData.observe(::sendAddToCartRecommendationTrackingEvent)
         getViewModel().generalSearchEventLiveData.observe(::sendTrackingGeneralEvent)
         getViewModel().addToCartRepurchaseWidgetTrackingLiveData.observe(::sendAddToCartRepurchaseProductTrackingEvent)
         getViewModel().oocOpenScreenTrackingEvent.observe(::sendOOCOpenScreenTracking)
@@ -931,117 +929,102 @@ abstract class BaseSearchCategoryFragment:
         getViewModel().onViewRemoveFilter(option)
     }
 
-    override fun onSaveCarouselScrollPosition(adapterPosition: Int, scrollPosition: Int) {
-        carouselScrollPosition.put(adapterPosition, scrollPosition)
-    }
+//    override fun onImpressedRecommendationCarouselItem(
+//        recommendationCarouselDataView: TokoNowProductRecommendationOocUiModel?,
+//        data: RecommendationCarouselData,
+//        recomItem: RecommendationItem,
+//        itemPosition: Int,
+//        adapterPosition: Int
+//    ) {
+//        val isOOC = recommendationCarouselDataView?.isOutOfCoverage()?:false
+//        trackingQueue?.putEETracking(
+//            ProductRecommendationTracking.getImpressionProductTracking(
+//                recommendationItem = recomItem,
+//                eventCategory = getEventCategory(isOOC),
+//                headerTitle = data.recommendationData.title,
+//                position = itemPosition,
+//                isLoggedIn = userSession.isLoggedIn,
+//                userId = userSession.userId,
+//                eventLabel = getEventLabel(isOOC),
+//                eventAction = getImpressionEventAction(isOOC),
+//                listValue = getListValue(isOOC, recomItem),
+//            )
+//        )
+//    }
 
-    override fun onGetCarouselScrollPosition(adapterPosition: Int): Int {
-        return carouselScrollPosition.get(adapterPosition)
-    }
+//    override fun onClickRecommendationCarouselItem(
+//        recommendationCarouselDataView: TokoNowProductRecommendationOocUiModel?,
+//        data: RecommendationCarouselData,
+//        recomItem: RecommendationItem,
+//        itemPosition: Int,
+//        adapterPosition: Int
+//    ) {
+//        val isOOC = recommendationCarouselDataView?.isOutOfCoverage()?:false
+//        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
+//            ProductRecommendationTracking.getClickProductTracking(
+//                recommendationItem = recomItem,
+//                eventCategory = getEventCategory(isOOC),
+//                headerTitle = data.recommendationData.title,
+//                position = itemPosition,
+//                isLoggedIn = userSession.isLoggedIn,
+//                userId = userSession.userId,
+//                eventLabel = getEventLabel(isOOC),
+//                eventAction = getClickEventAction(isOOC),
+//                listValue = getListValue(isOOC, recomItem),
+//            )
+//        )
+//        RouteManager.route(
+//                context,
+//                ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
+//                recomItem.productId.toString(),
+//        )
+//    }
 
-    override fun onBindRecommendationCarousel(
-        element: TokoNowProductRecommendationOocUiModel,
-        adapterPosition: Int,
-    ) {
-        getViewModel().onBindRecommendationCarousel(element, adapterPosition)
-    }
+//    override fun onATCNonVariantRecommendationCarouselItem(
+//        recommendationCarouselDataView: TokoNowProductRecommendationOocUiModel?,
+//        data: RecommendationCarouselData,
+//        recomItem: RecommendationItem,
+//        recommendationCarouselPosition: Int,
+//        quantity: Int,
+//    ) {
+//        getViewModel().onViewATCRecommendationItemNonVariant(
+//                recommendationItem = recomItem,
+//                adapterPosition = recommendationCarouselPosition,
+//                quantity = quantity,
+//        )
+//    }
 
-    override fun onImpressedRecommendationCarouselItem(
-        recommendationCarouselDataView: TokoNowProductRecommendationOocUiModel?,
-        data: RecommendationCarouselData,
-        recomItem: RecommendationItem,
-        itemPosition: Int,
-        adapterPosition: Int
-    ) {
-        val isOOC = recommendationCarouselDataView?.isOutOfCoverage()?:false
-        trackingQueue?.putEETracking(
-            ProductRecommendationTracking.getImpressionProductTracking(
-                recommendationItem = recomItem,
-                eventCategory = getEventCategory(isOOC),
-                headerTitle = data.recommendationData.title,
-                position = itemPosition,
-                isLoggedIn = userSession.isLoggedIn,
-                userId = userSession.userId,
-                eventLabel = getEventLabel(isOOC),
-                eventAction = getImpressionEventAction(isOOC),
-                listValue = getListValue(isOOC, recomItem),
-            )
-        )
-    }
+//    override fun onAddVariantRecommendationCarouselItem(
+//        recommendationCarouselDataView: TokoNowProductRecommendationOocUiModel?,
+//        data: RecommendationCarouselData,
+//        recomItem: RecommendationItem,
+//    ) {
+//        val productId = recomItem.productId.toString()
+//        val shopId = recomItem.shopId.toString()
+//
+//        openATCVariantBottomSheet(productId, shopId)
+//    }
 
-    override fun onClickRecommendationCarouselItem(
-        recommendationCarouselDataView: TokoNowProductRecommendationOocUiModel?,
-        data: RecommendationCarouselData,
-        recomItem: RecommendationItem,
-        itemPosition: Int,
-        adapterPosition: Int
-    ) {
-        val isOOC = recommendationCarouselDataView?.isOutOfCoverage()?:false
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
-            ProductRecommendationTracking.getClickProductTracking(
-                recommendationItem = recomItem,
-                eventCategory = getEventCategory(isOOC),
-                headerTitle = data.recommendationData.title,
-                position = itemPosition,
-                isLoggedIn = userSession.isLoggedIn,
-                userId = userSession.userId,
-                eventLabel = getEventLabel(isOOC),
-                eventAction = getClickEventAction(isOOC),
-                listValue = getListValue(isOOC, recomItem),
-            )
-        )
-        RouteManager.route(
-                context,
-                ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
-                recomItem.productId.toString(),
-        )
-    }
-
-    override fun onATCNonVariantRecommendationCarouselItem(
-        recommendationCarouselDataView: TokoNowProductRecommendationOocUiModel?,
-        data: RecommendationCarouselData,
-        recomItem: RecommendationItem,
-        recommendationCarouselPosition: Int,
-        quantity: Int,
-    ) {
-        getViewModel().onViewATCRecommendationItemNonVariant(
-                recommendationItem = recomItem,
-                adapterPosition = recommendationCarouselPosition,
-                quantity = quantity,
-        )
-    }
-
-    override fun onAddVariantRecommendationCarouselItem(
-        recommendationCarouselDataView: TokoNowProductRecommendationOocUiModel?,
-        data: RecommendationCarouselData,
-        recomItem: RecommendationItem,
-    ) {
-        val productId = recomItem.productId.toString()
-        val shopId = recomItem.shopId.toString()
-
-        openATCVariantBottomSheet(productId, shopId)
-    }
-
-    protected open fun sendAddToCartRecommendationTrackingEvent(
-        atcTrackingData: Triple<Int, String, RecommendationItem>
-    ) {
-        val (quantity, cartId, recommendationItem) = atcTrackingData
-        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
-            ProductRecommendationTracking.getAddToCartClickProductTracking(
-                recommendationItem = recommendationItem,
-                position = recommendationItem.position,
-                isLoggedIn = userSession.isLoggedIn,
-                userId = userSession.userId,
-                eventLabel = getEventLabel(false),
-                headerTitle = "",
-                quantity = quantity,
-                cartId = cartId,
-                eventAction = getAtcEventAction(false),
-                eventCategory = getEventCategory(false),
-                listValue = getListValue(false, recommendationItem),
-            )
-        )
-    }
+//    protected open fun sendAddToCartRecommendationTrackingEvent(
+//        atcTrackingData: Triple<Int, String, RecommendationItem>
+//    ) {
+//        val (quantity, cartId, recommendationItem) = atcTrackingData
+//        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
+//            ProductRecommendationTracking.getAddToCartClickProductTracking(
+//                recommendationItem = recommendationItem,
+//                position = recommendationItem.position,
+//                isLoggedIn = userSession.isLoggedIn,
+//                userId = userSession.userId,
+//                eventLabel = getEventLabel(false),
+//                headerTitle = "",
+//                quantity = quantity,
+//                cartId = cartId,
+//                eventAction = getAtcEventAction(false),
+//                eventCategory = getEventCategory(false),
+//                listValue = getListValue(false, recommendationItem),
+//            )
+//        )
+//    }
 
     abstract fun getListValue(isOOC: Boolean, recommendationItem: RecommendationItem): String
     abstract fun getImpressionEventAction(isOOC: Boolean): String
@@ -1192,5 +1175,37 @@ abstract class BaseSearchCategoryFragment:
             override fun onLoginPreverified() {}
 
         })
+    }
+
+    override fun onMiniCartUpdatedFromRecomWidget(miniCartSimplifiedData: MiniCartSimplifiedData) {
+
+    }
+
+    override fun onRecomTokonowAtcSuccess(message: String) {
+
+    }
+
+    override fun onRecomTokonowAtcFailed(throwable: Throwable) {
+
+    }
+
+    override fun onRecomTokonowAtcNeedToSendTracker(
+        recommendationItem: RecommendationItem
+    ) {
+
+    }
+
+    override fun onRecomTokonowDeleteNeedToSendTracker(
+        recommendationItem: RecommendationItem
+    ) {
+
+    }
+
+    override fun onClickItemNonLoginState() {
+
+    }
+
+    override fun setViewToLifecycleOwner(observer: LifecycleObserver) {
+        lifecycle.addObserver(observer)
     }
 }
