@@ -35,6 +35,7 @@ data class HomeRealTimeRecomUiModel(
     }
 
     fun shouldFetch(): Boolean {
-        return (widget == null || widgetState != RealTimeRecomWidgetState.READY) && enabled
+        val productList = widget?.recommendationItemList.orEmpty()
+        return productList.isEmpty() && enabled
     }
 }
