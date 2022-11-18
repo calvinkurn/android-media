@@ -51,10 +51,6 @@
                     android:scheme="wear" />
             </intent-filter>
         </service>
-
-        <activity
-            android:name=".TokopediaWatchActivity"
-            android:exported="false" />
     </application>
 
 </manifest>
