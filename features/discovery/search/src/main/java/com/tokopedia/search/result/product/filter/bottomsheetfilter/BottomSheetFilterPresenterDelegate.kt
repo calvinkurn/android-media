@@ -1,23 +1,20 @@
-package com.tokopedia.search.result.product.bottomsheetfilter
+package com.tokopedia.search.result.product.filter.bottomsheetfilter
 
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.GET_PRODUCT_COUNT_USE_CASE
 import com.tokopedia.filter.common.data.DynamicFilterModel
-import com.tokopedia.search.di.scope.SearchScope
-import com.tokopedia.search.result.product.DynamicFilterModelProvider
 import com.tokopedia.search.result.product.QueryKeyProvider
 import com.tokopedia.search.result.product.chooseaddress.ChooseAddressPresenterDelegate
+import com.tokopedia.search.result.product.filter.dynamicfilter.MutableDynamicFilterModelProvider
 import com.tokopedia.search.result.product.requestparamgenerator.RequestParamsGenerator
 import com.tokopedia.search.utils.createSearchProductDefaultFilter
 import com.tokopedia.usecase.UseCase
 import dagger.Lazy
 import rx.Subscriber
-import javax.inject.Inject
 import javax.inject.Named
 
-@SearchScope
-class BottomSheetFilterPresenterDelegate @Inject constructor(
+class BottomSheetFilterPresenterDelegate(
     private val view: BottomSheetFilterView,
     private val queryKeyProvider: QueryKeyProvider,
     private val requestParamsGenerator: RequestParamsGenerator,
@@ -26,9 +23,9 @@ class BottomSheetFilterPresenterDelegate @Inject constructor(
     private val getProductCountUseCase: Lazy<UseCase<String>>,
     @param:Named(SearchConstant.DynamicFilter.GET_DYNAMIC_FILTER_USE_CASE)
     private val getDynamicFilterUseCase: Lazy<UseCase<DynamicFilterModel>>,
-) : BottomSheetFilterPresenter, DynamicFilterModelProvider {
-    override var dynamicFilterModel: DynamicFilterModel? = null
-        private set
+    private val mutableDynamicFilterModelProvider: MutableDynamicFilterModelProvider,
+) : BottomSheetFilterPresenter,
+    MutableDynamicFilterModelProvider by mutableDynamicFilterModelProvider {
     override var isBottomSheetFilterEnabled: Boolean = true
         private set
 
@@ -43,12 +40,15 @@ class BottomSheetFilterPresenterDelegate @Inject constructor(
             chooseAddressDelegate.getChooseAddressParams(),
         )
         val getProductCountSubscriber = createGetProductCountSubscriber()
-        getProductCountUseCase.get().execute(getProductCountRequestParams, getProductCountSubscriber)
+        getProductCountUseCase.get().execute(
+            getProductCountRequestParams,
+            getProductCountSubscriber
+        )
     }
 
     private fun createGetProductCountSubscriber(): Subscriber<String> {
         return object : Subscriber<String>() {
-            override fun onCompleted() { }
+            override fun onCompleted() {}
 
             override fun onError(e: Throwable) {
                 setProductCount("0")
@@ -71,7 +71,7 @@ class BottomSheetFilterPresenterDelegate @Inject constructor(
         isBottomSheetFilterEnabled = false
 
         view.sendTrackingOpenFilterPage()
-        view.openBottomSheetFilter(dynamicFilterModel)
+        view.openBottomSheetFilter(dynamicFilterModel, this)
 
         if (dynamicFilterModel == null) {
             val getDynamicFilterRequestParams = requestParamsGenerator.createRequestDynamicFilterParams(
@@ -87,7 +87,7 @@ class BottomSheetFilterPresenterDelegate @Inject constructor(
 
     private fun createGetDynamicFilterModelSubscriber(): Subscriber<DynamicFilterModel> {
         return object : Subscriber<DynamicFilterModel>() {
-            override fun onCompleted() { }
+            override fun onCompleted() {}
 
             override fun onNext(dynamicFilterModel: DynamicFilterModel) {
                 handleGetDynamicFilterSuccess(dynamicFilterModel)

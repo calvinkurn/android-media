@@ -11,7 +11,7 @@ import com.tokopedia.filter.common.data.Option
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.search.analytics.GeneralSearchTrackingModel
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
-import com.tokopedia.search.result.product.bottomsheetfilter.BottomSheetFilterPresenter
+import com.tokopedia.search.result.product.filter.bottomsheetfilter.BottomSheetFilterPresenter
 import com.tokopedia.search.result.product.broadmatch.BroadMatchPresenter
 import com.tokopedia.search.result.product.cpm.BannerAdsPresenter
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
@@ -75,11 +75,7 @@ interface ProductListSectionContract {
         fun setQuickFilter(items: List<SortFilterItem>)
         fun showOnBoarding(firstProductPosition: Int)
         fun isFilterSelected(option: Option?): Boolean
-        fun setProductCount(productCountText: String?)
         val className: String
-        fun sendTrackingOpenFilterPage()
-        fun openBottomSheetFilter(dynamicFilterModel: DynamicFilterModel?)
-        fun setDynamicFilter(dynamicFilterModel: DynamicFilterModel)
         fun redirectionStartActivity(applink: String?, url: String?)
         fun trackEventLongPress(productID: String)
         fun showProductCardOptions(productCardOptionsModel: ProductCardOptionsModel)

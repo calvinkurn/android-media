@@ -31,18 +31,12 @@ import com.tokopedia.discovery.common.manager.showProductCardOptions
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.discovery.common.model.SearchParameter
 import com.tokopedia.discovery.common.model.WishlistTrackingModel
-import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet
-import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet.ApplySortFilterModel
 import com.tokopedia.filter.bottomsheet.filtergeneraldetail.FilterGeneralDetailBottomSheet
-import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.common.helper.getSortFilterCount
 import com.tokopedia.filter.common.helper.getSortFilterParamsString
 import com.tokopedia.filter.common.helper.isSortHasDefaultValue
-import com.tokopedia.filter.newdynamicfilter.analytics.FilterEventTracking
-import com.tokopedia.filter.newdynamicfilter.analytics.FilterTracking
-import com.tokopedia.filter.newdynamicfilter.analytics.FilterTrackingData
 import com.tokopedia.filter.newdynamicfilter.controller.FilterController
 import com.tokopedia.iris.Iris
 import com.tokopedia.iris.util.IrisSession
@@ -67,13 +61,11 @@ import com.tokopedia.search.di.module.SearchNavigationListenerModule
 import com.tokopedia.search.result.presentation.ProductListSectionContract
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.presentation.model.SearchProductTopAdsImageDataView
-import com.tokopedia.search.result.presentation.model.TickerDataView
 import com.tokopedia.search.result.presentation.view.listener.InspirationCarouselListener
 import com.tokopedia.search.result.presentation.view.listener.ProductListener
 import com.tokopedia.search.result.presentation.view.listener.QuickFilterElevation
 import com.tokopedia.search.result.presentation.view.listener.RedirectionListener
 import com.tokopedia.search.result.presentation.view.listener.SearchNavigationListener
-import com.tokopedia.search.result.presentation.view.listener.TickerListener
 import com.tokopedia.search.result.presentation.view.listener.TopAdsImageViewListener
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactoryImpl
 import com.tokopedia.search.result.product.ClassNameProvider
@@ -90,6 +82,7 @@ import com.tokopedia.search.result.product.chooseaddress.ChooseAddressListener
 import com.tokopedia.search.result.product.cpm.BannerAdsListenerDelegate
 import com.tokopedia.search.result.product.cpm.BannerAdsPresenter
 import com.tokopedia.search.result.product.emptystate.EmptyStateListenerDelegate
+import com.tokopedia.search.result.product.filter.bottomsheetfilter.BottomSheetFilterViewDelegate
 import com.tokopedia.search.result.product.globalnavwidget.GlobalNavListenerDelegate
 import com.tokopedia.search.result.product.inspirationbundle.InspirationBundleListenerDelegate
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
@@ -110,7 +103,6 @@ import com.tokopedia.search.utils.FragmentProvider
 import com.tokopedia.search.utils.SearchIdlingResource
 import com.tokopedia.search.utils.SearchLogger
 import com.tokopedia.search.utils.SmallGridSpanCount
-import com.tokopedia.search.utils.UrlParamUtils
 import com.tokopedia.search.utils.addFilterOrigin
 import com.tokopedia.search.utils.applinkmodifier.ApplinkModifier
 import com.tokopedia.search.utils.applyQuickFilterElevation
@@ -123,8 +115,8 @@ import com.tokopedia.topads.sdk.domain.model.Category
 import com.tokopedia.topads.sdk.domain.model.FreeOngkir
 import com.tokopedia.topads.sdk.domain.model.Product
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
-import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.video_widget.VideoPlayerAutoplay
 import com.tokopedia.video_widget.carousel.VideoCarouselWidgetCoordinator
 import com.tokopedia.video_widget.util.networkmonitor.DefaultNetworkMonitor
@@ -132,7 +124,6 @@ import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
 import org.json.JSONArray
 import javax.inject.Inject
 import com.tokopedia.wishlist_common.R as Rwishlist
-import com.tokopedia.unifycomponents.Toaster
 
 class ProductListFragment: BaseDaggerFragment(),
     ProductListSectionContract.View,
@@ -140,7 +131,6 @@ class ProductListFragment: BaseDaggerFragment(),
     RecommendationListener,
     InspirationCarouselListener,
     QuickFilterElevation,
-    SortFilterBottomSheet.Callback,
     TopAdsImageViewListener,
     ChooseAddressListener,
     ProductListParameterListener,
@@ -225,6 +215,10 @@ class ProductListFragment: BaseDaggerFragment(),
     @Inject
     lateinit var atcVariantBottomSheetLauncher: AddToCartVariantBottomSheetLauncher
 
+    @Suppress("LateinitUsage")
+    @Inject
+    lateinit var bottomSheetFilterViewDelegate: BottomSheetFilterViewDelegate
+
     private var refreshLayout: SwipeRefreshLayout? = null
     private var staggeredGridLayoutLoadMoreTriggerListener: EndlessRecyclerViewScrollListener? = null
     private var searchNavigationListener: SearchNavigationListener? = null
@@ -234,15 +228,6 @@ class ProductListFragment: BaseDaggerFragment(),
     private var irisSession: IrisSession? = null
     private var searchSortFilter: SortFilter? = null
     private var shimmeringView: LinearLayout? = null
-    private var sortFilterBottomSheet: SortFilterBottomSheet? = null
-    private val filterTrackingData by lazy {
-        FilterTrackingData(
-                FilterEventTracking.Event.CLICK_SEARCH_RESULT,
-                FilterEventTracking.Category.FILTER_PRODUCT,
-                "",
-                FilterEventTracking.Category.PREFIX_SEARCH_RESULT_PAGE
-        )
-    }
 
     override var productCardLifecycleObserver: ProductCardLifecycleObserver? = null
         private set
@@ -300,6 +285,10 @@ class ProductListFragment: BaseDaggerFragment(),
         }
     }
 
+    private fun initBottomSheetFilterLifecycleObserver() {
+        viewLifecycleOwner.lifecycle.addObserver(bottomSheetFilterViewDelegate)
+    }
+
     private fun initNetworkMonitor() {
         networkMonitor = DefaultNetworkMonitor(activity, this)
     }
@@ -342,6 +331,7 @@ class ProductListFragment: BaseDaggerFragment(),
         initViews(view)
         addDefaultSelectedSort()
         initProductVideoAutoplayLifecycleObserver()
+        initBottomSheetFilterLifecycleObserver()
 
         presenter?.onViewCreated()
     }
@@ -1471,79 +1461,6 @@ class ProductListFragment: BaseDaggerFragment(),
     private fun openBottomSheetFilterRevamp() {
         presenter?.openFilterPage(getSearchParameter()?.getSearchParameterMap())
     }
-
-    override fun sendTrackingOpenFilterPage() {
-        FilterTracking.eventOpenFilterPage(filterTrackingData)
-    }
-
-    override fun openBottomSheetFilter(dynamicFilterModel: DynamicFilterModel?) {
-        if (!isAdded) return
-
-        sortFilterBottomSheet = SortFilterBottomSheet()
-        sortFilterBottomSheet?.show(
-                parentFragmentManager,
-                searchParameter?.getSearchParameterHashMap(),
-                dynamicFilterModel,
-                this
-        )
-        sortFilterBottomSheet?.setOnDismissListener {
-            sortFilterBottomSheet = null
-            presenter?.onBottomSheetFilterDismissed()
-        }
-    }
-
-    override fun setDynamicFilter(dynamicFilterModel: DynamicFilterModel) {
-        val searchParameterMap = searchParameter?.getSearchParameterHashMap() ?: mapOf()
-
-        filterController.appendFilterList(searchParameterMap, dynamicFilterModel.data.filter)
-
-        sortFilterBottomSheet?.setDynamicFilterModel(dynamicFilterModel)
-    }
-
-    override fun onApplySortFilter(applySortFilterModel: ApplySortFilterModel) {
-        presenter?.onApplySortFilter(applySortFilterModel.mapParameter)
-
-        sortFilterBottomSheet = null
-
-        applySort(applySortFilterModel)
-        applyFilter(applySortFilterModel)
-
-        refreshSearchParameter(applySortFilterModel.mapParameter)
-
-        lastFilterListenerDelegate.updateLastFilter()
-
-        reloadData()
-    }
-
-    private fun applySort(applySortFilterModel: ApplySortFilterModel) {
-        if (applySortFilterModel.selectedSortName.isEmpty()
-                || applySortFilterModel.selectedSortMapParameter.isEmpty()) return
-
-        SearchTracking.eventSearchResultSort(screenName, applySortFilterModel.selectedSortName, getUserId())
-    }
-
-    private fun applyFilter(applySortFilterModel: ApplySortFilterModel) {
-        FilterTracking
-                .eventApplyFilter(filterTrackingData, screenName, applySortFilterModel.selectedFilterMapParameter)
-    }
-
-    override fun getResultCount(mapParameter: Map<String, String>) {
-        presenter?.getProductCount(mapParameter)
-    }
-
-    override fun setProductCount(productCountText: String?) {
-        sortFilterBottomSheet?.setResultCountText(getFilterCountText(productCountText))
-    }
-
-    private fun getFilterCountText(productCountText: String?): String =
-        if (productCountText.isNullOrBlank()) {
-            getString(com.tokopedia.filter.R.string.bottom_sheet_filter_finish_button_no_count)
-        } else {
-            String.format(
-                getString(com.tokopedia.filter.R.string.bottom_sheet_filter_finish_button_template_text),
-                productCountText
-            )
-        }
     //endregion
 
     //region TopAdsImageView / TDN

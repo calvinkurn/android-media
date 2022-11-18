@@ -51,8 +51,8 @@ import com.tokopedia.search.result.presentation.view.typefactory.ProductListType
 import com.tokopedia.search.result.product.DynamicFilterModelProvider
 import com.tokopedia.search.result.product.banned.BannedProductsPresenterDelegate
 import com.tokopedia.search.result.product.banner.BannerPresenterDelegate
-import com.tokopedia.search.result.product.bottomsheetfilter.BottomSheetFilterPresenter
-import com.tokopedia.search.result.product.bottomsheetfilter.BottomSheetFilterPresenterDelegate
+import com.tokopedia.search.result.product.filter.bottomsheetfilter.BottomSheetFilterPresenter
+import com.tokopedia.search.result.product.filter.bottomsheetfilter.BottomSheetFilterPresenterDelegate
 import com.tokopedia.search.result.product.broadmatch.BroadMatchDataView
 import com.tokopedia.search.result.product.broadmatch.BroadMatchPresenter
 import com.tokopedia.search.result.product.broadmatch.BroadMatchPresenterDelegate
@@ -159,12 +159,13 @@ class ProductListPresenter @Inject constructor(
     private val tickerPresenter: TickerPresenter,
     private val safeSearchPresenter: SafeSearchPresenter,
     private val addToCartUseCase: AddToCartUseCase,
-    private val bottomSheetFilterPresenter: BottomSheetFilterPresenterDelegate,
+    private val dynamicFilterModelProvider: DynamicFilterModelProvider,
+    private val bottomSheetFilterPresenter: BottomSheetFilterPresenter,
 ): BaseDaggerPresenter<ProductListSectionContract.View>(),
     ProductListSectionContract.Presenter,
     Pagination by paginationImpl,
     BannerAdsPresenter by BannerAdsPresenterDelegate(topAdsHeadlineHelper),
-    DynamicFilterModelProvider by bottomSheetFilterPresenter,
+    DynamicFilterModelProvider by dynamicFilterModelProvider,
     LastFilterPresenter by lastFilterPresenterDelegate,
     InspirationListAtcPresenter by inspirationListAtcPresenterDelegate,
     BroadMatchPresenter by broadMatchDelegate,
@@ -204,8 +205,6 @@ class ProductListPresenter @Inject constructor(
 
     private var enableGlobalNavWidget = true
     private var additionalParams = ""
-    override var isBottomSheetFilterEnabled = true
-        private set
     private var hasLoadData = false
     private var responseCode = ""
     private var navSource = ""
