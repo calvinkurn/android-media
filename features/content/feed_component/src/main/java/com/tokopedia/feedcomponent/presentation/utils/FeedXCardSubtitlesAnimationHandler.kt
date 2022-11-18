@@ -23,8 +23,8 @@ class FeedXCardSubtitlesAnimationHandler(
     lateinit var subtitles: List<String>
     private var currentPositionSubtitle = 0
 
-    private var visibleContainer = firstContainer
-    private var invisibleContainer = secondContainer
+//    private var visibleContainer = firstContainer
+//    private var invisibleContainer = secondContainer
     private var isAnimationStarted = false
     private var animatorSet: AnimatorSet? = null
     private var timer: Timer? = null
@@ -45,8 +45,8 @@ class FeedXCardSubtitlesAnimationHandler(
 
     private fun animateView() {
         isAnimationStarted = true
-        setDataIntoViews()
-        animateTwoViews(visibleContainer, invisibleContainer)
+//        setDataIntoViews()
+        animateTwoViews(firstContainer, secondContainer)
     }
 
     private fun setDataIntoViews() {
@@ -57,8 +57,8 @@ class FeedXCardSubtitlesAnimationHandler(
         val invisibleDataPos =
             if (currentPositionSubtitle + 1 >= subtitles.size) 0 else currentPositionSubtitle + 1
 
-        visibleContainer.get()?.text = subtitles[visibleDataPos]
-        invisibleContainer.get()?.text = subtitles[invisibleDataPos]
+//        visibleContainer.get()?.text = subtitles[visibleDataPos]
+//        invisibleContainer.get()?.text = subtitles[invisibleDataPos]
     }
 
     fun stopAnimation() {
@@ -77,7 +77,7 @@ class FeedXCardSubtitlesAnimationHandler(
         timer = Timer()
         timer?.scheduleAtFixedRate(object : TimerTask() {
             override fun run() {
-                visibleContainer.get()?.post {
+                firstContainer.get()?.post {
                     animateView()
                 }
             }
@@ -90,9 +90,9 @@ class FeedXCardSubtitlesAnimationHandler(
         Log.d("FEED_ANIM", "Animation End, Masuk")
 
         //switch container reference
-        val tempContainer = visibleContainer
-        visibleContainer = invisibleContainer
-        invisibleContainer = tempContainer
+//        val tempContainer = visibleContainer
+//        visibleContainer = invisibleContainer
+//        invisibleContainer = tempContainer
 
         //increment pos
 //        currentPositionSubtitle += 1
@@ -113,8 +113,8 @@ class FeedXCardSubtitlesAnimationHandler(
         secondContainer.get()?.translationY = dpToPx(16)
         currentPositionSubtitle = 0
 
-        visibleContainer = firstContainer
-        invisibleContainer = secondContainer
+//        visibleContainer = firstContainer
+//        invisibleContainer = secondContainer
     }
 
     @SuppressLint("Recycle")
@@ -143,21 +143,21 @@ class FeedXCardSubtitlesAnimationHandler(
                 val translateAnimObjTwo: ObjectAnimator =
                     ObjectAnimator.ofPropertyValuesHolder(v2, translateAnimPropTwo)
 
-                translateAnimObjTwo.addListener(object: AnimatorListener {
-                    override fun onAnimationStart(animation: Animator?) {
-                    }
-
-                    override fun onAnimationEnd(animation: Animator?) {
-                        afterAnimationComplete()
-                    }
-
-                    override fun onAnimationCancel(animation: Animator?) {
-                    }
-
-                    override fun onAnimationRepeat(animation: Animator?) {
-                    }
-
-                })
+//                translateAnimObjTwo.addListener(object: AnimatorListener {
+//                    override fun onAnimationStart(animation: Animator?) {
+//                    }
+//
+//                    override fun onAnimationEnd(animation: Animator?) {
+//                        afterAnimationComplete()
+//                    }
+//
+//                    override fun onAnimationCancel(animation: Animator?) {
+//                    }
+//
+//                    override fun onAnimationRepeat(animation: Animator?) {
+//                    }
+//
+//                })
 
                 animatorSet = AnimatorSet()
                 animatorSet?.playTogether(
