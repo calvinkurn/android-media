@@ -1168,11 +1168,11 @@ abstract class BaseSearchCategoryFragment:
         })
     }
 
-    open fun productRecommendationOocCallback() = ProductRecommendationOocCallback(
-        lifecycle = lifecycle
+    open fun createProductRecommendationOocCallback() = ProductRecommendationOocCallback(
+        lifecycle = viewLifecycleOwner.lifecycle
     )
 
-    open fun productRecommendationCallback(cdListName: String, categoryL1: String = "") = ProductRecommendationCallback(
+    open fun createProductRecommendationCallback(cdListName: String, categoryL1: String = "") = ProductRecommendationCallback(
         productRecommendationViewModel = productRecommendationViewModel,
         baseSearchCategoryViewModel = getViewModel(),
         activity = activity,

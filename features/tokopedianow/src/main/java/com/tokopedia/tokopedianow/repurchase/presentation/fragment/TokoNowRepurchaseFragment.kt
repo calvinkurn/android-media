@@ -22,6 +22,8 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
+import com.tokopedia.discovery.common.constants.SearchApiConst
+import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.DEFAULT_VALUE_OF_PARAMETER_DEVICE
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observe
@@ -40,10 +42,15 @@ import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.minicart.common.widget.MiniCartWidget
 import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
+import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.VariantPageSource
+import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presenter.RecomWidgetViewModel
+import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant
+import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.PAGE_NUMBER_RECOM_WIDGET
+import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.RECOM_WIDGET
 import com.tokopedia.recommendation_widget_common.viewutil.initRecomWidgetViewModel
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
@@ -57,6 +64,8 @@ import com.tokopedia.tokopedianow.categoryfilter.presentation.activity.TokoNowCa
 import com.tokopedia.tokopedianow.categoryfilter.presentation.activity.TokoNowCategoryFilterActivity.Companion.REQUEST_CODE_CATEGORY_FILTER_BOTTOM_SHEET
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.SCREEN_NAME_TOKONOW_OOC
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalytics
+import com.tokopedia.tokopedianow.common.constant.ConstantValue
+import com.tokopedia.tokopedianow.common.constant.ConstantValue.PAGE_NAME_RECOMMENDATION_NO_RESULT_PARAM
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference.SetUserPreferenceData
 import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
@@ -78,6 +87,7 @@ import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateOocViewHold
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowProductRecommendationOocViewHolder.TokoNowRecommendationCarouselListener
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowProductRecommendationOocViewHolder.TokonowRecomBindPageNameListener
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowServerErrorViewHolder.ServerErrorListener
+import com.tokopedia.tokopedianow.common.viewmodel.TokoNowProductRecommendationViewModel
 import com.tokopedia.tokopedianow.databinding.FragmentTokopedianowRepurchaseBinding
 import com.tokopedia.tokopedianow.datefilter.presentation.activity.TokoNowDateFilterActivity.Companion.EXTRA_SELECTED_DATE_FILTER
 import com.tokopedia.tokopedianow.datefilter.presentation.activity.TokoNowDateFilterActivity.Companion.REQUEST_CODE_DATE_FILTER_BOTTOMSHEET
@@ -85,10 +95,10 @@ import com.tokopedia.tokopedianow.repurchase.analytic.RepurchaseAnalytics
 import com.tokopedia.tokopedianow.repurchase.analytic.RepurchaseAnalytics.VALUE.REPURCHASE_TOKONOW
 import com.tokopedia.tokopedianow.repurchase.constant.RepurchaseStaticLayoutId.Companion.EMPTY_STATE_OOC
 import com.tokopedia.tokopedianow.repurchase.di.component.DaggerRepurchaseComponent
-import com.tokopedia.tokopedianow.repurchase.domain.mapper.RepurchaseLayoutMapper.PRODUCT_RECOMMENDATION
 import com.tokopedia.tokopedianow.repurchase.presentation.adapter.RepurchaseAdapter
 import com.tokopedia.tokopedianow.repurchase.presentation.adapter.RepurchaseAdapterTypeFactory
 import com.tokopedia.tokopedianow.repurchase.presentation.adapter.differ.RepurchaseListDiffer
+import com.tokopedia.tokopedianow.repurchase.presentation.listener.ProductRecommendationCallback
 import com.tokopedia.tokopedianow.repurchase.presentation.listener.RepurchaseProductCardListener
 import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseLayoutUiModel
 import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseProductUiModel
@@ -136,6 +146,8 @@ class TokoNowRepurchaseFragment:
     @Inject
     lateinit var viewModel: TokoNowRepurchaseViewModel
     @Inject
+    lateinit var productRecommendationViewModel: TokoNowProductRecommendationViewModel
+    @Inject
     lateinit var userSession: UserSessionInterface
     @Inject
     lateinit var analytics: RepurchaseAnalytics
@@ -148,8 +160,6 @@ class TokoNowRepurchaseFragment:
     private val carouselScrollPosition = SparseIntArray()
 
     private var binding by autoClearedNullable<FragmentTokopedianowRepurchaseBinding>()
-
-    private val recomWidgetViewModel: RecomWidgetViewModel? by initRecomWidgetViewModel()
 
     private val adapter by lazy {
         RepurchaseAdapter(
@@ -164,7 +174,8 @@ class TokoNowRepurchaseFragment:
                 emptyStateNoHistorylistener = this,
                 sortFilterListener = this,
                 serverErrorListener = this,
-                tokonowRecomBindPageNameListener = this
+                tokonowRecomBindPageNameListener = this,
+                productRecommendationListener = createProductRecommendationListener()
             ),
             RepurchaseListDiffer()
         )
@@ -229,7 +240,7 @@ class TokoNowRepurchaseFragment:
         viewModel.updateToolbarNotification()
         viewModel.setProductAddToCartQuantity(miniCartSimplifiedData)
         setupPadding(miniCartSimplifiedData.isShowMiniCartWidget)
-        recomWidgetViewModel?.updateMiniCartWithPageData(miniCartSimplifiedData)
+        productRecommendationViewModel.updateMiniCartSimplified(miniCartSimplifiedData)
     }
 
     override fun onChooseAddressWidgetRemoved() {
@@ -248,17 +259,11 @@ class TokoNowRepurchaseFragment:
 
     override fun refreshLayoutPage() = refreshLayout()
 
-    override fun onCategoryRetried() {
-        // TO-DO : retry to get category
-    }
+    override fun onCategoryRetried() { /* noting to do */ }
 
-    override fun onAllCategoryClicked() {
-        // TO-DO : analytics
-    }
+    override fun onAllCategoryClicked() { /* noting to do */ }
 
-    override fun onCategoryClicked(position: Int, categoryId: String, headerName: String, categoryName: String) {
-        // TO-DO : analytics
-    }
+    override fun onCategoryClicked(position: Int, categoryId: String, headerName: String, categoryName: String) { /* noting to do */ }
 
     override fun onCategoryImpression(data: TokoNowCategoryGridUiModel) { }
 
@@ -280,31 +285,6 @@ class TokoNowRepurchaseFragment:
 
     override fun onRemoveFilterClick(option: Option) { /* noting to do */ }
 
-    override fun onSaveCarouselScrollPosition(adapterPosition: Int, scrollPosition: Int) {
-        carouselScrollPosition.put(adapterPosition, scrollPosition)
-    }
-
-    override fun onGetCarouselScrollPosition(adapterPosition: Int): Int {
-        return carouselScrollPosition.get(adapterPosition)
-    }
-
-    override fun onBindRecommendationCarousel(
-        model: TokoNowProductRecommendationOocUiModel,
-        adapterPosition: Int
-    ) {
-        // TO-DO :
-    }
-
-    override fun onImpressedRecommendationCarouselItem(
-        model: TokoNowProductRecommendationOocUiModel?,
-        data: RecommendationCarouselData,
-        recomItem: RecommendationItem,
-        itemPosition: Int,
-        adapterPosition: Int
-    ) {
-        // TO-DO :
-    }
-
     override fun onClickRecommendationCarouselItem(
         model: TokoNowProductRecommendationOocUiModel?,
         data: RecommendationCarouselData,
@@ -317,20 +297,6 @@ class TokoNowRepurchaseFragment:
             ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
             recomItem.productId.toString(),
         )
-    }
-
-    override fun onATCNonVariantRecommendationCarouselItem(
-        model: TokoNowProductRecommendationOocUiModel?,
-        data: RecommendationCarouselData,
-        recomItem: RecommendationItem,
-        recommendationCarouselPosition: Int,
-        quantity: Int
-    ) {
-        if (userSession.isLoggedIn) {
-            viewModel.onClickAddToCart(recomItem.productId.toString(), quantity, PRODUCT_RECOMMENDATION, recomItem.shopId.toString())
-        } else {
-            RouteManager.route(context, ApplinkConst.LOGIN)
-        }
     }
 
     override fun onAddVariantRecommendationCarouselItem(
@@ -348,33 +314,44 @@ class TokoNowRepurchaseFragment:
         RouteManager.route(context, applink)
     }
 
-    override fun onMiniCartUpdatedFromRecomWidget(miniCartSimplifiedData: MiniCartSimplifiedData) {
-        getMiniCart()
-    }
+    override fun onSaveCarouselScrollPosition(adapterPosition: Int, scrollPosition: Int) { /* nothing to do */ }
 
-    override fun onRecomTokonowAtcSuccess(message: String) {
-        showToaster(
-            message = message,
-            type = Toaster.TYPE_NORMAL
-        )
-    }
+    override fun onGetCarouselScrollPosition(adapterPosition: Int): Int = 0
 
-    override fun onRecomTokonowAtcFailed(throwable: Throwable) {
-        showToaster(
-            message = throwable.message.orEmpty(),
-            type = Toaster.TYPE_ERROR
-        )
-    }
+    override fun onATCNonVariantRecommendationCarouselItem(
+        model: TokoNowProductRecommendationOocUiModel?,
+        data: RecommendationCarouselData,
+        recomItem: RecommendationItem,
+        recommendationCarouselPosition: Int,
+        quantity: Int
+    ) { /* nothing to do */ }
+
+    override fun onBindRecommendationCarousel(
+        model: TokoNowProductRecommendationOocUiModel,
+        adapterPosition: Int
+    ) { /* nothing to do */ }
+
+    override fun onImpressedRecommendationCarouselItem(
+        model: TokoNowProductRecommendationOocUiModel?,
+        data: RecommendationCarouselData,
+        recomItem: RecommendationItem,
+        itemPosition: Int,
+        adapterPosition: Int
+    ) { /* nothing to do */ }
+
+    override fun onMiniCartUpdatedFromRecomWidget(miniCartSimplifiedData: MiniCartSimplifiedData) { /* nothing to do */ }
+
+    override fun onRecomTokonowAtcSuccess(message: String) { /* nothing to do */ }
+
+    override fun onRecomTokonowAtcFailed(throwable: Throwable) { /* nothing to do */ }
 
     override fun onRecomTokonowAtcNeedToSendTracker(
         recommendationItem: RecommendationItem
-    ) {
-    }
+    ) { /* nothing to do */ }
 
     override fun onRecomTokonowDeleteNeedToSendTracker(
         recommendationItem: RecommendationItem
-    ) {
-    }
+    ) { /* nothing to do */ }
 
     override fun onClickItemNonLoginState() {
         RouteManager.route(context, ApplinkConst.LOGIN)
@@ -578,7 +555,7 @@ class TokoNowRepurchaseFragment:
             if(it is Success) {
                 setupMiniCart(it.data)
                 setupPadding(it.data.isShowMiniCartWidget)
-                recomWidgetViewModel?.updateMiniCartWithPageData(it.data)
+                productRecommendationViewModel.updateMiniCartSimplified(it.data)
             }
         }
 
@@ -670,6 +647,55 @@ class TokoNowRepurchaseFragment:
         observe(viewModel.updateToolbarNotification) { update ->
             if(update) {
                 updateToolbarNotification()
+            }
+        }
+
+        observe(productRecommendationViewModel.miniCartAdd) { result ->
+            when (result) {
+                is Success -> {
+                    getMiniCart()
+                    showToaster(
+                        message = result.data.errorMessage.joinToString(separator = ", "),
+                        type = Toaster.TYPE_NORMAL
+                    )
+                }
+                is Fail -> {
+                    showToaster(
+                        message = result.throwable.message.orEmpty(),
+                        type = Toaster.TYPE_ERROR
+                    )
+                }
+            }
+        }
+
+        observe(productRecommendationViewModel.miniCartUpdate) { result ->
+            when (result) {
+                is Success -> {
+                    val shopIds = listOf(localCacheModel?.shop_id.orEmpty())
+                    miniCartWidget?.updateData(shopIds)
+                }
+                is Fail -> {
+                    showToaster(
+                        message = result.throwable.message.orEmpty(),
+                        type = Toaster.TYPE_ERROR
+                    )
+                }
+            }
+        }
+
+        observe(productRecommendationViewModel.miniCartRemove) { result ->
+            when (result) {
+                is Success -> {
+                    getMiniCart()
+                    showToaster(
+                        message = result.data.second,
+                        type = Toaster.TYPE_NORMAL
+                    )
+                }
+                is Fail -> {
+                    val message = result.throwable.message.orEmpty()
+                    showToaster(message = message, type = Toaster.TYPE_ERROR)
+                }
             }
         }
     }
@@ -992,5 +1018,14 @@ class TokoNowRepurchaseFragment:
                 viewModel.switchService()
             }
         }
+    }
+
+    private fun createProductRecommendationListener(): ProductRecommendationCallback {
+        return ProductRecommendationCallback(
+            productRecommendationViewModel = productRecommendationViewModel,
+            tokoNowRepurchaseViewModel = viewModel,
+            activity = activity,
+            startActivityForResult=::startActivityForResult
+        )
     }
 }

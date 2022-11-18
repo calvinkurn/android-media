@@ -186,8 +186,8 @@ class TokoNowCategoryFragment:
             categoryAisleListener = this,
             tokoNowCategoryGridListener = this,
             tokoNowProductCardListener = this,
-            productRecommendationOocListener = productRecommendationOocCallback(),
-            productRecommendationListener = productRecommendationCallback(getCDListName(), getViewModel().categoryL1)
+            productRecommendationOocListener = createProductRecommendationOocCallback(),
+            productRecommendationListener = createProductRecommendationCallback(getCDListName(), getViewModel().categoryL1)
     )
 
     override fun getViewModel() = tokoNowCategoryViewModel

@@ -156,8 +156,8 @@ class TokoNowSearchFragment :
             categoryJumperListener = this,
             ctaTokoNowHomeListener = this,
             broadMatchListener = this,
-            productRecommendationOocListener = productRecommendationOocCallback(),
-            productRecommendationListener = productRecommendationCallback(getCDListName())
+            productRecommendationOocListener = createProductRecommendationOocCallback(),
+            productRecommendationListener = createProductRecommendationCallback(getCDListName())
     )
 
     override val miniCartWidgetPageName: MiniCartAnalytics.Page
