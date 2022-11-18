@@ -1,5 +1,7 @@
 package com.tokopedia.mvc.presentation.product.list
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,23 +13,35 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.campaign.components.adapter.CompositeAdapter
 import com.tokopedia.campaign.components.adapter.DelegateAdapterItem
+import com.tokopedia.campaign.utils.constant.DateConstant
 import com.tokopedia.campaign.utils.extension.applyPaddingToLastItem
 import com.tokopedia.campaign.utils.extension.attachDividerItemDecoration
 import com.tokopedia.campaign.utils.extension.showToaster
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.applyUnifyBackgroundColor
+import com.tokopedia.kotlin.extensions.view.formatTo
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.linker.LinkerManager
+import com.tokopedia.linker.LinkerUtils
+import com.tokopedia.linker.interfaces.ShareCallback
+import com.tokopedia.linker.model.LinkerError
+import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.mvc.R
 import com.tokopedia.mvc.databinding.SmvcFragmentProductListBinding
 import com.tokopedia.mvc.di.component.DaggerMerchantVoucherCreationComponent
 import com.tokopedia.mvc.domain.entity.Product
 import com.tokopedia.mvc.domain.entity.SelectedProduct
+import com.tokopedia.mvc.domain.entity.ShopData
+import com.tokopedia.mvc.domain.entity.enums.BenefitType
+import com.tokopedia.mvc.domain.entity.enums.PageMode
 import com.tokopedia.mvc.domain.entity.enums.PromoType
 import com.tokopedia.mvc.domain.entity.enums.VoucherAction
 import com.tokopedia.mvc.presentation.product.add.AddProductFragment
@@ -37,11 +51,18 @@ import com.tokopedia.mvc.presentation.product.list.uimodel.ProductListEvent
 import com.tokopedia.mvc.presentation.product.list.uimodel.ProductListUiState
 import com.tokopedia.mvc.presentation.product.variant.dialog.DeleteConfirmationDialog
 import com.tokopedia.mvc.presentation.product.variant.review.ReviewVariantBottomSheet
+import com.tokopedia.mvc.presentation.share.LinkerDataGenerator
+import com.tokopedia.mvc.presentation.share.SharingComponentInstanceBuilder
 import com.tokopedia.mvc.util.constant.BundleConstant
+import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
+import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
+import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.flow.collect
+import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 
 class ProductListFragment : BaseDaggerFragment() {
 
@@ -49,9 +70,10 @@ class ProductListFragment : BaseDaggerFragment() {
         private const val ONE_PRODUCT = 1
 
         @JvmStatic
-        fun newInstance(selectedProducts: List<SelectedProduct>): ProductListFragment {
+        fun newInstance(pageMode: PageMode, selectedProducts: List<SelectedProduct>): ProductListFragment {
             return ProductListFragment().apply {
                 arguments = Bundle().apply {
+                    putParcelable(BundleConstant.BUNDLE_KEY_PAGE_MODE, pageMode)
                     putParcelableArrayList(
                         BundleConstant.BUNDLE_KEY_SELECTED_PRODUCT_IDS,
                         ArrayList(selectedProducts)
@@ -61,6 +83,7 @@ class ProductListFragment : BaseDaggerFragment() {
         }
     }
 
+    private val pageMode by lazy { arguments?.getParcelable(BundleConstant.BUNDLE_KEY_PAGE_MODE) as? PageMode }
     private val selectedParentProducts by lazy { arguments?.getParcelableArrayList<SelectedProduct>(BundleConstant.BUNDLE_KEY_SELECTED_PRODUCT_IDS) }
     private var binding by autoClearedNullable<SmvcFragmentProductListBinding>()
 
@@ -70,6 +93,8 @@ class ProductListFragment : BaseDaggerFragment() {
             .build()
     }
 
+    @Inject
+    lateinit var shareComponentInstanceBuilder: SharingComponentInstanceBuilder
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -79,7 +104,7 @@ class ProductListFragment : BaseDaggerFragment() {
 
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(ProductListViewModel::class.java) }
-
+    private var shareComponentBottomSheet : UniversalShareBottomSheet? = null
 
     override fun getScreenName(): String = AddProductFragment::class.java.canonicalName.orEmpty()
 
@@ -213,8 +238,11 @@ class ProductListFragment : BaseDaggerFragment() {
             }
 
             is ProductListEffect.ConfirmAddProduct -> {
-                activity?.finish()
-                println()
+                if (pageMode == PageMode.CREATE) {
+                    //TODO: Navigate to voucher preview page
+                } else {
+                    sendResult(effect.selectedProducts)
+                }
             }
         }
     }
@@ -328,6 +356,112 @@ class ProductListFragment : BaseDaggerFragment() {
 
     private fun CompoundButton.isClickTriggeredByUserInteraction() : Boolean {
         return isPressed
+    }
+
+    private fun displayShareBottomSheet(
+        selectedProducts: List<Product>,
+        selectedProductImageUrls: List<String>,
+        shop: ShopData
+    ) {
+        val voucherStartDate = Date()
+        val voucherEndDate = Date()
+
+        val endDate = voucherEndDate.formatTo(DateConstant.DATE_YEAR_PRECISION)
+        val endHour = voucherEndDate.formatTo(DateConstant.TIME_MINUTE_PRECISION)
+
+        val formattedShopName = MethodChecker.fromHtml(shop.name).toString()
+        val title = String.format(
+            getString(R.string.smvc_placeholder_share_component_outgoing_title),
+            formattedShopName
+        )
+        val description = String.format(
+            getString(R.string.smvc_placeholder_share_component_text_description),
+            formattedShopName,
+            endDate,
+            endHour
+        )
+
+        val imageGeneratorParam = SharingComponentInstanceBuilder.Param(
+            voucherId = 1239,
+            isPublic = true,
+            voucherCode = "UNVRCUAN",
+            voucherStartTime = voucherStartDate,
+            voucherEndTime = voucherEndDate,
+            promoType = PromoType.CASHBACK,
+            benefitType = BenefitType.NOMINAL,
+            shopLogo = shop.logo,
+            shopName = formattedShopName,
+            discountAmount = 500_000,
+            discountAmountMax = 1_000_000,
+            productImageUrls = selectedProductImageUrls
+        )
+
+        shareComponentBottomSheet = shareComponentInstanceBuilder.build(
+            imageGeneratorParam,
+            title,
+            onShareOptionsClicked = { shareModel ->
+                handleShareOptionSelection(
+                    imageGeneratorParam.voucherId,
+                    shareModel,
+                    title,
+                    description,
+                    shop.domain
+                )
+            },
+            onCloseOptionClicked = {
+
+            })
+
+        shareComponentBottomSheet?.show(childFragmentManager, shareComponentBottomSheet?.tag)
+    }
+
+    private fun handleShareOptionSelection(
+        voucherId: Long,
+        shareModel: ShareModel,
+        title: String,
+        description: String,
+        shopDomain: String
+    ) {
+        val shareCallback = object : ShareCallback {
+            override fun urlCreated(linkerShareData: LinkerShareResult?) {
+                val wording = "$description ${linkerShareData?.shareUri.orEmpty()}"
+                SharingUtil.executeShareIntent(
+                    shareModel,
+                    linkerShareData,
+                    activity,
+                    view,
+                    wording
+                )
+                shareComponentBottomSheet?.dismiss()
+            }
+
+            override fun onError(linkerError: LinkerError?) {}
+        }
+
+        val linkerDataGenerator = LinkerDataGenerator()
+        val outgoingDescription = getString(R.string.smvc_share_component_outgoing_text_description)
+        val linkerShareData = linkerDataGenerator.generate(
+            voucherId,
+            userSession.shopId,
+            shopDomain,
+            shareModel,
+            title,
+            outgoingDescription
+        )
+        LinkerManager.getInstance().executeShareRequest(
+            LinkerUtils.createShareRequest(
+                Int.ZERO,
+                linkerShareData,
+                shareCallback
+            )
+        )
+    }
+
+    private fun sendResult(selectedProducts: List<SelectedProduct>) {
+        val returnIntent = Intent()
+        returnIntent.putParcelableArrayListExtra(BundleConstant.BUNDLE_KEY_SELECTED_PRODUCTS, ArrayList(selectedProducts))
+        activity?.setResult(Activity.RESULT_OK, returnIntent)
+        activity?.finish()
     }
 }
 

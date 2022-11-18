@@ -1,6 +1,10 @@
 package com.tokopedia.mvc.domain.entity.enums
 
-enum class BenefitType {
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
+enum class BenefitType : Parcelable{
     NOMINAL,
     PERCENTAGE
 }

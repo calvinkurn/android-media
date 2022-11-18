@@ -10,9 +10,9 @@ import com.tokopedia.mvc.domain.entity.ProductCategoryOption
 import com.tokopedia.mvc.domain.entity.ProductSortOptions
 import com.tokopedia.mvc.domain.entity.SelectedProduct
 import com.tokopedia.mvc.domain.entity.ShopShowcase
+import com.tokopedia.mvc.domain.entity.VoucherConfiguration
 import com.tokopedia.mvc.domain.entity.VoucherValidationResult
 import com.tokopedia.mvc.domain.entity.Warehouse
-import com.tokopedia.mvc.domain.entity.enums.BenefitType
 import com.tokopedia.mvc.domain.entity.enums.PromoType
 import com.tokopedia.mvc.domain.entity.enums.VoucherAction
 import com.tokopedia.mvc.domain.entity.enums.WarehouseType
@@ -20,7 +20,6 @@ import com.tokopedia.mvc.domain.usecase.GetInitiateVoucherPageUseCase
 import com.tokopedia.mvc.domain.usecase.GetShopWarehouseLocationUseCase
 import com.tokopedia.mvc.domain.usecase.ProductListMetaUseCase
 import com.tokopedia.mvc.domain.usecase.ProductListUseCase
-import com.tokopedia.mvc.domain.usecase.ShopBasicDataUseCase
 import com.tokopedia.mvc.domain.usecase.ShopShowcasesByShopIDUseCase
 import com.tokopedia.mvc.domain.usecase.VoucherValidationPartialUseCase
 import com.tokopedia.mvc.presentation.product.add.uimodel.AddProductEffect
@@ -44,8 +43,7 @@ class AddProductViewModel @Inject constructor(
     private val getProductListMetaUseCase: ProductListMetaUseCase,
     private val getProductsUseCase: ProductListUseCase,
     private val getInitiateVoucherPageUseCase: GetInitiateVoucherPageUseCase,
-    private val voucherValidationPartialUseCase: VoucherValidationPartialUseCase,
-    private val shopBasicDataUseCase: ShopBasicDataUseCase
+    private val voucherValidationPartialUseCase: VoucherValidationPartialUseCase
 ) : BaseViewModel(dispatchers.main) {
 
     private val _uiState = MutableStateFlow(AddProductUiState())
@@ -60,6 +58,7 @@ class AddProductViewModel @Inject constructor(
     fun processEvent(event: AddProductEvent) {
         when(event) {
             is AddProductEvent.FetchRequiredData -> {
+                _uiState.update { it.copy(voucherConfiguration = event.voucherConfiguration) }
                 getProductsAndProductsMetadata(event.action, event.promoType)
                 getShopShowcases()
             }
@@ -85,7 +84,10 @@ class AddProductViewModel @Inject constructor(
         }
     }
 
-    private fun getProductsAndProductsMetadata(action: VoucherAction, promoType: PromoType, ) {
+    private fun getProductsAndProductsMetadata(
+        action: VoucherAction,
+        promoType: PromoType
+    ) {
         launchCatchError(
             dispatchers.io,
             block = {
@@ -141,7 +143,9 @@ class AddProductViewModel @Inject constructor(
                 val nonPreorderParentProducts = productsResponse.products.filter { it.preorder.durationDays.isZero() }
                 val currentPageParentProductsIds = nonPreorderParentProducts.map { product -> product.id }
 
-                val validatedParentProducts = validateProducts(currentPageParentProductsIds)
+                val voucherConfiguration = currentState.voucherConfiguration
+
+                val validatedParentProducts = validateProducts(voucherConfiguration, currentPageParentProductsIds)
                 val updatedParentProducts = combineParentProductDataWithVariant(
                     nonPreorderParentProducts,
                     currentState.selectedProductsIds,
@@ -169,15 +173,18 @@ class AddProductViewModel @Inject constructor(
 
     }
 
-    private suspend fun validateProducts(currentPageParentProductIds: List<Long>): List<VoucherValidationResult.ValidationProduct> {
+    private suspend fun validateProducts(
+        voucherConfiguration: VoucherConfiguration,
+        currentPageParentProductIds: List<Long>
+    ): List<VoucherValidationResult.ValidationProduct> {
         val voucherValidationParam = VoucherValidationPartialUseCase.Param(
-            benefitIdr = 25_000,
-            benefitMax = 500_000,
-            benefitPercent = 0,
-            BenefitType.NOMINAL,
-            PromoType.FREE_SHIPPING,
-            isLockToProduct = true,
-            minPurchase = 50_000,
+            benefitIdr = voucherConfiguration.benefitIdr,
+            benefitMax = voucherConfiguration.benefitMax,
+            benefitPercent = voucherConfiguration.benefitPercent,
+            benefitType = voucherConfiguration.benefitType,
+            promoType = voucherConfiguration.promoType,
+            isVoucherProduct = voucherConfiguration.isVoucherProduct,
+            minPurchase = voucherConfiguration.minPurchase,
             productIds = currentPageParentProductIds
         )
 
@@ -498,37 +505,23 @@ class AddProductViewModel @Inject constructor(
 
 
     private fun handleConfirmAddProduct() {
-        launchCatchError(
-            dispatchers.io,
-            block = {
-                val response = shopBasicDataUseCase.execute()
+        launch(dispatchers.computation) {
+            val selectedProducts = currentState.products
+                .filter { it.isSelected }
+                .map { product ->
+                    val parentProductId = product.id
+                    val variantProductIds = product.selectedVariantsIds.toList()
+                    SelectedProduct(parentProductId, variantProductIds)
+                }
 
-                val selectedProducts = currentState.products.filter { it.isSelected }
-                    .map { product ->
-                        val parentProductId = product.id
-                        val variantProductIds = product.selectedVariantsIds.toList()
-                        SelectedProduct(parentProductId, variantProductIds)
-                    }
-
-                val topSellingProductImageUrls = currentState.products
-                    .filter { it.isSelected }
-                    .sortedByDescending { it.txStats.sold }
-                    .map { it.picture }
+            val topSellingProductImageUrls = currentState.products
+                .filter { it.isSelected }
+                .sortedByDescending { it.txStats.sold }
+                .map { it.picture }
 
 
-                _uiEffect.tryEmit(
-                    AddProductEffect.ConfirmAddProduct(
-                        selectedProducts,
-                        topSellingProductImageUrls,
-                        response
-                    )
-                )
-
-            },
-            onError = { error ->
-                _uiState.update { it.copy(error = error) }
-            }
-        )
+            _uiEffect.tryEmit(AddProductEffect.ConfirmAddProduct(selectedProducts, topSellingProductImageUrls))
+        }
     }
 
 }

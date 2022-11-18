@@ -4,8 +4,8 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-enum class PromoType : Parcelable {
-    FREE_SHIPPING,
-    CASHBACK,
-    DISCOUNT
+enum class PageMode : Parcelable {
+    CREATE,
+    EDIT,
+    DUPLICATE
 }

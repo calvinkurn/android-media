@@ -4,13 +4,13 @@ import com.tokopedia.mvc.domain.entity.Product
 import com.tokopedia.mvc.domain.entity.ProductCategoryOption
 import com.tokopedia.mvc.domain.entity.ProductSortOptions
 import com.tokopedia.mvc.domain.entity.ShopShowcase
+import com.tokopedia.mvc.domain.entity.VoucherConfiguration
 import com.tokopedia.mvc.domain.entity.Warehouse
 import com.tokopedia.mvc.domain.entity.enums.PromoType
 import com.tokopedia.mvc.domain.entity.enums.VoucherAction
-import com.tokopedia.stability.patch.annotaion.Add
 
 sealed class AddProductEvent {
-    data class FetchRequiredData(val action: VoucherAction, val promoType: PromoType) : AddProductEvent()
+    data class FetchRequiredData(val action: VoucherAction, val promoType: PromoType, val voucherConfiguration: VoucherConfiguration) : AddProductEvent()
     data class LoadPage(val page: Int) : AddProductEvent()
     object ClearSearchBar : AddProductEvent()
     object ClearFilter : AddProductEvent()

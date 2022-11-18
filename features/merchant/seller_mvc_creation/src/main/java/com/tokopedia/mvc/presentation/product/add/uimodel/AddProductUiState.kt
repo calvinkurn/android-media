@@ -4,8 +4,11 @@ import com.tokopedia.mvc.domain.entity.Product
 import com.tokopedia.mvc.domain.entity.ProductCategoryOption
 import com.tokopedia.mvc.domain.entity.ProductSortOptions
 import com.tokopedia.mvc.domain.entity.ShopShowcase
+import com.tokopedia.mvc.domain.entity.VoucherConfiguration
 import com.tokopedia.mvc.domain.entity.VoucherCreationMetadata
 import com.tokopedia.mvc.domain.entity.Warehouse
+import com.tokopedia.mvc.domain.entity.enums.BenefitType
+import com.tokopedia.mvc.domain.entity.enums.PromoType
 import com.tokopedia.mvc.domain.entity.enums.WarehouseType
 import com.tokopedia.mvc.util.constant.NumberConstant
 
@@ -26,5 +29,15 @@ data class AddProductUiState(
     val selectedWarehouseLocation: Warehouse = Warehouse(0, "", WarehouseType.DEFAULT_WAREHOUSE_LOCATION),
     val selectedShopShowcase: List<ShopShowcase> = emptyList(),
     val selectedCategories: List<ProductCategoryOption> = emptyList(),
+    val voucherConfiguration: VoucherConfiguration = VoucherConfiguration(
+        benefitIdr = 0,
+        benefitMax = 0,
+        benefitPercent = 0,
+        benefitType = BenefitType.NOMINAL,
+        promoType = PromoType.CASHBACK,
+        minPurchase = 0,
+        productIds = emptyList(),
+        isVoucherProduct = true
+    ),
     val error: Throwable? = null
 )
