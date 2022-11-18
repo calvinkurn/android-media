@@ -84,5 +84,7 @@
     <string name="shop_page_product_bundle_count">1 Barang</string>
     <string name="product_bundle_action_button_text">Lihat Paket</string>
     <string name="product_bundle_bundle_sold">Terjual %s</string>
+    <string name="bundlewidget_other_product_text">produk lainnya</string>
+    <string name="bundlewidget_other_product_count_format">+%d</string>
 
 </resources>
