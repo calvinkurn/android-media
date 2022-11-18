@@ -25,6 +25,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.user.session.util.EncoderDecoder
 import com.tokopedia.usercomponents.R
 import com.tokopedia.usercomponents.databinding.LayoutWidgetStickyLoginBinding
 import com.tokopedia.usercomponents.stickylogin.analytics.StickyLoginReminderTracker
@@ -50,7 +51,6 @@ import com.tokopedia.usercomponents.stickylogin.di.DaggerStickyLoginComponent
 import com.tokopedia.usercomponents.stickylogin.di.module.StickyLoginModule
 import com.tokopedia.usercomponents.stickylogin.domain.data.StickyLoginTickerDataModel
 import com.tokopedia.usercomponents.stickylogin.view.viewModel.StickyLoginViewModel
-import com.tokopedia.user.session.util.EncoderDecoder
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import kotlinx.coroutines.*
 import java.util.concurrent.TimeUnit
@@ -176,7 +176,7 @@ class StickyLoginView : FrameLayout, CoroutineScope, DarkModeListener {
     }
 
     private fun initObserver(lifecycleOwner: LifecycleOwner) {
-        viewModel?.stickyContent?.observe(lifecycleOwner, {
+        viewModel?.stickyContent?.observe(lifecycleOwner) {
             when (it) {
                 is Success -> {
                     if (it.data.tickerDataModels.isEmpty()) {
@@ -197,7 +197,7 @@ class StickyLoginView : FrameLayout, CoroutineScope, DarkModeListener {
                     hide()
                 }
             }
-        })
+        }
     }
 
     fun setStickyAction(stickyLoginAction: StickyLoginAction) {

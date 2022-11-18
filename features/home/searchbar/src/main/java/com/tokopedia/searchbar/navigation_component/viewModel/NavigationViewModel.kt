@@ -10,13 +10,11 @@ import com.tokopedia.searchbar.navigation_component.datamodel.TopNavNotification
 import com.tokopedia.searchbar.navigation_component.domain.GetNotificationUseCase
 import com.tokopedia.searchbar.navigation_component.icons.IconConfig
 import com.tokopedia.searchbar.navigation_component.icons.IconList
-import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Job
 import javax.inject.Inject
 
 class NavigationViewModel @Inject constructor(
         dispatcher: CoroutineDispatchers,
-        val userSession: UserSessionInterface,
         val getNotificationUseCase: GetNotificationUseCase
 ) : BaseViewModel(dispatcher.io) {
     private var getNotificationJob: Job? = null

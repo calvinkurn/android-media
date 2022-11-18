@@ -1,6 +1,7 @@
 apply plugin: 'com.android.dynamic-feature'
 apply from: "$rootProject.projectDir/buildconfig/module.gradle"
 apply plugin: 'io.hansel.preprocessor.feature'
+apply plugin: 'robust'
 
 buildscript {
     repositories {
@@ -28,6 +29,12 @@ android {
         targetSdkVersion rootProject.ext.targetSdkVersion
     }
 
+    buildTypes {
+        release {
+            debuggable = rootProject.hasProperty('enableDebug') && rootProject.property("enableDebug") == "true"
+        }
+    }
+
     // Specifies 4 flavor dimensions.
     flavorDimensions "tier", "client"
 
@@ -50,5 +57,4 @@ android {
 dependencies {
     implementation project(rootProject.ext.app.customerapp)
     implementation projectOrAar(rootProject.ext.features.review)
-    implementation projectOrAar(rootProject.ext.features.productServiceWidget)
 }

@@ -1,10 +1,12 @@
 package com.tokopedia.seller.menu.domain.query
 
-internal object SellerMenuNotification {
+import com.tokopedia.seller.menu.common.domain.entity.Param
 
+internal object SellerMenuNotification {
+    private const val PARAM_INPUT = "input"
     val QUERY = """
-        query SellerMenuNotification() {
-            notifications {
+        query SellerMenuNotification($$PARAM_INPUT: NotificationRequest) {
+            notifications($PARAM_INPUT: $$PARAM_INPUT){
                 sellerOrderStatus {
                     newOrder
      	            readyToShip
@@ -19,4 +21,10 @@ internal object SellerMenuNotification {
             }
         }
     """.trimIndent()
+
+    fun getNotificationParam(shopId: String): Map<String, Any> {
+        return mapOf(
+            PARAM_INPUT to Param(shopId)
+        )
+    }
 }

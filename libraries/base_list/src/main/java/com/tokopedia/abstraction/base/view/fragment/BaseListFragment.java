@@ -93,6 +93,7 @@ public abstract class BaseListFragment<T extends Visitable, F extends AdapterTyp
     protected SwipeRefreshLayout swipeToRefresh;
     protected EndlessRecyclerViewScrollListener endlessRecyclerViewScrollListener;
     private RecyclerView recyclerView;
+    private Snackbar toasterSnackbar;
 
     protected boolean isLoadingInitialData;
 
@@ -432,14 +433,25 @@ public abstract class BaseListFragment<T extends Visitable, F extends AdapterTyp
             return;
         }
         String message = getMessageFromThrowable(getActivity(), throwable);
-        Toaster.INSTANCE.make(getView(), message, Snackbar.LENGTH_INDEFINITE, Toaster.TYPE_ERROR,
-                getString(R.string.retry_label), listener);
+        if (getView() != null) {
+            toasterSnackbar = Toaster.build(getView(), message, Snackbar.LENGTH_INDEFINITE, Toaster.TYPE_ERROR,
+                    getString(R.string.base_list_retry_label), listener);
+            toasterSnackbar.show();
+        }
     }
 
     protected void hideSnackBarRetry() {
         try{
-            Toaster.INSTANCE.getSnackBar().dismiss();
+            if (toasterSnackbar != null) {
+                toasterSnackbar.dismiss();
+            }
         }catch (Exception e){}
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        toasterSnackbar = null;
     }
 
     protected String getMessageFromThrowable(Context context, Throwable t){

@@ -20,7 +20,6 @@ import com.tokopedia.shop.common.domain.interactor.model.favoriteshop.FollowShop
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.wishlist.common.listener.WishListActionListener
 import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
 import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import io.mockk.*
@@ -448,74 +447,6 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
     }
     //endregion
 
-    //region wishlist or ingatkan saya clicked
-    @Test
-    fun `on success clicked ingatkan saya`() {
-        //fulfill cart redirection data
-        `render initial variant with given child id not buyable and hit gql tokonow`()
-
-        val productId = "2147818570"
-        every { (addWishListUseCase.createObservable(any(), any(), any())) }.answers {
-            val listener = args[2] as WishListActionListener
-            listener.onSuccessAddWishlist(productId)
-        }
-
-        viewModel.addWishlist(productId, "")
-
-        val updateResultData = viewModel.getActivityResultData()
-        Assert.assertEquals(updateResultData.shouldRefreshPreviousPage, true)
-
-        assertButton(false,
-                "check_wishlist",
-                "secondary_grays",
-                "Cek wishlist kamu ya")
-        Assert.assertTrue(viewModel.addWishlistResult.value is Success)
-    }
-
-    @Test
-    fun `on success clicked ingatkan saya with empty data`() {
-        decideFailValueHitGqlAggregator()
-
-        val productId = "2147818570"
-        every { (addWishListUseCase.createObservable(any(), any(), any())) }.answers {
-            val listener = args[2] as WishListActionListener
-            listener.onSuccessAddWishlist(productId)
-        }
-
-        viewModel.addWishlist(productId, "")
-
-        val updateResultData = viewModel.getActivityResultData()
-        Assert.assertEquals(updateResultData.shouldRefreshPreviousPage, true)
-
-        assertButton(false, null, null, null)
-        Assert.assertTrue(viewModel.addWishlistResult.value is Success)
-    }
-
-    @Test
-    fun `on fail clicked ingatkan saya`() {
-        //fulfill cart redirection data
-        `render initial variant with given child id not buyable and hit gql tokonow`()
-
-        val productId = "2147818570"
-        every { (addWishListUseCase.createObservable(any(), any(), any())) }.answers {
-            val listener = args[2] as WishListActionListener
-            listener.onErrorAddWishList("gagal", productId)
-        }
-
-        viewModel.addWishlist(productId, "")
-
-        val updateResultData = viewModel.getActivityResultData()
-        Assert.assertEquals(updateResultData.shouldRefreshPreviousPage, false)
-
-        assertButton(false,
-                "remind_me",
-                "secondary_green",
-                "Ingatkan Saya")
-
-        Assert.assertTrue(viewModel.addWishlistResult.value is Fail)
-    }
-    //endregion
-
     //region atc
     @Test
     fun `on success delete cart`() {
@@ -646,6 +577,21 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
     }
 
     @Test
+    fun `on atc fail cause by throw`() {
+        `render initial variant with given child id and hit gql tokonow campaign hide gimmick`()
+        val actionButtonAtc = 2
+
+        coEvery {
+            addToCartUseCase.createObservable(any()).toBlocking().single()
+        } throws Throwable()
+
+        viewModel.hitAtc(actionButtonAtc, 1234, "", "321", 0.0, "", "", true)
+
+        Assert.assertTrue(viewModel.addToCartLiveData.value is Fail)
+        assertButton(expectedIsBuyable = true)
+    }
+
+    @Test
     fun `on success update atc tokonow`() = runBlocking {
         decideSuccessValueHitGqlAggregator("2147818576", true, true)
         val actionButtonAtc = 2
@@ -684,6 +630,21 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
         coVerify {
             updateCartUseCase.setParams(capture(updateCartRequest), any())
         }
+
+        Assert.assertTrue(viewModel.updateCartLiveData.value is Fail)
+        assertButton(expectedCartText = "Simpan Perubahan", expectedIsBuyable = true)
+    }
+
+    @Test
+    fun `on fail update atc by throwable`() = runBlocking {
+        decideSuccessValueHitGqlAggregator("2147818576", true, true)
+        val actionButtonAtc = 2
+
+        coEvery {
+            updateCartUseCase.executeOnBackground()
+        } throws Throwable()
+
+        viewModel.hitAtc(actionButtonAtc, 1234, "", "321", 0.0, "", "", true)
 
         Assert.assertTrue(viewModel.updateCartLiveData.value is Fail)
         assertButton(expectedCartText = "Simpan Perubahan", expectedIsBuyable = true)

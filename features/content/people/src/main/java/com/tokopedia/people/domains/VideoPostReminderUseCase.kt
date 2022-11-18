@@ -1,50 +1,57 @@
 package com.tokopedia.people.domains
 
 import com.tokopedia.gql_query_annotation.GqlQuery
+import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.model.CacheType
+import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.people.model.VideoPostReimderModel
-import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
-import com.tokopedia.graphql.data.model.GraphqlRequest
 import javax.inject.Inject
 
-const val CHANNEL_REMINDER = """
-    mutation Play_playToggleChannelReminder(\${'$'}channelID: String, \${'$'}setActive: Boolean) {
-                playToggleChannelReminder(input: {channelID: \${'$'}channelID, setActive: \${'$'}setActive}) {
+@GqlQuery(VideoPostReminderUseCase.QUERY_NAME, VideoPostReminderUseCase.QUERY)
+class VideoPostReminderUseCase @Inject constructor(
+    graphqlRepository: GraphqlRepository,
+) : GraphqlUseCase<VideoPostReimderModel>(graphqlRepository) {
+
+    init {
+        setGraphqlQuery(VideoPostReminderUseCaseQuery())
+        setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
+        setTypeClass(VideoPostReimderModel::class.java)
+    }
+
+    suspend fun executeOnBackground(
+        channelId: String,
+        isActive: Boolean,
+    ): VideoPostReimderModel {
+        val request = mapOf(
+            KEY_CHANNEL_ID to channelId,
+            KEY_SET_ACTIVE to isActive,
+        )
+        setRequestParams(request)
+
+        return executeOnBackground()
+    }
+
+    companion object {
+        private const val KEY_CHANNEL_ID = "channelID"
+        private const val KEY_SET_ACTIVE = "setActive"
+
+        const val QUERY_NAME = "VideoPostReminderUseCaseQuery"
+        const val QUERY = """
+            mutation playToggleChannelReminder(
+                ${"$$KEY_CHANNEL_ID"}: String, 
+                ${"$$KEY_SET_ACTIVE"}: Boolean
+            ) {
+                playToggleChannelReminder(input: {
+                    $KEY_CHANNEL_ID: ${"$$KEY_CHANNEL_ID"}, 
+                    $KEY_SET_ACTIVE: ${"$$KEY_SET_ACTIVE"}
+                }) {
                   header {
                     message
                     status
                   }
                 }
-                }
-"""
-
-@GqlQuery("ChannelReminder", CHANNEL_REMINDER)
-class VideoPostReminderUseCase @Inject constructor(val useCase: MultiRequestGraphqlUseCase) {
-
-    suspend fun updateReminder(channelID: String, isActive: Boolean): VideoPostReimderModel {
-        val request = GraphqlRequest(
-            ChannelReminder.GQL_QUERY,
-            VideoPostReimderModel::class.java,
-            getRequestParams(channelID,isActive)
-        )
-
-        useCase.clearRequest()
-        useCase.addRequest(request)
-        val response = useCase.executeOnBackground()
-        return response.getData(VideoPostReimderModel::class.java)
-    }
-
-    private fun getRequestParams(
-        followingUserIdEnc: String,
-        isActive: Boolean
-    ): MutableMap<String, Any?> {
-        val requestMap = mutableMapOf<String, Any?>()
-        requestMap[KEY_CHANNEL_ID] = followingUserIdEnc
-        requestMap[KEY_STATUS] = isActive
-        return requestMap
-    }
-
-    companion object {
-        const val KEY_CHANNEL_ID = "channelID"
-        const val KEY_STATUS = "setActive"
+            }
+        """
     }
 }

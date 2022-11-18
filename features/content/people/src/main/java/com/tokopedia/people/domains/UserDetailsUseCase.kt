@@ -1,16 +1,42 @@
 package com.tokopedia.people.domains
 
 import com.tokopedia.gql_query_annotation.GqlQuery
-import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
-import com.tokopedia.graphql.data.model.GraphqlRequest
-import com.tokopedia.graphql.data.model.GraphqlResponse
+import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
+import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.graphql.data.model.CacheType
+import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.people.model.ProfileHeaderBase
-import com.tokopedia.people.model.UserProfileIsFollow
 import javax.inject.Inject
 
-const val USER_DETAILS = """
-    query ProfileHeader(\${'$'}userName: String!) {
-                feedXProfileHeader(username:\${'$'}userName) {
+@GqlQuery(UserDetailsUseCase.QUERY_NAME, UserDetailsUseCase.QUERY)
+class UserDetailsUseCase @Inject constructor(
+    graphqlRepository: GraphqlRepository,
+) : GraphqlUseCase<ProfileHeaderBase>(graphqlRepository) {
+
+    init {
+        setGraphqlQuery(UserDetailsUseCaseQuery())
+        setCacheStrategy(GraphqlCacheStrategy.Builder(CacheType.ALWAYS_CLOUD).build())
+        setTypeClass(ProfileHeaderBase::class.java)
+    }
+
+    suspend fun executeOnBackground(username: String): ProfileHeaderBase {
+        val request = mapOf(
+            KEY_USERNAME to username,
+        )
+        setRequestParams(request)
+
+        return executeOnBackground()
+    }
+
+    companion object {
+        private const val KEY_USERNAME = "username"
+
+        const val QUERY_NAME = "UserDetailsUseCaseQuery"
+        const val QUERY = """
+            query ProfileHeader(${"$$KEY_USERNAME"}: String!) {
+                feedXProfileHeader(
+                    $KEY_USERNAME: ${"$$KEY_USERNAME"}
+                ) {
                   profile {
                     userID
                     encryptedUserID
@@ -43,41 +69,7 @@ const val USER_DETAILS = """
                   hasAcceptTnC
                   shouldSeoIndex
                 }
-                }
-"""
-
-@GqlQuery("UserDetails", USER_DETAILS)
-class UserDetailsUseCase @Inject constructor(val useCase: MultiRequestGraphqlUseCase) {
-
-    suspend fun getUserProfileDetail(userName: String, profileId: MutableList<String>): GraphqlResponse {
-        val request = GraphqlRequest(
-            UserDetails.GQL_QUERY,
-            ProfileHeaderBase::class.java,
-            getRequestParams(userName)
-        )
-
-        useCase.clearRequest()
-        useCase.addRequest(request)
-        return useCase.executeOnBackground()
-    }
-
-    private fun getRequestParams(userName: String): MutableMap<String, Any?> {
-        val requestMap = mutableMapOf<String, Any?>()
-        requestMap[KEY_USERNAME] = userName
-        return requestMap
-    }
-
-    private fun getRequestParams(profileIds: MutableList<String>): MutableMap<String, Any?> {
-        val requestMap = mutableMapOf<String, Any?>()
-        requestMap[ProfileTheyFollowedUseCase.KEY_USERIDS] = profileIds
-        return requestMap
-    }
-
-    companion object {
-        const val KEY_USERNAME = "userName"
-    }
-
-    private fun getQuery(): String {
-        return ""
+            }
+        """
     }
 }

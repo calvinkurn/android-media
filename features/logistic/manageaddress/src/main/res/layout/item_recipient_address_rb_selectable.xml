@@ -6,8 +6,7 @@
     android:layout_height="wrap_content"
     android:orientation="vertical">
 
-    <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
+    <androidx.cardview.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="16dp"
@@ -20,7 +19,7 @@
             android:id="@+id/rl_shipment_recipient_address_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="@color/Unify_N0"
+            android:background="@color/Unify_Background"
             android:foreground="?selectableItemBackground">
 
             <LinearLayout
@@ -60,7 +59,7 @@
                 android:layout_marginBottom="16dp"
                 android:layout_toStartOf="@+id/ll_radio_button_container"
                 android:layout_toLeftOf="@+id/ll_radio_button_container"
-                android:background="@color/Unify_N0">
+                android:background="@color/Unify_Background">
 
                 <include
                     android:id="@+id/layout_address_normal"
@@ -86,7 +85,7 @@
                 android:padding="8dp"
                 android:text="@string/change_address"
                 android:textColor="@color/Unify_N700_32"
-                android:textSize="@dimen/sp_12"
+                android:textSize="12sp"
                 app:typographyType="body_3" />
 
 

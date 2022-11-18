@@ -30,6 +30,7 @@ class GetProductStockReminderUseCase @Inject constructor(
                 productID
                 stockAlertCount
                 stockAlertStatus
+                isBelowStockAlert
                 stock
                 combination
               }

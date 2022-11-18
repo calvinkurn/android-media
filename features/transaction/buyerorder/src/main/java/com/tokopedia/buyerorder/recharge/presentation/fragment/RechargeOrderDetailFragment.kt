@@ -18,7 +18,7 @@ import com.tokopedia.buyerorder.common.util.BuyerUtils
 import com.tokopedia.buyerorder.databinding.FragmentRechargeOrderDetailBinding
 import com.tokopedia.buyerorder.detail.analytics.OrderListAnalyticsUtils
 import com.tokopedia.buyerorder.detail.data.OrderCategory
-import com.tokopedia.buyerorder.detail.view.activity.SeeInvoiceActivity
+import com.tokopedia.buyerorder.detail.revamp.activity.SeeInvoiceActivity
 import com.tokopedia.buyerorder.recharge.data.request.RechargeOrderDetailRequest
 import com.tokopedia.buyerorder.recharge.di.RechargeOrderDetailComponent
 import com.tokopedia.buyerorder.recharge.presentation.adapter.RechargeOrderDetailAdapter
@@ -480,10 +480,24 @@ class RechargeOrderDetailFragment : BaseDaggerFragment(),
             dialog.setPrimaryCTAText(getString(R.string.dialog_void_emoney_primary_cta_label))
             dialog.setPrimaryCTAClickListener {
                 rechargeViewModel.voidEmoneyData(orderId)
+                rechargeOrderDetailAnalytics.eventVoidPopupClickBatalkan(
+                    OrderListAnalyticsUtils.getCategoryName(rechargeViewModel.getOrderDetailResultData()),
+                    OrderListAnalyticsUtils.getProductName(rechargeViewModel.getOrderDetailResultData())
+                )
             }
             dialog.setSecondaryCTAText(getString(R.string.dialog_void_emoney_secondary_cta_label))
             dialog.setSecondaryCTAClickListener {
                 dialog.dismiss()
+                rechargeOrderDetailAnalytics.eventVoidPopupClickKembali(
+                    OrderListAnalyticsUtils.getCategoryName(rechargeViewModel.getOrderDetailResultData()),
+                    OrderListAnalyticsUtils.getProductName(rechargeViewModel.getOrderDetailResultData())
+                )
+            }
+            dialog.setOnShowListener {
+                rechargeOrderDetailAnalytics.eventViewVoidPopup(
+                    OrderListAnalyticsUtils.getCategoryName(rechargeViewModel.getOrderDetailResultData()),
+                    OrderListAnalyticsUtils.getProductName(rechargeViewModel.getOrderDetailResultData())
+                )
             }
             dialog.setOverlayClose(false)
             dialog.show()

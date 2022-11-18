@@ -39,13 +39,13 @@ data class HotelCart (
                 val discount: String = "",
                 @SerializedName("discountAmount")
                 @Expose
-                val discountAmount: Int = 0,
+                val discountAmount: Long = 0L,
                 @SerializedName("cashback")
                 @Expose
                 val cashback: String = "",
                 @SerializedName("cashbackAmount")
                 @Expose
-                val cashbackAmount: Int = 0,
+                val cashbackAmount: Long = 0L,
                 @SerializedName("message")
                 @Expose
                 val message: String = "",

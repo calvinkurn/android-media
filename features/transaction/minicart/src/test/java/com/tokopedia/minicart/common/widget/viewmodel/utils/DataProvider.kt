@@ -1,6 +1,8 @@
 package com.tokopedia.minicart.common.widget.viewmodel.utils
 
 import com.google.gson.Gson
+import com.tokopedia.atc_common.data.model.request.ProductDetail
+import com.tokopedia.atc_common.data.model.response.AddToCartBundleResponse
 import com.tokopedia.cartcommon.data.response.deletecart.DeleteCartGqlResponse
 import com.tokopedia.cartcommon.data.response.deletecart.RemoveFromCartData
 import com.tokopedia.cartcommon.data.response.undodeletecart.UndoDeleteCartDataResponse
@@ -9,10 +11,13 @@ import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartGqlResponse
 import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
 import com.tokopedia.minicart.cartlist.MiniCartListUiModelMapper
 import com.tokopedia.minicart.cartlist.uimodel.MiniCartListUiModel
+import com.tokopedia.minicart.cartlist.uimodel.MiniCartProductBundleRecomUiModel
 import com.tokopedia.minicart.common.data.response.minicartlist.MiniCartData
 import com.tokopedia.minicart.common.data.response.minicartlist.MiniCartGqlResponse
+import com.tokopedia.minicart.common.domain.data.ProductBundleRecomResponse
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.mapper.MiniCartSimplifiedMapper
+import com.tokopedia.shop.common.widget.bundle.model.ShopHomeBundleProductUiModel
 
 object DataProvider {
 
@@ -86,6 +91,11 @@ object DataProvider {
         return miniCartSimplifiedMapper.mapMiniCartSimplifiedData(json.miniCart)
     }
 
+    fun provideGetMiniCartSimplifiedBundleSuccessAvailableAndUnavailable(): MiniCartSimplifiedData {
+        val json = gson.fromJson(fileUtil.getJsonFromAsset("assets/get_mini_cart_simplified_bundle_success_available_and_unavailable"), MiniCartGqlResponse::class.java)
+        return miniCartSimplifiedMapper.mapMiniCartSimplifiedData(json.miniCart)
+    }
+
     fun provideGetMiniCartSimplifiedSuccessEmptyData(): MiniCartSimplifiedData {
         val json = gson.fromJson(fileUtil.getJsonFromAsset("assets/get_mini_cart_simplified_success_empty"), MiniCartGqlResponse::class.java)
         return miniCartSimplifiedMapper.mapMiniCartSimplifiedData(json.miniCart)
@@ -136,6 +146,11 @@ object DataProvider {
         return miniCartSimplifiedData
     }
 
+    fun provideMiniCartSimplifiedDataBundleAvailableAndUnavailable(): MiniCartSimplifiedData {
+        val miniCartSimplifiedData = provideGetMiniCartSimplifiedBundleSuccessAvailableAndUnavailable()
+        return miniCartSimplifiedData
+    }
+
     fun provideGetMiniCartListSuccessWithSingleAvailableItem(): MiniCartListUiModel {
         val json = gson.fromJson(fileUtil.getJsonFromAsset("assets/get_mini_cart_success_single_available_item"), MiniCartGqlResponse::class.java)
         return miniCartListUiModelMapper.mapUiModel(json.miniCart)
@@ -169,6 +184,35 @@ object DataProvider {
     fun provideUpdateCartFailed(): UpdateCartV2Data {
         val json = gson.fromJson(fileUtil.getJsonFromAsset("assets/update_cart_failed"), UpdateCartGqlResponse::class.java)
         return json.updateCartData
+    }
+
+    fun provideProductBundleRecomResponse(isEmptyList: Boolean): ProductBundleRecomResponse {
+        return gson.fromJson(
+            fileUtil.getJsonFromAsset(if (isEmptyList) "assets/get_product_bundle_recommendation_empty_list" else "assets/get_product_bundle_recommendation"),
+            ProductBundleRecomResponse::class.java
+        )
+    }
+
+    fun provideAddToCartBundleResponse(isSuccess: Boolean, isEmptyData: Boolean = false, isOkStatus: Boolean = true): AddToCartBundleResponse {
+        return gson.fromJson(
+            fileUtil.getJsonFromAsset(if (isSuccess) if (isEmptyData) "assets/add_to_cart_bundle_empty_data" else "assets/add_to_cart_bundle" else if (isOkStatus) "assets/add_to_cart_bundle_failed" else "assets/add_to_cart_bundle_failed_not_ok"),
+            AddToCartBundleResponse::class.java
+        )
+    }
+
+    fun provideProductBundleRecomData(response: ProductBundleRecomResponse): MiniCartProductBundleRecomUiModel {
+        return miniCartListUiModelMapper.mapToProductBundleUiModel(
+            widgetResponse = response
+        )
+    }
+
+    fun provideAddToCartBundleProductDetailParam(productDetails: List<ShopHomeBundleProductUiModel>, quantity: Int, shopId: String, userId: String): List<ProductDetail> {
+        return miniCartListUiModelMapper.mapToAddToCartBundleProductDetailParam(
+            productDetails = productDetails,
+            quantity = quantity,
+            shopId = shopId,
+            userId = userId
+        )
     }
 
 }

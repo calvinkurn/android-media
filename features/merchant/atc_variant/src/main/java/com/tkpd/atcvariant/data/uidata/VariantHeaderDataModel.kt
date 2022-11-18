@@ -61,7 +61,7 @@ data class VariantHeaderDataModel(
 
 data class ProductHeaderData(
         val productMainPrice: String = "",
-        val productDiscountedPercentage: Int = 0,
+        val productDiscountedPercentage: Float = 0f,
         val isCampaignActive: Boolean = false,
         val productSlashPrice: String = "",
         val productStockFmt: String = ""

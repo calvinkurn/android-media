@@ -1,24 +1,31 @@
 package com.tokopedia.tokofood.common.util
 
 import android.content.Context
+import android.content.res.Resources
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
+import android.graphics.Rect
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.os.Parcel
 import android.os.Parcelable
+import android.os.SystemClock
 import android.text.InputFilter
 import android.view.View
+import android.view.ViewTreeObserver
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.widget.Toolbar
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
-import com.tokopedia.kotlin.extensions.view.toBitmap
+import com.tokopedia.kotlin.extensions.view.getBitmap
+import com.tokopedia.kotlin.extensions.view.getScreenHeight
+import com.tokopedia.kotlin.extensions.view.getScreenWidth
+import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.network.constant.ResponseStatus
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.tokofood.common.domain.response.CartTokoFoodData
+import com.tokopedia.tokofood.common.presentation.listener.TokofoodScrollChangedListener
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateParam
 import com.tokopedia.unifycomponents.QuantityEditorUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -26,6 +33,7 @@ import com.tokopedia.unifycomponents.toPx
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
+import java.util.*
 
 
 object TokofoodExt {
@@ -41,13 +49,10 @@ object TokofoodExt {
         return when (this) {
             is SocketTimeoutException, is UnknownHostException, is ConnectException -> GlobalError.NO_CONNECTION
             is RuntimeException -> {
-                when (localizedMessage?.toIntOrNull()) {
-                    ResponseStatus.SC_GATEWAY_TIMEOUT, ResponseStatus.SC_REQUEST_TIMEOUT -> GlobalError.NO_CONNECTION
-                    ResponseStatus.SC_NOT_FOUND -> GlobalError.PAGE_NOT_FOUND
-                    ResponseStatus.SC_INTERNAL_SERVER_ERROR -> GlobalError.SERVER_ERROR
-                    ResponseStatus.SC_BAD_GATEWAY -> GlobalError.MAINTENANCE
-                    else -> GlobalError.SERVER_ERROR
-                }
+                getGlobalErrorTypeFromErrorCode(localizedMessage?.toIntOrNull())
+            }
+            is MessageErrorException -> {
+                getGlobalErrorTypeFromErrorCode(errorCode?.toIntOrNull())
             }
             else -> GlobalError.SERVER_ERROR
         }
@@ -64,14 +69,18 @@ object TokofoodExt {
                 }
             }
             is RuntimeException -> {
-                when (localizedMessage?.toIntOrNull()) {
-                    ResponseStatus.SC_GATEWAY_TIMEOUT, ResponseStatus.SC_REQUEST_TIMEOUT -> GlobalError.NO_CONNECTION
-                    ResponseStatus.SC_NOT_FOUND -> GlobalError.PAGE_NOT_FOUND
-                    ResponseStatus.SC_INTERNAL_SERVER_ERROR -> GlobalError.SERVER_ERROR
-                    ResponseStatus.SC_BAD_GATEWAY -> GlobalError.MAINTENANCE
-                    else -> GlobalError.SERVER_ERROR
-                }
+                getGlobalErrorTypeFromErrorCode(localizedMessage?.toIntOrNull())
             }
+            else -> GlobalError.SERVER_ERROR
+        }
+    }
+
+    private fun getGlobalErrorTypeFromErrorCode(errorCode: Int?): Int {
+        return when (errorCode) {
+            ResponseStatus.SC_GATEWAY_TIMEOUT, ResponseStatus.SC_REQUEST_TIMEOUT -> GlobalError.NO_CONNECTION
+            ResponseStatus.SC_NOT_FOUND -> GlobalError.PAGE_NOT_FOUND
+            ResponseStatus.SC_INTERNAL_SERVER_ERROR -> GlobalError.SERVER_ERROR
+            ResponseStatus.SC_BAD_GATEWAY -> GlobalError.MAINTENANCE
             else -> GlobalError.SERVER_ERROR
         }
     }
@@ -114,6 +123,41 @@ object TokofoodExt {
         }
     }
 
+    fun View.addAndReturnImpressionListener(holder: ImpressHolder,
+                                            listener: TokofoodScrollChangedListener,
+                                            onView: () -> Unit) {
+        val scrollChangedListener = object : ViewTreeObserver.OnScrollChangedListener {
+            override fun onScrollChanged() {
+                if (!holder.isInvoke && viewIsVisible(this@addAndReturnImpressionListener)) {
+                    onView()
+                    holder.invoke()
+                    this@addAndReturnImpressionListener.viewTreeObserver?.removeOnScrollChangedListener(
+                        this
+                    )
+                }
+            }
+        }
+        viewTreeObserver?.addOnScrollChangedListener(scrollChangedListener)
+        listener.onScrollChangedListenerAdded(scrollChangedListener)
+    }
+
+    private fun viewIsVisible(view: View?): Boolean {
+        if (view == null) {
+            return false
+        }
+        if (!view.isShown) {
+            return false
+        }
+        val screen = Rect(0, 0, getScreenWidth(), getScreenHeight())
+        val offset = 100
+        val location = IntArray(2)
+        view.getLocationOnScreen(location)
+        val X = location[0] + offset
+        val Y = location[1] + offset
+        return screen.top <= Y && screen.bottom >= Y &&
+            screen.left <= X && screen.right >= X
+    }
+
     fun QuantityEditorUnify.setupEditText() {
         val maxLength = InputFilter.LengthFilter(MAXIMUM_QUANTITY_LENGTH)
         editText.filters = arrayOf(maxLength)
@@ -134,7 +178,7 @@ object TokofoodExt {
     }
 
 
-    private fun Context.scaledDrawable(bmp: Bitmap?, width: Int, height: Int): Drawable? {
+    private fun scaledDrawable(bmp: Bitmap?, resources: Resources, width: Int, height: Int): Drawable? {
         return try {
             bmp?.let {
                 val bmpScaled = Bitmap.createScaledBitmap(it, width, height, false)
@@ -148,11 +192,38 @@ object TokofoodExt {
 
     fun Toolbar?.setBackIconUnify() {
         this?.context?.let {
-            val backIconUnify = getIconUnifyDrawable(it, IconUnify.ARROW_BACK)?.toBitmap()
-            val scaleDrawable: Drawable? = context.scaledDrawable(backIconUnify, ICON_BOUND_SIZE.toPx(), ICON_BOUND_SIZE.toPx())
+            val backIconUnify = getIconUnifyDrawable(it, IconUnify.ARROW_BACK)?.getBitmap()
+            val scaleDrawable: Drawable? =
+                scaledDrawable(
+                    backIconUnify,
+                    resources,
+                    ICON_BOUND_SIZE.toPx(),
+                    ICON_BOUND_SIZE.toPx()
+                )
             scaleDrawable?.let { newDrawable ->
                 navigationIcon = newDrawable
             }
         }
     }
+
+    fun getLocalTimeZone(): String {
+        val timeZone = TimeZone.getDefault()
+        return timeZone.id
+    }
+
+    // TODO: move this to View.ext in release branch
+    fun View.clickWithDebounce(debounceTime: Long = CLICK_DEBOUNCE_TIME, action: () -> Unit) {
+        this.setOnClickListener(object : View.OnClickListener {
+            private var lastClickTime: Long = 0
+
+            override fun onClick(v: View) {
+                if (SystemClock.elapsedRealtime() - lastClickTime < debounceTime) return
+                else action()
+
+                lastClickTime = SystemClock.elapsedRealtime()
+            }
+        })
+    }
+
+    private const val CLICK_DEBOUNCE_TIME = 600L
 }

@@ -2,6 +2,9 @@ package com.tokopedia.play.broadcaster.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.broadcaster.revamp.util.statistic.BroadcasterMetric
+import com.tokopedia.content.common.types.ContentCommonUserType.TYPE_SHOP
+import com.tokopedia.content.common.types.ContentCommonUserType.TYPE_USER
+import com.tokopedia.content.common.ui.model.AccountStateInfoType
 import com.tokopedia.play.broadcaster.domain.model.GetAddedChannelTagsResponse
 import com.tokopedia.play.broadcaster.domain.model.GetChannelResponse
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
@@ -13,15 +16,17 @@ import com.tokopedia.play.broadcaster.pusher.state.PlayBroadcasterState
 import com.tokopedia.play.broadcaster.pusher.statistic.PlayBroadcasterMetric
 import com.tokopedia.play.broadcaster.pusher.timer.PlayBroadcastTimer
 import com.tokopedia.play.broadcaster.robot.PlayBroadcastViewModelRobot
-import com.tokopedia.play.broadcaster.ui.action.BroadcastStateChanged
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastEvent
+import com.tokopedia.play.broadcaster.ui.mapper.PlayBroProductUiMapper
+import com.tokopedia.play.broadcaster.ui.model.ChannelStatus
 import com.tokopedia.play.broadcaster.util.assertEmpty
 import com.tokopedia.play.broadcaster.util.assertEqualTo
 import com.tokopedia.play.broadcaster.util.assertTrue
 import com.tokopedia.play.broadcaster.util.assertType
 import com.tokopedia.play.broadcaster.util.error.DefaultErrorThrowable
 import com.tokopedia.play.broadcaster.util.logger.PlayLogger
+import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery
@@ -49,26 +54,24 @@ class PlayBroadcasterViewModelTest {
     private val mockGetAddedTagUseCase: GetAddedChannelTagsUseCase = mockk(relaxed = true)
     private val mockBroadcastTimer: PlayBroadcastTimer = mockk(relaxed = true)
     private val mockUserSessionInterface: UserSessionInterface = mockk(relaxed = true)
+    private val mockHydraSharedPreferences: HydraSharedPreferences = mockk(relaxed = true)
 
-    private val uiModelBuilder = UiModelBuilder()
     private val productSetupUiModelBuilder = ProductSetupUiModelBuilder()
+    private val uiModelBuilder = UiModelBuilder()
 
-    private val mockConfig = uiModelBuilder.buildConfigurationUiModel(
-        streamAllowed = true,
-        channelId = "123"
-    )
     private val mockChannel = GetChannelResponse.Channel(
         basic = GetChannelResponse.ChannelBasic(
             coverUrl = "https://tokopedia.com"
         )
     )
     private val mockAddedTag = GetAddedChannelTagsResponse()
+    private val mockProductTagSectionList = productSetupUiModelBuilder.buildProductTagSectionList()
 
     @Before
     fun setUp() {
-        coEvery { mockRepo.getChannelConfiguration() } returns mockConfig
         coEvery { mockGetChannelUseCase.executeOnBackground() } returns mockChannel
         coEvery { mockGetAddedTagUseCase.executeOnBackground() } returns mockAddedTag
+        coEvery { mockRepo.getProductTagSummarySection(any()) } returns mockProductTagSectionList
     }
 
     @Test
@@ -76,16 +79,19 @@ class PlayBroadcasterViewModelTest {
         val countDown = 5
         val configMock = uiModelBuilder.buildConfigurationUiModel(countDown = countDown.toLong())
 
-        val mockRepo: PlayBroadcastRepository = mockk(relaxed = true)
-        coEvery { mockRepo.getChannelConfiguration() } returns configMock
+        coEvery { mockRepo.getAccountList() } returns uiModelBuilder.buildAccountListModel()
+        coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns configMock
 
         val robot = PlayBroadcastViewModelRobot(
             dispatchers = testDispatcher,
-            channelRepo = mockRepo
+            channelRepo = mockRepo,
+            getChannelUseCase = mockGetChannelUseCase,
+            getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
+            productMapper = PlayBroProductUiMapper(),
         )
 
         robot.use {
-            it.getConfig()
+            it.getAccountConfiguration()
             it.getViewModel().getBeforeLiveCountDownDuration().assertEqualTo(countDown)
         }
     }
@@ -105,15 +111,23 @@ class PlayBroadcasterViewModelTest {
     @Test
     fun `when user submit set product action, it should emit new product section list state`() {
         val mockProductTagSection = productSetupUiModelBuilder.buildProductTagSectionList()
+        val configMock = uiModelBuilder.buildConfigurationUiModel()
+        val accountMock = uiModelBuilder.buildAccountListModel()
+
+        coEvery { mockRepo.getAccountList() } returns accountMock
+        coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns configMock
 
         val robot = PlayBroadcastViewModelRobot(
             dispatchers = testDispatcher,
             channelRepo = mockRepo,
+            getChannelUseCase = mockGetChannelUseCase,
+            getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
+            productMapper = PlayBroProductUiMapper(),
         )
 
         robot.use {
             val state = robot.recordState {
-                getConfig()
+                getAccountConfiguration()
                 getViewModel().submitAction(PlayBroadcastAction.SetProduct(mockProductTagSection))
             }
 
@@ -132,7 +146,11 @@ class PlayBroadcasterViewModelTest {
 
         robot.use {
             val events = robot.recordEvent {
-                it.getViewModel().submitAction(BroadcastStateChanged(PlayBroadcasterState.Resume(startedBefore = false, shouldContinue = false)))
+                it.getViewModel().submitAction(
+                    PlayBroadcastAction.BroadcastStateChanged(
+                        PlayBroadcasterState.Resume(startedBefore = false, shouldContinue = false)
+                    )
+                )
             }
 
             events
@@ -161,7 +179,11 @@ class PlayBroadcasterViewModelTest {
 
         robot.use {
             val events = robot.recordEvent {
-                it.getViewModel().submitAction(BroadcastStateChanged(PlayBroadcasterState.Resume(startedBefore = true, shouldContinue = true)))
+                it.getViewModel().submitAction(
+                    PlayBroadcastAction.BroadcastStateChanged(
+                        PlayBroadcasterState.Resume(startedBefore = true, shouldContinue = true)
+                    )
+                )
             }
 
             events
@@ -180,7 +202,11 @@ class PlayBroadcasterViewModelTest {
 
         robot.use {
             val events = robot.recordEvent {
-                it.getViewModel().submitAction(BroadcastStateChanged(PlayBroadcasterState.Resume(startedBefore = true, shouldContinue = false)))
+                it.getViewModel().submitAction(
+                    PlayBroadcastAction.BroadcastStateChanged(
+                        PlayBroadcasterState.Resume(startedBefore = true, shouldContinue = false)
+                    )
+                )
             }
 
             events
@@ -202,7 +228,11 @@ class PlayBroadcasterViewModelTest {
 
         robot.use {
             val events = robot.recordEvent {
-                it.getViewModel().submitAction(BroadcastStateChanged(PlayBroadcasterState.Resume(startedBefore = true, shouldContinue = false)))
+                it.getViewModel().submitAction(
+                    PlayBroadcastAction.BroadcastStateChanged(
+                        PlayBroadcasterState.Resume(startedBefore = true, shouldContinue = false)
+                    )
+                )
             }
 
             events
@@ -222,7 +252,11 @@ class PlayBroadcasterViewModelTest {
 
         robot.use {
             val events = robot.recordEvent {
-                it.getViewModel().submitAction(BroadcastStateChanged(PlayBroadcasterState.Resume(startedBefore = true, shouldContinue = true)))
+                it.getViewModel().submitAction(
+                    PlayBroadcastAction.BroadcastStateChanged(
+                        PlayBroadcasterState.Resume(startedBefore = true, shouldContinue = true)
+                    )
+                )
 
             }
 
@@ -254,7 +288,11 @@ class PlayBroadcasterViewModelTest {
 
         robot.use {
             val events = robot.recordEvent {
-                it.getViewModel().submitAction(BroadcastStateChanged(PlayBroadcasterState.Resume(startedBefore = false, shouldContinue = true)))
+                it.getViewModel().submitAction(
+                    PlayBroadcastAction.BroadcastStateChanged(
+                        PlayBroadcasterState.Resume(startedBefore = false, shouldContinue = true)
+                    )
+                )
             }
 
             events
@@ -285,7 +323,11 @@ class PlayBroadcasterViewModelTest {
 
         robot.use {
             val events = robot.recordEvent {
-                it.getViewModel().submitAction(BroadcastStateChanged(PlayBroadcasterState.Resume(startedBefore = false, shouldContinue = true)))
+                it.getViewModel().submitAction(
+                    PlayBroadcastAction.BroadcastStateChanged(
+                        PlayBroadcasterState.Resume(startedBefore = false, shouldContinue = true)
+                    )
+                )
 
             }
 
@@ -417,7 +459,11 @@ class PlayBroadcasterViewModelTest {
 
         robot.use {
             val event = robot.recordEvent {
-                it.getViewModel().submitAction(BroadcastStateChanged(PlayBroadcasterState.Error(errorThrowable)))
+                it.getViewModel().submitAction(
+                    PlayBroadcastAction.BroadcastStateChanged(
+                        PlayBroadcasterState.Error(errorThrowable)
+                    )
+                )
             }
 
             event
@@ -446,7 +492,11 @@ class PlayBroadcasterViewModelTest {
 
         robot.use {
             val event = robot.recordEvent {
-                it.getViewModel().submitAction(BroadcastStateChanged(PlayBroadcasterState.Recovered))
+                it.getViewModel().submitAction(
+                    PlayBroadcastAction.BroadcastStateChanged(
+                        PlayBroadcasterState.Recovered
+                    )
+                )
             }
 
             event
@@ -475,7 +525,11 @@ class PlayBroadcasterViewModelTest {
 
         robot.use {
             val event = robot.recordEvent {
-                it.getViewModel().submitAction(BroadcastStateChanged(PlayBroadcasterState.Recovered))
+                it.getViewModel().submitAction(
+                    PlayBroadcastAction.BroadcastStateChanged(
+                        PlayBroadcasterState.Recovered
+                    )
+                )
             }
 
             event
@@ -504,7 +558,11 @@ class PlayBroadcasterViewModelTest {
 
         robot.use {
             val event = robot.recordEvent {
-                it.getViewModel().submitAction(BroadcastStateChanged(PlayBroadcasterState.Recovered))
+                it.getViewModel().submitAction(
+                    PlayBroadcastAction.BroadcastStateChanged(
+                        PlayBroadcasterState.Recovered
+                    )
+                )
             }
 
             event
@@ -527,7 +585,11 @@ class PlayBroadcasterViewModelTest {
 
         robot.use {
             val event = robot.recordEvent {
-                it.getViewModel().submitAction(BroadcastStateChanged(PlayBroadcasterState.Recovered))
+                it.getViewModel().submitAction(
+                    PlayBroadcastAction.BroadcastStateChanged(
+                        PlayBroadcasterState.Recovered
+                    )
+                )
             }
 
             event
@@ -643,4 +705,386 @@ class PlayBroadcasterViewModelTest {
             verify { mockLogger.sendAll("") }
         }
     }
+
+    @Test
+    fun `when trigger startTimer(), then it will trigger broadcasterTimer start`() {
+        val mockTimer: PlayBroadcastTimer = mockk(relaxed = true)
+
+        val robot = PlayBroadcastViewModelRobot(
+            dispatchers = testDispatcher,
+            broadcastTimer = mockTimer,
+        )
+
+        robot.use {
+            it.getViewModel().startTimer()
+
+            verify { mockTimer.start() }
+        }
+    }
+
+    @Test
+    fun `when trigger stopTimer(), then it will trigger broadcasterTimer stop`() {
+        val mockTimer: PlayBroadcastTimer = mockk(relaxed = true)
+
+        val robot = PlayBroadcastViewModelRobot(
+            dispatchers = testDispatcher,
+            broadcastTimer = mockTimer,
+        )
+
+        robot.use {
+            it.getViewModel().stopTimer()
+
+            verify { mockTimer.stop() }
+        }
+    }
+
+    @Test
+    fun `when user only have shop and eligible then selected account is shop`() {
+        val configMock = uiModelBuilder.buildConfigurationUiModel()
+        val accountMock = uiModelBuilder.buildAccountListModel(onlyShop = true)
+
+        coEvery { mockRepo.getAccountList() } returns accountMock
+        coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns configMock
+
+        val robot = PlayBroadcastViewModelRobot(
+            dispatchers = testDispatcher,
+            channelRepo = mockRepo,
+            getChannelUseCase = mockGetChannelUseCase,
+            getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
+            productMapper = PlayBroProductUiMapper(),
+        )
+
+        robot.use {
+            val state = robot.recordState {
+                it.getAccountConfiguration()
+            }
+            state.selectedContentAccount.type.assertEqualTo(TYPE_SHOP)
+        }
+    }
+
+    @Test
+    fun `when user only have shop and not eligible then selected account is shop with info`() {
+        val configMock = uiModelBuilder.buildConfigurationUiModel()
+        val accountMock = uiModelBuilder.buildAccountListModel(tncShop = false, onlyShop = true)
+
+        coEvery { mockRepo.getAccountList() } returns accountMock
+        coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns configMock
+
+        val robot = PlayBroadcastViewModelRobot(
+            dispatchers = testDispatcher,
+            channelRepo = mockRepo,
+            getChannelUseCase = mockGetChannelUseCase,
+            getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
+            productMapper = PlayBroProductUiMapper(),
+        )
+
+        robot.use {
+            val state = robot.recordState {
+                it.getAccountConfiguration()
+            }
+            state.selectedContentAccount.type.assertEqualTo(TYPE_SHOP)
+            state.accountStateInfo.type.assertEqualTo(AccountStateInfoType.NotAcceptTNC)
+            state.accountStateInfo.selectedAccount.type.assertEqualTo(TYPE_SHOP)
+        }
+    }
+
+    @Test
+    fun `when user only have buyer and eligible then selected account is buyer`() {
+        val configMock = uiModelBuilder.buildConfigurationUiModel()
+        val accountMock = uiModelBuilder.buildAccountListModel(onlyBuyer = true)
+
+        coEvery { mockRepo.getAccountList() } returns accountMock
+        coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns configMock
+
+        val robot = PlayBroadcastViewModelRobot(
+            dispatchers = testDispatcher,
+            channelRepo = mockRepo,
+            getChannelUseCase = mockGetChannelUseCase,
+            getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
+            productMapper = PlayBroProductUiMapper(),
+        )
+
+        robot.use {
+            val state = robot.recordState {
+                it.getAccountConfiguration()
+            }
+            state.selectedContentAccount.type.assertEqualTo(TYPE_USER)
+        }
+    }
+
+    @Test
+    fun `when user only have buyer and not eligible then selected account is buyer with info`() {
+        val configMock = uiModelBuilder.buildConfigurationUiModel()
+        val accountMock = uiModelBuilder.buildAccountListModel(tncBuyer = false, onlyBuyer = true)
+
+        coEvery { mockRepo.getAccountList() } returns accountMock
+        coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns configMock
+
+        val robot = PlayBroadcastViewModelRobot(
+            dispatchers = testDispatcher,
+            channelRepo = mockRepo,
+            getChannelUseCase = mockGetChannelUseCase,
+            getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
+            productMapper = PlayBroProductUiMapper(),
+        )
+
+        robot.use {
+            val state = robot.recordState {
+                it.getAccountConfiguration()
+            }
+            state.selectedContentAccount.type.assertEqualTo(TYPE_USER)
+            state.accountStateInfo.type.assertEqualTo(AccountStateInfoType.NotAcceptTNC)
+            state.accountStateInfo.selectedAccount.type.assertEqualTo(TYPE_USER)
+        }
+    }
+
+    @Test
+    fun `when user have already switch account before then selected account is from preferences`() {
+        val configMock = uiModelBuilder.buildConfigurationUiModel()
+        val accountMock = uiModelBuilder.buildAccountListModel()
+
+        coEvery { mockHydraSharedPreferences.getLastSelectedAccount() } returns TYPE_USER
+        coEvery { mockRepo.getAccountList() } returns accountMock
+        coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns configMock
+
+        val robot = PlayBroadcastViewModelRobot(
+            dispatchers = testDispatcher,
+            channelRepo = mockRepo,
+            sharedPref = mockHydraSharedPreferences,
+            getChannelUseCase = mockGetChannelUseCase,
+            getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
+            productMapper = PlayBroProductUiMapper(),
+        )
+
+        robot.use {
+            val state = robot.recordState {
+                it.getAccountConfiguration()
+            }
+            state.selectedContentAccount.type.assertEqualTo(TYPE_USER)
+        }
+    }
+
+    @Test
+    fun `when selected account is from preferences but selected account is not eligible then switch to other`() {
+        val configMock = uiModelBuilder.buildConfigurationUiModel()
+        val accountMock = uiModelBuilder.buildAccountListModel(tncShop = false)
+
+        coEvery { mockHydraSharedPreferences.getLastSelectedAccount() } returns TYPE_SHOP
+        coEvery { mockRepo.getAccountList() } returns accountMock
+        coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns configMock
+
+        val robot = PlayBroadcastViewModelRobot(
+            dispatchers = testDispatcher,
+            channelRepo = mockRepo,
+            sharedPref = mockHydraSharedPreferences,
+            getChannelUseCase = mockGetChannelUseCase,
+            getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
+            productMapper = PlayBroProductUiMapper(),
+        )
+
+        robot.use {
+            val state = robot.recordState {
+                it.getAccountConfiguration()
+            }
+            state.selectedContentAccount.type.assertEqualTo(TYPE_USER)
+        }
+    }
+
+    @Test
+    fun `when shop account eligible then selected account is shop`() {
+        val configMock = uiModelBuilder.buildConfigurationUiModel()
+        val accountMock = uiModelBuilder.buildAccountListModel()
+
+        coEvery { mockRepo.getAccountList() } returns accountMock
+        coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns configMock
+
+        val robot = PlayBroadcastViewModelRobot(
+            dispatchers = testDispatcher,
+            channelRepo = mockRepo,
+            getChannelUseCase = mockGetChannelUseCase,
+            getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
+            productMapper = PlayBroProductUiMapper(),
+        )
+
+        robot.use {
+            val state = robot.recordState {
+                it.getAccountConfiguration()
+            }
+            state.selectedContentAccount.type.assertEqualTo(TYPE_SHOP)
+        }
+    }
+
+    @Test
+    fun `when shop account not eligible but buyer account is eligible then selected account is buyer`() {
+        val configMock = uiModelBuilder.buildConfigurationUiModel()
+        val accountMock = uiModelBuilder.buildAccountListModel(tncShop = false)
+
+        coEvery { mockRepo.getAccountList() } returns accountMock
+        coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns configMock
+
+        val robot = PlayBroadcastViewModelRobot(
+            dispatchers = testDispatcher,
+            channelRepo = mockRepo,
+            getChannelUseCase = mockGetChannelUseCase,
+            getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
+            productMapper = PlayBroProductUiMapper(),
+        )
+
+        robot.use {
+            val state = robot.recordState {
+                it.getAccountConfiguration()
+            }
+            state.selectedContentAccount.type.assertEqualTo(TYPE_USER)
+        }
+    }
+
+    @Test
+    fun `when shop account not eligible and buyer account not eligible then selected account is shop with info`() {
+        val configMock = uiModelBuilder.buildConfigurationUiModel()
+        val accountMock = uiModelBuilder.buildAccountListModel(tncShop = false, usernameBuyer = false)
+
+        coEvery { mockRepo.getAccountList() } returns accountMock
+        coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns configMock
+
+        val robot = PlayBroadcastViewModelRobot(
+            dispatchers = testDispatcher,
+            channelRepo = mockRepo,
+            getChannelUseCase = mockGetChannelUseCase,
+            getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
+            productMapper = PlayBroProductUiMapper(),
+        )
+
+        robot.use {
+            val state = robot.recordState {
+                it.getAccountConfiguration()
+            }
+            state.selectedContentAccount.type.assertEqualTo(TYPE_SHOP)
+            state.accountStateInfo.type.assertEqualTo(AccountStateInfoType.NoUsername)
+            state.accountStateInfo.selectedAccount.type.assertEqualTo(TYPE_USER)
+        }
+    }
+
+    @Test
+    fun `when shop and buyer account eligible but live stream then selected account is shop with info`() {
+        val configMock = uiModelBuilder.buildConfigurationUiModel(channelStatus = ChannelStatus.Live)
+        val accountMock = uiModelBuilder.buildAccountListModel()
+
+        coEvery { mockRepo.getAccountList() } returns accountMock
+        coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns configMock
+
+        val robot = PlayBroadcastViewModelRobot(
+            dispatchers = testDispatcher,
+            channelRepo = mockRepo,
+            getChannelUseCase = mockGetChannelUseCase,
+            getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
+            productMapper = PlayBroProductUiMapper(),
+        )
+
+        robot.use {
+            val state = robot.recordState {
+                it.getAccountConfiguration()
+            }
+            state.selectedContentAccount.type.assertEqualTo(TYPE_SHOP)
+            state.accountStateInfo.type.assertEqualTo(AccountStateInfoType.Live)
+            state.selectedContentAccount.type.assertEqualTo(TYPE_SHOP)
+        }
+    }
+
+    @Test
+    fun `when entry point from user profile then selected account should be non-seller`() {
+        val configMock = uiModelBuilder.buildConfigurationUiModel()
+        val accountMock = uiModelBuilder.buildAccountListModel()
+
+        coEvery { mockRepo.getAccountList() } returns accountMock
+        coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns configMock
+
+        val robot = PlayBroadcastViewModelRobot(
+            dispatchers = testDispatcher,
+            channelRepo = mockRepo,
+            getChannelUseCase = mockGetChannelUseCase,
+            getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
+            productMapper = PlayBroProductUiMapper(),
+        )
+
+        robot.use {
+            val state = robot.recordState {
+                it.getAccountConfiguration(TYPE_USER)
+            }
+            state.selectedContentAccount.type.assertEqualTo(TYPE_USER)
+        }
+    }
+
+    @Test
+    fun `when entry point from user profile but non-seller not eligible then selected account should be seller`() {
+        val configMock = uiModelBuilder.buildConfigurationUiModel()
+        val accountMock = uiModelBuilder.buildAccountListModel(usernameBuyer = false, tncBuyer = false)
+
+        coEvery { mockRepo.getAccountList() } returns accountMock
+        coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns configMock
+
+        val robot = PlayBroadcastViewModelRobot(
+            dispatchers = testDispatcher,
+            channelRepo = mockRepo,
+            getChannelUseCase = mockGetChannelUseCase,
+            getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
+            productMapper = PlayBroProductUiMapper(),
+        )
+
+        robot.use {
+            val state = robot.recordState {
+                it.getAccountConfiguration(TYPE_USER)
+            }
+            state.selectedContentAccount.type.assertEqualTo(TYPE_SHOP)
+        }
+    }
+
+
+    @Test
+    fun `when entry point from whatever that require open as seller then selected account should be seller`() {
+        val configMock = uiModelBuilder.buildConfigurationUiModel()
+        val accountMock = uiModelBuilder.buildAccountListModel()
+
+        coEvery { mockRepo.getAccountList() } returns accountMock
+        coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns configMock
+
+        val robot = PlayBroadcastViewModelRobot(
+            dispatchers = testDispatcher,
+            channelRepo = mockRepo,
+            getChannelUseCase = mockGetChannelUseCase,
+            getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
+            productMapper = PlayBroProductUiMapper(),
+        )
+
+        robot.use {
+            val state = robot.recordState {
+                it.getAccountConfiguration(TYPE_SHOP)
+            }
+            state.selectedContentAccount.type.assertEqualTo(TYPE_SHOP)
+        }
+    }
+
+    @Test
+    fun `when entry point from whatever that require open as seller but seller not eligible then selected account should be non-seller`() {
+        val configMock = uiModelBuilder.buildConfigurationUiModel()
+        val accountMock = uiModelBuilder.buildAccountListModel(tncShop = false)
+
+        coEvery { mockRepo.getAccountList() } returns accountMock
+        coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns configMock
+
+        val robot = PlayBroadcastViewModelRobot(
+            dispatchers = testDispatcher,
+            channelRepo = mockRepo,
+            getChannelUseCase = mockGetChannelUseCase,
+            getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
+            productMapper = PlayBroProductUiMapper(),
+        )
+
+        robot.use {
+            val state = robot.recordState {
+                it.getAccountConfiguration(TYPE_SHOP)
+            }
+            state.selectedContentAccount.type.assertEqualTo(TYPE_USER)
+        }
+    }
+
 }

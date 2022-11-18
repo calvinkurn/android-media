@@ -46,7 +46,7 @@ class SourceCodeDetector : Detector(), Detector.UastScanner {
         ConstructorDetector.checkConstructor(context, node, constructor)
     }
 
-    override fun getApplicableMethodNames(): List<String>? = MethodCallDetector.applicableMethodNames
+    override fun getApplicableMethodNames(): List<String> = MethodCallDetector.applicableMethodNames
 
     override fun visitMethodCall(
             context: JavaContext,

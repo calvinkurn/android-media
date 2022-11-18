@@ -45,8 +45,4 @@ query Notification($cursor: String) {
   feed_last_feeds(cursor:$cursor){
       newFeeds
     }
-
-  homeFlag {
-    isOSBottomNav
-  }
 }

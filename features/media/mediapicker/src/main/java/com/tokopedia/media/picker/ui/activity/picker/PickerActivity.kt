@@ -5,16 +5,16 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.MotionEvent
 import android.widget.Toast
+import androidx.fragment.app.FragmentFactory
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.R
 import com.tokopedia.media.picker.analytics.PickerAnalytics
 import com.tokopedia.media.common.utils.ParamCacheManager
-import com.tokopedia.media.picker.di.DaggerPickerComponent
+import com.tokopedia.media.picker.di.PickerInjector
 import com.tokopedia.media.picker.ui.PickerFragmentFactory
 import com.tokopedia.media.picker.ui.PickerFragmentFactoryImpl
 import com.tokopedia.media.picker.ui.PickerUiConfig
@@ -38,20 +38,26 @@ import com.tokopedia.picker.common.uimodel.MediaUiModel.Companion.toUiModel
 import com.tokopedia.picker.common.mapper.humanize
 import com.tokopedia.picker.common.utils.VideoDurationRetriever
 import com.tokopedia.picker.common.utils.wrapper.PickerFile.Companion.asPickerFile
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.file.cleaner.InternalStorageCleaner.cleanUpInternalStorageIfNeeded
 import com.tokopedia.utils.image.ImageProcessingUtil
 import javax.inject.Inject
 
-open class PickerActivity : BaseActivity()
-    , PermissionFragment.Listener
-    , NavToolbarComponent.Listener
-    , PickerActivityContract
-    , BottomNavComponent.Listener {
+open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
+    NavToolbarComponent.Listener, PickerActivityContract, BottomNavComponent.Listener {
 
-    @Inject lateinit var factory: ViewModelProvider.Factory
-    @Inject lateinit var param: ParamCacheManager
-    @Inject lateinit var pickerAnalytics: PickerAnalytics
+    @Inject
+    lateinit var fragmentFactory: FragmentFactory
+
+    @Inject
+    lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    @Inject
+    lateinit var param: ParamCacheManager
+
+    @Inject
+    lateinit var pickerAnalytics: PickerAnalytics
 
     private val hasPermissionGranted: Boolean by permissionGranted()
 
@@ -60,7 +66,7 @@ open class PickerActivity : BaseActivity()
     private val viewModel by lazy {
         ViewModelProvider(
             this,
-            factory
+            viewModelFactory
         )[PickerViewModel::class.java]
     }
 
@@ -87,10 +93,14 @@ open class PickerActivity : BaseActivity()
         )
     }
 
+    private var editorParam: EditorParam? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_picker)
         initInjector()
+        supportFragmentManager.fragmentFactory = fragmentFactory
+        super.onCreate(savedInstanceState)
+
+        setContentView(R.layout.activity_picker)
 
         setupParamQueryAndDataIntent()
         restoreDataState(savedInstanceState)
@@ -118,6 +128,12 @@ open class PickerActivity : BaseActivity()
                     onFinishIntent(it)
                 }
             }
+        } else if (resultCode == Activity.RESULT_OK && requestCode == REQUEST_EDITOR_PAGE && data != null) {
+            data.getParcelableExtra<EditorResult>(RESULT_INTENT_EDITOR)?.let {
+                onFinishIntent(
+                    PickerResult(it.originalPaths, editedImages = it.editedImages)
+                )
+            }
         }
     }
 
@@ -135,9 +151,20 @@ open class PickerActivity : BaseActivity()
     }
 
     private fun setupParamQueryAndDataIntent() {
-        val pickerParam = intent?.getParcelableExtra(EXTRA_PICKER_PARAM)?: PickerParam()
+        val pickerParam = intent?.getParcelableExtra(EXTRA_PICKER_PARAM) ?: PickerParam()
 
         onPageSourceNotFound(pickerParam)
+
+        if (pickerParam.isEditorEnabled()) {
+            val isEditorAllowed =
+                RemoteConfigInstance.getInstance().abTestPlatform.getString(PICKER_TO_EDITOR_ROLLENCE) == PICKER_TO_EDITOR_ROLLENCE
+
+            if (!isEditorAllowed) {
+                pickerParam.withoutEditor()
+            } else {
+                editorParam = pickerParam.getEditorParam() ?: EditorParam()
+            }
+        }
 
         // get data from uri query parameter
         intent?.data?.let {
@@ -148,12 +175,7 @@ open class PickerActivity : BaseActivity()
         param.setParam(pickerParam)
 
         // get pre-included media items
-        param.get().includeMedias()
-            .map { it.asPickerFile() }
-            .map { it.toUiModel() }
-            .also {
-                stateOnChangePublished(it)
-            }
+        viewModel.preSelectedMedias()
     }
 
     private fun restoreDataState(savedInstanceState: Bundle?) {
@@ -202,6 +224,17 @@ open class PickerActivity : BaseActivity()
                 )
             }
         }
+
+        viewModel.includeMedias.observe(this) { files ->
+            if (files.isEmpty()) return@observe
+
+            val fileToUiModel = files.mapNotNull {
+                val mPickerFile = it?.asPickerFile()
+                mPickerFile?.toUiModel()
+            }
+
+            stateOnChangePublished(fileToUiModel)
+        }
     }
 
     private fun onPageViewByType() {
@@ -243,11 +276,10 @@ open class PickerActivity : BaseActivity()
     }
 
     private fun onEditorIntent(data: PickerResult) {
-        /*
-        * TODO: we didn't supported the editor yet,
-        *  need to change after editor developed on Q3.
-        *  */
-        onFinishIntent(data)
+        editorParam?.let {
+            val intent = MediaEditor.intent(this, data.originalPaths, it)
+            startActivityForResult(intent, REQUEST_EDITOR_PAGE)
+        }
     }
 
     private fun onPermissionPageView() {
@@ -270,8 +302,7 @@ open class PickerActivity : BaseActivity()
     }
 
     override fun onGetVideoDuration(media: MediaUiModel): Int {
-        val file = media.file?: return 0
-        return VideoDurationRetriever.get(applicationContext, file)
+        return VideoDurationRetriever.get(applicationContext, media.file)
     }
 
     override fun onCameraTabSelected(isDirectClick: Boolean) {
@@ -293,7 +324,9 @@ open class PickerActivity : BaseActivity()
     }
 
     override fun dispatchTouchEvent(ev: MotionEvent?): Boolean {
-        if (!param.get().isIncludeVideoFile()) return false
+        if (!param.get().isIncludeVideoFile()) {
+            return super.dispatchTouchEvent(ev)
+        }
 
         container.cameraFragment()?.run {
             val cameraFragment = this
@@ -372,7 +405,7 @@ open class PickerActivity : BaseActivity()
         return model.file?.isSizeMoreThan(param.get().maxImageFileSize()) == true
     }
 
-    override fun isMinStorageThreshold() = viewModel.isDeviceStorageFull()
+    override fun isMinStorageThreshold() = viewModel.isDeviceStorageAlmostFull()
 
     override fun onShowMediaLimitReachedGalleryToast() {
         onShowValidationToaster(
@@ -491,18 +524,21 @@ open class PickerActivity : BaseActivity()
     }
 
     protected open fun createFragmentFactory(): PickerFragmentFactory {
-        return PickerFragmentFactoryImpl()
+        return PickerFragmentFactoryImpl(
+            fragmentManager = supportFragmentManager,
+            classLoader = applicationContext.classLoader
+        )
     }
 
     protected open fun initInjector() {
-        DaggerPickerComponent.builder()
-            .baseAppComponent((application as BaseMainApplication).baseAppComponent)
-            .build()
+        PickerInjector
+            .get(this)
             .inject(this)
     }
 
     companion object {
         const val REQUEST_PREVIEW_PAGE = 123
+        const val REQUEST_EDITOR_PAGE = 456
 
         private const val LAST_MEDIA_SELECTION = "last_media_selection"
 

@@ -34,7 +34,9 @@ sealed class PlayWidgetPromoType {
     companion object {
 
         fun getByType(type: String, promoText: String): PlayWidgetPromoType {
-            return when (type.toUpperCase(Locale.getDefault())) {
+            return when (type.uppercase(Locale.getDefault())) {
+                "SPECIAL_CAMPAIGN_LIVE" -> LiveOnly(promoText, false)
+                "SPECIAL_CAMPAIGN" -> Default(promoText, false)
                 "RILISAN_SPESIAL_LIVE" -> LiveOnly(promoText, true)
                 "RILISAN_SPESIAL" -> Default(promoText, true)
                 "DEFAULT" -> Default(promoText, false)

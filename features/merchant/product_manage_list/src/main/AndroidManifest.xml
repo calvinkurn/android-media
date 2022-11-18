@@ -46,24 +46,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.tokopedia.product.manage.feature.cashback.presentation.activity.ProductManageSetCashbackActivity"
-            android:theme="@style/Theme.White"
-            android:label="@string/product_manage_set_cashback"
-            android:screenOrientation="behind"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="com.tokopedia.internal.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-                <category android:name="android.intent.category.BROWSABLE" />
-
-                <data
-                    android:host="@string/host_marketplace"
-                    android:pathPattern="@string/path_set_cashback"
-                    android:scheme="@string/internal_scheme" />
-            </intent-filter>
-        </activity>
-        <activity
             android:name=".feature.campaignstock.ui.activity.CampaignStockActivity"
             android:label="@string/product_manage_campaign_stock_allocation"
             android:theme="@style/Theme.White"

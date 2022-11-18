@@ -32,17 +32,19 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="@string/host_global"
-                    android:pathPattern="@string/path_cotp"
+                    android:host="@string/host_user"
+                    android:pathPattern="@string/applink_cotp"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
         <activity
             android:name=".silentverification.view.activity.SilentVerificationActivity"
             android:label=""
+            android:exported="false"
             android:screenOrientation="portrait"
             android:theme="@style/Theme.White"
-            android:windowSoftInputMode="adjustResize">
+            android:windowSoftInputMode="adjustResize"
+            >
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />
 
@@ -69,8 +71,8 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="@string/host_global"
-                    android:pathPattern="@string/path_otp_push_notif_receiver"
+                    android:host="@string/host_user"
+                    android:pathPattern="@string/applink_otp_push_notif_receiver"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
@@ -86,8 +88,8 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="@string/host_global"
-                    android:pathPattern="@string/path_otp_push_notif_setting"
+                    android:host="@string/host_user"
+                    android:pathPattern="@string/applink_otp_push_notif_setting"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
@@ -107,8 +109,8 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="@string/host_global"
-                    android:pathPattern="@string/path_qr_login"
+                    android:host="@string/host_user"
+                    android:pathPattern="@string/applink_qr_login"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>
@@ -124,8 +126,8 @@
                 <category android:name="android.intent.category.BROWSABLE" />
 
                 <data
-                    android:host="@string/host_global"
-                    android:pathPattern="@string/path_qr_login_result"
+                    android:host="@string/host_user"
+                    android:pathPattern="@string/applink_qr_login_result"
                     android:scheme="@string/internal_scheme" />
             </intent-filter>
         </activity>

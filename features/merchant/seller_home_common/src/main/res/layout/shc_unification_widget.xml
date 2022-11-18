@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.tokopedia.unifycomponents.CardUnify xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    app:cardCornerRadius="8dp"
+    tools:minHeight="200dp">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/containerShcUnification"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <com.tokopedia.sellerhomecommon.presentation.view.customview.WidgetTitleView
+            android:id="@+id/tvShcUnificationTitle"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:ellipsize="end"
+            android:maxLines="2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="display_2"
+            app:typographyWeight="bold"
+            tools:layout_height="32dp"
+            tools:text="Cek keadaan produkmu" />
+
+        <View
+            android:id="@+id/viewShcUnificationTabBg"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:background="@drawable/shc_filter_view_background"
+            app:layout_constraintBottom_toBottomOf="@+id/tvShcUnificationTab"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/tvShcUnificationTab" />
+
+        <com.tokopedia.iconunify.IconUnify
+            android:id="@+id/icShcUnificationTab"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginEnd="8dp"
+            app:icon_name="CHEVRON_DOWN"
+            app:layout_constraintBottom_toBottomOf="@+id/viewShcUnificationTabBg"
+            app:layout_constraintEnd_toEndOf="@+id/viewShcUnificationTabBg"
+            app:layout_constraintTop_toTopOf="@+id/viewShcUnificationTabBg" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tvShcUnificationTab"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:gravity="center_vertical"
+            android:paddingStart="12dp"
+            android:paddingTop="8dp"
+            android:paddingEnd="8dp"
+            android:paddingBottom="8dp"
+            app:layout_constraintStart_toStartOf="@+id/viewShcUnificationTabBg"
+            app:layout_constraintTop_toBottomOf="@+id/tvShcUnificationTitle"
+            app:typographyType="display_2"
+            tools:text="Terlaris (6)" />
+
+        <com.tokopedia.unifycomponents.NotificationUnify
+            android:id="@+id/shcNotifTagTab"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="@+id/tvShcUnificationTab"
+            app:layout_constraintStart_toEndOf="@+id/tvShcUnificationTab"
+            app:layout_constraintTop_toTopOf="@+id/tvShcUnificationTab" />
+
+        <ViewStub
+            android:id="@+id/stubShcUnificationLoading"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout="@layout/shc_unification_widget_loading"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvShcUnificationTab" />
+
+        <ViewStub
+            android:id="@+id/stubShcUnificationSuccess"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout="@layout/shc_unification_widget_success"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvShcUnificationTab" />
+
+        <ViewStub
+            android:id="@+id/stubShcUnificationError"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout="@layout/shc_unification_widget_error"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvShcUnificationTab" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</com.tokopedia.unifycomponents.CardUnify>

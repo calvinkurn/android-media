@@ -28,4 +28,9 @@ data class EditAddressParam(
     @SerializedName("latitude")
     val latitude: String,
     @SerializedName("longitude")
-    val longitude: String)
+    val longitude: String,
+    @SerializedName("source")
+    val source: String,
+    @SerializedName("is_tokonow_request")
+    val isTokonowRequest: Boolean
+)

@@ -135,7 +135,7 @@ private fun getTickerData(tickerData: List<AffiliateAnnouncementDataV2.GetAffili
     tickerData?.forEach { ticker ->
         val title = ticker?.announcementTitle ?: ""
         val desc = ticker?.announcementDescription ?: ""
-        val htmlDesc = desc + "<a href=\"${ticker?.ctaLink?.androidURL}\">${ticker?.ctaText}</a>"
+        val htmlDesc = desc + "<a href=\"${ticker?.ctaLink?.androidURL}\"> ${ticker?.ctaText}</a>"
         tempList.add(TickerData(title, htmlDesc, type, isFromHtml = true))
     }
     return tempList

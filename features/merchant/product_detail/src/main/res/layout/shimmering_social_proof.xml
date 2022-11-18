@@ -19,7 +19,7 @@
 
     <View
         android:id="@+id/separator_1"
-        android:layout_width="@dimen/dp_1"
+        android:layout_width="1dp"
         android:layout_height="0dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"
@@ -44,7 +44,7 @@
 
     <View
         android:id="@+id/separator_2"
-        android:layout_width="@dimen/dp_1"
+        android:layout_width="1dp"
         android:layout_height="0dp"
         android:layout_marginStart="8dp"
         android:layout_marginLeft="8dp"

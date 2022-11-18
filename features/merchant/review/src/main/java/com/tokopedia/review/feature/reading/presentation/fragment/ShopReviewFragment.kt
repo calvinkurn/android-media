@@ -13,6 +13,9 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.play.core.splitcompat.SplitCompat
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.chat_common.util.EndlessRecyclerViewScrollUpListener
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.orFalse
@@ -28,6 +31,7 @@ import com.tokopedia.review.common.util.ReviewConstants
 import com.tokopedia.review.feature.reading.data.ProductrevGetProductRatingAndTopic
 import com.tokopedia.review.feature.reading.data.ProductrevGetShopRatingAndTopic
 import com.tokopedia.review.feature.reading.presentation.widget.ReadReviewRatingOnlyEmptyState
+import com.tokopedia.shop.common.view.interfaces.ShopPageSharedListener
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.Typography
@@ -226,5 +230,28 @@ class ShopReviewFragment : ReadReviewFragment() {
                 Toaster.TYPE_ERROR,
                 getString(R.string.review_refresh)
         ) { action.invoke() }.show()
+    }
+
+    override fun redirectToPDP(productId: String) {
+        val pdpAppLink = getPdpAppLink(productId)
+        context?.let {
+            val intent = RouteManager.getIntent(
+                context,
+                pdpAppLink
+            )
+            startActivity(intent)
+        }
+    }
+
+    private fun getPdpAppLink(productId: String): String {
+        val basePdpAppLink = UriUtil.buildUri(
+            ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
+            productId
+        )
+        return createAffiliateLink(basePdpAppLink)
+    }
+
+    private fun createAffiliateLink(basePdpAppLink: String): String {
+        return (activity as? ShopPageSharedListener)?.createPdpAffiliateLink(basePdpAppLink).orEmpty()
     }
 }

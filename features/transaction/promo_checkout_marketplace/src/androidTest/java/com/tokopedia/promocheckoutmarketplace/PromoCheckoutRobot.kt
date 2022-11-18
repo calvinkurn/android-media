@@ -4,6 +4,7 @@ import android.view.View
 import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.UiController
 import androidx.test.espresso.ViewAction
+import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.action.ViewActions.swipeDown
 import androidx.test.espresso.contrib.RecyclerViewActions.actionOnHolderItem
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
@@ -37,13 +38,24 @@ class PromoCheckoutRobot {
     }
 
     fun typePromoCode(promoCode: String) {
-        onView(withId(R.id.promo_checkout_marketplace_module_recycler_view)).perform(
-                actionOnHolderItem(onPromoInputViewHolder(), typePromoCodeInPromoInputViewHolder(promoCode)))
+        onView(withId(R.id.button_input_promo)).perform(click())
+        onView(withId(R.id.et_input_promo)).perform(object : ViewAction {
+            override fun getConstraints(): Matcher<View> {
+                return isDisplayed()
+            }
+
+            override fun getDescription(): String {
+                return "type promo input"
+            }
+
+            override fun perform(uiController: UiController?, view: View?) {
+                (view as? TextFieldUnify2)?.editText?.setText(promoCode)
+            }
+        })
     }
 
     fun clickTerapkanPromoCode() {
-        onView(withId(R.id.promo_checkout_marketplace_module_recycler_view)).perform(
-                actionOnHolderItem(onPromoInputViewHolder(), clickTerapkanInPromoInputViewHolder()))
+        onView(withId(R.id.btn_apply_promo)).perform(click())
     }
 
     fun clickPakaiPromo() {

@@ -102,7 +102,7 @@ data class MetaDataVerify(
         val totalOtherCharges: Int = 0,
         @SerializedName("total_tax_amount")
         @Expose
-        val totalTaxAmount: Int = 0,
+        val totalTaxAmount: Long = 0L,
         @SuppressLint("Invalid Data Type")
         @SerializedName("total_ticket_price")
         @Expose

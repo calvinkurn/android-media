@@ -100,7 +100,9 @@ class HomeDynamicChannelUseCase @Inject constructor(
 
     fun updateHeaderData(homeHeaderDataModel: HomeHeaderDataModel, homeDataModel: HomeDynamicChannelModel) {
         findWidget<HomeHeaderDataModel>(homeDataModel) { model, index ->
-            homeDataModel.updateWidgetModel(visitable = homeHeaderDataModel, position = index) {}
+            if (model.needToShowUserWallet) {
+                homeDataModel.updateWidgetModel(visitable = homeHeaderDataModel, position = index) {}
+            }
         }
     }
 
@@ -299,6 +301,30 @@ class HomeDynamicChannelUseCase @Inject constructor(
                         var newTopAdsModel = visitableFound.copy()
                         if (data.isNotEmpty()) {
                             newTopAdsModel = visitableFound.copy(topAdsImageViewModel = data[0])
+                        }
+                        newTopAdsModel
+                    }
+
+                    dynamicChannelPlainResponse.getWidgetDataIfExist<
+                        HomeTopAdsVerticalBannerDataModel,
+                        ArrayList<TopAdsImageViewModel>>(
+                        widgetRepository = homeTopadsImageRepository,
+                        iterateList = true,
+                        bundleParam = {
+                            Bundle().apply {
+                                putString(
+                                    HomeTopadsImageRepository.Companion.TOP_ADS_BANNER_TYPE,
+                                    HomeTopadsImageRepository.Companion.VERTICAL
+                                )
+                            }
+                        },
+                        deleteWidgetWhen = {
+                            it?.isEmpty() == true
+                        }
+                    ) { visitableFound, data, _ ->
+                        var newTopAdsModel = visitableFound.copy()
+                        if (data.isNotEmpty()) {
+                            newTopAdsModel = visitableFound.copy(topAdsImageViewModelList = data)
                         }
                         newTopAdsModel
                     }
@@ -879,7 +905,8 @@ class HomeDynamicChannelUseCase @Inject constructor(
                      */
                     if (!isCacheExistForProcess) {
                         val dynamicChannelResponseValue = try {
-                            val dynamicChannelResponse = homeDynamicChannelsRepository.getRemoteData(
+                            val dynamicChannelResponse = homeDynamicChannelsRepository.
+                            getRemoteData(
                                 Bundle().apply {
                                     putInt(
                                         HomeDynamicChannelsRepository.NUM_OF_CHANNEL, CHANNEL_LIMIT_FOR_PAGINATION

@@ -4,12 +4,11 @@ import com.tokopedia.play.broadcaster.ui.model.interactive.GiveawayConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.interactive.QuizConfigUiModel
 import com.tokopedia.play_common.model.dto.interactive.InteractiveType
-import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
+import com.tokopedia.play_common.model.dto.interactive.GameUiModel
 import com.tokopedia.play_common.model.dto.interactive.PlayCurrentInteractiveModel
 import com.tokopedia.play_common.model.dto.interactive.PlayInteractiveTimeStatus
+import com.tokopedia.play_common.model.ui.LeaderboardGameUiModel
 import com.tokopedia.play_common.model.ui.PlayLeaderboardConfigUiModel
-import com.tokopedia.play_common.model.ui.PlayLeaderboardInfoUiModel
-import com.tokopedia.play_common.model.ui.PlayLeaderboardUiModel
 import com.tokopedia.play_common.model.ui.PlayWinnerUiModel
 import com.tokopedia.play_common.model.ui.QuizChoicesUiModel
 
@@ -19,27 +18,8 @@ import com.tokopedia.play_common.model.ui.QuizChoicesUiModel
 class InteractiveUiModelBuilder {
 
     fun buildLeaderboardInfoModel(
-        leaderboardWinners: List<PlayLeaderboardUiModel> = buildLeaderboardWinnerList(3, 3),
-        totalParticipant: String = "1",
-        config: PlayLeaderboardConfigUiModel = buildLeaderboardConfigModel(),
-    ) = PlayLeaderboardInfoUiModel(
-        leaderboardWinners = leaderboardWinners,
-        totalParticipant = totalParticipant,
-        config = config,
-    )
-
-    fun buildLeaderboardWinnerList(
-        size: Int,
-        winnerSize: Int,
-    ) = List(size) {
-        PlayLeaderboardUiModel(
-            title = "Giveaway $it",
-            winners = buildWinnerList(winnerSize),
-            otherParticipantText = "",
-            otherParticipant = 0,
-            id = "1"
-        )
-    }
+       list : List<LeaderboardGameUiModel>
+    ) = list
 
     fun buildWinnerList(
         size: Int
@@ -108,29 +88,28 @@ class InteractiveUiModelBuilder {
         maxTitleLength: Int = 50,
         maxChoicesCount: Int = 3,
         minChoicesCount: Int = 1,
-        maxRewardLength: Int = 5,
         maxChoiceLength: Int = 5,
         availableStartTimeInMs: List<Long> = List(5) { it.toLong() },
         eligibleStartTimeInMs: List<Long> = List(5) { it.toLong() },
         showPrizeCoachMark: Boolean = true,
+        isGiftActive: Boolean = false,
     ) = QuizConfigUiModel(
         isActive = isActive,
         maxTitleLength = maxTitleLength,
         maxChoicesCount = maxChoicesCount,
         minChoicesCount = minChoicesCount,
-        maxRewardLength = maxRewardLength,
         maxChoiceLength = maxChoiceLength,
         availableStartTimeInMs = availableStartTimeInMs,
         eligibleStartTimeInMs = eligibleStartTimeInMs,
-        showPrizeCoachMark = showPrizeCoachMark,
+        isGiftActive = isGiftActive,
     )
 
     fun buildGiveaway(
         id: String = "",
         title: String = "",
         waitingDuration: Long = 200L,
-        status: InteractiveUiModel.Giveaway.Status = InteractiveUiModel.Giveaway.Status.Unknown,
-    ) = InteractiveUiModel.Giveaway(
+        status: GameUiModel.Giveaway.Status = GameUiModel.Giveaway.Status.Unknown,
+    ) = GameUiModel.Giveaway(
         id = id,
         title = title,
         waitingDuration = waitingDuration,
@@ -141,16 +120,14 @@ class InteractiveUiModelBuilder {
         id: String = "",
         title: String = "",
         waitingDuration: Long = 200L,
-        status: InteractiveUiModel.Quiz.Status = InteractiveUiModel.Quiz.Status.Unknown,
+        status: GameUiModel.Quiz.Status = GameUiModel.Quiz.Status.Unknown,
         listOfChoices: List<QuizChoicesUiModel> = emptyList(),
-        reward: String = "",
-    ) = InteractiveUiModel.Quiz(
+    ) = GameUiModel.Quiz(
         id = id,
         title = title,
         waitingDuration = waitingDuration,
         status = status,
         listOfChoices = listOfChoices,
-        reward = reward,
     )
 
     fun buildCurrentInteractiveModel(

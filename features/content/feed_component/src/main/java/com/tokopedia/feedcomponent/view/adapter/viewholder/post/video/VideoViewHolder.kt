@@ -35,7 +35,7 @@ class VideoViewHolder(private val listener: VideoViewListener) :
                     listener.onVideoPlayerClicked(
                         element.positionInFeed,
                         pagerPosition,
-                        element.postId.toString(),
+                        element.postId,
                         element.redirectLink,
                         "",
                         "",

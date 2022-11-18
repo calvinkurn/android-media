@@ -39,8 +39,9 @@ class PostProcessingFilter {
         consecutiveEmptyProductCount++
 
         val isNotEmpty = totalData > 0
+        val hasNextPage = getNextStartParam(searchParameter) < totalData
         val isBelowThreshold = consecutiveEmptyProductCount < LOAD_EMPTY_PRODUCT_THRESHOLD
-        val willLoadNextPage = isNotEmpty && isBelowThreshold
+        val willLoadNextPage = isNotEmpty && hasNextPage && isBelowThreshold
 
         if (willLoadNextPage)
             loadNextPage(searchParameter, callbackLoad)

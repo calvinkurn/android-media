@@ -16,6 +16,7 @@ import com.tokopedia.autocompletecomponent.initialstate.recentsearch.RecentSearc
 import com.tokopedia.autocompletecomponent.initialstate.recentsearch.RecentSearchTitleDataView
 import com.tokopedia.autocompletecomponent.initialstate.recentview.RecentViewDataView
 import com.tokopedia.autocompletecomponent.initialstate.recentview.RecentViewTitleDataView
+import com.tokopedia.autocompletecomponent.initialstate.searchbareducation.SearchBarEducationDataView
 import com.tokopedia.autocompletecomponent.shouldBe
 import com.tokopedia.autocompletecomponent.shouldBeInstanceOf
 
@@ -336,4 +337,37 @@ private fun InitialStateChipWidgetDataView.assertInitialStateChipWidgetDataView(
             expectedKeyword,
         )
     }
+}
+
+internal fun `Then verify SearchBarEducationDataView`(
+    actualData: List<Visitable<*>>,
+    expectedData: List<InitialStateData>,
+    expectedDimension90: String = "",
+    expectedKeyword: String,
+) {
+    val actualSearchBarEducationDataViewPosition =
+        actualData.indexOfFirst { it is SearchBarEducationDataView }
+    val expectedSearchBarEducationDataPosition =
+        expectedData.indexOfFirst { it.id == InitialStateData.INITIAL_STATE_SEARCHBAR_EDUCATION }
+
+    actualData[actualSearchBarEducationDataViewPosition].shouldBeInstanceOf<SearchBarEducationDataView>()
+
+    val searchBarEducationDataView =
+        actualData[actualSearchBarEducationDataViewPosition] as SearchBarEducationDataView
+    val expectedSearchBarEducationData =
+        expectedData[expectedSearchBarEducationDataPosition]
+
+
+    searchBarEducationDataView.header shouldBe expectedSearchBarEducationData.header
+    searchBarEducationDataView.labelAction shouldBe expectedSearchBarEducationData.labelAction
+
+    searchBarEducationDataView.item.assertBaseItemInitialStateSearch(
+        expectedSearchBarEducationData.items.first(),
+        "",
+        "",
+        1,
+        expectedDimension90,
+        expectedSearchBarEducationData.trackingOption,
+        expectedKeyword,
+    )
 }

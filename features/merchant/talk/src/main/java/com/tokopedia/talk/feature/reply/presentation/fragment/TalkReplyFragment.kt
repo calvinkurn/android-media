@@ -27,6 +27,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.attachcommon.data.ResultProduct
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.talk.R
 import com.tokopedia.talk.common.analytics.TalkPerformanceMonitoringContract
@@ -114,6 +115,23 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
     private var toaster: Snackbar? = null
     private var inboxType = ""
     private var templateAdapter: TalkReplyTemplateAdapter? = null
+    private val blockDialog by lazy(LazyThreadSafetyMode.NONE) {
+        context?.let {
+            DialogUnify(it, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
+                setTitle(getString(R.string.talk_block_dialog_title))
+                setDescription(getString(R.string.talk_block_dialog_description))
+                setPrimaryCTAText(getString(R.string.talk_block_dialog_primary_cta_text))
+                setSecondaryCTAText(getString(R.string.talk_block_dialog_secondary_cta_text))
+                setPrimaryCTAClickListener {
+                    viewModel.blockTalk(questionId)
+                    dialogPrimaryCTA.isLoading = true
+                    dialogSecondaryCTA.isEnabled = false
+                }
+                setSecondaryCTAClickListener { dismiss() }
+                setOverlayClose(false)
+            }
+        }
+    }
 
     override fun getScreenName(): String {
         return TalkReplyTrackingConstants.REPLY_SCREEN_NAME
@@ -165,6 +183,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         observeUnmaskQuestion()
         observeReportComment()
         observeReportTalk()
+        observeBlockTalk()
         observeTemplateList()
         super.onViewCreated(view, savedInstanceState)
         getDiscussionData()
@@ -200,6 +219,10 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         goToReportActivity(commentId)
     }
 
+    override fun onBlockOptionClicked() {
+        showBlockDialog()
+    }
+
     override fun onDeleteOptionClicked(commentId: String) {
         showDeleteDialog(commentId)
     }
@@ -208,8 +231,19 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         goToEditProduct()
     }
 
-    override fun onKebabClicked(commentId: String, allowReport: Boolean, allowDelete: Boolean) {
-        showBottomSheet(commentId, allowReport, allowDelete, false)
+    override fun onKebabClicked(
+        commentId: String,
+        allowReport: Boolean,
+        allowDelete: Boolean,
+        allowBlock: Boolean
+    ) {
+        showBottomSheet(
+            commentId = commentId,
+            allowReport = allowReport,
+            allowDelete = allowDelete,
+            allowEdit = false,
+            allowBlock = allowBlock
+        )
     }
 
     override fun onClickAttachedProduct(productId: String) {
@@ -353,7 +387,13 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
     }
 
     override fun onKebabClicked() {
-        showBottomSheet(commentId = "", allowReport = false, allowDelete = false, allowEdit = true)
+        showBottomSheet(
+            commentId = "",
+            allowReport = false,
+            allowDelete = false,
+            allowEdit = true,
+            allowBlock = false
+        )
     }
 
     override fun onTemplateClicked(template: String) {
@@ -388,7 +428,6 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         val intent = RouteManager.getIntent(context, ApplinkConstInternalMarketplace.ATTACH_PRODUCT)
         intent.putExtra(TOKOPEDIA_ATTACH_PRODUCT_SHOP_ID_KEY, shopId)
         intent.putExtra(TOKOPEDIA_ATTACH_PRODUCT_IS_SELLER_KEY, viewModel.isMyShop)
-        intent.putExtra(TOKOPEDIA_ATTACH_PRODUCT_SHOP_NAME_KEY, "")
         intent.putExtra(TOKOPEDIA_ATTACH_PRODUCT_SOURCE_KEY, SOURCE_TALK)
         startActivityForResult(intent, ATTACH_PRODUCT_ACTIVITY_REQUEST_CODE)
     }
@@ -416,6 +455,14 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
     private fun goToProfileActivity(userId: String) {
         val intent = RouteManager.getIntent(context, ApplinkConst.PROFILE, userId)
         startActivity(intent)
+    }
+
+    private fun showBlockDialog() {
+        blockDialog?.run {
+            dialogPrimaryCTA.isLoading = false
+            dialogSecondaryCTA.isEnabled = true
+            show()
+        }
     }
 
     private fun showDeleteDialog(commentId: String) {
@@ -453,7 +500,8 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         commentId: String,
         allowReport: Boolean,
         allowDelete: Boolean,
-        allowEdit: Boolean
+        allowEdit: Boolean,
+        allowBlock: Boolean
     ) {
         val reportBottomSheet = context?.let { context ->
             TalkReplyReportBottomSheet.createInstance(
@@ -462,7 +510,8 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
                 this,
                 allowReport,
                 allowDelete,
-                allowEdit
+                allowEdit,
+                allowBlock
             )
         }
         this.childFragmentManager.let { reportBottomSheet?.show(it, "") }
@@ -638,6 +687,7 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
             getString(R.string.reply_unmask_toaster_negative),
             resources.getBoolean(R.bool.reply_adjust_toaster_height)
         )
+        blockDialog?.dismiss()
     }
 
     private fun onFailUnmaskCommentOrQuestion(throwable: Throwable) {
@@ -646,6 +696,25 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
         showErrorToaster(
             getString(R.string.reply_unmask_toaster_error),
             resources.getBoolean(R.bool.reply_adjust_toaster_height)
+        )
+    }
+
+    private fun onSuccessBlockContent() {
+        adapter?.clearAllElements()
+        getDiscussionData()
+        showSuccessToaster(
+            getString(R.string.talk_block_toaster_success_text),
+            context?.resources?.getBoolean(R.bool.reply_adjust_toaster_height).orTrue()
+        )
+        blockDialog?.dismiss()
+    }
+
+    private fun onFailBlockCommentOrQuestion(throwable: Throwable) {
+        logException(throwable)
+        hidePageLoading()
+        showErrorToaster(
+            getString(R.string.talk_block_toaster_fail_text),
+            context?.resources?.getBoolean(R.bool.reply_adjust_toaster_height).orTrue()
         )
     }
 
@@ -793,6 +862,15 @@ class TalkReplyFragment : BaseDaggerFragment(), HasComponent<TalkReplyComponent>
                 is Fail -> onFailUnmaskCommentOrQuestion(it.throwable)
             }
         })
+    }
+
+    private fun observeBlockTalk() {
+        viewModel.blockTalkResult.observe(viewLifecycleOwner) {
+            when (it) {
+                is Success -> onSuccessBlockContent()
+                is Fail -> onFailBlockCommentOrQuestion(it.throwable)
+            }
+        }
     }
 
     private fun observeTemplateList() {

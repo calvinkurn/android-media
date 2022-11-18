@@ -1,0 +1,108 @@
+{
+  "tokofoodSearchMerchant": {
+    "state": {
+      "status": "ooc",
+      "title": "This is OOC",
+      "subtitle": "T"
+    },
+    "merchants": [
+      {
+        "id": "6d95e28a-42c2-48b5-b374-0877aced7f63",
+        "applink": "tokopedia://food/merchant/6d95e28a-42c2-48b5-b374-0877aced7f63",
+        "brandID": "b0ff3585-247e-4937-89a2-4165d967e4e7",
+        "name": "McDonald\u0027s, Plaza Festival",
+        "addressLocality": "",
+        "imageURL": "https://i-integration.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/44e895ce-2219-44c4-91fe-59edc0f3e366.jpg",
+        "priceLevel": {
+          "icon": "$",
+          "fareCount": 0
+        },
+        "merchantCategories": [
+          "Fast Food"
+        ],
+        "rating": 0,
+        "ratingFmt": "New",
+        "distance": 1.35,
+        "distanceFmt": "1.4 km",
+        "etaFmt": "Tiba 0 menit",
+        "promo": "",
+        "hasBranch": true,
+        "branchApplink": "tokopedia://food/category?pageTitle\u003dDaftar%20Cabang\u0026brand_uid\u003db0ff3585-247e-4937-89a2-4165d967e4e7",
+        "isClosed": false
+      },
+      {
+        "id": "25ea7fdc-d8cb-450a-9c98-3aef5ac58682",
+        "applink": "tokopedia://food/merchant/25ea7fdc-d8cb-450a-9c98-3aef5ac58682",
+        "brandID": "162c23fd-4474-45f9-9641-33761ca76344",
+        "name": "McDonald\u0027s Puri Indah",
+        "addressLocality": "",
+        "imageURL": "https://i-integration.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/2e8323dc-5db1-437d-957b-2c943aa79917.jpg",
+        "priceLevel": {
+          "icon": "$",
+          "fareCount": 0
+        },
+        "merchantCategories": [
+          "Fast Food"
+        ],
+        "rating": 0,
+        "ratingFmt": "New",
+        "distance": 4.48,
+        "distanceFmt": "4.5 km",
+        "etaFmt": "Tiba 0 menit",
+        "promo": "",
+        "hasBranch": true,
+        "branchApplink": "tokopedia://food/category?pageTitle\u003dDaftar%20Cabang\u0026brand_uid\u003d162c23fd-4474-45f9-9641-33761ca76344",
+        "isClosed": false
+      },
+      {
+        "id": "32fe6ada-86c5-43bc-a36b-6d45b7852365",
+        "applink": "tokopedia://food/merchant/32fe6ada-86c5-43bc-a36b-6d45b7852365",
+        "brandID": "85a82f6f-549b-4e5e-a18a-b147909d028f",
+        "name": "McDonald\u0027s Ruko Green Garden",
+        "addressLocality": "",
+        "imageURL": "https://i-integration.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/f6ea95ed-5c22-432b-8438-ddc3ce21e230.jpg",
+        "priceLevel": {
+          "icon": "$",
+          "fareCount": 0
+        },
+        "merchantCategories": [
+          "Fast Food"
+        ],
+        "rating": 0,
+        "ratingFmt": "New",
+        "distance": 8.88,
+        "distanceFmt": "8.9 km",
+        "etaFmt": "Tiba 0 menit",
+        "promo": "",
+        "hasBranch": false,
+        "branchApplink": "",
+        "isClosed": false
+      },
+      {
+        "id": "0857b75e-7f43-47a0-8ea4-12f366f2594a",
+        "applink": "tokopedia://food/merchant/0857b75e-7f43-47a0-8ea4-12f366f2594a",
+        "brandID": "2ed4cc2d-85bc-4734-8ecb-9521c0c5e8dc",
+        "name": "McDonald\u0027s Ciffest, Cengkareng",
+        "addressLocality": "",
+        "imageURL": "https://i-integration.gojekapi.com/darkroom/gofood-indonesia/v2/images/uploads/9504f352-efc3-4da4-ae31-48f59521026c.jpg",
+        "priceLevel": {
+          "icon": "$",
+          "fareCount": 0
+        },
+        "merchantCategories": [
+          "Fast Food"
+        ],
+        "rating": 0,
+        "ratingFmt": "New",
+        "distance": 15.71,
+        "distanceFmt": "15.7 km",
+        "etaFmt": "Tiba 0 menit",
+        "promo": "",
+        "hasBranch": false,
+        "branchApplink": "",
+        "isClosed": false
+      }
+    ],
+    "nextPageKey": ""
+  }
+}

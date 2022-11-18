@@ -1,7 +1,0 @@
-mutation removeWishlist($productID: SuperInteger!, $userID: SuperInteger!) {
-    wishlist_remove_v2(productID: $productID, userID: $userID) {
-        id
-        success
-        __typename
-    }
-}

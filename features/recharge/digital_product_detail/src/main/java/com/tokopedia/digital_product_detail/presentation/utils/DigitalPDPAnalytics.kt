@@ -40,6 +40,7 @@ import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTr
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Event.VIEW_DIGITAL_IRIS
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Event.VIEW_ITEM
 import com.tokopedia.digital_product_detail.presentation.utils.DigitalPDPEventTracking.Event.VIEW_ITEM_LIST
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.recharge_component.model.denom.DenomData
 import com.tokopedia.recharge_component.model.denom.DenomWidgetEnum
 import com.tokopedia.recharge_component.model.recommendation_card.RecommendationCardWidgetModel
@@ -670,7 +671,7 @@ class DigitalPDPAnalytics {
                     putString(ITEM_BRAND, operatorName)
                     putString(
                         ITEM_CATEGORY,
-                        DigitalPDPCategoryUtil.getCategoryName(recomData.categoryId.toInt())
+                        DigitalPDPCategoryUtil.getCategoryName(recomData.categoryId.toIntSafely())
                     )
                     putString(ITEM_ID, recomData.id)
                     putString(ITEM_NAME, recomData.title)

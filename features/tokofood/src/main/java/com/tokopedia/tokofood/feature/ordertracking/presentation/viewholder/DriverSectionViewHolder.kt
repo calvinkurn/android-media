@@ -9,6 +9,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.databinding.ItemTokofoodOrderTrackingDriverSectionBinding
+import com.tokopedia.tokofood.common.presentation.viewholder.CustomPayloadViewHolder
 import com.tokopedia.tokofood.feature.ordertracking.presentation.adapter.DriverInformationAdapter
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.DriverInformationUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.DriverSectionUiModel
@@ -16,7 +17,7 @@ import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.DriverS
 class DriverSectionViewHolder(
     view: View,
     private val listener: Listener
-) : BaseOrderTrackingViewHolder<DriverSectionUiModel>(view) {
+) : CustomPayloadViewHolder<DriverSectionUiModel>(view) {
 
     companion object {
         @LayoutRes

@@ -60,6 +60,20 @@ class OrderSummaryAnalytics @Inject constructor() : TransactionAnalytics() {
         sendGeneralEvent(gtmData)
     }
 
+    fun eventClickOnInsuranceInfoTooltip(userId: String) {
+        val gtmData = getGtmData(
+            EventName.CLICK_CX,
+            EventCategory.INSURANCE_INFO_TOOLTIP,
+            EventAction.CLICK_INSURANCE_INFO_TOOLTIP,
+            ""
+        )
+        gtmData[ExtraKey.BUSINESS_UNIT] = CustomDimension.DIMENSION_BUSINESS_UNIT_PURCHASE_PLATFORM
+        gtmData[ExtraKey.CURRENT_SITE] = CustomDimension.DIMENSION_CURRENT_SITE_MARKETPLACE
+        gtmData[ExtraKey.TRACKER_ID] = TrackerId.CLICK_INSURANCE_INFO_TOOLTIP
+        gtmData[ExtraKey.USER_ID] = userId
+        sendGeneralEvent(gtmData)
+    }
+
     fun eventClickBayarNotSuccess(isButtonPilihPembayaran: Boolean, eventId: String) {
         sendGeneralEvent(
                 EventName.CLICK_CHECKOUT_EXPRESS,

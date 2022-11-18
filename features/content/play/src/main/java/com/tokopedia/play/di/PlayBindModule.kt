@@ -2,6 +2,8 @@ package com.tokopedia.play.di
 
 import com.tokopedia.play.analytic.campaign.PlayCampaignAnalytic
 import com.tokopedia.play.analytic.campaign.PlayCampaignAnalyticImpl
+import com.tokopedia.play.analytic.interactive.PlayInteractiveAnalytic
+import com.tokopedia.play.analytic.interactive.PlayInteractiveAnalyticImpl
 import com.tokopedia.play.analytic.like.PlayLikeAnalytic
 import com.tokopedia.play.analytic.like.PlayLikeAnalyticImpl
 import com.tokopedia.play.analytic.partner.PlayPartnerAnalytic
@@ -16,6 +18,8 @@ import com.tokopedia.play.analytic.tokonow.PlayTokoNowAnalytic
 import com.tokopedia.play.analytic.tokonow.PlayTokoNowAnalyticImpl
 import com.tokopedia.play.analytic.upcoming.PlayUpcomingAnalytic
 import com.tokopedia.play.analytic.upcoming.PlayUpcomingAnalyticImpl
+import com.tokopedia.play.analytic.voucher.PlayVoucherAnalytic
+import com.tokopedia.play.analytic.voucher.PlayVoucherAnalyticImpl
 import com.tokopedia.play.util.logger.PlayLog
 import com.tokopedia.play.util.logger.PlayLogImpl
 import com.tokopedia.play.util.timer.PlayTimerFactory
@@ -58,11 +62,19 @@ abstract class PlayBindModule {
 
     @Binds
     @PlayScope
+    abstract fun bindInteractiveAnalytic(analytic: PlayInteractiveAnalyticImpl): PlayInteractiveAnalytic
+
+    @Binds
+    @PlayScope
     abstract fun bindTagItemsAnalyticFactory(factory: PlayTagItemsAnalyticImpl.Factory): PlayTagItemsAnalytic.Factory
 
     @Binds
     @PlayScope
     abstract fun bindTokonowAnalytic(analytic: PlayTokoNowAnalyticImpl): PlayTokoNowAnalytic
+
+    @Binds
+    @PlayScope
+    abstract fun bindVoucherAnalytic(analytic: PlayVoucherAnalyticImpl): PlayVoucherAnalytic
 
     /**
      * Utils

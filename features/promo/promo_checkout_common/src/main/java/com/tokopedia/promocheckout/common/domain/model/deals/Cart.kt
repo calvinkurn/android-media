@@ -14,25 +14,25 @@ data class Cart (
         val totalConvFee: Int = 0,
         @SerializedName("total_price")
         @Expose
-        val totalPrice: Int = 0,
+        val totalPrice: Double = 0.0,
         @SerializedName("grand_total")
         @Expose
         val grandTotal: Int = 0,
         @SerializedName("display_price")
         @Expose
-        val displayPrice: Int = 0,
+        val displayPrice: Double = 0.0,
         @SerializedName("promocode")
         @Expose
         val promocode: String = "",
         @SerializedName("promocode_discount")
         @Expose
-        val promocodeDiscount: Int = 0,
+        val promocodeDiscount: Long = 0L,
         @SerializedName("promocode_cashback")
         @Expose
-        val promocodeCashback: Int = 0,
+        val promocodeCashback: Long = 0L,
         @SerializedName("cashback_amount")
         @Expose
-        val cashbackAmount: Int = 0,
+        val cashbackAmount: Long = 0L,
         @SerializedName("promocode_failure_message")
         @Expose
         val promocodeFailureMessage: String = "",

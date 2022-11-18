@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.flight.R
 import com.tokopedia.flight.detail.view.model.SimpleModel
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import java.util.*
 
 /**
@@ -216,7 +217,7 @@ class FlightSimpleAdapter : RecyclerView.Adapter<FlightSimpleAdapter.ViewHolder>
             TypedValue.COMPLEX_UNIT_PX,
             dp,
             resources.displayMetrics
-        ).toInt()
+        ).toIntSafely()
     }
 
     companion object {

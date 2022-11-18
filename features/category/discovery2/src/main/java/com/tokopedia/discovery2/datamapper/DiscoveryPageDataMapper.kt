@@ -5,11 +5,14 @@ import com.tokopedia.discovery2.Constant
 import com.tokopedia.discovery2.Constant.Calendar.DYNAMIC
 import com.tokopedia.discovery2.Constant.Calendar.STATIC
 import com.tokopedia.discovery2.Constant.ProductTemplate.GRID
+import com.tokopedia.discovery2.Constant.TopAdsSdk.TOP_ADS_GSLP_TDN
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.Utils.Companion.TIMER_DATE_FORMAT
+import com.tokopedia.discovery2.Utils.Companion.areFiltersApplied
 import com.tokopedia.discovery2.Utils.Companion.getElapsedTime
 import com.tokopedia.discovery2.Utils.Companion.isSaleOver
 import com.tokopedia.discovery2.Utils.Companion.parseFlashSaleDate
+import com.tokopedia.discovery2.analytics.EMPTY_STRING
 import com.tokopedia.discovery2.data.*
 import com.tokopedia.discovery2.data.ErrorState.NetworkErrorState
 import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapper
@@ -19,12 +22,15 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Compa
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.TARGET_COMP_ID
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.youtubeview.AutoPlayController
 import com.tokopedia.filter.newdynamicfilter.controller.FilterController
+import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
 import com.tokopedia.minicart.common.domain.data.MiniCartItemType
 import com.tokopedia.minicart.common.domain.data.getMiniCartItemParentProduct
 import com.tokopedia.minicart.common.domain.data.getMiniCartItemProduct
+import java.util.LinkedList
 
 
 val discoveryPageData: MutableMap<String, DiscoveryResponse> = HashMap()
@@ -205,6 +211,10 @@ class DiscoveryPageDataMapper(
                     listComponents.add(component)
                 }
             }
+            ComponentNames.ExplicitWidget.componentName -> {
+                addPageInfoToExplicitWidget(component)
+                listComponents.add(component)
+            }
             else -> listComponents.add(component)
         }
         return listComponents
@@ -252,11 +262,18 @@ class DiscoveryPageDataMapper(
         }
         component.properties?.template = Constant.ProductTemplate.LIST
         component.componentsPerPage = COMPONENTS_PER_PAGE
-        return parseProductVerticalList(component,false)
+        return parseProductVerticalList(component, component.areFiltersApplied())
     }
 
     private fun addBannerTimerComp(component: ComponentsItem): Boolean {
+        if(component.data?.firstOrNull()?.endDate.isNullOrEmpty() || component.data?.firstOrNull()?.startDate.isNullOrEmpty()){
+            return false
+        }
         return getElapsedTime(component.data?.firstOrNull()?.endDate ?: "") > 0
+    }
+
+    private fun addPageInfoToExplicitWidget(component: ComponentsItem){
+        component.pageType = pageInfo.type ?: EMPTY_STRING
     }
 
     private fun parseTab(component: ComponentsItem, position: Int): List<ComponentsItem> {
@@ -379,7 +396,7 @@ class DiscoveryPageDataMapper(
     }
 
     private fun parseProductVerticalList(component: ComponentsItem,showEmptyState:Boolean = true): List<ComponentsItem> {
-        val listComponents: ArrayList<ComponentsItem> = ArrayList()
+        val listComponents: LinkedList<ComponentsItem> = LinkedList()
 
         if (component.verticalProductFailState) {
             listComponents.add(component)
@@ -420,6 +437,23 @@ class DiscoveryPageDataMapper(
                         }
                     })
                 }
+                if (component.properties?.index != null &&
+                    component.properties?.index!! > Int.ZERO &&
+                    component.properties?.index!! < listComponents.size &&
+                    !component.properties?.targetedComponentId.isNullOrEmpty())
+                 {
+                    getComponent(
+                        component.properties?.targetedComponentId!!,
+                        component.pageEndPoint
+                    )?.let {
+                        if(it.name == ComponentNames.DiscoTDNBanner.componentName){
+                            it.design = TOP_ADS_GSLP_TDN
+                            it.recomQueryProdId = component.recomQueryProdId
+                        }
+                        listComponents.add(component.properties?.index!! + Int.ONE, it)
+                    }
+                }
+
                 if (Utils.nextPageAvailable(component,component.componentsPerPage) && component.showVerticalLoader) {
                     listComponents.addAll(handleProductState(component, ComponentNames.LoadMore.componentName, queryParameterMap))
                 } else if (component.getComponentsItem()?.size == 0 && showEmptyState) {

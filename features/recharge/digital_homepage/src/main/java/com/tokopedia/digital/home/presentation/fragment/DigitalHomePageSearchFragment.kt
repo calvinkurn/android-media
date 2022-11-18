@@ -23,18 +23,18 @@ import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.digital.home.R
 import com.tokopedia.digital.home.analytics.RechargeHomepageAnalytics
-import com.tokopedia.digital.home.databinding.ViewRechargeHomeSearchBinding
 import com.tokopedia.digital.home.analytics.RechargeHomepageTrackingAdditionalConstant.SCREEN_NAME_TOPUP_BILLS
+import com.tokopedia.digital.home.databinding.ViewRechargeHomeSearchBinding
 import com.tokopedia.digital.home.di.RechargeHomepageComponent
 import com.tokopedia.digital.home.model.Tracking
-import com.tokopedia.digital.home.old.model.DigitalHomePageSearchCategoryModel
 import com.tokopedia.digital.home.presentation.adapter.DigitalHomePageSearchTypeFactory
 import com.tokopedia.digital.home.presentation.adapter.viewholder.DigitalHomePageSearchDoubleLineViewHolder
 import com.tokopedia.digital.home.presentation.adapter.viewholder.DigitalHomePageSearchEmptyStateViewHolder
 import com.tokopedia.digital.home.presentation.adapter.viewholder.DigitalHomePageSearchViewHolder
 import com.tokopedia.digital.home.presentation.listener.SearchAutoCompleteListener
+import com.tokopedia.digital.home.presentation.model.DigitalHomePageSearchCategoryModel
 import com.tokopedia.digital.home.presentation.viewmodel.DigitalHomePageSearchViewModel
-import com.tokopedia.digital.home.util.DigitalHomepageGqlQuery
+import com.tokopedia.digital.home.util.QueryDigitalHomeCategory
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -47,15 +47,16 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
-open class DigitalHomePageSearchFragment : BaseListFragment<DigitalHomePageSearchCategoryModel, DigitalHomePageSearchTypeFactory>(),
-        DigitalHomePageSearchViewHolder.OnSearchCategoryClickListener,
-        DigitalHomePageSearchDoubleLineViewHolder.OnSearchDoubleLineClickListener,
-        SearchAutoCompleteListener,
-        DigitalHomePageSearchEmptyStateViewHolder.DigitalHomepageSearchEmptyListener,
-        CoroutineScope
-{
+open class DigitalHomePageSearchFragment :
+    BaseListFragment<DigitalHomePageSearchCategoryModel, DigitalHomePageSearchTypeFactory>(),
+    DigitalHomePageSearchViewHolder.OnSearchCategoryClickListener,
+    DigitalHomePageSearchDoubleLineViewHolder.OnSearchDoubleLineClickListener,
+    SearchAutoCompleteListener,
+    DigitalHomePageSearchEmptyStateViewHolder.DigitalHomepageSearchEmptyListener,
+    CoroutineScope {
 
     protected var binding by autoCleared<ViewRechargeHomeSearchBinding>()
+
     @Inject
     lateinit var userSession: UserSessionInterface
 
@@ -70,7 +71,11 @@ open class DigitalHomePageSearchFragment : BaseListFragment<DigitalHomePageSearc
 
     var searchBarScreenName: String = SCREEN_NAME_TOPUP_BILLS
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         binding = ViewRechargeHomeSearchBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -80,7 +85,8 @@ open class DigitalHomePageSearchFragment : BaseListFragment<DigitalHomePageSearc
 
         savedInstanceState?.let {
             if (it.containsKey(PARAM_SEARCH_BAR_SCREEN_NAME))
-                searchBarScreenName = it.getString(PARAM_SEARCH_BAR_SCREEN_NAME, SCREEN_NAME_TOPUP_BILLS)
+                searchBarScreenName =
+                    it.getString(PARAM_SEARCH_BAR_SCREEN_NAME, SCREEN_NAME_TOPUP_BILLS)
         }
 
         activity?.run {
@@ -100,8 +106,11 @@ open class DigitalHomePageSearchFragment : BaseListFragment<DigitalHomePageSearc
 
         // Show keyboard automatically
         binding.digitalHomepageSearchViewSearchBar.searchBarTextField.requestFocus()
-        binding.digitalHomepageSearchViewSearchBar.searchBarTextField.setOnEditorActionListener(getSearchListener)
-        binding.digitalHomepageSearchViewSearchBar.searchBarTextField.addTextChangedListener(object : TextWatcher {
+        binding.digitalHomepageSearchViewSearchBar.searchBarTextField.setOnEditorActionListener(
+            getSearchListener
+        )
+        binding.digitalHomepageSearchViewSearchBar.searchBarTextField.addTextChangedListener(object :
+            TextWatcher {
             private var searchFor = ""
             override fun afterTextChanged(p0: Editable?) {
             }
@@ -118,7 +127,7 @@ open class DigitalHomePageSearchFragment : BaseListFragment<DigitalHomePageSearc
 
                 launch {
                     delay(DELAY)
-                    if (searchText != searchFor){
+                    if (searchText != searchFor) {
                         return@launch
                     } else {
                         onSearchBarTextChanged(text.toString())
@@ -128,13 +137,18 @@ open class DigitalHomePageSearchFragment : BaseListFragment<DigitalHomePageSearc
         })
 
         context?.run {
-            val inputMethodManager = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-            inputMethodManager.showSoftInput(binding.digitalHomepageSearchViewSearchBar.searchBarTextField, InputMethod.SHOW_FORCED)
+            val inputMethodManager =
+                getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+            inputMethodManager.showSoftInput(
+                binding.digitalHomepageSearchViewSearchBar.searchBarTextField,
+                InputMethod.SHOW_FORCED
+            )
         }
 
         val recyclerView = getRecyclerView(view) as? VerticalRecyclerView
         recyclerView?.clearItemDecoration()
-        recyclerView?.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        recyclerView?.layoutManager =
+            LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         recyclerView?.addOnScrollListener(object : RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
                 super.onScrollStateChanged(recyclerView, newState)
@@ -176,12 +190,18 @@ open class DigitalHomePageSearchFragment : BaseListFragment<DigitalHomePageSearc
                     if (!it.data.searchQuery.isNullOrEmpty()) {
                         renderList(it.data.listSearchResult)
                     }
-                    if (!it.data.isFromAutoComplete){
+                    if (!it.data.isFromAutoComplete) {
                         trackSearchResultCategories(it.data.listSearchResult)
                     } else if (it.data.listSearchResult.isNullOrEmpty() && it.data.isFromAutoComplete) {
-                        rechargeHomepageAnalytics.impressNoResult(it.data.trackerUser, userSession.userId)
+                        rechargeHomepageAnalytics.impressNoResult(
+                            it.data.trackerUser,
+                            userSession.userId
+                        )
                     } else if (!it.data.listSearchResult.isNullOrEmpty() && it.data.isFromAutoComplete) {
-                        rechargeHomepageAnalytics.impressionSearchAutoComplete(it.data.trackerUser, userSession.userId)
+                        rechargeHomepageAnalytics.impressionSearchAutoComplete(
+                            it.data.trackerUser,
+                            userSession.userId
+                        )
                     }
 
                 }
@@ -201,14 +221,16 @@ open class DigitalHomePageSearchFragment : BaseListFragment<DigitalHomePageSearc
             onGetListErrorWithExistingData(throwable)
         } else {
             val (errMsg, errCode) = ErrorHandler.getErrorMessagePair(
-                    context, throwable, ErrorHandler.Builder().build())
+                context, throwable, ErrorHandler.Builder().build()
+            )
             val errorNetworkModel = ErrorNetworkModel()
 
             errorNetworkModel.run {
                 errorMessage = errMsg
                 subErrorMessage = "${
                     getString(
-                            com.tokopedia.kotlin.extensions.R.string.title_try_again)
+                        com.tokopedia.kotlin.extensions.R.string.title_try_again
+                    )
                 }. Kode Error: ($errCode)"
                 onRetryListener = ErrorNetworkModel.OnRetryListener {
                     showLoading()
@@ -234,21 +256,41 @@ open class DigitalHomePageSearchFragment : BaseListFragment<DigitalHomePageSearc
 
     }
 
-    override fun clickCategoryListener(element: DigitalHomePageSearchCategoryModel, trackingUser: Tracking, trackingItem: Tracking) {
-        rechargeHomepageAnalytics.clickCateoryAutoComplete(trackingUser, trackingItem, userSession.userId)
+    override fun clickCategoryListener(
+        element: DigitalHomePageSearchCategoryModel,
+        trackingUser: Tracking,
+        trackingItem: Tracking
+    ) {
+        rechargeHomepageAnalytics.clickCateoryAutoComplete(
+            trackingUser,
+            trackingItem,
+            userSession.userId
+        )
         RouteManager.route(context, element.applink)
     }
 
     override fun impressCategoryListener(trackingUser: Tracking, trackingItem: Tracking) {
-        rechargeHomepageAnalytics.impressionCategoryAutoComplete(trackingUser, trackingItem, userSession.userId)
+        rechargeHomepageAnalytics.impressionCategoryAutoComplete(
+            trackingUser,
+            trackingItem,
+            userSession.userId
+        )
     }
 
     override fun clickOperatorListener(trackingUser: Tracking, trackingItem: Tracking) {
-        rechargeHomepageAnalytics.clickOperatorAutoComplete(trackingUser, trackingItem, userSession.userId)
+        rechargeHomepageAnalytics.clickOperatorAutoComplete(
+            trackingUser,
+            trackingItem,
+            userSession.userId
+        )
     }
 
     override fun impressOperatorListener(trackingUser: Tracking, trackingItem: Tracking) {
-        rechargeHomepageAnalytics.impressionOperatorAutoComplete(trackingUser, trackingItem, userSession.userId)
+        rechargeHomepageAnalytics.impressionOperatorAutoComplete(
+            trackingUser,
+            trackingItem,
+            userSession.userId
+        )
     }
 
     override fun clearEmptyStateListener() {
@@ -273,30 +315,40 @@ open class DigitalHomePageSearchFragment : BaseListFragment<DigitalHomePageSearc
         }
     }
 
-    override fun onSearchCategoryClicked(category: DigitalHomePageSearchCategoryModel, position: Int) {
-        rechargeHomepageAnalytics.eventSearchResultPageClick(category, position,
-                userSession.userId, searchBarScreenName)
+    override fun onSearchCategoryClicked(
+        category: DigitalHomePageSearchCategoryModel,
+        position: Int
+    ) {
+        rechargeHomepageAnalytics.eventSearchResultPageClick(
+            category, position,
+            userSession.userId, searchBarScreenName
+        )
         RouteManager.route(context, category.applink)
     }
 
-    override fun onSearchDoubleLineClicked(category: DigitalHomePageSearchCategoryModel, position: Int) {
+    override fun onSearchDoubleLineClicked(
+        category: DigitalHomePageSearchCategoryModel,
+        position: Int
+    ) {
         RouteManager.route(context, category.applink)
     }
 
     private fun trackSearchResultCategories(list: List<DigitalHomePageSearchCategoryModel>) {
-        rechargeHomepageAnalytics.eventSearchResultPageImpression(list,
-                userSession.userId, searchBarScreenName)
+        rechargeHomepageAnalytics.eventSearchResultPageImpression(
+            list,
+            userSession.userId, searchBarScreenName
+        )
     }
 
     open fun searchCategory(searchQuery: String) {
         if (!searchQuery.isNullOrEmpty()) {
-            viewModel.searchCategoryList(DigitalHomepageGqlQuery.digitalHomeCategory, searchQuery)
+            viewModel.searchCategoryList(QueryDigitalHomeCategory(), searchQuery)
         } else {
             viewModel.cancelAutoComplete()
         }
     }
 
-    private fun resetToInitialState(){
+    private fun resetToInitialState() {
         KeyboardHandler.showSoftKeyboard(activity)
         binding.digitalHomepageSearchViewSearchBar.searchBarTextField.apply {
             requestFocus()

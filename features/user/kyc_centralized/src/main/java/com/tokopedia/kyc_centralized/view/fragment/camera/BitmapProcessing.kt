@@ -8,6 +8,8 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kyc_centralized.KycConstant
+import com.tokopedia.kyc_centralized.common.KycServerLogger
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import kotlinx.coroutines.CoroutineScope
@@ -45,7 +47,7 @@ class BitmapCroppingAndCompression constructor(
             withContext(coroutineDispatchers.main) {
                 listener.onBitmapReady(bitmapCropped)
 
-                sendLog(true,
+                KycServerLogger.kycCropAndCompression(true,
                         bitmapOriginal = bitmap,
                         bitmapCropped = bitmapCropped,
                         bitmapCompressed = null,
@@ -58,7 +60,7 @@ class BitmapCroppingAndCompression constructor(
         }, onError = {
             withContext(coroutineDispatchers.main) {
                 listener.onFailed(bitmap, it)
-                sendLog(isSuccess = false, throwable = it)
+                KycServerLogger.kycCropAndCompression(isSuccess = false, throwable = it)
             }
         })
     }
@@ -77,7 +79,7 @@ class BitmapCroppingAndCompression constructor(
             withContext(coroutineDispatchers.main) {
                 listener.onBitmapReady(bitmapCompressed)
 
-                sendLog(true,
+                KycServerLogger.kycCropAndCompression(true,
                         bitmapOriginal = bitmap,
                         bitmapCropped = null,
                         bitmapCompressed = bitmapCompressed,
@@ -90,7 +92,7 @@ class BitmapCroppingAndCompression constructor(
         }, onError = {
             withContext(coroutineDispatchers.main) {
                 listener.onFailed(bitmap, it)
-                sendLog(isSuccess = false, throwable = it)
+                KycServerLogger.kycCropAndCompression(isSuccess = false, throwable = it)
             }
         })
     }
@@ -116,7 +118,7 @@ class BitmapCroppingAndCompression constructor(
                 if (bitmapFinal != null) {
                     listener.onBitmapReady(bitmapFinal)
 
-                    sendLog(true,
+                    KycServerLogger.kycCropAndCompression(true,
                             bitmapOriginal = bitmap,
                             bitmapCropped = bitmapCropped,
                             bitmapCompressed = bitmapCompressed,
@@ -129,7 +131,7 @@ class BitmapCroppingAndCompression constructor(
             }
         }, {
             withContext(coroutineDispatchers.main) {
-                sendLog(isSuccess = false, throwable = it)
+                KycServerLogger.kycCropAndCompression(isSuccess = false, throwable = it)
                 listener.onFailed(bitmap, it)
             }
         })
@@ -188,14 +190,14 @@ class BitmapCroppingAndCompression constructor(
      * @return quality reduction
      */
     private fun getQualityRedcution(bitmap: Bitmap): Float {
-        val size = calculateSize(bitmap) / 1024
+        val size = calculateSize(bitmap) / MB_DIVIDER
         return when {
-            size > 2 && size < 3 -> { 70F }
-            size > 3 && size < 6 -> { 50F }
-            size > 6 && size < 10 -> { 40F }
-            size > 10 && size < 15 -> { 30F }
-            size > 15 -> { 20F }
-            else -> { 100F }
+            size > KycConstant.MB_2 && size < KycConstant.MB_3 -> { KycConstant.QUALITY_70 }
+            size > KycConstant.MB_3 && size < KycConstant.MB_6 -> { KycConstant.QUALITY_50 }
+            size > KycConstant.MB_6 && size < KycConstant.MB_10 -> { KycConstant.QUALITY_40 }
+            size > KycConstant.MB_10 && size < KycConstant.MB_15 -> { KycConstant.QUALITY_30 }
+            size > KycConstant.MB_15 -> { KycConstant.QUALITY_20 }
+            else -> { KycConstant.QUALITY_100 }
         }
     }
 
@@ -222,49 +224,19 @@ class BitmapCroppingAndCompression constructor(
         return try {
             val stream = ByteArrayOutputStream()
             bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream)
-            val result = stream.size().toFloat() / 1024F
+            val result = stream.size().toFloat() / MB_DIVIDER_FLOAT
             stream.flush()
             stream.close()
             result
         } catch (e: Exception) {
-            e.printStackTrace()
             0F
         }
     }
 
-    private fun sendLog(
-            isSuccess: Boolean,
-            bitmapOriginal: Bitmap? = null,
-            bitmapCropped: Bitmap? = null,
-            bitmapCompressed: Bitmap? = null,
-            bitmapFinal: Bitmap? = null,
-            croppingTimeProcess: Long? = 0L,
-            compressionTimeProcess: Long? = 0L,
-            compressionQuality: Float = 0F,
-            throwable: Throwable? = null
-    ) {
-        val log = mapOf(
-                "status" to if (isSuccess) "Success" else "Failed",
-                "originalSizeInKb" to "${bitmapOriginal?.let { calculateSize(it) }}",
-                "originalResolution" to "${bitmapOriginal?.width}x${bitmapOriginal?.height}",
-                "croppedSizeInKb" to "${bitmapCropped?.let { calculateSize(it) }}",
-                "croppedResolution" to "${bitmapCropped?.width}x${bitmapCropped?.height}",
-                "compressedSizeInKb" to "${bitmapCompressed?.let { calculateSize(it) }}",
-                "compressedResolution" to "${bitmapCompressed?.width}x${bitmapCompressed?.height}",
-                "compressionQualityPercentage" to compressionQuality.toString(),
-                "finalResolution" to "${bitmapFinal?.width}x${bitmapFinal?.height}",
-                "croppingTimeProcessInMs" to "$croppingTimeProcess",
-                "compressionTimeProcessInMs" to "$compressionTimeProcess",
-                "processTimeInMs" to "${croppingTimeProcess.orZero() + compressionTimeProcess.orZero()}",
-                "stackTrace" to throwable?.message.toString()
-        )
-
-        ServerLogger.log(Priority.P2, TAG_LOG_CROP_AND_COMPRESSION_KYC, log)
-        Timber.d("$TAG_LOG_CROP_AND_COMPRESSION_KYC | log:\n${log}")
-    }
-
     companion object {
-        private const val TAG_LOG_CROP_AND_COMPRESSION_KYC = "KYC_CROP_AND_COMPRESSION"
-        const val DEFAULT_PADDING = 32
+        const val DEFAULT_PADDING = 8
+
+        private const val MB_DIVIDER = 1024
+        private const val MB_DIVIDER_FLOAT = 1024F
     }
 }

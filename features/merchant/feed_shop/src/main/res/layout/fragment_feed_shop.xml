@@ -11,8 +11,8 @@
         android:layout_height="match_parent"
         android:clipToPadding="false"
         android:orientation="vertical"
-        android:paddingTop="@dimen/dp_8"
-        android:paddingBottom="@dimen/spacing_lvl3"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
         app:reverseLayout="false" />
 
@@ -23,8 +23,8 @@
         android:visibility="gone">
 
         <com.tokopedia.unifycomponents.LoaderUnify
-            android:layout_width="@dimen/dp_50"
-            android:layout_height="@dimen/dp_50"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
             android:layout_gravity="center" />
     </FrameLayout>
 </RelativeLayout>

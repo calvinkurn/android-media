@@ -15,8 +15,8 @@ import com.tokopedia.profilecompletion.addpin.data.*
 import com.tokopedia.profilecompletion.changegender.data.ChangeGenderPojo
 import com.tokopedia.profilecompletion.changename.domain.pojo.ChangeNamePojo
 import com.tokopedia.profilecompletion.data.ProfileCompletionQueryConstant
-import com.tokopedia.profilecompletion.settingprofile.data.UserProfileInfoData
-import com.tokopedia.profilecompletion.settingprofile.data.UserProfileRoleData
+import com.tokopedia.profilecompletion.profilecompletion.data.UserProfileInfoData
+import com.tokopedia.profilecompletion.profilecompletion.data.UserProfileRoleData
 import dagger.Module
 import dagger.Provides
 import dagger.multibindings.IntoMap

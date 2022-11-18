@@ -68,9 +68,6 @@ data class QuizResponse(
     @SerializedName("question")
     val question: String = "",
 
-    @SerializedName("prize")
-    val prize: String = "",
-
     @SerializedName("countdown_end")
     val countdownEnd: Int = 0,
 

@@ -21,6 +21,7 @@ interface SellerHomeRouter {
     fun getProductManageFragment(
         filterOptions: ArrayList<String>,
         searchKeyword: String,
+        tab: String,
         navigationMenu: View?
     ): Fragment
 

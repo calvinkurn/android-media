@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="@dimen/dp_80"
     android:layout_height="@dimen/dp_80"
-    tools:background="#f5751d">
+    tools:background="@color/imagepickerinsta_dms_camera_btn_bg">
 
     <ProgressBar
         android:id="@+id/progress_bar_timer"
@@ -16,7 +16,8 @@
         android:indeterminate="false"
         android:max="100"
         android:progress="0"
-        android:progressDrawable="@drawable/imagepicker_insta_timer_1" />
+        android:progressDrawable="@drawable/imagepicker_insta_timer_1"
+        tools:ignore="UnifyComponentUsage" />
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/image_capture"

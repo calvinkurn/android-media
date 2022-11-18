@@ -13,8 +13,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.AutoCompleteTextView
+import androidx.annotation.ColorRes
+import androidx.annotation.DimenRes
+import androidx.core.content.res.ResourcesCompat
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
@@ -52,11 +54,11 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.travel.country_code.presentation.activity.PhoneCodePickerActivity
 import com.tokopedia.travel.country_code.presentation.fragment.PhoneCodePickerFragment
 import com.tokopedia.travel.country_code.presentation.model.TravelCountryPhoneCode
-import com.tokopedia.travel.country_code.util.TravelCountryCodeGqlQuery
+import com.tokopedia.travel.country_code.util.QueryTravelCountryCode
 import com.tokopedia.travel.passenger.data.entity.TravelContactIdCard
 import com.tokopedia.travel.passenger.data.entity.TravelContactListModel
 import com.tokopedia.travel.passenger.presentation.adapter.TravelContactArrayAdapter
-import com.tokopedia.travel.passenger.util.TravelPassengerGqlQuery
+import com.tokopedia.travel.passenger.util.QueryGetContactList
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.date.DateUtil
 import com.tokopedia.utils.date.addTimeToSpesificDate
@@ -117,7 +119,7 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
         }
 
         activity?.run {
-            val viewModelProvider = ViewModelProviders.of(this, viewModelFactory)
+            val viewModelProvider = ViewModelProvider(this, viewModelFactory)
             passengerViewModel = viewModelProvider.get(FlightPassengerViewModel::class.java)
         }
     }
@@ -136,7 +138,7 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
 
         if (autofillName.isNotEmpty()) binding?.loadingScreen?.root?.show() else binding?.loadingScreen?.root?.hide()
         passengerViewModel.getContactList(
-            TravelPassengerGqlQuery.CONTACT_LIST,
+            QueryGetContactList(),
             getPassengerTypeString(passengerModel.type)
         )
         initView()
@@ -149,7 +151,7 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
             contactList?.let {
                 travelContactArrayAdapter.updateItem(it.toMutableList())
                 if (autofillName.isNotEmpty()) {
-                    for ((index, item) in it.withIndex()) {
+                    for ((_, item) in it.withIndex()) {
                         if (item.fullName.equals(autofillName, false)) {
                             autofillPassengerContact(item)
                             break
@@ -351,7 +353,7 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
         }
 
         if (isAdultPassenger()) {
-            val entries = resources.getStringArray(R.array.flight_adult_titles)
+            val entries = context?.resources?.getStringArray(R.array.flight_adult_titles) ?: emptyArray()
             binding?.rvPassengerTitle?.setItem(
                 ArrayList(Arrays.asList(*entries)),
                 initialSelectedItemPos = if (passengerModel.passengerTitle != null) getPassengerTitleId(
@@ -359,7 +361,7 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
                 ) - PLUS_ONE else null
             )
         } else {
-            val entries = resources.getStringArray(R.array.flight_child_infant_titles)
+            val entries = context?.resources?.getStringArray(R.array.flight_child_infant_titles) ?: emptyArray()
             var initialSelectedPosition =
                 if (passengerModel.passengerTitle != null && passengerModel.passengerTitle.isNotEmpty()) getPassengerTitleId(
                     passengerModel.passengerTitle
@@ -473,10 +475,10 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
         }
 
         val mealAdapter = FlightSimpleAdapter()
-        mealAdapter.setMarginTopDp(resources.getDimension(com.tokopedia.flight.R.dimen.margin_4))
-        mealAdapter.setMarginBottomDp(resources.getDimension(com.tokopedia.flight.R.dimen.margin_4))
+        mealAdapter.setMarginTopDp(getDimensions(com.tokopedia.flight.R.dimen.margin_4))
+        mealAdapter.setMarginBottomDp(getDimensions(com.tokopedia.flight.R.dimen.margin_4))
         mealAdapter.setArrowVisible(true)
-        mealAdapter.setFontSize(resources.getDimension(com.tokopedia.unifyprinciples.R.dimen.fontSize_lvl2))
+        mealAdapter.setFontSize(getDimensions(com.tokopedia.unifyprinciples.R.dimen.fontSize_lvl2))
         mealAdapter.setInteractionListener(object :
             FlightSimpleAdapter.OnAdapterInteractionListener {
             override fun onItemClick(adapterPosition: Int, viewModel: SimpleModel) {
@@ -509,7 +511,7 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
         binding?.rvMeals?.setHasFixedSize(true)
         binding?.rvMeals?.isNestedScrollingEnabled = false
         binding?.rvMeals?.adapter = mealAdapter
-        mealAdapter.setDescriptionTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_G500))
+        mealAdapter.setDescriptionTextColor(getColor(com.tokopedia.unifyprinciples.R.color.Unify_G500))
         mealAdapter.setViewModels(models)
         mealAdapter.notifyDataSetChanged()
     }
@@ -566,10 +568,10 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
         }
 
         val luggageAdapter = FlightSimpleAdapter()
-        luggageAdapter.setMarginTopDp(resources.getDimension(com.tokopedia.flight.R.dimen.margin_4))
-        luggageAdapter.setMarginBottomDp(resources.getDimension(com.tokopedia.flight.R.dimen.margin_4))
+        luggageAdapter.setMarginTopDp(getDimensions(com.tokopedia.flight.R.dimen.margin_4))
+        luggageAdapter.setMarginBottomDp(getDimensions(com.tokopedia.flight.R.dimen.margin_4))
         luggageAdapter.setArrowVisible(true)
-        luggageAdapter.setFontSize(resources.getDimension(com.tokopedia.unifycomponents.R.dimen.fontSize_lvl2))
+        luggageAdapter.setFontSize(getDimensions(com.tokopedia.unifycomponents.R.dimen.fontSize_lvl2))
         luggageAdapter.setInteractionListener(object :
             FlightSimpleAdapter.OnAdapterInteractionListener {
             override fun onItemClick(adapterPosition: Int, viewModel: SimpleModel) {
@@ -597,7 +599,7 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
         binding?.rvLuggages?.setHasFixedSize(true)
         binding?.rvLuggages?.isNestedScrollingEnabled = false
         binding?.rvLuggages?.adapter = luggageAdapter
-        luggageAdapter.setDescriptionTextColor(resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_G500))
+        luggageAdapter.setDescriptionTextColor(getColor(com.tokopedia.unifyprinciples.R.color.Unify_G500))
         luggageAdapter.setViewModels(models)
         luggageAdapter.notifyDataSetChanged()
 
@@ -829,11 +831,11 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
                             )
                         )
                         passengerViewModel.getNationalityById(
-                            TravelCountryCodeGqlQuery.ALL_COUNTRY,
+                            QueryTravelCountryCode(),
                             contact.nationality
                         )
                         passengerViewModel.getPassportIssuerCountryById(
-                            TravelCountryCodeGqlQuery.ALL_COUNTRY,
+                            QueryTravelCountryCode(),
                             id.country
                         )
                     } else if (isIdCard(id)) {
@@ -1266,6 +1268,10 @@ class FlightBookingPassengerFragment : BaseDaggerFragment() {
             }
         }
     }
+
+    private fun getDimensions(@DimenRes dimen: Int): Float = context?.resources?.getDimension(dimen) ?: 0.0f
+
+    private fun getColor(@ColorRes id: Int): Int = context?.resources?.let { ResourcesCompat.getColor(it, id, null) } ?: 0
 
     companion object {
 

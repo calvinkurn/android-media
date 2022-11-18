@@ -65,7 +65,6 @@ class GetProductVariantAggregatorUseCase @Inject constructor(
                           products{
                             productID
                             boType
-                            boCampaignIDs
                           }
                           images{
                             boType

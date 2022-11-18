@@ -16,7 +16,6 @@ import android.telephony.TelephonyManager
 import android.util.DisplayMetrics
 import android.view.WindowManager
 import androidx.core.content.ContextCompat
-import com.google.android.gms.ads.identifier.AdvertisingIdClient
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.tokopedia.device.info.DeviceConnectionInfo
 import com.tokopedia.device.info.DeviceInfo
@@ -26,6 +25,7 @@ import com.tokopedia.devicefingerprint.submitdevice.payload.DeviceInfoPayload
 import com.tokopedia.encryption.security.sha256
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.suspendCancellableCoroutine
 import timber.log.Timber
 import java.io.File
 import java.lang.reflect.Field
@@ -75,7 +75,7 @@ class DeviceInfoPayloadCreator @Inject constructor(
                 appVersion = Build.VERSION.RELEASE,
                 isFromPlayStore = isFromPlayStore(),
                 uuid = DeviceInfo.getUUID(context),
-                userId = userSession.userId.toInt(),
+                userId = userSession.userId.toLong(),
                 deviceModel = Build.MODEL,
                 deviceManufacturer = Build.MANUFACTURER,
                 timezone = TimeZone.getDefault().displayName,
@@ -120,12 +120,20 @@ class DeviceInfoPayloadCreator @Inject constructor(
                 Manifest.permission.ACCESS_COARSE_LOCATION
         ) == PackageManager.PERMISSION_GRANTED
         if (isGrantedFineLocation && isGrantedCoarseLocation) {
-            return suspendCoroutine { cont ->
+            return suspendCancellableCoroutine { cont ->
+                // https://stackoverflow.com/questions/48227346/
+                var hasResumed = false
                 fusedLocationClient.lastLocation.addOnSuccessListener { location: Location? ->
-                    cont.resume(location)
+                    if (!hasResumed) {
+                        cont.resume(location)
+                        hasResumed = true
+                    }
                 }
                 fusedLocationClient.lastLocation.addOnFailureListener { exception ->
-                    cont.resumeWithException(exception)
+                    if (!hasResumed) {
+                        cont.resumeWithException(exception)
+                        hasResumed = true
+                    }
                 }
             }
         } else {

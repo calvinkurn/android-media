@@ -13,16 +13,20 @@ object InspirationCarouselTrackingUnificationDataMapper {
 
     fun createCarouselTrackingUnificationData(
         product: InspirationCarouselDataView.Option.Product,
-        searchParameter: SearchParameter?
+        searchParameter: SearchParameter?,
+        cartId: String = "",
+        quantity: Int = 0,
     ): InspirationCarouselTrackingUnification.Data {
         return InspirationCarouselTrackingUnification.Data(
             searchParameter.queryKey,
             product,
             getSortFilterParamStringFromSearchParameter(searchParameter),
+            cartId,
+            quantity,
         )
     }
 
-    fun getSortFilterParamStringFromSearchParameter(
+    private fun getSortFilterParamStringFromSearchParameter(
         searchParameter: SearchParameter?
     ): String {
         val parameter = searchParameter ?: return ""

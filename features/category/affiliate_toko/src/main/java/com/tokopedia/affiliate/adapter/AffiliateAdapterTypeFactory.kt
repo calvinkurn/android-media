@@ -1,8 +1,33 @@
 package com.tokopedia.affiliate.adapter
 
 
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateCommisionDividerItemModel
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateCommisionThickDividerItemModel
-import com.tokopedia.affiliate.ui.viewholder.viewmodel.*
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateCommissionItemModel
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateDataPlatformShimmerModel
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateDateFilterModel
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateHeaderModel
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateNoPromoItemFoundModel
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliatePerformaSharedProductCardsModel
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliatePerformanceChipModel
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliatePerformanceChipRVModel
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliatePortfolioButtonModel
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliatePortfolioUrlModel
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateProductCardMetricsModel
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliatePromotionCardModel
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliatePromotionErrorCardModel
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliatePromotionShopModel
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateShareModel
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateSharedProductCardsModel
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateShimmerModel
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateStaggeredPromotionCardModel
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateStaggeredShimmerModel
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateTermsAndConditionModel
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateTrafficCardModel
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateTransactionHistoryItemModel
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateUserPerformanceListModel
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateUserPerformanceModel
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateWithdrawalTitleItemModel
 
 interface AffiliateAdapterTypeFactory {
     fun type(viewModelShared: AffiliateSharedProductCardsModel): Int
@@ -30,4 +55,6 @@ interface AffiliateAdapterTypeFactory {
     fun type(viewModel: AffiliateWithdrawalTitleItemModel): Int
     fun type(viewModel: AffiliateTrafficCardModel): Int
     fun type(viewModel: AffiliateProductCardMetricsModel): Int
+    fun type(viewModel: AffiliatePerformanceChipRVModel): Int
+    fun type(viewModel: AffiliatePerformanceChipModel): Int
 }

@@ -54,7 +54,10 @@ import android.content.SharedPreferences;
 import android.provider.Settings;
 import android.text.TextUtils;
 
+import com.google.crypto.tink.Aead;
 import com.tokopedia.device.info.DeviceInfo;
+import com.tokopedia.encryption.security.AeadEncryptor;
+import com.tokopedia.user.session.datastore.DataStorePreference;
 
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -77,6 +80,10 @@ public class UserSession extends MigratedUserSession implements UserSessionInter
     @Inject
     public UserSession(Context context) {
         super(context);
+    }
+
+    public UserSession(Context context, DataStorePreference dataStorePreference, Aead encryptor) {
+        super(context, dataStorePreference, encryptor);
     }
 
     public String getAccessToken() {

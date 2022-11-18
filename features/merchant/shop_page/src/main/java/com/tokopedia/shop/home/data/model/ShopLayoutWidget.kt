@@ -45,6 +45,8 @@ data class ShopLayoutWidget(
         data class Header(
                 @SerializedName("title")
                 val title: String = "",
+                @SerializedName("subtitle")
+                val subtitle: String = "",
                 @SerializedName("ctaText")
                 val ctaText: String = "",
                 @SerializedName("ctaLink")

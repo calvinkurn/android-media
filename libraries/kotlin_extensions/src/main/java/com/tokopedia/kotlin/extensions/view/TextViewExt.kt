@@ -1,12 +1,24 @@
 package com.tokopedia.kotlin.extensions.view
 
-import android.text.*
+import android.graphics.Paint
+import android.text.Spannable
+import android.text.SpannableStringBuilder
+import android.text.TextPaint
 import android.text.method.LinkMovementMethod
-import android.text.style.ClickableSpan
 import android.text.style.URLSpan
-import android.view.MotionEvent
 import android.view.View
 import android.widget.TextView
+import androidx.annotation.ColorRes
+import androidx.core.content.ContextCompat
+
+fun TextView.strikethrough() {
+    this.paintFlags = this.paintFlags or Paint.STRIKE_THRU_TEXT_FLAG
+}
+
+fun TextView.setTextColorCompat(@ColorRes resourceId: Int) {
+    val color = ContextCompat.getColor(this.context, resourceId)
+    this.setTextColor(color)
+}
 
 
 fun TextView.displayTextOrHide(text: String) {
@@ -45,7 +57,7 @@ fun TextView.setTextAndContentDescription(text: String?, contentDescriptionTempl
 fun TextView.setClickableUrlHtml(htmlText: String?,
                                  applyCustomStyling: TextPaint.() -> Unit = {},
                                  onTouchListener: (spannable: Spannable) -> View.OnTouchListener? = { null },
-                                 onUrlClicked: (String) -> Unit) {
+                                 onUrlClicked: (String, String) -> Unit) {
     htmlText?.let {
         val sequence: CharSequence = it.parseAsHtml()
         val strBuilder = SpannableStringBuilder(sequence)
@@ -66,25 +78,31 @@ fun TextView.setClickableUrlHtml(htmlText: String?,
 private fun makeLinkClickable(strBuilder: SpannableStringBuilder,
                               span: URLSpan,
                               customStyling: TextPaint.() -> Unit,
-                              onUrlClicked: (String) -> Unit) {
+                              onUrlClicked: (String, String) -> Unit) {
     val start = strBuilder.getSpanStart(span)
     val end = strBuilder.getSpanEnd(span)
     val flags = strBuilder.getSpanFlags(span)
-    val clickableSpan = ClickableSpanWithCustomStyle(span.url, customStyling, onUrlClicked)
+    val clickableSpan = ClickableSpanWithCustomStyle(
+        span.url,
+        strBuilder.substring(start, end),
+        customStyling,
+        onUrlClicked
+    )
     strBuilder.setSpan(clickableSpan, start, end, flags)
     strBuilder.removeSpan(span)
 }
 
 
 private class ClickableSpanWithCustomStyle(url: String,
+                                           private val text: String,
                                            private val applyCustomStyling: TextPaint.() -> Unit,
-                                           private val onUrlClicked: (String) -> Unit) : URLSpan(url) {
+                                           private val onUrlClicked: (String, String) -> Unit) : URLSpan(url) {
     override fun updateDrawState(ds: TextPaint) {
         super.updateDrawState(ds)
         ds.applyCustomStyling()
     }
 
     override fun onClick(widget: View) {
-        onUrlClicked(url)
+        onUrlClicked(url, text)
     }
 }

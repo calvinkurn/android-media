@@ -5,6 +5,7 @@ import com.tokopedia.discovery.common.analytics.searchComponentTracking
 import com.tokopedia.search.analytics.SearchTracking
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView.Option
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView.Option.Product
+import com.tokopedia.search.result.product.inspirationlistatc.analytics.InspirationListAtcTracking
 import com.tokopedia.track.TrackApp
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import javax.inject.Inject
@@ -15,12 +16,17 @@ class InspirationCarouselTrackingUnification @Inject constructor() {
         val keyword: String,
         val product: Product,
         val filterSortParams: String,
+        val cartId: String,
+        val quantity: Int,
     ) {
         val eventLabel: String
             get() = "$keyword - ${product.inspirationCarouselTitle} - ${product.optionTitle}"
 
         val productDataLayer: Any
             get() = product.asUnificationObjectDataLayer(filterSortParams)
+
+        val productAtcDataLayer: Any
+            get() = product.asUnificationAtcObjectDataLayer(filterSortParams, cartId, quantity)
     }
 
     fun trackCarouselImpression(
@@ -50,6 +56,13 @@ class InspirationCarouselTrackingUnification @Inject constructor() {
         val searchComponentTracking = option.asSearchComponentTracking(keyword)
 
         searchComponentTracking.click(TrackApp.getInstance().gtm)
+    }
+
+    fun trackCarouselClickAtc(data: Data) {
+        InspirationListAtcTracking.trackEventClickAddToCartInspirationCarouselUnification(
+            data.eventLabel,
+            arrayListOf(data.productAtcDataLayer),
+        )
     }
 
     private fun Option.asSearchComponentTracking(keyword: String): SearchComponentTracking =

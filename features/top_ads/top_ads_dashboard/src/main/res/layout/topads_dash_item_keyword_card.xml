@@ -92,7 +92,7 @@
             android:layout_marginTop="4dp"
             android:includeFontPadding="false"
             android:text="@string/topads_dash_klik"
-            android:textColor="@color/topads_light_shadow"
+            android:textColor="@color/Unify_N700_68"
             app:layout_constraintStart_toEndOf="@id/price_bid"
             app:layout_constraintTop_toTopOf="@id/img_total"
             app:typographyType="small" />
@@ -103,7 +103,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             android:layout_marginBottom="12dp"
-            app:cardBackgroundColor="@color/topads_dash_cardview_color"
+            app:cardBackgroundColor="@color/Unify_TN800"
             app:cardCornerRadius="8dp"
             app:cardElevation="0dp"
             app:card_type="shadow_disabled"

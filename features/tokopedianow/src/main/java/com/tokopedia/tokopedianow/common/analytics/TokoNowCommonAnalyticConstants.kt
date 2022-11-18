@@ -7,6 +7,7 @@ object TokoNowCommonAnalyticConstants {
         const val EVENT_CLICK_CONTENT = "clickContent"
         const val EVENT_VIEW_TOKONOW_IRIS = "viewTokoNowIris"
         const val EVENT_CLICK_TOKONOW = "clickTokoNow"
+        const val EVENT_CLICK_PG = "clickPG"
         const val EVENT_SELECT_CONTENT = "select_content"
         const val EVENT_VIEW_ITEM = "view_item"
         const val EVENT_VIEW_ITEM_LIST = "view_item_list"
@@ -17,12 +18,13 @@ object TokoNowCommonAnalyticConstants {
         const val EVENT_REMOVE_FROM_CART = "remove_from_cart"
         const val EVENT_OPEN_SCREEN = "openScreen"
         const val EVENT_VIEW_PG_IRIS = "viewPGIris"
-        const val EVENT_CLICK_PG = "clickPG"
         const val EVENT_VIEW_GROWTH_IRIS = "viewGrowthIris"
         const val EVENT_CLICK_GROWTH = "clickGrowth"
         const val EVENT_CLICK_COMMUNICATION = "clickCommunication"
         const val EVENT_CAMPAIGN_CODE = "campaignCode"
         const val EVENT_WAREHOUSE_ID = "warehouseId"
+        const val EVENT_PROMO_VIEW = "promoView"
+        const val EVENT_PROMO_CLICK = "promoClick"
     }
 
     object CATEGORY{
@@ -75,11 +77,11 @@ object TokoNowCommonAnalyticConstants {
         const val BUSINESS_UNIT_PHYSICAL_GOODS = "Physical Goods"
         const val BUSINESS_UNIT_SHARING_EXPERIENCE = "sharingexperience"
         const val BUSINESS_UNIT_PLAY = "play"
-        const val LIST_HOME_PAGE_PAST_PURCHASE_WIDGET = "/tokonow - homepage - past_purchase_widget"
         const val SCREEN_NAME_TOKONOW_OOC = "tokonow ooc - "
         const val PAGE_NAME_TOKOPEDIA_NOW = "tokopedia now"
         const val DEFAULT_NULL_VALUE = "null"
         const val DEFAULT_CATEGORY_ID = "0"
+        const val DEFAULT_EMPTY_VALUE = ""
     }
 
     object ACTION{

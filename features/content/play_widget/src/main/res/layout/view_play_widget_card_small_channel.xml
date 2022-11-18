@@ -197,18 +197,23 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@drawable/bg_play_widget_small_live_context"
+        android:ellipsize="end"
+        android:gravity="center"
+        android:maxWidth="@dimen/play_widget_small_width"
+        android:maxLines="1"
         android:paddingStart="@dimen/spacing_lvl2"
         android:paddingTop="@dimen/spacing_lvl1"
         android:paddingEnd="@dimen/spacing_lvl2"
         android:paddingBottom="@dimen/spacing_lvl1"
         android:textColor="@color/Unify_Static_White"
+        app:layout_constrainedWidth="true"
         app:layout_constraintBottom_toBottomOf="@id/fl_border"
         app:layout_constraintEnd_toEndOf="@id/fl_border"
         app:layout_constraintStart_toStartOf="@id/fl_border"
         app:layout_constraintTop_toBottomOf="@id/fl_border"
+        app:layout_constraintVertical_bias="1.0"
         app:typographyType="small"
         app:typographyWeight="bold"
-        tools:text="Kejar Diskon"
-        />
+        tools:text="Kejar Diskon" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

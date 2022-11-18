@@ -248,8 +248,7 @@ class DigitalCartActivityWithDisableVoucher {
 
         onView(withId(R.id.tv_promo_checkout_title)).check(matches(isDisplayed()))
         onView(withId(R.id.tv_promo_checkout_title)).check(matches(withText(mActivityRule.activity.resources.getString(R.string.digital_checkout_promo_disabled_title))))
-        onView(withId(R.id.tv_promo_checkout_desc)).check(matches(isDisplayed()))
-        onView(withId(R.id.tv_promo_checkout_desc)).check(matches(withText(mActivityRule.activity.resources.getString(R.string.digital_checkout_promo_disabled_description))))
+        onView(withId(R.id.tv_promo_checkout_desc)).check(matches(not(isDisplayed())))
         onView(withId(R.id.iv_promo_checkout_right)).check(matches(not(isDisplayed())))
         Thread.sleep(1000)
     }

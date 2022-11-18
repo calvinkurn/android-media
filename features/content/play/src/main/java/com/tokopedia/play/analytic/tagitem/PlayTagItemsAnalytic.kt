@@ -51,6 +51,33 @@ interface PlayTagItemsAnalytic {
 
     fun clickSeeToasterAfterAtc()
 
+    /**
+     * Carousel
+     */
+    fun impressPinnedProductInCarousel(
+        product: PlayProductUiModel.Product,
+        position: Int,
+    )
+
+    fun clickPinnedProductInCarousel(
+        product: PlayProductUiModel.Product,
+        position: Int,
+    )
+
+    fun buyPinnedProductInCarousel(
+        product: PlayProductUiModel.Product,
+        cartId: String,
+        quantity: Int,
+    )
+
+    fun atcPinnedProductInCarousel(
+        product: PlayProductUiModel.Product,
+        cartId: String,
+        quantity: Int,
+    )
+
+    fun impressToasterAtcPinnedProductCarousel()
+
     interface Factory {
         fun create(
             trackingQueue: TrackingQueue,
