@@ -59,11 +59,14 @@ import com.tokopedia.search.result.product.cpm.BannerAdsPresenterDelegate
 import com.tokopedia.search.result.product.cpm.CpmDataView
 import com.tokopedia.search.result.product.emptystate.EmptyStateDataView
 import com.tokopedia.search.result.product.globalnavwidget.GlobalNavDataView
-import com.tokopedia.search.result.product.inspirationbundle.InspirationProductBundlingDataViewMapper.convertToInspirationProductBundleDataView
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
+import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselPresenterDelegate
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselProductDataViewMapper
+import com.tokopedia.search.result.product.inspirationcarousel.LAYOUT_INSPIRATION_CAROUSEL_CHIPS
+import com.tokopedia.search.result.product.inspirationcarousel.LAYOUT_INSPIRATION_CAROUSEL_GRID
 import com.tokopedia.search.result.product.inspirationlistatc.InspirationListAtcPresenter
 import com.tokopedia.search.result.product.inspirationlistatc.InspirationListAtcPresenterDelegate
+import com.tokopedia.search.result.product.inspirationwidget.InspirationWidgetPresenterDelegate
 import com.tokopedia.search.result.product.inspirationwidget.InspirationWidgetVisitable
 import com.tokopedia.search.result.product.lastfilter.LastFilterPresenter
 import com.tokopedia.search.result.product.lastfilter.LastFilterPresenterDelegate
@@ -87,7 +90,6 @@ import com.tokopedia.search.result.product.safesearch.SafeSearchPresenter
 import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationPresenterDelegate
 import com.tokopedia.search.result.product.searchintokopedia.SearchInTokopediaDataView
 import com.tokopedia.search.result.product.separator.VerticalSeparator
-import com.tokopedia.search.result.product.suggestion.SuggestionDataView
 import com.tokopedia.search.result.product.suggestion.SuggestionPresenter
 import com.tokopedia.search.result.product.tdn.TopAdsImageViewPresenterDelegate
 import com.tokopedia.search.result.product.ticker.TickerPresenter
@@ -141,6 +143,7 @@ class ProductListPresenter @Inject constructor(
     private val getInspirationCarouselChipsUseCase: Lazy<UseCase<InspirationCarouselChipsProductModel>>,
     @param:Named(SAVE_LAST_FILTER_USE_CASE)
     private val saveLastFilterUseCase: Lazy<UseCase<Int>>,
+    private val addToCartUseCase: AddToCartUseCase,
     private val topAdsUrlHitter: TopAdsUrlHitter,
     private val schedulersProvider: SchedulersProvider,
     private val topAdsHeadlineHelper : TopAdsHeadlineHelper,
@@ -157,9 +160,10 @@ class ProductListPresenter @Inject constructor(
     private val suggestionPresenter: SuggestionPresenter,
     private val tickerPresenter: TickerPresenter,
     private val safeSearchPresenter: SafeSearchPresenter,
-    private val addToCartUseCase: AddToCartUseCase,
     private val topAdsImageViewPresenterDelegate: TopAdsImageViewPresenterDelegate,
     wishlistPresenterDelegate: WishlistPresenterDelegate,
+    private val inspirationWidgetPresenter: InspirationWidgetPresenterDelegate,
+    private val inspirationCarouselPresenter: InspirationCarouselPresenterDelegate,
 ): BaseDaggerPresenter<ProductListSectionContract.View>(),
     ProductListSectionContract.Presenter,
     Pagination by paginationImpl,
@@ -174,21 +178,9 @@ class ProductListPresenter @Inject constructor(
 
     companion object {
         private val generalSearchTrackingRelatedKeywordResponseCodeList = listOf("3", "4", "5", "6")
-        private val showInspirationCarouselLayout = listOf(
-            SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_INFO,
-            SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_LIST,
-            SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_GRID,
-            SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_CHIPS,
-            SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_DYNAMIC_PRODUCT,
-            SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_BUNDLE,
-            SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_LIST_ATC,
-            SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_VIDEO,
-        )
         private const val SEARCH_PAGE_NAME_RECOMMENDATION = "empty_search"
         private const val DEFAULT_PAGE_TITLE_RECOMMENDATION = "Rekomendasi untukmu"
         private const val QUICK_FILTER_MINIMUM_SIZE = 2
-        private const val PRODUCT_BUNDLE_MINIMUM_SIZE = 2
-        private const val PRODUCT_BUNDLE_MAXIMUM_SIZE = 7
         private val LOCAL_SEARCH_KEY_PARAMS = listOf(
                 SearchApiConst.NAVSOURCE,
                 SearchApiConst.SRP_PAGE_ID,
@@ -219,8 +211,6 @@ class ProductListPresenter @Inject constructor(
     private var isShowHeadlineAdsBasedOnGlobalNav = false
 
     private var productList = mutableListOf<Visitable<*>>()
-    private var inspirationCarouselDataView = mutableListOf<InspirationCarouselDataView>()
-    private var inspirationWidgetVisitable = mutableListOf<InspirationWidgetVisitable>()
     override val quickFilterList = mutableListOf<Filter>()
     override var dynamicFilterModel: DynamicFilterModel? = null
         private set
@@ -438,7 +428,7 @@ class ProductListPresenter @Inject constructor(
 
         processHeadlineAdsLoadMore(searchProductModel, list)
         processTopAdsImageViewModel(searchParameter, list)
-        processInspirationWidgetPosition(searchParameter, list)
+        processInspirationWidgetPosition(list)
         processInspirationCarouselPosition(list)
         processBannerAndBroadMatchInSamePosition(list)
         bannerDelegate.processBanner(list, productList) { index, banner ->
@@ -947,13 +937,17 @@ class ProductListPresenter @Inject constructor(
         additionalParams = productDataView.additionalParams
 
         runCustomMetric(performanceMonitoring, SEARCH_RESULT_PLT_RENDER_LOGIC_INSPIRATION_CAROUSEL) {
-            inspirationCarouselDataView = productDataView.inspirationCarouselDataView.toMutableList()
+            inspirationCarouselPresenter.setInspirationCarouselDataViewList(
+                productDataView.inspirationCarouselDataView
+            )
             processInspirationCarouselPosition(list)
         }
 
         runCustomMetric(performanceMonitoring, SEARCH_RESULT_PLT_RENDER_LOGIC_INSPIRATION_WIDGET) {
-            inspirationWidgetVisitable = productDataView.inspirationWidgetDataView.toMutableList()
-            processInspirationWidgetPosition(searchParameter, list)
+            inspirationWidgetPresenter.setInspirationWidgetDataViewList(
+                productDataView.inspirationWidgetDataView
+            )
+            processInspirationWidgetPosition(list)
         }
 
         processBannerAndBroadMatchInSamePosition(list)
@@ -1105,36 +1099,10 @@ class ProductListPresenter @Inject constructor(
         visitableList.addAll(headlineAdsIndex, headlineAdsVisitableList)
     }
 
-    private fun processInspirationWidgetPosition(
-        searchParameter: Map<String, Any>,
-        list: MutableList<Visitable<*>>,
-    ) {
-        if (inspirationWidgetVisitable.isEmpty()) return
-
-        val inspirationWidgetVisitableIterator = inspirationWidgetVisitable.iterator()
-        while (inspirationWidgetVisitableIterator.hasNext()) {
-            val data = inspirationWidgetVisitableIterator.next()
-
-            if (data.data.position < 0) {
-                inspirationWidgetVisitableIterator.remove()
-                continue
-            }
-
-            val widgetPosition = data.data.position
-            if (widgetPosition <= productList.size) {
-                try {
-                    val visitableIndex = getVisitableIndex(list, widgetPosition)
-
-                    list.add(visitableIndex, data)
-                    inspirationWidgetVisitableIterator.remove()
-                } catch (exception: Throwable) {
-                    Timber.w(exception)
-                    view.logWarning(
-                        UrlParamUtils.generateUrlParamString(searchParameter as Map<String?, Any>),
-                        exception,
-                    )
-                }
-            }
+    private fun processInspirationWidgetPosition(list: MutableList<Visitable<*>>) {
+        inspirationWidgetPresenter.processInspirationWidgetPosition(productList) { position, data ->
+            val visitableIndex = getVisitableIndex(list, position)
+            list.add(visitableIndex, data)
         }
     }
 
@@ -1147,101 +1115,13 @@ class ProductListPresenter @Inject constructor(
     }
 
     private fun processInspirationCarouselPosition(list: MutableList<Visitable<*>>) {
-        if (inspirationCarouselDataView.isEmpty()) return
-
-        val inspirationCarouselViewModelIterator = inspirationCarouselDataView.iterator()
-        while (inspirationCarouselViewModelIterator.hasNext()) {
-            val data = inspirationCarouselViewModelIterator.next()
-
-            if (isInvalidInspirationCarouselLayout(data)) {
-                inspirationCarouselViewModelIterator.remove()
-                continue
-            }
-
-            if (data.position <= productList.size && shouldShowInspirationCarousel(data.layout)) {
-                val inspirationCarouselVisitableList = constructInspirationCarouselVisitableList(data)
-                val visitableIndex = getVisitableIndex(list, data.position)
-
-                list.addAll(visitableIndex, inspirationCarouselVisitableList)
-                inspirationCarouselViewModelIterator.remove()
-            }
-        }
-    }
-
-    private fun isInvalidInspirationCarouselLayout(data: InspirationCarouselDataView) : Boolean {
-        return data.isInvalidCarouselChipsLayout()
-            || data.isInvalidCarouselVideoLayout()
-            || data.isInvalidProductBundleLayout()
-    }
-
-    private fun InspirationCarouselDataView.isInvalidCarouselChipsLayout() : Boolean {
-        return layout == SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_CHIPS
-            && isFirstOptionHasNoProducts()
-    }
-
-    private fun InspirationCarouselDataView.isInvalidCarouselVideoLayout() : Boolean {
-        return isVideoLayout() && isFirstOptionHasNoProducts()
-    }
-
-    private fun InspirationCarouselDataView.isFirstOptionHasNoProducts() : Boolean {
-        val firstOption = options.getOrNull(0)
-        return firstOption != null && !firstOption.hasProducts()
-    }
-
-    private fun InspirationCarouselDataView.isInvalidProductBundleLayout() : Boolean {
-        return isBundleLayout()
-            && (options.size < PRODUCT_BUNDLE_MINIMUM_SIZE || options.size > PRODUCT_BUNDLE_MAXIMUM_SIZE)
-    }
-
-    private fun shouldShowInspirationCarousel(layout: String): Boolean {
-        return showInspirationCarouselLayout.contains(layout)
-    }
-
-    private fun constructInspirationCarouselVisitableList(data: InspirationCarouselDataView) =
-        when {
-            data.isDynamicProductLayout() -> convertInspirationCarouselToBroadMatch(data)
-            data.isVideoLayout() -> convertInspirationCarouselToInspirationCarouselVideo(data)
-            data.isBundleLayout() -> convertInspirationCarouselToInspirationProductBundle(data)
-            data.isListAtcLayout() ->
-                inspirationListAtcPresenterDelegate.convertInspirationCarouselToInspirationListAtc(data)
-            else -> listOf(data)
-        }
-
-    private fun InspirationCarouselDataView.isDynamicProductLayout() =
-        layout == SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_DYNAMIC_PRODUCT
-    private fun InspirationCarouselDataView.isVideoLayout() =
-        layout == SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_VIDEO
-    private fun InspirationCarouselDataView.isBundleLayout() =
-        layout == SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_BUNDLE
-    private fun InspirationCarouselDataView.isListAtcLayout() =
-        layout == SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_LIST_ATC
-
-    private fun convertInspirationCarouselToInspirationProductBundle(
-        data: InspirationCarouselDataView
-    ): List<Visitable<*>> {
-        return listOf(data.convertToInspirationProductBundleDataView(
-            view.queryKey,
+        inspirationCarouselPresenter.processInspirationCarouselPosition(
+            productList,
             externalReference,
-        ))
-    }
-
-    private fun convertInspirationCarouselToInspirationCarouselVideo(data: InspirationCarouselDataView) : List<Visitable<*>> {
-        return listOf(InspirationCarouselVideoDataView(data))
-    }
-
-    private fun convertInspirationCarouselToBroadMatch(data: InspirationCarouselDataView): List<Visitable<*>> {
-        val broadMatchVisitableList = mutableListOf<Visitable<*>>()
-
-        val hasTitle = data.title.isNotEmpty()
-
-        if (hasTitle)
-            broadMatchVisitableList.add(SuggestionDataView.create(data))
-
-        broadMatchVisitableList.addAll(
-            BroadMatchDataView.createList(data, externalReference, !hasTitle)
-        )
-
-        return broadMatchVisitableList
+        ) { position, inspirationCarouselVisitableList ->
+            val visitableIndex = getVisitableIndex(list, position)
+            list.addAll(visitableIndex, inspirationCarouselVisitableList)
+        }
     }
 
     private fun processBannerAndBroadMatchInSamePosition(list: MutableList<Visitable<*>>) {
@@ -1884,9 +1764,9 @@ class ProductListPresenter @Inject constructor(
         if(product.isOrganicAds) sendTrackingImpressInspirationCarouselAds(product)
 
         when(product.layout) {
-            SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_GRID ->
+            LAYOUT_INSPIRATION_CAROUSEL_GRID ->
                 view.trackEventImpressionInspirationCarouselGridItem(product)
-            SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_CHIPS ->
+            LAYOUT_INSPIRATION_CAROUSEL_CHIPS ->
                 view.trackEventImpressionInspirationCarouselChipsItem(product)
             else -> view.trackEventImpressionInspirationCarouselListItem(product)
         }
@@ -1909,9 +1789,9 @@ class ProductListPresenter @Inject constructor(
         view.redirectionStartActivity(product.applink, product.url)
 
         when(product.layout) {
-            SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_GRID ->
+            LAYOUT_INSPIRATION_CAROUSEL_GRID ->
                 view.trackEventClickInspirationCarouselGridItem(product)
-            SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_CHIPS ->
+            LAYOUT_INSPIRATION_CAROUSEL_CHIPS ->
                 view.trackEventClickInspirationCarouselChipsItem(product)
             else -> view.trackEventClickInspirationCarouselListItem(product)
         }
