@@ -14,9 +14,9 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.product_service_widget.R
 import com.tokopedia.product_service_widget.databinding.ItemProductbundleMultipleWidgetBinding
 import com.tokopedia.productbundlewidget.adapter.ProductBundleMultipleAdapter
+import com.tokopedia.productbundlewidget.adapter.constant.ProductBundleConstant.MAX_PRODUCT_DISPLAYED
 import com.tokopedia.productbundlewidget.listener.ProductBundleAdapterListener
 import com.tokopedia.productbundlewidget.model.BundleDetailUiModel
-import com.tokopedia.productbundlewidget.model.BundleProductGroupingHelper.MAX_PRODUCT_DISPLAYED
 import com.tokopedia.productbundlewidget.model.BundleProductGroupingHelper.groupDataSet
 import com.tokopedia.productbundlewidget.model.BundleProductUiModel
 import com.tokopedia.productbundlewidget.model.BundleShopUiModel

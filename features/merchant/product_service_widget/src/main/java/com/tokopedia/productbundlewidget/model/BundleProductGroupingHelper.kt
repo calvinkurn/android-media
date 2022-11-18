@@ -1,7 +1,8 @@
 package com.tokopedia.productbundlewidget.model
 
+import com.tokopedia.productbundlewidget.adapter.constant.ProductBundleConstant.MAX_PRODUCT_DISPLAYED
+
 object BundleProductGroupingHelper {
-    const val MAX_PRODUCT_DISPLAYED = 3
     fun groupDataSet(
         bundleProducts: List<BundleProductUiModel>
     ): Pair<List<BundleProductUiModel>, List<BundleProductUiModel>> {
