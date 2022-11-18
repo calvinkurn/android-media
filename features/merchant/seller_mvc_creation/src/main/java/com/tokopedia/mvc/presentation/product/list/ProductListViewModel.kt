@@ -273,9 +273,11 @@ class ProductListViewModel @Inject constructor(
             block = {
                 val response = shopBasicDataUseCase.execute()
 
-                val selectedProducts = currentState.products.filter { it.isSelected }
-                val topSellingProductImageUrls = selectedProducts
-                    .filter { it.isSelected }
+                val selectedProducts = currentState.products.map { parentProduct ->
+                    SelectedProduct(parentProduct.id, parentProduct.selectedVariantsIds.toList())
+                }
+
+                val topSellingProductImageUrls = currentState.products
                     .sortedByDescending { it.txStats.sold }
                     .map { it.picture }
 

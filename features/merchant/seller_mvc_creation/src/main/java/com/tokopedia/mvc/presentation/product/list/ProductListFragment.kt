@@ -212,7 +212,10 @@ class ProductListFragment : BaseDaggerFragment() {
                 )
             }
 
-            is ProductListEffect.ConfirmAddProduct -> {}
+            is ProductListEffect.ConfirmAddProduct -> {
+                activity?.finish()
+                println()
+            }
         }
     }
 
