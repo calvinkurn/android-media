@@ -3,24 +3,37 @@ package com.tokopedia.tokopedianow.common.listener
 import android.os.Parcelable
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardCarouselItemUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowSeeMoreCardCarouselUiModel
+import com.tokopedia.tokopedianow.common.view.TokoNowDynamicHeaderView
 import com.tokopedia.tokopedianow.common.view.TokoNowProductRecommendationView.TokoNowProductRecommendationListener
 import com.tokopedia.tokopedianow.common.view.productcard.TokoNowProductCardCarouselView
 import com.tokopedia.tokopedianow.common.viewmodel.TokoNowProductRecommendationViewModel
+import com.tokopedia.user.session.UserSession
 
 class TokoNowProductRecommendationCallback(
     private val viewModel: TokoNowProductRecommendationViewModel?,
-    private val listener: TokoNowProductRecommendationListener?
-): TokoNowProductCardCarouselView.TokoNowProductCardCarouselListener {
+    private val listener: TokoNowProductRecommendationListener?,
+    private val userSession: UserSession
+): TokoNowProductCardCarouselView.TokoNowProductCardCarouselListener,
+    TokoNowDynamicHeaderView.TokoNowDynamicHeaderListener {
+
     override fun onProductCardClicked(
         position: Int,
         product: TokoNowProductCardCarouselItemUiModel
     ) {
+        listener?.productCardClicked(
+            position = position,
+            product = product
+        )
     }
 
     override fun onProductCardImpressed(
         position: Int,
         product: TokoNowProductCardCarouselItemUiModel
     ) {
+        listener?.productCardImpressed(
+            position = position,
+            product = product
+        )
     }
 
     override fun onProductCardAnimationFinished(
@@ -28,10 +41,14 @@ class TokoNowProductRecommendationCallback(
         product: TokoNowProductCardCarouselItemUiModel,
         quantity: Int
     ) {
-        viewModel?.updateUi(
-            productId = product.productCardModel.productId,
-            quantity = quantity
-        )
+        if (!userSession.isLoggedIn) {
+            listener?.openLoginPage()
+        } else {
+            viewModel?.updateUi(
+                productId = product.productCardModel.productId,
+                quantity = quantity
+            )
+        }
     }
 
     override fun onProductCardQuantityChanged(
@@ -39,25 +56,36 @@ class TokoNowProductRecommendationCallback(
         product: TokoNowProductCardCarouselItemUiModel,
         quantity: Int
     ) {
-        viewModel?.addProductToCart(
-            productId = product.productCardModel.productId,
-            shopId = product.shopId,
-            quantity = quantity
-        )
+        if (!userSession.isLoggedIn) {
+            listener?.openLoginPage()
+        } else {
+            viewModel?.addProductToCart(
+                productId = product.productCardModel.productId,
+                shopId = product.shopId,
+                quantity = quantity
+            )
+        }
     }
 
     override fun onProductCardAddVariantClicked(
         position: Int,
         product: TokoNowProductCardCarouselItemUiModel
     ) {
-
+        listener?.productCardAddVariantClicked(
+            productId = product.productCardModel.productId,
+            shopId = product.shopId
+        )
     }
 
     override fun onSeeMoreClicked(seeMoreUiModel: TokoNowSeeMoreCardCarouselUiModel) {
+        listener?.seeMoreClicked(seeMoreUiModel)
     }
 
-    override fun saveScrollState(state: Parcelable?) {}
+    override fun onSeeAllClicked(headerName: String, appLink: String) {
+        listener?.seeAllClicked(appLink)
+    }
 
+    override fun onChannelExpired() { /* nothing to do */ }
+    override fun saveScrollState(state: Parcelable?) { /* nothing to do */ }
     override fun getScrollState(): Parcelable? = null
-
 }

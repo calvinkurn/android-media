@@ -5,7 +5,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationUiModel
 import com.tokopedia.tokopedianow.common.view.TokoNowProductRecommendationView
-import com.tokopedia.tokopedianow.databinding.ItemTokopedianowHomeProductRecomBinding
+import com.tokopedia.tokopedianow.databinding.ItemTokopedianowProductRecommendationBinding
 import com.tokopedia.utils.view.binding.viewBinding
 
 class TokoNowProductRecommendationViewHolder(
@@ -15,16 +15,16 @@ class TokoNowProductRecommendationViewHolder(
 
     companion object {
         @JvmStatic
-        val LAYOUT = R.layout.item_tokopedianow_home_product_recom
+        val LAYOUT = R.layout.item_tokopedianow_product_recommendation
     }
 
-    private var binding: ItemTokopedianowHomeProductRecomBinding? by viewBinding()
+    private var binding: ItemTokopedianowProductRecommendationBinding? by viewBinding()
 
     override fun bind(element: TokoNowProductRecommendationUiModel) {
-        binding?.productRecom?.setRequstParam(
+        binding?.productRecommendation?.setRequstParam(
             getRecommendationRequestParam = element.requestParam
         )
-        binding?.productRecom?.setListener(
+        binding?.productRecommendation?.setListener(
             productRecommendationListener = listener
         )
     }

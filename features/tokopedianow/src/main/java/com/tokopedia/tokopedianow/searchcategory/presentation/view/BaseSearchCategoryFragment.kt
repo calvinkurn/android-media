@@ -13,7 +13,6 @@ import androidx.annotation.DimenRes
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.FragmentManager
-import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.GridLayoutManager
@@ -75,11 +74,9 @@ import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
 import com.tokopedia.tokopedianow.common.util.TokoNowServiceTypeUtil
 import com.tokopedia.tokopedianow.common.util.TokoNowSharedPreference
 import com.tokopedia.tokopedianow.common.util.TokoNowSwitcherUtil.switchService
-import com.tokopedia.tokopedianow.common.view.TokoNowProductRecommendationView
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateNoResultViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateOocViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowProductCardViewHolder.TokoNowProductCardListener
-import com.tokopedia.tokopedianow.common.viewholder.TokoNowProductRecommendationOocViewHolder
 import com.tokopedia.tokopedianow.common.viewmodel.TokoNowProductRecommendationViewModel
 import com.tokopedia.tokopedianow.databinding.FragmentTokopedianowSearchCategoryBinding
 import com.tokopedia.tokopedianow.home.presentation.view.listener.OnBoard20mBottomSheetCallback
@@ -92,6 +89,8 @@ import com.tokopedia.tokopedianow.searchcategory.presentation.listener.BannerCom
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.CategoryFilterListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ChooseAddressListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ProductItemListener
+import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ProductRecommendationCallback
+import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ProductRecommendationOocCallback
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.QuickFilterListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.SwitcherWidgetListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.TitleListener
@@ -125,9 +124,7 @@ abstract class BaseSearchCategoryFragment:
     ProductItemListener,
     SwitcherWidgetListener,
     TokoNowEmptyStateNoResultViewHolder.TokoNowEmptyStateNoResultListener,
-    TokoNowProductCardListener,
-    TokoNowProductRecommendationView.TokoNowProductRecommendationListener,
-    TokoNowProductRecommendationOocViewHolder.TokonowRecomBindPageNameListener
+    TokoNowProductCardListener
 {
 
     companion object {
@@ -147,7 +144,7 @@ abstract class BaseSearchCategoryFragment:
     lateinit var sharedPref: TokoNowSharedPreference
 
     @Inject
-    lateinit var productRecomViewModel: TokoNowProductRecommendationViewModel
+    lateinit var productRecommendationViewModel: TokoNowProductRecommendationViewModel
 
     protected var searchCategoryAdapter: SearchCategoryAdapter? = null
     protected var endlessScrollListener: EndlessRecyclerViewScrollListener? = null
@@ -534,7 +531,7 @@ abstract class BaseSearchCategoryFragment:
         getViewModel().updateToolbarNotification.observe(::updateToolbarNotification)
         getViewModel().needToUpdateProductRecommendationLiveData.observe(::updateProductRecommendation)
 
-        productRecomViewModel.miniCartAdd.observe(viewLifecycleOwner) { result ->
+        productRecommendationViewModel.miniCartAdd.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Success -> {
                     showSuccessATCMessage(result.data.errorMessage.joinToString(separator = ", "))
@@ -548,7 +545,7 @@ abstract class BaseSearchCategoryFragment:
             }
         }
 
-        productRecomViewModel.miniCartUpdate.observe(viewLifecycleOwner) { result ->
+        productRecommendationViewModel.miniCartUpdate.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Success -> {
                     getViewModel().refreshMiniCart()
@@ -561,7 +558,7 @@ abstract class BaseSearchCategoryFragment:
             }
         }
 
-        productRecomViewModel.miniCartRemove.observe(viewLifecycleOwner) { result ->
+        productRecommendationViewModel.miniCartRemove.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Success -> {
                     showSuccessATCMessage(result.data.second)
@@ -748,23 +745,17 @@ abstract class BaseSearchCategoryFragment:
         getViewModel().onViewClickCategoryFilterChip(option, isSelected)
     }
 
-    override fun getProductRecommendationViewModel(): TokoNowProductRecommendationViewModel? = productRecomViewModel
-
-    override fun hideProductRecommendationWidget() {
-        getViewModel().removeProductRecommendationWidget()
-    }
-
     private fun updateMiniCartWidget(miniCartSimplifiedData: MiniCartSimplifiedData?) {
         miniCartSimplifiedData ?: return
 
         miniCartWidget?.updateData(miniCartSimplifiedData)
-        productRecomViewModel.updateMiniCartSimplified(miniCartSimplifiedData)
+        productRecommendationViewModel.updateMiniCartSimplified(miniCartSimplifiedData)
     }
 
     override fun onCartItemsUpdated(miniCartSimplifiedData: MiniCartSimplifiedData) {
         getViewModel().updateToolbarNotification()
         getViewModel().onViewUpdateCartItems(miniCartSimplifiedData)
-        productRecomViewModel.updateMiniCartSimplified(miniCartSimplifiedData)
+        productRecommendationViewModel.updateMiniCartSimplified(miniCartSimplifiedData)
     }
 
     private fun updateMiniCartWidgetVisibility(isVisible: Boolean?) {
@@ -1177,35 +1168,16 @@ abstract class BaseSearchCategoryFragment:
         })
     }
 
-    override fun onMiniCartUpdatedFromRecomWidget(miniCartSimplifiedData: MiniCartSimplifiedData) {
+    open fun productRecommendationOocCallback() = ProductRecommendationOocCallback(
+        lifecycle = lifecycle
+    )
 
-    }
-
-    override fun onRecomTokonowAtcSuccess(message: String) {
-
-    }
-
-    override fun onRecomTokonowAtcFailed(throwable: Throwable) {
-
-    }
-
-    override fun onRecomTokonowAtcNeedToSendTracker(
-        recommendationItem: RecommendationItem
-    ) {
-
-    }
-
-    override fun onRecomTokonowDeleteNeedToSendTracker(
-        recommendationItem: RecommendationItem
-    ) {
-
-    }
-
-    override fun onClickItemNonLoginState() {
-
-    }
-
-    override fun setViewToLifecycleOwner(observer: LifecycleObserver) {
-        lifecycle.addObserver(observer)
-    }
+    open fun productRecommendationCallback(cdListName: String, categoryL1: String = "") = ProductRecommendationCallback(
+        productRecommendationViewModel = productRecommendationViewModel,
+        baseSearchCategoryViewModel = getViewModel(),
+        activity = activity,
+        startActivityForResult = ::startActivityForResult,
+        cdListName = cdListName,
+        categoryL1 = categoryL1
+    )
 }

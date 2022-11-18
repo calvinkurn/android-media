@@ -11,6 +11,7 @@ import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendati
 import com.tokopedia.tokopedianow.common.di.component.DaggerCommonComponent
 import com.tokopedia.tokopedianow.common.listener.TokoNowProductRecommendationCallback
 import com.tokopedia.tokopedianow.common.model.TokoNowDynamicHeaderUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowProductCardCarouselItemUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationViewUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowSeeMoreCardCarouselUiModel
 import com.tokopedia.tokopedianow.common.view.TokoNowDynamicHeaderView.TokoNowDynamicHeaderListener
@@ -20,11 +21,16 @@ import com.tokopedia.tokopedianow.databinding.LayoutTokopedianowProductRecommend
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSession
+import javax.inject.Inject
 
 class TokoNowProductRecommendationView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null
 ): BaseCustomView(context, attrs) {
+
+    @Inject
+    lateinit var userSession: UserSession
 
     private var binding: LayoutTokopedianowProductRecommendationViewBinding
 
@@ -114,7 +120,7 @@ class TokoNowProductRecommendationView @JvmOverloads constructor(
     }
 
     /**
-     * The listeners will be used when data are set outside of this widget
+     * The listener will be used when data are set outside of this widget
      */
     fun setListener(
         productCardCarouselListener: TokoNowProductCardCarouselListener? = null,
@@ -129,7 +135,7 @@ class TokoNowProductRecommendationView @JvmOverloads constructor(
     }
 
     /**
-     * The listeners will be used for fetching gql inside this widget
+     * The listener will be used for fetching gql inside this widget
      */
     fun setListener(
         productRecommendationListener: TokoNowProductRecommendationListener? = null
@@ -139,11 +145,14 @@ class TokoNowProductRecommendationView @JvmOverloads constructor(
 
             viewModel = listener?.getProductRecommendationViewModel()
 
+            val callback = TokoNowProductRecommendationCallback(
+                viewModel = viewModel,
+                listener = listener,
+                userSession = userSession
+            )
             setListener(
-                productCardCarouselListener = TokoNowProductRecommendationCallback(
-                    viewModel = viewModel,
-                    listener = listener
-                )
+                productCardCarouselListener = callback,
+                headerCarouselListener = callback
             )
 
             viewModel?.run {
@@ -160,5 +169,28 @@ class TokoNowProductRecommendationView @JvmOverloads constructor(
     interface TokoNowProductRecommendationListener {
         fun getProductRecommendationViewModel(): TokoNowProductRecommendationViewModel?
         fun hideProductRecommendationWidget()
+        fun openLoginPage()
+        fun productCardAddVariantClicked(
+            productId: String,
+            shopId: String
+        )
+        fun productCardClicked(
+            position: Int,
+            product: TokoNowProductCardCarouselItemUiModel
+        )
+        fun productCardImpressed(
+            position: Int,
+            product: TokoNowProductCardCarouselItemUiModel
+        )
+        fun productCardQuantityChanged(
+            position: Int,
+            product: TokoNowProductCardCarouselItemUiModel
+        )
+        fun seeMoreClicked(
+            seeMoreUiModel: TokoNowSeeMoreCardCarouselUiModel
+        )
+        fun seeAllClicked(
+            appLink: String
+        )
     }
 }

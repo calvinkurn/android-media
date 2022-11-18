@@ -7,7 +7,6 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.manager.AdultManager
-import com.tokopedia.discovery.common.utils.UrlParamUtils
 import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
@@ -38,12 +37,10 @@ import com.tokopedia.tokopedianow.category.presentation.listener.CategoryAisleLi
 import com.tokopedia.tokopedianow.category.presentation.model.CategoryAisleItemDataView
 import com.tokopedia.tokopedianow.category.presentation.typefactory.CategoryTypeFactoryImpl
 import com.tokopedia.tokopedianow.category.presentation.viewmodel.TokoNowCategoryViewModel
-import com.tokopedia.tokopedianow.category.utils.RECOM_QUERY_PARAM_CATEGORY_ID
-import com.tokopedia.tokopedianow.category.utils.RECOM_QUERY_PARAM_REF
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
 import com.tokopedia.tokopedianow.common.util.TokoNowUniversalShareUtil
 import com.tokopedia.tokopedianow.common.util.TokoNowUniversalShareUtil.shareRequest
-import com.tokopedia.tokopedianow.common.viewholder.TokoNowCategoryGridViewHolder
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowCategoryGridViewHolder.TokoNowCategoryGridListener
 import com.tokopedia.tokopedianow.common.model.ShareTokonow
 import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
 import com.tokopedia.tokopedianow.common.util.StringUtil.getOrDefaultZeroString
@@ -66,7 +63,7 @@ class TokoNowCategoryFragment:
         BaseSearchCategoryFragment(),
         CategoryAisleListener,
         ScreenShotListener,
-        TokoNowCategoryGridViewHolder.TokoNowCategoryGridListener,
+        TokoNowCategoryGridListener,
         ShareBottomsheetListener,
         PermissionListener {
 
@@ -189,8 +186,8 @@ class TokoNowCategoryFragment:
             categoryAisleListener = this,
             tokoNowCategoryGridListener = this,
             tokoNowProductCardListener = this,
-            productRecommendationOocListener = this,
-            productRecommendationListener = this
+            productRecommendationOocListener = productRecommendationOocCallback(),
+            productRecommendationListener = productRecommendationCallback(getCDListName(), getViewModel().categoryL1)
     )
 
     override fun getViewModel() = tokoNowCategoryViewModel
@@ -564,27 +561,6 @@ class TokoNowCategoryFragment:
 //        RouteManager.route(context, modifySeeMoreRecomApplink(applink))
 //    }
 
-    private fun modifySeeMoreRecomApplink(originalApplink: String): String {
-        val uri = Uri.parse(originalApplink)
-        val queryParamsMap = UrlParamUtils.getParamMap(uri.query ?: "")
-        val recomRef = queryParamsMap[RECOM_QUERY_PARAM_REF] ?: ""
-
-        return if (recomRef == TOKONOW_CLP) {
-            val recomCategoryId = queryParamsMap[RECOM_QUERY_PARAM_CATEGORY_ID] ?: ""
-
-            if (recomCategoryId.isEmpty()) {
-                queryParamsMap[RECOM_QUERY_PARAM_CATEGORY_ID] = getViewModel().categoryL1
-            }
-
-            "${uri.scheme}://" +
-                    "${uri.host}/" +
-                    "${uri.path}?" +
-                    UrlParamUtils.generateUrlParamString(queryParamsMap)
-        } else {
-            originalApplink
-        }
-    }
-
     private fun sendOpenScreenTracking(model: CategoryTrackerModel) {
         val uri = Uri.parse(model.url)
         val categorySlug = uri.lastPathSegment ?: return
@@ -614,7 +590,7 @@ class TokoNowCategoryFragment:
     override fun refreshLayout() {
         super.refreshLayout()
 
-        productRecomViewModel.updateProductRecommendation(
+        productRecommendationViewModel.updateProductRecommendation(
             requestParam = getViewModel().createProductRecommendationRequestParam(
                 pageName = TOKONOW_CLP
             )
@@ -623,7 +599,7 @@ class TokoNowCategoryFragment:
 
     override fun updateProductRecommendation(needToUpdate: Boolean) {
         if (needToUpdate) {
-            productRecomViewModel.updateProductRecommendation(
+            productRecommendationViewModel.updateProductRecommendation(
                 requestParam = getViewModel().createProductRecommendationRequestParam(
                     pageName = TOKONOW_CLP
                 )
