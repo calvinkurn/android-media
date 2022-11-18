@@ -2,6 +2,7 @@ package com.tokopedia.wishlist.topads
 
 import android.Manifest
 import androidx.recyclerview.widget.RecyclerView
+import androidx.test.espresso.IdlingRegistry
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
 import androidx.test.rule.GrantPermissionRule
@@ -10,12 +11,15 @@ import com.tokopedia.test.application.assertion.topads.TopAdsAssertion
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupTopAdsDetector
 import com.tokopedia.wishlist.R
-import com.tokopedia.wishlist.adapter
+import com.tokopedia.wishlist.util.adapter
 import com.tokopedia.wishlist.runWishlistCollectionBot
+import com.tokopedia.wishlist.util.WishlistIdlingResource
+import com.tokopedia.wishlist.util.disableCoachmarkWishlistOnboarding
 import com.tokopedia.wishlistcollection.view.activity.WishlistCollectionActivity
 import com.tokopedia.wishlistcollection.view.adapter.WishlistCollectionAdapter
 import com.tokopedia.wishlistcollection.view.adapter.viewholder.WishlistCollectionRecommendationItemViewHolder
 import org.junit.After
+import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 
@@ -44,17 +48,21 @@ class WishlistCollectionTopAdsVerificationTest {
             }
         }
 
+    @Before
+    fun setup() {
+        disableCoachmarkWishlistOnboarding(context)
+        IdlingRegistry.getInstance().register(WishlistIdlingResource.countingIdlingResource)
+    }
+
     @After
-    fun deleteDatabase() {
+    fun cleanup() {
         topAdsAssertion.after()
+        IdlingRegistry.getInstance().unregister(WishlistIdlingResource.countingIdlingResource)
     }
 
     @Test
     fun testWishlistCollectionTopAds() {
         runWishlistCollectionBot {
-            loading()
-            hideCoachmark()
-
             val wishlistCollectionRecyclerView =
                 activityRule.activity.findViewById<RecyclerView>(R.id.rv_wishlist_collection)
             val itemCount = wishlistCollectionRecyclerView.adapter?.itemCount ?: 0
