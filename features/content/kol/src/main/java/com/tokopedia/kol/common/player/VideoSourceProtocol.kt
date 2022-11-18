@@ -1,6 +1,6 @@
-package com.tokopedia.videoplayer.state
+package com.tokopedia.kol.common.player
 
-import com.tokopedia.videoplayer.R
+import com.tokopedia.kol.R
 
 sealed class VideoSourceProtocol {
 
@@ -16,19 +16,17 @@ sealed class VideoSourceProtocol {
         const val file  = "file"
 
         fun protocol(source: String): VideoSourceProtocol {
-            if (!source.contains(":")) {
-                return InvalidFormat(R.string.videoplayer_invalid_protocol_format)
+            return if (!source.contains(":")) {
+                InvalidFormat(R.string.kol_invalid_protocol_format)
             } else {
-                val url = source.split(":").first()
-                return when (url) {
+                when (source.split(":").first()) {
                     https -> Http
                     http -> Http
                     rtmp -> Rtmp
                     file -> File
-                    else -> InvalidFormat(R.string.videoplayer_invalid_protocol_type)
+                    else -> InvalidFormat(R.string.kol_invalid_protocol_type)
                 }
             }
         }
     }
-
 }
