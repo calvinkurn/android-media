@@ -15,9 +15,12 @@ buildscript {
 }
 
 dependencies {
-    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
-
     implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk7
+    implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
+    implementation rootProject.ext.miscDependencies.coroutineCore
+    implementation rootProject.ext.miscDependencies.coroutineAndroid
+
+    implementation platform(rootProject.ext.firebase.bom)
     implementation (rootProject.ext.firebase.crashlytics) {
         transitive = true
     }
