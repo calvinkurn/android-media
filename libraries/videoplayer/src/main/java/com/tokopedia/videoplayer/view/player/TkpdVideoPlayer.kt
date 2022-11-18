@@ -29,7 +29,7 @@ import com.tokopedia.videoplayer.state.*
 import com.tokopedia.videoplayer.state.Player.Companion.STATE_BUFFERING
 import com.tokopedia.videoplayer.state.Player.Companion.STATE_READY
 import com.tokopedia.videoplayer.utils.sendViewToBack
-import com.tokopedia.videoplayer.utils.showToast
+import com.tokopedia.kotlin.extensions.view.showToast
 import kotlinx.android.synthetic.main.fragment_video_player.*
 import java.io.File
 
