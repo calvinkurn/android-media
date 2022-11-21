@@ -176,6 +176,249 @@ class EventRedeemRevampViewModel @Inject constructor(
                     {
                         "label": "NIK",
                         "value": "330303251296003439443"
+                    }
+                ]
+            },
+            {
+                "id": 5,
+                "day": 2,
+                "redemption_time": 1667796268,
+                "participant_details": [
+                    {
+                        "label": "Nama",
+                        "value": "Fila"
+                    },
+                    {
+                        "label": "NIK",
+                        "value": "330303251296003439443"
+                    },
+                    {
+                        "label": "NIK",
+                        "value": "330303251296003439443"
+                    }
+                ]
+            },
+            {
+                "id": 6,
+                "day": 2,
+                "redemption_time": 1667796268,
+                "participant_details": [
+                    {
+                        "label": "Nama",
+                        "value": "Fila"
+                    },
+                    {
+                        "label": "NIK",
+                        "value": "330303251296003439443"
+                    },
+                    {
+                        "label": "NIK",
+                        "value": "330303251296003439443"
+                    }
+                ]
+            },
+            {
+                "id": 7,
+                "day": 1,
+                "redemption_time": 1667796268,
+                "participant_details": [
+                    {
+                        "label": "Nama",
+                        "value": "Fila"
+                    },
+                    {
+                        "label": "NIK",
+                        "value": "330303251296003439443"
+                    },
+                    {
+                        "label": "NIK",
+                        "value": "330303251296003439443"
+                    }
+                ]
+            },
+            {
+                "id": 8,
+                "day": 2,
+                "redemption_time": 1667796268,
+                "participant_details": [
+                    {
+                        "label": "Nama",
+                        "value": "Fila"
+                    },
+                    {
+                        "label": "NIK",
+                        "value": "330303251296003439443"
+                    },
+                    {
+                        "label": "NIK",
+                        "value": "330303251296003439443"
+                    }
+                ]
+            },
+            {
+                "id": 9,
+                "day": 2,
+                "redemption_time": 1667796268,
+                "participant_details": [
+                    {
+                        "label": "Nama",
+                        "value": "Fila"
+                    },
+                    {
+                        "label": "NIK",
+                        "value": "330303251296003439443"
+                    },
+                    {
+                        "label": "NIK",
+                        "value": "330303251296003439443"
+                    }
+                ]
+            },
+            {
+                "id": 10,
+                "day": 2,
+                "redemption_time": 1667796268,
+                "participant_details": [
+                    {
+                        "label": "Nama",
+                        "value": "Fila"
+                    },
+                    {
+                        "label": "NIK",
+                        "value": "330303251296003439443"
+                    },
+                    {
+                        "label": "NIK",
+                        "value": "330303251296003439443"
+                    }
+                ]
+            },
+             {
+                "id": 11,
+                "day": 1,
+                "redemption_time": 1667796268,
+                "participant_details": [
+                    {
+                        "label": "Nama",
+                        "value": "Fila"
+                    },
+                    {
+                        "label": "NIK",
+                        "value": "330303251296003439443"
+                    },
+                    {
+                        "label": "NIK",
+                        "value": "330303251296003439443"
+                    }
+                ]
+            },
+             {
+                "id": 12,
+                "day": 1,
+                "redemption_time": 1667796268,
+                "participant_details": [
+                    {
+                        "label": "Nama",
+                        "value": "Fila"
+                    },
+                    {
+                        "label": "NIK",
+                        "value": "330303251296003439443"
+                    },
+                    {
+                        "label": "NIK",
+                        "value": "330303251296003439443"
+                    }
+                ]
+            },
+            {
+                "id": 13,
+                "day": 1,
+                "redemption_time": 1667796268,
+                "participant_details": [
+                    {
+                        "label": "Nama",
+                        "value": "Fila"
+                    },
+                    {
+                        "label": "NIK",
+                        "value": "330303251296003439443"
+                    },
+                    {
+                        "label": "NIK",
+                        "value": "330303251296003439443"
+                    }
+                ]
+            },
+            {
+                "id": 14,
+                "day": 1,
+                "redemption_time": 1667796268,
+                "participant_details": [
+                    {
+                        "label": "Nama",
+                        "value": "Fila"
+                    },
+                    {
+                        "label": "NIK",
+                        "value": "330303251296003439443"
+                    },
+                    {
+                        "label": "NIK",
+                        "value": "330303251296003439443"
+                    }
+                ]
+            },
+            {
+                "id": 15,
+                "day": 1,
+                "redemption_time": 1667796268,
+                "participant_details": [
+                    {
+                        "label": "Nama",
+                        "value": "Fila"
+                    },
+                    {
+                        "label": "NIK",
+                        "value": "330303251296003439443"
+                    },
+                    {
+                        "label": "NIK",
+                        "value": "330303251296003439443"
+                    }
+                ]
+            },
+            {
+                "id": 16,
+                "day": 1,
+                "redemption_time": 1667796268,
+                "participant_details": [
+                    {
+                        "label": "Nama",
+                        "value": "Fila"
+                    },
+                    {
+                        "label": "NIK",
+                        "value": "330303251296003439443"
+                    },
+                    {
+                        "label": "NIK",
+                        "value": "330303251296003439443"
+                    }
+                ]
+            },
+            {
+                "id": 17,
+                "day": 1,
+                "redemption_time": 1667796268,
+                "participant_details": [
+                    {
+                        "label": "Nama",
+                        "value": "Fila"
+                    },
+                    {
+                        "label": "NIK",
+                        "value": "330303251296003439443"
                     },
                     {
                         "label": "NIK",
