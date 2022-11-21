@@ -46,7 +46,7 @@ class UserProfileShopRecomViewModelTest {
     private val mockMutationError = mutationBuilder.buildError()
     private val mockException = commonBuilder.buildException()
     private val mockHasAcceptTnc = profileWhitelistBuilder.buildHasAcceptTnc()
-    private val mockShopRecomIsShown = shopRecomBuilder.buildModelIsShown()
+    private val mockShopRecomIsShown = shopRecomBuilder.buildModelIsShown(nextCursor = "")
     private val mockShopRecomIsNotShown = shopRecomBuilder.buildModelIsShown(isShown = false)
     private val mockShopRecomIsShownNoLoadMore = shopRecomBuilder.buildModelIsShown(nextCursor = "")
     private val mockShopRecomIsShownTypeShop = shopRecomBuilder.buildModelIsShown(shopRecomBuilder.typeShop)

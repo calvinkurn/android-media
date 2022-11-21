@@ -391,6 +391,7 @@ class UserProfileViewModel @AssistedInject constructor(
     private suspend fun loadShopRecom(cursor: String = "") {
         val result = repo.getShopRecom(cursor)
         if (result.isShown) {
+            if (cursor.isEmpty()) _shopRecom.update { ShopRecomUiModel() }
             _shopRecom.update {
                 it.copy(
                     isShown = result.isShown,
@@ -398,6 +399,7 @@ class UserProfileViewModel @AssistedInject constructor(
                     title = result.title,
                     loadNextPage = result.loadNextPage,
                     items = it.items + result.items,
+                    isRefresh = cursor.isEmpty(),
                 )
             }
         } else _shopRecom.update { ShopRecomUiModel() }

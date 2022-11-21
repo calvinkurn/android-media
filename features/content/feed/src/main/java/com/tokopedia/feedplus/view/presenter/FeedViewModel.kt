@@ -833,6 +833,7 @@ class FeedViewModel @Inject constructor(
         launchCatchError(baseDispatcher.io, block = {
             val request = requestShopRecomWidget(nextCursor)
             if (request.shopRecomUiModel.isShown) {
+                if (nextCursor.isEmpty()) _shopRecom.update { ShopRecomWidgetModel() }
                 _shopRecom.update {
                     it.copy(
                         shopRecomUiModel = it.shopRecomUiModel.copy(
@@ -841,6 +842,7 @@ class FeedViewModel @Inject constructor(
                             title = request.shopRecomUiModel.title,
                             loadNextPage = request.shopRecomUiModel.loadNextPage,
                             items = it.shopRecomUiModel.items + request.shopRecomUiModel.items,
+                            isRefresh = nextCursor.isEmpty(),
                         ),
                         onError = "",
                     )
