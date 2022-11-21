@@ -2,4 +2,7 @@
 <resources>
     <!--Main Page-->
     <string name="privacy_center_footer_image" translatable="false">https://images.tokopedia.net/img/android/user/privacy_center_footer/img_main_page_privacy_center.png</string>
+
+    <!--Search History-->
+    <string name="search_history_empty_image" translatable="false">https://images.tokopedia.net/img/android/user/privacy_center/img_privacy_center_search_history_empty.png</string>
 </resources>

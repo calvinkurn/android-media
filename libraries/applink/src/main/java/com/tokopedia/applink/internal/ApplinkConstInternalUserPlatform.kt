@@ -474,4 +474,10 @@ object ApplinkConstInternalUserPlatform {
      **/
     const val ACCOUNT_LINKING_WEBVIEW = "${NEW_INTERNAL_USER}/account-linking-webview"
 
+    /**
+     * com.tokopedia.privacyaccount.searchhistory.SearchHistoryActivity
+     * @Applink : tokopedia-android-internal://user/search-history
+     **/
+    const val SEARCH_HISTORY = "$NEW_INTERNAL_USER/search-history"
+
 }
