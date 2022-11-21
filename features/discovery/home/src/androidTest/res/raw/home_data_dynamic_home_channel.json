@@ -4855,7 +4855,7 @@
                     "name": "BPJS",
                     "url": "https://www.tokopedia.com/tagihan/bpjs-kesehatan?ispulsa=1",
                     "applinks": "tokopedia://digital/form?category_id=4",
-                    "imageUrl": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2019/4/11/3127195/3127195_0675b163-0aa0-4c49-bdaa-2a38b8276f5b.png",
+                    "imageUrl": "https://images.tokopedia.net/img/cache/100-square/attachment/2019/4/11/3127195/3127195_0675b163-0aa0-4c49-bdaa-2a38b8276f5b.png",
                     "bu_identifier": ""
                 },
                 {
@@ -4863,7 +4863,7 @@
                     "name": "Tiket Pesawat",
                     "url": "https://www.tokopedia.com/tiket-pesawat?ispulsa=1",
                     "applinks": "tokopedia://pesawat",
-                    "imageUrl": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2019/4/1/3127195/3127195_2258af2c-550d-4b7f-a8d4-f62178070ed8.png",
+                    "imageUrl": "https://images.tokopedia.net/img/cache/100-square/attachment/2019/4/1/3127195/3127195_2258af2c-550d-4b7f-a8d4-f62178070ed8.png",
                     "bu_identifier": "null_null_Tiket Pesawat"
                 },
                 {
@@ -4871,7 +4871,7 @@
                     "name": "Pulsa",
                     "url": "https://www.tokopedia.com/pulsa?ispulsa=1",
                     "applinks": "tokopedia://digital/form?category_id=1&menu_id=2",
-                    "imageUrl": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2019/4/2/3127195/3127195_426c7c26-e0e7-47cb-ba5a-52241b625d71.png",
+                    "imageUrl": "https://images.tokopedia.net/img/cache/100-square/attachment/2019/4/2/3127195/3127195_426c7c26-e0e7-47cb-ba5a-52241b625d71.png",
                     "bu_identifier": "null_null_Pulsa"
                 },
                 {

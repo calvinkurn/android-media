@@ -87,7 +87,7 @@
           "product_minimum_order": 1,
           "free_ongkir": {
             "is_active": true,
-            "img_url": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+            "img_url": "https://images.tokopedia.net/img/ic_bebas_ongkir.png"
           },
           "campaign": {
             "original_price": "",
@@ -179,7 +179,7 @@
           "product_minimum_order": 3,
           "free_ongkir": {
             "is_active": true,
-            "img_url": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+            "img_url": "https://images.tokopedia.net/img/ic_bebas_ongkir.png"
           },
           "campaign": {
             "original_price": "",
@@ -265,7 +265,7 @@
           "product_minimum_order": 5,
           "free_ongkir": {
             "is_active": true,
-            "img_url": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+            "img_url": "https://images.tokopedia.net/img/ic_bebas_ongkir.png"
           },
           "campaign": {
             "original_price": "",
@@ -361,7 +361,7 @@
           "product_minimum_order": 2,
           "free_ongkir": {
             "is_active": false,
-            "img_url": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+            "img_url": "https://images.tokopedia.net/img/ic_bebas_ongkir.png"
           },
           "campaign": {
             "original_price": "",
@@ -436,7 +436,7 @@
           "product_minimum_order": 7,
           "free_ongkir": {
             "is_active": false,
-            "img_url": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+            "img_url": "https://images.tokopedia.net/img/ic_bebas_ongkir.png"
           },
           "campaign": {
             "original_price": "",
@@ -522,7 +522,7 @@
           "product_minimum_order": 1,
           "free_ongkir": {
             "is_active": true,
-            "img_url": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+            "img_url": "https://images.tokopedia.net/img/ic_bebas_ongkir.png"
           },
           "campaign": {
             "original_price": "",

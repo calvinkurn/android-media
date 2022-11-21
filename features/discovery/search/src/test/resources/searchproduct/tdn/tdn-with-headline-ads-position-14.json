@@ -561,7 +561,7 @@
           {
             "name": "Official Store",
             "key": "official",
-            "icon": "https://ecs7.tokopedia.net/img/autocomplete/ic_os.png",
+            "icon": "https://images.tokopedia.net/img/autocomplete/ic_os.png",
             "value": "true",
             "is_new": false,
             "input_type": "checkbox",
@@ -633,7 +633,7 @@
           {
             "name": "Power Merchant",
             "key": "goldmerchant",
-            "icon": "https://ecs7.tokopedia.net/img/autocomplete/ic_pm.png",
+            "icon": "https://images.tokopedia.net/img/autocomplete/ic_pm.png",
             "value": "true",
             "is_new": false,
             "input_type": "checkbox",
@@ -700,7 +700,7 @@
           "product_minimum_order": 1,
           "free_ongkir": {
             "is_active": true,
-            "img_url": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+            "img_url": "https://images.tokopedia.net/img/ic_bebas_ongkir.png"
           },
           "campaign": {
             "original_price": "",
@@ -801,7 +801,7 @@
           "product_minimum_order": 1,
           "free_ongkir": {
             "is_active": true,
-            "img_url": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+            "img_url": "https://images.tokopedia.net/img/ic_bebas_ongkir.png"
           },
           "campaign": {
             "original_price": "",
@@ -887,7 +887,7 @@
           "product_minimum_order": 1,
           "free_ongkir": {
             "is_active": true,
-            "img_url": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+            "img_url": "https://images.tokopedia.net/img/ic_bebas_ongkir.png"
           },
           "campaign": {
             "original_price": "",
@@ -973,7 +973,7 @@
           "product_minimum_order": 1,
           "free_ongkir": {
             "is_active": true,
-            "img_url": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+            "img_url": "https://images.tokopedia.net/img/ic_bebas_ongkir.png"
           },
           "campaign": {
             "original_price": "",
@@ -1059,7 +1059,7 @@
           "product_minimum_order": 1,
           "free_ongkir": {
             "is_active": true,
-            "img_url": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+            "img_url": "https://images.tokopedia.net/img/ic_bebas_ongkir.png"
           },
           "campaign": {
             "original_price": "",
@@ -1150,7 +1150,7 @@
           "product_minimum_order": 1,
           "free_ongkir": {
             "is_active": true,
-            "img_url": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+            "img_url": "https://images.tokopedia.net/img/ic_bebas_ongkir.png"
           },
           "campaign": {
             "original_price": "",
@@ -1360,7 +1360,7 @@
           "name": "nexard",
           "image": {
             "full_url": "https://ta-staging.tokopedia.com/promo/v1/views/8a-2rOYDQfPwgcV7yZUEHZFiy3zwq3ei6seFoAJFoZFiy3zwPIBFgZUEHaFircYpq9z2Qfdi6sJDUSz2Q31i6sJfHAepHAHaosnDUSCxPcKi6i-ByRHRbSz5qfYFg3z2yZNXg9e5q3OSbfoxyfxBbpJFHmOpr9uxrM15Pfui9RoBrSg2yf1Wrfx5rcN5rcx5Pc4XrcNSUiFiyRCWUsth6mFiqfuNPfYagVY2gmUEH_1hoAHDUMVj9RosQR-BUstao_jXoAyhHAHaHAHRHs1RHAeDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_1o-r7BW_sCsQABE3BPc8ujagfBvq1BRZ3BRq3JausujHsBN3jyN8Bja69Bq17jfZ32CP1N1e9268Bu2_JoGP3Uao32q17jfZ3OGQ1NIZM2guOVN_VPcqJY1gRz6zO1O_jHFoV2IZMBHuOja_S2-81O1Qc2qzV1F3uo-r7BW69BxufzFyMFNqO2yeMgxuOV2_fB-P7B2PfBiH72F3s-DPuKpeSBiHBUh3_oZgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Ao6QfUpeMgxuOV2_fB-P7B2PfBs3VgDyfNDgMzIzMNs81jfZ3B-r7BX_M2iH72D3A-G83UpgI2q17jfZ32Cq1hAZS2gHsBN3ByN8B29zSBgHMP2_fB-81N1qRu6zVBd_1zo81OJ__ooqB1p_1zzq3gzv_7ibm-Orfua9fBjUstio_eibm-xQcri6i-0PVYB8cVsPmUDUMNOQ3-BrBY5gBYxgIHi6sJDUMNOQ3-BrBYxgIowrMuhUsthbm-X9foxQMz2gcV7guYxgIHi6sHDUMVi9RzBrRei6i-6UiFiPMuarfB5QiUEUSyaUiFirMuh9fxBy3zDq3NB9RCaQfzOyRzwyfYOQSei6sHDUSg2g9PBgVYFrMYjP3o79fBjraUE3pJOHs1OosnhbAJOHs1Oo_rh997?src=search&cpm_template_req=3%2C4%2C5&keyword_correction=sticker&t=android&uid=54&is_search=1&keywords=sticker&page=1&template_id_used=3",
-            "full_ecs": "https://ecs7.tokopedia.net/img/cache/100-square/web_service-shopnophoto.png"
+            "full_ecs": "https://images.tokopedia.net/img/cache/100-square/web_service-shopnophoto.png"
           },
           "shop": {
             "id": "480996",
@@ -1387,7 +1387,7 @@
                 "image_product": {
                   "product_id": "15255601",
                   "product_name": "Sticker 44",
-                  "image_url": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/7/29/8969756/8969756_b6ca40a8-d9ff-4562-952d-0167fd5982d0_1350_1350",
+                  "image_url": "https://images.tokopedia.net/img/cache/200-square/product-1/2019/7/29/8969756/8969756_b6ca40a8-d9ff-4562-952d-0167fd5982d0_1350_1350",
                   "image_click_url": "https://ta-staging.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEoAn7H_nObm-xgVY789CBUstpbm-FQRo2PcB5QiUEHZFiPcBWgZUEH_yFoAHFHpUfHmFiqfuNPfYagVY2gmUEH_1hoAHDUMVj9RosQR-BUstao_jXoAyhHAHaHAHRHs1RHAeDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_1o-r7BW_sCsQABE3BPc8ujagfBvq1BRZ3BRq3JausujHsBN3jyN8Bja69Bq17jfZ32CP1N1e9268Bu2_JoGP3Uao32q17jfZ3OGQ1NIZM2guOVN_VPcqJY1gRz6zO1O_jHFoV2IZMBHuOja_S2-81O1Qc2qzV1F3uo-r7BW69BxufzFyMFNqO2yeMgxuOV2_fB-P7B2PfBiH72F3s-DPuKpeSBiHBUh3_oZgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Ao6QfUpeMgxuOV2_fB-P7B2PfBs3VgDyfNDgMzIzMNs81jfZ3B-r7BX_M2iH72D3A-G83UpgI2q17jfZ32Cq1hAZS2gHsBN3ByN8B29zSBgHMP2_fB-81N1qRu6zVBd_1zo81OJ__ooqB1p_1zzq3gzv_7ibm-Orfua9fBjUstio_eibm-xQcri6i-0PVYB8cVsPmUDUMNOQ3-BrBY5gBYxgIHi6sJDUMNOQ3-BrBYxgIowrMuhUsthbm-X9foxQMz2gcV7guYxgIHi6sHDUMVi9RzBrRei6i-6UiFiPMuarfB5QiUEUSyaUS7?r=https%3A%2F%2Fstaging.tokopedia.com%2Fnexard%2Fsticker-44&click_ad_type=2&product_id=15255601&src=search&cpm_template_req=3%2C4%2C5&is_search=1&template_id_used=3&t=android&uid=54&keywords=sticker&page=1&keyword_correction=sticker"
                 },
                 "campaign": {
@@ -1408,7 +1408,7 @@
                 "image_product": {
                   "product_id": "15255571",
                   "product_name": "Sticker 18",
-                  "image_url": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2019/7/29/8969756/8969756_9a575acb-3fe5-49f9-834c-879738fed427_1350_1350",
+                  "image_url": "https://images.tokopedia.net/img/cache/200-square/product-1/2019/7/29/8969756/8969756_9a575acb-3fe5-49f9-834c-879738fed427_1350_1350",
                   "image_click_url": "https://ta-staging.tokopedia.com/promo/v1/clicks/8a-xgVY2gmUEoAn7H_nObm-xgVY789CBUstpbm-FQRo2PcB5QiUEHZFiPcBWgZUEH_yFoAHFHpUfHmFiqfuNPfYagVY2gmUEH_1hoAHDUMVj9RosQR-BUstao_jXoAyhHAHaHAHRHs1RHAeDUSHp9fh5gaUEUMuNZM2jZJ2M33NGPMep_Mh-qMY2_1o-r7BW_sCsQABE3BPc8ujagfBvq1BRZ3BRq3JausujHsBN3jyN8Bja69Bq17jfZ32CP1N1e9268Bu2_JoGP3Uao32q17jfZ3OGQ1NIZM2guOVN_VPcqJY1gRz6zO1O_jHFoV2IZMBHuOja_S2-81O1Qc2qzV1F3uo-r7BW69BxufzFyMFNqO2yeMgxuOV2_fB-P7B2PfBiH72F3s-DPuKpeSBiHBUh3_oZgMV913Bvq1BRZ3BRq3UpZSCqHMhO3Ao6QfUpeMgxuOV2_fB-P7B2PfBs3VgDyfNDgMzIzMNs81jfZ3B-r7BX_M2iH72D3A-G83UpgI2q17jfZ32Cq1hAZS2gHsBN3ByN8B29zSBgHMP2_fB-81N1qRu6zVBd_1zo81OJ__ooqB1p_1zzq3gzv_7ibm-Orfua9fBjUstio_eibm-xQcri6i-0PVYB8cVsPmUDUMNOQ3-BrBY5gBYxgIHi6sJDUMNOQ3-BrBYxgIowrMuhUsthbm-X9foxQMz2gcV7guYxgIHi6sHDUMVi9RzBrRei6i-6UiFiPMuarfB5QiUEUSyaUS7?r=https%3A%2F%2Fstaging.tokopedia.com%2Fnexard%2Fsticker-18&keywords=sticker&click_ad_type=2&src=search&page=1&template_id_used=3&keyword_correction=sticker&product_id=15255571&uid=54&t=android&is_search=1&cpm_template_req=3%2C4%2C5"
                 },
                 "campaign": {
@@ -1418,12 +1418,12 @@
               }
             ],
             "image_shop": {
-              "cover": "https://ecs7.tokopedia.net/img/cache/750/web_service-shopnocover.png",
-              "s_url": "https://ecs7.tokopedia.net/img/cache/215-square/web_service-shopnophoto.png",
-              "xs_url": "https://ecs7.tokopedia.net/img/cache/100-square/web_service-shopnophoto.png",
-              "cover_ecs": "https://ecs7.tokopedia.net/img/cache/750/web_service-shopnocover.png",
-              "s_ecs": "https://ecs7.tokopedia.net/img/cache/215-square/web_service-shopnophoto.png",
-              "xs_ecs": "https://ecs7.tokopedia.net/img/cache/100-square/web_service-shopnophoto.png"
+              "cover": "https://images.tokopedia.net/img/cache/750/web_service-shopnocover.png",
+              "s_url": "https://images.tokopedia.net/img/cache/215-square/web_service-shopnophoto.png",
+              "xs_url": "https://images.tokopedia.net/img/cache/100-square/web_service-shopnophoto.png",
+              "cover_ecs": "https://images.tokopedia.net/img/cache/750/web_service-shopnocover.png",
+              "s_ecs": "https://images.tokopedia.net/img/cache/215-square/web_service-shopnophoto.png",
+              "xs_ecs": "https://images.tokopedia.net/img/cache/100-square/web_service-shopnophoto.png"
             }
           },
           "badges": [],

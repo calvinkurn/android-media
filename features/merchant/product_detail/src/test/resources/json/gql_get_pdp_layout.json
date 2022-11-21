@@ -246,7 +246,7 @@
                   "percentage": 0
                 },
                 "isFreeOngkir": {
-                  "imageURL": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png",
+                  "imageURL": "https://images.tokopedia.net/img/ic_bebas_ongkir.png",
                   "isActive": true
                 },
                 "isOS": true,
@@ -553,7 +553,7 @@
               {
                 "applink": "",
                 "content": [],
-                "icon": "https://ecs7.tokopedia.net/pdp/info/icon/icTradeinBlue_3x.png",
+                "icon": "https://images.tokopedia.net/pdp/info/icon/icTradeinBlue_3x.png",
                 "isApplink": true,
                 "title": "Beli dengan Tukar Tambah"
               }
@@ -592,7 +592,7 @@
               {
                 "applink": "",
                 "content": [],
-                "icon": "https://ecs7.tokopedia.net/pdp/info/icon/icFulfillment_3x.png",
+                "icon": "https://images.tokopedia.net/pdp/info/icon/icFulfillment_3x.png",
                 "isApplink": false,
                 "title": "Dilayani oleh Tokopedia"
               }
@@ -605,7 +605,7 @@
               {
                 "applink": "",
                 "content": [],
-                "icon": "https://ecs7.tokopedia.net/pdp/info/icon/icProtection_3x.png",
+                "icon": "https://images.tokopedia.net/pdp/info/icon/icProtection_3x.png",
                 "isApplink": false,
                 "title": "Proteksi Gadget"
               }
@@ -618,7 +618,7 @@
               {
                 "applink": "",
                 "content": [],
-                "icon": "https://ecs7.tokopedia.net/pdp/info/icon/icOrderprio_3x.png",
+                "icon": "https://images.tokopedia.net/pdp/info/icon/icOrderprio_3x.png",
                 "isApplink": false,
                 "title": "Order Prioritas"
               }

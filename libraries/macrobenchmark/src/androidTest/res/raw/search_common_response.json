@@ -751,7 +751,7 @@
               {
                 "name": "Official Store",
                 "key": "official",
-                "icon": "https://ecs7.tokopedia.net/img/autocomplete/ic_os.png",
+                "icon": "https://images.tokopedia.net/img/autocomplete/ic_os.png",
                 "value": "true",
                 "is_new": false,
                 "input_type": "checkbox",
@@ -823,7 +823,7 @@
               {
                 "name": "Power Merchant",
                 "key": "goldmerchant",
-                "icon": "https://ecs7.tokopedia.net/img/autocomplete/ic_pm.png",
+                "icon": "https://images.tokopedia.net/img/autocomplete/ic_pm.png",
                 "value": "true",
                 "is_new": false,
                 "input_type": "checkbox",
@@ -894,7 +894,7 @@
               "product_item_sold_payment_verified": "Terjual 1",
               "free_ongkir": {
                 "is_active": false,
-                "img_url": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                "img_url": "https://images.tokopedia.net/img/ic_bebas_ongkir.png"
               },
               "campaign": {
                 "original_price": "",
@@ -985,7 +985,7 @@
               "product_item_sold_payment_verified": "Terjual 78",
               "free_ongkir": {
                 "is_active": true,
-                "img_url": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                "img_url": "https://images.tokopedia.net/img/ic_bebas_ongkir.png"
               },
               "campaign": {
                 "original_price": "",
@@ -1071,7 +1071,7 @@
               "product_item_sold_payment_verified": "",
               "free_ongkir": {
                 "is_active": true,
-                "img_url": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                "img_url": "https://images.tokopedia.net/img/ic_bebas_ongkir.png"
               },
               "campaign": {
                 "original_price": "",
@@ -1157,7 +1157,7 @@
               "product_item_sold_payment_verified": "Terjual 6",
               "free_ongkir": {
                 "is_active": true,
-                "img_url": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                "img_url": "https://images.tokopedia.net/img/ic_bebas_ongkir.png"
               },
               "campaign": {
                 "original_price": "",
@@ -1237,7 +1237,7 @@
               "product_item_sold_payment_verified": "Terjual 5",
               "free_ongkir": {
                 "is_active": true,
-                "img_url": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                "img_url": "https://images.tokopedia.net/img/ic_bebas_ongkir.png"
               },
               "campaign": {
                 "original_price": "",
@@ -1323,7 +1323,7 @@
               "product_item_sold_payment_verified": "Terjual 106",
               "free_ongkir": {
                 "is_active": true,
-                "img_url": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                "img_url": "https://images.tokopedia.net/img/ic_bebas_ongkir.png"
               },
               "campaign": {
                 "original_price": "",

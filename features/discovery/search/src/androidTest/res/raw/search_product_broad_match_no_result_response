@@ -84,7 +84,7 @@
                       ],
                       "freeOngkir": {
                         "isActive": true,
-                        "imgUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                        "imgUrl": "https://images.tokopedia.net/img/ic_bebas_ongkir.png"
                       },
                       "ads": {
                         "id": "",
@@ -115,7 +115,7 @@
                       ],
                       "freeOngkir": {
                         "isActive": true,
-                        "imgUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                        "imgUrl": "https://images.tokopedia.net/img/ic_bebas_ongkir.png"
                       },
                       "ads": {
                         "id": "",
@@ -153,7 +153,7 @@
                       ],
                       "freeOngkir": {
                         "isActive": true,
-                        "imgUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                        "imgUrl": "https://images.tokopedia.net/img/ic_bebas_ongkir.png"
                       },
                       "ads": {
                         "id": "",
@@ -253,7 +253,7 @@
                       ],
                       "freeOngkir": {
                         "isActive": true,
-                        "imgUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                        "imgUrl": "https://images.tokopedia.net/img/ic_bebas_ongkir.png"
                       },
                       "ads": {
                         "id": "62295726",
@@ -284,7 +284,7 @@
                       ],
                       "freeOngkir": {
                         "isActive": true,
-                        "imgUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                        "imgUrl": "https://images.tokopedia.net/img/ic_bebas_ongkir.png"
                       },
                       "ads": {
                         "id": "80798493",
@@ -322,7 +322,7 @@
                       ],
                       "freeOngkir": {
                         "isActive": true,
-                        "imgUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                        "imgUrl": "https://images.tokopedia.net/img/ic_bebas_ongkir.png"
                       },
                       "ads": {
                         "id": "",
@@ -367,7 +367,7 @@
                       ],
                       "freeOngkir": {
                         "isActive": true,
-                        "imgUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                        "imgUrl": "https://images.tokopedia.net/img/ic_bebas_ongkir.png"
                       },
                       "ads": {
                         "id": "13714890",
@@ -405,7 +405,7 @@
                       ],
                       "freeOngkir": {
                         "isActive": true,
-                        "imgUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                        "imgUrl": "https://images.tokopedia.net/img/ic_bebas_ongkir.png"
                       },
                       "ads": {
                         "id": "49341880",
@@ -526,7 +526,7 @@
                       ],
                       "freeOngkir": {
                         "isActive": true,
-                        "imgUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                        "imgUrl": "https://images.tokopedia.net/img/ic_bebas_ongkir.png"
                       },
                       "ads": {
                         "id": "",
@@ -564,7 +564,7 @@
                       ],
                       "freeOngkir": {
                         "isActive": true,
-                        "imgUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                        "imgUrl": "https://images.tokopedia.net/img/ic_bebas_ongkir.png"
                       },
                       "ads": {
                         "id": "",
@@ -613,7 +613,7 @@
               {
                 "name": "Official Store",
                 "key": "official",
-                "icon": "https://ecs7.tokopedia.net/img/autocomplete/ic_os.png",
+                "icon": "https://images.tokopedia.net/img/autocomplete/ic_os.png",
                 "value": "true",
                 "is_new": false,
                 "input_type": "checkbox",
@@ -647,7 +647,7 @@
               {
                 "name": "Power Merchant",
                 "key": "goldmerchant",
-                "icon": "https://ecs7.tokopedia.net/img/autocomplete/ic_pm.png",
+                "icon": "https://images.tokopedia.net/img/autocomplete/ic_pm.png",
                 "value": "true",
                 "is_new": false,
                 "input_type": "checkbox",
@@ -724,7 +724,7 @@
                 "product_minimum_order": 1,
                 "free_ongkir": {
                   "is_active": true,
-                  "img_url": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                  "img_url": "https://images.tokopedia.net/img/ic_bebas_ongkir.png"
                 },
                 "campaign": {
                   "original_price": "",
@@ -815,7 +815,7 @@
                 "product_minimum_order": 1,
                 "free_ongkir": {
                   "is_active": true,
-                  "img_url": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+                  "img_url": "https://images.tokopedia.net/img/ic_bebas_ongkir.png"
                 },
                 "campaign": {
                   "original_price": "",

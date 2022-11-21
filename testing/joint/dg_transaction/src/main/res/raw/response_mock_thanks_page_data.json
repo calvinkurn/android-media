@@ -10,7 +10,7 @@
         "payment_status": 3,
         "payment_type": "TOKOPEDIA",
         "gateway_name": "Saldo Tokopedia",
-        "gateway_image": "https://ecs7.tokopedia.net/img/toppay/payment-logo/saldo-new.png",
+        "gateway_image": "https://images.tokopedia.net/img/toppay/payment-logo/saldo-new.png",
         "expire_time_unix": 1654230746,
         "expire_time_str": "Jumat, 03 Jun 2022 11:32 WIB",
         "page_type": "Success",

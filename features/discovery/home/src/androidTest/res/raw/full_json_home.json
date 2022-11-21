@@ -299,7 +299,7 @@
       "category_persona": "",
       "name": "Hotel",
       "url": "https://www.tokopedia.com/hotel",
-      "imageUrl": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2019/10/21/20723472/20723472_9c845009-67dd-468c-aa8a-d6436ed52f92.png",
+      "imageUrl": "https://images.tokopedia.net/img/cache/100-square/attachment/2019/10/21/20723472/20723472_9c845009-67dd-468c-aa8a-d6436ed52f92.png",
       "applinks": "tokopedia://hotel/dashboard",
       "bu_identifier": "DG_DG_Hotel"
     }, {
@@ -310,7 +310,7 @@
       "category_persona": "",
       "name": "Emas",
       "url": "https://www.tokopedia.com/emas/",
-      "imageUrl": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2019/9/5/20723472/20723472_4794df30-b713-440a-83b5-b8c71c6f9e80.png",
+      "imageUrl": "https://images.tokopedia.net/img/cache/100-square/attachment/2019/9/5/20723472/20723472_4794df30-b713-440a-83b5-b8c71c6f9e80.png",
       "applinks": "tokopedia://webview?url=https%3A%2F%2Fwww.tokopedia.com%2Femas%2F",
       "bu_identifier": "null_null_Emas"
     }, {
@@ -321,7 +321,7 @@
       "category_persona": "",
       "name": "Paket Data",
       "url": "https://www.tokopedia.com/paket-data?ispulsa=1",
-      "imageUrl": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2019/4/2/3127195/3127195_131d5e92-780e-4d15-850c-feaacbb9bff6.png",
+      "imageUrl": "https://images.tokopedia.net/img/cache/100-square/attachment/2019/4/2/3127195/3127195_131d5e92-780e-4d15-850c-feaacbb9bff6.png",
       "applinks": "tokopedia://digital/form?category_id=2\u0026menu_id=2",
       "bu_identifier": "null_null_Paket Data"
     }]
@@ -588,7 +588,7 @@
         "isTopads": true,
         "freeOngkir": {
           "isActive": false,
-          "imageUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+          "imageUrl": "https://images.tokopedia.net/img/ic_bebas_ongkir.png"
         },
         "productViewCountFormatted": "",
         "isOutOfStock": false,
@@ -616,7 +616,7 @@
         "isTopads": true,
         "freeOngkir": {
           "isActive": true,
-          "imageUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+          "imageUrl": "https://images.tokopedia.net/img/ic_bebas_ongkir.png"
         },
         "productViewCountFormatted": "",
         "isOutOfStock": false,
@@ -644,7 +644,7 @@
         "isTopads": true,
         "freeOngkir": {
           "isActive": false,
-          "imageUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+          "imageUrl": "https://images.tokopedia.net/img/ic_bebas_ongkir.png"
         },
         "productViewCountFormatted": "",
         "isOutOfStock": false,
@@ -672,7 +672,7 @@
         "isTopads": true,
         "freeOngkir": {
           "isActive": true,
-          "imageUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+          "imageUrl": "https://images.tokopedia.net/img/ic_bebas_ongkir.png"
         },
         "productViewCountFormatted": "",
         "isOutOfStock": false,
@@ -887,7 +887,7 @@
         "isTopads": false,
         "freeOngkir": {
           "isActive": true,
-          "imageUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+          "imageUrl": "https://images.tokopedia.net/img/ic_bebas_ongkir.png"
         },
         "productViewCountFormatted": "",
         "isOutOfStock": false,
@@ -962,7 +962,7 @@
         "isTopads": true,
         "freeOngkir": {
           "isActive": true,
-          "imageUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+          "imageUrl": "https://images.tokopedia.net/img/ic_bebas_ongkir.png"
         },
         "productViewCountFormatted": "",
         "isOutOfStock": false,
@@ -990,7 +990,7 @@
         "isTopads": true,
         "freeOngkir": {
           "isActive": true,
-          "imageUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+          "imageUrl": "https://images.tokopedia.net/img/ic_bebas_ongkir.png"
         },
         "productViewCountFormatted": "",
         "isOutOfStock": false,
@@ -1018,7 +1018,7 @@
         "isTopads": true,
         "freeOngkir": {
           "isActive": true,
-          "imageUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+          "imageUrl": "https://images.tokopedia.net/img/ic_bebas_ongkir.png"
         },
         "productViewCountFormatted": "",
         "isOutOfStock": false,
@@ -1093,7 +1093,7 @@
         "isTopads": false,
         "freeOngkir": {
           "isActive": true,
-          "imageUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+          "imageUrl": "https://images.tokopedia.net/img/ic_bebas_ongkir.png"
         },
         "productViewCountFormatted": "",
         "isOutOfStock": false,
@@ -1121,7 +1121,7 @@
         "isTopads": false,
         "freeOngkir": {
           "isActive": true,
-          "imageUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+          "imageUrl": "https://images.tokopedia.net/img/ic_bebas_ongkir.png"
         },
         "productViewCountFormatted": "",
         "isOutOfStock": false,
@@ -1149,7 +1149,7 @@
         "isTopads": false,
         "freeOngkir": {
           "isActive": true,
-          "imageUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+          "imageUrl": "https://images.tokopedia.net/img/ic_bebas_ongkir.png"
         },
         "productViewCountFormatted": "",
         "isOutOfStock": false,
@@ -1177,7 +1177,7 @@
         "isTopads": false,
         "freeOngkir": {
           "isActive": true,
-          "imageUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+          "imageUrl": "https://images.tokopedia.net/img/ic_bebas_ongkir.png"
         },
         "productViewCountFormatted": "",
         "isOutOfStock": false,
@@ -1205,7 +1205,7 @@
         "isTopads": false,
         "freeOngkir": {
           "isActive": true,
-          "imageUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+          "imageUrl": "https://images.tokopedia.net/img/ic_bebas_ongkir.png"
         },
         "productViewCountFormatted": "",
         "isOutOfStock": false,
@@ -1233,7 +1233,7 @@
         "isTopads": false,
         "freeOngkir": {
           "isActive": true,
-          "imageUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+          "imageUrl": "https://images.tokopedia.net/img/ic_bebas_ongkir.png"
         },
         "productViewCountFormatted": "",
         "isOutOfStock": false,
@@ -1308,7 +1308,7 @@
         "isTopads": false,
         "freeOngkir": {
           "isActive": true,
-          "imageUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+          "imageUrl": "https://images.tokopedia.net/img/ic_bebas_ongkir.png"
         },
         "productViewCountFormatted": "7.9rb orang",
         "isOutOfStock": false,
@@ -1514,7 +1514,7 @@
         "isTopads": false,
         "freeOngkir": {
           "isActive": true,
-          "imageUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+          "imageUrl": "https://images.tokopedia.net/img/ic_bebas_ongkir.png"
         },
         "productViewCountFormatted": "2.3rb orang",
         "isOutOfStock": false,
@@ -1542,7 +1542,7 @@
         "isTopads": false,
         "freeOngkir": {
           "isActive": true,
-          "imageUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+          "imageUrl": "https://images.tokopedia.net/img/ic_bebas_ongkir.png"
         },
         "productViewCountFormatted": "",
         "isOutOfStock": false,
@@ -1570,7 +1570,7 @@
         "isTopads": false,
         "freeOngkir": {
           "isActive": true,
-          "imageUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+          "imageUrl": "https://images.tokopedia.net/img/ic_bebas_ongkir.png"
         },
         "productViewCountFormatted": "1.3rb orang",
         "isOutOfStock": false,
@@ -1645,7 +1645,7 @@
         "isTopads": true,
         "freeOngkir": {
           "isActive": true,
-          "imageUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+          "imageUrl": "https://images.tokopedia.net/img/ic_bebas_ongkir.png"
         },
         "productViewCountFormatted": "",
         "isOutOfStock": false,
@@ -1673,7 +1673,7 @@
         "isTopads": true,
         "freeOngkir": {
           "isActive": true,
-          "imageUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+          "imageUrl": "https://images.tokopedia.net/img/ic_bebas_ongkir.png"
         },
         "productViewCountFormatted": "",
         "isOutOfStock": false,
@@ -1701,7 +1701,7 @@
         "isTopads": true,
         "freeOngkir": {
           "isActive": true,
-          "imageUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+          "imageUrl": "https://images.tokopedia.net/img/ic_bebas_ongkir.png"
         },
         "productViewCountFormatted": "",
         "isOutOfStock": false,
@@ -1729,7 +1729,7 @@
         "isTopads": true,
         "freeOngkir": {
           "isActive": true,
-          "imageUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+          "imageUrl": "https://images.tokopedia.net/img/ic_bebas_ongkir.png"
         },
         "productViewCountFormatted": "",
         "isOutOfStock": false,
@@ -1972,7 +1972,7 @@
         "isTopads": false,
         "freeOngkir": {
           "isActive": true,
-          "imageUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+          "imageUrl": "https://images.tokopedia.net/img/ic_bebas_ongkir.png"
         },
         "productViewCountFormatted": "",
         "isOutOfStock": true,
@@ -2004,7 +2004,7 @@
         "isTopads": false,
         "freeOngkir": {
           "isActive": true,
-          "imageUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+          "imageUrl": "https://images.tokopedia.net/img/ic_bebas_ongkir.png"
         },
         "productViewCountFormatted": "",
         "isOutOfStock": true,
@@ -2036,7 +2036,7 @@
         "isTopads": false,
         "freeOngkir": {
           "isActive": true,
-          "imageUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+          "imageUrl": "https://images.tokopedia.net/img/ic_bebas_ongkir.png"
         },
         "productViewCountFormatted": "",
         "isOutOfStock": true,
@@ -2147,7 +2147,7 @@
         "isTopads": false,
         "freeOngkir": {
           "isActive": true,
-          "imageUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+          "imageUrl": "https://images.tokopedia.net/img/ic_bebas_ongkir.png"
         },
         "productViewCountFormatted": "",
         "isOutOfStock": true,
@@ -2179,7 +2179,7 @@
         "isTopads": false,
         "freeOngkir": {
           "isActive": true,
-          "imageUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+          "imageUrl": "https://images.tokopedia.net/img/ic_bebas_ongkir.png"
         },
         "productViewCountFormatted": "",
         "isOutOfStock": true,
@@ -2258,7 +2258,7 @@
         "isTopads": false,
         "freeOngkir": {
           "isActive": true,
-          "imageUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+          "imageUrl": "https://images.tokopedia.net/img/ic_bebas_ongkir.png"
         },
         "productViewCountFormatted": "",
         "isOutOfStock": true,
@@ -2532,7 +2532,7 @@
         "isTopads": false,
         "freeOngkir": {
           "isActive": true,
-          "imageUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+          "imageUrl": "https://images.tokopedia.net/img/ic_bebas_ongkir.png"
         },
         "productViewCountFormatted": "",
         "isOutOfStock": false,
@@ -2560,7 +2560,7 @@
         "isTopads": false,
         "freeOngkir": {
           "isActive": true,
-          "imageUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+          "imageUrl": "https://images.tokopedia.net/img/ic_bebas_ongkir.png"
         },
         "productViewCountFormatted": "",
         "isOutOfStock": false,
@@ -2588,7 +2588,7 @@
         "isTopads": false,
         "freeOngkir": {
           "isActive": true,
-          "imageUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+          "imageUrl": "https://images.tokopedia.net/img/ic_bebas_ongkir.png"
         },
         "productViewCountFormatted": "",
         "isOutOfStock": false,
@@ -2663,7 +2663,7 @@
         "isTopads": false,
         "freeOngkir": {
           "isActive": true,
-          "imageUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+          "imageUrl": "https://images.tokopedia.net/img/ic_bebas_ongkir.png"
         },
         "productViewCountFormatted": "",
         "isOutOfStock": false,
@@ -2691,7 +2691,7 @@
         "isTopads": false,
         "freeOngkir": {
           "isActive": true,
-          "imageUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+          "imageUrl": "https://images.tokopedia.net/img/ic_bebas_ongkir.png"
         },
         "productViewCountFormatted": "",
         "isOutOfStock": false,
@@ -2719,7 +2719,7 @@
         "isTopads": false,
         "freeOngkir": {
           "isActive": true,
-          "imageUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+          "imageUrl": "https://images.tokopedia.net/img/ic_bebas_ongkir.png"
         },
         "productViewCountFormatted": "",
         "isOutOfStock": false,
@@ -2925,7 +2925,7 @@
         "isTopads": false,
         "freeOngkir": {
           "isActive": true,
-          "imageUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+          "imageUrl": "https://images.tokopedia.net/img/ic_bebas_ongkir.png"
         },
         "productViewCountFormatted": "",
         "isOutOfStock": true,
@@ -2957,7 +2957,7 @@
         "isTopads": false,
         "freeOngkir": {
           "isActive": true,
-          "imageUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+          "imageUrl": "https://images.tokopedia.net/img/ic_bebas_ongkir.png"
         },
         "productViewCountFormatted": "",
         "isOutOfStock": true,
@@ -2989,7 +2989,7 @@
         "isTopads": false,
         "freeOngkir": {
           "isActive": true,
-          "imageUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+          "imageUrl": "https://images.tokopedia.net/img/ic_bebas_ongkir.png"
         },
         "productViewCountFormatted": "",
         "isOutOfStock": true,
@@ -3068,7 +3068,7 @@
         "isTopads": false,
         "freeOngkir": {
           "isActive": true,
-          "imageUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+          "imageUrl": "https://images.tokopedia.net/img/ic_bebas_ongkir.png"
         },
         "productViewCountFormatted": "",
         "isOutOfStock": false,
@@ -3096,7 +3096,7 @@
         "isTopads": false,
         "freeOngkir": {
           "isActive": true,
-          "imageUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+          "imageUrl": "https://images.tokopedia.net/img/ic_bebas_ongkir.png"
         },
         "productViewCountFormatted": "",
         "isOutOfStock": false,
@@ -3124,7 +3124,7 @@
         "isTopads": false,
         "freeOngkir": {
           "isActive": true,
-          "imageUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+          "imageUrl": "https://images.tokopedia.net/img/ic_bebas_ongkir.png"
         },
         "productViewCountFormatted": "",
         "isOutOfStock": false,
@@ -3199,7 +3199,7 @@
         "isTopads": false,
         "freeOngkir": {
           "isActive": true,
-          "imageUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+          "imageUrl": "https://images.tokopedia.net/img/ic_bebas_ongkir.png"
         },
         "productViewCountFormatted": "",
         "isOutOfStock": true,
@@ -3231,7 +3231,7 @@
         "isTopads": false,
         "freeOngkir": {
           "isActive": true,
-          "imageUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+          "imageUrl": "https://images.tokopedia.net/img/ic_bebas_ongkir.png"
         },
         "productViewCountFormatted": "",
         "isOutOfStock": false,
@@ -3259,7 +3259,7 @@
         "isTopads": false,
         "freeOngkir": {
           "isActive": true,
-          "imageUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+          "imageUrl": "https://images.tokopedia.net/img/ic_bebas_ongkir.png"
         },
         "productViewCountFormatted": "",
         "isOutOfStock": false,
@@ -3549,7 +3549,7 @@
         "isTopads": true,
         "freeOngkir": {
           "isActive": true,
-          "imageUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+          "imageUrl": "https://images.tokopedia.net/img/ic_bebas_ongkir.png"
         },
         "productViewCountFormatted": "",
         "isOutOfStock": false,
@@ -3577,7 +3577,7 @@
         "isTopads": true,
         "freeOngkir": {
           "isActive": true,
-          "imageUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+          "imageUrl": "https://images.tokopedia.net/img/ic_bebas_ongkir.png"
         },
         "productViewCountFormatted": "",
         "isOutOfStock": false,
@@ -3605,7 +3605,7 @@
         "isTopads": true,
         "freeOngkir": {
           "isActive": true,
-          "imageUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+          "imageUrl": "https://images.tokopedia.net/img/ic_bebas_ongkir.png"
         },
         "productViewCountFormatted": "",
         "isOutOfStock": false,
@@ -3633,7 +3633,7 @@
         "isTopads": true,
         "freeOngkir": {
           "isActive": true,
-          "imageUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+          "imageUrl": "https://images.tokopedia.net/img/ic_bebas_ongkir.png"
         },
         "productViewCountFormatted": "",
         "isOutOfStock": false,
@@ -3829,7 +3829,7 @@
         "isTopads": true,
         "freeOngkir": {
           "isActive": true,
-          "imageUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+          "imageUrl": "https://images.tokopedia.net/img/ic_bebas_ongkir.png"
         },
         "productViewCountFormatted": "",
         "isOutOfStock": false,
@@ -3857,7 +3857,7 @@
         "isTopads": true,
         "freeOngkir": {
           "isActive": true,
-          "imageUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+          "imageUrl": "https://images.tokopedia.net/img/ic_bebas_ongkir.png"
         },
         "productViewCountFormatted": "",
         "isOutOfStock": false,
@@ -3885,7 +3885,7 @@
         "isTopads": true,
         "freeOngkir": {
           "isActive": true,
-          "imageUrl": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+          "imageUrl": "https://images.tokopedia.net/img/ic_bebas_ongkir.png"
         },
         "productViewCountFormatted": "",
         "isOutOfStock": false,

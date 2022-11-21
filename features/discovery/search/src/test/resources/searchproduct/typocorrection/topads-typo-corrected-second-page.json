@@ -51,7 +51,7 @@
           "product_minimum_order": 3,
           "free_ongkir": {
             "is_active": true,
-            "img_url": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+            "img_url": "https://images.tokopedia.net/img/ic_bebas_ongkir.png"
           },
           "campaign": {
             "original_price": "Rp249.000",
@@ -134,7 +134,7 @@
           "product_rating_format": "4.7",
           "free_ongkir": {
             "is_active": true,
-            "img_url": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+            "img_url": "https://images.tokopedia.net/img/ic_bebas_ongkir.png"
           },
           "campaign": {
             "original_price": "",
@@ -223,7 +223,7 @@
           "product_minimum_order": 3,
           "free_ongkir": {
             "is_active": true,
-            "img_url": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+            "img_url": "https://images.tokopedia.net/img/ic_bebas_ongkir.png"
           },
           "campaign": {
             "original_price": "Rp239.000",
@@ -301,7 +301,7 @@
           "product_minimum_order": 3,
           "free_ongkir": {
             "is_active": false,
-            "img_url": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+            "img_url": "https://images.tokopedia.net/img/ic_bebas_ongkir.png"
           },
           "campaign": {
             "original_price": "",
@@ -406,7 +406,7 @@
           "product_minimum_order": 3,
           "free_ongkir": {
             "is_active": true,
-            "img_url": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+            "img_url": "https://images.tokopedia.net/img/ic_bebas_ongkir.png"
           },
           "campaign": {
             "original_price": "",
@@ -495,7 +495,7 @@
           "product_minimum_order": 3,
           "free_ongkir": {
             "is_active": false,
-            "img_url": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png"
+            "img_url": "https://images.tokopedia.net/img/ic_bebas_ongkir.png"
           },
           "campaign": {
             "original_price": "",
