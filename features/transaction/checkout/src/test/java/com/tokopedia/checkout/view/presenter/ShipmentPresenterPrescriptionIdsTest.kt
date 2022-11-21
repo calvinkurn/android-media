@@ -2,6 +2,7 @@ package com.tokopedia.checkout.view.presenter
 
 import com.google.gson.Gson
 import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection
+import com.tokopedia.checkout.domain.model.cartshipmentform.EpharmacyData
 import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressGqlUseCase
 import com.tokopedia.checkout.domain.usecase.CheckoutGqlUseCase
 import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormV3UseCase
@@ -24,7 +25,9 @@ import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiUseCase
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
+import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.response.GetPrescriptionIdsResponse
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.model.UploadPrescriptionUiModel
+import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.usecase.GetPrescriptionIdsUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldValidateUsePromoRevampUseCase
 import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
@@ -32,10 +35,12 @@ import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
+import io.mockk.mockk
 import io.mockk.verify
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
+import rx.Observable
 import rx.subscriptions.CompositeSubscription
 
 class ShipmentPresenterPrescriptionIdsTest {
@@ -98,6 +103,9 @@ class ShipmentPresenterPrescriptionIdsTest {
     private lateinit var eligibleForAddressUseCase: EligibleForAddressUseCase
 
     @MockK
+    private lateinit var prescriptionIdsUseCase: GetPrescriptionIdsUseCase
+
+    @MockK
     private lateinit var epharmacyUseCase: EPharmacyPrepareProductsGroupUseCase
 
     private var shipmentDataConverter = ShipmentDataConverter()
@@ -105,6 +113,10 @@ class ShipmentPresenterPrescriptionIdsTest {
     private lateinit var presenter: ShipmentPresenter
 
     private var gson = Gson()
+
+    companion object {
+        const val CHECKOUT_ID = "100"
+    }
 
     @Before
     fun before() {
@@ -127,6 +139,7 @@ class ShipmentPresenterPrescriptionIdsTest {
             checkoutAnalytics,
             shipmentDataConverter,
             releaseBookingUseCase,
+            prescriptionIdsUseCase,
             epharmacyUseCase,
             validateUsePromoRevampUseCase,
             gson,
@@ -134,6 +147,147 @@ class ShipmentPresenterPrescriptionIdsTest {
             eligibleForAddressUseCase
         )
         presenter.attachView(view)
+    }
+
+    @Test
+    fun `WHEN fetch prescription then should hit fetch prescription use case with checkout id`() {
+        // Given
+        every { prescriptionIdsUseCase.execute(any()) } returns Observable.just(
+            GetPrescriptionIdsResponse(
+                detailData = GetPrescriptionIdsResponse.EPharmacyCheckoutData(
+                    prescriptionData = GetPrescriptionIdsResponse.EPharmacyCheckoutData.EPharmacyPrescriptionDetailData(
+                        prescriptions = listOf(
+                            GetPrescriptionIdsResponse.EPharmacyCheckoutData.Prescription("123"),
+                            GetPrescriptionIdsResponse.EPharmacyCheckoutData.Prescription("321"),
+                        ),
+                        checkoutId = CHECKOUT_ID
+                    )
+                )
+            )
+        )
+        presenter.shipmentCartItemModelList = listOf()
+        presenter.setUploadPrescriptionData(
+            UploadPrescriptionUiModel(
+                false, "", "",
+                checkoutId = CHECKOUT_ID, arrayListOf(), 0, ""
+            )
+        )
+
+        // When
+        presenter.fetchPrescriptionIds(
+            EpharmacyData(
+                showImageUpload = true,
+                checkoutId = CHECKOUT_ID,
+                consultationFlow = false
+            )
+        )
+
+        // Then
+        verify { prescriptionIdsUseCase.execute(CHECKOUT_ID) }
+        verify(exactly = 1) { view.updateUploadPrescription(match { it.uploadedImageCount == 2 }) }
+    }
+
+    @Test
+    fun `GIVEN empty checkout id WHEN fetch prescription ids THEN should not hit fetch prescription use case`() {
+        // Given
+        val checkoutId = ""
+
+        // When
+        presenter.fetchPrescriptionIds(
+            EpharmacyData(
+                showImageUpload = true,
+                checkoutId = checkoutId,
+                consultationFlow = false
+            )
+        )
+
+        // Then
+        verify(inverse = true) { prescriptionIdsUseCase.execute(any()) }
+    }
+
+    @Test
+    fun `GIVEN not need to upload prescription WHEN fetch prescription THEN should not hit fetch prescription use case`() {
+        // Given
+        every { prescriptionIdsUseCase.execute(any()) } returns Observable.just(
+            mockk<GetPrescriptionIdsResponse>(
+                relaxed = true
+            )
+        )
+        presenter.setUploadPrescriptionData(null)
+
+        // When
+        presenter.fetchPrescriptionIds(
+            EpharmacyData(
+                showImageUpload = false,
+                checkoutId = CHECKOUT_ID,
+                consultationFlow = false
+            )
+        )
+
+        // Then
+        verify(inverse = true) { prescriptionIdsUseCase.execute(any()) }
+    }
+
+    @Test
+    fun `GIVEN consultation flow prescription WHEN fetch prescription THEN should not hit fetch prescription use case`() {
+        // Given
+        every { prescriptionIdsUseCase.execute(any()) } returns Observable.just(
+            mockk<GetPrescriptionIdsResponse>(
+                relaxed = true
+            )
+        )
+        presenter.setUploadPrescriptionData(null)
+
+        // When
+        presenter.fetchPrescriptionIds(
+            EpharmacyData(
+                showImageUpload = false,
+                checkoutId = CHECKOUT_ID,
+                consultationFlow = false
+            )
+        )
+
+        // Then
+        verify(inverse = true) { prescriptionIdsUseCase.execute(any()) }
+    }
+
+    @Test
+    fun `GIVEN error item WHEN fetch prescription THEN should not update prescription data`() {
+        // Given
+        every { prescriptionIdsUseCase.execute(any()) } returns Observable.error(Throwable())
+        presenter.setUploadPrescriptionData(
+            UploadPrescriptionUiModel(
+                false, "", "",
+                checkoutId = CHECKOUT_ID, arrayListOf(), 0, ""
+            )
+        )
+
+        // When
+        presenter.fetchPrescriptionIds(
+            EpharmacyData(
+                showImageUpload = true,
+                checkoutId = CHECKOUT_ID,
+                consultationFlow = false
+            )
+        )
+
+        // Then
+        verify { prescriptionIdsUseCase.execute(CHECKOUT_ID) }
+        verify(exactly = 0) { view.updateUploadPrescription(any()) }
+    }
+
+    @Test
+    fun `CHECK upload prescription data initialization`() {
+        // When
+        presenter.setUploadPrescriptionData(
+            UploadPrescriptionUiModel(
+                false, "", "",
+                checkoutId = CHECKOUT_ID, arrayListOf(), 0, ""
+            )
+        )
+
+        // Then
+        assert(presenter.uploadPrescriptionUiModel != null)
     }
 
     @Test

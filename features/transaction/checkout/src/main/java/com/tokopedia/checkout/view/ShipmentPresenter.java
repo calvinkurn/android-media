@@ -39,6 +39,7 @@ import com.tokopedia.checkout.data.model.request.saveshipmentstate.ShipmentState
 import com.tokopedia.checkout.data.model.request.saveshipmentstate.ShipmentStateShopProductData;
 import com.tokopedia.checkout.domain.model.cartshipmentform.CampaignTimerUi;
 import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData;
+import com.tokopedia.checkout.domain.model.cartshipmentform.EpharmacyData;
 import com.tokopedia.checkout.domain.model.cartshipmentform.GroupAddress;
 import com.tokopedia.checkout.domain.model.changeaddress.SetShippingAddressData;
 import com.tokopedia.checkout.domain.model.checkout.CheckoutData;
@@ -784,7 +785,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 false,
                 false
         ));
-        fetchPrescriptionIds(cartShipmentAddressFormData.getEpharmacyData().getShowImageUpload() && !cartShipmentAddressFormData.getEpharmacyData().getConsultationFlow(), cartShipmentAddressFormData.getEpharmacyData().getCheckoutId());
+        fetchPrescriptionIds(cartShipmentAddressFormData.getEpharmacyData());
 
         cartData = cartShipmentAddressFormData.getCartData();
     }
@@ -2396,10 +2397,10 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         }
     }
 
-    public void fetchPrescriptionIds(boolean isUploadPrescriptionNeeded, String checkoutId) {
-        if (!checkoutId.isEmpty() && isUploadPrescriptionNeeded) {
+    public void fetchPrescriptionIds(EpharmacyData epharmacyData) {
+        if (!epharmacyData.getCheckoutId().isEmpty() && epharmacyData.getShowImageUpload() && !epharmacyData.getConsultationFlow()) {
             compositeSubscription.add(prescriptionIdsUseCase
-                    .execute(checkoutId)
+                    .execute(epharmacyData.getCheckoutId())
                     .subscribe(new Subscriber<GetPrescriptionIdsResponse>() {
                         @Override
                         public void onCompleted() {
