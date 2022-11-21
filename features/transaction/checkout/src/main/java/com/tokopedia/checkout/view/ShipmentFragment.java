@@ -1110,83 +1110,87 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
 
     @Override
     public void renderCourierStateSuccess(CourierItemData courierItemData, int itemPosition, boolean isTradeInDropOff, boolean isForceReloadRates) {
-        ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.getShipmentCartItemModelByIndex(itemPosition);
-        if (shipmentCartItemModel == null) return;
+        if (getContext() != null) {
+            ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.getShipmentCartItemModelByIndex(itemPosition);
+            if (shipmentCartItemModel == null) return;
 
-        shipmentCartItemModel.setStateLoadingCourierState(false);
-        if (isTradeInDropOff) {
-            shipmentAdapter.setSelectedCourierTradeInPickup(courierItemData);
-        } else {
-            if (!isForceReloadRates && courierItemData.getLogPromoCode() != null) {
-                String cartString = shipmentCartItemModel.getCartString();
+            shipmentCartItemModel.setStateLoadingCourierState(false);
+            if (isTradeInDropOff) {
+                shipmentAdapter.setSelectedCourierTradeInPickup(courierItemData);
+            } else {
+                if (!isForceReloadRates && courierItemData.getLogPromoCode() != null) {
+                    String cartString = shipmentCartItemModel.getCartString();
 
-                ValidateUsePromoRequest validateUsePromoRequest = generateValidateUsePromoRequest();
-                if (courierItemData.getLogPromoCode() != null && courierItemData.getLogPromoCode().length() > 0) {
-                    for (OrdersItem ordersItem : validateUsePromoRequest.getOrders()) {
-                        if (ordersItem.getUniqueId().equals(shipmentCartItemModel.getCartString())) {
-                            if (!ordersItem.getCodes().contains(courierItemData.getLogPromoCode())) {
-                                ordersItem.getCodes().add(courierItemData.getLogPromoCode());
-                            }
-                            ordersItem.setShippingId(courierItemData.getShipperId());
-                            ordersItem.setSpId(courierItemData.getShipperProductId());
-                            ordersItem.setFreeShippingMetadata(courierItemData.getFreeShippingMetadata());
-                            ordersItem.setShopId(shipmentCartItemModel.getShopId());
-                            ordersItem.setPo(shipmentCartItemModel.isProductIsPreorder());
-                            ordersItem.setPoDuration(shipmentCartItemModel.getCartItemModels()
-                                    .get(0).getPreOrderDurationDay());
-                            ordersItem.setWarehouseId(shipmentCartItemModel.getFulfillmentId());
-                            ordersItem.setBoCampaignId(courierItemData.getBoCampaignId());
-                            ordersItem.setShippingSubsidy(courierItemData.getShippingSubsidy());
-                            ordersItem.setBenefitClass(courierItemData.getBenefitClass());
-                            ordersItem.setShippingPrice(courierItemData.getShippingRate());
-                            ordersItem.setEtaText(courierItemData.getEtaText());
-                            break;
-                        }
-                    }
-                }
-
-                List<ShipmentCartItemModel> shipmentCartItemModelLists = shipmentAdapter.getShipmentCartItemModelList();
-                if (shipmentCartItemModelLists != null && shipmentCartItemModelLists.size() > 0) {
-                    for (ShipmentCartItemModel tmpShipmentCartItemModel : shipmentCartItemModelLists) {
+                    ValidateUsePromoRequest validateUsePromoRequest = generateValidateUsePromoRequest();
+                    if (courierItemData.getLogPromoCode() != null && courierItemData.getLogPromoCode().length() > 0) {
                         for (OrdersItem ordersItem : validateUsePromoRequest.getOrders()) {
-                            if (!shipmentCartItemModel.getCartString().equals(tmpShipmentCartItemModel.getCartString()) &&
-                                    tmpShipmentCartItemModel.getCartString().equals(ordersItem.getUniqueId()) &&
-                                    tmpShipmentCartItemModel.getSelectedShipmentDetailData() != null &&
-                                    tmpShipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier() != null) {
-                                ordersItem.getCodes().remove(tmpShipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getLogPromoCode());
+                            if (ordersItem.getUniqueId().equals(shipmentCartItemModel.getCartString())) {
+                                if (!ordersItem.getCodes().contains(courierItemData.getLogPromoCode())) {
+                                    ordersItem.getCodes().add(courierItemData.getLogPromoCode());
+                                }
+                                ordersItem.setShippingId(courierItemData.getShipperId());
+                                ordersItem.setSpId(courierItemData.getShipperProductId());
+                                ordersItem.setFreeShippingMetadata(courierItemData.getFreeShippingMetadata());
+                                ordersItem.setShopId(shipmentCartItemModel.getShopId());
+                                ordersItem.setPo(shipmentCartItemModel.isProductIsPreorder());
+                                ordersItem.setPoDuration(shipmentCartItemModel.getCartItemModels()
+                                        .get(0).getPreOrderDurationDay());
+                                ordersItem.setWarehouseId(shipmentCartItemModel.getFulfillmentId());
+                                ordersItem.setBoCampaignId(courierItemData.getBoCampaignId());
+                                ordersItem.setShippingSubsidy(courierItemData.getShippingSubsidy());
+                                ordersItem.setBenefitClass(courierItemData.getBenefitClass());
+                                ordersItem.setShippingPrice(courierItemData.getShippingRate());
+                                ordersItem.setEtaText(courierItemData.getEtaText());
+                                break;
                             }
                         }
                     }
-                }
 
-                shipmentPresenter.doValidateUseLogisticPromo(itemPosition, cartString, validateUsePromoRequest, courierItemData.getLogPromoCode());
+                    List<ShipmentCartItemModel> shipmentCartItemModelLists = shipmentAdapter.getShipmentCartItemModelList();
+                    if (shipmentCartItemModelLists != null && shipmentCartItemModelLists.size() > 0) {
+                        for (ShipmentCartItemModel tmpShipmentCartItemModel : shipmentCartItemModelLists) {
+                            for (OrdersItem ordersItem : validateUsePromoRequest.getOrders()) {
+                                if (!shipmentCartItemModel.getCartString().equals(tmpShipmentCartItemModel.getCartString()) &&
+                                        tmpShipmentCartItemModel.getCartString().equals(ordersItem.getUniqueId()) &&
+                                        tmpShipmentCartItemModel.getSelectedShipmentDetailData() != null &&
+                                        tmpShipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier() != null) {
+                                    ordersItem.getCodes().remove(tmpShipmentCartItemModel.getSelectedShipmentDetailData().getSelectedCourier().getLogPromoCode());
+                                }
+                            }
+                        }
+                    }
+
+                    shipmentPresenter.doValidateUseLogisticPromo(itemPosition, cartString, validateUsePromoRequest, courierItemData.getLogPromoCode());
+                }
+                checkCourierPromo(courierItemData, itemPosition);
+                shipmentAdapter.setSelectedCourier(itemPosition, courierItemData, false);
             }
-            checkCourierPromo(courierItemData, itemPosition);
-            shipmentAdapter.setSelectedCourier(itemPosition, courierItemData, false);
+            onNeedUpdateViewItem(itemPosition);
+            shipmentPresenter.processSaveShipmentState(shipmentCartItemModel);
         }
-        onNeedUpdateViewItem(itemPosition);
-        shipmentPresenter.processSaveShipmentState(shipmentCartItemModel);
     }
 
     @Override
     public void renderCourierStateFailed(int itemPosition, boolean isTradeInDropOff, boolean isBoAutoApplyFlow) {
-        ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.getShipmentCartItemModelByIndex(itemPosition);
-        if (shipmentCartItemModel != null) {
-            shipmentCartItemModel.setStateLoadingCourierState(false);
-            if (isTradeInDropOff) {
-                shipmentCartItemModel.setStateHasLoadCourierTradeInDropOffState(true);
-            } else {
-                shipmentCartItemModel.setStateHasLoadCourierState(true);
+        if (getContext() != null) {
+            ShipmentCartItemModel shipmentCartItemModel = shipmentAdapter.getShipmentCartItemModelByIndex(itemPosition);
+            if (shipmentCartItemModel != null) {
+                shipmentCartItemModel.setStateLoadingCourierState(false);
+                if (isTradeInDropOff) {
+                    shipmentCartItemModel.setStateHasLoadCourierTradeInDropOffState(true);
+                } else {
+                    shipmentCartItemModel.setStateHasLoadCourierState(true);
+                }
+                if (!shipmentCartItemModel.getBoCode().isEmpty()) {
+                    shipmentPresenter.cancelAutoApplyPromoStackLogistic(itemPosition, shipmentCartItemModel.getBoCode(), shipmentCartItemModel);
+                    shipmentPresenter.clearOrderPromoCodeFromLastValidateUseRequest(shipmentCartItemModel.getCartString(), shipmentCartItemModel.getBoCode());
+                    shipmentCartItemModel.setBoCode("");
+                    showToastNormal(getString(R.string.checkout_failed_auto_apply_bo_message));
+                } else if (isBoAutoApplyFlow) {
+                    showToastNormal(getString(R.string.checkout_failed_auto_apply_bo_message));
+                }
+                onNeedUpdateViewItem(itemPosition);
             }
-            if (!shipmentCartItemModel.getBoCode().isEmpty()) {
-                shipmentPresenter.cancelAutoApplyPromoStackLogistic(itemPosition, shipmentCartItemModel.getBoCode(), shipmentCartItemModel);
-                shipmentPresenter.clearOrderPromoCodeFromLastValidateUseRequest(shipmentCartItemModel.getCartString(), shipmentCartItemModel.getBoCode());
-                shipmentCartItemModel.setBoCode("");
-                showToastNormal(getString(R.string.checkout_failed_auto_apply_bo_message));
-            } else if (isBoAutoApplyFlow) {
-                showToastNormal(getString(R.string.checkout_failed_auto_apply_bo_message));
-            }
-            onNeedUpdateViewItem(itemPosition);
         }
     }
 
