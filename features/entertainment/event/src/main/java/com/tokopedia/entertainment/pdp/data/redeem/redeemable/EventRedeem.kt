@@ -128,6 +128,7 @@ data class Participant(
     val redemptionTime: Int = 0,
     @SerializedName("participant_details")
     val participantDetails: List<ParticipantDetail> = emptyList(),
+    var checked: Boolean = false
 )
 
 data class ParticipantDetail(

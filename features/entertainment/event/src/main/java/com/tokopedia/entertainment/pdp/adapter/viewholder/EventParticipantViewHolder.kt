@@ -14,7 +14,10 @@ import com.tokopedia.kotlin.extensions.view.show
  * Author firmanda on 17,Nov,2022
  */
 
-class EventParticipantViewHolder(itemView: View):
+class EventParticipantViewHolder(
+    private val listener: ParticipantListener,
+    itemView: View
+):
     AbstractViewHolder<ParticipantUiModel>(itemView) {
 
     private var binding: ItemEventPdpRedeemBinding? by viewBinding()
@@ -22,7 +25,12 @@ class EventParticipantViewHolder(itemView: View):
     override fun bind(element: ParticipantUiModel) {
         binding?.run {
             tgParticipantTitle.text = element.title
+
+            cbParticipant.setOnCheckedChangeListener(null)
             cbParticipant.isChecked = element.isChecked
+            cbParticipant.setOnCheckedChangeListener { _, isChecked ->
+                listener.onCheckListener(element, isChecked)
+            }
 
             if (element.subTitle.isNotEmpty()) {
                 tgParticipantSubTitle.show()
@@ -37,5 +45,9 @@ class EventParticipantViewHolder(itemView: View):
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_event_pdp_redeem
+    }
+
+    fun interface ParticipantListener {
+        fun onCheckListener(element: ParticipantUiModel, isChecked: Boolean)
     }
 }

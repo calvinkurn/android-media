@@ -33,7 +33,7 @@ object EventRedeemMapper {
                        id = it.id,
                        title = it.participantDetails.first().value,
                        subTitle = participantsListMapping(it.participantDetails, context),
-                       isChecked = false
+                       isChecked = it.checked
                     )
                 )
             }

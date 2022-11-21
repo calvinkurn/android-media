@@ -17,6 +17,7 @@ import com.tokopedia.entertainment.pdp.data.redeem.redeemable.Participant
 import com.tokopedia.entertainment.pdp.di.EventPDPComponent
 import com.tokopedia.entertainment.pdp.viewmodel.EventRedeemRevampViewModel
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.usecase.coroutines.Fail
@@ -26,10 +27,11 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 import com.tokopedia.entertainment.R.string as redeemString
+
 /**
  * Author firmanda on 17,Nov,2022
  */
-class EventRedeemRevampFragment : BaseDaggerFragment() {
+class EventRedeemRevampFragment : BaseDaggerFragment(), EventRedeemRevampBottomSheet.RedeemBottomSheetListener {
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -127,10 +129,16 @@ class EventRedeemRevampFragment : BaseDaggerFragment() {
             tgValueTypeTicket.text = redeem.schedule.name
             tgValueDate.text = redeem.schedule.showData
             tgValueSumTicket.text = redeem.quantity.toString()
-            tfRedeem.addOnFocusChangeListener = { _, _ ->
-                showBottomSheet(redeem.redemptions)
+            tfRedeem.addOnFocusChangeListener = { _, hasFocus ->
+                if (hasFocus) {
+                    showBottomSheet()
+                }
             }
         }
+    }
+
+    private fun getUpdateListRedemption(): List<Participant> {
+        return viewModel.listRedemptions
     }
 
     private fun showLoading() {
@@ -214,13 +222,35 @@ class EventRedeemRevampFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun showBottomSheet(participants: List<Participant>) {
+    private fun showBottomSheet() {
         context?.let { context ->
-            val mappedParticipant = participantToVisitableMapper(participants, context)
+            val mappedParticipant = participantToVisitableMapper(getUpdateListRedemption(), context)
             val bottomSheetEventRedeem = EventRedeemRevampBottomSheet.getInstance()
+            bottomSheetEventRedeem.setListener(this)
             bottomSheetEventRedeem.setList(mappedParticipant)
             bottomSheetEventRedeem.show(childFragmentManager, EventPDPComponent::class.java.simpleName)
         }
+    }
+
+    private fun clearFocusEditText() {
+        binding?.tfRedeem?.textInputLayout?.editText?.clearFocus()
+    }
+
+    private fun updateSize() {
+        if (viewModel.getCheckedIds().isMoreThanZero()) {
+            binding?.tfRedeem?.textInputLayout?.editText?.setText(viewModel.getCheckedIds().toString())
+        } else {
+            binding?.tfRedeem?.textInputLayout?.editText?.setText("")
+        }
+    }
+
+    override fun onClickSave(listCheckedIds: List<Pair<String, Boolean>>) {
+        viewModel.updateCheckedIds(listCheckedIds)
+        updateSize()
+    }
+
+    override fun onClose() {
+        clearFocusEditText()
     }
 
     companion object {

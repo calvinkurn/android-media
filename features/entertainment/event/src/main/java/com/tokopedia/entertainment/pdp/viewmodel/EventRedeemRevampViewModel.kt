@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.entertainment.pdp.data.redeem.ErrorRedeem
 import com.tokopedia.entertainment.pdp.data.redeem.redeemable.EventRedeem
+import com.tokopedia.entertainment.pdp.data.redeem.redeemable.Participant
 import com.tokopedia.entertainment.pdp.network_api.GetEventRedeemUseCase
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.network.exception.MessageErrorException
@@ -29,6 +30,7 @@ class EventRedeemRevampViewModel @Inject constructor(
 ) : BaseViewModel(dispatcher.main) {
 
     private val _inputRedeemUrl = MutableSharedFlow<String>(Int.ONE)
+    var listRedemptions: List<Participant> = mutableListOf()
 
     val flowRedeemData: SharedFlow<Result<EventRedeem>> =
         _inputRedeemUrl.flatMapConcat {
@@ -55,13 +57,38 @@ class EventRedeemRevampViewModel @Inject constructor(
 //        val value = response[EventRedeem::class.java]
 //
 //        return if (value?.code == SUCCESS_CODE && !value.isError) {
+//            listRedemptions = convertToRedeemResponse(response).data.redemptions
 //            Success(convertToRedeemResponse(response))
 //        } else {
 //            val error = convertToErrorResponse(response)
 //            Fail(MessageErrorException(error))
 //        }
+
         val dummy = Gson().fromJson(DUMMY, EventRedeem::class.java)
+        listRedemptions = dummy.data.redemptions
         return Success(dummy)
+    }
+
+    fun updateCheckedIds(listCheckedIds: List<Pair<String, Boolean>>) {
+        listRedemptions.forEachIndexed { index, participant ->
+            val listCheckedId = listCheckedIds.firstOrNull {
+                it.first == participant.id
+            }
+            if (listCheckedId != null) {
+                participant.checked = listCheckedId.second
+            }
+        }
+    }
+
+    fun getCheckedIds(): Int {
+        var size = 0
+        listRedemptions.forEachIndexed { index, participant ->
+            if (participant.checked) {
+               size += Int.ONE
+            }
+        }
+
+        return size
     }
 
     private fun convertToRedeemResponse(typeRestResponseMap: Map<Type, RestResponse?>): EventRedeem {

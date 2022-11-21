@@ -1,5 +1,6 @@
 package com.tokopedia.entertainment.pdp.bottomsheet
 
+import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,6 +12,8 @@ import com.tokopedia.entertainment.databinding.BottomSheetEventRedeemRevampBindi
 import com.tokopedia.entertainment.pdp.adapter.EventRedeemRevampAdapter
 import com.tokopedia.entertainment.pdp.adapter.diffutil.EventRedeemRevampDiffer
 import com.tokopedia.entertainment.pdp.adapter.factory.EventRedeemRevampAdapterTypeFactory
+import com.tokopedia.entertainment.pdp.adapter.viewholder.EventParticipantViewHolder
+import com.tokopedia.entertainment.pdp.uimodel.ParticipantUiModel
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -20,16 +23,19 @@ import com.tokopedia.entertainment.R.string as stringRedeem
  * Author firmanda on 17,Nov,2022
  */
 
-class EventRedeemRevampBottomSheet: BottomSheetUnify() {
+class EventRedeemRevampBottomSheet: BottomSheetUnify(),
+    EventParticipantViewHolder.ParticipantListener {
 
     private var binding by autoClearedNullable<BottomSheetEventRedeemRevampBinding>()
     private val adapter by lazy(LazyThreadSafetyMode.NONE){
         EventRedeemRevampAdapter(
-            typeFactory = EventRedeemRevampAdapterTypeFactory(),
+            typeFactory = EventRedeemRevampAdapterTypeFactory(this),
             differ = EventRedeemRevampDiffer()
         )
     }
+    private var listener: RedeemBottomSheetListener? = null
     private var listParticipant: List<Visitable<*>> = mutableListOf()
+    private var listCheckedIds: MutableList<Pair<String, Boolean>> = mutableListOf()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -75,7 +81,7 @@ class EventRedeemRevampBottomSheet: BottomSheetUnify() {
     }
 
     private fun saveList() {
-        //TODO Save List
+        listener?.onClickSave(listCheckedIds)
         dismiss()
     }
 
@@ -83,7 +89,25 @@ class EventRedeemRevampBottomSheet: BottomSheetUnify() {
         this.listParticipant = items
     }
 
+    fun setListener(listener: RedeemBottomSheetListener) {
+        this.listener = listener
+    }
+
+    override fun onCheckListener(element: ParticipantUiModel, isChecked: Boolean) {
+        listCheckedIds.add(Pair(element.id, isChecked))
+    }
+
+    override fun onDismiss(dialog: DialogInterface) {
+        super.onDismiss(dialog)
+        listener?.onClose()
+    }
+
     companion object {
         fun getInstance(): EventRedeemRevampBottomSheet = EventRedeemRevampBottomSheet()
+    }
+
+    interface RedeemBottomSheetListener{
+        fun onClickSave(listCheckedIds: List<Pair<String, Boolean>>)
+        fun onClose()
     }
 }
