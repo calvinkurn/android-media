@@ -30,6 +30,7 @@ import com.tokopedia.mvc.domain.entity.VoucherStatus
 import com.tokopedia.mvc.presentation.bottomsheet.EduCenterBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.FilterVoucherBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.FilterVoucherStatusBottomSheet
+import com.tokopedia.mvc.presentation.bottomsheet.MoreMenuVoucherBottomSheet
 import com.tokopedia.mvc.presentation.list.adapter.VoucherAdapterListener
 import com.tokopedia.mvc.presentation.list.adapter.VouchersAdapter
 import com.tokopedia.mvc.presentation.list.constant.MvcListConstant.INITIAL_PAGE
@@ -77,7 +78,7 @@ class MvcListFragment: BaseDaggerFragment(), HasPaginatedList by HasPaginatedLis
     }
 
     override fun onVoucherListMoreMenuClicked(voucher: Voucher) {
-        println("more menu")
+        MoreMenuVoucherBottomSheet().show(childFragmentManager, "")
     }
 
     override fun onVoucherListCopyCodeClicked(voucher: Voucher) {

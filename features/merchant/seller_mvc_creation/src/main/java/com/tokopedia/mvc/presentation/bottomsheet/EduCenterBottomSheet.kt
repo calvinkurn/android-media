@@ -27,7 +27,8 @@ class EduCenterBottomSheet: BottomSheetUnify() {
         isKeyboardOverlap = false
         clearContentPadding = true
         setChild(binding?.root)
-        setTitle(getString(R.string.smvc_bottomsheet_edu_center))
+        setTitle(getString(R.string.smvc_bottomsheet_edu_center_title))
+        // TODO: Implement layout and behavior
     }
 
 }

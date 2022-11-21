@@ -46,7 +46,7 @@ class FilterVoucherStatusBottomSheet: BottomSheetUnify() {
         isKeyboardOverlap = false
         clearContentPadding = true
         setChild(binding?.root)
-        setTitle(getString(R.string.smvc_bottomsheet_filter_status_voucher))
+        setTitle(getString(R.string.smvc_bottomsheet_filter_status_voucher_title))
     }
 
     fun setListener(listener: FilterVoucherStatusBottomSheetListener) {
