@@ -28,6 +28,7 @@ class OrderStatusHeaderViewHolder(
     private val labelBuyerOrderDetailPreOrder = itemView?.findViewById<Label>(R.id.labelBuyerOrderDetailPreOrder)
     private val tvBuyerOrderDetailSeeDetail = itemView?.findViewById<Typography>(R.id.tvBuyerOrderDetailSeeDetail)
     private val tvBuyerOrderDetailStatusOrder = itemView?.findViewById<Typography>(R.id.tvBuyerOrderDetailStatusOrder)
+    private val labelBuyerOrderDetailScheduleDelivery = itemView?.findViewById<Label>(R.id.labelBuyerOrderDetailScheduleDelivery)
 
     init {
         setupSeeOrderStatusDetail()
@@ -41,6 +42,7 @@ class OrderStatusHeaderViewHolder(
             setupIndicatorColor(it.indicatorColor)
             setupStatusHeader(it.orderStatus)
             setupPreOrderLabel(it.preOrder)
+            setupScheduleDeliveryLabel(it.label)
             setupSeeDetailVisibility(it.orderId)
         }
     }
@@ -60,6 +62,9 @@ class OrderStatusHeaderViewHolder(
                     }
                     if (oldItem.preOrder != newItem.preOrder) {
                         setupPreOrderLabel(newItem.preOrder)
+                    }
+                    if (oldItem.label != newItem.label) {
+                        setupScheduleDeliveryLabel(newItem.label)
                     }
                     container?.layoutTransition?.disableTransitionType(LayoutTransition.CHANGING)
                     return
@@ -96,6 +101,14 @@ class OrderStatusHeaderViewHolder(
             labelBuyerOrderDetailPreOrder?.setLabel(itemView.context.getString(R.string.label_pre_order_duration, preOrder.value))
         } else {
             labelBuyerOrderDetailPreOrder?.gone()
+        }
+    }
+
+    private fun setupScheduleDeliveryLabel(label: String) {
+        if (label.isNotBlank()) {
+            labelBuyerOrderDetailScheduleDelivery?.setLabel(label)
+        } else {
+            labelBuyerOrderDetailScheduleDelivery?.gone()
         }
     }
 
