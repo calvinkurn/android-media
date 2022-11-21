@@ -145,9 +145,6 @@ class PlayShortsViewModel @Inject constructor(
 
     init {
         setupPreparationMenu()
-
-        /** TODO: for mocking purpose, delete this later */
-//        submitAction(PlayShortsAction.SetMedia("/storage/emulated/0/Movies/VID_20221110_141411.mp4"))
     }
 
     fun submitAction(action: PlayShortsAction) {
