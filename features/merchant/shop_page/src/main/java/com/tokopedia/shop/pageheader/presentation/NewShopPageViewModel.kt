@@ -19,7 +19,6 @@ import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
 import com.tokopedia.network.exception.UserNotLoginException
 import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.shop.common.constant.ShopPageConstant
-import com.tokopedia.shop.common.constant.ShopPageConstant.SHARED_PREF_AFFILIATE_TRACKER_ID
 import com.tokopedia.shop.common.data.model.HomeLayoutData
 import com.tokopedia.shop.common.data.model.ShopQuestGeneralTracker
 import com.tokopedia.shop.common.data.model.ShopQuestGeneralTrackerInput
@@ -99,7 +98,6 @@ class NewShopPageViewModel @Inject constructor(
         private val getFollowStatusUseCase: Lazy<GetFollowStatusUseCase>,
         private val updateFollowStatusUseCase: Lazy<UpdateFollowStatusUseCase>,
         private val gqlGetShopOperationalHourStatusUseCase: Lazy<GQLGetShopOperationalHourStatusUseCase>,
-        private val sharedPreferences: SharedPreferences,
         private val dispatcherProvider: CoroutineDispatchers
 )
     : BaseViewModel(dispatcherProvider.main) {
@@ -155,10 +153,6 @@ class NewShopPageViewModel @Inject constructor(
     private val _shopPageShopShareData = MutableLiveData<Result<ShopInfo>>()
     val shopPageShopShareData: LiveData<Result<ShopInfo>>
         get() = _shopPageShopShareData
-
-    val shopAffiliateTrackerId: LiveData<String>
-        get() = _shopAffiliateTrackerId
-    private val _shopAffiliateTrackerId = MutableLiveData<String>()
 
     fun getShopPageTabData(
             shopId: String,
@@ -638,21 +632,5 @@ class NewShopPageViewModel @Inject constructor(
             )
         }) {
         }
-    }
-
-    fun saveAffiliateTrackerId(affiliateTrackerId: String) {
-        launchCatchError(dispatcherProvider.io, block = {
-            sharedPreferences.edit().putString(
-                SHARED_PREF_AFFILIATE_TRACKER_ID,
-                affiliateTrackerId
-            ).apply()
-        }) {}
-    }
-
-    fun getShopAffiliateTrackerId() {
-        launchCatchError(dispatcherProvider.io, block = {
-            val shopAffiliateTrackerId = sharedPreferences.getString(SHARED_PREF_AFFILIATE_TRACKER_ID, "")
-            _shopAffiliateTrackerId.postValue(shopAffiliateTrackerId)
-        }){}
     }
 }

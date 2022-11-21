@@ -42,7 +42,6 @@ object ShopPageConstant {
     const val CODE_STATUS_SUCCESS = "200"
     const val AFFILIATE_PAGE_ID = "pageID"
     const val SHOP_PAGE_SHARED_PREFERENCE = "SHOP_PAGE_PREFERENCE"
-    const val SHARED_PREF_AFFILIATE_TRACKER_ID = "SHARED_PREF_AFFILIATE_TRACKER_ID"
     object ShopLayoutFeatures{
         const val DIRECT_PURCHASE = "direct_purchase"
     }

@@ -175,7 +175,6 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     private var navSource = ""
     private var isEnableDirectPurchase: Boolean = false
     private var isFulfillmentFilterActive: Boolean = false
-    private var affiliateTrackerId: String = ""
 
     private val staggeredGridLayoutManager: StaggeredGridLayoutManager by lazy {
         StaggeredGridLayoutManager(GRID_SPAN_COUNT, StaggeredGridLayoutManager.VERTICAL)
@@ -297,11 +296,6 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         }
         observeLiveData()
         initAffiliateCookie()
-        getShopAffiliateTrackerId()
-    }
-
-    private fun getShopAffiliateTrackerId() {
-        viewModel.getShopAffiliateTrackerId()
     }
 
     private fun initAffiliateCookie() {
@@ -614,15 +608,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         observeDeleteCartLiveData()
         observeUpdatedShopProductListQuantityData()
         observeShopAtcTrackerLiveData()
-        observeShopAffiliateTrackerId()
     }
-
-    private fun observeShopAffiliateTrackerId() {
-        viewModel.shopAffiliateTrackerId.observe(viewLifecycleOwner){
-            affiliateTrackerId = it
-        }
-    }
-
 
     private fun observeShopAtcTrackerLiveData() {
         viewModel.shopPageAtcTracker.observe(viewLifecycleOwner, {
@@ -1106,7 +1092,7 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
     }
 
     private fun createPdpAffiliateLink(basePdpAppLink: String): String {
-        return affiliateCookieHelper.createAffiliateLink(basePdpAppLink, affiliateTrackerId)
+        return affiliateCookieHelper.createAffiliateLink(basePdpAppLink)
     }
 
     private fun onSuccessAddWishlist(productId: String) {

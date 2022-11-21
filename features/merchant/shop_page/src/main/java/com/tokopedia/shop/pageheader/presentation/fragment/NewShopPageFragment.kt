@@ -1045,14 +1045,12 @@ class NewShopPageFragment :
             observeShopPageFollowingStatusSharedViewModel()
             observeShopPageFeedTabSharedViewModel()
             observeShopPageMiniCartSharedViewModel()
-            observeShopAffiliateTrackerId()
             getInitialData()
             inflateViewStub()
             initViews(view)
             if (swipeToRefresh?.isRefreshing == false) {
                 setViewState(VIEW_LOADING)
             }
-            getShopAffiliateTrackerId()
         }
         context?.let {
            screenShotDetector = UniversalShareBottomSheet.createAndStartScreenShotDetector(
@@ -1065,30 +1063,11 @@ class NewShopPageFragment :
         initAffiliateCookie()
     }
 
-    private fun getShopAffiliateTrackerId() {
-        shopViewModel?.getShopAffiliateTrackerId()
-    }
-
-    private fun observeShopAffiliateTrackerId() {
-        shopViewModel?.shopAffiliateTrackerId?.observe(viewLifecycleOwner){
-            val affiliateTrackerId = it.ifEmpty {
-                val affiliateTrackerId = UUID.randomUUID().toString()
-                saveAffiliateTrackerId(affiliateTrackerId)
-                affiliateTrackerId
-            }
-            affiliateData?.affiliateTrackerId = affiliateTrackerId
-        }
-    }
-
     private fun checkAffiliateAppLink(uri: Uri) {
         val isAppLinkContainAffiliateUuid = uri.queryParameterNames.contains(QUERY_AFFILIATE_UUID)
         if(isAppLinkContainAffiliateUuid) {
             setAffiliateData(uri)
         }
-    }
-
-    private fun saveAffiliateTrackerId(affiliateTrackerId: String) {
-        shopViewModel?.saveAffiliateTrackerId(affiliateTrackerId)
     }
 
     private fun getMarketingServiceQueryParamData(data: Uri) {
@@ -1097,9 +1076,11 @@ class NewShopPageFragment :
     }
 
     private fun setAffiliateData(uri: Uri) {
+        val affiliateTrackerId = UUID.randomUUID().toString()
         affiliateData = ShopAffiliateData(
             uri.getQueryParameter(QUERY_AFFILIATE_UUID).orEmpty(),
-            uri.getQueryParameter(QUERY_AFFILIATE_CHANNEL).orEmpty()
+            uri.getQueryParameter(QUERY_AFFILIATE_CHANNEL).orEmpty(),
+            affiliateTrackerId
         )
     }
 
