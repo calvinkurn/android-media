@@ -44,6 +44,12 @@ class FeedPlusContainerViewModel @Inject constructor(
             else -> false
         }
 
+    val isShowShortsButton: Boolean
+        get() = when(val whitelist = whitelistResp.value) {
+            is Success -> whitelist.data.authors.isNotEmpty()
+            else -> false
+        }
+
     private var isLoading = MutableLiveData<Boolean>()
 
     fun getDynamicTabs() {

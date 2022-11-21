@@ -266,4 +266,10 @@
 
     <!-- Product Picker UGC -->
     <string name="play_bro_max_selected_product_reached">Kamu udah pilih %d produk.</string>
+
+    <!-- Banner -->
+    <string name="play_bro_banner_shorts_title">Lebih asik buat video pendek</string>
+    <string name="play_bro_banner_shorts_description">Buat video yang menarik &amp; inspiratif, yuk</string>
+    <string name="play_bro_banner_shorts_coachmark_title">Baru! Bisa buat video pendek 🥳</string>
+    <string name="play_bro_banner_shorts_coachmark_description">Buat video hingga 90 detik tentang produk jualanmu supaya banyak pembeli tertarik!</string>
 </resources>
