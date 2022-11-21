@@ -152,7 +152,15 @@
     <string name="biaya_iklan_tip_1">Semakin tinggi biaya iklanmu, maka semakin \ntinggi posisi iklanmu di halaman pencarian.</string>
     <string name="biaya_iklan_tip_2">Pakai rekomendasi biaya agar dapat\n menyaingi iklan dari penjual lain.</string>
     <string name="biaya_iklan_tip_3">Biaya iklan hanya dikenakan jika ada calon \npembeli yang klik iklanmu.</string>
-
+    
+<!-- MpAdCreationOnboarding -->    
+    <string name="mp_ad_creation_onboarding_text">Beriklan dengan TopAds terbukti meningkatkan jangkauan pembeli, lho. Yuk, rasakan sendiri keuntungannya dengan mulai beriklan.</string>
+    <string name="mp_ad_creation_onboarding_num_text_1">Potensi tampil\n meningkat</string>
+    <string name="mp_ad_creation_onboarding_num_text_2">Potensi klik\n meningkat</string>
+    <string name="mp_ad_creation_onboarding_num_text_3">Potensi penjualan\n meningkat</string>
+    <string name="mp_ad_creation_onboarding_subtext">*Berdasarkan data performa toko yang aktif menggunakan TopAds.</string>
+    <string name="mp_ad_creation_onboarding_cta_text">Iklankan Produkmu</string>
+    <string name="mp_ad_creation_onboarding_footer_text">Mau cari tahu apa itu TopAds? Yuk, Kenalan Dulu</string>
 
     <string-array name="sort_product_list_array">
         <item>Terlaris</item>

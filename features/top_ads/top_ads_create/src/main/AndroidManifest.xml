@@ -74,5 +74,12 @@
             android:screenOrientation="portrait"
             android:theme="@style/Theme.WhiteUnify"
             android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name="com.tokopedia.topads.view.activity.MpAdCreationActivity"
+            android:label="@string/topads_create_onboarding_title"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.WhiteUnify"
+            android:windowSoftInputMode="adjustPan"
+            />
     </application>
 </manifest>
