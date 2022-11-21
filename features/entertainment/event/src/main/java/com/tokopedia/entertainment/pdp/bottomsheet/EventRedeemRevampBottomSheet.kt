@@ -94,7 +94,17 @@ class EventRedeemRevampBottomSheet: BottomSheetUnify(),
     }
 
     override fun onCheckListener(element: ParticipantUiModel, isChecked: Boolean) {
-        listCheckedIds.add(Pair(element.id, isChecked))
+        val index = listCheckedIds.mapIndexed { index, pair ->
+            Pair(pair.first, index)
+        }.firstOrNull{
+            element.id == it.first
+        }
+
+        if (index != null) {
+            listCheckedIds[index.second] = Pair(element.id, isChecked)
+        } else {
+            listCheckedIds.add(Pair(element.id, isChecked))
+        }
     }
 
     override fun onDismiss(dialog: DialogInterface) {

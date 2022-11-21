@@ -105,7 +105,7 @@ class EventRedeemRevampViewModel @Inject constructor(
     }
 
     fun updateCheckedIds(listCheckedIds: List<Pair<String, Boolean>>) {
-        listRedemptions.forEachIndexed { index, participant ->
+        listRedemptions.forEachIndexed { _, participant ->
             val listCheckedId = listCheckedIds.firstOrNull {
                 it.first == participant.id
             }

@@ -8,6 +8,8 @@ import android.view.ViewGroup
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.entertainment.databinding.FragmentEventRedeemRevampBinding
 import com.tokopedia.entertainment.pdp.activity.EventRedeemActivity.Companion.EXTRA_URL_REDEEM
 import com.tokopedia.entertainment.pdp.bottomsheet.EventRedeemRevampBottomSheet
@@ -76,6 +78,7 @@ class EventRedeemRevampFragment : BaseDaggerFragment(),
 
     private fun initalRequest() {
         hideMainLayout()
+        hideRedeemLayout()
         hideGlobalError()
         if (!userSession.isLoggedIn) {
             showGlobalError(isNotLogin = true, isUrlEmpty = false, null)
@@ -138,15 +141,16 @@ class EventRedeemRevampFragment : BaseDaggerFragment(),
     private fun showMainError(throwable: Throwable) {
         hideLoading()
         hideMainLayout()
+        hideRedeemLayout()
         showGlobalError(isNotLogin = false, isUrlEmpty = false, throwable)
     }
 
     private fun showData(redeem: Data) {
         hideLoading()
         hideGlobalError()
+        hideRedeemLayout()
         showMainLayout()
         renderMainLayout(redeem)
-        hideRedeemLayout()
     }
 
     private fun showSuccessRedeem() {
@@ -255,11 +259,20 @@ class EventRedeemRevampFragment : BaseDaggerFragment(),
     }
 
     private fun showRedeemLayout() {
-
+        binding?.run {
+            containerSuccessRedeem.show()
+            btnScan.show()
+            tgTitleRedeem.hide()
+            btnRedeem.hide()
+            tfRedeem.hide()
+        }
     }
 
     private fun hideRedeemLayout() {
-
+        binding?.run {
+            containerSuccessRedeem.hide()
+            btnScan.hide()
+        }
     }
 
     private fun renderMainLayout(redeem: Data) {
@@ -281,7 +294,14 @@ class EventRedeemRevampFragment : BaseDaggerFragment(),
     }
 
     private fun renderSuccessRedeemLayout() {
-
+        binding?.run {
+            context?.let { context ->
+                tgSuccessRedeem.text = context.resources.getString(redeemString.ent_redeem_success_redeem, viewModel.getCheckedIdsSize())
+                btnScan.setOnClickListener {
+                    RouteManager.route(context, ApplinkConstInternalMarketplace.QR_SCANNEER)
+                }
+            }
+        }
     }
 
     private fun showBottomSheet() {
