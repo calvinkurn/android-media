@@ -100,9 +100,7 @@ class CampaignListViewModel @Inject constructor(
                     delay(TIMER_FOR_FLIP)
                 }
             },
-            onError = {
-
-            }
+            onError = {}
         )
     }
 

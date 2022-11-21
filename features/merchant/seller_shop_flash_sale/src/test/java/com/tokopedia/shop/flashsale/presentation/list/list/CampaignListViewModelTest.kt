@@ -42,7 +42,6 @@ import org.junit.Rule
 import org.junit.Test
 import java.util.*
 
-@OptIn(ExperimentalCoroutinesApi::class)
 class CampaignListViewModelTest {
     @RelaxedMockK
     lateinit var getSellerCampaignListUseCase: GetSellerCampaignListUseCase
