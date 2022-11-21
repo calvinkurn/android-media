@@ -20,7 +20,7 @@ class RoundedCornersTransformation constructor(
     }
 
     enum class CornerType {
-        ALL, TOP_LEFT, TOP_RIGHT, BOTTOM_LEFT, BOTTOM_RIGHT, TOP
+        ALL, TOP_LEFT, TOP_RIGHT, BOTTOM_LEFT, BOTTOM_RIGHT, TOP, BOTTOM, LEFT, RIGHT
     }
 
     private val diameter: Int = radius * 2
@@ -48,6 +48,10 @@ class RoundedCornersTransformation constructor(
             CornerType.TOP_RIGHT -> drawTopRightRoundRect(canvas, paint, width, height)
             CornerType.BOTTOM_LEFT -> drawBottomLeftRoundRect(canvas, paint, width, height)
             CornerType.BOTTOM_RIGHT -> drawBottomRightRoundRect(canvas, paint, width, height)
+            CornerType.TOP -> drawTopRoundRect(canvas, paint, width, height)
+            CornerType.BOTTOM -> drawBottomRoundRect(canvas, paint, width, height)
+            CornerType.LEFT -> drawLeftRoundRect(canvas, paint, width, height)
+            CornerType.RIGHT -> drawRightRoundRect(canvas, paint, width, height)
             else -> canvas.drawRoundRect(
                 RectF(ZERO_VALUE, ZERO_VALUE, width, height),
                 radius.toFloat(),
@@ -119,6 +123,40 @@ class RoundedCornersTransformation constructor(
         )
         canvas.drawRect(RectF(ZERO_VALUE, ZERO_VALUE, right - radius, bottom), paint)
         canvas.drawRect(RectF(right - radius, ZERO_VALUE, right, bottom - radius), paint)
+    }
+
+    private fun drawTopRoundRect(canvas: Canvas, paint: Paint, right: Float, bottom: Float) {
+        canvas.drawRoundRect(
+            RectF(ZERO_VALUE, ZERO_VALUE, right, ZERO_VALUE + diameter), radius.toFloat(), radius.toFloat(),
+            paint
+        )
+        canvas.drawRect(RectF(ZERO_VALUE, ZERO_VALUE + radius, right, bottom), paint)
+    }
+
+    private fun drawBottomRoundRect(canvas: Canvas, paint: Paint, right: Float, bottom: Float) {
+        canvas.drawRoundRect(
+            RectF(ZERO_VALUE, bottom - diameter, right, bottom), radius.toFloat(), radius.toFloat(),
+            paint
+        )
+        canvas.drawRect(RectF(ZERO_VALUE, ZERO_VALUE, right, bottom - radius), paint)
+    }
+
+    private fun drawLeftRoundRect(canvas: Canvas, paint: Paint, right: Float, bottom: Float) {
+        canvas.drawRoundRect(
+            RectF(ZERO_VALUE, ZERO_VALUE, ZERO_VALUE + diameter, bottom), radius.toFloat(), radius.toFloat(),
+            paint
+        )
+        canvas.drawRect(RectF(ZERO_VALUE + radius, ZERO_VALUE, right, bottom), paint)
+    }
+
+    private fun drawRightRoundRect(canvas: Canvas, paint: Paint, right: Float, bottom: Float) {
+        canvas.drawRoundRect(
+            RectF(right - diameter, ZERO_VALUE, right, bottom),
+            radius.toFloat(),
+            radius.toFloat(),
+            paint
+        )
+        canvas.drawRect(RectF(ZERO_VALUE, ZERO_VALUE, right - radius, bottom), paint)
     }
 
     override fun updateDiskCacheKey(messageDigest: MessageDigest) {

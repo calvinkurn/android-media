@@ -35,6 +35,7 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.DividerUnify
+import com.tokopedia.home_component.customview.util.RoundedCornersTransformation.CornerType
 
 /**
  * Created by Devara on 2020-04-28
@@ -223,10 +224,10 @@ class DynamicLegoBannerViewHolder(itemView: View,
         private fun setLegoViewData(holder: LegoItemViewHolder, grid: ChannelGrid, position: Int) {
             if(getItemViewType(position) == LEGO_SQUARE && isUsingPaddingStyle) {
                 val cornerType = when(position) {
-                    POSITION_TOP_LEFT -> RoundedCornersTransformation.CornerType.TOP_LEFT
-                    POSITION_TOP_RIGHT -> RoundedCornersTransformation.CornerType.TOP_RIGHT
-                    POSITION_BOTTOM_LEFT -> RoundedCornersTransformation.CornerType.BOTTOM_LEFT
-                    POSITION_BOTTOM_RIGHT -> RoundedCornersTransformation.CornerType.BOTTOM_RIGHT
+                    POSITION_TOP_LEFT -> if(layout == DynamicChannelLayout.LAYOUT_LEGO_3_IMAGE) CornerType.LEFT else CornerType.TOP_LEFT
+                    POSITION_TOP_RIGHT -> if(layout == DynamicChannelLayout.LAYOUT_LEGO_3_IMAGE) CornerType.RIGHT else CornerType.TOP_RIGHT
+                    POSITION_BOTTOM_LEFT -> CornerType.BOTTOM_LEFT
+                    POSITION_BOTTOM_RIGHT -> CornerType.BOTTOM_RIGHT
                     else -> null
                 }
                 cornerType?.let {
