@@ -270,7 +270,7 @@ class VideoDetailFragment :
                 MediaPlayer.MEDIA_ERROR_UNKNOWN -> {
                     Toast.makeText(
                         requireContext(),
-                        getString(com.tokopedia.videoplayer.R.string.error_unknown),
+                        getString(R.string.kol_error_unknown),
                         Toast.LENGTH_SHORT
                     ).show()
                     activity?.finish()
