@@ -44,7 +44,8 @@ class ShareComponentInstanceBuilder @Inject constructor(
         val shopName: String,
         val discountAmount: Long,
         val discountAmountMax: Long,
-        val productImageUrls: List<String>
+        val productImageUrls: List<String>,
+        val discountPercentage: Int
     )
     
     fun build(
@@ -119,9 +120,9 @@ class ShareComponentInstanceBuilder @Inject constructor(
             )
 
             val formattedBenefitType = when(param.promoType) {
-                PromoType.FREE_SHIPPING -> "gratis-ongkir"
-                PromoType.CASHBACK -> "cashback"
-                PromoType.DISCOUNT -> "diskon"
+                PromoType.FREE_SHIPPING -> ImageGeneratorConstants.VoucherBenefitType.GRATIS_ONGKIR
+                PromoType.CASHBACK -> ImageGeneratorConstants.VoucherBenefitType.CASHBACK
+                PromoType.DISCOUNT -> ImageGeneratorConstants.VoucherBenefitType.DISCOUNT
             }
 
             addImageGeneratorData(
@@ -144,6 +145,18 @@ class ShareComponentInstanceBuilder @Inject constructor(
             addImageGeneratorData(
                 key = ImageGeneratorConstants.ImageGeneratorKeys.VOUCHER_NOMINAL_SYMBOL,
                 value = symbol
+            )
+            val formattedDiscountType = when(param.benefitType) {
+                BenefitType.NOMINAL -> ImageGeneratorConstants.CashbackType.NOMINAL
+                BenefitType.PERCENTAGE -> ImageGeneratorConstants.CashbackType.PERCENTAGE
+            }
+            addImageGeneratorData(
+                key = ImageGeneratorConstants.ImageGeneratorKeys.VOUCHER_DISCOUNT_TYPE,
+                value = formattedDiscountType
+            )
+            addImageGeneratorData(
+                key = ImageGeneratorConstants.ImageGeneratorKeys.VOUCHER_DISCOUNT_PERCENTAGE,
+                value = param.discountPercentage.toString()
             )
             addImageGeneratorData(
                 key = ImageGeneratorConstants.ImageGeneratorKeys.SHOP_LOGO_MVC,
