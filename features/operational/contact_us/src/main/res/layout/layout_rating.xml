@@ -4,14 +4,6 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <View
-        android:id="@+id/divider"
-        android:layout_width="match_parent"
-        android:layout_height="4dp"
-        android:layout_marginBottom="16dp"
-        android:background="@color/contact_us_dms_rating_divider"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/txt_help_title"
         android:layout_width="wrap_content"
