@@ -355,6 +355,7 @@ class FeedAnalyticTracker
         val mediaType = feedTrackerData.mediaType
         val trackerId = feedTrackerData.trackerId
         val productId = feedTrackerData.productId
+        val category = if (feedTrackerData.isProductDetailPage) CATEGORY_FEED_TIMELINE_FEED_DETAIL else CATEGORY_FEED_TIMELINE_BOTTOMSHEET
         val finalLabel =
             if (feedTrackerData.campaignStatus.isNotEmpty() && isFollowed) KEY_EVENT_LABEL to String.format(
                 FORMAT_FIVE_PARAM,
@@ -372,7 +373,7 @@ class FeedAnalyticTracker
             )
         var map = mapOf(
             KEY_EVENT to CLICK_FEED,
-            KEY_EVENT_CATEGORY to CATEGORY_FEED_TIMELINE_BOTTOMSHEET,
+            KEY_EVENT_CATEGORY to category,
             KEY_EVENT_ACTION to String.format(
                 FORMAT_THREE_PARAM,
                 CLICK,
@@ -442,11 +443,12 @@ class FeedAnalyticTracker
     }
 
     fun eventImageClicked(
-        activityId: String,
-        type: String,
-        isFollowed: Boolean,
-        shopId: String
+        feedTrackerData: FeedTrackerData
     ) {
+        val activityId = feedTrackerData.postId
+        val type = feedTrackerData.postType
+        val isFollowed = feedTrackerData.isFollowed
+        val shopId = feedTrackerData.shopId
         val map = mapOf(
             KEY_EVENT to CLICK_FEED,
             KEY_EVENT_CATEGORY to CATEGORY_FEED_TIMELINE,
@@ -457,9 +459,10 @@ class FeedAnalyticTracker
                getPostType(type,isFollowed)
             ),
             KEY_EVENT_LABEL to String.format(
-                FORMAT_TWO_PARAM,
+                FORMAT_THREE_PARAM,
                 activityId,
-                shopId
+                shopId,
+                feedTrackerData.contentSlotValue
             ),
             KEY_BUSINESS_UNIT_EVENT to CONTENT,
             KEY_CURRENT_SITE_EVENT to MARKETPLACE,
@@ -532,7 +535,6 @@ class FeedAnalyticTracker
         val type = trackerData.postType
         val isFollowed = trackerData.isFollowed
         val mediaType = trackerData.mediaType
-
         val trackerId = if (trackerData.campaignStatus.isNotEmpty()){
             if (trackerData.isFollowed) "13446" else "13432"
         } else ""
@@ -540,16 +542,18 @@ class FeedAnalyticTracker
 
         val finalLabel = if (trackerData.campaignStatus.isNotEmpty() && isFollowed) {
             String.format(
-                FORMAT_THREE_PARAM,
+                FORMAT_FOUR_PARAM,
                 activityId,
                 shopId,
+                trackerData.contentSlotValue,
                 trackerData.campaignStatus
             )
         } else {
             String.format(
-                FORMAT_TWO_PARAM,
+                FORMAT_THREE_PARAM,
                 activityId,
-                shopId
+                shopId,
+                trackerData.contentSlotValue
             )
         }
         var map = getCommonMap(CATEGORY_FEED_TIMELINE_BOTTOMSHEET, trackerData.campaignStatus)
@@ -581,8 +585,10 @@ class FeedAnalyticTracker
         val type = trackerData.postType
         val isFollowed = trackerData.isFollowed
         val mediaType = trackerData.mediaType
+        val category = if (trackerData.isProductDetailPage) CATEGORY_FEED_TIMELINE_FEED_DETAIL else CATEGORY_FEED_TIMELINE_BOTTOMSHEET
 
-        var map = getCommonMap(CATEGORY_FEED_TIMELINE_BOTTOMSHEET)
+
+        var map = getCommonMap(category)
         map = map.plus(
             mutableMapOf(
                 KEY_EVENT_ACTION to String.format(
@@ -960,8 +966,10 @@ class FeedAnalyticTracker
             "double tap like"
         else if (doubleTap && !isLiked)
             "double tap unlike"
-        else
+        else if(isLiked)
             "like"
+        else
+            "unlike"
 
         val finallabel = if (feedTrackerData.campaignStatus.isNotEmpty() && feedTrackerData.isFollowed) KEY_EVENT_LABEL to String.format(
             FORMAT_FOUR_PARAM,
@@ -1170,7 +1178,7 @@ class FeedAnalyticTracker
         val type = feedTrackerData.postType
         val isFollowed = feedTrackerData .isFollowed
         val shopId = feedTrackerData.shopId
-        val mediaType = feedTrackerData .shopId
+        val mediaType = feedTrackerData.mediaType
 
         trackEnhancedEcommerceEventNew(
             PROMO_VIEW,
@@ -1236,7 +1244,6 @@ class FeedAnalyticTracker
     fun eventClickLihatSemuaComment(
         feedTrackerData: FeedTrackerData
     ) {
-
         val activityId = feedTrackerData.postId
         val type = feedTrackerData.postType
         val isFollowed = feedTrackerData .isFollowed
@@ -1373,7 +1380,12 @@ class FeedAnalyticTracker
             map = map.plus(KEY_TRACKER_ID to trackerId)
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
     }
-    fun eventClickFullScreenIconVOD(channelId: String, type: String, isFollowed: Boolean, shopId: String, mediaType: String) {
+    fun eventClickFullScreenIconVOD(feedTrackerData: FeedTrackerData) {
+        val channelId = feedTrackerData.postId
+        val type = feedTrackerData.postType
+        val isFollowed = feedTrackerData.isFollowed
+        val shopId = feedTrackerData.shopId
+        val mediaType = feedTrackerData.mediaType
         var map = getCommonMap()
         map = map.plus(
                 mapOf(KEY_EVENT_ACTION to String.format(
@@ -1383,9 +1395,10 @@ class FeedAnalyticTracker
                                 getPostType(type, isFollowed, mediaType)
                         ),
                         KEY_EVENT_LABEL to String.format(
-                                FORMAT_TWO_PARAM,
+                                FORMAT_THREE_PARAM,
                                 channelId,
-                                shopId
+                                shopId,
+                                feedTrackerData.contentSlotValue
                         )
                 )
         )
@@ -1609,14 +1622,14 @@ class FeedAnalyticTracker
     }
 
     fun eventClickFollowitem(
-        activityId: String,
-        position: Int,
-        type: String,
-        isFollowed: Boolean,
-        shopId: String,
-        mediaType: String,
-        trackerId: String = ""
+       feedTrackerData: FeedTrackerData
     ) {
+        val activityId = feedTrackerData.postId
+        val type = feedTrackerData.postType
+        val isFollowed = feedTrackerData.isFollowed
+        val shopId = feedTrackerData.shopId
+        val mediaType = feedTrackerData.mediaType
+        val trackerId = feedTrackerData.trackerId
         val followtext = if (isFollowed) {
             "unfollow"
         } else {
@@ -1634,7 +1647,8 @@ class FeedAnalyticTracker
             KEY_EVENT_LABEL to String.format(
                 FORMAT_TWO_PARAM,
                 activityId,
-                shopId
+                shopId,
+
             ),
             KEY_BUSINESS_UNIT_EVENT to CONTENT,
             KEY_CURRENT_SITE_EVENT to MARKETPLACE,
@@ -1903,8 +1917,10 @@ class FeedAnalyticTracker
         postType: String,
         isVideoPost: Boolean,
         isFollowed: Boolean,
-        isCommentPage: Boolean
+        isCommentPage: Boolean,
+        contentSlotValue: String = ""
     ) {
+
         val map = mapOf(
             KEY_EVENT to CLICK_FEED,
             EVENT_CATEGORY to if (isCommentPage) CATEGORY_FEED_TIMELINE_COMMENT else CATEGORY_FEED_TIMELINE,
@@ -1915,9 +1931,10 @@ class FeedAnalyticTracker
                 getPostType(postType, isFollowed ,if (isVideoPost) TYPE_VIDEO else TYPE_IMAGE)
             ),
             KEY_EVENT_LABEL to String.format(
-                FORMAT_THREE_PARAM,
+                FORMAT_FOUR_PARAM,
                 postId,
                 authorId,
+                contentSlotValue,
                 hashTag
             ),
             KEY_BUSINESS_UNIT_EVENT to CONTENT,
@@ -2195,7 +2212,7 @@ class FeedAnalyticTracker
                     FORMAT_THREE_PARAM,
                     "watch",
                     "video",
-                    getPostType("", isFollowed = isFollowed, mediaType)
+                    getPostType(feedTrackerData.postType, isFollowed = isFollowed, mediaType)
                 ),
                 KEY_EVENT_LABEL to String.format(
                     FORMAT_FOUR_PARAM,

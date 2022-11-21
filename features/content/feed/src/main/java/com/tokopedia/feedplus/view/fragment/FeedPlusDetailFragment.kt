@@ -434,7 +434,8 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
                 campaignStatus = item.saleStatus,
                 product = item.product,
                 productId = item.product.id,
-                mediaIndex = 0
+                mediaIndex = 0,
+                isProductDetailPage = true
             )
         )
         val bundle = Bundle()
@@ -530,7 +531,8 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
                 contentSlotValue = contentSlotValue,
                 mediaIndex = 0,
                 positionInFeed = 0,
-                trackerId = ""
+                trackerId = "",
+                isProductDetailPage = true
                 )
         )
 

@@ -16,5 +16,6 @@ data class FeedTrackerData(
     val trackerId: String = "",
     val productId: String = "",
     val product: FeedXProduct = FeedXProduct(),
-    val mediaIndex: Int = 0
+    val mediaIndex: Int = 0,
+    val isProductDetailPage: Boolean = false
 )

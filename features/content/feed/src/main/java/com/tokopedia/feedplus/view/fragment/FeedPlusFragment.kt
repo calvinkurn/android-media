@@ -2000,11 +2000,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
         if (isFullScreenButton)
             feedAnalytics.eventClickFullScreenIconVOD(
-                finalId,
-                feedXCard.typename,
-                feedXCard.followers.isFollowed,
-                feedXCard.author.id,
-                feedXCard.media.firstOrNull()?.type ?: ""
+                getFeedTrackerDataModel(feedXCard)
             )
         else
             feedAnalytics.eventClicklanjutMenontonVOD(
@@ -2060,8 +2056,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
         rowNumber: Int,
         time: Long
     ) {
-            var finalId =
-                if (feedXCard.typename == TYPE_FEED_X_CARD_PLAY) feedXCard.playChannelID else feedXCard.id
 
             feedAnalytics.eventSendWatchVODAnalytics(
                 getFeedTrackerDataModel(feedXCard),
@@ -2420,7 +2414,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     override fun onImageClicked(
         feedXCard: FeedXCard
     ) {
-        feedAnalytics.eventImageClicked(feedXCard.id, feedXCard.typename, feedXCard.followers.isFollowed, feedXCard.author.id)
+        feedAnalytics.eventImageClicked(getFeedTrackerDataModel(feedXCard))
         if (feedXCard.campaign.isRilisanSpl || feedXCard.campaign.isFlashSaleToko) {
             val product =
                 if (feedXCard.lastCarouselIndex in (feedXCard.products.indices)) feedXCard.products[feedXCard.lastCarouselIndex] else null
@@ -2646,7 +2640,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
             feedXCard.typename,
             feedXCard.media[0].type != "image",
             feedXCard.followers.isFollowed,
-            false
+            false,
+            (feedXCard.contentScore).firstOrNull()?.value ?: String.EMPTY,
         )
     }
 
@@ -2988,13 +2983,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 } else ""
 
                 feedAnalytics.eventClickFollowitem(
-                    if (item.feedXCard.typename == TYPE_FEED_X_CARD_PLAY) item.feedXCard.playChannelID else item.feedXCard.id,
-                    adapterPosition,
-                    item.feedXCard.typename,
-                    !item.feedXCard.followers.isFollowed,
-                    item.feedXCard.author.id,
-                    item.feedXCard.media.firstOrNull()?.type ?: "",
-                    trackerId = trackerId
+                    getFeedTrackerDataModel(feedXCardData, trackerId = trackerId)
                 )
 
                 if (item.feedXCard.followers.isFollowed)
@@ -3032,12 +3021,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 item.feedXCard.followers.isFollowed = !item.feedXCard.followers.isFollowed
 
                 feedAnalytics.eventClickFollowitem(
-                    item.feedXCard.id,
-                    adapterPosition,
-                    item.feedXCard.typename,
-                    !item.feedXCard.followers.isFollowed,
-                    item.feedXCard.author.id,
-                    item.feedXCard.media.firstOrNull()?.type ?: ""
+                    getFeedTrackerDataModel(item.feedXCard)
                 )
 
                 if (item.feedXCard.followers.isFollowed)
