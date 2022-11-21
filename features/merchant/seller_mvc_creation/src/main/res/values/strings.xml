@@ -42,6 +42,11 @@
 
     <!--Common Bottomsheet-->
     <string name="smvc_bottomsheet_filter_voucher">Filter</string>
+    <string name="smvc_bottomsheet_filter_voucher_all">Semua Status</string>
+    <string name="smvc_bottomsheet_filter_voucher_notstarted">Mendatang</string>
+    <string name="smvc_bottomsheet_filter_voucher_ongoing">Berlangsung</string>
+    <string name="smvc_bottomsheet_filter_voucher_finished">Selesai</string>
+    <string name="smvc_bottomsheet_filter_status_voucher">Status</string>
     <string name="smvc_bottomsheet_edu_center">Pusat Edukasi</string>
 
 </resources>

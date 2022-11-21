@@ -1,8 +1,10 @@
 package com.tokopedia.mvc.domain.entity
 
+import androidx.annotation.StringRes
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.mvc.R
 
 data class VoucherListParam (
     @SerializedName("voucher_type")
@@ -122,4 +124,19 @@ enum class VoucherSubsidy(val type: Int) {
 enum class VoucherVps(val type: Int) {
     NON_VPS(0),
     VPS(1)
+}
+
+enum class VoucherStatusFilter(val type: List<VoucherStatus>, @StringRes val captionRes: Int) {
+    ALL_STATUS(
+        listOf(VoucherStatus.NOT_STARTED, VoucherStatus.ONGOING, VoucherStatus.ENDED, VoucherStatus.STOPPED),
+        R.string.smvc_bottomsheet_filter_voucher_all),
+    NOT_STARTED(
+        listOf(VoucherStatus.NOT_STARTED),
+        R.string.smvc_bottomsheet_filter_voucher_notstarted),
+    ONGOING(
+        listOf(VoucherStatus.ONGOING),
+        R.string.smvc_bottomsheet_filter_voucher_ongoing),
+    FINISHED(
+        listOf(VoucherStatus.ENDED, VoucherStatus.STOPPED),
+        R.string.smvc_bottomsheet_filter_voucher_finished)
 }

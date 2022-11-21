@@ -26,8 +26,10 @@ import com.tokopedia.mvc.databinding.SmvcFragmentMvcListFooterBinding
 import com.tokopedia.mvc.di.component.DaggerMerchantVoucherCreationComponent
 import com.tokopedia.mvc.domain.entity.Voucher
 import com.tokopedia.mvc.domain.entity.VoucherCreationQuota
+import com.tokopedia.mvc.domain.entity.VoucherStatus
 import com.tokopedia.mvc.presentation.bottomsheet.EduCenterBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.FilterVoucherBottomSheet
+import com.tokopedia.mvc.presentation.bottomsheet.FilterVoucherStatusBottomSheet
 import com.tokopedia.mvc.presentation.list.adapter.VoucherAdapterListener
 import com.tokopedia.mvc.presentation.list.adapter.VouchersAdapter
 import com.tokopedia.mvc.presentation.list.constant.MvcListConstant.INITIAL_PAGE
@@ -40,10 +42,10 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
 class MvcListFragment: BaseDaggerFragment(), HasPaginatedList by HasPaginatedListImpl(),
-    VoucherAdapterListener {
+    VoucherAdapterListener, FilterVoucherStatusBottomSheet.FilterVoucherStatusBottomSheetListener {
 
     private val filterList = ArrayList<SortFilterItem>()
-    private val filterItem by lazy { SortFilterItem("AAA") }
+    private val filterItem by lazy { SortFilterItem(getString(R.string.smvc_bottomsheet_filter_voucher_all)) }
     private var binding by autoClearedNullable<SmvcFragmentMvcListBinding>()
 
     @Inject
@@ -88,6 +90,13 @@ class MvcListFragment: BaseDaggerFragment(), HasPaginatedList by HasPaginatedLis
 
     override fun onVoucherListClicked(voucher: Voucher) {
         println("card")
+    }
+
+    override fun onFilterVoucherStatusChanged(status: List<VoucherStatus>, statusText: String) {
+        filterItem.title = statusText
+        filterItem.selectedItem = arrayListOf(statusText)
+        viewModel.setFilterStatus(status)
+        loadInitialDataList()
     }
 
     private fun setupObservables() {
@@ -144,10 +153,14 @@ class MvcListFragment: BaseDaggerFragment(), HasPaginatedList by HasPaginatedLis
     }
 
     private fun SearchBarUnify.setupSearchBar() {
-        clearListener = { loadInitialDataList() }
+        clearListener = {
+            viewModel.setFilterKeyword("")
+            loadInitialDataList()
+        }
         searchBarTextField.setOnEditorActionListener { textView, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                loadInitialDataList(textView.text.toString())
+                viewModel.setFilterKeyword(textView.text.toString())
+                loadInitialDataList()
                 KeyboardHandler.hideSoftKeyboard(activity)
             }
             return@setOnEditorActionListener false
@@ -188,19 +201,24 @@ class MvcListFragment: BaseDaggerFragment(), HasPaginatedList by HasPaginatedLis
         dismissListener = parentListener
 
 
-        filterItem.listener = {  }
+        filterItem.listener = {
+            val bottomSheet = FilterVoucherStatusBottomSheet()
+            bottomSheet.setSelected(filterItem.selectedItem)
+            bottomSheet.setListener(this@MvcListFragment)
+            bottomSheet.show(childFragmentManager, "")
+        }
         filterItem.refChipUnify.setChevronClickListener {  }
     }
 
-    private fun loadInitialDataList(keyword: String = "") {
+    private fun loadInitialDataList() {
         val adapter = binding?.rvVoucher?.adapter as? VouchersAdapter
         adapter?.clearDataList()
-        viewModel.getVoucherList(keyword, INITIAL_PAGE, PAGE_SIZE)
+        viewModel.getVoucherList(INITIAL_PAGE, PAGE_SIZE)
         viewModel.getVoucherQuota()
     }
 
     private fun getDataList(page: Int, pageSize: Int) {
-        viewModel.getVoucherList(binding?.searchBar?.searchBarTextField?.text.toString(), page, pageSize)
+        viewModel.getVoucherList(page, pageSize)
     }
 
     private fun redirectToCreateVoucherPage() {

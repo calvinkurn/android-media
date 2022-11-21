@@ -11,6 +11,7 @@ import com.tokopedia.mvc.domain.entity.VoucherSort
 import com.tokopedia.mvc.domain.entity.VoucherStatus
 import com.tokopedia.mvc.domain.usecase.GetVoucherListUseCase
 import com.tokopedia.mvc.domain.usecase.GetVoucherQuotaUseCase
+import com.tokopedia.mvc.presentation.list.model.FilterModel
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import javax.inject.Inject
 
@@ -29,18 +30,28 @@ class MvcListViewModel @Inject constructor(
     private val _error = MutableLiveData<Throwable>()
     val error: LiveData<Throwable> get() = _error
 
-    fun getVoucherList(keyword: String, page: Int, pageSize: Int) {
+    private val filter = FilterModel()
+
+    fun setFilterKeyword(keyword: String) {
+        filter.keyword = keyword
+    }
+
+    fun setFilterStatus(status: List<VoucherStatus>) {
+        filter.status = status.toMutableList()
+    }
+
+    fun getVoucherList(page: Int, pageSize: Int) {
         launchCatchError(
             dispatchers.io,
             block = {
                 val param = VoucherListParam.createParam(
                     type = null,
-                    status = listOf(VoucherStatus.NOT_STARTED, VoucherStatus.ONGOING),
+                    status = filter.status,
                     sort = VoucherSort.VOUCHER_STATUS,
                     target = null,
                     page = page,
                     perPage = pageSize,
-                    voucherName = keyword
+                    voucherName = filter.keyword
                 )
                 _voucherList.postValue(getVoucherListUseCase.execute(param))
             },
