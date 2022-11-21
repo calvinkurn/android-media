@@ -8,6 +8,7 @@ import com.tokopedia.entertainment.pdp.uimodel.ParticipantTitleUiModel
 import com.tokopedia.entertainment.pdp.uimodel.ParticipantUiModel
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.entertainment.R.string as stringRedeem
 
 /**
@@ -42,6 +43,12 @@ object EventRedeemMapper {
         }
 
         return participantList
+    }
+
+    fun getStatusNotAllDisabled(participants: List<Participant>): Boolean {
+        return participants.firstOrNull {
+            it.redemptionTime.isZero()
+        } != null
     }
 
     private fun dayTitle(day: Int, context: Context) : String {

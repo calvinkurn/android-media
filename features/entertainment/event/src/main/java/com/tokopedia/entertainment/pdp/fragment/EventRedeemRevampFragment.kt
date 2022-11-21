@@ -13,6 +13,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.entertainment.databinding.FragmentEventRedeemRevampBinding
 import com.tokopedia.entertainment.pdp.activity.EventRedeemActivity.Companion.EXTRA_URL_REDEEM
 import com.tokopedia.entertainment.pdp.bottomsheet.EventRedeemRevampBottomSheet
+import com.tokopedia.entertainment.pdp.common.util.EventRedeemMapper.getStatusNotAllDisabled
 import com.tokopedia.entertainment.pdp.common.util.EventRedeemMapper.participantToVisitableMapper
 import com.tokopedia.entertainment.pdp.data.redeem.redeemable.Data
 import com.tokopedia.entertainment.pdp.data.redeem.redeemable.Participant
@@ -282,13 +283,28 @@ class EventRedeemRevampFragment : BaseDaggerFragment(),
             tgValueTypeTicket.text = redeem.schedule.name
             tgValueDate.text = redeem.schedule.showData
             tgValueSumTicket.text = redeem.quantity.toString()
-            tfRedeem.addOnFocusChangeListener = { _, hasFocus ->
-                if (hasFocus) {
-                    showBottomSheet()
+            renderDisableRedeem()
+        }
+    }
+
+    private fun renderDisableRedeem() {
+        binding?.run {
+            if (getStatusNotAllDisabled(getUpdateListRedemption())) {
+                tfRedeem.addOnFocusChangeListener = { _, hasFocus ->
+                    if (hasFocus) {
+                        showBottomSheet()
+                    }
                 }
-            }
-            btnRedeem.setOnClickListener {
-                processRedeem()
+                btnRedeem.setOnClickListener {
+                    processRedeem()
+                }
+            } else {
+                context?.let{ context ->
+                    tfRedeem.setMessage(context.resources.getString(redeemString.ent_redeem_success_all_redeemed))
+                    tfRedeem.textInputLayout.editText?.setText(ALL_REDEEMED)
+                    tfRedeem.isEnabled = false
+                    btnRedeem.isEnabled = false
+                }
             }
         }
     }
@@ -365,6 +381,7 @@ class EventRedeemRevampFragment : BaseDaggerFragment(),
     }
 
     companion object {
+        private const val ALL_REDEEMED = "0"
         fun newInstance(urlRedeem: String) = EventRedeemRevampFragment().also {
             it.arguments = Bundle().apply {
                 putString(EXTRA_URL_REDEEM, urlRedeem)
