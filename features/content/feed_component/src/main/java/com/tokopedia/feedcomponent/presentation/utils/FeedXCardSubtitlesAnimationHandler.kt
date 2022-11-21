@@ -125,18 +125,18 @@ class FeedXCardSubtitlesAnimationHandler(
 
         viewOne.get()?.let { v1 ->
             viewTwo.get()?.let { v2 ->
-                val alphaAnimPropOne = PropertyValuesHolder.ofFloat(View.ALPHA, 1f, 0f)
-                val alphaAnimObjOne: ObjectAnimator =
-                    ObjectAnimator.ofPropertyValuesHolder(v1, alphaAnimPropOne)
+//                val alphaAnimPropOne = PropertyValuesHolder.ofFloat(View.ALPHA, 1f, 0f)
+//                val alphaAnimObjOne: ObjectAnimator =
+//                    ObjectAnimator.ofPropertyValuesHolder(v1, alphaAnimPropOne)
 
                 val translateAnimPropOne =
                     PropertyValuesHolder.ofFloat(View.TRANSLATION_Y, 0f, -dpToPx(16))
                 val translateAnimObjOne: ObjectAnimator =
                     ObjectAnimator.ofPropertyValuesHolder(v1, translateAnimPropOne)
 
-                val alphaAnimPropTwo = PropertyValuesHolder.ofFloat(View.ALPHA, 0f, 1f)
-                val alphaAnimObjTwo: ObjectAnimator =
-                    ObjectAnimator.ofPropertyValuesHolder(v2, alphaAnimPropTwo)
+//                val alphaAnimPropTwo = PropertyValuesHolder.ofFloat(View.ALPHA, 0f, 1f)
+//                val alphaAnimObjTwo: ObjectAnimator =
+//                    ObjectAnimator.ofPropertyValuesHolder(v2, alphaAnimPropTwo)
 
                 val translateAnimPropTwo =
                     PropertyValuesHolder.ofFloat(View.TRANSLATION_Y, dpToPx(16), 0f)
@@ -161,9 +161,7 @@ class FeedXCardSubtitlesAnimationHandler(
 
                 animatorSet = AnimatorSet()
                 animatorSet?.playTogether(
-                    alphaAnimObjOne,
                     translateAnimObjOne,
-                    alphaAnimObjTwo,
                     translateAnimObjTwo
                 )
                 animatorSet?.duration = 600L
