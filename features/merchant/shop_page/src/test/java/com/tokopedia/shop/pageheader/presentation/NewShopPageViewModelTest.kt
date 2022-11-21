@@ -1,14 +1,12 @@
 package com.tokopedia.shop.pageheader.presentation
 
 import android.content.Context
-import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
-import com.tokopedia.media.loader.loadImageWithEmptyTarget
 import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
 import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.shop.common.data.model.*
@@ -93,9 +91,6 @@ class NewShopPageViewModelTest {
     lateinit var gqlGetShopOperationalHourStatusUseCase: Lazy<GQLGetShopOperationalHourStatusUseCase>
 
     @RelaxedMockK
-    lateinit var sharedPreferences: SharedPreferences
-
-    @RelaxedMockK
     lateinit var affiliateCookieHelper: AffiliateCookieHelper
 
     @RelaxedMockK
@@ -130,7 +125,6 @@ class NewShopPageViewModelTest {
                 getFollowStatusUseCase,
                 updateFollowStatusUseCase,
                 gqlGetShopOperationalHourStatusUseCase,
-                sharedPreferences,
                 testCoroutineDispatcherProvider
         )
     }
@@ -751,24 +745,5 @@ class NewShopPageViewModelTest {
             mockShopId
         )
         coVerify { affiliateCookieHelper.initCookie(any(), any(), any()) }
-    }
-
-    @Test
-    fun `when saveAffiliateTrackerId success, then shared preferences getString should return mocked value`() {
-        val mockAffiliateTrackerId = "123"
-        every { sharedPreferences.getString(any(), any()) } returns mockAffiliateTrackerId
-        shopPageViewModel.saveAffiliateTrackerId(mockAffiliateTrackerId)
-        assert(sharedPreferences.getString("", "") == mockAffiliateTrackerId)
-    }
-
-    @Test
-    fun `when saveAffiliateTrackerId error, then shared preferences getString should return empty value`() {
-        val mockAffiliateTrackerId = "123"
-        every { sharedPreferences.getString(any(), any()) } returns ""
-        coEvery {
-            sharedPreferences.edit().putString(any(), any())
-        } throws Exception()
-        shopPageViewModel.saveAffiliateTrackerId(mockAffiliateTrackerId)
-        assert(sharedPreferences.getString("", "")?.isEmpty() == true)
     }
 }

@@ -1,7 +1,6 @@
 package com.tokopedia.shop.product.view.viewmodel
 
 import android.content.Context
-import android.content.SharedPreferences
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
@@ -81,8 +80,6 @@ abstract class ShopPageProductListViewModelTestFixture {
     @RelaxedMockK
     lateinit var deleteCartUseCase: DeleteCartUseCase
     @RelaxedMockK
-    lateinit var sharedPreferences: SharedPreferences
-    @RelaxedMockK
     lateinit var context: Context
     @RelaxedMockK
     lateinit var affiliateCookieHelper: AffiliateCookieHelper
@@ -142,8 +139,7 @@ abstract class ShopPageProductListViewModelTestFixture {
                 gqlShopPageGetDynamicTabUseCase,
                 addToCartUseCase,
                 updateCartUseCase,
-                deleteCartUseCase,
-                sharedPreferences
+                deleteCartUseCase
         )
     }
 }
