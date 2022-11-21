@@ -21,10 +21,10 @@ import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.privacycenter.R
+import com.tokopedia.privacycenter.common.di.PrivacyCenterComponent
 import com.tokopedia.privacycenter.databinding.BottomSheetRangePickerBinding
 import com.tokopedia.privacycenter.databinding.FragmentDsarLayoutBinding
 import com.tokopedia.privacycenter.databinding.ItemTransactionHistoryRangeBinding
-import com.tokopedia.privacycenter.di.PrivacyCenterComponent
 import com.tokopedia.privacycenter.dsar.model.ItemRangeModel
 import com.tokopedia.privacycenter.dsar.viewmodel.DsarViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify

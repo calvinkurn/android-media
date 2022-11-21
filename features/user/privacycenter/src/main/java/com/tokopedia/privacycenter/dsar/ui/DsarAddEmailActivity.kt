@@ -4,8 +4,8 @@ import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
-import com.tokopedia.privacycenter.di.DaggerPrivacyCenterComponent
-import com.tokopedia.privacycenter.di.PrivacyCenterComponent
+import com.tokopedia.privacycenter.common.di.DaggerPrivacyCenterComponent
+import com.tokopedia.privacycenter.common.di.PrivacyCenterComponent
 
 class DsarAddEmailActivity: BaseSimpleActivity(), HasComponent<PrivacyCenterComponent> {
 

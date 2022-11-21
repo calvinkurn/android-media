@@ -12,8 +12,8 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.privacycenter.common.di.PrivacyCenterComponent
 import com.tokopedia.privacycenter.databinding.FragmentDsarAddEmailLayoutBinding
-import com.tokopedia.privacycenter.di.PrivacyCenterComponent
 import com.tokopedia.privacycenter.dsar.viewmodel.DsarAddEmailViewModel
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject

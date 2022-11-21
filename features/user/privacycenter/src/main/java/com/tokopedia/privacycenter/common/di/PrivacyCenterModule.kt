@@ -10,7 +10,6 @@ import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
 import okhttp3.OkHttpClient
-import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
@@ -32,13 +31,7 @@ class PrivacyCenterModule {
     @Provides
     @ActivityScope
     fun provideOneTrustOkHttpClient(chuckerInterceptor: ChuckerInterceptor): OkHttpClient {
-        val loggingInterceptor = HttpLoggingInterceptor().apply {
-            level = HttpLoggingInterceptor.Level.HEADERS
-        }
-
         val builder = OkHttpClient.Builder()
-//            .addInterceptor(OneTrustInterceptor())
-            .addInterceptor(loggingInterceptor)
             .addInterceptor(chuckerInterceptor)
         return builder.build()
     }
