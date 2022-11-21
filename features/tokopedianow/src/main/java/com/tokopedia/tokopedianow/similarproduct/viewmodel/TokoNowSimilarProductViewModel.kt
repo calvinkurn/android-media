@@ -7,6 +7,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
+import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
@@ -14,6 +15,7 @@ import com.tokopedia.tokopedianow.common.base.viewmodel.BaseTokoNowViewModel
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
 import com.tokopedia.tokopedianow.recipedetail.presentation.mapper.RecipeSimilarProductMapper.updateDeletedProductQuantity
 import com.tokopedia.tokopedianow.recipedetail.presentation.mapper.RecipeSimilarProductMapper.updateProductQuantity
+import com.tokopedia.tokopedianow.searchcategory.utils.ChooseAddressWrapper
 import com.tokopedia.tokopedianow.similarproduct.domain.model.RecommendationItem
 import com.tokopedia.tokopedianow.similarproduct.domain.usecase.GetSimilarProductUseCase
 import com.tokopedia.tokopedianow.similarproduct.model.SimilarProductUiModel
@@ -26,6 +28,7 @@ class TokoNowSimilarProductViewModel @Inject constructor(
     deleteCartUseCase: DeleteCartUseCase,
     getMiniCartUseCase: GetMiniCartListSimplifiedUseCase,
     private val getSimilarProductUseCase: GetSimilarProductUseCase,
+    protected val chooseAddressWrapper: ChooseAddressWrapper,
     addressData: TokoNowLocalAddress,
     userSession: UserSessionInterface,
     dispatchers: CoroutineDispatchers
@@ -75,10 +78,33 @@ class TokoNowSimilarProductViewModel @Inject constructor(
     }
     fun getSimilarProductList(userId: Int, productIds: String){
         launchCatchError( block = {
-            val response = getSimilarProductUseCase.execute(userId, "3453436555")
+            chooseAddressWrapper.getChooseAddressData()
+            val response = getSimilarProductUseCase.execute(userId, productIds, appendChooseAddressParams())
             _similarProductList.postValue(response.productRecommendationWidgetSingle?.data?.recommendation)
         }, onError = {
         })
 
+    }
+
+    private fun appendChooseAddressParams(): MutableMap<String, Any> {
+        val tokonowQueryParam: MutableMap<String, Any> = mutableMapOf()
+        val chooseAddressData = chooseAddressWrapper.getChooseAddressData()
+
+        if (chooseAddressData.city_id.isNotEmpty())
+            tokonowQueryParam[SearchApiConst.USER_CITY_ID] = chooseAddressData.city_id
+        if (chooseAddressData.address_id.isNotEmpty())
+            tokonowQueryParam[SearchApiConst.USER_ADDRESS_ID] = chooseAddressData.address_id
+        if (chooseAddressData.district_id.isNotEmpty())
+            tokonowQueryParam[SearchApiConst.USER_DISTRICT_ID] = chooseAddressData.district_id
+        if (chooseAddressData.lat.isNotEmpty())
+            tokonowQueryParam[SearchApiConst.USER_LAT] = chooseAddressData.lat
+        if (chooseAddressData.long.isNotEmpty())
+            tokonowQueryParam[SearchApiConst.USER_LONG] = chooseAddressData.long
+        if (chooseAddressData.postal_code.isNotEmpty())
+            tokonowQueryParam[SearchApiConst.USER_POST_CODE] = chooseAddressData.postal_code
+        if (chooseAddressData.warehouse_id.isNotEmpty())
+            tokonowQueryParam[SearchApiConst.USER_WAREHOUSE_IDs] = chooseAddressData.warehouse_id
+
+        return tokonowQueryParam
     }
 }

@@ -225,7 +225,7 @@ class TokoNowProductCardView @JvmOverloads constructor(
         isShown: Boolean,
         productId: String
     ) {
-        similarProductTypography.showIfWithBlock(true) {
+        similarProductTypography.showIfWithBlock(isOos && isShown) {
             adjustChevronIcon(
                 drawable = getIconUnifyDrawable(
                     context = context,

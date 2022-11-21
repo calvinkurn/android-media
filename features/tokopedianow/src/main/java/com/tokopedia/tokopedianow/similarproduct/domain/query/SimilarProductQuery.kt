@@ -7,6 +7,11 @@ internal object SimilarProductQuery: GqlQueryInterface {
     const val PARAM_USER_ID = "userID"
     const val PARAM_PRODUCT_IDS = "productIDs"
     const val PARAM_PAGE_NAME = "pageName"
+    const val PARAM_CATEGORY_IDS = "categoryIDs"
+    const val PARAM_KEYWORDS = "keywords"
+    const val PARAM_QUERY = "queryParam"
+    const val PARAM_X_DEVICE = "xDevice"
+    const val PARAM_TOKONOW = "tokoNow"
 
     private const val OPERATION_NAME = "productRecommendationWidgetSingle"
 
@@ -16,8 +21,8 @@ internal object SimilarProductQuery: GqlQueryInterface {
 
     override fun getQuery(): String {
         return """
-        query $OPERATION_NAME(${'$'}${PARAM_USER_ID}: Int!, ${'$'}${PARAM_PRODUCT_IDS}: String!){
-            $OPERATION_NAME(${PARAM_USER_ID}:${'$'}${PARAM_USER_ID}, ${PARAM_PRODUCT_IDS}:${'$'}${PARAM_PRODUCT_IDS}, ${PARAM_PAGE_NAME}: "now_similar_page",xDevice: "android") {
+        query $OPERATION_NAME(${'$'}${PARAM_USER_ID}: Int!, ${'$'}${PARAM_PRODUCT_IDS}: String!, ${'$'}${PARAM_QUERY}: String!){
+            $OPERATION_NAME(${PARAM_USER_ID}:${'$'}${PARAM_USER_ID}, ${PARAM_PRODUCT_IDS}:${'$'}${PARAM_PRODUCT_IDS}, ${PARAM_QUERY}:${'$'}${PARAM_QUERY}, ${PARAM_PAGE_NAME}: "now_similar_page", ${PARAM_X_DEVICE}: "android", ${PARAM_TOKONOW}: true) {
                 meta {
                   recommendation
                   size

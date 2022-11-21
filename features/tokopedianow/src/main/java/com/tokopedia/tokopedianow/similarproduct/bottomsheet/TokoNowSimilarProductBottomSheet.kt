@@ -9,13 +9,21 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntSafely
+import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
+import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
+import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
+import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.util.BottomSheetUtil.configureMaxHeight
 import com.tokopedia.tokopedianow.databinding.BottomsheetTokopedianowSimilarProductsBinding
 import com.tokopedia.tokopedianow.similarproduct.adapter.SimilarProductAdapter
 import com.tokopedia.tokopedianow.similarproduct.adapter.SimilarProductAdapterTypeFactory
 import com.tokopedia.tokopedianow.similarproduct.analytic.ProductAnalytics
+import com.tokopedia.tokopedianow.similarproduct.model.SimilarProductUiModel
 import com.tokopedia.tokopedianow.similarproduct.viewholder.SimilarProductViewHolder
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -130,4 +138,80 @@ class TokoNowSimilarProductBottomSheet : BottomSheetUnify() {
     fun showEmptyProductListUi(){
         binding?.viewFlipper?.displayedChild = 1
     }
+
+    fun updateMiniCart(shopId: String){
+        binding?.miniCart?.updateData(listOf(shopId))
+    }
+
+    fun showMiniCart(data: MiniCartSimplifiedData, shopId: Long, listener: MiniCartWidgetListener) {
+        val miniCartWidget = binding?.miniCart
+        val showMiniCartWidget = data.isShowMiniCartWidget
+
+        if(showMiniCartWidget) {
+            val pageName = MiniCartAnalytics.Page.HOME_PAGE
+            val shopIds = listOf(shopId.toString())
+            val source = MiniCartSource.TokonowHome
+            miniCartWidget?.initialize(
+                shopIds = shopIds,
+                fragment = this,
+                listener = listener,
+                pageName = pageName,
+                source = source
+            )
+            miniCartWidget?.show()
+        } else {
+            hideMiniCart()
+        }
+        setupPadding(data)
+    }
+
+    fun hideMiniCart() {
+        binding?.miniCart?.apply {
+//            hideCoachMark()
+            hide()
+        }
+        resetPadding()
+    }
+
+    private fun setupPadding(data: MiniCartSimplifiedData) {
+        binding?.miniCart?.post {
+            val paddingZero = context?.resources?.getDimensionPixelSize(
+                com.tokopedia.unifyprinciples.R.dimen.layout_lvl0
+            ).orZero()
+
+            val paddingBottom = if (data.isShowMiniCartWidget) {
+                getMiniCartHeight()
+            } else {
+                paddingZero
+            }
+            binding?.recyclerView?.setPadding(paddingZero, paddingZero, paddingZero, paddingBottom)
+        }
+    }
+
+    private fun resetPadding() {
+        val paddingZero = context?.resources?.getDimensionPixelSize(
+            com.tokopedia.unifyprinciples.R.dimen.layout_lvl0
+        ).orZero()
+        binding?.recyclerView?.setPadding(paddingZero, paddingZero, paddingZero, paddingZero)
+    }
+
+    private fun getMiniCartHeight(): Int {
+        val space16 = context?.resources?.getDimension(
+            com.tokopedia.unifyprinciples.R.dimen.unify_space_16
+        )?.toInt().orZero()
+        return binding?.miniCart?.height.orZero() - space16
+    }
+
+    fun changeQuantity(quantity:Int, position: Int){
+        val item = (items[position] as SimilarProductUiModel)
+        item.quantity = quantity
+        adapter.notifyItemChanged(position)
+    }
+
+    fun updateList(indexList: ArrayList<Int>) {
+        indexList.forEach {
+            adapter.notifyItemChanged(it)
+        }
+    }
+
 }

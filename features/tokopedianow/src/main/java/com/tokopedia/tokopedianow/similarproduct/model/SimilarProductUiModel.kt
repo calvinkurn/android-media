@@ -11,7 +11,7 @@ data class SimilarProductUiModel(
     val id: String,
     val shopId: String,
     val name: String,
-    val quantity: Int = 0,
+    var quantity: Int = 0,
     val stock: Int,
     val minOrder: Int = 1,
     val maxOrder: Int = 1,
