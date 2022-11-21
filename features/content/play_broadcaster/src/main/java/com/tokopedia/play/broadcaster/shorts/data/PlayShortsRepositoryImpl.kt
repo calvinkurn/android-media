@@ -65,6 +65,7 @@ class PlayShortsRepositoryImpl @Inject constructor(
                 TermsAndConditionUiModel("Desc $it")
             },
             maxTitleCharacter = 24,
+            maxTaggedProduct = 30,
         )
 
         /** TODO: will uncomment this later */

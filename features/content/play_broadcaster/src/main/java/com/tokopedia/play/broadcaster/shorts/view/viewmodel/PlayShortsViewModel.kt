@@ -52,9 +52,8 @@ class PlayShortsViewModel @Inject constructor(
     val productSectionList: List<ProductTagSectionUiModel>
         get() = _productSectionList.value
 
-    /** TODO: provide the correct max product here */
     val maxProduct: Int
-        get() = 30
+        get() = _config.value.maxTaggedProduct
 
     val isAllMandatoryMenuChecked: Boolean
         get() = _titleForm.value.title.isNotEmpty()
