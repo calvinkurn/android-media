@@ -35,11 +35,7 @@ object DeeplinkMapperUser {
             deeplink == ApplinkConst.SETTING_PROFILE -> ApplinkConstInternalUserPlatform.SETTING_PROFILE
             deeplink == ApplinkConst.INPUT_INACTIVE_NUMBER -> ApplinkConstInternalUserPlatform.INPUT_OLD_PHONE_NUMBER
             deeplink == ApplinkConst.ADD_PHONE -> ApplinkConstInternalUserPlatform.ADD_PHONE
-            deeplink == ApplinkConst.PRIVACY_CENTER -> if (isRollencePrivacyCenterActivated()) {
-                ApplinkConstInternalUserPlatform.PRIVACY_CENTER
-            } else {
-                ApplinkConsInternalHome.HOME_NAVIGATION
-            }
+            deeplink == ApplinkConst.PRIVACY_CENTER -> getApplinkPrivacyCenter()
             else -> deeplink
         }
     }
@@ -66,6 +62,14 @@ object DeeplinkMapperUser {
                 UriUtil.buildUriAppendParams(KYC_ALA_CARTE, params)
             }
             else -> internal
+        }
+    }
+
+    private fun getApplinkPrivacyCenter(): String {
+        return if (isRollencePrivacyCenterActivated()) {
+            ApplinkConstInternalUserPlatform.PRIVACY_CENTER
+        } else {
+            ApplinkConsInternalHome.HOME_NAVIGATION
         }
     }
 
