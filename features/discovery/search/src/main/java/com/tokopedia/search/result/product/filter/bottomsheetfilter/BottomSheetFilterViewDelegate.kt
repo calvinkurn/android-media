@@ -1,7 +1,6 @@
 package com.tokopedia.search.result.product.filter.bottomsheetfilter
 
 import android.content.Context
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleObserver
 import androidx.lifecycle.LifecycleOwner
