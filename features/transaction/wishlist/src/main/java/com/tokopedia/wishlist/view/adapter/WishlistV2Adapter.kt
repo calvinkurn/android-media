@@ -39,6 +39,7 @@ class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var isTickerCloseClicked = false
     var isRefreshing = false
     private var isAutoSelected = false
+    private var isAddBulkModeFromOthers = false
 
     companion object {
         const val LAYOUT_LOADER_LIST = 0
@@ -66,6 +67,7 @@ class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         fun onNotFoundButtonClicked(keyword: String)
         fun onThreeDotsMenuClicked(itemWishlist: WishlistV2UiModel.Item)
         fun onCheckBulkOption(productId: String, isChecked: Boolean, position: Int)
+        fun onValidateCheckBulkOption(productId: String, isChecked: Boolean, position: Int)
         fun onUncheckAutomatedBulkDelete(productId: String, isChecked: Boolean, position: Int)
         fun onAtc(wishlistItem: WishlistV2UiModel.Item, position: Int)
         fun onCheckSimilarProduct(url: String)
@@ -191,13 +193,13 @@ class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                     val params = (holder.itemView.layoutParams as StaggeredGridLayoutManager.LayoutParams)
                     params.isFullSpan = true
                     holder.itemView.layoutParams = params
-                    (holder as WishlistV2ListItemViewHolder).bind(element, holder.adapterPosition, isShowCheckbox, isAutoSelected)
+                    (holder as WishlistV2ListItemViewHolder).bind(element, holder.adapterPosition, isShowCheckbox, isAutoSelected, isAddBulkModeFromOthers)
                 }
                 TYPE_GRID -> {
                     val params = (holder.itemView.layoutParams as StaggeredGridLayoutManager.LayoutParams)
                     params.isFullSpan = false
                     holder.itemView.layoutParams = params
-                    (holder as WishlistV2GridItemViewHolder).bind(element, holder.adapterPosition, isShowCheckbox, isAutoSelected)
+                    (holder as WishlistV2GridItemViewHolder).bind(element, holder.adapterPosition, isShowCheckbox, isAutoSelected, isAddBulkModeFromOthers)
                 }
                 TYPE_EMPTY_STATE -> {
                     val params = (holder.itemView.layoutParams as StaggeredGridLayoutManager.LayoutParams)
@@ -358,9 +360,16 @@ class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         notifyDataSetChanged()
     }
 
+    fun showCheckboxAddBulkFromOthers() {
+        isShowCheckbox = true
+        isAddBulkModeFromOthers = true
+        notifyDataSetChanged()
+    }
+
     fun hideCheckbox() {
         isShowCheckbox = false
         isAutoSelected = false
+        isAddBulkModeFromOthers = false
         clearCheckbox()
         notifyDataSetChanged()
     }
