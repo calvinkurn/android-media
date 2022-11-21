@@ -9,10 +9,11 @@ class PlayVideoModelBuilder {
 
     fun buildModel(
         size: Int = 10,
+        isEmpty: Boolean = false,
     ): UserPostModel {
         return UserPostModel(
             playGetContentSlot = PlayGetContentSlot(
-                data = mutableListOf(
+                data = if (isEmpty) emptyList<PlayPostContent>().toMutableList() else mutableListOf(
                     PlayPostContent(
                         hash = "",
                         type = "",
