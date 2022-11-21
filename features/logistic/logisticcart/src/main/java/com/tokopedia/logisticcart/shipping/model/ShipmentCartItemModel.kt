@@ -118,6 +118,7 @@ class ShipmentCartItemModel(
 
     // Epharmacy
     var hasEthicalProducts: Boolean = false,
+    var hasNonEthicalProducts: Boolean = false,
     var prescriptionIds: List<String> = emptyList(),
     var tokoConsultationId: String = "",
     var partnerConsultationId: String = "",
