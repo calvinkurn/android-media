@@ -94,8 +94,8 @@ ext {
     gojekSSOVersion = '1.0.1-67-0738bd6'
     playIntegrityVersion = '1.0.1'
     conversationsVersion = '7.6.2-5e5a894'
-    gojekCourierVersion = '0.1.4'
-    gojekCourierClientVersion = '0.0.5@aar'
+    gojekCourierVersion = '0.1.5'
+    gojekCourierClientVersion = '0.0.6@aar'
 
     benchmarkTestVersion = '1.0.0'
     testCore = '1.4.0'
