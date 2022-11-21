@@ -481,6 +481,6 @@ object ShopPageTrackingConstant {
     object Key {
         const val CAMPAIGN_ID = "campaign_id"
         const val VARIANT_ID = "variant_id"
-        const val AFFILIATE_TRACKER_ID = "affiliate_tracker_id"
+        const val AFFILIATE_CHANNEL_ID = "channelId"
     }
 }

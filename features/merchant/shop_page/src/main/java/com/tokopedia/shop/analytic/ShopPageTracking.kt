@@ -151,7 +151,7 @@ open class ShopPageTracking(
         customDimension[ShopPageTrackingConstant.Key.CAMPAIGN_ID] = campaignId
         customDimension[ShopPageTrackingConstant.Key.VARIANT_ID] = variantId
         customDimension[ShopPageTrackingConstant.TRACKER_ID] = TRACKER_SHOP_PAGE_OPEN_SCREEN
-        customDimension[ShopPageTrackingConstant.Key.AFFILIATE_TRACKER_ID] = affiliateTrackerId
+        customDimension[ShopPageTrackingConstant.Key.AFFILIATE_CHANNEL_ID] = affiliateTrackerId
         TrackApp.getInstance().gtm.sendScreenAuthenticated(screenName, customDimension)
     }
 
