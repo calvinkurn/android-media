@@ -69,6 +69,7 @@ class EventRedeemRevampFragment : BaseDaggerFragment(), EventRedeemRevampBottomS
         initalRequest()
         renderUI()
         observeRedeemData()
+        observeRedeem()
     }
 
     private fun initalRequest() {
@@ -79,13 +80,17 @@ class EventRedeemRevampFragment : BaseDaggerFragment(), EventRedeemRevampBottomS
         } else if (urlRedeem == ""){
             showGlobalError(isNotLogin = false, isUrlEmpty = true, null)
         } else if(userSession.isLoggedIn && urlRedeem != "") {
-            showLoading()
             requestRedeemData()
         }
     }
 
     private fun requestRedeemData() {
+        showLoading()
         viewModel.setInputRedeemUrl(urlRedeem)
+    }
+
+    private fun redeemIds() {
+        viewModel.setInputRedeemedUrl(urlRedeem)
     }
 
     private fun observeRedeemData() {
@@ -97,6 +102,21 @@ class EventRedeemRevampFragment : BaseDaggerFragment(), EventRedeemRevampBottomS
                     }
                     is Fail -> {
                         showMainError(it.throwable)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun observeRedeem() {
+        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
+            viewModel.flowRedeem.collect {
+                when (it) {
+                    is Success -> {
+                        requestRedeemData()
+                    }
+                    is Fail -> {
+                        //error data
                     }
                 }
             }
@@ -134,6 +154,17 @@ class EventRedeemRevampFragment : BaseDaggerFragment(), EventRedeemRevampBottomS
                     showBottomSheet()
                 }
             }
+            btnRedeem.setOnClickListener {
+                processRedeem()
+            }
+        }
+    }
+
+    private fun processRedeem() {
+        if (viewModel.getCheckedIdsSize().isMoreThanZero()) {
+            redeemIds()
+        } else {
+            setErrorInput()
         }
     }
 
@@ -237,10 +268,25 @@ class EventRedeemRevampFragment : BaseDaggerFragment(), EventRedeemRevampBottomS
     }
 
     private fun updateSize() {
-        if (viewModel.getCheckedIds().isMoreThanZero()) {
-            binding?.tfRedeem?.textInputLayout?.editText?.setText(viewModel.getCheckedIds().toString())
+        if (viewModel.getCheckedIdsSize().isMoreThanZero()) {
+            resetErrorInput()
+            binding?.tfRedeem?.textInputLayout?.editText?.setText(viewModel.getCheckedIdsSize().toString())
         } else {
             binding?.tfRedeem?.textInputLayout?.editText?.setText("")
+        }
+    }
+
+    private fun setErrorInput() {
+        context?.let { context ->
+            binding?.tfRedeem?.isInputError = true
+            binding?.tfRedeem?.setMessage(context.resources.getString(redeemString.ent_redeem_revamp_sum_product_error))
+        }
+    }
+
+    private fun resetErrorInput() {
+        context?.let { context ->
+            binding?.tfRedeem?.isInputError = false
+            binding?.tfRedeem?.setMessage("")
         }
     }
 

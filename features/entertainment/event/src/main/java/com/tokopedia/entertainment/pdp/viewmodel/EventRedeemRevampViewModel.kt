@@ -6,9 +6,12 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.entertainment.pdp.data.redeem.ErrorRedeem
 import com.tokopedia.entertainment.pdp.data.redeem.redeemable.EventRedeem
+import com.tokopedia.entertainment.pdp.data.redeem.redeemable.EventRedeemedData
 import com.tokopedia.entertainment.pdp.data.redeem.redeemable.Participant
 import com.tokopedia.entertainment.pdp.network_api.GetEventRedeemUseCase
+import com.tokopedia.entertainment.pdp.network_api.GetEventRedeemedUseCase
 import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -26,10 +29,12 @@ import javax.inject.Inject
 
 class EventRedeemRevampViewModel @Inject constructor(
     private val dispatcher: CoroutineDispatchers,
-    private val getEventRedeemUseCase: GetEventRedeemUseCase
+    private val getEventRedeemUseCase: GetEventRedeemUseCase,
+    private val getEventRedeemedUseCase: GetEventRedeemedUseCase
 ) : BaseViewModel(dispatcher.main) {
 
     private val _inputRedeemUrl = MutableSharedFlow<String>(Int.ONE)
+    private val _inputRedeemedUrl = MutableSharedFlow<String>(Int.ONE)
     var listRedemptions: List<Participant> = mutableListOf()
 
     val flowRedeemData: SharedFlow<Result<EventRedeem>> =
@@ -45,28 +50,57 @@ class EventRedeemRevampViewModel @Inject constructor(
             replay = Int.ONE
         )
 
+    val flowRedeem: SharedFlow<Result<EventRedeemedData>> =
+        _inputRedeemedUrl.flatMapConcat {
+            flow {
+                emit(redeemIds(it))
+            }.catch {
+                emit(Fail(it))
+            }
+        }.shareIn(
+            scope = this,
+            started = SharingStarted.WhileSubscribed(SHARED_FLOW_STOP_TIMEOUT_MILLIS),
+            replay = Int.ONE
+        )
+
     fun setInputRedeemUrl(redeemUrl: String) {
         _inputRedeemUrl.tryEmit(redeemUrl)
     }
 
-    private suspend fun getRedeemData(redeemUrl: String): Result<EventRedeem> {
-//        getEventRedeemUseCase.setUrlRedeem(redeemUrl)
-//        val response = withContext(dispatcher.io) {
-//            getEventRedeemUseCase.executeOnBackground()
-//        }
-//        val value = response[EventRedeem::class.java]
-//
-//        return if (value?.code == SUCCESS_CODE && !value.isError) {
-//            listRedemptions = convertToRedeemResponse(response).data.redemptions
-//            Success(convertToRedeemResponse(response))
-//        } else {
-//            val error = convertToErrorResponse(response)
-//            Fail(MessageErrorException(error))
-//        }
+    fun setInputRedeemedUrl(redeemUrl: String) {
+        _inputRedeemedUrl.tryEmit(redeemUrl)
+    }
 
-        val dummy = Gson().fromJson(DUMMY, EventRedeem::class.java)
-        listRedemptions = dummy.data.redemptions
-        return Success(dummy)
+    private suspend fun getRedeemData(redeemUrl: String): Result<EventRedeem> {
+        getEventRedeemUseCase.setUrlRedeem(redeemUrl)
+        val response = withContext(dispatcher.io) {
+            getEventRedeemUseCase.executeOnBackground()
+        }
+        val value = response[EventRedeem::class.java]
+
+        return if (value?.code == SUCCESS_CODE && !value.isError) {
+            listRedemptions = convertToRedeemResponse(response).data.redemptions
+            Success(convertToRedeemResponse(response))
+        } else {
+            val error = convertToErrorResponse(response)
+            Fail(MessageErrorException(error))
+        }
+    }
+
+    private suspend fun redeemIds(redeemUrl: String): Result<EventRedeemedData> {
+        getEventRedeemedUseCase.setUrlRedeem(redeemUrl)
+        getEventRedeemedUseCase.setRedeemIds(getCheckedIds())
+        val response = withContext(dispatcher.io) {
+            getEventRedeemedUseCase.executeOnBackground()
+        }
+        val value = response[EventRedeemedData::class.java]
+
+        return if (value?.code == SUCCESS_CODE && !value.isError) {
+            Success(convertToRedeemedResponse(response))
+        } else {
+            val error = convertToErrorResponseRedeemed(response)
+            Fail(MessageErrorException(error))
+        }
     }
 
     fun updateCheckedIds(listCheckedIds: List<Pair<String, Boolean>>) {
@@ -80,9 +114,9 @@ class EventRedeemRevampViewModel @Inject constructor(
         }
     }
 
-    fun getCheckedIds(): Int {
+    fun getCheckedIdsSize(): Int {
         var size = 0
-        listRedemptions.forEachIndexed { index, participant ->
+        listRedemptions.forEach{ participant ->
             if (participant.checked) {
                size += Int.ONE
             }
@@ -91,12 +125,31 @@ class EventRedeemRevampViewModel @Inject constructor(
         return size
     }
 
+    private fun getCheckedIds(): List<Int> {
+        val list = listRedemptions.filter { participant ->
+            participant.checked
+        }.map {
+            it.id.toIntSafely()
+        }
+        return list
+    }
+
     private fun convertToRedeemResponse(typeRestResponseMap: Map<Type, RestResponse?>): EventRedeem {
         return typeRestResponseMap[EventRedeem::class.java]?.getData() as EventRedeem
     }
 
+    private fun convertToRedeemedResponse(typeRestResponseMap: Map<Type, RestResponse?>): EventRedeemedData {
+        return typeRestResponseMap[EventRedeemedData::class.java]?.getData() as EventRedeemedData
+    }
+
     private fun convertToErrorResponse(typeRestResponseMap: Map<Type, RestResponse?>): String? {
         val errorBody = typeRestResponseMap[EventRedeem::class.java]?.errorBody ?: ""
+        val errorRedeem = Gson().fromJson(errorBody, ErrorRedeem::class.java)
+        return errorRedeem.messageError.firstOrNull()
+    }
+
+    private fun convertToErrorResponseRedeemed(typeRestResponseMap: Map<Type, RestResponse?>): String? {
+        val errorBody = typeRestResponseMap[EventRedeemedData::class.java]?.errorBody ?: ""
         val errorRedeem = Gson().fromJson(errorBody, ErrorRedeem::class.java)
         return errorRedeem.messageError.firstOrNull()
     }
