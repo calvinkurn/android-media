@@ -38,6 +38,7 @@ import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.Toaster
+import javax.inject.Inject
 
 
 open class BaseFragmentProvideRating : BaseDaggerFragment(),
