@@ -18,7 +18,6 @@ import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.utils.view.DialogForceLogout;
 import com.tokopedia.analyticsdebugger.debugger.TetraDebugger;
-import com.tokopedia.app.common.di.CommonAppComponent;
 import com.tokopedia.config.GlobalConfig;
 import com.tokopedia.core.analytics.ScreenTracking;
 import com.tokopedia.core.analytics.TrackingUtils;
@@ -216,10 +215,6 @@ public class BaseActivity extends AppCompatActivity implements
     @Override
     public String getScreenName() {
         return null;
-    }
-
-    public CommonAppComponent getApplicationComponent() {
-        return ((MainApplication) getApplication()).getAppComponent();
     }
 
     public BaseAppComponent getBaseAppComponent() {
