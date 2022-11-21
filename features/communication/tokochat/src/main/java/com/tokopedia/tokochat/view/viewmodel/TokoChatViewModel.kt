@@ -346,7 +346,7 @@ class TokoChatViewModel @Inject constructor(
                         )
                     }
                 } else {
-                    _error.postValue(Throwable(imageUrlResponse.error?.joinToString()))
+                    _error.postValue(Throwable(imageUrlResponse.error?.firstOrNull()?.message))
                     onError()
                 }
             } else { // Else use the downloaded image

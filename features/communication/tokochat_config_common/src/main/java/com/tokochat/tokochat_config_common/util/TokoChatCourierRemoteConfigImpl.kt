@@ -230,7 +230,7 @@ class TokoChatCourierRemoteConfigImpl @Inject constructor(
      * The usage is for end-to-end tracking purposes
      */
     override val isMessageEnvelopeEnabled: Boolean
-        get() = remoteConfig.getBoolean(IS_MESSAGE_ENVELOPE_ENABLED, true)
+        get() = remoteConfig.getBoolean(IS_MESSAGE_ENVELOPE_ENABLED, false)
 
     companion object {
         private const val COURIER_EVENT_PROBABILITY = "android_tokochat_courierEventProbability"
