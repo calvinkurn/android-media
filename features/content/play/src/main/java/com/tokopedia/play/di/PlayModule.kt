@@ -180,8 +180,12 @@ class PlayModule(val mContext: Context) {
      */
     @PlayScope
     @Provides
-    fun providePlaySSE(userSession: UserSessionInterface, dispatchers: CoroutineDispatchers): PlayChannelSSE =
-        PlayChannelSSEImpl(userSession, dispatchers, mContext)
+    fun providePlaySSE(
+        @ApplicationContext appContext: Context,
+        userSession: UserSessionInterface,
+        dispatchers: CoroutineDispatchers
+    ): PlayChannelSSE =
+        PlayChannelSSEImpl(userSession, dispatchers, appContext)
 
     /**
      * Sharing Experience

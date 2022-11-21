@@ -1,16 +1,17 @@
 package com.tokopedia.tokofood.feature.search.initialstate.presentation.viewholder
 
 import android.view.View
-import android.view.ViewTreeObserver
 import androidx.annotation.LayoutRes
 import com.tokopedia.tokofood.R
+import com.tokopedia.tokofood.common.presentation.listener.TokofoodScrollChangedListener
 import com.tokopedia.tokofood.common.presentation.viewholder.CustomPayloadViewHolder
 import com.tokopedia.tokofood.common.util.TokofoodExt.addAndReturnImpressionListener
 import com.tokopedia.tokofood.databinding.RecentSearchItemInitialStateBinding
 import com.tokopedia.tokofood.feature.search.initialstate.presentation.uimodel.RecentSearchItemUiModel
 
 class RecentSearchItemViewHolder(view: View,
-                                 private val actionListener: ActionListener
+                                 private val actionListener: ActionListener,
+                                 private val tokofoodScrollChangedListener: TokofoodScrollChangedListener
 ): CustomPayloadViewHolder<RecentSearchItemUiModel>(view) {
 
     companion object {
@@ -78,16 +79,14 @@ class RecentSearchItemViewHolder(view: View,
         item: RecentSearchItemUiModel,
         position: Int
     ) {
-        val impressionListener = binding.root.addAndReturnImpressionListener(item) {
+        binding.root.addAndReturnImpressionListener(item, tokofoodScrollChangedListener) {
             actionListener.onImpressionRecentSearch(item, position)
         }
-        actionListener.onSetRecentSearchImpression(impressionListener)
     }
 
     interface ActionListener {
         fun onDeleteRecentSearchClicked(itemId: String, position: Int)
         fun onRecentSearchItemClicked(title: String)
         fun onImpressionRecentSearch(item: RecentSearchItemUiModel, position: Int)
-        fun onSetRecentSearchImpression(listener: ViewTreeObserver.OnScrollChangedListener)
     }
 }
