@@ -12,8 +12,8 @@
     </style>
 
     <style name="Tabs.ContactUs" parent="Tabs">
-        <item name="footerPadding">@dimen/dp_15</item>
-        <item name="topPadding">@dimen/dp_12</item>
+        <item name="footerPadding">15dp</item>
+        <item name="topPadding">12dp</item>
         <item name="footerLineHeight">0dp</item>
         <item name="footerIndicatorHeight">5dp</item>
         <item name="footerIndicatorStyle">underline</item>
@@ -52,7 +52,7 @@
     <style name="Theme.AppCompat.Translucent" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="android:background">@color/contact_us_dms_transparent</item> <!-- Or any transparency or color you need -->
         <item name="android:windowNoTitle">true</item>
-        <item name="android:windowBackground">@android:color/transparent</item>
+        <item name="android:windowBackground">@color/contact_us_dms_transparent</item>
         <item name="android:colorBackgroundCacheHint">@null</item>
         <item name="android:windowIsTranslucent">true</item>
         <item name="android:windowIsFloating">true</item>
