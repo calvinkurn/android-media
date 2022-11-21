@@ -4,6 +4,7 @@ import android.Manifest.permission.POST_NOTIFICATIONS
 import android.os.Build
 import android.os.Bundle
 import android.view.View
+import android.view.ViewGroup
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.notifications.R
 import com.tokopedia.notifications.databinding.CmLayoutNotificationsGeneralPromptBinding
@@ -58,6 +59,17 @@ class NotificationGeneralPromptBottomSheet: BottomSheetUnify() {
             arrayOf(POST_NOTIFICATIONS),
             POST_NOTIFICATIONS_REQUEST_CODE,
         )
+    }
+
+    override fun onDestroyView() {
+        view?.let {
+            if (it is ViewGroup)
+                it.removeAllViews()
+        }
+
+        binding = null
+
+        super.onDestroyView()
     }
 
     companion object {

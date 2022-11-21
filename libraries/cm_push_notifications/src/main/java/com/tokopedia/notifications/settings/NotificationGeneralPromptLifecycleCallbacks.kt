@@ -11,11 +11,18 @@ import android.os.Looper
 import androidx.core.app.ActivityCompat
 import androidx.fragment.app.FragmentActivity
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 
 class NotificationGeneralPromptLifecycleCallbacks : Application.ActivityLifecycleCallbacks {
 
     override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {
-        if (activity !is FragmentActivity || isActivityExcludedFromGeneralPrompt(activity)) return
+        val activityName = activity::class.java.simpleName
+        val userSession = createUserSession(activity)
+
+        if (activity !is FragmentActivity
+            || isActivityExcludedFromGeneralPrompt(activityName)
+            || isFirstTimeUserToOnBoarding(activityName, userSession)) return
 
         val isNotificationPermissionDenied = isNotificationPermissionDenied(activity)
         val repo = NotificationGeneralPromptSharedPreferences(activity.applicationContext)
@@ -31,8 +38,14 @@ class NotificationGeneralPromptLifecycleCallbacks : Application.ActivityLifecycl
         activity.application.unregisterActivityLifecycleCallbacks(this)
     }
 
-    private fun isActivityExcludedFromGeneralPrompt(activity: Activity) =
-        exceptionActivityList.contains(activity::class.java.simpleName)
+    private fun createUserSession(activity: Activity): UserSessionInterface =
+        UserSession(activity)
+
+    private fun isActivityExcludedFromGeneralPrompt(activityName: String) =
+        exceptionActivityList.contains(activityName)
+
+    private fun isFirstTimeUserToOnBoarding(activityName: String, userSession: UserSessionInterface) =
+        activityName == CUSTOMER_APP_FIRST_ACTIVITY && userSession.isFirstTimeUser
 
     private fun isNotificationPermissionDenied(activity: Activity) =
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU)
@@ -68,6 +81,7 @@ class NotificationGeneralPromptLifecycleCallbacks : Application.ActivityLifecycl
     override fun onActivityDestroyed(activity: Activity) { }
 
     companion object {
+        private const val CUSTOMER_APP_FIRST_ACTIVITY = "MainParentActivity"
         private val exceptionActivityList = listOf(
             "SplashScreenActivity",
             "SellerOnboardingActivity",
@@ -79,7 +93,11 @@ class NotificationGeneralPromptLifecycleCallbacks : Application.ActivityLifecycl
             "PhoneShopCreationActivity",
             "VerificationActivity",
             "DeveloperOptionActivity",
-            "RemoteConfigFragmentActivity"
+            "RemoteConfigFragmentActivity",
+            "ConsumerSplashScreen",
+            "OnboardingActivity",
+            "RegisterInitialActivity",
+            "TwoFactorActivity",
         )
     }
 }
