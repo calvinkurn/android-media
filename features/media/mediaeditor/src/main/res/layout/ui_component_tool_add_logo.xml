@@ -22,6 +22,7 @@
         android:layout_height="wrap_content">
 
         <com.tokopedia.unifycomponents.CardUnify2
+            android:id="@+id/add_logo_upload_button"
             android:padding="10dp"
             app:card_type="border"
             app:cardCornerRadius="8dp"

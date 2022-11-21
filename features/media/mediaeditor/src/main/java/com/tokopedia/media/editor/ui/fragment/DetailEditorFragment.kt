@@ -288,6 +288,10 @@ class DetailEditorFragment @Inject constructor(
         }
     }
 
+    override fun onUpload() {
+        addLogoComponent.bottomSheet().show(childFragmentManager, bottomSheetTag)
+    }
+
     override fun initObserver() {
         observeIntentUiModel()
         observeIntentUiState()
@@ -473,7 +477,11 @@ class DetailEditorFragment @Inject constructor(
             EditorToolType.ADD_LOGO -> {
                 setImageView(url, true) {
                     // init add logo when image is already done (waiting for image size)
-                    addLogoComponent.setupView(originalImageWidth, originalImageHeight)
+                    addLogoComponent.setupView(
+                        originalImageWidth,
+                        originalImageHeight,
+                        viewModel.getAvatarShop()
+                    )
                 }
             }
         }
@@ -985,6 +993,8 @@ class DetailEditorFragment @Inject constructor(
 
         private const val DELAY_EXECUTION_PREVIOUS_CROP = 400L
         private const val DELAY_EXECUTION_PREVIOUS_ROTATE = 400L
+
+        private const val bottomSheetTag = "Add Logo BottomSheet"
 
         private const val DELAY_REMOVE_BG_TOASTER = 300L
     }

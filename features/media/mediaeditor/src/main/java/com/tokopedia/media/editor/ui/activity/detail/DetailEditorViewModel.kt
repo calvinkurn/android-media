@@ -197,6 +197,10 @@ class DetailEditorViewModel @Inject constructor(
         )
     }
 
+    fun getAvatarShop(): String {
+        return userSession.shopAvatar
+    }
+
     private fun initializeWatermarkAsset() {
         if (!watermarkFilterRepository.isAssetInitialize()) {
             resourceProvider.getWatermarkLogoDrawable()?.let {
