@@ -262,7 +262,6 @@ class DataLayerServiceListener: WearableListenerService(), CoroutineScope {
             }
 
             override fun onError(e: Throwable?) {
-                Log.d(TAG, e?.message?:"")
             }
 
             override fun onNext(orderListModel: OrderListModel) {
@@ -300,8 +299,6 @@ class DataLayerServiceListener: WearableListenerService(), CoroutineScope {
 
                 // Send a message to all nodes in parallel
                 nodes.map { node ->
-                    Log.d(TAG, "Sending data to watch... ${node.displayName}")
-
                     async {
                         messageClient.sendMessage(
                             node.id,
@@ -311,12 +308,9 @@ class DataLayerServiceListener: WearableListenerService(), CoroutineScope {
                             .await()
                     }
                 }.awaitAll()
-                Log.d(TAG, "Send data to watch success: $message")
             } catch (cancellationException: CancellationException) {
-                Log.d(TAG, "Send data to watch failed (cancelled): $message")
                 throw cancellationException
             } catch (exception: Exception) {
-                Log.d(TAG, "Send data to watch failed: $exception")
             }
         }
     }
@@ -352,7 +346,6 @@ class DataLayerServiceListener: WearableListenerService(), CoroutineScope {
         const val GET_PHONE_STATE = "/get-phone-state"
 
         const val ACCEPT_BULK_ORDER_PATH = "/accept-bulk-order"
-        const val TAG = "DataLayerServiceListener"
         const val OPEN_LOGIN_PAGE = "/open-login-page"
 
         const val OPEN_READY_TO_SHIP = "/open-ready-to-ship"
