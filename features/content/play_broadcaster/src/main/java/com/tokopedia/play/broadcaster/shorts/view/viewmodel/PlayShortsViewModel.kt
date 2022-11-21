@@ -49,6 +49,9 @@ class PlayShortsViewModel @Inject constructor(
     val title: String
         get() = _titleForm.value.title
 
+    val maxTitleCharacter: Int
+        get() = _config.value.maxTitleCharacter
+
     val productSectionList: List<ProductTagSectionUiModel>
         get() = _productSectionList.value
 
