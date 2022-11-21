@@ -292,6 +292,18 @@ class PlayMoreActionBottomSheet @Inject constructor(
         hideSheets()
     }
 
+    override fun onPipClicked(view: KebabMenuSheetViewComponent) {
+        //TODO("Not yet implemented")
+    }
+
+    override fun onChromecastClicked(view: KebabMenuSheetViewComponent) {
+        //TODO("Not yet implemented")
+    }
+
+    override fun onWatchModeClick(view: KebabMenuSheetViewComponent) {
+        //TODO("Not yet implemented")
+    }
+
     /***
      * PlayUserReportSheetViewComponent Listener
      */

@@ -14,6 +14,7 @@ import com.tokopedia.play.view.uimodel.PlayMoreActionUiModel
 import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
 import com.tokopedia.play_common.viewcomponent.ViewComponent
 import com.tokopedia.play_common.R as commonR
+import com.tokopedia.unifycomponents.R as unifyR
 
 /**
  * @author by astidhiyaa on 08/12/21
@@ -28,10 +29,34 @@ class KebabMenuSheetViewComponent(
 
     private val reportAction = PlayMoreActionUiModel(
         type = PlayMoreActionType.Report,
-        iconRes = 0,
-        isIconAvailable = false,
+        iconRes = unifyR.drawable.iconunify_warning,
+        isIconAvailable = true,
         subtitleRes = R.string.play_kebab_report_title,
         onClick = { listener.onReportClick(this@KebabMenuSheetViewComponent) }
+    )
+
+    private val pipAction = PlayMoreActionUiModel(
+        type = PlayMoreActionType.PiP,
+        iconRes = R.drawable.ic_play_pip,
+        isIconAvailable = true,
+        subtitleRes = R.string.play_kebab_pip,
+        onClick = { listener.onPipClicked(this@KebabMenuSheetViewComponent) }
+    )
+
+    private val chromecastAction = PlayMoreActionUiModel(
+        type = PlayMoreActionType.Chromecast,
+        iconRes = R.drawable.ic_chromecast,
+        isIconAvailable = true,
+        subtitleRes = R.string.play_kebab_chromecast,
+        onClick = { listener.onChromecastClicked(this@KebabMenuSheetViewComponent) }
+    )
+
+    private val watchAction = PlayMoreActionUiModel(
+        type = PlayMoreActionType.WatchMode,
+        iconRes = unifyR.drawable.iconunify_visibility,
+        isIconAvailable = true,
+        subtitleRes = R.string.play_kebab_watch_mode,
+        onClick = { listener.onWatchModeClick(this@KebabMenuSheetViewComponent) }
     )
 
     init {
@@ -56,6 +81,9 @@ class KebabMenuSheetViewComponent(
 
     private fun setActionList(){
         val actionList = mutableListOf<PlayMoreActionUiModel>().apply {
+            add(pipAction)
+            add(chromecastAction)
+            add(watchAction)
             add(reportAction)
         }
         if (actionList.isNotEmpty()) {
@@ -71,5 +99,8 @@ class KebabMenuSheetViewComponent(
     interface Listener {
         fun onReportClick(view: KebabMenuSheetViewComponent)
         fun onCloseButtonClicked(view: KebabMenuSheetViewComponent)
+        fun onPipClicked(view: KebabMenuSheetViewComponent)
+        fun onChromecastClicked(view: KebabMenuSheetViewComponent)
+        fun onWatchModeClick(view: KebabMenuSheetViewComponent)
     }
 }
