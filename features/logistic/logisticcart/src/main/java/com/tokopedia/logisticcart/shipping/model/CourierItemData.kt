@@ -67,5 +67,4 @@ class CourierItemData(
         var benefitClass: String = "",
         var shippingSubsidy: Long = 0,
         var boCampaignId: Long = 0,
-        var whitelabelDescription: String = "",
 ) : Parcelable, ShipmentOptionData

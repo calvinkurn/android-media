@@ -36,7 +36,6 @@ class ShippingCourierConverter @Inject constructor() {
         courierItemData.isUsePinPoint = shippingCourierUiModel.productData.isShowMap == 1
         courierItemData.isHideChangeCourierCard = shippingCourierUiModel.serviceData.selectedShipperProductId > 0
         courierItemData.durationCardDescription = shippingCourierUiModel.serviceData.texts.textEtaSummarize
-        courierItemData.whitelabelDescription = shippingCourierUiModel.serviceData.texts.textServiceDesc
         if (!courierItemData.isUsePinPoint) {
             if (shippingCourierUiModel.productData.error != null && shippingCourierUiModel.productData.error.errorId == ErrorProductData.ERROR_PINPOINT_NEEDED) {
                 courierItemData.isUsePinPoint = true
@@ -71,7 +70,8 @@ class ShippingCourierConverter @Inject constructor() {
                     otdPrev.textDetail,
                     otdPrev.urlDetail,
                     otdPrev.value,
-                    otdPrev.iconUrl
+                    otdPrev.iconUrl,
+                    otdPrev.urlText
             )
             courierItemData.ontimeDelivery = otd
         }

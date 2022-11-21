@@ -244,7 +244,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private ConstraintLayout layoutStateWhitelabelShipping;
     private Typography labelSelectedWhitelabelShipping;
     private Typography labelWhitelabelDescription;
-    private Typography labelWhitelabelOtdTnc;
     private Typography labelWhitelabelEtaText;
     private ImageView imageMerchantVoucher;
     private IconUnify mIconTooltip;
@@ -394,7 +393,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         layoutStateWhitelabelShipping = itemView.findViewById(R.id.layout_state_has_selected_whitelabel_shipping);
         labelSelectedWhitelabelShipping = itemView.findViewById(R.id.label_selected_whitelabel_shipping);
         labelWhitelabelDescription = itemView.findViewById(R.id.label_whitelabel_description);
-        labelWhitelabelOtdTnc = itemView.findViewById(R.id.label_whitelabel_otd_tnc);
         labelWhitelabelEtaText = itemView.findViewById(R.id.label_whitelabel_shipping_eta);
 
         // AddOn Experience
@@ -1075,25 +1073,22 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             labelWhitelabelEtaText.setVisibility(View.GONE);
         }
 
-        String shippingDescription = selectedCourierItemData.getWhitelabelDescription();
         OntimeDelivery ontimeDelivery = selectedCourierItemData.getOntimeDelivery();
-
-        // On time delivery guarantee
-        if (ontimeDelivery != null && ontimeDelivery.getAvailable() && !ontimeDelivery.getTextLabel().isEmpty()) {
-            if (!shippingDescription.isEmpty()) {
-                shippingDescription = shippingDescription + " & ";
+        if (itemView.getContext() != null && ontimeDelivery != null && ontimeDelivery.getAvailable()) {
+            String whitelabelDescription = "";
+            if (!ontimeDelivery.getTextUrl().isEmpty() && !ontimeDelivery.getUrlDetail().isEmpty()) {
+                labelWhitelabelDescription.setOnClickListener(view -> {
+                    mActionListener.onOntimeDeliveryClicked(ontimeDelivery.getUrlDetail());
+                });
+                if (!ontimeDelivery.getTextLabel().isEmpty()) {
+                    whitelabelDescription = itemView.getContext().getString(R.string.checkout_whitelabel_desc_otdg_url, ontimeDelivery.getTextLabel(), ontimeDelivery.getUrlDetail(), ontimeDelivery.getTextUrl());
+                } else {
+                    whitelabelDescription = itemView.getContext().getString(R.string.checkout_whitelabel_otdg_url, ontimeDelivery.getUrlDetail(), ontimeDelivery.getTextUrl());
+                }
+            } else if (!ontimeDelivery.getTextLabel().isEmpty()) {
+                whitelabelDescription = ontimeDelivery.getTextLabel();
             }
-            labelWhitelabelOtdTnc.setText(ontimeDelivery.getTextLabel());
-            labelWhitelabelOtdTnc.setOnClickListener(view -> {
-                mActionListener.onOntimeDeliveryClicked(ontimeDelivery.getUrlDetail());
-            });
-            labelWhitelabelOtdTnc.setVisibility(View.VISIBLE);
-        } else {
-            labelWhitelabelOtdTnc.setVisibility(View.GONE);
-        }
-
-        if (!shippingDescription.isEmpty()) {
-            labelWhitelabelDescription.setText(shippingDescription);
+            labelWhitelabelDescription.setText(new HtmlLinkHelper(itemView.getContext(), whitelabelDescription).getSpannedString());
             labelWhitelabelDescription.setVisibility(View.VISIBLE);
         } else {
             labelWhitelabelDescription.setVisibility(View.GONE);

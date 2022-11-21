@@ -26,6 +26,9 @@ public class OntimeDeliveryGuarantee implements Parcelable {
     @SerializedName("icon_url")
     @Expose
     private String iconUrl;
+    @SerializedName("url_text")
+    @Expose
+    private String urlText;
 
     public boolean getAvailable() {
         return available;
@@ -75,6 +78,15 @@ public class OntimeDeliveryGuarantee implements Parcelable {
         this.urlDetail = urlDetail;
     }
 
+
+    public String getUrlText() {
+        return urlText;
+    }
+
+    public void setUrlText(String urlText) {
+        this.urlText = urlText;
+    }
+
     public OntimeDeliveryGuarantee() {
     }
 
@@ -91,6 +103,7 @@ public class OntimeDeliveryGuarantee implements Parcelable {
         dest.writeString(this.urlDetail);
         dest.writeInt(this.value);
         dest.writeString(this.iconUrl);
+        dest.writeString(this.urlText);
     }
 
     protected OntimeDeliveryGuarantee(Parcel in) {
@@ -100,6 +113,7 @@ public class OntimeDeliveryGuarantee implements Parcelable {
         this.urlDetail = in.readString();
         this.value = in.readInt();
         this.iconUrl = in.readString();
+        this.urlText = in.readString();
     }
 
     public static final Creator<OntimeDeliveryGuarantee> CREATOR = new Creator<OntimeDeliveryGuarantee>() {
