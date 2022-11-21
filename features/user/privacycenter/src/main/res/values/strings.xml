@@ -50,6 +50,12 @@
     <string name="privacy_center_tokopedia_care_title">Butuh info lebih lanjut?</string>
     <string name="privacy_center_tokopedia_care_item_title">Hubungi Tokopedia Care</string>
 
+    <!--Section | Activity-->
+    <string name="privacy_center_activity_title">Aktivitas</string>
+    <string name="privacy_center_activity_subtitle">Atur data dari aktivitasmu di Tokopedia</string>
+    <string name="privacy_center_activity_share_wishlist_title">Bagikan Wishlist</string>
+    <string name="privacy_center_activity_search_history_title">Riwayat Pencarian</string>
+
     <!--  CONSENT WITHDRAWAL  -->
     <string name="consent_withdrawal_page_title">Consent Withdrawal</string>
     <string name="consent_withdrawal_primary_data_usage">Penggunaan data utama</string>
