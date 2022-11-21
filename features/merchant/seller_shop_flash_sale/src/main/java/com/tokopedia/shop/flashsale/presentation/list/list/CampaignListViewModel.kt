@@ -101,7 +101,7 @@ class CampaignListViewModel @Inject constructor(
                 }
             },
             onError = {
-                _timeFlip.postValue(DEFAULT_VALUE_OF_ANIMATION)
+
             }
         )
     }
