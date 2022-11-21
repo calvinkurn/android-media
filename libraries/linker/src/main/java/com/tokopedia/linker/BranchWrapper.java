@@ -13,6 +13,7 @@ import com.tokopedia.linker.helper.RechargeBranchHelper;
 import com.tokopedia.linker.interfaces.LinkerRouter;
 import com.tokopedia.linker.interfaces.ShareCallback;
 import com.tokopedia.linker.interfaces.WrapperInterface;
+import com.tokopedia.linker.model.Link;
 import com.tokopedia.linker.model.LinkerCommerceData;
 import com.tokopedia.linker.model.LinkerData;
 import com.tokopedia.linker.model.LinkerDeeplinkData;
@@ -76,7 +77,7 @@ public class BranchWrapper implements WrapperInterface {
             Class<?> miui = Class.forName("miui.os.MiuiInit");
             Method method = miui.getMethod("isPreinstalledPAIPackage", String.class);
             return (Boolean) method.invoke(null, pkgName);
-        }catch(Exception ex){
+        } catch (Exception ex) {
             Timber.w("P2#PRE_INSTALL_XIAOMI#error;error='%s'", ex.getMessage());
         }
         return false;
@@ -99,7 +100,7 @@ public class BranchWrapper implements WrapperInterface {
     public void createShareUrl(LinkerShareRequest linkerShareRequest, Context context) {
         if (linkerShareRequest != null && linkerShareRequest.getDataObj() != null && linkerShareRequest.getDataObj() instanceof LinkerShareData) {
 
-            if(((LinkerShareData)linkerShareRequest.getDataObj()).getLinkerData().isAffiliate()){
+            if (((LinkerShareData) linkerShareRequest.getDataObj()).getLinkerData().isAffiliate()) {
                 generateAffiliateLink(((LinkerShareData) linkerShareRequest.getDataObj()).getLinkerData(),
                         context, linkerShareRequest.getShareCallbackInterface(),
                         ((LinkerShareData) linkerShareRequest.getDataObj()).getUserData());
@@ -108,7 +109,7 @@ public class BranchWrapper implements WrapperInterface {
                 generateFirebaseLink(((LinkerShareData) linkerShareRequest.getDataObj()).getLinkerData(),
                         context, linkerShareRequest.getShareCallbackInterface(),
                         ((LinkerShareData) linkerShareRequest.getDataObj()).getUserData());
-            }else {
+            } else {
                 generateBranchLink(((LinkerShareData) linkerShareRequest.getDataObj()).getLinkerData(),
                         context, linkerShareRequest.getShareCallbackInterface(),
                         ((LinkerShareData) linkerShareRequest.getDataObj()).getUserData());
@@ -168,8 +169,7 @@ public class BranchWrapper implements WrapperInterface {
                     if (!deeplink.startsWith(LinkerConstants.APPLINKS + "://") &&
                             !TextUtils.isEmpty(deeplink)) {
                         deferredDeeplinkPath = LinkerConstants.APPLINKS + "://" + deeplink;
-                    }
-                    else {
+                    } else {
                         deferredDeeplinkPath = deeplink;
                     }
                     if (linkerDeeplinkRequest.getDefferedDeeplinkCallback() != null) {
@@ -197,9 +197,9 @@ public class BranchWrapper implements WrapperInterface {
             @Override
             public void onInitFinished(JSONObject referringParams, BranchError error) {
                 if (error == null) {
-                    if(!uriHaveCampaignData && referringParams != null && referringParams.optBoolean("+clicked_branch_link")) {
+                    if (!uriHaveCampaignData && referringParams != null && referringParams.optBoolean("+clicked_branch_link")) {
                         sendUtmParameters(context, referringParams);
-                    }else {
+                    } else {
                         logNonBranchLinkData(context, referringParams);
                     }
                 }
@@ -207,7 +207,7 @@ public class BranchWrapper implements WrapperInterface {
         };
     }
 
-    private void sendUtmParameters(Context context, JSONObject referringParams){
+    private void sendUtmParameters(Context context, JSONObject referringParams) {
         String utmSource;
         String utmCampaign;
         String utmMedium;
@@ -251,7 +251,7 @@ public class BranchWrapper implements WrapperInterface {
     }
 
     @Override
-    public void initSession(Activity activity, boolean uriHaveCampaignData){
+    public void initSession(Activity activity, boolean uriHaveCampaignData) {
         checkBranchLinkUTMParams(activity);
         Branch.sessionBuilder(activity)
                 .withCallback(getBranchCallbackForUtmParams(activity, uriHaveCampaignData))
@@ -371,18 +371,18 @@ public class BranchWrapper implements WrapperInterface {
         return branchUniversalObject;
     }
 
-    private void generateAffiliateLink(){
+    private void generateAffiliateLink() {
 
     }
 
     private void generateFirebaseLink(final LinkerData data, final Context context,
                                       final ShareCallback shareCallback, final UserData userData) {
-        new FirebaseDLWrapper().createShortLink(shareCallback,data);
+        new FirebaseDLWrapper().createShortLink(shareCallback, data);
 
     }
 
     private void generateAffiliateLink(final LinkerData data, final Context context,
-                                      final ShareCallback shareCallback, final UserData userData) {
+                                       final ShareCallback shareCallback, final UserData userData) {
         new AffiliateWrapper().executeAffiliateUseCase(data, shareCallback, context);
     }
 
@@ -405,7 +405,7 @@ public class BranchWrapper implements WrapperInterface {
                         removeHandlerTimeoutMessage();
                         if (error == null) {
                             if (shareCallback != null) {
-                                if(!TextUtils.isEmpty(url)) {
+                                if (!TextUtils.isEmpty(url)) {
                                     shareCallback.urlCreated(LinkerUtils.createShareResult(data.getTextContentForBranch(url), url, url));
                                 } else {
                                     shareCallback.urlCreated(LinkerUtils.createShareResult(data.getTextContent(), data.renderShareUri(), data.renderShareUri()));
@@ -428,10 +428,10 @@ public class BranchWrapper implements WrapperInterface {
         }
     }
 
-    private String getFallbackUrl(LinkerData data){
+    private String getFallbackUrl(LinkerData data) {
         String fallbackUrl = data.renderShareUri();
-        if(TextUtils.isEmpty(fallbackUrl)
-                && !TextUtils.isEmpty(data.getDesktopUrl())){
+        if (TextUtils.isEmpty(fallbackUrl)
+                && !TextUtils.isEmpty(data.getDesktopUrl())) {
             fallbackUrl = data.getDesktopUrl();
         }
         return fallbackUrl;
@@ -446,7 +446,7 @@ public class BranchWrapper implements WrapperInterface {
 
         if (LinkerData.PRODUCT_TYPE.equalsIgnoreCase(data.getType())) {
             deeplinkPath = getApplinkPath(LinkerConstants.PRODUCT_INFO, data.getId());
-            if(!TextUtils.isEmpty(data.getAdditionalQueryParam())){
+            if (!TextUtils.isEmpty(data.getAdditionalQueryParam())) {
                 deeplinkPath = appendQueryParams(deeplinkPath, data.getAdditionalQueryParam());
             }
         } else if (LinkerData.SHOP_TYPE.equalsIgnoreCase(data.getType())) {
@@ -467,6 +467,11 @@ public class BranchWrapper implements WrapperInterface {
             deeplinkPath = getApplinkPath(LinkerConstants.NOW, data.getId());
         } else if (LinkerData.NOW_RECIPE_TYPE.equalsIgnoreCase(data.getType())) {
             deeplinkPath = getApplinkPath(LinkerConstants.NOW_RECIPE, data.getId());
+        } else if (LinkerData.NOW_HOME.equalsIgnoreCase(data.getType())) {
+            deeplinkPath = getApplinkPathWithQueryParam(LinkerConstants.NOW_HOME,
+                    new HashMap<>() {{
+                        put(LinkerConstants.QUERY_KEY_REFERRAL_CODE, data.getId());
+                    }});
         } else if (LinkerData.FOOD_TYPE.equalsIgnoreCase(data.getType())) {
             deeplinkPath = data.getDeepLink();
         } else if (LinkerData.WEBVIEW_TYPE.equalsIgnoreCase(data.getType())) {
@@ -493,7 +498,7 @@ public class BranchWrapper implements WrapperInterface {
         } else if (LinkerData.INDI_CHALLENGE_TYPE.equalsIgnoreCase(data.getType())) {
             deeplinkPath = data.getDeepLink();
         } else if (LinkerData.PLAY_BROADCASTER.equalsIgnoreCase(data.getType()) ||
-                    LinkerData.PLAY_VIEWER.equalsIgnoreCase(data.getType())) {
+                LinkerData.PLAY_VIEWER.equalsIgnoreCase(data.getType())) {
             linkProperties.addControlParameter(LinkerConstants.ANDROID_DESKTOP_URL_KEY, desktopUrl);
             linkProperties.addControlParameter(LinkerConstants.IOS_DESKTOP_URL_KEY, desktopUrl);
         } else if (LinkerData.HOTEL_TYPE.equalsIgnoreCase(data.getType())) {
@@ -507,15 +512,15 @@ public class BranchWrapper implements WrapperInterface {
             if (!data.getCustmMsg().isEmpty()) linkProperties.addTag(data.getCustmMsg());
             linkProperties.setCampaign(LinkerConstants.SHARE_LABEL);
             deeplinkPath = data.getDeepLink();
-        } else if (LinkerData.ENTERTAINMENT_TYPE.equalsIgnoreCase(data.getType())){
+        } else if (LinkerData.ENTERTAINMENT_TYPE.equalsIgnoreCase(data.getType())) {
             if (!desktopUrl.isEmpty()) {
                 linkProperties.addControlParameter(LinkerConstants.ANDROID_DESKTOP_URL_KEY, desktopUrl);
                 linkProperties.addControlParameter(LinkerConstants.IOS_DESKTOP_URL_KEY, desktopUrl);
             }
             deeplinkPath = data.getDeepLink();
-        }else if (LinkerData.USER_PROFILE_SOCIAL.equalsIgnoreCase(data.getType())) {
+        } else if (LinkerData.USER_PROFILE_SOCIAL.equalsIgnoreCase(data.getType())) {
             deeplinkPath = getApplinkPath(LinkerConstants.USER_PROFILE_SOCIAL, data.getId());
-        } else if (LinkerData.FEED_TYPE.equalsIgnoreCase(data.getType()) && !TextUtils.isEmpty(data.getDeepLink())){
+        } else if (LinkerData.FEED_TYPE.equalsIgnoreCase(data.getType()) && !TextUtils.isEmpty(data.getDeepLink())) {
             deeplinkPath = data.getDeepLink();
         }
 
@@ -602,6 +607,14 @@ public class BranchWrapper implements WrapperInterface {
         return url;
     }
 
+    private static String getApplinkPathWithQueryParam(String url, Map<String, String> queryMap) {
+        Uri uri = Uri.parse(url);
+        for (var entry : queryMap.entrySet()) {
+            uri = uri.buildUpon().appendQueryParameter(entry.getKey(), entry.getValue()).build();
+        }
+        return uri.toString();
+    }
+
     public static Boolean isAndroidIosUrlActivated(Context context) {
         return ((LinkerRouter) context.getApplicationContext()).
                 getBooleanRemoteConfig(LinkerConstants.FIREBASE_KEY_INCLUDEMOBILEWEB, true);
@@ -635,8 +648,8 @@ public class BranchWrapper implements WrapperInterface {
         }
     }
 
-    private String mapDeeplinkToScreenName(){
-        if(!TextUtils.isEmpty(getDefferedDeeplinkForSession())
+    private String mapDeeplinkToScreenName() {
+        if (!TextUtils.isEmpty(getDefferedDeeplinkForSession())
                 && getDefferedDeeplinkForSession().startsWith(LinkerConstants.TOKOPEDIA_SCHEME)
                 && getDefferedDeeplinkForSession().contains(LinkerConstants.DISCOVERY_PATH)) {
             String[] deeplinkArray = getDefferedDeeplinkForSession().split(LinkerConstants.QUERY_PARAM_SEPARATOR);
@@ -655,9 +668,9 @@ public class BranchWrapper implements WrapperInterface {
 
     private void checkBranchLinkUTMParams(Activity activity) {
         APP_OPEN_FROM_BRANCH_LINK = false;
-        if (activity != null && activity.getIntent().getData() != null){
+        if (activity != null && activity.getIntent().getData() != null) {
             String intentDataStr = activity.getIntent().getData().toString();
-            if(intentDataStr.contains(LinkerConstants.BRANCH_LINK_DOMAIN_1) ||
+            if (intentDataStr.contains(LinkerConstants.BRANCH_LINK_DOMAIN_1) ||
                     intentDataStr.contains(LinkerConstants.BRANCH_LINK_DOMAIN_2) ||
                     intentDataStr.contains(LinkerConstants.BRANCH_LINK_DOMAIN_3)) {
                 APP_OPEN_FROM_BRANCH_LINK = true;
@@ -682,7 +695,7 @@ public class BranchWrapper implements WrapperInterface {
     }
 
     private boolean isSkipUtmEvent(Context context) {
-        if(isFirstOpen(context)) return false;
+        if (isFirstOpen(context)) return false;
         if (isBranchUtmOnlyBranchLinkActivated(context) && !APP_OPEN_FROM_BRANCH_LINK) {
             return true;
         }
@@ -697,7 +710,7 @@ public class BranchWrapper implements WrapperInterface {
     }
 
     private void logValidCampaignUtmParams(Context context, String utmSource, String utmMedium, String utmCampaign, String clickTime) {
-        if(getRemoteConfig(context).getBoolean(APP_ENABLE_BRANCH_VALID_CAMPAIGN_LOGGING, true)) {
+        if (getRemoteConfig(context).getBoolean(APP_ENABLE_BRANCH_VALID_CAMPAIGN_LOGGING, true)) {
             new BranchHelperValidation().logValidCampaignData(utmSource, utmMedium, utmCampaign, clickTime, isFirstOpen(context), APP_OPEN_FROM_BRANCH_LINK);
         }
     }
@@ -723,19 +736,19 @@ public class BranchWrapper implements WrapperInterface {
         return localCacheHandler;
     }
 
-    private long getRemoteConfigTimeOutValue(Context context, String key){
+    private long getRemoteConfigTimeOutValue(Context context, String key) {
         return getRemoteConfig(context).getLong(key, 5000);
     }
 
-    private RemoteConfig getRemoteConfig(Context context){
-        if(remoteConfig == null){
+    private RemoteConfig getRemoteConfig(Context context) {
+        if (remoteConfig == null) {
             remoteConfig = new FirebaseRemoteConfigImpl(context);
         }
         return remoteConfig;
     }
 
-    private void setBranchCallbackTimeOutFunction(ShareCallback shareCallback, LinkerData data, long timeoutDuration){
-        handler =  new android.os.Handler(Looper.getMainLooper());
+    private void setBranchCallbackTimeOutFunction(ShareCallback shareCallback, LinkerData data, long timeoutDuration) {
+        handler = new android.os.Handler(Looper.getMainLooper());
         handler.postDelayed(
                 new Runnable() {
                     public void run() {
