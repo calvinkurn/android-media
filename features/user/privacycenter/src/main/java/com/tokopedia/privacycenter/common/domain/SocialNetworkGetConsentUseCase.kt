@@ -42,11 +42,3 @@ class SocialNetworkGetConsentUseCase @Inject constructor(
         private const val VALUE_RELATION_TYPE = 1
     }
 }
-
-sealed class GetRecommendationFriendState(
-    val isAllowed: Boolean? = null, val throwable: Throwable? = null
-) {
-    class Loading : GetRecommendationFriendState()
-    class Success(isAllowed: Boolean) : GetRecommendationFriendState(isAllowed = isAllowed)
-    class Failed(throwable: Throwable) : GetRecommendationFriendState(throwable = throwable)
-}
