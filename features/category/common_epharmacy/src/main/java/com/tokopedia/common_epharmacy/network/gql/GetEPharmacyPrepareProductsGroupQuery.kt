@@ -17,6 +17,7 @@ object GetEPharmacyPrepareProductsGroupQuery : GqlQueryInterface {
                 }
                 data {
                   attachment_page_ticker_text
+                  attachment_page_ticker_logo_url
                   epharmacy_groups {
                     epharmacy_group_id
                     prescription_source
@@ -81,6 +82,12 @@ object GetEPharmacyPrepareProductsGroupQuery : GqlQueryInterface {
                         item_weight
                         product_total_weight_fmt
                       }
+                    }
+                    prescription_cta {
+                      logo_url
+                      title
+                      subtitle
+                      action_type
                     }
                   }
                 }

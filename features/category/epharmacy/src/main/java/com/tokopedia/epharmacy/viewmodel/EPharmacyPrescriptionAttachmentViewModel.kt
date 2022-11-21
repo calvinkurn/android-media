@@ -6,7 +6,6 @@ import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.common_epharmacy.network.response.EPharmacyPrepareProductsGroupResponse
 import com.tokopedia.common_epharmacy.usecase.EPharmacyPrepareProductsGroupUseCase
 import com.tokopedia.epharmacy.component.BaseEPharmacyDataModel
-import com.tokopedia.epharmacy.component.model.EPharmacyAttachmentDataModel
 import com.tokopedia.epharmacy.component.model.EPharmacyDataModel
 import com.tokopedia.epharmacy.component.model.EPharmacyTickerDataModel
 import com.tokopedia.epharmacy.di.qualifier.CoroutineBackgroundDispatcher
@@ -74,18 +73,18 @@ class EPharmacyPrescriptionAttachmentViewModel @Inject constructor(
         }
     }
 
-    fun validateButtonData(ePharmacyAttachmentUiUpdater: EPharmacyAttachmentUiUpdater) {
-        val groupStatuses = arrayListOf<Int>()
-        ePharmacyAttachmentUiUpdater.mapOfData.forEach {
-            if (it.value is EPharmacyAttachmentDataModel) {
-                (it.value as EPharmacyAttachmentDataModel).let { model ->
-                    groupStatuses.add(model.consultationStatus ?: 0)
-                }
-            }
-        }
-        val statusCount = EPharmacyMapper.getPrescriptionCount(groupStatuses)
-        renderButtonOnResult(statusCount)
-    }
+//    fun validateButtonData(ePharmacyAttachmentUiUpdater: EPharmacyAttachmentUiUpdater) {
+//        val groupStatuses = arrayListOf<Int>()
+//        ePharmacyAttachmentUiUpdater.mapOfData.forEach {
+//            if (it.value is EPharmacyAttachmentDataModel) {
+//                (it.value as EPharmacyAttachmentDataModel).let { model ->
+//                    groupStatuses.add(model.consultationStatus ?: 0)
+//                }
+//            }
+//        }
+//        val statusCount = EPharmacyMapper.getPrescriptionCount(groupStatuses)
+//        renderButtonOnResult(statusCount)
+//    }
 
     private fun mapGroupsDataIntoDataModel(data: EPharmacyPrepareProductsGroupResponse): EPharmacyDataModel {
         val listOfComponents = arrayListOf<BaseEPharmacyDataModel>()
@@ -95,7 +94,7 @@ class EPharmacyPrescriptionAttachmentViewModel @Inject constructor(
                     TICKER_COMPONENT,
                     TICKER_COMPONENT,
                     data.detailData?.groupsData?.attachmentPageTickerText,
-                    EPHARMACY_TICKER_ICON,
+                    data.detailData?.groupsData?.attachmentPageTickerLogoUrl,
                     EPHARMACY_TICKER_BACKGROUND
                 )
             )

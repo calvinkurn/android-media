@@ -11,7 +11,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.common_epharmacy.network.response.EPharmacyItemButtonData
 import com.tokopedia.common_epharmacy.network.response.EPharmacyMiniConsultationResult
 import com.tokopedia.common_epharmacy.network.response.EPharmacyPrepareProductsGroupResponse
 import com.tokopedia.epharmacy.R
@@ -284,18 +283,18 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
     override fun onCTACClick(adapterPosition: Int, modelKey: String?) {
         super.onCTACClick(adapterPosition, modelKey)
         val model = (ePharmacyAttachmentUiUpdater.mapOfData[modelKey] as EPharmacyAttachmentDataModel)
-        redirectAttachmentCTA(model.enablerLogo, model.epharmacyGroupId, model.epharmacyButton, model.consultationSource?.pwaLink)
+        redirectAttachmentCTA(model.enablerLogo, model.epharmacyGroupId, model.prescriptionCTA, model.consultationSource?.pwaLink)
     }
 
-    private fun redirectAttachmentCTA(enablerImage: String?, groupId: String?, epharmacyButton: EPharmacyItemButtonData?, miniConsultationWebLink: String?) {
-        when (epharmacyButton?.sourceType) {
-            PrescriptionSourceType.MINI_CONSULT.type -> {
+    private fun redirectAttachmentCTA(enablerImage: String?, groupId: String?, prescriptionCTA: EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.PrescriptionCTA?, miniConsultationWebLink: String?) {
+        when (prescriptionCTA?.actionType) {
+            PrescriptionActionType.REDIRECT_PWA.type -> {
                 startMiniConsultation(miniConsultationWebLink)
             }
-            PrescriptionSourceType.UPLOAD.type -> {
+            PrescriptionActionType.REDIRECT_UPLOAD.type -> {
                 startPhotoUpload(groupId)
             }
-            PrescriptionSourceType.MULTI.type -> {
+            PrescriptionActionType.REDIRECT_OPTION.type -> {
                 startAttachmentChooser(enablerImage, groupId, miniConsultationWebLink)
             }
         }
@@ -333,15 +332,14 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        ePharmacyPrescriptionAttachmentViewModel.validateButtonData(ePharmacyAttachmentUiUpdater)
-
-        fun processUploadRequestData() {
-            data?.let { prescriptionResultIntent ->
-                val prescriptionIds = prescriptionResultIntent.extras?.getStringArrayList(EPHARMACY_PRESCRIPTION_IDS)
-                val groupId = prescriptionResultIntent.extras?.getString(EPHARMACY_GROUP_ID)
-                updateModelForUploadPrescription(prescriptionIds, groupId)
-            }
-        }
+//        ePharmacyPrescriptionAttachmentViewModel.validateButtonData(ePharmacyAttachmentUiUpdater)
+//        fun processUploadRequestData() {
+//            data?.let { prescriptionResultIntent ->
+//                val prescriptionIds = prescriptionResultIntent.extras?.getStringArrayList(EPHARMACY_PRESCRIPTION_IDS)
+//                val groupId = prescriptionResultIntent.extras?.getString(EPHARMACY_GROUP_ID)
+//                updateModelForUploadPrescription(prescriptionIds, groupId)
+//            }
+//        }
 
         when (requestCode) {
             EPHARMACY_CHOOSER_REQUEST_CODE -> {
@@ -350,7 +348,7 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
                         getData()
                     }
                     EPHARMACY_UPLOAD_REQUEST_CODE -> {
-                        processUploadRequestData()
+                        getData()
                     }
                 }
             }
@@ -358,25 +356,23 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
                 getData()
             }
             EPHARMACY_UPLOAD_REQUEST_CODE -> {
-                processUploadRequestData()
+                getData()
             }
         }
     }
 
     private fun updateModelForUploadPrescription(prescriptionIds: ArrayList<String>?, groupId: String?) {
-        val modelUniqueId = EPharmacyMapper.getUniqueModelName(groupId, 0, true)
-        (ePharmacyAttachmentUiUpdater.mapOfData[modelUniqueId] as? EPharmacyAttachmentDataModel)?.copy()?.let { newModel ->
-            val prescriptionImages = arrayListOf<EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.PrescriptionImage?>()
-            prescriptionIds?.forEach {
-                prescriptionImages.add(EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.PrescriptionImage("", it, "", ""))
-            }
-            newModel.prescriptionImages = prescriptionImages
-            ePharmacyAttachmentUiUpdater.updateModel(newModel)
-            ePharmacyPrescriptionAttachmentViewModel.validateButtonData(ePharmacyAttachmentUiUpdater)
-            val buttonData = EPharmacyMapper.prepareCtaData(newModel.prescriptionSource, newModel.tokoConsultationId, newModel.prescriptionImages)
-            newModel.epharmacyButton = buttonData
-            updateUi()
-        }
+//        val modelUniqueId = EPharmacyMapper.getUniqueModelName(groupId, 0, true)
+//        (ePharmacyAttachmentUiUpdater.mapOfData[modelUniqueId] as? EPharmacyAttachmentDataModel)?.copy()?.let { newModel ->
+//            val prescriptionImages = arrayListOf<EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.PrescriptionImage?>()
+//            prescriptionIds?.forEach {
+//                prescriptionImages.add(EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.PrescriptionImage("", it, "", ""))
+//            }
+//            newModel.prescriptionImages = prescriptionImages
+//            ePharmacyAttachmentUiUpdater.updateModel(newModel)
+//            ePharmacyPrescriptionAttachmentViewModel.validateButtonData(ePharmacyAttachmentUiUpdater)
+//            updateUi()
+//        }
     }
 
     override fun getScreenName() = EPHARMACY_SCREEN_NAME

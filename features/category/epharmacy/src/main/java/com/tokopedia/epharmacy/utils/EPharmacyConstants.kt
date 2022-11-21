@@ -39,7 +39,6 @@ enum class EPharmacyButtonKey(val key: String) {
 enum class EPharmacyPrescriptionStatus(val status: String) {
     APPROVED("APPROVED"),
     REJECTED("REJECTED"),
-    ACTIVE("ACTIVE"),
     SELECTED("SELECTED")
 }
 
@@ -75,7 +74,5 @@ enum class EPharmacyConsultationStatus(val status: Int) {
     APPROVED(2),
     REJECTED(4)
 }
-
-const val EPHARMACY_RX_IMAGE = "https://images.tokopedia.net/img/android/res/singleDpi/epharmacy_sucess_image_uploaded_count.png"
 
 const val EPHARMACY_CHECKOUT_APPLINK = "tokopedia://checkout"

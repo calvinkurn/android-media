@@ -49,7 +49,7 @@ class EPharmacyAttachmentViewHolder(private val view: View, private val ePharmac
         val LAYOUT = R.layout.epharmacy_prescription_attachment_view_item
     }
 
-    private var dataModel : EPharmacyAttachmentDataModel? = null
+    private var dataModel: EPharmacyAttachmentDataModel? = null
 
     override fun bind(element: EPharmacyAttachmentDataModel?) {
         dataModel = element
@@ -66,19 +66,20 @@ class EPharmacyAttachmentViewHolder(private val view: View, private val ePharmac
     }
 
     private fun renderObstruction() {
-        if(dataModel?.consultationStatus == EPharmacyConsultationStatus.REJECTED.status
-            ||dataModel?.consultationStatus == EPharmacyConsultationStatus.EXPIRED.status){
+        if (dataModel?.consultationStatus == EPharmacyConsultationStatus.REJECTED.status ||
+            dataModel?.consultationStatus == EPharmacyConsultationStatus.EXPIRED.status
+        ) {
             topView?.run {
                 show()
-                setOnClickListener{}
+                setOnClickListener {}
             }
             bottomView.run {
                 show()
-                setOnClickListener{}
+                setOnClickListener {}
             }
             ticker.show()
             productImageCard.alpha = 0.5f
-        }else {
+        } else {
             topView.hide()
             bottomView.hide()
             ticker.hide()
@@ -99,16 +100,19 @@ class EPharmacyAttachmentViewHolder(private val view: View, private val ePharmac
     }
 
     private fun renderProductsData() {
-        dataModel?.shopInfo?.products?.firstOrNull()?.let {  firstProduct ->
+        dataModel?.shopInfo?.products?.firstOrNull()?.let { firstProduct ->
             productText.text = firstProduct.name
             productQuantity.text = "${firstProduct.quantity} Barang (${firstProduct.productTotalWeightFmt})"
             productImageUnify.loadImage(firstProduct.productImage)
         }
 
-        if(!dataModel?.shopInfo?.products.isNullOrEmpty() && (dataModel?.shopInfo?.products?.size
-                ?: 0) > 1){
+        if (!dataModel?.shopInfo?.products.isNullOrEmpty() && (
+            dataModel?.shopInfo?.products?.size
+                ?: 0
+            ) > 1
+        ) {
             productAccordionView.show()
-            if(productAccordionRV.adapter == null){
+            if (productAccordionRV.adapter == null) {
                 productAccordionRV.layoutManager = LinearLayoutManager(view.context, RecyclerView.VERTICAL, false)
                 productAccordionRV.adapter = dataModel?.shopInfo?.products?.let { products ->
                     getAttachmentAccordionAdapter(
@@ -116,9 +120,9 @@ class EPharmacyAttachmentViewHolder(private val view: View, private val ePharmac
                     )
                 }
                 productAccordionView.setOnClickListener {
-                    ePharmacyListener?.onInteractAccordion(bindingAdapterPosition,dataModel?.productsIsExpanded ?: false, dataModel?.name)
+                    ePharmacyListener?.onInteractAccordion(bindingAdapterPosition, dataModel?.productsIsExpanded ?: false, dataModel?.name)
                 }
-            }else {
+            } else {
                 dataModel?.shopInfo?.products?.let { products ->
                     (productAccordionRV.adapter as EPharmacyAttachmentProductAccordionAdapter).setData(
                         getProductsWithoutFirst(products)
@@ -126,14 +130,14 @@ class EPharmacyAttachmentViewHolder(private val view: View, private val ePharmac
                 }
             }
 
-            if(dataModel?.productsIsExpanded == true){
+            if (dataModel?.productsIsExpanded == true) {
                 productAccordionRV.show()
                 productAccordionChevron.setImage(IconUnify.CHEVRON_UP, null, null, null, null)
-            }else{
+            } else {
                 productAccordionChevron.setImage(IconUnify.CHEVRON_DOWN, null, null, null, null)
                 productAccordionRV.hide()
             }
-        }else {
+        } else {
             productAccordionView.hide()
         }
     }
@@ -145,31 +149,31 @@ class EPharmacyAttachmentViewHolder(private val view: View, private val ePharmac
     private fun getProductsWithoutFirst(products: ArrayList<EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo.Product?>): ArrayList<EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo.Product?> {
         val productSubList = arrayListOf<EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo.Product?>()
         products.forEachIndexed { index, product ->
-            if(index != 0){ productSubList.add(product) }
+            if (index != 0) { productSubList.add(product) }
         }
         return productSubList
     }
 
     private fun renderButton() {
-        if(dataModel?.showUploadWidget == true && !dataModel?.epharmacyButton?.text.isNullOrBlank()){
+        if (dataModel?.showUploadWidget == true && !dataModel?.prescriptionCTA?.title.isNullOrBlank()) {
             chatDokterUploadLayout.show()
-            chatDokterUploadText.text = dataModel?.epharmacyButton?.text
-            if(!dataModel?.epharmacyButton?.subText.isNullOrBlank()){
+            chatDokterUploadText.text = dataModel?.prescriptionCTA?.title
+            if (!dataModel?.prescriptionCTA?.subtitle.isNullOrBlank()) {
                 chatDokterUploadSubText.show()
-                chatDokterUploadSubText.text = "${dataModel?.epharmacyButton?.subText} ${dataModel?.consultationSource?.enablerName}"
-            }else {
+                chatDokterUploadSubText.text = dataModel?.prescriptionCTA?.subtitle
+            } else {
                 chatDokterUploadSubText.hide()
             }
-            chatDokterUploadIcon.loadImage(dataModel?.epharmacyButton?.iconUrl)
+            chatDokterUploadIcon.loadImage(dataModel?.prescriptionCTA?.logoUrl)
             chatDokterUploadLayout.setOnClickListener {
-                ePharmacyListener?.onCTACClick(bindingAdapterPosition,dataModel?.name)
+                ePharmacyListener?.onCTACClick(bindingAdapterPosition, dataModel?.name)
             }
-        }else {
+        } else {
             chatDokterUploadLayout.hide()
         }
     }
 
-    private fun renderDivider(){
-        if(dataModel?.showDivider == true) divider.show() else divider.hide()
+    private fun renderDivider() {
+        if (dataModel?.showDivider == true) divider.show() else divider.hide()
     }
 }

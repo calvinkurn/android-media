@@ -20,6 +20,8 @@ data class EPharmacyPrepareProductsGroupResponse(
         data class GroupData(
             @SerializedName("attachment_page_ticker_text")
             val attachmentPageTickerText: String?,
+            @SerializedName("attachment_page_ticker_logo_url")
+            val attachmentPageTickerLogoUrl: String?,
             @SerializedName("epharmacy_groups")
             val epharmacyGroups: List<EpharmacyGroup?>?
         ) : Parcelable {
@@ -38,7 +40,9 @@ data class EPharmacyPrepareProductsGroupResponse(
                 @SerializedName("prescription_source")
                 val prescriptionSource: List<String?>?,
                 @SerializedName("products_info")
-                val shopInfo: List<ProductsInfo?>?
+                val shopInfo: List<ProductsInfo?>?,
+                @SerializedName("prescription_cta")
+                val prescriptionCTA: PrescriptionCTA?
             ) : Parcelable {
                 @Parcelize
                 data class ConsultationData(
@@ -123,6 +127,17 @@ data class EPharmacyPrepareProductsGroupResponse(
                 }
 
                 @Parcelize
+                data class PrescriptionCTA(
+                    @SerializedName("logo_url")
+                    val logoUrl: String?,
+                    @SerializedName("title")
+                    val title: String?,
+                    @SerializedName("subtitle")
+                    val subtitle: String?,
+                    @SerializedName("action_type")
+                    val actionType: String?
+                ) : Parcelable
+
                 data class PrescriptionImage(
                     @SerializedName("expired_at")
                     val expiredAt: String?,
