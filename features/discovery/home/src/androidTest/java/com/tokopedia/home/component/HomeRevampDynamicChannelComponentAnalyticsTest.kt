@@ -148,6 +148,19 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
     }
 
     @Test
+    fun testComponentMixLeftPadding() {
+        HomeDCCassavaTest {
+            initTest()
+            doActivityTestByModelClass(dataModelClass = MixLeftPaddingDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
+                clickOnMixLeftPaddingSection(viewHolder, i)
+            }
+        } validateAnalytics {
+            addDebugEnd()
+            hasPassedAnalytics(cassavaTestRule, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_MIX_LEFT)
+        }
+    }
+
+    @Test
     fun testComponentMixTop() {
         HomeDCCassavaTest {
             initTest()
