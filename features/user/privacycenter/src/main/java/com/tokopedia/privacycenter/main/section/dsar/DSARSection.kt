@@ -6,6 +6,7 @@ import android.view.View
 import androidx.viewbinding.ViewBinding
 import com.tokopedia.privacycenter.R
 import com.tokopedia.privacycenter.databinding.SectionConsentwithdrawalBinding
+import com.tokopedia.privacycenter.main.analytics.MainPrivacyCenterAnalytics
 import com.tokopedia.privacycenter.main.section.BasePrivacyCenterSection
 import com.tokopedia.unifycomponents.Toaster
 
@@ -29,9 +30,7 @@ class DSARSection(
     }
 
     override fun onButtonDirectionClick(view: View) {
-//        TODO: put DSAR applink here
-//        val intent = RouteManager.getIntent(context, /dsar)
-//        context?.startActivity(intent)
+        MainPrivacyCenterAnalytics.sendClickOnButtonDownloadDataPribadiEvent()
         Toaster.build(view, "DSAR Section clicked").show()
     }
 

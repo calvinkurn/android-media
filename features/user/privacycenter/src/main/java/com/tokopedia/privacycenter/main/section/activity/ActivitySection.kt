@@ -8,6 +8,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.privacycenter.R
 import com.tokopedia.privacycenter.databinding.SectionActivityBinding
+import com.tokopedia.privacycenter.main.analytics.MainPrivacyCenterAnalytics
 import com.tokopedia.privacycenter.main.section.BasePrivacyCenterSection
 
 class ActivitySection(private val context: Context?) : BasePrivacyCenterSection(context) {
@@ -57,10 +58,18 @@ class ActivitySection(private val context: Context?) : BasePrivacyCenterSection(
     }
 
     private fun goToShareWishlist() {
+        MainPrivacyCenterAnalytics.sendClickOnButtonAktivitasEvent(
+            MainPrivacyCenterAnalytics.LABEL_SHARE_WISHLIST
+        )
+
         // direct to share wishlist
     }
 
     private fun goToHistorySearch() {
+        MainPrivacyCenterAnalytics.sendClickOnButtonAktivitasEvent(
+            MainPrivacyCenterAnalytics.LABEL_SEARCH_HISTORY
+        )
+
         RouteManager.route(
             context,
             ApplinkConstInternalUserPlatform.SEARCH_HISTORY

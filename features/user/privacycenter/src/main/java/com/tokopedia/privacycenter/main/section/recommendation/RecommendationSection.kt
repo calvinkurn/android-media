@@ -15,11 +15,11 @@ import com.tokopedia.privacycenter.common.PrivacyCenterStateResult
 import com.tokopedia.privacycenter.common.domain.GetRecommendationFriendState
 import com.tokopedia.privacycenter.common.utils.getMessage
 import com.tokopedia.privacycenter.databinding.SectionRecomendationAndPromoBinding
+import com.tokopedia.privacycenter.main.analytics.MainPrivacyCenterAnalytics
 import com.tokopedia.privacycenter.main.section.BasePrivacyCenterSection
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
 
-class RecommendationSection (
+class RecommendationSection(
     context: Context?,
     private val viewModel: RecommendationViewModel,
     private val fragmentManager: FragmentManager,
@@ -60,7 +60,7 @@ class RecommendationSection (
             }
 
             viewModel.getConsentSocialNetwork.observe(lifecycleOwner) {
-                when(it) {
+                when (it) {
                     is GetRecommendationFriendState.Loading -> {
                         showShimmering(true)
                     }
@@ -76,7 +76,7 @@ class RecommendationSection (
             }
 
             viewModel.setConsentSocialNetwork.observe(lifecycleOwner) {
-                when(it) {
+                when (it) {
                     is PrivacyCenterStateResult.Loading -> {
                         showLoaderDialog(true)
                     }
@@ -110,10 +110,20 @@ class RecommendationSection (
     private fun initListener() {
         sectionViewBinding.itemShakeShake.onToggleClicked { _, isChecked ->
             viewModel.setShakeShakePermission(isChecked)
+
+            MainPrivacyCenterAnalytics.sendClickOnTrackingSectionEvent(
+                MainPrivacyCenterAnalytics.LABEL_TOGGLE_SHAKE_SHAKE,
+                isChecked
+            )
         }
 
         sectionViewBinding.itemGeolocation.onToggleClicked { _, isChecked ->
             if (viewModel.isGeolocationAllowed.value != isChecked) {
+                MainPrivacyCenterAnalytics.sendClickOnTrackingSectionEvent(
+                    MainPrivacyCenterAnalytics.LABEL_TOGGLE_GEOLOCATION,
+                    isChecked
+                )
+
                 sectionViewBinding.itemGeolocation.forceToggleState(false)
 
                 if (isChecked) {
@@ -126,7 +136,12 @@ class RecommendationSection (
 
         sectionViewBinding.itemRecommendationFriend.onToggleClicked { buttonView, isChecked ->
             if (viewModel.isRecommendationFriendAllowed.value != isChecked) {
-                (buttonView as SwitchUnify).isChecked = !isChecked
+                MainPrivacyCenterAnalytics.sendClickOnTrackingSectionEvent(
+                    MainPrivacyCenterAnalytics.LABEL_TOGGLE_RECOMMENDATION_FRIEND,
+                    isChecked
+                )
+
+                sectionViewBinding.itemRecommendationFriend.forceToggleState(!isChecked)
 
                 if (!isChecked) {
                     showVerificationDisabledDataUsage()
@@ -231,7 +246,7 @@ class RecommendationSection (
     }
 
     override fun onButtonDirectionClick(view: View) {
-        //none
+        // none
     }
 
     private fun showToasterError(message: String) {
