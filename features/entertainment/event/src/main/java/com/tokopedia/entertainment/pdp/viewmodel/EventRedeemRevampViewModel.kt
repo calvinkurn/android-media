@@ -8,6 +8,7 @@ import com.tokopedia.entertainment.pdp.data.redeem.ErrorRedeem
 import com.tokopedia.entertainment.pdp.data.redeem.redeemable.EventRedeem
 import com.tokopedia.entertainment.pdp.data.redeem.redeemable.EventRedeemedData
 import com.tokopedia.entertainment.pdp.data.redeem.redeemable.Participant
+import com.tokopedia.entertainment.pdp.data.redeem.redeemable.RedeemRequest
 import com.tokopedia.entertainment.pdp.network_api.GetEventRedeemUseCase
 import com.tokopedia.entertainment.pdp.network_api.GetEventRedeemedUseCase
 import com.tokopedia.kotlin.extensions.view.ONE
@@ -89,7 +90,7 @@ class EventRedeemRevampViewModel @Inject constructor(
 
     private suspend fun redeemIds(redeemUrl: String): Result<EventRedeemedData> {
         getEventRedeemedUseCase.setUrlRedeem(redeemUrl)
-        getEventRedeemedUseCase.setRedeemIds(getCheckedIds())
+        getEventRedeemedUseCase.setRedeemIds(RedeemRequest(getCheckedIds()))
         val response = withContext(dispatcher.io) {
             getEventRedeemedUseCase.executeOnBackground()
         }

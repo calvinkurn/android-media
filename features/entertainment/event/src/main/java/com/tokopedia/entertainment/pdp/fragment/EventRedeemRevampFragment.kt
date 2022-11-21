@@ -20,6 +20,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -31,7 +32,8 @@ import com.tokopedia.entertainment.R.string as redeemString
 /**
  * Author firmanda on 17,Nov,2022
  */
-class EventRedeemRevampFragment : BaseDaggerFragment(), EventRedeemRevampBottomSheet.RedeemBottomSheetListener {
+class EventRedeemRevampFragment : BaseDaggerFragment(),
+    EventRedeemRevampBottomSheet.RedeemBottomSheetListener {
 
     @Inject
     lateinit var userSession: UserSessionInterface
@@ -77,9 +79,9 @@ class EventRedeemRevampFragment : BaseDaggerFragment(), EventRedeemRevampBottomS
         hideGlobalError()
         if (!userSession.isLoggedIn) {
             showGlobalError(isNotLogin = true, isUrlEmpty = false, null)
-        } else if (urlRedeem == ""){
+        } else if (urlRedeem == "") {
             showGlobalError(isNotLogin = false, isUrlEmpty = true, null)
-        } else if(userSession.isLoggedIn && urlRedeem != "") {
+        } else if (userSession.isLoggedIn && urlRedeem != "") {
             requestRedeemData()
         }
     }
@@ -113,10 +115,10 @@ class EventRedeemRevampFragment : BaseDaggerFragment(), EventRedeemRevampBottomS
             viewModel.flowRedeem.collect {
                 when (it) {
                     is Success -> {
-                        requestRedeemData()
+                        showSuccessRedeem()
                     }
                     is Fail -> {
-                        //error data
+                        showErrorToaster(it.throwable.message)
                     }
                 }
             }
@@ -160,8 +162,16 @@ class EventRedeemRevampFragment : BaseDaggerFragment(), EventRedeemRevampBottomS
         }
     }
 
+    private fun showSuccessRedeem() {
+        hideLoading()
+        hideGlobalError()
+        showMainLayout()
+    }
+
     private fun processRedeem() {
         if (viewModel.getCheckedIdsSize().isMoreThanZero()) {
+            hideGlobalError()
+            showLoading()
             redeemIds()
         } else {
             setErrorInput()
@@ -191,11 +201,13 @@ class EventRedeemRevampFragment : BaseDaggerFragment(), EventRedeemRevampBottomS
                 show()
                 if (isNotLogin) {
                     errorTitle.text = context.resources.getString(redeemString.ent_redeem_not_login)
-                    errorDescription.text = context.resources.getString(redeemString.ent_redeem_revamp_not_login)
+                    errorDescription.text =
+                        context.resources.getString(redeemString.ent_redeem_revamp_not_login)
                     errorAction.hide()
                 } else if (isUrlEmpty) {
                     errorTitle.text = context.resources.getString(redeemString.ent_redeem_url_null)
-                    errorDescription.text = context.resources.getString(redeemString.ent_redeem_revamp_empty_url)
+                    errorDescription.text =
+                        context.resources.getString(redeemString.ent_redeem_revamp_empty_url)
                     errorAction.hide()
                 } else {
                     errorTitle.text = ErrorHandler.getErrorMessage(context, throwable)
@@ -259,7 +271,10 @@ class EventRedeemRevampFragment : BaseDaggerFragment(), EventRedeemRevampBottomS
             val bottomSheetEventRedeem = EventRedeemRevampBottomSheet.getInstance()
             bottomSheetEventRedeem.setListener(this)
             bottomSheetEventRedeem.setList(mappedParticipant)
-            bottomSheetEventRedeem.show(childFragmentManager, EventPDPComponent::class.java.simpleName)
+            bottomSheetEventRedeem.show(
+                childFragmentManager,
+                EventPDPComponent::class.java.simpleName
+            )
         }
     }
 
@@ -270,7 +285,9 @@ class EventRedeemRevampFragment : BaseDaggerFragment(), EventRedeemRevampBottomS
     private fun updateSize() {
         if (viewModel.getCheckedIdsSize().isMoreThanZero()) {
             resetErrorInput()
-            binding?.tfRedeem?.textInputLayout?.editText?.setText(viewModel.getCheckedIdsSize().toString())
+            binding?.tfRedeem?.textInputLayout?.editText?.setText(
+                viewModel.getCheckedIdsSize().toString()
+            )
         } else {
             binding?.tfRedeem?.textInputLayout?.editText?.setText("")
         }
@@ -287,6 +304,15 @@ class EventRedeemRevampFragment : BaseDaggerFragment(), EventRedeemRevampBottomS
         context?.let { context ->
             binding?.tfRedeem?.isInputError = false
             binding?.tfRedeem?.setMessage("")
+        }
+    }
+
+    private fun showErrorToaster(errorMessage: String?) {
+        hideLoading()
+        view?.let { view ->
+            errorMessage?.let {
+                Toaster.build(view, errorMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+            }
         }
     }
 

@@ -6,27 +6,28 @@ import com.tokopedia.common.network.data.model.RequestType
 import com.tokopedia.common.network.data.model.RestRequest
 import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.entertainment.pdp.data.redeem.redeemable.EventRedeemedData
+import com.tokopedia.entertainment.pdp.data.redeem.redeemable.RedeemRequest
 import java.lang.reflect.Type
 import javax.inject.Inject
 
 class GetEventRedeemedUseCase @Inject
 constructor(private val repository: RestRepository) : RestRequestUseCase(repository) {
 
-    var eventRedeemIds: List<Int> = emptyList()
+    var redeemRequest: RedeemRequest = RedeemRequest()
     var url : String = ""
 
     fun setUrlRedeem(urlRedeem: String){
         url = urlRedeem
     }
 
-    fun setRedeemIds(listIds: List<Int>) {
-        eventRedeemIds = listIds
+    fun setRedeemIds(redeemRequest: RedeemRequest) {
+        this.redeemRequest = redeemRequest
     }
 
     override suspend fun executeOnBackground(): Map<Type, RestResponse?> {
         val restRequest = RestRequest.Builder(url, EventRedeemedData::class.java)
             .setRequestType(RequestType.POST)
-            .setBody(eventRedeemIds)
+            .setBody(redeemRequest)
             .build()
         restRequestList.clear()
         restRequestList.add(restRequest)
