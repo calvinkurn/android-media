@@ -46,7 +46,6 @@ class SellerHomeActivityViewModel @Inject constructor(
         private const val SOURCE = "stuart_seller_home"
 
         private const val CAPABILITY_WEAR_APP = "verify_remote_tokopedia_wear_app"
-        private const val TOKOPEDIA_MARKET_WEAR_APP = "market://details?id=com.spotify.music"
     }
 
     private val _notifications = MutableLiveData<Result<NotificationUiModel>>()
@@ -151,14 +150,10 @@ class SellerHomeActivityViewModel @Inject constructor(
         }
     }
 
-    private suspend fun findAllWearDevices(): MutableList<Node>? {
-        return nodeClient.connectedNodes.await()
-    }
-
     fun checkIfWearHasCompanionApp() {
         launch {
-            nodeClient.connectedNodes.await().let { connectedNodes ->
-                connectedNodes?.firstOrNull { it.isNearby }?.let {
+            nodeClient.connectedNodes.await()?.let { connectedNodes ->
+                connectedNodes.firstOrNull { it.isNearby }?.let {
                     try {
                         val capabilityInfo = capabilityClient
                             .getCapability(CAPABILITY_WEAR_APP, CapabilityClient.FILTER_ALL)
@@ -183,13 +178,9 @@ class SellerHomeActivityViewModel @Inject constructor(
         }
     }
 
-    fun launchMarket() {
-        val intent = Intent(Intent.ACTION_VIEW)
-            .addCategory(Intent.CATEGORY_BROWSABLE)
-            .setData(Uri.parse(TOKOPEDIA_MARKET_WEAR_APP))
-
+    fun launchMarket(marketIntent: Intent) {
         launch {
-            startRemoteActivity(remoteActivityHelper, intent)
+            startRemoteActivity(remoteActivityHelper, marketIntent)
         }
     }
 
