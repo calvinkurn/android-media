@@ -27,11 +27,10 @@ import kotlin.coroutines.CoroutineContext
 class TokoNowProductCardCarouselView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null
-): BaseCustomView(context, attrs),
+) : BaseCustomView(context, attrs),
     TokoNowProductCardCarouselItemViewHolder.TokoNowCarouselProductCardItemListener,
     TokoNowSeeMoreCardCarouselViewHolder.TokoNowCarouselProductCardSeeMoreListener,
-    CoroutineScope
-{
+    CoroutineScope {
 
     private val adapter: TokoNowProductCardCarouselAdapter by lazy {
         TokoNowProductCardCarouselAdapter(
@@ -65,6 +64,9 @@ class TokoNowProductCardCarouselView @JvmOverloads constructor(
             root.addItemDecoration(ProductCardCarouselDecoration(context))
             root.itemAnimator = null
         }
+
+        binding.root.layoutManager = layoutManager
+        binding.root.adapter = adapter
     }
 
     override val coroutineContext: CoroutineContext = SupervisorJob() + Dispatchers.Main
@@ -151,8 +153,6 @@ class TokoNowProductCardCarouselView @JvmOverloads constructor(
         items: List<Visitable<*>>,
         seeMoreModel: TokoNowSeeMoreCardCarouselUiModel? = null
     ) {
-        binding.root.layoutManager = layoutManager
-        binding.root.adapter = adapter
         if (seeMoreModel != null && seeMoreModel.appLink.isNotBlank()) {
             val newItems = items.toMutableList()
             newItems.add(seeMoreModel)
@@ -187,12 +187,12 @@ class TokoNowProductCardCarouselView @JvmOverloads constructor(
         fun onProductCardAnimationFinished(
             position: Int,
             product: TokoNowProductCardCarouselItemUiModel,
-            quantity: Int,
+            quantity: Int
         )
         fun onProductCardQuantityChanged(
             position: Int,
             product: TokoNowProductCardCarouselItemUiModel,
-            quantity: Int,
+            quantity: Int
         )
         fun onProductCardAddVariantClicked(
             position: Int,

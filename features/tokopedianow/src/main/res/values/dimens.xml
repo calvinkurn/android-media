@@ -34,4 +34,5 @@
     <dimen name="tokopedianow_product_card_margin_end">8dp</dimen>
     <dimen name="tokopedianow_product_card_margin_end_corner">16dp</dimen>
     <dimen name="tokopedianow_product_card_margin_start_corner">16dp</dimen>
+    <dimen name="tokopedianow_product_card_add_button_size">46dp</dimen>
 </resources>
