@@ -32,11 +32,6 @@ class PlayShortsIdleManager @Inject constructor(
         }
     }
 
-    /**
-     * TODO: forceStandByMode should be called when:
-     * 1. showMainComponent(false)
-     * 2. bottomsheet is shown
-     */
     fun forceStandByMode() {
         clear()
         emitState(State.StandBy)
