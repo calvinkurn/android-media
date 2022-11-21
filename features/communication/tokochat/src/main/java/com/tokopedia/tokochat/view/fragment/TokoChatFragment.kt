@@ -196,7 +196,6 @@ class TokoChatFragment :
         observeTokoChatBackground()
         observeChatRoomTicker()
         observeChannelDetails()
-        observerTyping()
         observeMemberLeft()
         observeLoadOrderTransactionStatus()
         observeUpdateOrderTransactionStatus()
@@ -690,6 +689,7 @@ class TokoChatFragment :
             if (firstTimeOpen) {
                 firstTimeOpen = false
                 viewModel.loadChatRoomTicker()
+                observerTyping()
             }
 
             // It's from load more func, if recyclerview is loading more
