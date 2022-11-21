@@ -148,11 +148,7 @@ class PlayShortsActivity : BaseActivity() {
     }
 
     private fun setupBinding() {
-        binding = ActivityPlayShortsBinding.inflate(
-            LayoutInflater.from(this),
-            null,
-            false
-        )
+        binding = ActivityPlayShortsBinding.inflate(layoutInflater)
         setContentView(binding.root)
     }
 
