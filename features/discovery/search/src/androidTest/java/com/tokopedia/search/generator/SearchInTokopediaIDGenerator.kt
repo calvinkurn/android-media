@@ -6,7 +6,7 @@ import androidx.test.espresso.matcher.ViewMatchers
 import com.tokopedia.search.generator.utils.IDGeneratorHelper
 import org.junit.Test
 
-class SearchInTokopediaIDGenerator: BaseIDGenerator() {
+internal class SearchInTokopediaIDGenerator: BaseIDGenerator() {
     override val queryParam: String = "?q=hairdryer&srp_page_id=383958&navsource=tokocabang&srp_page_titleDilayani+Tokopedia&srp-component_id=02.01.00.00"
     override val mockModel: Int = com.tokopedia.search.test.R.raw.search_product_last_page_response
 

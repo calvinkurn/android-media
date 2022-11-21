@@ -7,7 +7,7 @@ import com.tokopedia.search.QUERY_PARAMS_WITH_KEYWORD
 import com.tokopedia.search.generator.utils.IDGeneratorHelper
 import org.junit.Test
 
-class ViolationIDGenerator: BaseIDGenerator() {
+internal class ViolationIDGenerator: BaseIDGenerator() {
     override val queryParam: String = QUERY_PARAMS_WITH_KEYWORD
     override val mockModel: Int = com.tokopedia.search.test.R.raw.search_product_violation_response
 
