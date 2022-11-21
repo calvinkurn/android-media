@@ -45,11 +45,11 @@ class AddProductActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.smvc_activity_add_product)
 
+        val pageMode = pageMode ?: return
+        val voucherConfiguration = voucherConfiguration ?: return
+
         supportFragmentManager.beginTransaction()
-            .replace(
-                R.id.container,
-                AddProductFragment.newInstance(pageMode ?: return, voucherConfiguration ?: return)
-            )
+            .replace(R.id.container, AddProductFragment.newInstance(pageMode, voucherConfiguration))
             .commit()
     }
 

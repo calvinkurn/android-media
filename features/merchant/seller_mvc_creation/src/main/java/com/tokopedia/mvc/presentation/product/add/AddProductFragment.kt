@@ -39,13 +39,10 @@ import com.tokopedia.mvc.di.component.DaggerMerchantVoucherCreationComponent
 import com.tokopedia.mvc.domain.entity.Product
 import com.tokopedia.mvc.domain.entity.ProductCategoryOption
 import com.tokopedia.mvc.domain.entity.ProductSortOptions
-import com.tokopedia.mvc.domain.entity.SelectedProduct
 import com.tokopedia.mvc.domain.entity.ShopShowcase
 import com.tokopedia.mvc.domain.entity.VoucherConfiguration
 import com.tokopedia.mvc.domain.entity.Warehouse
 import com.tokopedia.mvc.domain.entity.enums.PageMode
-import com.tokopedia.mvc.domain.entity.enums.PromoType
-import com.tokopedia.mvc.domain.entity.enums.VoucherAction
 import com.tokopedia.mvc.domain.entity.enums.WarehouseType
 import com.tokopedia.mvc.presentation.product.add.adapter.CategoryFilterAdapter
 import com.tokopedia.mvc.presentation.product.add.adapter.ProductDelegateAdapter
@@ -141,11 +138,7 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
         observeUiState()
 
         viewModel.processEvent(
-            AddProductEvent.FetchRequiredData(
-                VoucherAction.CREATE,
-                PromoType.CASHBACK,
-                voucherConfiguration ?: return
-            )
+            AddProductEvent.FetchRequiredData(pageMode ?: return, voucherConfiguration ?: return)
         )
     }
 
@@ -249,8 +242,12 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
             is AddProductEffect.ShowVariantBottomSheet -> {
                 displayVariantBottomSheet(effect.selectedParentProduct)
             }
-            is AddProductEffect.ConfirmAddProduct -> {
-                ProductListActivity.start(activity ?: return, effect.selectedProducts)
+            is AddProductEffect.ProductConfirmed -> {
+                ProductListActivity.start(
+                    activity ?: return,
+                    effect.voucherConfiguration,
+                    effect.selectedProducts
+                )
             }
             is AddProductEffect.AddNewProducts -> {
                 sendSelectedProductsToProductListActivity(effect.selectedProducts)
@@ -625,13 +622,6 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
 
     private fun CompoundButton.isClickTriggeredByUserInteraction() : Boolean {
         return isPressed
-    }
-
-    private fun sendSelectedProductsToCallerActivity(selectedProducts: List<SelectedProduct>) {
-        val returnIntent = Intent()
-        returnIntent.putParcelableArrayListExtra(BundleConstant.BUNDLE_KEY_SELECTED_PRODUCTS, ArrayList(selectedProducts))
-        activity?.setResult(Activity.RESULT_OK, returnIntent)
-        activity?.finish()
     }
 
     private fun sendSelectedProductsToProductListActivity(selectedProducts: List<Product>) {

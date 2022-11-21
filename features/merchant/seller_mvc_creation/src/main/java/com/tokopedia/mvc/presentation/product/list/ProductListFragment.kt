@@ -74,13 +74,21 @@ class ProductListFragment : BaseDaggerFragment() {
         private const val REQUEST_CODE_ADD_NEW_PRODUCT = 101
 
         @JvmStatic
-        fun newInstance(pageMode: PageMode, selectedProducts: List<SelectedProduct>): ProductListFragment {
+        fun newInstance(
+            pageMode: PageMode,
+            voucherConfiguration: VoucherConfiguration,
+            selectedProducts: List<SelectedProduct>
+        ): ProductListFragment {
             return ProductListFragment().apply {
                 arguments = Bundle().apply {
                     putParcelable(BundleConstant.BUNDLE_KEY_PAGE_MODE, pageMode)
                     putParcelableArrayList(
                         BundleConstant.BUNDLE_KEY_SELECTED_PRODUCT_IDS,
                         ArrayList(selectedProducts)
+                    )
+                    putParcelable(
+                        BundleConstant.BUNDLE_KEY_VOUCHER_CONFIGURATION,
+                        voucherConfiguration
                     )
                 }
             }
@@ -89,6 +97,7 @@ class ProductListFragment : BaseDaggerFragment() {
 
     private val pageMode by lazy { arguments?.getParcelable(BundleConstant.BUNDLE_KEY_PAGE_MODE) as? PageMode }
     private val selectedParentProducts by lazy { arguments?.getParcelableArrayList<SelectedProduct>(BundleConstant.BUNDLE_KEY_SELECTED_PRODUCT_IDS) }
+    private val voucherConfiguration by lazy { arguments?.getParcelable(BundleConstant.BUNDLE_KEY_VOUCHER_CONFIGURATION) as? VoucherConfiguration }
     private var binding by autoClearedNullable<SmvcFragmentProductListBinding>()
 
     private val productAdapter by lazy {
@@ -163,20 +172,9 @@ class ProductListFragment : BaseDaggerFragment() {
     private fun setupClickListener() {
         binding?.tpgCtaAddProduct?.setOnClickListener {
             if (pageMode == PageMode.EDIT) {
-                val voucherConfiguration = VoucherConfiguration(
-                    benefitIdr = 25_000,
-                    benefitMax = 500_000,
-                    benefitPercent = 0,
-                    benefitType = BenefitType.NOMINAL,
-                    promoType = PromoType.FREE_SHIPPING,
-                    isVoucherProduct = true,
-                    minPurchase = 50_000,
-                    productIds = emptyList()
-                )
-
                 val intent = AddProductActivity.buildEditModeIntent(
                     activity ?: return@setOnClickListener,
-                    voucherConfiguration
+                    voucherConfiguration ?: return@setOnClickListener
                 )
                 startActivityForResult(intent, REQUEST_CODE_ADD_NEW_PRODUCT)
             }
@@ -554,7 +552,7 @@ class ProductListFragment : BaseDaggerFragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
-        if(requestCode == REQUEST_CODE_ADD_NEW_PRODUCT) {
+        if (requestCode == REQUEST_CODE_ADD_NEW_PRODUCT) {
             if (resultCode == Activity.RESULT_OK) {
                 val newlySelectedProducts = data?.getParcelableArrayListExtra<Product>(BundleConstant.BUNDLE_KEY_SELECTED_PRODUCTS).orEmpty()
                 viewModel.processEvent(ProductListEvent.AddNewProductToSelection(newlySelectedProducts))

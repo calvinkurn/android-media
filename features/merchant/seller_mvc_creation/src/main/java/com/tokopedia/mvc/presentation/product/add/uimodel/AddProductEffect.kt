@@ -5,6 +5,7 @@ import com.tokopedia.mvc.domain.entity.ProductCategoryOption
 import com.tokopedia.mvc.domain.entity.ProductSortOptions
 import com.tokopedia.mvc.domain.entity.SelectedProduct
 import com.tokopedia.mvc.domain.entity.ShopShowcase
+import com.tokopedia.mvc.domain.entity.VoucherConfiguration
 import com.tokopedia.mvc.domain.entity.Warehouse
 
 sealed class AddProductEffect {
@@ -35,9 +36,10 @@ sealed class AddProductEffect {
 
     data class ShowVariantBottomSheet(val selectedParentProduct: Product) : AddProductEffect()
 
-    data class ConfirmAddProduct(
+    data class ProductConfirmed(
         val selectedProducts: List<SelectedProduct>,
-        val selectedParentProductImageUrls: List<String>
+        val selectedParentProductImageUrls: List<String>,
+        val voucherConfiguration: VoucherConfiguration
     ) : AddProductEffect()
 
     data class AddNewProducts(

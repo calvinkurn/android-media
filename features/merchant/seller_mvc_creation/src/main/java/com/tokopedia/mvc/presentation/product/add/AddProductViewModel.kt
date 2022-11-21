@@ -13,7 +13,7 @@ import com.tokopedia.mvc.domain.entity.ShopShowcase
 import com.tokopedia.mvc.domain.entity.VoucherConfiguration
 import com.tokopedia.mvc.domain.entity.VoucherValidationResult
 import com.tokopedia.mvc.domain.entity.Warehouse
-import com.tokopedia.mvc.domain.entity.enums.PromoType
+import com.tokopedia.mvc.domain.entity.enums.PageMode
 import com.tokopedia.mvc.domain.entity.enums.VoucherAction
 import com.tokopedia.mvc.domain.entity.enums.WarehouseType
 import com.tokopedia.mvc.domain.usecase.GetInitiateVoucherPageUseCase
@@ -59,7 +59,7 @@ class AddProductViewModel @Inject constructor(
         when(event) {
             is AddProductEvent.FetchRequiredData -> {
                 _uiState.update { it.copy(voucherConfiguration = event.voucherConfiguration) }
-                getProductsAndProductsMetadata(event.action, event.promoType)
+                getProductsAndProductsMetadata(event.pageMode, event.voucherConfiguration)
                 getShopShowcases()
             }
             is AddProductEvent.LoadPage -> handleLoadPage(event.page)
@@ -85,17 +85,16 @@ class AddProductViewModel @Inject constructor(
         }
     }
 
-    private fun getProductsAndProductsMetadata(
-        action: VoucherAction,
-        promoType: PromoType
-    ) {
+    private fun getProductsAndProductsMetadata(pageMode: PageMode, voucherConfiguration: VoucherConfiguration) {
         launchCatchError(
             dispatchers.io,
             block = {
+                val action = if (pageMode == PageMode.CREATE) VoucherAction.CREATE else VoucherAction.UPDATE
+
                 val warehouseParam = GetShopWarehouseLocationUseCase.Param()
                 val sellerWarehousesDeferred = async { getShopWarehouseLocationUseCase.execute(warehouseParam) }
 
-                val metadataParam = GetInitiateVoucherPageUseCase.Param(action, promoType, isVoucherProduct = true)
+                val metadataParam = GetInitiateVoucherPageUseCase.Param(action, voucherConfiguration.promoType, isVoucherProduct = true)
                 val metadataDeferred = async { getInitiateVoucherPageUseCase.execute(metadataParam) }
 
                 val sellerWarehouses = sellerWarehousesDeferred.await()
@@ -521,7 +520,13 @@ class AddProductViewModel @Inject constructor(
                 .map { it.picture }
 
 
-            _uiEffect.tryEmit(AddProductEffect.ConfirmAddProduct(selectedProducts, topSellingProductImageUrls))
+            _uiEffect.tryEmit(
+                AddProductEffect.ProductConfirmed(
+                    selectedProducts,
+                    topSellingProductImageUrls,
+                    currentState.voucherConfiguration
+                )
+            )
         }
     }
 
