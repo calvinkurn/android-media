@@ -15,6 +15,8 @@ import com.tokopedia.content.common.onboarding.view.fragment.UGCOnboardingParent
 import com.tokopedia.content.common.types.ContentCommonUserType
 import com.tokopedia.content.common.ui.bottomsheet.SellerTncBottomSheet
 import com.tokopedia.content.common.ui.model.TermsAndConditionUiModel
+import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.picker.common.MediaPicker
 import com.tokopedia.picker.common.PageSource
 import com.tokopedia.picker.common.types.ModeType
@@ -25,11 +27,13 @@ import com.tokopedia.play.broadcaster.shorts.di.DaggerPlayShortsComponent
 import com.tokopedia.play.broadcaster.shorts.di.PlayShortsModule
 import com.tokopedia.play.broadcaster.shorts.ui.model.action.PlayShortsAction
 import com.tokopedia.play.broadcaster.shorts.ui.model.event.PlayShortsBottomSheet
+import com.tokopedia.play.broadcaster.shorts.ui.model.event.PlayShortsOneTimeEvent
 import com.tokopedia.play.broadcaster.shorts.ui.model.state.PlayShortsUiState
 import com.tokopedia.play.broadcaster.shorts.view.bottomsheet.ShortsAccountNotEligibleBottomSheet
 import com.tokopedia.play.broadcaster.shorts.view.fragment.PlayShortsPreparationFragment
 import com.tokopedia.play.broadcaster.shorts.view.fragment.base.PlayShortsBaseFragment
 import com.tokopedia.play.broadcaster.shorts.view.viewmodel.PlayShortsViewModel
+import com.tokopedia.play.broadcaster.util.extension.channelNotFound
 import com.tokopedia.play_common.util.extension.withCache
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
@@ -58,6 +62,7 @@ class PlayShortsActivity : BaseActivity() {
         super.onCreate(savedInstanceState)
 
         setupBinding()
+        setupView()
         setupObserver()
 
         viewModel.submitAction(PlayShortsAction.PreparePage(getPreferredAccountType()))
@@ -151,6 +156,13 @@ class PlayShortsActivity : BaseActivity() {
         setContentView(binding.root)
     }
 
+    private fun setupView() {
+        binding.globalError.apply {
+            setType(GlobalError.PAGE_NOT_FOUND)
+            setActionClickListener { finish() }
+        }
+    }
+
     private fun setupObserver() {
         lifecycleScope.launchWhenStarted {
             viewModel.uiState.withCache().collectLatest {
@@ -161,6 +173,7 @@ class PlayShortsActivity : BaseActivity() {
         lifecycleScope.launchWhenStarted {
             viewModel.uiEvent.collect {
                 renderBottomSheet(it.bottomSheet)
+                renderOneTimeEvent(it.oneTimeEvent)
             }
         }
     }
@@ -195,6 +208,16 @@ class PlayShortsActivity : BaseActivity() {
             }
             is PlayShortsBottomSheet.SellerNotEligible -> {
                 showSellerNotEligibleBottomSheet()
+            }
+            else -> {}
+        }
+    }
+
+    private fun renderOneTimeEvent(oneTimeEvent: PlayShortsOneTimeEvent) {
+        when(oneTimeEvent) {
+            is PlayShortsOneTimeEvent.ErrorPreparingPage -> {
+                binding.loader.visibility = View.GONE
+                binding.globalError.visibility = View.VISIBLE
             }
             else -> {}
         }

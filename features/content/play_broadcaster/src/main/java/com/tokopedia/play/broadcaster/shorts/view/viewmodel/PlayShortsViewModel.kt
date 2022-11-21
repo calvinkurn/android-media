@@ -14,6 +14,7 @@ import com.tokopedia.play.broadcaster.shorts.ui.model.PlayShortsConfigUiModel
 import com.tokopedia.play.broadcaster.shorts.ui.model.PlayShortsMediaUiModel
 import com.tokopedia.play.broadcaster.shorts.ui.model.action.PlayShortsAction
 import com.tokopedia.play.broadcaster.shorts.ui.model.event.PlayShortsBottomSheet
+import com.tokopedia.play.broadcaster.shorts.ui.model.event.PlayShortsOneTimeEvent
 import com.tokopedia.play.broadcaster.shorts.ui.model.event.PlayShortsToaster
 import com.tokopedia.play.broadcaster.shorts.ui.model.event.PlayShortsUiEvent
 import com.tokopedia.play.broadcaster.shorts.ui.model.state.PlayShortsCoverFormUiState
@@ -190,7 +191,9 @@ class PlayShortsViewModel @Inject constructor(
             setupConfigurationIfEligible(bestEligibleAccount)
 
         }) {
-            /** TODO: handle global page error like the one in broadcaster */
+            _uiEvent.oneTimeUpdate {
+                it.copy(oneTimeEvent = PlayShortsOneTimeEvent.ErrorPreparingPage)
+            }
         }
     }
 

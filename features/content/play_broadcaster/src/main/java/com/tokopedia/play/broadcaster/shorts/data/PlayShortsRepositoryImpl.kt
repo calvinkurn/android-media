@@ -27,6 +27,8 @@ class PlayShortsRepositoryImpl @Inject constructor(
 ) : PlayShortsRepository {
 
     override suspend fun getAccountList(): List<ContentAccountUiModel> = withContext(dispatchers.io) {
+        delay(500)
+
         listOf(
             ContentAccountUiModel(
                 id = "123",
