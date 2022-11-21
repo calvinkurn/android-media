@@ -63,7 +63,8 @@ interface PlayBroadcastMapper {
         coverUrl: String,
         date: String,
         duration: String,
-        isEligiblePostVideo: Boolean
+        isEligiblePostVideo: Boolean,
+        author: ContentAccountUiModel,
     ): ChannelSummaryUiModel
 
     fun mapIncomingChat(chat: Chat): PlayChatUiModel
