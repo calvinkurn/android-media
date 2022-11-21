@@ -10,7 +10,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:paddingBottom="@dimen/spacing_lvl4">
+        android:paddingBottom="16dp">
 
         <!--Start of Content List-->
 
@@ -28,7 +28,7 @@
             android:id="@+id/number_content_first"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_lvl5"
+            android:layout_marginTop="24dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/title_gifting"
             app:notificationColor="color_secondary"
@@ -39,8 +39,8 @@
             android:id="@+id/tv_content_first"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/spacing_lvl4"
-            android:layout_marginTop="@dimen/spacing_lvl4"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
             android:paddingTop="-10dp"
             android:text="@string/label_gifting_description_first"
             android:textColor="@color/Unify_N700_96"
@@ -53,7 +53,7 @@
             android:id="@+id/number_content_second"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_lvl5"
+            android:layout_marginTop="24dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_content_first"
             app:notificationColor="color_secondary"
@@ -64,7 +64,7 @@
             android:id="@+id/tv_content_second"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/spacing_lvl4"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="17dp"
             android:text="@string/label_gifting_description_second"
             android:textColor="@color/Unify_N700_96"
@@ -77,7 +77,7 @@
             android:id="@+id/number_content_third"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_lvl5"
+            android:layout_marginTop="24dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tv_content_second"
             app:notificationColor="color_secondary"
@@ -88,8 +88,8 @@
             android:id="@+id/tv_content_third"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/spacing_lvl4"
-            android:layout_marginTop="@dimen/spacing_lvl4"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
             android:text="@string/label_gifting_description_third"
             android:textColor="@color/Unify_N700_96"
             app:layout_constraintEnd_toEndOf="parent"
@@ -104,7 +104,7 @@
             android:id="@+id/title_description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_lvl5"
+            android:layout_marginTop="24dp"
             android:text="@string/label_gifting_description_example"
             android:textColor="@color/Unify_N700"
             app:layout_constraintStart_toStartOf="parent"
@@ -114,7 +114,7 @@
         <com.tokopedia.unifycomponents.CardUnify
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_lvl4"
+            android:layout_marginTop="16dp"
             app:card_type="border_disabled"
             app:layout_constraintTop_toBottomOf="@+id/title_description">
 
@@ -126,7 +126,7 @@
                 <com.tokopedia.unifyprinciples.Typography
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_margin="@dimen/spacing_lvl3"
+                    android:layout_margin="8dp"
                     android:text="@string/label_gifting_description_template"
                     android:textColor="@color/Unify_N700_96"
                     app:layout_constraintEnd_toEndOf="parent"
@@ -138,9 +138,9 @@
                     android:id="@+id/button_copy_template"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="@dimen/spacing_lvl3"
-                    android:layout_marginEnd="@dimen/spacing_lvl3"
-                    android:layout_marginBottom="@dimen/spacing_lvl4"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginBottom="16dp"
                     android:text="@string/action_copy_template" />
 
             </LinearLayout>

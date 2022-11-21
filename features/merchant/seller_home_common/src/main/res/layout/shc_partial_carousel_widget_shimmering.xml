@@ -4,15 +4,15 @@
     android:id="@+id/bannerImagesShimmering"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingStart="@dimen/layout_lvl1"
-    android:paddingLeft="@dimen/layout_lvl1"
-    android:paddingEnd="@dimen/layout_lvl1"
-    android:paddingRight="@dimen/layout_lvl1">
+    android:paddingStart="8dp"
+    android:paddingLeft="8dp"
+    android:paddingEnd="8dp"
+    android:paddingRight="8dp">
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/shimmering_title"
         android:layout_width="156dp"
-        android:layout_height="@dimen/layout_lvl2"
+        android:layout_height="16dp"
         app:loader_corner_radius="5dp"
         app:loader_type="rect"
         app:layout_constraintStart_toStartOf="parent"
@@ -20,9 +20,9 @@
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/shimmering_banner"
-        android:layout_width="@dimen/layout_lvl0"
+        android:layout_width="0dp"
         android:layout_height="@dimen/shc_dimen_180dp"
-        android:layout_marginTop="@dimen/layout_lvl2"
+        android:layout_marginTop="16dp"
         app:loader_corner_radius="5dp"
         app:loader_type="rect"
         app:layout_constraintEnd_toEndOf="parent"
@@ -31,10 +31,10 @@
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/shimmering_load_more"
-        android:layout_width="@dimen/layout_lvl7"
-        android:layout_height="@dimen/layout_lvl2"
-        android:layout_marginTop="@dimen/layout_lvl1"
-        android:textSize="@dimen/fontSize_lvl3"
+        android:layout_width="64dp"
+        android:layout_height="16dp"
+        android:layout_marginTop="8dp"
+        android:textSize="14sp"
         app:loader_corner_radius="5dp"
         app:loader_type="rect"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -43,10 +43,10 @@
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/shimmering_dots"
-        android:layout_width="@dimen/layout_lvl7"
-        android:layout_height="@dimen/layout_lvl2"
-        android:layout_marginTop="@dimen/layout_lvl1"
-        android:textSize="@dimen/fontSize_lvl3"
+        android:layout_width="64dp"
+        android:layout_height="16dp"
+        android:layout_marginTop="8dp"
+        android:textSize="14sp"
         app:loader_corner_radius="5dp"
         app:loader_type="rect"
         app:layout_constraintBottom_toBottomOf="parent"

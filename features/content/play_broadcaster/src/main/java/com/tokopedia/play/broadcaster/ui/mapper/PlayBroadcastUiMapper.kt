@@ -200,13 +200,15 @@ class PlayBroadcastUiMapper @Inject constructor(
         coverUrl: String,
         date: String,
         duration: String,
-        isEligiblePostVideo: Boolean
+        isEligiblePostVideo: Boolean,
+        author: ContentAccountUiModel,
     ) = ChannelSummaryUiModel(
         title = title,
         coverUrl = coverUrl,
         date = date,
         duration = duration,
         isEligiblePostVideo = isEligiblePostVideo,
+        author = author,
     )
 
     override fun mapIncomingChat(chat: Chat): PlayChatUiModel = PlayChatUiModel(

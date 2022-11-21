@@ -22,10 +22,6 @@ android {
         exclude 'META-INF/**'
     }
 
-    kotlinOptions {
-        jvmTarget = "1.8"
-    }
-
     defaultConfig {
         multiDexEnabled true
         if (project.hasProperty("benchmark")) {
@@ -33,6 +29,9 @@ android {
         } else {
             testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
         }
+    }
+    kotlinOptions {
+        jvmTarget = "1.8"
     }
 }
 

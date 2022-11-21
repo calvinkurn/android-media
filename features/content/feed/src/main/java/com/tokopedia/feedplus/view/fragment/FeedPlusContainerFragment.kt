@@ -398,7 +398,10 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
 
     override fun setUserVisibleHint(isVisibleToUser: Boolean) {
         super.setUserVisibleHint(isVisibleToUser)
-        if (!isVisibleToUser) hideAllFab()
+        if (!isVisibleToUser) {
+            hideAllFab()
+            coachMarkHelper.dismissAllCoachMark()
+        }
     }
 
     override fun onHiddenChanged(hidden: Boolean) {
@@ -411,10 +414,10 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     @JvmOverloads
     fun goToExplore(shouldResetCategory: Boolean = false) {
         if (canGoToExplore()) {
-            viewPager?.currentItem = pagerAdapter.contentExploreIndex
+            viewPager?.currentItem = pagerAdapter.getContentExploreIndex()
 
             if (shouldResetCategory) {
-                pagerAdapter.contentExplore?.onCategoryReset()
+                pagerAdapter.getContentExplore()?.onCategoryReset()
             }
         }
     }
@@ -616,9 +619,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
                 feedFloatingButton.show()
                 showCreatePostOnBoarding()
             } else feedFloatingButton.hide()
-        } catch (e: Exception) {
-            feedFloatingButton.hide()
-        }
+        } catch (e: Exception) { }
     }
 
     private fun createLiveFab(): FloatingButtonItem {
@@ -725,7 +726,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     }
 
     private fun canGoToExplore(): Boolean {
-        return pagerAdapter.isContextExploreExist
+        return pagerAdapter.isContextExploreExist()
     }
 
     fun hideAllFab() {

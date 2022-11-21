@@ -500,7 +500,8 @@ object HomeLayoutMapper {
         productId: String,
         quantity: Int
     ) {
-        firstOrNull { it.layout is HomeLeftCarouselAtcUiModel }?.run {
+        filter { it.layout is HomeLeftCarouselAtcUiModel }.forEach { homeLayoutItemUiModel ->
+            val layout = homeLayoutItemUiModel.layout
             val layoutUiModel = layout as HomeLeftCarouselAtcUiModel
             val productList = layoutUiModel.productList.toMutableList()
             val productUiModel = productList.firstOrNull {
@@ -526,7 +527,7 @@ object HomeLayoutMapper {
                     (productUiModel as? HomeLeftCarouselAtcProductCardUiModel)?.copy(productCardModel = it)?.apply {
                         productList[index] = this
                     }
-                    copy(layout = layoutUiModel.copy(productList = productList))
+                    homeLayoutItemUiModel.copy(layout = layoutUiModel.copy(productList = productList))
                 }
             }
         }
