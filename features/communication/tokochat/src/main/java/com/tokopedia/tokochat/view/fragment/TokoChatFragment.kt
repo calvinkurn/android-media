@@ -152,7 +152,7 @@ class TokoChatFragment :
         removeObservers(viewModel.isChatConnected)
         removeObservers(viewModel.channelDetail)
         removeObservers(viewModel.error)
-        viewModel.connectionCheckJob?.cancel()
+        viewModel.cancelCheckConnection()
         super.onDestroy()
     }
 
@@ -784,29 +784,26 @@ class TokoChatFragment :
         retryIcon: ImageUnify?,
         isFromRetry: Boolean
     ) {
-        context?.let {
-            viewModel.getImageWithId(
-                it,
-                imageId = element.imageId,
-                channelId = channelId,
-                onImageReady = { imageFile ->
-                    onImageReadyToLoad(imageView, element, loader, retryIcon, imageFile)
-                },
-                onError = {
-                    activity?.runOnUiThread {
-                        loader?.hide()
-                        retryIcon?.show()
-                        element.updateShouldRetry(true)
-                    }
-                },
-                onDirectLoad = {
-                    onDirectLoadImage(element, loader, retryIcon)
-                    impressOnImageAttachment(element, imageView)
-                },
-                imageView = imageView,
-                isFromRetry = isFromRetry
-            )
-        }
+        viewModel.getImageWithId(
+            imageId = element.imageId,
+            channelId = channelId,
+            onImageReady = { imageFile ->
+                onImageReadyToLoad(imageView, element, loader, retryIcon, imageFile)
+            },
+            onError = {
+                activity?.runOnUiThread {
+                    loader?.hide()
+                    retryIcon?.show()
+                    element.updateShouldRetry(true)
+                }
+            },
+            onDirectLoad = {
+                onDirectLoadImage(element, loader, retryIcon)
+                impressOnImageAttachment(element, imageView)
+            },
+            imageView = imageView,
+            isFromRetry = isFromRetry
+        )
     }
 
     override fun onCloseMaskingPhoneNumberBottomSheet() {

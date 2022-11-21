@@ -1,7 +1,7 @@
 package com.tokopedia.tokochat.view.viewmodel
 
-import android.content.Context
 import android.widget.ImageView
+import androidx.annotation.VisibleForTesting
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
@@ -28,14 +28,13 @@ import com.tokopedia.tokochat.domain.usecase.TokoChatMarkAsReadUseCase
 import com.tokopedia.tokochat.domain.usecase.TokoChatOrderProgressUseCase
 import com.tokopedia.tokochat.domain.usecase.TokoChatRegistrationChannelUseCase
 import com.tokopedia.tokochat.domain.usecase.TokoChatSendMessageUseCase
-import com.tokopedia.tokochat.util.TokoChatViewUtil.downloadAndSaveByteArrayImage
-import com.tokopedia.tokochat.util.TokoChatViewUtil.getTokoChatPhotoPath
+import com.tokopedia.tokochat.util.TokoChatViewUtil
+import com.tokopedia.tokochat.util.TokoChatViewUtil.Companion.getTokoChatPhotoPath
 import com.tokopedia.tokochat_common.util.TokoChatValueUtil
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.currentCoroutineContext
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -48,7 +47,6 @@ import kotlinx.coroutines.flow.emptyFlow
 import kotlinx.coroutines.flow.flatMapLatest
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.flowOn
-import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
@@ -65,6 +63,7 @@ class TokoChatViewModel @Inject constructor(
     private val getTokoChatRoomTickerUseCase: GetTokoChatRoomTickerUseCase,
     private val getTokoChatOrderProgressUseCase: TokoChatOrderProgressUseCase,
     private val getImageUrlUseCase: TokoChatGetImageUseCase,
+    private val viewUtil: TokoChatViewUtil,
     private val dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main) {
 
@@ -98,8 +97,10 @@ class TokoChatViewModel @Inject constructor(
     val error: LiveData<Throwable>
         get() = _error
 
-    val orderStatusParamFlow = MutableSharedFlow<Pair<String, String>>(Int.ONE)
+    @VisibleForTesting
     var connectionCheckJob: Job? = null
+
+    val orderStatusParamFlow = MutableSharedFlow<Pair<String, String>>(Int.ONE)
 
     init {
         viewModelScope.launch {
@@ -231,15 +232,20 @@ class TokoChatViewModel @Inject constructor(
     }
 
     fun doCheckChatConnection() {
-        connectionCheckJob?.cancel()
+        cancelCheckConnection()
         connectionCheckJob = launchCatchError(context = dispatcher.io, block = {
-            while (currentCoroutineContext().isActive) {
+            while (true) {
                 delay(DELAY_UPDATE_ORDER_STATE)
                 _isChatConnected.postValue(chatChannelUseCase.isChatConnected())
             }
         }, onError = {
                 _isChatConnected.postValue(false)
             })
+    }
+
+    fun cancelCheckConnection() {
+        connectionCheckJob?.cancel()
+        connectionCheckJob = null
     }
 
     fun getTokoChatBackground() {
@@ -312,7 +318,6 @@ class TokoChatViewModel @Inject constructor(
     }
 
     fun getImageWithId(
-        context: Context,
         imageId: String,
         channelId: String,
         onImageReady: (File?) -> Unit,
@@ -329,16 +334,20 @@ class TokoChatViewModel @Inject constructor(
                 val imageUrlResponse = getImageUrlUseCase(
                     TokoChatGetImageUseCase.Param(imageId, channelId)
                 )
-                imageUrlResponse.data?.url?.let {
-                    downloadAndSaveByteArrayImage(
-                        context,
-                        generateImageName(imageId, channelId),
-                        getImageUrlUseCase.getImage(it).byteStream(),
-                        onImageReady,
-                        onError,
-                        onDirectLoad,
-                        imageView
-                    )
+                if (imageUrlResponse.success == true) {
+                    imageUrlResponse.data?.url?.let {
+                        viewUtil.downloadAndSaveByteArrayImage(
+                            generateImageName(imageId, channelId),
+                            getImageUrlUseCase.getImage(it).byteStream(),
+                            onImageReady,
+                            onError,
+                            onDirectLoad,
+                            imageView
+                        )
+                    }
+                } else {
+                    _error.postValue(Throwable(imageUrlResponse.error?.firstOrNull()?.message))
+                    onError()
                 }
             } else { // Else use the downloaded image
                 onImageReady(cachedImage)
