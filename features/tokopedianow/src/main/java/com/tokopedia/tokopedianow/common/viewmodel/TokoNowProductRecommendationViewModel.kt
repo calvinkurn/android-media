@@ -38,6 +38,10 @@ class TokoNowProductRecommendationViewModel @Inject constructor(
     private val deleteCartUseCase: DeleteCartUseCase,
     dispatchers: CoroutineDispatchers
 ): BaseViewModel(dispatchers.io) {
+    companion object {
+        private const val NO_ORDER_QUANTITY = 0
+        private const val NON_VARIANT_PRODUCT = "0"
+    }
 
     private val _productRecommendation = MutableLiveData<Result<TokoNowProductRecommendationViewUiModel>>()
     private val _miniCartAdd = MutableLiveData<Result<AddToCartDataModel>>()
@@ -46,6 +50,7 @@ class TokoNowProductRecommendationViewModel @Inject constructor(
     private val _productModelsUpdate = MutableLiveData<List<Visitable<*>>>()
 
     private var productModels : MutableList<Visitable<*>> = mutableListOf()
+    private var isProductAnimating: Boolean = false
     private var mMiniCartSimplifiedData: MiniCartSimplifiedData? = null
     private var job: Job? = null
 
@@ -155,7 +160,7 @@ class TokoNowProductRecommendationViewModel @Inject constructor(
             val data = Pair(productId, it.data.message.joinToString(separator = ", "))
             updateProductQuantity(
                 productId = productId,
-                quantity = 0
+                quantity = NO_ORDER_QUANTITY
             )
             _miniCartRemove.postValue(Success(data))
         }, {
@@ -181,7 +186,7 @@ class TokoNowProductRecommendationViewModel @Inject constructor(
         productModels.filterIsInstance<TokoNowProductCardCarouselItemUiModel>().forEachIndexed { index, model ->
             productModels[index] = model.copy(
                 productCardModel = model.productCardModel.copy(
-                    orderQuantity = 0
+                    orderQuantity = NO_ORDER_QUANTITY
                 )
             )
         }
@@ -207,12 +212,12 @@ class TokoNowProductRecommendationViewModel @Inject constructor(
         }
         val unavailableProducts = productModels.filter { it is TokoNowProductCardCarouselItemUiModel && it.productCardModel.productId !in cartProductIds }
         unavailableProducts.forEach { model ->
-            if ((model as TokoNowProductCardCarouselItemUiModel).parentId != "0") {
+            if ((model as TokoNowProductCardCarouselItemUiModel).parentId != NON_VARIANT_PRODUCT) {
                 val totalQuantity = miniCartSimplifiedData.miniCartItems.getMiniCartItemParentProduct(model.parentId)?.totalQuantity.orZero()
                 if (totalQuantity == HomeLayoutMapper.DEFAULT_QUANTITY) {
                     updateProductQuantity(
                         productId = model.productCardModel.productId,
-                        quantity = 0
+                        quantity = NO_ORDER_QUANTITY
                     )
                 } else {
                     updateProductQuantity(
@@ -223,7 +228,7 @@ class TokoNowProductRecommendationViewModel @Inject constructor(
             } else {
                 updateProductQuantity(
                     productId = model.productCardModel.productId,
-                    quantity = 0
+                    quantity = NO_ORDER_QUANTITY
                 )
             }
         }
@@ -234,6 +239,7 @@ class TokoNowProductRecommendationViewModel @Inject constructor(
         quantity: Int,
         shopId: String
     ) {
+        isProductAnimating = true
         val miniCartItem = getMiniCartItem(productId)
         when {
             miniCartItem == null && quantity.isZero() -> { /* do nothing */ }
@@ -247,6 +253,7 @@ class TokoNowProductRecommendationViewModel @Inject constructor(
         productId: String,
         quantity: Int
     ) {
+        isProductAnimating = false
         val miniCartItem = getMiniCartItem(productId)
         if (quantity.isZero() && miniCartItem != null) {
             removeItemCart(
@@ -265,15 +272,17 @@ class TokoNowProductRecommendationViewModel @Inject constructor(
     fun updateMiniCartSimplified(miniCartSimplifiedData: MiniCartSimplifiedData?) {
         mMiniCartSimplifiedData = miniCartSimplifiedData
 
-        launch {
-            mMiniCartSimplifiedData?.apply {
-                if (miniCartItems.values.isEmpty()) {
-                    resetAllProductQuantities()
-                } else {
-                    updateProductQuantityBasedOnMiniCart(this)
-                    resetProductQuantityBasedOnMiniCart(this)
+        if (!isProductAnimating) {
+            launch {
+                mMiniCartSimplifiedData?.apply {
+                    if (miniCartItems.values.isEmpty()) {
+                        resetAllProductQuantities()
+                    } else {
+                        updateProductQuantityBasedOnMiniCart(this)
+                        resetProductQuantityBasedOnMiniCart(this)
+                    }
+                    _productModelsUpdate.postValue(productModels)
                 }
-                _productModelsUpdate.postValue(productModels)
             }
         }
     }
