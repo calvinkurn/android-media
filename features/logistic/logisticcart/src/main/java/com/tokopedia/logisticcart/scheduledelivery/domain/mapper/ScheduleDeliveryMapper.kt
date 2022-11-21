@@ -1,6 +1,6 @@
-package com.tokopedia.logisticcart.scheduledelivery.mapper
+package com.tokopedia.logisticcart.scheduledelivery.domain.mapper
 
-import com.tokopedia.logisticcart.scheduledelivery.model.ScheduleDeliveryParam
+import com.tokopedia.logisticcart.scheduledelivery.domain.entity.request.ScheduleDeliveryParam
 import com.tokopedia.logisticcart.shipping.model.RatesParam
 import javax.inject.Inject
 

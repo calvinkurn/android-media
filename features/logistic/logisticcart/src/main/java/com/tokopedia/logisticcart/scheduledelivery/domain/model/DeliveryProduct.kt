@@ -1,11 +1,10 @@
-package com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.scheduledelivery
+package com.tokopedia.logisticcart.scheduledelivery.domain.model
 
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.CodData
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.InsuranceData
-import com.tokopedia.logisticCommon.util.StringFormatterHelper.appendHtmlBoldText
-import com.tokopedia.logisticCommon.util.StringFormatterHelper.appendHtmlStrikethroughText
+import com.tokopedia.logisticcart.scheduledelivery.utils.StringFormatterHelper.appendHtmlBoldText
+import com.tokopedia.logisticcart.scheduledelivery.utils.StringFormatterHelper.appendHtmlStrikethroughText
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
@@ -18,8 +17,8 @@ class DeliveryProduct(
     val textEta: String = "",
     @SerializedName("promo_text")
     val promoText: String = "",
-    @SerializedName("id") // or timeslotId ?
-    val id: Long = 0L,
+    @SerializedName("timeslot_id")
+    val timeslotId: Long = 0L,
     @SerializedName("available")
     val available: Boolean = false,
     @SerializedName("hidden")
@@ -50,12 +49,8 @@ class DeliveryProduct(
     val checksum: String = "",
     @SerializedName("insurance")
     val insurance: InsuranceData = InsuranceData(),
-    @SerializedName("cod")
-    val cod: CodData = CodData(),
     @SerializedName("features")
     val features: Features = Features(),
-    @SerializedName("shipping_metadata")
-    val shippingMetadata: ShippingMetadata = ShippingMetadata(),
     @SerializedName("ut")
     val ut: String = "",
     @SerializedName("promo_stacking")

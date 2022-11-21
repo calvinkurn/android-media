@@ -1,4 +1,4 @@
-package com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.scheduledelivery
+package com.tokopedia.logisticcart.scheduledelivery.domain.model
 
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
@@ -14,10 +14,10 @@ class PromoStacking(
     val benefitClass: String = "",
     @SerializedName("is_bebas_ongkir_extra")
     val isBebasOngkirExtra: Boolean = false,
-    @SerializedName("shipping_subsidy")
-    val shippingSubsidy: Long = 0,
+    @SerializedName("benefit_amount")
+    val benefitAmount: Long = 0,
     @SerializedName("boCampaignId")
     val boCampaignId: Long = 0,
     @SerializedName("free_shipping_metadata")
-    val freeShippingMetadata: String = "",
+    val freeShippingMetadata: FreeShippingMetadata = FreeShippingMetadata(),
 ) : Parcelable

@@ -6,7 +6,7 @@ import com.tokopedia.checkout.data.model.response.shipmentaddressform.ShipmentAd
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.RatesApiGqlResponse
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.RatesGqlResponse
 import com.tokopedia.checkout.data.model.request.checkout.old.DataCheckoutRequest
-import com.tokopedia.logisticcart.scheduledelivery.model.ScheduleDeliveryRatesResponse
+import com.tokopedia.logisticcart.scheduledelivery.domain.entity.response.ScheduleDeliveryRatesResponse
 import com.tokopedia.purchase_platform.common.feature.promo.data.response.validateuse.ValidateUseResponse
 
 object DataProvider {

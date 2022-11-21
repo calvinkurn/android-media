@@ -1,4 +1,4 @@
-package com.tokopedia.logisticCommon.util
+package com.tokopedia.logisticcart.scheduledelivery.utils
 
 object StringFormatterHelper {
 

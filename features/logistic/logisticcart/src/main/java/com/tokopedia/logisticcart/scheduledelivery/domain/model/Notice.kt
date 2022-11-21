@@ -1,4 +1,4 @@
-package com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.scheduledelivery
+package com.tokopedia.logisticcart.scheduledelivery.domain.model
 
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName

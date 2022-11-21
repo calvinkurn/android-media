@@ -74,9 +74,9 @@ data class SelectedShipperModel(
             etaErrorCode = 0
             shipperName = ""
             freeShippingChosenCourierTitle = ""
-            freeShippingMetadata = scheduleDelivery.deliveryProduct.promoStacking.freeShippingMetadata
+            freeShippingMetadata = scheduleDelivery.deliveryProduct.promoStacking.freeShippingMetadata.toJson()
             benefitClass = scheduleDelivery.deliveryProduct.promoStacking.benefitClass
-            shippingSubsidy = scheduleDelivery.deliveryProduct.promoStacking.shippingSubsidy
+            shippingSubsidy = scheduleDelivery.deliveryProduct.promoStacking.freeShippingMetadata.shippingSubsidy
             boCampaignId = scheduleDelivery.deliveryProduct.promoStacking.boCampaignId
         }
     }

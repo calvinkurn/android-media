@@ -1,4 +1,4 @@
-package com.tokopedia.logisticcart.scheduledelivery.model
+package com.tokopedia.logisticcart.scheduledelivery.domain.entity.request
 
 import com.google.gson.annotations.SerializedName
 

@@ -1,7 +1,7 @@
 package com.tokopedia.logisticcart.shipping.model
 
 import android.os.Parcelable
-import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.scheduledelivery.ScheduleDeliveryData
+import com.tokopedia.logisticcart.scheduledelivery.domain.model.ScheduleDeliveryData
 import kotlinx.parcelize.Parcelize
 
 /**

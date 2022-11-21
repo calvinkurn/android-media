@@ -1,8 +1,8 @@
-package com.tokopedia.logisticcart.scheduledelivery.usecase
+package com.tokopedia.logisticcart.scheduledelivery.domain.usecase
 
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.logisticcart.domain.executor.SchedulerProvider
-import com.tokopedia.logisticcart.scheduledelivery.mapper.ScheduleDeliveryMapper
+import com.tokopedia.logisticcart.scheduledelivery.domain.mapper.ScheduleDeliveryMapper
 import com.tokopedia.logisticcart.shipping.model.RatesParam
 import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
@@ -35,7 +35,7 @@ class GetRatesWithScheduleUseCase @Inject constructor(
             .flatMap { shippingRecommendationData ->
                 getScheduleDeliveryUseCase.execute(mapper.map(ratesParam, warehouseId))
                     .map {
-                        shippingRecommendationData.scheduleDeliveryData = it.scheduleDeliveryData
+                        shippingRecommendationData.scheduleDeliveryData = it.ongkirGetScheduledDeliveryRates.scheduleDeliveryData
                         shippingRecommendationData
                     }
             }

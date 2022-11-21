@@ -1,10 +1,10 @@
-package com.tokopedia.logisticcart.scheduledelivery.mapper
+package com.tokopedia.logisticcart.scheduledelivery.domain.mapper
 
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.scheduledelivery.DeliveryProduct
-import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.scheduledelivery.DeliveryService
-import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.scheduledelivery.Notice
-import com.tokopedia.logisticCommon.util.StringFormatterHelper.appendHtmlBoldText
+import com.tokopedia.logisticcart.scheduledelivery.domain.model.DeliveryProduct
+import com.tokopedia.logisticcart.scheduledelivery.domain.model.DeliveryService
+import com.tokopedia.logisticcart.scheduledelivery.domain.model.Notice
+import com.tokopedia.logisticcart.scheduledelivery.utils.StringFormatterHelper.appendHtmlBoldText
 import com.tokopedia.logisticcart.scheduledelivery.view.uimodel.BottomSheetInfoUiModel
 import com.tokopedia.logisticcart.scheduledelivery.view.uimodel.BottomSheetUiModel
 import com.tokopedia.logisticcart.scheduledelivery.view.uimodel.ButtonDateUiModel
@@ -90,8 +90,8 @@ object ScheduleDeliveryBottomSheetMapper {
                 content = time.generateTimeTitle(),
                 note = time.text,
                 isEnabled = time.available,
-                isSelected = time.available && (isDateSelected && time.id == selectedTimeSlot.id),
-                timeId = time.id,
+                isSelected = time.available && (isDateSelected && time.timeslotId == selectedTimeSlot.timeslotId),
+                timeId = time.timeslotId,
                 dateId = dateId
             )
         }

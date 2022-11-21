@@ -1,9 +1,9 @@
 package com.tokopedia.logisticcart.shipping.model
 
 import android.os.Parcelable
-import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.scheduledelivery.DeliveryProduct
-import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.scheduledelivery.DeliveryService
-import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.scheduledelivery.Notice
+import com.tokopedia.logisticcart.scheduledelivery.domain.model.DeliveryProduct
+import com.tokopedia.logisticcart.scheduledelivery.domain.model.DeliveryService
+import com.tokopedia.logisticcart.scheduledelivery.domain.model.Notice
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
@@ -35,7 +35,7 @@ data class ScheduleDeliveryUiModel(
         ) { selectedScheduleDate, selectedDeliveryProduct, isSelectedProduct ->
             this.isSelected = isSelectedProduct
             this.scheduleDate = selectedScheduleDate
-            this.timeslotId = selectedDeliveryProduct.id
+            this.timeslotId = selectedDeliveryProduct.timeslotId
             this.deliveryProduct = selectedDeliveryProduct
         }
     }
@@ -60,7 +60,7 @@ data class ScheduleDeliveryUiModel(
         if (scheduleDate != "" && timeslotId != 0L) {
             val deliveryService = deliveryServices.find { it.id == scheduleDate }
             val deliveryProduct = deliveryService?.deliveryProducts?.find {
-                it.id == timeslotId && it.available
+                it.timeslotId == timeslotId && it.available
             }
 
             if (deliveryService != null && deliveryProduct != null) {

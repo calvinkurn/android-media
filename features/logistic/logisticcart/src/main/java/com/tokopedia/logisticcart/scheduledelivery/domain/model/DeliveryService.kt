@@ -1,7 +1,8 @@
-package com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.scheduledelivery
+package com.tokopedia.logisticcart.scheduledelivery.domain.model
 
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorRatesDetailData
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
@@ -17,7 +18,7 @@ class DeliveryService(
     @SerializedName("hidden")
     val hidden: Boolean = false,
     @SerializedName("error")
-    val error: Error = Error(),
+    val error: ErrorRatesDetailData = ErrorRatesDetailData(),
     @SerializedName("delivery_products")
     val deliveryProducts: List<DeliveryProduct> = arrayListOf(),
 ) : Parcelable
