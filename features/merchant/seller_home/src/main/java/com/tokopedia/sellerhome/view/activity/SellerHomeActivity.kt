@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.content.pm.ActivityInfo
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Handler
@@ -90,6 +91,7 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
         private const val NAVIGATION_HOME_MENU_POSITION = 0
         private const val TRACKER_PREF_NAME = "NotificationUserSettings"
         private const val NOTIFICATION_USER_SETTING_KEY = "isSellerSettingSent"
+        private const val TOKOPEDIA_MARKET_WEAR_APP = "market://details?id=com.spotify.music"
     }
 
     @Inject
@@ -728,7 +730,10 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
                     setPrimaryCTAText(resources.getString(R.string.wearos_install_popup_install))
                     setSecondaryCTAText(resources.getString(R.string.wearos_install_popup_later))
                     setPrimaryCTAClickListener {
-                        homeViewModel.launchMarket()
+                        val marketIntent = Intent(Intent.ACTION_VIEW)
+                            .addCategory(Intent.CATEGORY_BROWSABLE)
+                            .setData(Uri.parse(TOKOPEDIA_MARKET_WEAR_APP))
+                        homeViewModel.launchMarket(marketIntent)
                     }
                     setSecondaryCTAClickListener {
                         dialog.dismiss()
