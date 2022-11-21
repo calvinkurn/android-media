@@ -106,7 +106,7 @@ data class DynamicHomeChannel(
             var isCache: Boolean = true,
             @SerializedName("styleParam")
             @Expose
-            var styleParam: String = ""
+            var styleParam: String = "borderStyle=padding&dividerSize=8"
     ) : ImpressHolder() {
 
         private var position: Int = 0

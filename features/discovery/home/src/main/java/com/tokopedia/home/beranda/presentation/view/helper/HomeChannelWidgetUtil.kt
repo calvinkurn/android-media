@@ -23,7 +23,7 @@ object HomeChannelWidgetUtil {
             ?: DEFAULT_DIVIDER_HEIGHT.toPx()
         dividerTop?.layoutParams?.height = dividerSize
         dividerBottom?.layoutParams?.height = dividerSize
-        when(channelModel?.dividerType) {
+        when(ChannelConfig.DIVIDER_TOP) {
             ChannelConfig.DIVIDER_NO_DIVIDER -> {
                 dividerTop?.invisible()
                 if(useBottomPadding) setBottomPadding(dividerBottom)
