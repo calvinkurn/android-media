@@ -17,7 +17,6 @@ import com.tkpd.library.utils.SnackbarManager;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent;
 import com.tokopedia.abstraction.common.utils.view.DialogForceLogout;
-import com.tokopedia.app.common.di.CommonAppComponent;
 import com.tokopedia.cachemanager.PersistentCacheManager;
 import com.tokopedia.common_digital.common.constant.DigitalCache;
 import com.tokopedia.config.GlobalConfig;
@@ -219,10 +218,6 @@ public class BaseActivity extends AppCompatActivity implements
     @Override
     public String getScreenName() {
         return null;
-    }
-
-    public CommonAppComponent getApplicationComponent() {
-        return ((MainApplication) getApplication()).getAppComponent();
     }
 
     public BaseAppComponent getBaseAppComponent() {
