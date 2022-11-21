@@ -640,7 +640,6 @@ class HomeAdapterFactory(private val listener: HomeCategoryListener, private val
                     view,
                     mixLeftComponentListener,
                     homeComponentListener,
-                    parentRecycledViewPool,
                     cardInteraction = true
                 )
             else -> viewHolder = super.createViewHolder(view, type)

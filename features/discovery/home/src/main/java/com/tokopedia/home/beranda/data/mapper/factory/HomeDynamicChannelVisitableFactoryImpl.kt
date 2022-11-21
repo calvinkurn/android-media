@@ -326,11 +326,17 @@ class HomeDynamicChannelVisitableFactoryImpl(
     }
 
     private fun createMixLeftPaddingComponent(channel: DynamicHomeChannel.Channels, verticalPosition: Int, isCache: Boolean) {
-        visitableList.add(mappingMixLeftPaddingComponent(
+        visitableList.add(
+            mappingMixLeftPaddingComponent(
                 channel, isCache, verticalPosition
-        ))
-        context?.let { HomeTrackingUtils.homeDiscoveryWidgetImpression(it,
-                visitableList.size, channel) }
+            )
+        )
+        context?.let {
+            HomeTrackingUtils.homeDiscoveryWidgetImpression(
+                it,
+                visitableList.size, channel
+            )
+        }
     }
 
     private fun createMixTopComponent(channel: DynamicHomeChannel.Channels, verticalPosition: Int, isCache: Boolean) {
@@ -560,12 +566,17 @@ class HomeDynamicChannelVisitableFactoryImpl(
         )
     }
 
-    private fun mappingMixLeftPaddingComponent(channel: DynamicHomeChannel.Channels,
-                                        isCache: Boolean,
-                                        verticalPosition: Int): Visitable<*> {
+    private fun mappingMixLeftPaddingComponent(
+        channel: DynamicHomeChannel.Channels,
+        isCache: Boolean,
+        verticalPosition: Int
+    ): Visitable<*> {
         return MixLeftPaddingDataModel(
-                channelModel = DynamicChannelComponentMapper.mapHomeChannelToComponent(channel, verticalPosition),
-                isCache = isCache
+            channelModel = DynamicChannelComponentMapper.mapHomeChannelToComponent(
+                channel,
+                verticalPosition
+            ),
+            isCache = isCache
         )
     }
 

@@ -27,7 +27,6 @@ import com.tokopedia.home_component.productcardgridcarousel.typeFactory.CommonCa
 import com.tokopedia.home_component.productcardgridcarousel.viewHolder.CarouselViewAllCardViewHolder
 import com.tokopedia.home_component.util.ChannelWidgetUtil
 import com.tokopedia.home_component.util.GravitySnapHelper
-import com.tokopedia.home_component.viewholders.adapter.MixLeftAdapter
 import com.tokopedia.home_component.viewholders.adapter.MixTopComponentAdapter
 import com.tokopedia.home_component.visitable.MixLeftPaddingDataModel
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
@@ -47,15 +46,14 @@ class MixLeftPaddingComponentViewHolder(
     itemView: View,
     val mixLeftComponentListener: MixLeftComponentListener?,
     val homeComponentListener: HomeComponentListener?,
-    private val parentRecycledViewPool: RecyclerView.RecycledViewPool? = null,
     private val cardInteraction: Boolean = false
 ) : AbstractViewHolder<MixLeftPaddingDataModel>(itemView), CoroutineScope,
     CommonProductCardCarouselListener, BannerMixLeftPaddingListener {
 
-    private lateinit var adapter: MixTopComponentAdapter
+    private var adapter: MixTopComponentAdapter? = null
     private val masterJob = SupervisorJob()
     override val coroutineContext = masterJob + Dispatchers.Main
-    private lateinit var layoutManager: LinearLayoutManager
+    private var layoutManager: LinearLayoutManager? = null
     private var isCacheData = false
     private var binding: GlobalDcMixLeftPaddingBinding? by viewBinding()
 
