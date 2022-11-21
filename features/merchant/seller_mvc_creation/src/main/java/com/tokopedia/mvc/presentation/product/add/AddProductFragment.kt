@@ -159,7 +159,11 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
 
     private fun setupButton() {
         binding?.btnAddProduct?.setOnClickListener {
-            viewModel.processEvent(AddProductEvent.ConfirmAddProduct)
+            if (pageMode == PageMode.CREATE) {
+                viewModel.processEvent(AddProductEvent.ConfirmAddProduct)
+            } else {
+                viewModel.processEvent(AddProductEvent.AddNewProducts)
+            }
         }
     }
 
@@ -246,11 +250,10 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
                 displayVariantBottomSheet(effect.selectedParentProduct)
             }
             is AddProductEffect.ConfirmAddProduct -> {
-                if (pageMode == PageMode.CREATE) {
-                    ProductListActivity.start(activity ?: return, effect.selectedProducts)
-                } else {
-                    sendResult(effect.selectedProducts)
-                }
+                ProductListActivity.start(activity ?: return, effect.selectedProducts)
+            }
+            is AddProductEffect.AddNewProducts -> {
+                sendSelectedProductsToProductListActivity(effect.selectedProducts)
             }
         }
     }
@@ -624,7 +627,14 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
         return isPressed
     }
 
-    private fun sendResult(selectedProducts: List<SelectedProduct>) {
+    private fun sendSelectedProductsToCallerActivity(selectedProducts: List<SelectedProduct>) {
+        val returnIntent = Intent()
+        returnIntent.putParcelableArrayListExtra(BundleConstant.BUNDLE_KEY_SELECTED_PRODUCTS, ArrayList(selectedProducts))
+        activity?.setResult(Activity.RESULT_OK, returnIntent)
+        activity?.finish()
+    }
+
+    private fun sendSelectedProductsToProductListActivity(selectedProducts: List<Product>) {
         val returnIntent = Intent()
         returnIntent.putParcelableArrayListExtra(BundleConstant.BUNDLE_KEY_SELECTED_PRODUCTS, ArrayList(selectedProducts))
         activity?.setResult(Activity.RESULT_OK, returnIntent)

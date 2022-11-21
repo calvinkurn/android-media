@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.view.removeFirst
 import com.tokopedia.mvc.domain.entity.Product
 import com.tokopedia.mvc.domain.entity.SelectedProduct
+import com.tokopedia.mvc.domain.entity.enums.PageMode
 import com.tokopedia.mvc.domain.entity.enums.PromoType
 import com.tokopedia.mvc.domain.entity.enums.VoucherAction
 import com.tokopedia.mvc.domain.usecase.GetInitiateVoucherPageUseCase
@@ -41,9 +42,9 @@ class ProductListViewModel @Inject constructor(
 
     fun processEvent(event: ProductListEvent) {
         when(event) {
-            is ProductListEvent.FetchProducts -> getProductsAndProductsMetadata(event.action, event.promoType, event.selectedProducts)
-            is ProductListEvent.AddProductToSelection -> handleAddProductToSelection(event.productId)
-            ProductListEvent.ConfirmAddProduct -> handleConfirmAddProduct()
+            is ProductListEvent.FetchProducts -> getProductsAndProductsMetadata(event.action, event.promoType, event.selectedProducts, event.pageMode)
+            is ProductListEvent.MarkProductForDeletion -> handleMarkProductForDeletion(event.productId)
+            ProductListEvent.TapContinueButton -> handleProceedToNextPage()
             ProductListEvent.DisableSelectAllCheckbox -> handleUncheckAllProduct()
             ProductListEvent.EnableSelectAllCheckbox -> handleCheckAllProduct()
             is ProductListEvent.TapVariant -> handleTapVariant(event.parentProduct)
@@ -56,13 +57,17 @@ class ProductListViewModel @Inject constructor(
                 _uiEffect.tryEmit(ProductListEffect.ShowBulkDeleteProductConfirmationDialog(productToDeleteCount))
             }
             ProductListEvent.ApplyBulkDeleteProduct -> handleBulkDeleteProducts()
+            ProductListEvent.TapCtaChangeProduct -> handleSwitchPageMode()
+            is ProductListEvent.AddNewProductToSelection -> handleAddNewProductToSelection(event.newProducts)
         }
     }
+
 
     private fun getProductsAndProductsMetadata(
         action: VoucherAction,
         promoType: PromoType,
-        selectedProducts: List<SelectedProduct>
+        selectedProducts: List<SelectedProduct>,
+        pageMode: PageMode
     ) {
         launchCatchError(
             dispatchers.io,
@@ -85,17 +90,25 @@ class ProductListViewModel @Inject constructor(
 
                 val productsResponse = productListUseCase.execute(productListParam)
 
+                val enableCheckbox = pageMode == PageMode.CREATE
+
                 val updatedProducts = productsResponse.products.map { parentProduct ->
                     val selectedVariants = findSelectedVariantsByParentId(parentProduct.id, selectedProducts)
 
                     parentProduct.copy(
                         originalVariants = toOriginalVariant(parentProduct.id, selectedProducts),
-                        selectedVariantsIds = selectedVariants
+                        selectedVariantsIds = selectedVariants,
+                        enableCheckbox = enableCheckbox
                     )
                 }
 
                 _uiState.update {
-                    it.copy(isLoading = false, products = updatedProducts)
+                    it.copy(
+                        isLoading = false,
+                        products = updatedProducts,
+                        pageMode = pageMode,
+                        maxProductSelection = metadata.maxProduct
+                    )
                 }
 
             },
@@ -151,7 +164,7 @@ class ProductListViewModel @Inject constructor(
         }
     }
 
-    private fun handleAddProductToSelection(productIdToAdd: Long) = launch(dispatchers.computation) {
+    private fun handleMarkProductForDeletion(productIdToAdd: Long) = launch(dispatchers.computation) {
         val updatedProducts = updateProductAsSelected(productIdToAdd, currentState.products)
 
         _uiState.update {
@@ -267,7 +280,7 @@ class ProductListViewModel @Inject constructor(
         }
     }
 
-    private fun handleConfirmAddProduct() {
+    private fun handleProceedToNextPage() {
         launchCatchError(
             dispatchers.io,
             block = {
@@ -312,6 +325,22 @@ class ProductListViewModel @Inject constructor(
             }
 
             _uiEffect.tryEmit(ProductListEffect.BulkDeleteProductSuccess(productIdsToDelete.count()))
+        }
+    }
+
+    private fun handleSwitchPageMode() {
+        launch(dispatchers.computation) {
+            val modifiedProducts = currentState.products.map {
+                it.copy(enableCheckbox = true, isDeletable = true)
+            }
+            _uiState.update { it.copy(products = modifiedProducts, pageMode = PageMode.CREATE) }
+        }
+    }
+
+    private fun handleAddNewProductToSelection(newProducts: List<Product>) {
+        launch(dispatchers.computation) {
+            val modifiedProducts = currentState.products + newProducts
+            _uiState.update { it.copy(products = modifiedProducts) }
         }
     }
 

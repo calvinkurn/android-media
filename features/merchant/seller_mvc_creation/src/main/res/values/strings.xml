@@ -56,6 +56,7 @@
     <string name="smvc_delete_product">Hapus Produk?</string>
     <string name="smvc_delete_variant">Hapus Varian?</string>
     <string name="smvc_proceed_delete">Ya, Hapus</string>
+    <string name="smvc_update_product">Ubah Produk</string>
 
     <!--Share Component-->
     <string name="smvc_placeholder_share_component_outgoing_title">Kupon Produk dari %s</string>

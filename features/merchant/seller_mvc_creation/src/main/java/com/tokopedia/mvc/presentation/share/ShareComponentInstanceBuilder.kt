@@ -17,7 +17,7 @@ import javax.inject.Inject
 /**
  * Docs are defined on: https://docs.google.com/spreadsheets/d/10Kee8re2G87hS5elK4XASlHYaav8nsvjjiU9L5qbGKQ/edit#gid=0
  */
-class SharingComponentInstanceBuilder @Inject constructor(
+class ShareComponentInstanceBuilder @Inject constructor(
     private val userSession: UserSessionInterface
 ) {
 

@@ -67,6 +67,7 @@ class AddProductViewModel @Inject constructor(
             AddProductEvent.ClearFilter -> handleClearFilter()
             AddProductEvent.ClearSearchBar -> handleClearSearchbar()
             AddProductEvent.ConfirmAddProduct -> handleConfirmAddProduct()
+            AddProductEvent.AddNewProducts -> handleAddNewProducts()
             AddProductEvent.DisableSelectAllCheckbox -> handleUncheckAllProduct()
             AddProductEvent.EnableSelectAllCheckbox -> handleCheckAllProduct()
             is AddProductEvent.RemoveProductFromSelection -> handleRemoveProductFromSelection(event.productId)
@@ -524,4 +525,16 @@ class AddProductViewModel @Inject constructor(
         }
     }
 
+    private fun handleAddNewProducts() {
+        launch(dispatchers.computation) {
+            val selectedProducts = currentState.products.filter { it.isSelected }
+
+            val topSellingProductImageUrls = selectedProducts
+                .sortedByDescending { it.txStats.sold }
+                .map { it.picture }
+
+
+            _uiEffect.tryEmit(AddProductEffect.AddNewProducts(selectedProducts, topSellingProductImageUrls))
+        }
+    }
 }

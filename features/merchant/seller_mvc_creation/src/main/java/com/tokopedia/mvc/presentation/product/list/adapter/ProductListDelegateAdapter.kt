@@ -79,6 +79,10 @@ class ProductListDelegateAdapter(
                     onCheckboxClick(bindingAdapterPosition, isChecked)
                 }
                 checkbox.isEnabled = item.enableCheckbox && item.isEligible
+
+                checkbox.isVisible = item.enableCheckbox
+
+                iconDelete.isVisible = item.isDeletable
             }
         }
 

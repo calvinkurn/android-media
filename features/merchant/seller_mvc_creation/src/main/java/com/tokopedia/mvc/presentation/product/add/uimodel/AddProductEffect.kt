@@ -4,7 +4,6 @@ import com.tokopedia.mvc.domain.entity.Product
 import com.tokopedia.mvc.domain.entity.ProductCategoryOption
 import com.tokopedia.mvc.domain.entity.ProductSortOptions
 import com.tokopedia.mvc.domain.entity.SelectedProduct
-import com.tokopedia.mvc.domain.entity.ShopData
 import com.tokopedia.mvc.domain.entity.ShopShowcase
 import com.tokopedia.mvc.domain.entity.Warehouse
 
@@ -38,6 +37,11 @@ sealed class AddProductEffect {
 
     data class ConfirmAddProduct(
         val selectedProducts: List<SelectedProduct>,
+        val selectedParentProductImageUrls: List<String>
+    ) : AddProductEffect()
+
+    data class AddNewProducts(
+        val selectedProducts: List<Product>,
         val selectedParentProductImageUrls: List<String>
     ) : AddProductEffect()
 }

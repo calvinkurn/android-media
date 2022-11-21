@@ -24,7 +24,8 @@ data class Product(
     val originalVariants: List<Variant>,
     val selectedVariantsIds: Set<Long>,
     val isSelected: Boolean,
-    val enableCheckbox: Boolean
+    val enableCheckbox: Boolean,
+    val isDeletable: Boolean
 ) : DelegateAdapterItem, Parcelable {
 
     @Parcelize

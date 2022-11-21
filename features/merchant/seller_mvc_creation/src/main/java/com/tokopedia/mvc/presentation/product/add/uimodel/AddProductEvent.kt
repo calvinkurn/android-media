@@ -28,6 +28,7 @@ sealed class AddProductEvent {
     data class ApplySortFilter(val selectedSort: ProductSortOptions) : AddProductEvent()
     data class SearchProduct(val searchKeyword : String) : AddProductEvent()
     object ConfirmAddProduct : AddProductEvent()
+    object AddNewProducts : AddProductEvent()
     data class TapVariant(val parentProduct : Product) : AddProductEvent()
     data class VariantUpdated(val modifiedParentProductId: Long, val selectedVariantIds: Set<Long>) : AddProductEvent()
 }

@@ -23,6 +23,18 @@ class AddProductActivity : AppCompatActivity() {
 
             return intent
         }
+
+        fun buildEditModeIntent(context: Context, voucherConfiguration: VoucherConfiguration): Intent {
+            val bundle = Bundle().apply {
+                putParcelable(BundleConstant.BUNDLE_KEY_PAGE_MODE, PageMode.EDIT)
+                putParcelable(BundleConstant.BUNDLE_KEY_VOUCHER_CONFIGURATION, voucherConfiguration)
+            }
+
+            val intent = Intent(context, AddProductActivity::class.java)
+            intent.putExtras(bundle)
+
+            return intent
+        }
     }
 
     private val pageMode by lazy { intent?.extras?.getParcelable(BundleConstant.BUNDLE_KEY_PAGE_MODE) as? PageMode }
