@@ -26,6 +26,7 @@ import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayAnalytic
 import com.tokopedia.play.analytic.PlayNewAnalytic
 import com.tokopedia.play.extensions.*
+import com.tokopedia.play.util.isChanged
 import com.tokopedia.play.util.observer.DistinctObserver
 import com.tokopedia.play.util.withCache
 import com.tokopedia.play.view.activity.PlayActivity
@@ -321,6 +322,7 @@ class PlayFragment @Inject constructor(
             playViewModel.focusPage(channelData)
             analytic.sendScreen(channelId, playViewModel.channelType, sourceType = playParentViewModel.source.type, channelName = channelData.channelDetail.channelInfo.title)
             newAnalytic.sendDataNow(channelId, playViewModel.channelType, channelData.channelDetail.channelInfo.title)
+            newAnalytic.setData(channelData.channelDetail.channelInfo)
             sendSwipeRoomAnalytic()
         } catch (e: Throwable) {}
     }
@@ -473,7 +475,7 @@ class PlayFragment @Inject constructor(
                 val state = cachedState.value
                 val prevState = cachedState.prevValue
 
-                handleStatus(state.status)
+                if(cachedState.isChanged { it.status.channelStatus.statusType }) handleStatus(state.status)
             }
         }
     }

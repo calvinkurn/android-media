@@ -99,4 +99,8 @@ object Constant {
     }
 
     const val LABEL_FULFILLMENT = "fulfillment"
+
+    object TopAdsSdk{
+        const val TOP_ADS_GSLP_TDN = "topads gslp"
+    }
 }
