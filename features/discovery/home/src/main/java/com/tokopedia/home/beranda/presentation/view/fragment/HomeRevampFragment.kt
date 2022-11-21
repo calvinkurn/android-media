@@ -630,8 +630,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                     this.add(
                         CoachMark2Item(
                             it,
-                            subscriptionBalanceCoachMark.title.parseAsHtml(),
-                            subscriptionBalanceCoachMark.description.parseAsHtml()
+                            if (subscriptionBalanceCoachMark.title.isBlank()) "" else subscriptionBalanceCoachMark.title.parseAsHtml(),
+                            if (subscriptionBalanceCoachMark.description.isBlank()) "" else subscriptionBalanceCoachMark.description.parseAsHtml()
                         )
                     )
                 }
@@ -931,7 +931,6 @@ open class HomeRevampFragment : BaseDaggerFragment(),
             getPageLoadTimeCallback()?.stopCustomMetric(HomePerformanceConstant.KEY_PERFORMANCE_ON_RESUME_HOME)
             getHomeViewModel().isFirstLoad = false
         }
-        manageCoachmarkOnFragmentVisible(isVisibleToUser = false)
 
         refreshQuestWidget()
         adapter?.onResumeSpecialRelease()
@@ -1995,9 +1994,11 @@ open class HomeRevampFragment : BaseDaggerFragment(),
         when (isVisibleToUser) {
             false -> {
                 if (tokonowCoachmarkIsShowing) {
+                    tokonowCoachmarkIsShowing = false
                     coachmarkTokonow?.hideCoachMark()
                 }
                 else if (subscriptionCoachmarkIsShowing) {
+                    subscriptionCoachmarkIsShowing = false
                     coachmarkSubscription?.hideCoachMark()
                 }
             }

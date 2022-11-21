@@ -51,7 +51,7 @@
             "tag": 100
           },
           "price": "Rp 4.155.000",
-          "priceRange": "",
+          "priceRange": "Rp10.000 - Rp15jt",
           "wishlist": false,
           "categoryId": 65,
           "categoryName": "Handphone & Tablet",
@@ -524,6 +524,7 @@
           "uri": "https://www.tokopedia.com/odzaclassic/odza-classic-kemeja-batik-slimfit-modern-pria-lengan-panjang-abris-m?src=topads",
           "relative_uri": "odzaclassic/odza-classic-kemeja-batik-slimfit-modern-pria-lengan-panjang-abris-m",
           "price_format": "Rp129.950",
+          "price_range": "Rp10.000 - Rp15jt",
           "wholesale_price": [],
           "count_talk_format": "0",
           "count_review_format": "4",

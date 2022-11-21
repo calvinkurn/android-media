@@ -25,7 +25,7 @@ class UnFollowModelBuilder {
                 ),
                 messages = emptyList(),
                 errorCode = "",
-            )
+            ),
         )
     }
 }

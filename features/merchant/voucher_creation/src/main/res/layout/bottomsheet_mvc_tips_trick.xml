@@ -10,13 +10,13 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@color/transparent"
-        android:paddingTop="@dimen/layout_lvl1">
+        android:paddingTop="8dp">
 
         <ImageView
             android:id="@+id/icMvcCarouselInfo"
-            android:layout_width="@dimen/layout_lvl4"
-            android:layout_height="@dimen/layout_lvl4"
-            android:layout_marginStart="@dimen/layout_lvl2"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:layout_marginStart="16dp"
             android:contentDescription="@string/mvc_voucher_tips_trick_info_icon_content_description"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -24,12 +24,12 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvMvcCarouselInfo"
-            android:layout_width="@dimen/layout_lvl0"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/layout_lvl2"
-            android:layout_marginLeft="@dimen/layout_lvl2"
-            android:layout_marginEnd="@dimen/layout_lvl2"
-            android:layout_marginRight="@dimen/layout_lvl2"
+            android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp"
             android:textColor="@color/Neutral_N700_96"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/icMvcCarouselInfo"
@@ -39,9 +39,9 @@
 
         <View
             android:id="@+id/vMvcHorLine0"
-            android:layout_width="@dimen/layout_lvl0"
+            android:layout_width="0dp"
             android:layout_height="@dimen/mvc_dimen_1dp"
-            android:layout_marginTop="@dimen/layout_lvl2"
+            android:layout_marginTop="16dp"
             android:background="@color/dark_N600"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -49,13 +49,13 @@
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tvMvcVoucherDesign"
-            android:layout_width="@dimen/layout_lvl0"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/layout_lvl2"
-            android:layout_marginLeft="@dimen/layout_lvl2"
-            android:layout_marginTop="@dimen/layout_lvl2"
-            android:layout_marginEnd="@dimen/layout_lvl2"
-            android:layout_marginRight="@dimen/layout_lvl2"
+            android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp"
             android:text="@string/mvc_voucher_view"
             android:textAllCaps="true"
             app:layout_constraintEnd_toEndOf="parent"
@@ -66,9 +66,9 @@
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rvMvcImageCarousel"
-            android:layout_width="@dimen/layout_lvl0"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/layout_lvl1"
+            android:layout_marginTop="8dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvMvcVoucherDesign" />
@@ -77,7 +77,7 @@
             android:id="@+id/pageControlMvcCarousel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/layout_lvl2"
+            android:layout_marginTop="16dp"
             app:indicator_color="DEFAULT"
             app:indicator_type="CIRCLE"
             app:layout_constraintEnd_toEndOf="parent"
@@ -86,9 +86,9 @@
 
         <View
             android:id="@+id/vMvcHorLine1"
-            android:layout_width="@dimen/layout_lvl0"
+            android:layout_width="0dp"
             android:layout_height="@dimen/mvc_dimen_1dp"
-            android:layout_marginTop="@dimen/layout_lvl2"
+            android:layout_marginTop="16dp"
             android:background="@color/dark_N600"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -98,11 +98,11 @@
             android:id="@+id/rvMvcTipsTrick"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/layout_lvl2"
-            android:layout_marginLeft="@dimen/layout_lvl2"
-            android:layout_marginTop="@dimen/layout_lvl2"
-            android:layout_marginEnd="@dimen/layout_lvl2"
-            android:layout_marginRight="@dimen/layout_lvl2"
+            android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/vMvcHorLine1"
@@ -111,13 +111,13 @@
 
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/btnMvcTipsTrickDownload"
-            android:layout_width="@dimen/layout_lvl0"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/layout_lvl2"
-            android:layout_marginLeft="@dimen/layout_lvl2"
-            android:layout_marginTop="@dimen/layout_lvl3"
-            android:layout_marginEnd="@dimen/layout_lvl2"
-            android:layout_marginRight="@dimen/layout_lvl2"
+            android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp"
             android:gravity="center"
             android:text="@string/mvc_download_voucher"
             android:textStyle="bold"
@@ -128,14 +128,14 @@
 
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/btnMvcTipsTrickShare"
-            android:layout_width="@dimen/layout_lvl0"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/layout_lvl2"
-            android:layout_marginLeft="@dimen/layout_lvl2"
-            android:layout_marginTop="@dimen/layout_lvl2"
-            android:layout_marginEnd="@dimen/layout_lvl2"
-            android:layout_marginRight="@dimen/layout_lvl2"
-            android:layout_marginBottom="@dimen/layout_lvl3"
+            android:layout_marginStart="16dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp"
+            android:layout_marginBottom="24dp"
             android:gravity="center"
             android:text="@string/mvc_share_voucher"
             android:textStyle="bold"
@@ -143,6 +143,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/btnMvcTipsTrickDownload"
-            app:layout_goneMarginTop="@dimen/layout_lvl2" />
+            app:layout_goneMarginTop="16dp" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.core.widget.NestedScrollView>

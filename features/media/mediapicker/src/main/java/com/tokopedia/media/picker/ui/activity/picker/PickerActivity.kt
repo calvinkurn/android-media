@@ -175,12 +175,7 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
         param.setParam(pickerParam)
 
         // get pre-included media items
-        param.get().includeMedias()
-            .map { it.asPickerFile() }
-            .map { it.toUiModel() }
-            .also {
-                stateOnChangePublished(it)
-            }
+        viewModel.preSelectedMedias()
     }
 
     private fun restoreDataState(savedInstanceState: Bundle?) {
@@ -228,6 +223,17 @@ open class PickerActivity : BaseActivity(), PermissionFragment.Listener,
                     medias.isNotEmpty() && param.get().isMultipleSelectionType()
                 )
             }
+        }
+
+        viewModel.includeMedias.observe(this) { files ->
+            if (files.isEmpty()) return@observe
+
+            val fileToUiModel = files.mapNotNull {
+                val mPickerFile = it?.asPickerFile()
+                mPickerFile?.toUiModel()
+            }
+
+            stateOnChangePublished(fileToUiModel)
         }
     }
 
