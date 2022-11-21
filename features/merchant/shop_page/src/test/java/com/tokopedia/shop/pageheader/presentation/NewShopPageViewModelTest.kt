@@ -755,37 +755,43 @@ class NewShopPageViewModelTest {
     @Test
     fun `when call createAffiliateCookieShopAtcDirectPurchase is success`() {
         val mockAffiliateChannel = "channel"
-        val mockShopId = "456"
-        val mockIsAtc = true
+        val mockUUID = "1234"
+        val mockIsVariant = true
         val mockProductId = "678"
+        val mockStockQty = 11
         coEvery {
-            affiliateCookieHelper.initCookie(any(),any(),any(), isATC = mockIsAtc)
+            affiliateCookieHelper.initCookie(any(),any(),any())
         } returns Unit
         shopPageViewModel.createAffiliateCookieShopAtcProduct(
+            mockUUID,
             affiliateCookieHelper,
             mockAffiliateChannel,
-            mockShopId,
-            mockProductId
+            mockProductId,
+            mockIsVariant,
+            mockStockQty
         )
-        coVerify { affiliateCookieHelper.initCookie(any(),any(),any(), isATC = mockIsAtc) }
+        coVerify { affiliateCookieHelper.initCookie(any(),any(),any()) }
     }
 
     @Test
     fun `when call createAffiliateCookieShopAtcDirectPurchase is error`() {
         val mockAffiliateChannel = "channel"
-        val mockShopId = "456"
-        val mockIsAtc = true
+        val mockUUID = "1234"
+        val mockIsVariant = true
         val mockProductId = "678"
+        val mockStockQty = 11
         coEvery {
-            affiliateCookieHelper.initCookie(any(),any(),any(), isATC = mockIsAtc)
+            affiliateCookieHelper.initCookie(any(),any(),any())
         } throws Exception()
         shopPageViewModel.createAffiliateCookieShopAtcProduct(
+            mockUUID,
             affiliateCookieHelper,
             mockAffiliateChannel,
-            mockShopId,
-            mockProductId
+            mockProductId,
+            mockIsVariant,
+            mockStockQty
         )
-        coVerify { affiliateCookieHelper.initCookie(any(),any(),any(), isATC = mockIsAtc) }
+        coVerify { affiliateCookieHelper.initCookie(any(),any(),any()) }
     }
 
     @Test

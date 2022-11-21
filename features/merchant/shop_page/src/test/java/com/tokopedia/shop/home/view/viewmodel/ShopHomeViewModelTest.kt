@@ -1800,7 +1800,7 @@ class ShopHomeViewModelTest {
         )
         assert(viewModel.miniCartAdd.value is Success)
         assert(viewModel.shopPageAtcTracker.value?.atcType == ShopPageAtcTracker.AtcType.ADD)
-        assert(viewModel.createAffiliateCookieAtcProduct.value?.isNotEmpty() == true)
+        assert(viewModel.createAffiliateCookieAtcProduct.value != null)
     }
 
     @Test
@@ -1913,7 +1913,7 @@ class ShopHomeViewModelTest {
         )
         assert(viewModel.miniCartUpdate.value is Success)
         assert(viewModel.shopPageAtcTracker.value?.atcType == ShopPageAtcTracker.AtcType.UPDATE_ADD)
-        assert(viewModel.createAffiliateCookieAtcProduct.value?.isNotEmpty() == true)
+        assert(viewModel.createAffiliateCookieAtcProduct.value != null)
     }
 
     @Test

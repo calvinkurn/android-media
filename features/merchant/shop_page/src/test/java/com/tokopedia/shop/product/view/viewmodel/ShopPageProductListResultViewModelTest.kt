@@ -1154,7 +1154,7 @@ class ShopPageProductListResultViewModelTest : ShopPageProductListViewModelTestF
         )
         assert(shopPageProductListResultViewModel.miniCartAdd.value is Success)
         assert(shopPageProductListResultViewModel.shopPageAtcTracker.value?.atcType == ShopPageAtcTracker.AtcType.ADD)
-        assert(shopPageProductListResultViewModel.createAffiliateCookieAtcProduct.value?.isNotEmpty() == true)
+        assert(shopPageProductListResultViewModel.createAffiliateCookieAtcProduct.value != null)
     }
 
     @Test
@@ -1267,7 +1267,7 @@ class ShopPageProductListResultViewModelTest : ShopPageProductListViewModelTestF
         )
         assert(shopPageProductListResultViewModel.miniCartUpdate.value is Success)
         assert(shopPageProductListResultViewModel.shopPageAtcTracker.value?.atcType == ShopPageAtcTracker.AtcType.UPDATE_ADD)
-        assert(shopPageProductListResultViewModel.createAffiliateCookieAtcProduct.value?.isNotEmpty() == true)
+        assert(shopPageProductListResultViewModel.createAffiliateCookieAtcProduct.value != null)
     }
 
     @Test
@@ -1379,37 +1379,39 @@ class ShopPageProductListResultViewModelTest : ShopPageProductListViewModelTestF
     @Test
     fun `when call createAffiliateCookieShopAtcDirectPurchase is success`() {
         val mockAffiliateChannel = "channel"
-        val mockShopId = "456"
-        val mockIsAtc = true
+        val mockIsVariant = true
         val mockProductId = "678"
+        val mockStockQty = 11
         coEvery {
-            affiliateCookieHelper.initCookie(any(),any(),any(), isATC = mockIsAtc)
+            affiliateCookieHelper.initCookie(any(),any(),any())
         } returns Unit
         shopPageProductListResultViewModel.createAffiliateCookieShopAtcProduct(
             affiliateCookieHelper,
             mockAffiliateChannel,
-            mockShopId,
-            mockProductId
+            mockProductId,
+            mockIsVariant,
+            mockStockQty
         )
-        coVerify { affiliateCookieHelper.initCookie(any(),any(),any(), isATC = mockIsAtc) }
+        coVerify { affiliateCookieHelper.initCookie(any(),any(),any()) }
     }
 
     @Test
     fun `when call createAffiliateCookieShopAtcDirectPurchase is error`() {
         val mockAffiliateChannel = "channel"
-        val mockShopId = "456"
-        val mockIsAtc = true
+        val mockIsVariant = true
         val mockProductId = "678"
+        val mockStockQty = 11
         coEvery {
-            affiliateCookieHelper.initCookie(any(),any(),any(), isATC = mockIsAtc)
+            affiliateCookieHelper.initCookie(any(),any(),any())
         } throws Exception()
         shopPageProductListResultViewModel.createAffiliateCookieShopAtcProduct(
             affiliateCookieHelper,
             mockAffiliateChannel,
-            mockShopId,
-            mockProductId
+            mockProductId,
+            mockIsVariant,
+            mockStockQty
         )
-        coVerify { affiliateCookieHelper.initCookie(any(),any(),any(), isATC = mockIsAtc) }
+        coVerify { affiliateCookieHelper.initCookie(any(),any(),any()) }
     }
 
     @Test

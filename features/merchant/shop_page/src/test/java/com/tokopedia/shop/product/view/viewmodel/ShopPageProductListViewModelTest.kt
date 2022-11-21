@@ -1511,7 +1511,7 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
         )
         assert(viewModelShopPageProductListViewModel.miniCartAdd.value is Success)
         assert(viewModelShopPageProductListViewModel.shopPageAtcTracker.value?.atcType == ShopPageAtcTracker.AtcType.ADD)
-        assert(viewModelShopPageProductListViewModel.createAffiliateCookieAtcProduct.value?.isNotEmpty() == true)
+        assert(viewModelShopPageProductListViewModel.createAffiliateCookieAtcProduct.value != null)
     }
 
     @Test
@@ -1624,7 +1624,7 @@ class ShopPageProductListViewModelTest : ShopPageProductListViewModelTestFixture
         )
         assert(viewModelShopPageProductListViewModel.miniCartUpdate.value is Success)
         assert(viewModelShopPageProductListViewModel.shopPageAtcTracker.value?.atcType == ShopPageAtcTracker.AtcType.UPDATE_ADD)
-        assert(viewModelShopPageProductListViewModel.createAffiliateCookieAtcProduct.value?.isNotEmpty() == true)
+        assert(viewModelShopPageProductListViewModel.createAffiliateCookieAtcProduct.value != null)
     }
 
     @Test

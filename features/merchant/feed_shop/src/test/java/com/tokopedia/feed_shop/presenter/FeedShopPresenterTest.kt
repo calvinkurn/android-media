@@ -25,6 +25,7 @@ import com.tokopedia.kolcommon.data.pojo.follow.FollowKolQuery
 import com.tokopedia.kolcommon.domain.usecase.FollowKolPostGqlUseCase
 import com.tokopedia.kolcommon.domain.usecase.LikeKolPostUseCase
 import com.tokopedia.kolcommon.view.listener.KolPostLikeListener
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
 import org.junit.Before
@@ -912,7 +913,7 @@ class FeedShopPresenterTest: KolPostLikeListener {
         presenter.addPostTagItemToCart(postTagItem)
 
         verify {
-            view.onAddToCartSuccess(model.data.productId)
+            view.onAddToCartSuccess(postTagItem.id.toLongOrZero())
         }
     }
 
