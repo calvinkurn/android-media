@@ -1,5 +1,6 @@
 package com.tokopedia.product.manage.common.feature.list.domain.usecase
 
+import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.product.manage.common.feature.list.data.model.ProductManageAccessResponse
@@ -11,6 +12,7 @@ import javax.inject.Inject
  * See GQL documentation for more information about ProductListMeta.
  * Docs: https://tokopedia.atlassian.net/wiki/spaces/MC/pages/669877876/GQL+ProductListMeta
  */
+@GqlQuery("GetProductManageAccessGqlQuery", GetProductManageAccessUseCase.QUERY)
 class GetProductManageAccessUseCase @Inject constructor(
     repository: GraphqlRepository
 ) : GraphqlUseCase<ProductManageAccessResponse>(repository) {
@@ -21,7 +23,7 @@ class GetProductManageAccessUseCase @Inject constructor(
         private const val EXTRA_INFO_ACCESS = "access"
         private const val EXTRA_INFO_RBAC = "rbac"
 
-        private val QUERY = """
+        const val QUERY = """
             query ProductListMeta(${'$'}shopID:String!, ${'$'}extraInfo:[String]){
                 ProductListMeta(shopID:${'$'}shopID, extraInfo:${'$'}extraInfo){
                     header{
@@ -37,11 +39,11 @@ class GetProductManageAccessUseCase @Inject constructor(
                     }
                   }
                 }
-        """.trimIndent()
+        """
     }
 
     init {
-        setGraphqlQuery(QUERY)
+        setGraphqlQuery(GetProductManageAccessGqlQuery())
         setTypeClass(ProductManageAccessResponse::class.java)
     }
 

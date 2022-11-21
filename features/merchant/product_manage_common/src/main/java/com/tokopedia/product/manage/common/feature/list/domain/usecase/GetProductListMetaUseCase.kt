@@ -54,7 +54,7 @@ class GetProductListMetaUseCase @Inject constructor(
     }
 
     init {
-        setGraphqlQuery(query)
+        setGraphqlQuery(ProductListMetaGqlQuery())
         setTypeClass(ProductListMetaResponse::class.java)
     }
 
