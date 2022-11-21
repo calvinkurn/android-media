@@ -1,8 +1,8 @@
 package com.tokopedia.search.result.product.filter.dynamicfilter
 
 import com.tokopedia.filter.common.data.DynamicFilterModel
-import com.tokopedia.search.result.product.DynamicFilterModelProvider
+import javax.inject.Inject
 
-class MutableDynamicFilterModelProviderDelegate : MutableDynamicFilterModelProvider {
+class MutableDynamicFilterModelProviderDelegate @Inject constructor() : MutableDynamicFilterModelProvider {
     override var dynamicFilterModel: DynamicFilterModel? = null
 }

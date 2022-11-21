@@ -2,24 +2,20 @@ package com.tokopedia.search.result.product.filter.dynamicfilter
 
 import com.tokopedia.search.di.scope.SearchScope
 import com.tokopedia.search.result.product.DynamicFilterModelProvider
+import dagger.Binds
 import dagger.Module
-import dagger.Provides
 
 @Module
-object DynamicFilterModelProviderModule {
-    @JvmStatic
-    @Provides
+abstract class DynamicFilterModelProviderModule {
+    @Binds
     @SearchScope
-    fun provideMutableDynamicFilterModelProvider() : MutableDynamicFilterModelProvider {
-        return MutableDynamicFilterModelProviderDelegate()
-    }
+    abstract fun bindMutableDynamicFilterModelProvider(
+        providerDelegate: MutableDynamicFilterModelProviderDelegate,
+    ) : MutableDynamicFilterModelProvider
 
-    @JvmStatic
-    @Provides
+    @Binds
     @SearchScope
-    fun provideDynamicFilterModelProvider(
+    abstract fun bindDynamicFilterModelProvider(
         mutableDynamicFilterModelProvider: MutableDynamicFilterModelProvider,
-    ) : DynamicFilterModelProvider {
-        return mutableDynamicFilterModelProvider
-    }
+    ) : DynamicFilterModelProvider
 }
