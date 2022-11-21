@@ -12,7 +12,7 @@ import com.tokopedia.play.broadcaster.ui.model.game.GameType
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.*
 import com.tokopedia.play.broadcaster.util.assertEqualTo
 import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
-import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
+import com.tokopedia.play_common.model.dto.interactive.GameUiModel
 import com.tokopedia.play_common.model.ui.LeadeboardType
 import com.tokopedia.play_common.model.ui.LeaderboardGameUiModel
 import com.tokopedia.play_common.model.ui.QuizChoicesUiModel
@@ -104,8 +104,8 @@ class PlayBroQuizViewModelTest {
                 getAccountConfiguration()
                 getViewModel().submitAction(PlayBroadcastAction.SubmitQuizForm)
             }
-            Assertions.assertThat(state.interactive)
-                .isInstanceOf(InteractiveUiModel.Quiz::class.java)
+            Assertions.assertThat(state.game)
+                .isInstanceOf(GameUiModel.Quiz::class.java)
         }
     }
 
@@ -121,7 +121,7 @@ class PlayBroQuizViewModelTest {
                 getAccountConfiguration()
                 it.getViewModel().submitAction(PlayBroadcastAction.QuizEnded)
             }
-            Assertions.assertThat(state.interactive).isInstanceOf(InteractiveUiModel.Unknown::class.java)
+            Assertions.assertThat(state.game).isInstanceOf(GameUiModel.Unknown::class.java)
         }
     }
 
