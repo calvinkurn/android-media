@@ -8,11 +8,11 @@ import com.google.gson.annotations.SerializedName
  */
 
 data class DynamicHomeIconEntity(
-        @SerializedName("dynamicHomeIcon")
+        @SerializedName("dynamicHomeIcon", alternate = ["getHomeCategoryV2"])
         val dynamicHomeIcon: DynamicHomeIcon
 ){
     data class DynamicHomeIcon(
-            @SerializedName("categoryGroup")
+            @SerializedName("categoryGroup", alternate = ["categories"])
             val categoryGroup: List<Category> = listOf()
     )
 
