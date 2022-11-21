@@ -474,4 +474,20 @@ object ApplinkConstInternalUserPlatform {
      **/
     const val ACCOUNT_LINKING_WEBVIEW = "${NEW_INTERNAL_USER}/account-linking-webview"
 
+    /**
+     * # Sharing wishlist
+     *
+     * @class       : SharingWishlistActivity
+     * @Applink     : tokopedia-android-internal://user/sharing-wishlist?tab={tab}
+     * @param
+     *  - tab       : optional | string | ref: [PARAM_TAB]
+     */
+    const val PARAM_TAB = "tab"
+
+    /** param value for [PARAM_TAB] */
+    const val TAB_PUBLIC = "public"
+    const val TAB_PRIVATE = "private"
+
+    const val SHARING_WISHLIST = "$NEW_INTERNAL_USER/sharing-wishlist?tab={$PARAM_TAB}"
+
 }

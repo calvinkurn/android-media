@@ -64,4 +64,17 @@
     <!--Section | DSAR-->
     <string name="dsar_section_title">Download data pribadimu</string>
     <string name="dsar_section_description">Download datamu yang tersimpan di Tokopedia</string>
+
+    <!-- SHARING WISHLIST -->
+    <string name="sharing_wishlist_page_title">Bagikan Wishlist</string>
+    <string name="sharing_wishlist_empty_page_title">Belum ada koleksi wishlist yang bersifat %s</string>
+    <string name="sharing_wishlist_empty_page_description">Jika ada koleksi wishlist yang bersifat %s, kamu bisa lihat dan atur dari sini </string>
+    <string name="sharing_wishlist_collection_atur_button">Atur</string>
+    <string name="sharing_wishlist_bottom_sheet_title">Siapa yang boleh lihat Koleksi “%s” ini?</string>
+    <string name="sharing_wishlist_private_option">Hanya saya</string>
+    <string name="sharing_wishlist_public_option">Semua orang</string>
+    <string name="sharing_wishlist_save_button">Simpan</string>
+    <string name="sharing_wishlist_another_settup">Ubah Pengaturan Lainnya</string>
+    <string name="sharing_wishlist_failed_title">Konten gagal ditampilkan</string>
+
 </resources>

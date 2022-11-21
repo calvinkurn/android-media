@@ -10,6 +10,8 @@ import com.tokopedia.privacycenter.main.PrivacyCenterViewModel
 import com.tokopedia.privacycenter.main.section.accountlinking.AccountLinkingViewModel
 import com.tokopedia.privacycenter.main.section.consentwithdrawal.ConsentWithdrawalSectionViewModel
 import com.tokopedia.privacycenter.main.section.recommendation.RecommendationViewModel
+import com.tokopedia.privacycenter.sharingwishlist.viewmodel.SharingWishlistSharedViewModel
+import com.tokopedia.privacycenter.sharingwishlist.viewmodel.SharingWishlistViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -43,10 +45,21 @@ abstract class PrivacyCenterViewModelModule {
     @ViewModelKey(RecommendationViewModel::class)
     abstract fun provideRecommendationViewModel(viewModel: RecommendationViewModel): ViewModel
 
-
     @Binds
     @IntoMap
     @ActivityScope
     @ViewModelKey(ConsentWithdrawalViewModel::class)
     abstract fun provideConsentWithdrawalViewModel(viewModel: ConsentWithdrawalViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ActivityScope
+    @ViewModelKey(SharingWishlistViewModel::class)
+    abstract fun provideSharingWishlistViewModel(viewModel: SharingWishlistViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ActivityScope
+    @ViewModelKey(SharingWishlistSharedViewModel::class)
+    abstract fun provideSharingWishlistSharedViewModel(viewModel: SharingWishlistSharedViewModel): ViewModel
 }
