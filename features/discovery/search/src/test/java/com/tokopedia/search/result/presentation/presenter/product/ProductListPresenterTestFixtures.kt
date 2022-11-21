@@ -29,7 +29,6 @@ import com.tokopedia.search.result.product.filter.dynamicfilter.MutableDynamicFi
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDynamicProductView
 import com.tokopedia.search.result.product.inspirationlistatc.InspirationListAtcPresenterDelegate
 import com.tokopedia.search.result.product.inspirationlistatc.InspirationListAtcView
-import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDynamicProductView
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselPresenterDelegate
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselView
 import com.tokopedia.search.result.product.inspirationwidget.InspirationWidgetPresenterDelegate

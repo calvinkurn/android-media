@@ -49,8 +49,6 @@ import com.tokopedia.search.result.presentation.view.typefactory.ProductListType
 import com.tokopedia.search.result.product.DynamicFilterModelProvider
 import com.tokopedia.search.result.product.banned.BannedProductsPresenterDelegate
 import com.tokopedia.search.result.product.banner.BannerPresenterDelegate
-import com.tokopedia.search.result.product.filter.bottomsheetfilter.BottomSheetFilterPresenter
-import com.tokopedia.search.result.product.filter.bottomsheetfilter.BottomSheetFilterPresenterDelegate
 import com.tokopedia.search.result.product.broadmatch.BroadMatchDataView
 import com.tokopedia.search.result.product.broadmatch.BroadMatchPresenter
 import com.tokopedia.search.result.product.broadmatch.BroadMatchPresenterDelegate
@@ -60,6 +58,7 @@ import com.tokopedia.search.result.product.cpm.BannerAdsPresenter
 import com.tokopedia.search.result.product.cpm.BannerAdsPresenterDelegate
 import com.tokopedia.search.result.product.cpm.CpmDataView
 import com.tokopedia.search.result.product.emptystate.EmptyStateDataView
+import com.tokopedia.search.result.product.filter.bottomsheetfilter.BottomSheetFilterPresenter
 import com.tokopedia.search.result.product.globalnavwidget.GlobalNavDataView
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselPresenterDelegate
@@ -69,7 +68,6 @@ import com.tokopedia.search.result.product.inspirationcarousel.LAYOUT_INSPIRATIO
 import com.tokopedia.search.result.product.inspirationlistatc.InspirationListAtcPresenter
 import com.tokopedia.search.result.product.inspirationlistatc.InspirationListAtcPresenterDelegate
 import com.tokopedia.search.result.product.inspirationwidget.InspirationWidgetPresenterDelegate
-import com.tokopedia.search.result.product.inspirationwidget.InspirationWidgetVisitable
 import com.tokopedia.search.result.product.lastfilter.LastFilterPresenter
 import com.tokopedia.search.result.product.lastfilter.LastFilterPresenterDelegate
 import com.tokopedia.search.result.product.localsearch.EMPTY_LOCAL_SEARCH_RESPONSE_CODE
@@ -95,7 +93,6 @@ import com.tokopedia.search.result.product.separator.VerticalSeparator
 import com.tokopedia.search.result.product.suggestion.SuggestionPresenter
 import com.tokopedia.search.result.product.tdn.TopAdsImageViewPresenterDelegate
 import com.tokopedia.search.result.product.ticker.TickerPresenter
-import com.tokopedia.search.result.product.videowidget.InspirationCarouselVideoDataView
 import com.tokopedia.search.result.product.wishlist.WishlistPresenter
 import com.tokopedia.search.result.product.wishlist.WishlistPresenterDelegate
 import com.tokopedia.search.utils.SchedulersProvider
@@ -119,7 +116,6 @@ import rx.Observable
 import rx.Subscriber
 import rx.functions.Action1
 import rx.subscriptions.CompositeSubscription
-import timber.log.Timber
 import javax.inject.Inject
 import javax.inject.Named
 import kotlin.math.max
@@ -164,6 +160,7 @@ class ProductListPresenter @Inject constructor(
     private val topAdsImageViewPresenterDelegate: TopAdsImageViewPresenterDelegate,
     wishlistPresenterDelegate: WishlistPresenterDelegate,
     private val inspirationWidgetPresenter: InspirationWidgetPresenterDelegate,
+    private val inspirationCarouselPresenter: InspirationCarouselPresenterDelegate,
     dynamicFilterModelProvider: DynamicFilterModelProvider,
     bottomSheetFilterPresenter: BottomSheetFilterPresenter,
 ): BaseDaggerPresenter<ProductListSectionContract.View>(),
