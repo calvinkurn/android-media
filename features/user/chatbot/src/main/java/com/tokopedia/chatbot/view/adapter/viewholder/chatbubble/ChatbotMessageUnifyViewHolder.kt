@@ -32,18 +32,12 @@ abstract class ChatbotMessageUnifyViewHolder(
 
     private val movementMethod = ChatLinkHandlerMovementMethod(listener)
 
-    private val listener2: TestListener? = null
-
     override fun bind(message: MessageUiModel) {
         verifyReplyTime(message)
         ChatbotMessageViewHolderBinder.bindChatMessage(message.message, customChatLayout, movementMethod, message.isSender)
         ChatbotMessageViewHolderBinder.bindHour(message.replyTime, customChatLayout)
         setHeaderDate(message)
         bindReplyBubbleListener()
-
-        customChatLayout?.fxChat?.setOnClickListener{
-            listener2?.onClick()
-        }
 
         customChatLayout?.fxChat?.setOnLongClickListener {
             replyBubbleListener.showReplyOption(message)
@@ -89,8 +83,4 @@ abstract class ChatbotMessageUnifyViewHolder(
     override val dateId: Int
         get() = R.id.date
 
-}
-
-interface TestListener {
-    fun onClick()
 }

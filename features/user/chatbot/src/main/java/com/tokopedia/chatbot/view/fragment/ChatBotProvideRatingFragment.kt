@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.analytics.ChatbotAnalytics
 import com.tokopedia.chatbot.databinding.ChatbotFragmentRatingProvideBinding
 import com.tokopedia.chatbot.di.ChatbotModule
@@ -18,7 +19,6 @@ import com.tokopedia.chatbot.di.DaggerChatbotComponent
 import com.tokopedia.csat_rating.data.BadCsatReasonListItem
 import com.tokopedia.csat_rating.fragment.BaseFragmentProvideRating
 import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
 import javax.inject.Inject
 
 private const val ACTION_KIRIM_CSAT_SMILEY_BUTTON_CLICKED = "click kirim csat smiley button"
@@ -39,6 +39,7 @@ class ChatBotProvideRatingFragment : BaseFragmentProvideRating() {
         const val TIME_STAMP = "time_stamp"
         const val minLength = 1
         const val maxLength = 29
+        const val minimumLines = 4
         fun newInstance(bundle: Bundle?): ChatBotProvideRatingFragment {
             val fragment = ChatBotProvideRatingFragment()
             fragment.arguments = bundle
@@ -60,13 +61,15 @@ class ChatBotProvideRatingFragment : BaseFragmentProvideRating() {
         findViews(view)
         super.onViewCreated(view, savedInstanceState)
         initChatbotInjector()
+        getBindingView().topBotReasonLayout.etState.minLine = minimumLines
+
         arguments?.let {
             if (!((it.getBoolean(IS_SHOW_OTHER_REASON)) ?: false)) {
                 getBindingView().topBotReasonLayout.reasonLayout.hide()
             } else {
                 getBindingView().topBotReasonLayout.botReasonText.text =
                     it.getString(OTHER_REASON_TITLE)
-                getBindingView().topBotReasonLayout.etState.addTextChangedListener(object :
+                getBindingView().topBotReasonLayout.etState.editText.addTextChangedListener(object :
                     TextWatcher {
                     override fun afterTextChanged(s: Editable?) {
 
@@ -90,9 +93,13 @@ class ChatBotProvideRatingFragment : BaseFragmentProvideRating() {
                         val reviewLength = s.toString().findLength()
                         updateReviewLength(reviewLength)
                         if (reviewLength in minLength..maxLength) {
-                            getBindingView().topBotReasonLayout.warningText.show()
+                            getBindingView().topBotReasonLayout.etState.setMessage(
+                                context?.getString(
+                                    R.string.minimum_30_character
+                                ) ?: ""
+                            )
                         } else {
-                            getBindingView().topBotReasonLayout.warningText.hide()
+                            getBindingView().topBotReasonLayout.etState.setMessage("")
                         }
                     }
 
@@ -145,7 +152,7 @@ class ChatBotProvideRatingFragment : BaseFragmentProvideRating() {
         chatbotAnalytics.get().eventClick(ACTION_KIRIM_CSAT_SMILEY_BUTTON_CLICKED)
         intent.putExtra(
             BOT_OTHER_REASON,
-            getBindingView().topBotReasonLayout.etState.text.toString()
+            getBindingView().topBotReasonLayout.etState.editText.text.toString()
         )
         intent.putExtra(TIME_STAMP, arguments?.getString(TIME_STAMP) ?: "")
         super.onSuccessSubmit(intent)
