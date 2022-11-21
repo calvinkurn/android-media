@@ -1995,8 +1995,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         shouldTrack: Boolean,
         isFullScreenButton: Boolean
     ) {
-        var finalId =
-            if (feedXCard.typename == TYPE_FEED_X_CARD_PLAY) feedXCard.playChannelID else feedXCard.id
+
 
         if (isFullScreenButton)
             feedAnalytics.eventClickFullScreenIconVOD(

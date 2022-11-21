@@ -1220,7 +1220,7 @@ class FeedAnalyticTracker
         val type = feedTrackerData.postType
         val isFollowed = feedTrackerData .isFollowed
         val shopId = feedTrackerData.shopId
-        val mediaType = feedTrackerData .shopId
+        val mediaType = feedTrackerData.mediaType
         var map = getCommonMap()
         map = map.plus(
             mapOf(
@@ -1248,7 +1248,7 @@ class FeedAnalyticTracker
         val type = feedTrackerData.postType
         val isFollowed = feedTrackerData .isFollowed
         val shopId = feedTrackerData.shopId
-        val mediaType = feedTrackerData .shopId
+        val mediaType = feedTrackerData.mediaType
 
         var map = getCommonMap()
         map = map.plus(
@@ -1645,11 +1645,11 @@ class FeedAnalyticTracker
                 getPostType(type, isFollowed, mediaType)
             ),
             KEY_EVENT_LABEL to String.format(
-                FORMAT_TWO_PARAM,
+                FORMAT_THREE_PARAM,
                 activityId,
                 shopId,
+                feedTrackerData.contentSlotValue),
 
-            ),
             KEY_BUSINESS_UNIT_EVENT to CONTENT,
             KEY_CURRENT_SITE_EVENT to MARKETPLACE,
 
