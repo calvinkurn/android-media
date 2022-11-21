@@ -2,7 +2,7 @@ package com.tokopedia.people.viewmodel.userprofile
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.people.Success
-import com.tokopedia.people.domains.repository.UserProfileRepository
+import com.tokopedia.people.data.UserProfileRepository
 import com.tokopedia.people.model.CommonModelBuilder
 import com.tokopedia.people.model.shoprecom.ShopRecomModelBuilder
 import com.tokopedia.people.model.userprofile.*
@@ -73,17 +73,6 @@ class UserProfilePlayVideoViewModelTest {
         coEvery { mockRepo.getShopRecom("") } returns mockShopRecom
 
         coEvery { mockRepo.getWhitelist() } returns mockHasAcceptTnc
-    }
-
-    @Test
-    fun `load profile with refresh - should emit LoadPlayVideo event`() {
-        robot.start {
-            recordEvent {
-                submitAction(UserProfileAction.LoadProfile(isRefresh = true))
-            } andThen {
-                last().assertEvent(UserProfileUiEvent.LoadPlayVideo)
-            }
-        }
     }
 
     @Test
