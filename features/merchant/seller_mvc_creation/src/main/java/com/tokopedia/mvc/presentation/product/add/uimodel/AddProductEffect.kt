@@ -7,6 +7,7 @@ import com.tokopedia.mvc.domain.entity.SelectedProduct
 import com.tokopedia.mvc.domain.entity.ShopShowcase
 import com.tokopedia.mvc.domain.entity.VoucherConfiguration
 import com.tokopedia.mvc.domain.entity.Warehouse
+import com.tokopedia.mvc.presentation.product.list.uimodel.ProductListEffect
 
 sealed class AddProductEffect {
     data class LoadNextPageSuccess(
@@ -46,4 +47,6 @@ sealed class AddProductEffect {
         val selectedProducts: List<Product>,
         val selectedParentProductImageUrls: List<String>
     ) : AddProductEffect()
+
+    data class ShowError(val error: Throwable) : AddProductEffect()
 }

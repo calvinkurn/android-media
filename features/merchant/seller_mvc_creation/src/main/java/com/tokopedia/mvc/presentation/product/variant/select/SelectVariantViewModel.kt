@@ -88,6 +88,7 @@ class SelectVariantViewModel @Inject constructor(
                 }
             },
             onError = { error ->
+                _uiEffect.tryEmit(SelectVariantEffect.ShowError(error))
                 _uiState.update { it.copy(isLoading = false, error = error) }
             }
         )

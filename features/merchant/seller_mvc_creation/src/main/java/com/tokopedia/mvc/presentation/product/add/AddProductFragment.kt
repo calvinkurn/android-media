@@ -27,6 +27,7 @@ import com.tokopedia.campaign.entity.LoadingItem
 import com.tokopedia.campaign.utils.extension.applyPaddingToLastItem
 import com.tokopedia.campaign.utils.extension.attachDividerItemDecoration
 import com.tokopedia.campaign.utils.extension.enable
+import com.tokopedia.campaign.utils.extension.showToasterError
 import com.tokopedia.kotlin.extensions.view.applyUnifyBackgroundColor
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
@@ -53,6 +54,7 @@ import com.tokopedia.mvc.presentation.product.add.uimodel.AddProductEffect
 import com.tokopedia.mvc.presentation.product.add.uimodel.AddProductEvent
 import com.tokopedia.mvc.presentation.product.add.uimodel.AddProductUiState
 import com.tokopedia.mvc.presentation.product.list.ProductListActivity
+import com.tokopedia.mvc.presentation.product.list.uimodel.ProductListEffect
 import com.tokopedia.mvc.presentation.product.variant.select.SelectVariantBottomSheet
 import com.tokopedia.mvc.util.constant.BundleConstant
 import com.tokopedia.mvc.util.constant.NumberConstant
@@ -251,6 +253,9 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
             }
             is AddProductEffect.AddNewProducts -> {
                 sendSelectedProductsToProductListActivity(effect.selectedProducts)
+            }
+            is AddProductEffect.ShowError -> {
+                binding?.cardUnify2?.showToasterError(effect.error)
             }
         }
     }

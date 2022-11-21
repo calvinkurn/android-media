@@ -18,6 +18,7 @@ import com.tokopedia.campaign.components.adapter.DelegateAdapterItem
 import com.tokopedia.campaign.utils.extension.applyPaddingToLastItem
 import com.tokopedia.campaign.utils.extension.attachDividerItemDecoration
 import com.tokopedia.campaign.utils.extension.showToaster
+import com.tokopedia.campaign.utils.extension.showToasterError
 import com.tokopedia.kotlin.extensions.view.applyUnifyBackgroundColor
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.invisible
@@ -253,6 +254,9 @@ class ProductListFragment : BaseDaggerFragment() {
                 } else {
                     sendResult(effect.selectedProducts)
                 }
+            }
+            is ProductListEffect.ShowError -> {
+                binding?.cardUnify2?.showToasterError(effect.error)
             }
         }
     }

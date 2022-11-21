@@ -12,6 +12,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.campaign.utils.extension.applyPaddingToLastItem
 import com.tokopedia.campaign.utils.extension.attachDividerItemDecoration
+import com.tokopedia.campaign.utils.extension.showToasterError
 import com.tokopedia.kotlin.extensions.view.applyUnifyBackgroundColor
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.isZero
@@ -167,6 +168,9 @@ class SelectVariantBottomSheet : BottomSheetUnify() {
             is SelectVariantEffect.ConfirmUpdateVariant -> {
                 onSelectButtonClick(effect.selectedVariantIds)
                 dismiss()
+            }
+            is SelectVariantEffect.ShowError -> {
+                binding?.cardUnify2?.showToasterError(effect.error)
             }
         }
     }

@@ -110,6 +110,7 @@ class ReviewVariantViewModel @Inject constructor(
                 }
             },
             onError = { error ->
+                _uiEffect.tryEmit(ReviewVariantEffect.ShowError(error))
                 _uiState.update { it.copy(isLoading = false, error = error) }
             }
         )

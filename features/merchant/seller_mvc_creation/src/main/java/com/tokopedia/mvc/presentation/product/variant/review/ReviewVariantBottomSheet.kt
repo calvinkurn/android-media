@@ -12,6 +12,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.campaign.utils.extension.applyPaddingToLastItem
 import com.tokopedia.campaign.utils.extension.attachDividerItemDecoration
+import com.tokopedia.campaign.utils.extension.showToasterError
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.applyUnifyBackgroundColor
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
@@ -210,6 +211,9 @@ class ReviewVariantBottomSheet: BottomSheetUnify() {
                     primaryButtonTitle = getString(R.string.smvc_proceed_delete),
                     onPrimaryButtonClick = { viewModel.processEvent(ReviewVariantEvent.ApplyRemoveVariant(effect.productId)) }
                 )
+            }
+            is ReviewVariantEffect.ShowError -> {
+                binding?.cardUnify2?.showToasterError(effect.error)
             }
         }
     }

@@ -25,6 +25,7 @@ import com.tokopedia.mvc.domain.usecase.VoucherValidationPartialUseCase
 import com.tokopedia.mvc.presentation.product.add.uimodel.AddProductEffect
 import com.tokopedia.mvc.presentation.product.add.uimodel.AddProductEvent
 import com.tokopedia.mvc.presentation.product.add.uimodel.AddProductUiState
+import com.tokopedia.mvc.presentation.product.list.uimodel.ProductListEffect
 import com.tokopedia.mvc.util.constant.NumberConstant
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import kotlinx.coroutines.async
@@ -119,6 +120,7 @@ class AddProductViewModel @Inject constructor(
 
             },
             onError = { error ->
+                _uiEffect.tryEmit(AddProductEffect.ShowError(error))
                 _uiState.update { it.copy(error = error) }
             }
         )
@@ -167,6 +169,7 @@ class AddProductViewModel @Inject constructor(
 
             },
             onError = { error ->
+                _uiEffect.tryEmit(AddProductEffect.ShowError(error))
                 _uiState.update { it.copy(error = error) }
             }
         )
@@ -498,6 +501,7 @@ class AddProductViewModel @Inject constructor(
                 _uiState.update { it.copy(shopShowcases = sellerCreatedShowcasesOnly) }
             },
             onError = { error ->
+                _uiEffect.tryEmit(AddProductEffect.ShowError(error))
                 _uiState.update { it.copy(error = error) }
             }
         )

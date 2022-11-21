@@ -91,11 +91,11 @@ class ProductListViewModel @Inject constructor(
                 val enableCheckbox = pageMode == PageMode.CREATE
 
                 val updatedProducts = productsResponse.products.map { parentProduct ->
-                    val selectedVariants = findSelectedVariantsByParentId(parentProduct.id, selectedProducts)
+                    val variantIds = findVariantsIdsByParentId(parentProduct.id, selectedProducts)
 
                     parentProduct.copy(
                         originalVariants = toOriginalVariant(parentProduct.id, selectedProducts),
-                        selectedVariantsIds = selectedVariants,
+                        selectedVariantsIds = variantIds,
                         enableCheckbox = enableCheckbox
                     )
                 }
@@ -111,6 +111,7 @@ class ProductListViewModel @Inject constructor(
 
             },
             onError = { error ->
+                _uiEffect.tryEmit(ProductListEffect.ShowError(error))
                 _uiState.update { it.copy(isLoading = false, error = error) }
             }
         )
@@ -128,7 +129,7 @@ class ProductListViewModel @Inject constructor(
     }
 
 
-    private fun findSelectedVariantsByParentId(
+    private fun findVariantsIdsByParentId(
         parentProductId: Long,
         selectedProducts: List<SelectedProduct>
     ): Set<Long> {
