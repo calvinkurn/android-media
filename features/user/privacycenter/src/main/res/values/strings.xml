@@ -66,17 +66,17 @@
     <string name="dsar_section_description">Download datamu yang tersimpan di Tokopedia</string>
 
     <!--Search History-->
-    <string name="search_history_title">Riwayat Pencarian</string>
-    <string name="search_history_latest_search">Terakhir dicari</string>
-    <string name="search_history_delete_all">Hapus Semua</string>
-    <string name="search_history_empty_list">Tidak ada riwayat pencarian terakhir</string>
-    <string name="search_history_local_load_title">Konten gagal ditampilkan</string>
-    <string name="search_history_local_load_subtitle">Klik ikon di samping buat coba lagi.</string>
-    <string name="search_history_dialog_title">Yakin hapus semua riwayat terakhir dicari?</string>
-    <string name="search_history_dialog_subtitle">Riwayat yang akan dihapus tidak dapat dikembalikan</string>
-    <string name="search_history_dialog_primary">Hapus Semua</string>
-    <string name="search_history_dialog_secondary">Kembali</string>
-    <string name="search_history_message_failed_delete_all">Gagal menghapus semua riwayat pencarian </string>
-    <string name="search_history_message_failed_delete_one">Gagal menghapus riwayat pencarian </string>
+    <string name="privacy_center_search_history_title">Riwayat Pencarian</string>
+    <string name="privacy_center_search_history_latest_search">Terakhir dicari</string>
+    <string name="privacy_center_search_history_delete_all">Hapus Semua</string>
+    <string name="privacy_center_search_history_empty_list">Tidak ada riwayat pencarian terakhir</string>
+    <string name="privacy_center_search_history_local_load_title">Konten gagal ditampilkan</string>
+    <string name="privacy_center_search_history_local_load_subtitle">Klik ikon di samping buat coba lagi.</string>
+    <string name="privacy_center_search_history_dialog_title">Yakin hapus semua riwayat terakhir dicari?</string>
+    <string name="privacy_center_search_history_dialog_subtitle">Riwayat yang akan dihapus tidak dapat dikembalikan</string>
+    <string name="privacy_center_search_history_dialog_primary">Hapus Semua</string>
+    <string name="privacy_center_search_history_dialog_secondary">Kembali</string>
+    <string name="privacy_center_search_history_message_failed_delete_all">Gagal menghapus semua riwayat pencarian </string>
+    <string name="privacy_center_search_history_message_failed_delete_one">Gagal menghapus riwayat pencarian </string>
 
 </resources>

@@ -3,6 +3,17 @@ package com.tokopedia.privacycenter.common.utils
 import java.io.UnsupportedEncodingException
 import java.net.URLEncoder
 
+/*
+* This function use to generate map uri param to string
+* ex:
+* paramMap = mapOf(
+*   "device" to "android,
+*   "source" to "search"
+* )
+*
+* will convert to:
+* device=android&source=searchbar
+* */
 fun <T> generateUrlParamString(paramMap: Map<String?, T>): String {
     if (mapIsEmpty(paramMap)) {
         return ""

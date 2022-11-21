@@ -111,9 +111,9 @@ class SearchHistoryFragment : BaseDaggerFragment() {
 
         val message = throwable?.getMessage(requireActivity())
             ?: if (clearAll) {
-                requireActivity().getString(R.string.search_history_message_failed_delete_all)
+                requireActivity().getString(R.string.privacy_center_search_history_message_failed_delete_all)
             } else {
-                requireActivity().getString(R.string.search_history_message_failed_delete_one)
+                requireActivity().getString(R.string.privacy_center_search_history_message_failed_delete_one)
             }
         showToasterError(message)
     }
@@ -170,8 +170,9 @@ class SearchHistoryFragment : BaseDaggerFragment() {
         }
 
         binding?.localLoad?.apply {
-            localLoadTitle = requireActivity().getString(R.string.search_history_local_load_title)
-            localLoadDescription = requireActivity().getString(R.string.search_history_local_load_subtitle)
+            localLoadTitle = requireActivity().getString(R.string.privacy_center_search_history_local_load_title)
+            localLoadDescription =
+                requireActivity().getString(R.string.privacy_center_search_history_local_load_subtitle)
         }
 
         val message = throwable.getMessage(requireActivity())
@@ -180,10 +181,10 @@ class SearchHistoryFragment : BaseDaggerFragment() {
 
     private fun showDialogDeleteAll() {
         DialogUnify(requireActivity(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
-            setTitle(getString(R.string.search_history_dialog_title))
-            setDescription(getString(R.string.search_history_dialog_subtitle))
-            setPrimaryCTAText(getString(R.string.search_history_dialog_primary))
-            setSecondaryCTAText(getString(R.string.search_history_dialog_secondary))
+            setTitle(getString(R.string.privacy_center_search_history_dialog_title))
+            setDescription(getString(R.string.privacy_center_search_history_dialog_subtitle))
+            setPrimaryCTAText(getString(R.string.privacy_center_search_history_dialog_primary))
+            setSecondaryCTAText(getString(R.string.privacy_center_search_history_dialog_secondary))
 
             setPrimaryCTAClickListener {
                 dismiss()
