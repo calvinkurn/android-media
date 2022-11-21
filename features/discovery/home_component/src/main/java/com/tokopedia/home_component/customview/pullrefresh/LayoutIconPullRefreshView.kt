@@ -7,18 +7,11 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.HapticFeedbackConstants
 import android.view.View
-import android.view.animation.AccelerateDecelerateInterpolator
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.view.animation.PathInterpolatorCompat
 import com.tokopedia.home_component.R
-import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.kotlin.extensions.view.invisible
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.kotlin.extensions.view.dpToPx
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.LoaderUnify
 import kotlin.math.roundToInt
@@ -57,13 +50,15 @@ class LayoutIconPullRefreshView : ConstraintLayout, LayoutIconPullRefreshListene
     private var offsetY: Float = 0.0f
     private var pullRefreshIcon: ImageUnify? = null
     private var heightLayoutScroll: Int = 0
+    private val pathInterpolator = PathInterpolatorCompat.create(.2f, .64f, .21f, 1f)
 
     companion object {
         private const val MAXIMUM_HEIGHT_SCROLL = 120
         private const val HEIGHT_LOADING = 56
         private const val MAXIMUM_PROGRESS_REFRESH = 1
-        private const val TIME_DURATION_ANIMATION_HEIGHT: Long = 200
+        private const val TIME_DURATION_ANIMATION_HEIGHT: Long = 120
         private const val HEIGHT_LAYOUT_GONE = 0
+        private const val MAXIMUM_ALPHA = 1.0
         private const val TYPE_WHITE = 0
         private const val TYPE_GREEN = 1
     }
@@ -124,6 +119,7 @@ class LayoutIconPullRefreshView : ConstraintLayout, LayoutIconPullRefreshListene
     override fun startRefreshing() {
         offsetY = 0f
         progressRefresh = 0f
+        loaderPullRefresh?.alpha = 1f
         containerIconPullRefresh?.visible()
         setLayoutHeight(
             heightLayoutScroll.dpToPx(resources.displayMetrics),
@@ -147,6 +143,9 @@ class LayoutIconPullRefreshView : ConstraintLayout, LayoutIconPullRefreshListene
             .setDuration(TIME_DURATION_ANIMATION_HEIGHT)
         slideAnimator.addUpdateListener { animation ->
             val value = animation.animatedValue as Int
+            if (targetHeight == HEIGHT_LAYOUT_GONE) {
+                loaderPullRefresh?.alpha = (value * MAXIMUM_ALPHA / currentHeight).toFloat()
+            }
             if (value == HEIGHT_LAYOUT_GONE) {
                 callback.invoke()
             }
@@ -155,8 +154,7 @@ class LayoutIconPullRefreshView : ConstraintLayout, LayoutIconPullRefreshListene
         }
         val set = AnimatorSet()
         set.play(slideAnimator)
-//        set.interpolator = AccelerateDecelerateInterpolator()
-        set.interpolator = PathInterpolatorCompat.create(.63f, .01f, .29f, 1f)
+        set.interpolator = pathInterpolator
         set.start()
     }
 
