@@ -34,6 +34,7 @@ class EPharmacyActivity : BaseSimpleActivity(), HasComponent<EPharmacyComponent>
     private var orderId = DEFAULT_ZERO_VALUE
     private var checkoutId = ""
     private var entryPoint = ""
+    private var source = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         ePharmacyComponent.inject(this)
@@ -51,11 +52,13 @@ class EPharmacyActivity : BaseSimpleActivity(), HasComponent<EPharmacyComponent>
     override fun getNewFragment(): Fragment {
         extractOrderId()
         extractCheckoutId()
+        extractSource()
         extractEntryPoint()
         return UploadPrescriptionFragment.newInstance(Bundle().apply {
             putLong(EXTRA_ORDER_ID_LONG, orderId)
             putString(EXTRA_CHECKOUT_ID_STRING, checkoutId)
             putString(EXTRA_ENTRY_POINT_STRING, entryPoint)
+            putString(EXTRA_SOURCE_STRING, source)
         })
     }
 
@@ -73,6 +76,10 @@ class EPharmacyActivity : BaseSimpleActivity(), HasComponent<EPharmacyComponent>
         checkoutId = if (intent.hasExtra(EXTRA_CHECKOUT_ID_STRING)) {
             intent.getStringExtra(EXTRA_CHECKOUT_ID_STRING) ?: ""
         } else ""
+    }
+
+    private fun extractSource() {
+       source = intent.getStringExtra(EXTRA_SOURCE_STRING) ?: ENTRY_POINT_CHECKOUT.lowercase()
     }
 
     private fun extractEntryPoint() {

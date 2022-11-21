@@ -25,6 +25,7 @@ import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.network.constant.ResponseStatus
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.tokofood.common.domain.response.CartTokoFoodData
+import com.tokopedia.tokofood.common.presentation.listener.TokofoodScrollChangedListener
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateParam
 import com.tokopedia.unifycomponents.QuantityEditorUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -123,8 +124,8 @@ object TokofoodExt {
     }
 
     fun View.addAndReturnImpressionListener(holder: ImpressHolder,
-                                            onView: () -> Unit
-    ): ViewTreeObserver.OnScrollChangedListener {
+                                            listener: TokofoodScrollChangedListener,
+                                            onView: () -> Unit) {
         val scrollChangedListener = object : ViewTreeObserver.OnScrollChangedListener {
             override fun onScrollChanged() {
                 if (!holder.isInvoke && viewIsVisible(this@addAndReturnImpressionListener)) {
@@ -137,7 +138,7 @@ object TokofoodExt {
             }
         }
         viewTreeObserver?.addOnScrollChangedListener(scrollChangedListener)
-        return scrollChangedListener
+        listener.onScrollChangedListenerAdded(scrollChangedListener)
     }
 
     private fun viewIsVisible(view: View?): Boolean {
