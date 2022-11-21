@@ -57,4 +57,15 @@
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="heading_6" />
 
+    <com.tokopedia.unifycomponents.Label
+        android:id="@+id/labelBuyerOrderDetailScheduleDelivery"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        app:labelType="general_light_grey"
+        app:layout_constraintStart_toStartOf="@id/tvBuyerOrderDetailStatusOrder"
+        app:layout_constraintTop_toBottomOf="@id/buyerOrderDetailIndicator"
+        tools:text="Kirim Sesuai Jadwal" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
