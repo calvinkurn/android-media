@@ -14,6 +14,7 @@ import com.tokopedia.filter.newdynamicfilter.analytics.FilterTrackingData
 import com.tokopedia.filter.newdynamicfilter.controller.FilterController
 import com.tokopedia.search.analytics.SearchTracking
 import com.tokopedia.search.di.qualifier.SearchContext
+import com.tokopedia.search.di.scope.SearchScope
 import com.tokopedia.search.result.product.ProductListParameterListener
 import com.tokopedia.search.result.product.ScreenNameProvider
 import com.tokopedia.search.result.product.SearchParameterProvider
@@ -24,8 +25,10 @@ import com.tokopedia.search.utils.contextprovider.ContextProvider
 import com.tokopedia.search.utils.contextprovider.WeakReferenceContextProvider
 import com.tokopedia.search.utils.getUserId
 import com.tokopedia.user.session.UserSessionInterface
+import javax.inject.Inject
 
-class BottomSheetFilterViewDelegate(
+@SearchScope
+class BottomSheetFilterViewDelegate @Inject constructor(
     @SearchContext
     context: Context,
     fragmentProvider: FragmentProvider,

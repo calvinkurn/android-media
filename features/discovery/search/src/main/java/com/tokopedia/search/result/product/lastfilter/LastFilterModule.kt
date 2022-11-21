@@ -1,18 +1,15 @@
 package com.tokopedia.search.result.product.lastfilter
 
 import com.tokopedia.search.di.scope.SearchScope
+import dagger.Binds
 import dagger.Module
-import dagger.Provides
 
 @Module
-object LastFilterModule {
+abstract class LastFilterModule {
 
-    @JvmStatic
-    @Provides
     @SearchScope
-    fun provideLastFilterListener(
+    @Binds
+    abstract fun bindLastFilterListener(
         lastFilterListener: LastFilterListenerDelegate
-    ): LastFilterListener {
-        return lastFilterListener
-    }
+    ): LastFilterListener
 }

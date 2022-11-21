@@ -4,6 +4,7 @@ import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.constants.SearchConstant
 import com.tokopedia.discovery.common.constants.SearchConstant.SearchProduct.GET_PRODUCT_COUNT_USE_CASE
 import com.tokopedia.filter.common.data.DynamicFilterModel
+import com.tokopedia.search.di.scope.SearchScope
 import com.tokopedia.search.result.product.QueryKeyProvider
 import com.tokopedia.search.result.product.chooseaddress.ChooseAddressPresenterDelegate
 import com.tokopedia.search.result.product.filter.dynamicfilter.MutableDynamicFilterModelProvider
@@ -12,9 +13,11 @@ import com.tokopedia.search.utils.createSearchProductDefaultFilter
 import com.tokopedia.usecase.UseCase
 import dagger.Lazy
 import rx.Subscriber
+import javax.inject.Inject
 import javax.inject.Named
 
-class BottomSheetFilterPresenterDelegate(
+@SearchScope
+class BottomSheetFilterPresenterDelegate @Inject constructor(
     private val view: BottomSheetFilterView,
     private val queryKeyProvider: QueryKeyProvider,
     private val requestParamsGenerator: RequestParamsGenerator,
