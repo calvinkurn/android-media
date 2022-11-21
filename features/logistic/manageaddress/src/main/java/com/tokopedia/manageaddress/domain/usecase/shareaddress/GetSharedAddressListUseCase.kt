@@ -6,7 +6,6 @@ import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.logisticCommon.data.query.KeroLogisticQuery
-import com.tokopedia.manageaddress.domain.model.shareaddress.GetSharedAddressListParam
 import com.tokopedia.manageaddress.domain.response.shareaddress.GetSharedAddressListResponse
 import javax.inject.Inject
 

@@ -41,13 +41,23 @@ class FromFriendViewModel @Inject constructor(
     val deleteAddressState: LiveData<FromFriendAddressActionState>
         get() = _deleteAddressState
 
-    var isCancelDelete = false
+    private var isCancelDelete = false
     val addressList = mutableListOf<RecipientAddressModel>()
     private val temporaryList = arrayListOf<RecipientAddressModel>()
+
+    val selectedAddressList: List<RecipientAddressModel>
+        get() = addressList.filter { it.isSelected }
+
+    private val unSelectAddressList: List<RecipientAddressModel>
+        get() = addressList.filter { it.isSelected.not() }
+
+    private val senderUserIds: List<String>
+        get() = selectedAddressList.map { it.id }
+
     val isHaveAddressList: Boolean
         get() = addressList.isNotEmpty()
     val isAllSelected: Boolean
-        get() = getSelectedAddressList().size == addressList.size
+        get() = selectedAddressList.size == addressList.size
     var isNeedUpdateAllList = true
     var isShareAddressFromNotif = false
     var source = ""
@@ -59,7 +69,8 @@ class FromFriendViewModel @Inject constructor(
             val result = sharedAddressMapper.call(response)
             updateAddressList(result.listAddress)
             showGetShareAddressLoading(false)
-            _getFromFriendAddressState.value = FromFriendAddressListState.Success(response.keroGetSharedAddressList)
+            _getFromFriendAddressState.value =
+                FromFriendAddressListState.Success(response.keroGetSharedAddressList)
         }, onError = {
             _getFromFriendAddressState.value =
                 FromFriendAddressListState.Fail(it, it.message.orEmpty())
@@ -76,19 +87,11 @@ class FromFriendViewModel @Inject constructor(
         _getFromFriendAddressState.value = FromFriendAddressListState.Loading(isShowLoading)
     }
 
-    fun getSelectedAddressList(): List<RecipientAddressModel> {
-        return addressList.filter { it.isSelected }
-    }
-
-    private fun getSenderUserIds(): List<String> {
-        return getSelectedAddressList().map { it.id }
-    }
-
     fun saveAddress() {
         launchCatchError(block = {
             showSaveAddressLoading(true)
             val param = SenderShareAddressParam(
-                senderUserIds = getSenderUserIds(),
+                senderUserIds = senderUserIds,
                 source = source
             )
             val result = saveAddressUseCase(param)
@@ -111,11 +114,12 @@ class FromFriendViewModel @Inject constructor(
     fun deleteAddress() = launch {
         isCancelDelete = false
         val param = SenderShareAddressParam(
-            senderUserIds = getSenderUserIds(),
+            senderUserIds = senderUserIds,
             source = source
         )
-        updateTemporaryList()
-        updateAddressList(getUnSelectAddressList().toTypedArray())
+        temporaryList.clear()
+        temporaryList.addAll(addressList.toTypedArray())
+        updateAddressList(unSelectAddressList.toTypedArray())
         onDeletingAddress(true)
         delay(TOAST_SHOWING_TIME)
 
@@ -145,15 +149,6 @@ class FromFriendViewModel @Inject constructor(
         isCancelDelete = true
         updateAddressList(temporaryList)
         onDeletingAddress(false)
-    }
-
-    private fun updateTemporaryList() {
-        temporaryList.clear()
-        temporaryList.addAll(addressList.toTypedArray())
-    }
-
-    private fun getUnSelectAddressList(): List<RecipientAddressModel> {
-        return addressList.filter { it.isSelected.not() }
     }
 
     private fun updateAddressList(currentList: Array<RecipientAddressModel>) {

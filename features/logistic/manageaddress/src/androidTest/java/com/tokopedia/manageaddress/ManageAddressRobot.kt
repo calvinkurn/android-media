@@ -17,7 +17,6 @@ import com.tokopedia.test.application.espresso_component.CommonMatcher.firstView
 import com.tokopedia.test.application.matcher.RecyclerViewMatcher
 import org.hamcrest.CoreMatchers.allOf
 import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.core.AllOf
 
 class ManageAddressRobot {
 

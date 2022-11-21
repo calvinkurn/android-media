@@ -1,7 +1,9 @@
 package com.tokopedia.manageaddress.ui.manageaddress
 
+import android.os.Bundle
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
+import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.PARAM_SOURCE
 import com.tokopedia.localizationchooseaddress.data.repository.ChooseAddressRepository
 import com.tokopedia.localizationchooseaddress.domain.mapper.ChooseAddressMapper
 import com.tokopedia.localizationchooseaddress.domain.model.ChosenAddressModel
@@ -26,6 +28,8 @@ import com.tokopedia.manageaddress.domain.usecase.shareaddress.ValidateShareAddr
 import com.tokopedia.manageaddress.domain.usecase.shareaddress.ValidateShareAddressAsSenderUseCase
 import com.tokopedia.manageaddress.ui.uimodel.ValidateShareAddressState
 import com.tokopedia.manageaddress.util.ManageAddressConstant
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.RollenceKey.KEY_SHARE_ADDRESS_LOGI
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -49,19 +53,27 @@ class ManageAddressViewModelTest {
 
     private val getPeopleAddressUseCase: GetAddressCornerUseCase = mockk(relaxed = true)
     private val deletePeopleAddressUseCase: DeletePeopleAddressUseCase = mockk(relaxed = true)
-    private val setDefaultPeopleAddressUseCase = mockk<SetDefaultPeopleAddressUseCase>(relaxed = true)
+    private val setDefaultPeopleAddressUseCase =
+        mockk<SetDefaultPeopleAddressUseCase>(relaxed = true)
     private val eligibleForAddressUseCase: EligibleForAddressUseCase = mockk(relaxed = true)
     private val chooseAddressRepo: ChooseAddressRepository = mockk(relaxed = true)
     private val chooseAddressMapper: ChooseAddressMapper = mockk(relaxed = true)
     private val chosenAddressObserver: Observer<Result<ChosenAddressModel>> = mockk(relaxed = true)
-    private val eligibleForAddressFeatureObserver: Observer<Result<EligibleForAddressFeatureModel>> = mockk(relaxed = true)
-    private val validateShareAddressAsReceiverUseCase: ValidateShareAddressAsReceiverUseCase = mockk(relaxed = true)
-    private val validateShareAddressAsSenderUseCase: ValidateShareAddressAsSenderUseCase = mockk(relaxed = true)
+    private val eligibleForAddressFeatureObserver: Observer<Result<EligibleForAddressFeatureModel>> =
+        mockk(relaxed = true)
+    private val validateShareAddressAsReceiverUseCase: ValidateShareAddressAsReceiverUseCase =
+        mockk(relaxed = true)
+    private val validateShareAddressAsSenderUseCase: ValidateShareAddressAsSenderUseCase =
+        mockk(relaxed = true)
 
-    private var observerManageAddressState = mockk<Observer<ManageAddressState<String>>>(relaxed = true)
-    private var observerManageAddressStateAddressList = mockk<Observer<ManageAddressState<AddressListModel>>>(relaxed = true)
-    private var observerResultRemovedAddress = mockk<Observer<ManageAddressState<String>>>(relaxed = true)
-    private var observerValidateShareAddressState = mockk<Observer<ValidateShareAddressState>>(relaxed = true)
+    private var observerManageAddressState =
+        mockk<Observer<ManageAddressState<String>>>(relaxed = true)
+    private var observerManageAddressStateAddressList =
+        mockk<Observer<ManageAddressState<AddressListModel>>>(relaxed = true)
+    private var observerResultRemovedAddress =
+        mockk<Observer<ManageAddressState<String>>>(relaxed = true)
+    private var observerValidateShareAddressState =
+        mockk<Observer<ValidateShareAddressState>>(relaxed = true)
     private val mockThrowable = mockk<Throwable>(relaxed = true)
 
 
@@ -82,17 +94,29 @@ class ManageAddressViewModelTest {
         )
         manageAddressViewModel.getChosenAddress.observeForever(chosenAddressObserver)
         manageAddressViewModel.setChosenAddress.observeForever(chosenAddressObserver)
-        manageAddressViewModel.eligibleForAddressFeature.observeForever(eligibleForAddressFeatureObserver)
+        manageAddressViewModel.eligibleForAddressFeature.observeForever(
+            eligibleForAddressFeatureObserver
+        )
         manageAddressViewModel.setDefault.observeForever(observerManageAddressState)
         manageAddressViewModel.addressList.observeForever(observerManageAddressStateAddressList)
         manageAddressViewModel.resultRemovedAddress.observeForever(observerResultRemovedAddress)
-        manageAddressViewModel.validateShareAddressState.observeForever(observerValidateShareAddressState)
+        manageAddressViewModel.validateShareAddressState.observeForever(
+            observerValidateShareAddressState
+        )
     }
 
     @Test
     fun `Search Address Success`() {
         val response = AddressListModel()
-        every { getPeopleAddressUseCase.execute(any(), any(), any(), any(), any()) } returns Observable.just(response).doOnSubscribe {
+        every {
+            getPeopleAddressUseCase.execute(
+                any(),
+                any(),
+                any(),
+                any(),
+                any()
+            )
+        } returns Observable.just(response).doOnSubscribe {
             assertEquals(ManageAddressState.Loading, manageAddressViewModel.addressList.value)
         }
 
@@ -104,17 +128,37 @@ class ManageAddressViewModelTest {
     @Test
     fun `Search Address Failed`() {
         val response = Throwable()
-        every { getPeopleAddressUseCase.execute(any(), any(), any(), any(), any()) } returns Observable.error(response)
+        every {
+            getPeopleAddressUseCase.execute(
+                any(),
+                any(),
+                any(),
+                any(),
+                any()
+            )
+        } returns Observable.error(response)
 
         manageAddressViewModel.searchAddress("", -1, -1, true)
 
-        assertEquals(ManageAddressState.Fail(response, ""), manageAddressViewModel.addressList.value)
+        assertEquals(
+            ManageAddressState.Fail(response, ""),
+            manageAddressViewModel.addressList.value
+        )
     }
 
     @Test
     fun `Load More Address Success`() {
         val response = AddressListModel()
-        every { getPeopleAddressUseCase.loadMore(any(), any(), any(), any(), any(), any()) } returns Observable.just(response)
+        every {
+            getPeopleAddressUseCase.loadMore(
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any()
+            )
+        } returns Observable.just(response)
             .doOnSubscribe {
                 assertEquals(ManageAddressState.Loading, manageAddressViewModel.addressList.value)
             }
@@ -127,11 +171,23 @@ class ManageAddressViewModelTest {
     @Test
     fun `Load More Address Failed`() {
         val response = Throwable()
-        every { getPeopleAddressUseCase.loadMore(any(), any(), any(), any(), any(), any()) } returns Observable.error(response)
+        every {
+            getPeopleAddressUseCase.loadMore(
+                any(),
+                any(),
+                any(),
+                any(),
+                any(),
+                any()
+            )
+        } returns Observable.error(response)
 
         manageAddressViewModel.loadMore(-1, -1, true)
 
-        assertEquals(ManageAddressState.Fail(response, ""), manageAddressViewModel.addressList.value)
+        assertEquals(
+            ManageAddressState.Fail(response, ""),
+            manageAddressViewModel.addressList.value
+        )
     }
 
     @Test
@@ -181,7 +237,12 @@ class ManageAddressViewModelTest {
 
     @Test
     fun `Get Chosen Address Success`() {
-        coEvery { chooseAddressRepo.getStateChosenAddress(any(), any()) } returns GetStateChosenAddressQglResponse()
+        coEvery {
+            chooseAddressRepo.getStateChosenAddress(
+                any(),
+                any()
+            )
+        } returns GetStateChosenAddressQglResponse()
         manageAddressViewModel.getStateChosenAddress("address")
         verify { chosenAddressObserver.onChanged(match { it is Success }) }
     }
@@ -189,7 +250,12 @@ class ManageAddressViewModelTest {
 
     @Test
     fun `Get Chosen Address Fail`() {
-        coEvery { chooseAddressRepo.getStateChosenAddress(any(), any()) } throws Throwable("test error")
+        coEvery {
+            chooseAddressRepo.getStateChosenAddress(
+                any(),
+                any()
+            )
+        } throws Throwable("test error")
         manageAddressViewModel.getStateChosenAddress("address")
         verify { chosenAddressObserver.onChanged(match { it is Fail }) }
     }
@@ -245,7 +311,9 @@ class ManageAddressViewModelTest {
         coEvery {
             eligibleForAddressUseCase.eligibleForAddressFeature(any(), any(), featureId)
         } answers {
-            firstArg<(KeroAddrIsEligibleForAddressFeatureData) -> Unit>().invoke(KeroAddrIsEligibleForAddressFeatureData())
+            firstArg<(KeroAddrIsEligibleForAddressFeatureData) -> Unit>().invoke(
+                KeroAddrIsEligibleForAddressFeatureData()
+            )
         }
     }
 
@@ -263,10 +331,11 @@ class ManageAddressViewModelTest {
         val mockResponse = spyk(
             ValidateShareAddressAsReceiverResponse(
                 keroValidateShareAddressAsReceiver = spyk(
-                ValidateShareAddressAsReceiverResponse.ValidateShareAddressData(
-                    isValid = true
+                    ValidateShareAddressAsReceiverResponse.ValidateShareAddressData(
+                        isValid = true
+                    )
                 )
-            ))
+            )
         )
 
         coEvery {
@@ -294,7 +363,8 @@ class ManageAddressViewModelTest {
                     ValidateShareAddressAsReceiverResponse.ValidateShareAddressData(
                         isValid = false
                     )
-                ))
+                )
+            )
         )
 
         coEvery {
@@ -333,7 +403,8 @@ class ManageAddressViewModelTest {
                         isValid = true,
                         receiverUserName = receiverUserName
                     )
-                ))
+                )
+            )
         )
 
         coEvery {
@@ -345,7 +416,11 @@ class ManageAddressViewModelTest {
         assertTrue(manageAddressViewModel.isNeedToShareAddress)
         assertTrue(manageAddressViewModel.isNeedValidateShareAddress)
         verify {
-            observerValidateShareAddressState.onChanged(ValidateShareAddressState.Success(receiverUserName))
+            observerValidateShareAddressState.onChanged(
+                ValidateShareAddressState.Success(
+                    receiverUserName
+                )
+            )
         }
     }
 
@@ -358,7 +433,8 @@ class ManageAddressViewModelTest {
                     ValidateShareAddressAsSenderResponse.ValidateShareAddressData(
                         isValid = false
                     )
-                ))
+                )
+            )
         )
 
         coEvery {
@@ -451,5 +527,33 @@ class ManageAddressViewModelTest {
         verify {
             observerValidateShareAddressState.onChanged(ValidateShareAddressState.Success())
         }
+    }
+
+    @Test
+    fun `verify when setupDataFromArgument is correct`() {
+        // Given
+        val ruid = "123"
+        val suid = "456"
+        val source = "source"
+        mockkStatic(RemoteConfigInstance::class)
+
+        val bundle = mockk<Bundle>()
+        every {
+            RemoteConfigInstance.getInstance().abTestPlatform.getString(
+                KEY_SHARE_ADDRESS_LOGI,
+                ""
+            )
+        } returns KEY_SHARE_ADDRESS_LOGI
+        every { bundle.getString(ManageAddressConstant.QUERY_PARAM_RUID) } returns ruid
+        every { bundle.getString(ManageAddressConstant.QUERY_PARAM_SUID) } returns suid
+        every { bundle.getString(PARAM_SOURCE) } returns source
+
+        // When
+        manageAddressViewModel.setupDataFromArgument(bundle)
+
+        // Then
+        assertEquals(manageAddressViewModel.source, source)
+        assertEquals(manageAddressViewModel.receiverUserId, ruid)
+        assertEquals(manageAddressViewModel.senderUserId, suid)
     }
 }

@@ -700,8 +700,8 @@ class MainAddressFragment :
             setOnDismissListener { dismiss() }
         }
 
-        fragmentManager?.let {
-            bottomSheetLainnya?.show(it, "show")
+        activity?.apply {
+            bottomSheetLainnya?.show(supportFragmentManager, "show")
         }
     }
 

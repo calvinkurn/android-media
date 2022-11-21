@@ -33,7 +33,8 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 
-class FromFriendFragment : BaseDaggerFragment(),
+class FromFriendFragment :
+    BaseDaggerFragment(),
     ManageAddressItemAdapter.FromFriendAddressItemAdapterListener {
 
     @Inject
@@ -71,12 +72,9 @@ class FromFriendFragment : BaseDaggerFragment(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         initArguments()
-        initCbAllAddress()
-        initRequestAddressView()
-        initRecyclerView()
+        bindView()
         initObserver()
-        initButtonClickListener()
-        loadAddressList()
+        viewModel.getFromFriendAddressList()
     }
 
     private fun initArguments() {
@@ -86,178 +84,29 @@ class FromFriendFragment : BaseDaggerFragment(),
         viewModel.source = arguments?.getString(PARAM_SOURCE, "") ?: ""
     }
 
-    private fun initCbAllAddress() {
-        binding?.cbAllAddress?.setOnCheckedChangeListener { _, isChecked ->
-            if (viewModel.isNeedUpdateAllList) {
-                ShareAddressAnalytics.onCheckAllAddress(isChecked)
-                viewModel.setAllListSelected(isChecked)
-                refreshListAndButton()
-            } else {
-                viewModel.isNeedUpdateAllList = true
-            }
-        }
-    }
-
-    private fun initRequestAddressView() {
-        binding?.cardRequestAddress?.clRequestAddress?.setOnClickListener {
-            ShareAddressAnalytics.onClickRequestAddress()
-            showRequestAddressBottomSheet()
-        }
-    }
-
-    private fun initRecyclerView() {
-        binding?.rvAddressList?.let {
-            adapter.initAddressList(viewModel.addressList)
-            it.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-            it.adapter = adapter
-        }
-    }
-
-    private fun initObserver() {
-        viewModel.getFromFriendAddressState.observe(
-            viewLifecycleOwner,
-            Observer {
-                when (it) {
-                    is FromFriendAddressListState.Success -> {
-                        showTotalAddressTicker(it.data?.message)
-                        onSuccessGetList()
-                        updateTabText(it.data?.numberOfRequest)
-                    }
-                    is FromFriendAddressListState.Fail -> onFailedGetList(it.throwable)
-                    is FromFriendAddressListState.Loading -> onLoadingGetList(it.isShowLoading)
-                }
-            }
-        )
-
-        viewModel.saveAddressState.observe(
-            viewLifecycleOwner,
-            Observer {
-                when (it) {
-                    is FromFriendAddressActionState.Success -> onSuccessSaveAddress(it.message)
-                    is FromFriendAddressActionState.Fail -> {
-                        trackOnClickSaveButton(isSuccess = false)
-                        showToaster(it.errorMessage, Toaster.TYPE_ERROR)
-                    }
-                    is FromFriendAddressActionState.Loading -> onLoadingSaveAddress(it.isShowLoading)
-                }
-            }
-        )
-
-        viewModel.deleteAddressState.observe(
-            viewLifecycleOwner,
-            Observer {
-                when (it) {
-                    is FromFriendAddressActionState.Success -> onSuccessDeleteAddress()
-                    is FromFriendAddressActionState.Fail -> onFailedDeleteAddress(it.errorMessage)
-                    is FromFriendAddressActionState.Loading -> refreshListAndButton()
-                }
-            }
-        )
-    }
-
-    private fun refreshListAndButton() {
-        showCbAllAddress()
-        refreshList()
-        updateButton()
-    }
-
-    private fun showCbAllAddress() {
-        binding?.cbAllAddress?.isVisible = viewModel.isHaveAddressList
-    }
-
-    private fun showTotalAddressTicker(message: String?) {
-        binding?.totalAddressTicker?.apply {
-            if (!message.isNullOrBlank()) {
-                visible()
-                setTextDescription(message)
-            } else {
-                gone()
-            }
-        }
-    }
-
-    private fun updateTabText(numberOfRequest: Int?) {
-        mListener?.updateFromFriendsTabText(numberOfRequest ?: 0)
-    }
-
-    private fun onSuccessGetList() {
-        updateAddressView()
-        refreshList()
-    }
-
-    private fun updateAddressView() {
+    private fun bindView() {
         binding?.apply {
-            groupCardAndList.visible()
-            if (viewModel.isShareAddressFromNotif && viewModel.addressList.isEmpty()) {
-                groupBottomView.gone()
-                globalError.apply {
-                    visible()
-                    setType(GlobalError.MAINTENANCE)
-                    errorIllustration.loadImage(IMAGE_SHARE_ADDRESS)
-                    errorIllustration.adjustViewBounds = true
-                    errorTitle.text =
-                        getString(R.string.title_failed_saved_share_address_from_notif)
-                    errorDescription.text =
-                        getString(R.string.description_failed_saved_share_address_from_notif)
+            cbAllAddress.setOnCheckedChangeListener { _, isChecked ->
+                if (viewModel.isNeedUpdateAllList) {
+                    ShareAddressAnalytics.onCheckAllAddress(isChecked)
+                    viewModel.setAllListSelected(isChecked)
+                    refreshListAndButton()
+                } else {
+                    viewModel.isNeedUpdateAllList = true
                 }
-            } else {
-                globalError.gone()
-                groupBottomView.visible()
             }
-        }
-    }
 
-    private fun onFailedGetList(throwable: Throwable?) {
-        if (throwable != null) {
-            handleError(throwable)
-        }
-    }
+            cardRequestAddress.clRequestAddress.setOnClickListener {
+                ShareAddressAnalytics.onClickRequestAddress()
+                showRequestAddressBottomSheet()
+            }
 
-    private fun onLoadingGetList(isShowLoading: Boolean) {
-        binding?.apply {
-            swipeRefresh.isRefreshing = isShowLoading
-            cbAllAddress.isVisible = viewModel.isHaveAddressList && isShowLoading.not()
-        }
-    }
+            rvAddressList.let {
+                adapter.initAddressList(viewModel.addressList)
+                it.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+                it.adapter = adapter
+            }
 
-    private fun onSuccessSaveAddress(message: String) {
-        trackOnClickSaveButton(isSuccess = true)
-        showToaster(message)
-        mListener?.apply {
-            removeArgumentsFromNotif()
-            onSuccessSaveShareAddress()
-        }
-    }
-
-    private fun trackOnClickSaveButton(isSuccess: Boolean) {
-        ShareAddressAnalytics.onClickSaveButton(isSuccess)
-    }
-
-    private fun trackOnClickDeleteButton(isSuccess: Boolean) {
-        ShareAddressAnalytics.onClickDeleteButton(isSuccess)
-    }
-
-    private fun onLoadingSaveAddress(isLoading: Boolean) {
-        binding?.btnSave?.isLoading = isLoading
-    }
-
-    private fun onSuccessDeleteAddress() {
-        trackOnClickDeleteButton(isSuccess = true)
-        if (viewModel.isShareAddressFromNotif) {
-            viewModel.isShareAddressFromNotif = false
-            mListener?.removeArgumentsFromNotif()
-        }
-        loadAddressList()
-    }
-
-    private fun onFailedDeleteAddress(errorMessage: String) {
-        trackOnClickDeleteButton(isSuccess = false)
-        refreshListAndButton()
-        showToaster(errorMessage, Toaster.TYPE_ERROR)
-    }
-
-    private fun initButtonClickListener() {
-        binding?.apply {
             btnDelete.setOnClickListener {
                 viewModel.deleteAddress()
                 showToaster(
@@ -272,6 +121,111 @@ class FromFriendFragment : BaseDaggerFragment(),
                 viewModel.saveAddress()
             }
         }
+    }
+
+    private fun initObserver() {
+        viewModel.getFromFriendAddressState.observe(
+            viewLifecycleOwner,
+            Observer {
+                when (it) {
+                    is FromFriendAddressListState.Success -> {
+                        binding?.apply {
+                            totalAddressTicker.apply {
+                                it.data?.message?.takeIf { it.isNotBlank() }?.apply {
+                                    visible()
+                                    setTextDescription(this)
+                                } ?: kotlin.run {
+                                    gone()
+                                }
+                            }
+
+                            groupCardAndList.visible()
+                            if (viewModel.isShareAddressFromNotif && viewModel.addressList.isEmpty()) {
+                                groupBottomView.gone()
+                                globalError.apply {
+                                    visible()
+                                    setType(GlobalError.MAINTENANCE)
+                                    errorIllustration.loadImage(IMAGE_SHARE_ADDRESS)
+                                    errorIllustration.adjustViewBounds = true
+                                    errorTitle.text =
+                                        getString(R.string.title_failed_saved_share_address_from_notif)
+                                    errorDescription.text =
+                                        getString(R.string.description_failed_saved_share_address_from_notif)
+                                }
+                            } else {
+                                globalError.gone()
+                                groupBottomView.visible()
+                            }
+                        }
+
+                        adapter.refreshAdapter()
+                        mListener?.updateFromFriendsTabText(it.data?.numberOfRequest ?: 0)
+                    }
+                    is FromFriendAddressListState.Fail -> {
+                        if (it.throwable != null) {
+                            handleError(it.throwable)
+                        }
+                    }
+                    is FromFriendAddressListState.Loading -> {
+                        binding?.apply {
+                            swipeRefresh.isRefreshing = it.isShowLoading
+                            cbAllAddress.isVisible = viewModel.isHaveAddressList && it.isShowLoading.not()
+                        }
+                    }
+                }
+            }
+        )
+
+        viewModel.saveAddressState.observe(
+            viewLifecycleOwner,
+            Observer {
+                when (it) {
+                    is FromFriendAddressActionState.Success -> {
+                        ShareAddressAnalytics.onClickSaveButton(isSuccess = true)
+                        showToaster(it.message)
+                        mListener?.apply {
+                            removeArgumentsFromNotif()
+                            onSuccessSaveShareAddress()
+                        }
+                    }
+                    is FromFriendAddressActionState.Fail -> {
+                        ShareAddressAnalytics.onClickSaveButton(isSuccess = false)
+                        showToaster(it.errorMessage, Toaster.TYPE_ERROR)
+                    }
+                    is FromFriendAddressActionState.Loading -> {
+                        binding?.btnSave?.isLoading = it.isShowLoading
+                    }
+                }
+            }
+        )
+
+        viewModel.deleteAddressState.observe(
+            viewLifecycleOwner,
+            Observer {
+                when (it) {
+                    is FromFriendAddressActionState.Success -> {
+                        ShareAddressAnalytics.onClickDeleteButton(isSuccess = true)
+                        if (viewModel.isShareAddressFromNotif) {
+                            viewModel.isShareAddressFromNotif = false
+                            mListener?.removeArgumentsFromNotif()
+                        }
+                        viewModel.getFromFriendAddressList()
+                    }
+                    is FromFriendAddressActionState.Fail -> {
+                        ShareAddressAnalytics.onClickDeleteButton(isSuccess = false)
+                        refreshListAndButton()
+                        showToaster(it.errorMessage, Toaster.TYPE_ERROR)
+                    }
+                    is FromFriendAddressActionState.Loading -> refreshListAndButton()
+                }
+            }
+        )
+    }
+
+    private fun refreshListAndButton() {
+        binding?.cbAllAddress?.isVisible = viewModel.isHaveAddressList
+        adapter.refreshAdapter()
+        updateButton()
     }
 
     private fun handleError(throwable: Throwable) {
@@ -310,7 +264,7 @@ class FromFriendFragment : BaseDaggerFragment(),
             globalError.setType(type)
             globalError.setActionClickListener {
                 context?.let {
-                    loadAddressList()
+                    viewModel.getFromFriendAddressList()
                 }
             }
             groupCardAndList.gone()
@@ -326,19 +280,21 @@ class FromFriendFragment : BaseDaggerFragment(),
         onClickListener: (() -> Unit)? = null
     ) {
         view?.let {
-            Toaster.build(it, message, Toaster.LENGTH_SHORT, type = toastType,
-                actionText = actionText, clickListener = {
+            Toaster.build(
+                view = it,
+                text = message,
+                duration = Toaster.LENGTH_SHORT,
+                type = toastType,
+                actionText = actionText,
+                clickListener = {
                     onClickListener?.invoke()
-                }).show()
+                }
+            ).show()
         }
     }
 
-    private fun refreshList() {
-        adapter.refreshAdapter()
-    }
-
     private fun updateButton() {
-        val checkedAddressSize = viewModel.getSelectedAddressList().size
+        val checkedAddressSize = viewModel.selectedAddressList.size
         val isEnable = checkedAddressSize > 0
         binding?.apply {
             btnDelete.isEnabled = isEnable
@@ -351,23 +307,17 @@ class FromFriendFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun loadAddressList() {
-        viewModel.getFromFriendAddressList()
-    }
-
     override fun onCheckedChangeListener(index: Int, isChecked: Boolean) {
         viewModel.onCheckedAddress(index, isChecked)
-        updateCbAllAddress()
-        updateButton()
-    }
 
-    private fun updateCbAllAddress() {
         binding?.cbAllAddress?.apply {
-            if (isChecked != viewModel.isAllSelected) {
+            if (this.isChecked != viewModel.isAllSelected) {
                 viewModel.isNeedUpdateAllList = false
-                isChecked = viewModel.isAllSelected
+                this.isChecked = viewModel.isAllSelected
             }
         }
+
+        updateButton()
     }
 
     private fun showRequestAddressBottomSheet() {

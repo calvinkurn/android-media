@@ -15,7 +15,6 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.widget.ViewPager2
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.PARAM_SOURCE
 import com.tokopedia.design.text.SearchInputView
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
@@ -41,8 +40,11 @@ import javax.inject.Inject
  * Fragment that hold tab layout and viewpager
  * inside it have MainAddressFragment and FromFriendFragment
  */
-class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener,
-    FromFriendFragment.Listener, MainAddressFragment.MainAddressListener {
+class ManageAddressFragment :
+    BaseDaggerFragment(),
+    SearchInputView.Listener,
+    FromFriendFragment.Listener,
+    MainAddressFragment.MainAddressListener {
 
     companion object {
         private const val MAIN_ADDRESS_FRAGMENT_POSITION = 0
@@ -87,14 +89,18 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener,
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         binding = FragmentManageAddressBinding.inflate(inflater, container, false)
         return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initArgument()
+        viewModel.setupDataFromArgument(arguments)
         if (viewModel.isNeedValidateShareAddress) {
             observerValidateShareAddress()
             viewModel.doValidateShareAddress()
@@ -103,68 +109,73 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener,
         }
     }
 
-    private fun initArgument() {
-        if (viewModel.isEligibleShareAddress) {
-            viewModel.receiverUserId = arguments?.getString(ManageAddressConstant.QUERY_PARAM_RUID)
-            viewModel.senderUserId = arguments?.getString(ManageAddressConstant.QUERY_PARAM_SUID)
-        }
-        viewModel.source = arguments?.getString(PARAM_SOURCE) ?: ""
-    }
-
     private fun observerValidateShareAddress() {
         viewModel.validateShareAddressState.observe(
             viewLifecycleOwner,
             Observer {
                 when (it) {
                     is ValidateShareAddressState.Success -> {
-                        setReceiverUserName(it.receiverUserName)
+                        it.receiverUserName?.takeIf { receiverUserName -> receiverUserName.isNotBlank() }
+                            ?.apply {
+                                arguments?.putString(
+                                    ManageAddressConstant.EXTRA_RECEIVER_USER_NAME,
+                                    this
+                                )
+                            }
                         bindView()
                     }
-                    is ValidateShareAddressState.Fail -> onFailedValidateShareAddress()
-                    is ValidateShareAddressState.Loading -> showLoading(it.isShowLoading)
+                    is ValidateShareAddressState.Fail -> {
+                        if (viewModel.isNeedToShareAddress) {
+                            viewModel.receiverUserId = null
+                            arguments?.putString(ManageAddressConstant.QUERY_PARAM_RUID, null)
+                        } else {
+                            arguments?.putBoolean(
+                                ManageAddressConstant.EXTRA_SHARE_ADDRESS_FROM_NOTIF,
+                                true
+                            )
+                        }
+                        bindView()
+                    }
+                    is ValidateShareAddressState.Loading -> {
+                        binding?.apply {
+                            if (it.isShowLoading) {
+                                llMainView.gone()
+                                progressBar.visible()
+                            } else {
+                                llMainView.visible()
+                                progressBar.gone()
+                            }
+                        }
+                    }
                 }
             }
         )
     }
 
-    private fun setReceiverUserName(receiverUserName: String?) {
-        if (receiverUserName?.isNotBlank() == true) {
-            arguments?.putString(ManageAddressConstant.EXTRA_RECEIVER_USER_NAME, receiverUserName)
-        }
-    }
-
     private fun bindView() {
-        initSearchView()
-        initView()
-        setSearchView(viewModel.savedQuery)
-    }
-
-    private fun onFailedValidateShareAddress() {
-        if (viewModel.isNeedToShareAddress) {
-            viewModel.receiverUserId = null
-            arguments?.putString(ManageAddressConstant.QUERY_PARAM_RUID, null)
-        } else {
-            arguments?.putBoolean(ManageAddressConstant.EXTRA_SHARE_ADDRESS_FROM_NOTIF, true)
-        }
-        bindView()
-    }
-
-    private fun showLoading(isShowLoading: Boolean) {
         binding?.apply {
-            if (isShowLoading) {
-                llMainView.gone()
-                progressBar.visible()
-            } else {
-                llMainView.visible()
-                progressBar.gone()
+            searchInputView.run {
+                searchBarTextField.setOnClickListener {
+                    searchBarTextField.isCursorVisible = true
+                    openSoftKeyboard()
+                }
+
+                searchBarTextField.setOnEditorActionListener { _, actionId, event ->
+                    if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                        clearFocus()
+                        performSearch(searchBarTextField.text.toString() ?: "")
+                        return@setOnEditorActionListener true
+                    }
+                    return@setOnEditorActionListener false
+                }
+
+                clearListener = { performSearch("") }
+
+                searchBarPlaceholder = getString(R.string.label_find_address)
             }
-        }
-    }
 
-    private fun initView() {
-        binding?.apply {
             val fragments = fragmentPage()
-            tabAdapter = this@ManageAddressFragment?.let { ManageAddressViewPagerAdapter(it, fragments) }
+            tabAdapter = ManageAddressViewPagerAdapter(this@ManageAddressFragment, fragments)
             vpManageAddress.adapter = tabAdapter
             vpManageAddress.offscreenPageLimit = fragments.size
             vpManageAddress.isUserInputEnabled = false
@@ -172,40 +183,42 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener,
                 tlManageAddress.gone()
             } else if (viewModel.isNeedToShareAddress) {
                 tlManageAddress.gone()
-                manageAddressListener?.setToolbarTitle(getString(R.string.title_select_share_address), false)
+                manageAddressListener?.setToolbarTitle(
+                    getString(R.string.title_select_share_address),
+                    false
+                )
             } else {
                 tlManageAddress.visible()
                 TabsUnifyMediator(tlManageAddress, vpManageAddress) { tab, position ->
-                    tab.setCustomText(fragmentPage().getOrNull(position)?.first ?: getString(R.string.tablayout_label_main))
+                    tab.setCustomText(
+                        fragments.getOrNull(position)?.first
+                            ?: getString(R.string.tablayout_label_main)
+                    )
                 }
 
-                vpManageAddress.registerOnPageChangeCallback(onPageChangeCallback())
-                doCheckIsReceiveShareAddress()
-            }
-        }
-    }
-
-    private fun onPageChangeCallback(): ViewPager2.OnPageChangeCallback {
-        return object : ViewPager2.OnPageChangeCallback() {
-            override fun onPageSelected(position: Int) {
-                if (isFirstLoad) {
-                    isFirstLoad = false
-                } else {
-                    if (position == MAIN_ADDRESS_FRAGMENT_POSITION) {
-                        ShareAddressAnalytics.onClickMainTab()
-                    } else {
-                        ShareAddressAnalytics.onClickFromFriendTab()
+                vpManageAddress.registerOnPageChangeCallback(object :
+                    ViewPager2.OnPageChangeCallback() {
+                    override fun onPageSelected(position: Int) {
+                        if (isFirstLoad) {
+                            isFirstLoad = false
+                        } else {
+                            if (position == MAIN_ADDRESS_FRAGMENT_POSITION) {
+                                ShareAddressAnalytics.onClickMainTab()
+                            } else {
+                                ShareAddressAnalytics.onClickFromFriendTab()
+                            }
+                        }
                     }
+                })
+
+                if (viewModel.isReceiveShareAddress) {
+                    Handler(Looper.getMainLooper()).postDelayed({
+                        binding?.vpManageAddress?.currentItem = FROM_FRIEND_FRAGMENT_POSITION
+                    }, DELAY_SWIPE_VIEW_PAGER)
                 }
             }
-        }
-    }
 
-    private fun doCheckIsReceiveShareAddress() {
-        if (viewModel.isReceiveShareAddress) {
-            Handler(Looper.getMainLooper()).postDelayed({
-                binding?.vpManageAddress?.currentItem = FROM_FRIEND_FRAGMENT_POSITION
-            }, DELAY_SWIPE_VIEW_PAGER)
+            searchInputView.searchBarTextField.setText(viewModel.savedQuery)
         }
     }
 
@@ -241,11 +254,22 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener,
 
     private fun fragmentPage(): List<Pair<String, Fragment>> {
         return if (viewModel.isEligibleShareAddress.not() || viewModel.isNeedToShareAddress) {
-            listOf(Pair(getString(R.string.tablayout_label_main), MainAddressFragment.newInstance(bundleData())))
+            listOf(
+                Pair(
+                    getString(R.string.tablayout_label_main),
+                    MainAddressFragment.newInstance(bundleData())
+                )
+            )
         } else {
             listOf(
-                Pair(getString(R.string.tablayout_label_main), MainAddressFragment.newInstance(bundleData())),
-                Pair(getString(R.string.tablayout_label_from_friend), FromFriendFragment.newInstance(bundleData(), this))
+                Pair(
+                    getString(R.string.tablayout_label_main),
+                    MainAddressFragment.newInstance(bundleData())
+                ),
+                Pair(
+                    getString(R.string.tablayout_label_from_friend),
+                    FromFriendFragment.newInstance(bundleData(), this)
+                )
             )
         }
     }
@@ -257,32 +281,6 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener,
             bundle.putAll(arguments)
         }
         return bundle
-    }
-
-    private fun setSearchView(searchKey: String) {
-        binding?.searchInputView?.searchBarTextField?.setText(searchKey)
-    }
-
-    private fun initSearchView() {
-        binding?.searchInputView?.run {
-            searchBarTextField.setOnClickListener {
-                searchBarTextField.isCursorVisible = true
-                openSoftKeyboard()
-            }
-
-            searchBarTextField.setOnEditorActionListener { _, actionId, event ->
-                if (actionId == EditorInfo.IME_ACTION_SEARCH) {
-                    clearFocus()
-                    performSearch(searchBarTextField.text.toString() ?: "")
-                    return@setOnEditorActionListener true
-                }
-                return@setOnEditorActionListener false
-            }
-
-            clearListener = { performSearch("") }
-
-            searchBarPlaceholder = getString(R.string.label_find_address)
-        }
     }
 
     fun setListener(listener: ManageAddressListener) {
@@ -308,22 +306,26 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener,
     }
 
     override fun onSuccessSaveShareAddress() {
-        binding?.vpManageAddress?.currentItem = MAIN_ADDRESS_FRAGMENT_POSITION
-        viewModel.savedQuery = ""
-        setSearchView(viewModel.savedQuery)
+        binding?.apply {
+            vpManageAddress.currentItem = MAIN_ADDRESS_FRAGMENT_POSITION
+            viewModel.savedQuery = ""
+            searchInputView.searchBarTextField.setText(viewModel.savedQuery)
+        }
+
         performSearch(viewModel.savedQuery)
     }
 
     override fun updateFromFriendsTabText(count: Int) {
         binding?.tlManageAddress?.tabLayout?.getTabAt(FROM_FRIEND_FRAGMENT_POSITION)?.apply {
-            customView?.findViewById<TextView>(com.tokopedia.unifycomponents.R.id.tab_item_text_id)?.apply {
-                text = if (count > 0) {
-                    getString(R.string.tablayout_label_from_friend_with_value, count.toString())
-                } else {
-                    getString(R.string.tablayout_label_from_friend)
+            customView?.findViewById<TextView>(com.tokopedia.unifycomponents.R.id.tab_item_text_id)
+                ?.apply {
+                    text = if (count > 0) {
+                        getString(R.string.tablayout_label_from_friend_with_value, count.toString())
+                    } else {
+                        getString(R.string.tablayout_label_from_friend)
+                    }
+                    ellipsize = null
                 }
-                ellipsize = null
-            }
         }
     }
 

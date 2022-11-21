@@ -165,10 +165,12 @@ class ShareAddressConfirmationBottomSheet :
     }
 
     private fun TextView.setTextDescription() {
-        text = MethodChecker.fromHtml(String.format(
+        text = MethodChecker.fromHtml(
+            String.format(
                 getString(
                     R.string.share_address_confirmation_description,
-                    receiverUserName?.takeIf { it.isNotBlank() } ?: getString(R.string.desc_your_friend)
+                    receiverUserName?.takeIf { it.isNotBlank() }
+                        ?: getString(R.string.desc_your_friend)
                 )
             )
         )
@@ -224,21 +226,26 @@ class ShareAddressConfirmationBottomSheet :
         onClickEvent: () -> Unit
     ) {
         val spannableString = SpannableString(linkText).apply {
-            setSpan(object : ClickableSpan() {
-                override fun onClick(view: View) {
-                    onClickEvent()
-                }
+            setSpan(
+                object : ClickableSpan() {
+                    override fun onClick(view: View) {
+                        onClickEvent()
+                    }
 
-                override fun updateDrawState(ds: TextPaint) {
-                    super.updateDrawState(ds)
-                    ds.typeface = Typeface.DEFAULT_BOLD
-                    ds.isUnderlineText = false
-                    ds.color = ContextCompat.getColor(
-                        context,
-                        com.tokopedia.unifyprinciples.R.color.Unify_G500
-                    )
-                }
-            }, 0, linkText.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
+                    override fun updateDrawState(ds: TextPaint) {
+                        super.updateDrawState(ds)
+                        ds.typeface = Typeface.DEFAULT_BOLD
+                        ds.isUnderlineText = false
+                        ds.color = ContextCompat.getColor(
+                            context,
+                            com.tokopedia.unifyprinciples.R.color.Unify_G500
+                        )
+                    }
+                },
+                0,
+                linkText.length,
+                Spanned.SPAN_EXCLUSIVE_EXCLUSIVE
+            )
         }
         this.movementMethod = LinkMovementMethod.getInstance()
         this.text = TextUtils.concat(this.text, " ", spannableString)
@@ -252,8 +259,10 @@ class ShareAddressConfirmationBottomSheet :
 
     companion object {
         const val TAG_SHARE_ADDRESS_CONFIRMATION = "ShareAddressConfirmationBottomSheet"
-        private const val IMAGE_SHARE_ADDRESS = "https://images.tokopedia.net/img/android/share_address/share_address_image.png"
-        private const val TERMS_AND_CONDITIONS = "https://www.tokopedia.com/help/article/syarat-dan-ketentuan-bagikan-alamat"
+        private const val IMAGE_SHARE_ADDRESS =
+            "https://images.tokopedia.net/img/android/share_address/share_address_image.png"
+        private const val TERMS_AND_CONDITIONS =
+            "https://www.tokopedia.com/help/article/syarat-dan-ketentuan-bagikan-alamat"
 
         fun newInstance(
             senderAddressId: String?,

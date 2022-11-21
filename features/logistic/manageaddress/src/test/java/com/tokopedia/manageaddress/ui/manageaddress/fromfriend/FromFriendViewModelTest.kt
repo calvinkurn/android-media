@@ -275,7 +275,7 @@ class FromFriendViewModelTest {
         viewModel.onCheckedAddress(0, isChecked = true)
 
         Assert.assertTrue(viewModel.isHaveAddressList)
-        Assert.assertTrue(viewModel.getSelectedAddressList().isNotEmpty())
+        Assert.assertTrue(viewModel.selectedAddressList.isNotEmpty())
     }
 
     @Test

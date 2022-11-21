@@ -152,43 +152,37 @@ class ManageAddressItemAdapter : RecyclerView.Adapter<ManageAddressItemAdapter.M
         private fun switchActionView(data: RecipientAddressModel) {
             if (mainAddressItemAdapterListener != null) {
                 if (isNeedToShareAddress) {
-                    hideActionView()
+                    binding.iconShare.gone()
+                    binding.imgGift.gone()
+                    binding.btnPrimary.gone()
+                    binding.btnSecondary.gone()
+                    binding.lblMainAddress.gone()
                 } else if (data.isSharedAddress) {
                     showIconGift()
                     setPrimaryButton(data)
                 } else {
-                    showIconShare()
+                    if (isEligibleShareAddress) {
+                        binding.iconShare.visible()
+                    } else {
+                        binding.iconShare.gone()
+                    }
+                    binding.imgGift.gone()
                     setPrimaryButton(data)
                 }
                 binding.cbSelectAddress.gone()
             } else if (fromFriendItemAdapterListener != null) {
                 showIconGift()
-                setAddressSharedButton()
+                binding.btnPrimary.gone()
+                binding.lblMainAddress.gone()
+                binding.btnSecondary.gone()
                 binding.cbSelectAddress.visible()
             }
-        }
-
-        private fun showIconShare() {
-            if (isEligibleShareAddress) {
-                binding.iconShare.visible()
-            } else {
-                binding.iconShare.gone()
-            }
-            binding.imgGift.gone()
         }
 
         private fun showIconGift() {
             binding.iconShare.gone()
             binding.imgGift.visible()
             binding.imgGift.setImageUrl(IMAGE_GIFT_CARD)
-        }
-
-        private fun hideActionView() {
-            binding.iconShare.gone()
-            binding.imgGift.gone()
-            binding.btnPrimary.gone()
-            binding.btnSecondary.gone()
-            binding.lblMainAddress.gone()
         }
 
         private fun setPrimaryButton(peopleAddress: RecipientAddressModel) {
@@ -202,12 +196,6 @@ class ManageAddressItemAdapter : RecyclerView.Adapter<ManageAddressItemAdapter.M
             }
         }
 
-        private fun setAddressSharedButton() {
-            binding.btnPrimary.gone()
-            binding.lblMainAddress.gone()
-            binding.btnSecondary.gone()
-        }
-
         private fun setVisibility(peopleAddress: RecipientAddressModel) {
             if (peopleAddress.latitude.isNullOrZero() || peopleAddress.longitude.isNullOrZero()) {
                 val colorGrey = ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_N700_96)
@@ -218,10 +206,6 @@ class ManageAddressItemAdapter : RecyclerView.Adapter<ManageAddressItemAdapter.M
                 binding.imgLocationState.setImage(IconUnify.LOCATION, colorGreen, colorGreen)
                 binding.tvPinpointState.text = itemView.context.getString(R.string.pinpoint)
             }
-        }
-
-        private fun String?.isNullOrZero(): Boolean {
-            return this.isNullOrEmpty() || this == "0.0"
         }
 
         private fun setListener(peopleAddress: RecipientAddressModel) {
@@ -250,6 +234,10 @@ class ManageAddressItemAdapter : RecyclerView.Adapter<ManageAddressItemAdapter.M
                 }
             }
         }
+    }
+
+    private fun String?.isNullOrZero(): Boolean {
+        return this.isNullOrEmpty() || this == "0.0"
     }
 
     companion object {

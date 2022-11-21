@@ -78,7 +78,6 @@ class ManageAddressActivity : BaseActivity(), HasComponent<ManageAddressComponen
     }
 
     override fun onBackPressed() {
-
         val currentFragment = getMainAddressFragment()
         if (currentFragment != null) {
             if (currentFragment.isFromEditChosenAddress == true) {
