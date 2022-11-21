@@ -5346,6 +5346,304 @@
                             "#FFFFFF"
                         ]
                     }
+                },
+                {
+                    "id": 225559,
+                    "dividerType": 0,
+                    "group_id": 240,
+                    "galaxy_attribution": "PG",
+                    "persona": "",
+                    "brand_id": "",
+                    "category_persona": "",
+                    "name": "Test Lego 4 Product",
+                    "layout": "lego_4_product",
+                    "campaignType": 0,
+                    "type": "",
+                    "pageName": "manual_injection_no_blacklist",
+                    "showPromoBadge": true,
+                    "categoryID": "{}",
+                    "perso_type": 1,
+                    "campaignCode": "",
+                    "has_close_button": false,
+                    "isAutoRefreshAfterExpired": false,
+                    "token": "",
+                    "widgetParam": "",
+                    "contextualInfo": 0,
+                    "viewAllCard": {
+                        "id": 0,
+                        "contentType": "",
+                        "title": "",
+                        "description": "",
+                        "imageUrl": "",
+                        "gradientColor": []
+                    },
+                    "header": {
+                        "id": 245076,
+                        "name": "Test Lego 4 Product",
+                        "subtitle": "",
+                        "url": "https://www.tokopedia.com/discovery/mission?embedCategory=true&source=homepage.lego_4_product.0.225559&targetTitleID=1",
+                        "applink": "tokopedia://discovery/mission?embedCategory=true&source=homepage.lego_4_product.0.225559&targetTitleID=1",
+                        "serverTime": 0,
+                        "expiredTime": "",
+                        "backColor": "",
+                        "backImage": "",
+                        "textColor": "#31353b"
+                    },
+                    "grids": [
+
+                        {
+                            "campaignCode": "",
+                            "id": 3092562880,
+                            "back_color": "",
+                            "name": "Helm_Type_3 - S",
+                            "expiredTime": "",
+                            "url": "https://www.tokopedia.com/5303360-sumber-motor/helm-type-3-s",
+                            "applink": "tokopedia://product/3092562880",
+                            "price": "Rp 500.000",
+                            "slashedPrice": "",
+                            "discount": "",
+                            "imageUrl": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2022/6/14/9ec119a9-27a6-46d7-92ff-a4584d63dc7f.jpg",
+                            "label": "",
+                            "soldPercentage": 0,
+                            "attribution": "",
+                            "productClickUrl": "https://ace.tokopedia.com/r3/v2/track?category=1311&event=click&experimentVersion=v1.4&page=0&page_name=manual_injection_no_blacklist&pid=3092562880&pos=1&recommendation=injection&rectype=injection&redirect=https://www.tokopedia.com/5303360-sumber-motor/helm-type-3-s?catid1311=%26ref=manual_injection_no_blacklist_pa0_po1%26src=r3injection&tid=SVHVzo9qMFGE1yCaLrQI21wRel8=&uid=16939915&unique_id=&utime=1665054203&widget=r3_widget&xdevice=android-3.150",
+                            "impression": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2022/6/14/9ec119a9-27a6-46d7-92ff-a4584d63dc7f.jpg",
+                            "cashback": "",
+                            "isTopads": false,
+                            "freeOngkir": {
+                                "isActive": true,
+                                "imageUrl": "https://images.tokopedia.net/img/img/promo/targeting/red_bo_normal.png"
+                            },
+                            "productViewCountFormatted": "",
+                            "isOutOfStock": false,
+                            "warehouseID": 3763379,
+                            "minOrder": 1,
+                            "recommendationType": "injection",
+                            "shop": {
+                                "shopID": 5303360,
+                                "name": "5303360_sumber_motor",
+                                "city": "Jakarta Selatan",
+                                "imageUrl": "",
+                                "url": "https://www.tokopedia.com/5303360-sumber-motor",
+                                "applink": ""
+                            },
+                            "labelGroup": [
+                                {
+                                    "title": "Tiba 8 - 10 Oct",
+                                    "position": "eta",
+                                    "type": "textDarkGrey",
+                                    "url": ""
+                                }
+                            ],
+                            "has_buy_button": false,
+                            "rating": 0,
+                            "ratingAverage": "",
+                            "count_review": 0,
+                            "benefit": {
+                                "type": "",
+                                "value": ""
+                            },
+                            "textColor": "",
+                            "badges": [
+                                {
+                                    "title": "Official Store",
+                                    "image_url": "https://images.tokopedia.net/img/official_store_badge.png"
+                                }
+                            ]
+                        },
+                        {
+                            "campaignCode": "",
+                            "id": 4942420363,
+                            "back_color": "",
+                            "name": "Gantungan_Kunci_Same_6",
+                            "expiredTime": "",
+                            "url": "https://www.tokopedia.com/5303360-sumber-motor/gantungan-kunci-same-6",
+                            "applink": "tokopedia://product/4942420363",
+                            "price": "Rp 10.000",
+                            "slashedPrice": "",
+                            "discount": "",
+                            "imageUrl": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2022/7/21/c08d0fdf-8eed-49a6-8291-f0dc99431226.png",
+                            "label": "",
+                            "soldPercentage": 0,
+                            "attribution": "",
+                            "productClickUrl": "https://ace.tokopedia.com/r3/v2/track?category=2361&event=click&experimentVersion=v1.4&page=0&page_name=manual_injection_no_blacklist&pid=4942420363&pos=2&recommendation=injection&rectype=injection&redirect=https://www.tokopedia.com/5303360-sumber-motor/gantungan-kunci-same-6?catid2361=%26ref=manual_injection_no_blacklist_pa0_po2%26src=r3injection&tid=SVHVzo9qMFGE1yCaLrQI21wRel8=&uid=16939915&unique_id=&utime=1665054203&widget=r3_widget&xdevice=android-3.150",
+                            "impression": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2022/7/21/c08d0fdf-8eed-49a6-8291-f0dc99431226.png",
+                            "cashback": "",
+                            "isTopads": false,
+                            "freeOngkir": {
+                                "isActive": true,
+                                "imageUrl": "https://images.tokopedia.net/img/img/promo/targeting/red_bo_normal.png"
+                            },
+                            "productViewCountFormatted": "",
+                            "isOutOfStock": false,
+                            "warehouseID": 3763379,
+                            "minOrder": 1,
+                            "recommendationType": "injection",
+                            "shop": {
+                                "shopID": 5303360,
+                                "name": "5303360_sumber_motor",
+                                "city": "Jakarta Selatan",
+                                "imageUrl": "",
+                                "url": "https://www.tokopedia.com/5303360-sumber-motor",
+                                "applink": ""
+                            },
+                            "labelGroup": [
+                                {
+                                    "title": "Tiba 8 - 10 Oct",
+                                    "position": "eta",
+                                    "type": "textDarkGrey",
+                                    "url": ""
+                                }
+                            ],
+                            "has_buy_button": false,
+                            "rating": 0,
+                            "ratingAverage": "",
+                            "count_review": 0,
+                            "benefit": {
+                                "type": "",
+                                "value": ""
+                            },
+                            "textColor": "",
+                            "badges": [
+                                {
+                                    "title": "Official Store",
+                                    "image_url": "https://images.tokopedia.net/img/official_store_badge.png"
+                                }
+                            ]
+                        },
+                        {
+                            "campaignCode": "",
+                            "id": 3097745901,
+                            "back_color": "",
+                            "name": "Ban_Motor_Type_4",
+                            "expiredTime": "",
+                            "url": "https://www.tokopedia.com/5303360-sumber-motor/ban-motor-type-4",
+                            "applink": "tokopedia://product/3097745901",
+                            "price": "Rp 250.000",
+                            "slashedPrice": "",
+                            "discount": "",
+                            "imageUrl": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2022/6/14/51971ecf-10dd-422e-8a20-b953ceeddd0e.png",
+                            "label": "",
+                            "soldPercentage": 0,
+                            "attribution": "",
+                            "productClickUrl": "https://ace.tokopedia.com/r3/v2/track?category=2899&event=click&experimentVersion=v1.4&page=0&page_name=manual_injection_no_blacklist&pid=3097745901&pos=3&recommendation=injection&rectype=injection&redirect=https://www.tokopedia.com/5303360-sumber-motor/ban-motor-type-4?catid2899=%26ref=manual_injection_no_blacklist_pa0_po3%26src=r3injection&tid=SVHVzo9qMFGE1yCaLrQI21wRel8=&uid=16939915&unique_id=&utime=1665054203&widget=r3_widget&xdevice=android-3.150",
+                            "impression": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2022/6/14/51971ecf-10dd-422e-8a20-b953ceeddd0e.png",
+                            "cashback": "",
+                            "isTopads": false,
+                            "freeOngkir": {
+                                "isActive": true,
+                                "imageUrl": "https://images.tokopedia.net/img/img/promo/targeting/red_bo_normal.png"
+                            },
+                            "productViewCountFormatted": "",
+                            "isOutOfStock": false,
+                            "warehouseID": 3763379,
+                            "minOrder": 1,
+                            "recommendationType": "injection",
+                            "shop": {
+                                "shopID": 5303360,
+                                "name": "5303360_sumber_motor",
+                                "city": "Jakarta Selatan",
+                                "imageUrl": "",
+                                "url": "https://www.tokopedia.com/5303360-sumber-motor",
+                                "applink": ""
+                            },
+                            "labelGroup": [
+                                {
+                                    "title": "Recom Automation",
+                                    "position": "campaign",
+                                    "type": "",
+                                    "url": "https://images.tokopedia.net/img/phOWBv/2022/3/4/bbc7dc1e-e153-4f18-9ade-382b460b18c4.png"
+                                },
+                                {
+                                    "title": "Tiba 8 - 10 Oct",
+                                    "position": "eta",
+                                    "type": "textDarkGrey",
+                                    "url": ""
+                                }
+                            ],
+                            "has_buy_button": false,
+                            "rating": 0,
+                            "ratingAverage": "",
+                            "count_review": 0,
+                            "benefit": {
+                                "type": "",
+                                "value": ""
+                            },
+                            "textColor": "",
+                            "badges": [
+                                {
+                                    "title": "Official Store",
+                                    "image_url": "https://images.tokopedia.net/img/official_store_badge.png"
+                                }
+                            ]
+                        },
+                        {
+                            "campaignCode": "",
+                            "id": 3097889746,
+                            "back_color": "",
+                            "name": "Ban_Motor_Type_5",
+                            "expiredTime": "",
+                            "url": "https://www.tokopedia.com/5303360-sumber-motor/ban-motor-type-5",
+                            "applink": "tokopedia://product/3097889746",
+                            "price": "Rp 300.000",
+                            "slashedPrice": "",
+                            "discount": "",
+                            "imageUrl": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2022/6/14/f2ea0d35-3ef6-416f-b270-1e57e70d00e8.png",
+                            "label": "",
+                            "soldPercentage": 0,
+                            "attribution": "",
+                            "productClickUrl": "https://ace.tokopedia.com/r3/v2/track?category=2899&event=click&experimentVersion=v1.4&page=0&page_name=manual_injection_no_blacklist&pid=3097889746&pos=4&recommendation=injection&rectype=injection&redirect=https://www.tokopedia.com/5303360-sumber-motor/ban-motor-type-5?catid2899=%26ref=manual_injection_no_blacklist_pa0_po4%26src=r3injection&tid=SVHVzo9qMFGE1yCaLrQI21wRel8=&uid=16939915&unique_id=&utime=1665054203&widget=r3_widget&xdevice=android-3.150",
+                            "impression": "https://images.tokopedia.net/img/cache/300-square/VqbcmM/2022/6/14/f2ea0d35-3ef6-416f-b270-1e57e70d00e8.png",
+                            "cashback": "",
+                            "isTopads": false,
+                            "freeOngkir": {
+                                "isActive": true,
+                                "imageUrl": "https://images.tokopedia.net/img/img/promo/targeting/red_bo_normal.png"
+                            },
+                            "productViewCountFormatted": "",
+                            "isOutOfStock": false,
+                            "warehouseID": 3763379,
+                            "minOrder": 1,
+                            "recommendationType": "injection",
+                            "shop": {
+                                "shopID": 5303360,
+                                "name": "5303360_sumber_motor",
+                                "city": "Jakarta Selatan",
+                                "imageUrl": "",
+                                "url": "https://www.tokopedia.com/5303360-sumber-motor",
+                                "applink": ""
+                            },
+                            "labelGroup": [
+                                {
+                                    "title": "Recom Automation",
+                                    "position": "campaign",
+                                    "type": "",
+                                    "url": "https://images.tokopedia.net/img/phOWBv/2022/3/4/bbc7dc1e-e153-4f18-9ade-382b460b18c4.png"
+                                },
+                                {
+                                    "title": "Tiba 8 - 10 Oct",
+                                    "position": "eta",
+                                    "type": "textDarkGrey",
+                                    "url": ""
+                                }
+                            ],
+                            "has_buy_button": false,
+                            "rating": 0,
+                            "ratingAverage": "",
+                            "count_review": 0,
+                            "benefit": {
+                                "type": "",
+                                "value": ""
+                            },
+                            "textColor": "",
+                            "badges": [
+                                {
+                                    "title": "Official Store",
+                                    "image_url": "https://images.tokopedia.net/img/official_store_badge.png"
+                                }
+                            ]
+                        }
+                    ]
                 }
             ]
         }

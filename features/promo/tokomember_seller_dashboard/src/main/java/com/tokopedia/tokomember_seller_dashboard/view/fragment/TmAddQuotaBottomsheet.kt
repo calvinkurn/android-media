@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -13,6 +14,7 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.tokomember_seller_dashboard.R
 import com.tokopedia.tokomember_seller_dashboard.callbacks.TmCouponListRefreshCallback
 import com.tokopedia.tokomember_seller_dashboard.di.component.DaggerTokomemberDashComponent
+import com.tokopedia.tokomember_seller_dashboard.tracker.TmTracker
 import com.tokopedia.tokomember_seller_dashboard.util.ADD_QUOTA
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_VOUCHER_ID
 import com.tokopedia.tokomember_seller_dashboard.util.BUNDLE_VOUCHER_MAX_CASHBACK
@@ -25,6 +27,7 @@ import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TmCouponViewMode
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.toDp
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.text.currency.CurrencyFormatHelper
 import com.tokopedia.utils.text.currency.NumberTextWatcher
 import kotlinx.android.synthetic.main.tm_layout_add_quota.*
@@ -43,6 +46,11 @@ class TmAddQuotaBottomsheet: BottomSheetUnify() {
         val viewModelProvider = ViewModelProvider(this, viewModelFactory.get())
         viewModelProvider.get(TmCouponViewModel::class.java)
     }
+
+    @Inject
+    lateinit var tmTracker: TmTracker
+    @Inject
+    lateinit var userSession:UserSessionInterface
 
     private val childLayoutRes = R.layout.tm_layout_add_quota
     private var voucherId = ""
@@ -163,6 +171,13 @@ class TmAddQuotaBottomsheet: BottomSheetUnify() {
             else {
                 val quota = textFieldQuota.editText.text.toString().toIntOrZero()
                 if(quota >= voucherQuota) {
+                    callingFragment?.let {
+                        if (it is TmDashCouponDetailFragment) {
+                            tmTracker.clickSimpanQuotaCouponDetail(userSession.shopId)
+                        } else {
+                            tmTracker.clickAddQuotaCTA(userSession.shopId)
+                        }
+                    }
                     tmCouponViewModel.updateQuota(
                         quota = quota,
                         voucherId = voucherId.toIntOrZero(),
@@ -193,6 +208,7 @@ class TmAddQuotaBottomsheet: BottomSheetUnify() {
 
         const val TAG = "TM_ADD_QUOTA_BOTTOM_SHEET"
         lateinit var tmCouponListRefreshCallback: TmCouponListRefreshCallback
+        private var callingFragment: Fragment? = null
 
         fun show(
             childFragmentManager: FragmentManager,
@@ -200,6 +216,7 @@ class TmAddQuotaBottomsheet: BottomSheetUnify() {
             currentQuota: Int,
             couponType: String,
             tmCouponListRefreshCallback: TmCouponListRefreshCallback,
+            fragment: Fragment,
             maxCashback: Int
         ){
             val bundle = Bundle()
@@ -208,6 +225,7 @@ class TmAddQuotaBottomsheet: BottomSheetUnify() {
             bundle.putString(BUNDLE_VOUCHER_TYPE, couponType)
             bundle.putInt(BUNDLE_VOUCHER_MAX_CASHBACK, maxCashback)
             this.tmCouponListRefreshCallback = tmCouponListRefreshCallback
+            callingFragment = fragment
             val tokomemberIntroBottomsheet = TmAddQuotaBottomsheet().apply {
                 arguments = bundle
             }

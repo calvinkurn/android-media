@@ -1,6 +1,0 @@
-query affiliateCheck() {
-  affiliateCheck{
-    isAffiliate
-    status
-  }
-}

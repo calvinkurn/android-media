@@ -100,7 +100,7 @@ class ShopCardUseCase @Inject constructor(private val shopCardRepository: ShopCa
 
         val queryParameterMap = mutableMapOf<String, Any>()
 
-        queryParameterMap[Utils.RPC_PAGE__SIZE] = shopPerPage.toString()
+        queryParameterMap[Utils.RPC_PAGE_SIZE] = shopPerPage.toString()
         queryParameterMap[RPC_PAGE_NUMBER] = pageNumber.toString()
         queryParameterMap[RPC_NEXT_PAGE] = nextPageKey ?: ""
 

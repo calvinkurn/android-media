@@ -19,7 +19,7 @@ data class DynamicHomeChannel(
             @SerializedName("id")
             val id: String = "",
             @Expose
-            @SerializedName("group_id", alternate = ["groupId"])
+            @SerializedName("group_id", alternate = ["groupID"])
             val groupId: String = "",
             @Expose
             @SerializedName("galaxy_attribution", alternate = ["galaxyAttribution"])
@@ -28,7 +28,7 @@ data class DynamicHomeChannel(
             @SerializedName("persona")
             val persona: String = "",
             @Expose
-            @SerializedName("brand_id", alternate = ["brandId"])
+            @SerializedName("brand_id", alternate = ["brandID"])
             val brandId: String = "",
             @Expose
             @SerializedName("category_persona", alternate = ["categoryPersona"])
@@ -136,34 +136,6 @@ data class DynamicHomeChannel(
             return list
         }
 
-        fun getEnhanceClickSprintSaleLegoHomePage(position: Int): Map<String, Any> {
-            return DataLayer.mapOf(
-                    "event", "productClick",
-                    "eventCategory", "homepage",
-                    "eventAction", "click on lego product",
-                    "eventLabel", header.name,
-                    channelId, id,
-                    campaignCodeLabel, campaignCode,
-                    "ecommerce", DataLayer.mapOf(
-                    "currencyCode", "IDR",
-                    "click", DataLayer.mapOf(
-                    "actionField", DataLayer.mapOf("list", "/ - p1 - lego product - product - ${grids[position].recommendationType}" + header.name),
-                    "products", DataLayer.listOf(
-                    DataLayer.mapOf(
-                            "name", grids[position].name,
-                            "id",  grids[position].id,
-                            "price", CurrencyFormatHelper.convertRupiahToInt(grids[position].price).toString(),
-                            "list", "/ - p1 - lego product - " + header.name,
-                            "position", (position + 1).toString(),
-                            "dimension84", id,
-                            "dimension96", persoType+ "_" + categoryID)
-            )
-            )
-            ),
-                    "attribution", getHomeAttribution(position + 1, grids[position].id)
-            )
-        }
-
         fun convertPromoEnhanceLegoBannerDataLayerForCombination(): List<Any> {
             val list: MutableList<Any> = ArrayList()
             for (i in grids.indices) {
@@ -204,24 +176,6 @@ data class DynamicHomeChannel(
 
             return list
         }
-
-        val enhanceImpressionDynamicSprintLegoHomePage: Map<String, Any>
-            get() {
-                val list: List<Any> = convertPromoEnhanceDynamicSprintLegoDataLayer(grids)
-                return DataLayer.mapOf(
-                        "event", "productView",
-                        "eventCategory", "homepage",
-                        "eventAction", "impression on lego product",
-                        "eventLabel", "",
-                        "ecommerce", DataLayer.mapOf(
-                        "curencyCode", "IDR",
-                        "impressions", DataLayer.listOf(
-                        *list.toTypedArray()
-                )
-                ),
-                        "attribution", getHomeAttribution(position + 1, header.name)
-                )
-            }
 
         private fun convertPromoEnhanceDynamicSprintLegoDataLayer(grids: Array<Grid>?): List<Any> {
             val list: MutableList<Any> = ArrayList()
@@ -287,9 +241,7 @@ data class DynamicHomeChannel(
             const val LAYOUT_3_IMAGE: String = "3_image"
             const val LAYOUT_SPRINT: String = "sprint_3_image"
             const val LAYOUT_SPRINT_LEGO: String = "sprint_lego"
-            const val LAYOUT_ORGANIC: String = "organic"
             const val LAYOUT_6_IMAGE: String = "6_image"
-            const val LAYOUT_BANNER_GIF: String = "banner_image"
             const val LAYOUT_LEGO_3_IMAGE: String = "lego_3_image"
             const val LAYOUT_LEGO_4_IMAGE: String = "lego_4_image"
             const val LAYOUT_LEGO_2_IMAGE: String = "1x2_banner"
@@ -315,6 +267,7 @@ data class DynamicHomeChannel(
             const val LAYOUT_CATEGORY_WIDGET_V2: String = "category_widget_v2"
             const val LAYOUT_FEATURED_SHOP: String = "shop_widget"
             const val LAYOUT_BANNER_ADS: String = "banner_ads"
+            const val LAYOUT_VERTICAL_BANNER_ADS: String = "tdn_vertical_carousel"
             const val LAYOUT_BEST_SELLING: String = "best_selling"
             const val LAYOUT_CATEGORY_ICON: String = "category_icon"
             const val LAYOUT_BANNER_CAROUSEL_V2 = "banner_carousel_v2"
@@ -328,6 +281,7 @@ data class DynamicHomeChannel(
             const val LAYOUT_CUE_WIDGET: String = "cue_widget"
             const val LAYOUT_MISSION_WIDGET: String = "mission_widget"
             const val LAYOUT_VPS_WIDGET: String = "4_banners_auto_vps_v2"
+            const val LAYOUT_LEGO_4_PRODUCT: String = "lego_4_product"
             const val channelId: String = "channelId"
             const val campaignCodeLabel: String = "campaignCode"
             const val DIVIDER_NO_DIVIDER = 0

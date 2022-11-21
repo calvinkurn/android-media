@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.tokopedia.macrobenchmark_util">
+    <application android:label="@string/app_name">
+        <activity
+            android:name=".env.SessionSetupActivity"
+            android:exported="true"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_session_setting"
+                    android:pathPrefix="@string/path_home_dev_opt"
+                    android:scheme="tokopedia-android-internal" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".env.MockTestActivity"
+            android:exported="true"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateHidden">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_mock_setting"
+                    android:pathPrefix="@string/path_home_dev_opt"
+                    android:scheme="tokopedia-android-internal" />
+            </intent-filter>
+        </activity>
+    </application>
+
+</manifest>

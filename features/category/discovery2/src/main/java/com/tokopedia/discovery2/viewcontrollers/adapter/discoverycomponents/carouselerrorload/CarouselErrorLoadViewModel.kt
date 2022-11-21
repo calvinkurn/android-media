@@ -6,7 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.Utils
 import com.tokopedia.discovery2.data.ComponentsItem
-import com.tokopedia.discovery2.datamapper.getComponent
+import com.tokopedia.discovery2.usecase.MerchantVoucherUseCase
 import com.tokopedia.discovery2.usecase.productCardCarouselUseCase.ProductCardsUseCase
 import com.tokopedia.discovery2.usecase.shopcardusecase.ShopCardUseCase
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
@@ -17,7 +17,7 @@ import kotlinx.coroutines.SupervisorJob
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
-class CarouselErrorLoadViewModel(val application: Application,
+class CarouselErrorLoadViewModel(application: Application,
                                  private val components: ComponentsItem, val position: Int) :
         DiscoveryBaseViewModel(), CoroutineScope {
 
@@ -29,6 +29,9 @@ class CarouselErrorLoadViewModel(val application: Application,
     @Inject
     lateinit var shopCardUseCase: ShopCardUseCase
 
+    @Inject
+    lateinit var merchantVoucherUseCase: MerchantVoucherUseCase
+
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + SupervisorJob()
 
@@ -39,11 +42,23 @@ class CarouselErrorLoadViewModel(val application: Application,
     fun loadData() {
         showLoader.value = true
         launchCatchError(block = {
-            components?.let {
+            components.let {
                 syncData.value = when (components.parentComponentName) {
                     ComponentNames.ShopCardView.componentName ->
-                        shopCardUseCase.getShopCardPaginatedData(components.parentComponentId, components.pageEndPoint)
-                    else -> productCardUseCase.getCarouselPaginatedData(components.parentComponentId, components.pageEndPoint)
+                        shopCardUseCase.getShopCardPaginatedData(
+                            components.parentComponentId,
+                            components.pageEndPoint
+                        )
+                    ComponentNames.MerchantVoucherCarousel.componentName ->
+                        merchantVoucherUseCase.getCarouselPaginatedData(
+                            components.parentComponentId,
+                            components.pageEndPoint
+                        )
+
+                    else -> productCardUseCase.getCarouselPaginatedData(
+                        components.parentComponentId,
+                        components.pageEndPoint
+                    )
                 }
 
             }

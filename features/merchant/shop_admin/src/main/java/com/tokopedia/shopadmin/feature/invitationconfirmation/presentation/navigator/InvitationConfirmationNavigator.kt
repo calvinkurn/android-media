@@ -7,7 +7,6 @@ import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.shopadmin.common.constants.Constants
 
@@ -22,15 +21,6 @@ class InvitationConfirmationNavigator(
             ApplinkConstInternalMarketplace.ADMIN_ACCEPTED,
             params
         )
-        RouteManager.route(fragment.context, appLink)
-    }
-
-    fun goToShopAccount() {
-        val appLink = if (GlobalConfig.isSellerApp()) {
-            ApplinkConstInternalSellerapp.SELLER_HOME
-        } else {
-            ApplinkConstInternalSellerapp.SELLER_MENU
-        }
         RouteManager.route(fragment.context, appLink)
     }
 

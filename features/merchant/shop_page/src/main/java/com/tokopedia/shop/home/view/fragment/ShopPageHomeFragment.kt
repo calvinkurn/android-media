@@ -646,7 +646,8 @@ open class ShopPageHomeFragment : BaseListFragment<Visitable<*>, AdapterTypeFact
             isOwner,
             isLogin,
             isThematicWidgetShown,
-            isEnableDirectPurchase
+            isEnableDirectPurchase,
+            shopId
         )
         if (shopHomeWidgetContentData.isNotEmpty()) {
             shopHomeAdapter.setHomeLayoutData(shopHomeWidgetContentData)
@@ -1268,7 +1269,8 @@ open class ShopPageHomeFragment : BaseListFragment<Visitable<*>, AdapterTypeFact
             isOwner,
             isLogin,
             isThematicWidgetShown,
-            isEnableDirectPurchase
+            isEnableDirectPurchase,
+            shopId
         )
         if (shopHomeWidgetContentData.isNotEmpty()) {
             shopHomeAdapter.setHomeLayoutData(shopHomeWidgetContentData)
@@ -2379,6 +2381,27 @@ open class ShopPageHomeFragment : BaseListFragment<Visitable<*>, AdapterTypeFact
         }
     }
 
+    override fun onPersonalizationTrendingCarouselProductItemClicked(
+        parentPosition: Int,
+        itemPosition: Int,
+        shopHomeCarousellProductUiModel: ShopHomeCarousellProductUiModel,
+        shopHomeProductViewModel: ShopHomeProductUiModel
+    ) {
+        sendShopHomeWidgetClickedTracker(
+            ShopPageTrackingConstant.VALUE_SHOP_DECOR_PRODUCT,
+            shopHomeCarousellProductUiModel.name,
+            shopHomeCarousellProductUiModel.widgetId,
+            ShopUtil.getActualPositionFromIndex(parentPosition)
+        )
+        shopPageHomeTracking.clickProductPersonalizationTrendingWidget(
+            itemPosition,
+            shopHomeProductViewModel,
+            shopId,
+            userId
+        )
+        goToPDP(shopHomeProductViewModel.productUrl)
+    }
+
     override fun onCarouselPersonalizationProductItemClickAddToCart(
         parentPosition: Int,
         itemPosition: Int,
@@ -2519,6 +2542,18 @@ open class ShopPageHomeFragment : BaseListFragment<Visitable<*>, AdapterTypeFact
             shopHomeCarousellProductUiModel?.header?.title ?: "",
             shopHomeCarousellProductUiModel?.name ?: "",
             customDimensionShopPage
+        )
+    }
+
+    override fun onCarouselProductPersonalizationTrendingItemImpression(
+        itemPosition: Int,
+        shopHomeProductViewModel: ShopHomeProductUiModel
+    ) {
+        shopPageHomeTracking.impressionProductPersonalizationTrendingWidget(
+            itemPosition,
+            shopHomeProductViewModel,
+            shopId,
+            userId
         )
     }
 
@@ -2817,6 +2852,10 @@ open class ShopPageHomeFragment : BaseListFragment<Visitable<*>, AdapterTypeFact
             model.widgetId,
             ShopUtil.getActualPositionFromIndex(adapterPosition)
         )
+    }
+
+    override fun onCarouselProductPersonalizationTrendingWidgetImpression() {
+        shopPageHomeTracking.impressionPersonalizationTrendingWidget(shopId, userId)
     }
 
     private fun onSuccessRemoveWishList(

@@ -13,7 +13,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:src="@color/black" />
+        tools:src="@color/Unify_NN1000" />
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/tdnShimmer"

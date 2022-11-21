@@ -10,6 +10,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.vouchercreation.shop.create.domain.model.ShopInfo
 import com.tokopedia.vouchercreation.common.domain.usecase.BasicShopInfoUseCase
 import com.tokopedia.vouchercreation.common.domain.usecase.InitiateVoucherUseCase
@@ -112,7 +113,7 @@ class CreateMerchantVoucherStepsViewModel @Inject constructor(
     }
 
     private suspend fun getBasicInfo(): ShopInfo {
-        val userId = userSession.userId.toInt()
+        val userId = userSession.userId.toIntOrZero()
         basicShopInfoUseCase.params = BasicShopInfoUseCase.createRequestParams(userId)
         return basicShopInfoUseCase.executeOnBackground()
     }

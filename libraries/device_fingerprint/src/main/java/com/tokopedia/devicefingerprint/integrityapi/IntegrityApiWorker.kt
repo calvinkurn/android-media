@@ -7,6 +7,7 @@ import com.google.android.play.core.integrity.IntegrityManager
 import com.google.android.play.core.integrity.IntegrityManagerFactory
 import com.google.android.play.core.integrity.IntegrityServiceException
 import com.google.android.play.core.integrity.IntegrityTokenRequest
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.devicefingerprint.di.DaggerDeviceFingerprintComponent
 import com.tokopedia.devicefingerprint.di.DeviceFingerprintModule
 import com.tokopedia.devicefingerprint.integrityapi.model.IntegrityParam
@@ -102,9 +103,16 @@ class IntegrityApiWorker(val appContext: Context, val params: WorkerParameters) 
         private const val MAX_RETRY = 3
 
         private const val CONFIG_INTEGRITY = "and_play_integrity"
+        private const val SELLER_CONFIG_INTEGRITY = "sel_play_integrity"
 
-        fun isEnable(): Boolean =
-            RemoteConfigInstance.getInstance().abTestPlatform.getString(CONFIG_INTEGRITY, "").isNotEmpty()
+        fun isEnable(): Boolean {
+            val rollence = if(GlobalConfig.isSellerApp()) {
+                RemoteConfigInstance.getInstance().abTestPlatform.getString(SELLER_CONFIG_INTEGRITY, "")
+            } else {
+                RemoteConfigInstance.getInstance().abTestPlatform.getString(CONFIG_INTEGRITY, "")
+            }
+            return rollence.isNotEmpty()
+        }
 
         @JvmStatic
         fun scheduleWorker(context: Context, event: String) {

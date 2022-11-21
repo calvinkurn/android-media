@@ -4,28 +4,21 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.cmhomewidget.databinding.LayoutCmHomeWidgetProductCardBinding
-import com.tokopedia.cmhomewidget.databinding.LayoutCmHomeWidgetProductCardShimmerBinding
-import com.tokopedia.cmhomewidget.databinding.LayoutCmHomeWidgetViewAllCardShimmerBinding
-import com.tokopedia.cmhomewidget.databinding.LayoutCmHtwdViewAllCardBinding
+import com.tokopedia.cmhomewidget.databinding.*
 import com.tokopedia.cmhomewidget.di.scope.CMHomeWidgetScope
-import com.tokopedia.cmhomewidget.domain.data.CMHomeWidgetProductCardData
-import com.tokopedia.cmhomewidget.domain.data.CMHomeWidgetProductCardShimmerData
-import com.tokopedia.cmhomewidget.domain.data.CMHomeWidgetViewAllCardData
-import com.tokopedia.cmhomewidget.domain.data.CMHomeWidgetViewAllCardShimmerData
+import com.tokopedia.cmhomewidget.domain.data.*
+import com.tokopedia.cmhomewidget.listener.CMHomeWidgetPaymentCardListener
 import com.tokopedia.cmhomewidget.listener.CMHomeWidgetProductCardListener
 import com.tokopedia.cmhomewidget.listener.CMHomeWidgetViewAllCardListener
-import com.tokopedia.cmhomewidget.presentation.adapter.viewholder.CMHomeWidgetProductCardShimmerViewHolder
-import com.tokopedia.cmhomewidget.presentation.adapter.viewholder.CMHomeWidgetProductCardViewHolder
-import com.tokopedia.cmhomewidget.presentation.adapter.viewholder.CMHomeWidgetViewAllCardShimmerViewHolder
-import com.tokopedia.cmhomewidget.presentation.adapter.viewholder.CMHomeWidgetViewAllCardViewHolder
+import com.tokopedia.cmhomewidget.presentation.adapter.viewholder.*
 import javax.inject.Inject
 
 @CMHomeWidgetScope
 class CMHomeWidgetViewHolderTypeFactoryImpl @Inject constructor(
     private val cmHomeWidgetProductCardListener: CMHomeWidgetProductCardListener,
-    private val cmHomeWidgetViewAllCardListener: CMHomeWidgetViewAllCardListener
-) : CMHomeWidgetViewHolderTypeFactory, BaseAdapterTypeFactory() {
+    private val cmHomeWidgetViewAllCardListener: CMHomeWidgetViewAllCardListener,
+    private val cmHomeWidgetPaymentCardListener: CMHomeWidgetPaymentCardListener,
+    ) : CMHomeWidgetViewHolderTypeFactory, BaseAdapterTypeFactory() {
 
     override fun type(cmHomeWidgetProductCardData: CMHomeWidgetProductCardData): Int {
         return CMHomeWidgetProductCardViewHolder.LAYOUT
@@ -41,6 +34,10 @@ class CMHomeWidgetViewHolderTypeFactoryImpl @Inject constructor(
 
     override fun type(cmHomeWidgetViewAllCardShimmerData: CMHomeWidgetViewAllCardShimmerData): Int {
         return CMHomeWidgetViewAllCardShimmerViewHolder.LAYOUT
+    }
+
+    override fun type(cmHomeWidgetPaymentData: CMHomeWidgetPaymentData): Int {
+        return CMHomeWidgetPaymentCardViewHolder.LAYOUT
     }
 
     override fun createViewHolder(
@@ -68,6 +65,12 @@ class CMHomeWidgetViewHolderTypeFactoryImpl @Inject constructor(
             CMHomeWidgetViewAllCardShimmerViewHolder.LAYOUT -> {
                 CMHomeWidgetViewAllCardShimmerViewHolder(
                     getViewAllCardShimmerBinding(parent)
+                )
+            }
+            CMHomeWidgetPaymentCardViewHolder.LAYOUT -> {
+                CMHomeWidgetPaymentCardViewHolder(
+                    getPaymentCardBinding(parent),
+                    cmHomeWidgetPaymentCardListener
                 )
             }
             else -> {
@@ -106,6 +109,14 @@ class CMHomeWidgetViewHolderTypeFactoryImpl @Inject constructor(
 
     private fun getViewAllCardShimmerBinding(parent: ViewGroup): LayoutCmHomeWidgetViewAllCardShimmerBinding {
         return LayoutCmHomeWidgetViewAllCardShimmerBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent,
+            false
+        )
+    }
+
+    private fun getPaymentCardBinding(parent: ViewGroup): LayoutCmHomeWidgetPaymentCardBinding {
+        return LayoutCmHomeWidgetPaymentCardBinding.inflate(
             LayoutInflater.from(parent.context),
             parent,
             false

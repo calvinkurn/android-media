@@ -62,6 +62,7 @@ class ShopCouponSheetViewComponent(
             if (newState == RecyclerView.SCROLL_STATE_SETTLING &&
                 layoutManager is LinearLayoutManager
             ) {
+                if (layoutManager.findFirstCompletelyVisibleItemPosition() == 0 && layoutManager.findLastCompletelyVisibleItemPosition() == recyclerView.childCount - 1) return
                 listener.onVoucherScrolled(
                     this@ShopCouponSheetViewComponent,
                     layoutManager.findLastVisibleItemPosition()

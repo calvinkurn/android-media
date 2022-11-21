@@ -3,6 +3,8 @@ package com.tokopedia.search.result.presentation.presenter.product
 import com.tokopedia.search.di.scope.SearchScope
 import com.tokopedia.search.result.presentation.ProductListSectionContract
 import com.tokopedia.search.result.product.DynamicFilterModelProvider
+import com.tokopedia.search.result.product.inspirationlistatc.InspirationListAtcPresenter
+import com.tokopedia.search.result.product.inspirationlistatc.InspirationListAtcPresenterDelegate
 import com.tokopedia.search.result.product.lastfilter.LastFilterPresenter
 import com.tokopedia.search.result.product.lastfilter.LastFilterPresenterDelegate
 import dagger.Binds

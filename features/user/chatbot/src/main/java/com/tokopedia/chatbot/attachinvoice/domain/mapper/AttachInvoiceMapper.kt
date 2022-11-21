@@ -3,8 +3,7 @@ package com.tokopedia.chatbot.attachinvoice.domain.mapper
 import com.tokopedia.chatbot.attachinvoice.domain.pojo.InvoiceLinkAttributePojo
 import com.tokopedia.chatbot.attachinvoice.domain.pojo.InvoiceLinkPojo
 import com.tokopedia.chatbot.attachinvoice.view.resultmodel.SelectedInvoice
-import com.tokopedia.chatbot.data.invoice.AttachInvoiceSingleViewModel
-
+import com.tokopedia.chatbot.data.invoice.AttachInvoiceSingleUiModel
 import javax.inject.Inject
 
 /**
@@ -16,22 +15,24 @@ internal constructor() {
     companion object {
 
         @Deprecated("")
-        fun selectedInvoiceViewModelToSelectedInvoice(viewModel: AttachInvoiceSingleViewModel): SelectedInvoice {
-            return SelectedInvoice(viewModel.id,
-                    viewModel.code,
-                    viewModel.typeString,
-                    viewModel.type,
-                    viewModel.title,
-                    viewModel.imageUrl,
-                    viewModel.description,
-                    viewModel.amount,
-                    viewModel.createdTime,
-                    viewModel.url,
-                    viewModel.status,
-                    viewModel.statusId)
+        fun selectedInvoiceViewModelToSelectedInvoice(viewModel: AttachInvoiceSingleUiModel): SelectedInvoice {
+            return SelectedInvoice(
+                viewModel.id,
+                viewModel.code,
+                viewModel.typeString,
+                viewModel.type,
+                viewModel.title,
+                viewModel.imageUrl,
+                viewModel.description,
+                viewModel.amount,
+                viewModel.createdTime,
+                viewModel.url,
+                viewModel.status,
+                viewModel.statusId
+            )
         }
 
-        fun invoiceViewModelToDomainInvoicePojo(selectedInvoice: AttachInvoiceSingleViewModel): InvoiceLinkPojo {
+        fun invoiceViewModelToDomainInvoicePojo(selectedInvoice: AttachInvoiceSingleUiModel): InvoiceLinkPojo {
             val invoiceLinkAttributePojo = InvoiceLinkAttributePojo()
             invoiceLinkAttributePojo.code = selectedInvoice.code
             invoiceLinkAttributePojo.createTime = selectedInvoice.createdTime

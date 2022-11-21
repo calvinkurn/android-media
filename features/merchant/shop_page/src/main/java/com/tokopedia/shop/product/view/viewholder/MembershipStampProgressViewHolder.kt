@@ -52,7 +52,7 @@ class MembershipStampProgressViewHolder(itemView: View, listener: MembershipStam
         rvMembership = viewBinding?.rvMembership
         rvMembership?.apply {
             itemView.context?.let {
-                layoutManager = LinearLayoutManager(it, LinearLayout.HORIZONTAL, false)
+                layoutManager = LinearLayoutManager(it, LinearLayoutManager.HORIZONTAL, false)
                 adapter = membershipAdapter
             }
         }

@@ -5,6 +5,7 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.homenav.mainnav.data.pojo.shop.ShopData
+import com.tokopedia.homenav.mainnav.domain.usecases.query.GetShopInfoQuery
 import com.tokopedia.searchbar.navigation_component.data.notification.Param
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.Fail
@@ -22,25 +23,7 @@ class GetShopInfoUseCase @Inject constructor(
     var params: RequestParams = RequestParams.EMPTY
 
     init {
-        val query =
-                """query getShopInfo($$PARAM_INPUT: NotificationRequest){
-                 userShopInfo{
-                    info{
-                        shop_name
-                        shop_id
-                    }
-                 }
-                 notifications(input: $$PARAM_INPUT) {
-                    sellerOrderStatus {
-                        newOrder
-                        readyToShip
-                        inResolution
-                    }
-                 }
-            }
-            """.trimIndent()
-
-        graphqlUseCase.setGraphqlQuery(query)
+        graphqlUseCase.setGraphqlQuery(GetShopInfoQuery())
         graphqlUseCase.setTypeClass(ShopData::class.java)
         params.parameters[PARAM_INPUT] = Param(userSession.shopId)
     }

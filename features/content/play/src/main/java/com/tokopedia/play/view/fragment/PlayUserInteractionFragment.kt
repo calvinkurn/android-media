@@ -174,7 +174,7 @@ class PlayUserInteractionFragment @Inject constructor(
      */
     private val interactiveActiveView by viewComponentOrNull { InteractiveActiveViewComponent(it, this) }
     private val interactiveFinishView by viewComponentOrNull { InteractiveFinishViewComponent(it) }
-    private val interactiveResultView by viewComponentOrNull(isEagerInit = true) { InteractiveGameResultViewComponent(it, this) }
+    private val interactiveResultView by viewComponentOrNull(isEagerInit = true) { InteractiveGameResultViewComponent(it, this, viewLifecycleOwner.lifecycleScope) }
 
     private val activityResultHelper by lifecycleBound({
         ActivityResultHelper(this)
@@ -990,9 +990,7 @@ class PlayUserInteractionFragment @Inject constructor(
                     }
                     is ShowCoachMarkWinnerEvent -> {
                         if (interactiveResultView?.isHidden() == true || container.alpha != VISIBLE_ALPHA) return@collect
-                        interactiveResultView?.showCoachMark(event.title, event.subtitle)
-                        delay(GAME_LOSER_COACHMARK_DELAY)
-                        interactiveResultView?.hideCoachMark()
+                        interactiveResultView?.showCoachMark(event.title, getTextFromUiString(event.subtitle))
                     }
                     HideCoachMarkWinnerEvent -> {
                         interactiveResultView?.hideCoachMark()
@@ -1237,6 +1235,7 @@ class PlayUserInteractionFragment @Inject constructor(
     private fun openProductSheet() {
         interactiveResultView?.hideCoachMark()
         playViewModel.onShowProductSheet(bottomSheetMaxHeight)
+        productAnalyticHelper.sendImpressedProductSheets()
     }
 
     private fun pushParentPlayByKeyboardHeight(estimatedKeyboardHeight: Int) {
@@ -1949,8 +1948,6 @@ class PlayUserInteractionFragment @Inject constructor(
         private const val AUTO_SWIPE_DELAY = 500L
 
         private const val FADING_EDGE_PRODUCT_FEATURED_WIDTH_MULTIPLIER = 0.125f
-
-        private const val GAME_LOSER_COACHMARK_DELAY = 5000L
     }
 
     sealed interface Event {

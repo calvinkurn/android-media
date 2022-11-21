@@ -89,6 +89,8 @@ class LoginEmailPhoneViewModelTest {
 
     private var showLocationAdminPopUp = mockk<Observer<Result<Boolean>>>(relaxed = true)
 
+    private var adminRedirection = mockk<Observer<Result<Boolean>>>(relaxed = true)
+
     private var loginTokenV2UseCase = mockk<LoginTokenV2UseCase>(relaxed = true)
     private var getAdminTypeUseCase = mockk<GetAdminTypeUseCase>(relaxed = true)
     private var generatePublicKeyUseCase = mockk<GeneratePublicKeyUseCase>(relaxed = true)
@@ -146,6 +148,7 @@ class LoginEmailPhoneViewModelTest {
         viewModel.showLocationAdminPopUp.observeForever(showLocationAdminPopUp)
         viewModel.getTemporaryKeyResponse.observeForever(getTemporaryKeyObserver)
         viewModel.navigateToGojekSeamless.observeForever(navigateGojekSeamlessObserver)
+        viewModel.adminRedirection.observeForever(adminRedirection)
     }
 
     private val throwable = Throwable("Error")
@@ -937,6 +940,21 @@ class LoginEmailPhoneViewModelTest {
         /* Then */
         verify {
             showLocationAdminPopUp.onChanged(Success(true))
+        }
+    }
+
+    @Test
+    fun `on Admin Redirection`() {
+
+        every { getProfileUseCase.execute(any()) } answers {
+            firstArg<GetProfileSubscriber>().onLocationAdminRedirection?.invoke()
+        }
+
+        viewModel.getUserInfo()
+
+        /* Then */
+        verify {
+            adminRedirection.onChanged(Success(true))
         }
     }
 

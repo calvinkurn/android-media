@@ -11,6 +11,7 @@ import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.coVerify
 import io.mockk.impl.annotations.RelaxedMockK
+import io.mockk.verify
 import junit.framework.Assert.assertEquals
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import org.junit.Before
@@ -91,7 +92,115 @@ class OrderAppWidgetViewModelTest {
         val result = OrderUiModel(
                 orders = newOrderResult.orders.orEmpty().plus(readyToShipResult.orders.orEmpty()),
                 sellerOrderStatus = readyToShipResult.sellerOrderStatus
-        )
+            )
+
+            val newOrderList = newOrderResult.orders
+            val readyToShipList = readyToShipResult.orders
+
+            newOrderList?.forEach {
+                assertEquals(Const.OrderStatusId.NEW_ORDER, it.statusId)
+            }
+
+            readyToShipList?.forEach {
+                assertEquals(Const.OrderStatusId.READY_TO_SHIP, it.statusId)
+            }
+
+            verify {
+                mView.onSuccess(result)
+            }
+        }
+
+    @Test
+    fun `returns the order list but can't notify the UI when view not bind`() =
+        coroutineTestRule.runBlockingTest {
+            mViewModel.unbind()
+            getNewOrderUseCase.params = newOrderParams
+            getReadyToShipUseCase.params = readyToShipParams
+
+            val newOrderModel =
+                OrderUiModel(orders = listOf(OrderItemUiModel(statusId = Const.OrderStatusId.NEW_ORDER)))
+
+            val readyToShipModel =
+                OrderUiModel(orders = listOf(OrderItemUiModel(statusId = Const.OrderStatusId.READY_TO_SHIP)))
+
+            coEvery {
+                getNewOrderUseCase.executeOnBackground()
+            } returns newOrderModel
+
+            coEvery {
+                getReadyToShipUseCase.executeOnBackground()
+            } returns readyToShipModel
+
+            mViewModel.getOrderList(startDate, endDate)
+
+            coVerify {
+                getNewOrderUseCase.executeOnBackground()
+            }
+
+            coVerify {
+                getReadyToShipUseCase.executeOnBackground()
+            }
+
+            val newOrderResult = getNewOrderUseCase.executeOnBackground()
+            val readyToShipResult = getReadyToShipUseCase.executeOnBackground()
+
+            val result = OrderUiModel(
+                orders = newOrderResult.orders.orEmpty().plus(readyToShipResult.orders.orEmpty()),
+                sellerOrderStatus = readyToShipResult.sellerOrderStatus
+            )
+
+            val newOrderList = newOrderResult.orders
+            val readyToShipList = readyToShipResult.orders
+
+            newOrderList?.forEach {
+                assertEquals(Const.OrderStatusId.NEW_ORDER, it.statusId)
+            }
+
+            readyToShipList?.forEach {
+                assertEquals(Const.OrderStatusId.READY_TO_SHIP, it.statusId)
+            }
+
+            verify(inverse = true) {
+                mView.onSuccess(result)
+            }
+        }
+
+    @Test
+    fun `returns the order list and notify the UI when get the order list successfully with null orders`() =
+        coroutineTestRule.runBlockingTest {
+
+            getNewOrderUseCase.params = newOrderParams
+            getReadyToShipUseCase.params = readyToShipParams
+
+            val newOrderModel = OrderUiModel(orders = null)
+
+            val readyToShipModel = OrderUiModel(orders = null)
+
+            coEvery {
+                getNewOrderUseCase.executeOnBackground()
+            } returns newOrderModel
+
+            coEvery {
+                getReadyToShipUseCase.executeOnBackground()
+            } returns readyToShipModel
+
+            mViewModel.getOrderList(startDate, endDate)
+
+            coVerify {
+                getNewOrderUseCase.executeOnBackground()
+            }
+
+            coVerify {
+                getReadyToShipUseCase.executeOnBackground()
+            }
+
+            val newOrderResult = getNewOrderUseCase.executeOnBackground()
+            val readyToShipResult = getReadyToShipUseCase.executeOnBackground()
+
+            val result = OrderUiModel(
+                orders = emptyList(),
+                sellerOrderStatus = readyToShipResult.sellerOrderStatus
+            )
 
         val newOrderList = newOrderResult.orders
         val readyToShipList = readyToShipResult.orders
@@ -104,7 +213,7 @@ class OrderAppWidgetViewModelTest {
             assertEquals(Const.OrderStatusId.READY_TO_SHIP, it.statusId)
         }
 
-        coVerify {
+        verify {
             mView.onSuccess(result)
         }
     }
@@ -129,7 +238,7 @@ class OrderAppWidgetViewModelTest {
             getNewOrderUseCase.executeOnBackground()
         }
 
-        coVerify {
+        verify {
             mView.onError(any())
         }
     }
@@ -160,7 +269,41 @@ class OrderAppWidgetViewModelTest {
             getReadyToShipUseCase.executeOnBackground()
         }
 
+        verify {
+            mView.onError(any())
+        }
+    }
+
+    @Test
+    fun `given view null value when getReadyToShipUseCase invoked then throw Exception will not notify the UI`() {
+        mViewModel.unbind()
+
+        val throwable = RuntimeException("")
+        getNewOrderUseCase.params = newOrderParams
+        getReadyToShipUseCase.params = readyToShipParams
+
+        val newOrderModel =
+            OrderUiModel(orders = listOf(OrderItemUiModel(statusId = Const.OrderStatusId.NEW_ORDER)))
+
+        coEvery {
+            getNewOrderUseCase.executeOnBackground()
+        } returns newOrderModel
+
+        coEvery {
+            getReadyToShipUseCase.executeOnBackground()
+        } throws throwable
+
+        mViewModel.getOrderList(startDate, endDate)
+
         coVerify {
+            getNewOrderUseCase.executeOnBackground()
+        }
+
+        coVerify {
+            getReadyToShipUseCase.executeOnBackground()
+        }
+
+        verify(inverse = true) {
             mView.onError(any())
         }
     }
