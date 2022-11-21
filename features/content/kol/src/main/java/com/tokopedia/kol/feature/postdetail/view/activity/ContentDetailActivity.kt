@@ -42,7 +42,7 @@ class ContentDetailActivity : BaseSimpleActivity() {
     }
 
     fun getSource(): String {
-        return intent?.extras?.getString(PARAM_SOURCE) ?: SHARE_LINK
+        return intent?.extras?.getString(PARAM_ENTRY_POINT) ?: SHARE_LINK
     }
 
     fun setContentDetailMainPostData(card: FeedXCard?) {
@@ -81,7 +81,7 @@ class ContentDetailActivity : BaseSimpleActivity() {
     companion object {
         const val PARAM_POST_ID = "post_id"
         const val DEFAULT_POST_ID = "0"
-        const val PARAM_SOURCE = "source"
+        const val PARAM_ENTRY_POINT = "entry_point"
         const val SHARE_LINK = "share_link"
     }
 }
