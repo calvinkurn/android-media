@@ -198,7 +198,7 @@
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/top_ads_product_subtitle_first"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:maxLines="1"
@@ -206,7 +206,7 @@
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/top_ads_product_subtitle_second"
-                android:layout_width="0dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:ellipsize="end"
                 android:maxLines="1"
