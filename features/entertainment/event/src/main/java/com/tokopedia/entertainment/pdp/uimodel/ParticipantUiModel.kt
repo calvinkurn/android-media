@@ -11,7 +11,8 @@ class ParticipantUiModel(
     val id: String = "",
     val title: String = "",
     val subTitle: String = "",
-    var isChecked: Boolean = false
+    var isChecked: Boolean = false,
+    var isDisabled: Boolean = false
 ): Visitable<EventRedeemRevampTypeFactory> {
     override fun type(typeFactory: EventRedeemRevampTypeFactory): Int {
         return typeFactory.type(this)

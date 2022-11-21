@@ -145,27 +145,16 @@ class EventRedeemRevampFragment : BaseDaggerFragment(),
         hideLoading()
         hideGlobalError()
         showMainLayout()
-        binding?.run {
-            tgValueBookerName.text = redeem.user.name
-            tgValueProduct.text = redeem.product.displayName
-            tgValueTypeTicket.text = redeem.schedule.name
-            tgValueDate.text = redeem.schedule.showData
-            tgValueSumTicket.text = redeem.quantity.toString()
-            tfRedeem.addOnFocusChangeListener = { _, hasFocus ->
-                if (hasFocus) {
-                    showBottomSheet()
-                }
-            }
-            btnRedeem.setOnClickListener {
-                processRedeem()
-            }
-        }
+        renderMainLayout(redeem)
+        hideRedeemLayout()
     }
 
     private fun showSuccessRedeem() {
         hideLoading()
         hideGlobalError()
         showMainLayout()
+        showRedeemLayout()
+        renderSuccessRedeemLayout()
     }
 
     private fun processRedeem() {
@@ -263,6 +252,36 @@ class EventRedeemRevampFragment : BaseDaggerFragment(),
             btnRedeem.hide()
             tfRedeem.hide()
         }
+    }
+
+    private fun showRedeemLayout() {
+
+    }
+
+    private fun hideRedeemLayout() {
+
+    }
+
+    private fun renderMainLayout(redeem: Data) {
+        binding?.run {
+            tgValueBookerName.text = redeem.user.name
+            tgValueProduct.text = redeem.product.displayName
+            tgValueTypeTicket.text = redeem.schedule.name
+            tgValueDate.text = redeem.schedule.showData
+            tgValueSumTicket.text = redeem.quantity.toString()
+            tfRedeem.addOnFocusChangeListener = { _, hasFocus ->
+                if (hasFocus) {
+                    showBottomSheet()
+                }
+            }
+            btnRedeem.setOnClickListener {
+                processRedeem()
+            }
+        }
+    }
+
+    private fun renderSuccessRedeemLayout() {
+
     }
 
     private fun showBottomSheet() {

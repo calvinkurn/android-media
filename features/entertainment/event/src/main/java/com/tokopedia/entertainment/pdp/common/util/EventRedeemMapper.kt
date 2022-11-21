@@ -7,6 +7,7 @@ import com.tokopedia.entertainment.pdp.data.redeem.redeemable.ParticipantDetail
 import com.tokopedia.entertainment.pdp.uimodel.ParticipantTitleUiModel
 import com.tokopedia.entertainment.pdp.uimodel.ParticipantUiModel
 import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.entertainment.R.string as stringRedeem
 
 /**
@@ -33,7 +34,8 @@ object EventRedeemMapper {
                        id = it.id,
                        title = it.participantDetails.first().value,
                        subTitle = participantsListMapping(it.participantDetails, context),
-                       isChecked = it.checked
+                       isChecked = it.checked,
+                       isDisabled = it.redemptionTime.isMoreThanZero()
                     )
                 )
             }

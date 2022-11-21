@@ -26,10 +26,16 @@ class EventParticipantViewHolder(
         binding?.run {
             tgParticipantTitle.text = element.title
 
-            cbParticipant.setOnCheckedChangeListener(null)
-            cbParticipant.isChecked = element.isChecked
-            cbParticipant.setOnCheckedChangeListener { _, isChecked ->
-                listener.onCheckListener(element, isChecked)
+            if (element.isDisabled) {
+                cbParticipant.isEnabled = false
+                cbParticipant.isChecked = true
+            } else {
+                cbParticipant.isEnabled = true
+                cbParticipant.setOnCheckedChangeListener(null)
+                cbParticipant.isChecked = element.isChecked
+                cbParticipant.setOnCheckedChangeListener { _, isChecked ->
+                    listener.onCheckListener(element, isChecked)
+                }
             }
 
             if (element.subTitle.isNotEmpty()) {
