@@ -142,7 +142,6 @@ class BottomSheetFilterViewDelegate @Inject constructor(
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
     private fun onViewDestroyed() {
-        // In case view destroyed, clear bottomSheet and callback reference
         sortFilterBottomSheet = null
         callback = null
     }
