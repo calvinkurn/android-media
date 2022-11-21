@@ -8,14 +8,14 @@
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:layout_width="match_parent"
-        android:layout_height="@dimen/layout_lvl4"
+        android:layout_height="32dp"
         app:loader_corner_radius="10dp"
         app:loader_type="rect"/>
 
     <com.tokopedia.unifycomponents.LoaderUnify
-        android:layout_marginTop="@dimen/spacing_lvl3"
+        android:layout_marginTop="8dp"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/layout_lvl8"
+        android:layout_height="96dp"
         app:loader_corner_radius="10dp"
         app:loader_type="rect"/>
 
