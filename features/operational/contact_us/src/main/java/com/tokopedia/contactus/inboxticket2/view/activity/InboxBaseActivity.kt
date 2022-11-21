@@ -119,9 +119,21 @@ abstract class InboxBaseActivity : BaseSimpleActivity(), InboxBaseView {
 
     override fun setSnackBarErrorMessage(message: String, clickable: Boolean) {
         if (clickable) {
-            Toaster.make(getRootView(), message, Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR, getString(R.string.ok), View.OnClickListener { })
+            Toaster.make(
+                getRootView(),
+                message,
+                Snackbar.LENGTH_SHORT,
+                Toaster.TYPE_ERROR,
+                getString(R.string.ok),
+                View.OnClickListener { })
         } else {
-            Toaster.make(getRootView(), message, Snackbar.LENGTH_SHORT, Toaster.TYPE_ERROR, "", View.OnClickListener {})
+            Toaster.make(
+                getRootView(),
+                message,
+                Snackbar.LENGTH_SHORT,
+                Toaster.TYPE_ERROR,
+                "",
+                View.OnClickListener {})
         }
     }
 }

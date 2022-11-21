@@ -233,11 +233,21 @@ class TicketListAdapter(private val itemList: MutableList<InboxTicketListRespons
         private fun setTicketReadStatus(readStatus: String?, mContext :Context) {
             when {
                 UNREAD.equals(readStatus, true) -> {
-                    layoutItemTicket?.setBackgroundColor(MethodChecker.getColor(mContext, com.tokopedia.unifyprinciples.R.color.Unify_G100_44))
+                    layoutItemTicket?.setBackgroundColor(
+                        MethodChecker.getColor(
+                            mContext,
+                            com.tokopedia.unifyprinciples.R.color.Unify_G100_44
+                        )
+                    )
                     tvTicketTitle?.setWeight(Typography.BOLD)
                 }
                 READ.equals(readStatus, true) -> {
-                    layoutItemTicket?.setBackgroundColor(MethodChecker.getColor(mContext, com.tokopedia.abstraction.R.color.white))
+                    layoutItemTicket?.setBackgroundColor(
+                        MethodChecker.getColor(
+                            mContext,
+                            com.tokopedia.unifyprinciples.R.color.Unify_NN0
+                        )
+                    )
                     tvTicketTitle?.setWeight(Typography.REGULAR)
                 }
             }

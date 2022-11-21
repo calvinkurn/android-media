@@ -33,8 +33,6 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import kotlinx.android.synthetic.main.bottom_sheet_rating_provide.view.*
-import kotlinx.android.synthetic.main.layout_item_ticket.*
 import javax.inject.Inject
 
 class ContactUsProvideRatingActivity : BaseSimpleActivity() {
@@ -162,7 +160,7 @@ class ContactUsProvideRatingActivity : BaseSimpleActivity() {
         ) }
     }
     private fun disableSubmitButton() {
-         buttonFinished?.setTextColor(MethodChecker.getColor(this, com.tokopedia.abstraction.R.color.grey_500))
+         buttonFinished?.setTextColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_NN400))
          buttonFinished?.isEnabled = false
     }
 
@@ -274,7 +272,12 @@ class ContactUsProvideRatingActivity : BaseSimpleActivity() {
     }
 
     private fun enableSubmitButton() {
-        buttonFinished?.setTextColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_Static_White))
+        buttonFinished?.setTextColor(
+            MethodChecker.getColor(
+                this,
+                com.tokopedia.unifyprinciples.R.color.Unify_Static_White
+            )
+        )
         buttonFinished?.isEnabled = true
     }
 

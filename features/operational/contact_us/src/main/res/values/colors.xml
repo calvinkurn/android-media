@@ -21,6 +21,7 @@
     <color name="contact_us_dms_priority_color">#9342ED</color>
     <color name="contact_us_dms_detail_view_txn">#03AC0E</color>
     <color name="contact_us_dms_rating_divider">#F3F4F5</color>
+    <color name="contact_us_selesai_button">#00A958</color>
 
 
 </resources>

@@ -111,7 +111,7 @@
         android:layout_margin="16dp"
         android:background="@drawable/bg_button_state"
         android:gravity="center"
-        android:text="Selesai"
+        android:text="@string/contact_us_selesai_button"
         android:textColor="@color/Unify_N0"
         app:typographyWeight="bold"
         app:typographyType="display_2"
