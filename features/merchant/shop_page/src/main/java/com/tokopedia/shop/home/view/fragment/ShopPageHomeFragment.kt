@@ -1427,6 +1427,12 @@ open class ShopPageHomeFragment : BaseListFragment<Visitable<*>, AdapterTypeFact
             val widgetMvcLayout = listWidgetLayoutToLoad.firstOrNull { isWidgetMvc(it) }?.apply {
                 listWidgetLayoutToLoad.remove(this)
             }
+            // exclude product bundle widget from widgets to load
+            viewModel?.let { viewModel ->
+                listWidgetLayoutToLoad.firstOrNull { viewModel.isWidgetBundle(it) }?.apply {
+                    listWidgetLayoutToLoad.remove(this)
+                }
+            }
             getWidgetContentData(listWidgetLayoutToLoad)
             widgetPlayLayout?.let {
                 getPlayWidgetData()
@@ -1454,9 +1460,8 @@ open class ShopPageHomeFragment : BaseListFragment<Visitable<*>, AdapterTypeFact
         if (listWidgetLayoutToLoad.isNotEmpty()) {
             val widgetUserAddressLocalData = ShopUtil.getShopPageWidgetUserAddressLocalData(context)
                 ?: LocalCacheModel()
-            val widgetsToLoad = viewModel?.excludeProductBundleWidget(listWidgetLayoutToLoad)?: listOf()
             viewModel?.getWidgetContentData(
-                widgetsToLoad,
+                listWidgetLayoutToLoad.toList(),
                 shopId,
                 widgetUserAddressLocalData,
                 isThematicWidgetShown,

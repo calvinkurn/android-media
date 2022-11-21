@@ -87,8 +87,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
-import org.junit.Assert.assertNotNull
-import org.junit.Assert.assertTrue
+import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -1993,5 +1992,15 @@ class ShopHomeViewModelTest {
         assert(viewModel.shopPageAtcTracker.value == null)
     }
 
+    @Test
+    fun `when widget type is bundle expect isWidgetBundle to return true`() {
+        val testData = ShopPageWidgetLayoutUiModel(widgetType = WidgetType.BUNDLE)
+        assertTrue(viewModel.isWidgetBundle(testData))
+    }
 
+    @Test
+    fun `when widget type is not bundle expect isWidgetBundle to return false`() {
+        val testData = ShopPageWidgetLayoutUiModel(widgetType = WidgetType.CAMPAIGN)
+        assertFalse(viewModel.isWidgetBundle(testData))
+    }
 }

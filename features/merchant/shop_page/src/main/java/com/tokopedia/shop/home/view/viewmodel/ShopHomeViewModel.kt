@@ -1169,9 +1169,7 @@ class ShopHomeViewModel @Inject constructor(
         _shopPageAtcTracker.postValue(shopPageAtcTracker)
     }
 
-    fun excludeProductBundleWidget(listWidgetLayoutToLoad: MutableList<ShopPageWidgetLayoutUiModel>): List<ShopPageWidgetLayoutUiModel> {
-        return listWidgetLayoutToLoad.filterNot {
-            it.widgetType == WidgetType.BUNDLE
-        }
+    fun isWidgetBundle(data: ShopPageWidgetLayoutUiModel): Boolean {
+        return data.widgetType == WidgetType.BUNDLE
     }
 }
