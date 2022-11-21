@@ -27,6 +27,8 @@
     <string name="pp_cd_image_badge_plus">image badge plus</string>
     <string name="pp_cd_image_upload_prescription">prescription icon</string>
 
+    <string name="pp_epharmacy_upload_invalid_title_text">Resep tidak terlampir</string>
+    <string name="pp_epharmacy_upload_invalid_description_text">Dokter tidak memberi resep</string>
     <string name="pp_epharmacy_upload_success_text">Berhasil Upload Foto Resep</string>
     <string name="pp_epharmacy_upload_prescription_attached_title_text">Resep Terlampir</string>
     <string name="pp_epharmacy_upload_prescription_count_text">Kamu punya %d resep dokter</string>

@@ -44,13 +44,26 @@ class UploadPrescriptionViewHolder(
                 ViewGroup.LayoutParams.WRAP_CONTENT
             )
         }
-        binding.uploadPrescriptionText.text = uploadPrescriptionUiModel.uploadImageText
         binding.uploadIcon.loadImage(uploadPrescriptionUiModel.leftIconUrl ?: "")
-        if (uploadPrescriptionUiModel.uploadedImageCount == 0) {
-            binding.uploadDescriptionText.hide()
+        if (uploadPrescriptionUiModel.uploadedImageCount == null || uploadPrescriptionUiModel.uploadedImageCount == 0) {
+            if (uploadPrescriptionUiModel.hasInvalidPrescription) {
+                binding.uploadPrescriptionText.text =
+                    itemView.resources.getString(R.string.pp_epharmacy_upload_invalid_title_text)
+                binding.uploadDescriptionText.text =
+                    itemView.resources.getString(R.string.pp_epharmacy_upload_invalid_description_text)
+                binding.uploadDescriptionText.show()
+            } else {
+                binding.uploadPrescriptionText.text = uploadPrescriptionUiModel.uploadImageText
+                binding.uploadDescriptionText.hide()
+            }
         } else {
+            binding.uploadPrescriptionText.text =
+                itemView.resources.getString(R.string.pp_epharmacy_upload_prescription_attached_title_text)
+            binding.uploadDescriptionText.text = itemView.resources.getString(
+                R.string.pp_epharmacy_upload_prescription_count_text,
+                uploadPrescriptionUiModel.uploadedImageCount
+            )
             binding.uploadDescriptionText.show()
-            binding.uploadDescriptionText.text = uploadPrescriptionUiModel.descriptionText
         }
         binding.uploadPrescriptionLayout.setOnClickListener {
             listener.uploadPrescriptionAction(uploadPrescriptionUiModel)
