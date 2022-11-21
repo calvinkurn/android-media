@@ -11,7 +11,7 @@ abstract class DynamicFilterModelProviderModule {
     @SearchScope
     abstract fun bindMutableDynamicFilterModelProvider(
         providerDelegate: MutableDynamicFilterModelProviderDelegate,
-    ) : MutableDynamicFilterModelProvider
+    ): MutableDynamicFilterModelProvider
 
     @Binds
     @SearchScope
