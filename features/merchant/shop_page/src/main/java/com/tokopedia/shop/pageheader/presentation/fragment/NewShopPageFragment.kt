@@ -1,6 +1,7 @@
 package com.tokopedia.shop.pageheader.presentation.fragment
 
 import android.animation.Animator
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.ClipData
 import android.content.Context
@@ -198,6 +199,7 @@ import com.tokopedia.unifycomponents.R.id.bottom_sheet_wrapper
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.floatingbutton.FloatingButtonUnify
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.universal_sharing.tracker.PageType
 import com.tokopedia.universal_sharing.view.bottomsheet.ScreenshotDetector
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
@@ -538,8 +540,9 @@ class NewShopPageFragment :
     }
 
     private fun initViewPager() {
-        viewPager?.isUserInputEnabled = false
+        @SuppressLint("WrongConstant") // Suggested constant not same with actual needed value for offscreenPageLimit
         viewPager?.offscreenPageLimit = VIEWPAGER_PAGE_LIMIT
+        viewPager?.isUserInputEnabled = false
         viewPager?.adapter = viewPagerAdapter
     }
 
@@ -704,10 +707,6 @@ class NewShopPageFragment :
                 if(isUsingNewShareBottomSheet(requireContext())){
                     isGeneralShareBottomSheet = true
                     showUniversalShareBottomSheet()
-                    shopPageTracking?.onImpressionShareBottomSheet(
-                            customDimensionShopPage,
-                            userId
-                    )
                 } else {
                     shopShareBottomSheet = ShopShareBottomSheet.createInstance().apply {
                         init(this@NewShopPageFragment)
@@ -877,8 +876,8 @@ class NewShopPageFragment :
                             buttonLabel ?: ""
                     )
                     {
-                        if (!shopId.isNullOrBlank()) {
-                            showMerchantVoucherCouponBottomSheet(shopId.toInt())
+                        if (shopId.isNotBlank()) {
+                            showMerchantVoucherCouponBottomSheet(shopId.toIntOrZero())
                             shopPageTracking?.clickCekToasterSuccess(
                                     shopId,
                                     shopViewModel?.userId
@@ -2889,7 +2888,8 @@ class NewShopPageFragment :
                             shopPageTracking?.clickShareBottomSheetOption(
                                     shareModel.channel.orEmpty(),
                                     customDimensionShopPage,
-                                    userId
+                                    userId,
+                                    UniversalShareBottomSheet.getUserType()
                             )
                             if(!isMyShop) {
                                 shopPageTracking?.clickGlobalHeaderShareBottomSheetOption(
@@ -2965,10 +2965,19 @@ class NewShopPageFragment :
             setOgImageUrl(shopPageHeaderDataModel?.shopSnippetUrl ?: "")
             imageSaved(shopImageFilePath)
         }
+
+        universalShareBottomSheet?.setOnGetAffiliateData {
+            shopPageTracking?.onImpressionShareBottomSheet(
+                customDimensionShopPage,
+                userId,
+                UniversalShareBottomSheet.getUserType()
+            )
+        }
+
         universalShareBottomSheet?.show(activity?.supportFragmentManager, this, screenShotDetector, safeViewAction = {
             val inputShare = AffiliatePDPInput().apply {
                 pageDetail = PageDetail(pageId = shopId, pageType = "shop", siteId = "1", verticalId = "1")
-                pageType = "shop"
+                pageType = PageType.SHOP.value
                 product = Product()
                 shop = Shop(shopID = shopId, shopStatus = shopPageHeaderDataModel?.shopStatus, isOS = shopPageHeaderDataModel?.isOfficial == true, isPM = shopPageHeaderDataModel?.isGoldMerchant == true)
             }

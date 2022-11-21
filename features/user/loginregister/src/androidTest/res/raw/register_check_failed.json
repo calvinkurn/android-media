@@ -1,0 +1,9 @@
+{
+  "registerCheck": {
+    "isExist": false,
+    "errors": [
+      "Nomor handphone sudah terdaftar."
+    ],
+    "view": ""
+  }
+}

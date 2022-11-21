@@ -40,7 +40,9 @@ class GetWishlistCollectionItemsUseCase @Inject constructor(
                     has_next_page
                     total_data
                     count_removable_items
+                    description
                     show_empty_state_on_bottomsheet
+                    collection_type
                     empty_state {
                       type
                       messages{

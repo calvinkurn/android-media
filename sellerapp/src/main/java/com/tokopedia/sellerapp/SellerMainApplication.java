@@ -31,6 +31,7 @@ import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.graphql.util.GqlActivityCallback;
 import com.tokopedia.interceptors.authenticator.TkpdAuthenticatorGql;
 import com.tokopedia.interceptors.refreshtoken.RefreshTokenGql;
+import com.tokopedia.journeydebugger.JourneySubscriber;
 import com.tokopedia.keys.Keys;
 import com.tokopedia.logger.LogManager;
 import com.tokopedia.logger.LoggerProxy;
@@ -67,6 +68,8 @@ import io.embrace.android.embracesdk.Embrace;
 import kotlin.Pair;
 import kotlin.jvm.functions.Function1;
 import timber.log.Timber;
+
+import com.tokopedia.developer_options.notification.DevOptNotificationManager;
 
 /**
  * Created by ricoharisin on 11/11/16.
@@ -114,7 +117,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Co
         initCacheManager();
         initEmbrace();
 
-        if (GlobalConfig.DEBUG) {
+        if (GlobalConfig.isAllowDebuggingTools()) {
             new Cassava.Builder(this).initialize();
         }
         TrackApp.initTrackApp(this);
@@ -138,6 +141,8 @@ public class SellerMainApplication extends SellerRouterApplication implements Co
         Loader.init(this);
         setEmbraceUserId();
         EmbraceMonitoring.INSTANCE.setCarrierProperties(this);
+
+        showDevOptNotification();
     }
 
     private TkpdAuthenticatorGql getAuthenticator() {
@@ -269,6 +274,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Co
         if (GlobalConfig.isAllowDebuggingTools()) {
             registerActivityLifecycleCallbacks(new ViewInspectorSubscriber());
             registerActivityLifecycleCallbacks(new DevOptsSubscriber());
+            registerActivityLifecycleCallbacks(new JourneySubscriber());
         }
         registerActivityLifecycleCallbacks(new TwoFactorCheckerSubscriber());
         registerActivityLifecycleCallbacks(new MediaLoaderActivityLifecycle(this));
@@ -345,5 +351,9 @@ public class SellerMainApplication extends SellerRouterApplication implements Co
             map.put("error", Log.getStackTraceString(throwable));
             ServerLogger.log(Priority.P1, "WORK_MANAGER", map);
         }).build();
+    }
+
+    private void showDevOptNotification() {
+        new DevOptNotificationManager(this).start();
     }
 }

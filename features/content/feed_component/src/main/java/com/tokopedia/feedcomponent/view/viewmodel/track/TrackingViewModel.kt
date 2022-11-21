@@ -9,7 +9,7 @@ class TrackingViewModel(
         val type: String = "",
         val source: String = "",
         val viewType: String = "",
-        val recomId: Int = 0
+        val recomId: Long = 0
 ) {
     fun copy(): TrackingViewModel {
         return TrackingViewModel(clickURL, viewURL, type, source)

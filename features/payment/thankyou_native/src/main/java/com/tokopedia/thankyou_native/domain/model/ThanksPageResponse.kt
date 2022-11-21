@@ -5,6 +5,7 @@ import android.os.Parcel
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 import kotlinx.android.parcel.Parcelize
+import kotlinx.android.parcel.RawValue
 
 
 data class ThanksPageResponse(
@@ -98,6 +99,8 @@ data class ThanksPageData(
     var paymentMethodCount: Int,
     // parse config flag json
     var configFlagData: ConfigFlag? = null,
+    // parse gyro data json
+    var gyroData: @RawValue MutableMap<String, Any?>? = null,
 ) : Parcelable
 
 
@@ -137,8 +140,12 @@ data class CustomDataOther(
     val trackingData: String?,
     @SerializedName("is_enjoy_plus_benefit")
     val isEnjoyPLus: String?,
+    @SerializedName("is_plus_transaction")
+    val isPlusTransaction: String?,
     @SerializedName("custom_illustration")
-    val customIllustration: String?
+    val customIllustration: String?,
+    @SerializedName("validate_engine_data")
+    val gyroData: String?
 ) : Parcelable
 
 @Parcelize
@@ -528,7 +535,6 @@ data class ThankPageTopTickerData(
             tickerCTAUrl
         }
     }
-
     fun isAppLink(): Boolean {
         return !tickerCTAApplink.isNullOrEmpty()
     }

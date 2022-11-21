@@ -3,6 +3,7 @@ package com.tokopedia.chat_common.view.adapter
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.chat_common.domain.pojo.attachmentmenu.AttachmentMenu
+import com.tokopedia.chat_common.domain.pojo.attachmentmenu.VideoMenu
 import com.tokopedia.chat_common.domain.pojo.attachmentmenu.VoucherMenu
 import com.tokopedia.chat_common.view.adapter.viewholder.chatmenu.AttachmentItemViewHolder
 
@@ -43,8 +44,20 @@ class AttachmentMenuAdapter(
         return false
     }
 
+    fun alreadyHasVideoMenu(): Boolean {
+        for (menu in menus) {
+            if (menu is VideoMenu) return true
+        }
+        return false
+    }
+
     fun addVoucherAttachmentMenu() {
         menus.add(VoucherMenu())
+        notifyItemInserted(menus.size - 1)
+    }
+
+    fun addVideoAttachmentMenu() {
+        menus.add(VideoMenu())
         notifyItemInserted(menus.size - 1)
     }
 

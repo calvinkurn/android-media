@@ -26,6 +26,17 @@ dependencies {
     
     implementation rootProject.ext.supportLibDependencies.constraintLayout
     implementation rootProject.ext.miscDependencies.roundCornerProgressBar
+
+    implementation rootProject.ext.miscDependencies.lifeCycleExtentions
+    implementation rootProject.ext.miscDependencies.lifecycleRuntimeKtx
+
+    //unit test
+    testImplementation rootProject.ext.testDependencies.mockk
+    testImplementation rootProject.ext.testDependencies.archCoreTesting
+    testImplementation rootProject.ext.testDependencies.junit
+    testImplementation rootProject.ext.miscDependencies.coroutineTest
+    testImplementation rootProject.ext.miscDependencies.coroutineCore
+    testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
 }
 
 project.ext {
@@ -36,3 +47,4 @@ project.ext {
 }
 
 apply from: '../../../publish_local.gradle'
+apply from: '../../../jacoco_task.gradle'

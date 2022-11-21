@@ -3,8 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:background="@color/medium_green_70">
+    android:layout_height="match_parent">
 
     <androidx.appcompat.widget.AppCompatImageView
         android:id="@+id/imageInactiveBg"
@@ -41,7 +40,7 @@
         android:paddingLeft="@dimen/dp_32"
         android:paddingEnd="@dimen/dp_32"
         android:paddingRight="@dimen/dp_32"
-        android:textColor="@android:color/white"
+        android:textColor="@color/Unify_Static_White"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
@@ -60,7 +59,7 @@
         android:paddingLeft="@dimen/dp_32"
         android:paddingEnd="@dimen/dp_32"
         android:paddingRight="@dimen/dp_32"
-        android:textColor="@android:color/white"
+        android:textColor="@color/Unify_Static_White"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvInactiveTitle"
@@ -79,7 +78,7 @@
         android:layout_marginRight="40dp"
         android:background="@drawable/gf_bg_white_3d"
         android:gravity="center"
-        android:textColor="@color/gf_n600"
+        android:textColor="@color/gamification_dms_n600"
         android:paddingBottom="@dimen/gami_core_floating_egg_dp_3"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"

@@ -146,4 +146,12 @@ class ProductDetailAdapter(asyncDifferConfig: AsyncDifferConfig<DynamicPdpDataMo
         (holder.itemView.layoutParams as? StaggeredGridLayoutManager.LayoutParams)
             ?.isFullSpan = isFullSpan
     }
+
+    override fun onCurrentListChanged(
+        previousList: MutableList<DynamicPdpDataModel>,
+        currentList: MutableList<DynamicPdpDataModel>
+    ) {
+        listener?.updateNavigationTabPosition()
+        super.onCurrentListChanged(previousList, currentList)
+    }
 }

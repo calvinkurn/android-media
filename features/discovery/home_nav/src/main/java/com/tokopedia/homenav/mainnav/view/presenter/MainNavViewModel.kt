@@ -70,6 +70,8 @@ import com.tokopedia.homenav.mainnav.view.datamodel.wishlist.ShimmerWishlistData
 import com.tokopedia.homenav.mainnav.view.datamodel.wishlist.WishlistDataModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.sessioncommon.data.admin.AdminData
+import com.tokopedia.sessioncommon.data.admin.AdminDataResponse
 import com.tokopedia.sessioncommon.domain.usecase.AccountAdminInfoUseCase
 import com.tokopedia.sessioncommon.util.AdminUserSessionUtil.refreshUserSessionAdminData
 import com.tokopedia.sessioncommon.util.AdminUserSessionUtil.refreshUserSessionShopData
@@ -204,7 +206,8 @@ class MainNavViewModel @Inject constructor(
     private fun isLaunchedFromHome(): Boolean {
         return pageSource == ApplinkConsInternalNavigation.SOURCE_HOME ||
                 pageSource == ApplinkConsInternalNavigation.SOURCE_HOME_UOH ||
-                pageSource == ApplinkConsInternalNavigation.SOURCE_HOME_WISHLIST
+                pageSource == ApplinkConsInternalNavigation.SOURCE_HOME_WISHLIST_V2 ||
+                pageSource == ApplinkConsInternalNavigation.SOURCE_HOME_WISHLIST_COLLECTION
     }
 
     fun getPageSource(): String {
@@ -437,9 +440,8 @@ class MainNavViewModel @Inject constructor(
                 val adminData = getAdminData()
 
                 accountHeaderModel.apply {
-                    adminData.let { (_, canGoToSellerAccount, _) ->
-                        val adminRole = null
-                        setAdminData(adminRole, canGoToSellerAccount)
+                    adminData?.let { adminData ->
+                        setAdminData(adminData.data)
                     }
                 }.let {
                     it.state = NAV_PROFILE_STATE_SUCCESS
@@ -868,16 +870,15 @@ class MainNavViewModel @Inject constructor(
                     }
                 }
                 val response = call.await()
-                val (_, canGoToSellerAccount, _) = adminDataCall.await()
+                val adminData = adminDataCall.await()
                 val result = (response.takeIf { it is Success } as? Success<ShopData>)?.data
                 result?.let {
                     accountModel.run {
                         val shopName = it.userShopInfo.info.shopName
                         val shopId: String = if(it.userShopInfo.info.shopId.isBlank()) AccountHeaderDataModel.DEFAULT_SHOP_ID_NOT_OPEN else it.userShopInfo.info.shopId
-                        val adminRole = null
                         val orderCount = getTotalOrderCount(it.notifications)
                         setUserShopName(shopName, shopId, orderCount)
-                        setAdminData(adminRole, canGoToSellerAccount)
+                        setAdminData(adminData?.data)
                     }
                     updateWidget(accountModel, INDEX_MODEL_ACCOUNT)
                     return@launchCatchError
@@ -1008,7 +1009,7 @@ class MainNavViewModel @Inject constructor(
      * @return  Triple of admin role text (if is admin), boolean to determine if seller can go to
      *          account page, and boolean if shop is active
      */
-    private suspend fun getAdminData(): Triple<String?, Boolean, Boolean> {
+    private suspend fun getAdminData(): AdminDataResponse? {
         val (adminDataResponse, refreshedShopData) =
                 if (userSession.get().isShopOwner) {
                     Pair(null, null)
@@ -1033,9 +1034,8 @@ class MainNavViewModel @Inject constructor(
                     }
             userSession.get().refreshUserSessionShopData(it.copy(shopId = shopId))
         }
-        val canGoToSellerAccount: Boolean = adminDataResponse?.data?.detail?.roleType?.isLocationAdmin?.not() ?: true
-        val adminRoleText: String? = adminDataResponse?.data?.adminTypeText
-        return Triple(adminRoleText, canGoToSellerAccount, isShopActive)
+
+        return adminDataResponse
     }
 
     fun findComplainModelPosition(): Int {

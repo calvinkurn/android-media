@@ -61,7 +61,7 @@ class KeywordItemViewHolder(
                 cardView?.setBackgroundColor(
                     ContextCompat.getColor(
                         view.context,
-                        R.color.topads_dash_white
+                        com.tokopedia.unifyprinciples.R.color.Unify_NN0
                     )
                 )
                 btnSwitch.visibility = View.VISIBLE
@@ -89,14 +89,14 @@ class KeywordItemViewHolder(
                 cardView.setBackgroundColor(
                     ContextCompat.getColor(
                         view.context,
-                        R.color.topads_dash_white
+                        com.tokopedia.unifyprinciples.R.color.Unify_NN0
                     )
                 )
             } else {
                 cardView.setBackgroundColor(
                     ContextCompat.getColor(
                         view.context,
-                        R.color.topads_select_color
+                        com.tokopedia.unifyprinciples.R.color.Unify_B400_20
                     )
                 )
             }
@@ -115,14 +115,14 @@ class KeywordItemViewHolder(
                         cardView?.setBackgroundColor(
                             ContextCompat.getColor(
                                 view.context,
-                                R.color.topads_select_color
+                                com.tokopedia.unifyprinciples.R.color.Unify_B400_20
                             )
                         )
                     else
                         cardView?.setBackgroundColor(
                             ContextCompat.getColor(
                                 view.context,
-                                R.color.topads_dash_white
+                                com.tokopedia.unifyprinciples.R.color.Unify_NN0
                             )
                         )
                 }
@@ -134,7 +134,7 @@ class KeywordItemViewHolder(
                 cardView.setBackgroundColor(
                     ContextCompat.getColor(
                         view.context,
-                        R.color.topads_select_color
+                        com.tokopedia.unifyprinciples.R.color.Unify_B400_20
                     )
                 )
                 onSelectMode.invoke(true)

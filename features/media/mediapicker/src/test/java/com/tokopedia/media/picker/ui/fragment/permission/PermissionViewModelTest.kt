@@ -16,23 +16,21 @@ import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.junit.runners.JUnit4
-import kotlin.math.exp
 
 @RunWith(JUnit4::class)
 class PermissionViewModelTest {
-
     @get:Rule val instantTaskExecutorRule = InstantTaskExecutorRule()
 
     private val cacheManager = mockk<ParamCacheManager>(relaxed = true)
-    private lateinit var viewModel: PermissionViewModel
+    private val permissionCodeName = mockk<Observer<List<String>>>(relaxed = true)
 
-    private val mockPermissionCodeName = mockk<Observer<List<String>>>(relaxed = true)
+    private lateinit var viewModel: PermissionViewModel
 
     @Before
     fun setUp() {
         viewModel = PermissionViewModel(cacheManager)
 
-        viewModel.permissionCodeName.observeForever(mockPermissionCodeName)
+        viewModel.permissionCodeName.observeForever(permissionCodeName)
     }
 
     @Test
@@ -134,7 +132,7 @@ class PermissionViewModelTest {
         viewModel.getDynamicPermissionList()
 
         // Then
-        verify(atLeast = 1) { mockPermissionCodeName.onChanged(any()) }
+        verify(atLeast = 1) { permissionCodeName.onChanged(any()) }
     }
 
     @Test

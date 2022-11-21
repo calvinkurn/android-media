@@ -391,6 +391,7 @@ object ShopPageTrackingConstant {
     const val VALUE_SHOP_DECOR_PLAY = "Play"
     const val VALUE_STRING_ZERO = "0"
     const val VALUE_SHOP_PAGE_THEMATIC = "/shoppagethematic"
+    const val ITEM_LIST_PERSO_TRENDING_WIDGET = "/shoppage - trending"
     const val VALUE_MULTIPLE_BUNDLING = "multiple bundling"
     const val VALUE_SINGLE_BUNDLING = "single bundling"
 
@@ -441,6 +442,7 @@ object ShopPageTrackingConstant {
     const val SHOP_PRODUCT_ATC_QUANTITY_DECREASE = "decrease"
     object Event {
         const val DIRECT_PURCHASE_ADD_TO_CART = "add_to_cart"
+        const val VIEW_PG_IRIS = "viewPGIris"
     }
 
     object EventAction {
@@ -448,6 +450,9 @@ object ShopPageTrackingConstant {
         const val CLICK_PRODUCT_ATC = "click - product - add to cart"
         const val CLICK_PRODUCT_ATC_QUANTITY = "click - product - quantity"
         const val CLICK_PRODUCT_ATC_RESET = "click - product - quantity reset"
+        const val IMPRESSION_PERSONALIZATION_TRENDING_WIDGET = "widget impression - home - trending"
+        const val IMPRESSION_PERSONALIZATION_TRENDING_WIDGET_ITEM = "product list impression - home - trending"
+        const val CLICK_PERSONALIZATION_TRENDING_WIDGET_ITEM = "click product - home - trending"
     }
 
     object EventCategory {
@@ -465,6 +470,9 @@ object ShopPageTrackingConstant {
         const val TRACKER_ID_CLICK_SINGLE_BUNDLE = "25999"
         const val TRACKER_ID_ATC_MULTIPLE_BUNDLING_WDIGET = "25640"
         const val TRACKER_ID_ATC_SINGLE_BUNDLING_WIDGET = "25643"
+        const val TRACKER_ID_IMPRESSION_PERSONALIZATION_TRENDING_WIDGET = "35966"
+        const val TRACKER_ID_IMPRESSION_PERSONALIZATION_TRENDING_WIDGET_ITEM = "35968"
+        const val TRACKER_ID_CLICK_PERSONALIZATION_TRENDING_WIDGET_ITEM = "35967"
     }
 
     object Key {

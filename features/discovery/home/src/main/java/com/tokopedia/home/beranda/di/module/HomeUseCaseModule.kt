@@ -40,7 +40,6 @@ import com.tokopedia.home.beranda.domain.interactor.DismissHomeReviewUseCase
 import com.tokopedia.home.beranda.domain.interactor.GetCoroutinePendingCashbackUseCase
 import com.tokopedia.home.beranda.domain.interactor.GetDynamicChannelsUseCase
 import com.tokopedia.home.beranda.domain.interactor.GetHomeBalanceWidgetUseCase
-import com.tokopedia.home.beranda.domain.interactor.GetHomeIconUseCase
 import com.tokopedia.home.beranda.domain.interactor.GetHomeRecommendationUseCase
 import com.tokopedia.home.beranda.domain.interactor.GetHomeTokopointsListDataUseCase
 import com.tokopedia.home.beranda.domain.interactor.GetRecommendationTabUseCase
@@ -74,7 +73,6 @@ import com.tokopedia.home.beranda.domain.interactor.usecase.HomeDynamicChannelUs
 import com.tokopedia.home.beranda.domain.model.HomeChannelData
 import com.tokopedia.home.beranda.domain.model.HomeData
 import com.tokopedia.home.beranda.domain.model.HomeFlagData
-import com.tokopedia.home.beranda.domain.model.HomeIconData
 import com.tokopedia.home.beranda.domain.model.SetInjectCouponTimeBased
 import com.tokopedia.home.beranda.domain.model.banner.HomeBannerData
 import com.tokopedia.home.beranda.domain.model.review.SuggestedProductReview
@@ -301,30 +299,24 @@ class HomeUseCaseModule {
 
     @Provides
     @HomeScope
-    fun provideGetHomeIconUseCase(graphqlRepository: GraphqlRepository): GetHomeIconUseCase {
-        val useCase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<HomeIconData>(graphqlRepository)
-        useCase.setGraphqlQuery(HomeIconQuery())
-        return GetHomeIconUseCase(useCase)
-    }
-
-    @Provides
-    @HomeScope
-    fun provideGetHomePageBannerUseCase(graphqlRepository: GraphqlRepository, homeRoomDataSource: HomeRoomDataSource): HomePageBannerRepository {
+    fun provideGetHomePageBannerUseCase(graphqlRepository: GraphqlRepository, remoteConfig: RemoteConfig): HomePageBannerRepository {
         val useCase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<HomeBannerData>(graphqlRepository)
-        useCase.setGraphqlQuery(HomeSlidesQuery())
-        return HomePageBannerRepository(useCase, homeRoomDataSource)
+        val isUsingV2 = remoteConfig.getBoolean(RemoteConfigKey.HOME_USE_GQL_FED_QUERY, true)
+        return HomePageBannerRepository(useCase, isUsingV2)
     }
 
     @Provides
     @HomeScope
-    fun provideHomeTickerRepository(graphqlRepository: GraphqlRepository): HomeTickerRepository {
-        return HomeTickerRepository(graphqlRepository)
+    fun provideHomeTickerRepository(graphqlRepository: GraphqlRepository, remoteConfig: RemoteConfig): HomeTickerRepository {
+        val isUsingV2 = remoteConfig.getBoolean(RemoteConfigKey.HOME_USE_GQL_FED_QUERY, true)
+        return HomeTickerRepository(graphqlRepository, isUsingV2)
     }
 
     @Provides
     @HomeScope
-    fun provideHomeIconRepository(graphqlRepository: GraphqlRepository): HomeIconRepository {
-        return HomeIconRepository(graphqlRepository)
+    fun provideHomeIconRepository(graphqlRepository: GraphqlRepository, remoteConfig: RemoteConfig): HomeIconRepository {
+        val isUsingV2 = remoteConfig.getBoolean(RemoteConfigKey.HOME_USE_GQL_FED_QUERY, true)
+        return HomeIconRepository(graphqlRepository, isUsingV2)
     }
 
     @Provides

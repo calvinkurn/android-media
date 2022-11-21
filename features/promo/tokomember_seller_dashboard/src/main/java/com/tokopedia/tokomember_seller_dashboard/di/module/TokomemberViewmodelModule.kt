@@ -5,12 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.tokomember_seller_dashboard.di.scope.TokomemberDashScope
-import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TmCouponViewModel
-import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TmProgramListViewModel
-import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TmDashCreateViewModel
-import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TokomemberDashHomeViewmodel
-import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TmDashIntroViewModel
-import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.TmEligibilityViewModel
+import com.tokopedia.tokomember_seller_dashboard.view.viewmodel.*
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -57,4 +52,16 @@ abstract class TokomemberViewmodelModule {
     @IntoMap
     @ViewModelKey(TmCouponViewModel::class)
     abstract fun tmCouponViewModel(viewModel: TmCouponViewModel): ViewModel
+
+    @TokomemberDashScope
+    @Binds
+    @IntoMap
+    @ViewModelKey(TmMemberListViewModel::class)
+    abstract fun tmMemberListViewModel(viewModel : TmMemberListViewModel) : ViewModel
+
+    @TokomemberDashScope
+    @Binds
+    @IntoMap
+    @ViewModelKey(TmCouponDetailViewModel::class)
+    abstract fun tmCouponDetailViewModel(viewModel: TmCouponDetailViewModel): ViewModel
 }

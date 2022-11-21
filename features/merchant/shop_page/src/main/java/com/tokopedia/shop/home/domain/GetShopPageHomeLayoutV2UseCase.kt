@@ -1,6 +1,5 @@
 package com.tokopedia.shop.home.domain
 
-import com.google.gson.Gson
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
 import com.tokopedia.graphql.data.model.*
 import com.tokopedia.network.exception.MessageErrorException
@@ -46,6 +45,7 @@ class GetShopPageHomeLayoutV2UseCase @Inject constructor(
                   type
                   header {
                     title
+                    subtitle
                     ctaText
                     ctaLink
                     cover

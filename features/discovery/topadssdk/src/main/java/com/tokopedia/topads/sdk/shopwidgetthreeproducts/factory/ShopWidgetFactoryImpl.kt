@@ -27,7 +27,7 @@ class ShopWidgetFactoryImpl(
         return EmptyShopCardViewHolder.LAYOUT
     }
 
-    override fun type(shopWidgetShimmerViewModel: ShopWidgetShimmerViewModel): Int {
+    override fun type(shopWidgetShimmerUiModel: ShopWidgetShimmerUiModel): Int {
         return ShopWidgetShimmerViewHolder.LAYOUT
     }
 

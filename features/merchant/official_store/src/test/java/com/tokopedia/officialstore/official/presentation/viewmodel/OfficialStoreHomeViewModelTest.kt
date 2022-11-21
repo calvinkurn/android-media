@@ -20,29 +20,33 @@ import com.tokopedia.officialstore.official.data.model.OfficialStoreChannel
 import com.tokopedia.officialstore.official.data.model.OfficialStoreFeaturedShop
 import com.tokopedia.officialstore.official.data.model.Banner
 import com.tokopedia.officialstore.official.data.model.dynamic_channel.Channel
+import com.tokopedia.officialstore.official.data.model.dynamic_channel.Header
 import com.tokopedia.officialstore.official.domain.GetOfficialStoreBannerUseCase
 import com.tokopedia.officialstore.official.domain.GetOfficialStoreBenefitUseCase
 import com.tokopedia.officialstore.official.domain.GetOfficialStoreDynamicChannelUseCase
 import com.tokopedia.officialstore.official.domain.GetOfficialStoreFeaturedUseCase
-import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialBenefitDataModel
-import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialBannerDataModel
-import com.tokopedia.officialstore.official.presentation.adapter.datamodel.ProductRecommendationDataModel
-import com.tokopedia.officialstore.official.presentation.adapter.datamodel.ProductRecommendationTitleDataModel
-import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialLoadingDataModel
-import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialLoadingMoreDataModel
-import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialFeaturedShopDataModel
-import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialTopAdsHeadlineDataModel
 import com.tokopedia.officialstore.official.presentation.dynamic_channel.DynamicChannelDataModel
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.recommendation_widget_common.widget.bestseller.mapper.BestSellerMapper
 import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
+import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialBannerDataModel
+import com.tokopedia.officialstore.official.presentation.adapter.datamodel.ProductRecommendationDataModel
+import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialBenefitDataModel
+import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialTopAdsHeadlineDataModel
+import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialLoadingMoreDataModel
+import com.tokopedia.officialstore.official.presentation.adapter.datamodel.ProductRecommendationTitleDataModel
+import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialFeaturedShopDataModel
+import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialLoadingDataModel
+import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialTopAdsBannerDataModel
+import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsWishlishedUseCase
-import com.tokopedia.topads.sdk.domain.model.CpmModel
-import com.tokopedia.topads.sdk.domain.model.CpmData
-import com.tokopedia.topads.sdk.domain.model.Cpm
 import com.tokopedia.topads.sdk.domain.model.TopAdsHeadlineResponse
+import com.tokopedia.topads.sdk.domain.model.CpmModel
+import com.tokopedia.topads.sdk.domain.model.Cpm
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
+import com.tokopedia.topads.sdk.domain.model.CpmData
 import com.tokopedia.topads.sdk.domain.usecase.GetTopAdsHeadlineUseCase
 import com.tokopedia.topads.sdk.utils.TopAdsAddressHelper
 import com.tokopedia.usecase.coroutines.Fail
@@ -123,6 +127,9 @@ class OfficialStoreHomeViewModelTest {
     @RelaxedMockK
     lateinit var topAdsAddressHelper: TopAdsAddressHelper
 
+    @RelaxedMockK
+    lateinit var topAdsImageViewUseCase: TopAdsImageViewUseCase
+
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
@@ -143,6 +150,7 @@ class OfficialStoreHomeViewModelTest {
             topAdsWishlishedUseCase,
             deleteWishlistV2UseCase,
             getDisplayHeadlineAds,
+            topAdsImageViewUseCase,
             getRecommendationUseCaseCoroutine,
             bestSellerMapper,
             getTopAdsHeadlineUseCase,
@@ -183,13 +191,12 @@ class OfficialStoreHomeViewModelTest {
             val error = MessageErrorException()
             val prefixUrl = "prefix"
             val slug = "slug"
-            val category = createCategory(prefixUrl, slug)
             val channelType = "$prefixUrl$slug"
 
             onGetOfficialStoreData_thenReturn(error)
             onSetupDynamicChannelParams_thenCompleteWith(channelType)
 
-            viewModel.loadFirstData(category)
+            viewModel.loadFirstData(null)
 
             assertEquals(viewModel.officialStoreError.value, error)
         }
@@ -224,7 +231,7 @@ class OfficialStoreHomeViewModelTest {
         val categoryId = "0"
         val listOfRecom = mutableListOf(RecommendationWidget(recommendationItemList = listOf(RecommendationItem())))
         val topAdsHeadlineAd = OfficialTopAdsHeadlineDataModel(TopAdsHeadlineResponse(CpmModel().apply {
-            data = listOf(CpmData().apply {
+            data = mutableListOf(CpmData().apply {
                 cpm = Cpm().apply {
                     position = 0
                 }
@@ -501,6 +508,116 @@ class OfficialStoreHomeViewModelTest {
         assertNull(viewModel.officialStoreLiveData.value?.dataList?.find { it is FeaturedShopDataModel && it.channelModel.id == expectedFeaturedShopDataModel.channelModel.id })
     }
 
+    @Test
+    fun given_get_tdn_carousel_success_when_get_osDynamicChannel_banner_ads_carousel_then_update_list() {
+        val prefixUrl = "prefix"
+        val slug = "slug"
+        val category = createCategory(prefixUrl, slug)
+        val channelHeader = Header(123L, "channelHeader", "", "", "",
+            "", 0L, "", "", "")
+
+        val dynamicChannelResponse: MutableList<OfficialStoreChannel> = mutableListOf()
+        dynamicChannelResponse.addAll(
+            listOf(
+                OfficialStoreChannel(channel = Channel(layout = DynamicChannelLayout.LAYOUT_BANNER_ADS_CAROUSEL, header = channelHeader))
+            )
+        )
+
+        val tdnCarouselResponse: ArrayList<TopAdsImageViewModel> = ArrayList<TopAdsImageViewModel> ()
+        tdnCarouselResponse.addAll(
+            listOf(
+                TopAdsImageViewModel(),
+                TopAdsImageViewModel(),
+            ))
+
+        coEvery { getOfficialStoreDynamicChannelUseCase.executeOnBackground() } returns dynamicChannelResponse
+        coEvery { topAdsImageViewUseCase.getImageData(topAdsImageViewUseCase.getQueryMap(
+            "",
+            "12",
+            "",
+            3,
+            3,
+            ""
+        )) } returns tdnCarouselResponse
+
+        viewModel.loadFirstData(category)
+
+        val resultTdnBannerAdsModel = viewModel.officialStoreLiveData.value?.dataList?.filterIsInstance<OfficialTopAdsBannerDataModel>()
+        assertFalse(resultTdnBannerAdsModel.isNullOrEmpty())
+        assertNotNull(resultTdnBannerAdsModel?.find { it.tdnBanner == tdnCarouselResponse})
+    }
+
+    @Test
+    fun `when getting empty list for tdn carousel on Dynamic channel banner ads carousel then remove from list`() {
+        val prefixUrl = "prefix"
+        val slug = "slug"
+        val category = createCategory(prefixUrl, slug)
+        val channelHeader = Header(123L, "channelHeader", "", "", "",
+            "", 0L, "", "", "")
+
+        val dynamicChannelResponse: MutableList<OfficialStoreChannel> = mutableListOf()
+        dynamicChannelResponse.addAll(
+            listOf(
+                OfficialStoreChannel(channel = Channel(layout = DynamicChannelLayout.LAYOUT_BANNER_ADS_CAROUSEL, header = channelHeader))
+            )
+        )
+
+        val tdnCarouselResponse: ArrayList<TopAdsImageViewModel> = ArrayList<TopAdsImageViewModel> ()
+        tdnCarouselResponse.addAll(
+            listOf())
+
+        coEvery { getOfficialStoreDynamicChannelUseCase.executeOnBackground() } returns dynamicChannelResponse
+        coEvery { topAdsImageViewUseCase.getImageData(topAdsImageViewUseCase.getQueryMap(
+            "",
+            "12",
+            "",
+            3,
+            3,
+            ""
+        )) } returns tdnCarouselResponse
+
+        viewModel.loadFirstData(category)
+
+        val resultTdnBannerAdsModel = viewModel.officialStoreLiveData.value?.dataList?.filterIsInstance<OfficialTopAdsBannerDataModel>()
+        assertTrue(resultTdnBannerAdsModel.isNullOrEmpty())
+        assertNull(resultTdnBannerAdsModel?.find { it.tdnBanner == tdnCarouselResponse})
+    }
+
+    @Test
+    fun given_get_tdn_carousel_error_when_get_osDynamicChannel_banner_ads_carousel_then_remove_from_list() {
+        val prefixUrl = "prefix"
+        val slug = "slug"
+        val category = createCategory(prefixUrl, slug)
+
+        val dynamicChannelResponse: MutableList<OfficialStoreChannel> = mutableListOf()
+        dynamicChannelResponse.addAll(
+            listOf(
+                OfficialStoreChannel(channel = Channel(layout = DynamicChannelLayout.LAYOUT_BANNER_ADS_CAROUSEL))
+            )
+        )
+
+        val tdnCarouselResponse: ArrayList<TopAdsImageViewModel> = ArrayList<TopAdsImageViewModel> ()
+        tdnCarouselResponse.addAll(
+            listOf(
+                TopAdsImageViewModel(),
+                TopAdsImageViewModel(),
+            ))
+
+        coEvery { getOfficialStoreDynamicChannelUseCase.executeOnBackground() } returns dynamicChannelResponse
+        coEvery { topAdsImageViewUseCase.getImageData(topAdsImageViewUseCase.getQueryMap(
+            "",
+            "12",
+            "",
+            3,
+            3,
+            ""
+        )) } throws Exception("this is mock exception")
+
+        viewModel.loadFirstData(category)
+
+        val resultTdnBannerAdsModel = viewModel.officialStoreLiveData.value?.dataList?.filterIsInstance<OfficialTopAdsBannerDataModel>()
+        assertTrue(resultTdnBannerAdsModel.isNullOrEmpty())
+    }
 
     // ===================================== //
     private fun onGetOfficialStoreBanners_thenReturn(osBanners: OfficialStoreBanners) {
@@ -520,7 +637,7 @@ class OfficialStoreHomeViewModelTest {
     }
 
     private fun createCategory(prefixUrl: String, slug: String): Category {
-        return Category(prefixUrl = prefixUrl, slug = slug)
+        return Category(categoryId = "0", prefixUrl = prefixUrl, slug = slug, title = "Home")
     }
 
     private fun onGetOfficialStoreData_thenReturn(error: Throwable) {
@@ -763,55 +880,6 @@ class OfficialStoreHomeViewModelTest {
     }
 
     @Test
-    fun given_refresh__when_swipe_layout__then_remove_recom_and_topads_headline_widget() {
-        val prefixUrl = "prefix"
-        val slug = "slug"
-        val category = createCategory(prefixUrl, slug)
-        val channelType = "$prefixUrl$slug"
-        val osBanners = OfficialStoreBanners(banners = mutableListOf(Banner()))
-        val osBenefits = OfficialStoreBenefits()
-        val osFeatured = OfficialStoreFeaturedShop()
-        val osDynamicChannel = mutableListOf(
-            OfficialStoreChannel(channel = Channel(
-                layout = DynamicChannelLayout.LAYOUT_BANNER_CAROUSEL)
-            )
-        )
-        val page = 1
-        val title = "Rekomendasi Untukmu"
-
-        onGetOfficialStoreBanners_thenReturn(osBanners)
-        onGetOfficialStoreBenefits_thenReturn(osBenefits)
-        onGetOfficialStoreFeaturedShop_thenReturn(osFeatured)
-        onGetDynamicChannel_thenReturn(osDynamicChannel)
-        onSetupDynamicChannelParams_thenCompleteWith(channelType)
-
-        val listOfRecom = mutableListOf(
-            RecommendationWidget(
-                title = title,
-                recommendationItemList = listOf(
-                    RecommendationItem()
-                )
-            )
-        )
-
-        coEvery {
-            getRecommendationUseCase.createObservable(any()).toBlocking().first()
-        } returns listOfRecom
-
-        viewModel.loadFirstData(category)
-        viewModel.counterTitleShouldBeRendered += 1
-        viewModel.loadMoreProducts(category.categoryId, page)
-
-        viewModel.removeRecomWidget()
-        viewModel.removeRecommendation()
-        viewModel.removeTopAdsHeadlineWidget()
-        assertNull(viewModel.officialStoreLiveData.value?.dataList?.find { it is BestSellerDataModel })
-        assertNull(viewModel.officialStoreLiveData.value?.dataList?.find { it is ProductRecommendationDataModel })
-        assertNull(viewModel.officialStoreLiveData.value?.dataList?.find { it is ProductRecommendationTitleDataModel })
-        assertEquals(viewModel.productRecommendationTitleSection, title)
-    }
-
-    @Test
     fun given_countdown_finished__when_dynamic_channel_flashsale__then_remove_widget() {
         val prefixUrl = "prefix"
         val slug = "slug"
@@ -822,7 +890,7 @@ class OfficialStoreHomeViewModelTest {
         val osFeatured = OfficialStoreFeaturedShop()
         val osDynamicChannel = mutableListOf(
             OfficialStoreChannel(channel = Channel(
-                layout = DynamicChannelLayout.LAYOUT_BANNER_CAROUSEL)
+                layout = DynamicChannelLayout.LAYOUT_SPRINT_LEGO)
             )
         )
         val page = 1

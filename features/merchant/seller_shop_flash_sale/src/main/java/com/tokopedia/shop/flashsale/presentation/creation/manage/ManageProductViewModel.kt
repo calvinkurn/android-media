@@ -10,11 +10,12 @@ import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.shop.common.di.GqlGetShopCloseDetailInfoQualifier
 import com.tokopedia.shop.common.domain.interactor.GQLGetShopInfoUseCase
 import com.tokopedia.shop.flashsale.common.tracker.ShopFlashSaleTracker
-import com.tokopedia.shop.flashsale.common.util.ProductErrorStatusHandler
 import com.tokopedia.shop.flashsale.data.request.GetSellerCampaignProductListRequest
 import com.tokopedia.shop.flashsale.domain.entity.SellerCampaignProductList
 import com.tokopedia.shop.flashsale.domain.entity.enums.ManageProductBannerType
-import com.tokopedia.shop.flashsale.domain.entity.enums.ManageProductBannerType.*
+import com.tokopedia.shop.flashsale.domain.entity.enums.ManageProductBannerType.EMPTY_BANNER
+import com.tokopedia.shop.flashsale.domain.entity.enums.ManageProductBannerType.ERROR_BANNER
+import com.tokopedia.shop.flashsale.domain.entity.enums.ManageProductBannerType.HIDE_BANNER
 import com.tokopedia.shop.flashsale.domain.entity.enums.ManageProductErrorType.NOT_ERROR
 import com.tokopedia.shop.flashsale.domain.entity.enums.ProductionSubmissionAction
 import com.tokopedia.shop.flashsale.domain.usecase.DoSellerCampaignProductSubmissionUseCase
@@ -34,7 +35,6 @@ class ManageProductViewModel @Inject constructor(
     private val getSellerCampaignProductListUseCase: GetSellerCampaignProductListUseCase,
     private val doSellerCampaignProductSubmissionUseCase: DoSellerCampaignProductSubmissionUseCase,
     private val getSellerCampaignDetailUseCase: GetSellerCampaignDetailUseCase,
-    private val productErrorStatusHandler: ProductErrorStatusHandler,
     private val tracker: ShopFlashSaleTracker,
     @GqlGetShopCloseDetailInfoQualifier private val gqlGetShopInfoUseCase: GQLGetShopInfoUseCase
 ) : BaseViewModel(dispatchers.main) {
@@ -65,9 +65,10 @@ class ManageProductViewModel @Inject constructor(
     }
 
     private var isCoachMarkShown = false
-    
+
     var campaignName = ""
     var autoShowEditProduct = true
+    private var autoNavigateWhenProductIsEmpty = true
 
     fun getProducts(
         campaignId: Long,
@@ -101,37 +102,21 @@ class ManageProductViewModel @Inject constructor(
             },
             onError = {}
         )
-
-    }
-
-    fun setProductErrorMessage(productList: SellerCampaignProductList) {
-        productList.productList.forEach { product ->
-            val productErrorType = productErrorStatusHandler.getErrorType(product.productMapData)
-            product.errorMessage = productErrorStatusHandler.getProductListErrorMessage(
-                productErrorType,
-                product.productMapData
-            )
-        }
-    }
-
-    fun setProductInfoCompletion(productList: SellerCampaignProductList) {
-        productList.productList.forEach { product ->
-            product.isInfoComplete = isProductInfoComplete(product.productMapData)
-        }
     }
 
     fun getBannerType(productList: SellerCampaignProductList) {
         var isProductContainingError = false
         productList.productList.forEach { product ->
-            if (productErrorStatusHandler.getErrorType(product.productMapData) != NOT_ERROR) {
-                _bannerType.postValue(ERROR_BANNER)
-                isProductContainingError = true
+            val errorType = product.errorType
+            if (product.isInfoComplete) {
+                if (errorType != NOT_ERROR) {
+                    _bannerType.postValue(ERROR_BANNER)
+                    isProductContainingError = true
+                }
             } else {
-                if (!isProductInfoComplete(product.productMapData)) {
-                    if (bannerType.value != ERROR_BANNER) {
-                        _bannerType.postValue(EMPTY_BANNER)
-                        isProductContainingError = true
-                    }
+                if (bannerType.value != ERROR_BANNER) {
+                    _bannerType.postValue(EMPTY_BANNER)
+                    isProductContainingError = true
                 }
             }
         }
@@ -177,7 +162,7 @@ class ManageProductViewModel @Inject constructor(
             block = {
                 val shopId = userSessionInterface.shopId.toIntOrZero()
                 gqlGetShopInfoUseCase.params = GQLGetShopInfoUseCase.createParams(listOf(shopId))
-                gqlGetShopInfoUseCase.isFromCacheFirst = true
+                gqlGetShopInfoUseCase.isFromCacheFirst = false
                 val result = gqlGetShopInfoUseCase.executeOnBackground()
                 _shopStatus.postValue(Success(result.statusInfo.shopStatus))
             },
@@ -197,5 +182,13 @@ class ManageProductViewModel @Inject constructor(
 
     fun getIsCoachMarkShown(): Boolean {
         return isCoachMarkShown
+    }
+
+    fun setAutoNavigateToChooseProduct(value: Boolean) {
+        autoNavigateWhenProductIsEmpty = value
+    }
+
+    fun autoNavigateToChooseProduct(): Boolean {
+        return autoNavigateWhenProductIsEmpty
     }
 }

@@ -27,7 +27,7 @@ import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.TEMPLATE_TAGIHAN
 import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.TEMPLATE_TOKEN_LISTRIK_DIGITAL_PDP
 import com.tokopedia.applink.digital.DeeplinkMapperDigitalConst.TRAVEL_SUBHOMEPAGE_PLATFORM_ID
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital
-import com.tokopedia.applink.order.DeeplinkMapperUohOrder.getRegisteredNavigationUohOrder
+import com.tokopedia.applink.purchaseplatform.DeeplinkMapperUoh.getRegisteredNavigationUohOrder
 import com.tokopedia.logger.ServerLogger
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl

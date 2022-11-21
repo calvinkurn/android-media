@@ -5,6 +5,7 @@ import androidx.annotation.LayoutRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import com.tokopedia.topads.dashboard.R
+import com.tokopedia.topads.dashboard.R.color
 import com.tokopedia.topads.dashboard.view.adapter.negkeyword.viewmodel.NegKeywordItemModel
 import com.tokopedia.unifycomponents.CardUnify
 import com.tokopedia.unifycomponents.Label
@@ -39,7 +40,7 @@ class NegKeywordItemViewHolder(
                 checkBox.visibility = View.VISIBLE
             } else {
                 cardView.setBackgroundColor(ContextCompat.getColor(
-                    view.context, R.color.topads_dash_white))
+                    view.context, color.Unify_NN0))
                 checkBox.visibility = View.GONE
             }
             keyTitle.text = it.result.keywordTag
@@ -48,10 +49,10 @@ class NegKeywordItemViewHolder(
             checkBox.isChecked = item.isChecked
             if (!checkBox.isChecked) {
                 cardView.setBackgroundColor(ContextCompat.getColor(view.context,
-                    R.color.topads_dash_white))
+                    color.Unify_NN0))
             } else {
                 cardView.setBackgroundColor(ContextCompat.getColor(view.context,
-                    R.color.topads_select_color))
+                    color.Unify_B400_20))
             }
             itemCard.setOnClickListener {
                 if (selectMode) {
@@ -59,17 +60,17 @@ class NegKeywordItemViewHolder(
                     item.isChecked = checkBox.isChecked
                     if (checkBox.isChecked)
                         cardView.setBackgroundColor(ContextCompat.getColor(view.context,
-                            R.color.topads_select_color))
+                            color.Unify_B400_20))
                     else
                         cardView.setBackgroundColor(ContextCompat.getColor(view.context,
-                            R.color.topads_dash_white))
+                            color.Unify_NN0))
                 }
             }
             itemCard.setOnLongClickListener {
                 item.isChecked = true
                 checkBox.isChecked = true
                 cardView.setBackgroundColor(ContextCompat.getColor(
-                    view.context, R.color.topads_select_color))
+                    view.context, color.Unify_B400_20))
                 onSelectMode.invoke(true)
                 true
             }

@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.METHOD_LOGIN_EMAIL
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.METHOD_LOGIN_PHONE
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.PARAM_IS_RETURN_HOME
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.kotlin.extensions.view.setLightStatusBar
 import com.tokopedia.kotlin.extensions.view.setStatusBarColor
@@ -81,6 +82,7 @@ open class LoginActivity : BaseSimpleActivity(), HasComponent<LoginComponent>,
             val phone = it.getQueryParameter(PARAM_PHONE).orEmpty()
             val email = it.getQueryParameter(PARAM_EMAIL).orEmpty()
             val source = it.getQueryParameter(PARAM_SOURCE).orEmpty()
+            val isReturnHomeWhenBackPressed = it.getBooleanQueryParameter(PARAM_IS_RETURN_HOME, false)
 
             if (method.isEmpty()) {
                 if (email.isNotEmpty()) {
@@ -94,6 +96,7 @@ open class LoginActivity : BaseSimpleActivity(), HasComponent<LoginComponent>,
             bundle.putString(PARAM_PHONE, phone)
             bundle.putString(PARAM_EMAIL, email)
             bundle.putString(PARAM_SOURCE, source)
+            bundle.putBoolean(PARAM_IS_RETURN_HOME, isReturnHomeWhenBackPressed)
         }
 
         return bundle

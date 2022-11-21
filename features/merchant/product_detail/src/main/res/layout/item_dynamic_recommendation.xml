@@ -81,9 +81,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
-        android:layout_marginTop="@dimen/spacing_lvl3"
-        android:layout_marginLeft="@dimen/spacing_lvl2"
-        android:layout_marginStart="@dimen/spacing_lvl2"
+        android:layout_marginTop="8dp"
+        android:layout_marginLeft="4dp"
+        android:layout_marginStart="4dp"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"/>
 
     <FrameLayout
@@ -95,7 +95,7 @@
             android:id="@+id/rvProductRecom"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_lvl3"
+            android:layout_marginTop="8dp"
             android:clipToPadding="false"
             android:scrollbars="none"
             android:visibility="gone"

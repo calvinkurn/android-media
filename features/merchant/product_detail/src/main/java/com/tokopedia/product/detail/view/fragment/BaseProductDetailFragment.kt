@@ -88,7 +88,6 @@ abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactor
     fun submitList(visitables: List<DynamicPdpDataModel>) {
         rvPdp?.post {
             productAdapter?.submitList(visitables)
-            binding?.pdpNavigation?.updateItemPosition()
         }
     }
 
@@ -97,7 +96,7 @@ abstract class BaseProductDetailFragment<T : Visitable<*>, F : AdapterTypeFactor
     }
 
     fun renderPageError(errorModel: PageErrorDataModel) {
-        context?.let { ctx ->
+        context?.let { _ ->
             productAdapter?.showError(errorModel)
             swipeToRefresh?.let {
                 it.isEnabled = false
