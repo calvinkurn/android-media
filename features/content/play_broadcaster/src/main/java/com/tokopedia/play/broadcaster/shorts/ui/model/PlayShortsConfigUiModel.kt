@@ -9,15 +9,20 @@ data class PlayShortsConfigUiModel(
     val shortsId: String,
     val shortsAllowed: Boolean,
     val tncList: List<TermsAndConditionUiModel>,
-    val maxTitleCharacter: Int
+    val maxTitleCharacter: Int,
+    val maxTaggedProduct: Int,
 ) {
     companion object {
+
+        private const val DEFAULT_MAX_TITLE_CHARACTER = 24
+
         val Empty: PlayShortsConfigUiModel
             get() = PlayShortsConfigUiModel(
                 shortsId = "",
                 shortsAllowed = false,
                 tncList = emptyList(),
-                maxTitleCharacter = 24
+                maxTitleCharacter = DEFAULT_MAX_TITLE_CHARACTER,
+                maxTaggedProduct = 0,
             )
     }
 }

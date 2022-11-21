@@ -384,7 +384,7 @@ class PlayShortsPreparationFragment @Inject constructor(
                     binding.formTitle.setTitle(viewModel.title)
                 }
                 binding.formTitle.setLoading(false)
-                /** TODO: setup title max character after getConfig */
+                binding.formTitle.setMaxCharacter(viewModel.maxTitleCharacter)
             }
             PlayShortsTitleFormUiState.State.Loading -> {
                 hideKeyboard()

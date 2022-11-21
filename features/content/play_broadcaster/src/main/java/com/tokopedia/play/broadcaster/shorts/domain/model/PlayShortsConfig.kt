@@ -10,5 +10,8 @@ data class PlayShortsConfig(
     val draftShortsId: Int = 0,
 
     @SerializedName("max_title_length")
-    val maxTitleCharacter: Int = 24,
+    val maxTitleCharacter: Int = 0,
+
+    @SerializedName("max_tagged_product")
+    val maxTaggedProduct: Int = 0,
 )

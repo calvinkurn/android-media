@@ -41,11 +41,12 @@ class PlayShortsUiMapper @Inject constructor(
 
         return PlayShortsConfigUiModel(
             shortsId = if(config.draftShortsId == 0) "" else config.draftShortsId.toString(),
-            maxTitleCharacter = config.maxTitleCharacter,
             shortsAllowed = response.authorConfig.shortVideoAllowed,
             tncList = response.authorConfig.tnc.map {
                 TermsAndConditionUiModel(desc = it.description)
             },
+            maxTitleCharacter = config.maxTitleCharacter,
+            maxTaggedProduct = config.maxTaggedProduct
         )
     }
 

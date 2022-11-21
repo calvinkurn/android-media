@@ -29,6 +29,8 @@ class PlayShortsRepositoryImpl @Inject constructor(
 ) : PlayShortsRepository {
 
     override suspend fun getAccountList(): List<ContentAccountUiModel> = withContext(dispatchers.io) {
+        delay(500)
+
         listOf(
             ContentAccountUiModel(
                 id = "123",
@@ -67,6 +69,7 @@ class PlayShortsRepositoryImpl @Inject constructor(
                 TermsAndConditionUiModel("Desc $it")
             },
             maxTitleCharacter = 24,
+            maxTaggedProduct = 30,
         )
 
         /** TODO: will uncomment this later */

@@ -60,12 +60,14 @@ class PlayShortsViewModel @Inject constructor(
     val title: String
         get() = _titleForm.value.title
 
+    val maxTitleCharacter: Int
+        get() = _config.value.maxTitleCharacter
+
     val productSectionList: List<ProductTagSectionUiModel>
         get() = _productSectionList.value
 
-    /** TODO: provide the correct max product here */
     val maxProduct: Int
-        get() = 30
+        get() = _config.value.maxTaggedProduct
 
     val isAllMandatoryMenuChecked: Boolean
         get() = _titleForm.value.title.isNotEmpty()
@@ -159,9 +161,6 @@ class PlayShortsViewModel @Inject constructor(
 
     init {
         setupPreparationMenu()
-
-        /** TODO: for mocking purpose, delete this later */
-//        submitAction(PlayShortsAction.SetMedia("/storage/emulated/0/Movies/VID_20221110_141411.mp4"))
     }
 
     fun submitAction(action: PlayShortsAction) {
@@ -210,7 +209,9 @@ class PlayShortsViewModel @Inject constructor(
             setupConfigurationIfEligible(bestEligibleAccount)
 
         }) {
-            /** TODO: handle global page error like the one in broadcaster */
+            _uiEvent.oneTimeUpdate {
+                it.copy(oneTimeEvent = PlayShortsOneTimeEvent.ErrorPreparingPage)
+            }
         }
     }
 

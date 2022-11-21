@@ -53,5 +53,7 @@ sealed interface PlayShortsOneTimeEvent {
 
     object Unknown : PlayShortsOneTimeEvent
 
+    object ErrorPreparingPage : PlayShortsOneTimeEvent
+
     object GoToSummary : PlayShortsOneTimeEvent
 }
