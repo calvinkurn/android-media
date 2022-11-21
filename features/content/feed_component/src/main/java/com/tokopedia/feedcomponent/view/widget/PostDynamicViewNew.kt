@@ -663,8 +663,10 @@ class PostDynamicViewNew @JvmOverloads constructor(
         //region author info
         val activityName = ""
         val authorType = if (author.type == 1) FollowCta.AUTHOR_USER else FollowCta.AUTHOR_SHOP
+        val authorId = if (authorType == FollowCta.AUTHOR_USER) author.encryptedUserId else author.id
+
         val followCta = FollowCta(
-            authorID = author.id,
+            authorID = authorId,
             authorType = authorType,
             isFollow = isFollowed
         )
@@ -700,7 +702,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                     listener?.onFollowClickAds(positionInFeed, shopId, adId)
                 } else {
                     listener?.onHeaderActionClick(
-                        positionInFeed, author.id,
+                        positionInFeed, authorId,
                         authorType, isFollowed, type, isVideo
                     )
                 }
@@ -738,7 +740,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 deletable,
                 true,
                 isFollowed,
-                author.id,
+                authorId,
                 authorType,
                 type,
                 mediaType,
