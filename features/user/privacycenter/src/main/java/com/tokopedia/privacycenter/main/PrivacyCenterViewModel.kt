@@ -2,19 +2,19 @@ package com.tokopedia.privacycenter.main
 
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.privacycenter.common.domain.UserUseCase
+import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 class PrivacyCenterViewModel @Inject constructor(
-    private val userUseCase: UserUseCase,
+    private val userSessionInterface: UserSessionInterface,
     dispatcher: CoroutineDispatchers
 ) : BaseViewModel(dispatcher.main) {
 
     fun getUserName(): String {
-        return userUseCase.getUserName()
+        return userSessionInterface.name
     }
 
     fun isLoggedIn(): Boolean {
-        return userUseCase.isLoggedIn()
+        return userSessionInterface.isLoggedIn
     }
 }

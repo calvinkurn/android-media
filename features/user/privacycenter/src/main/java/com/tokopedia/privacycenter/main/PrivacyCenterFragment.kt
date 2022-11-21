@@ -139,7 +139,10 @@ class PrivacyCenterFragment :
                 }
             }
         }
-        binding?.textName?.text = viewModel.getUserName()
+        binding?.textName?.text = String.format(
+            resources.getString(R.string.privacy_center_toolbar_title),
+            viewModel.getUserName()
+        )
     }
 
     override fun onStop() {
