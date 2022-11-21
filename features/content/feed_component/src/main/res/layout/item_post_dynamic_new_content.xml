@@ -173,7 +173,7 @@
             android:maxLines="1"
             android:text="@string/feeds_cek_sekarang"
             app:layout_constrainedWidth="true"
-            app:layout_constraintBottom_toTopOf="@id/top_ads_product_subtitle"
+            app:layout_constraintBottom_toTopOf="@id/top_ads_product_subtitle_container"
             app:layout_constraintEnd_toStartOf="@+id/chevron"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -196,15 +196,23 @@
             app:layout_constraintVertical_chainStyle="packed"
             tools:visibility="visible">
 
-        </LinearLayout>
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/top_ads_product_subtitle_first"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
+                app:typographyType="display_3" />
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/top_ads_product_subtitle"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:maxLines="1"
-            app:typographyType="display_3" />
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/top_ads_product_subtitle_second"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:maxLines="1"
+                app:typographyType="display_3" />
+
+        </LinearLayout>
 
         <com.tokopedia.iconunify.IconUnify
             android:id="@+id/chevron"

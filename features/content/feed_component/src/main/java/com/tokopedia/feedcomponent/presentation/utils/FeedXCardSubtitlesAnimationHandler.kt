@@ -7,7 +7,6 @@ import android.animation.ObjectAnimator
 import android.animation.PropertyValuesHolder
 import android.annotation.SuppressLint
 import android.content.res.Resources
-import android.util.Log
 import android.view.View
 import java.lang.ref.WeakReference
 import java.util.*
@@ -16,18 +15,35 @@ import java.util.*
  * Created By : Muhammad Furqan on 11/11/22
  */
 class FeedXCardSubtitlesAnimationHandler(
-    val firstContainer: WeakReference<com.tokopedia.unifyprinciples.Typography>,
-    val secondContainer: WeakReference<com.tokopedia.unifyprinciples.Typography>
+    private val firstContainer: WeakReference<com.tokopedia.unifyprinciples.Typography>,
+    private val secondContainer: WeakReference<com.tokopedia.unifyprinciples.Typography>
 ) {
 
-    lateinit var subtitles: List<String>
-    private var currentPositionSubtitle = 0
+    var subtitles: List<String> = emptyList()
+    private var currentPositionAnimationInfo = 0
 
-//    private var visibleContainer = firstContainer
-//    private var invisibleContainer = secondContainer
+    private var visibleContainer = firstContainer
+    private var invisibleContainer = secondContainer
     private var isAnimationStarted = false
     private var animatorSet: AnimatorSet? = null
     private var timer: Timer? = null
+
+    private val animListener = object : AnimatorListener {
+        override fun onAnimationStart(animation: Animator?) {
+
+        }
+
+        override fun onAnimationEnd(animation: Animator?) {
+            afterAnimationComplete()
+        }
+
+        override fun onAnimationCancel(animation: Animator?) {
+        }
+
+        override fun onAnimationRepeat(animation: Animator?) {
+
+        }
+    }
 
     private val onAttachListener = object : View.OnAttachStateChangeListener {
         override fun onViewAttachedToWindow(v: View?) {
@@ -45,20 +61,21 @@ class FeedXCardSubtitlesAnimationHandler(
 
     private fun animateView() {
         isAnimationStarted = true
-//        setDataIntoViews()
-        animateTwoViews(firstContainer, secondContainer)
+
+        setDataIntoViews()
+        animateTwoViews(visibleContainer, invisibleContainer)
     }
 
     private fun setDataIntoViews() {
-        if (!::subtitles.isInitialized) return
-
         val visibleDataPos =
-            if (currentPositionSubtitle == subtitles.size) 0 else currentPositionSubtitle
+            if (currentPositionAnimationInfo == subtitles.size) 0 else currentPositionAnimationInfo
         val invisibleDataPos =
-            if (currentPositionSubtitle + 1 >= subtitles.size) 0 else currentPositionSubtitle + 1
+            if (currentPositionAnimationInfo + 1 >= subtitles.size) 0 else currentPositionAnimationInfo + 1
+        currentPositionAnimationInfo = visibleDataPos
 
-//        visibleContainer.get()?.text = subtitles[visibleDataPos]
-//        invisibleContainer.get()?.text = subtitles[invisibleDataPos]
+        visibleContainer.get()?.text = subtitles[visibleDataPos]
+        invisibleContainer.get()?.text = subtitles[invisibleDataPos]
+
     }
 
     fun stopAnimation() {
@@ -67,7 +84,7 @@ class FeedXCardSubtitlesAnimationHandler(
     }
 
     fun startTimer() {
-        val START_DELAY = 2000L
+        val START_DELAY = 3000L
         val INTERVAL = START_DELAY
 
         if (timer == null) {
@@ -77,7 +94,7 @@ class FeedXCardSubtitlesAnimationHandler(
         timer = Timer()
         timer?.scheduleAtFixedRate(object : TimerTask() {
             override fun run() {
-                firstContainer.get()?.post {
+                visibleContainer.get()?.post {
                     animateView()
                 }
             }
@@ -85,36 +102,31 @@ class FeedXCardSubtitlesAnimationHandler(
     }
 
     private fun afterAnimationComplete() {
-        if (!::subtitles.isInitialized) return
-
-        Log.d("FEED_ANIM", "Animation End, Masuk")
-
         //switch container reference
-//        val tempContainer = visibleContainer
-//        visibleContainer = invisibleContainer
-//        invisibleContainer = tempContainer
+        val tempContainer = visibleContainer
+        visibleContainer = invisibleContainer
+        invisibleContainer = tempContainer
 
         //increment pos
-//        currentPositionSubtitle += 1
+        currentPositionAnimationInfo += 1
 
         //reset position
-//        if (currentPositionSubtitle == subtitles.size)
-//            currentPositionSubtitle = 0
+        if (currentPositionAnimationInfo == subtitles.size)
+            currentPositionAnimationInfo = 0
     }
 
     private fun reset() {
-
         firstContainer.get()?.clearAnimation()
         secondContainer.get()?.clearAnimation()
 
         firstContainer.get()?.alpha = 1f
         firstContainer.get()?.translationY = 0f
         secondContainer.get()?.alpha = 0f
-        secondContainer.get()?.translationY = dpToPx(16)
-        currentPositionSubtitle = 0
+        secondContainer.get()?.translationY = dpToPx(48)
+        currentPositionAnimationInfo = 0
 
-//        visibleContainer = firstContainer
-//        invisibleContainer = secondContainer
+        visibleContainer = firstContainer
+        invisibleContainer = secondContainer
     }
 
     @SuppressLint("Recycle")
@@ -124,44 +136,33 @@ class FeedXCardSubtitlesAnimationHandler(
     ) {
 
         viewOne.get()?.let { v1 ->
+
+
             viewTwo.get()?.let { v2 ->
-//                val alphaAnimPropOne = PropertyValuesHolder.ofFloat(View.ALPHA, 1f, 0f)
-//                val alphaAnimObjOne: ObjectAnimator =
-//                    ObjectAnimator.ofPropertyValuesHolder(v1, alphaAnimPropOne)
+                val alphaAnimPropOne = PropertyValuesHolder.ofFloat(View.ALPHA, 1f, 0f)
+                val alphaAnimObjOne: ObjectAnimator =
+                    ObjectAnimator.ofPropertyValuesHolder(v1, alphaAnimPropOne)
 
                 val translateAnimPropOne =
-                    PropertyValuesHolder.ofFloat(View.TRANSLATION_Y, 0f, -dpToPx(16))
+                    PropertyValuesHolder.ofFloat(View.TRANSLATION_Y, 0f, -dpToPx(48))
                 val translateAnimObjOne: ObjectAnimator =
                     ObjectAnimator.ofPropertyValuesHolder(v1, translateAnimPropOne)
 
-//                val alphaAnimPropTwo = PropertyValuesHolder.ofFloat(View.ALPHA, 0f, 1f)
-//                val alphaAnimObjTwo: ObjectAnimator =
-//                    ObjectAnimator.ofPropertyValuesHolder(v2, alphaAnimPropTwo)
+                val alphaAnimPropTwo = PropertyValuesHolder.ofFloat(View.ALPHA, 0f, 1f)
+                val alphaAnimObjTwo: ObjectAnimator =
+                    ObjectAnimator.ofPropertyValuesHolder(v2, alphaAnimPropTwo)
 
                 val translateAnimPropTwo =
-                    PropertyValuesHolder.ofFloat(View.TRANSLATION_Y, dpToPx(16), 0f)
+                    PropertyValuesHolder.ofFloat(View.TRANSLATION_Y, dpToPx(48), 0f)
                 val translateAnimObjTwo: ObjectAnimator =
                     ObjectAnimator.ofPropertyValuesHolder(v2, translateAnimPropTwo)
-
-//                translateAnimObjTwo.addListener(object: AnimatorListener {
-//                    override fun onAnimationStart(animation: Animator?) {
-//                    }
-//
-//                    override fun onAnimationEnd(animation: Animator?) {
-//                        afterAnimationComplete()
-//                    }
-//
-//                    override fun onAnimationCancel(animation: Animator?) {
-//                    }
-//
-//                    override fun onAnimationRepeat(animation: Animator?) {
-//                    }
-//
-//                })
+                translateAnimObjTwo.addListener(animListener)
 
                 animatorSet = AnimatorSet()
                 animatorSet?.playTogether(
+                    alphaAnimObjOne,
                     translateAnimObjOne,
+                    alphaAnimObjTwo,
                     translateAnimObjTwo
                 )
                 animatorSet?.duration = 600L

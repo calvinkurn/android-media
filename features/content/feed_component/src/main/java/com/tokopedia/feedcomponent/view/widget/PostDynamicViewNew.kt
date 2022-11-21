@@ -188,6 +188,10 @@ class PostDynamicViewNew @JvmOverloads constructor(
     private val topAdsProductName = findViewById<Typography>(R.id.top_ads_product_name)
     private val topAdsProductSubtitleContainer =
         findViewById<LinearLayout>(R.id.top_ads_product_subtitle_container)
+    private val topAdsProductSubtitleFirst =
+        findViewById<Typography>(R.id.top_ads_product_subtitle_first)
+    private val topAdsProductSubtitleSecond =
+        findViewById<Typography>(R.id.top_ads_product_subtitle_second)
     private val topAdsChevron = topAdsCard.findViewById<IconUnify>(R.id.chevron)
     private val pageControl: PageControl = findViewById(R.id.page_indicator)
     private val likeButton: IconUnify = findViewById(R.id.like_button)
@@ -591,27 +595,19 @@ class PostDynamicViewNew @JvmOverloads constructor(
 
         if (!subtitles.isNullOrEmpty()) {
             topAdsProductSubtitleContainer.removeAllViews()
-            subtitles.map { subtitle ->
-                val typography = Typography(context)
-                typography.setType(Typography.DISPLAY_3)
-                typography.ellipsize = TextUtils.TruncateAt.END
-                typography.maxLines = ONE
-                typography.setTextColor(
-                    MethodChecker.getColor(
-                        context,
-                        unifyPrinciplesR.color.Unify_N0
-                    )
-                )
-                typography.text = subtitle
-
-                topAdsProductSubtitleContainer.addView(typography)
+            subtitles.mapIndexed { index, subtitle ->
+                if (index == ZERO) {
+                    topAdsProductSubtitleFirst.text = subtitle
+                } else if (index == ONE) {
+                    topAdsProductSubtitleSecond.text = subtitle
+                }
             }
 
             // set animation to subtitles
             if (topAdsProductSubtitleContainer.childCount > ONE) {
                 animationHandler = FeedXCardSubtitlesAnimationHandler(
-                    WeakReference(topAdsProductSubtitleContainer.getChildAt(ZERO) as Typography),
-                    WeakReference(topAdsProductSubtitleContainer.getChildAt(ONE) as Typography)
+                    WeakReference(topAdsProductSubtitleFirst),
+                    WeakReference(topAdsProductSubtitleSecond)
                 )
                 animationHandler?.subtitles = subtitles
                 animationHandler?.checkToCancelTimer()
