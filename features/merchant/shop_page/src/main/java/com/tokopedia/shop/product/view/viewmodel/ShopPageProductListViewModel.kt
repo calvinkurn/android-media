@@ -20,6 +20,7 @@ import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.GetShopEtala
 import com.tokopedia.shop.common.util.ShopUtil.isFilterNotIgnored
 import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.atc_common.AtcFromExternalSource
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.cartcommon.data.request.updatecart.UpdateCartRequest
@@ -584,7 +585,8 @@ class ShopPageProductListViewModel @Inject constructor(
             AddToCartUseCase.getMinimumParams(
                 productId = productId,
                 shopId = shopId,
-                quantity = quantity
+                quantity = quantity,
+                atcExternalSource = AtcFromExternalSource.ATC_FROM_SHOP
             )
         addToCartUseCase.setParams(addToCartRequestParams)
         addToCartUseCase.execute({

@@ -1167,7 +1167,7 @@ class ShopPageProductListFragment : BaseListFragment<BaseShopProductViewModel, S
     }
 
     private fun observeIsCreateAffiliateCookieAtcProduct() {
-        viewModel.createAffiliateCookieAtcProduct.observe(viewLifecycleOwner) {
+        viewModel?.createAffiliateCookieAtcProduct?.observe(viewLifecycleOwner) {
             it?.let {
                 createAffiliateCookieAtcProduct(it)
             }

@@ -3073,7 +3073,6 @@ class NewShopPageFragment :
             affiliateData?.affiliateUUId.orEmpty(),
             affiliateCookieHelper,
             affiliateData?.affiliateChannel.orEmpty(),
-            shopId,
             productId,
             isVariant,
             stockQty

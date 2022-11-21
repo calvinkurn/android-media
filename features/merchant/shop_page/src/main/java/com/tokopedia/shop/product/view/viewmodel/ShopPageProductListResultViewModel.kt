@@ -21,6 +21,7 @@ import com.tokopedia.shop.common.graphql.domain.usecase.shopetalase.GetShopEtala
 import com.tokopedia.shop.common.util.ShopUtil
 import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.atc_common.AtcFromExternalSource
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.cartcommon.data.request.updatecart.UpdateCartRequest
@@ -57,6 +58,7 @@ import javax.inject.Inject
 import com.tokopedia.common_sdk_affiliate_toko.model.AffiliatePageDetail
 import com.tokopedia.common_sdk_affiliate_toko.model.AffiliateSdkPageSource
 import com.tokopedia.common_sdk_affiliate_toko.model.AffiliateSdkProductInfo
+import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateAtcSource
 import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
 import com.tokopedia.shop.common.constant.ShopPageConstant.SHARED_PREF_AFFILIATE_CHANNEL
 
@@ -534,7 +536,8 @@ class ShopPageProductListResultViewModel @Inject constructor(private val userSes
             AddToCartUseCase.getMinimumParams(
                 productId = productId,
                 shopId = shopId,
-                quantity = quantity
+                quantity = quantity,
+                atcExternalSource = AtcFromExternalSource.ATC_FROM_SHOP
             )
         addToCartUseCase.setParams(addToCartRequestParams)
         addToCartUseCase.execute({
@@ -741,17 +744,19 @@ class ShopPageProductListResultViewModel @Inject constructor(private val userSes
     fun createAffiliateCookieShopAtcProduct(
         affiliateCookieHelper: AffiliateCookieHelper,
         affiliateChannel: String,
-        shopId: String,
         productId: String,
         isVariant: Boolean,
         stockQty: Int
     ) {
         launchCatchError(dispatcherProvider.io, block = {
+            val affiliateSdkDirectAtcSource = AffiliateSdkPageSource.DirectATC(
+                AffiliateAtcSource.SHOP_PAGE,
+                AffiliateSdkProductInfo("", isVariant, stockQty)
+            )
             affiliateCookieHelper.initCookie(
                 "",
                 affiliateChannel,
-                AffiliatePageDetail(productId, AffiliateSdkPageSource.PDP(shopId,AffiliateSdkProductInfo("",isVariant,stockQty))),
-                isATC = true
+                AffiliatePageDetail(productId, affiliateSdkDirectAtcSource)
             )
         }) {
         }

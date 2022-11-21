@@ -636,7 +636,6 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
         viewModel.createAffiliateCookieShopAtcProduct(
             affiliateCookieHelper,
             affiliateChannel,
-            shopId.orEmpty(),
             affiliateAtcProductModel.productId,
             affiliateAtcProductModel.isVariant,
             affiliateAtcProductModel.stockQty

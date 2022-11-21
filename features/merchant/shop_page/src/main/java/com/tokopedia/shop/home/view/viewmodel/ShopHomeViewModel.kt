@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.atc_common.AtcFromExternalSource
 import com.tokopedia.atc_common.data.model.request.AddToCartBundleRequestParams
 import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiCartParam
 import com.tokopedia.atc_common.data.model.request.AddToCartOccMultiRequestParams
@@ -21,6 +22,7 @@ import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.common.network.data.model.RestResponse
+import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateAtcSource
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -488,9 +490,14 @@ class ShopHomeViewModel @Inject constructor(
     }
 
     private fun submitAddProductToCart(shopId: String, product: ShopHomeProductUiModel): AddToCartDataModel {
-        val requestParams = AddToCartUseCase.getMinimumParams(product.id
-            , shopId, productName = product.name, price = product.displayedPrice
-            , userId = userId)
+        val requestParams = AddToCartUseCase.getMinimumParams(
+            product.id,
+            shopId,
+            productName = product.name,
+            price = product.displayedPrice,
+            userId = userId,
+            atcExternalSource = AtcFromExternalSource.ATC_FROM_SHOP
+        )
         return addToCartUseCaseRx.createObservable(requestParams).toBlocking().first()
     }
 
@@ -950,7 +957,8 @@ class ShopHomeViewModel @Inject constructor(
         val addToCartRequestParams = com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase.getMinimumParams(
             productId = shopHomeProductUiModel.id,
             shopId = shopId,
-            quantity = quantity
+            quantity = quantity,
+            atcExternalSource = AtcFromExternalSource.ATC_FROM_SHOP
         )
         addToCartUseCase.setParams(addToCartRequestParams)
         addToCartUseCase.execute({

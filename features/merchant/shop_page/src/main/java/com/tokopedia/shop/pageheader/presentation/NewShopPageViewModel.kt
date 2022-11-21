@@ -10,6 +10,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.common_sdk_affiliate_toko.model.AffiliatePageDetail
 import com.tokopedia.common_sdk_affiliate_toko.model.AffiliateSdkPageSource
 import com.tokopedia.common_sdk_affiliate_toko.model.AffiliateSdkProductInfo
+import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateAtcSource
 import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -641,17 +642,19 @@ class NewShopPageViewModel @Inject constructor(
         uuId: String,
         affiliateCookieHelper: AffiliateCookieHelper,
         affiliateChannel: String,
-        shopId: String,
         productId: String,
         isVariant: Boolean,
         stockQty: Int
     ) {
         launchCatchError(dispatcherProvider.io, block = {
+            val affiliateSdkDirectAtcSource = AffiliateSdkPageSource.DirectATC(
+                AffiliateAtcSource.SHOP_PAGE,
+                AffiliateSdkProductInfo("", isVariant, stockQty)
+            )
             affiliateCookieHelper.initCookie(
                 uuId,
                 affiliateChannel,
-                AffiliatePageDetail(productId, AffiliateSdkPageSource.PDP(shopId,AffiliateSdkProductInfo("",isVariant,stockQty))),
-                isATC = true
+                AffiliatePageDetail(productId, affiliateSdkDirectAtcSource)
             )
         }) {
         }

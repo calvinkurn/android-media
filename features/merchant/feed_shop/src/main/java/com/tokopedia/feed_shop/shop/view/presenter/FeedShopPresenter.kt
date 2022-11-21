@@ -4,6 +4,7 @@ import android.text.TextUtils
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.affiliatecommon.domain.DeletePostUseCase
 import com.tokopedia.affiliatecommon.domain.TrackAffiliateClickUseCase
+import com.tokopedia.atc_common.AtcFromExternalSource
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.config.GlobalConfig
@@ -334,8 +335,12 @@ class FeedShopPresenter @Inject constructor(
         if (postTagItem.shop.isNotEmpty()) {
             atcUseCase.execute(
                     AddToCartUseCase.getMinimumParams(
-                            postTagItem.id, postTagItem.shop.first().shopId, productName = postTagItem.text,
-                            price = postTagItem.price, userId = getUserId()
+                        postTagItem.id,
+                        postTagItem.shop.first().shopId,
+                        productName = postTagItem.text,
+                        price = postTagItem.price,
+                        userId = getUserId(),
+                        atcExternalSource = AtcFromExternalSource.ATC_FROM_SHOP
                     ),
                     object : Subscriber<AddToCartDataModel>() {
                         override fun onNext(model: AddToCartDataModel?) {
