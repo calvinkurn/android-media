@@ -1,7 +1,6 @@
 package com.tokopedia.tokopedianow.repurchase.presentation.adapter
 
 import android.view.View
-import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -89,18 +88,6 @@ class RepurchaseAdapterTypeFactory(
             RepurchaseSortFilterViewHolder.LAYOUT -> RepurchaseSortFilterViewHolder(view, sortFilterListener)
             // endregion
             else -> super.createViewHolder(view, type)
-        }.apply {
-            if(this !is RepurchaseProductViewHolder) {
-                applyFullSpan()
-            }
-        }
-    }
-
-    private fun AbstractViewHolder<*>.applyFullSpan(): AbstractViewHolder<*> {
-        return apply {
-            val layoutParams = itemView.layoutParams
-                as? StaggeredGridLayoutManager.LayoutParams
-            layoutParams?.isFullSpan = true
         }
     }
 }

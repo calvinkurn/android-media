@@ -9,7 +9,6 @@ import android.util.SparseIntArray
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.DimenRes
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.FragmentManager
@@ -77,6 +76,7 @@ import com.tokopedia.tokopedianow.common.constant.ServiceType.NOW_2H
 import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowRecommendationCarouselUiModel
+import com.tokopedia.tokopedianow.common.util.RecyclerViewGridUtil.addProductItemDecoration
 import com.tokopedia.tokopedianow.common.util.TokoNowServiceTypeUtil
 import com.tokopedia.tokopedianow.common.util.TokoNowSharedPreference
 import com.tokopedia.tokopedianow.common.util.TokoNowSwitcherUtil.switchService
@@ -90,7 +90,6 @@ import com.tokopedia.tokopedianow.searchcategory.data.model.QuerySafeModel
 import com.tokopedia.tokopedianow.searchcategory.presentation.adapter.SearchCategoryAdapter
 import com.tokopedia.tokopedianow.searchcategory.presentation.customview.CategoryChooserBottomSheet
 import com.tokopedia.tokopedianow.searchcategory.presentation.customview.StickySingleHeaderView
-import com.tokopedia.tokopedianow.searchcategory.presentation.itemdecoration.ProductItemDecoration
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.BannerComponentListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.CategoryFilterListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ChooseAddressListener
@@ -134,7 +133,7 @@ abstract class BaseSearchCategoryFragment:
 
     companion object {
         private const val SPAN_COUNT = 3
-        private const val PRODUCT_FILLED_BASED_ON_SPAN = 1
+        private const val SPAN_FULL_SPACE = 1
         private const val REQUEST_CODE_LOGIN = 69
         private const val QUERY_PARAM_SERVICE_TYPE_NOW2H = "?service_type=2h"
         private const val DEFAULT_POSITION = 0
@@ -445,7 +444,7 @@ abstract class BaseSearchCategoryFragment:
             spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
                 override fun getSpanSize(position: Int): Int {
                     return when (searchCategoryAdapter?.getItemViewType(position)) {
-                        ProductItemViewHolder.LAYOUT -> PRODUCT_FILLED_BASED_ON_SPAN
+                        ProductItemViewHolder.LAYOUT -> SPAN_FULL_SPACE
                         else -> SPAN_COUNT
                     }
                 }
@@ -493,23 +492,6 @@ abstract class BaseSearchCategoryFragment:
     }
 
     abstract fun createTypeFactory(): BaseSearchCategoryTypeFactory
-
-    protected open fun RecyclerView.addProductItemDecoration() {
-        try {
-            val context = context ?: return
-            val unifySpace16 = com.tokopedia.unifyprinciples.R.dimen.unify_space_16
-            val spacing = context.getDimensionPixelSize(unifySpace16)
-
-            if (itemDecorationCount >= 1)
-                invalidateItemDecorations()
-
-            addItemDecoration(ProductItemDecoration(spacing))
-        } catch (throwable: Throwable) {
-
-        }
-    }
-
-    private fun Context.getDimensionPixelSize(@DimenRes id: Int) = resources.getDimensionPixelSize(id)
 
     protected open fun observeViewModel() {
         getViewModel().visitableListLiveData.observe(this::submitList)

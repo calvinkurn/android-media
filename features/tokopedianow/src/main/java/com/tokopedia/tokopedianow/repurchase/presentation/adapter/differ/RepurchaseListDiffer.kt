@@ -2,6 +2,7 @@ package com.tokopedia.tokopedianow.repurchase.presentation.adapter.differ
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.tokopedianow.common.base.adapter.BaseTokopediaNowDiffer
+import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseProductUiModel
 import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseSortFilterUiModel
 
 class RepurchaseListDiffer : BaseTokopediaNowDiffer() {
@@ -13,6 +14,8 @@ class RepurchaseListDiffer : BaseTokopediaNowDiffer() {
         val newItem = newList[newItemPosition]
 
         return if(oldItem is RepurchaseSortFilterUiModel && newItem is RepurchaseSortFilterUiModel) {
+            oldItem.id == newItem.id
+        } else if (oldItem is RepurchaseProductUiModel && newItem is RepurchaseProductUiModel) {
             oldItem.id == newItem.id
         } else {
             oldItem == newItem
