@@ -12,8 +12,7 @@ sealed class ProductListEffect {
 
     data class ConfirmAddProduct(
         val selectedProducts: List<SelectedProduct>,
-        val selectedParentProductImageUrls: List<String>,
-        val shop: ShopData
+        val selectedParentProductImageUrls: List<String>
     ) : ProductListEffect()
 
     data class ShowDeleteProductConfirmationDialog(val productId: Long) : ProductListEffect()

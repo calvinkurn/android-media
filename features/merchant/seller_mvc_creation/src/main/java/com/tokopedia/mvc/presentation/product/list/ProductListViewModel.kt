@@ -10,7 +10,6 @@ import com.tokopedia.mvc.domain.entity.enums.PromoType
 import com.tokopedia.mvc.domain.entity.enums.VoucherAction
 import com.tokopedia.mvc.domain.usecase.GetInitiateVoucherPageUseCase
 import com.tokopedia.mvc.domain.usecase.ProductListUseCase
-import com.tokopedia.mvc.domain.usecase.ShopBasicDataUseCase
 import com.tokopedia.mvc.presentation.product.list.uimodel.ProductListEffect
 import com.tokopedia.mvc.presentation.product.list.uimodel.ProductListEvent
 import com.tokopedia.mvc.presentation.product.list.uimodel.ProductListUiState
@@ -27,7 +26,6 @@ import javax.inject.Inject
 class ProductListViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     private val getInitiateVoucherPageUseCase: GetInitiateVoucherPageUseCase,
-    private val shopBasicDataUseCase: ShopBasicDataUseCase,
     private val productListUseCase: ProductListUseCase
 ) : BaseViewModel(dispatchers.main) {
 
@@ -281,32 +279,22 @@ class ProductListViewModel @Inject constructor(
     }
 
     private fun handleProceedToNextPage() {
-        launchCatchError(
-            dispatchers.io,
-            block = {
-                val response = shopBasicDataUseCase.execute()
-
-                val selectedProducts = currentState.products.map { parentProduct ->
-                    SelectedProduct(parentProduct.id, parentProduct.selectedVariantsIds.toList())
-                }
-
-                val topSellingProductImageUrls = currentState.products
-                    .sortedByDescending { it.txStats.sold }
-                    .map { it.picture }
-
-                _uiEffect.tryEmit(
-                    ProductListEffect.ConfirmAddProduct(
-                        selectedProducts,
-                        topSellingProductImageUrls,
-                        response
-                    )
-                )
-
-            },
-            onError = { error ->
-                _uiState.update { it.copy(error = error) }
+        launch(dispatchers.computation) {
+            val selectedProducts = currentState.products.map { parentProduct ->
+                SelectedProduct(parentProduct.id, parentProduct.selectedVariantsIds.toList())
             }
-        )
+
+            val topSellingProductImageUrls = currentState.products
+                .sortedByDescending { it.txStats.sold }
+                .map { it.picture }
+
+            _uiEffect.tryEmit(
+                ProductListEffect.ConfirmAddProduct(
+                    selectedProducts,
+                    topSellingProductImageUrls
+                )
+            )
+        }
     }
 
 
