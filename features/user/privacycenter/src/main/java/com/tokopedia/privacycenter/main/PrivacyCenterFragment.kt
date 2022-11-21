@@ -1,6 +1,7 @@
 package com.tokopedia.privacycenter.main
 
 import android.Manifest
+import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
@@ -13,6 +14,7 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import com.google.android.material.appbar.AppBarLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
@@ -37,6 +39,7 @@ import com.tokopedia.privacycenter.main.section.faqPrivacySection.FaqPrivacySect
 import com.tokopedia.privacycenter.main.section.recommendation.RecommendationSection
 import com.tokopedia.privacycenter.main.section.recommendation.RecommendationViewModel
 import com.tokopedia.privacycenter.main.section.tokopediacare.TokopediaCareSection
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.isUsingNightModeResources
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -93,9 +96,18 @@ class PrivacyCenterFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        handleApplinkRollence()
         initToolbar()
         binding?.rootContent?.addView(bindingImageFooter?.root)
         loadFooterImage()
+    }
+
+    private fun handleApplinkRollence() {
+        if (!isRollencePrivacyCenterActivated()) {
+            goToHome()
+        } else if (!viewModel.isLoggedIn()) {
+            goToLogin()
+        }
     }
 
     private fun loadFooterImage() {
@@ -178,6 +190,25 @@ class PrivacyCenterFragment :
         }
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        when (requestCode) {
+            REQUEST_LOGIN -> {
+                if (resultCode == Activity.RESULT_OK) {
+                    viewModelAccountLinkingSection.getAccountLinkingStatus()
+                    viewModelRecommendationSection.getConsentSocialNetwork()
+                    viewModelConsentWithdrawalSection.getConsentGroupList()
+                } else {
+                    requireActivity().finish()
+                }
+            }
+            REQUEST_ACCOUNT_WEBVIEW_REQUEST -> {
+                viewModelAccountLinkingSection.getAccountLinkingStatus()
+            }
+        }
+    }
+
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
@@ -186,9 +217,6 @@ class PrivacyCenterFragment :
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
         when (requestCode) {
-            REQUEST_ACCOUNT_WEBVIEW_REQUEST -> {
-                viewModelAccountLinkingSection.getAccountLinkingStatus()
-            }
             REQUEST_LOCATION_PERMISSION -> {
                 val isAllowed =
                     grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED
@@ -207,6 +235,28 @@ class PrivacyCenterFragment :
                 }
             }
         }
+    }
+
+    private fun isRollencePrivacyCenterActivated(): Boolean {
+        return RemoteConfigInstance
+            .getInstance()
+            .abTestPlatform
+            .getString(ROLLENCE_PRIVACY_CENTER)
+            .isNotEmpty()
+    }
+
+    private fun goToHome() {
+        val intent = RouteManager.getIntent(requireActivity(), ApplinkConst.HOME)
+        intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TASK or Intent.FLAG_ACTIVITY_NEW_TASK
+        startActivity(intent)
+    }
+
+    private fun goToLogin() {
+        val intent = RouteManager.getIntent(
+            requireActivity(),
+            ApplinkConstInternalUserPlatform.LOGIN
+        )
+        startActivityForResult(intent, REQUEST_LOGIN)
     }
 
     private fun goToApplicationDetailActivity() {
@@ -244,7 +294,7 @@ class PrivacyCenterFragment :
         startActivityForResult(intent, REQUEST_ACCOUNT_WEBVIEW_REQUEST)
     }
 
-    inner class PrivacyCenterSectionDelegateImpl: PrivacyCenterSectionDelegate {
+    inner class PrivacyCenterSectionDelegateImpl : PrivacyCenterSectionDelegate {
         override val accountLinkingSection: AccountLinkingSection =
             AccountLinkingSection(context, viewModelAccountLinkingSection, this@PrivacyCenterFragment)
         override val activitySection: ActivitySection = ActivitySection(context)
@@ -266,6 +316,8 @@ class PrivacyCenterFragment :
     companion object {
         fun newInstance() = PrivacyCenterFragment()
         private const val PACKAGE = "package"
+        private const val ROLLENCE_PRIVACY_CENTER = "privacy_center_and"
+        private const val REQUEST_LOGIN = 200
         private const val REQUEST_LOCATION_PERMISSION = 100
         private const val OFFSET_CHANGE_COLOR_STATUS_BAR = -136
         private const val REQUEST_ACCOUNT_WEBVIEW_REQUEST = 101

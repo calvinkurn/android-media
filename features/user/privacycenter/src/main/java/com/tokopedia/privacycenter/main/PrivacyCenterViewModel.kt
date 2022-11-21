@@ -8,10 +8,13 @@ import javax.inject.Inject
 class PrivacyCenterViewModel @Inject constructor(
     private val userUseCase: UserUseCase,
     dispatcher: CoroutineDispatchers
-): BaseViewModel(dispatcher.main) {
+) : BaseViewModel(dispatcher.main) {
 
     fun getUserName(): String {
         return userUseCase.getUserName()
     }
 
+    fun isLoggedIn(): Boolean {
+        return userUseCase.isLoggedIn()
+    }
 }

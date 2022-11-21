@@ -7,6 +7,7 @@ class UserUseCase @Inject constructor(
     private val userSessionInterface: UserSessionInterface
 ) {
 
-    fun getUserName(): String = "Hi, ${userSessionInterface.name}"
+    fun getUserName(): String = "Hai, ${userSessionInterface.name}"
 
+    fun isLoggedIn(): Boolean = userSessionInterface.isLoggedIn
 }
