@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -13,6 +14,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.entertainment.databinding.FragmentEventRedeemRevampBinding
 import com.tokopedia.entertainment.pdp.activity.EventRedeemActivity.Companion.EXTRA_URL_REDEEM
 import com.tokopedia.entertainment.pdp.bottomsheet.EventRedeemRevampBottomSheet
+import com.tokopedia.entertainment.pdp.common.util.EventRedeemMapper.getEmptyParticipant
 import com.tokopedia.entertainment.pdp.common.util.EventRedeemMapper.getStatusNotAllDisabled
 import com.tokopedia.entertainment.pdp.common.util.EventRedeemMapper.participantToVisitableMapper
 import com.tokopedia.entertainment.pdp.data.redeem.redeemable.Data
@@ -75,6 +77,7 @@ class EventRedeemRevampFragment : BaseDaggerFragment(),
         renderUI()
         observeRedeemData()
         observeRedeem()
+        observeOldRedeem()
     }
 
     private fun initalRequest() {
@@ -99,6 +102,10 @@ class EventRedeemRevampFragment : BaseDaggerFragment(),
         viewModel.setInputRedeemedUrl(urlRedeem)
     }
 
+    private fun oldRedeem() {
+        viewModel.setInputOldRedeemedUrl(urlRedeem)
+    }
+
     private fun observeRedeemData() {
         viewLifecycleOwner.lifecycleScope.launchWhenResumed {
             viewModel.flowRedeemData.collect {
@@ -117,6 +124,21 @@ class EventRedeemRevampFragment : BaseDaggerFragment(),
     private fun observeRedeem() {
         viewLifecycleOwner.lifecycleScope.launchWhenResumed {
             viewModel.flowRedeem.collect {
+                when (it) {
+                    is Success -> {
+                        showSuccessRedeem()
+                    }
+                    is Fail -> {
+                        showErrorToaster(it.throwable.message)
+                    }
+                }
+            }
+        }
+    }
+
+    private fun observeOldRedeem() {
+        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
+            viewModel.flowOldRedeem.collect {
                 when (it) {
                     is Success -> {
                         showSuccessRedeem()
@@ -170,6 +192,12 @@ class EventRedeemRevampFragment : BaseDaggerFragment(),
         } else {
             setErrorInput()
         }
+    }
+
+    private fun processOldRedeem() {
+        hideGlobalError()
+        showLoading()
+        oldRedeem()
     }
 
     private fun getUpdateListRedemption(): List<Participant> {
@@ -283,11 +311,11 @@ class EventRedeemRevampFragment : BaseDaggerFragment(),
             tgValueTypeTicket.text = redeem.schedule.name
             tgValueDate.text = redeem.schedule.showData
             tgValueSumTicket.text = redeem.quantity.toString()
-            renderDisableRedeem()
+            renderRedeemLayout()
         }
     }
 
-    private fun renderDisableRedeem() {
+    private fun renderRedeemLayout() {
         binding?.run {
             if (getStatusNotAllDisabled(getUpdateListRedemption())) {
                 tfRedeem.addOnFocusChangeListener = { _, hasFocus ->
@@ -297,6 +325,15 @@ class EventRedeemRevampFragment : BaseDaggerFragment(),
                 }
                 btnRedeem.setOnClickListener {
                     processRedeem()
+                }
+            } else if (getEmptyParticipant(getUpdateListRedemption())) {
+                tfRedeem.hide()
+                val btnParamRedeem = btnRedeem.layoutParams as ConstraintLayout.LayoutParams
+                btnParamRedeem.leftToRight = ConstraintLayout.LayoutParams.UNSET
+                btnParamRedeem.leftToLeft = ConstraintLayout.LayoutParams.PARENT_ID
+                btnRedeem.layoutParams = btnParamRedeem
+                btnRedeem.setOnClickListener {
+                    processOldRedeem()
                 }
             } else {
                 context?.let{ context ->
@@ -312,7 +349,17 @@ class EventRedeemRevampFragment : BaseDaggerFragment(),
     private fun renderSuccessRedeemLayout() {
         binding?.run {
             context?.let { context ->
-                tgSuccessRedeem.text = context.resources.getString(redeemString.ent_redeem_success_redeem, viewModel.getCheckedIdsSize())
+                tgSuccessRedeem.text =
+                    if (viewModel.getCheckedIdsSize().isMoreThanZero()) {
+                        context.resources.getString(
+                            redeemString.ent_redeem_success_redeem,
+                            viewModel.getCheckedIdsSize()
+                        )
+                    } else {
+                        context.resources.getString(
+                            redeemString.ent_redeem_success_old_redeem
+                        )
+                    }
                 btnScan.setOnClickListener {
                     RouteManager.route(context, ApplinkConstInternalMarketplace.QR_SCANNEER)
                 }

@@ -11,6 +11,7 @@ import com.tokopedia.entertainment.pdp.data.redeem.redeemable.Participant
 import com.tokopedia.entertainment.pdp.data.redeem.redeemable.RedeemRequest
 import com.tokopedia.entertainment.pdp.network_api.GetEventRedeemUseCase
 import com.tokopedia.entertainment.pdp.network_api.GetEventRedeemedUseCase
+import com.tokopedia.entertainment.pdp.network_api.RedeemTicketEventUseCase
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.network.exception.MessageErrorException
@@ -31,11 +32,13 @@ import javax.inject.Inject
 class EventRedeemRevampViewModel @Inject constructor(
     private val dispatcher: CoroutineDispatchers,
     private val getEventRedeemUseCase: GetEventRedeemUseCase,
-    private val getEventRedeemedUseCase: GetEventRedeemedUseCase
+    private val getEventRedeemedUseCase: GetEventRedeemedUseCase,
+    private val getEventOldRedeemUseCase: RedeemTicketEventUseCase
 ) : BaseViewModel(dispatcher.main) {
 
     private val _inputRedeemUrl = MutableSharedFlow<String>(Int.ONE)
     private val _inputRedeemedUrl = MutableSharedFlow<String>(Int.ONE)
+    private val _inputOldRedeemedUrl = MutableSharedFlow<String>(Int.ONE)
     var listRedemptions: List<Participant> = mutableListOf()
 
     val flowRedeemData: SharedFlow<Result<EventRedeem>> =
@@ -64,12 +67,29 @@ class EventRedeemRevampViewModel @Inject constructor(
             replay = Int.ONE
         )
 
+    val flowOldRedeem: SharedFlow<Result<EventRedeemedData>> =
+        _inputOldRedeemedUrl.flatMapConcat {
+            flow {
+                emit(oldRedeem(it))
+            }.catch {
+                emit(Fail(it))
+            }
+        }.shareIn(
+            scope = this,
+            started = SharingStarted.WhileSubscribed(SHARED_FLOW_STOP_TIMEOUT_MILLIS),
+            replay = Int.ONE
+        )
+
     fun setInputRedeemUrl(redeemUrl: String) {
         _inputRedeemUrl.tryEmit(redeemUrl)
     }
 
     fun setInputRedeemedUrl(redeemUrl: String) {
         _inputRedeemedUrl.tryEmit(redeemUrl)
+    }
+
+    fun setInputOldRedeemedUrl(redeemUrl: String) {
+        _inputOldRedeemedUrl.tryEmit(redeemUrl)
     }
 
     private suspend fun getRedeemData(redeemUrl: String): Result<EventRedeem> {
@@ -93,6 +113,21 @@ class EventRedeemRevampViewModel @Inject constructor(
         getEventRedeemedUseCase.setRedeemIds(RedeemRequest(getCheckedIds()))
         val response = withContext(dispatcher.io) {
             getEventRedeemedUseCase.executeOnBackground()
+        }
+        val value = response[EventRedeemedData::class.java]
+
+        return if (value?.code == SUCCESS_CODE && !value.isError) {
+            Success(convertToRedeemedResponse(response))
+        } else {
+            val error = convertToErrorResponseRedeemed(response)
+            Fail(MessageErrorException(error))
+        }
+    }
+
+    private suspend fun oldRedeem(redeemUrl: String): Result<EventRedeemedData> {
+        getEventOldRedeemUseCase.setUrlRedeem(redeemUrl)
+        val response = withContext(dispatcher.io) {
+            getEventOldRedeemUseCase.executeOnBackground()
         }
         val value = response[EventRedeemedData::class.java]
 

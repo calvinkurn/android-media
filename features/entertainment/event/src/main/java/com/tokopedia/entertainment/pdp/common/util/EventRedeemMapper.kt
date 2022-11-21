@@ -51,6 +51,10 @@ object EventRedeemMapper {
         } != null
     }
 
+    fun getEmptyParticipant(participants: List<Participant>): Boolean {
+        return participants.isEmpty()
+    }
+
     private fun dayTitle(day: Int, context: Context) : String {
         return context.resources.getString(stringRedeem.ent_redeem_revamp_day, day)
     }
