@@ -10,20 +10,20 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.library.baseadapter.AdapterCallback
 import com.tokopedia.library.baseadapter.BaseAdapter
 import com.tokopedia.people.databinding.UpItemUserFeedBinding
-import com.tokopedia.people.model.Post
-import com.tokopedia.people.model.UserFeedPostsModel
+import com.tokopedia.people.views.uimodel.content.PostUiModel
+import com.tokopedia.people.views.uimodel.content.UserFeedPostsUiModel
 
 class UserFeedPostsBaseAdapter(
     callback: AdapterCallback,
     val feedPostsWidgetCallback: FeedPostsCallback,
     val onLoadMore: (cursor: String) -> Unit,
-) : BaseAdapter<Post>(callback) {
+) : BaseAdapter<PostUiModel>(callback) {
 
     var cursor: String = ""
 
     inner class ViewHolder(private val view: UpItemUserFeedBinding) : BaseVH(view.root) {
 
-        override fun bindView(item: Post?, position: Int) {
+        override fun bindView(item: PostUiModel?, position: Int) {
             if (item == null || item.media.isEmpty()) return
             val firstItem = item.media.first()
 
@@ -78,10 +78,10 @@ class UserFeedPostsBaseAdapter(
         if (position == (itemCount - 1) && !isLastPage) onLoadMore(cursor)
     }
 
-    fun onSuccess(data: UserFeedPostsModel) {
-        data.feedXProfileGetProfilePosts.posts.let { loadCompleted(it, data) }
-        isLastPage = !data.feedXProfileGetProfilePosts.pagination.hasNext
-        cursor = data.feedXProfileGetProfilePosts.pagination.cursor
+    fun onSuccess(data: UserFeedPostsUiModel) {
+        loadCompleted(data.posts, data)
+        isLastPage = !data.pagination.hasNext
+        cursor = data.pagination.cursor
     }
 
     fun onError() {
@@ -90,7 +90,7 @@ class UserFeedPostsBaseAdapter(
 
     interface FeedPostsCallback {
         fun onFeedPostsClick(appLink: String, itemID: String, imageUrl: String, position: Int, mediaType: String)
-        fun onImpressFeedPostData(item: Post, position: Int)
+        fun onImpressFeedPostData(item: PostUiModel, position: Int)
     }
 
     companion object {

@@ -18,9 +18,9 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.people.Resources
 import com.tokopedia.people.Success
 import com.tokopedia.people.data.UserProfileRepository
-import com.tokopedia.people.model.UserFeedPostsModel
 import com.tokopedia.people.model.UserPostModel
 import com.tokopedia.people.views.uimodel.action.UserProfileAction
+import com.tokopedia.people.views.uimodel.content.UserFeedPostsUiModel
 import com.tokopedia.people.views.uimodel.event.UserProfileUiEvent
 import com.tokopedia.people.views.uimodel.profile.*
 import com.tokopedia.people.views.uimodel.saved.SavedReminderData
@@ -47,8 +47,8 @@ class UserProfileViewModel @AssistedInject constructor(
     }
 
     /** feeds posts **/
-    private val feedPostsContent = MutableLiveData<Resources<UserFeedPostsModel>>()
-    val feedPostsContentLiveData: LiveData<Resources<UserFeedPostsModel>> get() = feedPostsContent
+    private val feedPostsContent = MutableLiveData<Resources<UserFeedPostsUiModel>>()
+    val feedPostsContentLiveData: LiveData<Resources<UserFeedPostsUiModel>> get() = feedPostsContent
     private val feedsPostsError = MutableLiveData<Throwable>()
     val feedsPostsErrorLiveData: LiveData<Throwable> get() = feedsPostsError
 
@@ -154,7 +154,7 @@ class UserProfileViewModel @AssistedInject constructor(
         viewModelScope.launchCatchError(
             block = {
                 val data = repo.getFeedPosts(profileUserID, cursor)
-                if (cursor.isEmpty() && data.feedXProfileGetProfilePosts.posts.isEmpty()) {
+                if (cursor.isEmpty() && data.posts.isEmpty()) {
                     _uiEvent.emit(UserProfileUiEvent.EmptyLoadFirstFeedPosts)
                     return@launchCatchError
                 }

@@ -30,6 +30,7 @@ import com.tokopedia.people.views.fragment.UserProfileFragment.Companion.PAGE_EM
 import com.tokopedia.people.views.fragment.UserProfileFragment.Companion.PAGE_ERROR
 import com.tokopedia.people.views.itemdecoration.GridSpacingItemDecoration
 import com.tokopedia.people.views.uimodel.action.UserProfileAction
+import com.tokopedia.people.views.uimodel.content.PostUiModel
 import com.tokopedia.people.views.uimodel.event.UserProfileUiEvent
 import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
@@ -137,7 +138,7 @@ class UserProfileFeedFragment @Inject constructor(
     }
 
     private fun adduserPostErrorObserver() {
-        viewModel.userPostErrorLiveData.observe(viewLifecycleOwner) {
+        viewModel.feedsPostsErrorLiveData.observe(viewLifecycleOwner) {
             with(binding) {
                 userFeedContainer.displayedChild = PAGE_ERROR
 
@@ -185,7 +186,7 @@ class UserProfileFeedFragment @Inject constructor(
         startActivity(intent)
     }
 
-    override fun onImpressFeedPostData(item: Post, position: Int) {
+    override fun onImpressFeedPostData(item: PostUiModel, position: Int) {
         impressCoordinator.initiateDataImpress(item) {
             userProfileTracker.impressionPost(
                 viewModel.profileUserID,

@@ -17,8 +17,8 @@ import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomUiModel
 import com.tokopedia.people.domains.*
 import com.tokopedia.people.model.ProfileFollowerListBase
 import com.tokopedia.people.model.ProfileFollowingListBase
-import com.tokopedia.people.model.UserFeedPostsModel
 import com.tokopedia.people.model.UserPostModel
+import com.tokopedia.people.views.uimodel.content.UserFeedPostsUiModel
 import com.tokopedia.people.views.uimodel.mapper.UserProfileUiMapper
 import com.tokopedia.people.views.uimodel.profile.FollowInfoUiModel
 import com.tokopedia.people.views.uimodel.profile.ProfileTabUiModel
@@ -98,11 +98,13 @@ class UserProfileRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getFeedPosts(userID: String, cursor: String): UserFeedPostsModel {
+    override suspend fun getFeedPosts(userID: String, cursor: String): UserFeedPostsUiModel {
         return withContext(dispatcher.io) {
-            return@withContext getUserProfileFeedPostsUseCase.executeOnBackground(
-                userID = userID,
-                cursor = cursor,
+            return@withContext mapper.mapFeedPosts(
+                getUserProfileFeedPostsUseCase.executeOnBackground(
+                    userID = userID,
+                    cursor = cursor,
+                ),
             )
         }
     }

@@ -4,6 +4,10 @@ import com.tokopedia.feedcomponent.data.pojo.whitelist.Author
 import com.tokopedia.feedcomponent.data.pojo.whitelist.WhitelistQuery
 import com.tokopedia.feedcomponent.people.model.MutationUiModel
 import com.tokopedia.people.model.*
+import com.tokopedia.people.views.uimodel.content.MediaUiModel
+import com.tokopedia.people.views.uimodel.content.PaginationUiModel
+import com.tokopedia.people.views.uimodel.content.PostUiModel
+import com.tokopedia.people.views.uimodel.content.UserFeedPostsUiModel
 import com.tokopedia.people.views.uimodel.profile.*
 import javax.inject.Inject
 
@@ -87,6 +91,34 @@ class UserProfileUiMapperImpl @Inject constructor() : UserProfileUiMapper {
                 } else {
                     listOf()
                 },
+            )
+        }
+    }
+
+    override fun mapFeedPosts(response: UserFeedPostsModel): UserFeedPostsUiModel {
+        return with(response.feedXProfileGetProfilePosts) {
+            UserFeedPostsUiModel(
+                pagination = PaginationUiModel(
+                    cursor = pagination.cursor,
+                    hasNext = pagination.hasNext,
+                    totalData = pagination.totalData,
+                ),
+                posts = posts.map { post ->
+                    PostUiModel(
+                        id = post.id,
+                        appLink = post.appLink,
+                        media = post.media.map { media ->
+                            MediaUiModel(
+                                appLink = media.appLink,
+                                coverURL = media.coverURL,
+                                id = media.id,
+                                mediaURL = media.mediaURL,
+                                type = media.type,
+                                webLink = media.webLink,
+                            )
+                        }
+                    )
+                }
             )
         }
     }

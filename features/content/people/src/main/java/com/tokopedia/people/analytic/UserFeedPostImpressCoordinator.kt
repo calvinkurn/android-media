@@ -1,15 +1,15 @@
 package com.tokopedia.people.analytic
 
-import com.tokopedia.people.model.Post
+import com.tokopedia.people.views.uimodel.content.PostUiModel
 import javax.inject.Inject
 
 class UserFeedPostImpressCoordinator @Inject constructor() {
 
-    private val mDataImpress = mutableListOf<Post>()
+    private val mDataImpress = mutableListOf<PostUiModel>()
 
     fun initiateDataImpress(
-        dataImpress: Post,
-        callback: (dataImpress: Post) -> Unit,
+        dataImpress: PostUiModel,
+        callback: (dataImpress: PostUiModel) -> Unit,
     ) {
         val findShopRecom = mDataImpress.filter { it.id == dataImpress.id }
         if (!findShopRecom.isNullOrEmpty()) return
