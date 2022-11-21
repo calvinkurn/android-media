@@ -654,7 +654,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         )
     }
 
-    private fun renderUserProfileEntryPoint(userAccount: Author?) {
+    private fun renderUserProfileEntryPoint(userAccount: GetCheckWhitelist.Author?) {
         ivFeedUser?.let { ivFeedUser ->
             if(userAccount == null) {
                 ivFeedUser.setOnClickListener(null)
