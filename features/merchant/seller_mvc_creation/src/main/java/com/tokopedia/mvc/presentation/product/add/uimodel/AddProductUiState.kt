@@ -20,7 +20,7 @@ data class AddProductUiState(
     val maxProductSelection: Int = 0,
     val warehouses: List<Warehouse> = emptyList(),
     val selectedProductsIds: Set<Long> = emptySet(),
-    val isSelectAllActive: Boolean = false,
+    val isSelectAllCheckboxActive: Boolean = false,
     val sortOptions: List<ProductSortOptions> = emptyList(),
     val categoryOptions: List<ProductCategoryOption> = emptyList(),
     val shopShowcases: List<ShopShowcase> = emptyList(),
