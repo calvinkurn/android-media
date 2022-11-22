@@ -354,14 +354,11 @@ class ChatbotFragment :
         chatbotAnalytics.get().eventShowView(ACTION_IMPRESSION_CSAT_SMILEY_VIEW)
         getBindingView().chatbotViewHelpRate.txtHelpTitle.text =
             mCsatResponse.attachment?.attributes?.title
-        // TODO check this
         hideKeyboard()
-        smallReplyBox?.hide()
         getBindingView().chatbotViewHelpRate.layoutOfRate.show()
     }
 
     private fun hideCsatRatingView() {
-        enableTyping()
         getBindingView().chatbotViewHelpRate.layoutOfRate.hide()
     }
 
