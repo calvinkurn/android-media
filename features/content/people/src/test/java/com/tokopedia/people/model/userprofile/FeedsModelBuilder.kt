@@ -13,8 +13,8 @@ class FeedsModelBuilder {
     fun mockFeedsPost(isEmpty: Boolean = false): UserFeedPostsUiModel {
         return UserFeedPostsUiModel(
             pagination = PaginationUiModel(
-                cursor = "",
-                hasNext = false,
+                cursor = "123",
+                hasNext = true,
                 totalData = 10,
             ),
             posts = if (isEmpty) emptyList() else posts(),

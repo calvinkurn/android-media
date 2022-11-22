@@ -146,7 +146,6 @@ class UserProfileContentViewModelTest {
             }
             it.recordState {
                 submitAction(UserProfileAction.LoadProfile(isRefresh = true))
-                submitAction(UserProfileAction.LoadProfileTab)
             } andThen {
                 profileTab equalTo mockProfileTabShown
             }
@@ -163,8 +162,24 @@ class UserProfileContentViewModelTest {
                 submitAction(UserProfileAction.LoadProfile(isRefresh = true))
                 submitAction(UserProfileAction.LoadFeedPosts(""))
             } andThen {
-                val data = robot.viewModel.feedPostsContentLiveData.getOrAwaitValue()
-                data equalTo Success(mockFeed)
+                feedPostsContent equalTo mockFeed
+            }
+        }
+    }
+
+    @Test
+    fun `when user success load feed post pagination`() {
+        robot.use {
+            it.setup {
+                coEvery { mockRepo.getFeedPosts(mockOwnProfile.userID, "") } returns mockFeed
+                coEvery { mockRepo.getFeedPosts(mockOwnProfile.userID, "123") } returns mockFeed
+            }
+            it.recordState {
+                submitAction(UserProfileAction.LoadProfile(isRefresh = true))
+                submitAction(UserProfileAction.LoadFeedPosts(""))
+                submitAction(UserProfileAction.LoadFeedPosts("123"))
+            } andThen {
+                feedPostsContent.posts.size equalTo mockFeed.posts.size * 2
             }
         }
     }
@@ -175,11 +190,11 @@ class UserProfileContentViewModelTest {
             it.setup {
                 coEvery { mockRepo.getFeedPosts(mockOwnProfile.userID, "") } returns mockFeedEmpty
             }
-            it.recordEvent {
+            it.recordState {
                 submitAction(UserProfileAction.LoadProfile(isRefresh = true))
                 submitAction(UserProfileAction.LoadFeedPosts(""))
             } andThen {
-                last().assertEvent(UserProfileUiEvent.EmptyLoadFirstFeedPosts)
+                feedPostsContent equalTo mockFeedEmpty
             }
         }
     }
@@ -190,12 +205,11 @@ class UserProfileContentViewModelTest {
             it.setup {
                 coEvery { mockRepo.getFeedPosts(mockOwnProfile.userID, "") } throws mockException
             }
-            it.recordState {
+            it.recordEvent {
                 submitAction(UserProfileAction.LoadProfile(isRefresh = true))
                 submitAction(UserProfileAction.LoadFeedPosts(""))
             } andThen {
-                val throwable = robot.viewModel.feedsPostsErrorLiveData.getOrAwaitValue()
-                throwable equalTo mockException
+                last().assertEvent(UserProfileUiEvent.ErrorFeedPosts(mockException))
             }
         }}
 
@@ -212,11 +226,25 @@ class UserProfileContentViewModelTest {
 
     @Test
     fun `when user successfully load user play video, it will emit the data`() {
-        robot.start {
+        robot.recordState {
             submitAction(UserProfileAction.LoadPlayVideo(""))
+        } andThen {
+            videoPostsContent equalTo mockPlayVideo
+        }
+    }
 
-            val data = robot.viewModel.playPostContentLiveData.getOrAwaitValue()
-            data equalTo Success(mockPlayVideo)
+    @Test
+    fun `when user successfully load user play video pagination, it will emit the data`() {
+        robot.use {
+            it.setup {
+                coEvery { mockRepo.getPlayVideo(any(), "123") } returns mockPlayVideo
+            }
+            it.recordState {
+                submitAction(UserProfileAction.LoadPlayVideo(""))
+                submitAction(UserProfileAction.LoadPlayVideo("123"))
+            } andThen {
+                videoPostsContent.playGetContentSlot.data.size equalTo mockPlayVideo.playGetContentSlot.data.size * 2
+            }
         }
     }
 
@@ -226,26 +254,21 @@ class UserProfileContentViewModelTest {
             it.setup {
                 coEvery { mockRepo.getPlayVideo(any(), any()) } returns mockPlayVideoEmpty
             }
-            it.recordEvent {
+            it.recordState {
                 submitAction(UserProfileAction.LoadPlayVideo(""))
             } andThen {
-                last().assertEvent(UserProfileUiEvent.EmptyLoadFirstVideoPosts)
+                videoPostsContent equalTo mockPlayVideoEmpty
             }
         }
     }
 
     @Test
     fun `when user failed load user play video, it will emit error`() {
-        robot.start {
+        robot.recordEvent {
             coEvery { mockRepo.getPlayVideo(any(), any()) } throws mockException
-
             submitAction(UserProfileAction.LoadPlayVideo(""))
-
-            val data = robot.viewModel.playPostContentLiveData.getOrNullValue()
-            val throwable = robot.viewModel.userPostErrorLiveData.getOrAwaitValue()
-
-            assertEquals(data, null)
-            throwable equalTo mockException
+        } andThen {
+            last().assertEvent(UserProfileUiEvent.ErrorVideoPosts(mockException))
         }
     }
 }

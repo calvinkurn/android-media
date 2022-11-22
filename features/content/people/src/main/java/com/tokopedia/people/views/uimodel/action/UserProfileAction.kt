@@ -28,6 +28,4 @@ sealed interface UserProfileAction {
     data class LoadNextPageShopRecom(val nextCurSor: String) : UserProfileAction
 
     object RemoveReminderActivityResult : UserProfileAction
-
-    object LoadProfileTab : UserProfileAction
 }

@@ -360,7 +360,7 @@ class UserProfileFragment @Inject constructor(
                             binding.swipeRefreshLayout.isRefreshing = false
                         }
                         showErrorContent {
-                            viewModel.submitAction(UserProfileAction.LoadProfileTab)
+                            refreshLandingPageData(true)
                         }
                     }
                     is UserProfileUiEvent.ErrorFollowUnfollow -> {

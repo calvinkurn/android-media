@@ -43,7 +43,7 @@ class PlayVideoModelBuilder {
                                     ),
                                     promoLabels = emptyList(),
                                 ),
-                                partner = PlayPostContentItem.Partner(
+                                partner = Partner(
                                     id = "1",
                                     name = "Siapa Yah",
                                 ),
@@ -54,7 +54,7 @@ class PlayVideoModelBuilder {
                 playGetContentSlot = PlayGetContentSlotMeta(
                     isAutoplay = true,
                     maxAutoplayInCell = 30,
-                    nextCursor = "",
+                    nextCursor = "123",
                 ),
             ),
         )
