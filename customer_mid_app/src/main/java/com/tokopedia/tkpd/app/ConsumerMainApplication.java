@@ -163,7 +163,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         com.tokopedia.akamai_bot_lib.UtilsKt.initAkamaiBotManager(ConsumerMainApplication.this);
         createAndCallPreSeq();
         super.onCreate();
-        TokoPatch.init(this);
+        initRobust();
         createAndCallPostSeq();
         initializeAbTestVariant();
         createAndCallFetchAbTest();
@@ -182,6 +182,12 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         Typography.Companion.setFontTypeOpenSauceOne(true);
 
         showDevOptNotification();
+    }
+
+    private void initRobust() {
+        if(remoteConfig.getBoolean(RemoteConfigKey.CUSTOMER_ENABLE_ROBUST, false)) {
+            TokoPatch.init(this);
+        }
     }
 
     private void initializationNewRelic() {
