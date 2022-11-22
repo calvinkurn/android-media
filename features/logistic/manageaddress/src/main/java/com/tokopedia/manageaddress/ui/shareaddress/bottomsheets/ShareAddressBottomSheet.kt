@@ -30,7 +30,8 @@ import com.tokopedia.manageaddress.domain.request.SendShareAddressRequestParam
 import com.tokopedia.manageaddress.domain.request.ShareAddressToUserParam
 import javax.inject.Inject
 
-class ShareAddressBottomSheet : BottomSheetUnify(),
+class ShareAddressBottomSheet :
+    BottomSheetUnify(),
     HasComponent<ShareAddressComponent> {
 
     private var binding by autoCleared<BottomsheetShareAddressBinding>()
@@ -143,8 +144,10 @@ class ShareAddressBottomSheet : BottomSheetUnify(),
     private fun setRequestAddressView() {
         if (isRequestAddress) {
             binding.apply {
-                txtTitleShareAddress.text = getString(R.string.share_address_bottom_sheet_title_request)
-                txtContentShareAddress.text = getString(R.string.request_address_bottom_sheet_description)
+                txtTitleShareAddress.text =
+                    getString(R.string.share_address_bottom_sheet_title_request)
+                txtContentShareAddress.text =
+                    getString(R.string.request_address_bottom_sheet_description)
                 btnShare.text = getString(R.string.request_address_bottom_sheet_btn_request)
             }
         }
@@ -158,8 +161,13 @@ class ShareAddressBottomSheet : BottomSheetUnify(),
                     setShareButtonEnabled(s?.isNotBlank() == true)
                 }
 
-                override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
-                override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
+                override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                    // no op
+                }
+
+                override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                    // no op
+                }
             })
 
             etInputEmailNoHp.icon2.let { contactIcon ->
@@ -167,7 +175,8 @@ class ShareAddressBottomSheet : BottomSheetUnify(),
                     ContextCompat.getColor(
                         etInputEmailNoHp.context,
                         com.tokopedia.unifyprinciples.R.color.Unify_NN900
-                    ), PorterDuff.Mode.SRC_IN
+                    ),
+                    PorterDuff.Mode.SRC_IN
                 )
                 contactIcon.setOnClickListener {
                     onNavigateToContact()
@@ -217,24 +226,26 @@ class ShareAddressBottomSheet : BottomSheetUnify(),
                 getPermissions(),
                 object : PermissionCheckerHelper.PermissionCheckListener {
                     override fun onPermissionDenied(permissionText: String) {
-                        //no-op
+                        // no-op
                     }
 
                     override fun onNeverAskAgain(permissionText: String) {
-                        //no-op
+                        // no-op
                     }
 
                     override fun onPermissionGranted() {
                         openContactPicker()
                     }
-                }, getString(R.string.rationale_need_contact)
+                },
+                getString(R.string.rationale_need_contact)
             )
         }
     }
 
     private fun openContactPicker() {
         val contactPickerIntent = Intent(
-            Intent.ACTION_PICK, ContactsContract.CommonDataKinds.Phone.CONTENT_URI
+            Intent.ACTION_PICK,
+            ContactsContract.CommonDataKinds.Phone.CONTENT_URI
         )
         try {
             ShareAddressAnalytics.onClickPhoneBookToGetContact(isRequestAddress)

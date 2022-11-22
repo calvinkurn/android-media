@@ -12,13 +12,18 @@ object ShareAddressUtil {
 
     fun convertContactUriToData(contentResolver: ContentResolver, contactUri: Uri): ContactData {
         val id = contactUri.lastPathSegment
-        val contactWhere = (ContactsContract.CommonDataKinds.Phone._ID + " = ? AND "
-            + ContactsContract.Data.MIMETYPE + " = ?")
+        val contactWhere = (
+            ContactsContract.CommonDataKinds.Phone._ID + " = ? AND " + ContactsContract.Data.MIMETYPE + " = ?"
+            )
 
         val contactWhereParams =
             arrayOf(id, ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE)
         val cursorPhone = contentResolver.query(
-            ContactsContract.Data.CONTENT_URI, null, contactWhere, contactWhereParams, null
+            ContactsContract.Data.CONTENT_URI,
+            null,
+            contactWhere,
+            contactWhereParams,
+            null
         )
 
         var givenName = ""

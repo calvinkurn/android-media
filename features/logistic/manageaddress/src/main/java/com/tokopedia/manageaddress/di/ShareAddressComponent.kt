@@ -11,7 +11,8 @@ import dagger.Component
 @ActivityScope
 @Component(
     modules = [CoreModule::class, ShareAddressConfirmationViewModelModule::class],
-    dependencies = [BaseAppComponent::class])
+    dependencies = [BaseAppComponent::class]
+)
 interface ShareAddressComponent {
     fun inject(fragment: ShareAddressBottomSheet)
 

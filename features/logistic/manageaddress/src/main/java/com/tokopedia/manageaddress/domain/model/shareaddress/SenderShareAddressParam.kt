@@ -8,7 +8,7 @@ data class SenderShareAddressParam(
     @SerializedName("sender_user_ids")
     val senderUserIds: List<String>,
 ) {
-    fun toMapParam() : Map<String, Any> = mapOf(PARAM to this)
+    fun toMapParam(): Map<String, Any> = mapOf(PARAM to this)
 
     companion object {
         private const val PARAM = "param"
