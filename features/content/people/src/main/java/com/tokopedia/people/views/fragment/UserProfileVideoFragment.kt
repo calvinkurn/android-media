@@ -137,10 +137,6 @@ class UserProfileVideoFragment @Inject constructor(
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.uiEvent.collect { event ->
                 when (event) {
-                    is UserProfileUiEvent.EmptyLoadFirstVideoPosts -> {
-                        if (viewModel.isSelfProfile) emptyPostSelf() else emptyPostVisitor()
-                        binding.userVideoContainer.displayedChild = PAGE_EMPTY
-                    }
                     is UserProfileUiEvent.SuccessUpdateReminder -> {
                         mAdapter.notifyItemChanged(event.position)
                         view?.showToast(event.message)
