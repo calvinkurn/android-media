@@ -15,6 +15,7 @@ import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.sessioncommon.data.GenerateKeyPojo
 import com.tokopedia.sessioncommon.data.KeyData
 import com.tokopedia.sessioncommon.data.pin.PinStatusData
+import com.tokopedia.sessioncommon.data.pin.PinStatusParam
 import com.tokopedia.sessioncommon.data.pin.PinStatusResponse
 import com.tokopedia.sessioncommon.domain.usecase.CheckPinHashV2UseCase
 import com.tokopedia.sessioncommon.domain.usecase.GeneratePublicKeyUseCase
@@ -725,6 +726,24 @@ class VerificationViewModelTest {
     }
 
     @Test
+    fun `CreateCheckPinV2Param - userid`() {
+        val testId = "12345"
+        assert(viewmodel.createCheckPinV2Param(testId, "", "").id == testId)
+    }
+
+    @Test
+    fun `CreateCheckPinV2Param - phone`() {
+        val phone = "12345"
+        assert(viewmodel.createCheckPinV2Param("", phone, "").id == phone)
+    }
+
+    @Test
+    fun `CreateCheckPinV2Param - email`() {
+        val email = "yoris.prayogo@tokopedia.com"
+        assert(viewmodel.createCheckPinV2Param("", "", email).id == email)
+    }
+
+    @Test
     fun `Validate otp method pin v2 - encryption failed`() {
         viewmodel.otpValidateResult.observeForever(otpValidateResultObserver)
         coEvery { otpValidateUseCase.getData(any()) } returns successOtpValidationResponse
@@ -751,7 +770,7 @@ class VerificationViewModelTest {
         coEvery { checkPinHashV2UseCase(any()) } returns mockResponse
 
         runBlocking {
-            assertTrue(viewmodel.isNeedHash("", ""))
+            assertTrue(viewmodel.isNeedHash(PinStatusParam("", "")))
         }
     }
 
@@ -763,7 +782,7 @@ class VerificationViewModelTest {
         coEvery { checkPinHashV2UseCase(any()) } returns mockResponse
 
         runBlocking {
-            assertEquals(false, viewmodel.isNeedHash("", ""))
+            assertEquals(false, viewmodel.isNeedHash(PinStatusParam("", "")))
         }
     }
 

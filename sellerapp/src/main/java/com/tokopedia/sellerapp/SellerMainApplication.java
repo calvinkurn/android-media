@@ -31,6 +31,7 @@ import com.tokopedia.graphql.data.GraphqlClient;
 import com.tokopedia.graphql.util.GqlActivityCallback;
 import com.tokopedia.interceptors.authenticator.TkpdAuthenticatorGql;
 import com.tokopedia.interceptors.refreshtoken.RefreshTokenGql;
+import com.tokopedia.journeydebugger.JourneySubscriber;
 import com.tokopedia.keys.Keys;
 import com.tokopedia.logger.LogManager;
 import com.tokopedia.logger.LoggerProxy;
@@ -273,6 +274,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Co
         if (GlobalConfig.isAllowDebuggingTools()) {
             registerActivityLifecycleCallbacks(new ViewInspectorSubscriber());
             registerActivityLifecycleCallbacks(new DevOptsSubscriber());
+            registerActivityLifecycleCallbacks(new JourneySubscriber());
         }
         registerActivityLifecycleCallbacks(new TwoFactorCheckerSubscriber());
         registerActivityLifecycleCallbacks(new MediaLoaderActivityLifecycle(this));

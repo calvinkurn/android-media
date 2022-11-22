@@ -124,11 +124,13 @@ class ProductChooserIdGenerator {
     private val mockProductSetupViewModelFactory = object : PlayBroProductSetupViewModel.Factory {
         override fun create(
             productSectionList: List<ProductTagSectionUiModel>,
-            savedStateHandle: SavedStateHandle
+            savedStateHandle: SavedStateHandle,
+            isEligibleForPin: Boolean,
         ): PlayBroProductSetupViewModel {
             return PlayBroProductSetupViewModel(
                 productSectionList = mockProductSections,
                 savedStateHandle = savedStateHandle,
+                isEligibleForPin = isEligibleForPin,
                 repo = repo,
                 configStore = configStore,
                 userSession = userSession,

@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:padding="10dp"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_title_function_id"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        android:text="@string/label_function_id"/>
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_title_patch_id"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/tv_title_function_id"
+        app:layout_constraintBottom_toTopOf="@id/tv_title_patch_name"
+        app:layout_constraintStart_toStartOf="parent"
+        android:text="@string/label_patch_id"/>
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_title_function_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/barrier_patch_name"
+        android:text="@string/label_function_name"/>
+    
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrier"
+        android:layout_width="wrap_content"
+        app:barrierDirection="end"
+        app:constraint_referenced_ids="tv_title_function_id, tv_title_patch_id, tv_title_patch_name, tv_title_function_name, tv_title_counter"
+        android:layout_height="wrap_content"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_title_counter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_function_name"
+        android:text="@string/label_counter"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_function_id"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/tv_patch_id"
+        app:layout_constraintBottom_toBottomOf="@id/tv_title_function_id"
+        app:layout_constraintStart_toEndOf="@id/barrier"
+        android:layout_marginStart="@dimen/unify_space_8"
+        app:typographyWeight="reguler"
+        app:typographyType="body_2"
+        tools:text="122323"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_title_patch_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/tv_title_patch_id"
+        app:layout_constraintBottom_toTopOf="@id/tv_title_function_name"
+        android:text="@string/label_patch_name"/>
+
+    <androidx.constraintlayout.widget.Barrier
+        android:id="@+id/barrier_patch_name"
+        app:constraint_referenced_ids="tv_title_patch_name, tv_patch_name"
+        app:barrierDirection="bottom"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_patch_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toEndOf="@id/barrier"
+        app:layout_constraintTop_toBottomOf="@id/tv_patch_id"
+        app:layout_constraintBottom_toTopOf="@id/tv_function_name"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="@dimen/unify_space_8"
+        app:typographyWeight="reguler"
+        app:typographyType="body_2"
+        tools:text="BaseActivity.onCreate_tessadassdasdt"/>
+
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_patch_id"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@id/tv_function_name"
+        app:layout_constraintTop_toBottomOf="@id/tv_function_id"
+        app:layout_constraintStart_toEndOf="@id/barrier"
+        app:typographyWeight="reguler"
+        app:typographyType="body_2"
+        android:layout_marginStart="@dimen/unify_space_8"
+        tools:text="122323"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_function_name"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toBottomOf="@id/tv_patch_id"
+        app:layout_constraintBottom_toTopOf="@id/tv_counter"
+        app:layout_constraintStart_toEndOf="@id/barrier"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:layout_marginStart="@dimen/unify_space_8"
+        app:layout_constraintHorizontal_bias="0"
+        android:gravity="start"
+        app:typographyWeight="reguler"
+        app:typographyType="body_2"
+        android:maxLines="5"
+        tools:text="BaseActivity.onCreate"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_counter"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/unify_space_8"
+        app:layout_constraintTop_toBottomOf="@id/tv_function_name"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@id/barrier"
+        app:layout_constraintHorizontal_bias="0"
+        app:typographyType="body_2"
+        tools:text="3"/>
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:layout_width="match_parent"
+        android:layout_height="@dimen/unify_space_2"
+        app:layout_constraintTop_toBottomOf="@id/tv_counter"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        android:background="@color/Unify_Static_Black"
+        android:layout_marginTop="@dimen/unify_space_12"/>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -178,7 +178,7 @@ class TmDashCreateViewModel @Inject constructor(
         }, cardID)
     }
 
-    private fun getCardBackgroundData(cardData: CardData, colorcode:String, pattern: ArrayList<String>) {
+    fun getCardBackgroundData(cardData: CardData, colorcode:String, pattern: ArrayList<String>) {
         tokomemeberCardBgUsecase.cancelJobs()
         tokomemeberCardBgUsecase.getCardBgDataN(cardData,colorcode,pattern,{
             _tokomemberCardBgResultLiveData.postValue(Success(it))
@@ -187,7 +187,7 @@ class TmDashCreateViewModel @Inject constructor(
         }
     }
 
-    private fun getCardColorData(cardData: CardData) {
+    fun getCardColorData(cardData: CardData) {
         tokomemberDashCardUsecase.cancelJobs()
         tokomemberCardColorMapperUsecase.getCardColorData(cardData, {
             _tokomemberCardColorResultLiveData.postValue(Success(it))

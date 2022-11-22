@@ -18,4 +18,7 @@ data class BundleDetailUiModel(
     val productSoldInfo: String = "",
     val useProductSoldInfo: Boolean = true,
     var applink: String = "",
+    var selectedBundleId: String = "0",
+    var selectedBundleApplink: String = "",
+    var bundleType: String = "",
 )

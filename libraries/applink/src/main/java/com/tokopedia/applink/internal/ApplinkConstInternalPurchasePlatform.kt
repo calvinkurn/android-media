@@ -23,8 +23,10 @@ object ApplinkConstInternalPurchasePlatform {
     const val PATH_PRODUCT_ID = "productId"
     const val PATH_COLLECTION_ID = "collectionId"
     const val PATH_SRC = "src"
+    const val BOOLEAN_EXTRA_NEED_REFRESH = "needRefresh"
     const val BOOLEAN_EXTRA_SUCCESS = "success"
     const val STRING_EXTRA_MESSAGE_TOASTER = "messageToaster"
     const val STRING_EXTRA_COLLECTION_ID = "collectionId"
     const val REQUEST_CODE_ADD_WISHLIST_COLLECTION = 588
+    const val NEED_FINISH_ACTIVITY = "needFinishActivity"
 }

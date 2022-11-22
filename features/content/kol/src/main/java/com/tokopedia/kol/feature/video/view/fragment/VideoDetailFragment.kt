@@ -30,9 +30,9 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewH
 import com.tokopedia.feedcomponent.view.viewmodel.DynamicPostUiModel
 import com.tokopedia.kol.R
 import com.tokopedia.kol.common.di.DaggerKolComponent
-import com.tokopedia.kol.feature.comment.view.activity.KolCommentActivity
+import com.tokopedia.kol.feature.comment.view.activity.KolCommentNewActivity
 import com.tokopedia.kol.feature.comment.view.activity.KolCommentNewActivity.Companion.getCallingIntent
-import com.tokopedia.kol.feature.comment.view.fragment.KolCommentFragment
+import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailArgumentModel.Companion.COMMENT_ARGS_TOTAL_COMMENT
 import com.tokopedia.kol.feature.video.view.activity.VideoDetailActivity
 import com.tokopedia.kol.feature.video.view.listener.VideoDetailContract
 import com.tokopedia.kolcommon.domain.usecase.LikeKolPostUseCase
@@ -157,7 +157,7 @@ class VideoDetailFragment :
                         if (::dynamicPostViewModel.isInitialized)
                             calculateTotalComment(
                                 it.getIntExtra(
-                                    KolCommentFragment.ARGS_TOTAL_COMMENT,
+                                    COMMENT_ARGS_TOTAL_COMMENT,
                                     0
                                 )
                             )
@@ -349,10 +349,13 @@ class VideoDetailFragment :
 
                 } else {
                     startActivityForResult(
-                        KolCommentActivity.getCallingIntent(
+                        KolCommentNewActivity.getCallingIntent(
                             requireActivity(),
                             id.toIntOrZero(),
-                            0
+                            0,
+                            authorId,
+                            isFollowed,
+                            postType
                         ), INTENT_COMMENT
                     )
                 }

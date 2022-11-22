@@ -31,5 +31,4 @@
     <string name="emoney_nfc_permission_denied_message">Anda tidak memberikan izin akses untuk NFC</string>
     <string name="emoney_nfc_tap_card_button_label_error">Coba Lagi</string>
     <string name="emoney_nfc_feature_unavailable">Fitur ini belum tersedia</string>
-    <string name="emoney_nfc_no_need_to_check_logic">No need to check logic</string>
 </resources>

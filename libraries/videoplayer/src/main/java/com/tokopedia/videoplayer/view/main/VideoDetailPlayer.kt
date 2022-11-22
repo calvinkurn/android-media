@@ -1,7 +1,6 @@
 package com.tokopedia.videoplayer.view.main
 
 import android.os.Bundle
-import android.os.Parcel
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment

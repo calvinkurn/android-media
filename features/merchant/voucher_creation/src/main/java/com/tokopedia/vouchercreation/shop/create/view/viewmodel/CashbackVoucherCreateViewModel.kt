@@ -62,12 +62,12 @@ class CashbackVoucherCreateViewModel @Inject constructor(
     private val mPercentageMinimumPurchaseErrorPairLiveData = MutableLiveData<Pair<Boolean, String>>()
     private val mPercentageVoucherQuotaErrorPairLiveData = MutableLiveData<Pair<Boolean, String>>()
 
-    private val mRupiahValueList = MutableLiveData<Array<Int>>()
-    val rupiahValueList: LiveData<Array<Int>>
+    private val mRupiahValueList = MutableLiveData<IntArray>()
+    val rupiahValueList: LiveData<IntArray>
         get() = mRupiahValueList
 
-    private val mPercentageValueList = MutableLiveData<Array<Int>>()
-    val percentageValueList: LiveData<Array<Int>>
+    private val mPercentageValueList = MutableLiveData<IntArray>()
+    val percentageValueList: LiveData<IntArray>
         get() = mPercentageValueList
 
     private val mRupiahErrorPairList = MutableLiveData<Array<Pair<Boolean, String>?>>()
@@ -481,7 +481,7 @@ class CashbackVoucherCreateViewModel @Inject constructor(
     private fun refreshTextFieldValue(cashbackType: CashbackType) {
         when (cashbackType) {
             CashbackType.Rupiah -> {
-                mRupiahValueList.value = arrayOf(
+                mRupiahValueList.value = intArrayOf(
                         mRupiahMaximumDiscountLiveData.value.toZeroIfNull(),
                         mRupiahMinimumPurchaseLiveData.value.toZeroIfNull(),
                         mRupiahVoucherQuotaLiveData.value.toZeroIfNull()
@@ -493,7 +493,7 @@ class CashbackVoucherCreateViewModel @Inject constructor(
                 )
             }
             CashbackType.Percentage -> {
-                mPercentageValueList.value = arrayOf(
+                mPercentageValueList.value = intArrayOf(
                         mPercentageDiscountAmountLiveData.value.toZeroIfNull(),
                         mPercentageMaximumDiscountLiveData.value.toZeroIfNull(),
                         mPercentageMinimumPurchaseLiveData.value.toZeroIfNull(),
