@@ -93,7 +93,4 @@
     <string name="mvc_bottomsheet_quota_information_point_one">Kuota penggunaan kupon akan berkurang saat transaksi selesai.</string>
     <string name="mvc_bottomsheet_quota_information_point_two">1 kuota penggunaan berlaku untuk 1 kali transaksi dari 1 pembeli selama periode berlangsung kupon. Kamu tidak perlu membayar kupon yang tidak digunakan oleh pembeli.</string>
 
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-
 </resources>

@@ -4,7 +4,7 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-enum class VoucherAction : Parcelable{
+enum class VoucherAction : Parcelable {
     CREATE,
     UPDATE
 }
