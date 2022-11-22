@@ -369,7 +369,7 @@ class DiscoveryFragment :
                 } else if (scrollDist < -MINIMUM) {
                     if (discoveryViewModel.getAddressVisibilityValue()) {
                         chooseAddressWidget?.show()
-                        if (isLightThemeStatusBar == false) {
+                        if (isLightThemeStatusBar != true) {
                             chooseAddressWidgetDivider?.show()
                         } else {
                             chooseAddressWidgetDivider?.hide()
