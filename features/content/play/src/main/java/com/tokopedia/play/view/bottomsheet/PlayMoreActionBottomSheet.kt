@@ -68,6 +68,8 @@ class PlayMoreActionBottomSheet @Inject constructor(
 
     private var userReportTimeMillis: Date = Date()
 
+    var mListener: Listener? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -293,15 +295,16 @@ class PlayMoreActionBottomSheet @Inject constructor(
     }
 
     override fun onPipClicked(view: KebabMenuSheetViewComponent) {
-        //TODO("Not yet implemented")
+        mListener?.onPipClicked(this)
     }
 
     override fun onChromecastClicked(view: KebabMenuSheetViewComponent) {
         analytic.clickCast()
+        dismiss()
     }
 
     override fun onWatchModeClick(view: KebabMenuSheetViewComponent) {
-        //TODO("Not yet implemented")
+        mListener?.onWatchModeClicked(this)
     }
 
     /***
@@ -361,13 +364,18 @@ class PlayMoreActionBottomSheet @Inject constructor(
         super.onCancel(dialog)
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        mListener = null
+    }
+
     /***
      * BottomSheet Listener
      */
 
     interface Listener {
         fun onWatchModeClicked(bottomSheet: PlayMoreActionBottomSheet)
-        fun onNoAction(bottomSheet: PlayMoreActionBottomSheet)
+        fun onPipClicked(bottomSheet: PlayMoreActionBottomSheet)
     }
 
     companion object {

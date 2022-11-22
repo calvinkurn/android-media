@@ -307,8 +307,14 @@ class PlayUserInteractionFragment @Inject constructor(
         bottomSheet.dismiss()
     }
 
-    override fun onNoAction(bottomSheet: PlayMoreActionBottomSheet) {
-
+    override fun onPipClicked(bottomSheet: PlayMoreActionBottomSheet) {
+        playViewModel.requestWatchInPiP()
+        pipAnalytic.clickPiPIcon(
+            channelId = channelId,
+            shopId = playViewModel.partnerId,
+            channelType = playViewModel.channelType
+        )
+        bottomSheet.dismiss()
     }
 
     override fun onInterceptOrientationChangedEvent(newOrientation: ScreenOrientation): Boolean {
@@ -1196,6 +1202,7 @@ class PlayUserInteractionFragment @Inject constructor(
     private fun getBottomSheetInstance() : PlayMoreActionBottomSheet {
         if(!::bottomSheet.isInitialized){
             bottomSheet = childFragmentManager.fragmentFactory.instantiate(requireActivity().classLoader, PlayMoreActionBottomSheet::class.java.name) as PlayMoreActionBottomSheet
+            bottomSheet.mListener = this
             bottomSheet.setShowListener { bottomSheet.bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED }
         }
 
