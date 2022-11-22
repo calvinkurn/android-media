@@ -39,6 +39,8 @@ class SellerHomeWidgetSSEImpl(
         private const val HEADER_X_DEVICE = "X-Device"
         private const val BEARER = "Bearer %s"
         private const val ANDROID_VERSION = "android-%s"
+        private const val SSE_STAGING_URL = "https://sse-staging.tokopedia.com/seller-dashboard/sse/datakeys?page=%s&datakeys=%s"
+        private const val SSE_PRODUCTION_URL = "https://sse.tokopedia.com/seller-dashboard/sse/datakeys?page=%s&datakeys=%s"
     }
 
     private var sse: ServerSentEvent? = null
@@ -78,9 +80,9 @@ class SellerHomeWidgetSSEImpl(
 
     private fun getBaseSseUrl(): String {
         return if (TokopediaUrl.getInstance().TYPE == Env.STAGING) {
-            "https://sse-staging.tokopedia.com/seller-dashboard/sse/datakeys?page=%s&datakeys=%s"
+            SSE_STAGING_URL
         } else {
-            "https://sse.tokopedia.com/seller-dashboard/sse/datakeys?page=%s&datakeys=%s"
+            SSE_PRODUCTION_URL
         }
     }
 
@@ -138,6 +140,5 @@ class SellerHomeWidgetSSEImpl(
 
     private fun printLog(s: String) {
         SSELogger.getInstance(context).send(s)
-        println("$LOG_KEY : $s")
     }
 }
