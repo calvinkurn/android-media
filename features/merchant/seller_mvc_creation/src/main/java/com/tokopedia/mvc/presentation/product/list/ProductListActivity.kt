@@ -31,7 +31,7 @@ class ProductListActivity : AppCompatActivity() {
             context.startActivity(starter)
         }
 
-        fun buildEditMode(
+        fun buildEditModeIntent(
             context: Context,
             voucherConfiguration: VoucherConfiguration,
             selectedProducts: List<SelectedProduct>
