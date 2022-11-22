@@ -2202,15 +2202,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     override fun userCarouselImpression(feedXCard: FeedXCard, positionInFeed: Int) {
-//        data.id,
-//        data.media[position],
-//        position,
-//        data.typename,
-//        data.followers.isFollowed,
-//        data.author.id,
-//        positionInFeed,
-//        data.cpmData,
-//        data.listProduct
         if (feedXCard.isTopAds) {
             onTopAdsProductItemListsner(positionInFeed, feedXCard.listProduct[feedXCard.lastCarouselIndex], feedXCard.cpmData)
             TopAdsGtmTracker.eventTopAdsHeadlineShopView(
@@ -2641,9 +2632,9 @@ class FeedPlusFragment : BaseDaggerFragment(),
             Toaster.TYPE_NORMAL,
             getString(Rwishlist.string.cta_success_add_to_wishlist),
             View.OnClickListener {
-                getFeedTrackerDataModelFromPosition(positionInFeed)?.let { it1 ->
+                getFeedTrackerDataModelFromPosition(positionInFeed)?.let { feedTrackerData ->
                     feedAnalytics.eventOnTagSheetItemBuyClicked(
-                        it1
+                        feedTrackerData
                     )
                 }
                 RouteManager.route(context, ApplinkConst.WISHLIST)

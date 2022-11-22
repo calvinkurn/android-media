@@ -28,7 +28,6 @@ import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker
 import com.tokopedia.feedcomponent.analytics.tracker.FeedTrackerData
 import com.tokopedia.feedcomponent.bottomsheets.FeedFollowersOnlyBottomSheet
 import com.tokopedia.feedcomponent.bottomsheets.ProductActionBottomSheet
-import com.tokopedia.feedcomponent.data.feedrevamp.FeedXMedia
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCampaign
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXGetActivityProductsResponse
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
@@ -96,7 +95,7 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
     private var postType: String = ""
     private var saleType: String = ""
     private var saleStatus: String = ""
-    private var contentSlotValue: String = ""
+    private var contentScore: String = ""
     private var isFollowed: Boolean = false
     private var productList = mutableListOf<FeedXProduct>()
     private var activityId: String = ""
@@ -306,10 +305,10 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
                 }
             }
         }
-        if (contentSlotValue.isEmpty()) {
+        if (contentScore.isEmpty()) {
             arguments?.run {
                 getString(FeedPlusDetailActivity.PARAM_CONTENT_SLOT_VALUE)?.let {
-                    contentSlotValue = it
+                    contentScore = it
                 }
             }
         }
@@ -521,18 +520,16 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
         feedAnalytics.eventClickBottomSheetMenu(
             FeedTrackerData(
                 postId = finalID,
-                media = FeedXMedia(),
                 postType = item.postType,
                 isFollowed = item.isFollowed,
                 shopId = item.shopId,
                 mediaType = "",
                 positionInFeed = item.positionInFeed,
-                contentSlotValue = contentSlotValue,
+                contentSlotValue = contentScore,
                 trackerId = "",
                 campaignStatus = item.saleStatus,
                 product = item.product,
                 productId = item.product.id,
-                mediaIndex = 0,
                 isProductDetailPage = true
             )
         )
@@ -626,13 +623,8 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
                 postType = item.postType,
                 isFollowed = item.isFollowed,
                 shopId = item.shopId,
-                media = FeedXMedia(),
-                mediaType =  "",
-                product = FeedXProduct(),
                 campaignStatus = "",
-                contentSlotValue = contentSlotValue,
-                mediaIndex = 0,
-                positionInFeed = 0,
+                contentSlotValue = contentScore,
                 trackerId = "",
                 isProductDetailPage = true
                 )
@@ -687,7 +679,7 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
                     type,
                     isFollowed,
                     "",
-                    contentScore = contentSlotValue
+                    contentScore = contentScore
                 )
             else
                 feedAnalytics.eventAddToCartFeedVOD(
@@ -701,7 +693,7 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
                     type,
                     isFollowed,
                     "",
-                    contentScore = contentSlotValue
+                    contentScore = contentScore
                 )
         } else {
             feedAnalytics.sendClickAddToCartAsgcProductDetail(
@@ -713,7 +705,7 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
                 postTagItem.price.toString(),
                 1,
                 shopName,
-                contentScore = contentSlotValue
+                contentScore = contentScore
             )
         }
 
@@ -749,7 +741,7 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
                 isFollowed,
                 shopId,
                 "",
-                contentScore = contentSlotValue
+                contentScore = contentScore
             )
         else
             feedAnalytics.sendClickAddToWishlistAsgcProductDetail(
@@ -757,7 +749,7 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
                 shopId,
                 productId,
                 campaignStatusValue,
-                contentSlotValue
+                contentScore
             )
 
         context?.let {
@@ -803,12 +795,10 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
                         isFollowed = isFollowed,
                         shopId = shopId,
                         campaignStatus = getTrackerCampaignStatusSuffix(),
-                        contentSlotValue = contentSlotValue,
+                        contentSlotValue = contentScore,
                         mediaIndex = 0 ,
-                        media = FeedXMedia(),
                         mediaType = "",
                         positionInFeed = positionInFeed,
-                        product = FeedXProduct(),
                         productId = "",
                         trackerId = ""
                     ))
@@ -917,7 +907,7 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
                 feedDetailProductModel.isFollowed,
                 if (feedDetailProductModel.saleType.isNotEmpty()) "13440" else "",
                 campaignStatus,
-                contentSlotValue
+                contentScore
             )
             goToProductDetail(feedDetailProductModel.id)
         }
