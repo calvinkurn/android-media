@@ -1,6 +1,6 @@
 package com.tokopedia.people.views.uimodel.mapper
 
-import com.tokopedia.feedcomponent.data.pojo.whitelist.WhitelistQuery
+import com.tokopedia.content.common.model.GetCheckWhitelist
 import com.tokopedia.feedcomponent.people.model.MutationUiModel
 import com.tokopedia.people.model.ProfileHeaderBase
 import com.tokopedia.people.model.UserProfileIsFollow
@@ -15,7 +15,7 @@ interface UserProfileUiMapper {
 
     fun mapFollowInfo(response: UserProfileIsFollow): FollowInfoUiModel
 
-    fun mapUserWhitelist(response: WhitelistQuery): ProfileWhitelistUiModel
+    fun mapUserWhitelist(response: GetCheckWhitelist): ProfileWhitelistUiModel
 
     fun mapUpdateReminder(response: VideoPostReimderModel): MutationUiModel
 }

@@ -1,12 +1,11 @@
 package com.tokopedia.content.common.usecase
 
-import com.tokopedia.feedcomponent.data.pojo.whitelist.WhitelistQuery
+import com.tokopedia.content.common.model.GetCheckWhitelist
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
-import java.util.*
 import javax.inject.Inject
 
 /**
@@ -15,7 +14,7 @@ import javax.inject.Inject
 @GqlQuery(GetWhiteListNewUseCase.QUERY_NAME, GetWhiteListNewUseCase.GET_WHITE_LIST_QUERY)
 class GetWhiteListNewUseCase @Inject constructor(
     graphqlRepository: GraphqlRepository
-) : GraphqlUseCase<WhitelistQuery>(graphqlRepository) {
+) : GraphqlUseCase<GetCheckWhitelist>(graphqlRepository) {
 
     init {
         setGraphqlQuery(GetWhitelistNewUseCaseQuery())
@@ -23,7 +22,7 @@ class GetWhiteListNewUseCase @Inject constructor(
             GraphqlCacheStrategy
                 .Builder(CacheType.ALWAYS_CLOUD).build()
         )
-        setTypeClass(WhitelistQuery::class.java)
+        setTypeClass(GetCheckWhitelist::class.java)
     }
 
     private fun createRequestParams(type: String, id: String = "") {
@@ -34,7 +33,7 @@ class GetWhiteListNewUseCase @Inject constructor(
         setRequestParams(request)
     }
 
-    suspend fun execute(type: String, id: String = ""): WhitelistQuery {
+    suspend fun execute(type: String, id: String = ""): GetCheckWhitelist {
         this.createRequestParams(type, id)
         return executeOnBackground()
     }

@@ -1,6 +1,6 @@
 package com.tokopedia.feedplus.domain.repository
 
-import com.tokopedia.feedcomponent.data.pojo.whitelist.WhitelistQuery
+import com.tokopedia.content.common.model.GetCheckWhitelist
 import com.tokopedia.feedplus.data.pojo.FeedTabs
 
 /**
@@ -8,7 +8,7 @@ import com.tokopedia.feedplus.data.pojo.FeedTabs
  */
 interface FeedPlusRepository {
 
-    suspend fun getWhitelist(): WhitelistQuery
+    suspend fun getWhitelist(): GetCheckWhitelist
 
     suspend fun getDynamicTabs(): FeedTabs
 
