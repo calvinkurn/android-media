@@ -28,23 +28,6 @@ class FeedXCardSubtitlesAnimationHandler(
     private var animatorSet: AnimatorSet? = null
     private var timer: Timer? = null
 
-    private val animListener = object : AnimatorListener {
-        override fun onAnimationStart(animation: Animator?) {
-
-        }
-
-        override fun onAnimationEnd(animation: Animator?) {
-            afterAnimationComplete()
-        }
-
-        override fun onAnimationCancel(animation: Animator?) {
-        }
-
-        override fun onAnimationRepeat(animation: Animator?) {
-
-        }
-    }
-
     private val onAttachListener = object : View.OnAttachStateChangeListener {
         override fun onViewAttachedToWindow(v: View?) {
             startTimer()
@@ -84,8 +67,8 @@ class FeedXCardSubtitlesAnimationHandler(
     }
 
     fun startTimer() {
-        val START_DELAY = 3000L
-        val INTERVAL = START_DELAY
+        val START_DELAY = 2000L
+        val INTERVAL = 3000L
 
         if (timer == null) {
             setDataIntoViews()
@@ -148,7 +131,22 @@ class FeedXCardSubtitlesAnimationHandler(
                     PropertyValuesHolder.ofFloat(View.TRANSLATION_Y, dpToPx(48), 0f)
                 val translateAnimObjTwo: ObjectAnimator =
                     ObjectAnimator.ofPropertyValuesHolder(v2, translateAnimPropTwo)
-                translateAnimObjTwo.addListener(animListener)
+                translateAnimObjTwo.addListener(object : AnimatorListener {
+                    override fun onAnimationStart(animation: Animator?) {
+
+                    }
+
+                    override fun onAnimationEnd(animation: Animator?) {
+                        afterAnimationComplete()
+                    }
+
+                    override fun onAnimationCancel(animation: Animator?) {
+                    }
+
+                    override fun onAnimationRepeat(animation: Animator?) {
+
+                    }
+                })
 
                 animatorSet = AnimatorSet()
                 animatorSet?.playTogether(
