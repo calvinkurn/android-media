@@ -37,7 +37,7 @@ import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.domain.usecase.SetUserPreferenceUseCase
 import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowCategoryListUiModel
-import com.tokopedia.tokopedianow.common.model.TokoNowRecommendationCarouselUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeCategoryMapper
 import com.tokopedia.tokopedianow.searchcategory.cartservice.CartService
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.CategoryTitle
@@ -90,7 +90,6 @@ class TokoNowCategoryViewModel @Inject constructor (
         getMiniCartListSimplifiedUseCase,
         cartService,
         getWarehouseUseCase,
-        getRecommendationUseCase,
         setUserPreferenceUseCase,
         chooseAddressWrapper,
         abTestPlatformWrapper,
@@ -181,13 +180,11 @@ class TokoNowCategoryViewModel @Inject constructor (
     }
 
     override fun createFooterVisitableList(): List<Visitable<*>> {
-        val recomData =
-            TokoNowRecommendationCarouselUiModel(
-                pageName = TOKONOW_CLP,
-                isBindWithPageName = true,
-                miniCartSource = MiniCartSource.TokonowCategoryPage
+        val recomData = TokoNowProductRecommendationUiModel(
+            requestParam = createProductRecommendationRequestParam(
+                pageName = TOKONOW_CLP
             )
-        recomData.categoryId = getRecomCategoryId(recomData)
+        )
         return listOf(
             createAisleDataView(),
             recomData
@@ -411,9 +408,9 @@ class TokoNowCategoryViewModel @Inject constructor (
     }
 
     override fun getRecomCategoryId(
-            recommendationCarouselDataView: TokoNowRecommendationCarouselUiModel
+        pageName: String
     ): List<String> {
-        if (recommendationCarouselDataView.pageName == TOKONOW_NO_RESULT) return listOf()
+        if (pageName == TOKONOW_NO_RESULT) return listOf()
 
         val tokonowParam = FilterHelper.createParamsWithoutExcludes(queryParam)
         val categoryFilterId = tokonowParam[SearchApiConst.SC] ?: ""

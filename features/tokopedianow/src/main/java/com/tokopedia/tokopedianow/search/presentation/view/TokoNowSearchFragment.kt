@@ -141,7 +141,6 @@ class TokoNowSearchFragment :
     override fun sendDecreaseQtyTrackingEvent(productId: String) {
         SearchTracking.sendDecreaseQtyEvent(tokoNowSearchViewModel.query, productId)
     }
-
     override fun createTypeFactory() = SearchTypeFactoryImpl(
             tokoNowEmptyStateOocListener = createTokoNowEmptyStateOocListener(TOKONOW_DASH_SEARCH_PAGE),
             chooseAddressListener = this,
@@ -155,9 +154,12 @@ class TokoNowSearchFragment :
             suggestionListener = this,
             categoryJumperListener = this,
             ctaTokoNowHomeListener = this,
-            recommendationCarouselListener = this,
             broadMatchListener = this,
-            recomWidgetBindPageNameListener = this
+            productRecommendationOocListener = createProductRecommendationOocCallback(),
+            productRecommendationBindOocListener = createProductRecommendationOocCallback(),
+            productRecommendationListener = createProductRecommendationCallback().copy(
+                query = getViewModel().query
+            )
     )
 
     override val miniCartWidgetPageName: MiniCartAnalytics.Page
@@ -339,7 +341,7 @@ class TokoNowSearchFragment :
         }
     }
 
-    override fun getAtcEventAction(isOOC: Boolean): String {
+    override fun getAtcEventAction(): String {
         return CLICK_ATC_SRP_PRODUCT_TOKONOW
     }
 
@@ -363,7 +365,7 @@ class TokoNowSearchFragment :
         }
     }
 
-    override fun getEventLabel(isOOC: Boolean): String {
+    override fun getEventLabel(): String {
         return getViewModel().query
     }
 
@@ -442,12 +444,6 @@ class TokoNowSearchFragment :
         if (appLink.startsWith(ApplinkConst.TokopediaNow.SEARCH))
             modifyApplinkToSearchResult(appLink)
         else appLink
-
-    override fun onSeeMoreClick(data: RecommendationCarouselData, applink: String) {
-        SearchTracking.sendRecommendationSeeAllClickEvent(getViewModel().query)
-
-        RouteManager.route(context, applink)
-    }
 
     override fun sendOOCOpenScreenTracking(isTracked: Boolean) {
         SearchTracking.sendOOCOpenScreenTracking(userSession.isLoggedIn)

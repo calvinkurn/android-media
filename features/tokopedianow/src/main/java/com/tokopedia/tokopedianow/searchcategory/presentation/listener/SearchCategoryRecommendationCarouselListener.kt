@@ -2,7 +2,7 @@ package com.tokopedia.tokopedianow.searchcategory.presentation.listener
 
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
-import com.tokopedia.tokopedianow.common.model.TokoNowRecommendationCarouselUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationOocUiModel
 
 interface SearchCategoryRecommendationCarouselListener {
 
@@ -11,37 +11,37 @@ interface SearchCategoryRecommendationCarouselListener {
     fun onGetCarouselScrollPosition(adapterPosition: Int): Int
 
     fun onBindRecommendationCarousel(
-            element: TokoNowRecommendationCarouselUiModel,
-            adapterPosition: Int,
+        element: TokoNowProductRecommendationOocUiModel,
+        adapterPosition: Int,
     )
 
     fun onImpressedRecommendationCarouselItem(
-            recommendationCarouselDataView: TokoNowRecommendationCarouselUiModel?,
-            data: RecommendationCarouselData,
-            recomItem: RecommendationItem,
-            itemPosition: Int,
-            adapterPosition: Int,
+        recommendationCarouselDataView: TokoNowProductRecommendationOocUiModel?,
+        data: RecommendationCarouselData,
+        recomItem: RecommendationItem,
+        itemPosition: Int,
+        adapterPosition: Int,
     )
 
     fun onClickRecommendationCarouselItem(
-            recommendationCarouselDataView: TokoNowRecommendationCarouselUiModel?,
-            data: RecommendationCarouselData,
-            recomItem: RecommendationItem,
-            itemPosition: Int,
-            adapterPosition: Int
+        recommendationCarouselDataView: TokoNowProductRecommendationOocUiModel?,
+        data: RecommendationCarouselData,
+        recomItem: RecommendationItem,
+        itemPosition: Int,
+        adapterPosition: Int
     )
 
     fun onATCNonVariantRecommendationCarouselItem(
-            recommendationCarouselDataView: TokoNowRecommendationCarouselUiModel?,
-            data: RecommendationCarouselData,
-            recomItem: RecommendationItem,
-            recommendationCarouselPosition: Int,
-            quantity: Int,
+        recommendationCarouselDataView: TokoNowProductRecommendationOocUiModel?,
+        data: RecommendationCarouselData,
+        recomItem: RecommendationItem,
+        recommendationCarouselPosition: Int,
+        quantity: Int,
     )
 
     fun onAddVariantRecommendationCarouselItem(
-            recommendationCarouselDataView: TokoNowRecommendationCarouselUiModel?,
-            data: RecommendationCarouselData,
-            recomItem: RecommendationItem,
+        recommendationCarouselDataView: TokoNowProductRecommendationOocUiModel?,
+        data: RecommendationCarouselData,
+        recomItem: RecommendationItem,
     )
 }

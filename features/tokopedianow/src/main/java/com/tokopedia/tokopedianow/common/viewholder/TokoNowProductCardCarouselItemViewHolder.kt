@@ -52,7 +52,7 @@ class TokoNowProductCardCarouselItemViewHolder(
                     quantity = quantity
                 )
             }
-            addOnImpressionListener(element) {
+            addOnImpressionListener(element.impressHolder) {
                 listener?.onProductCardImpressed(
                     position = layoutPosition,
                     product = element

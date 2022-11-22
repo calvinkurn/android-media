@@ -4,8 +4,8 @@ import android.content.Context
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
-import com.tokopedia.tokopedianow.common.model.TokoNowRecommendationCarouselUiModel
-import com.tokopedia.tokopedianow.common.viewholder.TokoNowRecommendationCarouselViewHolder.TokoNowRecommendationCarouselListener
+import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationOocUiModel
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowProductRecommendationOocViewHolder.TokoNowRecommendationCarouselListener
 import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics
 
 class HomeProductRecomOocCallback (
@@ -14,7 +14,7 @@ class HomeProductRecomOocCallback (
 ): TokoNowRecommendationCarouselListener {
 
     override fun onImpressedRecommendationCarouselItem(
-        model: TokoNowRecommendationCarouselUiModel?,
+        model: TokoNowProductRecommendationOocUiModel?,
         data: RecommendationCarouselData,
         recomItem: RecommendationItem,
         itemPosition: Int,
@@ -28,7 +28,7 @@ class HomeProductRecomOocCallback (
     }
 
     override fun onClickRecommendationCarouselItem(
-        model: TokoNowRecommendationCarouselUiModel?,
+        model: TokoNowProductRecommendationOocUiModel?,
         data: RecommendationCarouselData,
         recomItem: RecommendationItem,
         itemPosition: Int,
@@ -61,7 +61,7 @@ class HomeProductRecomOocCallback (
     override fun onGetCarouselScrollPosition(adapterPosition: Int): Int = 0
 
     override fun onATCNonVariantRecommendationCarouselItem(
-        model: TokoNowRecommendationCarouselUiModel?,
+        model: TokoNowProductRecommendationOocUiModel?,
         data: RecommendationCarouselData,
         recomItem: RecommendationItem,
         recommendationCarouselPosition: Int,
@@ -69,13 +69,13 @@ class HomeProductRecomOocCallback (
     ) { /* do nothing */ }
 
     override fun onAddVariantRecommendationCarouselItem(
-        model: TokoNowRecommendationCarouselUiModel?,
+        model: TokoNowProductRecommendationOocUiModel?,
         data: RecommendationCarouselData,
         recomItem: RecommendationItem
     ) { /* do nothing */ }
 
     override fun onBindRecommendationCarousel(
-        model: TokoNowRecommendationCarouselUiModel,
+        model: TokoNowProductRecommendationOocUiModel,
         adapterPosition: Int
     ) { /* do noting */ }
 

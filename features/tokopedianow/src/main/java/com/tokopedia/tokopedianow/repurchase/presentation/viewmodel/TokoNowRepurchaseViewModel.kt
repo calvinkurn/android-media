@@ -51,13 +51,15 @@ import com.tokopedia.tokopedianow.repurchase.domain.mapper.RepurchaseLayoutMappe
 import com.tokopedia.tokopedianow.repurchase.domain.mapper.RepurchaseLayoutMapper.addLayoutList
 import com.tokopedia.tokopedianow.repurchase.domain.mapper.RepurchaseLayoutMapper.addLoading
 import com.tokopedia.tokopedianow.repurchase.domain.mapper.RepurchaseLayoutMapper.addProduct
-import com.tokopedia.tokopedianow.repurchase.domain.mapper.RepurchaseLayoutMapper.addRecomWidget
+import com.tokopedia.tokopedianow.repurchase.domain.mapper.RepurchaseLayoutMapper.addProductRecommendation
+import com.tokopedia.tokopedianow.repurchase.domain.mapper.RepurchaseLayoutMapper.addProductRecommendationOoc
 import com.tokopedia.tokopedianow.repurchase.domain.mapper.RepurchaseLayoutMapper.addServerErrorState
 import com.tokopedia.tokopedianow.repurchase.domain.mapper.RepurchaseLayoutMapper.addSortFilter
 import com.tokopedia.tokopedianow.repurchase.domain.mapper.RepurchaseLayoutMapper.removeAllProduct
 import com.tokopedia.tokopedianow.repurchase.domain.mapper.RepurchaseLayoutMapper.removeChooseAddress
 import com.tokopedia.tokopedianow.repurchase.domain.mapper.RepurchaseLayoutMapper.removeEmptyStateNoHistory
 import com.tokopedia.tokopedianow.repurchase.domain.mapper.RepurchaseLayoutMapper.removeLoading
+import com.tokopedia.tokopedianow.repurchase.domain.mapper.RepurchaseLayoutMapper.removeProductRecommendation
 import com.tokopedia.tokopedianow.repurchase.domain.mapper.RepurchaseLayoutMapper.setCategoryFilter
 import com.tokopedia.tokopedianow.repurchase.domain.mapper.RepurchaseLayoutMapper.setDateFilter
 import com.tokopedia.tokopedianow.repurchase.domain.mapper.RepurchaseLayoutMapper.setSortFilter
@@ -237,6 +239,17 @@ class TokoNowRepurchaseViewModel @Inject constructor(
 
     fun removeChooseAddressWidget() {
         layoutList.removeChooseAddress()
+
+        val layout = RepurchaseLayoutUiModel(
+            layoutList = layoutList,
+            state = TokoNowLayoutState.UPDATE
+        )
+
+        _getLayout.postValue(Success(layout))
+    }
+
+    fun removeProductRecommendationWidget() {
+        layoutList.removeProductRecommendation()
 
         val layout = RepurchaseLayoutUiModel(
             layoutList = layoutList,
@@ -649,7 +662,7 @@ class TokoNowRepurchaseViewModel @Inject constructor(
                 layoutList.clear()
                 layoutList.addChooseAddress()
                 layoutList.addEmptyStateOoc(localCacheModel?.service_type.orEmpty())
-                layoutList.addRecomWidget(PAGE_NAME_RECOMMENDATION_OOC_PARAM)
+                layoutList.addProductRecommendationOoc(PAGE_NAME_RECOMMENDATION_OOC_PARAM)
             }
             ERROR_STATE_FAILED_TO_FETCH_DATA -> {
                 layoutList.clear()
@@ -660,7 +673,7 @@ class TokoNowRepurchaseViewModel @Inject constructor(
                 layoutList.addChooseAddress()
                 layoutList.addEmptyStateNoResult(localCacheModel?.service_type.orEmpty())
                 getCategoryGridAsync().await()
-                layoutList.addRecomWidget(PAGE_NAME_RECOMMENDATION_NO_RESULT_PARAM)
+                layoutList.addProductRecommendation(PAGE_NAME_RECOMMENDATION_NO_RESULT_PARAM)
             }
         }
     }

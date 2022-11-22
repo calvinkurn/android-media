@@ -34,6 +34,7 @@ import com.tokopedia.home_component.data.DynamicHomeChannelCommon.Channels
 import com.tokopedia.home_component.mapper.DynamicChannelComponentMapper
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.isZero
+import com.tokopedia.kotlin.extensions.view.removeFirst
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
@@ -41,7 +42,6 @@ import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.productcard.ProductCardModel
-import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
@@ -49,7 +49,6 @@ import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.OOC
 import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.PAGE_NUMBER_RECOM_WIDGET
 import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.RECOM_WIDGET
 import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.TOKONOW_NO_RESULT
-import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_CLICK_TOKONOW
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.KEY.KEY_BUSINESS_UNIT
@@ -62,9 +61,10 @@ import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference
 import com.tokopedia.tokopedianow.common.domain.usecase.SetUserPreferenceUseCase
 import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateOocUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
-import com.tokopedia.tokopedianow.common.model.TokoNowRecommendationCarouselUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationOocUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowRepurchaseUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateNoResultUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeRepurchaseMapper
 import com.tokopedia.tokopedianow.home.domain.model.GetRepurchaseResponse.RepurchaseData
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.GENERAL_SEARCH
@@ -123,7 +123,6 @@ abstract class BaseSearchCategoryViewModel(
         protected val getMiniCartListSimplifiedUseCase: GetMiniCartListSimplifiedUseCase,
         protected val cartService: CartService,
         private val getShopAndWarehouseUseCase: GetChosenAddressWarehouseLocUseCase,
-        protected val getRecommendationUseCase: GetRecommendationUseCase,
         protected val setUserPreferenceUseCase: SetUserPreferenceUseCase,
         protected val chooseAddressWrapper: ChooseAddressWrapper,
         protected val abTestPlatformWrapper: ABTestPlatformWrapper,
@@ -220,11 +219,6 @@ abstract class BaseSearchCategoryViewModel(
     private val deleteCartTrackingMutableLiveData = SingleLiveEvent<String>()
     val deleteCartTrackingLiveData: LiveData<String> = deleteCartTrackingMutableLiveData
 
-    private val addToCartRecommendationTrackingMutableLiveData =
-            SingleLiveEvent<Triple<Int, String, RecommendationItem>>()
-    val addToCartRecommendationItemTrackingLiveData: LiveData<Triple<Int, String, RecommendationItem>> =
-            addToCartRecommendationTrackingMutableLiveData
-
     private val generalSearchEventMutableLiveData = SingleLiveEvent<Map<String, Any>>()
     val generalSearchEventLiveData: LiveData<Map<String, Any>> = generalSearchEventMutableLiveData
 
@@ -246,6 +240,9 @@ abstract class BaseSearchCategoryViewModel(
 
     private val updateToolbarNotificationLiveData = MutableLiveData<Boolean>()
     val updateToolbarNotification: LiveData<Boolean> = updateToolbarNotificationLiveData
+
+    private val needToUpdateProductRecommendationMutableLiveData = MutableLiveData<Boolean>()
+    val needToUpdateProductRecommendationLiveData: LiveData<Boolean> = needToUpdateProductRecommendationMutableLiveData
 
     init {
         updateQueryParams()
@@ -340,7 +337,11 @@ abstract class BaseSearchCategoryViewModel(
             hostSource = DEFAULT_VALUE_SOURCE_SEARCH,
             serviceType = chooseAddressData?.service_type.orEmpty()
         ))
-        visitableList.add(TokoNowRecommendationCarouselUiModel(pageName = OOC_TOKONOW, miniCartSource = miniCartSource))
+        visitableList.add(TokoNowProductRecommendationOocUiModel(
+                pageName = OOC_TOKONOW,
+                isBindWithPageName = true
+            )
+        )
     }
 
     protected open fun onGetShopAndWarehouseFailed(throwable: Throwable) {
@@ -463,11 +464,10 @@ abstract class BaseSearchCategoryViewModel(
         visitableList.add(chooseAddressDataView)
         visitableList.add(TokoNowEmptyStateNoResultUiModel(activeFilterList = activeFilterList))
         visitableList.add(
-            TokoNowRecommendationCarouselUiModel(
-                pageName = TOKONOW_NO_RESULT,
-                keywords = getKeywordForGeneralSearchTracking(),
-                isBindWithPageName = true,
-                miniCartSource = miniCartSource
+            TokoNowProductRecommendationUiModel(
+                requestParam = createProductRecommendationRequestParam(
+                    pageName = TOKONOW_NO_RESULT
+                )
             )
         )
     }
@@ -667,14 +667,6 @@ abstract class BaseSearchCategoryViewModel(
         contentVisitableList.addAll(productListDataView)
     }
 
-    protected open fun mapToLabelGroupDataView(labelGroup: ProductLabelGroup) =
-        LabelGroupDataView(
-            url = labelGroup.url,
-            title = labelGroup.title,
-            position = labelGroup.position,
-            type = labelGroup.type,
-        )
-
     protected open fun addRepurchaseWidget(
         contentVisitableList: MutableList<Visitable<*>>,
         repurchaseWidget: RepurchaseData,
@@ -798,6 +790,8 @@ abstract class BaseSearchCategoryViewModel(
         updateHeaderBackgroundVisibility(!isEmptyProductList)
 
         showPageContent()
+
+        needToUpdateProductRecommendationMutableLiveData.value = true
     }
 
     protected fun clearVisitableListLiveData() {
@@ -856,6 +850,12 @@ abstract class BaseSearchCategoryViewModel(
         visitableList.remove(loadingMoreModel)
         visitableList.addAll(createContentVisitableList(contentDataView))
         visitableList.addFooter()
+    }
+
+    fun removeProductRecommendationWidget() {
+        visitableList.removeFirst { it is TokoNowProductRecommendationUiModel }
+
+        updateVisitableListLiveData()
     }
 
     open fun onViewOpenFilterPage() {
@@ -1239,37 +1239,11 @@ abstract class BaseSearchCategoryViewModel(
         }
     }
 
-    open fun onBindRecommendationCarousel(
-            element: TokoNowRecommendationCarouselUiModel,
-            adapterPosition: Int,
-    ) {
-        launchCatchError(
-                block = { getRecommendationCarousel(element, adapterPosition) },
-                onError = { getRecommendationCarouselError(element, adapterPosition) },
-        )
-    }
-
-    protected open suspend fun getRecommendationCarousel(
-            element: TokoNowRecommendationCarouselUiModel,
-            adapterPosition: Int,
-    ) {
-        if (element.carouselData.state == RecommendationCarouselData.STATE_READY) return
-
-        recommendationPositionInVisitableList = adapterPosition
-
-        val getRecommendationRequestParam = createRecommendationRequestParam(element)
-        val recommendationListData =
-                getRecommendationUseCase.getData(getRecommendationRequestParam)
-
-        updateRecommendationList(recommendationListData)
-        updateVisitableListForRecommendationCarousel(element, adapterPosition)
-    }
-
-    protected open fun createRecommendationRequestParam(
-            recommendationCarouselDataView: TokoNowRecommendationCarouselUiModel
+    open fun createProductRecommendationRequestParam(
+            pageName: String
     ) = GetRecommendationRequestParam(
-            pageName = recommendationCarouselDataView.pageName,
-            categoryIds = getRecomCategoryId(recommendationCarouselDataView),
+            pageName = pageName,
+            categoryIds = getRecomCategoryId(pageName),
             xSource = RECOM_WIDGET,
             isTokonow = true,
             pageNumber = PAGE_NUMBER_RECOM_WIDGET,
@@ -1278,17 +1252,10 @@ abstract class BaseSearchCategoryViewModel(
     )
 
     protected open fun getRecomCategoryId(
-            recommendationCarouselDataView: TokoNowRecommendationCarouselUiModel
+            pageName: String
     ) = listOf<String>()
 
     protected open fun getRecomKeywords() = listOf<String>()
-
-    private fun updateRecommendationList(recommendationListData: List<RecommendationWidget>) {
-        recommendationList.clear()
-        recommendationList.addAll(recommendationListData)
-
-        updateRecommendationListQuantity(recommendationList)
-    }
 
     private fun updateRecommendationListQuantity(recommendationList: List<RecommendationWidget>?) {
         recommendationList
@@ -1304,84 +1271,8 @@ abstract class BaseSearchCategoryViewModel(
         recommendationItem.quantity = quantity
     }
 
-    protected open suspend fun updateVisitableListForRecommendationCarousel(
-        element: TokoNowRecommendationCarouselUiModel,
-        adapterPosition: Int,
-    ) {
-        val recommendationData = recommendationList.firstOrNull() ?: RecommendationWidget()
-
-        if (recommendationData.recommendationItemList.isEmpty()) {
-            visitableList.remove(element)
-            suspendUpdateVisitableListLiveData()
-        } else {
-            element.carouselData = RecommendationCarouselData(
-                state = RecommendationCarouselData.STATE_READY,
-                recommendationData = recommendationData
-            )
-
-            updateVisitableWithIndex(listOf(adapterPosition))
-        }
-    }
-
-    protected open suspend fun getRecommendationCarouselError(
-        element: TokoNowRecommendationCarouselUiModel,
-        adapterPosition: Int,
-    ) {
-        element.carouselData = RecommendationCarouselData(
-                state = RecommendationCarouselData.STATE_FAILED
-        )
-
-        updateVisitableWithIndex(listOf(adapterPosition))
-    }
-
-    open fun onViewATCRecommendationItemNonVariant(
-            recommendationItem: RecommendationItem,
-            adapterPosition: Int,
-            quantity: Int,
-    ) {
-        val productId = recommendationItem.productId.toString()
-        val shopId = recommendationItem.shopId.toString()
-        val currentQuantity = recommendationItem.quantity
-
-        cartService.handleCart(
-            cartProductItem = CartProductItem(productId, shopId, currentQuantity),
-            quantity = quantity,
-            onSuccessAddToCart = {
-                addToCartRecommendationTrackingMutableLiveData.value = Triple(
-                    quantity,
-                    it.data.cartId,
-                    recommendationItem,
-                )
-                updateCartMessageSuccess(it.errorMessage.joinToString(separator = ", "))
-                onAddToCartSuccessRecommendationItem(recommendationItem, it.data.quantity)
-                updateToolbarNotification()
-            },
-            onSuccessUpdateCart = {
-                onAddToCartSuccessRecommendationItem(recommendationItem, quantity)
-                updateToolbarNotification()
-            },
-            onSuccessDeleteCart = {
-                updateCartMessageSuccess(it.errorMessage.joinToString(separator = ", "))
-                onAddToCartSuccessRecommendationItem(recommendationItem, 0)
-                updateToolbarNotification()
-            },
-            onError = ::onAddToCartFailed,
-            handleCartEventNonLogin = {
-                handleAddToCartEventNonLogin(adapterPosition)
-            },
-        )
-    }
-
     fun updateToolbarNotification() {
         updateToolbarNotificationLiveData.postValue(true)
-    }
-
-    private fun onAddToCartSuccessRecommendationItem(
-        recommendationItem: RecommendationItem,
-        quantity: Int,
-    ) {
-        recommendationItem.quantity = quantity
-        refreshMiniCart()
     }
 
     open fun onViewATCRepurchaseWidget(

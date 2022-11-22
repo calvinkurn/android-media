@@ -14,15 +14,15 @@ import com.tokopedia.recommendation_widget_common.widget.carousel.Recommendation
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselTokonowListener
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselTokonowPageNameListener
 import com.tokopedia.tokopedianow.R
-import com.tokopedia.tokopedianow.common.model.TokoNowRecommendationCarouselUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationOocUiModel
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowRecomCarouselBinding
 import com.tokopedia.utils.view.binding.viewBinding
 
-class TokoNowRecommendationCarouselViewHolder(
+class TokoNowProductRecommendationOocViewHolder(
     itemView: View,
     private val recommendationCarouselListener: TokoNowRecommendationCarouselListener? = null,
     private val recommendationCarouselWidgetBindPageNameListener: TokonowRecomBindPageNameListener? = null
-) : AbstractViewHolder<TokoNowRecommendationCarouselUiModel>(itemView),
+) : AbstractViewHolder<TokoNowProductRecommendationOocUiModel>(itemView),
     RecomCarouselWidgetBasicListener, RecommendationCarouselTokonowListener,
     RecommendationCarouselTokonowPageNameListener {
 
@@ -34,9 +34,9 @@ class TokoNowRecommendationCarouselViewHolder(
 
     private var binding: ItemTokopedianowRecomCarouselBinding? by viewBinding()
 
-    private var uiModel: TokoNowRecommendationCarouselUiModel? = null
+    private var uiModel: TokoNowProductRecommendationOocUiModel? = null
 
-    override fun bind(element: TokoNowRecommendationCarouselUiModel?) {
+    override fun bind(element: TokoNowProductRecommendationOocUiModel?) {
         uiModel = element ?: return
         val scrollToPosition =
             recommendationCarouselListener?.onGetCarouselScrollPosition(adapterPosition)
@@ -231,12 +231,12 @@ class TokoNowRecommendationCarouselViewHolder(
         fun onGetCarouselScrollPosition(adapterPosition: Int): Int
 
         fun onBindRecommendationCarousel(
-            model: TokoNowRecommendationCarouselUiModel,
+            model: TokoNowProductRecommendationOocUiModel,
             adapterPosition: Int,
         )
 
         fun onImpressedRecommendationCarouselItem(
-            model: TokoNowRecommendationCarouselUiModel?,
+            model: TokoNowProductRecommendationOocUiModel?,
             data: RecommendationCarouselData,
             recomItem: RecommendationItem,
             itemPosition: Int,
@@ -244,7 +244,7 @@ class TokoNowRecommendationCarouselViewHolder(
         )
 
         fun onClickRecommendationCarouselItem(
-            model: TokoNowRecommendationCarouselUiModel?,
+            model: TokoNowProductRecommendationOocUiModel?,
             data: RecommendationCarouselData,
             recomItem: RecommendationItem,
             itemPosition: Int,
@@ -252,7 +252,7 @@ class TokoNowRecommendationCarouselViewHolder(
         )
 
         fun onATCNonVariantRecommendationCarouselItem(
-            model: TokoNowRecommendationCarouselUiModel?,
+            model: TokoNowProductRecommendationOocUiModel?,
             data: RecommendationCarouselData,
             recomItem: RecommendationItem,
             recommendationCarouselPosition: Int,
@@ -260,7 +260,7 @@ class TokoNowRecommendationCarouselViewHolder(
         )
 
         fun onAddVariantRecommendationCarouselItem(
-            model: TokoNowRecommendationCarouselUiModel?,
+            model: TokoNowProductRecommendationOocUiModel?,
             data: RecommendationCarouselData,
             recomItem: RecommendationItem,
         )

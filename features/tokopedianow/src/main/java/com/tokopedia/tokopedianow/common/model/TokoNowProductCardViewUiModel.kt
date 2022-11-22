@@ -40,23 +40,23 @@ data class TokoNowProductCardViewUiModel(
     fun isOos() = getOosLabelGroup() != null
     fun isFlashSale() = progressBarLabel.isNotBlank() && !isOos()
     fun isNormal() = !isOos() && !isFlashSale()
-}
 
-data class LabelGroup(
-    val position: String = "",
-    val title: String = "",
-    val type: String = "",
-    val imageUrl: String = ""
-) {
-    fun isStatusPosition() = position == LABEL_STATUS
-    fun isBestSellerPosition() = position == LABEL_BEST_SELLER
-    fun isNewProductLabelPosition() = position == LABEL_GIMMICK
-    fun isPricePosition() = position == LABEL_PRICE
-    fun isWeightPosition() = position == LABEL_WEIGHT
+    data class LabelGroup(
+        val position: String = "",
+        val title: String = "",
+        val type: String = "",
+        val imageUrl: String = ""
+    ) {
+        fun isStatusPosition() = position == LABEL_STATUS
+        fun isBestSellerPosition() = position == LABEL_BEST_SELLER
+        fun isNewProductLabelPosition() = position == LABEL_GIMMICK
+        fun isPricePosition() = position == LABEL_PRICE
+        fun isWeightPosition() = position == LABEL_WEIGHT
 
-    fun isTransparentBlackColor() = type == TRANSPARENT_BLACK
-    fun isTextDarkOrangeColor() = type == TEXT_DARK_ORANGE
-    fun isLightGreenColor() = type == LIGHT_GREEN
+        fun isTransparentBlackColor() = type == TRANSPARENT_BLACK
+        fun isTextDarkOrangeColor() = type == TEXT_DARK_ORANGE
+        fun isLightGreenColor() = type == LIGHT_GREEN
+    }
 }
 
 /**

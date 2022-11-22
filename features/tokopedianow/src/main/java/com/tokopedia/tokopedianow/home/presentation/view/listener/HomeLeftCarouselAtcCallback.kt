@@ -103,8 +103,8 @@ class HomeLeftCarouselAtcCallback (
         openAppLink(appLink)
 
         analytics.trackClickViewAllLeftCarousel(
-            channelId = channelId,
-            channelHeaderName = headerName
+            id = channelId,
+            headerName = headerName
         )
     }
 
@@ -139,8 +139,8 @@ class HomeLeftCarouselAtcCallback (
         openAppLink(seeMoreUiModel.appLink)
 
         analytics.trackClickViewAllLeftCarousel(
-            channelId = seeMoreUiModel.channelId,
-            channelHeaderName = seeMoreUiModel.channelHeaderName
+            id = seeMoreUiModel.id,
+            headerName = seeMoreUiModel.headerName
         )
     }
 
