@@ -8,7 +8,7 @@
         android:id="@+id/icon_partner"
         android:layout_width="32dp"
         android:layout_height="32dp"
-        android:src="@drawable/ic_gojek_logo"
+        android:src="@drawable/privacy_center_ic_gojek"
         app:layout_constraintBottom_toBottomOf="@+id/description_account_linking"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/name_partner" />
