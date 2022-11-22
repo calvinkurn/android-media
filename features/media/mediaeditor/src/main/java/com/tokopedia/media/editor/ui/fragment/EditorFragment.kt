@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.fragment.app.activityViewModels
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -51,6 +52,8 @@ class EditorFragment @Inject constructor(
     private var activeImageUrl: String = ""
     private var loader: LoaderDialog? = null
     private var autoCropStartTime: Long = 0
+
+    private var toaster: Snackbar? = null
 
     fun isShowDialogConfirmation(): Boolean {
         return viewModel.getEditState(activeImageUrl)?.editList?.isNotEmpty() ?: false
@@ -208,6 +211,7 @@ class EditorFragment @Inject constructor(
                     putExtra(DetailEditorActivity.PARAM_EDITOR, viewModel.editorParam.value)
                 }
 
+                toaster?.dismiss()
                 startActivityForResult(intent, DetailEditorActivity.EDITOR_RESULT_CODE)
             }
         }
@@ -364,7 +368,7 @@ class EditorFragment @Inject constructor(
             val ratioWidth = autoCropRatio?.getRatioX()?.toFloat() ?: 1f
             val ratioHeight = autoCropRatio?.getRatioY()?.toFloat() ?: 1f
 
-            Toaster.build(
+            toaster = Toaster.build(
                 editorFragmentContainer,
                 getString(
                     editorR.string.editor_auto_crop_format,
@@ -373,7 +377,8 @@ class EditorFragment @Inject constructor(
                 ),
                 Toaster.LENGTH_LONG,
                 Toaster.TYPE_NORMAL
-            ).show()
+            )
+            toaster?.show()
         }
     }
 

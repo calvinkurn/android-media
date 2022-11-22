@@ -23,6 +23,9 @@
     <string name="editor_undo_state_format">Undo %s</string>
     <string name="editor_redo_state_format">Redo %s</string>
     <string name="editor_auto_crop_format">Foto berhasil dipotong %d:%d secara otomatis. Untuk mengatur posisinya, pilih editor Crop.</string>
+    <string name="editor_add_logo_toast_text">Yah, koneksi internetmu terputus saat gunakan fitur ini. Coba lagi, ya.</string>
+    <string name="editor_add_logo_toast_cta">Oke</string>
+    <string name="editor_add_logo_toast_final">Tidak ada koneksi internet</string>
     
     <!-- Dialog confirmation text -->
     <string name="editor_detail_activity_dialog_title">Batal simpan edit media?</string>
