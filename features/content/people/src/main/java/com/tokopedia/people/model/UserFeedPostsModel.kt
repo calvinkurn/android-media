@@ -1,285 +1,284 @@
 package com.tokopedia.people.model
 
 import com.google.gson.annotations.SerializedName
-import com.tokopedia.library.baseadapter.BaseItem
 
 data class UserFeedPostsModel(
     @SerializedName("feedXProfileGetProfilePosts")
-    val feedXProfileGetProfilePosts: FeedXProfileGetProfilePosts,
+    val feedXProfileGetProfilePosts: FeedXProfileGetProfilePosts = FeedXProfileGetProfilePosts(),
 )
 
 data class FeedXProfileGetProfilePosts(
     @SerializedName("pagination")
-    val pagination: Pagination,
+    val pagination: Pagination = Pagination(),
     @SerializedName("posts")
-    val posts: List<Post>,
+    val posts: List<Post> = emptyList(),
 )
 
 data class Pagination(
     @SerializedName("cursor")
-    val cursor: String,
+    val cursor: String = "",
     @SerializedName("hasNext")
-    val hasNext: Boolean,
+    val hasNext: Boolean = false,
     @SerializedName("totalData")
-    val totalData: Int,
+    val totalData: Int = 0,
 )
 
 data class Post(
     @SerializedName("__typename")
-    val __typename: String,
+    val typename: String = "",
     @SerializedName("actionButtonLabel")
-    val actionButtonLabel: String,
+    val actionButtonLabel: String = "",
     @SerializedName("actionButtonOperationApp")
-    val actionButtonOperationApp: String,
+    val actionButtonOperationApp: String = "",
     @SerializedName("actionButtonOperationWeb")
-    val actionButtonOperationWeb: String,
+    val actionButtonOperationWeb: String = "",
     @SerializedName("appLink")
-    val appLink: String,
+    val appLink: String = "",
     @SerializedName("author")
-    val author: Author,
+    val author: Author = Author(),
     @SerializedName("comm")
-    val comm: Comm,
+    val comment: Comment = Comment(),
     @SerializedName("deletable")
-    val deletable: Boolean,
+    val deletable: Boolean = false,
     @SerializedName("editable")
-    val editable: Boolean,
+    val editable: Boolean = false,
     @SerializedName("fol")
-    val fol: Fol,
+    val followers: Followers = Followers(),
     @SerializedName("hashtagAppLinkFmt")
-    val hashtagAppLinkFmt: String,
+    val hashtagAppLinkFmt: String = "",
     @SerializedName("hashtagWebLinkFmt")
-    val hashtagWebLinkFmt: String,
+    val hashtagWebLinkFmt: String = "",
     @SerializedName("id")
-    val id: String,
+    val id: String = "",
     @SerializedName("like")
-    val like: Like,
+    val like: Like = Like(),
     @SerializedName("media")
-    val media: List<Media>,
+    val media: List<Media> = emptyList(),
     @SerializedName("mediaRatio")
-    val mediaRatio: MediaRatio,
+    val mediaRatio: MediaRatio = MediaRatio(),
     @SerializedName("mods")
-    val mods: List<String>,
+    val mods: List<String> = emptyList(),
     @SerializedName("publishedAt")
-    val publishedAt: String,
+    val publishedAt: String = "",
     @SerializedName("reportable")
-    val reportable: Boolean,
+    val reportable: Boolean = false,
     @SerializedName("sh")
-    val sh: Sh,
+    val share: Share = Share(),
     @SerializedName("subTitle")
-    val subTitle: String,
+    val subTitle: String = "",
     @SerializedName("tags")
-    val tags: List<Tag>,
+    val tags: List<Tag> = emptyList(),
     @SerializedName("text")
-    val text: String,
+    val text: String = "",
     @SerializedName("title")
-    val title: String,
+    val title: String = "",
     @SerializedName("views")
-    val views: Views,
+    val views: Views = Views(),
     @SerializedName("webLink")
-    val webLink: String,
+    val webLink: String = "",
 )
 
 data class Author(
     @SerializedName("id")
-    val id: String,
+    val id: String = "",
     @SerializedName("type")
-    val type: Int,
+    val type: Int = 0,
     @SerializedName("name")
-    val name: String,
+    val name: String = "",
     @SerializedName("description")
-    val description: String,
+    val description: String = "",
     @SerializedName("badgeURL")
-    val badgeURL: String,
+    val badgeURL: String = "",
     @SerializedName("logoURL")
-    val logoURL: String,
+    val logoURL: String = "",
     @SerializedName("webLink")
-    val webLink: String,
+    val webLink: String = "",
     @SerializedName("appLink")
-    val appLink: String,
+    val appLink: String = "",
     @SerializedName("encryptedUserID")
-    val encryptedUserID: String,
+    val encryptedUserID: String = "",
 )
 
-data class Comm(
+data class Comment(
     @SerializedName("count")
-    val count: Int,
+    val count: Int = 0,
     @SerializedName("countFmt")
-    val countFmt: String,
+    val countFmt: String = "",
     @SerializedName("items")
-    val items: List<CommList>,
+    val items: List<CommentList> = emptyList(),
     @SerializedName("label")
-    val label: String,
+    val label: String = "",
     @SerializedName("mods")
-    val mods: List<String>,
+    val mods: List<String> = emptyList(),
 )
 
-data class CommList(
+data class CommentList(
     @SerializedName("id")
-    val id: String,
+    val id: String = "",
     @SerializedName("author")
-    val author: Author,
+    val author: Author = Author(),
     @SerializedName("text")
-    val text: String,
+    val text: String = "",
     @SerializedName("mods")
-    val mods: List<String>,
+    val mods: List<String> = emptyList(),
 )
 
-data class Fol(
+data class Followers(
     @SerializedName("count")
-    val count: Int,
+    val count: Int = 0,
     @SerializedName("countFmt")
-    val countFmt: String,
+    val countFmt: String = "",
     @SerializedName("isFollowed")
-    val isFollowed: Boolean,
+    val isFollowed: Boolean = false,
     @SerializedName("label")
-    val label: String,
+    val label: String = "",
     @SerializedName("mods")
-    val mods: List<String>,
+    val mods: List<String> = emptyList(),
 )
 
 data class Like(
     @SerializedName("count")
-    val count: Int,
+    val count: Int = 0,
     @SerializedName("countFmt")
-    val countFmt: String,
+    val countFmt: String = "",
     @SerializedName("isLiked")
-    val isLiked: Boolean,
+    val isLiked: Boolean = false,
     @SerializedName("label")
-    val label: String,
+    val label: String = "",
     @SerializedName("likedBy")
-    val likedBy: List<String>,
+    val likedBy: List<String> = emptyList(),
     @SerializedName("mods")
-    val mods: List<String>,
+    val mods: List<String> = emptyList(),
 )
 
 data class Media(
     @SerializedName("appLink")
-    val appLink: String,
+    val appLink: String = "",
     @SerializedName("coverURL")
-    val coverURL: String,
+    val coverURL: String = "",
     @SerializedName("id")
-    val id: String,
+    val id: String = "",
     @SerializedName("mediaURL")
-    val mediaURL: String,
+    val mediaURL: String = "",
     @SerializedName("mods")
-    val mods: List<String>,
+    val mods: List<String> = emptyList(),
     @SerializedName("tagging")
-    val tagging: List<Tagging>,
+    val tagging: List<Tagging> = emptyList(),
     @SerializedName("type")
-    val type: String,
+    val type: String = "",
     @SerializedName("webLink")
-    val webLink: String,
+    val webLink: String = "",
 )
 
 data class MediaRatio(
     @SerializedName("height")
-    val height: Int,
+    val height: Int = 0,
     @SerializedName("width")
-    val width: Int,
+    val width: Int = 0,
 )
 
-data class Sh(
+data class Share(
     @SerializedName("label")
-    val label: String,
+    val label: String = "",
     @SerializedName("mods")
-    val mods: List<String>,
+    val mods: List<String> = emptyList(),
     @SerializedName("operation")
-    val operation: String,
+    val operation: String = "",
 )
 
 data class Tag(
     @SerializedName("appLink")
-    val appLink: String,
+    val appLink: String = "",
     @SerializedName("bebasOngkirStatus")
-    val bebasOngkirStatus: String,
+    val bebasOngkirStatus: String = "",
     @SerializedName("bebasOngkirURL")
-    val bebasOngkirURL: String,
+    val bebasOngkirURL: String = "",
     @SerializedName("bestSellerFmt")
-    val bestSellerFmt: String,
+    val bestSellerFmt: String = "",
     @SerializedName("cashbackFmt")
-    val cashbackFmt: String,
+    val cashbackFmt: String = "",
     @SerializedName("countReview")
-    val countReview: Int,
+    val countReview: Int = 0,
     @SerializedName("countReviewFmt")
-    val countReviewFmt: String,
+    val countReviewFmt: String = "",
     @SerializedName("coverURL")
-    val coverURL: String,
+    val coverURL: String = "",
     @SerializedName("discount")
-    val discount: Int,
+    val discount: Int = 0,
     @SerializedName("discountFmt")
-    val discountFmt: String,
+    val discountFmt: String = "",
     @SerializedName("etaShipping")
-    val etaShipping: String,
+    val etaShipping: String = "",
     @SerializedName("halalFmt")
-    val halalFmt: String,
+    val halalFmt: String = "",
     @SerializedName("id")
-    val id: String,
+    val id: String = "",
     @SerializedName("isBebasOngkir")
-    val isBebasOngkir: Boolean,
+    val isBebasOngkir: Boolean = false,
     @SerializedName("isBestSeller")
-    val isBestSeller: Boolean,
+    val isBestSeller: Boolean = false,
     @SerializedName("isCashback")
-    val isCashback: Boolean,
+    val isCashback: Boolean = false,
     @SerializedName("isDiscount")
-    val isDiscount: Boolean,
+    val isDiscount: Boolean = false,
     @SerializedName("isHalal")
-    val isHalal: Boolean,
+    val isHalal: Boolean = false,
     @SerializedName("isPricePerPiece")
-    val isPricePerPiece: Boolean,
+    val isPricePerPiece: Boolean = false,
     @SerializedName("mods")
-    val mods: List<String>,
+    val mods: List<String> = emptyList(),
     @SerializedName("name")
-    val name: String,
+    val name: String = "",
     @SerializedName("price")
-    val price: Double,
+    val price: Double = 0.0,
     @SerializedName("priceDiscount")
-    val priceDiscount: Double,
+    val priceDiscount: Double = 0.0,
     @SerializedName("priceDiscountFmt")
-    val priceDiscountFmt: String,
+    val priceDiscountFmt: String = "",
     @SerializedName("priceFmt")
-    val priceFmt: String,
+    val priceFmt: String = "",
     @SerializedName("priceOriginal")
-    val priceOriginal: Double,
+    val priceOriginal: Double = 0.0,
     @SerializedName("priceOriginalFmt")
-    val priceOriginalFmt: String,
+    val priceOriginalFmt: String = "",
     @SerializedName("pricePerPieceFmt")
-    val pricePerPieceFmt: String,
+    val pricePerPieceFmt: String = "",
     @SerializedName("shopBadgeURL")
-    val shopBadgeURL: String,
+    val shopBadgeURL: String = "",
     @SerializedName("shopID")
-    val shopID: String,
+    val shopID: String = "",
     @SerializedName("shopName")
-    val shopName: String,
+    val shopName: String = "",
     @SerializedName("shopType")
-    val shopType: Int,
+    val shopType: Int = 0,
     @SerializedName("shopTypeName")
-    val shopTypeName: String,
+    val shopTypeName: String = "",
     @SerializedName("star")
-    val star: Int,
+    val star: Int = 0,
     @SerializedName("totalSold")
-    val totalSold: Int,
+    val totalSold: Int = 0,
     @SerializedName("totalSoldFmt")
-    val totalSoldFmt: String,
+    val totalSoldFmt: String = "",
     @SerializedName("webLink")
-    val webLink: String,
+    val webLink: String = "",
 )
 
 data class Tagging(
     @SerializedName("posX")
-    val posX: Double,
+    val posX: Double = 0.0,
     @SerializedName("posY:")
-    val posY: Double,
+    val posY: Double = 0.0,
     @SerializedName("tagIndex")
-    val tagIndex: Int,
+    val tagIndex: Int = 0,
 )
 
 data class Views(
     @SerializedName("count")
-    val count: Int,
+    val count: Int = 0,
     @SerializedName("countFmt")
-    val countFmt: String,
+    val countFmt: String = "",
     @SerializedName("label")
-    val label: String,
+    val label: String = "",
     @SerializedName("mods")
-    val mods: List<String>,
+    val mods: List<String> = emptyList(),
 )
