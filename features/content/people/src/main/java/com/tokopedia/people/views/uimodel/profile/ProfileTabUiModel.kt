@@ -5,7 +5,7 @@ package com.tokopedia.people.views.uimodel.profile
  */
 data class ProfileTabUiModel(
     val showTabs: Boolean = false,
-    val tabs: List<Tab> = listOf(),
+    val tabs: List<Tab> = emptyList(),
 ) {
     data class Tab(
         val title: String = "",

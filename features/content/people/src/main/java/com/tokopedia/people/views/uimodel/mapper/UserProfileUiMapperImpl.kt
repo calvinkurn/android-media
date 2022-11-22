@@ -89,7 +89,7 @@ class UserProfileUiMapperImpl @Inject constructor() : UserProfileUiMapper {
                         )
                     }.sortedBy { it.position }
                 } else {
-                    listOf()
+                    emptyList()
                 },
             )
         }
