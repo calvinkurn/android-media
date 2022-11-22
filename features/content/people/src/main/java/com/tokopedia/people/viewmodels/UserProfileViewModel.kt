@@ -331,6 +331,7 @@ class UserProfileViewModel @AssistedInject constructor(
         if (result.isShown) {
             val items = if (cursor.isEmpty()) result.items
             else _shopRecom.value.items + result.items
+
             _shopRecom.update {
                 it.copy(
                     isShown = result.isShown,

@@ -835,6 +835,7 @@ class FeedViewModel @Inject constructor(
             if (request.shopRecomUiModel.isShown) {
                 val items = if (nextCursor.isEmpty()) request.shopRecomUiModel.items
                 else _shopRecom.value.shopRecomUiModel.items + request.shopRecomUiModel.items
+
                 _shopRecom.update {
                     it.copy(
                         shopRecomUiModel = it.shopRecomUiModel.copy(
