@@ -25,14 +25,16 @@ class AdditionalParam(
 /**
  * Encapsulates all the page details
  *
- * @param[pageId] productId for Product, shopId for Shop and campaignId for campaign
+ * @param[pageId] productId for Product, shopId for Shop, empty for discovery
  * @param[source] [AffiliateSdkPageSource]
+ * @param[pageName] campaign slug, empty for Product and Shop
  * @param[siteId] if not provided default value is always 1
  * @param[verticalId] if not provided default value is always 1
  */
 class AffiliatePageDetail(
-    val pageId: String,
+    val pageId: String = "",
     val source: AffiliateSdkPageSource,
+    val pageName: String = "",
     val siteId: String = "1",
     val verticalId: String = "1"
 )
@@ -70,6 +72,15 @@ sealed class AffiliateSdkPageSource(
     class Shop(shopId: String = "") :
         AffiliateSdkPageSource(shopId) {
         override fun getType() = AffiliateSdkConstant.SHOP
+        override fun shouldCallCheckCookie() = true
+    }
+
+    /**
+     * Encapsulates info for Discovery page source.
+     */
+    class Discovery :
+        AffiliateSdkPageSource("") {
+        override fun getType() = AffiliateSdkConstant.CAMPAIGN
         override fun shouldCallCheckCookie() = true
     }
 
