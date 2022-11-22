@@ -3075,7 +3075,8 @@ class NewShopPageFragment :
             affiliateData?.affiliateChannel.orEmpty(),
             productId,
             isVariant,
-            stockQty
+            stockQty,
+            shopId
         )
     }
 }

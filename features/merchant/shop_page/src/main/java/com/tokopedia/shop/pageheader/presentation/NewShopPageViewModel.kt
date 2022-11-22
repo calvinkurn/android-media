@@ -644,11 +644,13 @@ class NewShopPageViewModel @Inject constructor(
         affiliateChannel: String,
         productId: String,
         isVariant: Boolean,
-        stockQty: Int
+        stockQty: Int,
+        shopId: String
     ) {
         launchCatchError(dispatcherProvider.io, block = {
             val affiliateSdkDirectAtcSource = AffiliateSdkPageSource.DirectATC(
                 AffiliateAtcSource.SHOP_PAGE,
+                shopId,
                 AffiliateSdkProductInfo("", isVariant, stockQty)
             )
             affiliateCookieHelper.initCookie(

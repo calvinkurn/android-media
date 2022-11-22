@@ -638,7 +638,8 @@ class ShopPageProductListResultFragment : BaseListFragment<BaseShopProductViewMo
             affiliateChannel,
             affiliateAtcProductModel.productId,
             affiliateAtcProductModel.isVariant,
-            affiliateAtcProductModel.stockQty
+            affiliateAtcProductModel.stockQty,
+            shopId.orEmpty()
         )
     }
 
