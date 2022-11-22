@@ -14,6 +14,7 @@ import com.tokopedia.entertainment.pdp.network_api.GetEventRedeemUseCase
 import com.tokopedia.entertainment.pdp.network_api.GetEventRedeemedUseCase
 import com.tokopedia.entertainment.pdp.network_api.RedeemTicketEventUseCase
 import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -44,7 +45,7 @@ class EventRedeemRevampViewModel @Inject constructor(
     private val _inputRedeemedUrl = MutableSharedFlow<String>(Int.ONE)
     private val _inputOldRedeemedUrl = MutableSharedFlow<String>(Int.ONE)
     var listRedemptions: List<Participant> = mutableListOf()
-    var oldFlowQuantity: Int = 0
+    var oldFlowQuantity: Int = Int.ZERO
 
     val flowRedeemData: SharedFlow<Result<EventRedeem>> =
         _inputRedeemUrl.flatMapConcat {
@@ -97,6 +98,14 @@ class EventRedeemRevampViewModel @Inject constructor(
         _inputOldRedeemedUrl.tryEmit(redeemUrl)
     }
 
+    fun updateCheckedIds(listCheckedIds: List<Pair<String, Boolean>>) {
+        EventRedeemMapper.updateCheckedIds(listRedemptions, listCheckedIds)
+    }
+
+    fun getCheckedIdsSize(): Int {
+        return EventRedeemMapper.getCheckedIdsSize(listRedemptions)
+    }
+
     private suspend fun getRedeemData(redeemUrl: String): Result<EventRedeem> {
         getEventRedeemUseCase.setUrlRedeem(redeemUrl)
         val response = withContext(dispatcher.io) {
@@ -143,14 +152,6 @@ class EventRedeemRevampViewModel @Inject constructor(
             val error = convertToErrorResponseRedeemed(response)
             Fail(MessageErrorException(error))
         }
-    }
-
-    fun updateCheckedIds(listCheckedIds: List<Pair<String, Boolean>>) {
-        EventRedeemMapper.updateCheckedIds(listRedemptions, listCheckedIds)
-    }
-
-    fun getCheckedIdsSize(): Int {
-        return EventRedeemMapper.getCheckedIdsSize(listRedemptions)
     }
 
     private fun updateListRedemptionAndQuantity(redeemData: EventRedeem) {

@@ -336,7 +336,7 @@ class EventRedeemRevampFragment : BaseDaggerFragment(),
      * Redemption is null or empty or one will have first condition
      * * * Empty or null redemption will hit old redeem
      * * * One Redemption will hit new redeem
-     * Redemption is not all redeemed will have second condition
+     * Multiple Redeem will have second condition
      **/
     private fun renderRedeemLayout() {
         binding?.run {
@@ -383,7 +383,7 @@ class EventRedeemRevampFragment : BaseDaggerFragment(),
 
     /***
      * isFromScan mean get the redeem success from start
-     * if got isFromScan will show all redeemen without quantity showing
+     * if got isFromScan will show all redeemen without quantity showing and will show time redeemed
      **/
     private fun renderSuccessRedeemLayout(isFromScan: Boolean, qty: Int, date: String) {
         binding?.run {
