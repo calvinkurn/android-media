@@ -69,7 +69,7 @@ class RecommendationFriendBottomSheet : BottomSheetUnify() {
             getString(R.string.privacy_account_bottom_sheet_clarification_image_banner_2),
             getString(R.string.privacy_account_bottom_sheet_clarification_image_banner_3)
         )
-        binding?.carouselClarification?.addItems(R.layout.item_custom_image_banner, listImageBanner, itemParam)
+        binding?.carouselClarification?.addItems(R.layout.item_custom_image_banner_privacy_center, listImageBanner, itemParam)
     }
 
     private fun setViewDescCheckBox() {
