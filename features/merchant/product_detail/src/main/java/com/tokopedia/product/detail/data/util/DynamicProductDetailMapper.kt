@@ -677,7 +677,6 @@ object DynamicProductDetailMapper {
                     || (it.name() == ProductDetailConstant.PRODUCT_FULLFILMENT)
                     || (it.name() == ProductDetailConstant.PRODUCT_INSTALLMENT_PAYLATER_INFO)
                     || (it.name() == ProductDetailConstant.ORDER_PRIORITY)
-                    || (it.name() == ProductDetailConstant.COD)
                     /**
                      * Remove when lollipop and sellerapp
                      */

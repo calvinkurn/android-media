@@ -1375,7 +1375,6 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         Assert.assertTrue(p1Result.none { it.name() == ProductDetailConstant.PRODUCT_INSTALLMENT_PAYLATER_INFO })
         Assert.assertTrue(p1Result.none { it.name() == ProductDetailConstant.PRODUCT_FULLFILMENT })
         Assert.assertTrue(p1Result.none { it.name() == ProductDetailConstant.ORDER_PRIORITY })
-        Assert.assertTrue(p1Result.none { it.name() == ProductDetailConstant.COD })
 
         Assert.assertTrue(p1Result.any { it.name() == ProductDetailConstant.MEDIA })
         Assert.assertTrue(p1Result.any { it.name() == ProductDetailConstant.TICKER_INFO })

@@ -41,7 +41,7 @@
         android:id="@+id/product_statistic_layout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/unify_space_8"
+        android:layout_marginStart="8dp"
         android:background="@drawable/grey_nn100_rounded_corner"
         android:gravity="center"
         app:layout_constraintBottom_toBottomOf="@id/tpg_product_price"

@@ -7,13 +7,16 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.PorterDuff
 import android.graphics.Rect
+import android.graphics.Typeface
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.GradientDrawable
 import android.graphics.drawable.LayerDrawable
 import android.net.Uri
 import android.os.Build
+import android.text.Spannable
 import android.text.SpannableStringBuilder
 import android.text.SpannedString
+import android.text.style.StyleSpan
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
@@ -33,7 +36,6 @@ import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.graphql.data.model.GraphqlError
-import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
@@ -424,6 +426,19 @@ inline fun buildSpannedString(builderAction: SpannableStringBuilder.() -> Unit):
     return SpannedString(builder)
 }
 
+inline fun SpannableStringBuilder.inSpans(
+    span: Any,
+    builderAction: SpannableStringBuilder.() -> Unit
+): SpannableStringBuilder {
+    val start = length
+    builderAction()
+    setSpan(span, start, length, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
+    return this
+}
+
+inline fun SpannableStringBuilder.bold(builderAction: SpannableStringBuilder.() -> Unit) =
+    inSpans(StyleSpan(Typeface.BOLD), builderAction = builderAction)
+
 suspend fun getBitmapFromUrl(
     context: Context,
     url: String,
@@ -449,4 +464,17 @@ suspend fun getBitmapFromUrl(
     cont.invokeOnCancellation {
         Glide.with(context).clear(target)
     }
+}
+
+inline fun View.updateLayoutParams(block: ViewGroup.LayoutParams.() -> Unit) {
+    updateLayoutParams<ViewGroup.LayoutParams>(block)
+}
+
+@JvmName("updateLayoutParamsTyped")
+inline fun <reified T : ViewGroup.LayoutParams> View.updateLayoutParams(
+    block: T.() -> Unit
+) {
+    val params = layoutParams as T
+    block(params)
+    layoutParams = params
 }

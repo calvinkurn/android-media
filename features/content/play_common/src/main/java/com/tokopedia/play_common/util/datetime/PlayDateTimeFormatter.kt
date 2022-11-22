@@ -1,7 +1,9 @@
 package com.tokopedia.play_common.util.datetime
 
+import com.tokopedia.utils.date.*
 import java.text.SimpleDateFormat
 import java.util.*
+import java.util.concurrent.TimeUnit
 
 /**
  * Created By : Jonathan Darwin on August 24, 2021
@@ -109,5 +111,16 @@ object PlayDateTimeFormatter {
         catch (e: Exception) {
             ""
         }
+    }
+
+    fun getToday(): Date {
+        return Calendar.getInstance(TimeZone.getTimeZone(GMT), locale).time
+    }
+
+    fun Date.getDayDiffFromToday(): Long {
+        val leftDate = this.trimDate()
+        val rightDate = getToday()
+        val diff = leftDate.time - rightDate.time
+        return TimeUnit.DAYS.convert(diff, TimeUnit.MILLISECONDS)
     }
 }
