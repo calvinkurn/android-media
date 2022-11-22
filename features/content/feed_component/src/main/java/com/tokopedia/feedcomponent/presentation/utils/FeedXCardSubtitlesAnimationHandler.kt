@@ -1,12 +1,11 @@
 package com.tokopedia.feedcomponent.presentation.utils
 
-import android.animation.Animator
-import android.animation.Animator.AnimatorListener
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.animation.PropertyValuesHolder
 import android.annotation.SuppressLint
 import android.content.res.Resources
+import android.os.Handler
 import android.view.View
 import java.lang.ref.WeakReference
 import java.util.*
@@ -131,22 +130,6 @@ class FeedXCardSubtitlesAnimationHandler(
                     PropertyValuesHolder.ofFloat(View.TRANSLATION_Y, dpToPx(48), 0f)
                 val translateAnimObjTwo: ObjectAnimator =
                     ObjectAnimator.ofPropertyValuesHolder(v2, translateAnimPropTwo)
-                translateAnimObjTwo.addListener(object : AnimatorListener {
-                    override fun onAnimationStart(animation: Animator?) {
-
-                    }
-
-                    override fun onAnimationEnd(animation: Animator?) {
-                        afterAnimationComplete()
-                    }
-
-                    override fun onAnimationCancel(animation: Animator?) {
-                    }
-
-                    override fun onAnimationRepeat(animation: Animator?) {
-
-                    }
-                })
 
                 animatorSet = AnimatorSet()
                 animatorSet?.playTogether(
@@ -155,6 +138,8 @@ class FeedXCardSubtitlesAnimationHandler(
                 )
                 animatorSet?.duration = 600L
                 animatorSet?.start()
+
+                Handler().postDelayed({ afterAnimationComplete() }, animatorSet?.duration ?: 600L)
             }
         }
     }
