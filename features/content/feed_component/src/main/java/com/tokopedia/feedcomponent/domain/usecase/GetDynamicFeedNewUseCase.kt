@@ -304,6 +304,7 @@ query feedxhome(${'$'}req: FeedXHomeRequest!) {
       ... on FeedXCardProductsHighlight {
         id
         type
+        hasVoucher
         author {
           id
           type
@@ -439,8 +440,10 @@ val DETAIL_ID = "sourceID"
 val SOURCE = "source"
 
 @GqlQuery("GetFeedXHomeQuery", FEED_X_QUERY)
-class GetDynamicFeedNewUseCase @Inject constructor(@ApplicationContext context: Context, graphqlRepository: GraphqlRepository)
-    : GraphqlUseCase<FeedXData>(graphqlRepository) {
+class GetDynamicFeedNewUseCase @Inject constructor(
+    @ApplicationContext context: Context,
+    graphqlRepository: GraphqlRepository
+) : GraphqlUseCase<FeedXData>(graphqlRepository) {
 
     var context: Context? = null
 
@@ -453,8 +456,8 @@ class GetDynamicFeedNewUseCase @Inject constructor(@ApplicationContext context: 
 
     fun setParams(cursor: String, limit: Int, detailId: String = "") {
         val queryMap = mutableMapOf(
-                CURSOR to cursor,
-                LIMIT to limit
+            CURSOR to cursor,
+            LIMIT to limit
         )
         if (!TextUtils.isEmpty(detailId)) {
             queryMap[DETAIL_ID] = detailId
@@ -465,14 +468,20 @@ class GetDynamicFeedNewUseCase @Inject constructor(@ApplicationContext context: 
     }
 
     suspend fun execute(cursor: String = "", limit: Int = 5, detailId: String = ""):
-            DynamicFeedDomainModel {
+        DynamicFeedDomainModel {
         this.setParams(cursor, limit, detailId)
         val dynamicFeedResponse = executeOnBackground()
-        val shouldShowNewTopadsOnly = context?.let { TopadsRollenceUtil.shouldShowFeedNewDesignValue(it) }?:true
-        return DynamicFeedNewMapper.map(dynamicFeedResponse.feedXHome, cursor, shouldShowNewTopadsOnly)
+        val shouldShowNewTopadsOnly =
+            context?.let { TopadsRollenceUtil.shouldShowFeedNewDesignValue(it) } ?: true
+        return DynamicFeedNewMapper.map(
+            dynamicFeedResponse.feedXHome,
+            cursor,
+            shouldShowNewTopadsOnly
+        )
     }
+
     suspend fun executeForCDP(cursor: String = "", limit: Int = 5, detailId: String = ""):
-            FeedXData {
+        FeedXData {
         this.setParams(cursor, limit, detailId)
         return executeOnBackground()
     }
