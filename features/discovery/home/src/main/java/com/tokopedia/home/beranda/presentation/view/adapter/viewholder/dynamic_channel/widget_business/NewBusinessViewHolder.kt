@@ -24,8 +24,6 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_ch
 import com.tokopedia.home_component.customview.DynamicChannelHeaderView
 import com.tokopedia.home_component.customview.HeaderListener
 import com.tokopedia.home_component.model.*
-import com.tokopedia.home_component.util.ChannelStyleUtil
-import com.tokopedia.home_component.util.ChannelStyleUtil.parseBorderStyle
 import com.tokopedia.home_component.util.ChannelWidgetUtil
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -165,8 +163,7 @@ class NewBusinessViewHolder(view: View, private val listener: HomeCategoryListen
         ChannelWidgetUtil.validateHomeComponentDivider(
             channelModel = element?.channelModel,
             dividerTop = dividerTop,
-            dividerBottom = dividerBottom,
-            useBottomPadding = element?.channelModel?.channelConfig?.borderStyle == ChannelStyleUtil.BORDER_STYLE_BLEEDING
+            dividerBottom = dividerBottom
         )
     }
 
