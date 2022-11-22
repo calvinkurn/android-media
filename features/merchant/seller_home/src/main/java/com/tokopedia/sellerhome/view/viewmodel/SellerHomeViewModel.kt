@@ -265,10 +265,6 @@ class SellerHomeViewModel @Inject constructor(
         })
     }
 
-    private fun saveRawWidgets(widgets: List<BaseWidgetUiModel<*>>) {
-        this.rawWidgetList = widgets
-    }
-
     fun getCardWidgetData(dataKeys: List<String>) {
         launchCatchError(block = {
             val params = GetCardDataUseCase.getRequestParams(dataKeys, dynamicParameter)
@@ -493,6 +489,10 @@ class SellerHomeViewModel @Inject constructor(
 
     fun stopSSE() {
         widgetSse.get().closeSse()
+    }
+
+    private fun saveRawWidgets(widgets: List<BaseWidgetUiModel<*>>) {
+        this.rawWidgetList = widgets
     }
 
     private suspend fun <T : Any> BaseGqlUseCase<T>.executeUseCase() = withContext(dispatcher.io) {
