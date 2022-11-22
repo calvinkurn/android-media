@@ -24,6 +24,7 @@ import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker.Event.O
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker.Event.PRODUCT_CLICK
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker.Event.PRODUCT_VIEW
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker.Event.PROMO_VIEW
+import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker.Event.SELECT_CONTENT
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker.Screen.MARKETPLACE
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker.Screen.SCREEN_DIMENSION_IS_FEED_EMPTY
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker.Screen.SCREEN_DIMENSION_IS_LOGGED_IN_STATUS
@@ -98,6 +99,8 @@ class FeedAnalyticTracker
         const val OPEN_SCREEN = "openScreen"
         const val ADD_TO_CART = "addToCart"
         const val CONTENT = "content"
+
+        const val SELECT_CONTENT = "select_content"
 
         const val PROMO_CLICK = "promoClick"
         const val CLICK_PG = "clickPG"
@@ -416,7 +419,7 @@ class FeedAnalyticTracker
     ) {
         val asgcCampaignTrackerId = if (campaignStatus.isNotEmpty() && isFollowed) "17983" else "13432"
         val typeAction = if (mediaType == MediaType.VIDEO && type!= TYPE_FEED_X_CARD_PLAY)
-            "tag product"
+            "product tag"
         else
             "lihat produk"
 
@@ -433,7 +436,7 @@ class FeedAnalyticTracker
             )
 
         var map = mapOf(
-            KEY_EVENT to getEvent(campaignStatus.isNotEmpty()),
+            KEY_EVENT to SELECT_CONTENT,
             KEY_EVENT_CATEGORY to CATEGORY_FEED_TIMELINE,
             KEY_EVENT_ACTION to String.format(
                 FORMAT_THREE_PARAM,
@@ -444,7 +447,6 @@ class FeedAnalyticTracker
            finalLabel,
             KEY_BUSINESS_UNIT_EVENT to "content",
             KEY_CURRENT_SITE_EVENT to MARKETPLACE,
-
             KEY_EVENT_USER_ID to userSessionInterface.userId
         )
         if (campaignStatus.isNotEmpty())
