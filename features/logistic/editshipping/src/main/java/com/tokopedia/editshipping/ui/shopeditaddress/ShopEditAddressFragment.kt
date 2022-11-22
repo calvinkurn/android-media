@@ -513,8 +513,8 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
     private fun moveMap(latLng: LatLng) {
         val cameraPosition = CameraPosition.Builder()
             .target(latLng)
-            .zoom(15f)
-            .bearing(0f)
+            .zoom(MAP_ZOOM)
+            .bearing(MAP_BEARING)
             .build()
 
         googleMap?.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))
@@ -536,6 +536,8 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
     companion object {
         private const val GET_DISTRICT_RECCOMENDATION_REQUEST_CODE = 100
         private const val OPEN_MAP_REQUEST_CODE = 200
+        private const val MAP_ZOOM = 15f
+        private const val MAP_BEARING = 0f
         private const val RESULT_INTENT_DISTRICT_RECOMMENDATION = "district_recommendation_address"
         private const val EXTRA_ADDRESS_MODEL = "EXTRA_ADDRESS_MODEL"
         const val EXTRA_SAVE_DATA_UI_MODEL = "EXTRA_SAVE_DATA_UI_MODEL"
