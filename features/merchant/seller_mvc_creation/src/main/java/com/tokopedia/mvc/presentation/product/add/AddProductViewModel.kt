@@ -221,14 +221,14 @@ class AddProductViewModel @Inject constructor(
 
             val isProductAlreadyOnSelection = product.id in selectedProductIds
             val isSelected = isProductAlreadyOnSelection || (shouldAutomaticallyAddToProductSelection && isEligible)
-
+            val enableCheckbox = (isBelowMaximumProductSelection && isEligible) || isSelected
             product.copy(
                 isEligible = isEligible,
                 ineligibleReason = matchedProduct?.reason.orEmpty(),
                 originalVariants = variants.orEmpty(),
                 selectedVariantsIds = variants?.map { it.variantProductId }?.toSet().orEmpty(),
                 isSelected = isSelected,
-                enableCheckbox = isBelowMaximumProductSelection && isEligible
+                enableCheckbox = enableCheckbox
             )
         }
 
