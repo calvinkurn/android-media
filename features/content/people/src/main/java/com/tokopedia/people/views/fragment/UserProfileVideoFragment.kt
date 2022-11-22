@@ -23,8 +23,10 @@ import com.tokopedia.people.analytic.UserVideoPostImpressCoordinator
 import com.tokopedia.people.analytic.tracker.UserProfileTracker
 import com.tokopedia.people.databinding.UpFragmentVideoBinding
 import com.tokopedia.people.model.PlayPostContentItem
+import com.tokopedia.people.model.UserPostModel
 import com.tokopedia.people.utils.showErrorToast
 import com.tokopedia.people.utils.showToast
+import com.tokopedia.people.utils.withCache
 import com.tokopedia.people.viewmodels.UserProfileViewModel
 import com.tokopedia.people.viewmodels.factory.UserProfileViewModelFactory
 import com.tokopedia.people.views.activity.UserProfileActivity
@@ -42,6 +44,7 @@ import com.tokopedia.people.views.uimodel.action.UserProfileAction
 import com.tokopedia.people.views.uimodel.event.UserProfileUiEvent
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
@@ -216,11 +219,8 @@ class UserProfileVideoFragment @Inject constructor(
     }
 
     override fun onEmptyList(rawObject: Any?) {
-        if (viewModel.isSelfProfile) {
-            emptyPostSelf()
-        } else {
-            emptyPostVisitor()
-        }
+        if (viewModel.isSelfProfile) emptyPostSelf()
+        else emptyPostVisitor()
         binding.userVideoContainer.displayedChild = PAGE_EMPTY
     }
 
