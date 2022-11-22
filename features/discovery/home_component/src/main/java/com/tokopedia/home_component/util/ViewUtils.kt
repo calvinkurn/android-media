@@ -26,7 +26,6 @@ object ChannelWidgetUtil {
         channelModel: ChannelModel?,
         dividerTop: DividerUnify?,
         dividerBottom: DividerUnify?,
-        useBottomPadding: Boolean = false
     ) {
         val dividerSize = channelModel?.channelConfig?.dividerSize?.toPx()
             ?: DEFAULT_DIVIDER_HEIGHT.toPx()
@@ -35,8 +34,7 @@ object ChannelWidgetUtil {
         when(channelModel?.channelConfig?.dividerType) {
             ChannelConfig.DIVIDER_NO_DIVIDER -> {
                 dividerTop?.invisible()
-                if(useBottomPadding) setBottomPadding(dividerBottom)
-                else dividerBottom?.gone()
+                dividerBottom?.gone()
             }
             ChannelConfig.DIVIDER_TOP -> {
                 dividerTop?.visible()
