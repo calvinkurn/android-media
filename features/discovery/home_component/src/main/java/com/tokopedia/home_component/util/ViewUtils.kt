@@ -51,9 +51,10 @@ object ChannelWidgetUtil {
         }
     }
 
-    private fun setBottomPadding(dividerBottom: DividerUnify?) {
-        dividerBottom?.layoutParams?.height = DEFAULT_BOTTOM_PADDING.toPx()
-        dividerBottom?.visible()
+    private fun DividerUnify.invisible() {
+        this.layoutParams?.height = DEFAULT_BOTTOM_PADDING.toPx()
+        this.setBackgroundResource(android.R.color.transparent)
+        this.visible()
     }
 }
 
