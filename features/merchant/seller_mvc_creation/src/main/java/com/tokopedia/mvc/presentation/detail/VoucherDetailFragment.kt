@@ -15,10 +15,7 @@ import com.tokopedia.mvc.databinding.*
 import com.tokopedia.mvc.di.component.DaggerMerchantVoucherCreationComponent
 import com.tokopedia.mvc.domain.entity.VoucherDetailData
 import com.tokopedia.mvc.util.SharingUtil
-import com.tokopedia.mvc.util.constant.DiscountTypeConstant
-import com.tokopedia.mvc.util.constant.PromoTypeConstant
-import com.tokopedia.mvc.util.constant.TargetBuyerConstant
-import com.tokopedia.mvc.util.constant.VoucherStatusConstant
+import com.tokopedia.mvc.util.constant.*
 import com.tokopedia.mvc.util.constant.VoucherTargetConstant.VOUCHER_TARGET_PUBLIC
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.unifyprinciples.Typography
@@ -34,9 +31,10 @@ class VoucherDetailFragment : BaseDaggerFragment() {
 
     companion object {
         @JvmStatic
-        fun newInstance(couponId: Long): VoucherDetailFragment {
+        fun newInstance(voucherId: Long): VoucherDetailFragment {
             return VoucherDetailFragment().apply {
                 arguments = Bundle().apply {
+                    putLong(BundleConstant.BUNDLE_VOUCHER_ID, voucherId)
                 }
             }
         }
@@ -62,6 +60,10 @@ class VoucherDetailFragment : BaseDaggerFragment() {
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(VoucherDetailViewModel::class.java) }
 
+    private val voucherId by lazy {
+        arguments?.getLong(BundleConstant.BUNDLE_VOUCHER_ID).orZero()
+    }
+
     override fun getScreenName(): String =
         VoucherDetailFragment::class.java.canonicalName.orEmpty()
 
@@ -84,7 +86,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         observeData()
-        getVoucherDetailData(14883692)
+        getVoucherDetailData(voucherId)
     }
 
     private fun observeData() {
@@ -166,6 +168,10 @@ class VoucherDetailFragment : BaseDaggerFragment() {
         headerBinding?.run {
             tpgVoucherStatus.apply {
                 when (data.voucherStatus) {
+                    VoucherStatusConstant.NOT_STARTED -> {
+                        text = getString(R.string.smvc_status_upcoming_label)
+                        setTextColorCompat(com.tokopedia.unifyprinciples.R.color.Unify_NN600)
+                    }
                     VoucherStatusConstant.ONGOING -> {
                         text = getString(R.string.smvc_status_ongoing_label)
                         setTextColorCompat(com.tokopedia.unifyprinciples.R.color.Green_G500)
