@@ -1,8 +1,8 @@
 package com.tokopedia.feedplus.domain.model.feed
 
 import com.tokopedia.content.common.model.GetCheckWhitelistResponse
-import com.tokopedia.content.common.model.GetCheckWhitelistResponse.Author.Companion.TYPE_SHOP
-import com.tokopedia.content.common.model.GetCheckWhitelistResponse.Author.Companion.TYPE_USER
+import com.tokopedia.content.common.types.ContentCommonUserType.TYPE_SHOP
+import com.tokopedia.content.common.types.ContentCommonUserType.TYPE_USER
 
 
 /**

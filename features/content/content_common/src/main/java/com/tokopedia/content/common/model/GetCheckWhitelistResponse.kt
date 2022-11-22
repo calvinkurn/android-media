@@ -83,12 +83,5 @@ data class GetCheckWhitelistResponse (
             @SerializedName("has_username")
             val hasUsername: Boolean = false,
         )
-
-        companion object {
-            const val TYPE_AFFILIATE = "affiliate"
-            const val TYPE_SHOP = "content-shop"
-            const val TYPE_USER = "content-user"
-            const val KEY_POST_TOKO = "Post Toko"
-        }
     }
 }
