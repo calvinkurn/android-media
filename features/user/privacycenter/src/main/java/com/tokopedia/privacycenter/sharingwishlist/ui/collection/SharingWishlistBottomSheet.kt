@@ -9,11 +9,15 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.visibleWithCondition
 import com.tokopedia.privacycenter.R
 import com.tokopedia.privacycenter.common.PrivacyCenterStateResult
 import com.tokopedia.privacycenter.common.di.DaggerPrivacyCenterComponent
+import com.tokopedia.privacycenter.common.utils.getMessage
 import com.tokopedia.privacycenter.databinding.SharingWishlistBottomSheetBinding
 import com.tokopedia.privacycenter.sharingwishlist.SharingWishlistConst.COLLECTION_PRIVATE_ID
 import com.tokopedia.privacycenter.sharingwishlist.SharingWishlistConst.COLLECTION_PUBLIC_ID
@@ -23,8 +27,6 @@ import com.tokopedia.privacycenter.sharingwishlist.domain.data.WishlistBydIdData
 import com.tokopedia.privacycenter.sharingwishlist.domain.data.WishlistCollectionByIdDataModel
 import com.tokopedia.privacycenter.sharingwishlist.viewmodel.SharingWishlistViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
@@ -48,7 +50,7 @@ class SharingWishlistBottomSheet constructor(
     private var selectedOption: Int = 0
 
     interface Listener {
-        fun onUpdateSuccess(message: String)
+        fun onUpdateWithMessage(message: String, isSuccess: Boolean)
     }
 
     init {
@@ -93,17 +95,16 @@ class SharingWishlistBottomSheet constructor(
 
     private fun setupView() {
         viewBinding?.apply {
-            publicOption.setOnCheckedChangeListener { buttonView, isChecked ->
-                privateTips.showWithCondition(isChecked)
-                if (isChecked) {
-                    selectedOption = COLLECTION_PUBLIC_ID
-                }
+            publicOption.setOnClickListener {
+                privateOption.isChecked = false
+                privateTips.show()
+                selectedOption = COLLECTION_PUBLIC_ID
             }
 
-            privateOption.setOnCheckedChangeListener { buttonView, isChecked ->
-                if (isChecked) {
-                    selectedOption = COLLECTION_PRIVATE_ID
-                }
+            privateOption.setOnClickListener {
+                publicOption.isChecked = false
+                privateTips.hide()
+                selectedOption = COLLECTION_PRIVATE_ID
             }
 
             buttonSave.setOnClickListener {
@@ -128,21 +129,42 @@ class SharingWishlistBottomSheet constructor(
         viewModel.wishlistCollectionById.observe(viewLifecycleOwner) {
             when(it) {
                 is PrivacyCenterStateResult.Fail -> {
-                    view?.let { v -> Toaster.build(v, it.error.message.toString(), type = TYPE_ERROR).show() }
+                    updateWithMessage(it.error.getMessage(context), false)
                 }
-                is PrivacyCenterStateResult.Loading -> {}
-                is PrivacyCenterStateResult.Success -> onSuccessGetCollectionBydId(it.data)
+                is PrivacyCenterStateResult.Loading -> {
+                    showInitialLoader(true)
+                }
+                is PrivacyCenterStateResult.Success -> {
+                    showInitialLoader(false)
+                    onSuccessGetCollectionBydId(it.data)
+                }
             }
         }
 
         viewModel.updateWishlistCollection.observe(viewLifecycleOwner) {
             when(it) {
                 is PrivacyCenterStateResult.Fail -> {
-                    view?.let { v -> Toaster.build(v, it.error.message.toString(), type = TYPE_ERROR).show() }
+                    updateWithMessage(it.error.getMessage(context), false)
                 }
-                is PrivacyCenterStateResult.Loading -> {}
-                is PrivacyCenterStateResult.Success -> onSuccessUpdateWishlistCollection(it.data.message)
+                is PrivacyCenterStateResult.Loading -> {
+                    viewBinding?.buttonSave?.isLoading = true
+                }
+                is PrivacyCenterStateResult.Success -> updateWithMessage(it.data.message, true)
             }
+        }
+    }
+
+    private fun showInitialLoader(isLoading: Boolean) {
+        viewBinding?.apply {
+            loader.showWithCondition(isLoading)
+            bottomSheetTitle.showWithCondition(!isLoading)
+            privateOption.visibleWithCondition(!isLoading)
+            publicOption.visibleWithCondition(!isLoading)
+            labelPrivate.visibleWithCondition(!isLoading)
+            labelPublic.visibleWithCondition(!isLoading)
+            privateTips.visibleWithCondition(!isLoading)
+            buttonSave.visibleWithCondition(!isLoading)
+            buttonAnotherSetup.visibleWithCondition(!isLoading)
         }
     }
 
@@ -154,11 +176,15 @@ class SharingWishlistBottomSheet constructor(
             privateTips.description = generateTipsText(data.ticker)
             privateOption.isChecked = data.collection.access == COLLECTION_PRIVATE_ID
             publicOption.isChecked = data.collection.access == COLLECTION_PUBLIC_ID
+            selectedOption = data.collection.access
+            privateTips.showWithCondition(
+                data.collection.access == COLLECTION_PUBLIC_ID
+            )
         }
     }
 
-    private fun onSuccessUpdateWishlistCollection(message: String) {
-        listener.onUpdateSuccess(message)
+    private fun updateWithMessage(message: String, isSuccess: Boolean) {
+        listener.onUpdateWithMessage(message, isSuccess)
         this.dismiss()
     }
 

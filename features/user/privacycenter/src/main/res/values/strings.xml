@@ -96,5 +96,7 @@
     <string name="sharing_wishlist_save_button">Simpan</string>
     <string name="sharing_wishlist_another_settup">Ubah Pengaturan Lainnya</string>
     <string name="sharing_wishlist_failed_title">Konten gagal ditampilkan</string>
+    <string name="sharing_wishlist_label_private">Pribadi</string>
+    <string name="sharing_wishlist_label_public">Publik</string>
 
 </resources>

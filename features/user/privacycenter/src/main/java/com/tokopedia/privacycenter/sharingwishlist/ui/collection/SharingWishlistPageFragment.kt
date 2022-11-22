@@ -176,10 +176,18 @@ class SharingWishlistPageFragment : BaseDaggerFragment(),
         )
     }
 
-    override fun onUpdateSuccess(message: String) {
-        view?.let { Toaster.build(it, message).show() }
-        viewModel.getWishlistCollections(collectionAccess)
-        sharedViewModel.notifyPager(collectionAccess)
+    override fun onUpdateWithMessage(message: String, isSuccess: Boolean) {
+        val typeToaster = if (isSuccess) {
+            Toaster.TYPE_NORMAL
+        } else {
+            Toaster.TYPE_ERROR
+        }
+        view?.let { Toaster.build(it, message, type = typeToaster).show() }
+
+        if (isSuccess) {
+            viewModel.getWishlistCollections(collectionAccess)
+            sharedViewModel.notifyPager(collectionAccess)
+        }
     }
 
     companion object {
