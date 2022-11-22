@@ -97,7 +97,7 @@ internal class GetRecommendationUseCaseRequest {
                   }
                 }
 
-    """.trimIndent()
+        """.trimIndent()
 
         val singleQuery = """
             query productRecommendationSingle(${'$'}pageNumber: Int!, ${'$'}pageName: String!, ${'$'}productIDs: String!, ${'$'}queryParam: String!) {
@@ -185,6 +185,6 @@ internal class GetRecommendationUseCaseRequest {
                  }
              }
 
-    """.trimIndent()
+        """.trimIndent()
     }
 }
