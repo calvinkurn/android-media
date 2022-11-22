@@ -57,6 +57,7 @@ import com.tokopedia.people.viewmodels.factory.UserProfileViewModelFactory
 import com.tokopedia.people.views.activity.FollowerFollowingListingActivity
 import com.tokopedia.people.views.activity.UserProfileActivity
 import com.tokopedia.people.views.activity.UserProfileActivity.Companion.EXTRA_USERNAME
+import com.tokopedia.people.views.adapter.UserPostBaseAdapter
 import com.tokopedia.people.views.adapter.UserProfilePagerAdapter
 import com.tokopedia.people.views.adapter.UserProfilePagerAdapter.Companion.FRAGMENT_KEY_FEEDS
 import com.tokopedia.people.views.adapter.UserProfilePagerAdapter.Companion.FRAGMENT_KEY_VIDEO
@@ -119,6 +120,8 @@ class UserProfileFragment @Inject constructor(
             requireArguments().getString(EXTRA_USERNAME).orEmpty(),
         )
     }
+
+    private var listenerPlayWidget: UserPostBaseAdapter.PlayWidgetCallback? = null
 
     private val pagerAdapter: UserProfilePagerAdapter by lazy(LazyThreadSafetyMode.NONE) {
         UserProfilePagerAdapter(
@@ -214,6 +217,7 @@ class UserProfileFragment @Inject constructor(
         mainBinding.appBarUserProfile.removeOnOffsetChangedListener(feedFloatingButtonManager.offsetListener)
         feedFloatingButtonManager.cancel()
 
+        listenerPlayWidget = null
         _binding = null
     }
 
@@ -867,9 +871,13 @@ class UserProfileFragment @Inject constructor(
                 val totalView = data.extras?.getString(EXTRA_TOTAL_VIEW).orEmpty()
                 val isReminderSet = data.extras?.getBoolean(EXTRA_IS_REMINDER, false) ?: false
 
-                (activity as? UserProfileActivity)?.listenerPlayWidget?.updatePlayWidgetLatestData(channelId, totalView, isReminderSet)
+               listenerPlayWidget?.updatePlayWidgetLatestData(channelId, totalView, isReminderSet)
             }
         }
+    }
+
+    fun initListenerPlayWidget(listener: UserPostBaseAdapter.PlayWidgetCallback) {
+        listenerPlayWidget = listener
     }
 
     private fun showUniversalShareBottomSheet() {

@@ -21,8 +21,6 @@ class UserProfileActivity : BaseSimpleActivity() {
     @Inject
     lateinit var fragmentFactory: FragmentFactory
 
-    var listenerPlayWidget: UserPostBaseAdapter.PlayWidgetCallback? = null
-
     private var bundle: Bundle? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -32,11 +30,6 @@ class UserProfileActivity : BaseSimpleActivity() {
         super.onCreate(savedInstanceState)
         toolbar.hide()
         setResult(Activity.RESULT_OK, intent)
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        listenerPlayWidget = null
     }
 
     override fun getNewFragment(): Fragment? {
@@ -54,10 +47,6 @@ class UserProfileActivity : BaseSimpleActivity() {
             )
             .build()
             .inject(this)
-    }
-
-    fun initListenerPlayWidget(listener: UserPostBaseAdapter.PlayWidgetCallback) {
-        listenerPlayWidget = listener
     }
 
     private fun setupFragmentFactory() {

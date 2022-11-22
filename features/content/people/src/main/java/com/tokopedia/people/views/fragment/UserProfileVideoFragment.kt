@@ -130,7 +130,7 @@ class UserProfileVideoFragment @Inject constructor(
     }
 
     private fun initListener() {
-        (activity as? UserProfileActivity)?.initListenerPlayWidget(this)
+        (parentFragment as? UserProfileFragment)?.initListenerPlayWidget(this)
     }
 
     private fun observeUiEvent() {
