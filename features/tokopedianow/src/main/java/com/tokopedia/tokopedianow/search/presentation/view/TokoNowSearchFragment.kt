@@ -156,6 +156,7 @@ class TokoNowSearchFragment :
             ctaTokoNowHomeListener = this,
             broadMatchListener = this,
             productRecommendationOocListener = createProductRecommendationOocCallback(),
+            productRecommendationBindOocListener = createProductRecommendationOocCallback(),
             productRecommendationListener = createProductRecommendationCallback().copy(
                 query = getViewModel().query
             )

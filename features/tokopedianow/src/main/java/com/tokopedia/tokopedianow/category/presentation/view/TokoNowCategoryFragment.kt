@@ -186,6 +186,7 @@ class TokoNowCategoryFragment:
             categoryAisleListener = this,
             tokoNowCategoryGridListener = this,
             tokoNowProductCardListener = this,
+            productRecommendationOocBindListener = createProductRecommendationOocCallback(),
             productRecommendationOocListener = createProductRecommendationOocCallback(),
             productRecommendationListener = createProductRecommendationCallback().copy(
                 categoryL1 = getViewModel().categoryL1,

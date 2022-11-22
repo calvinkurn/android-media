@@ -1094,12 +1094,21 @@ abstract class BaseSearchCategoryFragment:
             override fun onVerificationSuccess(message: String?) {}
 
             override fun onLoginPreverified() {}
-
         })
     }
 
     open fun createProductRecommendationOocCallback() = ProductRecommendationOocCallback(
-        lifecycle = viewLifecycleOwner.lifecycle
+        lifecycle = viewLifecycleOwner.lifecycle,
+        userSession = userSession,
+        trackingQueue = trackingQueue,
+        activity = activity,
+        eventLabel = getEventLabel(),
+        eventActionClicked = getClickEventAction(true),
+        eventActionImpressed = getImpressionEventAction(true),
+        eventCategory = getEventCategory(true),
+        getListValue = { recommendationItem ->
+            getListValue(true, recommendationItem)
+        },
     )
 
     open fun createProductRecommendationCallback() = ProductRecommendationCallback(
