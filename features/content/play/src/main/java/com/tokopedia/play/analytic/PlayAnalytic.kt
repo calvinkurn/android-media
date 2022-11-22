@@ -632,7 +632,7 @@ class PlayAnalytic(
     private fun clickBeliButtonProductWithNoVariant(trackingQueue: TrackingQueue,
                                                     product: PlayProductUiModel.Product,
                                                     sectionInfo: ProductSectionUiModel.Section,
-                                                    cartId: String,
+                                                    action: ProductAction,
                                                     shopInfo: PlayPartnerInfo) {
         val (eventAction, eventLabel) = when (sectionInfo.config.type) {
             ProductSectionType.Active -> Pair("$KEY_TRACK_CLICK - buy in ongoing section", "${generateBaseEventLabel(product = product, campaignId = sectionInfo.id)} - beli langsung ${action == ProductAction.OCC}")
