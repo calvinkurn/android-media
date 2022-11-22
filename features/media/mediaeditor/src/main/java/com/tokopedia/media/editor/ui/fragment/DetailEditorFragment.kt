@@ -292,6 +292,12 @@ class DetailEditorFragment @Inject constructor(
         addLogoComponent.bottomSheet().show(childFragmentManager, bottomSheetTag)
     }
 
+    override fun onLoadFailed() {
+        val text = requireContext().getString(editorR.string.editor_add_logo_toast_final)
+        Toast.makeText(context, text, Toast.LENGTH_LONG).show()
+        activity?.finish()
+    }
+
     override fun initObserver() {
         observeIntentUiModel()
         observeIntentUiState()
