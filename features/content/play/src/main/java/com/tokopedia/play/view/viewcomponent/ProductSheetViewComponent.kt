@@ -26,6 +26,7 @@ import com.tokopedia.play.ui.productsheet.itemdecoration.ProductLineItemDecorati
 import com.tokopedia.play.ui.productsheet.viewholder.ProductLineViewHolder
 import com.tokopedia.play.ui.productsheet.viewholder.ProductSheetSectionViewHolder
 import com.tokopedia.play.view.custom.RectangleShadowOutlineProvider
+import com.tokopedia.play.view.type.ProductAction
 import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayEmptyBottomSheetInfoUiModel
@@ -82,27 +83,17 @@ class ProductSheetViewComponent(
             )
         }
 
-        override fun onBuyProduct(
+        override fun onButtonTransactionProduct(
             viewHolder: ProductLineViewHolder,
             product: PlayProductUiModel.Product,
             section: ProductSectionUiModel.Section,
+            action: ProductAction,
         ) {
-            listener.onBuyButtonClicked(
+            listener.onButtonTransactionClicked(
                 this@ProductSheetViewComponent,
                 product,
                 section,
-            )
-        }
-
-        override fun onAtcProduct(
-            viewHolder: ProductLineViewHolder,
-            product: PlayProductUiModel.Product,
-            section: ProductSectionUiModel.Section,
-        ) {
-            listener.onAtcButtonClicked(
-                this@ProductSheetViewComponent,
-                product,
-                section,
+                action,
             )
         }
     }
@@ -413,8 +404,7 @@ class ProductSheetViewComponent(
 
     interface Listener {
         fun onCloseButtonClicked(view: ProductSheetViewComponent)
-        fun onBuyButtonClicked(view: ProductSheetViewComponent, product: PlayProductUiModel.Product, sectionInfo: ProductSectionUiModel.Section)
-        fun onAtcButtonClicked(view: ProductSheetViewComponent, product: PlayProductUiModel.Product, sectionInfo: ProductSectionUiModel.Section)
+        fun onButtonTransactionClicked(view: ProductSheetViewComponent, product: PlayProductUiModel.Product, sectionInfo: ProductSectionUiModel.Section, action: ProductAction)
         fun onProductCardClicked(view: ProductSheetViewComponent, product: PlayProductUiModel.Product, sectionInfo: ProductSectionUiModel.Section, position: Int)
         fun onEmptyButtonClicked(view: ProductSheetViewComponent)
         fun onProductImpressed(
