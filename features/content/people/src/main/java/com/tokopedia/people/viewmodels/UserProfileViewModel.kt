@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
+import com.tokopedia.content.common.producttag.util.extension.setValue
 import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowAction.Follow
 import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowAction.UnFollow
 import com.tokopedia.feedcomponent.people.model.MutationUiModel
@@ -91,8 +92,6 @@ class UserProfileViewModel @AssistedInject constructor(
 
     val isShopRecomShow: Boolean get() = _shopRecom.value.isShown
 
-    var ugcOnboardingOpenFrom: Int = 0
-
     private val _savedReminderData = MutableStateFlow<SavedReminderData>(SavedReminderData.NoData)
     private val _profileInfo = MutableStateFlow(ProfileUiModel.Empty)
     private val _followInfo = MutableStateFlow(FollowInfoUiModel.Empty)
@@ -131,6 +130,7 @@ class UserProfileViewModel @AssistedInject constructor(
             is UserProfileAction.RemoveReminderActivityResult -> handleRemoveReminderActivityResult()
             is UserProfileAction.ClickFollowButtonShopRecom -> handleClickFollowButtonShopRecom(action.itemID)
             is UserProfileAction.RemoveShopRecomItem -> handleRemoveShopRecomItem(action.itemID)
+            is UserProfileAction.LoadNextPageShopRecom -> handleLoadNextPageShopRecom(action.nextCurSor)
         }
     }
 
@@ -143,6 +143,15 @@ class UserProfileViewModel @AssistedInject constructor(
         }
     }
 
+    private fun handleLoadNextPageShopRecom(nextCursor: String) {
+        viewModelScope.launchCatchError(block = {
+            if (nextCursor.isEmpty()) return@launchCatchError
+            loadShopRecom(nextCursor)
+        }, onError = {
+                _uiEvent.emit(UserProfileUiEvent.ErrorLoadNextPageShopRecom(it))
+            },)
+    }
+
     /**
      * play video will be moved to dedicated fragment when
      * developing another tab user profile eventually. so gonna leave as is for now
@@ -150,8 +159,7 @@ class UserProfileViewModel @AssistedInject constructor(
     private fun handleLoadPlayVideo(cursor: String) {
         viewModelScope.launchCatchError(block = {
             val data = repo.getPlayVideo(profileUserID, cursor)
-            if (data != null) playPostContent.value = Success(data)
-            else throw NullPointerException("data is null")
+            playPostContent.value = Success(data)
         }, onError = {
                 userPostError.value = it
             },)
@@ -318,10 +326,23 @@ class UserProfileViewModel @AssistedInject constructor(
             _uiEvent.emit(UserProfileUiEvent.LoadPlayVideo)
     }
 
-    private suspend fun loadShopRecom() {
-        val result = repo.getShopRecom()
-        if (result.isShown) _shopRecom.emit(result)
-        else _shopRecom.emit(ShopRecomUiModel())
+    private suspend fun loadShopRecom(cursor: String = "") {
+        val result = repo.getShopRecom(cursor)
+        if (result.isShown) {
+            val items = if (cursor.isEmpty()) result.items
+            else _shopRecom.value.items + result.items
+
+            _shopRecom.update {
+                it.copy(
+                    isShown = result.isShown,
+                    nextCursor = result.nextCursor,
+                    title = result.title,
+                    loadNextPage = result.loadNextPage,
+                    items = items,
+                    isRefresh = cursor.isEmpty(),
+                )
+            }
+        } else _shopRecom.update { ShopRecomUiModel() }
     }
 
     companion object {
