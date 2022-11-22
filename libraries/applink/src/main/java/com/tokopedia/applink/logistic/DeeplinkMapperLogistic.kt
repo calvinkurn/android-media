@@ -26,4 +26,8 @@ object DeeplinkMapperLogistic {
     fun getRegisteredNavigationPod(deepLink: String): String {
         return deepLink.replace(HEADER_TEMPLATE, ApplinkConstInternalLogistic.INTERNAL_LOGISTIC)
     }
+
+    fun getRegisteredNavigationPinpointWebview(deepLink: String): String {
+        return deepLink.replace(HEADER_TEMPLATE, ApplinkConstInternalLogistic.INTERNAL_LOGISTIC)
+    }
 }
