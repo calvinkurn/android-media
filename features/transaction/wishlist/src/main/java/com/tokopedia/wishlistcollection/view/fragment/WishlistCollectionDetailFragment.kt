@@ -2598,6 +2598,8 @@ class WishlistCollectionDetailFragment :
         } else {
             listSelectedProductIds.remove(productId)
         }
+        collectionItemsAdapter.setCheckbox(position, isChecked)
+        setBottomButton()
     }
 
     override fun onValidateCheckBulkOption(productId: String, isChecked: Boolean, position: Int) {
