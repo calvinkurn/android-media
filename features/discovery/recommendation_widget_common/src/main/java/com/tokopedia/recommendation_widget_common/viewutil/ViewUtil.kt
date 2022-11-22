@@ -6,7 +6,6 @@ import android.graphics.Color
 import android.util.TypedValue
 import androidx.annotation.ColorInt
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.DividerUnify
