@@ -4,7 +4,6 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.kotlin.extensions.view.isZero
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.mvc.domain.entity.Product
 import com.tokopedia.mvc.domain.entity.ProductCategoryOption
 import com.tokopedia.mvc.domain.entity.ProductSortOptions
@@ -25,7 +24,6 @@ import com.tokopedia.mvc.domain.usecase.VoucherValidationPartialUseCase
 import com.tokopedia.mvc.presentation.product.add.uimodel.AddProductEffect
 import com.tokopedia.mvc.presentation.product.add.uimodel.AddProductEvent
 import com.tokopedia.mvc.presentation.product.add.uimodel.AddProductUiState
-import com.tokopedia.mvc.presentation.product.list.uimodel.ProductListEffect
 import com.tokopedia.mvc.util.constant.NumberConstant
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import kotlinx.coroutines.async
@@ -73,11 +71,12 @@ class AddProductViewModel @Inject constructor(
             AddProductEvent.EnableSelectAllCheckbox -> handleCheckAllProduct()
             is AddProductEvent.RemoveProductFromSelection -> handleRemoveProductFromSelection(event.productId)
             AddProductEvent.TapCategoryFilter -> _uiEffect.tryEmit(AddProductEffect.ShowProductCategoryBottomSheet(currentState.categoryOptions, currentState.selectedCategories))
-            AddProductEvent.TapLocationFilter -> _uiEffect.tryEmit(AddProductEffect.ShowWarehouseLocationBottomSheet(currentState.warehouses, currentState.selectedWarehouseLocation))
+            AddProductEvent.TapWarehouseLocationFilter -> _uiEffect.tryEmit(AddProductEffect.ShowWarehouseLocationBottomSheet(currentState.warehouses, currentState.selectedWarehouseLocation))
             AddProductEvent.TapShowCaseFilter -> _uiEffect.tryEmit(AddProductEffect.ShowShowcasesBottomSheet(currentState.shopShowcases, currentState.selectedShopShowcase))
             AddProductEvent.TapSortFilter -> _uiEffect.tryEmit(AddProductEffect.ShowSortBottomSheet(currentState.sortOptions, currentState.selectedSort))
             is AddProductEvent.ApplyCategoryFilter -> handleApplyCategoryFilter(event.selectedCategories)
             is AddProductEvent.ApplyWarehouseLocationFilter -> handleApplyWarehouseLocationFilter(event.selectedWarehouseLocation)
+            is AddProductEvent.ConfirmChangeWarehouseLocationFilter -> handleConfirmChangeWarehouseLocationFilter(event.newWarehouseLocation)
             is AddProductEvent.ApplyShowCaseFilter -> handleApplyShopShowcasesFilter(event.selectedShowCases)
             is AddProductEvent.ApplySortFilter -> handleApplySortFilter(event.selectedSort)
             is AddProductEvent.SearchProduct -> handleSearchProduct(event.searchKeyword)
@@ -108,8 +107,9 @@ class AddProductViewModel @Inject constructor(
 
                 _uiState.update {
                     it.copy(
-                        voucherCreationMetadata = metadata,
+                        maxProductSelection = metadata.maxProduct,
                         warehouses = sellerWarehouses,
+                        defaultWarehouseLocationId = defaultWarehouse.warehouseId,
                         selectedWarehouseLocation = defaultWarehouse,
                         sortOptions = productListMeta.sortOptions,
                         categoryOptions = productListMeta.categoryOptions,
@@ -202,7 +202,7 @@ class AddProductViewModel @Inject constructor(
     ): List<Product> {
 
         val nextSelectedProductSize = selectedProductIds.size + AddProductFragment.PAGE_SIZE
-        val isBelowMaximumProductSelection = nextSelectedProductSize <= currentState.voucherCreationMetadata?.maxProduct.orZero()
+        val isBelowMaximumProductSelection = nextSelectedProductSize <= currentState.maxProductSelection
         val shouldAutomaticallyAddToProductSelection = currentState.isSelectAllActive && isBelowMaximumProductSelection
 
         val formattedProducts = currentPageParentProduct.map { product ->
@@ -252,38 +252,48 @@ class AddProductViewModel @Inject constructor(
         val isOnSearchMode = currentState.searchKeyword.isNotEmpty()
         val currentlyDisplayedProductIds = currentState.products.map { it.id }
 
-        val maxProductSelection = currentState.voucherCreationMetadata?.maxProduct.orZero()
-        val selectedProducts = currentState.products.mapIndexed { index, product ->
-            if (index < maxProductSelection && product.isEligible) {
+        val maxProductSelection = currentState.maxProductSelection
 
-                val isProductDisplayedOnSearchResult = product.id in currentlyDisplayedProductIds
-                val isSelected = if (isOnSearchMode) {
-                    //If is on search product mode. Only product from search result should be selected
-                    isProductDisplayedOnSearchResult
-                } else {
-                    //If we're not in search product mode. Select all loaded products
-                    true
+        //Reset all products to uncheck state
+        val uncheckedProducts = currentState.products.map { it.copy(isSelected = false, enableCheckbox = true) }
+
+        val modifiedProducts = uncheckedProducts.mapIndexed { index, product ->
+            val isProductOnAutoSelectRange = index < maxProductSelection
+            when {
+                isProductOnAutoSelectRange && product.isEligible -> {
+
+                    val isProductDisplayedOnSearchResult = product.id in currentlyDisplayedProductIds
+                    val isSelected = if (isOnSearchMode) {
+                        //If is on search product mode. Only product from search result should be selected
+                        isProductDisplayedOnSearchResult
+                    } else {
+                        //If we're not in search product mode. Select all loaded products
+                        true
+                    }
+
+                    //To make sure only eligible variant products will be selected
+                    val eligibleVariantsOnly = product.originalVariants.filter { it.isEligible }.map { it.variantProductId }.toSet()
+
+                    product.copy(isSelected = isSelected, enableCheckbox = true, selectedVariantsIds = eligibleVariantsOnly)
                 }
-
-                //To make sure only eligible variant products will be selected
-                val eligibleVariantsOnly = product.originalVariants.filter { it.isEligible }.map { it.variantProductId }.toSet()
-
-                product.copy(isSelected = isSelected, enableCheckbox = true, selectedVariantsIds = eligibleVariantsOnly)
-            } else {
-                product
+                !isProductOnAutoSelectRange -> {
+                    product.copy(isSelected = false, enableCheckbox = false)
+                }
+                else -> product
             }
         }
 
-        val selectedProductIds = selectedProducts.filter { it.isSelected }.map { it.id }.toSet()
+        val selectedProductIds = modifiedProducts.filter { it.isSelected }.map { it.id }.toSet()
 
         _uiState.update {
             it.copy(
                 isSelectAllActive = true,
                 selectedProductsIds = selectedProductIds,
-                products = selectedProducts
+                products = modifiedProducts
             )
         }
     }
+
 
     private fun handleUncheckAllProduct() = launch(dispatchers.computation) {
         val disabledProducts = currentState.products.map { it.copy(isSelected = false, enableCheckbox = true) }
@@ -297,7 +307,7 @@ class AddProductViewModel @Inject constructor(
     }
 
     private fun handleAddProductToSelection(productIdToAdd: Long) = launch(dispatchers.computation) {
-        val maxProductSelection = currentState.voucherCreationMetadata?.maxProduct.orZero()
+        val maxProductSelection = currentState.maxProductSelection
         val newSelectedProductCountAfterSelection = currentState.selectedProductsIds.size.inc()
         val isReachedMaxSelection = newSelectedProductCountAfterSelection == maxProductSelection
 
@@ -398,7 +408,7 @@ class AddProductViewModel @Inject constructor(
                 page = NumberConstant.FIRST_PAGE,
                 products = emptyList(),
                 selectedCategories = emptyList(),
-                selectedWarehouseLocation = Warehouse(0, "", WarehouseType.DEFAULT_WAREHOUSE_LOCATION),
+                selectedWarehouseLocation = Warehouse(currentState.defaultWarehouseLocationId, "", WarehouseType.DEFAULT_WAREHOUSE_LOCATION),
                 selectedShopShowcase = emptyList(),
                 selectedSort = ProductSortOptions("DEFAULT", "", "DESC")
             )
@@ -434,12 +444,26 @@ class AddProductViewModel @Inject constructor(
     }
 
     private fun handleApplyWarehouseLocationFilter(selectedWarehouse: Warehouse) {
+        val currentWarehouseId = currentState.selectedWarehouseLocation.warehouseId
+        val newWarehouseId = selectedWarehouse.warehouseId
+        val isWarehouseChanged = currentWarehouseId != newWarehouseId
+
+        if (isWarehouseChanged) {
+            _uiEffect.tryEmit(AddProductEffect.ShowChangeWarehouseDialogConfirmation(selectedWarehouse))
+        } else {
+            handleConfirmChangeWarehouseLocationFilter(selectedWarehouse)
+        }
+    }
+
+
+    private fun handleConfirmChangeWarehouseLocationFilter(newWarehouseLocation: Warehouse) {
         _uiState.update {
             it.copy(
                 isLoading = true,
                 page = NumberConstant.FIRST_PAGE,
                 products = emptyList(),
-                selectedWarehouseLocation = selectedWarehouse
+                selectedProductsIds = emptySet(),
+                selectedWarehouseLocation = newWarehouseLocation
             )
         }
 

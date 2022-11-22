@@ -54,7 +54,7 @@ import com.tokopedia.mvc.presentation.product.add.uimodel.AddProductEffect
 import com.tokopedia.mvc.presentation.product.add.uimodel.AddProductEvent
 import com.tokopedia.mvc.presentation.product.add.uimodel.AddProductUiState
 import com.tokopedia.mvc.presentation.product.list.ProductListActivity
-import com.tokopedia.mvc.presentation.product.list.uimodel.ProductListEffect
+import com.tokopedia.mvc.presentation.product.variant.dialog.ConfirmationDialog
 import com.tokopedia.mvc.presentation.product.variant.select.SelectVariantBottomSheet
 import com.tokopedia.mvc.util.constant.BundleConstant
 import com.tokopedia.mvc.util.constant.NumberConstant
@@ -71,7 +71,6 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
     companion object {
         const val PAGE_SIZE = 10
         private const val ONE_FILTER_SELECTED = 1
-        private const val BUNDLE_KEY_COUPON_ID = "couponId"
 
         @JvmStatic
         fun newInstance(pageMode : PageMode, voucherConfiguration: VoucherConfiguration): AddProductFragment {
@@ -85,7 +84,6 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
 
     }
 
-    private val couponId by lazy { arguments?.getLong(BUNDLE_KEY_COUPON_ID, 0) }
     private val pageMode by lazy { arguments?.getParcelable(BundleConstant.BUNDLE_KEY_PAGE_MODE) as? PageMode }
     private val voucherConfiguration by lazy { arguments?.getParcelable(BundleConstant.BUNDLE_KEY_VOUCHER_CONFIGURATION) as? VoucherConfiguration }
 
@@ -257,6 +255,21 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
             is AddProductEffect.ShowError -> {
                 binding?.cardUnify2?.showToasterError(effect.error)
             }
+            is AddProductEffect.ShowChangeWarehouseDialogConfirmation -> {
+                if (!isAdded) return
+
+                ConfirmationDialog.show(
+                    context = activity ?: return,
+                    title = getString(R.string.smvc_change_location),
+                    description = getString(R.string.smvc_change_location_description),
+                    primaryButtonTitle = getString(R.string.smvc_confirm_change_location),
+                    onPrimaryButtonClick = {
+                        viewModel.processEvent(
+                            AddProductEvent.ConfirmChangeWarehouseLocationFilter(effect.selectedWarehouseLocation)
+                        )
+                    }
+                )
+            }
         }
     }
 
@@ -265,11 +278,11 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
         renderLoadingState(uiState.isLoading)
 
         renderSelectAllCheckbox(uiState)
-        renderMaxProductSelection(uiState.voucherCreationMetadata?.maxProduct.orZero())
+        renderMaxProductSelection(uiState.maxProductSelection)
 
         //Filter
         renderSortChips(uiState.selectedSort)
-        renderWarehouseLocationChips(uiState.selectedWarehouseLocation)
+        renderWarehouseLocationChips(uiState.selectedWarehouseLocation, uiState.defaultWarehouseLocationId)
         renderCategoryChips(uiState.selectedCategories)
         renderShopShowcaseChips(uiState.selectedShopShowcase)
 
@@ -343,19 +356,19 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
         }
     }
 
-    private fun renderWarehouseLocationChips(selectedWarehouse: Warehouse) {
-        if (selectedWarehouse.warehouseName.isEmpty()) {
-            locationChips.type = ChipsUnify.TYPE_NORMAL
-            locationChips.selectedItem = arrayListOf(getString(R.string.smvc_sort))
+    private fun renderWarehouseLocationChips(
+        selectedWarehouse: Warehouse,
+        defaultWarehouseId: Long
+    ) {
+        locationChips.type = ChipsUnify.TYPE_SELECTED
+
+        val warehouseName = if (selectedWarehouse.warehouseId == defaultWarehouseId) {
+            getString(R.string.smvc_seller_location)
         } else {
-            locationChips.type = ChipsUnify.TYPE_SELECTED
-            val warehouseName = if (selectedWarehouse.warehouseType == WarehouseType.DEFAULT_WAREHOUSE_LOCATION) {
-                getString(R.string.smvc_seller_location)
-            } else {
-                selectedWarehouse.warehouseName
-            }
-            locationChips.selectedItem = arrayListOf(warehouseName)
+            selectedWarehouse.warehouseName
         }
+        locationChips.selectedItem = arrayListOf(warehouseName)
+
     }
 
     private fun renderShopShowcaseChips(selectedShowcases: List<ShopShowcase>) {
@@ -397,7 +410,7 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
     }
 
     private fun setupSortFilter() {
-        val onLocationClicked = { viewModel.processEvent(AddProductEvent.TapLocationFilter) }
+        val onLocationClicked = { viewModel.processEvent(AddProductEvent.TapWarehouseLocationFilter) }
         locationChips.listener = { onLocationClicked() }
         locationChips.chevronListener = { onLocationClicked() }
 

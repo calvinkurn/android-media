@@ -39,7 +39,9 @@ class ReviewVariantViewModel @Inject constructor(
                 handleFetchProductVariants(
                     event.originalVariantIds,
                     event.isParentProductSelected,
-                    event.selectedProduct
+                    event.selectedProduct,
+                    event.isVariantCheckable,
+                    event.isVariantDeletable
                 )
             }
             is ReviewVariantEvent.AddVariantToSelection -> handleAddVariantToSelection(event.variantProductId)
@@ -60,7 +62,9 @@ class ReviewVariantViewModel @Inject constructor(
     private fun handleFetchProductVariants(
         originalVariantIds: List<Long>,
         isParentProductSelected: Boolean,
-        selectedProduct: SelectedProduct
+        selectedProduct: SelectedProduct,
+        isVariantCheckable: Boolean,
+        isVariantDeletable: Boolean
     ) {
         _uiState.update {
             it.copy(
@@ -69,18 +73,20 @@ class ReviewVariantViewModel @Inject constructor(
                 originalVariantIds = originalVariantIds
             )
         }
-        getVariantDetail(selectedProduct, isParentProductSelected, originalVariantIds)
+        getVariantDetail(selectedProduct, isParentProductSelected, originalVariantIds, isVariantCheckable, isVariantDeletable)
     }
 
     private fun getVariantDetail(
         selectedProduct: SelectedProduct,
         isParentProductSelected: Boolean,
-        originalVariantIds: List<Long>
+        originalVariantIds: List<Long>,
+        isVariantCheckable: Boolean,
+        isVariantDeletable: Boolean
     ) {
         launchCatchError(
             dispatchers.io,
             block = {
-                val params = ProductV3UseCase.Param(selectedProduct.parentProductId, 0)
+                val params = ProductV3UseCase.Param(selectedProduct.parentProductId)
                 val response = productV3UseCase.execute(params)
                 val allVariantsFromRemote = formatVariantNames(response)
 
@@ -91,7 +97,11 @@ class ReviewVariantViewModel @Inject constructor(
                         selectedProduct.variantProductIds,
                         originalVariantIds
                     )
-                    variant.copy(isSelected = shouldSelectVariant)
+                    variant.copy(
+                        isSelected = shouldSelectVariant,
+                        isCheckable = isVariantCheckable,
+                        isDeletable = isVariantDeletable
+                    )
                 }
 
                 val userSelectedVariantsOnly = updatedVariants.filter { it.variantId in originalVariantIds }
@@ -198,13 +208,13 @@ class ReviewVariantViewModel @Inject constructor(
             val modifiedVariants = currentState.variants.toMutableList()
             modifiedVariants.removeFirst { it.variantId == variantIdToDelete }
 
-            val modifiedVariantProductIds =
+            val modifiedVariantIds =
                 modifiedVariants.filter { it.isSelected }.map { it.variantId }.toMutableSet()
 
             _uiState.update {
                 it.copy(
                     variants = modifiedVariants,
-                    selectedVariantIds = modifiedVariantProductIds
+                    selectedVariantIds = modifiedVariantIds
                 )
             }
         }

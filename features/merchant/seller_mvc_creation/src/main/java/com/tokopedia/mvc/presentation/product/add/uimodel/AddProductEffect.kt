@@ -48,5 +48,7 @@ sealed class AddProductEffect {
         val selectedParentProductImageUrls: List<String>
     ) : AddProductEffect()
 
+    data class ShowChangeWarehouseDialogConfirmation(val selectedWarehouseLocation: Warehouse) : AddProductEffect()
+
     data class ShowError(val error: Throwable) : AddProductEffect()
 }

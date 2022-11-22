@@ -5,7 +5,6 @@ import com.tokopedia.mvc.domain.entity.ProductCategoryOption
 import com.tokopedia.mvc.domain.entity.ProductSortOptions
 import com.tokopedia.mvc.domain.entity.ShopShowcase
 import com.tokopedia.mvc.domain.entity.VoucherConfiguration
-import com.tokopedia.mvc.domain.entity.VoucherCreationMetadata
 import com.tokopedia.mvc.domain.entity.Warehouse
 import com.tokopedia.mvc.domain.entity.enums.BenefitType
 import com.tokopedia.mvc.domain.entity.enums.PromoType
@@ -18,7 +17,7 @@ data class AddProductUiState(
     val totalProducts: Int = 0,
     val searchKeyword: String = "",
     val products: List<Product> = emptyList(),
-    val voucherCreationMetadata: VoucherCreationMetadata? = null,
+    val maxProductSelection: Int = 0,
     val warehouses: List<Warehouse> = emptyList(),
     val selectedProductsIds: Set<Long> = emptySet(),
     val isSelectAllActive: Boolean = false,
@@ -26,6 +25,7 @@ data class AddProductUiState(
     val categoryOptions: List<ProductCategoryOption> = emptyList(),
     val shopShowcases: List<ShopShowcase> = emptyList(),
     val selectedSort: ProductSortOptions = ProductSortOptions("DEFAULT", "", "DESC"),
+    val defaultWarehouseLocationId: Long = 0,
     val selectedWarehouseLocation: Warehouse = Warehouse(0, "", WarehouseType.DEFAULT_WAREHOUSE_LOCATION),
     val selectedShopShowcase: List<ShopShowcase> = emptyList(),
     val selectedCategories: List<ProductCategoryOption> = emptyList(),

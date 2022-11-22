@@ -5,7 +5,7 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.mvc.R
 import com.tokopedia.unifycomponents.UnifyButton
 
-object DeleteConfirmationDialog {
+object ConfirmationDialog {
 
     fun show(
         context: Context,

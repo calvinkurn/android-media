@@ -20,16 +20,18 @@ class ProductV3Mapper @Inject constructor() {
 
         val products = variant.products.map {
             Variant(
-                it.productID.toLongOrZero(),
+                variantId = it.productID.toLongOrZero(),
                 variantName = "",
-                it.combination,
-                imageUrl,
-                it.price.toLongOrZero(),
+                combinations = it.combination,
+                imageUrl = imageUrl,
+                price = it.price.toLongOrZero(),
                 isSelected = false,
-                it.stock,
+                stockCount = it.stock,
                 soldCount = 0,
                 isEligible = true,
-                reason = ""
+                reason = "",
+                isCheckable = true,
+                isDeletable = false
             )
         }
 

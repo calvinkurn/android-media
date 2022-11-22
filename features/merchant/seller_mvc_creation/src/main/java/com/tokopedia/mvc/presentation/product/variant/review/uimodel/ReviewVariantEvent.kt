@@ -6,7 +6,9 @@ sealed class ReviewVariantEvent {
     data class FetchProductVariants(
         val isParentProductSelected: Boolean,
         val selectedProduct: SelectedProduct,
-        val originalVariantIds: List<Long>
+        val originalVariantIds: List<Long>,
+        val isVariantCheckable: Boolean,
+        val isVariantDeletable: Boolean
     ) : ReviewVariantEvent()
 
     object EnableSelectAllCheckbox : ReviewVariantEvent()

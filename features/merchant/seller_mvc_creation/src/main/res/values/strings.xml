@@ -19,8 +19,13 @@
     <string name="smvc_update">Ubah</string>
     <string name="smvc_save">Simpan</string>
     <string name="smvc_select_variant">Pilih Varian</string>
+    <string name="smvc_change_location">Ganti lokasi?</string>
+    <string name="smvc_confirm_change_location">Ganti Lokasi</string>
+    <string name="smvc_change_location_description">Produk yang sudah kamu pilih akan tereset jika kamu ganti lokasi</string>
     <string name="smvc_empty_state_no_product_title">Oops, produk nggak ditemukan</string>
     <string name="smvc_empty_state_no_product_description">Coba gunakan kata kunci lain atau filter yang berbeda, ya.</string>
+    <string name="smvc_no_showcase">Tokomu belum punya etalase</string>
+    <string name="smvc_no_showcase_description">Etalase yang tampil di sini adalah etalase yang dibuat sendiri.</string>
 
     <string name="smvc_placeholder_max_selected_product">Maks. %d Produk</string>
     <string name="smvc_placeholder_selected_product_count">%d/%d</string>

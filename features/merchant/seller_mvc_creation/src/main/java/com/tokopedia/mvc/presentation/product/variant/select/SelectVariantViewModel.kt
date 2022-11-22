@@ -54,7 +54,7 @@ class SelectVariantViewModel @Inject constructor(
         launchCatchError(
             dispatchers.io,
             block = {
-                val params = ProductV3UseCase.Param(selectedParentProduct.id, 0)
+                val params = ProductV3UseCase.Param(selectedParentProduct.id)
                 val response = productV3UseCase.execute(params)
 
                 val modifiedVariantNames = findUpdatedVariantNames(response)

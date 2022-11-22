@@ -24,7 +24,7 @@ import com.tokopedia.mvc.R
 import com.tokopedia.mvc.databinding.SmvcBottomsheetReviewVariantBinding
 import com.tokopedia.mvc.di.component.DaggerMerchantVoucherCreationComponent
 import com.tokopedia.mvc.domain.entity.SelectedProduct
-import com.tokopedia.mvc.presentation.product.variant.dialog.DeleteConfirmationDialog
+import com.tokopedia.mvc.presentation.product.variant.dialog.ConfirmationDialog
 import com.tokopedia.mvc.presentation.product.variant.review.uimodel.ReviewVariantEffect
 import com.tokopedia.mvc.presentation.product.variant.review.uimodel.ReviewVariantEvent
 import com.tokopedia.mvc.presentation.product.variant.review.uimodel.ReviewVariantUiState
@@ -40,6 +40,8 @@ class ReviewVariantBottomSheet: BottomSheetUnify() {
         private const val BUNDLE_KEY_SELECTED_PRODUCT = "selected_product"
         private const val BUNDLE_PARENT_PRODUCT_IS_SELECTED = "is_parent_product_selected"
         private const val BUNDLE_ORIGINAL_VARIANT_IDS = "original_variant_ids"
+        private const val BUNDLE_KEY_IS_VARIANT_CHECKABLE = "is_variant_checkable"
+        private const val BUNDLE_KEY_IS_VARIANT_DELETABLE = "is_variant_deletable"
         private const val DIVIDER_MARGIN_LEFT = 16
         private const val ONE_VARIANT = 1
 
@@ -47,13 +49,17 @@ class ReviewVariantBottomSheet: BottomSheetUnify() {
         fun newInstance(
             isParentProductSelected: Boolean,
             selectedProduct: SelectedProduct,
-            originalVariantIds: List<Long>
+            originalVariantIds: List<Long>,
+            isVariantCheckable: Boolean,
+            isVariantDeletable: Boolean
         ): ReviewVariantBottomSheet {
             return ReviewVariantBottomSheet().apply {
                 arguments = Bundle().apply {
                     putBoolean(BUNDLE_PARENT_PRODUCT_IS_SELECTED, isParentProductSelected)
                     putParcelable(BUNDLE_KEY_SELECTED_PRODUCT, selectedProduct)
                     putLongArray(BUNDLE_ORIGINAL_VARIANT_IDS, originalVariantIds.toLongArray())
+                    putBoolean(BUNDLE_KEY_IS_VARIANT_CHECKABLE, isVariantCheckable)
+                    putBoolean(BUNDLE_KEY_IS_VARIANT_DELETABLE, isVariantDeletable)
                 }
             }
         }
@@ -63,6 +69,8 @@ class ReviewVariantBottomSheet: BottomSheetUnify() {
     private val isParentProductSelected by lazy { arguments?.getBoolean(BUNDLE_PARENT_PRODUCT_IS_SELECTED, false).orFalse() }
     private val parentProduct by lazy { arguments?.getParcelable(BUNDLE_KEY_SELECTED_PRODUCT) as? SelectedProduct }
     private val originalVariantIds by lazy { arguments?.getLongArray(BUNDLE_ORIGINAL_VARIANT_IDS) }
+    private val isVariantCheckable by lazy { arguments?.getBoolean(BUNDLE_KEY_IS_VARIANT_CHECKABLE) }
+    private val isVariantDeletable by lazy { arguments?.getBoolean(BUNDLE_KEY_IS_VARIANT_DELETABLE) }
     private var onSaveButtonClick: (Set<Long>) -> Unit = {}
 
     @Inject
@@ -109,7 +117,9 @@ class ReviewVariantBottomSheet: BottomSheetUnify() {
             ReviewVariantEvent.FetchProductVariants(
                 isParentProductSelected,
                 parentProduct ?: return,
-                originalVariantIds?.toList().orEmpty()
+                originalVariantIds?.toList().orEmpty(),
+                isVariantCheckable.orFalse(),
+                isVariantDeletable.orFalse()
             )
         )
     }
@@ -195,7 +205,7 @@ class ReviewVariantBottomSheet: BottomSheetUnify() {
                 dismiss()
             }
             is ReviewVariantEffect.ShowBulkDeleteVariantConfirmationDialog -> {
-                DeleteConfirmationDialog.show(
+                ConfirmationDialog.show(
                     context = activity ?: return,
                     title = getString(R.string.smvc_placeholder_bulk_delete_variant_confirmation, effect.toDeleteProductCount),
                     description = getString(R.string.smvc_delete_variant_description),
@@ -204,7 +214,7 @@ class ReviewVariantBottomSheet: BottomSheetUnify() {
                 )
             }
             is ReviewVariantEffect.ShowDeleteVariantConfirmationDialog -> {
-                DeleteConfirmationDialog.show(
+                ConfirmationDialog.show(
                     context = activity ?: return,
                     title = getString(R.string.smvc_delete_variant),
                     description = getString(R.string.smvc_delete_variant_description),

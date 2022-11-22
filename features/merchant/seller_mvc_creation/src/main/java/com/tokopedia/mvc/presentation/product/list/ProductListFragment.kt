@@ -42,7 +42,7 @@ import com.tokopedia.mvc.presentation.product.list.adapter.ProductListDelegateAd
 import com.tokopedia.mvc.presentation.product.list.uimodel.ProductListEffect
 import com.tokopedia.mvc.presentation.product.list.uimodel.ProductListEvent
 import com.tokopedia.mvc.presentation.product.list.uimodel.ProductListUiState
-import com.tokopedia.mvc.presentation.product.variant.dialog.DeleteConfirmationDialog
+import com.tokopedia.mvc.presentation.product.variant.dialog.ConfirmationDialog
 import com.tokopedia.mvc.presentation.product.variant.review.ReviewVariantBottomSheet
 import com.tokopedia.mvc.util.constant.BundleConstant
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -212,10 +212,18 @@ class ProductListFragment : BaseDaggerFragment() {
     private fun handleEffect(effect: ProductListEffect) {
         when (effect) {
             is ProductListEffect.ShowVariantBottomSheet -> {
-                displayVariantBottomSheet(effect.isParentProductSelected, effect.selectedProduct, effect.originalVariantIds)
+                val isVariantCheckable = pageMode == PageMode.CREATE
+                val isVariantDeletable = pageMode == PageMode.EDIT
+                displayVariantBottomSheet(
+                    effect.isParentProductSelected,
+                    effect.selectedProduct,
+                    effect.originalVariantIds,
+                    isVariantCheckable,
+                    isVariantDeletable
+                )
             }
             is ProductListEffect.ShowBulkDeleteProductConfirmationDialog -> {
-                DeleteConfirmationDialog.show(
+                ConfirmationDialog.show(
                     context = activity ?: return,
                     title = getString(R.string.smvc_placeholder_bulk_delete_product_confirmation, effect.toDeleteProductCount),
                     description = getString(R.string.smvc_delete_product_description),
@@ -224,7 +232,7 @@ class ProductListFragment : BaseDaggerFragment() {
                 )
             }
             is ProductListEffect.ShowDeleteProductConfirmationDialog -> {
-                DeleteConfirmationDialog.show(
+                ConfirmationDialog.show(
                     context = activity ?: return,
                     title = getString(R.string.smvc_delete_product),
                     description = getString(R.string.smvc_delete_product_description),
@@ -252,7 +260,7 @@ class ProductListFragment : BaseDaggerFragment() {
                 if (pageMode == PageMode.CREATE) {
                     //TODO: Navigate to voucher preview page
                 } else {
-                    sendResult(effect.selectedProducts)
+                    sendResultToCallerActivity(effect.selectedProducts)
                 }
             }
             is ProductListEffect.ShowError -> {
@@ -263,27 +271,15 @@ class ProductListFragment : BaseDaggerFragment() {
 
 
     private fun handleUiState(uiState: ProductListUiState) {
+        renderToolbar(uiState.pageMode)
+        renderTopSection(uiState.products.count(), uiState.maxProductSelection)
         renderLoadingState(uiState.isLoading)
         renderList(uiState.products)
-        renderEmptyState(
-            uiState.products.count(),
-            uiState.isLoading,
-            uiState.pageMode,
-            uiState.maxProductSelection
-        )
-        renderProductCounter(
-            uiState.products.count(),
-            uiState.selectedProductsIds.count(),
-            uiState.pageMode
-        )
+        renderEmptyState(uiState.products.count(), uiState.isLoading, uiState.pageMode)
+        renderProductCounter(uiState.products.count(), uiState.selectedProductsIds.count(), uiState.pageMode)
         renderBulkDeleteIcon(uiState.selectedProductsIds.count())
-        renderSelectAllCheckbox(
-            uiState.products.count(),
-            uiState.selectedProductsIds.count(),
-            uiState.pageMode
-        )
+        renderSelectAllCheckbox(uiState.products.count(), uiState.selectedProductsIds.count(), uiState.pageMode)
         renderButton()
-        renderToolbar(uiState.pageMode)
     }
 
     private fun renderToolbar(pageMode: PageMode) {
@@ -336,22 +332,30 @@ class ProductListFragment : BaseDaggerFragment() {
 
 
     private fun renderList(products: List<DelegateAdapterItem> ) {
+        binding?.recyclerView?.isVisible = products.count().isMoreThanZero()
         productAdapter.submit(products)
     }
 
-    private fun renderEmptyState(
-        productCount: Int,
-        isLoading: Boolean,
-        pageMode: PageMode,
-        maxProductSelection: Int
-    ) {
+    private fun renderTopSection(productCount: Int, maxProductSelection: Int) {
         val isCreateMode = pageMode == PageMode.CREATE
         binding?.run {
-            recyclerView.isVisible = productCount.isMoreThanZero()
             checkbox.isVisible = productCount.isMoreThanZero() && isCreateMode
             dividerList.isVisible = productCount.isMoreThanZero() && isCreateMode
             tpgSelectAll.isVisible = productCount.isMoreThanZero() && isCreateMode
             tpgSelectedParentProductCount.isVisible = productCount.isMoreThanZero() && isCreateMode
+
+            when {
+                productCount >= maxProductSelection -> tpgCtaAddProduct.gone()
+                productCount.isMoreThanZero() && isCreateMode -> tpgCtaAddProduct.visible()
+                else -> tpgCtaAddProduct.gone()
+            }
+        }
+    }
+
+    private fun renderEmptyState(productCount: Int, isLoading: Boolean, pageMode: PageMode) {
+        val isCreateMode = pageMode == PageMode.CREATE
+
+        binding?.run {
             emptyState.isVisible = productCount.isZero() && !isLoading
             emptyState.emptyStateCTAID.setOnClickListener { activity?.finish() }
 
@@ -359,12 +363,6 @@ class ProductListFragment : BaseDaggerFragment() {
                 !isCreateMode -> cardUnify2.gone()
                 productCount.isZero() -> cardUnify2.invisible()
                 else -> cardUnify2.visible()
-            }
-
-            when {
-                productCount >= maxProductSelection -> tpgCtaAddProduct.gone()
-                productCount.isMoreThanZero() && isCreateMode -> tpgCtaAddProduct.visible()
-                else -> tpgCtaAddProduct.gone()
             }
         }
     }
@@ -405,12 +403,16 @@ class ProductListFragment : BaseDaggerFragment() {
     private fun displayVariantBottomSheet(
         isParentProductSelected: Boolean,
         selectedProduct: SelectedProduct,
-        originalVariantIds: List<Long>
+        originalVariantIds: List<Long>,
+        isVariantCheckable: Boolean,
+        isVariantDeletable: Boolean
     ) {
         val bottomSheet = ReviewVariantBottomSheet.newInstance(
             isParentProductSelected,
             selectedProduct,
-            originalVariantIds
+            originalVariantIds,
+            isVariantCheckable,
+            isVariantDeletable
         )
         bottomSheet.setOnSelectButtonClick { selectedVariantIds ->
             viewModel.processEvent(ProductListEvent.VariantUpdated(selectedProduct.parentProductId, selectedVariantIds))
@@ -423,9 +425,12 @@ class ProductListFragment : BaseDaggerFragment() {
     }
 
 
-    private fun sendResult(selectedProducts: List<SelectedProduct>) {
+    private fun sendResultToCallerActivity(selectedProducts: List<SelectedProduct>) {
         val returnIntent = Intent()
-        returnIntent.putParcelableArrayListExtra(BundleConstant.BUNDLE_KEY_SELECTED_PRODUCTS, ArrayList(selectedProducts))
+        returnIntent.putParcelableArrayListExtra(
+            BundleConstant.BUNDLE_KEY_SELECTED_PRODUCTS,
+            ArrayList(selectedProducts)
+        )
         activity?.setResult(Activity.RESULT_OK, returnIntent)
         activity?.finish()
     }

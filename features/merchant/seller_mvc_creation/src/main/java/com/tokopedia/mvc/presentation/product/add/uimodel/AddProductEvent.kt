@@ -17,7 +17,7 @@ sealed class AddProductEvent {
     object DisableSelectAllCheckbox : AddProductEvent()
     data class AddProductToSelection(val productId: Long) : AddProductEvent()
     data class RemoveProductFromSelection(val productId: Long) : AddProductEvent()
-    object TapLocationFilter : AddProductEvent()
+    object TapWarehouseLocationFilter : AddProductEvent()
     object TapCategoryFilter : AddProductEvent()
     object TapShowCaseFilter : AddProductEvent()
     object TapSortFilter : AddProductEvent()
@@ -28,6 +28,7 @@ sealed class AddProductEvent {
     data class SearchProduct(val searchKeyword : String) : AddProductEvent()
     object ConfirmAddProduct : AddProductEvent()
     object AddNewProducts : AddProductEvent()
+    data class ConfirmChangeWarehouseLocationFilter(val newWarehouseLocation: Warehouse) : AddProductEvent()
     data class TapVariant(val parentProduct : Product) : AddProductEvent()
     data class VariantUpdated(val modifiedParentProductId: Long, val selectedVariantIds: Set<Long>) : AddProductEvent()
 }

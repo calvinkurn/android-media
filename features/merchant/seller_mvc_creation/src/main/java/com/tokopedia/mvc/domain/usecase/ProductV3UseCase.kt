@@ -102,8 +102,7 @@ class ProductV3UseCase @Inject constructor(
         val params = mapOf(
             REQUEST_PARAM_PRODUCT_ID to param.productId.toString(),
             REQUEST_PARAM_OPTIONS to ProductV3Options(stats = true, txStats = true, variant = true, basic = true, picture = true),
-            REQUEST_PARAM_EXTRA_INFO to ProductV3ExtraInfo(event = true),
-            REQUEST_PARAM_WAREHOUSE_ID to param.warehouseId.toString()
+            REQUEST_PARAM_EXTRA_INFO to ProductV3ExtraInfo(event = true)
         )
 
         return GraphqlRequest(
@@ -114,11 +113,6 @@ class ProductV3UseCase @Inject constructor(
     }
 
 
-    data class Param(
-        val productId: Long,
-        val warehouseId: Long,
-    )
-
-
+    data class Param(val productId: Long)
 }
 

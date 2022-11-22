@@ -6,6 +6,7 @@ import android.widget.ImageView
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.splitByThousand
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.mvc.R
@@ -86,6 +87,9 @@ class ReviewVariantAdapter : RecyclerView.Adapter<ReviewVariantAdapter.ViewHolde
                     onVariantClick(bindingAdapterPosition, isChecked)
                 }
                 checkBox.isEnabled = item.isEligible
+                checkBox.isVisible = item.isCheckable
+
+                iconDelete.isVisible = item.isDeletable
             }
         }
 
