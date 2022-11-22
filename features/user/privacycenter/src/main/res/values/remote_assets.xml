@@ -5,4 +5,9 @@
 
     <!--Search History-->
     <string name="search_history_empty_image" translatable="false">https://images.tokopedia.net/img/android/user/privacy_center/img_privacy_center_search_history_empty.png</string>
+
+    <!--Recommendation Section-->
+    <string name="privacy_account_bottom_sheet_clarification_image_banner_1" translatable="false">https://images.tokopedia.net/img/android/user/optinout/img_privacy_account_banner_1.png</string>
+    <string name="privacy_account_bottom_sheet_clarification_image_banner_2" translatable="false">https://images.tokopedia.net/img/android/user/optinout/img_privacy_account_banner_2.png</string>
+    <string name="privacy_account_bottom_sheet_clarification_image_banner_3" translatable="false">https://images.tokopedia.net/img/android/user/optinout/img_privacy_account_banner_3.png</string>
 </resources>

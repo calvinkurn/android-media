@@ -1,9 +1,13 @@
 package com.tokopedia.privacycenter.main
 
 import android.Manifest
+import android.app.Activity
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
+import android.net.Uri
 import android.os.Bundle
+import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -34,6 +38,7 @@ import com.tokopedia.privacycenter.main.section.faqPrivacySection.FaqPrivacySect
 import com.tokopedia.privacycenter.main.section.recommendation.RecommendationSection
 import com.tokopedia.privacycenter.main.section.recommendation.RecommendationViewModel
 import com.tokopedia.privacycenter.main.section.tokopediacare.TokopediaCareSection
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.isUsingNightModeResources
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
@@ -89,9 +94,16 @@ class PrivacyCenterFragment :
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        handleStatusLogin()
         initToolbar()
         binding?.rootContent?.addView(bindingImageFooter?.root)
         loadFooterImage()
+    }
+
+    private fun handleStatusLogin() {
+        if (!viewModel.isLoggedIn()) {
+            goToLogin()
+        }
     }
 
     private fun loadFooterImage() {
@@ -123,7 +135,10 @@ class PrivacyCenterFragment :
                 }
             }
         }
-        binding?.textName?.text = viewModel.getUserName()
+        binding?.textName?.text = String.format(
+            resources.getString(R.string.privacy_center_toolbar_title),
+            viewModel.getUserName()
+        )
     }
 
     override fun onStop() {
@@ -174,6 +189,25 @@ class PrivacyCenterFragment :
         }
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        when (requestCode) {
+            REQUEST_LOGIN -> {
+                if (resultCode == Activity.RESULT_OK) {
+                    viewModelAccountLinkingSection.getAccountLinkingStatus()
+                    viewModelRecommendationSection.getConsentSocialNetwork()
+                    viewModelConsentWithdrawalSection.getConsentGroupList()
+                } else {
+                    requireActivity().finish()
+                }
+            }
+            REQUEST_ACCOUNT_WEBVIEW_REQUEST -> {
+                viewModelAccountLinkingSection.getAccountLinkingStatus()
+            }
+        }
+    }
+
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
@@ -182,16 +216,40 @@ class PrivacyCenterFragment :
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
         when (requestCode) {
-            REQUEST_ACCOUNT_WEBVIEW_REQUEST -> {
-                viewModelAccountLinkingSection.getAccountLinkingStatus()
-            }
             REQUEST_LOCATION_PERMISSION -> {
-                val isAllowed = grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED
+                val isAllowed =
+                    grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED
 
                 // change toggle geolocation
                 viewModelRecommendationSection.setGeolocationChange(isAllowed)
+
+                if (!isAllowed) {
+                    Toaster.build(
+                        requireView(),
+                        getString(R.string.privacy_center_recommendation_dialog_permission_denied),
+                        Toaster.LENGTH_LONG,
+                        Toaster.TYPE_ERROR,
+                        getString(R.string.privacy_center_recommendation_dialog_permission_setting)
+                    ) { goToApplicationDetailActivity() }.show()
+                }
             }
         }
+    }
+
+    private fun goToLogin() {
+        val intent = RouteManager.getIntent(
+            requireActivity(),
+            ApplinkConstInternalUserPlatform.LOGIN
+        )
+        startActivityForResult(intent, REQUEST_LOGIN)
+    }
+
+    private fun goToApplicationDetailActivity() {
+        val intent = Intent()
+        intent.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
+        val uri = Uri.fromParts(PACKAGE, requireActivity().packageName, null)
+        intent.data = uri
+        requireActivity().startActivity(intent)
     }
 
     override fun onRequestLocationPermission() {
@@ -221,13 +279,14 @@ class PrivacyCenterFragment :
         startActivityForResult(intent, REQUEST_ACCOUNT_WEBVIEW_REQUEST)
     }
 
-    inner class PrivacyCenterSectionDelegateImpl: PrivacyCenterSectionDelegate {
+    inner class PrivacyCenterSectionDelegateImpl : PrivacyCenterSectionDelegate {
         override val accountLinkingSection: AccountLinkingSection =
             AccountLinkingSection(context, viewModelAccountLinkingSection, this@PrivacyCenterFragment)
         override val activitySection: ActivitySection = ActivitySection(context)
         override val recommendationSection: RecommendationSection = RecommendationSection(
             context,
             viewModelRecommendationSection,
+            childFragmentManager,
             this@PrivacyCenterFragment
         )
         override val consentWithdrawalSection: ConsentWithdrawalSection = ConsentWithdrawalSection(
@@ -241,6 +300,8 @@ class PrivacyCenterFragment :
 
     companion object {
         fun newInstance() = PrivacyCenterFragment()
+        private const val PACKAGE = "package"
+        private const val REQUEST_LOGIN = 200
         private const val REQUEST_LOCATION_PERMISSION = 100
         private const val OFFSET_CHANGE_COLOR_STATUS_BAR = -136
         private const val REQUEST_ACCOUNT_WEBVIEW_REQUEST = 101
