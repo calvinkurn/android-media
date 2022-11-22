@@ -7,7 +7,6 @@ import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.mvc.R
-import com.tokopedia.mvc.common.util.DateUtil.formatStartFinishDate
 import com.tokopedia.mvc.databinding.SmvcItemVoucherBinding
 import com.tokopedia.mvc.databinding.SmvcItemVoucherDataBinding
 import com.tokopedia.mvc.databinding.SmvcItemVoucherHeaderBinding
@@ -16,6 +15,9 @@ import com.tokopedia.mvc.databinding.SmvcItemVoucherStatsBinding
 import com.tokopedia.mvc.domain.entity.Voucher
 import com.tokopedia.mvc.domain.entity.enums.VoucherStatus
 import com.tokopedia.mvc.domain.entity.enums.VoucherTargetBuyer
+import com.tokopedia.utils.date.DateUtil
+import com.tokopedia.utils.date.DateUtil.DEFAULT_VIEW_FORMAT
+import com.tokopedia.utils.date.DateUtil.YYYY_MM_DD_T_HH_MM_SS_Z
 
 class VouchersViewHolder(
     private val binding: SmvcItemVoucherBinding,
@@ -102,7 +104,9 @@ class VouchersViewHolder(
     }
 
     private fun SmvcItemVoucherPeriodBinding.setupPeriod(voucher: Voucher) {
-        tfPeriodDate.text = formatStartFinishDate(voucher.startTime, voucher.finishTime)
+        val startDate = DateUtil.formatDate(YYYY_MM_DD_T_HH_MM_SS_Z, DEFAULT_VIEW_FORMAT, voucher.startTime)
+        val finishDate = DateUtil.formatDate(YYYY_MM_DD_T_HH_MM_SS_Z, DEFAULT_VIEW_FORMAT, voucher.finishTime)
+        tfPeriodDate.text = root.context.getString(R.string.smvc_voucherlist_voucher_date_format, startDate, finishDate)
         tfMultiPeriodMore.text = root.context.getString(R.string.smvc_voucherlist_format_multiperiod, voucher.totalChild)
         tfMultiPeriodMore.isVisible = voucher.totalChild.isMoreThanZero()
         iconMenu.isVisible = voucher.totalChild.isMoreThanZero()
