@@ -11,6 +11,7 @@ class ParticipantUiModel(
     val id: String = "",
     val title: String = "",
     val subTitle: String = "",
+    val redeemTime: String = "",
     var isChecked: Boolean = false,
     var isDisabled: Boolean = false
 ): Visitable<EventRedeemRevampTypeFactory> {

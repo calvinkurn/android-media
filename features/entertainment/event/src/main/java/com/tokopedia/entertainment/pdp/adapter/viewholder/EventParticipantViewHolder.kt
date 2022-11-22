@@ -28,7 +28,15 @@ class EventParticipantViewHolder(
             if (element.isDisabled) {
                 cbParticipant.isEnabled = false
                 cbParticipant.isChecked = true
+
+                if (element.redeemTime.isNotEmpty()) {
+                    tgParticipantRedeemTime.show()
+                    tgParticipantRedeemTime.text = element.redeemTime
+                } else {
+                    tgParticipantRedeemTime.hide()
+                }
             } else {
+                tgParticipantRedeemTime.hide()
                 cbParticipant.isEnabled = true
                 cbParticipant.setOnCheckedChangeListener(null)
                 cbParticipant.isChecked = element.isChecked
@@ -40,7 +48,6 @@ class EventParticipantViewHolder(
             if (element.subTitle.isNotEmpty()) {
                 tgParticipantSubTitle.show()
                 tgParticipantSubTitle.text = element.subTitle
-
             } else {
                 tgParticipantSubTitle.hide()
             }

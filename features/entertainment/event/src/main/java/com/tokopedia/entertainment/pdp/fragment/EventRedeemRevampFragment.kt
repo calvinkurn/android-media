@@ -363,6 +363,7 @@ class EventRedeemRevampFragment : BaseDaggerFragment(),
                     }
                 btnScan.setOnClickListener {
                     RouteManager.route(context, ApplinkConstInternalMarketplace.QR_SCANNEER)
+                    activity?.finish()
                 }
             }
         }

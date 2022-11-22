@@ -2,6 +2,7 @@ package com.tokopedia.entertainment.pdp.common.util
 
 import android.content.Context
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.entertainment.home.utils.DateUtils
 import com.tokopedia.entertainment.pdp.data.redeem.redeemable.Participant
 import com.tokopedia.entertainment.pdp.data.redeem.redeemable.ParticipantDetail
 import com.tokopedia.entertainment.pdp.uimodel.ParticipantTitleUiModel
@@ -10,6 +11,7 @@ import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.toIntSafely
+import java.util.*
 import com.tokopedia.entertainment.R.string as stringRedeem
 
 /**
@@ -37,7 +39,8 @@ object EventRedeemMapper {
                        title = it.participantDetails.first().value,
                        subTitle = participantsListMapping(it.participantDetails, context),
                        isChecked = it.checked,
-                       isDisabled = it.redemptionTime.isMoreThanZero()
+                       isDisabled = it.redemptionTime.isMoreThanZero(),
+                       redeemTime = getRedemptionTime(context, it.redemptionTime)
                     )
                 )
             }
@@ -104,6 +107,19 @@ object EventRedeemMapper {
     private fun getSubtitle(context: Context, participantDetail: ParticipantDetail) : String {
         return context.resources.getString(stringRedeem.ent_redeem_revamp_subtitle,
             participantDetail.label, participantDetail.value)
+    }
+
+    private fun getRedemptionTime(context: Context, redemptionTime: Int): String {
+        return if (redemptionTime.isMoreThanZero()) {
+            context.resources.getString(stringRedeem.ent_redeem_success_redeem_time,
+                DateUtils.dateToString(
+                    Date(redemptionTime.toLong() * DateUtils.SECOND_IN_MILIS),
+                    "dd MMM yyyy hh:ss"
+                )
+            )
+        } else {
+            ""
+        }
     }
 
 }
