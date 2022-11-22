@@ -1571,10 +1571,10 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         val sellerAccount = accountList.firstOrNull { it.type == TYPE_SHOP }
         val nonSellerAccount = accountList.firstOrNull { it.type == TYPE_USER }
         return if (sellerAccount != null) {
-            if (sellerAccount.hasAcceptTnc) {
+            if (sellerAccount.enable) {
                 sellerAccount
             } else if (nonSellerAccount != null) {
-                if (nonSellerAccount.hasUsername && nonSellerAccount.hasAcceptTnc) {
+                if (nonSellerAccount.hasUsername && nonSellerAccount.enable) {
                     nonSellerAccount
                 } else {
                     sellerAccount
@@ -1631,7 +1631,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                 }
                 false
             }
-            !selectedAccount.hasAcceptTnc -> {
+            !selectedAccount.enable -> {
                 if (isFirstOpen && isAllowChangeAccount) return false
                 _accountStateInfo.update { AccountStateInfo() }
                 _accountStateInfo.update {

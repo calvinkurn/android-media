@@ -17,15 +17,11 @@ import com.tokopedia.play.broadcaster.shorts.ui.model.PlayShortsConfigUiModel
 import com.tokopedia.play.broadcaster.shorts.ui.model.PlayShortsMediaUiModel
 import com.tokopedia.play.broadcaster.shorts.ui.model.PlayShortsUploadUiModel
 import com.tokopedia.play.broadcaster.shorts.ui.model.action.PlayShortsAction
-import com.tokopedia.play.broadcaster.shorts.ui.model.event.PlayShortsBottomSheet
-import com.tokopedia.play.broadcaster.shorts.ui.model.event.PlayShortsOneTimeEvent
-import com.tokopedia.play.broadcaster.shorts.ui.model.event.PlayShortsToaster
 import com.tokopedia.play.broadcaster.shorts.ui.model.event.PlayShortsUiEvent
 import com.tokopedia.play.broadcaster.shorts.ui.model.state.PlayShortsCoverFormUiState
 import com.tokopedia.play.broadcaster.shorts.ui.model.state.PlayShortsTitleFormUiState
 import com.tokopedia.play.broadcaster.shorts.ui.model.state.PlayShortsUiState
 import com.tokopedia.play.broadcaster.shorts.ui.model.state.PlayShortsUploadUiState
-import com.tokopedia.play.broadcaster.shorts.util.oneTimeUpdate
 import com.tokopedia.play.broadcaster.shorts.view.custom.DynamicPreparationMenu
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagUiModel
@@ -33,13 +29,15 @@ import com.tokopedia.play.broadcaster.util.error.DefaultErrorThrowable
 import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
 import com.tokopedia.play_common.model.result.NetworkResult
-import com.tokopedia.play_common.model.result.map
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.coroutines.CoroutineContext
 
 /**
  * Created By : Jonathan Darwin on November 08, 2022
@@ -92,6 +90,7 @@ class PlayShortsViewModel @Inject constructor(
     val tncList: List<TermsAndConditionUiModel>
         get() = _config.value.tncList
 
+    private val _globalLoader = MutableStateFlow(false)
     private val _config = MutableStateFlow(PlayShortsConfigUiModel.Empty)
     private val _media = MutableStateFlow(PlayShortsMediaUiModel.create(exoPlayer))
     private val _accountList = MutableStateFlow<List<ContentAccountUiModel>>(emptyList())
@@ -132,6 +131,7 @@ class PlayShortsViewModel @Inject constructor(
     }
 
     val uiState: Flow<PlayShortsUiState> = combine(
+        _globalLoader,
         _config,
         _media,
         _accountList,
@@ -141,8 +141,9 @@ class PlayShortsViewModel @Inject constructor(
         _coverForm,
         _tags,
         _uploadState,
-    ) { config, media, accountList, selectedAccount, menuListUiState, titleForm, coverForm, tags, uploadState ->
+    ) { globalLoader, config, media, accountList, selectedAccount, menuListUiState, titleForm, coverForm, tags, uploadState ->
         PlayShortsUiState(
+            globalLoader = globalLoader,
             config = config,
             media = media,
             accountList = accountList,
@@ -155,7 +156,7 @@ class PlayShortsViewModel @Inject constructor(
         )
     }
 
-    private val _uiEvent = MutableStateFlow(PlayShortsUiEvent.Empty)
+    private val _uiEvent = MutableSharedFlow<PlayShortsUiEvent>()
     val uiEvent: Flow<PlayShortsUiEvent>
         get() = _uiEvent
 
@@ -200,18 +201,15 @@ class PlayShortsViewModel @Inject constructor(
     }
 
     private fun handlePreparePage(preferredAccountType: String) {
-        viewModelScope.launchCatchError(block = {
+        viewModelScope.launchCatchErrorWithLoader(block = {
             val accountList = repo.getAccountList().apply {
                 _accountList.update { this }
             }
             val bestEligibleAccount = accountManager.getBestEligibleAccount(accountList, preferredAccountType)
 
             setupConfigurationIfEligible(bestEligibleAccount)
-
         }) {
-            _uiEvent.oneTimeUpdate {
-                it.copy(oneTimeEvent = PlayShortsOneTimeEvent.ErrorPreparingPage)
-            }
+            _uiEvent.emit(PlayShortsUiEvent.ErrorPreparingPage)
         }
     }
 
@@ -242,24 +240,19 @@ class PlayShortsViewModel @Inject constructor(
     }
 
     private fun handleClickSwitchAccount() {
-        _uiEvent.oneTimeUpdate {
-            it.copy(
-                bottomSheet = PlayShortsBottomSheet.SwitchAccount
-            )
+        viewModelScope.launch {
+            _uiEvent.emit(PlayShortsUiEvent.SwitchAccount)
         }
     }
 
     private fun handleSwitchAccount() {
-        viewModelScope.launchCatchError(block = {
-            /** TODO: Add loading state */
+        viewModelScope.launchCatchErrorWithLoader(block = {
             val newSelectedAccount = accountManager.switchAccount(_accountList.value, _selectedAccount.value.type)
 
             setupConfigurationIfEligible(newSelectedAccount)
 
         }) { throwable ->
-            _uiEvent.oneTimeUpdate {
-                it.copy(toaster = PlayShortsToaster.ErrorSwitchAccount(throwable))
-            }
+            _uiEvent.emit(PlayShortsUiEvent.ErrorSwitchAccount(throwable))
         }
     }
 
@@ -293,13 +286,9 @@ class PlayShortsViewModel @Inject constructor(
                 )
             }
 
-            _uiEvent.oneTimeUpdate {
-                it.copy(
-                    toaster = PlayShortsToaster.ErrorUploadTitle(throwable) {
-                        submitAction(PlayShortsAction.UploadTitle(title = title))
-                    }
-                )
-            }
+            _uiEvent.emit(PlayShortsUiEvent.ErrorUploadTitle(throwable) {
+                submitAction(PlayShortsAction.UploadTitle(title = title))
+            })
         }
     }
 
@@ -415,12 +404,12 @@ class PlayShortsViewModel @Inject constructor(
         val config = repo.getShortsConfiguration(account.id, account.type)
         _config.update { it.copy(tncList = config.tncList) }
 
-        if(account.isShop && (!account.hasAcceptTnc || !config.shortsAllowed)) {
+        if(account.isShop && (!account.enable || !config.shortsAllowed)) {
             emitEventSellerNotEligible()
-        } else if (account.isUser && !account.hasAcceptTnc) {
-            emitEventUGCOnboarding(account.hasUsername)
-        } else if (account.isUser && !config.shortsAllowed){
+        } else if (account.isUser && !config.shortsAllowed) {
             emitEventAccountNotEligible()
+        } else if (account.isUser && !account.enable) {
+            emitEventUGCOnboarding(account.hasUsername)
         } else {
             val finalConfig = if(config.shortsId.isEmpty()) {
                 val shortsId = repo.createShorts(account.id, account.type)
@@ -436,21 +425,34 @@ class PlayShortsViewModel @Inject constructor(
     }
 
     private fun emitEventSellerNotEligible() {
-        _uiEvent.oneTimeUpdate {
-            it.copy(bottomSheet = PlayShortsBottomSheet.SellerNotEligible)
+        viewModelScope.launch {
+            _uiEvent.emit(PlayShortsUiEvent.SellerNotEligible)
         }
     }
 
     private fun emitEventAccountNotEligible() {
-        _uiEvent.oneTimeUpdate {
-            it.copy(bottomSheet = PlayShortsBottomSheet.AccountNotEligible)
+        viewModelScope.launch {
+            _uiEvent.emit(PlayShortsUiEvent.AccountNotEligible)
         }
     }
 
     private fun emitEventUGCOnboarding(hasUsername: Boolean) {
-        _uiEvent.oneTimeUpdate {
-            it.copy(bottomSheet = PlayShortsBottomSheet.UGCOnboarding(hasUsername))
+        viewModelScope.launch {
+            _uiEvent.emit(PlayShortsUiEvent.UGCOnboarding(hasUsername))
         }
+    }
+
+    private fun CoroutineScope.launchCatchErrorWithLoader(
+        context: CoroutineContext = coroutineContext,
+        block: suspend CoroutineScope.() -> Unit,
+        onError: suspend (Throwable) -> Unit
+    ) = launchCatchError(context, block = {
+        _globalLoader.update { true }
+        block()
+        _globalLoader.update { false }
+    }) {
+        _globalLoader.update { false }
+        onError(it)
     }
 
     private suspend fun saveTag() {

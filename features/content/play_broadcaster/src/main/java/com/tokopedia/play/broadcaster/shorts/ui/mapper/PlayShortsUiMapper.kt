@@ -28,7 +28,7 @@ class PlayShortsUiMapper @Inject constructor(
                 badge = it.badge,
                 type = it.type,
                 hasUsername = it.shortVideo.hasUsername,
-                hasAcceptTnc = it.shortVideo.enable,
+                enable = it.shortVideo.enable,
             )
         }
     }

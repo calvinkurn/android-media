@@ -12,9 +12,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.google.android.exoplayer2.upstream.*
 import com.tokopedia.coachmark.CoachMark2
-import com.tokopedia.content.common.types.ContentCommonUserType
 import com.tokopedia.content.common.ui.bottomsheet.ContentAccountTypeBottomSheet
-import com.tokopedia.content.common.ui.bottomsheet.SellerTncBottomSheet
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.content.common.ui.toolbar.ContentColor
 import com.tokopedia.content.common.util.coachmark.ContentCoachMarkConfig
@@ -23,14 +21,12 @@ import com.tokopedia.content.common.util.coachmark.ContentCoachMarkSharedPref
 import com.tokopedia.content.common.util.hideKeyboard
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.databinding.FragmentPlayShortsPreparationBinding
 import com.tokopedia.play.broadcaster.setup.product.view.ProductSetupFragment
 import com.tokopedia.play.broadcaster.shorts.ui.model.action.PlayShortsAction
-import com.tokopedia.play.broadcaster.shorts.ui.model.event.PlayShortsBottomSheet
-import com.tokopedia.play.broadcaster.shorts.ui.model.event.PlayShortsToaster
+import com.tokopedia.play.broadcaster.shorts.ui.model.event.PlayShortsUiEvent
 import com.tokopedia.play.broadcaster.shorts.ui.model.state.PlayShortsCoverFormUiState
 import com.tokopedia.play.broadcaster.shorts.ui.model.state.PlayShortsTitleFormUiState
 import com.tokopedia.play.broadcaster.shorts.ui.model.state.PlayShortsUiState
@@ -292,8 +288,28 @@ class PlayShortsPreparationFragment @Inject constructor(
 
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.uiEvent.collect { event ->
-                renderToaster(event.toaster)
-                renderBottomSheet(event.bottomSheet)
+                when (event) {
+                    is PlayShortsUiEvent.ErrorUploadTitle -> {
+                        toaster.showError(
+                            event.throwable,
+                            duration = Toaster.LENGTH_LONG,
+                            actionLabel = getString(R.string.play_broadcast_try_again),
+                            actionListener = {
+                                event.onRetry()
+                            }
+                        )
+                    }
+                    is PlayShortsUiEvent.ErrorSwitchAccount -> {
+                        toaster.showError(
+                            event.throwable,
+                            duration = Toaster.LENGTH_SHORT
+                        )
+                    }
+                    is PlayShortsUiEvent.SwitchAccount -> {
+                        showSwitchAccountBottomSheet()
+                    }
+                    else -> {}
+                }
             }
         }
 
@@ -428,37 +444,6 @@ class PlayShortsPreparationFragment @Inject constructor(
         /** TODO: for mocking purpose */
         binding.btnNext.isEnabled = true
 //        binding.btnNext.isEnabled = viewModel.isAllMandatoryMenuChecked
-    }
-
-    private fun renderToaster(toasterData: PlayShortsToaster) {
-        when (toasterData) {
-            is PlayShortsToaster.ErrorUploadTitle -> {
-                toaster.showError(
-                    toasterData.throwable,
-                    duration = Toaster.LENGTH_LONG,
-                    actionLabel = getString(R.string.play_broadcast_try_again),
-                    actionListener = {
-                        toasterData.onRetry()
-                    }
-                )
-            }
-            is PlayShortsToaster.ErrorSwitchAccount -> {
-                toaster.showError(
-                    toasterData.throwable,
-                    duration = Toaster.LENGTH_SHORT
-                )
-            }
-            else -> {}
-        }
-    }
-
-    private fun renderBottomSheet(bottomSheet: PlayShortsBottomSheet) {
-        when (bottomSheet) {
-            is PlayShortsBottomSheet.SwitchAccount -> {
-                showSwitchAccountBottomSheet()
-            }
-            else -> {}
-        }
     }
 
     private fun showMainComponent(isShow: Boolean) {

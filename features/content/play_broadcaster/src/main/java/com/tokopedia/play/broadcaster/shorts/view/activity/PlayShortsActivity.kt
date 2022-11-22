@@ -2,7 +2,6 @@ package com.tokopedia.play.broadcaster.shorts.view.activity
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
 import androidx.activity.viewModels
 import androidx.fragment.app.Fragment
@@ -16,7 +15,7 @@ import com.tokopedia.content.common.types.ContentCommonUserType
 import com.tokopedia.content.common.ui.bottomsheet.SellerTncBottomSheet
 import com.tokopedia.content.common.ui.model.TermsAndConditionUiModel
 import com.tokopedia.globalerror.GlobalError
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.picker.common.MediaPicker
 import com.tokopedia.picker.common.PageSource
 import com.tokopedia.picker.common.types.ModeType
@@ -26,15 +25,13 @@ import com.tokopedia.play.broadcaster.databinding.ActivityPlayShortsBinding
 import com.tokopedia.play.broadcaster.shorts.di.DaggerPlayShortsComponent
 import com.tokopedia.play.broadcaster.shorts.di.PlayShortsModule
 import com.tokopedia.play.broadcaster.shorts.ui.model.action.PlayShortsAction
-import com.tokopedia.play.broadcaster.shorts.ui.model.event.PlayShortsBottomSheet
-import com.tokopedia.play.broadcaster.shorts.ui.model.event.PlayShortsOneTimeEvent
+import com.tokopedia.play.broadcaster.shorts.ui.model.event.PlayShortsUiEvent
 import com.tokopedia.play.broadcaster.shorts.ui.model.state.PlayShortsUiState
 import com.tokopedia.play.broadcaster.shorts.view.bottomsheet.ShortsAccountNotEligibleBottomSheet
 import com.tokopedia.play.broadcaster.shorts.view.fragment.PlayShortsPreparationFragment
 import com.tokopedia.play.broadcaster.shorts.view.fragment.PlayShortsSummaryFragment
 import com.tokopedia.play.broadcaster.shorts.view.fragment.base.PlayShortsBaseFragment
 import com.tokopedia.play.broadcaster.shorts.view.viewmodel.PlayShortsViewModel
-import com.tokopedia.play.broadcaster.util.extension.channelNotFound
 import com.tokopedia.play_common.util.extension.withCache
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
@@ -76,8 +73,10 @@ class PlayShortsActivity : BaseActivity() {
                 fragment.setListener(object : UGCOnboardingParentFragment.Listener {
                     override fun onSuccess() {
                         /** TODO: handle tracker */
-                        if(getCurrentFragment() == null)
+                        if(isFragmentContainerEmpty()) {
+                            showNoEligibleAccountBackground(false)
                             viewModel.submitAction(PlayShortsAction.PreparePage(getPreferredAccountType()))
+                        }
                         else
                             viewModel.submitAction(PlayShortsAction.SwitchAccount)
                     }
@@ -100,7 +99,7 @@ class PlayShortsActivity : BaseActivity() {
 
                     override fun clickCloseIcon() {
                         /** TODO: handle tracker */
-                        if (getCurrentFragment() == null) finish()
+                        if (isFragmentContainerEmpty()) finish()
                     }
                 })
             }
@@ -117,14 +116,14 @@ class PlayShortsActivity : BaseActivity() {
 
                 fragment.setListener(object : SellerTncBottomSheet.Listener {
                     override fun clickCloseIcon() {
-                        if(getCurrentFragment() == null) finish()
+                        if(isFragmentContainerEmpty()) finish()
                     }
                 })
             }
             is ShortsAccountNotEligibleBottomSheet -> {
                 fragment.setListener(object : ShortsAccountNotEligibleBottomSheet.Listener {
                     override fun onClose() {
-                        if(getCurrentFragment() == null) finish()
+                        if(isFragmentContainerEmpty()) finish()
                     }
                 })
             }
@@ -164,13 +163,37 @@ class PlayShortsActivity : BaseActivity() {
         lifecycleScope.launchWhenStarted {
             viewModel.uiState.withCache().collectLatest {
                 renderPage(it.prevValue, it.value)
+                renderGlobalLoader(it.prevValue, it.value)
             }
         }
 
         lifecycleScope.launchWhenStarted {
-            viewModel.uiEvent.collect {
-                renderBottomSheet(it.bottomSheet)
-                renderOneTimeEvent(it.oneTimeEvent)
+            viewModel.uiEvent.collect { event ->
+                when (event) {
+                    is PlayShortsUiEvent.UGCOnboarding -> {
+                        showUGCOnboardingBottomSheet(event.hasUsername)
+
+                        if(isFragmentContainerEmpty()) showNoEligibleAccountBackground(true)
+                    }
+                    is PlayShortsUiEvent.AccountNotEligible -> {
+                        showNoEligibleAccountBottomSheet()
+
+                        if(isFragmentContainerEmpty()) showNoEligibleAccountBackground(true)
+                    }
+                    is PlayShortsUiEvent.SellerNotEligible -> {
+                        showSellerNotEligibleBottomSheet()
+
+                        if(isFragmentContainerEmpty()) showNoEligibleAccountBackground(true)
+                    }
+                    is PlayShortsUiEvent.ErrorPreparingPage -> {
+                        binding.loader.visibility = View.GONE
+                        binding.globalError.visibility = View.VISIBLE
+                    }
+                    is PlayShortsUiEvent.GoToSummary -> {
+                        openSummaryFragment()
+                    }
+                    else -> {}
+                }
             }
         }
     }
@@ -179,10 +202,6 @@ class PlayShortsActivity : BaseActivity() {
         prev: PlayShortsUiState?,
         curr: PlayShortsUiState
     ) {
-        /**
-         * Need to put validation here so render page only run once
-         */
-
         if (prev?.config?.shortsId?.isEmpty() == true && curr.config.shortsId.isNotEmpty() && curr.media.mediaUri.isEmpty()) {
             binding.loader.visibility = View.GONE
             openMediaPicker()
@@ -190,43 +209,20 @@ class PlayShortsActivity : BaseActivity() {
             binding.loader.visibility = View.GONE
             openPreparation()
         }
-        else if(curr.config.shortsId.isEmpty()) {
-            binding.loader.visibility = View.VISIBLE
-        }
     }
 
-    private fun renderBottomSheet(bottomSheet: PlayShortsBottomSheet) {
-        when (bottomSheet) {
-            is PlayShortsBottomSheet.UGCOnboarding -> {
-                showUGCOnboardingBottomSheet(bottomSheet.hasUsername)
-            }
-            is PlayShortsBottomSheet.AccountNotEligible -> {
-                showNoEligibleAccountBottomSheet()
-            }
-            is PlayShortsBottomSheet.SellerNotEligible -> {
-                showSellerNotEligibleBottomSheet()
-            }
-            else -> {}
-        }
-    }
+    private fun renderGlobalLoader(
+        prev: PlayShortsUiState?,
+        curr: PlayShortsUiState
+    ) {
+        if(prev?.globalLoader == curr.globalLoader) return
 
-    private fun renderOneTimeEvent(oneTimeEvent: PlayShortsOneTimeEvent) {
-        when(oneTimeEvent) {
-            is PlayShortsOneTimeEvent.ErrorPreparingPage -> {
-                binding.loader.visibility = View.GONE
-                binding.globalError.visibility = View.VISIBLE
-            }
-            is PlayShortsOneTimeEvent.GoToSummary -> {
-                openSummaryFragment()
-            }
-            else -> {}
-        }
+        binding.loader.showWithCondition(curr.globalLoader)
     }
 
     private fun openMediaPicker() {
         val intent = MediaPicker.intent(this) {
-            /** TODO: need to decide this pageSource based on our analytics */
-            pageSource(PageSource.Unknown)
+            pageSource(PageSource.PlayShorts)
             minVideoDuration(1000)
             maxVideoDuration(90000)
             pageType(PageType.GALLERY)
@@ -291,6 +287,10 @@ class PlayShortsActivity : BaseActivity() {
             .show(supportFragmentManager)
     }
 
+    private fun showNoEligibleAccountBackground(isShow: Boolean) {
+        binding.clNoEligibleAccount.showWithCondition(isShow)
+    }
+
     private fun getPreferredAccountType(): String {
         return intent.getStringExtra(ContentCommonUserType.KEY_AUTHOR_TYPE).orEmpty()
     }
@@ -316,6 +316,8 @@ class PlayShortsActivity : BaseActivity() {
     }
 
     private fun getCurrentFragment() = supportFragmentManager.findFragmentById(R.id.container)
+
+    private fun isFragmentContainerEmpty() = getCurrentFragment() == null
 
     companion object {
         private const val MEDIA_PICKER_REQ = 123

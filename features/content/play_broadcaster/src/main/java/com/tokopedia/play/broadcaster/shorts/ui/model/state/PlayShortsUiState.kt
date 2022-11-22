@@ -12,6 +12,7 @@ import com.tokopedia.play_common.model.result.NetworkResult
  * Created By : Jonathan Darwin on November 08, 2022
  */
 data class PlayShortsUiState(
+    val globalLoader: Boolean,
     val config: PlayShortsConfigUiModel,
     val media: PlayShortsMediaUiModel,
     val accountList: List<ContentAccountUiModel>,
