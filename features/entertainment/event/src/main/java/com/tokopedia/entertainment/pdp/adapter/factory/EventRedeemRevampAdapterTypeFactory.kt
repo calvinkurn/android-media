@@ -15,8 +15,7 @@ import com.tokopedia.entertainment.pdp.uimodel.ParticipantUiModel
 
 class EventRedeemRevampAdapterTypeFactory (
     private val listener: EventParticipantViewHolder.ParticipantListener,
-) :
-    BaseAdapterTypeFactory(),
+) : BaseAdapterTypeFactory(),
     EventRedeemRevampTypeFactory {
 
     override fun type(uiModel: ParticipantUiModel): Int = EventParticipantViewHolder.LAYOUT

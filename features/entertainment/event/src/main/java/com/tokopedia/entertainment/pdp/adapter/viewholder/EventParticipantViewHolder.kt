@@ -17,8 +17,7 @@ import com.tokopedia.kotlin.extensions.view.show
 class EventParticipantViewHolder(
     private val listener: ParticipantListener,
     itemView: View
-):
-    AbstractViewHolder<ParticipantUiModel>(itemView) {
+): AbstractViewHolder<ParticipantUiModel>(itemView) {
 
     private var binding: ItemEventPdpRedeemBinding? by viewBinding()
 
