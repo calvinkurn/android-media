@@ -3,7 +3,7 @@ package com.tokopedia.feedcomponent.view.viewmodel.posttag
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
 import com.tokopedia.feedcomponent.view.adapter.posttag.PostTagTypeFactory
 
-data class ProductPostTagViewModelNew(
+data class ProductPostTagModelNew(
     var id: String = "",
     var text: String = "",
     var imgUrl:String = "",
@@ -39,7 +39,7 @@ data class ProductPostTagViewModelNew(
     val saleType: String = "",
     val saleStatus: String = "",
     var isWishlisted: Boolean = false
-) : BasePostTagViewModel {
+) : BasePostTagModel {
     override fun type(typeFactory: PostTagTypeFactory): Int {
         return typeFactory.type(this)
     }

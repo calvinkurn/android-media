@@ -1,7 +1,7 @@
 //package com.tokopedia.tokopedia.feedplus.view.presenter
 //
 //import com.tokopedia.affiliatecommon.domain.TrackAffiliateClickUseCase
-//import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.TrackAffiliateViewModel
+//import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.TrackAffiliateModel
 //import com.tokopedia.feedplus.view.presenter.FeedViewModel
 //import com.tokopedia.tokopedia.feedplus.InstantTaskExecutorRuleSpek
 //import com.tokopedia.tokopedia.feedplus.view.createFeedTestInstance
@@ -30,7 +30,7 @@
 //        val trackAffiliateClickUseCase by memoized<TrackAffiliateClickUseCase>()
 //
 //        Scenario("Success track affiliate") {
-//            val successResponse = TrackAffiliateViewModel()
+//            val successResponse = TrackAffiliateModel()
 //            Given("Feed view model") {
 //                feedViewModel = createFeedViewModel()
 //            }
@@ -63,7 +63,7 @@
 //        }
 //
 //        Scenario("Success track affiliate but failed response") {
-//            val successResponse = TrackAffiliateViewModel()
+//            val successResponse = TrackAffiliateModel()
 //            Given("Feed view model") {
 //                feedViewModel = createFeedViewModel()
 //            }

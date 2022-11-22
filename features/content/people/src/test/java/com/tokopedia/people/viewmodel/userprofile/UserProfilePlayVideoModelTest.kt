@@ -22,7 +22,7 @@ import org.junit.Test
 /**
  * Created By : Jonathan Darwin on July 06, 2022
  */
-class UserProfilePlayVideoViewModelTest {
+class UserProfilePlayVideoModelTest {
 
     @get:Rule
     val instantTaskExecutorRule: InstantTaskExecutorRule = InstantTaskExecutorRule()

@@ -6,8 +6,8 @@ import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCardDataItem
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXHome
 import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel
 import com.tokopedia.feedcomponent.view.viewmodel.DynamicPostUiModel
-import com.tokopedia.feedcomponent.view.viewmodel.banner.BannerItemViewModel
-import com.tokopedia.feedcomponent.view.viewmodel.carousel.CarouselPlayCardViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.banner.BannerItemModel
+import com.tokopedia.feedcomponent.view.viewmodel.carousel.CarouselPlayCardModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.TrackingPostModel
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsHeadLineV2Model
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsHeadlineUiModel
@@ -84,14 +84,14 @@ object DynamicFeedNewMapper {
     }
 
     private fun mapCardCarousel(posts: MutableList<Visitable<*>>) {
-        posts.add(CarouselPlayCardViewModel())
+        posts.add(CarouselPlayCardModel())
     }
 
     private fun mapCardBanner(posts: MutableList<Visitable<*>>, items: List<FeedXCardDataItem>) {
-        val bannerList: MutableList<BannerItemViewModel> = ArrayList()
+        val bannerList: MutableList<BannerItemModel> = ArrayList()
         items.forEach { media ->
             val id = media.id
-            bannerList.add(BannerItemViewModel(
+            bannerList.add(BannerItemModel(
                     id, media.coverUrl, media.appLink
             ))
         }

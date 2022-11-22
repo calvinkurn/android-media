@@ -4,7 +4,7 @@ package com.tokopedia.feedcomponent.view.viewmodel.mention
  * Created by jegul on 2019-08-05.
  */
 
-data class MentionableUserViewModel(
+data class MentionableUserModel(
         val id: String,
         val userName: String?,
         val fullName: String,

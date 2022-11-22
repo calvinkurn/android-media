@@ -29,8 +29,8 @@ import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.MediaItem
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTag
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem
 import com.tokopedia.feedcomponent.data.pojo.template.templateitem.TemplateFooter
-import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
-import com.tokopedia.feedcomponent.view.viewmodel.post.grid.MultimediaGridViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostModel
+import com.tokopedia.feedcomponent.view.viewmodel.post.grid.MultimediaGridModel
 import com.tokopedia.kol.R
 import com.tokopedia.kol.common.di.KolComponent
 import com.tokopedia.kol.feature.comment.view.activity.KolCommentNewActivity
@@ -51,8 +51,6 @@ import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
 import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
 import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
-import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.OPEN_WISHLIST
-import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil
 import kotlinx.android.synthetic.main.fragment_media_preview.*
 import javax.inject.Inject
 
@@ -157,10 +155,10 @@ class MediaPreviewFragment: BaseDaggerFragment() {
     }
 
     private fun onSuccessGetDetail(data: PostDetailUiModel) {
-        val dynamicPost = data.dynamicPostViewModel.postList.firstOrNull() as DynamicPostViewModel?
+        val dynamicPost = data.dynamicPostViewModel.postList.firstOrNull() as DynamicPostModel?
         dynamicPost?.let {
             bindToolbar(it)
-            val mediaGrid = it.contentList.filterIsInstance<MultimediaGridViewModel>().firstOrNull()
+            val mediaGrid = it.contentList.filterIsInstance<MultimediaGridModel>().firstOrNull()
             if (mediaGrid != null){
                 bindMedia(mediaGrid.mediaItemList)
             }
@@ -381,7 +379,7 @@ class MediaPreviewFragment: BaseDaggerFragment() {
         }
     }
 
-    private fun bindToolbar(dynamicPost: DynamicPostViewModel) {
+    private fun bindToolbar(dynamicPost: DynamicPostModel) {
         val templateHeader = dynamicPost.template.cardpost.header
         val header = dynamicPost.header
         postAuthor = header.followCta.authorType

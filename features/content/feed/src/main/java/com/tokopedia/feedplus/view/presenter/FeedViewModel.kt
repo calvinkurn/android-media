@@ -17,7 +17,7 @@ import com.tokopedia.feedcomponent.data.feedrevamp.*
 import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel
 import com.tokopedia.feedcomponent.domain.usecase.*
 import com.tokopedia.feedcomponent.util.CustomUiMessageThrowable
-import com.tokopedia.feedcomponent.view.viewmodel.carousel.CarouselPlayCardViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.carousel.CarouselPlayCardModel
 import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.*
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.domain.model.DynamicFeedFirstPageDomainModel
@@ -98,17 +98,17 @@ class FeedViewModel @Inject constructor(
     val followKolResp = MutableLiveData<Result<FollowKolViewModel>>()
     val followKolRecomResp = MutableLiveData<Result<FollowKolViewModel>>()
     val likeKolResp = MutableLiveData<Result<LikeKolViewModel>>()
-    val deletePostResp = MutableLiveData<Result<DeletePostViewModel>>()
-    val atcResp = MutableLiveData<Result<AtcViewModel>>()
-    val toggleFavoriteShopResp = MutableLiveData<Result<FavoriteShopViewModel>>()
-    val trackAffiliateResp = MutableLiveData<Result<TrackAffiliateViewModel>>()
-    val reportResponse = MutableLiveData<Result<DeletePostViewModel>>()
+    val deletePostResp = MutableLiveData<Result<DeletePostModel>>()
+    val atcResp = MutableLiveData<Result<AtcModel>>()
+    val toggleFavoriteShopResp = MutableLiveData<Result<FavoriteShopModel>>()
+    val trackAffiliateResp = MutableLiveData<Result<TrackAffiliateModel>>()
+    val reportResponse = MutableLiveData<Result<DeletePostModel>>()
     val viewTrackResponse = MutableLiveData<Result<ViewsKolModel>>()
     val longVideoViewTrackResponse = MutableLiveData<Result<ViewsKolModel>>()
 
 
-    private val _playWidgetModel = MutableLiveData<Result<CarouselPlayCardViewModel>>()
-    val playWidgetModel: LiveData<Result<CarouselPlayCardViewModel>>
+    private val _playWidgetModel = MutableLiveData<Result<CarouselPlayCardModel>>()
+    val playWidgetModel: LiveData<Result<CarouselPlayCardModel>>
         get() = _playWidgetModel
 
     private val _asgcReminderButtonInitialStatus = MutableLiveData<Result<FeedAsgcCampaignResponseModel>>()
@@ -136,7 +136,7 @@ class FeedViewModel @Inject constructor(
         sendReportUseCase.createRequestParams(contentId.toIntOrZero(), reasonType, reasonMessage, contentType)
         sendReportUseCase.execute(
             {
-                val deleteModel = DeletePostViewModel(
+                val deleteModel = DeletePostModel(
                     contentId,
                     positionInFeed,
                     it.feedReportSubmit.errorMessage,
@@ -663,9 +663,9 @@ class FeedViewModel @Inject constructor(
         }
     }
 
-    private fun deletePost(id: String, rowNumber: Int): DeletePostViewModel {
+    private fun deletePost(id: String, rowNumber: Int): DeletePostModel {
         try {
-            val data = DeletePostViewModel()
+            val data = DeletePostModel()
             data.id = id
             data.rowNumber = rowNumber
             val params = DeletePostUseCase.createRequestParams(id)
@@ -683,7 +683,7 @@ class FeedViewModel @Inject constructor(
         type: String,
         isFollowed: Boolean,
         activityId: String
-    ): AtcViewModel =
+    ): AtcModel =
         withContext(baseDispatcher.io) {
             val params = AddToCartUseCase.getMinimumParams(
                 postTagItem.id,
@@ -693,7 +693,7 @@ class FeedViewModel @Inject constructor(
                 userId = userSession.userId
             )
             try {
-                val data = AtcViewModel()
+                val data = AtcModel()
                 data.applink = postTagItem.appLink
                 data.activityId = activityId
                 data.postType = type
@@ -720,9 +720,9 @@ class FeedViewModel @Inject constructor(
         adapterPosition: Int,
         shopId: String,
         isUnfollowClickedFromBottomSheetMenu: Boolean = false
-    ): FavoriteShopViewModel {
+    ): FavoriteShopModel {
         try {
-            val data = FavoriteShopViewModel()
+            val data = FavoriteShopModel()
             data.rowNumber = rowNumber
             data.adapterPosition = adapterPosition
             data.shopId = shopId
@@ -736,9 +736,9 @@ class FeedViewModel @Inject constructor(
         }
     }
 
-    private fun trackAffiliate(url: String): TrackAffiliateViewModel {
+    private fun trackAffiliate(url: String): TrackAffiliateModel {
         try {
-            val data = TrackAffiliateViewModel()
+            val data = TrackAffiliateModel()
             data.url = url
             val params = TrackAffiliateClickUseCase.createRequestParams(url)
             val isSuccess = trackAffiliateClickUseCase.createObservable(params).toBlocking().first()
@@ -769,15 +769,15 @@ class FeedViewModel @Inject constructor(
     }
 
     private fun shouldGetPlayWidget(model: DynamicFeedDomainModel): Boolean {
-        return model.postList.any { it is CarouselPlayCardViewModel }
+        return model.postList.any { it is CarouselPlayCardModel }
     }
 
-    private suspend fun processPlayWidget(isAutoRefresh: Boolean = false): CarouselPlayCardViewModel {
+    private suspend fun processPlayWidget(isAutoRefresh: Boolean = false): CarouselPlayCardModel {
         val response = playWidgetTools.getWidgetFromNetwork(
             widgetType = PlayWidgetUseCase.WidgetType.Feeds,
             coroutineContext = baseDispatcher.io
         )
         val uiModel = playWidgetTools.mapWidgetToModel(response)
-        return CarouselPlayCardViewModel(uiModel, isAutoRefresh)
+        return CarouselPlayCardModel(uiModel, isAutoRefresh)
     }
 }

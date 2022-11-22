@@ -24,7 +24,7 @@ import org.junit.Test
 /**
  * Created By : Jonathan Darwin on March 11, 2022
  */
-class PlayBroadcastSummaryPostVideoViewModelTest {
+class PlayBroadcastSummaryPostVideoModelTest {
 
     @get:Rule
     val rule: CoroutineTestRule = CoroutineTestRule()

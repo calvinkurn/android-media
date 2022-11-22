@@ -10,8 +10,8 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.design.component.ButtonCompat
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta
-import com.tokopedia.feedcomponent.view.viewmodel.recommendation.RecommendationCardViewModel
-import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.recommendation.RecommendationCardModel
+import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingModel
 import com.tokopedia.kotlin.extensions.view.*
 import kotlinx.android.synthetic.main.item_recommendation_card.view.*
 import com.tokopedia.unifyprinciples.R as unifyR
@@ -19,7 +19,7 @@ import com.tokopedia.unifyprinciples.R as unifyR
 /**
  * @author by milhamj on 20/12/18.
  */
-class RecommendationCardAdapter(val list: MutableList<RecommendationCardViewModel>,
+class RecommendationCardAdapter(val list: MutableList<RecommendationCardModel>,
                                 private val positionInFeed: Int,
                                 private val listener: RecommendationCardListener)
     : RecyclerView.Adapter<RecommendationCardAdapter.RecommendationCardViewHolder>() {
@@ -45,7 +45,7 @@ class RecommendationCardAdapter(val list: MutableList<RecommendationCardViewMode
                                        private val listener: RecommendationCardListener)
         : RecyclerView.ViewHolder(v) {
 
-        fun bind(element: RecommendationCardViewModel) {
+        fun bind(element: RecommendationCardModel) {
             initView(element)
             initViewListener(element)
         }
@@ -57,7 +57,7 @@ class RecommendationCardAdapter(val list: MutableList<RecommendationCardViewMode
             itemView.ivProfile.clearImage()
         }
 
-        private fun initView(element: RecommendationCardViewModel) {
+        private fun initView(element: RecommendationCardModel) {
             itemView.addOnImpressionListener(element.impressHolder) {
                 listener.onAffiliateTrackClicked(element.tracking, false)
             }
@@ -86,7 +86,7 @@ class RecommendationCardAdapter(val list: MutableList<RecommendationCardViewMode
             }
         }
 
-        private fun initViewListener(element: RecommendationCardViewModel) {
+        private fun initViewListener(element: RecommendationCardModel) {
             itemView.setOnClickListener {
                 listener.onRecommendationAvatarClick(
                         positionInFeed,
@@ -146,6 +146,6 @@ class RecommendationCardAdapter(val list: MutableList<RecommendationCardViewMode
 
         fun onRecommendationActionClick(positionInFeed: Int, adapterPosition: Int, id: String, type: String, isFollow: Boolean)
 
-        fun onAffiliateTrackClicked(trackList: List<TrackingViewModel>, isClick: Boolean)
+        fun onAffiliateTrackClicked(trackList: List<TrackingModel>, isClick: Boolean)
     }
 }

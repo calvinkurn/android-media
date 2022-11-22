@@ -5,8 +5,8 @@ import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXMedia
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.BasePostViewHolder
-import com.tokopedia.feedcomponent.view.viewmodel.post.image.ImagePostViewModel
-import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.post.image.ImagePostModel
+import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingModel
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.topads.sdk.domain.model.CpmData
 import com.tokopedia.topads.sdk.domain.model.Product
@@ -15,11 +15,11 @@ import kotlinx.android.synthetic.main.item_fc_post_image.view.*
 /**
  * @author by milhamj on 04/12/18.
  */
-class ImagePostViewHolder(private val listener: ImagePostListener) : BasePostViewHolder<ImagePostViewModel>() {
+class ImagePostViewHolder(private val listener: ImagePostListener) : BasePostViewHolder<ImagePostModel>() {
 
     override var layoutRes = R.layout.item_fc_post_image
 
-    override fun bind(element: ImagePostViewModel) {
+    override fun bind(element: ImagePostModel) {
         itemView.image.setOnClickListener {
             listener.onImageClick(element.positionInFeed, pagerPosition, element.redirectLink)
             if (element.trackingList.isNotEmpty()) {
@@ -72,6 +72,6 @@ class ImagePostViewHolder(private val listener: ImagePostListener) : BasePostVie
 
         fun onImageClick(positionInFeed: Int, contentPosition: Int, redirectLink: String)
 
-        fun onAffiliateTrackClicked(trackList: List<TrackingViewModel>, isClick: Boolean)
+        fun onAffiliateTrackClicked(trackList: List<TrackingModel>, isClick: Boolean)
     }
 }

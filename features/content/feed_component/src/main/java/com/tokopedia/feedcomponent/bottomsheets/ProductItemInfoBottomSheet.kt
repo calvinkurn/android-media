@@ -16,7 +16,7 @@ import com.tokopedia.feedcomponent.databinding.ItemPosttagBinding
 import com.tokopedia.feedcomponent.domain.mapper.TYPE_FEED_X_CARD_PLAY
 import com.tokopedia.feedcomponent.presentation.viewmodel.FeedProductItemInfoViewModel
 import com.tokopedia.feedcomponent.view.adapter.bottomsheetadapter.ProductInfoBottomSheetAdapter
-import com.tokopedia.feedcomponent.view.viewmodel.posttag.ProductPostTagViewModelNew
+import com.tokopedia.feedcomponent.view.viewmodel.posttag.ProductPostTagModelNew
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -148,15 +148,15 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
         }
     }
 
-    private fun mapPostTag(postTagItemList: List<FeedXProduct>): List<ProductPostTagViewModelNew> {
+    private fun mapPostTag(postTagItemList: List<FeedXProduct>): List<ProductPostTagModelNew> {
         var postDescription = ""
         var adClickUrl = ""
         val desc = context?.getString(R.string.feed_share_default_text)
-        val itemList: MutableList<ProductPostTagViewModelNew> = mutableListOf()
+        val itemList: MutableList<ProductPostTagModelNew> = mutableListOf()
         for (postTagItem in postTagItemList) {
             postDescription = desc?.replace("%s", postTagItem.authorName).toString()
             adClickUrl = postTagItem.adClickUrl
-            val item = ProductPostTagViewModelNew(
+            val item = ProductPostTagModelNew(
                 postTagItem.id,
                 postTagItem.name,
                 postTagItem.coverURL,
@@ -238,7 +238,7 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
 
     interface Listener {
         fun onBottomSheetThreeDotsClicked(
-            item: ProductPostTagViewModelNew,
+            item: ProductPostTagModelNew,
             context: Context,
             shopId: String = ""
         )
@@ -260,8 +260,8 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
             mediaType: String
         )
 
-        fun onAddToCartButtonClicked(item: ProductPostTagViewModelNew)
-        fun onAddToWishlistButtonClicked(item: ProductPostTagViewModelNew, rowNumber: Int)
+        fun onAddToCartButtonClicked(item: ProductPostTagModelNew)
+        fun onAddToWishlistButtonClicked(item: ProductPostTagModelNew, rowNumber: Int)
     }
 
     companion object {

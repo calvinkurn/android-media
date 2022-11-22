@@ -71,19 +71,19 @@ import com.tokopedia.feedcomponent.view.base.FeedPlusContainerListener
 import com.tokopedia.feedcomponent.view.base.FeedPlusTabParentFragment
 import com.tokopedia.feedcomponent.view.share.FeedProductTagSharingHelper
 import com.tokopedia.feedcomponent.view.viewmodel.DynamicPostUiModel
-import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightCardViewModel
-import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightCardModel
+import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.TrackingPostModel
-import com.tokopedia.feedcomponent.view.viewmodel.post.poll.PollContentViewModel
-import com.tokopedia.feedcomponent.view.viewmodel.posttag.ProductPostTagViewModelNew
+import com.tokopedia.feedcomponent.view.viewmodel.post.poll.PollContentModel
+import com.tokopedia.feedcomponent.view.viewmodel.posttag.ProductPostTagModelNew
 import com.tokopedia.feedcomponent.view.viewmodel.recommendation.TrackingRecommendationModel
-import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.DeletePostViewModel
-import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.FavoriteShopViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.DeletePostModel
+import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.FavoriteShopModel
 import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.FeedAsgcCampaignResponseModel
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsHeadLineV2Model
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsHeadlineUiModel
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopUiModel
-import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingModel
 import com.tokopedia.feedcomponent.view.widget.CardTitleView
 import com.tokopedia.feedcomponent.view.widget.FeedMultipleImageView
 import com.tokopedia.feedplus.R
@@ -1642,8 +1642,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 )
             }
 
-            if (adapter.getlist()[positionInFeed] is DynamicPostViewModel) {
-                val (_, _, _, _, _, _, _, _, trackingPostModel) = adapter.getlist()[positionInFeed] as DynamicPostViewModel
+            if (adapter.getlist()[positionInFeed] is DynamicPostModel) {
+                val (_, _, _, _, _, _, _, _, trackingPostModel) = adapter.getlist()[positionInFeed] as DynamicPostModel
                 analytics.eventFollowCardPost(
                     if (isFollow) FeedAnalytics.Element.UNFOLLOW else FeedAnalytics.Element.FOLLOW,
                     trackingPostModel.activityName,
@@ -2150,8 +2150,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
 
     override fun userImagePostImpression(positionInFeed: Int, contentPosition: Int) {
-        if (adapter.getlist().size > positionInFeed && adapter.getList()[positionInFeed] is DynamicPostViewModel) {
-            val (_, _, _, _, _, _, _, _, trackingPostModel) = adapter.getlist()[positionInFeed] as DynamicPostViewModel
+        if (adapter.getlist().size > positionInFeed && adapter.getList()[positionInFeed] is DynamicPostModel) {
+            val (_, _, _, _, _, _, _, _, trackingPostModel) = adapter.getlist()[positionInFeed] as DynamicPostModel
             feedAnalytics.eventImageImpressionPost(
                 FeedAnalyticTracker.Screen.FEED,
                 trackingPostModel.postId,
@@ -2234,8 +2234,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
     ) {
         onGoToLink(redirectLink)
 
-        if (adapter.getlist()[positionInFeed] is DynamicPostViewModel) {
-            val (_, _, _, _, _, _, _, _, trackingPostModel) = adapter.getlist()[positionInFeed] as DynamicPostViewModel
+        if (adapter.getlist()[positionInFeed] is DynamicPostModel) {
+            val (_, _, _, _, _, _, _, _, trackingPostModel) = adapter.getlist()[positionInFeed] as DynamicPostModel
             trackCardPostClick(positionInFeed, trackingPostModel)
         }
     }
@@ -2246,8 +2246,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
         redirectLink: String,
         isSingleItem: Boolean
     ) {
-        if (adapter.getlist()[positionInFeed] is DynamicPostViewModel) {
-            val (id, _, _, _, _, _, _, _, trackingPostModel) = adapter.getlist()[positionInFeed] as DynamicPostViewModel
+        if (adapter.getlist()[positionInFeed] is DynamicPostModel) {
+            val (id, _, _, _, _, _, _, _, trackingPostModel) = adapter.getlist()[positionInFeed] as DynamicPostModel
             trackCardPostClick(positionInFeed, trackingPostModel)
 
             if (!isSingleItem && activity != null) {
@@ -2265,7 +2265,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         }
     }
 
-    override fun onAffiliateTrackClicked(trackList: List<TrackingViewModel>, isClick: Boolean) {
+    override fun onAffiliateTrackClicked(trackList: List<TrackingModel>, isClick: Boolean) {
         for (track in trackList) {
             if (isClick) {
                 trackUrlEvent(track.clickURL)
@@ -2275,7 +2275,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         }
     }
 
-    override fun onHighlightItemClicked(positionInFeed: Int, item: HighlightCardViewModel) {
+    override fun onHighlightItemClicked(positionInFeed: Int, item: HighlightCardModel) {
         onGoToLink(item.applink)
     }
 
@@ -2287,7 +2287,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     private fun onTagSheetItemBuy(
-        item: ProductPostTagViewModelNew
+        item: ProductPostTagModelNew
     ) {
         val activityId = item.postId.toString()
         val postTagItem = item.product
@@ -2360,8 +2360,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
             RouteManager.route(context, redirectUrl)
         }
 
-        if (adapter.getlist()[positionInFeed] is DynamicPostViewModel) {
-            val (_, _, _, _, _, _, _, _, trackingPostModel) = adapter.getlist()[positionInFeed] as DynamicPostViewModel
+        if (adapter.getlist()[positionInFeed] is DynamicPostModel) {
+            val (_, _, _, _, _, _, _, _, trackingPostModel) = adapter.getlist()[positionInFeed] as DynamicPostModel
             trackCardPostClick(positionInFeed, trackingPostModel)
         }
     }
@@ -2377,10 +2377,10 @@ class FeedPlusFragment : BaseDaggerFragment(),
             onVoteOptionClicked(positionInFeed, pollId, optionId)
         }
 
-        if (adapter.getlist()[positionInFeed] is DynamicPostViewModel) {
-            val (_, _, _, _, _, _, contentList, _, trackingPostModel) = adapter.getlist()[positionInFeed] as DynamicPostViewModel
-            if (contentList[contentPosition] is PollContentViewModel) {
-                val (_, _, _, _, optionList) = contentList[contentPosition] as PollContentViewModel
+        if (adapter.getlist()[positionInFeed] is DynamicPostModel) {
+            val (_, _, _, _, _, _, contentList, _, trackingPostModel) = adapter.getlist()[positionInFeed] as DynamicPostModel
+            if (contentList[contentPosition] is PollContentModel) {
+                val (_, _, _, _, optionList) = contentList[contentPosition] as PollContentModel
                 val (_, option1, imageUrl) = optionList[option]
                 analytics.eventVoteClick(
                     trackingPostModel.activityName,
@@ -2668,7 +2668,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     private fun onShareProduct(
-        item: ProductPostTagViewModelNew,
+        item: ProductPostTagModelNew,
         activityId: String,
         trackerId: String = ""
     ) {
@@ -3070,7 +3070,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun onErrorDeletePost(data: DeletePostViewModel) {
+    private fun onErrorDeletePost(data: DeletePostModel) {
         Toaster.build(
             requireView(),
             data.errorMessage,
@@ -3090,7 +3090,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         onGoToLink(pdpAppLink)
     }
 
-    private fun onSuccessToggleFavoriteShop(data: FavoriteShopViewModel) {
+    private fun onSuccessToggleFavoriteShop(data: FavoriteShopModel) {
         val rowNumber = data.rowNumber
         val adapterPosition = data.adapterPosition
         if (rowNumber < adapter.getlist().size) {
@@ -3133,8 +3133,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 )
             }
 
-            if (adapter.getlist()[rowNumber] is DynamicPostViewModel) {
-                val (_, _, header) = adapter.getlist()[rowNumber] as DynamicPostViewModel
+            if (adapter.getlist()[rowNumber] is DynamicPostModel) {
+                val (_, _, header) = adapter.getlist()[rowNumber] as DynamicPostModel
                 header.followCta.isFollow = !header.followCta.isFollow
                 adapter.notifyItemChanged(rowNumber, DynamicPostViewHolder.PAYLOAD_FOLLOW)
             }
@@ -3178,7 +3178,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun onErrorToggleFavoriteShop(data: FavoriteShopViewModel) {
+    private fun onErrorToggleFavoriteShop(data: FavoriteShopModel) {
         adapter.notifyItemChanged(data.rowNumber, data.adapterPosition)
         Toaster.build(
             requireView(),
@@ -3662,7 +3662,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     override fun onBottomSheetThreeDotsClicked(
-        item: ProductPostTagViewModelNew,
+        item: ProductPostTagModelNew,
         context: Context,
         shopId: String
     ) {
@@ -3734,7 +3734,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
             )
     }
 
-    override fun onAddToWishlistButtonClicked(item: ProductPostTagViewModelNew, rowNumber: Int) {
+    override fun onAddToWishlistButtonClicked(item: ProductPostTagModelNew, rowNumber: Int) {
         val finalID =
             if (item.postType == TYPE_FEED_X_CARD_PLAY) item.playChannelId else item.postId.toString()
         val trackerId = if (item.isFlashSaleToko || item.isRilisanSpl) {
@@ -3758,7 +3758,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         )
     }
 
-    override fun onAddToCartButtonClicked(item: ProductPostTagViewModelNew) {
+    override fun onAddToCartButtonClicked(item: ProductPostTagModelNew) {
         onTagSheetItemBuy(
             item
         )

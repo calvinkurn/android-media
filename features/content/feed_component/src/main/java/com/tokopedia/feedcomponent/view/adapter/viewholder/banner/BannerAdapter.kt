@@ -5,8 +5,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.feedcomponent.R
-import com.tokopedia.feedcomponent.view.viewmodel.banner.BannerItemViewModel
-import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.banner.BannerItemModel
+import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingModel
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.loadImage
 import kotlinx.android.synthetic.main.item_banner_item.view.*
@@ -15,7 +15,7 @@ import kotlinx.android.synthetic.main.item_banner_item.view.*
  * @author by milhamj on 08/05/18.
  */
 
-class BannerAdapter(private val itemViewModels: List<BannerItemViewModel>,
+class BannerAdapter(private val itemViewModels: List<BannerItemModel>,
                     private val positionInFeed: Int,
                     private var listener: BannerItemListener)
     : RecyclerView.Adapter<BannerAdapter.ViewHolder>() {
@@ -37,7 +37,7 @@ class BannerAdapter(private val itemViewModels: List<BannerItemViewModel>,
     class ViewHolder(v: View, private val positionInFeed: Int, val listener: BannerItemListener)
         : RecyclerView.ViewHolder(v) {
 
-        fun bind(element: BannerItemViewModel) {
+        fun bind(element: BannerItemModel) {
             itemView.banner.loadImage(element.imageUrl)
             itemView.setOnClickListener {
                 listener.onBannerItemClick(positionInFeed, adapterPosition, element.redirectUrl)
@@ -51,6 +51,6 @@ class BannerAdapter(private val itemViewModels: List<BannerItemViewModel>,
     interface BannerItemListener {
         fun onBannerItemClick(positionInFeed: Int, adapterPosition: Int, redirectUrl: String)
 
-        fun onAffiliateTrackClicked(trackList: List<TrackingViewModel>, isClick: Boolean)
+        fun onAffiliateTrackClicked(trackList: List<TrackingModel>, isClick: Boolean)
     }
 }

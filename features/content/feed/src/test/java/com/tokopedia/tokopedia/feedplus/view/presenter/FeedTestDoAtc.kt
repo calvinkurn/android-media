@@ -2,7 +2,7 @@
 //
 //import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 //import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem
-//import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.AtcViewModel
+//import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.AtcModel
 //import com.tokopedia.feedplus.view.presenter.FeedViewModel
 //import com.tokopedia.tokopedia.feedplus.InstantTaskExecutorRuleSpek
 //import com.tokopedia.tokopedia.feedplus.view.createFeedTestInstance
@@ -32,7 +32,7 @@
 //        val RESULT_SUCCESS = 0
 //
 //        Scenario("Success do add to cart") {
-//            val successResponse = AtcViewModel()
+//            val successResponse = AtcModel()
 //            Given("Feed view model") {
 //                feedViewModel = createFeedViewModel()
 //            }

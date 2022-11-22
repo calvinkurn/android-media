@@ -4,7 +4,7 @@
 //import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel
 //import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedNewUseCase
 //import com.tokopedia.feedcomponent.domain.usecase.GetWhitelistNewUseCase
-//import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
+//import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostModel
 //import com.tokopedia.feedplus.domain.model.DynamicFeedFirstPageDomainModel
 //import com.tokopedia.feedplus.view.presenter.FeedViewModel
 //import com.tokopedia.tokopedia.feedplus.InstantTaskExecutorRuleSpek
@@ -48,12 +48,12 @@
 //
 //            Given("Mock sample response data") {
 //                successResponse.dynamicFeedDomainModel.postList = mutableListOf(
-//                    DynamicPostViewModel(id = 1),
-//                    DynamicPostViewModel(id = 2),
-//                    DynamicPostViewModel(id = 3),
-//                    DynamicPostViewModel(id = 4),
-//                    DynamicPostViewModel(id = 5),
-//                    DynamicPostViewModel(id = 6)
+//                    DynamicPostModel(id = 1),
+//                    DynamicPostModel(id = 2),
+//                    DynamicPostModel(id = 3),
+//                    DynamicPostModel(id = 4),
+//                    DynamicPostModel(id = 5),
+//                    DynamicPostModel(id = 6)
 //                )
 //            }
 //            Given("Mock user id") {
@@ -136,12 +136,12 @@
 //
 //            Given("Mock sample response data") {
 //                successResponse.postList = mutableListOf(
-//                        DynamicPostViewModel(id = 1),
-//                        DynamicPostViewModel(id = 2),
-//                        DynamicPostViewModel(id = 3),
-//                        DynamicPostViewModel(id = 4),
-//                        DynamicPostViewModel(id = 5),
-//                        DynamicPostViewModel(id = 6)
+//                        DynamicPostModel(id = 1),
+//                        DynamicPostModel(id = 2),
+//                        DynamicPostModel(id = 3),
+//                        DynamicPostModel(id = 4),
+//                        DynamicPostModel(id = 5),
+//                        DynamicPostModel(id = 6)
 //                )
 //            }
 //

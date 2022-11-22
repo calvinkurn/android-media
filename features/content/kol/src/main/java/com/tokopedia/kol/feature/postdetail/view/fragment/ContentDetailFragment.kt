@@ -32,7 +32,7 @@ import com.tokopedia.feedcomponent.domain.mapper.*
 import com.tokopedia.feedcomponent.util.CustomUiMessageThrowable
 import com.tokopedia.feedcomponent.util.FeedScrollListenerNew
 import com.tokopedia.feedcomponent.util.util.DataMapper
-import com.tokopedia.feedcomponent.view.viewmodel.posttag.ProductPostTagViewModelNew
+import com.tokopedia.feedcomponent.view.viewmodel.posttag.ProductPostTagModelNew
 import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.FeedAsgcCampaignResponseModel
 import com.tokopedia.kol.common.util.ContentDetailResult
 import com.tokopedia.kol.feature.postdetail.di.DaggerContentDetailComponent
@@ -637,7 +637,7 @@ class ContentDetailFragment : BaseDaggerFragment(), ContentDetailPostViewHolder.
         )
     }
 
-    private fun getContentShareDataModel(product: ProductPostTagViewModelNew) =
+    private fun getContentShareDataModel(product: ProductPostTagModelNew) =
         ContentShareDataModel(
             id = product.id,
             name = product.shopName,
@@ -687,7 +687,7 @@ class ContentDetailFragment : BaseDaggerFragment(), ContentDetailPostViewHolder.
 
 
     private fun onShareProduct(
-        item: ProductPostTagViewModelNew
+        item: ProductPostTagModelNew
     ) {
         rowNumberWhenShareClicked = item.positionInFeed
         if (!item.isFollowed && item.postType == TYPE_FEED_X_CARD_POST && item.mediaType == TYPE_IMAGE)
@@ -1426,7 +1426,7 @@ class ContentDetailFragment : BaseDaggerFragment(), ContentDetailPostViewHolder.
     }
 
     override fun onBottomSheetThreeDotsClicked(
-        item: ProductPostTagViewModelNew,
+        item: ProductPostTagModelNew,
         context: Context,
         shopId: String
     ) {
@@ -1519,7 +1519,7 @@ class ContentDetailFragment : BaseDaggerFragment(), ContentDetailPostViewHolder.
                 mediaType = mediaType,
                 productId = postTagItemList.firstOrNull()?.id ?: "",
                 trackerId = getTrackerID(
-                    ProductPostTagViewModelNew(
+                    ProductPostTagModelNew(
                         postType = type,
                         mediaType = mediaType,
                         isFollowed = isFollowed
@@ -1579,7 +1579,7 @@ class ContentDetailFragment : BaseDaggerFragment(), ContentDetailPostViewHolder.
         onGoToLink(redirectUrl)
     }
 
-    override fun onAddToWishlistButtonClicked(item: ProductPostTagViewModelNew, rowNumber: Int) {
+    override fun onAddToWishlistButtonClicked(item: ProductPostTagModelNew, rowNumber: Int) {
         val finalID =
             if (item.postType == TYPE_FEED_X_CARD_PLAY) item.playChannelId else item.postId.toString()
 
@@ -1595,7 +1595,7 @@ class ContentDetailFragment : BaseDaggerFragment(), ContentDetailPostViewHolder.
         )
     }
 
-    override fun onAddToCartButtonClicked(item: ProductPostTagViewModelNew) {
+    override fun onAddToCartButtonClicked(item: ProductPostTagModelNew) {
         val finalID =
             if (item.postType == TYPE_FEED_X_CARD_PLAY) item.playChannelId else item.postId.toString()
 
@@ -1635,7 +1635,7 @@ class ContentDetailFragment : BaseDaggerFragment(), ContentDetailPostViewHolder.
                 shopName = shopName,
                 mediaType = mediaType,
                 trackerId = getTrackerID(
-                    ProductPostTagViewModelNew(
+                    ProductPostTagModelNew(
                         postType = type,
                         mediaType = type,
                         isFollowed = isFollowed
@@ -1698,7 +1698,7 @@ class ContentDetailFragment : BaseDaggerFragment(), ContentDetailPostViewHolder.
                     productId = productId,
                     shopId = shopId,
                     trackerId = getTrackerID(
-                        ProductPostTagViewModelNew(
+                        ProductPostTagModelNew(
                             postType = type,
                             mediaType = mediaType,
                             isFollowed = isFollowed
@@ -2104,7 +2104,7 @@ class ContentDetailFragment : BaseDaggerFragment(), ContentDetailPostViewHolder.
     }
 
     private fun getTrackerID(
-        item: ProductPostTagViewModelNew,
+        item: ProductPostTagModelNew,
         trackerIdSgc: String = "",
         trackerIdSgcRecom: String = "",
         trackerIdAsgc: String = "",

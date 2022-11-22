@@ -10,8 +10,8 @@ import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Comment
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.Like
-import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightCardViewModel
-import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightCardModel
+import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingModel
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.loadImageWithoutPlaceholder
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
@@ -21,7 +21,7 @@ import kotlinx.android.synthetic.main.item_highlight_card.view.*
  * @author by yoasfs on 2019-08-06
  */
 
-class HighlightAdapter(val list: MutableList<HighlightCardViewModel>,
+class HighlightAdapter(val list: MutableList<HighlightCardModel>,
                        val highlightListener: HighlightListener): RecyclerView.Adapter<HighlightAdapter.Holder>() {
 
     companion object {
@@ -45,13 +45,13 @@ class HighlightAdapter(val list: MutableList<HighlightCardViewModel>,
 
     class Holder(v: View, private val highlightListener: HighlightListener): RecyclerView.ViewHolder(v) {
 
-        fun bind(item: HighlightCardViewModel, positionInAdapter: Int) {
+        fun bind(item: HighlightCardModel, positionInAdapter: Int) {
             initView(item)
             initViewListener(item, positionInAdapter)
 
         }
 
-        private fun initViewListener(item: HighlightCardViewModel, positionInAdapter: Int) {
+        private fun initViewListener(item: HighlightCardModel, positionInAdapter: Int) {
             itemView.likeIcon.setOnClickListener{
                 highlightListener.onLikeClick(item.positionInFeed, positionInAdapter, item.postId.toLongOrZero(), item.footer.like.isChecked)
             }
@@ -95,7 +95,7 @@ class HighlightAdapter(val list: MutableList<HighlightCardViewModel>,
             }
         }
 
-        private fun initView(item: HighlightCardViewModel) {
+        private fun initView(item: HighlightCardModel) {
             ImageHandler.loadImageFit2(itemView.context, itemView.productImage, item.thumbnail)
             if (getBadgeId(item) != 0) {
                 ImageHandler.loadImageWithId(itemView.badge, getBadgeId(item))
@@ -110,7 +110,7 @@ class HighlightAdapter(val list: MutableList<HighlightCardViewModel>,
             }
         }
 
-        private fun getBadgeId(item: HighlightCardViewModel): Int {
+        private fun getBadgeId(item: HighlightCardModel): Int {
             when (item.type) {
                 TYPE_YOUTUBE -> return R.drawable.ic_affiliate_video
                 TYPE_MULTI -> return R.drawable.ic_affiliate_multi
@@ -171,9 +171,9 @@ class HighlightAdapter(val list: MutableList<HighlightCardViewModel>,
 
         fun onFooterActionClick(positionInFeed: Int, redirectUrl: String)
 
-        fun onAffiliateTrackClicked(trackList: List<TrackingViewModel>, isClick: Boolean)
+        fun onAffiliateTrackClicked(trackList: List<TrackingModel>, isClick: Boolean)
 
-        fun onHighlightItemClicked(positionInFeed: Int, item: HighlightCardViewModel)
+        fun onHighlightItemClicked(positionInFeed: Int, item: HighlightCardModel)
     }
 
 }

@@ -56,12 +56,11 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.post.youtube.YoutubeV
 import com.tokopedia.feedcomponent.view.adapter.viewholder.recommendation.RecommendationCardAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopAdsBannerViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopadsShopViewHolder
-import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightCardViewModel
-import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightCardModel
+import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.TrackingPostModel
-import com.tokopedia.feedcomponent.view.viewmodel.posttag.ProductPostTagViewModelNew
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopUiModel
-import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingModel
 import com.tokopedia.feedcomponent.view.widget.CardTitleView
 import com.tokopedia.feedcomponent.view.widget.FeedMultipleImageView
 import com.tokopedia.iconunify.IconUnify
@@ -414,7 +413,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     private fun trackFeedShopImpression(listFeed: List<Visitable<*>>) {
         for (i in listFeed.indices) {
             val visitable = listFeed[i]
-            if (visitable is DynamicPostViewModel) {
+            if (visitable is DynamicPostModel) {
                 val trackingPostModel = visitable.trackingPostModel
                 if (visitable.postTag.items.isNotEmpty()) {
                     postTagAnalytics.trackViewPostTagFeedShop(
@@ -500,8 +499,8 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     override fun onLikeKolSuccess(rowNumber: Int, action: LikeKolPostUseCase.LikeKolPostAction) {
         if (adapter.data.size > rowNumber
                 && adapter.data[rowNumber] != null
-                && adapter.data[rowNumber] is DynamicPostViewModel) {
-            val model = adapter.data[rowNumber] as DynamicPostViewModel
+                && adapter.data[rowNumber] is DynamicPostModel) {
+            val model = adapter.data[rowNumber] as DynamicPostModel
             val like = model.footer.like
             like.isChecked = !model.footer.like.isChecked
             if (like.isChecked) {
@@ -768,7 +767,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     }
 
 
-    override fun onAffiliateTrackClicked(trackList: List<TrackingViewModel>, isClick: Boolean) {
+    override fun onAffiliateTrackClicked(trackList: List<TrackingModel>, isClick: Boolean) {
         for (tracking in trackList) {
             if (isClick) {
                 presenter.trackPostClickUrl(tracking.clickURL)
@@ -782,7 +781,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         presenter.doTopAdsTracker(url, shopId, shopName, imageUrl, false)
     }
 
-    override fun onHighlightItemClicked(positionInFeed: Int, item: HighlightCardViewModel) {
+    override fun onHighlightItemClicked(positionInFeed: Int, item: HighlightCardModel) {
 
     }
 
@@ -803,8 +802,8 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     }
 
     override fun userImagePostImpression(positionInFeed: Int, contentPosition: Int) {
-        if (positionInFeed < adapter.dataSize && adapter.data[positionInFeed] is DynamicPostViewModel) {
-            val (_, _, _, _, _, _, _, _, trackingPostModel) = adapter.data[positionInFeed] as DynamicPostViewModel
+        if (positionInFeed < adapter.dataSize && adapter.data[positionInFeed] is DynamicPostModel) {
+            val (_, _, _, _, _, _, _, _, trackingPostModel) = adapter.data[positionInFeed] as DynamicPostModel
             feedAnalytics.eventImageImpressionPost(
                 FeedAnalyticTracker.Screen.FEED_SHOP,
                 trackingPostModel.postId.toString(),
@@ -839,8 +838,8 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     }
 
     override fun onImageClick(positionInFeed: Int, contentPosition: Int, redirectLink: String) {
-        if (adapter.data[positionInFeed] is DynamicPostViewModel) {
-            val (_, _, _, _, _, _, _, _, trackingPostModel) = adapter.data[positionInFeed] as DynamicPostViewModel
+        if (adapter.data[positionInFeed] is DynamicPostModel) {
+            val (_, _, _, _, _, _, _, _, trackingPostModel) = adapter.data[positionInFeed] as DynamicPostModel
             feedAnalytics.eventShopPageClickPost(
                 trackingPostModel.postId.toString(),
                 trackingPostModel.activityName,
@@ -864,7 +863,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
 
     override fun onMediaGridClick(positionInFeed: Int, contentPosition: Int,
                                   redirectLink: String, isSingleItem: Boolean) {
-        val model = adapter.data[positionInFeed] as? DynamicPostViewModel
+        val model = adapter.data[positionInFeed] as? DynamicPostModel
         if (!isSingleItem && model != null) {
             RouteManager.route(
                     requireContext(),
@@ -877,8 +876,8 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
                     model.id.toString()
             )
         }
-        if (adapter.data[positionInFeed] is DynamicPostViewModel) {
-            val (_, _, _, _, _, _, _, _, trackingPostModel) = adapter.data[positionInFeed] as DynamicPostViewModel
+        if (adapter.data[positionInFeed] is DynamicPostModel) {
+            val (_, _, _, _, _, _, _, _, trackingPostModel) = adapter.data[positionInFeed] as DynamicPostModel
             feedAnalytics.eventShopPageClickPost(
                     trackingPostModel.postId.toString(),
                     trackingPostModel.activityName,
@@ -967,8 +966,8 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
             isFollowed: Boolean,
             startTime: Long
     ) {
-        if (adapter.data[positionInFeed] is DynamicPostViewModel) {
-            val (_, _, _, _, _, _, _, _, trackingPostModel) = adapter.data[positionInFeed] as DynamicPostViewModel
+        if (adapter.data[positionInFeed] is DynamicPostModel) {
+            val (_, _, _, _, _, _, _, _, trackingPostModel) = adapter.data[positionInFeed] as DynamicPostModel
             feedAnalytics.eventShopPageClickPost(
                     trackingPostModel.postId.toString(),
                     trackingPostModel.activityName,

@@ -14,7 +14,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.bottomsheets.ProductItemInfoBottomSheet
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
-import com.tokopedia.feedcomponent.view.viewmodel.posttag.ProductPostTagViewModelNew
+import com.tokopedia.feedcomponent.view.viewmodel.posttag.ProductPostTagModelNew
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.loadImage
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -28,7 +28,7 @@ private const val RATING_FORMAT = 20.0
 class ProductPostTagViewHolderNew(
     val mainView: View,
     val listener: ProductItemInfoBottomSheet.Listener
-) : AbstractViewHolder<ProductPostTagViewModelNew>(mainView) {
+) : AbstractViewHolder<ProductPostTagModelNew>(mainView) {
 
     private val productLayout: FrameLayout
     private val productImage: ImageUnify
@@ -76,7 +76,7 @@ class ProductPostTagViewHolderNew(
         addToWishlistBtnIcon = itemView.findViewById(R.id.image_add_to_wishlist)
     }
 
-    override fun bind(item: ProductPostTagViewModelNew) {
+    override fun bind(item: ProductPostTagModelNew) {
         label.showWithCondition(item.isDiscount && item.isUpcoming.not())
         productTag.showWithCondition(item.isDiscount || item.isUpcoming)
         discountlayout.showWithCondition(item.isDiscount || item.isUpcoming)
@@ -152,7 +152,7 @@ class ProductPostTagViewHolderNew(
         }
     }
 
-    private fun setGradientColorForProgressBar(item: ProductPostTagViewModelNew ){
+    private fun setGradientColorForProgressBar(item: ProductPostTagModelNew ){
         val progressBarColor: IntArray = intArrayOf(
             ContextCompat.getColor(itemView.context, com.tokopedia.feedcomponent.R.color.feed_dms_asgc_progress_0_color),
             ContextCompat.getColor(itemView.context, com.tokopedia.feedcomponent.R.color.feed_dms_asgc_progress_100_color)

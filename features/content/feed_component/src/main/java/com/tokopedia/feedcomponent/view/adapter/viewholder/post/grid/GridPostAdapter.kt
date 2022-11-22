@@ -11,9 +11,9 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
-import com.tokopedia.feedcomponent.view.viewmodel.post.grid.GridItemViewModel
-import com.tokopedia.feedcomponent.view.viewmodel.post.grid.GridPostViewModel
-import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.post.grid.GridItemModel
+import com.tokopedia.feedcomponent.view.viewmodel.post.grid.GridPostModel
+import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingModel
 import com.tokopedia.kotlin.extensions.view.getDimens
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.loadImageRounded
@@ -38,7 +38,7 @@ private const val EXTRA_DETAIL_ID = "{extra_detail_id}"
 
 class GridPostAdapter(
     private val contentPosition: Int,
-    private val gridPostViewModel: GridPostViewModel,
+    private val gridPostModel: GridPostModel,
     private val listener: GridItemListener
 ) : RecyclerView.Adapter<GridPostAdapter.GridItemViewHolder>() {
 
@@ -46,69 +46,69 @@ class GridPostAdapter(
         val view = LayoutInflater.from(parent.context).inflate(R.layout.item_grid, parent, false)
         return GridItemViewHolder(
             view,
-            gridPostViewModel.positionInFeed,
+            gridPostModel.positionInFeed,
             contentPosition,
             listener,
-            gridPostViewModel
+            gridPostModel
         )
     }
 
     override fun getItemCount(): Int {
         return when {
-            gridPostViewModel.itemList.size >= MAX_FEED_SIZE -> MAX_FEED_SIZE
-            gridPostViewModel.itemList.size >= MAX_FEED_SIZE_SMALL -> MAX_FEED_SIZE_SMALL
-            else -> gridPostViewModel.itemList.size
+            gridPostModel.itemList.size >= MAX_FEED_SIZE -> MAX_FEED_SIZE
+            gridPostModel.itemList.size >= MAX_FEED_SIZE_SMALL -> MAX_FEED_SIZE_SMALL
+            else -> gridPostModel.itemList.size
         }
     }
 
     @Suppress("ConvertTwoComparisonsToRangeCheck")
     override fun onBindViewHolder(holder: GridItemViewHolder, position: Int) {
         holder.bindImage(
-            gridPostViewModel.itemList[position].thumbnail,
-            gridPostViewModel.itemList.size
+            gridPostModel.itemList[position].thumbnail,
+            gridPostModel.itemList.size
         )
 
-        if (gridPostViewModel.showGridButton
-            && gridPostViewModel.totalItems > MAX_FEED_SIZE
+        if (gridPostModel.showGridButton
+            && gridPostModel.totalItems > MAX_FEED_SIZE
             && position == LAST_FEED_POSITION
         ) {
-            val extraProduct = gridPostViewModel.totalItems - LAST_FEED_POSITION
+            val extraProduct = gridPostModel.totalItems - LAST_FEED_POSITION
             holder.bindOthers(
                 extraProduct,
-                gridPostViewModel.actionText,
-                gridPostViewModel.actionLink,
-                gridPostViewModel.postId,
-                gridPostViewModel.postType,
-                gridPostViewModel.isFollowed,
-                gridPostViewModel.shopId,
-                gridPostViewModel.hasVoucher
+                gridPostModel.actionText,
+                gridPostModel.actionLink,
+                gridPostModel.postId,
+                gridPostModel.postType,
+                gridPostModel.isFollowed,
+                gridPostModel.shopId,
+                gridPostModel.hasVoucher
             )
 
-        } else if (gridPostViewModel.showGridButton
-            && gridPostViewModel.totalItems < MAX_FEED_SIZE
-            && gridPostViewModel.totalItems > MAX_FEED_SIZE_SMALL
+        } else if (gridPostModel.showGridButton
+            && gridPostModel.totalItems < MAX_FEED_SIZE
+            && gridPostModel.totalItems > MAX_FEED_SIZE_SMALL
             && position == LAST_FEED_POSITION_SMALL
         ) {
-            val extraProduct = gridPostViewModel.totalItems - LAST_FEED_POSITION_SMALL
+            val extraProduct = gridPostModel.totalItems - LAST_FEED_POSITION_SMALL
             holder.bindOthers(
                 extraProduct,
-                gridPostViewModel.actionText,
-                gridPostViewModel.actionLink,
-                gridPostViewModel.postId,
-                gridPostViewModel.postType,
-                gridPostViewModel.isFollowed,
-                gridPostViewModel.shopId,
-                gridPostViewModel.hasVoucher
+                gridPostModel.actionText,
+                gridPostModel.actionLink,
+                gridPostModel.postId,
+                gridPostModel.postType,
+                gridPostModel.isFollowed,
+                gridPostModel.shopId,
+                gridPostModel.hasVoucher
             )
 
         } else {
             holder.bindProduct(
-                gridPostViewModel.postId,
-                gridPostViewModel.itemList[position],
-                gridPostViewModel.postType,
-                gridPostViewModel.isFollowed,
-                gridPostViewModel.shopId,
-                gridPostViewModel.hasVoucher
+                gridPostModel.postId,
+                gridPostModel.itemList[position],
+                gridPostModel.postType,
+                gridPostModel.isFollowed,
+                gridPostModel.shopId,
+                gridPostModel.hasVoucher
             )
         }
     }
@@ -117,7 +117,7 @@ class GridPostAdapter(
         val v: View,
         private val positionInFeed: Int,
         private val contentPosition: Int,
-        private val listener: GridItemListener, private val gridPostViewModel: GridPostViewModel
+        private val listener: GridItemListener, private val gridPostModel: GridPostModel
     ) : RecyclerView.ViewHolder(v) {
         fun bindImage(image: String, listSize: Int) {
             itemView.productImage.loadImageRounded(image, RAD_10f)
@@ -126,7 +126,7 @@ class GridPostAdapter(
 
         fun bindProduct(
             postId: String,
-            item: GridItemViewModel,
+            item: GridItemModel,
             type: String,
             isFollowed: Boolean,
             shopId: String,
@@ -164,7 +164,7 @@ class GridPostAdapter(
                     isFollowed,
                     shopId,
                     hasVoucher,
-                    gridPostViewModel.itemListFeedXProduct,
+                    gridPostModel.itemListFeedXProduct,
                     item.index
                 )
                 if (item.trackingList.isNotEmpty()) {
@@ -246,7 +246,7 @@ class GridPostAdapter(
                     isFollowed,
                     shopId,
                     hasVoucher,
-                    gridPostViewModel.itemListFeedXProduct,
+                    gridPostModel.itemListFeedXProduct,
                     0
                 )
             }
@@ -300,7 +300,7 @@ class GridPostAdapter(
             index: Int
         )
 
-        fun onAffiliateTrackClicked(trackList: List<TrackingViewModel>, isClick: Boolean)
+        fun onAffiliateTrackClicked(trackList: List<TrackingModel>, isClick: Boolean)
     }
 
     companion object {

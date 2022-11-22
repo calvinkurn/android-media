@@ -70,8 +70,8 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.post.video.VideoViewH
 import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopAdsHeadlineListener
 import com.tokopedia.feedcomponent.view.transition.BackgroundColorTransition
 import com.tokopedia.feedcomponent.view.viewmodel.DynamicPostUiModel
-import com.tokopedia.feedcomponent.view.viewmodel.post.grid.GridItemViewModel
-import com.tokopedia.feedcomponent.view.viewmodel.post.grid.GridPostViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.post.grid.GridItemModel
+import com.tokopedia.feedcomponent.view.viewmodel.post.grid.GridPostModel
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsHeadLineV2Model
 import com.tokopedia.feedcomponent.view.widget.listener.FeedCampaignListener
 import com.tokopedia.iconunify.IconUnify
@@ -1679,8 +1679,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
     private fun getGridPostModel(
         feedXCard: FeedXCard,
         products: List<FeedXProduct>
-    ): GridPostViewModel {
-        return GridPostViewModel(
+    ): GridPostModel {
+        return GridPostModel(
             getGridItemViewModel(products),
             SHOW_MORE,
             feedXCard.appLink,
@@ -1697,11 +1697,11 @@ class PostDynamicViewNew @JvmOverloads constructor(
         )
     }
 
-    private fun getGridItemViewModel(products: List<FeedXProduct>): MutableList<GridItemViewModel> {
-        val itemList: MutableList<GridItemViewModel> = ArrayList()
+    private fun getGridItemViewModel(products: List<FeedXProduct>): MutableList<GridItemModel> {
+        val itemList: MutableList<GridItemModel> = ArrayList()
         products.forEach {
             itemList.add(
-                GridItemViewModel(
+                GridItemModel(
                     id = it.id,
                     text = it.name,
                     price = if (it.isDiscount)
