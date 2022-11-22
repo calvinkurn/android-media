@@ -8,7 +8,7 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/Unify_N0"
+        android:background="@color/Unify_Background"
         android:id="@+id/parent_layout">
 
         <com.tokopedia.unifyprinciples.Typography
@@ -42,7 +42,6 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
-            android:layout_marginLeft="16dp"
             android:layout_marginTop="24dp"
             android:layout_marginBottom="8dp"
             android:textColor="@color/Unify_N700_96"
@@ -55,7 +54,7 @@
         <LinearLayout
             android:id="@+id/smile_layout"
             android:layout_width="0dp"
-            android:layout_height="@dimen/dp_chatbot_45"
+            android:layout_height="45dp"
             android:layout_marginTop="16dp"
             android:weightSum="5"
             app:layout_constraintLeft_toLeftOf="parent"
@@ -81,7 +80,7 @@
         <View
             android:id="@+id/divider"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_chatbot_1"
+            android:layout_height="1dp"
             android:layout_marginLeft="16dp"
             android:layout_marginTop="16dp"
             android:layout_marginRight="16dp"
@@ -110,11 +109,11 @@
             android:id="@+id/linearLayout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="@dimen/dp_chatbot_10"
-            android:layout_marginRight="16dp"
+            android:layout_marginStart="10dp"
+            android:layout_marginEnd="16dp"
             android:orientation="vertical"
-            android:paddingTop="@dimen/dp_chatbot_6"
-            android:paddingBottom="@dimen/dp_chatbot_6"
+            android:paddingTop="6dp"
+            android:paddingBottom="6dp"
             android:showDividers="end"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/txt_feedback_question"
@@ -130,7 +129,7 @@
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/txt_finished"
             android:layout_width="match_parent"
-            android:layout_height="@dimen/dp_chatbot_50"
+            android:layout_height="50dp"
             android:layout_margin="24dp"
             android:layout_marginBottom="8dp"
             android:background="@drawable/bg_button_state"

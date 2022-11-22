@@ -1,15 +1,13 @@
 package com.tokopedia.chatbot.view.fragment
 
-import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.chatbot.databinding.ChatbotFragmentCsatBinding
-import com.tokopedia.chatbot.view.activity.ChatBotCsatActivity
-import com.tokopedia.csat_rating.fragment.BaseFragmentProvideRating
+import com.tokopedia.unifycomponents.BottomSheetUnify
 
-class ChatBotCsatFragment : BaseFragmentProvideRating() {
+class ChatBotCsatFragment : BottomSheetUnify() {
 
     companion object {
         fun newInstance(bundle: Bundle?): ChatBotCsatFragment {
@@ -31,24 +29,24 @@ class ChatBotCsatFragment : BaseFragmentProvideRating() {
         return getBindingView().root
     }
 
-    override fun getTextHelpTitleId(): Int = getBindingView().txtHelpTitle.id
-    override fun getSmilleLayoutId(): Int = getBindingView().smileLayout.id
-    override fun getSmileSelectedId(): Int = getBindingView().txtSmileSelected.id
-    override fun getFeedbackQuestionId(): Int = getBindingView().txtFeedbackQuestion.id
-    override fun getTextFinishedId(): Int = getBindingView().txtFinished.id
-    override fun getFilterReviewId(): Int = getBindingView().filterReview.id
+//    override fun getTextHelpTitleId(): Int = getBindingView().txtHelpTitle.id
+//    override fun getSmilleLayoutId(): Int = getBindingView().smileLayout.id
+//    override fun getSmileSelectedId(): Int = getBindingView().txtSmileSelected.id
+//    override fun getFeedbackQuestionId(): Int = getBindingView().txtFeedbackQuestion.id
+//    override fun getTextFinishedId(): Int = getBindingView().txtFinished.id
+//    override fun getFilterReviewId(): Int = getBindingView().filterReview.id
 
-    override fun onSuccessSubmit(intent: Intent) {
-        intent.putExtra(
-            ChatBotCsatActivity.CASE_CHAT_ID,
-            arguments?.getString(ChatBotCsatActivity.CASE_CHAT_ID)
-        )
-        intent.putExtra(
-            ChatBotCsatActivity.CASE_ID,
-            arguments?.getString(ChatBotCsatActivity.CASE_ID)
-        )
-        super.onSuccessSubmit(intent)
-    }
+//    override fun onSuccessSubmit(intent: Intent) {
+//        intent.putExtra(
+//            ChatBotCsatActivity.CASE_CHAT_ID,
+//            arguments?.getString(ChatBotCsatActivity.CASE_CHAT_ID)
+//        )
+//        intent.putExtra(
+//            ChatBotCsatActivity.CASE_ID,
+//            arguments?.getString(ChatBotCsatActivity.CASE_ID)
+//        )
+//        super.onSuccessSubmit(intent)
+//    }
 
     override fun onDestroyView() {
         super.onDestroyView()
