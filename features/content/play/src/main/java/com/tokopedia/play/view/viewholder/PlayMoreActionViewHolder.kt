@@ -18,7 +18,7 @@ class PlayMoreActionViewHolder(itemView: View) : BaseViewHolder(itemView) {
 
     fun bind(item: PlayMoreActionUiModel) {
         ivIcon.shouldShowWithAction(item.isIconAvailable){
-            ivIcon.setImageResource(item.iconRes)
+            ivIcon.setImageDrawable(item.icon)
         }
         tvSubtitle.text = getString(item.subtitleRes)
         itemView.setOnClickListener { item.onClick(item) }

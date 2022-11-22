@@ -15,7 +15,7 @@ class PlayMoreActionAdapter : BaseDiffUtilAdapter<PlayMoreActionUiModel>() {
     }
 
     override fun areItemsTheSame(oldItem: PlayMoreActionUiModel, newItem: PlayMoreActionUiModel): Boolean {
-        return oldItem.iconRes == newItem.iconRes
+        return oldItem.icon == newItem.icon
     }
 
     override fun areContentsTheSame(oldItem: PlayMoreActionUiModel, newItem: PlayMoreActionUiModel): Boolean {

@@ -1,11 +1,15 @@
 package com.tokopedia.play.view.viewcomponent
 
+import android.content.Context
 import android.view.ViewGroup
 import android.widget.ImageView
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.OnLifecycleEvent
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.play.R
 import com.tokopedia.play.view.adapter.PlayMoreActionAdapter
@@ -26,10 +30,12 @@ class KebabMenuSheetViewComponent(
 
     private val rvActionList: RecyclerView = findViewById(R.id.rv_action_list)
     private val moreActionAdapter = PlayMoreActionAdapter()
+    private val ctx: Context
+        get() = rootView.context
 
     private val reportAction = PlayMoreActionUiModel(
         type = PlayMoreActionType.Report,
-        iconRes = unifyR.drawable.iconunify_warning,
+        icon = getIconUnifyDrawable(ctx, IconUnify.WARNING, MethodChecker.getColor(ctx, unifyR.color.Unify_NN900)),
         isIconAvailable = true,
         subtitleRes = R.string.play_kebab_report_title,
         onClick = { listener.onReportClick(this@KebabMenuSheetViewComponent) }
@@ -37,7 +43,7 @@ class KebabMenuSheetViewComponent(
 
     private val pipAction = PlayMoreActionUiModel(
         type = PlayMoreActionType.PiP,
-        iconRes = R.drawable.ic_play_pip,
+        icon = MethodChecker.getDrawable(ctx, R.drawable.ic_play_pip),
         isIconAvailable = true,
         subtitleRes = R.string.play_kebab_pip,
         onClick = { listener.onPipClicked(this@KebabMenuSheetViewComponent) }
@@ -45,7 +51,7 @@ class KebabMenuSheetViewComponent(
 
     private val chromecastAction = PlayMoreActionUiModel(
         type = PlayMoreActionType.Chromecast,
-        iconRes = R.drawable.ic_chromecast,
+        icon = MethodChecker.getDrawable(ctx, R.drawable.ic_chromecast),
         isIconAvailable = true,
         subtitleRes = R.string.play_kebab_chromecast,
         onClick = { listener.onChromecastClicked(this@KebabMenuSheetViewComponent) }
@@ -53,7 +59,7 @@ class KebabMenuSheetViewComponent(
 
     private val watchAction = PlayMoreActionUiModel(
         type = PlayMoreActionType.WatchMode,
-        iconRes = unifyR.drawable.iconunify_visibility,
+        icon = getIconUnifyDrawable(ctx, IconUnify.VISIBILITY, MethodChecker.getColor(ctx, unifyR.color.Unify_NN900)),
         isIconAvailable = true,
         subtitleRes = R.string.play_kebab_watch_mode,
         onClick = { listener.onWatchModeClick(this@KebabMenuSheetViewComponent) }

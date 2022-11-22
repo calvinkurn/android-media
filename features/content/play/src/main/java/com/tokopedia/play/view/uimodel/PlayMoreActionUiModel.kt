@@ -1,6 +1,6 @@
 package com.tokopedia.play.view.uimodel
 
-import androidx.annotation.DrawableRes
+import android.graphics.drawable.Drawable
 import androidx.annotation.StringRes
 import com.tokopedia.play.view.type.PlayMoreActionType
 
@@ -9,7 +9,7 @@ import com.tokopedia.play.view.type.PlayMoreActionType
  */
 data class PlayMoreActionUiModel(
         val type: PlayMoreActionType,
-        @DrawableRes val iconRes: Int,
+        val icon: Drawable?,
         @StringRes val subtitleRes: Int,
         val isIconAvailable: Boolean,
         val onClick: (PlayMoreActionUiModel) -> Unit
