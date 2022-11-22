@@ -133,8 +133,6 @@ class PlayUserInteractionFragment @Inject constructor(
         VideoSettingsViewComponent.Listener,
         ImmersiveBoxViewComponent.Listener,
         PlayButtonViewComponent.Listener,
-        PiPViewComponent.Listener,
-        CastViewComponent.Listener,
         ProductSeeMoreViewComponent.Listener,
         InteractiveGameResultViewComponent.Listener,
         ChooseAddressViewComponent.Listener,
@@ -157,8 +155,6 @@ class PlayUserInteractionFragment @Inject constructor(
     private val immersiveBoxView by viewComponent { ImmersiveBoxViewComponent(it, R.id.v_immersive_box, this) }
     private val playButtonView by viewComponent { PlayButtonViewComponent(it, R.id.view_play_button, this) }
     private val endLiveInfoView by viewComponent { EndLiveInfoViewComponent(it, R.id.view_end_live_info) }
-    private val pipView by viewComponentOrNull(isEagerInit = true) { PiPViewComponent(it, R.id.view_pip_control, this) }
-    private val castView by viewComponentOrNull(isEagerInit = true) { CastViewComponent(it, this) }
     private val topmostLikeView by viewComponentOrNull(isEagerInit = true) { EmptyViewComponent(it, R.id.view_topmost_like) }
     private val rtnView by viewComponentOrNull { RealTimeNotificationViewComponent(it) }
     private val likeBubbleView by viewComponent { LikeBubbleViewComponent(
@@ -526,25 +522,6 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     /**
-     * PIP View Component Listener
-     */
-    override fun onPiPButtonClicked(view: PiPViewComponent) {
-        playViewModel.requestWatchInPiP()
-        pipAnalytic.clickPiPIcon(
-                channelId = channelId,
-                shopId = playViewModel.partnerId,
-                channelType = playViewModel.channelType
-        )
-    }
-
-    /**
-     * Cast View Component Listener
-     */
-    override fun onCastClicked() {
-        analytic.clickCast()
-    }
-
-    /**
      * Product See More Listener
      */
     override fun onProductSeeMoreClick(view: ProductSeeMoreViewComponent) {
@@ -626,8 +603,9 @@ class PlayUserInteractionFragment @Inject constructor(
         if (orientation.isLandscape) setupLandscapeView()
         else setupPortraitView()
 
-        if (playViewModel.isPiPAllowed) pipView?.show()
-        else pipView?.hide()
+            //TODO()move to list
+//        if (playViewModel.isPiPAllowed) pipView?.show()
+//        else pipView?.hide()
 
         setupFeaturedProductsFadingEdge(view)
     }
@@ -1470,14 +1448,15 @@ class PlayUserInteractionFragment @Inject constructor(
             bottomInsets: Map<BottomInsetsType, BottomInsetsState> = playViewModel.bottomInsets,
             isFreezeOrBanned: Boolean = playViewModel.isFreezeOrBanned
     ) {
-        val isCastVisible = castView?.isShown() ?: false
-        if (!playViewModel.isPiPAllowed || !videoPlayer.isGeneral() || isFreezeOrBanned || playViewModel.isCastAllowed || isCastVisible) {
-            pipView?.hide()
-            return
-        }
-
-        if (!bottomInsets.isAnyShown) pipView?.show()
-        else pipView?.hide()
+        //TODO() Move to list
+//        val isCastVisible = castView?.isShown() ?: false
+//        if (!playViewModel.isPiPAllowed || !videoPlayer.isGeneral() || isFreezeOrBanned || playViewModel.isCastAllowed || isCastVisible) {
+//            pipView?.hide()
+//            return
+//        }
+//
+//        if (!bottomInsets.isAnyShown) pipView?.show()
+//        else pipView?.hide()
     }
 
     private fun renderInteractiveDialog(
@@ -1614,14 +1593,16 @@ class PlayUserInteractionFragment @Inject constructor(
     private fun castViewOnStateChanged(
         bottomInsets: Map<BottomInsetsType, BottomInsetsState> = playViewModel.bottomInsets
     ) {
-        if(playViewModel.isCastAllowed && !bottomInsets.isAnyShown) {
-            val currentVisibility = castView?.isHidden() ?: true
-            if(currentVisibility)
-                analytic.impressCast(playViewModel.latestCompleteChannelData.channelDetail.channelInfo.id, playViewModel.channelType)
 
-            castView?.show()
-        }
-        else castView?.hide()
+        //TODO() move to list
+//        if(playViewModel.isCastAllowed && !bottomInsets.isAnyShown) {
+//            val currentVisibility = castView?.isHidden() ?: true
+//            if(currentVisibility)
+//                analytic.impressCast(playViewModel.latestCompleteChannelData.channelDetail.channelInfo.id, playViewModel.channelType)
+//
+//            castView?.show()
+//        }
+//        else castView?.hide()
     }
     //endregion
 
