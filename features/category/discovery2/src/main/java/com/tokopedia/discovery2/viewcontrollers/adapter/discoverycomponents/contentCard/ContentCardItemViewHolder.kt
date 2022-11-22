@@ -47,7 +47,7 @@ class ContentCardItemViewHolder(itemView: View, private val fragment: Fragment) 
             contentCardItemViewModel.getTimerData().observe(it) { timerData ->
                 if (timerData.days > 0) {
                     binding.hoursLayout.text = String.format(TIME_DISPLAY_FORMAT, timerData.days)
-                    binding.minutesLayout.text = itemView.context?.getString(R.string.hari)
+                    binding.minutesLayout.text = itemView.context?.getString(R.string.hari_small)
                     binding.hoursSeparatorTextView.gone()
                 } else {
                     binding.hoursLayout.text = String.format(TIME_DISPLAY_FORMAT, timerData.hours)
