@@ -97,6 +97,7 @@ import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_GRID_INT
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_LIST
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_LIST_INT
 import com.tokopedia.wishlist.util.WishlistV2LayoutPreference
+import com.tokopedia.wishlist.util.WishlistV2Utils
 import com.tokopedia.wishlist.view.adapter.WishlistV2Adapter
 import com.tokopedia.wishlist.view.adapter.WishlistV2CleanerBottomSheetAdapter
 import com.tokopedia.wishlist.view.adapter.WishlistV2FilterBottomSheetAdapter
@@ -117,6 +118,7 @@ import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.DELAY_SHOW
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.EXTRA_COLLECTION_ID_DESTINATION
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.EXTRA_COLLECTION_NAME_DESTINATION
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.EXTRA_IS_BULK_ADD
+import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.EXTRA_IS_SHOW_CLEANER_BOTTOMSHEET
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.SOURCE_COLLECTION
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.SRC_WISHLIST_COLLECTION
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.SRC_WISHLIST_COLLECTION_BULK_ADD
@@ -169,6 +171,7 @@ class WishlistCollectionDetailFragment :
     private var isBulkDeleteShow = false
     private var isBulkAddShow = false
     private var isBulkAddFromOtherCollectionShow = false
+    private var isShowingCleanerBottomSheet = false
     private var listSelectedProductIdsFromOtherCollection = arrayListOf<String>()
     private var listSelectedProductIds = arrayListOf<String>()
     private lateinit var firebaseRemoteConfig: FirebaseRemoteConfigImpl
@@ -650,6 +653,10 @@ class WishlistCollectionDetailFragment :
                         listSettingButtons = collectionDetail.setting.buttons
                         _maxBulk = collectionDetail.addWishlistBulkConfig.maxBulk
                         _toasterMaxBulk = collectionDetail.addWishlistBulkConfig.addWishlistBulkToaster.message
+
+                        if (isShowingCleanerBottomSheet) {
+                            showBottomSheetCleaner(WishlistV2Utils.mapToStorageCleanerBottomSheet(collectionDetail.storageCleanerBottomsheet))
+                        }
                     }
                 }
                 is Fail -> {
@@ -903,7 +910,7 @@ class WishlistCollectionDetailFragment :
                                     message = result.data.message,
                                     actionText = result.data.button.text,
                                     type = toasterType
-                                ) { goToWishlistCollection(COLLECTION_ID_SEMUA_WISHLIST) }
+                                ) { goToWishlistCollectionDetailShowCleanerBottomSheet(COLLECTION_ID_SEMUA_WISHLIST) }
                             }
 
                             ERROR_COLLECTION_IS_PRIVATE_ADD_BULK -> {
@@ -1089,6 +1096,7 @@ class WishlistCollectionDetailFragment :
         collectionId =
             arguments?.getString(ApplinkConstInternalPurchasePlatform.PATH_COLLECTION_ID) ?: ""
         isBulkAddShow = arguments?.getBoolean(EXTRA_IS_BULK_ADD) ?: false
+        isShowingCleanerBottomSheet = arguments?.getBoolean(EXTRA_IS_SHOW_CLEANER_BOTTOMSHEET) ?: false
         collectionIdDestination = arguments?.getString(EXTRA_COLLECTION_ID_DESTINATION) ?: ""
         collectionNameDestination = arguments?.getString(EXTRA_COLLECTION_NAME_DESTINATION) ?: ""
         paramGetCollectionItems.collectionId = collectionId
@@ -2320,6 +2328,13 @@ class WishlistCollectionDetailFragment :
     private fun goToWishlistCollection(collectionId: String) {
         val intentCollectionDetail = RouteManager.getIntent(context, WISHLIST_COLLECTION_DETAIL_INTERNAL, collectionId)
         intentCollectionDetail.putExtra(EXTRA_IS_BULK_ADD, false)
+        startActivityForResult(intentCollectionDetail, REQUEST_CODE_GO_TO_COLLECTION_DETAIL)
+    }
+
+    private fun goToWishlistCollectionDetailShowCleanerBottomSheet(collectionId: String) {
+        turnOffBulkAddFromOtherCollection()
+        val intentCollectionDetail = RouteManager.getIntent(context, WISHLIST_COLLECTION_DETAIL_INTERNAL, collectionId)
+        intentCollectionDetail.putExtra(EXTRA_IS_SHOW_CLEANER_BOTTOMSHEET, true)
         startActivityForResult(intentCollectionDetail, REQUEST_CODE_GO_TO_COLLECTION_DETAIL)
     }
 
