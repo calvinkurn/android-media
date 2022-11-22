@@ -72,7 +72,6 @@ class TokoNowSimilarProductFragment : Fragment(), SimilarProductViewHolder.Simil
 
         observeLiveData()
         super.onViewCreated(view, savedInstanceState)
-//        detailViewModel.checkAddressData()
         setupBottomSheet()
         trackImpression()
 
@@ -138,20 +137,16 @@ class TokoNowSimilarProductFragment : Fragment(), SimilarProductViewHolder.Simil
     }
 
     private fun observeLiveData() {
-        viewModel.similarProductList.observe(viewLifecycleOwner, {
-            if(it.isNotEmpty()) {
+        viewModel.similarProductList.observe(viewLifecycleOwner, { list ->
+            if(list.isNotEmpty()) {
                 //map this list to similar ui model list
-                it?.forEachIndexed { index, recommendationItem ->
+                list?.forEachIndexed { index, recommendationItem ->
                     run {
-                        recommendationItem?.let { it1 ->
+                        recommendationItem?.let { recommendationItem ->
                             SimilarProductMapper.mapToProductUiModel(
                                 index,
-                                it1
-                            )?.let { it2 ->
-                                productList.add(
-                                    it2
-                                )
-                            }
+                                recommendationItem
+                            )?.let { mappedProduct -> productList.add(mappedProduct) }
                         }
                     }
                 }

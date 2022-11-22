@@ -167,7 +167,6 @@ class TokoNowSimilarProductBottomSheet : BottomSheetUnify() {
 
     fun hideMiniCart() {
         binding?.miniCart?.apply {
-//            hideCoachMark()
             hide()
         }
         resetPadding()

@@ -16,7 +16,7 @@ import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
 import com.tokopedia.tokopedianow.recipedetail.presentation.mapper.RecipeSimilarProductMapper.updateDeletedProductQuantity
 import com.tokopedia.tokopedianow.recipedetail.presentation.mapper.RecipeSimilarProductMapper.updateProductQuantity
 import com.tokopedia.tokopedianow.searchcategory.utils.ChooseAddressWrapper
-import com.tokopedia.tokopedianow.similarproduct.domain.model.RecommendationItem
+import com.tokopedia.tokopedianow.similarproduct.domain.model.ProductRecommendationResponse.ProductRecommendationWidgetSingle.Data.RecommendationItem
 import com.tokopedia.tokopedianow.similarproduct.domain.usecase.GetSimilarProductUseCase
 import com.tokopedia.tokopedianow.similarproduct.model.SimilarProductUiModel
 import com.tokopedia.user.session.UserSessionInterface
@@ -28,7 +28,7 @@ class TokoNowSimilarProductViewModel @Inject constructor(
     deleteCartUseCase: DeleteCartUseCase,
     getMiniCartUseCase: GetMiniCartListSimplifiedUseCase,
     private val getSimilarProductUseCase: GetSimilarProductUseCase,
-    protected val chooseAddressWrapper: ChooseAddressWrapper,
+    private val chooseAddressWrapper: ChooseAddressWrapper,
     addressData: TokoNowLocalAddress,
     userSession: UserSessionInterface,
     dispatchers: CoroutineDispatchers

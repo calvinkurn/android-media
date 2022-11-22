@@ -10,7 +10,6 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowRecipeProductBinding
 import com.tokopedia.tokopedianow.similarproduct.activity.TokoNowSimilarProductActivity
@@ -51,7 +50,7 @@ class SimilarProductViewHolder(
             textName.text = product.name
             textPrice.text = product.priceFmt
             textWeight.text = product.weight
-            imgProduct.loadImage(product.imageUrl)
+            imgProduct.setImageUrl(product.imageUrl)
         }
     }
 

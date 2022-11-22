@@ -12,8 +12,8 @@ import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
 /**
- * Get Recipe GQL Docs:
- * https://tokopedia.atlassian.net/wiki/spaces/TokoNow/pages/1973782733/GQL+Get+Recipe
+ * Get Product Recommendation Widget Single GQL Docs:
+ * https://tokopedia.atlassian.net/wiki/spaces/PSM/pages/545653484/Recommendation+Widget+Single+GraphQL+for+single+component
  */
 class GetSimilarProductUseCase @Inject constructor(gqlRepository: GraphqlRepository) {
 
