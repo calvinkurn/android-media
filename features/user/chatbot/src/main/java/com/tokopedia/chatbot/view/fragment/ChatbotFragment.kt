@@ -176,7 +176,6 @@ import java.io.File
 import java.util.*
 import javax.inject.Inject
 
-
 /**
  * @author by nisie on 23/11/18.
  */
@@ -248,36 +247,37 @@ class ChatbotFragment :
     private var isArticleEntry = false
     private var hashMap: Map<String, String> = HashMap<String, String>()
     var isAttached: Boolean = false
-    private var floatingInvoice : ChatbotFloatingInvoice? = null
-    private var isSendButtonActivated : Boolean = true
+    private var floatingInvoice: ChatbotFloatingInvoice? = null
+    private var isSendButtonActivated: Boolean = true
     private var isFloatingSendButton: Boolean = false
-    private var isFloatingInvoiceCancelled : Boolean = false
+    private var isFloatingInvoiceCancelled: Boolean = false
 
-    private var isConnectedToAgent : Boolean = false
-    private var attachmentMenuRecyclerView : AttachmentMenuRecyclerView? = null
+    private var isConnectedToAgent: Boolean = false
+    private var attachmentMenuRecyclerView: AttachmentMenuRecyclerView? = null
     private var smallReplyBox: SmallReplyBox? = null
     private var bigReplyBox: BigReplyBox? = null
-    private var replyBubbleContainer : ReplyBubbleAreaMessage? = null
-    private var replyBubbleEnabled : Boolean = false
+    private var replyBubbleContainer: ReplyBubbleAreaMessage? = null
+    private var replyBubbleEnabled: Boolean = false
     private var senderNameForReply = ""
     private var smoothScroll: SmoothScroller? = null
     private var rvScrollListener: RecyclerViewScrollListener? = null
     private var rvLayoutManager: LinearLayoutManager? = null
     private var messageCreateTime: String = ""
     private lateinit var chatbotAdapter: ChatbotAdapter
-    private var isEligibleForVideoUplaod : Boolean = false
+    private var isEligibleForVideoUplaod: Boolean = false
     private var guideline: Guideline? = null
     private var chatbotViewStateImpl: ChatbotViewStateImpl? = null
     private var replyBoxBottomSheetPlaceHolder: String = ""
     private var replyBoxBottomSheetTitle: String = ""
-    var xForReplyBubbleOnboarding: Int  = 0
-    var yForReplyBubbleOnboarding: Int  = 0
+    var xForReplyBubbleOnboarding: Int = 0
+    var yForReplyBubbleOnboarding: Int = 0
     var replyBubbleOnBoardingHasBeenShow: Boolean = false
     var videoUploadOnBoardingHasBeenShow: Boolean = false
     private val coachmarkHandler = Handler(Looper.getMainLooper())
 
     @Inject
     lateinit var replyBubbleOnBoarding: ReplyBubbleOnBoarding
+
     @Inject
     lateinit var videoUploadOnBoarding: VideoUploadOnBoarding
     private var recyclerView: RecyclerView? = null
@@ -294,7 +294,6 @@ class ChatbotFragment :
         private const val ZERO_POSITION = 0
         private const val BUBBLE_NOT_FOUND = -2
         private const val DELAY_TO_SHOW_COACHMARK = 1000L
-
     }
 
     override fun initInjector() {
@@ -355,7 +354,7 @@ class ChatbotFragment :
         chatbotAnalytics.get().eventShowView(ACTION_IMPRESSION_CSAT_SMILEY_VIEW)
         getBindingView().chatbotViewHelpRate.txtHelpTitle.text =
             mCsatResponse.attachment?.attributes?.title
-        //TODO check this
+        // TODO check this
         hideKeyboard()
         smallReplyBox?.hide()
         getBindingView().chatbotViewHelpRate.layoutOfRate.show()
@@ -409,7 +408,7 @@ class ChatbotFragment :
         bigReplyBox?.replyBoxClickListener = this
         bigReplyBox?.sendButtonListener = this
     }
-    private fun initSmoothScroller(){
+    private fun initSmoothScroller() {
         smoothScroll = SmoothScroller(context)
     }
 
@@ -483,7 +482,6 @@ class ChatbotFragment :
             }
             isArticleDataSent(true)
         }
-
     }
 
     private fun isArticleDataSent(dataSentState: Boolean) {
@@ -491,7 +489,6 @@ class ChatbotFragment :
     }
 
     private fun onSendFloatingInvoiceClicked() {
-
         floatingInvoice?.hide()
         smallReplyBox?.removeTextChangedListener()
 
@@ -547,7 +544,7 @@ class ChatbotFragment :
             this,
             this,
             this,
-            getUserSession(),
+            getUserSession()
         )
     }
 
@@ -617,7 +614,6 @@ class ChatbotFragment :
         getBindingView().chatbotViewHelpRate.btnInactive5.setOnClickListener(this@ChatbotFragment)
     }
 
-
     private fun goToOnboardingActivity() {
         val hasBeenShownVideoUploadOnBoarding = videoUploadOnBoarding.hasBeenShown()
         val hasBeenShownReplyBubbleOnboarding = replyBubbleOnBoarding.hasBeenShown()
@@ -658,7 +654,6 @@ class ChatbotFragment :
             getBindingView().addCommentArea.show()
             smallReplyBox?.show()
             bigReplyBox?.hide()
-
         } else {
             smallReplyBox?.hide()
             bigReplyBox?.show()
@@ -667,23 +662,22 @@ class ChatbotFragment :
 
     override fun onCreateViewState(view: View): BaseChatViewState {
         return ChatbotViewStateImpl(
-                view,
-                session,
-                this,
-                this,
-                this,
-                (activity as BaseChatToolbarActivity).getToolbar(),
-                adapter,
-                sendAnalytics = { impressionType ->
-                    chatbotAnalytics.get().eventShowView(impressionType)
+            view,
+            session,
+            this,
+            this,
+            this,
+            (activity as BaseChatToolbarActivity).getToolbar(),
+            adapter,
+            sendAnalytics = { impressionType ->
+                chatbotAnalytics.get().eventShowView(impressionType)
             }
         ).also {
             chatbotViewStateImpl = it
         }
     }
 
-    private fun pickVideoFromDevice(){
-
+    private fun pickVideoFromDevice() {
         activity?.let {
             val intent = context?.let { context ->
                 MediaPicker.intentWithGalleryFirst(context) {
@@ -764,7 +758,7 @@ class ChatbotFragment :
         })
     }
 
-    private fun navigateToWebView(linkUrl : String) {
+    private fun navigateToWebView(linkUrl: String) {
         RouteManager.route(
             context,
             String.format(Locale.getDefault(), "%s?url=%s", ApplinkConst.WEBVIEW, linkUrl)
@@ -832,8 +826,9 @@ class ChatbotFragment :
             if (it !is FallbackAttachmentUiModel) {
                 return
             }
-            if (it.attachmentType != DYNAMIC_ATTACHMENT)
+            if (it.attachmentType != DYNAMIC_ATTACHMENT) {
                 return
+            }
 
             if (it.attachment is Attachment) {
                 val attachment = it.attachment as Attachment
@@ -845,18 +840,17 @@ class ChatbotFragment :
                     val replyBoxAttribute =
                         dynamicAttachmentContents?.dynamicAttachmentAttribute?.replyBoxAttribute
 
-                    val state =  presenter.validateHistoryForAttachment34(replyBoxAttribute)
+                    val state = presenter.validateHistoryForAttachment34(replyBoxAttribute)
 
-                    if (state)
+                    if (state) {
                         return
-
+                    }
                 } catch (e: JsonSyntaxException) {
                     return
                 }
             }
         }
     }
-
 
     private fun onSuccessResetChatToFirstPage(): (ChatroomViewModel, ChatReplies) -> Unit {
         return { chatroomViewModel, chatReplies ->
@@ -936,7 +930,7 @@ class ChatbotFragment :
 
     private fun manageActionBubble(visitable: Visitable<*>) {
         when {
-            (visitable is MessageUiModel && visitable.attachmentType != SESSION_CHANGE) -> hideActionBubble()
+            (visitable is MessageUiModel && (visitable.attachmentType != SESSION_CHANGE || visitable.attachmentType != DYNAMIC_ATTACHMENT)) -> hideActionBubble()
             visitable is AttachInvoiceSentUiModel && visitable.isSender -> hideActionBubble()
         }
     }
@@ -1029,7 +1023,7 @@ class ChatbotFragment :
         when (requestCode) {
             TOKOPEDIA_ATTACH_INVOICE_REQ_CODE -> onSelectedInvoiceResult(resultCode, data)
             REQUEST_CODE_CHAT_IMAGE -> onPickedAttachImage(resultCode, data)
-            REQUEST_CODE_CHAT_VIDEO -> onPickedAttachVideo(resultCode,data)
+            REQUEST_CODE_CHAT_VIDEO -> onPickedAttachVideo(resultCode, data)
             REQUEST_SUBMIT_FEEDBACK -> if (resultCode == Activity.RESULT_OK) submitRating(data)
             REQUEST_SUBMIT_CSAT -> submitCsat(resultCode, data)
             REQUEST_CODE_CHATBOT_ONBOARDING -> backFromOnboardingActivity()
@@ -1119,7 +1113,7 @@ class ChatbotFragment :
         presenter.checkUploadSecure(messageId, data)
     }
 
-    private fun onPickedAttachVideo(resultCode: Int, data: Intent?){
+    private fun onPickedAttachVideo(resultCode: Int, data: Intent?) {
         if (resultCode != Activity.RESULT_OK || data == null) {
             return
         }
@@ -1159,7 +1153,7 @@ class ChatbotFragment :
         smallReplyBox?.hide()
     }
 
-    private fun sendAnalyticsForVideoUpload(videoFilePath : String) {
+    private fun sendAnalyticsForVideoUpload(videoFilePath: String) {
         val videoFile = File(videoFilePath)
         val extension = VideoUtil.findVideoExtension(videoFile)
         val videoSize = VideoUtil.findVideoSize(videoFile)
@@ -1174,7 +1168,6 @@ class ChatbotFragment :
         }
 
         return null
-
     }
 
     private fun generateChatUiModelWithVideo(video: String, totalLength: Long): VideoUploadUiModel {
@@ -1188,7 +1181,6 @@ class ChatbotFragment :
             .withIsDummy(true)
             .withLength(totalLength)
             .build()
-
     }
 
     override fun uploadUsingSecureUpload(data: Intent) {
@@ -1198,7 +1190,6 @@ class ChatbotFragment :
                 getViewState()?.onImageUpload(imageUploadUiModel)
                 presenter.uploadImageSecureUpload(imageUploadUiModel, messageId, opponentId, onErrorImageUpload(), path, context)
             }
-
         }
     }
 
@@ -1424,13 +1415,12 @@ class ChatbotFragment :
 
     override fun createAttachmentMenus(): List<AttachmentMenu> {
         var list = mutableListOf<AttachmentMenu>()
-        if(isConnectedToAgent && isEligibleForVideoUplaod){
+        if (isConnectedToAgent && isEligibleForVideoUplaod) {
             attachmentMenuRecyclerView?.addVideoAttachmentMenu()
         } else {
             list.add(ChatbotImageMenu())
         }
         return list
-
     }
 
     override fun onClickAttachImage(menu: AttachmentMenu) {
@@ -1516,14 +1506,14 @@ class ChatbotFragment :
         }
     }
 
-    private fun handleImageResendBottomSheet(element: ImageUploadUiModel,bottomSheetPage: BottomSheetUnify) {
+    private fun handleImageResendBottomSheet(element: ImageUploadUiModel, bottomSheetPage: BottomSheetUnify) {
         removeDummy(element)
         getViewState()?.onImageUpload(element)
         presenter.uploadImageSecureUpload(element, messageId, opponentId, onErrorImageUpload(), element.imageUrl, context)
         bottomSheetPage.dismiss()
     }
 
-    private fun handleImageDeleteBottomSheet(element: ImageUploadUiModel,bottomSheetPage: BottomSheetUnify) {
+    private fun handleImageDeleteBottomSheet(element: ImageUploadUiModel, bottomSheetPage: BottomSheetUnify) {
         removeDummy(element)
         bottomSheetPage.dismiss()
         view?.let {
@@ -1537,15 +1527,15 @@ class ChatbotFragment :
         }
     }
 
-    private fun handleVideoResendBottomSheet(element: VideoUploadUiModel,bottomSheetPage: BottomSheetUnify) {
+    private fun handleVideoResendBottomSheet(element: VideoUploadUiModel, bottomSheetPage: BottomSheetUnify) {
         removeDummy(element)
         bottomSheetPage.dismiss()
         element.isRetry = false
         getViewState()?.onVideoUpload(element)
         presenter.updateMediaUris(listOf(VideoUploadData(element.videoUrl, messageId, SendableUiModel.generateStartTime())))
- }
+    }
 
-    private fun handleVideoDeleteBottomSheet(element: VideoUploadUiModel,bottomSheetPage: BottomSheetUnify) {
+    private fun handleVideoDeleteBottomSheet(element: VideoUploadUiModel, bottomSheetPage: BottomSheetUnify) {
         removeDummy(element)
         bottomSheetPage.dismiss()
         view?.let {
@@ -1559,8 +1549,8 @@ class ChatbotFragment :
         }
     }
 
-    private fun onErrorVideoUpload(): (String,VideoUploadUiModel) -> Unit {
-        return { errorMsg,video ->
+    private fun onErrorVideoUpload(): (String, VideoUploadUiModel) -> Unit {
+        return { errorMsg, video ->
             if (view != null) {
                 Toaster.build(requireView(), errorMsg, Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR).show()
                 getViewState()?.showRetryUploadVideos(video)
@@ -1663,7 +1653,7 @@ class ChatbotFragment :
             rvPages.layoutManager =
                 LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             val adapter =
-                ReplyBubbleBottomSheetAdapter(onReplyBottomSheetItemClicked(bottomSheetPage,messageUiModel))
+                ReplyBubbleBottomSheetAdapter(onReplyBottomSheetItemClicked(bottomSheetPage, messageUiModel))
             ReplyBubbleBottomSheetAdapter(
                 onReplyBottomSheetItemClicked(
                     bottomSheetPage,
@@ -1739,8 +1729,9 @@ class ChatbotFragment :
                 val position = getPositionToAnchorReplyBubbleCoachmark()
                 if (position == BUBBLE_NOT_FOUND) {
                     return@postDelayed
-                } else if (position != RecyclerView.NO_POSITION)
+                } else if (position != RecyclerView.NO_POSITION) {
                     smoothScrollToPosition(position)
+                }
             } else {
                 goToOnboardingActivity()
             }
@@ -1756,7 +1747,7 @@ class ChatbotFragment :
             replyBubbleContainer?.referredMsg = null
             setGuidelineForReplyBubble(false)
             replyBubbleContainer?.hide()
-        }else{
+        } else {
             setGuidelineForReplyBubble(true)
             replyBubbleContainer?.show()
         }
@@ -1795,14 +1786,15 @@ class ChatbotFragment :
             }
 
             override fun scrollDone() {
-                if (!isConnectedToAgent)
+                if (!isConnectedToAgent) {
                     return
-                if (videoUploadOnBoardingHasBeenShow && replyBubbleOnBoardingHasBeenShow)
+                }
+                if (videoUploadOnBoardingHasBeenShow && replyBubbleOnBoardingHasBeenShow) {
                     return
+                }
 
                 getPositionToShowCoachmark()
             }
-
         }.also {
             recyclerView?.addOnScrollListener(it)
         }
@@ -1856,8 +1848,9 @@ class ChatbotFragment :
         if (visitable !is FallbackAttachmentUiModel) {
             return false
         }
-        if (visitable.attachmentType != DYNAMIC_ATTACHMENT)
+        if (visitable.attachmentType != DYNAMIC_ATTACHMENT) {
             return false
+        }
 
         if (visitable.attachment is Attachment) {
             val attachment = visitable.attachment as Attachment
@@ -1869,9 +1862,9 @@ class ChatbotFragment :
                 val replyBoxAttribute =
                     dynamicAttachmentContents?.dynamicAttachmentAttribute?.replyBoxAttribute
 
-                if (!CheckDynamicAttachmentValidity.checkValidity(replyBoxAttribute?.contentCode))
+                if (!CheckDynamicAttachmentValidity.checkValidity(replyBoxAttribute?.contentCode)) {
                     return false
-
+                }
             } catch (e: JsonSyntaxException) {
                 return true
             }
@@ -2007,13 +2000,12 @@ class ChatbotFragment :
         showTopLoading()
     }
 
-
     override fun onRetrySendVideo(element: VideoUploadUiModel) {
         createRetryMediaUploadBottomSheet(element)
     }
 
     override fun onVideoUploadCancelClicked(video: VideoUploadUiModel) {
-        presenter.cancelVideoUpload(video.videoUrl!!,SOURCE_ID_FOR_VIDEO_UPLOAD, onError())
+        presenter.cancelVideoUpload(video.videoUrl!!, SOURCE_ID_FOR_VIDEO_UPLOAD, onError())
         getViewState()?.showRetryUploadVideos(video)
     }
 
@@ -2034,16 +2026,17 @@ class ChatbotFragment :
             }
 
         bottomSheetPage.apply {
-            if (element is ImageUploadUiModel)
+            if (element is ImageUploadUiModel) {
                 setTitle(
                     this@ChatbotFragment.context?.getString(R.string.chatbot_retry_image_upload_bottom_sheet_title)
                         ?: ""
                 )
-            else
+            } else {
                 setTitle(
                     this@ChatbotFragment.context?.getString(R.string.chatbot_retry_video_upload_bottom_sheet_title)
                         ?: ""
                 )
+            }
             showCloseIcon = false
             setChild(viewBottomSheetPage.root)
             showKnob = true
@@ -2063,7 +2056,8 @@ class ChatbotFragment :
         adapter.setList(
             listOf<String>(
                 context?.getString(R.string.chatbot_delete)
-                    ?: "", context?.getString(R.string.chatbot_resend) ?: ""
+                    ?: "",
+                context?.getString(R.string.chatbot_resend) ?: ""
             )
         )
     }
