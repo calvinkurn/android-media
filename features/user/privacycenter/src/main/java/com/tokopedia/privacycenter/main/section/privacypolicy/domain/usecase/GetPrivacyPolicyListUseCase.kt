@@ -10,6 +10,7 @@ import com.tokopedia.privacycenter.main.section.privacypolicy.PrivacyPolicyConst
 import com.tokopedia.privacycenter.main.section.privacypolicy.domain.data.PrivacyPolicyDataModel
 import com.tokopedia.privacycenter.main.section.privacypolicy.domain.data.PrivacyPolicyListResponse
 import com.tokopedia.usecase.coroutines.UseCase
+import com.tokopedia.utils.date.DateUtil
 import javax.inject.Inject
 
 class GetPrivacyPolicyListUseCase @Inject constructor(
@@ -38,7 +39,8 @@ class GetPrivacyPolicyListUseCase @Inject constructor(
                 val listData = data.data
                 listData.sortedByDescending {
                     it.lastUpdate
-                }
+                }.map { it.sectionTitle = "${it.sectionTitle} - ${DateUtil.formatDate("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", DateUtil.DEFAULT_VIEW_FORMAT, it.lastUpdate)}" }
+
                 if(listLimit > 0) {
                     PrivacyCenterStateResult.Success(data.data.take(listLimit))
                 } else {
