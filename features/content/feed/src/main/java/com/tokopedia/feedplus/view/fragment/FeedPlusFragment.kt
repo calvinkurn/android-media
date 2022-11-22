@@ -71,6 +71,7 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.recommendation.Recomm
 import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.*
 import com.tokopedia.feedcomponent.view.base.FeedPlusContainerListener
 import com.tokopedia.feedcomponent.view.base.FeedPlusTabParentFragment
+import com.tokopedia.feedcomponent.view.share.FeedProductTagSharingHelper
 import com.tokopedia.feedcomponent.view.viewmodel.DynamicPostUiModel
 import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightCardViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
@@ -88,7 +89,6 @@ import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
 import com.tokopedia.feedcomponent.view.widget.CardTitleView
 import com.tokopedia.feedcomponent.view.widget.FeedMultipleImageView
 import com.tokopedia.feedplus.R
-import com.tokopedia.wishlist_common.R as Rwishlist
 import com.tokopedia.feedplus.domain.model.DynamicFeedFirstPageDomainModel
 import com.tokopedia.feedplus.view.adapter.FeedPlusAdapter
 import com.tokopedia.feedplus.view.adapter.typefactory.feed.FeedPlusTypeFactoryImpl
@@ -104,12 +104,10 @@ import com.tokopedia.feedplus.view.di.FeedPlusComponent
 import com.tokopedia.feedplus.view.presenter.FeedViewModel
 import com.tokopedia.feedplus.view.util.NpaLinearLayoutManager
 import com.tokopedia.feedplus.view.viewmodel.FeedPromotedShopViewModel
+import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kolcommon.domain.usecase.FollowKolPostGqlUseCase
-import com.tokopedia.kolcommon.view.listener.KolPostViewHolderListener
 import com.tokopedia.kolcommon.view.viewmodel.FollowKolViewModel
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.linker.interfaces.ShareCallback
@@ -143,10 +141,7 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import java.util.*
 import javax.inject.Inject
-import kotlin.collections.ArrayList
-import com.tokopedia.kotlin.extensions.view.*
-import com.tokopedia.feedcomponent.view.share.FeedProductTagSharingHelper
-import com.tokopedia.globalerror.GlobalError
+import com.tokopedia.wishlist_common.R as Rwishlist
 
 /**
  * @author by nisie on 5/15/17.
@@ -164,7 +159,6 @@ const val TYPE_CONTENT_PREVIEW_PAGE = "content-preview-page"
 class FeedPlusFragment : BaseDaggerFragment(),
     SwipeRefreshLayout.OnRefreshListener,
     TopAdsItemClickListener, TopAdsInfoClickListener,
-    KolPostViewHolderListener,
     BannerAdapter.BannerItemListener,
     RecommendationCardAdapter.RecommendationCardListener,
     TopadsShopViewHolder.TopadsShopListener,
@@ -1292,61 +1286,28 @@ class FeedPlusFragment : BaseDaggerFragment(),
         return position
     }
 
-    override fun onGoToKolProfile(rowNumber: Int, userId: String, postId: Int) {
-        //Not Used - 04/11/2019
-    }
 
-    override fun onGoToKolProfileUsingApplink(rowNumber: Int, applink: String) {
-        onGoToLink(applink)
-    }
-
-    override fun onOpenKolTooltip(rowNumber: Int, uniqueTrackingId: String, url: String) {
-        onGoToLink(url)
-    }
-
-    override fun trackContentClick(
-        hasMultipleContent: Boolean,
-        activityId: String,
-        activityType: String,
-        position: String
-    ) {
-
-    }
-
-    override fun trackTooltipClick(
-        hasMultipleContent: Boolean,
-        activityId: String,
-        activityType: String,
-        position: String
-    ) {
-
-    }
-
-    override fun onFollowKolClicked(
+    private fun onFollowKolClicked(
         rowNumber: Int,
-        id: Int,
+        id: String,
         isFollowedFromFollowRestrictionBottomSheet: Boolean
     ) {
         if (userSession.isLoggedIn) {
-            feedViewModel.doFollowKol(id, rowNumber)
+            feedViewModel.doFollowKol(id, rowNumber, isFollowedFromFollowRestrictionBottomSheet)
         } else {
             onGoToLogin()
         }
     }
 
-    override fun onUnfollowKolClicked(rowNumber: Int, id: Int) {
+    private fun onUnfollowKolClicked(rowNumber: Int, id: String) {
         if (userSession.isLoggedIn) {
             feedViewModel.doUnfollowKol(id, rowNumber)
         } else {
             onGoToLogin()
         }
-
     }
 
-    override fun onLikeKolClicked(
-        rowNumber: Int, id: Long, hasMultipleContent: Boolean,
-        activityType: String
-    ) {
+    private fun onLikeKolClicked(rowNumber: Int, id: Long, ) {
         if (userSession.isLoggedIn) {
             feedViewModel.doLikeKol(id, rowNumber)
         } else {
@@ -1354,10 +1315,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         }
     }
 
-    override fun onUnlikeKolClicked(
-        rowNumber: Int, id: Long, hasMultipleContent: Boolean,
-        activityType: String
-    ) {
+    private fun onUnlikeKolClicked(rowNumber: Int, id: Long) {
         if (userSession.isLoggedIn) {
             feedViewModel.doUnlikeKol(id, rowNumber)
         } else {
@@ -1365,14 +1323,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         }
     }
 
-    override fun onGoToKolComment(
-        rowNumber: Int, id: String, hasMultipleContent: Boolean,
-        activityType: String
-    ) {
-        //not used
-    }
-
-    fun gotToKolComment(
+    private fun gotToKolComment(
         rowNumber: Int, id: String, authorType: String,
         isVideo: Boolean, isFollowed: Boolean, type: String
     ) {
@@ -1413,13 +1364,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
         } else {
             onGoToLogin()
         }
-    }
-
-    override fun onEditClicked(
-        hasMultipleContent: Boolean, activityId: String,
-        activityType: String
-    ) {
-
     }
 
     /**
@@ -1542,16 +1486,15 @@ class FeedPlusFragment : BaseDaggerFragment(),
         isFollow: Boolean
     ) {
         if (type == FollowCta.AUTHOR_USER) {
-            val userIdInt = id.toIntOrZero()
             if (isFollow) {
                 feedViewModel.doUnfollowKolFromRecommendation(
-                    userIdInt,
+                    id,
                     positionInFeed,
                     adapterPosition
                 )
             } else {
                 feedViewModel.doFollowKolFromRecommendation(
-                    userIdInt,
+                    id,
                     positionInFeed,
                     adapterPosition
                 )
@@ -1693,11 +1636,10 @@ class FeedPlusFragment : BaseDaggerFragment(),
     ) {
         if (userSession.isLoggedIn) {
             if (type == FollowCta.AUTHOR_USER) {
-                val userIdInt = id.toIntOrZero()
                 if (isFollow) {
-                    onUnfollowKolClicked(positionInFeed, userIdInt)
+                    onUnfollowKolClicked(positionInFeed, id)
                 } else {
-                    onFollowKolClicked(positionInFeed, userIdInt, isFollowedFromFollowRestrictionBottomSheet)
+                    onFollowKolClicked(positionInFeed, id, isFollowedFromFollowRestrictionBottomSheet)
                 }
 
             } else if (type == FollowCta.AUTHOR_SHOP) {
@@ -1924,9 +1866,9 @@ class FeedPlusFragment : BaseDaggerFragment(),
             campaignStatus = getTrackerLabelSuffixFromPosition(positionInFeed)
         )
         if (isLiked) {
-            onUnlikeKolClicked(positionInFeed, id, false, "")
+            onUnlikeKolClicked(positionInFeed, id)
         } else {
-            onLikeKolClicked(positionInFeed, id, false, "")
+            onLikeKolClicked(positionInFeed, id)
         }
     }
 
@@ -2942,13 +2884,11 @@ class FeedPlusFragment : BaseDaggerFragment(),
         if (adapter.getlist().size > rowNumber && adapter.getlist()[rowNumber] is DynamicPostUiModel) {
             val item = (adapter.getlist()[rowNumber] as DynamicPostUiModel)
             item.feedXCard.followers.isFollowed = !item.feedXCard.followers.isFollowed
-            if (item.feedXCard.followers.isFollowed)
-                item.feedXCard.followers.transitionFollow = true
-            if (!item.feedXCard.followers.isFollowed)
-                adapter.notifyItemChanged(
-                    rowNumber,
-                    DynamicPostNewViewHolder.PAYLOAD_ANIMATE_FOLLOW
-                )
+            if (item.feedXCard.followers.isFollowed) item.feedXCard.followers.transitionFollow = true
+            adapter.notifyItemChanged(
+                rowNumber,
+                DynamicPostNewViewHolder.PAYLOAD_ANIMATE_FOLLOW
+            )
         }
     }
 

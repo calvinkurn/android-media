@@ -368,7 +368,7 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
     private fun onShopFollowRequestedFromBottomSheet(){
         requireLogin {
             if (authorType == FollowCta.AUTHOR_USER) {
-                feedViewModel.doFollowKol(authorId.toIntOrZero(), 0)
+                feedViewModel.doFollowKol(authorId, 0)
             } else if (authorType == FollowCta.AUTHOR_SHOP) {
                 feedViewModel.doToggleFavoriteShop(
                     rowNumber = 0,

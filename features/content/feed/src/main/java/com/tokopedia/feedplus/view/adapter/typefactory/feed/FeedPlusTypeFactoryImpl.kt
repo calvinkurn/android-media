@@ -31,7 +31,6 @@ import com.tokopedia.feedcomponent.view.widget.CardTitleView
 import com.tokopedia.feedcomponent.view.widget.FeedMultipleImageView
 import com.tokopedia.feedplus.view.adapter.viewholder.carouselplaycard.CarouselPlayCardViewHolder
 import com.tokopedia.feedplus.view.fragment.FeedPlusFragment
-import com.tokopedia.kolcommon.view.listener.KolPostViewHolderListener
 import com.tokopedia.play.widget.PlayWidgetViewHolder
 import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
 import com.tokopedia.user.session.UserSessionInterface
@@ -46,7 +45,6 @@ class FeedPlusTypeFactoryImpl(
         private val playWidgetCoordinator: PlayWidgetCoordinator
 ) : BaseAdapterTypeFactory(), FeedPlusTypeFactory, DynamicFeedTypeFactory {
 
-    private val kolPostListener: KolPostViewHolderListener
     private val dynamicPostListener: DynamicPostViewHolder.DynamicPostListener
     private val bannerListener: BannerAdapter.BannerItemListener
     private val topadsShopListener: TopadsShopViewHolder.TopadsShopListener
@@ -64,7 +62,6 @@ class FeedPlusTypeFactoryImpl(
     private val shopRecomCallback: ShopRecomWidgetCallback
 
     init {
-        this.kolPostListener = context
         this.dynamicPostListener = context
         this.bannerListener = context
         this.topadsShopListener = context
