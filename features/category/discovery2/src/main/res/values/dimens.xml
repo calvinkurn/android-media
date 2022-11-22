@@ -55,7 +55,4 @@
     <dimen name="calendar_banner_widget_height">243.5dp</dimen>
     <dimen name="calendar_banner_widget_width">141dp</dimen>
 
-    <!--    default toolbar height + default status bar height + 16 margin-->
-    <dimen name="disco_default_toolbar_status_height">96dp</dimen>
-
 </resources>

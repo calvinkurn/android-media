@@ -17,7 +17,7 @@ import com.tokopedia.unifyprinciples.Typography
 class ThematicHeaderViewHolder(itemView: View, private val fragment: Fragment) :
     AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
 
-    private lateinit var thematicHeaderViewModel: ThematicHeaderViewModel
+    private var thematicHeaderViewModel: ThematicHeaderViewModel? = null
     private var lihatTitleTextView: Typography = itemView.findViewById(R.id.title)
     private var lihatSubTitleTextView: Typography = itemView.findViewById(R.id.subtitle)
     private var backgroundImageView: ImageView = itemView.findViewById(R.id.background_image)
@@ -29,7 +29,7 @@ class ThematicHeaderViewHolder(itemView: View, private val fragment: Fragment) :
     override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
         super.setUpObservers(lifecycleOwner)
         lifecycleOwner?.let {
-            thematicHeaderViewModel.getComponentLiveData().observe(it, { componentItem ->
+            thematicHeaderViewModel?.getComponentLiveData()?.observe(it, { componentItem ->
                 componentItem.data?.firstOrNull()?.let { dataItem ->
                     setupView(dataItem)
                 }
@@ -40,10 +40,9 @@ class ThematicHeaderViewHolder(itemView: View, private val fragment: Fragment) :
     override fun removeObservers(lifecycleOwner: LifecycleOwner?) {
         super.removeObservers(lifecycleOwner)
         lifecycleOwner?.let {
-            thematicHeaderViewModel.getComponentLiveData().removeObservers(it)
+            thematicHeaderViewModel?.getComponentLiveData()?.removeObservers(it)
         }
     }
-
 
     private fun setupView(dataItem: DataItem) {
         with(dataItem) {

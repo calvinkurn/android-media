@@ -157,7 +157,7 @@ class DiscoveryFragment :
     MiniCartWidgetListener {
 
     private var thematicHeaderColor: String = ""
-    private lateinit var navScrollListener: NavRecyclerViewScrollListener
+    private var navScrollListener: NavRecyclerViewScrollListener? = null
     private var autoScrollSectionID: String? = null
     private var anchorViewHolder: AnchorTabsViewHolder? = null
     private lateinit var discoveryViewModel: DiscoveryViewModel
@@ -210,7 +210,7 @@ class DiscoveryFragment :
     private var isManualScroll = true
     private var stickyHeaderShowing = false
     private var hasColouredHeader: Boolean = false
-    private var isLightThemeStatusBar:Boolean ?= null
+    private var isLightThemeStatusBar: Boolean? = null
 
     companion object {
         fun getInstance(endPoint: String?, queryParameterMap: Map<String, String?>?): DiscoveryFragment {
@@ -420,7 +420,7 @@ class DiscoveryFragment :
 
                 override fun onSwitchToDarkToolbar() {
                     if (hasColouredHeader) {
-                        if(isLightThemeStatusBar != true) {
+                        if (isLightThemeStatusBar != true) {
                             requestStatusBarLight()
                             navToolbar.hideShadow()
                             if (discoveryViewModel.getAddressVisibilityValue()) {
@@ -432,7 +432,7 @@ class DiscoveryFragment :
 
                 override fun onSwitchToLightToolbar() {
                     if (hasColouredHeader) {
-                        if(isLightThemeStatusBar != false) {
+                        if (isLightThemeStatusBar != false) {
                             requestStatusBarDark()
                             navToolbar.setShowShadowEnabled(true)
                             navToolbar.showShadow(true)
@@ -831,7 +831,7 @@ class DiscoveryFragment :
 
     }
 
-    private fun setupHexBackgroundColor(color: String){
+    private fun setupHexBackgroundColor(color: String) {
         thematicHeaderColor = color
         try {
             val colorResource = Color.parseColor(color)
@@ -847,9 +847,9 @@ class DiscoveryFragment :
     }
 
     private fun setupNavScrollListener() {
-        if(::navScrollListener.isInitialized) {
-            recyclerView.removeOnScrollListener(navScrollListener)
-            recyclerView.addOnScrollListener(navScrollListener)
+        navScrollListener?.let {
+            recyclerView.removeOnScrollListener(it)
+            recyclerView.addOnScrollListener(it)
         }
     }
 
