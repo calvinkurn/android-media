@@ -256,9 +256,6 @@ class SellerHomeViewModelTest {
         )
 
         dynamicParameter = getDynamicParameter()
-        /*rawWidgets = viewModel::class.java.getDeclaredField("rawWidgets").apply {
-            isAccessible = true
-        }*/
     }
 
     private fun getDynamicParameter(): DynamicParameterModel {
