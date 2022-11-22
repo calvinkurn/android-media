@@ -76,8 +76,10 @@ class PlayShortsActivity : BaseActivity() {
                 fragment.setListener(object : UGCOnboardingParentFragment.Listener {
                     override fun onSuccess() {
                         /** TODO: handle tracker */
-                        if(isFragmentContainerEmpty())
+                        if(isFragmentContainerEmpty()) {
+                            showNoEligibleAccountBackground(false)
                             viewModel.submitAction(PlayShortsAction.PreparePage(getPreferredAccountType()))
+                        }
                         else
                             viewModel.submitAction(PlayShortsAction.SwitchAccount)
                     }
@@ -203,17 +205,17 @@ class PlayShortsActivity : BaseActivity() {
             is PlayShortsBottomSheet.UGCOnboarding -> {
                 showUGCOnboardingBottomSheet(bottomSheet.hasUsername)
 
-                if(isFragmentContainerEmpty()) showNoEligibleAccountBackground()
+                if(isFragmentContainerEmpty()) showNoEligibleAccountBackground(true)
             }
             is PlayShortsBottomSheet.AccountNotEligible -> {
                 showNoEligibleAccountBottomSheet()
 
-                if(isFragmentContainerEmpty()) showNoEligibleAccountBackground()
+                if(isFragmentContainerEmpty()) showNoEligibleAccountBackground(true)
             }
             is PlayShortsBottomSheet.SellerNotEligible -> {
                 showSellerNotEligibleBottomSheet()
 
-                if(isFragmentContainerEmpty()) showNoEligibleAccountBackground()
+                if(isFragmentContainerEmpty()) showNoEligibleAccountBackground(true)
             }
             else -> {}
         }
@@ -283,8 +285,8 @@ class PlayShortsActivity : BaseActivity() {
             .show(supportFragmentManager)
     }
 
-    private fun showNoEligibleAccountBackground() {
-        binding.clNoEligibleAccount.visibility = View.VISIBLE
+    private fun showNoEligibleAccountBackground(isShow: Boolean) {
+        binding.clNoEligibleAccount.showWithCondition(isShow)
     }
 
     private fun getPreferredAccountType(): String {
