@@ -1,8 +1,8 @@
 package com.tokopedia.feedplus.domain.model.feed
 
-import com.tokopedia.content.common.model.GetCheckWhitelist
-import com.tokopedia.content.common.model.GetCheckWhitelist.Author.Companion.TYPE_SHOP
-import com.tokopedia.content.common.model.GetCheckWhitelist.Author.Companion.TYPE_USER
+import com.tokopedia.content.common.model.GetCheckWhitelistResponse
+import com.tokopedia.content.common.model.GetCheckWhitelistResponse.Author.Companion.TYPE_SHOP
+import com.tokopedia.content.common.model.GetCheckWhitelistResponse.Author.Companion.TYPE_USER
 
 
 /**
@@ -17,7 +17,7 @@ data class WhitelistDomain(
     val postSuccessMessage: String,
     val desc: String,
     val image: String,
-    val authors: List<GetCheckWhitelist.Author>
+    val authors: List<GetCheckWhitelistResponse.Author>
 ) {
 
     val isShopAccountExists: Boolean
@@ -33,7 +33,7 @@ data class WhitelistDomain(
     val isShopAccountLiveEligible: Boolean
         get() = authors.find { it.type == TYPE_SHOP && it.livestream.enable } != null
 
-    val userAccount: GetCheckWhitelist.Author?
+    val userAccount: GetCheckWhitelistResponse.Author?
         get() = authors.find { it.type == TYPE_USER }
 
     companion object {

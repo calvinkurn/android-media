@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName
  * @author by yfsx on 20/06/18.
  */
 
-data class GetCheckWhitelist (
+data class GetCheckWhitelistResponse (
     @SerializedName("feed_check_whitelist")
     val whitelist: Whitelist = Whitelist()
 ) {

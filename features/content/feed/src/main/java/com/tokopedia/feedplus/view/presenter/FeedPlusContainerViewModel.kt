@@ -4,7 +4,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.content.common.model.GetCheckWhitelist
+import com.tokopedia.content.common.model.GetCheckWhitelistResponse
 import com.tokopedia.feedplus.data.pojo.FeedTabs
 import com.tokopedia.feedplus.domain.model.feed.WhitelistDomain
 import com.tokopedia.feedplus.domain.repository.FeedPlusRepository
@@ -67,7 +67,7 @@ class FeedPlusContainerViewModel @Inject constructor(
         }
     }
 
-    private fun getWhitelistDomain(query: GetCheckWhitelist?): WhitelistDomain {
+    private fun getWhitelistDomain(query: GetCheckWhitelistResponse?): WhitelistDomain {
         return if (query == null) {
             WhitelistDomain.Empty
         } else {

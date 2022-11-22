@@ -31,7 +31,7 @@ import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.coachmark.CoachMark
 import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
-import com.tokopedia.content.common.model.GetCheckWhitelist
+import com.tokopedia.content.common.model.GetCheckWhitelistResponse
 import com.tokopedia.createpost.common.analyics.FeedTrackerImagePickerInsta
 import com.tokopedia.createpost.common.view.customview.PostProgressUpdateView
 import com.tokopedia.createpost.common.view.viewmodel.CreatePostViewModel
@@ -96,7 +96,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     private var isTrackerOnBroadcastRecieveAlreadyHit: Boolean = false
     private var isFeedSelectedFromBottomNavigation: Boolean = false
     private var feedToolbar: Toolbar? = null
-    private val authorList: MutableList<GetCheckWhitelist.Author> = mutableListOf()
+    private val authorList: MutableList<GetCheckWhitelistResponse.Author> = mutableListOf()
     private lateinit var newFeedReceiver: BroadcastReceiver
     private var postProgressUpdateView: PostProgressUpdateView? = null
     private var viewPager: ViewPager? = null
@@ -654,7 +654,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         )
     }
 
-    private fun renderUserProfileEntryPoint(userAccount: GetCheckWhitelist.Author?) {
+    private fun renderUserProfileEntryPoint(userAccount: GetCheckWhitelistResponse.Author?) {
         ivFeedUser?.let { ivFeedUser ->
             if(userAccount == null) {
                 ivFeedUser.setOnClickListener(null)

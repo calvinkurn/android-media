@@ -1,7 +1,7 @@
 package com.tokopedia.play.broadcaster.ui.mapper
 
 import com.tokopedia.broadcaster.revamp.util.statistic.BroadcasterMetric
-import com.tokopedia.content.common.model.GetCheckWhitelist
+import com.tokopedia.content.common.model.GetCheckWhitelistResponse
 import com.tokopedia.content.common.types.ContentCommonUserType.TYPE_SHOP
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.content.common.ui.model.TermsAndConditionUiModel
@@ -508,7 +508,7 @@ class PlayBroadcastUiMapper @Inject constructor(
         audioBufferTimestamp = metric.audioBufferTimestamp,
     )
 
-    override fun mapAuthorList(response: GetCheckWhitelist): List<ContentAccountUiModel> {
+    override fun mapAuthorList(response: GetCheckWhitelistResponse): List<ContentAccountUiModel> {
         return response.whitelist.authors.map {
             ContentAccountUiModel(
                 id = it.id,

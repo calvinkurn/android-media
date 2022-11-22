@@ -1,6 +1,6 @@
 package com.tokopedia.people.views.uimodel.mapper
 
-import com.tokopedia.content.common.model.GetCheckWhitelist
+import com.tokopedia.content.common.model.GetCheckWhitelistResponse
 import com.tokopedia.feedcomponent.data.pojo.whitelist.Author
 import com.tokopedia.feedcomponent.people.model.MutationUiModel
 import com.tokopedia.people.model.*
@@ -49,7 +49,7 @@ class UserProfileUiMapperImpl @Inject constructor() : UserProfileUiMapper {
         )
     }
 
-    override fun mapUserWhitelist(response: GetCheckWhitelist): ProfileWhitelistUiModel {
+    override fun mapUserWhitelist(response: GetCheckWhitelistResponse): ProfileWhitelistUiModel {
         val authorUgc = response.whitelist.authors.find { it.type == Author.TYPE_USER }
 
         return ProfileWhitelistUiModel(

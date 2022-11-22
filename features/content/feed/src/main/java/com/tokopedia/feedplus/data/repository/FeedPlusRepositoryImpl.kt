@@ -1,7 +1,7 @@
 package com.tokopedia.feedplus.data.repository
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.content.common.model.GetCheckWhitelist
+import com.tokopedia.content.common.model.GetCheckWhitelistResponse
 import com.tokopedia.content.common.usecase.GetWhiteListNewUseCase
 import com.tokopedia.content.common.usecase.GetWhiteListNewUseCase.Companion.WHITELIST_ENTRY_POINT
 import com.tokopedia.feedplus.data.pojo.FeedTabs
@@ -21,7 +21,7 @@ class FeedPlusRepositoryImpl @Inject constructor(
     private val getWhitelistUseCase: GetWhiteListNewUseCase
 ) : FeedPlusRepository {
 
-    override suspend fun getWhitelist(): GetCheckWhitelist = withContext(dispatchers.io) {
+    override suspend fun getWhitelist(): GetCheckWhitelistResponse = withContext(dispatchers.io) {
         getWhitelistUseCase.execute(WHITELIST_ENTRY_POINT)
     }
 

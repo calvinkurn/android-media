@@ -1,7 +1,7 @@
 package com.tokopedia.play.broadcaster.ui.mapper
 
 import com.tokopedia.broadcaster.revamp.util.statistic.BroadcasterMetric
-import com.tokopedia.content.common.model.GetCheckWhitelist
+import com.tokopedia.content.common.model.GetCheckWhitelistResponse
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.play.broadcaster.domain.model.*
 import com.tokopedia.play.broadcaster.domain.model.interactive.GetInteractiveConfigResponse
@@ -115,5 +115,5 @@ interface PlayBroadcastMapper {
         channelId: String,
     ): PlayBroadcasterMetric
 
-    fun mapAuthorList(response: GetCheckWhitelist): List<ContentAccountUiModel>
+    fun mapAuthorList(response: GetCheckWhitelistResponse): List<ContentAccountUiModel>
 }
