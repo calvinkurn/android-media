@@ -18,7 +18,9 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.withContext
+import java.util.*
 import javax.inject.Inject
+import kotlin.collections.ArrayList
 
 class RechargeHomepageViewModel @Inject constructor(
     private val graphqlRepository: GraphqlRepository,
@@ -173,7 +175,13 @@ class RechargeHomepageViewModel @Inject constructor(
     ): Map<String, Any> {
         return mapOf(
             PARAM_RECHARGE_HOMEPAGE_SECTION_ID to sectionId,
-            PARAM_RECHARGE_HOMEPAGE_SECTION_ACTION to String.format("%s:%s:%s", actionName, sectionObjectId, itemObjectId)
+            PARAM_RECHARGE_HOMEPAGE_SECTION_ACTION to String.format(
+                Locale.getDefault(),
+                "%s:%s:%s",
+                actionName,
+                sectionObjectId,
+                itemObjectId
+            )
         )
     }
 
