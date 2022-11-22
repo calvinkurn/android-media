@@ -99,7 +99,6 @@ import org.junit.Test
 import org.junit.jupiter.api.Assertions
 import org.mockito.ArgumentMatchers.anyLong
 import org.mockito.ArgumentMatchers.anyString
-import java.lang.reflect.Field
 
 /**
  * Created By @ilhamsuaib on 19/03/20

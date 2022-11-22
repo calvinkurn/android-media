@@ -1,7 +1,6 @@
 package com.tokopedia.sellerhomecommon.sse
 
 import com.tokopedia.sellerhomecommon.presentation.model.BaseDataUiModel
-import com.tokopedia.sellerhomecommon.sse.model.WidgetSSEModel
 import kotlinx.coroutines.flow.Flow
 
 /**
