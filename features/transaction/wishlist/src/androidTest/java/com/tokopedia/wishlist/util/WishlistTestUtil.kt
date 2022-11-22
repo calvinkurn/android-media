@@ -4,8 +4,10 @@ import android.content.Context
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.coachmark.CoachMarkPreference
 
-fun disableCoachmarkWishlistOnboarding(context: Context) {
+fun disableWishlistCoachmark(context: Context) {
     CoachMarkPreference.setShown(context, "coachmark-wishlist-onboarding", true)
+    CoachMarkPreference.setShown(context, "coachmark-wishlist-sharing", true)
+    CoachMarkPreference.setShown(context, "coachmark-wishlist", true)
 }
 
 internal inline fun <reified T : RecyclerView.Adapter<*>> RecyclerView?.adapter(): T {

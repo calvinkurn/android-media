@@ -11,10 +11,10 @@ import com.tokopedia.test.application.assertion.topads.TopAdsAssertion
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupTopAdsDetector
 import com.tokopedia.wishlist.R
-import com.tokopedia.wishlist.util.adapter
 import com.tokopedia.wishlist.runWishlistCollectionBot
 import com.tokopedia.wishlist.util.WishlistIdlingResource
-import com.tokopedia.wishlist.util.disableCoachmarkWishlistOnboarding
+import com.tokopedia.wishlist.util.adapter
+import com.tokopedia.wishlist.util.disableWishlistCoachmark
 import com.tokopedia.wishlistcollection.view.activity.WishlistCollectionActivity
 import com.tokopedia.wishlistcollection.view.adapter.WishlistCollectionAdapter
 import com.tokopedia.wishlistcollection.view.adapter.viewholder.WishlistCollectionRecommendationItemViewHolder
@@ -45,12 +45,12 @@ class WishlistCollectionTopAdsVerificationTest {
                 super.beforeActivityLaunched()
                 InstrumentationAuthHelper.loginInstrumentationTestTopAdsUser()
                 setupTopAdsDetector()
+                disableWishlistCoachmark(context)
             }
         }
 
     @Before
     fun setup() {
-        disableCoachmarkWishlistOnboarding(context)
         IdlingRegistry.getInstance().register(WishlistIdlingResource.countingIdlingResource)
     }
 
