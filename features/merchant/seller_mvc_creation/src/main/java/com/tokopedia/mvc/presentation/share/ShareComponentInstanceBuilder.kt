@@ -33,15 +33,17 @@ class ShareComponentInstanceBuilder @Inject constructor(
 
 
     data class Param(
+        val isVoucherProduct: Boolean,
+        val voucherStartDate: Date,
+        val voucherEndDate: Date,
         val voucherId: Long,
         val isPublic: Boolean,
         val voucherCode: String,
-        val voucherStartTime: Date,
-        val voucherEndTime: Date,
         val promoType: PromoType,
         val benefitType: BenefitType,
         val shopLogo: String,
         val shopName: String,
+        val shopDomain: String,
         val discountAmount: Long,
         val discountAmountMax: Long,
         val productImageUrls: List<String>,
@@ -171,15 +173,16 @@ class ShareComponentInstanceBuilder @Inject constructor(
                 value = param.voucherCode
             )
 
-            val startTime = param.voucherStartTime.formatTo(DateConstant.DATE_YEAR_PRECISION)
-            val endTime = param.voucherEndTime.formatTo(DateConstant.DATE_YEAR_PRECISION)
+            val startDate = param.voucherStartDate.formatTo(DateConstant.DATE_YEAR_PRECISION)
+            val endDate = param.voucherEndDate.formatTo(DateConstant.DATE_YEAR_PRECISION)
+
             addImageGeneratorData(
                 key = ImageGeneratorConstants.ImageGeneratorKeys.VOUCHER_START_TIME,
-                value = startTime
+                value = startDate
             )
             addImageGeneratorData(
                 key = ImageGeneratorConstants.ImageGeneratorKeys.VOUCHER_FINISH_TIME,
-                value = endTime
+                value = endDate
             )
             addImageGeneratorData(
                 key = ImageGeneratorConstants.ImageGeneratorKeys.PRODUCT_COUNT,
