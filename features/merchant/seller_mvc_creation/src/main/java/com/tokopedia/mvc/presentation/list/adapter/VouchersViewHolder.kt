@@ -14,8 +14,8 @@ import com.tokopedia.mvc.databinding.SmvcItemVoucherHeaderBinding
 import com.tokopedia.mvc.databinding.SmvcItemVoucherPeriodBinding
 import com.tokopedia.mvc.databinding.SmvcItemVoucherStatsBinding
 import com.tokopedia.mvc.domain.entity.Voucher
-import com.tokopedia.mvc.domain.entity.VoucherStatus
-import com.tokopedia.mvc.domain.entity.VoucherTargetBuyer
+import com.tokopedia.mvc.domain.entity.enums.VoucherStatus
+import com.tokopedia.mvc.domain.entity.enums.VoucherTargetBuyer
 
 class VouchersViewHolder(
     private val binding: SmvcItemVoucherBinding,

@@ -1,10 +1,15 @@
 package com.tokopedia.mvc.domain.entity
 
-import androidx.annotation.StringRes
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.mvc.R
+import com.tokopedia.mvc.domain.entity.enums.PromoType
+import com.tokopedia.mvc.domain.entity.enums.VoucherServiceType
+import com.tokopedia.mvc.domain.entity.enums.VoucherSort
+import com.tokopedia.mvc.domain.entity.enums.VoucherStatus
+import com.tokopedia.mvc.domain.entity.enums.VoucherSubsidy
+import com.tokopedia.mvc.domain.entity.enums.VoucherTarget
+import com.tokopedia.mvc.domain.entity.enums.VoucherVps
 
 data class VoucherListParam (
     @SerializedName("voucher_type")
@@ -49,7 +54,7 @@ data class VoucherListParam (
 
         @JvmStatic
         fun createParam(
-            type: VoucherType? = null,
+            type: PromoType? = null,
             status: List<VoucherStatus> = emptyList(),
             sort: VoucherSort? = null,
             target: VoucherTarget? = null,
@@ -69,74 +74,10 @@ data class VoucherListParam (
                 isVps = listOf(VoucherVps.VPS, VoucherVps.NON_VPS).joinToString(VALUE_DELIMITER),
                 voucherName = voucherName,
                 targetBuyer = null,
-                isLockToProduct = listOf(VoucherServiceType.SHOP_VOUCHER.type,
+                isLockToProduct = listOf(
+                    VoucherServiceType.SHOP_VOUCHER.type,
                     VoucherServiceType.PRODUCT_VOUCHER.type).joinToString(VALUE_DELIMITER)
             )
         }
     }
-}
-
-enum class VoucherServiceType(val type: Int) {
-    SHOP_VOUCHER(0),
-    PRODUCT_VOUCHER(1)
-}
-
-enum class VoucherType(val type: Int) {
-    FREE_ONGKIR(1),
-    DISCOUNT(2),
-    CASHBACK(3)
-}
-
-enum class VoucherStatus(val type: Int) {
-    DELETED(-1),
-    PROCESSING(0),
-    NOT_STARTED(1),
-    ONGOING(2),
-    ENDED(3),
-    STOPPED(4)
-}
-
-enum class VoucherTarget(val type: Int) {
-    PUBLIC(1),
-    PRIVATE(0)
-}
-
-enum class VoucherTargetBuyer(val type: Int) {
-    ALL_BUYER(0),
-    NEW_FOLLOWER(1),
-    NEW_BUYER(2),
-    MEMBER(3)
-}
-
-enum class VoucherSort(val type: String) {
-    CREATE_TIME("create_time"),
-    START_TIME("voucher_start_time"),
-    FINISH_TIME("voucher_finish_time"),
-    VOUCHER_STATUS("voucher_status")
-}
-
-enum class VoucherSubsidy(val type: Int) {
-    SELLER(0),
-    TOKOPEDIA(1),
-    SELLER_AND_TOKOPEDIA(2)
-}
-
-enum class VoucherVps(val type: Int) {
-    NON_VPS(0),
-    VPS(1)
-}
-
-enum class VoucherStatusFilter(val type: List<VoucherStatus>, @StringRes val captionRes: Int) {
-    ALL_STATUS(
-        listOf(VoucherStatus.NOT_STARTED, VoucherStatus.ONGOING, VoucherStatus.ENDED, VoucherStatus.STOPPED),
-        R.string.smvc_bottomsheet_filter_voucher_all),
-    NOT_STARTED(
-        listOf(VoucherStatus.NOT_STARTED),
-        R.string.smvc_bottomsheet_filter_voucher_notstarted),
-    ONGOING(
-        listOf(VoucherStatus.ONGOING),
-        R.string.smvc_bottomsheet_filter_voucher_ongoing),
-    FINISHED(
-        listOf(VoucherStatus.ENDED, VoucherStatus.STOPPED),
-        R.string.smvc_bottomsheet_filter_voucher_finished)
 }

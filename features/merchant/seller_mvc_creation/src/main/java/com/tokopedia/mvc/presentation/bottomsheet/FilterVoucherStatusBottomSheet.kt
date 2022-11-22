@@ -7,8 +7,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.mvc.R
 import com.tokopedia.mvc.databinding.SmvcBottomsheetFilterStatusVoucherBinding
-import com.tokopedia.mvc.domain.entity.VoucherStatus
-import com.tokopedia.mvc.domain.entity.VoucherStatusFilter
+import com.tokopedia.mvc.domain.entity.enums.VoucherStatus
+import com.tokopedia.mvc.domain.entity.enums.VoucherStatusFilter
 import com.tokopedia.mvc.presentation.bottomsheet.adapter.FilterVoucherStatusAdapter
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable

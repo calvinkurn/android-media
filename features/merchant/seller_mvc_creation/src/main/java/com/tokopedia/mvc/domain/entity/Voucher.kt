@@ -1,39 +1,38 @@
 package com.tokopedia.mvc.domain.entity
 
-import android.os.Parcelable
-import kotlinx.parcelize.Parcelize
+import com.tokopedia.mvc.domain.entity.enums.VoucherStatus
+import com.tokopedia.mvc.domain.entity.enums.VoucherTargetBuyer
 
-@Parcelize
 data class Voucher(
-    val id: Int,
-    val name: String,
-    val type: Int,
-    val typeFormatted: String,
-    val image: String,
-    val imageSquare: String,
-    val imagePortrait: String,
-    val status: VoucherStatus,
-    val discountUsingPercent: Boolean,
-    val discountAmt: Int,
-    val discountAmtFormatted: String,
-    val discountAmtMax: Int,
-    val minimumAmt: Int,
-    val quota: Int,
-    val confirmedQuota: Int,
-    val bookedQuota: Int,
-    val startTime: String,
-    val finishTime: String,
-    val code: String,
-    val createdTime: String,
-    val updatedTime: String,
-    val isPublic: Boolean,
-    val isLockToProduct: Boolean,
+    val id: Int = 0,
+    val name: String = "",
+    val type: Int = 0,
+    val typeFormatted: String = "",
+    val image: String = "",
+    val imageSquare: String = "",
+    val imagePortrait: String = "",
+    val status: VoucherStatus = VoucherStatus.PROCESSING,
+    val discountUsingPercent: Boolean = false,
+    val discountAmt: Int = 0,
+    val discountAmtFormatted: String = "",
+    val discountAmtMax: Int = 0,
+    val minimumAmt: Int = 0,
+    val quota: Int = 0,
+    val confirmedQuota: Int = 0,
+    val bookedQuota: Int = 0,
+    val startTime: String = "",
+    val finishTime: String = "",
+    val code: String = "",
+    val createdTime: String = "",
+    val updatedTime: String = "",
+    val isPublic: Boolean = false,
+    val isLockToProduct: Boolean = false,
     val showNewBc: Boolean = false,
     val isFreeIconVisible: Boolean = false,
     val isVps: Boolean = false,
-    val totalChild: Int,
+    val totalChild: Int = 0,
     val packageName: String = "",
     val isSubsidy: Boolean = false,
     val tnc: String = "",
-    val targetBuyer: VoucherTargetBuyer
-): Parcelable
+    val targetBuyer: VoucherTargetBuyer = VoucherTargetBuyer.ALL_BUYER
+)

@@ -7,8 +7,8 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.mvc.domain.entity.Voucher
 import com.tokopedia.mvc.domain.entity.VoucherCreationQuota
 import com.tokopedia.mvc.domain.entity.VoucherListParam
-import com.tokopedia.mvc.domain.entity.VoucherSort
-import com.tokopedia.mvc.domain.entity.VoucherStatus
+import com.tokopedia.mvc.domain.entity.enums.VoucherSort
+import com.tokopedia.mvc.domain.entity.enums.VoucherStatus
 import com.tokopedia.mvc.domain.usecase.GetVoucherListUseCase
 import com.tokopedia.mvc.domain.usecase.GetVoucherQuotaUseCase
 import com.tokopedia.mvc.presentation.list.model.FilterModel

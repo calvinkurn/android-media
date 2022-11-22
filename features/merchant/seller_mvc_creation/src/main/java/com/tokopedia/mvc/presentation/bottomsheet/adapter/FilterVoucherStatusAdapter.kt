@@ -6,8 +6,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.mvc.databinding.SmvcItemFilterVoucherStatusBinding
-import com.tokopedia.mvc.domain.entity.VoucherStatus
-import com.tokopedia.mvc.domain.entity.VoucherStatusFilter
+import com.tokopedia.mvc.domain.entity.enums.VoucherStatus
+import com.tokopedia.mvc.domain.entity.enums.VoucherStatusFilter
 
 class FilterVoucherStatusAdapter: RecyclerView.Adapter<FilterVoucherStatusAdapter.ViewHolder>() {
 

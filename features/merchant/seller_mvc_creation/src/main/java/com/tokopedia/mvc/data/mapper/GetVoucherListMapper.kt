@@ -3,8 +3,8 @@ package com.tokopedia.mvc.data.mapper
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.mvc.data.response.MerchantVoucherModel
 import com.tokopedia.mvc.domain.entity.Voucher
-import com.tokopedia.mvc.domain.entity.VoucherStatus
-import com.tokopedia.mvc.domain.entity.VoucherTargetBuyer
+import com.tokopedia.mvc.domain.entity.enums.VoucherStatus
+import com.tokopedia.mvc.domain.entity.enums.VoucherTargetBuyer
 import javax.inject.Inject
 
 class GetVoucherListMapper @Inject constructor() {
