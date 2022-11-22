@@ -7,9 +7,8 @@ object GeneralInfoTracking {
 
     fun onClickObatKeras(
         common: CommonTracker,
-        data: GeneralInfoTracker,
+        data: GeneralInfoTracker
     ) {
-
         val eventAction = "click - obat keras component - lihat on perlu resep dokter"
         val pdp = "product detail page"
 
@@ -17,7 +16,7 @@ object GeneralInfoTracking {
             Hit.EVENT to "clickPG",
             Hit.EVENT_ACTION to eventAction,
             Hit.EVENT_CATEGORY to pdp,
-            Hit.EVENT_LABEL to "product_id:${common.productId};user_id:${common.userId};shop_id:${common.shopId};category:${common.categoryId};isTokonow:${data.isTokoNow};",
+            Hit.EVENT_LABEL to "product_id:${common.productId};user_id:${common.userId};shop_id:${common.shopId};category:${common.categoryChildId};isTokonow:${data.isTokoNow};",
             Hit.TRACKER_ID to "39383",
             Hit.BUSINESS_UNIT to pdp,
             Hit.CATEGORY_ID to common.categoryId,
@@ -32,6 +31,4 @@ object GeneralInfoTracking {
 
         TrackApp.getInstance().gtm.sendGeneralEvent(mapEvent)
     }
-
-
 }
