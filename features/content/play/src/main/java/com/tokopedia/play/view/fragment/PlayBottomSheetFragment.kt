@@ -684,6 +684,19 @@ class PlayBottomSheetFragment @Inject constructor(
                         }
                         is OCCSuccessEvent -> {
                             router.route(requireContext(),ApplinkConstInternalMarketplace.ONE_CLICK_CHECKOUT)
+
+                            val bottomInsetsType = if (event.isVariant) {
+                                BottomInsetsType.VariantSheet
+                            } else BottomInsetsType.ProductSheet //TEMPORARY
+
+                            analytic.clickProductAction(
+                                product = event.product,
+                                cartId = event.cartId,
+                                productAction = ProductAction.OCC,
+                                bottomInsetsType = bottomInsetsType,
+                                shopInfo = playViewModel.latestCompleteChannelData.partnerInfo,
+                                sectionInfo = event.sectionInfo ?: ProductSectionUiModel.Section.Empty
+                            )
                         }
                         else -> {}
                     }
