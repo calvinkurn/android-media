@@ -55,7 +55,7 @@ class UserProfileVideoFragment @Inject constructor(
 ) : TkpdBaseV4Fragment(), AdapterCallback, UserPostBaseAdapter.PlayWidgetCallback {
 
     private val gridLayoutManager by lazy(LazyThreadSafetyMode.NONE) {
-        GridLayoutManager(activity, 2)
+        GridLayoutManager(activity, GRID_SPAN_COUNT)
     }
 
     private var _binding: UpFragmentVideoBinding? = null
@@ -114,8 +114,8 @@ class UserProfileVideoFragment @Inject constructor(
         return object : GridLayoutManager.SpanSizeLookup() {
             override fun getSpanSize(position: Int): Int {
                 return when (mAdapter.getItemViewType(position)) {
-                    LOADING -> 2
-                    else -> 1
+                    LOADING -> LOADING_SPAN
+                    else -> DATA_SPAN
                 }
             }
         }
@@ -306,6 +306,9 @@ class UserProfileVideoFragment @Inject constructor(
 
     companion object {
         private const val TAG = "UserProfileVideoFragment"
+        private const val GRID_SPAN_COUNT = 2
+        private const val LOADING_SPAN = 2
+        private const val DATA_SPAN = 1
 
         fun getFragment(
             fragmentManager: FragmentManager,

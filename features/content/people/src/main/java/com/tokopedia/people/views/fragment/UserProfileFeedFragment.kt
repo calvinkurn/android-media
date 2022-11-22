@@ -155,7 +155,7 @@ class UserProfileFeedFragment @Inject constructor(
         binding.rvFeed.layoutManager = gridLayoutManager
         if (binding.rvFeed.itemDecorationCount == 0) {
             val spacing = requireContext().resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2)
-            binding.rvFeed.addItemDecoration(GridSpacingItemDecoration(3, spacing, true))
+            binding.rvFeed.addItemDecoration(GridSpacingItemDecoration(GRID_SPAN_COUNT, spacing, true))
         }
         binding.rvFeed.adapter = mAdapter
     }
@@ -164,8 +164,8 @@ class UserProfileFeedFragment @Inject constructor(
         return object : GridLayoutManager.SpanSizeLookup() {
             override fun getSpanSize(position: Int): Int {
                 return when (mAdapter.getItemViewType(position)) {
-                    UserProfileFragment.LOADING -> 3
-                    else -> 1
+                    UserProfileFragment.LOADING -> LOADING_SPAN
+                    else -> DATA_SPAN
                 }
             }
         }
@@ -242,6 +242,9 @@ class UserProfileFeedFragment @Inject constructor(
         private const val KEY_SOURCE = "source"
         private const val KEY_POSITION = "position"
         private const val VAL_SOURCE = "user_profile"
+        private const val GRID_SPAN_COUNT = 3
+        private const val LOADING_SPAN = 3
+        private const val DATA_SPAN = 1
 
         fun getFragment(
             fragmentManager: FragmentManager,
