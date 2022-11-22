@@ -66,6 +66,15 @@
                 android:inflatedId="@+id/voucher_setting_layout"
                 android:layout="@layout/smvc_voucher_detail_product_section" />
 
+            <com.tokopedia.mvc.common.customview.SpendingEstimationLabelView
+                android:id="@+id/label_spending_estimation"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                tools:title_placeholder_text="Pengeluaran hingga saat ini"
+                tools:description_placeholder_text="Tidak ada pemotongan karena kupon berasal dari Tokopedia"
+                tools:spending_estimation_placeholder_text="Rp3.200.000"/>
+
         </LinearLayout>
 
     </androidx.core.widget.NestedScrollView>

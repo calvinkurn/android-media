@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.mvc.domain.entity.VoucherDetailData
 import com.tokopedia.mvc.domain.usecase.MerchantPromotionGetMVDataByIDUseCase
 import com.tokopedia.usecase.coroutines.Fail
@@ -33,5 +34,11 @@ class VoucherDetailViewModel @Inject constructor(
                 _voucherDetail.postValue(Fail(error))
             }
         )
+    }
+
+    fun getSpendingEstimation(data: VoucherDetailData): String {
+        val voucherDiscount = data.voucherDiscountAmount
+        val voucherQuota = data.voucherQuota
+        return (voucherDiscount * voucherQuota).getCurrencyFormatted()
     }
 }

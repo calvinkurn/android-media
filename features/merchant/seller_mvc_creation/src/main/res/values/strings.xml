@@ -38,7 +38,7 @@
     <string name="smvc_placeholder_share_component_outgoing_title">Kupon Produk dari %s</string>
     <string name="smvc_share_component_outgoing_text_description">Yuk, belanja dan pakai Kupon Produknya sekarang!</string>
     <string name="smvc_placeholder_share_component_text_description">Dapatkan Kupon Produk %s di \@Tokopedia hingga %s pukul %s WIB hanya untukmu!</string>
-    <string name="smvc_placeholder_product_price">%s - %s</string>
+<!--    <string name="smvc_placeholder_product_price">%s - %s</string>-->
 
     <string name="bullet_unicode">\u2022</string>
 
@@ -110,5 +110,11 @@
     <string name="smvc_duplicate_label">Duplikat</string>
     <string name="smvc_promotion_package_label">Paket Promosi</string>
     <string name="smvc_product_count_placeholder">%d Produk</string>
+    <string name="smvc_spending_estimation_title_1">Estimasi Maks. Pengeluaran</string>
+    <string name="smvc_spending_estimation_title_2">Pengeluaran hingga saat ini</string>
+    <string name="smvc_spending_estimation_title_3">Total pengeluaran</string>
+    <string name="smvc_spending_estimation_description_1">Dipotong dari transaksi selesai.</string>
+    <string name="smvc_spending_estimation_description_2">Tidak ada potongan biaya karena kupon berasal dari Paket Promosi.</string>
+    <string name="smvc_spending_estimation_description_3">Tidak ada potongan biaya karena kupon berasal dari Tokopedia.</string>
 
 </resources>

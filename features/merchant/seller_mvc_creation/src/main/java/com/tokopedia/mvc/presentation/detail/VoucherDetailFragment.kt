@@ -122,6 +122,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
         setupVoucherInfoSection(data)
         setupVoucherSettingSection(data)
         setupProductListSection(data)
+        setupSpendingEstimationSection(data)
         setupButtonSection(data)
     }
 
@@ -165,21 +166,17 @@ class VoucherDetailFragment : BaseDaggerFragment() {
         headerBinding?.run {
             tpgVoucherStatus.apply {
                 when (data.voucherStatus) {
-                    VoucherStatusConstant.NOT_STARTED -> {
-                        text = getString(R.string.smvc_status_upcoming_label)
-                        setTextColorCompat(com.tokopedia.unifyprinciples.R.color.Unify_NN600)
-                    }
                     VoucherStatusConstant.ONGOING -> {
                         text = getString(R.string.smvc_status_ongoing_label)
                         setTextColorCompat(com.tokopedia.unifyprinciples.R.color.Green_G500)
                     }
-                    VoucherStatusConstant.ENDED -> {
-                        text = getString(R.string.smvc_status_ended_label)
-                        setTextColorCompat(com.tokopedia.unifyprinciples.R.color.Unify_NN600)
-                    }
                     VoucherStatusConstant.STOPPED -> {
                         text = getString(R.string.smvc_status_stopped_label)
                         setTextColorCompat(com.tokopedia.unifyprinciples.R.color.Red_R500)
+                    }
+                    else -> {
+                        text = getString(R.string.smvc_status_ended_label)
+                        setTextColorCompat(com.tokopedia.unifyprinciples.R.color.Unify_NN600)
                     }
                 }
             }
@@ -215,10 +212,12 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                     timer.invisible()
                     tpgPeriodStop.apply {
                         visible()
-                        text = getString(
-                            R.string.smvc_placeholder_stopped_date,
-                            stoppedDate.formatTo(DateConstant.DATE_YEAR_PRECISION)
-                        )
+                        if (stoppedDate != null) {
+                            text = getString(
+                                R.string.smvc_placeholder_stopped_date,
+                                stoppedDate.formatTo(DateConstant.DATE_YEAR_PRECISION)
+                            )
+                        }
                     }
                 }
             }
@@ -406,6 +405,27 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                 tpgSeeProduct.setOnClickListener {
                     //TODO:go to product page
                 }
+            }
+        }
+    }
+
+    private fun setupSpendingEstimationSection(data: VoucherDetailData) {
+        val spendingEstimation = viewModel.getSpendingEstimation(data)
+        val title = when (data.voucherStatus) {
+            VoucherStatusConstant.ONGOING -> getString(R.string.smvc_spending_estimation_title_2)
+            VoucherStatusConstant.ENDED -> getString(R.string.smvc_spending_estimation_title_3)
+            else -> getString(R.string.smvc_spending_estimation_title_1)
+        }
+        val description = when {
+            data.isVps == TRUE -> getString(R.string.smvc_spending_estimation_description_2)
+            data.isSubsidy == TRUE -> getString(R.string.smvc_spending_estimation_description_3)
+            else -> getString(R.string.smvc_spending_estimation_description_1)
+        }
+        binding?.run {
+            labelSpendingEstimation.apply {
+                titleText = title
+                descriptionText = description
+                spendingEstimationText = spendingEstimation
             }
         }
     }
