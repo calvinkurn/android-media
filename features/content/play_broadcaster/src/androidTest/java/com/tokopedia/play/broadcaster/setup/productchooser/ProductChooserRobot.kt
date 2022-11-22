@@ -63,7 +63,8 @@ class ProductChooserRobot(
                                 userSession = analyticUserSession,
                             ),
                             CoroutineDispatchersProvider,
-                        )
+                        ),
+                        mockk(relaxed = true),
                     )
                 }
             }
