@@ -589,6 +589,8 @@ class TmProgramFragment : BaseDaggerFragment(), ChipGroupCallback,
                             }"
                         )
                     } else if (number <= programThreshold?.maxThresholdLevel1 ?: 0 && number > 0) {
+                        val tickerText = "Undangan TokoMember diberikan ke pembeli yang belanja senilai nominal transaksi minimum."
+                        tickerInfo.setTextDescription(tickerText)
                         tickerInfo.show()
                         if (textFieldTranskVip.editText.text.toString()
                                 .isNotEmpty() && number >= CurrencyFormatHelper.convertRupiahToInt(
