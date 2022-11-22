@@ -22,7 +22,8 @@ interface ProductBundleAdapterListener {
 
     fun onMultipleBundleMoreProductClicked(
         selectedMultipleBundle: BundleDetailUiModel,
-        bundleProductGrouped: List<BundleProductUiModel>
+        bundleProductGrouped: List<BundleProductUiModel>,
+        bundleProductAll: List<BundleProductUiModel>
     )
 
     fun onSingleBundleActionButtonClicked(

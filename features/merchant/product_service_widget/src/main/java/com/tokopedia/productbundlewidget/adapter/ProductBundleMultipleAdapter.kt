@@ -76,7 +76,8 @@ class ProductBundleMultipleAdapter(
     private fun onMoreProductClick() {
         listener?.onMultipleBundleMoreProductClicked(
             bundleDetail,
-            bundleProductGrouped
+            bundleProductGrouped,
+            bundleProducts
         )
     }
 
