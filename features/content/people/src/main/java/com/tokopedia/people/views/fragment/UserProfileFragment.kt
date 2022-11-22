@@ -364,8 +364,8 @@ class UserProfileFragment @Inject constructor(
                         }
                     }
                     is UserProfileUiEvent.ErrorFollowUnfollow -> {
-                        val message = if (event.message.isNotEmpty()) event.message else getDefaultErrorMessage()
-                        view?.showErrorToast(message)
+                        val message = if (event.throwable.message.isNullOrEmpty()) getDefaultErrorMessage() else event.throwable.message
+                        message?.let { view?.showErrorToast(it) }
                     }
                     is UserProfileUiEvent.ErrorUpdateReminder -> {
                         val message = when (event.throwable) {

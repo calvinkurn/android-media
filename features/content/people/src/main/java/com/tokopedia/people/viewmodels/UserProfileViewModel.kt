@@ -118,22 +118,21 @@ class UserProfileViewModel @AssistedInject constructor(
 
     fun submitAction(action: UserProfileAction) {
         when (action) {
-            is UserProfileAction.LoadProfile -> handleLoadProfile(action.isRefresh)
-            is UserProfileAction.LoadFeedPosts -> handleLoadFeedPosts(action.cursor)
-            is UserProfileAction.LoadPlayVideo -> handleLoadPlayVideo(action.cursor)
             is UserProfileAction.ClickFollowButton -> handleClickFollowButton(action.isFromLogin)
+            is UserProfileAction.ClickFollowButtonShopRecom -> handleClickFollowButtonShopRecom(
+                action.itemID,
+            )
             is UserProfileAction.ClickUpdateReminder -> handleClickUpdateReminder(action.isFromLogin)
+            is UserProfileAction.LoadFeedPosts -> handleLoadFeedPosts(action.cursor)
+            is UserProfileAction.LoadNextPageShopRecom -> handleLoadNextPageShopRecom(action.nextCurSor)
+            is UserProfileAction.LoadPlayVideo -> handleLoadPlayVideo(action.cursor)
+            is UserProfileAction.LoadProfile -> handleLoadProfile(action.isRefresh)
+            is UserProfileAction.RemoveShopRecomItem -> handleRemoveShopRecomItem(action.itemID)
             is UserProfileAction.SaveReminderActivityResult -> handleSaveReminderActivityResult(
                 action.channelId,
                 action.position,
                 action.isActive,
             )
-            is UserProfileAction.RemoveReminderActivityResult -> handleRemoveReminderActivityResult()
-            is UserProfileAction.ClickFollowButtonShopRecom -> handleClickFollowButtonShopRecom(
-                action.itemID,
-            )
-            is UserProfileAction.RemoveShopRecomItem -> handleRemoveShopRecomItem(action.itemID)
-            is UserProfileAction.LoadNextPageShopRecom -> handleLoadNextPageShopRecom(action.nextCurSor)
         }
     }
 
@@ -225,12 +224,12 @@ class UserProfileViewModel @AssistedInject constructor(
                         _profileInfo.update { repo.getProfile(followInfo.userID) }
                     }
                     is MutationUiModel.Error -> {
-                        _uiEvent.emit(UserProfileUiEvent.ErrorFollowUnfollow(result.message))
+                        _uiEvent.emit(UserProfileUiEvent.ErrorFollowUnfollow(Throwable(result.message)))
                     }
                 }
             },
         ) {
-            _uiEvent.emit(UserProfileUiEvent.ErrorFollowUnfollow(""))
+            _uiEvent.emit(UserProfileUiEvent.ErrorFollowUnfollow(it))
         }
     }
 
@@ -247,7 +246,7 @@ class UserProfileViewModel @AssistedInject constructor(
                     _uiEvent.emit(
                         when (result) {
                             is MutationUiModel.Success -> {
-                                submitAction(UserProfileAction.RemoveReminderActivityResult)
+                                handleRemoveReminderActivityResult()
                                 UserProfileUiEvent.SuccessUpdateReminder(
                                     result.message,
                                     data.position,
@@ -334,13 +333,13 @@ class UserProfileViewModel @AssistedInject constructor(
                     }
                     is MutationUiModel.Error -> {
                         updateLoadingStateFollowShopRecom(itemId, currentState)
-                        _uiEvent.emit(UserProfileUiEvent.ErrorFollowUnfollow(result.message))
+                        _uiEvent.emit(UserProfileUiEvent.ErrorFollowUnfollow(Throwable(result.message)))
                     }
                 }
             },
             onError = {
                 updateLoadingStateFollowShopRecom(itemId, currentState)
-                _uiEvent.emit(UserProfileUiEvent.ErrorFollowUnfollow(""))
+                _uiEvent.emit(UserProfileUiEvent.ErrorFollowUnfollow(it))
             },
         )
     }
@@ -418,7 +417,7 @@ class UserProfileViewModel @AssistedInject constructor(
 
             _shopRecom.update {
                 it.copy(
-                    isShown = result.isShown,
+                    isShown = true,
                     nextCursor = result.nextCursor,
                     title = result.title,
                     loadNextPage = result.loadNextPage,
