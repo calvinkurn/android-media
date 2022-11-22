@@ -12,7 +12,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import androidx.lifecycle.LifecycleObserver
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -22,8 +21,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
-import com.tokopedia.discovery.common.constants.SearchApiConst
-import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.DEFAULT_VALUE_OF_PARAMETER_DEVICE
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observe
@@ -42,16 +39,9 @@ import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.minicart.common.widget.MiniCartWidget
 import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
-import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.VariantPageSource
-import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
-import com.tokopedia.recommendation_widget_common.presenter.RecomWidgetViewModel
-import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant
-import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.PAGE_NUMBER_RECOM_WIDGET
-import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.RECOM_WIDGET
-import com.tokopedia.recommendation_widget_common.viewutil.initRecomWidgetViewModel
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.searchbar.helper.ViewHelper
@@ -64,8 +54,6 @@ import com.tokopedia.tokopedianow.categoryfilter.presentation.activity.TokoNowCa
 import com.tokopedia.tokopedianow.categoryfilter.presentation.activity.TokoNowCategoryFilterActivity.Companion.REQUEST_CODE_CATEGORY_FILTER_BOTTOM_SHEET
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.SCREEN_NAME_TOKONOW_OOC
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalytics
-import com.tokopedia.tokopedianow.common.constant.ConstantValue
-import com.tokopedia.tokopedianow.common.constant.ConstantValue.PAGE_NAME_RECOMMENDATION_NO_RESULT_PARAM
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference.SetUserPreferenceData
 import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
@@ -85,7 +73,6 @@ import com.tokopedia.tokopedianow.common.viewholder.TokoNowChooseAddressWidgetVi
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateNoResultViewHolder.TokoNowEmptyStateNoResultListener
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateOocViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowProductRecommendationOocViewHolder.TokoNowRecommendationCarouselListener
-import com.tokopedia.tokopedianow.common.viewholder.TokoNowProductRecommendationOocViewHolder.TokonowRecomBindPageNameListener
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowServerErrorViewHolder.ServerErrorListener
 import com.tokopedia.tokopedianow.common.viewmodel.TokoNowProductRecommendationViewModel
 import com.tokopedia.tokopedianow.databinding.FragmentTokopedianowRepurchaseBinding
@@ -99,6 +86,7 @@ import com.tokopedia.tokopedianow.repurchase.presentation.adapter.RepurchaseAdap
 import com.tokopedia.tokopedianow.repurchase.presentation.adapter.RepurchaseAdapterTypeFactory
 import com.tokopedia.tokopedianow.repurchase.presentation.adapter.differ.RepurchaseListDiffer
 import com.tokopedia.tokopedianow.repurchase.presentation.listener.ProductRecommendationCallback
+import com.tokopedia.tokopedianow.repurchase.presentation.listener.ProductRecommendationOocCallback
 import com.tokopedia.tokopedianow.repurchase.presentation.listener.RepurchaseProductCardListener
 import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseLayoutUiModel
 import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseProductUiModel
@@ -128,8 +116,7 @@ class TokoNowRepurchaseFragment:
     TokoNowRecommendationCarouselListener,
     RepurchaseEmptyStateNoHistoryListener,
     SortFilterListener,
-    ServerErrorListener,
-    TokonowRecomBindPageNameListener
+    ServerErrorListener
 {
 
     companion object {
@@ -174,7 +161,7 @@ class TokoNowRepurchaseFragment:
                 emptyStateNoHistorylistener = this,
                 sortFilterListener = this,
                 serverErrorListener = this,
-                tokonowRecomBindPageNameListener = this,
+                tokonowRecomBindPageNameListener = createProductRecommendationOocListener(),
                 productRecommendationListener = createProductRecommendationListener()
             ),
             RepurchaseListDiffer()
@@ -338,28 +325,6 @@ class TokoNowRepurchaseFragment:
         itemPosition: Int,
         adapterPosition: Int
     ) { /* nothing to do */ }
-
-    override fun onMiniCartUpdatedFromRecomWidget(miniCartSimplifiedData: MiniCartSimplifiedData) { /* nothing to do */ }
-
-    override fun onRecomTokonowAtcSuccess(message: String) { /* nothing to do */ }
-
-    override fun onRecomTokonowAtcFailed(throwable: Throwable) { /* nothing to do */ }
-
-    override fun onRecomTokonowAtcNeedToSendTracker(
-        recommendationItem: RecommendationItem
-    ) { /* nothing to do */ }
-
-    override fun onRecomTokonowDeleteNeedToSendTracker(
-        recommendationItem: RecommendationItem
-    ) { /* nothing to do */ }
-
-    override fun onClickItemNonLoginState() {
-        RouteManager.route(context, ApplinkConst.LOGIN)
-    }
-
-    override fun setViewToLifecycleOwner(observer: LifecycleObserver) {
-        viewLifecycleOwner.lifecycle.addObserver(observer)
-    }
 
     override fun onClickSortFilter() {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalTokopediaNow.SORT_FILTER)
@@ -1018,6 +983,13 @@ class TokoNowRepurchaseFragment:
                 viewModel.switchService()
             }
         }
+    }
+
+    private fun createProductRecommendationOocListener(): ProductRecommendationOocCallback {
+        return ProductRecommendationOocCallback(
+            activity = activity,
+            lifecycle = viewLifecycleOwner.lifecycle
+        )
     }
 
     private fun createProductRecommendationListener(): ProductRecommendationCallback {

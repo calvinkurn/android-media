@@ -31,7 +31,10 @@ class ProductRecommendationCallback(
         activity?.startActivityForResult(intent, RequestCode.REQUEST_CODE_LOGIN)
     }
 
-    override fun productCardAddVariantClicked(productId: String, shopId: String) {
+    override fun productCardAddVariantClicked(
+        productId: String,
+        shopId: String
+    ) {
         activity?.apply {
             AtcVariantHelper.goToAtcVariant(
                 context = this,
@@ -54,19 +57,23 @@ class ProductRecommendationCallback(
         RouteManager.route(activity, product.appLink)
     }
 
+    override fun seeMoreClicked(
+        seeMoreUiModel: TokoNowSeeMoreCardCarouselUiModel
+    ) {
+        RouteManager.route(activity, seeMoreUiModel.appLink)
+    }
+
+    override fun seeAllClicked(
+        appLink: String
+    ) {
+        RouteManager.route(activity, appLink)
+    }
+
     override fun productCardImpressed(
         position: Int,
         product: TokoNowProductCardCarouselItemUiModel,
         isLogin: Boolean,
         userId: String
     ) { /* nothing to do */ }
-
-    override fun seeMoreClicked(seeMoreUiModel: TokoNowSeeMoreCardCarouselUiModel) {
-        RouteManager.route(activity, seeMoreUiModel.appLink)
-    }
-
-    override fun seeAllClicked(appLink: String) {
-        RouteManager.route(activity, appLink)
-    }
 
 }
