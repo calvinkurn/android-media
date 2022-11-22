@@ -73,8 +73,7 @@ class DynamicLegoBannerViewHolder(itemView: View,
         ChannelWidgetUtil.validateHomeComponentDivider(
             channelModel = element.channelModel,
             dividerTop = itemView.findViewById<DividerUnify>(R.id.home_component_divider_header),
-            dividerBottom = itemView.findViewById<DividerUnify>(R.id.home_component_divider_footer),
-            useBottomPadding = true
+            dividerBottom = itemView.findViewById<DividerUnify>(R.id.home_component_divider_footer)
         )
     }
 
