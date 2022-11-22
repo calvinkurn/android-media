@@ -7,6 +7,7 @@ import com.tokopedia.mvc.di.scope.MerchantVoucherCreationScope
 import com.tokopedia.mvc.presentation.list.fragment.MvcListFragment
 import com.tokopedia.mvc.presentation.product.add.AddProductActivity
 import com.tokopedia.mvc.presentation.product.add.AddProductFragment
+import com.tokopedia.mvc.presentation.product.variant.SelectVariantBottomSheet
 import dagger.Component
 
 @MerchantVoucherCreationScope
@@ -18,4 +19,5 @@ interface MerchantVoucherCreationComponent {
     fun inject(activity: AddProductActivity)
     fun inject(fragment: AddProductFragment)
     fun inject(fragment: MvcListFragment)
+    fun inject(fragment: SelectVariantBottomSheet)
 }
