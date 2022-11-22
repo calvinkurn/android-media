@@ -51,8 +51,8 @@ class KebabMenuSheetViewComponent(
 
     private val chromecastAction = PlayMoreActionUiModel(
         type = PlayMoreActionType.Chromecast,
-        icon = MethodChecker.getDrawable(ctx, R.drawable.ic_chromecast),
-        isIconAvailable = true,
+        icon = null,
+        isIconAvailable = false,
         subtitleRes = R.string.play_kebab_chromecast,
         onClick = { listener.onChromecastClicked(this@KebabMenuSheetViewComponent) }
     )

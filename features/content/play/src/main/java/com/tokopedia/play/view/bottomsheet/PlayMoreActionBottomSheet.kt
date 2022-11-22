@@ -297,7 +297,7 @@ class PlayMoreActionBottomSheet @Inject constructor(
     }
 
     override fun onChromecastClicked(view: KebabMenuSheetViewComponent) {
-        //TODO("Not yet implemented")
+        analytic.clickCast()
     }
 
     override fun onWatchModeClick(view: KebabMenuSheetViewComponent) {
