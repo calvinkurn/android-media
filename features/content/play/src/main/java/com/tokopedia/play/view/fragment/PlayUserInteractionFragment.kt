@@ -1460,7 +1460,7 @@ class PlayUserInteractionFragment @Inject constructor(
             }
             PlayStatusType.Archived -> {
                 endLiveInfoView.setInfo(title = getString(R.string.play_archived_title))
-                endLiveInfoView.showToaster(text = getString(R.string.play_archived_title))
+                endLiveInfoView.showToaster(text = getString(R.string.play_archived_description))
                 endLiveInfoView.show()
             }
             else -> endLiveInfoView.hide()

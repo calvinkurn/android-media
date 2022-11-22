@@ -118,5 +118,7 @@
     <string name="play_product_pinned_atc">+</string>
     <string name="play_product_pinned_info_separator">\u00b7</string>
     <string name="play_voucher_header">Kupon bisa dipilih di halaman Keranjang jika ada produk dari toko</string>
+
     <string name="play_archived_title">Video telah dihapus</string>
+    <string name="play_archived_description">Video ini telah dihapus.</string>
 </resources>
