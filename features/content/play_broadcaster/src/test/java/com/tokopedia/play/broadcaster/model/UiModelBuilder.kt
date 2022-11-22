@@ -196,7 +196,7 @@ class UiModelBuilder {
                     iconUrl = "icon.url.shop",
                     badge = "icon.badge",
                     hasUsername = usernameShop,
-                    hasAcceptTnc = tncShop
+                    enable = tncShop
                 )
             )
             onlyBuyer -> listOf(
@@ -207,7 +207,7 @@ class UiModelBuilder {
                     iconUrl = "icon.url.buyer",
                     badge = "icon.badge",
                     hasUsername = usernameBuyer,
-                    hasAcceptTnc = tncBuyer
+                    enable = tncBuyer
                 )
             )
             else -> listOf(
@@ -218,7 +218,7 @@ class UiModelBuilder {
                     iconUrl = "icon.url.shop",
                     badge = "icon.badge",
                     hasUsername = usernameShop,
-                    hasAcceptTnc = tncShop
+                    enable = tncShop
                 ),
                 ContentAccountUiModel(
                     id = idBuyer,
@@ -227,7 +227,7 @@ class UiModelBuilder {
                     iconUrl = "icon.url.buyer",
                     badge = "icon.badge",
                     hasUsername = usernameBuyer,
-                    hasAcceptTnc = tncBuyer
+                    enable = tncBuyer
                 ),
             )
         }

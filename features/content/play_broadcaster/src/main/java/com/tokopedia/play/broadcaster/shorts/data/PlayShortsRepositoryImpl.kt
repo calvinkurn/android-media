@@ -37,7 +37,7 @@ class PlayShortsRepositoryImpl @Inject constructor(
                 badge = "",
                 type = "content-shop",
                 hasUsername = true,
-                hasAcceptTnc = false,
+                enable = false,
             ),
             ContentAccountUiModel(
                 id = "456",
@@ -46,7 +46,7 @@ class PlayShortsRepositoryImpl @Inject constructor(
                 badge = "",
                 type = "content-user",
                 hasUsername = true,
-                hasAcceptTnc = true,
+                enable = true,
             )
         )
 

@@ -87,6 +87,6 @@ class PlayShortsAccountManagerImpl @Inject constructor(
     }
 
     private fun isAccountEligible(account: ContentAccountUiModel): Boolean {
-        return !account.isUnknown && (account.isUser || (account.isShop && account.hasAcceptTnc))
+        return !account.isUnknown && (account.isUser || (account.isShop && account.enable))
     }
 }
