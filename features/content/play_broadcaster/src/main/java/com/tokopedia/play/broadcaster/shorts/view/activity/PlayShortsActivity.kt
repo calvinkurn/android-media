@@ -76,7 +76,7 @@ class PlayShortsActivity : BaseActivity() {
                 fragment.setListener(object : UGCOnboardingParentFragment.Listener {
                     override fun onSuccess() {
                         /** TODO: handle tracker */
-                        if(getCurrentFragment() == null)
+                        if(isFragmentContainerEmpty())
                             viewModel.submitAction(PlayShortsAction.PreparePage(getPreferredAccountType()))
                         else
                             viewModel.submitAction(PlayShortsAction.SwitchAccount)
@@ -100,7 +100,7 @@ class PlayShortsActivity : BaseActivity() {
 
                     override fun clickCloseIcon() {
                         /** TODO: handle tracker */
-                        if (getCurrentFragment() == null) finish()
+                        if (isFragmentContainerEmpty()) finish()
                     }
                 })
             }
@@ -117,14 +117,14 @@ class PlayShortsActivity : BaseActivity() {
 
                 fragment.setListener(object : SellerTncBottomSheet.Listener {
                     override fun clickCloseIcon() {
-                        if(getCurrentFragment() == null) finish()
+                        if(isFragmentContainerEmpty()) finish()
                     }
                 })
             }
             is ShortsAccountNotEligibleBottomSheet -> {
                 fragment.setListener(object : ShortsAccountNotEligibleBottomSheet.Listener {
                     override fun onClose() {
-                        if(getCurrentFragment() == null) finish()
+                        if(isFragmentContainerEmpty()) finish()
                     }
                 })
             }
@@ -202,12 +202,18 @@ class PlayShortsActivity : BaseActivity() {
         when (bottomSheet) {
             is PlayShortsBottomSheet.UGCOnboarding -> {
                 showUGCOnboardingBottomSheet(bottomSheet.hasUsername)
+
+                if(isFragmentContainerEmpty()) showNoEligibleAccountBackground()
             }
             is PlayShortsBottomSheet.AccountNotEligible -> {
                 showNoEligibleAccountBottomSheet()
+
+                if(isFragmentContainerEmpty()) showNoEligibleAccountBackground()
             }
             is PlayShortsBottomSheet.SellerNotEligible -> {
                 showSellerNotEligibleBottomSheet()
+
+                if(isFragmentContainerEmpty()) showNoEligibleAccountBackground()
             }
             else -> {}
         }
@@ -277,6 +283,10 @@ class PlayShortsActivity : BaseActivity() {
             .show(supportFragmentManager)
     }
 
+    private fun showNoEligibleAccountBackground() {
+        binding.clNoEligibleAccount.visibility = View.VISIBLE
+    }
+
     private fun getPreferredAccountType(): String {
         return intent.getStringExtra(ContentCommonUserType.KEY_AUTHOR_TYPE).orEmpty()
     }
@@ -302,6 +312,8 @@ class PlayShortsActivity : BaseActivity() {
     }
 
     private fun getCurrentFragment() = supportFragmentManager.findFragmentById(R.id.container)
+
+    private fun isFragmentContainerEmpty() = getCurrentFragment() == null
 
     companion object {
         private const val MEDIA_PICKER_REQ = 123
