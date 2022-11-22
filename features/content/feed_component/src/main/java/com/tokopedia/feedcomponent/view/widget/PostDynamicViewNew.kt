@@ -278,6 +278,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                         mData.author.id,
                         mData.typename,
                         mData.followers.isFollowed,
+                        mData.hasVoucher,
                         positionInFeed,
                         mData,
                     )
@@ -287,6 +288,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                         mData.shopId,
                         TYPE_TOPADS_HEADLINE_NEW,
                         mData.followers.isFollowed,
+                        mData.hasVoucher,
                         positionInFeed,
                         mData,
                     )
