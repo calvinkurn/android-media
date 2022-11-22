@@ -8,10 +8,9 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.databinding.FragmentPlayShortsSummaryBinding
 import com.tokopedia.play.broadcaster.shorts.ui.model.action.PlayShortsAction
-import com.tokopedia.play.broadcaster.shorts.ui.model.event.PlayShortsToaster
+import com.tokopedia.play.broadcaster.shorts.ui.model.event.PlayShortsUiEvent
 import com.tokopedia.play.broadcaster.shorts.ui.model.state.PlayShortsUiState
 import com.tokopedia.play.broadcaster.shorts.ui.model.state.PlayShortsUploadUiState
 import com.tokopedia.play.broadcaster.shorts.view.fragment.base.PlayShortsBaseFragment
@@ -114,7 +113,15 @@ class PlayShortsSummaryFragment @Inject constructor(
 
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.uiEvent.collect { event ->
-                renderToaster(event.toaster)
+                when(event) {
+                    is PlayShortsUiEvent.ErrorUploadMedia -> {
+                        toaster.showError(
+                            event.throwable,
+                            duration = Toaster.LENGTH_SHORT
+                        )
+                    }
+                    else -> {}
+                }
             }
         }
     }
@@ -195,18 +202,6 @@ class PlayShortsSummaryFragment @Inject constructor(
                 binding.btnUploadVideo.isLoading = false
                 binding.btnUploadVideo.isEnabled = isButtonEnabled
             }
-        }
-    }
-
-    private fun renderToaster(toasterData: PlayShortsToaster) {
-        when(toasterData) {
-            is PlayShortsToaster.ErrorUploadMedia -> {
-                toaster.showError(
-                    toasterData.throwable,
-                    duration = Toaster.LENGTH_SHORT
-                )
-            }
-            else -> {}
         }
     }
 

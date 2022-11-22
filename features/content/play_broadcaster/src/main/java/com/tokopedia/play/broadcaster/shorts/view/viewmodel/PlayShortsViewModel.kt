@@ -4,8 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
+import com.tokopedia.play_common.util.extension.combine
 import com.google.android.exoplayer2.ExoPlayer
-import com.tokopedia.content.common.producttag.util.extension.combine
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.content.common.ui.model.TermsAndConditionUiModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -321,7 +321,9 @@ class PlayShortsViewModel @Inject constructor(
     }
 
     private fun handleClickNext() {
-        _uiEvent.oneTimeUpdate { it.copy(oneTimeEvent = PlayShortsOneTimeEvent.GoToSummary) }
+        viewModelScope.launch {
+            _uiEvent.emit(PlayShortsUiEvent.GoToSummary)
+        }
     }
 
     private fun handleLoadTag() {
@@ -370,11 +372,7 @@ class PlayShortsViewModel @Inject constructor(
             _uploadState.update { PlayShortsUploadUiState.Success }
         }) { throwable ->
             _uploadState.update { PlayShortsUploadUiState.Error(throwable) }
-            _uiEvent.oneTimeUpdate {
-                it.copy(
-                    toaster = PlayShortsToaster.ErrorUploadMedia(throwable)
-                )
-            }
+            _uiEvent.emit(PlayShortsUiEvent.ErrorUploadMedia(throwable))
         }
     }
 
