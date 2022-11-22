@@ -1653,7 +1653,6 @@ open class ShopPageHomeFragment : BaseListFragment<Visitable<*>, AdapterTypeFact
             bundlePosition = bundlePosition,
             clickedProduct = selectedProduct
         )
-        goToPDP(selectedProduct.productAppLink)
     }
 
     override fun onTrackSingleVariantChange(selectedProduct: ShopHomeBundleProductUiModel, selectedSingleBundle: ShopHomeProductBundleDetailUiModel, bundleName: String) {
@@ -1714,7 +1713,6 @@ open class ShopPageHomeFragment : BaseListFragment<Visitable<*>, AdapterTypeFact
             clickedProduct = selectedProduct,
             selectedPackage = selectedSingleBundle.minOrderWording
         )
-        goToPDP(selectedProduct.productAppLink)
     }
 
     override fun addMultipleBundleToCart(
