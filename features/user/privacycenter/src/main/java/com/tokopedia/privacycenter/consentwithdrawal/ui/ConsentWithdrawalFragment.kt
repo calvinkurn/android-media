@@ -27,7 +27,7 @@ import com.tokopedia.privacycenter.consentwithdrawal.ui.adapter.ConsentWithdrawa
 import com.tokopedia.privacycenter.consentwithdrawal.ui.adapter.uimodel.PurposeUiModel
 import com.tokopedia.privacycenter.consentwithdrawal.ui.adapter.uimodel.TitleDividerUiModel
 import com.tokopedia.privacycenter.consentwithdrawal.viewmodel.ConsentWithdrawalViewModel
-import com.tokopedia.privacycenter.databinding.FragmentConsentWithdrawalBinding
+import com.tokopedia.privacycenter.databinding.FragmentConsentWithdrawalPrivacyCenterBinding
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
@@ -42,7 +42,7 @@ class ConsentWithdrawalFragment : BaseDaggerFragment(), ConsentWithdrawalListene
         )
     }
 
-    private var viewBinding by autoClearedNullable<FragmentConsentWithdrawalBinding>()
+    private var viewBinding by autoClearedNullable<FragmentConsentWithdrawalPrivacyCenterBinding>()
     private val consentWithdrawalAdapter by lazy(LazyThreadSafetyMode.NONE) {
         ConsentWithdrawalAdapter(this)
     }
@@ -60,7 +60,7 @@ class ConsentWithdrawalFragment : BaseDaggerFragment(), ConsentWithdrawalListene
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        viewBinding = FragmentConsentWithdrawalBinding.inflate(inflater, container, false)
+        viewBinding = FragmentConsentWithdrawalPrivacyCenterBinding.inflate(inflater, container, false)
         return viewBinding?.root
     }
 
