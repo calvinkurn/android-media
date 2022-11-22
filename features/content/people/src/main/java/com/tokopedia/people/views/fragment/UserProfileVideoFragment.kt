@@ -125,7 +125,7 @@ class UserProfileVideoFragment @Inject constructor(
         observeUiEvent()
 
         addListObserver()
-        adduserPostErrorObserver()
+        addUserPostErrorObserver()
     }
 
     private fun initListener() {
@@ -181,7 +181,7 @@ class UserProfileVideoFragment @Inject constructor(
         }
     }
 
-    private fun adduserPostErrorObserver() {
+    private fun addUserPostErrorObserver() {
         viewModel.userPostErrorLiveData.observe(viewLifecycleOwner) {
             with(binding) {
                 userVideoContainer.displayedChild = PAGE_ERROR

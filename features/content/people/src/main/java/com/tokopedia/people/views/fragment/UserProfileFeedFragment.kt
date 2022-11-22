@@ -101,7 +101,7 @@ class UserProfileFeedFragment @Inject constructor(
         observeUiEvent()
 
         addListObserver()
-        adduserPostErrorObserver()
+        addUserPostErrorObserver()
     }
 
     private fun observeUiEvent() {
@@ -137,7 +137,7 @@ class UserProfileFeedFragment @Inject constructor(
         }
     }
 
-    private fun adduserPostErrorObserver() {
+    private fun addUserPostErrorObserver() {
         viewModel.feedsPostsErrorLiveData.observe(viewLifecycleOwner) {
             with(binding) {
                 userFeedContainer.displayedChild = PAGE_ERROR
