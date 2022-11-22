@@ -199,7 +199,7 @@
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/top_ads_product_subtitle_first"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="15dp"
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:visibility="visible"
@@ -208,7 +208,7 @@
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/top_ads_product_subtitle_second"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="15dp"
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:visibility="visible"
