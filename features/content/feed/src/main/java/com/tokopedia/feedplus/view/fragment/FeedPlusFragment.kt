@@ -2960,9 +2960,9 @@ class FeedPlusFragment : BaseDaggerFragment(),
             val item = (newList[rowNumber] as DynamicPostUiModel)
             val campaign = item.feedXCard.campaign
             if (campaign.campaignId == data.campaignId)
-            campaign.reminder = data.reminderStatus
+                campaign.reminder = data.reminderStatus
             if (shouldShowToaster)
-            showToastOnSuccessReminderSetForFSTorRS(item.feedXCard)
+                showToastOnSuccessReminderSetForFSTorRS(item.feedXCard)
 
             adapter.notifyItemChanged(
                 data.rowNumber,
@@ -3657,7 +3657,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         bundle.putBoolean("isLogin", userSession.isLoggedIn)
         val sheet = ProductActionBottomSheet.newInstance(bundle)
         if (!sheet.isAdded)
-        sheet.show(childFragmentManager, "")
+            sheet.show(childFragmentManager, "")
         sheet.shareProductCB = {
             val shareTrackerId = getTrackerIdForCampaignSaleTracker(
                 item.positionInFeed,

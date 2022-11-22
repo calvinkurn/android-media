@@ -53,7 +53,6 @@ import com.tokopedia.feedplus.view.presenter.FeedViewModel
 import com.tokopedia.feedplus.view.subscriber.FeedDetailViewState
 import com.tokopedia.feedplus.view.util.EndlessScrollRecycleListener
 import com.tokopedia.feedplus.view.viewmodel.feeddetail.FeedDetailProductModel
-import com.tokopedia.feedplus.view.viewmodel.feeddetail.FeedDetailProductModel
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -988,7 +987,7 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
     override fun onPause() {
         super.onPause()
         if (productList.isNotEmpty())
-        trackImpression(productList)
+            trackImpression(productList)
     }
 
     override fun onError(linkerError: LinkerError?) {}
