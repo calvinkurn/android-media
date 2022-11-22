@@ -90,6 +90,7 @@ import com.tokopedia.wishlist.databinding.FragmentWishlistCollectionDetailBindin
 import com.tokopedia.wishlist.util.WishlistV2Analytics
 import com.tokopedia.wishlist.util.WishlistV2Consts.EXTRA_TOASTER_WISHLIST_COLLECTION_DETAIL
 import com.tokopedia.wishlist.util.WishlistV2Consts.MENU_ADD_ITEM_TO_COLLECTION
+import com.tokopedia.wishlist.util.WishlistV2Consts.MENU_ADD_WISHLIST
 import com.tokopedia.wishlist.util.WishlistV2Consts.MENU_DELETE_WISHLIST
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_GRID
 import com.tokopedia.wishlist.util.WishlistV2Consts.TYPE_GRID_INT
@@ -910,9 +911,8 @@ class WishlistCollectionDetailFragment :
                             }
 
                             ERROR_MAX_BULK_VALIDATION_FAILURE -> {
-                                showToaster(
+                                showToasterActionOke(
                                     message = result.data.message,
-                                    actionText = result.data.button.text,
                                     type = toasterType
                                 )
                             }
@@ -1957,6 +1957,20 @@ class WishlistCollectionDetailFragment :
                                     ApplinkConstInternalPurchasePlatform.REQUEST_CODE_ADD_WISHLIST_COLLECTION
                                 )
                             }
+                            MENU_ADD_WISHLIST -> {
+                                val applinkCollection =
+                                    "${ApplinkConstInternalPurchasePlatform.WISHLIST_COLLECTION_BOTTOMSHEET}?${ApplinkConstInternalPurchasePlatform.PATH_PRODUCT_ID}=${wishlistItem.id}&${ApplinkConstInternalPurchasePlatform.PATH_SRC}=$SRC_WISHLIST"
+                                val intentBottomSheetWishlistCollection =
+                                    RouteManager.getIntent(context, applinkCollection)
+                                intentBottomSheetWishlistCollection.putExtra(
+                                    IS_PRODUCT_ACTIVE,
+                                    wishlistItem.available
+                                )
+                                startActivityForResult(
+                                    intentBottomSheetWishlistCollection,
+                                    ApplinkConstInternalPurchasePlatform.REQUEST_CODE_ADD_WISHLIST_COLLECTION
+                                )
+                            }
                         }
                     }
                     WishlistCollectionAnalytics.sendClickOptionOnThreeDotMenuEvent(additionalItem.text)
@@ -2185,7 +2199,8 @@ class WishlistCollectionDetailFragment :
 
                 LinkerManager.getInstance().executeShareRequest(
                     LinkerUtils.createShareRequest(
-                        0, linkerShareResult,
+                        0,
+                        linkerShareResult,
                         object : ShareCallback {
                             override fun urlCreated(linkerShareResult: LinkerShareResult?) {
                                 val shareString = getString(
