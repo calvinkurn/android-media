@@ -17,6 +17,7 @@ import com.tokopedia.content.common.ui.bottomsheet.SellerTncBottomSheet
 import com.tokopedia.content.common.ui.model.TermsAndConditionUiModel
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.picker.common.MediaPicker
 import com.tokopedia.picker.common.PageSource
 import com.tokopedia.picker.common.types.ModeType
@@ -163,6 +164,7 @@ class PlayShortsActivity : BaseActivity() {
         lifecycleScope.launchWhenStarted {
             viewModel.uiState.withCache().collectLatest {
                 renderPage(it.prevValue, it.value)
+                renderGlobalLoader(it.prevValue, it.value)
             }
         }
 
@@ -178,10 +180,6 @@ class PlayShortsActivity : BaseActivity() {
         prev: PlayShortsUiState?,
         curr: PlayShortsUiState
     ) {
-        /**
-         * Need to put validation here so render page only run once
-         */
-
         if (prev?.config?.shortsId?.isEmpty() == true && curr.config.shortsId.isNotEmpty() && curr.media.mediaUri.isEmpty()) {
             binding.loader.visibility = View.GONE
             openMediaPicker()
@@ -189,9 +187,15 @@ class PlayShortsActivity : BaseActivity() {
             binding.loader.visibility = View.GONE
             openPreparation()
         }
-        else if(curr.config.shortsId.isEmpty()) {
-            binding.loader.visibility = View.VISIBLE
-        }
+    }
+
+    private fun renderGlobalLoader(
+        prev: PlayShortsUiState?,
+        curr: PlayShortsUiState
+    ) {
+        if(prev?.globalLoader == curr.globalLoader) return
+
+        binding.loader.showWithCondition(curr.globalLoader)
     }
 
     private fun renderBottomSheet(bottomSheet: PlayShortsBottomSheet) {

@@ -25,12 +25,16 @@ import com.tokopedia.play.broadcaster.shorts.view.custom.DynamicPreparationMenu
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
+import kotlinx.coroutines.CancellationException
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.coroutines.CoroutineContext
 
 /**
  * Created By : Jonathan Darwin on November 08, 2022
@@ -82,6 +86,7 @@ class PlayShortsViewModel @Inject constructor(
     val tncList: List<TermsAndConditionUiModel>
         get() = _config.value.tncList
 
+    private val _globalLoader = MutableStateFlow(false)
     private val _config = MutableStateFlow(PlayShortsConfigUiModel.Empty)
     private val _media = MutableStateFlow(PlayShortsMediaUiModel.create(exoPlayer))
     private val _accountList = MutableStateFlow<List<ContentAccountUiModel>>(emptyList())
@@ -120,6 +125,7 @@ class PlayShortsViewModel @Inject constructor(
     }
 
     val uiState: Flow<PlayShortsUiState> = combine(
+        _globalLoader,
         _config,
         _media,
         _accountList,
@@ -127,8 +133,9 @@ class PlayShortsViewModel @Inject constructor(
         _menuListUiState,
         _titleForm,
         _coverForm
-    ) { config, media, accountList, selectedAccount, menuListUiState, titleForm, coverForm ->
+    ) { globalLoader, config, media, accountList, selectedAccount, menuListUiState, titleForm, coverForm ->
         PlayShortsUiState(
+            globalLoader,
             config = config,
             media = media,
             accountList = accountList,
@@ -179,14 +186,13 @@ class PlayShortsViewModel @Inject constructor(
     }
 
     private fun handlePreparePage(preferredAccountType: String) {
-        viewModelScope.launchCatchError(block = {
+        viewModelScope.launchCatchErrorWithLoader(block = {
             val accountList = repo.getAccountList().apply {
                 _accountList.update { this }
             }
             val bestEligibleAccount = accountManager.getBestEligibleAccount(accountList, preferredAccountType)
 
             setupConfigurationIfEligible(bestEligibleAccount)
-
         }) {
             _uiEvent.oneTimeUpdate {
                 it.copy(oneTimeEvent = PlayShortsOneTimeEvent.ErrorPreparingPage)
@@ -229,8 +235,7 @@ class PlayShortsViewModel @Inject constructor(
     }
 
     private fun handleSwitchAccount() {
-        viewModelScope.launchCatchError(block = {
-            /** TODO: Add loading state */
+        viewModelScope.launchCatchErrorWithLoader(block = {
             val newSelectedAccount = accountManager.switchAccount(_accountList.value, _selectedAccount.value.type)
 
             setupConfigurationIfEligible(newSelectedAccount)
@@ -376,5 +381,18 @@ class PlayShortsViewModel @Inject constructor(
         _uiEvent.oneTimeUpdate {
             it.copy(bottomSheet = PlayShortsBottomSheet.UGCOnboarding(hasUsername))
         }
+    }
+
+    private fun CoroutineScope.launchCatchErrorWithLoader(
+        context: CoroutineContext = coroutineContext,
+        block: suspend CoroutineScope.() -> Unit,
+        onError: suspend (Throwable) -> Unit
+    ) = launchCatchError(context, block = {
+        _globalLoader.update { true }
+        block()
+        _globalLoader.update { false }
+    }) {
+        _globalLoader.update { false }
+        onError(it)
     }
 }

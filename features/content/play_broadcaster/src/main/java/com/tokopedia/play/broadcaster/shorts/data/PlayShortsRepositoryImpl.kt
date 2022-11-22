@@ -37,7 +37,7 @@ class PlayShortsRepositoryImpl @Inject constructor(
                 badge = "",
                 type = "content-shop",
                 hasUsername = true,
-                hasAcceptTnc = true,
+                hasAcceptTnc = false,
             ),
             ContentAccountUiModel(
                 id = "456",
@@ -60,6 +60,8 @@ class PlayShortsRepositoryImpl @Inject constructor(
         authorId: String,
         authorType: String
     ): PlayShortsConfigUiModel = withContext(dispatchers.io) {
+        delay(500)
+
         PlayShortsConfigUiModel(
             shortsId = "123",
             shortsAllowed = true,

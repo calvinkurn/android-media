@@ -10,6 +10,7 @@ import com.tokopedia.play.broadcaster.view.state.CoverSetupState
  * Created By : Jonathan Darwin on November 08, 2022
  */
 data class PlayShortsUiState(
+    val globalLoader: Boolean,
     val config: PlayShortsConfigUiModel,
     val media: PlayShortsMediaUiModel,
     val accountList: List<ContentAccountUiModel>,
