@@ -164,7 +164,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 import javax.inject.Inject;
 
@@ -2433,53 +2432,53 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     @Override
     public void fetchEpharmacyData() {
         epharmacyUseCase.getEPharmacyPrepareProductsGroup(ePharmacyPrepareProductsGroupResponse -> {
-            ArrayList<GroupData.EpharmacyGroup> epharmacyGroups = new ArrayList<>();
-            ArrayList<GroupData.EpharmacyGroup.ProductsInfo> shopInfo = new ArrayList<>();
-            ArrayList<GroupData.EpharmacyGroup.ProductsInfo.Product> products = new ArrayList<>();
-            products.add(new GroupData.EpharmacyGroup.ProductsInfo.Product(
-                    true,
-                    null,
-                    null,
-                    2150458249L,
-                    null,
-                    null,
-                    null
-            ));
-            shopInfo.add(new GroupData.EpharmacyGroup.ProductsInfo(
-                    null,
-                    products,
-                    "6554231",
-                    null,
-                    null,
-                    null,
-                    null
-            ));
-            epharmacyGroups.add(new GroupData.EpharmacyGroup(
-                    new GroupData.EpharmacyGroup.ConsultationData(
-                            4,
-                            "",
-                            null,
-                            null,
-                            null,
-                            null, null,
-                            null, null
-                    ),
-                    null,
-                    "1",
-                    null,
-                    null,
-                    null,
-                    shopInfo
-            ));
-            EPharmacyPrepareProductsGroupResponse ePharmacyPrepareProductsGroupResponse1 = new EPharmacyPrepareProductsGroupResponse(
-                    new EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData(
-                            new GroupData(
-                                    "",
-                                    epharmacyGroups
-                            )
-                    )
-            );
-            processEpharmacyData(ePharmacyPrepareProductsGroupResponse1);
+//            ArrayList<GroupData.EpharmacyGroup> epharmacyGroups = new ArrayList<>();
+//            ArrayList<GroupData.EpharmacyGroup.ProductsInfo> shopInfo = new ArrayList<>();
+//            ArrayList<GroupData.EpharmacyGroup.ProductsInfo.Product> products = new ArrayList<>();
+//            products.add(new GroupData.EpharmacyGroup.ProductsInfo.Product(
+//                    true,
+//                    null,
+//                    null,
+//                    2150458249L,
+//                    null,
+//                    null,
+//                    null
+//            ));
+//            shopInfo.add(new GroupData.EpharmacyGroup.ProductsInfo(
+//                    null,
+//                    products,
+//                    "6554231",
+//                    null,
+//                    null,
+//                    null,
+//                    null
+//            ));
+//            epharmacyGroups.add(new GroupData.EpharmacyGroup(
+//                    new GroupData.EpharmacyGroup.ConsultationData(
+//                            4,
+//                            "",
+//                            null,
+//                            null,
+//                            null,
+//                            null, null,
+//                            null, null
+//                    ),
+//                    null,
+//                    "1",
+//                    null,
+//                    null,
+//                    null,
+//                    shopInfo
+//            ));
+//            EPharmacyPrepareProductsGroupResponse ePharmacyPrepareProductsGroupResponse1 = new EPharmacyPrepareProductsGroupResponse(
+//                    new EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData(
+//                            new GroupData(
+//                                    "",
+//                                    epharmacyGroups
+//                            )
+//                    )
+//            );
+            processEpharmacyData(ePharmacyPrepareProductsGroupResponse);
             return Unit.INSTANCE;
         }, throwable -> {
             Timber.d(throwable);
@@ -2613,6 +2612,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 if (!shipmentCartItemModel.isError() && shipmentCartItemModel.getHasEthicalProducts()) {
                     ethicalProductCount += 1;
                     boolean updated = false;
+                    boolean shouldResetCourier = false;
                     int position = getView().getShipmentCartItemModelAdapterPositionByUniqueId(shipmentCartItemModel.getCartString());
                     if (position > 0) {
                         for (EPharmacyMiniConsultationResult result : results) {
@@ -2634,27 +2634,32 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                             }
                                             if (product != null && product.getProductId() != null) {
                                                 for (CartItemModel cartItemModel : shipmentCartItemModel.getCartItemModels()) {
-                                                    if (product.getProductId() == cartItemModel.getProductId()) {
-                                                        if (result.getConsultationString() != null && !UtilsKt.isNullOrEmpty(result.getTokoConsultationId()) && !Objects.equals(result.getTokoConsultationId(), "0")) {
-                                                            if (result.getConsultationStatus() != null && result.getConsultationStatus() == 4) {
+                                                    if (!cartItemModel.isError() && product.getProductId() == cartItemModel.getProductId()) {
+                                                        if (result.getConsultationStatus() != null && result.getConsultationStatus() == 4) {
+                                                            shipmentCartItemModel.setTokoConsultationId("");
+                                                            shipmentCartItemModel.setPartnerConsultationId("");
+                                                            shipmentCartItemModel.setConsultationDataString("");
+                                                            hasInvalidPrescription = true;
+                                                            errorEthicalProductCount += 1;
+                                                            if (shipmentCartItemModel.getHasNonEthicalProducts()) {
+                                                                cartItemModel.setError(true);
+                                                                cartItemModel.setErrorMessage(uploadPrescriptionUiModel.getRejectedWording());
+                                                                shouldResetCourier = true;
+                                                            } else {
                                                                 shipmentCartItemModel.setError(true);
                                                                 shipmentCartItemModel.setErrorTitle(uploadPrescriptionUiModel.getRejectedWording());
-                                                                shipmentCartItemModel.setTokoConsultationId("");
-                                                                shipmentCartItemModel.setPartnerConsultationId("");
-                                                                shipmentCartItemModel.setConsultationDataString("");
+                                                                shipmentCartItemModel.setSpId(0);
                                                                 getView().resetCourier(shipmentCartItemModel);
-                                                                updated = true;
-                                                                hasInvalidPrescription = true;
-                                                                errorEthicalProductCount += 1;
-                                                                break;
-                                                            } else if (result.getConsultationStatus() != null && result.getConsultationStatus() == 2) {
-                                                                shipmentCartItemModel.setTokoConsultationId(result.getTokoConsultationId());
-                                                                shipmentCartItemModel.setPartnerConsultationId(result.getPartnerConsultationId());
-                                                                shipmentCartItemModel.setConsultationDataString(result.getConsultationString());
-                                                                mapPrescriptionCount.put(result.getEpharmacyGroupId(), result.getPrescription().size());
                                                                 updated = true;
                                                                 break;
                                                             }
+                                                        } else if (result.getConsultationStatus() != null && result.getConsultationStatus() == 2) {
+                                                            shipmentCartItemModel.setTokoConsultationId(result.getTokoConsultationId());
+                                                            shipmentCartItemModel.setPartnerConsultationId(result.getPartnerConsultationId());
+                                                            shipmentCartItemModel.setConsultationDataString(result.getConsultationString());
+                                                            mapPrescriptionCount.put(result.getEpharmacyGroupId(), result.getPrescription().size());
+                                                            updated = true;
+                                                            break;
                                                         } else if (result.getPrescriptionImages() != null && !result.getPrescriptionImages().isEmpty()) {
                                                             ArrayList<String> prescriptionIds = new ArrayList<>();
                                                             for (GroupData.EpharmacyGroup.PrescriptionImage prescriptionImage : result.getPrescriptionImages()) {
@@ -2675,15 +2680,19 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                 }
                             }
                         }
+                        if (shouldResetCourier) {
+                            shipmentCartItemModel.setSpId(0);
+                            getView().resetCourier(shipmentCartItemModel);
+                        }
                     }
                 } else if (!shipmentCartItemModel.isError()) {
                     hasNonEthicalProduct = true;
                 }
             }
 
-            if (!hasNonEthicalProduct && ethicalProductCount > 0 && ethicalProductCount == errorEthicalProductCount) {
-                getView().onNoValidCheckoutItem();
-            } else {
+//            if (!hasNonEthicalProduct && ethicalProductCount > 0 && ethicalProductCount == errorEthicalProductCount) {
+//                getView().onNoValidCheckoutItem();
+//            } else {
                 int totalPrescription = 0;
                 for (Integer value : mapPrescriptionCount.values()) {
                     totalPrescription += value;
@@ -2692,7 +2701,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 uploadPrescriptionUiModel.setUploadedImageCount(totalPrescription);
                 uploadPrescriptionUiModel.setHasInvalidPrescription(hasInvalidPrescription);
                 getView().updateUploadPrescription(uploadPrescriptionUiModel);
-            }
+//            }
         }
     }
 
