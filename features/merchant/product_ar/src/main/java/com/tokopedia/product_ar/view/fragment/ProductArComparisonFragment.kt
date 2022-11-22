@@ -37,7 +37,6 @@ import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import kotlinx.coroutines.flow.collectLatest
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class ProductArComparisonFragment : BaseDaggerFragment(), ComparissonHelperListener,
@@ -126,7 +125,7 @@ class ProductArComparisonFragment : BaseDaggerFragment(), ComparissonHelperListe
     }
 
     private fun observeAddRemoveImageGrid() {
-        viewLifecycleOwner.lifecycleScope.launch {
+        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
             loader?.hide()
             viewModel?.addRemoveImageGrid?.collectLatest {
                 if (it.imagesBitmap.isEmpty()) return@collectLatest
