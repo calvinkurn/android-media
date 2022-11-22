@@ -30,14 +30,18 @@ class MvcListViewModel @Inject constructor(
     private val _error = MutableLiveData<Throwable>()
     val error: LiveData<Throwable> get() = _error
 
-    private val filter = FilterModel()
+    private var filter = FilterModel()
 
     fun setFilterKeyword(keyword: String) {
-        filter.keyword = keyword
+        filter = filter.copy(
+            keyword = keyword
+        )
     }
 
     fun setFilterStatus(status: List<VoucherStatus>) {
-        filter.status = status.toMutableList()
+        filter = filter.copy(
+            status = status.toMutableList()
+        )
     }
 
     fun getVoucherList(page: Int, pageSize: Int) {

@@ -7,10 +7,10 @@ import com.tokopedia.mvc.domain.entity.enums.VoucherTarget
 import com.tokopedia.mvc.domain.entity.enums.VoucherTargetBuyer
 
 data class FilterModel (
-    var keyword: String = "",
-    var status: MutableList<VoucherStatus> = mutableListOf(VoucherStatus.NOT_STARTED, VoucherStatus.ONGOING),
-    var type: PromoType? = null,
-    var voucherSubsidy: VoucherSubsidy = VoucherSubsidy.SELLER_AND_TOKOPEDIA,
-    var target: VoucherTarget? = null,
-    var targetBuyer: VoucherTargetBuyer? = null
+    val keyword: String = "",
+    val status: MutableList<VoucherStatus> = mutableListOf(VoucherStatus.NOT_STARTED, VoucherStatus.ONGOING),
+    val type: PromoType? = null,
+    val voucherSubsidy: VoucherSubsidy = VoucherSubsidy.SELLER_AND_TOKOPEDIA,
+    val target: VoucherTarget? = null,
+    val targetBuyer: VoucherTargetBuyer? = null
 )
