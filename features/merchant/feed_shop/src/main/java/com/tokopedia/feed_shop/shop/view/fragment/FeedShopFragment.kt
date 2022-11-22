@@ -940,6 +940,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         type: String,
         isFollowed: Boolean,
         shopId: String,
+        hasVoucher: Boolean,
         feedXProducts: List<FeedXProduct>,
         index: Int
     ) {
@@ -1273,6 +1274,6 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
 
     }
 
-    override fun onClickSekSekarang(postId: String, shopId: String, type: String, isFollowed: Boolean, positionInFeed: Int, feedXCard: FeedXCard) {
+    override fun onClickSekSekarang(postId: String, shopId: String, type: String, isFollowed: Boolean, hasVoucher: Boolean, positionInFeed: Int, feedXCard: FeedXCard) {
     }
 }
