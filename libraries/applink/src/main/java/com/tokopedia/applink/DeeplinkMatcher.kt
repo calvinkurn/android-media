@@ -8,7 +8,6 @@ import com.tokopedia.applink.DeepLinkChecker.CATEGORY
 import com.tokopedia.applink.DeepLinkChecker.CONTENT
 import com.tokopedia.applink.DeepLinkChecker.DEALS
 import com.tokopedia.applink.DeepLinkChecker.DISCOVERY_PAGE
-import com.tokopedia.applink.DeepLinkChecker.EPHARMACY
 import com.tokopedia.applink.DeepLinkChecker.ETALASE
 import com.tokopedia.applink.DeepLinkChecker.FIND
 import com.tokopedia.applink.DeepLinkChecker.FLIGHT
@@ -55,7 +54,6 @@ class DeeplinkMatcher {
         add(Pattern(EQ, 1, mapOf(0 to "invoice.pl")) to INVOICE)
         add(Pattern(GT, 0, mapOf(0 to "blog")) to BLOG)
         add(Pattern(GT, 0, mapOf(0 to "category")) to CATEGORY)
-        add(Pattern(GT, 0, mapOf(0 to "epharmacy")) to EPHARMACY)
         add(Pattern(GT, 0, mapOf(0 to "p")) to CATEGORY)
         add(Pattern(GT, 0, mapOf(0 to "search")) to BROWSE)
         add(Pattern(EQ, 1, mapOf(0 to "hot")) to HOT_LIST)
@@ -81,7 +79,7 @@ class DeeplinkMatcher {
         add(Pattern(GT, 0, mapOf(0 to "contact-us")) to OTHER)
         add(Pattern(GT, 0, mapOf(0 to "about")) to OTHER)
         add(Pattern(GT, 0, mapOf(0 to "reset.pl")) to OTHER)
-        add(Pattern(GT,0, mapOf(0 to "order-list")) to ORDER_LIST)
+        add(Pattern(GT, 0, mapOf(0 to "order-list")) to ORDER_LIST)
         add(Pattern(GT, 0, mapOf(0 to "activation.pl")) to OTHER)
         add(Pattern(GT, 1, mapOf(0 to "kredit-motor")) to OTHER)
         add(Pattern(EQ, 2, mapOf(0 to "fm", 1 to "modal-toko")) to OTHER)
@@ -142,4 +140,5 @@ class DeeplinkMatcher {
 class Pattern(
     var isSegmentSizeEqual: Boolean = false,
     var segmentSize: Int = 1,
-    var patternIndex: Map<Int, String>?)
+    var patternIndex: Map<Int, String>?
+)
