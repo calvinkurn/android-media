@@ -123,9 +123,7 @@ class UserProfileVideoFragment @Inject constructor(
 
     private fun initObserver() {
         observeUiEvent()
-
-        addListObserver()
-        addUserPostErrorObserver()
+        observeUiState()
     }
 
     private fun initListener() {
@@ -149,47 +147,33 @@ class UserProfileVideoFragment @Inject constructor(
                             is UnknownHostException, is SocketTimeoutException -> {
                                 requireContext().getString(R.string.up_error_local_error)
                             }
-                            else -> {
-                                event.throwable.message ?: getDefaultErrorMessage()
-                            }
+                            else -> event.throwable.message ?: getDefaultErrorMessage()
                         }
 
                         view?.showErrorToast(message)
                     }
-                }
-            }
-        }
-    }
+                    is UserProfileUiEvent.ErrorVideoPosts -> {
+                        with(binding) {
+                            userVideoContainer.displayedChild = PAGE_ERROR
 
-    @SuppressLint("NotifyDataSetChanged")
-    private fun addListObserver() {
-        viewModel.playPostContentLiveData.observe(viewLifecycleOwner) {
-            it?.let {
-                when (it) {
-                    is Loading -> {
-                        mAdapter.resetAdapter()
-                        mAdapter.notifyDataSetChanged()
-                    }
-                    is Success -> {
-                        mAdapter.onSuccess(it.data)
-                    }
-                    is ErrorMessage -> {
-                        mAdapter.onError()
+                            globalErrorVideo.refreshBtn?.setOnClickListener {
+                                userVideoContainer.displayedChild = PAGE_LOADING
+                                fetchPlayVideo(viewModel.profileUserID)
+                            }
+                        }
                     }
                 }
             }
         }
     }
 
-    private fun addUserPostErrorObserver() {
-        viewModel.userPostErrorLiveData.observe(viewLifecycleOwner) {
-            with(binding) {
-                userVideoContainer.displayedChild = PAGE_ERROR
-
-                globalErrorVideo.refreshBtn?.setOnClickListener {
-                    userVideoContainer.displayedChild = PAGE_LOADING
-                    fetchPlayVideo(viewModel.profileUserID)
-                }
+    private fun observeUiState() {
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            viewModel.uiState.withCache().collectLatest {
+                val prev = it.prevValue?.videoPostsContent
+                val value = it.value.videoPostsContent
+                if ((prev == null && value == UserPostModel()) || (prev == value)) return@collectLatest
+                mAdapter.onSuccess(value)
             }
         }
     }

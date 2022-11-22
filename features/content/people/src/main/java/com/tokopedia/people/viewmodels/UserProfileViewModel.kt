@@ -1,7 +1,5 @@
 package com.tokopedia.people.viewmodels
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.content.common.producttag.util.extension.combine
@@ -15,9 +13,8 @@ import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomFollowState.LOADING_
 import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomFollowState.UNFOLLOW
 import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomUiModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.people.Resources
-import com.tokopedia.people.Success
 import com.tokopedia.people.data.UserProfileRepository
+import com.tokopedia.people.model.PlayGetContentSlot
 import com.tokopedia.people.model.UserPostModel
 import com.tokopedia.people.views.uimodel.action.UserProfileAction
 import com.tokopedia.people.views.uimodel.content.UserFeedPostsUiModel
@@ -45,18 +42,6 @@ class UserProfileViewModel @AssistedInject constructor(
     interface Factory {
         fun create(username: String): UserProfileViewModel
     }
-
-    /** feeds posts **/
-    private val feedPostsContent = MutableLiveData<Resources<UserFeedPostsUiModel>>()
-    val feedPostsContentLiveData: LiveData<Resources<UserFeedPostsUiModel>> get() = feedPostsContent
-    private val feedsPostsError = MutableLiveData<Throwable>()
-    val feedsPostsErrorLiveData: LiveData<Throwable> get() = feedsPostsError
-
-    /** play video **/
-    private val playPostContent = MutableLiveData<Resources<UserPostModel>>()
-    val playPostContentLiveData: LiveData<Resources<UserPostModel>> get() = playPostContent
-    private val userPostError = MutableLiveData<Throwable>()
-    val userPostErrorLiveData: LiveData<Throwable> get() = userPostError
 
     /** Public Getter */
     val displayName: String
@@ -101,6 +86,8 @@ class UserProfileViewModel @AssistedInject constructor(
     private val _profileType = MutableStateFlow(ProfileType.Unknown)
     private val _shopRecom = MutableStateFlow(ShopRecomUiModel())
     private val _profileTab = MutableStateFlow(ProfileTabUiModel())
+    private val _feedPostsContent = MutableStateFlow(UserFeedPostsUiModel())
+    private val _videoPostContent = MutableStateFlow(UserPostModel())
 
     private val _uiEvent = MutableSharedFlow<UserProfileUiEvent>()
 
@@ -114,7 +101,9 @@ class UserProfileViewModel @AssistedInject constructor(
         _profileWhitelist,
         _shopRecom,
         _profileTab,
-    ) { profileInfo, followInfo, profileType, profileWhitelist, shopRecom, profileTab ->
+        _feedPostsContent,
+        _videoPostContent,
+    ) { profileInfo, followInfo, profileType, profileWhitelist, shopRecom, profileTab, feedPostsContent, videoPostContent ->
         UserProfileUiState(
             profileInfo = profileInfo,
             followInfo = followInfo,
@@ -122,6 +111,8 @@ class UserProfileViewModel @AssistedInject constructor(
             profileWhitelist = profileWhitelist,
             shopRecom = shopRecom,
             profileTab = profileTab,
+            feedPostsContent = feedPostsContent,
+            videoPostsContent = videoPostContent,
         )
     }
 
@@ -154,14 +145,18 @@ class UserProfileViewModel @AssistedInject constructor(
         viewModelScope.launchCatchError(
             block = {
                 val data = repo.getFeedPosts(profileUserID, cursor)
-                if (cursor.isEmpty() && data.posts.isEmpty()) {
-                    _uiEvent.emit(UserProfileUiEvent.EmptyLoadFirstFeedPosts)
-                    return@launchCatchError
+                val finalPosts = if (cursor.isEmpty()) data.posts
+                else _feedPostsContent.value.posts + data.posts
+
+                _feedPostsContent.update {
+                    it.copy(
+                        pagination = data.pagination,
+                        posts = finalPosts,
+                    )
                 }
-                feedPostsContent.value = Success(data)
             },
             onError = {
-                feedsPostsError.value = it
+                _uiEvent.emit(UserProfileUiEvent.ErrorFeedPosts(it))
             },
         )
     }
@@ -170,14 +165,20 @@ class UserProfileViewModel @AssistedInject constructor(
         viewModelScope.launchCatchError(
             block = {
                 val data = repo.getPlayVideo(profileUserID, cursor)
-                if (cursor.isEmpty() && data.playGetContentSlot.data.isEmpty()) {
-                    _uiEvent.emit(UserProfileUiEvent.EmptyLoadFirstVideoPosts)
-                    return@launchCatchError
+                val finalPosts = if (cursor.isEmpty()) data.playGetContentSlot.data
+                else _videoPostContent.value.playGetContentSlot.data + data.playGetContentSlot.data
+
+                _videoPostContent.update {
+                    it.copy(
+                        playGetContentSlot = PlayGetContentSlot(
+                            data = finalPosts,
+                            playGetContentSlot = data.playGetContentSlot.playGetContentSlot
+                        )
+                    )
                 }
-                playPostContent.value = Success(data)
             },
             onError = {
-                userPostError.value = it
+                _uiEvent.emit(UserProfileUiEvent.ErrorVideoPosts(it))
             },
         )
     }

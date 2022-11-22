@@ -20,7 +20,7 @@ import com.tokopedia.people.Success
 import com.tokopedia.people.analytic.UserFeedPostImpressCoordinator
 import com.tokopedia.people.analytic.tracker.UserProfileTracker
 import com.tokopedia.people.databinding.UpFragmentFeedBinding
-import com.tokopedia.people.model.Post
+import com.tokopedia.people.utils.withCache
 import com.tokopedia.people.viewmodels.UserProfileViewModel
 import com.tokopedia.people.viewmodels.factory.UserProfileViewModelFactory
 import com.tokopedia.people.views.activity.UserProfileActivity
@@ -31,8 +31,10 @@ import com.tokopedia.people.views.fragment.UserProfileFragment.Companion.PAGE_ER
 import com.tokopedia.people.views.itemdecoration.GridSpacingItemDecoration
 import com.tokopedia.people.views.uimodel.action.UserProfileAction
 import com.tokopedia.people.views.uimodel.content.PostUiModel
+import com.tokopedia.people.views.uimodel.content.UserFeedPostsUiModel
 import com.tokopedia.people.views.uimodel.event.UserProfileUiEvent
 import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
 class UserProfileFeedFragment @Inject constructor(
@@ -99,75 +101,51 @@ class UserProfileFeedFragment @Inject constructor(
 
     private fun initObserver() {
         observeUiEvent()
-
-        addListObserver()
-        addUserPostErrorObserver()
+        observeUiState()
     }
 
     private fun observeUiEvent() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.uiEvent.collect { event ->
-                when (event) {
-                    is UserProfileUiEvent.EmptyLoadFirstFeedPosts -> {
-                        if (viewModel.isSelfProfile) emptyPostSelf() else emptyPostVisitor()
-                        binding.userFeedContainer.displayedChild = PAGE_EMPTY
+                if (event is UserProfileUiEvent.ErrorFeedPosts) {
+                    with(binding) {
+                        userFeedContainer.displayedChild = PAGE_ERROR
+
+                        globalErrorFeed.refreshBtn?.setOnClickListener {
+                            fetchFeedsPosts()
+                        }
                     }
-                }
+                } else return@collect
             }
         }
     }
 
-    @SuppressLint("NotifyDataSetChanged")
-    private fun addListObserver() {
-        viewModel.feedPostsContentLiveData.observe(viewLifecycleOwner) {
-            it?.let {
-                when (it) {
-                    is Loading -> {
-                        mAdapter.resetAdapter()
-                        mAdapter.notifyDataSetChanged()
-                    }
-                    is Success -> {
-                        mAdapter.onSuccess(it.data)
-                    }
-                    is ErrorMessage -> {
-                        mAdapter.onError()
-                    }
-                }
+    private fun observeUiState() {
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            viewModel.uiState.withCache().collectLatest {
+                val prev = it.prevValue?.feedPostsContent
+                val value = it.value.feedPostsContent
+                if ((prev == null && value == UserFeedPostsUiModel()) || (prev == value)) return@collectLatest
+                renderFeedPosts(value)
             }
         }
     }
 
-    private fun addUserPostErrorObserver() {
-        viewModel.feedsPostsErrorLiveData.observe(viewLifecycleOwner) {
-            with(binding) {
-                userFeedContainer.displayedChild = PAGE_ERROR
-
-                globalErrorFeed.refreshBtn?.setOnClickListener {
-                    fetchFeedsPosts()
-                }
+    @OptIn(ExperimentalStdlibApi::class)
+    private fun renderFeedPosts(data: UserFeedPostsUiModel) {
+        if (data.posts.isEmpty()) emptyPost()
+        else {
+            nextCursor = data.pagination.cursor
+            val model = buildList {
+                addAll(data.posts.map { postUiModel ->
+                        UserFeedPostsBaseAdapter.Model.FeedPosts(postUiModel)
+                    },
+                )
+                if (data.pagination.hasNext) add(UserFeedPostsBaseAdapter.Model.Loading)
             }
-        }
-    }
 
-    private fun setupFeedsPosts() {
-        gridLayoutManager.spanSizeLookup = getSpanSizeLookUp()
-
-        binding.rvFeed.layoutManager = gridLayoutManager
-        if (binding.rvFeed.itemDecorationCount == 0) {
-            val spacing = requireContext().resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2)
-            binding.rvFeed.addItemDecoration(GridSpacingItemDecoration(GRID_SPAN_COUNT, spacing, true))
-        }
-        binding.rvFeed.adapter = mAdapter
-    }
-
-    private fun getSpanSizeLookUp(): GridLayoutManager.SpanSizeLookup {
-        return object : GridLayoutManager.SpanSizeLookup() {
-            override fun getSpanSize(position: Int): Int {
-                return when (mAdapter.getItemViewType(position)) {
-                    UserProfileFragment.LOADING -> LOADING_SPAN
-                    else -> DATA_SPAN
-                }
-            }
+            if (binding.rvFeed.isComputingLayout.not()) mAdapter.setItemsAndAnimateChanges(model)
+            binding.userFeedContainer.displayedChild = PAGE_CONTENT
         }
     }
 
