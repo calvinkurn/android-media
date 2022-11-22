@@ -3,19 +3,27 @@ package com.tokopedia.privacycenter.sharingwishlist
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.privacycenter.common.PrivacyCenterStateResult
-import com.tokopedia.privacycenter.sharingwishlist.domain.data.*
+import com.tokopedia.privacycenter.sharingwishlist.domain.data.UpdateWishlistDataModel
+import com.tokopedia.privacycenter.sharingwishlist.domain.data.WishlistByIdTickerDataModel
+import com.tokopedia.privacycenter.sharingwishlist.domain.data.WishlistBydIdDataModel
+import com.tokopedia.privacycenter.sharingwishlist.domain.data.WishlistCollectionByIdDataModel
+import com.tokopedia.privacycenter.sharingwishlist.domain.data.WishlistCollectionsDataModel
+import com.tokopedia.privacycenter.sharingwishlist.domain.data.WishlistDataModel
 import com.tokopedia.privacycenter.sharingwishlist.domain.usecase.GetWishlistCollectionByIdUseCase
 import com.tokopedia.privacycenter.sharingwishlist.domain.usecase.GetWishlistCollectionUseCase
 import com.tokopedia.privacycenter.sharingwishlist.domain.usecase.UpdateWishlistCollectionUseCase
 import com.tokopedia.privacycenter.sharingwishlist.ui.SharingWishlistStateResult
 import com.tokopedia.privacycenter.sharingwishlist.viewmodel.SharingWishlistViewModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
+import com.tokopedia.unit.test.ext.getOrAwaitValue
 import io.mockk.coEvery
 import io.mockk.mockk
 import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import kotlin.test.assertEquals
+import kotlin.test.assertTrue
 
 class SharingWishlistViewModelTest {
 
@@ -84,11 +92,11 @@ class SharingWishlistViewModelTest {
 
         viewModel?.getWishlistCollections(1)
 
-        val result = viewModel?.wishlistCollection?.value
-        assert(result is SharingWishlistStateResult.RenderCollection)
-        (result as SharingWishlistStateResult.RenderCollection).apply {
-            assert(this.data.collections.isNotEmpty())
-            assert(!this.data.isEmptyState)
+        val result = viewModel?.wishlistCollection?.getOrAwaitValue()
+        assertTrue(result is SharingWishlistStateResult.RenderCollection)
+        result.apply {
+            assertTrue(this.data.collections.isNotEmpty())
+            assertTrue(!this.data.isEmptyState)
         }
     }
 
@@ -105,8 +113,8 @@ class SharingWishlistViewModelTest {
 
         viewModel?.getWishlistCollections(1)
 
-        val result = viewModel?.wishlistCollection?.value
-        assert(result is SharingWishlistStateResult.CollectionEmpty)
+        val result = viewModel?.wishlistCollection?.getOrAwaitValue()
+        assertTrue(result is SharingWishlistStateResult.CollectionEmpty)
     }
 
     @Test
@@ -117,8 +125,8 @@ class SharingWishlistViewModelTest {
 
         viewModel?.getWishlistCollections(1)
 
-        val result = viewModel?.wishlistCollection?.value
-        assert(result is SharingWishlistStateResult.Fail)
+        val result = viewModel?.wishlistCollection?.getOrAwaitValue()
+        assertTrue(result is SharingWishlistStateResult.Fail)
     }
 
     @Test
@@ -146,10 +154,10 @@ class SharingWishlistViewModelTest {
 
         viewModel?.getCollectionById(collectionId)
 
-        val result = viewModel?.wishlistCollectionById?.value
-        assert(result is PrivacyCenterStateResult.Success)
-        (result as PrivacyCenterStateResult.Success).apply {
-            assert(this.data.collection.id == collectionId)
+        val result = viewModel?.wishlistCollectionById?.getOrAwaitValue()
+        assertTrue(result is PrivacyCenterStateResult.Success)
+        result.apply {
+            assertEquals(this.data.collection.id, collectionId)
         }
     }
 
@@ -163,8 +171,8 @@ class SharingWishlistViewModelTest {
 
         viewModel?.getCollectionById(collectionId)
 
-        val result = viewModel?.wishlistCollectionById?.value
-        assert(result is PrivacyCenterStateResult.Fail)
+        val result = viewModel?.wishlistCollectionById?.getOrAwaitValue()
+        assertTrue(result is PrivacyCenterStateResult.Fail)
     }
 
     @Test
@@ -180,10 +188,10 @@ class SharingWishlistViewModelTest {
 
         viewModel?.updateWishlistCollection(WishlistCollectionByIdDataModel())
 
-        val result = viewModel?.updateWishlistCollection?.value
-        assert(result is PrivacyCenterStateResult.Success)
-        (result as PrivacyCenterStateResult.Success).apply {
-            assert(this.data.success)
+        val result = viewModel?.updateWishlistCollection?.getOrAwaitValue()
+        assertTrue(result is PrivacyCenterStateResult.Success)
+        result.apply {
+            assertTrue(this.data.success)
         }
     }
 
@@ -195,7 +203,7 @@ class SharingWishlistViewModelTest {
 
         viewModel?.updateWishlistCollection(WishlistCollectionByIdDataModel())
 
-        val result = viewModel?.updateWishlistCollection?.value
-        assert(result is PrivacyCenterStateResult.Fail)
+        val result = viewModel?.updateWishlistCollection?.getOrAwaitValue()
+        assertTrue(result is PrivacyCenterStateResult.Fail)
     }
 }

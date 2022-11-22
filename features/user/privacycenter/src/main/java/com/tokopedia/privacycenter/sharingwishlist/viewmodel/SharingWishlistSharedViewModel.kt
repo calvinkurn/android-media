@@ -11,12 +11,12 @@ class SharingWishlistSharedViewModel @Inject constructor(
     dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.main) {
 
-    private val _wishlistCollectionSate = MutableSharedFlow<Int>(extraBufferCapacity = 10, replay = 1)
-    val wishlistCollectionState = _wishlistCollectionSate.asSharedFlow()
+    private val _wishlistCollectionState = MutableSharedFlow<Int>(extraBufferCapacity = 10, replay = 1)
+    val wishlistCollectionState = _wishlistCollectionState.asSharedFlow()
 
     fun notifyPager(access: Int) {
         launch(coroutineContext) {
-            _wishlistCollectionSate.tryEmit(access)
+            _wishlistCollectionState.tryEmit(access)
         }
     }
 }
