@@ -220,6 +220,7 @@ class ProductListFragment : BaseDaggerFragment() {
                 )
             }
             is ProductListEffect.ShowBulkDeleteProductConfirmationDialog -> {
+                if (!isAdded) return
                 ConfirmationDialog.show(
                     context = activity ?: return,
                     title = getString(R.string.smvc_placeholder_bulk_delete_product_confirmation, effect.toDeleteProductCount),
@@ -229,6 +230,8 @@ class ProductListFragment : BaseDaggerFragment() {
                 )
             }
             is ProductListEffect.ShowDeleteProductConfirmationDialog -> {
+                if (!isAdded) return
+
                 ConfirmationDialog.show(
                     context = activity ?: return,
                     title = getString(R.string.smvc_delete_product),

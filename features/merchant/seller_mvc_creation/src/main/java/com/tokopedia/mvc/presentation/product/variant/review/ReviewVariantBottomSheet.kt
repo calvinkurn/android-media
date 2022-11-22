@@ -205,6 +205,8 @@ class ReviewVariantBottomSheet: BottomSheetUnify() {
                 dismiss()
             }
             is ReviewVariantEffect.ShowBulkDeleteVariantConfirmationDialog -> {
+                if (!isAdded) return
+
                 ConfirmationDialog.show(
                     context = activity ?: return,
                     title = getString(R.string.smvc_placeholder_bulk_delete_variant_confirmation, effect.toDeleteProductCount),
@@ -214,6 +216,8 @@ class ReviewVariantBottomSheet: BottomSheetUnify() {
                 )
             }
             is ReviewVariantEffect.ShowDeleteVariantConfirmationDialog -> {
+                if (!isAdded) return
+
                 ConfirmationDialog.show(
                     context = activity ?: return,
                     title = getString(R.string.smvc_delete_variant),

@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.campaign.components.bottomsheet.selection.entity.MultipleSelectionItem
 import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.mvc.databinding.SmvcItemShowcaseBinding
+import com.tokopedia.mvc.databinding.SmvcItemFilterBinding
 
 class ShopShowcaseFilterAdapter : RecyclerView.Adapter<ShopShowcaseFilterAdapter.ViewHolder>() {
 
@@ -32,7 +32,7 @@ class ShopShowcaseFilterAdapter : RecyclerView.Adapter<ShopShowcaseFilterAdapter
     private val differ = AsyncListDiffer(this, differCallback)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val binding = SmvcItemShowcaseBinding.inflate(
+        val binding = SmvcItemFilterBinding.inflate(
             LayoutInflater.from(parent.context),
             parent,
             false
@@ -54,12 +54,12 @@ class ShopShowcaseFilterAdapter : RecyclerView.Adapter<ShopShowcaseFilterAdapter
         this.onItemClicked = onItemClicked
     }
 
-    inner class ViewHolder(private val binding: SmvcItemShowcaseBinding) :
+    inner class ViewHolder(private val binding: SmvcItemFilterBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: MultipleSelectionItem) {
-            binding.tpgShowcaseName.text = item.name
-            binding.iconCheckmarkShowcase.isVisible = item.isSelected
+            binding.tpgFilterName.text = item.name
+            binding.iconCheckmarkState.isVisible = item.isSelected
             binding.root.setOnClickListener { onItemClicked(item) }
         }
     }
