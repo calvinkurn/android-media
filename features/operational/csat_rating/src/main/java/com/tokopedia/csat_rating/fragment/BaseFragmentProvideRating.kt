@@ -15,13 +15,13 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.csat_rating.ProvideRatingContract
 import com.tokopedia.csat_rating.R
 import com.tokopedia.csat_rating.data.BadCsatReasonListItem
 import com.tokopedia.csat_rating.di.component.DaggerCsatComponent
-import com.tokopedia.csat_rating.di.general.CsatComponentCommon
 import com.tokopedia.csat_rating.di.module.CsatRatingModule
 import com.tokopedia.csat_rating.presenter.BaseProvideRatingFragmentViewModel
 import com.tokopedia.csat_rating.presenter.BaseProvideRatingFragmentViewModel.Companion.FIFTH_EMOJI
@@ -80,9 +80,10 @@ open class BaseFragmentProvideRating : BaseDaggerFragment(),
 
 
     override fun initInjector() {
-        DaggerCsatComponent.builder()
-            .csatRatingModule(CsatRatingModule())
-            .csatComponentCommon(getComponent(CsatComponentCommon::class.java))
+        DaggerCsatComponent.builder().baseAppComponent(
+            ((activity as Activity).application as BaseMainApplication).baseAppComponent
+        )
+            .csatRatingModule(context?.let { CsatRatingModule(it) })
             .build()
             .inject(this)
     }
