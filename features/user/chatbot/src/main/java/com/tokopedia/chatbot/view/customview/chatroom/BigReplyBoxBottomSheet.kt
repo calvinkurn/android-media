@@ -6,6 +6,7 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.databinding.BottomSheetBigReplyBoxBinding
@@ -53,6 +54,12 @@ class BigReplyBoxBottomSheet : BottomSheetUnify(), ChatbotSendButtonListener {
             maxLine = MAXIMUM_NUMBER_OF_LINES
             labelText.text =  this@BigReplyBoxBottomSheet.labelText
             setPlaceholder(hintText)
+            editText.setHintTextColor(
+                ContextCompat.getColor(
+                    context,
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN400
+                )
+            )
         }
     }
 
