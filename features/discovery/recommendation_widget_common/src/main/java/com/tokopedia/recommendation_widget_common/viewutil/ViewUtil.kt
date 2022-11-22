@@ -6,7 +6,6 @@ import android.graphics.Color
 import android.util.TypedValue
 import androidx.annotation.ColorInt
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.DividerUnify
@@ -37,6 +36,7 @@ object ChannelWidgetUtil {
     private const val DIVIDER_TOP = 1
     private const val DIVIDER_BOTTOM = 2
     private const val DIVIDER_TOP_AND_BOTTOM = 3
+    private const val DEFAULT_BOTTOM_PADDING = 8
 
     fun validateHomeComponentDivider(
         dividerType: Int,
@@ -64,6 +64,12 @@ object ChannelWidgetUtil {
                 dividerBottom?.visible()
             }
         }
+    }
+
+    private fun DividerUnify.invisible() {
+        this.layoutParams?.height = DEFAULT_BOTTOM_PADDING.toPx()
+        this.setBackgroundResource(android.R.color.transparent)
+        this.visible()
     }
 }
 

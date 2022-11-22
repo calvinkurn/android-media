@@ -8,8 +8,6 @@ import com.tokopedia.home.beranda.listener.HomeCategoryListener
 import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_channel.CarouselPlayWidgetDataModel
 import com.tokopedia.home.beranda.presentation.view.helper.HomeChannelWidgetUtil
 import com.tokopedia.home.databinding.HomeDcPlayBannerCarouselBinding
-import com.tokopedia.home_component.util.ChannelStyleUtil
-import com.tokopedia.home_component.util.ChannelStyleUtil.parseBorderStyle
 import com.tokopedia.play.widget.PlayWidgetViewHolder
 import com.tokopedia.play.widget.analytic.global.model.PlayWidgetHomeAnalyticModel
 import com.tokopedia.utils.view.binding.viewBinding
@@ -44,8 +42,7 @@ class CarouselPlayWidgetViewHolder(
         HomeChannelWidgetUtil.validateHomeComponentDivider(
             channelModel = element.homeChannel,
             dividerTop = binding?.homeComponentDividerHeader,
-            dividerBottom = binding?.homeComponentDividerFooter,
-            useBottomPadding = element.homeChannel.styleParam.parseBorderStyle() == ChannelStyleUtil.BORDER_STYLE_BLEEDING
+            dividerBottom = binding?.homeComponentDividerFooter
         )
     }
 

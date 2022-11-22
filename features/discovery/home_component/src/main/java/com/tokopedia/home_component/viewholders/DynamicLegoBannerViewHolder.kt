@@ -17,7 +17,6 @@ import com.tokopedia.home_component.R
 import com.tokopedia.home_component.customview.DynamicChannelHeaderView
 import com.tokopedia.home_component.customview.HeaderListener
 import com.tokopedia.home_component.customview.ShimmeringImageView
-import com.tokopedia.home_component.customview.util.RoundedCornersTransformation
 import com.tokopedia.home_component.decoration.GridSpacingItemDecoration
 import com.tokopedia.home_component.decoration.clearDecorations
 import com.tokopedia.home_component.listener.DynamicLegoBannerListener
@@ -25,7 +24,6 @@ import com.tokopedia.home_component.listener.HomeComponentListener
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.home_component.model.DynamicChannelLayout
-import com.tokopedia.home_component.util.ChannelStyleUtil
 import com.tokopedia.home_component.util.ChannelWidgetUtil
 import com.tokopedia.home_component.util.DynamicChannelTabletConfiguration
 import com.tokopedia.home_component.util.FPM_DYNAMIC_LEGO_BANNER
@@ -36,6 +34,7 @@ import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.DividerUnify
 import com.tokopedia.home_component.customview.util.RoundedCornersTransformation.CornerType
+import com.tokopedia.home_component.util.ChannelStyleUtil
 
 /**
  * Created by Devara on 2020-04-28
@@ -74,8 +73,7 @@ class DynamicLegoBannerViewHolder(itemView: View,
         ChannelWidgetUtil.validateHomeComponentDivider(
             channelModel = element.channelModel,
             dividerTop = itemView.findViewById<DividerUnify>(R.id.home_component_divider_header),
-            dividerBottom = itemView.findViewById<DividerUnify>(R.id.home_component_divider_footer),
-            useBottomPadding = element.channelModel.channelConfig.borderStyle==ChannelStyleUtil.BORDER_STYLE_BLEEDING
+            dividerBottom = itemView.findViewById<DividerUnify>(R.id.home_component_divider_footer)
         )
     }
 
@@ -88,22 +86,12 @@ class DynamicLegoBannerViewHolder(itemView: View,
             }
             parentRecyclerViewPool?.let { recyclerView.setRecycledViewPool(parentRecyclerViewPool) }
             recyclerView.setHasFixedSize(true)
-            if (recyclerView.itemDecorationCount == 0) recyclerView.addItemDecoration(
-                    GridSpacingItemDecoration(defaultSpanCount, SPAN_SPACING_0, true))
 
             recyclerView.layoutManager = GridLayoutManager(
                     itemView.context,
                     defaultSpanCount,
                     GridLayoutManager.VERTICAL, false)
 
-            recyclerView.adapter = LegoItemAdapter(
-                    legoListener,
-                    element.channelModel,
-                    adapterPosition + 1,
-                    isCacheData,
-                    isUsingPaddingStyle,
-                    element.cardInteraction
-            )
             recyclerView.clearDecorations()
             //setup for lego rollence
             val layout = element.channelModel.channelConfig.layout
@@ -115,18 +103,25 @@ class DynamicLegoBannerViewHolder(itemView: View,
                 if (recyclerView.itemDecorationCount == 0) {
                     recyclerView.addItemDecoration(GridSpacingItemDecoration(spanCount, spacing, false))
                 }
+            } else {
+                if (recyclerView.itemDecorationCount == 0) recyclerView.addItemDecoration(
+                    GridSpacingItemDecoration(defaultSpanCount, SPAN_SPACING_0, true))
             }
             //end for lego rollence
-            val marginValue = if(isUsingPaddingStyle) itemView.resources.getDimension(R.dimen.home_component_margin_default).toInt() else 0
-            val marginLayoutParams = recyclerView.layoutParams as ConstraintLayout.LayoutParams
-            marginLayoutParams.leftMargin = marginValue
-            marginLayoutParams.rightMargin = marginValue
-            marginLayoutParams.topToBottom = R.id.home_component_header_view
-            recyclerView.layoutParams = marginLayoutParams
+            val horizontalPadding = if(isUsingPaddingStyle) itemView.resources.getDimension(R.dimen.home_component_margin_default).toInt() else 0
+            val bottomPadding = if(isUsingPaddingStyle) itemView.resources.getDimension(R.dimen.home_component_padding_style_bottom_margin).toInt() else 0
             recyclerView.setPadding(
-                0,0,0, marginValue
+                horizontalPadding, 0, horizontalPadding, bottomPadding
             )
 
+            recyclerView.adapter = LegoItemAdapter(
+                legoListener,
+                element.channelModel,
+                adapterPosition + 1,
+                isCacheData,
+                isUsingPaddingStyle,
+                element.cardInteraction
+            )
         } else {
             legoListener?.getDynamicLegoBannerData(element.channelModel)
         }
@@ -179,6 +174,8 @@ class DynamicLegoBannerViewHolder(itemView: View,
             private const val POSITION_TOP_RIGHT = 2
             private const val POSITION_BOTTOM_LEFT = 3
             private const val POSITION_BOTTOM_RIGHT = 5
+            private const val LEGO_36_RATIO_BLEEDING = "1:1"
+            private const val LEGO_36_RATIO_PADDING = "120:135"
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): LegoItemViewHolder {
@@ -230,11 +227,15 @@ class DynamicLegoBannerViewHolder(itemView: View,
                     POSITION_BOTTOM_RIGHT -> CornerType.BOTTOM_RIGHT
                     else -> null
                 }
+                (holder.imageView.layoutParams as ConstraintLayout.LayoutParams).dimensionRatio = LEGO_36_RATIO_PADDING
                 cornerType?.let {
                     holder.imageView.loadImageRounded(grid.imageUrl, ROUNDED_CORNER_RADIUS.toDpInt(),
                         FPM_DYNAMIC_LEGO_BANNER, it)
                 } ?: holder.imageView.loadImage(grid.imageUrl, FPM_DYNAMIC_LEGO_BANNER)
             } else {
+                if(getItemViewType(position) == LEGO_SQUARE) {
+                    (holder.imageView.layoutParams as ConstraintLayout.LayoutParams).dimensionRatio = LEGO_36_RATIO_BLEEDING
+                }
                 holder.imageView.loadImage(grid.imageUrl, FPM_DYNAMIC_LEGO_BANNER)
             }
         }

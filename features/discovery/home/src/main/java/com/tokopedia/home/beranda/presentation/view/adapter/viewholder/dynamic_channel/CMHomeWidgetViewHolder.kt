@@ -10,8 +10,6 @@ import com.tokopedia.home.beranda.presentation.view.adapter.datamodel.dynamic_ch
 import com.tokopedia.home.beranda.presentation.view.helper.HomeChannelWidgetUtil
 import com.tokopedia.home.beranda.presentation.view.listener.CMHomeWidgetCallback
 import com.tokopedia.home.databinding.HomeDcCmHomeWidgetItemBinding
-import com.tokopedia.home_component.util.ChannelStyleUtil
-import com.tokopedia.home_component.util.ChannelStyleUtil.parseBorderStyle
 import com.tokopedia.utils.view.binding.viewBinding
 
 class CMHomeWidgetViewHolder(
@@ -55,8 +53,7 @@ class CMHomeWidgetViewHolder(
             HomeChannelWidgetUtil.validateHomeComponentDivider(
                 channelModel = channel,
                 dividerTop = cmHomeWidgetDividerHeader,
-                dividerBottom = cmHomeWidgetDividerFooter,
-                useBottomPadding = channel.styleParam.parseBorderStyle() == ChannelStyleUtil.BORDER_STYLE_BLEEDING
+                dividerBottom = cmHomeWidgetDividerFooter
             )
         }
     }

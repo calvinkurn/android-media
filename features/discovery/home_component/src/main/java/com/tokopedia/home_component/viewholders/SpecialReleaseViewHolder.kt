@@ -26,7 +26,6 @@ import com.tokopedia.home_component.productcardgridcarousel.viewHolder.CarouselV
 import com.tokopedia.home_component.productcardgridcarousel.viewHolder.SpecialReleaseItemViewHolder
 import com.tokopedia.home_component.productcardgridcarousel.viewHolder.calculator.calculateHeight
 import com.tokopedia.home_component.util.*
-import com.tokopedia.home_component.util.ChannelStyleUtil.parseBorderStyle
 import com.tokopedia.home_component.viewholders.adapter.SpecialReleaseAdapter
 import com.tokopedia.home_component.visitable.SpecialReleaseDataModel
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
@@ -132,8 +131,7 @@ class SpecialReleaseViewHolder(
         ChannelWidgetUtil.validateHomeComponentDivider(
             channelModel = element.channelModel,
             dividerTop = binding?.homeComponentDividerHeader,
-            dividerBottom = binding?.homeComponentDividerFooter,
-            useBottomPadding = element.channelModel.channelConfig.borderStyle == ChannelStyleUtil.BORDER_STYLE_BLEEDING
+            dividerBottom = binding?.homeComponentDividerFooter
         )
     }
 

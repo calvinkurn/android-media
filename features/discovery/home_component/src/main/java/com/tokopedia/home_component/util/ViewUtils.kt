@@ -9,7 +9,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.home_component.model.ChannelConfig
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.DividerUnify
@@ -26,7 +25,6 @@ object ChannelWidgetUtil {
         channelModel: ChannelModel?,
         dividerTop: DividerUnify?,
         dividerBottom: DividerUnify?,
-        useBottomPadding: Boolean = false
     ) {
         val dividerSize = channelModel?.channelConfig?.dividerSize?.toPx()
             ?: DEFAULT_DIVIDER_HEIGHT.toPx()
@@ -35,8 +33,7 @@ object ChannelWidgetUtil {
         when(channelModel?.channelConfig?.dividerType) {
             ChannelConfig.DIVIDER_NO_DIVIDER -> {
                 dividerTop?.invisible()
-                if(useBottomPadding) setBottomPadding(dividerBottom)
-                else dividerBottom?.gone()
+                dividerBottom?.gone()
             }
             ChannelConfig.DIVIDER_TOP -> {
                 dividerTop?.visible()
@@ -53,10 +50,10 @@ object ChannelWidgetUtil {
         }
     }
 
-    private fun setBottomPadding(dividerBottom: DividerUnify?) {
-        dividerBottom?.layoutParams?.height = DEFAULT_BOTTOM_PADDING.toPx()
-        dividerBottom?.setBackgroundResource(android.R.color.transparent)
-        dividerBottom?.visible()
+    private fun DividerUnify.invisible() {
+        this.layoutParams?.height = DEFAULT_BOTTOM_PADDING.toPx()
+        this.setBackgroundResource(android.R.color.transparent)
+        this.visible()
     }
 }
 

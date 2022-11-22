@@ -4,7 +4,6 @@ import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home_component.model.ChannelConfig
 import com.tokopedia.home_component.util.ChannelStyleUtil.parseDividerSize
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.DividerUnify
 import com.tokopedia.unifycomponents.toPx
@@ -16,8 +15,7 @@ object HomeChannelWidgetUtil {
     fun validateHomeComponentDivider(
         channelModel: DynamicHomeChannel.Channels?,
         dividerTop: DividerUnify?,
-        dividerBottom: DividerUnify?,
-        useBottomPadding: Boolean = false
+        dividerBottom: DividerUnify?
     ) {
         val dividerSize = channelModel?.styleParam?.parseDividerSize()?.toPx()
             ?: DEFAULT_DIVIDER_HEIGHT.toPx()
@@ -26,8 +24,7 @@ object HomeChannelWidgetUtil {
         when(channelModel?.dividerType) {
             ChannelConfig.DIVIDER_NO_DIVIDER -> {
                 dividerTop?.invisible()
-                if(useBottomPadding) setBottomPadding(dividerBottom)
-                else dividerBottom?.gone()
+                dividerBottom?.gone()
             }
             ChannelConfig.DIVIDER_TOP -> {
                 dividerTop?.visible()
@@ -44,9 +41,9 @@ object HomeChannelWidgetUtil {
         }
     }
 
-    private fun setBottomPadding(dividerBottom: DividerUnify?) {
-        dividerBottom?.layoutParams?.height = DEFAULT_BOTTOM_PADDING.toPx()
-        dividerBottom?.setBackgroundResource(android.R.color.transparent)
-        dividerBottom?.visible()
+    private fun DividerUnify.invisible() {
+        this.layoutParams?.height = DEFAULT_BOTTOM_PADDING.toPx()
+        this.setBackgroundResource(android.R.color.transparent)
+        this.visible()
     }
 }

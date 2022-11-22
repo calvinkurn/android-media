@@ -124,8 +124,7 @@ class MixLeftPaddingComponentViewHolder(
         ChannelWidgetUtil.validateHomeComponentDivider(
             channelModel = element.channelModel,
             dividerTop = binding?.homeComponentDividerHeader,
-            dividerBottom = binding?.homeComponentDividerFooter,
-            useBottomPadding = true
+            dividerBottom = binding?.homeComponentDividerFooter
         )
     }
 
