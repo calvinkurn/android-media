@@ -1,13 +1,13 @@
-package com.tokopedia.tokopedianow.searchcategory.presentation.itemdecoration
+package com.tokopedia.tokopedianow.common.decoration
 
 import android.graphics.Rect
 import android.view.View
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.tokopedianow.searchcategory.presentation.viewholder.ProductItemViewHolder
+import com.tokopedia.tokopedianow.R
 
-class ProductItemDecoration(
-        private val spacing: Int,
+class ProductCardGridDecoration(
+    private val spacing: Int,
 ): RecyclerView.ItemDecoration() {
 
     companion object {
@@ -71,7 +71,7 @@ class ProductItemDecoration(
 
     private fun isTopProductItem(parent: RecyclerView, absolutePos: Int, relativePos: Int, totalSpanCount: Int): Boolean = !isProductItem(parent, absolutePos - relativePos % totalSpanCount - 1)
 
-    private fun isProductItem(parent: RecyclerView, viewPosition: Int): Boolean = ProductItemViewHolder.LAYOUT == getRecyclerViewViewType(parent, viewPosition)
+    private fun isProductItem(parent: RecyclerView, viewPosition: Int): Boolean = R.layout.item_tokopedianow_product_grid_card == getRecyclerViewViewType(parent, viewPosition)
 
     private fun getRecyclerViewViewType(parent: RecyclerView, viewPosition: Int): Int {
         val adapter = parent.adapter ?: return INVALID_VIEW_TYPE

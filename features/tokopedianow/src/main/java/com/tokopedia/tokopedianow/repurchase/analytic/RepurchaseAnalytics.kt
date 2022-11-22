@@ -1,6 +1,7 @@
 package com.tokopedia.tokopedianow.repurchase.analytic
 
 import android.os.Bundle
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_ADD_TO_CART
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_CLICK_TOKONOW
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.EVENT.EVENT_SELECT_CONTENT
@@ -251,9 +252,9 @@ class RepurchaseAnalytics {
             putString(KEY_ITEM_BRAND, "")
             putString(KEY_ITEM_CATEGORY, model.category)
             putString(KEY_ITEM_ID, model.id)
-            putString(KEY_ITEM_NAME, model.productCard.productName)
-            putString(KEY_ITEM_VARIANT, model.productCard.labelGroupVariantList.joinToString { it.title })
-            putString(KEY_PRICE, model.productCard.formattedPrice)
+            putString(KEY_ITEM_NAME, model.productCardModel.name)
+            putString(KEY_ITEM_VARIANT, "")
+            putLong(KEY_PRICE, model.productCardModel.price.filter { it.isDigit() }.toLongOrZero())
             putString(KEY_QUANTITY, quantity.toString())
             putString(KEY_SHOP_ID, model.shopId)
             putString(KEY_SHOP_NAME, VALUE.SHOP_NAME)
@@ -267,9 +268,9 @@ class RepurchaseAnalytics {
             putString(KEY_ITEM_BRAND, "")
             putString(KEY_ITEM_CATEGORY, model.category)
             putString(KEY_ITEM_ID, model.id)
-            putString(KEY_ITEM_NAME, model.productCard.productName)
-            putString(KEY_ITEM_VARIANT, model.productCard.labelGroupVariantList.joinToString { it.title })
-            putString(KEY_PRICE, model.productCard.formattedPrice)
+            putString(KEY_ITEM_NAME, model.productCardModel.name)
+            putString(KEY_ITEM_VARIANT, "")
+            putString(KEY_PRICE, model.productCardModel.price)
         }
     }
 }
