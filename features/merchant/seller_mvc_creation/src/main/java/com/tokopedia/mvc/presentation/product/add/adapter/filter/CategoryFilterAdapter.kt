@@ -1,29 +1,29 @@
-package com.tokopedia.mvc.presentation.product.add.adapter
+package com.tokopedia.mvc.presentation.product.add.adapter.filter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.campaign.components.bottomsheet.selection.entity.SingleSelectionItem
+import com.tokopedia.campaign.components.bottomsheet.selection.entity.MultipleSelectionItem
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.mvc.databinding.SmvcItemFilterBinding
 
-class ProductSortAdapter : RecyclerView.Adapter<ProductSortAdapter.ViewHolder>() {
+class CategoryFilterAdapter : RecyclerView.Adapter<CategoryFilterAdapter.ViewHolder>() {
 
-    private var onItemClicked: (SingleSelectionItem) -> Unit = {}
+    private var onItemClicked: (MultipleSelectionItem) -> Unit = {}
 
-    private val differCallback = object : DiffUtil.ItemCallback<SingleSelectionItem>() {
+    private val differCallback = object : DiffUtil.ItemCallback<MultipleSelectionItem>() {
         override fun areItemsTheSame(
-            oldItem: SingleSelectionItem,
-            newItem: SingleSelectionItem
+            oldItem: MultipleSelectionItem,
+            newItem: MultipleSelectionItem
         ): Boolean {
             return oldItem.id == newItem.id
         }
 
         override fun areContentsTheSame(
-            oldItem: SingleSelectionItem,
-            newItem: SingleSelectionItem
+            oldItem: MultipleSelectionItem,
+            newItem: MultipleSelectionItem
         ): Boolean {
             return oldItem == newItem
         }
@@ -50,39 +50,43 @@ class ProductSortAdapter : RecyclerView.Adapter<ProductSortAdapter.ViewHolder>()
     }
 
 
-    fun setOnItemClicked(onItemClicked: (SingleSelectionItem) -> Unit) {
+    fun setOnItemClicked(onItemClicked: (MultipleSelectionItem) -> Unit) {
         this.onItemClicked = onItemClicked
     }
 
     inner class ViewHolder(private val binding: SmvcItemFilterBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(item: SingleSelectionItem) {
+        fun bind(item: MultipleSelectionItem) {
             binding.tpgFilterName.text = item.name
             binding.iconCheckmarkState.isVisible = item.isSelected
             binding.root.setOnClickListener { onItemClicked(item) }
         }
     }
 
-    fun submit(newItems: List<SingleSelectionItem>) {
+    fun submit(newItems: List<MultipleSelectionItem>) {
         differ.submitList(newItems)
     }
 
-    fun markAsSelected(newItem : SingleSelectionItem) {
+    fun markAsSelected(newItem : MultipleSelectionItem) {
         val current = snapshot()
 
         val newList = current.map {  item ->
-            if (item.name == newItem.name) {
-                item.copy(isSelected = true)
+            if (item.id == newItem.id) {
+                item.copy(isSelected = !item.isSelected)
             } else {
-                item.copy(isSelected = false)
+                item
             }
         }
 
         submit(newList)
     }
 
-    private fun snapshot(): List<SingleSelectionItem> {
+    fun getSelectedItems(): List<MultipleSelectionItem> {
+        return snapshot().filter { it.isSelected }
+    }
+
+    private fun snapshot(): List<MultipleSelectionItem> {
         return differ.currentList
     }
 }

@@ -1,4 +1,4 @@
-package com.tokopedia.mvc.presentation.product.add.adapter
+package com.tokopedia.mvc.presentation.product.add.adapter.filter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -9,7 +9,7 @@ import com.tokopedia.campaign.components.bottomsheet.selection.entity.SingleSele
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.mvc.databinding.SmvcItemFilterBinding
 
-class WarehouseFilterAdapter : RecyclerView.Adapter<WarehouseFilterAdapter.ViewHolder>() {
+class ProductSortAdapter : RecyclerView.Adapter<ProductSortAdapter.ViewHolder>() {
 
     private var onItemClicked: (SingleSelectionItem) -> Unit = {}
 
@@ -72,7 +72,7 @@ class WarehouseFilterAdapter : RecyclerView.Adapter<WarehouseFilterAdapter.ViewH
         val current = snapshot()
 
         val newList = current.map {  item ->
-            if (item.id == newItem.id) {
+            if (item.name == newItem.name) {
                 item.copy(isSelected = true)
             } else {
                 item.copy(isSelected = false)
@@ -81,7 +81,6 @@ class WarehouseFilterAdapter : RecyclerView.Adapter<WarehouseFilterAdapter.ViewH
 
         submit(newList)
     }
-
 
     private fun snapshot(): List<SingleSelectionItem> {
         return differ.currentList

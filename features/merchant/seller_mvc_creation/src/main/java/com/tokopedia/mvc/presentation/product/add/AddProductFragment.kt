@@ -14,16 +14,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
-import com.tokopedia.campaign.components.adapter.CompositeAdapter
-import com.tokopedia.campaign.components.adapter.DelegateAdapterItem
-import com.tokopedia.campaign.components.adapter.LoadingDelegateAdapter
 import com.tokopedia.campaign.components.bottomsheet.selection.entity.MultipleSelectionItem
 import com.tokopedia.campaign.components.bottomsheet.selection.entity.SingleSelectionItem
 import com.tokopedia.campaign.components.bottomsheet.selection.multiple.MultipleSelectionBottomSheet
 import com.tokopedia.campaign.components.bottomsheet.selection.single.SingleSelectionBottomSheet
 import com.tokopedia.campaign.delegates.HasPaginatedList
 import com.tokopedia.campaign.delegates.HasPaginatedListImpl
-import com.tokopedia.campaign.entity.LoadingItem
 import com.tokopedia.campaign.utils.extension.applyPaddingToLastItem
 import com.tokopedia.campaign.utils.extension.attachDividerItemDecoration
 import com.tokopedia.campaign.utils.extension.enable
@@ -45,11 +41,11 @@ import com.tokopedia.mvc.domain.entity.VoucherConfiguration
 import com.tokopedia.mvc.domain.entity.Warehouse
 import com.tokopedia.mvc.domain.entity.enums.PageMode
 import com.tokopedia.mvc.domain.entity.enums.WarehouseType
-import com.tokopedia.mvc.presentation.product.add.adapter.CategoryFilterAdapter
-import com.tokopedia.mvc.presentation.product.add.adapter.ProductDelegateAdapter
-import com.tokopedia.mvc.presentation.product.add.adapter.ProductSortAdapter
-import com.tokopedia.mvc.presentation.product.add.adapter.ShopShowcaseFilterAdapter
-import com.tokopedia.mvc.presentation.product.add.adapter.WarehouseFilterAdapter
+import com.tokopedia.mvc.presentation.product.add.adapter.ProductAdapter
+import com.tokopedia.mvc.presentation.product.add.adapter.filter.CategoryFilterAdapter
+import com.tokopedia.mvc.presentation.product.add.adapter.filter.ProductSortAdapter
+import com.tokopedia.mvc.presentation.product.add.adapter.filter.ShopShowcaseFilterAdapter
+import com.tokopedia.mvc.presentation.product.add.adapter.filter.WarehouseFilterAdapter
 import com.tokopedia.mvc.presentation.product.add.uimodel.AddProductEffect
 import com.tokopedia.mvc.presentation.product.add.uimodel.AddProductEvent
 import com.tokopedia.mvc.presentation.product.add.uimodel.AddProductUiState
@@ -94,10 +90,7 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
     private val sortChips by lazy { SortFilterItem(getString(R.string.smvc_sort)) }
 
     private val productAdapter by lazy {
-        CompositeAdapter.Builder()
-            .add(ProductDelegateAdapter(onItemClick, onCheckboxClick, onVariantClick))
-            .add(LoadingDelegateAdapter())
-            .build()
+        ProductAdapter(onItemClick, onCheckboxClick, onVariantClick)
     }
 
 
@@ -188,13 +181,7 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
 
 
     private fun setupPaging() {
-        val pagingConfig = HasPaginatedList.Config(
-            pageSize = PAGE_SIZE,
-            onLoadNextPage = {
-                productAdapter.addItem(LoadingItem)
-            }, onLoadNextPageFinished = {
-                productAdapter.removeItem(LoadingItem)
-            })
+        val pagingConfig = HasPaginatedList.Config(pageSize = PAGE_SIZE)
 
         binding?.recyclerView?.apply {
             layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
@@ -304,7 +291,7 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
         binding?.loader?.isVisible = isLoading
     }
 
-    private fun renderList(products: List<DelegateAdapterItem> ) {
+    private fun renderList(products: List<Product> ) {
         productAdapter.submit(products)
 
         if (products.isEmpty()) {
@@ -437,26 +424,24 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
     }
 
     private val onItemClick: (Int) -> Unit = { selectedItemPosition ->
-        val selectedItem = productAdapter.getItems()[selectedItemPosition]
-        val selectedItemId = (selectedItem.id() as? Long).orZero()
+        val selectedItem = productAdapter.snapshot()[selectedItemPosition]
 
-        viewModel.processEvent(AddProductEvent.AddProductToSelection(selectedItemId))
+        viewModel.processEvent(AddProductEvent.AddProductToSelection(selectedItem.id))
     }
 
 
     private val onCheckboxClick: (Int, Boolean) -> Unit = { selectedItemPosition, isChecked ->
-        val selectedItem = productAdapter.getItems()[selectedItemPosition]
-        val selectedItemId = (selectedItem.id() as? Long).orZero()
+        val selectedItem = productAdapter.snapshot()[selectedItemPosition]
 
         if (isChecked) {
-            viewModel.processEvent(AddProductEvent.AddProductToSelection(selectedItemId))
+            viewModel.processEvent(AddProductEvent.AddProductToSelection(selectedItem.id))
         } else {
-            viewModel.processEvent(AddProductEvent.RemoveProductFromSelection(selectedItemId))
+            viewModel.processEvent(AddProductEvent.RemoveProductFromSelection(selectedItem.id))
         }
     }
 
     private val onVariantClick: (Int) -> Unit = { selectedItemPosition ->
-        val selectedItem = productAdapter.getItems()[selectedItemPosition]
+        val selectedItem = productAdapter.snapshot()[selectedItemPosition]
         val selectedParentProduct = (selectedItem as? Product)
 
         selectedParentProduct?.run {

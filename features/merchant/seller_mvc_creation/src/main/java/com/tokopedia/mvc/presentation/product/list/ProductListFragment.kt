@@ -23,7 +23,6 @@ import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.isZero
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.mvc.R
 import com.tokopedia.mvc.databinding.SmvcFragmentProductListBinding
@@ -206,7 +205,8 @@ class ProductListFragment : BaseDaggerFragment() {
         when (effect) {
             is ProductListEffect.ShowVariantBottomSheet -> {
                 val isVariantCheckable = pageMode == PageMode.CREATE
-                val isVariantDeletable = pageMode == PageMode.EDIT
+                val isVariantDeletable = pageMode == PageMode.CREATE
+
                 displayVariantBottomSheet(
                     effect.isParentProductSelected,
                     effect.selectedProduct,
@@ -217,6 +217,7 @@ class ProductListFragment : BaseDaggerFragment() {
             }
             is ProductListEffect.ShowBulkDeleteProductConfirmationDialog -> {
                 if (!isAdded) return
+
                 ConfirmationDialog.show(
                     context = activity ?: return,
                     title = getString(R.string.smvc_placeholder_bulk_delete_product_confirmation, effect.toDeleteProductCount),
@@ -378,19 +379,17 @@ class ProductListFragment : BaseDaggerFragment() {
 
     private val onDeleteProductClick: (Int) -> Unit = { selectedItemPosition ->
         val selectedItem = productAdapter.snapshot()[selectedItemPosition]
-        val selectedItemId = (selectedItem.id() as? Long).orZero()
 
-        viewModel.processEvent(ProductListEvent.TapRemoveProduct(selectedItemId))
+        viewModel.processEvent(ProductListEvent.TapRemoveProduct(selectedItem.id))
     }
 
     private val onCheckboxClick: (Int, Boolean) -> Unit = { selectedItemPosition, isChecked ->
         val selectedItem = productAdapter.snapshot()[selectedItemPosition]
-        val selectedItemId = (selectedItem.id() as? Long).orZero()
 
         if (isChecked) {
-            viewModel.processEvent(ProductListEvent.MarkProductForDeletion(selectedItemId))
+            viewModel.processEvent(ProductListEvent.MarkProductForDeletion(selectedItem.id))
         } else {
-            viewModel.processEvent(ProductListEvent.RemoveProductFromSelection(selectedItemId))
+            viewModel.processEvent(ProductListEvent.RemoveProductFromSelection(selectedItem.id))
         }
     }
 
