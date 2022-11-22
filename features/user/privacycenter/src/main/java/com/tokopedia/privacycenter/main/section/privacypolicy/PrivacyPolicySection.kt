@@ -17,13 +17,11 @@ import com.tokopedia.privacycenter.common.PrivacyCenterStateResult
 import com.tokopedia.privacycenter.databinding.SectionPrivacyPolicyBinding
 import com.tokopedia.privacycenter.main.section.BasePrivacyCenterSection
 import com.tokopedia.privacycenter.main.section.privacypolicy.PrivacyPolicyConst.DEFAULT_TITLE
-import com.tokopedia.privacycenter.main.section.privacypolicy.PrivacyPolicyConst.KEY_HTML_CONTENT
 import com.tokopedia.privacycenter.main.section.privacypolicy.PrivacyPolicyConst.KEY_TITLE
+import com.tokopedia.privacycenter.main.section.privacypolicy.PrivacyPolicyConst.SECTION_ID
 import com.tokopedia.privacycenter.main.section.privacypolicy.adapter.PrivacyPolicyAdapter
 import com.tokopedia.privacycenter.main.section.privacypolicy.domain.data.PrivacyPolicyDataModel
-import com.tokopedia.privacycenter.main.section.privacypolicy.domain.data.PrivacyPolicyDetailDataModel
 import com.tokopedia.privacycenter.main.section.privacypolicy.webview.PrivacyPolicyWebViewActivity
-import com.tokopedia.unifycomponents.Toaster
 
 class PrivacyPolicySection constructor(
     private val context: Context?,
@@ -102,21 +100,11 @@ class PrivacyPolicySection constructor(
                     is PrivacyCenterStateResult.Success -> onSuccessGetPrivacyPolicyTopFiveList(it.data)
                 }
             }
-
-            viewModel.privacyPolicyDetail.observe(this) {
-                when (it) {
-                    is PrivacyCenterStateResult.Fail -> {
-                        Toaster.build(sectionViewBinding.root, it.error.message.toString()).show()
-                    }
-                    is PrivacyCenterStateResult.Loading -> {}
-                    is PrivacyCenterStateResult.Success -> onSuccessGetPrivacyPolicyDetail(it.data)
-                }
-            }
         }
     }
 
     override fun onItemClicked(item: PrivacyPolicyDataModel) {
-        viewModel.getPrivacyPolicyDetail(item.sectionId)
+        openDetailPrivacyPolicy(item.sectionTitle, item.sectionId)
     }
 
     private fun onSuccessGetPrivacyPolicyTopFiveList(data: List<PrivacyPolicyDataModel>) {
@@ -125,19 +113,15 @@ class PrivacyPolicySection constructor(
         privacyPolicyAdapter.apply {
             clearAllItems()
             addItems(data)
-            notifyItemRangeInserted(0, data.size)
+            notifyDataSetChanged()
         }
     }
 
-    private fun onSuccessGetPrivacyPolicyDetail(data: PrivacyPolicyDetailDataModel) {
-        openDetailPrivacyPolicy(data.sectionTitle, data.sectionContent)
-    }
-
-    private fun openDetailPrivacyPolicy(title: String, htmlContent: String) {
+    private fun openDetailPrivacyPolicy(title: String, sectionId: String) {
         val intent = Intent(context, PrivacyPolicyWebViewActivity::class.java).apply {
             putExtras(Bundle().apply {
                 putString(KEY_TITLE, title)
-                putString(KEY_HTML_CONTENT, htmlContent)
+                putString(SECTION_ID, sectionId)
             })
         }
 

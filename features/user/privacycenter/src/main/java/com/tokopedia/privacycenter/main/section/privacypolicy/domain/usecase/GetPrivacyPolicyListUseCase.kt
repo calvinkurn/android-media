@@ -39,7 +39,11 @@ class GetPrivacyPolicyListUseCase @Inject constructor(
                 listData.sortedByDescending {
                     it.lastUpdate
                 }
-                PrivacyCenterStateResult.Success(data.data.take(listLimit))
+                if(listLimit > 0) {
+                    PrivacyCenterStateResult.Success(data.data.take(listLimit))
+                } else {
+                    PrivacyCenterStateResult.Success(data.data)
+                }
             } else {
                 PrivacyCenterStateResult.Fail(MessageErrorException(data.respDesc))
             }

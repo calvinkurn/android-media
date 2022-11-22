@@ -41,7 +41,7 @@ class PrivacyCenterFragment : BaseDaggerFragment(), AppBarLayout.OnOffsetChanged
     }
 
     private val viewModelPrivacyPolicySectionViewModel by lazy {
-        ViewModelProvider(this, viewModelFactory).get(
+        ViewModelProvider(requireActivity(), viewModelFactory).get(
             PrivacyPolicySectionViewModel::class.java
         )
     }
