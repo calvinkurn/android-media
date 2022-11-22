@@ -1,9 +1,9 @@
-package com.tokopedia.csat_rating.adapter.chatbot_csat.adapter
+package com.tokopedia.chatbot.view.customview.csat.adapter
 
 import android.view.View
 import android.widget.ImageView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.csat_rating.R
+import com.tokopedia.chatbot.R
 import com.tokopedia.csat_rating.adapter.OptionItemViewHolder
 import com.tokopedia.csat_rating.quickfilter.QuickFilterItem
 import com.tokopedia.csat_rating.quickfilter.QuickSingleFilterListener

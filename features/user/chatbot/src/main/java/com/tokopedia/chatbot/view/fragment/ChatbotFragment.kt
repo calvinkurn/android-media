@@ -108,7 +108,6 @@ import com.tokopedia.chatbot.domain.pojo.chatrating.SendRatingPojo
 import com.tokopedia.chatbot.domain.pojo.csatRating.csatInput.InputItem
 import com.tokopedia.chatbot.domain.pojo.csatRating.websocketCsatRatingResponse.Attributes
 import com.tokopedia.chatbot.domain.pojo.csatRating.websocketCsatRatingResponse.WebSocketCsatResponse
-import com.tokopedia.chatbot.domain.pojo.csatoptionlist.CsatAttributesPojo
 import com.tokopedia.chatbot.domain.pojo.replyBox.DynamicAttachment
 import com.tokopedia.chatbot.domain.pojo.submitchatcsat.ChipSubmitChatCsatInput
 import com.tokopedia.chatbot.util.ChatBubbleItemDecorator
@@ -564,49 +563,7 @@ class ChatbotFragment :
         return ChatbotAdapter(typeFactory)
     }
 
-    private fun goToCsat() {
-
-        val model: CsatOptionsUiModel? = CsatOptionsUiModel(
-            csat = CsatAttributesPojo.Csat(
-                "123",
-                "456",
-                listOf(CsatAttributesPojo.Csat.Point("AAA", "AAA",1),
-                    CsatAttributesPojo.Csat.Point("AAA", "AAA",1),
-                    CsatAttributesPojo.Csat.Point("AAA", "AAA",1),
-                    CsatAttributesPojo.Csat.Point("AAA", "AAA",1),
-                    CsatAttributesPojo.Csat.Point("AAA", "AAA",1)),
-                "ABC",
-                reasons = listOf(CsatAttributesPojo.Csat.Reason(
-                    1, "A"
-                ),CsatAttributesPojo.Csat.Reason(
-                    2, "B"
-                ),CsatAttributesPojo.Csat.Reason(
-                    3, "C"
-                ),CsatAttributesPojo.Csat.Reason(
-                    4, "D"
-                ),
-                    CsatAttributesPojo.Csat.Reason(
-                        5, "E"
-                    ),),
-                "DEF",
-                "Bot",
-                123456
-            )
-        )
-
-        startActivityForResult(
-            context?.let {
-                ChatBotCsatActivity
-                    .getInstance(it, 2, model)
-            },
-            REQUEST_SUBMIT_CSAT
-        )
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-
-        goToCsat()
-
         floatingInvoice = getBindingView().floatingInvoice
 
         ticker = getBindingView().chatbotTicker

@@ -4,25 +4,15 @@ import android.content.Context
 import android.content.Intent
 import androidx.fragment.app.Fragment
 import com.tokopedia.chatbot.data.csatoptionlist.CsatOptionsUiModel
-import com.tokopedia.csat_rating.activity.BottomSheetProvideRatingActivity
+import com.tokopedia.chatbot.view.fragment.ChatBotCsatFragment
+import com.tokopedia.csat_rating.activity.BaseProvideRatingActivity
 import com.tokopedia.csat_rating.data.BadCsatReasonListItem
+import java.util.*
 
-class ChatBotCsatActivity : BottomSheetProvideRatingActivity() {
+class ChatBotCsatActivity : BaseProvideRatingActivity() {
 
-    override fun getNewFragment(): Fragment? {
-        return null
-    }
-
-    override fun onSuccessSubmit(intent: Intent) {
-        intent.putExtra(
-            CASE_CHAT_ID,
-            intent.getStringExtra(CASE_CHAT_ID)
-        )
-        intent.putExtra(
-            CASE_ID,
-            intent.getStringExtra(CASE_ID)
-        )
-        super.onSuccessSubmit(intent)
+    override fun getNewFragment(): Fragment {
+        return ChatBotCsatFragment.newInstance(intent.extras)
     }
 
     companion object {
@@ -32,8 +22,6 @@ class ChatBotCsatActivity : BottomSheetProvideRatingActivity() {
         val QUESTION_LIST = "questionList"
         val CASE_CHAT_ID = "caseChatID"
         val CASE_ID = "caseID"
-        const val CLICKED_EMOJI = "clicked_emoji"
-        const val PARAM_OPTIONS_CSAT = "options_csat"
 
         fun getInstance(context: Context, clickEmoji: Int, model: CsatOptionsUiModel?): Intent {
             val intent = Intent(context, ChatBotCsatActivity::class.java)

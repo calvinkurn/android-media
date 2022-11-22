@@ -1,10 +1,10 @@
-package com.tokopedia.csat_rating.adapter.chatbot_csat
+package com.tokopedia.chatbot.view.customview.csat
 
 import android.content.Context
 import android.util.AttributeSet
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.csat_rating.adapter.chatbot_csat.adapter.ChatBotQuickOptionViewAdapter
+import com.tokopedia.chatbot.view.customview.csat.adapter.ChatBotQuickOptionViewAdapter
 import com.tokopedia.csat_rating.quickfilter.QuickSingleFilterView
 
 class ChatBotQuickOptionViewCsat : QuickSingleFilterView {
