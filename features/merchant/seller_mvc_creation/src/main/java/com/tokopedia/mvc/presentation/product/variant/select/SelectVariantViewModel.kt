@@ -37,7 +37,7 @@ class SelectVariantViewModel @Inject constructor(
         when(event) {
             is SelectVariantEvent.FetchProductVariants -> {
                 _uiState.update { it.copy(isLoading = true, parentProductId = event.selectedParentProduct.id) }
-                getVariantDetail(event.selectedParentProduct)
+                getAllVariantsByParentProductId(event.selectedParentProduct)
             }
             is SelectVariantEvent.AddProductToSelection -> handleAddProductToSelection(event.variantProductId)
             SelectVariantEvent.DisableSelectAllCheckbox -> handleUncheckAllProduct()
@@ -50,7 +50,7 @@ class SelectVariantViewModel @Inject constructor(
     }
 
 
-    private fun getVariantDetail(selectedParentProduct : Product) {
+    private fun getAllVariantsByParentProductId(selectedParentProduct : Product) {
         launchCatchError(
             dispatchers.io,
             block = {
@@ -64,7 +64,10 @@ class SelectVariantViewModel @Inject constructor(
                     variant.copy(isEligible = isEligible, reason = reason)
                 }
 
-                val updatedVariants = validatedVariants.map {
+                val originalVariantIds = selectedParentProduct.originalVariants.map { it.variantProductId }
+                val eligibleVariantsOnly = validatedVariants.filter { it.variantId in originalVariantIds }
+
+                val updatedVariants = eligibleVariantsOnly.map {
                     if (it.variantId in selectedParentProduct.selectedVariantsIds && it.isEligible) {
                         it.copy(isSelected = true)
                     } else {
@@ -72,18 +75,16 @@ class SelectVariantViewModel @Inject constructor(
                     }
                 }
 
-                val selectedVariantIds = updatedVariants.filter { it.isSelected }.map { it.variantId }.toSet()
-
                 _uiState.update {
                     it.copy(
                         isLoading = false,
                         parentProductName = response.parentProductName,
-                        parentProductStock = response.parentProductStock,
+                        parentProductStock = selectedParentProduct.stock,
                         parentProductPrice = response.parentProductPrice,
                         parentProductSoldCount = response.parentProductSoldCount,
                         parentProductImageUrl = response.parentProductImageUrl,
                         variants = updatedVariants,
-                        selectedVariantIds = selectedVariantIds
+                        selectedVariantIds = updatedVariants.selectedVariantsOnly()
                     )
                 }
             },
@@ -112,13 +113,12 @@ class SelectVariantViewModel @Inject constructor(
 
     private fun handleCheckAllProduct() = launch(dispatchers.computation) {
         val variants = currentState.variants.map { it.copy(isSelected = it.isEligible) }
-        val selectedVariantIds = variants.filter { it.isSelected }.map { it.variantId }.toSet()
 
         _uiState.update {
             it.copy(
                 isSelectAllActive = true,
                 variants = variants,
-                selectedVariantIds = selectedVariantIds
+                selectedVariantIds = variants.selectedVariantsOnly()
             )
         }
     }
@@ -144,8 +144,7 @@ class SelectVariantViewModel @Inject constructor(
                     variant
                 }
             }
-            val selectedVariants = modifiedVariants.filter { it.isSelected }.map { it.variantId }.toSet()
-            _uiState.update { it.copy(variants = modifiedVariants, selectedVariantIds = selectedVariants) }
+            _uiState.update { it.copy(variants = modifiedVariants, selectedVariantIds = modifiedVariants.selectedVariantsOnly()) }
         }
     }
 
@@ -159,9 +158,11 @@ class SelectVariantViewModel @Inject constructor(
                     variant
                 }
             }
-            val selectedVariants = modifiedVariants.filter { it.isSelected }.map { it.variantId }.toSet()
-            _uiState.update { it.copy(variants = modifiedVariants, selectedVariantIds = selectedVariants) }
+            _uiState.update { it.copy(variants = modifiedVariants, selectedVariantIds = modifiedVariants.selectedVariantsOnly()) }
         }
     }
 
+    private fun List<Variant>.selectedVariantsOnly(): Set<Long> {
+        return filter { it.isSelected }.map { it.variantId }.toSet()
+    }
 }

@@ -200,7 +200,7 @@ class SelectVariantBottomSheet : BottomSheetUnify() {
         binding?.run {
             tpgProductName.text = uiState.parentProductName
             tpgStock.text = context?.getString(R.string.smvc_placeholder_total_stock, uiState.parentProductStock.splitByThousand())
-            tpgSoldCount.text = context?.getString(R.string.smvc_placeholder_product_sold_count, uiState.parentProductStock.splitByThousand())
+            tpgSoldCount.text = context?.getString(R.string.smvc_placeholder_product_sold_count, uiState.parentProductSoldCount.splitByThousand())
             imgParentProduct.loadImage(uiState.parentProductImageUrl)
         }
     }

@@ -89,6 +89,9 @@ class ReviewVariantAdapter : RecyclerView.Adapter<ReviewVariantAdapter.ViewHolde
                 checkBox.isEnabled = item.isEligible
                 checkBox.isVisible = item.isCheckable
 
+                tpgSoldCount.text = binding.tpgSoldCount.context.getString(R.string.smvc_placeholder_product_sold_count, item.soldCount.splitByThousand())
+                tpgSoldCount.isEnabled = item.isEligible
+
                 iconDelete.isVisible = item.isDeletable
             }
         }

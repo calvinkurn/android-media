@@ -27,7 +27,7 @@ class ProductV3Mapper @Inject constructor() {
                 price = it.price.toLongOrZero(),
                 isSelected = false,
                 stockCount = it.stock,
-                soldCount = 0,
+                soldCount = response.getProductV3.txStats.itemSold,
                 isEligible = true,
                 reason = "",
                 isCheckable = true,
