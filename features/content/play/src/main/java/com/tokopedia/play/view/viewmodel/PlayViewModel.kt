@@ -2639,9 +2639,9 @@ class PlayViewModel @AssistedInject constructor(
             val shouldShow = !isFreezeOrBanned && cache && config.isEnabled
             if (!shouldShow) return@launch
             _isFollowPopUpShown.update { it.copy(shouldShow = shouldShow, partnerId = streamerId.toLong()) }
+        }.invokeOnCompletion {
+            playPreference.setFollowPopUp(streamerId)
         }
-
-        playPreference.setFollowPopUp(streamerId)
     }
 
     private fun CoroutineScope.launch(
