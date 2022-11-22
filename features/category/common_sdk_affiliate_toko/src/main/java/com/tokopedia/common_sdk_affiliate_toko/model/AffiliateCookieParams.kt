@@ -77,14 +77,16 @@ sealed class AffiliateSdkPageSource(
      * Encapsulates info for DirectATC.
      *
      * @param[atcSource] [AffiliateAtcSource]
+     * @param[shopId] shopId of shop
      * @param[productInfo] [AffiliateSdkProductInfo]
      */
     class DirectATC(
         atcSource: AffiliateAtcSource,
+        shopId: String?,
         productInfo: AffiliateSdkProductInfo?
     ) :
         AffiliateSdkPageSource(
-            "",
+            shopId.orEmpty(),
             atcSource,
             productInfo = productInfo ?: AffiliateSdkProductInfo("", false, 0)
         ) {
