@@ -1,5 +1,6 @@
 package com.tokopedia.mvc.data.mapper
 
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.mvc.data.response.GetInitiateVoucherPageResponse
 import com.tokopedia.mvc.domain.entity.VoucherCreationMetadata
 import javax.inject.Inject
@@ -13,9 +14,9 @@ class GetInitiateVoucherPageMapper @Inject constructor() {
                 isEligible,
                 maxProduct,
                 prefixVoucherCode,
-                shopId,
+                shopId.toLongOrZero(),
                 token,
-                userId
+                userId.toLongOrZero()
             )
         }
     }

@@ -16,4 +16,8 @@ object DateConstant {
     const val DATE_MONTH_ONLY = "dd MMM"
     const val DATE_ONLY = "dd"
     //endregion
+
+    //region Time
+    const val TIME_MINUTE_PRECISION = "HH:mm"
+    //endregion
 }

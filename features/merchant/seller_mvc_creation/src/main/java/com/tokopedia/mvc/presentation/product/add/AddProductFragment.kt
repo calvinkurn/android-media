@@ -4,20 +4,84 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
+import android.widget.CompoundButton
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.campaign.components.adapter.CompositeAdapter
+import com.tokopedia.campaign.components.adapter.DelegateAdapterItem
+import com.tokopedia.campaign.components.adapter.LoadingDelegateAdapter
+import com.tokopedia.campaign.components.bottomsheet.selection.entity.MultipleSelectionItem
+import com.tokopedia.campaign.components.bottomsheet.selection.entity.SingleSelectionItem
+import com.tokopedia.campaign.components.bottomsheet.selection.multiple.MultipleSelectionBottomSheet
+import com.tokopedia.campaign.components.bottomsheet.selection.single.SingleSelectionBottomSheet
+import com.tokopedia.campaign.delegates.HasPaginatedList
+import com.tokopedia.campaign.delegates.HasPaginatedListImpl
+import com.tokopedia.campaign.entity.LoadingItem
+import com.tokopedia.campaign.utils.constant.DateConstant
+import com.tokopedia.campaign.utils.extension.applyPaddingToLastItem
+import com.tokopedia.campaign.utils.extension.attachDividerItemDecoration
+import com.tokopedia.campaign.utils.extension.enable
+import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.applyUnifyBackgroundColor
+import com.tokopedia.kotlin.extensions.view.formatTo
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.isZero
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.linker.LinkerManager
+import com.tokopedia.linker.LinkerUtils
+import com.tokopedia.linker.interfaces.ShareCallback
+import com.tokopedia.linker.model.LinkerError
+import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.mvc.di.component.DaggerMerchantVoucherCreationComponent
-import com.tokopedia.mvc.domain.usecase.GetInitiateVoucherPageUseCase
+import com.tokopedia.mvc.domain.entity.ProductCategoryOption
+import com.tokopedia.mvc.domain.entity.ProductSortOptions
+import com.tokopedia.mvc.domain.entity.ShopShowcase
+import com.tokopedia.mvc.domain.entity.Warehouse
+import com.tokopedia.mvc.domain.entity.enums.PromoType
+import com.tokopedia.mvc.domain.entity.enums.VoucherAction
+import com.tokopedia.mvc.domain.entity.enums.WarehouseType
+import com.tokopedia.mvc.presentation.product.add.adapter.CategoryFilterAdapter
+import com.tokopedia.mvc.presentation.product.add.adapter.ProductDelegateAdapter
+import com.tokopedia.mvc.presentation.product.add.adapter.ProductSortAdapter
+import com.tokopedia.mvc.presentation.product.add.adapter.ShopShowcaseFilterAdapter
+import com.tokopedia.mvc.presentation.product.add.adapter.WarehouseFilterAdapter
+import com.tokopedia.mvc.presentation.product.add.uimodel.AddProductEffect
+import com.tokopedia.mvc.presentation.product.add.uimodel.AddProductEvent
+import com.tokopedia.mvc.presentation.product.add.uimodel.AddProductUiState
+import com.tokopedia.mvc.util.constant.NumberConstant
+import com.tokopedia.mvc.R
 import com.tokopedia.mvc.databinding.SmvcFragmentAddProductBinding
+import com.tokopedia.mvc.domain.entity.Product
+import com.tokopedia.mvc.domain.entity.ShopData
+import com.tokopedia.mvc.domain.entity.enums.BenefitType
+import com.tokopedia.mvc.presentation.product.variant.SelectVariantBottomSheet
+import com.tokopedia.mvc.presentation.share.LinkerDataGenerator
+import com.tokopedia.mvc.presentation.share.SharingComponentInstanceBuilder
+import com.tokopedia.sortfilter.SortFilterItem
+import com.tokopedia.unifycomponents.ChipsUnify
+import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
+import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
+import com.tokopedia.universal_sharing.view.model.ShareModel
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import kotlinx.coroutines.flow.collect
+import java.util.*
 import javax.inject.Inject
 
-
-class AddProductFragment : BaseDaggerFragment() {
+class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginatedListImpl() {
 
     companion object {
+        const val PAGE_SIZE = 10
+        private const val ONE_FILTER_SELECTED = 1
+        private const val BUNDLE_KEY_COUPON_ID = "couponId"
 
         @JvmStatic
         fun newInstance(couponId: Long): AddProductFragment {
@@ -30,18 +94,36 @@ class AddProductFragment : BaseDaggerFragment() {
 
     }
 
+    private val couponId by lazy { arguments?.getLong(BUNDLE_KEY_COUPON_ID, 0) }
     private var binding by autoClearedNullable<SmvcFragmentAddProductBinding>()
+    private val locationChips by lazy { SortFilterItem(getString(R.string.smvc_location)) }
+    private val categoryChips by lazy { SortFilterItem(getString(R.string.smvc_category)) }
+    private val showcaseChips by lazy { SortFilterItem(getString(R.string.smvc_showcase)) }
+    private val sortChips by lazy { SortFilterItem(getString(R.string.smvc_sort)) }
+    private var shareComponentBottomSheet : UniversalShareBottomSheet? = null
+
+    private val productAdapter by lazy {
+        CompositeAdapter.Builder()
+            .add(ProductDelegateAdapter(onItemClick, onCheckboxClick, onVariantClick))
+            .add(LoadingDelegateAdapter())
+            .build()
+    }
 
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
 
+    @Inject
+    lateinit var userSession : UserSessionInterface
+
+    @Inject
+    lateinit var shareComponentInstanceBuilder: SharingComponentInstanceBuilder
+
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(AddProductViewModel::class.java) }
 
 
-    override fun getScreenName(): String =
-        AddProductFragment::class.java.canonicalName.orEmpty()
+    override fun getScreenName(): String = AddProductFragment::class.java.canonicalName.orEmpty()
 
     override fun initInjector() {
         DaggerMerchantVoucherCreationComponent.builder()
@@ -62,21 +144,585 @@ class AddProductFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        observeValidationResult()
+        applyUnifyBackgroundColor()
+        setupView()
+        observeUiEffect()
+        observeUiState()
 
-        viewModel.getShopWarehouseLocations()
-        viewModel.getShopShowcases()
-        viewModel.getProductListMeta(0L)
-        viewModel.getProducts(13121049L, 1, "DEFAULT", "DESC")
-        viewModel.getMaxProductSelection(GetInitiateVoucherPageUseCase.Param.Action.CREATE, GetInitiateVoucherPageUseCase.Param.PromoType.CASHBACK, true)
-        //viewModel.getCurrentMonthRemainingQuota()
+        viewModel.processEvent(AddProductEvent.FetchRequiredData(VoucherAction.CREATE, PromoType.CASHBACK))
     }
 
-    private fun observeValidationResult() {
-        /* viewModel.areInputValid.observe(viewLifecycleOwner) { validationResult ->
-             handleValidationResult(validationResult)
-         }*/
+    private fun setupView() {
+        setupCheckbox()
+        setupSortFilter()
+        setupPaging()
+        setupSearchBar()
+        setupButton()
+    }
+
+    private fun setupButton() {
+        binding?.btnAddProduct?.setOnClickListener {
+            viewModel.processEvent(AddProductEvent.ConfirmAddProduct)
+        }
+    }
+
+    private fun setupCheckbox() {
+        binding?.checkbox?.setOnCheckedChangeListener { view, isChecked ->
+            if (view.isClickTriggeredByUserInteraction()) {
+                if (isChecked) {
+                    viewModel.processEvent(AddProductEvent.EnableSelectAllCheckbox)
+                } else {
+                    viewModel.processEvent(AddProductEvent.DisableSelectAllCheckbox)
+                }
+            }
+        }
+    }
+
+    private fun setupSearchBar() {
+        binding?.searchBar?.searchBarTextField?.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                resetPaging()
+                val searchKeyword = binding?.searchBar?.searchBarTextField?.text.toString().trim()
+                viewModel.processEvent(AddProductEvent.SearchProduct(searchKeyword))
+                return@setOnEditorActionListener false
+            }
+            return@setOnEditorActionListener false
+        }
+        binding?.searchBar?.clearListener = { viewModel.processEvent(AddProductEvent.ClearSearchBar) }
+        binding?.searchBar?.searchBarPlaceholder = getString(R.string.smvc_search_product)
     }
 
 
+    private fun setupPaging() {
+        val pagingConfig = HasPaginatedList.Config(
+            pageSize = PAGE_SIZE,
+            onLoadNextPage = {
+                productAdapter.addItem(LoadingItem)
+            }, onLoadNextPageFinished = {
+                productAdapter.removeItem(LoadingItem)
+            })
+
+        binding?.recyclerView?.apply {
+            layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
+            applyPaddingToLastItem()
+            attachDividerItemDecoration()
+            adapter = productAdapter
+
+            attachPaging(this, pagingConfig) { page, _ ->
+                val nextPage = page.inc()
+                viewModel.processEvent(AddProductEvent.LoadPage(nextPage))
+            }
+        }
+    }
+
+    private fun observeUiState() {
+        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
+            viewModel.uiState.collect { state -> handleUiState(state) }
+        }
+    }
+
+    private fun observeUiEffect() {
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            viewModel.uiEffect.collect { event -> handleEffect(event) }
+        }
+    }
+
+    private fun handleEffect(effect: AddProductEffect) {
+        when (effect) {
+            is AddProductEffect.LoadNextPageSuccess -> {
+                val hasNextPage = effect.currentPageItems.size == PAGE_SIZE
+                notifyLoadResult(hasNextPage)
+            }
+            is AddProductEffect.ShowSortBottomSheet -> {
+                showSortBottomSheet(effect.selectedSort, effect.sortOptions)
+            }
+            is AddProductEffect.ShowProductCategoryBottomSheet -> {
+                showCategorySheet(effect.selectedCategories, effect.categories)
+            }
+            is AddProductEffect.ShowShowcasesBottomSheet -> {
+                showShopShowcasesBottomSheet(effect.selectedShowcases, effect.showcases)
+            }
+            is AddProductEffect.ShowWarehouseLocationBottomSheet -> {
+                showWarehouseBottomSheet(effect.selectedWarehouse, effect.warehouses)
+            }
+            is AddProductEffect.ShowVariantBottomSheet -> {
+                displayVariantBottomSheet(effect.selectedParentProduct)
+            }
+            is AddProductEffect.ConfirmAddProduct -> {
+                displayShareBottomSheet(
+                    effect.selectedParentProducts,
+                    effect.selectedParentProductImageUrls,
+                    effect.shop
+                )
+            }
+        }
+    }
+
+
+    private fun handleUiState(uiState: AddProductUiState) {
+        renderLoadingState(uiState.isLoading)
+
+        renderSelectAllCheckbox(uiState)
+        renderMaxProductSelection(uiState.voucherCreationMetadata?.maxProduct.orZero())
+
+        //Filter
+        renderSortChips(uiState.selectedSort)
+        renderWarehouseLocationChips(uiState.selectedWarehouseLocation)
+        renderCategoryChips(uiState.selectedCategories)
+        renderShopShowcaseChips(uiState.selectedShopShowcase)
+
+        renderList(uiState.products)
+        renderEmptyState(uiState.totalProducts, uiState.isLoading)
+
+        renderBottomSection(uiState)
+    }
+
+    private fun renderMaxProductSelection(maxProductSelection : Int) {
+        binding?.tpgMaxProductSelection?.text = getString(
+            R.string.smvc_placeholder_max_selected_product,
+            maxProductSelection
+        )
+
+    }
+
+    private fun renderLoadingState(isLoading: Boolean) {
+        binding?.loader?.isVisible = isLoading
+    }
+
+    private fun renderList(products: List<DelegateAdapterItem> ) {
+        productAdapter.submit(products)
+
+        if (products.isEmpty()) {
+            resetPaging()
+        }
+    }
+
+    private fun renderBottomSection(uiState: AddProductUiState) {
+        binding?.tpgSelectedProductCount?.text = getString(
+            R.string.smvc_placeholder_selected_product_count,
+            uiState.selectedProductsIds.size,
+            uiState.totalProducts.orZero()
+        )
+        binding?.btnAddProduct?.isEnabled = uiState.selectedProductsIds.isNotEmpty()
+    }
+
+    private fun renderEmptyState(totalProducts: Int, isLoading : Boolean) {
+        binding?.recyclerView?.isVisible = totalProducts.isMoreThanZero()
+        binding?.cardUnify2?.isVisible = totalProducts.isMoreThanZero()
+        binding?.checkbox?.isVisible = totalProducts.isMoreThanZero()
+        binding?.dividerList?.isVisible = totalProducts.isMoreThanZero()
+        binding?.tpgSelectAll?.isVisible = totalProducts.isMoreThanZero()
+        binding?.tpgMaxProductSelection?.isVisible = totalProducts.isMoreThanZero()
+        binding?.emptyStateAddProduct?.isVisible = totalProducts.isZero() && !isLoading
+    }
+
+    private fun renderSelectAllCheckbox(uiState: AddProductUiState) {
+        binding?.checkbox?.isChecked = uiState.isSelectAllActive
+
+        val checkboxWording = if (uiState.selectedProductsIds.isEmpty()) {
+            getString(R.string.smvc_select_all)
+        } else {
+            getString(
+                R.string.smvc_placeholder_check_all_selected_product_count,
+                uiState.selectedProductsIds.size,
+                uiState.totalProducts
+            )
+        } 
+        binding?.tpgSelectAll?.text = checkboxWording
+    }
+
+    private fun renderSortChips(selectedSort: ProductSortOptions) {
+        if (selectedSort.id == "DEFAULT") {
+            sortChips.type = ChipsUnify.TYPE_NORMAL
+            sortChips.selectedItem = arrayListOf(getString(R.string.smvc_sort))
+        } else {
+            sortChips.type = ChipsUnify.TYPE_SELECTED
+            sortChips.selectedItem = arrayListOf(selectedSort.name)
+        }
+    }
+
+    private fun renderWarehouseLocationChips(selectedWarehouse: Warehouse) {
+        if (selectedWarehouse.warehouseName.isEmpty()) {
+            locationChips.type = ChipsUnify.TYPE_NORMAL
+            locationChips.selectedItem = arrayListOf(getString(R.string.smvc_sort))
+        } else {
+            locationChips.type = ChipsUnify.TYPE_SELECTED
+            val warehouseName = if (selectedWarehouse.warehouseType == WarehouseType.DEFAULT_WAREHOUSE_LOCATION) {
+                getString(R.string.smvc_seller_location)
+            } else {
+                selectedWarehouse.warehouseName
+            }
+            locationChips.selectedItem = arrayListOf(warehouseName)
+        }
+    }
+
+    private fun renderShopShowcaseChips(selectedShowcases: List<ShopShowcase>) {
+        if (selectedShowcases.isEmpty()) {
+            showcaseChips.type = ChipsUnify.TYPE_NORMAL
+            showcaseChips.selectedItem = arrayListOf(getString(R.string.smvc_showcase))
+        } else if (selectedShowcases.size == ONE_FILTER_SELECTED) {
+            val selectedCategory = selectedShowcases.first()
+            showcaseChips.type = ChipsUnify.TYPE_SELECTED
+            showcaseChips.selectedItem = arrayListOf(selectedCategory.name)
+        } else {
+            showcaseChips.type = ChipsUnify.TYPE_SELECTED
+            showcaseChips.selectedItem = arrayListOf(
+                getString(
+                    R.string.smvc_placeholder_selected_showcase_count,
+                    selectedShowcases.size
+                )
+            )
+        }
+    }
+
+    private fun renderCategoryChips(selectedCategories: List<ProductCategoryOption>) {
+        if (selectedCategories.isEmpty()) {
+            categoryChips.type = ChipsUnify.TYPE_NORMAL
+            categoryChips.selectedItem = arrayListOf(getString(R.string.smvc_category))
+        } else if (selectedCategories.size == ONE_FILTER_SELECTED) {
+            val selectedCategory = selectedCategories.first()
+            categoryChips.type = ChipsUnify.TYPE_SELECTED
+            categoryChips.selectedItem = arrayListOf(selectedCategory.name)
+        } else {
+            categoryChips.type = ChipsUnify.TYPE_SELECTED
+            categoryChips.selectedItem = arrayListOf(
+                getString(
+                    R.string.smvc_placeholder_selected_category_count,
+                    selectedCategories.size
+                )
+            )
+        }
+    }
+
+    private fun setupSortFilter() {
+        val onLocationClicked = { viewModel.processEvent(AddProductEvent.TapLocationFilter) }
+        locationChips.listener = { onLocationClicked() }
+        locationChips.chevronListener = { onLocationClicked() }
+
+        val onCategoryClicked = { viewModel.processEvent(AddProductEvent.TapCategoryFilter) }
+        categoryChips.listener = { onCategoryClicked() }
+        categoryChips.chevronListener = { onCategoryClicked() }
+
+
+        val onShowCaseClicked = { viewModel.processEvent(AddProductEvent.TapShowCaseFilter) }
+        showcaseChips.listener = { onShowCaseClicked() }
+        showcaseChips.chevronListener = { onShowCaseClicked() }
+
+        val onSortClicked = { viewModel.processEvent(AddProductEvent.TapSortFilter) }
+        sortChips.listener = { onSortClicked() }
+        sortChips.chevronListener = { onSortClicked() }
+
+        val items = arrayListOf(locationChips, categoryChips, showcaseChips, sortChips)
+
+        binding?.sortFilter?.addItem(items)
+        binding?.sortFilter?.parentListener = {}
+        binding?.sortFilter?.dismissListener = {
+           viewModel.processEvent(AddProductEvent.ClearFilter)
+        }
+    }
+
+    private val onItemClick: (Int) -> Unit = { selectedItemPosition ->
+        val selectedItem = productAdapter.getItems()[selectedItemPosition]
+        val selectedItemId = (selectedItem.id() as? Long).orZero()
+
+        viewModel.processEvent(AddProductEvent.AddProductToSelection(selectedItemId))
+    }
+
+
+    private val onCheckboxClick: (Int, Boolean) -> Unit = { selectedItemPosition, isChecked ->
+        val selectedItem = productAdapter.getItems()[selectedItemPosition]
+        val selectedItemId = (selectedItem.id() as? Long).orZero()
+
+        if (isChecked) {
+            viewModel.processEvent(AddProductEvent.AddProductToSelection(selectedItemId))
+        } else {
+            viewModel.processEvent(AddProductEvent.RemoveProductFromSelection(selectedItemId))
+        }
+    }
+
+    private val onVariantClick: (Int) -> Unit = { selectedItemPosition ->
+        val selectedItem = productAdapter.getItems()[selectedItemPosition]
+        val selectedParentProduct = (selectedItem as? Product)
+
+        selectedParentProduct?.run {
+            viewModel.processEvent(AddProductEvent.TapVariant(this))
+        }
+
+    }
+
+    private fun showSortBottomSheet(
+        selectedSort: ProductSortOptions,
+        remoteSortOptions: List<ProductSortOptions>
+    ) {
+        if (!isAdded) return
+        val sortAdapter = ProductSortAdapter()
+
+        val sortOptions = remoteSortOptions.map { sort ->
+            val isSelected = sort.id == selectedSort.id
+            SingleSelectionItem(sort.id, sort.name, isSelected, sort.value)
+        }
+
+        val bottomSheet = SingleSelectionBottomSheet.newInstance(selectedSort.id, sortOptions)
+
+        bottomSheet.setBottomSheetTitle(getString(R.string.smvc_sort))
+
+        sortAdapter.setOnItemClicked { newItem ->
+            sortAdapter.markAsSelected(newItem)
+
+            viewModel.processEvent(AddProductEvent.ApplySortFilter(ProductSortOptions(newItem.id, newItem.name, newItem.direction)))
+
+            bottomSheet.dismiss()
+        }
+
+        bottomSheet.setCustomAppearance {
+            recyclerView.adapter = sortAdapter
+            button.gone()
+            sortAdapter.submit(sortOptions)
+        }
+        
+        bottomSheet.show(childFragmentManager, bottomSheet.tag)
+    }
+
+    private fun showWarehouseBottomSheet(selectedWarehouse: Warehouse, remoteWarehouseOptions: List<Warehouse>) {
+        if (!isAdded) return
+
+        val warehouseFilterAdapter = WarehouseFilterAdapter()
+
+        val warehouseOptions = remoteWarehouseOptions.map { sort ->
+            val isSelected = sort.warehouseId == selectedWarehouse.warehouseId
+            val warehouseName = if (sort.warehouseType == WarehouseType.DEFAULT_WAREHOUSE_LOCATION) {
+                getString(R.string.smvc_seller_location)
+            } else {
+                sort.warehouseName
+            }
+
+            SingleSelectionItem(sort.warehouseId.toString(), warehouseName, isSelected, "")
+        }
+
+        val bottomSheet = SingleSelectionBottomSheet.newInstance(
+            selectedWarehouse.warehouseId.toString(),
+            warehouseOptions
+        )
+
+        bottomSheet.setBottomSheetTitle(getString(R.string.smvc_location))
+
+        warehouseFilterAdapter.setOnItemClicked { newItem ->
+            warehouseFilterAdapter.markAsSelected(newItem)
+
+            val warehouseType = if (newItem.name == "Shop Location") {
+                WarehouseType.DEFAULT_WAREHOUSE_LOCATION
+            } else {
+                WarehouseType.WAREHOUSE
+            }
+
+            val newlySelectedWarehouse = Warehouse(newItem.id.toLong(), newItem.name, warehouseType)
+            val event = AddProductEvent.ApplyWarehouseLocationFilter(newlySelectedWarehouse)
+            viewModel.processEvent(event)
+
+            bottomSheet.dismiss()
+        }
+
+        bottomSheet.setCustomAppearance {
+            recyclerView.adapter = warehouseFilterAdapter
+            button.gone()
+            warehouseFilterAdapter.submit(warehouseOptions)
+        }
+
+        bottomSheet.show(childFragmentManager, bottomSheet.tag)
+    }
+
+    private fun showCategorySheet(
+        selectedCategories: List<ProductCategoryOption>,
+        remoteCategory: List<ProductCategoryOption>
+    ) {
+        if (!isAdded) return
+
+        val categoryFilterAdapter = CategoryFilterAdapter()
+
+        val selectedCategoryIds = selectedCategories.map { category -> category.id }
+        val categoriesOptions = remoteCategory.map { category ->
+            MultipleSelectionItem(category.id, category.name, category.id in selectedCategoryIds)
+        }
+
+        val bottomSheet = MultipleSelectionBottomSheet.newInstance(selectedCategoryIds, categoriesOptions)
+
+        bottomSheet.setBottomSheetTitle(getString(R.string.smvc_category))
+
+        categoryFilterAdapter.setOnItemClicked { newItem ->
+            bottomSheet.getBottomsheetView()?.btnApply?.enable()
+            categoryFilterAdapter.markAsSelected(newItem)
+        }
+
+        bottomSheet.setOnApplyButtonClick {
+            val selectedItem = categoryFilterAdapter.getSelectedItems()
+            val newlySelectedCategories = selectedItem.map { ProductCategoryOption(it.id, it.name, it.name) }
+            val event = AddProductEvent.ApplyCategoryFilter(newlySelectedCategories)
+            viewModel.processEvent(event)
+        }
+
+        bottomSheet.setCustomAppearance {
+            recyclerView.adapter = categoryFilterAdapter
+            categoryFilterAdapter.submit(categoriesOptions)
+        }
+
+        bottomSheet.show(childFragmentManager, bottomSheet.tag)
+    }
+
+    private fun showShopShowcasesBottomSheet(
+        selectedShowcases: List<ShopShowcase>,
+        remoteShopShowcases: List<ShopShowcase>
+    ) {
+        if (!isAdded) return
+
+        val showcaseFilterAdapter = ShopShowcaseFilterAdapter()
+
+        val selectedShowcasesIds = selectedShowcases.map { showcase -> showcase.id }
+        val showcasesOptions = remoteShopShowcases.map { showcase ->
+            MultipleSelectionItem(showcase.id.toString(), showcase.name, showcase.id in selectedShowcasesIds)
+        }
+
+        val bottomSheet = MultipleSelectionBottomSheet.newInstance(
+            selectedShowcasesIds.map { it.toString() },
+            showcasesOptions
+        )
+
+        bottomSheet.setBottomSheetTitle(getString(R.string.smvc_showcase))
+
+        showcaseFilterAdapter.setOnItemClicked { newItem ->
+            bottomSheet.getBottomsheetView()?.btnApply?.enable()
+            showcaseFilterAdapter.markAsSelected(newItem)
+        }
+
+        bottomSheet.setOnApplyButtonClick {
+            val selectedItem = showcaseFilterAdapter.getSelectedItems()
+            val newlySelectedShowcases = selectedItem.map {
+                ShopShowcase(
+                    it.id.toLong(),
+                    it.name,
+                    it.name,
+                    NumberConstant.ID_SELLER_CREATED_SHOWCASE_TYPE
+                )
+            }
+            val event = AddProductEvent.ApplyShowCaseFilter(newlySelectedShowcases)
+            viewModel.processEvent(event)
+        }
+
+        bottomSheet.setCustomAppearance {
+            recyclerView.adapter = showcaseFilterAdapter
+            showcaseFilterAdapter.submit(showcasesOptions)
+        }
+
+        bottomSheet.show(childFragmentManager, bottomSheet.tag)
+    }
+
+    private fun displayShareBottomSheet(
+        selectedProducts: List<Product>,
+        selectedProductImageUrls: List<String>,
+        shop: ShopData
+    ) {
+        val voucherStartDate = Date()
+        val voucherEndDate = Date()
+
+        val endDate = voucherEndDate.formatTo(DateConstant.DATE_YEAR_PRECISION)
+        val endHour = voucherEndDate.formatTo(DateConstant.TIME_MINUTE_PRECISION)
+
+        val formattedShopName = MethodChecker.fromHtml(shop.name).toString()
+        val title = String.format(
+            getString(R.string.smvc_placeholder_share_component_outgoing_title),
+            formattedShopName
+        )
+        val description = String.format(
+            getString(R.string.smvc_placeholder_share_component_text_description),
+            formattedShopName,
+            endDate,
+            endHour
+        )
+
+        val imageGeneratorParam = SharingComponentInstanceBuilder.Param(
+            voucherId = 1239,
+            isPublic = true,
+            voucherCode = "UNVRCUAN",
+            voucherStartTime = voucherStartDate,
+            voucherEndTime = voucherEndDate,
+            promoType = PromoType.CASHBACK,
+            benefitType = BenefitType.NOMINAL,
+            shopLogo = shop.logo,
+            shopName = formattedShopName,
+            discountAmount = 500_000,
+            discountAmountMax = 1_000_000,
+            productImageUrls = selectedProductImageUrls
+        )
+
+        shareComponentBottomSheet = shareComponentInstanceBuilder.build(
+            imageGeneratorParam,
+            title,
+            onShareOptionsClicked = { shareModel ->
+                handleShareOptionSelection(
+                    imageGeneratorParam.voucherId,
+                    shareModel,
+                    title,
+                    description,
+                    shop.domain
+                )
+            },
+            onCloseOptionClicked = {
+
+            })
+
+        shareComponentBottomSheet?.show(childFragmentManager, shareComponentBottomSheet?.tag)
+    }
+
+    private fun handleShareOptionSelection(
+        voucherId: Long,
+        shareModel: ShareModel,
+        title: String,
+        description: String,
+        shopDomain: String
+    ) {
+        val shareCallback = object : ShareCallback {
+            override fun urlCreated(linkerShareData: LinkerShareResult?) {
+                val wording = "$description ${linkerShareData?.shareUri.orEmpty()}"
+                SharingUtil.executeShareIntent(
+                    shareModel,
+                    linkerShareData,
+                    activity,
+                    view,
+                    wording
+                )
+                shareComponentBottomSheet?.dismiss()
+            }
+
+            override fun onError(linkerError: LinkerError?) {}
+        }
+
+        val linkerDataGenerator = LinkerDataGenerator()
+        val outgoingDescription = getString(R.string.smvc_share_component_outgoing_text_description)
+        val linkerShareData = linkerDataGenerator.generate(
+            voucherId,
+            userSession.shopId,
+            shopDomain,
+            shareModel,
+            title,
+            outgoingDescription
+        )
+        LinkerManager.getInstance().executeShareRequest(
+            LinkerUtils.createShareRequest(
+                Int.ZERO,
+                linkerShareData,
+                shareCallback
+            )
+        )
+    }
+
+    private fun displayVariantBottomSheet(selectedParentProduct: Product) {
+        val bottomSheet = SelectVariantBottomSheet.newInstance(selectedParentProduct)
+        bottomSheet.setOnSelectButtonClick { selectedVariantIds ->
+            viewModel.processEvent(AddProductEvent.VariantUpdated(selectedParentProduct.id, selectedVariantIds))
+        }
+        bottomSheet.show(childFragmentManager, bottomSheet.tag)
+    }
+
+    private fun CompoundButton.isClickTriggeredByUserInteraction() : Boolean {
+        return isPressed
+    }
 }

@@ -4,14 +4,62 @@
     <string name="smvc_add_product">Tambah Produk</string>
     <string name="smvc_add_product_subtitle">Pilih produk untuk dipasang kupon.</string>
     <string name="smvc_search_product">Cari nama produk</string>
-    <string name="smvc_select_all">Piih Semua</string>
+    <string name="smvc_select_all">Pilih Semua</string>
+    <string name="smvc_select">Pilih</string>
+    <string name="smvc_product">Produk</string>
+    <string name="smvc_seller_location">Lokasi Seller</string>
+    <string name="smvc_location">Lokasi</string>
+    <string name="smvc_category">Kategori</string>
+    <string name="smvc_showcase">Etalase</string>
+    <string name="smvc_sort">Urutkan</string>
+    <string name="smvc_update">Ubah</string>
+    <string name="smvc_select_variant">Pilih Varian</string>
+    <string name="smvc_empty_state_no_product_title">Oops, produk nggak ditemukan</string>
+    <string name="smvc_empty_state_no_product_description">Coba gunakan kata kunci lain atau filter yang berbeda, ya.</string>
 
     <string name="smvc_placeholder_max_selected_product">Maks. %d Produk</string>
-    <string name="smvc_placeholder_selected_product_count">%d/%d Produk</string>
+    <string name="smvc_placeholder_selected_product_count">%d/%d</string>
+    <string name="smvc_placeholder_check_all_selected_product_count">%d / %d terpilih</string>
     <string name="smvc_placeholder_product_sku">SKU %s</string>
-    <string name="smvc_placeholder_product_sold_count">Terjual: %d</string>
+    <string name="smvc_placeholder_product_sold_count">Terjual: %s</string>
     <string name="smvc_placeholder_variant_product_count">%d Varian Produk</string>
+    <string name="smvc_placeholder_selected_variant_product_count">&lt;b>%d&lt;/b>/%d Varian Produk Terpilih</string>
+    <string name="smvc_placeholder_modified_variant_product_count">%d/%d Varian Produk Terpilih</string>
+    <string name="smvc_placeholder_product_price_range">Rp%s - Rp%s</string>
+    <string name="smvc_placeholder_product_price">Rp%s</string>
+    <string name="smvc_placeholder_total_stock">Total stok: %s</string>
+    <string name="smvc_placeholder_selected_category_count">%d Kategori</string>
+    <string name="smvc_placeholder_selected_showcase_count">%d Etalase</string>
+    <string name="smvc_placeholder_selected_variant_count">Pilih (%d)</string>
+    <string name="smvc_placholder_stock">Stok: %d</string>
+
+
+    <!--Share Component-->
+    <string name="smvc_placeholder_share_component_outgoing_title">Kupon Produk dari %s</string>
+    <string name="smvc_share_component_outgoing_text_description">Yuk, belanja dan pakai Kupon Produknya sekarang!</string>
+    <string name="smvc_placeholder_share_component_text_description">Dapatkan Kupon Produk %s di \@Tokopedia hingga %s pukul %s WIB hanya untukmu!</string>
     <string name="smvc_placeholder_product_price">%s - %s</string>
+
+    <string name="bullet_unicode">\u2022</string>
+
+    <!--  Expense Estimation Bottom Sheet  -->
+    <string name="mvc_bottomsheet_expense_estimation_title">Pengeluaran Promosi</string>
+    <string name="mvc_bottomsheet_expense_estimation_point_one">Kuota penggunaan kupon akan berkurang saat transaksi selesai.</string>
+    <string name="mvc_bottomsheet_expense_estimation_point_two">1 kuota penggunaan berlaku untuk 1 kali transaksi dari 1 pembeli selama periode berlangsung kupon. Kamu tidak perlu membayar kupon yang tidak digunakan oleh pembeli.</string>
+    <string name="mvc_bottomsheet_expense_estimation_footnote_header">Perhitungan pengeluaran</string>
+    <string name="mvc_bottomsheet_expense_estimation_footnote_body">Estimasi = Nominal Promo x Kuota Penggunaan Kupon</string>
+
+    <!--  Promotion Type Bottom Sheet  -->
+    <string name="mvc_bottomsheet_promotion_type_title">Tipe Promo</string>
+    <string name="mvc_bottomsheet_promotion_type_point_one">Gratis Ongkir: Pembeli akan dapat potongan ongkir.</string>
+    <string name="mvc_bottomsheet_promotion_type_point_two">Cashback: Pembeli akan dapat cashback berupa Gopay Coins.</string>
+    <string name="mvc_bottomsheet_promotion_type_point_three">Diskon: Pembeli akan dapat potongan harga secara langsung saat checkout.</string>
+
+    <!--  Promotion Type Bottom Sheet  -->
+    <string name="mvc_bottomsheet_quota_information_title">Kuota Penggunaan Kupon</string>
+    <string name="mvc_bottomsheet_quota_information_point_one">Kuota penggunaan kupon akan berkurang saat transaksi selesai.</string>
+    <string name="mvc_bottomsheet_quota_information_point_two">1 kuota penggunaan berlaku untuk 1 kali transaksi dari 1 pembeli selama periode berlangsung kupon. Kamu tidak perlu membayar kupon yang tidak digunakan oleh pembeli.</string>
+
 
     <!--Voucher detail page-->
     <string name="smvc_ubah_kupon_label">Ubah Kupon</string>
@@ -62,4 +110,5 @@
     <string name="smvc_duplicate_label">Duplikat</string>
     <string name="smvc_promotion_package_label">Paket Promosi</string>
     <string name="smvc_product_count_placeholder">%d Produk</string>
+
 </resources>
