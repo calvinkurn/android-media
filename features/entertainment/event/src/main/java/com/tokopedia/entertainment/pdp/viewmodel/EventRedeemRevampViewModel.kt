@@ -44,6 +44,7 @@ class EventRedeemRevampViewModel @Inject constructor(
     private val _inputRedeemedUrl = MutableSharedFlow<String>(Int.ONE)
     private val _inputOldRedeemedUrl = MutableSharedFlow<String>(Int.ONE)
     var listRedemptions: List<Participant> = mutableListOf()
+    var oldFlowQuantity: Int = 0
 
     val flowRedeemData: SharedFlow<Result<EventRedeem>> =
         _inputRedeemUrl.flatMapConcat {
@@ -104,8 +105,9 @@ class EventRedeemRevampViewModel @Inject constructor(
         val value = response[EventRedeem::class.java]
 
         return if (value?.code == SUCCESS_CODE && !value.isError) {
-            listRedemptions = convertToRedeemResponse(response).data.redemptions ?: emptyList()
-            Success(convertToRedeemResponse(response))
+            val convertedResponse = convertToRedeemResponse(response)
+            updateListRedemptionAndQuantity(convertedResponse)
+            Success(convertedResponse)
         } else {
             val error = convertToErrorResponse(response)
             Fail(MessageErrorException(error))
@@ -149,6 +151,11 @@ class EventRedeemRevampViewModel @Inject constructor(
 
     fun getCheckedIdsSize(): Int {
         return EventRedeemMapper.getCheckedIdsSize(listRedemptions)
+    }
+
+    private fun updateListRedemptionAndQuantity(redeemData: EventRedeem) {
+        listRedemptions = redeemData.data.redemptions ?: emptyList()
+        oldFlowQuantity = redeemData.data.quantity
     }
 
     private fun getCheckedIds(): List<Int> {

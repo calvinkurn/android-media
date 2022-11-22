@@ -14,13 +14,17 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.entertainment.databinding.FragmentEventRedeemRevampBinding
 import com.tokopedia.entertainment.pdp.activity.EventRedeemActivity.Companion.EXTRA_URL_REDEEM
 import com.tokopedia.entertainment.pdp.bottomsheet.EventRedeemRevampBottomSheet
+import com.tokopedia.entertainment.pdp.common.util.EventRedeemMapper.getAllRedeemedTime
 import com.tokopedia.entertainment.pdp.common.util.EventRedeemMapper.getEmptyParticipant
+import com.tokopedia.entertainment.pdp.common.util.EventRedeemMapper.getOneParticipant
+import com.tokopedia.entertainment.pdp.common.util.EventRedeemMapper.getOneRedemptionPair
 import com.tokopedia.entertainment.pdp.common.util.EventRedeemMapper.getStatusNotAllDisabled
 import com.tokopedia.entertainment.pdp.common.util.EventRedeemMapper.participantToVisitableMapper
 import com.tokopedia.entertainment.pdp.data.redeem.redeemable.Data
 import com.tokopedia.entertainment.pdp.data.redeem.redeemable.Participant
 import com.tokopedia.entertainment.pdp.di.EventPDPComponent
 import com.tokopedia.entertainment.pdp.viewmodel.EventRedeemRevampViewModel
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.getDimens
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
@@ -131,7 +135,7 @@ class EventRedeemRevampFragment : BaseDaggerFragment(),
             viewModel.flowRedeem.collect {
                 when (it) {
                     is Success -> {
-                        showSuccessRedeem()
+                        showSuccessRedeem(isFromScan = false, viewModel.getCheckedIdsSize())
                     }
                     is Fail -> {
                         showErrorToaster(it.throwable.message)
@@ -146,7 +150,7 @@ class EventRedeemRevampFragment : BaseDaggerFragment(),
             viewModel.flowOldRedeem.collect {
                 when (it) {
                     is Success -> {
-                        showSuccessRedeem()
+                        showSuccessRedeem(isFromScan = false, viewModel.oldFlowQuantity)
                     }
                     is Fail -> {
                         showErrorToaster(it.throwable.message)
@@ -173,20 +177,28 @@ class EventRedeemRevampFragment : BaseDaggerFragment(),
         showGlobalError(isNotLogin = false, isUrlEmpty = false, throwable)
     }
 
+    /***
+     * All Voucher Already Redeemed redeem.redemptionStatus > 0
+    **/
     private fun showData(redeem: Data) {
         hideLoading()
         hideGlobalError()
-        hideRedeemLayout()
         showMainLayout()
         renderMainLayout(redeem)
+
+        if (redeem.redemptionStatus.isMoreThanZero()) {
+            showSuccessRedeem(isFromScan = true, Int.ZERO, redeem.product.createdAt)
+        } else {
+            hideRedeemLayout()
+        }
     }
 
-    private fun showSuccessRedeem() {
+    private fun showSuccessRedeem(isFromScan: Boolean, qty: Int, date: String = "") {
         hideLoading()
         hideGlobalError()
         showMainLayout()
         showRedeemLayout()
-        renderSuccessRedeemLayout()
+        renderSuccessRedeemLayout(isFromScan, qty, date)
     }
 
     private fun processRedeem() {
@@ -320,18 +332,16 @@ class EventRedeemRevampFragment : BaseDaggerFragment(),
         }
     }
 
+    /***
+     * Redemption is null or empty or one will have first condition
+     * * * Empty or null redemption will hit old redeem
+     * * * One Redemption will hit new redeem
+     * Redemption is not all redeemed will have second condition
+     **/
     private fun renderRedeemLayout() {
         binding?.run {
-            if (getStatusNotAllDisabled(getUpdateListRedemption())) {
-                tfRedeem.addOnFocusChangeListener = { _, hasFocus ->
-                    if (hasFocus) {
-                        showBottomSheet()
-                    }
-                }
-                btnRedeem.setOnClickListener {
-                    processRedeem()
-                }
-            } else if (getEmptyParticipant(getUpdateListRedemption())) {
+            if (getEmptyParticipant(getUpdateListRedemption()) || getOneParticipant(getUpdateListRedemption())) {
+                tgTitleRedeem.hide()
                 tfRedeem.hide()
                 btnRedeem.run {
                     val btnParamRedeem = layoutParams as ConstraintLayout.LayoutParams
@@ -339,8 +349,17 @@ class EventRedeemRevampFragment : BaseDaggerFragment(),
                     btnParamRedeem.leftToLeft = ConstraintLayout.LayoutParams.PARENT_ID
                     layoutParams = btnParamRedeem
 
+                    text = context.resources.getString(redeemString.ent_redeem_revamp_redeem_title)
+
                     setOnClickListener {
-                        processOldRedeem()
+                        if (getEmptyParticipant(getUpdateListRedemption())) {
+                            processOldRedeem()
+                        } else if (getOneParticipant(getUpdateListRedemption())){
+                            getOneRedemptionPair(getUpdateListRedemption())?.let {
+                                viewModel.updateCheckedIds(listOf(it))
+                                processRedeem()
+                            }
+                        }
                     }
                     setMargin(
                         getDimens(dimenUnify.unify_space_16),
@@ -349,31 +368,43 @@ class EventRedeemRevampFragment : BaseDaggerFragment(),
                         getDimens(dimenUnify.unify_space_0)
                     )
                 }
-            } else {
-                context?.let{ context ->
-                    tfRedeem.setMessage(context.resources.getString(redeemString.ent_redeem_success_all_redeemed))
-                    tfRedeem.textInputLayout.editText?.setText(ALL_REDEEMED)
-                    tfRedeem.isEnabled = false
-                    btnRedeem.isEnabled = false
+            } else if (getStatusNotAllDisabled(getUpdateListRedemption())) {
+                tfRedeem.addOnFocusChangeListener = { _, hasFocus ->
+                    if (hasFocus) {
+                        showBottomSheet()
+                    }
+                }
+                btnRedeem.setOnClickListener {
+                    processRedeem()
                 }
             }
         }
     }
 
-    private fun renderSuccessRedeemLayout() {
+    /***
+     * isFromScan mean get the redeem success from start
+     * if got isFromScan will show all redeemen without quantity showing
+     **/
+    private fun renderSuccessRedeemLayout(isFromScan: Boolean, qty: Int, date: String) {
         binding?.run {
             context?.let { context ->
                 tgSuccessRedeem.text =
-                    if (viewModel.getCheckedIdsSize().isMoreThanZero()) {
+                    if (isFromScan) {
                         context.resources.getString(
-                            redeemString.ent_redeem_success_redeem,
-                            viewModel.getCheckedIdsSize()
+                            redeemString.ent_redeem_success_all_already_redeem
                         )
                     } else {
                         context.resources.getString(
-                            redeemString.ent_redeem_success_old_redeem
+                            redeemString.ent_redeem_success_redeem,
+                            qty
                         )
                     }
+                if (isFromScan) {
+                    tgSuccessRedeemTime.show()
+                    tgSuccessRedeemTime.text = getAllRedeemedTime(context, date)
+                } else {
+                    tgSuccessRedeemTime.hide()
+                }
                 btnScan.setOnClickListener {
                     RouteManager.route(context, ApplinkConstInternalMarketplace.QR_SCANNEER)
                     activity?.finish()
@@ -441,7 +472,6 @@ class EventRedeemRevampFragment : BaseDaggerFragment(),
     }
 
     companion object {
-        private const val ALL_REDEEMED = "0"
         fun newInstance(urlRedeem: String) = EventRedeemRevampFragment().also {
             it.arguments = Bundle().apply {
                 putString(EXTRA_URL_REDEEM, urlRedeem)

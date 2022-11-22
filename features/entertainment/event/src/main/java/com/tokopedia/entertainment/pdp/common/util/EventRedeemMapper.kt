@@ -1,5 +1,6 @@
 package com.tokopedia.entertainment.pdp.common.util
 
+import android.annotation.SuppressLint
 import android.content.Context
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.entertainment.home.utils.DateUtils
@@ -11,7 +12,8 @@ import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.toIntSafely
-import java.util.*
+import java.text.SimpleDateFormat
+import java.util.Date
 import com.tokopedia.entertainment.R.string as stringRedeem
 
 /**
@@ -20,7 +22,8 @@ import com.tokopedia.entertainment.R.string as stringRedeem
 
 object EventRedeemMapper {
 
-    private const val REDEEM_TIME_FORMAT = "dd MMM yyyy hh:ss"
+    private const val REDEEM_TIME_FORMAT = "dd MMM yyyy HH:mm"
+    private const val REDEEM_RAW_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ssZ"
 
     fun participantToVisitableMapper(participants: List<Participant>, context: Context): List<Visitable<*>> {
         val participantList = mutableListOf<Visitable<*>>()
@@ -61,6 +64,10 @@ object EventRedeemMapper {
         return participants.isEmpty()
     }
 
+    fun getOneParticipant(participants: List<Participant>): Boolean {
+        return participants.size == Int.ONE
+    }
+
     fun getCheckedIdsSize(participants: List<Participant>): Int {
         var size = 0
         participants.forEach{ participant ->
@@ -92,6 +99,24 @@ object EventRedeemMapper {
         }
     }
 
+    @SuppressLint("SimpleDateFormat")
+    fun getAllRedeemedTime(context: Context, redemptionTime: String): String {
+        val parser = SimpleDateFormat(REDEEM_RAW_TIME_FORMAT)
+        val formatter = SimpleDateFormat(REDEEM_TIME_FORMAT)
+        val formattedDate = formatter.format(parser.parse(redemptionTime)) ?: ""
+
+        return context.resources.getString(
+            stringRedeem.ent_redeem_success_all_redeem_time,
+            formattedDate
+        )
+    }
+
+    fun getOneRedemptionPair(participants: List<Participant>): Pair<String, Boolean>? {
+        val redemption = participants.firstOrNull()
+        return redemption?.run {
+            Pair(id, true)
+        }
+    }
     private fun dayTitle(day: Int, context: Context) : String {
         return context.resources.getString(stringRedeem.ent_redeem_revamp_day, day)
     }
@@ -123,5 +148,4 @@ object EventRedeemMapper {
             ""
         }
     }
-
 }

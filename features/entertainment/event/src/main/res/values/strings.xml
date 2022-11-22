@@ -137,6 +137,8 @@
     <string name="ent_redeem_revamp_subtitle">%s: %s \u0020</string>
     <string name="ent_redeem_success_redeem">Berhasil redeem %d tiket!</string>
     <string name="ent_redeem_success_old_redeem">Berhasil redeem tiket!</string>
+    <string name="ent_redeem_success_all_already_redeem">Semua tiket sudah di redeem</string>
     <string name="ent_redeem_success_all_redeemed">Tiket Habis Terpakai</string>
     <string name="ent_redeem_success_redeem_time">Di redeem pada %s</string>
+    <string name="ent_redeem_success_all_redeem_time">%s WIB</string>
 </resources>
