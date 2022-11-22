@@ -1986,7 +1986,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         widgetType: String
     ) {
         val widgetList: MutableList<BaseWidgetUiModel<*>> = if (widgetType == WidgetType.CARD) {
-            getWidgetListForSse(widgetDataList)
+            getWidgetListForSse(widgetDataList).toMutableList()
         } else {
             adapter.data.toMutableList()
         }
@@ -2026,7 +2026,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
      * the card widget if card widget data from SSE is more then 0.
      * So this method to handle that and will return list of widgets
      * */
-    private fun <D : BaseDataUiModel> getWidgetListForSse(widgetDataList: List<D>): MutableList<BaseWidgetUiModel<*>> {
+    private fun <D : BaseDataUiModel> getWidgetListForSse(widgetDataList: List<D>): List<BaseWidgetUiModel<*>> {
         val widgetMap: Map<String, BaseWidgetUiModel<*>> = adapter.data.associateBy { it.dataKey }
         val widgetList = mutableListOf<BaseWidgetUiModel<*>>()
         val widgetDataMap = widgetDataList.associateBy { it.dataKey }
@@ -2049,7 +2049,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             }
         }
 
-        return widgetList
+        return widgetList.toList()
     }
 
     private fun showWidgetSuccessToaster() {
