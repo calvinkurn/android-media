@@ -596,7 +596,6 @@ class PostDynamicViewNew @JvmOverloads constructor(
         val subtitles = getCTAButtonSubtitle(feedXCard)
 
         if (!subtitles.isNullOrEmpty()) {
-            topAdsProductSubtitleContainer.removeAllViews()
             subtitles.mapIndexed { index, subtitle ->
                 if (index == ZERO) {
                     topAdsProductSubtitleFirst.text = subtitle
@@ -606,7 +605,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
             }
 
             // set animation to subtitles
-            if (topAdsProductSubtitleContainer.childCount > ONE) {
+            if (subtitles.size > ONE) {
                 animationHandler = FeedXCardSubtitlesAnimationHandler(
                     WeakReference(topAdsProductSubtitleFirst),
                     WeakReference(topAdsProductSubtitleSecond)
