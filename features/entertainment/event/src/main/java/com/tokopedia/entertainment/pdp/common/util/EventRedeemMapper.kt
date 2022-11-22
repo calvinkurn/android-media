@@ -20,6 +20,8 @@ import com.tokopedia.entertainment.R.string as stringRedeem
 
 object EventRedeemMapper {
 
+    private const val REDEEM_TIME_FORMAT = "dd MMM yyyy hh:ss"
+
     fun participantToVisitableMapper(participants: List<Participant>, context: Context): List<Visitable<*>> {
         val participantList = mutableListOf<Visitable<*>>()
         participants.groupBy {
@@ -114,7 +116,7 @@ object EventRedeemMapper {
             context.resources.getString(stringRedeem.ent_redeem_success_redeem_time,
                 DateUtils.dateToString(
                     Date(redemptionTime.toLong() * DateUtils.SECOND_IN_MILIS),
-                    "dd MMM yyyy hh:ss"
+                    REDEEM_TIME_FORMAT
                 )
             )
         } else {
