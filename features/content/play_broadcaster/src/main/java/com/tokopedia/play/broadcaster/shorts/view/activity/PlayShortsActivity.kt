@@ -2,7 +2,6 @@ package com.tokopedia.play.broadcaster.shorts.view.activity
 
 import android.content.Intent
 import android.os.Bundle
-import android.view.LayoutInflater
 import android.view.View
 import androidx.activity.viewModels
 import androidx.fragment.app.Fragment
@@ -16,7 +15,6 @@ import com.tokopedia.content.common.types.ContentCommonUserType
 import com.tokopedia.content.common.ui.bottomsheet.SellerTncBottomSheet
 import com.tokopedia.content.common.ui.model.TermsAndConditionUiModel
 import com.tokopedia.globalerror.GlobalError
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.picker.common.MediaPicker
 import com.tokopedia.picker.common.PageSource
@@ -27,14 +25,12 @@ import com.tokopedia.play.broadcaster.databinding.ActivityPlayShortsBinding
 import com.tokopedia.play.broadcaster.shorts.di.DaggerPlayShortsComponent
 import com.tokopedia.play.broadcaster.shorts.di.PlayShortsModule
 import com.tokopedia.play.broadcaster.shorts.ui.model.action.PlayShortsAction
-import com.tokopedia.play.broadcaster.shorts.ui.model.event.PlayShortsBottomSheet
-import com.tokopedia.play.broadcaster.shorts.ui.model.event.PlayShortsOneTimeEvent
+import com.tokopedia.play.broadcaster.shorts.ui.model.event.PlayShortsUiEvent
 import com.tokopedia.play.broadcaster.shorts.ui.model.state.PlayShortsUiState
 import com.tokopedia.play.broadcaster.shorts.view.bottomsheet.ShortsAccountNotEligibleBottomSheet
 import com.tokopedia.play.broadcaster.shorts.view.fragment.PlayShortsPreparationFragment
 import com.tokopedia.play.broadcaster.shorts.view.fragment.base.PlayShortsBaseFragment
 import com.tokopedia.play.broadcaster.shorts.view.viewmodel.PlayShortsViewModel
-import com.tokopedia.play.broadcaster.util.extension.channelNotFound
 import com.tokopedia.play_common.util.extension.withCache
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
@@ -171,9 +167,29 @@ class PlayShortsActivity : BaseActivity() {
         }
 
         lifecycleScope.launchWhenStarted {
-            viewModel.uiEvent.collect {
-                renderBottomSheet(it.bottomSheet)
-                renderOneTimeEvent(it.oneTimeEvent)
+            viewModel.uiEvent.collect { event ->
+                when (event) {
+                    is PlayShortsUiEvent.UGCOnboarding -> {
+                        showUGCOnboardingBottomSheet(event.hasUsername)
+
+                        if(isFragmentContainerEmpty()) showNoEligibleAccountBackground(true)
+                    }
+                    is PlayShortsUiEvent.AccountNotEligible -> {
+                        showNoEligibleAccountBottomSheet()
+
+                        if(isFragmentContainerEmpty()) showNoEligibleAccountBackground(true)
+                    }
+                    is PlayShortsUiEvent.SellerNotEligible -> {
+                        showSellerNotEligibleBottomSheet()
+
+                        if(isFragmentContainerEmpty()) showNoEligibleAccountBackground(true)
+                    }
+                    is PlayShortsUiEvent.ErrorPreparingPage -> {
+                        binding.loader.visibility = View.GONE
+                        binding.globalError.visibility = View.VISIBLE
+                    }
+                    else -> {}
+                }
             }
         }
     }
@@ -198,37 +214,6 @@ class PlayShortsActivity : BaseActivity() {
         if(prev?.globalLoader == curr.globalLoader) return
 
         binding.loader.showWithCondition(curr.globalLoader)
-    }
-
-    private fun renderBottomSheet(bottomSheet: PlayShortsBottomSheet) {
-        when (bottomSheet) {
-            is PlayShortsBottomSheet.UGCOnboarding -> {
-                showUGCOnboardingBottomSheet(bottomSheet.hasUsername)
-
-                if(isFragmentContainerEmpty()) showNoEligibleAccountBackground(true)
-            }
-            is PlayShortsBottomSheet.AccountNotEligible -> {
-                showNoEligibleAccountBottomSheet()
-
-                if(isFragmentContainerEmpty()) showNoEligibleAccountBackground(true)
-            }
-            is PlayShortsBottomSheet.SellerNotEligible -> {
-                showSellerNotEligibleBottomSheet()
-
-                if(isFragmentContainerEmpty()) showNoEligibleAccountBackground(true)
-            }
-            else -> {}
-        }
-    }
-
-    private fun renderOneTimeEvent(oneTimeEvent: PlayShortsOneTimeEvent) {
-        when(oneTimeEvent) {
-            is PlayShortsOneTimeEvent.ErrorPreparingPage -> {
-                binding.loader.visibility = View.GONE
-                binding.globalError.visibility = View.VISIBLE
-            }
-            else -> {}
-        }
     }
 
     private fun openMediaPicker() {

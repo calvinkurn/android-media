@@ -13,25 +13,16 @@ import com.tokopedia.play.broadcaster.shorts.factory.PlayShortsMediaSourceFactor
 import com.tokopedia.play.broadcaster.shorts.ui.model.PlayShortsConfigUiModel
 import com.tokopedia.play.broadcaster.shorts.ui.model.PlayShortsMediaUiModel
 import com.tokopedia.play.broadcaster.shorts.ui.model.action.PlayShortsAction
-import com.tokopedia.play.broadcaster.shorts.ui.model.event.PlayShortsBottomSheet
-import com.tokopedia.play.broadcaster.shorts.ui.model.event.PlayShortsOneTimeEvent
-import com.tokopedia.play.broadcaster.shorts.ui.model.event.PlayShortsToaster
 import com.tokopedia.play.broadcaster.shorts.ui.model.event.PlayShortsUiEvent
 import com.tokopedia.play.broadcaster.shorts.ui.model.state.PlayShortsCoverFormUiState
 import com.tokopedia.play.broadcaster.shorts.ui.model.state.PlayShortsTitleFormUiState
 import com.tokopedia.play.broadcaster.shorts.ui.model.state.PlayShortsUiState
-import com.tokopedia.play.broadcaster.shorts.util.oneTimeUpdate
 import com.tokopedia.play.broadcaster.shorts.view.custom.DynamicPreparationMenu
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
-import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.delay
-import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
@@ -146,7 +137,7 @@ class PlayShortsViewModel @Inject constructor(
         )
     }
 
-    private val _uiEvent = MutableStateFlow(PlayShortsUiEvent.Empty)
+    private val _uiEvent = MutableSharedFlow<PlayShortsUiEvent>()
     val uiEvent: Flow<PlayShortsUiEvent>
         get() = _uiEvent
 
@@ -194,9 +185,7 @@ class PlayShortsViewModel @Inject constructor(
 
             setupConfigurationIfEligible(bestEligibleAccount)
         }) {
-            _uiEvent.oneTimeUpdate {
-                it.copy(oneTimeEvent = PlayShortsOneTimeEvent.ErrorPreparingPage)
-            }
+            _uiEvent.emit(PlayShortsUiEvent.ErrorPreparingPage)
         }
     }
 
@@ -227,10 +216,8 @@ class PlayShortsViewModel @Inject constructor(
     }
 
     private fun handleClickSwitchAccount() {
-        _uiEvent.oneTimeUpdate {
-            it.copy(
-                bottomSheet = PlayShortsBottomSheet.SwitchAccount
-            )
+        viewModelScope.launch {
+            _uiEvent.emit(PlayShortsUiEvent.SwitchAccount)
         }
     }
 
@@ -241,9 +228,7 @@ class PlayShortsViewModel @Inject constructor(
             setupConfigurationIfEligible(newSelectedAccount)
 
         }) { throwable ->
-            _uiEvent.oneTimeUpdate {
-                it.copy(toaster = PlayShortsToaster.ErrorSwitchAccount(throwable))
-            }
+            _uiEvent.emit(PlayShortsUiEvent.ErrorSwitchAccount(throwable))
         }
     }
 
@@ -277,13 +262,9 @@ class PlayShortsViewModel @Inject constructor(
                 )
             }
 
-            _uiEvent.oneTimeUpdate {
-                it.copy(
-                    toaster = PlayShortsToaster.ErrorUploadTitle(throwable) {
-                        submitAction(PlayShortsAction.UploadTitle(title = title))
-                    }
-                )
-            }
+            _uiEvent.emit(PlayShortsUiEvent.ErrorUploadTitle(throwable) {
+                submitAction(PlayShortsAction.UploadTitle(title = title))
+            })
         }
     }
 
@@ -366,20 +347,20 @@ class PlayShortsViewModel @Inject constructor(
     }
 
     private fun emitEventSellerNotEligible() {
-        _uiEvent.oneTimeUpdate {
-            it.copy(bottomSheet = PlayShortsBottomSheet.SellerNotEligible)
+        viewModelScope.launch {
+            _uiEvent.emit(PlayShortsUiEvent.SellerNotEligible)
         }
     }
 
     private fun emitEventAccountNotEligible() {
-        _uiEvent.oneTimeUpdate {
-            it.copy(bottomSheet = PlayShortsBottomSheet.AccountNotEligible)
+        viewModelScope.launch {
+            _uiEvent.emit(PlayShortsUiEvent.AccountNotEligible)
         }
     }
 
     private fun emitEventUGCOnboarding(hasUsername: Boolean) {
-        _uiEvent.oneTimeUpdate {
-            it.copy(bottomSheet = PlayShortsBottomSheet.UGCOnboarding(hasUsername))
+        viewModelScope.launch {
+            _uiEvent.emit(PlayShortsUiEvent.UGCOnboarding(hasUsername))
         }
     }
 
