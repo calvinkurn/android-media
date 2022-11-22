@@ -89,6 +89,9 @@ import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Rule
@@ -96,6 +99,7 @@ import org.junit.Test
 import org.junit.jupiter.api.Assertions
 import org.mockito.ArgumentMatchers.anyLong
 import org.mockito.ArgumentMatchers.anyString
+import java.lang.reflect.Field
 
 /**
  * Created By @ilhamsuaib on 19/03/20
@@ -252,6 +256,9 @@ class SellerHomeViewModelTest {
         )
 
         dynamicParameter = getDynamicParameter()
+        /*rawWidgets = viewModel::class.java.getDeclaredField("rawWidgets").apply {
+            isAccessible = true
+        }*/
     }
 
     private fun getDynamicParameter(): DynamicParameterModel {
@@ -410,6 +417,7 @@ class SellerHomeViewModelTest {
         }
 
         Assertions.assertEquals(Success(layoutList), viewModel.widgetLayout.value)
+        Assertions.assertEquals(layoutList, viewModel.rawWidgetList)
     }
 
     @Test
@@ -511,6 +519,7 @@ class SellerHomeViewModelTest {
         assert((viewModel.widgetLayout.value as? Success)?.data?.all { actualWidget ->
             successLayoutList.find { it.data == actualWidget.data } != null
         } == true)
+        Assertions.assertEquals(layoutList, viewModel.rawWidgetList)
     }
 
     @Test
@@ -606,6 +615,7 @@ class SellerHomeViewModelTest {
             assert((viewModel.widgetLayout.value as? Success)?.data?.all { actualWidget ->
                 successLayoutList.find { it.data == actualWidget.data } != null
             } == true)
+            Assertions.assertEquals(layoutList, viewModel.rawWidgetList)
         }
     }
 
@@ -662,6 +672,7 @@ class SellerHomeViewModelTest {
         coVerify(exactly = 1) {
             getLayoutUseCase.executeOnBackground()
         }
+        Assertions.assertEquals(layoutList, viewModel.rawWidgetList)
     }
 
     @Test
@@ -3021,6 +3032,59 @@ class SellerHomeViewModelTest {
         viewModel.getWidgetLayout(1000f)
 
         assert((viewModel.widgetLayout.value as? Success)?.data?.any { it.id == DATA_KEY_ANNOUNCEMENT } == false)
+    }
+
+    @Test
+    fun `on stop sse`() {
+        viewModel.stopSSE()
+        verify { widgetSse.closeSse() }
+    }
+
+    @Test
+    fun `on start SSE when realTimeDataKeys is not empty then set card widgets data liveData`() {
+        coroutineTestRule.runBlockingTest {
+            val page = "home"
+            val param = listOf("cardWidget")
+            val cardData = CardDataUiModel()
+            val mockResponse = listOf(cardData)
+            every { widgetSse.listen() } returns flow { flowOf(mockResponse) }
+
+            viewModel.startSse(param)
+
+            verify { widgetSse.connect(page, param) }
+            coVerify { widgetSse.listen() }
+
+            widgetSse.listen().collect {
+                viewModel.cardWidgetData.verifySuccessEquals(Success(listOf(cardData)))
+            }
+        }
+    }
+
+    @Test
+    fun `on start SSE when realTimeDataKeys is not empty then set milestone widgets data liveData`() {
+        coroutineTestRule.runBlockingTest {
+            val page = "home"
+            val param = listOf("milestoneWidget")
+            val milestoneData = MilestoneDataUiModel()
+            val mockResponse = listOf(milestoneData)
+            every { widgetSse.listen() } returns flow { flowOf(mockResponse) }
+
+            viewModel.startSse(param)
+
+            verify { widgetSse.connect(page, param) }
+            coVerify { widgetSse.listen() }
+            widgetSse.listen().collect {
+                viewModel.milestoneWidgetData.verifySuccessEquals(Success(listOf(milestoneData)))
+            }
+        }
+    }
+
+    @Test
+    fun `on start SSE when realTimeDataKeys is empty`() {
+        val param = emptyList<String>()
+        viewModel.startSse(param)
+        verify(inverse = true) { widgetSse.connect(anyString(), param) }
+        verify(inverse = true) { widgetSse.listen() }
     }
 
     private fun provideCompleteSuccessWidgetLayout(): List<BaseWidgetUiModel<*>> {

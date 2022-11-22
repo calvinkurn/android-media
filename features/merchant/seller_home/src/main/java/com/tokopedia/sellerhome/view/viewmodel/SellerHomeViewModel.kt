@@ -12,6 +12,7 @@ import com.tokopedia.sellerhome.domain.model.ShippingLoc
 import com.tokopedia.sellerhome.domain.usecase.GetShopInfoByIdUseCase
 import com.tokopedia.sellerhome.domain.usecase.GetShopLocationUseCase
 import com.tokopedia.sellerhome.view.helper.SellerHomeLayoutHelper
+import com.tokopedia.sellerhome.view.helper.handleSseMessage
 import com.tokopedia.sellerhome.view.model.ShopShareDataUiModel
 import com.tokopedia.sellerhomecommon.common.const.DateFilterType
 import com.tokopedia.sellerhomecommon.domain.model.DynamicParameterModel
@@ -36,7 +37,6 @@ import com.tokopedia.sellerhomecommon.domain.usecase.GetUnificationDataUseCase
 import com.tokopedia.sellerhomecommon.domain.usecase.SubmitWidgetDismissUseCase
 import com.tokopedia.sellerhomecommon.presentation.model.AnnouncementDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.BarChartDataUiModel
-import com.tokopedia.sellerhomecommon.presentation.model.BaseDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.BaseWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.CalendarDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.CalendarFilterDataKeyUiModel
@@ -65,7 +65,6 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
-import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flowOn
@@ -112,8 +111,6 @@ class SellerHomeViewModel @Inject constructor(
         private const val TICKER_PAGE_NAME = "seller"
     }
 
-    private val rawWidgets: MutableList<BaseWidgetUiModel<*>> = mutableListOf()
-    private var sseJob: Job? = null
     private val shopId: String by lazy { userSession.get().shopId }
     private val dynamicParameter by lazy {
         val startDateMillis = DateTimeUtil.getNPastDaysTimestamp(daysBefore = 7)
@@ -125,6 +122,8 @@ class SellerHomeViewModel @Inject constructor(
             dateType = DateFilterType.DATE_TYPE_DAY
         )
     }
+    var rawWidgetList: List<BaseWidgetUiModel<*>> = emptyList()
+        private set
 
     private val _homeTicker = MutableLiveData<Result<List<TickerItemUiModel>>>()
     private val _widgetLayout = MutableLiveData<Result<List<BaseWidgetUiModel<*>>>>()
@@ -204,11 +203,6 @@ class SellerHomeViewModel @Inject constructor(
         )
     }
 
-    override fun onCleared() {
-        super.onCleared()
-        stopSSE()
-    }
-
     fun getTicker() {
         launchCatchError(block = {
             val useCase = getTickerUseCase.get()
@@ -272,8 +266,7 @@ class SellerHomeViewModel @Inject constructor(
     }
 
     private fun saveRawWidgets(widgets: List<BaseWidgetUiModel<*>>) {
-        this.rawWidgets.clear()
-        this.rawWidgets.addAll(widgets)
+        this.rawWidgetList = widgets
     }
 
     fun getCardWidgetData(dataKeys: List<String>) {
@@ -488,25 +481,17 @@ class SellerHomeViewModel @Inject constructor(
         })
     }
 
-    fun getRawWidgets(): List<BaseWidgetUiModel<*>> = rawWidgets
-
     fun startSse(realTimeDataKeys: List<String>) {
-        cancelSseJob()
-        sseJob = viewModelScope.launch(dispatcher.io) {
+        stopSSE()
+        viewModelScope.launch(dispatcher.io) {
             if (realTimeDataKeys.isNotEmpty()) {
                 widgetSse.get().connect(SELLER_HOME_SSE, realTimeDataKeys)
-                widgetSse.get().listen()
-                    .collect { data ->
-                        data?.let {
-                            handleSSEMessage(it)
-                        }
-                    }
+                widgetSse.get().listen().handleSseMessage(_cardWidgetData, _milestoneWidgetData)
             }
         }
     }
 
-    fun cancelSseJob() {
-        sseJob?.cancel()
+    fun stopSSE() {
         widgetSse.get().closeSse()
     }
 
@@ -562,25 +547,5 @@ class SellerHomeViewModel @Inject constructor(
         getTransformerFlow(useCaseResult, false).collect {
             liveData.value = Success(it)
         }
-    }
-
-    private suspend fun handleSSEMessage(model: BaseDataUiModel) {
-        withContext(dispatcher.main) {
-            when (model) {
-                is CardDataUiModel -> setLiveWidgetLiveData(_cardWidgetData, model)
-                is MilestoneDataUiModel -> setLiveWidgetLiveData(_milestoneWidgetData, model)
-            }
-        }
-    }
-
-    private fun <T : BaseDataUiModel> setLiveWidgetLiveData(
-        liveData: MutableLiveData<Result<List<T>>>, model: T
-    ) {
-        liveData.value = Success(listOf(model))
-    }
-
-    private fun stopSSE() {
-        sseJob?.cancel()
-        widgetSse.get().closeSse()
     }
 }

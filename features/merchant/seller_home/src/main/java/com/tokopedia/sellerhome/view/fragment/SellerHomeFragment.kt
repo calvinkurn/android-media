@@ -2031,7 +2031,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         val widgetList = mutableListOf<BaseWidgetUiModel<*>>()
         val widgetDataMap = widgetDataList.associateBy { it.dataKey }
 
-        sellerHomeViewModel.getRawWidgets().forEach { w ->
+        sellerHomeViewModel.rawWidgetList.forEach { w ->
             val widget = widgetMap[w.dataKey]
             if (w is CardWidgetUiModel) {
                 val data = widgetDataMap[w.dataKey]
@@ -2649,7 +2649,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     private fun startWidgetSse() {
         lifecycleScope.launchWhenResumed {
             withContext(Dispatchers.IO) {
-                val widgets = sellerHomeViewModel.getRawWidgets()
+                val widgets = sellerHomeViewModel.rawWidgetList
                 val isAnyRealtimeWidget = widgets.any { it.useRealtime }
                 if (isAnyRealtimeWidget) {
                     val realTimeDataKeys = widgets.filter { it.useRealtime }.map { it.dataKey }
@@ -2660,7 +2660,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     }
 
     private fun stopWidgetSse() {
-        sellerHomeViewModel.cancelSseJob()
+        sellerHomeViewModel.stopSSE()
     }
 
     interface Listener {
