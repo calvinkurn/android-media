@@ -1,9 +1,8 @@
 package com.tokopedia.product.manage.feature.list.view.adapter.viewholder
 
-import android.graphics.PorterDuff
 import android.view.View
+import android.view.ViewGroup
 import androidx.annotation.LayoutRes
-import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.image.ImageHandler.loadImageFitCenter
 import com.tokopedia.config.GlobalConfig
@@ -16,6 +15,7 @@ import com.tokopedia.product.manage.common.feature.list.data.model.ProductUiMode
 import com.tokopedia.product.manage.common.feature.quickedit.common.interfaces.ProductCampaignInfoListener
 import com.tokopedia.product.manage.databinding.ItemManageProductListBinding
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifycomponents.toDp
 import com.tokopedia.utils.view.binding.viewBinding
 
 class ProductViewHolder(
@@ -47,6 +47,8 @@ class ProductViewHolder(
         showProductImage(product)
         showNotifyMeBuyer(product)
         showStockHintImage(product)
+        showLabelGuaranteed(product)
+
         if (!product.isVariant()) {
             showStockAlertImage(product)
             showStockAlertActiveImage(product)
@@ -66,15 +68,17 @@ class ProductViewHolder(
 
     private fun impressionView() {
         val impressHolder = ImpressHolder()
-        if (adapterPosition.orZero() == Int.ZERO) {
-            binding?.imageNotifyMeBuyer?.addOnImpressionListener(impressHolder) {
-                listener.onImpressionNotifyMe()
+        if (absoluteAdapterPosition.orZero() == Int.ZERO) {
+            binding?.ivLabelGuaranteed?.addOnImpressionListener(impressHolder) {
+                listener.onImpressionLabelGuarantee()
             }
         }
 
         if (binding?.imageStockReminder?.isVisible.orTrue()) {
-            listener.onImpressionProductStockReminder()
-        } else if (binding?.btnMoreOptions?.isVisible.orTrue() && adapterPosition.orZero() == POSITION_TICKET_BTN_MORE_OPTION
+            if (!binding?.ivLabelGuaranteed?.isVisible.orFalse()){
+                listener.onImpressionProductStockReminder()
+            }
+        } else if (binding?.btnMoreOptions?.isVisible.orTrue() && absoluteAdapterPosition.orZero() == POSITION_TICKET_BTN_MORE_OPTION
             && GlobalConfig.isSellerApp()
         ) {
             if (!binding?.imageNotifyMeBuyer?.isVisible.orFalse()) {
@@ -122,7 +126,18 @@ class ProductViewHolder(
     private fun showProductLabel(product: ProductUiModel) {
         binding?.labelBanned?.showWithCondition(product.isViolation())
         binding?.labelInactive?.showWithCondition(product.isInactive())
+
         binding?.labelActive?.showWithCondition(product.isActive())
+
+        val layoutParams = binding?.labelActive?.layoutParams as ViewGroup.MarginLayoutParams
+        if (product.isStockGuaranteed) {
+            val marginLeft =
+                itemView.context?.resources?.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4)
+                    .orZero()
+            binding?.labelActive?.setMargin(marginLeft.toDp(), layoutParams.topMargin, Int.ZERO, Int.ZERO)
+        } else {
+            binding?.labelActive?.setMargin(Int.ZERO,layoutParams.topMargin, Int.ZERO, Int.ZERO)
+        }
     }
 
     private fun showVariantLabel(product: ProductUiModel) {
@@ -189,6 +204,14 @@ class ProductViewHolder(
             )
     }
 
+    private fun showLabelGuaranteed(product: ProductUiModel) {
+        binding?.ivLabelGuaranteed
+            ?.showWithCondition(product.isStockGuaranteed)
+        binding?.ivLabelGuaranteed?.setOnClickListener {
+            listener.onClickLabelGuarantee()
+        }
+    }
+
     private fun showNotifyMeBuyer(product: ProductUiModel) {
         binding?.imageNotifyMeBuyer
             ?.showWithCondition(product.haveNotifyMeOOS)
@@ -202,12 +225,6 @@ class ProductViewHolder(
     }
 
     private fun showStockAlertImage(product: ProductUiModel) {
-        binding?.imageStockReminder?.setColorFilter(
-            ContextCompat.getColor(
-                itemView.context,
-                com.tokopedia.unifycomponents.R.color.Unify_NN500
-            ), PorterDuff.Mode.SRC_ATOP
-        )
         binding?.imageStockReminder
             ?.showWithCondition(
                 product.hasStockAlert && !product.stockAlertActive
@@ -371,6 +388,7 @@ class ProductViewHolder(
         fun onClickStockInformation()
         fun onClickNotifyMeBuyerInformation(product: ProductUiModel)
         fun onClickStockReminderInformation(stockAlertCount: Int, stockAlertActive: Boolean)
+        fun onClickLabelGuarantee()
         fun onClickMoreOptionsButton(product: ProductUiModel)
         fun onClickProductItem(product: ProductUiModel)
         fun onClickProductCheckBox(isChecked: Boolean, position: Int)
@@ -381,6 +399,6 @@ class ProductViewHolder(
         fun onClickContactCsButton(product: ProductUiModel)
         fun onImpressionMoreOption()
         fun onImpressionProductStockReminder()
-        fun onImpressionNotifyMe()
+        fun onImpressionLabelGuarantee()
     }
 }

@@ -2881,7 +2881,7 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
 
     private fun onGetTickerData_thenReturn(tickerData: List<TickerData>) {
         every {
-            tickerStaticDataProvider.getTickers(any(), any(), any())
+            tickerStaticDataProvider.getTickers(any(), any())
         } returns tickerData
     }
 

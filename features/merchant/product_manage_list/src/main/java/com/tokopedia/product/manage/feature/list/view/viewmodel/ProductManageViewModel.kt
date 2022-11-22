@@ -400,13 +400,10 @@ class ProductManageViewModel @Inject constructor(
 
     fun getTickerData() {
         val isMultiLocationShop = userSessionInterface.isMultiLocationShop
-        val isShowTickerNotifyMe =
-            remoteConfig.getBoolean(ENABLE_TICKER_NOTIFY_ME, true)
         _tickerData.value =
             tickerStaticDataProvider.getTickers(
                 isMultiLocationShop,
-                _shopStatus.value?.shopStatus.orEmpty(),
-                isShowTickerNotifyMe
+                _shopStatus.value?.shopStatus.orEmpty()
             )
     }
 

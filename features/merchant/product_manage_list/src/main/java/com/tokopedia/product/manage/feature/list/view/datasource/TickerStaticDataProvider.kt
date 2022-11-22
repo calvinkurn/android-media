@@ -9,17 +9,26 @@ import javax.inject.Inject
 
 class TickerStaticDataProvider @Inject constructor(private val resourceProvider: ResourceProvider) {
 
-    private fun MutableList<TickerData>.addNotifyMeTicker(isShowTickerNotifyMe: Boolean) {
-        if (isShowTickerNotifyMe) {
-            add(
-                TickerData(
-                    title = resourceProvider.getTickerNotifyMeTitle(),
-                    description = resourceProvider.getTickerNotifyMeDescription(),
-                    type = Ticker.TYPE_ANNOUNCEMENT,
-                    isFromHtml = true
-                )
+    private fun MutableList<TickerData>.addStockAvailableTicker() {
+        add(
+            TickerData(
+                title = resourceProvider.getTickerStockAvailableTitle(),
+                description = resourceProvider.getTickerStockAvailableDescription(),
+                type = Ticker.TYPE_ANNOUNCEMENT,
+                isFromHtml = true
             )
-        }
+        )
+    }
+
+    private fun MutableList<TickerData>.addNotifyMeTicker() {
+        add(
+            TickerData(
+                title = resourceProvider.getTickerNotifyMeTitle(),
+                description = resourceProvider.getTickerNotifyMeDescription(),
+                type = Ticker.TYPE_ANNOUNCEMENT,
+                isFromHtml = true
+            )
+        )
     }
 
     private fun MutableList<TickerData>.addMaxStockTicker() {
@@ -45,7 +54,7 @@ class TickerStaticDataProvider @Inject constructor(private val resourceProvider:
         }
     }
 
-    fun getTickers(multiLocationSeller: Boolean, statusShop: String, isShowTickerNotifyMe: Boolean): List<TickerData> {
+    fun getTickers(multiLocationSeller: Boolean, statusShop: String): List<TickerData> {
         return when (statusShop.toIntSafely()) {
             ON_MODERATED_STAGE -> {
                 getTickerShopModerate()
@@ -55,7 +64,8 @@ class TickerStaticDataProvider @Inject constructor(private val resourceProvider:
             }
             else -> {
                 mutableListOf<TickerData>().apply {
-                    addNotifyMeTicker(isShowTickerNotifyMe)
+                    addStockAvailableTicker()
+                    addNotifyMeTicker()
                     addMaxStockTicker()
                     addMultiLocationTicker(multiLocationSeller)
                 }.filter { it.description.isNotBlank() }
