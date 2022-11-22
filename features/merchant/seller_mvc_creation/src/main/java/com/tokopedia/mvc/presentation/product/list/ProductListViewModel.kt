@@ -5,8 +5,8 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.view.removeFirst
 import com.tokopedia.mvc.domain.entity.Product
 import com.tokopedia.mvc.domain.entity.SelectedProduct
+import com.tokopedia.mvc.domain.entity.VoucherConfiguration
 import com.tokopedia.mvc.domain.entity.enums.PageMode
-import com.tokopedia.mvc.domain.entity.enums.PromoType
 import com.tokopedia.mvc.domain.entity.enums.VoucherAction
 import com.tokopedia.mvc.domain.usecase.GetInitiateVoucherPageUseCase
 import com.tokopedia.mvc.domain.usecase.ProductListUseCase
@@ -29,6 +29,10 @@ class ProductListViewModel @Inject constructor(
     private val productListUseCase: ProductListUseCase
 ) : BaseViewModel(dispatchers.main) {
 
+    companion object {
+        private const val THREE_TOP_SELLING_PRODUCT_IMAGE_URL = 3
+    }
+
     private val _uiState = MutableStateFlow(ProductListUiState())
     val uiState = _uiState.asStateFlow()
 
@@ -40,9 +44,9 @@ class ProductListViewModel @Inject constructor(
 
     fun processEvent(event: ProductListEvent) {
         when(event) {
-            is ProductListEvent.FetchProducts -> getProductsAndProductsMetadata(event.action, event.promoType, event.selectedProducts, event.pageMode)
+            is ProductListEvent.FetchProducts -> getProductsAndProductsMetadata(event.pageMode, event.voucherConfiguration, event.selectedProducts)
             is ProductListEvent.MarkProductForDeletion -> handleMarkProductForDeletion(event.productId)
-            ProductListEvent.TapContinueButton -> handleProceedToNextPage()
+            ProductListEvent.TapContinueButton -> handleRedirection()
             ProductListEvent.DisableSelectAllCheckbox -> handleUncheckAllProduct()
             ProductListEvent.EnableSelectAllCheckbox -> handleCheckAllProduct()
             is ProductListEvent.TapVariant -> handleTapVariant(event.parentProduct)
@@ -62,15 +66,16 @@ class ProductListViewModel @Inject constructor(
 
 
     private fun getProductsAndProductsMetadata(
-        action: VoucherAction,
-        promoType: PromoType,
-        selectedProducts: List<SelectedProduct>,
-        pageMode: PageMode
+        pageMode: PageMode,
+        voucherConfiguration: VoucherConfiguration,
+        selectedProducts: List<SelectedProduct>
     ) {
         launchCatchError(
             dispatchers.io,
             block = {
-                val metadataParam = GetInitiateVoucherPageUseCase.Param(action, promoType, isVoucherProduct = true)
+                val action = if (pageMode == PageMode.CREATE) VoucherAction.CREATE else VoucherAction.UPDATE
+
+                val metadataParam = GetInitiateVoucherPageUseCase.Param(action, voucherConfiguration.promoType, isVoucherProduct = true)
                 val metadata = getInitiateVoucherPageUseCase.execute(metadataParam)
 
                 val selectedParentProductIds = selectedProducts.map { it.parentProductId }
@@ -88,7 +93,7 @@ class ProductListViewModel @Inject constructor(
 
                 val productsResponse = productListUseCase.execute(productListParam)
 
-                val enableCheckbox = pageMode == PageMode.CREATE
+                val isCreateMode = pageMode == PageMode.CREATE
 
                 val updatedProducts = productsResponse.products.map { parentProduct ->
                     val variantIds = findVariantsIdsByParentId(parentProduct.id, selectedProducts)
@@ -96,7 +101,8 @@ class ProductListViewModel @Inject constructor(
                     parentProduct.copy(
                         originalVariants = toOriginalVariant(parentProduct.id, selectedProducts),
                         selectedVariantsIds = variantIds,
-                        enableCheckbox = enableCheckbox
+                        enableCheckbox = isCreateMode,
+                        isDeletable = isCreateMode
                     )
                 }
 
@@ -104,8 +110,10 @@ class ProductListViewModel @Inject constructor(
                     it.copy(
                         isLoading = false,
                         products = updatedProducts,
+                        originalPageMode = pageMode,
                         pageMode = pageMode,
-                        maxProductSelection = metadata.maxProduct
+                        maxProductSelection = metadata.maxProduct,
+                        voucherConfiguration = voucherConfiguration
                     )
                 }
 
@@ -279,7 +287,7 @@ class ProductListViewModel @Inject constructor(
         }
     }
 
-    private fun handleProceedToNextPage() {
+    private fun handleRedirection() {
         launch(dispatchers.computation) {
             val selectedProducts = currentState.products.map { parentProduct ->
                 SelectedProduct(parentProduct.id, parentProduct.selectedVariantsIds.toList())
@@ -287,21 +295,32 @@ class ProductListViewModel @Inject constructor(
 
             val topSellingProductImageUrls = currentState.products
                 .sortedByDescending { it.txStats.sold }
+                .take(THREE_TOP_SELLING_PRODUCT_IMAGE_URL)
                 .map { it.picture }
 
-            _uiEffect.tryEmit(
-                ProductListEffect.ConfirmAddProduct(
-                    selectedProducts,
-                    topSellingProductImageUrls
+            if (currentState.originalPageMode == PageMode.CREATE) {
+                _uiEffect.tryEmit(
+                    ProductListEffect.ProceedToVoucherPreviewPage(
+                        currentState.voucherConfiguration,
+                        selectedProducts,
+                        topSellingProductImageUrls
+                    )
                 )
-            )
+            } else {
+                _uiEffect.tryEmit(
+                    ProductListEffect.SendResultToCallerPage(
+                        selectedProducts,
+                        topSellingProductImageUrls
+                    )
+                )
+            }
         }
     }
 
 
     private fun handleBulkDeleteProducts() {
         launch(dispatchers.computation) {
-            val productIdsToDelete = currentState.products.filter { it.isSelected }.map { it.id }
+            val productIdsToDelete = currentState.products.selectedProductsOnly()
 
             val modifiedProducts = currentState.products.toMutableList()
             modifiedProducts.removeAll { it.id in productIdsToDelete }

@@ -2,18 +2,15 @@ package com.tokopedia.mvc.presentation.product.list.uimodel
 
 import com.tokopedia.mvc.domain.entity.Product
 import com.tokopedia.mvc.domain.entity.SelectedProduct
+import com.tokopedia.mvc.domain.entity.VoucherConfiguration
 import com.tokopedia.mvc.domain.entity.enums.PageMode
-import com.tokopedia.mvc.domain.entity.enums.PromoType
-import com.tokopedia.mvc.domain.entity.enums.VoucherAction
 
 sealed class ProductListEvent {
     data class FetchProducts(
-        val action: VoucherAction,
-        val promoType: PromoType,
-        val selectedProducts: List<SelectedProduct>,
-        val pageMode: PageMode
+        val pageMode: PageMode,
+        val voucherConfiguration: VoucherConfiguration,
+        val selectedProducts: List<SelectedProduct>
     ) : ProductListEvent()
-
     object EnableSelectAllCheckbox : ProductListEvent()
     object DisableSelectAllCheckbox : ProductListEvent()
     data class MarkProductForDeletion(val productId: Long) : ProductListEvent()

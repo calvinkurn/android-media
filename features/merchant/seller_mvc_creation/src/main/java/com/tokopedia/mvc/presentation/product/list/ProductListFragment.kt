@@ -34,8 +34,6 @@ import com.tokopedia.mvc.domain.entity.Product
 import com.tokopedia.mvc.domain.entity.SelectedProduct
 import com.tokopedia.mvc.domain.entity.VoucherConfiguration
 import com.tokopedia.mvc.domain.entity.enums.PageMode
-import com.tokopedia.mvc.domain.entity.enums.PromoType
-import com.tokopedia.mvc.domain.entity.enums.VoucherAction
 import com.tokopedia.mvc.presentation.product.add.AddProductActivity
 import com.tokopedia.mvc.presentation.product.add.AddProductFragment
 import com.tokopedia.mvc.presentation.product.list.adapter.ProductListDelegateAdapter
@@ -123,10 +121,9 @@ class ProductListFragment : BaseDaggerFragment() {
 
         viewModel.processEvent(
             ProductListEvent.FetchProducts(
-                VoucherAction.CREATE,
-                PromoType.CASHBACK,
-                selectedParentProducts?.toList().orEmpty(),
-                pageMode ?: PageMode.CREATE
+                pageMode ?: PageMode.CREATE,
+                voucherConfiguration ?: return,
+                selectedParentProducts?.toList().orEmpty()
             )
         )
     }
@@ -256,12 +253,15 @@ class ProductListFragment : BaseDaggerFragment() {
                 )
             }
 
-            is ProductListEffect.ConfirmAddProduct -> {
-                if (pageMode == PageMode.CREATE) {
-                    //TODO: Navigate to voucher preview page
-                } else {
-                    sendResultToCallerActivity(effect.selectedProducts)
-                }
+            is ProductListEffect.ProceedToVoucherPreviewPage -> {
+                val voucherConfiguration = effect.voucherConfiguration
+                val selectedProducts = effect.selectedProducts
+                val topSellingProductImageUrls = effect.selectedParentProductImageUrls
+
+                //TODO: Navigate to voucher preview page
+            }
+            is ProductListEffect.SendResultToCallerPage -> {
+                sendResultToCallerActivity(effect.selectedProducts)
             }
             is ProductListEffect.ShowError -> {
                 binding?.cardUnify2?.showToasterError(effect.error)
@@ -272,7 +272,7 @@ class ProductListFragment : BaseDaggerFragment() {
 
     private fun handleUiState(uiState: ProductListUiState) {
         renderToolbar(uiState.pageMode)
-        renderTopSection(uiState.products.count(), uiState.maxProductSelection)
+        renderTopSection(uiState.pageMode, uiState.products.count(), uiState.maxProductSelection)
         renderLoadingState(uiState.isLoading)
         renderList(uiState.products)
         renderEmptyState(uiState.products.count(), uiState.isLoading, uiState.pageMode)
@@ -336,12 +336,10 @@ class ProductListFragment : BaseDaggerFragment() {
         productAdapter.submit(products)
     }
 
-    private fun renderTopSection(productCount: Int, maxProductSelection: Int) {
+    private fun renderTopSection(pageMode: PageMode, productCount: Int, maxProductSelection: Int) {
         val isCreateMode = pageMode == PageMode.CREATE
         binding?.run {
-            checkbox.isVisible = productCount.isMoreThanZero() && isCreateMode
             dividerList.isVisible = productCount.isMoreThanZero() && isCreateMode
-            tpgSelectAll.isVisible = productCount.isMoreThanZero() && isCreateMode
             tpgSelectedParentProductCount.isVisible = productCount.isMoreThanZero() && isCreateMode
 
             when {
@@ -368,8 +366,15 @@ class ProductListFragment : BaseDaggerFragment() {
     }
 
     private fun renderSelectAllCheckbox(productCount: Int, selectedProductCount: Int, pageMode: PageMode) {
-        binding?.checkbox?.isChecked = selectedProductCount == productCount
-        binding?.checkbox?.isVisible = pageMode == PageMode.CREATE
+        val isCreateMode = pageMode == PageMode.CREATE
+
+        binding?.run {
+            checkbox.isChecked = selectedProductCount == productCount
+            checkbox.isVisible = productCount.isMoreThanZero() && isCreateMode
+            tpgSelectAll.isVisible = productCount.isMoreThanZero() && isCreateMode
+            checkbox.isVisible = productCount.isMoreThanZero() && isCreateMode
+        }
+
     }
 
     private val onDeleteProductClick: (Int) -> Unit = { selectedItemPosition ->
