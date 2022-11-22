@@ -5,6 +5,7 @@ import android.graphics.Color
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.core.content.ContextCompat
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
@@ -28,6 +29,10 @@ class RealTimeRecommendationCarouselView @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : BaseCustomView(context, attrs, defStyleAttr), RecomCarouselWidgetBasicListener,
     RecommendationCarouselTokonowListener {
+
+    companion object {
+        private const val FIRST_ITEM_POSITION = 0
+    }
 
     var listener: RealTimeRecommendationListener? = null
     var analytics: RealTimeRecommendationAnalytics? = null
@@ -59,6 +64,12 @@ class RealTimeRecommendationCarouselView @JvmOverloads constructor(
         }
     }
 
+    private fun scrollToFirstPosition() {
+        itemView?.recommendationCarousel
+            ?.findViewById<RecyclerView>(com.tokopedia.recommendation_widget_common.R.id.rv_product)
+            ?.scrollToPosition(FIRST_ITEM_POSITION)
+    }
+
     private fun renderRealTimeRecom(data: HomeRealTimeRecomUiModel) {
         val widget = data.widget
 
@@ -70,6 +81,7 @@ class RealTimeRecommendationCarouselView @JvmOverloads constructor(
             hideRefreshRecommendation()
             hideProgressBar()
             setBackgroundColor()
+            scrollToFirstPosition()
         } else {
             hideContent()
         }
