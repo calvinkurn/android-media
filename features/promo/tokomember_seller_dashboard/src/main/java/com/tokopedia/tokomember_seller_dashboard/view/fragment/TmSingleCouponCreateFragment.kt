@@ -215,8 +215,8 @@ class TmSingleCouponCreateFragment : BaseDaggerFragment() {
         programData = arguments?.getParcelable(BUNDLE_PROGRAM_DATA)
         prefManager = context?.let { it1 -> TmPrefManager(it1) }
         tmTracker = TmTracker()
-        val tickerText = context?.resources?.getString(R.string.tm_kupon_single_ticker).orEmpty()
-        ticker.setTextDescription(tickerText)
+//        val tickerText = context?.resources?.getString(R.string.tm_kupon_single_ticker).orEmpty()
+//        ticker.setTextDescription(tickerText)
         renderHeader()
         renderButton()
         observeDataFromApi()
