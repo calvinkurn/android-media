@@ -22,11 +22,11 @@ class GetUserProfileFeedPostsUseCase @Inject constructor(
         setTypeClass(UserFeedPostsModel::class.java)
     }
 
-    suspend fun executeOnBackground(userID: String, cursor: String): UserFeedPostsModel {
+    suspend fun executeOnBackground(userID: String, cursor: String, limit: Int = 10): UserFeedPostsModel {
         val request = mapOf(
             KEY_SOURCE_ID to userID,
             KEY_CURSOR to cursor,
-            KEY_LIMIT to VAL_LIMIT,
+            KEY_LIMIT to limit,
         )
         setRequestParams(request)
 
@@ -37,7 +37,6 @@ class GetUserProfileFeedPostsUseCase @Inject constructor(
         private const val KEY_SOURCE_ID = "sourceID"
         private const val KEY_CURSOR = "cursor"
         private const val KEY_LIMIT = "limit"
-        private const val VAL_LIMIT = 10
         const val QUERY_NAME = "GetUserProfileFeedPostsUseCaseQuery"
         const val QUERY = """
             query FeedXProfileGetProfilePosts(
