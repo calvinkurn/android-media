@@ -47,24 +47,19 @@ class ProductRecommendationCallback(
 
     override fun productCardClicked(
         position: Int,
-        product: TokoNowProductCardCarouselItemUiModel
+        product: TokoNowProductCardCarouselItemUiModel,
+        isLogin: Boolean,
+        userId: String
     ) {
         RouteManager.route(activity, product.appLink)
     }
 
     override fun productCardImpressed(
         position: Int,
-        product: TokoNowProductCardCarouselItemUiModel
-    ) {
-
-    }
-
-    override fun productCardQuantityChanged(
-        position: Int,
-        product: TokoNowProductCardCarouselItemUiModel
-    ) {
-
-    }
+        product: TokoNowProductCardCarouselItemUiModel,
+        isLogin: Boolean,
+        userId: String
+    ) { /* nothing to do */ }
 
     override fun seeMoreClicked(seeMoreUiModel: TokoNowSeeMoreCardCarouselUiModel) {
         RouteManager.route(activity, seeMoreUiModel.appLink)

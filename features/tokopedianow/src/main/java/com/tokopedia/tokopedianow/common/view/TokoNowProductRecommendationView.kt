@@ -176,15 +176,15 @@ class TokoNowProductRecommendationView @JvmOverloads constructor(
         )
         fun productCardClicked(
             position: Int,
-            product: TokoNowProductCardCarouselItemUiModel
+            product: TokoNowProductCardCarouselItemUiModel,
+            isLogin: Boolean,
+            userId: String
         )
         fun productCardImpressed(
             position: Int,
-            product: TokoNowProductCardCarouselItemUiModel
-        )
-        fun productCardQuantityChanged(
-            position: Int,
-            product: TokoNowProductCardCarouselItemUiModel
+            product: TokoNowProductCardCarouselItemUiModel,
+            isLogin: Boolean,
+            userId: String
         )
         fun seeMoreClicked(
             seeMoreUiModel: TokoNowSeeMoreCardCarouselUiModel
