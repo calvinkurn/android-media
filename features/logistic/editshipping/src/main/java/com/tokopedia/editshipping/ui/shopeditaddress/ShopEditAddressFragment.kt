@@ -1,5 +1,6 @@
 package com.tokopedia.editshipping.ui.shopeditaddress
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -431,6 +432,7 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
         }
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private fun setViewListener() {
         etShopLocation?.apply {
             addTextChangedListener(setShopLocationWatcher())
