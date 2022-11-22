@@ -462,6 +462,7 @@ class AddProductViewModel @Inject constructor(
                 isLoading = true,
                 page = NumberConstant.FIRST_PAGE,
                 products = emptyList(),
+                isSelectAllActive = false,
                 selectedProductsIds = emptySet(),
                 selectedWarehouseLocation = newWarehouseLocation
             )
