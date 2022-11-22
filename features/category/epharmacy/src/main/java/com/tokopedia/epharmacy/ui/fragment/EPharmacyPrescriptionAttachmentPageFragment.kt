@@ -31,7 +31,6 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.track.builder.Tracker
-import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.Toaster.LENGTH_LONG
 import com.tokopedia.unifycomponents.Toaster.TYPE_ERROR
@@ -47,7 +46,6 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
 
     private var ePharmacyRecyclerView: RecyclerView? = null
     private var ePharmacyDoneButton: UnifyButton? = null
-    private var ePharmacyLoader: LoaderUnify? = null
     private var ePharmacyGlobalError: GlobalError? = null
 
     @Inject
@@ -114,7 +112,6 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
         view.apply {
             ePharmacyRecyclerView = findViewById(R.id.epharmacy_rv)
             ePharmacyDoneButton = findViewById(R.id.done_button)
-            ePharmacyLoader = findViewById(R.id.epharmacy_loader)
             ePharmacyGlobalError = findViewById(R.id.epharmacy_global_error)
         }
     }
@@ -130,9 +127,16 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
     }
 
     private fun addShimmer() {
+        ePharmacyRecyclerView?.show()
         ePharmacyAttachmentUiUpdater.mapOfData.clear()
         ePharmacyAttachmentUiUpdater.updateModel(EPharmacyShimmerDataModel("shimmer_1", "shimmer component"))
         ePharmacyAttachmentUiUpdater.updateModel(EPharmacyShimmerDataModel("shimmer_2", "shimmer component"))
+        updateUi()
+    }
+
+    private fun removeShimmer() {
+        ePharmacyAttachmentUiUpdater.mapOfData.clear()
+        ePharmacyRecyclerView?.hide()
         updateUi()
     }
 
@@ -179,8 +183,8 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
     }
 
     private fun onFailGroupData(it: Fail) {
-        ePharmacyLoader?.hide()
         ePharmacyDoneButton?.hide()
+        removeShimmer()
         when (it.throwable) {
             is UnknownHostException, is SocketTimeoutException -> setGlobalErrors(GlobalError.NO_CONNECTION)
             is IllegalStateException -> setGlobalErrors(GlobalError.PAGE_FULL)
@@ -204,7 +208,6 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
     }
 
     private fun onSuccessGroupData(it: Success<EPharmacyDataModel>) {
-        ePharmacyLoader?.hide()
         ePharmacyAttachmentUiUpdater.mapOfData.clear()
         it.data.listOfComponents.forEach { component ->
             ePharmacyAttachmentUiUpdater.updateModel(component)
@@ -332,15 +335,6 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-//        ePharmacyPrescriptionAttachmentViewModel.validateButtonData(ePharmacyAttachmentUiUpdater)
-//        fun processUploadRequestData() {
-//            data?.let { prescriptionResultIntent ->
-//                val prescriptionIds = prescriptionResultIntent.extras?.getStringArrayList(EPHARMACY_PRESCRIPTION_IDS)
-//                val groupId = prescriptionResultIntent.extras?.getString(EPHARMACY_GROUP_ID)
-//                updateModelForUploadPrescription(prescriptionIds, groupId)
-//            }
-//        }
-
         when (requestCode) {
             EPHARMACY_CHOOSER_REQUEST_CODE -> {
                 when (resultCode) {
@@ -359,20 +353,6 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
                 getData()
             }
         }
-    }
-
-    private fun updateModelForUploadPrescription(prescriptionIds: ArrayList<String>?, groupId: String?) {
-//        val modelUniqueId = EPharmacyMapper.getUniqueModelName(groupId, 0, true)
-//        (ePharmacyAttachmentUiUpdater.mapOfData[modelUniqueId] as? EPharmacyAttachmentDataModel)?.copy()?.let { newModel ->
-//            val prescriptionImages = arrayListOf<EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.PrescriptionImage?>()
-//            prescriptionIds?.forEach {
-//                prescriptionImages.add(EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.PrescriptionImage("", it, "", ""))
-//            }
-//            newModel.prescriptionImages = prescriptionImages
-//            ePharmacyAttachmentUiUpdater.updateModel(newModel)
-//            ePharmacyPrescriptionAttachmentViewModel.validateButtonData(ePharmacyAttachmentUiUpdater)
-//            updateUi()
-//        }
     }
 
     override fun getScreenName() = EPHARMACY_SCREEN_NAME

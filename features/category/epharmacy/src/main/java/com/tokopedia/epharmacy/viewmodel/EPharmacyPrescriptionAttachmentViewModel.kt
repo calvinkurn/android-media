@@ -73,19 +73,6 @@ class EPharmacyPrescriptionAttachmentViewModel @Inject constructor(
         }
     }
 
-//    fun validateButtonData(ePharmacyAttachmentUiUpdater: EPharmacyAttachmentUiUpdater) {
-//        val groupStatuses = arrayListOf<Int>()
-//        ePharmacyAttachmentUiUpdater.mapOfData.forEach {
-//            if (it.value is EPharmacyAttachmentDataModel) {
-//                (it.value as EPharmacyAttachmentDataModel).let { model ->
-//                    groupStatuses.add(model.consultationStatus ?: 0)
-//                }
-//            }
-//        }
-//        val statusCount = EPharmacyMapper.getPrescriptionCount(groupStatuses)
-//        renderButtonOnResult(statusCount)
-//    }
-
     private fun mapGroupsDataIntoDataModel(data: EPharmacyPrepareProductsGroupResponse): EPharmacyDataModel {
         val listOfComponents = arrayListOf<BaseEPharmacyDataModel>()
         if (data.detailData?.groupsData?.attachmentPageTickerText?.isNotBlank() == true) {
