@@ -1242,7 +1242,10 @@ class PlayUserInteractionFragment @Inject constructor(
 
     fun hideBottomSheet() {
         val bottomSheet = getBottomSheetInstance()
-        if (bottomSheet.isVisible) bottomSheet.dismiss()
+        if (bottomSheet.isVisible) {
+            bottomSheet.dismiss()
+            playViewModel.submitAction(CloseKebabMenu)
+        }
     }
 
     private fun showInteractionIfWatchMode() {

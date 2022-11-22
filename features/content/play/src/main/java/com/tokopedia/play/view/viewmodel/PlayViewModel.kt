@@ -199,9 +199,12 @@ class PlayViewModel @AssistedInject constructor(
 
     private val _isFollowPopUpShown = MutableStateFlow(FollowPopUpUiState())
 
-    private val _followPopUpUiState = combine(_bottomInsets, _isFollowPopUpShown, _partnerInfo) {
-        bottomInsets, popUp, partner -> FollowPopUpUiState(
-            shouldShow = !bottomInsets.isAnyShown && popUp.shouldShow && partner.needFollow && partner.id == popUp.partnerId
+    private val _isThreeDotsOpened = MutableStateFlow(false)
+    private val _isSharingOpened = MutableStateFlow(false)
+
+    private val _followPopUpUiState = combine(_bottomInsets, _isFollowPopUpShown, _partnerInfo, _isThreeDotsOpened, _isSharingOpened, _interactive) {
+        bottomInsets, popUp, partner, kebab, sharing, interactive -> FollowPopUpUiState(
+            shouldShow = !bottomInsets.isAnyShown && popUp.shouldShow && partner.needFollow && partner.id == popUp.partnerId && !kebab && !sharing && !interactive.isPlaying
         )
     }.flowOn(dispatchers.computation)
 
@@ -977,6 +980,7 @@ class PlayViewModel @AssistedInject constructor(
             PlayViewerNewAction.AutoOpenInteractive -> handleAutoOpen()
             is SendWarehouseId -> handleWarehouse(action.id, action.isOOC)
             DismissFollowPopUp -> _isFollowPopUpShown.update { it.copy(shouldShow = false) }
+            CloseKebabMenu -> _isThreeDotsOpened.update { false }
         }
     }
 
@@ -2266,10 +2270,13 @@ class PlayViewModel @AssistedInject constructor(
                 copyLink()
             }
         }
+
+        _isSharingOpened.update { true }
     }
 
     private fun handleCloseSharingOption() {
         playAnalytic.closeShareBottomSheet(channelId, partnerId, channelType.value, playShareExperience.isScreenshotBottomSheet())
+        _isSharingOpened.update { false }
     }
 
     private fun handleSharingOption(shareModel: ShareModel) {
@@ -2318,6 +2325,8 @@ class PlayViewModel @AssistedInject constructor(
         viewModelScope.launch {
             _uiEvent.emit(OpenKebabEvent)
         }
+
+        _isThreeDotsOpened.update { true }
     }
 
     private fun handleFooterClick(appLink: String){
