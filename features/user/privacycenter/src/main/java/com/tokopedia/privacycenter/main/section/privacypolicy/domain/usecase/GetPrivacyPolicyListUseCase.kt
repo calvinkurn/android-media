@@ -39,7 +39,7 @@ class GetPrivacyPolicyListUseCase @Inject constructor(
                 val listData = data.data
                 listData.sortedByDescending {
                     it.lastUpdate
-                }.map { it.sectionTitle = "${it.sectionTitle} - ${DateUtil.formatDate("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", DateUtil.DEFAULT_VIEW_FORMAT, it.lastUpdate)}" }
+                }.map { it.sectionTitle = "${it.sectionTitle} - ${DateUtil.formatDate(DateUtil.YYYY_MM_DD_T_HH_MM_SS_SSS_Z, DateUtil.DEFAULT_VIEW_FORMAT, it.lastUpdate)}" }
 
                 if(listLimit > 0) {
                     PrivacyCenterStateResult.Success(data.data.take(listLimit))
