@@ -20,7 +20,6 @@ import com.tokopedia.mvc.util.constant.PromoTypeConstant
 import com.tokopedia.mvc.util.constant.TargetBuyerConstant
 import com.tokopedia.mvc.util.constant.VoucherStatusConstant
 import com.tokopedia.mvc.util.constant.VoucherTargetConstant.VOUCHER_TARGET_PUBLIC
-import com.tokopedia.mvc.util.constant.VoucherTypeConstant.VOUCHER_PRODUCT
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.usecase.coroutines.Fail
@@ -41,6 +40,9 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                 }
             }
         }
+
+        private const val TRUE = 1
+        private const val FALSE = 0
     }
 
     // binding
@@ -119,6 +121,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
         setupVoucherTypeSection(data)
         setupVoucherInfoSection(data)
         setupVoucherSettingSection(data)
+        setupProductListSection(data)
         setupButtonSection(data)
     }
 
@@ -132,9 +135,9 @@ class VoucherDetailFragment : BaseDaggerFragment() {
         headerBinding?.run {
             setupVoucherStatus(data)
             setupVoucherAction(data)
-            imgVoucher.setImageUrl(data.voucherImage)
+            imgVoucher.setImageUrl(data.voucherImageSquare)
             when (data.isVps) {
-                0 -> {
+                FALSE -> {
                     labelVoucherSource.gone()
                     tpgVpsPackage.gone()
                 }
@@ -237,8 +240,8 @@ class VoucherDetailFragment : BaseDaggerFragment() {
             }
         }
         voucherTypeBinding?.run {
-            tpgVoucherType.text = when (data.voucherType) {
-                VOUCHER_PRODUCT -> getString(R.string.smvc_voucher_product_label)
+            tpgVoucherType.text = when (data.isLockToProduct) {
+                TRUE -> getString(R.string.smvc_voucher_product_label)
                 else -> getString(R.string.smvc_voucher_store_label)
             }
         }
@@ -385,6 +388,25 @@ class VoucherDetailFragment : BaseDaggerFragment() {
             TargetBuyerConstant.NEW_FOLLOWER -> getString(R.string.smvc_new_follower_label)
             TargetBuyerConstant.NEW_USER -> getString(R.string.smvc_new_user_label)
             else -> getString(R.string.smvc_member_label)
+        }
+    }
+
+    private fun setupProductListSection(data: VoucherDetailData) {
+        if (data.isLockToProduct == TRUE) {
+            binding?.run {
+                if (layoutProductList.parent != null) {
+                    layoutProductList.inflate()
+                }
+            }
+            voucherProductBinding?.run {
+                tpgProductList.text = getString(
+                    R.string.smvc_product_count_placeholder,
+                    data.productIds.count()
+                )
+                tpgSeeProduct.setOnClickListener {
+                    //TODO:go to product page
+                }
+            }
         }
     }
 
