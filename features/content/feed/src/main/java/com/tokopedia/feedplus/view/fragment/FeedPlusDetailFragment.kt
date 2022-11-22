@@ -92,6 +92,7 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
     private var saleType: String = ""
     private var saleStatus: String = ""
     private var isFollowed: Boolean = false
+    private var hasVoucher: Boolean = false
     private var productList = mutableListOf<FeedXProduct>()
     private var activityId: String = ""
     private lateinit var shareData: LinkerData
@@ -259,8 +260,14 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
             }
         }
         arguments?.run {
-            getBoolean(FeedPlusDetailActivity.PARAM_IS_FOLLOWED)?.let {
+            getBoolean(FeedPlusDetailActivity.PARAM_IS_FOLLOWED).let {
                 isFollowed = it
+            }
+        }
+
+        arguments?.run {
+            getBoolean(FeedPlusDetailActivity.PARAM_HAS_VOUCHER).let {
+                hasVoucher = it
             }
         }
 
@@ -393,6 +400,7 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
 
                             customMvcTracker.activityId = activityId
                             customMvcTracker.status = getTrackerCampaignStatusSuffix()
+                            customMvcTracker.hasVoucher = hasVoucher
                             // TODO : Add Content Score
 
                             mvcWidget.setData(

@@ -273,6 +273,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         private const val VOD_POST = "VOD_POST"
         private const val PRODUCT_LIST = "product_list"
         private const val IS_FOLLOWED = "is_followed"
+        private const val HAS_VOUCHER = "has_voucher"
         private const val POST_TYPE = "post_type"
         private const val SHOP_NAME = "shop_name"
         private const val PARAM_SALE_TYPE = "sale_type"
@@ -2510,6 +2511,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
             customMvcTracker.activityId = finalId
             customMvcTracker.status = label
+            customMvcTracker.hasVoucher = card.hasVoucher
             // TODO : Add Content Score
 
             productTagBS.show(
@@ -2526,7 +2528,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
                     shopName = card.author.name,
                     mediaType = mediaType,
                     saleStatus = card.campaign.status,
-                    saleType = card.campaign.name
+                    saleType = card.campaign.name,
+                    hasVoucher = card.hasVoucher
                 ),
                 viewModelFactory,
                 customMvcTracker = customMvcTracker
@@ -2754,6 +2757,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         type: String,
         isFollowed: Boolean,
         shopId: String,
+        hasVoucher: Boolean,
         products: List<FeedXProduct>,
         index: Int
     ) {
@@ -2762,6 +2766,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
             shopId,
             activityId,
             isFollowed,
+            hasVoucher,
             type,
             products
         )
@@ -3212,6 +3217,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         shopId: String,
         activityId: String,
         isFollowed: Boolean,
+        hasVoucher: Boolean,
         type: String,
         products: List<FeedXProduct>
     ) {
@@ -3225,6 +3231,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
                     intent.putExtra(PARAM_SHOP_ID, shopId)
                     intent.putExtra(PARAM_ACTIVITY_ID, activityId)
                     intent.putExtra(POST_TYPE, type)
+                    intent.putExtra(HAS_VOUCHER, hasVoucher)
                     if (activity != null)
                         requireActivity().startActivity(intent)
                 } else {
@@ -3433,6 +3440,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         shopId: String,
         type: String,
         isFollowed: Boolean,
+        hasVoucher: Boolean,
         positionInFeed: Int,
         feedXCard: FeedXCard
     ) {
@@ -3458,6 +3466,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
             val intent = RouteManager.getIntent(context, feedXCard.appLinkProductList)
             intent.putParcelableArrayListExtra(PRODUCT_LIST, ArrayList(feedXCard.products))
             intent.putExtra(IS_FOLLOWED, isFollowed)
+            intent.putExtra(HAS_VOUCHER, hasVoucher)
             intent.putExtra(PARAM_SHOP_ID, shopId)
             intent.putExtra(SHOP_NAME, feedXCard.author.name)
             intent.putExtra(PARAM_ACTIVITY_ID, postId)

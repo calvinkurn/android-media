@@ -13,6 +13,7 @@ class FeedMerchantVoucherAnalyticTracker :
     var activityId: String = ""
     var contentScore: String = ""
     var status: String = "" // pre / ongoing
+    var hasVoucher: Boolean = false
 
     override fun userClickEntryPoints(
         shopId: String,
@@ -31,7 +32,7 @@ class FeedMerchantVoucherAnalyticTracker :
             MvcSource.FEED_PRODUCT_DETAIL -> TRACKER_ID_PRODUCT_DETAIL
             else -> ""
         }
-        val eventLabel = "$activityId - $shopId - $contentScore - $status - true"
+        val eventLabel = "$activityId - $shopId - $contentScore - $status - $hasVoucher"
 
         val map = mapOf(
             KEY_EVENT to EVENT,

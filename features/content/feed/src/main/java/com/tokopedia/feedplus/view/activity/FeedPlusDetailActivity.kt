@@ -20,6 +20,7 @@ class FeedPlusDetailActivity : BaseSimpleActivity() {
     private lateinit var saleStatus: String
     private lateinit var postType: String
     private var isFollowed: Boolean = false
+    private var hasVoucher: Boolean = false
 
     companion object {
         const val EXTRA_DETAIL_ID = "extra_detail_id"
@@ -27,6 +28,7 @@ class FeedPlusDetailActivity : BaseSimpleActivity() {
         const val PARAM_SHOP_ID = "shop_id"
         const val PARAM_ACTIVITY_ID = "activity_id"
         const val PARAM_IS_FOLLOWED = "is_followed"
+        const val PARAM_HAS_VOUCHER = "has_voucher"
         const val PARAM_POST_TYPE = "post_type"
         const val PARAM_SHOP_NAME = "shop_name"
         const val PARAM_SALE_TYPE = "sale_type"
@@ -52,6 +54,7 @@ class FeedPlusDetailActivity : BaseSimpleActivity() {
         shopId = intent.getStringExtra(PARAM_SHOP_ID).orEmpty()
         postType = intent.getStringExtra(PARAM_POST_TYPE).orEmpty()
         isFollowed = intent.getBooleanExtra(PARAM_IS_FOLLOWED, false)
+        hasVoucher = intent.getBooleanExtra(PARAM_HAS_VOUCHER, false)
         activityId = intent.getStringExtra(PARAM_ACTIVITY_ID).orEmpty()
         shopName = intent.getStringExtra(PARAM_SHOP_NAME).orEmpty()
         saleType = intent.getStringExtra(PARAM_SALE_TYPE).orEmpty()
@@ -68,6 +71,7 @@ class FeedPlusDetailActivity : BaseSimpleActivity() {
         bundle.putString(PARAM_SALE_STATUS, saleStatus)
         bundle.putString(PARAM_SALE_TYPE, saleType)
         bundle.putBoolean(PARAM_IS_FOLLOWED, isFollowed)
+        bundle.putBoolean(PARAM_HAS_VOUCHER, hasVoucher)
         return FeedPlusDetailFragment.createInstance(bundle)
     }
 
@@ -86,6 +90,5 @@ class FeedPlusDetailActivity : BaseSimpleActivity() {
     fun getShopInfoLayout(): View? {
         return findViewById(R.id.shop_info_card)
     }
-
 
 }

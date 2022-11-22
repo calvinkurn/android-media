@@ -646,6 +646,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                     feedXCard.author.id,
                     feedXCard.typename,
                     feedXCard.followers.isFollowed,
+                    feedXCard.hasVoucher,
                     positionInFeed,
                     feedXCard,
                 )
@@ -655,6 +656,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                     feedXCard.shopId,
                     TYPE_TOPADS_HEADLINE_NEW,
                     feedXCard.followers.isFollowed,
+                    feedXCard.hasVoucher,
                     positionInFeed,
                     feedXCard,
                 )
@@ -1688,6 +1690,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
             positionInFeed,
             feedXCard.typename,
             feedXCard.followers.isFollowed,
+            feedXCard.hasVoucher,
             feedXCard.author.id,
             feedXCard.products
         )

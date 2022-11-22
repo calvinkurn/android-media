@@ -1169,7 +1169,8 @@ class ContentDetailFragment : BaseDaggerFragment(), ContentDetailPostViewHolder.
                     shopName = feedXCard.author.name,
                     mediaType = media?.type ?: "",
                     saleStatus = feedXCard.campaign.status,
-                    saleType = feedXCard.campaign.name
+                    saleType = feedXCard.campaign.name,
+                    hasVoucher = feedXCard.hasVoucher
                 ),
                 viewModelFactory
             )

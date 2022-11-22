@@ -18,6 +18,7 @@ data class GridPostViewModel(
         override var positionInFeed: Int = 0,
         val postType: String="",
         val isFollowed: Boolean = false,
+        val hasVoucher: Boolean = false,
         val shopId: String="",
         val itemListFeedXProduct :List<FeedXProduct> = ArrayList(),
 
