@@ -221,8 +221,7 @@ class PlayShortsActivity : BaseActivity() {
 
     private fun openMediaPicker() {
         val intent = MediaPicker.intent(this) {
-            /** TODO: need to decide this pageSource based on our analytics */
-            pageSource(PageSource.Unknown)
+            pageSource(PageSource.PlayShorts)
             minVideoDuration(1000)
             maxVideoDuration(90000)
             pageType(PageType.GALLERY)
