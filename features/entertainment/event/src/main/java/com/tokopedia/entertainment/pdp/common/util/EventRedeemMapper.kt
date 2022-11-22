@@ -9,6 +9,7 @@ import com.tokopedia.entertainment.pdp.uimodel.ParticipantUiModel
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isZero
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.entertainment.R.string as stringRedeem
 
 /**
@@ -53,6 +54,37 @@ object EventRedeemMapper {
 
     fun getEmptyParticipant(participants: List<Participant>): Boolean {
         return participants.isEmpty()
+    }
+
+    fun getCheckedIdsSize(participants: List<Participant>): Int {
+        var size = 0
+        participants.forEach{ participant ->
+            if (participant.checked) {
+                size += Int.ONE
+            }
+        }
+
+        return size
+    }
+
+    fun getCheckedIds(participants: List<Participant>): List<Int> {
+        val list = participants.filter { participant ->
+            participant.checked
+        }.map {
+            it.id.toIntSafely()
+        }
+        return list
+    }
+
+    fun updateCheckedIds(participants: List<Participant>, listCheckedIds: List<Pair<String, Boolean>>) {
+        participants.forEachIndexed { _, participant ->
+            val listCheckedId = listCheckedIds.firstOrNull {
+                it.first == participant.id
+            }
+            if (listCheckedId != null) {
+                participant.checked = listCheckedId.second
+            }
+        }
     }
 
     private fun dayTitle(day: Int, context: Context) : String {

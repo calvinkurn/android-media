@@ -10,8 +10,8 @@ import com.tokopedia.entertainment.pdp.data.redeem.redeemable.RedeemRequest
 import java.lang.reflect.Type
 import javax.inject.Inject
 
-class GetEventRedeemedUseCase @Inject
-constructor(private val repository: RestRepository) : RestRequestUseCase(repository) {
+class GetEventRedeemedUseCase @Inject constructor(private val repository: RestRepository) :
+    RestRequestUseCase(repository) {
 
     var redeemRequest: RedeemRequest = RedeemRequest()
     var url : String = ""
@@ -32,6 +32,5 @@ constructor(private val repository: RestRepository) : RestRequestUseCase(reposit
         restRequestList.clear()
         restRequestList.add(restRequest)
         return repository.getResponses(restRequestList)
-
     }
 }

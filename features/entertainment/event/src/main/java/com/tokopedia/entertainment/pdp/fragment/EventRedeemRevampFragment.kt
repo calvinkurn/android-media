@@ -33,6 +33,7 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 import com.tokopedia.entertainment.R.string as redeemString
+import com.tokopedia.unifyprinciples.R.color as redeemColor
 
 /**
  * Author firmanda on 17,Nov,2022
@@ -86,9 +87,9 @@ class EventRedeemRevampFragment : BaseDaggerFragment(),
         hideGlobalError()
         if (!userSession.isLoggedIn) {
             showGlobalError(isNotLogin = true, isUrlEmpty = false, null)
-        } else if (urlRedeem == "") {
+        } else if (urlRedeem.isEmpty()) {
             showGlobalError(isNotLogin = false, isUrlEmpty = true, null)
-        } else if (userSession.isLoggedIn && urlRedeem != "") {
+        } else if (userSession.isLoggedIn && urlRedeem.isNotEmpty()) {
             requestRedeemData()
         }
     }
@@ -155,7 +156,7 @@ class EventRedeemRevampFragment : BaseDaggerFragment(),
         binding?.run {
             tfRedeem.icon1.setColorFilter(
                 MethodChecker.getColor(
-                    context, com.tokopedia.unifyprinciples.R.color.Unify_NN950
+                    context, redeemColor.Unify_NN950
                 ), PorterDuff.Mode.SRC_IN
             )
         }
@@ -375,7 +376,7 @@ class EventRedeemRevampFragment : BaseDaggerFragment(),
             bottomSheetEventRedeem.setList(mappedParticipant)
             bottomSheetEventRedeem.show(
                 childFragmentManager,
-                EventPDPComponent::class.java.simpleName
+                EventRedeemRevampBottomSheet::class.java.simpleName
             )
         }
     }
@@ -403,10 +404,8 @@ class EventRedeemRevampFragment : BaseDaggerFragment(),
     }
 
     private fun resetErrorInput() {
-        context?.let { context ->
-            binding?.tfRedeem?.isInputError = false
-            binding?.tfRedeem?.setMessage("")
-        }
+        binding?.tfRedeem?.isInputError = false
+        binding?.tfRedeem?.setMessage("")
     }
 
     private fun showErrorToaster(errorMessage: String?) {
