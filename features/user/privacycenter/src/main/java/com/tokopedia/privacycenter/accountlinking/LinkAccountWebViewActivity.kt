@@ -125,7 +125,7 @@ class LinkAccountWebViewActivity: BaseSimpleWebViewActivity(), HasComponent<Priv
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
         val inflater = menuInflater
-        inflater.inflate(R.menu.menu_link_account, menu)
+        inflater.inflate(R.menu.menu_link_account_privacy_center, menu)
 
         val item = menu.findItem(R.id.menu_link_account_skip)
         val s = SpannableString(this.getString(R.string.account_linking_skip_for_now))
