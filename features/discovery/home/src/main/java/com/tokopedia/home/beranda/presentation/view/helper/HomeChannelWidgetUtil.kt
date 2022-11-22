@@ -11,13 +11,11 @@ import com.tokopedia.unifycomponents.toPx
 
 object HomeChannelWidgetUtil {
     private const val DEFAULT_DIVIDER_HEIGHT = 1
-    private const val DEFAULT_BOTTOM_PADDING = 8
 
     fun validateHomeComponentDivider(
         channelModel: DynamicHomeChannel.Channels?,
         dividerTop: DividerUnify?,
-        dividerBottom: DividerUnify?,
-        useBottomPadding: Boolean = false
+        dividerBottom: DividerUnify?
     ) {
         val dividerSize = channelModel?.styleParam?.parseDividerSize()?.toPx()
             ?: DEFAULT_DIVIDER_HEIGHT.toPx()
@@ -26,8 +24,7 @@ object HomeChannelWidgetUtil {
         when(channelModel?.dividerType) {
             ChannelConfig.DIVIDER_NO_DIVIDER -> {
                 dividerTop?.invisible()
-                if(useBottomPadding) setBottomPadding(dividerBottom)
-                else dividerBottom?.gone()
+                dividerBottom?.gone()
             }
             ChannelConfig.DIVIDER_TOP -> {
                 dividerTop?.visible()
@@ -42,10 +39,5 @@ object HomeChannelWidgetUtil {
                 dividerBottom?.visible()
             }
         }
-    }
-
-    private fun setBottomPadding(dividerBottom: DividerUnify?) {
-        dividerBottom?.layoutParams?.height = DEFAULT_BOTTOM_PADDING.toPx()
-        dividerBottom?.visible()
     }
 }
