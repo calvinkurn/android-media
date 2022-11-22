@@ -122,7 +122,8 @@ class ShipmentCartItemModel(
     var prescriptionIds: List<String> = emptyList(),
     var tokoConsultationId: String = "",
     var partnerConsultationId: String = "",
-    var consultationDataString: String = ""
+    var consultationDataString: String = "",
+    var shouldResetCourier: Boolean = false,
 ) : Parcelable {
 
     val isCustomPinpointError: Boolean
