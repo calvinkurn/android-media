@@ -5,13 +5,16 @@ import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
+import android.graphics.Rect
 import android.net.Uri
+import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.google.android.material.appbar.AppBarLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
@@ -28,6 +31,8 @@ import com.tokopedia.privacycenter.common.utils.setFitToWindows
 import com.tokopedia.privacycenter.common.utils.setTextStatusBar
 import com.tokopedia.privacycenter.databinding.FragmentPrivacyCenterBinding
 import com.tokopedia.privacycenter.databinding.SectionFooterImageBinding
+import com.tokopedia.privacycenter.main.analytics.MainPrivacyCenterAnalytics
+import com.tokopedia.privacycenter.main.analytics.TrackerScrollState
 import com.tokopedia.privacycenter.main.section.accountlinking.AccountLinkingSection
 import com.tokopedia.privacycenter.main.section.accountlinking.AccountLinkingViewModel
 import com.tokopedia.privacycenter.main.section.activity.ActivitySection
@@ -41,6 +46,9 @@ import com.tokopedia.privacycenter.main.section.tokopediacare.TokopediaCareSecti
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.isUsingNightModeResources
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 class PrivacyCenterFragment :
@@ -98,6 +106,43 @@ class PrivacyCenterFragment :
         initToolbar()
         binding?.rootContent?.addView(bindingImageFooter?.root)
         loadFooterImage()
+        trackingScroll()
+
+        MainPrivacyCenterAnalytics.sendViewPrivacyCenterEvent()
+    }
+
+    private fun trackingScroll() {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            val trackingItem = mutableListOf<TrackerScrollState>()
+            privacyCenterSection?.privacyCenterSections()?.forEach {
+                trackingItem.add(TrackerScrollState(false, it.key))
+            }
+            var counterTracker = 0
+            val maxTracker = trackingItem.size
+
+            val scrollBounds = Rect()
+            binding?.nestedScrollView?.getHitRect(scrollBounds)
+
+            binding?.nestedScrollView?.setOnScrollChangeListener { _, _, _, _, _ ->
+                if (counterTracker != maxTracker) {
+                    lifecycleScope.launch(Dispatchers.Default) {
+                        trackingItem.forEachIndexed { index, section ->
+                            if (!section.isTrack) {
+                                withContext(Dispatchers.Main) {
+                                    if (binding?.rootContent?.getChildAt(index)
+                                        ?.getLocalVisibleRect(scrollBounds) == true
+                                    ) {
+                                        section.isTrack = true
+                                        counterTracker++
+                                        MainPrivacyCenterAnalytics.sendScrollPrivacyCenterEvent(section.sectionName)
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private fun handleStatusLogin() {
