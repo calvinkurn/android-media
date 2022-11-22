@@ -662,7 +662,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
 
         //region author info
         val activityName = ""
-        val authorType = if (author.type == 1) FollowCta.AUTHOR_USER else FollowCta.AUTHOR_SHOP
+        val authorType = if (author.type == 3) FollowCta.AUTHOR_USER else FollowCta.AUTHOR_SHOP
         val authorId = if (authorType == FollowCta.AUTHOR_USER) author.encryptedUserId else author.id
 
         val followCta = FollowCta(
