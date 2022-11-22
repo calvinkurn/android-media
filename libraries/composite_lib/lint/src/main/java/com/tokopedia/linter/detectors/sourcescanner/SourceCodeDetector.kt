@@ -10,10 +10,7 @@ import com.tokopedia.linter.detectors.sourcescanner.constructor.ConstructorDetec
 import com.tokopedia.linter.detectors.sourcescanner.constructor.ConstructorDetector.applicableConstructorList
 import com.tokopedia.linter.detectors.sourcescanner.elements.ElementDetector
 import com.tokopedia.linter.detectors.sourcescanner.method.MethodCallDetector
-import org.jetbrains.uast.UAnnotation
-import org.jetbrains.uast.UCallExpression
-import org.jetbrains.uast.UElement
-import org.jetbrains.uast.UImportStatement
+import org.jetbrains.uast.*
 
 @Suppress("UnstableApiUsage")
 class SourceCodeDetector : Detector(), Detector.UastScanner {
