@@ -1,5 +1,6 @@
 package com.tokopedia.contactus.inboxticket2.view.activity
 
+import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
@@ -31,6 +32,7 @@ import com.tokopedia.csat_rating.quickfilter.QuickFilterItem
 import com.tokopedia.csat_rating.quickfilter.QuickSingleFilterView
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observe
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import javax.inject.Inject
@@ -39,6 +41,7 @@ class ContactUsProvideRatingActivity : BaseSimpleActivity() {
 
     private val bottomSheetPage = BottomSheetUnify()
     private var selectedOption: MutableList<String> = ArrayList()
+
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private val viewModel: ContactUsRatingViewModel by lazy(LazyThreadSafetyMode.NONE) {
@@ -76,16 +79,16 @@ class ContactUsProvideRatingActivity : BaseSimpleActivity() {
         }
     }
 
-    private fun getValuesFromIntent(){
+    private fun getValuesFromIntent() {
         val caption = intent.getStringArrayListExtra(BaseFragmentProvideRating.CAPTION_LIST).orEmpty()
         viewModel.setCaption(caption as ArrayList<String>)
         val question = intent.getStringArrayListExtra(BaseFragmentProvideRating.QUESTION_LIST).orEmpty()
         viewModel.setQuestion(question as ArrayList<String>)
-        val reasonItemList : ArrayList<BadCsatReasonListItem> = intent?.getParcelableArrayListExtra(
+        val reasonItemList: ArrayList<BadCsatReasonListItem> = intent?.getParcelableArrayListExtra(
             BaseFragmentProvideRating.PARAM_OPTIONS_CSAT
         ) ?: ArrayList()
         viewModel.setReasonList(reasonItemList)
-        val emojiState =  intent?.getIntExtra(BaseFragmentProvideRating.CLICKED_EMOJI, 0) ?: BaseFragmentProvideRating.NO_EMOJI
+        val emojiState = intent?.getIntExtra(BaseFragmentProvideRating.CLICKED_EMOJI, 0) ?: BaseFragmentProvideRating.NO_EMOJI
         viewModel.setSelectedEmoji(emojiState)
         viewModel.setCsatTitle(intent?.getStringExtra(BaseFragmentProvideRating.CSAT_TITLE) ?: "")
     }
@@ -99,6 +102,9 @@ class ContactUsProvideRatingActivity : BaseSimpleActivity() {
             filterReview = findViewById(R.id.filter_review)
             buttonFinished = findViewById(R.id.txt_finished)
 
+            buttonFinished?.setOnClickListener {
+                onSubmitClick()
+            }
             csatTitle?.text = viewModel.csatTitle
         }
         return view
@@ -155,13 +161,15 @@ class ContactUsProvideRatingActivity : BaseSimpleActivity() {
     }
 
     private fun setFirstEmoji(drawable: Int) {
-        addImageView(drawable).setOnClickListener { viewModel.setSelectedEmoji(
-            FIRST_EMOJI
-        ) }
+        addImageView(drawable).setOnClickListener {
+            viewModel.setSelectedEmoji(
+                FIRST_EMOJI
+            )
+        }
     }
     private fun disableSubmitButton() {
-         buttonFinished?.setTextColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_NN400))
-         buttonFinished?.isEnabled = false
+        buttonFinished?.setTextColor(MethodChecker.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_NN400))
+        buttonFinished?.isEnabled = false
     }
 
     private fun setSecondEmoji(drawable: Int) {
@@ -181,28 +189,31 @@ class ContactUsProvideRatingActivity : BaseSimpleActivity() {
     }
 
     private fun setFourthEmoji(drawable: Int) {
-        addImageView(drawable).setOnClickListener { viewModel.setSelectedEmoji(
-            FOURTH_EMOJI
-        ) }
+        addImageView(drawable).setOnClickListener {
+            viewModel.setSelectedEmoji(
+                FOURTH_EMOJI
+            )
+        }
     }
 
     private fun setFifthEmoji(drawable: Int) {
-        addImageView(drawable).setOnClickListener { viewModel.setSelectedEmoji(
-            FIFTH_EMOJI
-        ) }
+        addImageView(drawable).setOnClickListener {
+            viewModel.setSelectedEmoji(
+                FIFTH_EMOJI
+            )
+        }
     }
 
     private fun setMessage(message: String) {
-         textEmojiSelected?.text = message
-
+        textEmojiSelected?.text = message
     }
 
     private fun setMessageColor(color: Int) {
-         textEmojiSelected?.setTextColor(MethodChecker.getColor(this, color))
+        textEmojiSelected?.setTextColor(MethodChecker.getColor(this, color))
     }
 
-     private fun setQuestion(question: String) {
-         feedbackQuestion?.text = question
+    private fun setQuestion(question: String) {
+        feedbackQuestion?.text = question
     }
 
     private fun addImageView(drawable: Int): ImageView {
@@ -218,11 +229,11 @@ class ContactUsProvideRatingActivity : BaseSimpleActivity() {
         return imageView
     }
 
-     private fun clearEmoji() {
-         emojiLayout?.removeAllViews()
+    private fun clearEmoji() {
+        emojiLayout?.removeAllViews()
     }
 
-    private fun clearAllOfSelectedReason(){
+    private fun clearAllOfSelectedReason() {
         selectedOption.clear()
     }
 
@@ -252,7 +263,7 @@ class ContactUsProvideRatingActivity : BaseSimpleActivity() {
                     selectedOption.remove(typeFilter)
                 } else {
                     if (!(filterList.isNotEmpty() && filterList[0].id > 0)) {
-                        //Neglect
+                        // Neglect
                     }
                     if (typeFilter != null) {
                         selectedOption.add(typeFilter)
@@ -309,7 +320,29 @@ class ContactUsProvideRatingActivity : BaseSimpleActivity() {
             val array = context.resources.getStringArray(R.array.contactus_csat_caption)
             return arrayListOf(*array)
         }
+    }
 
+    fun onSuccessSubmit(intent: Intent) {
+        setResult(Activity.RESULT_OK, intent)
+        finish()
+    }
+
+    private fun onSubmitClick() {
+        val intent = Intent()
+        intent.putExtra(BaseFragmentProvideRating.EMOJI_STATE, viewModel.emojiState.orZero())
+        intent.putExtra(BaseFragmentProvideRating.SELECTED_ITEM, getSelectedItem())
+        onSuccessSubmit(intent)
+    }
+
+    fun getSelectedItem(): String {
+        var filters = ""
+        for (filter in selectedOption) {
+            filters += "$filter;"
+        }
+        if (filters.isNotEmpty()) {
+            filters = filters.substring(0, filters.length - 1)
+        }
+        return filters
     }
 
     override fun getNewFragment(): Fragment? {
