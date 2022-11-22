@@ -29,4 +29,18 @@ data class HomeLeftCarouselAtcUiModel(
             (other as? HomeLeftCarouselAtcUiModel)?.productList == productList &&
             (other as? HomeLeftCarouselAtcUiModel)?.realTimeRecom == realTimeRecom
     }
+
+    override fun getChangePayload(newModel: HomeLayoutUiModel): Any? {
+        val newItem = newModel as HomeLeftCarouselAtcUiModel
+        val oldProductList = productList
+        val newProductList = newItem.productList
+        val oldRtrWidget = realTimeRecom
+        val newRtrWidget = newItem.realTimeRecom
+
+        return when {
+            oldProductList != newProductList ||
+            oldRtrWidget != newRtrWidget -> true
+            else -> null
+        }
+    }
 }

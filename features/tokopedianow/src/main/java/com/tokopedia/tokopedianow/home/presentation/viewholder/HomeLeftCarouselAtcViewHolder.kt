@@ -26,6 +26,7 @@ import com.tokopedia.tokopedianow.home.presentation.adapter.HomeLeftCarouselAtcP
 import com.tokopedia.tokopedianow.home.presentation.adapter.HomeLeftCarouselAtcProductCardTypeFactoryImpl
 import com.tokopedia.tokopedianow.home.presentation.adapter.differ.HomeLeftCarouselAtcProductCardDiffer
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselAtcProductCardUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeRealTimeRecomUiModel
 import com.tokopedia.tokopedianow.home.presentation.view.listener.HomeLeftCarouselAtcCallback
 import com.tokopedia.utils.view.binding.viewBinding
 import kotlinx.coroutines.CoroutineScope
@@ -116,6 +117,13 @@ class HomeLeftCarouselAtcViewHolder (
         onLeftCarouselImpressed(
             element = element
         )
+    }
+
+    override fun bind(element: HomeLeftCarouselAtcUiModel?, payloads: MutableList<Any>) {
+        if(payloads.firstOrNull() == true && element != null) {
+            setupRecyclerView(element = element)
+            setupRealTimeRecommendation(element = element)
+        }
     }
 
     private fun setupRealTimeRecommendation(element: HomeLeftCarouselAtcUiModel) {

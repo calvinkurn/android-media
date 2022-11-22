@@ -20,6 +20,7 @@ import com.tokopedia.tokopedianow.databinding.ItemTokopedianowHomeProductRecomBi
 import com.tokopedia.tokopedianow.home.constant.HomeStaticLayoutId.Companion.PRODUCT_RECOM_OOC
 import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProductRecomUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeRealTimeRecomUiModel
 import com.tokopedia.utils.view.binding.viewBinding
 
 class HomeProductRecomViewHolder(
@@ -44,14 +45,7 @@ class HomeProductRecomViewHolder(
     override fun bind(element: HomeProductRecomUiModel) {
         channelId = element.id
         isOoc = element.id == PRODUCT_RECOM_OOC
-        binding?.carouselProductRecom?.bind(
-            carouselData = RecommendationCarouselData(
-                recommendationData = element.recomWidget,
-                state = RecommendationCarouselData.STATE_READY,
-            ),
-            basicListener = this,
-            tokonowListener = this
-        )
+        renderProductCarousel(element)
         setOnScrollListener()
         restoreScrollState()
         if (isOoc) {
@@ -61,6 +55,24 @@ class HomeProductRecomViewHolder(
             binding?.carouselProductRecom?.setMargin(spaceZero, spaceSixTeen, spaceZero, spaceZero)
         }
         renderRealTimeRecommendation(element)
+    }
+
+    override fun bind(element: HomeProductRecomUiModel?, payloads: MutableList<Any>) {
+        if (payloads.firstOrNull() == true && element != null) {
+            renderProductCarousel(element = element)
+            renderRealTimeRecommendation(element = element)
+        }
+    }
+
+    private fun renderProductCarousel(element: HomeProductRecomUiModel) {
+        binding?.carouselProductRecom?.bind(
+            carouselData = RecommendationCarouselData(
+                recommendationData = element.recomWidget,
+                state = RecommendationCarouselData.STATE_READY,
+            ),
+            basicListener = this,
+            tokonowListener = this
+        )
     }
 
     private fun renderRealTimeRecommendation(element: HomeProductRecomUiModel) {
