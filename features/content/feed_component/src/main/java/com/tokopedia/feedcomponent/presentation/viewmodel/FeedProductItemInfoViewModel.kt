@@ -36,7 +36,7 @@ class FeedProductItemInfoViewModel @Inject constructor(
             val response = mvcSummaryUseCase.getResponse(mvcSummaryUseCase.getQueryParams(shopId))
 
             if (response.data?.resultStatus?.code != "200") {
-                throw ResponseErrorException(response.data?.resultStatus?.message.toString())
+                throw ResponseErrorException(response.data?.resultStatus?.message?.get(0).toString())
             }
 
             response.data?.let {
