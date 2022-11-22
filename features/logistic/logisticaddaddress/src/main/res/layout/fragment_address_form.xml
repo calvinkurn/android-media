@@ -28,7 +28,6 @@
                 android:id="@+id/ticker_maps_unavailable"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:titleText="@string/maps_unavailable_ticker_title"
                 app:descriptionText="@string/maps_unavailable_ticker_description"
                 app:tickerType="error"
                 app:tickerShapeType="loose"

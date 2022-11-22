@@ -173,7 +173,6 @@
                         android:id="@+id/ticker_maps_preview_unavailable"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        app:titleText="@string/maps_preview_unavailable_ticker_title"
                         app:descriptionText="@string/maps_preview_unavailable_ticker_desc"
                         app:tickerType="error"
                         app:tickerShapeType="loose"
