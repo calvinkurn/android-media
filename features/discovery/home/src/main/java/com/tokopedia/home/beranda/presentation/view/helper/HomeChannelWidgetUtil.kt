@@ -46,7 +46,6 @@ object HomeChannelWidgetUtil {
 
     private fun setBottomPadding(dividerBottom: DividerUnify?) {
         dividerBottom?.layoutParams?.height = DEFAULT_BOTTOM_PADDING.toPx()
-        dividerBottom?.setBackgroundResource(android.R.color.transparent)
         dividerBottom?.visible()
     }
 }
