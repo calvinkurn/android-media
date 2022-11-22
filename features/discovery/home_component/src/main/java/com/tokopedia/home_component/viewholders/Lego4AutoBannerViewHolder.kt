@@ -2,7 +2,6 @@ package com.tokopedia.home_component.viewholders
 
 import android.view.View
 import androidx.annotation.LayoutRes
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -86,12 +85,9 @@ class Lego4AutoBannerViewHolder (itemView: View,
                     false
                 )
         )
-        val marginValue = if(isUsingPadding) itemView.resources.getDimension(R.dimen.home_component_margin_default).toInt() else 0
-        val marginLayoutParams = recyclerView.layoutParams as ConstraintLayout.LayoutParams
-        marginLayoutParams.leftMargin = marginValue
-        marginLayoutParams.rightMargin = marginValue
-        recyclerView.layoutParams = marginLayoutParams
-        recyclerView.setPadding(0,0,0, marginValue)
+        val horizontalPadding = if(isUsingPadding) itemView.resources.getDimension(R.dimen.home_component_margin_default).toInt() else 0
+        val bottomPadding = if(isUsingPadding) itemView.resources.getDimension(R.dimen.home_component_padding_style_bottom_margin).toInt() else 0
+        recyclerView.setPadding(horizontalPadding, 0, horizontalPadding, bottomPadding)
     }
 
     private fun setHeaderComponent(element: Lego4AutoDataModel) {
