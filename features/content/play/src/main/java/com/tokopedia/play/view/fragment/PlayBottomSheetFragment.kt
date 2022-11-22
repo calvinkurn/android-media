@@ -14,15 +14,14 @@ import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils
 import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
+import com.tokopedia.content.common.util.Router
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayAnalytic
 import com.tokopedia.play.analytic.PlayNewAnalytic
-import com.tokopedia.play.analytic.ProductAnalyticHelper
 import com.tokopedia.play.extensions.isAnyShown
 import com.tokopedia.play.extensions.isCouponSheetsShown
 import com.tokopedia.play.extensions.isKeyboardShown
@@ -68,13 +67,14 @@ import javax.inject.Inject
 class PlayBottomSheetFragment @Inject constructor(
     private val viewModelFactory: ViewModelProvider.Factory,
     private val analytic: PlayAnalytic,
-    private val newAnalytic: PlayNewAnalytic) :
-    TkpdBaseV4Fragment(),
-        PlayFragmentContract,
-        ProductSheetViewComponent.Listener,
-        VariantSheetViewComponent.Listener,
-        PlayGameLeaderboardViewComponent.Listener,
-        ShopCouponSheetViewComponent.Listener {
+    private val newAnalytic: PlayNewAnalytic,
+    private val router: Router,
+) : TkpdBaseV4Fragment(),
+    PlayFragmentContract,
+    ProductSheetViewComponent.Listener,
+    VariantSheetViewComponent.Listener,
+    PlayGameLeaderboardViewComponent.Listener,
+    ShopCouponSheetViewComponent.Listener {
 
     companion object {
         private const val REQUEST_CODE_LOGIN = 191
@@ -100,8 +100,6 @@ class PlayBottomSheetFragment @Inject constructor(
     private val playFragment: PlayFragment
         get() = requireParentFragment() as PlayFragment
 
-    private lateinit var productAnalyticHelper: ProductAnalyticHelper
-
     override fun getScreenName(): String = "Play Bottom Sheet"
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -120,7 +118,6 @@ class PlayBottomSheetFragment @Inject constructor(
         super.onViewCreated(view, savedInstanceState)
         setupView(view)
         setupObserve()
-        initAnalytic()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -182,10 +179,13 @@ class PlayBottomSheetFragment @Inject constructor(
 
     override fun onProductImpressed(
         view: ProductSheetViewComponent,
-        products: List<ProductSheetAdapter.Item.Product>
+        products: Map<ProductSheetAdapter.Item.Product, Int>
     ) {
-        productAnalyticHelper.trackImpressedProductsBottomSheet(products)
-        productAnalyticHelper.sendImpressedBottomSheet(playViewModel.latestCompleteChannelData.partnerInfo.type)
+        if (!playViewModel.bottomInsets.isProductSheetsShown) return
+
+        if (playViewModel.latestCompleteChannelData.partnerInfo.type == PartnerType.TokoNow)
+            newAnalytic.impressProductBottomSheetNow(products)
+        else analytic.impressBottomSheetProduct(products)
     }
 
     private fun onProductCountChanged() {
@@ -322,10 +322,6 @@ class PlayBottomSheetFragment @Inject constructor(
         observeUiEvent()
     }
 
-    private fun initAnalytic() {
-        productAnalyticHelper = ProductAnalyticHelper(analytic, newAnalytic)
-    }
-
     private fun closeProductSheet() {
         playViewModel.onHideProductSheet()
     }
@@ -435,9 +431,9 @@ class PlayBottomSheetFragment @Inject constructor(
 
     private fun openApplink(applink: String, vararg params: String, requestCode: Int? = null, shouldFinish: Boolean = false) {
         if (requestCode == null) {
-            RouteManager.route(context, applink, *params)
+            router.route(context, applink, *params)
         } else {
-            val intent = RouteManager.getIntent(context, applink, *params)
+            val intent = router.getIntent(context, applink, *params)
             startActivityForResult(intent, requestCode)
         }
         activity?.overridePendingTransition(R.anim.anim_play_enter_page, R.anim.anim_play_exit_page)
@@ -560,7 +556,7 @@ class PlayBottomSheetFragment @Inject constructor(
             playViewModel.uiEvent.collect { event ->
                 when (event) {
                         is BuySuccessEvent -> {
-                            RouteManager.route(requireContext(), ApplinkConstInternalMarketplace.CART)
+                            router.route(requireContext(), ApplinkConstInternalMarketplace.CART)
 
 
                             val bottomInsetsType = if (event.isVariant) {
@@ -629,7 +625,7 @@ class PlayBottomSheetFragment @Inject constructor(
                                 message = wording,
                                 actionText = toaster,
                                 actionClickListener = {
-                                    RouteManager.route(requireContext(), route)
+                                    router.route(requireContext(), route)
                                     if (event.product.isPinned &&
                                         !playViewModel.bottomInsets.isProductSheetsShown) {
 
@@ -713,7 +709,7 @@ class PlayBottomSheetFragment @Inject constructor(
     ) {
         newAnalytic.clickInfoNow()
         val appLink = "${ApplinkConstInternalTokopediaNow.EDUCATIONAL_INFO}?source=play&channel_id=${playViewModel.channelId}&state=${playViewModel.channelType}"
-        val intent = RouteManager.getIntent(context, appLink)
+        val intent = router.getIntent(context, appLink)
         startActivity(intent)
     }
 

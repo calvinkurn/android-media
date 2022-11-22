@@ -85,6 +85,13 @@ class UserProfileFollowViewModelTest {
             } recordState {
                 submitAction(UserProfileAction.ClickFollowButton(isFromLogin = false))
             } andThen {
+                it.viewModel.displayName equalTo "Jonathan Darwin"
+                it.viewModel.profileUsername equalTo mockOwnUsername
+                it.viewModel.profileCover equalTo "123.jpg"
+                it.viewModel.totalFollower equalTo ""
+                it.viewModel.totalFollowing equalTo ""
+                it.viewModel.totalPost equalTo ""
+                it.viewModel.profileWebLink equalTo ""
                 followInfo equalTo mockOwnFollow
             }
         }

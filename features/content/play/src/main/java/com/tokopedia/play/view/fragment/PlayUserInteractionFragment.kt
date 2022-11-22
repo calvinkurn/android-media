@@ -17,7 +17,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
+import com.tokopedia.content.common.util.Router
 import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.hide
@@ -101,7 +101,6 @@ import com.tokopedia.url.TokopediaUrl
 import kotlinx.coroutines.*
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
-import java.util.*
 import javax.inject.Inject
 import com.tokopedia.play_common.R as commonR
 
@@ -117,7 +116,8 @@ class PlayUserInteractionFragment @Inject constructor(
     private val castAnalyticHelper: CastAnalyticHelper,
     private val performanceClassConfig: PerformanceClassConfig,
     private val newAnalytic: PlayNewAnalytic,
-    analyticManagerFactory: PlayChannelAnalyticManager.Factory,
+    private val analyticManager: PlayChannelAnalyticManager,
+    private val router: Router,
 ) :
         TkpdBaseV4Fragment(),
         PlayMoreActionBottomSheet.Listener,
@@ -240,14 +240,6 @@ class PlayUserInteractionFragment @Inject constructor(
 
     private lateinit var onStatsInfoGlobalLayoutListener: ViewTreeObserver.OnGlobalLayoutListener
 
-    private val productAnalyticHelper = ProductAnalyticHelper(analytic, newAnalytic)
-
-    private val analyticManager by lazy(LazyThreadSafetyMode.NONE) {
-        analyticManagerFactory.create(
-            productAnalyticHelper = productAnalyticHelper,
-        )
-    }
-
     private var localCache: LocalCacheModel = LocalCacheModel()
 
     /**
@@ -306,13 +298,7 @@ class PlayUserInteractionFragment @Inject constructor(
     override fun onPause() {
         super.onPause()
         isOpened = false
-        productAnalyticHelper.sendImpressedFeaturedProducts(
-            partner = playViewModel.latestCompleteChannelData.partnerInfo.type
-        )
         analytic.getTrackingQueue().sendAll()
-        analyticManager.sendPendingTrackers(
-            partnerType = playViewModel.latestCompleteChannelData.partnerInfo.type
-        )
     }
 
     override fun onWatchModeClicked(bottomSheet: PlayMoreActionBottomSheet) {
@@ -1197,9 +1183,9 @@ class PlayUserInteractionFragment @Inject constructor(
 
     private fun openApplink(applink: String, vararg params: String, requestCode: Int? = null, shouldFinish: Boolean = false) {
         if (requestCode == null) {
-            RouteManager.route(context, applink, *params)
+            router.route(context, applink, *params)
         } else {
-            val intent = RouteManager.getIntent(context, applink, *params)
+            val intent = router.getIntent(context, applink, *params)
             startActivityForResult(intent, requestCode)
         }
         activity?.overridePendingTransition(R.anim.anim_play_enter_page, R.anim.anim_play_exit_page)
@@ -1909,5 +1895,6 @@ class PlayUserInteractionFragment @Inject constructor(
 
         object OnScrubStarted : Event
         object OnScrubEnded : Event
+        object OnProductUpdate: Event
     }
 }

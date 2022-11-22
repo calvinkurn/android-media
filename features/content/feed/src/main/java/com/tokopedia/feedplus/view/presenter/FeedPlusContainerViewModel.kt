@@ -44,6 +44,8 @@ class FeedPlusContainerViewModel @Inject constructor(
             else -> false
         }
 
+    private var isLoading = MutableLiveData<Boolean>()
+
     fun getDynamicTabs() {
         launchCatchError(block = {
             val feedTabs: FeedTabs = repo.getDynamicTabs()
@@ -61,12 +63,15 @@ class FeedPlusContainerViewModel @Inject constructor(
 
     fun getWhitelist() {
         viewModelScope.launchCatchError(block = {
-            if(!userSession.isLoggedIn) return@launchCatchError
+            if(!userSession.isLoggedIn || isLoading.value == true) return@launchCatchError
+            isLoading.value = true
 
             val response = repo.getWhitelist()
             whitelistResp.value = Success(getWhitelistDomain(response))
+            isLoading.value = false
         }) {
             whitelistResp.value = Fail(it)
+            isLoading.value = false
         }
     }
 
