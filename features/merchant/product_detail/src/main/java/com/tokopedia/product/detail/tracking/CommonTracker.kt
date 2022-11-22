@@ -15,5 +15,5 @@ data class CommonTracker(
     val categoryId by lazy { basicCategory.id }
     val productId by lazy { productBasic.productID }
     val shopType by lazy { productInfo.shopTypeString }
-    val categoryChildId by lazy { basicCategory.detail.lastOrNull() ?: "" }
+    val categoryChildId by lazy { basicCategory.detail.lastOrNull()?.id ?: "" }
 }
