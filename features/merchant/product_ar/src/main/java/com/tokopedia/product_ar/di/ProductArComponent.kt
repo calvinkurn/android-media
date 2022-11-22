@@ -6,10 +6,10 @@ import com.tokopedia.product_ar.view.fragment.ProductArFragment
 import dagger.Component
 
 @ProductArScope
-@Component(modules = [
-    ProductArModule::class,
-    ProductArViewModelModule::class],
-        dependencies = [BaseAppComponent::class])
+@Component(
+    modules = [ProductArModule::class, ProductArViewModelModule::class],
+    dependencies = [BaseAppComponent::class]
+)
 interface ProductArComponent {
     fun inject(fragment: ProductArFragment)
     fun inject(fragment: ProductArComparisonFragment)

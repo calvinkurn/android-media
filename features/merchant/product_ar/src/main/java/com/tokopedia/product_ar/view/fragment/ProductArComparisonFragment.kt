@@ -240,13 +240,7 @@ class ProductArComparisonFragment : BaseDaggerFragment(), ComparissonHelperListe
     private fun getInitialProductId(): String {
         return sharedViewModel?.arListData?.value?.modifaceUiModel?.firstOrNull {
             it.isSelected
-        }?.productId ?: ""
-    }
-
-    private fun getInitialProductName(): String {
-        return sharedViewModel?.arListData?.value?.modifaceUiModel?.firstOrNull {
-            it.isSelected
-        }?.productName ?: ""
+        }?.productId.orEmpty()
     }
 
     private fun getVariantTotalSize(): Int {

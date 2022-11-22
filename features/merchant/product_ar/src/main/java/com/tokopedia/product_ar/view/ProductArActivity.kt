@@ -34,11 +34,15 @@ class ProductArActivity : BaseSimpleActivity(), HasComponent<ProductArComponent>
     fun getMakeUpEngine(): MFEMakeupEngine? = mMakeupEngine
 
     fun goToArComparisonFragment() {
-        supportFragmentManager.beginTransaction().replace(parentViewResourceID,
+        supportFragmentManager
+            .beginTransaction()
+            .replace(
+                parentViewResourceID,
                 ProductArComparisonFragment.newInstance(),
-                PRODUCT_AR_COMPARISON_FRAGMENT)
-                .addToBackStack(null)
-                .commitAllowingStateLoss()
+                PRODUCT_AR_COMPARISON_FRAGMENT
+            )
+            .addToBackStack(null)
+            .commitAllowingStateLoss()
     }
 
     override fun getLayoutRes(): Int = R.layout.activity_product_ar
@@ -88,7 +92,7 @@ class ProductArActivity : BaseSimpleActivity(), HasComponent<ProductArComponent>
 
         uri?.let {
             productId = it.lastPathSegment.toString()
-            shopId = intent.getStringExtra(SHOP_ID_EXTRA) ?: ""
+            shopId = intent.getStringExtra(SHOP_ID_EXTRA).orEmpty()
         }
 
         setupEngine()

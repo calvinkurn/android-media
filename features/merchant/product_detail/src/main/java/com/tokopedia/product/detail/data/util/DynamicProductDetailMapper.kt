@@ -243,9 +243,7 @@ object DynamicProductDetailMapper {
                     )
                 }
                 ProductDetailConstant.AR_BUTTON -> {
-                    if (Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1) {
-                        listOfComponent.add(ArButtonDataModel(type = component.type, name = component.componentName))
-                    }
+                    listOfComponent.add(ArButtonDataModel(type = component.type, name = component.componentName))
                 }
                 ProductDetailConstant.FINTECH_WIDGET_TYPE -> {
                     listOfComponent.add(
@@ -659,6 +657,7 @@ object DynamicProductDetailMapper {
         val isOfficialStore = productInfo?.data?.isOS == true
         val isVariant = productInfo?.isProductVariant() ?: false
         val isVariantEmpty = variantData == null || !variantData.hasChildren
+        val higherThanLollipop = Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1
 
         return initialLayoutData.filterNot {
             (it.name() == ProductDetailConstant.TRADE_IN && (!isTradein || isShopOwner))
@@ -679,6 +678,11 @@ object DynamicProductDetailMapper {
                     || (it.name() == ProductDetailConstant.PRODUCT_INSTALLMENT_PAYLATER_INFO)
                     || (it.name() == ProductDetailConstant.ORDER_PRIORITY)
                     || (it.name() == ProductDetailConstant.COD)
+                    /**
+                     * Remove when lollipop and sellerapp
+                     */
+                    || (it.name() == ProductDetailConstant.AR_BUTTON
+                    && (GlobalConfig.isSellerApp() || !higherThanLollipop))
         }.toMutableList()
     }
 

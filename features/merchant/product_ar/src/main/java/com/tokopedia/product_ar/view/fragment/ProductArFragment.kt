@@ -182,10 +182,10 @@ class ProductArFragment : Fragment(), ProductArListener, MFEMakeupEngine.MFEMake
             activity?.runOnUiThread {
                 before?.let {
                     sharedViewModel?.setArListData(
-                            listOfArData = (viewModel?.productArList?.value as? Success)?.data
-                                    ?: listOf(),
-                            processedPhoto = after,
-                            originalPhoto = before)
+                        listOfArData = (viewModel?.productArList?.value as? Success)?.data.orEmpty(),
+                        processedPhoto = after,
+                        originalPhoto = before
+                    )
                     binding?.arLoader?.hide()
                     getArActivity()?.goToArComparisonFragment()
                 }
@@ -538,7 +538,7 @@ class ProductArFragment : Fragment(), ProductArListener, MFEMakeupEngine.MFEMake
         viewModel?.let {
             it.onVariantClicked(
                     productId, it.getProductArUiModel(),
-                    partialBottomArView?.adapter?.getCurrentArImageDatas() ?: listOf(),
+                    partialBottomArView?.adapter?.getCurrentArImageDatas().orEmpty(),
                     selectedMfeProduct
             )
         }

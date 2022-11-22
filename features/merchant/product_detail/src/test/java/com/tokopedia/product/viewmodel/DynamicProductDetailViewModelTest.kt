@@ -92,7 +92,6 @@ import io.mockk.mockk
 import io.mockk.mockkObject
 import io.mockk.slot
 import io.mockk.verify
-import java.util.concurrent.TimeoutException
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Assert
@@ -100,6 +99,8 @@ import org.junit.Test
 import org.mockito.Matchers.anyInt
 import org.mockito.Matchers.anyString
 import rx.Observable
+import java.util.concurrent.TimeoutException
+
 
 @ExperimentalCoroutinesApi
 open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
@@ -1217,6 +1218,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.TRADE_IN } == 1)
         Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.REPORT } == 1)
         Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.SHIPMENT } == 1)
+        Assert.assertTrue(p1Result.count { it.name() == ProductDetailConstant.AR_BUTTON } == 1)
     }
 
     private fun `co verify p1 success`() {
@@ -1391,6 +1393,11 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             GlobalConfig.isSellerApp()
         } returns true
 
+        /**
+         * make sure button ar removed because its sellerapp eventho os > 22
+         */
+        setOS(25)
+
         every {
             viewModel.userId
         } returns "123"
@@ -1415,6 +1422,44 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
         Assert.assertTrue(p1Result.none { it.type() == ProductDetailConstant.PRODUCT_LIST })
         Assert.assertTrue(p1Result.none { it.name() == ProductDetailConstant.PLAY_CAROUSEL })
         Assert.assertTrue(p1Result.none { it.name() == ProductDetailConstant.REPORT })
+        Assert.assertTrue(p1Result.none { it.name() == ProductDetailConstant.AR_BUTTON })
+    }
+
+    @Test
+    fun `remove button_ar when customerapp and os under lollipop`() {
+        val dataP1 = ProductDetailTestUtil.getMockPdpLayout()
+        val productParams = ProductParams("", "", "", "", "", "")
+
+        every {
+            GlobalConfig.isSellerApp()
+        } returns false
+
+        /**
+         * make sure button ar removed because of os under 22
+         */
+        setOS(20)
+
+        every {
+            viewModel.userId
+        } returns "123"
+
+        every {
+            viewModel.isShopOwner()
+        } returns true
+
+        every {
+            userSessionInterface.isLoggedIn
+        } returns true
+
+        every {
+            viewModel.isUserSessionActive
+        } returns false
+
+        `co every p1 success`(dataP1)
+
+        viewModel.getProductP1(productParams, refreshPage = true, userLocationLocal = getUserLocationCache())
+        val p1Result = (viewModel.productLayout.value as Success).data
+        Assert.assertTrue(p1Result.none { it.name() == ProductDetailConstant.AR_BUTTON })
     }
 
     /**
