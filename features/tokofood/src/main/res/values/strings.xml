@@ -77,7 +77,6 @@
     <string name="action_share">Share</string>
     <string name="action_open_global_menu">Open Global Menu</string>
     <string name="action_save">Simpan</string>
-    <string name="text_rating_title">%s Rating</string>
     <string name="text_distance_title">Jarak</string>
     <string name="text_estimation_title">Tiba</string>
     <string name="text_ops_hour_title">Jam Operasional</string>
@@ -186,6 +185,7 @@
     <string name="search_srp_ooc_success_change_address">Berhasil mengubah alamat</string>
     <string name="search_srp_ooc_failed_edit_pinpoint">Gagal mengubah pinpoint alamat</string>
     <string name="search_srp_ooc_okay">Oke</string>
+    <string name="search_srp_filter_title">Filter restoran</string>
 
     <!-- Search - Common -->
     <string name="search_common_to_homepage">Ke Homepage</string>

@@ -35,6 +35,7 @@ import com.tokopedia.feed_shop.shop.view.contract.FeedShopContract
 import com.tokopedia.feed_shop.shop.view.model.EmptyFeedShopSellerMigrationUiModel
 import com.tokopedia.feed_shop.shop.view.model.EmptyFeedShopUiModel
 import com.tokopedia.feed_shop.shop.view.model.WhitelistUiModel
+import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomWidgetModel
 import com.tokopedia.user.session.UserSessionInterface
 
 /**
@@ -90,6 +91,10 @@ class FeedShopFactoryImpl(private val mainView: FeedShopContract.View,
     }
 
     override fun type(carouselPlayCardViewModel: CarouselPlayCardViewModel): Int {
+        return 0
+    }
+
+    override fun type(shopRecomWidgetModel: ShopRecomWidgetModel): Int {
         return 0
     }
 

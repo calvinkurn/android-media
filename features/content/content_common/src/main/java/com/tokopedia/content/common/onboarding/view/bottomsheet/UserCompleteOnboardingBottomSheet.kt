@@ -8,7 +8,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.content.common.databinding.BottomsheetUserCompleteOnboardingBinding
 import com.tokopedia.content.common.util.withCache
@@ -17,22 +16,16 @@ import com.tokopedia.content.common.onboarding.view.bottomsheet.base.BaseUserOnb
 import com.tokopedia.content.common.onboarding.view.strategy.factory.UGCOnboardingStrategyFactory
 import com.tokopedia.content.common.onboarding.view.uimodel.action.UGCOnboardingAction
 import com.tokopedia.content.common.onboarding.view.uimodel.event.UGCOnboardingUiEvent
-import com.tokopedia.content.common.onboarding.view.uimodel.state.FeedUGCOnboardingUiState
+import com.tokopedia.content.common.onboarding.view.uimodel.state.UGCOnboardingUiState
 import com.tokopedia.content.common.onboarding.view.uimodel.state.UsernameState
 import com.tokopedia.content.common.onboarding.view.viewmodel.UGCOnboardingViewModel
 import com.tokopedia.content.common.onboarding.view.viewmodel.factory.UGCOnboardingViewModelFactory
-import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 import android.view.inputmethod.EditorInfo
 
-import android.widget.TextView
-
-import android.widget.EditText
-import android.widget.TextView.OnEditorActionListener
-import android.widget.Toast
 import androidx.fragment.app.viewModels
 import com.tokopedia.content.common.util.hideKeyboard
 
@@ -147,8 +140,8 @@ class UserCompleteOnboardingBottomSheet @Inject constructor(
 
     /** Render Section */
     private fun renderLayout(
-        prev: FeedUGCOnboardingUiState?,
-        curr: FeedUGCOnboardingUiState,
+        prev: UGCOnboardingUiState?,
+        curr: UGCOnboardingUiState,
     ) {
         if(prev == curr) return
 

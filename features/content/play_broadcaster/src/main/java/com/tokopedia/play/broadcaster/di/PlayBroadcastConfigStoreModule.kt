@@ -10,6 +10,8 @@ import com.tokopedia.play.broadcaster.data.config.ProductConfigStore
 import com.tokopedia.play.broadcaster.data.config.ProductConfigStoreImpl
 import com.tokopedia.play.broadcaster.data.config.TitleConfigStore
 import com.tokopedia.play.broadcaster.data.config.TitleConfigStoreImpl
+import com.tokopedia.play.broadcaster.data.config.AccountConfigStore
+import com.tokopedia.play.broadcaster.data.config.AccountConfigStoreImpl
 import dagger.Binds
 import dagger.Module
 
@@ -34,6 +36,10 @@ abstract class PlayBroadcastConfigStoreModule {
     @Binds
     @ActivityRetainedScope
     abstract fun bindBroadcastScheduleConfigStore(configStore: BroadcastScheduleConfigStoreImpl): BroadcastScheduleConfigStore
+
+    @Binds
+    @ActivityRetainedScope
+    abstract fun bindBroadcastUGCConfigStore(configStore: AccountConfigStoreImpl): AccountConfigStore
 
     @Binds
     @ActivityRetainedScope

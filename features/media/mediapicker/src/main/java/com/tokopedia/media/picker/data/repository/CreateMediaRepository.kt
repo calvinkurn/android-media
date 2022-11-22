@@ -29,6 +29,7 @@ class CreateMediaRepositoryImpl : CreateMediaRepository {
                     nativeCaptureSize.height
                 )?: return@flow
 
+                // if process save is change, please check editor utils getTokopediaCacheDir() for path checker
                 emit(ImageProcessingUtil.writeImageToTkpdPath(bitmap, compressFormat))
             } catch (e: Throwable) {
                 emit(ImageProcessingUtil.writeImageToTkpdPath(byteArray, compressFormat))

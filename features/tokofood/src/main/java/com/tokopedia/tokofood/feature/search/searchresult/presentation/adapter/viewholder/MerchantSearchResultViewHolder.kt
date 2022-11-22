@@ -1,7 +1,6 @@
 package com.tokopedia.tokofood.feature.search.searchresult.presentation.adapter.viewholder
 
 import android.view.View
-import android.view.ViewTreeObserver
 import androidx.annotation.LayoutRes
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
@@ -19,7 +18,9 @@ import com.tokopedia.tokofood.R
 import com.tokopedia.tokofood.common.domain.response.AdditionalData
 import com.tokopedia.tokofood.common.domain.response.Merchant
 import com.tokopedia.tokofood.common.domain.response.PriceLevel
+import com.tokopedia.tokofood.common.presentation.listener.TokofoodScrollChangedListener
 import com.tokopedia.tokofood.common.util.TokofoodExt.addAndReturnImpressionListener
+import com.tokopedia.tokofood.common.util.TokofoodExt.clickWithDebounce
 import com.tokopedia.tokofood.databinding.ItemTokofoodSearchSrpCardBinding
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.uimodel.MerchantSearchResultUiModel
 import com.tokopedia.unifyprinciples.Typography
@@ -28,7 +29,8 @@ import java.lang.StringBuilder
 
 class MerchantSearchResultViewHolder(
     itemView: View,
-    private val listener: TokoFoodMerchantSearchResultListener? = null
+    private val listener: TokoFoodMerchantSearchResultListener? = null,
+    private val tokofoodScrollChangedListener: TokofoodScrollChangedListener
 ) : AbstractViewHolder<MerchantSearchResultUiModel>(itemView) {
 
     private val binding: ItemTokofoodSearchSrpCardBinding? by viewBinding()
@@ -66,16 +68,12 @@ class MerchantSearchResultViewHolder(
     }
 
     private fun setPromoInfo(promo: String, additionalData: AdditionalData) {
+        setPromoRibbonLabel(additionalData.topTextBanner)
         binding?.run {
             if (promo.isBlank()) {
-                ribbonTokofoodPromo.hide()
                 ivItemSrpMerchantDiscount.hide()
                 tvItemSrpMerchantPromoDetail.hide()
             } else {
-                ribbonTokofoodPromo.run {
-                    show()
-                    setRibbonText(additionalData.topTextBanner)
-                }
                 ivItemSrpMerchantDiscount.run {
                     show()
                     setImageUrl(additionalData.discountIcon)
@@ -83,6 +81,19 @@ class MerchantSearchResultViewHolder(
                 tvItemSrpMerchantPromoDetail.run {
                     show()
                     text = promo
+                }
+            }
+        }
+    }
+
+    private fun setPromoRibbonLabel(topTextBanner: String) {
+        binding?.run {
+            if (topTextBanner.isBlank()) {
+                ribbonTokofoodPromo.hide()
+            } else {
+                ribbonTokofoodPromo.run {
+                    show()
+                    setRibbonText(topTextBanner)
                 }
             }
         }
@@ -216,22 +227,20 @@ class MerchantSearchResultViewHolder(
     private fun setOtherBranchButton(merchant: Merchant) {
         binding?.btnTokofoodItemSrpBranch?.run {
             showWithCondition(merchant.hasBranch)
-            setOnClickListener {
+            clickWithDebounce {
                 listener?.onBranchButtonClicked(merchant)
             }
         }
     }
 
     private fun addImpressionListener(merchant: Merchant) {
-        binding?.root?.addAndReturnImpressionListener(merchant) {
+        binding?.root?.addAndReturnImpressionListener(merchant, tokofoodScrollChangedListener) {
             listener?.onImpressMerchant(merchant, bindingAdapterPosition)
-        }?.let { impressionListener ->
-            listener?.onImpressionListenerAdded(impressionListener)
         }
     }
 
     private fun setOnClickListener(merchant: Merchant) {
-        binding?.root?.setOnClickListener {
+        binding?.root?.clickWithDebounce {
             listener?.onClickMerchant(merchant, bindingAdapterPosition)
         }
     }
@@ -269,7 +278,6 @@ class MerchantSearchResultViewHolder(
         fun onClickMerchant(merchant: Merchant, position: Int)
         fun onImpressMerchant(merchant: Merchant, position: Int)
         fun onBranchButtonClicked(merchant: Merchant)
-        fun onImpressionListenerAdded(listener: ViewTreeObserver.OnScrollChangedListener)
     }
 
     companion object {
