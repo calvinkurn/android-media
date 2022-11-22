@@ -9,6 +9,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.campaign.components.adapter.CompositeAdapter
+import com.tokopedia.campaign.utils.extension.attachDividerItemDecoration
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
@@ -87,6 +88,7 @@ class WidgetCampaignProductSubmissionProgress(
         rvCampaignList?.apply {
             layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             adapter = adapterWidgetCampaignProductSubmissionProgress
+            attachDividerItemDecoration(R.drawable.campaign_product_submission_progress_item_separator)
         }
     }
 
