@@ -21,8 +21,10 @@ import com.tokopedia.entertainment.pdp.data.redeem.redeemable.Data
 import com.tokopedia.entertainment.pdp.data.redeem.redeemable.Participant
 import com.tokopedia.entertainment.pdp.di.EventPDPComponent
 import com.tokopedia.entertainment.pdp.viewmodel.EventRedeemRevampViewModel
+import com.tokopedia.kotlin.extensions.view.getDimens
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
+import com.tokopedia.kotlin.extensions.view.setMargin
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.Toaster
@@ -34,6 +36,8 @@ import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 import com.tokopedia.entertainment.R.string as redeemString
 import com.tokopedia.unifyprinciples.R.color as redeemColor
+import com.tokopedia.unifyprinciples.R.dimen as dimenUnify
+
 
 /**
  * Author firmanda on 17,Nov,2022
@@ -329,12 +333,21 @@ class EventRedeemRevampFragment : BaseDaggerFragment(),
                 }
             } else if (getEmptyParticipant(getUpdateListRedemption())) {
                 tfRedeem.hide()
-                val btnParamRedeem = btnRedeem.layoutParams as ConstraintLayout.LayoutParams
-                btnParamRedeem.leftToRight = ConstraintLayout.LayoutParams.UNSET
-                btnParamRedeem.leftToLeft = ConstraintLayout.LayoutParams.PARENT_ID
-                btnRedeem.layoutParams = btnParamRedeem
-                btnRedeem.setOnClickListener {
-                    processOldRedeem()
+                btnRedeem.run {
+                    val btnParamRedeem = layoutParams as ConstraintLayout.LayoutParams
+                    btnParamRedeem.leftToRight = ConstraintLayout.LayoutParams.UNSET
+                    btnParamRedeem.leftToLeft = ConstraintLayout.LayoutParams.PARENT_ID
+                    layoutParams = btnParamRedeem
+
+                    setOnClickListener {
+                        processOldRedeem()
+                    }
+                    setMargin(
+                        getDimens(dimenUnify.unify_space_16),
+                        getDimens(dimenUnify.unify_space_16),
+                        getDimens(dimenUnify.unify_space_16),
+                        getDimens(dimenUnify.unify_space_0)
+                    )
                 }
             } else {
                 context?.let{ context ->

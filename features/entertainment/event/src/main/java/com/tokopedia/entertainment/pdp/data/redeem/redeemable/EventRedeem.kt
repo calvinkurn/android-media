@@ -25,7 +25,7 @@ data class Data(
     @SerializedName("user")
     val user: User = User(),
     @SerializedName("redemptions")
-    val redemptions: List<Participant> = emptyList(),
+    val redemptions: List<Participant>? = emptyList(),
 )
 
 data class Product(

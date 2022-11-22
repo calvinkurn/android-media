@@ -104,7 +104,7 @@ class EventRedeemRevampViewModel @Inject constructor(
         val value = response[EventRedeem::class.java]
 
         return if (value?.code == SUCCESS_CODE && !value.isError) {
-            listRedemptions = convertToRedeemResponse(response).data.redemptions
+            listRedemptions = convertToRedeemResponse(response).data.redemptions ?: emptyList()
             Success(convertToRedeemResponse(response))
         } else {
             val error = convertToErrorResponse(response)
