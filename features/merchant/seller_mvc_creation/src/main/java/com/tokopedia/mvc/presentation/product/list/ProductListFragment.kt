@@ -13,8 +13,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
-import com.tokopedia.campaign.components.adapter.CompositeAdapter
-import com.tokopedia.campaign.components.adapter.DelegateAdapterItem
 import com.tokopedia.campaign.utils.extension.applyPaddingToLastItem
 import com.tokopedia.campaign.utils.extension.attachDividerItemDecoration
 import com.tokopedia.campaign.utils.extension.showToaster
@@ -36,7 +34,7 @@ import com.tokopedia.mvc.domain.entity.VoucherConfiguration
 import com.tokopedia.mvc.domain.entity.enums.PageMode
 import com.tokopedia.mvc.presentation.product.add.AddProductActivity
 import com.tokopedia.mvc.presentation.product.add.AddProductFragment
-import com.tokopedia.mvc.presentation.product.list.adapter.ProductListDelegateAdapter
+import com.tokopedia.mvc.presentation.product.list.adapter.ProductListAdapter
 import com.tokopedia.mvc.presentation.product.list.uimodel.ProductListEffect
 import com.tokopedia.mvc.presentation.product.list.uimodel.ProductListEvent
 import com.tokopedia.mvc.presentation.product.list.uimodel.ProductListUiState
@@ -81,9 +79,7 @@ class ProductListFragment : BaseDaggerFragment() {
     private var binding by autoClearedNullable<SmvcFragmentProductListBinding>()
 
     private val productAdapter by lazy {
-        CompositeAdapter.Builder()
-            .add(ProductListDelegateAdapter(onDeleteProductClick, onCheckboxClick, onVariantClick))
-            .build()
+        ProductListAdapter(onDeleteProductClick, onCheckboxClick, onVariantClick)
     }
 
     @Inject
@@ -334,7 +330,7 @@ class ProductListFragment : BaseDaggerFragment() {
     }
 
 
-    private fun renderList(products: List<DelegateAdapterItem> ) {
+    private fun renderList(products: List<Product> ) {
         binding?.recyclerView?.isVisible = products.count().isMoreThanZero()
         productAdapter.submit(products)
     }
@@ -381,14 +377,14 @@ class ProductListFragment : BaseDaggerFragment() {
     }
 
     private val onDeleteProductClick: (Int) -> Unit = { selectedItemPosition ->
-        val selectedItem = productAdapter.getItems()[selectedItemPosition]
+        val selectedItem = productAdapter.snapshot()[selectedItemPosition]
         val selectedItemId = (selectedItem.id() as? Long).orZero()
 
         viewModel.processEvent(ProductListEvent.TapRemoveProduct(selectedItemId))
     }
 
     private val onCheckboxClick: (Int, Boolean) -> Unit = { selectedItemPosition, isChecked ->
-        val selectedItem = productAdapter.getItems()[selectedItemPosition]
+        val selectedItem = productAdapter.snapshot()[selectedItemPosition]
         val selectedItemId = (selectedItem.id() as? Long).orZero()
 
         if (isChecked) {
@@ -399,7 +395,7 @@ class ProductListFragment : BaseDaggerFragment() {
     }
 
     private val onVariantClick: (Int) -> Unit = { selectedItemPosition ->
-        val selectedItem = productAdapter.getItems()[selectedItemPosition]
+        val selectedItem = productAdapter.snapshot()[selectedItemPosition]
         val selectedParentProduct = (selectedItem as? Product)
 
         selectedParentProduct?.run {
