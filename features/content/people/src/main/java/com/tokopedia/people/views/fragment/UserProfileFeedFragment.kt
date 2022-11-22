@@ -42,7 +42,7 @@ class UserProfileFeedFragment @Inject constructor(
 ) : TkpdBaseV4Fragment(), AdapterCallback, UserFeedPostsBaseAdapter.FeedPostsCallback {
 
     private val gridLayoutManager by lazy(LazyThreadSafetyMode.NONE) {
-        GridLayoutManager(activity, 3)
+        GridLayoutManager(activity, GRID_SPAN_COUNT)
     }
 
     private val mAdapter: UserFeedPostsBaseAdapter by lazy(LazyThreadSafetyMode.NONE) {
