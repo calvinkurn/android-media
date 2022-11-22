@@ -51,6 +51,15 @@ class HomeProductRecomViewHolder(
         }
     }
 
+    override fun bind(element: HomeProductRecomUiModel?, payloads: MutableList<Any>) {
+        if (payloads.firstOrNull() == true && element != null) {
+            binding?.productRecommendation?.setItems(
+                items = element.productList,
+                seeMoreModel = element.seeMoreModel
+            )
+        }
+    }
+
     override fun onSeeAllClicked(
         headerName: String,
         appLink: String

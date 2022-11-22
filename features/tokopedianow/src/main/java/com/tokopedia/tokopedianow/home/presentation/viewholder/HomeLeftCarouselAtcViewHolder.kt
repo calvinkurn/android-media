@@ -15,8 +15,8 @@ import com.tokopedia.tokopedianow.common.view.TokoNowDynamicHeaderView
 import com.tokopedia.tokopedianow.common.view.TokoNowView
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowHomeLeftCarouselAtcBinding
 import com.tokopedia.tokopedianow.home.presentation.adapter.leftcarousel.HomeLeftCarouselAtcProductCardAdapter
-import com.tokopedia.tokopedianow.home.presentation.adapter.leftcarousel.HomeLeftCarouselAtcProductCardTypeFactoryImpl
 import com.tokopedia.tokopedianow.home.presentation.adapter.leftcarousel.HomeLeftCarouselAtcProductCardDiffer
+import com.tokopedia.tokopedianow.home.presentation.adapter.leftcarousel.HomeLeftCarouselAtcProductCardTypeFactoryImpl
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselAtcUiModel
 import com.tokopedia.tokopedianow.home.presentation.view.listener.HomeLeftCarouselAtcCallback
 import com.tokopedia.utils.view.binding.viewBinding
@@ -39,7 +39,7 @@ class HomeLeftCarouselAtcViewHolder(
         private const val FIRST_VISIBLE_ITEM_POSITION = 0
         private const val NO_SCROLLED = 0
         private const val IMAGE_PARALLAX_ALPHA = 0.5f
-        private const val EXPECTED_IMAGE_PARALLAX_RATIO= 0.2f
+        private const val EXPECTED_IMAGE_PARALLAX_RATIO = 0.2f
         private const val DEFAULT_IMAGE_TRANSLATION_VALUE = 0f
         private const val DEFAULT_IMAGE_ALPHA_VALUE = 1f
 
@@ -78,6 +78,8 @@ class HomeLeftCarouselAtcViewHolder(
             rvProduct.addOnScrollListener(scrollListener)
             rvProduct.itemAnimator = null
             rvProduct.addItemDecoration(ProductCardCarouselDecoration(rvProduct.context))
+            rvProduct.layoutManager = layoutManager
+            rvProduct.adapter = adapter
         }
     }
 
@@ -97,6 +99,12 @@ class HomeLeftCarouselAtcViewHolder(
             hitLeftCarouselImpressionTracker(
                 element = element
             )
+        }
+    }
+
+    override fun bind(element: HomeLeftCarouselAtcUiModel?, payloads: MutableList<Any>) {
+        if (payloads.firstOrNull() == true && element != null) {
+            binding?.setupRecyclerView(element = element)
         }
     }
 
@@ -134,8 +142,6 @@ class HomeLeftCarouselAtcViewHolder(
     private fun ItemTokopedianowHomeLeftCarouselAtcBinding.setupRecyclerView(
         element: HomeLeftCarouselAtcUiModel
     ) {
-        rvProduct.layoutManager = layoutManager
-        rvProduct.adapter = adapter
         adapter.submitList(ArrayList(element.productList))
         restoreInstanceStateToLayoutManager()
     }
@@ -203,19 +209,19 @@ class HomeLeftCarouselAtcViewHolder(
 
     private fun getDynamicHeaderListener(
         element: HomeLeftCarouselAtcUiModel
-    )
-    = object : TokoNowDynamicHeaderView.TokoNowDynamicHeaderListener {
-        override fun onSeeAllClicked(headerName: String, appLink: String) {
-            homeLeftCarouselAtcCallback?.onSeeMoreClicked(
-                appLink = appLink,
-                channelId = element.id,
-                headerName = element.header.title
-            )
+    ) =
+        object : TokoNowDynamicHeaderView.TokoNowDynamicHeaderListener {
+            override fun onSeeAllClicked(headerName: String, appLink: String) {
+                homeLeftCarouselAtcCallback?.onSeeMoreClicked(
+                    appLink = appLink,
+                    channelId = element.id,
+                    headerName = element.header.title
+                )
+            }
+            override fun onChannelExpired() {
+                homeLeftCarouselAtcCallback?.onRemoveLeftCarouselAtc(element.id)
+            }
         }
-        override fun onChannelExpired() {
-            homeLeftCarouselAtcCallback?.onRemoveLeftCarouselAtc(element.id)
-        }
-    }
 
     interface HomeLeftCarouselAtcListener {
         fun onSeeMoreClicked(
