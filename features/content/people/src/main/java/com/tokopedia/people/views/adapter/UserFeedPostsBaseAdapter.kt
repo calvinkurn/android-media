@@ -1,100 +1,60 @@
 package com.tokopedia.people.views.adapter
 
-import android.view.LayoutInflater
-import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.library.baseadapter.AdapterCallback
-import com.tokopedia.library.baseadapter.BaseAdapter
-import com.tokopedia.people.databinding.UpItemUserFeedBinding
+import com.tokopedia.adapterdelegate.BaseDiffUtilAdapter
 import com.tokopedia.people.views.uimodel.content.PostUiModel
-import com.tokopedia.people.views.uimodel.content.UserFeedPostsUiModel
+import com.tokopedia.people.views.viewholder.FeedPostLoadingViewHolder
 
+/**
+ * created by fachrizalmrsln on 13/07/22
+ **/
 class UserFeedPostsBaseAdapter(
-    callback: AdapterCallback,
-    val feedPostsWidgetCallback: FeedPostsCallback,
-    val onLoadMore: (cursor: String) -> Unit,
-) : BaseAdapter<PostUiModel>(callback) {
+    val listener: FeedPostsCallback,
+    val onLoadMore: () -> Unit,
+) : BaseDiffUtilAdapter<UserFeedPostsBaseAdapter.Model>() {
 
-    var cursor: String = ""
-
-    inner class ViewHolder(private val view: UpItemUserFeedBinding) : BaseVH(view.root) {
-
-        override fun bindView(item: PostUiModel?, position: Int) {
-            if (item == null || item.media.isEmpty()) return
-            val firstItem = item.media.first()
-
-            feedPostsWidgetCallback.onImpressFeedPostData(item, position)
-            view.imageContent.apply {
-                cornerRadius = 0
-                setImageUrl(item.media.first().coverURL)
-                setOnClickListener {
-                    feedPostsWidgetCallback.onFeedPostsClick(
-                        item.appLink,
-                        item.id,
-                        firstItem.coverURL,
-                        position,
-                        firstItem.type,
-                    )
-                }
-            }
-            when (firstItem.type) {
-                MEDIA_TYPE_VIDEO -> {
-                    view.iconType.visible()
-                    view.iconType.setImage(IconUnify.PLAY)
-                }
-                MEDIA_TYPE_IMAGE -> {
-                    view.iconType.showWithCondition(item.media.size > 1)
-                    view.iconType.setImage(IconUnify.SELECT_MULTIPLE)
-                }
-                else -> view.iconType.gone()
-            }
-        }
-    }
-
-    override fun getItemViewHolder(
-        parent: ViewGroup,
-        inflater: LayoutInflater,
-        viewType: Int,
-    ): BaseVH {
-        return ViewHolder(
-            UpItemUserFeedBinding.inflate(
-                LayoutInflater.from(parent.context),
-                parent,
-                false,
-            ),
-        )
+    init {
+        delegatesManager
+            .addDelegate(UserFeedPostsAdapterDelegate.Loading())
+            .addDelegate(UserFeedPostsAdapterDelegate.FeedPosts(listener))
     }
 
     override fun onBindViewHolder(
         holder: RecyclerView.ViewHolder,
         position: Int,
-        payloads: List<Any>,
+        payloads: List<Any>
     ) {
         super.onBindViewHolder(holder, position, payloads)
-        if (position == (itemCount - 1) && !isLastPage) onLoadMore(cursor)
+        if (position == (itemCount - 1) && holder is FeedPostLoadingViewHolder) onLoadMore()
     }
 
-    fun onSuccess(data: UserFeedPostsUiModel) {
-        loadCompleted(data.posts, data)
-        isLastPage = !data.pagination.hasNext
-        cursor = data.pagination.cursor
+    override fun areItemsTheSame(oldItem: Model, newItem: Model): Boolean {
+        return when {
+            oldItem is Model.Loading && newItem is Model.Loading -> false
+            oldItem is Model.FeedPosts && newItem is Model.FeedPosts -> oldItem.item.id == newItem.item.id
+            else -> oldItem == newItem
+        }
     }
 
-    fun onError() {
-        loadCompletedWithError()
+    override fun areContentsTheSame(oldItem: Model, newItem: Model): Boolean {
+        return oldItem == newItem
     }
 
     interface FeedPostsCallback {
-        fun onFeedPostsClick(appLink: String, itemID: String, imageUrl: String, position: Int, mediaType: String)
+        fun onFeedPostsClick(
+            appLink: String,
+            itemID: String,
+            imageUrl: String,
+            position: Int,
+            mediaType: String
+        )
+
         fun onImpressFeedPostData(item: PostUiModel, position: Int)
     }
 
-    companion object {
-        private const val MEDIA_TYPE_IMAGE = "image"
-        private const val MEDIA_TYPE_VIDEO = "video"
+    sealed interface Model {
+        object Loading : Model
+        data class FeedPosts(val item: PostUiModel) : Model
     }
+
 }

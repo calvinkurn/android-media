@@ -1,6 +1,5 @@
 package com.tokopedia.people.views.fragment
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,11 +11,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.*
-import com.tokopedia.library.baseadapter.AdapterCallback
-import com.tokopedia.people.ErrorMessage
-import com.tokopedia.people.Loading
 import com.tokopedia.people.R
-import com.tokopedia.people.Success
 import com.tokopedia.people.analytic.UserFeedPostImpressCoordinator
 import com.tokopedia.people.analytic.tracker.UserProfileTracker
 import com.tokopedia.people.databinding.UpFragmentFeedBinding
@@ -41,15 +36,17 @@ class UserProfileFeedFragment @Inject constructor(
     private val viewModelFactoryCreator: UserProfileViewModelFactory.Creator,
     private val userProfileTracker: UserProfileTracker,
     private val impressCoordinator: UserFeedPostImpressCoordinator,
-) : TkpdBaseV4Fragment(), AdapterCallback, UserFeedPostsBaseAdapter.FeedPostsCallback {
+) : TkpdBaseV4Fragment(), UserFeedPostsBaseAdapter.FeedPostsCallback {
+
+    private var nextCursor: String = ""
 
     private val gridLayoutManager by lazy(LazyThreadSafetyMode.NONE) {
         GridLayoutManager(activity, GRID_SPAN_COUNT)
     }
 
     private val mAdapter: UserFeedPostsBaseAdapter by lazy(LazyThreadSafetyMode.NONE) {
-        UserFeedPostsBaseAdapter(this, this) { cursor ->
-            viewModel.submitAction(UserProfileAction.LoadFeedPosts(cursor))
+        UserFeedPostsBaseAdapter(this) {
+            viewModel.submitAction(UserProfileAction.LoadFeedPosts(nextCursor))
         }
     }
 
@@ -93,6 +90,28 @@ class UserProfileFeedFragment @Inject constructor(
     }
 
     override fun getScreenName(): String = TAG
+
+    private fun setupFeedsPosts() {
+        gridLayoutManager.spanSizeLookup = getSpanSizeLookUp()
+
+        binding.rvFeed.layoutManager = gridLayoutManager
+        if (binding.rvFeed.itemDecorationCount == 0) {
+            val spacing = requireContext().resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2)
+            binding.rvFeed.addItemDecoration(GridSpacingItemDecoration(GRID_SPAN_COUNT, spacing, true))
+        }
+        binding.rvFeed.adapter = mAdapter
+    }
+
+    private fun getSpanSizeLookUp(): GridLayoutManager.SpanSizeLookup {
+        return object : GridLayoutManager.SpanSizeLookup() {
+            override fun getSpanSize(position: Int): Int {
+                return when (mAdapter.getItem(position)) {
+                    is UserFeedPostsBaseAdapter.Model.Loading -> LOADING_SPAN
+                    else -> DATA_SPAN
+                }
+            }
+        }
+    }
 
     private fun fetchFeedsPosts() {
         binding.userFeedContainer.displayedChild = UserProfileFragment.PAGE_LOADING
@@ -149,7 +168,7 @@ class UserProfileFeedFragment @Inject constructor(
         }
     }
 
-    override fun onFeedPostsClick(appLink: String, itemID: String, imageUrl: String, position: Int, mediaType: String) {
+    override fun onFeedPostsClick(appLink: String, itemID: String, imageUrl: String, position: Int, mediaType: String, ) {
         userProfileTracker.clickPost(
             viewModel.profileUserID,
             viewModel.isSelfProfile,
@@ -177,6 +196,12 @@ class UserProfileFeedFragment @Inject constructor(
         }
     }
 
+    private fun emptyPost() {
+        if (viewModel.isSelfProfile) emptyPostSelf()
+        else emptyPostVisitor()
+        binding.userFeedContainer.displayedChild = PAGE_EMPTY
+    }
+
     private fun emptyPostSelf() {
         binding.emptyFeed.textErrorEmptyTitle.text = getString(R.string.up_empty_post_title_on_self)
         binding.emptyFeed.textErrorEmptyDesc.apply {
@@ -188,31 +213,6 @@ class UserProfileFeedFragment @Inject constructor(
     private fun emptyPostVisitor() {
         binding.emptyFeed.textErrorEmptyTitle.text = getString(R.string.up_empty_post_on_visitor)
         binding.emptyFeed.textErrorEmptyDesc.hide()
-    }
-
-    override fun onRetryPageLoad(pageNumber: Int) {
-    }
-
-    override fun onEmptyList(rawObject: Any?) {
-        if (viewModel.isSelfProfile) emptyPostSelf()
-        else emptyPostVisitor()
-        binding.userFeedContainer.displayedChild = PAGE_EMPTY
-    }
-
-    override fun onStartFirstPageLoad() {
-    }
-
-    override fun onFinishFirstPageLoad(itemCount: Int, rawObject: Any?) {
-        binding.userFeedContainer.displayedChild = PAGE_CONTENT
-    }
-
-    override fun onStartPageLoad(pageNumber: Int) {
-    }
-
-    override fun onFinishPageLoad(itemCount: Int, pageNumber: Int, rawObject: Any?) {
-    }
-
-    override fun onError(pageNumber: Int) {
     }
 
     companion object {
