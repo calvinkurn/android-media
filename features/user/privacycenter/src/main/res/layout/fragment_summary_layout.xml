@@ -34,12 +34,14 @@
         android:orientation="vertical"
         android:paddingTop="12dp"
         android:paddingHorizontal="12dp"
-        android:background="@color/Unify_NN50"
+        android:background="@drawable/dsar_summary_bg"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/typography2">
 
         <com.tokopedia.unifyprinciples.Typography
+            app:typographyType="paragraph_3"
+            app:typographyWeight="reguler"
             android:id="@+id/txtSummary"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

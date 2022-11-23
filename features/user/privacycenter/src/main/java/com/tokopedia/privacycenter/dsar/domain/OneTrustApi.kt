@@ -16,6 +16,9 @@ interface OneTrustApi {
     @PUT("datasubject/v2/requestqueues/{requestQueueRefId}/movestages/en-us")
     suspend fun updateRequest(@Body body: UpdateRequestBody, @Path("requestQueueRefId") refId: String, @HeaderMap header: Map<String, String>): Response<Void>
 
-    @PUT("datasubject/v2/requestqueues/search/en-us")
+    @POST("datasubject/v2/requestqueues/search/en-us")
     suspend fun searchRequest(@Body body: SearchRequestBody, @HeaderMap header: Map<String, String>): Response<SearchRequestResponse>
+
+    @GET("datasubject/v2/requestqueues/{requestQueueRefId}/language/en-us")
+    suspend fun getRequest(@Path("requestQueueRefId") refId: String, @HeaderMap header: Map<String, String>): Response<GetRequestDetailResponse>
 }

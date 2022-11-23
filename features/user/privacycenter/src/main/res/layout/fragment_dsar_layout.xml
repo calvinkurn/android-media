@@ -1,50 +1,70 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:padding="16dp"
-    android:background="@color/Unify_Static_White"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <include
-        android:id="@+id/personalInfo"
-        layout="@layout/item_dsar_profile"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-
-    <include
+    <com.tokopedia.unifycomponents.LoaderUnify
         android:visibility="visible"
-        android:id="@+id/layoutOptions"
-        layout="@layout/fragment_landing_dsar"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginTop="24dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/personalInfo" />
+        android:id="@+id/mainLoader"
+        android:layout_gravity="center"
+        android:layout_width="32dp"
+        android:layout_height="32dp"/>
 
     <include
-        android:visibility="gone"
-        android:id="@+id/layoutSummary"
-        layout="@layout/fragment_summary_layout"
+        android:id="@+id/layoutProgress"
+        layout="@layout/fragment_dsar_on_progress_layout"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_marginTop="24dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/personalInfo" />
+        android:layout_height="match_parent"
+        android:visibility="gone" />
 
-    <com.tokopedia.unifycomponents.UnifyButton
-        android:id="@+id/btnNext"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:visibility="gone"
+        android:id="@+id/mainLayout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_gravity="bottom"
-        android:gravity="bottom"
-        android:text="Lanjut"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-</androidx.constraintlayout.widget.ConstraintLayout>
+        android:layout_height="match_parent"
+        android:background="@color/Unify_Static_White"
+        android:orientation="vertical"
+        android:padding="16dp">
+
+        <include
+            android:id="@+id/personalInfo"
+            layout="@layout/item_dsar_profile"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <include
+            android:id="@+id/layoutOptions"
+            layout="@layout/fragment_landing_dsar"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="24dp"
+            android:visibility="visible"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/personalInfo" />
+
+        <include
+            android:id="@+id/layoutSummary"
+            layout="@layout/fragment_summary_layout"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_marginTop="16dp"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/personalInfo" />
+
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/btnNext"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:gravity="bottom"
+            android:text="Lanjut"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</FrameLayout>

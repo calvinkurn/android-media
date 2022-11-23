@@ -8,8 +8,14 @@ data class SearchRequestResponse(
 )
 
 data class SearchResult(
+    @SerializedName("requestQueueRefId")
+    val requestQueueRefId: String = "",
+    @SerializedName("requestQueueId")
+    val requestQueueId: String = "",
     @SerializedName("status")
     val status: String = "",
     @SerializedName("email")
-    val email: String = ""
+    val email: String = "",
+    @SerializedName("deadline")
+    val deadline: String = ""
 )

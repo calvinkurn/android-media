@@ -17,6 +17,7 @@ import dagger.Component
     PrivacyCenterModule::class,
     AccountLinkingModule::class,
     RecommendationModule::class,
+    DsarModule::class,
     PrivacyCenterViewModelModule::class
 ], dependencies = [BaseAppComponent::class])
 interface PrivacyCenterComponent {

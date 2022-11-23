@@ -4,16 +4,39 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.privacycenter.common.utils.getSimpleDateFormat
+import com.tokopedia.privacycenter.common.utils.toHumanReadableFormat
+import com.tokopedia.privacycenter.dsar.DsarConstants.DATE_RANGE_CUSTOM
+import com.tokopedia.privacycenter.dsar.DsarConstants.FILTER_TYPE_PAYMENT
+import com.tokopedia.privacycenter.dsar.DsarConstants.FILTER_TYPE_PERSONAL
+import com.tokopedia.privacycenter.dsar.DsarConstants.FILTER_TYPE_TRANSACTION
+import com.tokopedia.privacycenter.dsar.DsarConstants.HTML_NEW_LINE
+import com.tokopedia.privacycenter.dsar.DsarConstants.ONE_TRUST_FORMAT_1
+import com.tokopedia.privacycenter.dsar.DsarConstants.PAYMENT_LABEL
+import com.tokopedia.privacycenter.dsar.DsarConstants.PERSONAL_LABEL
+import com.tokopedia.privacycenter.dsar.DsarConstants.STATUS_CLOSED
+import com.tokopedia.privacycenter.dsar.DsarConstants.STATUS_COMPLETED
+import com.tokopedia.privacycenter.dsar.DsarConstants.STATUS_REJECTED
+import com.tokopedia.privacycenter.dsar.DsarConstants.SUMMARY_ERROR
+import com.tokopedia.privacycenter.dsar.DsarConstants.TRANSACTION_HISTORY_PREFIX
+import com.tokopedia.privacycenter.dsar.DsarConstants.TRANSACTION_LABEL
+import com.tokopedia.privacycenter.dsar.DsarUtils.getInitialRangeItem
+import com.tokopedia.privacycenter.dsar.domain.SearchRequestUseCase
 import com.tokopedia.privacycenter.dsar.domain.SubmitRequestUseCase
 import com.tokopedia.privacycenter.dsar.model.CreateRequestResponse
+import com.tokopedia.privacycenter.dsar.model.GetRequestDetailResponse
 import com.tokopedia.privacycenter.dsar.model.ItemRangeModel
+import com.tokopedia.privacycenter.dsar.model.SearchRequestBody
+import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import kotlinx.coroutines.launch
-import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
 
 class DsarViewModel @Inject constructor(
     val submitRequestUseCase: SubmitRequestUseCase,
+    val searchRequestUseCase: SearchRequestUseCase,
+    val userSession: UserSessionInterface,
     dispatcher: CoroutineDispatchers
 ): BaseViewModel(dispatcher.main) {
 
@@ -32,12 +55,23 @@ class DsarViewModel @Inject constructor(
     private val endDate = MutableLiveData<String>()
     val _endDate: LiveData<String> = endDate
 
+    private val mainButtonLoading = SingleLiveEvent<Boolean>()
+    val _mainButtonLoading: LiveData<Boolean> = mainButtonLoading
+
+    private val mainLoader = SingleLiveEvent<Boolean>()
+    val _mainLoader: LiveData<Boolean> = mainLoader
+
+    private val toasterError = SingleLiveEvent<String>()
+    val _toasterError: LiveData<String> = toasterError
+
     private val submitRequest = MutableLiveData<CreateRequestResponse>()
     val _submitRequest: LiveData<CreateRequestResponse> = submitRequest
 
-    fun setRangeItems(items: ArrayList<ItemRangeModel>) {
-        itemRangeData.value = items
-    }
+    private val requestDetails = MutableLiveData<GetRequestDetailResponse>()
+    val _requestDetails: LiveData<GetRequestDetailResponse> = requestDetails
+
+    private val showMainLayout = SingleLiveEvent<Boolean>()
+    val _showMainLayout: LiveData<Boolean> = showMainLayout
 
     fun getSelectedRangeItems(): ItemRangeModel? {
         return itemRangeData.value?.first { it.selected }
@@ -46,8 +80,8 @@ class DsarViewModel @Inject constructor(
     fun setSelectedRangeItems(id: Int) {
         itemRangeData.value?.forEach {
             it.selected = it.id == id
-            if(it.id == 5) {
-                it.transactionDate = calculateTransactionDate(id)
+            if(it.id == DATE_RANGE_CUSTOM) {
+                it.transactionDate = calculateTransactionDateForCustomDate(id)
             }
         }
         itemRangeData.value = itemRangeData.value
@@ -55,15 +89,7 @@ class DsarViewModel @Inject constructor(
 
     fun populateRangeItems() {
         itemRangeData.value?.clear()
-        val items = arrayListOf(
-            ItemRangeModel(0, "Selama Tahun Ini", transactionDate = calculateTransactionDate(0)),
-            ItemRangeModel(1, "3 Tahun Terakhir", transactionDate = calculateTransactionDate(1)),
-            ItemRangeModel(2, "3 Bulan Terakhir", transactionDate = calculateTransactionDate(2)),
-            ItemRangeModel(3, "30 Hari Terakhir", transactionDate = calculateTransactionDate(3)),
-            ItemRangeModel(4, "7 Hari Terakhir", transactionDate = calculateTransactionDate(4)),
-            ItemRangeModel(5, "Pilih Tanggal Sendiri", transactionDate = calculateTransactionDate(5))
-        )
-        itemRangeData.value = items
+        itemRangeData.value = getInitialRangeItem()
     }
 
     fun addFilter(filter: String) {
@@ -83,11 +109,12 @@ class DsarViewModel @Inject constructor(
     }
 
     fun submitRequest() {
+        mainButtonLoading.value = true
         launch {
             try {
                 val requests = arrayListOf<String>()
                 filterItems.value?.forEach {
-                    if(it == "personal") {
+                    if(it == FILTER_TYPE_PERSONAL) {
                         requests.add("full_name")
                         requests.add("mailing_address")
                         requests.add("phone_number")
@@ -95,102 +122,103 @@ class DsarViewModel @Inject constructor(
                         requests.add("dob")
                         requests.add("gender")
                     }
-                    if(it == "payment") {
+                    if(it == FILTER_TYPE_PAYMENT) {
                         requests.add("bank_account")
                         requests.add("payment")
                     }
-                    if(it == "transaction") {
+                    if(it == FILTER_TYPE_TRANSACTION) {
                         requests.add(getSelectedRangeItems()?.transactionDate ?: "")
                     }
                 }
                 val param = submitRequestUseCase.constructParams(requests)
-                submitRequest.value = submitRequestUseCase(param)
+                val result = submitRequestUseCase(param)
+                if(result.email.isNotEmpty() && result.deadline.isNotEmpty()) {
+                    submitRequest.value = result
+                } else {
+                    toasterError.value = "Terjadi Kesalahan"
+                }
             } catch (e: Exception) {
-                e.printStackTrace()
+                toasterError.value = e.message
+            } finally {
+                mainButtonLoading.value = false
             }
         }
     }
 
-    fun applyTransactionHistoryFilter() {
-        if(itemRangeData.value?.isNotEmpty() == true) {
-            println("selected_item ${itemRangeData.value!!.first { it.selected }}")
-        } else {
-
-        }
-    }
-
-    fun calculateTransactionDate(selectedId: Int): String {
+    fun calculateTransactionDateForCustomDate(selectedId: Int): String {
         val maxDate = GregorianCalendar(Locale.getDefault())
         val minDate = GregorianCalendar(Locale.getDefault())
-        when(selectedId) {
-            0 -> {
-                minDate.apply {
-                    set(GregorianCalendar.MONTH, GregorianCalendar.JANUARY)
-                    set(GregorianCalendar.DAY_OF_MONTH, 1)
-                }
+        if(selectedId == DATE_RANGE_CUSTOM) {
+            endDate.value?.let {
+                maxDate.time = it.toHumanReadableFormat()
             }
-            1 -> {
-                minDate.apply {
-                    add(Calendar.YEAR, -3)
-                }
-            }
-            2 -> {
-                minDate.apply {
-                    add(Calendar.MONTH, -3)
-                }
-            }
-            3 -> {
-                minDate.apply {
-                    add(Calendar.DAY_OF_MONTH, -30)
-                }
-            }
-            4 -> {
-                minDate.apply {
-                    add(Calendar.DAY_OF_MONTH, -7)
-                }
-            }
-            5 -> {
-                val sdf = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
-                if(endDate.value != null && startDate.value != null) {
-                    maxDate.time = sdf.parse(endDate.value ?: "")
-                    minDate.time = sdf.parse(startDate.value ?: "")
-                }
+            startDate.value?.let {
+                minDate.time = it.toHumanReadableFormat()
             }
         }
-        val dateFormat = SimpleDateFormat("yyyyMMdd", Locale.getDefault())
-
-        val formattedMaxDate = dateFormat.format(maxDate.time)
-        val formattedMinDate = dateFormat.format(minDate.time)
-        return "transaction_history_${formattedMinDate}_${formattedMaxDate}"
+        val formattedMaxDate = getSimpleDateFormat(ONE_TRUST_FORMAT_1).format(maxDate.time)
+        val formattedMinDate = getSimpleDateFormat(ONE_TRUST_FORMAT_1).format(minDate.time)
+        return "${TRANSACTION_HISTORY_PREFIX}_${formattedMinDate}_${formattedMaxDate}"
     }
 
     fun setStartDate(date: Date) {
-        startDate.value = SimpleDateFormat("dd MMM yyyy", Locale.getDefault()).format(date).toString()
+        startDate.value = date.toHumanReadableFormat()
     }
 
     fun setEndDate(date: Date) {
-        endDate.value = SimpleDateFormat("dd MMM yyyy", Locale.getDefault()).format(date).toString()
-        setSelectedRangeItems(5)
+        endDate.value = date.toHumanReadableFormat()
+        setSelectedRangeItems(DATE_RANGE_CUSTOM)
+    }
+
+    fun checkRequestStatus() {
+        mainLoader.value = true
+        launch {
+            try {
+                val param = SearchRequestBody(email = userSession.email)
+                val result = searchRequestUseCase(param)
+                if(result.status.isEmpty()) {
+                    showMainLayout.value = true
+                } else if(result.status != STATUS_REJECTED && result.status != STATUS_COMPLETED && result.status != STATUS_CLOSED) {
+                    requestDetails.value = result
+                }
+            } catch (e: Exception) {
+                showMainLayout.value = true
+                toasterError.value = e.message
+            } finally {
+                mainLoader.value = false
+            }
+        }
     }
 
     fun showSummary() {
         var text = ""
-        filterItems.value?.forEach {
-            if(it == "personal") {
-                text += "Informasi Pribadi:\nUser ID, Nama Lengkap, Nomor HP, E-mail, Tanggal Lahir, Jenis Kelamin, Daftar Alamat Pengiriman\n\n"
-            }
-            if(it == "payment") {
-                text += "Informasi Pembayaran:\nDaftar Rekening Bank, Daftar Kartu Kredit, Daftar Kartu Debit\n\n"
-            }
-            if(it == "transaction") {
-                val transData = getSelectedRangeItems()
-                var transText = transData?.title
-                if(transData?.id == 5) {
-                    transText = "${startDate.value} - ${endDate.value}"
+        if(filterItems.value?.isNotEmpty() == true) {
+            showSummary.value = filterItems.value?.joinToString { "," }
+            filterItems.value?.forEachIndexed { index, s ->
+                if (s == FILTER_TYPE_PERSONAL) {
+                    text += PERSONAL_LABEL
                 }
-                text += "Riwayat Transaksi:\n${transText}\n\n"
+                if (s == FILTER_TYPE_PAYMENT) {
+                    text += PAYMENT_LABEL
+                }
+                if (s == FILTER_TYPE_TRANSACTION) {
+                    val transData = getSelectedRangeItems()
+                    var transText = transData?.title
+                    if (transData?.id == DATE_RANGE_CUSTOM) {
+                        transText = "${startDate.value} - ${endDate.value}"
+                    }
+                    text += "$TRANSACTION_LABEL${transText}"
+                }
+                text += if (index == (filterItems.value?.count() ?: 0) - 1) {
+                    HTML_NEW_LINE
+                } else {
+                    // append 2 new line for last item
+                    "$HTML_NEW_LINE$HTML_NEW_LINE"
+                }
             }
+            showSummary.value = text
+        } else {
+            toasterError.value = SUMMARY_ERROR
         }
-        showSummary.value = text
     }
 }

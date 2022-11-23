@@ -16,7 +16,9 @@ data class CreateRequestBody (
     @SerializedName("firstName")
     var firstName: String = "",
     @SerializedName("lastName")
-    var lastName: String = ""
+    var lastName: String = "",
+    @Transient
+    var templateId: String
 )
 
 data class AdditionalData(

@@ -86,6 +86,7 @@ dependencies {
     implementation rootProject.ext.networkDependencies.okHttp
     implementation rootProject.ext.networkDependencies.retrofit
     implementation rootProject.ext.networkDependencies.converterGson
+    implementation projectOrAar(rootProject.ext.libraries.keys)
 
     // Test
     testImplementation rootProject.ext.testDependencies.mockk

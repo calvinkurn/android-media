@@ -3,6 +3,7 @@ package com.tokopedia.privacycenter.dsar.ui
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.text.Html
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -22,9 +23,14 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.privacycenter.R
 import com.tokopedia.privacycenter.common.di.PrivacyCenterComponent
+import com.tokopedia.privacycenter.common.utils.formatDateLocalTimezone
 import com.tokopedia.privacycenter.databinding.BottomSheetRangePickerBinding
 import com.tokopedia.privacycenter.databinding.FragmentDsarLayoutBinding
 import com.tokopedia.privacycenter.databinding.ItemTransactionHistoryRangeBinding
+import com.tokopedia.privacycenter.dsar.DsarConstants.DATE_RANGE_CUSTOM
+import com.tokopedia.privacycenter.dsar.DsarConstants.FILTER_TYPE_PAYMENT
+import com.tokopedia.privacycenter.dsar.DsarConstants.FILTER_TYPE_TRANSACTION
+import com.tokopedia.privacycenter.dsar.model.GetRequestDetailResponse
 import com.tokopedia.privacycenter.dsar.model.ItemRangeModel
 import com.tokopedia.privacycenter.dsar.viewmodel.DsarViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -90,14 +96,44 @@ class DsarFragment: BaseDaggerFragment(), OnDateChangedListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setupViews()
+
+        viewModel._showMainLayout.observe(viewLifecycleOwner) {
+            if(it) {
+                binding?.mainLayout?.visible()
+            } else {
+                binding?.mainLayout?.gone()
+            }
+        }
+
+        viewModel._mainLoader.observe(viewLifecycleOwner) {
+            if(it) {
+                showMainLoader()
+            } else {
+                hideMainLoader()
+            }
+        }
+
+        viewModel._mainButtonLoading.observe(viewLifecycleOwner) {
+            binding?.btnNext?.isLoading = it
+        }
+
+        viewModel._toasterError.observe(viewLifecycleOwner) {
+            showToasterError(it)
+        }
+
         viewModel._itemRangeData.observe(viewLifecycleOwner) {
             if(it.isNotEmpty()) {
                 if(::rangePickerBottomSheet.isInitialized && rangePickerBottomSheet.isVisible) {
                     updateRangeItemsView(it)
+                    binding?.layoutOptions?.itemTransactionHistory
                 } else {
                     showTransactionHistoryBtmSheet(it)
                 }
             }
+        }
+
+        viewModel._requestDetails.observe(viewLifecycleOwner) {
+            renderOnProgressView(it)
         }
 
         viewModel._submitRequest.observe(viewLifecycleOwner) {
@@ -124,6 +160,14 @@ class DsarFragment: BaseDaggerFragment(), OnDateChangedListener {
                 rangePickerDialogBinding.txtEndDate.editText.setText(it)
             }
         }
+
+        viewModel.checkRequestStatus()
+    }
+
+    private fun showToasterError(errMsg: String) {
+        view?.let {
+            Toaster.build(it, errMsg, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+        }
     }
 
     private fun onSubmitSuccess(email: String, deadline: String) {
@@ -139,9 +183,7 @@ class DsarFragment: BaseDaggerFragment(), OnDateChangedListener {
             if(resultCode == Activity.RESULT_OK && data != null) {
                 viewModel.submitRequest()
             } else if(resultCode == Activity.RESULT_CANCELED) {
-                view?.let {
-                    Toaster.build(it, "Gagal Verifikasi", Toaster.LENGTH_LONG).show()
-                }
+                showToasterError("Gagal Verifikasi")
             }
         } else if(requestCode == REQUEST_ADD_EMAIL && resultCode == Activity.RESULT_OK) {
             renderProfileHeader()
@@ -161,7 +203,7 @@ class DsarFragment: BaseDaggerFragment(), OnDateChangedListener {
 
     private fun showSummary(data: String) {
         binding?.layoutSummary?.root?.visible()
-        binding?.layoutSummary?.txtSummary?.text = data
+        binding?.layoutSummary?.txtSummary?.text = Html.fromHtml(data)
         binding?.btnNext?.apply {
             text = "Ajukan Download Data"
             setOnClickListener { toVerification() }
@@ -207,9 +249,9 @@ class DsarFragment: BaseDaggerFragment(), OnDateChangedListener {
                 it.isActivated = !it.isActivated
                 if (!it.isActivated) {
                     checkIcon.invisible()
-                    viewModel.removeFilter("personal")
+                    viewModel.removeFilter(FILTER_TYPE_PAYMENT)
                 } else {
-                    viewModel.addFilter("personal")
+                    viewModel.addFilter(FILTER_TYPE_PAYMENT)
                     checkIcon.visible()
                 }
             }
@@ -218,10 +260,10 @@ class DsarFragment: BaseDaggerFragment(), OnDateChangedListener {
             mainLayout.setOnClickListener {
                 it.isActivated = !it.isActivated
                 if(!it.isActivated) {
-                    viewModel.removeFilter("payment")
+                    viewModel.removeFilter(FILTER_TYPE_PAYMENT)
                     checkIcon.invisible()
                 } else {
-                    viewModel.addFilter("payment")
+                    viewModel.addFilter(FILTER_TYPE_PAYMENT)
                     checkIcon.visible()
                 }
             }
@@ -230,10 +272,10 @@ class DsarFragment: BaseDaggerFragment(), OnDateChangedListener {
             mainLayout.setOnClickListener {
                 it.isActivated = !it.isActivated
                 if(!it.isActivated) {
-                    viewModel.removeFilter("transaction")
+                    viewModel.removeFilter(FILTER_TYPE_TRANSACTION)
                     checkIcon.invisible()
                 } else {
-                    viewModel.addFilter("transaction")
+                    viewModel.addFilter(FILTER_TYPE_TRANSACTION)
                     viewModel.populateRangeItems()
                     checkIcon.visible()
                 }
@@ -281,7 +323,7 @@ class DsarFragment: BaseDaggerFragment(), OnDateChangedListener {
             }
 
             renderInitialState()
-            datePicker.show(parentFragmentManager, "DateTimePicker Show")
+            datePicker.show(parentFragmentManager, "")
         }
     }
 
@@ -305,7 +347,7 @@ class DsarFragment: BaseDaggerFragment(), OnDateChangedListener {
     private fun onCheckedChanged(id: Int, isChecked: Boolean) {
         if(isChecked) {
             viewModel.setSelectedRangeItems(id)
-            if(id == 5) {
+            if(id == DATE_RANGE_CUSTOM) {
                 showDatePicker()
                 rangePickerDialogBinding.layoutCustomDate.visible()
             } else {
@@ -331,14 +373,42 @@ class DsarFragment: BaseDaggerFragment(), OnDateChangedListener {
             }
             rangePickerBottomSheet.setChild(rangePickerDialogBinding.root)
             rangePickerDialogBinding.btnApplyFilter.setOnClickListener {
-                viewModel.applyTransactionHistoryFilter()
                 rangePickerBottomSheet.dismiss()
             }
         }
         rangePickerBottomSheet.show(parentFragmentManager, "")
     }
 
+    private fun renderOnProgressView(searchResult: GetRequestDetailResponse) {
+        binding?.mainLayout?.gone()
+        binding?.layoutProgress?.root?.visible()
+        binding?.layoutProgress?.imgSuccess?.loadImage(IMG_PROGRESS)
+        binding?.layoutProgress?.btnDetail?.setOnClickListener {
+            showBottomSheetDetails(searchResult)
+        }
+        binding?.layoutProgress?.btnBack?.setOnClickListener {
+            activity?.finish()
+        }
+        binding?.layoutProgress?.txtProgressDescription?.text = "Kami bakal kabari lewat e-mail ${searchResult.email} maks. ${searchResult.deadline.formatDateLocalTimezone()}.\nSilahkan cek secara berkala, ya!"
+    }
+
+    private fun showBottomSheetDetails(searchResult: GetRequestDetailResponse) {
+        RequestDetailBottomSheet.showDetailsBottomSheet(parentFragmentManager, requireContext(), userSession, searchResult)
+    }
+
+    private fun showMainLoader() {
+        binding?.mainLoader?.visible()
+        binding?.mainLayout?.gone()
+        binding?.layoutProgress?.root?.gone()
+    }
+
+    private fun hideMainLoader() {
+        binding?.mainLoader?.gone()
+    }
+
     companion object {
+
+        private const val IMG_PROGRESS = "https://images.tokopedia.net/img/android/account/privacycenter/img_request_on_progress.png"
         const val STATE_START = 0
         const val STATE_END = 1
         const val REQUEST_SECURITY_QUESTION = 100
