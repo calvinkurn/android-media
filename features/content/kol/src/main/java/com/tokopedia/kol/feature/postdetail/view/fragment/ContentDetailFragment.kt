@@ -1743,7 +1743,7 @@ class ContentDetailFragment : BaseDaggerFragment(), ContentDetailPostViewHolder.
                 getString(kolR.string.feed_post_deleted),
                 Toaster.LENGTH_LONG,
                 Toaster.TYPE_NORMAL,
-                getString(com.tokopedia.content.common.R.string.content_action_ok)
+                getString(com.tokopedia.kolcommon.R.string.content_action_ok)
             ).show()
         }
     }
