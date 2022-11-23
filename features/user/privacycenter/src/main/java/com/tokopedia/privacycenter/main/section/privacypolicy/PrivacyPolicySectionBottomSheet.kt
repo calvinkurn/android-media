@@ -84,19 +84,20 @@ class PrivacyPolicySectionBottomSheet : BottomSheetUnify(), PrivacyPolicyAdapter
     }
 
     private fun initObservers() {
-        viewModel.privacyPolicyList.observe(viewLifecycleOwner) {
+        viewModel.bottomSheetState.observe(viewLifecycleOwner) {
             when (it) {
-                is PrivacyCenterStateResult.Fail -> showLocalLoad()
-                is PrivacyCenterStateResult.Loading -> loadingPrivacyPolicyList(true)
-                is PrivacyCenterStateResult.Success -> onSuccessGetPrivacyPolicyAllList(it.data)
+                PrivacyPolicyUiModel.InnerState.Error -> showLocalLoad()
+                PrivacyPolicyUiModel.InnerState.Loading -> loadingPrivacyPolicyList()
+                is PrivacyPolicyUiModel.InnerState.Success -> onSuccessGetPrivacyPolicyAllList(it.list)
             }
         }
     }
 
     private fun onSuccessGetPrivacyPolicyAllList(data: List<PrivacyPolicyDataModel>) {
         viewBinding?.apply {
-            listPrivacyPolicy.showWithCondition(true)
-            loaderListPrivacyPolicy.showWithCondition(false)
+            listPrivacyPolicy.show()
+            loaderListPrivacyPolicy.hide()
+            localLoadPrivacyPolicy.hide()
         }
         privacyPolicyAdapter.apply {
             clearAllItems()
@@ -120,10 +121,11 @@ class PrivacyPolicySectionBottomSheet : BottomSheetUnify(), PrivacyPolicyAdapter
         openDetailPrivacyPolicy(item.sectionTitle, item.sectionId)
     }
 
-    private fun loadingPrivacyPolicyList(isLoading: Boolean) {
+    private fun loadingPrivacyPolicyList() {
         viewBinding?.apply {
-            listPrivacyPolicy.showWithCondition(!isLoading)
-            loaderListPrivacyPolicy.showWithCondition(isLoading)
+            listPrivacyPolicy.hide()
+            localLoadPrivacyPolicy.hide()
+            loaderListPrivacyPolicy.show()
         }
     }
 

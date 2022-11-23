@@ -17,11 +17,11 @@ import javax.inject.Inject
 class GetPrivacyPolicyListUseCase @Inject constructor(
     private val restRepository: RestRepository,
     dispatchers: CoroutineDispatchers
-) : CoroutineUseCase<Int, PrivacyCenterStateResult<List<PrivacyPolicyDataModel>>>(dispatchers.io) {
+) : CoroutineUseCase<Int, List<PrivacyPolicyDataModel>>(dispatchers.io) {
 
     override fun graphqlQuery(): String = ""
 
-    override suspend fun execute(params: Int): PrivacyCenterStateResult<List<PrivacyPolicyDataModel>> {
+    override suspend fun execute(params: Int): List<PrivacyPolicyDataModel> {
         val request = RestRequest.Builder(
             PrivacyPolicyConst.GET_LIST_URL,
             PrivacyPolicyListResponse::class.java
@@ -29,7 +29,7 @@ class GetPrivacyPolicyListUseCase @Inject constructor(
 
         val response = restRepository.getResponse(request)
         return if (response.isError) {
-            PrivacyCenterStateResult.Fail(Throwable(response.errorBody))
+            throw Throwable(response.errorBody)
         } else {
             val data = response.getData<PrivacyPolicyListResponse>()
             if (data.respCode == PrivacyPolicyConst.RESPONSE_OK && data.respDesc == PrivacyPolicyConst.RESPONSE_SUCCESS) {
@@ -47,12 +47,12 @@ class GetPrivacyPolicyListUseCase @Inject constructor(
                 }
 
                 if (params > 0) {
-                    PrivacyCenterStateResult.Success(data.data.take(params))
+                    data.data.take(params)
                 } else {
-                    PrivacyCenterStateResult.Success(data.data)
+                    data.data
                 }
             } else {
-                PrivacyCenterStateResult.Fail(MessageErrorException(data.respDesc))
+                throw MessageErrorException(data.respDesc)
             }
         }
     }

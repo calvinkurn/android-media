@@ -4,10 +4,10 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.privacycenter.common.PrivacyCenterStateResult
 import com.tokopedia.privacycenter.main.section.privacypolicy.domain.data.PrivacyPolicyDataModel
 import com.tokopedia.privacycenter.main.section.privacypolicy.domain.usecase.GetPrivacyPolicyListUseCase
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -16,34 +16,43 @@ class PrivacyPolicySectionViewModel @Inject constructor(
     dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.main) {
 
-    private val _privacyPolicyList =
-        MutableLiveData<PrivacyCenterStateResult<List<PrivacyPolicyDataModel>>>()
-    val privacyPolicyList: LiveData<PrivacyCenterStateResult<List<PrivacyPolicyDataModel>>>
-        get() = _privacyPolicyList
+    private val _bottomSheetState = MutableLiveData<PrivacyPolicyUiModel.InnerState>(PrivacyPolicyUiModel.InnerState.Loading)
+    val bottomSheetState: LiveData<PrivacyPolicyUiModel.InnerState>
+        get() = _bottomSheetState
 
-    private val _privacyPolicyTopFiveList =
-        MutableLiveData<PrivacyCenterStateResult<List<PrivacyPolicyDataModel>>>()
-    val privacyPolicyTopFiveList: LiveData<PrivacyCenterStateResult<List<PrivacyPolicyDataModel>>>
-        get() = _privacyPolicyTopFiveList
+    private val _state = MutableLiveData(PrivacyPolicyUiModel())
+    val state: LiveData<PrivacyPolicyUiModel>
+        get() = _state
 
     fun getPrivacyPolicyAllList() {
-        _privacyPolicyList.value = PrivacyCenterStateResult.Loading()
+        _bottomSheetState.value = PrivacyPolicyUiModel.InnerState.Loading
         launch {
             try {
-                _privacyPolicyList.value = getPrivacyPolicyList(0)
+                _bottomSheetState.value = PrivacyPolicyUiModel.InnerState.Success(getPrivacyPolicyList(0))
             } catch (e: Exception) {
-                _privacyPolicyList.value = PrivacyCenterStateResult.Fail(e)
+                _bottomSheetState.value = PrivacyPolicyUiModel.InnerState.Error
             }
         }
     }
 
     fun getPrivacyPolicyTopFiveList() {
-        _privacyPolicyTopFiveList.value = PrivacyCenterStateResult.Loading()
-        launchCatchError(coroutineContext, {
-            _privacyPolicyTopFiveList.value = getPrivacyPolicyList(5)
-        }, {
-            _privacyPolicyTopFiveList.value = PrivacyCenterStateResult.Fail(it)
-        })
+        _state.value = _state.value!!.copy(innerState = PrivacyPolicyUiModel.InnerState.Loading)
+        launch {
+            _state.value = try {
+                _state.value!!.copy(
+                    innerState = PrivacyPolicyUiModel.InnerState.Success(
+                        getPrivacyPolicyList(5)
+                    )
+                )
+            } catch (e: Exception) {
+                _state.value!!.copy(innerState = PrivacyPolicyUiModel.InnerState.Error)
+            }
+        }
+    }
+
+    fun toggleContentVisibility() {
+        val currentShown = _state.value!!.shown
+        _state.value = _state.value!!.copy(shown = !currentShown)
     }
 
 }

@@ -11,9 +11,9 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.common.network.util.NetworkClient
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.privacycenter.R
-import com.tokopedia.privacycenter.common.PrivacyCenterStateResult
 import com.tokopedia.privacycenter.databinding.SectionPrivacyPolicyBinding
 import com.tokopedia.privacycenter.main.section.BasePrivacyCenterSection
 import com.tokopedia.privacycenter.main.section.privacypolicy.PrivacyPolicyConst.DEFAULT_TITLE
@@ -29,7 +29,6 @@ class PrivacyPolicySection constructor(
     private val viewModel: PrivacyPolicySectionViewModel
 ) : BasePrivacyCenterSection(context), PrivacyPolicyAdapter.Listener {
 
-    private var isPrivacyPolicyListOpened: Boolean = false
     private val privacyPolicyAdapter = PrivacyPolicyAdapter(this)
     private var privacyPolicySectionBottomSheet: PrivacyPolicySectionBottomSheet? = null
 
@@ -67,14 +66,7 @@ class PrivacyPolicySection constructor(
             }
 
             menuListPrivacyPolicy.setOnClickListener {
-                isPrivacyPolicyListOpened = !isPrivacyPolicyListOpened
-                iconMenu.setImage(
-                    if (isPrivacyPolicyListOpened)
-                        IconUnify.CHEVRON_UP
-                    else
-                        IconUnify.CHEVRON_DOWN
-                )
-                listPrivacyPolicy.showWithCondition(isPrivacyPolicyListOpened)
+                viewModel.toggleContentVisibility()
             }
 
             buttonShowAllList.setOnClickListener {
@@ -93,23 +85,36 @@ class PrivacyPolicySection constructor(
 
     override fun initObservers() {
         lifecycleOwner?.run {
-            viewModel.privacyPolicyTopFiveList.observe(this) {
-                when (it) {
-                    is PrivacyCenterStateResult.Fail -> showLocalLoad()
-                    is PrivacyCenterStateResult.Loading -> loadingPrivacyPolicyList(true)
-                    is PrivacyCenterStateResult.Success -> onSuccessGetPrivacyPolicyTopFiveList(it.data)
+            viewModel.state.observe(this) {
+                toggleCollapsable(it.shown)
+                if (it.shown) {
+                    when (it.innerState) {
+                        is PrivacyPolicyUiModel.InnerState.Error ->  showLocalLoad()
+                        PrivacyPolicyUiModel.InnerState.Loading -> loadingPrivacyPolicyList()
+                        is PrivacyPolicyUiModel.InnerState.Success -> showList(it.innerState.list)
+                    }
                 }
             }
         }
     }
 
     override fun onItemClicked(item: PrivacyPolicyDataModel) {
-        openDetailPrivacyPolicy(item.sectionTitle, item.sectionId)
+        val intent = Intent(context, PrivacyPolicyWebViewActivity::class.java).apply {
+            putExtras(Bundle().apply {
+                putString(KEY_TITLE, item.sectionTitle)
+                putString(SECTION_ID, item.sectionId)
+            })
+        }
+
+        context?.startActivity(intent)
     }
 
-    private fun onSuccessGetPrivacyPolicyTopFiveList(data: List<PrivacyPolicyDataModel>) {
-        loadingPrivacyPolicyList(false)
-
+    private fun showList(data: List<PrivacyPolicyDataModel>) {
+        sectionViewBinding.run {
+            localLoadPrivacyPolicy.hide()
+            loaderListPrivacyPolicy.hide()
+            listPrivacyPolicy.show()
+        }
         privacyPolicyAdapter.apply {
             clearAllItems()
             addItems(data)
@@ -117,23 +122,18 @@ class PrivacyPolicySection constructor(
         }
     }
 
-    private fun openDetailPrivacyPolicy(title: String, sectionId: String) {
-        val intent = Intent(context, PrivacyPolicyWebViewActivity::class.java).apply {
-            putExtras(Bundle().apply {
-                putString(KEY_TITLE, title)
-                putString(SECTION_ID, sectionId)
-            })
-        }
-
-        context?.startActivity(intent)
+    private fun toggleCollapsable(shown: Boolean) {
+        sectionViewBinding.iconMenu.setImage(
+            if (shown) IconUnify.CHEVRON_UP else IconUnify.CHEVRON_DOWN
+        )
+        sectionViewBinding.privacyPolicyContainer.showWithCondition(shown)
     }
 
-    private fun loadingPrivacyPolicyList(isLoading: Boolean) {
-        if (isPrivacyPolicyListOpened) {
-            sectionViewBinding.apply {
-                loaderListPrivacyPolicy.showWithCondition(isLoading)
-                listPrivacyPolicy.showWithCondition(!isLoading)
-            }
+    private fun loadingPrivacyPolicyList() {
+        sectionViewBinding.run {
+            loaderListPrivacyPolicy.show()
+            listPrivacyPolicy.hide()
+            localLoadPrivacyPolicy.hide()
         }
     }
 
@@ -142,6 +142,7 @@ class PrivacyPolicySection constructor(
             loaderListPrivacyPolicy.hide()
             listPrivacyPolicy.hide()
             localLoadPrivacyPolicy.apply {
+                show()
                 localLoadTitle = context.getString(R.string.privacy_center_error_network_title)
                 refreshBtn?.setOnClickListener {
                     this.hide()
