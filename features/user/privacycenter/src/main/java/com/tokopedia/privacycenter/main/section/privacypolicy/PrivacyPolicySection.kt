@@ -142,13 +142,11 @@ class PrivacyPolicySection constructor(
             loaderListPrivacyPolicy.hide()
             listPrivacyPolicy.hide()
             localLoadPrivacyPolicy.apply {
-                show()
                 localLoadTitle = context.getString(R.string.privacy_center_error_network_title)
                 refreshBtn?.setOnClickListener {
-                    this.hide()
                     viewModel.getPrivacyPolicyTopFiveList()
                 }
-            }
+            }.show()
         }
     }
 

@@ -137,7 +137,6 @@ class PrivacyPolicySectionBottomSheet : BottomSheetUnify(), PrivacyPolicyAdapter
                 localLoadTitle = context.getString(R.string.privacy_center_error_network_title)
                 refreshBtn?.setOnClickListener {
                     viewModel.getPrivacyPolicyAllList()
-                    this.hide()
                 }
             }.show()
         }
