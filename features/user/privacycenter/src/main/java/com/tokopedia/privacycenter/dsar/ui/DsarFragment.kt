@@ -28,6 +28,7 @@ import com.tokopedia.privacycenter.databinding.FragmentDsarLayoutBinding
 import com.tokopedia.privacycenter.databinding.ItemTransactionHistoryRangeBinding
 import com.tokopedia.privacycenter.dsar.DsarConstants.DATE_RANGE_CUSTOM
 import com.tokopedia.privacycenter.dsar.DsarConstants.FILTER_TYPE_PAYMENT
+import com.tokopedia.privacycenter.dsar.DsarConstants.FILTER_TYPE_PERSONAL
 import com.tokopedia.privacycenter.dsar.DsarConstants.FILTER_TYPE_TRANSACTION
 import com.tokopedia.privacycenter.dsar.model.GetRequestDetailResponse
 import com.tokopedia.privacycenter.dsar.model.ItemRangeModel
@@ -97,7 +98,7 @@ class DsarFragment: BaseDaggerFragment(), OnDateChangedListener {
         super.onViewCreated(view, savedInstanceState)
         setupViews()
 
-        viewModel._showMainLayout.observe(viewLifecycleOwner) {
+        viewModel.showMainLayout.observe(viewLifecycleOwner) {
             if(it) {
                 binding?.mainLayout?.visible()
             } else {
@@ -105,7 +106,7 @@ class DsarFragment: BaseDaggerFragment(), OnDateChangedListener {
             }
         }
 
-        viewModel._mainLoader.observe(viewLifecycleOwner) {
+        viewModel.mainLoader.observe(viewLifecycleOwner) {
             if(it) {
                 showMainLoader()
             } else {
@@ -113,15 +114,15 @@ class DsarFragment: BaseDaggerFragment(), OnDateChangedListener {
             }
         }
 
-        viewModel._mainButtonLoading.observe(viewLifecycleOwner) {
+        viewModel.mainButtonLoading.observe(viewLifecycleOwner) {
             binding?.btnNext?.isLoading = it
         }
 
-        viewModel._toasterError.observe(viewLifecycleOwner) {
+        viewModel.toasterError.observe(viewLifecycleOwner) {
             showToasterError(it)
         }
 
-        viewModel._itemRangeData.observe(viewLifecycleOwner) {
+        viewModel.itemRangeData.observe(viewLifecycleOwner) {
             if(it.isNotEmpty()) {
                 if(::rangePickerBottomSheet.isInitialized && rangePickerBottomSheet.isVisible) {
                     updateRangeItemsView(it)
@@ -132,35 +133,29 @@ class DsarFragment: BaseDaggerFragment(), OnDateChangedListener {
             }
         }
 
-        viewModel._requestDetails.observe(viewLifecycleOwner) {
+        viewModel.requestDetails.observe(viewLifecycleOwner) {
             renderOnProgressView(it)
         }
 
-        viewModel._submitRequest.observe(viewLifecycleOwner) {
+        viewModel.submitRequest.observe(viewLifecycleOwner) {
             onSubmitSuccess(it.email, it.deadline)
         }
 
-        viewModel._startDate.observe(viewLifecycleOwner) {
+        viewModel.customDate.observe(viewLifecycleOwner) {
             if (::rangePickerDialogBinding.isInitialized) {
                 rangePickerDialogBinding.txtStartDate.editText
-                    .setText(it)
+                    .setText(it.startDate)
+                rangePickerDialogBinding.txtEndDate.editText.setText(it.endDate)
             }
         }
 
-        viewModel._showSummary.observe(viewLifecycleOwner) {
+        viewModel.showSummary.observe(viewLifecycleOwner) {
             if(it.isNotEmpty()) {
                 showSummary(it)
             } else {
                 hideSummary()
             }
         }
-
-        viewModel._endDate.observe(viewLifecycleOwner) {
-            if (::rangePickerDialogBinding.isInitialized) {
-                rangePickerDialogBinding.txtEndDate.editText.setText(it)
-            }
-        }
-
         viewModel.checkRequestStatus()
     }
 
@@ -249,9 +244,9 @@ class DsarFragment: BaseDaggerFragment(), OnDateChangedListener {
                 it.isActivated = !it.isActivated
                 if (!it.isActivated) {
                     checkIcon.invisible()
-                    viewModel.removeFilter(FILTER_TYPE_PAYMENT)
+                    viewModel.removeFilter(FILTER_TYPE_PERSONAL)
                 } else {
-                    viewModel.addFilter(FILTER_TYPE_PAYMENT)
+                    viewModel.addFilter(FILTER_TYPE_PERSONAL)
                     checkIcon.visible()
                 }
             }

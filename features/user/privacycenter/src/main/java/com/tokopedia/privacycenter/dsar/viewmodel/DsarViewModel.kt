@@ -10,6 +10,7 @@ import com.tokopedia.privacycenter.dsar.DsarConstants.FILTER_TYPE_PAYMENT
 import com.tokopedia.privacycenter.dsar.DsarConstants.FILTER_TYPE_PERSONAL
 import com.tokopedia.privacycenter.dsar.DsarConstants.FILTER_TYPE_TRANSACTION
 import com.tokopedia.privacycenter.dsar.DsarConstants.HTML_NEW_LINE
+import com.tokopedia.privacycenter.dsar.DsarConstants.MAX_SELECTED_ITEM
 import com.tokopedia.privacycenter.dsar.DsarConstants.PAYMENT_LABEL
 import com.tokopedia.privacycenter.dsar.DsarConstants.PERSONAL_LABEL
 import com.tokopedia.privacycenter.dsar.DsarConstants.STATUS_CLOSED
@@ -25,6 +26,7 @@ import com.tokopedia.privacycenter.dsar.model.CreateRequestResponse
 import com.tokopedia.privacycenter.dsar.model.GetRequestDetailResponse
 import com.tokopedia.privacycenter.dsar.model.ItemRangeModel
 import com.tokopedia.privacycenter.dsar.model.SearchRequestBody
+import com.tokopedia.privacycenter.dsar.model.uimodel.CustomDateModel
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.date.DateUtil
 import com.tokopedia.utils.date.toDate
@@ -41,80 +43,70 @@ class DsarViewModel @Inject constructor(
     dispatcher: CoroutineDispatchers
 ): BaseViewModel(dispatcher.main) {
 
-    private val itemRangeData = MutableLiveData<ArrayList<ItemRangeModel>>()
-    val _itemRangeData: LiveData<ArrayList<ItemRangeModel>> = itemRangeData
+    private val _itemRangeData = MutableLiveData<ArrayList<ItemRangeModel>>()
+    val itemRangeData: LiveData<ArrayList<ItemRangeModel>> = _itemRangeData
 
-    private val filterItems = MutableLiveData<ArrayList<String>>(arrayListOf())
-    val _filterItems: LiveData<ArrayList<String>> = filterItems
+    private val _filterItems = arrayListOf<String>()
 
-    private val startDate = MutableLiveData<String>()
-    val _startDate: LiveData<String> = startDate
+    private val _customDate = MutableLiveData(CustomDateModel())
+    val customDate: LiveData<CustomDateModel> = _customDate
 
-    private val showSummary = MutableLiveData<String>()
-    val _showSummary: LiveData<String> = showSummary
+    private val _showSummary = MutableLiveData<String>()
+    val showSummary: LiveData<String> = _showSummary
 
-    private val endDate = MutableLiveData<String>()
-    val _endDate: LiveData<String> = endDate
+    private val _mainButtonLoading = SingleLiveEvent<Boolean>()
+    val mainButtonLoading: LiveData<Boolean> = _mainButtonLoading
 
-    private val mainButtonLoading = SingleLiveEvent<Boolean>()
-    val _mainButtonLoading: LiveData<Boolean> = mainButtonLoading
+    private val _mainLoader = SingleLiveEvent<Boolean>()
+    val mainLoader: LiveData<Boolean> = _mainLoader
 
-    private val mainLoader = SingleLiveEvent<Boolean>()
-    val _mainLoader: LiveData<Boolean> = mainLoader
+    private val _toasterError = SingleLiveEvent<String>()
+    val toasterError: LiveData<String> = _toasterError
 
-    private val toasterError = SingleLiveEvent<String>()
-    val _toasterError: LiveData<String> = toasterError
+    private val _submitRequest = MutableLiveData<CreateRequestResponse>()
+    val submitRequest: LiveData<CreateRequestResponse> = _submitRequest
 
-    private val submitRequest = MutableLiveData<CreateRequestResponse>()
-    val _submitRequest: LiveData<CreateRequestResponse> = submitRequest
+    private val _requestDetails = MutableLiveData<GetRequestDetailResponse>()
+    val requestDetails: LiveData<GetRequestDetailResponse> = _requestDetails
 
-    private val requestDetails = MutableLiveData<GetRequestDetailResponse>()
-    val _requestDetails: LiveData<GetRequestDetailResponse> = requestDetails
-
-    private val showMainLayout = SingleLiveEvent<Boolean>()
-    val _showMainLayout: LiveData<Boolean> = showMainLayout
+    private val _showMainLayout = SingleLiveEvent<Boolean>()
+    val showMainLayout: LiveData<Boolean> = _showMainLayout
 
     fun getSelectedRangeItems(): ItemRangeModel? {
-        return itemRangeData.value?.first { it.selected }
+        return this.itemRangeData.value?.first { it.selected }
     }
 
     fun setSelectedRangeItems(id: Int) {
-        itemRangeData.value?.forEach {
+        this.itemRangeData.value?.forEach {
             it.selected = it.id == id
             if(it.id == DATE_RANGE_CUSTOM) {
                 it.transactionDate = calculateTransactionDateForCustomDate(id)
             }
         }
-        itemRangeData.value = itemRangeData.value
+        _itemRangeData.value = this.itemRangeData.value
     }
 
     fun populateRangeItems() {
-        itemRangeData.value?.clear()
-        itemRangeData.value = getInitialRangeItem()
+        _itemRangeData.value?.clear()
+        _itemRangeData.value = getInitialRangeItem()
     }
 
     fun addFilter(filter: String) {
-        if((filterItems.value?.count() ?: 0) < 3) {
-            val newVal = filterItems.value?.apply {
-                add(filter)
-            }
-            filterItems.value = newVal
+        if((_filterItems.count()) < MAX_SELECTED_ITEM) {
+            _filterItems.add(filter)
         }
     }
 
     fun removeFilter(filter: String) {
-        val newVal = filterItems.value?.apply {
-            remove(filter)
-        }
-        filterItems.value = newVal
+        _filterItems.remove(filter)
     }
 
     fun submitRequest() {
-        mainButtonLoading.value = true
+        _mainButtonLoading.value = true
         launch {
             try {
                 val requests = arrayListOf<String>()
-                filterItems.value?.forEach {
+                _filterItems.forEach {
                     if(it == FILTER_TYPE_PERSONAL) {
                         requests.addAll(DsarConstants.DSAR_PERSONAL_DATA)
                     }
@@ -127,11 +119,11 @@ class DsarViewModel @Inject constructor(
                 }
                 val param = submitRequestUseCase.constructParams(requests)
                 val result = submitRequestUseCase(param)
-                submitRequest.value = result
+                _submitRequest.value = result
             } catch (e: Exception) {
-                toasterError.value = e.message
+                _toasterError.value = e.message
             } finally {
-                mainButtonLoading.value = false
+                _mainButtonLoading.value = false
             }
         }
     }
@@ -140,12 +132,8 @@ class DsarViewModel @Inject constructor(
         val maxDate = GregorianCalendar(Locale.getDefault())
         val minDate = GregorianCalendar(Locale.getDefault())
         if(selectedId == DATE_RANGE_CUSTOM) {
-            endDate.value?.let {
-                maxDate.time = it.toDate(DateUtil.DEFAULT_VIEW_FORMAT)
-            }
-            startDate.value?.let {
-                minDate.time = it.toDate(DateUtil.DEFAULT_VIEW_FORMAT)
-            }
+            maxDate.time = _customDate.value?.endDate.toDate(DateUtil.DEFAULT_VIEW_FORMAT)
+            minDate.time = _customDate.value?.startDate.toDate(DateUtil.DEFAULT_VIEW_FORMAT)
         }
 
         val formattedMaxDate = maxDate.time.toString(DateUtil.YYYYMMDD)
@@ -154,39 +142,43 @@ class DsarViewModel @Inject constructor(
     }
 
     fun setStartDate(date: Date) {
-        startDate.value = date.toString()
+        _customDate.value = _customDate.value?.copy(
+            startDate = date.toString(DateUtil.DEFAULT_VIEW_FORMAT)
+        )
     }
 
     fun setEndDate(date: Date) {
-        endDate.value = date.toString(DateUtil.DEFAULT_VIEW_FORMAT)
+        _customDate.value = _customDate.value?.copy(
+            endDate = date.toString(DateUtil.DEFAULT_VIEW_FORMAT)
+        )
         setSelectedRangeItems(DATE_RANGE_CUSTOM)
     }
 
     fun checkRequestStatus() {
-        mainLoader.value = true
+        _mainLoader.value = true
         launch {
             try {
                 val param = SearchRequestBody(email = userSession.email)
                 val result = searchRequestUseCase(param)
                 if(result.status.isEmpty()) {
-                    showMainLayout.value = true
+                    _showMainLayout.value = true
                 } else if(result.status != STATUS_REJECTED && result.status != STATUS_COMPLETED && result.status != STATUS_CLOSED) {
-                    requestDetails.value = result
+                    _requestDetails.value = result
                 }
             } catch (e: Exception) {
-                showMainLayout.value = true
-                toasterError.value = e.message
+                _showMainLayout.value = true
+                _toasterError.value = e.message
             } finally {
-                mainLoader.value = false
+                _mainLoader.value = false
             }
         }
     }
 
     fun showSummary() {
         var text = ""
-        if(filterItems.value?.isNotEmpty() == true) {
-            showSummary.value = filterItems.value?.joinToString { "," }
-            filterItems.value?.forEachIndexed { index, s ->
+        if(_filterItems.isNotEmpty()) {
+            _showSummary.value = _filterItems.joinToString { "," }
+            _filterItems.forEachIndexed { index, s ->
                 if (s == FILTER_TYPE_PERSONAL) {
                     text += PERSONAL_LABEL
                 }
@@ -197,20 +189,20 @@ class DsarViewModel @Inject constructor(
                     val transData = getSelectedRangeItems()
                     var transText = transData?.title
                     if (transData?.id == DATE_RANGE_CUSTOM) {
-                        transText = "${startDate.value} - ${endDate.value}"
+                        transText = "${_customDate.value?.startDate} - ${_customDate.value?.endDate}"
                     }
                     text += "$TRANSACTION_LABEL${transText}"
                 }
-                text += if (index == (filterItems.value?.count() ?: 0) - 1) {
+                text += if (index == (_filterItems.count()) - 1) {
                     HTML_NEW_LINE
                 } else {
                     // append 2 new line for last item
                     "$HTML_NEW_LINE$HTML_NEW_LINE"
                 }
             }
-            showSummary.value = text
+            _showSummary.value = text
         } else {
-            toasterError.value = SUMMARY_ERROR
+            _toasterError.value = SUMMARY_ERROR
         }
     }
 }

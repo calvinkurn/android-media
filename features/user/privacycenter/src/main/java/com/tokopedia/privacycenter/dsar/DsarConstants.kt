@@ -49,4 +49,5 @@ object DsarConstants {
     const val DAYS_92 = 92L
     const val DAYS_3_YEARS = 1096L
 
+    const val MAX_SELECTED_ITEM = 3
 }
