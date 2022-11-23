@@ -391,4 +391,3 @@ dependencies {
 
     androidTestImplementation rootProject.ext.testDependencies.fragmentTest
 }
-
