@@ -6,11 +6,9 @@ import com.tokopedia.common.network.data.model.RequestType
 import com.tokopedia.common.network.data.model.RestRequest
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.privacycenter.common.PrivacyCenterStateResult
 import com.tokopedia.privacycenter.main.section.privacypolicy.PrivacyPolicyConst
 import com.tokopedia.privacycenter.main.section.privacypolicy.domain.data.PrivacyPolicyDataModel
 import com.tokopedia.privacycenter.main.section.privacypolicy.domain.data.PrivacyPolicyListResponse
-import com.tokopedia.usecase.coroutines.UseCase
 import com.tokopedia.utils.date.DateUtil
 import javax.inject.Inject
 
@@ -29,7 +27,7 @@ class GetPrivacyPolicyListUseCase @Inject constructor(
 
         val response = restRepository.getResponse(request)
         return if (response.isError) {
-            throw Throwable(response.errorBody)
+            throw Exception(response.errorBody)
         } else {
             val data = response.getData<PrivacyPolicyListResponse>()
             if (data.respCode == PrivacyPolicyConst.RESPONSE_OK && data.respDesc == PrivacyPolicyConst.RESPONSE_SUCCESS) {

@@ -5,7 +5,6 @@ import com.tokopedia.privacycenter.main.section.BasePrivacyCenterSection
 import com.tokopedia.privacycenter.main.section.accountlinking.AccountLinkingSection
 import com.tokopedia.privacycenter.main.section.activity.ActivitySection
 import com.tokopedia.privacycenter.main.section.consentwithdrawal.ConsentWithdrawalSection
-import com.tokopedia.privacycenter.main.section.dummy.DummySection
 import com.tokopedia.privacycenter.main.section.privacypolicy.PrivacyPolicySection
 import com.tokopedia.privacycenter.main.section.dsar.DSARSection
 import com.tokopedia.privacycenter.main.section.faqPrivacySection.FaqPrivacySection
@@ -41,8 +40,8 @@ class PrivacyCenterSection constructor(
             ActivitySection.TAG to delegate.activitySection,
             RecommendationSection.TAG to delegate.recommendationSection,
             ConsentWithdrawalSection.TAG to delegate.consentWithdrawalSection,
-            PrivacyPolicySection.TAG to delegate.privacyPolicySection,
             DSARSection.TAG to delegate.dsarSection,
+            PrivacyPolicySection.TAG to delegate.privacyPolicySection,
             FaqPrivacySection.TAG to delegate.faqPrivacySection,
             TokopediaCareSection.TAG to delegate.tokopediaCareSection
         )
@@ -57,7 +56,7 @@ class PrivacyCenterSection constructor(
     fun removeAllViews() {
         parentView?.removeAllViews()
 
-        delegate.dummySection.lifecycleOwner = null
+//        delegate.dummySection.lifecycleOwner = null
         delegate.consentWithdrawalSection.lifecycleOwner = null
         delegate.privacyPolicySection.lifecycleOwner = null
     }

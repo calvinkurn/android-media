@@ -46,20 +46,20 @@ class RecommendationSection(
     private var enableGeolocationDialog: DialogUnify? = null
 
     override fun initObservers() {
-        lifecycleOwner?.let {
-            viewModel.isShakeShakeAllowed.observe(lifecycleOwner) { isAllowed ->
+        lifecycleOwner?.let { lifecycle ->
+            viewModel.isShakeShakeAllowed.observe(lifecycle) { isAllowed ->
                 sectionViewBinding.itemShakeShake.forceToggleState(isAllowed)
             }
 
-            viewModel.isGeolocationAllowed.observe(lifecycleOwner) { isAllowed ->
+            viewModel.isGeolocationAllowed.observe(lifecycle) { isAllowed ->
                 sectionViewBinding.itemGeolocation.forceToggleState(isAllowed)
             }
 
-            viewModel.isRecommendationFriendAllowed.observe(lifecycleOwner) {
+            viewModel.isRecommendationFriendAllowed.observe(lifecycle) {
                 sectionViewBinding.itemRecommendationFriend.forceToggleState(it)
             }
 
-            viewModel.getConsentSocialNetwork.observe(lifecycleOwner) {
+            viewModel.getConsentSocialNetwork.observe(lifecycle) {
                 when (it) {
                     is GetRecommendationFriendState.Loading -> {
                         showShimmering(true)
@@ -75,7 +75,7 @@ class RecommendationSection(
                 }
             }
 
-            viewModel.setConsentSocialNetwork.observe(lifecycleOwner) {
+            viewModel.setConsentSocialNetwork.observe(lifecycle) {
                 when (it) {
                     is PrivacyCenterStateResult.Loading -> {
                         showLoaderDialog(true)

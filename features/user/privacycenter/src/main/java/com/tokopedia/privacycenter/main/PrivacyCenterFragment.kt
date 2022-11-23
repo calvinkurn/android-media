@@ -44,7 +44,6 @@ import com.tokopedia.privacycenter.main.section.recommendation.RecommendationSec
 import com.tokopedia.privacycenter.main.section.recommendation.RecommendationViewModel
 import com.tokopedia.privacycenter.main.section.tokopediacare.TokopediaCareSection
 import com.tokopedia.unifycomponents.Toaster
-import com.tokopedia.privacycenter.main.section.dummy.DummySection
 import com.tokopedia.privacycenter.main.section.privacypolicy.PrivacyPolicySection
 import com.tokopedia.privacycenter.main.section.privacypolicy.PrivacyPolicySectionViewModel
 import com.tokopedia.unifycomponents.isUsingNightModeResources
