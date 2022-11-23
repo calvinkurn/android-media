@@ -130,6 +130,7 @@ import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
+import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import com.tokopedia.unifyprinciples.R as RUnify
@@ -816,6 +817,9 @@ class DiscoveryFragment :
         if (!data?.thematicHeader?.color.isNullOrEmpty()) {
             hasColouredHeader = true
             activity?.let { navToolbar.setupToolbarWithStatusBar(it) }
+            context?.let {
+                navToolbar.setIconCustomColor(getDarkIconColor(it),getLightIconColor(it))
+            }
             if (isLightThemeStatusBar == true) {
                 navToolbar.hideShadow()
             } else {
@@ -1947,6 +1951,31 @@ class DiscoveryFragment :
     private fun requestStatusBarLight() {
         isLightThemeStatusBar = true
         (activity as? DiscoveryActivity)?.requestStatusBarLight()
+    }
+
+    private fun getLightIconColor(context: Context): Int {
+        return if (context.isDarkMode()) {
+            ContextCompat.getColor(
+                context,
+                com.tokopedia.unifyprinciples.R.color.Unify_Static_White
+            )
+        } else {
+            ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+        }
+    }
+
+    private fun getDarkIconColor(context: Context): Int {
+        return if (context.isDarkMode()) {
+            ContextCompat.getColor(
+                context,
+                com.tokopedia.unifyprinciples.R.color.Unify_Static_White
+            )
+        } else {
+            ContextCompat.getColor(
+                context,
+                com.tokopedia.searchbar.R.color.searchbar_dms_state_light_icon
+            )
+        }
     }
 
 }
