@@ -38,6 +38,8 @@ class ProductCardGridDecoration(
             outRect.top = getTopOffset(parent, absolutePos, spanIndex, spanCount)
             outRect.right = getRightProductOffset(spanIndex)
             outRect.bottom = getBottomOffset()
+        } else if (isChooseAddressWidget(parent, absolutePos)) {
+            outRect.top = spacing / DIVIDED_BY_TWO
         }
     }
 
@@ -72,6 +74,8 @@ class ProductCardGridDecoration(
     private fun isTopProductItem(parent: RecyclerView, absolutePos: Int, relativePos: Int, totalSpanCount: Int): Boolean = !isProductItem(parent, absolutePos - relativePos % totalSpanCount - 1)
 
     private fun isProductItem(parent: RecyclerView, viewPosition: Int): Boolean = R.layout.item_tokopedianow_product_grid_card == getRecyclerViewViewType(parent, viewPosition)
+
+    private fun isChooseAddressWidget(parent: RecyclerView, viewPosition: Int): Boolean = R.layout.item_tokopedianow_choose_address_widget == getRecyclerViewViewType(parent, viewPosition)
 
     private fun getRecyclerViewViewType(parent: RecyclerView, viewPosition: Int): Int {
         val adapter = parent.adapter ?: return INVALID_VIEW_TYPE

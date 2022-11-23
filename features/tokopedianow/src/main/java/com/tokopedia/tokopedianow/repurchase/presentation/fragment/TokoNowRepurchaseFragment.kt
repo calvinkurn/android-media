@@ -467,6 +467,7 @@ class TokoNowRepurchaseFragment:
             rvRepurchase?.apply {
                 addProductItemDecoration()
                 adapter = this@TokoNowRepurchaseFragment.adapter
+                itemAnimator = null
                 layoutManager = GridLayoutManager(context, SPAN_COUNT).apply {
                     spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
                         override fun getSpanSize(position: Int): Int {

@@ -43,6 +43,8 @@ class TokoNowProductCardView @JvmOverloads constructor(
         private const val VERTICAL_BIAS_RATING_TYPOGRAPHY = 1.0f
         private const val WORDING_SEGERA_HABIS = "Segera Habis"
         private const val BOUND_DEFAULT_VALUE = 0
+        private const val NO_MARGIN = 0
+        private const val NO_DISCOUNT_STRING = "0"
     }
 
     private var binding: LayoutTokopedianowProductCardViewBinding
@@ -172,9 +174,9 @@ class TokoNowProductCardView @JvmOverloads constructor(
         discountInt: Int,
         labelGroup: LabelGroup?
     ) {
-        val isDiscountNotBlank = discount.isNotBlank() || !discountInt.isZero()
-        promoLabel.showIfWithBlock(isDiscountNotBlank || labelGroup != null) {
-            if (isDiscountNotBlank) {
+        val isDiscountNotBlankOrZero = (discount.isNotBlank() && discount != NO_DISCOUNT_STRING) || !discountInt.isZero()
+        promoLabel.showIfWithBlock(isDiscountNotBlankOrZero || labelGroup != null) {
+            if (isDiscountNotBlankOrZero) {
                 text = if (discountInt.isZero()) discount else context.getString(R.string.tokopedianow_product_card_percentage, discountInt)
                 adjustLabelType(LIGHT_RED)
             } else {
@@ -356,10 +358,7 @@ class TokoNowProductCardView @JvmOverloads constructor(
             ConstraintSet.BOTTOM,
             ConstraintSet.PARENT_ID,
             ConstraintSet.BOTTOM,
-            getDpFromDimen(
-                context = context,
-                id = R.dimen.tokopedianow_product_card_rating_typography_bottom_margin_normal_state
-            ).toIntSafely()
+            NO_MARGIN
         )
 
         constraintSet.applyTo(root)
