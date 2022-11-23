@@ -162,6 +162,12 @@
     <string name="mp_ad_creation_onboarding_cta_text">Iklankan Produkmu</string>
     <string name="mp_ad_creation_onboarding_footer_text">Mau cari tahu apa itu TopAds? Yuk, Kenalan Dulu</string>
 
+<!-- MpAdCreationGroupList-->
+    <string name="mp_ad_creation_group_list_header_text">Masukkan ke Grup Iklan</string>
+    <string name="mp_ad_creation_grp_list_add_grp_text">Buat Grup Iklan Baru</string>
+    <string name="mp_ad_creation_grp_list_cta">Simpan</string>
+    <string name="mp_ad_creation_grp_list_infinite_reload_text">Beberapa grup gagal dimuat. Muat Ulang</string>
+
     <string-array name="sort_product_list_array">
         <item>Terlaris</item>
         <item>Terbaru</item>

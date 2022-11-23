@@ -12,6 +12,7 @@ import com.tokopedia.topads.create.R
 import com.tokopedia.topads.create.databinding.MpAdCreationActivityBinding
 import com.tokopedia.topads.di.DaggerCreateAdsComponent
 import com.tokopedia.topads.view.fragment.MpAdCreationOnboardingFragment
+import com.tokopedia.topads.view.fragment.MpAdGroupFragment
 import com.tokopedia.topads.view.model.MpAdCreationViewModel
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
@@ -66,7 +67,7 @@ class MpAdCreationActivity : BaseActivity() {
 //        if(productType!=null && productType.isUsed){
 //
 //        }
-        addFragment(MpAdCreationOnboardingFragment.newInstance())
+        addFragment(MpAdGroupFragment.newInstance())
     }
 
     override fun onBackPressed() {

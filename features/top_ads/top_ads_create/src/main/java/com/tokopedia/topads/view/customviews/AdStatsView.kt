@@ -1,0 +1,60 @@
+package com.tokopedia.topads.view.customviews
+
+import android.content.Context
+import android.util.AttributeSet
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.topads.view.adapter.adstat.AdStatAdapter
+import com.tokopedia.topads.view.adapter.adstat.AdStatHorizontalDecoration
+import com.tokopedia.topads.create.R
+import com.tokopedia.topads.view.datamodel.AdStatModel
+import com.tokopedia.unifycomponents.BaseCustomView
+
+class AdStatsView @JvmOverloads constructor(
+    context: Context,
+    attrs:AttributeSet?=null,
+    defStyleAttr:Int = 0
+) : BaseCustomView(context, attrs,defStyleAttr) {
+
+    private var rv:RecyclerView?=null
+    private var statAdapter:AdStatAdapter?=null
+
+    init {
+      inflateRecyclerView(context)
+    }
+
+    private fun inflateRecyclerView(context: Context){
+        rv = RecyclerView(context).apply {
+            layoutParams = LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.WRAP_CONTENT)
+            val rvLayoutManager = LinearLayoutManager(
+                context,
+                LinearLayoutManager.HORIZONTAL,
+                false
+            )
+            layoutManager = rvLayoutManager
+            addItemDecoration(AdStatHorizontalDecoration(30))
+            statAdapter = AdStatAdapter()
+            adapter = statAdapter
+        }
+        addView(rv)
+        submitStatList(getDummyList())
+    }
+
+    private fun getDummyList() = listOf(
+        AdStatModel("11.098","Tampil",false),
+        AdStatModel("11.098","Klik",false),
+        AdStatModel("11.098","Terjual",false)
+    )
+
+    fun submitStatList(list:List<AdStatModel>){
+        statAdapter?.submitList(list)
+    }
+
+    fun setAllLoading(count:Int){
+        val loadingList:MutableList<AdStatModel> = mutableListOf()
+        for(i in 0 until count)
+            loadingList.add(AdStatModel())
+        submitStatList(loadingList)
+    }
+
+}
