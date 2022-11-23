@@ -84,7 +84,6 @@ fun submitEnabledDataUsageFailedAction() {
     isTextDisplayed("Gagal mengaktifkan penggunaan data")
 }
 
-
 fun verificationDisabledDataUsageAction() {
     clickOnView(R.id.switch_permission_data_usage)
     isDisplayed(
