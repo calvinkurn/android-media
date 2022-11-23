@@ -2,17 +2,14 @@ package com.tokopedia.privacycenter.main.section.privacypolicy.domain.data
 
 import com.google.gson.annotations.SerializedName
 
-abstract class PrivacyPolicyBaseResponseDataModel(
+data class PrivacyPolicyListResponse(
+    @SerializedName("data")
+    val data: List<PrivacyPolicyDataModel> = listOf(),
     @SerializedName("resp_code")
     val respCode: String = "",
     @SerializedName("resp_desc")
     val respDesc: String = ""
 )
-
-data class PrivacyPolicyListResponse(
-    @SerializedName("data")
-    val data: List<PrivacyPolicyDataModel> = listOf()
-): PrivacyPolicyBaseResponseDataModel()
 
 data class PrivacyPolicyDataModel(
     @SerializedName("section_id")
