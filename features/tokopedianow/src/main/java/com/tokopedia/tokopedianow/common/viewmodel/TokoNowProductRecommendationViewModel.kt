@@ -25,8 +25,8 @@ import com.tokopedia.tokopedianow.common.model.TokoNowProductCardCarouselItemUiM
 import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationViewUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper
 import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -37,7 +37,7 @@ class TokoNowProductRecommendationViewModel @Inject constructor(
     private val updateCartUseCase: UpdateCartUseCase,
     private val deleteCartUseCase: DeleteCartUseCase,
     dispatchers: CoroutineDispatchers
-): BaseViewModel(dispatchers.io) {
+) : BaseViewModel(dispatchers.io) {
     companion object {
         private const val NO_ORDER_QUANTITY = 0
         private const val NON_VARIANT_PRODUCT = "0"
@@ -46,11 +46,10 @@ class TokoNowProductRecommendationViewModel @Inject constructor(
     private val _productRecommendation = MutableLiveData<Result<TokoNowProductRecommendationViewUiModel>>()
     private val _miniCartAdd = MutableLiveData<Result<AddToCartDataModel>>()
     private val _miniCartUpdate = MutableLiveData<Result<UpdateCartV2Data>>()
-    private val _miniCartRemove = MutableLiveData<Result<Pair<String,String>>>()
+    private val _miniCartRemove = MutableLiveData<Result<Pair<String, String>>>()
     private val _productModelsUpdate = MutableLiveData<List<Visitable<*>>>()
 
-    private var productModels : MutableList<Visitable<*>> = mutableListOf()
-    private var isProductAnimating: Boolean = false
+    private var productModels: MutableList<Visitable<*>> = mutableListOf()
     private var mMiniCartSimplifiedData: MiniCartSimplifiedData? = null
     private var job: Job? = null
 
@@ -60,7 +59,7 @@ class TokoNowProductRecommendationViewModel @Inject constructor(
         get() = _miniCartAdd
     val miniCartUpdate: LiveData<Result<UpdateCartV2Data>>
         get() = _miniCartUpdate
-    val miniCartRemove: LiveData<Result<Pair<String,String>>>
+    val miniCartRemove: LiveData<Result<Pair<String, String>>>
         get() = _miniCartRemove
     val productModelsUpdate: LiveData<List<Visitable<*>>>
         get() = _productModelsUpdate
@@ -94,7 +93,8 @@ class TokoNowProductRecommendationViewModel @Inject constructor(
                 } else {
                     _productRecommendation.postValue(Fail(Throwable()))
                 }
-            }, onError = { throwable ->
+            },
+            onError = { throwable ->
                 _productRecommendation.postValue(Fail(throwable))
             }
         )
@@ -136,7 +136,7 @@ class TokoNowProductRecommendationViewModel @Inject constructor(
         )
         updateCartUseCase.setParams(
             updateCartRequestList = listOf(updateCartRequest),
-            source = UpdateCartUseCase.VALUE_SOURCE_UPDATE_QTY_NOTES,
+            source = UpdateCartUseCase.VALUE_SOURCE_UPDATE_QTY_NOTES
         )
         updateCartUseCase.execute({
             updateProductQuantity(
@@ -239,7 +239,6 @@ class TokoNowProductRecommendationViewModel @Inject constructor(
         quantity: Int,
         shopId: String
     ) {
-        isProductAnimating = true
         val miniCartItem = getMiniCartItem(productId)
         when {
             miniCartItem == null && quantity.isZero() -> { /* do nothing */ }
@@ -253,7 +252,6 @@ class TokoNowProductRecommendationViewModel @Inject constructor(
         productId: String,
         quantity: Int
     ) {
-        isProductAnimating = false
         val miniCartItem = getMiniCartItem(productId)
         if (quantity.isZero() && miniCartItem != null) {
             removeItemCart(
@@ -272,17 +270,15 @@ class TokoNowProductRecommendationViewModel @Inject constructor(
     fun updateMiniCartSimplified(miniCartSimplifiedData: MiniCartSimplifiedData?) {
         mMiniCartSimplifiedData = miniCartSimplifiedData
 
-        if (!isProductAnimating) {
-            launch {
-                mMiniCartSimplifiedData?.apply {
-                    if (miniCartItems.values.isEmpty()) {
-                        resetAllProductQuantities()
-                    } else {
-                        updateProductQuantityBasedOnMiniCart(this)
-                        resetProductQuantityBasedOnMiniCart(this)
-                    }
-                    _productModelsUpdate.postValue(productModels)
+        launch {
+            mMiniCartSimplifiedData?.apply {
+                if (miniCartItems.values.isEmpty()) {
+                    resetAllProductQuantities()
+                } else {
+                    updateProductQuantityBasedOnMiniCart(this)
+                    resetProductQuantityBasedOnMiniCart(this)
                 }
+                _productModelsUpdate.postValue(productModels)
             }
         }
     }
