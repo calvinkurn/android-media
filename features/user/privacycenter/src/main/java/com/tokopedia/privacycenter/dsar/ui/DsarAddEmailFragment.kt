@@ -15,6 +15,7 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.privacycenter.R
 import com.tokopedia.privacycenter.common.di.PrivacyCenterComponent
 import com.tokopedia.privacycenter.databinding.FragmentDsarAddEmailLayoutBinding
+import com.tokopedia.privacycenter.dsar.DsarConstants.OTP_MODE_EMAIL
 import com.tokopedia.privacycenter.dsar.model.uimodel.AddEmailModel
 import com.tokopedia.privacycenter.dsar.viewmodel.DsarAddEmailViewModel
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -105,7 +106,7 @@ class DsarAddEmailFragment: BaseDaggerFragment() {
             putString(ApplinkConstInternalGlobal.PARAM_MSISDN, "")
             putBoolean(ApplinkConstInternalGlobal.PARAM_CAN_USE_OTHER_METHOD, false)
             putInt(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, OTP_TYPE_ADD_EMAIL)
-            putString(ApplinkConstInternalGlobal.PARAM_REQUEST_OTP_MODE, "email")
+            putString(ApplinkConstInternalGlobal.PARAM_REQUEST_OTP_MODE, OTP_MODE_EMAIL)
             putBoolean(ApplinkConstInternalGlobal.PARAM_IS_SHOW_CHOOSE_METHOD, false)
         })
         startActivityForResult(intent, REQUEST_ADD_EMAIL)

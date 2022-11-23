@@ -61,4 +61,7 @@ object DsarConstants {
     const val BEARER = "Bearer"
 
     const val LANG_US = "en-us"
+
+    const val OTP_MODE_EMAIL = "email"
+
 }

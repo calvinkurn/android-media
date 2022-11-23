@@ -178,7 +178,7 @@ class DsarFragment: BaseDaggerFragment(), OnDateChangedListener {
             if(resultCode == Activity.RESULT_OK && data != null) {
                 viewModel.submitRequest()
             } else if(resultCode == Activity.RESULT_CANCELED) {
-                showToasterError("Gagal Verifikasi")
+                showToasterError(getString(R.string.dsar_failed_otp_label))
             }
         } else if(requestCode == REQUEST_ADD_EMAIL && resultCode == Activity.RESULT_OK) {
             renderProfileHeader()
@@ -200,7 +200,7 @@ class DsarFragment: BaseDaggerFragment(), OnDateChangedListener {
         binding?.layoutSummary?.root?.visible()
         binding?.layoutSummary?.txtSummary?.text = Html.fromHtml(data)
         binding?.btnNext?.apply {
-            text = "Ajukan Download Data"
+            text = getString(R.string.dsar_submit_download_btn_title)
             setOnClickListener { toVerification() }
         }
         binding?.layoutOptions?.root?.gone()
@@ -288,7 +288,7 @@ class DsarFragment: BaseDaggerFragment(), OnDateChangedListener {
     }
 
     private fun renderInitialState() {
-        datePicker.setTitle("Mulai dari")
+        datePicker.setTitle(getString(R.string.dsar_date_picker_start_title))
     }
 
     private fun showDatePicker() {
@@ -311,7 +311,7 @@ class DsarFragment: BaseDaggerFragment(), OnDateChangedListener {
 
             datePicker.apply {
                 setCloseClickListener { dismiss() }
-                datePickerButton.text = "Pilih"
+                datePickerButton.text = getString(R.string.dsar_date_picker_choose_btn_title)
                 datePickerButton.setOnClickListener {
                     onDateSelected()
                 }

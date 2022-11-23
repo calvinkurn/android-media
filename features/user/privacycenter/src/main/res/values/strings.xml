@@ -119,6 +119,10 @@
     <string name="dsar_bottom_sheet_detail_subtitle">Data akan didownload dari akun kamu yang ini:</string>
     <string name="dsar_date_picker_title">Mau download riwayat transaksi sejak kapan?</string>
     <string name="dsar_date_picker_btn_title">Terapkan</string>
+    <string name="dsar_failed_otp_label">Gagal Verifikasi</string>
+    <string name="dsar_submit_download_btn_title">Ajukan Download Data</string>
+    <string name="dsar_date_picker_start_title">Mulai dari</string>
+    <string name="dsar_date_picker_choose_btn_title">Pilih</string>
 
     <!-- SHARING WISHLIST -->
     <string name="sharing_wishlist_page_title">Bagikan Wishlist</string>
@@ -133,5 +137,6 @@
     <string name="sharing_wishlist_failed_title">Konten gagal ditampilkan</string>
     <string name="sharing_wishlist_label_private">Pribadi</string>
     <string name="sharing_wishlist_label_public">Publik</string>
+
 
 </resources>
