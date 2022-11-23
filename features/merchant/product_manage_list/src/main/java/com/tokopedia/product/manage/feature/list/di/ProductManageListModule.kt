@@ -17,9 +17,6 @@ import com.tokopedia.product.manage.common.feature.draft.data.db.source.AddEditP
 import com.tokopedia.product.manage.common.feature.uploadstatus.data.db.UploadStatusDao
 import com.tokopedia.product.manage.common.feature.uploadstatus.data.db.repository.UploadStatusRepository
 import com.tokopedia.product.manage.common.feature.uploadstatus.data.db.repository.UploadStatusRepositoryImpl
-import com.tokopedia.product.manage.feature.list.constant.GQL_FEATURED_PRODUCT
-import com.tokopedia.product.manage.feature.list.constant.GQL_UPDATE_PRODUCT
-import com.tokopedia.product.manage.feature.list.constant.ProductManageListConstant
 import com.tokopedia.product.manage.feature.multiedit.domain.MultiEditProductUseCase
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.shop.common.constant.GQLQueryNamedConstant
@@ -53,54 +50,11 @@ class ProductManageListModule(private val context: Context) {
 
     @ProductManageListScope
     @Provides
-    @Named(ProductManageListConstant.GQL_POPUP_NAME)
-    fun requestQuery(): String {
-        return """
-            query GetShopManagerPopups(${'$'}shopID:Int!){
-              getShopManagerPopups(shopID: ${'$'}shopID) {
-                 data {
-                   showPopUp
-                 }
-              }
-            }
-        """.trimIndent()
-    }
-
-    @ProductManageListScope
-    @Provides
-    @Named(GQL_UPDATE_PRODUCT)
-    fun provideUpdateProduct(): String {
-        return """
-            mutation productUpdateV3(${'$'}input: ProductInputV3!){
-              ProductUpdateV3(input:${'$'}input) {
-                header {
-                  messages
-                  reason
-                  errorCode
-                }
-                isSuccess
-              }
-            }
-        """.trimIndent()
-    }
-
-    @ProductManageListScope
-    @Provides
     @Named(GQLQueryNamedConstant.SHOP_INFO)
     fun provideGqlQueryShopInfo(): String {
         return GraphqlHelper.loadRawString(
             context.resources,
             com.tokopedia.shop.common.R.raw.gql_get_shop_info)
-    }
-
-    @ProductManageListScope
-    @Provides
-    @Named(GQL_FEATURED_PRODUCT)
-    fun provideGqlMutationFeaturedProduct(): String {
-        return GraphqlHelper.loadRawString(
-            context.resources,
-            com.tokopedia.shop.common.R.raw.gql_mutation_gold_manage_featured_product_v2
-        )
     }
 
     @ProductManageListScope
