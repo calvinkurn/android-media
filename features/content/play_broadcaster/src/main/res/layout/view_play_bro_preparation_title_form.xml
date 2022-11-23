@@ -58,6 +58,19 @@
         app:unify_text_field_placeholder="@string/play_bro_title_form_hint"
         />
 
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btn_save"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/spacing_lvl4"
+        app:unifyButtonVariant="ghost"
+        app:unifyButtonInvers="true"
+        android:text="@string/play_label_save"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        />
+
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/loader_loading_title_form"
         android:layout_width="@dimen/play_bro_title_form_loading_size"
