@@ -330,7 +330,33 @@ class PlayShortsAnalyticImpl @Inject constructor(
         sendGeneralClickEvent(
             eventAction = "click - upload video",
             eventLabel = "${getEventLabelByAccount(account)} - $channelId",
-            trackerId = "37585"
+            trackerId = "37586"
+        )
+    }
+
+    /** Row 65 */
+    fun openScreenSummaryPage(account: ContentAccountUiModel) {
+        sendGeneralOpenScreen(
+            screenName = "/play broadcast short - summary page - ${getEventLabelByAccount(account)}",
+            trackerId = "37588",
+        )
+    }
+
+    /** Row 67 */
+    fun clickRefreshContentTag(account: ContentAccountUiModel) {
+        sendGeneralClickEvent(
+            eventAction = "click - refresh content tags",
+            account = account,
+            trackerId = "37590"
+        )
+    }
+
+    /** Row 82 */
+    fun clickNextOnPreparationPage(account: ContentAccountUiModel) {
+        sendGeneralClickEvent(
+            eventAction = "click - lanjut post creation",
+            account = account,
+            trackerId = "37605"
         )
     }
 
