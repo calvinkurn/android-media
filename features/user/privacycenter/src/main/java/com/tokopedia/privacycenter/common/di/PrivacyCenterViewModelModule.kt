@@ -6,6 +6,8 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.privacycenter.consentwithdrawal.viewmodel.ConsentWithdrawalViewModel
+import com.tokopedia.privacycenter.dsar.viewmodel.DsarAddEmailViewModel
+import com.tokopedia.privacycenter.dsar.viewmodel.DsarViewModel
 import com.tokopedia.privacycenter.main.PrivacyCenterViewModel
 import com.tokopedia.privacycenter.main.section.accountlinking.AccountLinkingViewModel
 import com.tokopedia.privacycenter.main.section.consentwithdrawal.ConsentWithdrawalSectionViewModel
@@ -51,6 +53,19 @@ abstract class PrivacyCenterViewModelModule {
     @ActivityScope
     @ViewModelKey(ConsentWithdrawalViewModel::class)
     abstract fun provideConsentWithdrawalViewModel(viewModel: ConsentWithdrawalViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ActivityScope
+    @ViewModelKey(DsarViewModel::class)
+    abstract fun provideDsarViewModel(viewModel: DsarViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ActivityScope
+    @ViewModelKey(DsarAddEmailViewModel::class)
+    abstract fun provideDsarAddEmailViewModel(viewModel: DsarAddEmailViewModel): ViewModel
+
 
     @Binds
     @IntoMap

@@ -10,11 +10,9 @@ import dagger.Provides
 
 @Module
 class PrivacyCenterModule {
-
     @Provides
     @ActivityScope
     fun provideUserSession(@ApplicationContext context: Context): UserSessionInterface {
         return UserSession(context)
     }
-
 }

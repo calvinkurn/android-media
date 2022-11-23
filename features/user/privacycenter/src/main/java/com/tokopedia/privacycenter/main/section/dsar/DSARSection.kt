@@ -4,14 +4,15 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import androidx.viewbinding.ViewBinding
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.privacycenter.R
 import com.tokopedia.privacycenter.databinding.SectionConsentwithdrawalBinding
 import com.tokopedia.privacycenter.main.analytics.MainPrivacyCenterAnalytics
 import com.tokopedia.privacycenter.main.section.BasePrivacyCenterSection
-import com.tokopedia.unifycomponents.Toaster
 
 class DSARSection(
-    context: Context?
+    val context: Context?
 ) : BasePrivacyCenterSection(context) {
 
     override val sectionViewBinding: ViewBinding = SectionConsentwithdrawalBinding.inflate(
@@ -31,7 +32,8 @@ class DSARSection(
 
     override fun onButtonDirectionClick(view: View) {
         MainPrivacyCenterAnalytics.sendClickOnButtonDownloadDataPribadiEvent()
-        Toaster.build(view, "DSAR Section clicked").show()
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.DSAR)
+        context?.startActivity(intent)
     }
 
     companion object {
