@@ -11,7 +11,7 @@ data class GetCheckWhitelistResponse(
     val whitelist: Whitelist = Whitelist()
 ) {
 
-    data class Whitelist (
+    data class Whitelist(
         @SerializedName("iswhitelist")
         val isWhitelist: Boolean = false,
 
