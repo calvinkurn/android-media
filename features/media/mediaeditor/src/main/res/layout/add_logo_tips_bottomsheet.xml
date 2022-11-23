@@ -24,6 +24,7 @@
         android:layout_height="wrap_content"/>
 
     <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/add_logo_bottomsheet_button"
         android:layout_marginTop="24dp"
         app:unifyButtonVariant="filled"
         app:unifyButtonType="main"

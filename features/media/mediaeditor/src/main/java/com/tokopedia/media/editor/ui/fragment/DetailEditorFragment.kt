@@ -1,5 +1,6 @@
 package com.tokopedia.media.editor.ui.fragment
 
+import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.Canvas
@@ -47,9 +48,15 @@ import com.tokopedia.media.editor.utils.removeBackgroundToText
 import com.tokopedia.media.editor.utils.watermarkToText
 import com.tokopedia.media.loader.loadImageWithEmptyTarget
 import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
+import com.tokopedia.picker.common.EXTRA_RESULT_PICKER
 import com.tokopedia.picker.common.ImageRatioType
+import com.tokopedia.picker.common.MediaPicker
+import com.tokopedia.picker.common.PageSource
+import com.tokopedia.picker.common.PickerResult
 import com.tokopedia.picker.common.basecomponent.uiComponent
 import com.tokopedia.picker.common.types.EditorToolType
+import com.tokopedia.picker.common.types.ModeType
+import com.tokopedia.picker.common.types.PageType
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifyprinciples.R as principleR
 import com.tokopedia.utils.view.binding.viewBinding
@@ -296,6 +303,26 @@ class DetailEditorFragment @Inject constructor(
         val text = requireContext().getString(editorR.string.editor_add_logo_toast_final)
         Toast.makeText(context, text, Toast.LENGTH_LONG).show()
         activity?.finish()
+    }
+
+    override fun onPickerCall() {
+        val intent = MediaPicker.intent(requireContext()) {
+            pageType(PageType.GALLERY)
+            modeType(ModeType.IMAGE_ONLY)
+            minImageResolution(500)
+            pageSource(PageSource.AddLogo)
+            singleSelectionMode()
+        }
+
+        startActivityForResult(intent, ADD_LOGO_PICKER_REQUEST_CODE)
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == ADD_LOGO_PICKER_REQUEST_CODE && resultCode == Activity.RESULT_OK){
+            val elements = data?.getParcelableExtra(EXTRA_RESULT_PICKER)?: PickerResult()
+            addLogoComponent.initUploadAvatar(elements.originalPaths.first())
+        }
     }
 
     override fun initObserver() {
@@ -999,9 +1026,10 @@ class DetailEditorFragment @Inject constructor(
 
         private const val DELAY_EXECUTION_PREVIOUS_CROP = 400L
         private const val DELAY_EXECUTION_PREVIOUS_ROTATE = 400L
+        private const val DELAY_REMOVE_BG_TOASTER = 300L
 
         private const val bottomSheetTag = "Add Logo BottomSheet"
 
-        private const val DELAY_REMOVE_BG_TOASTER = 300L
+        private const val ADD_LOGO_PICKER_REQUEST_CODE = 979
     }
 }
