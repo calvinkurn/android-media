@@ -692,6 +692,8 @@ class PlayBottomSheetFragment @Inject constructor(
                                 BottomInsetsType.VariantSheet
                             } else BottomInsetsType.ProductSheet //TEMPORARY
 
+                            if (event.isProductFeatured) return@collect
+
                             analytic.clickProductAction(
                                 product = event.product,
                                 cartId = event.cartId,
