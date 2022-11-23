@@ -29,8 +29,7 @@ class DriverSectionViewHolder(
         val LAYOUT = R.layout.item_tokofood_order_tracking_driver_section
 
         private const val ICON_DEFAULT_PERCENTAGE_X_POSITION = 1.6f
-        private const val ICON_DEFAULT_PERCENTAGE_Y_POSITION = -0.6f
-        private const val BADGE_COUNTER_MAX = 99
+        private const val ICON_DEFAULT_PERCENTAGE_Y_POSITION = -0.55f
     }
 
     private val binding = ItemTokofoodOrderTrackingDriverSectionBinding.bind(itemView)
@@ -116,11 +115,6 @@ class DriverSectionViewHolder(
                 if (badgeCounter == null || badgeCounter.isZero() || badgeCounter.isLessThanZero()) {
                     notificationRef.hide()
                 } else {
-                    val badgeCounterFmt = if (badgeCounter > BADGE_COUNTER_MAX) {
-                        "$BADGE_COUNTER_MAX+"
-                    } else {
-                        badgeCounter.toString()
-                    }
                     notificationRef.show()
                     setNotifXY(
                         ICON_DEFAULT_PERCENTAGE_X_POSITION,
@@ -128,7 +122,7 @@ class DriverSectionViewHolder(
                     )
 
                     notificationRef.setNotification(
-                        notif = badgeCounterFmt,
+                        notif = badgeCounter.toString(),
                         notificationType = NotificationUnify.COUNTER_TYPE,
                         colorType = NotificationUnify.COLOR_PRIMARY
                     )
