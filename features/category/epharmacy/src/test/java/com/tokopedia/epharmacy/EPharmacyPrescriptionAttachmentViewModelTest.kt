@@ -39,8 +39,10 @@ class EPharmacyPrescriptionAttachmentViewModelTest {
 
     @Test
     fun getGroupsSuccessTest() {
-        val response = mockk<EPharmacyPrepareProductsGroupResponse>(relaxed = true)
-
+        val epharmacyGroup = mockk<EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup>(relaxed = true)
+        val responseGroup = EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData("","", arrayListOf(epharmacyGroup))
+        val responseData = EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData(responseGroup)
+        val response  = EPharmacyPrepareProductsGroupResponse(responseData)
         coEvery {
             ePharmacyPrepareProductsGroupUseCase.getEPharmacyPrepareProductsGroup(any(), any())
         } coAnswers {

@@ -33,6 +33,6 @@ class EPharmacyChooserTransparentActivity : BaseActivity() {
     }
 
     private fun openBottomSheet(){
-        EPharmacyChooserBottomSheet.newInstance(enableImageURL,checkoutId).show(supportFragmentManager,"")
+        EPharmacyChooserBottomSheet.newInstance(enableImageURL,checkoutId,consultationWebLink).show(supportFragmentManager,"")
     }
 }

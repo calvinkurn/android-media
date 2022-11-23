@@ -54,7 +54,6 @@
             </intent-filter>
         </activity>
 
-
         <activity
             android:name=".ui.activity.EPharmacyChooserTransparentActivity"
             android:theme="@style/Theme.AppCompat.DayNight.Translucent"
