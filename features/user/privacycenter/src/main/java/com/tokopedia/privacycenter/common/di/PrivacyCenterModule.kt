@@ -16,7 +16,6 @@ import okhttp3.logging.HttpLoggingInterceptor
 
 @Module
 class PrivacyCenterModule {
-
     @Provides
     @ActivityScope
     fun provideUserSession(@ApplicationContext context: Context): UserSessionInterface {

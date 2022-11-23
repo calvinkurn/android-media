@@ -7,8 +7,8 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.privacycenter.common.PrivacyCenterStateResult
 import com.tokopedia.privacycenter.common.data.AccountLinkingResponse
-import com.tokopedia.privacycenter.common.utils.formatDateLocalTimezone
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.date.DateUtil
 import javax.inject.Inject
 
 class AccountLinkingUseCase @Inject constructor(
@@ -39,7 +39,7 @@ class AccountLinkingUseCase @Inject constructor(
         val phoneNumber = userSessionInterface.phoneNumber
 
         return if (linkedStatus.isNotEmpty() && linkedStatus.first().status == KEY_ACCOUNT_LINKED) {
-            val linkedTime = response.accountsLinkerStatus.linkStatus.first().linkedTime.formatDateLocalTimezone()
+            val linkedTime = DateUtil.formatDate(DateUtil.YYYY_MM_DD_T_HH_MM_SS_SSS_Z, DateUtil.DEFAULT_VIEW_FORMAT, response.accountsLinkerStatus.linkStatus.first().linkedTime)
             PrivacyCenterStateResult.Success(AccountLinkingStatus(true, phoneNumber, linkedTime))
         } else {
             PrivacyCenterStateResult.Success(AccountLinkingStatus(false))
