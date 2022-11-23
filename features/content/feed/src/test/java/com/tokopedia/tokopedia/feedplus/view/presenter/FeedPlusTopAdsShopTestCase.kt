@@ -43,12 +43,10 @@ class FeedPlusTopAdsShopTestCase {
             FeedViewModel(
                 baseDispatcher = baseDispatcher,
                 userSession = mockk(),
-                doFavoriteShopUseCase = mockk(),
-                followKolPostGqlUseCase =  mockk(),
                 likeKolPostUseCase = mockk(),
                 addToCartUseCase = mockk(),
                 trackAffiliateClickUseCase = trackAffiliateClickUseCase,
-                deletePostUseCase = mockk(),
+                submitActionContentUseCase = mockk(),
                 sendTopAdsUseCase = sendTopAdsUseCase,
                 playWidgetTools = mockk(),
                 getDynamicFeedNewUseCase = mockk(),
