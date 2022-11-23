@@ -61,7 +61,9 @@ class CatalogLandingPageFragment: Fragment(),
     private var catalogLandingRecyclerView: RecyclerView? = null
 
     private var catalogLibraryUiUpdater: CatalogLibraryUiUpdater =
-        CatalogLibraryUiUpdater(mutableMapOf())
+        CatalogLibraryUiUpdater(mutableMapOf()).also {
+            it.setUpForLandingPage()
+        }
     private var shimmerLayout: ScrollView? = null
 
     private val categoryIdentifier = ""

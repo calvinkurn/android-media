@@ -46,7 +46,6 @@ class CatalogLibraryUseCaseModule {
         return CatalogRelevantUseCase(graphqlRepository)
     }
 
-    @CatalogLibraryScope
     @Provides
     fun getCatalogListUseCase(@ApplicationContext graphqlRepository: GraphqlRepository): CatalogListUseCase {
         return CatalogListUseCase(graphqlRepository)

@@ -37,6 +37,10 @@ class CatalogHomepageAdapterFactoryImpl(private val catalogLibraryListener: Cata
         return CatalogLandingPageListContainerViewHolder.LAYOUT
     }
 
+    override fun type(data: CatalogShimmerDataModel): Int {
+        return CatalogShimmerViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
             CatalogSpecialContainerViewHolder.LAYOUT -> CatalogSpecialContainerViewHolder(view, catalogLibraryListener)
@@ -46,6 +50,7 @@ class CatalogHomepageAdapterFactoryImpl(private val catalogLibraryListener: Cata
             CatalogTopFiveContainerViewHolder.LAYOUT -> CatalogTopFiveContainerViewHolder(view, catalogLibraryListener)
             CatalogMostViralContainerViewHolder.LAYOUT -> CatalogMostViralContainerViewHolder(view, catalogLibraryListener)
             CatalogLandingPageListContainerViewHolder.LAYOUT -> CatalogLandingPageListContainerViewHolder(view, catalogLibraryListener)
+            CatalogShimmerViewHolder.LAYOUT -> CatalogShimmerViewHolder(view)
             else -> super.createViewHolder(view, type)
         }
     }

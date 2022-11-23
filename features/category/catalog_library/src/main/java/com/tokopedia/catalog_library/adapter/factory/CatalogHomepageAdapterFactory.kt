@@ -16,6 +16,8 @@ interface CatalogHomepageAdapterFactory {
     fun type(data: CatalogMostViralDataModel): Int
     fun type(data: CatalogLandingListDataModel): Int
 
+    fun type(data: CatalogShimmerDataModel): Int
+
     fun createViewHolder(view: View, type: Int): AbstractViewHolder<*>
 
 }
