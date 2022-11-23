@@ -138,6 +138,7 @@ data class EPharmacyPrepareProductsGroupResponse(
                     val actionType: String?
                 ) : Parcelable
 
+                @Parcelize
                 data class PrescriptionImage(
                     @SerializedName("expired_at")
                     val expiredAt: String?,
