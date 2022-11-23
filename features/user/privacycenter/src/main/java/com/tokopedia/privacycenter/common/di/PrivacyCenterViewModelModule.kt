@@ -11,6 +11,8 @@ import com.tokopedia.privacycenter.main.section.accountlinking.AccountLinkingVie
 import com.tokopedia.privacycenter.main.section.consentwithdrawal.ConsentWithdrawalSectionViewModel
 import com.tokopedia.privacycenter.main.section.privacypolicy.PrivacyPolicySectionViewModel
 import com.tokopedia.privacycenter.main.section.recommendation.RecommendationViewModel
+import com.tokopedia.privacycenter.sharingwishlist.viewmodel.SharingWishlistSharedViewModel
+import com.tokopedia.privacycenter.sharingwishlist.viewmodel.SharingWishlistViewModel
 import com.tokopedia.privacycenter.searchhistory.SearchHistoryViewModel
 import dagger.Binds
 import dagger.Module
@@ -62,4 +64,16 @@ abstract class PrivacyCenterViewModelModule {
     @ActivityScope
     @ViewModelKey(SearchHistoryViewModel::class)
     abstract fun provideSearchHistoryViewModel(viewModel: SearchHistoryViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ActivityScope
+    @ViewModelKey(SharingWishlistViewModel::class)
+    abstract fun provideSharingWishlistViewModel(viewModel: SharingWishlistViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ActivityScope
+    @ViewModelKey(SharingWishlistSharedViewModel::class)
+    abstract fun provideSharingWishlistSharedViewModel(viewModel: SharingWishlistSharedViewModel): ViewModel
 }

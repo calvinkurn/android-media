@@ -11,12 +11,8 @@ import com.tokopedia.privacycenter.databinding.BaseItemPrivacyCenterBinding
 import com.tokopedia.privacycenter.main.analytics.MainPrivacyCenterAnalytics
 import com.tokopedia.privacycenter.main.section.BasePrivacyCenterSection
 import com.tokopedia.url.TokopediaUrl
-import javax.inject.Inject
 
 class TokopediaCareSection(private val context: Context?) : BasePrivacyCenterSection(context) {
-
-    @Inject
-    lateinit var analytics: MainPrivacyCenterAnalytics
 
     override val sectionViewBinding: BaseItemPrivacyCenterBinding = BaseItemPrivacyCenterBinding.inflate(
         LayoutInflater.from(context)
@@ -49,7 +45,7 @@ class TokopediaCareSection(private val context: Context?) : BasePrivacyCenterSec
 
     private fun initListener() {
         sectionViewBinding.itemViewPrivacyCenter.setOnClickListener {
-            analytics.sendClickOnButtonTokopediaCareEvent()
+            MainPrivacyCenterAnalytics.sendClickOnButtonTokopediaCareEvent()
             goToTokopediaCare()
         }
     }

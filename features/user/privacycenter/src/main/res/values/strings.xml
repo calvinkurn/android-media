@@ -2,8 +2,8 @@
 <resources>
 
     <!--Main page-->
-    <string name="title_privacy_center">Pengaturan Privasi</string>
-    <string name="privacy_center_toolbar_title">Hai %s</string>
+    <string name="title_privacy_center">Privasi Akun</string>
+    <string name="privacy_center_toolbar_title">Hai, %s</string>
     <string name="privacy_center_toolbar_desc">Penggunaan datamu bisa diatur di sini</string>
     <string name="privacy_center_error_network_title">Koneksi internetmu terganggu</string>
     <string name="privacy_center_error_network_detail">Yuk, pastikan internetmu lancar dengan cek ulang paket data, WIFI, atau jaringan di tempatmu.</string>
@@ -49,8 +49,8 @@
     <string name="privacy_center_recommendation_dialog_description_permission_geolocation">Kami perlu lokasimu biar bisa kasih rekomendasi yang cocok. Aktifkan pengaturan HP untuk membagikan lokasi.</string>
     <string name="privacy_center_recommendation_dialog_button_primary_permission_geolocation">Bagikan Lokasi</string>
     <string name="privacy_center_recommendation_dialog_button_secondary_permission_geolocation">Batal</string>
-    <string name="privacy_center_recommendation_dialog_permission_denied">Izin lokasi ditolak, aktifkan melalui pengaturan.</string>
-    <string name="privacy_center_recommendation_dialog_permission_setting">Pengaturan</string>
+    <string name="privacy_center_recommendation_dialog_permission_denied">Akses lokasi sudah ditolak, aktifkan lewat pengaturan HP ya.</string>
+    <string name="privacy_center_recommendation_dialog_permission_setting">Aktifkan</string>
     <string name="privacy_center_recommendation_friend_in_feed_title">Rekomendasi Teman di Feed</string>
     <string name="privacy_center_recommendation_friend_in_feed_subtitle">Tampilkan teman yang bisa di-follow</string>
     <string name="privacy_center_recommendation_friend_desc">Kami akan kasih rekomendasi teman yang bisa di-follow di Profil Feed kamu, berdasarkan datamu di fitur Referral dan Berbagi Alamat.</string>
@@ -103,5 +103,19 @@
     <string name="privacy_center_search_history_dialog_secondary">Kembali</string>
     <string name="privacy_center_search_history_message_failed_delete_all">Gagal menghapus semua riwayat pencarian </string>
     <string name="privacy_center_search_history_message_failed_delete_one">Gagal menghapus riwayat pencarian </string>
+
+    <!-- SHARING WISHLIST -->
+    <string name="sharing_wishlist_page_title">Bagikan Wishlist</string>
+    <string name="sharing_wishlist_empty_page_title">Belum ada koleksi wishlist yang bersifat %s</string>
+    <string name="sharing_wishlist_empty_page_description">Jika ada koleksi wishlist yang bersifat %s, kamu bisa lihat dan atur dari sini </string>
+    <string name="sharing_wishlist_collection_atur_button">Atur</string>
+    <string name="sharing_wishlist_bottom_sheet_title">Siapa yang boleh lihat Koleksi “%s” ini?</string>
+    <string name="sharing_wishlist_private_option">Hanya saya</string>
+    <string name="sharing_wishlist_public_option">Semua orang</string>
+    <string name="sharing_wishlist_save_button">Simpan</string>
+    <string name="sharing_wishlist_another_settup">Ubah Pengaturan Lainnya</string>
+    <string name="sharing_wishlist_failed_title">Konten gagal ditampilkan</string>
+    <string name="sharing_wishlist_label_private">Pribadi</string>
+    <string name="sharing_wishlist_label_public">Publik</string>
 
 </resources>

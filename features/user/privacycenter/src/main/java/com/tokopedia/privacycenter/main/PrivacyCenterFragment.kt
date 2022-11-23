@@ -27,7 +27,7 @@ import com.tokopedia.privacycenter.common.di.PrivacyCenterComponent
 import com.tokopedia.privacycenter.common.utils.getDynamicColorStatusBar
 import com.tokopedia.privacycenter.common.utils.getIconBackWithColor
 import com.tokopedia.privacycenter.common.utils.getIdColor
-import com.tokopedia.privacycenter.common.utils.setFitToWindows
+import com.tokopedia.privacycenter.common.utils.getResColor
 import com.tokopedia.privacycenter.common.utils.setTextStatusBar
 import com.tokopedia.privacycenter.databinding.FragmentPrivacyCenterBinding
 import com.tokopedia.privacycenter.databinding.SectionFooterImageBinding
@@ -112,11 +112,18 @@ class PrivacyCenterFragment :
         super.onViewCreated(view, savedInstanceState)
         handleStatusLogin()
         initToolbar()
-        binding?.rootContent?.addView(bindingImageFooter?.root)
-        loadFooterImage()
+        setUpUserNameToolbar()
+        addFooterImage()
         trackingScroll()
 
         MainPrivacyCenterAnalytics.sendViewPrivacyCenterEvent()
+    }
+
+    private fun setUpUserNameToolbar() {
+        binding?.textName?.text = String.format(
+            requireActivity().resources.getString(R.string.privacy_center_toolbar_title),
+            viewModel.getUserName()
+        )
     }
 
     private fun trackingScroll() {
@@ -159,7 +166,8 @@ class PrivacyCenterFragment :
         }
     }
 
-    private fun loadFooterImage() {
+    private fun addFooterImage() {
+        binding?.rootContent?.addView(bindingImageFooter?.root)
         bindingImageFooter?.imgFooterPrivacyCenter?.loadImageWithoutPlaceholder(
             getString(R.string.privacy_center_footer_image)
         )
@@ -178,8 +186,6 @@ class PrivacyCenterFragment :
 
     private fun initToolbar() {
         requireActivity().apply {
-            setFitToWindows(false)
-            window.statusBarColor = Color.TRANSPARENT
             binding?.unifyToolbar?.apply {
                 title = resources.getString(R.string.title_privacy_center)
                 setBackgroundColor(Color.TRANSPARENT)
@@ -188,10 +194,6 @@ class PrivacyCenterFragment :
                 }
             }
         }
-        binding?.textName?.text = String.format(
-            resources.getString(R.string.privacy_center_toolbar_title),
-            viewModel.getUserName()
-        )
     }
 
     override fun onStop() {
@@ -228,8 +230,8 @@ class PrivacyCenterFragment :
             val textColor = getIdColor(getWhite = isExpand)
             val backIcon = getIconBackWithColor(getWhite = isExpand)
 
-            window.statusBarColor = if (isExpand) {
-                Color.TRANSPARENT
+            window.statusBarColor = if (!isCollapsed) {
+                getResColor(R.color.dms_privacy_center_static_color_toolbar)
             } else {
                 getDynamicColorStatusBar()
             }
@@ -251,6 +253,7 @@ class PrivacyCenterFragment :
                     viewModelAccountLinkingSection.getAccountLinkingStatus()
                     viewModelRecommendationSection.getConsentSocialNetwork()
                     viewModelConsentWithdrawalSection.getConsentGroupList()
+                    setUpUserNameToolbar()
                 } else {
                     requireActivity().finish()
                 }

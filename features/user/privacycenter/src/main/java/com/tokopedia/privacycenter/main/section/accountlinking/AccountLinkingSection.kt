@@ -56,9 +56,9 @@ class AccountLinkingSection(
 
             MainPrivacyCenterAnalytics.sendClickOnButtonAccountLinkingEvent(
                 if (isLinked) {
-                    MainPrivacyCenterAnalytics.LABEL_LINK
-                } else {
                     MainPrivacyCenterAnalytics.LABEL_UNLINK
+                } else {
+                    MainPrivacyCenterAnalytics.LABEL_LINK
                 }
             )
         }
