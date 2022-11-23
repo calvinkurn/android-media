@@ -40,7 +40,7 @@ class PlayShortsAnalyticImpl @Inject constructor(
         get() = TrackApp.getInstance().gtm.irisSessionId
 
     /** Row 10 */
-    fun clickBackPostCreationEvent(account: ContentAccountUiModel) {
+    override fun clickBackOnPreparationPage(account: ContentAccountUiModel) {
         sendGeneralClickEvent(
             eventAction = "click - back post creation",
             account = account,
@@ -49,7 +49,7 @@ class PlayShortsAnalyticImpl @Inject constructor(
     }
 
     /** Row 11 */
-    fun clickCloseCoachMarkEvent(account: ContentAccountUiModel) {
+    override fun clickCloseCoachOnPreparationPage(account: ContentAccountUiModel) {
         sendGeneralClickEvent(
             eventAction = "click - close coachmark",
             account = account,
@@ -58,7 +58,7 @@ class PlayShortsAnalyticImpl @Inject constructor(
     }
 
     /** Row 12 */
-    fun clickAvailableAccountEvent(account: ContentAccountUiModel) {
+    override fun clickSwitchAccount(account: ContentAccountUiModel) {
         sendGeneralClickEvent(
             eventAction = "click - available account",
             account = account,
@@ -67,7 +67,7 @@ class PlayShortsAnalyticImpl @Inject constructor(
     }
 
     /** Row 13 */
-    fun clickSwitchProfile(account: ContentAccountUiModel) {
+    override fun clickCloseSwitchAccount(account: ContentAccountUiModel) {
         sendGeneralClickEvent(
             eventAction = "click - close switch profile",
             account = account,
@@ -76,7 +76,7 @@ class PlayShortsAnalyticImpl @Inject constructor(
     }
 
     /** Row 14 */
-    fun clickUserAccount(account: ContentAccountUiModel) {
+    override fun clickUserAccount(account: ContentAccountUiModel) {
         sendGeneralClickEvent(
             eventAction = "click - pilih akun user",
             account = account,
@@ -85,7 +85,7 @@ class PlayShortsAnalyticImpl @Inject constructor(
     }
 
     /** Row 15 */
-    fun clickShopAccount(account: ContentAccountUiModel) {
+    override fun clickShopAccount(account: ContentAccountUiModel) {
         sendGeneralClickEvent(
             eventAction = "click - pilih akun shop",
             account = account,
@@ -94,7 +94,7 @@ class PlayShortsAnalyticImpl @Inject constructor(
     }
 
     /** Row 16 */
-    fun viewSwitchAccountToShopConfirmation(account: ContentAccountUiModel) {
+    override fun viewSwitchAccountToShopConfirmation(account: ContentAccountUiModel) {
         sendGeneralViewEvent(
             eventAction = "view - switch profile shop bottom sheet",
             account = account,
@@ -103,7 +103,7 @@ class PlayShortsAnalyticImpl @Inject constructor(
     }
 
     /** Row 17 */
-    fun clickCancelSwitchAccountToShop(account: ContentAccountUiModel) {
+    override fun clickCancelSwitchAccountToShop(account: ContentAccountUiModel) {
         sendGeneralClickEvent(
             eventAction = "click - batal switch to shop",
             account = account,
@@ -112,7 +112,7 @@ class PlayShortsAnalyticImpl @Inject constructor(
     }
 
     /** Row 18 */
-    fun viewSwitchAccountToUserConfirmation(account: ContentAccountUiModel) {
+    override fun viewSwitchAccountToUserConfirmation(account: ContentAccountUiModel) {
         sendGeneralViewEvent(
             eventAction = "view - switch profile user bottom sheet",
             account = account,
@@ -121,7 +121,7 @@ class PlayShortsAnalyticImpl @Inject constructor(
     }
 
     /** Row 19 */
-    fun clickCancelSwitchAccountToUser(account: ContentAccountUiModel) {
+    override fun clickCancelSwitchAccountToUser(account: ContentAccountUiModel) {
         sendGeneralClickEvent(
             eventAction = "click - batal switch to user",
             account = account,
@@ -130,7 +130,7 @@ class PlayShortsAnalyticImpl @Inject constructor(
     }
 
     /** Row 20 */
-    fun clickCancelOnCompleteOnboardingUGC(account: ContentAccountUiModel) {
+    override fun clickCancelOnCompleteOnboardingUGC(account: ContentAccountUiModel) {
         sendGeneralClickEvent(
             eventAction = "click - x register user profile",
             account = account,
@@ -139,7 +139,7 @@ class PlayShortsAnalyticImpl @Inject constructor(
     }
 
     /** Row 21 */
-    fun clickTypeUsernameOnCompleteOnboardingUGC(account: ContentAccountUiModel) {
+    override fun clickTypeUsernameOnCompleteOnboardingUGC(account: ContentAccountUiModel) {
         sendGeneralClickEvent(
             eventAction = "click - type user profile name",
             account = account,
@@ -148,7 +148,7 @@ class PlayShortsAnalyticImpl @Inject constructor(
     }
 
     /** Row 22 */
-    fun clickAcceptTncOnCompleteOnboardingUGC(account: ContentAccountUiModel) {
+    override fun clickAcceptTncOnCompleteOnboardingUGC(account: ContentAccountUiModel) {
         sendGeneralClickEvent(
             eventAction = "click - accept t&c",
             account = account,
@@ -157,7 +157,7 @@ class PlayShortsAnalyticImpl @Inject constructor(
     }
 
     /** Row 23 */
-    fun viewCompleteOnboardingUGC(account: ContentAccountUiModel) {
+    override fun viewCompleteOnboardingUGC(account: ContentAccountUiModel) {
         sendGeneralViewEvent(
             eventAction = "view - register user profile",
             account = account,
@@ -166,7 +166,7 @@ class PlayShortsAnalyticImpl @Inject constructor(
     }
 
     /** Row 24 */
-    fun clickContinueOnCompleteOnboardingUGC(account: ContentAccountUiModel) {
+    override fun clickContinueOnCompleteOnboardingUGC(account: ContentAccountUiModel) {
         sendGeneralClickEvent(
             eventAction = "click - lanjut register user profile",
             account = account,
@@ -175,7 +175,7 @@ class PlayShortsAnalyticImpl @Inject constructor(
     }
 
     /** Row 25 */
-    fun viewSwitchAccountBottomSheet(account: ContentAccountUiModel) {
+    override fun viewSwitchAccountBottomSheet(account: ContentAccountUiModel) {
         sendGeneralViewEvent(
             eventAction = "view - switch profile bottom sheet",
             account = account,
@@ -184,7 +184,7 @@ class PlayShortsAnalyticImpl @Inject constructor(
     }
 
     /** Row 28 */
-    fun viewPreparationPage(account: ContentAccountUiModel) {
+    override fun viewPreparationPage(account: ContentAccountUiModel) {
         sendGeneralViewEvent(
             eventAction = "view - post creation page",
             account = account,
@@ -193,7 +193,7 @@ class PlayShortsAnalyticImpl @Inject constructor(
     }
 
     /** Row 29 */
-    fun clickMenuTitle(account: ContentAccountUiModel) {
+    override fun clickMenuTitle(account: ContentAccountUiModel) {
         sendGeneralClickEvent(
             eventAction = "click - edit title",
             account = account,
@@ -202,7 +202,7 @@ class PlayShortsAnalyticImpl @Inject constructor(
     }
 
     /** Row 30 */
-    fun clickProductMenu(account: ContentAccountUiModel) {
+    override fun clickProductMenu(account: ContentAccountUiModel) {
         sendGeneralClickEvent(
             eventAction = "click - add product tag",
             account = account,
@@ -211,7 +211,7 @@ class PlayShortsAnalyticImpl @Inject constructor(
     }
 
     /** Row 31 */
-    fun clickCoverMenu(account: ContentAccountUiModel) {
+    override fun clickCoverMenu(account: ContentAccountUiModel) {
         sendGeneralClickEvent(
             eventAction = "click - add cover on preparation page",
             account = account,
@@ -220,7 +220,7 @@ class PlayShortsAnalyticImpl @Inject constructor(
     }
 
     /** Row 32 */
-    fun clickBackOnTitleForm(account: ContentAccountUiModel) {
+    override fun clickBackOnTitleForm(account: ContentAccountUiModel) {
         sendGeneralClickEvent(
             eventAction = "click - back title page",
             account = account,
@@ -229,7 +229,7 @@ class PlayShortsAnalyticImpl @Inject constructor(
     }
 
     /** Row 33 */
-    fun clickTextBoxOnTitleForm(account: ContentAccountUiModel) {
+    override fun clickTextBoxOnTitleForm(account: ContentAccountUiModel) {
         sendGeneralClickEvent(
             eventAction = "click - fill text title",
             account = account,
@@ -238,7 +238,7 @@ class PlayShortsAnalyticImpl @Inject constructor(
     }
 
     /** Row 34 */
-    fun clickSaveOnTitleForm(account: ContentAccountUiModel) {
+    override fun clickSaveOnTitleForm(account: ContentAccountUiModel) {
         sendGeneralClickEvent(
             eventAction = "click - simpan",
             account = account,
@@ -247,7 +247,7 @@ class PlayShortsAnalyticImpl @Inject constructor(
     }
 
     /** Row 35 */
-    fun clickClearTextBoxOnTitleForm(account: ContentAccountUiModel) {
+    override fun clickClearTextBoxOnTitleForm(account: ContentAccountUiModel) {
         sendGeneralClickEvent(
             eventAction = "click - delete text title",
             account = account,
@@ -256,7 +256,7 @@ class PlayShortsAnalyticImpl @Inject constructor(
     }
 
     /** Row 36 */
-    fun openScreenTitleForm(account: ContentAccountUiModel) {
+    override fun openScreenTitleForm(account: ContentAccountUiModel) {
         sendGeneralOpenScreen(
             screenName = "/play broadcast short - title page - ${getEventLabelByAccount(account)}",
             trackerId = "37559",
@@ -264,7 +264,7 @@ class PlayShortsAnalyticImpl @Inject constructor(
     }
 
     /** Row 51 */
-    fun clickCloseOnCoverForm(account: ContentAccountUiModel) {
+    override fun clickCloseOnCoverForm(account: ContentAccountUiModel) {
         sendGeneralClickEvent(
             eventAction = "click - close cover page",
             account = account,
@@ -273,7 +273,7 @@ class PlayShortsAnalyticImpl @Inject constructor(
     }
 
     /** Row 52 */
-    fun clickSelectCoverOnCoverForm(account: ContentAccountUiModel) {
+    override fun clickSelectCoverOnCoverForm(account: ContentAccountUiModel) {
         sendGeneralClickEvent(
             eventAction = "click - edit cover",
             account = account,
@@ -282,7 +282,7 @@ class PlayShortsAnalyticImpl @Inject constructor(
     }
 
     /** Row 57 */
-    fun openScreenCoverForm(account: ContentAccountUiModel) {
+    override fun openScreenCoverForm(account: ContentAccountUiModel) {
         sendGeneralOpenScreen(
             screenName = "/play broadcast short - cover page - ${getEventLabelByAccount(account)}",
             trackerId = "37580"
@@ -290,7 +290,7 @@ class PlayShortsAnalyticImpl @Inject constructor(
     }
 
     /** Row 59 */
-    fun viewLeavePreparationConfirmationPopup(account: ContentAccountUiModel) {
+    override fun viewLeavePreparationConfirmationPopup(account: ContentAccountUiModel) {
         sendGeneralViewEvent(
             eventAction = "view - yakin mau keluar botom sheet",
             account = account,
@@ -299,7 +299,7 @@ class PlayShortsAnalyticImpl @Inject constructor(
     }
 
     /** Row 60 */
-    fun clickContinueOnLeaveConfirmationPopup(account: ContentAccountUiModel) {
+    override fun clickContinueOnLeaveConfirmationPopup(account: ContentAccountUiModel) {
         sendGeneralClickEvent(
             eventAction = "click - lanjut persiapan bottom sheet",
             account = account,
@@ -308,7 +308,7 @@ class PlayShortsAnalyticImpl @Inject constructor(
     }
 
     /** Row 61 */
-    fun clickBackOnSummaryPage(account: ContentAccountUiModel) {
+    override fun clickBackOnSummaryPage(account: ContentAccountUiModel) {
         sendGeneralClickEvent(
             eventAction = "click - back summary page",
             account = account,
@@ -317,7 +317,7 @@ class PlayShortsAnalyticImpl @Inject constructor(
     }
 
     /** Row 62 */
-    fun clickContentTag(tag: String, account: ContentAccountUiModel) {
+    override fun clickContentTag(tag: String, account: ContentAccountUiModel) {
         sendGeneralClickEvent(
             eventAction = "click - content tag",
             eventLabel = "${account.id} - $tag - ${getAccountType(account)}",
@@ -326,7 +326,7 @@ class PlayShortsAnalyticImpl @Inject constructor(
     }
 
     /** Row 63 */
-    fun clickUploadVideo(channelId: String, account: ContentAccountUiModel) {
+    override fun clickUploadVideo(channelId: String, account: ContentAccountUiModel) {
         sendGeneralClickEvent(
             eventAction = "click - upload video",
             eventLabel = "${getEventLabelByAccount(account)} - $channelId",
@@ -335,7 +335,7 @@ class PlayShortsAnalyticImpl @Inject constructor(
     }
 
     /** Row 65 */
-    fun openScreenSummaryPage(account: ContentAccountUiModel) {
+    override fun openScreenSummaryPage(account: ContentAccountUiModel) {
         sendGeneralOpenScreen(
             screenName = "/play broadcast short - summary page - ${getEventLabelByAccount(account)}",
             trackerId = "37588",
@@ -343,7 +343,7 @@ class PlayShortsAnalyticImpl @Inject constructor(
     }
 
     /** Row 67 */
-    fun clickRefreshContentTag(account: ContentAccountUiModel) {
+    override fun clickRefreshContentTag(account: ContentAccountUiModel) {
         sendGeneralClickEvent(
             eventAction = "click - refresh content tags",
             account = account,
@@ -352,7 +352,7 @@ class PlayShortsAnalyticImpl @Inject constructor(
     }
 
     /** Row 82 */
-    fun clickNextOnPreparationPage(account: ContentAccountUiModel) {
+    override fun clickNextOnPreparationPage(account: ContentAccountUiModel) {
         sendGeneralClickEvent(
             eventAction = "click - lanjut post creation",
             account = account,

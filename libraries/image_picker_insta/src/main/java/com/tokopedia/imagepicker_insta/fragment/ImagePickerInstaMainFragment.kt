@@ -118,10 +118,12 @@ class ImagePickerInstaMainFragment : PermissionFragment(), ImagePickerFragmentCo
             is ContentAccountTypeBottomSheet -> {
                 childFragment.setAnalytic(feedAccountAnalytic)
                 childFragment.setData(viewModel.contentAccountList)
-                childFragment.setOnAccountClickListener(object : ContentAccountTypeBottomSheet.Listener {
+                childFragment.setListener(object : ContentAccountTypeBottomSheet.Listener {
                     override fun onAccountClick(contentAccount: ContentAccountUiModel) {
                         viewModel.setSelectedFeedAccount(contentAccount)
                     }
+
+                    override fun onClickClose() { }
                 })
             }
         }

@@ -262,7 +262,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
             }
             is ContentAccountTypeBottomSheet -> {
                 childFragment.setData(parentViewModel.contentAccountList)
-                childFragment.setOnAccountClickListener(object : ContentAccountTypeBottomSheet.Listener {
+                childFragment.setListener(object : ContentAccountTypeBottomSheet.Listener {
                     override fun onAccountClick(contentAccount: ContentAccountUiModel) {
                         if (contentAccount.id == parentViewModel.authorId) return
                         analytic.onClickAccount()
@@ -274,6 +274,8 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                         }
                         viewModel.setFromSwitchAccount(true)
                     }
+
+                    override fun onClickClose() { }
                 })
             }
             is UGCOnboardingParentFragment -> {

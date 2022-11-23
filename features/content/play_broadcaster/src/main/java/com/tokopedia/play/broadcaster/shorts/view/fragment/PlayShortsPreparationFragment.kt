@@ -24,6 +24,7 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.databinding.FragmentPlayShortsPreparationBinding
 import com.tokopedia.play.broadcaster.setup.product.view.ProductSetupFragment
+import com.tokopedia.play.broadcaster.shorts.analytic.PlayShortsAnalyticManager
 import com.tokopedia.play.broadcaster.shorts.ui.model.action.PlayShortsAction
 import com.tokopedia.play.broadcaster.shorts.ui.model.event.PlayShortsUiEvent
 import com.tokopedia.play.broadcaster.shorts.ui.model.state.PlayShortsCoverFormUiState
@@ -38,6 +39,7 @@ import com.tokopedia.play.broadcaster.shorts.view.viewmodel.PlayShortsViewModel
 import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
+import com.tokopedia.play.broadcaster.util.eventbus.EventBus
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupBottomSheet
 import com.tokopedia.play.broadcaster.view.custom.preparation.CoverFormView
 import com.tokopedia.play.broadcaster.view.custom.preparation.TitleFormView
@@ -57,7 +59,8 @@ class PlayShortsPreparationFragment @Inject constructor(
     private val viewModelFactory: ViewModelProvider.Factory,
     private val userSession: UserSessionInterface,
     private val coachMarkManager: ContentCoachMarkManager,
-    private val idleManager: PlayShortsIdleManager
+    private val idleManager: PlayShortsIdleManager,
+    private val analyticManager: PlayShortsAnalyticManager,
 ) : PlayShortsBaseFragment() {
 
     override fun getScreenName(): String = "PlayShortsPreparationFragment"
@@ -69,6 +72,10 @@ class PlayShortsPreparationFragment @Inject constructor(
 
     private val toaster by viewLifecycleBound(
         creator = { PlayToaster(binding.toasterLayout, it.viewLifecycleOwner) }
+    )
+
+    private val eventBus by viewLifecycleBound(
+        creator = { EventBus<Event>() }
     )
 
     private var exitConfirmationDialog: DialogUnify? = null
@@ -102,6 +109,7 @@ class PlayShortsPreparationFragment @Inject constructor(
         setupView()
         setupListener()
         setupObserver()
+        setupAnalytic()
         setupCoachMark()
     }
 
@@ -170,8 +178,16 @@ class PlayShortsPreparationFragment @Inject constructor(
             }
             is ContentAccountTypeBottomSheet -> {
                 childFragment.setData(viewModel.accountList)
-                childFragment.setOnAccountClickListener(object : ContentAccountTypeBottomSheet.Listener {
+                childFragment.setListener(object : ContentAccountTypeBottomSheet.Listener {
                     override fun onAccountClick(contentAccount: ContentAccountUiModel) {
+                        sendAnalytic(
+                            when {
+                                contentAccount.isShop -> Event.ClickShopAccount
+                                contentAccount.isUser -> Event.ClickUserAccount
+                                else -> Event.Unknown
+                            }
+                        )
+
                         if (contentAccount.id == viewModel.selectedAccount.id) return
 
                         if (viewModel.isFormFilled) {
@@ -179,6 +195,10 @@ class PlayShortsPreparationFragment @Inject constructor(
                         } else {
                             viewModel.submitAction(PlayShortsAction.SwitchAccount)
                         }
+                    }
+
+                    override fun onClickClose() {
+                        sendAnalytic(Event.ClickCloseSwitchAccount)
                     }
                 })
             }
@@ -214,15 +234,15 @@ class PlayShortsPreparationFragment @Inject constructor(
         with(binding) {
             toolbar.apply {
                 setOnBackClickListener {
+                    sendAnalytic(Event.ClickBack)
                     activity?.onBackPressed()
                 }
 
-                if (viewModel.isAllowChangeAccount) {
-                    setOnAccountClickListener {
+                setOnAccountClickListener {
+                    if(viewModel.isAllowChangeAccount) {
+                        sendAnalytic(Event.ClickSwitchAccount)
                         viewModel.submitAction(PlayShortsAction.ClickSwitchAccount)
                     }
-                } else {
-                    setOnBackClickListener(null)
                 }
             }
 
@@ -326,6 +346,16 @@ class PlayShortsPreparationFragment @Inject constructor(
         }
     }
 
+    private fun setupAnalytic() {
+        analyticManager.setDataSource(object : PlayShortsAnalyticManager.DataSource {
+            override fun getSelectedAccount(): ContentAccountUiModel {
+                return viewModel.selectedAccount
+            }
+        })
+
+        analyticManager.observe(viewLifecycleOwner.lifecycleScope, eventBus)
+    }
+
     private fun setupCoachMark() {
         coachMarkManager.setupCoachMark(
             ContentCoachMarkConfig(binding.preparationMenu).apply {
@@ -333,6 +363,9 @@ class PlayShortsPreparationFragment @Inject constructor(
                 subtitle = getString(R.string.play_shorts_preparation_coachmark_description)
                 position = CoachMark2.POSITION_TOP
                 setCoachmarkPrefKey(ContentCoachMarkSharedPref.Key.PlayShortsPreparation, userSession.userId)
+                onClickCloseListener = {
+                    sendAnalytic(Event.ClickCloseCoachMark)
+                }
             }
         )
     }
@@ -493,46 +526,64 @@ class PlayShortsPreparationFragment @Inject constructor(
 
     private fun showSwitchAccountConfirmationDialog(selectedAccount: ContentAccountUiModel) {
         if (switchAccountConfirmationDialog == null) {
-            switchAccountConfirmationDialog = DialogUnify(requireContext(), DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply {
-                setTitle(
-                    getString(
-                        if (selectedAccount.isShop) {
-                            R.string.play_shorts_switch_account_to_shop_title
-                        } else {
-                            R.string.play_shorts_switch_account_to_user_title
-                        }
-                    )
+            switchAccountConfirmationDialog = DialogUnify(requireContext(), DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE)
+        }
+
+        switchAccountConfirmationDialog?.apply {
+            setTitle(
+                getString(
+                    if (selectedAccount.isShop) {
+                        R.string.play_shorts_switch_account_to_shop_title
+                    } else {
+                        R.string.play_shorts_switch_account_to_user_title
+                    }
                 )
-                setDescription(
-                    getString(
-                        if (selectedAccount.isShop) {
-                            R.string.play_shorts_switch_account_to_shop_description
-                        } else {
-                            R.string.play_shorts_switch_account_to_user_description
-                        }
-                    )
+            )
+            setDescription(
+                getString(
+                    if (selectedAccount.isShop) {
+                        R.string.play_shorts_switch_account_to_shop_description
+                    } else {
+                        R.string.play_shorts_switch_account_to_user_description
+                    }
                 )
-                setPrimaryCTAText(getString(R.string.play_shorts_switch_account_cancel))
-                setPrimaryCTAClickListener {
-                    dismiss()
-                }
-                setSecondaryCTAText(
-                    getString(
-                        if (selectedAccount.isShop) {
-                            R.string.play_shorts_switch_account_to_shop_confirm
-                        } else {
-                            R.string.play_shorts_switch_account_to_user_confirm
-                        }
-                    )
+            )
+            setPrimaryCTAText(getString(R.string.play_shorts_switch_account_cancel))
+            setPrimaryCTAClickListener {
+                sendAnalytic(
+                    when {
+                        selectedAccount.isShop -> Event.ClickCancelSwitchAccountToShop
+                        selectedAccount.isUser -> Event.ClickCancelSwitchAccountToUser
+                        else -> Event.Unknown
+                    }
                 )
-                setSecondaryCTAClickListener {
-                    dismiss()
-                    viewModel.submitAction(PlayShortsAction.SwitchAccount)
-                }
+
+                dismiss()
+            }
+            setSecondaryCTAText(
+                getString(
+                    if (selectedAccount.isShop) {
+                        R.string.play_shorts_switch_account_to_shop_confirm
+                    } else {
+                        R.string.play_shorts_switch_account_to_user_confirm
+                    }
+                )
+            )
+            setSecondaryCTAClickListener {
+                dismiss()
+                viewModel.submitAction(PlayShortsAction.SwitchAccount)
             }
         }
 
         if (switchAccountConfirmationDialog?.isShowing == false) {
+            sendAnalytic(
+                when {
+                    selectedAccount.isShop -> Event.ViewSwitchAccountToShopConfirmation
+                    selectedAccount.isUser -> Event.ViewSwitchAccountToUserConfirmation
+                    else -> Event.Unknown
+                }
+            )
+
             switchAccountConfirmationDialog?.show()
         }
     }
@@ -556,6 +607,10 @@ class PlayShortsPreparationFragment @Inject constructor(
         setupFragment.show(childFragmentManager)
     }
 
+    private fun sendAnalytic(event: Event) {
+        eventBus.emit(event)
+    }
+
     companion object {
         private const val TAG = "PlayShortsPreparationFragment"
 
@@ -569,5 +624,30 @@ class PlayShortsPreparationFragment @Inject constructor(
                 PlayShortsPreparationFragment::class.java.name
             ) as PlayShortsPreparationFragment
         }
+    }
+
+    sealed interface Event {
+
+        object Unknown : Event
+
+        object ClickBack : Event
+
+        object ClickCloseCoachMark : Event
+
+        object ClickSwitchAccount : Event
+
+        object ClickCloseSwitchAccount : Event
+
+        object ClickUserAccount : Event
+
+        object ClickShopAccount : Event
+
+        object ViewSwitchAccountToShopConfirmation : Event
+
+        object ClickCancelSwitchAccountToShop : Event
+
+        object ViewSwitchAccountToUserConfirmation : Event
+
+        object ClickCancelSwitchAccountToUser : Event
     }
 }

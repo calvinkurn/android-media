@@ -1,6 +1,81 @@
 package com.tokopedia.play.broadcaster.shorts.analytic
 
+import com.tokopedia.content.common.ui.model.ContentAccountUiModel
+
 /**
  * Created By : Jonathan Darwin on November 23, 2022
  */
-interface PlayShortsAnalytic
+interface PlayShortsAnalytic {
+
+    fun clickBackOnPreparationPage(account: ContentAccountUiModel)
+
+    fun clickCloseCoachOnPreparationPage(account: ContentAccountUiModel)
+
+    fun clickSwitchAccount(account: ContentAccountUiModel)
+
+    fun clickCloseSwitchAccount(account: ContentAccountUiModel)
+
+    fun clickUserAccount(account: ContentAccountUiModel)
+
+    fun clickShopAccount(account: ContentAccountUiModel)
+
+    fun viewSwitchAccountToShopConfirmation(account: ContentAccountUiModel)
+
+    fun clickCancelSwitchAccountToShop(account: ContentAccountUiModel)
+
+    fun viewSwitchAccountToUserConfirmation(account: ContentAccountUiModel)
+
+    fun clickCancelSwitchAccountToUser(account: ContentAccountUiModel)
+
+    fun clickCancelOnCompleteOnboardingUGC(account: ContentAccountUiModel)
+
+    fun clickTypeUsernameOnCompleteOnboardingUGC(account: ContentAccountUiModel)
+
+    fun clickAcceptTncOnCompleteOnboardingUGC(account: ContentAccountUiModel)
+
+    fun viewCompleteOnboardingUGC(account: ContentAccountUiModel)
+
+    fun clickContinueOnCompleteOnboardingUGC(account: ContentAccountUiModel)
+
+    fun viewSwitchAccountBottomSheet(account: ContentAccountUiModel)
+
+    fun viewPreparationPage(account: ContentAccountUiModel)
+
+    fun clickMenuTitle(account: ContentAccountUiModel)
+
+    fun clickProductMenu(account: ContentAccountUiModel)
+
+    fun clickCoverMenu(account: ContentAccountUiModel)
+
+    fun clickBackOnTitleForm(account: ContentAccountUiModel)
+
+    fun clickTextBoxOnTitleForm(account: ContentAccountUiModel)
+
+    fun clickSaveOnTitleForm(account: ContentAccountUiModel)
+
+    fun clickClearTextBoxOnTitleForm(account: ContentAccountUiModel)
+
+    fun openScreenTitleForm(account: ContentAccountUiModel)
+
+    fun clickCloseOnCoverForm(account: ContentAccountUiModel)
+
+    fun clickSelectCoverOnCoverForm(account: ContentAccountUiModel)
+
+    fun openScreenCoverForm(account: ContentAccountUiModel)
+
+    fun viewLeavePreparationConfirmationPopup(account: ContentAccountUiModel)
+
+    fun clickContinueOnLeaveConfirmationPopup(account: ContentAccountUiModel)
+
+    fun clickBackOnSummaryPage(account: ContentAccountUiModel)
+
+    fun clickContentTag(tag: String, account: ContentAccountUiModel)
+
+    fun clickUploadVideo(channelId: String, account: ContentAccountUiModel)
+
+    fun openScreenSummaryPage(account: ContentAccountUiModel)
+
+    fun clickRefreshContentTag(account: ContentAccountUiModel)
+
+    fun clickNextOnPreparationPage(account: ContentAccountUiModel)
+}
