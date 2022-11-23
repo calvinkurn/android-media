@@ -177,6 +177,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.KYC_LIVEN
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.PRIVACY_CENTER
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.SETTING_PROFILE
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.PUSH_NOTIFICATION_TROUBLESHOOTER
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.SHARING_WISHLIST
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.SEARCH_HISTORY
 import com.tokopedia.applink.review.ReviewApplinkConst
 import com.tokopedia.config.GlobalConfig
@@ -570,7 +571,8 @@ object DeeplinkDFMapper : CoroutineScope {
                 it.startsWithPattern(PRIVACY_CENTER) ||
                 it.startsWithPattern(CONSENT_WITHDRAWAL_NEW) ||
                 it.startsWithPattern(ACCOUNT_LINKING_WEBVIEW) ||
-                it.startsWithPattern(SEARCH_HISTORY)
+                it.startsWithPattern(SEARCH_HISTORY) ||
+                it.startsWithPattern(SHARING_WISHLIST)
             }, DF_USER_PRIVACYCENTER, R.string.title_privacy_center))
 
             // Media

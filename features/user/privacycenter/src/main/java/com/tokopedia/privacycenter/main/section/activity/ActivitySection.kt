@@ -62,7 +62,10 @@ class ActivitySection(private val context: Context?) : BasePrivacyCenterSection(
             MainPrivacyCenterAnalytics.LABEL_SHARE_WISHLIST
         )
 
-        // direct to share wishlist
+        RouteManager.route(
+            context,
+            ApplinkConstInternalUserPlatform.SHARING_WISHLIST
+        )
     }
 
     private fun goToHistorySearch() {
