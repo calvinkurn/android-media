@@ -125,7 +125,7 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
     @MockK
     private lateinit var prescriptionIdsUseCase: GetPrescriptionIdsUseCase
 
-    @MockK
+    @MockK(relaxed = true)
     private lateinit var epharmacyUseCase: EPharmacyPrepareProductsGroupUseCase
 
     private var shipmentDataConverter = ShipmentDataConverter()
@@ -1769,6 +1769,7 @@ class ShipmentPresenterLoadShipmentAddressFormTest {
         verify {
             getShipmentAddressFormV3UseCase.cancelJobs()
             eligibleForAddressUseCase.cancelJobs()
+            epharmacyUseCase.cancelJobs()
         }
     }
 }

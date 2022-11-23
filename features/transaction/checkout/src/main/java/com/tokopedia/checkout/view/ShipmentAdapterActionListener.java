@@ -138,8 +138,6 @@ public interface ShipmentAdapterActionListener {
 
     void addOnOrderLevelImpression(List<CartItemModel> cartItemModelList);
 
-//    void uploadPrescriptionAction(UploadPrescriptionUiModel uploadPrescriptionUiModel);
-
     void onViewUpsellCard(ShipmentUpsellModel shipmentUpsellModel);
 
     void onClickUpsellCard(ShipmentUpsellModel shipmentUpsellModel);
