@@ -16,6 +16,8 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.seller_tokopedia_flash_sale.R
 import com.tokopedia.seller_tokopedia_flash_sale.databinding.StfsBottomsheetListProductSseSubmissionErrorBinding
 import com.tokopedia.tkpd.flashsale.common.bottomsheet.sse_submission_error.adapter.delegate.FlashSaleProductListSseSubmissionErrorItemDelegate
+import com.tokopedia.tkpd.flashsale.common.bottomsheet.sse_submission_error.adapter.delegate.FlashSaleProductListSseSubmissionErrorItemShimmeringDelegate
+import com.tokopedia.tkpd.flashsale.common.bottomsheet.sse_submission_error.adapter.item.ProductSseSubmissionErrorShimmeringItem
 import com.tokopedia.tkpd.flashsale.di.component.DaggerTokopediaFlashSaleComponent
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -30,6 +32,7 @@ class FlashSaleProductListSseSubmissionErrorBottomSheet :
     private val productSseErrorSubmissionAdapter by lazy {
         CompositeAdapter.Builder()
             .add(FlashSaleProductListSseSubmissionErrorItemDelegate())
+            .add(FlashSaleProductListSseSubmissionErrorItemShimmeringDelegate())
             .add(LoadingDelegateAdapter())
             .build()
     }
@@ -63,6 +66,14 @@ class FlashSaleProductListSseSubmissionErrorBottomSheet :
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
+    private fun showProductListShimmering(){
+        productSseErrorSubmissionAdapter.addItem(ProductSseSubmissionErrorShimmeringItem)
+    }
+
+    private fun hideProductListShimmering(){
+        productSseErrorSubmissionAdapter.removeItem(ProductSseSubmissionErrorShimmeringItem)
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         bottomSheetTitle.apply {
@@ -73,6 +84,7 @@ class FlashSaleProductListSseSubmissionErrorBottomSheet :
 
     private fun observeProductSubmissionSseErrorLiveData() {
         viewModel.productSubmissionSseError.observe(viewLifecycleOwner) {
+            hideProductListShimmering()
             notifyLoadResult(it.isHasNextProduct)
             productSseErrorSubmissionAdapter.addItems(it.listCampaignProductError)
             acknowledgeProductSubmissionSse()
@@ -100,6 +112,7 @@ class FlashSaleProductListSseSubmissionErrorBottomSheet :
 
     private fun getInitialProductListSseSubmissionError() {
         currentProductOffset = Int.ZERO
+        showProductListShimmering()
         getProductListSseSubmissionErrorData(currentProductOffset)
     }
 
@@ -110,7 +123,6 @@ class FlashSaleProductListSseSubmissionErrorBottomSheet :
 
     private fun getProductListSseSubmissionErrorData(page: Int) {
         viewModel.getProductListSseSubmissionError(campaignId, page)
-
     }
 
     private fun setupRecyclerView() {
