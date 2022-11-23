@@ -229,7 +229,7 @@ class UserProfileViewModel @AssistedInject constructor(
                 }
             },
         ) {
-            _uiEvent.emit(UserProfileUiEvent.ErrorFollowUnfollow(it))
+            _uiEvent.emit(UserProfileUiEvent.ErrorFollowUnfollow(Throwable()))
         }
     }
 
@@ -339,7 +339,7 @@ class UserProfileViewModel @AssistedInject constructor(
             },
             onError = {
                 updateLoadingStateFollowShopRecom(itemId, currentState)
-                _uiEvent.emit(UserProfileUiEvent.ErrorFollowUnfollow(it))
+                _uiEvent.emit(UserProfileUiEvent.ErrorFollowUnfollow(Throwable()))
             },
         )
     }
