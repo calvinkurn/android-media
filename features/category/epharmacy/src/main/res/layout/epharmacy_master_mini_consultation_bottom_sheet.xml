@@ -35,6 +35,7 @@
             app:layout_constraintStart_toEndOf="@id/close_icon"
             app:layout_constraintTop_toTopOf="parent"
             app:typographyType="heading_3"
+            android:textColor="@color/Unify_NN950"
             tools:text="Apotek Century Meruya Raden Saleh" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -47,7 +48,7 @@
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/heading_title"
-            app:typographyType="body_1"
+            app:typographyType="paragraph_3"
             tools:text="Obat keras memerlukan resep karena berpotensi membahayakan jika tidak digunakan di bawah pengawasan dokter." />
 
         <com.tokopedia.unifyprinciples.Typography
