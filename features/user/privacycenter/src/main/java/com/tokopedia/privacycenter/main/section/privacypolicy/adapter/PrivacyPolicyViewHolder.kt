@@ -13,11 +13,9 @@ class PrivacyPolicyViewHolder(
     private val listener: PrivacyPolicyAdapter.Listener
 ) : BaseViewHolder(itemView) {
 
-    private val itemViewBinding by viewBinding<PrivacyPolicyItemViewBinding>()
-
     fun bind(item: PrivacyPolicyDataModel) {
-        itemViewBinding?.apply {
-            itemPrivacyPolicy.apply {
+        PrivacyPolicyItemViewBinding.bind(itemView).run {
+            itemPrivacyPolicy.run {
                 if (listener.isFromBottomSheet) {
                     setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN950))
                 } else {
