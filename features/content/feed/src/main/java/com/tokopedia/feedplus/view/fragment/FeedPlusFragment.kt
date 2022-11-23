@@ -1316,7 +1316,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun gotToKolComment(
+    private fun goToKolComment(
         rowNumber: Int, id: String, authorType: String,
         isVideo: Boolean, isFollowed: Boolean, type: String
     ) {
@@ -1825,7 +1825,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
             }
         }
 
-        gotToKolComment(
+        goToKolComment(
             positionInFeed,
             id,
             authorType,
