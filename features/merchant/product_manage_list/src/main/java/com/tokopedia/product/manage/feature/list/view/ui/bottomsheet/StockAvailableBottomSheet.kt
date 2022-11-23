@@ -14,7 +14,7 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 
 class StockAvailableBottomSheet(
     private val fm: FragmentManager? = null
-): BottomSheetUnify() {
+) : BottomSheetUnify() {
 
     companion object {
         private val TAG: String = StockAvailableBottomSheet::class.java.simpleName

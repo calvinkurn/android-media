@@ -78,8 +78,8 @@ class ProductViewHolder(
             if (!binding?.ivLabelGuaranteed?.isVisible.orFalse()){
                 listener.onImpressionProductStockReminder()
             }
-        } else if (binding?.btnMoreOptions?.isVisible.orTrue() && absoluteAdapterPosition.orZero() == POSITION_TICKET_BTN_MORE_OPTION
-            && GlobalConfig.isSellerApp()
+        } else if (binding?.btnMoreOptions?.isVisible.orTrue() && absoluteAdapterPosition.orZero() == POSITION_TICKET_BTN_MORE_OPTION &&
+            GlobalConfig.isSellerApp()
         ) {
             if (!binding?.imageNotifyMeBuyer?.isVisible.orFalse()) {
                 listener.onImpressionMoreOption()
@@ -136,7 +136,7 @@ class ProductViewHolder(
                     .orZero()
             binding?.labelActive?.setMargin(marginLeft.toDp(), layoutParams.topMargin, Int.ZERO, Int.ZERO)
         } else {
-            binding?.labelActive?.setMargin(Int.ZERO,layoutParams.topMargin, Int.ZERO, Int.ZERO)
+            binding?.labelActive?.setMargin(Int.ZERO, layoutParams.topMargin, Int.ZERO, Int.ZERO)
         }
     }
 
