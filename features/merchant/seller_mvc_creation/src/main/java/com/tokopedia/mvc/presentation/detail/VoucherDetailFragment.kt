@@ -142,28 +142,39 @@ class VoucherDetailFragment : BaseDaggerFragment() {
             setupVoucherStatus(data)
             setupVoucherAction(data)
             imgVoucher.setImageUrl(data.voucherImageSquare)
-            when (data.isVps) {
-                FALSE -> {
-                    labelVoucherSource.gone()
-                    tpgVpsPackage.gone()
-                }
-                else -> {
-                    labelVoucherSource.apply {
-                        visible()
-                        text = context.getString(R.string.smvc_promotion_package_label)
-                    }
-                    tpgVpsPackage.apply {
-                        visible()
-                        text = data.packageName
-                    }
-                }
-            }
+            setPackage(data)
             val availableQuota = data.voucherQuota - data.remainingQuota
             tpgUsedVoucherQuota.text = availableQuota.toString()
             tpgAvailableVoucherQuota.text = getString(
                 R.string.smvc_placeholder_voucher_quota,
                 data.remainingQuota
             )
+        }
+    }
+
+    private fun setPackage(data: VoucherDetailData){
+        headerBinding?.run {
+            if (data.isVps == FALSE && data.isSubsidy == FALSE) {
+                labelVoucherSource.gone()
+                tpgVpsPackage.gone()
+            } else {
+                if (data.isVps == TRUE) {
+                    labelVoucherSource.apply {
+                        visible()
+                        text = getString(R.string.smvc_promotion_package_label)
+                    }
+                    tpgVpsPackage.apply {
+                        visible()
+                        text = data.packageName
+                    }
+                } else {
+                    labelVoucherSource.apply {
+                        visible()
+                        text = getString(R.string.smvc_from_tokopedia_label)
+                    }
+                    tpgVpsPackage.gone()
+                }
+            }
         }
     }
 
@@ -273,10 +284,10 @@ class VoucherDetailFragment : BaseDaggerFragment() {
         }
         voucherInfoBinding?.run {
             if (data.isPublic == VOUCHER_TARGET_PUBLIC) {
-                tpgVoucherTarget.text =  getString(R.string.smvc_voucher_public_label)
+                tpgVoucherTarget.text = getString(R.string.smvc_voucher_public_label)
                 llVoucherCode.gone()
             } else {
-                tpgVoucherTarget.text =  getString(R.string.smvc_voucher_private_label)
+                tpgVoucherTarget.text = getString(R.string.smvc_voucher_private_label)
                 llVoucherCode.visible()
             }
             tpgVoucherName.text = data.voucherName
@@ -498,7 +509,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                 //TODO:open bottom sheet
             }
             btnBroadcastChat.setOnClickListener {
-                context?.let { ctx -> SharingUtil.shareToBroadCastChat(ctx, 14883692) }
+                context?.let { ctx -> SharingUtil.shareToBroadCastChat(ctx, voucherId) }
             }
         }
         btnState2Binding?.apply {
@@ -506,7 +517,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                 //TODO:open bottom sheet
             }
             btnBroadcastChat.setOnClickListener {
-                context?.let { ctx -> SharingUtil.shareToBroadCastChat(ctx, 14883692) }
+                context?.let { ctx -> SharingUtil.shareToBroadCastChat(ctx, voucherId) }
             }
             btnShare.setOnClickListener {
                 //TODO:open share component

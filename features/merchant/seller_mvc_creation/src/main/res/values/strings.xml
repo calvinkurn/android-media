@@ -109,6 +109,7 @@
     <string name="smvc_sharing_label">Bagikan</string>
     <string name="smvc_duplicate_label">Duplikat</string>
     <string name="smvc_promotion_package_label">Paket Promosi</string>
+    <string name="smvc_from_tokopedia_label">Dari Tokopedia</string>
     <string name="smvc_product_count_placeholder">%d Produk</string>
     <string name="smvc_spending_estimation_title_1">Estimasi Maks. Pengeluaran</string>
     <string name="smvc_spending_estimation_title_2">Pengeluaran hingga saat ini</string>
