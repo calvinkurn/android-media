@@ -363,7 +363,6 @@ class CampaignDetailFragment : BaseDaggerFragment() {
         val totalProduct = flashSaleProductSubmissionSseResult.countAllProduct
         when (flashSaleProductSubmissionSseResult.status) {
             FlashSaleProductSubmissionSseResult.Status.IN_PROGRESS -> {
-                hideProductSubmissionSseProgressDialog()
                 showProductSubmissionSseProgressDialog()
             }
             FlashSaleProductSubmissionSseResult.Status.PARTIAL_SUCCESS -> {
