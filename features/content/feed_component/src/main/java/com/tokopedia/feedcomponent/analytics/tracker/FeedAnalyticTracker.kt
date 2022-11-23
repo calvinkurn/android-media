@@ -7,6 +7,7 @@ import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker.Action.
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker.Action.CLICK_FULL_SCREEN
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker.Action.CLICK_LANJUT_MENONTON
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker.Action.CLICK_SEK_SEKARANG
+import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker.Action.FORMAT_FIVE_PARAM
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker.Action.FORMAT_FOUR_PARAM
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker.Action.FORMAT_THREE_PARAM
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker.Action.FORMAT_TWO_PARAM
@@ -28,7 +29,6 @@ import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker.Event.S
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker.Screen.MARKETPLACE
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker.Screen.SCREEN_DIMENSION_IS_FEED_EMPTY
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker.Screen.SCREEN_DIMENSION_IS_LOGGED_IN_STATUS
-import com.tokopedia.feedcomponent.data.feedrevamp.FeedXMedia
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
 import com.tokopedia.kotlin.extensions.view.getDigits
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
@@ -64,7 +64,6 @@ class FeedAnalyticTracker
 
         private const val KEY_EVENT = "event"
         private const val KEY_EVENT_SCREEN_NAME = "screenName"
-        private const val KEY_OPEN_SCREEN_EVENT = "openScreen"
         private const val KEY_EVENT_CATEGORY = "eventCategory"
         private const val KEY_EVENT_ACTION = "eventAction"
         private const val KEY_EVENT_LABEL = "eventLabel"
@@ -82,7 +81,8 @@ class FeedAnalyticTracker
         private const val SGC_VOD_PLAY_RECOM = "sgc play long video recom"
         private const val SGC_IMAGE_RECOM = "sgc image recom"
         private const val ASGC = "asgc"
-        private const val VIDEO = "sgc video"
+        private const val SGC_VIDEO = "sgc video"
+        private const val VIDEO = "video"
         private const val Upcoming = "upcoming"
         private const val ASGC_RECOM = "asgc recom"
         private const val TOPADS = "topads"
@@ -123,19 +123,14 @@ class FeedAnalyticTracker
         const val MY_PROFILE_SOCIALCOMMERCE = "my profile socialcommerce"
         const val USER_PROFILE_SOCIALCOMMERCE = "user profile socialcommerce"
 
-        const val CONTENT_DETAIL = "$USER_PROFILE_SOCIALCOMMERCE - content detail"
-        const val MY_CONTENT_DETAIL = "$MY_PROFILE_SOCIALCOMMERCE - content detail"
-
         const val CONTENT_FEED_SHOP_PAGE = "content feed - shop page"
         const val CONTENT_HASHTAG = "content hashtag"
         const val CONTENT_DETAIL_PAGE_HASHTAG = "content detail page - hashtag page"
-        const val CONTENT_INTEREST_PICK = "content interest pick"
         const val CATEGORY_FEED_TIMELINE = "content feed timeline"
         const val CATEGORY_FEED_TIMELINE_BOTTOMSHEET = "content feed timeline - bottom sheet"
         const val CATEGORY_FEED_TIMELINE_COMMENT = "content feed timeline - comment"
         const val CATEGORY_FEED_TIMELINE_MENU = "content feed timeline - three dots page"
         const val CATEGORY_FEED_TIMELINE_FEED_DETAIL = "content feed timeline - product detail"
-        const val CONTENT_FEED_CREATION = "content feed creation"
 
     }
 
@@ -150,30 +145,13 @@ class FeedAnalyticTracker
         const val CLICK_POST = "click post"
         const val CLICK_POST_HASHTAG = "click - post"
         const val CLICK_AVATAR = "click avatar"
-        const val CLICK_INTEREST = "click interest"
-        const val CLICK_INTEREST_SEE_ALL = "click interest - lihat semua"
-        const val CLICK_INTEREST_CHECK_ACCOUNT = "click check akun yang sesuai"
-        const val CLICK_INTEREST_CHECK_INSPIRATION = "click lihat inspirasi"
-        const val CLICK_PRODUCT_RECOM = "click product recommendation"
-        const val CLICK_CONTENT_RECOM = "click content recommendation"
-        const val CLICK_FOLLOW = "click follow"
-        const val CLICK_UNFOLLOW = "click unfollow"
-        const val CLICK_FOLLOW_ALL = "click follow semua"
         const val CLICK_FEED_PRODUCT_DETAIL = "click - shop"
-        const val CLICK_CONTENT_DETAIL_SHOP = "click - shop"
-        const val CLICK_CONTENT_DETAIL_AFFILIATE = "click - user"
         const val CLICK_SEK_SEKARANG = "cek sekarang"
         const val CLICK_LANJUT_MENONTON = "lanjut menonton"
         const val CLICK_FULL_SCREEN = "full screen"
         const val CLICK_ADD_TO_CART = "add to cart"
 
-        const val IMPRESSION_PRODUCT_RECOM = "impression product recommendation"
-        const val IMPRESSION_CONTENT_RECOM = "impression content recommendation"
         const val IMPRESSION_POST = "impression post"
-
-        const val CLICK_RETRY_ON_FEED_TO_POST = "click on retry button"
-
-
 
         const val PARAM_ACTION_LOGIN = "login"
         const val PARAM_ACTION_NONLOGIN = "nonlogin"
@@ -183,18 +161,8 @@ class FeedAnalyticTracker
         const val FORMAT_TWO_PARAM = "%s - %s"
         const val FORMAT_THREE_PARAM = "%s - %s - %s"
         const val FORMAT_FOUR_PARAM = "%s - %s - %s - %s"
+        const val FORMAT_FIVE_PARAM = "%s - %s - %s - %s - %s"
 
-
-        object Field {
-            object List {
-                const val POSTED_PRODUCT = "produk di post"
-                const val USER_PROFILE_PAGE_POSTED_PRODUCT =
-                    "${Screen.USER_PROFILE_PAGE} - $POSTED_PRODUCT"
-                const val USER_PROFILE_PAGE_DETAIL_POSTED_PRODUCT =
-                    "${Screen.USER_PROFILE_PAGE_DETAIL} - $POSTED_PRODUCT"
-                const val FEED_POSTED_PRODUCT = "${Screen.FEED} - $POSTED_PRODUCT"
-            }
-        }
     }
     fun getEvent(isCampaign: Boolean) = if(isCampaign) CLICK_PG else CLICK_FEED
 
@@ -266,14 +234,14 @@ class FeedAnalyticTracker
             LONG_VIDEO_SGC
         else if(type == TYPE_FEED_X_CARD_POST && !isFollowed && isLongVideo(mediaType))
             LONG_VIDEO_SGC_RECOM
-        else if (isVideo(mediaType))
-            VIDEO
+        else if (type == TYPE_FEED_X_CARD_POST && isVideo(mediaType))
+            SGC_VIDEO
         else if(type!= TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT && !isFollowed)
             SGC_IMAGE_RECOM
         else
             SGC_IMAGE
     }
-    private fun isVideo(mediaType: String):Boolean = mediaType == VIDEO
+    private fun isVideo(mediaType: String):Boolean = mediaType == SGC_VIDEO || mediaType == VIDEO
     private fun isLongVideo(mediaType: String):Boolean = mediaType == TYPE_LONG_VIDEO
 
     //    https://docs.google.com/spreadsheets/d/1yFbEMzRj0_VdeVN7KfZIHZlv71uvX38XjfcYw7nPB3c/edit#gid=1359526861
@@ -292,32 +260,34 @@ class FeedAnalyticTracker
     //https://mynakama.tokopedia.com/datatracker/requestdetail/view/942
     //1
     fun eventClickFeedAvatar(
-        activityId: String,
-        type: String,
-        isFollowed: Boolean,
-        shopId: String,
-        mediaType: String,
-        isCaption: Boolean,
-        trackerId: String,
-        campaignStatus: String
+        feedTrackerData: FeedTrackerData,
+        isCaption: Boolean
     ) {
+        val activityId = feedTrackerData.postId
+        val type = feedTrackerData.postType
+        val isFollowed = feedTrackerData.isFollowed
+        val shopId = feedTrackerData.shopId
+        val mediaType = feedTrackerData.mediaType
         val actionField = if (isCaption)
             "shop name below"
         else
             "shop"
 
-        val finalLabel = if (campaignStatus.isNotEmpty() && isFollowed) KEY_EVENT_LABEL to String.format(
-            FORMAT_THREE_PARAM,
-            activityId,
-            shopId,
-            campaignStatus
-        ) else KEY_EVENT_LABEL to String.format(
-            FORMAT_TWO_PARAM,
-            activityId,
-            shopId
-        )
+        val finalLabel =
+            if (feedTrackerData.campaignStatus.isNotEmpty() && isFollowed) KEY_EVENT_LABEL to String.format(
+                FORMAT_FOUR_PARAM,
+                activityId,
+                shopId,
+                feedTrackerData.contentSlotValue,
+                feedTrackerData.campaignStatus
+            ) else KEY_EVENT_LABEL to String.format(
+                FORMAT_THREE_PARAM,
+                activityId,
+                shopId,
+                feedTrackerData.contentSlotValue
+            )
         var map = mapOf(
-            KEY_EVENT to getEvent(campaignStatus.isNotEmpty()),
+            KEY_EVENT to getEvent(feedTrackerData.campaignStatus.isNotEmpty()),
             KEY_EVENT_CATEGORY to CATEGORY_FEED_TIMELINE,
             KEY_EVENT_ACTION to String.format(
                 FORMAT_THREE_PARAM,
@@ -331,32 +301,34 @@ class FeedAnalyticTracker
 
             KEY_EVENT_USER_ID to userSessionInterface.userId,
         )
-        if (trackerId.isNotEmpty())
-            map  = map.plus(KEY_TRACKER_ID to trackerId)
+        if (feedTrackerData.trackerId.isNotEmpty())
+            map  = map.plus(KEY_TRACKER_ID to feedTrackerData.trackerId)
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
     }
 
     fun evenClickMenu(
-        activityId: String,
-        type: String,
-        isFollowed: Boolean,
-        shopId: String,
-        mediaType: String,
-        trackerId: String = "",
-        campaignStatus: String = ""
+        feedTrackerData: FeedTrackerData
     ) {
-        val finalLabel = if (campaignStatus.isNotEmpty() && isFollowed) KEY_EVENT_LABEL to String.format(
-            FORMAT_THREE_PARAM,
-            activityId,
-            shopId,
-            campaignStatus
-        ) else KEY_EVENT_LABEL to String.format(
-            FORMAT_TWO_PARAM,
-            activityId,
-            shopId
-        )
+        val activityId = feedTrackerData.postId
+        val type = feedTrackerData.postType
+        val isFollowed = feedTrackerData.isFollowed
+        val shopId = feedTrackerData.shopId
+        val mediaType = feedTrackerData.mediaType
+        val finalLabel =
+            if (feedTrackerData.campaignStatus.isNotEmpty() && isFollowed) KEY_EVENT_LABEL to String.format(
+                FORMAT_FOUR_PARAM,
+                activityId,
+                shopId,
+                feedTrackerData.contentSlotValue,
+                feedTrackerData.campaignStatus
+            ) else KEY_EVENT_LABEL to String.format(
+                FORMAT_THREE_PARAM,
+                activityId,
+                shopId,
+                feedTrackerData.contentSlotValue,
+            )
         var map = mapOf(
-            KEY_EVENT to getEvent(campaignStatus.isNotEmpty()),
+            KEY_EVENT to getEvent(feedTrackerData.campaignStatus.isNotEmpty()),
             KEY_EVENT_CATEGORY to CATEGORY_FEED_TIMELINE,
             KEY_EVENT_ACTION to String.format(
                 FORMAT_THREE_PARAM,
@@ -370,34 +342,48 @@ class FeedAnalyticTracker
 
             KEY_EVENT_USER_ID to userSessionInterface.userId
         )
-        if (trackerId.isNotEmpty())
-            map = map.plus(KEY_TRACKER_ID to trackerId)
+        if (feedTrackerData.trackerId.isNotEmpty())
+            map = map.plus(KEY_TRACKER_ID to feedTrackerData.trackerId)
 
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
     }
 
     fun eventClickBottomSheetMenu(
-        activityId: String,
-        type: String,
-        isFollowed: Boolean,
-        shopId: String,
-        mediaType: String,
-        trackerId: String = ""
+        feedTrackerData: FeedTrackerData
     ) {
+        val activityId = feedTrackerData.postId
+        val type: String = feedTrackerData.postType
+        val isFollowed = feedTrackerData.isFollowed
+        val shopId = feedTrackerData.shopId
+        val mediaType = feedTrackerData.mediaType
+        val trackerId = feedTrackerData.trackerId
+        val productId = feedTrackerData.productId
+        val category = if (feedTrackerData.isProductDetailPage) CATEGORY_FEED_TIMELINE_FEED_DETAIL else CATEGORY_FEED_TIMELINE_BOTTOMSHEET
+        val finalLabel =
+            if (feedTrackerData.campaignStatus.isNotEmpty() && isFollowed) KEY_EVENT_LABEL to String.format(
+                FORMAT_FIVE_PARAM,
+                activityId,
+                shopId,
+                feedTrackerData.contentSlotValue,
+                feedTrackerData.campaignStatus,
+                productId
+            ) else KEY_EVENT_LABEL to String.format(
+                FORMAT_FOUR_PARAM,
+                activityId,
+                shopId,
+                feedTrackerData.contentSlotValue,
+                productId
+            )
         var map = mapOf(
             KEY_EVENT to CLICK_FEED,
-            KEY_EVENT_CATEGORY to CATEGORY_FEED_TIMELINE_BOTTOMSHEET,
+            KEY_EVENT_CATEGORY to category,
             KEY_EVENT_ACTION to String.format(
                 FORMAT_THREE_PARAM,
                 CLICK,
                 "three dots",
                 getPostType(type,isFollowed, mediaType)
             ),
-            KEY_EVENT_LABEL to String.format(
-                FORMAT_TWO_PARAM,
-                activityId,
-                shopId
-            ),
+            finalLabel,
             KEY_BUSINESS_UNIT_EVENT to CONTENT,
             KEY_CURRENT_SITE_EVENT to MARKETPLACE,
 
@@ -411,32 +397,35 @@ class FeedAnalyticTracker
 
 
     fun eventTagClicked(
-        activityId: String, type: String,
-        isFollowed: Boolean,
-        shopId: String,
-        mediaType: String,
-        campaignStatus: String = ""
+        feedTrackerData: FeedTrackerData
     ) {
-        val asgcCampaignTrackerId = if (campaignStatus.isNotEmpty() && isFollowed) "17983" else "13432"
+        val activityId = feedTrackerData.postId
+        val mediaType = feedTrackerData.mediaType
+        val isFollowed = feedTrackerData.isFollowed
+        val type = feedTrackerData.postType
+        val asgcCampaignTrackerId = if (feedTrackerData.campaignStatus.isNotEmpty() && isFollowed) "17983" else "13432"
         val typeAction = if (mediaType == MediaType.VIDEO && type!= TYPE_FEED_X_CARD_PLAY)
             "product tag"
         else
             "lihat produk"
 
-        val finalLabel = if (campaignStatus.isNotEmpty() && isFollowed) KEY_EVENT_LABEL to String.format(
-            FORMAT_THREE_PARAM,
-            activityId,
-            shopId,
-            campaignStatus
-        ) else
-            KEY_EVENT_LABEL to String.format(
-                FORMAT_TWO_PARAM,
+        val finalLabel =
+            if (feedTrackerData.campaignStatus.isNotEmpty() && isFollowed) KEY_EVENT_LABEL to String.format(
+                FORMAT_FOUR_PARAM,
                 activityId,
-                shopId
-            )
+                feedTrackerData.shopId,
+                feedTrackerData.contentSlotValue,
+                feedTrackerData.campaignStatus
+            ) else
+                KEY_EVENT_LABEL to String.format(
+                    FORMAT_THREE_PARAM,
+                    activityId,
+                    feedTrackerData.shopId,
+                    feedTrackerData.contentSlotValue,
+                )
 
         var map = mapOf(
-            KEY_EVENT to SELECT_CONTENT,
+            KEY_EVENT to getEvent(feedTrackerData.campaignStatus.isNotEmpty()),
             KEY_EVENT_CATEGORY to CATEGORY_FEED_TIMELINE,
             KEY_EVENT_ACTION to String.format(
                 FORMAT_THREE_PARAM,
@@ -449,17 +438,19 @@ class FeedAnalyticTracker
             KEY_CURRENT_SITE_EVENT to MARKETPLACE,
             KEY_EVENT_USER_ID to userSessionInterface.userId
         )
-        if (campaignStatus.isNotEmpty())
+        if (feedTrackerData.campaignStatus.isNotEmpty())
             map = map.plus(KEY_TRACKER_ID to asgcCampaignTrackerId)
 
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
     }
 
     fun eventImageClicked(
-        activityId: String, type: String,
-        isFollowed: Boolean,
-        shopId: String
+        feedTrackerData: FeedTrackerData
     ) {
+        val activityId = feedTrackerData.postId
+        val type = feedTrackerData.postType
+        val isFollowed = feedTrackerData.isFollowed
+        val shopId = feedTrackerData.shopId
         val map = mapOf(
             KEY_EVENT to CLICK_FEED,
             KEY_EVENT_CATEGORY to CATEGORY_FEED_TIMELINE,
@@ -470,9 +461,10 @@ class FeedAnalyticTracker
                getPostType(type,isFollowed)
             ),
             KEY_EVENT_LABEL to String.format(
-                FORMAT_TWO_PARAM,
+                FORMAT_THREE_PARAM,
                 activityId,
-                shopId
+                shopId,
+                feedTrackerData.contentSlotValue
             ),
             KEY_BUSINESS_UNIT_EVENT to CONTENT,
             KEY_CURRENT_SITE_EVENT to MARKETPLACE,
@@ -490,25 +482,29 @@ class FeedAnalyticTracker
         shopId: String,
         mediaType: String,
         trackerId: String = "",
-        campaignStatus: String = ""
+        campaignStatus: String = "",
+        contentScore: String
     ) {
         val finalLabel = if (campaignStatus.isNotEmpty() && isFollowed) {
             KEY_EVENT_LABEL to String.format(
-                FORMAT_FOUR_PARAM,
+                FORMAT_FIVE_PARAM,
                 activityId,
                 shopId,
-                productId,
-                campaignStatus
+                contentScore,
+                campaignStatus,
+                productId
             )
         } else {
             if (type == TYPE_FEED_X_CARD_PLAY || mediaType == TYPE_LONG_VIDEO) KEY_EVENT_LABEL to String.format(
-                FORMAT_TWO_PARAM,
+                FORMAT_THREE_PARAM,
                 activityId,
-                shopId
+                shopId,
+                contentScore
             ) else KEY_EVENT_LABEL to String.format(
                 FORMAT_THREE_PARAM,
                 activityId,
                 shopId,
+                contentScore,
                 productId
             )
         }
@@ -534,31 +530,35 @@ class FeedAnalyticTracker
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
     }
     fun eventOnTagSheetItemBuyClicked(
-        activityId: String, type: String,
-        isFollowed: Boolean,
-        shopId: String,
-        mediaType: String = "",
-        campaignStatus: String = ""
+        trackerData: FeedTrackerData
     ) {
-        val trackerId = if (campaignStatus.isNotEmpty()){
-            if (isFollowed) "13446" else "13432"
+        val activityId = trackerData.postId
+        val shopId = trackerData.shopId
+        val type = trackerData.postType
+        val isFollowed = trackerData.isFollowed
+        val mediaType = trackerData.mediaType
+        val trackerId = if (trackerData.campaignStatus.isNotEmpty()){
+            if (trackerData.isFollowed) "13446" else "13432"
         } else ""
 
-        val finalLabel = if (campaignStatus.isNotEmpty() && isFollowed) {
+
+        val finalLabel = if (trackerData.campaignStatus.isNotEmpty() && isFollowed) {
+            String.format(
+                FORMAT_FOUR_PARAM,
+                activityId,
+                shopId,
+                trackerData.contentSlotValue,
+                trackerData.campaignStatus
+            )
+        } else {
             String.format(
                 FORMAT_THREE_PARAM,
                 activityId,
                 shopId,
-                campaignStatus
-            )
-        } else {
-            String.format(
-                FORMAT_TWO_PARAM,
-                activityId,
-                shopId
+                trackerData.contentSlotValue
             )
         }
-        var map = getCommonMap(CATEGORY_FEED_TIMELINE_BOTTOMSHEET, campaignStatus)
+        var map = getCommonMap(CATEGORY_FEED_TIMELINE_BOTTOMSHEET, trackerData.campaignStatus)
         map = map.plus(
             mutableMapOf(
                 KEY_EVENT_ACTION to String.format(
@@ -580,10 +580,17 @@ class FeedAnalyticTracker
     }
 
     fun eventonShareProductClicked(
-        activityId: String, productId: String, type: String,
-        isFollowed: Boolean, shopId: String, mediaType: String, trackerId: String = ""
+        trackerData: FeedTrackerData
     ) {
-        var map = getCommonMap(CATEGORY_FEED_TIMELINE_BOTTOMSHEET)
+        val activityId = trackerData.postId
+        val shopId = trackerData.shopId
+        val type = trackerData.postType
+        val isFollowed = trackerData.isFollowed
+        val mediaType = trackerData.mediaType
+        val category = if (trackerData.isProductDetailPage) CATEGORY_FEED_TIMELINE_FEED_DETAIL else CATEGORY_FEED_TIMELINE_BOTTOMSHEET
+
+
+        var map = getCommonMap(category)
         map = map.plus(
             mutableMapOf(
                 KEY_EVENT_ACTION to String.format(
@@ -593,52 +600,72 @@ class FeedAnalyticTracker
                     getPostType(type,isFollowed, mediaType)
                 ),
                 KEY_EVENT_LABEL to String.format(
-                    FORMAT_TWO_PARAM,
+                    FORMAT_THREE_PARAM,
                     activityId,
-                    shopId
+                    shopId,
+                    trackerData.contentSlotValue
                 ),
                 KEY_BUSINESS_UNIT_EVENT to CONTENT,
                 KEY_CURRENT_SITE_EVENT to MARKETPLACE,
-
                 KEY_EVENT_USER_ID to userSessionInterface.userId
             )
         )
-        if (trackerId.isNotEmpty())
-            map = map.plus(KEY_TRACKER_ID to trackerId)
+        if (trackerData.trackerId.isNotEmpty())
+            map = map.plus(KEY_TRACKER_ID to trackerData.trackerId)
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
     }
 
     fun eventGridProductItemClicked(
-        activityId: String, productId: String, type: String,
-        isFollowed: Boolean,
-        shopId: String,
-        products: FeedXProduct,
-        index: Int
+        feedTrackerData: FeedTrackerData,
     ) {
+        val activityId = feedTrackerData.postId
+        val type = feedTrackerData.postType
+        val isFollowed = feedTrackerData.isFollowed
+        val shopId = feedTrackerData.shopId
+        val product = feedTrackerData.product
+        val index = feedTrackerData.mediaIndex
 
-    trackEnhancedEcommerceEventNew(
-        PRODUCT_CLICK,
-        CATEGORY_FEED_TIMELINE,
-        String.format(
-            FORMAT_THREE_PARAM,
-            CLICK,
-            "product",
-            getPostType(type, isFollowed)
-        ),
-        String.format(
-            FORMAT_THREE_PARAM,
-            activityId,
-            shopId,
-            productId
-        ),
-        eCommerceData = DataLayer.mapOf(CLICK , mapOf(
+        val eventLabelFinal =
+            if (feedTrackerData.campaignStatus.isNotEmpty() && isFollowed) String.format(
+                FORMAT_FIVE_PARAM,
+                activityId,
+                shopId,
+                feedTrackerData.contentSlotValue,
+                feedTrackerData.campaignStatus,
+                product.id
+            ) else
+                String.format(
+                    FORMAT_FOUR_PARAM,
+                    activityId,
+                    shopId,
+                    feedTrackerData.contentSlotValue,
+                    product.id
+                )
+
+        trackEnhancedEcommerceEventNew(
+            PRODUCT_CLICK,
+            CATEGORY_FEED_TIMELINE,
+            String.format(
+                FORMAT_THREE_PARAM,
+                CLICK,
+                "product",
+                getPostType(type, isFollowed)
+            ),
+            eventLabelFinal,
+            eCommerceData = DataLayer.mapOf(
+                CLICK, mapOf(
                     "actionField" to mapOf(
-                        "list" to "/feed - ${getPostType(type = TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT, isFollowed)}"
+                        "list" to "/feed - ${
+                            getPostType(
+                                type = TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT,
+                                isFollowed
+                            )
+                        }"
                     ),
-                    "products" to getSingleProductListASGC(products, index+1, type, isFollowed)
+                    "products" to getSingleProductListASGC(product, index + 1, type, isFollowed)
                 )
             )
-    )
+        )
 
     }
 
@@ -652,7 +679,8 @@ class FeedAnalyticTracker
         shopName: String,
         type: String,
         isFollowed: Boolean,
-        mediaType: String
+        mediaType: String,
+        contentScore: String
 ) {
     trackEnhancedEcommerceEventNew(
             ADD_TO_CART,
@@ -664,9 +692,10 @@ class FeedAnalyticTracker
                     getPostType(type, isFollowed, mediaType)
             ),
             String.format(
-                    FORMAT_THREE_PARAM,
+                    FORMAT_FOUR_PARAM,
                     channelId,
                     shopId,
+                    contentScore,
                     productId
             ),
             eCommerceData = getCurrencyData() +
@@ -691,7 +720,7 @@ class FeedAnalyticTracker
     )
 }
 
-    fun sendClickRemindCampaignAsgcEvent (activityId: String, shopId: String) {
+    fun sendClickRemindCampaignAsgcEvent (activityId: String, shopId: String, contentScore: String) {
         val map = mapOf(
             KEY_EVENT to CLICK_PG,
             KEY_EVENT_CATEGORY to CATEGORY_FEED_TIMELINE,
@@ -702,9 +731,10 @@ class FeedAnalyticTracker
                 "asgc"
             ),
             KEY_EVENT_LABEL to String.format(
-                FORMAT_THREE_PARAM,
+                FORMAT_FOUR_PARAM,
                 activityId,
                 shopId,
+                contentScore,
                 "pre"
             ),
             KEY_BUSINESS_UNIT_EVENT to CONTENT,
@@ -716,7 +746,7 @@ class FeedAnalyticTracker
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
     }
 
-    fun sendClickUnremindCampaignAsgcEvent (activityId: String, shopId: String) {
+    fun sendClickUnremindCampaignAsgcEvent (activityId: String, shopId: String, contentScore: String) {
         val map = mapOf(
             KEY_EVENT to CLICK_PG,
             KEY_EVENT_CATEGORY to CATEGORY_FEED_TIMELINE,
@@ -727,9 +757,10 @@ class FeedAnalyticTracker
                 "asgc"
             ),
             KEY_EVENT_LABEL to String.format(
-                FORMAT_THREE_PARAM,
+                FORMAT_FOUR_PARAM,
                 activityId,
                 shopId,
+                contentScore,
                 "pre"
             ),
             KEY_BUSINESS_UNIT_EVENT to CONTENT,
@@ -741,7 +772,13 @@ class FeedAnalyticTracker
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
     }
 
-    fun sendClickAddToWishlistAsgcProductDetail (activityId: String, shopId: String, productId: String, campaignStatus: String) {
+    fun sendClickAddToWishlistAsgcProductDetail(
+        activityId: String,
+        shopId: String,
+        productId: String,
+        campaignStatus: String,
+        contentScore: String
+    ) {
         val map = mapOf(
             KEY_EVENT to CLICK_PG,
             KEY_EVENT_CATEGORY to CATEGORY_FEED_TIMELINE_FEED_DETAIL,
@@ -752,11 +789,12 @@ class FeedAnalyticTracker
                 "asgc"
             ),
             KEY_EVENT_LABEL to String.format(
-                FORMAT_FOUR_PARAM,
+                FORMAT_FIVE_PARAM,
                 activityId,
                 shopId,
+                contentScore,
+                campaignStatus,
                 productId,
-                campaignStatus
             ),
             KEY_BUSINESS_UNIT_EVENT to CONTENT,
             KEY_CURRENT_SITE_EVENT to MARKETPLACE,
@@ -775,7 +813,8 @@ class FeedAnalyticTracker
         productName: String,
         price: String,
         quantity: Int,
-        shopName: String
+        shopName: String,
+        contentScore: String
     ) {
         trackEnhancedEcommerceEventNew(
                 ADD_TO_CART,
@@ -787,11 +826,12 @@ class FeedAnalyticTracker
                     "asgc"
                 ),
                 String.format(
-                    FORMAT_FOUR_PARAM,
+                    FORMAT_FIVE_PARAM,
                     activityId,
                     shopId,
-                    productId,
-                    campaignStatus
+                    contentScore,
+                    campaignStatus,
+                    productId
                 ),
                 trackerId = "17987",
                 eCommerceData = getCurrencyData() +
@@ -825,7 +865,8 @@ class FeedAnalyticTracker
         productName: String,
         price: String,
         quantity: Int,
-        shopName: String
+        shopName: String,
+        contentScore: String
     ) {
         trackEnhancedEcommerceEventNew(
             ADD_TO_CART,
@@ -837,11 +878,12 @@ class FeedAnalyticTracker
                 "asgc"
             ),
             String.format(
-                FORMAT_FOUR_PARAM,
+                FORMAT_FIVE_PARAM,
                 activityId,
                 shopId,
+                contentScore,
+                campaignStatus,
                 productId,
-                campaignStatus
             ),
             trackerId = "17982",
             eCommerceData = getCurrencyData() +
@@ -868,23 +910,26 @@ class FeedAnalyticTracker
     }
 
     fun eventGridMoreProductCLicked(
-        activityId: String,
-        type: String,
-        isFollowed: Boolean,
-        shopId: String,
-        trackerId: String = "",
-        campaignStatus: String = ""
+        feedTrackerData: FeedTrackerData
     ) {
+        val activityId = feedTrackerData.postId
+        val type = feedTrackerData.postType
+        val isFollowed = feedTrackerData.isFollowed
+        val shopId = feedTrackerData.shopId
+        val campaignStatus = feedTrackerData.campaignStatus
+
         val finallabel = if (campaignStatus.isNotEmpty() && isFollowed) KEY_EVENT_LABEL to String.format(
-            FORMAT_THREE_PARAM,
+            FORMAT_FOUR_PARAM,
             activityId,
             shopId,
+            feedTrackerData.contentSlotValue,
             campaignStatus
         ) else
             KEY_EVENT_LABEL to String.format(
-                FORMAT_TWO_PARAM,
+                FORMAT_THREE_PARAM,
                 activityId,
-                shopId
+                shopId,
+                feedTrackerData.contentSlotValue
             )
         var map = mapOf(
             KEY_EVENT to getEvent(campaignStatus.isNotEmpty()),
@@ -901,43 +946,47 @@ class FeedAnalyticTracker
 
             KEY_EVENT_USER_ID to userSessionInterface.userId
         )
-        if (trackerId.isNotEmpty())
-            map = map.plus(KEY_TRACKER_ID to trackerId)
+        if (feedTrackerData.trackerId.isNotEmpty())
+            map = map.plus(KEY_TRACKER_ID to feedTrackerData.trackerId)
 
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
     }
 
 
     fun eventClickLikeButton(
-        activityId: String,
+        feedTrackerData: FeedTrackerData,
         doubleTap: Boolean = false,
         isLiked: Boolean,
-        type: String,
-        isFollowed: Boolean,
-        shopId: String,
-        mediaType: String,
-        trackerId: String,
-        campaignStatus: String = ""
     ) {
+        val activityId = feedTrackerData.postId
+        val shopId = feedTrackerData.shopId
+        val type = feedTrackerData.postType
+        val isFollowed = feedTrackerData.isFollowed
+        val mediaType = feedTrackerData.mediaType
+
         val likeType = if (doubleTap && isLiked)
             "double tap like"
         else if (doubleTap && !isLiked)
             "double tap unlike"
-        else
+        else if(isLiked)
             "like"
+        else
+            "unlike"
 
-        val finallabel = if (campaignStatus.isNotEmpty() && isFollowed) KEY_EVENT_LABEL to String.format(
-            FORMAT_THREE_PARAM,
+        val finallabel = if (feedTrackerData.campaignStatus.isNotEmpty() && feedTrackerData.isFollowed) KEY_EVENT_LABEL to String.format(
+            FORMAT_FOUR_PARAM,
             activityId,
             shopId,
-            campaignStatus
+            feedTrackerData.contentSlotValue,
+            feedTrackerData.campaignStatus
         ) else
             KEY_EVENT_LABEL to String.format(
-                FORMAT_TWO_PARAM,
+                FORMAT_THREE_PARAM,
                 activityId,
-                shopId
+                shopId,
+                feedTrackerData.contentSlotValue
             )
-        var map = getCommonMap(campaignStatus = campaignStatus)
+        var map = getCommonMap(campaignStatus = feedTrackerData.campaignStatus)
         map = map.plus(
             mapOf(
                 KEY_EVENT_ACTION to String.format(
@@ -949,8 +998,8 @@ class FeedAnalyticTracker
                 finallabel
             )
         )
-        if (trackerId.isNotEmpty())
-            map = map.plus(KEY_TRACKER_ID to trackerId)
+        if (feedTrackerData.trackerId.isNotEmpty())
+            map = map.plus(KEY_TRACKER_ID to feedTrackerData.trackerId)
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
     }
 
@@ -1060,14 +1109,14 @@ class FeedAnalyticTracker
     }
 
     fun eventImpression(
-        activityId: String,
-        media: FeedXMedia,
-        position: Int,
-        type: String,
-        isFollowed: Boolean,
-        shopId: String,
-        postPosition: String
+        feedTrackerData: FeedTrackerData
     ) {
+        val activityId = feedTrackerData.postId
+        val media = feedTrackerData.media
+        val position = feedTrackerData.positionInFeed
+        val type = feedTrackerData.postType
+        val isFollowed = feedTrackerData.isFollowed
+        val shopId = feedTrackerData.shopId
         val isVideo = type == TYPE_FEED_X_CARD_PLAY
         val isLongVideo = type == TYPE_FEED_X_CARD_POST && media.type == TYPE_LONG_VIDEO
         var eventAction = ""
@@ -1107,9 +1156,10 @@ class FeedAnalyticTracker
             CONTENT_FEED_TIMELINE,
             eventAction,
             String.format(
-                FORMAT_TWO_PARAM,
+                FORMAT_THREE_PARAM,
                 activityId,
-                shopId
+                shopId,
+                feedTrackerData.contentSlotValue
             ),
             getPromoViewData(
                 getPromotionsData(
@@ -1122,14 +1172,16 @@ class FeedAnalyticTracker
     }
 
     fun eventPostImpression(
-        activityId: String,
-        media: FeedXMedia,
-        position: Int,
-        type: String,
-        isFollowed: Boolean,
-        shopId: String,
-        mediaType: String
+        feedTrackerData: FeedTrackerData
     ) {
+        val activityId = feedTrackerData.postId
+        val media = feedTrackerData.media
+        val position = feedTrackerData.positionInFeed
+        val type = feedTrackerData.postType
+        val isFollowed = feedTrackerData .isFollowed
+        val shopId = feedTrackerData.shopId
+        val mediaType = feedTrackerData.mediaType
+
         trackEnhancedEcommerceEventNew(
             PROMO_VIEW,
             CONTENT_FEED_TIMELINE,
@@ -1140,9 +1192,10 @@ class FeedAnalyticTracker
                 getPostType(type, isFollowed, mediaType)
             ),
             String.format(
-                FORMAT_TWO_PARAM,
+                FORMAT_THREE_PARAM,
                 activityId,
-                shopId
+                shopId,
+                feedTrackerData.contentSlotValue
             ),
             getPromoViewData(
                 getPromotionsData(
@@ -1163,12 +1216,13 @@ class FeedAnalyticTracker
 
 
     fun eventClickOpenComment(
-        activityId: String,
-        type: String,
-        isFollowed: Boolean,
-        shopId: String,
-        mediaType: String
+        feedTrackerData: FeedTrackerData
     ) {
+        val activityId = feedTrackerData.postId
+        val type = feedTrackerData.postType
+        val isFollowed = feedTrackerData .isFollowed
+        val shopId = feedTrackerData.shopId
+        val mediaType = feedTrackerData.mediaType
         var map = getCommonMap()
         map = map.plus(
             mapOf(
@@ -1179,21 +1233,25 @@ class FeedAnalyticTracker
                     getPostType(type, isFollowed, mediaType)
                 ),
                 KEY_EVENT_LABEL to String.format(
-                    FORMAT_TWO_PARAM,
+                    FORMAT_THREE_PARAM,
                     activityId,
-                    shopId
+                    shopId,
+                    feedTrackerData.contentSlotValue
                 )
             )
         )
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
     }
+
     fun eventClickLihatSemuaComment(
-            activityId: String,
-            type: String,
-            isFollowed: Boolean,
-            shopId: String,
-            mediaType: String
+        feedTrackerData: FeedTrackerData
     ) {
+        val activityId = feedTrackerData.postId
+        val type = feedTrackerData.postType
+        val isFollowed = feedTrackerData .isFollowed
+        val shopId = feedTrackerData.shopId
+        val mediaType = feedTrackerData.mediaType
+
         var map = getCommonMap()
         map = map.plus(
                 mapOf(
@@ -1204,9 +1262,10 @@ class FeedAnalyticTracker
                                 getPostType(type, isFollowed, mediaType)
                         ),
                         KEY_EVENT_LABEL to String.format(
-                                FORMAT_TWO_PARAM,
+                                FORMAT_THREE_PARAM,
                                 activityId,
-                                shopId
+                                shopId,
+                                feedTrackerData.contentSlotValue
                         )
                 )
         )
@@ -1215,26 +1274,29 @@ class FeedAnalyticTracker
 
 
     fun eventClickOpenShare(
-        activityId: String,
-        type: String,
-        isFollowed: Boolean,
-        shopId: String,
-        mediaType: String,
-        trackerId: String = "",
-        campaignStatus: String = ""
+        feedTrackerData: FeedTrackerData
     ) {
-        val finalLabel = if (campaignStatus.isNotEmpty() && isFollowed) KEY_EVENT_LABEL to String.format(
-            FORMAT_THREE_PARAM,
-            activityId,
-            shopId,
-            campaignStatus
-        ) else
-            KEY_EVENT_LABEL to String.format(
-                FORMAT_TWO_PARAM,
+        val activityId = feedTrackerData.postId
+        val shopId = feedTrackerData.shopId
+        val type = feedTrackerData.postType
+        val isFollowed = feedTrackerData.isFollowed
+        val mediaType = feedTrackerData.mediaType
+
+        val finalLabel =
+            if (feedTrackerData.campaignStatus.isNotEmpty() && isFollowed) KEY_EVENT_LABEL to String.format(
+                FORMAT_FOUR_PARAM,
                 activityId,
-                shopId
-            )
-        var map = getCommonMap(campaignStatus = campaignStatus)
+                shopId,
+                feedTrackerData.contentSlotValue,
+                feedTrackerData.campaignStatus
+            ) else
+                KEY_EVENT_LABEL to String.format(
+                    FORMAT_THREE_PARAM,
+                    activityId,
+                    shopId,
+                    feedTrackerData.contentSlotValue
+                )
+        var map = getCommonMap(campaignStatus = feedTrackerData.campaignStatus)
         map = map.plus(
             mapOf(
                 KEY_EVENT_ACTION to String.format(
@@ -1246,18 +1308,19 @@ class FeedAnalyticTracker
                 finalLabel
             )
         )
-        if (trackerId.isNotEmpty())
-            map = map.plus(KEY_TRACKER_ID to trackerId)
+        if (feedTrackerData.trackerId.isNotEmpty())
+            map = map.plus(KEY_TRACKER_ID to feedTrackerData.trackerId)
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
     }
 
     fun eventClickReadMoreNew(
-        activityId: String,
-        shopId: String,
-        type: String,
-        isFollowed: Boolean,
-        mediaType: String
+        feedTrackerData: FeedTrackerData
     ) {
+        val activityId = feedTrackerData.postId
+        val shopId = feedTrackerData.shopId
+        val type = feedTrackerData.postType
+        val isFollowed = feedTrackerData.isFollowed
+        val mediaType = feedTrackerData.mediaType
         var map = getCommonMap()
         map = map.plus(
             mapOf(
@@ -1268,9 +1331,10 @@ class FeedAnalyticTracker
                     getPostType(type, isFollowed, mediaType)
                 ),
                 KEY_EVENT_LABEL to String.format(
-                    FORMAT_TWO_PARAM,
+                    FORMAT_THREE_PARAM,
                     activityId,
-                    shopId
+                    shopId,
+                    feedTrackerData.contentSlotValue
                 )
             )
         )
@@ -1278,26 +1342,29 @@ class FeedAnalyticTracker
     }
 
     fun eventClickCloseProductInfoSheet(
-        activityId: String,
-        type: String,
-        isFollowed: Boolean,
-        shopId: String,
-        mediaType: String,
-        trackerId: String,
-        campaignStatus: String
+        feedTrackerData: FeedTrackerData
     ) {
+        val activityId = feedTrackerData.postId
+        val type = feedTrackerData.postType
+        val isFollowed = feedTrackerData.isFollowed
+        val shopId = feedTrackerData.shopId
+        val mediaType = feedTrackerData.mediaType
+        val trackerId = feedTrackerData.trackerId
+        val campaignStatus = feedTrackerData.campaignStatus
         val eventLabel = if (campaignStatus.isNotEmpty() && isFollowed)
             String.format(
-                FORMAT_THREE_PARAM,
+                FORMAT_FOUR_PARAM,
                 activityId,
                 shopId,
+                feedTrackerData.contentSlotValue,
                 campaignStatus
             )
         else
             String.format(
-                FORMAT_TWO_PARAM,
+                FORMAT_THREE_PARAM,
                 activityId,
-                shopId
+                shopId,
+                feedTrackerData.contentSlotValue,
             )
         var map = getCommonMapBottomSheet(campaignStatus = campaignStatus)
         map = map.plus(
@@ -1315,7 +1382,12 @@ class FeedAnalyticTracker
             map = map.plus(KEY_TRACKER_ID to trackerId)
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
     }
-    fun eventClickFullScreenIconVOD(channelId: String, type: String, isFollowed: Boolean, shopId: String, mediaType: String) {
+    fun eventClickFullScreenIconVOD(feedTrackerData: FeedTrackerData) {
+        val channelId = feedTrackerData.postId
+        val type = feedTrackerData.postType
+        val isFollowed = feedTrackerData.isFollowed
+        val shopId = feedTrackerData.shopId
+        val mediaType = feedTrackerData.mediaType
         var map = getCommonMap()
         map = map.plus(
                 mapOf(KEY_EVENT_ACTION to String.format(
@@ -1325,15 +1397,20 @@ class FeedAnalyticTracker
                                 getPostType(type, isFollowed, mediaType)
                         ),
                         KEY_EVENT_LABEL to String.format(
-                                FORMAT_TWO_PARAM,
+                                FORMAT_THREE_PARAM,
                                 channelId,
-                                shopId
+                                shopId,
+                                feedTrackerData.contentSlotValue
                         )
                 )
         )
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
     }
-    fun eventSendWatchVODAnalytics(channelId: String, type: String, isFollowed: Boolean, shopId: String, time: Long, mediaType: String) {
+    fun eventSendWatchVODAnalytics(feedTrackerData: FeedTrackerData, time: Long) {
+        val channelId = feedTrackerData.postId
+        val isFollowed = feedTrackerData.isFollowed
+        val mediaType = feedTrackerData.mediaType
+        val type = feedTrackerData.postType
         var map = getCommonMap()
         map = map.plus(
                 mutableMapOf(
@@ -1344,16 +1421,23 @@ class FeedAnalyticTracker
                                 getPostType(type, isFollowed = isFollowed, mediaType)
                         ),
                         KEY_EVENT_LABEL to String.format(
-                                FORMAT_THREE_PARAM,
+                                FORMAT_FOUR_PARAM,
                                 channelId,
-                                shopId,
+                                feedTrackerData.shopId,
+                                feedTrackerData.contentSlotValue,
                                 time
                         )
                 )
         )
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
     }
-    fun eventClicklanjutMenontonVOD(channelId: String, type: String, isFollowed: Boolean, shopId: String, mediaType: String) {
+    fun eventClicklanjutMenontonVOD(feedTrackerData: FeedTrackerData) {
+        val channelId = feedTrackerData.postId
+        val type = feedTrackerData.postType
+        val isFollowed = feedTrackerData.isFollowed
+        val shopId = feedTrackerData.shopId
+        val mediaType = feedTrackerData.mediaType
+
         var map = getCommonMap()
         map = map.plus(
                 mapOf(
@@ -1364,9 +1448,10 @@ class FeedAnalyticTracker
                                 getPostType(type, isFollowed, mediaType)
                         ),
                         KEY_EVENT_LABEL to String.format(
-                                FORMAT_TWO_PARAM,
+                                FORMAT_THREE_PARAM,
                                 channelId,
-                                shopId
+                                shopId,
+                                feedTrackerData.contentSlotValue
                         )
                 )
         )
@@ -1415,26 +1500,30 @@ class FeedAnalyticTracker
     }
 
     fun eventClickPostTagitem(
-        activityId: String,
-        product: FeedXProduct,
-        position: Int,
-        type: String,
-        isFollowed: Boolean,
-        shopId: String,
-        campaignStatus: String = ""
+        feedTrackerData: FeedTrackerData
     ) {
+        val activityId = feedTrackerData.postId
+        val type = feedTrackerData.postType
+        val isFollowed = feedTrackerData.isFollowed
+        val shopId = feedTrackerData.shopId
+        val campaignStatus = feedTrackerData.campaignStatus
+        val product = feedTrackerData.product
+        val position = feedTrackerData.mediaIndex
+
         val trackerIdForAsgcCampaign = if (isFollowed) "17984" else ""
         val eventLabelFinal = if (campaignStatus.isNotEmpty() && isFollowed) String.format(
-            FORMAT_FOUR_PARAM,
+            FORMAT_FIVE_PARAM,
             activityId,
             shopId,
-            product.id,
-            campaignStatus
+            feedTrackerData.contentSlotValue,
+            campaignStatus,
+            product.id
         ) else
             String.format(
-                FORMAT_THREE_PARAM,
+                FORMAT_FOUR_PARAM,
                 activityId,
                 shopId,
+                feedTrackerData.contentSlotValue,
                 product.id
             )
 
@@ -1460,31 +1549,34 @@ class FeedAnalyticTracker
     }
 
     fun eventClickBSitem(
-        activityId: String,
-        products: List<FeedXProduct>,
-        position: Int,
-        type: String,
-        isFollowed: Boolean,
-        shopId: String,
-        mediaType: String,
-        trackerId: String = "",
-        campaignStatus: String = ""
+        feedTrackerData: FeedTrackerData,
+        productPosition: Int
     ) {
+        val activityId = feedTrackerData.postId
+        val type = feedTrackerData.postType
+        val isFollowed = feedTrackerData.isFollowed
+        val shopId = feedTrackerData.shopId
+        val mediaType = feedTrackerData.mediaType
+        val trackerId = feedTrackerData.trackerId
+        val campaignStatus = feedTrackerData.campaignStatus
+        val product = feedTrackerData.product
         val finalLabel =
             if (campaignStatus.isNotEmpty() && isFollowed)
                 String.format(
-                    FORMAT_FOUR_PARAM,
+                    FORMAT_FIVE_PARAM,
                     activityId,
                     shopId,
-                    products[position - 1].id,
-                    campaignStatus
+                    feedTrackerData.contentSlotValue,
+                    campaignStatus,
+                    product.id
                 )
         else
             String.format(
-                    FORMAT_THREE_PARAM,
+                    FORMAT_FOUR_PARAM,
                     activityId,
                     shopId,
-                    products[position - 1].id
+                    feedTrackerData.contentSlotValue,
+                    product.id
             )
         val postType = getPostType(type, isFollowed, mediaType)
 
@@ -1503,7 +1595,7 @@ class FeedAnalyticTracker
                 "actionField" to mapOf(
                     "list" to "/feed - ${if( postType == ASGC || postType == ASGC_RECOM) "$postType detail" else postType}"
                 ),
-                "products" to getSingleProductListASGC(products[position - 1], position, type, isFollowed, mediaType)
+                "products" to getSingleProductListASGC(product, productPosition, type, isFollowed, mediaType)
             )
             )
         )
@@ -1532,14 +1624,14 @@ class FeedAnalyticTracker
     }
 
     fun eventClickFollowitem(
-        activityId: String,
-        position: Int,
-        type: String,
-        isFollowed: Boolean,
-        shopId: String,
-        mediaType: String,
-        trackerId: String = ""
+       feedTrackerData: FeedTrackerData
     ) {
+        val activityId = feedTrackerData.postId
+        val type = feedTrackerData.postType
+        val isFollowed = feedTrackerData.isFollowed
+        val shopId = feedTrackerData.shopId
+        val mediaType = feedTrackerData.mediaType
+        val trackerId = feedTrackerData.trackerId
         val followtext = if (isFollowed) {
             "unfollow"
         } else {
@@ -1555,10 +1647,11 @@ class FeedAnalyticTracker
                 getPostType(type, isFollowed, mediaType)
             ),
             KEY_EVENT_LABEL to String.format(
-                FORMAT_TWO_PARAM,
+                FORMAT_THREE_PARAM,
                 activityId,
-                shopId
-            ),
+                shopId,
+                feedTrackerData.contentSlotValue),
+
             KEY_BUSINESS_UNIT_EVENT to CONTENT,
             KEY_CURRENT_SITE_EVENT to MARKETPLACE,
 
@@ -1572,25 +1665,29 @@ class FeedAnalyticTracker
 
 
     fun eventClickGreyArea(
-        activityId: String,
-        type: String,
-        isFollowed: Boolean,
-        shopId: String,
-        mediaType: String,
-        trackerId: String,
-        campaignStatus: String = ""
+        feedTrackerData: FeedTrackerData
     ) {
-        val finalLabel = if (campaignStatus.isNotEmpty() && isFollowed) KEY_EVENT_LABEL to String.format(
-            FORMAT_THREE_PARAM,
-            activityId,
-            shopId,
-            campaignStatus
-        ) else
-            KEY_EVENT_LABEL to String.format(
-                FORMAT_TWO_PARAM,
+        val activityId = feedTrackerData.postId
+        val type = feedTrackerData.postType
+        val isFollowed = feedTrackerData.isFollowed
+        val shopId = feedTrackerData.shopId
+        val mediaType = feedTrackerData.mediaType
+        val trackerId = feedTrackerData.trackerId
+        val campaignStatus = feedTrackerData.campaignStatus
+        val finalLabel =
+            if (campaignStatus.isNotEmpty() && isFollowed) KEY_EVENT_LABEL to String.format(
+                FORMAT_FOUR_PARAM,
                 activityId,
-                shopId
-            )
+                shopId,
+                feedTrackerData.contentSlotValue,
+                campaignStatus
+            ) else
+                KEY_EVENT_LABEL to String.format(
+                    FORMAT_THREE_PARAM,
+                    activityId,
+                    shopId,
+                    feedTrackerData.contentSlotValue
+                )
         var map = getCommonMap(CATEGORY_FEED_TIMELINE_BOTTOMSHEET, campaignStatus)
         map = map.plus(
             mutableMapOf(
@@ -1724,7 +1821,12 @@ class FeedAnalyticTracker
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
     }
 
-    fun eventClickGreyAreaThreeDots(activityId: String, type: String, isFollowed: Boolean, shopId: String) {
+    fun eventClickGreyAreaThreeDots(feedTrackerData: FeedTrackerData) {
+        val activityId  = feedTrackerData.postId
+        val type = feedTrackerData.postId
+        val isFollowed = feedTrackerData.isFollowed
+        val shopId =feedTrackerData.postId
+
         var map = getCommonMap(CATEGORY_FEED_TIMELINE_MENU)
         map = map.plus(
             mutableMapOf(
@@ -1735,9 +1837,10 @@ class FeedAnalyticTracker
                     getPostType(type, isFollowed)
                 ),
                 KEY_EVENT_LABEL to String.format(
-                    FORMAT_TWO_PARAM,
+                    FORMAT_THREE_PARAM,
                     activityId,
-                    shopId
+                    shopId,
+                    feedTrackerData.contentSlotValue
                 )
             )
         )
@@ -1816,8 +1919,10 @@ class FeedAnalyticTracker
         postType: String,
         isVideoPost: Boolean,
         isFollowed: Boolean,
-        isCommentPage: Boolean
+        isCommentPage: Boolean,
+        contentSlotValue: String = ""
     ) {
+
         val map = mapOf(
             KEY_EVENT to CLICK_FEED,
             EVENT_CATEGORY to if (isCommentPage) CATEGORY_FEED_TIMELINE_COMMENT else CATEGORY_FEED_TIMELINE,
@@ -1828,9 +1933,10 @@ class FeedAnalyticTracker
                 getPostType(postType, isFollowed ,if (isVideoPost) TYPE_VIDEO else TYPE_IMAGE)
             ),
             KEY_EVENT_LABEL to String.format(
-                FORMAT_THREE_PARAM,
+                FORMAT_FOUR_PARAM,
                 postId,
                 authorId,
+                contentSlotValue,
                 hashTag
             ),
             KEY_BUSINESS_UNIT_EVENT to CONTENT,
@@ -2023,7 +2129,12 @@ class FeedAnalyticTracker
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
     }
 
-    fun clickMuteButton(activityId: String, isMute: Boolean, id: String, isFollowed: Boolean, mediaType: String) {
+    fun clickMuteButton(
+        feedTrackerData: FeedTrackerData
+    ) {
+        val activityId = feedTrackerData.postId
+        val isFollowed = feedTrackerData.isFollowed
+        val mediaType = feedTrackerData.mediaType
         var map = getCommonMap()
         map = map.plus(
             mutableMapOf(
@@ -2031,21 +2142,25 @@ class FeedAnalyticTracker
                     FORMAT_THREE_PARAM,
                     CLICK,
                     "mute",
-                    getPostType("", isFollowed , mediaType)
+                    getPostType(feedTrackerData.postType, isFollowed, mediaType)
                 ),
                 KEY_EVENT_LABEL to String.format(
-                    FORMAT_TWO_PARAM,
+                    FORMAT_THREE_PARAM,
                     activityId,
-                    id
+                    feedTrackerData.shopId,
+                    feedTrackerData.contentSlotValue
                 )
             )
         )
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
 
     }
-    fun clickSoundVOD(channelId: String, isMute: Boolean, id: String, isFollowed: Boolean, mediaType: String) {
+    fun clickSoundVOD(feedTrackerData: FeedTrackerData) {
+        val channelId = feedTrackerData.postId
+        val isFollowed = feedTrackerData.isFollowed
+        val mediaType = feedTrackerData.mediaType
         var map = getCommonMap()
-        val type = if (mediaType == TYPE_LONG_VIDEO) TYPE_FEED_X_CARD_POST else TYPE_FEED_X_CARD_PLAY
+        val type = feedTrackerData.postType
         map = map.plus(
                 mutableMapOf(
                         KEY_EVENT_ACTION to String.format(
@@ -2055,9 +2170,10 @@ class FeedAnalyticTracker
                                 getPostType(type , isFollowed , mediaType)
                         ),
                         KEY_EVENT_LABEL to String.format(
-                                FORMAT_TWO_PARAM,
+                                FORMAT_THREE_PARAM,
                                 channelId,
-                                id
+                                feedTrackerData.shopId,
+                                feedTrackerData.contentSlotValue
                         )
                 )
         )
@@ -2065,7 +2181,7 @@ class FeedAnalyticTracker
 
     }
 
-    fun clickOnVideo(activityId: String, authorId: String, isFollowed: Boolean) {
+    fun clickOnVideo(activityId: String, authorId: String, isFollowed: Boolean, contentScore: String) {
         var map = getCommonMap()
         map = map.plus(
             mutableMapOf(
@@ -2073,19 +2189,24 @@ class FeedAnalyticTracker
                     FORMAT_THREE_PARAM,
                     CLICK,
                     "video area",
-                    getPostType("", isFollowed, TYPE_VIDEO )
+                    getPostType("", isFollowed, TYPE_VIDEO)
                 ),
                 KEY_EVENT_LABEL to String.format(
-                    FORMAT_TWO_PARAM,
+                    FORMAT_THREE_PARAM,
                     activityId,
-                    authorId
+                    authorId,
+                    contentScore
+
                 )
             )
         )
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
     }
 
-    fun eventWatchVideo(activityId: String, authorId: String, isFollowed: Boolean, time: Long, mediaType: String) {
+    fun eventWatchVideo(feedTrackerData: FeedTrackerData, time: Long) {
+        val activityId = feedTrackerData.postId
+        val isFollowed = feedTrackerData.isFollowed
+        val mediaType = feedTrackerData.mediaType
         var map = getCommonMap()
         map = map.plus(
             mutableMapOf(
@@ -2093,12 +2214,13 @@ class FeedAnalyticTracker
                     FORMAT_THREE_PARAM,
                     "watch",
                     "video",
-                    getPostType("", isFollowed = isFollowed, mediaType)
+                    getPostType(feedTrackerData.postType, isFollowed = isFollowed, mediaType)
                 ),
                 KEY_EVENT_LABEL to String.format(
-                    FORMAT_THREE_PARAM,
+                    FORMAT_FOUR_PARAM,
                     activityId,
-                    authorId,
+                    feedTrackerData.shopId,
+                    feedTrackerData.contentSlotValue,
                     time
                 )
             )

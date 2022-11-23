@@ -351,15 +351,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
                     ) return
 
                     imagePostListener.userCarouselImpression(
-                        data.id,
-                        data.media[position],
-                        position,
-                        data.typename,
-                        data.followers.isFollowed,
-                        data.author.id,
-                        positionInFeed,
-                        data.cpmData,
-                        data.listProduct
+                        data,
+                        positionInFeed
                     )
                 }
             }
@@ -403,11 +396,9 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 isMuted: Boolean
             ) {
                 listener?.muteUnmuteVideo(
-                    mData.playChannelID,
+                    mData,
                     isMuted,
-                    mData.author.id,
-                    mData.followers.isFollowed,
-                    mData.isTypeVOD,
+                    positionInFeed,
                     media.type,
                 )
             }
@@ -418,11 +409,9 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 isMuted: Boolean
             ) {
                 listener?.muteUnmuteVideo(
-                    mData.playChannelID,
+                    mData,
                     isMuted,
-                    mData.author.id,
-                    mData.followers.isFollowed,
-                    mData.isTypeVOD,
+                    positionInFeed,
                     media.type,
                 )
 
@@ -565,19 +554,12 @@ class PostDynamicViewNew @JvmOverloads constructor(
                     TYPE_USE_ASGC_NEW_DESIGN
                 )
 
-            if (feedXCard.typename == TYPE_FEED_X_CARD_POST || feedXCard.typename == TYPE_TOPADS_HEADLINE_NEW || feedXCard.typename == TYPE_FEED_X_CARD_VOD || isTypeNewASGC) {
-                imagePostListener.userCarouselImpression(
-                    feedXCard.id,
-                    feedXCard.media.first(),
-                    0,
-                    feedXCard.typename,
-                    feedXCard.followers.isFollowed,
-                    feedXCard.author.id,
-                    positionInFeed,
-                    feedXCard.cpmData,
-                    feedXCard.listProduct
-                )
-            }
+                    if (feedXCard.typename == TYPE_FEED_X_CARD_POST || feedXCard.typename == TYPE_TOPADS_HEADLINE_NEW || feedXCard.typename == TYPE_FEED_X_CARD_VOD || isTypeNewASGC) {
+                        imagePostListener.userCarouselImpression(
+                            feedXCard,
+                            positionInFeed
+                        )
+                    }
 
             if (feedXCard.typename == TYPE_FEED_X_CARD_POST || feedXCard.typename == TYPE_TOPADS_HEADLINE_NEW || feedXCard.typename == TYPE_FEED_X_CARD_VOD || isTypeNewASGC) {
                 listener?.onImpressionTracking(feedXCard, positionInFeed)
@@ -992,11 +974,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 captionText.setOnClickListener {
                     if (captionText.text.contains(context.getString(R.string.feed_component_read_more_button))) {
                         listener?.onReadMoreClicked(
-                            if (caption.typename == TYPE_FEED_X_CARD_VOD) caption.playChannelID else caption.id,
-                            caption.author.id,
-                            caption.typename,
-                            caption.followers.isFollowed,
-                            caption.media.firstOrNull()?.type ?: ""
+                            caption,
+                            positionInFeed
                         )
                         val txt: String = buildString {
                             append("<b>" + caption.author.name + "</b>" + " - ").appendLine(
@@ -1298,15 +1277,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 layout_video?.player = videoPlayer?.getExoPlayer()
                 layout_video?.videoSurfaceView?.setOnClickListener {
                     changeMuteStateVideo(volume_icon)
-                    setMuteUnmuteSgcVideo(
-                        volume_icon,
-                        postId,
-                        feedXCard.followers.isFollowed,
-                        authorId,
-                        true,
-                        false,
-                        feedMedia.type
-                    )
+                    setMuteUnmuteSgcVideo(volume_icon, true, feedMedia.type)
 
                 }
 
@@ -1407,11 +1378,9 @@ class PostDynamicViewNew @JvmOverloads constructor(
                     mediaType: String
                 ) {
                     it.muteUnmuteVideo(
-                        feedXCard.playChannelID,
+                        feedXCard,
                         mute,
-                        feedXCard.author.id,
-                        feedXCard.followers.isFollowed,
-                        true,
+                        positionInFeed,
                         mediaType
                     )
                 }
@@ -1461,11 +1430,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
 
     private fun setMuteUnmuteSgcVideo(
         volumeIcon: ImageView?,
-        postId: String,
-        isFollowed: Boolean,
-        activityId: String,
         isVideoTap: Boolean,
-        isVOD: Boolean,
         mediaType: String
     ) {
         val countDownTimer = object : CountDownTimer(TIME_THREE_SEC, TIME_SECOND) {
@@ -1477,14 +1442,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 volumeIcon?.gone()
             }
         }
-        listener?.muteUnmuteVideo(
-            postId,
-            GridPostAdapter.isMute,
-            activityId,
-            isFollowed,
-            isVOD,
-            mediaType
-        )
+        listener?.muteUnmuteVideo(mData, GridPostAdapter.isMute, positionInFeed, mediaType)
         if (!volumeIcon?.isVisible!!)
             volumeIcon.visible()
         if (isVideoTap) {

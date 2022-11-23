@@ -192,7 +192,13 @@ class ProductPostTagViewHolderNew(
         mediaType: String
     ): View.OnClickListener {
         return View.OnClickListener {
-            listener.onTaggedProductCardClicked(positionInFeed, item.appLink, item, itemPosition+1, mediaType = mediaType)
+            listener.onTaggedProductCardClicked(
+                positionInFeed,
+                item.appLink,
+                item,
+                itemPosition + 1,
+                mediaType = mediaType
+            )
         }
     }
 

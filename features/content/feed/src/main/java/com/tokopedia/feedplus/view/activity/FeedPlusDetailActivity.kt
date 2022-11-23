@@ -20,6 +20,7 @@ class FeedPlusDetailActivity : BaseSimpleActivity() {
     private lateinit var saleType: String
     private lateinit var saleStatus: String
     private var postPosition: Int = DEFAULT_INVALID_POSITION
+    private lateinit var contentSlotValue: String
     private lateinit var postType: String
     private var isFollowed: Boolean = false
     private var hasVoucher: Boolean = false
@@ -38,6 +39,7 @@ class FeedPlusDetailActivity : BaseSimpleActivity() {
         const val PARAM_SALE_STATUS = "sale_status"
         const val PARAM_POST_POSITION = "position"
         private const val DEFAULT_INVALID_POSITION = -1
+        const val PARAM_CONTENT_SLOT_VALUE = "content_slot_value"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -66,6 +68,7 @@ class FeedPlusDetailActivity : BaseSimpleActivity() {
         saleType = intent.getStringExtra(PARAM_SALE_TYPE).orEmpty()
         saleStatus = intent.getStringExtra(PARAM_SALE_STATUS).orEmpty()
         postPosition = intent.getIntExtra(PARAM_POST_POSITION, DEFAULT_INVALID_POSITION)
+        contentSlotValue = intent.getStringExtra(PARAM_CONTENT_SLOT_VALUE).orEmpty()
     }
 
     override fun getNewFragment(): Fragment? {
@@ -78,6 +81,7 @@ class FeedPlusDetailActivity : BaseSimpleActivity() {
         bundle.putInt(PARAM_POST_POSITION, postPosition)
         bundle.putString(PARAM_SHOP_NAME, shopName)
         bundle.putString(PARAM_SALE_STATUS, saleStatus)
+        bundle.putString(PARAM_CONTENT_SLOT_VALUE, contentSlotValue)
         bundle.putString(PARAM_SALE_TYPE, saleType)
         bundle.putBoolean(PARAM_IS_FOLLOWED, isFollowed)
         bundle.putBoolean(PARAM_HAS_VOUCHER, hasVoucher)

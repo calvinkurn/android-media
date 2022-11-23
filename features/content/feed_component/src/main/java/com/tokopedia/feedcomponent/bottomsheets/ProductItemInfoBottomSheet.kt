@@ -26,7 +26,6 @@ import com.tokopedia.mvcwidget.trackers.MvcSource
 import com.tokopedia.mvcwidget.trackers.MvcTrackerImpl
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
-import kotlinx.android.synthetic.main.item_posttag.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 
@@ -221,6 +220,7 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
         this.viewModelFactory = viewModelFactory
         this.customMvcTracker = customMvcTracker
 
+        dismissedByClosing = false
         show(fragmentManager, "")
     }
 
@@ -233,7 +233,11 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
         adapter?.notifyItemChanged(rowNumber, payload)
     }
 
-    fun showToasterOnBottomSheetOnSuccessFollow(message: String, type: Int, actionText: String? = null) {
+    fun showToasterOnBottomSheetOnSuccessFollow(
+        message: String,
+        type: Int,
+        actionText: String? = null
+    ) {
         view?.rootView?.let {
             context?.resources?.let { resource ->
                 Toaster.toasterCustomBottomHeight =
