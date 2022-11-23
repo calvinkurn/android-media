@@ -99,13 +99,13 @@ class UserProfileRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getFeedPosts(userID: String, cursor: String): UserFeedPostsUiModel {
+    override suspend fun getFeedPosts(userID: String, cursor: String, limit: Int): UserFeedPostsUiModel {
         return withContext(dispatcher.io) {
             return@withContext mapper.mapFeedPosts(
                 getUserProfileFeedPostsUseCase.executeOnBackground(
                     userID = userID,
                     cursor = cursor,
-                    limit = DEFAULT_LIMIT,
+                    limit = limit,
                 ),
             )
         }
@@ -180,6 +180,5 @@ class UserProfileRepositoryImpl @Inject constructor(
     companion object {
         private const val VAL_FEEDS_PROFILE = "feeds-profile"
         private const val VAL_SOURCE_BUYER = "buyer"
-        private const val DEFAULT_LIMIT = 10
     }
 }

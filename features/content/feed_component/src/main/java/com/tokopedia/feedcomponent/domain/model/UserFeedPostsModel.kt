@@ -265,9 +265,9 @@ data class Tag(
 
 data class Tagging(
     @SerializedName("posX")
-    val posX: Double = 0.0,
-    @SerializedName("posY:")
-    val posY: Double = 0.0,
+    val posX: Float = 0F,
+    @SerializedName("posY")
+    val posY: Float = 0F,
     @SerializedName("tagIndex")
     val tagIndex: Int = 0,
 )

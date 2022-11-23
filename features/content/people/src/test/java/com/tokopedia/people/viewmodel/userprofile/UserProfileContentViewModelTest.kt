@@ -156,7 +156,7 @@ class UserProfileContentViewModelTest {
     fun `when user success load feed post`() {
         robot.use {
             it.setup {
-                coEvery { mockRepo.getFeedPosts(mockOwnProfile.userID, "") } returns mockFeed
+                coEvery { mockRepo.getFeedPosts(mockOwnProfile.userID, "", 10) } returns mockFeed
             }
             it.recordState {
                 submitAction(UserProfileAction.LoadProfile(isRefresh = true))
@@ -171,8 +171,8 @@ class UserProfileContentViewModelTest {
     fun `when user success load feed post pagination`() {
         robot.use {
             it.setup {
-                coEvery { mockRepo.getFeedPosts(mockOwnProfile.userID, "") } returns mockFeed
-                coEvery { mockRepo.getFeedPosts(mockOwnProfile.userID, "123") } returns mockFeed
+                coEvery { mockRepo.getFeedPosts(mockOwnProfile.userID, "", 10) } returns mockFeed
+                coEvery { mockRepo.getFeedPosts(mockOwnProfile.userID, "123", 10) } returns mockFeed
             }
             it.recordState {
                 submitAction(UserProfileAction.LoadProfile(isRefresh = true))
@@ -188,7 +188,7 @@ class UserProfileContentViewModelTest {
     fun `when user success load feed post but empty`() {
         robot.use {
             it.setup {
-                coEvery { mockRepo.getFeedPosts(mockOwnProfile.userID, "") } returns mockFeedEmpty
+                coEvery { mockRepo.getFeedPosts(mockOwnProfile.userID, "", 10) } returns mockFeedEmpty
             }
             it.recordState {
                 submitAction(UserProfileAction.LoadProfile(isRefresh = true))
@@ -203,7 +203,7 @@ class UserProfileContentViewModelTest {
     fun `when user fail load feed post`() {
         robot.use {
             it.setup {
-                coEvery { mockRepo.getFeedPosts(mockOwnProfile.userID, "") } throws mockException
+                coEvery { mockRepo.getFeedPosts(mockOwnProfile.userID, "", 10) } throws mockException
             }
             it.recordEvent {
                 submitAction(UserProfileAction.LoadProfile(isRefresh = true))

@@ -180,6 +180,7 @@ class UserProfileFeedFragment @Inject constructor(
         val intent = RouteManager.getIntent(requireContext(), appLink)
         intent.putExtra(KEY_SOURCE, VAL_SOURCE)
         intent.putExtra(KEY_POSITION, position)
+        intent.putExtra(KEY_VISITED_USER_ID, viewModel.profileUserID)
         startActivity(intent)
     }
 
@@ -219,6 +220,7 @@ class UserProfileFeedFragment @Inject constructor(
         private const val TAG = "UserProfileFeedFragment"
         private const val KEY_SOURCE = "source"
         private const val KEY_POSITION = "position"
+        private const val KEY_VISITED_USER_ID = "visited_user_id"
         private const val VAL_SOURCE = "user_profile"
         private const val GRID_SPAN_COUNT = 3
         private const val LOADING_SPAN = 3

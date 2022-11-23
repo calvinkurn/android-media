@@ -35,6 +35,7 @@ interface UserProfileRepository {
     suspend fun getFeedPosts(
         userID: String,
         cursor: String,
+        limit: Int,
     ): UserFeedPostsUiModel
 
     suspend fun getPlayVideo(
