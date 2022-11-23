@@ -70,12 +70,9 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.post.poll.PollAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.video.VideoViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.youtube.YoutubeViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.*
-import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopAdsBannerViewHolder
-import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopAdsHeadlineListener
-import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopAdsHeadlineV2ViewHolder
-import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopadsShopViewHolder
 import com.tokopedia.feedcomponent.view.base.FeedPlusContainerListener
 import com.tokopedia.feedcomponent.view.base.FeedPlusTabParentFragment
+import com.tokopedia.feedcomponent.view.share.FeedProductTagSharingHelper
 import com.tokopedia.feedcomponent.view.viewmodel.DynamicPostUiModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.TrackingPostModel
@@ -107,11 +104,10 @@ import com.tokopedia.feedplus.view.di.FeedPlusComponent
 import com.tokopedia.feedplus.view.presenter.FeedViewModel
 import com.tokopedia.feedplus.view.util.NpaLinearLayoutManager
 import com.tokopedia.feedplus.view.viewmodel.FeedPromotedShopViewModel
+import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kolcommon.domain.usecase.FollowKolPostGqlUseCase
 import com.tokopedia.kolcommon.view.viewmodel.FollowKolViewModel
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.linker.interfaces.ShareCallback
@@ -145,10 +141,6 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import java.util.*
 import javax.inject.Inject
-import kotlin.collections.ArrayList
-import com.tokopedia.kotlin.extensions.view.*
-import com.tokopedia.feedcomponent.view.share.FeedProductTagSharingHelper
-import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.wishlist_common.R as Rwishlist
 
 /**
@@ -2888,7 +2880,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 getString(R.string.feed_post_deleted),
                 Toaster.LENGTH_LONG,
                 Toaster.TYPE_NORMAL,
-                getString(com.tokopedia.affiliatecommon.R.string.af_title_ok)
+                getString(R.string.feed_action_ok)
             ).show()
         }
         if (adapter.getlist().isEmpty()) {
