@@ -295,11 +295,11 @@ class TokoChatTransactionOrderWidget : LinearLayout {
     private fun bindClickOpenCloseState() {
         val clickListener = OnClickListener {
             doWhenState(
-                isOpen = { changeState(State.CLOSE) },
-                isClose = {
-                    changeState(State.OPEN)
+                isOpen = {
+                    changeState(State.CLOSE)
                     listener?.onTransactionWidgetClosed()
-                }
+                },
+                isClose = { changeState(State.OPEN) }
             )
         }
         partialOrderStatusWidgetBinding?.tokochatTpOrderVisibility?.setOnClickListener(clickListener)
