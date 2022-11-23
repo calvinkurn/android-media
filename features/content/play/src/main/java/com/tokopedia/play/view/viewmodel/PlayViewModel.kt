@@ -197,15 +197,14 @@ class PlayViewModel @AssistedInject constructor(
     /** Needed to decide whether we need to call setResult() or no when leaving play room */
     private val _isChannelReportLoaded = MutableStateFlow(false)
 
-    private val _isFollowPopUpShown = MutableStateFlow(FollowPopUpUiState())
+    private val _isFollowPopUpShown = MutableStateFlow(FollowPopUpUiState.Empty)
 
     private val _isThreeDotsOpened = MutableStateFlow(false)
     private val _isSharingOpened = MutableStateFlow(false)
 
     private val _followPopUpUiState = combine(_bottomInsets, _isFollowPopUpShown, _partnerInfo, _isThreeDotsOpened, _isSharingOpened, _interactive) {
-        bottomInsets, popUp, partner, kebab, sharing, interactive -> FollowPopUpUiState(
-            shouldShow = !bottomInsets.isAnyShown && popUp.shouldShow && partner.needFollow && partner.id == popUp.partnerId && !kebab && !sharing && !interactive.isPlaying
-        )
+        bottomInsets, popUp, partner, kebab, sharing, interactive ->
+            !bottomInsets.isAnyShown && popUp.shouldShow && partner.needFollow && partner.id == popUp.partnerId && !kebab && !sharing && !interactive.isPlaying
     }.flowOn(dispatchers.computation)
 
     private val _winnerBadgeUiState = combine(

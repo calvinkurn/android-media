@@ -1954,8 +1954,8 @@ class PlayUserInteractionFragment @Inject constructor(
         }
     }
 
-    private fun renderFollowPopUp(state: FollowPopUpUiState) {
-        if (state.shouldShow)
+    private fun renderFollowPopUp(shouldShow: Boolean) {
+        if (shouldShow)
             PlayFollowBottomSheet.getOrCreate(childFragmentManager, classLoader = requireActivity().classLoader)
                 .show(childFragmentManager)
     }
