@@ -15,7 +15,11 @@ import com.tokopedia.logisticCommon.domain.usecase.EligibleForAddressUseCase
 import com.tokopedia.logisticcart.scheduledelivery.domain.usecase.GetRatesWithScheduleUseCase
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter
 import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesResponseStateConverter
-import com.tokopedia.logisticcart.shipping.model.*
+import com.tokopedia.logisticcart.shipping.model.CartItemModel
+import com.tokopedia.logisticcart.shipping.model.CourierItemData
+import com.tokopedia.logisticcart.shipping.model.ScheduleDeliveryUiModel
+import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel
+import com.tokopedia.logisticcart.shipping.model.ShipmentDetailData
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiUseCase
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
