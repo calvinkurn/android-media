@@ -61,6 +61,7 @@
     <string name="smvc_voucherlist_toaster_actiontext">Oke</string>
     <string name="smvc_voucherlist_quota_remaining_text">Sisa Kuota</string>
     <string name="smvc_voucherlist_create_voucher_text">Buat Kupon</string>
+    <string name="smvc_voucherlist_copy_to_clipboard_message">Kode kupon berhasil disalin</string>
 
     <!--Common Bottomsheet-->
     <string name="smvc_bottomsheet_filter_voucher_title">Filter</string>

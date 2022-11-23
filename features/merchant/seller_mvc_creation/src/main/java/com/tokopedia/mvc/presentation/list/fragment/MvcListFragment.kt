@@ -14,6 +14,7 @@ import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.campaign.delegates.HasPaginatedList
 import com.tokopedia.campaign.delegates.HasPaginatedListImpl
+import com.tokopedia.campaign.utils.extension.showToaster
 import com.tokopedia.campaign.utils.extension.showToasterError
 import com.tokopedia.campaign.utils.extension.slideDown
 import com.tokopedia.campaign.utils.extension.slideUp
@@ -39,6 +40,7 @@ import com.tokopedia.mvc.presentation.list.viewmodel.MvcListViewModel
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.SearchBarUnify
+import com.tokopedia.utils.clipboard.ClipboardHandler
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
@@ -82,7 +84,8 @@ class MvcListFragment: BaseDaggerFragment(), HasPaginatedList by HasPaginatedLis
     }
 
     override fun onVoucherListCopyCodeClicked(voucher: Voucher) {
-        println("copy")
+        context?.let { ClipboardHandler.copyToClipboard(it, voucher.code) }
+        binding?.footer?.root.showToaster(getString(R.string.smvc_voucherlist_copy_to_clipboard_message))
     }
 
     override fun onVoucherListMultiPeriodClicked(voucher: Voucher) {
