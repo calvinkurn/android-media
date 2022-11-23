@@ -131,7 +131,7 @@ private fun Toolbar(
     NestHeader(
         modifier = modifier,
         title = title,
-        onToolbarBackIconPressed = onToolbarBackIconPressed
+        onBackIconPressed = onToolbarBackIconPressed
     )
 }
 
