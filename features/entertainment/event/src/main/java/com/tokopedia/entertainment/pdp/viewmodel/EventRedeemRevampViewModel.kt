@@ -114,7 +114,7 @@ class EventRedeemRevampViewModel @Inject constructor(
         val value = response[EventRedeem::class.java]
 
         return if (value?.code == SUCCESS_CODE && !value.isError) {
-            val convertedResponse = convertToRedeemResponse(response)
+            val convertedResponse = convertToRedeemResponse(value)
             updateListRedemptionAndQuantity(convertedResponse)
             Success(convertedResponse)
         } else {
@@ -132,7 +132,7 @@ class EventRedeemRevampViewModel @Inject constructor(
         val value = response[EventRedeemedData::class.java]
 
         return if (value?.code == SUCCESS_CODE && !value.isError) {
-            Success(convertToRedeemedResponse(response))
+            Success(convertToRedeemedResponse(value))
         } else {
             val error = convertToErrorResponseRedeemed(response)
             Fail(MessageErrorException(error))
@@ -147,7 +147,7 @@ class EventRedeemRevampViewModel @Inject constructor(
         val value = response[EventRedeemedData::class.java]
 
         return if (value?.code == SUCCESS_CODE && !value.isError) {
-            Success(convertToRedeemedResponse(response))
+            Success(convertToRedeemedResponse(value))
         } else {
             val error = convertToErrorResponseRedeemed(response)
             Fail(MessageErrorException(error))
@@ -163,12 +163,12 @@ class EventRedeemRevampViewModel @Inject constructor(
         return EventRedeemMapper.getCheckedIds(listRedemptions)
     }
 
-    private fun convertToRedeemResponse(typeRestResponseMap: Map<Type, RestResponse?>): EventRedeem {
-        return typeRestResponseMap[EventRedeem::class.java]?.getData() as EventRedeem
+    private fun convertToRedeemResponse(restResponse: RestResponse): EventRedeem {
+        return restResponse.getData() as EventRedeem
     }
 
-    private fun convertToRedeemedResponse(typeRestResponseMap: Map<Type, RestResponse?>): EventRedeemedData {
-        return typeRestResponseMap[EventRedeemedData::class.java]?.getData() as EventRedeemedData
+    private fun convertToRedeemedResponse(restResponse: RestResponse): EventRedeemedData {
+        return restResponse.getData() as EventRedeemedData
     }
 
     private fun convertToErrorResponse(typeRestResponseMap: Map<Type, RestResponse?>): String? {

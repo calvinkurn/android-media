@@ -58,41 +58,7 @@
         "border_color": ""
       }
     ],
-    "redemptions": [
-      {
-        "id": 14940,
-        "day": 1,
-        "redemption_time": 1669112370,
-        "participant_details": [
-          {
-            "label": "Nama",
-            "value": "Hefdy Wiguna#1"
-          }
-        ]
-      },
-      {
-        "id": 14941,
-        "day": 1,
-        "redemption_time": 1669112386,
-        "participant_details": [
-          {
-            "label": "Nama",
-            "value": "Hefdy Wiguna#2"
-          }
-        ]
-      },
-      {
-        "id": 14942,
-        "day": 1,
-        "redemption_time": 1669112386,
-        "participant_details": [
-          {
-            "label": "Nama",
-            "value": "Hefdy Wiguna#3"
-          }
-        ]
-      }
-    ],
+    "redemptions": null,
     "redemption_status": 1,
     "quantity": 3
   },
