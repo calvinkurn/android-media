@@ -1,30 +1,30 @@
-package com.tokopedia.affiliatecommon.data.pojo.submitpost.request
+package com.tokopedia.createpost.common.domain.entity.request
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 data class SubmitPostMedium(
-        @SerializedName("mediaURL")
+    @SerializedName("mediaURL")
         @Expose
         var mediaURL: String = "",
 
-        @SerializedName("order")
+    @SerializedName("order")
         @Expose
         val order: Int = 0,
 
-        @SerializedName("tags")
+    @SerializedName("tags")
         @Expose
         var tags: List<MediaTag> = arrayListOf(),
 
-        @SerializedName("type")
+    @SerializedName("type")
         @Expose
         var type: String = TYPE_IMAGE,
 
-        @SerializedName("videoID")
+    @SerializedName("videoID")
         @Expose
         var videoID: String = "",
 
-        @SerializedName("mediaUploadID")
+    @SerializedName("mediaUploadID")
         @Expose
         var mediaUploadID: String = ""
 

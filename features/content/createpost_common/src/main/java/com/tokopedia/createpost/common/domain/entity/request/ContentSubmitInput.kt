@@ -1,4 +1,4 @@
-package com.tokopedia.affiliatecommon.data.pojo.submitpost.request
+package com.tokopedia.createpost.common.domain.entity.request
 
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName

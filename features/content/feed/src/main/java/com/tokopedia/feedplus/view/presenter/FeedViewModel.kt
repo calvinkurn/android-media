@@ -1,13 +1,13 @@
 package com.tokopedia.feedplus.view.presenter
 
 import android.content.Context
+import android.text.TextUtils
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.abstraction.common.utils.paging.PagingHandler
-import com.tokopedia.affiliatecommon.domain.DeletePostUseCase
 import com.tokopedia.affiliatecommon.domain.TrackAffiliateClickUseCase
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.content.common.usecase.GetWhiteListNewUseCase
@@ -34,16 +34,13 @@ import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomWidgetModel
 import com.tokopedia.feedcomponent.util.CustomUiMessageThrowable
 import com.tokopedia.feedcomponent.view.viewmodel.carousel.CarouselPlayCardViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.*
-import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.AtcViewModel
-import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.DeletePostViewModel
-import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.FavoriteShopViewModel
-import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.TrackAffiliateViewModel
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.domain.model.DynamicFeedFirstPageDomainModel
 import com.tokopedia.feedplus.view.constants.Constants.FeedConstants.NON_LOGIN_USER_ID
 import com.tokopedia.feedplus.view.viewmodel.FeedPromotedShopViewModel
 import com.tokopedia.kolcommon.data.pojo.FollowKolDomain
 import com.tokopedia.kolcommon.data.pojo.follow.FollowKolQuery
+import com.tokopedia.kolcommon.domain.interactor.SubmitActionContentUseCase
 import com.tokopedia.kolcommon.domain.usecase.FollowKolPostGqlUseCase
 import com.tokopedia.kolcommon.domain.usecase.LikeKolPostUseCase
 import com.tokopedia.kolcommon.view.viewmodel.FollowKolViewModel
@@ -86,10 +83,10 @@ class FeedViewModel @Inject constructor(
     private val userSession: UserSessionInterface,
     private val doFavoriteShopUseCase: ToggleFavouriteShopUseCase,
     private val followKolPostGqlUseCase: FollowKolPostGqlUseCase,
+    private val submitActionContentUseCase: SubmitActionContentUseCase,
     private val likeKolPostUseCase: LikeKolPostUseCase,
     private val addToCartUseCase: AddToCartUseCase,
     private val trackAffiliateClickUseCase: TrackAffiliateClickUseCase,
-    private val deletePostUseCase: DeletePostUseCase,
     private val sendTopAdsUseCase: SendTopAdsUseCase,
     private val playWidgetTools: PlayWidgetTools,
     private val shopRecomUseCase: ShopRecomUseCase,
@@ -417,10 +414,17 @@ class FeedViewModel @Inject constructor(
 
     fun doDeletePost(id: String, rowNumber: Int) {
         launchCatchError(block = {
-            val results = withContext(baseDispatcher.io) {
-                deletePost(id, rowNumber)
+            val response = withContext(baseDispatcher.io) {
+                submitActionContentUseCase.setRequestParams(SubmitActionContentUseCase.paramToDeleteContent(id))
+                submitActionContentUseCase.executeOnBackground()
             }
-            deletePostResp.value = Success(results)
+            deletePostResp.value = Success(
+                DeletePostViewModel(
+                    id = id,
+                    rowNumber = rowNumber,
+                    isSuccess = TextUtils.isEmpty(response.content.error)
+                )
+            )
         },) {
             deletePostResp.value = Fail(it)
         }
@@ -697,20 +701,6 @@ class FeedViewModel @Inject constructor(
                     data.isFollow = false
                 }
             }
-            return data
-        } catch (e: Throwable) {
-            throw e
-        }
-    }
-
-    private fun deletePost(id: String, rowNumber: Int): DeletePostViewModel {
-        try {
-            val data = DeletePostViewModel()
-            data.id = id
-            data.rowNumber = rowNumber
-            val params = DeletePostUseCase.createRequestParams(id)
-            val isSuccess = deletePostUseCase.createObservable(params).toBlocking().first()
-            data.isSuccess = isSuccess
             return data
         } catch (e: Throwable) {
             throw e

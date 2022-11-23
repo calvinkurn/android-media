@@ -1,8 +1,8 @@
-package com.tokopedia.affiliatecommon.domain
+package com.tokopedia.createpost.common.domain.usecase
 
 import android.text.TextUtils
-import com.tokopedia.affiliatecommon.data.pojo.submitpost.request.ContentSubmitInput
-import com.tokopedia.affiliatecommon.data.pojo.submitpost.response.SubmitPostData
+import com.tokopedia.createpost.common.domain.entity.request.ContentSubmitInput
+import com.tokopedia.createpost.common.domain.entity.SubmitPostData
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.network.exception.MessageErrorException
@@ -15,7 +15,6 @@ import javax.inject.Inject
 /**
  * @author by milhamj on 10/15/18.
  */
-
 @Deprecated("please use com.tokopedia.kolcommon.domain.interactor.SubmitActionContentUseCase")
 class DeletePostUseCase @Inject constructor(private val graphqlUseCase: GraphqlUseCase)
     : UseCase<Boolean>() {
