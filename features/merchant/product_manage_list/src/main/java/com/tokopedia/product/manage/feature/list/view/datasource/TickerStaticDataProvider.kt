@@ -15,7 +15,7 @@ class TickerStaticDataProvider @Inject constructor(private val resourceProvider:
     private val EXPIRED_DATE_TICKER_STOCK_AVAILABLE = "23/01/2023"
 
     private fun MutableList<TickerData>.addStockAvailableTicker() {
-        if (!getIsExpiredTicker(EXPIRED_DATE_TICKER_STOCK_AVAILABLE)) {
+        if (!isExpiredTicker(EXPIRED_DATE_TICKER_STOCK_AVAILABLE)) {
             add(
                 TickerData(
                     title = resourceProvider.getTickerStockAvailableTitle(),
@@ -94,7 +94,7 @@ class TickerStaticDataProvider @Inject constructor(private val resourceProvider:
         )
     )
 
-    private fun getIsExpiredTicker(expiredDate:String) : Boolean{
+    private fun isExpiredTicker(expiredDate:String) : Boolean{
         val expiredDateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
         val expiredCalendar = expiredDateFormat.parse(expiredDate).time
 
