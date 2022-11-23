@@ -45,9 +45,7 @@ class EPharmacyAttachPrescriptionActivity : BaseSimpleActivity(), HasComponent<E
 
     override fun getNewFragment(): Fragment {
 
-        return EPharmacyPrescriptionAttachmentPageFragment.newInstance(Bundle().apply {
-            putString(EXTRA_ORIGIN_STRING, "")
-        })
+        return EPharmacyPrescriptionAttachmentPageFragment.newInstance()
 
     }
 

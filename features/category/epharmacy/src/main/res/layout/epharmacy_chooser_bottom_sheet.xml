@@ -29,30 +29,27 @@
         app:typographyType="heading_3"
         android:text="Upload Resep atau Chat Dokter"
         />
-    <LinearLayout
-        android:id="@+id/step_list_rv"
+
+    <include
+        android:id="@+id/chooser_upload"
+        android:layout_marginTop="16dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        android:orientation="vertical"
-        app:layout_constraintTop_toBottomOf="@id/heading_title">
+        app:layout_constraintTop_toBottomOf="@id/heading_title"
+        layout="@layout/epharmacy_chooser_item"
+        />
 
-        <include
-            android:id="@+id/chooser_upload"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            layout="@layout/epharmacy_chooser_item"
-            />
-
-        <include
-            android:id="@+id/chooser_mini_consultation"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            layout="@layout/epharmacy_chooser_item"
-            />
-    </LinearLayout>
+    <include
+        android:id="@+id/chooser_mini_consultation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/chooser_upload"
+        layout="@layout/epharmacy_chooser_item"
+        />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/static_title_partner"
@@ -61,7 +58,7 @@
         android:textAlignment="center"
         android:textColor="@color/Unify_NN600"
         app:typographyType="paragraph_3"
-        app:layout_constraintTop_toBottomOf="@id/step_list_rv"
+        app:layout_constraintTop_toBottomOf="@id/chooser_mini_consultation"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         android:text="@string/epharmacy_dilayani_oleh"

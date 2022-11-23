@@ -4,8 +4,8 @@ const val EXTRA_ORDER_ID_LONG = "extra_order_id_long"
 const val EXTRA_CHECKOUT_ID_STRING = "extra_checkout_id_string"
 const val EXTRA_ENTRY_POINT_STRING = "extra_entry_point_string"
 const val EXTRA_SOURCE_STRING = "source"
-const val EXTRA_ORIGIN_STRING = "extra_origin_string"
 const val EXTRA_CONSULTATION_WEB_LINK_STRING = "extra_consultation_web_link_string"
+const val EPHARMACY_MINI_CONSULTATION_RESULT_EXTRA = "epharmacy_mini_consultation_result"
 
 const val DEFAULT_ZERO_VALUE = 0L
 
@@ -24,6 +24,9 @@ const val PRESCRIPTION_COMPONENT = "prescription component"
 const val PRODUCT_COMPONENT = "product component"
 const val GROUP_COMPONENT = "group component"
 const val TICKER_COMPONENT = "ticker component"
+const val SHIMMER_COMPONENT = "shimmer component"
+const val SHIMMER_COMPONENT_1 = "shimmer 1"
+const val SHIMMER_COMPONENT_2 = "shimmer 2"
 
 const val EPHARMACY_SCREEN_NAME = "epharmacy page"
 
@@ -55,7 +58,7 @@ const val UPLOAD_CHOOSER_IMAGE_URL = "https://images.tokopedia.net/img/android/r
 const val MINI_CONS_CHOOSER_IMAGE_URL = "https://images.tokopedia.net/img/android/res/singleDpi/epharmacy_chooser_mini_cons_doc.png"
 
 const val EPHARMACY_APPLINK = "tokopedia://epharmacy/"
-const val EPHARMACY_ATTACH_PRESCRIPTION_APPLINK = "tokopedia://epharmacy/attach-prescription"
+const val EPHARMACY_CHOOSER_APPLINK = "tokopedia://epharmacy/chooser/"
 
 const val DATA_TYPE = "data_type"
 const val ENABLER_NAME = "enabler_name"
@@ -63,9 +66,7 @@ const val ENABLER_NAME = "enabler_name"
 const val EPHARMACY_BOTTOM_SHEET_BOTTOM_TNC_IMAGE_URL = "https://images.tokopedia.net/img/green-waves.png"
 const val EPHARMACY_BOTTOM_SHEET_BOTTOM_IMAGE_URL = "https://images.tokopedia.net/img/miniconsul-toped-illustration.png"
 const val EPHARMACY_PDP_INFO_DATA_TYPE = "obat_keras_info"
-const val EPHARMACY_CHOOSER_APPLINK = "tokopedia://epharmacy/chooser/"
 
-const val EPHARMACY_TICKER_ICON = "https://images.tokopedia.net/img/android/res/singleDpi/epharmacy_chooser_mini_cons_doc.png"
 const val EPHARMACY_TICKER_BACKGROUND = "https://images.tokopedia.net/img/android/res/singleDpi/epharmacy_mini_consult_ticker_background.png"
 
 enum class EPharmacyConsultationStatus(val status: Int) {

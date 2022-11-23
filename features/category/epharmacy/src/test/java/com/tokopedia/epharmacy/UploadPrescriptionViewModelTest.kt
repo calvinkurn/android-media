@@ -1,10 +1,8 @@
 package com.tokopedia.epharmacy
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.epharmacy.network.response.EPharmacyDataResponse
-import com.tokopedia.epharmacy.network.response.EPharmacyProduct
-import com.tokopedia.epharmacy.network.response.EPharmacyUploadPrescriptionIdsResponse
-import com.tokopedia.epharmacy.network.response.PrescriptionImage
+import com.tokopedia.common.network.data.model.RestResponse
+import com.tokopedia.epharmacy.network.response.*
 import com.tokopedia.epharmacy.usecase.GetEPharmacyCheckoutDetailUseCase
 import com.tokopedia.epharmacy.usecase.GetEPharmacyOrderDetailUseCase
 import com.tokopedia.epharmacy.usecase.PostPrescriptionIdUseCase
@@ -13,6 +11,7 @@ import com.tokopedia.epharmacy.viewmodel.UploadPrescriptionViewModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
+import io.mockk.coVerify
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.TestCoroutineDispatcher
@@ -20,6 +19,7 @@ import org.junit.Assert
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import java.lang.reflect.Type
 
 @ExperimentalCoroutinesApi
 class UploadPrescriptionViewModelTest {
@@ -275,11 +275,28 @@ class UploadPrescriptionViewModelTest {
 
     @Test
     fun reUploadPrescriptionImage() {
-        viewModel.reUploadPrescriptionImage(0, "")
+        viewModel.addSelectedPrescriptionImages(arrayListOf("sfaf","sfa"))
+        coEvery {
+            uploadPrescriptionUseCase.executeOnBackground(0, "sfaf")
+        } coAnswers {
+            HashMap<Type, RestResponse>().apply {
+                put(EPharmacyPrescriptionUploadResponse::class.java, RestResponse(mockk<EPharmacyPrescriptionUploadResponse>(relaxed = true),1,false))
+            }
+        }
+        viewModel.reUploadPrescriptionImage(0,"sfaf")
+        coVerify(exactly = 1) {  uploadPrescriptionUseCase.executeOnBackground(0,"sfaf") }
     }
 
     @Test
-    fun addSelectedPrescriptionImages() {
-        viewModel.addSelectedPrescriptionImages(arrayListOf("", ""))
+    fun addSelectedPrescriptionImagesEmptyFail(){
+        viewModel.addSelectedPrescriptionImages(arrayListOf("",""))
+        coEvery {
+            uploadPrescriptionUseCase.executeOnBackground(0, "")
+        } coAnswers {
+            HashMap<Type, RestResponse>().apply {
+                put(EPharmacyPrescriptionUploadResponse::class.java, RestResponse(mockk<EPharmacyPrescriptionUploadResponse>(relaxed = true),1,false))
+            }
+        }
+        coVerify(exactly = 0) {  uploadPrescriptionUseCase.executeOnBackground(0,"") }
     }
 }

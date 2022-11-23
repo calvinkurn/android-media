@@ -6,7 +6,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.common_epharmacy.network.response.EPharmacyPrepareProductsGroupResponse
 import com.tokopedia.epharmacy.component.viewholder.EPharmacyProductsAccordionItemViewHolder
 
-// TODO Convert to List Adapter
 class EPharmacyAttachmentProductAccordionAdapter(var products : ArrayList<EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo.Product?>):
     RecyclerView.Adapter<EPharmacyProductsAccordionItemViewHolder>() {
 

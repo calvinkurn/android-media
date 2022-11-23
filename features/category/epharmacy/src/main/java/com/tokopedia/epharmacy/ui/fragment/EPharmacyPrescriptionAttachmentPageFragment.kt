@@ -129,8 +129,8 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
     private fun addShimmer() {
         ePharmacyRecyclerView?.show()
         ePharmacyAttachmentUiUpdater.mapOfData.clear()
-        ePharmacyAttachmentUiUpdater.updateModel(EPharmacyShimmerDataModel("shimmer_1", "shimmer component"))
-        ePharmacyAttachmentUiUpdater.updateModel(EPharmacyShimmerDataModel("shimmer_2", "shimmer component"))
+        ePharmacyAttachmentUiUpdater.updateModel(EPharmacyShimmerDataModel(SHIMMER_COMPONENT_1, SHIMMER_COMPONENT))
+        ePharmacyAttachmentUiUpdater.updateModel(EPharmacyShimmerDataModel(SHIMMER_COMPONENT_1, SHIMMER_COMPONENT))
         updateUi()
     }
 
@@ -235,7 +235,7 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
             activity?.setResult(
                 EPHARMACY_MINI_CONSULTATION_REQUEST_CODE,
                 Intent().apply {
-                    // putParcelableArrayListExtra("epharmacy_mini_consultation_result", getResultForCheckout())
+                     putParcelableArrayListExtra(EPHARMACY_MINI_CONSULTATION_RESULT_EXTRA, getResultForCheckout())
                 }
             )
         } else {
@@ -361,127 +361,8 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
 
     companion object {
         @JvmStatic
-        fun newInstance(bundle: Bundle): EPharmacyPrescriptionAttachmentPageFragment {
-            val fragment = EPharmacyPrescriptionAttachmentPageFragment()
-            fragment.arguments = bundle
-            return fragment
+        fun newInstance(): EPharmacyPrescriptionAttachmentPageFragment {
+            return EPharmacyPrescriptionAttachmentPageFragment()
         }
-    }
-
-    private fun userViewAttachPrescriptionPage(totalShop: String, epGroupId: String) {
-        Tracker.Builder()
-            .setEvent(EventKeys.OPEN_SCREEN)
-            .setCustomProperty(EventKeys.TRACKER_ID, TrackerId.OPEN_SCREEN_ID_ATTACH)
-            .setBusinessUnit(EventKeys.BUSINESS_UNIT_VALUE)
-            .setCurrentSite(EventKeys.CURRENT_SITE_VALUE)
-            .setCustomProperty(EventKeys.IS_LOGGED_IN, userSession.isLoggedIn.toString())
-            .setCustomProperty(EventKeys.PAGE_PATH, "")
-            .setCustomProperty(EventKeys.SCREEN_NAME, "view attach prescription page - $totalShop - $epGroupId")
-            .setUserId(userSession.userId)
-            .build()
-            .send()
-    }
-
-    private fun clickAttachPrescriptionButton(
-        buttonText: String,
-        enablers: String,
-        buttonPosition: String,
-        totalShop: String,
-        shopId: String,
-        ePharmacyGroupId: String
-    ) {
-        Tracker.Builder()
-            .setEvent(EventKeys.CLICK_PG)
-            .setEventAction(ActionKeys.CLICK_ATTACH_PRESCRIPTION_BUTTON)
-            .setEventCategory(CategoryKeys.ATTACH_PRESCRIPTION_PAGE)
-            .setEventLabel("$buttonText - $enablers - $buttonPosition - $totalShop - $shopId - $ePharmacyGroupId")
-            .setCustomProperty(EventKeys.TRACKER_ID, TrackerId.ATTACH_PRESCRIPTION_BUTTON)
-            .setBusinessUnit(EventKeys.BUSINESS_UNIT_VALUE)
-            .setCurrentSite(EventKeys.CURRENT_SITE_VALUE)
-            .build()
-            .send()
-    }
-
-    private fun viewMiniConsultationPage(
-        enablerName: String,
-        ePharmacyGroupId: String,
-        consultationId: String
-    ) {
-        Tracker.Builder()
-            .setEvent(EventKeys.OPEN_SCREEN)
-            .setCustomProperty(EventKeys.TRACKER_ID, TrackerId.VIEW_MINI_CONSULTATION)
-            .setBusinessUnit(EventKeys.BUSINESS_UNIT_VALUE)
-            .setCurrentSite(EventKeys.CURRENT_SITE_VALUE)
-            .setCustomProperty(EventKeys.IS_LOGGED_IN, userSession.isLoggedIn.toString())
-            .setCustomProperty(EventKeys.PAGE_PATH, "")
-            .setCustomProperty(EventKeys.SCREEN_NAME, "view mini consultation page - $enablerName - $ePharmacyGroupId - $consultationId")
-            .setUserId(userSession.userId)
-            .build()
-            .send()
-    }
-
-    private fun viewAttachPrescriptionResult(
-        consultationId: String,
-        enablerName: String,
-        successFailed: String,
-        approvalReason: String,
-        ePharmacyGroupId: String,
-        prescriptionId: String
-    ) {
-        Tracker.Builder()
-            .setEvent(EventKeys.VIEW_PG_IRIS)
-            .setEventAction(ActionKeys.VIEW_ATTACH_PRESCRIPTION_RESULT)
-            .setEventCategory(CategoryKeys.ATTACH_PRESCRIPTION_PAGE)
-            .setEventLabel("$consultationId - $enablerName - $successFailed - $approvalReason - $ePharmacyGroupId - $prescriptionId")
-            .setCustomProperty(EventKeys.TRACKER_ID, TrackerId.ATTACH_PRESCRIPTION_RESULT)
-            .setBusinessUnit(EventKeys.BUSINESS_UNIT_VALUE)
-            .setCurrentSite(EventKeys.CURRENT_SITE_VALUE)
-            .build()
-            .send()
-    }
-
-    private fun clickUploadResepDokter(enablerName: String, ePharmacyGroupId: String) {
-        Tracker.Builder()
-            .setEvent(EventKeys.CLICK_PG)
-            .setEventAction(ActionKeys.CLICK_UPLOAD_RESEP_DOKTER)
-            .setEventCategory(CategoryKeys.ATTACH_PRESCRIPTION_PAGE)
-            .setEventLabel("$enablerName - $ePharmacyGroupId")
-            .setCustomProperty(EventKeys.TRACKER_ID, TrackerId.CLICK_UPLOAD_RESEP_DOKTER)
-            .setBusinessUnit(EventKeys.BUSINESS_UNIT_VALUE)
-            .setCurrentSite(EventKeys.CURRENT_SITE_VALUE)
-            .build()
-            .send()
-    }
-
-    private fun clickChatDokter(enablerName: String, ePharmacyGroupId: String) {
-        Tracker.Builder()
-            .setEvent(EventKeys.VIEW_PG_IRIS)
-            .setEventAction(ActionKeys.CLICK_CHAT_DOKTER)
-            .setEventCategory(CategoryKeys.ATTACH_PRESCRIPTION_PAGE)
-            .setEventLabel("$enablerName - $ePharmacyGroupId")
-            .setCustomProperty(EventKeys.TRACKER_ID, TrackerId.CLICK_CHAT_DOKTER)
-            .setBusinessUnit(EventKeys.BUSINESS_UNIT_VALUE)
-            .setCurrentSite(EventKeys.CURRENT_SITE_VALUE)
-            .build()
-            .send()
-    }
-
-    private fun clickCTAButton(
-        consultationId: String,
-        enablerName: String,
-        approvalReason: String,
-        ePharmacyGroupId: String,
-        prescriptionId: String
-    ) {
-        Tracker.Builder()
-            .setEvent(EventKeys.CLICK_PG)
-            .setEventAction(ActionKeys.CLICK_LANJUT_KE_PENGIRIMAN)
-            .setEventCategory(CategoryKeys.ATTACH_PRESCRIPTION_PAGE)
-            .setEventLabel("$consultationId - $enablerName - $approvalReason - $ePharmacyGroupId - $prescriptionId")
-            .setCustomProperty(EventKeys.TRACKER_ID, TrackerId.ATTACH_PRESCRIPTION_BUTTON)
-            .setBusinessUnit(EventKeys.BUSINESS_UNIT_VALUE)
-            .setCurrentSite(EventKeys.CURRENT_SITE_VALUE)
-            .build()
-            .send()
     }
 }
