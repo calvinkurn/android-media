@@ -10,6 +10,7 @@ import android.text.style.ImageSpan
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.LinearLayout
 import androidx.core.graphics.drawable.RoundedBitmapDrawableFactory
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.iconunify.IconUnify
@@ -34,6 +35,7 @@ class AddLogoToolUiComponent constructor(
 
     private val shopAvatar = findViewById<ImageView>(editorR.id.add_logo_shop_avatar)
     private val uploadAvatar = findViewById<ImageView>(editorR.id.add_logo_upload_avatar)
+    private val uploadAvatarWrapper = findViewById<LinearLayout>(editorR.id.add_logo_upload_avatar_wrapper)
     private val uploadButton = findViewById<CardUnify2>(editorR.id.add_logo_upload_button)
 
     private var originalImageWidth = 1
@@ -51,6 +53,11 @@ class AddLogoToolUiComponent constructor(
             null,
             false
         )
+
+        child.addLogoBottomsheetButton.setOnClickListener {
+            listener.onPickerCall()
+            this.dismiss()
+        }
 
         child.addLogoTipsMore.text = getTipsMoreText()
         child.addLogoTipsList.text = getTipsListText()
@@ -93,7 +100,6 @@ class AddLogoToolUiComponent constructor(
         shopAvatarUrl = avatarUrl
 
         initShopAvatar()
-        initUploadAvatar()
         initListener()
         container().show()
     }
@@ -115,10 +121,11 @@ class AddLogoToolUiComponent constructor(
         )
     }
 
-    private fun initUploadAvatar() {
-        loadImageWithEmptyTarget(context, "/storage/emulated/0/Pictures/Rectangle 18.png", {},
+    fun initUploadAvatar(imageUrl: String) {
+        loadImageWithEmptyTarget(context, imageUrl, {},
             MediaBitmapEmptyTarget(
                 onReady = {
+                    uploadAvatarWrapper.show()
                     uploadAvatar.setImageBitmap(
                         roundedBitmap(it, cornerRadius = 8f)
                     )
@@ -190,6 +197,7 @@ class AddLogoToolUiComponent constructor(
         fun onLogoChosen(bitmap: Bitmap)
         fun onUpload()
         fun onLoadFailed()
+        fun onPickerCall()
     }
 
     companion object {
