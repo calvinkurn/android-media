@@ -1,7 +1,7 @@
 package com.tokopedia.logisticcart.shipping.features.shippingcourier.view
 
 import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.ErrorProductData
-import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.scheduledelivery.ScheduleDeliveryData
+import com.tokopedia.logisticcart.scheduledelivery.domain.model.ScheduleDeliveryData
 import com.tokopedia.logisticcart.shipping.model.*
 import javax.inject.Inject
 
@@ -115,14 +115,26 @@ class ShippingCourierConverter @Inject constructor() {
         }
 
         /*Schedule Delivery*/
-        shippingRecommendationData?.scheduleDeliveryData?.takeIf { it.hidden.not() }?.apply {
-            courierItemData.scheduleDeliveryUiModel = convertToScheduleDeliveryUiModel(
-                shipmentCartItemModel?.scheduleDate ?: "",
-                shipmentCartItemModel?.timeslotId ?: 0L,
-            )
-        }
+        courierItemData.setScheduleDeliveryUiModel(
+            scheduleDeliveryData = shippingRecommendationData?.scheduleDeliveryData,
+            scheduleDate = shipmentCartItemModel?.scheduleDate,
+            timeslotId = shipmentCartItemModel?.timeslotId
+        )
 
         return courierItemData
+    }
+
+    private fun CourierItemData.setScheduleDeliveryUiModel(
+        scheduleDeliveryData: ScheduleDeliveryData?,
+        scheduleDate: String?,
+        timeslotId: Long?
+    ) {
+        scheduleDeliveryData?.takeIf { it.hidden.not() }?.apply {
+            scheduleDeliveryUiModel = convertToScheduleDeliveryUiModel(
+                scheduleDate ?: "",
+                timeslotId ?: 0L,
+            )
+        }
     }
 
     fun convertToCourierItemDataWithPromo(shippingCourierUiModel: ShippingCourierUiModel, data: LogisticPromoUiModel): CourierItemData {

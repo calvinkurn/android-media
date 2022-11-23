@@ -1,7 +1,10 @@
 package com.tokopedia.product.detail.view.util
 
+import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Canvas
+import android.graphics.PorterDuff
+import android.graphics.drawable.Drawable
 import android.view.View
 import androidx.annotation.ColorRes
 import androidx.core.content.ContextCompat
@@ -10,12 +13,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.kotlin.extensions.view.toPx
-import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.common.extensions.getColorChecker
+import com.tokopedia.unifycomponents.toPx
 
 /**
  * Created by Yehezkiel on 26/01/21
  */
+@SuppressLint("DeprecatedMethod")
 class ProductSeparatorItemDecoration(
     private val context: Context,
     marginHorizontal: Int = 16,
@@ -27,8 +32,20 @@ class ProductSeparatorItemDecoration(
     private val heightPx = height.toPx()
     private val drawable by lazy {
         getDrawableDivider()?.apply {
-            val wrap = DrawableCompat.wrap(this)
-            DrawableCompat.setTint(wrap, getColor(color))
+            setDrawableTint(drawable = this)
+        }
+    }
+
+    private fun setDrawableTint(drawable: Drawable) {
+        try {
+            val mutate = DrawableCompat.wrap(drawable)
+            DrawableCompat.setTint(mutate, getColor(color))
+        } catch (t: Throwable) {
+            try {
+                drawable.mutate().setColorFilter(getColor(color), PorterDuff.Mode.SRC_IN);
+            } catch (t: Throwable) {
+                t.printStackTrace()
+            }
         }
     }
 
@@ -36,7 +53,7 @@ class ProductSeparatorItemDecoration(
         context, com.tokopedia.abstraction.R.drawable.bg_line_separator_thin
     )
 
-    private fun getColor(@ColorRes colorId: Int) = ContextCompat.getColor(context, colorId)
+    private fun getColor(@ColorRes colorId: Int) = context.getColorChecker(id = colorId)
 
     override fun onDrawOver(
         c: Canvas,

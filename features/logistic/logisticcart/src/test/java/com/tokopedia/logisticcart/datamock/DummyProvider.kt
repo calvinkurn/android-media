@@ -74,11 +74,11 @@ internal object DummyProvider {
         return shippingRecomData
     }
 
-    fun getShippingDataWithServiceError() : ShippingRecommendationData {
+    fun getShippingDataWithServiceError(errorCode: Int = 1) : ShippingRecommendationData {
         val ratesData = getRatesResponseWithPromo()
         val shippingRecomData = ShippingDurationConverter().convertModel(ratesData.ratesData)
         val errorService = shippingRecomData.shippingDurationUiModels.first()
-        errorService.etaErrorCode = 1
+        errorService.etaErrorCode = errorCode
         return shippingRecomData
     }
 
@@ -86,6 +86,14 @@ internal object DummyProvider {
         val ratesData = getRatesResponseWithPromo()
         val shippingRecomData = ShippingDurationConverter().convertModel(ratesData.ratesData)
         val errorEtaPromo = shippingRecomData.listLogisticPromo.first().copy(etaData = EstimatedTimeArrivalPromo(textEta = "", errorCode = 1))
+        shippingRecomData.listLogisticPromo = listOf(errorEtaPromo)
+        return shippingRecomData
+    }
+
+    fun getShippingDataWithPromoEtaErrorAndTextEta() : ShippingRecommendationData {
+        val ratesData = getRatesResponseWithPromo()
+        val shippingRecomData = ShippingDurationConverter().convertModel(ratesData.ratesData)
+        val errorEtaPromo = shippingRecomData.listLogisticPromo.first().copy(etaData = EstimatedTimeArrivalPromo(textEta = "", errorCode = -1))
         shippingRecomData.listLogisticPromo = listOf(errorEtaPromo)
         return shippingRecomData
     }

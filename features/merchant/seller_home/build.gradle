@@ -63,6 +63,7 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.universal_sharing)
     implementation projectOrAar(rootProject.ext.libraries.utils)
     implementation projectOrAar(rootProject.ext.libraries.webview)
+    implementation projectOrAar(rootProject.ext.libraries.cmPushNotifications)
 
     //internal arr libs
     implementation rootProject.ext.unifyDependencies.coach_mark

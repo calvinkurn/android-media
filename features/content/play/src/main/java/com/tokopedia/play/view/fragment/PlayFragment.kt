@@ -59,6 +59,7 @@ import com.tokopedia.play_common.viewcomponent.viewComponent
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
+import java.lang.Exception
 import javax.inject.Inject
 
 /**
@@ -320,6 +321,7 @@ class PlayFragment @Inject constructor(
             playViewModel.focusPage(channelData)
             analytic.sendScreen(channelId, playViewModel.channelType, sourceType = playParentViewModel.source.type, channelName = channelData.channelDetail.channelInfo.title)
             newAnalytic.sendDataNow(channelId, playViewModel.channelType, channelData.channelDetail.channelInfo.title)
+            newAnalytic.setData(channelData.channelDetail.channelInfo)
             sendSwipeRoomAnalytic()
         } catch (e: Throwable) {}
     }
@@ -576,8 +578,12 @@ class PlayFragment @Inject constructor(
         if (playNavigation.canNavigateNextPage()) playNavigation.navigateToNextPage()
     }
 
+    @Throws(IndexOutOfBoundsException::class)
     private fun sendSwipeRoomAnalytic() {
-        if (playParentViewModel.startingChannelId != channelId) analytic.swipeRoom()
+        try {
+            val nextId = playParentViewModel.getNextChannel(channelId)
+            if (playParentViewModel.startingChannelId != channelId) analytic.swipeRoom(nextId)
+        } catch (e: Exception) {}
     }
 
     //region onStateChanged

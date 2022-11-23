@@ -11,7 +11,7 @@ object ApplinkConstInternalContent {
 
     const val INTERNAL_AFFILIATE_CREATE_POST_V2 = "$INTERNAL_AFFILIATE/create_post_v2/"
     const val INTERNAL_PRODUCT_PICKER_FROM_SHOP = "$INTERNAL_CONTENT/productpickerfromshop/"
-    const val INTERNAL_FEED_AUTOCOMPLETE = "$INTERNAL_CONTENT/feed_autocomplete"
+    const val INTERNAL_CONTENT_PRODUCT_TAG_AUTOCOMPLETE = "$INTERNAL_CONTENT/product_tag_autocomplete"
     const val INTERNAL_FEED_CREATION_PRODUCT_SEARCH = "$INTERNAL_CONTENT/creation_product_search"
     const val INTERNAL_FEED_CREATION_SHOP_SEARCH = "$INTERNAL_CONTENT/creation_shop_search"
 
@@ -43,5 +43,7 @@ object ApplinkConstInternalContent {
     const val INTERNAL_MEDIA_PREVIEW = "$MEDIA_PREVIEW?$ARG_MEDIA_INDEX=$DUMMY_MEDIA_INDEX"
 
     const val PLAY_PATH_LITE = "play/channel/"
+
+    internal const val INTERNAL_FEATURE_PREVENTION = "$INTERNAL_CONTENT/content-prevention"
 
 }

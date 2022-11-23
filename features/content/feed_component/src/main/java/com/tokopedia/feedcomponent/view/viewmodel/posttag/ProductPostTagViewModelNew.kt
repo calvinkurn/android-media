@@ -35,9 +35,29 @@ data class ProductPostTagViewModelNew(
     var description:String = "",
     var isTopads:Boolean = false,
     var adClickUrl:String = "",
-    var playChannelId:String = ""
+    var playChannelId:String = "",
+    val saleType: String = "",
+    val saleStatus: String = "",
+    var isWishlisted: Boolean = false
 ) : BasePostTagViewModel {
     override fun type(typeFactory: PostTagTypeFactory): Int {
         return typeFactory.type(this)
     }
+
+    val isRilisanSpl: Boolean
+        get() = saleType == ASGC_RILISAN_SPECIAL
+    val isFlashSaleToko: Boolean
+        get() = type == ASGC_FLASH_SALE_TOKO
+    val isUpcoming: Boolean
+        get() = saleStatus == Upcoming
+    val isOngoing: Boolean
+        get() = saleStatus == Ongoing
+
+    companion object {
+        private const val ASGC_RILISAN_SPECIAL = "Rilisan Spesial"
+        private const val ASGC_FLASH_SALE_TOKO = "asgc_flash_sale_toko"
+        private const val Upcoming = "upcoming"
+        private const val Ongoing = "ongoing"
+    }
 }
+

@@ -72,6 +72,14 @@
                     android:path="/wishlist-collection-bottomsheet" />
             </intent-filter>
         </activity>
+
+        <activity
+            android:name="com.tokopedia.wishlistcollection.view.activity.WishlistCollectionEditActivity"
+            android:exported="false"
+            android:label="@string/page_name_wishlist_edit"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:theme="@style/Theme.White"/>
     </application>
 
 </manifest>

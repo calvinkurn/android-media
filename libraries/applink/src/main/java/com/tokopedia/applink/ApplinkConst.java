@@ -281,6 +281,7 @@ public interface ApplinkConst {
     String SETTING_PASSWORD = "tokopedia://setting/password";
     String SETTING_PROFILE = "tokopedia://setting/profile";
     String SETTING_ADDRESS = "tokopedia://setting/address";
+    String SETTING_EDIT_ADDRESS = "tokopedia://setting/editaddress/";
 
     String NOTIFICATION = "tokopedia://notification";
     String NOTIFICATION_TROUBLESHOOTER = "tokopedia://notification-troubleshooter";
@@ -530,11 +531,20 @@ public interface ApplinkConst {
         String REVIEW_REMINDER = "sellerapp://review-reminder";
         String SHOP_SCORE_DETAIL = "sellerapp://shop-score-detail";
         String SELLER_SHOP_FLASH_SALE = "sellerapp://shop-flash-sale";
+        String SELLER_TOKOPEDIA_FLASH_SALE = "sellerapp://tokopedia-flash-sale";
+        String SELLER_TOKOPEDIA_FLASH_SALE_CAMPAIGN_DETAIL = "sellerapp://tokopedia-flash-sale/campaign-detail/{campaign_id}";
         String SHOP_DISCOUNT = "sellerapp://shop-discount";
         String TOKOMEMBER = "sellerapp://tokomember";
+        String TOKOMEMBER_PROGRAM_LIST = "sellerapp://tokomember/program-list";
+        String TOKOMEMBER_COUPON_LIST = "sellerapp://tokomember/coupon-list";
+        String TOKOMEMBER_PROGRAM_CREATION = "sellerapp://tokomember/program-creation";
+        String TOKOMEMBER_COUPON_CREATION = "sellerapp://tokomember/coupon-creation";
+        String TOKOMEMBER_PROGRAM_EXTENSION = "sellerapp://tokomember/program-extension/{program_id}";
         String ADMIN_INVITATION = "sellerapp://shop-admin/invitation-page";
         String ADMIN_ACCEPTED = "sellerapp://shop-admin/accepted-page";
         String ADMIN_REDIRECTION = "sellerapp://shop-admin/redirection-page";
+        String PRODUCT_MANAGE = "sellerapp://product/manage";
+
     }
 
     interface TokopediaNow {
@@ -627,6 +637,12 @@ public interface ApplinkConst {
 
         // chat source page
         String SOURCE_CHAT_SEARCH = "chat_search";
+    }
+
+    interface Tokomember{
+        String MAIN_PATH = "sellerapp://tokomember";
+        String PROGRAM_EXTENSION = "/tokomember/program-extension";
+        String COUPON_DETAIL = "/tokomember/coupon-detail";
     }
 
     interface AttachInvoice {
@@ -732,6 +748,10 @@ public interface ApplinkConst {
 
         String VALUE_CAMERA_PAGE = "0"; // camera page
         String VALUE_GALLERY_PAGE = "1"; // gallery page
+    }
+
+    interface MediaEditor {
+        String MEDIA_EDITOR = "tokopedia://media-editor";
     }
 
     interface GeneralInfo {

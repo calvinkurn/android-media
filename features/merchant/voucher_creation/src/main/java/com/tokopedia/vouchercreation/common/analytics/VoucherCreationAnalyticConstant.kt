@@ -16,6 +16,7 @@ object VoucherCreationAnalyticConstant {
         const val USER_ID = "userId"
         const val BUSINESS_UNIT = "businessUnit"
         const val PAGE_SOURCE = "pageSource"
+        const val TRACKER_ID = "trackerId"
     }
 
     object Values {
@@ -25,6 +26,11 @@ object VoucherCreationAnalyticConstant {
         const val PHYSICAL_GOODS = "physical goods"
         const val COMMUNICATION = "communication"
         const val SHARING_EXPERIENCE = "sharingexperience"
+        const val TRACKER_ID_CLICK_ENTRYPOINT_SHARE = "27552"
+        const val TRACKER_ID_DISMISS_SHARE = "27553"
+        const val TRACKER_ID_CLICK_CHANNEL_SHARE = "27554"
+        const val TRACKER_ID_VIEW_SHARE = "27555"
+        const val IMAGE_TYPE_SHARE = "default"
     }
 
     object ScreenName {

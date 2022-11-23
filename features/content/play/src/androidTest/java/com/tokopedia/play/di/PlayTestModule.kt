@@ -51,9 +51,9 @@ import javax.inject.Named
 @Module
 class PlayTestModule(
     val mContext: Context,
-    val channelStateStorage: PlayChannelStateStorage = PlayChannelStateStorage(),
     val trackingQueue: TrackingQueue = TrackingQueue(mContext),
     val userSession: (appContext: Context) -> UserSessionInterface = { UserSession(it) },
+    val remoteConfig: RemoteConfig = FirebaseRemoteConfigImpl(mContext),
 ) {
 
     @PlayScope
@@ -124,13 +124,13 @@ class PlayTestModule(
     @PlayScope
     @Provides
     fun provideRemoteConfig(): RemoteConfig {
-        return FirebaseRemoteConfigImpl(mContext)
+        return remoteConfig
     }
 
     @PlayScope
     @Provides
     fun providePlayChannelStateStorage(): PlayChannelStateStorage {
-        return channelStateStorage
+        return PlayChannelStateStorage()
     }
 
     @PlayScope
@@ -149,17 +149,6 @@ class PlayTestModule(
     @Provides
     fun provideHtmlTextTransformer(): HtmlTextTransformer {
         return DefaultHtmlTextTransformer()
-    }
-
-    @Provides
-    fun provideWebSocket(userSession: UserSessionInterface, dispatchers: CoroutineDispatchers, localCacheHandler: LocalCacheHandler): PlayWebSocket {
-        return PlayWebSocketImpl(
-            OkHttpClient.Builder(),
-            userSession,
-            dispatchers,
-            mContext,
-            localCacheHandler,
-        )
     }
 
     @Provides

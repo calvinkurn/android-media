@@ -16,7 +16,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
-import com.tokopedia.logisticCommon.util.StringFormatterHelper.appendHtmlBoldText
+import com.tokopedia.logisticcart.scheduledelivery.utils.StringFormatterHelper.appendHtmlBoldText
 import com.tokopedia.logisticcart.R
 import com.tokopedia.logisticcart.databinding.ItemShipmentShippingExperienceBinding
 import com.tokopedia.logisticcart.scheduledelivery.view.ShippingScheduleWidget
@@ -88,9 +88,9 @@ class ShippingWidget : ConstraintLayout {
     ) {
         binding?.apply {
             if (shipmentCartItemModel.isShippingBorderRed) {
-                containerShippingExperience.setBackgroundResource(R.drawable.checkout_module_bg_rounded_red)
+                containerShippingExperience.setBackgroundResource(com.tokopedia.purchase_platform.common.R.drawable.bg_pp_rounded_red)
             } else {
-                containerShippingExperience.setBackgroundResource(R.drawable.checkout_module_bg_rounded_grey)
+                containerShippingExperience.setBackgroundResource(com.tokopedia.purchase_platform.common.R.drawable.bg_pp_rounded_grey)
             }
             if (shipmentCartItemModel.isTriggerShippingVibrationAnimation) {
                 containerShippingExperience.animate()
@@ -125,7 +125,7 @@ class ShippingWidget : ConstraintLayout {
             layoutStateHasErrorShipping.visible()
             llShippingExperienceStateLoading.root.gone()
             containerShippingExperience.visible()
-            containerShippingExperience.setBackgroundResource(R.drawable.checkout_module_bg_rounded_grey)
+            containerShippingExperience.setBackgroundResource(com.tokopedia.purchase_platform.common.R.drawable.bg_pp_rounded_grey)
         }
     }
 
@@ -134,7 +134,7 @@ class ShippingWidget : ConstraintLayout {
             layoutStateNoSelectedShipping.gone()
             llShippingExperienceStateLoading.root.gone()
             containerShippingExperience.visible()
-            containerShippingExperience.setBackgroundResource(R.drawable.checkout_module_bg_rounded_grey)
+            containerShippingExperience.setBackgroundResource(com.tokopedia.purchase_platform.common.R.drawable.bg_pp_rounded_grey)
         }
     }
 
@@ -581,7 +581,7 @@ class ShippingWidget : ConstraintLayout {
             layoutStateNoSelectedShipping.gone()
             llShippingExperienceStateLoading.root.gone()
             containerShippingExperience.visible()
-            containerShippingExperience.setBackgroundResource(R.drawable.checkout_module_bg_rounded_grey)
+            containerShippingExperience.setBackgroundResource(com.tokopedia.purchase_platform.common.R.drawable.bg_pp_rounded_grey)
             layoutStateHasSelectedNormalShipping.gone()
             layoutStateFailedShipping.gone()
             layoutStateHasErrorShipping.gone()
