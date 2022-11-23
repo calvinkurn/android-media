@@ -164,7 +164,7 @@ class AddProductViewModel @Inject constructor(
                     selectedParentProductIds.count()
                 }
 
-                val allParentProductSelected = selectedProductCount == productsResponse.total
+                val isSelectAllCheckboxActive = selectedProductCount == productsResponse.total || currentState.isSelectAllCheckboxActive
 
                 _uiEffect.emit(AddProductEffect.LoadNextPageSuccess(updatedParentProducts, allParentProducts))
                 _uiState.update {
@@ -173,7 +173,7 @@ class AddProductViewModel @Inject constructor(
                         products = allParentProducts,
                         selectedProductsIds = selectedParentProductIds,
                         selectedProductCount = selectedProductCount,
-                        isSelectAllCheckboxActive = allParentProductSelected,
+                        isSelectAllCheckboxActive = isSelectAllCheckboxActive,
                         totalProducts = productsResponse.total
                     )
                 }
