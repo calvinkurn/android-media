@@ -89,9 +89,9 @@ class PrivacyPolicySection constructor(
                 toggleCollapsable(it.shown)
                 if (it.shown) {
                     when (it.innerState) {
-                        is PrivacyPolicyUiModel.InnerState.Error ->  showLocalLoad()
-                        PrivacyPolicyUiModel.InnerState.Loading -> loadingPrivacyPolicyList()
                         is PrivacyPolicyUiModel.InnerState.Success -> showList(it.innerState.list)
+                        PrivacyPolicyUiModel.InnerState.Loading -> loadingPrivacyPolicyList()
+                        PrivacyPolicyUiModel.InnerState.Error ->  showLocalLoad()
                     }
                 }
             }
