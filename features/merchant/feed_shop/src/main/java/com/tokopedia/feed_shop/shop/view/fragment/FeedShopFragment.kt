@@ -29,6 +29,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.content.common.types.BundleData
 import com.tokopedia.createpost.common.analyics.FeedTrackerImagePickerInsta
 import com.tokopedia.createpost.common.view.viewmodel.CreatePostViewModel
 import com.tokopedia.dialog.DialogUnify
@@ -36,10 +37,16 @@ import com.tokopedia.feed_shop.R
 import com.tokopedia.feed_shop.analytics.ShopAnalytics
 import com.tokopedia.feed_shop.databinding.FragmentFeedShopBinding
 import com.tokopedia.feed_shop.di.DaggerFeedShopComponent
+import com.tokopedia.feed_shop.shop.domain.WhitelistDomain
+import com.tokopedia.feed_shop.shop.view.InterfaceShopPageFab
+import com.tokopedia.feed_shop.shop.view.adapter.factory.FeedShopFactoryImpl
+import com.tokopedia.feed_shop.shop.view.contract.FeedShopContract
+import com.tokopedia.feed_shop.shop.view.model.EmptyFeedShopSellerMigrationUiModel
+import com.tokopedia.feed_shop.shop.view.model.EmptyFeedShopUiModel
+import com.tokopedia.feed_shop.shop.view.model.WhitelistUiModel
 import com.tokopedia.feedcomponent.analytics.posttag.PostTagAnalytics
 import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCard
-import com.tokopedia.feedcomponent.data.feedrevamp.FeedXMedia
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta
 import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem
@@ -59,12 +66,12 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopadsShopView
 import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightCardViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.TrackingPostModel
-import com.tokopedia.feedcomponent.view.viewmodel.posttag.ProductPostTagViewModelNew
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopUiModel
 import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
 import com.tokopedia.feedcomponent.view.widget.CardTitleView
 import com.tokopedia.feedcomponent.view.widget.FeedMultipleImageView
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.imagepicker_insta.common.trackers.TrackerProvider
 import com.tokopedia.kolcommon.domain.usecase.LikeKolPostUseCase
 import com.tokopedia.kolcommon.util.PostMenuListener
 import com.tokopedia.kolcommon.util.createBottomMenu
@@ -76,25 +83,15 @@ import com.tokopedia.seller_migration_common.isSellerMigrationEnabled
 import com.tokopedia.seller_migration_common.presentation.util.goToInformationWebview
 import com.tokopedia.seller_migration_common.presentation.util.goToSellerApp
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
-import com.tokopedia.feed_shop.shop.domain.WhitelistDomain
-import com.tokopedia.feed_shop.shop.view.InterfaceShopPageFab
-import com.tokopedia.feed_shop.shop.view.adapter.factory.FeedShopFactoryImpl
-import com.tokopedia.feed_shop.shop.view.contract.FeedShopContract
-import com.tokopedia.feed_shop.shop.view.model.EmptyFeedShopSellerMigrationUiModel
-import com.tokopedia.feed_shop.shop.view.model.EmptyFeedShopUiModel
-import com.tokopedia.feed_shop.shop.view.model.WhitelistUiModel
-import com.tokopedia.content.common.types.BundleData
-import com.tokopedia.imagepicker_insta.common.trackers.TrackerProvider
 import com.tokopedia.shop.common.view.interfaces.HasSharedViewModel
 import com.tokopedia.shop.common.view.interfaces.ISharedViewModel
 import com.tokopedia.shop.common.view.interfaces.ShopPageSharedListener
 import com.tokopedia.shop.common.view.model.ShopPageFabConfig
-import com.tokopedia.topads.sdk.domain.model.CpmData
-import com.tokopedia.topads.sdk.domain.model.Product
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.floatingbutton.FloatingButtonItem
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.view.binding.viewBinding
+import java.util.*
 import javax.inject.Inject
 import com.tokopedia.universal_sharing.R as universalSharingR
 
@@ -169,6 +166,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         private const val KOL_COMMENT_CODE = 13
         private const val PARAM_SOURCE = "source"
         private const val SHOP_PAGE = "shop_page"
+        private const val WEBVIEW_URL_FORMAT = "%s?url=%s"
 
         private const val PARAM_CREATE_POST_URL: String = "PARAM_CREATE_POST_URL"
         private const val PARAM_SHOP_ID: String = "PARAM_SHOP_ID"
@@ -1083,7 +1081,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         } else {
             RouteManager.route(
                     activity,
-                    String.format("%s?url=%s", ApplinkConst.WEBVIEW, updatedUrl)
+                String.format(Locale.ENGLISH, WEBVIEW_URL_FORMAT, ApplinkConst.WEBVIEW, updatedUrl)
             )
         }
     }
