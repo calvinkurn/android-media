@@ -14,7 +14,9 @@ import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.privacycenter.common.di.PrivacyCenterComponent
 import com.tokopedia.privacycenter.databinding.FragmentDsarAddEmailLayoutBinding
+import com.tokopedia.privacycenter.dsar.model.uimodel.AddEmailModel
 import com.tokopedia.privacycenter.dsar.viewmodel.DsarAddEmailViewModel
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
@@ -56,21 +58,39 @@ class DsarAddEmailFragment: BaseDaggerFragment() {
         }
     }
 
-    private fun setupObserver() {
-        viewModel._checkEmail.observe(viewLifecycleOwner) {
-            if(it.isNotEmpty()) {
-                goToVerificationActivity(it)
-            }
-        }
-
-        viewModel._addEmail.observe(viewLifecycleOwner) {
-            if(it) {
-                onSuccessAddEmail()
+    private fun renderViewModel(data: AddEmailModel) {
+        data.let {
+            binding?.btnAddEmail?.isLoading = it.btnLoading
+            if(it.inputError.isNotEmpty()) {
+                binding?.txtFieldEmail?.isInputError = true
+                binding?.txtFieldEmail?.editText?.error = it.inputError
+            } else {
+                binding?.txtFieldEmail?.isInputError = false
             }
         }
     }
 
-    private fun onSuccessAddEmail() {
+    private fun setupObserver() {
+        viewModel.addEmailModel.observe(viewLifecycleOwner) {
+            renderViewModel(it)
+        }
+
+        viewModel.routeToSuccessPage.observe(viewLifecycleOwner) {
+            finishActivityWithResultOk()
+        }
+
+        viewModel.toasterError.observe(viewLifecycleOwner) {
+            Toaster.build(requireView(), it, Toaster.LENGTH_LONG).show()
+        }
+
+        viewModel.routeToVerification.observe(viewLifecycleOwner) {
+            if(it.isNotEmpty()) {
+                goToVerificationActivity(it)
+            }
+        }
+    }
+
+    private fun finishActivityWithResultOk() {
         activity?.setResult(Activity.RESULT_OK)
         activity?.finish()
     }

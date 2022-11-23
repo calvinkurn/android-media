@@ -11,7 +11,7 @@ import javax.inject.Inject
 class DsarCheckEmailUseCase @Inject constructor(
     @ApplicationContext private val repository: GraphqlRepository,
     dispatcher: CoroutineDispatchers
-) : CoroutineUseCase<Map<String, Any>, DsarCheckEmailResponse>(dispatcher.io) {
+) : CoroutineUseCase<String, DsarCheckEmailResponse>(dispatcher.io) {
 
     override fun graphqlQuery(): String = """
         mutation check_email(${'$'}email: String!) {
@@ -22,7 +22,11 @@ class DsarCheckEmailUseCase @Inject constructor(
         }
     """.trimIndent()
 
-    override suspend fun execute(params: Map<String, Any>): DsarCheckEmailResponse {
-        return repository.request(graphqlQuery(), params)
+    private fun createParam(param: String): Map<String, Any> {
+        return mapOf("email" to param)
+    }
+
+    override suspend fun execute(params: String): DsarCheckEmailResponse {
+        return repository.request(graphqlQuery(), createParam(params))
     }
 }

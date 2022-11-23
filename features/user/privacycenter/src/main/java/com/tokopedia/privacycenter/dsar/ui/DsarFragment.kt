@@ -23,7 +23,6 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.privacycenter.R
 import com.tokopedia.privacycenter.common.di.PrivacyCenterComponent
-import com.tokopedia.privacycenter.common.utils.formatDateLocalTimezone
 import com.tokopedia.privacycenter.databinding.BottomSheetRangePickerBinding
 import com.tokopedia.privacycenter.databinding.FragmentDsarLayoutBinding
 import com.tokopedia.privacycenter.databinding.ItemTransactionHistoryRangeBinding
@@ -37,6 +36,7 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.date.DateUtil
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.util.*
 import javax.inject.Inject
@@ -74,9 +74,9 @@ class DsarFragment: BaseDaggerFragment(), OnDateChangedListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if(userSession.email.isEmpty()) {
+//        if(userSession.email.isEmpty()) {
             goToAddEmail()
-        }
+//        }
     }
 
     fun goToAddEmail() {
@@ -389,7 +389,8 @@ class DsarFragment: BaseDaggerFragment(), OnDateChangedListener {
         binding?.layoutProgress?.btnBack?.setOnClickListener {
             activity?.finish()
         }
-        binding?.layoutProgress?.txtProgressDescription?.text = "Kami bakal kabari lewat e-mail ${searchResult.email} maks. ${searchResult.deadline.formatDateLocalTimezone()}.\nSilahkan cek secara berkala, ya!"
+        val formattedDate = DateUtil.formatDate(DateUtil.YYYY_MM_DD_T_HH_MM_SS_SSS_Z, DateUtil.DEFAULT_VIEW_FORMAT, searchResult.deadline)
+        binding?.layoutProgress?.txtProgressDescription?.text = "Kami bakal kabari lewat e-mail ${searchResult.email} maks. ${formattedDate}.\nSilahkan cek secara berkala, ya!"
     }
 
     private fun showBottomSheetDetails(searchResult: GetRequestDetailResponse) {

@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import androidx.fragment.app.FragmentManager
 import com.google.gson.Gson
 import com.tokopedia.media.loader.loadImage
-import com.tokopedia.privacycenter.common.utils.formatDateLocalTimezone
 import com.tokopedia.privacycenter.databinding.BottomSheetDetailsBinding
 import com.tokopedia.privacycenter.dsar.DsarConstants.FILTER_TYPE_PAYMENT
 import com.tokopedia.privacycenter.dsar.DsarConstants.HTML_NEW_LINE
@@ -18,6 +17,7 @@ import com.tokopedia.privacycenter.dsar.model.GetRequestDetailResponse
 import com.tokopedia.privacycenter.dsar.model.RequestAdditionalData
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.date.DateUtil
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -42,7 +42,8 @@ object RequestDetailBottomSheet {
             binding.personalInfo.txtProfileEmail.text = requestDetailResponse.email
             binding.personalInfo.txtProfileName.text = requestDetailResponse.firstName
             binding.personalInfo.txtProfilePhone.text = additionalData.phoneNumber
-            binding.layoutSummary.ticker.setTextDescription(Html.fromHtml("Salinan data akan dikirim ke e-mail diatas paling lambat <b>${requestDetailResponse.deadline.formatDateLocalTimezone()}</b>"))
+            val formattedDate = DateUtil.formatDate(DateUtil.YYYY_MM_DD_T_HH_MM_SS_SSS_Z, DateUtil.DEFAULT_VIEW_FORMAT, requestDetailResponse.deadline)
+            binding.layoutSummary.ticker.setTextDescription(Html.fromHtml("Salinan data akan dikirim ke e-mail diatas paling lambat <b>${formattedDate}</b>"))
             binding.layoutSummary.txtSummary.text = Html.fromHtml(mapAdditionalData(additionalData))
         }
         bottomSheet.show(fragmentManager, "")

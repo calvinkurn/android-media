@@ -1,9 +1,11 @@
 package com.tokopedia.privacycenter.common.di
 
 import android.content.Context
+import com.chuckerteam.chucker.api.ChuckerCollector
 import com.chuckerteam.chucker.api.ChuckerInterceptor
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.privacycenter.dsar.DsarHelper
 import com.tokopedia.privacycenter.dsar.domain.GetCredentialsApi
 import com.tokopedia.privacycenter.dsar.domain.OneTrustApi
@@ -19,14 +21,19 @@ class DsarModule {
     @Provides
     @ActivityScope
     fun provideChuckerInterceptor(@ApplicationContext context: Context): ChuckerInterceptor {
-        return ChuckerInterceptor(context)
+        val collector = ChuckerCollector(
+            context, GlobalConfig.isAllowDebuggingTools())
+        return ChuckerInterceptor(
+            context, collector)
     }
 
     @Provides
     @ActivityScope
     fun provideOneTrustOkHttpClient(chuckerInterceptor: ChuckerInterceptor): OkHttpClient {
         val builder = OkHttpClient.Builder()
-            .addInterceptor(chuckerInterceptor)
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            builder.addInterceptor(chuckerInterceptor)
+        }
         return builder.build()
     }
 
@@ -34,6 +41,7 @@ class DsarModule {
     @ActivityScope
     fun provideOneTrustRetrofit(okHttpClient: OkHttpClient): Retrofit {
         return Retrofit.Builder()
+            // move to tokopedia url when api ready
             .baseUrl("https://uat-de.onetrust.com/api/")
             .client(okHttpClient)
             .addConverterFactory(GsonConverterFactory.create())

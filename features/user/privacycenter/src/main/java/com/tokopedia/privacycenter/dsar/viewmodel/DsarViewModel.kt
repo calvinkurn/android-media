@@ -4,14 +4,11 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.privacycenter.common.utils.getSimpleDateFormat
-import com.tokopedia.privacycenter.common.utils.toHumanReadableFormat
 import com.tokopedia.privacycenter.dsar.DsarConstants.DATE_RANGE_CUSTOM
 import com.tokopedia.privacycenter.dsar.DsarConstants.FILTER_TYPE_PAYMENT
 import com.tokopedia.privacycenter.dsar.DsarConstants.FILTER_TYPE_PERSONAL
 import com.tokopedia.privacycenter.dsar.DsarConstants.FILTER_TYPE_TRANSACTION
 import com.tokopedia.privacycenter.dsar.DsarConstants.HTML_NEW_LINE
-import com.tokopedia.privacycenter.dsar.DsarConstants.ONE_TRUST_FORMAT_1
 import com.tokopedia.privacycenter.dsar.DsarConstants.PAYMENT_LABEL
 import com.tokopedia.privacycenter.dsar.DsarConstants.PERSONAL_LABEL
 import com.tokopedia.privacycenter.dsar.DsarConstants.STATUS_CLOSED
@@ -28,6 +25,9 @@ import com.tokopedia.privacycenter.dsar.model.GetRequestDetailResponse
 import com.tokopedia.privacycenter.dsar.model.ItemRangeModel
 import com.tokopedia.privacycenter.dsar.model.SearchRequestBody
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.utils.date.DateUtil
+import com.tokopedia.utils.date.toDate
+import com.tokopedia.utils.date.toString
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import kotlinx.coroutines.launch
 import java.util.*
@@ -150,23 +150,24 @@ class DsarViewModel @Inject constructor(
         val minDate = GregorianCalendar(Locale.getDefault())
         if(selectedId == DATE_RANGE_CUSTOM) {
             endDate.value?.let {
-                maxDate.time = it.toHumanReadableFormat()
+                maxDate.time = it.toDate(DateUtil.DEFAULT_VIEW_FORMAT)
             }
             startDate.value?.let {
-                minDate.time = it.toHumanReadableFormat()
+                minDate.time = it.toDate(DateUtil.DEFAULT_VIEW_FORMAT)
             }
         }
-        val formattedMaxDate = getSimpleDateFormat(ONE_TRUST_FORMAT_1).format(maxDate.time)
-        val formattedMinDate = getSimpleDateFormat(ONE_TRUST_FORMAT_1).format(minDate.time)
+
+        val formattedMaxDate = maxDate.time.toString(DateUtil.YYYYMMDD)
+        val formattedMinDate = minDate.time.toString(DateUtil.YYYYMMDD)
         return "${TRANSACTION_HISTORY_PREFIX}_${formattedMinDate}_${formattedMaxDate}"
     }
 
     fun setStartDate(date: Date) {
-        startDate.value = date.toHumanReadableFormat()
+        startDate.value = date.toString()
     }
 
     fun setEndDate(date: Date) {
-        endDate.value = date.toHumanReadableFormat()
+        endDate.value = date.toString(DateUtil.DEFAULT_VIEW_FORMAT)
         setSelectedRangeItems(DATE_RANGE_CUSTOM)
     }
 

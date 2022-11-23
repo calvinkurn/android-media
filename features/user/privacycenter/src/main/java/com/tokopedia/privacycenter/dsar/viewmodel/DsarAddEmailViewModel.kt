@@ -7,6 +7,8 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.privacycenter.dsar.domain.DsarAddEmailUseCase
 import com.tokopedia.privacycenter.dsar.domain.DsarCheckEmailUseCase
 import com.tokopedia.privacycenter.dsar.model.AddEmailParam
+import com.tokopedia.privacycenter.dsar.model.uimodel.AddEmailModel
+import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -16,35 +18,46 @@ class DsarAddEmailViewModel @Inject constructor(
     dispatcher: CoroutineDispatchers
 ): BaseViewModel(dispatcher.main) {
 
-    private val checkEmail = MutableLiveData<String>()
-    val _checkEmail: LiveData<String> = checkEmail
+    private val _addEmailModel = MutableLiveData(AddEmailModel())
+    val addEmailModel: LiveData<AddEmailModel> = _addEmailModel
 
-    private val addEmail = MutableLiveData<Boolean>()
-    val _addEmail: LiveData<Boolean> = addEmail
+    private val _routeToSuccessPage = SingleLiveEvent<Void>()
+    val routeToSuccessPage: LiveData<Void> = _routeToSuccessPage
+
+    private val _routeToVerification = SingleLiveEvent<String>()
+    val routeToVerification: LiveData<String> = _routeToVerification
+
+    private val _toasterError = SingleLiveEvent<String>()
+    val toasterError: LiveData<String> = _toasterError
 
     fun checkEmail(email: String) {
+        _addEmailModel.value = _addEmailModel.value?.copy(btnLoading = true)
         launch {
             try {
-                val param = mapOf("email" to email)
-                val result = dsarCheckEmailUseCase(param).data
+                val result = dsarCheckEmailUseCase(email).data
+                _addEmailModel.value = _addEmailModel.value?.copy(inputText = email, inputError = result.errorMessage, btnLoading = false)
                 if(result.isValid) {
-                    checkEmail.value = email
-                } else {
-                    checkEmail.value = ""
+                    _routeToVerification.value = email
                 }
             } catch (e: Exception) {
-                checkEmail.value = ""
+                _addEmailModel.value = _addEmailModel.value?.copy(inputText = "", inputError = e.message ?: "", btnLoading = false)
             }
         }
     }
 
     fun addEmail(email: String, otpCode: String, otpType: String) {
+        _addEmailModel.value = _addEmailModel.value?.copy(btnLoading = true)
         launch {
             try {
                 val param = AddEmailParam(email, otpCode, otpType)
-                addEmail.value = dsarAddEmailUseCase(param).data.isSuccess
+                val result = dsarAddEmailUseCase(param).data
+                if(result.isSuccess && result.errorMessage.isNotEmpty()) {
+                    _routeToSuccessPage.call()
+                } else if(result.errorMessage.isNotEmpty()) {
+                    _toasterError.value = result.errorMessage
+                }
             } catch (e: Exception) {
-                addEmail.value = false
+                _toasterError.value = e.message
             }
         }
     }

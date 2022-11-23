@@ -1,7 +1,8 @@
 package com.tokopedia.privacycenter.dsar
 
-import com.tokopedia.privacycenter.common.utils.getSimpleDateFormat
 import com.tokopedia.privacycenter.dsar.model.ItemRangeModel
+import com.tokopedia.utils.date.DateUtil
+import com.tokopedia.utils.date.toString
 import java.util.*
 
 object DsarUtils {
@@ -66,9 +67,9 @@ object DsarUtils {
                 }
             }
         }
-        val formatter = getSimpleDateFormat(DsarConstants.ONE_TRUST_FORMAT_1)
-        val formattedMaxDate = formatter.format(maxDate.time)
-        val formattedMinDate = formatter.format(minDate.time)
+        val formattedMaxDate = maxDate.time.toString(DateUtil.YYYYMMDD)
+        val formattedMinDate = minDate.time.toString(DateUtil.YYYYMMDD)
+
         return "${DsarConstants.TRANSACTION_HISTORY_PREFIX}_${formattedMinDate}_${formattedMaxDate}"
     }
 }
