@@ -26,6 +26,9 @@ import com.tokopedia.search.result.product.chooseaddress.ChooseAddressView
 import com.tokopedia.search.result.product.inspirationlistatc.InspirationListAtcPresenterDelegate
 import com.tokopedia.search.result.product.inspirationlistatc.InspirationListAtcView
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDynamicProductView
+import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselPresenterDelegate
+import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselView
+import com.tokopedia.search.result.product.inspirationwidget.InspirationWidgetPresenterDelegate
 import com.tokopedia.search.result.product.lastfilter.LastFilterPresenterDelegate
 import com.tokopedia.search.result.product.pagination.PaginationImpl
 import com.tokopedia.search.result.product.productfilterindicator.ProductFilterIndicator
@@ -36,6 +39,7 @@ import com.tokopedia.search.result.product.safesearch.SafeSearchView
 import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationPreference
 import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationPresenterDelegate
 import com.tokopedia.search.result.product.suggestion.SuggestionPresenter
+import com.tokopedia.search.result.product.tdn.TopAdsImageViewPresenterDelegate
 import com.tokopedia.search.result.product.ticker.TickerPresenterDelegate
 import com.tokopedia.search.result.product.wishlist.WishlistPresenterDelegate
 import com.tokopedia.search.result.product.wishlist.WishlistView
@@ -114,6 +118,7 @@ internal open class ProductListPresenterTestFixtures {
     protected val applinkModifier = mockk<ApplinkModifier>(relaxed = true)
     protected val safeSearchPreference = mockk<MutableSafeSearchPreference>(relaxed = true)
     protected val safeSearchView = mockk<SafeSearchView>(relaxed = true)
+    protected val inspirationCarouselView = mockk<InspirationCarouselView>(relaxed = true)
 
     protected lateinit var productListPresenter: ProductListPresenter
 
@@ -143,6 +148,7 @@ internal open class ProductListPresenterTestFixtures {
             safeSearchPreference,
             safeSearchView,
         )
+        val topAdsImageViewPresenter = TopAdsImageViewPresenterDelegate()
 
         productListPresenter = ProductListPresenter(
             searchFirstPageUseCase,
@@ -155,6 +161,7 @@ internal open class ProductListPresenterTestFixtures {
             { getLocalSearchRecommendationUseCase },
             { getInspirationCarouselChipsProductsUseCase },
             { saveLastFilterUseCase },
+            addToCartUseCase,
             topAdsUrlHitter,
             testSchedulersProvider,
             topAdsHeadlineHelper,
@@ -183,8 +190,13 @@ internal open class ProductListPresenterTestFixtures {
             suggestionPresenter,
             tickerPresenter,
             safeSearchPresenter,
-            addToCartUseCase,
+            topAdsImageViewPresenter,
             WishlistPresenterDelegate(wishlistView),
+            InspirationWidgetPresenterDelegate(),
+            InspirationCarouselPresenterDelegate(
+                inspirationCarouselView,
+                inspirationListAtcPresenterDelegate,
+            ),
         )
         productListPresenter.attachView(productListView)
     }
