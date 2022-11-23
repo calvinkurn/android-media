@@ -12,7 +12,7 @@ import com.tokopedia.utils.view.binding.viewBinding
 class TokoNowProductCardCarouselItemViewHolder(
     view: View,
     private var listener: TokoNowCarouselProductCardItemListener? = null
-): AbstractViewHolder<TokoNowProductCardCarouselItemUiModel>(view) {
+) : AbstractViewHolder<TokoNowProductCardCarouselItemUiModel>(view) {
 
     companion object {
         @LayoutRes
@@ -58,6 +58,18 @@ class TokoNowProductCardCarouselItemViewHolder(
                     product = element
                 )
             }
+        }
+    }
+
+    override fun bind(element: TokoNowProductCardCarouselItemUiModel?, payloads: MutableList<Any>) {
+        val payload = payloads.firstOrNull()
+
+        if (payload != null && element != null) {
+            binding?.productCard?.setData(
+                model = element.productCardModel
+            )
+        } else {
+            super.bind(element, payloads)
         }
     }
 

@@ -7,25 +7,24 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType
-import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics
 import com.tokopedia.tokopedianow.common.model.TokoNowSeeMoreCardCarouselUiModel
-import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselAtcProductCardUiModel
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowSeeMoreCardCarouselViewHolder
+import com.tokopedia.tokopedianow.home.analytic.HomeAnalytics
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselAtcProductCardUiModel
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeLeftCarouselAtcProductCardViewHolder
 import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeLeftCarouselAtcViewHolder
 import com.tokopedia.tokopedianow.home.presentation.viewmodel.TokoNowHomeViewModel
 import com.tokopedia.user.session.UserSessionInterface
 
-class HomeLeftCarouselAtcCallback (
+class HomeLeftCarouselAtcCallback(
     private val context: Context?,
     private val userSession: UserSessionInterface,
     private val viewModel: TokoNowHomeViewModel,
     private val analytics: HomeAnalytics,
     private val startActivityForResult: (Intent, Int) -> Unit
-): HomeLeftCarouselAtcProductCardViewHolder.HomeLeftCarouselAtcProductCardListener,
-   TokoNowSeeMoreCardCarouselViewHolder.TokoNowCarouselProductCardSeeMoreListener,
-   HomeLeftCarouselAtcViewHolder.HomeLeftCarouselAtcListener
-{
+) : HomeLeftCarouselAtcProductCardViewHolder.HomeLeftCarouselAtcProductCardListener,
+    TokoNowSeeMoreCardCarouselViewHolder.TokoNowCarouselProductCardSeeMoreListener,
+    HomeLeftCarouselAtcViewHolder.HomeLeftCarouselAtcListener {
 
     override fun onProductCardAddVariantClicked(
         product: HomeLeftCarouselAtcProductCardUiModel
@@ -37,7 +36,7 @@ class HomeLeftCarouselAtcCallback (
                 pageSource = VariantPageSource.TOKONOW_PAGESOURCE,
                 isTokoNow = true,
                 shopId = product.shopId,
-                startActivitResult =startActivityForResult
+                startActivitResult = startActivityForResult
             )
         }
     }
@@ -46,16 +45,6 @@ class HomeLeftCarouselAtcCallback (
         product: HomeLeftCarouselAtcProductCardUiModel,
         quantity: Int
     ) {
-        if (userSession.isLoggedIn) {
-            viewModel.addProductToCart(
-                productId = product.id.orEmpty(),
-                quantity = quantity,
-                shopId = product.shopId,
-                type = TokoNowLayoutType.MIX_LEFT_CAROUSEL_ATC_ANIMATION_FINISHED
-            )
-        } else {
-            RouteManager.route(context, ApplinkConst.LOGIN)
-        }
     }
 
     override fun onProductCardQuantityChanged(
@@ -97,7 +86,8 @@ class HomeLeftCarouselAtcCallback (
     }
 
     override fun onSeeMoreClicked(
-        appLink: String, channelId: String,
+        appLink: String,
+        channelId: String,
         headerName: String
     ) {
         openAppLink(appLink)
@@ -145,7 +135,7 @@ class HomeLeftCarouselAtcCallback (
     }
 
     private fun openAppLink(appLink: String) {
-        if(appLink.isNotEmpty()) {
+        if (appLink.isNotEmpty()) {
             RouteManager.route(context, appLink)
         }
     }

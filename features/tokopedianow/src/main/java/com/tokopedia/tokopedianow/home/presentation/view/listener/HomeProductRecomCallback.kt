@@ -19,7 +19,7 @@ class HomeProductRecomCallback(
     private val viewModel: TokoNowHomeViewModel,
     private val analytics: HomeAnalytics,
     private val startActivityForResult: (Intent, Int) -> Unit
-): HomeProductRecomListener {
+) : HomeProductRecomListener {
 
     override fun onProductRecomClicked(
         product: TokoNowProductCardCarouselItemUiModel,
@@ -90,23 +90,6 @@ class HomeProductRecomCallback(
         }
     }
 
-    override fun onProductRecomAnimationFinished(
-        product: TokoNowProductCardCarouselItemUiModel,
-        quantity: Int,
-        channelId: String
-    ) {
-        if (userSession.isLoggedIn) {
-            viewModel.addProductToCart(
-                productId = product.productCardModel.productId,
-                quantity = quantity,
-                shopId = product.shopId,
-                type = TokoNowLayoutType.PRODUCT_RECOM_ANIMATION_FINISHED
-            )
-        } else {
-            RouteManager.route(context, ApplinkConst.LOGIN)
-        }
-    }
-
     override fun onProductCardAddVariantClicked(
         product: TokoNowProductCardCarouselItemUiModel,
         position: Int
@@ -124,9 +107,8 @@ class HomeProductRecomCallback(
     }
 
     private fun openAppLink(appLink: String) {
-        if(appLink.isNotEmpty()) {
+        if (appLink.isNotEmpty()) {
             RouteManager.route(context, appLink)
         }
     }
-
 }

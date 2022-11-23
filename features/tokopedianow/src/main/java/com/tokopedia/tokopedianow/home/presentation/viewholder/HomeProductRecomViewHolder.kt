@@ -17,7 +17,7 @@ import com.tokopedia.utils.view.binding.viewBinding
 class HomeProductRecomViewHolder(
     itemView: View,
     private val tokoNowView: TokoNowView? = null,
-    private val listener: HomeProductRecomListener? = null,
+    private val listener: HomeProductRecomListener? = null
 ) : AbstractViewHolder<HomeProductRecomUiModel>(itemView),
     TokoNowProductCardCarouselView.TokoNowProductCardCarouselListener,
     TokoNowDynamicHeaderView.TokoNowDynamicHeaderListener {
@@ -47,6 +47,15 @@ class HomeProductRecomViewHolder(
             productRecommendation.setListener(
                 productCardCarouselListener = this@HomeProductRecomViewHolder,
                 headerCarouselListener = this@HomeProductRecomViewHolder
+            )
+        }
+    }
+
+    override fun bind(element: HomeProductRecomUiModel?, payloads: MutableList<Any>) {
+        if (payloads.firstOrNull() == true && element != null) {
+            binding?.productRecommendation?.setItems(
+                items = element.productList,
+                seeMoreModel = element.seeMoreModel
             )
         }
     }
@@ -101,11 +110,6 @@ class HomeProductRecomViewHolder(
         product: TokoNowProductCardCarouselItemUiModel,
         quantity: Int
     ) {
-        listener?.onProductRecomAnimationFinished(
-            product = product,
-            quantity = quantity,
-            channelId = channelId
-        )
     }
 
     override fun onProductCardQuantityChanged(
@@ -164,11 +168,6 @@ class HomeProductRecomViewHolder(
             headerName: String
         )
         fun onProductRecomQuantityChanged(
-            product: TokoNowProductCardCarouselItemUiModel,
-            quantity: Int,
-            channelId: String
-        )
-        fun onProductRecomAnimationFinished(
             product: TokoNowProductCardCarouselItemUiModel,
             quantity: Int,
             channelId: String

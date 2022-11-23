@@ -8,7 +8,7 @@ class HomeLeftCarouselAtcProductCardDiffer: DiffUtil.ItemCallback<Visitable<*>>(
 
     override fun areItemsTheSame(oldItem: Visitable<*>, newItem: Visitable<*>): Boolean {
         return if (oldItem is HomeLeftCarouselAtcProductCardUiModel && newItem is HomeLeftCarouselAtcProductCardUiModel) {
-            oldItem.id == newItem.id && oldItem.productCardModel.orderQuantity == newItem.productCardModel.orderQuantity
+            oldItem.id == newItem.id
         } else {
             oldItem == newItem
         }

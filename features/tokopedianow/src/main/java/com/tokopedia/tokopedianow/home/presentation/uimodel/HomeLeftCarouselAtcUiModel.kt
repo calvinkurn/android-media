@@ -26,4 +26,15 @@ data class HomeLeftCarouselAtcUiModel(
     override fun equals(other: Any?): Boolean {
         return (other as? HomeLeftCarouselAtcUiModel)?.id == id && (other as? HomeLeftCarouselAtcUiModel)?.productList == productList
     }
+
+    override fun getChangePayload(newModel: HomeLayoutUiModel): Any? {
+        val newItem = newModel as HomeLeftCarouselAtcUiModel
+        val oldProductList = productList
+        val newProductList = newItem.productList
+
+        return when {
+            oldProductList != newProductList -> true
+            else -> null
+        }
+    }
 }
