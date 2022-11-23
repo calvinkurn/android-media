@@ -99,7 +99,7 @@ dependencies {
     testImplementation rootProject.ext.miscDependencies.coroutineTest
     testImplementation rootProject.ext.testDependencies.kotlinTest
     testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
-    implementation rootProject.ext.supportLibDependencies.preferenceV7
+
     androidTestImplementation rootProject.ext.testDependencies.espressoCore
     androidTestImplementation rootProject.ext.testDependencies.espressoContrib
     androidTestImplementation rootProject.ext.testDependencies.espressoIntents
