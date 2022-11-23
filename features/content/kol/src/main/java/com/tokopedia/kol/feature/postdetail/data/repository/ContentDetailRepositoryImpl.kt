@@ -7,6 +7,7 @@ import com.tokopedia.feedcomponent.data.feedrevamp.FeedASGCUpcomingReminderStatu
 import com.tokopedia.feedcomponent.domain.usecase.CheckUpcomingCampaignReminderUseCase
 import com.tokopedia.feedcomponent.domain.usecase.FeedBroadcastTrackerUseCase
 import com.tokopedia.feedcomponent.domain.usecase.FeedXTrackViewerUseCase
+import com.tokopedia.feedcomponent.domain.usecase.GetUserProfileFeedPostsUseCase
 import com.tokopedia.feedcomponent.domain.usecase.PostUpcomingCampaignReminderUseCase
 import com.tokopedia.feedcomponent.util.CustomUiMessageThrowable
 import com.tokopedia.kol.R
@@ -46,6 +47,7 @@ class ContentDetailRepositoryImpl @Inject constructor(
     private val trackViewerUseCase: FeedXTrackViewerUseCase,
     private val checkUpcomingCampaignReminderUseCase: CheckUpcomingCampaignReminderUseCase,
     private val postUpcomingCampaignReminderUseCase: PostUpcomingCampaignReminderUseCase,
+    private val getUserProfileFeedPostUseCase: GetUserProfileFeedPostsUseCase,
     private val mapper: ContentDetailMapper,
 ) : ContentDetailRepository {
 
