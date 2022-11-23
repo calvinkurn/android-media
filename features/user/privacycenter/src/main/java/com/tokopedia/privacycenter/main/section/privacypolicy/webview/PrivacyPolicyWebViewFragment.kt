@@ -10,25 +10,17 @@ import com.tokopedia.webview.BaseWebViewFragment
 
 class PrivacyPolicyWebViewFragment : BaseWebViewFragment() {
 
-    private var htmlContent: String = ""
-    private var title: String = ""
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        htmlContent = arguments?.getString(KEY_HTML_CONTENT).orEmpty()
-        title = arguments?.getString(KEY_TITLE) ?: DEFAULT_TITLE
+        val htmlContent = arguments?.getString(KEY_HTML_CONTENT).orEmpty()
+        val titleArgs = arguments?.getString(KEY_TITLE) ?: DEFAULT_TITLE
 
         val actionbar = activity?.actionBar
         actionbar?.apply {
-            title = this.title
+            title = titleArgs
         }
 
-        renderHtml()
-    }
-
-    @SuppressLint("SetJavaScriptEnabled")
-    private fun renderHtml() {
         webView.loadPartialWebView(htmlContent)
     }
 
