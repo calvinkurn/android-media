@@ -10,11 +10,7 @@ import com.tokopedia.product.detail.common.R
 
 /**
  * CoachMark Hierarchy
- * 1. Product AR
- * 2. IMS
- * 3. Hampers
- * So if 3 of them serves in one PDP, only show one based on hierarchy. Another coach mark will show
- * after pdp re-open
+ * PDP can only shows 1 coach mark in 1 page
  */
 class ProductDetailCoachMarkHelper(context: Context) {
 
@@ -29,7 +25,7 @@ class ProductDetailCoachMarkHelper(context: Context) {
 
     fun showCoachMarkAr(targetView: View?) {
         val shouldShowCoachMark =
-            getCoachMarkState(PRODUCT_DETAIL_AR_PAGE_COACHMARK) == false
+            getCoachMarkState(PRODUCT_DETAIL_AR_PAGE_COACHMARK) == false && !coachMarkEverShowing
 
         if (targetView != null && shouldShowCoachMark) {
             initCoachMarkView(targetView.context)
@@ -53,9 +49,8 @@ class ProductDetailCoachMarkHelper(context: Context) {
 
     fun showCoachMarkOneLiners(targetView: View?) {
         val shouldShowCoachMark =
-            getCoachMarkState(COACH_MARK_IMS_TAG) == false &&
-                    getCoachMarkState(PRODUCT_DETAIL_AR_PAGE_COACHMARK) == true &&
-                    !coachMarkEverShowing
+            getCoachMarkState(COACH_MARK_IMS_TAG) == false && !coachMarkEverShowing
+
 
         if (targetView != null && shouldShowCoachMark) {
             initCoachMarkView(targetView.context)
@@ -79,10 +74,8 @@ class ProductDetailCoachMarkHelper(context: Context) {
     }
 
     fun showCoachMarkHampers(targetView: View?) {
-        val shouldShowCoachMark = getCoachMarkState(PDP_HAMPERS_COACHMARK_EXTRA) == false &&
-                getCoachMarkState(PRODUCT_DETAIL_AR_PAGE_COACHMARK) == true &&
-                getCoachMarkState(COACH_MARK_IMS_TAG) == true &&
-                !coachMarkEverShowing
+        val shouldShowCoachMark = getCoachMarkState(PDP_HAMPERS_COACHMARK_EXTRA) == false
+                && !coachMarkEverShowing
 
         if (targetView != null && shouldShowCoachMark) {
             initCoachMarkView(targetView.context)
