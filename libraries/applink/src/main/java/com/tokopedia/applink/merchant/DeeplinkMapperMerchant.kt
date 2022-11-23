@@ -391,6 +391,16 @@ object DeeplinkMapperMerchant {
         return UriUtil.matchWithPattern(ApplinkConst.SellerApp.SELLER_MVC_LIST, appLink) != null
     }
 
+    fun isSellerMvcListActiveAppLink(deeplink: String): Boolean {
+        val appLink = Uri.parse(deeplink)
+        return UriUtil.matchWithPattern(ApplinkConst.SellerApp.SELLER_MVC_LIST_ACTIVE, appLink) != null
+    }
+
+    fun isSellerMvcListHistoryAppLink(deeplink: String): Boolean {
+        val appLink = Uri.parse(deeplink)
+        return UriUtil.matchWithPattern(ApplinkConst.SellerApp.SELLER_MVC_LIST_HISTORY, appLink) != null
+    }
+
     fun isSellerMvcShopCreateAppLink(deeplink: String): Boolean {
         val appLink = Uri.parse(deeplink)
         return UriUtil.matchWithPattern(ApplinkConst.SellerApp.SELLER_MVC_SHOP_CREATE, appLink) != null
@@ -443,6 +453,24 @@ object DeeplinkMapperMerchant {
         val lastSegment = appLink.lastPathSegment.orEmpty()
         return UriUtil.buildUri(
             ApplinkConstInternalSellerapp.SELLER_MVC_LIST,
+            lastSegment
+        )
+    }
+
+    fun getRegisteredNavigationForSellerMvcListActive(deeplink: String): String {
+        val appLink = Uri.parse(deeplink)
+        val lastSegment = appLink.lastPathSegment.orEmpty()
+        return UriUtil.buildUri(
+            ApplinkConstInternalSellerapp.SELLER_MVC_LIST_ACTIVE,
+            lastSegment
+        )
+    }
+
+    fun getRegisteredNavigationForSellerMvcListHistory(deeplink: String): String {
+        val appLink = Uri.parse(deeplink)
+        val lastSegment = appLink.lastPathSegment.orEmpty()
+        return UriUtil.buildUri(
+            ApplinkConstInternalSellerapp.SELLER_MVC_LIST_HISTORY,
             lastSegment
         )
     }

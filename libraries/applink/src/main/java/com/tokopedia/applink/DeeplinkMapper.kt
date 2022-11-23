@@ -676,6 +676,8 @@ object DeeplinkMapper {
                 DeeplinkMapperMerchant.isSellerTokopediaFlashSaleApplink(deeplink) -> DeeplinkMapperMerchant.getRegisteredNavigationForSellerTokopediaFlashSale(deeplink)
                 DeeplinkMapperMerchant.isSellerTokopediaFlashSaleCampaignDetailApplink(deeplink) -> DeeplinkMapperMerchant.getRegisteredNavigationForSellerTokopediaFlashSaleCampaignDetail(deeplink)
                 DeeplinkMapperMerchant.isSellerMvcListAppLink(deeplink) -> DeeplinkMapperMerchant.getRegisteredNavigationForSellerMvcList(deeplink)
+                DeeplinkMapperMerchant.isSellerMvcListActiveAppLink(deeplink) -> DeeplinkMapperMerchant.getRegisteredNavigationForSellerMvcListActive(deeplink)
+                DeeplinkMapperMerchant.isSellerMvcListHistoryAppLink(deeplink) -> DeeplinkMapperMerchant.getRegisteredNavigationForSellerMvcListHistory(deeplink)
                 DeeplinkMapperMerchant.isSellerMvcShopCreateAppLink(deeplink) -> DeeplinkMapperMerchant.getRegisteredNavigationForSellerMvcShopCreate(deeplink)
                 DeeplinkMapperMerchant.isSellerMvcProductCreateAppLink(deeplink) -> DeeplinkMapperMerchant.getRegisteredNavigationForSellerMvcProductCreate(deeplink)
                 DeeplinkMapperMerchant.isSellerMvcDetailAppLink(deeplink) -> DeeplinkMapperMerchant.getRegisteredNavigationForSellerMvcDetail(deeplink)
