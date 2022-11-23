@@ -54,7 +54,7 @@ class UserProfileViewModelTest {
 
     private val mockOwnProfile = profileBuilder.buildProfile(userID = mockUserId)
     private val mockOtherProfile = profileBuilder.buildProfile(userID = mockOtherUserId)
-    private val mockShopRecom = shopRecomBuilder.buildModelIsShown()
+    private val mockShopRecom = shopRecomBuilder.buildModelIsShown(nextCursor = "")
     private val mockEmptyShopRecom = shopRecomBuilder.buildEmptyModel()
 
     private val mockOwnFollow = followInfoBuilder.buildFollowInfo(userID = mockUserId, encryptedUserID = mockUserId, status = false)
