@@ -21,6 +21,8 @@ import com.tokopedia.play.broadcaster.analytic.ugc.PlayBroadcastAccountAnalyticI
 import com.tokopedia.play.broadcaster.data.config.*
 import com.tokopedia.play.broadcaster.data.repository.*
 import com.tokopedia.play.broadcaster.domain.repository.*
+import com.tokopedia.play.broadcaster.shorts.analytic.PlayShortsAnalytic
+import com.tokopedia.play.broadcaster.shorts.analytic.PlayShortsAnalyticImpl
 import com.tokopedia.play.broadcaster.shorts.data.PlayShortsRepositoryImpl
 import com.tokopedia.play.broadcaster.shorts.domain.PlayShortsRepository
 import com.tokopedia.play.broadcaster.shorts.domain.manager.PlayShortsAccountManager
@@ -55,6 +57,10 @@ abstract class PlayShortsBindModule {
     @Binds
     @PlayShortsScope
     abstract fun bindPlayShortsAccountManager(accountManager: PlayShortsAccountManagerImpl): PlayShortsAccountManager
+
+    @Binds
+    @PlayShortsScope
+    abstract fun bindPlayShortsAnalytic(analytic: PlayShortsAnalyticImpl): PlayShortsAnalytic
 
     /** Broadcaster Repository */
     @Binds
