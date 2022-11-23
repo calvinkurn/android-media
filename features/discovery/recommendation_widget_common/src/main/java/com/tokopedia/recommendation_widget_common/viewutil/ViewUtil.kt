@@ -65,11 +65,6 @@ object ChannelWidgetUtil {
             }
         }
     }
-
-    private fun DividerUnify.setAsPadding(height: Int) {
-        this.layoutParams?.height = height.toPx()
-        this.invisible()
-    }
 }
 
 fun Float.toDpInt(): Int = this.toPx().toInt()
