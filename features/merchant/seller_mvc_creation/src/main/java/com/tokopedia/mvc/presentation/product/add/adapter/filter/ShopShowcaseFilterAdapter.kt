@@ -5,25 +5,25 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.campaign.components.bottomsheet.selection.entity.MultipleSelectionItem
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.mvc.databinding.SmvcItemFilterBinding
+import com.tokopedia.mvc.domain.entity.ShopShowcase
 
 class ShopShowcaseFilterAdapter : RecyclerView.Adapter<ShopShowcaseFilterAdapter.ViewHolder>() {
 
-    private var onItemClicked: (MultipleSelectionItem) -> Unit = {}
+    private var onItemClicked: (ShopShowcase) -> Unit = {}
 
-    private val differCallback = object : DiffUtil.ItemCallback<MultipleSelectionItem>() {
+    private val differCallback = object : DiffUtil.ItemCallback<ShopShowcase>() {
         override fun areItemsTheSame(
-            oldItem: MultipleSelectionItem,
-            newItem: MultipleSelectionItem
+            oldItem: ShopShowcase,
+            newItem: ShopShowcase
         ): Boolean {
             return oldItem.id == newItem.id
         }
 
         override fun areContentsTheSame(
-            oldItem: MultipleSelectionItem,
-            newItem: MultipleSelectionItem
+            oldItem: ShopShowcase,
+            newItem: ShopShowcase
         ): Boolean {
             return oldItem == newItem
         }
@@ -50,29 +50,29 @@ class ShopShowcaseFilterAdapter : RecyclerView.Adapter<ShopShowcaseFilterAdapter
     }
 
 
-    fun setOnItemClicked(onItemClicked: (MultipleSelectionItem) -> Unit) {
+    fun setOnShowcaseClicked(onItemClicked: (ShopShowcase) -> Unit) {
         this.onItemClicked = onItemClicked
     }
 
     inner class ViewHolder(private val binding: SmvcItemFilterBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(item: MultipleSelectionItem) {
+        fun bind(item: ShopShowcase) {
             binding.tpgFilterName.text = item.name
             binding.iconCheckmarkState.isVisible = item.isSelected
             binding.root.setOnClickListener { onItemClicked(item) }
         }
     }
 
-    fun submit(newItems: List<MultipleSelectionItem>) {
+    fun submit(newItems: List<ShopShowcase>) {
         differ.submitList(newItems)
     }
 
-    fun markAsSelected(newItem : MultipleSelectionItem) {
+    fun markAsSelected(selectedShowcaseIds : List<Long>) {
         val current = snapshot()
 
-        val newList = current.map {  item ->
-            if (item.id == newItem.id) {
+        val newList = current.map { item ->
+            if (item.id in selectedShowcaseIds) {
                 item.copy(isSelected = !item.isSelected)
             } else {
                 item
@@ -82,11 +82,11 @@ class ShopShowcaseFilterAdapter : RecyclerView.Adapter<ShopShowcaseFilterAdapter
         submit(newList)
     }
 
-    fun getSelectedItems(): List<MultipleSelectionItem> {
+    fun getSelectedItems(): List<ShopShowcase> {
         return snapshot().filter { it.isSelected }
     }
 
-    private fun snapshot(): List<MultipleSelectionItem> {
+    fun snapshot(): List<ShopShowcase> {
         return differ.currentList
     }
 }

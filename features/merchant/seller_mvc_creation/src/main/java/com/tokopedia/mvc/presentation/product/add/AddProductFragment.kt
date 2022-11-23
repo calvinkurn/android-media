@@ -44,8 +44,8 @@ import com.tokopedia.mvc.domain.entity.enums.WarehouseType
 import com.tokopedia.mvc.presentation.product.add.adapter.ProductAdapter
 import com.tokopedia.mvc.presentation.product.add.adapter.filter.CategoryFilterAdapter
 import com.tokopedia.mvc.presentation.product.add.adapter.filter.ProductSortAdapter
-import com.tokopedia.mvc.presentation.product.add.adapter.filter.ShopShowcaseFilterAdapter
 import com.tokopedia.mvc.presentation.product.add.adapter.filter.WarehouseFilterAdapter
+import com.tokopedia.mvc.presentation.product.add.bottomsheet.ShowcaseFilterBottomSheet
 import com.tokopedia.mvc.presentation.product.add.uimodel.AddProductEffect
 import com.tokopedia.mvc.presentation.product.add.uimodel.AddProductEvent
 import com.tokopedia.mvc.presentation.product.add.uimodel.AddProductUiState
@@ -53,7 +53,6 @@ import com.tokopedia.mvc.presentation.product.list.ProductListActivity
 import com.tokopedia.mvc.presentation.product.variant.dialog.ConfirmationDialog
 import com.tokopedia.mvc.presentation.product.variant.select.SelectVariantBottomSheet
 import com.tokopedia.mvc.util.constant.BundleConstant
-import com.tokopedia.mvc.util.constant.NumberConstant
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.user.session.UserSessionInterface
@@ -221,7 +220,7 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
                 showCategorySheet(effect.selectedCategories, effect.categories)
             }
             is AddProductEffect.ShowShowcasesBottomSheet -> {
-                showShopShowcasesBottomSheet(effect.selectedShowcases, effect.showcases)
+                showShopShowcasesBottomSheet(effect.selectedShowcaseIds, effect.showcases)
             }
             is AddProductEffect.ShowWarehouseLocationBottomSheet -> {
                 showWarehouseBottomSheet(effect.selectedWarehouse, effect.warehouses)
@@ -237,7 +236,7 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
                 )
             }
             is AddProductEffect.AddNewProducts -> {
-                sendSelectedProductsToProductListActivity(effect.selectedProducts)
+                returnSelectedProductsResultToProductListActivity(effect.selectedProducts)
             }
             is AddProductEffect.ShowError -> {
                 binding?.cardUnify2?.showToasterError(effect.error)
@@ -569,47 +568,18 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
     }
 
     private fun showShopShowcasesBottomSheet(
-        selectedShowcases: List<ShopShowcase>,
+        selectedShowcaseIds: List<Long>,
         remoteShopShowcases: List<ShopShowcase>
     ) {
         if (!isAdded) return
 
-        val showcaseFilterAdapter = ShopShowcaseFilterAdapter()
-
-        val selectedShowcasesIds = selectedShowcases.map { showcase -> showcase.id }
-        val showcasesOptions = remoteShopShowcases.map { showcase ->
-            MultipleSelectionItem(showcase.id.toString(), showcase.name, showcase.id in selectedShowcasesIds)
-        }
-
-        val bottomSheet = MultipleSelectionBottomSheet.newInstance(
-            selectedShowcasesIds.map { it.toString() },
-            showcasesOptions
+        val bottomSheet = ShowcaseFilterBottomSheet.newInstance(
+            selectedShowcaseIds,
+            remoteShopShowcases
         )
-
-        bottomSheet.setBottomSheetTitle(getString(R.string.smvc_showcase))
-
-        showcaseFilterAdapter.setOnItemClicked { newItem ->
-            bottomSheet.getBottomsheetView()?.btnApply?.enable()
-            showcaseFilterAdapter.markAsSelected(newItem)
-        }
-
-        bottomSheet.setOnApplyButtonClick {
-            val selectedItem = showcaseFilterAdapter.getSelectedItems()
-            val newlySelectedShowcases = selectedItem.map {
-                ShopShowcase(
-                    it.id.toLong(),
-                    it.name,
-                    it.name,
-                    NumberConstant.ID_SELLER_CREATED_SHOWCASE_TYPE
-                )
-            }
-            val event = AddProductEvent.ApplyShowCaseFilter(newlySelectedShowcases)
+        bottomSheet.setOnApplyButtonClick { selectedShowcases ->
+            val event = AddProductEvent.ApplyShowCaseFilter(selectedShowcases)
             viewModel.processEvent(event)
-        }
-
-        bottomSheet.setCustomAppearance {
-            recyclerView.adapter = showcaseFilterAdapter
-            showcaseFilterAdapter.submit(showcasesOptions)
         }
 
         bottomSheet.show(childFragmentManager, bottomSheet.tag)
@@ -627,7 +597,7 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
         return isPressed
     }
 
-    private fun sendSelectedProductsToProductListActivity(selectedProducts: List<Product>) {
+    private fun returnSelectedProductsResultToProductListActivity(selectedProducts: List<Product>) {
         val returnIntent = Intent()
         returnIntent.putParcelableArrayListExtra(BundleConstant.BUNDLE_KEY_SELECTED_PRODUCTS, ArrayList(selectedProducts))
         activity?.setResult(Activity.RESULT_OK, returnIntent)
