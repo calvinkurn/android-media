@@ -8,6 +8,6 @@ object IntegrityApiConstant {
     const val EVENT_LOGIN = "login"
     const val EVENT_REGISTER = "register"
 
-    const val LOGIN_CONFIG = "and_play_integrity_login"
-    const val REGISTER_CONFIG = "and_play_integrity_register"
+    const val LOGIN_CONFIG = "android_user_play_integrity_login"
+    const val REGISTER_CONFIG = "android_user_play_integrity_register"
 }
