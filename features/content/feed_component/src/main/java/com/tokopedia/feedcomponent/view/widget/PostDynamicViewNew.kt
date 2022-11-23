@@ -60,13 +60,13 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.topads.sdk.domain.model.CpmData
 import com.tokopedia.unifycomponents.*
-import com.tokopedia.unifyprinciples.R as unifyPrinciplesR
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.item_post_video_new.view.*
 import kotlinx.coroutines.*
 import java.net.URLEncoder
 import kotlin.math.round
+import com.tokopedia.unifyprinciples.R as unifyPrinciplesR
 
 private const val TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT: String = "FeedXCardProductsHighlight"
 private const val TYPE_USE_ASGC_NEW_DESIGN: String = "use_new_design"
@@ -632,8 +632,9 @@ class PostDynamicViewNew @JvmOverloads constructor(
             } else context.getString(R.string.feed_header_follow_count_less_text)
         }
         bindContentSubInfo(
-            shouldShow = (type == TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT)
-                    || (!isFollowed || followers.transitionFollow),
+            shouldShow = type == TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT
+                    || ((!isFollowed || followers.transitionFollow)
+                && !(type == TYPE_FEED_X_CARD_POST && author.type == 3)),
             value = contentSubInfoValue
         )
         //endregion
@@ -644,9 +645,11 @@ class PostDynamicViewNew @JvmOverloads constructor(
 
         //region author info
         val activityName = ""
-        val authorType = if (author.type == 1) FollowCta.AUTHOR_USER else FollowCta.AUTHOR_SHOP
+        val authorType = if (author.type == 3) FollowCta.AUTHOR_USER else FollowCta.AUTHOR_SHOP
+        val authorId = if (authorType == FollowCta.AUTHOR_USER) author.encryptedUserId else author.id
+
         val followCta = FollowCta(
-            authorID = author.id,
+            authorID = authorId,
             authorType = authorType,
             isFollow = isFollowed
         )
@@ -682,7 +685,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                     listener?.onFollowClickAds(positionInFeed, shopId, adId)
                 } else {
                     listener?.onHeaderActionClick(
-                        positionInFeed, author.id,
+                        positionInFeed, authorId,
                         authorType, isFollowed, type, isVideo
                     )
                 }
@@ -720,7 +723,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 deletable,
                 true,
                 isFollowed,
-                author.id,
+                authorId,
                 authorType,
                 type,
                 mediaType,
