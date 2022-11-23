@@ -125,7 +125,10 @@ data class FeedXCard(
     val isTypeSgcVideo: Boolean
         get() =  media.isNotEmpty() && media.first().type == TYPE_VIDEO
     val isTypeSGC: Boolean
-        get() = typename == TYPE_FEED_X_CARD_POST && media.isNotEmpty() && media.first().type != TYPE_LONG_VIDEO
+        get() = typename == TYPE_FEED_X_CARD_POST && media.isNotEmpty()
+            && media.first().type != TYPE_LONG_VIDEO && author.type == AUTHOR_SGC
+    val isTypeUGC: Boolean
+        get() = typename == TYPE_FEED_X_CARD_POST && author.type == AUTHOR_UGC
     val useASGCNewDesign: Boolean
         get() = mods.contains(USE_ASGC_NEW_DESIGN)
     val isASGCDiscountToko: Boolean
@@ -185,5 +188,7 @@ data class FeedXCard(
 
         private const val USE_ASGC_NEW_DESIGN: String = "use_new_design"
         private const val ASGC_DISCOUNT_TOKO = "asgc_discount_toko"
+        private const val AUTHOR_SGC = 2
+        private const val AUTHOR_UGC = 3
     }
 }
