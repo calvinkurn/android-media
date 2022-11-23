@@ -493,42 +493,44 @@ class PlayShortsPreparationFragment @Inject constructor(
 
     private fun showSwitchAccountConfirmationDialog(selectedAccount: ContentAccountUiModel) {
         if (switchAccountConfirmationDialog == null) {
-            switchAccountConfirmationDialog = DialogUnify(requireContext(), DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE).apply {
-                setTitle(
-                    getString(
-                        if (selectedAccount.isShop) {
-                            R.string.play_shorts_switch_account_to_shop_title
-                        } else {
-                            R.string.play_shorts_switch_account_to_user_title
-                        }
-                    )
+            switchAccountConfirmationDialog = DialogUnify(requireContext(), DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE)
+        }
+
+        switchAccountConfirmationDialog?.apply {
+            setTitle(
+                getString(
+                    if (selectedAccount.isShop) {
+                        R.string.play_shorts_switch_account_to_shop_title
+                    } else {
+                        R.string.play_shorts_switch_account_to_user_title
+                    }
                 )
-                setDescription(
-                    getString(
-                        if (selectedAccount.isShop) {
-                            R.string.play_shorts_switch_account_to_shop_description
-                        } else {
-                            R.string.play_shorts_switch_account_to_user_description
-                        }
-                    )
+            )
+            setDescription(
+                getString(
+                    if (selectedAccount.isShop) {
+                        R.string.play_shorts_switch_account_to_shop_description
+                    } else {
+                        R.string.play_shorts_switch_account_to_user_description
+                    }
                 )
-                setPrimaryCTAText(getString(R.string.play_shorts_switch_account_cancel))
-                setPrimaryCTAClickListener {
-                    dismiss()
-                }
-                setSecondaryCTAText(
-                    getString(
-                        if (selectedAccount.isShop) {
-                            R.string.play_shorts_switch_account_to_shop_confirm
-                        } else {
-                            R.string.play_shorts_switch_account_to_user_confirm
-                        }
-                    )
+            )
+            setPrimaryCTAText(getString(R.string.play_shorts_switch_account_cancel))
+            setPrimaryCTAClickListener {
+                dismiss()
+            }
+            setSecondaryCTAText(
+                getString(
+                    if (selectedAccount.isShop) {
+                        R.string.play_shorts_switch_account_to_shop_confirm
+                    } else {
+                        R.string.play_shorts_switch_account_to_user_confirm
+                    }
                 )
-                setSecondaryCTAClickListener {
-                    dismiss()
-                    viewModel.submitAction(PlayShortsAction.SwitchAccount)
-                }
+            )
+            setSecondaryCTAClickListener {
+                dismiss()
+                viewModel.submitAction(PlayShortsAction.SwitchAccount)
             }
         }
 
