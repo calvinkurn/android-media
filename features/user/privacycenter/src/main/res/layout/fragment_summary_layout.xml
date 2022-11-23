@@ -9,7 +9,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:closeButtonVisibility="gone"
-        app:descriptionText="Salinan data akan dikirim ke e-mail diatas maks. 2 hari kerja"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -21,7 +20,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="Data yang ingin di download"
+        android:text="@string/dsar_choose_data_title"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/ticker"
         app:typographyWeight="bold" />
@@ -44,9 +43,7 @@
             app:typographyWeight="reguler"
             android:id="@+id/txtSummary"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Informasi Pribadi:\nUser ID, Nama Lengkap, Nomor HP, E-mail, Tanggal Lahir, Jenis Kelamin, Daftar Alamat Pengiriman" />
-
+            android:layout_height="wrap_content" />
     </LinearLayout>
 
 

@@ -10,7 +10,7 @@
         android:id="@+id/typography2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Data yang ingin di download"
+        android:text="@string/dsar_choose_data_title"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyWeight="bold" />
@@ -19,7 +19,7 @@
         android:id="@+id/typography3"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Pilih min. 1 data"
+        android:text="@string/dsar_pick_min_data_label"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/typography2"
         app:typographyType="display_3" />

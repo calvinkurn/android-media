@@ -211,7 +211,7 @@ class DsarFragment: BaseDaggerFragment(), OnDateChangedListener {
         binding?.layoutSummary?.root?.gone()
 
         binding?.btnNext?.apply {
-            text = "Lanjut"
+            text = getString(R.string.dsar_btn_lanjut_title)
             setOnClickListener { viewModel.showSummary() }
         }
     }
@@ -377,7 +377,7 @@ class DsarFragment: BaseDaggerFragment(), OnDateChangedListener {
     private fun renderOnProgressView(searchResult: GetRequestDetailResponse) {
         binding?.mainLayout?.gone()
         binding?.layoutProgress?.root?.visible()
-        binding?.layoutProgress?.imgSuccess?.loadImage(IMG_PROGRESS)
+        binding?.layoutProgress?.imgSuccess?.loadImage(getString(R.string.dsar_on_progress_illustration))
         binding?.layoutProgress?.btnDetail?.setOnClickListener {
             showBottomSheetDetails(searchResult)
         }
@@ -385,7 +385,7 @@ class DsarFragment: BaseDaggerFragment(), OnDateChangedListener {
             activity?.finish()
         }
         val formattedDate = DateUtil.formatDate(DateUtil.YYYY_MM_DD_T_HH_MM_SS_SSS_Z, DateUtil.DEFAULT_VIEW_FORMAT, searchResult.deadline)
-        binding?.layoutProgress?.txtProgressDescription?.text = "Kami bakal kabari lewat e-mail ${searchResult.email} maks. ${formattedDate}.\nSilahkan cek secara berkala, ya!"
+        binding?.layoutProgress?.txtProgressDescription?.text = getString(R.string.dsar_progress_description, searchResult.email, formattedDate)
     }
 
     private fun showBottomSheetDetails(searchResult: GetRequestDetailResponse) {
@@ -403,8 +403,6 @@ class DsarFragment: BaseDaggerFragment(), OnDateChangedListener {
     }
 
     companion object {
-
-        private const val IMG_PROGRESS = "https://images.tokopedia.net/img/android/account/privacycenter/img_request_on_progress.png"
         const val STATE_START = 0
         const val STATE_END = 1
         const val REQUEST_SECURITY_QUESTION = 100

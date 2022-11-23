@@ -22,7 +22,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="18dp"
         android:textAlignment="center"
-        android:text="Tambah e-mail dulu, yuk!"
+        android:text="@string/dsar_add_email_title"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imgSuccess"
@@ -38,7 +38,7 @@
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/typography5"
-        android:text="E-mail akan digunakan untuk kirim link download datamu." />
+        android:text="@string/dsar_success_description" />
 
 
     <com.tokopedia.unifycomponents.TextFieldUnify2
@@ -51,7 +51,7 @@
     <com.tokopedia.unifycomponents.UnifyButton
         android:layout_marginTop="16dp"
         android:id="@+id/btnAddEmail"
-        android:text="Tambah E-mail"
+        android:text="@string/dsar_btn_add_email_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 

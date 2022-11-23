@@ -2,6 +2,7 @@ package com.tokopedia.privacycenter.dsar.domain
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
+import com.tokopedia.privacycenter.dsar.DsarConstants
 import com.tokopedia.privacycenter.dsar.DsarHelper
 import com.tokopedia.privacycenter.dsar.model.AdditionalData
 import com.tokopedia.privacycenter.dsar.model.CreateRequestBody
@@ -23,7 +24,7 @@ class SubmitRequestUseCase @Inject constructor(
     override suspend fun execute(params: CreateRequestBody): CreateRequestResponse {
         val credentials = getCredentialsApi.fetchCredential()
         credentials?.let {
-            val request = oneTrustApi.createRequest(params, "570ceffa-c436-4b8f-b5ac-3c2e5b010c31", HeaderUtils.createHeader(
+            val request = oneTrustApi.createRequest(params, dsarHelper.getTemplateId(), HeaderUtils.createHeader(
                 token = it.accessToken,
             )).body()
             oneTrustApi.updateRequest(
@@ -39,10 +40,10 @@ class SubmitRequestUseCase @Inject constructor(
         val additionalData = AdditionalData(
             userId = userSession.userId,
             requestDetails = requestDetails.joinToString(","),
-            phoneNumber = "${userSession.phoneNumber}"
+            phoneNumber = userSession.phoneNumber
         )
         return CreateRequestBody(
-            languange = "en-us",
+            languange = DsarConstants.LANG_US,
             email = userSession.email,
             additionalData = additionalData,
             firstName = userSession.name,

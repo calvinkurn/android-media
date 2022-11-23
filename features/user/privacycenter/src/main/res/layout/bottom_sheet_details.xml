@@ -11,7 +11,7 @@
         android:id="@+id/txtBtmSheetTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="Data akan didownload dari akun kamu yang ini:"
+        android:text="@string/dsar_bottom_sheet_detail_subtitle"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         android:layout_marginBottom="12dp"

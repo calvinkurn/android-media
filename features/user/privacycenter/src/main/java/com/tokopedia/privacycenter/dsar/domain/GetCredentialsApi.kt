@@ -1,5 +1,6 @@
 package com.tokopedia.privacycenter.dsar.domain
 
+import com.tokopedia.privacycenter.dsar.DsarConstants.HEADER_TEXT_PLAIN
 import com.tokopedia.privacycenter.dsar.DsarHelper
 import com.tokopedia.privacycenter.dsar.model.GetCredentialResponse
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -12,9 +13,13 @@ class GetCredentialsApi @Inject constructor(
 ) {
     suspend fun fetchCredential(): GetCredentialResponse? {
         return oneTrustApi.getCredentials(
-            "client_credentials".toRequestBody("text/plain".toMediaTypeOrNull()),
-            dsarHelper.getClientId().toRequestBody("text/plain".toMediaTypeOrNull()),
-            dsarHelper.getSecret().toRequestBody("text/plain".toMediaTypeOrNull())
+            CLIENT_CREDENTIALS.toRequestBody(HEADER_TEXT_PLAIN.toMediaTypeOrNull()),
+            dsarHelper.getClientId().toRequestBody(HEADER_TEXT_PLAIN.toMediaTypeOrNull()),
+            dsarHelper.getSecret().toRequestBody(HEADER_TEXT_PLAIN.toMediaTypeOrNull())
         ).body()
+    }
+
+    companion object {
+        const val CLIENT_CREDENTIALS = "client_credentials"
     }
 }

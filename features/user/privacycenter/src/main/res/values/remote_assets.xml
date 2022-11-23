@@ -13,4 +13,10 @@
 
     <!--Share Wishlist-->
     <string name="sharing_wishlist_empty_page">https://images.tokopedia.net/img/android/user/privacy_center/img_privacy_center_empty_wishlist.png</string>
+
+    <string name="dsar_add_email_illustration" translatable="false">https://images.tokopedia.net/img/android/account/privacycenter/img_add_name_illustration.png</string>
+    <string name="dsar_on_progress_illustration" translatable="false">https://images.tokopedia.net/img/android/account/privacycenter/img_request_on_progress.png</string>
+    <string name="dsar_request_success_illustration" translatable="false">https://images.tokopedia.net/img/android/accounts/privacycenter/request_success.png</string>
+
+
 </resources>

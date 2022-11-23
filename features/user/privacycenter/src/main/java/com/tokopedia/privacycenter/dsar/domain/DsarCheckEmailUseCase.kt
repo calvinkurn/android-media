@@ -23,10 +23,14 @@ class DsarCheckEmailUseCase @Inject constructor(
     """.trimIndent()
 
     private fun createParam(param: String): Map<String, Any> {
-        return mapOf("email" to param)
+        return mapOf(PARAM_EMAIL to param)
     }
 
     override suspend fun execute(params: String): DsarCheckEmailResponse {
         return repository.request(graphqlQuery(), createParam(params))
+    }
+
+    companion object {
+        const val PARAM_EMAIL = "email"
     }
 }

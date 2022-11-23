@@ -23,7 +23,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="18dp"
         android:textAlignment="center"
-        android:text="Sip, pengajuan download data sudah terkirim. Kami proses dulu, ya!"
+        android:text="@string/dsar_success_page_title"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/imgSuccess"
@@ -44,7 +44,7 @@
     <com.tokopedia.unifycomponents.UnifyButton
         android:layout_marginTop="30dp"
         android:id="@+id/btnSuccess"
-        android:text="Balik ke Privasi Akun"
+        android:text="@string/dsar_btn_on_progress_back_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"/>
 

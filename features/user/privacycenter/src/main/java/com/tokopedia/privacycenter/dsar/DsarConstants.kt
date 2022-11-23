@@ -50,4 +50,15 @@ object DsarConstants {
     const val DAYS_3_YEARS = 1096L
 
     const val MAX_SELECTED_ITEM = 3
+
+    const val HEADER_TEXT_PLAIN = "text/plain"
+    const val APPLICATION_JSON = "application/json"
+
+    const val HEADER_ACCEPT = "Accept"
+    const val HEADER_CONTENT_TYPE = "Content-Type"
+    const val HEADER_AUTHORIZATION = "Authorization"
+
+    const val BEARER = "Bearer"
+
+    const val LANG_US = "en-us"
 }

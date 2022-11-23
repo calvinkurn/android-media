@@ -12,6 +12,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.privacycenter.R
 import com.tokopedia.privacycenter.common.di.PrivacyCenterComponent
 import com.tokopedia.privacycenter.databinding.FragmentDsarAddEmailLayoutBinding
 import com.tokopedia.privacycenter.dsar.model.uimodel.AddEmailModel
@@ -49,7 +50,7 @@ class DsarAddEmailFragment: BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding?.imgIllustration?.loadImage(IMG_ILLUSTRATION)
+        binding?.imgIllustration?.loadImage(getString(R.string.dsar_add_email_illustration))
         setupObserver()
         binding?.btnAddEmail?.setOnClickListener {
             val email = binding?.txtFieldEmail?.editText?.text?.toString()?.trim() ?: ""
@@ -124,7 +125,5 @@ class DsarAddEmailFragment: BaseDaggerFragment() {
 
         private const val REQUEST_ADD_EMAIL = 100
         private const val OTP_TYPE_ADD_EMAIL = 141
-
-        const val IMG_ILLUSTRATION = "https://images.tokopedia.net/img/android/account/privacycenter/img_add_name_illustration.png"
     }
 }
