@@ -15,6 +15,7 @@
     <string name="path_privacy_account">/privacy-account</string>
     <string name="path_consent_withdrawal">/consent/withdrawal</string>
     <string name="path_dsar">/dsar</string>
+    <string name="path_dsar_add_email">/dsar/add-email</string>
 
     <!--Profile Completion-->
     <string name="path_add_name_register">/add-name-register</string>

@@ -1,5 +1,7 @@
 package com.tokopedia.privacycenter.dsar.ui
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -8,6 +10,9 @@ import android.view.ViewGroup.LayoutParams
 import android.view.ViewGroup.MarginLayoutParams
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.datepicker.LocaleUtils
 import com.tokopedia.datepicker.OnDateChangedListener
 import com.tokopedia.datepicker.datetimepicker.DateTimePickerUnify
@@ -23,6 +28,7 @@ import com.tokopedia.privacycenter.di.PrivacyCenterComponent
 import com.tokopedia.privacycenter.dsar.model.ItemRangeModel
 import com.tokopedia.privacycenter.dsar.viewmodel.DsarViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -60,6 +66,18 @@ class DsarFragment: BaseDaggerFragment(), OnDateChangedListener {
         getComponent(PrivacyCenterComponent::class.java).inject(this)
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        if(userSession.email.isEmpty()) {
+            goToAddEmail()
+        }
+    }
+
+    fun goToAddEmail() {
+        val intent = RouteManager.getIntent(activity, ApplinkConstInternalUserPlatform.DSAR_ADD_EMAIL)
+        startActivityForResult(intent, REQUEST_ADD_EMAIL)
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -82,10 +100,22 @@ class DsarFragment: BaseDaggerFragment(), OnDateChangedListener {
             }
         }
 
+        viewModel._submitRequest.observe(viewLifecycleOwner) {
+            onSubmitSuccess(it.email, it.deadline)
+        }
+
         viewModel._startDate.observe(viewLifecycleOwner) {
             if (::rangePickerDialogBinding.isInitialized) {
                 rangePickerDialogBinding.txtStartDate.editText
                     .setText(it)
+            }
+        }
+
+        viewModel._showSummary.observe(viewLifecycleOwner) {
+            if(it.isNotEmpty()) {
+                showSummary(it)
+            } else {
+                hideSummary()
             }
         }
 
@@ -96,10 +126,60 @@ class DsarFragment: BaseDaggerFragment(), OnDateChangedListener {
         }
     }
 
-    private fun updateRangeItemsView(items: List<ItemRangeModel>) {
-        rangePickerDialogBinding.txtStartDate.editText.setText("")
-        rangePickerDialogBinding.txtEndDate.editText.setText("")
+    private fun onSubmitSuccess(email: String, deadline: String) {
+        val intent = Intent(activity, DsarSuccessActivity::class.java)
+        intent.putExtra(DsarSuccessActivity.EXTRA_EMAIL, email)
+        intent.putExtra(DsarSuccessActivity.EXTRA_DEADLINE, deadline)
+        startActivity(intent)
+        activity?.finish()
+    }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == REQUEST_SECURITY_QUESTION) {
+            if(resultCode == Activity.RESULT_OK && data != null) {
+                viewModel.submitRequest()
+            } else if(resultCode == Activity.RESULT_CANCELED) {
+                view?.let {
+                    Toaster.build(it, "Gagal Verifikasi", Toaster.LENGTH_LONG).show()
+                }
+            }
+        } else if(requestCode == REQUEST_ADD_EMAIL && resultCode == Activity.RESULT_OK) {
+            renderProfileHeader()
+        }
+        else {
+            super.onActivityResult(requestCode, resultCode, data)
+        }
+
+    }
+    private fun toVerification() {
+        val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.COTP)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_MSISDN, userSession.phoneNumber)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_EMAIL, userSession.email)
+        intent.putExtra(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, OTP_TYPE)
+        startActivityForResult(intent, REQUEST_SECURITY_QUESTION)
+    }
+
+    private fun showSummary(data: String) {
+        binding?.layoutSummary?.root?.visible()
+        binding?.layoutSummary?.txtSummary?.text = data
+        binding?.btnNext?.apply {
+            text = "Ajukan Download Data"
+            setOnClickListener { toVerification() }
+        }
+        binding?.layoutOptions?.root?.gone()
+    }
+
+    private fun hideSummary() {
+        binding?.layoutOptions?.root?.visible()
+        binding?.layoutSummary?.root?.gone()
+
+        binding?.btnNext?.apply {
+            text = "Lanjut"
+            setOnClickListener { viewModel.showSummary() }
+        }
+    }
+
+    private fun updateRangeItemsView(items: List<ItemRangeModel>) {
         if(items.count() == rangePickerDialogBinding.layoutDateRange.childCount) {
             items.forEach {
                 val view = rangePickerDialogBinding.layoutDateRange.getChildAt(it.id)
@@ -111,14 +191,18 @@ class DsarFragment: BaseDaggerFragment(), OnDateChangedListener {
         }
     }
 
-    private fun setupViews() {
+    private fun renderProfileHeader() {
         binding?.personalInfo?.apply {
             txtProfileName.text = userSession.name
             txtProfileEmail.text = userSession.email
             txtProfilePhone.text = userSession.phoneNumber
             imgProfilePicture.loadImage(userSession.profilePicture)
         }
-        binding?.itemPersonalInfo?.apply {
+    }
+
+    private fun setupViews() {
+        renderProfileHeader()
+        binding?.layoutOptions?.itemPersonalInfo?.apply {
             mainLayout.setOnClickListener {
                 it.isActivated = !it.isActivated
                 if (!it.isActivated) {
@@ -130,7 +214,7 @@ class DsarFragment: BaseDaggerFragment(), OnDateChangedListener {
                 }
             }
         }
-        binding?.itemPaymentInfo?.apply {
+        binding?.layoutOptions?.itemPaymentInfo?.apply {
             mainLayout.setOnClickListener {
                 it.isActivated = !it.isActivated
                 if(!it.isActivated) {
@@ -142,7 +226,7 @@ class DsarFragment: BaseDaggerFragment(), OnDateChangedListener {
                 }
             }
         }
-        binding?.itemTransactionHistory?.apply {
+        binding?.layoutOptions?.itemTransactionHistory?.apply {
             mainLayout.setOnClickListener {
                 it.isActivated = !it.isActivated
                 if(!it.isActivated) {
@@ -172,7 +256,7 @@ class DsarFragment: BaseDaggerFragment(), OnDateChangedListener {
 
     private fun showDatePicker() {
         val minDate = GregorianCalendar(LocaleUtils.getCurrentLocale(requireContext())).apply {
-            add(Calendar.YEAR, -15)
+            add(Calendar.YEAR, -3)
         }
 
         val defaultDate = GregorianCalendar(LocaleUtils.getCurrentLocale(requireContext()))
@@ -248,6 +332,7 @@ class DsarFragment: BaseDaggerFragment(), OnDateChangedListener {
             rangePickerBottomSheet.setChild(rangePickerDialogBinding.root)
             rangePickerDialogBinding.btnApplyFilter.setOnClickListener {
                 viewModel.applyTransactionHistoryFilter()
+                rangePickerBottomSheet.dismiss()
             }
         }
         rangePickerBottomSheet.show(parentFragmentManager, "")
@@ -256,6 +341,9 @@ class DsarFragment: BaseDaggerFragment(), OnDateChangedListener {
     companion object {
         const val STATE_START = 0
         const val STATE_END = 1
+        const val REQUEST_SECURITY_QUESTION = 100
+        const val REQUEST_ADD_EMAIL = 101
+        const val OTP_TYPE = 170
 
         fun newInstance() = DsarFragment()
     }

@@ -101,6 +101,7 @@
         </activity>
 
         <activity
+            android:label="@string/title_dsar_activity"
             android:name="com.tokopedia.privacycenter.dsar.ui.DsarActivity"
             android:theme="@style/Theme.WhiteUnify"
             android:exported="false"
@@ -118,6 +119,29 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name="com.tokopedia.privacycenter.dsar.ui.DsarAddEmailActivity"
+            android:theme="@style/Theme.WhiteUnify"
+            android:exported="false"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_user"
+                    android:pathPattern="@string/path_dsar_add_email"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name="com.tokopedia.privacycenter.dsar.ui.DsarSuccessActivity"
+            android:theme="@style/Theme.WhiteUnify"
+            android:exported="false"
+            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>

@@ -9,8 +9,9 @@
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/imageUnify"
-        android:layout_width="24dp"
-        android:layout_height="26dp"
+        android:padding="2dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"

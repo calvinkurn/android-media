@@ -1,26 +1,21 @@
 package com.tokopedia.privacycenter.dsar.domain
 
-import com.tokopedia.privacycenter.dsar.model.CreateRequestBody
-import com.tokopedia.privacycenter.dsar.model.CreateRequestResponse
-import com.tokopedia.privacycenter.dsar.model.GetCredentialResponse
+import com.tokopedia.privacycenter.dsar.model.*
+import okhttp3.RequestBody
 import retrofit2.Response
-import retrofit2.http.Body
-import retrofit2.http.Headers
-import retrofit2.http.POST
-import retrofit2.http.Path
+import retrofit2.http.*
 
 interface OneTrustApi {
     @POST("access/v1/oauth/token")
-    @Headers("content-type", "multipart/form-data")
-    suspend fun getCredentials(): Response<GetCredentialResponse>
+    @Multipart
+    suspend fun getCredentials(@Part("grant_type") grantType: RequestBody, @Part("client_id") clientId: RequestBody, @Part("client_secret") clientSecret: RequestBody): Response<GetCredentialResponse>
 
     @POST("datasubject/v2/requestqueues/{templateId}")
-    @Headers("content-type", "application/json")
-    suspend fun createRequest(@Body body: CreateRequestBody, @Path("templateId") templateId: String): Response<CreateRequestResponse>
+    suspend fun createRequest(@Body body: CreateRequestBody, @Path("templateId") templateId: String, @HeaderMap header: Map<String, String>): Response<CreateRequestResponse>
 
-    @POST("datasubject/v2/requestqueues/{{templateId}}")
-    @Headers("content-type", "application/json")
-    suspend fun updateRequest(@Body body: CreateRequestBody): Response<CreateRequestResponse>
+    @PUT("datasubject/v2/requestqueues/{requestQueueRefId}/movestages/en-us")
+    suspend fun updateRequest(@Body body: UpdateRequestBody, @Path("requestQueueRefId") refId: String, @HeaderMap header: Map<String, String>): Response<Void>
 
-
+    @PUT("datasubject/v2/requestqueues/search/en-us")
+    suspend fun searchRequest(@Body body: SearchRequestBody, @HeaderMap header: Map<String, String>): Response<SearchRequestResponse>
 }

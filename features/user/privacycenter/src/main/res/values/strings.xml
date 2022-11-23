@@ -82,6 +82,8 @@
     <!--Section | DSAR-->
     <string name="dsar_section_title">Download data pribadimu</string>
     <string name="dsar_section_description">Download datamu yang tersimpan di Tokopedia</string>
+    <string name="title_dsar_activity">Download Data Pribadi</string>
+
 
     <!--Search History-->
     <string name="privacy_center_search_history_title">Riwayat Pencarian</string>

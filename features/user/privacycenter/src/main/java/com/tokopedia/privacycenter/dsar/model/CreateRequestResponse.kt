@@ -6,5 +6,9 @@ data class CreateRequestResponse(
     @SerializedName("requestQueueRefId")
     val requestQueueRefId: String = "",
     @SerializedName("requestQueueId")
-    val requestQueueId: String = ""
+    val requestQueueId: String = "",
+    @SerializedName("email")
+    val email: String = "",
+    @SerializedName("deadline")
+    val deadline: String = ""
 )

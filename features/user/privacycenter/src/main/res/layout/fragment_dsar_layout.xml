@@ -14,54 +14,28 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <com.tokopedia.unifyprinciples.Typography
+
+    <include
+        android:visibility="visible"
+        android:id="@+id/layoutOptions"
+        layout="@layout/fragment_landing_dsar"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
         android:layout_marginTop="24dp"
-        android:id="@+id/typography2"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Data yang ingin di download"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/personalInfo"
-        app:typographyWeight="bold" />
-
-    <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/typography3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Pilih min. 1 data"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/typography2"
-        app:typographyType="display_3" />
-
-    <include
-        android:id="@+id/itemPersonalInfo"
-        layout="@layout/item_dsar_personal_info"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/typography3" />
+        app:layout_constraintTop_toBottomOf="@+id/personalInfo" />
 
     <include
-        android:id="@+id/itemPaymentInfo"
-        layout="@layout/item_dsar_payment_info"
+        android:visibility="gone"
+        android:id="@+id/layoutSummary"
+        layout="@layout/fragment_summary_layout"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="24dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/itemPersonalInfo" />
-
-    <include
-        android:id="@+id/itemTransactionHistory"
-        layout="@layout/item_dsar_transaction_history"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/itemPaymentInfo" />
+        app:layout_constraintTop_toBottomOf="@+id/personalInfo" />
 
     <com.tokopedia.unifycomponents.UnifyButton
         android:id="@+id/btnNext"

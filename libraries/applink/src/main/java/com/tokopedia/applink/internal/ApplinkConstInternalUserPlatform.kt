@@ -479,6 +479,13 @@ object ApplinkConstInternalUserPlatform {
      * @Applink : tokopedia-android-internal://user/dsar
      **/
     const val DSAR = "$NEW_INTERNAL_USER/dsar"
+
+    /**
+     * com.tokopedia.privacycenter.dsar.ui.DsarAddEmailActivity
+     * @Applink : tokopedia-android-internal://user/dsar/add-email
+     **/
+    const val DSAR_ADD_EMAIL = "$NEW_INTERNAL_USER/dsar/add-email"
+
     /**
      * com.tokopedia.privacyaccount.searchhistory.SearchHistoryActivity
      * @Applink : tokopedia-android-internal://user/search-history
