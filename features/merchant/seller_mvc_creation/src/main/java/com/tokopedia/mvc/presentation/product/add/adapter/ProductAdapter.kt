@@ -88,7 +88,21 @@ class ProductAdapter(
 
                 separator.isEnabled = item.isEligible
 
-                checkbox.isChecked = item.isSelected
+                when {
+                    item.isSelected && item.selectedVariantsIds.count() != item.originalVariants.count() -> {
+                        checkbox.isChecked = true
+                        checkbox.setIndeterminate(true)
+                    }
+                    item.isSelected && item.selectedVariantsIds.count() == item.originalVariants.count() -> {
+                        checkbox.isChecked = true
+                        checkbox.setIndeterminate(false)
+                    }
+                    !item.isSelected -> {
+                        checkbox.isChecked = false
+                        checkbox.setIndeterminate(false)
+                    }
+                }
+
                 checkbox.setOnCheckedChangeListener { _, isChecked ->
                     onCheckboxClick(bindingAdapterPosition, isChecked)
                 }
@@ -118,38 +132,23 @@ class ProductAdapter(
         private fun RelativeLayout.setVariantCount(item: Product) {
             isVisible = item.originalVariants.isNotEmpty()
             val originalVariantCount = item.originalVariants.count()
-            val updatedVariantCount = item.selectedVariantsIds.count()
-            val variantChanged = originalVariantCount != updatedVariantCount
-
-            when {
-                item.isSelected && variantChanged -> {
-                    binding.iconDropdown.gone()
-                    binding.tpgUpdateVariant.visible()
-                    binding.tpgVariantCount.text = binding.tpgVariantCount.context.getString(
-                        R.string.smvc_placeholder_modified_variant_product_count,
+            if (item.isSelected) {
+                binding.iconDropdown.gone()
+                binding.tpgUpdateVariant.visible()
+                binding.tpgVariantCount.text = MethodChecker.fromHtml(
+                    binding.tpgVariantCount.context.getString(
+                        R.string.smvc_placeholder_selected_variant_product_count,
                         item.selectedVariantsIds.size,
                         item.originalVariants.size
                     )
-                }
-                item.isSelected -> {
-                    binding.iconDropdown.gone()
-                    binding.tpgUpdateVariant.visible()
-                    binding.tpgVariantCount.text = MethodChecker.fromHtml(
-                        binding.tpgVariantCount.context.getString(
-                            R.string.smvc_placeholder_selected_variant_product_count,
-                            item.selectedVariantsIds.size,
-                            item.originalVariants.size
-                        )
-                    )
-                }
-                else -> {
-                    binding.iconDropdown.visible()
-                    binding.tpgUpdateVariant.gone()
-                    binding.tpgVariantCount.text = binding.tpgVariantCount.context.getString(
-                        R.string.smvc_placeholder_variant_product_count,
-                        originalVariantCount
-                    )
-                }
+                )
+            } else {
+                binding.iconDropdown.visible()
+                binding.tpgUpdateVariant.gone()
+                binding.tpgVariantCount.text = binding.tpgVariantCount.context.getString(
+                    R.string.smvc_placeholder_variant_product_count,
+                    originalVariantCount
+                )
             }
         }
 
