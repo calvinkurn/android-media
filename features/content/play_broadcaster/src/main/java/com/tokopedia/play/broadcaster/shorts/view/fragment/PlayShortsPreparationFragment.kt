@@ -10,7 +10,6 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import com.google.android.exoplayer2.upstream.*
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.content.common.ui.bottomsheet.ContentAccountTypeBottomSheet
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
@@ -248,6 +247,10 @@ class PlayShortsPreparationFragment @Inject constructor(
             }
 
             formTitle.setListener(object : TitleFormView.Listener {
+                override fun onClearTitle() {
+                    /** TODO: attach tracker here */
+                }
+
                 override fun onCloseTitleForm(view: TitleFormView) {
                     hideKeyboard()
                     viewModel.submitAction(PlayShortsAction.CloseTitleForm)

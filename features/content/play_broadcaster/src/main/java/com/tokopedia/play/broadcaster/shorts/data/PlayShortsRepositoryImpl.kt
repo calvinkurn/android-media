@@ -95,6 +95,8 @@ class PlayShortsRepositoryImpl @Inject constructor(
     }
 
     override suspend fun uploadTitle(title: String, shortsId: String, authorId: String) {
+        delay(1000)
+
         /** TODO: will uncomment this later */
 //        withContext(dispatchers.io) {
 //            updateChannelUseCase.apply {
