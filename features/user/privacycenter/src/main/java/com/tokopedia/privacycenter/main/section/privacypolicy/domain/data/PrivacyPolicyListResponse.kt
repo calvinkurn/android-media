@@ -14,11 +14,6 @@ data class PrivacyPolicyListResponse(
     val data: List<PrivacyPolicyDataModel> = listOf()
 ): PrivacyPolicyBaseResponseDataModel()
 
-data class PrivacyPolicyDetailResponse(
-    @SerializedName("data")
-    val data: PrivacyPolicyDetailDataModel = PrivacyPolicyDetailDataModel()
-): PrivacyPolicyBaseResponseDataModel()
-
 data class PrivacyPolicyDataModel(
     @SerializedName("section_id")
     val sectionId: String = "",
@@ -30,13 +25,4 @@ data class PrivacyPolicyDataModel(
     val language: String = "",
     @SerializedName("last_update")
     val lastUpdate: String = "",
-)
-
-data class PrivacyPolicyDetailDataModel(
-    @SerializedName("section_id")
-    val sectionId: String = "",
-    @SerializedName("section_title")
-    val sectionTitle: String = "",
-    @SerializedName("section_content")
-    val sectionContent: String = ""
 )
