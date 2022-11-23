@@ -10,18 +10,15 @@ import com.tokopedia.webview.BaseWebViewFragment
 
 class PrivacyPolicyWebViewFragment : BaseWebViewFragment() {
 
-    private var sectionId: String = ""
-    private var title: String = ""
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        sectionId = arguments?.getString(SECTION_ID).orEmpty()
-        title = arguments?.getString(KEY_TITLE) ?: DEFAULT_TITLE
+        val sectionId = arguments?.getString(SECTION_ID).orEmpty()
+        val titleArg = arguments?.getString(KEY_TITLE) ?: DEFAULT_TITLE
 
         val actionbar = activity?.actionBar
         actionbar?.apply {
-            title = this.title
+            title = titleArg
         }
 
         webView.loadUrl("$WEBVIEW_URL$sectionId")
