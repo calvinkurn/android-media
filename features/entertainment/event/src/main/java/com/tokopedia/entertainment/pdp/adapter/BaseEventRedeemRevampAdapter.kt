@@ -40,7 +40,8 @@ open class BaseEventRedeemRevampAdapter <T, F: AdapterTypeFactory>(
             for (itemPosition in (titlePosition+Int.ONE)..size) {
                 if (visitables[itemPosition] is ParticipantTitleUiModel) {
                     break
-                } else if ((visitables[itemPosition] is ParticipantUiModel) && !(visitables[itemPosition] as ParticipantUiModel).isDisabled) {
+                } else if ((visitables[itemPosition] is ParticipantUiModel)
+                    && !(visitables[itemPosition] as ParticipantUiModel).isDisabled) {
                     updateCheckedItem(isChecked, itemPosition, (visitables[itemPosition] as ParticipantUiModel))
                 }
             }
@@ -57,28 +58,12 @@ open class BaseEventRedeemRevampAdapter <T, F: AdapterTypeFactory>(
     }
 
     private fun updateItemIsAllChecked(participantUiModel: ParticipantUiModel) {
-        var isAllChecked = true
-
-        run breaking@ {
-            visitables.forEach {
-                if ((it is ParticipantUiModel) && !it.isDisabled &&
-                    it.day == participantUiModel.day && !it.isChecked) {
-                    isAllChecked = false
-                    return@breaking
-                }
-            }
-        }
-
-        val index = visitables.mapIndexed { index, visitable ->
-            Pair(index, visitable)
-        }.firstOrNull{
-            (it.second is ParticipantTitleUiModel) &&
-                (it.second as ParticipantTitleUiModel).day == participantUiModel.day
-        }
+        val isAllChecked = isAllItemChecked(participantUiModel)
+        val index = getIndexParent(participantUiModel)
 
         if (index != null) {
-            (visitables[index.first] as ParticipantTitleUiModel).isChecked = isAllChecked
-            notifyItemChanged(index.first)
+            (visitables[index] as ParticipantTitleUiModel).isChecked = isAllChecked
+            notifyItemChanged(index)
         }
     }
 
@@ -100,6 +85,31 @@ open class BaseEventRedeemRevampAdapter <T, F: AdapterTypeFactory>(
             listCheckedIds.add(Pair(participantUiModel.id, isChecked))
         }
     }
+
+    private fun isAllItemChecked(participantUiModel: ParticipantUiModel): Boolean {
+        var isAllChecked = true
+        run breaking@ {
+            visitables.forEach {
+                if ((it is ParticipantUiModel) && !it.isDisabled &&
+                    it.day == participantUiModel.day && !it.isChecked) {
+                    isAllChecked = false
+                    return@breaking
+                }
+            }
+        }
+        return isAllChecked
+    }
+
+    private fun getIndexParent(participantUiModel: ParticipantUiModel): Int? {
+        val index = visitables.mapIndexed { index, visitable ->
+            Pair(index, visitable)
+        }.firstOrNull{
+            (it.second is ParticipantTitleUiModel) &&
+                (it.second as ParticipantTitleUiModel).day == participantUiModel.day
+        }
+        return index?.first
+    }
+
 
     fun interface EventRedeemBaseAdapterListener {
         fun updateListChecked(listCheckedIds: MutableList<Pair<String, Boolean>>)
