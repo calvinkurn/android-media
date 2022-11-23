@@ -23,6 +23,10 @@ class PlayShortsAnalyticImpl @Inject constructor(
      * Notes:
      * 1. Row 16 & 18 -> is it expected we use suffix "bottom sheet" while we are showing a popup dialog?
      * 2. Row 34 -> is it expected we just have label "click - simpan" without more context on what data is being saved?
+     * 3. Row 53 - 56 -> its not applicable since android still using old cover picker
+     * 4. Row 58 -> we dont have "Simpan" button in existing feature
+     * 5. Row 59 & 60 -> is it expected we use suffix "bottom sheet" while we are showing a popup dialog?
+     *
      */
 
     private val currentSite: String
@@ -256,6 +260,50 @@ class PlayShortsAnalyticImpl @Inject constructor(
         sendGeneralOpenScreen(
             screenName = "/play broadcast short - title page - ${getEventLabelByAccount(account)}",
             trackerId = "37559",
+        )
+    }
+
+    /** Row 51 */
+    fun clickCloseOnCoverForm(account: ContentAccountUiModel) {
+        sendGeneralClickEvent(
+            eventAction = "click - close cover page",
+            account = account,
+            trackerId = "37574"
+        )
+    }
+
+    /** Row 52 */
+    fun clickSelectCoverOnCoverForm(account: ContentAccountUiModel) {
+        sendGeneralClickEvent(
+            eventAction = "click - edit cover",
+            account = account,
+            trackerId = "37575"
+        )
+    }
+
+    /** Row 57 */
+    fun openScreenCoverForm(account: ContentAccountUiModel) {
+        sendGeneralOpenScreen(
+            screenName = "/play broadcast short - cover page - ${getEventLabelByAccount(account)}",
+            trackerId = "37580"
+        )
+    }
+
+    /** Row 59 */
+    fun viewLeavePreparationConfirmationPopup(account: ContentAccountUiModel) {
+        sendGeneralViewEvent(
+            eventAction = "view - yakin mau keluar botom sheet",
+            account = account,
+            trackerId = "37582"
+        )
+    }
+
+    /** Row 60 */
+    fun clickContinueOnLeaveConfirmationPopup(account: ContentAccountUiModel) {
+        sendGeneralClickEvent(
+            eventAction = "click - lanjut persiapan bottom sheet",
+            account = account,
+            trackerId = "37583"
         )
     }
 
