@@ -203,69 +203,17 @@ class ProductListFragment : BaseDaggerFragment() {
 
     private fun handleEffect(effect: ProductListEffect) {
         when (effect) {
-            is ProductListEffect.ShowVariantBottomSheet -> {
-                val isVariantCheckable = pageMode == PageMode.CREATE
-                val isVariantDeletable = pageMode == PageMode.CREATE
-
-                displayVariantBottomSheet(
-                    effect.isParentProductSelected,
-                    effect.selectedProduct,
-                    effect.originalVariantIds,
-                    isVariantCheckable,
-                    isVariantDeletable
-                )
-            }
-            is ProductListEffect.ShowBulkDeleteProductConfirmationDialog -> {
-                if (!isAdded) return
-
-                ConfirmationDialog.show(
-                    context = activity ?: return,
-                    title = getString(R.string.smvc_placeholder_bulk_delete_product_confirmation, effect.toDeleteProductCount),
-                    description = getString(R.string.smvc_delete_product_description),
-                    primaryButtonTitle = getString(R.string.smvc_proceed_delete),
-                    onPrimaryButtonClick = { viewModel.processEvent(ProductListEvent.ApplyBulkDeleteProduct) }
-                )
-            }
-            is ProductListEffect.ShowDeleteProductConfirmationDialog -> {
-                if (!isAdded) return
-
-                ConfirmationDialog.show(
-                    context = activity ?: return,
-                    title = getString(R.string.smvc_delete_product),
-                    description = getString(R.string.smvc_delete_product_description),
-                    primaryButtonTitle = getString(R.string.smvc_proceed_delete),
-                    onPrimaryButtonClick = { viewModel.processEvent(ProductListEvent.ApplyRemoveProduct(effect.productId)) }
-                )
-            }
-            is ProductListEffect.BulkDeleteProductSuccess -> {
-                binding?.cardUnify2.showToaster(
-                    message = getString(
+            is ProductListEffect.ShowVariantBottomSheet -> displayVariantBottomSheet(effect.isParentProductSelected, effect.selectedProduct, effect.originalVariantIds, pageMode ?: return)
+            is ProductListEffect.ShowBulkDeleteProductConfirmationDialog -> showBulkDeleteProductConfirmationDialog(effect.toDeleteProductCount)
+            is ProductListEffect.ShowDeleteProductConfirmationDialog -> showDeleteProductConfirmationDialog(effect.productId)
+            is ProductListEffect.BulkDeleteProductSuccess -> binding?.cardUnify2.showToaster(message = getString(
                         R.string.smvc_placeholder_bulk_delete_product,
                         effect.deletedProductCount
-                    ),
-                    ctaText = getString(R.string.smvc_ok)
-                )
-            }
-            ProductListEffect.ProductDeleted -> {
-                binding?.cardUnify2.showToaster(
-                    message = getString(R.string.smvc_product_deleted),
-                    ctaText = getString(R.string.smvc_ok)
-                )
-            }
-
-            is ProductListEffect.ProceedToVoucherPreviewPage -> {
-                val voucherConfiguration = effect.voucherConfiguration
-                val selectedProducts = effect.selectedProducts
-                val topSellingProductImageUrls = effect.selectedParentProductImageUrls
-
-                //TODO: Navigate to voucher preview page
-            }
-            is ProductListEffect.SendResultToCallerPage -> {
-                sendResultToCallerActivity(effect.selectedProducts)
-            }
-            is ProductListEffect.ShowError -> {
-                binding?.cardUnify2?.showToasterError(effect.error)
-            }
+                    ), ctaText = getString(R.string.smvc_ok))
+            ProductListEffect.ProductDeleted -> binding?.cardUnify2.showToaster(message = getString(R.string.smvc_product_deleted), ctaText = getString(R.string.smvc_ok))
+            is ProductListEffect.ProceedToVoucherPreviewPage -> navigateToVoucherPreviewPage(effect.voucherConfiguration, effect.selectedProducts, effect.selectedParentProductImageUrls)
+            is ProductListEffect.SendResultToCallerPage -> sendResultToCallerActivity(effect.selectedProducts)
+            is ProductListEffect.ShowError -> binding?.cardUnify2?.showToasterError(effect.error)
         }
     }
 
@@ -407,9 +355,11 @@ class ProductListFragment : BaseDaggerFragment() {
         isParentProductSelected: Boolean,
         selectedProduct: SelectedProduct,
         originalVariantIds: List<Long>,
-        isVariantCheckable: Boolean,
-        isVariantDeletable: Boolean
+        pageMode: PageMode
     ) {
+        val isVariantCheckable = pageMode == PageMode.CREATE
+        val isVariantDeletable = pageMode == PageMode.CREATE
+
         val bottomSheet = ReviewVariantBottomSheet.newInstance(
             isParentProductSelected,
             selectedProduct,
@@ -447,6 +397,38 @@ class ProductListFragment : BaseDaggerFragment() {
                 viewModel.processEvent(ProductListEvent.AddNewProductToSelection(newlySelectedProducts))
             }
         }
+    }
+
+    private fun showBulkDeleteProductConfirmationDialog(productCountToBeDeleted: Int) {
+        if (!isAdded) return
+
+        ConfirmationDialog.show(
+            context = activity ?: return,
+            title = getString(R.string.smvc_placeholder_bulk_delete_product_confirmation, productCountToBeDeleted),
+            description = getString(R.string.smvc_delete_product_description),
+            primaryButtonTitle = getString(R.string.smvc_proceed_delete),
+            onPrimaryButtonClick = { viewModel.processEvent(ProductListEvent.ApplyBulkDeleteProduct) }
+        )
+    }
+
+    private fun showDeleteProductConfirmationDialog(productId: Long){
+        if (!isAdded) return
+
+        ConfirmationDialog.show(
+            context = activity ?: return,
+            title = getString(R.string.smvc_delete_product),
+            description = getString(R.string.smvc_delete_product_description),
+            primaryButtonTitle = getString(R.string.smvc_proceed_delete),
+            onPrimaryButtonClick = { viewModel.processEvent(ProductListEvent.ApplyRemoveProduct(productId)) }
+        )
+    }
+
+    private fun navigateToVoucherPreviewPage(
+        voucherConfiguration: VoucherConfiguration,
+        selectedProducts: List<SelectedProduct>,
+        selectedParentProductImageUrls: List<String>
+    ) {
+        //TODO: Navigate to voucher preview page
     }
 }
 
