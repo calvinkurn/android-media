@@ -1,11 +1,11 @@
-package com.tokopedia.people.domains
+package com.tokopedia.feedcomponent.domain.usecase
 
+import com.tokopedia.feedcomponent.domain.model.UserFeedPostsModel
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
-import com.tokopedia.people.model.UserFeedPostsModel
 import javax.inject.Inject
 
 /**
