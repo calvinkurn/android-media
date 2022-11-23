@@ -19,6 +19,12 @@ class PlayShortsAnalyticImpl @Inject constructor(
      * https://mynakama.tokopedia.com/datatracker/requestdetail/view/3511
      */
 
+    /**
+     * Notes:
+     * 1. Row 16 & 18 -> is it expected we use suffix "bottom sheet" while we are showing a popup dialog?
+     * 2. Row 34 -> is it expected we just have label "click - simpan" without more context on what data is being saved?
+     */
+
     private val currentSite: String
         get() = if (GlobalConfig.isSellerApp()) {
             SHORTS_CURRENT_SITE_SELLER
@@ -227,6 +233,45 @@ class PlayShortsAnalyticImpl @Inject constructor(
         )
     }
 
+    /** Row 34 */
+    fun clickSaveOnTitleForm(account: ContentAccountUiModel) {
+        sendGeneralClickEvent(
+            eventAction = "click - simpan",
+            account = account,
+            trackerId = "37557"
+        )
+    }
+
+    /** Row 35 */
+    fun clickClearTextBoxOnTitleForm(account: ContentAccountUiModel) {
+        sendGeneralClickEvent(
+            eventAction = "click - delete text title",
+            account = account,
+            trackerId = "37558"
+        )
+    }
+
+    /** Row 36 */
+    fun openScreenTitleForm(account: ContentAccountUiModel) {
+        sendGeneralOpenScreen(
+            screenName = "/play broadcast short - title page - ${getEventLabelByAccount(account)}",
+            trackerId = "37559",
+        )
+    }
+
+    private fun sendGeneralOpenScreen(
+        screenName: String,
+        trackerId: String,
+    ) {
+        sendGeneralEvent(
+            Tracker.Builder()
+                .setEvent(SHORTS_OPEN_SCREEN)
+                .setCustomProperty(IS_LOGGED_IN_STATUS_LABEL, userSession.isLoggedIn)
+                .setCustomProperty(TRACKER_ID_LABEL, trackerId)
+                .setCustomProperty(SCREEN_NAME_LABEL, screenName)
+        )
+    }
+
     private fun sendGeneralViewEvent(
         eventAction: String,
         account: ContentAccountUiModel,
@@ -235,6 +280,7 @@ class PlayShortsAnalyticImpl @Inject constructor(
         sendGeneralEvent(
             Tracker.Builder()
                 .setEvent(SHORTS_VIEW_CONTENT)
+                .setEventCategory(SHORTS_EVENT_CATEGORY)
                 .setEventAction(eventAction)
                 .setEventLabel(getEventLabelByAccount(account))
                 .setCustomProperty(TRACKER_ID_LABEL, trackerId)
@@ -249,6 +295,7 @@ class PlayShortsAnalyticImpl @Inject constructor(
         sendGeneralEvent(
             Tracker.Builder()
                 .setEvent(SHORTS_CLICK_CONTENT)
+                .setEventCategory(SHORTS_EVENT_CATEGORY)
                 .setEventAction(eventAction)
                 .setEventLabel(getEventLabelByAccount(account))
                 .setCustomProperty(TRACKER_ID_LABEL, trackerId)
@@ -259,7 +306,6 @@ class PlayShortsAnalyticImpl @Inject constructor(
         trackerBuilder: Tracker.Builder
     ) {
         trackerBuilder
-            .setEventCategory(SHORTS_EVENT_CATEGORY)
             .setBusinessUnit(SHORTS_BUSINESS_UNIT)
             .setCurrentSite(currentSite)
             .setUserId(userSession.userId)
@@ -281,6 +327,7 @@ class PlayShortsAnalyticImpl @Inject constructor(
     }
 
     companion object {
+        private const val SHORTS_OPEN_SCREEN = "openScreen"
         private const val SHORTS_VIEW_CONTENT = "viewContentIris"
         private const val SHORTS_CLICK_CONTENT = "clickContent"
         private const val SHORTS_EVENT_CATEGORY = "play broadcast short"
@@ -292,5 +339,7 @@ class PlayShortsAnalyticImpl @Inject constructor(
 
         private const val TRACKER_ID_LABEL = "trackerId"
         private const val SESSION_IRIS_LABEL = "sessionIris"
+        private const val SCREEN_NAME_LABEL = "screenName"
+        private const val IS_LOGGED_IN_STATUS_LABEL = "isLoggedInStatus"
     }
 }
