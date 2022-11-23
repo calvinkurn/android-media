@@ -16,7 +16,6 @@ import com.tokopedia.privacycenter.common.di.PrivacyCenterComponent
 import com.tokopedia.privacycenter.databinding.FragmentDsarAddEmailLayoutBinding
 import com.tokopedia.privacycenter.dsar.model.uimodel.AddEmailModel
 import com.tokopedia.privacycenter.dsar.viewmodel.DsarAddEmailViewModel
-import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
@@ -77,10 +76,6 @@ class DsarAddEmailFragment: BaseDaggerFragment() {
 
         viewModel.routeToSuccessPage.observe(viewLifecycleOwner) {
             finishActivityWithResultOk()
-        }
-
-        viewModel.toasterError.observe(viewLifecycleOwner) {
-            Toaster.build(requireView(), it, Toaster.LENGTH_LONG).show()
         }
 
         viewModel.routeToVerification.observe(viewLifecycleOwner) {

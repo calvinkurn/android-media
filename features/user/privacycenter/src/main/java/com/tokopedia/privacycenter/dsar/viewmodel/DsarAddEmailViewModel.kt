@@ -27,9 +27,6 @@ class DsarAddEmailViewModel @Inject constructor(
     private val _routeToVerification = SingleLiveEvent<String>()
     val routeToVerification: LiveData<String> = _routeToVerification
 
-    private val _toasterError = SingleLiveEvent<String>()
-    val toasterError: LiveData<String> = _toasterError
-
     fun checkEmail(email: String) {
         _addEmailModel.value = _addEmailModel.value?.copy(btnLoading = true)
         launch {
@@ -51,13 +48,13 @@ class DsarAddEmailViewModel @Inject constructor(
             try {
                 val param = AddEmailParam(email, otpCode, otpType)
                 val result = dsarAddEmailUseCase(param).data
-                if(result.isSuccess && result.errorMessage.isNotEmpty()) {
+                if(result.isSuccess && result.errorMessage.isEmpty()) {
                     _routeToSuccessPage.call()
                 } else if(result.errorMessage.isNotEmpty()) {
-                    _toasterError.value = result.errorMessage
+                    _addEmailModel.value = _addEmailModel.value?.copy(inputText = "", inputError = result.errorMessage, btnLoading = false)
                 }
             } catch (e: Exception) {
-                _toasterError.value = e.message
+                _addEmailModel.value = _addEmailModel.value?.copy(inputText = "", inputError = "", btnLoading = false)
             }
         }
     }
