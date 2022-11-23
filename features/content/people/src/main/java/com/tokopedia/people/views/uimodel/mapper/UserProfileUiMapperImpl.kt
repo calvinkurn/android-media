@@ -2,6 +2,7 @@ package com.tokopedia.people.views.uimodel.mapper
 
 import com.tokopedia.feedcomponent.data.pojo.whitelist.Author
 import com.tokopedia.feedcomponent.data.pojo.whitelist.WhitelistQuery
+import com.tokopedia.feedcomponent.domain.model.UserFeedPostsModel
 import com.tokopedia.feedcomponent.people.model.MutationUiModel
 import com.tokopedia.people.model.*
 import com.tokopedia.people.views.uimodel.content.MediaUiModel

@@ -3,6 +3,7 @@ package com.tokopedia.people.data
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.content.common.usecase.GetWhiteListNewUseCase
 import com.tokopedia.content.common.usecase.GetWhiteListNewUseCase.Companion.WHITELIST_ENTRY_POINT
+import com.tokopedia.feedcomponent.domain.usecase.GetUserProfileFeedPostsUseCase
 import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowAction
 import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowUseCase
 import com.tokopedia.feedcomponent.domain.usecase.shoprecom.ShopRecomUseCase
