@@ -23,7 +23,7 @@ data class PrivacyPolicyDataModel(
     @SerializedName("section_id")
     val sectionId: String = "",
     @SerializedName("section_title")
-    val sectionTitle: String = "",
+    var sectionTitle: String = "",
     @SerializedName("topic_id")
     val topicId: String = "",
     @SerializedName("language")

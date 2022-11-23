@@ -16,12 +16,11 @@ import com.tokopedia.privacycenter.common.PrivacyCenterStateResult
 import com.tokopedia.privacycenter.common.di.DaggerPrivacyCenterComponent
 import com.tokopedia.privacycenter.databinding.PrivacyPolicyBottomSheetBinding
 import com.tokopedia.privacycenter.main.section.privacypolicy.PrivacyPolicyConst.KEY_TITLE
+import com.tokopedia.privacycenter.main.section.privacypolicy.PrivacyPolicyConst.SECTION_ID
 import com.tokopedia.privacycenter.main.section.privacypolicy.adapter.PrivacyPolicyAdapter
 import com.tokopedia.privacycenter.main.section.privacypolicy.domain.data.PrivacyPolicyDataModel
-import com.tokopedia.privacycenter.main.section.privacypolicy.domain.data.PrivacyPolicyDetailDataModel
 import com.tokopedia.privacycenter.main.section.privacypolicy.webview.PrivacyPolicyWebViewActivity
 import com.tokopedia.unifycomponents.BottomSheetUnify
-import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
@@ -30,7 +29,7 @@ class PrivacyPolicySectionBottomSheet : BottomSheetUnify(), PrivacyPolicyAdapter
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private val viewModel by lazy {
-        ViewModelProvider(this, viewModelFactory).get(
+        ViewModelProvider(requireActivity(), viewModelFactory).get(
             PrivacyPolicySectionViewModel::class.java
         )
     }
@@ -40,8 +39,8 @@ class PrivacyPolicySectionBottomSheet : BottomSheetUnify(), PrivacyPolicyAdapter
 
     init {
         showCloseIcon = true
-        isDragable = false
         showKnob = false
+        isDragable = false
         clearContentPadding = true
         bottomSheetBehaviorDefaultState = BottomSheetBehavior.STATE_EXPANDED
     }
@@ -92,35 +91,25 @@ class PrivacyPolicySectionBottomSheet : BottomSheetUnify(), PrivacyPolicyAdapter
                 is PrivacyCenterStateResult.Success -> onSuccessGetPrivacyPolicyAllList(it.data)
             }
         }
-
-        viewModel.privacyPolicyDetail.observe(viewLifecycleOwner) {
-            when (it) {
-                is PrivacyCenterStateResult.Fail -> {
-                    view?.let { v -> Toaster.build(v, it.error.message.toString()).show() }
-                }
-                is PrivacyCenterStateResult.Loading -> { }
-                is PrivacyCenterStateResult.Success -> onSuccessGetPrivacyPolicyDetail(it.data)
-            }
-        }
     }
 
     private fun onSuccessGetPrivacyPolicyAllList(data: List<PrivacyPolicyDataModel>) {
+        viewBinding?.apply {
+            listPrivacyPolicy.showWithCondition(true)
+            loaderListPrivacyPolicy.showWithCondition(false)
+        }
         privacyPolicyAdapter.apply {
             clearAllItems()
             addItems(data)
-            notifyItemRangeInserted(0, data.size)
+            notifyDataSetChanged()
         }
     }
 
-    private fun onSuccessGetPrivacyPolicyDetail(data: PrivacyPolicyDetailDataModel) {
-        openDetailPrivacyPolicy(data.sectionTitle, data.sectionContent)
-    }
-
-    private fun openDetailPrivacyPolicy(title: String, htmlContent: String) {
+    private fun openDetailPrivacyPolicy(title: String, sectionId: String) {
         val intent = Intent(context, PrivacyPolicyWebViewActivity::class.java).apply {
             putExtras(Bundle().apply {
                 putString(KEY_TITLE, title)
-                putString(PrivacyPolicyConst.KEY_HTML_CONTENT, htmlContent)
+                putString(SECTION_ID, sectionId)
             })
         }
 
@@ -128,7 +117,7 @@ class PrivacyPolicySectionBottomSheet : BottomSheetUnify(), PrivacyPolicyAdapter
     }
 
     override fun onItemClicked(item: PrivacyPolicyDataModel) {
-        viewModel.getPrivacyPolicyDetail(item.sectionId)
+        openDetailPrivacyPolicy(item.sectionTitle, item.sectionId)
     }
 
     private fun loadingPrivacyPolicyList(isLoading: Boolean) {
