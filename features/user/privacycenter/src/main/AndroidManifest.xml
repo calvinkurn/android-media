@@ -63,7 +63,7 @@
 
         <activity
             android:name=".searchhistory.SearchHistoryActivity"
-            android:label="@string/search_history_title"
+            android:label="@string/privacy_center_search_history_title"
             android:theme="@style/Theme.WhiteUnify"
             android:exported="false"
             android:screenOrientation="portrait">

@@ -30,6 +30,10 @@ class DeleteSearchHistoryUseCase @Inject constructor(
         """.trimIndent()
 
     override suspend fun execute(params: DeleteSearchHistoryParam): DeleteSearchHistoryResult {
+        if (params.position < 0) {
+            return DeleteSearchHistoryResult.Failed(0, params.clearAll)
+        }
+
         val registrationId = userSession.deviceId
         val userId = userSession.userId
         val uniqueId = getUniqueId(userId, registrationId)
@@ -89,15 +93,4 @@ class DeleteSearchHistoryUseCase @Inject constructor(
         private const val KEY_DEVICE_ID = "device_id"
         private const val KEY_DELETE_SUCCESS = "success"
     }
-}
-
-sealed class DeleteSearchHistoryResult(
-    val position: Int = -1, val isClearAll: Boolean = false, val throwable: Throwable? = null
-) {
-    class Success(position: Int, isClearAll: Boolean) : DeleteSearchHistoryResult(
-        position = position, isClearAll = isClearAll
-    )
-    class Failed(position: Int, isClearAll: Boolean, throwable: Throwable? = null) : DeleteSearchHistoryResult(
-        position = position, isClearAll = isClearAll, throwable = throwable
-    )
 }

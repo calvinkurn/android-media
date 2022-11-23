@@ -6,15 +6,23 @@ import android.net.Uri
 import android.provider.Settings
 import android.view.LayoutInflater
 import android.view.View
+import androidx.fragment.app.FragmentManager
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.privacycenter.R
+import com.tokopedia.privacycenter.common.PrivacyCenterStateResult
+import com.tokopedia.privacycenter.common.domain.GetRecommendationFriendState
+import com.tokopedia.privacycenter.common.utils.getMessage
 import com.tokopedia.privacycenter.databinding.SectionRecomendationAndPromoBinding
+import com.tokopedia.privacycenter.main.analytics.MainPrivacyCenterAnalytics
 import com.tokopedia.privacycenter.main.section.BasePrivacyCenterSection
+import com.tokopedia.unifycomponents.Toaster
 
-class RecommendationSection (
+class RecommendationSection(
     context: Context?,
     private val viewModel: RecommendationViewModel,
+    private val fragmentManager: FragmentManager,
     private val listener: Listener
 ) : BasePrivacyCenterSection(context) {
 
@@ -32,6 +40,11 @@ class RecommendationSection (
         context?.getString(R.string.privacy_center_recommendation_subtitle).orEmpty()
     override val isShowDirectionButton: Boolean = false
 
+    private var verificationEnabledDataUsageBottomSheet: RecommendationFriendBottomSheet? = null
+    private var verificationDisabledDataUsageDialog: DialogUnify? = null
+    private var loaderDialog: LoaderDialog? = null
+    private var enableGeolocationDialog: DialogUnify? = null
+
     override fun initObservers() {
         lifecycleOwner?.let {
             viewModel.isShakeShakeAllowed.observe(lifecycleOwner) { isAllowed ->
@@ -41,11 +54,47 @@ class RecommendationSection (
             viewModel.isGeolocationAllowed.observe(lifecycleOwner) { isAllowed ->
                 sectionViewBinding.itemGeolocation.forceToggleState(isAllowed)
             }
+
+            viewModel.isRecommendationFriendAllowed.observe(lifecycleOwner) {
+                sectionViewBinding.itemRecommendationFriend.forceToggleState(it)
+            }
+
+            viewModel.getConsentSocialNetwork.observe(lifecycleOwner) {
+                when (it) {
+                    is GetRecommendationFriendState.Loading -> {
+                        showShimmering(true)
+                    }
+                    is GetRecommendationFriendState.Success -> {
+                        showShimmering(false)
+                    }
+                    is GetRecommendationFriendState.Failed -> {
+                        showLocalLoad {
+                            viewModel.getConsentSocialNetwork()
+                        }
+                    }
+                }
+            }
+
+            viewModel.setConsentSocialNetwork.observe(lifecycleOwner) {
+                when (it) {
+                    is PrivacyCenterStateResult.Loading -> {
+                        showLoaderDialog(true)
+                    }
+                    is PrivacyCenterStateResult.Success -> {
+                        showLoaderDialog(false)
+                    }
+                    is PrivacyCenterStateResult.Fail -> {
+                        showLoaderDialog(false)
+                        val message = it.error.getMessage(sectionViewBinding.root.context)
+                        showToasterError(message)
+                    }
+                }
+            }
         }
     }
 
     override fun onViewRendered() {
-        showShimmering(false)
+        showShimmering(true)
         setUpView()
         initListener()
     }
@@ -54,15 +103,27 @@ class RecommendationSection (
         sectionViewBinding.itemShakeShake.setIcon(IconUnify.SHAKE)
 
         sectionViewBinding.itemGeolocation.setIcon(IconUnify.LOCATION)
+
+        sectionViewBinding.itemRecommendationFriend.setIcon(IconUnify.USER_ADD)
     }
 
     private fun initListener() {
         sectionViewBinding.itemShakeShake.onToggleClicked { _, isChecked ->
             viewModel.setShakeShakePermission(isChecked)
+
+            MainPrivacyCenterAnalytics.sendClickOnTrackingSectionEvent(
+                MainPrivacyCenterAnalytics.LABEL_TOGGLE_SHAKE_SHAKE,
+                isChecked
+            )
         }
 
         sectionViewBinding.itemGeolocation.onToggleClicked { _, isChecked ->
             if (viewModel.isGeolocationAllowed.value != isChecked) {
+                MainPrivacyCenterAnalytics.sendClickOnTrackingSectionEvent(
+                    MainPrivacyCenterAnalytics.LABEL_TOGGLE_GEOLOCATION,
+                    isChecked
+                )
+
                 sectionViewBinding.itemGeolocation.forceToggleState(false)
 
                 if (isChecked) {
@@ -72,11 +133,81 @@ class RecommendationSection (
                 }
             }
         }
+
+        sectionViewBinding.itemRecommendationFriend.onToggleClicked { buttonView, isChecked ->
+            if (viewModel.isRecommendationFriendAllowed.value != isChecked) {
+                MainPrivacyCenterAnalytics.sendClickOnTrackingSectionEvent(
+                    MainPrivacyCenterAnalytics.LABEL_TOGGLE_RECOMMENDATION_FRIEND,
+                    isChecked
+                )
+
+                sectionViewBinding.itemRecommendationFriend.forceToggleState(!isChecked)
+
+                if (!isChecked) {
+                    showVerificationDisabledDataUsage()
+                } else {
+                    showVerificationEnabledDataUsage()
+                }
+            }
+        }
+    }
+
+    private fun showVerificationEnabledDataUsage() {
+        verificationEnabledDataUsageBottomSheet = RecommendationFriendBottomSheet()
+
+        verificationEnabledDataUsageBottomSheet?.setOnVerificationClickedListener {
+            verificationEnabledDataUsageBottomSheet?.dismiss()
+            verificationEnabledDataUsageBottomSheet = null
+            viewModel.setConsentSocialNetwork(true)
+        }
+
+        verificationEnabledDataUsageBottomSheet?.show(
+            fragmentManager,
+            TAG_BOTTOM_SHEET_VERIFICATION
+        )
+    }
+
+    private fun showLoaderDialog(isShow: Boolean) {
+        if (isShow) {
+            loaderDialog = LoaderDialog(sectionViewBinding.root.context)
+            loaderDialog?.setLoadingText("")
+            loaderDialog?.show()
+        } else {
+            loaderDialog?.dismiss()
+            loaderDialog = null
+        }
+    }
+
+    private fun showVerificationDisabledDataUsage() {
+        sectionViewBinding.root.context?.apply {
+            verificationDisabledDataUsageDialog =
+                DialogUnify(this, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
+
+            verificationDisabledDataUsageDialog?.apply {
+                setTitle(getString(R.string.privacy_center_recommendation_friend_dialog_disabled_title))
+                setDescription(getString(R.string.privacy_center_recommendation_friend_dialog_disabled_subtitle))
+                setPrimaryCTAText(getString(R.string.privacy_center_recommendation_friend_dialog_primary))
+                setSecondaryCTAText(getString(R.string.privacy_center_recommendation_friend_dialog_secondary))
+            }
+
+            verificationDisabledDataUsageDialog?.setPrimaryCTAClickListener {
+                verificationDisabledDataUsageDialog?.dismiss()
+                verificationDisabledDataUsageDialog = null
+                viewModel.setConsentSocialNetwork(false)
+            }
+
+            verificationDisabledDataUsageDialog?.setSecondaryCTAClickListener {
+                verificationDisabledDataUsageDialog?.dismiss()
+                verificationDisabledDataUsageDialog = null
+            }
+
+            verificationDisabledDataUsageDialog?.show()
+        }
     }
 
     private fun showVerificationPermissionGeolocation() {
         sectionViewBinding.root.context?.apply {
-            val dialog =
+            enableGeolocationDialog =
                 DialogUnify(this, DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
                     setTitle(
                         getString(R.string.privacy_center_recommendation_dialog_title_permission_geolocation)
@@ -90,15 +221,17 @@ class RecommendationSection (
                     setPrimaryCTAClickListener {
                         listener.onRequestLocationPermission()
                         dismiss()
+                        enableGeolocationDialog = null
                     }
                     setSecondaryCTAText(
                         getString(R.string.privacy_center_recommendation_dialog_button_secondary_permission_geolocation)
                     )
                     setSecondaryCTAClickListener {
                         dismiss()
+                        enableGeolocationDialog = null
                     }
                 }
-            dialog.show()
+            enableGeolocationDialog?.show()
         }
     }
 
@@ -113,11 +246,16 @@ class RecommendationSection (
     }
 
     override fun onButtonDirectionClick(view: View) {
-        //none
+        // none
+    }
+
+    private fun showToasterError(message: String) {
+        Toaster.build(sectionViewBinding.root, message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
     }
 
     companion object {
         const val TAG = "RecommendationAndPromoSection"
+        private const val TAG_BOTTOM_SHEET_VERIFICATION = "BottomSheetRecommendationFriend"
         private const val PACKAGE = "package"
     }
 }

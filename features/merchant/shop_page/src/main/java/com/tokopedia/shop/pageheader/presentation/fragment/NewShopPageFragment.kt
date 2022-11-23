@@ -1623,6 +1623,7 @@ class NewShopPageFragment :
         if (selectedTabName.isNotEmpty()) {
             if (!isMyShop) {
                 shopPageTracking?.sendScreenShopPage(shopId, isLogin, selectedTabName, campaignId, variantId)
+                shopPageTracking?.sendBranchScreenShop(userId)
             }
         }
     }

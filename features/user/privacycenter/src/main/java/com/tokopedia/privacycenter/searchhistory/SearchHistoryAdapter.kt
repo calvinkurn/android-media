@@ -85,7 +85,6 @@ class SearchHistoryAdapter(
             }
 
             binding.apply {
-
                 imgIconSearch.loadImageWithoutPlaceholder(item.imageUrl)
             }
         }

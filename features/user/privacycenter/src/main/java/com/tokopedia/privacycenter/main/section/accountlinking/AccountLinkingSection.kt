@@ -8,6 +8,7 @@ import com.tokopedia.privacycenter.R
 import com.tokopedia.privacycenter.common.PrivacyCenterStateResult
 import com.tokopedia.privacycenter.common.utils.getMessage
 import com.tokopedia.privacycenter.databinding.ItemAccountLinkingBinding
+import com.tokopedia.privacycenter.main.analytics.MainPrivacyCenterAnalytics
 import com.tokopedia.privacycenter.main.section.BasePrivacyCenterSection
 
 class AccountLinkingSection(
@@ -26,6 +27,7 @@ class AccountLinkingSection(
     override val sectionTextTitle: String = context?.getString(R.string.account_linking_title).orEmpty()
     override val sectionTextDescription: String = context?.getString(R.string.account_linking_subtitle).orEmpty()
     override val isShowDirectionButton: Boolean = false
+    private var isLinked: Boolean = false
 
     override fun initObservers() {
         lifecycleOwner?.let {
@@ -36,7 +38,9 @@ class AccountLinkingSection(
                     }
                     is PrivacyCenterStateResult.Success -> {
                         showShimmering(false)
+                        isLinked = it.data.isLinked
                         showStatusAccountLinked(it.data.isLinked, it.data.phoneNumber, it.data.linkedTime)
+                        sendStatusAccountTracker(it.data.isLinked)
                     }
                     is PrivacyCenterStateResult.Fail -> {
                         showOnFailed(it.error)
@@ -49,7 +53,25 @@ class AccountLinkingSection(
     override fun onViewRendered() {
         sectionViewBinding.root.setOnClickListener {
             listener.onItemAccountLinkingClicked()
+
+            MainPrivacyCenterAnalytics.sendClickOnButtonAccountLinkingEvent(
+                if (isLinked) {
+                    MainPrivacyCenterAnalytics.LABEL_LINK
+                } else {
+                    MainPrivacyCenterAnalytics.LABEL_UNLINK
+                }
+            )
         }
+    }
+
+    private fun sendStatusAccountTracker(isLinked: Boolean) {
+        MainPrivacyCenterAnalytics.sendViewAccountLinkingSectionEvent(
+            if (isLinked) {
+                MainPrivacyCenterAnalytics.LABEL_ACCOUNT_LINKED
+            } else {
+                MainPrivacyCenterAnalytics.LABEL_ACCOUNT_NOT_LINKED
+            }
+        )
     }
 
     private fun showStatusAccountLinked(isLinked: Boolean, phoneNumber: String = "", linkedTime: String = "") {

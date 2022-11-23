@@ -76,12 +76,8 @@ class SearchHistoryUseCase @Inject constructor(
 
         val response: SearchHistoryResponse = repository.request(graphqlQuery(), parameter)
 
-        var recentSearch: List<ItemSearch> = emptyList()
-        response.universeInitialState.data.forEach {
-            if (it.id == KEY_RECENT_SEARCH) {
-                recentSearch = it.items
-            }
-        }
+        val recentSearch: List<ItemSearch> =
+            response.universeInitialState.data.find { it.id == KEY_RECENT_SEARCH }?.items ?: emptyList()
 
         return PrivacyCenterStateResult.Success(recentSearch)
     }
