@@ -181,41 +181,6 @@
             app:typographyType="display_3"
             app:typographyWeight="bold" />
 
-        <LinearLayout
-            android:id="@+id/top_ads_product_subtitle_container"
-            android:layout_width="0dp"
-            android:layout_height="16dp"
-            android:layout_marginStart="16dp"
-            android:orientation="vertical"
-            android:visibility="gone"
-            app:layout_constrainedWidth="true"
-            app:layout_constraintBottom_toTopOf="@id/top_ads_campaign_copywriting"
-            app:layout_constraintEnd_toStartOf="@+id/chevron"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/top_ads_product_name"
-            app:layout_constraintVertical_chainStyle="packed"
-            tools:visibility="visible">
-
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/top_ads_product_subtitle_first"
-                android:layout_width="match_parent"
-                android:layout_height="15dp"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:visibility="visible"
-                app:typographyType="display_3" />
-
-            <com.tokopedia.unifyprinciples.Typography
-                android:id="@+id/top_ads_product_subtitle_second"
-                android:layout_width="match_parent"
-                android:layout_height="15dp"
-                android:ellipsize="end"
-                android:maxLines="1"
-                android:visibility="visible"
-                app:typographyType="display_3" />
-
-        </LinearLayout>
-
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/top_ads_campaign_copywriting"
             android:layout_width="0dp"
