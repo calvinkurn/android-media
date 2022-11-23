@@ -186,5 +186,93 @@ internal class GetRecommendationUseCaseRequest {
              }
 
         """.trimIndent()
+
+        val singleQueryV2 = """
+            query productRecommendationSingleHTTPV2(${'$'}pageNumber: Int!, ${'$'}pageName: String!, ${'$'}productIDs: String!, ${'$'}queryParam: String!) {
+                productRecommendationWidgetSingleHTTPV2(pageNumber: ${'$'}pageNumber, pageName: ${'$'}pageName, productIDs: ${'$'}productIDs, queryParam: ${'$'}queryParam){
+                   data {
+                       tID
+                       source
+                       title
+                       foreignTitle
+                       widgetUrl
+                       seeMoreAppLink
+                       seeMoreUrlLink
+                       pageName
+                       pagination{
+                            hasNext
+                       }
+                       campaign{
+                        appLandingPageLink
+                        landingPageLink
+                        assets {
+                          banner{
+                            apps
+                          }
+                        }
+                       }
+                       recommendation {
+                           id
+                           name
+                           categoryBreadcrumbs
+                           url
+                           appUrl
+                           clickUrl
+                           wishlistUrl
+                           trackerImageUrl
+                           imageUrl
+                           relatedProductAppLink
+                           relatedProductUrlLink
+                           price
+                           priceInt
+                           discountPercentage
+                           slashedPrice
+                           slashedPriceInt
+                           shop {
+                               id
+                               name
+                               city
+                           }
+                          departmentId
+                          labels {
+                              title
+                              color
+                          }
+                          labelgroup{
+                            position
+                            title
+                            type
+                            url
+                          }
+                          badges {
+                              title
+                              imageUrl
+                          }
+                          wholesalePrice {
+                              price
+                              quantityMax
+                              quantityMin
+                              priceString
+                          }
+                          freeOngkir{
+                            isActive
+                            imageUrl
+                          }
+                          rating
+                          ratingAverage
+                          countReview
+                          recommendationType
+                          stock
+                          isTopads
+                          specificationLabels {
+                            key
+                            value
+                        }
+                       }
+                   }
+                 }
+             }
+
+        """.trimIndent()
     }
 }
