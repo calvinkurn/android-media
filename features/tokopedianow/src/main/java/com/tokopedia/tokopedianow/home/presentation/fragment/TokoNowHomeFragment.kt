@@ -218,7 +218,6 @@ class TokoNowHomeFragment: Fragment(),
         const val KEY_IS_OPEN_MINICART_LIST = "isMiniCartOpen"
         const val KEY_SERVICE_TYPE = "service_type"
         const val URL_IMAGE_DIALOG_REFERRAL = "https://images.tokopedia.net/img/tokonow/referral/surprise gift.png"
-        private const val LOTTIE_REFERRAL = "https://assets.tokopedia.net/asts/lottie/android/tokonow/tokonow_animation_referral.json"
         const val QUERY_REFERRAL_CODE = "referralcode"
 
         fun newInstance() = TokoNowHomeFragment()
@@ -1948,14 +1947,7 @@ class TokoNowHomeFragment: Fragment(),
                 dialog.dismiss()
             }
 
-            val newView = LottieAnimationView(context)
-            newView.setAnimationFromUrl(LOTTIE_REFERRAL)
             dialog.setImageUrl(URL_IMAGE_DIALOG_REFERRAL)
-            dialog.setOnShowListener {
-                newView.repeatCount = 1
-                newView.playAnimation()
-            }
-            replaceImage(newView, dialog.dialogImage)
             dialog.show()
         }
     }
