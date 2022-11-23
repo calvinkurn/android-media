@@ -1,7 +1,8 @@
 package com.tokopedia.checkout.view.helper
 
-import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.scheduledelivery.ScheduleDeliveryData
-import com.tokopedia.logisticcart.scheduledelivery.model.ScheduleDeliveryRatesResponse
+import com.tokopedia.logisticcart.scheduledelivery.domain.entity.response.OngkirGetScheduledDeliveryRates
+import com.tokopedia.logisticcart.scheduledelivery.domain.entity.response.ScheduleDeliveryRatesResponse
+import com.tokopedia.logisticcart.scheduledelivery.domain.model.ScheduleDeliveryData
 
 object ScheduleDeliveryResponseHelper {
 
@@ -11,21 +12,21 @@ object ScheduleDeliveryResponseHelper {
         hidden: Boolean? = null,
         recommend: Boolean? = null,
     ): ScheduleDeliveryRatesResponse {
-        val scheduleDeliveryData = scheduleDeliveryRatesResponse.scheduleDeliveryData
+        val scheduleDeliveryData = scheduleDeliveryRatesResponse.ongkirGetScheduledDeliveryRates.scheduleDeliveryData
         return ScheduleDeliveryRatesResponse(
-            ScheduleDeliveryData(
-                scheduleDeliveryData.ratesId,
-                available ?: scheduleDeliveryData.available,
-                hidden ?: scheduleDeliveryData.hidden,
-                recommend ?: scheduleDeliveryData.recommend,
-                scheduleDeliveryData.deliveryType,
-                scheduleDeliveryData.title,
-                scheduleDeliveryData.text,
-                scheduleDeliveryData.notice,
-                scheduleDeliveryData.ticker,
-                scheduleDeliveryData.labels,
-                scheduleDeliveryData.error,
-                scheduleDeliveryData.deliveryServices
+            OngkirGetScheduledDeliveryRates(
+                ScheduleDeliveryData(
+                    scheduleDeliveryData.ratesId,
+                    available ?: scheduleDeliveryData.available,
+                    hidden ?: scheduleDeliveryData.hidden,
+                    recommend ?: scheduleDeliveryData.recommend,
+                    scheduleDeliveryData.deliveryType,
+                    scheduleDeliveryData.title,
+                    scheduleDeliveryData.text,
+                    scheduleDeliveryData.notice,
+                    scheduleDeliveryData.error,
+                    scheduleDeliveryData.deliveryServices
+                )
             )
         )
     }

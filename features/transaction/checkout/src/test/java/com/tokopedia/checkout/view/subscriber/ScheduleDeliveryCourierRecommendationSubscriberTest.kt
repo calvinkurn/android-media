@@ -1,6 +1,6 @@
 package com.tokopedia.checkout.view.subscriber
 
-import com.tokopedia.logisticCommon.data.entity.ratescourierrecommendation.scheduledelivery.DeliveryProduct
+import com.tokopedia.logisticcart.scheduledelivery.domain.model.DeliveryProduct
 import com.tokopedia.logisticcart.shipping.model.CourierItemData
 import com.tokopedia.logisticcart.shipping.model.ScheduleDeliveryUiModel
 import com.tokopedia.logisticcart.shipping.model.ShipmentCartItemModel

@@ -31,7 +31,7 @@ class ShipmentCourierConverterTest {
         val shippingRecommendationData =
             shippingDurationConverter.convertModel(ratesResponse.ratesData)
         shippingRecommendationData.scheduleDeliveryData =
-            mockRatesScheduleDeliveryResponse.scheduleDeliveryData
+            mockRatesScheduleDeliveryResponse.ongkirGetScheduledDeliveryRates.scheduleDeliveryData
         val shipmentCartItemModel = ShipmentCartItemModel()
 
         // When
@@ -53,7 +53,7 @@ class ShipmentCourierConverterTest {
         val shippingRecommendationData =
             shippingDurationConverter.convertModel(ratesResponse.ratesData)
         shippingRecommendationData.scheduleDeliveryData =
-            ratesScheduleDeliveryResponse.scheduleDeliveryData
+            ratesScheduleDeliveryResponse.ongkirGetScheduledDeliveryRates.scheduleDeliveryData
         val shipmentCartItemModel = ShipmentCartItemModel()
 
         // When
@@ -80,7 +80,7 @@ class ShipmentCourierConverterTest {
         val shippingRecommendationData =
             shippingDurationConverter.convertModel(ratesResponse.ratesData)
         shippingRecommendationData.scheduleDeliveryData =
-            mockRatesScheduleDeliveryResponse.scheduleDeliveryData
+            mockRatesScheduleDeliveryResponse.ongkirGetScheduledDeliveryRates.scheduleDeliveryData
         val shipmentCartItemModel = ShipmentCartItemModel()
 
         // When
@@ -102,7 +102,7 @@ class ShipmentCourierConverterTest {
         val shippingRecommendationData =
             shippingDurationConverter.convertModel(ratesResponse.ratesData)
         shippingRecommendationData.scheduleDeliveryData =
-            ratesScheduleDeliveryResponse.scheduleDeliveryData
+            ratesScheduleDeliveryResponse.ongkirGetScheduledDeliveryRates.scheduleDeliveryData
         val shipmentCartItemModel = ShipmentCartItemModel(
             scheduleDate = "2022-09-20T00:00:00Z",
             timeslotId = 2022092014123,
@@ -128,7 +128,7 @@ class ShipmentCourierConverterTest {
         val shippingRecommendationData =
             shippingDurationConverter.convertModel(ratesResponse.ratesData)
         shippingRecommendationData.scheduleDeliveryData =
-            ratesScheduleDeliveryResponse.scheduleDeliveryData
+            ratesScheduleDeliveryResponse.ongkirGetScheduledDeliveryRates.scheduleDeliveryData
         val shipmentCartItemModel = ShipmentCartItemModel(
             scheduleDate = "2022-10-20T00:00:00Z",
             timeslotId = 2022092014124,
@@ -159,7 +159,7 @@ class ShipmentCourierConverterTest {
         val shippingRecommendationData =
             shippingDurationConverter.convertModel(ratesResponse.ratesData)
         shippingRecommendationData.scheduleDeliveryData =
-            mockRatesScheduleDeliveryResponse.scheduleDeliveryData
+            mockRatesScheduleDeliveryResponse.ongkirGetScheduledDeliveryRates.scheduleDeliveryData
         val shipmentCartItemModel = ShipmentCartItemModel(
             scheduleDate = "2022-10-20T00:00:00Z",
             timeslotId = 2022092014124,
@@ -185,7 +185,7 @@ class ShipmentCourierConverterTest {
         val shippingRecommendationData =
             shippingDurationConverter.convertModel(ratesResponse.ratesData)
         shippingRecommendationData.scheduleDeliveryData =
-            ratesScheduleDeliveryResponse.scheduleDeliveryData
+            ratesScheduleDeliveryResponse.ongkirGetScheduledDeliveryRates.scheduleDeliveryData
         val shipmentCartItemModel = ShipmentCartItemModel(
             scheduleDate = "2022-09-20T00:00:00Z",
             timeslotId = 2022092014123,
@@ -224,7 +224,7 @@ class ShipmentCourierConverterTest {
         val shippingRecommendationData =
             shippingDurationConverter.convertModel(ratesResponse.ratesData)
         shippingRecommendationData.scheduleDeliveryData =
-            ratesScheduleDeliveryResponse.scheduleDeliveryData
+            ratesScheduleDeliveryResponse.ongkirGetScheduledDeliveryRates.scheduleDeliveryData
         val shipmentCartItemModel = ShipmentCartItemModel(
             scheduleDate = "2022-08-20T00:00:00Z",
             timeslotId = 2022092014122,
