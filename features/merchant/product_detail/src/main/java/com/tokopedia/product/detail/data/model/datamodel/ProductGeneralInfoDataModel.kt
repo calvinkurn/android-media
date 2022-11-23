@@ -17,7 +17,8 @@ data class ProductGeneralInfoDataModel(
     var isPlaceholder: Boolean = false,
 
     var additionalIcon: String = "",
-    var additionalDesc: String = ""
+    var additionalDesc: String = "",
+    var separator: String = "",
 ) : DynamicPdpDataModel {
 
     override val impressHolder: ImpressHolder = ImpressHolder()
@@ -65,4 +66,13 @@ data class ProductGeneralInfoDataModel(
 
         return iconUrl.ifBlank { parentIcon }
     }
+
+    val shouldRenderContent
+        get() = !isPlaceholder && (subtitle.isNotBlank() || title.isNotBlank())
+
+    val shouldTopSeparatorShowing
+        get() = separator == ProductCustomInfoDataModel.SEPARATOR_BOTH || separator == ProductCustomInfoDataModel.SEPARATOR_TOP
+
+    val shouldBottomSeparatorShowing
+        get() = separator == ProductCustomInfoDataModel.SEPARATOR_BOTH || separator == ProductCustomInfoDataModel.SEPARATOR_BOTTOM
 }
