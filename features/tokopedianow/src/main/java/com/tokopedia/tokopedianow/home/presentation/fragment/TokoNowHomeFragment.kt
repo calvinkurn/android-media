@@ -1320,14 +1320,12 @@ class TokoNowHomeFragment: Fragment(),
     }
 
     private fun setupReferralData(referral: HomeSharingReferralWidgetUiModel) {
-        val url = REFERRAL_PAGE_URL + referral.sharingUrlParam
-
         updateShareHomeData(
             pageIdConstituents = listOf(PAGE_TYPE_HOME),
             isScreenShot = false,
             thumbNailTitle = context?.resources?.getString(R.string.tokopedianow_home_share_thumbnail_title).orEmpty(),
             linkerType = NOW_HOME,
-            id = referral.sharingUrlParam,
+            id = referral.sharingUrlParam.removePrefix("${referral.slug}/"),
         )
 
         shareHomeTokonow?.apply {
