@@ -62,4 +62,16 @@ open class EventPDPRedeemRevampViewModelTestFixture {
             getEventRedeemedUseCase.executeOnBackground()
         } throws throwable
     }
+
+    protected fun onGetOldRedeemProcess_thenReturn(mapResponse: Map<Type, RestResponse?>) {
+        coEvery {
+            getEventOldRedeemUseCase.executeOnBackground()
+        } returns mapResponse
+    }
+
+    protected fun onGetOldRedeemProcess_thenReturn(throwable: Throwable) {
+        coEvery {
+            getEventOldRedeemUseCase.executeOnBackground()
+        } throws throwable
+    }
 }

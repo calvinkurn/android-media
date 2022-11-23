@@ -1,6 +1,7 @@
 package com.tokopedia.entertainment.pdp.viewmodel
 
 import com.tokopedia.entertainment.pdp.data.redeem.redeemable.EventRedeem
+import com.tokopedia.entertainment.pdp.data.redeem.redeemable.EventRedeemedData
 import com.tokopedia.entertainment.pdp.data.redeem.redeemable.Participant
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -194,4 +195,206 @@ class EventPDPRedeemRevampViewModelTest: EventPDPRedeemRevampViewModelTestFixtur
         Assert.assertEquals(viewModel.oldFlowQuantity, 0)
     }
     //endregion redeem data
+
+    //region new process redeem
+    @Test
+    fun `when new process redeem should run and give success result`() {
+        onGetNewRedeemProcess_thenReturn(createRedeemedDataMap())
+        val expectedResponse = createRedeemedData()
+        var actualResponse: Result<EventRedeemedData>? = null
+
+        runBlockingTest {
+            val collectorJob = launch {
+                viewModel.flowRedeem.collectLatest {
+                    actualResponse = it
+                }
+            }
+            viewModel.setInputRedeemedUrl("")
+            collectorJob.cancel()
+        }
+
+        Assert.assertEquals(expectedResponse, (actualResponse as Success).data)
+    }
+
+    @Test
+    fun `when new process redeem should run and give error result because null`() {
+        onGetNewRedeemProcess_thenReturn(createRedeemedNullDataMap())
+        var actualResponse: Result<EventRedeemedData>? = null
+
+        runBlockingTest {
+            val collectorJob = launch {
+                viewModel.flowRedeem.collectLatest {
+                    actualResponse = it
+                }
+            }
+            viewModel.setInputRedeemedUrl("")
+            collectorJob.cancel()
+        }
+
+        Assert.assertTrue(actualResponse is Fail)
+    }
+
+    @Test
+    fun `when new process redeem should run and give error result error body`() {
+        onGetNewRedeemProcess_thenReturn(createRedeemedErrorBodyDataMap(Throwable()))
+        var actualResponse: Result<EventRedeemedData>? = null
+
+        runBlockingTest {
+            val collectorJob = launch {
+                viewModel.flowRedeem.collectLatest {
+                    actualResponse = it
+                }
+            }
+            viewModel.setInputRedeemedUrl("")
+            collectorJob.cancel()
+        }
+
+        Assert.assertTrue(actualResponse is Fail)
+        Assert.assertEquals((actualResponse as Fail).throwable.message, "Unauthorized")
+        Assert.assertEquals(viewModel.listRedemptions, emptyList<Participant>())
+        Assert.assertEquals(viewModel.oldFlowQuantity, 0)
+    }
+
+    @Test
+    fun `when new process redeem should run and give error result error body null`() {
+        onGetNewRedeemProcess_thenReturn(createRedeemedErrorBodyNullDataMap(Throwable()))
+        var actualResponse: Result<EventRedeemedData>? = null
+
+        runBlockingTest {
+            val collectorJob = launch {
+                viewModel.flowRedeem.collectLatest {
+                    actualResponse = it
+                }
+            }
+            viewModel.setInputRedeemedUrl("")
+            collectorJob.cancel()
+        }
+
+        Assert.assertTrue(actualResponse is Fail)
+        Assert.assertEquals(viewModel.listRedemptions, emptyList<Participant>())
+        Assert.assertEquals(viewModel.oldFlowQuantity, 0)
+    }
+
+    @Test
+    fun `when new process redeem should run and give error result is error true`() {
+        onGetNewRedeemProcess_thenReturn(createRedeemedDataIsErrorTrueMap())
+        var actualResponse: Result<EventRedeemedData>? = null
+
+        runBlockingTest {
+            val collectorJob = launch {
+                viewModel.flowRedeem.collectLatest {
+                    actualResponse = it
+                }
+            }
+            viewModel.setInputRedeemedUrl("")
+            collectorJob.cancel()
+        }
+
+        Assert.assertTrue(actualResponse is Fail)
+        Assert.assertEquals((actualResponse as Fail).throwable.message, "Unauthorized")
+        Assert.assertEquals(viewModel.listRedemptions, emptyList<Participant>())
+        Assert.assertEquals(viewModel.oldFlowQuantity, 0)
+    }
+    //endregion new process redeem
+
+    //region old process redeem
+    @Test
+    fun `when old process redeem should run and give success result`() {
+        onGetOldRedeemProcess_thenReturn(createRedeemedDataMap())
+        val expectedResponse = createRedeemedData()
+        var actualResponse: Result<EventRedeemedData>? = null
+
+        runBlockingTest {
+            val collectorJob = launch {
+                viewModel.flowOldRedeem.collectLatest {
+                    actualResponse = it
+                }
+            }
+            viewModel.setInputOldRedeemedUrl("")
+            collectorJob.cancel()
+        }
+
+        Assert.assertEquals(expectedResponse, (actualResponse as Success).data)
+    }
+
+    @Test
+    fun `when old process redeem should run and give error result because null`() {
+        onGetOldRedeemProcess_thenReturn(createRedeemedNullDataMap())
+        var actualResponse: Result<EventRedeemedData>? = null
+
+        runBlockingTest {
+            val collectorJob = launch {
+                viewModel.flowOldRedeem.collectLatest {
+                    actualResponse = it
+                }
+            }
+            viewModel.setInputOldRedeemedUrl("")
+            collectorJob.cancel()
+        }
+
+        Assert.assertTrue(actualResponse is Fail)
+    }
+
+    @Test
+    fun `when old process redeem should run and give error result error body`() {
+        onGetOldRedeemProcess_thenReturn(createRedeemedErrorBodyDataMap(Throwable()))
+        var actualResponse: Result<EventRedeemedData>? = null
+
+        runBlockingTest {
+            val collectorJob = launch {
+                viewModel.flowOldRedeem.collectLatest {
+                    actualResponse = it
+                }
+            }
+            viewModel.setInputOldRedeemedUrl("")
+            collectorJob.cancel()
+        }
+
+        Assert.assertTrue(actualResponse is Fail)
+        Assert.assertEquals((actualResponse as Fail).throwable.message, "Unauthorized")
+        Assert.assertEquals(viewModel.listRedemptions, emptyList<Participant>())
+        Assert.assertEquals(viewModel.oldFlowQuantity, 0)
+    }
+
+    @Test
+    fun `when old process redeem should run and give error result error body null`() {
+        onGetOldRedeemProcess_thenReturn(createRedeemedErrorBodyNullDataMap(Throwable()))
+        var actualResponse: Result<EventRedeemedData>? = null
+
+        runBlockingTest {
+            val collectorJob = launch {
+                viewModel.flowOldRedeem.collectLatest {
+                    actualResponse = it
+                }
+            }
+            viewModel.setInputOldRedeemedUrl("")
+            collectorJob.cancel()
+        }
+
+        Assert.assertTrue(actualResponse is Fail)
+        Assert.assertEquals(viewModel.listRedemptions, emptyList<Participant>())
+        Assert.assertEquals(viewModel.oldFlowQuantity, 0)
+    }
+
+    @Test
+    fun `when old process redeem should run and give error result is error true`() {
+        onGetOldRedeemProcess_thenReturn(createRedeemedDataIsErrorTrueMap())
+        var actualResponse: Result<EventRedeemedData>? = null
+
+        runBlockingTest {
+            val collectorJob = launch {
+                viewModel.flowOldRedeem.collectLatest {
+                    actualResponse = it
+                }
+            }
+            viewModel.setInputOldRedeemedUrl("")
+            collectorJob.cancel()
+        }
+
+        Assert.assertTrue(actualResponse is Fail)
+        Assert.assertEquals((actualResponse as Fail).throwable.message, "Unauthorized")
+        Assert.assertEquals(viewModel.listRedemptions, emptyList<Participant>())
+        Assert.assertEquals(viewModel.oldFlowQuantity, 0)
+    }
+    //endregion old process redeem
 }
