@@ -108,7 +108,7 @@ class SharingWishlistBottomSheet constructor(
             }
 
             buttonSave.setOnClickListener {
-                viewModel.updateWishlistCollection(collection.apply {
+                viewModel.updateWishlist(collection.apply {
                     access = selectedOption
                 })
             }
@@ -141,7 +141,7 @@ class SharingWishlistBottomSheet constructor(
             }
         }
 
-        viewModel.updateWishlistCollection.observe(viewLifecycleOwner) {
+        viewModel.updateWishlist.observe(viewLifecycleOwner) {
             when(it) {
                 is PrivacyCenterStateResult.Fail -> {
                     updateWithMessage(it.error.getMessage(context), false)

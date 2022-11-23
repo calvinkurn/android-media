@@ -185,7 +185,6 @@ class SharingWishlistPageFragment : BaseDaggerFragment(),
         view?.let { Toaster.build(it, message, type = typeToaster).show() }
 
         if (isSuccess) {
-            viewModel.getWishlistCollections(collectionAccess)
             sharedViewModel.notifyPager(collectionAccess)
         }
     }

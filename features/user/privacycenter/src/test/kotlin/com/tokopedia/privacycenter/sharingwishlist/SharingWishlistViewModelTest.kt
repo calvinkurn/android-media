@@ -74,14 +74,14 @@ class SharingWishlistViewModelTest {
 
         viewModel?.wishlistCollection?.observeForever(wishlistCollectionObserver)
         viewModel?.wishlistCollectionById?.observeForever(wishlistCollectionByIdObserver)
-        viewModel?.updateWishlistCollection?.observeForever(updateWishlistCollectionObserver)
+        viewModel?.updateWishlist?.observeForever(updateWishlistCollectionObserver)
     }
 
     @After
     fun tearDown() {
         viewModel?.wishlistCollection?.removeObserver(wishlistCollectionObserver)
         viewModel?.wishlistCollectionById?.removeObserver(wishlistCollectionByIdObserver)
-        viewModel?.updateWishlistCollection?.removeObserver(updateWishlistCollectionObserver)
+        viewModel?.updateWishlist?.removeObserver(updateWishlistCollectionObserver)
     }
 
     @Test
@@ -186,9 +186,9 @@ class SharingWishlistViewModelTest {
             updateWishlistCollectionUseCase(any())
         } returns PrivacyCenterStateResult.Success(mockResponse)
 
-        viewModel?.updateWishlistCollection(WishlistCollectionByIdDataModel())
+        viewModel?.updateWishlist(WishlistCollectionByIdDataModel())
 
-        val result = viewModel?.updateWishlistCollection?.getOrAwaitValue()
+        val result = viewModel?.updateWishlist?.getOrAwaitValue()
         assertTrue(result is PrivacyCenterStateResult.Success)
         result.apply {
             assertTrue(this.data.success)
@@ -201,9 +201,9 @@ class SharingWishlistViewModelTest {
             updateWishlistCollectionUseCase(any())
         } throws Throwable("Opps!")
 
-        viewModel?.updateWishlistCollection(WishlistCollectionByIdDataModel())
+        viewModel?.updateWishlist(WishlistCollectionByIdDataModel())
 
-        val result = viewModel?.updateWishlistCollection?.getOrAwaitValue()
+        val result = viewModel?.updateWishlist?.getOrAwaitValue()
         assertTrue(result is PrivacyCenterStateResult.Fail)
     }
 }

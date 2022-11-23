@@ -17,9 +17,9 @@ import com.tokopedia.privacycenter.sharingwishlist.ui.SharingWishlistStateResult
 import javax.inject.Inject
 
 class SharingWishlistViewModel @Inject constructor(
-    private val getWishlistCollectionUseCase: GetWishlistCollectionUseCase,
-    private val getWishlistCollectionByIdUseCase: GetWishlistCollectionByIdUseCase,
-    private val updateWishlistCollectionUseCase: UpdateWishlistCollectionUseCase,
+    private val getWishlistCollection: GetWishlistCollectionUseCase,
+    private val getWishlistCollectionById: GetWishlistCollectionByIdUseCase,
+    private val updateWishlistCollection: UpdateWishlistCollectionUseCase,
     dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.main) {
 
@@ -31,34 +31,34 @@ class SharingWishlistViewModel @Inject constructor(
     val wishlistCollectionById: LiveData<PrivacyCenterStateResult<WishlistBydIdDataModel>>
         get() = _wishlistCollectionById
 
-    private val _updateWishlistCollection = MutableLiveData<PrivacyCenterStateResult<UpdateWishlistDataModel>>()
-    val updateWishlistCollection: LiveData<PrivacyCenterStateResult<UpdateWishlistDataModel>>
-        get() = _updateWishlistCollection
+    private val _updateWishlist = MutableLiveData<PrivacyCenterStateResult<UpdateWishlistDataModel>>()
+    val updateWishlist: LiveData<PrivacyCenterStateResult<UpdateWishlistDataModel>>
+        get() = _updateWishlist
 
     fun getWishlistCollections(collectionAccess: Int) {
         _wishlistCollection.value = SharingWishlistStateResult.Loading()
-        launchCatchError(coroutineContext, {
-            _wishlistCollection.value = getWishlistCollectionUseCase(collectionAccess)
-        }, {
+        launchCatchError(block =  {
+            _wishlistCollection.value = getWishlistCollection(collectionAccess)
+        }, onError = {
             _wishlistCollection.value = SharingWishlistStateResult.Fail(it)
         })
     }
 
     fun getCollectionById(collectionId: Int) {
         _wishlistCollectionById.value = PrivacyCenterStateResult.Loading()
-        launchCatchError(coroutineContext, {
-            _wishlistCollectionById.value = getWishlistCollectionByIdUseCase(collectionId)
-        }, {
+        launchCatchError(block = {
+            _wishlistCollectionById.value = getWishlistCollectionById(collectionId)
+        }, onError = {
             _wishlistCollectionById.value = PrivacyCenterStateResult.Fail(it)
         })
     }
 
-    fun updateWishlistCollection(params: WishlistCollectionByIdDataModel) {
-        _updateWishlistCollection.value = PrivacyCenterStateResult.Loading()
-        launchCatchError(coroutineContext, {
-            _updateWishlistCollection.value = updateWishlistCollectionUseCase(params)
-        }, {
-            _updateWishlistCollection.value = PrivacyCenterStateResult.Fail(it)
+    fun updateWishlist(params: WishlistCollectionByIdDataModel) {
+        _updateWishlist.value = PrivacyCenterStateResult.Loading()
+        launchCatchError( block = {
+            _updateWishlist.value = updateWishlistCollection(params)
+        }, onError = {
+            _updateWishlist.value = PrivacyCenterStateResult.Fail(it)
         })
     }
 }
