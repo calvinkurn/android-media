@@ -87,7 +87,7 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/ll_voucher_nominal"
+        android:id="@+id/ll_voucher_code"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
@@ -108,15 +108,29 @@
             app:typographyType="display_3"
             app:typographyWeight="reguler" />
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tpg_voucher_code"
+        <LinearLayout
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_weight="50"
-            android:textColor="@color/black"
-            app:typographyType="display_3"
-            app:typographyWeight="reguler"
-            tools:text="CERIASEHAT" />
+            android:layout_weight="50">
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/tpg_voucher_code"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@color/black"
+                app:typographyType="display_3"
+                app:typographyWeight="reguler"
+                tools:text="CERIASEHAT" />
+
+            <com.tokopedia.iconunify.IconUnify
+                android:id="@+id/icon_copy"
+                android:layout_width="16dp"
+                android:layout_height="16dp"
+                android:layout_marginStart="8dp"
+                android:layout_gravity="center"
+                app:icon_name="COPY"/>
+
+        </LinearLayout>
 
     </LinearLayout>
 
@@ -130,7 +144,7 @@
         android:weightSum="100"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="@+id/tpg_voucher_info_title"
-        app:layout_constraintTop_toBottomOf="@+id/ll_voucher_nominal">
+        app:layout_constraintTop_toBottomOf="@+id/ll_voucher_code">
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/tpg_voucher_start_period_label"

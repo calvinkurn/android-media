@@ -22,7 +22,7 @@ class VoucherDetailActivity : BaseSimpleActivity() {
             context.startActivity(intent)
         }
 
-        private const val VOUCHER_ID_SEGMENT = 1
+        private const val VOUCHER_ID_SEGMENT = 2
     }
 
     private val voucherId by lazy {

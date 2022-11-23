@@ -9,7 +9,9 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.campaign.utils.constant.DateConstant
+import com.tokopedia.campaign.utils.extension.showToaster
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.mvc.R
 import com.tokopedia.mvc.databinding.*
 import com.tokopedia.mvc.di.component.DaggerMerchantVoucherCreationComponent
@@ -41,6 +43,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
 
         private const val TRUE = 1
         private const val FALSE = 0
+        private const val COPY_PROMO_CODE_LABEL = "promo_code"
     }
 
     // binding
@@ -166,24 +169,34 @@ class VoucherDetailFragment : BaseDaggerFragment() {
 
     private fun setupVoucherStatus(data: VoucherDetailData) {
         headerBinding?.run {
-            tpgVoucherStatus.apply {
-                when (data.voucherStatus) {
-                    VoucherStatusConstant.NOT_STARTED -> {
+            when (data.voucherStatus) {
+                VoucherStatusConstant.NOT_STARTED -> {
+                    tpgVoucherStatus.apply {
                         text = getString(R.string.smvc_status_upcoming_label)
                         setTextColorCompat(com.tokopedia.unifyprinciples.R.color.Unify_NN600)
                     }
-                    VoucherStatusConstant.ONGOING -> {
+                    imgCampaignStatusIndicator.loadImage(ImageUrlConstant.IMAGE_URL_RIBBON_GREY)
+                }
+                VoucherStatusConstant.ONGOING -> {
+                    tpgVoucherStatus.apply {
                         text = getString(R.string.smvc_status_ongoing_label)
                         setTextColorCompat(com.tokopedia.unifyprinciples.R.color.Green_G500)
                     }
-                    VoucherStatusConstant.STOPPED -> {
+                    imgCampaignStatusIndicator.loadImage(ImageUrlConstant.IMAGE_URL_RIBBON_GREEN)
+                }
+                VoucherStatusConstant.STOPPED -> {
+                    tpgVoucherStatus.apply {
                         text = getString(R.string.smvc_status_stopped_label)
                         setTextColorCompat(com.tokopedia.unifyprinciples.R.color.Red_R500)
                     }
-                    else -> {
+                    imgCampaignStatusIndicator.loadImage(ImageUrlConstant.IMAGE_URL_RIBBON_RED)
+                }
+                else -> {
+                    tpgVoucherStatus.apply {
                         text = getString(R.string.smvc_status_ended_label)
                         setTextColorCompat(com.tokopedia.unifyprinciples.R.color.Unify_NN600)
                     }
+                    imgCampaignStatusIndicator.loadImage(ImageUrlConstant.IMAGE_URL_RIBBON_GREY)
                 }
             }
         }
@@ -259,13 +272,18 @@ class VoucherDetailFragment : BaseDaggerFragment() {
             }
         }
         voucherInfoBinding?.run {
-            tpgVoucherTarget.text = if (data.isPublic == VOUCHER_TARGET_PUBLIC) {
-                getString(R.string.smvc_voucher_public_label)
+            if (data.isPublic == VOUCHER_TARGET_PUBLIC) {
+                tpgVoucherTarget.text =  getString(R.string.smvc_voucher_public_label)
+                llVoucherCode.gone()
             } else {
-                getString(R.string.smvc_voucher_private_label)
+                tpgVoucherTarget.text =  getString(R.string.smvc_voucher_private_label)
+                llVoucherCode.visible()
             }
             tpgVoucherName.text = data.voucherName
             tpgVoucherCode.text = data.voucherCode
+            iconCopy.setOnClickListener {
+                copyVoucherCode(data.voucherCode)
+            }
             val format = SimpleDateFormat(
                 DateConstant.DATE_WITH_SECOND_PRECISION_ISO_8601,
                 Locale.getDefault()
@@ -506,5 +524,21 @@ class VoucherDetailFragment : BaseDaggerFragment() {
 
     private fun getVoucherDetailData(voucherId: Long) {
         viewModel.getVoucherDetail(voucherId)
+    }
+
+    private fun copyVoucherCode(voucherCode: String) {
+        context?.let { ctx ->
+            SharingUtil.copyTextToClipboard(
+                ctx,
+                COPY_PROMO_CODE_LABEL,
+                voucherCode
+            )
+        }
+        binding?.run {
+            layoutButtonGroup.showToaster(
+                getString(R.string.coupon_code_copied_to_clipboard),
+                getString(R.string.smvc_oke_label)
+            )
+        }
     }
 }
