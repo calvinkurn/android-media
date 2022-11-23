@@ -1942,7 +1942,7 @@ class TokoNowHomeFragment: Fragment(),
         context?.let {
             val dialog = DialogUnify(it, DialogUnify.SINGLE_ACTION, DialogUnify.WITH_ILLUSTRATION)
             dialog.setTitle(data.title)
-            dialog.setDescription(data.description)
+            dialog.setDescription(data.subtitle)
             dialog.setPrimaryCTAText(data.ctaText)
             dialog.setPrimaryCTAClickListener {
                 dialog.dismiss()
