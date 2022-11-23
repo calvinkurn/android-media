@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedASGCUpcomingReminderStatus
+import com.tokopedia.feedcomponent.util.LimitGenerator
 import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.FeedAsgcCampaignResponseModel
 import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.FeedWidgetData
 import com.tokopedia.kol.common.util.ContentDetailResult
@@ -78,10 +79,13 @@ class ContentDetailViewModel @Inject constructor(
     val feedWidgetLatestData: LiveData<Result<FeedWidgetData>>
         get() = _feedWidgetLatestData
 
-    fun fetchUserProfileFeedPost(profileUserID: String, limit: Int = 10) {
+    fun fetchUserProfileFeedPost(profileUserID: String, currentPosition: Int = -1) {
         launchCatchError(
             block = {
-                val data = repository.getFeedPosts(profileUserID, currentCursor, limit)
+                val data = repository.getFeedPosts(
+                    profileUserID, currentCursor,
+                    LimitGenerator.getExpectedLimit(currentPosition)
+                )
                 currentCursor = data.cursor
                 _userProfileFeedPost.value = Success(data)
             },

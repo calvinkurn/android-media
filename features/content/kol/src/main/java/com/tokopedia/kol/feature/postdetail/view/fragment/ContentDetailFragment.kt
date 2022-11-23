@@ -238,7 +238,7 @@ class ContentDetailFragment : BaseDaggerFragment(), ContentDetailPostViewHolder.
 
         setupView(view)
 
-        if (contentDetailSource == USER_PROFILE) viewModel.fetchUserProfileFeedPost(visitedUserID)
+        if (contentDetailSource == USER_PROFILE) viewModel.fetchUserProfileFeedPost(visitedUserID, postPosition)
         else viewModel.getContentDetail(postId)
 
         observeLikeContent()
