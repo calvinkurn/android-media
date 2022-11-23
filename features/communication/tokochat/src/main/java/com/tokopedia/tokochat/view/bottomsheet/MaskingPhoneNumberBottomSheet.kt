@@ -27,7 +27,11 @@ class MaskingPhoneNumberBottomSheet : BottomSheetUnify() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view = inflater.inflate(com.tokopedia.tokochat_common.R.layout.tokochat_masking_phone_number_bottomsheet, container, false)
+        val view = inflater.inflate(
+            com.tokopedia.tokochat_common.R.layout.tokochat_masking_phone_number_bottomsheet,
+            container,
+            false
+        )
         binding = TokochatMaskingPhoneNumberBottomsheetBinding.bind(view)
         setChild(view)
         return super.onCreateView(inflater, container, savedInstanceState)
@@ -40,17 +44,18 @@ class MaskingPhoneNumberBottomSheet : BottomSheetUnify() {
     }
 
     private fun setDriverPhoneNumber() {
-        this@MaskingPhoneNumberBottomSheet.driverPhoneNumber = arguments?.getString(DRIVER_PHONE_NUMBER_KEY, "").orEmpty()
+        this@MaskingPhoneNumberBottomSheet.driverPhoneNumber =
+            arguments?.getString(DRIVER_PHONE_NUMBER_KEY, "").orEmpty()
     }
 
     private fun setupViews() {
         binding?.tokochatIvMaskingPhoneNumber?.loadImage(IV_MASKING_PHONE_NUMBER)
         setDriverCallBtn()
-        setCloseBottomSheet()
+        setCloseMaskingPhoneNumber()
     }
 
-    private fun setCloseBottomSheet() {
-        setCloseClickListener {
+    private fun setCloseMaskingPhoneNumber() {
+        setOnDismissListener {
             analyticsListener?.onCloseMaskingPhoneNumberBottomSheet()
         }
     }
@@ -107,5 +112,4 @@ class MaskingPhoneNumberBottomSheet : BottomSheetUnify() {
 
         val TAG: String = MaskingPhoneNumberBottomSheet::class.java.simpleName
     }
-
 }

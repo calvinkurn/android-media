@@ -7,7 +7,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 class ChatListAnalytic @Inject constructor(
-        private val userSession: UserSessionInterface
+    private val userSession: UserSessionInterface
 ) {
     interface Event {
         companion object {
@@ -61,102 +61,109 @@ class ChatListAnalytic @Inject constructor(
         }
     }
 
-
     //    #CL2
     fun eventClickFilterChat() {
-        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            TrackAppUtils.gtmData(
                 Event.CLICK_INBOX_CHAT,
                 Category.CATEGORY_CHAT_DETAIL,
                 Action.ACTION_CLICK_ON_FILTER,
                 ""
-        ))
+            )
+        )
     }
 
     //    #CL3
     fun eventClickListFilterChat(label: String) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            TrackAppUtils.gtmData(
                 Event.CLICK_INBOX_CHAT,
                 Category.CATEGORY_CHAT_DETAIL,
                 Action.ACTION_CLICK_ON_LIST_FILTER_CHAT,
                 label
-        ))
+            )
+        )
     }
 
     //    #CL5
     fun eventClickTabChat(label: String) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            TrackAppUtils.gtmData(
                 Event.CLICK_INBOX_CHAT,
                 Category.CATEGORY_INBOX_CHAT,
                 Action.ACTION_CLICK_TAB_CHAT_ON_INBOX_CHAT,
                 label
-        ))
+            )
+        )
     }
 
     //    #CL6
     fun eventClickChatList(label: String) {
-        TrackApp.getInstance().gtm.sendGeneralEvent(TrackAppUtils.gtmData(
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            TrackAppUtils.gtmData(
                 Event.CLICK_INBOX_CHAT,
                 Category.CATEGORY_INBOX_CHAT,
                 Action.ACTION_CLICK_ON_CHATLIST,
                 label
-        ))
+            )
+        )
     }
 
     fun eventClickBroadcastButton() {
         TrackApp.getInstance().gtm.sendGeneralEvent(
-                TrackAppUtils.gtmData(
-                        Event.CLICK_INBOX_CHAT,
-                        Category.CATEGORY_INBOX_CHAT,
-                        Action.ACTION_CLICK_BROADCAST_WIZARD,
-                        ""
-                )
+            TrackAppUtils.gtmData(
+                Event.CLICK_INBOX_CHAT,
+                Category.CATEGORY_INBOX_CHAT,
+                Action.ACTION_CLICK_BROADCAST_WIZARD,
+                ""
+            )
         )
     }
 
     fun trackChangeReadStatus(element: ItemChatListPojo) {
         val eventLabel = "${element.getLiteralReadStatus()} - ${element.getLiteralUserType()}"
         TrackApp.getInstance().gtm.sendGeneralEvent(
-                TrackAppUtils.gtmData(
-                        Event.CLICK_INBOX_CHAT,
-                        Category.CATEGORY_INBOX_CHAT,
-                        Action.ACTION_CLICK_ON_MARK_MESSAGE,
-                        eventLabel
-                )
+            TrackAppUtils.gtmData(
+                Event.CLICK_INBOX_CHAT,
+                Category.CATEGORY_INBOX_CHAT,
+                Action.ACTION_CLICK_ON_MARK_MESSAGE,
+                eventLabel
+            )
         )
     }
 
     fun trackDeleteChat(element: ItemChatListPojo) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
-                TrackAppUtils.gtmData(
-                        Event.CLICK_CHAT_DETAIL,
-                        Category.CATEGORY_CHAT_DETAIL,
-                        Action.DELETE_CHAT,
-                        ""
-                )
+            TrackAppUtils.gtmData(
+                Event.CLICK_CHAT_DETAIL,
+                Category.CATEGORY_CHAT_DETAIL,
+                Action.DELETE_CHAT,
+                ""
+            )
         )
     }
 
     // #TA1
     fun eventViewCtaTopAds() {
         TrackApp.getInstance().gtm.sendGeneralEvent(
-                TrackAppUtils.gtmData(
-                        Event.VIEW_CHAT_DETAIL_IRIS,
-                        Category.CATEGORY_CHAT_DETAIL,
-                        Action.VIEW_CTA_TOPADS,
-                        userSession.shopId
-                )
+            TrackAppUtils.gtmData(
+                Event.VIEW_CHAT_DETAIL_IRIS,
+                Category.CATEGORY_CHAT_DETAIL,
+                Action.VIEW_CTA_TOPADS,
+                userSession.shopId
+            )
         )
     }
 
     // #TA2
     fun eventClickCtaTopAds() {
         TrackApp.getInstance().gtm.sendGeneralEvent(
-                TrackAppUtils.gtmData(
-                        Event.CLICK_CHAT_DETAIL,
-                        Category.CATEGORY_CHAT_DETAIL,
-                        Action.CLICK_CTA_TOPADS,
-                        userSession.shopId
-                )
+            TrackAppUtils.gtmData(
+                Event.CLICK_CHAT_DETAIL,
+                Category.CATEGORY_CHAT_DETAIL,
+                Action.CLICK_CTA_TOPADS,
+                userSession.shopId
+            )
         )
     }
 
@@ -180,7 +187,7 @@ class ChatListAnalytic @Inject constructor(
             TrackAppUtils.gtmData(
                 Event.CLICK_COMMUNICATION,
                 Category.INBOX_PAGE,
-                Action.ACTION_CLICK_ON_CHATLIST,
+                Action.CLICK_CHAT_DRIVER_TICKER,
                 role
             ).apply {
                 put(Other.TRACKER_ID, Other.TRACKER_ID_39093)

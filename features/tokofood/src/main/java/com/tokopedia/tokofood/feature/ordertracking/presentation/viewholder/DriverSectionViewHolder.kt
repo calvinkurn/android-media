@@ -4,7 +4,6 @@ import android.content.Context
 import android.view.Gravity
 import android.view.View
 import androidx.annotation.LayoutRes
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.iconunify.IconUnify
@@ -13,8 +12,8 @@ import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.tokofood.R
-import com.tokopedia.tokofood.databinding.ItemTokofoodOrderTrackingDriverSectionBinding
 import com.tokopedia.tokofood.common.presentation.viewholder.CustomPayloadViewHolder
+import com.tokopedia.tokofood.databinding.ItemTokofoodOrderTrackingDriverSectionBinding
 import com.tokopedia.tokofood.feature.ordertracking.presentation.adapter.DriverInformationAdapter
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.DriverInformationUiModel
 import com.tokopedia.tokofood.feature.ordertracking.presentation.uimodel.DriverSectionUiModel
@@ -29,8 +28,9 @@ class DriverSectionViewHolder(
         @LayoutRes
         val LAYOUT = R.layout.item_tokofood_order_tracking_driver_section
 
-        private const val ICON_DEFAULT_PERCENTAGE_X_POSITION = 1.5f
+        private const val ICON_DEFAULT_PERCENTAGE_X_POSITION = 1.6f
         private const val ICON_DEFAULT_PERCENTAGE_Y_POSITION = -0.6f
+        private const val BADGE_COUNTER_MAX = 99
     }
 
     private val binding = ItemTokofoodOrderTrackingDriverSectionBinding.bind(itemView)
@@ -93,7 +93,7 @@ class DriverSectionViewHolder(
     private fun ItemTokofoodOrderTrackingDriverSectionBinding.setupDriverCall(isCallable: Boolean) {
         icDriverCall.run {
             var (isClickableCall, callIconColor) = getIsEnableAndColorIcons(root.context, isCallable)
-            callIconColor = if(callIconColor != Int.ZERO) callIconColor else null
+            callIconColor = if (callIconColor != Int.ZERO) callIconColor else null
 
             isClickable = isClickableCall
             setImage(IconUnify.CALL, callIconColor, callIconColor)
@@ -109,13 +109,18 @@ class DriverSectionViewHolder(
     private fun ItemTokofoodOrderTrackingDriverSectionBinding.setupDriverChat(
         isEnableChat: Boolean,
         goFoodOrderNumber: String,
-        badgeCounter: Int?,
+        badgeCounter: Int?
     ) {
         icDriverChat.run {
             if (isShowDriverChat()) {
                 if (badgeCounter == null || badgeCounter.isZero() || badgeCounter.isLessThanZero()) {
                     notificationRef.hide()
                 } else {
+                    val badgeCounterFmt = if (badgeCounter > BADGE_COUNTER_MAX) {
+                        "$BADGE_COUNTER_MAX+"
+                    } else {
+                        badgeCounter.toString()
+                    }
                     notificationRef.show()
                     setNotifXY(
                         ICON_DEFAULT_PERCENTAGE_X_POSITION,
@@ -123,7 +128,7 @@ class DriverSectionViewHolder(
                     )
 
                     notificationRef.setNotification(
-                        notif = badgeCounter.toString(),
+                        notif = badgeCounterFmt,
                         notificationType = NotificationUnify.COUNTER_TYPE,
                         colorType = NotificationUnify.COLOR_PRIMARY
                     )
@@ -132,7 +137,7 @@ class DriverSectionViewHolder(
                 }
 
                 var (isClickableCall, chatIconColor) = getIsEnableAndColorIcons(root.context, isEnableChat)
-                chatIconColor = if(chatIconColor != Int.ZERO) chatIconColor else null
+                chatIconColor = if (chatIconColor != Int.ZERO) chatIconColor else null
 
                 isClickable = isClickableCall
 
@@ -155,9 +160,8 @@ class DriverSectionViewHolder(
         }
     }
 
-
     private fun getIsEnableAndColorIcons(context: Context, isEnable: Boolean): Pair<Boolean, Int?> {
-       return if (isEnable) {
+        return if (isEnable) {
             val nn900Color =
                 MethodChecker.getColor(
                     context,
@@ -189,11 +193,11 @@ class DriverSectionViewHolder(
         }
     }
 
-
     private fun isShowDriverChat(): Boolean {
         return try {
             RemoteConfigInstance.getInstance().abTestPlatform.getString(
-                RollenceKey.KEY_ROLLENCE_TOKOCHAT, ""
+                RollenceKey.KEY_ROLLENCE_TOKOCHAT,
+                ""
             ) == RollenceKey.KEY_ROLLENCE_TOKOCHAT
         } catch (e: Exception) {
             true
