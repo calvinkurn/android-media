@@ -146,6 +146,10 @@ query feedxhome(${'$'}req: FeedXHomeRequest!) {
         }
         publishedAt
         mods
+        detailScore {
+          label
+          value
+        }
       }
        ... on FeedXCardPlay {
         id
@@ -259,6 +263,10 @@ query feedxhome(${'$'}req: FeedXHomeRequest!) {
         }
         publishedAt
         mods
+        detailScore {
+          label
+          value
+        }
       }
       ... on FeedXCardTopAds {
         a: id
@@ -422,6 +430,10 @@ query feedxhome(${'$'}req: FeedXHomeRequest!) {
         publishedAt
         deletable
         mods
+        detailScore {
+          label
+          value
+        }
       }
       ... on FeedXCardPlaceholder {
         id
