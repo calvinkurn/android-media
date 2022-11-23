@@ -17,7 +17,7 @@ class TitleDividerViewHolder(
 
     fun onBind(item: TitleDividerUiModel) {
         itemViewBinding?.apply {
-            itemLargeDivider.showWithCondition(item.isDivider&& !item.isSmallDivider)
+            itemLargeDivider.showWithCondition(item.isDivider && !item.isSmallDivider)
             itemSmallDivider.showWithCondition(item.isDivider && item.isSmallDivider)
 
             itemTitle.apply {

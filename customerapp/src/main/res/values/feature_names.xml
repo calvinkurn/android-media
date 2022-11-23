@@ -61,7 +61,9 @@
     <string name="title_liveness_detection">Liveness Detection</string>
 
     <!--    Dynamic feature for Privacy Account-->
+    <string name="title_base_privacy_center">Privacy Center</string>
     <string name="title_privacy_center">Privacy Center</string>
+    <string name="privacy_center_search_history_title">Riwayat Pencarian</string>
 
     <!--    Dynamic feature for Login Fingerprint-->
     <string name="title_feature_login_fingerprint_setting">Sidik Jari</string>

@@ -7,8 +7,11 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.privacycenter.consentwithdrawal.viewmodel.ConsentWithdrawalViewModel
 import com.tokopedia.privacycenter.main.PrivacyCenterViewModel
+import com.tokopedia.privacycenter.main.section.accountlinking.AccountLinkingViewModel
 import com.tokopedia.privacycenter.main.section.consentwithdrawal.ConsentWithdrawalSectionViewModel
 import com.tokopedia.privacycenter.main.section.privacypolicy.PrivacyPolicySectionViewModel
+import com.tokopedia.privacycenter.main.section.recommendation.RecommendationViewModel
+import com.tokopedia.privacycenter.searchhistory.SearchHistoryViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -27,9 +30,20 @@ abstract class PrivacyCenterViewModelModule {
 
     @Binds
     @IntoMap
+    @ViewModelKey(AccountLinkingViewModel::class)
+    internal abstract fun bindAccountLinkingViewModel(viewModel: AccountLinkingViewModel): ViewModel
+
+    @Binds
+    @IntoMap
     @ActivityScope
     @ViewModelKey(ConsentWithdrawalSectionViewModel::class)
     abstract fun provideConsentWithdrawalSectionViewModel(viewModel: ConsentWithdrawalSectionViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ActivityScope
+    @ViewModelKey(RecommendationViewModel::class)
+    abstract fun provideRecommendationViewModel(viewModel: RecommendationViewModel): ViewModel
 
     @Binds
     @IntoMap
@@ -42,4 +56,10 @@ abstract class PrivacyCenterViewModelModule {
     @ActivityScope
     @ViewModelKey(PrivacyPolicySectionViewModel::class)
     abstract fun providePrivacyPolicySectionViewModel(viewModel: PrivacyPolicySectionViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ActivityScope
+    @ViewModelKey(SearchHistoryViewModel::class)
+    abstract fun provideSearchHistoryViewModel(viewModel: SearchHistoryViewModel): ViewModel
 }

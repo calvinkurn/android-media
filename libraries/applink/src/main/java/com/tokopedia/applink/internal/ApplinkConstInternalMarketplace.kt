@@ -193,6 +193,9 @@ object ApplinkConstInternalMarketplace {
     // ChatSearchActivity
     const val CHAT_SEARCH = "$INTERNAL_MARKETPLACE/chat-search"
 
+    // BubbleChatActivationActivity
+    const val TOPCHAT_BUBBLE_ACTIVATION = "${INTERNAL_MARKETPLACE}/bubble-activation"
+
     // PowerMerchantSubscribeActivity
     const val POWER_MERCHANT_SUBSCRIBE = "$INTERNAL_MARKETPLACE/power-merchant-subscribe"
 

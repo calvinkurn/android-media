@@ -147,13 +147,18 @@ class PlayModule(val mContext: Context) {
     }
 
     @Provides
-    fun provideWebSocket(userSession: UserSessionInterface, dispatchers: CoroutineDispatchers, localCacheHandler: LocalCacheHandler): PlayWebSocket {
+    fun provideWebSocket(
+        @ApplicationContext context: Context,
+        userSession: UserSessionInterface,
+        dispatchers: CoroutineDispatchers,
+        localCacheHandler: LocalCacheHandler,
+    ): PlayWebSocket {
         return PlayWebSocketImpl(
-                OkHttpClient.Builder(),
-                userSession,
-                dispatchers,
-                mContext,
-                localCacheHandler,
+            OkHttpClient.Builder(),
+            userSession,
+            dispatchers,
+            context,
+            localCacheHandler,
         )
     }
 
@@ -175,8 +180,12 @@ class PlayModule(val mContext: Context) {
      */
     @PlayScope
     @Provides
-    fun providePlaySSE(userSession: UserSessionInterface, dispatchers: CoroutineDispatchers): PlayChannelSSE =
-        PlayChannelSSEImpl(userSession, dispatchers, mContext)
+    fun providePlaySSE(
+        @ApplicationContext appContext: Context,
+        userSession: UserSessionInterface,
+        dispatchers: CoroutineDispatchers
+    ): PlayChannelSSE =
+        PlayChannelSSEImpl(userSession, dispatchers, appContext)
 
     /**
      * Sharing Experience

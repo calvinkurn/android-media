@@ -122,6 +122,7 @@ public interface ApplinkConst {
     String HOST_LOGIN = "login";
     String LOGIN = "tokopedia://login";
     String ADD_PHONE = "tokopedia://add-phone";
+    String PRIVACY_CENTER = "tokopedia://privacy-center";
     String OTP = "tokopedia://otp";
     String QR_LOGIN = "tokopedia://login/qr";
     String OTP_PUSH_NOTIF_RECEIVER = "tokopedia://otp-verify";
@@ -281,6 +282,7 @@ public interface ApplinkConst {
     String SETTING_PASSWORD = "tokopedia://setting/password";
     String SETTING_PROFILE = "tokopedia://setting/profile";
     String SETTING_ADDRESS = "tokopedia://setting/address";
+    String SETTING_EDIT_ADDRESS = "tokopedia://setting/editaddress/";
 
     String NOTIFICATION = "tokopedia://notification";
     String NOTIFICATION_TROUBLESHOOTER = "tokopedia://notification-troubleshooter";

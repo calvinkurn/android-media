@@ -140,6 +140,7 @@ class ProductChooserUGCRobot(
                         analyticUserSession,
                         ugcViewModel,
                         CoroutineDispatchersProvider,
+                        mockk(relaxed = true)
                     )
                 }
                 LastTaggedProductFragment::class.java.name -> {

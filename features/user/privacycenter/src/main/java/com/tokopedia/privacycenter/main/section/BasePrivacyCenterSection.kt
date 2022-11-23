@@ -17,6 +17,7 @@ abstract class BasePrivacyCenterSection(context: Context?) {
     protected abstract val sectionTextTitle: String?
     protected abstract val sectionTextDescription: String?
     protected abstract val isShowDirectionButton: Boolean
+    open val isShowDivider: Boolean = true
     protected abstract fun initObservers()
     protected abstract fun onViewRendered()
     protected abstract fun onButtonDirectionClick(view: View)
@@ -41,6 +42,8 @@ abstract class BasePrivacyCenterSection(context: Context?) {
             } else {
                 sectionContentLayout.hide()
             }
+
+            sectionDivider.showWithCondition(isShowDivider)
         }
     }
 
@@ -71,7 +74,10 @@ abstract class BasePrivacyCenterSection(context: Context?) {
 
     fun showLocalLoad(title: String = "", description: String = "", onRetryClick: (View) -> Unit) {
         sectionViewBinding?.root?.hide()
-        showShimmering(false)
+        sectionBaseViewBinding.apply {
+            loadingView.root.hide()
+            baseSection.show()
+        }
 
         sectionBaseViewBinding.sectionLocalLoad.apply {
             localLoadTitle = title.ifEmpty {
@@ -89,4 +95,3 @@ abstract class BasePrivacyCenterSection(context: Context?) {
         sectionBaseViewBinding.sectionLocalLoad.hide()
     }
 }
-

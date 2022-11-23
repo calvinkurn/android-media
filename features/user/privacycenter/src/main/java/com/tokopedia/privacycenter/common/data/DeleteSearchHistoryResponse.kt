@@ -1,0 +1,13 @@
+package com.tokopedia.privacycenter.common.data
+
+import com.google.gson.annotations.SerializedName
+
+data class DeleteSearchHistoryResponse(
+	@SerializedName("universe_delete_recent_search")
+	val universeDeleteRecentSearch: UniverseDeleteRecentSearch
+)
+
+data class UniverseDeleteRecentSearch(
+	@SerializedName("status")
+	val status: String
+)
