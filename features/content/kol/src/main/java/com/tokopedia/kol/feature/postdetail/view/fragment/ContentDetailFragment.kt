@@ -78,6 +78,7 @@ import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
 import com.tokopedia.universal_sharing.view.model.ShareModel
+import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
@@ -103,7 +104,8 @@ class ContentDetailFragment : BaseDaggerFragment(), ContentDetailPostViewHolder.
 
     private var cdpRecyclerView: RecyclerView? = null
     private var postId = "0"
-    private var position = 0
+    private var visitedUserID = ""
+    private var postPosition = 0
     private var contentDetailSource = ""
     private var rowNumberWhenShareClicked = 0
     private var dissmisByGreyArea = true
@@ -145,6 +147,7 @@ class ContentDetailFragment : BaseDaggerFragment(), ContentDetailPostViewHolder.
         const val OPEN_VIDEO_DETAIL = 1311
         const val OPEN_FEED_DETAIL = 1313
         private const val COMMENT_ARGS_SERVER_ERROR_MSG = "ARGS_SERVER_ERROR_MSG"
+        private const val USER_PROFILE = "user_profile"
 
 
         @JvmStatic
@@ -164,7 +167,11 @@ class ContentDetailFragment : BaseDaggerFragment(), ContentDetailPostViewHolder.
     private fun initVar() {
         contentDetailSource = arguments?.getString(ContentDetailActivity.PARAM_SOURCE) ?: ContentDetailActivity.SHARE_LINK
         postId = arguments?.getString(ContentDetailActivity.PARAM_POST_ID) ?: ContentDetailActivity.DEFAULT_POST_ID
-        position = arguments?.getInt(ContentDetailActivity.PARAM_POSITION) ?: 0
+
+        if (contentDetailSource == USER_PROFILE) {
+            postPosition = arguments?.getInt(ContentDetailActivity.PARAM_POSITION) ?: 0
+            visitedUserID = arguments?.getString(ContentDetailActivity.PARAM_VISITED_USER_ID).orEmpty()
+        }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -230,8 +237,9 @@ class ContentDetailFragment : BaseDaggerFragment(), ContentDetailPostViewHolder.
         }
 
         setupView(view)
-        viewModel.getContentDetail(postId)
 
+        if (contentDetailSource == USER_PROFILE) viewModel.fetchUserProfileFeedPost(visitedUserID)
+        else viewModel.getContentDetail(postId)
 
         observeLikeContent()
         observeWishlist()
@@ -260,7 +268,8 @@ class ContentDetailFragment : BaseDaggerFragment(), ContentDetailPostViewHolder.
     private fun getEndlessRecyclerViewScrollListener(): EndlessRecyclerViewScrollListener {
         return object : EndlessRecyclerViewScrollListener(cdpRecyclerView?.layoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                viewModel.getContentDetailRecommendation(postId)
+                if (contentDetailSource == USER_PROFILE) viewModel.fetchUserProfileFeedPost(visitedUserID)
+                else viewModel.getContentDetailRecommendation(postId)
             }
 
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
@@ -279,6 +288,7 @@ class ContentDetailFragment : BaseDaggerFragment(), ContentDetailPostViewHolder.
             }
         }
     }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
