@@ -31,6 +31,7 @@ class BigReplyBoxBottomSheet : BottomSheetUnify(), ChatbotSendButtonListener {
         showCloseIcon = false
         clearContentPadding = true
         showHeader = false
+        isKeyboardOverlap = false
     }
 
     override fun onCreateView(
@@ -52,7 +53,7 @@ class BigReplyBoxBottomSheet : BottomSheetUnify(), ChatbotSendButtonListener {
         with(chatText) {
             minLine = MINIMUM_NUMBER_OF_LINES
             maxLine = MAXIMUM_NUMBER_OF_LINES
-            labelText.text =  this@BigReplyBoxBottomSheet.labelText
+            labelText.text = this@BigReplyBoxBottomSheet.labelText
             setPlaceholder(hintText)
             editText.setHintTextColor(
                 ContextCompat.getColor(
@@ -136,5 +137,4 @@ class BigReplyBoxBottomSheet : BottomSheetUnify(), ChatbotSendButtonListener {
         const val MINIMUM_NUMBER_OF_LINES = 3
         const val MAXIMUM_NUMBER_OF_LINES = 10
     }
-
 }
