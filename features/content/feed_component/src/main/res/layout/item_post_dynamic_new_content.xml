@@ -173,7 +173,6 @@
             android:maxLines="1"
             android:text="@string/feeds_cek_sekarang"
             app:layout_constrainedWidth="true"
-            app:layout_constraintBottom_toTopOf="@id/top_ads_product_subtitle_container"
             app:layout_constraintEnd_toStartOf="@+id/chevron"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
