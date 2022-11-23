@@ -1149,6 +1149,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                                 ordersItem.setBenefitClass(courierItemData.getSelectedShipper().getBenefitClass());
                                 ordersItem.setShippingPrice(courierItemData.getSelectedShipper().getShippingRate());
                                 ordersItem.setEtaText(courierItemData.getSelectedShipper().getEtaText());
+                                ordersItem.setValidationMetadata(shipmentCartItemModel.getValidationMetadata());
                                 break;
                             }
                         }
@@ -3702,6 +3703,25 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 shipmentCartItemModel.setValidationMetadata("");
             }
 
+            if (shipmentCartItemModel.getVoucherLogisticItemUiModel() != null &&
+                    !TextUtils.isEmpty(shipmentCartItemModel.getVoucherLogisticItemUiModel().getCode())) {
+                String promoLogisticCode = shipmentCartItemModel.getVoucherLogisticItemUiModel().getCode();
+                shipmentPresenter.cancelAutoApplyPromoStackLogistic(0, promoLogisticCode, shipmentCartItemModel);
+                ValidateUsePromoRequest validateUsePromoRequest = shipmentPresenter.getLastValidateUseRequest();
+                if (validateUsePromoRequest != null) {
+                    for (OrdersItem ordersItem : validateUsePromoRequest.getOrders()) {
+                        if (ordersItem != null && ordersItem.getCodes().size() > 0) {
+                            ordersItem.getCodes().remove(promoLogisticCode);
+                        }
+                    }
+                }
+                shipmentCartItemModel.setVoucherLogisticItemUiModel(null);
+                setBenefitSummaryInfoUiModel(null);
+                shipmentAdapter.clearTotalPromoStackAmount();
+                shipmentAdapter.updateShipmentCostModel();
+                shipmentAdapter.updateCheckoutButtonData(null);
+            }
+
             shipmentAdapter.setSelectedCourier(position, newCourierItemData, true);
             shipmentPresenter.processSaveShipmentState(shipmentCartItemModel);
 
@@ -3750,6 +3770,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                         ordersItem.setBenefitClass(selectedShipperModel.getBenefitClass());
                         ordersItem.setShippingPrice(selectedShipperModel.getShippingRate());
                         ordersItem.setEtaText(selectedShipperModel.getEtaText());
+                        ordersItem.setValidationMetadata(shipmentCartItemModel.getValidationMetadata());
                         break;
                     }
                 }

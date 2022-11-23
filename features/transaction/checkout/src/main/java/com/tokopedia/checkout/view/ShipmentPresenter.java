@@ -1291,9 +1291,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             setCouponStateChanged(true);
             RequestParams requestParams = RequestParams.create();
             requestParams.putObject(OldValidateUsePromoRevampUseCase.PARAM_VALIDATE_USE, validateUsePromoRequest);
-        if (showLoading) {
-            getView().setStateLoadingCourierStateAtIndex(cartPosition, true);
-        }
+            if (showLoading) {
+                getView().setStateLoadingCourierStateAtIndex(cartPosition, true);
+            }
 
             compositeSubscription.add(
                     validateUsePromoRevampUseCase.createObservable(requestParams)
