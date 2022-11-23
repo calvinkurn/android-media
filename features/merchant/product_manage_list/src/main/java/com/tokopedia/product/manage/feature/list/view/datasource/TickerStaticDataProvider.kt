@@ -5,30 +5,26 @@ import com.tokopedia.product.manage.common.feature.getstatusshop.data.model.Stat
 import com.tokopedia.product.manage.common.feature.getstatusshop.data.model.StatusInfo.Companion.ON_MODERATED_STAGE
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerData
+import java.text.SimpleDateFormat
+import java.util.*
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class TickerStaticDataProvider @Inject constructor(private val resourceProvider: ResourceProvider) {
 
-    private fun MutableList<TickerData>.addStockAvailableTicker() {
-        add(
-            TickerData(
-                title = resourceProvider.getTickerStockAvailableTitle(),
-                description = resourceProvider.getTickerStockAvailableDescription(),
-                type = Ticker.TYPE_ANNOUNCEMENT,
-                isFromHtml = true
-            )
-        )
-    }
+    private val EXPIRED_DATE_TICKER_STOCK_AVAILABLE = "23/01/2023"
 
-    private fun MutableList<TickerData>.addNotifyMeTicker() {
-        add(
-            TickerData(
-                title = resourceProvider.getTickerNotifyMeTitle(),
-                description = resourceProvider.getTickerNotifyMeDescription(),
-                type = Ticker.TYPE_ANNOUNCEMENT,
-                isFromHtml = true
+    private fun MutableList<TickerData>.addStockAvailableTicker() {
+        if (!getIsExpiredTicker(EXPIRED_DATE_TICKER_STOCK_AVAILABLE)) {
+            add(
+                TickerData(
+                    title = resourceProvider.getTickerStockAvailableTitle(),
+                    description = resourceProvider.getTickerStockAvailableDescription(),
+                    type = Ticker.TYPE_ANNOUNCEMENT,
+                    isFromHtml = true
+                )
             )
-        )
+        }
     }
 
     private fun MutableList<TickerData>.addMaxStockTicker() {
@@ -65,7 +61,6 @@ class TickerStaticDataProvider @Inject constructor(private val resourceProvider:
             else -> {
                 mutableListOf<TickerData>().apply {
                     addStockAvailableTicker()
-                    addNotifyMeTicker()
                     addMaxStockTicker()
                     addMultiLocationTicker(multiLocationSeller)
                 }.filter { it.description.isNotBlank() }
@@ -98,4 +93,15 @@ class TickerStaticDataProvider @Inject constructor(private val resourceProvider:
             isFromHtml = true
         )
     )
+
+    private fun getIsExpiredTicker(expiredDate:String) : Boolean{
+        val expiredDateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
+        val expiredCalendar = expiredDateFormat.parse(expiredDate).time
+
+        val currentDate = Calendar.getInstance().timeInMillis
+
+        val totalDays = TimeUnit.MILLISECONDS.toDays(expiredCalendar - currentDate)
+
+        return totalDays < 0
+    }
 }
