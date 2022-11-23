@@ -36,8 +36,6 @@ import org.spekframework.spek2.style.gherkin.FeatureBody
  */
 fun TestBody.createFeedViewModel(): FeedViewModel{
     val userSession by memoized<UserSessionInterface>()
-    val doFavoriteShopUseCase by memoized<ToggleFavouriteShopUseCase>()
-    val followKolPostGqlUseCase by memoized<FollowKolPostGqlUseCase>()
     val likeKolPostUseCase by memoized<LikeKolPostUseCase>()
     val atcUseCase by memoized<com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase>()
     val trackAffiliateClickUseCase by memoized<TrackAffiliateClickUseCase>()
@@ -62,8 +60,6 @@ fun TestBody.createFeedViewModel(): FeedViewModel{
     return FeedViewModel(
         baseDispatcher = CoroutineTestDispatchersProvider,
         userSession = userSession,
-        doFavoriteShopUseCase = doFavoriteShopUseCase,
-        followKolPostGqlUseCase = followKolPostGqlUseCase,
         likeKolPostUseCase = likeKolPostUseCase,
         addToCartUseCase = atcUseCase,
         trackAffiliateClickUseCase = trackAffiliateClickUseCase,
