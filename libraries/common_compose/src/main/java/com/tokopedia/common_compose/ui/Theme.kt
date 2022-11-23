@@ -19,16 +19,16 @@ import androidx.core.view.WindowCompat
 
 
 private val NestThemeLight = lightColors(
-    primary = NestGN.light._500,
-    onPrimary = NestNN.light._0,
+    primary = NestNN.light._0,
+    onPrimary = NestNN.light._700,
     primaryVariant = NestGN.light._400,
     secondary = NestBN.light._200,
     surface = NestNN.light._0,
 )
 
 private val NestThemeDark = darkColors(
-    primary = NestGN.dark._500,
-    onPrimary = NestNN.dark._0,
+    primary = NestNN.dark._0,
+    onPrimary = NestNN.dark._700,
     secondary = NestBN.dark._200,
     surface = NestNN.dark._0
 )
@@ -51,8 +51,6 @@ fun NestTheme(
     val themeColors = if (darkTheme) NestThemeDark else NestThemeLight
     val elevation = if (darkTheme) DarkElevation else LightElevation
     val colors: NestColor = if (darkTheme) NestDarkColor() else NestLightColor()
-
-    AdaptiveStatusBarColor(darkTheme = darkTheme, themeColors = themeColors)
 
     AdaptiveStatusBarColor(themeColors = themeColors)
 
