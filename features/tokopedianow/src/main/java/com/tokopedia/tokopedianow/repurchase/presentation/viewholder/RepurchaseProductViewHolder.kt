@@ -4,9 +4,8 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
-import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
+import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowProductGridCardBinding
 import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseProductUiModel
@@ -20,50 +19,32 @@ class RepurchaseProductViewHolder(
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_tokopedianow_product_grid_card
-
-        private const val PARAM_CATEGORY_L1 = "category_l1"
     }
 
     private var binding: ItemTokopedianowProductGridCardBinding? by viewBinding()
 
     override fun bind(item: RepurchaseProductUiModel) {
-//        binding?.tokoNowGridProductCard?.apply {
-//            setProductModel(item.productCard)
-//
-//            setOnClickListener {
-//                goToProductDetail(item)
-//                listener?.onClickProduct(item, item.position)
-//            }
-//
-//            setAddVariantClickListener {
-//                listener?.onAddToCartVariant(item)
-//            }
-//
-//            setSimilarProductClickListener {
-//                goToCategoryPage(item)
-//                listener?.onClickSimilarProduct()
-//            }
-//
-//            setAddToCartNonVariantClickListener(object: ATCNonVariantListener {
-//                override fun onQuantityChanged(quantity: Int) {
-//                    listener?.onAddToCartNonVariant(item, quantity)
-//                }
-//            })
-//
-//            setImageProductViewHintListener(item, object: ViewHintListener {
-//                override fun onViewHint() {
-//                    listener?.onProductImpressed(item)
-//                }
-//            })
-//        }
-    }
-
-    private fun goToCategoryPage(item: RepurchaseProductUiModel) {
-        val uri = UriUtil.buildUriAppendParam(
-            ApplinkConstInternalTokopediaNow.CATEGORY,
-            mapOf(PARAM_CATEGORY_L1 to item.categoryId)
-        )
-        RouteManager.route(itemView.context, uri)
+        binding?.productCard?.apply {
+            setData(
+                model = item.productCardModel
+            )
+            setOnClickListener {
+                goToProductDetail(item)
+                listener?.onClickProduct(item, item.position)
+            }
+            setOnClickQuantityEditorListener { quantity ->
+                listener?.onAddToCartNonVariant(item, quantity)
+            }
+            setOnClickQuantityEditorVariantListener {
+                listener?.onAddToCartVariant(item)
+            }
+            setOnAnimationFinishedListener { quantity ->
+                listener?.onAddToCartNonVariantAnimationFinished(item, quantity)
+            }
+            addOnImpressionListener(item) {
+                listener?.onProductImpressed(item)
+            }
+        }
     }
 
     private fun goToProductDetail(item: RepurchaseProductUiModel) {
@@ -78,6 +59,7 @@ class RepurchaseProductViewHolder(
         fun onClickProduct(item: RepurchaseProductUiModel, position: Int)
         fun onAddToCartVariant(item: RepurchaseProductUiModel)
         fun onAddToCartNonVariant(item: RepurchaseProductUiModel, quantity: Int)
+        fun onAddToCartNonVariantAnimationFinished(item: RepurchaseProductUiModel, quantity: Int)
         fun onProductImpressed(item: RepurchaseProductUiModel)
         fun onClickSimilarProduct()
     }

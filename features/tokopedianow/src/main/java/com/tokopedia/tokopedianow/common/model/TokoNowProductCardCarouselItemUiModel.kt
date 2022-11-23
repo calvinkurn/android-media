@@ -17,12 +17,15 @@ data class TokoNowProductCardCarouselItemUiModel(
     val appLink: String = "",
     val parentId: String = "0",
     val alternativeKeyword: String = "",
+    val headerName: String = "",
+    val recommendationType: String = "",
+    val impressHolder: ImpressHolder = ImpressHolder(),
 
     /**
      * Mandatory params
      */
     var productCardModel: TokoNowProductCardViewUiModel,
-): Visitable<TokoNowProductCardCarouselTypeFactory>, ImpressHolder() {
+): Visitable<TokoNowProductCardCarouselTypeFactory> {
     override fun type(typeFactory: TokoNowProductCardCarouselTypeFactory): Int {
         return typeFactory.type(this)
     }

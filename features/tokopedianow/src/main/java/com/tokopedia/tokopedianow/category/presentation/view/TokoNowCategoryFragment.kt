@@ -186,8 +186,13 @@ class TokoNowCategoryFragment:
             categoryAisleListener = this,
             tokoNowCategoryGridListener = this,
             tokoNowProductCardListener = this,
+            productRecommendationOocBindListener = createProductRecommendationOocCallback(),
             productRecommendationOocListener = createProductRecommendationOocCallback(),
-            productRecommendationListener = createProductRecommendationCallback(getCDListName(), getViewModel().categoryL1)
+            productRecommendationListener = createProductRecommendationCallback().copy(
+                categoryL1 = getViewModel().categoryL1,
+                cdListName = getCDListName(),
+                categoryIdTracking = getViewModel().categoryIdTracking
+            )
     )
 
     override fun getViewModel() = tokoNowCategoryViewModel
@@ -484,7 +489,7 @@ class TokoNowCategoryFragment:
         }
     }
 
-    override fun getAtcEventAction(isOOC: Boolean): String {
+    override fun getAtcEventAction(): String {
         return CLICK_ATC_CLP_PRODUCT_TOKONOW
     }
 
@@ -505,7 +510,7 @@ class TokoNowCategoryFragment:
         }
     }
 
-    override fun getEventLabel(isOOC: Boolean): String {
+    override fun getEventLabel(): String {
         return getViewModel().categoryIdTracking
     }
 
@@ -554,12 +559,6 @@ class TokoNowCategoryFragment:
             userSession.userId,
         )
     }
-
-//    override fun onSeeMoreClick(data: RecommendationCarouselData, applink: String) {
-//        CategoryTracking.sendRecommendationSeeAllClickEvent(getViewModel().categoryIdTracking)
-//
-//        RouteManager.route(context, modifySeeMoreRecomApplink(applink))
-//    }
 
     private fun sendOpenScreenTracking(model: CategoryTrackerModel) {
         val uri = Uri.parse(model.url)

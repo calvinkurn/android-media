@@ -20,13 +20,14 @@ import com.tokopedia.minicart.common.domain.data.getMiniCartItemParentProduct
 import com.tokopedia.minicart.common.domain.data.getMiniCartItemProduct
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
-import com.tokopedia.tokopedianow.common.domain.mapper.ProductRecommendationMapper
+import com.tokopedia.tokopedianow.common.analytics.model.AddToCartDataTrackerModel
+import com.tokopedia.tokopedianow.common.domain.mapper.ProductRecommendationMapper.mapResponseToProductRecommendation
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardCarouselItemUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationViewUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper
 import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.usecase.coroutines.Result
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -48,6 +49,7 @@ class TokoNowProductRecommendationViewModel @Inject constructor(
     private val _miniCartUpdate = MutableLiveData<Result<UpdateCartV2Data>>()
     private val _miniCartRemove = MutableLiveData<Result<Pair<String, String>>>()
     private val _productModelsUpdate = MutableLiveData<List<Visitable<*>>>()
+    private val _atcDataTracker = MutableLiveData<AddToCartDataTrackerModel>()
 
     private var productModels: MutableList<Visitable<*>> = mutableListOf()
     private var mMiniCartSimplifiedData: MiniCartSimplifiedData? = null
@@ -63,6 +65,8 @@ class TokoNowProductRecommendationViewModel @Inject constructor(
         get() = _miniCartRemove
     val productModelsUpdate: LiveData<List<Visitable<*>>>
         get() = _productModelsUpdate
+    val atcDataTracker: LiveData<AddToCartDataTrackerModel>
+        get() = _atcDataTracker
 
     private fun getMiniCartItem(productId: String): MiniCartItem.MiniCartItemProduct? {
         val items = mMiniCartSimplifiedData?.miniCartItems.orEmpty()
@@ -77,7 +81,7 @@ class TokoNowProductRecommendationViewModel @Inject constructor(
             block = {
                 val result = getRecommendationUseCase.getData(requestParam)
                 if (result.isNotEmpty()) {
-                    val productRecommendation = ProductRecommendationMapper.mapResponseToProductRecommendation(
+                    val productRecommendation = mapResponseToProductRecommendation(
                         recommendationWidget = result.first(),
                         miniCartData = mMiniCartSimplifiedData
                     )
@@ -101,20 +105,29 @@ class TokoNowProductRecommendationViewModel @Inject constructor(
     }
 
     fun addItemToCart(
-        productId: String,
+        position: Int,
         shopId: String,
-        quantity: Int
+        quantity: Int,
+        product: TokoNowProductCardCarouselItemUiModel
     ) {
         val addToCartRequestParams = AddToCartUseCase.getMinimumParams(
-            productId = productId,
+            productId = product.productCardModel.productId,
             shopId = shopId,
             quantity = quantity
         )
         addToCartUseCase.setParams(addToCartRequestParams)
         addToCartUseCase.execute({
             updateProductQuantity(
-                productId = productId,
+                productId = product.productCardModel.productId,
                 quantity = quantity
+            )
+            _atcDataTracker.postValue(
+                AddToCartDataTrackerModel(
+                    position = position,
+                    quantity = it.data.quantity,
+                    cartId = it.data.cartId,
+                    productRecommendation = product
+                )
             )
             _miniCartAdd.postValue(Success(it))
         }, {
@@ -235,14 +248,15 @@ class TokoNowProductRecommendationViewModel @Inject constructor(
     }
 
     fun addProductToCart(
-        productId: String,
+        position: Int,
         quantity: Int,
-        shopId: String
+        shopId: String,
+        product: TokoNowProductCardCarouselItemUiModel
     ) {
-        val miniCartItem = getMiniCartItem(productId)
+        val miniCartItem = getMiniCartItem(product.productCardModel.productId)
         when {
             miniCartItem == null && quantity.isZero() -> { /* do nothing */ }
-            miniCartItem == null -> addItemToCart(productId, shopId, quantity)
+            miniCartItem == null -> addItemToCart(position, shopId, quantity, product)
             quantity.isZero() -> removeItemCart(miniCartItem)
             else -> updateItemCart(miniCartItem, quantity)
         }

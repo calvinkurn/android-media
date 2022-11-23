@@ -9,7 +9,6 @@ import android.util.SparseIntArray
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.annotation.DimenRes
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.fragment.app.FragmentManager
@@ -57,6 +56,7 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.recommendation_widget_common.widget.ProductRecommendationTracking
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.helper.ViewHelper
 import com.tokopedia.searchbar.navigation_component.NavToolbar
@@ -67,10 +67,13 @@ import com.tokopedia.searchbar.navigation_component.icons.IconList.ID_SHARE
 import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScrollListener
 import com.tokopedia.searchbar.navigation_component.util.NavToolbarExt
 import com.tokopedia.tokopedianow.R
+import com.tokopedia.tokopedianow.common.analytics.model.AddToCartDataTrackerModel
 import com.tokopedia.tokopedianow.common.bottomsheet.TokoNowOnBoard20mBottomSheet
 import com.tokopedia.tokopedianow.common.constant.ServiceType.NOW_2H
+import com.tokopedia.tokopedianow.common.domain.mapper.ProductRecommendationMapper.mapProductItemToRecommendationItem
 import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
+import com.tokopedia.tokopedianow.common.util.RecyclerViewGridUtil.addProductItemDecoration
 import com.tokopedia.tokopedianow.common.util.TokoNowServiceTypeUtil
 import com.tokopedia.tokopedianow.common.util.TokoNowSharedPreference
 import com.tokopedia.tokopedianow.common.util.TokoNowSwitcherUtil.switchService
@@ -84,7 +87,6 @@ import com.tokopedia.tokopedianow.searchcategory.data.model.QuerySafeModel
 import com.tokopedia.tokopedianow.searchcategory.presentation.adapter.SearchCategoryAdapter
 import com.tokopedia.tokopedianow.searchcategory.presentation.customview.CategoryChooserBottomSheet
 import com.tokopedia.tokopedianow.searchcategory.presentation.customview.StickySingleHeaderView
-import com.tokopedia.tokopedianow.searchcategory.presentation.itemdecoration.ProductItemDecoration
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.BannerComponentListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.CategoryFilterListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ChooseAddressListener
@@ -129,8 +131,7 @@ abstract class BaseSearchCategoryFragment:
 
     companion object {
         private const val SPAN_COUNT = 3
-        private const val PRODUCT_FILLED_BASED_ON_SPAN = 1
-        private const val REQUEST_CODE_LOGIN = 69
+        private const val SPAN_FULL_SPACE = 1
         private const val QUERY_PARAM_SERVICE_TYPE_NOW2H = "?service_type=2h"
         private const val DEFAULT_POSITION = 0
     }
@@ -435,7 +436,7 @@ abstract class BaseSearchCategoryFragment:
             spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
                 override fun getSpanSize(position: Int): Int {
                     return when (searchCategoryAdapter?.getItemViewType(position)) {
-                        ProductItemViewHolder.LAYOUT -> PRODUCT_FILLED_BASED_ON_SPAN
+                        ProductItemViewHolder.LAYOUT -> SPAN_FULL_SPACE
                         else -> SPAN_COUNT
                     }
                 }
@@ -483,23 +484,6 @@ abstract class BaseSearchCategoryFragment:
     }
 
     abstract fun createTypeFactory(): BaseSearchCategoryTypeFactory
-
-    protected open fun RecyclerView.addProductItemDecoration() {
-        try {
-            val context = context ?: return
-            val unifySpace16 = com.tokopedia.unifyprinciples.R.dimen.unify_space_16
-            val spacing = context.getDimensionPixelSize(unifySpace16)
-
-            if (itemDecorationCount >= 1)
-                invalidateItemDecorations()
-
-            addItemDecoration(ProductItemDecoration(spacing))
-        } catch (throwable: Throwable) {
-
-        }
-    }
-
-    private fun Context.getDimensionPixelSize(@DimenRes id: Int) = resources.getDimensionPixelSize(id)
 
     protected open fun observeViewModel() {
         getViewModel().visitableListLiveData.observe(::submitList)
@@ -570,6 +554,10 @@ abstract class BaseSearchCategoryFragment:
                     }
                 }
             }
+        }
+
+        productRecommendationViewModel.atcDataTracker.observe(viewLifecycleOwner) {
+            sendAddToCartRecommendationTrackingEvent(it)
         }
     }
 
@@ -920,109 +908,33 @@ abstract class BaseSearchCategoryFragment:
         getViewModel().onViewRemoveFilter(option)
     }
 
-//    override fun onImpressedRecommendationCarouselItem(
-//        recommendationCarouselDataView: TokoNowProductRecommendationOocUiModel?,
-//        data: RecommendationCarouselData,
-//        recomItem: RecommendationItem,
-//        itemPosition: Int,
-//        adapterPosition: Int
-//    ) {
-//        val isOOC = recommendationCarouselDataView?.isOutOfCoverage()?:false
-//        trackingQueue?.putEETracking(
-//            ProductRecommendationTracking.getImpressionProductTracking(
-//                recommendationItem = recomItem,
-//                eventCategory = getEventCategory(isOOC),
-//                headerTitle = data.recommendationData.title,
-//                position = itemPosition,
-//                isLoggedIn = userSession.isLoggedIn,
-//                userId = userSession.userId,
-//                eventLabel = getEventLabel(isOOC),
-//                eventAction = getImpressionEventAction(isOOC),
-//                listValue = getListValue(isOOC, recomItem),
-//            )
-//        )
-//    }
-
-//    override fun onClickRecommendationCarouselItem(
-//        recommendationCarouselDataView: TokoNowProductRecommendationOocUiModel?,
-//        data: RecommendationCarouselData,
-//        recomItem: RecommendationItem,
-//        itemPosition: Int,
-//        adapterPosition: Int
-//    ) {
-//        val isOOC = recommendationCarouselDataView?.isOutOfCoverage()?:false
-//        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
-//            ProductRecommendationTracking.getClickProductTracking(
-//                recommendationItem = recomItem,
-//                eventCategory = getEventCategory(isOOC),
-//                headerTitle = data.recommendationData.title,
-//                position = itemPosition,
-//                isLoggedIn = userSession.isLoggedIn,
-//                userId = userSession.userId,
-//                eventLabel = getEventLabel(isOOC),
-//                eventAction = getClickEventAction(isOOC),
-//                listValue = getListValue(isOOC, recomItem),
-//            )
-//        )
-//        RouteManager.route(
-//                context,
-//                ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
-//                recomItem.productId.toString(),
-//        )
-//    }
-
-//    override fun onATCNonVariantRecommendationCarouselItem(
-//        recommendationCarouselDataView: TokoNowProductRecommendationOocUiModel?,
-//        data: RecommendationCarouselData,
-//        recomItem: RecommendationItem,
-//        recommendationCarouselPosition: Int,
-//        quantity: Int,
-//    ) {
-//        getViewModel().onViewATCRecommendationItemNonVariant(
-//                recommendationItem = recomItem,
-//                adapterPosition = recommendationCarouselPosition,
-//                quantity = quantity,
-//        )
-//    }
-
-//    override fun onAddVariantRecommendationCarouselItem(
-//        recommendationCarouselDataView: TokoNowProductRecommendationOocUiModel?,
-//        data: RecommendationCarouselData,
-//        recomItem: RecommendationItem,
-//    ) {
-//        val productId = recomItem.productId.toString()
-//        val shopId = recomItem.shopId.toString()
-//
-//        openATCVariantBottomSheet(productId, shopId)
-//    }
-
-//    protected open fun sendAddToCartRecommendationTrackingEvent(
-//        atcTrackingData: Triple<Int, String, RecommendationItem>
-//    ) {
-//        val (quantity, cartId, recommendationItem) = atcTrackingData
-//        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
-//            ProductRecommendationTracking.getAddToCartClickProductTracking(
-//                recommendationItem = recommendationItem,
-//                position = recommendationItem.position,
-//                isLoggedIn = userSession.isLoggedIn,
-//                userId = userSession.userId,
-//                eventLabel = getEventLabel(false),
-//                headerTitle = "",
-//                quantity = quantity,
-//                cartId = cartId,
-//                eventAction = getAtcEventAction(false),
-//                eventCategory = getEventCategory(false),
-//                listValue = getListValue(false, recommendationItem),
-//            )
-//        )
-//    }
+    private fun sendAddToCartRecommendationTrackingEvent(
+        addToCartDataTrackerModel: AddToCartDataTrackerModel
+    ) {
+        val recommendationItem = mapProductItemToRecommendationItem(addToCartDataTrackerModel.productRecommendation)
+        TrackApp.getInstance().gtm.sendEnhanceEcommerceEvent(
+            ProductRecommendationTracking.getAddToCartClickProductTracking(
+                recommendationItem = recommendationItem,
+                position = addToCartDataTrackerModel.position,
+                isLoggedIn = userSession.isLoggedIn,
+                userId = userSession.userId,
+                eventLabel = getEventLabel(),
+                headerTitle = "",
+                quantity = addToCartDataTrackerModel.quantity,
+                cartId = addToCartDataTrackerModel.cartId,
+                eventAction = getAtcEventAction(),
+                eventCategory = getEventCategory(false),
+                listValue = getListValue(false, recommendationItem),
+            )
+        )
+    }
 
     abstract fun getListValue(isOOC: Boolean, recommendationItem: RecommendationItem): String
     abstract fun getImpressionEventAction(isOOC: Boolean): String
     abstract fun getClickEventAction(isOOC: Boolean): String
-    abstract fun getAtcEventAction(isOOC: Boolean): String
+    abstract fun getAtcEventAction(): String
     abstract fun getEventCategory(isOOC: Boolean): String
-    abstract fun getEventLabel(isOOC: Boolean): String
+    abstract fun getEventLabel(): String
 
     private fun sendTrackingGeneralEvent(dataLayer: Map<String, Any>) {
         TrackApp.getInstance().gtm.sendGeneralEvent(dataLayer)
@@ -1164,20 +1076,35 @@ abstract class BaseSearchCategoryFragment:
             override fun onVerificationSuccess(message: String?) {}
 
             override fun onLoginPreverified() {}
-
         })
     }
 
     open fun createProductRecommendationOocCallback() = ProductRecommendationOocCallback(
-        lifecycle = viewLifecycleOwner.lifecycle
+        lifecycle = viewLifecycleOwner.lifecycle,
+        userSession = userSession,
+        trackingQueue = trackingQueue,
+        activity = activity,
+        eventLabel = getEventLabel(),
+        eventActionClicked = getClickEventAction(true),
+        eventActionImpressed = getImpressionEventAction(true),
+        eventCategory = getEventCategory(true),
+        getListValue = { recommendationItem ->
+            getListValue(true, recommendationItem)
+        },
     )
 
-    open fun createProductRecommendationCallback(cdListName: String, categoryL1: String = "") = ProductRecommendationCallback(
+    open fun createProductRecommendationCallback() = ProductRecommendationCallback(
         productRecommendationViewModel = productRecommendationViewModel,
         baseSearchCategoryViewModel = getViewModel(),
         activity = activity,
         startActivityForResult = ::startActivityForResult,
-        cdListName = cdListName,
-        categoryL1 = categoryL1
+        trackingQueue = trackingQueue,
+        eventLabel = getEventLabel(),
+        eventActionClicked = getClickEventAction(false),
+        eventActionImpressed = getImpressionEventAction(false),
+        eventCategory = getEventCategory(false),
+        getListValue = { recommendationItem ->
+            getListValue(false, recommendationItem)
+        },
     )
 }

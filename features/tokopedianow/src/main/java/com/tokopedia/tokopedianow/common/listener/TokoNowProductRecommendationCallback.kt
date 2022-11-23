@@ -22,7 +22,9 @@ class TokoNowProductRecommendationCallback(
     ) {
         listener?.productCardClicked(
             position = position,
-            product = product
+            product = product,
+            isLogin = userSession.isLoggedIn,
+            userId = userSession.userId
         )
     }
 
@@ -32,7 +34,9 @@ class TokoNowProductRecommendationCallback(
     ) {
         listener?.productCardImpressed(
             position = position,
-            product = product
+            product = product,
+            isLogin = userSession.isLoggedIn,
+            userId = userSession.userId
         )
     }
 
@@ -60,9 +64,10 @@ class TokoNowProductRecommendationCallback(
             listener?.openLoginPage()
         } else {
             viewModel?.addProductToCart(
-                productId = product.productCardModel.productId,
+                position = position,
                 shopId = product.shopId,
-                quantity = quantity
+                quantity = quantity,
+                product = product
             )
         }
     }

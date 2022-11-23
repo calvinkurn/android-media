@@ -22,8 +22,7 @@ class ProductItemViewHolder(
 
     private var binding: ItemTokopedianowProductGridCardBinding? by viewBinding()
 
-    override fun bind(element: ProductItemDataView?) {
-        element ?: return
+    override fun bind(element: ProductItemDataView) {
         binding?.productCard?.apply {
             setData(
                 model = element.productCardModel

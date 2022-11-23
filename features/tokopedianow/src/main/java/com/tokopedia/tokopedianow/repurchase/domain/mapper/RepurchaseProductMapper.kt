@@ -1,76 +1,51 @@
 package com.tokopedia.tokopedianow.repurchase.domain.mapper
 
-import com.tokopedia.productcard.ProductCardModel
-import com.tokopedia.productcard.ProductCardModel.*
 import com.tokopedia.tokopedianow.common.constant.ConstantValue.ADDITIONAL_POSITION
 import com.tokopedia.tokopedianow.common.domain.model.RepurchaseProduct
+import com.tokopedia.tokopedianow.common.model.TokoNowProductCardViewUiModel
 import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseProductUiModel
 
 object RepurchaseProductMapper {
+    private const val DEFAULT_MAX_ORDER = 0
+
+    private fun mapRepurchaseProductToProductCard(
+        product: RepurchaseProduct
+    ): TokoNowProductCardViewUiModel = TokoNowProductCardViewUiModel(
+        productId = product.id,
+        imageUrl = product.imageUrl,
+        minOrder = product.minOrder,
+        maxOrder = product.maxOrder,
+        availableStock = product.stock,
+        price = product.price,
+        discount = product.discountPercentage,
+        slashPrice = product.slashedPrice,
+        name = product.name,
+        rating = product.ratingAverage,
+        hasBeenWishlist = false,
+        isWishlistShown = false,
+        isSimilarProductShown = true,
+        isVariant = product.parentProductId.isNotBlank() && product.parentProductId != "0",
+        needToShowQuantityEditor = product.minOrder <= product.maxOrder && product.maxOrder != DEFAULT_MAX_ORDER,
+        labelGroupList = product.labelGroup.map {
+            TokoNowProductCardViewUiModel.LabelGroup(
+                position = it.position,
+                type = it.type,
+                title = it.title,
+                imageUrl = it.url
+            )
+        }
+    )
 
     fun List<RepurchaseProduct>.mapToProductListUiModel() = mapIndexed { index, repurchaseProduct ->
         RepurchaseProductUiModel(
-            repurchaseProduct.id,
-            repurchaseProduct.parentProductId,
-            repurchaseProduct.shop.id,
-            repurchaseProduct.categoryId,
-            repurchaseProduct.category,
-            repurchaseProduct.isStockEmpty(),
-            createProductCardModel(repurchaseProduct),
-            index + ADDITIONAL_POSITION
+            id = repurchaseProduct.id,
+            parentId = repurchaseProduct.parentProductId,
+            shopId = repurchaseProduct.shop.id,
+            categoryId = repurchaseProduct.categoryId,
+            category = repurchaseProduct.category,
+            isStockEmpty = repurchaseProduct.isStockEmpty(),
+            position = index + ADDITIONAL_POSITION,
+            productCardModel = mapRepurchaseProductToProductCard(repurchaseProduct)
         )
-    }
-
-    private fun createProductCardModel(product: RepurchaseProduct): ProductCardModel {
-        return if (product.isVariant()) {
-            ProductCardModel(
-                productImageUrl = product.imageUrl,
-                productName = product.name,
-                discountPercentage = product.getDiscount(),
-                slashedPrice = product.slashedPrice,
-                formattedPrice = product.price,
-                hasSimilarProductButton = product.isStockEmpty(),
-                labelGroupList = mapLabelGroup(product),
-                labelGroupVariantList = mapLabelGroupVariant(product),
-                variant = Variant(),
-                isOutOfStock = product.isStockEmpty(),
-                countSoldRating = product.ratingAverage
-            )
-        } else {
-            ProductCardModel(
-                productImageUrl = product.imageUrl,
-                productName = product.name,
-                discountPercentage = product.getDiscount(),
-                slashedPrice = product.slashedPrice,
-                formattedPrice = product.price,
-                hasSimilarProductButton = product.isStockEmpty(),
-                labelGroupList = mapLabelGroup(product),
-                labelGroupVariantList = mapLabelGroupVariant(product),
-                nonVariant = NonVariant(
-                    minQuantity = product.minOrder,
-                    maxQuantity = product.maxOrder
-                ),
-                isOutOfStock = product.isStockEmpty(),
-                countSoldRating = product.ratingAverage
-            )
-        }.run {
-            if(product.isStockEmpty()) {
-                copy(variant = null, nonVariant = null)
-            } else {
-                this
-            }
-        }
-    }
-
-    private fun mapLabelGroup(product: RepurchaseProduct): List<LabelGroup> {
-        return product.labelGroup.map {
-            LabelGroup(it.position, it.title, it.type, it.url)
-        }
-    }
-
-    private fun mapLabelGroupVariant(product: RepurchaseProduct): List<LabelGroupVariant> {
-        return product.labelGroupVariant.map {
-            LabelGroupVariant(it.typeVariant, it.title, it.type, it.hexColor)
-        }
     }
 }

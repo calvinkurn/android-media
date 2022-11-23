@@ -42,6 +42,7 @@ import com.tokopedia.tokopedianow.repurchase.constant.RepurchaseStaticLayoutId.C
 import com.tokopedia.tokopedianow.repurchase.constant.RepurchaseStaticLayoutId.Companion.ERROR_STATE_FAILED_TO_FETCH_DATA
 import com.tokopedia.tokopedianow.repurchase.domain.mapper.RepurchaseLayoutMapper.PRODUCT_RECOMMENDATION
 import com.tokopedia.tokopedianow.repurchase.domain.mapper.RepurchaseLayoutMapper.PRODUCT_REPURCHASE
+import com.tokopedia.tokopedianow.repurchase.domain.mapper.RepurchaseLayoutMapper.PRODUCT_REPURCHASE_ANIMATION_FINISHED
 import com.tokopedia.tokopedianow.repurchase.domain.mapper.RepurchaseLayoutMapper.addCategoryGrid
 import com.tokopedia.tokopedianow.repurchase.domain.mapper.RepurchaseLayoutMapper.addChooseAddress
 import com.tokopedia.tokopedianow.repurchase.domain.mapper.RepurchaseLayoutMapper.addEmptyStateNoHistory
@@ -64,6 +65,7 @@ import com.tokopedia.tokopedianow.repurchase.domain.mapper.RepurchaseLayoutMappe
 import com.tokopedia.tokopedianow.repurchase.domain.mapper.RepurchaseLayoutMapper.setSortFilter
 import com.tokopedia.tokopedianow.repurchase.domain.mapper.RepurchaseLayoutMapper.updateDeletedATCQuantity
 import com.tokopedia.tokopedianow.repurchase.domain.mapper.RepurchaseLayoutMapper.updateProductATCQuantity
+import com.tokopedia.tokopedianow.repurchase.domain.mapper.RepurchaseLayoutMapper.updateProductQuantity
 import com.tokopedia.tokopedianow.repurchase.domain.param.GetRepurchaseProductListParam
 import com.tokopedia.tokopedianow.repurchase.domain.usecase.GetRepurchaseProductListUseCase
 import com.tokopedia.tokopedianow.repurchase.presentation.fragment.TokoNowRepurchaseFragment.Companion.CATEGORY_LEVEL_DEPTH
@@ -143,6 +145,8 @@ class TokoNowRepurchaseViewModel @Inject constructor(
     private var selectedDateFilter: SelectedDateFilter = SelectedDateFilter()
     private var selectedSortFilter: Int = FREQUENTLY_BOUGHT
     private var layoutList: MutableList<Visitable<*>> = mutableListOf()
+    private val layoutTypesOfRunningAnimation = listOf(PRODUCT_REPURCHASE)
+    private var currentLayoutType = ""
 
     private var getMiniCartJob: Job? = null
 
@@ -269,12 +273,26 @@ class TokoNowRepurchaseViewModel @Inject constructor(
     }
 
     fun onClickAddToCart(productId: String, quantity: Int, type: String, shopId: String) {
-        val miniCartItem = getMiniCartItem(productId)
+        currentLayoutType = type
 
-        when {
-            miniCartItem == null -> addItemToCart(productId, shopId, type, quantity)
-            quantity.isZero() -> removeItemFromCart(miniCartItem)
-            else -> updateItemCart(miniCartItem, quantity)
+        if (type !in layoutTypesOfRunningAnimation && !quantity.isZero()) {
+            layoutList.updateProductQuantity(productId, quantity)
+
+            val layout = RepurchaseLayoutUiModel(
+                layoutList = layoutList,
+                state = TokoNowLayoutState.UPDATE
+            )
+
+            _atcQuantity.postValue(Success(layout))
+        } else {
+            val miniCartItem = getMiniCartItem(productId)
+
+            when {
+                miniCartItem == null && quantity.isZero() -> { /* do nothing */ }
+                miniCartItem == null -> addItemToCart(productId, shopId, type, quantity)
+                quantity.isZero() -> removeItemFromCart(miniCartItem)
+                else -> updateItemCart(miniCartItem, quantity)
+            }
         }
     }
 
@@ -617,8 +635,12 @@ class TokoNowRepurchaseViewModel @Inject constructor(
 
     private fun setMiniCartAndProductQuantity(miniCart: MiniCartSimplifiedData) {
         miniCartSimplifiedData = miniCart
+
+        if (currentLayoutType in layoutTypesOfRunningAnimation) return
+        currentLayoutType = ""
+
         layoutList.updateProductATCQuantity(miniCart)
-        layoutList.updateDeletedATCQuantity(miniCart, PRODUCT_REPURCHASE)
+        layoutList.updateDeletedATCQuantity(miniCart, PRODUCT_REPURCHASE_ANIMATION_FINISHED)
         layoutList.updateDeletedATCQuantity(miniCart, PRODUCT_RECOMMENDATION)
     }
 

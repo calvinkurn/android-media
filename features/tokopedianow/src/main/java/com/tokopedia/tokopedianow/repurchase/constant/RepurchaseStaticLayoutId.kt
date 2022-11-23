@@ -9,6 +9,7 @@ import com.tokopedia.tokopedianow.repurchase.constant.RepurchaseStaticLayoutId.C
 import com.tokopedia.tokopedianow.repurchase.constant.RepurchaseStaticLayoutId.Companion.EMPTY_STATE_OOC
 import com.tokopedia.tokopedianow.repurchase.constant.RepurchaseStaticLayoutId.Companion.ERROR_STATE_FAILED_TO_FETCH_DATA
 import com.tokopedia.tokopedianow.repurchase.constant.RepurchaseStaticLayoutId.Companion.PRODUCT_RECOM_NO_RESULT
+import com.tokopedia.tokopedianow.repurchase.constant.RepurchaseStaticLayoutId.Companion.SORT_FILTER
 
 /**
  * IDs for layout that does not returned by Home Dynamic Channel query.
@@ -24,7 +25,8 @@ import com.tokopedia.tokopedianow.repurchase.constant.RepurchaseStaticLayoutId.C
         EMPTY_STATE_OOC,
         ERROR_STATE_FAILED_TO_FETCH_DATA,
         PRODUCT_RECOM_OOC,
-        PRODUCT_RECOM_NO_RESULT
+        PRODUCT_RECOM_NO_RESULT,
+        SORT_FILTER
 )
 annotation class RepurchaseStaticLayoutId {
     companion object {
