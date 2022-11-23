@@ -14,7 +14,6 @@ import com.tokopedia.user.session.UserSessionInterface
 import dagger.Component
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
-import com.tokopedia.feedcomponent.di.FeedFloatingButtonManagerModule
 import com.tokopedia.feedcomponent.people.di.PeopleModule
 import com.tokopedia.feedcomponent.shoprecom.di.ShopRecomModule
 

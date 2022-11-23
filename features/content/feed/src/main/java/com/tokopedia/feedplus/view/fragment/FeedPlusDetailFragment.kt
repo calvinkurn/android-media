@@ -54,6 +54,7 @@ import com.tokopedia.feedplus.view.subscriber.FeedDetailViewState
 import com.tokopedia.feedplus.view.util.EndlessScrollRecycleListener
 import com.tokopedia.feedplus.view.viewmodel.feeddetail.FeedDetailProductModel
 import com.tokopedia.kotlin.extensions.view.EMPTY
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.linker.interfaces.ShareCallback
@@ -163,7 +164,7 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
         initVar(savedInstanceState)
 
         if (::presenter.isInitialized) {
-            presenter.fetchMerchantVoucherSummary(shopId)
+            presenter.fetchMerchantVoucherSummary(authorId)
         }
     }
 
@@ -488,7 +489,7 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
                                 mvcData = MvcData(
                                     it.data.animatedInfoList
                                 ),
-                                shopId = shopId,
+                                shopId = authorId,
                                 source = MvcSource.FEED_PRODUCT_DETAIL,
                                 mvcTrackerImpl = customMvcTracker
                             )
