@@ -104,7 +104,7 @@ class UserProfileRepositoryImpl @Inject constructor(
                 getUserProfileFeedPostsUseCase.executeOnBackground(
                     userID = userID,
                     cursor = cursor,
-                    limit = 10,
+                    limit = DEFAULT_LIMIT,
                 ),
             )
         }
@@ -179,5 +179,6 @@ class UserProfileRepositoryImpl @Inject constructor(
     companion object {
         private const val VAL_FEEDS_PROFILE = "feeds-profile"
         private const val VAL_SOURCE_BUYER = "buyer"
+        private const val DEFAULT_LIMIT = 10
     }
 }
