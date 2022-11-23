@@ -26,7 +26,7 @@ class PlayShortsAnalyticImpl @Inject constructor(
      * 3. Row 53 - 56 -> its not applicable since android still using old cover picker
      * 4. Row 58 -> we dont have "Simpan" button in existing feature
      * 5. Row 59 & 60 -> is it expected we use suffix "bottom sheet" while we are showing a popup dialog?
-     *
+     * 6. Row 20 - 24 -> theres a possiblity where eventLabel is " - " bcs theres no selected account, so how?
      */
 
     private val currentSite: String
@@ -49,7 +49,7 @@ class PlayShortsAnalyticImpl @Inject constructor(
     }
 
     /** Row 11 */
-    override fun clickCloseCoachOnPreparationPage(account: ContentAccountUiModel) {
+    override fun clickCloseCoachMarkOnPreparationPage(account: ContentAccountUiModel) {
         sendGeneralClickEvent(
             eventAction = "click - close coachmark",
             account = account,
@@ -130,7 +130,7 @@ class PlayShortsAnalyticImpl @Inject constructor(
     }
 
     /** Row 20 */
-    override fun clickCancelOnCompleteOnboardingUGC(account: ContentAccountUiModel) {
+    override fun clickCancelOnboardingUGC(account: ContentAccountUiModel) {
         sendGeneralClickEvent(
             eventAction = "click - x register user profile",
             account = account,
@@ -139,7 +139,7 @@ class PlayShortsAnalyticImpl @Inject constructor(
     }
 
     /** Row 21 */
-    override fun clickTypeUsernameOnCompleteOnboardingUGC(account: ContentAccountUiModel) {
+    override fun clickTextFieldUsernameOnboardingUGC(account: ContentAccountUiModel) {
         sendGeneralClickEvent(
             eventAction = "click - type user profile name",
             account = account,
@@ -148,7 +148,7 @@ class PlayShortsAnalyticImpl @Inject constructor(
     }
 
     /** Row 22 */
-    override fun clickAcceptTncOnCompleteOnboardingUGC(account: ContentAccountUiModel) {
+    override fun clickAcceptTncOnboardingUGC(account: ContentAccountUiModel) {
         sendGeneralClickEvent(
             eventAction = "click - accept t&c",
             account = account,
@@ -157,7 +157,7 @@ class PlayShortsAnalyticImpl @Inject constructor(
     }
 
     /** Row 23 */
-    override fun viewCompleteOnboardingUGC(account: ContentAccountUiModel) {
+    override fun viewOnboardingUGC(account: ContentAccountUiModel) {
         sendGeneralViewEvent(
             eventAction = "view - register user profile",
             account = account,
@@ -166,7 +166,7 @@ class PlayShortsAnalyticImpl @Inject constructor(
     }
 
     /** Row 24 */
-    override fun clickContinueOnCompleteOnboardingUGC(account: ContentAccountUiModel) {
+    override fun clickContinueOnboardingUGC(account: ContentAccountUiModel) {
         sendGeneralClickEvent(
             eventAction = "click - lanjut register user profile",
             account = account,

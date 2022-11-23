@@ -9,7 +9,7 @@ interface PlayShortsAnalytic {
 
     fun clickBackOnPreparationPage(account: ContentAccountUiModel)
 
-    fun clickCloseCoachOnPreparationPage(account: ContentAccountUiModel)
+    fun clickCloseCoachMarkOnPreparationPage(account: ContentAccountUiModel)
 
     fun clickSwitchAccount(account: ContentAccountUiModel)
 
@@ -27,15 +27,15 @@ interface PlayShortsAnalytic {
 
     fun clickCancelSwitchAccountToUser(account: ContentAccountUiModel)
 
-    fun clickCancelOnCompleteOnboardingUGC(account: ContentAccountUiModel)
+    fun clickCancelOnboardingUGC(account: ContentAccountUiModel)
 
-    fun clickTypeUsernameOnCompleteOnboardingUGC(account: ContentAccountUiModel)
+    fun clickTextFieldUsernameOnboardingUGC(account: ContentAccountUiModel)
 
-    fun clickAcceptTncOnCompleteOnboardingUGC(account: ContentAccountUiModel)
+    fun clickAcceptTncOnboardingUGC(account: ContentAccountUiModel)
 
-    fun viewCompleteOnboardingUGC(account: ContentAccountUiModel)
+    fun viewOnboardingUGC(account: ContentAccountUiModel)
 
-    fun clickContinueOnCompleteOnboardingUGC(account: ContentAccountUiModel)
+    fun clickContinueOnboardingUGC(account: ContentAccountUiModel)
 
     fun viewSwitchAccountBottomSheet(account: ContentAccountUiModel)
 

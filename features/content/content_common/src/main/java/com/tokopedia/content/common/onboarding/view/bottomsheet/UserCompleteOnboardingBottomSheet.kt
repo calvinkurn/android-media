@@ -5,6 +5,7 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.text.method.LinkMovementMethod
 import android.view.LayoutInflater
+import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentManager
@@ -86,6 +87,13 @@ class UserCompleteOnboardingBottomSheet @Inject constructor(
 
     private fun setupListener() {
         binding.textFieldUsername.editText.apply {
+            setOnTouchListener { _, motionEvent ->
+                if (motionEvent.action == MotionEvent.ACTION_UP) {
+                    _listener?.clickTextFieldUsername()
+                }
+                false
+            }
+
             addTextChangedListener(object : TextWatcher {
                 override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {}
 
@@ -105,6 +113,7 @@ class UserCompleteOnboardingBottomSheet @Inject constructor(
         }
 
         binding.layoutTnc.cbxTnc.setOnCheckedChangeListener { _, _ ->
+            _listener?.clickAcceptTnc()
             viewModel.submitAction(UGCOnboardingAction.CheckTnc)
         }
 
@@ -192,6 +201,8 @@ class UserCompleteOnboardingBottomSheet @Inject constructor(
     }
 
     interface Listener : BaseUserOnboardingBottomSheet.Listener {
+        fun clickTextFieldUsername()
+        fun clickAcceptTnc()
         fun clickNextOnCompleteOnboarding()
     }
 

@@ -262,6 +262,10 @@ class UserProfileFragment @Inject constructor(
                         )
                     }
 
+                    override fun clickTextFieldUsernameOnboarding() {}
+
+                    override fun clickAcceptTnc() {}
+
                     override fun clickNextOnTncOnboarding() {
                         userProfileTracker.clickLanjutOnBoardingBottomSheetWithUsername(
                             viewModel.profileUserID,

@@ -79,6 +79,7 @@ class UserTnCOnboardingBottomSheet @Inject constructor(
 
     private fun setupListener() {
         binding.layoutTnc.cbxTnc.setOnCheckedChangeListener { _, _ ->
+            _listener?.clickAcceptTnc()
             viewModel.submitAction(UGCOnboardingAction.CheckTnc)
         }
 
@@ -149,6 +150,7 @@ class UserTnCOnboardingBottomSheet @Inject constructor(
     }
 
     interface Listener : BaseUserOnboardingBottomSheet.Listener {
+        fun clickAcceptTnc()
         fun clickNextOnTncOnboarding()
     }
 

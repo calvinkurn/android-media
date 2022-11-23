@@ -288,6 +288,10 @@ class PlayBroadcastPreparationFragment @Inject constructor(
 
                     override fun impressCompleteOnboarding() {}
 
+                    override fun clickTextFieldUsernameOnboarding() {}
+
+                    override fun clickAcceptTnc() {}
+
                     override fun clickNextOnTncOnboarding() {}
 
                     override fun clickNextOnCompleteOnboarding() {}
