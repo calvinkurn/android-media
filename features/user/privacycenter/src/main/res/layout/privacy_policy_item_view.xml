@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -9,21 +9,21 @@
         android:id="@+id/itemPrivacyPolicy"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Kebijakan Privasi v.005 - 23 Des 2022"
-        android:textColor="@color/Unify_G500"
         android:paddingVertical="12dp"
+        android:textColor="@color/Unify_G500"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
         app:typographyType="display_3"
         app:typographyWeight="bold"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        tools:text="Kebijakan Privasi v.005 - 23 Des 2022" />
 
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/dividerPrivacyPolicy"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        app:layout_constraintTop_toBottomOf="@+id/itemPrivacyPolicy"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintTop_toBottomOf="@+id/itemPrivacyPolicy" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

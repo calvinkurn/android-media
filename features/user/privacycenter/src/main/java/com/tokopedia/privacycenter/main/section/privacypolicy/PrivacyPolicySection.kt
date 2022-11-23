@@ -151,6 +151,6 @@ class PrivacyPolicySection constructor(
     }
 
     companion object {
-        const val TAG = "PrivacyPolicy"
+        const val TAG = "PrivacyPolicySection"
     }
 }

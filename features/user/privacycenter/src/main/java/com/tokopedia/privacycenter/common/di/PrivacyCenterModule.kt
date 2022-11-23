@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.common.network.coroutines.RestRequestInteractor
 import com.tokopedia.common.network.coroutines.repository.RestRepository
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -34,10 +35,13 @@ class PrivacyCenterModule {
         loggingInterceptor: HttpLoggingInterceptor,
         chuckerInterceptor: ChuckerInterceptor
     ): MutableList<Interceptor> {
-        return mutableListOf(
-            loggingInterceptor,
-            chuckerInterceptor
-        )
+        return mutableListOf<Interceptor>(
+            loggingInterceptor
+        ).also {
+            if (GlobalConfig.isAllowDebuggingTools()) {
+                it.add(chuckerInterceptor)
+            }
+        }
     }
 
     @Provides
