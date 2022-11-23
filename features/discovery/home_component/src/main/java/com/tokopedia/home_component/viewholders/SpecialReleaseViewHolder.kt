@@ -30,6 +30,7 @@ import com.tokopedia.home_component.util.getGradientBackgroundViewAllWhite
 import com.tokopedia.home_component.util.setGradientBackground
 import com.tokopedia.home_component.viewholders.adapter.SpecialReleaseAdapter
 import com.tokopedia.home_component.visitable.SpecialReleaseDataModel
+import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
@@ -146,7 +147,7 @@ class SpecialReleaseViewHolder(
         }.toMutableList()
 
         val visitableList: MutableList<Visitable<*>> = carouselDataModelList.map { it }.toMutableList()
-        if (channel.channelGrids.size > 1 && channel.channelHeader.applink.isNotEmpty()) {
+        if (channel.channelGrids.size > Int.ONE && channel.channelHeader.applink.isNotEmpty()) {
             if (channel.channelViewAllCard.id != CarouselViewAllCardViewHolder.DEFAULT_VIEW_ALL_ID && channel.channelViewAllCard.contentType.isNotBlank() && channel.channelViewAllCard.contentType != CarouselViewAllCardViewHolder.CONTENT_DEFAULT) {
                 visitableList.add(
                     CarouselViewAllCardDataModel(
@@ -173,7 +174,7 @@ class SpecialReleaseViewHolder(
     }
 
     private fun valuateRecyclerViewDecoration() {
-        if (binding?.homeComponentSpecialReleaseRv?.itemDecorationCount == 0) binding?.homeComponentSpecialReleaseRv?.addItemDecoration(SimpleHorizontalLinearLayoutDecoration())
+        if (binding?.homeComponentSpecialReleaseRv?.itemDecorationCount == Int.ZERO) binding?.homeComponentSpecialReleaseRv?.addItemDecoration(SimpleHorizontalLinearLayoutDecoration())
         binding?.homeComponentSpecialReleaseRv?.layoutManager = LinearLayoutManager(
             itemView.context,
             LinearLayoutManager.HORIZONTAL,
