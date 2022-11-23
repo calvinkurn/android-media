@@ -2440,7 +2440,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
             customMvcTracker.activityId = if (card.typename == TYPE_FEED_X_CARD_PLAY) card.playChannelID else card.id
             customMvcTracker.status = getTrackerLabelSuffixForCampaignSaleTracker(card)
             customMvcTracker.hasVoucher = card.hasVoucher
-            // TODO : Add Content Score
+            customMvcTracker.contentScore = (card.contentScore).firstOrNull()?.value ?: String.EMPTY
 
             productTagBS.show(
                 childFragmentManager,
@@ -3762,7 +3762,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
         campaignStatus = getTrackerLabelSuffixForCampaignSaleTracker(feedXCard),
         product = product,
         productId = product.id,
-        mediaIndex = feedXCard.lastCarouselIndex
+        mediaIndex = feedXCard.lastCarouselIndex,
+        hasVoucher = feedXCard.hasVoucher
     )
 
     private fun getFeedTrackerDataModelFromPosition(
