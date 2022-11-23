@@ -4,18 +4,21 @@ import com.tokopedia.home.beranda.domain.model.DynamicHomeChannel
 import com.tokopedia.home_component.model.ChannelConfig
 import com.tokopedia.home_component.util.ChannelStyleUtil.parseDividerSize
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.DividerUnify
 import com.tokopedia.unifycomponents.toPx
 
 object HomeChannelWidgetUtil {
     private const val DEFAULT_DIVIDER_HEIGHT = 1
-    private const val DEFAULT_BOTTOM_PADDING = 8
+    private const val BOTTOM_PADDING_WITH_DIVIDER = 0
+    private const val BOTTOM_PADDING_WITHOUT_DIVIDER = 8
 
     fun validateHomeComponentDivider(
         channelModel: DynamicHomeChannel.Channels?,
         dividerTop: DividerUnify?,
-        dividerBottom: DividerUnify?
+        dividerBottom: DividerUnify?,
+        useBottomPadding: Boolean = false
     ) {
         val dividerSize = channelModel?.styleParam?.parseDividerSize()?.toPx()
             ?: DEFAULT_DIVIDER_HEIGHT.toPx()
@@ -23,15 +26,15 @@ object HomeChannelWidgetUtil {
         dividerBottom?.layoutParams?.height = dividerSize
         when(channelModel?.dividerType) {
             ChannelConfig.DIVIDER_NO_DIVIDER -> {
-                dividerTop?.invisible()
-                dividerBottom?.gone()
+                dividerTop?.gone()
+                if(useBottomPadding) dividerBottom?.setAsPadding(BOTTOM_PADDING_WITHOUT_DIVIDER) else dividerBottom?.gone()
             }
             ChannelConfig.DIVIDER_TOP -> {
                 dividerTop?.visible()
-                dividerBottom?.gone()
+                if(useBottomPadding) dividerBottom?.setAsPadding(BOTTOM_PADDING_WITH_DIVIDER) else dividerBottom?.gone()
             }
             ChannelConfig.DIVIDER_BOTTOM -> {
-                dividerTop?.invisible()
+                dividerTop?.gone()
                 dividerBottom?.visible()
             }
             ChannelConfig.DIVIDER_TOP_AND_BOTTOM -> {
@@ -41,9 +44,8 @@ object HomeChannelWidgetUtil {
         }
     }
 
-    private fun DividerUnify.invisible() {
-        this.layoutParams?.height = DEFAULT_BOTTOM_PADDING.toPx()
-        this.setBackgroundResource(android.R.color.transparent)
-        this.visible()
+    private fun DividerUnify.setAsPadding(height: Int) {
+        this.layoutParams?.height = height.toPx()
+        this.invisible()
     }
 }

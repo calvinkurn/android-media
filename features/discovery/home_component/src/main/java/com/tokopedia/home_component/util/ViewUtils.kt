@@ -9,6 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.home_component.model.ChannelConfig
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.toPx
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.unifycomponents.DividerUnify
@@ -19,12 +20,13 @@ import com.tokopedia.unifycomponents.toPx
  */
 object ChannelWidgetUtil {
     private const val DEFAULT_DIVIDER_HEIGHT = 1
-    private const val DEFAULT_BOTTOM_PADDING = 8
+    private const val BOTTOM_PADDING_WITHOUT_DIVIDER = 8
 
     fun validateHomeComponentDivider(
         channelModel: ChannelModel?,
         dividerTop: DividerUnify?,
         dividerBottom: DividerUnify?,
+        useBottomPadding: Boolean = false
     ) {
         val dividerSize = channelModel?.channelConfig?.dividerSize?.toPx()
             ?: DEFAULT_DIVIDER_HEIGHT.toPx()
@@ -32,15 +34,15 @@ object ChannelWidgetUtil {
         dividerBottom?.layoutParams?.height = dividerSize
         when(channelModel?.channelConfig?.dividerType) {
             ChannelConfig.DIVIDER_NO_DIVIDER -> {
-                dividerTop?.invisible()
-                dividerBottom?.gone()
+                dividerTop?.gone()
+                if(useBottomPadding) dividerBottom?.setAsPadding(BOTTOM_PADDING_WITHOUT_DIVIDER) else dividerBottom?.gone()
             }
             ChannelConfig.DIVIDER_TOP -> {
                 dividerTop?.visible()
                 dividerBottom?.gone()
             }
             ChannelConfig.DIVIDER_BOTTOM -> {
-                dividerTop?.invisible()
+                dividerTop?.gone()
                 dividerBottom?.visible()
             }
             ChannelConfig.DIVIDER_TOP_AND_BOTTOM -> {
@@ -50,10 +52,9 @@ object ChannelWidgetUtil {
         }
     }
 
-    private fun DividerUnify.invisible() {
-        this.layoutParams?.height = DEFAULT_BOTTOM_PADDING.toPx()
-        this.setBackgroundResource(android.R.color.transparent)
-        this.visible()
+    private fun DividerUnify.setAsPadding(height: Int) {
+        this.layoutParams?.height = height.toPx()
+        this.invisible()
     }
 }
 
