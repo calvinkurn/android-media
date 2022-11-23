@@ -103,6 +103,8 @@ class ContentDetailFragment : BaseDaggerFragment(), ContentDetailPostViewHolder.
 
     private var cdpRecyclerView: RecyclerView? = null
     private var postId = "0"
+    private var position = 0
+    private var contentDetailSource = ""
     private var rowNumberWhenShareClicked = 0
     private var dissmisByGreyArea = true
     private var endlessRecyclerViewScrollListener: EndlessRecyclerViewScrollListener? = null
@@ -114,8 +116,6 @@ class ContentDetailFragment : BaseDaggerFragment(), ContentDetailPostViewHolder.
     private val adapter = ContentDetailAdapter(
         ContentDetailListener = this
     )
-    private var contentDetailSource = ""
-
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -162,7 +162,9 @@ class ContentDetailFragment : BaseDaggerFragment(), ContentDetailPostViewHolder.
     }
 
     private fun initVar() {
+        contentDetailSource = arguments?.getString(ContentDetailActivity.PARAM_SOURCE) ?: ContentDetailActivity.SHARE_LINK
         postId = arguments?.getString(ContentDetailActivity.PARAM_POST_ID) ?: ContentDetailActivity.DEFAULT_POST_ID
+        position = arguments?.getInt(ContentDetailActivity.PARAM_POSITION) ?: 0
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -203,7 +205,6 @@ class ContentDetailFragment : BaseDaggerFragment(), ContentDetailPostViewHolder.
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val activity = requireActivity() as ContentDetailActivity
-        contentDetailSource = activity.getSource()
 
         val backBtn = activity.getHeaderView()?.findViewById<AppCompatImageView>(kolR.id.content_detail_back_icon)
         backBtn?.setOnClickListener {

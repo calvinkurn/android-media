@@ -20,9 +20,9 @@ class ContentDetailActivity : BaseSimpleActivity() {
 
     override fun getNewFragment(): Fragment {
         val bundle = Bundle().apply {
-            putString(
-                PARAM_POST_ID, postId()
-            )
+            putString(PARAM_POST_ID, postId())
+            putString(PARAM_SOURCE, getSource())
+            putInt(PARAM_POSITION, getPosition())
         }
         return ContentDetailFragment.newInstance(bundle)
     }
@@ -41,8 +41,12 @@ class ContentDetailActivity : BaseSimpleActivity() {
         return intent?.data?.lastPathSegment ?: DEFAULT_POST_ID
     }
 
-    fun getSource(): String {
+    private fun getSource(): String {
         return intent?.extras?.getString(PARAM_SOURCE) ?: SHARE_LINK
+    }
+
+    private fun getPosition(): Int {
+        return intent?.extras?.getInt(PARAM_POSITION) ?: 0
     }
 
     fun setContentDetailMainPostData(card: FeedXCard?) {
@@ -83,5 +87,6 @@ class ContentDetailActivity : BaseSimpleActivity() {
         const val DEFAULT_POST_ID = "0"
         const val PARAM_SOURCE = "source"
         const val SHARE_LINK = "share_link"
+        const val PARAM_POSITION = "position"
     }
 }
