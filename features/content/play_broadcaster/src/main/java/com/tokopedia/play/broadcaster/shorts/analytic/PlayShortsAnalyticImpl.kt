@@ -307,6 +307,33 @@ class PlayShortsAnalyticImpl @Inject constructor(
         )
     }
 
+    /** Row 61 */
+    fun clickBackOnSummaryPage(account: ContentAccountUiModel) {
+        sendGeneralClickEvent(
+            eventAction = "click - back summary page",
+            account = account,
+            trackerId = "37584"
+        )
+    }
+
+    /** Row 62 */
+    fun clickContentTag(tag: String, account: ContentAccountUiModel) {
+        sendGeneralClickEvent(
+            eventAction = "click - content tag",
+            eventLabel = "${account.id} - $tag - ${getAccountType(account)}",
+            trackerId = "37585"
+        )
+    }
+
+    /** Row 63 */
+    fun clickUploadVideo(channelId: String, account: ContentAccountUiModel) {
+        sendGeneralClickEvent(
+            eventAction = "click - upload video",
+            eventLabel = "${getEventLabelByAccount(account)} - $channelId",
+            trackerId = "37585"
+        )
+    }
+
     private fun sendGeneralOpenScreen(
         screenName: String,
         trackerId: String,
@@ -346,6 +373,21 @@ class PlayShortsAnalyticImpl @Inject constructor(
                 .setEventCategory(SHORTS_EVENT_CATEGORY)
                 .setEventAction(eventAction)
                 .setEventLabel(getEventLabelByAccount(account))
+                .setCustomProperty(TRACKER_ID_LABEL, trackerId)
+        )
+    }
+
+    private fun sendGeneralClickEvent(
+        eventAction: String,
+        eventLabel: String,
+        trackerId: String
+    ) {
+        sendGeneralEvent(
+            Tracker.Builder()
+                .setEvent(SHORTS_CLICK_CONTENT)
+                .setEventCategory(SHORTS_EVENT_CATEGORY)
+                .setEventAction(eventAction)
+                .setEventLabel(eventLabel)
                 .setCustomProperty(TRACKER_ID_LABEL, trackerId)
         )
     }
