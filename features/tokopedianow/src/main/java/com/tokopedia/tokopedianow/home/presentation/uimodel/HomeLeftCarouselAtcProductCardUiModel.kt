@@ -20,6 +20,7 @@ data class HomeLeftCarouselAtcProductCardUiModel(
     var recommendationType: String = "",
     var warehouseId: String = "",
     var campaignCode: String = "",
+    val categoryBreadcrumbs: String = "",
     val position: Int = 0,
     val productCardModel: TokoNowProductCardViewUiModel,
 ): Visitable<HomeLeftCarouselAtcProductCardTypeFactory>, ImpressHolder() {

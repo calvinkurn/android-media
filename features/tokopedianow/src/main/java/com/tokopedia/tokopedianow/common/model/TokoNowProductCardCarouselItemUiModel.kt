@@ -19,6 +19,7 @@ data class TokoNowProductCardCarouselItemUiModel(
     val alternativeKeyword: String = "",
     val headerName: String = "",
     val recommendationType: String = "",
+    val categoryBreadcrumbs: String = "",
     val impressHolder: ImpressHolder = ImpressHolder(),
 
     /**

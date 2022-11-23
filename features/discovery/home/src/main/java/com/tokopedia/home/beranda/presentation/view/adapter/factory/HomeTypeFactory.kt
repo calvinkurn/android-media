@@ -49,6 +49,8 @@ interface HomeTypeFactory {
 
     fun type(homeTopAdsBannerDataModel: HomeTopAdsBannerDataModel): Int
 
+    fun type(homeTopAdsVerticalBannerDataModel: HomeTopAdsVerticalBannerDataModel): Int
+
     fun type(dynamicChannelLoadingModel: DynamicChannelLoadingModel): Int
 
     fun type(dynamicChannelRetryModel: DynamicChannelRetryModel): Int

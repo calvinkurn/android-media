@@ -12,6 +12,8 @@ import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.decoration.ProductCardCarouselDecoration
 import com.tokopedia.tokopedianow.common.util.CustomProductCardCarouselLinearLayoutManager
 import com.tokopedia.tokopedianow.common.view.TokoNowDynamicHeaderView
+import com.tokopedia.tokopedianow.common.analytics.RealTimeRecommendationAnalytics
+import com.tokopedia.tokopedianow.common.listener.RealTimeRecommendationListener
 import com.tokopedia.tokopedianow.common.view.TokoNowView
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowHomeLeftCarouselAtcBinding
 import com.tokopedia.tokopedianow.home.presentation.adapter.leftcarousel.HomeLeftCarouselAtcProductCardAdapter
@@ -29,7 +31,9 @@ import kotlin.math.abs
 class HomeLeftCarouselAtcViewHolder(
     itemView: View,
     private val homeLeftCarouselAtcCallback: HomeLeftCarouselAtcCallback? = null,
-    private val tokoNowView: TokoNowView? = null
+    private val tokoNowView: TokoNowView? = null,
+    private val rtrListener: RealTimeRecommendationListener? = null,
+    private val rtrAnalytics: RealTimeRecommendationAnalytics? = null
 ) : AbstractViewHolder<HomeLeftCarouselAtcUiModel>(itemView), CoroutineScope {
 
     companion object {
@@ -96,6 +100,9 @@ class HomeLeftCarouselAtcViewHolder(
             setupRecyclerView(
                 element = element
             )
+            setupRealTimeRecommendation(
+                element = element
+            )
             hitLeftCarouselImpressionTracker(
                 element = element
             )
@@ -104,7 +111,10 @@ class HomeLeftCarouselAtcViewHolder(
 
     override fun bind(element: HomeLeftCarouselAtcUiModel?, payloads: MutableList<Any>) {
         if (payloads.firstOrNull() == true && element != null) {
-            binding?.setupRecyclerView(element = element)
+            binding?.apply {
+                setupRecyclerView(element = element)
+                setupRealTimeRecommendation(element = element)
+            }
         }
     }
 
@@ -144,6 +154,16 @@ class HomeLeftCarouselAtcViewHolder(
     ) {
         adapter.submitList(ArrayList(element.productList))
         restoreInstanceStateToLayoutManager()
+    }
+
+    private fun ItemTokopedianowHomeLeftCarouselAtcBinding.setupRealTimeRecommendation(
+        element: HomeLeftCarouselAtcUiModel
+    ) {
+        realTimeRecommendationCarousel.apply {
+            listener = rtrListener
+            analytics = rtrAnalytics
+            bind(element.realTimeRecom)
+        }
     }
 
     private fun ItemTokopedianowHomeLeftCarouselAtcBinding.hitLeftCarouselImpressionTracker(

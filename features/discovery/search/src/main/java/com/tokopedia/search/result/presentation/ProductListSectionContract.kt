@@ -17,6 +17,7 @@ import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarous
 import com.tokopedia.search.result.product.pagination.Pagination
 import com.tokopedia.search.result.product.safesearch.SafeSearchPresenter
 import com.tokopedia.search.result.product.ticker.TickerPresenter
+import com.tokopedia.search.result.product.wishlist.WishlistPresenter
 import com.tokopedia.sortfilter.SortFilterItem
 import org.json.JSONArray
 
@@ -40,7 +41,6 @@ interface ProductListSectionContract {
         val lastProductItemPositionFromCache: Int
         fun updateScrollListener()
         val isAnyFilterActive: Boolean
-        fun launchLoginActivity(productId: String?)
         fun showAdultRestriction()
         fun redirectSearchToAnotherPage(applink: String?)
         fun setDefaultLayoutType(defaultView: Int)
@@ -50,13 +50,6 @@ interface ProductListSectionContract {
         fun trackScreenAuthenticated()
         fun reloadData()
         val abTestRemoteConfig: RemoteConfig?
-        fun trackWishlistRecommendationProductLoginUser(isAddWishlist: Boolean)
-        fun trackWishlistRecommendationProductNonLoginUser()
-        fun trackWishlistProduct(wishlistTrackingModel: WishlistTrackingModel)
-        fun updateWishlistStatus(productId: String?, isWishlisted: Boolean)
-        fun hitWishlistClickUrl(productCardOptionsModel: ProductCardOptionsModel)
-        fun showMessageSuccessWishlistAction(wishlistResult: ProductCardOptionsModel.WishlistResult)
-        fun showMessageFailedWishlistAction(wishlistResult: ProductCardOptionsModel.WishlistResult)
         val previousKeyword: String
         val isLandingPage: Boolean
         fun logWarning(message: String?, throwable: Throwable?)
@@ -104,7 +97,8 @@ interface ProductListSectionContract {
         BannerAdsPresenter,
         BroadMatchPresenter,
         TickerPresenter,
-        SafeSearchPresenter {
+        SafeSearchPresenter,
+        WishlistPresenter {
 
         fun loadMoreData(searchParameter: Map<String, Any>)
         fun loadData(searchParameter: Map<String, Any>)
@@ -113,7 +107,6 @@ interface ProductListSectionContract {
         val isUserLoggedIn: Boolean
         fun onViewCreated()
         fun onViewVisibilityChanged(isViewVisible: Boolean, isViewAdded: Boolean)
-        fun handleWishlistAction(productCardOptionsModel: ProductCardOptionsModel?)
         fun onProductImpressed(item: ProductItemDataView?, adapterPosition: Int)
         fun onProductClick(item: ProductItemDataView?, adapterPosition: Int)
         fun trackProductClick(item: ProductItemDataView)

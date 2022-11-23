@@ -10,6 +10,7 @@ import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarous
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView.Option
 import com.tokopedia.search.result.product.separator.VerticalSeparable
 import com.tokopedia.search.result.product.separator.VerticalSeparator
+import com.tokopedia.search.result.product.wishlist.Wishlistable
 
 data class BroadMatchDataView(
     val keyword: String = "",
@@ -28,6 +29,7 @@ data class BroadMatchDataView(
 ) : ImpressHolder(),
     Visitable<ProductListTypeFactory>,
     VerticalSeparable,
+    Wishlistable,
     SearchComponentTracking by searchComponentTracking(
         trackingOption = trackingOption,
         keyword = actualKeyword,
@@ -46,6 +48,15 @@ data class BroadMatchDataView(
 
     override fun addBottomSeparator(): VerticalSeparable =
         this.copy(verticalSeparator = VerticalSeparator.Bottom)
+
+    override val isWishlisted: Boolean
+        get() = broadMatchItemDataViewList.any { it.isWishlisted }
+
+    override fun setWishlist(productID: String, isWishlisted: Boolean) {
+        broadMatchItemDataViewList.forEach {
+            it.setWishlist(productID, isWishlisted)
+        }
+    }
 
     companion object {
 

@@ -65,6 +65,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_margin="16dp"
+                android:visibility="gone"
                 app:layout_constraintTop_toBottomOf="@id/product_layout" />
 
             <com.tokopedia.unifycomponents.DividerUnify

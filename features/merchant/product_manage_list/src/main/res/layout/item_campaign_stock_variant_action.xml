@@ -2,7 +2,7 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="@dimen/product_manage_campaign_stock_variant_action_height"
-    android:paddingStart="@dimen/layout_lvl1"
+    android:paddingStart="8dp"
     android:paddingEnd="@dimen/product_manage_campaign_stock_accordion_padding"
     android:background="@color/Unify_Background"
     xmlns:app="http://schemas.android.com/apk/res-auto">

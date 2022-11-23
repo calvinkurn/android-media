@@ -145,7 +145,11 @@ class ReviewCredibilityViewModel @Inject constructor(
             when (requestState) {
                 is RequestState.Success -> {
                     ReviewCredibilityResponseMapper.toReviewCredibilityHeaderUiModel(
-                        requestState.result
+                        requestState.result,
+                        reviewerUserID,
+                        userSession.userId,
+                        productID,
+                        source
                     ).let { ReviewCredibilityHeaderUiState.Showed(it) }
                 }
                 is RequestState.Requesting -> {

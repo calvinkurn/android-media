@@ -4,9 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginLeft="@dimen/spacing_lvl4"
-    android:layout_marginRight="@dimen/spacing_lvl4"
-    android:layout_marginBottom="@dimen/spacing_lvl3">
+    android:layout_marginLeft="16dp"
+    android:layout_marginRight="16dp"
+    android:layout_marginBottom="8dp">
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/labelProduct"
