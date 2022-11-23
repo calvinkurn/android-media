@@ -44,7 +44,7 @@ sealed class FilterOption(val id: String) {
         private const val CAMPAIGN_ONLY = "isCampaignOnly"
         private const val STOCK_ALERT_ONLY = "hasStockAlertOnly"
         const val NOTIFY_ME_ONLY = "haveNotifyMeOOS"
-        private const val STOCK_AVAILABLE_ONLY = "isStockGuarantee"
+        private const val STOCK_AVAILABLE_ONLY = "isStockGuaranteed"
 
     }
 }

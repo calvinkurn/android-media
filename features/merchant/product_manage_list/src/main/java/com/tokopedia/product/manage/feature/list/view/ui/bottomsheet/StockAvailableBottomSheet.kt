@@ -18,7 +18,7 @@ class StockAvailableBottomSheet(
 
     companion object {
         private val TAG: String = StockAvailableBottomSheet::class.java.simpleName
-        private const val SELLER_EDU = "https://seller.tokopedia.com/edu/"
+        private const val SELLER_EDU = "https://seller.tokopedia.com/edu/reward-tanda-stok-tersedia/"
     }
 
     private var binding by autoClearedNullable<BottomSheetProductManageStockAvailableBinding>()
