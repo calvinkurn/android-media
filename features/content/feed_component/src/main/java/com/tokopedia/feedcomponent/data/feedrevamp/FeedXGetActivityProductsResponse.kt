@@ -10,9 +10,15 @@ data class FeedXGQLResponse(
 
 data class FeedXGetActivityProductsResponse(
     @SerializedName("products")
-    var products: List<FeedXProduct> = emptyList(),
-    @SerializedName("hasVoucher")
-    var hasVoucher: Boolean = false,
+    val products: List<FeedXProduct> = emptyList(),
+    @SerializedName("isFollowed")
+    val isFollowed: Boolean,
+    @SerializedName("contentType")
+    val contentType: String,
+    @SerializedName("campaign")
+    val campaign: FeedXCampaign,
     @SerializedName("nextCursor")
-    var nextCursor: String = "",
+    val nextCursor: String = "",
+    @SerializedName("hasVoucher")
+    var hasVoucher: Boolean = false
 )

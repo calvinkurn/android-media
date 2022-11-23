@@ -189,7 +189,7 @@
             android:orientation="vertical"
             android:visibility="gone"
             app:layout_constrainedWidth="true"
-            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/top_ads_campaign_copywriting"
             app:layout_constraintEnd_toStartOf="@+id/chevron"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/top_ads_product_name"
@@ -215,6 +215,24 @@
                 app:typographyType="display_3" />
 
         </LinearLayout>
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/top_ads_campaign_copywriting"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="@dimen/spacing_lvl4"
+            android:ellipsize="end"
+            android:maxLines="1"
+            android:visibility="gone"
+            android:text="@string/feed_asgc_campaign_cta_copywriting_text"
+            app:layout_constrainedWidth="true"
+            app:layout_constraintEnd_toStartOf="@+id/chevron"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/top_ads_product_name"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:typographyType="paragraph_3"
+            tools:text="Eksklusif untuk Follower Toko"
+            />
 
         <com.tokopedia.iconunify.IconUnify
             android:id="@+id/chevron"

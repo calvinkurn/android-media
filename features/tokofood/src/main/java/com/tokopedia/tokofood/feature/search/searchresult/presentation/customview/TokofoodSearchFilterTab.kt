@@ -1,7 +1,6 @@
 package com.tokopedia.tokofood.feature.search.searchresult.presentation.customview
 
 import android.content.Context
-import android.view.View
 import android.view.ViewTreeObserver
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
@@ -13,6 +12,7 @@ import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
+import com.tokopedia.tokofood.common.presentation.listener.TokofoodScrollChangedListener
 import com.tokopedia.tokofood.common.util.TokofoodExt.addAndReturnImpressionListener
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.uimodel.TokofoodFilterItemUiModel
 import com.tokopedia.tokofood.feature.search.searchresult.presentation.uimodel.TokofoodSortFilterItemUiModel
@@ -23,7 +23,7 @@ class TokofoodSearchFilterTab(
     private val sortFilter: SortFilter,
     private val context: Context?,
     private val listener: Listener
-) {
+): TokofoodScrollChangedListener {
 
     private val currentQuickFilter = mutableListOf<TokofoodSortFilterItemUiModel>()
     private val prefixChipImpressHolder = ImpressHolder()
@@ -32,6 +32,10 @@ class TokofoodSearchFilterTab(
 
     init {
         initSortFilter()
+    }
+
+    override fun onScrollChangedListenerAdded(onScrollChangedListener: ViewTreeObserver.OnScrollChangedListener) {
+        scrollChangedListenerList.add(onScrollChangedListener)
     }
 
     fun setQuickFilter(items: List<TokofoodSortFilterItemUiModel>) {
@@ -56,6 +60,7 @@ class TokofoodSearchFilterTab(
 
     fun removeListener() {
         removeScrollListeners()
+        sortFilter.removeScrollListener()
     }
 
     private fun initSortFilter() {
@@ -168,7 +173,7 @@ class TokofoodSearchFilterTab(
     }
 
     private fun setFullOnImpressionListener() {
-        sortFilter.sortFilterPrefix.addAndStoreImpressionListener(prefixChipImpressHolder) {
+        sortFilter.sortFilterPrefix.addAndReturnImpressionListener(prefixChipImpressHolder, this) {
             listener.onImpressCompleteFilterChip()
         }
     }
@@ -176,7 +181,7 @@ class TokofoodSearchFilterTab(
     private fun setSortOnImpressionListener() {
         (currentQuickFilter.getOrNull(Int.ZERO) as? TokofoodSortItemUiModel)?.let { sortUiModel ->
             sortFilter.sortFilterItems.getChildAt(Int.ONE)?.let { sortChip ->
-                sortChip.addAndStoreImpressionListener(sortUiModel) {
+                sortChip.addAndReturnImpressionListener(sortUiModel, this) {
                     listener.onImpressSortChip(sortUiModel.sortList)
                 }
             }
@@ -186,16 +191,11 @@ class TokofoodSearchFilterTab(
     private fun setMiniChipsOnImpressionListener() {
         currentQuickFilter.forEachIndexed { index, uiModel ->
             (uiModel as? TokofoodFilterItemUiModel)?.let { filterUiModel ->
-                sortFilter.sortFilterItems.getChildAt(index + Int.ONE)?.addAndStoreImpressionListener(filterUiModel) {
+                sortFilter.sortFilterItems.getChildAt(index + Int.ONE)?.addAndReturnImpressionListener(filterUiModel, this) {
                     listener.onImpressFilterChip(filterUiModel.filter.options)
                 }
             }
         }
-    }
-
-    private fun View.addAndStoreImpressionListener(holder: ImpressHolder, onView: () -> Unit) {
-        val scrollChangedListener = addAndReturnImpressionListener(holder, onView)
-        scrollChangedListenerList.add(scrollChangedListener)
     }
 
     private fun removeScrollListeners() {

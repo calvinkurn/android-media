@@ -82,7 +82,7 @@ import com.tokopedia.feed_shop.shop.view.contract.FeedShopContract
 import com.tokopedia.feed_shop.shop.view.model.EmptyFeedShopSellerMigrationUiModel
 import com.tokopedia.feed_shop.shop.view.model.EmptyFeedShopUiModel
 import com.tokopedia.feed_shop.shop.view.model.WhitelistUiModel
-import com.tokopedia.imagepicker_insta.common.BundleData
+import com.tokopedia.content.common.types.BundleData
 import com.tokopedia.imagepicker_insta.common.trackers.TrackerProvider
 import com.tokopedia.shop.common.view.interfaces.HasSharedViewModel
 import com.tokopedia.shop.common.view.interfaces.ISharedViewModel
@@ -542,7 +542,11 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     override fun trackTooltipClick(hasMultipleContent: Boolean, activityId: String, activityType: String, position: String) {
     }
 
-    override fun onFollowKolClicked(rowNumber: Int, id: Int) {
+    override fun onFollowKolClicked(
+        rowNumber: Int,
+        id: Int,
+        isFollowedFromFollowRestrictionBottomSheet: Boolean
+    ) {
     }
 
     override fun onUnfollowKolClicked(rowNumber: Int, id: Int) {
@@ -612,7 +616,8 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         isFollow: Boolean,
         postType: String,
         isVideo: Boolean,
-        isBottomSheetMenuOnFeed: Boolean
+        isBottomSheetMenuOnFeed: Boolean,
+        isFollowedFromFollowRestrictionBottomSheet: Boolean
     ) {
         if (type == FollowCta.AUTHOR_USER) {
             var userIdInt = 0

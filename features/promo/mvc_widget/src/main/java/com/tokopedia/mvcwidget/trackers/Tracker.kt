@@ -8,6 +8,7 @@ import com.tokopedia.mvcwidget.trackers.MvcSource.Companion.FEED_PRODUCT_DETAIL
 import com.tokopedia.mvcwidget.trackers.MvcSource.Companion.PDP
 import com.tokopedia.mvcwidget.trackers.MvcSource.Companion.REWARDS
 import com.tokopedia.mvcwidget.trackers.MvcSource.Companion.SHOP
+import com.tokopedia.mvcwidget.trackers.MvcSource.Companion.TOKOFOOD
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.interfaces.Analytics
 
@@ -108,7 +109,7 @@ object Tracker {
 }
 
 @Retention(AnnotationRetention.SOURCE)
-@IntDef(DEFAULT, SHOP, PDP, REWARDS, DISCO, FEED_BOTTOM_SHEET, FEED_PRODUCT_DETAIL)
+@IntDef(DEFAULT, SHOP, PDP, REWARDS, DISCO, FEED_BOTTOM_SHEET, FEED_PRODUCT_DETAIL, TOKOFOOD)
 annotation class MvcSource {
 
     companion object {
@@ -117,8 +118,9 @@ annotation class MvcSource {
         const val PDP = 2
         const val REWARDS = 3
         const val DISCO = 4
-        const val FEED_BOTTOM_SHEET = 5
-        const val FEED_PRODUCT_DETAIL = 6
+        const val TOKOFOOD = 5
+        const val FEED_BOTTOM_SHEET = 6
+        const val FEED_PRODUCT_DETAIL = 7
 
     }
 }

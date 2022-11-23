@@ -11,6 +11,7 @@ object PlayMerchantVoucherSocketResponse {
         description: String = "Min. Pembelanjaan 10rb",
         quota: Int = 1,
         expiredDate: String = "2018-12-07T23:30:00Z",
+        isPrivate: Boolean = true,
     ): String {
         var voucherList = ""
         for(i in 1..size) {
@@ -31,7 +32,8 @@ object PlayMerchantVoucherSocketResponse {
                     voucher_quota: $quota,
                     voucher_type: 3,
                     is_copyable: true,
-                    is_highlighted: true
+                    is_highlighted: true,
+                    is_private: $isPrivate
                 }
             """.trimIndent()
 

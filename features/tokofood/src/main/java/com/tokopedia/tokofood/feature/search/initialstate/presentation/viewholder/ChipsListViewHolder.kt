@@ -6,6 +6,7 @@ import androidx.core.view.ViewCompat
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.tokofood.R
+import com.tokopedia.tokofood.common.presentation.listener.TokofoodScrollChangedListener
 import com.tokopedia.tokofood.common.presentation.viewholder.CustomPayloadViewHolder
 import com.tokopedia.tokofood.databinding.ChipsListInitialStatePopularSearchBinding
 import com.tokopedia.tokofood.feature.search.initialstate.presentation.adapter.ChipsItemAdapter
@@ -15,7 +16,8 @@ import com.tokopedia.tokofood.feature.search.initialstate.presentation.uimodel.C
 
 class ChipsListViewHolder(
     view: View,
-    private val chipsItemListener: ChipsItemAdapter.ChipsItemListener
+    private val chipsItemListener: ChipsItemAdapter.ChipsItemListener,
+    private val tokofoodScrollChangedListener: TokofoodScrollChangedListener
 ) : CustomPayloadViewHolder<ChipsListUiModel>(view) {
 
     companion object {
@@ -28,7 +30,7 @@ class ChipsListViewHolder(
     private var chipsItemAdapter: ChipsItemAdapter? = null
 
     override fun bind(element: ChipsListUiModel) {
-        chipsItemAdapter = ChipsItemAdapter(chipsItemListener)
+        chipsItemAdapter = ChipsItemAdapter(chipsItemListener, tokofoodScrollChangedListener)
         setupChipsList(element)
     }
 

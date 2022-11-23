@@ -25,6 +25,8 @@ import com.tokopedia.mvcwidget.trackers.DefaultMvcTrackerImpl
 import com.tokopedia.mvcwidget.trackers.MvcSource
 import com.tokopedia.mvcwidget.trackers.MvcTrackerImpl
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.unifycomponents.Toaster
+import kotlinx.android.synthetic.main.item_posttag.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 
@@ -229,6 +231,21 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
             putBoolean(WISHLIST_ITEM_CLICKED, true)
         }
         adapter?.notifyItemChanged(rowNumber, payload)
+    }
+
+    fun showToasterOnBottomSheetOnSuccessFollow(message: String, type: Int, actionText: String? = null) {
+        view?.rootView?.let {
+            context?.resources?.let { resource ->
+                Toaster.toasterCustomBottomHeight =
+                    resource.getDimensionPixelSize(com.tokopedia.feedcomponent.R.dimen.feed_bottomsheet_toaster_margin_bottom)
+            }
+            if (actionText?.isEmpty() == false)
+                Toaster.build(it, message, Toaster.LENGTH_LONG, type, actionText)
+                    .show()
+            else {
+                Toaster.build(it, message, Toaster.LENGTH_LONG, type).show()
+            }
+        }
     }
 
     override fun onDestroy() {
