@@ -4,13 +4,17 @@ import android.app.Activity
 import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.os.Build
+import androidx.annotation.ColorRes
 import androidx.core.content.ContextCompat
-import androidx.core.view.WindowCompat
 import androidx.core.view.WindowInsetsControllerCompat
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.utils.view.binding.internal.findRootView
+
+fun Activity.getResColor(@ColorRes color: Int): Int {
+    return ContextCompat.getColor(this, color)
+}
 
 fun Activity.getDynamicColorStatusBar(): Int {
     return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -21,10 +25,6 @@ fun Activity.getDynamicColorStatusBar(): Int {
     } else {
         Color.GRAY
     }
-}
-
-fun Activity.setFitToWindows(isFit: Boolean) {
-    WindowCompat.setDecorFitsSystemWindows(window, isFit)
 }
 
 //This method has no effect on API < 23.
