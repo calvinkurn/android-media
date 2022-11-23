@@ -32,23 +32,23 @@ class PlayShortsRepositoryImpl @Inject constructor(
         delay(500)
 
         listOf(
-//            ContentAccountUiModel(
-//                id = "123",
-//                name = "Shop",
-//                iconUrl = "",
-//                badge = "",
-//                type = "content-shop",
-//                hasUsername = true,
-//                enable = true,
-//            ),
+            ContentAccountUiModel(
+                id = "123",
+                name = "Shop",
+                iconUrl = "",
+                badge = "",
+                type = "content-shop",
+                hasUsername = true,
+                enable = true,
+            ),
             ContentAccountUiModel(
                 id = "456",
                 name = "UGC",
                 iconUrl = "",
                 badge = "",
                 type = "content-user",
-                hasUsername = false,
-                enable = false,
+                hasUsername = true,
+                enable = true,
             )
         )
 

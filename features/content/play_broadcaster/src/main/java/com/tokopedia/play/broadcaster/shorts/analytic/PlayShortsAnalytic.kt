@@ -43,13 +43,13 @@ interface PlayShortsAnalytic {
 
     fun clickMenuTitle(account: ContentAccountUiModel)
 
-    fun clickProductMenu(account: ContentAccountUiModel)
+    fun clickMenuProduct(account: ContentAccountUiModel)
 
-    fun clickCoverMenu(account: ContentAccountUiModel)
+    fun clickMenuCover(account: ContentAccountUiModel)
 
     fun clickBackOnTitleForm(account: ContentAccountUiModel)
 
-    fun clickTextBoxOnTitleForm(account: ContentAccountUiModel)
+    fun clickTextFieldOnTitleForm(account: ContentAccountUiModel)
 
     fun clickSaveOnTitleForm(account: ContentAccountUiModel)
 

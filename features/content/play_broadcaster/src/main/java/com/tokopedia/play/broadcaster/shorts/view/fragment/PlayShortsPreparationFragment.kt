@@ -102,6 +102,9 @@ class PlayShortsPreparationFragment @Inject constructor(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        analytic.viewPreparationPage(viewModel.selectedAccount)
+
         setupView()
         setupListener()
         setupObserver()
@@ -248,12 +251,15 @@ class PlayShortsPreparationFragment @Inject constructor(
 
                 when (it.menuId) {
                     DynamicPreparationMenu.TITLE -> {
+                        analytic.clickMenuTitle(viewModel.selectedAccount)
                         viewModel.submitAction(PlayShortsAction.OpenTitleForm)
                     }
                     DynamicPreparationMenu.PRODUCT -> {
+                        analytic.clickMenuProduct(viewModel.selectedAccount)
                         openProductPicker()
                     }
                     DynamicPreparationMenu.COVER -> {
+                        analytic.clickMenuCover(viewModel.selectedAccount)
                         viewModel.submitAction(PlayShortsAction.OpenCoverForm)
                     }
                 }
@@ -261,25 +267,35 @@ class PlayShortsPreparationFragment @Inject constructor(
 
             formTitle.setListener(object : TitleFormView.Listener {
                 override fun onClearTitle() {
-                    /** TODO: attach tracker here */
+                    analytic.clickClearTextBoxOnTitleForm(viewModel.selectedAccount)
+                }
+
+                override fun onClickTextField() {
+                    analytic.clickTextFieldOnTitleForm(viewModel.selectedAccount)
                 }
 
                 override fun onCloseTitleForm(view: TitleFormView) {
+                    analytic.clickBackOnTitleForm(viewModel.selectedAccount)
                     hideKeyboard()
                     viewModel.submitAction(PlayShortsAction.CloseTitleForm)
                 }
 
                 override fun onTitleSaved(view: TitleFormView, title: String) {
+                    analytic.clickSaveOnTitleForm(viewModel.selectedAccount)
                     viewModel.submitAction(PlayShortsAction.UploadTitle(title))
                 }
             })
 
             formCover.setListener(object : CoverFormView.Listener {
                 override fun onCloseCoverForm() {
+                    analytic.clickCloseOnCoverForm(viewModel.selectedAccount)
+
                     viewModel.submitAction(PlayShortsAction.CloseCoverForm)
                 }
 
                 override fun onClickCoverPreview(isEditCover: Boolean) {
+                    analytic.clickSelectCoverOnCoverForm(viewModel.selectedAccount)
+
                     openCoverSetupFragment()
                 }
             })
@@ -388,6 +404,8 @@ class PlayShortsPreparationFragment @Inject constructor(
             title = getString(R.string.play_shorts_toolbar_title)
             subtitle = curr.selectedAccount.name
             icon = curr.selectedAccount.iconUrl
+
+            showHideExpandIcon(viewModel.isAllowChangeAccount)
         }
     }
 
@@ -478,11 +496,19 @@ class PlayShortsPreparationFragment @Inject constructor(
     private fun showTitleForm(isShow: Boolean) {
         showMainComponent(!isShow)
         binding.formTitle.showWithCondition(isShow)
+
+        if(isShow) {
+            analytic.openScreenTitleForm(viewModel.selectedAccount)
+        }
     }
 
     private fun showCoverForm(isShow: Boolean) {
         showMainComponent(!isShow)
         binding.formCover.showWithCondition(isShow)
+
+        if(isShow) {
+            analytic.openScreenCoverForm(viewModel.selectedAccount)
+        }
     }
 
     private fun showExitConfirmationDialog() {
@@ -568,6 +594,8 @@ class PlayShortsPreparationFragment @Inject constructor(
     }
 
     private fun showSwitchAccountBottomSheet() {
+        analytic.viewSwitchAccountBottomSheet(viewModel.selectedAccount)
+
         ContentAccountTypeBottomSheet
             .getFragment(childFragmentManager, requireActivity().classLoader)
             .show(childFragmentManager)

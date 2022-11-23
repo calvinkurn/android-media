@@ -202,7 +202,7 @@ class PlayShortsAnalyticImpl @Inject constructor(
     }
 
     /** Row 30 */
-    override fun clickProductMenu(account: ContentAccountUiModel) {
+    override fun clickMenuProduct(account: ContentAccountUiModel) {
         sendGeneralClickEvent(
             eventAction = "click - add product tag",
             account = account,
@@ -211,7 +211,7 @@ class PlayShortsAnalyticImpl @Inject constructor(
     }
 
     /** Row 31 */
-    override fun clickCoverMenu(account: ContentAccountUiModel) {
+    override fun clickMenuCover(account: ContentAccountUiModel) {
         sendGeneralClickEvent(
             eventAction = "click - add cover on preparation page",
             account = account,
@@ -229,7 +229,7 @@ class PlayShortsAnalyticImpl @Inject constructor(
     }
 
     /** Row 33 */
-    override fun clickTextBoxOnTitleForm(account: ContentAccountUiModel) {
+    override fun clickTextFieldOnTitleForm(account: ContentAccountUiModel) {
         sendGeneralClickEvent(
             eventAction = "click - fill text title",
             account = account,
