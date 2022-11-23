@@ -201,7 +201,7 @@ class GetScheduleDeliveryCourierRecommendationSubscriber(
         }
     }
 
-    private fun generateCourierItemData(
+    fun generateCourierItemData(
         shippingCourierUiModel: ShippingCourierUiModel,
         shippingRecommendationData: ShippingRecommendationData,
         logisticPromo: LogisticPromoUiModel? = null
@@ -239,27 +239,7 @@ class GetScheduleDeliveryCourierRecommendationSubscriber(
             courierItemData = shippingCourierConverter.convertToCourierItemData(courierUiModel, shippingRecommendationData, shipmentCartItemModel)
         }
 
-        if (courierItemData.scheduleDeliveryUiModel != null) {
-            val isScheduleDeliverySelected = courierItemData.scheduleDeliveryUiModel?.isSelected
-            if (isScheduleDeliverySelected == true &&
-                (
-                    courierItemData.scheduleDeliveryUiModel?.timeslotId != shipmentCartItemModel.timeslotId ||
-                    courierItemData.scheduleDeliveryUiModel?.scheduleDate != shipmentCartItemModel.scheduleDate
-                )
-            ) {
-                shipmentCartItemModel.scheduleDate =
-                    courierItemData.scheduleDeliveryUiModel?.scheduleDate ?: ""
-                shipmentCartItemModel.timeslotId =
-                    courierItemData.scheduleDeliveryUiModel?.timeslotId ?: 0
-                shipmentCartItemModel.validationMetadata =
-                    courierItemData.scheduleDeliveryUiModel?.deliveryProduct?.validationMetadata
-                        ?: ""
-            } else if (isScheduleDeliverySelected == false) {
-                shipmentCartItemModel.scheduleDate = ""
-                shipmentCartItemModel.timeslotId = 0L
-                shipmentCartItemModel.validationMetadata = ""
-            }
-        }
+        handleSyncShipmentCartItemModel(courierItemData, shipmentCartItemModel)
 
         logisticPromoChosen?.let {
             courierItemData.logPromoCode = it.promoCode
@@ -278,5 +258,32 @@ class GetScheduleDeliveryCourierRecommendationSubscriber(
             courierItemData.boCampaignId = it.boCampaignId
         }
         return courierItemData
+    }
+
+    fun handleSyncShipmentCartItemModel(
+        courierItemData: CourierItemData,
+        selectedShipmentCartItemModel: ShipmentCartItemModel
+    ) {
+        if (courierItemData.scheduleDeliveryUiModel != null) {
+            val isScheduleDeliverySelected = courierItemData.scheduleDeliveryUiModel?.isSelected
+            if (isScheduleDeliverySelected == true &&
+                (
+                    courierItemData.scheduleDeliveryUiModel?.timeslotId != selectedShipmentCartItemModel.timeslotId ||
+                        courierItemData.scheduleDeliveryUiModel?.scheduleDate != selectedShipmentCartItemModel.scheduleDate
+                    )
+            ) {
+                selectedShipmentCartItemModel.scheduleDate =
+                    courierItemData.scheduleDeliveryUiModel?.scheduleDate ?: ""
+                selectedShipmentCartItemModel.timeslotId =
+                    courierItemData.scheduleDeliveryUiModel?.timeslotId ?: 0
+                selectedShipmentCartItemModel.validationMetadata =
+                    courierItemData.scheduleDeliveryUiModel?.deliveryProduct?.validationMetadata
+                        ?: ""
+            } else if (isScheduleDeliverySelected == false) {
+                selectedShipmentCartItemModel.scheduleDate = ""
+                selectedShipmentCartItemModel.timeslotId = 0L
+                selectedShipmentCartItemModel.validationMetadata = ""
+            }
+        }
     }
 }
