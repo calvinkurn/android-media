@@ -33,7 +33,7 @@ class FeedPostsViewHolder(
                     item.appLink,
                     item.id,
                     firstItem.coverURL,
-                    bindingAdapterPosition,
+                    bindingAdapterPosition + 1,
                     firstItem.type,
                 )
             }

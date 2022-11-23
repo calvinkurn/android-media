@@ -32,7 +32,7 @@ open class UserPostBaseAdapter(
                 item,
                 item.isLive,
                 item.id,
-                position,
+                position + 1,
             )
             setData(this, item)
         }
@@ -129,7 +129,7 @@ open class UserPostBaseAdapter(
             item.channelId,
             item.video.isLive && item.channelType == PlayWidgetChannelType.Live,
             item.video.coverUrl,
-            getItemPosition(item.channelId),
+            getItemPosition(item.channelId) + 1,
         )
     }
 
