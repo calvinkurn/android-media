@@ -848,6 +848,7 @@ class PlayViewModel @AssistedInject constructor(
 
     fun hideThreeDotsSheet(){
         _observableKebabSheets.value = getDefaultKebabInsets()
+        _isThreeDotsOpened.update { false }
     }
 
     private fun getDefaultKebabInsets(): Map<KebabMenuType, BottomInsetsState> {
@@ -979,7 +980,6 @@ class PlayViewModel @AssistedInject constructor(
             PlayViewerNewAction.AutoOpenInteractive -> handleAutoOpen()
             is SendWarehouseId -> handleWarehouse(action.id, action.isOOC)
             DismissFollowPopUp -> _isFollowPopUpShown.update { it.copy(shouldShow = false) }
-            CloseKebabMenu -> _isThreeDotsOpened.update { false }
         }
     }
 
