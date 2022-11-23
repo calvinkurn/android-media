@@ -39,7 +39,7 @@ object TokoChatConnection {
 
     fun disconnect() {
         try {
-            courierConnection?.handleAppEvent(AppLogout.INSTANCE)
+            courierConnection?.handleAppEvent(AppLogout)
             Thread {
                 ConversationsRepository.instance?.resetConversationsData()
                 ConversationsRepository.destroy()
