@@ -1382,6 +1382,7 @@ class ShopPageProductListResultViewModelTest : ShopPageProductListViewModelTestF
         val mockIsVariant = true
         val mockProductId = "678"
         val mockStockQty = 11
+        val mockShopId = "125"
         coEvery {
             affiliateCookieHelper.initCookie(any(),any(),any())
         } returns Unit
@@ -1390,7 +1391,8 @@ class ShopPageProductListResultViewModelTest : ShopPageProductListViewModelTestF
             mockAffiliateChannel,
             mockProductId,
             mockIsVariant,
-            mockStockQty
+            mockStockQty,
+            mockShopId
         )
         coVerify { affiliateCookieHelper.initCookie(any(),any(),any()) }
     }
@@ -1401,6 +1403,7 @@ class ShopPageProductListResultViewModelTest : ShopPageProductListViewModelTestF
         val mockIsVariant = true
         val mockProductId = "678"
         val mockStockQty = 11
+        val mockShopId = "125"
         coEvery {
             affiliateCookieHelper.initCookie(any(),any(),any())
         } throws Exception()
@@ -1409,7 +1412,8 @@ class ShopPageProductListResultViewModelTest : ShopPageProductListViewModelTestF
             mockAffiliateChannel,
             mockProductId,
             mockIsVariant,
-            mockStockQty
+            mockStockQty,
+            mockShopId
         )
         coVerify { affiliateCookieHelper.initCookie(any(),any(),any()) }
     }
