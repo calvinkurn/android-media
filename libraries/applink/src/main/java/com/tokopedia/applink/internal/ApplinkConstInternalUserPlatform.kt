@@ -475,6 +475,11 @@ object ApplinkConstInternalUserPlatform {
     const val ACCOUNT_LINKING_WEBVIEW = "${NEW_INTERNAL_USER}/account-linking-webview"
 
     /**
+     * com.tokopedia.privacycenter.dsar.ui.DsarActivity
+     * @Applink : tokopedia-android-internal://user/dsar
+     **/
+    const val DSAR = "$NEW_INTERNAL_USER/dsar"
+    /**
      * com.tokopedia.privacyaccount.searchhistory.SearchHistoryActivity
      * @Applink : tokopedia-android-internal://user/search-history
      **/
