@@ -756,7 +756,7 @@ abstract class BaseSearchCategoryFragment:
 
         indices.forEach {
             if (it in searchCategoryAdapter.list.indices)
-                searchCategoryAdapter.notifyItemChanged(it)
+                searchCategoryAdapter.notifyItemChanged(it, true)
         }
     }
 
@@ -795,14 +795,7 @@ abstract class BaseSearchCategoryFragment:
             productItemDataView: ProductItemDataView,
             quantity: Int,
     ) {
-        getViewModel().onViewATCProductNonVariant(productItemDataView, quantity, false)
-    }
-
-    override fun onProductNonVariantAnimationFinished(
-        productItemDataView: ProductItemDataView,
-        quantity: Int
-    ) {
-        getViewModel().onViewATCProductNonVariantAnimationFinished(productItemDataView, quantity, true)
+        getViewModel().onViewATCProductNonVariant(productItemDataView, quantity)
     }
 
     protected open fun showSuccessATCMessage(message: String?) {

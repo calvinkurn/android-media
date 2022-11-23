@@ -45,13 +45,6 @@ class TokoNowProductCardCarouselItemViewHolder(
                     product = element
                 )
             }
-            setOnAnimationFinishedListener { quantity ->
-                listener?.onProductCardAnimationFinished(
-                    position = layoutPosition,
-                    product = element,
-                    quantity = quantity
-                )
-            }
             addOnImpressionListener(element.impressHolder) {
                 listener?.onProductCardImpressed(
                     position = layoutPosition,
@@ -77,11 +70,6 @@ class TokoNowProductCardCarouselItemViewHolder(
         fun onProductCardAddVariantClicked(
             position: Int,
             product: TokoNowProductCardCarouselItemUiModel
-        )
-        fun onProductCardAnimationFinished(
-            position: Int,
-            product: TokoNowProductCardCarouselItemUiModel,
-            quantity: Int
         )
         fun onProductCardQuantityChanged(
             position: Int,

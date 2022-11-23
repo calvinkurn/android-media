@@ -19,4 +19,12 @@ data class RepurchaseProductUiModel(
     override fun type(typeFactory: RepurchaseTypeFactory): Int {
         return typeFactory.type(this)
     }
+
+    fun getChangePayload(repurchaseProduct: RepurchaseProductUiModel): Any? {
+        val newProductCard = repurchaseProduct.productCardModel
+        return when {
+            productCardModel != newProductCard -> true
+            else -> null
+        }
+    }
 }

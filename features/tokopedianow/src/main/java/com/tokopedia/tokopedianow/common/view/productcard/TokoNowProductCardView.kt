@@ -500,10 +500,4 @@ class TokoNowProductCardView @JvmOverloads constructor(
     ) {
         binding.quantityEditor.onClickVariantListener = onClickVariantListener
     }
-
-    fun setOnAnimationFinishedListener(
-        onAnimationFinished: (Int) -> Unit
-    ) {
-        binding.quantityEditor.onAnimationFinished = onAnimationFinished
-    }
 }

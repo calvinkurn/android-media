@@ -6,11 +6,9 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.filter.common.data.DynamicFilterModel
-import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
-import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.tokopedianow.common.constant.ServiceType.NOW_15M
 import com.tokopedia.tokopedianow.common.domain.usecase.SetUserPreferenceUseCase
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardCarouselItemUiModel
@@ -308,13 +306,11 @@ class TokoNowSearchViewModel @Inject constructor (
     fun onViewATCBroadMatchItem(
         broadMatchItem: TokoNowProductCardCarouselItemUiModel,
         quantity: Int,
-        broadMatchIndex: Int,
-        hasAnimationFinished: Boolean
+        broadMatchIndex: Int
     ) {
         val productId = broadMatchItem.productCardModel.productId
         val shopId = broadMatchItem.shopId
         val currentQuantity = broadMatchItem.productCardModel.orderQuantity
-        hasProductAnimationFinished = hasAnimationFinished
 
         cartService.handleCart(
             cartProductItem = CartProductItem(productId, shopId, currentQuantity),
@@ -339,39 +335,6 @@ class TokoNowSearchViewModel @Inject constructor (
                 handleAddToCartEventNonLogin(broadMatchIndex)
             },
         )
-    }
-
-    fun onViewATCBroadMatchItemAnimationFinished(
-        broadMatchItem: TokoNowProductCardCarouselItemUiModel,
-        quantity: Int,
-        broadMatchIndex: Int,
-        hasAnimationFinished: Boolean
-    ) {
-        hasProductAnimationFinished = hasAnimationFinished
-
-        if (broadMatchItem.productCardModel.orderQuantity != quantity && quantity.isZero()) {
-            val productId = broadMatchItem.productCardModel.productId
-            val shopId = broadMatchItem.shopId
-            val currentQuantity = broadMatchItem.productCardModel.orderQuantity
-
-            cartService.handleCart(
-                cartProductItem = CartProductItem(productId, shopId, currentQuantity),
-                quantity = quantity,
-                onSuccessAddToCart = { /* nothing to do */ },
-                onSuccessUpdateCart = { /* nothing to do */ },
-                onSuccessDeleteCart = {
-                    onAddToCartSuccessBroadMatchItem(broadMatchItem, quantity)
-                    updateCartMessageSuccess(it.errorMessage.joinToString(separator = ", "))
-                    updateToolbarNotification()
-                },
-                onError = ::onAddToCartFailed,
-                handleCartEventNonLogin = {
-                    handleAddToCartEventNonLogin(broadMatchIndex)
-                },
-            )
-        } else {
-            refreshMiniCart()
-        }
     }
 
     private fun sendAddToCartBroadMatchItemTracking(
