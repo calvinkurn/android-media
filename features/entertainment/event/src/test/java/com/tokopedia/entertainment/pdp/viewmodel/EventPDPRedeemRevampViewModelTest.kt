@@ -29,6 +29,18 @@ class EventPDPRedeemRevampViewModelTest: EventPDPRedeemRevampViewModelTestFixtur
         Assert.assertEquals(viewModel.oldFlowQuantity, quantity)
     }
 
+
+    @Test
+    fun `when update checked list redemptions and return checked list`() {
+        val listRedemption = createRedeemData().data.redemptions ?: emptyList()
+        viewModel.listRedemptions = listRedemption
+        val checkedPair = listOf(Pair("14940", true))
+
+        viewModel.updateCheckedIds(checkedPair)
+        val result = viewModel.getCheckedIdsSize()
+        Assert.assertEquals(result, 1)
+    }
+
     //region redeem data
     @Test
     fun `when get redeem data should run and give success result`() {
