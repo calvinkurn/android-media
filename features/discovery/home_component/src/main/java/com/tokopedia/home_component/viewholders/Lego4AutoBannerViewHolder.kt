@@ -53,7 +53,8 @@ class Lego4AutoBannerViewHolder (itemView: View,
         ChannelWidgetUtil.validateHomeComponentDivider(
             channelModel = element.channelModel,
             dividerTop = binding?.homeComponentDividerHeader,
-            dividerBottom = binding?.homeComponentDividerFooter
+            dividerBottom = binding?.homeComponentDividerFooter,
+            useBottomPadding = element.channelModel.channelConfig.borderStyle == ChannelStyleUtil.BORDER_STYLE_BLEEDING
         )
     }
 
@@ -85,9 +86,8 @@ class Lego4AutoBannerViewHolder (itemView: View,
                     false
                 )
         )
-        val horizontalPadding = if(isUsingPadding) itemView.resources.getDimension(R.dimen.home_component_margin_default).toInt() else 0
-        val bottomPadding = if(isUsingPadding) itemView.resources.getDimension(R.dimen.home_component_padding_style_bottom_margin).toInt() else 0
-        recyclerView.setPadding(horizontalPadding, 0, horizontalPadding, bottomPadding)
+        val marginValue = if(isUsingPadding) itemView.resources.getDimension(R.dimen.home_component_margin_default).toInt() else 0
+        recyclerView.setPadding(marginValue, 0, marginValue, marginValue)
     }
 
     private fun setHeaderComponent(element: Lego4AutoDataModel) {
