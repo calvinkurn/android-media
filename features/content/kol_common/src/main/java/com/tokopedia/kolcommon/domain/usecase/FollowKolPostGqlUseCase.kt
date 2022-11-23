@@ -10,10 +10,7 @@ import javax.inject.Inject
 /**
  * @author by yfsx on 11/7/18.
  */
-@Deprecated(
-    message = "Use ProfileFollowUseCase / ProfileUnfollowedUseCase class instead",
-    replaceWith = ReplaceWith("ProfileFollowUseCase / ProfileUnfollowedUseCase")
-)
+@Deprecated("Use ProfileFollowUseCase and ProfileUnfollowedUseCase class instead")
 class FollowKolPostGqlUseCase @Inject constructor() : GraphqlUseCase() {
 
     companion object {
