@@ -523,10 +523,8 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
                 postType = item.postType,
                 isFollowed = item.isFollowed,
                 shopId = item.shopId,
-                mediaType = "",
                 positionInFeed = item.positionInFeed,
                 contentSlotValue = contentScore,
-                trackerId = "",
                 campaignStatus = item.saleStatus,
                 product = item.product,
                 productId = item.product.id,
@@ -623,9 +621,7 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
                 postType = item.postType,
                 isFollowed = item.isFollowed,
                 shopId = item.shopId,
-                campaignStatus = "",
                 contentSlotValue = contentScore,
-                trackerId = "",
                 isProductDetailPage = true
                 )
         )
@@ -796,11 +792,7 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
                         shopId = shopId,
                         campaignStatus = getTrackerCampaignStatusSuffix(),
                         contentSlotValue = contentScore,
-                        mediaIndex = 0 ,
-                        mediaType = "",
-                        positionInFeed = positionInFeed,
-                        productId = "",
-                        trackerId = ""
+                        positionInFeed = positionInFeed
                     ))
                 RouteManager.route(context, ApplinkConst.WISHLIST)
             }).show()
