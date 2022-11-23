@@ -557,10 +557,11 @@ class PlayBottomSheetFragment @Inject constructor(
                         is BuySuccessEvent -> {
                             router.route(requireContext(), ApplinkConstInternalMarketplace.CART)
 
-
                             val bottomInsetsType = if (event.isVariant) {
                                 BottomInsetsType.VariantSheet
                             } else BottomInsetsType.ProductSheet //TEMPORARY
+
+                            if (event.isProductFeatured) return@collect
 
                             val sectionInfo = event.sectionInfo ?: ProductSectionUiModel.Section.Empty
 
@@ -643,6 +644,8 @@ class PlayBottomSheetFragment @Inject constructor(
                             )
 
                             if (event.isVariant) closeVariantSheet()
+
+                            if (event.isProductFeatured) return@collect
 
                             val sectionInfo = event.sectionInfo ?: ProductSectionUiModel.Section.Empty
 
