@@ -79,22 +79,10 @@ class KebabMenuSheetViewComponent(
         }
     }
 
-    fun showView() {
-        /** Need to improve if there's watch mode - need to put it under observer*/
+    fun show(actions: List<PlayMoreActionUiModel>) {
+        if (actions.isEmpty()) return
+        moreActionAdapter.setItemsAndAnimateChanges(actions)
         show()
-        setActionList()
-    }
-
-    private fun setActionList(){
-        val actionList = mutableListOf<PlayMoreActionUiModel>().apply {
-            add(pipAction)
-            add(chromecastAction)
-            add(watchAction)
-            add(reportAction)
-        }
-        if (actionList.isNotEmpty()) {
-            moreActionAdapter.setItemsAndAnimateChanges(actionList)
-        }
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)

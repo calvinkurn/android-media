@@ -6,22 +6,31 @@ import android.view.View
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.iconunify.IconUnify
+import com.tokopedia.iconunify.getIconUnifyDrawable
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.play.R
 import com.tokopedia.play.analytic.PlayAnalytic
+import com.tokopedia.play.extensions.isAnyShown
+import com.tokopedia.play.util.isChanged
 import com.tokopedia.play.util.observer.DistinctObserver
 import com.tokopedia.play.util.withCache
 import com.tokopedia.play.view.fragment.PlayFragment
 import com.tokopedia.play.view.fragment.PlayUserInteractionFragment
 import com.tokopedia.play.view.type.BottomInsetsState
+import com.tokopedia.play.view.type.BottomInsetsType
+import com.tokopedia.play.view.type.PlayMoreActionType
+import com.tokopedia.play.view.uimodel.PlayMoreActionUiModel
 import com.tokopedia.play.view.uimodel.PlayUserReportReasoningUiModel
 import com.tokopedia.play.view.uimodel.action.OpenFooterUserReport
 import com.tokopedia.play.view.uimodel.action.OpenUserReport
 import com.tokopedia.play.view.uimodel.event.OpenUserReportEvent
 import com.tokopedia.play.view.uimodel.recom.PlayVideoMetaInfoUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayVideoPlayerUiModel
+import com.tokopedia.play.view.uimodel.recom.isGeneral
 import com.tokopedia.play.view.uimodel.state.KebabMenuType
 import com.tokopedia.play.view.viewcomponent.KebabMenuSheetViewComponent
 import com.tokopedia.play.view.viewcomponent.PlayUserReportSheetViewComponent
@@ -69,6 +78,46 @@ class PlayMoreActionBottomSheet @Inject constructor(
     private var userReportTimeMillis: Date = Date()
 
     var mListener: Listener? = null
+
+    private val reportAction by lazy {
+        PlayMoreActionUiModel(
+            type = PlayMoreActionType.Report,
+            icon = getIconUnifyDrawable(requireContext(), IconUnify.WARNING, MethodChecker.getColor(requireContext(), com.tokopedia.unifycomponents.R.color.Unify_NN900)),
+            isIconAvailable = true,
+            subtitleRes = R.string.play_kebab_report_title,
+            onClick = {  }
+        )
+    }
+
+    private val pipAction by lazy {
+        PlayMoreActionUiModel(
+            type = PlayMoreActionType.PiP,
+            icon = MethodChecker.getDrawable(requireContext(), R.drawable.ic_play_pip),
+            isIconAvailable = true,
+            subtitleRes = R.string.play_kebab_pip,
+            onClick = { }
+        )
+    }
+
+    private val chromecastAction by lazy {
+        PlayMoreActionUiModel(
+            type = PlayMoreActionType.Chromecast,
+            icon = null,
+            isIconAvailable = false,
+            subtitleRes = R.string.play_kebab_chromecast,
+            onClick = {  }
+        )
+    }
+
+    private val watchAction by lazy {
+        PlayMoreActionUiModel(
+            type = PlayMoreActionType.WatchMode,
+            icon = getIconUnifyDrawable(requireContext(), IconUnify.VISIBILITY, MethodChecker.getColor(requireContext(), com.tokopedia.unifycomponents.R.color.Unify_NN900)),
+            isIconAvailable = true,
+            subtitleRes = R.string.play_kebab_watch_mode,
+            onClick = {  }
+        )
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -118,17 +167,78 @@ class PlayMoreActionBottomSheet @Inject constructor(
      * Setup Observer
      */
     private fun setObserve(){
-        observeBottomInsets()
+        observeKebabInsets()
         observeUserReport()
         observeUserReportSubmission()
         observeEvent()
+        observeBottomInsets()
+        observeCast()
+        observeVideoMeta()
+        observeState()
     }
 
     private fun observeBottomInsets() {
+        playViewModel.observableBottomInsetsState.observe(viewLifecycleOwner, DistinctObserver { bottomInsets ->
+            renderCastView(bottomInsets)
+            renderPiPView(bottomInsets = bottomInsets)
+        })
+    }
+
+    private fun observeCast() {
+        playViewModel.observableCastState.observe(viewLifecycleOwner) {
+            renderCastView()
+            renderPiPView()
+        }
+    }
+
+    private fun observeVideoMeta() {
+        playViewModel.observableVideoMeta.observe(viewLifecycleOwner) { meta ->
+            renderPiPView(videoPlayer = meta.videoPlayer)
+        }
+    }
+
+    private fun observeState(){
+        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
+            playViewModel.uiState.withCache().collectLatest {
+                val cachedState = it
+
+                if (cachedState.isChanged { it.status.channelStatus.statusType }) renderPiPView(isFreezeOrBanned = cachedState.value.status.channelStatus.statusType.isFreeze || cachedState.value.status.channelStatus.statusType.isBanned)
+            }
+        }
+    }
+
+    private fun renderCastView(
+        bottomInsets: Map<BottomInsetsType, BottomInsetsState> = playViewModel.bottomInsets
+    ) {
+        if(playViewModel.isCastAllowed && !bottomInsets.isAnyShown) {
+            val currentVisibility = listOfAction.contains(chromecastAction)
+            if(currentVisibility)
+                analytic.impressCast(playViewModel.latestCompleteChannelData.channelDetail.channelInfo.id, playViewModel.channelType)
+            buildListAction(action = chromecastAction)
+        }
+        else removeAction(chromecastAction)
+    }
+
+    private fun renderPiPView(
+        videoPlayer: PlayVideoPlayerUiModel = playViewModel.videoPlayer,
+        bottomInsets: Map<BottomInsetsType, BottomInsetsState> = playViewModel.bottomInsets,
+        isFreezeOrBanned: Boolean = playViewModel.isFreezeOrBanned
+    ){
+        val currentVisibility = listOfAction.contains(chromecastAction)
+        if (!playViewModel.isPiPAllowed || !videoPlayer.isGeneral() || isFreezeOrBanned || playViewModel.isCastAllowed || currentVisibility) {
+            removeAction(pipAction)
+            return
+        }
+
+        if (!bottomInsets.isAnyShown) buildListAction(pipAction)
+        else removeAction(pipAction)
+    }
+
+    private fun observeKebabInsets() {
         playViewModel.observableKebabMenuSheet.observe(viewLifecycleOwner, DistinctObserver { kebabMenuType ->
             kebabMenuType[KebabMenuType.ThreeDots]?.let { it ->
                 if (it is BottomInsetsState.Shown) {
-                    kebabMenuSheetView.showView()
+                    kebabMenuSheetView.show(listOfAction)
                 }
                 else kebabMenuSheetView.hide()
             }
@@ -190,6 +300,19 @@ class PlayMoreActionBottomSheet @Inject constructor(
                 }
             }
         }
+    }
+
+    private val listOfAction = mutableListOf<PlayMoreActionUiModel>()
+
+    private fun buildListAction(action: PlayMoreActionUiModel) {
+        listOfAction.clear()
+        listOfAction.add(action)
+        listOfAction.add(listOfAction.lastIndex, reportAction) // Report
+        if(listOfAction.size > 1) listOfAction.add(listOfAction.lastIndex - 1, watchAction) //Watch Mode
+    }
+
+    private fun removeAction(action: PlayMoreActionUiModel) {
+        listOfAction.remove(action)
     }
 
     /***

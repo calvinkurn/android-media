@@ -603,10 +603,6 @@ class PlayUserInteractionFragment @Inject constructor(
         if (orientation.isLandscape) setupLandscapeView()
         else setupPortraitView()
 
-            //TODO()move to list
-//        if (playViewModel.isPiPAllowed) pipView?.show()
-//        else pipView?.hide()
-
         setupFeaturedProductsFadingEdge(view)
     }
 
@@ -729,7 +725,6 @@ class PlayUserInteractionFragment @Inject constructor(
 
             videoSettingsViewOnStateChanged(videoOrientation = meta.videoStream.orientation)
             gradientBackgroundViewOnStateChanged(videoOrientation = meta.videoStream.orientation)
-            pipViewOnStateChanged(videoPlayer = meta.videoPlayer)
             playButtonViewOnStateChanged(videoPlayer = meta.videoPlayer)
 
             pinnedViewOnStateChanged()
@@ -811,8 +806,6 @@ class PlayUserInteractionFragment @Inject constructor(
             pinnedViewOnStateChanged(bottomInsets = map)
             videoSettingsViewOnStateChanged(bottomInsets = map)
             immersiveBoxViewOnStateChanged(bottomInsets = map)
-            pipViewOnStateChanged(bottomInsets = map)
-            castViewOnStateChanged(bottomInsets = map)
         })
     }
     private fun observeUiState() {
@@ -976,8 +969,6 @@ class PlayUserInteractionFragment @Inject constructor(
 
     private fun observeCastState() {
         playViewModel.observableCastState.observe(viewLifecycleOwner) {
-            castViewOnStateChanged()
-            pipViewOnStateChanged()
             sendCastAnalytic(it)
         }
     }
@@ -1443,22 +1434,6 @@ class PlayUserInteractionFragment @Inject constructor(
         } else endLiveInfoView.hide()
     }
 
-    private fun pipViewOnStateChanged(
-            videoPlayer: PlayVideoPlayerUiModel = playViewModel.videoPlayer,
-            bottomInsets: Map<BottomInsetsType, BottomInsetsState> = playViewModel.bottomInsets,
-            isFreezeOrBanned: Boolean = playViewModel.isFreezeOrBanned
-    ) {
-        //TODO() Move to list
-//        val isCastVisible = castView?.isShown() ?: false
-//        if (!playViewModel.isPiPAllowed || !videoPlayer.isGeneral() || isFreezeOrBanned || playViewModel.isCastAllowed || isCastVisible) {
-//            pipView?.hide()
-//            return
-//        }
-//
-//        if (!bottomInsets.isAnyShown) pipView?.show()
-//        else pipView?.hide()
-    }
-
     private fun renderInteractiveDialog(
         prevState: InteractiveStateUiModel?,
         state: InteractiveStateUiModel,
@@ -1590,22 +1565,6 @@ class PlayUserInteractionFragment @Inject constructor(
         chooseAddressView?.rootView?.showWithCondition(addressUiState.shouldShow)
     }
 
-    private fun castViewOnStateChanged(
-        bottomInsets: Map<BottomInsetsType, BottomInsetsState> = playViewModel.bottomInsets
-    ) {
-
-        //TODO() move to list
-//        if(playViewModel.isCastAllowed && !bottomInsets.isAnyShown) {
-//            val currentVisibility = castView?.isHidden() ?: true
-//            if(currentVisibility)
-//                analytic.impressCast(playViewModel.latestCompleteChannelData.channelDetail.channelInfo.id, playViewModel.channelType)
-//
-//            castView?.show()
-//        }
-//        else castView?.hide()
-    }
-    //endregion
-
     private fun handleStatus(status: PlayStatusUiModel) {
         getBottomSheetInstance().setState(status.channelStatus.statusType.isFreeze)
 
@@ -1628,7 +1587,6 @@ class PlayUserInteractionFragment @Inject constructor(
             videoSettingsViewOnStateChanged(isFreezeOrBanned = true)
             toolbarViewOnStateChanged(isFreezeOrBanned = true)
             statsInfoViewOnStateChanged(isFreezeOrBanned = true)
-            pipViewOnStateChanged(isFreezeOrBanned = true)
             pinnedViewOnStateChanged(isFreezeOrBanned = true)
 
             /**
