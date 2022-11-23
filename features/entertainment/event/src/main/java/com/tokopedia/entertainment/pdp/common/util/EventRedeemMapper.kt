@@ -48,7 +48,7 @@ object EventRedeemMapper {
                     ParticipantUiModel(
                         id = it.id,
                         day = it.day,
-                        title = it.participantDetails.first().value,
+                        title = it.participantDetails.firstOrNull()?.value ?: "",
                         subTitle = participantsListMapping(it.participantDetails, context),
                         isChecked = it.checked,
                         isDisabled = it.redemptionTime.isMoreThanZero(),
@@ -61,17 +61,17 @@ object EventRedeemMapper {
         return participantList
     }
 
-    fun getStatusNotAllDisabled(participants: List<Participant>): Boolean {
+    fun isStatusNotAllDisabled(participants: List<Participant>): Boolean {
         return participants.firstOrNull {
             it.redemptionTime.isZero()
         } != null
     }
 
-    fun getEmptyParticipant(participants: List<Participant>): Boolean {
+    fun isEmptyParticipant(participants: List<Participant>): Boolean {
         return participants.isEmpty()
     }
 
-    fun getOneParticipant(participants: List<Participant>): Boolean {
+    fun isOneParticipant(participants: List<Participant>): Boolean {
         return participants.size == Int.ONE
     }
 

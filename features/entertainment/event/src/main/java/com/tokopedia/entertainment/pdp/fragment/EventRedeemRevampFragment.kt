@@ -15,10 +15,10 @@ import com.tokopedia.entertainment.databinding.FragmentEventRedeemRevampBinding
 import com.tokopedia.entertainment.pdp.activity.EventRedeemActivity.Companion.EXTRA_URL_REDEEM
 import com.tokopedia.entertainment.pdp.bottomsheet.EventRedeemRevampBottomSheet
 import com.tokopedia.entertainment.pdp.common.util.EventRedeemMapper.getAllRedeemedTime
-import com.tokopedia.entertainment.pdp.common.util.EventRedeemMapper.getEmptyParticipant
-import com.tokopedia.entertainment.pdp.common.util.EventRedeemMapper.getOneParticipant
+import com.tokopedia.entertainment.pdp.common.util.EventRedeemMapper.isEmptyParticipant
+import com.tokopedia.entertainment.pdp.common.util.EventRedeemMapper.isOneParticipant
 import com.tokopedia.entertainment.pdp.common.util.EventRedeemMapper.getOneRedemptionPair
-import com.tokopedia.entertainment.pdp.common.util.EventRedeemMapper.getStatusNotAllDisabled
+import com.tokopedia.entertainment.pdp.common.util.EventRedeemMapper.isStatusNotAllDisabled
 import com.tokopedia.entertainment.pdp.common.util.EventRedeemMapper.participantToVisitableMapper
 import com.tokopedia.entertainment.pdp.data.redeem.redeemable.Data
 import com.tokopedia.entertainment.pdp.data.redeem.redeemable.Participant
@@ -340,7 +340,7 @@ class EventRedeemRevampFragment : BaseDaggerFragment(),
      **/
     private fun renderRedeemLayout(redeem: Data) {
         binding?.run {
-            if (getEmptyParticipant(getUpdateListRedemption()) || getOneParticipant(getUpdateListRedemption())) {
+            if (isEmptyParticipant(getUpdateListRedemption()) || isOneParticipant(getUpdateListRedemption())) {
                 tgTitleRedeem.hide()
                 tfRedeem.hide()
                 btnRedeem.run {
@@ -352,9 +352,9 @@ class EventRedeemRevampFragment : BaseDaggerFragment(),
                     text = context.resources.getString(redeemString.ent_redeem_revamp_redeem_title)
 
                     setOnClickListener {
-                        if (getEmptyParticipant(getUpdateListRedemption())) {
+                        if (isEmptyParticipant(getUpdateListRedemption())) {
                             processOldRedeem()
-                        } else if (getOneParticipant(getUpdateListRedemption())){
+                        } else if (isOneParticipant(getUpdateListRedemption())){
                             getOneRedemptionPair(getUpdateListRedemption())?.let {
                                 viewModel.updateCheckedIds(listOf(it))
                                 processRedeem()
@@ -368,7 +368,7 @@ class EventRedeemRevampFragment : BaseDaggerFragment(),
                         getDimens(dimenUnify.unify_space_0)
                     )
                 }
-            } else if (getStatusNotAllDisabled(getUpdateListRedemption())) {
+            } else if (isStatusNotAllDisabled(getUpdateListRedemption())) {
                 tfRedeem.addOnFocusChangeListener = { _, hasFocus ->
                     if (hasFocus) {
                         showBottomSheet(redeem.schedule.name)

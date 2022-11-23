@@ -23,7 +23,12 @@ class EventParticipantViewHolder(
 
     override fun bind(element: ParticipantUiModel) {
         binding?.run {
-            tgParticipantTitle.text = element.title
+            if (element.title.isNotEmpty()){
+                tgParticipantTitle.show()
+                tgParticipantTitle.text = element.title
+            } else {
+                tgParticipantTitle.hide()
+            }
 
             if (element.isDisabled) {
                 cbParticipant.isEnabled = false
