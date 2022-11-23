@@ -149,7 +149,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Co
         EmbraceMonitoring.INSTANCE.setCarrierProperties(this);
 
         showDevOptNotification();
-        initLakPublisher();
+        initDevMonitoringTools();
     }
 
     private TkpdAuthenticatorGql getAuthenticator() {
@@ -364,7 +364,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Co
         new DevOptNotificationManager(this).start();
     }
 
-    private void initLakPublisher(){
+    private void initDevMonitoringTools(){
         DevMonitoring devMonitoring = new DevMonitoring(SellerMainApplication.this);
         devMonitoring.initLeakCanary(getLeakCanaryToggleValue(), getStrictModeLeakPublisherToggleValue(), this);
     }
