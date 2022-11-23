@@ -302,6 +302,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         if (eligibleForAddressUseCase != null) {
             eligibleForAddressUseCase.cancelJobs();
         }
+        if (epharmacyUseCase != null) {
+            epharmacyUseCase.cancelJobs();
+        }
     }
 
     @Override
@@ -2487,7 +2490,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     }
 
     private void processEpharmacyData(EPharmacyPrepareProductsGroupResponse ePharmacyPrepareProductsGroupResponse) {
-        if (ePharmacyPrepareProductsGroupResponse.getDetailData() != null) {
+        if (ePharmacyPrepareProductsGroupResponse.getDetailData() != null && getView() != null && uploadPrescriptionUiModel != null) {
             GroupData groupsData = ePharmacyPrepareProductsGroupResponse.getDetailData().getGroupsData();
             if (groupsData != null && groupsData.getEpharmacyGroups() != null && shipmentCartItemModelList != null) {
                 HashMap<String, Integer> mapPrescriptionCount = new HashMap<>();

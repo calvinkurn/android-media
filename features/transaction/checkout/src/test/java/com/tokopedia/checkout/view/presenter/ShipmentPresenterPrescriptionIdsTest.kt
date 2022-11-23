@@ -33,8 +33,10 @@ import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldVa
 import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.MockKAnnotations
+import io.mockk.Runs
 import io.mockk.every
 import io.mockk.impl.annotations.MockK
+import io.mockk.just
 import io.mockk.mockk
 import io.mockk.verify
 import org.junit.Assert.assertEquals
@@ -99,7 +101,7 @@ class ShipmentPresenterPrescriptionIdsTest {
     @MockK(relaxed = true)
     private lateinit var getShipmentAddressFormV3UseCase: GetShipmentAddressFormV3UseCase
 
-    @MockK
+    @MockK(relaxed = true)
     private lateinit var eligibleForAddressUseCase: EligibleForAddressUseCase
 
     @MockK
@@ -383,6 +385,137 @@ class ShipmentPresenterPrescriptionIdsTest {
     }
 
     @Test
+    fun `GIVEN null epharmacy data WHEN fetch epharmacy data THEN should do nothing`() {
+        // Given
+        presenter.setUploadPrescriptionData(UploadPrescriptionUiModel())
+        every { epharmacyUseCase.getEPharmacyPrepareProductsGroup(any(), any()) } answers {
+            (firstArg() as (EPharmacyPrepareProductsGroupResponse) -> Unit).invoke(
+                EPharmacyPrepareProductsGroupResponse(null)
+            )
+        }
+
+        // When
+        presenter.fetchEpharmacyData()
+
+        // Then
+        assertEquals(UploadPrescriptionUiModel(), presenter.uploadPrescriptionUiModel)
+    }
+
+    @Test
+    fun `GIVEN null upload prescription model WHEN fetch epharmacy data THEN should do nothing`() {
+        // Given
+        presenter.setUploadPrescriptionData(null)
+        every { epharmacyUseCase.getEPharmacyPrepareProductsGroup(any(), any()) } answers {
+            (firstArg() as (EPharmacyPrepareProductsGroupResponse) -> Unit).invoke(
+                EPharmacyPrepareProductsGroupResponse(
+                    EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData(
+                        GroupData(null, listOf())
+                    )
+                )
+            )
+        }
+
+        // When
+        presenter.fetchEpharmacyData()
+
+        // Then
+        assertEquals(null, presenter.uploadPrescriptionUiModel)
+    }
+
+    @Test
+    fun `GIVEN null view WHEN fetch epharmacy data THEN should do nothing`() {
+        // Given
+        presenter.setUploadPrescriptionData(UploadPrescriptionUiModel())
+        every { epharmacyUseCase.getEPharmacyPrepareProductsGroup(any(), any()) } answers {
+            (firstArg() as (EPharmacyPrepareProductsGroupResponse) -> Unit).invoke(
+                EPharmacyPrepareProductsGroupResponse(
+                    EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData(
+                        GroupData(null, listOf())
+                    )
+                )
+            )
+        }
+        every { epharmacyUseCase.cancelJobs() } just Runs
+        presenter.detachView()
+
+        // When
+        presenter.fetchEpharmacyData()
+
+        // Then
+        assertEquals(UploadPrescriptionUiModel(), presenter.uploadPrescriptionUiModel)
+    }
+
+    @Test
+    fun `GIVEN null epharmacy group data WHEN fetch epharmacy data THEN should do nothing`() {
+        // Given
+        presenter.setUploadPrescriptionData(UploadPrescriptionUiModel())
+        every { epharmacyUseCase.getEPharmacyPrepareProductsGroup(any(), any()) } answers {
+            (firstArg() as (EPharmacyPrepareProductsGroupResponse) -> Unit).invoke(
+                EPharmacyPrepareProductsGroupResponse(
+                    EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData(
+                        null
+                    )
+                )
+            )
+        }
+        presenter.shipmentCartItemModelList = arrayListOf()
+
+        // When
+        presenter.fetchEpharmacyData()
+
+        // Then
+        assertEquals(UploadPrescriptionUiModel(), presenter.uploadPrescriptionUiModel)
+    }
+
+    @Test
+    fun `GIVEN null epharmacy groups WHEN fetch epharmacy data THEN should do nothing`() {
+        // Given
+        presenter.setUploadPrescriptionData(UploadPrescriptionUiModel())
+        every { epharmacyUseCase.getEPharmacyPrepareProductsGroup(any(), any()) } answers {
+            (firstArg() as (EPharmacyPrepareProductsGroupResponse) -> Unit).invoke(
+                EPharmacyPrepareProductsGroupResponse(
+                    EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData(
+                        GroupData(
+                            null, null
+                        )
+                    )
+                )
+            )
+        }
+        presenter.shipmentCartItemModelList = arrayListOf()
+
+        // When
+        presenter.fetchEpharmacyData()
+
+        // Then
+        assertEquals(UploadPrescriptionUiModel(), presenter.uploadPrescriptionUiModel)
+    }
+
+    @Test
+    fun `GIVEN null shipment cart data WHEN fetch epharmacy data THEN should do nothing`() {
+        // Given
+        presenter.setUploadPrescriptionData(UploadPrescriptionUiModel())
+        every { epharmacyUseCase.getEPharmacyPrepareProductsGroup(any(), any()) } answers {
+            (firstArg() as (EPharmacyPrepareProductsGroupResponse) -> Unit).invoke(
+                EPharmacyPrepareProductsGroupResponse(
+                    EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData(
+                        GroupData(
+                            null,
+                            listOf()
+                        )
+                    )
+                )
+            )
+        }
+
+        // When
+        presenter.fetchEpharmacyData()
+
+        // Then
+        assertEquals(UploadPrescriptionUiModel(), presenter.uploadPrescriptionUiModel)
+    }
+
+    @Test
     fun `GIVEN rejected consultation WHEN fetch epharmacy data THEN should set error`() {
         // Given
         every { view.getShipmentCartItemModelAdapterPositionByUniqueId(any()) } returns 1
@@ -465,6 +598,88 @@ class ShipmentPresenterPrescriptionIdsTest {
         )
         assertEquals(true, presenter.shipmentCartItemModelList[0].isError)
         assertEquals(rejectedWording, presenter.shipmentCartItemModelList[0].errorTitle)
+    }
+
+    @Test
+    fun `GIVEN cannot get position WHEN fetch epharmacy data THEN should do nothing`() {
+        // Given
+        every { view.getShipmentCartItemModelAdapterPositionByUniqueId(any()) } returns -1
+        every { epharmacyUseCase.getEPharmacyPrepareProductsGroup(any(), any()) } answers {
+            (firstArg() as (EPharmacyPrepareProductsGroupResponse) -> Unit).invoke(
+                EPharmacyPrepareProductsGroupResponse(
+                    detailData = EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData(
+                        groupsData = GroupData(
+                            epharmacyGroups = listOf(
+                                GroupData.EpharmacyGroup(
+                                    epharmacyGroupId = "123",
+                                    shopInfo = listOf(
+                                        ProductsInfo(
+                                            shopId = "6554231",
+                                            products = listOf(
+                                                ProductsInfo.Product(
+                                                    productId = 2150389388,
+                                                    isEthicalDrug = true,
+                                                    itemWeight = 0.0,
+                                                    name = "",
+                                                    productImage = "",
+                                                    productTotalWeightFmt = "",
+                                                    quantity = 1,
+                                                )
+                                            ),
+                                            partnerLogoUrl = "",
+                                            shopLocation = "",
+                                            shopLogoUrl = "",
+                                            shopName = "",
+                                            shopType = "",
+                                        )
+                                    ),
+                                    numberPrescriptionImages = 0,
+                                    prescriptionImages = listOf(),
+                                    consultationData = GroupData.EpharmacyGroup.ConsultationData(
+                                        consultationString = "",
+                                        tokoConsultationId = "123",
+                                        partnerConsultationId = "321",
+                                        consultationStatus = 4,
+                                        doctorDetails = null,
+                                        endTime = null,
+                                        medicalRecommendation = null,
+                                        prescription = listOf(),
+                                        startTime = ""
+                                    ),
+                                    consultationSource = null,
+                                    prescriptionSource = null,
+                                )
+                            ),
+                            attachmentPageTickerText = null
+                        ),
+                    )
+                )
+            )
+        }
+        presenter.shipmentCartItemModelList = arrayListOf(
+            ShipmentCartItemModel(
+                shopId = 6554231,
+                cartItemModels = listOf(
+                    CartItemModel(
+                        productId = 2150389388
+                    )
+                ),
+                hasEthicalProducts = true
+            )
+        )
+        val rejectedWording = "rejectedWording"
+        presenter.setUploadPrescriptionData(UploadPrescriptionUiModel(rejectedWording = rejectedWording))
+
+        // When
+        presenter.fetchEpharmacyData()
+
+        // Then
+        assertEquals(
+            UploadPrescriptionUiModel(rejectedWording = rejectedWording),
+            presenter.uploadPrescriptionUiModel
+        )
+        assertEquals(false, presenter.shipmentCartItemModelList[0].isError)
+        assertEquals(null, presenter.shipmentCartItemModelList[0].errorTitle)
     }
 
     @Test
@@ -867,6 +1082,28 @@ class ShipmentPresenterPrescriptionIdsTest {
                     )
                 ),
                 hasEthicalProducts = false
+            ),
+            ShipmentCartItemModel(
+                shopId = 6554235,
+                isError = true,
+                cartItemModels = listOf(
+                    CartItemModel(
+                        isError = true,
+                        productId = 2150389381
+                    )
+                ),
+                hasEthicalProducts = true
+            ),
+            ShipmentCartItemModel(
+                shopId = 6554236,
+                isError = true,
+                cartItemModels = listOf(
+                    CartItemModel(
+                        isError = true,
+                        productId = 2150389380
+                    )
+                ),
+                hasEthicalProducts = false
             )
         )
         presenter.setUploadPrescriptionData(UploadPrescriptionUiModel())
@@ -905,6 +1142,225 @@ class ShipmentPresenterPrescriptionIdsTest {
         assertEquals("", presenter.shipmentCartItemModelList[3].tokoConsultationId)
         assertEquals("", presenter.shipmentCartItemModelList[3].partnerConsultationId)
         assertEquals(emptyList<String>(), presenter.shipmentCartItemModelList[3].prescriptionIds)
+    }
+
+    @Test
+    fun `GIVEN null shipment cart data WHEN set mini consultation result THEN should do nothing`() {
+        // Given
+        every { view.getShipmentCartItemModelAdapterPositionByUniqueId(any()) } returns 1
+        val results = arrayListOf(
+            EPharmacyMiniConsultationResult(
+                "123",
+                arrayListOf(
+                    ProductsInfo(
+                        "",
+                        arrayListOf(
+                            ProductsInfo.Product(
+                                false,
+                                0.0,
+                                "",
+                                2150389388,
+                                "",
+                                "",
+                                1
+                            )
+                        ),
+                        "6554231",
+                        "",
+                        "",
+                        "",
+                        ""
+                    )
+                ),
+                2,
+                "qwerty",
+                arrayListOf(
+                    GroupData.EpharmacyGroup.ConsultationData.Prescription(
+                        "",
+                        "",
+                        ""
+                    ),
+                    GroupData.EpharmacyGroup.ConsultationData.Prescription(
+                        "",
+                        "",
+                        ""
+                    )
+                ),
+                "321",
+                "123",
+                null
+            )
+        )
+        presenter.shipmentCartItemModelList = null
+        presenter.setUploadPrescriptionData(UploadPrescriptionUiModel())
+
+        // When
+        presenter.setMiniConsultationResult(results)
+
+        // Then
+        assertEquals(
+            UploadPrescriptionUiModel(),
+            presenter.uploadPrescriptionUiModel
+        )
+    }
+
+    @Test
+    fun `GIVEN null view WHEN set mini consultation result THEN should do nothing`() {
+        // Given
+        every { view.getShipmentCartItemModelAdapterPositionByUniqueId(any()) } returns 1
+        val results = arrayListOf(
+            EPharmacyMiniConsultationResult(
+                "123",
+                arrayListOf(
+                    ProductsInfo(
+                        "",
+                        arrayListOf(
+                            ProductsInfo.Product(
+                                false,
+                                0.0,
+                                "",
+                                2150389388,
+                                "",
+                                "",
+                                1
+                            )
+                        ),
+                        "6554231",
+                        "",
+                        "",
+                        "",
+                        ""
+                    )
+                ),
+                2,
+                "qwerty",
+                arrayListOf(
+                    GroupData.EpharmacyGroup.ConsultationData.Prescription(
+                        "",
+                        "",
+                        ""
+                    ),
+                    GroupData.EpharmacyGroup.ConsultationData.Prescription(
+                        "",
+                        "",
+                        ""
+                    )
+                ),
+                "321",
+                "123",
+                null
+            )
+        )
+        presenter.shipmentCartItemModelList = listOf()
+        presenter.setUploadPrescriptionData(UploadPrescriptionUiModel())
+        every { epharmacyUseCase.cancelJobs() } just Runs
+        presenter.detachView()
+
+        // When
+        presenter.setMiniConsultationResult(results)
+
+        // Then
+        assertEquals(
+            UploadPrescriptionUiModel(),
+            presenter.uploadPrescriptionUiModel
+        )
+    }
+
+    @Test
+    fun `GIVEN cannot get position WHEN set mini consultation result THEN should do nothing`() {
+        // Given
+        every { view.getShipmentCartItemModelAdapterPositionByUniqueId(any()) } returns -1
+        val results = arrayListOf(
+            EPharmacyMiniConsultationResult(
+                "123",
+                arrayListOf(
+                    ProductsInfo(
+                        "",
+                        arrayListOf(
+                            ProductsInfo.Product(
+                                false,
+                                0.0,
+                                "",
+                                2150389388,
+                                "",
+                                "",
+                                1
+                            )
+                        ),
+                        "6554231",
+                        "",
+                        "",
+                        "",
+                        ""
+                    )
+                ),
+                2,
+                "qwerty",
+                arrayListOf(
+                    GroupData.EpharmacyGroup.ConsultationData.Prescription(
+                        "",
+                        "",
+                        ""
+                    ),
+                    GroupData.EpharmacyGroup.ConsultationData.Prescription(
+                        "",
+                        "",
+                        ""
+                    )
+                ),
+                "321",
+                "123",
+                null
+            )
+        )
+        presenter.shipmentCartItemModelList = arrayListOf(
+            ShipmentCartItemModel(
+                shopId = 6554231,
+                cartItemModels = listOf(
+                    CartItemModel(
+                        productId = 2150389388
+                    ),
+                    CartItemModel(
+                        productId = 2150389389
+                    )
+                ),
+                hasEthicalProducts = true
+            ),
+            ShipmentCartItemModel(
+                shopId = 6554231,
+                cartItemModels = listOf(
+                    CartItemModel(
+                        productId = 2150389387
+                    ),
+                    CartItemModel(
+                        productId = 2150389386
+                    )
+                ),
+                hasEthicalProducts = true
+            ),
+            ShipmentCartItemModel(
+                shopId = 6554232,
+                cartItemModels = listOf(
+                    CartItemModel(
+                        productId = 2150389385
+                    ),
+                    CartItemModel(
+                        productId = 2150389384
+                    )
+                ),
+                hasEthicalProducts = false
+            )
+        )
+        presenter.setUploadPrescriptionData(UploadPrescriptionUiModel())
+
+        // When
+        presenter.setMiniConsultationResult(results)
+
+        // Then
+        assertEquals(
+            UploadPrescriptionUiModel(),
+            presenter.uploadPrescriptionUiModel
+        )
     }
 
     @Test
@@ -988,7 +1444,38 @@ class ShipmentPresenterPrescriptionIdsTest {
                     CartItemModel(
                         productId = 2150389384
                     )
-                )
+                ),
+                hasEthicalProducts = false
+            ),
+            ShipmentCartItemModel(
+                shopId = 6554233,
+                isError = true,
+                cartItemModels = listOf(
+                    CartItemModel(
+                        isError = true,
+                        productId = 2150389385
+                    ),
+                    CartItemModel(
+                        isError = true,
+                        productId = 2150389384
+                    )
+                ),
+                hasEthicalProducts = false
+            ),
+            ShipmentCartItemModel(
+                shopId = 6554234,
+                isError = true,
+                cartItemModels = listOf(
+                    CartItemModel(
+                        isError = true,
+                        productId = 2150389385
+                    ),
+                    CartItemModel(
+                        isError = true,
+                        productId = 2150389384
+                    )
+                ),
+                hasEthicalProducts = true
             )
         )
         presenter.setUploadPrescriptionData(UploadPrescriptionUiModel())

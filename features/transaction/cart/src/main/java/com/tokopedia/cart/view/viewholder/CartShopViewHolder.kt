@@ -42,11 +42,18 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
                          private val cartItemAdapterListener: CartItemAdapter.ActionListener,
                          private val compositeSubscription: CompositeSubscription) : RecyclerView.ViewHolder(binding.root) {
 
+    // variable to hold identifier
+    private var cartString: String = ""
+
     private val localCacheHandler: LocalCacheHandler by lazy {
         LocalCacheHandler(itemView.context, KEY_ONBOARDING_ICON_PIN)
     }
 
     fun bindUpdatedWeight(cartShopHolderData: CartShopHolderData) {
+        if (cartString != cartShopHolderData.cartString) {
+            // workaround for different binding
+            bindData(cartShopHolderData)
+        }
         renderMaximumWeight(cartShopHolderData)
         cartShopHolderData.isNeedToRefreshWeight = false
         renderBoAfford(cartShopHolderData)
@@ -68,6 +75,7 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
         renderMaximumWeight(cartShopHolderData)
         renderBoAfford(cartShopHolderData)
         renderAddOnInfo(cartShopHolderData)
+        cartString = cartShopHolderData.cartString
     }
 
     private fun renderIconPin(cartShopHolderData: CartShopHolderData) {
@@ -466,7 +474,7 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
             binding.apply {
                 val boAffordability = cartShopHolderData.boAffordability
                 when (boAffordability.state) {
-                    CartShopBoAffordabilityState.LOADING -> {
+                    CartShopBoAffordabilityState.FIRST_LOAD, CartShopBoAffordabilityState.LOADING -> {
                         textBoAffordability.gone()
                         arrowBoAffordability.gone()
                         largeLoaderBoAffordability.show()
@@ -522,6 +530,9 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
                     CartShopBoAffordabilityState.EMPTY -> {
                         layoutBoAffordability.gone()
                     }
+                }
+                if (boAffordability.state == CartShopBoAffordabilityState.FIRST_LOAD) {
+                    actionListener.checkBoAffordability(cartShopHolderData)
                 }
             }
         } else {
