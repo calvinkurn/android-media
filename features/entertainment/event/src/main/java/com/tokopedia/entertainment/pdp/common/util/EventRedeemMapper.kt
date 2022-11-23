@@ -25,27 +25,30 @@ object EventRedeemMapper {
     private const val REDEEM_TIME_FORMAT = "dd MMM yyyy HH:mm"
     private const val REDEEM_RAW_TIME_FORMAT = "yyyy-MM-dd'T'HH:mm:ssZ"
 
-    fun participantToVisitableMapper(participants: List<Participant>, context: Context): List<Visitable<*>> {
+    fun participantToVisitableMapper(mainTitle: String, participants: List<Participant>, context: Context): List<Visitable<*>> {
         val participantList = mutableListOf<Visitable<*>>()
-        participants.groupBy {
+        val participantGrouping = participants.groupBy {
             it.day
-        }.map {
+        }
+
+        val participantSize = participantGrouping.size
+        participantGrouping.map {
             participantList.add(
                 ParticipantTitleUiModel(
                     id = it.key.toString(),
-                    title = dayTitle(it.key, context)
+                    title = if (participantSize > Int.ONE) dayTitle(it.key, context) else mainTitle
                 )
             )
 
             it.value.forEach {
                 participantList.add(
                     ParticipantUiModel(
-                       id = it.id,
-                       title = it.participantDetails.first().value,
-                       subTitle = participantsListMapping(it.participantDetails, context),
-                       isChecked = it.checked,
-                       isDisabled = it.redemptionTime.isMoreThanZero(),
-                       redeemTime = getRedemptionTime(context, it.redemptionTime)
+                        id = it.id,
+                        title = it.participantDetails.first().value,
+                        subTitle = participantsListMapping(it.participantDetails, context),
+                        isChecked = it.checked,
+                        isDisabled = it.redemptionTime.isMoreThanZero(),
+                        redeemTime = getRedemptionTime(context, it.redemptionTime)
                     )
                 )
             }

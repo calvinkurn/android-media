@@ -328,7 +328,7 @@ class EventRedeemRevampFragment : BaseDaggerFragment(),
             tgValueTypeTicket.text = redeem.schedule.name
             tgValueDate.text = redeem.schedule.showData
             tgValueSumTicket.text = redeem.quantity.toString()
-            renderRedeemLayout()
+            renderRedeemLayout(redeem)
         }
     }
 
@@ -338,7 +338,7 @@ class EventRedeemRevampFragment : BaseDaggerFragment(),
      * * * One Redemption will hit new redeem
      * Multiple Redeem will have second condition
      **/
-    private fun renderRedeemLayout() {
+    private fun renderRedeemLayout(redeem: Data) {
         binding?.run {
             if (getEmptyParticipant(getUpdateListRedemption()) || getOneParticipant(getUpdateListRedemption())) {
                 tgTitleRedeem.hide()
@@ -371,7 +371,7 @@ class EventRedeemRevampFragment : BaseDaggerFragment(),
             } else if (getStatusNotAllDisabled(getUpdateListRedemption())) {
                 tfRedeem.addOnFocusChangeListener = { _, hasFocus ->
                     if (hasFocus) {
-                        showBottomSheet()
+                        showBottomSheet(redeem.schedule.name)
                     }
                 }
                 btnRedeem.setOnClickListener {
@@ -413,9 +413,9 @@ class EventRedeemRevampFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun showBottomSheet() {
+    private fun showBottomSheet(mainTitle: String) {
         context?.let { context ->
-            val mappedParticipant = participantToVisitableMapper(getUpdateListRedemption(), context)
+            val mappedParticipant = participantToVisitableMapper(mainTitle, getUpdateListRedemption(), context)
             val bottomSheetEventRedeem = EventRedeemRevampBottomSheet.getInstance()
             bottomSheetEventRedeem.setListener(this)
             bottomSheetEventRedeem.setList(mappedParticipant)
