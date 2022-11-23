@@ -33,23 +33,23 @@ class PrivacyPolicySectionViewModel @Inject constructor(
     }
 
     fun getPrivacyPolicyTopFiveList() {
-        _state.value = _state.value!!.copy(innerState = PrivacyPolicyUiModel.InnerState.Loading)
+        _state.value = _state.value?.copy(innerState = PrivacyPolicyUiModel.InnerState.Loading)
         launch {
             _state.value = try {
-                _state.value!!.copy(
+                _state.value?.copy(
                     innerState = PrivacyPolicyUiModel.InnerState.Success(
                         getPrivacyPolicyList(5)
                     )
                 )
             } catch (e: Exception) {
-                _state.value!!.copy(innerState = PrivacyPolicyUiModel.InnerState.Error)
+                _state.value?.copy(innerState = PrivacyPolicyUiModel.InnerState.Error)
             }
         }
     }
 
     fun toggleContentVisibility() {
-        val currentShown = _state.value!!.shown
-        _state.value = _state.value!!.copy(shown = !currentShown)
+        val currentShown = _state.value?.shown ?: false
+        _state.value = _state.value?.copy(shown = !currentShown)
     }
 
 }
