@@ -301,6 +301,8 @@ class PlayShortsPreparationFragment @Inject constructor(
             })
 
             btnNext.setOnClickListener {
+                analytic.clickNextOnPreparationPage(viewModel.selectedAccount)
+
                 viewModel.submitAction(PlayShortsAction.ClickNext)
             }
         }
@@ -518,6 +520,8 @@ class PlayShortsPreparationFragment @Inject constructor(
                 setDescription(getString(R.string.play_shorts_exit_confirmation_description))
                 setPrimaryCTAText(getString(R.string.play_shorts_exit_confirmation_continue))
                 setPrimaryCTAClickListener {
+                    analytic.clickContinueOnLeaveConfirmationPopup(viewModel.selectedAccount)
+
                     dismiss()
                 }
                 setSecondaryCTAText(getString(R.string.play_shorts_exit_confirmation_exit))
@@ -529,6 +533,8 @@ class PlayShortsPreparationFragment @Inject constructor(
         }
 
         if (exitConfirmationDialog?.isShowing == false) {
+            analytic.viewLeavePreparationConfirmationPopup(viewModel.selectedAccount)
+
             exitConfirmationDialog?.show()
         }
     }

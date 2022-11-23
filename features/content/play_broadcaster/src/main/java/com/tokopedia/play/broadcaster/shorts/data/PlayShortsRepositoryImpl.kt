@@ -116,6 +116,7 @@ class PlayShortsRepositoryImpl @Inject constructor(
     override suspend fun getTagRecommendation(
         creationId: String,
     ): Set<PlayTagUiModel> = withContext(dispatchers.io) {
+        throw Exception("Test")
         val response = getRecommendedChannelTagsUseCase.apply {
             setChannelId(creationId)
         }.executeOnBackground()
