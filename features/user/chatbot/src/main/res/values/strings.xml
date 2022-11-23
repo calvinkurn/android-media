@@ -11,7 +11,7 @@
     <string name="chatbot_text_satisfied">Beri nilai pada kualitas layanan kami</string>
     <string name="cb_bot_reason_text">Beri saran untuk Toped Bot</string>
     <string name="cb_bot_other_reason_text_hint">Tulis di sini</string>
-    <string name="minimum_30_character">Minimum 30 karakter</string>
+    <string name="minimum_30_character">Min. 30 karakter.</string>
     <string name="cb_bot_leave_queue">Keluar Antrian</string>
     <string name="cb_bot_leave_the_queue">Keluar dari Antrian</string>
     <string name="cb_bot_leave_the_queue_desc_one">Antrian kamu akan terputus jika keluar dari percakapan ini. Kamu yakin?</string>

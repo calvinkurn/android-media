@@ -8,6 +8,7 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -61,7 +62,15 @@ class ChatBotProvideRatingFragment : BaseFragmentProvideRating() {
         findViews(view)
         super.onViewCreated(view, savedInstanceState)
         initChatbotInjector()
-        getBindingView().topBotReasonLayout.etState.minLine = minimumLines
+        with(getBindingView().topBotReasonLayout.etState) {
+            minLine = minimumLines
+            editText.setHintTextColor(
+                ContextCompat.getColor(
+                    context,
+                    com.tokopedia.unifyprinciples.R.color.Unify_NN300
+                )
+            )
+        }
 
         arguments?.let {
             if (!((it.getBoolean(IS_SHOW_OTHER_REASON)) ?: false)) {

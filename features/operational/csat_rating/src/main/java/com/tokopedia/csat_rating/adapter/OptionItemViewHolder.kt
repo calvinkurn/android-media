@@ -7,7 +7,6 @@ import com.tokopedia.csat_rating.R
 import com.tokopedia.csat_rating.quickfilter.ItemFilterViewHolder
 import com.tokopedia.csat_rating.quickfilter.QuickFilterItem
 import com.tokopedia.csat_rating.quickfilter.QuickSingleFilterListener
-import com.tokopedia.abstraction.R as RAbstraction
 
 open class OptionItemViewHolder(itemView: View, listener: QuickSingleFilterListener?) : ItemFilterViewHolder(itemView, listener) {
 
@@ -33,7 +32,7 @@ open class OptionItemViewHolder(itemView: View, listener: QuickSingleFilterListe
             layoutBorder?.context?.let { drawableInside.setColor(MethodChecker.getColor(it,
                 com.tokopedia.unifyprinciples.R.color.Unify_N0)) }
             filterName?.context?.let { filterName?.setTextColor(MethodChecker.getColor(it,
-                com.tokopedia.unifyprinciples.R.color.Unify_NN600)) }
+                com.tokopedia.unifyprinciples.R.color.Unify_NN950)) }
         }
     }
 
