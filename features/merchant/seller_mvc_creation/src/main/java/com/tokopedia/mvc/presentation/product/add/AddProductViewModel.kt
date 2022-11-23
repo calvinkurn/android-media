@@ -256,8 +256,12 @@ class AddProductViewModel @Inject constructor(
 
         val modifiedProducts = currentState.products.mapIndexed { index, product ->
             val isProductOnAutoSelectRange = index < maxProductSelection
+
             when {
-                isProductOnAutoSelectRange && product.isEligible -> {
+                !product.isEligible -> {
+                    product.copy(isSelected = false, enableCheckbox = false)
+                }
+                isProductOnAutoSelectRange -> {
 
                     val isProductDisplayedOnSearchResult = product.id in currentlyDisplayedProductIds
                     val isSelected = if (isOnSearchMode) {
@@ -269,7 +273,7 @@ class AddProductViewModel @Inject constructor(
                     }
 
                     //To make sure only eligible variant products will be selected
-                    val eligibleVariantsOnly = product.originalVariants.filter { it.isEligible }.map { it.variantProductId }.toSet()
+                    val eligibleVariantsOnly = product.originalVariants.eligibleVariantOnly()
 
                     product.copy(isSelected = isSelected, enableCheckbox = true, selectedVariantsIds = eligibleVariantsOnly)
                 }
@@ -575,5 +579,9 @@ class AddProductViewModel @Inject constructor(
 
     private fun List<Product>.selectedProductsOnly(): Set<Long> {
         return filter { it.isSelected }.map { it.id }.toSet()
+    }
+
+    private fun List<Product.Variant>.eligibleVariantOnly(): Set<Long> {
+        return filter { it.isEligible }.map { it.variantProductId }.toSet()
     }
 }
