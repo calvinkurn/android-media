@@ -184,7 +184,7 @@ class TicketListAdapter(private val itemList: MutableList<InboxTicketListRespons
                         tvTicketStatus,
                         MethodChecker.getDrawable(
                             mContext,
-                            com.tokopedia.unifyprinciples.R.color.Unify_YN600
+                            R.drawable.rounded_rec_dalam_process
                         )
                     )
                     tvTicketStatus?.setText(R.string.on_going)
@@ -200,7 +200,7 @@ class TicketListAdapter(private val itemList: MutableList<InboxTicketListRespons
                         tvTicketStatus,
                         MethodChecker.getDrawable(
                             mContext,
-                            com.tokopedia.unifyprinciples.R.color.Unify_NN600
+                            R.drawable.rounded_rect_ditutup
                         )
                     )
                     tvTicketStatus?.setTextColor(
@@ -216,7 +216,7 @@ class TicketListAdapter(private val itemList: MutableList<InboxTicketListRespons
                         tvTicketStatus,
                         MethodChecker.getDrawable(
                             mContext,
-                            com.tokopedia.unifyprinciples.R.color.Unify_RN500
+                            R.drawable.rounded_rect_beri_penilaian
                         )
                     )
                     tvTicketStatus?.setTextColor(
