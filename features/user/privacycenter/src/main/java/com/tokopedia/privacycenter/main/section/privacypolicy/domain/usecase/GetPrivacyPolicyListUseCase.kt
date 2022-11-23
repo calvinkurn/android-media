@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.common.network.coroutines.repository.RestRepository
 import com.tokopedia.common.network.data.model.RequestType
 import com.tokopedia.common.network.data.model.RestRequest
+import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.privacycenter.common.PrivacyCenterStateResult
 import com.tokopedia.privacycenter.main.section.privacypolicy.PrivacyPolicyConst
@@ -16,15 +17,11 @@ import javax.inject.Inject
 class GetPrivacyPolicyListUseCase @Inject constructor(
     private val restRepository: RestRepository,
     dispatchers: CoroutineDispatchers
-) : UseCase<PrivacyCenterStateResult<List<PrivacyPolicyDataModel>>>(dispatchers.io) {
+) : CoroutineUseCase<Int, PrivacyCenterStateResult<List<PrivacyPolicyDataModel>>>(dispatchers.io) {
 
-    private var listLimit: Int = 0
+    override fun graphqlQuery(): String = ""
 
-    fun setParam(limit: Int) {
-        listLimit = limit
-    }
-
-    override suspend fun executeOnBackground(): PrivacyCenterStateResult<List<PrivacyPolicyDataModel>> {
+    override suspend fun execute(params: Int): PrivacyCenterStateResult<List<PrivacyPolicyDataModel>> {
         val request = RestRequest.Builder(
             PrivacyPolicyConst.GET_LIST_URL,
             PrivacyPolicyListResponse::class.java
@@ -39,10 +36,18 @@ class GetPrivacyPolicyListUseCase @Inject constructor(
                 val listData = data.data
                 listData.sortedByDescending {
                     it.lastUpdate
-                }.map { it.sectionTitle = "${it.sectionTitle} - ${DateUtil.formatDate(DateUtil.YYYY_MM_DD_T_HH_MM_SS_SSS_Z, DateUtil.DEFAULT_VIEW_FORMAT, it.lastUpdate)}" }
+                }.map {
+                    it.sectionTitle = "${it.sectionTitle} - ${
+                        DateUtil.formatDate(
+                            DateUtil.YYYY_MM_DD_T_HH_MM_SS_SSS_Z,
+                            DateUtil.DEFAULT_VIEW_FORMAT,
+                            it.lastUpdate
+                        )
+                    }"
+                }
 
-                if(listLimit > 0) {
-                    PrivacyCenterStateResult.Success(data.data.take(listLimit))
+                if (params > 0) {
+                    PrivacyCenterStateResult.Success(data.data.take(params))
                 } else {
                     PrivacyCenterStateResult.Success(data.data)
                 }
@@ -51,5 +56,6 @@ class GetPrivacyPolicyListUseCase @Inject constructor(
             }
         }
     }
+
 }
 

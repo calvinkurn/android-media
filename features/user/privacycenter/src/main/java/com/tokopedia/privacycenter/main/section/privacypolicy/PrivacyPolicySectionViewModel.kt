@@ -12,15 +12,17 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class PrivacyPolicySectionViewModel @Inject constructor(
-    private val getPrivacyPolicyListUseCase: GetPrivacyPolicyListUseCase,
+    private val getPrivacyPolicyList: GetPrivacyPolicyListUseCase,
     dispatchers: CoroutineDispatchers
-): BaseViewModel(dispatchers.main) {
+) : BaseViewModel(dispatchers.main) {
 
-    private val _privacyPolicyList = MutableLiveData<PrivacyCenterStateResult<List<PrivacyPolicyDataModel>>>()
+    private val _privacyPolicyList =
+        MutableLiveData<PrivacyCenterStateResult<List<PrivacyPolicyDataModel>>>()
     val privacyPolicyList: LiveData<PrivacyCenterStateResult<List<PrivacyPolicyDataModel>>>
         get() = _privacyPolicyList
 
-    private val _privacyPolicyTopFiveList = MutableLiveData<PrivacyCenterStateResult<List<PrivacyPolicyDataModel>>>()
+    private val _privacyPolicyTopFiveList =
+        MutableLiveData<PrivacyCenterStateResult<List<PrivacyPolicyDataModel>>>()
     val privacyPolicyTopFiveList: LiveData<PrivacyCenterStateResult<List<PrivacyPolicyDataModel>>>
         get() = _privacyPolicyTopFiveList
 
@@ -28,8 +30,7 @@ class PrivacyPolicySectionViewModel @Inject constructor(
         _privacyPolicyList.value = PrivacyCenterStateResult.Loading()
         launch {
             try {
-                getPrivacyPolicyListUseCase.setParam(0)
-                _privacyPolicyList.value = getPrivacyPolicyListUseCase.executeOnBackground()
+                _privacyPolicyList.value = getPrivacyPolicyList(0)
             } catch (e: Exception) {
                 _privacyPolicyList.value = PrivacyCenterStateResult.Fail(e)
             }
@@ -38,16 +39,11 @@ class PrivacyPolicySectionViewModel @Inject constructor(
 
     fun getPrivacyPolicyTopFiveList() {
         _privacyPolicyTopFiveList.value = PrivacyCenterStateResult.Loading()
-
         launchCatchError(coroutineContext, {
-            getPrivacyPolicyListUseCase.setParam(LIMIT_BY_FIVE)
-            _privacyPolicyTopFiveList.value = getPrivacyPolicyListUseCase.executeOnBackground()
+            _privacyPolicyTopFiveList.value = getPrivacyPolicyList(5)
         }, {
             _privacyPolicyTopFiveList.value = PrivacyCenterStateResult.Fail(it)
         })
     }
 
-    companion object {
-        private const val LIMIT_BY_FIVE = 5
-    }
 }
