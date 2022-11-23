@@ -39,7 +39,7 @@ class TokoChatCourierClientProvider @Inject constructor(
             debuggingEnabled = BuildConfig.DEBUG,
             courierRemoteConfig = courierRemoteConfig,
             connectionLifecycle = TokoChatCourierConnectionLifecycle,
-            appType = AppType.Tokopedia.INSTANCE
+            appType = AppType.Tokopedia
         )
 
         return CourierComponent.getOrCreate(params).courierConnection()

@@ -56,7 +56,7 @@ class TokoChatBabbleCourierImpl @Inject constructor(
     }
 
     override fun getUniqueClientId(profileId: String): String {
-        val appType = AppType.Tokopedia.INSTANCE
+        val appType = AppType.Tokopedia
         return "${appType.value}/${appType.owner}/${userSession.userId}"
     }
 
