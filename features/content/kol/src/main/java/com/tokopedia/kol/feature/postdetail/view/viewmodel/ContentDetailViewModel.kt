@@ -25,6 +25,7 @@ class ContentDetailViewModel @Inject constructor(
 
     var currentCursor = ""
 
+    private val _userProfileFeedPost = MutableLiveData<Result<ContentDetailUiModel>>()
     private val _getCDPPostRecomData = MutableLiveData<Result<ContentDetailUiModel>>()
     private val _getCDPPostFirstPostData = MutableLiveData<Result<ContentDetailUiModel>>()
     private val _likeKolResp = MutableLiveData<ContentDetailResult<LikeContentModel>>()
@@ -37,6 +38,8 @@ class ContentDetailViewModel @Inject constructor(
     private val _asgcReminderButtonStatus = MutableLiveData<ContentDetailResult<FeedAsgcCampaignResponseModel>>()
     private val _feedWidgetLatestData = MutableLiveData<Result<FeedWidgetData>>()
 
+    val userProfileFeedPost: LiveData<Result<ContentDetailUiModel>>
+        get() = _userProfileFeedPost
 
     val cDPPostRecomData: LiveData<Result<ContentDetailUiModel>>
         get() = _getCDPPostRecomData
@@ -74,6 +77,19 @@ class ContentDetailViewModel @Inject constructor(
 
     val feedWidgetLatestData: LiveData<Result<FeedWidgetData>>
         get() = _feedWidgetLatestData
+
+    fun fetchUserProfileFeedPost(profileUserID: String, limit: Int = 10) {
+        launchCatchError(
+            block = {
+                val data = repository.getFeedPosts(profileUserID, currentCursor, limit)
+                currentCursor = data.cursor
+                _userProfileFeedPost.value = Success(data)
+            },
+            onError = {
+                _userProfileFeedPost.value = Fail(it)
+            },
+        )
+    }
 
     fun fetchLatestFeedPostWidgetData(detailId: String, rowNumber: Int) {
         launchCatchError(block = {

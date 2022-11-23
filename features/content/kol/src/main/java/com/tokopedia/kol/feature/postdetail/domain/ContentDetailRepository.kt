@@ -21,6 +21,12 @@ interface ContentDetailRepository {
         cursor: String,
     ): ContentDetailUiModel
 
+    suspend fun getFeedPosts(
+        userID: String,
+        cursor: String,
+        limit: Int,
+    ): ContentDetailUiModel
+
     suspend fun likeContent(
         contentId: String,
         action: ContentLikeAction,

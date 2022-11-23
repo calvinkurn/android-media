@@ -171,6 +171,15 @@ class ContentDetailFragment : BaseDaggerFragment(), ContentDetailPostViewHolder.
         super.onActivityCreated(savedInstanceState)
 
         viewModel.run {
+            userProfileFeedPost.observe(
+                viewLifecycleOwner,
+                {
+                    when (it) {
+                        is Success -> onSuccessGetUserProfileFeedPost(it.data)
+                        is Fail -> showToast(getString(com.tokopedia.feedcomponent.R.string.feed_video_tab_error_reminder), Toaster.TYPE_ERROR)
+                    }
+                },
+            )
             getCDPPostFirstPostData.observe(viewLifecycleOwner, {
                 when (it) {
                     is Success -> {
@@ -315,6 +324,13 @@ class ContentDetailFragment : BaseDaggerFragment(), ContentDetailPostViewHolder.
         }
     }
 
+    private fun onSuccessGetUserProfileFeedPost(data: ContentDetailUiModel) {
+        endlessRecyclerViewScrollListener?.updateStateAfterGetData()
+        endlessRecyclerViewScrollListener?.setHasNextPage(viewModel.currentCursor.isNotEmpty())
+        adapter.addItems(data.postList)
+        cdpRecyclerView?.scrollToPosition(postPosition)
+        postPosition = adapter.lastIndex
+    }
 
     private fun onSuccessGetFirstPostCDPData(data: ContentDetailUiModel){
         (activity as? ContentDetailActivity)?.setContentDetailMainPostData(
