@@ -82,7 +82,9 @@
     <!--Section | DSAR-->
     <string name="dsar_section_title">Download data pribadimu</string>
     <string name="dsar_section_description">Download datamu yang tersimpan di Tokopedia</string>
-    <string name="title_dsar_activity">Download Data Pribadi</string>
+    <string name="dsar_activity_title">Download Data Pribadi</string>
+    <string name="dsar_bottom_sheet_title">Detail Pengajuan</string>
+    <string name="dsar_bottom_sheet_info_prefix">Salinan data akan dikirim ke e-mail diatas paling lambat </string>
 
 
     <!--Search History-->

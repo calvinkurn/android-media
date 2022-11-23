@@ -35,4 +35,11 @@ object DsarConstants {
     const val LABEL_RANGE_WEEKLY = "7 Hari Terakhir"
     const val LABEL_RANGE_CUSTOM = "Pilih Tanggal Sendiri"
 
+    val DSAR_PERSONAL_DATA = listOf(
+        "full_name", "mailing_address", "phone_number", "email", "dob", "gender"
+    )
+
+    val DSAR_PAYMENT_DATA = listOf(
+        "bank_account", "payment"
+    )
 }

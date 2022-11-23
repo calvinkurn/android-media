@@ -74,9 +74,9 @@ class DsarFragment: BaseDaggerFragment(), OnDateChangedListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        if(userSession.email.isEmpty()) {
+        if(userSession.email.isEmpty()) {
             goToAddEmail()
-//        }
+        }
     }
 
     fun goToAddEmail() {

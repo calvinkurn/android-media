@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.privacycenter.dsar.DsarConstants
 import com.tokopedia.privacycenter.dsar.DsarConstants.DATE_RANGE_CUSTOM
 import com.tokopedia.privacycenter.dsar.DsarConstants.FILTER_TYPE_PAYMENT
 import com.tokopedia.privacycenter.dsar.DsarConstants.FILTER_TYPE_PERSONAL
@@ -115,16 +116,10 @@ class DsarViewModel @Inject constructor(
                 val requests = arrayListOf<String>()
                 filterItems.value?.forEach {
                     if(it == FILTER_TYPE_PERSONAL) {
-                        requests.add("full_name")
-                        requests.add("mailing_address")
-                        requests.add("phone_number")
-                        requests.add("email")
-                        requests.add("dob")
-                        requests.add("gender")
+                        requests.addAll(DsarConstants.DSAR_PERSONAL_DATA)
                     }
                     if(it == FILTER_TYPE_PAYMENT) {
-                        requests.add("bank_account")
-                        requests.add("payment")
+                        requests.addAll(DsarConstants.DSAR_PAYMENT_DATA)
                     }
                     if(it == FILTER_TYPE_TRANSACTION) {
                         requests.add(getSelectedRangeItems()?.transactionDate ?: "")
@@ -132,11 +127,7 @@ class DsarViewModel @Inject constructor(
                 }
                 val param = submitRequestUseCase.constructParams(requests)
                 val result = submitRequestUseCase(param)
-                if(result.email.isNotEmpty() && result.deadline.isNotEmpty()) {
-                    submitRequest.value = result
-                } else {
-                    toasterError.value = "Terjadi Kesalahan"
-                }
+                submitRequest.value = result
             } catch (e: Exception) {
                 toasterError.value = e.message
             } finally {

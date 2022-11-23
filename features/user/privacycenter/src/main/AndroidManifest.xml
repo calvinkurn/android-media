@@ -101,7 +101,7 @@
         </activity>
 
         <activity
-            android:label="@string/title_dsar_activity"
+            android:label="@string/dsar_activity_title"
             android:name="com.tokopedia.privacycenter.dsar.ui.DsarActivity"
             android:theme="@style/Theme.WhiteUnify"
             android:exported="false"

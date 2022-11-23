@@ -6,7 +6,9 @@ import android.view.LayoutInflater
 import androidx.fragment.app.FragmentManager
 import com.google.gson.Gson
 import com.tokopedia.media.loader.loadImage
+import com.tokopedia.privacycenter.R
 import com.tokopedia.privacycenter.databinding.BottomSheetDetailsBinding
+import com.tokopedia.privacycenter.dsar.DsarConstants
 import com.tokopedia.privacycenter.dsar.DsarConstants.FILTER_TYPE_PAYMENT
 import com.tokopedia.privacycenter.dsar.DsarConstants.HTML_NEW_LINE
 import com.tokopedia.privacycenter.dsar.DsarConstants.PAYMENT_LABEL
@@ -18,7 +20,10 @@ import com.tokopedia.privacycenter.dsar.model.RequestAdditionalData
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.date.DateUtil
-import java.text.SimpleDateFormat
+import com.tokopedia.utils.date.DateUtil.DEFAULT_VIEW_FORMAT
+import com.tokopedia.utils.date.DateUtil.YYYYMMDD
+import com.tokopedia.utils.date.toDate
+import com.tokopedia.utils.date.toString
 import java.util.*
 import java.util.concurrent.TimeUnit
 
@@ -36,14 +41,21 @@ object RequestDetailBottomSheet {
                 RequestAdditionalData::class.java
             )
             val binding = BottomSheetDetailsBinding.inflate(LayoutInflater.from(context))
-            setTitle("Detail Pengajuan")
+            setTitle(context.getString(R.string.dsar_bottom_sheet_title))
             setChild(binding.root)
-            binding.personalInfo.imgProfilePicture.loadImage(userSessionInterface.profilePicture)
-            binding.personalInfo.txtProfileEmail.text = requestDetailResponse.email
-            binding.personalInfo.txtProfileName.text = requestDetailResponse.firstName
-            binding.personalInfo.txtProfilePhone.text = additionalData.phoneNumber
-            val formattedDate = DateUtil.formatDate(DateUtil.YYYY_MM_DD_T_HH_MM_SS_SSS_Z, DateUtil.DEFAULT_VIEW_FORMAT, requestDetailResponse.deadline)
-            binding.layoutSummary.ticker.setTextDescription(Html.fromHtml("Salinan data akan dikirim ke e-mail diatas paling lambat <b>${formattedDate}</b>"))
+            binding?.personalInfo?.run {
+                imgProfilePicture.loadImage(userSessionInterface.profilePicture)
+                txtProfileEmail.text = requestDetailResponse.email
+                txtProfileName.text = requestDetailResponse.firstName
+                txtProfilePhone.text = additionalData.phoneNumber
+            }
+            val formattedDate = DateUtil.formatDate(
+                DateUtil.YYYY_MM_DD_T_HH_MM_SS_SSS_Z,
+                DateUtil.DEFAULT_VIEW_FORMAT,
+                requestDetailResponse.deadline
+            )
+            val summaryInfoPrefix = context.getString(R.string.dsar_bottom_sheet_info_prefix)
+            binding.layoutSummary.ticker.setTextDescription(Html.fromHtml("$summaryInfoPrefix <b>${formattedDate}</b>"))
             binding.layoutSummary.txtSummary.text = Html.fromHtml(mapAdditionalData(additionalData))
         }
         bottomSheet.show(fragmentManager, "")
@@ -51,64 +63,45 @@ object RequestDetailBottomSheet {
     }
 
     fun mapAdditionalData(additionalData: RequestAdditionalData): String {
-        val requestDetails = additionalData.requestDetails.split(",")
         var finalText = ""
-        if (requestDetails.contains("full_name")) {
+        if (additionalData.requestDetails.contains(DsarConstants.DSAR_PERSONAL_DATA.first())) {
             finalText += "$PERSONAL_LABEL$HTML_NEW_LINE$HTML_NEW_LINE"
         }
-        if (requestDetails.contains(FILTER_TYPE_PAYMENT)) {
+        if (additionalData.requestDetails.contains(FILTER_TYPE_PAYMENT)) {
             finalText += "$PAYMENT_LABEL$HTML_NEW_LINE$HTML_NEW_LINE"
         }
 
+        val requestDetails = additionalData.requestDetails.split(",")
         val match = requestDetails.find { it.contains(TRANSACTION_HISTORY_PREFIX) }
         if (match?.isNotEmpty() == true) {
             val splitTransaction = match.split("_")
-            val startDate = convertToDate(splitTransaction[2])
-            val endDate = convertToDate(splitTransaction[3])
+            val startDate = splitTransaction[2].toDate(YYYYMMDD)
+            val endDate = splitTransaction[3].toDate(YYYYMMDD)
 
-            if (startDate != null && endDate != null) {
-                val diff = TimeUnit.MILLISECONDS.toDays(endDate.time - startDate.time)
+            val diff = TimeUnit.MILLISECONDS.toDays(endDate.time - startDate.time)
 
-                val firstDayOfThisYear = GregorianCalendar(Locale.getDefault()).apply {
-                    set(GregorianCalendar.MONTH, GregorianCalendar.JANUARY)
-                    set(GregorianCalendar.DAY_OF_MONTH, 1)
-                }
-
-                val thisYearDiff = TimeUnit.MILLISECONDS.toDays(endDate.time - firstDayOfThisYear.time.time)
-
-                val dateString = when (diff) {
-                    7L -> {
-                        "7 Hari Terakhir"
-                    }
-                    30L -> {
-                        "30 Hari Terakhir"
-                    }
-                    in 90L..92L -> {
-                        "3 Bulan Terakhir"
-                    }
-                    1096L -> {
-                        "3 Tahun Terakhir"
-                    }
-                    in (thisYearDiff-1)..(thisYearDiff+1) -> {
-                        "Selama Tahun Ini"
-                    }
-                    else -> {
-                        "${formatDate(startDate)} - ${formatDate(endDate)}"
-                    }
-                }
-                finalText += "$TRANSACTION_LABEL$dateString<br>"
+            val firstDayOfThisYear = GregorianCalendar(Locale.getDefault()).apply {
+                set(GregorianCalendar.MONTH, GregorianCalendar.JANUARY)
+                set(GregorianCalendar.DAY_OF_MONTH, 1)
             }
+
+            val thisYearDiff =
+                TimeUnit.MILLISECONDS.toDays(endDate.time - firstDayOfThisYear.time.time)
+
+            val dateString = when (diff) {
+                7L -> { DsarConstants.LABEL_RANGE_WEEKLY }
+                30L -> { DsarConstants.LABEL_RANGE_30_DAYS }
+                in 90L..92L -> { DsarConstants.LABEL_RANGE_3_MONTHS }
+                1096L -> { DsarConstants.LABEL_RANGE_3_YEARS }
+                in (thisYearDiff - 1)..(thisYearDiff + 1) -> { DsarConstants.LABEL_RANGE_YEARS }
+                else -> {
+                    "${startDate.toString(DEFAULT_VIEW_FORMAT)} - ${
+                        endDate.toString(DEFAULT_VIEW_FORMAT)
+                    }"
+                }
+            }
+            finalText += "$TRANSACTION_LABEL$dateString$HTML_NEW_LINE"
         }
         return finalText
-    }
-
-    fun formatDate(date: Date): String {
-        val sdf = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
-        return sdf.format(date)
-    }
-
-    fun convertToDate(date: String): Date? {
-        val sdf = SimpleDateFormat("yyyyMMdd", Locale.getDefault())
-        return sdf.parse(date)
     }
 }
