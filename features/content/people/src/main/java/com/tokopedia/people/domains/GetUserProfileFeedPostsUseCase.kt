@@ -22,7 +22,7 @@ class GetUserProfileFeedPostsUseCase @Inject constructor(
         setTypeClass(UserFeedPostsModel::class.java)
     }
 
-    suspend fun executeOnBackground(userID: String, cursor: String, limit: Int = 10): UserFeedPostsModel {
+    suspend fun executeOnBackground(userID: String, cursor: String, limit: Int): UserFeedPostsModel {
         val request = mapOf(
             KEY_SOURCE_ID to userID,
             KEY_CURSOR to cursor,

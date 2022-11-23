@@ -104,6 +104,7 @@ class UserProfileRepositoryImpl @Inject constructor(
                 getUserProfileFeedPostsUseCase.executeOnBackground(
                     userID = userID,
                     cursor = cursor,
+                    limit = 10,
                 ),
             )
         }
