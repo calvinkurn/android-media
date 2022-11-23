@@ -340,16 +340,13 @@ dependencies {
         exclude group: 'org.jetbrains', module: 'annotations'
     }
 
-    // Unit Test Dependencies
-    testImplementation rootProject.ext.testDependencies.mockk
-    testImplementation rootProject.ext.testDependencies.archCoreTesting
-    testImplementation projectOrAar(rootProject.ext.libraries.unitTest)
-
-
     //[START] test and androidTest dependencies
     androidTestImplementation(rootProject.ext.testDependencies.espressoCore, {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
+    testImplementation rootProject.ext.testDependencies.junit
+    testImplementation rootProject.ext.testDependencies.mockitorCore
+    testImplementation rootProject.ext.miscDependencies.rxJava
     androidTestImplementation rootProject.ext.miscDependencies.rxJava
     androidTestImplementation rootProject.ext.testDependencies.spoon
     androidTestImplementation rootProject.ext.testDependencies.androidAnnotation
@@ -394,3 +391,4 @@ dependencies {
 
     androidTestImplementation rootProject.ext.testDependencies.fragmentTest
 }
+

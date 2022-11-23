@@ -58,7 +58,6 @@ import com.tokopedia.feedcomponent.shoprecom.callback.ShopRecomWidgetCallback
 import com.tokopedia.feedcomponent.shoprecom.cordinator.ShopRecomImpressCoordinator
 import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomUiModelItem
 import com.tokopedia.feedcomponent.util.CustomUiMessageThrowable
-import com.tokopedia.feedcomponent.util.CustomUiMessageThrowable
 import com.tokopedia.feedcomponent.util.FeedScrollListenerNew
 import com.tokopedia.feedcomponent.util.manager.FeedFloatingButtonManager
 import com.tokopedia.feedcomponent.util.util.DataMapper
@@ -71,15 +70,10 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.post.poll.PollAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.video.VideoViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.youtube.YoutubeViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.*
-import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopAdsBannerViewHolder
-import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopAdsHeadlineListener
-import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopAdsHeadlineV2ViewHolder
-import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopadsShopViewHolder
 import com.tokopedia.feedcomponent.view.base.FeedPlusContainerListener
 import com.tokopedia.feedcomponent.view.base.FeedPlusTabParentFragment
 import com.tokopedia.feedcomponent.view.share.FeedProductTagSharingHelper
 import com.tokopedia.feedcomponent.view.viewmodel.DynamicPostUiModel
-import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightCardModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.TrackingPostModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.poll.PollContentModel
@@ -113,6 +107,8 @@ import com.tokopedia.feedplus.view.viewmodel.FeedPromotedShopViewModel
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kolcommon.domain.usecase.FollowKolPostGqlUseCase
 import com.tokopedia.kolcommon.view.viewmodel.FollowKolViewModel
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.extensions.view.visible
@@ -149,10 +145,6 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import java.util.*
 import javax.inject.Inject
-import kotlin.collections.ArrayList
-import com.tokopedia.kotlin.extensions.view.*
-import com.tokopedia.feedcomponent.view.share.FeedProductTagSharingHelper
-import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.wishlist_common.R as Rwishlist
 
 /**
@@ -963,7 +955,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
                        if (authorType == FollowCta.AUTHOR_USER) {
                            onSuccessFollowUnfollowKol(rowNumber)
                        } else if (authorType == FollowCta.AUTHOR_SHOP) {
-                           onSuccessToggleFavoriteShop(FavoriteShopViewModel(rowNumber = rowNumber, isUnfollowFromShopsMenu = false))
+                           onSuccessToggleFavoriteShop(FavoriteShopModel(rowNumber = rowNumber, isUnfollowFromShopsMenu = false))
                        }
                    }
                }
@@ -2541,23 +2533,6 @@ class FeedPlusFragment : BaseDaggerFragment(),
                     campaignStatus = getTrackerLabelSuffixFromPosition(positionInFeed)
                 )
             }
-            productTagBS.show(
-                childFragmentManager,
-                this,
-                ProductBottomSheetData(
-                    products = products,
-                    postId = card.id,
-                    shopId = card.author.id,
-                    postType = card.typename,
-                    isFollowed = card.followers.isFollowed,
-                    positionInFeed = positionInFeed,
-                    playChannelId = card.playChannelID,
-                    shopName = card.author.name,
-                    mediaType = mediaType,
-                    saleStatus = card.campaign.status,
-                    saleType = card.campaign.name
-                )
-            )
             if (shouldShowFollowerBottomSheet(card))
                 showFollowerBottomSheet(positionInFeed, card.campaign.status)
         }
@@ -3786,7 +3761,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         )
     }
 
-    override fun onAddToCartButtonClicked(item: ProductPostTagViewModelNew) {
+    override fun onAddToCartButtonClicked(item: ProductPostTagModelNew) {
         val list = adapter.getList()
         val position = item.positionInFeed
         var card: FeedXCard? = null
