@@ -23,6 +23,7 @@ class ContentDetailActivity : BaseSimpleActivity() {
             putString(PARAM_POST_ID, postId())
             putString(PARAM_SOURCE, getSource())
             putInt(PARAM_POSITION, getPosition())
+            putString(PARAM_VISITED_USER_ID, getVisitedUserID())
         }
         return ContentDetailFragment.newInstance(bundle)
     }
@@ -35,6 +36,10 @@ class ContentDetailActivity : BaseSimpleActivity() {
     private fun hideStatusBar() {
         requestWindowFeature(Window.FEATURE_NO_TITLE)
         this.window.setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager.LayoutParams.FLAG_FULLSCREEN)
+    }
+
+    private fun getVisitedUserID(): String {
+        return intent?.extras?.getString(PARAM_VISITED_USER_ID).orEmpty()
     }
 
     private fun postId(): String {
@@ -88,5 +93,6 @@ class ContentDetailActivity : BaseSimpleActivity() {
         const val PARAM_SOURCE = "source"
         const val SHARE_LINK = "share_link"
         const val PARAM_POSITION = "position"
+        const val PARAM_VISITED_USER_ID = "visited_user_id"
     }
 }
