@@ -15,6 +15,7 @@ import com.tokopedia.entertainment.pdp.uimodel.ParticipantUiModel
 
 class EventRedeemRevampAdapterTypeFactory (
     private val listener: EventParticipantViewHolder.ParticipantListener,
+    private val titleListener: EventParticipantTitleViewHolder.ParticipantTitleListener
 ) : BaseAdapterTypeFactory(),
     EventRedeemRevampTypeFactory {
 
@@ -24,7 +25,7 @@ class EventRedeemRevampAdapterTypeFactory (
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<out Visitable<*>> {
         return when (type) {
             EventParticipantViewHolder.LAYOUT -> EventParticipantViewHolder(listener, view)
-            EventParticipantTitleViewHolder.LAYOUT -> EventParticipantTitleViewHolder(view)
+            EventParticipantTitleViewHolder.LAYOUT -> EventParticipantTitleViewHolder(titleListener, view)
             else -> super.createViewHolder(view, type)
         }
     }

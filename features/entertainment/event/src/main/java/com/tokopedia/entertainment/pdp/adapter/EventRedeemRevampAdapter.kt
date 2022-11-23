@@ -11,5 +11,6 @@ import com.tokopedia.entertainment.pdp.adapter.factory.EventRedeemRevampAdapterT
 class EventRedeemRevampAdapter (
     typeFactory: EventRedeemRevampAdapterTypeFactory,
     differ: BaseEventRedeemRevampDiffer,
-): BaseEventRedeemRevampAdapter<Visitable<*>, EventRedeemRevampAdapterTypeFactory>(typeFactory, differ)
+    eventRedeemBaseAdapterListener: EventRedeemBaseAdapterListener,
+): BaseEventRedeemRevampAdapter<Visitable<*>, EventRedeemRevampAdapterTypeFactory>(typeFactory, differ, eventRedeemBaseAdapterListener)
 

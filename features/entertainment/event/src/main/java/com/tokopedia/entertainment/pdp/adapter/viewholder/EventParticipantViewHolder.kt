@@ -41,7 +41,7 @@ class EventParticipantViewHolder(
                 cbParticipant.setOnCheckedChangeListener(null)
                 cbParticipant.isChecked = element.isChecked
                 cbParticipant.setOnCheckedChangeListener { _, isChecked ->
-                    listener.onCheckListener(element, isChecked)
+                    listener.onCheckListener(element, isChecked, adapterPosition)
                 }
             }
 
@@ -60,6 +60,6 @@ class EventParticipantViewHolder(
     }
 
     fun interface ParticipantListener {
-        fun onCheckListener(element: ParticipantUiModel, isChecked: Boolean)
+        fun onCheckListener(element: ParticipantUiModel, isChecked: Boolean, position: Int)
     }
 }

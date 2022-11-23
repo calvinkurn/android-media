@@ -9,7 +9,10 @@ import com.tokopedia.entertainment.pdp.adapter.factory.EventRedeemRevampTypeFact
 
 class ParticipantTitleUiModel (
     val id: String = "",
-    val title: String = ""
+    val day: Int = -1,
+    val title: String = "",
+    var isDisabled: Boolean = false,
+    var isChecked: Boolean = false
 ): Visitable<EventRedeemRevampTypeFactory> {
     override fun type(typeFactory: EventRedeemRevampTypeFactory): Int {
         return typeFactory.type(this)

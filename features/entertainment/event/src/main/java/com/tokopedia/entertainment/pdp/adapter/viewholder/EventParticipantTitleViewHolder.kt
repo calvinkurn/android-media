@@ -12,7 +12,10 @@ import com.tokopedia.utils.view.binding.viewBinding
  * Author firmanda on 17,Nov,2022
  */
 
-class EventParticipantTitleViewHolder (itemView: View):
+class EventParticipantTitleViewHolder (
+    val listener: ParticipantTitleListener,
+    itemView: View
+):
     AbstractViewHolder<ParticipantTitleUiModel>(itemView) {
 
     private var binding: ItemEventPdpRedeemTitleBinding? by viewBinding()
@@ -20,12 +23,27 @@ class EventParticipantTitleViewHolder (itemView: View):
     override fun bind(element: ParticipantTitleUiModel) {
         binding?.run {
             tgDayParticipant.text = element.title
+            if (element.isDisabled) {
+                cbTitleParticipant.isEnabled = false
+                cbTitleParticipant.isChecked = true
+            } else {
+                cbTitleParticipant.isEnabled = true
+                cbTitleParticipant.setOnCheckedChangeListener(null)
+                cbTitleParticipant.isChecked = element.isChecked
+                cbTitleParticipant.setOnCheckedChangeListener { _, isChecked ->
+                    listener.onCheckTitleListener(element, isChecked, adapterPosition)
+                }
+            }
         }
     }
 
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.item_event_pdp_redeem_title
+    }
+
+    fun interface ParticipantTitleListener {
+        fun onCheckTitleListener(element: ParticipantTitleUiModel, isChecked: Boolean, position: Int)
     }
 }
 

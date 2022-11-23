@@ -9,10 +9,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.entertainment.databinding.BottomSheetEventRedeemRevampBinding
+import com.tokopedia.entertainment.pdp.adapter.BaseEventRedeemRevampAdapter
 import com.tokopedia.entertainment.pdp.adapter.EventRedeemRevampAdapter
 import com.tokopedia.entertainment.pdp.adapter.diffutil.EventRedeemRevampDiffer
 import com.tokopedia.entertainment.pdp.adapter.factory.EventRedeemRevampAdapterTypeFactory
+import com.tokopedia.entertainment.pdp.adapter.viewholder.EventParticipantTitleViewHolder
 import com.tokopedia.entertainment.pdp.adapter.viewholder.EventParticipantViewHolder
+import com.tokopedia.entertainment.pdp.uimodel.ParticipantTitleUiModel
 import com.tokopedia.entertainment.pdp.uimodel.ParticipantUiModel
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -24,13 +27,17 @@ import com.tokopedia.entertainment.R.string as stringRedeem
  */
 
 class EventRedeemRevampBottomSheet: BottomSheetUnify(),
-    EventParticipantViewHolder.ParticipantListener {
+    EventParticipantViewHolder.ParticipantListener,
+    EventParticipantTitleViewHolder.ParticipantTitleListener,
+    BaseEventRedeemRevampAdapter.EventRedeemBaseAdapterListener
+{
 
     private var binding by autoClearedNullable<BottomSheetEventRedeemRevampBinding>()
     private val adapter by lazy(LazyThreadSafetyMode.NONE){
         EventRedeemRevampAdapter(
-            typeFactory = EventRedeemRevampAdapterTypeFactory(this),
-            differ = EventRedeemRevampDiffer()
+            typeFactory = EventRedeemRevampAdapterTypeFactory(this, this),
+            differ = EventRedeemRevampDiffer(),
+            this
         )
     }
     private var listener: RedeemBottomSheetListener? = null
@@ -93,18 +100,16 @@ class EventRedeemRevampBottomSheet: BottomSheetUnify(),
         this.listener = listener
     }
 
-    override fun onCheckListener(element: ParticipantUiModel, isChecked: Boolean) {
-        val index = listCheckedIds.mapIndexed { index, pair ->
-            Pair(pair.first, index)
-        }.firstOrNull{
-            element.id == it.first
-        }
+    override fun onCheckListener(element: ParticipantUiModel, isChecked: Boolean, position: Int) {
+        adapter.updateOneItem(isChecked, position)
+    }
 
-        if (index != null) {
-            listCheckedIds[index.second] = Pair(element.id, isChecked)
-        } else {
-            listCheckedIds.add(Pair(element.id, isChecked))
-        }
+    override fun onCheckTitleListener(element: ParticipantTitleUiModel, isChecked: Boolean, position: Int) {
+        adapter.updateAllListItem(isChecked, position)
+    }
+
+    override fun updateListChecked(listCheckedIds: MutableList<Pair<String, Boolean>>) {
+        this.listCheckedIds = listCheckedIds
     }
 
     override fun onDismiss(dialog: DialogInterface) {

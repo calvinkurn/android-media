@@ -36,7 +36,10 @@ object EventRedeemMapper {
             participantList.add(
                 ParticipantTitleUiModel(
                     id = it.key.toString(),
-                    title = if (participantSize > Int.ONE) dayTitle(it.key, context) else mainTitle
+                    day = it.key,
+                    title = if (participantSize > Int.ONE) dayTitle(it.key, context) else mainTitle,
+                    isChecked = isAllChecked(it.value),
+                    isDisabled = isAllParticipantDisabled(it.value)
                 )
             )
 
@@ -44,6 +47,7 @@ object EventRedeemMapper {
                 participantList.add(
                     ParticipantUiModel(
                         id = it.id,
+                        day = it.day,
                         title = it.participantDetails.first().value,
                         subTitle = participantsListMapping(it.participantDetails, context),
                         isChecked = it.checked,
@@ -150,5 +154,35 @@ object EventRedeemMapper {
         } else {
             ""
         }
+    }
+
+    private fun isAllParticipantDisabled(participants: List<Participant>): Boolean {
+        var isAllParticipantDisable = true
+
+        run breaking@ {
+            participants.forEach {
+                if (it.redemptionTime.isZero()) {
+                    isAllParticipantDisable = false
+                    return@breaking
+                }
+            }
+        }
+
+        return isAllParticipantDisable
+    }
+
+    private fun isAllChecked(participants: List<Participant>): Boolean {
+        var isAllChecked = true
+
+        run breaking@ {
+            participants.forEach {
+                if (!it.checked) {
+                    isAllChecked = false
+                    return@breaking
+                }
+            }
+        }
+
+        return isAllChecked
     }
 }
