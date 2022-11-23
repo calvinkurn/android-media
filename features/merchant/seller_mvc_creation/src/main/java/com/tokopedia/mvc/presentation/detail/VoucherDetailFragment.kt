@@ -142,20 +142,24 @@ class VoucherDetailFragment : BaseDaggerFragment() {
             setupVoucherStatus(data)
             setupVoucherAction(data)
             imgVoucher.setImageUrl(data.voucherImageSquare)
+            tpgDateTimeStart.dateTime = data.voucherStartTime
+            tpgDateTimeEnd.dateTime = data.voucherFinishTime
             setPackage(data)
             val availableQuota = data.voucherQuota - data.remainingQuota
+            val usedQuotaPercentage = viewModel.getPercentage(availableQuota, data.remainingQuota)
             tpgUsedVoucherQuota.text = availableQuota.toString()
             tpgAvailableVoucherQuota.text = getString(
                 R.string.smvc_placeholder_voucher_quota,
                 data.remainingQuota
             )
+            pgbUsedVoucher.setValue(usedQuotaPercentage.toInt(), true)
         }
     }
 
     private fun setPackage(data: VoucherDetailData){
         headerBinding?.run {
             if (data.isVps == FALSE && data.isSubsidy == FALSE) {
-                labelVoucherSource.gone()
+                labelVoucherSource.invisible()
                 tpgVpsPackage.gone()
             } else {
                 if (data.isVps == TRUE) {

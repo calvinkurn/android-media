@@ -97,6 +97,41 @@
         app:typographyWeight="reguler"
         tools:text="Paket WIB Premium Max" />
 
+    <LinearLayout
+        android:id="@+id/ll_period"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="2dp"
+        android:layout_marginEnd="16dp"
+        android:gravity="center"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toEndOf="@+id/img_voucher"
+        app:layout_constraintTop_toBottomOf="@+id/tpg_vps_package">
+
+        <com.tokopedia.mvc.common.customview.VerticalDateTimeView
+            android:id="@+id/tpg_date_time_start"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/tpg_dash"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="12dp"
+            android:gravity="start"
+            android:textColor="@color/Unify_NN600"
+            android:text="@string/smvc_dash_label" />
+
+        <com.tokopedia.mvc.common.customview.VerticalDateTimeView
+            android:id="@+id/tpg_date_time_end"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+    </LinearLayout>
+
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tpg_progress_bar_title"
         android:layout_width="wrap_content"

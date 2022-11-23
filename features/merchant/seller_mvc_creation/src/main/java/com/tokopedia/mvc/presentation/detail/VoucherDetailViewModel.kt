@@ -41,4 +41,8 @@ class VoucherDetailViewModel @Inject constructor(
         val voucherQuota = data.voucherQuota
         return (voucherDiscount * voucherQuota).getCurrencyFormatted()
     }
+
+    fun getPercentage(value: Long, total: Long): Long {
+        return (value/total) * 100
+    }
 }
