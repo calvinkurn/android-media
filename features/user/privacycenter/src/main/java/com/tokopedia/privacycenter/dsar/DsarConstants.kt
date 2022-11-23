@@ -42,4 +42,11 @@ object DsarConstants {
     val DSAR_PAYMENT_DATA = listOf(
         "bank_account", "payment"
     )
+
+    const val DAYS_7 = 7L
+    const val DAYS_30 = 30L
+    const val DAYS_90 = 90L
+    const val DAYS_92 = 92L
+    const val DAYS_3_YEARS = 1096L
+
 }

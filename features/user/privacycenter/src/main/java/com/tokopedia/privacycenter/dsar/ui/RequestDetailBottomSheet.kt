@@ -43,7 +43,7 @@ object RequestDetailBottomSheet {
             val binding = BottomSheetDetailsBinding.inflate(LayoutInflater.from(context))
             setTitle(context.getString(R.string.dsar_bottom_sheet_title))
             setChild(binding.root)
-            binding?.personalInfo?.run {
+            binding.personalInfo.run {
                 imgProfilePicture.loadImage(userSessionInterface.profilePicture)
                 txtProfileEmail.text = requestDetailResponse.email
                 txtProfileName.text = requestDetailResponse.firstName
@@ -62,7 +62,7 @@ object RequestDetailBottomSheet {
         return bottomSheet
     }
 
-    fun mapAdditionalData(additionalData: RequestAdditionalData): String {
+    private fun mapAdditionalData(additionalData: RequestAdditionalData): String {
         var finalText = ""
         if (additionalData.requestDetails.contains(DsarConstants.DSAR_PERSONAL_DATA.first())) {
             finalText += "$PERSONAL_LABEL$HTML_NEW_LINE$HTML_NEW_LINE"
@@ -89,10 +89,10 @@ object RequestDetailBottomSheet {
                 TimeUnit.MILLISECONDS.toDays(endDate.time - firstDayOfThisYear.time.time)
 
             val dateString = when (diff) {
-                7L -> { DsarConstants.LABEL_RANGE_WEEKLY }
-                30L -> { DsarConstants.LABEL_RANGE_30_DAYS }
-                in 90L..92L -> { DsarConstants.LABEL_RANGE_3_MONTHS }
-                1096L -> { DsarConstants.LABEL_RANGE_3_YEARS }
+                DsarConstants.DAYS_7 -> { DsarConstants.LABEL_RANGE_WEEKLY }
+                DsarConstants.DAYS_30 -> { DsarConstants.LABEL_RANGE_30_DAYS }
+                in DsarConstants.DAYS_90..DsarConstants.DAYS_92 -> { DsarConstants.LABEL_RANGE_3_MONTHS }
+                DsarConstants.DAYS_3_YEARS -> { DsarConstants.LABEL_RANGE_3_YEARS }
                 in (thisYearDiff - 1)..(thisYearDiff + 1) -> { DsarConstants.LABEL_RANGE_YEARS }
                 else -> {
                     "${startDate.toString(DEFAULT_VIEW_FORMAT)} - ${
