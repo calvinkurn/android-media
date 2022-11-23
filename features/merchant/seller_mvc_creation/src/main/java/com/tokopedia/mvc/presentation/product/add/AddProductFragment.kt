@@ -320,12 +320,12 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
     private fun renderSelectAllCheckbox(uiState: AddProductUiState) {
         binding?.checkbox?.isChecked = uiState.isSelectAllCheckboxActive
 
-        val checkboxWording = if (uiState.selectedProductsIds.isEmpty()) {
+        val checkboxWording = if (uiState.selectedProductCount.isZero()) {
             getString(R.string.smvc_select_all)
         } else {
             getString(
                 R.string.smvc_placeholder_check_all_selected_product_count,
-                uiState.selectedProductsIds.size,
+                uiState.selectedProductCount,
                 uiState.totalProducts
             )
         } 

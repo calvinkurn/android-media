@@ -157,12 +157,23 @@ class AddProductViewModel @Inject constructor(
                 val allParentProducts = currentState.products + updatedParentProducts
                 val selectedParentProductIds = currentState.selectedProductsIds + allParentProducts.selectedProductsOnly()
 
+                val isOnSearchMode = currentState.searchKeyword.isNotEmpty()
+                val selectedProductCount = if (isOnSearchMode) {
+                    currentPageParentProductsIds.count { it in selectedParentProductIds }
+                } else {
+                    selectedParentProductIds.count()
+                }
+
+                val allParentProductSelected = selectedProductCount == productsResponse.total
+
                 _uiEffect.emit(AddProductEffect.LoadNextPageSuccess(updatedParentProducts, allParentProducts))
                 _uiState.update {
                     it.copy(
                         isLoading = false,
                         products = allParentProducts,
                         selectedProductsIds = selectedParentProductIds,
+                        selectedProductCount = selectedProductCount,
+                        isSelectAllCheckboxActive = allParentProductSelected,
                         totalProducts = productsResponse.total
                     )
                 }
@@ -288,6 +299,7 @@ class AddProductViewModel @Inject constructor(
             it.copy(
                 isSelectAllCheckboxActive = true,
                 selectedProductsIds = modifiedProducts.selectedProductsOnly(),
+                selectedProductCount = modifiedProducts.selectedProductsOnly().count(),
                 products = modifiedProducts
             )
         }
@@ -300,6 +312,7 @@ class AddProductViewModel @Inject constructor(
             it.copy(
                 isSelectAllCheckboxActive = false,
                 selectedProductsIds = emptySet(),
+                selectedProductCount = 0,
                 products = disabledProducts
             )
         }
@@ -320,10 +333,14 @@ class AddProductViewModel @Inject constructor(
 
         val updatedSelectedProductIds = currentState.selectedProductsIds + setOf(productIdToAdd)
 
+        val allParentProductSelected = updatedSelectedProductIds.count() == currentState.totalProducts
+
         _uiState.update {
             it.copy(
                 selectedProductsIds = updatedSelectedProductIds,
-                products = updatedProducts
+                selectedProductCount = updatedSelectedProductIds.count(),
+                products = updatedProducts,
+                isSelectAllCheckboxActive = allParentProductSelected
             )
         }
     }
@@ -380,6 +397,7 @@ class AddProductViewModel @Inject constructor(
             it.copy(
                 isSelectAllCheckboxActive = false,
                 selectedProductsIds = updatedSelectedProducts,
+                selectedProductCount = updatedSelectedProducts.count(),
                 products = updatedProducts
             )
         }
@@ -466,6 +484,7 @@ class AddProductViewModel @Inject constructor(
                 products = emptyList(),
                 isSelectAllCheckboxActive = false,
                 selectedProductsIds = emptySet(),
+                selectedProductCount = 0,
                 selectedWarehouseLocation = newWarehouseLocation
             )
         }
