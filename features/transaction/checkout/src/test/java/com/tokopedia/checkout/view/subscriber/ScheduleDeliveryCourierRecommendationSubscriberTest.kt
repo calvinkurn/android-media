@@ -11,7 +11,6 @@ import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 
-
 class ScheduleDeliveryCourierRecommendationSubscriberTest {
 
     @MockK
@@ -49,7 +48,8 @@ class ScheduleDeliveryCourierRecommendationSubscriberTest {
 
         // When
         scheduleDeliveryCourierRecommendationSubscriber.handleSyncShipmentCartItemModel(
-            courierItemData, shipmentCartItemModel
+            courierItemData,
+            shipmentCartItemModel
         )
 
         // Then
@@ -87,7 +87,8 @@ class ScheduleDeliveryCourierRecommendationSubscriberTest {
 
         // When
         scheduleDeliveryCourierRecommendationSubscriber.handleSyncShipmentCartItemModel(
-            courierItemData, shipmentCartItemModel
+            courierItemData,
+            shipmentCartItemModel
         )
 
         // Then
