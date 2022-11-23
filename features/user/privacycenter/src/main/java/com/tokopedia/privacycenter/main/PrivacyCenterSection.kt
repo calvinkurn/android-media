@@ -56,7 +56,6 @@ class PrivacyCenterSection constructor(
     fun removeAllViews() {
         parentView?.removeAllViews()
 
-//        delegate.dummySection.lifecycleOwner = null
         delegate.consentWithdrawalSection.lifecycleOwner = null
         delegate.privacyPolicySection.lifecycleOwner = null
     }
