@@ -2880,7 +2880,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 getString(R.string.feed_post_deleted),
                 Toaster.LENGTH_LONG,
                 Toaster.TYPE_NORMAL,
-                getString(R.string.feed_action_ok)
+                getString(com.tokopedia.content.common.R.string.content_action_ok)
             ).show()
         }
         if (adapter.getlist().isEmpty()) {
