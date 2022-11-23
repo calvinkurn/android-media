@@ -6,9 +6,9 @@ import com.gojek.courier.CourierConnection
 import com.gojek.courier.config.CourierRemoteConfig
 import com.google.gson.Gson
 import com.tokochat.tokochat_config_common.di.qualifier.TokoChatQualifier
+import com.tokochat.tokochat_config_common.remote_config.TokoChatCourierRemoteConfigImpl
 import com.tokochat.tokochat_config_common.repository.courier.TokoChatBabbleCourierImpl
 import com.tokochat.tokochat_config_common.repository.courier.TokoChatCourierClientProvider
-import com.tokochat.tokochat_config_common.util.TokoChatCourierRemoteConfigImpl
 import com.tokochat.tokochat_config_common.util.TokoChatCourierStateObservable
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.user.session.UserSessionInterface
