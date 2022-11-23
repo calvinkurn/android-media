@@ -115,16 +115,16 @@ data class CartShopHolderData(
 }
 
 class CartShopBoAffordabilityData(
-        var enable: Boolean = true,
-        var state: CartShopBoAffordabilityState = CartShopBoAffordabilityState.LOADING,
-        var tickerText: String = "",
-        var errorText: String = "",
+    var enable: Boolean = true,
+    var state: CartShopBoAffordabilityState = CartShopBoAffordabilityState.FIRST_LOAD,
+    var tickerText: String = "",
+    var errorText: String = "",
 
-        // list of cartIds for tracker
-        var cartIds: String = "",
-        var hasSeenTicker: Boolean = false,
+    // list of cartIds for tracker
+    var cartIds: String = "",
+    var hasSeenTicker: Boolean = false,
 )
 
 enum class CartShopBoAffordabilityState {
-    LOADING, FAILED, SUCCESS_AFFORD, SUCCESS_NOT_AFFORD, EMPTY
+    FIRST_LOAD, LOADING, FAILED, SUCCESS_AFFORD, SUCCESS_NOT_AFFORD, EMPTY
 }
