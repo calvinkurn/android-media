@@ -181,7 +181,7 @@ class CarouselImageViewHolder(
                 val tagView = PostTagView(itemView.context, tagging)
                 tagView.bindData(
                     tagBubbleListener  = dataSource.getTagBubbleListener(),
-                    products = if (card.isTypeProductHighlight && card.useASGCNewDesign) {
+                    products = if (card.isTypeProductHighlight && card.useASGCNewDesign || card.isTypeUGC) {
                         card.products
                     } else card.tags,
                     width = it.width,
