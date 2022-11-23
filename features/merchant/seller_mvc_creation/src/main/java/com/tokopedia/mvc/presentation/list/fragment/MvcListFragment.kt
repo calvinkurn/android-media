@@ -34,6 +34,7 @@ import com.tokopedia.mvc.presentation.bottomsheet.EduCenterBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.FilterVoucherBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.FilterVoucherStatusBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.MoreMenuVoucherBottomSheet
+import com.tokopedia.mvc.presentation.bottomsheet.OtherPeriodBottomSheet
 import com.tokopedia.mvc.presentation.list.adapter.VoucherAdapterListener
 import com.tokopedia.mvc.presentation.list.adapter.VouchersAdapter
 import com.tokopedia.mvc.presentation.list.viewmodel.MvcListViewModel
@@ -89,7 +90,7 @@ class MvcListFragment: BaseDaggerFragment(), HasPaginatedList by HasPaginatedLis
     }
 
     override fun onVoucherListMultiPeriodClicked(voucher: Voucher) {
-        println("multiperiod")
+        OtherPeriodBottomSheet().show(this, voucher.totalChild)
     }
 
     override fun onVoucherListClicked(voucher: Voucher) {
