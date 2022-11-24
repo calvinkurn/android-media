@@ -121,8 +121,6 @@ class UserProfileFragment @Inject constructor(
         )
     }
 
-    private var listenerPlayWidget: UserPostBaseAdapter.PlayWidgetCallback? = null
-
     private val pagerAdapter: UserProfilePagerAdapter by lazy(LazyThreadSafetyMode.NONE) {
         UserProfilePagerAdapter(
             childFragmentManager,
@@ -217,7 +215,6 @@ class UserProfileFragment @Inject constructor(
         mainBinding.appBarUserProfile.removeOnOffsetChangedListener(feedFloatingButtonManager.offsetListener)
         feedFloatingButtonManager.cancel()
 
-        listenerPlayWidget = null
         _binding = null
     }
 
@@ -407,7 +404,7 @@ class UserProfileFragment @Inject constructor(
         }
     }
 
-    private fun refreshLandingPageData(isRefreshPost: Boolean = false) {
+    fun refreshLandingPageData(isRefreshPost: Boolean = false) {
         viewModel.submitAction(UserProfileAction.LoadProfile(isRefreshPost))
     }
 
@@ -866,18 +863,7 @@ class UserProfileFragment @Inject constructor(
         when (requestCode) {
             REQUEST_CODE_LOGIN_TO_FOLLOW -> doFollowUnfollow(isFromLogin = true)
             REQUEST_CODE_LOGIN_TO_SET_REMINDER -> viewModel.submitAction(UserProfileAction.ClickUpdateReminder(isFromLogin = true))
-            REQUEST_CODE_PLAY_ROOM -> {
-                val channelId = data?.extras?.getString(EXTRA_CHANNEL_ID) ?: return
-                val totalView = data.extras?.getString(EXTRA_TOTAL_VIEW).orEmpty()
-                val isReminderSet = data.extras?.getBoolean(EXTRA_IS_REMINDER, false) ?: false
-
-               listenerPlayWidget?.updatePlayWidgetLatestData(channelId, totalView, isReminderSet)
-            }
         }
-    }
-
-    fun initListenerPlayWidget(listener: UserPostBaseAdapter.PlayWidgetCallback) {
-        listenerPlayWidget = listener
     }
 
     private fun showUniversalShareBottomSheet() {
@@ -1013,9 +999,6 @@ class UserProfileFragment @Inject constructor(
     }
 
     companion object {
-        private const val EXTRA_TOTAL_VIEW = "EXTRA_TOTAL_VIEW"
-        private const val EXTRA_IS_REMINDER = "EXTRA_IS_REMINDER"
-        private const val EXTRA_CHANNEL_ID = "EXTRA_CHANNEL_ID"
         const val PAGE_NAME_PROFILE = "UserProfile"
         const val FEATURE_SHARE = "share"
         const val EXTRA_DISPLAY_NAME = "display_name"
