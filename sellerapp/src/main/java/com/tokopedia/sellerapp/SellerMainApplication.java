@@ -86,9 +86,9 @@ public class SellerMainApplication extends SellerRouterApplication implements Co
     private static final String PARSER_SCALYR_SA = "android-seller-app-p%s";
     private final String EMBRACE_PRIMARY_CARRIER_KEY = "operatorNameMain";
     private final String EMBRACE_SECONDARY_CARRIER_KEY = "operatorNameSecondary";
-    private final String LEAK_CANARY_TOGGLE_SP_NAME = "mainapp_leakcanary_toggle";
-    private final String LEAK_CANARY_TOGGLE_KEY = "key_leakcanary_toggle";
-    private final String STRICT_MODE_LEAK_PUBLISHER_TOGGLE_KEY = "key_strict_mode_leak_publisher_toggle";
+    private final String LEAK_CANARY_TOGGLE_SP_NAME = "sellerapp_leakcanary_toggle";
+    private final String LEAK_CANARY_TOGGLE_KEY = "key_leakcanary_toggle_seller";
+    private final String STRICT_MODE_LEAK_PUBLISHER_TOGGLE_KEY = "key_strict_mode_leak_publisher_toggle_seller";
     private final boolean LEAK_CANARY_DEFAULT_TOGGLE = true;
     private final boolean STRICT_MODE_LEAK_PUBLISHER_DEFAULT_TOGGLE = false;
 
@@ -149,7 +149,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Co
         EmbraceMonitoring.INSTANCE.setCarrierProperties(this);
 
         showDevOptNotification();
-        initLakPublisher();
+        initDevMonitoringTools();
     }
 
     private TkpdAuthenticatorGql getAuthenticator() {
@@ -364,7 +364,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Co
         new DevOptNotificationManager(this).start();
     }
 
-    private void initLakPublisher(){
+    private void initDevMonitoringTools(){
         DevMonitoring devMonitoring = new DevMonitoring(SellerMainApplication.this);
         devMonitoring.initLeakCanary(getLeakCanaryToggleValue(), getStrictModeLeakPublisherToggleValue(), this);
     }
