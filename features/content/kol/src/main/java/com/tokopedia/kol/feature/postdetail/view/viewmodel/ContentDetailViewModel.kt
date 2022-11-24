@@ -12,7 +12,14 @@ import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.FeedAsgcCampaign
 import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.FeedWidgetData
 import com.tokopedia.kol.common.util.ContentDetailResult
 import com.tokopedia.kol.feature.postdetail.domain.ContentDetailRepository
-import com.tokopedia.kol.feature.postdetail.view.datamodel.*
+import com.tokopedia.kol.feature.postdetail.view.datamodel.ContentDetailUiModel
+import com.tokopedia.kol.feature.postdetail.view.datamodel.DeleteContentModel
+import com.tokopedia.kol.feature.postdetail.view.datamodel.LikeContentModel
+import com.tokopedia.kol.feature.postdetail.view.datamodel.ReportContentModel
+import com.tokopedia.kol.feature.postdetail.view.datamodel.ShopFollowModel
+import com.tokopedia.kol.feature.postdetail.view.datamodel.UGCFollowUnfollowModel
+import com.tokopedia.kol.feature.postdetail.view.datamodel.VisitContentModel
+import com.tokopedia.kol.feature.postdetail.view.datamodel.WishlistContentModel
 import com.tokopedia.kol.feature.postdetail.view.datamodel.type.ContentLikeAction
 import com.tokopedia.kol.feature.postdetail.view.datamodel.type.ShopFollowAction
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -33,7 +40,7 @@ class ContentDetailViewModel @Inject constructor(
     private val _getCDPPostFirstPostData = MutableLiveData<Result<ContentDetailUiModel>>()
     private val _likeKolResp = MutableLiveData<ContentDetailResult<LikeContentModel>>()
     private val _followShopObservable = MutableLiveData<ContentDetailResult<ShopFollowModel>>()
-    private val _followUserObservable = MutableLiveData<ContentDetailResult<Int>>()
+    private val _followUserObservable = MutableLiveData<ContentDetailResult<UGCFollowUnfollowModel>>()
     private val _trackVodVisitContentData = MutableLiveData<ContentDetailResult<VisitContentModel>>()
     private val _atcResp = MutableLiveData<ContentDetailResult<Boolean>>()
     private val _reportResponse = MutableLiveData<ContentDetailResult<ReportContentModel>>()
@@ -63,7 +70,7 @@ class ContentDetailViewModel @Inject constructor(
     val followShopObservable: LiveData<ContentDetailResult<ShopFollowModel>>
         get() = _followShopObservable
 
-    val followUserObservable: LiveData<ContentDetailResult<Int>>
+    val followUserObservable: LiveData<ContentDetailResult<UGCFollowUnfollowModel>>
         get() = _followUserObservable
 
     val vodViewData: LiveData<ContentDetailResult<VisitContentModel>>
@@ -199,7 +206,13 @@ class ContentDetailViewModel @Inject constructor(
     fun followUnFollowUser(isFollow: Boolean, encryptedUserID: String, currentPosition: Int) {
         launchCatchError(block = {
             when (repository.followUnfollowUser(isFollow, encryptedUserID)) {
-                is MutationUiModel.Success -> _followUserObservable.value = ContentDetailResult.Success(currentPosition)
+                is MutationUiModel.Success -> _followUserObservable.value =
+                    ContentDetailResult.Success(
+                        UGCFollowUnfollowModel(
+                            currentPosition = currentPosition,
+                            isFollow = isFollow,
+                        )
+                    )
                 is MutationUiModel.Error -> throw Throwable()
             }
         }, onError = {
