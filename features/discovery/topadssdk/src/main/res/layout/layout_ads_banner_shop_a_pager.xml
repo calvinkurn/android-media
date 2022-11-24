@@ -74,7 +74,7 @@
 
         <LinearLayout
             android:id="@+id/linearLayoutMerchantVoucher"
-            android:layout_width="wrap_content"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
             android:layout_marginStart="8dp"
@@ -110,8 +110,10 @@
             android:layout_marginEnd="8dp"
             android:text="@string/topads_sdk_sale_ends_in"
             android:visibility="gone"
+            android:gravity="end"
             app:layout_constraintBottom_toBottomOf="@id/topAdsFlashSaleTimer"
             app:layout_constraintEnd_toStartOf="@+id/topAdsFlashSaleTimer"
+            app:layout_constraintStart_toEndOf="@id/linearLayoutMerchantVoucher"
             app:layout_constraintTop_toTopOf="@+id/topAdsFlashSaleTimer"
             app:typographyType="display_3"
             tools:visibility="visible" />
