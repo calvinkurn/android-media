@@ -44,6 +44,8 @@ import com.tokopedia.privacycenter.main.section.recommendation.RecommendationSec
 import com.tokopedia.privacycenter.main.section.recommendation.RecommendationViewModel
 import com.tokopedia.privacycenter.main.section.tokopediacare.TokopediaCareSection
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.privacycenter.main.section.privacypolicy.PrivacyPolicySection
+import com.tokopedia.privacycenter.main.section.privacypolicy.PrivacyPolicySectionViewModel
 import com.tokopedia.unifycomponents.isUsingNightModeResources
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.Dispatchers
@@ -85,6 +87,12 @@ class PrivacyCenterFragment :
     private val viewModelRecommendationSection by lazy {
         ViewModelProvider(this, viewModelFactory).get(
             RecommendationViewModel::class.java
+        )
+    }
+
+    private val viewModelPrivacyPolicySectionViewModel by lazy {
+        ViewModelProvider(requireActivity(), viewModelFactory).get(
+            PrivacyPolicySectionViewModel::class.java
         )
     }
 
@@ -344,6 +352,11 @@ class PrivacyCenterFragment :
         override val dsarSection: DSARSection = DSARSection(context)
         override val faqPrivacySection: FaqPrivacySection = FaqPrivacySection(context)
         override val tokopediaCareSection: TokopediaCareSection = TokopediaCareSection(context)
+        override val privacyPolicySection: PrivacyPolicySection = PrivacyPolicySection(
+            context,
+            parentFragmentManager,
+            viewModelPrivacyPolicySectionViewModel
+        )
     }
 
     companion object {

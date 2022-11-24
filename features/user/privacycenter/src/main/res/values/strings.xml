@@ -31,6 +31,13 @@
     <string name="consent_withdrawal_section_title">Persetujuan kamu</string>
     <string name="consent_withdrawal_section_description">Atur fitur apa aja yang boleh akses datamu</string>
 
+    <!--Section | Privacy Policy -->
+    <string name="privacy_policy_label">Privacy Policy</string>
+    <string name="privacy_policy_section_title">Kebijakan Privasi Tokopedia</string>
+    <string name="privacy_policy_section_description">Kebijakan Privasi menjelaskan data pribadimu yang disimpan, bagaimana Tokopedia menggunakannya, dan kenapa Tokopedia memprosesnya.</string>
+    <string name="privacy_policy_bottom_sheet_title">Riwayat Kebijakan Privasi</string>
+    <string name="privacy_policy_show_all_list_button">Lihat Semua</string>
+
     <!--Section | Recommendation and promotion-->
     <string name="privacy_center_recommendation_title">Rekomendasi &amp; promo</string>
     <string name="privacy_center_recommendation_subtitle">Pakai perangkatmu buat penawaran spesial</string>
