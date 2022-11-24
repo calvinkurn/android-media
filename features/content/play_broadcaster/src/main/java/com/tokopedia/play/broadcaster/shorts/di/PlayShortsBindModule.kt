@@ -25,6 +25,8 @@ import com.tokopedia.play.broadcaster.data.repository.*
 import com.tokopedia.play.broadcaster.domain.repository.*
 import com.tokopedia.play.broadcaster.shorts.analytic.PlayShortsAnalytic
 import com.tokopedia.play.broadcaster.shorts.analytic.PlayShortsAnalyticImpl
+import com.tokopedia.play.broadcaster.shorts.analytic.sender.PlayShortsAnalyticSender
+import com.tokopedia.play.broadcaster.shorts.analytic.sender.PlayShortsAnalyticSenderImpl
 import com.tokopedia.play.broadcaster.shorts.data.PlayShortsRepositoryImpl
 import com.tokopedia.play.broadcaster.shorts.domain.PlayShortsRepository
 import com.tokopedia.play.broadcaster.shorts.domain.manager.PlayShortsAccountManager
@@ -63,6 +65,10 @@ abstract class PlayShortsBindModule {
     @Binds
     @PlayShortsScope
     abstract fun bindPlayShortsAnalytic(analytic: PlayShortsAnalyticImpl): PlayShortsAnalytic
+
+    @Binds
+    @PlayShortsScope
+    abstract fun bindPlayShortsAnalyticSender(analyticSender: PlayShortsAnalyticSenderImpl): PlayShortsAnalyticSender
 
     /** Broadcaster Repository */
     @Binds

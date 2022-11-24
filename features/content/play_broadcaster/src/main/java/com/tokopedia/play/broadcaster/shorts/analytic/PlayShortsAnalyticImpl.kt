@@ -2,6 +2,21 @@ package com.tokopedia.play.broadcaster.shorts.analytic
 
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
+import com.tokopedia.play.broadcaster.shorts.analytic.const.Label.IS_LOGGED_IN_STATUS_LABEL
+import com.tokopedia.play.broadcaster.shorts.analytic.const.Label.SCREEN_NAME_LABEL
+import com.tokopedia.play.broadcaster.shorts.analytic.const.Label.SESSION_IRIS_LABEL
+import com.tokopedia.play.broadcaster.shorts.analytic.const.Label.TRACKER_ID_LABEL
+import com.tokopedia.play.broadcaster.shorts.analytic.const.Value.SHORTS_BUSINESS_UNIT
+import com.tokopedia.play.broadcaster.shorts.analytic.const.Value.SHORTS_CLICK_CONTENT
+import com.tokopedia.play.broadcaster.shorts.analytic.const.Value.SHORTS_CURRENT_SITE_MAIN
+import com.tokopedia.play.broadcaster.shorts.analytic.const.Value.SHORTS_CURRENT_SITE_SELLER
+import com.tokopedia.play.broadcaster.shorts.analytic.const.Value.SHORTS_EVENT_CATEGORY
+import com.tokopedia.play.broadcaster.shorts.analytic.const.Value.SHORTS_OPEN_SCREEN
+import com.tokopedia.play.broadcaster.shorts.analytic.const.Value.SHORTS_TYPE_SELLER
+import com.tokopedia.play.broadcaster.shorts.analytic.const.Value.SHORTS_TYPE_USER
+import com.tokopedia.play.broadcaster.shorts.analytic.const.Value.SHORTS_VIEW_CONTENT
+import com.tokopedia.play.broadcaster.shorts.analytic.helper.PlayShortsAnalyticHelper
+import com.tokopedia.play.broadcaster.shorts.analytic.sender.PlayShortsAnalyticSender
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.builder.Tracker
 import com.tokopedia.user.session.UserSessionInterface
@@ -11,7 +26,8 @@ import javax.inject.Inject
  * Created By : Jonathan Darwin on November 23, 2022
  */
 class PlayShortsAnalyticImpl @Inject constructor(
-    private val userSession: UserSessionInterface
+    private val userSession: UserSessionInterface,
+    private val analyticSender: PlayShortsAnalyticSender,
 ) : PlayShortsAnalytic {
 
     /**
@@ -28,16 +44,6 @@ class PlayShortsAnalyticImpl @Inject constructor(
      * 5. Row 59 & 60 -> is it expected we use suffix "bottom sheet" while we are showing a popup dialog?
      * 6. Row 20 - 24 -> theres a possiblity where eventLabel is " - " bcs theres no selected account, so how?
      */
-
-    private val currentSite: String
-        get() = if (GlobalConfig.isSellerApp()) {
-            SHORTS_CURRENT_SITE_SELLER
-        } else {
-            SHORTS_CURRENT_SITE_MAIN
-        }
-
-    private val sessionIris: String
-        get() = TrackApp.getInstance().gtm.irisSessionId
 
     /** Row 10 */
     override fun clickBackOnPreparationPage(account: ContentAccountUiModel) {
@@ -258,7 +264,7 @@ class PlayShortsAnalyticImpl @Inject constructor(
     /** Row 36 */
     override fun openScreenTitleForm(account: ContentAccountUiModel) {
         sendGeneralOpenScreen(
-            screenName = "/play broadcast short - title page - ${getEventLabelByAccount(account)}",
+            screenName = "/play broadcast short - title page - ${PlayShortsAnalyticHelper.getEventLabelByAccount(account)}",
             trackerId = "37559",
         )
     }
@@ -284,7 +290,7 @@ class PlayShortsAnalyticImpl @Inject constructor(
     /** Row 57 */
     override fun openScreenCoverForm(account: ContentAccountUiModel) {
         sendGeneralOpenScreen(
-            screenName = "/play broadcast short - cover page - ${getEventLabelByAccount(account)}",
+            screenName = "/play broadcast short - cover page - ${PlayShortsAnalyticHelper.getEventLabelByAccount(account)}",
             trackerId = "37580"
         )
     }
@@ -320,7 +326,7 @@ class PlayShortsAnalyticImpl @Inject constructor(
     override fun clickContentTag(tag: String, account: ContentAccountUiModel) {
         sendGeneralClickEvent(
             eventAction = "click - content tag",
-            eventLabel = "${account.id} - $tag - ${getAccountType(account)}",
+            eventLabel = "${account.id} - $tag - ${PlayShortsAnalyticHelper.getAccountType(account)}",
             trackerId = "37585"
         )
     }
@@ -329,7 +335,7 @@ class PlayShortsAnalyticImpl @Inject constructor(
     override fun clickUploadVideo(channelId: String, account: ContentAccountUiModel) {
         sendGeneralClickEvent(
             eventAction = "click - upload video",
-            eventLabel = "${getEventLabelByAccount(account)} - $channelId",
+            eventLabel = "${PlayShortsAnalyticHelper.getEventLabelByAccount(account)} - $channelId",
             trackerId = "37586"
         )
     }
@@ -337,7 +343,7 @@ class PlayShortsAnalyticImpl @Inject constructor(
     /** Row 65 */
     override fun openScreenSummaryPage(account: ContentAccountUiModel) {
         sendGeneralOpenScreen(
-            screenName = "/play broadcast short - summary page - ${getEventLabelByAccount(account)}",
+            screenName = "/play broadcast short - summary page - ${PlayShortsAnalyticHelper.getEventLabelByAccount(account)}",
             trackerId = "37588",
         )
     }
@@ -364,13 +370,7 @@ class PlayShortsAnalyticImpl @Inject constructor(
         screenName: String,
         trackerId: String,
     ) {
-        sendGeneralEvent(
-            Tracker.Builder()
-                .setEvent(SHORTS_OPEN_SCREEN)
-                .setCustomProperty(IS_LOGGED_IN_STATUS_LABEL, userSession.isLoggedIn)
-                .setCustomProperty(TRACKER_ID_LABEL, trackerId)
-                .setCustomProperty(SCREEN_NAME_LABEL, screenName)
-        )
+        analyticSender.sendGeneralOpenScreen(screenName, trackerId)
     }
 
     private fun sendGeneralViewEvent(
@@ -378,14 +378,7 @@ class PlayShortsAnalyticImpl @Inject constructor(
         account: ContentAccountUiModel,
         trackerId: String
     ) {
-        sendGeneralEvent(
-            Tracker.Builder()
-                .setEvent(SHORTS_VIEW_CONTENT)
-                .setEventCategory(SHORTS_EVENT_CATEGORY)
-                .setEventAction(eventAction)
-                .setEventLabel(getEventLabelByAccount(account))
-                .setCustomProperty(TRACKER_ID_LABEL, trackerId)
-        )
+        analyticSender.sendGeneralViewEvent(eventAction, account, trackerId)
     }
 
     private fun sendGeneralClickEvent(
@@ -393,14 +386,7 @@ class PlayShortsAnalyticImpl @Inject constructor(
         account: ContentAccountUiModel,
         trackerId: String
     ) {
-        sendGeneralEvent(
-            Tracker.Builder()
-                .setEvent(SHORTS_CLICK_CONTENT)
-                .setEventCategory(SHORTS_EVENT_CATEGORY)
-                .setEventAction(eventAction)
-                .setEventLabel(getEventLabelByAccount(account))
-                .setCustomProperty(TRACKER_ID_LABEL, trackerId)
-        )
+        analyticSender.sendGeneralClickEvent(eventAction, account, trackerId)
     }
 
     private fun sendGeneralClickEvent(
@@ -408,54 +394,6 @@ class PlayShortsAnalyticImpl @Inject constructor(
         eventLabel: String,
         trackerId: String
     ) {
-        sendGeneralEvent(
-            Tracker.Builder()
-                .setEvent(SHORTS_CLICK_CONTENT)
-                .setEventCategory(SHORTS_EVENT_CATEGORY)
-                .setEventAction(eventAction)
-                .setEventLabel(eventLabel)
-                .setCustomProperty(TRACKER_ID_LABEL, trackerId)
-        )
-    }
-
-    private fun sendGeneralEvent(
-        trackerBuilder: Tracker.Builder
-    ) {
-        trackerBuilder
-            .setBusinessUnit(SHORTS_BUSINESS_UNIT)
-            .setCurrentSite(currentSite)
-            .setUserId(userSession.userId)
-            .setCustomProperty(SESSION_IRIS_LABEL, sessionIris)
-            .build()
-            .send()
-    }
-
-    private fun getEventLabelByAccount(account: ContentAccountUiModel): String {
-        return "${account.id} - ${getAccountType(account)}"
-    }
-
-    private fun getAccountType(account: ContentAccountUiModel): String {
-        return when {
-            account.isShop -> SHORTS_TYPE_SELLER
-            account.isUser -> SHORTS_TYPE_USER
-            else -> ""
-        }
-    }
-
-    companion object {
-        private const val SHORTS_OPEN_SCREEN = "openScreen"
-        private const val SHORTS_VIEW_CONTENT = "viewContentIris"
-        private const val SHORTS_CLICK_CONTENT = "clickContent"
-        private const val SHORTS_EVENT_CATEGORY = "play broadcast short"
-        private const val SHORTS_BUSINESS_UNIT = "play"
-        private const val SHORTS_TYPE_USER = "user"
-        private const val SHORTS_TYPE_SELLER = "seller"
-        private const val SHORTS_CURRENT_SITE_SELLER = "tokopediaseller"
-        private const val SHORTS_CURRENT_SITE_MAIN = "tokopediamarketplace"
-
-        private const val TRACKER_ID_LABEL = "trackerId"
-        private const val SESSION_IRIS_LABEL = "sessionIris"
-        private const val SCREEN_NAME_LABEL = "screenName"
-        private const val IS_LOGGED_IN_STATUS_LABEL = "isLoggedInStatus"
+        analyticSender.sendGeneralClickEvent(eventAction, eventLabel, trackerId)
     }
 }
