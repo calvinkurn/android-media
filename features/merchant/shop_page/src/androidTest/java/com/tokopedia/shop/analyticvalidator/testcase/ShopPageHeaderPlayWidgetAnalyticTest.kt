@@ -23,7 +23,6 @@ import org.junit.Rule
 import org.junit.Test
 import java.util.concurrent.TimeUnit
 
-
 /**
  * Created by mzennis on 02/11/20.
  */
@@ -33,11 +32,11 @@ class ShopPageHeaderPlayWidgetAnalyticTest {
 
         private const val IDLING_RESOURCE = "play_widget_fake_login"
         private const val FILE_NAME = "tracker/shop/shop_page_header_play_widget.json"
-
     }
 
     @get:Rule
     var intentsTestRule: IntentsTestRule<ShopPageActivity> = IntentsTestRule(ShopPageActivity::class.java, false, false)
+
     @get:Rule
     var cassavaRule = CassavaTestRule()
 
@@ -52,7 +51,7 @@ class ShopPageHeaderPlayWidgetAnalyticTest {
 
             override fun isIdleNow(): Boolean {
                 val buttonSetup = intentsTestRule.activity.findViewById<CardView>(R.id.play_sgc_widget_container)
-                val isIdle =  buttonSetup != null && buttonSetup.visibility == View.VISIBLE
+                val isIdle = buttonSetup != null && buttonSetup.visibility == View.VISIBLE
                 if (isIdle) callback?.onTransitionToIdle()
                 return isIdle
             }
@@ -70,7 +69,6 @@ class ShopPageHeaderPlayWidgetAnalyticTest {
         IdlingPolicies.setMasterPolicyTimeout(1, TimeUnit.MINUTES)
         IdlingPolicies.setIdlingResourceTimeout(1, TimeUnit.MINUTES)
 
-
 //        mockLogin()
     }
 
@@ -78,20 +76,20 @@ class ShopPageHeaderPlayWidgetAnalyticTest {
     fun openShopPageJourney() {
         /**
          * Need to be fixed later
-        intentsTestRule.launchActivity(Intent().apply {
-            putExtra(ShopParamConstant.EXTRA_SHOP_ID, "1959733")
-        })
-        IdlingRegistry.getInstance().register(idlingResourceInit)
-        Espresso.onIdle()
+         intentsTestRule.launchActivity(Intent().apply {
+         putExtra(ShopParamConstant.EXTRA_SHOP_ID, "1959733")
+         })
+         IdlingRegistry.getInstance().register(idlingResourceInit)
+         Espresso.onIdle()
 
-        // click widget "Yuk Mulai"
-        Espresso.onView(CommonMatcher.firstView(ViewMatchers.withId(R.id.container_lottie)))
-                .perform(ViewActions.click())
+         // click widget "Yuk Mulai"
+         Espresso.onView(CommonMatcher.firstView(ViewMatchers.withId(R.id.container_lottie)))
+         .perform(ViewActions.click())
 
-        intentsTestRule.activity.finish()
-        Thread.sleep(5000)
+         intentsTestRule.activity.finish()
+         Thread.sleep(5000)
 
-        validateTracker()
+         validateTracker()
          */
     }
 
@@ -103,10 +101,10 @@ class ShopPageHeaderPlayWidgetAnalyticTest {
 
     private fun mockLogin() {
         InstrumentationAuthHelper.loginToAnUser(
-                targetContext.applicationContext as Application,
-                idlingResourceLogin,
-                userName = "andhika.djaffri+1@tokopedia.com",
-                password = "tokopedia789"
+            targetContext.applicationContext as Application,
+            idlingResourceLogin,
+            userName = "andhika.djaffri+1@tokopedia.com",
+            password = "tokopedia789"
         )
         IdlingRegistry.getInstance().register(idlingResourceLogin)
         Espresso.onIdle()
