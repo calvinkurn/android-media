@@ -52,6 +52,9 @@ class TokoChatCourierRemoteConfigImpl @Inject constructor(
     override val courierEventProbability: Int
         get() = courierConfigData.courierEventProbability
 
+    /**
+     * Should not be 0
+     */
     override val courierEventSamplingUpperBound: Int
         get() = courierConfigData.courierEventSamplingUpperBound
 
