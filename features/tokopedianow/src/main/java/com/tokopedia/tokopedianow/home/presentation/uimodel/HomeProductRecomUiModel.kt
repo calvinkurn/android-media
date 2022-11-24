@@ -11,7 +11,8 @@ data class HomeProductRecomUiModel(
     val productList: List<TokoNowProductCardCarouselItemUiModel>,
     val seeMoreModel: TokoNowSeeMoreCardCarouselUiModel? = null,
     val headerModel: TokoNowDynamicHeaderUiModel? = null,
-    val realTimeRecom: HomeRealTimeRecomUiModel = HomeRealTimeRecomUiModel()
+    val realTimeRecom: HomeRealTimeRecomUiModel = HomeRealTimeRecomUiModel(),
+    val categoryBreadcrumbs: String = ""
 ) : HomeLayoutUiModel(id) {
     override fun type(typeFactory: HomeTypeFactory): Int {
         return typeFactory.type(this)

@@ -62,7 +62,6 @@ class TokoNowProductCardCarouselView @JvmOverloads constructor(
         ).apply {
             root.addOnScrollListener(scrollListener)
             root.addItemDecoration(ProductCardCarouselDecoration(context))
-            root.itemAnimator = null
         }
 
         binding.root.layoutManager = layoutManager
@@ -144,8 +143,9 @@ class TokoNowProductCardCarouselView @JvmOverloads constructor(
 
     private fun restoreInstanceStateToLayoutManager() {
         launch {
-            val scrollState = listener?.getScrollState()
-            layoutManager.onRestoreInstanceState(scrollState)
+            listener?.getScrollState()?.let {
+                layoutManager.onRestoreInstanceState(it)
+            }
         }
     }
 
@@ -205,5 +205,12 @@ class TokoNowProductCardCarouselView @JvmOverloads constructor(
             state: Parcelable?
         )
         fun getScrollState(): Parcelable?
+    }
+
+
+    interface TokoNowProductCardCarouseBasicListener: TokoNowProductCardCarouselListener{
+        override fun onSeeMoreClicked(seeMoreUiModel: TokoNowSeeMoreCardCarouselUiModel) {}
+        override fun saveScrollState(state: Parcelable?) {}
+        override fun getScrollState(): Parcelable? = null
     }
 }

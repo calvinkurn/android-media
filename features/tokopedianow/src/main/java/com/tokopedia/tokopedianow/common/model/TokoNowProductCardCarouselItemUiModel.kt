@@ -30,4 +30,10 @@ data class TokoNowProductCardCarouselItemUiModel(
     override fun type(typeFactory: TokoNowProductCardCarouselTypeFactory): Int {
         return typeFactory.type(this)
     }
+
+    fun getProductId() = productCardModel.productId
+
+    fun getProductName() = productCardModel.name
+
+    fun getProductPrice() = productCardModel.price
 }

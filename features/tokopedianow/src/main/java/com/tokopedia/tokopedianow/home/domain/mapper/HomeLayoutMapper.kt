@@ -393,31 +393,31 @@ object HomeLayoutMapper {
             PRODUCT_RECOM -> {
                 filter { it.layout is HomeProductRecomUiModel }.forEach { homeLayoutItemUiModel ->
                     val layout = homeLayoutItemUiModel.layout as HomeProductRecomUiModel
-                    val realTimeRecomList = layout.realTimeRecom.widget?.recommendationItemList.orEmpty()
+                    val realTimeRecomList = layout.realTimeRecom.productList
                     val cartProductIds = miniCartData.miniCartItems.values.mapNotNull { if (it is MiniCartItem.MiniCartItemProduct) it.productId else null }
-                    val deletedProducts = layout.productList.filter { it.productCardModel.productId !in cartProductIds }
-                    val deletedRtrProducts = realTimeRecomList.filter { it.productId.toString() !in cartProductIds }
+                    val deletedProducts = layout.productList.filter { it.getProductId() !in cartProductIds }
+                    val deletedRtrProducts = realTimeRecomList.filter { it.getProductId() !in cartProductIds }
 
                     deletedProducts.forEach { item ->
-                        removeProductRecomATC(item.productCardModel.productId, item.parentId, miniCartData)
+                        removeProductRecomATC(item.getProductId(), item.parentId, miniCartData)
                     }
 
                     deletedRtrProducts.forEach {
-                        removeProductRecomATC(it.productId.toString(), it.parentID.toString(), miniCartData)
+                        removeProductRecomATC(it.getProductId(), it.parentId, miniCartData)
                     }
                 }
             }
             MIX_LEFT_CAROUSEL_ATC -> {
                 filter { it.layout is HomeLeftCarouselAtcUiModel }.forEach { homeLayoutItemUiModel ->
                     val layout = homeLayoutItemUiModel.layout as HomeLeftCarouselAtcUiModel
-                    val realTimeRecomList = layout.realTimeRecom.widget?.recommendationItemList.orEmpty()
+                    val realTimeRecomList = layout.realTimeRecom.productList
 
                     val miniCartItems = miniCartData.miniCartItems.values
                         .filterIsInstance<MiniCartItem.MiniCartItemProduct>()
                     val cartProductIds = miniCartItems.map { it.productId }
 
                     val deletedProducts: MutableList<HomeLeftCarouselAtcProductCardUiModel> = mutableListOf()
-                    val deletedRtrProducts = realTimeRecomList.filter { it.productId.toString() !in cartProductIds }
+                    val deletedRtrProducts = realTimeRecomList.filter { it.getProductId() !in cartProductIds }
 
                     layout.productList.forEach {
                         if ((it is HomeLeftCarouselAtcProductCardUiModel) && it.id !in cartProductIds) {
@@ -431,7 +431,7 @@ object HomeLayoutMapper {
                         removeMixLeftATCProduct(item.id.toString(), item.parentProductId, variantGroup)
                     }
                     deletedRtrProducts.forEach {
-                        removeMixLeftATCProduct(it.productId.toString(), it.parentID.toString(), variantGroup)
+                        removeMixLeftATCProduct(it.getProductId(), it.parentId, variantGroup)
                     }
                 }
             }
@@ -512,11 +512,11 @@ object HomeLayoutMapper {
             val layout = homeLayoutItemUiModel.layout
             val uiModel = layout as HomeProductRecomUiModel
             val newRecommendationList = uiModel.productList.toMutableList()
-            val recommendationItem = newRecommendationList.firstOrNull { it.productCardModel.productId == productId }
+            val recommendationItem = newRecommendationList.firstOrNull { it.getProductId() == productId }
 
             val realTimeRecom = uiModel.realTimeRecom
-            val rtrItemList = realTimeRecom.widget?.recommendationItemList.orEmpty().toMutableList()
-            val rtrItem = rtrItemList.firstOrNull { it.productId.toString() == productId }
+            val rtrItemList = realTimeRecom.productList.toMutableList()
+            val rtrItem = rtrItemList.firstOrNull { it.getProductId() == productId }
             val rtrIndex = rtrItemList.indexOf(rtrItem)
 
             if (recommendationItem?.productCardModel?.orderQuantity != quantity) {
@@ -527,12 +527,12 @@ object HomeLayoutMapper {
 
             }
 
-            rtrItemList.getOrNull(rtrIndex)?.copy(quantity = quantity)?.let {
-                rtrItemList[rtrIndex] = it
+            rtrItemList.getOrNull(rtrIndex)?.productCardModel?.copy(orderQuantity = quantity)?.apply {
+                rtrItemList[rtrIndex] = rtrItemList[rtrIndex].copy(productCardModel = this)
             }
 
             updateItemById(layout.getVisitableId()) {
-                val newRtr = realTimeRecom.copy(widget = realTimeRecom.widget?.copy(recommendationItemList = rtrItemList))
+                val newRtr = realTimeRecom.copy(productList = rtrItemList)
                 val newModel = uiModel.copy(productList = newRecommendationList, realTimeRecom = newRtr)
                 homeLayoutItemUiModel.copy(layout = newModel)
             }
@@ -558,19 +558,21 @@ object HomeLayoutMapper {
             val index = layoutUiModel.productList.indexOf(productVisitable)
 
             val realTimeRecom = layoutUiModel.realTimeRecom
-            val rtrItemList = realTimeRecom.widget?.recommendationItemList.orEmpty().toMutableList()
-            val rtrItem = rtrItemList.firstOrNull { it.productId.toString() == productId }
-            val rtrProductUiModel = rtrItemList.firstOrNull { it.productId.toString() == productId }
+            val rtrItemList = realTimeRecom.productList.toMutableList()
+            val rtrItem = rtrItemList.firstOrNull { it.getProductId() == productId }
+            val rtrProductUiModel = rtrItemList.firstOrNull { it.getProductId() == productId }
             val rtrIndex = rtrItemList.indexOf(rtrItem)
 
             updateItemById(layout.getVisitableId()) {
                 productUiModel?.productCardModel?.copy(orderQuantity = quantity)?.let {
                     newProductList[index] = productUiModel.copy(productCardModel = it)
                 }
-                rtrProductUiModel?.copy(quantity = quantity)?.let { rtrItemList[rtrIndex] = it }
 
-                val rtrWidget = realTimeRecom.widget?.copy(recommendationItemList = rtrItemList)
-                val newRealTimeRecom = realTimeRecom.copy(widget = rtrWidget)
+                rtrProductUiModel?.productCardModel?.copy(orderQuantity = quantity)?.let {
+                    rtrItemList[rtrIndex] = rtrProductUiModel.copy(productCardModel = it)
+                }
+
+                val newRealTimeRecom = realTimeRecom.copy(productList = rtrItemList)
 
                 homeLayoutItemUiModel.copy(layout = layoutUiModel.copy(
                     productList = newProductList,
@@ -611,12 +613,12 @@ object HomeLayoutMapper {
         return filter { it.layout is HomeProductRecomUiModel }.firstOrNull { uiModel ->
             val productRecom = uiModel.layout as HomeProductRecomUiModel
             val recommendations = productRecom.productList
-            recommendations.firstOrNull { it.productCardModel.productId == productId } != null
+            recommendations.firstOrNull { it.getProductId() == productId } != null
         }?.let { uiModel ->
             val productRecom = uiModel.layout as HomeProductRecomUiModel
             val recommendations = productRecom.productList.toMutableList()
 
-            val product = recommendations.first { it.productCardModel.productId == productId }
+            val product = recommendations.first { it.getProductId() == productId }
             val position = recommendations.indexOf(product)
 
             recommendations[position] = product.copy(productCardModel = product.productCardModel.copy(orderQuantity = quantity))

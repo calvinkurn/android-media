@@ -11,13 +11,11 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
-import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
-import com.tokopedia.recommendation_widget_common.widget.carousel.RecomCarouselWidgetBasicListener
-import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
-import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselTokonowListener
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.analytics.RealTimeRecommendationAnalytics
 import com.tokopedia.tokopedianow.common.listener.RealTimeRecommendationListener
+import com.tokopedia.tokopedianow.common.model.TokoNowProductCardCarouselItemUiModel
+import com.tokopedia.tokopedianow.common.view.productcard.TokoNowProductCardCarouselView
 import com.tokopedia.tokopedianow.databinding.LayoutTokopedianowRealTimeRecommendationBinding
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeRealTimeRecomUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeRealTimeRecomUiModel.RealTimeRecomWidgetState
@@ -27,8 +25,8 @@ class RealTimeRecommendationCarouselView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null,
     defStyleAttr: Int = 0
-) : BaseCustomView(context, attrs, defStyleAttr), RecomCarouselWidgetBasicListener,
-    RecommendationCarouselTokonowListener {
+) : BaseCustomView(context, attrs, defStyleAttr),
+    TokoNowProductCardCarouselView.TokoNowProductCardCarouseBasicListener {
 
     companion object {
         private const val FIRST_ITEM_POSITION = 0
@@ -56,7 +54,7 @@ class RealTimeRecommendationCarouselView @JvmOverloads constructor(
             RealTimeRecomWidgetState.LOADING -> renderLoadingState()
             RealTimeRecomWidgetState.READY -> renderRealTimeRecom(data)
             RealTimeRecomWidgetState.REFRESH -> {
-                renderRecommendationCarousel(data)
+                renderProductCarousel(data)
                 renderRefreshRecommendation(data)
                 trackRefreshImpression(data)
             }
@@ -65,18 +63,18 @@ class RealTimeRecommendationCarouselView @JvmOverloads constructor(
     }
 
     private fun scrollToFirstPosition() {
-        itemView?.recommendationCarousel
-            ?.findViewById<RecyclerView>(com.tokopedia.recommendation_widget_common.R.id.rv_product)
+        itemView?.productCarousel
+            ?.findViewById<RecyclerView>(R.id.recycler_view)
             ?.scrollToPosition(FIRST_ITEM_POSITION)
     }
 
     private fun renderRealTimeRecom(data: HomeRealTimeRecomUiModel) {
-        val widget = data.widget
+        val productList = data.productList
 
-        if (widget?.recommendationItemList?.isNotEmpty() == true) {
+        if (productList.isNotEmpty()) {
             renderTitle(data)
             renderProductImage(data)
-            renderRecommendationCarousel(data)
+            renderProductCarousel(data)
             renderCloseBtn(data)
             hideRefreshRecommendation()
             hideProgressBar()
@@ -127,17 +125,11 @@ class RealTimeRecommendationCarouselView @JvmOverloads constructor(
         itemView?.textRefreshRecommendation?.hide()
     }
 
-    private fun renderRecommendationCarousel(data: HomeRealTimeRecomUiModel) {
-        data.widget?.let { widget ->
-            itemView?.recommendationCarousel?.bind(
-                carouselData = RecommendationCarouselData(
-                    recommendationData = widget,
-                    state = data.carouselState,
-                ),
-                basicListener = this,
-                tokonowListener = this
-            )
-            itemView?.recommendationCarousel?.show()
+    private fun renderProductCarousel(data: HomeRealTimeRecomUiModel) {
+        itemView?.productCarousel?.apply {
+            setListener(this@RealTimeRecommendationCarouselView)
+            bindItems(items = data.productList)
+            show()
         }
     }
 
@@ -179,7 +171,7 @@ class RealTimeRecommendationCarouselView @JvmOverloads constructor(
             textTitle.hide()
             textRefreshRecommendation.hide()
             imageClose.hide()
-            recommendationCarousel.hide()
+            productCarousel.hide()
             progressBar.hide()
             container.hide()
         }
@@ -203,112 +195,70 @@ class RealTimeRecommendationCarouselView @JvmOverloads constructor(
         analytics?.trackRefreshImpression(data.parentProductId)
     }
 
-    private fun trackProductImpression(recomItem: RecommendationItem, position: Int) {
+    private fun trackProductImpression(position: Int, product: TokoNowProductCardCarouselItemUiModel) {
         val headerName = getTitle(rtrData).orEmpty()
         val productId = rtrData?.parentProductId.orEmpty()
-        analytics?.trackProductImpression(headerName, productId, recomItem, position)
+        analytics?.trackProductImpression(headerName, productId, product, position)
     }
 
-    private fun trackProductClick(recomItem: RecommendationItem, itemPosition: Int) {
+    private fun trackProductClick(position: Int, product: TokoNowProductCardCarouselItemUiModel) {
         val headerName = getTitle(rtrData).orEmpty()
         val productId = rtrData?.parentProductId.orEmpty()
-        analytics?.trackProductClick(headerName, productId, recomItem, itemPosition)
+        analytics?.trackProductClick(headerName, productId, product, position)
     }
 
 
-    private fun trackProductAddToCart(recomItem: RecommendationItem, quantity: Int) {
+    private fun trackProductAddToCart(product: TokoNowProductCardCarouselItemUiModel, quantity: Int) {
         val productId = rtrData?.parentProductId.orEmpty()
-        analytics?.trackAddToCart(productId, recomItem, quantity)
+        analytics?.trackAddToCart(productId, product, quantity)
     }
 
     private fun setData(data: HomeRealTimeRecomUiModel) {
         rtrData = data
     }
 
-    override fun onRecomBannerImpressed(
-        data: RecommendationCarouselData,
-        adapterPosition: Int
+    override fun onProductCardClicked(
+        position: Int,
+        product: TokoNowProductCardCarouselItemUiModel
     ) {
+        listener?.onRecomProductCardClicked(position, product)
+        trackProductClick(position, product)
     }
 
-    override fun onRecomBannerClicked(
-        data: RecommendationCarouselData,
-        applink: String,
-        adapterPosition: Int
+    override fun onProductCardImpressed(
+        position: Int,
+        product: TokoNowProductCardCarouselItemUiModel
     ) {
+        trackProductImpression(position, product)
     }
 
-    override fun onChannelWidgetEmpty() {
-    }
-
-    override fun onChannelExpired(
-        data: RecommendationCarouselData,
-        channelPosition: Int
-    ) {
-    }
-
-    override fun onRecomChannelImpressed(data: RecommendationCarouselData) { /* nothing to do */
-    }
-
-    override fun onWidgetFail(pageName: String, e: Throwable) {
-    }
-
-    override fun onShowError(pageName: String, e: Throwable) {
-    }
-
-    override fun onRecomProductCardImpressed(
-        data: RecommendationCarouselData,
-        recomItem: RecommendationItem,
-        itemPosition: Int,
-        adapterPosition: Int
-    ) {
-        trackProductImpression(recomItem, itemPosition)
-    }
-
-    override fun onSeeAllBannerClicked(
-        data: RecommendationCarouselData,
-        applink: String
-    ) {
-    }
-
-    override fun onRecomProductCardClicked(
-        data: RecommendationCarouselData,
-        recomItem: RecommendationItem,
-        applink: String,
-        itemPosition: Int,
-        adapterPosition: Int
-    ) {
-        listener?.onRecomProductCardClicked(
-            recomItem,
-            data.recommendationData.title,
-            recomItem.position.toString(),
-            applink
-        )
-        trackProductClick(recomItem, itemPosition)
-    }
-
-    override fun onRecomProductCardAddToCartNonVariant(
-        data: RecommendationCarouselData,
-        recomItem: RecommendationItem,
-        adapterPosition: Int,
+    override fun onProductCardAnimationFinished(
+        position: Int,
+        product: TokoNowProductCardCarouselItemUiModel,
         quantity: Int
     ) {
-        listener?.onAddToCartProductNonVariant(
-            rtrData?.channelId.orEmpty(),
-            recomItem,
-            quantity,
-            data.recommendationData.title,
-            recomItem.position.toString()
-        )
-        trackProductAddToCart(recomItem, quantity)
+
     }
 
-    override fun onRecomProductCardAddVariantClick(
-        data: RecommendationCarouselData,
-        recomItem: RecommendationItem,
-        adapterPosition: Int
+    override fun onProductCardQuantityChanged(
+        position: Int,
+        product: TokoNowProductCardCarouselItemUiModel,
+        quantity: Int
     ) {
-        listener?.onAddToCartProductVariantClick(data, recomItem, adapterPosition)
+        val channelId = rtrData?.channelId.orEmpty()
+        listener?.onAddToCartProductNonVariant(
+            channelId,
+            product,
+            quantity
+        )
+        trackProductAddToCart(product, quantity)
+    }
+
+    override fun onProductCardAddVariantClicked(
+        position: Int,
+        product: TokoNowProductCardCarouselItemUiModel
+    ) {
+        listener?.onAddToCartProductVariantClick(position, product)
     }
 }
 
