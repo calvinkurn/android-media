@@ -352,7 +352,8 @@ class ShipmentPresenterSaveShipmentStateTest {
                     ).apply {
                         deliveryProduct = DeliveryProduct(
                             shipperId = 3,
-                            shipperProductId = 4
+                            shipperProductId = 4,
+                            validationMetadata = "{\"timeslot_id\":2022092014123,\"schedule_date\":\"2022-09-20T00:00:00Z\",\"shipping_price\":10000}"
                         )
                     }
                 }
@@ -382,9 +383,15 @@ class ShipmentPresenterSaveShipmentStateTest {
         val shopProductDataList = data.shopProductDataList
         assertEquals(1, shopProductDataList?.size ?: 0)
 
-        val shippingInfoData = shopProductDataList?.first()?.shippingInfoData
+        val firstShopProductDataList = data.shopProductDataList?.first()
+        val shippingInfoData = firstShopProductDataList?.shippingInfoData
+
         assertEquals(1, shippingInfoData?.shippingId ?: 0)
         assertEquals(2, shippingInfoData?.spId ?: 0)
+        assertEquals(
+            "",
+            firstShopProductDataList?.validationMetadata ?: ""
+        )
     }
 
     @Test
@@ -412,6 +419,7 @@ class ShipmentPresenterSaveShipmentStateTest {
                     }
                 }
             }
+            validationMetadata = "{\"timeslot_id\":2022092014123,\"schedule_date\":\"2022-09-20T00:00:00Z\",\"shipping_price\":10000}"
         }
 
         val addressId = "123"
@@ -437,8 +445,13 @@ class ShipmentPresenterSaveShipmentStateTest {
         val shopProductDataList = data.shopProductDataList
         assertEquals(1, shopProductDataList?.size ?: 0)
 
-        val shippingInfoData = shopProductDataList?.first()?.shippingInfoData
+        val firstShopProductDataList = data.shopProductDataList?.first()
+        val shippingInfoData = firstShopProductDataList?.shippingInfoData
         assertEquals(3, shippingInfoData?.shippingId ?: 0)
         assertEquals(4, shippingInfoData?.spId ?: 0)
+        assertEquals(
+            "{\"timeslot_id\":2022092014123,\"schedule_date\":\"2022-09-20T00:00:00Z\",\"shipping_price\":10000}",
+            firstShopProductDataList?.validationMetadata ?: ""
+        )
     }
 }

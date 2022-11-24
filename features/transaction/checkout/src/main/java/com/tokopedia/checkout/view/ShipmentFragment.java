@@ -2712,7 +2712,6 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                         ordersItem.setShippingSubsidy(0);
                         ordersItem.setShippingPrice(0);
                         ordersItem.setEtaText("");
-                        ordersItem.setValidationMetadata("");
                     }
                     ordersItem.setValidationMetadata(shipmentCartItemModel.getValidationMetadata());
                 } else {

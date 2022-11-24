@@ -64,7 +64,7 @@ class ShipmentCourierConverterTest {
         )
 
         // Then
-        assertEquals(false, courierItemData.scheduleDeliveryUiModel?.isSelected == true)
+        assertEquals(false, courierItemData.scheduleDeliveryUiModel!!.isSelected)
     }
 
     @Test
@@ -91,7 +91,7 @@ class ShipmentCourierConverterTest {
         )
 
         // Then
-        assertEquals(true, courierItemData.scheduleDeliveryUiModel?.isSelected == true)
+        assertEquals(true, courierItemData.scheduleDeliveryUiModel!!.isSelected)
     }
 
     @Test
@@ -117,7 +117,7 @@ class ShipmentCourierConverterTest {
         )
 
         // Then
-        assertEquals(true, courierItemData.scheduleDeliveryUiModel?.isSelected)
+        assertEquals(true, courierItemData.scheduleDeliveryUiModel!!.isSelected)
     }
 
     @Test
@@ -143,7 +143,7 @@ class ShipmentCourierConverterTest {
         )
 
         // Then
-        assertEquals(false, courierItemData.scheduleDeliveryUiModel?.isSelected)
+        assertEquals(false, courierItemData.scheduleDeliveryUiModel!!.isSelected)
     }
 
     @Test
@@ -174,7 +174,7 @@ class ShipmentCourierConverterTest {
         )
 
         // Then
-        assertEquals(true, courierItemData.scheduleDeliveryUiModel?.isSelected)
+        assertEquals(true, courierItemData.scheduleDeliveryUiModel!!.isSelected)
     }
 
     @Test
