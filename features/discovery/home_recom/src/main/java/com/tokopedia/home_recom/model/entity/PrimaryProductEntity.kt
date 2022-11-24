@@ -45,6 +45,7 @@ data class ProductDetailData(
     val countReview: Int = -1,
     @SerializedName("countReviewFloat")
     val countReviewFloat: Int = -1,
+    @SuppressLint("Invalid Data Type")
     @SerializedName("departmentId")
     val departmentId: Int = -1,
     @SuppressLint("Invalid Data Type")
@@ -65,6 +66,7 @@ data class ProductDetailData(
     @SuppressLint("Invalid Data Type")
     @SerializedName("price")
     val price: String = "",
+    @SuppressLint("Invalid Data Type")
     @SerializedName("priceInt")
     val priceInt: Int = -1,
     @SerializedName("rating")
