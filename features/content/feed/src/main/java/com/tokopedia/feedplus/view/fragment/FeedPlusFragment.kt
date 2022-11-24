@@ -2654,6 +2654,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
             feedXCard.followers.isFollowed,
             false,
             (feedXCard.contentScore).firstOrNull()?.value ?: String.EMPTY,
+            feedXCard.hasVoucher
         )
     }
 
