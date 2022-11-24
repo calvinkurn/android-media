@@ -27,6 +27,7 @@ data class TableWidgetUiModel(
     override var isNeedToBeRemoved: Boolean = false,
     override var showLoadingState: Boolean = false,
     override var emptyState: WidgetEmptyStateUiModel,
+    override var useRealtime: Boolean = false,
     val tableFilters: List<WidgetFilterUiModel>,
     val maxData: Int,
     val maxDisplay: Int
