@@ -39,6 +39,7 @@ class RealTimeRecommendationCarouselView @JvmOverloads constructor(
 
     private var itemView: LayoutTokopedianowRealTimeRecommendationBinding? = null
     private var rtrData: HomeRealTimeRecomUiModel? = null
+    private var previousState: RealTimeRecomWidgetState? = null
 
     init {
         itemView = LayoutTokopedianowRealTimeRecommendationBinding
@@ -65,9 +66,11 @@ class RealTimeRecommendationCarouselView @JvmOverloads constructor(
     }
 
     private fun scrollToFirstPosition() {
-        itemView?.recommendationCarousel
-            ?.findViewById<RecyclerView>(com.tokopedia.recommendation_widget_common.R.id.rv_product)
-            ?.scrollToPosition(FIRST_ITEM_POSITION)
+        if(previousState == RealTimeRecomWidgetState.REFRESH) {
+            itemView?.recommendationCarousel
+                ?.findViewById<RecyclerView>(com.tokopedia.recommendation_widget_common.R.id.rv_product)
+                ?.scrollToPosition(FIRST_ITEM_POSITION)
+        }
     }
 
     private fun renderRealTimeRecom(data: HomeRealTimeRecomUiModel) {
@@ -222,6 +225,7 @@ class RealTimeRecommendationCarouselView @JvmOverloads constructor(
     }
 
     private fun setData(data: HomeRealTimeRecomUiModel) {
+        previousState = rtrData?.widgetState
         rtrData = data
     }
 
