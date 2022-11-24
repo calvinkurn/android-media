@@ -12,7 +12,6 @@ import com.tokopedia.developer_options.presentation.activity.DeveloperOptionActi
 import com.tokopedia.developer_options.presentation.activity.DeveloperOptionActivity.Companion.LEAK_CANARY_TOGGLE_KEY
 import com.tokopedia.developer_options.presentation.activity.DeveloperOptionActivity.Companion.LEAK_CANARY_TOGGLE_KEY_SELLER
 import com.tokopedia.developer_options.presentation.activity.DeveloperOptionActivity.Companion.LEAK_CANARY_TOGGLE_SP_NAME
-import com.tokopedia.developer_options.presentation.activity.DeveloperOptionActivity.Companion.LEAK_CANARY_TOGGLE_SP_NAME_SELLER
 import com.tokopedia.developer_options.presentation.model.LeakCanaryUiModel
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
 
