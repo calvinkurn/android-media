@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.view.asLowerCase
 import com.tokopedia.kotlin.extensions.view.hide
@@ -177,12 +178,18 @@ class SharingWishlistPageFragment : BaseDaggerFragment(),
     }
 
     override fun onUpdateWithMessage(message: String, isSuccess: Boolean) {
-        val typeToaster = if (isSuccess) {
-            Toaster.TYPE_NORMAL
+        var snackbar: Snackbar? = null
+
+        snackbar = if (isSuccess) {
+            Toaster.build(view = requireView(), message, type = Toaster.TYPE_NORMAL,
+                actionText = getString(R.string.sharing_wishlist_oke),
+                clickListener = { snackbar?.dismiss() }
+            )
         } else {
-            Toaster.TYPE_ERROR
+            Toaster.build(view = requireView(), message, type = Toaster.TYPE_ERROR)
         }
-        view?.let { Toaster.build(it, message, type = typeToaster).show() }
+
+        snackbar.show()
 
         if (isSuccess) {
             sharedViewModel.notifyPager(collectionAccess)

@@ -144,6 +144,7 @@
     <string name="sharing_wishlist_failed_title">Konten gagal ditampilkan</string>
     <string name="sharing_wishlist_label_private">Pribadi</string>
     <string name="sharing_wishlist_label_public">Publik</string>
+    <string name="sharing_wishlist_oke">Oke</string>
     <string name="dsar_summary_ticker_info">Salinan data akan dikirim ke e-mail diatas maks. 2 hari kerja</string>
 
 

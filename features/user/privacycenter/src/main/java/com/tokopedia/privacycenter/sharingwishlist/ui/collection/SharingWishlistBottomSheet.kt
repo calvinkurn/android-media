@@ -48,6 +48,7 @@ class SharingWishlistBottomSheet constructor(
     private var collection = WishlistCollectionByIdDataModel()
 
     private var selectedOption: Int = 0
+    private var defaultOption: Int = 0
 
     interface Listener {
         fun onUpdateWithMessage(message: String, isSuccess: Boolean)
@@ -99,12 +100,14 @@ class SharingWishlistBottomSheet constructor(
                 privateOption.isChecked = false
                 privateTips.show()
                 selectedOption = COLLECTION_PUBLIC_ID
+                buttonSave.isEnabled = defaultOption != COLLECTION_PUBLIC_ID
             }
 
             privateOption.setOnClickListener {
                 publicOption.isChecked = false
                 privateTips.hide()
                 selectedOption = COLLECTION_PRIVATE_ID
+                buttonSave.isEnabled = defaultOption != COLLECTION_PRIVATE_ID
             }
 
             buttonSave.setOnClickListener {
@@ -176,7 +179,7 @@ class SharingWishlistBottomSheet constructor(
             privateTips.description = generateTipsText(data.ticker)
             privateOption.isChecked = data.collection.access == COLLECTION_PRIVATE_ID
             publicOption.isChecked = data.collection.access == COLLECTION_PUBLIC_ID
-            selectedOption = data.collection.access
+            defaultOption = data.collection.access
             privateTips.showWithCondition(
                 data.collection.access == COLLECTION_PUBLIC_ID
             )
