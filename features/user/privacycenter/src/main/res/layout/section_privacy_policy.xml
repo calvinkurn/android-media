@@ -82,19 +82,16 @@
             android:layout_height="wrap_content"
             android:visibility="gone"
             app:layout_constraintTop_toBottomOf="@+id/loaderListPrivacyPolicy" />
-    </LinearLayout>
 
-    <com.tokopedia.unifycomponents.UnifyButton
-        android:id="@+id/buttonShowAllList"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="@string/privacy_policy_show_all_list_button"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/privacyPolicyContainer"
-        app:unifyButtonSize="medium"
-        app:unifyButtonType="alternate"
-        app:unifyButtonVariant="ghost" />
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/buttonShowAllList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/privacy_policy_show_all_list_button"
+            app:unifyButtonSize="medium"
+            app:unifyButtonType="alternate"
+            app:unifyButtonVariant="ghost" />
+    </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
