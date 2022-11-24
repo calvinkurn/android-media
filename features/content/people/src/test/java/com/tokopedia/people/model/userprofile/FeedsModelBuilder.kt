@@ -10,21 +10,21 @@ import com.tokopedia.people.views.uimodel.content.UserFeedPostsUiModel
  */
 class FeedsModelBuilder {
 
-    fun mockFeedsPost(isEmpty: Boolean = false): UserFeedPostsUiModel {
+    fun mockFeedsPost(id: String = "123", isEmpty: Boolean = false): UserFeedPostsUiModel {
         return UserFeedPostsUiModel(
             pagination = PaginationUiModel(
                 cursor = "123",
                 hasNext = true,
                 totalData = 10,
             ),
-            posts = if (isEmpty) emptyList() else posts(),
+            posts = if (isEmpty) emptyList() else posts(id),
         )
     }
 
-    private fun posts(): List<PostUiModel> {
+    private fun posts(id: String): List<PostUiModel> {
         return listOf(
             PostUiModel(
-                id = "123",
+                id = id,
                 appLink = "applink",
                 media = listOf(
                     MediaUiModel(

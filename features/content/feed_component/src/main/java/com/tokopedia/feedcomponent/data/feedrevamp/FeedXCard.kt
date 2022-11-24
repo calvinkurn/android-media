@@ -24,6 +24,8 @@ data class FeedXCard(
     var deletable: Boolean = false,
     @SerializedName("mods")
     var mods: List<String> = emptyList(),
+    @SerializedName("detailScore")
+    var detailScore: List<FeedXScore> = emptyList(),
 
     //FeedXCardTopAds Data Type
     @SerializedName("promos")
@@ -133,6 +135,10 @@ data class FeedXCard(
         get() = mods.contains(USE_ASGC_NEW_DESIGN)
     val isASGCDiscountToko: Boolean
          get() = type == ASGC_DISCOUNT_TOKO
+    val contentScore
+        get() = detailScore.filter { feedXScore ->
+            feedXScore.isContentScore
+        }
 
     fun copyPostData(): FeedXCard {
         return FeedXCard(
@@ -171,6 +177,7 @@ data class FeedXCard(
             maxDiscPercent = maxDiscPercent,
             publishedAt = publishedAt,
             mods = mods,
+            detailScore = detailScore,
             impressHolder = impressHolder,
             isTopAds = isTopAds,
             adViewUrl = adViewUrl,

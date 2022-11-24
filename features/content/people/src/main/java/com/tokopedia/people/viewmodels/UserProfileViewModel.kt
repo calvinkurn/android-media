@@ -126,7 +126,7 @@ class UserProfileViewModel @AssistedInject constructor(
                 action.itemID,
             )
             is UserProfileAction.ClickUpdateReminder -> handleClickUpdateReminder(action.isFromLogin)
-            is UserProfileAction.LoadFeedPosts -> handleLoadFeedPosts(action.cursor, isRefresh = action.isRefresh)
+            is UserProfileAction.LoadFeedPosts -> handleLoadFeedPosts(action.cursor, action.limit, action.isRefresh)
             is UserProfileAction.LoadNextPageShopRecom -> handleLoadNextPageShopRecom(action.nextCurSor)
             is UserProfileAction.LoadPlayVideo -> handleLoadPlayVideo(action.cursor)
             is UserProfileAction.LoadProfile -> handleLoadProfile(action.isRefresh)
@@ -150,10 +150,11 @@ class UserProfileViewModel @AssistedInject constructor(
         }
     }
 
-    private fun handleLoadFeedPosts(cursor: String, limit: Int = 10, isRefresh: Boolean = false) {
+    private fun handleLoadFeedPosts(cursor: String, limit: Int, isRefresh: Boolean) {
         viewModelScope.launchCatchError(
             block = {
-                val data = if (isRefresh) repo.getFeedPosts(profileUserID, "", _feedPostsContent.value.posts.size)
+                val currentSize = _feedPostsContent.value.posts.size
+                val data = if (isRefresh) repo.getFeedPosts(profileUserID, "", if (currentSize == 0) limit else currentSize)
                 else repo.getFeedPosts(profileUserID, cursor, limit)
 
                 val finalPosts = (if (cursor.isEmpty() || isRefresh) data.posts

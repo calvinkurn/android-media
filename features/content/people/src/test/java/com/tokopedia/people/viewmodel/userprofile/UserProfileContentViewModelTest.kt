@@ -55,6 +55,7 @@ class UserProfileContentViewModelTest {
     private val mockProfileTabShown = profileTabBuilder.mockProfileTab()
     private val mockProfileTabNotShown = profileTabBuilder.mockProfileTab(showTabs = false)
     private val mockFeed = feedsModelBuilder.mockFeedsPost()
+    private val mockFeedPagination = feedsModelBuilder.mockFeedsPost(id = "3324")
     private val mockFeedEmpty = feedsModelBuilder.mockFeedsPost(isEmpty = true)
 
     private val mockPlayVideo = playVideoBuilder.buildModel()
@@ -168,11 +169,26 @@ class UserProfileContentViewModelTest {
     }
 
     @Test
+    fun `when user success refresh load feed post`() {
+        robot.use {
+            it.setup {
+                coEvery { mockRepo.getFeedPosts(mockOwnProfile.userID, "", 10) } returns mockFeed
+            }
+            it.recordState {
+                submitAction(UserProfileAction.LoadProfile(isRefresh = true))
+                submitAction(UserProfileAction.LoadFeedPosts("", 10, true))
+            } andThen {
+                feedPostsContent equalTo mockFeed
+            }
+        }
+    }
+
+    @Test
     fun `when user success load feed post pagination`() {
         robot.use {
             it.setup {
                 coEvery { mockRepo.getFeedPosts(mockOwnProfile.userID, "", 10) } returns mockFeed
-                coEvery { mockRepo.getFeedPosts(mockOwnProfile.userID, "123", 10) } returns mockFeed
+                coEvery { mockRepo.getFeedPosts(mockOwnProfile.userID, "123", 10) } returns mockFeedPagination
             }
             it.recordState {
                 submitAction(UserProfileAction.LoadProfile(isRefresh = true))
@@ -180,6 +196,25 @@ class UserProfileContentViewModelTest {
                 submitAction(UserProfileAction.LoadFeedPosts("123"))
             } andThen {
                 feedPostsContent.posts.size equalTo mockFeed.posts.size * 2
+            }
+        }
+    }
+
+    @Test
+    fun `when user success load feed post pagination and do refresh`() {
+        robot.use {
+            it.setup {
+                coEvery { mockRepo.getFeedPosts(mockOwnProfile.userID, "", 10) } returns mockFeed
+                coEvery { mockRepo.getFeedPosts(mockOwnProfile.userID, "123", 10) } returns mockFeedPagination
+                coEvery { mockRepo.getFeedPosts(mockOwnProfile.userID, "", mockFeed.posts.size * 2) } returns mockFeedPagination
+            }
+            it.recordState {
+                submitAction(UserProfileAction.LoadProfile(isRefresh = true))
+                submitAction(UserProfileAction.LoadFeedPosts(""))
+                submitAction(UserProfileAction.LoadFeedPosts("123", 10))
+                submitAction(UserProfileAction.LoadFeedPosts("123", 10, true))
+            } andThen {
+                feedPostsContent.posts.size equalTo mockFeed.posts.size
             }
         }
     }
