@@ -18,6 +18,7 @@ import com.tokopedia.mvc.databinding.*
 import com.tokopedia.mvc.di.component.DaggerMerchantVoucherCreationComponent
 import com.tokopedia.mvc.domain.entity.VoucherDetailData
 import com.tokopedia.mvc.presentation.bottomsheet.ExpenseEstimationBottomSheet
+import com.tokopedia.mvc.presentation.bottomsheet.ThreeDotsMenuBottomSheet
 import com.tokopedia.mvc.util.SharingUtil
 import com.tokopedia.mvc.util.constant.*
 import com.tokopedia.mvc.util.constant.VoucherTargetConstant.VOUCHER_TARGET_PUBLIC
@@ -58,6 +59,9 @@ class VoucherDetailFragment : BaseDaggerFragment() {
     private var btnState1Binding by autoClearedNullable<SmvcVoucherDetailButtonSectionState1Binding>()
     private var btnState2Binding by autoClearedNullable<SmvcVoucherDetailButtonSectionState2Binding>()
     private var btnState3Binding by autoClearedNullable<SmvcVoucherDetailButtonSectionState3Binding>()
+
+    //bottom sheet
+    private var threeDotsMenuBottomSheet = ThreeDotsMenuBottomSheet.newInstance()
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -511,13 +515,13 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                 }
             }
         }
-        setupButtonAction()
+        setupButtonAction(data)
     }
 
-    private fun setupButtonAction() {
+    private fun setupButtonAction(data: VoucherDetailData) {
         btnState1Binding?.apply {
             btnThreeDots.setOnClickListener {
-                //TODO:open bottom sheet
+                openThreeDotsBottomSheet(data)
             }
             btnBroadcastChat.setOnClickListener {
                 context?.let { ctx -> SharingUtil.shareToBroadCastChat(ctx, voucherId) }
@@ -525,7 +529,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
         }
         btnState2Binding?.apply {
             btnThreeDots.setOnClickListener {
-                //TODO:open bottom sheet
+                openThreeDotsBottomSheet(data)
             }
             btnBroadcastChat.setOnClickListener {
                 context?.let { ctx -> SharingUtil.shareToBroadCastChat(ctx, voucherId) }
@@ -536,12 +540,18 @@ class VoucherDetailFragment : BaseDaggerFragment() {
         }
         btnState3Binding?.apply {
             btnThreeDots.setOnClickListener {
-                //TODO:open bottom sheet
+                openThreeDotsBottomSheet(data)
             }
             btnDuplicate.setOnClickListener {
                 //TODO:go to summary page
             }
         }
+    }
+
+    private fun openThreeDotsBottomSheet(data: VoucherDetailData) {
+        val bottomSheetType = viewModel.getThreeDotsBottomSheetType(data)
+        threeDotsMenuBottomSheet.setData(data.voucherName, bottomSheetType)
+        threeDotsMenuBottomSheet.show(childFragmentManager, "")
     }
 
     private fun getVoucherDetailData(voucherId: Long) {

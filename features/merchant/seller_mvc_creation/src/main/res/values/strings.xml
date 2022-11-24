@@ -195,5 +195,8 @@
     <string name="coupon_code_copied_to_clipboard">Kode kupon berhasil disalin</string>
     <string name="smvc_oke_label">oke</string>
     <string name="smvc_dash_label">-</string>
+    <string name="smvc_see_tnc_title_label"><![CDATA[Lihat Syarat & Ketentuan Penggunaan Kupon]]></string>
+    <string name="smvc_cancel_label">Batalkan</string>
+    <string name="smvc_stop_label">Hentikan</string>
 
 </resources>

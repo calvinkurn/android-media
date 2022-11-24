@@ -7,6 +7,8 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.mvc.domain.entity.VoucherDetailData
 import com.tokopedia.mvc.domain.usecase.MerchantPromotionGetMVDataByIDUseCase
+import com.tokopedia.mvc.presentation.bottomsheet.ThreeDotsMenuBottomSheet
+import com.tokopedia.mvc.util.constant.VoucherStatusConstant
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -44,5 +46,19 @@ class VoucherDetailViewModel @Inject constructor(
 
     fun getPercentage(value: Long, total: Long): Long {
         return (value/total) * 100
+    }
+
+    fun getThreeDotsBottomSheetType(data: VoucherDetailData): Int {
+        return when(data.voucherStatus) {
+            VoucherStatusConstant.NOT_STARTED -> {
+               ThreeDotsMenuBottomSheet.TYPE_1
+            }
+            VoucherStatusConstant.ONGOING -> {
+                ThreeDotsMenuBottomSheet.TYPE_2
+            }
+            else -> {
+                ThreeDotsMenuBottomSheet.TYPE_3
+            }
+        }
     }
 }
