@@ -176,7 +176,7 @@ class UserProfileFeedFragment @Inject constructor(
             viewModel.isSelfProfile,
             itemID,
             imageUrl,
-            position + 1,
+            position,
             mediaType,
         )
         val intent = RouteManager.getIntent(requireContext(), appLink)

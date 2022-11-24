@@ -21,7 +21,7 @@ internal class UserFeedPostsAdapterDelegate private constructor() {
             holder: FeedPostsViewHolder,
         ) {
             holder.bindView(item.item)
-            listener.onImpressFeedPostData(item = item.item, holder.bindingAdapterPosition + 1)
+            listener.onImpressFeedPostData(item = item.item, holder.bindingAdapterPosition)
         }
 
         override fun onCreateViewHolder(
