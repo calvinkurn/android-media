@@ -140,10 +140,6 @@ class MainNavViewModel @Inject constructor(
         get() = _allProcessFinished
     private val _allProcessFinished: MutableLiveData<Event<Boolean>> = MutableLiveData(Event(false))
 
-    val businessListLiveData: LiveData<Result<List<HomeNavVisitable>>>
-        get() = _businessListLiveData
-    private val _businessListLiveData: MutableLiveData<Result<List<HomeNavVisitable>>> = MutableLiveData()
-
     val mainNavLiveData: LiveData<MainNavigationDataModel>
         get() = _mainNavLiveData
     private val _mainNavLiveData: MutableLiveData<MainNavigationDataModel> = MutableLiveData(MainNavigationDataModel(
@@ -323,9 +319,7 @@ class MainNavViewModel @Inject constructor(
                 //PLT network process is finished
                 _networkProcessLiveData.postValue(true)
                 allCategoriesCache = result
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
+            } catch (e: Exception) { }
             if (!isMePageUsingRollenceVariant)  {
                 val shimmeringDataModel = _mainNavListVisitable.find {
                     it is InitialShimmerDataModel
@@ -336,7 +330,7 @@ class MainNavViewModel @Inject constructor(
         }
     }
 
-    private fun getBuListMenuRevamp(isExpanded: Boolean = false) {
+    private fun getBuListMenuRevamp(isExpanded: Boolean) {
         updateAllCategories(listOf(InitialShimmerDataModel()), isExpanded)
         viewModelScope.launch {
             try {
@@ -353,7 +347,6 @@ class MainNavViewModel @Inject constructor(
                 } else {
                     updateAllCategories(listOf(ErrorStateBuDataModel()), isExpanded)
                 }
-                e.printStackTrace()
             }
         }
     }
@@ -390,7 +383,6 @@ class MainNavViewModel @Inject constructor(
                         updateWidget(ErrorStateBuDataModel(), _mainNavListVisitable.indexOf(it))
                     }
                 }
-                e.printStackTrace()
             }
         }
     }
@@ -428,9 +420,7 @@ class MainNavViewModel @Inject constructor(
                 )
                 updateWidget(accountHeaderModel, INDEX_MODEL_ACCOUNT)
             }
-        } catch (e: Exception) {
-            e.printStackTrace()
-        }
+        } catch (e: Exception) { }
     }
 
     private suspend fun updateProfileData() {
@@ -463,7 +453,6 @@ class MainNavViewModel @Inject constructor(
                         )
                     }
                 }
-                e.printStackTrace()
             }
         }
     }
@@ -482,16 +471,8 @@ class MainNavViewModel @Inject constructor(
     }
 
     fun refreshTransactionListData() {
-        val transactionPlaceHolder = _mainNavListVisitable.withIndex().find {
-            it.value is ErrorStateOngoingTransactionModel || it.value is TransactionListItemDataModel
-        }
-        transactionPlaceHolder?.let {
-            updateWidget(getInitialShimmerTransactionDataModel(), transactionPlaceHolder.index)
-        }
-        launchCatchError(coroutineContext, block = {
+        launch {
             getOnGoingTransaction()
-        }) {
-
         }
     }
 
@@ -637,10 +618,8 @@ class MainNavViewModel @Inject constructor(
         favoriteShopPlaceHolder?.let {
             updateWidget(ShimmerFavoriteShopDataModel(), favoriteShopPlaceHolder.index)
         }
-        launchCatchError(coroutineContext, block = {
+        launch {
             getFavoriteShops()
-        }) {
-
         }
     }
 
@@ -679,7 +658,6 @@ class MainNavViewModel @Inject constructor(
                 updateWidget(ErrorStateFavoriteShopDataModel(), it)
             }
             onlyForLoggedInUser { _allProcessFinished.postValue(Event(true)) }
-            e.printStackTrace()
         }
     }
 
@@ -690,10 +668,8 @@ class MainNavViewModel @Inject constructor(
         wishlistPlaceHolder?.let {
             updateWidget(ShimmerWishlistDataModel(), wishlistPlaceHolder.index)
         }
-        launchCatchError(coroutineContext, block = {
+        launch {
             getWishlist()
-        }) {
-
         }
     }
 
@@ -729,7 +705,6 @@ class MainNavViewModel @Inject constructor(
                 updateWidget(ErrorStateWishlistDataModel(), it)
             }
             onlyForLoggedInUser { _allProcessFinished.postValue(Event(true)) }
-            e.printStackTrace()
         }
     }
 
@@ -836,9 +811,7 @@ class MainNavViewModel @Inject constructor(
                 if (complainNotification.isMoreThanZero()) findMenu(ID_COMPLAIN)?.updateBadgeCounter(complainNotification.toString())
                 if (inboxTicketNotification.isMoreThanZero()) findMenu(ID_TOKOPEDIA_CARE)?.updateBadgeCounter(inboxTicketNotification.toString())
                 if (reviewNotification.isMoreThanZero()) findMenu(ID_REVIEW)?.updateBadgeCounter(reviewNotification.toString())
-            } catch (e: Exception) {
-                e.printStackTrace()
-            }
+            } catch (e: Exception) { }
         }
     }
 
@@ -987,19 +960,13 @@ class MainNavViewModel @Inject constructor(
 
     fun refreshProfileData() {
         updateWidget(InitialShimmerProfileDataModel(), INDEX_MODEL_ACCOUNT)
-        launchCatchError(coroutineContext, block = {
+        launch {
             updateProfileData()
-        }) {
-
         }
     }
 
     private suspend fun onlyForLoggedInUser(function: suspend ()-> Unit) {
         if (userSession.get().isLoggedIn) function.invoke()
-    }
-
-    private suspend fun onlyForNonLoggedInUser(function: suspend ()-> Unit) {
-        if (!userSession.get().isLoggedIn) function.invoke()
     }
 
     /**
