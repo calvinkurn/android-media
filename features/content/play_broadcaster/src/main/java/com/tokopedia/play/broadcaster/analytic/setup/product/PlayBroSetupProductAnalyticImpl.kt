@@ -84,11 +84,11 @@ class PlayBroSetupProductAnalyticImpl @Inject constructor(
         )
     }
 
-    override fun clickEtalaseCard() {
+    override fun clickEtalaseCard(etalaseName: String) {
         sendEvent("click - etalase card")
     }
 
-    override fun clickCampaignCard() {
+    override fun clickCampaignCard(campaignName: String) {
         sendEvent("click - campaign card")
     }
 
@@ -113,6 +113,26 @@ class PlayBroSetupProductAnalyticImpl @Inject constructor(
     }
 
     override fun viewProductSummary() {
+        /** Not applicable for broadcaster */
+    }
+
+    override fun clickCloseOnProductSortingBottomSheet() {
+        /** Not applicable for broadcaster */
+    }
+
+    override fun viewProductSortingBottomSheet() {
+        /** Not applicable for broadcaster */
+    }
+
+    override fun clickCloseOnProductFilterBottomSheet() {
+        /** Not applicable for broadcaster */
+    }
+
+    override fun viewProductFilterBottomSheet() {
+        /** Not applicable for broadcaster */
+    }
+
+    override fun viewProductChooser() {
         /** Not applicable for broadcaster */
     }
 

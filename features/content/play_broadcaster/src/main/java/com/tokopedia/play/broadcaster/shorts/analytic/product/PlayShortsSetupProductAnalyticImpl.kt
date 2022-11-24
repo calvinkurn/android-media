@@ -26,12 +26,158 @@ class PlayShortsSetupProductAnalyticImpl @Inject constructor(
         this.account = account
     }
 
+    /**
+     * Row 37
+     */
     override fun clickSearchBarOnProductSetup(search: String) {
-        TODO("Not yet implemented")
+        analyticSender.sendGeneralClickEvent(
+            eventAction = "click - search product",
+            account = account,
+            trackerId = "37560",
+        )
     }
 
+    /**
+     * Row 38
+     */
+    override fun clickProductSorting() {
+        analyticSender.sendGeneralClickEvent(
+            eventAction = "click - product sort",
+            account = account,
+            trackerId = "37561",
+        )
+    }
+
+    /**
+     * Row 39
+     */
+    override fun clickCampaignAndEtalaseFilter() {
+        analyticSender.sendGeneralClickEvent(
+            eventAction = "click - filter product etalase",
+            account = account,
+            trackerId = "37562",
+        )
+    }
+
+    /**
+     * Row 40
+     */
+    override fun clickCloseOnProductChooser(isProductSelected: Boolean) {
+        analyticSender.sendGeneralClickEvent(
+            eventAction = "click - close button on product bottom sheet",
+            account = account,
+            trackerId = "37563",
+        )
+    }
+
+    /**
+     * Row 41
+     */
+    override fun clickSelectProductOnProductSetup(productId: String) {
+        analyticSender.sendGeneralClickEvent(
+            eventAction = "click - product card",
+            eventLabel = "${PlayShortsAnalyticHelper.getEventLabelByAccount(account)} - $productId",
+            trackerId = "37564",
+        )
+    }
+
+    /**
+     * Row 42
+     */
+    override fun clickCloseOnProductSortingBottomSheet() {
+        analyticSender.sendGeneralClickEvent(
+            eventAction = "click - close sort product",
+            account = account,
+            trackerId = "37565",
+        )
+    }
+
+    /**
+     * Row 43
+     */
+    override fun clickProductSortingType(sortName: String) {
+        analyticSender.sendGeneralClickEvent(
+            eventAction = "click - sort type",
+            account = account,
+            trackerId = "37566",
+        )
+    }
+
+    /**
+     * Row 44
+     */
+    override fun viewProductSortingBottomSheet() {
+        analyticSender.sendGeneralViewEvent(
+            eventAction = "view - sorting bottom sheet",
+            account = account,
+            trackerId = "37567"
+        )
+    }
+
+    /**
+     * Row 45
+     */
+    override fun clickCloseOnProductFilterBottomSheet() {
+        analyticSender.sendGeneralClickEvent(
+            eventAction = "click - close filter bottom sheet",
+            account = account,
+            trackerId = "37568",
+        )
+    }
+
+    /**
+     * Row 46
+     */
+    override fun clickCampaignCard(campaignName: String) {
+        analyticSender.sendGeneralClickEvent(
+            eventAction = "click - campaign card",
+            eventLabel = "${PlayShortsAnalyticHelper.getEventLabelByAccount(account)} - $campaignName",
+            trackerId = "37569",
+        )
+    }
+
+    /**
+     * Row 47
+     */
+    override fun clickEtalaseCard(etalaseName: String) {
+        analyticSender.sendGeneralClickEvent(
+            eventAction = "click - etalase card",
+            eventLabel = "${PlayShortsAnalyticHelper.getEventLabelByAccount(account)} - $etalaseName",
+            trackerId = "37570",
+        )
+    }
+
+    /**
+     * Row 48
+     */
+    override fun viewProductFilterBottomSheet() {
+        analyticSender.sendGeneralViewEvent(
+            eventAction = "view - filter bottom sheet",
+            account = account,
+            trackerId = "37571"
+        )
+    }
+
+    /**
+     * Row 49
+     */
+    override fun viewProductChooser() {
+        analyticSender.sendGeneralViewEvent(
+            eventAction = "view - product selection bottom sheet",
+            account = account,
+            trackerId = "37572"
+        )
+    }
+
+    /**
+     * Row 50
+     */
     override fun clickSaveButtonOnProductSetup() {
-        TODO("Not yet implemented")
+        analyticSender.sendGeneralClickEvent(
+            eventAction = "click - save product card",
+            eventLabel = "",
+            trackerId = "37573",
+        )
     }
 
     /**
@@ -63,7 +209,7 @@ class PlayShortsSetupProductAnalyticImpl @Inject constructor(
         analyticSender.sendGeneralClickEvent(
             eventAction = "click - delete a product tagged",
             eventLabel = "${PlayShortsAnalyticHelper.getEventLabelByAccount(account)} - $productId",
-            trackerId = "click - delete a product tagged",
+            trackerId = "37596",
         )
     }
 
@@ -89,39 +235,11 @@ class PlayShortsSetupProductAnalyticImpl @Inject constructor(
         )
     }
 
-    override fun clickSelectProductOnProductSetup(productId: String) {
-        TODO("Not yet implemented")
-    }
-
-    override fun clickCampaignAndEtalaseFilter() {
-        TODO("Not yet implemented")
-    }
-
-    override fun clickProductSorting() {
-        TODO("Not yet implemented")
-    }
-
-    override fun clickProductSortingType(sortName: String) {
-        TODO("Not yet implemented")
-    }
-
-    override fun clickEtalaseCard() {
-        TODO("Not yet implemented")
-    }
-
-    override fun clickCampaignCard() {
-        TODO("Not yet implemented")
-    }
-
-    override fun clickCloseOnProductChooser(isProductSelected: Boolean) {
-        TODO("Not yet implemented")
-    }
-
     override fun clickConfirmCloseOnProductChooser() {
-        TODO("Not yet implemented")
+        /** Not applicable for shorts */
     }
 
     override fun clickCancelCloseOnProductChooser() {
-        TODO("Not yet implemented")
+        /** Not applicable for shorts */
     }
 }

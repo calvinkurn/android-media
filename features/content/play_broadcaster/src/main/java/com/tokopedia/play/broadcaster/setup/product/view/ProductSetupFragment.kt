@@ -100,15 +100,21 @@ class ProductSetupFragment @Inject constructor(
     override fun onAttachFragment(childFragment: Fragment) {
         super.onAttachFragment(childFragment)
         when (childFragment) {
-            is ProductChooserBottomSheet -> childFragment.setListener(productChooserListener)
+            is ProductChooserBottomSheet -> {
+                childFragment.setListener(productChooserListener)
+                childFragment.setDataSource(object : ProductChooserBottomSheet.DataSource {
+                    override fun getSelectedAccount(): ContentAccountUiModel {
+                        return mDataSource?.getSelectedAccount().orUnknown()
+                    }
+                })
+            }
             is ProductSummaryBottomSheet -> {
+                childFragment.setListener(productSummaryListener)
                 childFragment.setDataSource(object : ProductSummaryBottomSheet.DataSource {
                     override fun getSelectedAccount(): ContentAccountUiModel {
                         return mDataSource?.getSelectedAccount().orUnknown()
                     }
                 })
-
-                childFragment.setListener(productSummaryListener)
             }
             is ProductPickerUGCBottomSheet -> {
                 childFragment.setListener(productPickerUGCListener)
@@ -119,6 +125,13 @@ class ProductSetupFragment @Inject constructor(
 
                     override fun getShopBadgeIfAny(): String {
                         return mDataSource?.getSelectedAccount()?.badge.orEmpty()
+                    }
+                })
+            }
+            is EtalaseListBottomSheet -> {
+                childFragment.setDataSource(object : EtalaseListBottomSheet.DataSource {
+                    override fun getSelectedAccount(): ContentAccountUiModel {
+                        return mDataSource?.getSelectedAccount().orUnknown()
                     }
                 })
             }

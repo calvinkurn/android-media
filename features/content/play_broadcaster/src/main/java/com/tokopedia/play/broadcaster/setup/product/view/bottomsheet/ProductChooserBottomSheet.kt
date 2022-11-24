@@ -11,6 +11,8 @@ import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.content.common.ui.model.ContentAccountUiModel
+import com.tokopedia.content.common.util.orUnknown
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.play.broadcaster.R
@@ -115,6 +117,7 @@ class ProductChooserBottomSheet @Inject constructor(
     private var isSelectedProductsChanged = false
 
     private var mListener: Listener? = null
+    private var mDataSource: DataSource? = null
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return object : BottomSheetDialog(requireContext(), theme) {
@@ -136,6 +139,12 @@ class ProductChooserBottomSheet @Inject constructor(
 
         setupView()
         setupObserve()
+        setupAnalytic()
+    }
+
+    override fun onStart() {
+        super.onStart()
+        eventBus.emit(Event.ViewBottomSheet)
     }
 
     override fun onDestroyView() {
@@ -151,7 +160,14 @@ class ProductChooserBottomSheet @Inject constructor(
     override fun onAttachFragment(childFragment: Fragment) {
         super.onAttachFragment(childFragment)
         when (childFragment) {
-            is ProductSortBottomSheet -> childFragment.setListener(this)
+            is ProductSortBottomSheet -> {
+                childFragment.setListener(this)
+                childFragment.setDataSource(object : ProductSortBottomSheet.DataSource {
+                    override fun getSelectedAccount(): ContentAccountUiModel {
+                        return mDataSource?.getSelectedAccount().orUnknown()
+                    }
+                })
+            }
         }
     }
 
@@ -165,6 +181,10 @@ class ProductChooserBottomSheet @Inject constructor(
 
     fun setListener(listener: Listener?) {
         mListener = listener
+    }
+
+    fun setDataSource(dataSource: DataSource) {
+        mDataSource = dataSource
     }
 
     private fun setupBottomSheet() {
@@ -256,6 +276,10 @@ class ProductChooserBottomSheet @Inject constructor(
             eventBus,
             viewModel.uiState,
         )
+    }
+
+    private fun setupAnalytic() {
+        eventBus.emit(Event.SetSelectedAccount(mDataSource?.getSelectedAccount().orUnknown()))
     }
 
     private fun renderProductList(
@@ -535,8 +559,14 @@ class ProductChooserBottomSheet @Inject constructor(
         fun openCampaignAndEtalaseList(bottomSheet: ProductChooserBottomSheet)
     }
 
+    interface DataSource {
+        fun getSelectedAccount(): ContentAccountUiModel
+    }
+
     sealed class Event {
 
+        data class SetSelectedAccount(val account: ContentAccountUiModel) : Event()
+        object ViewBottomSheet : Event()
         object ExitDialogConfirm : Event()
         object ExitDialogCancel : Event()
         object CloseClicked : Event()
