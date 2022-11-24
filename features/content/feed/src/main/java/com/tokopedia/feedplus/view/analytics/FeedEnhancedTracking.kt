@@ -8,21 +8,11 @@ import kotlin.collections.ArrayList
  * @author by astidhiyaa on 30/08/22
  */
 object FeedEnhancedTracking {
+
     private const val EVENT = "event"
     private const val KEY_USER_ID = "userId"
     private const val KEY_USER_ID_MOD = "userIdmodulo"
     private const val ECOMMERCE = "ecommerce"
-    fun getImpressionTracking(
-        listPromotion: List<Promotion>,
-        userId: Int
-    ): Map<String, Any> {
-        return DataLayer.mapOf(
-            EVENT, Event.PROMO_VIEW,
-            KEY_USER_ID, userId.toString(),
-            KEY_USER_ID_MOD, (userId % 50).toString(),
-            ECOMMERCE, Ecommerce.getEcommerceView(listPromotion)
-        )
-    }
 
     fun getClickTracking(
         listPromotion: List<Promotion>,
@@ -101,7 +91,6 @@ object FeedEnhancedTracking {
             private const val TOPADS = "topads"
             private const val PRODUCT = "product"
             private const val SHOP = "shop"
-            private const val TOKOPEDIA_CONTENT = "tokopedia_content"
             const val TRACKING_NONE = "none"
             const val TRACKING_EMPTY = "-"
             fun createContentNameTopadsProduct(): String {

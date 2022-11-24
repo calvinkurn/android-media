@@ -9,11 +9,11 @@ import com.tokopedia.feedcomponent.data.feedrevamp.FeedXGetActivityProductsRespo
 import com.tokopedia.feedplus.view.repository.FeedDetailRepository
 import com.tokopedia.feedplus.view.subscriber.FeedDetailViewState
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
-class FeedDetailViewModel @Inject constructor(private var feedDetailRepository: FeedDetailRepository,
-                                              private val userSession: UserSessionInterface) : ViewModel() {
+class FeedDetailViewModel @Inject constructor(
+    private val feedDetailRepository: FeedDetailRepository
+) : ViewModel() {
 
     private var feedDetailLiveData: MutableLiveData<FeedDetailViewState> = MutableLiveData()
     private var pagingLiveData: MutableLiveData<Boolean> = MutableLiveData()

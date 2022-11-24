@@ -11,7 +11,6 @@ interface Constants {
         const val KEY_FEED = "KEY_FEED"
         const val KEY_FEED_FIRST_PAGE_LAST_CURSOR = "KEY_FEED_FIRSTPAGE_LAST_CURSOR"
         const val KEY_FEED_FIRST_PAGE_CURSOR = "KEY_FEED_FIRSTPAGE_CURSOR"
-        const val NON_LOGIN_USER_ID = "0"
     }
 
     object FeedDetailConstants {
@@ -47,6 +46,5 @@ interface Constants {
         object EventMoEngage {
             const val REFERRAL_SHARE_EVENT = "Share_Event"
         }
-
     }
 }
