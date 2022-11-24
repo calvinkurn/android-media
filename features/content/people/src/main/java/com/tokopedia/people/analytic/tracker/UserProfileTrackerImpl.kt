@@ -371,7 +371,7 @@ class UserProfileTrackerImpl @Inject constructor(
                 ECOMMERCE to hashMapOf(
                     PROMO_VIEW to hashMapOf(
                         PROMOTIONS to listOf(
-                            convertToPromotion(activityId, imageUrl, postPosition, "/$FEED_USER_PROFILE_POST"),
+                            convertToPromotion(activityId, imageUrl, postPosition + 1, "/$FEED_USER_PROFILE_POST"),
                         ),
                     ),
                 ),
@@ -407,7 +407,7 @@ class UserProfileTrackerImpl @Inject constructor(
                             convertToPromotion(
                                 activityId,
                                 imageUrl,
-                                postPosition,
+                                postPosition + 1,
                                 "/$FEED_USER_PROFILE_POST",
                             ),
                         ),
