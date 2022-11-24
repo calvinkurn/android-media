@@ -2,10 +2,10 @@ package com.tokopedia.recommendation_widget_common.di
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
-import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
-import com.tokopedia.recommendation_widget_common.domain.coroutines.GetSingleRecommendationUseCase
-import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationUseCaseRequest
+import com.tokopedia.recommendation_widget_common.domain.query.ListProductRecommendationQuery
+import com.tokopedia.recommendation_widget_common.domain.query.ListProductRecommendationQueryV2
+import com.tokopedia.recommendation_widget_common.domain.query.ProductRecommendationSingleQuery
+import com.tokopedia.recommendation_widget_common.domain.query.ProductRecommendationSingleQueryV2
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
@@ -29,9 +29,9 @@ class RecommendationModule {
         return com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase(
             context,
             if (remoteConfig.getBoolean(RemoteConfigKey.RECOM_USE_QUERY_V2, true)) {
-                GetRecommendationUseCaseRequest.widgetListQueryV2
+                ListProductRecommendationQueryV2()
             } else {
-                GetRecommendationUseCaseRequest.widgetListQuery
+                ListProductRecommendationQuery()
             },
             graphqlUseCase,
             userSession
@@ -47,9 +47,9 @@ class RecommendationModule {
     ): com.tokopedia.recommendation_widget_common.domain.GetSingleRecommendationUseCase {
         val query =
             if (remoteConfig.getBoolean(RemoteConfigKey.RECOM_USE_QUERY_V2, true)) {
-                GetRecommendationUseCaseRequest.singleQueryV2
+                ProductRecommendationSingleQueryV2()
             } else {
-                GetRecommendationUseCaseRequest.singleQuery
+                ProductRecommendationSingleQuery()
             }
         return com.tokopedia.recommendation_widget_common.domain.GetSingleRecommendationUseCase(context, query, graphqlUseCase, userSession)
     }
