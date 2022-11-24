@@ -105,11 +105,6 @@ subprojects {
                 substitute module('com.google.code.gson:gson') with module("com.google.code.gson:gson:$gsonDebugVersion")
                 substitute module("androidx.room:room-runtime") with module("androidx.room:room-runtime:$roomVersion")
                 substitute module("androidx.room:room-compiler") with module("androidx.room:room-compiler:$roomVersion")
-                substitute module('androidx.savedstate:savedstate') with module("androidx.savedstate:savedstate:1.1.0")
-                substitute module("androidx.compose.ui:ui") with module("androidx.compose.ui:ui:1.2.0")
-                substitute module("androidx.appcompat:appcompat") with module("androidx.appcompat:appcompat:1.1.0-rc01")
-                substitute module("androidx.core:core-ktx") with module("androidx.core:core-ktx:1.8.0")
-                substitute module('androidx.core:core') with module("androidx.core:core:${androidxCoreVersion}")
 
                 if (!rootProject.ext.debugToolsEnabled) {
                     substitute module(rootProject.ext.debugToolsDependencies.chuck) with module(rootProject.ext.debugToolsDependencies.chuckNoop)
