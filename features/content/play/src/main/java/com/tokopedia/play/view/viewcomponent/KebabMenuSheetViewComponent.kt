@@ -41,7 +41,8 @@ class KebabMenuSheetViewComponent(
 
     fun show(actions: List<PlayMoreActionUiModel>) {
         if (actions.isEmpty()) return
-        moreActionAdapter.setItemsAndAnimateChanges(actions)
+        val finalList = actions.sortedBy { it.priority }
+        moreActionAdapter.setItemsAndAnimateChanges(finalList)
         show()
     }
 

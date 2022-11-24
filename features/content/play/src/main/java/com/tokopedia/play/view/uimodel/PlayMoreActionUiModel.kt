@@ -8,9 +8,10 @@ import com.tokopedia.play.view.type.PlayMoreActionType
  * Created by jegul on 10/12/19
  */
 data class PlayMoreActionUiModel(
-        val type: PlayMoreActionType,
-        val icon: Drawable?,
-        @StringRes val subtitleRes: Int,
-        val isIconAvailable: Boolean,
-        val onClick: (PlayMoreActionUiModel) -> Unit
+    val type: PlayMoreActionType,
+    val icon: Drawable?,
+    @StringRes val subtitleRes: Int,
+    val isIconAvailable: Boolean,
+    val onClick: (PlayMoreActionUiModel) -> Unit,
+    val priority: Int,
 )

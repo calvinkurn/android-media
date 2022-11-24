@@ -87,7 +87,8 @@ class PlayMoreActionBottomSheet @Inject constructor(
             subtitleRes = R.string.play_kebab_report_title,
             onClick = {
                 shouldOpenUserReport()
-            }
+            },
+            priority = 4,
         )
     }
 
@@ -99,7 +100,8 @@ class PlayMoreActionBottomSheet @Inject constructor(
             subtitleRes = R.string.play_kebab_pip,
             onClick = {
                 mListener?.onPipClicked(this)
-            }
+            },
+            priority = 1,
         )
     }
 
@@ -111,7 +113,8 @@ class PlayMoreActionBottomSheet @Inject constructor(
             subtitleRes = R.string.play_kebab_chromecast,
             onClick = {
                 onChromeCastClicked()
-            }
+            },
+            priority = 2,
         )
     }
 
@@ -123,7 +126,8 @@ class PlayMoreActionBottomSheet @Inject constructor(
             subtitleRes = R.string.play_kebab_watch_mode,
             onClick = {
                 mListener?.onWatchModeClicked(this)
-            }
+            },
+            priority = 3,
         )
     }
 
