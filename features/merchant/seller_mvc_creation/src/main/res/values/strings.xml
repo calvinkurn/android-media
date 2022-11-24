@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!--Common-->
+    <string name="smvc_ok">Oke</string>
+    <string name="smvc_cancel">Batal</string>
+
     <!--Add product page-->
     <string name="smvc_add_product">Tambah Produk</string>
     <string name="smvc_add_product_subtitle">Pilih produk untuk dipasang kupon.</string>
@@ -13,9 +17,15 @@
     <string name="smvc_showcase">Etalase</string>
     <string name="smvc_sort">Urutkan</string>
     <string name="smvc_update">Ubah</string>
+    <string name="smvc_save">Simpan</string>
     <string name="smvc_select_variant">Pilih Varian</string>
+    <string name="smvc_change_location">Ganti lokasi?</string>
+    <string name="smvc_confirm_change_location">Ganti Lokasi</string>
+    <string name="smvc_change_location_description">Produk yang sudah kamu pilih akan tereset jika kamu ganti lokasi</string>
     <string name="smvc_empty_state_no_product_title">Oops, produk nggak ditemukan</string>
     <string name="smvc_empty_state_no_product_description">Coba gunakan kata kunci lain atau filter yang berbeda, ya.</string>
+    <string name="smvc_no_showcase">Tokomu belum punya etalase</string>
+    <string name="smvc_no_showcase_description">Etalase yang tampil di sini adalah etalase yang dibuat sendiri.</string>
 
     <string name="smvc_placeholder_max_selected_product">Maks. %d Produk</string>
     <string name="smvc_placeholder_selected_product_count">%d/%d</string>
@@ -23,8 +33,9 @@
     <string name="smvc_placeholder_product_sku">SKU %s</string>
     <string name="smvc_placeholder_product_sold_count">Terjual: %s</string>
     <string name="smvc_placeholder_variant_product_count">%d Varian Produk</string>
+
     <string name="smvc_placeholder_selected_variant_product_count">&lt;b>%d&lt;/b>/%d Varian Produk Terpilih</string>
-    <string name="smvc_placeholder_modified_variant_product_count">%d/%d Varian Produk Terpilih</string>
+
     <string name="smvc_placeholder_product_price_range">Rp%s - Rp%s</string>
     <string name="smvc_placeholder_product_price">Rp%s</string>
     <string name="smvc_placeholder_total_stock">Total stok: %s</string>
@@ -33,12 +44,76 @@
     <string name="smvc_placeholder_selected_variant_count">Pilih (%d)</string>
     <string name="smvc_placholder_stock">Stok: %d</string>
 
+    <!--Product List page-->
+    <string name="smvc_product_list">Daftar Produk</string>
+    <string name="smvc_stepper_page_last">Langkah 4 dari 4</string>
+    <string name="smvc_placholder_selected_product_count">%d Produk</string>
+    <string name="smvc_back">Kembali</string>
+    <string name="smvc_continue">Lanjut</string>
+    <string name="smvc_empty_state_no_selected_product_title">Belum ada produk untuk kupon ini</string>
+    <string name="smvc_empty_state_no_selected_product_description">Yuk, tambahkan produkmu terlebih dulu.</string>
+    <string name="smvc_placeholder_review_selected_product_count">%d / %d Terpilih</string>
+    <string name="smvc_placeholder_bulk_delete_product">%d produk berhasil dihapus.</string>
+    <string name="smvc_placeholder_bulk_delete_product_confirmation">Hapus %d Produk?</string>
+    <string name="smvc_placeholder_bulk_delete_variant_confirmation">Hapus %d Varian?</string>
+    <string name="smvc_delete_variant_description">Kamu bisa menambahkan kembali varian produk yang sudah dihapus nanti.</string>
+    <string name="smvc_delete_product_description">Kamu bisa menambahkan kembali produk yang sudah dihapus nanti.</string>
+    <string name="smvc_product_deleted">Produk berhasil dihapus.</string>
+    <string name="smvc_delete_product">Hapus Produk?</string>
+    <string name="smvc_delete_variant">Hapus Varian?</string>
+    <string name="smvc_proceed_delete">Ya, Hapus</string>
+    <string name="smvc_update_product">Ubah Produk</string>
+
+    <!--Voucher List-->
+    <string name="smvc_voucherlist_page_title">Daftar Kupon</string>
+    <string name="smvc_voucherlist_format_desc">%s %s</string>
+    <string name="smvc_voucherlist_format_percent_desc">%s %s hingga %s</string>
+    <string name="smvc_voucherlist_format_multiperiod">+%d Jadwal Lain</string>
+    <string name="smvc_voucherlist_voucher_date_format">%s - %s</string>
+    <string name="smvc_voucherlist_period_title">Periode</string>
+    <string name="smvc_voucherlist_target_allbuyer_text">Semua Pembeli</string>
+    <string name="smvc_voucherlist_target_newfollower_text">Follower Baru</string>
+    <string name="smvc_voucherlist_target_newbuyer_text">Pembeli Baru</string>
+    <string name="smvc_voucherlist_target_member_text">Member</string>
+    <string name="smvc_voucherlist_status_deleted_text">Dihapus</string>
+    <string name="smvc_voucherlist_status_processing_text">Diproses</string>
+    <string name="smvc_voucherlist_status_notstarted_text">Mendatang</string>
+    <string name="smvc_voucherlist_status_ongoing_text">Berlangsung</string>
+    <string name="smvc_voucherlist_status_ended_text">Berakhir</string>
+    <string name="smvc_voucherlist_status_stopped_text">Dihentikan</string>
+    <string name="smvc_voucherlist_usedquota_text">Kuota Terpakai</string>
+    <string name="smvc_voucherlist_bookedquota_text">Kupon di keranjang</string>
+    <string name="smvc_voucherlist_buyertarget_text">Target</string>
+    <string name="smvc_voucherlist_vps_text">Paket Promosi</string>
+    <string name="smvc_voucherlist_subsidi_text">Dari Tokopedia</string>
+    <string name="smvc_voucherlist_voucher_usage_delimiter">" dari "</string>
+    <string name="smvc_voucherlist_error_quota_format">Kupon aktif maks. %d per periode (%d hari)</string>
+    <string name="smvc_voucherlist_toaster_actiontext">Oke</string>
+    <string name="smvc_voucherlist_quota_remaining_text">Sisa Kuota</string>
+    <string name="smvc_voucherlist_create_voucher_text">Buat Kupon</string>
+
+    <!--Common Bottomsheet-->
+    <string name="smvc_bottomsheet_filter_voucher_title">Filter</string>
+    <string name="smvc_bottomsheet_filter_status_voucher_title">Status</string>
+    <string name="smvc_bottomsheet_filter_voucher_all">Semua Status</string>
+    <string name="smvc_bottomsheet_filter_voucher_notstarted">Mendatang</string>
+    <string name="smvc_bottomsheet_filter_voucher_ongoing">Berlangsung</string>
+    <string name="smvc_bottomsheet_filter_voucher_finished">Selesai</string>
+    <string name="smvc_bottomsheet_edu_center_title">Pusat Edukasi</string>
 
     <!--Share Component-->
     <string name="smvc_placeholder_share_component_outgoing_title">Kupon Produk dari %s</string>
     <string name="smvc_share_component_outgoing_text_description">Yuk, belanja dan pakai Kupon Produknya sekarang!</string>
     <string name="smvc_placeholder_share_component_text_description">Dapatkan Kupon Produk %s di \@Tokopedia hingga %s pukul %s WIB hanya untukmu!</string>
 <!--    <string name="smvc_placeholder_product_price">%s - %s</string>-->
+    <string name="smvc_placeholder_share_component_outgoing_title_product_voucher">Kupon Produk dari %s</string>
+    <string name="smvc_placeholder_share_component_outgoing_title_shop_voucher">Voucher Toko dari %s</string>
+
+    <string name="smvc_placeholder_share_component_text_description_product_voucher">Dapatkan Kupon Produk %s di \@Tokopedia hingga %s pukul %s WIB hanya untukmu!</string>
+    <string name="smvc_placeholder_share_component_text_description_shop_voucher">Dapatkan Voucher Toko %s di \@Tokopedia hingga %s pukul %s WIB hanya untukmu!</string>
+
+    <string name="smvc_share_component_outgoing_text_description_product_voucher">Yuk, belanja dan pakai Kupon Produknya sekarang!</string>
+    <string name="smvc_share_component_outgoing_text_description_shop_voucher">Yuk, belanja dan pakai Voucher Tokonya sekarang!</string>
 
     <string name="bullet_unicode">\u2022</string>
 

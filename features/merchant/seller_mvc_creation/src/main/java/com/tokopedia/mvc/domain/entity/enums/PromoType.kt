@@ -1,7 +1,11 @@
 package com.tokopedia.mvc.domain.entity.enums
 
-enum class PromoType {
-    FREE_SHIPPING,
-    CASHBACK,
-    DISCOUNT
+import android.os.Parcelable
+import kotlinx.parcelize.Parcelize
+
+@Parcelize
+enum class PromoType(val type: Int) : Parcelable {
+    FREE_SHIPPING(1),
+    CASHBACK(2),
+    DISCOUNT(3)
 }

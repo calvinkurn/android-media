@@ -9,7 +9,13 @@ class ShopShowcasesByShopIDMapper @Inject constructor() {
 
     fun map(response: ShopShowcasesByShopIDResponse): List<ShopShowcase> {
         return response.shopShowcasesByShopID.result.map { showcase ->
-            ShopShowcase(showcase.id.toLongOrZero(), showcase.alias, showcase.name, showcase.type)
+            ShopShowcase(
+                showcase.id.toLongOrZero(),
+                showcase.alias,
+                showcase.name,
+                showcase.type,
+                isSelected = false
+            )
         }
     }
 }

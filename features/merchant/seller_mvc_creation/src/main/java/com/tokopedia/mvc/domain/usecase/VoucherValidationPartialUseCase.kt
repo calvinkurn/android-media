@@ -26,6 +26,8 @@ class VoucherValidationPartialUseCase @Inject constructor(
     }
 
     companion object {
+        private const val SHOP_VOUCHER = 0
+        private const val PRODUCT_VOUCHER = 1
         private const val REQUEST_PARAM_VOUCHER_VALIDATION_PARTIAL_INPUT = "VoucherValidationPartialInput"
     }
 
@@ -131,7 +133,7 @@ class VoucherValidationPartialUseCase @Inject constructor(
             param.benefitPercent,
             benefitType,
             promoType,
-            if (param.isLockToProduct) 1 else 0,
+            if (param.isVoucherProduct) PRODUCT_VOUCHER else SHOP_VOUCHER,
             param.minPurchase,
             formattedProductIds
         )
@@ -150,7 +152,7 @@ class VoucherValidationPartialUseCase @Inject constructor(
         val benefitPercent: Int,
         val benefitType : BenefitType,
         val promoType: PromoType,
-        val isLockToProduct: Boolean,
+        val isVoucherProduct: Boolean,
         val minPurchase: Long,
         val productIds: List<Long>
     )

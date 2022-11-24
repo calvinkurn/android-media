@@ -109,6 +109,10 @@ class ProductListUseCase @Inject constructor(
             filter.add(GoodsFilterInput("menu", param.showcaseIds.map { it.toString() }))
         }
 
+        if (param.productIdInclude.isNotEmpty()) {
+            filter.add(GoodsFilterInput("productIDInclude", param.productIdInclude.map { it.toString() }))
+        }
+
         val sort = GoodsSortInput(param.sortId, param.sortDirection)
         val params = mapOf(
             REQUEST_PARAM_SHOP_ID to shopId,
@@ -135,7 +139,8 @@ class ProductListUseCase @Inject constructor(
         val showcaseIds : List<Long>,
         val sortId : String,
         val sortDirection:String,
-        val extraInfo: List<String> = listOf("view")
+        val extraInfo: List<String> = listOf("view"),
+        val productIdInclude : List<Long> = emptyList()
     )
 
 

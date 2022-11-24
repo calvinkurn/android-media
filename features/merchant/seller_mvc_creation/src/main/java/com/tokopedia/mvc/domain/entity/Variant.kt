@@ -10,5 +10,7 @@ data class Variant(
     val stockCount: Int,
     val soldCount: Int,
     val isEligible: Boolean,
-    val reason: String
+    val reason: String,
+    val isCheckable: Boolean,
+    val isDeletable: Boolean
 )
