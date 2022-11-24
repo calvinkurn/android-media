@@ -2,8 +2,6 @@ package com.tokopedia.shop.pageheader.presentation.adapter.viewholder.widget
 
 import android.view.View
 import android.widget.FrameLayout
-import androidx.cardview.widget.CardView
-import com.airbnb.lottie.LottieAnimationView
 import com.airbnb.lottie.LottieCompositionFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -16,13 +14,12 @@ import com.tokopedia.shop.databinding.LayoutShopHeaderPlayWidgetBinding
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderDataModel
 import com.tokopedia.shop.pageheader.presentation.uimodel.component.ShopHeaderPlayWidgetButtonComponentUiModel
 import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopHeaderWidgetUiModel
-import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
 
 class ShopHeaderPlayWidgetViewHolder(
-        itemView: View,
-        private val shopPageTrackingSGCPlayWidget: ShopPageTrackingSGCPlayWidget?,
-        private val listener: Listener
+    itemView: View,
+    private val shopPageTrackingSGCPlayWidget: ShopPageTrackingSGCPlayWidget?,
+    private val listener: Listener
 
 ) : AbstractViewHolder<ShopHeaderWidgetUiModel>(itemView) {
 
@@ -32,13 +29,13 @@ class ShopHeaderPlayWidgetViewHolder(
 
     interface Listener {
         fun onStartLiveStreamingClicked(
-                componentModel: ShopHeaderPlayWidgetButtonComponentUiModel,
-                shopHeaderWidgetUiModel: ShopHeaderWidgetUiModel
+            componentModel: ShopHeaderPlayWidgetButtonComponentUiModel,
+            shopHeaderWidgetUiModel: ShopHeaderWidgetUiModel
         )
 
         fun onImpressionPlayWidgetComponent(
-                componentModel: ShopHeaderPlayWidgetButtonComponentUiModel,
-                shopHeaderWidgetUiModel: ShopHeaderWidgetUiModel
+            componentModel: ShopHeaderPlayWidgetButtonComponentUiModel,
+            shopHeaderWidgetUiModel: ShopHeaderWidgetUiModel
         )
     }
 
@@ -59,8 +56,8 @@ class ShopHeaderPlayWidgetViewHolder(
                 playSgcBtnStartLiveLottieAnimationView?.setOnClickListener {
                     shopPageTrackingSGCPlayWidget?.onClickSGCContent(shopId = shopPageHeaderDataModel.shopId)
                     listener.onStartLiveStreamingClicked(
-                            modelComponent,
-                            shopHeaderWidgetUiModel
+                        modelComponent,
+                        shopHeaderWidgetUiModel
                     )
                 }
             } else {

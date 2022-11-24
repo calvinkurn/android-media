@@ -42,9 +42,6 @@ import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.domain.model.DynamicFeedFirstPageDomainModel
 import com.tokopedia.feedplus.view.constants.Constants.FeedConstants.NON_LOGIN_USER_ID
 import com.tokopedia.feedplus.view.viewmodel.FeedPromotedShopViewModel
-import com.tokopedia.kolcommon.data.pojo.FollowKolDomain
-import com.tokopedia.kolcommon.data.pojo.follow.FollowKolQuery
-import com.tokopedia.kolcommon.domain.usecase.FollowKolPostGqlUseCase
 import com.tokopedia.kolcommon.domain.usecase.LikeKolPostUseCase
 import com.tokopedia.kolcommon.view.viewmodel.FollowKolViewModel
 import com.tokopedia.kolcommon.view.viewmodel.LikeKolViewModel
@@ -84,8 +81,6 @@ private const val DEFAULT_VALUE_SRC = "fav_shop"
 class FeedViewModel @Inject constructor(
     private val baseDispatcher: CoroutineDispatchers,
     private val userSession: UserSessionInterface,
-    private val doFavoriteShopUseCase: ToggleFavouriteShopUseCase,
-    private val followKolPostGqlUseCase: FollowKolPostGqlUseCase,
     private val likeKolPostUseCase: LikeKolPostUseCase,
     private val addToCartUseCase: AddToCartUseCase,
     private val trackAffiliateClickUseCase: TrackAffiliateClickUseCase,
@@ -339,33 +334,60 @@ class FeedViewModel @Inject constructor(
 
     fun doFavoriteShop(promotedShopViewModel: Data, adapterPosition: Int) {
         launchCatchError(block = {
-            val results = withContext(baseDispatcher.io) {
-                doFavoriteShopResult(promotedShopViewModel)
+            val response = withContext(baseDispatcher.io) {
+                shopFollowUseCase.executeOnBackground(
+                    shopId = promotedShopViewModel.shop.id,
+                )
             }
-            results.adapterPosition = adapterPosition
-            doFavoriteShopResp.value = Success(results)
+            val result = shopRecomMapper.mapShopFollow(response)
+            doFavoriteShopResp.value = Success(
+                FeedPromotedShopViewModel(
+                    isSuccess = result is MutationUiModel.Success,
+                    promotedShopViewModel = promotedShopViewModel,
+                    adapterPosition = adapterPosition
+                )
+            )
         },) {
             doFavoriteShopResp.value = Fail(it)
         }
     }
 
-    fun doFollowKol(id: Int, rowNumber: Int, isFollowedFromFollowRestrictionBottomSheet: Boolean = false) {
+    fun doFollowKol(id: String, rowNumber: Int, isFollowedFromFollowRestrictionBottomSheet: Boolean = false) {
         launchCatchError(block = {
-            val results = withContext(baseDispatcher.io) {
-                followKol(id, rowNumber, isFollowedFromFollowRestrictionBottomSheet)
+            val response = withContext(baseDispatcher.io) {
+                doFollowUseCase.executeOnBackground(id)
             }
-            followKolResp.value = Success(results)
+            val result = profileMutationMapper.mapFollow(response)
+            followKolResp.value = Success(
+                FollowKolViewModel(
+                    id = id,
+                    rowNumber = rowNumber,
+                    status = 1, // todo: revamp the whole
+                    isFollowedFromFollowRestrictionBottomSheet = isFollowedFromFollowRestrictionBottomSheet,
+                    isSuccess = result is MutationUiModel.Success,
+                    isFollow = true,
+                )
+            )
         },) {
             followKolResp.value = Fail(Exception(ERROR_FOLLOW_MESSAGE))
         }
     }
 
-    fun doUnfollowKol(id: Int, rowNumber: Int) {
+    fun doUnfollowKol(id: String, rowNumber: Int) {
         launchCatchError(block = {
-            val results = withContext(baseDispatcher.io) {
-                unfollowKol(id, rowNumber)
+            val response = withContext(baseDispatcher.io) {
+                doUnfollowUseCase.executeOnBackground(id)
             }
-            followKolResp.value = Success(results)
+            val result = profileMutationMapper.mapUnfollow(response)
+            followKolResp.value = Success(
+                FollowKolViewModel(
+                    id = id,
+                    rowNumber = rowNumber,
+                    status = 0,
+                    isSuccess = result is MutationUiModel.Success,
+                    isFollow = false,
+                )
+            )
         },) {
             followKolResp.value = Fail(Exception(ERROR_UNFOLLOW_MESSAGE))
         }
@@ -393,23 +415,41 @@ class FeedViewModel @Inject constructor(
         }
     }
 
-    fun doFollowKolFromRecommendation(id: Int, rowNumber: Int, position: Int) {
+    fun doFollowKolFromRecommendation(id: String, rowNumber: Int, position: Int) {
         launchCatchError(block = {
-            val results = withContext(baseDispatcher.io) {
-                followKolFromRecom(id, rowNumber, position)
+            val response = withContext(baseDispatcher.io) {
+                doFollowUseCase.executeOnBackground(id)
             }
-            followKolRecomResp.value = Success(results)
+            val result = profileMutationMapper.mapFollow(response)
+            followKolRecomResp.value = Success(
+                FollowKolViewModel(
+                    status = 1,
+                    position = position,
+                    rowNumber = rowNumber,
+                    isSuccess = result is MutationUiModel.Success,
+                    isFollow = true,
+                )
+            )
         },) {
             followKolRecomResp.value = Fail(it)
         }
     }
 
-    fun doUnfollowKolFromRecommendation(id: Int, rowNumber: Int, position: Int) {
+    fun doUnfollowKolFromRecommendation(id: String, rowNumber: Int, position: Int) {
         launchCatchError(block = {
-            val results = withContext(baseDispatcher.io) {
-                unfollowKolFromRecom(id, rowNumber, position)
+            val response = withContext(baseDispatcher.io) {
+                doUnfollowUseCase.executeOnBackground(id)
             }
-            followKolRecomResp.value = Success(results)
+            val result = profileMutationMapper.mapUnfollow(response)
+            followKolRecomResp.value = Success(
+                FollowKolViewModel(
+                    status = 0,
+                    position = position,
+                    rowNumber = rowNumber,
+                    isSuccess = result is MutationUiModel.Success,
+                    isFollow = false,
+                )
+            )
         },) {
             followKolRecomResp.value = Fail(it)
         }
@@ -455,11 +495,23 @@ class FeedViewModel @Inject constructor(
         isUnfollowFromBottomSheetMenu: Boolean = false,
         isFollowedFromFollowRestrictionBottomSheet: Boolean = false,
     ) {
-        launchCatchError(block = {
-            val results = withContext(baseDispatcher.io) {
-                toggleFavoriteShop(rowNumber, adapterPosition, shopId, isUnfollowFromBottomSheetMenu, isFollowedFromFollowRestrictionBottomSheet)
+         launchCatchError(block = {
+            val response = withContext(baseDispatcher.io) {
+                shopFollowUseCase.executeOnBackground(
+                    shopId = shopId,
+                )
             }
-            toggleFavoriteShopResp.value = Success(results)
+            val result = shopRecomMapper.mapShopFollow(response)
+            toggleFavoriteShopResp.value = Success(
+                FavoriteShopViewModel(
+                    rowNumber = rowNumber,
+                    adapterPosition = adapterPosition,
+                    shopId = shopId,
+                    isUnfollowFromShopsMenu = isUnfollowFromBottomSheetMenu,
+                    isFollowedFromFollowRestrictionBottomSheet = isFollowedFromFollowRestrictionBottomSheet,
+                    isSuccess = result is MutationUiModel.Success
+                )
+            )
         },) {
             if (follow) {
                 toggleFavoriteShopResp.value = Fail(CustomUiMessageThrowable(R.string.feed_unfollow_error_message))
@@ -551,79 +603,6 @@ class FeedViewModel @Inject constructor(
         }
     }
 
-    private fun doFavoriteShopResult(promotedShopViewModel: Data): FeedPromotedShopViewModel {
-        try {
-            val result = FeedPromotedShopViewModel()
-            val params =
-                ToggleFavouriteShopUseCase.createRequestParam(promotedShopViewModel.shop.id)
-
-            params.putString(PARAM_SHOP_DOMAIN, promotedShopViewModel.shop.domain)
-            params.putString(PARAM_SRC, DEFAULT_VALUE_SRC)
-            params.putString(PARAM_AD_KEY, promotedShopViewModel.adRefKey)
-            val requestSuccess =
-                doFavoriteShopUseCase.createObservable(params).toBlocking().single()
-            result.isSuccess = requestSuccess
-            result.promotedShopViewModel = promotedShopViewModel
-            return result
-        } catch (e: Throwable) {
-            throw e
-        }
-    }
-
-    private fun followKol(
-        id: Int,
-        rowNumber: Int,
-        isFollowedFromFollowRestrictionBottomSheet: Boolean = false,
-    ): FollowKolViewModel {
-        try {
-            val data = FollowKolViewModel()
-            data.id = id
-            data.rowNumber = rowNumber
-            data.status = FollowKolPostGqlUseCase.PARAM_FOLLOW
-            data.isFollowedFromFollowRestrictionBottomSheet = isFollowedFromFollowRestrictionBottomSheet
-            followKolPostGqlUseCase.clearRequest()
-            val params = FollowKolPostGqlUseCase.getParam(id, FollowKolPostGqlUseCase.PARAM_FOLLOW)
-            val response = followKolPostGqlUseCase.createObservable(params).toBlocking().single()
-
-            val query = response.getData<FollowKolQuery>(FollowKolQuery::class.java)
-            if (query.data != null) {
-                val followKolDomain = FollowKolDomain(query.data.data.status)
-                if (followKolDomain.status == FollowKolPostGqlUseCase.SUCCESS_STATUS) {
-                    data.isSuccess =
-                        true
-                }
-            }
-            return data
-        } catch (e: Throwable) {
-            throw e
-        }
-    }
-
-    private fun unfollowKol(id: Int, rowNumber: Int): FollowKolViewModel {
-        try {
-            val data = FollowKolViewModel()
-            data.id = id
-            data.rowNumber = rowNumber
-            data.status = FollowKolPostGqlUseCase.PARAM_UNFOLLOW
-            followKolPostGqlUseCase.clearRequest()
-            val params =
-                FollowKolPostGqlUseCase.getParam(id, FollowKolPostGqlUseCase.PARAM_UNFOLLOW)
-            val response = followKolPostGqlUseCase.createObservable(params).toBlocking().single()
-
-            val query = response.getData<FollowKolQuery>(FollowKolQuery::class.java)
-            if (query.data != null) {
-                val followKolDomain = FollowKolDomain(query.data.data.status)
-                if (followKolDomain.status == FollowKolPostGqlUseCase.SUCCESS_STATUS) {
-                    data.isSuccess =
-                        true
-                }
-            }
-            return data
-        } catch (e: Throwable) {
-            throw e
-        }
-    }
-
     private fun likeKol(id: Long, rowNumber: Int): LikeKolViewModel {
         try {
             val data = LikeKolViewModel()
@@ -647,56 +626,6 @@ class FeedViewModel @Inject constructor(
                 LikeKolPostUseCase.getParam(id, LikeKolPostUseCase.LikeKolPostAction.Unlike)
             val isSuccess = likeKolPostUseCase.createObservable(params).toBlocking().first()
             data.isSuccess = isSuccess
-            return data
-        } catch (e: Throwable) {
-            throw e
-        }
-    }
-
-    private fun followKolFromRecom(id: Int, rowNumber: Int, position: Int): FollowKolViewModel {
-        try {
-            val data = FollowKolViewModel()
-            data.status = FollowKolPostGqlUseCase.PARAM_FOLLOW
-            data.position = position
-            data.rowNumber = rowNumber
-            val params = FollowKolPostGqlUseCase.getParam(id, data.status)
-            followKolPostGqlUseCase.clearRequest()
-            followKolPostGqlUseCase.addRequest(followKolPostGqlUseCase.getRequest(id, data.status))
-            val response = followKolPostGqlUseCase.createObservable(params).toBlocking().single()
-
-            val query = response.getData<FollowKolQuery>(FollowKolQuery::class.java)
-            if (query.data != null) {
-                val followKolDomain = FollowKolDomain(query.data.data.status)
-                if (followKolDomain.status == FollowKolPostGqlUseCase.SUCCESS_STATUS) {
-                    data.isSuccess = true
-                    data.isFollow = true
-                }
-            }
-            return data
-        } catch (e: Throwable) {
-            throw e
-        }
-    }
-
-    private fun unfollowKolFromRecom(id: Int, rowNumber: Int, position: Int): FollowKolViewModel {
-        try {
-            val data = FollowKolViewModel()
-            data.status = FollowKolPostGqlUseCase.PARAM_UNFOLLOW
-            data.position = position
-            data.rowNumber = rowNumber
-            val params = FollowKolPostGqlUseCase.getParam(id, data.status)
-            followKolPostGqlUseCase.clearRequest()
-            followKolPostGqlUseCase.addRequest(followKolPostGqlUseCase.getRequest(id, data.status))
-            val response = followKolPostGqlUseCase.createObservable(params).toBlocking().single()
-
-            val query = response.getData<FollowKolQuery>(FollowKolQuery::class.java)
-            if (query.data != null) {
-                val followKolDomain = FollowKolDomain(query.data.data.status)
-                if (followKolDomain.status == FollowKolPostGqlUseCase.SUCCESS_STATUS) {
-                    data.isSuccess = true
-                    data.isFollow = false
-                }
-            }
             return data
         } catch (e: Throwable) {
             throw e
@@ -757,30 +686,6 @@ class FeedViewModel @Inject constructor(
             }
         }
 
-    private fun toggleFavoriteShop(
-        rowNumber: Int,
-        adapterPosition: Int,
-        shopId: String,
-        isUnfollowClickedFromBottomSheetMenu: Boolean = false,
-        isFollowedFromFollowRestrictionBottomSheet: Boolean = false,
-    ): FavoriteShopViewModel {
-        try {
-            val data = FavoriteShopViewModel(
-                rowNumber = rowNumber,
-                adapterPosition = adapterPosition,
-                shopId = shopId,
-                isUnfollowFromShopsMenu = isUnfollowClickedFromBottomSheetMenu,
-                isFollowedFromFollowRestrictionBottomSheet = isFollowedFromFollowRestrictionBottomSheet,
-            )
-            val params = ToggleFavouriteShopUseCase.createRequestParam(shopId)
-            val isSuccess = doFavoriteShopUseCase.createObservable(params).toBlocking().first()
-            data.isSuccess = isSuccess
-            return data
-        } catch (e: Throwable) {
-            throw e
-        }
-    }
-
     private fun trackAffiliate(url: String): TrackAffiliateViewModel {
         try {
             val data = TrackAffiliateViewModel()
@@ -833,6 +738,9 @@ class FeedViewModel @Inject constructor(
         launchCatchError(baseDispatcher.io, block = {
             val request = requestShopRecomWidget(nextCursor)
             if (request.shopRecomUiModel.isShown) {
+                val items = if (nextCursor.isEmpty()) request.shopRecomUiModel.items
+                else _shopRecom.value.shopRecomUiModel.items + request.shopRecomUiModel.items
+
                 _shopRecom.update {
                     it.copy(
                         shopRecomUiModel = it.shopRecomUiModel.copy(
@@ -840,7 +748,8 @@ class FeedViewModel @Inject constructor(
                             nextCursor = request.shopRecomUiModel.nextCursor,
                             title = request.shopRecomUiModel.title,
                             loadNextPage = request.shopRecomUiModel.loadNextPage,
-                            items = it.shopRecomUiModel.items + request.shopRecomUiModel.items,
+                            items = items,
+                            isRefresh = nextCursor.isEmpty(),
                         ),
                         onError = "",
                     )

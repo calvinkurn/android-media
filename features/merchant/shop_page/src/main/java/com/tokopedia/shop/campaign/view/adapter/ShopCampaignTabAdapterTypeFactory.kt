@@ -114,14 +114,14 @@ class ShopCampaignTabAdapterTypeFactory(
     }
 
     override fun getShopHomeNplCampaignViewHolder(baseShopHomeWidgetUiModel: BaseShopHomeWidgetUiModel): Int {
-        return if(isShowHomeWidgetPlaceHolder(baseShopHomeWidgetUiModel))
+        return if (isShowHomeWidgetPlaceHolder(baseShopHomeWidgetUiModel))
             ShopCampaignNplPlaceholderViewHolder.LAYOUT
         else
             ShopCampaignNplViewHolder.LAYOUT
     }
 
     override fun type(uiModel: ThematicWidgetUiModel): Int {
-        return if(isShowThematicWidgetPlaceHolder(uiModel))
+        return if (isShowThematicWidgetPlaceHolder(uiModel))
             ShopCampaignThematicWidgetLoadingStateViewHolder.LAYOUT
         else
             ShopCampaignThematicWidgetViewHolder.LAYOUT
