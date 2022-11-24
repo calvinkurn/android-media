@@ -156,8 +156,8 @@ class UserProfileViewModel @AssistedInject constructor(
                 val data = if (isRefresh) repo.getFeedPosts(profileUserID, "", _feedPostsContent.value.posts.size)
                 else repo.getFeedPosts(profileUserID, cursor, limit)
 
-                val finalPosts = if (cursor.isEmpty() || isRefresh) data.posts
-                else _feedPostsContent.value.posts + data.posts
+                val finalPosts = (if (cursor.isEmpty() || isRefresh) data.posts
+                else _feedPostsContent.value.posts + data.posts).distinctBy { it.id }
 
                 _feedPostsContent.update {
                     it.copy(

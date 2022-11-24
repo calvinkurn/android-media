@@ -99,8 +99,8 @@ class ContentDetailViewModel @Inject constructor(
                     LimitGenerator.getExpectedLimit(currentPosition)
                 )
 
-                val newPostList = if (currentCursor.isEmpty() || isRefresh) data.postList
-                else userProfileFeedCurrentPostList + data.postList
+                val newPostList = (if (currentCursor.isEmpty() || isRefresh) data.postList
+                else userProfileFeedCurrentPostList + data.postList).distinctBy { it.id }
 
                 currentCursor = data.cursor
                 _userProfileFeedPost.value = Success(data.copy(
