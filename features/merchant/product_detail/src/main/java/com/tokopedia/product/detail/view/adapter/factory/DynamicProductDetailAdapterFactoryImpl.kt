@@ -18,6 +18,7 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductBundlingDataMode
 import com.tokopedia.product.detail.data.model.datamodel.ProductCategoryCarouselDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductContentDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductCustomInfoDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductCustomInfoTitleDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductDiscussionMostHelpfulDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductGeneralInfoDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductLoadingDataModel
@@ -53,6 +54,7 @@ import com.tokopedia.product.detail.view.viewholder.PdpComparisonWidgetViewHolde
 import com.tokopedia.product.detail.view.viewholder.ProductBundlingViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductCategoryCarouselViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductContentViewHolder
+import com.tokopedia.product.detail.view.viewholder.ProductCustomInfoTitleViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductCustomInfoViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductDiscussionMostHelpfulViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductGeneralInfoViewHolder
@@ -226,6 +228,10 @@ class DynamicProductDetailAdapterFactoryImpl(
         return ProductShopAdditionalViewHolder.LAYOUT
     }
 
+    override fun type(data: ProductCustomInfoTitleDataModel): Int {
+        return ProductCustomInfoTitleViewHolder.LAYOUT
+    }
+
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
             FintechWidgetViewHolder.LAYOUT -> FintechWidgetViewHolder(view,listener)
@@ -288,6 +294,10 @@ class DynamicProductDetailAdapterFactoryImpl(
             LoadingViewHolder.LAYOUT -> LoadingViewHolder(view)
             GlobalBundlingViewHolder.LAYOUT -> GlobalBundlingViewHolder(view, listener)
             ProductShopAdditionalViewHolder.LAYOUT -> ProductShopAdditionalViewHolder(
+                view = view,
+                listener = listener
+            )
+            ProductCustomInfoTitleViewHolder.LAYOUT -> ProductCustomInfoTitleViewHolder(
                 view = view,
                 listener = listener
             )

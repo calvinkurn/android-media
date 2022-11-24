@@ -358,6 +358,10 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
                        productID
                        whID
                     }
+                    ... on pdpDataCustomInfoTitle {
+                      title
+                      status
+                    }
                   }
                 }
               }

@@ -105,6 +105,7 @@ object ProductDetailConstant {
     const val FINTECH_WIDGET_TYPE = "chips_carousel"
     const val FINTECH_WIDGET_NAME = "paylater_cicilan"
     const val DILAYANI_TOKOPEDIA = "dt_info"
+    const val CUSTOM_INFO_TITLE = "custom_info_title"
 
     // Arguments
     const val ARG_PRODUCT_ID = "ARG_PRODUCT_ID"
