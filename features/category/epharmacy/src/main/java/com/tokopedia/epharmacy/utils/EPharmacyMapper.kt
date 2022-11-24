@@ -27,6 +27,7 @@ object EPharmacyMapper {
             group.prescriptionImages,
             group.prescriptionSource,
             group.consultationSource,
+            group.consultationData,
             false,
             group.prescriptionCTA,
             isLastIndex(group.shopInfo, index),

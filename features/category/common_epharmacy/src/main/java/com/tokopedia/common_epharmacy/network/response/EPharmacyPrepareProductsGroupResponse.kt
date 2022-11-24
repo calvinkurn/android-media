@@ -23,8 +23,13 @@ data class EPharmacyPrepareProductsGroupResponse(
             @SerializedName("attachment_page_ticker_logo_url")
             val attachmentPageTickerLogoUrl: String?,
             @SerializedName("epharmacy_groups")
-            val epharmacyGroups: List<EpharmacyGroup?>?
+            val epharmacyGroups: List<EpharmacyGroup?>?,
+            @SerializedName("toaster")
+            val toaster: EPharmacyToaster?,
+            @SerializedName("prescription_cta")
+            val papPrimaryCTA : PapPrimaryCTA?
         ) : Parcelable {
+
             @Parcelize
             data class EpharmacyGroup(
                 @SerializedName("consultation_data")
@@ -188,6 +193,25 @@ data class EPharmacyPrepareProductsGroupResponse(
             }
         }
     }
+
+    @Parcelize
+    data class EPharmacyToaster(
+        @SerializedName("type")
+        val type: String?,
+        @SerializedName("message")
+        val message: String?
+    ) : Parcelable
+
+    @Parcelize
+    data class PapPrimaryCTA(
+        @SerializedName("title")
+        val title: String?,
+        @SerializedName("redirect_link_apps")
+        val redirectLinkApps: String?,
+        @SerializedName("state")
+        val state: String?
+    ) : Parcelable
+
 }
 
 @Parcelize

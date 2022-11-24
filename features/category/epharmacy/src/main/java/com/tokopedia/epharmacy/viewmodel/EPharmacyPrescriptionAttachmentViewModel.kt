@@ -9,7 +9,12 @@ import com.tokopedia.epharmacy.component.BaseEPharmacyDataModel
 import com.tokopedia.epharmacy.component.model.EPharmacyDataModel
 import com.tokopedia.epharmacy.component.model.EPharmacyTickerDataModel
 import com.tokopedia.epharmacy.di.qualifier.CoroutineBackgroundDispatcher
-import com.tokopedia.epharmacy.network.response.PrescriptionStatusCount
+import com.tokopedia.epharmacy.network.params.InitiateConsultationParam
+import com.tokopedia.epharmacy.network.response.EPharmacyConsultationDetailsResponse
+import com.tokopedia.epharmacy.network.response.EPharmacyInitiateConsultationResponse
+import com.tokopedia.epharmacy.network.response.InitiateConsultation
+import com.tokopedia.epharmacy.usecase.EPharmacyGetConsultationDetailsUseCase
+import com.tokopedia.epharmacy.usecase.EPharmacyInitiateConsultationUseCase
 import com.tokopedia.epharmacy.utils.*
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
@@ -19,14 +24,19 @@ import javax.inject.Inject
 
 class EPharmacyPrescriptionAttachmentViewModel @Inject constructor(
     private val ePharmacyPrepareProductsGroupUseCase: EPharmacyPrepareProductsGroupUseCase,
+    private val ePharmacyInitiateConsultationUseCase: EPharmacyInitiateConsultationUseCase,
+    private val ePharmacyGetConsultationDetailsUseCase: EPharmacyGetConsultationDetailsUseCase,
     @CoroutineBackgroundDispatcher private val dispatcherBackground: CoroutineDispatcher
 ) : BaseViewModel(dispatcherBackground) {
 
     private val _productGroupLiveData = MutableLiveData<Result<EPharmacyDataModel>>()
     val productGroupLiveDataResponse: LiveData<Result<EPharmacyDataModel>> = _productGroupLiveData
 
-    private val _buttonLiveData = MutableLiveData<Pair<String, String>>()
-    val buttonLiveData: LiveData<Pair<String, String>> = _buttonLiveData
+    private val _initiateConsultation = MutableLiveData<Result<InitiateConsultation.InitiateConsultationData>>()
+    val initiateConsultation: LiveData<Result<InitiateConsultation.InitiateConsultationData>> = _initiateConsultation
+
+    private val _buttonLiveData = MutableLiveData<EPharmacyPrepareProductsGroupResponse.PapPrimaryCTA?>()
+    val buttonLiveData: LiveData<EPharmacyPrepareProductsGroupResponse.PapPrimaryCTA?> = _buttonLiveData
 
     private val _uploadError = MutableLiveData<EPharmacyUploadError>()
     val uploadError: LiveData<EPharmacyUploadError> = _uploadError
@@ -41,6 +51,24 @@ class EPharmacyPrescriptionAttachmentViewModel @Inject constructor(
         )
     }
 
+    fun initiateConsultation(params: InitiateConsultationParam) {
+        ePharmacyInitiateConsultationUseCase.cancelJobs()
+        ePharmacyInitiateConsultationUseCase.initiateConsultation(
+            ::onSuccessInitiateConsultation,
+            ::onFailInitiateConsultation,
+            params
+        )
+    }
+
+    fun getConsultationDetails(tokoConsultationId: String) {
+        ePharmacyGetConsultationDetailsUseCase.cancelJobs()
+        ePharmacyGetConsultationDetailsUseCase.getConsultationDetails(
+            ::onSuccessGetConsultationDetails,
+            ::onFailInitiateConsultation,
+            tokoConsultationId
+        )
+    }
+
     private fun onAvailablePrepareProductGroup(ePharmacyPrepareProductsGroupResponse: EPharmacyPrepareProductsGroupResponse) {
         ePharmacyPrepareProductsGroupResponseData = ePharmacyPrepareProductsGroupResponse
         ePharmacyPrepareProductsGroupResponse.let { data ->
@@ -48,27 +76,38 @@ class EPharmacyPrescriptionAttachmentViewModel @Inject constructor(
                 onFailPrepareProductGroup(IllegalStateException("Data invalid"))
             } else {
                 _productGroupLiveData.postValue(Success(mapGroupsDataIntoDataModel(data)))
-                mapButtonData(ePharmacyPrepareProductsGroupResponse)
+                _buttonLiveData.postValue(ePharmacyPrepareProductsGroupResponse.detailData?.groupsData?.papPrimaryCTA)
+                showToastData(ePharmacyPrepareProductsGroupResponse.detailData?.groupsData?.toaster)
             }
         }
     }
 
-    private fun mapButtonData(ePharmacyPrepareProductsGroupResponse: EPharmacyPrepareProductsGroupResponse) {
-        val groupStatuses = arrayListOf<Int>()
-        ePharmacyPrepareProductsGroupResponse.detailData?.groupsData?.epharmacyGroups?.forEach { group ->
-            groupStatuses.add(group?.consultationData?.consultationStatus ?: 0)
+    private fun onSuccessInitiateConsultation(response : EPharmacyInitiateConsultationResponse) {
+        response.getInitiateConsultation?.let { data ->
+            if(data.initiateConsultationData?.tokoConsultationId?.isNotBlank() == true){
+                _initiateConsultation.postValue(Success(data.initiateConsultationData))
+            }else {
+                onFailInitiateConsultation(IllegalStateException("Data invalid"))
+            }
         }
-        val statusCount = EPharmacyMapper.getPrescriptionCount(groupStatuses)
-        renderButtonOnResult(statusCount, true)
     }
 
-    private fun renderButtonOnResult(statusCount: PrescriptionStatusCount, isApi: Boolean = false) {
-        if (statusCount.approved > 0 || statusCount.active > 0) {
-            _buttonLiveData.postValue(Pair("Lanjut ke Pengiriman", "tokopedia://checkout/"))
-        } else if (statusCount.rejected > 0) {
-            _buttonLiveData.postValue(Pair("Lanjut ke Pengiriman", ""))
-            if (!isApi) {
-                _uploadError.postValue(EPharmacyNoDigitalPrescriptionError(true))
+    private fun onSuccessGetConsultationDetails(response : EPharmacyConsultationDetailsResponse) {
+        response.getEpharmacyConsultationDetails?.let { data ->
+//            if(data.initiateConsultationData?.tokoConsultationId?.isNotBlank() == true){
+//                _initiateConsultation.postValue(Success(data.initiateConsultationData))
+//            }else {
+//                onFailInitiateConsultation(IllegalStateException("Data invalid"))
+//            }
+        }
+    }
+
+    private fun showToastData(toaster: EPharmacyPrepareProductsGroupResponse.EPharmacyToaster?) {
+        toaster?.message?.let { message ->
+            if(PRESCRIPTION_ATTACH_SUCCESS == toaster.type){
+                _uploadError.value = EPharmacyMiniConsultationToaster(false ,message)
+            }else {
+                _uploadError.value = EPharmacyMiniConsultationToaster(true ,message)
             }
         }
     }
@@ -119,6 +158,10 @@ class EPharmacyPrescriptionAttachmentViewModel @Inject constructor(
 
     private fun onFailPrepareProductGroup(throwable: Throwable) {
         _productGroupLiveData.postValue(Fail(throwable))
+    }
+
+    private fun onFailInitiateConsultation(throwable: Throwable) {
+        _initiateConsultation.postValue(Fail(throwable))
     }
 
     override fun onCleared() {

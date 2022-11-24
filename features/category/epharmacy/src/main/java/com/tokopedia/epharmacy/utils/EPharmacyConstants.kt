@@ -77,3 +77,10 @@ enum class EPharmacyConsultationStatus(val status: Int) {
 }
 
 const val EPHARMACY_CHECKOUT_APPLINK = "tokopedia://checkout"
+
+enum class EPharmacyButtonState(val state: String) {
+    ACTIVE("ACTIVE"),
+    DISABLED("DISABLED")
+}
+
+const val PRESCRIPTION_ATTACH_SUCCESS = "PRESCRIPTION_ATTACH_SUCCESS"
