@@ -13,6 +13,7 @@ import com.tokopedia.recommendation_widget_common.ext.toQueryParam
 import com.tokopedia.recommendation_widget_common.extension.toRecommendationWidget
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.RemoteConfigKey
 import javax.inject.Inject
 
 /**
@@ -27,8 +28,7 @@ constructor(private val context: Context, private val graphqlRepository: Graphql
         val queryParam = ChooseAddressUtils.getLocalizingAddressData(context)?.toQueryParam(inputParameter.queryParam) ?: inputParameter.queryParam
         graphqlUseCase.setTypeClass(SingleProductRecommendationEntity::class.java)
         graphqlUseCase.setRequestParams(inputParameter.copy(queryParam = queryParam).toGqlRequest())
-//        if (remoteConfig.getBoolean(RemoteConfigKey.RECOM_USE_QUERY_V2, true)) {
-        if (true) {
+        if (remoteConfig.getBoolean(RemoteConfigKey.RECOM_USE_QUERY_V2, true)) {
             graphqlUseCase.setGraphqlQuery(ProductRecommendationSingleQueryV2())
         } else {
             graphqlUseCase.setGraphqlQuery(ProductRecommendationSingleQuery())
