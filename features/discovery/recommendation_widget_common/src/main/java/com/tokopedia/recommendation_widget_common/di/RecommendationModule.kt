@@ -6,6 +6,7 @@ import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetSingleRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationUseCaseRequest
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.user.session.UserSessionInterface
@@ -24,7 +25,17 @@ class RecommendationModule {
         graphqlUseCase: com.tokopedia.graphql.domain.GraphqlUseCase,
         userSession: UserSessionInterface
     ): com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase {
-        return com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase(context, GetRecommendationUseCaseRequest.widgetListQuery, graphqlUseCase, userSession)
+        val remoteConfig = FirebaseRemoteConfigImpl(context)
+        return com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase(
+            context,
+            if (remoteConfig.getBoolean(RemoteConfigKey.RECOM_USE_QUERY_V2, true)) {
+                GetRecommendationUseCaseRequest.widgetListQueryV2
+            } else {
+                GetRecommendationUseCaseRequest.widgetListQuery
+            },
+            graphqlUseCase,
+            userSession
+        )
     }
 
     @Provides

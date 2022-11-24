@@ -99,6 +99,103 @@ internal class GetRecommendationUseCaseRequest {
 
         """.trimIndent()
 
+        val widgetListQueryV2 = """
+            query productRecommendationV2(${'$'}userID: Int!, ${'$'}pageName: String!, ${'$'}pageNumber: Int!, ${'$'}xDevice: String!, ${'$'}xSource: String!, ${'$'}queryParam: String!, ${'$'}productIDs: String!, ${'$'}categoryIDs: String!, ${'$'}keywords: [String!]!, ${'$'}tokoNow: Boolean) {
+                  productRecommendationWidgetV2(userID: ${'$'}userID, pageName: ${'$'}pageName, pageNumber: ${'$'}pageNumber, xDevice: ${'$'}xDevice, xSource: ${'$'}xSource, queryParam: ${'$'}queryParam, productIDs : ${'$'}productIDs, categoryIDs : ${'$'}categoryIDs, keywords: ${'$'}keywords, tokoNow : ${'$'}tokoNow) {
+                    data {
+                      tID
+                      source
+                      title
+                      subtitle
+                      foreignTitle
+                      widgetUrl
+                      pageName
+                      seeMoreAppLink
+                      layoutType
+                      pagination {
+                        currentPage
+                        nextPage
+                        prevPage
+                        hasNext
+                      }
+                      campaign{
+                        appLandingPageLink
+                        landingPageLink
+                        thematicID
+                        assets {
+                          banner{
+                            apps
+                          }
+                        }
+                      }
+                      recommendation {
+                        id
+                        name
+                        categoryBreadcrumbs
+                        url
+                        appUrl
+                        clickUrl
+                        wishlistUrl
+                        trackerImageUrl
+                        imageUrl
+                        price
+                        priceInt
+                        discountPercentage
+                        slashedPrice
+                        slashedPriceInt
+                        isWishlist
+                        minOrder
+                        maxOrder
+                        shop {
+                          id
+                          name
+                          city
+                          isGold
+                          isOfficial
+                        }
+                        departmentId
+                        labels {
+                          title
+                          color
+                        }
+                        labelgroup{
+                            position
+                            title
+                            type
+                            url
+                        }
+                        badges {
+                          title
+                          imageUrl
+                        }
+                        wholesalePrice {
+                          price
+                          quantityMax
+                          quantityMin
+                          priceString
+                        }
+                        freeOngkir{
+                          isActive
+                          imageUrl
+                        }
+                        rating
+                        countReview
+                        ratingAverage
+                        recommendationType
+                        stock
+                        isTopads
+                        specificationLabels {
+                            key
+                            value
+                        }
+                        parentID
+                      }
+                    }
+                  }
+                }
+
+        """.trimIndent()
+
         val singleQuery = """
             query productRecommendationSingle(${'$'}pageNumber: Int!, ${'$'}pageName: String!, ${'$'}productIDs: String!, ${'$'}queryParam: String!) {
                 productRecommendationWidgetSingle(pageNumber: ${'$'}pageNumber, pageName: ${'$'}pageName, productIDs: ${'$'}productIDs, queryParam: ${'$'}queryParam){
