@@ -4,12 +4,8 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.editshipping.util.CPLDataProvider
 import com.tokopedia.logisticCommon.data.mapper.CustomProductLogisticMapper
-import com.tokopedia.logisticCommon.data.model.CustomProductLogisticModel
 import com.tokopedia.logisticCommon.data.repository.CustomProductLogisticUseCase
 import com.tokopedia.logisticCommon.data.response.customproductlogistic.OngkirGetCPLQGLResponse
-import com.tokopedia.usecase.coroutines.Fail
-import com.tokopedia.usecase.coroutines.Result
-import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
 import io.mockk.mockk
 import io.mockk.verify
@@ -85,9 +81,20 @@ class CustomProductLogisticViewModelTest {
 
         customProductLogisticViewModel.setAllShipperServiceState(true, selectedShipperId)
 
-        val result = customProductLogisticViewModel.cplData.shipperList.getOrNull(0)?.shipper?.find { s -> s.shipperId == selectedShipperId }!!
+        val result =
+            customProductLogisticViewModel.cplData.shipperList.getOrNull(0)?.shipper?.find { s -> s.shipperId == selectedShipperId }!!
         assertTrue(result.isActive)
         assertTrue(result.shipperProduct.all { it.isActive })
+    }
+
+    @Test
+    fun `WHEN check shipper checkbox but cpl is failed THEN do nothing`() {
+        loadMockCplData(null)
+        val selectedShipperId = 11L
+
+        customProductLogisticViewModel.setAllShipperServiceState(true, selectedShipperId)
+
+        assertFalse(customProductLogisticViewModel.cplState.value is CPLState.Update)
     }
 
     @Test
@@ -104,7 +111,6 @@ class CustomProductLogisticViewModelTest {
         assertFalse(result.isActive)
     }
 
-    
     @Test
     fun `WHEN check shipper service checkbox THEN set shipper service selected to checkbox active state`() {
         val mockResponse = CPLDataProvider.provideCPLResponse()
@@ -158,7 +164,8 @@ class CustomProductLogisticViewModelTest {
 
         customProductLogisticViewModel.setWhitelabelServiceState(selectedShipperIds, false)
 
-        val result = customProductLogisticViewModel.cplData.shipperList.getOrNull(0)?.shipper?.find { s -> s.isWhitelabel}!!
+        val result =
+            customProductLogisticViewModel.cplData.shipperList.getOrNull(0)?.shipper?.find { s -> s.isWhitelabel }!!
         assertFalse(result.isActive)
         assertFalse(result.shipperProduct.all { it.isActive })
     }
@@ -172,14 +179,110 @@ class CustomProductLogisticViewModelTest {
 
         customProductLogisticViewModel.setWhitelabelServiceState(selectedShipperIds, false)
 
-        val result = customProductLogisticViewModel.cplData.shipperList.getOrNull(0)?.shipper?.find { s -> s.isWhitelabel}!!
+        val result =
+            customProductLogisticViewModel.cplData.shipperList.getOrNull(0)?.shipper?.find { s -> s.isWhitelabel }!!
         assertTrue(result.isActive)
         assertTrue(result.shipperProduct.all { it.isActive })
     }
 
-    private fun loadMockCplData(mockData: OngkirGetCPLQGLResponse?) {
+    @Test
+    fun `WHEN check whitelabel service checkbox but failed to get CPL data THEN do nothing`() {
+        loadMockCplData(null)
+        val selectedShipperIds = listOf<Long>(28, 38)
+
+        customProductLogisticViewModel.setWhitelabelServiceState(selectedShipperIds, false)
+
+        assertFalse(customProductLogisticViewModel.cplState.value is CPLState.Update)
+    }
+
+    @Test
+    fun `WHEN already show on boarding THEN should set onboarding flag to false`() {
+        val mockResponse = CPLDataProvider.provideCPLResponse()
+        loadMockCplData(mockResponse)
+
+        customProductLogisticViewModel.setAlreadyShowOnBoarding()
+
+        val result = customProductLogisticViewModel.cplData
+        assertFalse(result.shouldShowOnBoarding)
+    }
+
+    @Test
+    fun `WHEN shipper products are all hidden THEN dont show shipper`() {
+        val mockResponse = CPLDataProvider.provideCPLResponse()
+        val indexShipperGroup = 0
+        val indexShipper = 1
+        val indexShipperProduct = 0
+        val hiddenShipper = mockResponse.response.data.shipperList[indexShipperGroup].shipper[indexShipper]
+        val hiddenShipperService = hiddenShipper.shipperProduct[indexShipperProduct]
+        hiddenShipperService.uiHidden = true
+        loadMockCplData(mockResponse)
+
+        val result = customProductLogisticViewModel.cplData
+        assertNull(result.shipperList[indexShipperGroup].shipper.find { shipperCPLModel -> shipperCPLModel.shipperId == hiddenShipper.shipperId })
+    }
+
+    @Test
+    fun `WHEN shipper products hidden THEN dont show shipper product`() {
+        val mockResponse = CPLDataProvider.provideCPLResponse()
+        val indexShipperGroup = 0
+        val indexShipper = 2
+        val indexShipperProduct = 1
+        val hiddenShipper = mockResponse.response.data.shipperList[indexShipperGroup].shipper[indexShipper]
+        val hiddenShipperService = hiddenShipper.shipperProduct[indexShipperProduct]
+        hiddenShipperService.uiHidden = true
+        loadMockCplData(mockResponse)
+
+        val result = customProductLogisticViewModel.cplData
+        assertNull(result.shipperList[indexShipperGroup].shipper[indexShipper].shipperProduct.find { product -> product.shipperProductId == hiddenShipperService.shipperProductId })
+    }
+
+    @Test
+    fun `WHEN whitelabel service available THEN the products active state is according the service active state`() {
+        val mockResponse = CPLDataProvider.provideCPLResponse()
+        val indexShipperGroup = 0
+        val indexShipper = 0
+        val whitelabelShipper = mockResponse.response.data.shipperList[indexShipperGroup].whitelabelShipper[indexShipper]
+        loadMockCplData(mockResponse)
+
+        val result = customProductLogisticViewModel.cplData
+        assertTrue(result.shipperList[indexShipperGroup].shipper[indexShipper].isWhitelabel)
+        assertTrue(result.shipperList[indexShipperGroup].shipper[indexShipper].shipperProduct[indexShipper].isActive == whitelabelShipper.isActive)
+    }
+
+    @Test
+    fun `WHEN whitelabel service chosen as draft THEN active state should be true`() {
+        val mockResponse = CPLDataProvider.provideCPLResponse()
+        val indexShipperGroup = 0
+        val indexShipper = 0
+        val whitelabelShipper = mockResponse.response.data.shipperList[indexShipperGroup].whitelabelShipper[indexShipper]
+        whitelabelShipper.isActive = false
+        val draft = whitelabelShipper.shipperProductIds
+        loadMockCplData(mockResponse, draft)
+
+        val result = customProductLogisticViewModel.cplData
+        assertTrue(result.shipperList[indexShipperGroup].shipper[indexShipper].isWhitelabel)
+        assertFalse(result.shipperList[indexShipperGroup].shipper[indexShipper].shipperProduct[indexShipper].isActive == whitelabelShipper.isActive)
+        assertTrue(result.shipperList[indexShipperGroup].shipper[indexShipper].shipperProduct[indexShipper].isActive)
+    }
+
+    @Test
+    fun `WHEN product service chosen as draft THEN active state should be true`() {
+        val mockResponse = CPLDataProvider.provideCPLResponse()
+        val indexShipperGroup = 0
+        val indexShipper = 2
+        val indexShipperProduct = 0
+        val shipperProduct = mockResponse.response.data.shipperList[indexShipperGroup].shipper[indexShipper].shipperProduct[indexShipperProduct]
+        shipperProduct.isActive = false
+        val draft = listOf(shipperProduct.shipperProductId)
+        loadMockCplData(mockResponse, draft)
+
+        val result = customProductLogisticViewModel.cplData
+        assertTrue(result.shipperList[indexShipperGroup].shipper[indexShipper].shipperProduct[indexShipperProduct].isActive)
+    }
+
+    private fun loadMockCplData(mockData: OngkirGetCPLQGLResponse?, draft: List<Long>? = null) {
         if (mockData != null) {
-            val uiModel = mapper.mapCPLData(mockData.response.data, null, true)
+            val uiModel = mapper.mapCPLData(mockData.response.data, draft, true)
             customProductLogisticViewModel.cplData = uiModel
         }
     }

@@ -23,6 +23,8 @@ import com.tokopedia.usecase.coroutines.Success
 import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
 import junit.framework.Assert.assertEquals
+import junit.framework.Assert.assertFalse
+import junit.framework.Assert.assertTrue
 import kotlinx.coroutines.runBlocking
 import org.junit.Assert
 import org.junit.Before
@@ -250,6 +252,34 @@ class AddEditProductShipmentViewModelTest {
         val activatedSpIds = listOf<Long>(18)
 
         viewModel.setProductActiveState(activatedSpIds)
+
+        Assert.assertFalse(viewModel.cplList.value is Success)
+    }
+
+    @Test
+    fun `setAlreadyShowOnBoarding should set onboarding flag to false`() {
+        val mockResponse = CPLDataProvider.provideCPLResponse()
+        val activatedSpIds = listOf<Long>(18)
+        coEvery {
+            customProductLogisticUseCase(any())
+        } returns mockResponse
+        viewModel.getCPLList(1234, 9876, null, null)
+
+        viewModel.setAlreadyShowOnBoarding()
+
+        val result = (viewModel.cplList.value as Success).data.shouldShowOnBoarding
+        assertFalse(result)
+    }
+
+    @Test
+    fun `setAlreadyShowOnBoarding does nothing if failed to get cpl data`() {
+        val testError = Throwable("test error")
+        coEvery {
+            customProductLogisticUseCase(any())
+        } throws testError
+        viewModel.getCPLList(1234, 9876, null, null)
+
+        viewModel.setAlreadyShowOnBoarding()
 
         Assert.assertFalse(viewModel.cplList.value is Success)
     }
