@@ -4,6 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.content.common.types.ContentCommonUserType.TYPE_SHOP
 import com.tokopedia.content.common.types.ContentCommonUserType.TYPE_USER
 import com.tokopedia.content.common.ui.model.AccountStateInfoType
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.play.broadcaster.domain.model.GetAddedChannelTagsResponse
 import com.tokopedia.play.broadcaster.domain.model.GetChannelResponse
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
@@ -13,9 +14,13 @@ import com.tokopedia.play.broadcaster.model.UiModelBuilder
 import com.tokopedia.play.broadcaster.model.setup.product.ProductSetupUiModelBuilder
 import com.tokopedia.play.broadcaster.pusher.timer.PlayBroadcastTimer
 import com.tokopedia.play.broadcaster.robot.PlayBroadcastViewModelRobot
+import com.tokopedia.play.broadcaster.type.OriginalPrice
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
+import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastEvent
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroProductUiMapper
 import com.tokopedia.play.broadcaster.ui.model.ChannelStatus
+import com.tokopedia.play.broadcaster.ui.model.pinnedproduct.PinProductUiModel
+import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.util.assertEmpty
 import com.tokopedia.play.broadcaster.util.assertEqualTo
 import com.tokopedia.play.broadcaster.util.assertTrue
@@ -584,4 +589,62 @@ class PlayBroadcasterViewModelTest {
         }
     }
 
+    @Test
+    fun `when user click pin product and success from network` () {
+        coEvery { mockRepo.setPinProduct(any(), any()) } returns true
+
+        val product = ProductUiModel(id = "1", "Wafer", "",10L, OriginalPrice("20",20.0), PinProductUiModel(isPinned = false, canPin = true))
+
+        val robot = PlayBroadcastViewModelRobot(
+            dispatchers = testDispatcher,
+            channelRepo = mockRepo,
+        )
+
+        robot.use {
+            val event = it.recordEvent {
+                it.getViewModel().submitAction(PlayBroadcastAction.ClickPinProduct(product))
+            }
+            event.last().assertEqualTo(PlayBroadcastEvent.SuccessPinnedProduct)
+        }
+    }
+
+    @Test
+    fun `when user click pin product and failed from network` () {
+        coEvery { mockRepo.setPinProduct(any(), any()) } returns false
+
+        val product = ProductUiModel(id = "1", "Wafer", "",10L, OriginalPrice("20",20.0), PinProductUiModel(isPinned = false, canPin = true))
+
+        val robot = PlayBroadcastViewModelRobot(
+            dispatchers = testDispatcher,
+            channelRepo = mockRepo,
+        )
+
+        robot.use {
+            val event = it.recordEvent {
+                it.getViewModel().submitAction(PlayBroadcastAction.ClickPinProduct(product))
+            }
+            event.assertEmpty()
+        }
+    }
+
+    @Test
+    fun `when user click pin product and error from network` () {
+        val error = MessageErrorException("Error kak")
+
+        coEvery { mockRepo.setPinProduct(any(), any()) } throws error
+
+        val product = ProductUiModel(id = "1", "Wafer", "",10L, OriginalPrice("20",20.0), PinProductUiModel(isPinned = false, canPin = true))
+
+        val robot = PlayBroadcastViewModelRobot(
+            dispatchers = testDispatcher,
+            channelRepo = mockRepo,
+        )
+
+        robot.use {
+            val event = it.recordEvent {
+                it.getViewModel().submitAction(PlayBroadcastAction.ClickPinProduct(product))
+            }
+            event.last().assertEqualTo(PlayBroadcastEvent.FailPinUnPinProduct(error, product.pinStatus.isPinned))
+        }
+    }
 }
