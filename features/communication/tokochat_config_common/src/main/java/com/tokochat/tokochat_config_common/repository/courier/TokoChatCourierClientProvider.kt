@@ -57,7 +57,7 @@ class TokoChatCourierClientProvider @Inject constructor(
     private fun getEventTracker(): EventTracker {
         return object : EventTracker {
             override fun trackEvent(name: String, properties: Map<String, Any>) {
-                CourierEventLogger.logExceptionToServerLogger(name, properties)
+                CourierEventLogger.logCourierEventToServerLogger(name, properties)
             }
         }
     }

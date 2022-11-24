@@ -8,7 +8,7 @@ object CourierEventLogger {
     private const val TAG = "COURIER_EVENTS"
     private const val EVENT_NAME = "EVENT_NAME"
 
-    fun logExceptionToServerLogger(
+    fun logCourierEventToServerLogger(
         name: String,
         properties: Map<String, Any>
     ) {
