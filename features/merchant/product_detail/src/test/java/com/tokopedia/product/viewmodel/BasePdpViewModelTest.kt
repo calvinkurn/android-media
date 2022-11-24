@@ -146,7 +146,7 @@ abstract class BasePdpViewModelTest {
     }
 
     private fun normalizeOs() {
-        setOS(30)
+        setOS(25)
     }
 
     fun setOS(newValue: Any?) {

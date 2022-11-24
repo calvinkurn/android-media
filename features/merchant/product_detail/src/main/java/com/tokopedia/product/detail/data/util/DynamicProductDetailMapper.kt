@@ -678,10 +678,10 @@ object DynamicProductDetailMapper {
                     || (it.name() == ProductDetailConstant.PRODUCT_INSTALLMENT_PAYLATER_INFO)
                     || (it.name() == ProductDetailConstant.ORDER_PRIORITY)
                     /**
-                     * Remove when lollipop and sellerapp
+                     * Remove when lollipop and product of seller itself
                      */
                     || (it.name() == ProductDetailConstant.AR_BUTTON
-                    && (GlobalConfig.isSellerApp() || !higherThanLollipop))
+                    && (GlobalConfig.isSellerApp() || !higherThanLollipop || isShopOwner))
         }.toMutableList()
     }
 

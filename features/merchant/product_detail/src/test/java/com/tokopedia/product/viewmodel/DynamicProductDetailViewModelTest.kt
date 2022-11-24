@@ -1392,11 +1392,6 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
             GlobalConfig.isSellerApp()
         } returns true
 
-        /**
-         * make sure button ar removed because its sellerapp eventho os > 22
-         */
-        setOS(25)
-
         every {
             viewModel.userId
         } returns "123"
