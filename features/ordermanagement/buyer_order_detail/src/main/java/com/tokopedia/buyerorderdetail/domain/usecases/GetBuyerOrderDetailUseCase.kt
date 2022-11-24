@@ -57,7 +57,9 @@ class GetBuyerOrderDetailUseCase @Inject constructor(
                   id
                   status_name
                   indicator_color
-                  label
+                  labels {
+                    label
+                  }
                 }
                 ticker_info {
                   text

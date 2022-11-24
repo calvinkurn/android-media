@@ -195,9 +195,15 @@ data class GetBuyerOrderDetailResponse(
                 @SerializedName("status_name")
                 val statusName: String = "",
                 @Expose
-                @SerializedName("label")
-                val label: String = ""
-            )
+                @SerializedName("labels")
+                val labels: List<Label> = listOf()
+            ) {
+                data class Label(
+                    @Expose
+                    @SerializedName("label")
+                    val label: String = ""
+                )
+            }
 
             data class Payment(
                 @Expose
