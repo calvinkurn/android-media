@@ -6,9 +6,9 @@
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/iv_no_account_eligible"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:src="@drawable/ic_shorts_account_not_eligible"
+        android:layout_width="@dimen/play_shorts_no_eligible_account_width"
+        android:layout_height="@dimen/play_shorts_no_eligible_account_height"
+        app:unify_image_url_src="@string/img_shorts_account_not_eligible"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
