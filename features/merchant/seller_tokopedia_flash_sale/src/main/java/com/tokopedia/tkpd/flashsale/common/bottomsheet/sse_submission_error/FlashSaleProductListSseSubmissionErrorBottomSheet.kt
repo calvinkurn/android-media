@@ -1,5 +1,6 @@
 package com.tokopedia.tkpd.flashsale.common.bottomsheet.sse_submission_error
 
+import android.content.DialogInterface
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -27,6 +28,18 @@ class FlashSaleProductListSseSubmissionErrorBottomSheet :
     BottomSheetUnify(),
     HasPaginatedList by HasPaginatedListImpl() {
 
+    companion object {
+        private val TAG = FlashSaleProductListSseSubmissionErrorBottomSheet::class.java.simpleName
+        private const val KEY_CAMPAIGN_ID = "campaign_id"
+
+        fun createInstance(campaignId: String): FlashSaleProductListSseSubmissionErrorBottomSheet =
+            FlashSaleProductListSseSubmissionErrorBottomSheet().apply {
+                arguments = Bundle().apply {
+                    putString(KEY_CAMPAIGN_ID, campaignId)
+                }
+            }
+    }
+
     private var binding by autoClearedNullable<StfsBottomsheetListProductSseSubmissionErrorBinding>()
 
     private val productSseErrorSubmissionAdapter by lazy {
@@ -46,6 +59,7 @@ class FlashSaleProductListSseSubmissionErrorBottomSheet :
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         initInjector()
+        getArgumentData(arguments)
     }
 
     private fun initInjector() {
@@ -53,6 +67,12 @@ class FlashSaleProductListSseSubmissionErrorBottomSheet :
             .baseAppComponent((activity?.applicationContext as? BaseMainApplication)?.baseAppComponent)
             .build()
             .inject(this)
+    }
+
+    private fun getArgumentData(arguments: Bundle?) {
+        arguments?.let{
+            campaignId = arguments.getString(KEY_CAMPAIGN_ID, "")
+        }
     }
 
     override fun onCreateView(
@@ -87,12 +107,16 @@ class FlashSaleProductListSseSubmissionErrorBottomSheet :
             hideProductListShimmering()
             notifyLoadResult(it.isHasNextProduct)
             productSseErrorSubmissionAdapter.addItems(it.listCampaignProductError)
-            acknowledgeProductSubmissionSse()
         }
     }
 
     private fun acknowledgeProductSubmissionSse() {
         viewModel.acknowledgeProductSubmissionSse(campaignId)
+    }
+
+    override fun onDismiss(dialog: DialogInterface) {
+        acknowledgeProductSubmissionSse()
+        super.onDismiss(dialog)
     }
 
     private fun setupBottomSheet(inflater: LayoutInflater, container: ViewGroup?) {
@@ -142,12 +166,7 @@ class FlashSaleProductListSseSubmissionErrorBottomSheet :
         }
     }
 
-    fun show(
-        campaignId: String,
-        manager: FragmentManager,
-        tag: String?,
-    ) {
-        this.campaignId = campaignId
-        show(manager, tag)
+    fun show(fragmentManager: FragmentManager) {
+        show(fragmentManager, TAG)
     }
 }

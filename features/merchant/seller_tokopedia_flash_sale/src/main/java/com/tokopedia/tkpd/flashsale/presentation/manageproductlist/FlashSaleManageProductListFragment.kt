@@ -306,8 +306,8 @@ class FlashSaleManageProductListFragment :
     }
 
     private fun openFlashSaleProductListSseSubmissionErrorBottomSheet() {
-        val bottomSheet = FlashSaleProductListSseSubmissionErrorBottomSheet()
-        bottomSheet.show(campaignId, childFragmentManager, bottomSheet.tag)
+        val bottomSheet = FlashSaleProductListSseSubmissionErrorBottomSheet.createInstance(campaignId)
+        bottomSheet.show(childFragmentManager)
     }
 
     private fun showProductSubmissionSseProgressDialog() {

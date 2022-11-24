@@ -410,8 +410,10 @@ class CampaignDetailFragment : BaseDaggerFragment() {
     }
 
     private fun openFlashSaleProductListSseSubmissionErrorBottomSheet() {
-        val bottomSheet = FlashSaleProductListSseSubmissionErrorBottomSheet()
-        bottomSheet.show(flashSaleId.toString(), childFragmentManager, bottomSheet.tag)
+        val bottomSheet = FlashSaleProductListSseSubmissionErrorBottomSheet.createInstance(
+            flashSaleId.toString()
+        )
+        bottomSheet.show(childFragmentManager)
     }
 
     private fun listenToExistingSse() {
