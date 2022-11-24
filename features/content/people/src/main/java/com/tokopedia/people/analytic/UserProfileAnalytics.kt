@@ -71,6 +71,7 @@ class UserProfileAnalytics {
         const val EVENT_CLICK_HOME_PAGE = "clickHomepage"
         const val EVENT_CLICK_COMMUNICATION = "clickCommunication"
         const val EVENT_VIEW_COMMUNICATION = "viewCommunicationIris"
+        const val EVENT_VIEW_CONTENT_IRIS = "viewContentIris"
     }
 
     object ScreenName {

@@ -129,5 +129,7 @@ interface UserProfileTracker {
 
     fun clickCreateShorts(userId: String)
 
+    fun viewCreateShorts(userId: String)
+
     fun sendAll()
 }

@@ -10,4 +10,6 @@ interface PlayShortsEntryPointAnalytic {
     fun clickShortsEntryPoint(accountId: String, accountType: String)
 
     fun clickCloseShortsEntryPointCoachMark(accountId: String, accountType: String)
+
+    fun viewShortsEntryPoint(accountId: String, accountType: String)
 }

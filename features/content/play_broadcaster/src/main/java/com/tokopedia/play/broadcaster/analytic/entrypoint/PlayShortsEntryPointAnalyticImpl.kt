@@ -72,6 +72,25 @@ class PlayShortsEntryPointAnalyticImpl @Inject constructor(
         )
     }
 
+    /**
+     * Row 80
+     */
+    override fun viewShortsEntryPoint(accountId: String, accountType: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            mapOf(
+                KEY_EVENT to KEY_TRACK_VIEW_EVENT_SELLER,
+                KEY_EVENT_ACTION to "view - buat video",
+                KEY_EVENT_CATEGORY to KEY_TRACK_CATEGORY_PLAY,
+                KEY_EVENT_LABEL to "$accountId - ${getAccountType(accountType)}",
+                KEY_CURRENT_SITE to currentSite,
+                KEY_USER_ID to userSession.userId,
+                KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
+                KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                KEY_TRACKER_ID to "37603"
+            )
+        )
+    }
+
     private fun getAccountType(accountType: String): String {
         return when(accountType) {
             ContentCommonUserType.TYPE_SHOP -> SHORTS_TYPE_SELLER

@@ -498,7 +498,12 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         feedFloatingButton.setOnClickListener {
             coachMarkManager?.hasBeenShown(feedFloatingButton)
             fabFeed.menuOpen = !fabFeed.menuOpen
-            if (fabFeed.menuOpen) entryPointAnalytic.clickMainEntryPoint()
+            if (fabFeed.menuOpen) {
+                entryPointAnalytic.clickMainEntryPoint()
+
+                if(viewModel.isShowShortsButton)
+                    entryPointAnalytic.viewShortsEntryPoint()
+            }
         }
     }
 

@@ -362,6 +362,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
             description = getString(R.string.play_bro_banner_shorts_description)
             bannerIcon = IconUnify.SHORT_VIDEO
         }
+        analytic.viewShortsEntryPoint(parentViewModel.authorId, parentViewModel.authorType)
     }
 
     private fun setupInsets() {

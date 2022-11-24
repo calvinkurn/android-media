@@ -336,6 +336,10 @@ class UserProfileFragment @Inject constructor(
             coachMarkManager.hasBeenShown(fabUserProfile)
 
             fabUp.menuOpen = !fabUp.menuOpen
+
+            if(fabUp.menuOpen && viewModel.isWhitelist) {
+                userProfileTracker.viewCreateShorts(viewModel.profileUserID)
+            }
         }
     }
 

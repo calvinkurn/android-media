@@ -66,6 +66,7 @@ import com.tokopedia.people.analytic.UserProfileAnalytics.Event.EVENT_CLICK_FEED
 import com.tokopedia.people.analytic.UserProfileAnalytics.Event.EVENT_CLICK_HOME_PAGE
 import com.tokopedia.people.analytic.UserProfileAnalytics.Event.EVENT_OPEN_SCREEN
 import com.tokopedia.people.analytic.UserProfileAnalytics.Event.EVENT_VIEW_COMMUNICATION
+import com.tokopedia.people.analytic.UserProfileAnalytics.Event.EVENT_VIEW_CONTENT_IRIS
 import com.tokopedia.people.analytic.UserProfileAnalytics.Event.EVENT_VIEW_HOME_PAGE
 import com.tokopedia.people.analytic.UserProfileAnalytics.Function.isLiveOrNotLive
 import com.tokopedia.people.analytic.UserProfileAnalytics.Function.isLiveOrVod
@@ -911,7 +912,25 @@ class UserProfileTrackerImpl @Inject constructor(
             .setEventCategory(FEED_USER_PROFILE)
             .setEventAction("click - buat video")
             .setEventLabel("$userId - user")
-            .setCustomProperty(TRACKER_ID, "TRACKER_ID")
+            .setCustomProperty(TRACKER_ID, "37593")
+            .setBusinessUnit(PLAY)
+            .setCurrentSite(currentSite)
+            .setCustomProperty(SESSION_IRIS, TrackApp.getInstance().gtm.irisSessionId)
+            .setUserId(userSession.userId)
+            .build()
+            .send()
+    }
+
+    /**
+     * Row 81
+     */
+    override fun viewCreateShorts(userId: String) {
+        Tracker.Builder()
+            .setEvent(EVENT_VIEW_CONTENT_IRIS)
+            .setEventCategory(FEED_USER_PROFILE)
+            .setEventAction("view - buat video")
+            .setEventLabel("$userId - user")
+            .setCustomProperty(TRACKER_ID, "37604")
             .setBusinessUnit(PLAY)
             .setCurrentSite(currentSite)
             .setCustomProperty(SESSION_IRIS, TrackApp.getInstance().gtm.irisSessionId)
