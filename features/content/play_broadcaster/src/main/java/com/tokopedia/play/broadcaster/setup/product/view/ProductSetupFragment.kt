@@ -7,6 +7,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
+import com.tokopedia.content.common.util.orUnknown
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.EtalaseListBottomSheet
 import com.tokopedia.play.broadcaster.setup.product.view.bottomsheet.ProductChooserBottomSheet
@@ -100,17 +101,24 @@ class ProductSetupFragment @Inject constructor(
         super.onAttachFragment(childFragment)
         when (childFragment) {
             is ProductChooserBottomSheet -> childFragment.setListener(productChooserListener)
-            is ProductSummaryBottomSheet -> childFragment.setListener(productSummaryListener)
+            is ProductSummaryBottomSheet -> {
+                childFragment.setDataSource(object : ProductSummaryBottomSheet.DataSource {
+                    override fun getSelectedAccount(): ContentAccountUiModel {
+                        return mDataSource?.getSelectedAccount().orUnknown()
+                    }
+                })
+
+                childFragment.setListener(productSummaryListener)
+            }
             is ProductPickerUGCBottomSheet -> {
                 childFragment.setListener(productPickerUGCListener)
                 childFragment.setDataSource(object : ProductPickerUGCBottomSheet.DataSource {
                     override fun getSelectedAccount(): ContentAccountUiModel {
-                        return mDataSource?.getSelectedAccount() ?: ContentAccountUiModel.Empty
+                        return mDataSource?.getSelectedAccount().orUnknown()
                     }
 
                     override fun getShopBadgeIfAny(): String {
-                        /** TODO: find a way to provide shopBadge here */
-                        return ""
+                        return mDataSource?.getSelectedAccount()?.badge.orEmpty()
                     }
                 })
             }

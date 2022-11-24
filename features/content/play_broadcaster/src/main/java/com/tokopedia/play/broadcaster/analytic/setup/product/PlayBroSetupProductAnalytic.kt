@@ -1,9 +1,13 @@
 package com.tokopedia.play.broadcaster.analytic.setup.product
 
+import com.tokopedia.content.common.ui.model.ContentAccountUiModel
+
 /**
  * Created By : Jonathan Darwin on February 04, 2022
  */
 interface PlayBroSetupProductAnalytic {
+
+    fun setSelectedAccount(account: ContentAccountUiModel)
 
     fun clickSearchBarOnProductSetup(search: String)
 
@@ -32,4 +36,8 @@ interface PlayBroSetupProductAnalytic {
     fun clickConfirmCloseOnProductChooser()
 
     fun clickCancelCloseOnProductChooser()
+
+    fun clickCloseOnProductSummary()
+
+    fun viewProductSummary()
 }

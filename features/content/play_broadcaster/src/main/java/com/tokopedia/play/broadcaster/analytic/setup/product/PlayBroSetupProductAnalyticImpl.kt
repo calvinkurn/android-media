@@ -1,5 +1,6 @@
 package com.tokopedia.play.broadcaster.analytic.setup.product
 
+import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.play.broadcaster.analytic.*
 import com.tokopedia.play.broadcaster.analytic.KEY_BUSINESS_UNIT
 import com.tokopedia.play.broadcaster.analytic.KEY_CURRENT_SITE
@@ -22,6 +23,10 @@ class PlayBroSetupProductAnalyticImpl @Inject constructor(
 ) : PlayBroSetupProductAnalytic {
 
     private val shopId = userSession.shopId
+
+    override fun setSelectedAccount(account: ContentAccountUiModel) {
+        /** Not applicable for broadcaster */
+    }
 
     override fun clickSearchBarOnProductSetup(search: String) {
         sendEvent(
@@ -101,6 +106,14 @@ class PlayBroSetupProductAnalyticImpl @Inject constructor(
 
     override fun clickCancelCloseOnProductChooser() {
         sendEvent("click - cancel close on add product page")
+    }
+
+    override fun clickCloseOnProductSummary() {
+        /** Not applicable for broadcaster */
+    }
+
+    override fun viewProductSummary() {
+        /** Not applicable for broadcaster */
     }
 
     private fun sendEvent(
