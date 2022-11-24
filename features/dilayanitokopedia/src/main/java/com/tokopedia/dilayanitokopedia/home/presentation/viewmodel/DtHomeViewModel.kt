@@ -12,6 +12,7 @@ import com.tokopedia.dilayanitokopedia.home.constant.AnchorTabData
 import com.tokopedia.dilayanitokopedia.home.constant.HomeStaticLayoutId
 import com.tokopedia.dilayanitokopedia.home.domain.mapper.AnchorTabMapper.mapMenuList
 import com.tokopedia.dilayanitokopedia.home.domain.mapper.HomeLayoutMapper.addEmptyStateIntoList
+import com.tokopedia.dilayanitokopedia.home.domain.mapper.HomeLayoutMapper.addLoadingIntoList
 import com.tokopedia.dilayanitokopedia.home.domain.mapper.HomeLayoutMapper.mapHomeLayoutList
 import com.tokopedia.dilayanitokopedia.home.domain.usecase.DtGetHomeLayoutDataUseCase
 import com.tokopedia.dilayanitokopedia.home.presentation.uimodel.AnchorTabUiModel
@@ -122,6 +123,25 @@ class DtHomeViewModel @Inject constructor(
         return AnchorTabData.getListAnchorTab()
     }
 
+
+    fun switchServiceOrLoadLayout(
+//        externalServiceType: String, localCacheModel: LocalCacheModel
+    ) {
+//        /*
+//           Note :
+//            - There are 2 types of external service we'll receive, those are 20m and 2h.
+//            - 20m will be changed to 15m temporarily.
+//            - 15m still used in LCA and BE as 20m service type.
+//         */
+//        val currentServiceType = localCacheModel.getServiceType()
+//
+//        if (externalServiceType != currentServiceType && externalServiceType.isNotBlank()) {
+//            switchService(localCacheModel, externalServiceType)
+//        } else {
+            getLoadingState()
+//        }
+    }
+
     /***
      *
      * @param localCacheModel local data from choose address
@@ -139,7 +159,7 @@ class DtHomeViewModel @Inject constructor(
     fun getLoadingState() {
 //        channelToken = ""
         homeLayoutItemList.clear()
-//        homeLayoutItemList.addLoadingIntoList()
+        homeLayoutItemList.addLoadingIntoList()
         val data = HomeLayoutListUiModel(
             items = getHomeVisitableList(),
             state = DtLayoutState.LOADING

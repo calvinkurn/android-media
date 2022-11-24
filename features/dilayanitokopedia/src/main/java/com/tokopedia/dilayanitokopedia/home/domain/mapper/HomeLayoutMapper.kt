@@ -7,25 +7,19 @@ import com.tokopedia.dilayanitokopedia.common.constant.DtLayoutType.Companion.MI
 import com.tokopedia.dilayanitokopedia.common.constant.DtLayoutType.Companion.MIX_TOP_CAROUSEL
 import com.tokopedia.dilayanitokopedia.home.constant.HomeLayoutItemState
 import com.tokopedia.dilayanitokopedia.home.constant.HomeStaticLayoutId
-import com.tokopedia.dilayanitokopedia.home.constant.HomeStaticLayoutId.Companion.CHOOSE_ADDRESS_WIDGET_ID
+import com.tokopedia.dilayanitokopedia.home.constant.HomeStaticLayoutId.Companion.LOADING_STATE
 import com.tokopedia.dilayanitokopedia.home.domain.mapper.FeaturedShopMapper.mapToFeaturedShop
 import com.tokopedia.dilayanitokopedia.home.domain.mapper.LeftCarouselMapper.mapToLeftCarousel
 import com.tokopedia.dilayanitokopedia.home.domain.mapper.LegoBannerMapper.mapLegoBannerDataModel
 import com.tokopedia.dilayanitokopedia.home.domain.mapper.SliderBannerMapper.mapSliderBannerModel
 import com.tokopedia.dilayanitokopedia.home.domain.mapper.TopCarouselMapper.mapTopCarouselModel
 import com.tokopedia.dilayanitokopedia.home.domain.model.HomeLayoutResponse
-import com.tokopedia.dilayanitokopedia.home.presentation.uimodel.AnchorTabUiModel
+import com.tokopedia.dilayanitokopedia.home.presentation.uimodel.HomeLoadingStateUiModel
 import com.tokopedia.dilayanitokopedia.home.uimodel.HomeLayoutItemUiModel
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import timber.log.Timber
 
 object HomeLayoutMapper {
-
-
-//    fun MutableList<HomeLayoutItemUiModel>.addLoadingIntoList() {
-//        val loadingLayout = HomeLoadingStateUiModel(id = LOADING_STATE)
-//        add(HomeLayoutItemUiModel(loadingLayout, HomeLayoutItemState.LOADED))
-//    }
 
     private val SUPPORTED_LAYOUT_TYPES = listOf(
 //        CATEGORY,
@@ -154,7 +148,10 @@ object HomeLayoutMapper {
         }
     }
 
-
+    fun MutableList<HomeLayoutItemUiModel>.addLoadingIntoList() {
+        val loadingLayout = HomeLoadingStateUiModel(id = LOADING_STATE)
+        add(HomeLayoutItemUiModel(loadingLayout, HomeLayoutItemState.LOADED))
+    }
 
 
 }

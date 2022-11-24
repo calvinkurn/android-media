@@ -5,6 +5,8 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.dilayanitokopedia.common.view.DtView
+import com.tokopedia.dilayanitokopedia.home.presentation.uimodel.HomeLoadingStateUiModel
+import com.tokopedia.dilayanitokopedia.home.presentation.viewholder.HomeLoadingStateViewHolder
 import com.tokopedia.home_component.HomeComponentTypeFactory
 import com.tokopedia.home_component.listener.BannerComponentListener
 import com.tokopedia.home_component.listener.DynamicLegoBannerListener
@@ -66,7 +68,7 @@ class DtHomeAdapterTypeFactory(
     private val homeTopCarouselListener: MixTopComponentListener? = null,
     private val homeLeftCarouselListener: MixLeftComponentListener? = null,
 ) : BaseAdapterTypeFactory(),
-//    HomeTypeFactory,
+    HomeTypeFactory,
     HomeComponentTypeFactory
 //    TokoNowCategoryGridTypeFactory,
 //    TokoNowRepurchaseTypeFactory,
@@ -123,9 +125,9 @@ class DtHomeAdapterTypeFactory(
     override fun type(bannerDataModel: BannerDataModel): Int = BannerComponentViewHolder.LAYOUT
     override fun type(mixLeftDataModel: MixLeftDataModel): Int = MixLeftComponentViewHolder.LAYOUT
 
-    override fun type(featuredShopDataModel: FeaturedShopDataModel): Int =
-        FeaturedShopViewHolder.LAYOUT
+    override fun type(featuredShopDataModel: FeaturedShopDataModel): Int = FeaturedShopViewHolder.LAYOUT
 
+    override fun type(uiModel: HomeLoadingStateUiModel): Int  = HomeLoadingStateViewHolder.LAYOUT
 
     // endregion
 
@@ -146,7 +148,7 @@ class DtHomeAdapterTypeFactory(
 //            HomeTickerViewHolder.LAYOUT -> HomeTickerViewHolder(view, homeTickerListener)
 //            HomeProductRecomViewHolder.LAYOUT -> HomeProductRecomViewHolder(view, tokoNowView, homeProductRecomListener)
 //            HomeEmptyStateViewHolder.LAYOUT -> HomeEmptyStateViewHolder(view, tokoNowView)
-//            HomeLoadingStateViewHolder.LAYOUT -> HomeLoadingStateViewHolder(view)
+            HomeLoadingStateViewHolder.LAYOUT -> HomeLoadingStateViewHolder(view)
 //            HomeSharingWidgetViewHolder.LAYOUT -> HomeSharingWidgetViewHolder(view, homeSharingEducationListener)
 //            HomeEducationalInformationWidgetViewHolder.LAYOUT -> HomeEducationalInformationWidgetViewHolder(view, homeEducationalInformationListener)
 //            HomeProgressBarViewHolder.LAYOUT -> HomeProgressBarViewHolder(view)
@@ -188,5 +190,7 @@ class DtHomeAdapterTypeFactory(
             }
         }
     }
+
+
 
 }

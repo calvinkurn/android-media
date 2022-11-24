@@ -8,11 +8,13 @@ import android.text.TextUtils
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.applink.RouteManager
@@ -57,6 +59,7 @@ import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.localizationchooseaddress.domain.mapper.TokonowWarehouseMapper
@@ -70,7 +73,6 @@ import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
-import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
 import com.tokopedia.universal_sharing.view.model.ShareModel
@@ -103,6 +105,8 @@ class DtHomeFragment : Fragment() {
     private var navToolbar: NavToolbar? = null
     private var statusBarBackground: View? = null
     private var rvHome: RecyclerView? = null
+    private var ivHeaderBackground: ImageView? = null
+
 
     private var rvLayoutManager: CustomLinearLayoutManager? = null
 
@@ -166,7 +170,10 @@ class DtHomeFragment : Fragment() {
          * Temporary
          * Remove later
          */
-        showLayout()
+//        showLayout()
+
+        loadLayout()
+
     }
 
     private fun setupChooseAddressWidget() {
@@ -176,16 +183,13 @@ class DtHomeFragment : Fragment() {
     }
 
     private fun initAnchorTabMenu() {
-        // data anchor tab
 
         anchorTabAdapter = DtAnchorTabAdapter(anchorTabListener())
         binding?.headerCompHolder?.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         binding?.headerCompHolder?.adapter = anchorTabAdapter
     }
 
-    /**
-     * TODO - part of click listener
-     */
+
     private fun anchorTabListener(): DtAnchorTabAdapter.AnchorTabListener {
         return object : DtAnchorTabAdapter.AnchorTabListener {
 
@@ -227,7 +231,7 @@ class DtHomeFragment : Fragment() {
 
     private fun initUiVariable() {
         view?.apply {
-//            ivHeaderBackground = binding?.viewBackgroundImage
+            ivHeaderBackground = binding?.dtViewBackgroundImage
             navToolbar = binding?.dtHomeNavToolbar
             statusBarBackground = binding?.dtHomeStatusBarBackground
             rvHome = binding?.rvHome
@@ -258,6 +262,7 @@ class DtHomeFragment : Fragment() {
                 toolbar.setToolbarTitle(getString(R.string.dt_home_title))
             }
         }
+        navToolbar?.hideShadow()
     }
 
     private fun initHint(searchPlaceholder: SearchPlaceholder) {
@@ -404,7 +409,6 @@ class DtHomeFragment : Fragment() {
 
     private fun showHomeLayout(data: HomeLayoutListUiModel) {
         rvHome?.post {
-            Timber.d("HomeLayoutt ${data.items}")
             adapter.submitList(data.items)
         }
     }
@@ -444,7 +448,9 @@ class DtHomeFragment : Fragment() {
     private fun onShowHomeLayout(data: HomeLayoutListUiModel) {
 //        startRenderPerformanceMonitoring()
         showHomeLayout(data)
-//        showHeaderBackground()
+        showHeaderBackground()
+        visibilityChooseAddress()
+        visibilityAnchorTab()
 //        stickyLoginLoadContent()
 //        showOnBoarding()
 //        getLayoutComponentData()
@@ -578,11 +584,36 @@ class DtHomeFragment : Fragment() {
 
     private fun onLoadingHomeLayout(data: HomeLayoutListUiModel) {
         showHomeLayout(data)
-//        loadHeaderBackground()
+        loadHeaderBackgroundLoading()
         checkAddressDataAndServiceArea()
         showLayout()
-//        showHideChooseAddress()
+        visibilityChooseAddress(false)
+        visibilityAnchorTab(false)
 //        hideSwitcherCoachMark()
+    }
+
+
+    private fun visibilityChooseAddress(visible: Boolean = true) {
+        if (visible) {
+            binding?.chooseAddressWidget?.visible()
+        } else {
+            binding?.chooseAddressWidget?.gone()
+        }
+    }
+
+    private fun visibilityAnchorTab(visible: Boolean = true) {
+        if (visible) {
+            binding?.headerCompHolder?.visible()
+        } else {
+            binding?.headerCompHolder?.gone()
+        }
+    }
+
+
+    private fun loadHeaderBackgroundLoading() {
+        ivHeaderBackground?.setImageResource(R.drawable.dt_ic_header_background_shimmering)
+        ivHeaderBackground?.show()
+
     }
 
     private fun onSearchBarClick() {
@@ -600,10 +631,10 @@ class DtHomeFragment : Fragment() {
 
     private fun switchServiceOrLoadLayout() {
         localCacheModel?.apply {
-//            viewModelDtHome.switchServiceOrLoadLayout(
+            viewModelDtHome.switchServiceOrLoadLayout(
 //                externalServiceType = externalServiceType,
 //                localCacheModel = this
-//            )
+            )
         }
     }
 
@@ -686,6 +717,10 @@ class DtHomeFragment : Fragment() {
 //        }
     }
 
+
+    /**
+     * Handle top carousel onChannelExpired
+     */
     private fun createTopComponentCallback(): HomeComponentListener? {
         return object : HomeComponentListener {
             override fun onChannelExpired(channelModel: ChannelModel, channelPosition: Int, visitable: Visitable<*>) {
@@ -771,7 +806,7 @@ class DtHomeFragment : Fragment() {
     private val homeMainToolbarHeight: Int
         get() {
             val defaultHeight = context?.resources?.getDimensionPixelSize(
-                R.dimen.tokopedianow_default_toolbar_status_height
+                R.dimen.dt_default_toolbar_status_height
             ).orZero()
             val height = (navToolbar?.height ?: defaultHeight)
             val padding = context?.resources?.getDimensionPixelSize(
@@ -883,7 +918,7 @@ class DtHomeFragment : Fragment() {
          * get position from anchor tab using visitable
          * select and scroll tab anchor from pisition
          */
-        if (visiblePosition != null) {
+        if (visiblePosition != null && viewModelDtHome.getHomeVisitableList().isNotEmpty()) {
             val visitable = viewModelDtHome.getHomeVisitableList()[visiblePosition]
 
             val anchorTabUiModel = viewModelDtHome.menuList.value?.find {
@@ -895,8 +930,6 @@ class DtHomeFragment : Fragment() {
                 anchorTabAdapter?.selectMenu(anchorTabUiModel)
                 binding?.headerCompHolder?.smoothScrollToPosition(indexAnchorTab)
             }
-            Toaster.build(requireView(), "updateAnchorTabWhenScroll $visiblePosition").show()
-            Timber.d("updateAnchorTabWhenScroll $visiblePosition")
         }
     }
 
@@ -924,5 +957,17 @@ class DtHomeFragment : Fragment() {
         binding?.dtViewBackgroundImage?.gone()
 
         statusBarState = AnchorTabStatus.MINIMIZE
+    }
+
+    private fun showHeaderBackground() {
+        context?.resources?.apply {
+            val background = VectorDrawableCompat.create(
+                this,
+                R.drawable.dt_ic_header_background,
+                context?.theme
+            )
+            ivHeaderBackground?.setImageDrawable(background)
+            ivHeaderBackground?.show()
+        }
     }
 }

@@ -12,7 +12,7 @@ import javax.inject.Inject
 
 /**
  * Dynamic Home Channel Query Docs:
- * https://tokopedia.atlassian.net/wiki/spaces/HP/pages/381550603/HPB+Home+-+Mojito+Channel
+ * https://tokopedia.atlassian.net/wiki/spaces/HP/pages/2043906993/HPB+Home+-+API+GQL+GraphQL+getHomeChannelV2
  */
 
 class DtGetHomeLayoutDataUseCase @Inject constructor(
@@ -26,10 +26,6 @@ class DtGetHomeLayoutDataUseCase @Inject constructor(
         private const val PARAM_CHANNELIDS = "channelIDs"
         private const val PARAM_LOCATION = "location"
 
-        /*
-        TODO - wait from BE - change from empty to dt
-         */
-//        private const val PARAM_VALUE_PAGE_DT = ""
         private const val PARAM_VALUE_PAGE_DT = "dt"
     }
 
@@ -51,10 +47,6 @@ class DtGetHomeLayoutDataUseCase @Inject constructor(
         )
 
         val response = executeOnBackground().response
-        response.data.forEach {
-            Timber.d("respondDataa ${it.layout}")
-
-        }
         return response.data
     }
 }

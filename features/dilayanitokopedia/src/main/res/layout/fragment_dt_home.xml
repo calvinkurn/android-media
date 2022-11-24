@@ -10,9 +10,8 @@
         android:id="@+id/dtViewBackgroundImage"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:elevation="1dp"
         android:scaleType="fitXY"
-        android:src="@drawable/dt_background_header"
+        android:src="@drawable/dt_ic_header_background"
         app:layout_constraintTop_toTopOf="parent" />
 
     <com.tokopedia.searchbar.navigation_component.NavToolbar
@@ -34,8 +33,6 @@
         app:toolbarInvertSearchBarColor="true"
         app:toolbarPageName="/" />
 
-
-
     <com.tokopedia.localizationchooseaddress.ui.widget.ChooseAddressWidget
         android:id="@+id/choose_address_widget"
         android:layout_width="match_parent"
@@ -50,6 +47,7 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/header_comp_holder"
+        android:paddingStart="12dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="20dp"
