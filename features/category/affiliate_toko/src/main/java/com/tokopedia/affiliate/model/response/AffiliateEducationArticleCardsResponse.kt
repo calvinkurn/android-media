@@ -88,7 +88,11 @@ data class AffiliateEducationArticleCardsResponse(
                     val uploadDatetime: String? = null,
 
                     @SerializedName("slug")
-                    val slug: String? = null
+                    val slug: String? = null,
+
+                    @SerializedName("id")
+                    val articleId: Long? = null
+
                 ) {
 
                     data class Attributes(
@@ -96,7 +100,7 @@ data class AffiliateEducationArticleCardsResponse(
                         @SerializedName("read_time")
                         val readTime: String? = null
                     )
-                    
+
                     data class CategoriesItem(
 
                         @SerializedName("level")
@@ -123,10 +127,8 @@ data class AffiliateEducationArticleCardsResponse(
                         @SerializedName("ios")
                         val ios: String? = null
                     )
-
                 }
             }
-
         }
     }
 }

@@ -3,14 +3,20 @@ package com.tokopedia.affiliate.ui.viewholder
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.affiliate.AffiliateAnalytics
+import com.tokopedia.affiliate.AffiliateAnalytics.ActionKeys
+import com.tokopedia.affiliate.AffiliateAnalytics.CategoryKeys
 import com.tokopedia.affiliate.PAGE_EDUCATION_ARTICLE
 import com.tokopedia.affiliate.PAGE_EDUCATION_EVENT
+import com.tokopedia.affiliate.PAGE_EDUCATION_TUTORIAL
 import com.tokopedia.affiliate.interfaces.AffiliateEducationSeeAllCardClickInterface
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEducationSeeAllUiModel
 import com.tokopedia.affiliate_toko.R
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.user.session.UserSessionInterface
+import javax.inject.Inject
 
 class AffiliateEducationSeeAllVH(
     itemView: View,
@@ -22,6 +28,9 @@ class AffiliateEducationSeeAllVH(
         @LayoutRes
         var LAYOUT = R.layout.affiliate_education_see_all_item
     }
+
+    @Inject
+    lateinit var userSessionInterface: UserSessionInterface
 
     override fun bind(element: AffiliateEducationSeeAllUiModel?) {
         itemView.findViewById<ImageUnify>(R.id.image_see_all_result)
@@ -52,6 +61,24 @@ class AffiliateEducationSeeAllVH(
                 element?.pageType.orEmpty(),
                 element?.article?.slug.orEmpty()
             )
+            when (element?.pageType) {
+                PAGE_EDUCATION_EVENT -> sendEducationClickEvent(element.article?.title, element.article?.articleId.toString(), ActionKeys.CLICK_EVENT_CARD, CategoryKeys.AFFILIATE_EDUKASI_CATEGORY_LANDING_EVENT)
+                PAGE_EDUCATION_ARTICLE -> sendEducationClickEvent(element.article?.title, element.article?.articleId.toString(), ActionKeys.CLICK_ARTICLE_CARD, CategoryKeys.AFFILIATE_EDUKASI_CATEGORY_LANDING_ARTICLE)
+                PAGE_EDUCATION_TUTORIAL -> sendEducationClickEvent(element.article?.title, element.article?.articleId.toString(), ActionKeys.CLICK_TUTORIAL_CARD, CategoryKeys.AFFILIATE_EDUKASI_CATEGORY_LANDING_TUTORIAL)
+            }
         }
+    }
+
+    private fun sendEducationClickEvent(creativeName: String?, eventId: String?, actionKeys: String, categoryKeys: String) {
+        AffiliateAnalytics.sendEducationTracker(
+            AffiliateAnalytics.EventKeys.SELECT_CONTENT,
+            actionKeys,
+            categoryKeys,
+            eventId,
+            position = 0,
+            eventId,
+            userSessionInterface.userId,
+            creativeName
+        )
     }
 }

@@ -3,10 +3,13 @@ package com.tokopedia.affiliate.ui.viewholder
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.affiliate.AffiliateAnalytics
 import com.tokopedia.affiliate.interfaces.AffiliateEducationBannerClickInterface
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEducationBannerUiModel
 import com.tokopedia.affiliate_toko.R
 import com.tokopedia.carousel.CarouselUnify
+import com.tokopedia.user.session.UserSessionInterface
+import javax.inject.Inject
 
 class AffiliateEducationBannerItemVH(
     itemView: View,
@@ -23,6 +26,9 @@ class AffiliateEducationBannerItemVH(
         setData(element)
     }
 
+    @Inject
+    lateinit var userSessionInterface: UserSessionInterface
+
     private fun setData(element: AffiliateEducationBannerUiModel?) {
         itemView.findViewById<CarouselUnify>(R.id.education_carousel).apply {
             element?.bannerList?.mapNotNull { it?.media?.mobile }?.let {
@@ -34,7 +40,21 @@ class AffiliateEducationBannerItemVH(
                 affiliateEducationBannerClickInterface?.onBannerClick(
                     element?.bannerList?.get(it)?.text?.primary?.redirectUrl.orEmpty()
                 )
+                sendEducationClickEvent(it, element?.bannerList?.get(it)?.title, element?.bannerList?.get(it)?.bannerId.toString())
             }
         }
+    }
+
+    private fun sendEducationClickEvent(position: Int?, creativeName: String?, bannerId: String?) {
+        AffiliateAnalytics.sendEducationTracker(
+            AffiliateAnalytics.EventKeys.SELECT_CONTENT,
+            AffiliateAnalytics.ActionKeys.CLICK_MAIN_BANNER,
+            AffiliateAnalytics.CategoryKeys.AFFILIATE_EDUKASI_PAGE,
+            bannerId,
+            position,
+            bannerId,
+            userSessionInterface.userId,
+            creativeName
+        )
     }
 }

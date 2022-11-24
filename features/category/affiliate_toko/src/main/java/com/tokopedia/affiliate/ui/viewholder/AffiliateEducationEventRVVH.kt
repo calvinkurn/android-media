@@ -5,6 +5,7 @@ import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.affiliate.AffiliateAnalytics
 import com.tokopedia.affiliate.PAGE_EDUCATION_EVENT
 import com.tokopedia.affiliate.adapter.AffiliateAdapter
 import com.tokopedia.affiliate.adapter.AffiliateAdapterFactory
@@ -14,6 +15,8 @@ import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEducationEventRV
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEducationEventUiModel
 import com.tokopedia.affiliate_toko.R
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.user.session.UserSessionInterface
+import javax.inject.Inject
 
 class AffiliateEducationEventRVVH(
     itemView: View,
@@ -30,6 +33,9 @@ class AffiliateEducationEventRVVH(
         var LAYOUT = R.layout.affiliate_education_event_list
     }
 
+    @Inject
+    lateinit var userSessionInterface: UserSessionInterface
+
     override fun bind(element: AffiliateEducationEventRVUiModel?) {
         eventData = element?.event
         eventAdapter =
@@ -45,6 +51,7 @@ class AffiliateEducationEventRVVH(
                 PAGE_EDUCATION_EVENT,
                 element?.event?.id.orEmpty()
             )
+            sendEducationClickEvent()
         }
         val rvLayoutManager =
             LinearLayoutManager(itemView.context, RecyclerView.HORIZONTAL, false)
@@ -54,6 +61,15 @@ class AffiliateEducationEventRVVH(
         }
         eventAdapter?.addMoreData(
             element?.event?.articles?.map { AffiliateEducationEventUiModel(it) }
+        )
+    }
+    private fun sendEducationClickEvent() {
+        AffiliateAnalytics.sendEducationTracker(
+            AffiliateAnalytics.EventKeys.CLICK_CONTENT,
+            AffiliateAnalytics.ActionKeys.CLICK_LIHAT_SEMUA_EVENT_CARD,
+            AffiliateAnalytics.CategoryKeys.AFFILIATE_EDUKASI_PAGE,
+            userId = userSessionInterface.userId,
+            eventLabel = ""
         )
     }
 }

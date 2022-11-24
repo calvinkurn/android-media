@@ -46,7 +46,10 @@ data class AffiliateEducationBannerResponse(
                 val title: String? = null,
 
                 @SerializedName("description_color")
-                val descriptionColor: String? = null
+                val descriptionColor: String? = null,
+
+                @SerializedName("id")
+                val bannerId: Long? = null
             ) {
                 data class Attributes(
                     @SerializedName("start")

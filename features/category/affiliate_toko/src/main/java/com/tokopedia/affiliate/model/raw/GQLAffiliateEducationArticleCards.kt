@@ -15,6 +15,7 @@ val GQL_Affiliate_Education_Article_Cards: String = """query GetEducationArticle
         has_more
         title
         items{
+          id
           title
           description
           slug
