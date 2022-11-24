@@ -5,6 +5,8 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedASGCUpcomingReminderStatus
+import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCard
+import com.tokopedia.feedcomponent.people.model.MutationUiModel
 import com.tokopedia.feedcomponent.util.LimitGenerator
 import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.FeedAsgcCampaignResponseModel
 import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.FeedWidgetData
@@ -31,6 +33,7 @@ class ContentDetailViewModel @Inject constructor(
     private val _getCDPPostFirstPostData = MutableLiveData<Result<ContentDetailUiModel>>()
     private val _likeKolResp = MutableLiveData<ContentDetailResult<LikeContentModel>>()
     private val _followShopObservable = MutableLiveData<ContentDetailResult<ShopFollowModel>>()
+    private val _followUserObservable = MutableLiveData<ContentDetailResult<Int>>()
     private val _trackVodVisitContentData = MutableLiveData<ContentDetailResult<VisitContentModel>>()
     private val _atcResp = MutableLiveData<ContentDetailResult<Boolean>>()
     private val _reportResponse = MutableLiveData<ContentDetailResult<ReportContentModel>>()
@@ -41,6 +44,12 @@ class ContentDetailViewModel @Inject constructor(
 
     val userProfileFeedPost: LiveData<Result<ContentDetailUiModel>>
         get() = _userProfileFeedPost
+
+    private var userProfileFeedCurrentPostList = listOf<FeedXCard>()
+        get() = when(val data = userProfileFeedPost.value) {
+            is Success -> data.data.postList
+            else -> emptyList()
+        }
 
     val cDPPostRecomData: LiveData<Result<ContentDetailUiModel>>
         get() = _getCDPPostRecomData
@@ -53,6 +62,9 @@ class ContentDetailViewModel @Inject constructor(
 
     val followShopObservable: LiveData<ContentDetailResult<ShopFollowModel>>
         get() = _followShopObservable
+
+    val followUserObservable: LiveData<ContentDetailResult<Int>>
+        get() = _followUserObservable
 
     val vodViewData: LiveData<ContentDetailResult<VisitContentModel>>
         get() = _trackVodVisitContentData
@@ -79,15 +91,22 @@ class ContentDetailViewModel @Inject constructor(
     val feedWidgetLatestData: LiveData<Result<FeedWidgetData>>
         get() = _feedWidgetLatestData
 
-    fun fetchUserProfileFeedPost(profileUserID: String, currentPosition: Int = -1) {
+    fun fetchUserProfileFeedPost(profileUserID: String, currentPosition: Int = -1, isRefresh: Boolean = false) {
         launchCatchError(
             block = {
                 val data = repository.getFeedPosts(
-                    profileUserID, currentCursor,
+                    profileUserID, if (isRefresh) "" else currentCursor,
                     LimitGenerator.getExpectedLimit(currentPosition)
                 )
+
+                val newPostList = if (currentCursor.isEmpty() || isRefresh) data.postList
+                else userProfileFeedCurrentPostList + data.postList
+
                 currentCursor = data.cursor
-                _userProfileFeedPost.value = Success(data)
+                _userProfileFeedPost.value = Success(data.copy(
+                    postList = newPostList,
+                    cursor = data.cursor,
+                ))
             },
             onError = {
                 _userProfileFeedPost.value = Fail(it)
@@ -175,6 +194,22 @@ class ContentDetailViewModel @Inject constructor(
                 followShop(shopId, action, rowNumber)
             }
         }
+    }
+
+    fun followUnFollowUser(isFollow: Boolean, encryptedUserID: String, currentPosition: Int) {
+        launchCatchError(block = {
+            val result = if (isFollow) repository.unfollowUser(encryptedUserID)
+            else repository.followUser(encryptedUserID)
+
+            when (result) {
+                is MutationUiModel.Success -> _followUserObservable.value = ContentDetailResult.Success(currentPosition)
+                is MutationUiModel.Error -> throw Throwable()
+            }
+        }, onError = {
+            _followUserObservable.value = ContentDetailResult.Failure(it) {
+                followUnFollowUser(isFollow, encryptedUserID, currentPosition)
+            }
+        })
     }
 
     fun trackVisitChannel(channelId: String, rowNumber: Int) {

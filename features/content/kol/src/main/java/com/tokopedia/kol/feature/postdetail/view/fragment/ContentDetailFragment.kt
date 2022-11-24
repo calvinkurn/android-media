@@ -12,7 +12,6 @@ import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -107,6 +106,7 @@ class ContentDetailFragment : BaseDaggerFragment(), ContentDetailPostViewHolder.
     private var cdpRecyclerView: RecyclerView? = null
     private var postId = "0"
     private var visitedUserID = ""
+    private var visitedUserEncryptedID = ""
     private var currentPosition = 0
     private var contentDetailSource = ""
     private var rowNumberWhenShareClicked = 0
@@ -171,6 +171,7 @@ class ContentDetailFragment : BaseDaggerFragment(), ContentDetailPostViewHolder.
         if (contentDetailSource == SOURCE_USER_PROFILE) {
             currentPosition = arguments?.getInt(ContentDetailActivity.PARAM_POSITION) ?: 0
             visitedUserID = arguments?.getString(ContentDetailActivity.PARAM_VISITED_USER_ID).orEmpty()
+            visitedUserEncryptedID = arguments?.getString(ContentDetailActivity.PARAM_VISITED_USER_ENCRYPTED_ID).orEmpty()
         }
     }
 
@@ -243,7 +244,7 @@ class ContentDetailFragment : BaseDaggerFragment(), ContentDetailPostViewHolder.
 
         observeLikeContent()
         observeWishlist()
-        observeFollowShop()
+        observeFollowUnfollow()
         observeDeleteContent()
         observeReportContent()
         observeVideoViewData()
@@ -337,7 +338,7 @@ class ContentDetailFragment : BaseDaggerFragment(), ContentDetailPostViewHolder.
     private fun onSuccessGetUserProfileFeedPost(data: ContentDetailUiModel) {
         endlessRecyclerViewScrollListener?.updateStateAfterGetData()
         endlessRecyclerViewScrollListener?.setHasNextPage(viewModel.currentCursor.isNotEmpty())
-        adapter.addItems(data.postList)
+        adapter.setItemsAndAnimateChanges(data.postList)
         cdpRecyclerView?.scrollToPosition(currentPosition)
         currentPosition = adapter.lastIndex
     }
@@ -804,12 +805,20 @@ class ContentDetailFragment : BaseDaggerFragment(), ContentDetailPostViewHolder.
                 )
             )
 
-        viewModel.followShop(
-            shopId = feedXCard.author.id,
-            action = ShopFollowAction.getFollowAction(feedXCard.followers.isFollowed),
-            rowNumber = postPosition,
-            isFollowedFromRSRestrictionBottomSheet = isFollowedFromRSRestrictionBottomSheet
-        )
+        if (feedXCard.isTypeUGC) {
+            viewModel.followUnFollowUser(
+                isFollow = feedXCard.followers.isFollowed,
+                encryptedUserID = visitedUserEncryptedID,
+                currentPosition = postPosition,
+            )
+        } else {
+            viewModel.followShop(
+                shopId = feedXCard.author.id,
+                action = ShopFollowAction.getFollowAction(feedXCard.followers.isFollowed),
+                rowNumber = postPosition,
+                isFollowedFromRSRestrictionBottomSheet = isFollowedFromRSRestrictionBottomSheet
+            )
+        }
     }
 
     override fun onClickOnThreeDots(feedXCard: FeedXCard, postPosition : Int) {
@@ -1850,7 +1859,7 @@ class ContentDetailFragment : BaseDaggerFragment(), ContentDetailPostViewHolder.
         })
     }
 
-    private fun observeFollowShop() {
+    private fun observeFollowUnfollow() {
         viewModel.followShopObservable.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is ContentDetailResult.Success -> {
@@ -1891,6 +1900,38 @@ class ContentDetailFragment : BaseDaggerFragment(), ContentDetailPostViewHolder.
                 }
             }
         })
+        viewModel.followUserObservable.observe(viewLifecycleOwner) {
+            when (it) {
+                is ContentDetailResult.Success -> {
+                    (activity as ContentDetailActivity).setActionToRefresh(true)
+                    currentPosition = it.data
+                    viewModel.fetchUserProfileFeedPost(visitedUserID, currentPosition, true)
+                }
+                is ContentDetailResult.Failure -> {
+                    when (it.error) {
+                        is UnknownHostException, is SocketTimeoutException, is ConnectException -> {
+                            showNoInterNetDialog(requireContext())
+                        }
+                        else -> {
+                            val errorMessage = if (it.error is CustomUiMessageThrowable) {
+                                requireContext().getString(it.error.errorMessageId)
+                            } else ErrorHandler.getErrorMessage(requireContext(), it.error)
+
+                            Toaster.build(
+                                requireView(),
+                                errorMessage,
+                                Toaster.LENGTH_LONG,
+                                Toaster.TYPE_ERROR,
+                                getString(com.tokopedia.abstraction.R.string.title_try_again)
+                            ) { _ ->
+                                it.onRetry()
+                            }.show()
+                        }
+                    }
+                }
+                ContentDetailResult.Loading -> {}
+            }
+        }
     }
 
     private fun observeDeleteContent() {

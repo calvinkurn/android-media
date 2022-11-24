@@ -383,8 +383,8 @@ class ContentDetailPostTypeViewHolder  @JvmOverloads constructor(
             } else context.getString(feedComponentR.string.feed_header_follow_count_less_text)
         }
         bindContentSubInfo(
-            shouldShow = (feedXCard.isTypeProductHighlight)
-                    || (!isFollowed || followers.transitionFollow),
+            shouldShow = (feedXCard.isTypeProductHighlight
+                    || (!isFollowed || followers.transitionFollow)) && !feedXCard.isTypeUGC,
             value = contentSubInfoValue
         )
         //endregion

@@ -26,6 +26,7 @@ class ContentDetailActivity : BaseSimpleActivity() {
             putString(PARAM_SOURCE, getSource())
             putInt(PARAM_POSITION, getPosition())
             putString(PARAM_VISITED_USER_ID, getVisitedUserID())
+            putString(PARAM_VISITED_USER_ENCRYPTED_ID, getVisitedUserEncryptedID())
         }
         return ContentDetailFragment.newInstance(bundle)
     }
@@ -42,6 +43,10 @@ class ContentDetailActivity : BaseSimpleActivity() {
 
     private fun getVisitedUserID(): String {
         return intent?.extras?.getString(PARAM_VISITED_USER_ID).orEmpty()
+    }
+
+    private fun getVisitedUserEncryptedID(): String {
+        return intent?.extras?.getString(PARAM_VISITED_USER_ENCRYPTED_ID).orEmpty()
     }
 
     private fun postId(): String {
@@ -109,6 +114,7 @@ class ContentDetailActivity : BaseSimpleActivity() {
         const val SHARE_LINK = "share_link"
         const val PARAM_POSITION = "position"
         const val PARAM_VISITED_USER_ID = "visited_user_id"
+        const val PARAM_VISITED_USER_ENCRYPTED_ID = "visited_user_encrypted_id"
         const val SOURCE_USER_PROFILE = "user_profile"
         const val PARAM_ACTION_TO_REFRESH = "action_to_refresh"
     }

@@ -9,6 +9,10 @@ import com.tokopedia.feedcomponent.domain.usecase.FeedBroadcastTrackerUseCase
 import com.tokopedia.feedcomponent.domain.usecase.FeedXTrackViewerUseCase
 import com.tokopedia.feedcomponent.domain.usecase.GetUserProfileFeedPostsUseCase
 import com.tokopedia.feedcomponent.domain.usecase.PostUpcomingCampaignReminderUseCase
+import com.tokopedia.feedcomponent.people.mapper.ProfileMutationMapper
+import com.tokopedia.feedcomponent.people.model.MutationUiModel
+import com.tokopedia.feedcomponent.people.usecase.ProfileFollowUseCase
+import com.tokopedia.feedcomponent.people.usecase.ProfileUnfollowedUseCase
 import com.tokopedia.feedcomponent.util.CustomUiMessageThrowable
 import com.tokopedia.kol.R
 import com.tokopedia.kol.feature.postdetail.domain.ContentDetailRepository
@@ -48,7 +52,10 @@ class ContentDetailRepositoryImpl @Inject constructor(
     private val checkUpcomingCampaignReminderUseCase: CheckUpcomingCampaignReminderUseCase,
     private val postUpcomingCampaignReminderUseCase: PostUpcomingCampaignReminderUseCase,
     private val getUserProfileFeedPostUseCase: GetUserProfileFeedPostsUseCase,
+    private val followUserUseCase: ProfileFollowUseCase,
+    private val unfollowUserUseCase: ProfileUnfollowedUseCase,
     private val mapper: ContentDetailMapper,
+    private val profileMutationMapper: ProfileMutationMapper,
 ) : ContentDetailRepository {
 
     override suspend fun getContentDetail(contentId: String): ContentDetailUiModel {
@@ -130,6 +137,22 @@ class ContentDetailRepositoryImpl @Inject constructor(
                 )
             }
             mapper.mapShopFollow(rowNumber, action, isFollowedFromRSRestrictionBottomSheet)
+        }
+    }
+
+    override suspend fun followUser(encryptedUserId: String): MutationUiModel {
+        return withContext(dispatcher.io) {
+            val result = followUserUseCase.executeOnBackground(encryptedUserId)
+
+            profileMutationMapper.mapFollow(result)
+        }
+    }
+
+    override suspend fun unfollowUser(encryptedUserId: String): MutationUiModel {
+        return withContext(dispatcher.io) {
+            val result = unfollowUserUseCase.executeOnBackground(encryptedUserId)
+
+            profileMutationMapper.mapUnfollow(result)
         }
     }
 

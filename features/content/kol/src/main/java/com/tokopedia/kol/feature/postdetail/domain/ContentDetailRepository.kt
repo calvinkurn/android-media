@@ -1,6 +1,7 @@
 package com.tokopedia.kol.feature.postdetail.domain
 
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedASGCUpcomingReminderStatus
+import com.tokopedia.feedcomponent.people.model.MutationUiModel
 import com.tokopedia.kol.feature.postdetail.view.datamodel.*
 import com.tokopedia.kol.feature.postdetail.view.datamodel.type.ContentLikeAction
 import com.tokopedia.kol.feature.postdetail.view.datamodel.type.ShopFollowAction
@@ -39,6 +40,10 @@ interface ContentDetailRepository {
         rowNumber: Int,
         isFollowedFromRSRestrictionBottomSheet: Boolean = false
     ): ShopFollowModel
+
+    suspend fun followUser(encryptedUserId: String): MutationUiModel
+
+    suspend fun unfollowUser(encryptedUserId: String): MutationUiModel
 
     suspend fun addToCart(
         productId: String,
