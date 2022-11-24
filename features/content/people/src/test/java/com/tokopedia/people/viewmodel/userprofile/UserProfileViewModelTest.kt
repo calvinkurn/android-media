@@ -97,6 +97,7 @@ class UserProfileViewModelTest {
                 profileType equalTo ProfileType.NotLoggedIn
                 profileWhitelist equalTo ProfileWhitelistUiModel.Empty
                 shopRecom equalTo mockEmptyShopRecom
+                it.viewModel.profileUserEncryptedID equalTo mockOwnProfile.encryptedUserID
             }
         }
     }
@@ -191,6 +192,7 @@ class UserProfileViewModelTest {
                 profileType equalTo ProfileType.OtherUser
                 profileWhitelist equalTo ProfileWhitelistUiModel.Empty
                 shopRecom equalTo mockEmptyShopRecom
+                it.viewModel.profileUserEncryptedID equalTo mockOtherProfile.encryptedUserID
             }
         }
     }
