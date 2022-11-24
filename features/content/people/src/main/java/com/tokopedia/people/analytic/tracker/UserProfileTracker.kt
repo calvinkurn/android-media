@@ -127,5 +127,7 @@ interface UserProfileTracker {
 
     fun clickAccessMedia(userId: String, self: Boolean, allow: String)
 
+    fun clickCreateShorts(userId: String)
+
     fun sendAll()
 }

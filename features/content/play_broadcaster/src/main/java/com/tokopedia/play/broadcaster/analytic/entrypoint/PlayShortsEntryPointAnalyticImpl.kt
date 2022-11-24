@@ -22,10 +22,18 @@ import javax.inject.Inject
 /**
  * Created By : Jonathan Darwin on November 24, 2022
  */
+
+/**
+ * Mynakama Tracker
+ * https://mynakama.tokopedia.com/datatracker/requestdetail/view/3511
+ */
 class PlayShortsEntryPointAnalyticImpl @Inject constructor(
     private val userSession: UserSessionInterface,
 ) : PlayShortsEntryPointAnalytic {
 
+    /**
+     * Row 2
+     */
     override fun clickShortsEntryPoint(
         accountId: String,
         accountType: String
@@ -41,6 +49,25 @@ class PlayShortsEntryPointAnalyticImpl @Inject constructor(
                 KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
                 KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
                 KEY_TRACKER_ID to "37525"
+            )
+        )
+    }
+
+    /**
+     * Row 69 : eventCategory is "play broadcast short" instead "play broadcast"?
+     */
+    override fun clickCloseShortsEntryPointCoachMark(accountId: String, accountType: String) {
+        TrackApp.getInstance().gtm.sendGeneralEvent(
+            mapOf(
+                KEY_EVENT to KEY_TRACK_CLICK_EVENT_SELLER,
+                KEY_EVENT_ACTION to "click - close entry point coachmark",
+                KEY_EVENT_CATEGORY to KEY_TRACK_CATEGORY_SHORTS,
+                KEY_EVENT_LABEL to "$accountId - ${getAccountType(accountType)}",
+                KEY_CURRENT_SITE to currentSite,
+                KEY_USER_ID to userSession.userId,
+                KEY_BUSINESS_UNIT to KEY_TRACK_BUSINESS_UNIT,
+                KEY_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId,
+                KEY_TRACKER_ID to "37592"
             )
         )
     }

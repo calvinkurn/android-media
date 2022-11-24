@@ -8,4 +8,6 @@ import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 interface PlayShortsEntryPointAnalytic {
 
     fun clickShortsEntryPoint(accountId: String, accountType: String)
+
+    fun clickCloseShortsEntryPointCoachMark(accountId: String, accountType: String)
 }

@@ -469,6 +469,9 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                 title = getString(R.string.play_bro_banner_shorts_coachmark_title)
                 subtitle = getString(R.string.play_bro_banner_shorts_coachmark_description)
                 setCoachmarkPrefKey(ContentCoachMarkSharedPref.Key.PlayShortsEntryPoint, userSession.userId)
+                onClickCloseListener = {
+                    analytic.clickCloseShortsEntryPointCoachMark(parentViewModel.authorId, parentViewModel.authorType)
+                }
             }
         )
     }
