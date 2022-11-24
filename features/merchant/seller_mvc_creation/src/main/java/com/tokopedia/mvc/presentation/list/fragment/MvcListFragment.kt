@@ -37,6 +37,7 @@ import com.tokopedia.mvc.presentation.bottomsheet.MoreMenuVoucherBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.OtherPeriodBottomSheet
 import com.tokopedia.mvc.presentation.list.adapter.VoucherAdapterListener
 import com.tokopedia.mvc.presentation.list.adapter.VouchersAdapter
+import com.tokopedia.mvc.presentation.list.model.FilterModel
 import com.tokopedia.mvc.presentation.list.viewmodel.MvcListViewModel
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
@@ -46,7 +47,8 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
 class MvcListFragment: BaseDaggerFragment(), HasPaginatedList by HasPaginatedListImpl(),
-    VoucherAdapterListener, FilterVoucherStatusBottomSheet.FilterVoucherStatusBottomSheetListener {
+    VoucherAdapterListener, FilterVoucherStatusBottomSheet.FilterVoucherStatusBottomSheetListener,
+    FilterVoucherBottomSheet.FilterVoucherBottomSheetListener {
 
     private val filterList = ArrayList<SortFilterItem>()
     private val filterItem by lazy { SortFilterItem(getString(R.string.smvc_bottomsheet_filter_voucher_all)) }
@@ -101,6 +103,11 @@ class MvcListFragment: BaseDaggerFragment(), HasPaginatedList by HasPaginatedLis
         filterItem.title = statusText
         filterItem.selectedItem = arrayListOf(statusText)
         viewModel.setFilterStatus(status)
+        loadInitialDataList()
+    }
+
+    override fun onFilterVoucherChanged(filter: FilterModel) {
+        viewModel.filter = filter
         loadInitialDataList()
     }
 
@@ -201,7 +208,9 @@ class MvcListFragment: BaseDaggerFragment(), HasPaginatedList by HasPaginatedLis
         addItem(filterList)
         parentListener = {
             filterItem.selectedItem = arrayListOf()
-            FilterVoucherBottomSheet().show(childFragmentManager, "")
+            val bottomSheet = FilterVoucherBottomSheet(viewModel.filter)
+            bottomSheet.setListener(this@MvcListFragment)
+            bottomSheet.show(childFragmentManager, "")
         }
         dismissListener = parentListener
 
