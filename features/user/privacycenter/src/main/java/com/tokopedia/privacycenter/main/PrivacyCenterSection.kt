@@ -5,6 +5,7 @@ import com.tokopedia.privacycenter.main.section.BasePrivacyCenterSection
 import com.tokopedia.privacycenter.main.section.accountlinking.AccountLinkingSection
 import com.tokopedia.privacycenter.main.section.activity.ActivitySection
 import com.tokopedia.privacycenter.main.section.consentwithdrawal.ConsentWithdrawalSection
+import com.tokopedia.privacycenter.main.section.privacypolicy.PrivacyPolicySection
 import com.tokopedia.privacycenter.main.section.dsar.DSARSection
 import com.tokopedia.privacycenter.main.section.faqPrivacySection.FaqPrivacySection
 import com.tokopedia.privacycenter.main.section.recommendation.RecommendationSection
@@ -19,6 +20,7 @@ interface PrivacyCenterSectionDelegate {
     val activitySection: ActivitySection
     val recommendationSection: RecommendationSection
     val consentWithdrawalSection: ConsentWithdrawalSection
+    val privacyPolicySection: PrivacyPolicySection
     val dsarSection: DSARSection
     val faqPrivacySection: FaqPrivacySection
     val tokopediaCareSection: TokopediaCareSection
@@ -39,6 +41,7 @@ class PrivacyCenterSection constructor(
             RecommendationSection.TAG to delegate.recommendationSection,
             ConsentWithdrawalSection.TAG to delegate.consentWithdrawalSection,
             DSARSection.TAG to delegate.dsarSection,
+            PrivacyPolicySection.TAG to delegate.privacyPolicySection,
             FaqPrivacySection.TAG to delegate.faqPrivacySection,
             TokopediaCareSection.TAG to delegate.tokopediaCareSection
         )
@@ -52,5 +55,8 @@ class PrivacyCenterSection constructor(
 
     fun removeAllViews() {
         parentView?.removeAllViews()
+
+        delegate.consentWithdrawalSection.lifecycleOwner = null
+        delegate.privacyPolicySection.lifecycleOwner = null
     }
 }

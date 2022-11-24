@@ -31,7 +31,7 @@ class AccountLinkingSection(
 
     override fun initObservers() {
         lifecycleOwner?.let {
-            viewModel.accountLinkingState.observe(lifecycleOwner) {
+            viewModel.accountLinkingState.observe(it) {
                 when (it) {
                     is PrivacyCenterStateResult.Loading -> {
                         showShimmering(true)

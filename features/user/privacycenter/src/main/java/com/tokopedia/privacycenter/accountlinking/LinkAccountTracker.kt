@@ -2,12 +2,13 @@ package com.tokopedia.privacycenter.accountlinking
 
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
+import javax.inject.Inject
 
 /**
  * Created by Yoris on 21/09/21.
  */
 
-class LinkAccountTracker {
+class LinkAccountTracker @Inject constructor() {
 
     // tracker no.7
     fun trackViewGojekOTP() {

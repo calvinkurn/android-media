@@ -22,7 +22,7 @@ abstract class BasePrivacyCenterSection(context: Context?) {
     protected abstract fun onViewRendered()
     protected abstract fun onButtonDirectionClick(view: View)
 
-    val lifecycleOwner: LifecycleOwner? = context as? LifecycleOwner
+    var lifecycleOwner: LifecycleOwner? = context as? LifecycleOwner
 
     private var sectionBaseViewBinding: SectionBaseBinding = SectionBaseBinding.inflate(
         LayoutInflater.from(context)
@@ -39,6 +39,8 @@ abstract class BasePrivacyCenterSection(context: Context?) {
 
             if (sectionViewBinding != null) {
                 sectionContent.addView(sectionViewBinding?.root)
+            } else {
+                sectionContentLayout.hide()
             }
 
             sectionDivider.showWithCondition(isShowDivider)
