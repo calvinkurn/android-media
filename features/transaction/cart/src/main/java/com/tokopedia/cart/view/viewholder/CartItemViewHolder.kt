@@ -576,7 +576,7 @@ class CartItemViewHolder constructor(
 
     private fun renderSlashPrice(data: CartItemHolderData) {
         val hasPriceOriginal = data.productOriginalPrice > 0
-        val hasWholesalePrice = data.wholesalePrice != 0L
+        val hasWholesalePrice = data.wholesalePrice > 0
         val hasPriceDrop = data.productInitialPriceBeforeDrop > 0 &&
             data.productInitialPriceBeforeDrop > data.productPrice
         if (hasPriceOriginal || hasWholesalePrice || hasPriceDrop) {
@@ -592,7 +592,7 @@ class CartItemViewHolder constructor(
                     // Price drop
                     renderSlashPriceFromPriceDrop(data)
                 }
-            } else if (data.wholesalePrice != 0L) {
+            } else if (data.wholesalePrice > 0) {
                 // Wholesale
                 renderSlashPriceFromWholesale(data)
             }

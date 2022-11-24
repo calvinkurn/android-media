@@ -86,7 +86,7 @@ data class CartItemHolderData(
         var shopBoAffordabilityData: CartShopBoAffordabilityData = CartShopBoAffordabilityData(),
 
         // Will be set after calculation
-        var wholesalePrice: Long = 0,
+        var wholesalePrice: Double = 0.0,
         var wholesalePriceFormatted: String? = null
 ) {
     companion object {
