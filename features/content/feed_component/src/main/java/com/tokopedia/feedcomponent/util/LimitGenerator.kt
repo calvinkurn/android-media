@@ -10,10 +10,13 @@ object LimitGenerator {
         val actualPosition = currentPosition + 1
 
         /** 10 determined as default limit **/
-        if (actualPosition <= 0) return 10
+        if (actualPosition <= 0) return DEFAULT_LIMIT
 
         /** mostly limit multiples of 10 **/
-        return if (actualPosition < 10) 10 else actualPosition / 10 * 10 + 10
+        return if (actualPosition < DEFAULT_LIMIT) DEFAULT_LIMIT
+        else actualPosition / DEFAULT_LIMIT * DEFAULT_LIMIT + DEFAULT_LIMIT
     }
+
+    private const val DEFAULT_LIMIT = 10
 
 }
