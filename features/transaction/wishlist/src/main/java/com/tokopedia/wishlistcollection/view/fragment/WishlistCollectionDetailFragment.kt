@@ -655,7 +655,7 @@ class WishlistCollectionDetailFragment :
                         _maxBulk = collectionDetail.addWishlistBulkConfig.maxBulk
                         _toasterMaxBulk = collectionDetail.addWishlistBulkConfig.addWishlistBulkToaster.message
 
-                        if (isShowingCleanerBottomSheet) {
+                        if (isShowingCleanerBottomSheet && collectionDetail.storageCleanerBottomsheet.title.isNotEmpty()) {
                             showBottomSheetCleaner(WishlistV2Utils.mapToStorageCleanerBottomSheet(collectionDetail.storageCleanerBottomsheet))
                         }
                     }
@@ -901,7 +901,7 @@ class WishlistCollectionDetailFragment :
                                     message = result.data.message,
                                     actionText = result.data.button.text,
                                     type = Toaster.TYPE_ERROR
-                                ) { goToWishlistCollection(COLLECTION_ID_SEMUA_WISHLIST) }
+                                ) { goToWishlistCollectionDetailShowCleanerBottomSheet(COLLECTION_ID_SEMUA_WISHLIST) }
                             }
 
                             ERROR_PARTIAL_MAX_QTY_VALIDATION_FAILURE_ADD_BULK -> {
@@ -2613,7 +2613,7 @@ class WishlistCollectionDetailFragment :
                 collectionItemsAdapter.setCheckbox(position, true)
                 setBottomButton()
             } else {
-                showToaster(message = _toasterMaxBulk, actionText = "", Toaster.TYPE_ERROR)
+                showToasterActionOke(message = _toasterMaxBulk, Toaster.TYPE_ERROR)
             }
         } else {
             listSelectedProductIdsFromOtherCollection.remove(productId)
