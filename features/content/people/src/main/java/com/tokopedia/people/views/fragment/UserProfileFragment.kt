@@ -55,7 +55,6 @@ import com.tokopedia.people.viewmodels.UserProfileViewModel.Companion.UGC_ONBOAR
 import com.tokopedia.people.viewmodels.UserProfileViewModel.Companion.UGC_ONBOARDING_OPEN_FROM_POST
 import com.tokopedia.people.viewmodels.factory.UserProfileViewModelFactory
 import com.tokopedia.people.views.activity.FollowerFollowingListingActivity
-import com.tokopedia.people.views.activity.UserProfileActivity
 import com.tokopedia.people.views.activity.UserProfileActivity.Companion.EXTRA_USERNAME
 import com.tokopedia.people.views.adapter.UserPostBaseAdapter
 import com.tokopedia.people.views.adapter.UserProfilePagerAdapter
@@ -346,7 +345,6 @@ class UserProfileFragment @Inject constructor(
             viewModel.uiEvent.collect { event ->
                 when (event) {
                     is UserProfileUiEvent.SuccessLoadTabs -> {
-                        binding.viewFlipper.displayedChild = PAGE_CONTENT
                         if (event.isEmptyContent) {
                             if (viewModel.isSelfProfile) emptyPostSelf() else emptyPostVisitor()
                             mainBinding.userPostContainer.displayedChild = PAGE_EMPTY
@@ -356,7 +354,6 @@ class UserProfileFragment @Inject constructor(
                         }
                     }
                     is UserProfileUiEvent.ErrorGetProfileTab -> {
-                        binding.viewFlipper.displayedChild = PAGE_CONTENT
                         if (binding.swipeRefreshLayout.isRefreshing) {
                             binding.swipeRefreshLayout.isRefreshing = false
                         }
@@ -429,6 +426,8 @@ class UserProfileFragment @Inject constructor(
         curr: ProfileUiModel,
     ) {
         if (prev == curr || curr == ProfileUiModel.Empty) return
+
+        binding.viewFlipper.displayedChild = PAGE_CONTENT
 
         userProfileTracker.openUserProfile(
             viewModel.profileUserID,
