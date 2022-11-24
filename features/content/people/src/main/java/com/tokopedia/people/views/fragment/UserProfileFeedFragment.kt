@@ -1,5 +1,7 @@
 package com.tokopedia.people.views.fragment
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -115,7 +117,7 @@ class UserProfileFeedFragment @Inject constructor(
 
     private fun fetchFeedsPosts() {
         binding.userFeedContainer.displayedChild = UserProfileFragment.PAGE_LOADING
-        viewModel.submitAction(UserProfileAction.LoadFeedPosts(""))
+        viewModel.submitAction(UserProfileAction.LoadFeedPosts())
     }
 
     private fun initObserver() {
@@ -181,7 +183,7 @@ class UserProfileFeedFragment @Inject constructor(
         intent.putExtra(KEY_SOURCE, VAL_SOURCE)
         intent.putExtra(KEY_POSITION, position)
         intent.putExtra(KEY_VISITED_USER_ID, viewModel.profileUserID)
-        startActivity(intent)
+        startActivityForResult(intent, REQUEST_CODE_TO_CDP)
     }
 
     override fun onImpressFeedPostData(item: PostUiModel, position: Int) {
@@ -194,6 +196,21 @@ class UserProfileFeedFragment @Inject constructor(
                 position,
                 it.media.first().type,
             )
+        }
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (resultCode != Activity.RESULT_OK) return
+
+        when (requestCode) {
+            REQUEST_CODE_TO_CDP -> {
+                val needRefresh = data?.extras?.getBoolean(ACTION_TO_REFRESH, false) ?: false
+                if (!needRefresh) return
+                (parentFragment as UserProfileFragment).refreshLandingPageData(true)
+                viewModel.submitAction(UserProfileAction.LoadFeedPosts(isRefresh = true))
+            }
         }
     }
 
@@ -225,6 +242,8 @@ class UserProfileFeedFragment @Inject constructor(
         private const val GRID_SPAN_COUNT = 3
         private const val LOADING_SPAN = 3
         private const val DATA_SPAN = 1
+        private const val REQUEST_CODE_TO_CDP = 1234
+        private const val ACTION_TO_REFRESH = "action_to_refresh"
 
         fun getFragment(
             fragmentManager: FragmentManager,

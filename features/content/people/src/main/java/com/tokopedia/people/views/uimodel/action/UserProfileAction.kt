@@ -11,7 +11,7 @@ sealed interface UserProfileAction {
 
     data class ClickUpdateReminder(val isFromLogin: Boolean) : UserProfileAction
 
-    data class LoadFeedPosts(val cursor: String) : UserProfileAction
+    data class LoadFeedPosts(val cursor: String = "", val isRefresh: Boolean = false) : UserProfileAction
 
     data class LoadNextPageShopRecom(val nextCurSor: String) : UserProfileAction
 
