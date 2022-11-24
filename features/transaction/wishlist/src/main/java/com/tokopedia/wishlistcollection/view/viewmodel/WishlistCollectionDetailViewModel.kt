@@ -22,6 +22,7 @@ import com.tokopedia.wishlist.data.model.response.BulkDeleteWishlistV2Response
 import com.tokopedia.wishlist.data.model.response.DeleteWishlistProgressResponse
 import com.tokopedia.wishlist.domain.BulkDeleteWishlistV2UseCase
 import com.tokopedia.wishlist.domain.DeleteWishlistProgressUseCase
+import com.tokopedia.wishlist.util.WishlistIdlingResource
 import com.tokopedia.wishlist.util.WishlistV2Consts
 import com.tokopedia.wishlist.util.WishlistV2Consts.EMPTY_WISHLIST_PAGE_NAME
 import com.tokopedia.wishlist.util.WishlistV2Consts.WISHLIST_TOPADS_ADS_COUNT
@@ -112,6 +113,7 @@ class WishlistCollectionDetailViewModel @Inject constructor(
         typeLayout: String?,
         isAutomaticDelete: Boolean
     ) {
+        WishlistIdlingResource.increment()
         launchCatchError(block = {
             val result = getWishlistCollectionItemsUseCase(params)
             recommSrc = if (result.getWishlistCollectionItems.totalData == 0) EMPTY_WISHLIST_PAGE_NAME else WISHLIST_PAGE_NAME
@@ -126,12 +128,15 @@ class WishlistCollectionDetailViewModel @Inject constructor(
                     getTopAdsData(), true
                 )
             )
+            WishlistIdlingResource.decrement()
         }, onError = {
             _collectionItems.value = Fail(it)
+            WishlistIdlingResource.decrement()
         })
     }
 
     fun loadRecommendation(page: Int) {
+        WishlistIdlingResource.increment()
         val listData = arrayListOf<WishlistV2TypeLayoutData>()
         launch {
             try {
@@ -146,8 +151,10 @@ class WishlistCollectionDetailViewModel @Inject constructor(
                     )
                 }
                 _collectionData.value = Success(listData)
+                WishlistIdlingResource.decrement()
             } catch (e: Exception) {
                 Timber.d(e)
+                WishlistIdlingResource.decrement()
             }
         }
     }

@@ -9,8 +9,8 @@ import com.tokopedia.shop.product.view.adapter.ShopProductAdapterTypeFactory
  */
 
 data class ShopProductChangeGridSectionUiModel(
-        var totalProduct: Int = 0,
-        var gridType: ShopProductViewGridType = ShopProductViewGridType.SMALL_GRID
+    var totalProduct: Int = 0,
+    var gridType: ShopProductViewGridType = ShopProductViewGridType.SMALL_GRID
 ) : BaseShopProductViewModel {
 
     override fun type(typeFactory: ShopProductAdapterTypeFactory?): Int {

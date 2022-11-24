@@ -9,7 +9,7 @@ import com.tokopedia.feedcomponent.view.adapter.post.DynamicFeedTypeFactory
  */
 data class ShopRecomWidgetModel(
     val shopRecomUiModel: ShopRecomUiModel = ShopRecomUiModel(),
-    val onError: String = ""
+    val onError: String = "",
 ) : Visitable<DynamicFeedTypeFactory> {
 
     override fun type(typeFactory: DynamicFeedTypeFactory?): Int {
