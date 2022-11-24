@@ -39,7 +39,6 @@ class UserTnCOnboardingBottomSheet @Inject constructor(
     private val viewModel: UGCOnboardingViewModel by viewModels {
         viewModelFactoryCreator.create(
             this,
-            onboardingType,
             strategyFactory.create(onboardingType),
         )
     }

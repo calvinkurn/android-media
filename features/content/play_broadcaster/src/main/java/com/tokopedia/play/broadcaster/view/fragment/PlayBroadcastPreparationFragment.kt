@@ -14,8 +14,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.broadcaster.revamp.util.error.BroadcasterErrorType
 import com.tokopedia.broadcaster.revamp.util.error.BroadcasterException
 import com.tokopedia.content.common.onboarding.view.fragment.UGCOnboardingParentFragment
-import com.tokopedia.content.common.onboarding.view.fragment.UGCOnboardingParentFragment.Companion.VALUE_ONBOARDING_TYPE_COMPLETE
-import com.tokopedia.content.common.onboarding.view.fragment.UGCOnboardingParentFragment.Companion.VALUE_ONBOARDING_TYPE_TNC
 import com.tokopedia.content.common.types.ContentCommonUserType.TYPE_USER
 import com.tokopedia.content.common.ui.bottomsheet.ContentAccountTypeBottomSheet
 import com.tokopedia.content.common.ui.bottomsheet.SellerTncBottomSheet
@@ -710,10 +708,12 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                 if (state.selectedAccount.isShop) {
                     showTermsAndConditionBottomSheet()
                 } else {
-                    showUGCOnboardingBottomSheet(VALUE_ONBOARDING_TYPE_TNC)
+                    showUGCOnboardingBottomSheet(UGCOnboardingParentFragment.OnboardingType.Tnc)
                 }
             }
-            AccountStateInfoType.NoUsername -> showUGCOnboardingBottomSheet(VALUE_ONBOARDING_TYPE_COMPLETE)
+            AccountStateInfoType.NoUsername -> {
+                showUGCOnboardingBottomSheet(UGCOnboardingParentFragment.OnboardingType.Complete)
+            }
             AccountStateInfoType.Unknown -> return
         }
     }
@@ -1006,14 +1006,13 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         return dialog
     }
 
-    private fun showUGCOnboardingBottomSheet(onboardingType: Int) {
+    private fun showUGCOnboardingBottomSheet(onboardingType: UGCOnboardingParentFragment.OnboardingType) {
         childFragmentManager.executePendingTransactions()
         val existingFragment = childFragmentManager.findFragmentByTag(UGCOnboardingParentFragment.TAG)
         if (existingFragment is UGCOnboardingParentFragment && existingFragment.isVisible) return
         try {
-            val bundle = Bundle().apply {
-                putInt(UGCOnboardingParentFragment.KEY_ONBOARDING_TYPE, onboardingType)
-            }
+            val bundle = UGCOnboardingParentFragment.createBundle(onboardingType)
+
             childFragmentManager.beginTransaction()
                 .add(UGCOnboardingParentFragment::class.java, bundle, UGCOnboardingParentFragment.TAG)
                 .commit()

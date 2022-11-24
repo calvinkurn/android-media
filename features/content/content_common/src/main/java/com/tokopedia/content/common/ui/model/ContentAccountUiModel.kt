@@ -44,3 +44,5 @@ data class ContentAccountUiModel(
         )
     }
 }
+
+fun ContentAccountUiModel?.orUnknown(): ContentAccountUiModel = this ?: ContentAccountUiModel.Empty
