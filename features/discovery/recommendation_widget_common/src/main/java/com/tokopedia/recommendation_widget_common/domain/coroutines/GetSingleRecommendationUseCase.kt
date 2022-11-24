@@ -12,7 +12,7 @@ import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendati
 import com.tokopedia.recommendation_widget_common.ext.toQueryParam
 import com.tokopedia.recommendation_widget_common.extension.toRecommendationWidget
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
-import com.tokopedia.remoteconfig.RemoteConfig
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import javax.inject.Inject
 
@@ -21,8 +21,10 @@ import javax.inject.Inject
  */
 
 open class GetSingleRecommendationUseCase @Inject
-constructor(private val context: Context, private val graphqlRepository: GraphqlRepository, private val remoteConfig: RemoteConfig) :
+constructor(private val context: Context, private val graphqlRepository: GraphqlRepository) :
     UseCase<GetRecommendationRequestParam, RecommendationWidget>() {
+    private val remoteConfig = FirebaseRemoteConfigImpl(context)
+
     override suspend fun getData(inputParameter: GetRecommendationRequestParam): RecommendationWidget {
         val graphqlUseCase: GraphqlUseCase<SingleProductRecommendationEntity> = GraphqlUseCase(graphqlRepository)
         val queryParam = ChooseAddressUtils.getLocalizingAddressData(context)?.toQueryParam(inputParameter.queryParam) ?: inputParameter.queryParam

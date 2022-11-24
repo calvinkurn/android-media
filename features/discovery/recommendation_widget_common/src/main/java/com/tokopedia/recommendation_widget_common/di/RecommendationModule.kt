@@ -2,14 +2,10 @@ package com.tokopedia.recommendation_widget_common.di
 
 import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
-import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
-import com.tokopedia.recommendation_widget_common.domain.coroutines.GetSingleRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.query.QueryListProductRecommendationV2
 import com.tokopedia.recommendation_widget_common.domain.query.QueryProductRecommendationSingleV2
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationUseCaseRequest
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -44,9 +40,9 @@ class RecommendationModule {
     fun provideGetSingleRecommendationUseCase(
         @ApplicationContext context: Context,
         graphqlUseCase: com.tokopedia.graphql.domain.GraphqlUseCase,
-        userSession: UserSessionInterface,
-        remoteConfig: RemoteConfig
+        userSession: UserSessionInterface
     ): com.tokopedia.recommendation_widget_common.domain.GetSingleRecommendationUseCase {
+        val remoteConfig = FirebaseRemoteConfigImpl(context)
         val query =
             if (remoteConfig.getBoolean(RemoteConfigKey.RECOM_USE_QUERY_V2, true)) {
                 QueryProductRecommendationSingleV2.PRODUCT_RECOMMENDATION_SINGLE_V2_QUERY

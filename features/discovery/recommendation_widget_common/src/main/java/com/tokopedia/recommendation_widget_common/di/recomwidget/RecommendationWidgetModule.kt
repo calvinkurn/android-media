@@ -9,7 +9,6 @@ import com.tokopedia.recommendation_widget_common.data.RecommendationFilterChips
 import com.tokopedia.recommendation_widget_common.domain.GetRecommendationFilterChips
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetSingleRecommendationUseCase
-import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -26,14 +25,8 @@ class RecommendationWidgetModule {
 
     @RecommendationWidgetScope
     @Provides
-    fun provideGetCoroutineSingleRecommendationUseCase(
-        @ApplicationContext context: Context,
-        coroutineGqlRepository: GraphqlRepository,
-        remoteConfig: RemoteConfig
-    ): GetSingleRecommendationUseCase =
-        GetSingleRecommendationUseCase(context, coroutineGqlRepository, remoteConfig)
+    fun provideGetCoroutineSingleRecommendationUseCase(@ApplicationContext context: Context, coroutineGqlRepository: GraphqlRepository): GetSingleRecommendationUseCase = GetSingleRecommendationUseCase(context, coroutineGqlRepository)
 
-    @RecommendationWidgetScope
     @Provides
     fun provideGetRecommendationFilterChips(graphqlRepository: GraphqlRepository, @ApplicationContext context: Context): GetRecommendationFilterChips {
         val graphql = GraphqlUseCase<RecommendationFilterChipsEntity>(graphqlRepository)
