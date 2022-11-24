@@ -545,8 +545,7 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
               subtitle
             }
           }
-    }
-""".trimIndent()
+        }""".trimIndent()
     }
 
     private var mCacheManager: GraphqlCacheManager? = null
