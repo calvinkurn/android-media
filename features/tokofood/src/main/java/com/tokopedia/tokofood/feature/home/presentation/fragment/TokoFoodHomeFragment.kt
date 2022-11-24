@@ -28,6 +28,8 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalTokoFood
 import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.PARAM_SOURCE
 import com.tokopedia.applink.tokofood.DeeplinkMapperTokoFood
+import com.tokopedia.coachmark.CoachMark2
+import com.tokopedia.coachmark.CoachMark2Item
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.addOneTimeGlobalLayoutListener
 import com.tokopedia.kotlin.extensions.view.hide
@@ -95,7 +97,6 @@ import com.tokopedia.tokofood.feature.home.presentation.view.listener.TokoFoodHo
 import com.tokopedia.tokofood.feature.home.presentation.view.listener.TokoFoodView
 import com.tokopedia.tokofood.feature.home.presentation.viewmodel.TokoFoodHomeViewModel
 import com.tokopedia.tokofood.feature.purchase.purchasepage.presentation.TokoFoodPurchaseFragment
-import com.tokopedia.tokofood.feature.search.container.presentation.fragment.SearchContainerFragment
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
@@ -197,6 +198,7 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
     private var swipeLayout: SwipeRefreshLayout? = null
     private var rvLayoutManager: CustomLinearLayoutManager? = null
     private var miniCartHome: TokoFoodMiniCartWidget? = null
+    private var searchCoachMark: CoachMark2? = null
     private var universalShareBottomSheet: UniversalShareBottomSheet? = null
     private var shareHomeTokoFood: TokoFoodHomeShare? = null
     private var localCacheModel: LocalCacheModel? = null
@@ -278,6 +280,7 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
     }
 
     override fun onPause() {
+        searchCoachMark?.dismissCoachMark()
         super.onPause()
         trackingQueue.sendAll()
     }
@@ -493,7 +496,7 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
                 toolbar.setupToolbarWithStatusBar(it, applyPadding = false, applyPaddingNegative = true)
                 toolbar.setToolbarTitle(getString(R.string.tokofood_title))
                 toolbar.setBackButtonType(NavToolbar.Companion.BackType.BACK_TYPE_BACK_WITHOUT_COLOR)
-                setToolbarSearchHint()
+                setToolbarSearch()
             }
         }
     }
@@ -507,17 +510,22 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
         navToolbar?.setIcon(icons)
     }
 
-    private fun setToolbarSearchHint() {
+    private fun setToolbarSearch() {
         if (isGoToSearchPage()) {
-            navToolbar?.setupSearchbar(
-                hints = listOf(
-                    HintData(
-                        placeholder = getString(com.tokopedia.tokofood.R.string.search_hint_searchbar_gofood)
-                    )
-                ),
-                searchbarClickCallback = { onSearchBarClick() }
-            )
+            viewModel.checkForSearchCoachMark()
+            setToolbarSearchHint()
         }
+    }
+
+    private fun setToolbarSearchHint() {
+        navToolbar?.setupSearchbar(
+            hints = listOf(
+                HintData(
+                    placeholder = getString(com.tokopedia.tokofood.R.string.search_hint_searchbar_gofood)
+                )
+            ),
+            searchbarClickCallback = { onSearchBarClick() }
+        )
     }
 
     private fun isGoToSearchPage(): Boolean {
@@ -641,6 +649,12 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
                 }
             }
         }
+
+        viewLifecycleOwner.lifecycleScope.launchWhenResumed {
+            viewModel.flowShouldShowSearchCoachMark.collect { shouldShow ->
+                updateSearchCoachMark(shouldShow)
+            }
+        }
     }
 
     private fun collectValue() {
@@ -736,6 +750,44 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
     private fun resetSwipeLayout() {
         swipeLayout?.isEnabled = true
         swipeLayout?.isRefreshing = false
+    }
+
+    private fun updateSearchCoachMark(shouldShow: Boolean) {
+        if (searchCoachMark == null) {
+            context?.let {
+                searchCoachMark = CoachMark2(it).apply {
+                    onDismissListener = ::onCoachMarkDismissedListener
+                }
+            }
+        }
+        setSearchCoachMarkVisibility(shouldShow)
+    }
+
+    private fun setSearchCoachMarkVisibility(shouldShow: Boolean) {
+        searchCoachMark?.run {
+            if (shouldShow && !isShowing) {
+                getSearchCoachMarkItem()?.let { coachMarkItem ->
+                    showCoachMark(arrayListOf(coachMarkItem), null, Int.ZERO)
+                }
+            } else {
+                hideCoachMark()
+            }
+        }
+    }
+
+    private fun getSearchCoachMarkItem(): CoachMark2Item? {
+        return navToolbar?.let { toolbar ->
+            CoachMark2Item(
+                anchorView = toolbar,
+                title = context?.getString(com.tokopedia.tokofood.R.string.home_coachmark_search_title).orEmpty(),
+                description = context?.getString(com.tokopedia.tokofood.R.string.home_coachmark_search_desc).orEmpty(),
+                position = CoachMark2.POSITION_BOTTOM
+            )
+        }
+    }
+
+    private fun onCoachMarkDismissedListener() {
+        viewModel.setSearchCoachMarkHasShown()
     }
 
     private fun removeAllScrollListener() {
