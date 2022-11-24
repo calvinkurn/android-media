@@ -12,6 +12,7 @@ import com.tokopedia.notification.common.utils.NotificationTargetPriorities
 import com.tokopedia.notifications.CMPushNotificationManager
 import com.tokopedia.notifications.common.CMConstant.PayloadKeys.*
 import com.tokopedia.notifications.model.*
+import com.tokopedia.notifications.model.payload_extra.TokoChat
 import com.tokopedia.notifications.model.payload_extra.Topchat
 import org.json.JSONObject
 import kotlin.collections.ArrayList
@@ -50,7 +51,7 @@ object PayloadConverter {
             replyType = data.getString(REPLY_TYPE, "")
         )
 
-        setNotificationSound(model= model, extras = data)
+        setNotificationSound(model = model, extras = data)
 
         model.title = data.getString(TITLE, "")
         model.detailMessage = data.getString(DESCRIPTION, "")
@@ -58,8 +59,9 @@ object PayloadConverter {
         model.media = getMedia(data)
         model.appLink = data.getString(APP_LINK, ApplinkConst.HOME)
         val actionButtonList = getActionButtons(data)
-        if (actionButtonList != null)
+        if (actionButtonList != null) {
             model.actionButton = actionButtonList
+        }
         model.persistentButtonList = getPersistentNotificationData(data)
         model.videoPushModel = data.getString(VIDEO_DATA, "")
         model.customValues = data.getString(CUSTOM_VALUE, "")
@@ -72,11 +74,13 @@ object PayloadConverter {
         model.isUpdateExisting = isBooleanTrue(data, UPDATE_NOTIFICATION)
         model.isTest = isBooleanTrue(data, IS_TEST)
         val gridList = getGridList(data)
-        if (gridList != null)
+        if (gridList != null) {
             model.gridList = gridList
+        }
         val productInfoList = getProductInfoList(data)
-        if (productInfoList != null)
+        if (productInfoList != null) {
             model.productInfoList = productInfoList
+        }
         model.subText = data.getString(SUB_TEXT)
         model.visualCollapsedImageUrl = data.getString(VISUAL_COLLAPSED_IMAGE)
         model.visualCollapsedElementId = data.getString(VISUAL_COLLAPSED_ELEMENT_ID)
@@ -86,12 +90,15 @@ object PayloadConverter {
 
         model.notificationMode = getNotificationMode(data)
 
-        //start end time,
+        // start end time,
         model.startTime = dataToLong(data, NOTIFICATION_START_TIME)
         model.endTime = dataToLong(data, NOTIFICATION_END_TIME)
 
-        if (model.notificationMode != NotificationMode.OFFLINE && (model.startTime == 0L ||
-                        model.endTime == 0L)) {
+        if (model.notificationMode != NotificationMode.OFFLINE && (
+            model.startTime == 0L ||
+                model.endTime == 0L
+            )
+        ) {
             model.startTime = System.currentTimeMillis()
             model.endTime = System.currentTimeMillis() + CMPushNotificationManager.instance.cmPushEndTimeInterval
         }
@@ -200,14 +207,17 @@ object PayloadConverter {
         model.visualExpandedElementId = data.visualExpandedElementId
         model.campaignUserToken = data.campaignUserToken
 
-        model.notificationMode =  if (data.notificationMode == true) NotificationMode.OFFLINE else NotificationMode.POST_NOW
+        model.notificationMode = if (data.notificationMode == true) NotificationMode.OFFLINE else NotificationMode.POST_NOW
 
-        //start end time,
+        // start end time,
         model.startTime = data.startTime.toLongOrZero()
         model.endTime = data.endTime.toLongOrZero()
 
-        if (model.notificationMode != NotificationMode.OFFLINE && (model.startTime == 0L ||
-                        model.endTime == 0L)) {
+        if (model.notificationMode != NotificationMode.OFFLINE && (
+            model.startTime == 0L ||
+                model.endTime == 0L
+            )
+        ) {
             model.startTime = System.currentTimeMillis()
             model.endTime = System.currentTimeMillis() + CMPushNotificationManager.instance.cmPushEndTimeInterval
         }
@@ -270,17 +280,18 @@ object PayloadConverter {
         }
     }
 
-
-
-    private fun setNotificationSound(model: BaseNotificationModel,
-                                     extras: Bundle) {
+    private fun setNotificationSound(
+        model: BaseNotificationModel,
+        extras: Bundle
+    ) {
         model.soundFileName = extras.getString(NOTIFICATION_SOUND, "")
         model.channelName = extras.getString(NOTIFICATION_CHANNEL, "")
     }
 
-
-    private fun setNotificationSound(model: BaseNotificationModel,
-                                     data: SerializedNotificationData) {
+    private fun setNotificationSound(
+        model: BaseNotificationModel,
+        data: SerializedNotificationData
+    ) {
         model.soundFileName = data.notificationSound ?: ""
         model.channelName = data.notificationChannel ?: ""
     }
@@ -307,7 +318,6 @@ object PayloadConverter {
         try {
             val gson = Gson()
             val actionButtonListType = object : TypeToken<ArrayList<ActionButton>>() {
-
             }.type
             return gson.fromJson<ArrayList<ActionButton>>(actions, actionButtonListType)
         } catch (e: Exception) {
@@ -324,11 +334,9 @@ object PayloadConverter {
         }
         try {
             val listType = object : TypeToken<ArrayList<PersistentButton>>() {
-
             }.type
             return Gson().fromJson<ArrayList<PersistentButton>>(persistentData, listType)
         } catch (e: Exception) {
-
             Log.e(TAG, "CM-getPersistentNotificationData", e)
         }
 
@@ -342,7 +350,6 @@ object PayloadConverter {
         }
         try {
             val listType = object : TypeToken<ArrayList<ProductInfo>>() {
-
             }.type
             return Gson().fromJson<ArrayList<ProductInfo>>(productInfoListStr, listType)
         } catch (e: Exception) {
@@ -359,7 +366,6 @@ object PayloadConverter {
         }
         try {
             val listType = object : TypeToken<ArrayList<Grid>>() {
-
             }.type
             return Gson().fromJson<ArrayList<Grid>>(persistentData, listType)
         } catch (e: Exception) {
@@ -370,7 +376,6 @@ object PayloadConverter {
     }
 
     private fun getVideoNotificationData(bundle: Bundle): JSONObject? {
-
         val values = bundle.getString(VIDEO_DATA)
         if (TextUtils.isEmpty(values)) {
             return null
@@ -391,25 +396,24 @@ object PayloadConverter {
         }
         try {
             val listType = object : TypeToken<ArrayList<Carousel>>() {
-
             }.type
             return Gson().fromJson<ArrayList<Carousel>>(carouselData, listType)
         } catch (e: Exception) {
-
             Log.e(TAG, "CM-getCarouselList", e)
         }
 
         return null
     }
 
-    private fun getPayloadExtras(data : Bundle) : PayloadExtra{
+    private fun getPayloadExtras(data: Bundle): PayloadExtra {
         return PayloadExtra(
             campaignName = data.getString(PayloadExtraDataKey.CAMPAIGN_NAME, null),
             journeyId = data.getString(PayloadExtraDataKey.JOURNEY_ID, null),
             journeyName = data.getString(PayloadExtraDataKey.JOURNEY_NAME, null),
             sessionId = data.getString(PayloadExtraDataKey.SESSION_ID, null),
             intentAction = data.getString(PayloadExtraDataKey.INTENT_ACTION, null),
-            topchat = getTopChatData(data)
+            topchat = getTopChatData(data),
+            tokoChat = getTokoChatData(data)
         )
     }
 
@@ -423,12 +427,22 @@ object PayloadConverter {
         }
     }
 
-    private fun getPayloadExtras(data : SerializedNotificationData) : PayloadExtra{
+    private fun getTokoChatData(data: Bundle): TokoChat? {
+        return try {
+            val tokoChatDataString = data.getString(PayloadExtraDataKey.TOKOCHAT)
+            Gson().fromJson(tokoChatDataString, TokoChat::class.java)
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
+    }
+
+    private fun getPayloadExtras(data: SerializedNotificationData): PayloadExtra {
         return PayloadExtra(
             campaignName = data.campaignName,
             journeyId = data.journeyId,
             journeyName = data.journeyName,
-            sessionId = data.sessionId,
+            sessionId = data.sessionId
         )
     }
 }
