@@ -41,7 +41,6 @@
 
         <com.tokopedia.unifyprinciples.Typography
             app:typographyType="paragraph_3"
-            app:typographyWeight="reguler"
             android:id="@+id/txtSummary"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
