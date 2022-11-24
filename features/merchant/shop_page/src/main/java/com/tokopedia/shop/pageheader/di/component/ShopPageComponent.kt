@@ -1,6 +1,5 @@
 package com.tokopedia.shop.pageheader.di.component
 
-import com.tokopedia.affiliatecommon.di.AffiliateCommonModule
 import com.tokopedia.shop.common.di.component.ShopComponent
 import com.tokopedia.shop.pageheader.di.module.ShopPageModule
 import com.tokopedia.shop.pageheader.di.scope.ShopPageScope

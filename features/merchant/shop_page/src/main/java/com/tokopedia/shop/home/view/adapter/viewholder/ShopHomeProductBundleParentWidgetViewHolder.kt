@@ -18,10 +18,10 @@ import com.tokopedia.utils.view.binding.viewBinding
 /**
  * author by Rafli Syam on 05/01/2022
  */
-class ShopHomeProductBundleParentWidgetViewHolder (
-        itemView: View,
-        private val multipleProductBundleListener: MultipleProductBundleListener,
-        private val singleProductBundleListener: SingleProductBundleListener
+class ShopHomeProductBundleParentWidgetViewHolder(
+    itemView: View,
+    private val multipleProductBundleListener: MultipleProductBundleListener,
+    private val singleProductBundleListener: SingleProductBundleListener
 ) : AbstractViewHolder<ShopHomeProductBundleListUiModel>(itemView) {
 
     companion object {
@@ -33,9 +33,9 @@ class ShopHomeProductBundleParentWidgetViewHolder (
     }
 
     private val viewBinding: ItemShopHomeProductBundleParentWidgetBinding? by viewBinding()
-    private var tvWidgetTitle : TextView? = null
-    private var rvBundleList : RecyclerView? = null
-    private var rvBundleAdapter : ShopHomeProductBundleWidgetAdapter? = null
+    private var tvWidgetTitle: TextView? = null
+    private var rvBundleList: RecyclerView? = null
+    private var rvBundleAdapter: ShopHomeProductBundleWidgetAdapter? = null
     private var bundleListSize = 0
 
     init {
@@ -62,13 +62,13 @@ class ShopHomeProductBundleParentWidgetViewHolder (
 
     private fun initRecyclerView(bundleLayoutManager: RecyclerView.LayoutManager, bundleLayout: ShopHomeProductBundleListUiModel) {
         rvBundleAdapter = ShopHomeProductBundleWidgetAdapter(
-                multipleProductBundleListener,
-                singleProductBundleListener,
-                bundleListSize,
-                bundleLayout.widgetId,
-                bundleLayout.widgetMasterId,
-                bundleLayout.type,
-                bundleLayout.name
+            multipleProductBundleListener,
+            singleProductBundleListener,
+            bundleListSize,
+            bundleLayout.widgetId,
+            bundleLayout.widgetMasterId,
+            bundleLayout.type,
+            bundleLayout.name
         )
         rvBundleList?.apply {
             setHasFixedSize(true)
