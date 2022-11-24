@@ -670,8 +670,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
             title = getString(R.string.feed_fab_create_shorts_video),
             listener = {
                 fabFeed.menuOpen = false
-                /** TODO: attach analytic here */
-//                entryPointAnalytic.clickCreateLiveEntryPoint()
+                entryPointAnalytic.clickCreateShortsEntryPoint()
 
                 RouteManager.route(requireContext(), ApplinkConst.PLAY_SHORTS)
             }

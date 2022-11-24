@@ -246,7 +246,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
     val authorName: String
         get() = _selectedAccount.value.name
 
-    private val authorType: String
+    val authorType: String
         get() = _selectedAccount.value.type
 
     private val _channelUiState = _configInfo

@@ -421,6 +421,8 @@ class PlayBroadcastPreparationFragment @Inject constructor(
             }
 
             bannerShorts.setOnClickListener {
+                analytic.clickShortsEntryPoint(parentViewModel.authorId, parentViewModel.authorType)
+
                 coachMarkManager.hasBeenShown(binding.bannerShorts)
                 RouteManager.route(requireContext(), ApplinkConst.PLAY_SHORTS)
             }

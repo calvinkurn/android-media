@@ -1,5 +1,7 @@
 package com.tokopedia.play.broadcaster.shorts.di
 
+import com.tokopedia.play.broadcaster.analytic.entrypoint.PlayShortsEntryPointAnalytic
+import com.tokopedia.play.broadcaster.analytic.entrypoint.PlayShortsEntryPointAnalyticImpl
 import com.tokopedia.play.broadcaster.analytic.interactive.PlayBroadcastInteractiveAnalytic
 import com.tokopedia.play.broadcaster.analytic.interactive.PlayBroadcastInteractiveAnalyticImpl
 import com.tokopedia.play.broadcaster.analytic.pinproduct.PlayBroadcastPinProductAnalytic
@@ -134,6 +136,10 @@ abstract class PlayShortsBindModule {
     @Binds
     @PlayShortsScope
     abstract fun bindPinUGCAnalytic(ugcAnalytic: PlayBroadcastAccountAnalyticImpl): PlayBroadcastAccountAnalytic
+
+    @Binds
+    @PlayShortsScope
+    abstract fun bindPlayShortsEntryPointAnalytic(shortsEntryPointAnalytic: PlayShortsEntryPointAnalyticImpl): PlayShortsEntryPointAnalytic
 
     /** Play Broadcaster Config Store */
     @Binds

@@ -436,7 +436,7 @@ class PlayShortsAnalyticImpl @Inject constructor(
 
     private fun getAccountType(account: ContentAccountUiModel): String {
         return when {
-            account.isShop -> SHORTS_TYPE_SHOP
+            account.isShop -> SHORTS_TYPE_SELLER
             account.isUser -> SHORTS_TYPE_USER
             else -> ""
         }
@@ -449,7 +449,7 @@ class PlayShortsAnalyticImpl @Inject constructor(
         private const val SHORTS_EVENT_CATEGORY = "play broadcast short"
         private const val SHORTS_BUSINESS_UNIT = "play"
         private const val SHORTS_TYPE_USER = "user"
-        private const val SHORTS_TYPE_SHOP = "shop"
+        private const val SHORTS_TYPE_SELLER = "seller"
         private const val SHORTS_CURRENT_SITE_SELLER = "tokopediaseller"
         private const val SHORTS_CURRENT_SITE_MAIN = "tokopediamarketplace"
 

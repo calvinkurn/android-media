@@ -1,9 +1,6 @@
 package com.tokopedia.feedplus.view.analytics.entrypoint
 
-import com.tokopedia.feedplus.view.analytics.CONTENT
-import com.tokopedia.feedplus.view.analytics.CONTENT_FEED_TIMELINE
-import com.tokopedia.feedplus.view.analytics.FORMAT_TWO_PARAM
-import com.tokopedia.feedplus.view.analytics.MARKETPLACE
+import com.tokopedia.feedplus.view.analytics.*
 import com.tokopedia.track.TrackApp
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
@@ -117,6 +114,37 @@ class FeedEntryPointAnalytic @Inject constructor(
             )
     }
 
+    /**
+     * Mynakama Tracker
+     * https://mynakama.tokopedia.com/datatracker/requestdetail/view/3511
+     *
+     * Row 1 : eventLabel is {partnerId} - {seller / user} but we can't identified the user
+     * as seller / user bcs it can be both
+     */
+    fun clickCreateShortsEntryPoint() {
+        TrackApp.getInstance().gtm
+            .sendGeneralEvent(
+                mapOf(
+                    EVENT_NAME to EVENT_CLICK_CONTENT,
+                    EVENT_ACTION to String.format(
+                        EVENT_ACTION_CLICK_FORMAT,
+                        "buat video"
+                    ),
+                    EVENT_CATEGORY to CONTENT_FEED_TIMELINE,
+                    EVENT_LABEL to String.format(
+                        /** TODO: need to determine {partnerId} - {seller / user} */
+                        FORMAT_TWO_PARAM,
+                        "",
+                        ""
+                    ),
+                    EVENT_BUSINESSUNIT to PLAY,
+                    EVENT_CURRENTSITE to MARKETPLACE,
+                    EVENT_TRACKER_ID to "37524",
+                    EVENT_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId
+                )
+            )
+    }
+
     companion object {
         private const val EVENT_NAME = "event"
         private const val EVENT_CATEGORY = "eventCategory"
@@ -124,8 +152,11 @@ class FeedEntryPointAnalytic @Inject constructor(
         private const val EVENT_LABEL = "eventLabel"
         private const val EVENT_BUSINESSUNIT = "businessUnit"
         private const val EVENT_CURRENTSITE = "currentSite"
+        private const val EVENT_TRACKER_ID = "trackerId"
+        private const val EVENT_SESSION_IRIS = "sessionIris"
 
         private const val EVENT_CLICK_FEED = "clickFeed"
+        private const val EVENT_CLICK_CONTENT = "clickContent"
         private const val EVENT_ACTION_CLICK_FORMAT = "click - %s"
     }
 }
