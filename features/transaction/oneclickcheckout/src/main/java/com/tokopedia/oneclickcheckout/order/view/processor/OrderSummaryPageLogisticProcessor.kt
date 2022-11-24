@@ -2,6 +2,7 @@ package com.tokopedia.oneclickcheckout.order.view.processor
 
 import com.google.gson.JsonParser
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.localizationchooseaddress.data.repository.ChooseAddressRepository
 import com.tokopedia.localizationchooseaddress.domain.mapper.ChooseAddressMapper
@@ -98,7 +99,7 @@ class OrderSummaryPageLogisticProcessor @Inject constructor(
                 preOrder = it.isPreOrder != 0
                 productPreOrderDuration = it.preOrderDuration
                 categoryList.add(it.categoryId)
-                productList.add(Product(it.productId, it.isFreeOngkir, it.isFreeOngkirExtra))
+                productList.add(Product(it.productId.toLongOrZero(), it.isFreeOngkir, it.isFreeOngkirExtra))
             }
         }
         if (orderShop.shouldValidateWeight() && totalWeight > orderShop.maximumWeight) {

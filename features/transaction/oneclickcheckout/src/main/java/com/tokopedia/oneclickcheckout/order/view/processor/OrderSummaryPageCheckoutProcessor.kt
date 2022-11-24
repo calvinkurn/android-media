@@ -114,7 +114,7 @@ class OrderSummaryPageCheckoutProcessor @Inject constructor(
                     }
                     checkoutProducts.add(
                         ProductData(
-                            productId = it.productId.toString(),
+                            productId = it.productId,
                             productQuantity = it.orderQuantity,
                             productNotes = it.notes,
                             isPPP = it.purchaseProtectionPlanData.stateChecked == PurchaseProtectionPlanData.STATE_TICKED,

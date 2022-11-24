@@ -223,7 +223,7 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         return OrderSummaryPageEnhanceECommerce().apply {
             for (orderProduct in products) {
                 setName(orderProduct.productName)
-                setId(orderProduct.productId.toString())
+                setId(orderProduct.productId)
                 setPrice(orderProduct.productPrice.toString())
                 setBrand(null)
                 setCategory(orderProduct.category)

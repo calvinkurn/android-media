@@ -2,6 +2,7 @@ package com.tokopedia.oneclickcheckout.order.view.processor
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.logisticcart.shipping.model.LogisticPromoUiModel
 import com.tokopedia.oneclickcheckout.common.DEFAULT_ERROR_MESSAGE
 import com.tokopedia.oneclickcheckout.common.DEFAULT_LOCAL_ERROR_MESSAGE
@@ -210,7 +211,7 @@ class OrderSummaryPagePromoProcessor @Inject constructor(private val validateUse
         val productDetails: ArrayList<ProductDetail> = ArrayList()
         orderCart.products.forEach {
             if (!it.isError) {
-                productDetails.add(ProductDetail(it.productId, it.orderQuantity))
+                productDetails.add(ProductDetail(it.productId.toLongOrZero(), it.orderQuantity))
             }
         }
         ordersItem.product_details = productDetails
@@ -282,7 +283,7 @@ class OrderSummaryPagePromoProcessor @Inject constructor(private val validateUse
         val productDetails: ArrayList<ProductDetailsItem> = ArrayList()
         orderCart.products.forEach {
             if (!it.isError) {
-                productDetails.add(ProductDetailsItem(it.orderQuantity, it.productId))
+                productDetails.add(ProductDetailsItem(it.orderQuantity, it.productId.toLongOrZero()))
             }
         }
         ordersItem.productDetails = productDetails

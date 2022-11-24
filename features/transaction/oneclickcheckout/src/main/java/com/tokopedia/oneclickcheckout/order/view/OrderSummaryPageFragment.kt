@@ -76,11 +76,11 @@ import com.tokopedia.oneclickcheckout.order.data.gocicil.GoCicilInstallmentReque
 import com.tokopedia.oneclickcheckout.order.di.OrderSummaryPageComponent
 import com.tokopedia.oneclickcheckout.order.view.bottomsheet.OrderPriceSummaryBottomSheet
 import com.tokopedia.oneclickcheckout.order.view.bottomsheet.PurchaseProtectionInfoBottomsheet
+import com.tokopedia.oneclickcheckout.order.view.card.OrderInsuranceCard
+import com.tokopedia.oneclickcheckout.order.view.card.OrderPreferenceCard
+import com.tokopedia.oneclickcheckout.order.view.card.OrderProductCard
 import com.tokopedia.oneclickcheckout.order.view.card.OrderPromoCard
 import com.tokopedia.oneclickcheckout.order.view.card.OrderShopCard
-import com.tokopedia.oneclickcheckout.order.view.card.OrderInsuranceCard
-import com.tokopedia.oneclickcheckout.order.view.card.OrderProductCard
-import com.tokopedia.oneclickcheckout.order.view.card.OrderPreferenceCard
 import com.tokopedia.oneclickcheckout.order.view.card.OrderTotalPaymentCard
 import com.tokopedia.oneclickcheckout.order.view.mapper.AddOnMapper
 import com.tokopedia.oneclickcheckout.order.view.model.*
@@ -166,7 +166,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
     private var shouldDismissProgressDialog: Boolean = false
 
     // Last saved PPP state based on productId
-    private val lastPurchaseProtectionCheckStates: HashMap<Long, Int> = HashMap()
+    private val lastPurchaseProtectionCheckStates: HashMap<String, Int> = HashMap()
 
     private var source: String = SOURCE_OTHERS
     private var tenor: Int = 0
@@ -1354,7 +1354,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
             orderSummaryAnalytics.eventPPClickTooltip(userSession.get().userId, categoryId, protectionPricePerProduct, protectionTitle)
         }
 
-        override fun onPurchaseProtectionCheckedChange(isChecked: Boolean, productId: Long) {
+        override fun onPurchaseProtectionCheckedChange(isChecked: Boolean, productId: String) {
             lastPurchaseProtectionCheckStates[productId] = if (isChecked) {
                 PurchaseProtectionPlanData.STATE_TICKED
             } else {
@@ -1363,7 +1363,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
             viewModel.calculateTotal()
         }
 
-        override fun getLastPurchaseProtectionCheckState(productId: Long): Int {
+        override fun getLastPurchaseProtectionCheckState(productId: String): Int {
             return lastPurchaseProtectionCheckStates[productId]
                     ?: PurchaseProtectionPlanData.STATE_EMPTY
         }
