@@ -1,5 +1,6 @@
 package com.tokopedia.cart.data.model.response.shopgroupsimplified
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 import java.util.*
 
@@ -27,15 +28,16 @@ data class Product(
         @SerializedName("campaign_id")
         val campaignId: String = "",
         @SerializedName("initial_price")
-        val initialPrice: Long = 0,
+        val initialPrice: Double = 0.0,
         @SerializedName("initial_price_fmt")
         val initialPriceFmt: String = "",
         @SerializedName("product_price_fmt")
         val productPriceFmt: String = "",
         @SerializedName("product_price")
-        val productPrice: Long = 0,
+        val productPrice: Double = 0.0,
         @SerializedName("product_original_price")
-        val productOriginalPrice: Long = 0,
+        val productOriginalPrice: Double = 0.0,
+        @SuppressLint("Invalid Data Type")
         @SerializedName("is_slash_price")
         val isSlashPrice: Boolean = false,
         @SerializedName("slash_price_label")
@@ -46,6 +48,7 @@ data class Product(
         val category: String = "",
         @SerializedName("catalog_id")
         val catalogId: String = "",
+        @SuppressLint("Invalid Data Type")
         @SerializedName("wholesale_price")
         val wholesalePrice: List<WholesalePrice> = ArrayList(),
         @SerializedName("product_weight_fmt")
@@ -80,6 +83,7 @@ data class Product(
         val productWarningMessage: String = "",
         @SerializedName("product_alert_message")
         val productAlertMessage: String = "",
+        @SuppressLint("Invalid Data Type")
         @SerializedName("price_changes")
         val priceChanges: PriceChanges = PriceChanges(),
         @SerializedName("product_invenage_total")
@@ -104,6 +108,7 @@ data class Product(
         val productWeightUnitText: String = "",
         @SerializedName("last_update_price")
         val lastUpdatePrice: Long = 0,
+        @SuppressLint("Invalid Data Type")
         @SerializedName("is_update_price")
         val isUpdatePrice: Boolean = false,
         @SerializedName("product_preorder")

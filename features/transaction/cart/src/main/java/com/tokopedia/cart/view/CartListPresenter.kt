@@ -716,12 +716,12 @@ class CartListPresenter @Inject constructor(
         }
 
         if (!hasCalculateWholesalePrice) {
-            subTotalWholesalePrice = (itemQty * cartItemHolderData.productPrice).toDouble()
+            subTotalWholesalePrice = (itemQty * cartItemHolderData.productPrice)
             cartItemHolderData.wholesalePriceFormatted = null
             cartItemHolderData.wholesalePrice = 0
             subtotalBeforeSlashedPrice =
-                if (cartItemHolderData.productOriginalPrice > 0) (itemQty * cartItemHolderData.productOriginalPrice).toDouble()
-                else (itemQty * cartItemHolderData.productPrice).toDouble()
+                if (cartItemHolderData.productOriginalPrice > 0) (itemQty * cartItemHolderData.productOriginalPrice)
+                else (itemQty * cartItemHolderData.productPrice)
         }
 
         if (cartItemHolderData.productCashBack.isNotBlank()) {
