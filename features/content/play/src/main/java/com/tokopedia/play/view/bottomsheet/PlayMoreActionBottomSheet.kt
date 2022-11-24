@@ -85,7 +85,9 @@ class PlayMoreActionBottomSheet @Inject constructor(
             icon = getIconUnifyDrawable(requireContext(), IconUnify.WARNING, MethodChecker.getColor(requireContext(), com.tokopedia.unifycomponents.R.color.Unify_NN900)),
             isIconAvailable = true,
             subtitleRes = R.string.play_kebab_report_title,
-            onClick = {  }
+            onClick = {
+                shouldOpenUserReport()
+            }
         )
     }
 
@@ -95,7 +97,9 @@ class PlayMoreActionBottomSheet @Inject constructor(
             icon = MethodChecker.getDrawable(requireContext(), R.drawable.ic_play_pip),
             isIconAvailable = true,
             subtitleRes = R.string.play_kebab_pip,
-            onClick = { }
+            onClick = {
+                mListener?.onPipClicked(this)
+            }
         )
     }
 
@@ -105,7 +109,9 @@ class PlayMoreActionBottomSheet @Inject constructor(
             icon = null,
             isIconAvailable = false,
             subtitleRes = R.string.play_kebab_chromecast,
-            onClick = {  }
+            onClick = {
+                onChromeCastClicked()
+            }
         )
     }
 
@@ -115,7 +121,9 @@ class PlayMoreActionBottomSheet @Inject constructor(
             icon = getIconUnifyDrawable(requireContext(), IconUnify.VISIBILITY, MethodChecker.getColor(requireContext(), com.tokopedia.unifycomponents.R.color.Unify_NN900)),
             isIconAvailable = true,
             subtitleRes = R.string.play_kebab_watch_mode,
-            onClick = {  }
+            onClick = {
+                mListener?.onWatchModeClicked(this)
+            }
         )
     }
 
@@ -409,25 +417,13 @@ class PlayMoreActionBottomSheet @Inject constructor(
     /***
      * KebabMenuSheetViewComponent Listener
      */
-    override fun onReportClick(view: KebabMenuSheetViewComponent) {
-        shouldOpenUserReport()
-    }
-
     override fun onCloseButtonClicked(view: KebabMenuSheetViewComponent) {
         hideSheets()
     }
 
-    override fun onPipClicked(view: KebabMenuSheetViewComponent) {
-        mListener?.onPipClicked(this)
-    }
-
-    override fun onChromecastClicked(view: KebabMenuSheetViewComponent) {
+    private fun onChromeCastClicked() {
         analytic.clickCast()
         dismiss()
-    }
-
-    override fun onWatchModeClick(view: KebabMenuSheetViewComponent) {
-        mListener?.onWatchModeClicked(this)
     }
 
     /***
