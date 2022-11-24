@@ -114,6 +114,7 @@ class PrivacyPolicySection constructor(
             localLoadPrivacyPolicy.hide()
             loaderListPrivacyPolicy.hide()
             listPrivacyPolicy.show()
+            buttonShowAllList.show()
         }
         privacyPolicyAdapter.apply {
             clearAllItems()
