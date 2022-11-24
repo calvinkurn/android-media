@@ -1,6 +1,8 @@
 package com.tokopedia.people.views.fragment
 
 import android.annotation.SuppressLint
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -91,7 +93,6 @@ class UserProfileVideoFragment @Inject constructor(
         super.onViewCreated(view, savedInstanceState)
 
         initObserver()
-        initListener()
         setupPlayVideo()
 
         fetchPlayVideo(viewModel.profileUserID)
@@ -127,10 +128,6 @@ class UserProfileVideoFragment @Inject constructor(
     private fun initObserver() {
         observeUiEvent()
         observeUiState()
-    }
-
-    private fun initListener() {
-        (parentFragment as? UserProfileFragment)?.initListenerPlayWidget(this)
     }
 
     private fun observeUiEvent() {
@@ -284,7 +281,26 @@ class UserProfileVideoFragment @Inject constructor(
         }
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+
+        if (resultCode != Activity.RESULT_OK) return
+
+        when (requestCode) {
+            REQUEST_CODE_PLAY_ROOM -> {
+                val channelId = data?.extras?.getString(EXTRA_CHANNEL_ID) ?: return
+                val totalView = data.extras?.getString(EXTRA_TOTAL_VIEW).orEmpty()
+                val isReminderSet = data.extras?.getBoolean(EXTRA_IS_REMINDER, false) ?: false
+
+                mAdapter.updatePlayWidgetLatestData(channelId, totalView, isReminderSet)
+            }
+        }
+    }
+
     companion object {
+        private const val EXTRA_TOTAL_VIEW = "EXTRA_TOTAL_VIEW"
+        private const val EXTRA_IS_REMINDER = "EXTRA_IS_REMINDER"
+        private const val EXTRA_CHANNEL_ID = "EXTRA_CHANNEL_ID"
         private const val TAG = "UserProfileVideoFragment"
         private const val GRID_SPAN_COUNT = 2
         private const val LOADING_SPAN = 2
