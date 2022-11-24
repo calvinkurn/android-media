@@ -5,10 +5,11 @@
     android:layout_height="wrap_content">
 
     <com.tokopedia.unifycomponents.ticker.Ticker
-        android:id="@+id/ticker"
+        android:id="@+id/tickerInfoSummary"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:closeButtonVisibility="gone"
+        app:descriptionText="@string/dsar_summary_ticker_info"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -22,7 +23,7 @@
         android:layout_marginTop="16dp"
         android:text="@string/dsar_choose_data_title"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/ticker"
+        app:layout_constraintTop_toBottomOf="@+id/tickerInfoSummary"
         app:typographyWeight="bold" />
 
 
