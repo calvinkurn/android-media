@@ -121,4 +121,6 @@
     <string name="play_product_pinned_atc">+</string>
     <string name="play_product_pinned_info_separator">\u00b7</string>
     <string name="play_voucher_header">Kupon bisa dipilih di halaman Keranjang jika ada produk dari toko</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
