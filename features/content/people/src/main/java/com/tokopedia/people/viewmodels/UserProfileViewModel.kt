@@ -150,10 +150,10 @@ class UserProfileViewModel @AssistedInject constructor(
     private fun handleLoadFeedPosts(cursor: String, limit: Int = 10, isRefresh: Boolean = false) {
         viewModelScope.launchCatchError(
             block = {
-                val data = if (isRefresh) repo.getFeedPosts(profileUserID, cursor, _feedPostsContent.value.posts.size)
+                val data = if (isRefresh) repo.getFeedPosts(profileUserID, "", _feedPostsContent.value.posts.size)
                 else repo.getFeedPosts(profileUserID, cursor, limit)
 
-                val finalPosts = if (cursor.isEmpty()) data.posts
+                val finalPosts = if (cursor.isEmpty() || isRefresh) data.posts
                 else _feedPostsContent.value.posts + data.posts
 
                 _feedPostsContent.update {
