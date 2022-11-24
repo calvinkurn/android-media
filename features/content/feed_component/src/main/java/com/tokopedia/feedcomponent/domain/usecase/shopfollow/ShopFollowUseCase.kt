@@ -36,6 +36,19 @@ class ShopFollowUseCase @Inject constructor(
         return executeOnBackground()
     }
 
+    suspend fun executeOnBackground(
+        shopId: String,
+    ): ShopFollowModel {
+        val request = mapOf(
+            SHOP_FOLLOW_INPUT to mapOf(
+                SHOP_FOLLOW_SHOP_ID to shopId,
+            )
+        )
+        setRequestParams(request)
+
+        return executeOnBackground()
+    }
+
     companion object {
         private const val SHOP_FOLLOW_SHOP_ID = "shopID"
         private const val SHOP_FOLLOW_ACTION = "action"
