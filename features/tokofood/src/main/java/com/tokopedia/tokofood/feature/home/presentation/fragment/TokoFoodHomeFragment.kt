@@ -766,8 +766,20 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
     private fun setSearchCoachMarkVisibility(shouldShow: Boolean) {
         searchCoachMark?.run {
             if (shouldShow && !isShowing) {
-                getSearchCoachMarkItem()?.let { coachMarkItem ->
+                val title =
+                    context?.getString(com.tokopedia.tokofood.R.string.home_coachmark_search_title)
+                        .orEmpty()
+                val description =
+                    context?.getString(com.tokopedia.tokofood.R.string.home_coachmark_search_desc)
+                        .orEmpty()
+                getSearchCoachMarkItem(title, description)?.let { coachMarkItem ->
                     showCoachMark(arrayListOf(coachMarkItem), null, Int.ZERO)
+                    analytics.viewSearchBarCoachmark(
+                        userSession.userId,
+                        localCacheModel?.district_id,
+                        title,
+                        description
+                    )
                 }
             } else {
                 hideCoachMark()
@@ -775,12 +787,12 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun getSearchCoachMarkItem(): CoachMark2Item? {
+    private fun getSearchCoachMarkItem(title: String, description: String): CoachMark2Item? {
         return navToolbar?.let { toolbar ->
             CoachMark2Item(
                 anchorView = toolbar,
-                title = context?.getString(com.tokopedia.tokofood.R.string.home_coachmark_search_title).orEmpty(),
-                description = context?.getString(com.tokopedia.tokofood.R.string.home_coachmark_search_desc).orEmpty(),
+                title = title,
+                description = description,
                 position = CoachMark2.POSITION_BOTTOM
             )
         }
