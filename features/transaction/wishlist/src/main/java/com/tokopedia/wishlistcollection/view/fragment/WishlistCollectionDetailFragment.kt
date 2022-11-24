@@ -123,6 +123,7 @@ import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.EXTRA_IS_S
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.SOURCE_COLLECTION
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.SRC_WISHLIST_COLLECTION
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.SRC_WISHLIST_COLLECTION_BULK_ADD
+import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.SRC_WISHLIST_COLLECTION_SHARING
 import com.tokopedia.wishlistcollection.util.WishlistCollectionSharingUtils
 import com.tokopedia.wishlistcollection.view.activity.WishlistCollectionDetailActivity
 import com.tokopedia.wishlistcollection.view.activity.WishlistCollectionEditActivity
@@ -884,7 +885,7 @@ class WishlistCollectionDetailFragment :
                         showBottomSheetCollection(
                             childFragmentManager,
                             listSelectedProductIdsFromOtherCollection.joinToString(),
-                            SRC_WISHLIST_COLLECTION_BULK_ADD
+                            SRC_WISHLIST_COLLECTION_SHARING
                         )
                     } else {
                         when (result.data.errorType) {
