@@ -5,7 +5,7 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.content.common.types.ContentCommonUserType.TYPE_SHOP
 import com.tokopedia.content.common.types.ContentCommonUserType.TYPE_USER
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
-import com.tokopedia.content.common.util.orUnknown
+import com.tokopedia.content.common.ui.model.orUnknown
 import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
