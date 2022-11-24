@@ -8,11 +8,19 @@ import javax.inject.Inject
 class TokofoodHomeSharedPref @Inject constructor(@ApplicationContext private val context: Context) {
 
     fun getHasSearchCoachmarkShown(): Boolean {
-        return CoachMarkPreference.hasShown(context, HAS_COACHMARK_SHOWN_KEY)
+        return try {
+            CoachMarkPreference.hasShown(context, HAS_COACHMARK_SHOWN_KEY)
+        } catch (ex: Exception) {
+            false
+        }
     }
 
     fun setHasSearchCoachmarkShown(hasShown: Boolean) {
-        CoachMarkPreference.setShown(context, HAS_COACHMARK_SHOWN_KEY, hasShown)
+        try {
+            CoachMarkPreference.setShown(context, HAS_COACHMARK_SHOWN_KEY, hasShown)
+        } catch (ex: Exception) {
+            // No-Op
+        }
     }
 
     companion object {
