@@ -86,8 +86,8 @@ class PrivacyPolicySection constructor(
     override fun initObservers() {
         lifecycleOwner?.run {
             viewModel.state.observe(this) {
-                toggleCollapsable(it.shown)
-                if (it.shown) {
+                toggleCollapsable(it.expanded)
+                if (it.expanded) {
                     when (it.innerState) {
                         is PrivacyPolicyUiModel.InnerState.Success -> showList(it.innerState.list)
                         PrivacyPolicyUiModel.InnerState.Loading -> loadingPrivacyPolicyList()
