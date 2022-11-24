@@ -85,7 +85,6 @@ interface DynamicProductDetailListener {
     fun goToEducational(url: String)
 
     fun onBbiInfoClick(url: String, title: String, componentTrackDataModel: ComponentTrackDataModel)
-    fun showCustomInfoCoachMark(componentName: String, viewTarget: View)
 
     /**
      * BestSellerViewHolder

@@ -1266,12 +1266,6 @@ open class DynamicProductDetailFragment :
         )
     }
 
-    override fun showCustomInfoCoachMark(componentName: String, viewTarget: View) {
-        if (componentName == ProductDetailConstant.HAMPERS_INFO) {
-            pdpCoachmarkHelper?.showCoachMarkHampers(viewTarget)
-        }
-    }
-
     override fun showOneLinersImsCoachMark(
         view: ImageUnify?
     ) {

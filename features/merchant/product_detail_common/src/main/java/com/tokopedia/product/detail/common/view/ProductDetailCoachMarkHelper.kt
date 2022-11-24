@@ -5,7 +5,6 @@ import android.content.SharedPreferences
 import android.view.View
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
-import com.tokopedia.coachmark.CoachMarkPreference
 import com.tokopedia.product.detail.common.R
 
 /**
@@ -73,31 +72,6 @@ class ProductDetailCoachMarkHelper(context: Context) {
         }
     }
 
-    fun showCoachMarkHampers(targetView: View?) {
-        val shouldShowCoachMark = getCoachMarkState(PDP_HAMPERS_COACHMARK_EXTRA) == false
-                && !coachMarkEverShowing
-
-        if (targetView != null && shouldShowCoachMark) {
-            initCoachMarkView(targetView.context)
-
-            val coachMarkList = arrayListOf<CoachMark2Item>()
-
-            coachMarkList.add(
-                CoachMark2Item(
-                    targetView,
-                    targetView.context.getString(R.string.pdp_hampers_coachmark_title),
-                    targetView.context.getString(R.string.pdp_hampers_coachmark_desc),
-                    CoachMark2.POSITION_TOP
-                )
-            )
-
-            coachMarkView?.showCoachMark(coachMarkList, null, 0)
-            coachMarkEverShowing = true
-            lastShown = PDP_HAMPERS_COACHMARK_EXTRA
-            setCoachMarkState(PDP_HAMPERS_COACHMARK_EXTRA, true)
-        }
-    }
-
     fun hideCoachMark(key: String) {
         if (coachMarkView != null && coachMarkView?.isShowing == true && lastShown == key) {
             coachMarkView?.hideCoachMark()
@@ -121,7 +95,6 @@ class ProductDetailCoachMarkHelper(context: Context) {
 
     companion object {
         const val PREF_NAME = "pdp_coachmark"
-        const val PDP_HAMPERS_COACHMARK_EXTRA = "pdp_hampers_coachmark"
         const val PRODUCT_DETAIL_AR_PAGE_COACHMARK = "coach_mark_pdp_ar_page"
         const val COACH_MARK_IMS_TAG = "pdp_coachmark_ims"
     }
