@@ -29,6 +29,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform
+import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform.PATH_SRC
 import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform.WISHLIST_COLLECTION_DETAIL_INTERNAL
 import com.tokopedia.atc_common.AtcFromExternalSource
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
@@ -135,7 +136,6 @@ import com.tokopedia.wishlistcollection.view.bottomsheet.listener.ActionListener
 import com.tokopedia.wishlistcollection.view.viewmodel.WishlistCollectionDetailViewModel
 import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.IS_PRODUCT_ACTIVE
-import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.TOASTER_RED
 import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -298,6 +298,7 @@ class WishlistCollectionDetailFragment :
         private const val SOURCE_AUTOMATIC_DELETION = "wishlist_automatic_delete"
         private const val OK = "OK"
         private const val SRC_WISHLIST = "wishlist"
+        private const val SRC_WISHLIST_SHARING = "sharing"
         private const val SRC_WISHLIST_PAGE = "wishlist page"
         private const val OPTION_CLEANER_MANUAL = "sendiri"
         private const val OPTION_CLEANER_AUTOMATIC = "otomatis"
@@ -886,14 +887,12 @@ class WishlistCollectionDetailFragment :
                             SRC_WISHLIST_COLLECTION_BULK_ADD
                         )
                     } else {
-                        var toasterType = Toaster.TYPE_NORMAL
-                        if (result.data.toasterColor == TOASTER_RED) toasterType = Toaster.TYPE_ERROR
                         when (result.data.errorType) {
                             ERROR_GENERAL_SYSTEM_FAILURE_ADD_BULK -> {
                                 showIndefiniteToasterWithCTA(
                                     message = result.data.message,
                                     actionText = result.data.button.text,
-                                    type = toasterType
+                                    type = Toaster.TYPE_ERROR
                                 ) { doAddWishlistBulk() }
                             }
 
@@ -901,7 +900,7 @@ class WishlistCollectionDetailFragment :
                                 showToasterWithCTA(
                                     message = result.data.message,
                                     actionText = result.data.button.text,
-                                    type = toasterType
+                                    type = Toaster.TYPE_ERROR
                                 ) { goToWishlistCollection(COLLECTION_ID_SEMUA_WISHLIST) }
                             }
 
@@ -909,7 +908,7 @@ class WishlistCollectionDetailFragment :
                                 showToasterWithCTA(
                                     message = result.data.message,
                                     actionText = result.data.button.text,
-                                    type = toasterType
+                                    type = Toaster.TYPE_ERROR
                                 ) { goToWishlistCollectionDetailShowCleanerBottomSheet(COLLECTION_ID_SEMUA_WISHLIST) }
                             }
 
@@ -920,7 +919,7 @@ class WishlistCollectionDetailFragment :
                             ERROR_MAX_BULK_VALIDATION_FAILURE -> {
                                 showToasterActionOke(
                                     message = result.data.message,
-                                    type = toasterType
+                                    type = Toaster.TYPE_ERROR
                                 )
                             }
                         }
@@ -1966,8 +1965,13 @@ class WishlistCollectionDetailFragment :
                                 )
                             }
                             MENU_ADD_WISHLIST -> {
-                                val applinkCollection =
-                                    "${ApplinkConstInternalPurchasePlatform.WISHLIST_COLLECTION_BOTTOMSHEET}?${ApplinkConstInternalPurchasePlatform.PATH_PRODUCT_ID}=${wishlistItem.id}&${ApplinkConstInternalPurchasePlatform.PATH_SRC}=$SRC_WISHLIST"
+                                var applinkCollection =
+                                    "${ApplinkConstInternalPurchasePlatform.WISHLIST_COLLECTION_BOTTOMSHEET}?${ApplinkConstInternalPurchasePlatform.PATH_PRODUCT_ID}=${wishlistItem.id}"
+                                if (collectionType == TYPE_COLLECTION_PUBLIC_OTHERS) {
+                                    applinkCollection += "&${ApplinkConstInternalPurchasePlatform.PATH_SRC}=$SRC_WISHLIST_SHARING"
+                                } else {
+                                    applinkCollection += "&${ApplinkConstInternalPurchasePlatform.PATH_SRC}=$SRC_WISHLIST"
+                                }
                                 val intentBottomSheetWishlistCollection =
                                     RouteManager.getIntent(context, applinkCollection)
                                 intentBottomSheetWishlistCollection.putExtra(
