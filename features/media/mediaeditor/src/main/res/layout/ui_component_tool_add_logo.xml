@@ -90,7 +90,7 @@
         <View
             android:layout_marginLeft="14dp"
             android:background="@color/Unify_NN300"
-            android:layout_width="0.8dp"
+            android:layout_width="0.5dp"
             android:layout_height="match_parent"/>
 
     </LinearLayout>

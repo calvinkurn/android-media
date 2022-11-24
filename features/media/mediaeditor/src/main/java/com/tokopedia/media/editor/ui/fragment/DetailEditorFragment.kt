@@ -290,9 +290,16 @@ class DetailEditorFragment @Inject constructor(
 
     // EditorDetailPreviewWidget finish load image
     override fun onLoadComplete() {
-        viewBinding?.imgUcropPreview?.cropImageView?.post {
-            readPreviousState()
-            initialImageMatrix = Matrix(viewBinding?.imgUcropPreview?.cropImageView?.imageMatrix)
+        viewBinding?.imgUcropPreview?.let {
+            it.post {
+                readPreviousState()
+                initialImageMatrix = Matrix(it.cropImageView.imageMatrix)
+
+                setOverlaySize(Pair(
+                    it.overlayView.cropViewRect.width(),
+                    it.overlayView.cropViewRect.height()
+                ))
+            }
         }
     }
 
@@ -423,6 +430,8 @@ class DetailEditorFragment @Inject constructor(
     private fun observeEditorParamModel() {
         viewModel.editorParam.observe(viewLifecycleOwner) {
             if (data.isToolCrop() || data.isToolRotate()) {
+                viewBinding?.imgViewPreview?.hide()
+
                 // uCrop height must be same between rotate & crop to get same result when implement state
                 // crop item is dynamic according to the editor param
                 rotateComponent.setupView(data)
@@ -516,7 +525,8 @@ class DetailEditorFragment @Inject constructor(
             }
             // ==========
             EditorToolType.ADD_LOGO -> {
-                setImageView(url, true) {
+                val addLogoUrl = data.resultUrl ?: url
+                setImageView(addLogoUrl, false) {
                     // init add logo when image is already done (waiting for image size)
                     addLogoComponent.setupView(
                         originalImageWidth,
@@ -881,8 +891,12 @@ class DetailEditorFragment @Inject constructor(
 
                     if (readPreviousValue) {
                         readPreviousState()
+                        viewBinding?.imgViewPreview?.let {
+                            setOverlaySize(getDisplayedImageSize(viewBinding?.imgViewPreview, it.drawable.toBitmap()))
+                        }
                     } else {
                         implementedBaseBitmap = bitmap
+                        setOverlaySize(getDisplayedImageSize(viewBinding?.imgViewPreview, bitmap))
                     }
 
                     if (data.isToolWatermark()) {
@@ -891,8 +905,6 @@ class DetailEditorFragment @Inject constructor(
                             WatermarkType.map(data.watermarkMode?.watermarkType)
                         )
                     }
-
-                    setOverlaySize(getDisplayedImageSize(viewBinding?.imgViewPreview, bitmap))
 
                     onImageReady()
                 },
