@@ -10,12 +10,14 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.campaign.utils.constant.DateConstant
 import com.tokopedia.campaign.utils.extension.showToaster
+import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.mvc.R
 import com.tokopedia.mvc.databinding.*
 import com.tokopedia.mvc.di.component.DaggerMerchantVoucherCreationComponent
 import com.tokopedia.mvc.domain.entity.VoucherDetailData
+import com.tokopedia.mvc.presentation.bottomsheet.ExpenseEstimationBottomSheet
 import com.tokopedia.mvc.util.SharingUtil
 import com.tokopedia.mvc.util.constant.*
 import com.tokopedia.mvc.util.constant.VoucherTargetConstant.VOUCHER_TARGET_PUBLIC
@@ -94,11 +96,13 @@ class VoucherDetailFragment : BaseDaggerFragment() {
 
     private fun observeData() {
         viewModel.voucherDetail.observe(viewLifecycleOwner) { result ->
+            hideLoading()
             when (result) {
                 is Success -> {
                     setupView(result.data)
                 }
                 is Fail -> {
+                    showGlobalError()
                 }
             }
         }
@@ -156,7 +160,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun setPackage(data: VoucherDetailData){
+    private fun setPackage(data: VoucherDetailData) {
         headerBinding?.run {
             if (data.isVps == FALSE && data.isSubsidy == FALSE) {
                 labelVoucherSource.invisible()
@@ -465,6 +469,9 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                 titleText = title
                 descriptionText = description
                 spendingEstimationText = spendingEstimation
+                iconInfo?.setOnClickListener {
+                    ExpenseEstimationBottomSheet.newInstance().show(childFragmentManager)
+                }
             }
         }
     }
@@ -538,6 +545,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
     }
 
     private fun getVoucherDetailData(voucherId: Long) {
+        showLoading()
         viewModel.getVoucherDetail(voucherId)
     }
 
@@ -554,6 +562,39 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                 getString(R.string.coupon_code_copied_to_clipboard),
                 getString(R.string.smvc_oke_label)
             )
+        }
+    }
+
+    private fun showLoading() {
+        binding?.run {
+            loader.show()
+            nsvContent.gone()
+            layoutButtonGroup.gone()
+            globalError.gone()
+        }
+    }
+
+    private fun hideLoading() {
+        binding?.run {
+            loader.gone()
+            nsvContent.show()
+            layoutButtonGroup.show()
+            globalError.gone()
+        }
+    }
+
+    private fun showGlobalError() {
+        binding?.run {
+            loader.gone()
+            nsvContent.gone()
+            layoutButtonGroup.gone()
+            globalError.apply {
+                show()
+                setType(GlobalError.SERVER_ERROR)
+                setActionClickListener {
+                    getVoucherDetailData(voucherId)
+                }
+            }
         }
     }
 }
