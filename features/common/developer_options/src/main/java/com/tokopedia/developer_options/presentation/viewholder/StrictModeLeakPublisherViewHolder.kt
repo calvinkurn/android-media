@@ -27,7 +27,7 @@ class StrictModeLeakPublisherViewHolder(
     override fun bind(element: StrictModeLeakPublisherUiModel) {
         itemView.context?.apply {
             val sharedPref = getSharedPreferences(
-                LEAK_CANARY_TOGGLE_SP_NAME_SELLER,
+                LEAK_CANARY_TOGGLE_SP_NAME,
                 BaseActivity.MODE_PRIVATE
             )
             val cb = itemView.findViewById<CheckboxUnify>(R.id.strict_mode_cb)

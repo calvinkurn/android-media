@@ -28,7 +28,7 @@ class LeakCanaryViewHolder(
     override fun bind(element: LeakCanaryUiModel) {
         itemView.context?.apply {
             val sharedPref = getSharedPreferences(
-                LEAK_CANARY_TOGGLE_SP_NAME_SELLER,
+                LEAK_CANARY_TOGGLE_SP_NAME,
                 BaseActivity.MODE_PRIVATE
             )
             val cb = itemView.findViewById<CheckboxUnify>(R.id.leak_canary_cb)
