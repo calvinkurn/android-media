@@ -675,8 +675,10 @@ object DeeplinkMapper {
                 DeeplinkMapperMerchant.isSellerShopFlashSaleApplink(deeplink) -> DeeplinkMapperMerchant.getRegisteredNavigationForSellerShopFlashSale(deeplink)
                 DeeplinkMapperMerchant.isSellerTokopediaFlashSaleApplink(deeplink) -> DeeplinkMapperMerchant.getRegisteredNavigationForSellerTokopediaFlashSale(deeplink)
                 DeeplinkMapperMerchant.isSellerTokopediaFlashSaleCampaignDetailApplink(deeplink) -> DeeplinkMapperMerchant.getRegisteredNavigationForSellerTokopediaFlashSaleCampaignDetail(deeplink)
-                DeeplinkMapperMerchant.isSellerMvcListAppLink(deeplink) -> DeeplinkMapperMerchant.getRegisteredNavigationForSellerMvcList(deeplink)
-                DeeplinkMapperMerchant.isSellerMvcShopCreateAppLink(deeplink) -> DeeplinkMapperMerchant.getRegisteredNavigationForSellerMvcShopCreate(deeplink)
+                DeeplinkMapperMerchant.isSellerMvcListAppLink(deeplink) -> DeeplinkMapperMerchant.getRegisteredNavigationForSellerMvcList()
+                DeeplinkMapperMerchant.isSellerMvcListActiveAppLink(deeplink) -> DeeplinkMapperMerchant.getRegisteredNavigationForSellerMvcListActive()
+                DeeplinkMapperMerchant.isSellerMvcListHistoryAppLink(deeplink) -> DeeplinkMapperMerchant.getRegisteredNavigationForSellerMvcListHistory()
+                DeeplinkMapperMerchant.isSellerMvcShopCreateAppLink(deeplink) -> DeeplinkMapperMerchant.getRegisteredNavigationForSellerMvcShopCreate()
                 DeeplinkMapperMerchant.isSellerMvcProductCreateAppLink(deeplink) -> DeeplinkMapperMerchant.getRegisteredNavigationForSellerMvcProductCreate(deeplink)
                 DeeplinkMapperMerchant.isSellerMvcDetailAppLink(deeplink) -> DeeplinkMapperMerchant.getRegisteredNavigationForSellerMvcDetail(deeplink)
                 //For Tokomember applinks with params
