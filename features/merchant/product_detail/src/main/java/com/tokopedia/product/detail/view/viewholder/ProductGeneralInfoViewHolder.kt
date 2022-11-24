@@ -1,10 +1,11 @@
 package com.tokopedia.product.detail.view.viewholder
 
 import android.view.View
+import android.view.ViewGroup.LayoutParams
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.setLayoutHeight
 import com.tokopedia.kotlin.extensions.view.showIfWithBlock
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.loader.loadIcon
@@ -45,10 +46,10 @@ class ProductGeneralInfoViewHolder(
 
     override fun bind(element: ProductGeneralInfoDataModel) = with(binding) {
         if (element.shouldRenderContent) {
-            root.show()
+            root.setLayoutHeight(LayoutParams.WRAP_CONTENT)
             contentBinding.renderContent(element = element)
         } else {
-            root.gone()
+            root.setLayoutHeight(0)
         }
     }
 
