@@ -27,12 +27,25 @@
         android:orientation="vertical"
         android:padding="16dp">
 
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/typography7"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/dsar_bottom_sheet_detail_subtitle"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:typographyType="paragraph_2" />
+
         <include
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
             android:id="@+id/personalInfo"
             layout="@layout/item_dsar_profile"
+            android:layout_marginTop="12dp"
+            android:layout_marginHorizontal="1dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@+id/typography7" />
 
         <include
             android:id="@+id/layoutOptions"
