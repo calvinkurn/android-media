@@ -6,7 +6,7 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tpgWarehouseName"
+        android:id="@+id/tpgFilterName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="16dp"
@@ -16,16 +16,16 @@
         tools:text="Jakarta" />
 
     <com.tokopedia.iconunify.IconUnify
-        android:id="@+id/iconCheckmarkWarehouse"
+        android:id="@+id/iconCheckmarkState"
         android:layout_width="22dp"
         android:layout_height="22dp"
         android:layout_margin="22dp"
         app:icon_color_light_enable="@color/Unify_GN500"
         app:icon_enable_state="true"
         app:icon_name="CHECK"
-        app:layout_constraintBottom_toBottomOf="@+id/tpgWarehouseName"
+        app:layout_constraintBottom_toBottomOf="@+id/tpgFilterName"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/tpgWarehouseName" />
+        app:layout_constraintTop_toTopOf="@+id/tpgFilterName" />
 
 
 

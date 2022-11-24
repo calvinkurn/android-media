@@ -104,9 +104,6 @@ class GetInitiateVoucherPageUseCase @Inject constructor(
         val action: VoucherAction,
         val promoType: PromoType,
         val isVoucherProduct: Boolean
-    ) {
-
-    }
-
+    )
 }
 

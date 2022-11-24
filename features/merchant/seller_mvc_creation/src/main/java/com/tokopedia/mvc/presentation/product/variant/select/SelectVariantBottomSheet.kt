@@ -1,4 +1,4 @@
-package com.tokopedia.mvc.presentation.product.variant
+package com.tokopedia.mvc.presentation.product.variant.select
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -12,6 +12,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.campaign.utils.extension.applyPaddingToLastItem
 import com.tokopedia.campaign.utils.extension.attachDividerItemDecoration
+import com.tokopedia.campaign.utils.extension.showToasterError
 import com.tokopedia.kotlin.extensions.view.applyUnifyBackgroundColor
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.isZero
@@ -21,9 +22,9 @@ import com.tokopedia.mvc.R
 import com.tokopedia.mvc.databinding.SmvcBottomsheetSelectVariantBinding
 import com.tokopedia.mvc.di.component.DaggerMerchantVoucherCreationComponent
 import com.tokopedia.mvc.domain.entity.Product
-import com.tokopedia.mvc.presentation.product.variant.uimodel.SelectVariantEffect
-import com.tokopedia.mvc.presentation.product.variant.uimodel.SelectVariantEvent
-import com.tokopedia.mvc.presentation.product.variant.uimodel.SelectVariantUiState
+import com.tokopedia.mvc.presentation.product.variant.select.uimodel.SelectVariantEffect
+import com.tokopedia.mvc.presentation.product.variant.select.uimodel.SelectVariantEvent
+import com.tokopedia.mvc.presentation.product.variant.select.uimodel.SelectVariantUiState
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.flow.collect
@@ -47,7 +48,9 @@ class SelectVariantBottomSheet : BottomSheetUnify() {
 
 
     private var binding by autoClearedNullable<SmvcBottomsheetSelectVariantBinding>()
-    private val parentProduct by lazy { arguments?.getParcelable(BUNDLE_KEY_SELECTED_PARENT_PRODUCT_ID) as? Product }
+    private val parentProduct by lazy { arguments?.getParcelable(
+        BUNDLE_KEY_SELECTED_PARENT_PRODUCT_ID
+    ) as? Product }
     private var onSelectButtonClick: (Set<Long>) -> Unit = {}
 
     @Inject
@@ -166,6 +169,9 @@ class SelectVariantBottomSheet : BottomSheetUnify() {
                 onSelectButtonClick(effect.selectedVariantIds)
                 dismiss()
             }
+            is SelectVariantEffect.ShowError -> {
+                binding?.cardUnify2?.showToasterError(effect.error)
+            }
         }
     }
 
@@ -194,7 +200,7 @@ class SelectVariantBottomSheet : BottomSheetUnify() {
         binding?.run {
             tpgProductName.text = uiState.parentProductName
             tpgStock.text = context?.getString(R.string.smvc_placeholder_total_stock, uiState.parentProductStock.splitByThousand())
-            tpgSoldCount.text = context?.getString(R.string.smvc_placeholder_product_sold_count, uiState.parentProductStock.splitByThousand())
+            tpgSoldCount.text = context?.getString(R.string.smvc_placeholder_product_sold_count, uiState.parentProductSoldCount.splitByThousand())
             imgParentProduct.loadImage(uiState.parentProductImageUrl)
         }
     }

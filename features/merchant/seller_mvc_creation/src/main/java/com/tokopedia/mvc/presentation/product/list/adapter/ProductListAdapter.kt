@@ -1,58 +1,66 @@
-package com.tokopedia.mvc.presentation.product.add.adapter
+package com.tokopedia.mvc.presentation.product.list.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.RelativeLayout
+import androidx.recyclerview.widget.AsyncListDiffer
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.campaign.components.adapter.DelegateAdapter
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.splitByThousand
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.mvc.R
-import com.tokopedia.mvc.databinding.SmvcItemProductBinding
+import com.tokopedia.mvc.databinding.SmvcItemProductListBinding
 import com.tokopedia.mvc.domain.entity.Product
 import com.tokopedia.mvc.util.constant.NumberConstant
 import com.tokopedia.mvc.util.extension.grayscale
 import com.tokopedia.mvc.util.extension.resetGrayscale
 import com.tokopedia.unifyprinciples.Typography
 
-class ProductDelegateAdapter(
-    private val onItemClick: (Int) -> Unit,
+class ProductListAdapter(
+    private val onDeleteProductClick: (Int) -> Unit,
     private val onCheckboxClick: (Int, Boolean) -> Unit,
     private val onVariantClick: (Int) -> Unit
-) : DelegateAdapter<Product, ProductDelegateAdapter.ViewHolder>(
-    Product::class.java
-) {
+)  : RecyclerView.Adapter<ProductListAdapter.ViewHolder>() {
 
-    override fun createViewHolder(parent: ViewGroup): RecyclerView.ViewHolder {
-        val binding = SmvcItemProductBinding.inflate(
-            LayoutInflater.from(parent.context),
-            parent,
-            false
-        )
+    private val differCallback = object : DiffUtil.ItemCallback<Product>() {
+        override fun areItemsTheSame(oldItem: Product, newItem: Product): Boolean {
+            return oldItem.id == newItem.id
+        }
+
+        override fun areContentsTheSame(oldItem: Product, newItem: Product): Boolean {
+            return oldItem == newItem
+        }
+    }
+
+    private val differ = AsyncListDiffer(this, differCallback)
+
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
+        val binding = SmvcItemProductListBinding.inflate(LayoutInflater.from(parent.context), parent, false)
         return ViewHolder(binding)
     }
 
-    override fun bindViewHolder(item: Product, viewHolder: ViewHolder) {
-        viewHolder.bind(item)
+    override fun getItemCount(): Int {
+        return differ.currentList.size
     }
 
-    inner class ViewHolder(private val binding : SmvcItemProductBinding) : RecyclerView.ViewHolder(binding.root) {
+    override fun onBindViewHolder(holder: ProductListAdapter.ViewHolder, position: Int) {
+        holder.bind(differ.currentList[position])
+    }
+
+    inner class ViewHolder(private val binding : SmvcItemProductListBinding) : RecyclerView.ViewHolder(binding.root) {
 
         init {
-            binding.root.setOnClickListener { onItemClick(bindingAdapterPosition) }
-            binding.tpgUpdateVariant.setOnClickListener { onVariantClick(bindingAdapterPosition) }
+            binding.iconDelete.setOnClickListener { onDeleteProductClick(bindingAdapterPosition) }
+            binding.layoutVariant.setOnClickListener { onVariantClick(bindingAdapterPosition) }
         }
 
         fun bind(item: Product) {
             with(binding) {
                 checkbox.setOnCheckedChangeListener(null)
-
-                tpgIneligibleReason.setIneligibleReason(item)
 
                 imgProduct.loadRemoteImageUrl(item)
                 imgProduct.cornerRadius = NumberConstant.IMAGE_VIEW_CORNER_RADIUS
@@ -82,6 +90,10 @@ class ProductDelegateAdapter(
                     onCheckboxClick(bindingAdapterPosition, isChecked)
                 }
                 checkbox.isEnabled = item.enableCheckbox && item.isEligible
+
+                checkbox.isVisible = item.enableCheckbox
+
+                iconDelete.isVisible = item.isDeletable
             }
         }
 
@@ -95,51 +107,14 @@ class ProductDelegateAdapter(
             }
         }
 
-        private fun Typography.setIneligibleReason(item: Product) {
-            if (item.ineligibleReason.isNotEmpty()) {
-                visible()
-                text = item.ineligibleReason
-            } else {
-                gone()
-            }
-        }
-
         private fun RelativeLayout.setVariantCount(item: Product) {
-            isVisible = item.originalVariants.isNotEmpty()
-            val originalVariantCount = item.originalVariants.count()
-            val updatedVariantCount = item.selectedVariantsIds.count()
-            val variantChanged = originalVariantCount != updatedVariantCount
+            isVisible = item.selectedVariantsIds.isNotEmpty()
+            val variantCount = item.selectedVariantsIds.count()
 
-            when {
-                item.isSelected && variantChanged -> {
-                    binding.iconDropdown.gone()
-                    binding.tpgUpdateVariant.visible()
-                    binding.tpgVariantCount.text = binding.tpgVariantCount.context.getString(
-                        R.string.smvc_placeholder_modified_variant_product_count,
-                        item.selectedVariantsIds.size,
-                        item.originalVariants.size
-                    )
-                }
-                item.isSelected -> {
-                    binding.iconDropdown.gone()
-                    binding.tpgUpdateVariant.visible()
-                    binding.tpgVariantCount.text = MethodChecker.fromHtml(
-                        binding.tpgVariantCount.context.getString(
-                            R.string.smvc_placeholder_selected_variant_product_count,
-                            item.selectedVariantsIds.size,
-                            item.originalVariants.size
-                        )
-                    )
-                }
-                else -> {
-                    binding.iconDropdown.visible()
-                    binding.tpgUpdateVariant.gone()
-                    binding.tpgVariantCount.text = binding.tpgVariantCount.context.getString(
-                        R.string.smvc_placeholder_variant_product_count,
-                        originalVariantCount
-                    )
-                }
-            }
+            binding.tpgVariantCount.text = binding.tpgVariantCount.context.getString(
+                R.string.smvc_placeholder_variant_product_count,
+                variantCount
+            )
         }
 
         private fun Typography.setSku(item: Product) {
@@ -168,4 +143,11 @@ class ProductDelegateAdapter(
 
     }
 
+    fun submit(newVariants: List<Product>) {
+        differ.submitList(newVariants)
+    }
+
+    fun snapshot(): List<Product> {
+        return differ.currentList
+    }
 }

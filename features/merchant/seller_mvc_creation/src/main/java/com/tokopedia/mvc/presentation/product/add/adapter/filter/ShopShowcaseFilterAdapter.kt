@@ -1,29 +1,29 @@
-package com.tokopedia.mvc.presentation.product.add.adapter
+package com.tokopedia.mvc.presentation.product.add.adapter.filter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.campaign.components.bottomsheet.selection.entity.SingleSelectionItem
 import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.mvc.databinding.SmvcItemWarehouseBinding
+import com.tokopedia.mvc.databinding.SmvcItemFilterBinding
+import com.tokopedia.mvc.domain.entity.ShopShowcase
 
-class WarehouseFilterAdapter : RecyclerView.Adapter<WarehouseFilterAdapter.ViewHolder>() {
+class ShopShowcaseFilterAdapter : RecyclerView.Adapter<ShopShowcaseFilterAdapter.ViewHolder>() {
 
-    private var onItemClicked: (SingleSelectionItem) -> Unit = {}
+    private var onItemClicked: (ShopShowcase) -> Unit = {}
 
-    private val differCallback = object : DiffUtil.ItemCallback<SingleSelectionItem>() {
+    private val differCallback = object : DiffUtil.ItemCallback<ShopShowcase>() {
         override fun areItemsTheSame(
-            oldItem: SingleSelectionItem,
-            newItem: SingleSelectionItem
+            oldItem: ShopShowcase,
+            newItem: ShopShowcase
         ): Boolean {
             return oldItem.id == newItem.id
         }
 
         override fun areContentsTheSame(
-            oldItem: SingleSelectionItem,
-            newItem: SingleSelectionItem
+            oldItem: ShopShowcase,
+            newItem: ShopShowcase
         ): Boolean {
             return oldItem == newItem
         }
@@ -32,7 +32,7 @@ class WarehouseFilterAdapter : RecyclerView.Adapter<WarehouseFilterAdapter.ViewH
     private val differ = AsyncListDiffer(this, differCallback)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val binding = SmvcItemWarehouseBinding.inflate(
+        val binding = SmvcItemFilterBinding.inflate(
             LayoutInflater.from(parent.context),
             parent,
             false
@@ -50,40 +50,44 @@ class WarehouseFilterAdapter : RecyclerView.Adapter<WarehouseFilterAdapter.ViewH
     }
 
 
-    fun setOnItemClicked(onItemClicked: (SingleSelectionItem) -> Unit) {
+    fun setOnShowcaseClicked(onItemClicked: (ShopShowcase) -> Unit) {
         this.onItemClicked = onItemClicked
     }
 
-    inner class ViewHolder(private val binding: SmvcItemWarehouseBinding) :
+    inner class ViewHolder(private val binding: SmvcItemFilterBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(item: SingleSelectionItem) {
-            binding.tpgWarehouseName.text = item.name
-            binding.iconCheckmarkWarehouse.isVisible = item.isSelected
+        fun bind(item: ShopShowcase) {
+            binding.tpgFilterName.text = item.name
+            binding.iconCheckmarkState.isVisible = item.isSelected
             binding.root.setOnClickListener { onItemClicked(item) }
         }
     }
 
-    fun submit(newItems: List<SingleSelectionItem>) {
+    fun submit(newItems: List<ShopShowcase>) {
         differ.submitList(newItems)
     }
 
-    fun markAsSelected(newItem : SingleSelectionItem) {
+    fun markAsSelected(selectedShowcaseIds : List<Long>) {
         val current = snapshot()
 
-        val newList = current.map {  item ->
-            if (item.id == newItem.id) {
-                item.copy(isSelected = true)
+        val newList = current.map { item ->
+            if (item.id in selectedShowcaseIds) {
+                item.copy(isSelected = !item.isSelected)
             } else {
-                item.copy(isSelected = false)
+                item
             }
         }
 
         submit(newList)
     }
 
+    fun getSelectedItems(): List<ShopShowcase> {
+        return snapshot().filter { it.isSelected }
+    }
 
-    private fun snapshot(): List<SingleSelectionItem> {
+    fun snapshot(): List<ShopShowcase> {
         return differ.currentList
     }
 }
+

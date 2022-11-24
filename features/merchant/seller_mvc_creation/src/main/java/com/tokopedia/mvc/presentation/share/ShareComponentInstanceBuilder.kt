@@ -17,7 +17,7 @@ import javax.inject.Inject
 /**
  * Docs are defined on: https://docs.google.com/spreadsheets/d/10Kee8re2G87hS5elK4XASlHYaav8nsvjjiU9L5qbGKQ/edit#gid=0
  */
-class SharingComponentInstanceBuilder @Inject constructor(
+class ShareComponentInstanceBuilder @Inject constructor(
     private val userSession: UserSessionInterface
 ) {
 
@@ -33,18 +33,21 @@ class SharingComponentInstanceBuilder @Inject constructor(
 
 
     data class Param(
+        val isVoucherProduct: Boolean,
+        val voucherStartDate: Date,
+        val voucherEndDate: Date,
         val voucherId: Long,
         val isPublic: Boolean,
         val voucherCode: String,
-        val voucherStartTime: Date,
-        val voucherEndTime: Date,
         val promoType: PromoType,
         val benefitType: BenefitType,
         val shopLogo: String,
         val shopName: String,
+        val shopDomain: String,
         val discountAmount: Long,
         val discountAmountMax: Long,
-        val productImageUrls: List<String>
+        val productImageUrls: List<String>,
+        val discountPercentage: Int
     )
     
     fun build(
@@ -119,9 +122,9 @@ class SharingComponentInstanceBuilder @Inject constructor(
             )
 
             val formattedBenefitType = when(param.promoType) {
-                PromoType.FREE_SHIPPING -> "gratis-ongkir"
-                PromoType.CASHBACK -> "cashback"
-                PromoType.DISCOUNT -> "diskon"
+                PromoType.FREE_SHIPPING -> ImageGeneratorConstants.VoucherBenefitType.GRATIS_ONGKIR
+                PromoType.CASHBACK -> ImageGeneratorConstants.VoucherBenefitType.CASHBACK
+                PromoType.DISCOUNT -> ImageGeneratorConstants.VoucherBenefitType.DISCOUNT
             }
 
             addImageGeneratorData(
@@ -145,6 +148,18 @@ class SharingComponentInstanceBuilder @Inject constructor(
                 key = ImageGeneratorConstants.ImageGeneratorKeys.VOUCHER_NOMINAL_SYMBOL,
                 value = symbol
             )
+            val formattedDiscountType = when(param.benefitType) {
+                BenefitType.NOMINAL -> ImageGeneratorConstants.CashbackType.NOMINAL
+                BenefitType.PERCENTAGE -> ImageGeneratorConstants.CashbackType.PERCENTAGE
+            }
+            addImageGeneratorData(
+                key = ImageGeneratorConstants.ImageGeneratorKeys.VOUCHER_DISCOUNT_TYPE,
+                value = formattedDiscountType
+            )
+            addImageGeneratorData(
+                key = ImageGeneratorConstants.ImageGeneratorKeys.VOUCHER_DISCOUNT_PERCENTAGE,
+                value = param.discountPercentage.toString()
+            )
             addImageGeneratorData(
                 key = ImageGeneratorConstants.ImageGeneratorKeys.SHOP_LOGO_MVC,
                 value = param.shopLogo
@@ -158,15 +173,16 @@ class SharingComponentInstanceBuilder @Inject constructor(
                 value = param.voucherCode
             )
 
-            val startTime = param.voucherStartTime.formatTo(DateConstant.DATE_YEAR_PRECISION)
-            val endTime = param.voucherEndTime.formatTo(DateConstant.DATE_YEAR_PRECISION)
+            val startDate = param.voucherStartDate.formatTo(DateConstant.DATE_YEAR_PRECISION)
+            val endDate = param.voucherEndDate.formatTo(DateConstant.DATE_YEAR_PRECISION)
+
             addImageGeneratorData(
                 key = ImageGeneratorConstants.ImageGeneratorKeys.VOUCHER_START_TIME,
-                value = startTime
+                value = startDate
             )
             addImageGeneratorData(
                 key = ImageGeneratorConstants.ImageGeneratorKeys.VOUCHER_FINISH_TIME,
-                value = endTime
+                value = endDate
             )
             addImageGeneratorData(
                 key = ImageGeneratorConstants.ImageGeneratorKeys.PRODUCT_COUNT,

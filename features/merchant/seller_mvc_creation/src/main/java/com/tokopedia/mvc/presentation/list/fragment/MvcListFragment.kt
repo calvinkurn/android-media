@@ -27,7 +27,10 @@ import com.tokopedia.mvc.databinding.SmvcFragmentMvcListBinding
 import com.tokopedia.mvc.databinding.SmvcFragmentMvcListFooterBinding
 import com.tokopedia.mvc.di.component.DaggerMerchantVoucherCreationComponent
 import com.tokopedia.mvc.domain.entity.Voucher
+import com.tokopedia.mvc.domain.entity.VoucherConfiguration
 import com.tokopedia.mvc.domain.entity.VoucherCreationQuota
+import com.tokopedia.mvc.domain.entity.enums.BenefitType
+import com.tokopedia.mvc.domain.entity.enums.PromoType
 import com.tokopedia.mvc.domain.entity.enums.VoucherStatus
 import com.tokopedia.mvc.presentation.bottomsheet.EduCenterBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.FilterVoucherBottomSheet
@@ -36,6 +39,7 @@ import com.tokopedia.mvc.presentation.bottomsheet.MoreMenuVoucherBottomSheet
 import com.tokopedia.mvc.presentation.list.adapter.VoucherAdapterListener
 import com.tokopedia.mvc.presentation.list.adapter.VouchersAdapter
 import com.tokopedia.mvc.presentation.list.viewmodel.MvcListViewModel
+import com.tokopedia.mvc.presentation.product.add.AddProductActivity
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.SearchBarUnify
@@ -223,7 +227,24 @@ class MvcListFragment: BaseDaggerFragment(), HasPaginatedList by HasPaginatedLis
     }
 
     private fun redirectToCreateVoucherPage() {
-        //TODO: create redirection here
+        //For sample only. Will redirect to add product page.
+        val voucherConfiguration = VoucherConfiguration(
+            benefitIdr = 25_000,
+            benefitMax = 500_000,
+            benefitPercent = 0,
+            benefitType = BenefitType.NOMINAL,
+            promoType = PromoType.FREE_SHIPPING,
+            isVoucherProduct = true,
+            minPurchase = 50_000,
+            productIds = emptyList()
+        )
+
+        val intent = AddProductActivity.buildCreateModeIntent(
+            activity ?: return,
+            voucherConfiguration
+        )
+
+        startActivityForResult(intent, 100)
     }
 
     private fun redirectToQuotaVoucherPage() {

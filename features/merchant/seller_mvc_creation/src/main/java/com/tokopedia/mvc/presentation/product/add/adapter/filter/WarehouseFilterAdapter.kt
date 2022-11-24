@@ -1,4 +1,4 @@
-package com.tokopedia.mvc.presentation.product.add.adapter
+package com.tokopedia.mvc.presentation.product.add.adapter.filter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -7,9 +7,9 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.campaign.components.bottomsheet.selection.entity.SingleSelectionItem
 import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.mvc.databinding.SmvcItemProductSortBinding
+import com.tokopedia.mvc.databinding.SmvcItemFilterBinding
 
-class ProductSortAdapter : RecyclerView.Adapter<ProductSortAdapter.ViewHolder>() {
+class WarehouseFilterAdapter : RecyclerView.Adapter<WarehouseFilterAdapter.ViewHolder>() {
 
     private var onItemClicked: (SingleSelectionItem) -> Unit = {}
 
@@ -32,7 +32,7 @@ class ProductSortAdapter : RecyclerView.Adapter<ProductSortAdapter.ViewHolder>()
     private val differ = AsyncListDiffer(this, differCallback)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val binding = SmvcItemProductSortBinding.inflate(
+        val binding = SmvcItemFilterBinding.inflate(
             LayoutInflater.from(parent.context),
             parent,
             false
@@ -54,12 +54,12 @@ class ProductSortAdapter : RecyclerView.Adapter<ProductSortAdapter.ViewHolder>()
         this.onItemClicked = onItemClicked
     }
 
-    inner class ViewHolder(private val binding: SmvcItemProductSortBinding) :
+    inner class ViewHolder(private val binding: SmvcItemFilterBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: SingleSelectionItem) {
-            binding.tpgSortName.text = item.name
-            binding.iconCheckmark.isVisible = item.isSelected
+            binding.tpgFilterName.text = item.name
+            binding.iconCheckmarkState.isVisible = item.isSelected
             binding.root.setOnClickListener { onItemClicked(item) }
         }
     }
@@ -72,7 +72,7 @@ class ProductSortAdapter : RecyclerView.Adapter<ProductSortAdapter.ViewHolder>()
         val current = snapshot()
 
         val newList = current.map {  item ->
-            if (item.name == newItem.name) {
+            if (item.id == newItem.id) {
                 item.copy(isSelected = true)
             } else {
                 item.copy(isSelected = false)
@@ -81,6 +81,7 @@ class ProductSortAdapter : RecyclerView.Adapter<ProductSortAdapter.ViewHolder>()
 
         submit(newList)
     }
+
 
     private fun snapshot(): List<SingleSelectionItem> {
         return differ.currentList

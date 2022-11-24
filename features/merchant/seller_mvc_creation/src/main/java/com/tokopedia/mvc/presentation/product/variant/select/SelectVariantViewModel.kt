@@ -1,4 +1,4 @@
-package com.tokopedia.mvc.presentation.product.variant
+package com.tokopedia.mvc.presentation.product.variant.select
 
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
@@ -7,9 +7,9 @@ import com.tokopedia.mvc.domain.entity.Product
 import com.tokopedia.mvc.domain.entity.Variant
 import com.tokopedia.mvc.domain.entity.VariantResult
 import com.tokopedia.mvc.domain.usecase.ProductV3UseCase
-import com.tokopedia.mvc.presentation.product.variant.uimodel.SelectVariantEffect
-import com.tokopedia.mvc.presentation.product.variant.uimodel.SelectVariantEvent
-import com.tokopedia.mvc.presentation.product.variant.uimodel.SelectVariantUiState
+import com.tokopedia.mvc.presentation.product.variant.select.uimodel.SelectVariantEffect
+import com.tokopedia.mvc.presentation.product.variant.select.uimodel.SelectVariantEvent
+import com.tokopedia.mvc.presentation.product.variant.select.uimodel.SelectVariantUiState
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -37,7 +37,7 @@ class SelectVariantViewModel @Inject constructor(
         when(event) {
             is SelectVariantEvent.FetchProductVariants -> {
                 _uiState.update { it.copy(isLoading = true, parentProductId = event.selectedParentProduct.id) }
-                getVariantDetail(event.selectedParentProduct)
+                getAllVariantsByParentProductId(event.selectedParentProduct)
             }
             is SelectVariantEvent.AddProductToSelection -> handleAddProductToSelection(event.variantProductId)
             SelectVariantEvent.DisableSelectAllCheckbox -> handleUncheckAllProduct()
@@ -50,11 +50,11 @@ class SelectVariantViewModel @Inject constructor(
     }
 
 
-    private fun getVariantDetail(selectedParentProduct : Product) {
+    private fun getAllVariantsByParentProductId(selectedParentProduct : Product) {
         launchCatchError(
             dispatchers.io,
             block = {
-                val params = ProductV3UseCase.Param(selectedParentProduct.id, 0)
+                val params = ProductV3UseCase.Param(selectedParentProduct.id)
                 val response = productV3UseCase.execute(params)
 
                 val modifiedVariantNames = findUpdatedVariantNames(response)
@@ -64,7 +64,10 @@ class SelectVariantViewModel @Inject constructor(
                     variant.copy(isEligible = isEligible, reason = reason)
                 }
 
-                val updatedVariants = validatedVariants.map {
+                val originalVariantIds = selectedParentProduct.originalVariants.map { it.variantProductId }
+                val eligibleVariantsOnly = validatedVariants.filter { it.variantId in originalVariantIds }
+
+                val updatedVariants = eligibleVariantsOnly.map {
                     if (it.variantId in selectedParentProduct.selectedVariantsIds && it.isEligible) {
                         it.copy(isSelected = true)
                     } else {
@@ -72,22 +75,21 @@ class SelectVariantViewModel @Inject constructor(
                     }
                 }
 
-                val selectedVariantIds = updatedVariants.filter { it.isSelected }.map { it.variantId }.toSet()
-
                 _uiState.update {
                     it.copy(
                         isLoading = false,
                         parentProductName = response.parentProductName,
-                        parentProductStock = response.parentProductStock,
+                        parentProductStock = selectedParentProduct.stock,
                         parentProductPrice = response.parentProductPrice,
                         parentProductSoldCount = response.parentProductSoldCount,
                         parentProductImageUrl = response.parentProductImageUrl,
                         variants = updatedVariants,
-                        selectedVariantIds = selectedVariantIds
+                        selectedVariantIds = updatedVariants.selectedVariantsOnly()
                     )
                 }
             },
             onError = { error ->
+                _uiEffect.tryEmit(SelectVariantEffect.ShowError(error))
                 _uiState.update { it.copy(isLoading = false, error = error) }
             }
         )
@@ -111,13 +113,12 @@ class SelectVariantViewModel @Inject constructor(
 
     private fun handleCheckAllProduct() = launch(dispatchers.computation) {
         val variants = currentState.variants.map { it.copy(isSelected = it.isEligible) }
-        val selectedVariantIds = variants.filter { it.isSelected }.map { it.variantId }.toSet()
 
         _uiState.update {
             it.copy(
                 isSelectAllActive = true,
                 variants = variants,
-                selectedVariantIds = selectedVariantIds
+                selectedVariantIds = variants.selectedVariantsOnly()
             )
         }
     }
@@ -143,8 +144,7 @@ class SelectVariantViewModel @Inject constructor(
                     variant
                 }
             }
-            val selectedVariants = modifiedVariants.filter { it.isSelected }.map { it.variantId }.toSet()
-            _uiState.update { it.copy(variants = modifiedVariants, selectedVariantIds = selectedVariants) }
+            _uiState.update { it.copy(variants = modifiedVariants, selectedVariantIds = modifiedVariants.selectedVariantsOnly()) }
         }
     }
 
@@ -158,9 +158,11 @@ class SelectVariantViewModel @Inject constructor(
                     variant
                 }
             }
-            val selectedVariants = modifiedVariants.filter { it.isSelected }.map { it.variantId }.toSet()
-            _uiState.update { it.copy(variants = modifiedVariants, selectedVariantIds = selectedVariants) }
+            _uiState.update { it.copy(variants = modifiedVariants, selectedVariantIds = modifiedVariants.selectedVariantsOnly()) }
         }
     }
 
+    private fun List<Variant>.selectedVariantsOnly(): Set<Long> {
+        return filter { it.isSelected }.map { it.variantId }.toSet()
+    }
 }

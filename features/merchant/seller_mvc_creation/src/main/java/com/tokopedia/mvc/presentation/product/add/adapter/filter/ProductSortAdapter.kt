@@ -1,29 +1,29 @@
-package com.tokopedia.mvc.presentation.product.add.adapter
+package com.tokopedia.mvc.presentation.product.add.adapter.filter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.AsyncListDiffer
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.campaign.components.bottomsheet.selection.entity.MultipleSelectionItem
+import com.tokopedia.campaign.components.bottomsheet.selection.entity.SingleSelectionItem
 import com.tokopedia.kotlin.extensions.view.isVisible
-import com.tokopedia.mvc.databinding.SmvcItemShowcaseBinding
+import com.tokopedia.mvc.databinding.SmvcItemFilterBinding
 
-class ShopShowcaseFilterAdapter : RecyclerView.Adapter<ShopShowcaseFilterAdapter.ViewHolder>() {
+class ProductSortAdapter : RecyclerView.Adapter<ProductSortAdapter.ViewHolder>() {
 
-    private var onItemClicked: (MultipleSelectionItem) -> Unit = {}
+    private var onItemClicked: (SingleSelectionItem) -> Unit = {}
 
-    private val differCallback = object : DiffUtil.ItemCallback<MultipleSelectionItem>() {
+    private val differCallback = object : DiffUtil.ItemCallback<SingleSelectionItem>() {
         override fun areItemsTheSame(
-            oldItem: MultipleSelectionItem,
-            newItem: MultipleSelectionItem
+            oldItem: SingleSelectionItem,
+            newItem: SingleSelectionItem
         ): Boolean {
             return oldItem.id == newItem.id
         }
 
         override fun areContentsTheSame(
-            oldItem: MultipleSelectionItem,
-            newItem: MultipleSelectionItem
+            oldItem: SingleSelectionItem,
+            newItem: SingleSelectionItem
         ): Boolean {
             return oldItem == newItem
         }
@@ -32,7 +32,7 @@ class ShopShowcaseFilterAdapter : RecyclerView.Adapter<ShopShowcaseFilterAdapter
     private val differ = AsyncListDiffer(this, differCallback)
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
-        val binding = SmvcItemShowcaseBinding.inflate(
+        val binding = SmvcItemFilterBinding.inflate(
             LayoutInflater.from(parent.context),
             parent,
             false
@@ -50,44 +50,39 @@ class ShopShowcaseFilterAdapter : RecyclerView.Adapter<ShopShowcaseFilterAdapter
     }
 
 
-    fun setOnItemClicked(onItemClicked: (MultipleSelectionItem) -> Unit) {
+    fun setOnItemClicked(onItemClicked: (SingleSelectionItem) -> Unit) {
         this.onItemClicked = onItemClicked
     }
 
-    inner class ViewHolder(private val binding: SmvcItemShowcaseBinding) :
+    inner class ViewHolder(private val binding: SmvcItemFilterBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(item: MultipleSelectionItem) {
-            binding.tpgShowcaseName.text = item.name
-            binding.iconCheckmarkShowcase.isVisible = item.isSelected
+        fun bind(item: SingleSelectionItem) {
+            binding.tpgFilterName.text = item.name
+            binding.iconCheckmarkState.isVisible = item.isSelected
             binding.root.setOnClickListener { onItemClicked(item) }
         }
     }
 
-    fun submit(newItems: List<MultipleSelectionItem>) {
+    fun submit(newItems: List<SingleSelectionItem>) {
         differ.submitList(newItems)
     }
 
-    fun markAsSelected(newItem : MultipleSelectionItem) {
+    fun markAsSelected(newItem : SingleSelectionItem) {
         val current = snapshot()
 
         val newList = current.map {  item ->
-            if (item.id == newItem.id) {
-                item.copy(isSelected = !item.isSelected)
+            if (item.name == newItem.name) {
+                item.copy(isSelected = true)
             } else {
-                item
+                item.copy(isSelected = false)
             }
         }
 
         submit(newList)
     }
 
-    fun getSelectedItems(): List<MultipleSelectionItem> {
-        return snapshot().filter { it.isSelected }
-    }
-
-    private fun snapshot(): List<MultipleSelectionItem> {
+    private fun snapshot(): List<SingleSelectionItem> {
         return differ.currentList
     }
 }
-

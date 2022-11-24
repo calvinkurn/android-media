@@ -4,22 +4,21 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.kotlin.extensions.view.isZero
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.mvc.domain.entity.Product
 import com.tokopedia.mvc.domain.entity.ProductCategoryOption
 import com.tokopedia.mvc.domain.entity.ProductSortOptions
+import com.tokopedia.mvc.domain.entity.SelectedProduct
 import com.tokopedia.mvc.domain.entity.ShopShowcase
+import com.tokopedia.mvc.domain.entity.VoucherConfiguration
 import com.tokopedia.mvc.domain.entity.VoucherValidationResult
 import com.tokopedia.mvc.domain.entity.Warehouse
-import com.tokopedia.mvc.domain.entity.enums.BenefitType
-import com.tokopedia.mvc.domain.entity.enums.PromoType
+import com.tokopedia.mvc.domain.entity.enums.PageMode
 import com.tokopedia.mvc.domain.entity.enums.VoucherAction
 import com.tokopedia.mvc.domain.entity.enums.WarehouseType
 import com.tokopedia.mvc.domain.usecase.GetInitiateVoucherPageUseCase
 import com.tokopedia.mvc.domain.usecase.GetShopWarehouseLocationUseCase
 import com.tokopedia.mvc.domain.usecase.ProductListMetaUseCase
 import com.tokopedia.mvc.domain.usecase.ProductListUseCase
-import com.tokopedia.mvc.domain.usecase.ShopBasicDataUseCase
 import com.tokopedia.mvc.domain.usecase.ShopShowcasesByShopIDUseCase
 import com.tokopedia.mvc.domain.usecase.VoucherValidationPartialUseCase
 import com.tokopedia.mvc.presentation.product.add.uimodel.AddProductEffect
@@ -43,8 +42,7 @@ class AddProductViewModel @Inject constructor(
     private val getProductListMetaUseCase: ProductListMetaUseCase,
     private val getProductsUseCase: ProductListUseCase,
     private val getInitiateVoucherPageUseCase: GetInitiateVoucherPageUseCase,
-    private val voucherValidationPartialUseCase: VoucherValidationPartialUseCase,
-    private val shopBasicDataUseCase: ShopBasicDataUseCase
+    private val voucherValidationPartialUseCase: VoucherValidationPartialUseCase
 ) : BaseViewModel(dispatchers.main) {
 
     private val _uiState = MutableStateFlow(AddProductUiState())
@@ -59,7 +57,8 @@ class AddProductViewModel @Inject constructor(
     fun processEvent(event: AddProductEvent) {
         when(event) {
             is AddProductEvent.FetchRequiredData -> {
-                getProductsAndProductsMetadata(event.action, event.promoType)
+                _uiState.update { it.copy(voucherConfiguration = event.voucherConfiguration) }
+                getProductsAndProductsMetadata(event.pageMode, event.voucherConfiguration)
                 getShopShowcases()
             }
             is AddProductEvent.LoadPage -> handleLoadPage(event.page)
@@ -67,15 +66,17 @@ class AddProductViewModel @Inject constructor(
             AddProductEvent.ClearFilter -> handleClearFilter()
             AddProductEvent.ClearSearchBar -> handleClearSearchbar()
             AddProductEvent.ConfirmAddProduct -> handleConfirmAddProduct()
+            AddProductEvent.AddNewProducts -> handleAddNewProducts()
             AddProductEvent.DisableSelectAllCheckbox -> handleUncheckAllProduct()
             AddProductEvent.EnableSelectAllCheckbox -> handleCheckAllProduct()
             is AddProductEvent.RemoveProductFromSelection -> handleRemoveProductFromSelection(event.productId)
             AddProductEvent.TapCategoryFilter -> _uiEffect.tryEmit(AddProductEffect.ShowProductCategoryBottomSheet(currentState.categoryOptions, currentState.selectedCategories))
-            AddProductEvent.TapLocationFilter -> _uiEffect.tryEmit(AddProductEffect.ShowWarehouseLocationBottomSheet(currentState.warehouses, currentState.selectedWarehouseLocation))
-            AddProductEvent.TapShowCaseFilter -> _uiEffect.tryEmit(AddProductEffect.ShowShowcasesBottomSheet(currentState.shopShowcases, currentState.selectedShopShowcase))
+            AddProductEvent.TapWarehouseLocationFilter -> _uiEffect.tryEmit(AddProductEffect.ShowWarehouseLocationBottomSheet(currentState.warehouses, currentState.selectedWarehouseLocation))
+            AddProductEvent.TapShowCaseFilter -> _uiEffect.tryEmit(AddProductEffect.ShowShowcasesBottomSheet(currentState.shopShowcases, currentState.selectedShopShowcase.map { it.id }))
             AddProductEvent.TapSortFilter -> _uiEffect.tryEmit(AddProductEffect.ShowSortBottomSheet(currentState.sortOptions, currentState.selectedSort))
             is AddProductEvent.ApplyCategoryFilter -> handleApplyCategoryFilter(event.selectedCategories)
             is AddProductEvent.ApplyWarehouseLocationFilter -> handleApplyWarehouseLocationFilter(event.selectedWarehouseLocation)
+            is AddProductEvent.ConfirmChangeWarehouseLocationFilter -> handleConfirmChangeWarehouseLocationFilter(event.newWarehouseLocation)
             is AddProductEvent.ApplyShowCaseFilter -> handleApplyShopShowcasesFilter(event.selectedShowCases)
             is AddProductEvent.ApplySortFilter -> handleApplySortFilter(event.selectedSort)
             is AddProductEvent.SearchProduct -> handleSearchProduct(event.searchKeyword)
@@ -84,14 +85,16 @@ class AddProductViewModel @Inject constructor(
         }
     }
 
-    private fun getProductsAndProductsMetadata(action: VoucherAction, promoType: PromoType, ) {
+    private fun getProductsAndProductsMetadata(pageMode: PageMode, voucherConfiguration: VoucherConfiguration) {
         launchCatchError(
             dispatchers.io,
             block = {
+                val action = if (pageMode == PageMode.CREATE) VoucherAction.CREATE else VoucherAction.UPDATE
+
                 val warehouseParam = GetShopWarehouseLocationUseCase.Param()
                 val sellerWarehousesDeferred = async { getShopWarehouseLocationUseCase.execute(warehouseParam) }
 
-                val metadataParam = GetInitiateVoucherPageUseCase.Param(action, promoType, isVoucherProduct = true)
+                val metadataParam = GetInitiateVoucherPageUseCase.Param(action, voucherConfiguration.promoType, isVoucherProduct = true)
                 val metadataDeferred = async { getInitiateVoucherPageUseCase.execute(metadataParam) }
 
                 val sellerWarehouses = sellerWarehousesDeferred.await()
@@ -104,8 +107,9 @@ class AddProductViewModel @Inject constructor(
 
                 _uiState.update {
                     it.copy(
-                        voucherCreationMetadata = metadata,
+                        maxProductSelection = metadata.maxProduct,
                         warehouses = sellerWarehouses,
+                        defaultWarehouseLocationId = defaultWarehouse.warehouseId,
                         selectedWarehouseLocation = defaultWarehouse,
                         sortOptions = productListMeta.sortOptions,
                         categoryOptions = productListMeta.categoryOptions,
@@ -116,6 +120,7 @@ class AddProductViewModel @Inject constructor(
 
             },
             onError = { error ->
+                _uiEffect.tryEmit(AddProductEffect.ShowError(error))
                 _uiState.update { it.copy(error = error) }
             }
         )
@@ -140,7 +145,9 @@ class AddProductViewModel @Inject constructor(
                 val nonPreorderParentProducts = productsResponse.products.filter { it.preorder.durationDays.isZero() }
                 val currentPageParentProductsIds = nonPreorderParentProducts.map { product -> product.id }
 
-                val validatedParentProducts = validateProducts(currentPageParentProductsIds)
+                val voucherConfiguration = currentState.voucherConfiguration
+
+                val validatedParentProducts = validateProducts(voucherConfiguration, currentPageParentProductsIds)
                 val updatedParentProducts = combineParentProductDataWithVariant(
                     nonPreorderParentProducts,
                     currentState.selectedProductsIds,
@@ -148,7 +155,16 @@ class AddProductViewModel @Inject constructor(
                 )
 
                 val allParentProducts = currentState.products + updatedParentProducts
-                val selectedParentProductIds = currentState.selectedProductsIds + allParentProducts.filter { it.isSelected }.map { it.id }
+                val selectedParentProductIds = currentState.selectedProductsIds + allParentProducts.selectedProductsOnly()
+
+                val isOnSearchMode = currentState.searchKeyword.isNotEmpty()
+                val selectedProductCount = if (isOnSearchMode) {
+                    currentPageParentProductsIds.count { it in selectedParentProductIds }
+                } else {
+                    selectedParentProductIds.count()
+                }
+
+                val isSelectAllCheckboxActive = selectedProductCount == productsResponse.total || currentState.isSelectAllCheckboxActive
 
                 _uiEffect.emit(AddProductEffect.LoadNextPageSuccess(updatedParentProducts, allParentProducts))
                 _uiState.update {
@@ -156,27 +172,33 @@ class AddProductViewModel @Inject constructor(
                         isLoading = false,
                         products = allParentProducts,
                         selectedProductsIds = selectedParentProductIds,
+                        selectedProductCount = selectedProductCount,
+                        isSelectAllCheckboxActive = isSelectAllCheckboxActive,
                         totalProducts = productsResponse.total
                     )
                 }
 
             },
             onError = { error ->
+                _uiEffect.tryEmit(AddProductEffect.ShowError(error))
                 _uiState.update { it.copy(error = error) }
             }
         )
 
     }
 
-    private suspend fun validateProducts(currentPageParentProductIds: List<Long>): List<VoucherValidationResult.ValidationProduct> {
+    private suspend fun validateProducts(
+        voucherConfiguration: VoucherConfiguration,
+        currentPageParentProductIds: List<Long>
+    ): List<VoucherValidationResult.ValidationProduct> {
         val voucherValidationParam = VoucherValidationPartialUseCase.Param(
-            benefitIdr = 25_000,
-            benefitMax = 500_000,
-            benefitPercent = 0,
-            BenefitType.NOMINAL,
-            PromoType.FREE_SHIPPING,
-            isLockToProduct = true,
-            minPurchase = 50_000,
+            benefitIdr = voucherConfiguration.benefitIdr,
+            benefitMax = voucherConfiguration.benefitMax,
+            benefitPercent = voucherConfiguration.benefitPercent,
+            benefitType = voucherConfiguration.benefitType,
+            promoType = voucherConfiguration.promoType,
+            isVoucherProduct = voucherConfiguration.isVoucherProduct,
+            minPurchase = voucherConfiguration.minPurchase,
             productIds = currentPageParentProductIds
         )
 
@@ -191,8 +213,8 @@ class AddProductViewModel @Inject constructor(
     ): List<Product> {
 
         val nextSelectedProductSize = selectedProductIds.size + AddProductFragment.PAGE_SIZE
-        val isBelowMaximumProductSelection = nextSelectedProductSize <= currentState.voucherCreationMetadata?.maxProduct.orZero()
-        val shouldAutomaticallyAddToProductSelection = currentState.isSelectAllActive && isBelowMaximumProductSelection
+        val isBelowMaximumProductSelection = nextSelectedProductSize <= currentState.maxProductSelection
+        val shouldAutomaticallyAddToProductSelection = currentState.isSelectAllCheckboxActive && isBelowMaximumProductSelection
 
         val formattedProducts = currentPageParentProduct.map { product ->
 
@@ -210,14 +232,14 @@ class AddProductViewModel @Inject constructor(
 
             val isProductAlreadyOnSelection = product.id in selectedProductIds
             val isSelected = isProductAlreadyOnSelection || (shouldAutomaticallyAddToProductSelection && isEligible)
-
+            val enableCheckbox = (isBelowMaximumProductSelection && isEligible) || isSelected
             product.copy(
                 isEligible = isEligible,
                 ineligibleReason = matchedProduct?.reason.orEmpty(),
                 originalVariants = variants.orEmpty(),
                 selectedVariantsIds = variants?.map { it.variantProductId }?.toSet().orEmpty(),
                 isSelected = isSelected,
-                enableCheckbox = isBelowMaximumProductSelection && isEligible
+                enableCheckbox = enableCheckbox
             )
         }
 
@@ -241,52 +263,63 @@ class AddProductViewModel @Inject constructor(
         val isOnSearchMode = currentState.searchKeyword.isNotEmpty()
         val currentlyDisplayedProductIds = currentState.products.map { it.id }
 
-        val maxProductSelection = currentState.voucherCreationMetadata?.maxProduct.orZero()
-        val selectedProducts = currentState.products.mapIndexed { index, product ->
-            if (index < maxProductSelection && product.isEligible) {
+        val maxProductSelection = currentState.maxProductSelection
 
-                val isProductDisplayedOnSearchResult = product.id in currentlyDisplayedProductIds
-                val isSelected = if (isOnSearchMode) {
-                    //If is on search product mode. Only product from search result should be selected
-                    isProductDisplayedOnSearchResult
-                } else {
-                    //If we're not in search product mode. Select all loaded products
-                    true
+        val modifiedProducts = currentState.products.mapIndexed { index, product ->
+            val isProductOnAutoSelectRange = index < maxProductSelection
+
+            when {
+                !product.isEligible -> {
+                    product.copy(isSelected = false, enableCheckbox = false)
                 }
+                isProductOnAutoSelectRange -> {
 
-                //To make sure only eligible variant products will be selected
-                val eligibleVariantsOnly = product.originalVariants.filter { it.isEligible }.map { it.variantProductId }.toSet()
+                    val isProductDisplayedOnSearchResult = product.id in currentlyDisplayedProductIds
+                    val isSelected = if (isOnSearchMode) {
+                        //If is on search product mode. Only product from search result should be selected
+                        isProductDisplayedOnSearchResult
+                    } else {
+                        //If we're not in search product mode. Select all loaded products
+                        true
+                    }
 
-                product.copy(isSelected = isSelected, enableCheckbox = true, selectedVariantsIds = eligibleVariantsOnly)
-            } else {
-                product
+                    //To make sure only eligible variant products will be selected
+                    val eligibleVariantsOnly = product.originalVariants.eligibleVariantOnly()
+
+                    product.copy(isSelected = isSelected, enableCheckbox = true, selectedVariantsIds = eligibleVariantsOnly)
+                }
+                !isProductOnAutoSelectRange -> {
+                    product.copy(isSelected = false, enableCheckbox = false)
+                }
+                else -> product
             }
         }
 
-        val selectedProductIds = selectedProducts.filter { it.isSelected }.map { it.id }.toSet()
-
         _uiState.update {
             it.copy(
-                isSelectAllActive = true,
-                selectedProductsIds = selectedProductIds,
-                products = selectedProducts
+                isSelectAllCheckboxActive = true,
+                selectedProductsIds = modifiedProducts.selectedProductsOnly(),
+                selectedProductCount = modifiedProducts.selectedProductsOnly().count(),
+                products = modifiedProducts
             )
         }
     }
+
 
     private fun handleUncheckAllProduct() = launch(dispatchers.computation) {
         val disabledProducts = currentState.products.map { it.copy(isSelected = false, enableCheckbox = true) }
         _uiState.update {
             it.copy(
-                isSelectAllActive = false,
+                isSelectAllCheckboxActive = false,
                 selectedProductsIds = emptySet(),
+                selectedProductCount = 0,
                 products = disabledProducts
             )
         }
     }
 
     private fun handleAddProductToSelection(productIdToAdd: Long) = launch(dispatchers.computation) {
-        val maxProductSelection = currentState.voucherCreationMetadata?.maxProduct.orZero()
+        val maxProductSelection = currentState.maxProductSelection
         val newSelectedProductCountAfterSelection = currentState.selectedProductsIds.size.inc()
         val isReachedMaxSelection = newSelectedProductCountAfterSelection == maxProductSelection
 
@@ -298,12 +331,16 @@ class AddProductViewModel @Inject constructor(
             updateProductAsSelected(productIdToAdd, currentState.products)
         }
 
-        val updatedProductIds = updatedProducts.filter { it.isSelected }.map { it.id }.toSet()
+        val updatedSelectedProductIds = currentState.selectedProductsIds + setOf(productIdToAdd)
+
+        val allParentProductSelected = updatedSelectedProductIds.count() == currentState.totalProducts
 
         _uiState.update {
             it.copy(
-                selectedProductsIds = updatedProductIds,
-                products = updatedProducts
+                selectedProductsIds = updatedSelectedProductIds,
+                selectedProductCount = updatedSelectedProductIds.count(),
+                products = updatedProducts,
+                isSelectAllCheckboxActive = allParentProductSelected
             )
         }
     }
@@ -358,8 +395,9 @@ class AddProductViewModel @Inject constructor(
 
         _uiState.update {
             it.copy(
-                isSelectAllActive = false,
+                isSelectAllCheckboxActive = false,
                 selectedProductsIds = updatedSelectedProducts,
+                selectedProductCount = updatedSelectedProducts.count(),
                 products = updatedProducts
             )
         }
@@ -372,7 +410,7 @@ class AddProductViewModel @Inject constructor(
                 isLoading = true,
                 searchKeyword = "",
                 page = NumberConstant.FIRST_PAGE,
-                isSelectAllActive = false,
+                isSelectAllCheckboxActive = false,
                 products = emptyList()
             )
         }
@@ -386,8 +424,9 @@ class AddProductViewModel @Inject constructor(
                 searchKeyword = currentState.searchKeyword,
                 page = NumberConstant.FIRST_PAGE,
                 products = emptyList(),
+                isSelectAllCheckboxActive = false,
                 selectedCategories = emptyList(),
-                selectedWarehouseLocation = Warehouse(0, "", WarehouseType.DEFAULT_WAREHOUSE_LOCATION),
+                selectedWarehouseLocation = Warehouse(currentState.defaultWarehouseLocationId, "", WarehouseType.DEFAULT_WAREHOUSE_LOCATION),
                 selectedShopShowcase = emptyList(),
                 selectedSort = ProductSortOptions("DEFAULT", "", "DESC")
             )
@@ -401,6 +440,7 @@ class AddProductViewModel @Inject constructor(
             it.copy(
                 isLoading = true,
                 page = NumberConstant.FIRST_PAGE,
+                isSelectAllCheckboxActive = false,
                 products = emptyList(),
                 searchKeyword = searchKeyword
             )
@@ -414,6 +454,7 @@ class AddProductViewModel @Inject constructor(
             it.copy(
                 isLoading = true,
                 page = NumberConstant.FIRST_PAGE,
+                isSelectAllCheckboxActive = false,
                 products = emptyList(),
                 selectedSort = selectedSort
             )
@@ -423,12 +464,28 @@ class AddProductViewModel @Inject constructor(
     }
 
     private fun handleApplyWarehouseLocationFilter(selectedWarehouse: Warehouse) {
+        val currentWarehouseId = currentState.selectedWarehouseLocation.warehouseId
+        val newWarehouseId = selectedWarehouse.warehouseId
+        val isWarehouseChanged = currentWarehouseId != newWarehouseId
+
+        if (isWarehouseChanged) {
+            _uiEffect.tryEmit(AddProductEffect.ShowChangeWarehouseDialogConfirmation(selectedWarehouse))
+        } else {
+            handleConfirmChangeWarehouseLocationFilter(selectedWarehouse)
+        }
+    }
+
+
+    private fun handleConfirmChangeWarehouseLocationFilter(newWarehouseLocation: Warehouse) {
         _uiState.update {
             it.copy(
                 isLoading = true,
                 page = NumberConstant.FIRST_PAGE,
                 products = emptyList(),
-                selectedWarehouseLocation = selectedWarehouse
+                isSelectAllCheckboxActive = false,
+                selectedProductsIds = emptySet(),
+                selectedProductCount = 0,
+                selectedWarehouseLocation = newWarehouseLocation
             )
         }
 
@@ -440,6 +497,7 @@ class AddProductViewModel @Inject constructor(
             it.copy(
                 isLoading = true,
                 page = NumberConstant.FIRST_PAGE,
+                isSelectAllCheckboxActive = false,
                 products = emptyList(),
                 selectedShopShowcase = selectedShopShowcases
             )
@@ -453,6 +511,7 @@ class AddProductViewModel @Inject constructor(
             it.copy(
                 isLoading = true,
                 page = NumberConstant.FIRST_PAGE,
+                isSelectAllCheckboxActive = false,
                 products = emptyList(),
                 selectedCategories = selectedCategories
             )
@@ -490,6 +549,7 @@ class AddProductViewModel @Inject constructor(
                 _uiState.update { it.copy(shopShowcases = sellerCreatedShowcasesOnly) }
             },
             onError = { error ->
+                _uiEffect.tryEmit(AddProductEffect.ShowError(error))
                 _uiState.update { it.copy(error = error) }
             }
         )
@@ -497,30 +557,50 @@ class AddProductViewModel @Inject constructor(
 
 
     private fun handleConfirmAddProduct() {
-        launchCatchError(
-            dispatchers.io,
-            block = {
-                val response = shopBasicDataUseCase.execute()
+        launch(dispatchers.computation) {
+            val selectedProducts = currentState.products
+                .filter { it.isSelected }
+                .map { product ->
+                    val parentProductId = product.id
+                    val variantProductIds = product.selectedVariantsIds.toList()
+                    SelectedProduct(parentProductId, variantProductIds)
+                }
 
-                val selectedProducts = currentState.products.filter { it.isSelected }
-                val topSellingProductImageUrls = selectedProducts
-                    .filter { it.isSelected }
-                    .sortedByDescending { it.txStats.sold }
-                    .map { it.picture }
+            val topSellingProductImageUrls = currentState.products
+                .filter { it.isSelected }
+                .sortedByDescending { it.txStats.sold }
+                .map { it.picture }
 
-                _uiEffect.tryEmit(
-                    AddProductEffect.ConfirmAddProduct(
-                        selectedProducts,
-                        topSellingProductImageUrls,
-                        response
-                    )
+
+            _uiEffect.tryEmit(
+                AddProductEffect.ProductConfirmed(
+                    selectedProducts,
+                    topSellingProductImageUrls,
+                    currentState.voucherConfiguration
                 )
-
-            },
-            onError = { error ->
-                _uiState.update { it.copy(error = error) }
-            }
-        )
+            )
+        }
     }
 
+    private fun handleAddNewProducts() {
+        launch(dispatchers.computation) {
+            val selectedProducts = currentState.products.filter { it.isSelected }
+
+            val topSellingProductImageUrls = selectedProducts
+                .sortedByDescending { it.txStats.sold }
+                .map { it.picture }
+
+
+            _uiEffect.tryEmit(AddProductEffect.AddNewProducts(selectedProducts, topSellingProductImageUrls))
+        }
+    }
+
+
+    private fun List<Product>.selectedProductsOnly(): Set<Long> {
+        return filter { it.isSelected }.map { it.id }.toSet()
+    }
+
+    private fun List<Product.Variant>.eligibleVariantOnly(): Set<Long> {
+        return filter { it.isEligible }.map { it.variantProductId }.toSet()
+    }
 }

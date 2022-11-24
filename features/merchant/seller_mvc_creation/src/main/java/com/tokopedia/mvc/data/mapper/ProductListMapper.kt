@@ -18,18 +18,17 @@ class ProductListMapper @Inject constructor() {
                 Product.Preorder(product.preorder.durationDays),
                 Product.Price(product.price.min, product.price.max),
                 product.sku,
-                Product.Stats(product.stats.countReview, product.stats.countTalk, product.stats.countView),
                 product.status,
                 product.stock,
                 Product.TxStats(product.txStats.sold),
-                product.warehouse.map { warehouse -> Product.Warehouse(warehouse.id.toLongOrZero()) },
                 product.warehouseCount,
                 selectedVariantsIds = emptySet(),
                 isEligible = true,
                 ineligibleReason = "",
                 originalVariants = emptyList(),
                 isSelected = false,
-                enableCheckbox = true
+                enableCheckbox = true,
+                isDeletable = false
             )
         }
         return ProductResult(response.productList.meta.totalHits, products)

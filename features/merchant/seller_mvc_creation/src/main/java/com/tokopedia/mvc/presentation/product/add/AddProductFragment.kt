@@ -1,5 +1,7 @@
 package com.tokopedia.mvc.presentation.product.add
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,101 +14,82 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
-import com.tokopedia.abstraction.common.utils.view.MethodChecker
-import com.tokopedia.campaign.components.adapter.CompositeAdapter
-import com.tokopedia.campaign.components.adapter.DelegateAdapterItem
-import com.tokopedia.campaign.components.adapter.LoadingDelegateAdapter
 import com.tokopedia.campaign.components.bottomsheet.selection.entity.MultipleSelectionItem
 import com.tokopedia.campaign.components.bottomsheet.selection.entity.SingleSelectionItem
 import com.tokopedia.campaign.components.bottomsheet.selection.multiple.MultipleSelectionBottomSheet
 import com.tokopedia.campaign.components.bottomsheet.selection.single.SingleSelectionBottomSheet
 import com.tokopedia.campaign.delegates.HasPaginatedList
 import com.tokopedia.campaign.delegates.HasPaginatedListImpl
-import com.tokopedia.campaign.entity.LoadingItem
-import com.tokopedia.campaign.utils.constant.DateConstant
 import com.tokopedia.campaign.utils.extension.applyPaddingToLastItem
 import com.tokopedia.campaign.utils.extension.attachDividerItemDecoration
 import com.tokopedia.campaign.utils.extension.enable
-import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.campaign.utils.extension.showToasterError
 import com.tokopedia.kotlin.extensions.view.applyUnifyBackgroundColor
-import com.tokopedia.kotlin.extensions.view.formatTo
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.linker.LinkerManager
-import com.tokopedia.linker.LinkerUtils
-import com.tokopedia.linker.interfaces.ShareCallback
-import com.tokopedia.linker.model.LinkerError
-import com.tokopedia.linker.model.LinkerShareResult
+import com.tokopedia.mvc.R
+import com.tokopedia.mvc.databinding.SmvcFragmentAddProductBinding
 import com.tokopedia.mvc.di.component.DaggerMerchantVoucherCreationComponent
+import com.tokopedia.mvc.domain.entity.Product
 import com.tokopedia.mvc.domain.entity.ProductCategoryOption
 import com.tokopedia.mvc.domain.entity.ProductSortOptions
 import com.tokopedia.mvc.domain.entity.ShopShowcase
+import com.tokopedia.mvc.domain.entity.VoucherConfiguration
 import com.tokopedia.mvc.domain.entity.Warehouse
-import com.tokopedia.mvc.domain.entity.enums.PromoType
-import com.tokopedia.mvc.domain.entity.enums.VoucherAction
+import com.tokopedia.mvc.domain.entity.enums.PageMode
 import com.tokopedia.mvc.domain.entity.enums.WarehouseType
-import com.tokopedia.mvc.presentation.product.add.adapter.CategoryFilterAdapter
-import com.tokopedia.mvc.presentation.product.add.adapter.ProductDelegateAdapter
-import com.tokopedia.mvc.presentation.product.add.adapter.ProductSortAdapter
-import com.tokopedia.mvc.presentation.product.add.adapter.ShopShowcaseFilterAdapter
-import com.tokopedia.mvc.presentation.product.add.adapter.WarehouseFilterAdapter
+import com.tokopedia.mvc.presentation.product.add.adapter.ProductAdapter
+import com.tokopedia.mvc.presentation.product.add.adapter.filter.CategoryFilterAdapter
+import com.tokopedia.mvc.presentation.product.add.adapter.filter.ProductSortAdapter
+import com.tokopedia.mvc.presentation.product.add.adapter.filter.WarehouseFilterAdapter
+import com.tokopedia.mvc.presentation.product.add.bottomsheet.ShowcaseFilterBottomSheet
 import com.tokopedia.mvc.presentation.product.add.uimodel.AddProductEffect
 import com.tokopedia.mvc.presentation.product.add.uimodel.AddProductEvent
 import com.tokopedia.mvc.presentation.product.add.uimodel.AddProductUiState
-import com.tokopedia.mvc.util.constant.NumberConstant
-import com.tokopedia.mvc.R
-import com.tokopedia.mvc.databinding.SmvcFragmentAddProductBinding
-import com.tokopedia.mvc.domain.entity.Product
-import com.tokopedia.mvc.domain.entity.ShopData
-import com.tokopedia.mvc.domain.entity.enums.BenefitType
-import com.tokopedia.mvc.presentation.product.variant.SelectVariantBottomSheet
-import com.tokopedia.mvc.presentation.share.LinkerDataGenerator
-import com.tokopedia.mvc.presentation.share.SharingComponentInstanceBuilder
+import com.tokopedia.mvc.presentation.product.list.ProductListActivity
+import com.tokopedia.mvc.presentation.product.variant.dialog.ConfirmationDialog
+import com.tokopedia.mvc.presentation.product.variant.select.SelectVariantBottomSheet
+import com.tokopedia.mvc.util.constant.BundleConstant
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.ChipsUnify
-import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
-import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
-import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.flow.collect
-import java.util.*
 import javax.inject.Inject
+
 
 class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginatedListImpl() {
 
     companion object {
         const val PAGE_SIZE = 10
         private const val ONE_FILTER_SELECTED = 1
-        private const val BUNDLE_KEY_COUPON_ID = "couponId"
 
         @JvmStatic
-        fun newInstance(couponId: Long): AddProductFragment {
+        fun newInstance(pageMode : PageMode, voucherConfiguration: VoucherConfiguration): AddProductFragment {
             return AddProductFragment().apply {
                 arguments = Bundle().apply {
-
+                    putParcelable(BundleConstant.BUNDLE_KEY_PAGE_MODE, pageMode)
+                    putParcelable(BundleConstant.BUNDLE_KEY_VOUCHER_CONFIGURATION, voucherConfiguration)
                 }
             }
         }
 
     }
 
-    private val couponId by lazy { arguments?.getLong(BUNDLE_KEY_COUPON_ID, 0) }
+    private val pageMode by lazy { arguments?.getParcelable(BundleConstant.BUNDLE_KEY_PAGE_MODE) as? PageMode }
+    private val voucherConfiguration by lazy { arguments?.getParcelable(BundleConstant.BUNDLE_KEY_VOUCHER_CONFIGURATION) as? VoucherConfiguration }
+
     private var binding by autoClearedNullable<SmvcFragmentAddProductBinding>()
     private val locationChips by lazy { SortFilterItem(getString(R.string.smvc_location)) }
     private val categoryChips by lazy { SortFilterItem(getString(R.string.smvc_category)) }
     private val showcaseChips by lazy { SortFilterItem(getString(R.string.smvc_showcase)) }
     private val sortChips by lazy { SortFilterItem(getString(R.string.smvc_sort)) }
-    private var shareComponentBottomSheet : UniversalShareBottomSheet? = null
 
     private val productAdapter by lazy {
-        CompositeAdapter.Builder()
-            .add(ProductDelegateAdapter(onItemClick, onCheckboxClick, onVariantClick))
-            .add(LoadingDelegateAdapter())
-            .build()
+        ProductAdapter(onItemClick, onCheckboxClick, onVariantClick)
     }
 
 
@@ -115,9 +98,6 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
 
     @Inject
     lateinit var userSession : UserSessionInterface
-
-    @Inject
-    lateinit var shareComponentInstanceBuilder: SharingComponentInstanceBuilder
 
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(AddProductViewModel::class.java) }
@@ -149,7 +129,9 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
         observeUiEffect()
         observeUiState()
 
-        viewModel.processEvent(AddProductEvent.FetchRequiredData(VoucherAction.CREATE, PromoType.CASHBACK))
+        viewModel.processEvent(
+            AddProductEvent.FetchRequiredData(pageMode ?: return, voucherConfiguration ?: return)
+        )
     }
 
     private fun setupView() {
@@ -162,7 +144,11 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
 
     private fun setupButton() {
         binding?.btnAddProduct?.setOnClickListener {
-            viewModel.processEvent(AddProductEvent.ConfirmAddProduct)
+            if (pageMode == PageMode.CREATE) {
+                viewModel.processEvent(AddProductEvent.ConfirmAddProduct)
+            } else {
+                viewModel.processEvent(AddProductEvent.AddNewProducts)
+            }
         }
     }
 
@@ -194,13 +180,7 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
 
 
     private fun setupPaging() {
-        val pagingConfig = HasPaginatedList.Config(
-            pageSize = PAGE_SIZE,
-            onLoadNextPage = {
-                productAdapter.addItem(LoadingItem)
-            }, onLoadNextPageFinished = {
-                productAdapter.removeItem(LoadingItem)
-            })
+        val pagingConfig = HasPaginatedList.Config(pageSize = PAGE_SIZE)
 
         binding?.recyclerView?.apply {
             layoutManager = LinearLayoutManager(activity, LinearLayoutManager.VERTICAL, false)
@@ -240,7 +220,7 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
                 showCategorySheet(effect.selectedCategories, effect.categories)
             }
             is AddProductEffect.ShowShowcasesBottomSheet -> {
-                showShopShowcasesBottomSheet(effect.selectedShowcases, effect.showcases)
+                showShopShowcasesBottomSheet(effect.selectedShowcaseIds, effect.showcases)
             }
             is AddProductEffect.ShowWarehouseLocationBottomSheet -> {
                 showWarehouseBottomSheet(effect.selectedWarehouse, effect.warehouses)
@@ -248,11 +228,32 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
             is AddProductEffect.ShowVariantBottomSheet -> {
                 displayVariantBottomSheet(effect.selectedParentProduct)
             }
-            is AddProductEffect.ConfirmAddProduct -> {
-                displayShareBottomSheet(
-                    effect.selectedParentProducts,
-                    effect.selectedParentProductImageUrls,
-                    effect.shop
+            is AddProductEffect.ProductConfirmed -> {
+                ProductListActivity.start(
+                    activity ?: return,
+                    effect.voucherConfiguration,
+                    effect.selectedProducts
+                )
+            }
+            is AddProductEffect.AddNewProducts -> {
+                returnSelectedProductsResultToProductListActivity(effect.selectedProducts)
+            }
+            is AddProductEffect.ShowError -> {
+                binding?.cardUnify2?.showToasterError(effect.error)
+            }
+            is AddProductEffect.ShowChangeWarehouseDialogConfirmation -> {
+                if (!isAdded) return
+
+                ConfirmationDialog.show(
+                    context = activity ?: return,
+                    title = getString(R.string.smvc_change_location),
+                    description = getString(R.string.smvc_change_location_description),
+                    primaryButtonTitle = getString(R.string.smvc_confirm_change_location),
+                    onPrimaryButtonClick = {
+                        viewModel.processEvent(
+                            AddProductEvent.ConfirmChangeWarehouseLocationFilter(effect.selectedWarehouseLocation)
+                        )
+                    }
                 )
             }
         }
@@ -263,11 +264,11 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
         renderLoadingState(uiState.isLoading)
 
         renderSelectAllCheckbox(uiState)
-        renderMaxProductSelection(uiState.voucherCreationMetadata?.maxProduct.orZero())
+        renderMaxProductSelection(uiState.maxProductSelection)
 
         //Filter
         renderSortChips(uiState.selectedSort)
-        renderWarehouseLocationChips(uiState.selectedWarehouseLocation)
+        renderWarehouseLocationChips(uiState.selectedWarehouseLocation, uiState.defaultWarehouseLocationId)
         renderCategoryChips(uiState.selectedCategories)
         renderShopShowcaseChips(uiState.selectedShopShowcase)
 
@@ -289,7 +290,7 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
         binding?.loader?.isVisible = isLoading
     }
 
-    private fun renderList(products: List<DelegateAdapterItem> ) {
+    private fun renderList(products: List<Product> ) {
         productAdapter.submit(products)
 
         if (products.isEmpty()) {
@@ -301,7 +302,7 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
         binding?.tpgSelectedProductCount?.text = getString(
             R.string.smvc_placeholder_selected_product_count,
             uiState.selectedProductsIds.size,
-            uiState.totalProducts.orZero()
+            uiState.maxProductSelection.orZero()
         )
         binding?.btnAddProduct?.isEnabled = uiState.selectedProductsIds.isNotEmpty()
     }
@@ -317,14 +318,14 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
     }
 
     private fun renderSelectAllCheckbox(uiState: AddProductUiState) {
-        binding?.checkbox?.isChecked = uiState.isSelectAllActive
+        binding?.checkbox?.isChecked = uiState.isSelectAllCheckboxActive
 
-        val checkboxWording = if (uiState.selectedProductsIds.isEmpty()) {
+        val checkboxWording = if (uiState.selectedProductCount.isZero()) {
             getString(R.string.smvc_select_all)
         } else {
             getString(
                 R.string.smvc_placeholder_check_all_selected_product_count,
-                uiState.selectedProductsIds.size,
+                uiState.selectedProductCount,
                 uiState.totalProducts
             )
         } 
@@ -341,19 +342,19 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
         }
     }
 
-    private fun renderWarehouseLocationChips(selectedWarehouse: Warehouse) {
-        if (selectedWarehouse.warehouseName.isEmpty()) {
-            locationChips.type = ChipsUnify.TYPE_NORMAL
-            locationChips.selectedItem = arrayListOf(getString(R.string.smvc_sort))
+    private fun renderWarehouseLocationChips(
+        selectedWarehouse: Warehouse,
+        defaultWarehouseId: Long
+    ) {
+        locationChips.type = ChipsUnify.TYPE_SELECTED
+
+        val warehouseName = if (selectedWarehouse.warehouseId == defaultWarehouseId) {
+            getString(R.string.smvc_seller_location)
         } else {
-            locationChips.type = ChipsUnify.TYPE_SELECTED
-            val warehouseName = if (selectedWarehouse.warehouseType == WarehouseType.DEFAULT_WAREHOUSE_LOCATION) {
-                getString(R.string.smvc_seller_location)
-            } else {
-                selectedWarehouse.warehouseName
-            }
-            locationChips.selectedItem = arrayListOf(warehouseName)
+            selectedWarehouse.warehouseName
         }
+        locationChips.selectedItem = arrayListOf(warehouseName)
+
     }
 
     private fun renderShopShowcaseChips(selectedShowcases: List<ShopShowcase>) {
@@ -395,7 +396,7 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
     }
 
     private fun setupSortFilter() {
-        val onLocationClicked = { viewModel.processEvent(AddProductEvent.TapLocationFilter) }
+        val onLocationClicked = { viewModel.processEvent(AddProductEvent.TapWarehouseLocationFilter) }
         locationChips.listener = { onLocationClicked() }
         locationChips.chevronListener = { onLocationClicked() }
 
@@ -422,26 +423,24 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
     }
 
     private val onItemClick: (Int) -> Unit = { selectedItemPosition ->
-        val selectedItem = productAdapter.getItems()[selectedItemPosition]
-        val selectedItemId = (selectedItem.id() as? Long).orZero()
+        val selectedItem = productAdapter.snapshot()[selectedItemPosition]
 
-        viewModel.processEvent(AddProductEvent.AddProductToSelection(selectedItemId))
+        viewModel.processEvent(AddProductEvent.AddProductToSelection(selectedItem.id))
     }
 
 
     private val onCheckboxClick: (Int, Boolean) -> Unit = { selectedItemPosition, isChecked ->
-        val selectedItem = productAdapter.getItems()[selectedItemPosition]
-        val selectedItemId = (selectedItem.id() as? Long).orZero()
+        val selectedItem = productAdapter.snapshot()[selectedItemPosition]
 
         if (isChecked) {
-            viewModel.processEvent(AddProductEvent.AddProductToSelection(selectedItemId))
+            viewModel.processEvent(AddProductEvent.AddProductToSelection(selectedItem.id))
         } else {
-            viewModel.processEvent(AddProductEvent.RemoveProductFromSelection(selectedItemId))
+            viewModel.processEvent(AddProductEvent.RemoveProductFromSelection(selectedItem.id))
         }
     }
 
     private val onVariantClick: (Int) -> Unit = { selectedItemPosition ->
-        val selectedItem = productAdapter.getItems()[selectedItemPosition]
+        val selectedItem = productAdapter.snapshot()[selectedItemPosition]
         val selectedParentProduct = (selectedItem as? Product)
 
         selectedParentProduct?.run {
@@ -569,149 +568,21 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
     }
 
     private fun showShopShowcasesBottomSheet(
-        selectedShowcases: List<ShopShowcase>,
+        selectedShowcaseIds: List<Long>,
         remoteShopShowcases: List<ShopShowcase>
     ) {
         if (!isAdded) return
 
-        val showcaseFilterAdapter = ShopShowcaseFilterAdapter()
-
-        val selectedShowcasesIds = selectedShowcases.map { showcase -> showcase.id }
-        val showcasesOptions = remoteShopShowcases.map { showcase ->
-            MultipleSelectionItem(showcase.id.toString(), showcase.name, showcase.id in selectedShowcasesIds)
-        }
-
-        val bottomSheet = MultipleSelectionBottomSheet.newInstance(
-            selectedShowcasesIds.map { it.toString() },
-            showcasesOptions
+        val bottomSheet = ShowcaseFilterBottomSheet.newInstance(
+            selectedShowcaseIds,
+            remoteShopShowcases
         )
-
-        bottomSheet.setBottomSheetTitle(getString(R.string.smvc_showcase))
-
-        showcaseFilterAdapter.setOnItemClicked { newItem ->
-            bottomSheet.getBottomsheetView()?.btnApply?.enable()
-            showcaseFilterAdapter.markAsSelected(newItem)
-        }
-
-        bottomSheet.setOnApplyButtonClick {
-            val selectedItem = showcaseFilterAdapter.getSelectedItems()
-            val newlySelectedShowcases = selectedItem.map {
-                ShopShowcase(
-                    it.id.toLong(),
-                    it.name,
-                    it.name,
-                    NumberConstant.ID_SELLER_CREATED_SHOWCASE_TYPE
-                )
-            }
-            val event = AddProductEvent.ApplyShowCaseFilter(newlySelectedShowcases)
+        bottomSheet.setOnApplyButtonClick { selectedShowcases ->
+            val event = AddProductEvent.ApplyShowCaseFilter(selectedShowcases)
             viewModel.processEvent(event)
         }
 
-        bottomSheet.setCustomAppearance {
-            recyclerView.adapter = showcaseFilterAdapter
-            showcaseFilterAdapter.submit(showcasesOptions)
-        }
-
         bottomSheet.show(childFragmentManager, bottomSheet.tag)
-    }
-
-    private fun displayShareBottomSheet(
-        selectedProducts: List<Product>,
-        selectedProductImageUrls: List<String>,
-        shop: ShopData
-    ) {
-        val voucherStartDate = Date()
-        val voucherEndDate = Date()
-
-        val endDate = voucherEndDate.formatTo(DateConstant.DATE_YEAR_PRECISION)
-        val endHour = voucherEndDate.formatTo(DateConstant.TIME_MINUTE_PRECISION)
-
-        val formattedShopName = MethodChecker.fromHtml(shop.name).toString()
-        val title = String.format(
-            getString(R.string.smvc_placeholder_share_component_outgoing_title),
-            formattedShopName
-        )
-        val description = String.format(
-            getString(R.string.smvc_placeholder_share_component_text_description),
-            formattedShopName,
-            endDate,
-            endHour
-        )
-
-        val imageGeneratorParam = SharingComponentInstanceBuilder.Param(
-            voucherId = 1239,
-            isPublic = true,
-            voucherCode = "UNVRCUAN",
-            voucherStartTime = voucherStartDate,
-            voucherEndTime = voucherEndDate,
-            promoType = PromoType.CASHBACK,
-            benefitType = BenefitType.NOMINAL,
-            shopLogo = shop.logo,
-            shopName = formattedShopName,
-            discountAmount = 500_000,
-            discountAmountMax = 1_000_000,
-            productImageUrls = selectedProductImageUrls
-        )
-
-        shareComponentBottomSheet = shareComponentInstanceBuilder.build(
-            imageGeneratorParam,
-            title,
-            onShareOptionsClicked = { shareModel ->
-                handleShareOptionSelection(
-                    imageGeneratorParam.voucherId,
-                    shareModel,
-                    title,
-                    description,
-                    shop.domain
-                )
-            },
-            onCloseOptionClicked = {
-
-            })
-
-        shareComponentBottomSheet?.show(childFragmentManager, shareComponentBottomSheet?.tag)
-    }
-
-    private fun handleShareOptionSelection(
-        voucherId: Long,
-        shareModel: ShareModel,
-        title: String,
-        description: String,
-        shopDomain: String
-    ) {
-        val shareCallback = object : ShareCallback {
-            override fun urlCreated(linkerShareData: LinkerShareResult?) {
-                val wording = "$description ${linkerShareData?.shareUri.orEmpty()}"
-                SharingUtil.executeShareIntent(
-                    shareModel,
-                    linkerShareData,
-                    activity,
-                    view,
-                    wording
-                )
-                shareComponentBottomSheet?.dismiss()
-            }
-
-            override fun onError(linkerError: LinkerError?) {}
-        }
-
-        val linkerDataGenerator = LinkerDataGenerator()
-        val outgoingDescription = getString(R.string.smvc_share_component_outgoing_text_description)
-        val linkerShareData = linkerDataGenerator.generate(
-            voucherId,
-            userSession.shopId,
-            shopDomain,
-            shareModel,
-            title,
-            outgoingDescription
-        )
-        LinkerManager.getInstance().executeShareRequest(
-            LinkerUtils.createShareRequest(
-                Int.ZERO,
-                linkerShareData,
-                shareCallback
-            )
-        )
     }
 
     private fun displayVariantBottomSheet(selectedParentProduct: Product) {
@@ -724,5 +595,12 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
 
     private fun CompoundButton.isClickTriggeredByUserInteraction() : Boolean {
         return isPressed
+    }
+
+    private fun returnSelectedProductsResultToProductListActivity(selectedProducts: List<Product>) {
+        val returnIntent = Intent()
+        returnIntent.putParcelableArrayListExtra(BundleConstant.BUNDLE_KEY_SELECTED_PRODUCTS, ArrayList(selectedProducts))
+        activity?.setResult(Activity.RESULT_OK, returnIntent)
+        activity?.finish()
     }
 }
