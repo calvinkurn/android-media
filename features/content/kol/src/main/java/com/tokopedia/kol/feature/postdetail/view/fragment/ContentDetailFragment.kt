@@ -339,6 +339,7 @@ class ContentDetailFragment : BaseDaggerFragment(), ContentDetailPostViewHolder.
         endlessRecyclerViewScrollListener?.setHasNextPage(viewModel.currentCursor.isNotEmpty())
         adapter.addItems(data.postList)
         cdpRecyclerView?.scrollToPosition(currentPosition)
+        currentPosition = adapter.lastIndex
     }
 
     private fun onSuccessGetFirstPostCDPData(data: ContentDetailUiModel){
