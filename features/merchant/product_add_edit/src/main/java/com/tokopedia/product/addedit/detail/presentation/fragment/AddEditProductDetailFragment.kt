@@ -199,6 +199,7 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
     private var categoryAlertDialog: DialogUnify? = null
     private var additionalInfoView: Typography? = null
     private var commissionInfoTipsView: TipsUnify? = null
+    private var disabledCategoryInfoView: ImageUnify? = null
 
     // product specification
     private var productSpecificationLayout: ViewGroup? = null
@@ -1779,6 +1780,8 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
         productCategoryPickerButton = binding?.addEditProductCategoryLayout?.tvCategoryPickerButton
         additionalInfoView = binding?.addEditProductCategoryLayout?.tpgAdditionalInfo
         commissionInfoTipsView = binding?.addEditProductCategoryLayout?.tuCommissionInfoTips
+        disabledCategoryInfoView = binding?.addEditProductCategoryLayout?.iuCtaInformation
+
         context?.let {
             categoryAlertDialog = DialogUnify(it, DialogUnify.SINGLE_ACTION, DialogUnify.NO_IMAGE)
             categoryAlertDialog?.setTitle(getString(R.string.title_category_dialog))

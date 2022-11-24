@@ -141,7 +141,6 @@ dependencies {
     //------- DO NOT DELETE THIS PART -------//
     // TO BE ADDED AS FEATURE REQUIREMENT
 	implementation project(rootProject.ext.features.categoryCommon)
-	implementation project(rootProject.ext.libraries.imagePicker)
 	implementation project(rootProject.ext.features.logisticCommon)
 	implementation project(rootProject.ext.features.productAddEdit)
 	implementation project(rootProject.ext.features.youtubeCommon)
