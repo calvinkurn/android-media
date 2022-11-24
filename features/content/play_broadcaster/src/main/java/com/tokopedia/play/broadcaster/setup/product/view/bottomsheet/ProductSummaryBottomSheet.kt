@@ -81,6 +81,11 @@ class ProductSummaryBottomSheet @Inject constructor(
         setupObserve()
     }
 
+    override fun onStart() {
+        super.onStart()
+        analytic.viewProductSummary()
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
