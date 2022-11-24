@@ -4,8 +4,10 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <include
-        android:id="@+id/general_info_layout"
-        layout="@layout/item_dynamic_custom_info" />
+    <ViewStub
+        android:id="@+id/vs_general_info"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout="@layout/item_dynamic_info_content" />
 
 </FrameLayout>

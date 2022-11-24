@@ -1,22 +1,33 @@
 package com.tokopedia.product.detail.view.viewholder
 
 import android.view.View
-import android.view.ViewGroup
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showIfWithBlock
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.media.loader.loadIcon
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.extensions.parseAsHtmlLink
 import com.tokopedia.product.detail.data.model.datamodel.ProductGeneralInfoDataModel
-import com.tokopedia.product.detail.databinding.ItemDynamicCustomInfoBinding
 import com.tokopedia.product.detail.databinding.ItemDynamicGeneralInfoBinding
+import com.tokopedia.product.detail.databinding.ItemDynamicInfoContentBinding
 import com.tokopedia.product.detail.view.listener.DynamicProductDetailListener
 import com.tokopedia.utils.resources.isDarkMode
 
+/**
+ * ViewHolder is used to display information whose data source is from p1 and p2
+ * component-type: info
+ * component-name:
+ *     - wholesale
+ *     - shipping
+ *     - tradein
+ *     - protection
+ *     - order_prio
+ *     - byme
+ *     - installment_paylater
+ */
 class ProductGeneralInfoViewHolder(
     val view: View,
     private val listener: DynamicProductDetailListener
@@ -28,31 +39,20 @@ class ProductGeneralInfoViewHolder(
     }
 
     private val binding = ItemDynamicGeneralInfoBinding.bind(view)
-    private val contentBinding by lazy { binding.generalInfoLayout }
+    private val contentBinding by lazy {
+        ItemDynamicInfoContentBinding.bind(binding.vsGeneralInfo.inflate())
+    }
 
-    override fun bind(element: ProductGeneralInfoDataModel) = with(contentBinding) {
+    override fun bind(element: ProductGeneralInfoDataModel) = with(binding) {
         if (element.shouldRenderContent) {
-            renderContent(element = element)
+            root.show()
+            contentBinding.renderContent(element = element)
         } else {
-            hideContent()
+            root.gone()
         }
     }
 
-    private fun ItemDynamicCustomInfoBinding.hideContent() {
-        infoTopSeparator.hide()
-        infoBottomSeparator.hide()
-        binding.setContentHeight(height = 0)
-    }
-
-    private fun ItemDynamicGeneralInfoBinding.setContentHeight(height: Int) {
-        if (root.layoutParams.height == height) return
-
-        root.layoutParams.height = height
-    }
-
-    private fun ItemDynamicCustomInfoBinding.renderContent(element: ProductGeneralInfoDataModel) {
-        binding.setContentHeight(height = ViewGroup.LayoutParams.WRAP_CONTENT)
-
+    private fun ItemDynamicInfoContentBinding.renderContent(element: ProductGeneralInfoDataModel) {
         impressComponent(element = element)
 
         setWidgetContent(element = element)
@@ -60,8 +60,8 @@ class ProductGeneralInfoViewHolder(
         setupAppLink(element = element)
     }
 
-    private fun impressComponent(element: ProductGeneralInfoDataModel) {
-        view.addOnImpressionListener(holder = element.impressHolder) {
+    private fun ItemDynamicInfoContentBinding.impressComponent(element: ProductGeneralInfoDataModel) {
+        root.addOnImpressionListener(holder = element.impressHolder) {
             listener.onImpressComponent(getComponentTrackData(element))
         }
     }
@@ -69,40 +69,55 @@ class ProductGeneralInfoViewHolder(
     /**
      * show label `see` and set event click if appLink is not empty
      */
-    private fun ItemDynamicCustomInfoBinding.setupAppLink(element: ProductGeneralInfoDataModel) {
-        infoSeeMore.showIfWithBlock(predicate = element.applink.isNotBlank()) {
-            listener.onInfoClicked(
-                appLink = element.applink,
-                name = element.name,
-                componentTrackDataModel = getComponentTrackData(element)
-            )
+    private fun ItemDynamicInfoContentBinding.setupAppLink(element: ProductGeneralInfoDataModel) {
+        infoSeeMore.showIfWithBlock(predicate = element.isApplink) {
+            setOnClickListener {
+                listener.onInfoClicked(
+                    appLink = element.applink,
+                    name = element.name,
+                    componentTrackDataModel = getComponentTrackData(element)
+                )
+            }
         }
     }
 
     /**
      * render widget content with condition
      */
-    private fun ItemDynamicCustomInfoBinding.setWidgetContent(element: ProductGeneralInfoDataModel) {
+    private fun ItemDynamicInfoContentBinding.setWidgetContent(element: ProductGeneralInfoDataModel) {
+        renderHeader(element = element)
+
+        renderDescription(element = element)
+
+        // general info have not the label
+        infoLabel.gone()
+
+        renderSeparator(element = element)
+    }
+
+    private fun ItemDynamicInfoContentBinding.renderHeader(element: ProductGeneralInfoDataModel) {
         val isDarkModel = binding.root.context.isDarkMode()
         val iconUrl = element.getIconUrl(isDarkModel = isDarkModel)
 
         infoImage.showIfWithBlock(predicate = iconUrl.isNotBlank()) { loadIcon(iconUrl) }
-
         infoTitle.showIfWithBlock(predicate = element.title.isNotEmpty()) { text = element.title }
-
         infoHeaderContainer.showWithCondition(
             shouldShow = infoImage.isVisible || infoTitle.isVisible
         )
+    }
 
+    private fun ItemDynamicInfoContentBinding.renderDescription(element: ProductGeneralInfoDataModel) {
         infoDescription.showIfWithBlock(predicate = element.subtitle.isNotEmpty()) {
             text = element.subtitle.parseAsHtmlLink(
                 context = root.context,
                 replaceNewLine = false
             )
         }
+    }
 
-        infoLabel.gone()
-
+    private fun ItemDynamicInfoContentBinding.renderSeparator(
+        element: ProductGeneralInfoDataModel
+    ) {
         infoTopSeparator.showWithCondition(shouldShow = element.shouldTopSeparatorShowing)
         infoBottomSeparator.showWithCondition(shouldShow = element.shouldBottomSeparatorShowing)
     }
