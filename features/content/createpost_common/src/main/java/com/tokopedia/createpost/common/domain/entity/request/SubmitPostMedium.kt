@@ -5,28 +5,28 @@ import com.google.gson.annotations.SerializedName
 
 data class SubmitPostMedium(
     @SerializedName("mediaURL")
-        @Expose
-        var mediaURL: String = "",
+    @Expose
+    var mediaURL: String = "",
 
     @SerializedName("order")
-        @Expose
-        val order: Int = 0,
+    @Expose
+    val order: Int = 0,
 
     @SerializedName("tags")
-        @Expose
-        var tags: List<MediaTag> = arrayListOf(),
+    @Expose
+    var tags: List<MediaTag> = arrayListOf(),
 
     @SerializedName("type")
-        @Expose
-        var type: String = TYPE_IMAGE,
+    @Expose
+    var type: String = TYPE_IMAGE,
 
     @SerializedName("videoID")
-        @Expose
-        var videoID: String = "",
+    @Expose
+    var videoID: String = "",
 
     @SerializedName("mediaUploadID")
-        @Expose
-        var mediaUploadID: String = ""
+    @Expose
+    var mediaUploadID: String = ""
 
 ) {
     companion object {
