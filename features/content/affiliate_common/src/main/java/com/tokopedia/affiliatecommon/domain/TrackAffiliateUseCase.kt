@@ -16,7 +16,7 @@ import javax.inject.Inject
  */
 class TrackAffiliateUseCase @Inject constructor(
     val graphqlUseCase: MultiRequestGraphqlUseCase
-): UseCase<Boolean>() {
+) : UseCase<Boolean>() {
 
     var params: Map<String, Any> = mapOf()
 
