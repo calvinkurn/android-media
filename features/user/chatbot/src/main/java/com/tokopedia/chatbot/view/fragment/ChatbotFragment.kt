@@ -72,6 +72,7 @@ import com.tokopedia.chatbot.ChatbotConstant.REQUEST_CODE_CHAT_VIDEO
 import com.tokopedia.chatbot.ChatbotConstant.REQUEST_SUBMIT_CSAT
 import com.tokopedia.chatbot.ChatbotConstant.REQUEST_SUBMIT_FEEDBACK
 import com.tokopedia.chatbot.ChatbotConstant.ReplyBoxType.DYNAMIC_ATTACHMENT
+import com.tokopedia.chatbot.ChatbotConstant.ReplyBoxType.REPLY_BOX_TOGGLE_VALUE
 import com.tokopedia.chatbot.ChatbotConstant.TOKOPEDIA_ATTACH_INVOICE_REQ_CODE
 import com.tokopedia.chatbot.ChatbotConstant.VIDEO_URL
 import com.tokopedia.chatbot.ChatbotConstant.VideoUpload.MAX_DURATION_FOR_VIDEO
@@ -801,7 +802,8 @@ class ChatbotFragment :
 
     private fun onSuccessGetExistingChatFirstTime(): (ChatroomViewModel, ChatReplies) -> Unit {
         return { chatroomViewModel, chatReplies ->
-            processDynamicAttachmentFromHistory(chatroomViewModel)
+            processDynamicAttachmentFromHistoryForContentCode100(chatroomViewModel)
+            processDynamicAttachmentFromHistoryForContentCode101(chatroomViewModel)
             val list = filterChatList(chatroomViewModel)
 
             updateViewData(chatroomViewModel)
@@ -816,9 +818,11 @@ class ChatbotFragment :
     }
 
     /**
-     * Check the first item of the list , if it is of Attachment type 34 , then handle the reply box
+     * Check the first item of the list , if it is of Attachment type 34 and content code 100,
+     * then need to check the first item only - to show/hide bigReplyBox,
+     * if first item is AT 34, then show the bigReplyBox else don't
      * */
-    private fun processDynamicAttachmentFromHistory(chatroom: ChatroomViewModel) {
+    private fun processDynamicAttachmentFromHistoryForContentCode100(chatroom: ChatroomViewModel) {
         chatroom.listChat.getOrNull(0).let {
             if (it !is FallbackAttachmentUiModel) {
                 return
@@ -838,6 +842,44 @@ class ChatbotFragment :
                         dynamicAttachmentContents?.dynamicAttachmentAttribute?.replyBoxAttribute
 
                     val state = presenter.validateHistoryForAttachment34(replyBoxAttribute)
+
+                    if (state) {
+                        return
+                    }
+                } catch (e: JsonSyntaxException) {
+                    return
+                }
+            }
+        }
+    }
+
+    /**
+     * Check the first item of the list , if it is of Attachment type 34 and content code 101,
+     * then need to check the whole list, whether to show/hide the reply box,
+     * */
+    private fun processDynamicAttachmentFromHistoryForContentCode101(chatroom: ChatroomViewModel) {
+        chatroom.listChat.forEach {
+            if (it !is FallbackAttachmentUiModel) {
+                return
+            }
+            if (it.attachmentType != DYNAMIC_ATTACHMENT) {
+                return
+            }
+
+            if (it.attachment is Attachment) {
+                val attachment = it.attachment as Attachment
+
+                try {
+                    val dynamicAttachmentContents =
+                        Gson().fromJson(attachment.attributes, DynamicAttachment::class.java)
+
+                    val replyBoxAttribute =
+                        dynamicAttachmentContents?.dynamicAttachmentAttribute?.replyBoxAttribute
+
+                    var state = false
+                    if (replyBoxAttribute?.contentCode == REPLY_BOX_TOGGLE_VALUE) {
+                        state = presenter.validateHistoryForAttachment34(replyBoxAttribute)
+                    }
 
                     if (state) {
                         return

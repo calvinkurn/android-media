@@ -55,8 +55,8 @@ import com.tokopedia.chatbot.ChatbotConstant.NewRelic.KEY_CHATBOT_GET_CHATLIST_R
 import com.tokopedia.chatbot.ChatbotConstant.NewRelic.KEY_CHATBOT_SECURE_UPLOAD_AVAILABILITY
 import com.tokopedia.chatbot.ChatbotConstant.NewRelic.KEY_SECURE_UPLOAD
 import com.tokopedia.chatbot.ChatbotConstant.ReplyBoxType.DYNAMIC_ATTACHMENT
+import com.tokopedia.chatbot.ChatbotConstant.ReplyBoxType.REPLY_BOX_TOGGLE_VALUE
 import com.tokopedia.chatbot.ChatbotConstant.ReplyBoxType.TYPE_BIG_REPLY_BOX
-import com.tokopedia.chatbot.ChatbotConstant.ReplyBoxType.TYPE_SMALL_REPLY_BOX
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.attachinvoice.domain.pojo.InvoiceLinkPojo
 import com.tokopedia.chatbot.data.TickerData.TickerDataResponse
@@ -440,7 +440,7 @@ class ChatbotPresenter @Inject constructor(
                 TYPE_BIG_REPLY_BOX -> {
                     convertToBigReplyBoxData(replyBoxAttribute.dynamicContent)
                 }
-                TYPE_SMALL_REPLY_BOX -> {
+                REPLY_BOX_TOGGLE_VALUE -> {
                     convertToSmallReplyBoxData(replyBoxAttribute.dynamicContent)
                 }
                 else -> {
@@ -498,7 +498,7 @@ class ChatbotPresenter @Inject constructor(
                     convertToBigReplyBoxData(replyBoxAttribute.dynamicContent)
                     return true
                 }
-                TYPE_SMALL_REPLY_BOX -> {
+                REPLY_BOX_TOGGLE_VALUE -> {
                     convertToSmallReplyBoxData(replyBoxAttribute.dynamicContent)
                     return true
                 }

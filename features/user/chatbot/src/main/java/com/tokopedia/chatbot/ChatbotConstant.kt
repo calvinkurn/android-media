@@ -41,7 +41,6 @@ object ChatbotConstant {
         const val X_USER_ID = "X-User-ID"
         const val X_APP_VERSION = "X-App-Version"
         const val X_DEVICE = "X-Device"
-
     }
 
     object AttachmentType {
@@ -54,11 +53,11 @@ object ChatbotConstant {
     object ReplyBoxType {
         const val DYNAMIC_ATTACHMENT = "34"
         const val TYPE_BIG_REPLY_BOX = 100
-        const val TYPE_SMALL_REPLY_BOX = 101
-        val ALLOWED_DYNAMIC_ATTACHMENT_TYPE = listOf<Int>(TYPE_BIG_REPLY_BOX, TYPE_SMALL_REPLY_BOX)
+        const val REPLY_BOX_TOGGLE_VALUE = 101
+        val ALLOWED_DYNAMIC_ATTACHMENT_TYPE = listOf<Int>(TYPE_BIG_REPLY_BOX, REPLY_BOX_TOGGLE_VALUE)
     }
 
-    object ChatbotUnification{
+    object ChatbotUnification {
         const val ARTICLE_ID = "articleId"
         const val ARTICLE_TITLE = "articleTitle"
         const val CODE = "code"
@@ -79,9 +78,10 @@ object ChatbotConstant {
     }
 
     object NewRelic {
-        //New Relic Key For Logging
+        // New Relic Key For Logging
         const val KEY_CHATBOT_ERROR = "CHATBOT_ANDROID_ERROR"
-        //Keys for each GQL
+
+        // Keys for each GQL
         const val KEY_SECURE_UPLOAD = "CHATBOT_SECURE_UPLOAD"
         const val KEY_CHATBOT_SECURE_UPLOAD_AVAILABILITY = "CHATBOT_SECURE_UPLOAD_AVAILABILITY"
         const val KEY_CHATBOT_GET_CHATLIST_RATING = "CHATBOT_GET_CHATLIST_RATING"
@@ -97,7 +97,6 @@ object ChatbotConstant {
         const val KEY_CHATBOT_CSAT_RATING = "CHATBOT_CSAT_RATING"
         const val KEY_CHATBOT_SOCKET_EXCEPTION = "CHATBOT_SOCKET_EXCEPTION"
     }
-
 
     const val CONTACT_US_APPLINK = "tokopedia-android-internal://customercare-inbox-list"
     const val VIDEO_URL = "chatbot-video-url"
