@@ -15,8 +15,8 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.content.common.R
+import com.tokopedia.content.common.onboarding.view.fragment.UGCOnboardingParentFragment
 import com.tokopedia.content.common.onboarding.view.fragment.UGCOnboardingParentFragment.Companion.KEY_ONBOARDING_TYPE
-import com.tokopedia.content.common.onboarding.view.fragment.UGCOnboardingParentFragment.Companion.VALUE_UNKNOWN
 import com.tokopedia.content.common.util.setSpanOnText
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifyprinciples.R as unifyR
@@ -29,7 +29,10 @@ abstract class BaseUserOnboardingBottomSheet : BottomSheetUnify() {
     protected var mListener: Listener? = null
 
     protected val onboardingType: Int
-        get() = arguments?.getInt(KEY_ONBOARDING_TYPE, VALUE_UNKNOWN) ?: VALUE_UNKNOWN
+        get() = arguments?.getInt(
+            KEY_ONBOARDING_TYPE,
+            UGCOnboardingParentFragment.OnboardingType.Unknown.value
+        ) ?: UGCOnboardingParentFragment.OnboardingType.Unknown.value
 
     private val clickablePolicy = object : ClickableSpan() {
         override fun onClick(p0: View) {

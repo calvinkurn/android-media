@@ -246,12 +246,11 @@ class PlayShortsActivity : BaseActivity() {
         val existingFragment = supportFragmentManager.findFragmentByTag(UGCOnboardingParentFragment.TAG)
         if (existingFragment is UGCOnboardingParentFragment && existingFragment.isVisible) return
 
-        val bundle = Bundle().apply {
-            putInt(
-                UGCOnboardingParentFragment.KEY_ONBOARDING_TYPE,
-                UGCOnboardingParentFragment.getOnboardingType(hasUsername = hasUsername)
-            )
-        }
+        val bundle = UGCOnboardingParentFragment.createBundle(
+            if(hasUsername) UGCOnboardingParentFragment.OnboardingType.Tnc
+            else UGCOnboardingParentFragment.OnboardingType.Complete
+        )
+
         supportFragmentManager.beginTransaction()
             .add(UGCOnboardingParentFragment::class.java, bundle, UGCOnboardingParentFragment.TAG)
             .commit()
