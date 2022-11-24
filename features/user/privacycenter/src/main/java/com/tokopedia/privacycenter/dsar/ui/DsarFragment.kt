@@ -311,7 +311,7 @@ class DsarFragment: BaseDaggerFragment(), OnDateChangedListener {
 
             datePicker.apply {
                 setCloseClickListener { dismiss() }
-                datePickerButton.text = getString(R.string.dsar_date_picker_choose_btn_title)
+                datePickerButton.text = it?.getString(R.string.dsar_date_picker_choose_btn_title)
                 datePickerButton.setOnClickListener {
                     onDateSelected()
                 }

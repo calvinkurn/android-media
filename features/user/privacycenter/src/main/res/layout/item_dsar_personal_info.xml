@@ -17,6 +17,7 @@
         app:srcCompat="@drawable/ic_people" />
 
     <com.tokopedia.unifyprinciples.Typography
+        app:typographyWeight="bold"
         android:id="@+id/typography"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
