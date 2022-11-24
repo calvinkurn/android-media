@@ -15,20 +15,24 @@ class ChatBotOptionItemViewHolder(itemView: View, listener: QuickSingleFilterLis
     override fun updateData(filterItem: QuickFilterItem) {
         filterName?.text = filterItem.name
         filterName?.context?.let {
-            filterName?.setTextColor(MethodChecker.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_N700_68))
+            filterName?.setTextColor(MethodChecker.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_NN950))
         }
-
-        layoutInside1.setBackgroundResource(R.drawable.ic_csat_check_box_bg)
     }
 
     override fun updateItemColor(selected: Boolean) {
         if (selected) {
             itemView.context?.let {
-                MethodChecker.setBackground(layoutInside1, MethodChecker.getDrawable(it, R.drawable.ic_checked_csat_option))
+                MethodChecker.setBackground(
+                    layoutInside1,
+                    MethodChecker.getDrawable(it, R.drawable.ic_checked_csat_option)
+                )
             }
         } else {
             itemView.context?.let {
-                MethodChecker.setBackground(layoutInside1, MethodChecker.getDrawable(it, R.drawable.ic_csat_check_box_bg))
+                MethodChecker.setBackground(
+                    layoutInside1,
+                    MethodChecker.getDrawable(it, R.drawable.ic_csat_check_box_bg)
+                )
             }
         }
     }
