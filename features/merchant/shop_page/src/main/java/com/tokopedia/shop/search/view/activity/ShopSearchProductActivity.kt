@@ -25,14 +25,14 @@ class ShopSearchProductActivity : BaseSimpleActivity(), HasComponent<ShopCompone
 
         @JvmStatic
         fun createIntent(
-                context: Context,
-                shopId: String,
-                shopName: String,
-                isOfficial: Boolean,
-                isGoldMerchant: Boolean,
-                keyword: String,
-                shopAttribution: String?,
-                shopRef: String
+            context: Context,
+            shopId: String,
+            shopName: String,
+            isOfficial: Boolean,
+            isGoldMerchant: Boolean,
+            keyword: String,
+            shopAttribution: String?,
+            shopRef: String
         ): Intent {
             val intent = Intent(context, ShopSearchProductActivity::class.java)
             intent.putExtra(KEY_SHOP_ATTRIBUTION, shopAttribution)
@@ -47,15 +47,15 @@ class ShopSearchProductActivity : BaseSimpleActivity(), HasComponent<ShopCompone
 
         @JvmStatic
         fun createIntent(
-                context: Context,
-                shopId: String,
-                shopName: String,
-                isOfficial: Boolean,
-                isGoldMerchant: Boolean,
-                keyword: String,
-                shopAttribution: String?,
-                sortId: String,
-                shopRef: String
+            context: Context,
+            shopId: String,
+            shopName: String,
+            isOfficial: Boolean,
+            isGoldMerchant: Boolean,
+            keyword: String,
+            shopAttribution: String?,
+            sortId: String,
+            shopRef: String
         ): Intent {
             val intent = createIntent(context, shopId, shopName, isOfficial, isGoldMerchant, keyword, shopAttribution, shopRef)
             intent.putExtra(KEY_SORT_ID, sortId)
@@ -92,17 +92,17 @@ class ShopSearchProductActivity : BaseSimpleActivity(), HasComponent<ShopCompone
     }
 
     override fun getNewFragment() = ShopSearchProductFragment.createInstance(
-            shopId,
-            shopName,
-            isOfficial,
-            isGold,
-            keyword,
-            shopAttribution,
-            shopRef
+        shopId,
+        shopName,
+        isOfficial,
+        isGold,
+        keyword,
+        shopAttribution,
+        shopRef
     )
 
     override fun getComponent(): ShopComponent = component
-            ?: ShopComponentHelper().getComponent(application, this)
+        ?: ShopComponentHelper().getComponent(application, this)
 
     override fun getLayoutRes() = R.layout.activity_shop_search_product
 
