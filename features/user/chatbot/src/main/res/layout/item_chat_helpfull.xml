@@ -18,7 +18,6 @@
         app:layout_constraintLeft_toLeftOf="parent"
         android:contentDescription="@null"
         tools:src="@drawable/rating_active_5"
-        android:tint="@color/Unify_N0"
         tools:visibility="visible"/>
 
     <com.tokopedia.unifyprinciples.Typography
