@@ -10,20 +10,24 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
+import com.tokopedia.affiliate.EDUCATION_ARTICLE_DETAIL_URL
 import com.tokopedia.affiliate.PAGE_EDUCATION_ARTICLE
 import com.tokopedia.affiliate.PAGE_EDUCATION_EVENT
+import com.tokopedia.affiliate.PAGE_EDUCATION_TUTORIAL
 import com.tokopedia.affiliate.adapter.AffiliateAdapter
 import com.tokopedia.affiliate.adapter.AffiliateAdapterFactory
 import com.tokopedia.affiliate.di.DaggerAffiliateComponent
 import com.tokopedia.affiliate.interfaces.AffiliateEducationSeeAllCardClickInterface
 import com.tokopedia.affiliate.viewmodel.AffiliateEducationSeeAllViewModel
 import com.tokopedia.affiliate_toko.R
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.basemvvm.viewcontrollers.BaseViewModelFragment
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.basemvvm.viewmodel.ViewModelProviderFactory
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.unifyprinciples.Typography
+import java.util.*
 import javax.inject.Inject
 
 class AffiliateEducationSeeAllFragment :
@@ -77,6 +81,7 @@ class AffiliateEducationSeeAllFragment :
         page = when (pageType) {
             PAGE_EDUCATION_EVENT -> getString(R.string.affiliate_event)
             PAGE_EDUCATION_ARTICLE -> getString(R.string.affiliate_artikel)
+            PAGE_EDUCATION_TUTORIAL -> getString(R.string.affiliate_tutorial)
             else -> getString(R.string.affiliate_artikel)
         }
         educationVM?.fetchSeeAllData(pageType, categoryId)
@@ -97,7 +102,6 @@ class AffiliateEducationSeeAllFragment :
             }
         }
         setObservers()
-
     }
 
     private fun setObservers() {
@@ -165,6 +169,13 @@ class AffiliateEducationSeeAllFragment :
     }
 
     private fun getArticleEventUrl(slug: String, title: String): String {
-        return "tokopedia://webview?titlebar=true&title=$title&url=https://affiliate.tokopedia.com/edu/$slug?navigation=hide"
+        return String.format(
+            Locale.getDefault(),
+            "%s?title=%s&url=%s%s?navigation=hide",
+            ApplinkConst.WEBVIEW,
+            title.replace(" ", "+"),
+            EDUCATION_ARTICLE_DETAIL_URL,
+            slug
+        )
     }
 }

@@ -4,8 +4,11 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.affiliate.PAGE_EDUCATION_ARTICLE
+import com.tokopedia.affiliate.PATTERN
+import com.tokopedia.affiliate.YYYY_MM_DD_HH_MM_SS
 import com.tokopedia.affiliate.interfaces.AffiliateEducationEventArticleClickInterface
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEducationArticleUiModel
+import com.tokopedia.affiliate.utils.DateUtils
 import com.tokopedia.affiliate_toko.R
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.ImageUnify
@@ -35,7 +38,11 @@ class AffiliateEducationArticleVH(
             itemView.context.getString(
                 R.string.article_widget_detail,
                 element?.article?.categories?.get(0)?.title,
-                element?.article?.modifiedDate,
+                DateUtils().formatDate(
+                    currentFormat = YYYY_MM_DD_HH_MM_SS,
+                    newFormat = PATTERN,
+                    dateString = element?.article?.modifiedDate.orEmpty()
+                ),
                 readMinute
             )
         itemView.findViewById<View>(R.id.article_widget_container)?.setOnClickListener {

@@ -41,18 +41,20 @@ class AffiliateEducationSeeAllViewModel @Inject constructor(
     ) {
         val tempList = mutableListOf<Visitable<AffiliateAdapterTypeFactory>>()
         educationArticleCards.cardsArticle?.data?.cards?.let {
-            hasMoreData.value = it[0]?.hasMore
-            totalCount.value = it[0]?.totalCount.orZero()
-            offset = it[0]?.offset.orZero()
-            it[0]?.articles?.mapNotNull { data ->
-                tempList.add(
-                    AffiliateEducationSeeAllUiModel(
-                        data,
-                        pageType.orEmpty()
+            if (it.isNotEmpty()) {
+                hasMoreData.value = it[0]?.hasMore
+                totalCount.value = it[0]?.totalCount.orZero()
+                offset = it[0]?.offset.orZero()
+                it[0]?.articles?.mapNotNull { data ->
+                    tempList.add(
+                        AffiliateEducationSeeAllUiModel(
+                            data,
+                            pageType.orEmpty()
+                        )
                     )
-                )
+                }
+                offset = it[0]?.offset.orZero() + tempList.size
             }
-            offset = it[0]?.offset.orZero() + tempList.size
         }
         educationPageData.value = tempList
     }
