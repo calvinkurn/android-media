@@ -1,5 +1,6 @@
 package com.tokopedia.kol.feature.postdetail.view.activity
 
+import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.os.PersistableBundle
@@ -15,8 +16,9 @@ import com.tokopedia.kol.R
 import com.tokopedia.kol.feature.postdetail.view.fragment.ContentDetailFragment
 
 class ContentDetailActivity : BaseSimpleActivity() {
-    var contentDetailFirstPostData : FeedXCard? = null
 
+    private var actionToRefresh: Boolean = false
+    var contentDetailFirstPostData : FeedXCard? = null
 
     override fun getNewFragment(): Fragment {
         val bundle = Bundle().apply {
@@ -58,6 +60,10 @@ class ContentDetailActivity : BaseSimpleActivity() {
         this.contentDetailFirstPostData = card
     }
 
+    fun setActionToRefresh(needRefresh: Boolean) {
+        this.actionToRefresh = needRefresh
+    }
+
     override fun getLayoutRes(): Int {
         return R.layout.activity_content_detail
     }
@@ -71,10 +77,13 @@ class ContentDetailActivity : BaseSimpleActivity() {
     }
 
     override fun onBackPressed() {
-        if (getSource() == SHARE_LINK) {
-            goToFeed()
-        } else {
-            super.onBackPressed()
+        when {
+            getSource() == SHARE_LINK -> goToFeed()
+            getSource() == SOURCE_USER_PROFILE -> {
+                setResultBeforeFinish()
+                supportFinishAfterTransition()
+            }
+            else -> super.onBackPressed()
         }
     }
 
@@ -87,6 +96,12 @@ class ContentDetailActivity : BaseSimpleActivity() {
         }
     }
 
+    private fun setResultBeforeFinish() {
+        setResult(Activity.RESULT_OK, Intent().apply {
+            putExtra(PARAM_ACTION_TO_REFRESH, actionToRefresh)
+        })
+    }
+
     companion object {
         const val PARAM_POST_ID = "post_id"
         const val DEFAULT_POST_ID = "0"
@@ -94,5 +109,7 @@ class ContentDetailActivity : BaseSimpleActivity() {
         const val SHARE_LINK = "share_link"
         const val PARAM_POSITION = "position"
         const val PARAM_VISITED_USER_ID = "visited_user_id"
+        const val SOURCE_USER_PROFILE = "user_profile"
+        const val PARAM_ACTION_TO_REFRESH = "action_to_refresh"
     }
 }

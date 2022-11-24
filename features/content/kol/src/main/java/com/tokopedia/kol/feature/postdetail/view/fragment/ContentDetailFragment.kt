@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -39,6 +40,7 @@ import com.tokopedia.kol.common.util.ContentDetailResult
 import com.tokopedia.kol.feature.postdetail.di.DaggerContentDetailComponent
 import com.tokopedia.kol.feature.postdetail.di.module.ContentDetailModule
 import com.tokopedia.kol.feature.postdetail.view.activity.ContentDetailActivity
+import com.tokopedia.kol.feature.postdetail.view.activity.ContentDetailActivity.Companion.SOURCE_USER_PROFILE
 import com.tokopedia.kol.feature.postdetail.view.adapter.ContentDetailAdapter
 import com.tokopedia.kol.feature.postdetail.view.adapter.viewholder.ContentDetailPostViewHolder
 import com.tokopedia.kol.feature.postdetail.view.analytics.ContentDetailNewPageAnalytics
@@ -105,7 +107,7 @@ class ContentDetailFragment : BaseDaggerFragment(), ContentDetailPostViewHolder.
     private var cdpRecyclerView: RecyclerView? = null
     private var postId = "0"
     private var visitedUserID = ""
-    private var postPosition = 0
+    private var currentPosition = 0
     private var contentDetailSource = ""
     private var rowNumberWhenShareClicked = 0
     private var dissmisByGreyArea = true
@@ -147,8 +149,6 @@ class ContentDetailFragment : BaseDaggerFragment(), ContentDetailPostViewHolder.
         const val OPEN_VIDEO_DETAIL = 1311
         const val OPEN_FEED_DETAIL = 1313
         private const val COMMENT_ARGS_SERVER_ERROR_MSG = "ARGS_SERVER_ERROR_MSG"
-        private const val USER_PROFILE = "user_profile"
-
 
         @JvmStatic
         fun newInstance(bundle: Bundle?): ContentDetailFragment {
@@ -168,8 +168,8 @@ class ContentDetailFragment : BaseDaggerFragment(), ContentDetailPostViewHolder.
         contentDetailSource = arguments?.getString(ContentDetailActivity.PARAM_SOURCE) ?: ContentDetailActivity.SHARE_LINK
         postId = arguments?.getString(ContentDetailActivity.PARAM_POST_ID) ?: ContentDetailActivity.DEFAULT_POST_ID
 
-        if (contentDetailSource == USER_PROFILE) {
-            postPosition = arguments?.getInt(ContentDetailActivity.PARAM_POSITION) ?: 0
+        if (contentDetailSource == SOURCE_USER_PROFILE) {
+            currentPosition = arguments?.getInt(ContentDetailActivity.PARAM_POSITION) ?: 0
             visitedUserID = arguments?.getString(ContentDetailActivity.PARAM_VISITED_USER_ID).orEmpty()
         }
     }
@@ -238,7 +238,7 @@ class ContentDetailFragment : BaseDaggerFragment(), ContentDetailPostViewHolder.
 
         setupView(view)
 
-        if (contentDetailSource == USER_PROFILE) viewModel.fetchUserProfileFeedPost(visitedUserID, postPosition)
+        if (contentDetailSource == SOURCE_USER_PROFILE) viewModel.fetchUserProfileFeedPost(visitedUserID, currentPosition)
         else viewModel.getContentDetail(postId)
 
         observeLikeContent()
@@ -268,7 +268,7 @@ class ContentDetailFragment : BaseDaggerFragment(), ContentDetailPostViewHolder.
     private fun getEndlessRecyclerViewScrollListener(): EndlessRecyclerViewScrollListener {
         return object : EndlessRecyclerViewScrollListener(cdpRecyclerView?.layoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                if (contentDetailSource == USER_PROFILE) viewModel.fetchUserProfileFeedPost(visitedUserID)
+                if (contentDetailSource == SOURCE_USER_PROFILE) viewModel.fetchUserProfileFeedPost(visitedUserID)
                 else viewModel.getContentDetailRecommendation(postId)
             }
 
@@ -338,8 +338,7 @@ class ContentDetailFragment : BaseDaggerFragment(), ContentDetailPostViewHolder.
         endlessRecyclerViewScrollListener?.updateStateAfterGetData()
         endlessRecyclerViewScrollListener?.setHasNextPage(viewModel.currentCursor.isNotEmpty())
         adapter.addItems(data.postList)
-        cdpRecyclerView?.scrollToPosition(postPosition)
-        postPosition = adapter.lastIndex
+        cdpRecyclerView?.scrollToPosition(currentPosition)
     }
 
     private fun onSuccessGetFirstPostCDPData(data: ContentDetailUiModel){
@@ -1762,6 +1761,9 @@ class ContentDetailFragment : BaseDaggerFragment(), ContentDetailPostViewHolder.
     }
 
     private fun onSuccessDeletePost(rowNumber: Int) {
+        if (contentDetailSource == SOURCE_USER_PROFILE) {
+            (activity as ContentDetailActivity).setActionToRefresh(true)
+        }
         if (adapter.getList().size > rowNumber) {
             adapter.getList().removeAt(rowNumber)
             adapter.notifyItemRemoved(rowNumber)
