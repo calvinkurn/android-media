@@ -42,6 +42,7 @@ import com.tokopedia.play.extensions.*
 import com.tokopedia.play.gesture.PlayClickTouchListener
 import com.tokopedia.play.ui.component.UiComponent
 import com.tokopedia.play.util.changeConstraint
+import com.tokopedia.play.util.isChanged
 import com.tokopedia.play.util.measureWithTimeout
 import com.tokopedia.play.util.observer.DistinctObserver
 import com.tokopedia.play.util.video.state.BufferSource
@@ -891,7 +892,7 @@ class PlayUserInteractionFragment @Inject constructor(
                     viewLifecycleOwner.lifecycleScope.launch(dispatchers.immediate) { invalidateChatListBounds() }
                 }
 
-                renderFollowPopUp(prevState?.isPopUp, state.isPopUp, state.bottomInsets, state.partner)
+                if(cachedState.isChanged { it.followPopUp }) renderFollowPopUp(state.followPopUp)
             }
         }
     }
@@ -1241,7 +1242,9 @@ class PlayUserInteractionFragment @Inject constructor(
 
     fun hideBottomSheet() {
         val bottomSheet = getBottomSheetInstance()
-        if (bottomSheet.isVisible) bottomSheet.dismiss()
+        if (bottomSheet.isVisible) {
+            bottomSheet.dismiss()
+        }
     }
 
     private fun showInteractionIfWatchMode() {
@@ -1950,11 +1953,8 @@ class PlayUserInteractionFragment @Inject constructor(
         }
     }
 
-    private fun renderFollowPopUp(prevState: Boolean?, state: Boolean,
-                                  bottomInsets: Map<BottomInsetsType, BottomInsetsState>,
-                                  partner: PlayPartnerInfo) {
-        val isFollowed = partner.status is PlayPartnerFollowStatus.Followable && (partner.status as? PlayPartnerFollowStatus.Followable)?.followStatus != PartnerFollowableStatus.Followed
-        if (prevState != state && state && !bottomInsets.isAnyShown && isFollowed)
+    private fun renderFollowPopUp(shouldShow: Boolean) {
+        if (shouldShow)
             PlayFollowBottomSheet.getOrCreate(childFragmentManager, classLoader = requireActivity().classLoader)
                 .show(childFragmentManager)
     }

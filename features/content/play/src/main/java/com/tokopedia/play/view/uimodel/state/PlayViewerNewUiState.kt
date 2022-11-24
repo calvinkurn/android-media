@@ -35,7 +35,7 @@ data class PlayViewerNewUiState(
     val isLoadingBuy: Boolean,
     val address: AddressWidgetUiState,
     val featuredProducts: List<PlayProductUiModel.Product>,
-    val isPopUp: Boolean,
+    val followPopUp: Boolean,
 ) {
 
     companion object {
@@ -66,7 +66,7 @@ data class PlayViewerNewUiState(
                     warehouseInfo = WarehouseInfoUiModel.Empty,
                 ),
                 featuredProducts = emptyList(),
-                isPopUp = false,
+                followPopUp = false,
             )
     }
 }
@@ -126,3 +126,16 @@ data class AddressWidgetUiState(
     val shouldShow: Boolean,
     val warehouseInfo: WarehouseInfoUiModel
 )
+
+data class FollowPopUpUiState(
+    val shouldShow: Boolean,
+    val partnerId: Long,
+){
+    companion object {
+        val Empty: FollowPopUpUiState
+            get() = FollowPopUpUiState(
+                shouldShow = false,
+                partnerId = 0L,
+            )
+    }
+}
