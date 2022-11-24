@@ -50,6 +50,9 @@ class UserProfileViewModel @AssistedInject constructor(
     val profileUserID: String
         get() = _profileInfo.value.userID
 
+    val profileUserEncryptedID: String
+        get() = _profileInfo.value.encryptedUserID
+
     val profileUsername: String
         get() = _profileInfo.value.username
 
