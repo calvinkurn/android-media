@@ -114,7 +114,7 @@ object OrderStatusUiStateMapper {
             orderStatus = orderStatus.statusName,
             orderStatusId = orderStatus.id,
             preOrder = mapPreOrderUiModel(preOrder),
-            label = orderStatus.label
+            labels = orderStatus.labels.map { it.label }
         )
     }
 

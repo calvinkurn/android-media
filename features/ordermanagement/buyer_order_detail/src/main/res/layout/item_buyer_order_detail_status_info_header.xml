@@ -57,15 +57,17 @@
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="heading_6" />
 
-    <com.tokopedia.unifycomponents.Label
-        android:id="@+id/labelBuyerOrderDetailScheduleDelivery"
-        android:layout_width="wrap_content"
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_buyer_order_detail_order_status_labels"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
-        app:labelType="general_light_grey"
-        app:layout_constraintStart_toStartOf="@id/tvBuyerOrderDetailStatusOrder"
+        android:layout_marginStart="8dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/buyerOrderDetailIndicator"
-        tools:text="Kirim Sesuai Jadwal" />
+        tools:itemCount="6"
+        tools:layoutManager="com.google.android.flexbox.FlexboxLayoutManager"
+        tools:listitem="@layout/item_buyer_order_detail_order_status_label" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

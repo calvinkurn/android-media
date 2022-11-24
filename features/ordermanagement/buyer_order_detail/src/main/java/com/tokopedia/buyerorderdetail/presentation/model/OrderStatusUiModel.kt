@@ -16,7 +16,7 @@ data class OrderStatusUiModel(
         val orderStatus: String,
         val orderStatusId: String,
         val preOrder: PreOrderUiModel,
-        val label: String
+        val labels: List<String>
     ) : BaseVisitableUiModel {
         override fun type(typeFactory: BuyerOrderDetailTypeFactory?): Int {
             return typeFactory?.type(this).orZero()
