@@ -2972,6 +2972,7 @@ class NewShopPageFragment :
     private var shopTickerVisibilityState: Int?= null
 
     override fun onChangeLayout(foldableInfo: FoldableInfo) {
+        ShopUtil.isFoldable = foldableInfo.isFoldableDevice()
         if (foldableInfo.isFoldableDevice() && foldableInfo.isHalfOpen() && foldableInfo.foldingFeature?.orientation == FoldingFeature.ORIENTATION_HORIZONTAL) {
             foldableScreenHorizontalBottomBound =
                 foldableInfo.foldingFeature?.bounds?.bottom.orZero()

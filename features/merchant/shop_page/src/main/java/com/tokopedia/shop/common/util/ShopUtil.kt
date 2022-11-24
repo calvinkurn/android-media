@@ -42,6 +42,7 @@ import java.net.UnknownHostException
 
 object ShopUtil {
     var isFoldableAndHorizontalScreen: Boolean = false
+    var isFoldable: Boolean = true
 
     fun getProductPerPage(context: Context?): Int{
         return context?.let{

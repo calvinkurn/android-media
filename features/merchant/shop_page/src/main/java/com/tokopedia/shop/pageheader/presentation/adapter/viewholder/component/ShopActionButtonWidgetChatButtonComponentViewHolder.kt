@@ -53,8 +53,8 @@ class ShopActionButtonWidgetChatButtonComponentViewHolder(
             lp.flexGrow = 1.0f
         }
         buttonChat?.apply {
-            if(ShopUtil.isFoldableAndHorizontalScreen){
-                buttonChat.buttonSize = BUTTON_SIZE_FOLD_ABLE
+            if(ShopUtil.isFoldable){
+                buttonChat.buttonSize = UnifyButton.Size.SMALL
             }
             text = model.label
             setOnClickListener {

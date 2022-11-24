@@ -35,8 +35,8 @@ class ShopActionButtonWidgetNoteButtonComponentViewHolder(
     private val imageButtonShopNote: UnifyButton? = viewBinding?.imageButtonShopNote
 
     override fun bind(model: ShopHeaderButtonComponentUiModel) {
-        if(ShopUtil.isFoldableAndHorizontalScreen){
-            imageButtonShopNote?.buttonSize = BUTTON_SIZE_FOLD_ABLE
+        if(ShopUtil.isFoldable){
+            imageButtonShopNote?.buttonSize = UnifyButton.Size.SMALL
             imageButtonShopNote?.layoutParams?.height = BUTTON_WIDTH_FOLD_ABLE.toPx()
             imageButtonShopNote?.layoutParams?.width = BUTTON_HEIGHT_FOLD_ABLE.toPx()
         }
