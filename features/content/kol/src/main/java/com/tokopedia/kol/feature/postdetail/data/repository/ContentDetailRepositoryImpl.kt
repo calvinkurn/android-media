@@ -140,19 +140,17 @@ class ContentDetailRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun followUser(encryptedUserId: String): MutationUiModel {
+    override suspend fun followUnfollowUser(isFollow: Boolean, encryptedUserId: String): MutationUiModel {
         return withContext(dispatcher.io) {
-            val result = followUserUseCase.executeOnBackground(encryptedUserId)
-
-            profileMutationMapper.mapFollow(result)
-        }
-    }
-
-    override suspend fun unfollowUser(encryptedUserId: String): MutationUiModel {
-        return withContext(dispatcher.io) {
-            val result = unfollowUserUseCase.executeOnBackground(encryptedUserId)
-
-            profileMutationMapper.mapUnfollow(result)
+            if (isFollow) {
+                profileMutationMapper.mapUnfollow(
+                    unfollowUserUseCase.executeOnBackground(encryptedUserId)
+                )
+            } else {
+                profileMutationMapper.mapFollow(
+                    followUserUseCase.executeOnBackground(encryptedUserId)
+                )
+            }
         }
     }
 

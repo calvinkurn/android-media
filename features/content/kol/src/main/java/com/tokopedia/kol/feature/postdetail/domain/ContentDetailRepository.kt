@@ -41,9 +41,10 @@ interface ContentDetailRepository {
         isFollowedFromRSRestrictionBottomSheet: Boolean = false
     ): ShopFollowModel
 
-    suspend fun followUser(encryptedUserId: String): MutationUiModel
-
-    suspend fun unfollowUser(encryptedUserId: String): MutationUiModel
+    suspend fun followUnfollowUser(
+        isFollow: Boolean,
+        encryptedUserId: String,
+    ): MutationUiModel
 
     suspend fun addToCart(
         productId: String,
