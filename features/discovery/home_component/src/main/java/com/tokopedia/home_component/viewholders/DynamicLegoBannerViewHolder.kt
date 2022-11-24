@@ -73,7 +73,8 @@ class DynamicLegoBannerViewHolder(itemView: View,
         ChannelWidgetUtil.validateHomeComponentDivider(
             channelModel = element.channelModel,
             dividerTop = itemView.findViewById<DividerUnify>(R.id.home_component_divider_header),
-            dividerBottom = itemView.findViewById<DividerUnify>(R.id.home_component_divider_footer)
+            dividerBottom = itemView.findViewById<DividerUnify>(R.id.home_component_divider_footer),
+            useBottomPadding = element.channelModel.channelConfig.borderStyle == ChannelStyleUtil.BORDER_STYLE_BLEEDING
         )
     }
 
@@ -108,10 +109,9 @@ class DynamicLegoBannerViewHolder(itemView: View,
                     GridSpacingItemDecoration(defaultSpanCount, SPAN_SPACING_0, true))
             }
             //end for lego rollence
-            val horizontalPadding = if(isUsingPaddingStyle) itemView.resources.getDimension(R.dimen.home_component_margin_default).toInt() else 0
-            val bottomPadding = if(isUsingPaddingStyle) itemView.resources.getDimension(R.dimen.home_component_padding_style_bottom_margin).toInt() else 0
+            val marginValue = if(isUsingPaddingStyle) itemView.resources.getDimension(R.dimen.home_component_margin_default).toInt() else 0
             recyclerView.setPadding(
-                horizontalPadding, 0, horizontalPadding, bottomPadding
+                marginValue, 0, marginValue, marginValue
             )
 
             recyclerView.adapter = LegoItemAdapter(
