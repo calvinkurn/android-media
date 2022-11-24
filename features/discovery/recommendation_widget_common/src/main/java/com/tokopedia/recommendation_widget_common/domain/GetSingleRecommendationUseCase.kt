@@ -2,7 +2,6 @@ package com.tokopedia.recommendation_widget_common.domain
 
 import android.content.Context
 import android.text.TextUtils
-import com.tokopedia.gql_query_annotation.GqlQueryInterface
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.domain.GraphqlUseCase
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -24,7 +23,7 @@ import javax.inject.Inject
 open class GetSingleRecommendationUseCase @Inject
 constructor(
     private val context: Context,
-    private val recomRawString: GqlQueryInterface,
+    private val recomRawString: String,
     private val graphqlUseCase: GraphqlUseCase,
     private val userSession: UserSessionInterface
 ) : UseCase<RecommendationEntity.RecommendationData>() {
