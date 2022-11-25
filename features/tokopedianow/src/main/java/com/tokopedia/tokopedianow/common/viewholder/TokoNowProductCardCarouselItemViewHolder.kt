@@ -45,13 +45,6 @@ class TokoNowProductCardCarouselItemViewHolder(
                     product = element
                 )
             }
-            setOnAnimationFinishedListener { quantity ->
-                listener?.onProductCardAnimationFinished(
-                    position = layoutPosition,
-                    product = element,
-                    quantity = quantity
-                )
-            }
             addOnImpressionListener(element.impressHolder) {
                 listener?.onProductCardImpressed(
                     position = layoutPosition,
@@ -62,14 +55,10 @@ class TokoNowProductCardCarouselItemViewHolder(
     }
 
     override fun bind(element: TokoNowProductCardCarouselItemUiModel?, payloads: MutableList<Any>) {
-        val payload = payloads.firstOrNull()
-
-        if (payload != null && element != null) {
+        if (payloads.firstOrNull() == true && element != null) {
             binding?.productCard?.setData(
                 model = element.productCardModel
             )
-        } else {
-            super.bind(element, payloads)
         }
     }
 
@@ -77,11 +66,6 @@ class TokoNowProductCardCarouselItemViewHolder(
         fun onProductCardAddVariantClicked(
             position: Int,
             product: TokoNowProductCardCarouselItemUiModel
-        )
-        fun onProductCardAnimationFinished(
-            position: Int,
-            product: TokoNowProductCardCarouselItemUiModel,
-            quantity: Int
         )
         fun onProductCardQuantityChanged(
             position: Int,

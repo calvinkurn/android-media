@@ -33,7 +33,6 @@ import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
 import com.tokopedia.home_component.data.DynamicHomeChannelCommon.Channels
 import com.tokopedia.home_component.mapper.DynamicChannelComponentMapper
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.removeFirst
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.domain.response.GetStateChosenAddressResponse
@@ -44,7 +43,6 @@ import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
-import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.OOC_TOKONOW
 import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.PAGE_NUMBER_RECOM_WIDGET
 import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.RECOM_WIDGET
@@ -69,6 +67,7 @@ import com.tokopedia.tokopedianow.home.domain.mapper.HomeRepurchaseMapper
 import com.tokopedia.tokopedianow.home.domain.model.GetRepurchaseResponse.RepurchaseData
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Action.GENERAL_SEARCH
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking.Category.TOP_NAV
+import com.tokopedia.tokopedianow.search.presentation.model.BroadMatchDataView
 import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst.Misc.LOCAL_SEARCH
 import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst.Misc.NONE
 import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst.Misc.PAGESOURCE
@@ -80,7 +79,6 @@ import com.tokopedia.tokopedianow.searchcategory.data.model.QuerySafeModel
 import com.tokopedia.tokopedianow.searchcategory.domain.mapper.ProductItemMapper.mapResponseToProductItem
 import com.tokopedia.tokopedianow.searchcategory.domain.mapper.mapChooseAddressToQuerySafeModel
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel.Product
-import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel.ProductLabelGroup
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel.SearchProduct
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel.SearchProductData
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel.SearchProductHeader
@@ -88,7 +86,6 @@ import com.tokopedia.tokopedianow.searchcategory.presentation.model.BannerDataVi
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.CategoryFilterDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.CategoryFilterItemDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ChooseAddressDataView
-import com.tokopedia.tokopedianow.searchcategory.presentation.model.LabelGroupDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductCountDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProgressBarDataView
@@ -135,14 +132,11 @@ abstract class BaseSearchCategoryViewModel(
     protected val queryParamMutable = queryParamMap.toMutableMap()
     protected var totalData = 0
     protected var chooseAddressData: LocalCacheModel? = null
-    protected var hasProductAnimationFinished = true
 
     private val filterController = FilterController()
     private var totalFetchedData = 0
     private var nextPage = 1
     private var currentProductPosition: Int = 1
-    private var recommendationPositionInVisitableList = -1
-    private val recommendationList = mutableListOf<RecommendationWidget>()
 
     val queryParam: Map<String, String> = queryParamMutable
     val hasGlobalMenu: Boolean
@@ -1018,7 +1012,7 @@ abstract class BaseSearchCategoryViewModel(
         withContext(baseDispatcher.io) {
             cartService.updateMiniCartItems(miniCartSimplifiedData)
 
-            if (visitableList.isEmpty() || !hasProductAnimationFinished) return@withContext
+            if (visitableList.isEmpty()) return@withContext
 
             val updatedProductIndices = mutableListOf<Int>()
 
@@ -1026,11 +1020,7 @@ abstract class BaseSearchCategoryViewModel(
                 updateQuantityInVisitable(visitable, index, updatedProductIndices)
             }
 
-            updateRecommendationListQuantity(recommendationList)
-            if (recommendationPositionInVisitableList != -1)
-                updatedProductIndices.add(recommendationPositionInVisitableList)
-
-            updateVisitableWithIndex(updatedProductIndices)
+            updatedVisitableIndicesMutableLiveData.postValue(updatedProductIndices)
         }
     }
 
@@ -1044,6 +1034,26 @@ abstract class BaseSearchCategoryViewModel(
                 updateProductItemQuantity(index, visitable, updatedProductIndices)
             is TokoNowRepurchaseUiModel ->
                 updateRepurchaseWidgetQuantity(visitable, index, updatedProductIndices)
+            is BroadMatchDataView ->
+                updateBroadMatchQuantities(visitable, index, updatedProductIndices)
+        }
+    }
+
+    private fun updateBroadMatchQuantities(
+        broadMatchDataView: BroadMatchDataView,
+        index: Int,
+        updatedProductIndices: MutableList<Int>,
+    ) {
+        broadMatchDataView.broadMatchItemModelList.forEach { broadMatchItemDataView ->
+            val productCardQuantity = broadMatchItemDataView.productCardModel.orderQuantity
+            val miniCartQuantity = cartService.getProductQuantity(broadMatchItemDataView.productCardModel.productId)
+
+            if (productCardQuantity != miniCartQuantity) {
+                broadMatchItemDataView.productCardModel = broadMatchItemDataView.productCardModel.copy(orderQuantity = miniCartQuantity)
+
+                if (!updatedProductIndices.contains(index))
+                    updatedProductIndices.add(index)
+            }
         }
     }
 
@@ -1058,12 +1068,6 @@ abstract class BaseSearchCategoryViewModel(
 
         productItem.productCardModel = productItem.productCardModel.copy(orderQuantity = quantity)
         updatedProductIndices.add(index)
-    }
-
-    private suspend fun updateVisitableWithIndex(updatedProductIndices: List<Int>) {
-        withContext(baseDispatcher.main) {
-            updatedVisitableIndicesMutableLiveData.value = updatedProductIndices
-        }
     }
 
     private fun onGetMiniCartDataFailed(throwable: Throwable) {
@@ -1082,13 +1086,11 @@ abstract class BaseSearchCategoryViewModel(
 
     open fun onViewATCProductNonVariant(
         productItem: ProductItemDataView,
-        quantity: Int,
-        hasAnimationFinished: Boolean
+        quantity: Int
     ) {
         val productId = productItem.id
         val shopId = productItem.shop.id
         val currentQuantity = productItem.productCardModel.orderQuantity
-        hasProductAnimationFinished = hasAnimationFinished
 
         cartService.handleCart(
             cartProductItem = CartProductItem(productId, shopId, currentQuantity),
@@ -1115,39 +1117,6 @@ abstract class BaseSearchCategoryViewModel(
                 handleAddToCartEventNonLogin(visitableList.indexOf(productItem))
             },
         )
-    }
-
-    open fun onViewATCProductNonVariantAnimationFinished(
-        productItem: ProductItemDataView,
-        quantity: Int,
-        hasAnimationFinished: Boolean
-    ) {
-        hasProductAnimationFinished = hasAnimationFinished
-
-        if (productItem.productCardModel.orderQuantity != quantity && quantity.isZero()) {
-            val productId = productItem.id
-            val shopId = productItem.shop.id
-            val currentQuantity = productItem.productCardModel.orderQuantity
-
-            cartService.handleCart(
-                cartProductItem = CartProductItem(productId, shopId, currentQuantity),
-                quantity = quantity,
-                onSuccessAddToCart = { /* nothing to do */ },
-                onSuccessUpdateCart = { /* nothing to do */ },
-                onSuccessDeleteCart = {
-                    sendDeleteCartTracking(productItem)
-                    onAddToCartSuccess(productItem, 0)
-                    updateCartMessageSuccess(it.errorMessage.joinToString(separator = ", "))
-                    updateToolbarNotification()
-                },
-                onError = ::onAddToCartFailed,
-                handleCartEventNonLogin = {
-                    handleAddToCartEventNonLogin(visitableList.indexOf(productItem))
-                },
-            )
-        } else {
-            refreshMiniCart()
-        }
     }
 
     private fun sendAddToCartTracking(quantity: Int, cartId: String, productItem: ProductItemDataView) {
@@ -1256,12 +1225,6 @@ abstract class BaseSearchCategoryViewModel(
     ) = listOf<String>()
 
     protected open fun getRecomKeywords() = listOf<String>()
-
-    private fun updateRecommendationListQuantity(recommendationList: List<RecommendationWidget>?) {
-        recommendationList
-                ?.flatMap(RecommendationWidget::recommendationItemList)
-                ?.forEach(::setRecommendationItemQuantity)
-    }
 
     private fun setRecommendationItemQuantity(recommendationItem: RecommendationItem) {
         val productId = recommendationItem.productId.toString()

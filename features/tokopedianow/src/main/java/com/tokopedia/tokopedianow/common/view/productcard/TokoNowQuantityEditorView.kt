@@ -67,7 +67,6 @@ class TokoNowQuantityEditorView @JvmOverloads constructor(
 
     var isVariant: Boolean = false
     var onClickListener: (counter: Int) -> Unit = {}
-    var onAnimationFinished: (counter: Int) -> Unit = {}
     var onClickVariantListener: (counter: Int) -> Unit = {}
 
     init {
@@ -168,11 +167,9 @@ class TokoNowQuantityEditorView @JvmOverloads constructor(
             R.id.startWithValue -> {
                 setEditTextPadding()
                 isAnimationRunning = false
-                onAnimationFinished(counter)
             }
             R.id.start -> {
                 isAnimationRunning = false
-                onAnimationFinished(counter)
             }
         }
     }
@@ -276,7 +273,11 @@ class TokoNowQuantityEditorView @JvmOverloads constructor(
 
         editText.setOnKeyListener { _, keyCode, keyEvent ->
             if (keyCode == KeyEvent.KEYCODE_ENTER && keyEvent.action == KeyEvent.ACTION_UP) {
+                onClickListener(counter)
                 collapseAnimation()
+                true
+            } else if (keyEvent.action == KeyEvent.ACTION_UP) {
+                executeTimer()
                 true
             } else {
                 false

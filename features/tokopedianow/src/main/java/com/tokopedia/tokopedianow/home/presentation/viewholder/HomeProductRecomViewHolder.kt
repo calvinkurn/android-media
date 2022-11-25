@@ -105,13 +105,6 @@ class HomeProductRecomViewHolder(
         )
     }
 
-    override fun onProductCardAnimationFinished(
-        position: Int,
-        product: TokoNowProductCardCarouselItemUiModel,
-        quantity: Int
-    ) {
-    }
-
     override fun onProductCardQuantityChanged(
         position: Int,
         product: TokoNowProductCardCarouselItemUiModel,

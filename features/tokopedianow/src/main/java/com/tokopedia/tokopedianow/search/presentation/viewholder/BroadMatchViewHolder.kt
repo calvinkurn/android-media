@@ -47,6 +47,15 @@ class BroadMatchViewHolder(
         }
     }
 
+    override fun bind(element: BroadMatchDataView?, payloads: MutableList<Any>) {
+        if (payloads.firstOrNull() == true && element != null) {
+            binding?.setItems(
+                items = element.broadMatchItemModelList.map { it.copy() },
+                seeMoreModel = element.seeMoreModel
+            )
+        }
+    }
+
     private fun ItemTokopedianowBroadmatchBinding.setItems(
         items: List<Visitable<*>>,
         seeMoreModel: TokoNowSeeMoreCardCarouselUiModel? = null
@@ -95,18 +104,6 @@ class BroadMatchViewHolder(
     ) {
         listener.onBroadMatchItemImpressed(
             broadMatchItemDataView = product,
-            broadMatchIndex = position
-        )
-    }
-
-    override fun onProductCardAnimationFinished(
-        position: Int,
-        product: TokoNowProductCardCarouselItemUiModel,
-        quantity: Int
-    ) {
-        listener.onBroadMatchItemATCNonVariantAnimationFinished(
-            broadMatchItemDataView = product,
-            quantity = quantity,
             broadMatchIndex = position
         )
     }

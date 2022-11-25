@@ -24,12 +24,6 @@ interface BroadMatchListener {
         broadMatchIndex: Int,
     )
 
-    fun onBroadMatchItemATCNonVariantAnimationFinished(
-        broadMatchItemDataView: TokoNowProductCardCarouselItemUiModel,
-        quantity: Int,
-        broadMatchIndex: Int,
-    )
-
     fun onSaveCarouselScrollState(
         adapterPosition: Int,
         state: Parcelable?

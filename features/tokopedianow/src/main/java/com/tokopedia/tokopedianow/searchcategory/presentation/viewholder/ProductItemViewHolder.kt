@@ -43,17 +43,19 @@ class ProductItemViewHolder(
                     productItemDataView = element
                 )
             }
-            setOnAnimationFinishedListener { quantity ->
-                listener.onProductNonVariantAnimationFinished(
-                    productItemDataView = element,
-                    quantity = quantity
-                )
-            }
             addOnImpressionListener(element) {
                 listener.onProductImpressed(
                     productItemDataView = element
                 )
             }
+        }
+    }
+
+    override fun bind(element: ProductItemDataView?, payloads: MutableList<Any>) {
+        if (payloads.firstOrNull() == true && element != null) {
+            binding?.productCard?.setData(
+                model = element.productCardModel
+            )
         }
     }
 }

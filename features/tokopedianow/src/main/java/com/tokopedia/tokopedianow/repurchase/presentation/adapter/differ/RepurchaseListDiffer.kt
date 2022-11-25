@@ -26,6 +26,17 @@ class RepurchaseListDiffer : BaseTokopediaNowDiffer() {
         return oldList[oldItemPosition] == newList[newItemPosition]
     }
 
+    override fun getChangePayload(oldItemPosition: Int, newItemPosition: Int): Any? {
+        val oldItem = oldList[oldItemPosition]
+        val newItem = newList[newItemPosition]
+
+        return if (oldItem is RepurchaseProductUiModel && newItem is RepurchaseProductUiModel) {
+            oldItem.getChangePayload(newItem)
+        } else {
+            super.getChangePayload(oldItemPosition, newItemPosition)
+        }
+    }
+
     override fun getOldListSize() = oldList.size
 
     override fun getNewListSize() = newList.size

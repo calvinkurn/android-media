@@ -40,21 +40,6 @@ class TokoNowProductRecommendationCallback(
         )
     }
 
-    override fun onProductCardAnimationFinished(
-        position: Int,
-        product: TokoNowProductCardCarouselItemUiModel,
-        quantity: Int
-    ) {
-        if (!userSession.isLoggedIn) {
-            listener?.openLoginPage()
-        } else {
-            viewModel?.updateUi(
-                productId = product.productCardModel.productId,
-                quantity = quantity
-            )
-        }
-    }
-
     override fun onProductCardQuantityChanged(
         position: Int,
         product: TokoNowProductCardCarouselItemUiModel,

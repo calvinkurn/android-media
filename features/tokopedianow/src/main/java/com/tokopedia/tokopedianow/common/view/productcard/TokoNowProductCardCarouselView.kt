@@ -81,18 +81,6 @@ class TokoNowProductCardCarouselView @JvmOverloads constructor(
         )
     }
 
-    override fun onProductCardAnimationFinished(
-        position: Int,
-        product: TokoNowProductCardCarouselItemUiModel,
-        quantity: Int
-    ) {
-        listener?.onProductCardAnimationFinished(
-            position = position,
-            product = product,
-            quantity = quantity
-        )
-    }
-
     override fun onProductCardQuantityChanged(
         position: Int,
         product: TokoNowProductCardCarouselItemUiModel,
@@ -183,11 +171,6 @@ class TokoNowProductCardCarouselView @JvmOverloads constructor(
         fun onProductCardImpressed(
             position: Int,
             product: TokoNowProductCardCarouselItemUiModel
-        )
-        fun onProductCardAnimationFinished(
-            position: Int,
-            product: TokoNowProductCardCarouselItemUiModel,
-            quantity: Int
         )
         fun onProductCardQuantityChanged(
             position: Int,
