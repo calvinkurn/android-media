@@ -93,9 +93,9 @@ ext {
     localBroadcastManagerVersion = '1.0.0'
     gojekSSOVersion = '1.0.1-67-0738bd6'
     playIntegrityVersion = '1.0.1'
-    conversationsVersion = '7.6.2-5e5a894'
+    conversationsVersion = '7.7.1-4fb561a'
     gojekCourierVersion = '0.1.5'
-    gojekCourierClientVersion = '0.0.6.3@aar'
+    gojekCourierClientVersion = '0.0.6.4@aar'
 
     benchmarkTestVersion = '1.0.0'
     testCore = '1.4.0'
