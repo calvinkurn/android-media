@@ -221,7 +221,10 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
         helperShopDetail = view?.findViewById(R.id.tv_detail_alamat_helper)
         txtShopLocationWatcher = view?.findViewById(R.id.tv_nama_lokasi_watcher)
         tvUserConsent = view?.findViewById(R.id.tv_user_consent)
+        initMaps()
+    }
 
+    private fun initMaps() {
         context?.let {
             if (MapsAvailabilityHelper.isMapsAvailable(it)) {
                 mapView = view?.findViewById(R.id.map_view_detail)

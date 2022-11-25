@@ -95,7 +95,10 @@ public class GeolocationActivity extends BaseActivity implements ITransactionAna
                 .geolocationModule(new GeolocationModule(this, null))
                 .build()
                 .inject(this);
+        checkMapsAvailability();
+    }
 
+    private void checkMapsAvailability() {
         View view = findViewById(android.R.id.content);
         if (view != null) {
             MapsAvailabilityHelper.INSTANCE.onMapsAvailableState(view, this::onMapsNotAvailable, this::onMapsAvailable);
