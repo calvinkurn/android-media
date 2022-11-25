@@ -16,6 +16,7 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import javax.inject.Inject
+import kotlin.math.roundToInt
 
 class VoucherDetailViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
@@ -54,7 +55,7 @@ class VoucherDetailViewModel @Inject constructor(
         return if (total.isZero()) {
             Int.ZERO
         } else {
-            ((value / total) * DEFAULT_PERCENTAGE_NORMALIZATION).toInt()
+            ((value.toDouble() / total.toDouble()) * DEFAULT_PERCENTAGE_NORMALIZATION).roundToInt()
         }
     }
 
