@@ -49,6 +49,7 @@ class SharingWishlistBottomSheet constructor(
 
     private var selectedOption: Int = 0
     private var defaultOption: Int = 0
+    private var nameCollection: String = ""
 
     interface Listener {
         fun onUpdateWithMessage(message: String, isSuccess: Boolean)
@@ -175,7 +176,8 @@ class SharingWishlistBottomSheet constructor(
         collection = data.collection
 
         viewBinding?.apply {
-            bottomSheetTitle.text = getString(R.string.sharing_wishlist_bottom_sheet_title, data.collection.name)
+            nameCollection = data.collection.name
+            bottomSheetTitle.text = getString(R.string.sharing_wishlist_bottom_sheet_title, nameCollection)
             privateTips.description = generateTipsText(data.ticker)
             privateOption.isChecked = data.collection.access == COLLECTION_PRIVATE_ID
             publicOption.isChecked = data.collection.access == COLLECTION_PUBLIC_ID
@@ -187,7 +189,24 @@ class SharingWishlistBottomSheet constructor(
     }
 
     private fun updateWithMessage(message: String, isSuccess: Boolean) {
-        listener.onUpdateWithMessage(message, isSuccess)
+        val messageUpdate = if (isSuccess) {
+            val nameOption = getString(
+                if (selectedOption == COLLECTION_PUBLIC_ID) {
+                    R.string.sharing_wishlist_label_public
+                } else {
+                    R.string.sharing_wishlist_label_private
+                }
+            )
+
+            String.format(
+                getString(R.string.sharing_wishlist_message_update),
+                nameCollection,
+                nameOption
+            )
+        } else {
+            message
+        }
+        listener.onUpdateWithMessage(messageUpdate, isSuccess)
         this.dismiss()
     }
 

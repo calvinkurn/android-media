@@ -2,6 +2,7 @@ package com.tokopedia.privacycenter.main.analytics
 
 import com.tokopedia.track.builder.Tracker
 
+//List tracker on MyNakama: https://mynakama.tokopedia.com/datatracker/requestdetail/view/3571
 object MainPrivacyCenterAnalytics {
 
     const val LABEL_SHARE_WISHLIST = "share wishlist"
@@ -68,7 +69,6 @@ object MainPrivacyCenterAnalytics {
             .send()
     }
 
-    // POSTPONED UNTIL PR APPROVED
     fun sendClickOnButtonBacaKebijakanPrivasiEvent() {
         Tracker.Builder()
             .setEvent("clickAccount")
@@ -82,7 +82,6 @@ object MainPrivacyCenterAnalytics {
             .send()
     }
 
-    // NOT YET IMPLEMENT
     fun sendClickOnButtonLihatSemuaEvent() {
         Tracker.Builder()
             .setEvent("clickAccount")
@@ -90,20 +89,6 @@ object MainPrivacyCenterAnalytics {
             .setEventCategory("privacy center page")
             .setEventLabel("")
             .setCustomProperty("trackerId", "38811")
-            .setBusinessUnit(VALUE_BUSINESS_UNIT)
-            .setCurrentSite(VALUE_CURRENT_SITE)
-            .build()
-            .send()
-    }
-
-    // NOT YET IMPLEMENT
-    fun sendViewHalYangSeringDitanyakanEvent() {
-        Tracker.Builder()
-            .setEvent("viewAccountIris")
-            .setEventAction("view hal yang sering ditanyakan")
-            .setEventCategory("privacy center page")
-            .setEventLabel("")
-            .setCustomProperty("trackerId", "38812")
             .setBusinessUnit(VALUE_BUSINESS_UNIT)
             .setCurrentSite(VALUE_CURRENT_SITE)
             .build()
@@ -123,13 +108,12 @@ object MainPrivacyCenterAnalytics {
             .send()
     }
 
-    // NOT YET IMPLEMENT
-    fun sendClickOnRiwayatKebijakanPrivasiEvent() {
+    fun sendClickOnRiwayatKebijakanPrivasiEvent(eventLabel: String) {
         Tracker.Builder()
             .setEvent("clickAccount")
             .setEventAction("click on riwayat kebijakan privasi")
             .setEventCategory("privacy center page")
-            .setEventLabel("{riwayat_kebijakan_privasi)")
+            .setEventLabel(eventLabel)
             .setCustomProperty("trackerId", "38931")
             .setBusinessUnit(VALUE_BUSINESS_UNIT)
             .setCurrentSite(VALUE_CURRENT_SITE)
