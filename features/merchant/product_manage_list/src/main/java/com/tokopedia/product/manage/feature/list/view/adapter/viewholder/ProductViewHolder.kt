@@ -75,7 +75,7 @@ class ProductViewHolder(
         }
 
         if (binding?.imageStockReminder?.isVisible.orTrue()) {
-            if (!binding?.ivLabelGuaranteed?.isVisible.orFalse()){
+            if (!binding?.ivLabelGuaranteed?.isVisible.orFalse()) {
                 listener.onImpressionProductStockReminder()
             }
         } else if (binding?.btnMoreOptions?.isVisible.orTrue() && absoluteAdapterPosition.orZero() == POSITION_TICKET_BTN_MORE_OPTION &&
