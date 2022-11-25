@@ -163,6 +163,8 @@ class ShipmentViewHolder(
             )
         }
 
+        pdpShipmentLine.showWithCondition(destination.isNotEmpty())
+
         val estimation = rates.etaText
         pdpShipmentEstimation.showIfWithBlock(estimation.isNotEmpty()) {
             text = rates.etaText.renderHtmlBold(
