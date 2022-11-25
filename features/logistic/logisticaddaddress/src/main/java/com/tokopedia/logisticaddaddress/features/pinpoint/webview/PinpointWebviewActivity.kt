@@ -3,6 +3,7 @@ package com.tokopedia.logisticaddaddress.features.pinpoint.webview
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.util.Log
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.kotlin.extensions.view.decodeToUtf8
@@ -27,6 +28,8 @@ import com.tokopedia.logisticaddaddress.common.AddressConstants.PARAM_SOURCE
 class PinpointWebviewActivity : BaseSimpleActivity() {
 
     override fun getNewFragment(): Fragment? {
+        val url = generateUrl()
+        Log.d("aaaa", "pinpointwebviewactivity url is $url")
         return PinpointWebviewFragment.newInstance(
             generateUrl(),
             intent.getParcelableExtra(
@@ -39,8 +42,7 @@ class PinpointWebviewActivity : BaseSimpleActivity() {
     private fun generateUrl(): String {
         val tokopediaUrl: String = "https://282-beta-feature.tokopedia.com/"
 //        val tokopediaUrl: String = TokopediaUrl.getInstance().WEB
-        val pinpointUrl = tokopediaUrl + URL_PINPOINT
-        return Uri.parse(pinpointUrl)
+        return Uri.parse(tokopediaUrl)
             .buildUpon()
             .appendPath(URL_PINPOINT)
             .setDistrictId()
@@ -125,13 +127,13 @@ class PinpointWebviewActivity : BaseSimpleActivity() {
         private const val URL_PINPOINT: String = "pin-point-web-view"
         fun getIntent(
             context: Context,
-            districtId: Long?,
-            lat: Double?,
-            lng: Double?,
+            districtId: Long? = null,
+            lat: Double? = null,
+            lng: Double? = null,
             currentLoc: Boolean = false,
-            locationPass: LocationPass?,
-            saveAddressDataModel: SaveAddressDataModel?,
-            source: PinpointSource?
+            locationPass: LocationPass? = null,
+            saveAddressDataModel: SaveAddressDataModel? = null,
+            source: PinpointSource? = null
         ): Intent {
             return Intent(context, PinpointWebviewActivity::class.java).apply {
                 putExtra(KEY_DISTRICT_ID, districtId)

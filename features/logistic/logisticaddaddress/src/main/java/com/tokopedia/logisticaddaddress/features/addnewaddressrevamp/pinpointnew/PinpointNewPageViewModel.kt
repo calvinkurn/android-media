@@ -19,11 +19,15 @@ import com.tokopedia.usecase.coroutines.Success
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class PinpointNewPageViewModel @Inject constructor(private val repo: KeroRepository,
-                                                   private val getDistrictMapper: GetDistrictMapper,
-                                                   private val districtBoundaryMapper: DistrictBoundaryMapper): ViewModel() {
+class PinpointNewPageViewModel @Inject constructor(
+    private val repo: KeroRepository,
+    private val getDistrictMapper: GetDistrictMapper,
+    private val districtBoundaryMapper: DistrictBoundaryMapper
+) : ViewModel() {
 
     private var saveAddressDataModel = SaveAddressDataModel()
+
+    var isGmsAvailable: Boolean = true
 
     private val _autofillDistrictData = MutableLiveData<Result<KeroMapsAutofill>>()
     val autofillDistrictData: LiveData<Result<KeroMapsAutofill>>
@@ -58,8 +62,7 @@ class PinpointNewPageViewModel @Inject constructor(private val repo: KeroReposit
             try {
                 val districtLoc = repo.getDistrict(placeId)
                 _districtLocation.value = Success(getDistrictMapper.map(districtLoc))
-            }
-            catch (e: Throwable) {
+            } catch (e: Throwable) {
                 _districtLocation.value = Fail(e)
             }
         }
@@ -87,7 +90,7 @@ class PinpointNewPageViewModel @Inject constructor(private val repo: KeroReposit
         }
     }
 
-    private fun mapDistrictCenterResponseToUiModel(data: KeroAddrGetDistrictCenterResponse.Data) : DistrictCenterUiModel {
+    private fun mapDistrictCenterResponseToUiModel(data: KeroAddrGetDistrictCenterResponse.Data): DistrictCenterUiModel {
         return data.keroAddrGetDistrictCenter.district.let {
             DistrictCenterUiModel(
                 latitude = it.latitude,
@@ -100,8 +103,7 @@ class PinpointNewPageViewModel @Inject constructor(private val repo: KeroReposit
         this.saveAddressDataModel = address
     }
 
-    fun getAddress() : SaveAddressDataModel {
+    fun getAddress(): SaveAddressDataModel {
         return this.saveAddressDataModel
     }
-
 }

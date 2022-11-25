@@ -2308,17 +2308,12 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     private void navigateToPinpointActivity(LocationPass locationPass) {
-        if (getView() != null) {
-            MapsAvailabilityHelper.INSTANCE.onMapsAvailableState(getView(), null, () -> {
-                Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalMarketplace.GEOLOCATION);
-                Bundle bundle = new Bundle();
-                bundle.putParcelable(LogisticConstant.EXTRA_EXISTING_LOCATION, locationPass);
-                bundle.putBoolean(LogisticConstant.EXTRA_IS_FROM_MARKETPLACE_CART, true);
-                intent.putExtras(bundle);
-                startActivityForResult(intent, REQUEST_CODE_COURIER_PINPOINT);
-                return Unit.INSTANCE;
-            });
-        }
+        Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalMarketplace.GEOLOCATION);
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(LogisticConstant.EXTRA_EXISTING_LOCATION, locationPass);
+        bundle.putBoolean(LogisticConstant.EXTRA_IS_FROM_MARKETPLACE_CART, true);
+        intent.putExtras(bundle);
+        startActivityForResult(intent, REQUEST_CODE_COURIER_PINPOINT);
     }
 
     @Override

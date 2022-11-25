@@ -99,7 +99,7 @@ public class AddressConstants {
     public static final String KEY_ADDRESS_DATA = "KEY_ADDRESS_DATA";
     public static final String KEY_SOURCE_PINPOINT = "KEY_SOURCE_PINPOINT";
     public static final String PARAM_LAT = "lat";
-    public static final String PARAM_LONG = "long";
+    public static final String PARAM_LONG = "lng";
     public static final String PARAM_DISTRICT_ID = "districtId";
     public static final String PARAM_CURRENT_LOC = "currentLoc";
     public static final String PARAM_SOURCE = "source" ;

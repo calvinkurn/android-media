@@ -94,6 +94,4 @@
     <string name="gocar_info_bottomsheet_title"><![CDATA[GoSend Car & GoSend Bike]]></string>
     <string name="gocar_instan_title_coachmark">Sekarang, kamu bisa pakai motor atau mobil untuk kurir instan GoSend!</string>
     <string name="gocar_instan_description_coachmark">Aktifkan layanan ini untuk mengaktifkan kurir motor / mobil instan GoSend (maks. 150kg).</string>
-    <string name="maps_preview_unavailable_ticker_title">Error pinpoint</string>
-    <string name="maps_preview_unavailable_ticker_desc">Device anda saat ini belum mendukung pinpoint</string>
 </resources>
