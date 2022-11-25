@@ -3,7 +3,7 @@ package com.tokopedia.epharmacy.di
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.epharmacy.ui.activity.EPharmacyActivity
 import com.tokopedia.epharmacy.ui.activity.EPharmacyAttachPrescriptionActivity
-import com.tokopedia.epharmacy.ui.bottomsheet.EpharmacyReminderScreenBottomSheet
+import com.tokopedia.epharmacy.ui.bottomsheet.EPharmacyReminderScreenBottomSheet
 import com.tokopedia.epharmacy.ui.bottomsheet.MiniConsultationMasterBottomSheetInfo
 import com.tokopedia.epharmacy.ui.fragment.EPharmacyChooserBottomSheet
 import com.tokopedia.epharmacy.ui.fragment.EPharmacyPrescriptionAttachmentPageFragment
@@ -20,7 +20,7 @@ interface EPharmacyComponent {
 
     fun inject(uploadPrescriptionFragment: UploadPrescriptionFragment)
 
-    fun inject(epharmacyReminderScreenBottomSheet: EpharmacyReminderScreenBottomSheet)
+    fun inject(epharmacyReminderScreenBottomSheet: EPharmacyReminderScreenBottomSheet)
 
     fun inject(epharmacyPrescriptionAttachmentPage: EPharmacyPrescriptionAttachmentPageFragment)
 

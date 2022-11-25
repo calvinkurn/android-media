@@ -8,7 +8,7 @@ data class EPharmacyReminderScreenResponse(
 ) {
     data class SubmitEpharmacyUserReminderData(
         @SerializedName("header")
-        val header: EPharmacyPrescriptionUploadResponse.Header? = null,
+        val header: EPharmacyHeader? = null,
         @SerializedName("data")
         val data: ReminderScreenData? = null
     ) {

@@ -15,7 +15,7 @@ data class EPharmacyReminderScreenParam(
     ) {
         data class EpharmacyConsultationInfoParams(
             @SerializedName("consultation_source_id")
-            val consultationSourceId: Long? = null
+            val consultationSourceId: String? = null
         )
     }
 }

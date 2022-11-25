@@ -53,5 +53,43 @@ const val MAX_MEDIA_SIZE_PICKER = 4_000_000L
 const val ENTRY_POINT_ORDER = "Order"
 const val ENTRY_POINT_CHECKOUT = "Checkout"
 
+const val ENABLER_IMAGE_URL = "enabler_image_url"
+const val UPLOAD_CHOOSER_IMAGE_URL = "https://images.tokopedia.net/img/android/res/singleDpi/epharmacy_chooser_mini_cons.jpg"
+const val MINI_CONS_CHOOSER_IMAGE_URL = "https://images.tokopedia.net/img/android/res/singleDpi/epharmacy_chooser_mini_cons_doc.png"
+
+const val EPHARMACY_APPLINK = "tokopedia://epharmacy/"
+const val EPHARMACY_CHOOSER_APPLINK = "tokopedia://epharmacy/chooser/"
+
+const val DATA_TYPE = "data_type"
+const val ENABLER_NAME = "enabler_name"
+
+const val EPHARMACY_BOTTOM_SHEET_BOTTOM_TNC_IMAGE_URL = "https://images.tokopedia.net/img/green-waves.png"
+const val EPHARMACY_BOTTOM_SHEET_BOTTOM_IMAGE_URL = "https://images.tokopedia.net/img/miniconsul-toped-illustration.png"
+const val EPHARMACY_PDP_INFO_DATA_TYPE = "obat_keras_info"
+
+const val EPHARMACY_TICKER_BACKGROUND = "https://images.tokopedia.net/img/android/res/singleDpi/epharmacy_mini_consult_ticker_background.png"
+
+enum class EPharmacyConsultationStatus(val status: Int) {
+    EXPIRED(0),
+    ACTIVE(1),
+    APPROVED(2),
+    REJECTED(4)
+}
+
+const val EPHARMACY_CHECKOUT_APPLINK = "tokopedia://checkout"
+
+enum class EPharmacyButtonState(val state: String) {
+    ACTIVE("ACTIVE"),
+    DISABLED("DISABLED")
+}
+
+const val PRESCRIPTION_ATTACH_SUCCESS = "PRESCRIPTION_ATTACH_SUCCESS"
+
+const val OPEN_TIME = "open_time"
+const val CLOSE_TIME = "close_time"
 const val REMINDER_TYPE = "reminder_type"
 const val CONSULTATION_SOURCE_ID = "consultation_source_id"
+
+const val YYYY_MM_DD_T_HH_MM_SS_Z = "yyyy-MM-dd'T'HH:mm:ss'Z'"
+const val NEW_DATE_FORMAT = "dd MMM yyyy, HH:mm"
+const val UTC = "UTC"

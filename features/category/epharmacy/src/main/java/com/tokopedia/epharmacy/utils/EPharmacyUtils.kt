@@ -2,6 +2,10 @@ package com.tokopedia.epharmacy.utils
 
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.usecase.BuildConfig
+import java.text.DateFormat
+import java.text.ParseException
+import java.text.SimpleDateFormat
+import java.util.*
 
 object EPharmacyUtils {
 
@@ -12,6 +16,23 @@ object EPharmacyUtils {
             e.printStackTrace()
         }
     }
+
+    fun formatDate(currentFormat: String = YYYY_MM_DD_T_HH_MM_SS_Z, newFormat: String = NEW_DATE_FORMAT, dateString: String): String {
+        return try {
+            val fromFormat: DateFormat = SimpleDateFormat(currentFormat, Locale.ENGLISH)
+            fromFormat.isLenient = false
+            fromFormat.timeZone = TimeZone.getTimeZone(UTC)
+            val toFormat: DateFormat = SimpleDateFormat(newFormat, Locale.ENGLISH)
+            toFormat.isLenient = false
+            toFormat.timeZone = TimeZone.getDefault()
+
+            val date = fromFormat.parse(dateString)
+            toFormat.format(date)
+        } catch (e: ParseException) {
+            e.printStackTrace()
+            dateString
+        }
+    }
 }
 
 enum class PrescriptionActionType(val type: String) {
@@ -19,5 +40,5 @@ enum class PrescriptionActionType(val type: String) {
     REDIRECT_OPTION("SHOW_PRESCRIPTION_ATTACHMENT_OPTION"),
     REDIRECT_UPLOAD("REDIRECT_PRESCRIPTION_UPLOAD_PAGE"),
     REDIRECT_PRESCRIPTION("REDIRECT_CONSULTATION_PRESCRIPTION"),
-    REDIRECT_NONE("NONE"),
+    REDIRECT_NONE("NONE")
 }

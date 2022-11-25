@@ -14,7 +14,7 @@ import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
 
-class EpharmacyReminderBsViewModel @Inject constructor(
+class EPharmacyReminderBsViewModel @Inject constructor(
     private val getEpharmcyReminderScreenUseCase: EpharmcyReminderScreenUseCase,
     @CoroutineBackgroundDispatcher private val dispatcherBackground: CoroutineDispatcher
 ) : BaseViewModel(dispatcherBackground) {

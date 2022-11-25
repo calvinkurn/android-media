@@ -11,9 +11,8 @@ import com.tokopedia.epharmacy.databinding.EpharmacyReminderScreenBottomSheetBin
 import com.tokopedia.epharmacy.di.DaggerEPharmacyComponent
 import com.tokopedia.epharmacy.di.EPharmacyComponent
 import com.tokopedia.epharmacy.network.request.EPharmacyReminderScreenParam
-import com.tokopedia.epharmacy.utils.CONSULTATION_SOURCE_ID
-import com.tokopedia.epharmacy.utils.REMINDER_TYPE
-import com.tokopedia.epharmacy.viewmodel.EpharmacyReminderBsViewModel
+import com.tokopedia.epharmacy.utils.*
+import com.tokopedia.epharmacy.viewmodel.EPharmacyReminderBsViewModel
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.media.loader.loadImageFitCenter
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -23,13 +22,13 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
-class EpharmacyReminderScreenBottomSheet : BottomSheetUnify() {
+class EPharmacyReminderScreenBottomSheet : BottomSheetUnify() {
 
     private var binding by autoClearedNullable<EpharmacyReminderScreenBottomSheetBinding>()
 
     companion object {
-        fun newInstance(reminderType: Long, consultationSourceId: Long? = null): EpharmacyReminderScreenBottomSheet {
-            return EpharmacyReminderScreenBottomSheet().apply {
+        fun newInstance(openTime : String? , closeTime : String?, reminderType: Long, consultationSourceId: String? = null): EPharmacyReminderScreenBottomSheet {
+            return EPharmacyReminderScreenBottomSheet().apply {
                 showCloseIcon = false
                 showHeader = false
                 clearContentPadding = true
@@ -37,9 +36,11 @@ class EpharmacyReminderScreenBottomSheet : BottomSheetUnify() {
                 isHideable = true
                 customPeekHeight = 800
                 arguments = Bundle().apply {
+                    putString(OPEN_TIME,openTime)
+                    putString(CLOSE_TIME,closeTime)
                     putLong(REMINDER_TYPE, reminderType)
                     if (consultationSourceId != null) {
-                        putLong(CONSULTATION_SOURCE_ID, consultationSourceId)
+                        putString(CONSULTATION_SOURCE_ID, consultationSourceId)
                     }
                 }
             }
@@ -53,7 +54,7 @@ class EpharmacyReminderScreenBottomSheet : BottomSheetUnify() {
     private val viewModel by lazy {
         viewModelFactory?.let {
             ViewModelProvider(this, it).get(
-                EpharmacyReminderBsViewModel::class.java
+                EPharmacyReminderBsViewModel::class.java
             )
         }
     }
@@ -109,7 +110,7 @@ class EpharmacyReminderScreenBottomSheet : BottomSheetUnify() {
 
     private fun requestParams(): EPharmacyReminderScreenParam? {
         val reminderType = arguments?.getLong(REMINDER_TYPE)
-        val consultationSourceId = arguments?.getLong(CONSULTATION_SOURCE_ID)
+        val consultationSourceId = arguments?.getString(CONSULTATION_SOURCE_ID)
         return if (reminderType != null) {
             EPharmacyReminderScreenParam(
                 input = EPharmacyReminderScreenParam.Input(
