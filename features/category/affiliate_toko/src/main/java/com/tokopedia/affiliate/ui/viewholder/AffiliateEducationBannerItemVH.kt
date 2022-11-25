@@ -19,12 +19,15 @@ class AffiliateEducationBannerItemVH(
         var LAYOUT = R.layout.affiliate_education_banner_view_holder
     }
 
+    private val carousel = itemView.findViewById<CarouselUnify>(R.id.education_carousel)
+
     override fun bind(element: AffiliateEducationBannerUiModel?) {
         setData(element)
     }
 
     private fun setData(element: AffiliateEducationBannerUiModel?) {
-        itemView.findViewById<CarouselUnify>(R.id.education_carousel).apply {
+        carousel.apply {
+            stage.removeAllViews()
             element?.bannerList?.mapNotNull { it?.media?.mobile }?.let {
                 addImages(ArrayList(it))
                 bannerItemMargin = 0

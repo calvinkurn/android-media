@@ -23,14 +23,18 @@ class AffiliateEducationEventVH(
         var LAYOUT = R.layout.affiliate_education_event_item
     }
 
+    private val imageEvent = itemView.findViewById<ImageView>(R.id.image_event)
+    private val eventCategory = itemView.findViewById<Typography>(R.id.event_category)
+    private val eventTitle = itemView.findViewById<Typography>(R.id.event_title)
+    private val eventDate = itemView.findViewById<Typography>(R.id.event_date)
+    private val eventDetail = itemView.findViewById<UnifyButton>(R.id.button_event_detail)
+
     override fun bind(element: AffiliateEducationEventUiModel?) {
-        itemView.findViewById<ImageView>(R.id.image_event)
-            .loadImage(element?.event?.thumbnail?.android)
-        itemView.findViewById<Typography>(R.id.event_category).text =
-            element?.event?.categories?.get(0)?.title
-        itemView.findViewById<Typography>(R.id.event_title).text = element?.event?.title
-        itemView.findViewById<Typography>(R.id.event_date).text = element?.event?.description
-        itemView.findViewById<UnifyButton>(R.id.button_event_detail).setOnClickListener {
+        imageEvent.loadImage(element?.event?.thumbnail?.android)
+        eventCategory.text = element?.event?.categories?.get(0)?.title
+        eventTitle.text = element?.event?.title
+        eventDate.text = element?.event?.description
+        eventDetail.setOnClickListener {
             affiliateEducationEventArticleClickInterface?.onDetailClick(
                 PAGE_EDUCATION_EVENT,
                 element?.event?.slug.orEmpty()
