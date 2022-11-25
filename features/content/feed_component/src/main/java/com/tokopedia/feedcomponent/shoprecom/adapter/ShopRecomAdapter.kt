@@ -1,56 +1,48 @@
 package com.tokopedia.feedcomponent.shoprecom.adapter
 
-import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomUiModelItem
-import com.tokopedia.feedcomponent.shoprecom.view.ShopRecomView
-import androidx.recyclerview.widget.DiffUtil
+import com.tokopedia.adapterdelegate.BaseDiffUtilAdapter
 import com.tokopedia.feedcomponent.shoprecom.callback.ShopRecomWidgetCallback
+import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomUiModelItem
 
 /**
  * created by fachrizalmrsln on 13/07/22
  **/
 class ShopRecomAdapter(
-    private val shopRecomCallback: ShopRecomWidgetCallback
-) : RecyclerView.Adapter<ShopRecomViewHolder>(), ShopRecomWidgetCallback {
+    listener: ShopRecomWidgetCallback,
+    private val onLoading: () -> Unit,
+) : BaseDiffUtilAdapter<ShopRecomAdapter.Model>() {
 
-    private val shopRecomItem = mutableListOf<ShopRecomUiModelItem>()
-
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ShopRecomViewHolder {
-        return ShopRecomViewHolder(ShopRecomView(parent.context), shopRecomCallback)
+    init {
+        delegatesManager
+            .addDelegate(ShopRecomAdapterDelegate.Loading())
+            .addDelegate(ShopRecomAdapterDelegate.ShopRecomWidget(listener))
     }
 
-    override fun onBindViewHolder(holder: ShopRecomViewHolder, position: Int) {
-        shopRecomCallback.onShopRecomItemImpress(shopRecomItem[position], position + 1)
-        holder.bindData(shopRecomItem[position])
+    override fun onBindViewHolder(
+        holder: RecyclerView.ViewHolder,
+        position: Int,
+        payloads: List<Any>
+    ) {
+        super.onBindViewHolder(holder, position, payloads)
+        if (position == (itemCount - 1) && holder is ShopRecomLoadingViewHolder) onLoading()
     }
 
-    override fun getItemCount(): Int {
-        return shopRecomItem.size
+    override fun areItemsTheSame(oldItem: Model, newItem: Model): Boolean {
+        return when {
+            oldItem is Model.Loading && newItem is Model.Loading -> false
+            oldItem is Model.ShopRecomWidget && newItem is Model.ShopRecomWidget -> oldItem.shopRecomItem.id == newItem.shopRecomItem.id
+            else -> oldItem == newItem
+        }
     }
 
-    fun updateData(data: List<ShopRecomUiModelItem>) {
-        val diffCallback = ShopRecomDiffUtil(shopRecomItem, data)
-        val diffResult = DiffUtil.calculateDiff(diffCallback)
-        shopRecomItem.clear()
-        shopRecomItem.addAll(data)
-        diffResult.dispatchUpdatesTo(this)
+    override fun areContentsTheSame(oldItem: Model, newItem: Model): Boolean {
+        return oldItem == newItem
     }
 
-    override fun onShopRecomCloseClicked(itemID: Long) {
-        shopRecomCallback.onShopRecomCloseClicked(itemID)
-    }
-
-    override fun onShopRecomFollowClicked(itemID: Long) {
-        shopRecomCallback.onShopRecomFollowClicked(itemID)
-    }
-
-    override fun onShopRecomItemClicked(itemID: Long, appLink: String, imageUrl: String, postPosition: Int) {
-        shopRecomCallback.onShopRecomItemClicked(itemID, appLink, imageUrl, postPosition)
-    }
-
-    override fun onShopRecomItemImpress(item: ShopRecomUiModelItem, postPosition: Int) {
-        shopRecomCallback.onShopRecomItemImpress(item, postPosition)
+    sealed interface Model {
+        object Loading : Model
+        data class ShopRecomWidget(val shopRecomItem: ShopRecomUiModelItem) : Model
     }
 
 }

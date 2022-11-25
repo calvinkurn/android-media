@@ -381,7 +381,7 @@ class FlashSaleManageProductListFragment :
         return adapter?.getItems()?.indexOfFirst {
             it is FlashSaleManageProductListItem
         }?.let { position ->
-            (rvProductList?.findViewHolderForAdapterPosition(position) as FlashSaleManageProductListItemViewHolder).buttonManage
+            (rvProductList?.findViewHolderForAdapterPosition(position) as? FlashSaleManageProductListItemViewHolder)?.buttonManage
         }
     }
 

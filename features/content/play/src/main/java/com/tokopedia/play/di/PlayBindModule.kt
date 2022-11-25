@@ -18,6 +18,8 @@ import com.tokopedia.play.analytic.tokonow.PlayTokoNowAnalytic
 import com.tokopedia.play.analytic.tokonow.PlayTokoNowAnalyticImpl
 import com.tokopedia.play.analytic.upcoming.PlayUpcomingAnalytic
 import com.tokopedia.play.analytic.upcoming.PlayUpcomingAnalyticImpl
+import com.tokopedia.play.analytic.voucher.PlayVoucherAnalytic
+import com.tokopedia.play.analytic.voucher.PlayVoucherAnalyticImpl
 import com.tokopedia.play.util.logger.PlayLog
 import com.tokopedia.play.util.logger.PlayLogImpl
 import com.tokopedia.play.util.timer.PlayTimerFactory
@@ -69,6 +71,10 @@ abstract class PlayBindModule {
     @Binds
     @PlayScope
     abstract fun bindTokonowAnalytic(analytic: PlayTokoNowAnalyticImpl): PlayTokoNowAnalytic
+
+    @Binds
+    @PlayScope
+    abstract fun bindVoucherAnalytic(analytic: PlayVoucherAnalyticImpl): PlayVoucherAnalytic
 
     /**
      * Utils

@@ -34,6 +34,8 @@ import com.tokopedia.mvcwidget.ResultStatus
 import com.tokopedia.mvcwidget.TokopointsCatalogMVCSummary
 import com.tokopedia.mvcwidget.TokopointsCatalogMVCSummaryResponse
 import com.tokopedia.mvcwidget.usecases.MVCSummaryUseCase
+import com.tokopedia.play.widget.data.PlayWidget
+import com.tokopedia.play.widget.data.PlayWidgetReminder
 import com.tokopedia.play.widget.ui.PlayWidgetState
 import com.tokopedia.play.widget.ui.model.*
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
@@ -45,10 +47,13 @@ import com.tokopedia.shop.common.constant.RATING_PARAM_KEY
 import com.tokopedia.shop.common.constant.SORT_PARAM_KEY
 import com.tokopedia.shop.common.constant.ShopPageConstant.CODE_STATUS_SUCCESS
 import com.tokopedia.shop.common.data.model.ShopPageAtcTracker
+import com.tokopedia.shop.common.data.model.ShopPageGetHomeType
+import com.tokopedia.shop.common.data.model.ShopPageWidgetLayoutUiModel
 import com.tokopedia.shop.common.domain.GetShopFilterBottomSheetDataUseCase
 import com.tokopedia.shop.common.domain.GetShopFilterProductCountUseCase
 import com.tokopedia.shop.common.domain.GqlGetShopSortUseCase
 import com.tokopedia.shop.common.domain.interactor.GQLCheckWishlistUseCase
+import com.tokopedia.shop.common.domain.interactor.GqlShopPageGetHomeType
 import com.tokopedia.shop.common.graphql.data.checkwishlist.CheckWishlistResult
 import com.tokopedia.shop.common.view.model.ShopProductFilterParameter
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeBundleProductUiModel
@@ -63,9 +68,6 @@ import com.tokopedia.shop.home.domain.GetCampaignNotifyMeUseCase
 import com.tokopedia.shop.home.domain.GetShopPageHomeLayoutV2UseCase
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
 import com.tokopedia.shop.home.view.model.*
-import com.tokopedia.shop.common.data.model.ShopPageGetHomeType
-import com.tokopedia.shop.common.data.model.ShopPageWidgetLayoutUiModel
-import com.tokopedia.shop.common.domain.interactor.GqlShopPageGetHomeType
 import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.domain.interactor.GqlGetShopProductUseCase
 import com.tokopedia.shop.sort.view.mapper.ShopProductSortMapper
@@ -178,13 +180,13 @@ class ShopHomeViewModelTest {
     private val shopProductFilterParameter = ShopProductFilterParameter().apply {
         setSortId("6")
         setMapData(
-                mutableMapOf(
-                        Pair(SORT_PARAM_KEY, "2"),
-                        Pair(SORT_PARAM_KEY, "3"),
-                        Pair(RATING_PARAM_KEY, "5"),
-                        Pair(PMIN_PARAM_KEY, "2"),
-                        Pair(PMAX_PARAM_KEY, "5")
-                )
+            mutableMapOf(
+                Pair(SORT_PARAM_KEY, "2"),
+                Pair(SORT_PARAM_KEY, "3"),
+                Pair(RATING_PARAM_KEY, "5"),
+                Pair(PMIN_PARAM_KEY, "2"),
+                Pair(PMAX_PARAM_KEY, "5")
+            )
         )
     }
     private val addressWidgetData: LocalCacheModel = LocalCacheModel()
@@ -207,7 +209,7 @@ class ShopHomeViewModelTest {
             listOf()
         ),
         widgetType = PlayWidgetType.Small,
-        isLoading = false,
+        isLoading = false
     )
 
     private val playWidgetStateMediumMockData = PlayWidgetState(
@@ -229,9 +231,8 @@ class ShopHomeViewModelTest {
             listOf()
         ),
         widgetType = PlayWidgetType.Medium,
-        isLoading = false,
+        isLoading = false
     )
-
 
     @Before
     fun setup() {
@@ -284,7 +285,7 @@ class ShopHomeViewModelTest {
     @Test
     fun `check whether response get lazy load product success is not null when isEnableDirect purchase is true`() {
         coEvery { getShopProductUseCase.executeOnBackground() } returns ShopProduct.GetShopProduct(
-                data = listOf(ShopProduct(), ShopProduct())
+            data = listOf(ShopProduct(), ShopProduct())
         )
 
         viewModel.getNewProductList(mockShopId, mockPage, mockProductPerPage, shopProductFilterParameter, addressWidgetData, mockIsDirectPurchaseTrue)
@@ -296,9 +297,11 @@ class ShopHomeViewModelTest {
         val liveDataValue = viewModel.productListData.value
         assertTrue(liveDataValue is Success)
         assertNotNull(liveDataValue)
-        assert((liveDataValue as? Success)?.data?.listShopProductUiModel?.all {
-            it.isEnableDirectPurchase
-        } == mockIsDirectPurchaseTrue)
+        assert(
+            (liveDataValue as? Success)?.data?.listShopProductUiModel?.all {
+                it.isEnableDirectPurchase
+            } == mockIsDirectPurchaseTrue
+        )
     }
 
     @Test
@@ -315,9 +318,11 @@ class ShopHomeViewModelTest {
 
         assertTrue(viewModel.productListData.value is Success)
         assertNotNull(viewModel.productListData.value)
-        assert((viewModel.productListData.value as? Success)?.data?.listShopProductUiModel?.all {
-            it.isEnableDirectPurchase
-        } == mockIsDirectPurchaseFalse)
+        assert(
+            (viewModel.productListData.value as? Success)?.data?.listShopProductUiModel?.all {
+                it.isEnableDirectPurchase
+            } == mockIsDirectPurchaseFalse
+        )
     }
 
     @Test
@@ -353,18 +358,17 @@ class ShopHomeViewModelTest {
         assertTrue(viewModel.shopHomeMerchantVoucherLayoutData.value is Fail)
     }
 
-
     @Test
     fun `check whether get merchant voucher is Success if TokopointsCatalogMVCSummary or resultStatus is null`() {
         coEvery {
             mvcSummaryUseCase.getResponse(any())
         } returns TokopointsCatalogMVCSummaryResponse(
-                TokopointsCatalogMVCSummary(
-                        resultStatus = null,
-                        null,
-                        null,
-                        null
-                )
+            TokopointsCatalogMVCSummary(
+                resultStatus = null,
+                null,
+                null,
+                null
+            )
         )
         viewModel.getMerchantVoucherCoupon(mockShopId, null, ShopHomeVoucherUiModel())
         assertTrue(viewModel.shopHomeMerchantVoucherLayoutData.value is Success)
@@ -372,17 +376,17 @@ class ShopHomeViewModelTest {
         coEvery {
             mvcSummaryUseCase.getResponse(any())
         } returns TokopointsCatalogMVCSummaryResponse(
-                TokopointsCatalogMVCSummary(
-                        resultStatus = ResultStatus(
-                                code = null,
-                                null,
-                                null,
-                                null
-                        ),
-                        null,
-                        null,
-                        null
-                )
+            TokopointsCatalogMVCSummary(
+                resultStatus = ResultStatus(
+                    code = null,
+                    null,
+                    null,
+                    null
+                ),
+                null,
+                null,
+                null
+            )
         )
         viewModel.getMerchantVoucherCoupon(mockShopId, context, ShopHomeVoucherUiModel())
         assertTrue(viewModel.shopHomeMerchantVoucherLayoutData.value is Success)
@@ -407,18 +411,20 @@ class ShopHomeViewModelTest {
         val mockDisplayedPrice = "Rp. 1000"
 
         val onSuccessAddToCart: (DataModel) -> Unit = mockk(relaxed = true)
-        every { addToCartUseCaseRx.createObservable(any()) } returns Observable.just(AddToCartDataModel(
+        every { addToCartUseCaseRx.createObservable(any()) } returns Observable.just(
+            AddToCartDataModel(
                 data = DataModel(success = 1)
-        ))
+            )
+        )
         viewModel.addProductToCart(
-                ShopHomeProductUiModel().apply {
-                    id = mockProductId
-                    name = mockProductName
-                    displayedPrice = mockDisplayedPrice
-                },
-                mockShopId,
-                onSuccessAddToCart,
-                {}
+            ShopHomeProductUiModel().apply {
+                id = mockProductId
+                name = mockProductName
+                displayedPrice = mockDisplayedPrice
+            },
+            mockShopId,
+            onSuccessAddToCart,
+            {}
         )
         verify { onSuccessAddToCart.invoke(any()) }
     }
@@ -430,18 +436,19 @@ class ShopHomeViewModelTest {
         val mockDisplayedPrice = "Rp. 1000"
         val onErrorAddToCart: (Throwable) -> Unit = mockk(relaxed = true)
         every { addToCartUseCaseRx.createObservable(any()) } returns Observable.just(
-                AddToCartDataModel(
-                        data = DataModel(success = 0, message = arrayListOf("Message"))
-                ))
+            AddToCartDataModel(
+                data = DataModel(success = 0, message = arrayListOf("Message"))
+            )
+        )
         viewModel.addProductToCart(
-                ShopHomeProductUiModel().apply {
-                    id = mockProductId
-                    name = mockProductName
-                    displayedPrice = mockDisplayedPrice
-                },
-                mockShopId,
-                {},
-                onErrorAddToCart
+            ShopHomeProductUiModel().apply {
+                id = mockProductId
+                name = mockProductName
+                displayedPrice = mockDisplayedPrice
+            },
+            mockShopId,
+            {},
+            onErrorAddToCart
         )
         verify { onErrorAddToCart.invoke(any()) }
     }
@@ -451,10 +458,10 @@ class ShopHomeViewModelTest {
         val onErrorAddToCart: (Throwable) -> Unit = mockk(relaxed = true)
         every { addToCartUseCaseRx.createObservable(any()) } throws Throwable()
         viewModel.addProductToCart(
-                ShopHomeProductUiModel(),
-                mockShopId,
-                {},
-                onErrorAddToCart
+            ShopHomeProductUiModel(),
+            mockShopId,
+            {},
+            onErrorAddToCart
         )
         verify { onErrorAddToCart.invoke(any()) }
     }
@@ -466,18 +473,18 @@ class ShopHomeViewModelTest {
         val mockDisplayedPrice = "Rp. 1000"
         val onSuccessAddToCart: (DataModel) -> Unit = mockk(relaxed = true)
         coEvery { addToCartOccUseCase.setParams(any()).executeOnBackground().mapToAddToCartDataModel() } returns AddToCartDataModel(
-                status = AddToCartDataModel.STATUS_OK,
-                data = DataModel(success = 1)
+            status = AddToCartDataModel.STATUS_OK,
+            data = DataModel(success = 1)
         )
         viewModel.addProductToCartOcc(
-                ShopHomeProductUiModel().apply {
-                    id = mockProductId
-                    name = mockProductName
-                    displayedPrice = mockDisplayedPrice
-                },
-                mockShopId,
-                onSuccessAddToCart,
-                {}
+            ShopHomeProductUiModel().apply {
+                id = mockProductId
+                name = mockProductName
+                displayedPrice = mockDisplayedPrice
+            },
+            mockShopId,
+            onSuccessAddToCart,
+            {}
         )
         verify { onSuccessAddToCart.invoke(any()) }
     }
@@ -486,14 +493,14 @@ class ShopHomeViewModelTest {
     fun `check whether onErrorAddToCart is called when addProductToCartOcc response is not success`() {
         val onErrorAddToCart: (Throwable) -> Unit = mockk(relaxed = true)
         coEvery { addToCartOccUseCase.setParams(any()).executeOnBackground().mapToAddToCartDataModel() } returns AddToCartDataModel(
-                status = AddToCartDataModel.STATUS_ERROR,
-                data = DataModel(success = 0, message = arrayListOf("Message"))
+            status = AddToCartDataModel.STATUS_ERROR,
+            data = DataModel(success = 0, message = arrayListOf("Message"))
         )
         viewModel.addProductToCartOcc(
-                ShopHomeProductUiModel(),
-                mockShopId,
-                {},
-                onErrorAddToCart
+            ShopHomeProductUiModel(),
+            mockShopId,
+            {},
+            onErrorAddToCart
         )
         verify { onErrorAddToCart.invoke(any()) }
     }
@@ -503,10 +510,10 @@ class ShopHomeViewModelTest {
         val onErrorAddToCart: (Throwable) -> Unit = mockk(relaxed = true)
         coEvery { addToCartOccUseCase.setParams(any()).executeOnBackground() } throws Throwable()
         viewModel.addProductToCartOcc(
-                ShopHomeProductUiModel(),
-                mockShopId,
-                {},
-                onErrorAddToCart
+            ShopHomeProductUiModel(),
+            mockShopId,
+            {},
+            onErrorAddToCart
         )
         verify { onErrorAddToCart.invoke(any()) }
     }
@@ -516,20 +523,20 @@ class ShopHomeViewModelTest {
         val onErrorAddToCart: (Throwable) -> Unit = mockk(relaxed = true)
 
         val mockBundleProductList = listOf(
-                ProductDetail(
-                        productId = "111",
-                        quantity = 1,
-                        shopId = "123",
-                        customerId = "321"
-                )
+            ProductDetail(
+                productId = "111",
+                quantity = 1,
+                shopId = "123",
+                customerId = "321"
+            )
         )
 
         val mockAtcBundleParams = AddToCartBundleRequestParams(
-                shopId = "123",
-                bundleId = "222",
-                bundleQty = 1,
-                selectedProductPdp = "0",
-                productDetails = mockBundleProductList
+            shopId = "123",
+            bundleId = "222",
+            bundleQty = 1,
+            selectedProductPdp = "0",
+            productDetails = mockBundleProductList
         )
 
         coEvery {
@@ -537,13 +544,13 @@ class ShopHomeViewModelTest {
             addToCartBundleUseCase.executeOnBackground()
         } throws Throwable()
         viewModel.addBundleToCart(
-                shopId = "123",
-                userId = "321",
-                bundleId = "222",
-                productDetails = listOf(ShopHomeBundleProductUiModel()),
-                {},
-                onErrorAddToCart,
-                productQuantity = 1
+            shopId = "123",
+            userId = "321",
+            bundleId = "222",
+            productDetails = listOf(ShopHomeBundleProductUiModel()),
+            {},
+            onErrorAddToCart,
+            productQuantity = 1
         )
 
         verify { onErrorAddToCart.invoke(any()) }
@@ -554,38 +561,38 @@ class ShopHomeViewModelTest {
         val onFinishAddToCart: (AddToCartBundleModel) -> Unit = mockk(relaxed = true)
 
         val mockBundleProductList = listOf(
-                ProductDetail(
-                        productId = "111",
-                        quantity = 1,
-                        shopId = "123",
-                        customerId = "321"
-                )
+            ProductDetail(
+                productId = "111",
+                quantity = 1,
+                shopId = "123",
+                customerId = "321"
+            )
         )
 
         val mockAtcBundleParams = AddToCartBundleRequestParams(
-                shopId = "123",
-                bundleId = "222",
-                bundleQty = 1,
-                selectedProductPdp = "0",
-                productDetails = mockBundleProductList
+            shopId = "123",
+            bundleId = "222",
+            bundleQty = 1,
+            selectedProductPdp = "0",
+            productDetails = mockBundleProductList
         )
 
         coEvery {
             addToCartBundleUseCase.setParams(mockAtcBundleParams)
             addToCartBundleUseCase.executeOnBackground()
         } returns AddToCartBundleModel(
-                status = "OK",
-                errorMessage = "",
-                addToCartBundleDataModel = AddToCartBundleDataModel(success = 1)
+            status = "OK",
+            errorMessage = "",
+            addToCartBundleDataModel = AddToCartBundleDataModel(success = 1)
         )
         viewModel.addBundleToCart(
-                shopId = "123",
-                userId = "321",
-                bundleId = "222",
-                productDetails = listOf(ShopHomeBundleProductUiModel()),
-                onFinishAddToCart = onFinishAddToCart,
-                {},
-                productQuantity = 1
+            shopId = "123",
+            userId = "321",
+            bundleId = "222",
+            productDetails = listOf(ShopHomeBundleProductUiModel()),
+            onFinishAddToCart = onFinishAddToCart,
+            {},
+            productQuantity = 1
         )
 
         verify { onFinishAddToCart.invoke(any()) }
@@ -601,54 +608,58 @@ class ShopHomeViewModelTest {
     fun `check whether checkWishlistData post Success value`() {
         val mockProductId = "123"
         coEvery { gqlCheckWishlistUseCaseProvider.get().executeOnBackground() } returns listOf(
-                CheckWishlistResult()
+            CheckWishlistResult()
         )
-        viewModel.getWishlistStatus(listOf(
+        viewModel.getWishlistStatus(
+            listOf(
                 ShopHomeCarousellProductUiModel(
-                        productList = listOf(
-                                ShopHomeProductUiModel().apply { id = "" },
-                                ShopHomeProductUiModel().apply { id = mockProductId }
-                        )
+                    productList = listOf(
+                        ShopHomeProductUiModel().apply { id = "" },
+                        ShopHomeProductUiModel().apply { id = mockProductId }
+                    )
                 )
-        ))
+            )
+        )
         assert(viewModel.checkWishlistData.value is Success)
     }
-
 
     @Test
     fun `check whether checkWishlistData post Success with null value if response throw exception`() {
         val mockProductId = "123"
         coEvery { gqlCheckWishlistUseCaseProvider.get().executeOnBackground() } throws Exception()
-        viewModel.getWishlistStatus(listOf(
+        viewModel.getWishlistStatus(
+            listOf(
                 ShopHomeCarousellProductUiModel(
-                        productList = listOf(
-                                ShopHomeProductUiModel().apply { id = "" },
-                                ShopHomeProductUiModel().apply { id = mockProductId }
-                        )
+                    productList = listOf(
+                        ShopHomeProductUiModel().apply { id = "" },
+                        ShopHomeProductUiModel().apply { id = mockProductId }
+                    )
                 )
-        ))
+            )
+        )
         assert(viewModel.checkWishlistData.value is Success)
         assertNotNull((viewModel.checkWishlistData.value as Success).data)
     }
-
 
     @Test
     fun `check checkWishlistData if exception is thrown`() {
         val mockProductId = "123"
         coEvery { gqlCheckWishlistUseCaseProvider.get().executeOnBackground() } returns listOf(
-                CheckWishlistResult()
+            CheckWishlistResult()
         )
         val observer = mockk<Observer<Result<List<Pair<ShopHomeCarousellProductUiModel, List<CheckWishlistResult>>?>>>>()
         viewModel.checkWishlistData.observeForever(observer)
         every { observer.onChanged(any<Result<List<Pair<ShopHomeCarousellProductUiModel, List<CheckWishlistResult>>>>>()) } throws Exception()
-        viewModel.getWishlistStatus(listOf(
+        viewModel.getWishlistStatus(
+            listOf(
                 ShopHomeCarousellProductUiModel(
-                        productList = listOf(
-                                ShopHomeProductUiModel().apply { id = "" },
-                                ShopHomeProductUiModel().apply { id = mockProductId }
-                        )
+                    productList = listOf(
+                        ShopHomeProductUiModel().apply { id = "" },
+                        ShopHomeProductUiModel().apply { id = mockProductId }
+                    )
                 )
-        ))
+            )
+        )
     }
 
     @Test
@@ -656,11 +667,11 @@ class ShopHomeViewModelTest {
         val mockVideoUrl = "mock video url"
         val mockWidgetId = "11"
         coEvery { getYoutubeVideoUseCase.executeOnBackground() } returns mapOf(
-                YoutubeVideoDetailModel::class.java to RestResponse(
-                        YoutubeVideoDetailModel(),
-                        1,
-                        true
-                )
+            YoutubeVideoDetailModel::class.java to RestResponse(
+                YoutubeVideoDetailModel(),
+                1,
+                true
+            )
         )
         viewModel.getVideoYoutube(mockVideoUrl, mockWidgetId)
         coVerify { getYoutubeVideoUseCase.executeOnBackground() }
@@ -704,7 +715,7 @@ class ShopHomeViewModelTest {
 
     @Test
     fun `check whether campaignFlashSaleRemindMeStatusData post Success value`() {
-        val mockCampaignId ="12345"
+        val mockCampaignId = "12345"
         coEvery { getCampaignNotifyMeUseCase.get().executeOnBackground() } returns GetCampaignNotifyMeModel()
         viewModel.getCampaignFlashSaleRemindMeStatus(mockCampaignId)
         coVerify { getCampaignNotifyMeUseCase.get().executeOnBackground() }
@@ -713,7 +724,7 @@ class ShopHomeViewModelTest {
 
     @Test
     fun `check whether campaignFlashSaleRemindMeStatusData value is null when error`() {
-        val mockCampaignId ="12345"
+        val mockCampaignId = "12345"
         coEvery { getCampaignNotifyMeUseCase.get().executeOnBackground() } throws Throwable()
         viewModel.getCampaignFlashSaleRemindMeStatus(mockCampaignId)
         coVerify { getCampaignNotifyMeUseCase.get().executeOnBackground() }
@@ -758,10 +769,10 @@ class ShopHomeViewModelTest {
 
     @Test
     fun `check whether bottomSheetFilterLiveData post Success value`() {
-        coEvery { getShopFilterBottomSheetDataUseCase.executeOnBackground() }  returns DynamicFilterModel(
-                data = DataValue(
-                        listOf(Filter(title = "pengiriman"), Filter(title = "Rating"))
-                )
+        coEvery { getShopFilterBottomSheetDataUseCase.executeOnBackground() } returns DynamicFilterModel(
+            data = DataValue(
+                listOf(Filter(title = "pengiriman"), Filter(title = "Rating"))
+            )
         )
         viewModel.getBottomSheetFilterData()
         coVerify { getShopFilterBottomSheetDataUseCase.executeOnBackground() }
@@ -804,13 +815,16 @@ class ShopHomeViewModelTest {
         val playWidgetMock = PlayWidget()
         coEvery { playWidgetTools.getWidgetFromNetwork(any(), any()) } returns playWidgetMock
         coEvery { playWidgetTools.mapWidgetToModel(playWidgetMock, any()) } returns playWidgetStateMockData
-        viewModel.getPlayWidget(mockShopId, CarouselPlayWidgetUiModel(
+        viewModel.getPlayWidget(
+            mockShopId,
+            CarouselPlayWidgetUiModel(
                 "",
                 0,
                 "",
                 "",
                 BaseShopHomeWidgetUiModel.Header()
-        ))
+            )
+        )
 
         coEvery { userSessionInterface.isLoggedIn } returns true
         coEvery { playWidgetTools.updateToggleReminder(any(), any(), any()) } returns mockPlayWidgetReminder
@@ -823,7 +837,6 @@ class ShopHomeViewModelTest {
         assert(viewModel.playWidgetReminderObservable.value is Success)
     }
 
-
     @Test
     fun `check whether playWidgetToggleReminderObservable fail value if mapWidgetToggleReminder return false`() {
         val mockChannelId = "123"
@@ -832,19 +845,21 @@ class ShopHomeViewModelTest {
         val playWidgetMock = PlayWidget()
         coEvery { playWidgetTools.getWidgetFromNetwork(any(), any()) } returns playWidgetMock
         coEvery { playWidgetTools.mapWidgetToModel(playWidgetMock, any()) } returns playWidgetStateMockData
-        viewModel.getPlayWidget(mockShopId, CarouselPlayWidgetUiModel(
+        viewModel.getPlayWidget(
+            mockShopId,
+            CarouselPlayWidgetUiModel(
                 "",
                 0,
                 "",
                 "",
                 BaseShopHomeWidgetUiModel.Header()
-        ))
+            )
+        )
         coEvery { userSessionInterface.isLoggedIn } returns true
         coEvery { playWidgetTools.updateToggleReminder(any(), any(), any()) } returns mockPlayWidgetReminder
         coEvery { playWidgetTools.mapWidgetToggleReminder(any()) } answers {
             false
         }
-
 
         viewModel.shouldUpdatePlayWidgetToggleReminder(mockChannelId, PlayWidgetReminderType.Reminded)
         coVerify { playWidgetTools.updateToggleReminder(any(), any(), any()) }
@@ -860,13 +875,16 @@ class ShopHomeViewModelTest {
         val playWidgetMock = PlayWidget()
         coEvery { playWidgetTools.getWidgetFromNetwork(any(), any()) } returns playWidgetMock
         coEvery { playWidgetTools.mapWidgetToModel(playWidgetMock, any()) } returns playWidgetStateMockData
-        viewModel.getPlayWidget(mockShopId, CarouselPlayWidgetUiModel(
+        viewModel.getPlayWidget(
+            mockShopId,
+            CarouselPlayWidgetUiModel(
                 "",
                 0,
                 "",
                 "",
                 BaseShopHomeWidgetUiModel.Header()
-        ))
+            )
+        )
         coEvery { userSessionInterface.isLoggedIn } returns true
         coEvery { playWidgetTools.updateToggleReminder(any(), any(), any()) } throws Throwable()
 
@@ -894,24 +912,26 @@ class ShopHomeViewModelTest {
         coEvery { getShopProductUseCase.executeOnBackground() } returns ShopProduct.GetShopProduct()
         coEvery { gqlGetShopSortUseCase.executeOnBackground() } returns listOf()
         coEvery { shopProductSortMapper.convertSort(any()) } returns mutableListOf(
-                ShopProductSortModel().apply {
-                    value = mockSortId
-                    name = mockSortName
-                }
+            ShopProductSortModel().apply {
+                value = mockSortId
+                name = mockSortName
+            }
         )
         viewModel.getProductGridListWidgetData(
-                mockShopId,
-                mockProductPerPage,
-                shopProductFilterParameter,
-                null,
-                addressWidgetData,
-                mockIsDirectPurchaseTrue
+            mockShopId,
+            mockProductPerPage,
+            shopProductFilterParameter,
+            null,
+            addressWidgetData,
+            mockIsDirectPurchaseTrue
         )
         val liveDataValue = viewModel.productListData.value
         assert(liveDataValue is Success)
-        assert((liveDataValue as? Success)?.data?.listShopProductUiModel?.all {
-            it.isEnableDirectPurchase
-        } == true)
+        assert(
+            (liveDataValue as? Success)?.data?.listShopProductUiModel?.all {
+                it.isEnableDirectPurchase
+            } == true
+        )
     }
 
     @Test
@@ -937,9 +957,11 @@ class ShopHomeViewModelTest {
         )
         val liveDataValue = viewModel.productListData.value
         assert(liveDataValue is Success)
-        assert((liveDataValue as? Success)?.data?.listShopProductUiModel?.all {
-            !it.isEnableDirectPurchase
-        } == true)
+        assert(
+            (liveDataValue as? Success)?.data?.listShopProductUiModel?.all {
+                !it.isEnableDirectPurchase
+            } == true
+        )
     }
 
     @Test
@@ -949,18 +971,18 @@ class ShopHomeViewModelTest {
         coEvery { getShopProductUseCase.executeOnBackground() } throws Exception()
         coEvery { gqlGetShopSortUseCase.executeOnBackground() } returns listOf()
         coEvery { shopProductSortMapper.convertSort(any()) } returns mutableListOf(
-                ShopProductSortModel().apply {
-                    value = mockSortId
-                    name = mockSortName
-                }
+            ShopProductSortModel().apply {
+                value = mockSortId
+                name = mockSortName
+            }
         )
         viewModel.getProductGridListWidgetData(
-                mockShopId,
-                mockProductPerPage,
-                shopProductFilterParameter,
-                null,
-                addressWidgetData,
-                mockIsDirectPurchaseTrue
+            mockShopId,
+            mockProductPerPage,
+            shopProductFilterParameter,
+            null,
+            addressWidgetData,
+            mockIsDirectPurchaseTrue
         )
         assert(viewModel.productListData.value == null)
     }
@@ -972,10 +994,10 @@ class ShopHomeViewModelTest {
 
         coEvery { gqlGetShopSortUseCase.executeOnBackground() } returns listOf()
         coEvery { shopProductSortMapper.convertSort(any()) } returns mutableListOf(
-                ShopProductSortModel().apply {
-                    value = mockSortId
-                    name = mockSortName
-                }
+            ShopProductSortModel().apply {
+                value = mockSortId
+                name = mockSortName
+            }
         )
         viewModel.getProductGridListWidgetData(mockShopId, mockProductPerPage, shopProductFilterParameter, ShopProduct.GetShopProduct(), addressWidgetData, mockIsDirectPurchaseTrue)
         assert(viewModel.getSortNameById(mockSortId) == mockSortName)
@@ -997,7 +1019,7 @@ class ShopHomeViewModelTest {
         coEvery { observer.onChanged(any<Success<GetShopHomeProductUiModel>>()) } throws Exception()
         coEvery { gqlGetShopSortUseCase.executeOnBackground() } returns listOf()
         coEvery { shopProductSortMapper.convertSort(any()) } returns mutableListOf(
-                ShopProductSortModel()
+            ShopProductSortModel()
         )
         viewModel.getProductGridListWidgetData(mockShopId, mockProductPerPage, shopProductFilterParameter, ShopProduct.GetShopProduct(), addressWidgetData, mockIsDirectPurchaseTrue)
     }
@@ -1009,10 +1031,10 @@ class ShopHomeViewModelTest {
 
         coEvery { gqlGetShopSortUseCase.executeOnBackground() } returns listOf()
         coEvery { shopProductSortMapper.convertSort(any()) } returns mutableListOf(
-                ShopProductSortModel().apply {
-                    value = mockSortId
-                    name = mockSortName
-                }
+            ShopProductSortModel().apply {
+                value = mockSortId
+                name = mockSortName
+            }
         )
         viewModel.getProductGridListWidgetData(mockShopId, mockProductPerPage, shopProductFilterParameter, ShopProduct.GetShopProduct(), addressWidgetData, mockIsDirectPurchaseTrue)
         assert(viewModel.getSortNameById("").isEmpty())
@@ -1038,9 +1060,11 @@ class ShopHomeViewModelTest {
             }
         )
         viewModel.getProductGridListWidgetData(mockShopId, mockProductPerPage, shopProductFilterParameter, mockShopProductList, addressWidgetData, mockIsDirectPurchaseTrue)
-        assert((viewModel.productListData.value as? Success)?.data?.listShopProductUiModel?.all {
-            it.isEnableDirectPurchase
-        } == true)
+        assert(
+            (viewModel.productListData.value as? Success)?.data?.listShopProductUiModel?.all {
+                it.isEnableDirectPurchase
+            } == true
+        )
     }
 
     @Test
@@ -1062,28 +1086,31 @@ class ShopHomeViewModelTest {
             }
         )
         viewModel.getProductGridListWidgetData(mockShopId, mockProductPerPage, shopProductFilterParameter, mockShopProductList, addressWidgetData, mockIsDirectPurchaseFalse)
-        assert((viewModel.productListData.value as? Success)?.data?.listShopProductUiModel?.all {
-            !it.isEnableDirectPurchase
-        } == true)
+        assert(
+            (viewModel.productListData.value as? Success)?.data?.listShopProductUiModel?.all {
+                !it.isEnableDirectPurchase
+            } == true
+        )
     }
-
 
     @Test
     fun `check whether playWidgetObservable value is not null when get data is success`() {
         val playWidgetMock = PlayWidget()
         coEvery { playWidgetTools.getWidgetFromNetwork(any(), any()) } returns playWidgetMock
         coEvery { playWidgetTools.mapWidgetToModel(playWidgetMock, any()) } returns playWidgetStateMockData
-        viewModel.getPlayWidget(mockShopId, CarouselPlayWidgetUiModel(
+        viewModel.getPlayWidget(
+            mockShopId,
+            CarouselPlayWidgetUiModel(
                 "",
                 0,
                 "",
                 "",
                 BaseShopHomeWidgetUiModel.Header()
-        ))
+            )
+        )
         coVerify { playWidgetTools.getWidgetFromNetwork(any(), any()) }
         assert(viewModel.playWidgetObservable.value != null)
     }
-
 
     @Test
     fun `check whether playWidgetObservable value is not null when get data is success if shopId and userSession shopId match`() {
@@ -1091,13 +1118,16 @@ class ShopHomeViewModelTest {
         val playWidgetMock = PlayWidget()
         coEvery { playWidgetTools.getWidgetFromNetwork(any(), any()) } returns playWidgetMock
         coEvery { playWidgetTools.mapWidgetToModel(playWidgetMock, any()) } returns playWidgetStateMockData
-        viewModel.getPlayWidget(mockShopId, CarouselPlayWidgetUiModel(
+        viewModel.getPlayWidget(
+            mockShopId,
+            CarouselPlayWidgetUiModel(
                 "",
                 0,
                 "",
                 "",
                 BaseShopHomeWidgetUiModel.Header()
-        ))
+            )
+        )
         coVerify { playWidgetTools.getWidgetFromNetwork(any(), any()) }
         assert(viewModel.playWidgetObservable.value != null)
     }
@@ -1106,22 +1136,28 @@ class ShopHomeViewModelTest {
     fun `check whether playWidgetObservable value is not null when get data is success if playWidgetObservable value is null`() {
         every { userSessionInterface.shopId } returns mockShopId
         val playWidgetMock = PlayWidget()
-        viewModel.getPlayWidget(mockShopId, CarouselPlayWidgetUiModel(
+        viewModel.getPlayWidget(
+            mockShopId,
+            CarouselPlayWidgetUiModel(
                 "",
                 0,
                 "",
                 "",
                 BaseShopHomeWidgetUiModel.Header()
-        ))
+            )
+        )
         coEvery { playWidgetTools.getWidgetFromNetwork(any(), any()) } returns playWidgetMock
         coEvery { playWidgetTools.mapWidgetToModel(playWidgetMock, any()) } returns playWidgetStateMockData
-        viewModel.getPlayWidget(mockShopId, CarouselPlayWidgetUiModel(
+        viewModel.getPlayWidget(
+            mockShopId,
+            CarouselPlayWidgetUiModel(
                 "",
                 0,
                 "",
                 "",
                 BaseShopHomeWidgetUiModel.Header()
-        ))
+            )
+        )
         coVerify { playWidgetTools.getWidgetFromNetwork(any(), any()) }
         assert(viewModel.playWidgetObservable.value != null)
     }
@@ -1132,20 +1168,26 @@ class ShopHomeViewModelTest {
         val playWidgetMock = PlayWidget()
         coEvery { playWidgetTools.getWidgetFromNetwork(any(), any()) } returns playWidgetMock
         coEvery { playWidgetTools.mapWidgetToModel(playWidgetMock, any()) } returns playWidgetStateMockData
-        viewModel.getPlayWidget(mockShopId, CarouselPlayWidgetUiModel(
+        viewModel.getPlayWidget(
+            mockShopId,
+            CarouselPlayWidgetUiModel(
                 "",
                 0,
                 "",
                 "",
                 BaseShopHomeWidgetUiModel.Header()
-        ))
-        viewModel.getPlayWidget(mockShopId, CarouselPlayWidgetUiModel(
+            )
+        )
+        viewModel.getPlayWidget(
+            mockShopId,
+            CarouselPlayWidgetUiModel(
                 "",
                 0,
                 "",
                 "",
                 BaseShopHomeWidgetUiModel.Header()
-        ))
+            )
+        )
         coVerify { playWidgetTools.getWidgetFromNetwork(any(), any()) }
         assert(viewModel.playWidgetObservable.value != null)
     }
@@ -1156,13 +1198,16 @@ class ShopHomeViewModelTest {
         val playWidgetMock = PlayWidget()
         coEvery { playWidgetTools.getWidgetFromNetwork(any(), any()) } returns playWidgetMock
         coEvery { playWidgetTools.mapWidgetToModel(playWidgetMock, any()) } returns playWidgetStateMockData
-        viewModel.getPlayWidget(mockShopId, CarouselPlayWidgetUiModel(
+        viewModel.getPlayWidget(
+            mockShopId,
+            CarouselPlayWidgetUiModel(
                 "",
                 0,
                 "",
                 "",
                 BaseShopHomeWidgetUiModel.Header()
-        ))
+            )
+        )
         coEvery {
             playWidgetTools.updateDeletedChannel(any(), channelId)
         } returns playWidgetStateMockData
@@ -1180,13 +1225,16 @@ class ShopHomeViewModelTest {
         coEvery { getShopProductUseCase.executeOnBackground() } returns ShopProduct.GetShopProduct()
         coEvery { playWidgetTools.getWidgetFromNetwork(any(), any()) } returns playWidgetMock
         coEvery { playWidgetTools.mapWidgetToModel(playWidgetMock, any()) } returns playWidgetStateMockData
-        viewModel.getPlayWidget(mockShopId, CarouselPlayWidgetUiModel(
+        viewModel.getPlayWidget(
+            mockShopId,
+            CarouselPlayWidgetUiModel(
                 "",
                 0,
                 "",
                 "",
                 BaseShopHomeWidgetUiModel.Header()
-        ))
+            )
+        )
         coEvery {
             playWidgetTools.updateDeletedChannel(any(), channelId)
         } throws Exception()
@@ -1240,25 +1288,28 @@ class ShopHomeViewModelTest {
                     )
                 )
             ),
-            isLoading = false,
+            isLoading = false
         )
         coEvery { getShopProductUseCase.executeOnBackground() } returns ShopProduct.GetShopProduct()
         coEvery { playWidgetTools.getWidgetFromNetwork(any(), any()) } returns playWidgetMock
         coEvery { playWidgetTools.mapWidgetToModel(playWidgetMock, any()) } returns playWidgetStateMockData
-        viewModel.getPlayWidget(mockShopId, CarouselPlayWidgetUiModel(
+        viewModel.getPlayWidget(
+            mockShopId,
+            CarouselPlayWidgetUiModel(
                 "",
                 0,
                 "",
                 "",
                 BaseShopHomeWidgetUiModel.Header()
-        ))
+            )
+        )
         coVerify { playWidgetTools.getWidgetFromNetwork(any(), any()) }
         every {
             playWidgetTools.updateTotalView(playWidgetStateMockData, mockChannelId, mockTotalView.totalViewFmt)
         } returns playWidgetUiModelMockDataWithTotalView
         viewModel.updatePlayWidgetTotalView(
-                mockChannelId,
-                mockTotalView.totalViewFmt
+            mockChannelId,
+            mockTotalView.totalViewFmt
         )
         val playWidgetUiModel = viewModel.playWidgetObservable.value?.playWidgetState?.model
         assert((playWidgetUiModel?.items?.first() as? PlayWidgetChannelUiModel)?.totalView == mockTotalView)
@@ -1269,18 +1320,18 @@ class ShopHomeViewModelTest {
         val mockChannelId = "123ch"
         val mockTotalView = "600"
         viewModel.updatePlayWidgetTotalView(
-                null,
-                null
+            null,
+            null
         )
         assert(viewModel.playWidgetObservable.value == null)
         viewModel.updatePlayWidgetTotalView(
-                mockChannelId,
-                null
+            mockChannelId,
+            null
         )
         assert(viewModel.playWidgetObservable.value == null)
         viewModel.updatePlayWidgetTotalView(
-                null,
-                mockTotalView
+            null,
+            mockTotalView
         )
         assert(viewModel.playWidgetObservable.value == null)
     }
@@ -1325,7 +1376,7 @@ class ShopHomeViewModelTest {
                         "",
                         "",
                         false,
-                        PlayWidgetChannelTypeTransition(PlayWidgetChannelType.Upcoming, PlayWidgetChannelType.Upcoming),
+                        PlayWidgetChannelTypeTransition(PlayWidgetChannelType.Upcoming, PlayWidgetChannelType.Upcoming)
                     )
                 )
             )
@@ -1333,13 +1384,16 @@ class ShopHomeViewModelTest {
         coEvery { getShopProductUseCase.executeOnBackground() } returns ShopProduct.GetShopProduct()
         coEvery { playWidgetTools.getWidgetFromNetwork(any(), any()) } returns playWidgetMock
         coEvery { playWidgetTools.mapWidgetToModel(playWidgetMock, any()) } returns playWidgetStateMediumMockData
-        viewModel.getPlayWidget(mockShopId, CarouselPlayWidgetUiModel(
+        viewModel.getPlayWidget(
+            mockShopId,
+            CarouselPlayWidgetUiModel(
                 "",
                 0,
                 "",
                 "",
                 BaseShopHomeWidgetUiModel.Header()
-        ))
+            )
+        )
         coVerify { playWidgetTools.getWidgetFromNetwork(any(), any()) }
         every {
             playWidgetTools.updateActionReminder(playWidgetStateMediumMockData, mockChannelId, mockReminderType)
@@ -1351,7 +1405,6 @@ class ShopHomeViewModelTest {
         val playWidgetUiModel = viewModel.playWidgetObservable.value?.playWidgetState?.model
         assert((playWidgetUiModel?.items?.first() as? PlayWidgetChannelUiModel)?.reminderType == mockReminderType)
     }
-
 
     @Test
     fun `check if playWidgetObservableplay value is updated when isReminder is change to not reminded`() {
@@ -1393,28 +1446,31 @@ class ShopHomeViewModelTest {
                         "",
                         "",
                         false,
-                        PlayWidgetChannelTypeTransition(PlayWidgetChannelType.Upcoming, PlayWidgetChannelType.Upcoming),
+                        PlayWidgetChannelTypeTransition(PlayWidgetChannelType.Upcoming, PlayWidgetChannelType.Upcoming)
                     )
                 )
             ),
-            isLoading = false,
+            isLoading = false
         )
         coEvery { playWidgetTools.getWidgetFromNetwork(any(), any()) } returns playWidgetMock
         coEvery { playWidgetTools.mapWidgetToModel(playWidgetMock, any()) } returns playWidgetStateMediumMockData
-        viewModel.getPlayWidget(mockShopId, CarouselPlayWidgetUiModel(
+        viewModel.getPlayWidget(
+            mockShopId,
+            CarouselPlayWidgetUiModel(
                 "",
                 0,
                 "",
                 "",
                 BaseShopHomeWidgetUiModel.Header()
-        ))
+            )
+        )
         coVerify { playWidgetTools.getWidgetFromNetwork(any(), any()) }
         every {
             playWidgetTools.updateActionReminder(playWidgetStateMediumMockData, mockChannelId, mockReminderType)
         } returns playWidgetUiModelMockDataWithReminder
         viewModel.updatePlayWidgetReminder(
-                mockChannelId,
-                false
+            mockChannelId,
+            false
         )
         val playWidgetUiModel = viewModel.playWidgetObservable.value?.playWidgetState?.model
         assert((playWidgetUiModel?.items?.first() as? PlayWidgetChannelUiModel)?.reminderType == mockReminderType)
@@ -1423,14 +1479,14 @@ class ShopHomeViewModelTest {
     @Test
     fun `calling updatePlayWidgetReminder(), check if playWidgetObservableplay value is null`() {
         viewModel.updatePlayWidgetReminder(
-                null,
-                false
+            null,
+            false
         )
         assert(viewModel.playWidgetObservable.value == null)
 
         viewModel.updatePlayWidgetReminder(
-                "123",
-                false
+            "123",
+            false
         )
         assert(viewModel.playWidgetObservable.value == null)
     }
@@ -1446,21 +1502,21 @@ class ShopHomeViewModelTest {
             } returns ShopLayoutWidgetV2()
             mockkObject(ShopPageHomeMapper)
             every { ShopPageHomeMapper.mapToListShopHomeWidget(any(), any(), any(), false, any(), any()) } returns listOf(
-                    ShopHomeCarousellProductUiModel(widgetId = "1")
+                ShopHomeCarousellProductUiModel(widgetId = "1")
             )
             viewModel.getWidgetContentData(
-                    listOf(
-                            ShopPageWidgetLayoutUiModel(
-                                    widgetId = "1"
-                            ),
-                            ShopPageWidgetLayoutUiModel(
-                                    widgetId = "2"
-                            )
+                listOf(
+                    ShopPageWidgetLayoutUiModel(
+                        widgetId = "1"
                     ),
-                    mockShopId,
-                    addressWidgetData,
-                    false,
-                    mockIsDirectPurchaseTrue
+                    ShopPageWidgetLayoutUiModel(
+                        widgetId = "2"
+                    )
+                ),
+                mockShopId,
+                addressWidgetData,
+                false,
+                mockIsDirectPurchaseTrue
             )
             assert(shopHomeWidgetContentData.await() is Success)
             assert((shopHomeWidgetContentData.await() as? Success)?.data?.isNotEmpty() == true)
@@ -1491,7 +1547,7 @@ class ShopHomeViewModelTest {
                 listWidget = listOf(
                     ShopLayoutWidget.Widget(
                         name = widgetName,
-                        type =  widgetType,
+                        type = widgetType,
                         widgetID = widgetId
                     )
                 )
@@ -1564,11 +1620,11 @@ class ShopHomeViewModelTest {
                 getShopPageHomeLayoutV2UseCase.get().executeOnBackground()
             } throws Exception()
             viewModel.getWidgetContentData(
-                    listOf(ShopPageWidgetLayoutUiModel()),
-                    mockShopId,
-                    addressWidgetData,
-                    false,
-                    mockIsDirectPurchaseTrue
+                listOf(ShopPageWidgetLayoutUiModel()),
+                mockShopId,
+                addressWidgetData,
+                false,
+                mockIsDirectPurchaseTrue
             )
             assert(shopHomeWidgetContentData.await() is Fail)
             assert(shopHomeWidgetContentDataError.await().isNotEmpty())
@@ -1581,8 +1637,8 @@ class ShopHomeViewModelTest {
         val mockShopHomeWidgetData = getMockShopHomeWidgetData()
         viewModel.setMiniCartData(mockMiniCartSimplifiedData)
         viewModel.getShopWidgetDataWithUpdatedQuantity(mockShopHomeWidgetData)
-        viewModel.updatedShopHomeWidgetQuantityData.value?.onEach {widgetLayoutData ->
-            when(widgetLayoutData){
+        viewModel.updatedShopHomeWidgetQuantityData.value?.onEach { widgetLayoutData ->
+            when (widgetLayoutData) {
                 is ShopHomeCarousellProductUiModel -> {
                     widgetLayoutData.productList.onEach {
                         checkProductListDataShouldMatchWithMatchedMiniCartData(
@@ -1601,7 +1657,7 @@ class ShopHomeViewModelTest {
                     }
                 }
 
-                is ShopHomeProductUiModel  -> {
+                is ShopHomeProductUiModel -> {
                     checkProductListDataShouldMatchWithMatchedMiniCartData(
                         widgetLayoutData,
                         mockMiniCartSimplifiedData
@@ -1619,7 +1675,7 @@ class ShopHomeViewModelTest {
             val isVariant = shopHomeProductUiModel.isVariant
             val listMatchedMiniCartItemProduct = if (isVariant) {
                 miniCartSimplifiedData.miniCartItems.values.filterIsInstance<MiniCartItem.MiniCartItemProduct>()
-                    .filter { it.productParentId == shopHomeProductUiModel.parentId}
+                    .filter { it.productParentId == shopHomeProductUiModel.parentId }
             } else {
                 val childProductId = shopHomeProductUiModel.id.orEmpty()
                 miniCartSimplifiedData.miniCartItems.getMiniCartItemProduct(childProductId)?.let {
@@ -1633,15 +1689,15 @@ class ShopHomeViewModelTest {
     private fun checkProductListDataShouldMatchWithMatchedMiniCartData(
         shopHomeProductUiModel: ShopHomeProductUiModel,
         miniCartSimplifiedData: MiniCartSimplifiedData
-    ){
+    ) {
         val matchedMiniCartItem = getMatchedMiniCartItem(
             shopHomeProductUiModel,
             miniCartSimplifiedData
         )
-        if(matchedMiniCartItem.isNotEmpty()){
+        if (matchedMiniCartItem.isNotEmpty()) {
             val quantityOnMiniCart = matchedMiniCartItem.sumOf { it.quantity }
             assert(quantityOnMiniCart == shopHomeProductUiModel.productInCart)
-        }else {
+        } else {
             assert(shopHomeProductUiModel.productInCart.isZero())
         }
     }
@@ -1650,8 +1706,8 @@ class ShopHomeViewModelTest {
     fun `when call getShopWidgetDataWithUpdatedQuantity without mocked mini cart data, then product in cart should be zero`() {
         val mockShopHomeWidgetData = getMockShopHomeWidgetData()
         viewModel.getShopWidgetDataWithUpdatedQuantity(mockShopHomeWidgetData)
-        viewModel.updatedShopHomeWidgetQuantityData.value?.onEach {widgetLayoutData ->
-            when(widgetLayoutData){
+        viewModel.updatedShopHomeWidgetQuantityData.value?.onEach { widgetLayoutData ->
+            when (widgetLayoutData) {
                 is ShopHomeCarousellProductUiModel -> {
                     widgetLayoutData.productList.onEach {
                         assert(it.productInCart.isZero())
@@ -1664,7 +1720,7 @@ class ShopHomeViewModelTest {
                     }
                 }
 
-                is ShopHomeProductUiModel  -> {
+                is ShopHomeProductUiModel -> {
                     assert(widgetLayoutData.productInCart.isZero())
                 }
             }
@@ -1684,15 +1740,15 @@ class ShopHomeViewModelTest {
                         id = "8"
                     },
                     ShopHomeProductUiModel().apply {
-                        parentId="12"
+                        parentId = "12"
                         isVariant = true
                     },
                     ShopHomeProductUiModel().apply {
-                        parentId="13"
+                        parentId = "13"
                         isVariant = true
                     },
                     ShopHomeProductUiModel().apply {
-                        parentId="14"
+                        parentId = "14"
                         isVariant = true
                     }
                 )
@@ -1704,7 +1760,7 @@ class ShopHomeViewModelTest {
                         id = "167"
                     },
                     ShopHomeProductUiModel().apply {
-                        parentId="11"
+                        parentId = "11"
                         isVariant = true
                         productInCart = 10
                     }
@@ -1731,7 +1787,7 @@ class ShopHomeViewModelTest {
                 layoutOrder = 0,
                 name = "",
                 type = "",
-                header = BaseShopHomeWidgetUiModel.Header(),
+                header = BaseShopHomeWidgetUiModel.Header()
             ),
             ShopHomeFlashSaleUiModel(
                 widgetId = "",
@@ -1771,12 +1827,12 @@ class ShopHomeViewModelTest {
     }
 
     @Test
-    fun `when call handleAtcFlow on add item to cart state is success, then miniCartAdd value should be success` (){
-        val mockQuantity  = 5
-        val mockComponentName  = "Product"
+    fun `when call handleAtcFlow on add item to cart state is success, then miniCartAdd value should be success`() {
+        val mockQuantity = 5
+        val mockComponentName = "Product"
         val mockShopHomeProductUiModel = ShopHomeProductUiModel().apply {
             id = "33"
-            name= "product name"
+            name = "product name"
             displayedPrice = "100"
         }
         every {
@@ -1804,12 +1860,12 @@ class ShopHomeViewModelTest {
     }
 
     @Test
-    fun `when call handleAtcFlow on add item to cart state is error, then miniCartAdd value should be fail` (){
-        val mockQuantity  = 5
-        val mockComponentName  = "Product"
+    fun `when call handleAtcFlow on add item to cart state is error, then miniCartAdd value should be fail`() {
+        val mockQuantity = 5
+        val mockComponentName = "Product"
         val mockShopHomeProductUiModel = ShopHomeProductUiModel().apply {
             id = "33"
-            name= "product name"
+            name = "product name"
             displayedPrice = "100"
         }
         every {
@@ -1828,12 +1884,12 @@ class ShopHomeViewModelTest {
     }
 
     @Test
-    fun `when call handleAtcFlow on remove item from cart state is success, then miniCartRemove value should be success` (){
-        val mockQuantity  = 0
-        val mockComponentName  = "Product"
+    fun `when call handleAtcFlow on remove item from cart state is success, then miniCartRemove value should be success`() {
+        val mockQuantity = 0
+        val mockComponentName = "Product"
         val mockShopHomeProductUiModel = ShopHomeProductUiModel().apply {
             id = "1"
-            name= "product name"
+            name = "product name"
             displayedPrice = "100"
         }
         every {
@@ -1860,12 +1916,12 @@ class ShopHomeViewModelTest {
     }
 
     @Test
-    fun `when call handleAtcFlow on remove item from cart state is error, then miniCartRemove value should be fail` (){
-        val mockQuantity  = 0
-        val mockComponentName  = "Product"
+    fun `when call handleAtcFlow on remove item from cart state is error, then miniCartRemove value should be fail`() {
+        val mockQuantity = 0
+        val mockComponentName = "Product"
         val mockShopHomeProductUiModel = ShopHomeProductUiModel().apply {
             id = "1"
-            name= "product name"
+            name = "product name"
             displayedPrice = "100"
         }
         every {
@@ -1884,13 +1940,13 @@ class ShopHomeViewModelTest {
     }
 
     @Test
-    fun `when call handleAtcFlow on update add item from cart state is success, then miniCartRemove value should be success` (){
-        val mockQuantity  = 10
-        val mockComponentName  = "Product"
+    fun `when call handleAtcFlow on update add item from cart state is success, then miniCartRemove value should be success`() {
+        val mockQuantity = 10
+        val mockComponentName = "Product"
         val mockShopHomeProductUiModel = ShopHomeProductUiModel().apply {
             id = "1"
             productInCart = 5
-            name= "product name"
+            name = "product name"
             displayedPrice = "100"
         }
         every {
@@ -1917,13 +1973,13 @@ class ShopHomeViewModelTest {
     }
 
     @Test
-    fun `when call handleAtcFlow on update remove item from cart state is success, then miniCartRemove value should be success` (){
-        val mockQuantity  = 2
-        val mockComponentName  = "Product"
+    fun `when call handleAtcFlow on update remove item from cart state is success, then miniCartRemove value should be success`() {
+        val mockQuantity = 2
+        val mockComponentName = "Product"
         val mockShopHomeProductUiModel = ShopHomeProductUiModel().apply {
             id = "1"
             productInCart = 5
-            name= "product name"
+            name = "product name"
             displayedPrice = "100"
         }
         every {
@@ -1950,13 +2006,13 @@ class ShopHomeViewModelTest {
     }
 
     @Test
-    fun `when call handleAtcFlow on update item from cart state is success, then miniCartRemove value should be fail` (){
-        val mockQuantity  = 2
-        val mockComponentName  = "Product"
+    fun `when call handleAtcFlow on update item from cart state is success, then miniCartRemove value should be fail`() {
+        val mockQuantity = 2
+        val mockComponentName = "Product"
         val mockShopHomeProductUiModel = ShopHomeProductUiModel().apply {
             id = "1"
             productInCart = 5
-            name= "product name"
+            name = "product name"
             displayedPrice = "100"
         }
         every {
@@ -1975,13 +2031,13 @@ class ShopHomeViewModelTest {
     }
 
     @Test
-    fun `when call handleAtcFlow without set mini cart data, then miniCartAdd, miniCartRemove ,miniCartUpdate and shopPageAtcTracker value should be null` (){
-        val mockQuantity  = 2
-        val mockComponentName  = "Product"
+    fun `when call handleAtcFlow without set mini cart data, then miniCartAdd, miniCartRemove ,miniCartUpdate and shopPageAtcTracker value should be null`() {
+        val mockQuantity = 2
+        val mockComponentName = "Product"
         val mockShopHomeProductUiModel = ShopHomeProductUiModel().apply {
             id = "1"
             productInCart = 5
-            name= "product name"
+            name = "product name"
             displayedPrice = "100"
         }
         viewModel.handleAtcFlow(
@@ -1995,6 +2051,4 @@ class ShopHomeViewModelTest {
         assert(viewModel.miniCartUpdate.value == null)
         assert(viewModel.shopPageAtcTracker.value == null)
     }
-
-
 }

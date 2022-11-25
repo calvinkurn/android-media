@@ -739,6 +739,7 @@ class PlayBroadcastPreparationFragment @Inject constructor(
 
     /** Others */
     private fun showMainComponent(isShow: Boolean) {
+        if (!isShow) binding.toolbarContentCommon.hideCoachMarkSwitchAccount()
         binding.groupPreparationMain.showWithCondition(isShow)
     }
 
