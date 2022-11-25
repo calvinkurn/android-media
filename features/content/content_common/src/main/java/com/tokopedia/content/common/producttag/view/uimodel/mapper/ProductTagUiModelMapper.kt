@@ -3,12 +3,23 @@ package com.tokopedia.content.common.producttag.view.uimodel.mapper
 import com.tokopedia.content.common.producttag.model.*
 import com.tokopedia.content.common.producttag.view.uimodel.*
 import com.tokopedia.filter.common.data.DynamicFilterModel
+import java.math.RoundingMode
+import java.text.DecimalFormat
+import java.text.DecimalFormatSymbols
 import javax.inject.Inject
 
 /**
  * Created By : Jonathan Darwin on April 26, 2022
  */
 class ProductTagUiModelMapper @Inject constructor() {
+
+    private val decimalFormatSymbols = DecimalFormatSymbols().apply {
+        decimalSeparator = PERIOD
+    }
+
+    private val decimalFormat = DecimalFormat(DECIMAL_FORMAT, decimalFormatSymbols).apply {
+        roundingMode = RoundingMode.CEILING
+    }
 
     fun mapLastTaggedProduct(response: GetFeedLastTaggedProductResponse): PagedDataUiModel<ProductUiModel> {
         return PagedDataUiModel(
@@ -22,7 +33,7 @@ class ProductTagUiModelMapper @Inject constructor() {
                     coverURL = it.coverURL,
                     webLink = it.webLink,
                     appLink = it.appLink,
-                    star = it.star,
+                    star = formatStarRating(it.star),
                     price = it.price,
                     priceFmt = it.priceFmt,
                     isDiscount = it.isDiscount,
@@ -56,7 +67,7 @@ class ProductTagUiModelMapper @Inject constructor() {
                     coverURL = it.coverURL,
                     webLink = it.webLink,
                     appLink = it.appLink,
-                    star = it.star,
+                    star = formatStarRating(it.star),
                     price = it.price,
                     priceFmt = it.priceFmt,
                     isDiscount = it.isDiscount,
@@ -98,14 +109,14 @@ class ProductTagUiModelMapper @Inject constructor() {
                         priceFmt = it.price,
                         isDiscount = it.discountPercentage != 0.0,
                         discount = it.discountPercentage,
-                        discountFmt = when(it.discountPercentage % 1.0 == 0.0) {
+                        discountFmt = when (it.discountPercentage % 1.0 == 0.0) {
                             true -> "${it.discountPercentage.toString().split(".")[0]}%"
                             else -> "${it.discountPercentage}%"
                         },
                         priceOriginal = 0.0,
                         priceOriginalFmt = it.originalPrice,
                         priceDiscount = 0.0,
-                        priceDiscountFmt = if(it.discountPercentage != 0.0) it.price else "",
+                        priceDiscountFmt = if (it.discountPercentage != 0.0) it.price else "",
                         totalSold = 0,
                         totalSoldFmt = it.countSold,
                         isBebasOngkir = it.freeOngkir.isActive,
@@ -196,5 +207,17 @@ class ProductTagUiModelMapper @Inject constructor() {
             isOfficial = shopInfo.goldOS.isOfficial == 1,
             isPMPro = shopInfo.goldOS.isGoldBadge == 1,
         )
+    }
+
+    private fun formatStarRating(star: Double): String {
+        return if (star == NO_STAR_RATING) ""
+        else decimalFormat.format(star / STAR_RATING_DIVIDER).toString()
+    }
+
+    companion object {
+        private const val DECIMAL_FORMAT = "0.0"
+        private const val NO_STAR_RATING = 0.0
+        private const val STAR_RATING_DIVIDER = 20.0
+        private const val PERIOD = '.'
     }
 }

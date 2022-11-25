@@ -1,7 +1,7 @@
 package com.tokopedia.play.domain.repository
 
 import com.tokopedia.play.view.storage.interactive.PlayInteractiveStorage
-import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
+import com.tokopedia.play_common.model.dto.interactive.GameUiModel
 import com.tokopedia.play_common.model.ui.LeaderboardGameUiModel
 
 /**
@@ -9,7 +9,7 @@ import com.tokopedia.play_common.model.ui.LeaderboardGameUiModel
  */
 interface PlayViewerInteractiveRepository : PlayInteractiveStorage {
 
-    suspend fun getCurrentInteractive(channelId: String): InteractiveUiModel
+    suspend fun getCurrentInteractive(channelId: String): GameUiModel
 
     suspend fun postGiveawayTap(channelId: String, interactiveId: String): Boolean
 

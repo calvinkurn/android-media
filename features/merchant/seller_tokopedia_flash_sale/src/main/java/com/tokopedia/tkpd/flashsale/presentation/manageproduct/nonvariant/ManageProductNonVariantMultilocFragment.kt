@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.View
+import androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_IDLE
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.campaign.base.BaseCampaignManageProductDetailFragment
 import com.tokopedia.campaign.components.bottomsheet.bulkapply.view.ProductBulkApplyBottomSheet
@@ -103,12 +104,14 @@ class ManageProductNonVariantMultilocFragment :
         product?.let {
             val warehouses = inputAdapter.getDataList()
             warehouses.onEachIndexed { indexEdited, warehouse ->
-                if (warehouse.isDilayaniTokopedia && indexEdited != index) {
+                if (warehouse.isDilayaniTokopedia && indexEdited != index && warehouses.getOrNull(index)?.isDilayaniTokopedia == true) {
                     warehouse.discountSetup.apply {
                         price = discountSetup.price
                         discount = discountSetup.discount
                     }
-                    inputAdapter.notifyItemChanged(indexEdited)
+                    if (rvManageProductDetail?.isComputingLayout == false && rvManageProductDetail?.scrollState == SCROLL_STATE_IDLE) {
+                        rvManageProductDetail?.adapter?.notifyItemChanged(indexEdited)
+                    }
                 }
             }
             val newProduct = it.copy(warehouses = warehouses)
