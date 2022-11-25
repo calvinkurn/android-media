@@ -2,6 +2,8 @@ package com.tokopedia.play.broadcaster.shorts.view.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.work.ExistingPeriodicWorkPolicy
+import androidx.work.ExistingWorkPolicy
 import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
 import com.tokopedia.play_common.util.extension.combine
@@ -480,6 +482,10 @@ class PlayShortsViewModel @Inject constructor(
             .setInputData(uploadWorkerInputData)
             .build()
 
-        workManager.beginWith(uploadWorker).enqueue()
+        workManager.enqueueUniqueWork(
+            "SHORTS_UPLOAD",
+            ExistingWorkPolicy.KEEP,
+            uploadWorker,
+        )
     }
 }

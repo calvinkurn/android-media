@@ -8,6 +8,7 @@ import android.graphics.drawable.TransitionDrawable
 import android.os.Build
 import android.os.Bundle
 import android.text.TextUtils
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,6 +20,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelProviders
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.viewpager.widget.ViewPager
+import androidx.work.WorkInfo
+import androidx.work.WorkManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.DisplayMetricUtils
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -340,6 +343,26 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         } else {
             updateVisibility(false)
         }
+
+        WorkManager.getInstance(requireActivity().applicationContext)
+            .getWorkInfosForUniqueWorkLiveData("SHORTS_UPLOAD")
+            .observe(this, Observer {
+                it.firstOrNull()?.let { workInfo ->
+                    postProgressUpdateView?.show()
+
+                    if(workInfo.state == WorkInfo.State.SUCCEEDED) {
+                        Log.d("<LOG>", "FEED - SUCCEEDED")
+                    }
+                    else if(workInfo.state == WorkInfo.State.FAILED) {
+                        Log.d("<LOG>", "FEED - FAILED")
+                    }
+                    else {
+                        val progress = workInfo.progress.getInt("progress", 0)
+                        Log.d("<LOG>", "FEED - PROGRESS $progress")
+                        postProgressUpdateView?.setProgressUpdate(progress, 100)
+                    }
+                }
+            })
     }
 
     override fun onDestroy() {
