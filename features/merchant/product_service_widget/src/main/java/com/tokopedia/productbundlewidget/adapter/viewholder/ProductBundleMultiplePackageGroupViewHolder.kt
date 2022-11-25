@@ -28,13 +28,12 @@ class ProductBundleMultiplePackageGroupViewHolder(
     ) {
         val context = itemView.context
         val bundleProductItem = item.firstOrNull()
-        val black = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN500)
+        val overlayColor = MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_Static_White_32)
         viewBinding?.apply {
             tvBundleProductCount.text = context.getString(R.string.bundlewidget_other_product_count_format, item.size)
             ivBundleProductMultiple.loadImage(bundleProductItem?.productImageUrl)
-            ivBundleProductMultiple.setColorFilter(black, PorterDuff.Mode.MULTIPLY)
+            ivBundleProductMultiple.setColorFilter(overlayColor, PorterDuff.Mode.MULTIPLY)
         }
-        //itemView.addOnImpressionListener(bundleProductItem) { onViewImpression.invoke(adapterPosition) }
         itemView.setOnClickListener { onMoreProductClick.invoke() }
     }
 }

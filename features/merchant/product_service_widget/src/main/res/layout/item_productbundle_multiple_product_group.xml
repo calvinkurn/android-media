@@ -13,7 +13,7 @@
         android:id="@+id/layout_bundle_multiple_image"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:background="@drawable/bg_button_white_border"
+        android:background="@drawable/bg_productbundle_image"
         android:padding="0.7dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
