@@ -312,6 +312,7 @@ class SearchProductFirstPageGqlUseCase(
                         options {
                             title
                             subtitle
+                            icon_subtitle
                             url
                             applink
                             banner_image_url

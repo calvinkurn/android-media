@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.carouselproductcard.CarouselProductCardListener
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.search.R
 import com.tokopedia.search.databinding.SearchInspirationCarouselOptionListAtcBinding
@@ -27,6 +28,7 @@ class InspirationListAtcViewHolder(
     override fun bind(item: InspirationListAtcDataView) {
         bindTitle(item)
         bindSubtitle(item)
+        bindSubtitleIcon(item)
         bindSeeMoreClick(item)
         bindProductCarousel(item)
     }
@@ -36,7 +38,19 @@ class InspirationListAtcViewHolder(
     }
 
     private fun bindSubtitle(item: InspirationListAtcDataView) {
-        binding?.inspirationCarouselListAtcSubtitle?.text = item.option.subtitle
+        binding?.inspirationCarouselListAtcSubtitle?.shouldShowWithAction(
+            item.option.subtitle.isNotEmpty()
+        ) {
+            binding?.inspirationCarouselListAtcSubtitle?.text = item.option.subtitle
+        }
+    }
+
+    private fun bindSubtitleIcon(item: InspirationListAtcDataView) {
+        binding?.inspirationCarouselListAtcSubtitleIcon?.shouldShowWithAction(
+            item.option.iconSubtitle.isNotEmpty()
+        ) {
+            binding?.inspirationCarouselListAtcSubtitleIcon?.loadImage(item.option.iconSubtitle)
+        }
     }
 
     private fun bindSeeMoreClick(item: InspirationListAtcDataView) {
