@@ -70,21 +70,25 @@ object MacroInteration {
         device.waitForIdle(IDLE_DURATION)
     }
 
-    fun waitUntilActivityShown(packageName: String) {
+
+    fun waitForComposableWidgetVisible(widgetContentDescription: String) {
         val instrumentation = InstrumentationRegistry.getInstrumentation()
         val device = UiDevice.getInstance(instrumentation)
 
-        device.wait(
-            Until.hasObject(By.clazz(packageName)),
-            TimeUnit.SECONDS.toMillis(10)
-        )
+        device.wait(Until.hasObject(By.descContains(widgetContentDescription)), DEFAULT_TIMEOUT)
+
+        val recycler = device
+            .findObject(By.descContains(widgetContentDescription))
+
+        recycler.wait(Until.scrollable(true), DEFAULT_TIMEOUT)
+        device.waitForIdle(IDLE_DURATION)
     }
 
     fun basicComposableListInteraction(contentDescription: String){
         val instrumentation = InstrumentationRegistry.getInstrumentation()
         val device = UiDevice.getInstance(instrumentation)
 
-        val list = device.findObject(By.desc(contentDescription))
+        val list = device.findObject(By.descContains(contentDescription))
 
         // Set gesture margin to avoid triggering gesture navigation
         // with input events from automation.

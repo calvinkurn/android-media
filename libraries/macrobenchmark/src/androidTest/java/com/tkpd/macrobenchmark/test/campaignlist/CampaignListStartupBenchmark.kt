@@ -24,7 +24,9 @@ class CampaignListStartupBenchmark(startupMode: StartupMode) : BaseStartupBenchm
     override fun getIntent() = MacroIntent.CampaignList.getCampaignListIntent()
 
     override fun waitUntil() {
-        MacroInteration.waitUntilActivityShown(MacroIntent.CampaignList.PACKAGE_NAME)
+        MacroInteration.waitForComposableWidgetVisible(
+            widgetContentDescription = MacroIntent.CampaignList.RECYCLER_VIEW_WIDGET_CONTENT_DESCRIPTION
+        )
     }
 
     override fun traceName() = "mp_campaign_list"

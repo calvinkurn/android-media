@@ -187,30 +187,16 @@ object MacroIntent {
         }
     }
 
-    /**
-     * Please create intent with deeplink URI that DIRECTLY open your page
-     * Don't pass intent that need to open DeeplinkActivity (which started with tokopedia://),
-     * it can make macrobenchmark misinterpret DeeplinkActivity becomes the target benchmark
-     */
-    object CampaignList {
-        /**
-         * Target recyclerview
-         * Capture view by resource id
-         */
-        const val RV_RESOURCE_ID = "rv_campaign_list"
 
-        private const val DF_MODULE_NAME = "df_base"
-        const val PACKAGE_NAME = "$TKPD_PACKAGE_NAME.$DF_MODULE_NAME"
+    object CampaignList {
+        const val PACKAGE_NAME = TKPD_PACKAGE_SELLER_APP
+
+        const val RECYCLER_VIEW_WIDGET_CONTENT_DESCRIPTION = "Campaign List"
 
         fun getCampaignListIntent(): Intent {
             val intent = Intent("com.tokopedia.internal.VIEW")
             intent.data = Uri.parse("tokopedia-android-internal://sellerapp/campaign-list")
             return intent
-        }
-
-
-        fun getCampaignListFrameTimingIntent(): Intent {
-            return getCampaignListIntent().apply { addFlags(Intent.FLAG_ACTIVITY_NEW_TASK) }
         }
     }
 

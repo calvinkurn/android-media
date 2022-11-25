@@ -20,7 +20,9 @@ class CampaignListFrameTimingBenchmark: BaseFrameTimingBenchmark() {
     }
 
     override fun pageInteractionTest(currentIteration: Int) {
-        MacroInteration.basicComposableListInteraction("Campaign List")
+        MacroInteration.basicComposableListInteraction(
+            contentDescription = MacroIntent.CampaignList.RECYCLER_VIEW_WIDGET_CONTENT_DESCRIPTION
+        )
     }
 
     override fun getIntent() = MacroIntent.CampaignList.getCampaignListIntent()
