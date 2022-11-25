@@ -3,13 +3,14 @@ package com.tokopedia.play.broadcaster.shorts.domain.worker
 import android.content.Context
 import android.util.Log
 import androidx.work.CoroutineWorker
-import androidx.work.Worker
 import androidx.work.WorkerParameters
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.mediauploader.UploaderUseCase
 import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.play.broadcaster.domain.usecase.PlayBroadcastUpdateChannelUseCase
+import com.tokopedia.play.broadcaster.shorts.di.DaggerPlayShortsComponent
+import com.tokopedia.play.broadcaster.shorts.di.PlayShortsModule
 import com.tokopedia.play.broadcaster.shorts.domain.usecase.BroadcasterAddMediasUseCase
 import com.tokopedia.play.broadcaster.shorts.ui.model.PlayShortsUploadUiModel
 import com.tokopedia.play.broadcaster.shorts.util.PlayShortsSnapshotHelper
@@ -19,24 +20,57 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
+import javax.inject.Inject
 
 /**
  * Created By : Jonathan Darwin on November 15, 2022
  */
 class PlayShortsUploadWorker(
-    private val context: Context,
+    private val appContext: Context,
     private val workerParam: WorkerParameters,
-    private val uploaderUseCase: UploaderUseCase,
-    private val updateChannelUseCase: PlayBroadcastUpdateChannelUseCase,
-    private val addMediaUseCase: BroadcasterAddMediasUseCase,
-    private val scope: CoroutineScope,
-    private val dispatchers: CoroutineDispatchers,
-    private val snapshotHelper: PlayShortsSnapshotHelper
-) : CoroutineWorker(context, workerParam) {
+) : CoroutineWorker(appContext, workerParam) {
+
+    @Inject
+    lateinit var uploaderUseCase: UploaderUseCase
+
+    @Inject
+    lateinit var updateChannelUseCase: PlayBroadcastUpdateChannelUseCase
+
+    @Inject
+    lateinit var addMediaUseCase: BroadcasterAddMediasUseCase
+
+    @Inject
+    lateinit var scope: CoroutineScope
+
+    @Inject
+    lateinit var dispatchers: CoroutineDispatchers
+
+    @Inject
+    lateinit var snapshotHelper: PlayShortsSnapshotHelper
+
+    init {
+        inject()
+    }
+
+    private fun inject() {
+        DaggerPlayShortsComponent.builder()
+            .baseAppComponent((appContext as BaseMainApplication).baseAppComponent)
+            .playShortsModule(PlayShortsModule(appContext))
+            .build()
+            .inject(this)
+    }
 
     override suspend fun doWork(): Result {
         return withContext(dispatchers.io) {
+
             val uploadData = PlayShortsUploadUiModel.parse(inputData)
+            Log.d("<LOG>", "Start Uploading...")
+            Log.d("<LOG>", uploadData.toString())
+            Log.d("<LOG>", updateChannelUseCase.toString())
+            Log.d("<LOG>", addMediaUseCase.toString())
+            Log.d("<LOG>", scope.toString())
+            Log.d("<LOG>", dispatchers.toString())
+            Log.d("<LOG>", snapshotHelper.toString())
 
             /**
              * Upload Flow
@@ -72,7 +106,6 @@ class PlayShortsUploadWorker(
 //                /** TODO: handle if error */
 //            }
 
-            Log.d("<LOG>", uploadData.toString())
             Result.success()
         }
     }

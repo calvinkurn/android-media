@@ -3,6 +3,7 @@ package com.tokopedia.play.broadcaster.shorts.di
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.content.common.onboarding.di.UGCOnboardingModule
 import com.tokopedia.content.common.producttag.di.module.ContentCreationProductTagBindModule
+import com.tokopedia.play.broadcaster.shorts.domain.worker.PlayShortsUploadWorker
 import com.tokopedia.play.broadcaster.shorts.view.activity.PlayShortsActivity
 import dagger.Component
 
@@ -24,4 +25,6 @@ import dagger.Component
 interface PlayShortsComponent {
 
     fun inject(activity: PlayShortsActivity)
+
+    fun inject(worker: PlayShortsUploadWorker)
 }
