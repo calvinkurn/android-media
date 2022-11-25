@@ -175,13 +175,12 @@ class DsarViewModel @Inject constructor(
                 }
                 if (s == FILTER_TYPE_TRANSACTION) {
                     val transData = getSelectedRangeItems()
-                    var transText = transData?.title
-                    if (transData?.id == DATE_RANGE_CUSTOM) {
-                        val startDate = DateUtil.formatDate(DateUtil.YYYYMMDD, DateUtil.DEFAULT_VIEW_FORMAT, transData.transactionDate.startDate)
-                        val endDate = DateUtil.formatDate(DateUtil.YYYYMMDD, DateUtil.DEFAULT_VIEW_FORMAT, transData.transactionDate.endDate)
-                        transText = "$startDate - $endDate"
+                    transData?.run {
+                        val startDate = DateUtil.formatDate(DateUtil.YYYYMMDD, DateUtil.DEFAULT_VIEW_FORMAT, transactionDate.startDate)
+                        val endDate = DateUtil.formatDate(DateUtil.YYYYMMDD, DateUtil.DEFAULT_VIEW_FORMAT, transactionDate.endDate)
+                        val transText = "$startDate - $endDate"
+                        text += "$TRANSACTION_LABEL${transText}"
                     }
-                    text += "$TRANSACTION_LABEL${transText}"
                 }
                 text += if (index == (_filterItems.count()) - 1) {
                     HTML_NEW_LINE
