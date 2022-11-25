@@ -55,7 +55,6 @@ class TopAdsShopViewHolder(
             val linearLayoutManager =
                 LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             recShopRecyclerView.layoutManager = linearLayoutManager
-            recShopRecyclerView.setHasFixedSize(true)
             recShopRecyclerView.adapter = topAdsShopAdapter
             element?.adsShopItems?.let { topAdsShopAdapter.setData(it) }
         } else {
