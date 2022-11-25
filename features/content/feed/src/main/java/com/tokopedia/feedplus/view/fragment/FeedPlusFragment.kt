@@ -1307,31 +1307,27 @@ class FeedPlusFragment : BaseDaggerFragment(),
         return position
     }
 
-    fun onFollowKolClicked(
+    private fun onFollowKolClicked(
         rowNumber: Int,
-        id: Int,
+        id: String,
         isFollowedFromFollowRestrictionBottomSheet: Boolean
     ) {
         if (userSession.isLoggedIn) {
-            feedViewModel.doFollowKol(id, rowNumber)
+            feedViewModel.doFollowKol(id, rowNumber, isFollowedFromFollowRestrictionBottomSheet)
         } else {
             onGoToLogin()
         }
     }
 
-    fun onUnfollowKolClicked(rowNumber: Int, id: Int) {
+    private fun onUnfollowKolClicked(rowNumber: Int, id: String) {
         if (userSession.isLoggedIn) {
             feedViewModel.doUnfollowKol(id, rowNumber)
         } else {
             onGoToLogin()
         }
-
     }
 
-    fun onLikeKolClicked(
-        rowNumber: Int, id: Long, hasMultipleContent: Boolean,
-        activityType: String
-    ) {
+    private fun onLikeKolClicked(rowNumber: Int, id: Long) {
         if (userSession.isLoggedIn) {
             feedViewModel.doLikeKol(id, rowNumber)
         } else {
@@ -1339,7 +1335,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         }
     }
 
-    fun onUnlikeKolClicked(
+    private fun onUnlikeKolClicked(
         rowNumber: Int, id: Long, hasMultipleContent: Boolean,
         activityType: String
     ) {
@@ -1350,7 +1346,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         }
     }
 
-    fun gotToKolComment(
+    private fun goToKolComment(
         rowNumber: Int, id: String, authorType: String,
         isVideo: Boolean, isFollowed: Boolean, type: String
     ) {
@@ -1598,13 +1594,12 @@ class FeedPlusFragment : BaseDaggerFragment(),
     ) {
         if (userSession.isLoggedIn) {
             if (type == FollowCta.AUTHOR_USER) {
-                val userIdInt = id.toIntOrZero()
                 if (isFollow) {
-                    onUnfollowKolClicked(positionInFeed, userIdInt)
+                    onUnfollowKolClicked(positionInFeed, id)
                 } else {
                     onFollowKolClicked(
                         positionInFeed,
-                        userIdInt,
+                        id,
                         isFollowedFromFollowRestrictionBottomSheet
                     )
                 }
@@ -1850,9 +1845,9 @@ class FeedPlusFragment : BaseDaggerFragment(),
 
             )
         if (isLiked) {
-            onUnlikeKolClicked(positionInFeed, id, false, "")
+            onUnlikeKolClicked(positionInFeed, id)
         } else {
-            onLikeKolClicked(positionInFeed, id, false, "")
+            onLikeKolClicked(positionInFeed, id)
         }
     }
 
@@ -1881,7 +1876,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
             }
         }
 
-        gotToKolComment(
+        goToKolComment(
             positionInFeed,
             id,
             authorType,
@@ -2437,7 +2432,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 getFeedTrackerDataModel(card, positionInFeed = positionInFeed)
             )
 
-            customMvcTracker.activityId = if (card.typename == TYPE_FEED_X_CARD_PLAY) card.playChannelID else card.id
+            customMvcTracker.activityId =
+                if (card.typename == TYPE_FEED_X_CARD_PLAY) card.playChannelID else card.id
             customMvcTracker.status = getTrackerLabelSuffixForCampaignSaleTracker(card)
             customMvcTracker.hasVoucher = card.hasVoucher
             customMvcTracker.contentScore = (card.contentScore).firstOrNull()?.value ?: String.EMPTY
@@ -2805,13 +2801,12 @@ class FeedPlusFragment : BaseDaggerFragment(),
         if (adapter.getlist().size > rowNumber && adapter.getlist()[rowNumber] is DynamicPostUiModel) {
             val item = (adapter.getlist()[rowNumber] as DynamicPostUiModel)
             item.feedXCard.followers.isFollowed = !item.feedXCard.followers.isFollowed
-            if (item.feedXCard.followers.isFollowed)
-                item.feedXCard.followers.transitionFollow = true
-            if (!item.feedXCard.followers.isFollowed)
-                adapter.notifyItemChanged(
-                    rowNumber,
-                    DynamicPostNewViewHolder.PAYLOAD_ANIMATE_FOLLOW
-                )
+            if (item.feedXCard.followers.isFollowed) item.feedXCard.followers.transitionFollow =
+                true
+            adapter.notifyItemChanged(
+                rowNumber,
+                DynamicPostNewViewHolder.PAYLOAD_ANIMATE_FOLLOW
+            )
         }
     }
 

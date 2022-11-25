@@ -18,7 +18,7 @@ import com.tokopedia.utils.view.binding.viewBinding
  */
 
 class ShopProductEtalaseTitleViewHolder(itemView: View) : AbstractViewHolder<ShopProductEtalaseTitleUiModel>(itemView) {
-    private val viewBinding : ItemNewShopProductEtalaseTitleViewBinding? by viewBinding()
+    private val viewBinding: ItemNewShopProductEtalaseTitleViewBinding? by viewBinding()
     private var textView: TextView? = null
     private var ivBadge: ImageView? = null
 
@@ -46,5 +46,4 @@ class ShopProductEtalaseTitleViewHolder(itemView: View) : AbstractViewHolder<Sho
         @LayoutRes
         val LAYOUT = R.layout.item_new_shop_product_etalase_title_view
     }
-
 }

@@ -42,6 +42,7 @@ query feedxhome(${'$'}req: FeedXHomeRequest!) {
           logoURL
           webLink
           appLink
+          encryptedUserID
         }
         title
         subTitle
