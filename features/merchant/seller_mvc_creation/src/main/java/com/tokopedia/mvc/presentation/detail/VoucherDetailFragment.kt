@@ -61,9 +61,9 @@ class VoucherDetailFragment : BaseDaggerFragment() {
     private var voucherInfoBinding by autoClearedNullable<SmvcVoucherDetailVoucherInfoSectionBinding>()
     private var voucherSettingBinding by autoClearedNullable<SmvcVoucherDetailVoucherSettingSectionBinding>()
     private var voucherProductBinding by autoClearedNullable<SmvcVoucherDetailProductSectionBinding>()
-    private var btnState1Binding by autoClearedNullable<SmvcVoucherDetailButtonSectionState1Binding>()
-    private var btnState2Binding by autoClearedNullable<SmvcVoucherDetailButtonSectionState2Binding>()
-    private var btnState3Binding by autoClearedNullable<SmvcVoucherDetailButtonSectionState3Binding>()
+    private var stateButtonBroadCastBinding by autoClearedNullable<SmvcVoucherDetailButtonSectionState1Binding>()
+    private var stateButtonShareBinding by autoClearedNullable<SmvcVoucherDetailButtonSectionState2Binding>()
+    private var stateButtonDuplicateBinding by autoClearedNullable<SmvcVoucherDetailButtonSectionState3Binding>()
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -458,7 +458,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                     data.productIds.count()
                 )
                 tpgSeeProduct.setOnClickListener {
-                    //TODO:go to product page
+                    // TODO:go to product page
                 }
             }
         }
@@ -493,7 +493,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
             when (data.voucherStatus) {
                 VoucherStatus.NOT_STARTED -> {
                     layoutButton.setOnInflateListener { _, view ->
-                        btnState1Binding = SmvcVoucherDetailButtonSectionState1Binding.bind(view)
+                        stateButtonBroadCastBinding = SmvcVoucherDetailButtonSectionState1Binding.bind(view)
                     }
                     layoutButton.layoutResource =
                         R.layout.smvc_voucher_detail_button_section_state_1
@@ -503,7 +503,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                 }
                 VoucherStatus.ONGOING -> {
                     layoutButton.setOnInflateListener { _, view ->
-                        btnState2Binding = SmvcVoucherDetailButtonSectionState2Binding.bind(view)
+                        stateButtonShareBinding = SmvcVoucherDetailButtonSectionState2Binding.bind(view)
                     }
                     layoutButton.layoutResource =
                         R.layout.smvc_voucher_detail_button_section_state_2
@@ -513,7 +513,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                 }
                 else -> {
                     layoutButton.setOnInflateListener { _, view ->
-                        btnState3Binding = SmvcVoucherDetailButtonSectionState3Binding.bind(view)
+                        stateButtonDuplicateBinding = SmvcVoucherDetailButtonSectionState3Binding.bind(view)
                     }
                     layoutButton.layoutResource =
                         R.layout.smvc_voucher_detail_button_section_state_3
@@ -527,7 +527,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
     }
 
     private fun setupButtonAction(data: VoucherDetailData) {
-        btnState1Binding?.apply {
+        stateButtonBroadCastBinding?.apply {
             btnThreeDots.setOnClickListener {
                 openThreeDotsBottomSheet(data)
             }
@@ -536,7 +536,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                 shareToBroadcastChat(data.voucherId)
             }
         }
-        btnState2Binding?.apply {
+        stateButtonShareBinding?.apply {
             btnThreeDots.setOnClickListener {
                 openThreeDotsBottomSheet(data)
             }
@@ -545,15 +545,15 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                 shareToBroadcastChat(data.voucherId)
             }
             btnShare.setOnClickListener {
-                //TODO:open share component
+                // TODO:open share component
             }
         }
-        btnState3Binding?.apply {
+        stateButtonDuplicateBinding?.apply {
             btnThreeDots.setOnClickListener {
                 openThreeDotsBottomSheet(data)
             }
             btnDuplicate.setOnClickListener {
-                //TODO:go to summary page
+                // TODO:go to summary page
             }
         }
     }
@@ -619,6 +619,6 @@ class VoucherDetailFragment : BaseDaggerFragment() {
     }
 
     private fun shareToBroadcastChat(voucherId: Long) {
-        routeToUrl(broadCastChatUrl+voucherId.toString())
+        routeToUrl(broadCastChatUrl + voucherId.toString())
     }
 }
