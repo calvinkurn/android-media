@@ -26,12 +26,11 @@ import retrofit2.Retrofit
         FeedPlusModule::class,
         FeedComponentModule::class,
         ViewModelModule::class,
-        FeedComponentViewModelModule::class,
         PlayWidgetModule::class,
         FeedFloatingButtonManagerModule::class,
         ShopRecomModule::class,
         PeopleModule::class,
-        FeedComponentViewModelModule::class,
+        FeedComponentViewModelModule::class
     ],
     dependencies = [BaseAppComponent::class]
 )
