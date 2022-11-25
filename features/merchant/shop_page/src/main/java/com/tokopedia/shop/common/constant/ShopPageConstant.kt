@@ -49,28 +49,26 @@ object ShopPageConstant {
     const val CODE_STATUS_SUCCESS = "200"
     const val AFFILIATE_PAGE_ID = "pageID"
 
+    const val SHOP_PAGE_SHARED_PREFERENCE = "SHOP_PAGE_PREFERENCE"
+    const val SHARED_PREF_AFFILIATE_CHANNEL = "SHARED_PREF_AFFILIATE_CHANNEL"
+
     object ShopLayoutFeatures {
-        const val SHOP_PAGE_SHARED_PREFERENCE = "SHOP_PAGE_PREFERENCE"
-        const val SHARED_PREF_AFFILIATE_CHANNEL = "SHARED_PREF_AFFILIATE_CHANNEL"
+        const val DIRECT_PURCHASE = "direct_purchase"
+    }
 
-        object ShopLayoutFeatures {
-            const val DIRECT_PURCHASE = "direct_purchase"
-        }
+    object ShopProductCardAtc {
+        const val CARD_HOME = "Card Home"
+        const val CARD_PRODUCT = "Card Product"
+        const val CARD_ETALASE = "Card Etalase"
+    }
 
-        object ShopProductCardAtc {
-            const val CARD_HOME = "Card Home"
-            const val CARD_PRODUCT = "Card Product"
-            const val CARD_ETALASE = "Card Etalase"
-        }
+    object BundleType {
+        const val SINGLE_BUNDLE = "Single Bundle"
+        const val MULTIPLE_BUNDLE = "Multiple Bundle"
+    }
 
-        object BundleType {
-            const val SINGLE_BUNDLE = "Single Bundle"
-            const val MULTIPLE_BUNDLE = "Multiple Bundle"
-        }
-
-        object ShopTickerType {
-            const val WARNING = "warning"
-            const val INFO = "info"
-        }
+    object ShopTickerType {
+        const val WARNING = "warning"
+        const val INFO = "info"
     }
 }
