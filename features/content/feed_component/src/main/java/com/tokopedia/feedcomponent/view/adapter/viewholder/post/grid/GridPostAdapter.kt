@@ -255,36 +255,41 @@ class GridPostAdapter(
 
         private fun setImageMargins(listSize: Int) {
             if (listSize == 1) {
+                val dimens16 = itemView.getDimens(unifyR.dimen.spacing_lvl4)
+
                 itemView.productLayout.setMargin(0, 0, 0, 0)
                 itemView.tagTypeText.setPadding(
-                    itemView.getDimens(unifyR.dimen.spacing_lvl4),
+                    dimens16,
                     0,
-                    itemView.getDimens(unifyR.dimen.spacing_lvl4),
+                    dimens16,
                     0
                 )
                 itemView.priceText.setPadding(
-                    itemView.getDimens(unifyR.dimen.spacing_lvl4),
+                    dimens16,
                     0,
-                    itemView.getDimens(unifyR.dimen.spacing_lvl4),
+                    dimens16,
                     0
                 )
             } else {
+                val dimens2 = itemView.getDimens(unifyR.dimen.spacing_lvl1)
+                val dimens4 = itemView.getDimens(unifyR.dimen.spacing_lvl2)
+
                 itemView.productLayout.setMargin(
-                    itemView.getDimens(unifyR.dimen.spacing_lvl1),
+                    dimens2,
                     0,
-                    itemView.getDimens(unifyR.dimen.spacing_lvl1),
+                    dimens2,
                     0
                 )
                 itemView.tagTypeText.setPadding(
-                    itemView.getDimens(unifyR.dimen.spacing_lvl2),
+                    dimens4,
                     0,
-                    itemView.getDimens(unifyR.dimen.spacing_lvl2),
+                    dimens4,
                     0
                 )
                 itemView.priceText.setPadding(
-                    itemView.getDimens(unifyR.dimen.spacing_lvl2),
+                    dimens4,
                     0,
-                    itemView.getDimens(unifyR.dimen.spacing_lvl2),
+                    dimens4,
                     0
                 )
             }

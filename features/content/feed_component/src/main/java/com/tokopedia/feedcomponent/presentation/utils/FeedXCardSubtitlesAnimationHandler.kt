@@ -66,9 +66,6 @@ class FeedXCardSubtitlesAnimationHandler(
     }
 
     fun startTimer() {
-        val START_DELAY = 2000L
-        val INTERVAL = 3000L
-
         if (timer == null) {
             setDataIntoViews()
         }
@@ -135,7 +132,7 @@ class FeedXCardSubtitlesAnimationHandler(
                     translateAnimObjOne,
                     translateAnimObjTwo
                 )
-                animatorSet?.duration = 600L
+                animatorSet?.duration = DURATION
                 animatorSet?.start()
 
                 Handler().postDelayed({ afterAnimationComplete() }, animatorSet?.duration ?: 600L)
@@ -145,5 +142,11 @@ class FeedXCardSubtitlesAnimationHandler(
 
     private fun dpToPx(dp: Int): Float {
         return (dp * Resources.getSystem().displayMetrics.density)
+    }
+
+    companion object {
+        private const val START_DELAY = 2000L
+        private const val INTERVAL = 3000L
+        private const val DURATION = 600L
     }
 }

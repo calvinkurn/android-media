@@ -68,7 +68,7 @@ class FeedDetailViewModel @Inject constructor(private var feedDetailRepository: 
             val response = mvcSummaryUseCase.getResponse(mvcSummaryUseCase.getQueryParams(shopId))
 
             if (response.data?.resultStatus?.code != HttpURLConnection.HTTP_OK.toString()) {
-                throw ResponseErrorException(response.data?.resultStatus?.message.toString())
+                throw ResponseErrorException(response.data?.resultStatus?.message?.getOrNull(0))
             }
 
             response.data?.let {

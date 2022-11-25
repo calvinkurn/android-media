@@ -142,7 +142,7 @@ class DynamicFeedMapper @Inject constructor() : Func1<GraphqlResponse, DynamicFe
     }
 
     private fun mapCardBanner(posts: MutableList<Visitable<*>>, feed: Feed, template: Template) {
-        val bannerList: MutableList<BannerItemModel> = ArrayList()
+        val bannerList: MutableList<BannerItemModel> = mutableListOf()
 
         feed.content.cardbanner.body.media.forEachIndexed { index, media ->
             val id = media.id

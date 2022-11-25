@@ -483,7 +483,8 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
                             customMvcTracker.activityId = activityId
                             customMvcTracker.status = getTrackerCampaignStatusSuffix()
                             customMvcTracker.hasVoucher = hasVoucher
-                            // TODO : Add Content Score
+                            customMvcTracker.contentScore = contentScore
+
 
                             mvcWidget.setData(
                                 mvcData = MvcData(

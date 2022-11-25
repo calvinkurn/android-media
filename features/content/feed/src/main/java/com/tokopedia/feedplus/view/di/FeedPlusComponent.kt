@@ -6,6 +6,8 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.feedcomponent.di.FeedComponentModule
 import com.tokopedia.feedcomponent.di.FeedComponentViewModelModule
 import com.tokopedia.feedcomponent.di.FeedFloatingButtonManagerModule
+import com.tokopedia.feedcomponent.people.di.PeopleModule
+import com.tokopedia.feedcomponent.shoprecom.di.ShopRecomModule
 import com.tokopedia.feedplus.view.fragment.FeedPlusDetailFragment
 import com.tokopedia.feedplus.view.fragment.FeedPlusFragment
 import com.tokopedia.feedplus.view.fragment.PlayFeedSeeMoreFragment
@@ -14,8 +16,6 @@ import com.tokopedia.user.session.UserSessionInterface
 import dagger.Component
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
-import com.tokopedia.feedcomponent.people.di.PeopleModule
-import com.tokopedia.feedcomponent.shoprecom.di.ShopRecomModule
 
 /**
  * @author by nisie on 5/15/17.
@@ -31,7 +31,7 @@ import com.tokopedia.feedcomponent.shoprecom.di.ShopRecomModule
         FeedFloatingButtonManagerModule::class,
         ShopRecomModule::class,
         PeopleModule::class,
-        FeedComponentViewModelModule::class
+        FeedComponentViewModelModule::class,
     ],
     dependencies = [BaseAppComponent::class]
 )

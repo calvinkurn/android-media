@@ -209,6 +209,7 @@ class FeedViewModel @Inject constructor(
 
     fun fetchLatestFeedPostWidgetData(detailId: String, rowNumber: Int) {
         viewModelScope.launchCatchError(
+            baseDispatcher.io,
             block = {
                 val response = getFeedWidgetUpdatedData(detailId)
 
@@ -217,10 +218,11 @@ class FeedViewModel @Inject constructor(
                         rowNumber = rowNumber,
                         feedXCard = response.feedXHome.items.first(),
                     )
-                    _feedWidgetLatestData.value = Success(updatedData)
+                    _feedWidgetLatestData.postValue(Success(updatedData))
                 } else {
-                    _feedWidgetLatestData.value =
+                    _feedWidgetLatestData.postValue(
                         Fail(CustomUiMessageThrowable(com.tokopedia.feedplus.R.string.feed_result_empty))
+                    )
                 }
             },
         ) {
@@ -281,23 +283,23 @@ class FeedViewModel @Inject constructor(
     }
 
     fun checkUpcomingCampaignInitialReminderStatus(campaign: FeedXCampaign, rowNumber: Int) {
-        viewModelScope.launchCatchError(
+        viewModelScope.launchCatchError(baseDispatcher.io,
             block = {
                 val data = checkUpcomingCampaign(campaignId = campaign.campaignId)
                 val reminderStatusRes =
                     if (data) FeedASGCUpcomingReminderStatus.On(campaign.campaignId) else FeedASGCUpcomingReminderStatus.Off(
                         campaign.campaignId
                     )
-                _asgcReminderButtonInitialStatus.value = Success(
+                _asgcReminderButtonInitialStatus.postValue(Success(
                     FeedAsgcCampaignResponseModel(
                         rowNumber = rowNumber,
                         campaignId = campaign.campaignId,
                         reminderStatus = reminderStatusRes
-                    )
+                    ))
                 )
             },
         ) {
-            _asgcReminderButtonInitialStatus.value = Fail(it)
+            _asgcReminderButtonInitialStatus.postValue(Fail(it))
         }
     }
 
