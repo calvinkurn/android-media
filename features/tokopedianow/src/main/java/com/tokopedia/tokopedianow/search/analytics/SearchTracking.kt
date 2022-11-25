@@ -537,7 +537,7 @@ object SearchTracking {
             "category", SearchCategoryTrackingConst.Misc.NONE_OTHER,
             "id", productCardModel.productId,
             "name", productCardModel.name,
-            "price", productCardModel.price,
+            "price", productCardModel.price.getDigits().toString(),
             "variant", SearchCategoryTrackingConst.Misc.NONE_OTHER,
         )
     }
