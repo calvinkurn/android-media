@@ -206,8 +206,12 @@ class DsarFragment: BaseDaggerFragment(), OnDateChangedListener {
             } else if(resultCode == Activity.RESULT_CANCELED) {
                 showToasterError(getString(R.string.dsar_failed_otp_label))
             }
-        } else if(requestCode == REQUEST_ADD_EMAIL && resultCode == Activity.RESULT_OK) {
-            renderProfileHeader()
+        } else if(requestCode == REQUEST_ADD_EMAIL) {
+            if(resultCode == Activity.RESULT_OK) {
+                renderProfileHeader()
+            }else {
+                activity?.finish()
+            }
         }
         else {
             super.onActivityResult(requestCode, resultCode, data)

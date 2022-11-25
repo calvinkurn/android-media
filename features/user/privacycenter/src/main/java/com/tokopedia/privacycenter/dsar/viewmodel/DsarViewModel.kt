@@ -155,7 +155,6 @@ class DsarViewModel @Inject constructor(
                     _requestDetails.value = result
                 }
             } catch (e: Exception) {
-                e.printStackTrace()
                 _showMainLayout.value = true
             } finally {
                 _mainLoader.value = false

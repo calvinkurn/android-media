@@ -56,22 +56,28 @@ class PurposeViewHolder(
     }
 
     private fun Typography.removeUrlLine() {
-        val spannable = SpannableString(text)
-        val stringUrl = spannable.getSpans(0, spannable.length, URLSpan::class.java).firstOrNull()
-        spannable.setSpan(
-            object : URLSpan(stringUrl?.url) {
-                override fun updateDrawState(ds: TextPaint) {
-                    super.updateDrawState(ds)
-                    ds.isUnderlineText = false
-                    ds.typeface = Typeface.DEFAULT_BOLD
-                    ds.color = ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
-                }
-            },
-            spannable.getSpanStart(stringUrl),
-            spannable.getSpanEnd(stringUrl),
-            0
-        )
-        text = spannable
+        try {
+            val spannable = SpannableString(text)
+            val stringUrl =
+                spannable.getSpans(0, spannable.length, URLSpan::class.java).firstOrNull()
+            spannable.setSpan(
+                object : URLSpan(stringUrl?.url) {
+                    override fun updateDrawState(ds: TextPaint) {
+                        super.updateDrawState(ds)
+                        ds.isUnderlineText = false
+                        ds.typeface = Typeface.DEFAULT_BOLD
+                        ds.color = ContextCompat.getColor(
+                            context,
+                            com.tokopedia.unifyprinciples.R.color.Unify_G500
+                        )
+                    }
+                },
+                spannable.getSpanStart(stringUrl),
+                spannable.getSpanEnd(stringUrl),
+                0
+            )
+            text = spannable
+        } catch (e: Exception) { }
     }
 
     companion object {
