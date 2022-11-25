@@ -119,6 +119,7 @@ import com.tokopedia.purchase_platform.common.feature.promo.view.model.validateu
 import com.tokopedia.purchase_platform.common.feature.promonoteligible.PromoNotEligibleActionListener
 import com.tokopedia.purchase_platform.common.feature.promonoteligible.PromoNotEligibleBottomSheet
 import com.tokopedia.purchase_platform.common.feature.purchaseprotection.domain.PurchaseProtectionPlanData
+import com.tokopedia.purchase_platform.common.utils.isNotBlankOrZero
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
@@ -882,7 +883,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
     }
 
     private fun updateLocalCacheAddressData(addressModel: OrderProfileAddress) {
-        if (addressModel.addressId > 0) {
+        if (addressModel.addressId.isNotBlankOrZero()) {
             activity?.let {
                 val localCache = ChooseAddressUtils.getLocalizingAddressData(it)
                 val newTokoNowData = addressModel.tokoNow
@@ -891,9 +892,9 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
                         || localCache.address_id.isEmpty() || localCache.address_id == "0") {
                     ChooseAddressUtils.updateLocalizingAddressDataFromOther(
                             context = it,
-                            addressId = addressModel.addressId.toString(),
-                            cityId = addressModel.cityId.toString(),
-                            districtId = addressModel.districtId.toString(),
+                            addressId = addressModel.addressId,
+                            cityId = addressModel.cityId,
+                            districtId = addressModel.districtId,
                             lat = addressModel.latitude,
                             long = addressModel.longitude,
                             label = String.format("%s %s", addressModel.addressName, addressModel.receiverName),
@@ -1453,7 +1454,7 @@ class OrderSummaryPageFragment : BaseDaggerFragment() {
             val currentGatewayCode = profile.payment.gatewayCode
             orderSummaryAnalytics.eventClickArrowToChangePaymentOption(currentGatewayCode, userSession.get().userId)
             val intent = Intent(context, PaymentListingActivity::class.java).apply {
-                putExtra(PaymentListingActivity.EXTRA_ADDRESS_ID, profile.address.addressId.toString())
+                putExtra(PaymentListingActivity.EXTRA_ADDRESS_ID, profile.address.addressId)
                 putExtra(PaymentListingActivity.EXTRA_PAYMENT_PROFILE, payment.creditCard.additionalData.profileCode)
                 putExtra(PaymentListingActivity.EXTRA_PAYMENT_MERCHANT, payment.creditCard.additionalData.merchantCode)
                 val orderCost = viewModel.orderTotal.value.orderCost

@@ -82,7 +82,7 @@ object AddOnMapper {
                     )),
                     isTokoCabang = orderShop.isFulfillment,
                     cartString = orderCart.cartString,
-                    warehouseId = orderShop.warehouseId.toString(),
+                    warehouseId = orderShop.warehouseId,
                     shopName = orderShop.shopName,
                     addOnInfoWording = orderCart.addOnWordingData,
                     addOnSavedStates = addOn.addOnsDataItemModelList.map {

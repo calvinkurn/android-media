@@ -90,8 +90,8 @@ class OrderSummaryPagePromoProcessor @Inject constructor(private val validateUse
                                             codes = arrayListOf(oldPromoCode),
                                             isPo = orderCart.products[0].isPreOrder == 1,
                                             poDuration = orderCart.products[0].preOrderDuration.toString(),
-                                            warehouseId = orderCart.shop.warehouseId,
-                                            shopId = orderCart.shop.shopId,
+                                            warehouseId = orderCart.shop.warehouseId.toLongOrZero(),
+                                            shopId = orderCart.shop.shopId.toLongOrZero(),
                                         )
                                 )
                         )
@@ -183,10 +183,10 @@ class OrderSummaryPagePromoProcessor @Inject constructor(private val validateUse
                                             boType = orderCart.shop.boMetadata.boType,
                                             codes = notEligiblePromoHolderdataList.mapNotNull { if (it.iconType == NotEligiblePromoHolderdata.TYPE_ICON_GLOBAL) null else it.promoCode }
                                                 .toMutableList(),
-                                            warehouseId = orderCart.shop.warehouseId,
+                                            warehouseId = orderCart.shop.warehouseId.toLongOrZero(),
                                             isPo = orderCart.products[0].isPreOrder == 1,
                                             poDuration = orderCart.products[0].preOrderDuration.toString(),
-                                            shopId = orderCart.shop.shopId,
+                                            shopId = orderCart.shop.shopId.toLongOrZero(),
                                         )
                                 )
                         )
@@ -205,7 +205,7 @@ class OrderSummaryPagePromoProcessor @Inject constructor(private val validateUse
         val promoRequest = PromoRequest()
 
         val ordersItem = Order()
-        ordersItem.shopId = orderCart.shop.shopId
+        ordersItem.shopId = orderCart.shop.shopId.toLongOrZero()
         ordersItem.uniqueId = orderCart.cartString
         ordersItem.boType = orderCart.shop.boMetadata.boType
         val productDetails: ArrayList<ProductDetail> = ArrayList()
@@ -273,10 +273,10 @@ class OrderSummaryPagePromoProcessor @Inject constructor(private val validateUse
         val validateUsePromoRequest = lastValidateUsePromoRequest ?: ValidateUsePromoRequest()
 
         val ordersItem = OrdersItem()
-        ordersItem.shopId = orderCart.shop.shopId
+        ordersItem.shopId = orderCart.shop.shopId.toLongOrZero()
         ordersItem.uniqueId = orderCart.cartString
         ordersItem.boType = orderCart.shop.boMetadata.boType
-        ordersItem.warehouseId = orderCart.shop.warehouseId
+        ordersItem.warehouseId = orderCart.shop.warehouseId.toLongOrZero()
         ordersItem.isPo = orderCart.products[0].isPreOrder == 1
         ordersItem.poDuration = orderCart.products[0].preOrderDuration
 

@@ -88,7 +88,7 @@ class OrderProductCard(private val binding: CardOrderProductBinding, private val
             binding.tickerOrderProduct.setHtmlDescription(product.errorMessage)
             binding.tickerOrderProduct.visible()
             if (!product.hasTriggerViewErrorProductLevelTicker) {
-                orderSummaryAnalytics.eventViewErrorProductLevelTicker(shop.shopId.toString(), product.errorMessage)
+                orderSummaryAnalytics.eventViewErrorProductLevelTicker(shop.shopId, product.errorMessage)
                 product.hasTriggerViewErrorProductLevelTicker = true
             }
         } else {
@@ -238,7 +238,7 @@ class OrderProductCard(private val binding: CardOrderProductBinding, private val
                 tvProductNotesEdit.gone()
                 tvProductNotesPlaceholder.visible()
                 tvProductNotesPlaceholder.setOnClickListener {
-                    orderSummaryAnalytics.eventClickSellerNotes(product.productId, shop.shopId.toString())
+                    orderSummaryAnalytics.eventClickSellerNotes(product.productId, shop.shopId)
                     showNotesTextField()
                 }
                 return@apply
@@ -248,7 +248,7 @@ class OrderProductCard(private val binding: CardOrderProductBinding, private val
             tvProductNotesPreview.visible()
             tvProductNotesEdit.visible()
             tvProductNotesEdit.setOnClickListener {
-                orderSummaryAnalytics.eventClickSellerNotes(product.productId, shop.shopId.toString())
+                orderSummaryAnalytics.eventClickSellerNotes(product.productId, shop.shopId)
                 showNotesTextField()
                 tfNote.editText.setSelection(tfNote.editText.length())
             }
@@ -334,10 +334,12 @@ class OrderProductCard(private val binding: CardOrderProductBinding, private val
                 }
             }
             qtyEditorProduct.setAddClickListener {
-                orderSummaryAnalytics.eventEditQuantityIncrease(product.productId, shop.shopId.toString(), product.orderQuantity.toString())
+                orderSummaryAnalytics.eventEditQuantityIncrease(product.productId,
+                    shop.shopId, product.orderQuantity.toString())
             }
             qtyEditorProduct.setSubstractListener {
-                orderSummaryAnalytics.eventEditQuantityDecrease(product.productId, shop.shopId.toString(), product.orderQuantity.toString())
+                orderSummaryAnalytics.eventEditQuantityDecrease(product.productId,
+                    shop.shopId, product.orderQuantity.toString())
             }
             quantityTextWatcher = object : TextWatcher {
                 override fun afterTextChanged(s: Editable?) {
