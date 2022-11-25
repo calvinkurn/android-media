@@ -100,8 +100,6 @@ class TickerStaticDataProvider @Inject constructor(private val resourceProvider:
 
         val currentDate = Calendar.getInstance().timeInMillis
 
-        val totalDays = TimeUnit.MILLISECONDS.toDays(expiredCalendar - currentDate)
-
-        return totalDays < 0
+        return currentDate > expiredCalendar
     }
 }
