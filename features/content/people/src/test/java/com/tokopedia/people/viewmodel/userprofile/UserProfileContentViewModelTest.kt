@@ -176,7 +176,7 @@ class UserProfileContentViewModelTest {
             }
             it.recordState {
                 submitAction(UserProfileAction.LoadProfile(isRefresh = true))
-                submitAction(UserProfileAction.LoadFeedPosts("", 10, true))
+                submitAction(UserProfileAction.LoadFeedPosts("", true))
             } andThen {
                 feedPostsContent equalTo mockFeed
             }
@@ -211,8 +211,8 @@ class UserProfileContentViewModelTest {
             it.recordState {
                 submitAction(UserProfileAction.LoadProfile(isRefresh = true))
                 submitAction(UserProfileAction.LoadFeedPosts(""))
-                submitAction(UserProfileAction.LoadFeedPosts("123", 10))
-                submitAction(UserProfileAction.LoadFeedPosts("123", 10, true))
+                submitAction(UserProfileAction.LoadFeedPosts("123"))
+                submitAction(UserProfileAction.LoadFeedPosts("123", true))
             } andThen {
                 feedPostsContent.posts.size equalTo mockFeed.posts.size
             }
