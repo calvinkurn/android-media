@@ -14,6 +14,8 @@ import com.tokopedia.logisticcart.scheduledelivery.view.uimodel.TitleSectionUiMo
 
 object ScheduleDeliveryBottomSheetMapper {
 
+    private const val IMAGE_BOTTOMSHEET_INFO = "https://images.tokopedia.net/img/now/schedule-delivery/schedule-bottomsheet-info-icon.png"
+
     fun mapResponseToUiModel(
         deliveryServices: List<DeliveryService>,
         selectedDateId: String,
@@ -30,10 +32,10 @@ object ScheduleDeliveryBottomSheetMapper {
             availableTitle = TitleSectionUiModel(
                 title = "Jadwal Tersedia",
                 content = selectedTimeSlot.promoText,
-                icon = IconUnify.INFORMATION,
+                icon = IconUnify.INFORMATION
             ),
             unavailableTitle = TitleSectionUiModel(
-                title = "Jadwal habis atau tidak tersedia",
+                title = "Jadwal habis atau tidak tersedia"
             ),
             infoUiModel = mapNoticeToScheduleInfoUiModel(notice)
         )
@@ -43,8 +45,7 @@ object ScheduleDeliveryBottomSheetMapper {
         return BottomSheetInfoUiModel(
             title = notice.title,
             description = notice.text,
-            // todo
-            imageUrl = ""
+            imageUrl = IMAGE_BOTTOMSHEET_INFO
         )
     }
 
