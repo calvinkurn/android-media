@@ -1549,7 +1549,8 @@ class ContentDetailFragment : BaseDaggerFragment(), ContentDetailPostViewHolder.
         type: String,
         shopId: String,
         isFollowed: Boolean,
-        mediaType: String
+        mediaType: String,
+        hasVoucher: Boolean
     ) {
         analyticsTracker.sendImpressionProductSgcImageEvent(
             ContentDetailPageAnalyticsDataModel(
