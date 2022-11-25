@@ -65,6 +65,17 @@ class PostProgressUpdateView @JvmOverloads constructor(
         mPostUpdateSwipe = postUpdateSwipe
     }
 
+    fun handleShortsUploadFailed() {
+        mPostUpdateSwipe?.updateVisibility(true)
+        progressBar?.progressBarColorType = ProgressBarUnify.COLOR_RED
+        retryText?.show()
+        processingText?.text = context.getString(R.string.cp_common_progress_bar_failed_text)
+        processingText?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_RN500))
+        retryText?.setOnClickListener {
+
+        }
+    }
+
     fun handleFailedState(draftId: String) {
         mPostUpdateSwipe?.updateVisibility(true)
         progressBar?.progressBarColorType = ProgressBarUnify.COLOR_RED

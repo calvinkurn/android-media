@@ -234,15 +234,21 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
 
         WorkManager.getInstance(requireActivity().applicationContext)
             .getWorkInfosForUniqueWorkLiveData("SHORTS_UPLOAD")
-            .observe(this, Observer {
+            .observe(viewLifecycleOwner, Observer {
                 it.firstOrNull()?.let { workInfo ->
+
+                    /** TODO: handle set initial data (image, etc) */
                     postProgressUpdateView?.show()
 
                     if(workInfo.state == WorkInfo.State.SUCCEEDED) {
                         Log.d("<LOG>", "FEED - SUCCEEDED")
+                        postProgressUpdateView?.hide()
+                        /** TODO: handle on success */
                     }
                     else if(workInfo.state == WorkInfo.State.FAILED) {
                         Log.d("<LOG>", "FEED - FAILED")
+                        postProgressUpdateView?.handleShortsUploadFailed()
+                        /** TODO: handle on fail & retry */
                     }
                     else {
                         val progress = workInfo.progress.getInt("progress", 0)
