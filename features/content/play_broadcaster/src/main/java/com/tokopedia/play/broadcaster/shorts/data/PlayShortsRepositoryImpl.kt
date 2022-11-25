@@ -127,8 +127,11 @@ class PlayShortsRepositoryImpl @Inject constructor(
         shortsId: String,
         tags: Set<String>
     ): Boolean = withContext(dispatchers.io) {
-        setChannelTagsUseCase.apply {
-            setParams(shortsId, tags)
-        }.executeOnBackground().recommendedTags.success
+        true
+
+        /** TODO: will uncomment this later */
+//        setChannelTagsUseCase.apply {
+//            setParams(shortsId, tags)
+//        }.executeOnBackground().recommendedTags.success
     }
 }

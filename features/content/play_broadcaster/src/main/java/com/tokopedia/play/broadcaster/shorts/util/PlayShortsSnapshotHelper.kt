@@ -8,11 +8,12 @@ import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.utils.image.ImageProcessingUtil
 import java.io.File
+import javax.inject.Inject
 
 /**
  * Created By : Jonathan Darwin on November 15, 2022
  */
-class PlayShortsSnapshotHelper {
+class PlayShortsSnapshotHelper @Inject constructor() {
 
     private var tempFile: File? = null
 

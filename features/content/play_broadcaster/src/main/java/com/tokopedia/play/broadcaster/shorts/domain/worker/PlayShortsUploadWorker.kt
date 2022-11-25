@@ -3,9 +3,12 @@ package com.tokopedia.play.broadcaster.shorts.domain.worker
 import android.content.Context
 import android.util.Log
 import androidx.work.CoroutineWorker
+import androidx.work.Worker
 import androidx.work.WorkerParameters
+import androidx.work.workDataOf
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.mediauploader.UploaderUseCase
 import com.tokopedia.mediauploader.common.state.UploadResult
 import com.tokopedia.play.broadcaster.domain.usecase.PlayBroadcastUpdateChannelUseCase
@@ -17,6 +20,7 @@ import com.tokopedia.play.broadcaster.shorts.util.PlayShortsSnapshotHelper
 import com.tokopedia.play_common.domain.UpdateChannelUseCase
 import com.tokopedia.play_common.types.PlayChannelStatusType
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
@@ -38,9 +42,6 @@ class PlayShortsUploadWorker(
 
     @Inject
     lateinit var addMediaUseCase: BroadcasterAddMediasUseCase
-
-    @Inject
-    lateinit var scope: CoroutineScope
 
     @Inject
     lateinit var dispatchers: CoroutineDispatchers
@@ -68,9 +69,19 @@ class PlayShortsUploadWorker(
             Log.d("<LOG>", uploadData.toString())
             Log.d("<LOG>", updateChannelUseCase.toString())
             Log.d("<LOG>", addMediaUseCase.toString())
-            Log.d("<LOG>", scope.toString())
             Log.d("<LOG>", dispatchers.toString())
             Log.d("<LOG>", snapshotHelper.toString())
+
+            delay(1000)
+            setProgress(workDataOf("progress" to 20))
+            delay(1000)
+            setProgress(workDataOf("progress" to 40))
+            delay(1000)
+            setProgress(workDataOf("progress" to 60))
+            delay(1000)
+            setProgress(workDataOf("progress" to 80))
+            delay(1000)
+            setProgress(workDataOf("progress" to 100))
 
             /**
              * Upload Flow
@@ -86,24 +97,29 @@ class PlayShortsUploadWorker(
              * If error happens anywhere within the flow:
              * 1. Update channel status to TranscodingFailed (value = 7)
              */
-//            scope.launchCatchError(block = {
+//            try {
 //                updateChannelStatus(uploadData, PlayChannelStatusType.Transcoding)
 //
 //                val mediaUrl = uploadMedia(UploadType.Video, uploadData.mediaUri)
 //
 //                if (uploadData.coverUri.isEmpty()) {
-//                    uploadFirstSnapshotAsCover(uploadData) {
+//                    uploadFirstSnapshotAsCover(this, uploadData, {
 //                        addMediaAndUpdateChannel(uploadData, mediaUrl)
+//                    }) {
+//                        throw it
 //                    }
 //                } else {
 //                    addMediaAndUpdateChannel(uploadData, mediaUrl)
 //                }
-//            }) {
+//            }
+//            catch (e: Exception) {
 //                updateChannelStatus(uploadData, PlayChannelStatusType.TranscodingFailed)
 //
 //                snapshotHelper.deleteLocalFile()
 //
 //                /** TODO: handle if error */
+//
+//                Result.failure()
 //            }
 
             Result.success()
@@ -152,9 +168,14 @@ class PlayShortsUploadWorker(
         }
     }
 
-    private suspend fun uploadFirstSnapshotAsCover(uploadData: PlayShortsUploadUiModel, onSuccess: suspend () -> Unit) {
-        snapshotHelper.snap(context, uploadData.mediaUri) {
-            scope.launch {
+    private suspend fun uploadFirstSnapshotAsCover(
+        scope: CoroutineScope,
+        uploadData: PlayShortsUploadUiModel,
+        onSuccess: suspend () -> Unit,
+        onError: suspend (Throwable) -> Unit
+    ) {
+        snapshotHelper.snap(appContext, uploadData.mediaUri) {
+            scope.launchCatchError(block = {
                 val uploadId = uploadMedia(UploadType.Image, it.absolutePath)
 
                 updateChannelUseCase.apply {
@@ -170,6 +191,8 @@ class PlayShortsUploadWorker(
                 snapshotHelper.deleteLocalFile()
 
                 onSuccess()
+            }) {
+                onError(it)
             }
         }
     }

@@ -32,7 +32,6 @@ import com.tokopedia.play_common.model.result.NetworkResult
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -103,7 +102,7 @@ class PlayShortsViewModel @Inject constructor(
     private val _titleForm = MutableStateFlow(PlayShortsTitleFormUiState.Empty)
     private val _coverForm = MutableStateFlow(PlayShortsCoverFormUiState.Empty)
 
-    private val _menuListUiState = kotlinx.coroutines.flow.combine(
+    private val _menuListUiState = combine(
         _menuList,
         _titleForm,
         _coverForm,
