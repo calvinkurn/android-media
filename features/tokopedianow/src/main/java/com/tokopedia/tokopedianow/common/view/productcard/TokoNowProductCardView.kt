@@ -512,4 +512,8 @@ class TokoNowProductCardView @JvmOverloads constructor(
     ) {
         binding.quantityEditor.onClickVariantListener = onClickVariantListener
     }
+
+    fun setListeners(listener: ProductItemListener){
+        this.listener = listener
+    }
 }
