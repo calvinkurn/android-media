@@ -2,6 +2,7 @@ package com.tokopedia.privacycenter.dsar.domain
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
+import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.privacycenter.dsar.DsarConstants
 import com.tokopedia.privacycenter.dsar.DsarHelper
 import com.tokopedia.privacycenter.dsar.model.AdditionalData
@@ -24,16 +25,23 @@ class SubmitRequestUseCase @Inject constructor(
     override suspend fun execute(params: CreateRequestBody): CreateRequestResponse {
         val credentials = getCredentialsApi.fetchCredential()
         credentials?.let {
-            val request = oneTrustApi.createRequest(params, dsarHelper.getTemplateId(), HeaderUtils.createHeader(
-                token = it.accessToken,
-            )).body()
-            oneTrustApi.updateRequest(
-                UpdateRequestBody(), request?.requestQueueRefId ?: "", HeaderUtils.createHeader(
-                    token = it.accessToken
-                ))
-            return request!!
+            if(it.accessToken.isNotEmpty()) {
+                val request = oneTrustApi.createRequest(
+                    params, dsarHelper.getTemplateId(), HeaderUtils.createHeader(
+                        token = it.accessToken,
+                    )
+                ).body()
+                oneTrustApi.updateRequest(
+                    UpdateRequestBody(), request?.requestQueueRefId ?: "", HeaderUtils.createHeader(
+                        token = it.accessToken
+                    )
+                )
+                if(request != null) {
+                    return request
+                }
+            }
         }
-        return CreateRequestResponse()
+        throw MessageErrorException(DsarConstants.LABEL_ERROR_REQUEST)
     }
 
     fun constructParams(requestDetails: ArrayList<String>): CreateRequestBody {
