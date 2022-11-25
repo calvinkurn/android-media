@@ -54,6 +54,10 @@ data class EditorDetailUiModel(
         return editorToolType == EditorToolType.WATERMARK
     }
 
+    fun isToolAddLogo(): Boolean {
+        return editorToolType == EditorToolType.ADD_LOGO
+    }
+
     companion object {
         const val REMOVE_BG_TYPE_DEFAULT = 0
         const val REMOVE_BG_TYPE_WHITE = 1
