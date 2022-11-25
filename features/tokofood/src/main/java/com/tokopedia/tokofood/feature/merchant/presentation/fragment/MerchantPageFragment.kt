@@ -31,11 +31,9 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.applink.tokofood.DeeplinkMapperTokoFood
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
-import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
@@ -299,6 +297,7 @@ class MerchantPageFragment : BaseMultiFragment(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setToolbarBackIconUnify()
+        setBackgroundBgColor()
         setBackgroundDefaultColor()
         setHeaderBackground()
         setupMerchantLogo()
@@ -362,6 +361,17 @@ class MerchantPageFragment : BaseMultiFragment(),
         }
     }
 
+    private fun setBackgroundBgColor() {
+        activity?.window?.decorView?.run {
+            setBackgroundColor(
+                ContextCompat.getColor(
+                    context,
+                    com.tokopedia.unifyprinciples.R.color.Unify_Background
+                )
+            )
+        }
+    }
+
     private fun setHeaderBackground() {
         context?.let {
             val backgroundResourceId =
@@ -375,20 +385,13 @@ class MerchantPageFragment : BaseMultiFragment(),
     }
 
     private fun setToolbarTransparentColor() {
-        binding?.toolbarMerchantPage?.let {
-            it.background = null
-        }
+        setHeaderBackground()
     }
 
     private fun setToolbarWhiteColor() {
-        binding?.toolbarMerchantPage?.let {
-            it.setBackgroundColor(
-                ContextCompat.getColor(
-                    it.context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_Background
-                )
-            )
-        }
+        try {
+            binding?.bgMerchantHeader?.setImageDrawable(null)
+        } catch (ignored: Exception) {}
     }
 
     private fun setupAppBarLayoutListener() {
