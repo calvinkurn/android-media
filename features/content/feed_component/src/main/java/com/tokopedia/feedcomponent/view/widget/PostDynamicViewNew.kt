@@ -102,7 +102,6 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import java.lang.ref.WeakReference
 import java.net.URLEncoder
 import kotlin.math.round
 import com.tokopedia.unifyprinciples.R as unifyPrinciplesR
@@ -1567,7 +1566,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
         imagePostListener.userGridPostImpression(
             positionInFeed, feedXCard.id,
             feedXCard.typename,
-            feedXCard.author.id
+            feedXCard.author.id,
+            feedXCard.hasVoucher
         )
         val adapter = GridPostAdapter(
             0,

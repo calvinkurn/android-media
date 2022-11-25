@@ -54,6 +54,7 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
     private var saleType: String = ""
     private var saleStatus: String = ""
     private var isFollowed: Boolean = false
+    private var hasVoucher: Boolean = false
     var closeClicked: (() -> Unit)? = null
     var disMissed: (() -> Unit)? = null
     var dismissedByClosing = false
@@ -143,7 +144,8 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
                 postType,
                 shopId,
                 isFollowed,
-                mediaType
+                mediaType,
+                hasVoucher
             )
             adapter?.setItemsAndAnimateChanges(mapPostTag(listProducts))
         }
@@ -211,6 +213,7 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
         this.shopId = productBottomSheetData.shopId
         this.postType = productBottomSheetData.postType
         this.isFollowed = productBottomSheetData.isFollowed
+        this.hasVoucher = productBottomSheetData.hasVoucher
         this.positionInFeed = productBottomSheetData.positionInFeed
         this.playChannelId = productBottomSheetData.playChannelId
         this.shopName = productBottomSheetData.shopName
@@ -270,7 +273,8 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
             type: String,
             shopId: String,
             isFollowed: Boolean,
-            mediaType: String
+            mediaType: String,
+            hasVoucher: Boolean
         )
 
         fun onTaggedProductCardClicked(

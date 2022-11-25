@@ -501,29 +501,33 @@ class FeedAnalyticTracker
         mediaType: String,
         trackerId: String = "",
         campaignStatus: String = "",
-        contentScore: String
+        contentScore: String,
+        hasVoucher: Boolean = false
     ) {
         val finalLabel = if (campaignStatus.isNotEmpty() && isFollowed) {
             KEY_EVENT_LABEL to String.format(
-                FORMAT_FIVE_PARAM,
+                FORMAT_SIX_PARAM,
                 activityId,
                 shopId,
                 contentScore,
                 campaignStatus,
-                productId
+                productId,
+                hasVoucher
             )
         } else {
             if (type == TYPE_FEED_X_CARD_PLAY || mediaType == TYPE_LONG_VIDEO) KEY_EVENT_LABEL to String.format(
-                FORMAT_THREE_PARAM,
-                activityId,
-                shopId,
-                contentScore
-            ) else KEY_EVENT_LABEL to String.format(
-                FORMAT_THREE_PARAM,
+                FORMAT_FOUR_PARAM,
                 activityId,
                 shopId,
                 contentScore,
-                productId
+                hasVoucher
+            ) else KEY_EVENT_LABEL to String.format(
+                FORMAT_FIVE_PARAM,
+                activityId,
+                shopId,
+                contentScore,
+                productId,
+                hasVoucher
             )
         }
         var map = getCommonMap(CATEGORY_FEED_TIMELINE_BOTTOMSHEET, campaignStatus)
@@ -705,7 +709,8 @@ class FeedAnalyticTracker
         type: String,
         isFollowed: Boolean,
         mediaType: String,
-        contentScore: String
+        contentScore: String,
+        hasVoucher: Boolean
     ) {
         trackEnhancedEcommerceEventNew(
             ADD_TO_CART,
@@ -717,11 +722,12 @@ class FeedAnalyticTracker
                 getPostType(type, isFollowed, mediaType)
             ),
             String.format(
-                FORMAT_FOUR_PARAM,
+                FORMAT_FIVE_PARAM,
                 channelId,
                 shopId,
                 contentScore,
-                productId
+                productId,
+                hasVoucher
             ),
             eCommerceData = getCurrencyData() +
                 getAddData(
@@ -816,7 +822,8 @@ class FeedAnalyticTracker
         shopId: String,
         productId: String,
         campaignStatus: String,
-        contentScore: String
+        contentScore: String,
+        hasVoucher: Boolean
     ) {
         val map = mapOf(
             KEY_EVENT to CLICK_PG,
@@ -828,12 +835,13 @@ class FeedAnalyticTracker
                 "asgc"
             ),
             KEY_EVENT_LABEL to String.format(
-                FORMAT_FIVE_PARAM,
+                FORMAT_SIX_PARAM,
                 activityId,
                 shopId,
                 contentScore,
                 campaignStatus,
                 productId,
+                hasVoucher
             ),
             KEY_BUSINESS_UNIT_EVENT to CONTENT,
             KEY_CURRENT_SITE_EVENT to MARKETPLACE,
@@ -853,7 +861,8 @@ class FeedAnalyticTracker
         price: String,
         quantity: Int,
         shopName: String,
-        contentScore: String
+        contentScore: String,
+        hasVoucher: Boolean
     ) {
         trackEnhancedEcommerceEventNew(
             ADD_TO_CART,
@@ -865,12 +874,13 @@ class FeedAnalyticTracker
                 "asgc"
             ),
             String.format(
-                FORMAT_FIVE_PARAM,
+                FORMAT_SIX_PARAM,
                 activityId,
                 shopId,
                 contentScore,
                 campaignStatus,
-                productId
+                productId,
+                hasVoucher
             ),
             trackerId = "17987",
             eCommerceData = getCurrencyData() +
@@ -905,7 +915,8 @@ class FeedAnalyticTracker
         price: String,
         quantity: Int,
         shopName: String,
-        contentScore: String
+        contentScore: String,
+        hasVoucher: Boolean
     ) {
         trackEnhancedEcommerceEventNew(
             ADD_TO_CART,
@@ -917,12 +928,13 @@ class FeedAnalyticTracker
                 "asgc"
             ),
             String.format(
-                FORMAT_FIVE_PARAM,
+                FORMAT_SIX_PARAM,
                 activityId,
                 shopId,
                 contentScore,
                 campaignStatus,
                 productId,
+                hasVoucher
             ),
             trackerId = "17982",
             eCommerceData = getCurrencyData() +
@@ -1104,7 +1116,8 @@ class FeedAnalyticTracker
         productId: String,
         products: List<FeedXProduct>,
         shopId: String,
-        isFollowed: Boolean
+        isFollowed: Boolean,
+        hasVoucher: Boolean
     ) {
         val type = if (productId == TYPE_FEED_X_CARD_PRODUCT_TOPADS) {
             TOPADS
@@ -1121,10 +1134,11 @@ class FeedAnalyticTracker
                 type
             ),
             String.format(
-                FORMAT_THREE_PARAM,
+                FORMAT_FOUR_PARAM,
                 activityId,
                 shopId,
-                products[0].id
+                products[0].id,
+                hasVoucher
             ),
             DataLayer.mapOf(
                 Product.CURRENCY_CODE, Product.CURRENCY_CODE_IDR,
@@ -1139,6 +1153,7 @@ class FeedAnalyticTracker
         position: Int,
         imageUrl: String,
         shopId: String,
+        hasVoucher: Boolean
     ) {
         trackEnhancedEcommerceEventNew(
             PROMO_VIEW,
@@ -1150,9 +1165,10 @@ class FeedAnalyticTracker
                 "asgc"
             ),
             String.format(
-                FORMAT_TWO_PARAM,
+                FORMAT_THREE_PARAM,
                 activityId,
-                shopId
+                shopId,
+                hasVoucher
             ),
             getPromoViewData(
                 getPromotionsData(
@@ -1546,7 +1562,8 @@ class FeedAnalyticTracker
         isFollowed: Boolean,
         isProductDetailPage: Boolean,
         mediaType: String,
-        trackerId: String = ""
+        trackerId: String = "",
+        hasVoucher: Boolean = false
     ) {
         trackEnhancedEcommerceEventNew(
             PRODUCT_VIEW,
@@ -1559,17 +1576,19 @@ class FeedAnalyticTracker
             ),
             if (mediaType == TYPE_LONG_VIDEO)
                 String.format(
-                    FORMAT_TWO_PARAM,
-                    activityId,
-                    shopId
-                )
-            else
-                String.format(
                     FORMAT_THREE_PARAM,
                     activityId,
                     shopId,
+                    hasVoucher
+                )
+            else
+                String.format(
+                    FORMAT_FOUR_PARAM,
+                    activityId,
+                    shopId,
                     if (isProductDetailPage) products[products.size - 1].id else
-                        products[0].id
+                        products[0].id,
+                    hasVoucher
                 ),
             DataLayer.mapOf(
                 Product.CURRENCY_CODE, Product.CURRENCY_CODE_IDR,

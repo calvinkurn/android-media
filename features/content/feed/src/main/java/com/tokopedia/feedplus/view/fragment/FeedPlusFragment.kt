@@ -111,7 +111,6 @@ import com.tokopedia.kolcommon.view.viewmodel.FollowKolViewModel
 import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.linker.LinkerManager
@@ -1336,8 +1335,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
     }
 
     private fun onUnlikeKolClicked(
-        rowNumber: Int, id: Long, hasMultipleContent: Boolean,
-        activityType: String
+        rowNumber: Int, id: Long
     ) {
         if (userSession.isLoggedIn) {
             feedViewModel.doUnlikeKol(id, rowNumber)
@@ -1774,6 +1772,16 @@ class FeedPlusFragment : BaseDaggerFragment(),
         return ""
     }
 
+    private fun getTrackerHasVoucherFromPosition(positionInFeed: Int): Boolean {
+        val list = adapter.getList()
+        if (positionInFeed < list.size && list[positionInFeed] is DynamicPostUiModel) {
+            val item = list[positionInFeed] as DynamicPostUiModel
+            val card = item.feedXCard
+            return card.hasVoucher
+        }
+        return false
+    }
+
 
     private fun getTrackerIdForCampaignSaleTracker(
         positionInFeed: Int,
@@ -2145,9 +2153,10 @@ class FeedPlusFragment : BaseDaggerFragment(),
         positionInFeed: Int,
         activityId: String,
         postType: String,
-        shopId: String
+        shopId: String,
+        hasVoucher: Boolean
     ) {
-        feedAnalytics.eventImpressionPostASGC(activityId, positionInFeed, "", shopId)
+        feedAnalytics.eventImpressionPostASGC(activityId, positionInFeed, "", shopId, hasVoucher)
     }
 
     override fun userProductImpression(
@@ -2159,18 +2168,21 @@ class FeedPlusFragment : BaseDaggerFragment(),
         productList: List<FeedXProduct>
     ) {
         var isFollowed = true
+        var hasVoucher = false
         val list = adapter.getList()
         if (positionInFeed < list.size && list[positionInFeed] is DynamicPostUiModel) {
             val item = list[positionInFeed] as DynamicPostUiModel
             val card = item.feedXCard
             isFollowed = card.followers.isFollowed
+            hasVoucher = card.hasVoucher
         }
         feedAnalytics.eventImpressionProduct(
             activityId,
             productId,
             productList,
             shopId,
-            isFollowed
+            isFollowed,
+            hasVoucher
         )
     }
 
@@ -2241,6 +2253,7 @@ class FeedPlusFragment : BaseDaggerFragment(),
         val mediaType = item.mediaType
         val isLongVideo = mediaType == TYPE_LONG_VIDEO
         val contentScore = getContentScoreFromPosition(item.positionInFeed)
+        val hasVoucher = getTrackerHasVoucherFromPosition(item.positionInFeed)
 
         if (item.saleStatus.isEmpty()) {
             if (type == TYPE_FEED_X_CARD_PLAY || type == TYPE_TOPADS_HEADLINE_NEW || isLongVideo)
@@ -2255,7 +2268,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
                     type,
                     isFollowed,
                     mediaType,
-                    contentScore = contentScore
+                    contentScore = contentScore,
+                    hasVoucher = hasVoucher
                 )
             else
                 feedAnalytics.eventAddToCartFeedVOD(
@@ -2269,7 +2283,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
                     type,
                     isFollowed,
                     mediaType,
-                    contentScore = contentScore
+                    contentScore = contentScore,
+                    hasVoucher = hasVoucher
                 )
         } else {
             feedAnalytics.sendClickAddToCartAsgcProductTagBottomSheet(
@@ -2281,7 +2296,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 postTagItem.price.toString(),
                 1,
                 item.shopName,
-                contentScore = contentScore
+                contentScore = contentScore,
+                hasVoucher = hasVoucher
             )
         }
 
@@ -2507,7 +2523,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
         productRowNumber: Int = 0,
         positionInFeed: Int,
         trackerid: String = "",
-        campaignStatus: String = ""
+        campaignStatus: String = "",
+        hasVoucher: Boolean = false
     ) {
         val finalId = if (type == TYPE_FEED_X_CARD_PLAY) playChannelId else postId
         val contentScore = getContentScoreFromPosition(positionInFeed)
@@ -2521,7 +2538,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
             mediaType,
             trackerid,
             campaignStatus,
-            contentScore = contentScore
+            contentScore = contentScore,
+            hasVoucher = hasVoucher
         )
         if (::productTagBS.isInitialized) {
             productTagBS.dismissedByClosing = true
@@ -3632,7 +3650,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 item.shopId,
                 item.playChannelId,
                 item.mediaType,
-                positionInFeed = item.positionInFeed
+                positionInFeed = item.positionInFeed,
+                hasVoucher = feedTrackerData?.hasVoucher ?: false
             )
         }
     }
@@ -3643,7 +3662,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
         type: String,
         shopId: String,
         isFollowed: Boolean,
-        mediaType: String
+        mediaType: String,
+        hasVoucher: Boolean
     ) {
         if (postTagItemList.isNotEmpty())
             feedAnalytics.eventImpressionProductBottomSheet(
@@ -3653,7 +3673,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
                 type,
                 isFollowed,
                 false,
-                mediaType = mediaType
+                mediaType = mediaType,
+                hasVoucher = hasVoucher
             )
     }
 
@@ -3677,7 +3698,8 @@ class FeedPlusFragment : BaseDaggerFragment(),
             rowNumber,
             item.positionInFeed,
             trackerId,
-            getTrackerLabelSuffixFromPosition(item.positionInFeed)
+            getTrackerLabelSuffixFromPosition(item.positionInFeed),
+            getTrackerHasVoucherFromPosition(item.positionInFeed)
         )
     }
 

@@ -60,7 +60,6 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.post.video.VideoViewH
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.youtube.YoutubeViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopAdsBannerViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopadsShopViewHolder
-import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightCardModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.TrackingPostModel
 import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopUiModel
@@ -786,7 +785,8 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         positionInFeed: Int,
         activityId: String,
         postType: String,
-        shopId: String
+        shopId: String,
+        hasVoucher: Boolean
     ) {
     }
 

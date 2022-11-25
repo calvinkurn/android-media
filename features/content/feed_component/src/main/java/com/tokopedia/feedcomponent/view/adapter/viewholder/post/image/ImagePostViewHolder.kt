@@ -53,6 +53,7 @@ class ImagePostViewHolder(private val listener: ImagePostListener) :
             activityId: String,
             postType: String,
             shopId: String,
+            hasVoucher: Boolean
         )
 
         fun userProductImpression(
