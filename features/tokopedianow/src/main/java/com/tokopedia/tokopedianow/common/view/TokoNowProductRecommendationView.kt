@@ -41,7 +41,6 @@ class TokoNowProductRecommendationView @JvmOverloads constructor(
     private var viewModel: TokoNowProductRecommendationViewModel? = null
     private var listener: TokoNowProductRecommendationListener? = null
     private var requestParam: GetRecommendationRequestParam? = null
-    private var widgetState: TokoNowProductRecommendationState = LOADED
 
     init {
         initInjector()
@@ -101,37 +100,22 @@ class TokoNowProductRecommendationView @JvmOverloads constructor(
     }
 
     /**
-     * setting the state first if wanna change the state
-     * before setting the data to the items and header
-     * (data outside of this widget)
-     */
-    fun setState(state: TokoNowProductRecommendationState) {
-        widgetState = state
-        binding.productCardShimmering.root.showWithCondition(state == LOADING)
-    }
-
-    /**
      * setting the data from outside of this widget
      */
-    fun setItems(
+    fun bind(
         items: List<Visitable<*>> = listOf(),
-        seeMoreModel: TokoNowSeeMoreCardCarouselUiModel? = null
+        seeMoreModel: TokoNowSeeMoreCardCarouselUiModel? = null,
+        header: TokoNowDynamicHeaderUiModel? = null,
+        state: TokoNowProductRecommendationState = LOADED
     ) {
-        binding.productCardCarousel.showIfWithBlock(widgetState == LOADED) {
+        binding.productCardShimmering.root.showWithCondition(state == LOADING)
+        binding.productCardCarousel.showIfWithBlock(state == LOADED) {
             bindItems(
                 items = items,
                 seeMoreModel = seeMoreModel
             )
         }
-    }
-
-    /**
-     * setting the data from outside of this widget
-     */
-    fun setHeader(
-        header: TokoNowDynamicHeaderUiModel? = null
-    ) {
-        binding.header.showIfWithBlock(header != null && widgetState == LOADED) {
+        binding.header.showIfWithBlock(header != null && state == LOADED) {
             header?.apply {
                 setModel(this)
             }
