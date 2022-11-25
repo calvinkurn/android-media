@@ -4,7 +4,6 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.EMPTY
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.productbundlewidget.listener.ProductBundleWidgetListener
 import com.tokopedia.productbundlewidget.model.*
 import com.tokopedia.productbundlewidget.presentation.ProductBundleWidgetView
@@ -14,7 +13,6 @@ import com.tokopedia.shop.common.widget.bundle.model.ShopHomeBundleProductUiMode
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeProductBundleDetailUiModel
 import com.tokopedia.shop.common.widget.bundle.viewholder.MultipleProductBundleListener
 import com.tokopedia.shop.common.widget.bundle.viewholder.SingleProductBundleListener
-import com.tokopedia.shop.common.widget.model.ShopHomeWidgetLayout
 import com.tokopedia.shop.databinding.ItemShopHomeProductBundleParentWidgetBinding
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
 import com.tokopedia.shop.home.view.model.ShopHomeProductBundleListUiModel
@@ -23,10 +21,10 @@ import com.tokopedia.utils.view.binding.viewBinding
 /**
  * author by Rafli Syam on 05/01/2022
  */
-class ShopHomeProductBundleParentWidgetViewHolder (
-        itemView: View,
-        private val multipleProductBundleListener: MultipleProductBundleListener,
-        private val singleProductBundleListener: SingleProductBundleListener
+class ShopHomeProductBundleParentWidgetViewHolder(
+    itemView: View,
+    private val multipleProductBundleListener: MultipleProductBundleListener,
+    private val singleProductBundleListener: SingleProductBundleListener
 ) : AbstractViewHolder<ShopHomeProductBundleListUiModel>(itemView), ProductBundleWidgetListener {
 
     companion object {
@@ -80,7 +78,7 @@ class ShopHomeProductBundleParentWidgetViewHolder (
     ) {
         val selectedShopHomeBundleUiModel = ShopPageHomeMapper.mapToShopHomeProductBundleDetailUiModel(selectedMultipleBundle)
         val selectedShopHomeProductUiModel = ShopPageHomeMapper.mapToShopHomeBundleProductUiModel(selectedProduct)
-        when(bundle.bundleType) {
+        when (bundle.bundleType) {
             BundleTypes.MULTIPLE_BUNDLE -> {
                 handleMultipleBundleClickEvent(
                     selectedBundle = selectedMultipleBundle,
@@ -90,7 +88,7 @@ class ShopHomeProductBundleParentWidgetViewHolder (
                 )
             }
             BundleTypes.SINGLE_BUNDLE -> {
-                handleMultipleBundleClickEvent(
+                handleSingleBundleClickEvent(
                     selectedBundle = selectedMultipleBundle,
                     selectedProduct = selectedProduct,
                     selectedShopHomeBundleUiModel = selectedShopHomeBundleUiModel,
@@ -98,7 +96,6 @@ class ShopHomeProductBundleParentWidgetViewHolder (
                 )
             }
         }
-
     }
 
     override fun impressionMultipleBundle(
@@ -189,7 +186,7 @@ class ShopHomeProductBundleParentWidgetViewHolder (
         selectedBundle: BundleDetailUiModel,
         selectedProduct: BundleProductUiModel,
         selectedShopHomeBundleUiModel: ShopHomeProductBundleDetailUiModel,
-        selectedShopHomeProductUiModel: ShopHomeBundleProductUiModel,
+        selectedShopHomeProductUiModel: ShopHomeBundleProductUiModel
     ) {
         multipleProductBundleListener.onMultipleBundleProductClicked(
             shopId = shopId,
