@@ -8,6 +8,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.privacycenter.R
+import com.tokopedia.privacycenter.common.di.ActivityComponentFactory
 import com.tokopedia.privacycenter.common.di.DaggerPrivacyCenterComponent
 import com.tokopedia.privacycenter.common.di.PrivacyCenterComponent
 
@@ -20,9 +21,7 @@ class ConsentWithdrawalActivity : BaseSimpleActivity(), HasComponent<PrivacyCent
     }
 
     override fun getComponent(): PrivacyCenterComponent {
-        return DaggerPrivacyCenterComponent.builder()
-            .baseAppComponent((application as BaseMainApplication).baseAppComponent)
-            .build()
+        return ActivityComponentFactory.instance.createComponent(application)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
