@@ -20,6 +20,7 @@ class TopAdsShopAdapter_v2 (
     private val shopAdsProductListener: ShopAdsProductListener,
     private val followButtonClickListener: FollowButtonClickListener?
 ) : RecyclerView.Adapter<TopAdsShopAdapter_v2.ShopAdsProductViewHolder>(){
+
     private val shopAdsProductItemList = arrayListOf<ShopProductModel.ShopProductModelItem>()
 
     fun setList(list: List<ShopProductModel.ShopProductModelItem>) {
@@ -29,20 +30,15 @@ class TopAdsShopAdapter_v2 (
     }
 
     inner class ShopAdsProductViewHolder(itemView: View, private val shopAdsProductListener: ShopAdsProductListener) : RecyclerView.ViewHolder(itemView) {
-//        private val productImage = itemView.findViewById<ImageView>(com.tokopedia.topads.sdk.R.id.productImage)
         private val productLogoShop = itemView.findViewById<ImageView>(R.id.productLogoShop)
         private val productShopBadge = itemView.findViewById<ImageView>(R.id.productShopBadge)
         private val productShopName = itemView.findViewById<Typography>(R.id.productShopName)
-//        private val shopProductReviews = itemView.findViewById<LinearLayout>(com.tokopedia.topads.sdk.R.id.shopProductReviews)
-//        private val reviewCount = itemView.findViewById<Typography>(com.tokopedia.topads.sdk.R.id.reviewCount)
-//        private val locationIcon = itemView.findViewById<ImageView>(com.tokopedia.topads.sdk.R.id.locationIcon)
         private val locationName = itemView.findViewById<Typography>(R.id.locationName)
         private val buttonFollow = itemView.findViewById<UnifyButton>(R.id.buttonFollow)
 
 
         fun bind(shopProductModelItem: ShopProductModel.ShopProductModelItem) {
 
-//            productImage.loadImage(shopProductModelItem.imageUrl)
             productLogoShop.loadImageCircle(shopProductModelItem.shopIcon)
             loadBadge(shopProductModelItem)
             productShopName.text = shopProductModelItem.shopName
@@ -83,31 +79,10 @@ class TopAdsShopAdapter_v2 (
 
         private fun setLocation(location: String) {
             if (location.isNotEmpty()) {
-//                locationIcon.show()
                 locationName.text = location
                 locationName.show()
             }
         }
-
-//        private fun setRating(rating: String, countReview: String) {
-//            val ratingData = rating.toFloatOrZero().toInt()
-//            if (ratingData in Int.ONE..TopAdsConstants.CONST_5) {
-//                for (r in Int.ZERO until ratingData) {
-//                    shopProductReviews.show()
-//                    (shopProductReviews.getChildAt(r) as ImageView).setImageResource(com.tokopedia.topads.sdk.R.drawable.product_card_ic_rating_active)
-//                }
-//                setTextViewReviewCount(countReview)
-//
-//            } else {
-//                reviewCount.hide()
-//                shopProductReviews.invisible()
-//            }
-//        }
-
-//        private fun setTextViewReviewCount(countReview: String) {
-//            reviewCount.show()
-//            reviewCount.text = String.format("%s%s%s", "(", countReview, ")")
-//        }
 
         private fun loadBadge(shopProductModelItem: ShopProductModel.ShopProductModelItem) {
             val isImageShopBadgeVisible = getIsImageShopBadgeVisible(shopProductModelItem)

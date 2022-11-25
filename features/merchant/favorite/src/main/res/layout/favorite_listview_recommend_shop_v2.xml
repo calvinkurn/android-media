@@ -72,14 +72,15 @@
                     android:textColor="@color/Unify_NN600"
                     tool:text="Tangerang selatan"
                     app:typographyType="display_2"
-                    android:visibility="gone"/>
+                    android:visibility="gone"
+                    android:paddingBottom="5dp"/>
 
             </LinearLayout>
         </LinearLayout>
 
         <com.tokopedia.unifycomponents.UnifyButton
             android:id="@+id/buttonFollow"
-            android:layout_width="85dp"
+            android:layout_width="wrap_content"
             android:layout_height="32dp"
             android:layout_alignParentEnd="true"
             android:layout_centerVertical="true"

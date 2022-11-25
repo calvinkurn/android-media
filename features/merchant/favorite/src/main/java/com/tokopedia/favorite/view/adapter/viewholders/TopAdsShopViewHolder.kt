@@ -46,11 +46,6 @@ class TopAdsShopViewHolder(
     private var recShopRecyclerView: RecyclerView =
         itemView.findViewById(R.id.rec_shop_recycler_view)
 
-    private var recShopRecyclerViewContainer: RelativeLayout =
-        itemView.findViewById(R.id.recShopRecyclerViewContainer)
-
-//    private var shopAdsProductView: ShopAdsWithOneProductView =
-//        itemView.findViewById<View>(R.id.shopAdsProductView) as ShopAdsWithOneProductView
     private val context: Context = itemView.context
 
     override fun bind(element: TopAdsShopUiModel?) {
@@ -63,8 +58,6 @@ class TopAdsShopViewHolder(
             recShopRecyclerView.setHasFixedSize(true)
             recShopRecyclerView.adapter = topAdsShopAdapter
             element?.adsShopItems?.let { topAdsShopAdapter.setData(it) }
-//            recShopRecyclerViewContainer.show()
-//            shopAdsProductView.hide()
         } else {
             val topAdsShopAdapter_v2 =
                 TopAdsShopAdapter_v2(
@@ -112,54 +105,6 @@ class TopAdsShopViewHolder(
             recShopRecyclerView.setHasFixedSize(true)
             recShopRecyclerView.adapter = topAdsShopAdapter_v2
             topAdsShopAdapter_v2.setList(getShopProductItem(element))
-//            element?.adsShopItems?.let { topAdsShopAdapter.setData(it) }
-//            shopAdsProductView.setShopProductModel(
-//                ShopProductModel(
-//                    title = "",
-//                    items = getShopProductItem(element)
-//                ),
-//                object : ShopAdsProductListener {
-//                    override fun onItemImpressed(position: Int) {
-//                        val item = element.adsShopItems?.getOrNull(position)
-//                        topAdsUrlHitter.hitImpressionUrl(
-//                            this.javaClass.name,
-//                            item?.shopImageUrl,
-//                            item?.shopId,
-//                            item?.shopName,
-//                            item?.shopImageUrl
-//                        )
-//                    }
-//
-//                    override fun onItemClicked(position: Int) {
-//                        RouteManager.route(context, element.adsShopItems?.getOrNull(position)?.applink)
-//                        recordCLick(element.adsShopItems?.getOrNull(position))
-//                    }
-//
-//                },
-//                object : FollowButtonClickListener {
-//                    override fun onItemClicked(shopProductModelItem: ShopProductModel.ShopProductModelItem) {
-//                        recordCLick(element.adsShopItems?.getOrNull(shopProductModelItem.position))
-//                        if (shopProductModelItem.isFollowed) {
-//                            Toaster.build(
-//                                itemView,
-//                                context.getString(R.string.favorite_error_text_for_followed),
-//                                Toaster.LENGTH_SHORT,
-//                                Toaster.TYPE_ERROR
-//                            ) { }.show()
-//                        } else {
-//                            shopProductModelItem.isFollowed = true
-//                            favoriteClickListener.onFavoriteShopClicked(
-//                                null,
-//                                getShopItem(shopProductModelItem)
-//                            )
-//                        }
-//
-//                    }
-//
-//                }
-//            )
-//            recShopRecyclerViewContainer.hide()
-//            shopAdsProductView.show()
         }
     }
 

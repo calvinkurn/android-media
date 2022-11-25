@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/main_content"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -22,12 +21,14 @@
             <com.tokopedia.unifyprinciples.Typography
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingBottom="@dimen/padding_vs"
-                android:paddingStart="@dimen/margin_small"
-                android:paddingEnd="@dimen/margin_small"
-                android:paddingTop="@dimen/padding_small"
                 android:maxLines="1"
+                android:paddingStart="@dimen/margin_small"
+                android:paddingTop="@dimen/padding_small"
+                android:paddingEnd="@dimen/margin_small"
+                android:paddingBottom="@dimen/padding_vs"
                 android:text="@string/recommendations_for_you"
+                android:textColor="@color/Unify_NN600"
+                app:typographyType="display_2"
                 android:textStyle="bold" />
 
         </RelativeLayout>
@@ -53,27 +54,16 @@
             <com.tokopedia.unifyprinciples.Typography
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:paddingBottom="@dimen/padding_vs"
-                android:paddingStart="@dimen/margin_small"
-                android:paddingEnd="@dimen/margin_small"
-                android:paddingTop="@dimen/padding_small"
                 android:maxLines="1"
+                android:paddingStart="@dimen/margin_small"
+                android:paddingTop="@dimen/padding_small"
+                android:paddingEnd="@dimen/margin_small"
+                android:paddingBottom="@dimen/padding_vs"
                 android:text="@string/my_favorite_shop"
-                android:textStyle="bold" />
+                android:textColor="@color/Unify_NN600"
+                app:typographyType="display_2"/>
 
         </RelativeLayout>
-
-<!--        <com.tokopedia.topads.sdk.widget.ShopAdsWithOneProductView-->
-<!--            android:id="@+id/shopAdsProductView"-->
-<!--            android:layout_height="wrap_content"-->
-<!--            android:layout_width="match_parent"-->
-<!--            android:visibility="gone"-->
-<!--            android:layout_marginStart="@dimen/sdk_dp_10"-->
-<!--            android:layout_marginEnd="@dimen/sdk_dp_10"-->
-<!--            app:layout_constraintStart_toStartOf="parent"-->
-<!--            app:layout_constraintTop_toTopOf="parent"-->
-<!--            app:layout_constraintEnd_toEndOf="parent"-->
-<!--            tools:visibility="visible"/>-->
     </LinearLayout>
 
 </LinearLayout>
