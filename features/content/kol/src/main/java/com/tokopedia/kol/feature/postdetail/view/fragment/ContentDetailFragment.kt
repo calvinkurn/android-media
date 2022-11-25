@@ -1909,8 +1909,6 @@ class ContentDetailFragment : BaseDaggerFragment(), ContentDetailPostViewHolder.
                     val toastMessage = if (it.data.isFollow) getString(com.tokopedia.feedcomponent.R.string.feed_unfollow_ugc_success_toaster_text)
                     else getString(com.tokopedia.feedcomponent.R.string.feed_follow_ugc_success_toaster_text)
                     showToast(toastMessage, Toaster.TYPE_NORMAL)
-
-                    viewModel.fetchUserProfileFeedPost(visitedUserID, currentPosition, true)
                 }
                 is ContentDetailResult.Failure -> {
                     when (it.error) {

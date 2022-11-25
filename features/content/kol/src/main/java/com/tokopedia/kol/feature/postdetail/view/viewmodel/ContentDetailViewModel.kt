@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedASGCUpcomingReminderStatus
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCard
+import com.tokopedia.feedcomponent.data.feedrevamp.FeedXFollowers
 import com.tokopedia.feedcomponent.people.model.MutationUiModel
 import com.tokopedia.feedcomponent.util.LimitGenerator
 import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.FeedAsgcCampaignResponseModel
@@ -206,13 +207,25 @@ class ContentDetailViewModel @Inject constructor(
     fun followUnFollowUser(isFollow: Boolean, encryptedUserID: String, currentPosition: Int) {
         launchCatchError(block = {
             when (val request = repository.followUnfollowUser(isFollow, encryptedUserID)) {
-                is MutationUiModel.Success -> _followUserObservable.value =
-                    ContentDetailResult.Success(
-                        UGCFollowUnfollowModel(
-                            currentPosition = currentPosition,
-                            isFollow = isFollow,
+                is MutationUiModel.Success -> {
+                    _followUserObservable.value =
+                        ContentDetailResult.Success(
+                            UGCFollowUnfollowModel(
+                                currentPosition = currentPosition,
+                                isFollow = isFollow,
+                            )
+                        )
+                    _userProfileFeedPost.value = Success(
+                        ContentDetailUiModel(
+                            postList = userProfileFeedCurrentPostList.map {
+                                it.copy(
+                                    followers = FeedXFollowers(isFollowed = !isFollow)
+                                )
+                            },
+                            cursor = currentCursor
                         )
                     )
+                }
                 is MutationUiModel.Error -> throw Throwable(request.message)
             }
         }, onError = {
