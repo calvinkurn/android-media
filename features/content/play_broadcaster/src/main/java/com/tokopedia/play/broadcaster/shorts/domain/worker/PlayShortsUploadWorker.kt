@@ -2,8 +2,10 @@ package com.tokopedia.play.broadcaster.shorts.domain.worker
 
 import android.content.Context
 import android.util.Log
+import androidx.work.CoroutineWorker
 import androidx.work.Worker
 import androidx.work.WorkerParameters
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.mediauploader.UploaderUseCase
 import com.tokopedia.mediauploader.common.state.UploadResult
@@ -15,6 +17,7 @@ import com.tokopedia.play_common.domain.UpdateChannelUseCase
 import com.tokopedia.play_common.types.PlayChannelStatusType
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.File
 
 /**
@@ -27,48 +30,51 @@ class PlayShortsUploadWorker(
     private val updateChannelUseCase: PlayBroadcastUpdateChannelUseCase,
     private val addMediaUseCase: BroadcasterAddMediasUseCase,
     private val scope: CoroutineScope,
+    private val dispatchers: CoroutineDispatchers,
     private val snapshotHelper: PlayShortsSnapshotHelper
-) : Worker(context, workerParam) {
+) : CoroutineWorker(context, workerParam) {
 
-    override fun doWork(): Result {
-        val uploadData = PlayShortsUploadUiModel.parse(inputData)
+    override suspend fun doWork(): Result {
+        return withContext(dispatchers.io) {
+            val uploadData = PlayShortsUploadUiModel.parse(inputData)
 
-        /**
-         * Upload Flow
-         * 1. Update channel status to Transcoding (value = 6)
-         * 2. Upload media to uploadpedia
-         * 3. If user doesnt upload cover:
-         *    3.a. Take first frame snapshot of selected media
-         *    3.a. Upload snapshot to uploadpedia
-         *    3.b. Update channel status (updating cover)
-         * 4. Add media to broadcaster backend
-         * 5. Update channel status to Active (value = 1)
-         *
-         * If error happens anywhere within the flow:
-         * 1. Update channel status to TranscodingFailed (value = 7)
-         */
-        scope.launchCatchError(block = {
-            updateChannelStatus(uploadData, PlayChannelStatusType.Transcoding)
+            /**
+             * Upload Flow
+             * 1. Update channel status to Transcoding (value = 6)
+             * 2. Upload media to uploadpedia
+             * 3. If user doesnt upload cover:
+             *    3.a. Take first frame snapshot of selected media
+             *    3.a. Upload snapshot to uploadpedia
+             *    3.b. Update channel status (updating cover)
+             * 4. Add media to broadcaster backend
+             * 5. Update channel status to Active (value = 1)
+             *
+             * If error happens anywhere within the flow:
+             * 1. Update channel status to TranscodingFailed (value = 7)
+             */
+//            scope.launchCatchError(block = {
+//                updateChannelStatus(uploadData, PlayChannelStatusType.Transcoding)
+//
+//                val mediaUrl = uploadMedia(UploadType.Video, uploadData.mediaUri)
+//
+//                if (uploadData.coverUri.isEmpty()) {
+//                    uploadFirstSnapshotAsCover(uploadData) {
+//                        addMediaAndUpdateChannel(uploadData, mediaUrl)
+//                    }
+//                } else {
+//                    addMediaAndUpdateChannel(uploadData, mediaUrl)
+//                }
+//            }) {
+//                updateChannelStatus(uploadData, PlayChannelStatusType.TranscodingFailed)
+//
+//                snapshotHelper.deleteLocalFile()
+//
+//                /** TODO: handle if error */
+//            }
 
-            val mediaUrl = uploadMedia(UploadType.Video, uploadData.mediaUri)
-
-            if (uploadData.coverUri.isEmpty()) {
-                uploadFirstSnapshotAsCover(uploadData) {
-                    addMediaAndUpdateChannel(uploadData, mediaUrl)
-                }
-            } else {
-                addMediaAndUpdateChannel(uploadData, mediaUrl)
-            }
-        }) {
-            updateChannelStatus(uploadData, PlayChannelStatusType.TranscodingFailed)
-
-            snapshotHelper.deleteLocalFile()
-
-            /** TODO: handle if error */
+            Log.d("<LOG>", uploadData.toString())
+            Result.success()
         }
-
-        Log.d("<LOG>", uploadData.toString())
-        return Result.success()
     }
 
     private suspend fun addMediaAndUpdateChannel(
