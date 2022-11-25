@@ -6,11 +6,9 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.filter.common.data.DynamicFilterModel
-import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
-import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.tokopedianow.common.constant.ServiceType.NOW_15M
 import com.tokopedia.tokopedianow.common.domain.usecase.SetUserPreferenceUseCase
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardCarouselItemUiModel
@@ -56,7 +54,6 @@ class TokoNowSearchViewModel @Inject constructor (
     getMiniCartListSimplifiedUseCase: GetMiniCartListSimplifiedUseCase,
     cartService: CartService,
     getWarehouseUseCase: GetChosenAddressWarehouseLocUseCase,
-    getRecommendationUseCase: GetRecommendationUseCase,
     setUserPreferenceUseCase: SetUserPreferenceUseCase,
     chooseAddressWrapper: ChooseAddressWrapper,
     abTestPlatformWrapper: ABTestPlatformWrapper,
@@ -69,7 +66,6 @@ class TokoNowSearchViewModel @Inject constructor (
         getMiniCartListSimplifiedUseCase,
         cartService,
         getWarehouseUseCase,
-        getRecommendationUseCase,
         setUserPreferenceUseCase,
         chooseAddressWrapper,
         abTestPlatformWrapper,
@@ -217,7 +213,6 @@ class TokoNowSearchViewModel @Inject constructor (
         related = null
     }
 
-
     private fun createCategoryJumperDataView(): CategoryJumperDataView {
         val categoryJumperItemList =
                 searchCategoryJumper
@@ -270,111 +265,38 @@ class TokoNowSearchViewModel @Inject constructor (
 
     }
 
-    override fun updateQuantityInVisitable(
-        visitable: Visitable<*>,
-        index: Int,
-        updatedProductIndices: MutableList<Int>,
-    ) {
-        super.updateQuantityInVisitable(visitable, index, updatedProductIndices)
-
-        if (visitable is BroadMatchDataView)
-            updateBroadMatchQuantities(visitable, index, updatedProductIndices)
-    }
-
-    private fun updateBroadMatchQuantities(
-        broadMatchDataView: BroadMatchDataView,
-        index: Int,
-        updatedProductIndices: MutableList<Int>,
-    ) {
-        broadMatchDataView.broadMatchItemModelList.forEach { broadMatchItemDataView ->
-            updateBroadMatchItemQuantity(broadMatchItemDataView, index, updatedProductIndices)
-        }
-    }
-
-    private fun updateBroadMatchItemQuantity(
-        broadMatchItemDataView: TokoNowProductCardCarouselItemUiModel,
-        index: Int,
-        updatedProductIndices: MutableList<Int>,
-    ) {
-        val productCardQuantity = broadMatchItemDataView.productCardModel.orderQuantity
-        val miniCartQuantity = cartService.getProductQuantity(broadMatchItemDataView.id)
-
-        if (productCardQuantity != miniCartQuantity) {
-            broadMatchItemDataView.productCardModel = broadMatchItemDataView.productCardModel.copy(orderQuantity = miniCartQuantity)
-
-            if (!updatedProductIndices.contains(index))
-                updatedProductIndices.add(index)
-        }
-    }
-
     fun onViewATCBroadMatchItem(
         broadMatchItem: TokoNowProductCardCarouselItemUiModel,
         quantity: Int,
-        broadMatchIndex: Int,
-        hasAnimationFinished: Boolean
+        broadMatchIndex: Int
     ) {
-        val productId = broadMatchItem.id
+        val productId = broadMatchItem.productCardModel.productId
         val shopId = broadMatchItem.shopId
         val currentQuantity = broadMatchItem.productCardModel.orderQuantity
-        hasProductAnimationFinished = hasAnimationFinished
 
         cartService.handleCart(
             cartProductItem = CartProductItem(productId, shopId, currentQuantity),
             quantity = quantity,
             onSuccessAddToCart = {
                 sendAddToCartBroadMatchItemTracking(quantity, it, broadMatchItem)
-                onAddToCartSuccessBroadMatchItem(broadMatchItem, it.data.quantity)
                 updateCartMessageSuccess(it.errorMessage.joinToString(separator = ", "))
                 updateToolbarNotification()
+                refreshMiniCart()
             },
             onSuccessUpdateCart = {
-                onAddToCartSuccessBroadMatchItem(broadMatchItem, quantity)
                 updateToolbarNotification()
+                refreshMiniCart()
             },
             onSuccessDeleteCart = {
-                onAddToCartSuccessBroadMatchItem(broadMatchItem, 0)
                 updateCartMessageSuccess(it.errorMessage.joinToString(separator = ", "))
                 updateToolbarNotification()
+                refreshMiniCart()
             },
             onError = ::onAddToCartFailed,
             handleCartEventNonLogin = {
                 handleAddToCartEventNonLogin(broadMatchIndex)
             },
         )
-    }
-
-    fun onViewATCBroadMatchItemAnimationFinished(
-        broadMatchItem: TokoNowProductCardCarouselItemUiModel,
-        quantity: Int,
-        broadMatchIndex: Int,
-        hasAnimationFinished: Boolean
-    ) {
-        hasProductAnimationFinished = hasAnimationFinished
-
-        if (broadMatchItem.productCardModel.orderQuantity != quantity && quantity.isZero()) {
-            val productId = broadMatchItem.id
-            val shopId = broadMatchItem.shopId
-            val currentQuantity = broadMatchItem.productCardModel.orderQuantity
-
-            cartService.handleCart(
-                cartProductItem = CartProductItem(productId, shopId, currentQuantity),
-                quantity = quantity,
-                onSuccessAddToCart = { /* nothing to do */ },
-                onSuccessUpdateCart = { /* nothing to do */ },
-                onSuccessDeleteCart = {
-                    onAddToCartSuccessBroadMatchItem(broadMatchItem, 0)
-                    onAddToCartSuccessBroadMatchItem(broadMatchItem, quantity)
-                    updateCartMessageSuccess(it.errorMessage.joinToString(separator = ", "))
-                    updateToolbarNotification()
-                },
-                onError = ::onAddToCartFailed,
-                handleCartEventNonLogin = {
-                    handleAddToCartEventNonLogin(broadMatchIndex)
-                },
-            )
-        } else {
-            refreshMiniCart()
-        }
     }
 
     private fun sendAddToCartBroadMatchItemTracking(
@@ -384,21 +306,6 @@ class TokoNowSearchViewModel @Inject constructor (
     ) {
         addToCartBroadMatchTrackingMutableLiveData.value =
             Triple(quantity, addToCartDataModel.data.cartId, broadMatchItem)
-    }
-
-    private fun onAddToCartSuccessBroadMatchItem(
-        broadMatchItem: TokoNowProductCardCarouselItemUiModel,
-        updatedQuantity: Int,
-    ) {
-        updateBroadMatchItemQuantity(broadMatchItem, updatedQuantity)
-        refreshMiniCart()
-    }
-
-    private fun updateBroadMatchItemQuantity(
-        broadMatchItem: TokoNowProductCardCarouselItemUiModel,
-        updatedQuantity: Int,
-    ) {
-        broadMatchItem.productCardModel = broadMatchItem.productCardModel.copy(orderQuantity = updatedQuantity)
     }
 
     companion object {

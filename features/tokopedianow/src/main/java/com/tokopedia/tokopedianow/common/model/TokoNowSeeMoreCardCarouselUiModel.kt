@@ -4,8 +4,8 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowProductCardCarouselTypeFactory
 
 data class TokoNowSeeMoreCardCarouselUiModel (
-    val channelId: String = "",
-    val channelHeaderName: String = "",
+    val id: String = "",
+    val headerName: String = "",
     val appLink: String = ""
 ): Visitable<TokoNowProductCardCarouselTypeFactory>{
     override fun type(typeFactory: TokoNowProductCardCarouselTypeFactory): Int {

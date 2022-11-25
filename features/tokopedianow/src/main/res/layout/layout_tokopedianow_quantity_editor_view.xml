@@ -27,7 +27,7 @@
         android:layout_height="46dp"
         android:padding="12dp"
         android:contentDescription="@string/tokopedianow_content_description_quantity_editor_view_add"
-        android:src="@drawable/iconunify_add"
+        app:srcCompat="@drawable/iconunify_add"
         android:tint="@color/tokopedianow_product_card_dms_button_stroke_plus_minus_cursor_color"
         android:translationZ="3dp"
         app:layout_constraintBottom_toBottomOf="parent"

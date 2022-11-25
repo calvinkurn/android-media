@@ -10,24 +10,24 @@ import com.tokopedia.tokopedianow.common.model.TokoNowSeeMoreCardCarouselUiModel
 import com.tokopedia.tokopedianow.common.view.TokoNowDynamicHeaderView
 import com.tokopedia.tokopedianow.common.view.TokoNowView
 import com.tokopedia.tokopedianow.common.view.productcard.TokoNowProductCardCarouselView
-import com.tokopedia.tokopedianow.databinding.ItemTokopedianowHomeProductRecomBinding
+import com.tokopedia.tokopedianow.databinding.ItemTokopedianowProductRecommendationBinding
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProductRecomUiModel
 import com.tokopedia.utils.view.binding.viewBinding
 
 class HomeProductRecomViewHolder(
     itemView: View,
     private val tokoNowView: TokoNowView? = null,
-    private val listener: HomeProductRecomListener? = null,
+    private val listener: HomeProductRecomListener? = null
 ) : AbstractViewHolder<HomeProductRecomUiModel>(itemView),
     TokoNowProductCardCarouselView.TokoNowProductCardCarouselListener,
     TokoNowDynamicHeaderView.TokoNowDynamicHeaderListener {
 
     companion object {
         @LayoutRes
-        val LAYOUT = R.layout.item_tokopedianow_home_product_recom
+        val LAYOUT = R.layout.item_tokopedianow_product_recommendation
     }
 
-    private var binding: ItemTokopedianowHomeProductRecomBinding? by viewBinding()
+    private var binding: ItemTokopedianowProductRecommendationBinding? by viewBinding()
 
     private var channelId = ""
     private var headerName = ""
@@ -37,16 +37,25 @@ class HomeProductRecomViewHolder(
             channelId = element.id
             headerName = element.headerModel?.title.orEmpty()
 
-            productRecom.setItems(
+            productRecommendation.setItems(
                 items = element.productList,
-                seeMoreUiModel = element.seeMoreModel
+                seeMoreModel = element.seeMoreModel
             )
-            productRecom.setHeader(
+            productRecommendation.setHeader(
                 header = element.headerModel
             )
-            productRecom.setListener(
+            productRecommendation.setListener(
                 productCardCarouselListener = this@HomeProductRecomViewHolder,
                 headerCarouselListener = this@HomeProductRecomViewHolder
+            )
+        }
+    }
+
+    override fun bind(element: HomeProductRecomUiModel?, payloads: MutableList<Any>) {
+        if (payloads.firstOrNull() == true && element != null) {
+            binding?.productRecommendation?.setItems(
+                items = element.productList,
+                seeMoreModel = element.seeMoreModel
             )
         }
     }
@@ -68,7 +77,7 @@ class HomeProductRecomViewHolder(
         listener?.onSeeMoreClicked(
             channelId = channelId,
             appLink = seeMoreUiModel.appLink,
-            headerName = seeMoreUiModel.channelHeaderName
+            headerName = seeMoreUiModel.headerName
         )
     }
 
@@ -93,18 +102,6 @@ class HomeProductRecomViewHolder(
             channelId = channelId,
             headerName = headerName,
             position = layoutPosition
-        )
-    }
-
-    override fun onProductCardAnimationFinished(
-        position: Int,
-        product: TokoNowProductCardCarouselItemUiModel,
-        quantity: Int
-    ) {
-        listener?.onProductRecomAnimationFinished(
-            product = product,
-            quantity = quantity,
-            channelId = channelId
         )
     }
 
@@ -164,11 +161,6 @@ class HomeProductRecomViewHolder(
             headerName: String
         )
         fun onProductRecomQuantityChanged(
-            product: TokoNowProductCardCarouselItemUiModel,
-            quantity: Int,
-            channelId: String
-        )
-        fun onProductRecomAnimationFinished(
             product: TokoNowProductCardCarouselItemUiModel,
             quantity: Int,
             channelId: String

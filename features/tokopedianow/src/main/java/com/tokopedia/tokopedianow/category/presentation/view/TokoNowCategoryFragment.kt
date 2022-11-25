@@ -47,6 +47,7 @@ import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
 import com.tokopedia.tokopedianow.common.util.StringUtil.getOrDefaultZeroString
 import com.tokopedia.tokopedianow.common.util.TokoNowUniversalShareUtil
 import com.tokopedia.tokopedianow.common.util.TokoNowUniversalShareUtil.shareRequest
+import com.tokopedia.tokopedianow.common.util.StringUtil.getOrDefaultZeroString
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowCategoryGridViewHolder
 import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment
 import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst.Misc.VALUE_LIST_OOC
@@ -69,7 +70,7 @@ class TokoNowCategoryFragment:
         BaseSearchCategoryFragment(),
         CategoryAisleListener,
         ScreenShotListener,
-        TokoNowCategoryGridViewHolder.TokoNowCategoryGridListener,
+    TokoNowCategoryGridViewHolder.TokoNowCategoryGridListener,
         ShareBottomsheetListener,
         PermissionListener {
 
@@ -193,10 +194,15 @@ class TokoNowCategoryFragment:
             switcherWidgetListener = this,
             tokoNowEmptyStateNoResultListener = this,
             categoryAisleListener = this,
-            recommendationCarouselListener = this,
             tokoNowCategoryGridListener = this,
             tokoNowProductCardListener = this,
-            recomWidgetBindPageNameListener = this
+            productRecommendationOocBindListener = createProductRecommendationOocCallback(),
+            productRecommendationOocListener = createProductRecommendationOocCallback(),
+            productRecommendationListener = createProductRecommendationCallback().copy(
+                categoryL1 = getViewModel().categoryL1,
+                cdListName = getCDListName(),
+                categoryIdTracking = getViewModel().categoryIdTracking
+            )
     )
 
     override fun getViewModel() = tokoNowCategoryViewModel
@@ -536,7 +542,7 @@ class TokoNowCategoryFragment:
         }
     }
 
-    override fun getAtcEventAction(isOOC: Boolean): String {
+    override fun getAtcEventAction(): String {
         return CLICK_ATC_CLP_PRODUCT_TOKONOW
     }
 
@@ -557,7 +563,7 @@ class TokoNowCategoryFragment:
         }
     }
 
-    override fun getEventLabel(isOOC: Boolean): String {
+    override fun getEventLabel(): String {
         return getViewModel().categoryIdTracking
     }
 
@@ -607,33 +613,6 @@ class TokoNowCategoryFragment:
         )
     }
 
-    override fun onSeeMoreClick(data: RecommendationCarouselData, applink: String) {
-        CategoryTracking.sendRecommendationSeeAllClickEvent(getViewModel().categoryIdTracking)
-
-        RouteManager.route(context, modifySeeMoreRecomApplink(applink))
-    }
-
-    private fun modifySeeMoreRecomApplink(originalApplink: String): String {
-        val uri = Uri.parse(originalApplink)
-        val queryParamsMap = UrlParamUtils.getParamMap(uri.query ?: "")
-        val recomRef = queryParamsMap[RECOM_QUERY_PARAM_REF] ?: ""
-
-        return if (recomRef == TOKONOW_CLP) {
-            val recomCategoryId = queryParamsMap[RECOM_QUERY_PARAM_CATEGORY_ID] ?: ""
-
-            if (recomCategoryId.isEmpty()) {
-                queryParamsMap[RECOM_QUERY_PARAM_CATEGORY_ID] = getViewModel().categoryL1
-            }
-
-            "${uri.scheme}://" +
-                    "${uri.host}/" +
-                    "${uri.path}?" +
-                    UrlParamUtils.generateUrlParamString(queryParamsMap)
-        } else {
-            originalApplink
-        }
-    }
-
     private fun sendOpenScreenTracking(model: CategoryTrackerModel) {
         val uri = Uri.parse(model.url)
         val categorySlug = uri.lastPathSegment ?: return
@@ -657,6 +636,17 @@ class TokoNowCategoryFragment:
     override fun showDialogAgeRestriction(querySafeModel: QuerySafeModel) {
         if (!querySafeModel.isQuerySafe) {
             AdultManager.showAdultPopUp(this, AR_ORIGIN_TOKONOW_CATEGORY, "${querySafeModel.warehouseId} - ${tokoNowCategoryViewModel.categoryL1.getOrDefaultZeroString()} - ${categoryIdLvl2.getOrDefaultZeroString()} - ${categoryIdLvl3.getOrDefaultZeroString()}")
+        }
+    }
+
+    override fun refreshLayout() {
+        super.refreshLayout()
+        refreshProductRecommendation(TOKONOW_CLP)
+    }
+
+    override fun updateProductRecommendation(needToUpdate: Boolean) {
+        if (needToUpdate) {
+            refreshProductRecommendation(TOKONOW_CLP)
         }
     }
 }

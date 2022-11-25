@@ -27,7 +27,7 @@ object RepurchaseProductMapper {
         isVariant = product.parentProductId.isNotBlank() && product.parentProductId != "0",
         needToShowQuantityEditor = product.minOrder <= product.maxOrder && product.maxOrder != DEFAULT_MAX_ORDER,
         labelGroupList = product.labelGroup.map {
-            com.tokopedia.tokopedianow.common.model.LabelGroup(
+            TokoNowProductCardViewUiModel.LabelGroup(
                 position = it.position,
                 type = it.type,
                 title = it.title,

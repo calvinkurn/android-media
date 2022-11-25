@@ -15,4 +15,15 @@ data class HomeProductRecomUiModel(
     override fun type(typeFactory: HomeTypeFactory): Int {
         return typeFactory.type(this)
     }
+
+    override fun getChangePayload(newModel: HomeLayoutUiModel): Any? {
+        val newItem = newModel as HomeProductRecomUiModel
+        val oldProductList = productList
+        val newProductList = newItem.productList
+
+        return when {
+            oldProductList != newProductList -> true
+            else -> null
+        }
+    }
 }

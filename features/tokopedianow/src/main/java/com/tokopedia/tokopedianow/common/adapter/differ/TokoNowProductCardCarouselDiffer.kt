@@ -4,10 +4,10 @@ import androidx.recyclerview.widget.DiffUtil
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardCarouselItemUiModel
 
-class TokoNowProductCardCarouselDiffer: DiffUtil.ItemCallback<Visitable<*>>() {
+class TokoNowProductCardCarouselDiffer : DiffUtil.ItemCallback<Visitable<*>>() {
     override fun areItemsTheSame(oldItem: Visitable<*>, newItem: Visitable<*>): Boolean {
         return if (oldItem is TokoNowProductCardCarouselItemUiModel && newItem is TokoNowProductCardCarouselItemUiModel) {
-            oldItem.id == newItem.id && oldItem.productCardModel?.orderQuantity == newItem.productCardModel?.orderQuantity
+            oldItem.productCardModel.productId == newItem.productCardModel.productId
         } else {
             oldItem == newItem
         }
@@ -15,5 +15,13 @@ class TokoNowProductCardCarouselDiffer: DiffUtil.ItemCallback<Visitable<*>>() {
 
     override fun areContentsTheSame(oldItem: Visitable<*>, newItem: Visitable<*>): Boolean {
         return oldItem.equals(newItem)
+    }
+
+    override fun getChangePayload(oldItem: Visitable<*>, newItem: Visitable<*>): Any? {
+        return if (oldItem is TokoNowProductCardCarouselItemUiModel && newItem is TokoNowProductCardCarouselItemUiModel) {
+            oldItem.productCardModel != newItem.productCardModel
+        } else {
+            super.getChangePayload(oldItem, newItem)
+        }
     }
 }

@@ -38,12 +38,17 @@ class RepurchaseProductViewHolder(
             setOnClickQuantityEditorVariantListener {
                 listener?.onAddToCartVariant(item)
             }
-            setOnAnimationFinishedListener { quantity ->
-                listener?.onAddToCartNonVariantAnimationFinished(item, quantity)
-            }
             addOnImpressionListener(item) {
                 listener?.onProductImpressed(item)
             }
+        }
+    }
+
+    override fun bind(item: RepurchaseProductUiModel?, payloads: MutableList<Any>) {
+        if (payloads.firstOrNull() == true && item != null) {
+            binding?.productCard?.setData(
+                model = item.productCardModel
+            )
         }
     }
 
@@ -56,11 +61,20 @@ class RepurchaseProductViewHolder(
     }
 
     interface RepurchaseProductCardListener {
-        fun onClickProduct(item: RepurchaseProductUiModel, position: Int)
-        fun onAddToCartVariant(item: RepurchaseProductUiModel)
-        fun onAddToCartNonVariant(item: RepurchaseProductUiModel, quantity: Int)
-        fun onAddToCartNonVariantAnimationFinished(item: RepurchaseProductUiModel, quantity: Int)
-        fun onProductImpressed(item: RepurchaseProductUiModel)
+        fun onClickProduct(
+            item: RepurchaseProductUiModel,
+            position: Int
+        )
+        fun onAddToCartVariant(
+            item: RepurchaseProductUiModel
+        )
+        fun onAddToCartNonVariant(
+            item: RepurchaseProductUiModel,
+            quantity: Int
+        )
+        fun onProductImpressed(
+            item: RepurchaseProductUiModel
+        )
         fun onClickSimilarProduct()
     }
 }

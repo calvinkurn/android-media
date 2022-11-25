@@ -4,7 +4,7 @@ import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.model.ChannelShop
 import com.tokopedia.home_component.util.ServerTimeOffsetUtil
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
-import com.tokopedia.tokopedianow.common.model.LabelGroup
+import com.tokopedia.tokopedianow.common.model.TokoNowProductCardViewUiModel.LabelGroup
 import com.tokopedia.tokopedianow.common.model.TokoNowDynamicHeaderUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardCarouselItemUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowSeeMoreCardCarouselUiModel
@@ -26,6 +26,7 @@ object ProductRecomMapper {
         channelGrid: ChannelGrid,
         miniCartData: MiniCartSimplifiedData? = null
     ): TokoNowProductCardViewUiModel = TokoNowProductCardViewUiModel(
+        productId = channelGrid.id,
         imageUrl = channelGrid.imageUrl,
         minOrder = channelGrid.minOrder,
         maxOrder = channelGrid.maxOrder,
@@ -68,7 +69,6 @@ object ProductRecomMapper {
             title = channelModel.name,
             productList = channelModel.channelGrids.map { channelGrid ->
                 TokoNowProductCardCarouselItemUiModel(
-                    id = channelGrid.id,
                     recomType = channelGrid.recommendationType,
                     pageName = channelModel.pageName,
                     productCardModel = mapChannelGridToProductCard(channelGrid, miniCartData),
@@ -81,8 +81,8 @@ object ProductRecomMapper {
                 )
             },
             seeMoreModel = TokoNowSeeMoreCardCarouselUiModel(
-                channelId = channelModel.channelHeader.id,
-                channelHeaderName = channelModel.channelHeader.name,
+                id = channelModel.channelHeader.id,
+                headerName = channelModel.channelHeader.name,
                 appLink = channelModel.channelHeader.applink
             ),
             headerModel = TokoNowDynamicHeaderUiModel(

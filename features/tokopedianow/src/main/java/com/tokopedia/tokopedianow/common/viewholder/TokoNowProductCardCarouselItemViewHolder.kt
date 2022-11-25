@@ -12,7 +12,7 @@ import com.tokopedia.utils.view.binding.viewBinding
 class TokoNowProductCardCarouselItemViewHolder(
     view: View,
     private var listener: TokoNowCarouselProductCardItemListener? = null
-): AbstractViewHolder<TokoNowProductCardCarouselItemUiModel>(view) {
+) : AbstractViewHolder<TokoNowProductCardCarouselItemUiModel>(view) {
 
     companion object {
         @LayoutRes
@@ -45,14 +45,7 @@ class TokoNowProductCardCarouselItemViewHolder(
                     product = element
                 )
             }
-            setOnAnimationFinishedListener { quantity ->
-                listener?.onProductCardAnimationFinished(
-                    position = layoutPosition,
-                    product = element,
-                    quantity = quantity
-                )
-            }
-            addOnImpressionListener(element) {
+            addOnImpressionListener(element.impressHolder) {
                 listener?.onProductCardImpressed(
                     position = layoutPosition,
                     product = element
@@ -61,15 +54,18 @@ class TokoNowProductCardCarouselItemViewHolder(
         }
     }
 
+    override fun bind(element: TokoNowProductCardCarouselItemUiModel?, payloads: MutableList<Any>) {
+        if (payloads.firstOrNull() == true && element != null) {
+            binding?.productCard?.setData(
+                model = element.productCardModel
+            )
+        }
+    }
+
     interface TokoNowCarouselProductCardItemListener {
         fun onProductCardAddVariantClicked(
             position: Int,
             product: TokoNowProductCardCarouselItemUiModel
-        )
-        fun onProductCardAnimationFinished(
-            position: Int,
-            product: TokoNowProductCardCarouselItemUiModel,
-            quantity: Int
         )
         fun onProductCardQuantityChanged(
             position: Int,

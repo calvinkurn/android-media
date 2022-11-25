@@ -23,21 +23,19 @@ import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.ED
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.LEGO_3_IMAGE
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.LEGO_6_IMAGE
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.MAIN_QUEST
+import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.MEDIUM_PLAY_WIDGET
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.MIX_LEFT_CAROUSEL
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.MIX_LEFT_CAROUSEL_ATC
-import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.MEDIUM_PLAY_WIDGET
-import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.MIX_LEFT_CAROUSEL_ATC_ANIMATION_FINISHED
-import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.SMALL_PLAY_WIDGET
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.PRODUCT_RECOM
-import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.PRODUCT_RECOM_ANIMATION_FINISHED
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.PRODUCT_RECOM_OOC
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.REPURCHASE_PRODUCT
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.SHARING_EDUCATION
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.SHARING_REFERRAL
+import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.SMALL_PLAY_WIDGET
 import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowChooseAddressWidgetUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateOocUiModel
-import com.tokopedia.tokopedianow.common.model.TokoNowRecommendationCarouselUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationOocUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowRepurchaseUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowServerErrorUiModel
 import com.tokopedia.tokopedianow.home.constant.HomeLayoutItemState
@@ -54,6 +52,10 @@ import com.tokopedia.tokopedianow.home.domain.mapper.HomeRepurchaseMapper.mapRep
 import com.tokopedia.tokopedianow.home.domain.mapper.HomeRepurchaseMapper.mapToRepurchaseUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.LeftCarouselMapper.mapResponseToLeftCarousel
 import com.tokopedia.tokopedianow.home.domain.mapper.LegoBannerMapper.mapLegoBannerDataModel
+import com.tokopedia.tokopedianow.home.domain.mapper.PlayWidgetMapper.mapToMediumPlayWidget
+import com.tokopedia.tokopedianow.home.domain.mapper.PlayWidgetMapper.mapToSmallPlayWidget
+import com.tokopedia.tokopedianow.home.domain.mapper.ProductRecomMapper.mapResponseToProductRecom
+import com.tokopedia.tokopedianow.home.domain.mapper.ProductRecomOocMapper.mapResponseToProductRecomOoc
 import com.tokopedia.tokopedianow.home.domain.mapper.QuestMapper.mapQuestUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.SharingMapper.mapSharingEducationUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.SharingMapper.mapSharingReferralUiModel
@@ -63,10 +65,6 @@ import com.tokopedia.tokopedianow.home.domain.mapper.VisitableMapper.getItemInde
 import com.tokopedia.tokopedianow.home.domain.mapper.VisitableMapper.updateItemById
 import com.tokopedia.tokopedianow.home.domain.model.GetRepurchaseResponse.RepurchaseData
 import com.tokopedia.tokopedianow.home.domain.model.HomeLayoutResponse
-import com.tokopedia.tokopedianow.home.domain.mapper.PlayWidgetMapper.mapToMediumPlayWidget
-import com.tokopedia.tokopedianow.home.domain.mapper.PlayWidgetMapper.mapToSmallPlayWidget
-import com.tokopedia.tokopedianow.home.domain.mapper.ProductRecomMapper.mapResponseToProductRecom
-import com.tokopedia.tokopedianow.home.domain.mapper.ProductRecomOocMapper.mapResponseToProductRecomOoc
 import com.tokopedia.tokopedianow.home.domain.model.HomeRemoveAbleWidget
 import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment.Companion.SOURCE
 import com.tokopedia.tokopedianow.home.presentation.model.HomeReferralDataModel
@@ -106,7 +104,7 @@ object HomeLayoutMapper {
         MIX_LEFT_CAROUSEL,
         MIX_LEFT_CAROUSEL_ATC,
         MEDIUM_PLAY_WIDGET,
-        SMALL_PLAY_WIDGET,
+        SMALL_PLAY_WIDGET
     )
 
     fun MutableList<HomeLayoutItemUiModel>.addLoadingIntoList() {
@@ -135,7 +133,7 @@ object HomeLayoutMapper {
     }
 
     fun MutableList<HomeLayoutItemUiModel>.addProductRecomOoc(recommendationWidget: RecommendationWidget) {
-        val productRecomUiModel = TokoNowRecommendationCarouselUiModel(
+        val productRecomUiModel = TokoNowProductRecommendationOocUiModel(
             pageName = OOC_TOKONOW,
             carouselData = RecommendationCarouselData(
                 recommendationData = recommendationWidget,
@@ -146,12 +144,12 @@ object HomeLayoutMapper {
     }
 
     fun MutableList<HomeLayoutItemUiModel>.mapHomeLayoutList(
-            response: List<HomeLayoutResponse>,
-            hasTickerBeenRemoved: Boolean,
-            removeAbleWidgets: List<HomeRemoveAbleWidget>,
-            miniCartData: MiniCartSimplifiedData?,
-            localCacheModel: LocalCacheModel,
-            isLoggedIn: Boolean
+        response: List<HomeLayoutResponse>,
+        hasTickerBeenRemoved: Boolean,
+        removeAbleWidgets: List<HomeRemoveAbleWidget>,
+        miniCartData: MiniCartSimplifiedData?,
+        localCacheModel: LocalCacheModel,
+        isLoggedIn: Boolean
     ) {
         val chooseAddressUiModel = TokoNowChooseAddressWidgetUiModel(id = CHOOSE_ADDRESS_WIDGET_ID)
         add(HomeLayoutItemUiModel(chooseAddressUiModel, HomeLayoutItemState.LOADED))
@@ -163,7 +161,6 @@ object HomeLayoutMapper {
 
         response.filter { SUPPORTED_LAYOUT_TYPES.contains(it.layout) }.forEach { layoutResponse ->
             if (removeAbleWidgets.none { layoutResponse.layout == it.type && it.isRemoved }) {
-
                 mapToHomeUiModel(layoutResponse, miniCartData, localCacheModel)?.let { item ->
                     add(item)
                 }
@@ -309,7 +306,7 @@ object HomeLayoutMapper {
             val miniCartItem = miniCartData.miniCartItems.getMiniCartItemProduct(productId)
             val productParentId = miniCartItem?.productParentId ?: DEFAULT_PARENT_ID
 
-            return if(productParentId != DEFAULT_PARENT_ID) {
+            return if (productParentId != DEFAULT_PARENT_ID) {
                 miniCartItems.getMiniCartItemParentProduct(productParentId)?.totalQuantity.orZero()
             } else {
                 miniCartItem?.quantity.orZero()
@@ -318,30 +315,30 @@ object HomeLayoutMapper {
     }
 
     fun MutableList<HomeLayoutItemUiModel>.updateRepurchaseProductQuantity(
-        miniCartData: MiniCartSimplifiedData,
+        miniCartData: MiniCartSimplifiedData
     ) {
         updateAllProductQuantity(miniCartData, REPURCHASE_PRODUCT)
         updateDeletedProductQuantity(miniCartData, REPURCHASE_PRODUCT)
     }
 
     fun MutableList<HomeLayoutItemUiModel>.updateProductRecomQuantity(
-        miniCartData: MiniCartSimplifiedData,
+        miniCartData: MiniCartSimplifiedData
     ) {
-        updateAllProductQuantity(miniCartData, PRODUCT_RECOM_ANIMATION_FINISHED)
-        updateDeletedProductQuantity(miniCartData, PRODUCT_RECOM_ANIMATION_FINISHED)
+        updateAllProductQuantity(miniCartData, PRODUCT_RECOM)
+        updateDeletedProductQuantity(miniCartData, PRODUCT_RECOM)
     }
 
     fun MutableList<HomeLayoutItemUiModel>.updateLeftCarouselProductQuantity(
-        miniCartData: MiniCartSimplifiedData,
+        miniCartData: MiniCartSimplifiedData
     ) {
-        updateAllProductQuantity(miniCartData, MIX_LEFT_CAROUSEL_ATC_ANIMATION_FINISHED)
-        updateDeletedProductQuantity(miniCartData, MIX_LEFT_CAROUSEL_ATC_ANIMATION_FINISHED)
+        updateAllProductQuantity(miniCartData, MIX_LEFT_CAROUSEL_ATC)
+        updateDeletedProductQuantity(miniCartData, MIX_LEFT_CAROUSEL_ATC)
     }
 
     // Update all product with quantity from cart
     private fun MutableList<HomeLayoutItemUiModel>.updateAllProductQuantity(
-            miniCartData: MiniCartSimplifiedData,
-            @TokoNowLayoutType type: String
+        miniCartData: MiniCartSimplifiedData,
+        @TokoNowLayoutType type: String
     ) {
         miniCartData.miniCartItems.values.map { miniCartItem ->
             if (miniCartItem is MiniCartItem.MiniCartItemProduct) {
@@ -360,8 +357,8 @@ object HomeLayoutMapper {
     ) {
         when (type) {
             REPURCHASE_PRODUCT -> updateRepurchaseProductQuantity(productId, quantity)
-            PRODUCT_RECOM_ANIMATION_FINISHED -> updateProductRecomQuantity(productId, quantity)
-            MIX_LEFT_CAROUSEL_ATC_ANIMATION_FINISHED -> updateLeftCarouselProductQuantity(productId, quantity)
+            PRODUCT_RECOM -> updateProductRecomQuantity(productId, quantity)
+            MIX_LEFT_CAROUSEL_ATC -> updateLeftCarouselProductQuantity(productId, quantity)
         }
     }
 
@@ -393,35 +390,35 @@ object HomeLayoutMapper {
                     }
                 }
             }
-            PRODUCT_RECOM_ANIMATION_FINISHED -> {
-                filter { it.layout is HomeProductRecomUiModel }.forEach { homeLayoutItemUiModel->
+            PRODUCT_RECOM -> {
+                filter { it.layout is HomeProductRecomUiModel }.forEach { homeLayoutItemUiModel ->
                     val layout = homeLayoutItemUiModel.layout as HomeProductRecomUiModel
                     val cartProductIds = miniCartData.miniCartItems.values.mapNotNull { if (it is MiniCartItem.MiniCartItemProduct) it.productId else null }
-                    val deletedProducts = layout.productList.filter { it.id !in cartProductIds }
+                    val deletedProducts = layout.productList.filter { it.productCardModel.productId !in cartProductIds }
 
                     deletedProducts.forEach { item ->
                         if (item.parentId != DEFAULT_PARENT_ID) {
                             val totalQuantity = miniCartData.miniCartItems.getMiniCartItemParentProduct(item.parentId)?.totalQuantity.orZero()
                             if (totalQuantity == DEFAULT_QUANTITY) {
-                                updateProductRecomQuantity(item.id, DEFAULT_QUANTITY)
+                                updateProductRecomQuantity(item.productCardModel.productId, DEFAULT_QUANTITY)
                             } else {
-                                updateProductRecomQuantity(item.id, totalQuantity)
+                                updateProductRecomQuantity(item.productCardModel.productId, totalQuantity)
                             }
                         } else {
-                            updateProductRecomQuantity(item.id, DEFAULT_QUANTITY)
+                            updateProductRecomQuantity(item.productCardModel.productId, DEFAULT_QUANTITY)
                         }
                     }
                 }
             }
-            MIX_LEFT_CAROUSEL_ATC_ANIMATION_FINISHED -> {
-                filter { it.layout is HomeLeftCarouselAtcUiModel }.forEach { homeLayoutItemUiModel->
+            MIX_LEFT_CAROUSEL_ATC -> {
+                filter { it.layout is HomeLeftCarouselAtcUiModel }.forEach { homeLayoutItemUiModel ->
                     val layout = homeLayoutItemUiModel.layout as HomeLeftCarouselAtcUiModel
                     val miniCartItems = miniCartData.miniCartItems.values
                         .filterIsInstance<MiniCartItem.MiniCartItemProduct>()
                     val cartProductIds = miniCartItems.map { it.productId }
                     val deletedProducts: MutableList<HomeLeftCarouselAtcProductCardUiModel> = mutableListOf()
                     layout.productList.forEach {
-                        if((it is HomeLeftCarouselAtcProductCardUiModel) && it.id !in cartProductIds ) {
+                        if ((it is HomeLeftCarouselAtcProductCardUiModel) && it.id !in cartProductIds) {
                             deletedProducts.add(it)
                         }
                     }
@@ -484,7 +481,7 @@ object HomeLayoutMapper {
             val layout = homeLayoutItemUiModel.layout
             val uiModel = layout as HomeProductRecomUiModel
             val newRecommendationList = uiModel.productList.toMutableList()
-            val recommendationItem = newRecommendationList.firstOrNull { it.id == productId }
+            val recommendationItem = newRecommendationList.firstOrNull { it.productCardModel.productId == productId }
 
             if (recommendationItem?.productCardModel?.orderQuantity == quantity) return
 
@@ -533,7 +530,9 @@ object HomeLayoutMapper {
                 items = it.playWidgetState.model.items.map { item ->
                     if (item is PlayWidgetChannelUiModel && item.channelId == channelId) {
                         item.copy(totalView = item.totalView.copy(totalViewFmt = totalView))
-                    } else item
+                    } else {
+                        item
+                    }
                 }
             )
             val playWidgetState = it.playWidgetState.copy(model = model)
@@ -556,12 +555,12 @@ object HomeLayoutMapper {
         return filter { it.layout is HomeProductRecomUiModel }.firstOrNull { uiModel ->
             val productRecom = uiModel.layout as HomeProductRecomUiModel
             val recommendations = productRecom.productList
-            recommendations.firstOrNull { it.id == productId } != null
+            recommendations.firstOrNull { it.productCardModel.productId == productId } != null
         }?.let { uiModel ->
             val productRecom = uiModel.layout as HomeProductRecomUiModel
             val recommendations = productRecom.productList.toMutableList()
 
-            val product = recommendations.first { it.id == productId }
+            val product = recommendations.first { it.productCardModel.productId == productId }
             val position = recommendations.indexOf(product)
 
             recommendations[position] = product.copy(productCardModel = product.productCardModel.copy(orderQuantity = quantity))
@@ -569,7 +568,7 @@ object HomeLayoutMapper {
         }
     }
 
-    inline fun<reified T: Visitable<*>> List<HomeLayoutItemUiModel>.getItem(itemClass: Class<T>): T? {
+    inline fun<reified T : Visitable<*>> List<HomeLayoutItemUiModel>.getItem(itemClass: Class<T>): T? {
         return mapNotNull { it.layout }.find {
             it.javaClass == itemClass
         } as? T

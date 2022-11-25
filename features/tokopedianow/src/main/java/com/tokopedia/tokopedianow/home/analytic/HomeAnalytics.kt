@@ -376,7 +376,7 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
         recommendationItem: TokoNowProductCardCarouselItemUiModel,
         position: Int
     ) {
-        val productId = recommendationItem.id
+        val productId = recommendationItem.productCardModel.productId
         val dataLayer = getEcommerceDataLayer(
             event = EVENT_SELECT_CONTENT,
             action = EVENT_ACTION_CLICK_PRODUCT_RECOM,
@@ -385,13 +385,13 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
             items = arrayListOf(
                 productItemDataLayer(
                     index = position.getTrackerPosition().toString(),
-                    productId = recommendationItem.id,
+                    productId = recommendationItem.productCardModel.productId,
                     productName = recommendationItem.productCardModel.name,
                     price = recommendationItem.productCardModel.price.filter { it.isDigit() }.toLongOrZero(),
                     productCategory = ""
                 )
             ),
-            productId = recommendationItem.id,
+            productId = recommendationItem.productCardModel.productId,
         )
         dataLayer.putString(KEY_PRODUCT_ID, productId)
         dataLayer.putString(
@@ -408,11 +408,11 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
         recommendationItem: TokoNowProductCardCarouselItemUiModel,
         position: Int
     ) {
-        val productId = recommendationItem.id
+        val productId = recommendationItem.productCardModel.productId
         val items = arrayListOf(
             productItemDataLayer(
                 index = position.getTrackerPosition().toString(),
-                productId = recommendationItem.id,
+                productId = recommendationItem.productCardModel.productId,
                 productName = recommendationItem.productCardModel.name,
                 price = recommendationItem.productCardModel.price.filter { it.isDigit() }.toLongOrZero(),
                 productCategory = ""
@@ -498,7 +498,7 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
     ) {
         val item = productItemDataLayer(
             index = position.getTrackerPosition().toString(),
-            productId = recommendationItem.id,
+            productId = recommendationItem.productCardModel.productId,
             productName = recommendationItem.productCardModel.name,
             price = recommendationItem.productCardModel.price.filter { it.isDigit() }.toLongOrZero()
         ).apply {
@@ -514,7 +514,7 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
             putString(KEY_CATEGORY_ID, "")
         }
 
-        val productId = recommendationItem.id
+        val productId = recommendationItem.productCardModel.productId
         val dataLayer = getEcommerceDataLayer(
             event = EVENT_ADD_TO_CART,
             action = EVENT_ACTION_CLICK_PRODUCT_RECOM_ADD_TO_CART,
@@ -537,7 +537,7 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
     ) {
         val item = productItemDataLayer(
             index = position.getTrackerPosition().toString(),
-            productId = recommendationItem.id,
+            productId = recommendationItem.productCardModel.productId,
             productName = recommendationItem.productCardModel.name,
             price = recommendationItem.productCardModel.price.filter { it.isDigit() }.toLongOrZero()
         ).apply {
@@ -554,7 +554,7 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
             category = EVENT_CATEGORY_RECOM_HOME_PAGE,
             label = "$channelId - $headerName",
             items = arrayListOf(item),
-            productId = recommendationItem.id,
+            productId = recommendationItem.productCardModel.productId,
             pageSource = ""
         )
         getTracker().sendEnhanceEcommerceEvent(EVENT_REMOVE_FROM_CART, dataLayer)
@@ -690,11 +690,11 @@ class HomeAnalytics @Inject constructor(private val userSession: UserSessionInte
         getTracker().sendEnhanceEcommerceEvent(EVENT_SELECT_CONTENT, dataLayer)
     }
 
-    fun trackClickViewAllLeftCarousel(channelId: String, channelHeaderName: String) {
+    fun trackClickViewAllLeftCarousel(id: String, headerName: String) {
         val dataLayer = getMarketplaceDataLayer(
             event = EVENT_SELECT_CONTENT,
             action = EVENT_ACTION_CLICK_VIEW_ALL_LEFT_CAROUSEL,
-            label = "$channelId - $channelHeaderName"
+            label = "$id - $headerName"
         )
 
         getTracker().sendEnhanceEcommerceEvent(EVENT_SELECT_CONTENT, dataLayer)

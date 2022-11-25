@@ -27,11 +27,10 @@ import kotlin.coroutines.CoroutineContext
 class TokoNowProductCardCarouselView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null
-): BaseCustomView(context, attrs),
+) : BaseCustomView(context, attrs),
     TokoNowProductCardCarouselItemViewHolder.TokoNowCarouselProductCardItemListener,
     TokoNowSeeMoreCardCarouselViewHolder.TokoNowCarouselProductCardSeeMoreListener,
-    CoroutineScope
-{
+    CoroutineScope {
 
     private val adapter: TokoNowProductCardCarouselAdapter by lazy {
         TokoNowProductCardCarouselAdapter(
@@ -65,6 +64,9 @@ class TokoNowProductCardCarouselView @JvmOverloads constructor(
             root.addItemDecoration(ProductCardCarouselDecoration(context))
             root.itemAnimator = null
         }
+
+        binding.root.layoutManager = layoutManager
+        binding.root.adapter = adapter
     }
 
     override val coroutineContext: CoroutineContext = SupervisorJob() + Dispatchers.Main
@@ -76,18 +78,6 @@ class TokoNowProductCardCarouselView @JvmOverloads constructor(
         listener?.onProductCardAddVariantClicked(
             position = position,
             product = product
-        )
-    }
-
-    override fun onProductCardAnimationFinished(
-        position: Int,
-        product: TokoNowProductCardCarouselItemUiModel,
-        quantity: Int
-    ) {
-        listener?.onProductCardAnimationFinished(
-            position = position,
-            product = product,
-            quantity = quantity
         )
     }
 
@@ -149,18 +139,22 @@ class TokoNowProductCardCarouselView @JvmOverloads constructor(
 
     fun bindItems(
         items: List<Visitable<*>>,
-        seeMoreUiModel: TokoNowSeeMoreCardCarouselUiModel? = null
+        seeMoreModel: TokoNowSeeMoreCardCarouselUiModel? = null
     ) {
-        binding.root.layoutManager = layoutManager
-        binding.root.adapter = adapter
-        if (seeMoreUiModel != null && seeMoreUiModel.appLink.isNotBlank()) {
+        if (seeMoreModel != null && seeMoreModel.appLink.isNotBlank()) {
             val newItems = items.toMutableList()
-            newItems.add(seeMoreUiModel)
+            newItems.add(seeMoreModel)
             adapter.submitList(newItems)
         } else {
             adapter.submitList(items)
         }
         restoreInstanceStateToLayoutManager()
+    }
+
+    fun updateItems(
+        items: List<Visitable<*>>
+    ) {
+        adapter.submitList(ArrayList(items))
     }
 
     fun setListener(
@@ -178,15 +172,10 @@ class TokoNowProductCardCarouselView @JvmOverloads constructor(
             position: Int,
             product: TokoNowProductCardCarouselItemUiModel
         )
-        fun onProductCardAnimationFinished(
-            position: Int,
-            product: TokoNowProductCardCarouselItemUiModel,
-            quantity: Int,
-        )
         fun onProductCardQuantityChanged(
             position: Int,
             product: TokoNowProductCardCarouselItemUiModel,
-            quantity: Int,
+            quantity: Int
         )
         fun onProductCardAddVariantClicked(
             position: Int,

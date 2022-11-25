@@ -4,7 +4,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.home_component.util.ServerTimeOffsetUtil
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
-import com.tokopedia.tokopedianow.common.model.LabelGroup
+import com.tokopedia.tokopedianow.common.model.TokoNowProductCardViewUiModel.LabelGroup
 import com.tokopedia.tokopedianow.common.model.TokoNowDynamicHeaderUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardViewUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowSeeMoreCardCarouselUiModel
@@ -54,8 +54,8 @@ object LeftCarouselMapper {
         if(channelModel.channelHeader.applink.isNotEmpty()) {
             productList.add(
                 TokoNowSeeMoreCardCarouselUiModel(
-                    channelId = channelModel.id,
-                    channelHeaderName = channelModel.channelHeader.name,
+                    id = channelModel.id,
+                    headerName = channelModel.channelHeader.name,
                     appLink = channelModel.channelHeader.applink
                 )
             )

@@ -19,7 +19,7 @@ class HomeProductRecomCallback(
     private val viewModel: TokoNowHomeViewModel,
     private val analytics: HomeAnalytics,
     private val startActivityForResult: (Intent, Int) -> Unit
-): HomeProductRecomListener {
+) : HomeProductRecomListener {
 
     override fun onProductRecomClicked(
         product: TokoNowProductCardCarouselItemUiModel,
@@ -80,27 +80,10 @@ class HomeProductRecomCallback(
     ) {
         if (userSession.isLoggedIn) {
             viewModel.addProductToCart(
-                productId = product.id,
+                productId = product.productCardModel.productId,
                 quantity = quantity,
                 shopId = product.shopId,
                 type = TokoNowLayoutType.PRODUCT_RECOM
-            )
-        } else {
-            RouteManager.route(context, ApplinkConst.LOGIN)
-        }
-    }
-
-    override fun onProductRecomAnimationFinished(
-        product: TokoNowProductCardCarouselItemUiModel,
-        quantity: Int,
-        channelId: String
-    ) {
-        if (userSession.isLoggedIn) {
-            viewModel.addProductToCart(
-                productId = product.id,
-                quantity = quantity,
-                shopId = product.shopId,
-                type = TokoNowLayoutType.PRODUCT_RECOM_ANIMATION_FINISHED
             )
         } else {
             RouteManager.route(context, ApplinkConst.LOGIN)
@@ -114,7 +97,7 @@ class HomeProductRecomCallback(
         context?.apply {
             AtcVariantHelper.goToAtcVariant(
                 context = this,
-                productId = product.id,
+                productId = product.productCardModel.productId,
                 pageSource = VariantPageSource.TOKONOW_PAGESOURCE,
                 isTokoNow = true,
                 shopId = product.shopId,
@@ -124,9 +107,8 @@ class HomeProductRecomCallback(
     }
 
     private fun openAppLink(appLink: String) {
-        if(appLink.isNotEmpty()) {
+        if (appLink.isNotEmpty()) {
             RouteManager.route(context, appLink)
         }
     }
-
 }

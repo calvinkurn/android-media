@@ -57,7 +57,7 @@ fun RecommendationEntity.RecommendationData.toRecommendationWidget(): Recommenda
                         header = title,
                         pageName = pageName,
                         minOrder = recommendation.minOrder,
-                        maxOrder = recommendation.minOrder,
+                        maxOrder = recommendation.maxOrder,
                         location = if (isRecomCardShouldShowVariantOrCart()) "" else recommendation.shop.city,
                         badgesUrl = if (isRecomCardShouldShowVariantOrCart()) listOf<String>() else recommendation.badges.map { it.imageUrl },
                         type = layoutType,

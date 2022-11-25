@@ -2,14 +2,15 @@ package com.tokopedia.tokopedianow.repurchase.domain.mapper
 
 import androidx.annotation.StringRes
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.DEFAULT_VALUE_OF_PARAMETER_DEVICE
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.data.getMiniCartItemParentProduct
 import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
-import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
-import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
-import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData.Companion.STATE_READY
+import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
+import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.PAGE_NUMBER_RECOM_WIDGET
+import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.RECOM_WIDGET
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.categorylist.domain.model.CategoryResponse
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
@@ -18,7 +19,8 @@ import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowChooseAddressWidgetUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateNoResultUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateOocUiModel
-import com.tokopedia.tokopedianow.common.model.TokoNowRecommendationCarouselUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationOocUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowServerErrorUiModel
 import com.tokopedia.tokopedianow.common.util.TokoNowServiceTypeUtil.REPURCHASE_EMPTY_RESOURCE_ID
 import com.tokopedia.tokopedianow.common.util.TokoNowServiceTypeUtil.getServiceTypeRes
@@ -46,8 +48,6 @@ import com.tokopedia.unifycomponents.ChipsUnify
 object RepurchaseLayoutMapper {
 
     const val PRODUCT_REPURCHASE = "product_repurchase"
-    const val PRODUCT_RECOMMENDATION = "product_recom"
-    const val PRODUCT_REPURCHASE_ANIMATION_FINISHED = "product_repurchase_animation_finished"
 
     private const val DEFAULT_QUANTITY = 0
     private const val DEFAULT_PARENT_ID = "0"
@@ -98,18 +98,6 @@ object RepurchaseLayoutMapper {
         )
     }
 
-    fun MutableList<Visitable<*>>.addProductRecom(pageName: String, recommendationWidget: RecommendationWidget) {
-        add(TokoNowRecommendationCarouselUiModel(
-                pageName = pageName,
-                carouselData = RecommendationCarouselData(
-                    recommendationData = recommendationWidget,
-                    state = STATE_READY
-                ),
-                miniCartSource = MiniCartSource.TokonowRepurchasePage
-            )
-        )
-    }
-
     fun MutableList<Visitable<*>>.addChooseAddress() {
         add(TokoNowChooseAddressWidgetUiModel())
     }
@@ -118,9 +106,23 @@ object RepurchaseLayoutMapper {
         add(TokoNowEmptyStateOocUiModel(hostSource = SOURCE, serviceType = serviceType))
     }
 
-    fun MutableList<Visitable<*>>.addRecomWidget(pageName: String) {
+    fun MutableList<Visitable<*>>.addProductRecommendation(pageName: String) {
         add(
-            TokoNowRecommendationCarouselUiModel(
+            TokoNowProductRecommendationUiModel(
+                requestParam = GetRecommendationRequestParam(
+                    pageName = pageName,
+                    xSource = RECOM_WIDGET,
+                    isTokonow = true,
+                    pageNumber = PAGE_NUMBER_RECOM_WIDGET,
+                    xDevice = DEFAULT_VALUE_OF_PARAMETER_DEVICE,
+                )
+            )
+        )
+    }
+
+    fun MutableList<Visitable<*>>.addProductRecommendationOoc(pageName: String) {
+        add(
+            TokoNowProductRecommendationOocUiModel(
                 pageName = pageName,
                 isFirstLoad = true,
                 isBindWithPageName = true,
@@ -152,6 +154,10 @@ object RepurchaseLayoutMapper {
 
     fun MutableList<Visitable<*>>.removeChooseAddress() {
         removeFirstLayout(TokoNowChooseAddressWidgetUiModel::class.java)
+    }
+
+    fun MutableList<Visitable<*>>.removeProductRecommendation() {
+        removeFirstLayout(TokoNowProductRecommendationUiModel::class.java)
     }
 
     fun MutableList<Visitable<*>>.setCategoryFilter(selectedFilter: SelectedSortFilter?) {
@@ -273,12 +279,11 @@ object RepurchaseLayoutMapper {
 
     fun MutableList<Visitable<*>>.updateDeletedATCQuantity(miniCart: MiniCartSimplifiedData, type: String) {
         when (type) {
-            PRODUCT_REPURCHASE_ANIMATION_FINISHED -> {
+            PRODUCT_REPURCHASE -> {
                 val productList = filterIsInstance<RepurchaseProductUiModel>()
                 val cartProductIds = miniCart.miniCartItems.values.mapNotNull {
                     if (it is MiniCartItem.MiniCartItemProduct) it.productId else null
                 }
-
                 val deletedProducts = productList.filter { it.id !in cartProductIds }
                 deletedProducts.forEach { model ->
                     val productId = model.id
@@ -296,31 +301,6 @@ object RepurchaseLayoutMapper {
                     }
                 }
             }
-            PRODUCT_RECOMMENDATION -> {
-                firstOrNull { it is TokoNowRecommendationCarouselUiModel }?.let { uiModel ->
-                    val layoutUiModel = uiModel as TokoNowRecommendationCarouselUiModel
-                    val cartProductIds = miniCart.miniCartItems.values.mapNotNull {
-                        if (it is MiniCartItem.MiniCartItemProduct) it.productId else null
-                    }
-
-                    val deletedProducts = layoutUiModel.carouselData.recommendationData.recommendationItemList.filter { it.productId.toString() !in cartProductIds }
-                    deletedProducts.forEach { model ->
-                        val productId = model.productId.toString()
-                        val parentId = model.parentID.toString()
-
-                        if (parentId != DEFAULT_PARENT_ID) {
-                            val totalQuantity = miniCart.miniCartItems.getMiniCartItemParentProduct(parentId)?.totalQuantity.orZero()
-                            if (totalQuantity == DEFAULT_QUANTITY) {
-                                updateProductRecomQuantity(productId, DEFAULT_QUANTITY)
-                            } else {
-                                updateProductRecomQuantity(productId, totalQuantity)
-                            }
-                        } else {
-                            updateProductRecomQuantity(productId, DEFAULT_QUANTITY)
-                        }
-                    }
-                }
-            }
         }
     }
 
@@ -333,28 +313,6 @@ object RepurchaseLayoutMapper {
                 val productCard = it.productCardModel.copy(orderQuantity = quantity)
                 set(index, it.copy(productCardModel = productCard))
             }
-        }
-    }
-
-    private fun MutableList<Visitable<*>>.updateProductRecomQuantity(productId: String, quantity: Int) {
-        firstOrNull { it is TokoNowRecommendationCarouselUiModel }?.let { uiModel ->
-            val index = indexOf(uiModel)
-            val layoutUiModel = uiModel as TokoNowRecommendationCarouselUiModel
-            val recommendationData = layoutUiModel.carouselData.recommendationData.copy()
-            recommendationData.recommendationItemList.firstOrNull { it.productId.toString() == productId }?.let {
-                it.quantity = quantity
-            }
-            set(
-                index = index,
-                element = TokoNowRecommendationCarouselUiModel(
-                    carouselData = layoutUiModel.carouselData.copy(
-                        recommendationData = recommendationData
-                    ),
-                    id = layoutUiModel.id,
-                    pageName = layoutUiModel.pageName,
-                    miniCartSource = MiniCartSource.TokonowRepurchasePage
-                )
-            )
         }
     }
 

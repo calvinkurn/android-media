@@ -14,6 +14,12 @@ import dagger.Provides
 class CommonModule {
     @CommonScope
     @Provides
+    fun provideContext(@ApplicationContext context: Context): Context {
+        return context
+    }
+
+    @CommonScope
+    @Provides
     fun provideUserSession(@ApplicationContext context: Context): UserSessionInterface {
         return UserSession(context)
     }
