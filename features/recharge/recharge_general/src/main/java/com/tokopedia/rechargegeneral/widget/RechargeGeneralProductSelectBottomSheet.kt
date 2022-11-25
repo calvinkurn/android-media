@@ -4,7 +4,6 @@ import android.content.Context
 import android.graphics.Paint
 import android.util.AttributeSet
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
@@ -41,9 +40,13 @@ class RechargeGeneralProductSelectBottomSheet @JvmOverloads constructor(
         }
 
     init {
-        val view = View.inflate(context, getLayout(), this)
-        binding = ViewRechargeGeneralWidgetProductSelectDropdownBottomSheetBinding.bind(view)
+        binding = ViewRechargeGeneralWidgetProductSelectDropdownBottomSheetBinding.inflate(
+            LayoutInflater.from(context),
+            this,
+            false
+        )
         binding.rvProductSelectDropdown.adapter = DigitalProductSelectDropdownAdapter(dropdownData)
+        addView(binding.root)
     }
 
     open fun getLayout(): Int {

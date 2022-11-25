@@ -2,11 +2,10 @@ package com.tokopedia.rechargegeneral.widget
 
 import android.content.Context
 import android.util.AttributeSet
-import android.view.View
+import android.view.LayoutInflater
 import com.tokopedia.common.topupbills.data.TopupBillsEnquiry
 import com.tokopedia.common.topupbills.widget.TopupBillsCheckoutWidget
 import com.tokopedia.promocheckout.common.view.widget.TickerPromoStackingCheckoutView
-import com.tokopedia.rechargegeneral.R
 import com.tokopedia.rechargegeneral.databinding.ViewRechargeGeneralWidgetCheckoutViewBottomSheetBinding
 import com.tokopedia.unifycomponents.BaseCustomView
 import org.jetbrains.annotations.NotNull
@@ -25,12 +24,16 @@ class RechargeGeneralCheckoutBottomSheet @JvmOverloads constructor(
     private var binding: ViewRechargeGeneralWidgetCheckoutViewBottomSheetBinding
 
     init {
-        val view = View.inflate(context, R.layout.view_recharge_general_widget_checkout_view_bottom_sheet, this)
-        binding = ViewRechargeGeneralWidgetCheckoutViewBottomSheetBinding.bind(view)
+        binding = ViewRechargeGeneralWidgetCheckoutViewBottomSheetBinding.inflate(
+            LayoutInflater.from(context),
+            this,
+            false
+        )
 
         binding.enquiryDataView.title = "Data"
         binding.checkoutView.setVisibilityLayout(true)
         binding.checkoutView.listener = this
+        addView(binding.root)
     }
 
     fun getPromoTicker(): TickerPromoStackingCheckoutView {
