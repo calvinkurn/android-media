@@ -41,7 +41,7 @@ class TokoChatUserViewModelTest : TokoChatViewModelTestFixture() {
             // Then
             Assert.assertEquals(
                 throwableDummy,
-                viewModel.error.observeAwaitValue()
+                viewModel.error.observeAwaitValue()?.first
             )
         }
     }

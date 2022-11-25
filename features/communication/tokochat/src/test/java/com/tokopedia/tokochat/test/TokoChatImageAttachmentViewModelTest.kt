@@ -309,7 +309,7 @@ class TokoChatImageAttachmentViewModelTest : TokoChatViewModelTestFixture() {
             // Then
             assertEquals(
                 throwableDummy,
-                viewModel.error.observeAwaitValue()
+                viewModel.error.observeAwaitValue()?.first
             )
         }
     }
@@ -349,7 +349,7 @@ class TokoChatImageAttachmentViewModelTest : TokoChatViewModelTestFixture() {
             // Then
             assertEquals(
                 imageResultDummy.error?.firstOrNull()?.message,
-                viewModel.error.observeAwaitValue()?.message
+                viewModel.error.observeAwaitValue()?.first?.message
             )
         }
     }
@@ -384,7 +384,7 @@ class TokoChatImageAttachmentViewModelTest : TokoChatViewModelTestFixture() {
             // Then
             assertEquals(
                 imageResultDummy.error?.firstOrNull()?.message,
-                viewModel.error.observeAwaitValue()?.message
+                viewModel.error.observeAwaitValue()?.first?.message
             )
         }
     }
@@ -419,7 +419,7 @@ class TokoChatImageAttachmentViewModelTest : TokoChatViewModelTestFixture() {
             // Then
             assertEquals(
                 imageResultDummy.error?.firstOrNull()?.message,
-                viewModel.error.observeAwaitValue()?.message
+                viewModel.error.observeAwaitValue()?.first?.message
             )
         }
     }
@@ -459,7 +459,7 @@ class TokoChatImageAttachmentViewModelTest : TokoChatViewModelTestFixture() {
             // Then
             assertEquals(
                 imageResultDummy.error?.firstOrNull()?.message,
-                viewModel.error.observeAwaitValue()?.message
+                viewModel.error.observeAwaitValue()?.first?.message
             )
         }
     }
