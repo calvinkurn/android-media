@@ -889,12 +889,13 @@ class FeedShopPresenterTest: KolPostLikeListener {
 
     @Test
     fun `add post tag item success should call onAddToCartSuccess`() {
+        val mockCartData = DataModel(success = 1, productId = 12345)
         every {
             atcUseCase.execute(any(), any())
         } answers {
             secondArg<Subscriber<AddToCartDataModel>>().onCompleted()
             secondArg<Subscriber<AddToCartDataModel>>().onNext(AddToCartDataModel(
-                    data = DataModel(success = 1)
+                    data = mockCartData
             ))
         }
 
@@ -913,7 +914,7 @@ class FeedShopPresenterTest: KolPostLikeListener {
         presenter.addPostTagItemToCart(postTagItem)
 
         verify {
-            view.onAddToCartSuccess(postTagItem.id)
+            view.onAddToCartSuccess(mockCartData.productId.toString())
         }
     }
 
