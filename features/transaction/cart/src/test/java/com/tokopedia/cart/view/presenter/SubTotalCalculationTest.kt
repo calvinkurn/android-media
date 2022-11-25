@@ -26,7 +26,7 @@ class SubTotalCalculationTest : BaseCartTest() {
     private fun initializeData() {
         //region First Item In First Shop
         firstProductFirstShop = CartItemHolderData().apply {
-            productPrice = 1000
+            productPrice = 1000.0
             parentId = "0"
             productId = "1"
             productCashBack = "10%"
@@ -36,7 +36,7 @@ class SubTotalCalculationTest : BaseCartTest() {
 
         //region First Item In Second Shop
         firstProductSecondShop = CartItemHolderData().apply {
-            productPrice = 40
+            productPrice = 40.0
             parentId = "0"
             productId = "2"
             quantity = 2
@@ -45,7 +45,7 @@ class SubTotalCalculationTest : BaseCartTest() {
 
         //region Second Item In First Shop
         secondProductFirstShop = CartItemHolderData().apply {
-            productPrice = 200
+            productPrice = 200.0
             parentId = "0"
             productId = "3"
             quantity = 3
@@ -54,7 +54,7 @@ class SubTotalCalculationTest : BaseCartTest() {
 
         //region Second Item In Second Shop
         secondProductSecondShop = CartItemHolderData().apply {
-            productPrice = 1
+            productPrice = 1.0
             parentId = "0"
             productId = "4"
             quantity = 4
@@ -66,7 +66,7 @@ class SubTotalCalculationTest : BaseCartTest() {
             isBundlingItem = true
             bundleId = "123"
             bundleGroupId = "123-abc"
-            bundlePrice = 50000
+            bundlePrice = 50000.0
             bundleQuantity = 2
             quantity = 1
         }
@@ -178,7 +178,7 @@ class SubTotalCalculationTest : BaseCartTest() {
         secondProductSecondShop.isSelected = true
         secondShop.isAllSelected = true
 
-        val wholesalePriceData = WholesalePrice(qtyMin = 5, prdPrc = 100)
+        val wholesalePriceData = WholesalePrice(qtyMin = 5, prdPrc = 100.0)
         firstProductFirstShop.wholesalePriceData = arrayListOf(wholesalePriceData)
         firstProductFirstShop.quantity = 10
 
@@ -210,7 +210,7 @@ class SubTotalCalculationTest : BaseCartTest() {
         secondProductSecondShop.isSelected = true
         secondShop.isAllSelected = true
 
-        val wholesalePriceData = WholesalePrice(qtyMin = 10, prdPrc = 100)
+        val wholesalePriceData = WholesalePrice(qtyMin = 10, prdPrc = 100.0)
         firstProductFirstShop.wholesalePriceData = arrayListOf(wholesalePriceData)
 
         every { view.getAllAvailableCartDataList() } answers {
@@ -274,17 +274,17 @@ class SubTotalCalculationTest : BaseCartTest() {
         secondShop.isAllSelected = true
 
         firstProductSecondShop.quantity = 1
-        firstProductSecondShop.productPrice = 100
+        firstProductSecondShop.productPrice = 100.0
         secondProductSecondShop.quantity = 1
-        secondProductSecondShop.productPrice = 200
+        secondProductSecondShop.productPrice = 200.0
 
         firstProductFirstShop.parentId = "9"
-        firstProductFirstShop.productPrice = 1000
+        firstProductFirstShop.productPrice = 1000.0
         firstProductFirstShop.productCashBack = "10%"
         firstProductFirstShop.quantity = 2
 
         secondProductFirstShop.parentId = "9"
-        secondProductFirstShop.productPrice = 1000
+        secondProductFirstShop.productPrice = 1000.0
         secondProductFirstShop.productCashBack = "10%"
         secondProductFirstShop.quantity = 2
 
@@ -317,17 +317,17 @@ class SubTotalCalculationTest : BaseCartTest() {
         secondShop.isAllSelected = true
 
         firstProductSecondShop.quantity = 1
-        firstProductSecondShop.productPrice = 100
+        firstProductSecondShop.productPrice = 100.0
         secondProductSecondShop.quantity = 1
-        secondProductSecondShop.productPrice = 200
+        secondProductSecondShop.productPrice = 200.0
 
         firstProductFirstShop.parentId = "9"
-        firstProductFirstShop.productPrice = 1000
+        firstProductFirstShop.productPrice = 1000.0
         firstProductFirstShop.productCashBack = "10%"
         firstProductFirstShop.quantity = 2
 
         secondProductFirstShop.parentId = "9"
-        secondProductFirstShop.productPrice = 1000
+        secondProductFirstShop.productPrice = 1000.0
         secondProductFirstShop.productCashBack = "10%"
         secondProductFirstShop.quantity = 4
 
@@ -382,7 +382,7 @@ class SubTotalCalculationTest : BaseCartTest() {
         // GIVEN
         initializeData()
         firstProductFirstShop.isSelected = true
-        firstProductFirstShop.productOriginalPrice = 2000
+        firstProductFirstShop.productOriginalPrice = 2000.0
         firstShop.isPartialSelected = true
 
         secondProductSecondShop.isSelected = true
