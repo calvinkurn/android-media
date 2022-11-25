@@ -1,18 +1,27 @@
 package com.tokopedia.notifications.settings
 
 import android.Manifest.permission.POST_NOTIFICATIONS
+import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.notifications.R
+import com.tokopedia.notifications.common.NotificationSettingsGtmEvents
 import com.tokopedia.notifications.databinding.CmLayoutNotificationsGeneralPromptBinding
+import com.tokopedia.notifications.utils.NotificationSettingsUtils
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.user.session.UserSession
+import com.tokopedia.user.session.UserSessionInterface
 
 class NotificationGeneralPromptBottomSheet: BottomSheetUnify() {
 
     private var binding: CmLayoutNotificationsGeneralPromptBinding? = null
+
+    private val userSession: UserSessionInterface by lazy(LazyThreadSafetyMode.NONE) {
+        UserSession(context)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,14 +60,43 @@ class NotificationGeneralPromptBottomSheet: BottomSheetUnify() {
             )
 
     private fun onTurnOnNotificationClick(ignored: View) {
-        dismiss()
-
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) return
+
+        context?.let {
+            NotificationSettingsUtils(it.applicationContext).sendNotificationPromptEvent()
+        }
 
         requestPermissions(
             arrayOf(POST_NOTIFICATIONS),
             POST_NOTIFICATIONS_REQUEST_CODE,
         )
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+
+        if (isPostNotificationPermissions(requestCode, permissions))
+            sendEventPostNotificationPermissionResult(grantResults)
+    }
+
+    private fun isPostNotificationPermissions(
+        requestCode: Int,
+        permissions: Array<out String>,
+    ) = requestCode == POST_NOTIFICATIONS_REQUEST_CODE
+        && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU
+        && permissions.contains(POST_NOTIFICATIONS)
+
+    private fun sendEventPostNotificationPermissionResult(grantResults: IntArray) {
+        val context = context ?: return
+
+        if (grantResults.firstOrNull() == PackageManager.PERMISSION_GRANTED)
+            NotificationSettingsGtmEvents(userSession, context).sendActionAllowEvent(context)
+        else
+            NotificationSettingsGtmEvents(userSession, context).sendActionNotAllowEvent(context)
     }
 
     override fun onDestroyView() {
