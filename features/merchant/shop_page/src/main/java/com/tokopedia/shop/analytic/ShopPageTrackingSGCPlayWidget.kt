@@ -15,8 +15,8 @@ import java.util.*
 
 class ShopPageTrackingSGCPlayWidget(
     trackingQueue: TrackingQueue
-) : ShopPageTracking(trackingQueue){
-    fun onImpressionSGCContent(shopId: String){
+) : ShopPageTracking(trackingQueue) {
+    fun onImpressionSGCContent(shopId: String) {
         val eventMap = HashMap<String, Any>()
         eventMap[EVENT] = CLICK_SHOP_PAGE
         eventMap[EVENT_CATEGORY] = SHOP_PAGE_SELLER
@@ -27,7 +27,7 @@ class ShopPageTrackingSGCPlayWidget(
         sendDataLayerEvent(eventMap)
     }
 
-    fun onClickSGCContent(shopId: String){
+    fun onClickSGCContent(shopId: String) {
         val eventMap = HashMap<String, Any>()
         eventMap[EVENT] = CLICK_SHOP_PAGE
         eventMap[EVENT_CATEGORY] = SHOP_PAGE_SELLER

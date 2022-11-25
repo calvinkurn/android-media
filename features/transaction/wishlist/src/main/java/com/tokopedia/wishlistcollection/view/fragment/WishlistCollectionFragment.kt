@@ -747,7 +747,6 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
 
     override fun onShareItemShown(anchorView: View) {
         if (!CoachMarkPreference.hasShown(requireContext(), COACHMARK_WISHLIST_SHARING)) {
-            coachMarkSharing1?.hideCoachMark()
             showCoachmarkKebabItem2(anchorView)
         }
     }
@@ -809,20 +808,19 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
             coachMarkSharing1 = CoachMark2(requireContext())
 
         coachMarkSharing1?.let {
-            it.setStepListener(object: CoachMark2.OnStepListener {
-                override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
-                    if (currentIndex == 1) {
-                        showBottomSheetKebabMenu(
-                            collectionId, collectionName, actions, collectionIndicatorTitle
-                        )
-                    }
-                }
-            })
+            it.onFinishListener = {
+                showBottomSheetKebabMenu(
+                    collectionId, collectionName, actions, collectionIndicatorTitle
+                )
+            }
+
             it.stepButtonTextLastChild =
                 getString(R.string.collection_coachmark_lanjut)
 
             if (!it.isShowing) {
-                it.showCoachMark(coachMarkItemSharing1, null)
+                it.showCoachMark(coachMarkItemSharing1, null, 1)
+                it.stepPrev?.visibility = View.GONE
+                it.stepPagination?.visibility = View.GONE
             }
         }
     }
@@ -868,6 +866,8 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
 
             if (!it.isShowing) {
                 it.showCoachMark(coachMarkItemSharing2, null, 1)
+                it.stepPrev?.visibility = View.GONE
+                it.stepPagination?.visibility = View.GONE
             }
             CoachMarkPreference.setShown(requireContext(), COACHMARK_WISHLIST_SHARING, true)
         }

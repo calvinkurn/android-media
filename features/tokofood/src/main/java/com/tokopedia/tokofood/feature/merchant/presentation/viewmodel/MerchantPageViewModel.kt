@@ -227,7 +227,7 @@ class MerchantPageViewModel @Inject constructor(
                 maxQty = variant.maxQty,
                 minQty = variant.minQty,
                 options = mapOptionDetailsToOptionUiModels(variant.minQty, variant.maxQty, variant.options),
-                outOfStockWording = resourceProvider.getOutOfStockWording().orEmpty()
+                outOfStockWording = resourceProvider.getOutOfStockWording()
         )
     }
 
@@ -261,9 +261,11 @@ class MerchantPageViewModel @Inject constructor(
                 val selectedProductListItem = mutableProductListItems.firstOrNull() { productListItem ->
                     productListItem.productUiModel.id == entry.key
                 }
-                selectedProductListItem?.productUiModel?.apply {
-                    isAtc = true
-                    customOrderDetails = mapTokoFoodProductsToCustomOrderDetails(entry.value)
+                if (selectedProductListItem != null) {
+                    with(selectedProductListItem.productUiModel) {
+                        isAtc = true
+                        customOrderDetails = mapTokoFoodProductsToCustomOrderDetails(entry.value)
+                    }
                 }
             } else {
                 // NON-VARIANT PRODUCT ORDER
@@ -271,11 +273,13 @@ class MerchantPageViewModel @Inject constructor(
                 val selectedProductListItem = mutableProductListItems.firstOrNull() { productListItem ->
                     productListItem.productUiModel.id == entry.key
                 }
-                selectedProductListItem?.productUiModel?.apply {
-                    isAtc = true
-                    cartId = selectedProduct.cartId
-                    orderQty = selectedProduct.quantity
-                    orderNote = selectedProduct.notes
+                if (selectedProductListItem != null) {
+                    with(selectedProductListItem.productUiModel) {
+                        isAtc = true
+                        cartId = selectedProduct.cartId
+                        orderQty = selectedProduct.quantity
+                        orderNote = selectedProduct.notes
+                    }
                 }
             }
         }
@@ -283,7 +287,9 @@ class MerchantPageViewModel @Inject constructor(
     }
 
     fun getAppliedProductSelection(): List<ProductListItem>? {
-        return (getMerchantDataResultLiveData.value as? Success)?.data?.tokofoodGetMerchantData?.let { merchantData ->
+        val successMerchantData = (getMerchantDataResultLiveData.value as? Success)?.data
+        val tokofoodGetMerchantData = successMerchantData?.tokofoodGetMerchantData
+        return tokofoodGetMerchantData?.let { merchantData ->
             val isShopClosed = merchantData.merchantProfile.opsHourFmt.isWarning
             val foodCategories = merchantData.categories
             val productListItems = mapFoodCategoriesToProductListItems(
@@ -322,11 +328,13 @@ class MerchantPageViewModel @Inject constructor(
     private fun resetMasterData(customListItems: List<CustomListItem>): List<CustomListItem> {
         customListItems.forEach {
             it.orderNote = String.EMPTY
-            it.addOnUiModel?.isSelected = false
-            it.addOnUiModel?.options?.forEach { optionUiModel ->
-                optionUiModel.isSelected = false
+            it.addOnUiModel?.run {
+                isSelected = false
+                options.forEach { optionUiModel ->
+                    optionUiModel.isSelected = false
+                }
+                selectedAddOns = listOf()
             }
-            it.addOnUiModel?.selectedAddOns = listOf()
         }
         return customListItems
     }

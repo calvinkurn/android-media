@@ -18,10 +18,12 @@ class ReportStoreReportWebViewFragment : BaseSessionWebViewFragment() {
 
     companion object {
         const val QUERY_PARAM_TOASTER_MESSAGE = "show_toast_message"
-        const val URI_HOST_KEY  = "back"
+        const val URI_HOST_KEY = "back"
 
-        fun newInstance(url: String,
-                        overrideUrl: Boolean): ReportStoreReportWebViewFragment {
+        fun newInstance(
+            url: String,
+            overrideUrl: Boolean
+        ): ReportStoreReportWebViewFragment {
             val fragment = ReportStoreReportWebViewFragment()
             val args = Bundle()
             args.putString(KEY_URL, url)

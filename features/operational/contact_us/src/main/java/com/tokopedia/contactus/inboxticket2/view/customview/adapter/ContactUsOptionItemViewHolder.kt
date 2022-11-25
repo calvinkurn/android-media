@@ -21,13 +21,23 @@ class ContactUsOptionItemViewHolder(itemView: View, listener: QuickSingleFilterL
         if (selected) {
             itemView.context?.let {
                 MethodChecker.setBackground(layoutInside1, MethodChecker.getDrawable(it, R.drawable.checked))
-                filterName?.setTextColor(MethodChecker.getColor(it, com.tokopedia.abstraction.R.color.font_black_primary_70))
+                filterName?.setTextColor(
+                    MethodChecker.getColor(
+                        it,
+                        com.tokopedia.unifyprinciples.R.color.Unify_NN950
+                    )
+                )
             }
 
         } else {
             itemView.context?.let {
                 MethodChecker.setBackground(layoutInside1, MethodChecker.getDrawable(it, R.drawable.check_box_bg))
-                filterName?.setTextColor(MethodChecker.getColor(it, com.tokopedia.abstraction.R.color.grey_500))
+                filterName?.setTextColor(
+                    MethodChecker.getColor(
+                        it,
+                        com.tokopedia.unifyprinciples.R.color.Unify_NN950
+                    )
+                )
             }
         }
     }
