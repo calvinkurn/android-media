@@ -214,9 +214,9 @@ class TokoChatFragment :
     private fun observeError() {
         observe(viewModel.error) {
             logExceptionTokoChat(
-                it,
+                it.first,
                 TokoChatErrorLogger.ErrorType.ERROR_PAGE,
-                TokoChatErrorLogger.ErrorDescription.RENDER_PAGE_ERROR
+                it.second
             )
         }
     }

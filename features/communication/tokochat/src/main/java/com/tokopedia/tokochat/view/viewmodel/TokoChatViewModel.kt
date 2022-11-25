@@ -93,8 +93,8 @@ class TokoChatViewModel @Inject constructor(
     val updateOrderTransactionStatus: SharedFlow<Result<TokoChatOrderProgressResponse>> =
         _updateOrderTransactionStatus
 
-    private val _error = MutableLiveData<Throwable>()
-    val error: LiveData<Throwable>
+    private val _error = MutableLiveData<Pair<Throwable, String>>()
+    val error: LiveData<Pair<Throwable, String>>
         get() = _error
 
     @VisibleForTesting
@@ -131,7 +131,7 @@ class TokoChatViewModel @Inject constructor(
                 messageMetaData
             )
         } catch (throwable: Throwable) {
-            _error.value = throwable
+            _error.value = Pair(throwable, ::sendMessage.name)
         }
     }
 
@@ -149,7 +149,7 @@ class TokoChatViewModel @Inject constructor(
                 orderChatType = orderChatType
             )
         } catch (throwable: Throwable) {
-            _error.value = throwable
+            _error.value = Pair(throwable, ::initGroupBooking.name)
         }
     }
 
@@ -161,7 +161,7 @@ class TokoChatViewModel @Inject constructor(
                     _channelDetail.postValue(Fail(it))
                 })
         } catch (throwable: Throwable) {
-            _error.value = throwable
+            _error.value = Pair(throwable, ::getGroupBookingChannel.name)
         }
     }
 
@@ -169,7 +169,7 @@ class TokoChatViewModel @Inject constructor(
         return try {
             getChatHistoryUseCase(channelId)
         } catch (throwable: Throwable) {
-            _error.value = throwable
+            _error.value = Pair(throwable, ::getChatHistory.name)
             MutableLiveData()
         }
     }
@@ -178,7 +178,7 @@ class TokoChatViewModel @Inject constructor(
         try {
             getChatHistoryUseCase.loadPreviousMessage()
         } catch (throwable: Throwable) {
-            _error.value = throwable
+            _error.value = Pair(throwable, ::loadPreviousMessages.name)
         }
     }
 
@@ -186,7 +186,7 @@ class TokoChatViewModel @Inject constructor(
         try {
             markAsReadUseCase(channelId)
         } catch (throwable: Throwable) {
-            _error.value = throwable
+            _error.value = Pair(throwable, ::markChatAsRead.name)
         }
     }
 
@@ -194,7 +194,7 @@ class TokoChatViewModel @Inject constructor(
         try {
             registrationChannelUseCase.registerActiveChannel(channelId)
         } catch (throwable: Throwable) {
-            _error.value = throwable
+            _error.value = Pair(throwable, ::registerActiveChannel.name)
         }
     }
 
@@ -202,7 +202,7 @@ class TokoChatViewModel @Inject constructor(
         try {
             registrationChannelUseCase.deRegisterActiveChannel(channelId)
         } catch (throwable: Throwable) {
-            _error.value = throwable
+            _error.value = Pair(throwable, ::deRegisterActiveChannel.name)
         }
     }
 
@@ -210,7 +210,7 @@ class TokoChatViewModel @Inject constructor(
         return try {
             getTypingUseCase.getTypingStatus()
         } catch (throwable: Throwable) {
-            _error.value = throwable
+            _error.value = Pair(throwable, ::getTypingStatus.name)
             MutableLiveData()
         }
     }
@@ -219,7 +219,7 @@ class TokoChatViewModel @Inject constructor(
         try {
             getTypingUseCase.setTypingStatus(status)
         } catch (throwable: Throwable) {
-            _error.value = throwable
+            _error.value = Pair(throwable, ::setTypingStatus.name)
         }
     }
 
@@ -227,7 +227,7 @@ class TokoChatViewModel @Inject constructor(
         try {
             getTypingUseCase.resetTypingStatus()
         } catch (throwable: Throwable) {
-            _error.value = throwable
+            _error.value = Pair(throwable, ::resetTypingStatus.name)
         }
     }
 
@@ -275,7 +275,7 @@ class TokoChatViewModel @Inject constructor(
         return try {
             chatChannelUseCase.getMemberLeftLiveData()
         } catch (throwable: Throwable) {
-            _error.value = throwable
+            _error.value = Pair(throwable, ::getMemberLeft.name)
             MutableLiveData()
         }
     }
@@ -312,7 +312,7 @@ class TokoChatViewModel @Inject constructor(
         return try {
             chatChannelUseCase.getLiveChannel(channelId)
         } catch (throwable: Throwable) {
-            _error.value = throwable
+            _error.value = Pair(throwable, ::getLiveChannel.name)
             MutableLiveData()
         }
     }
@@ -346,14 +346,19 @@ class TokoChatViewModel @Inject constructor(
                         )
                     }
                 } else {
-                    _error.postValue(Throwable(imageUrlResponse.error?.firstOrNull()?.message))
+                    _error.postValue(
+                        Pair(
+                            Throwable(imageUrlResponse.error?.firstOrNull()?.message),
+                            ::getImageWithId.name
+                        )
+                    )
                     onError()
                 }
             } else { // Else use the downloaded image
                 onImageReady(cachedImage)
             }
         }, onError = {
-                _error.postValue(it)
+                _error.postValue(Pair(it, ::getImageWithId.name))
                 onError()
             })
     }
