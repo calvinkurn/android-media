@@ -17,7 +17,10 @@ import com.tokopedia.affiliate.PAGE_EDUCATION_TUTORIAL
 import com.tokopedia.affiliate.adapter.AffiliateAdapter
 import com.tokopedia.affiliate.adapter.AffiliateAdapterFactory
 import com.tokopedia.affiliate.di.DaggerAffiliateComponent
+import com.tokopedia.affiliate.interfaces.AffiliateEduCategoryChipClick
 import com.tokopedia.affiliate.interfaces.AffiliateEducationSeeAllCardClickInterface
+import com.tokopedia.affiliate.model.response.AffiliateEducationArticleCardsResponse
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEduCategoryChipModel
 import com.tokopedia.affiliate.viewmodel.AffiliateEducationSeeAllViewModel
 import com.tokopedia.affiliate_toko.R
 import com.tokopedia.applink.ApplinkConst
@@ -32,7 +35,8 @@ import javax.inject.Inject
 
 class AffiliateEducationSeeAllFragment :
     BaseViewModelFragment<AffiliateEducationSeeAllViewModel>(),
-    AffiliateEducationSeeAllCardClickInterface {
+    AffiliateEducationSeeAllCardClickInterface,
+    AffiliateEduCategoryChipClick {
 
     private var educationVM: AffiliateEducationSeeAllViewModel? = null
     private var pageType: String? = null
@@ -42,7 +46,14 @@ class AffiliateEducationSeeAllFragment :
     private val seeAllAdapter by lazy {
         AffiliateAdapter(
             AffiliateAdapterFactory(
-                educationSeeAllCardClickInterface = this
+                educationSeeAllCardClickInterface = this,
+            )
+        )
+    }
+    private val categoryChipAdapter by lazy {
+        AffiliateAdapter(
+            AffiliateAdapterFactory(
+                affiliateEduCategoryChipClick = this
             )
         )
     }
@@ -94,6 +105,9 @@ class AffiliateEducationSeeAllFragment :
             this.layoutManager = layoutManager
             this.adapter = seeAllAdapter
         }
+        view.findViewById<RecyclerView>(R.id.rv_education_category_chip)?.apply {
+            this.adapter = categoryChipAdapter
+        }
         view.findViewById<NavToolbar>(R.id.education_see_all_navToolbar)?.run {
             viewLifecycleOwner.lifecycle.addObserver(this)
             getCustomViewContentView()?.findViewById<Typography>(R.id.navbar_tittle)?.text = page
@@ -109,7 +123,9 @@ class AffiliateEducationSeeAllFragment :
             seeAllAdapter.addMoreData(it)
             loadMoreTriggerListener?.updateStateAfterGetData()
         }
-
+        educationVM?.getEducationCategoryChip()?.observe(viewLifecycleOwner) {
+            categoryChipAdapter.addMoreData(it)
+        }
         educationVM?.getTotalCount()?.observe(viewLifecycleOwner) {
             view?.findViewById<Typography>(R.id.tv_total_items)?.text = buildString {
                 append(it)
@@ -117,7 +133,6 @@ class AffiliateEducationSeeAllFragment :
                 append(page)
             }
         }
-
         educationVM?.hasMoreData()?.observe(viewLifecycleOwner) {
             hasMoreData = it
         }
@@ -177,5 +192,26 @@ class AffiliateEducationSeeAllFragment :
             EDUCATION_ARTICLE_DETAIL_URL,
             slug
         )
+    }
+
+    override fun onChipClick(
+        type: AffiliateEducationArticleCardsResponse.CardsArticle.Data.CardsItem.Article.CategoriesItem?
+    ) {
+        val selectedIndex =
+            categoryChipAdapter.list.indexOfFirst { (it as AffiliateEduCategoryChipModel).chipType == type }
+        val previouslySelectedIndex =
+            categoryChipAdapter.list.indexOfFirst { visitable ->
+                (visitable as AffiliateEduCategoryChipModel).chipType?.isSelected == true
+            }
+        if (selectedIndex != previouslySelectedIndex && previouslySelectedIndex >= 0) {
+            (categoryChipAdapter.list[selectedIndex] as AffiliateEduCategoryChipModel).chipType?.isSelected =
+                true
+            (categoryChipAdapter.list[previouslySelectedIndex] as AffiliateEduCategoryChipModel).chipType?.isSelected =
+                false
+            categoryChipAdapter.notifyItemChanged(selectedIndex)
+            categoryChipAdapter.notifyItemChanged(previouslySelectedIndex)
+        }
+        seeAllAdapter.resetList()
+        educationVM?.resetList(pageType, type?.id.toString())
     }
 }

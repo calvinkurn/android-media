@@ -1,5 +1,7 @@
 package com.tokopedia.affiliate.interfaces
 
+import com.tokopedia.affiliate.model.response.AffiliateEducationArticleCardsResponse
+
 interface AffiliateEducationLearnClickInterface {
     fun onKamusClick()
     fun onBantuanClick()
@@ -24,4 +26,8 @@ interface AffiliateEducationSocialCTAClickInterface {
 
 interface AffiliateEducationBannerClickInterface {
     fun onBannerClick(url: String)
+}
+
+interface AffiliateEduCategoryChipClick {
+    fun onChipClick(type: AffiliateEducationArticleCardsResponse.CardsArticle.Data.CardsItem.Article.CategoriesItem?)
 }

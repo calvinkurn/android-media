@@ -5,6 +5,7 @@ import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateCommisionThickDi
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateCommissionItemModel
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateDataPlatformShimmerModel
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateDateFilterModel
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEduCategoryChipModel
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEducationArticleRVUiModel
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEducationArticleTopicRVUiModel
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEducationArticleTopicUiModel
@@ -82,4 +83,5 @@ interface AffiliateAdapterTypeFactory {
     fun type(viewModel: AffiliateEducationSocialUiModel): Int
     fun type(viewModel: AffiliateEducationLearnUiModel): Int
     fun type(viewModel: AffiliateEducationSeeAllUiModel): Int
+    fun type(viewModel: AffiliateEduCategoryChipModel): Int
 }

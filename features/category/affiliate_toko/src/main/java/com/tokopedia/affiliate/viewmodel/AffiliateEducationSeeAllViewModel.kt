@@ -5,6 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.affiliate.adapter.AffiliateAdapterTypeFactory
 import com.tokopedia.affiliate.model.response.AffiliateEducationArticleCardsResponse
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEduCategoryChipModel
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEducationSeeAllUiModel
 import com.tokopedia.affiliate.usecase.AffiliateEducationArticleCardsUseCase
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
@@ -21,6 +22,8 @@ class AffiliateEducationSeeAllViewModel @Inject constructor(
     private var offset: Int = 0
 
     private val educationPageData = MutableLiveData<List<Visitable<AffiliateAdapterTypeFactory>>>()
+    private val educationCategoryChip =
+        MutableLiveData<List<Visitable<AffiliateAdapterTypeFactory>>>()
     private val totalCount = MutableLiveData<Int>()
     private val hasMoreData = MutableLiveData<Boolean>()
 
@@ -35,6 +38,11 @@ class AffiliateEducationSeeAllViewModel @Inject constructor(
         }, onError = { Timber.e(it) })
     }
 
+    fun resetList(pageType: String?, categoryID: String?) {
+        offset = 0
+        fetchSeeAllData(pageType, categoryID)
+    }
+
     private fun convertToVisitable(
         educationArticleCards: AffiliateEducationArticleCardsResponse,
         pageType: String?
@@ -45,6 +53,21 @@ class AffiliateEducationSeeAllViewModel @Inject constructor(
                 hasMoreData.value = it[0]?.hasMore
                 totalCount.value = it[0]?.totalCount.orZero()
                 offset = it[0]?.offset.orZero()
+                val categories = it[0]?.articles?.mapNotNull { data ->
+                    data?.categories
+                }
+                if (educationCategoryChip.value.isNullOrEmpty()) {
+                    educationCategoryChip.value =
+                        categories?.flatten()
+                            ?.distinctBy { cat -> cat?.id }
+                            ?.mapIndexedNotNull { index, categoriesItem ->
+                                AffiliateEduCategoryChipModel(
+                                    categoriesItem.apply {
+                                        this?.isSelected = index == 0
+                                    }
+                                )
+                            }
+                }
                 it[0]?.articles?.mapNotNull { data ->
                     tempList.add(
                         AffiliateEducationSeeAllUiModel(
@@ -61,6 +84,9 @@ class AffiliateEducationSeeAllViewModel @Inject constructor(
 
     fun getEducationSeeAllData(): LiveData<List<Visitable<AffiliateAdapterTypeFactory>>> =
         educationPageData
+
+    fun getEducationCategoryChip(): LiveData<List<Visitable<AffiliateAdapterTypeFactory>>> =
+        educationCategoryChip
 
     fun getTotalCount(): LiveData<Int> = totalCount
     fun hasMoreData(): LiveData<Boolean> = hasMoreData

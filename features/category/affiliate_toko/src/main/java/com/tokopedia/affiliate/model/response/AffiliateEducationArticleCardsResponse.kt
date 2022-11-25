@@ -96,7 +96,7 @@ data class AffiliateEducationArticleCardsResponse(
                         @SerializedName("read_time")
                         val readTime: String? = null
                     )
-                    
+
                     data class CategoriesItem(
 
                         @SerializedName("level")
@@ -106,7 +106,9 @@ data class AffiliateEducationArticleCardsResponse(
                         val id: Long? = null,
 
                         @SerializedName("title")
-                        val title: String? = null
+                        val title: String? = null,
+
+                        var isSelected: Boolean = false
                     )
 
                     data class Thumbnail(
@@ -123,10 +125,8 @@ data class AffiliateEducationArticleCardsResponse(
                         @SerializedName("ios")
                         val ios: String? = null
                     )
-
                 }
             }
-
         }
     }
 }
