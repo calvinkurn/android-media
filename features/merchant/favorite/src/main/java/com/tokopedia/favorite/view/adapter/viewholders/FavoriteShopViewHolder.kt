@@ -36,7 +36,7 @@ class FavoriteShopViewHolder(itemView: View) : AbstractViewHolder<FavoriteShopUi
     private var avatarImageView: ImageView? = null
     private var nameTextView: TextView? = null
     private var locationTextview: TextView? = null
-    private var favoriteImageView: ImageView? = null
+//    private var favoriteImageView: ImageView? = null
     private var badgeIcon: ImageView? = null
 
     private fun initView(itemView: View) {

@@ -40,13 +40,14 @@
                 android:contentDescription="@null"
                 android:visibility="gone">
             </ImageView>
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/shop_name"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/favorite_href_link_dms"
-                android:textSize="@dimen/fontvs"
-                tool:text="Shop Name"/>
+                android:textColor="@color/Unify_NN950"
+                tool:text="Shop Name"
+                app:typographyType="display_2"
+                android:maxLines="1"/>
         </LinearLayout>
 
         <LinearLayout
@@ -56,16 +57,17 @@
             android:layout_marginStart="@dimen/margin_small"
             android:layout_toEndOf="@+id/shop_avatar"
             android:gravity="center_vertical"
-            android:orientation="horizontal"
-            >
+            android:orientation="horizontal">
 
-            <TextView
+            <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/location"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="3dp"
-                android:textColor="@color/Unify_N300"
-                android:textSize="@dimen/fontvs"/>
+                android:maxLines="1"
+                android:textColor="@color/Unify_NN600"
+                tool:text="Tangerang selatan"
+                app:typographyType="display_2"/>
 
         </LinearLayout>
 
