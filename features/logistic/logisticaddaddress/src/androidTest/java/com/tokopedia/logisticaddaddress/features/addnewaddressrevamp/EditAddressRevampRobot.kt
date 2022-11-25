@@ -42,7 +42,7 @@ class EditAddressRevampRobot {
 
     fun onClickChangePinpoint() {
         onView(withId(R.id.btn_change)).perform(click())
-        waitForData()
+        waitForData(3000)
     }
 
     fun onClickCariUlangAlamat() {
@@ -117,8 +117,8 @@ class EditAddressRevampRobot {
             .perform(click(), typeText(address), closeSoftKeyboard())
     }
 
-    private fun waitForData() {
-        Thread.sleep(1000L)
+    private fun waitForData(millis: Long = 1000L) {
+        Thread.sleep(millis)
     }
 
 }

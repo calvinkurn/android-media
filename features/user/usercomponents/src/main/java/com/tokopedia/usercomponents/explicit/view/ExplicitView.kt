@@ -216,7 +216,7 @@ class ExplicitView constructor(
         showShadow(true)
         initSuccessMessageText(
             data?.message.orEmpty(),
-            context.getString(R.string.explicit_succes_message_action),
+            data?.textApplink.orEmpty(),
             data?.applink.orEmpty()
         )
         replaceView(bindingSuccess?.root)
@@ -252,6 +252,9 @@ class ExplicitView constructor(
         applink: String
     ) {
         val message = "$messageSuccess $textApplink"
+        val indexStar = messageSuccess.length + 1
+        val indexEnd = indexStar + textApplink.length
+
         val spannable = SpannableString(message)
         spannable.setSpan(
             object : ClickableSpan() {
@@ -267,12 +270,14 @@ class ExplicitView constructor(
                     ds.typeface = Typeface.create(Typeface.DEFAULT, Typeface.BOLD)
                 }
             },
-            message.indexOf(textApplink),
-            message.indexOf(textApplink) + textApplink.length,
+            indexStar,
+            indexEnd,
             0
         )
-        bindingSuccess?.txtSuccessTitle?.movementMethod = LinkMovementMethod.getInstance()
-        bindingSuccess?.txtSuccessTitle?.setText(spannable, TextView.BufferType.SPANNABLE)
+        bindingSuccess?.txtSuccessTitle?.apply {
+            movementMethod = LinkMovementMethod.getInstance()
+            setText(spannable, TextView.BufferType.SPANNABLE)
+        }
     }
 
     private fun goToExplicitProfilePreference(applink: String) {

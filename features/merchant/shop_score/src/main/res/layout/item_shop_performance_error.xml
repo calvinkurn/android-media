@@ -6,7 +6,7 @@
 
     <com.tokopedia.globalerror.GlobalError
         android:id="@+id/globalErrorShopPerformance"
-        android:layout_width="@dimen/layout_lvl0"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:gravity="center"
         app:layout_constraintStart_toStartOf="parent"

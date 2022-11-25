@@ -28,7 +28,6 @@ import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.media.loader.loadImage
-import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.review.R
 import com.tokopedia.review.ReviewInstance
 import com.tokopedia.review.common.analytics.ReviewSellerPerformanceMonitoringContract
@@ -99,7 +98,7 @@ open class RatingProductFragment : BaseListFragment<Visitable<*>, SellerReviewLi
     private val reviewSellerAdapter: ReviewSellerAdapter
         get() = adapter as ReviewSellerAdapter
 
-    private val sellerReviewListTypeFactory by lazy {
+    protected open val sellerReviewListTypeFactory by lazy {
         SellerReviewListTypeFactory(this, this)
     }
 

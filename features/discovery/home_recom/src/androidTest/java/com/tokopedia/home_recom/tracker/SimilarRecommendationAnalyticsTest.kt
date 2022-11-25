@@ -15,6 +15,7 @@ import com.tokopedia.analyticsdebugger.cassava.cassavatest.hasAllSuccess
 import com.tokopedia.home_recom.R
 import com.tokopedia.home_recom.SimilarProductRecommendationActivity
 import com.tokopedia.home_recom.view.viewholder.RecommendationItemViewHolder
+import com.tokopedia.test.application.annotations.CassavaTest
 import com.tokopedia.test.application.assertion.topads.TopAdsVerificationTestReportUtil
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
@@ -27,6 +28,7 @@ import org.junit.Test
 /**
  * Created by Lukas on 1/11/21.
  */
+@CassavaTest
 class SimilarRecommendationAnalyticsTest {
 
     companion object{
