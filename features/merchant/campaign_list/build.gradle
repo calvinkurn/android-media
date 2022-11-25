@@ -105,6 +105,7 @@ dependencies {
 
     //Compose
     implementation rootProject.ext.composeDependencies.composeConstraint
+    implementation rootProject.ext.composeDependencies.composeActivity
 
     //Macrobenchmark
     androidTestImplementation("androidx.compose.ui:ui-test-junit4:$compose_version")
