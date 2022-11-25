@@ -1,14 +1,17 @@
 package com.tokopedia.people.views.uimodel.mapper
 
-import com.tokopedia.feedcomponent.data.pojo.whitelist.Author
-import com.tokopedia.feedcomponent.data.pojo.whitelist.WhitelistQuery
 import com.tokopedia.feedcomponent.domain.model.UserFeedPostsModel
+import com.tokopedia.content.common.model.GetCheckWhitelistResponse
+import com.tokopedia.content.common.types.ContentCommonUserType
 import com.tokopedia.feedcomponent.people.model.MutationUiModel
 import com.tokopedia.people.model.*
 import com.tokopedia.people.views.uimodel.content.MediaUiModel
 import com.tokopedia.people.views.uimodel.content.PaginationUiModel
 import com.tokopedia.people.views.uimodel.content.PostUiModel
 import com.tokopedia.people.views.uimodel.content.UserFeedPostsUiModel
+import com.tokopedia.people.model.ProfileHeaderBase
+import com.tokopedia.people.model.UserProfileIsFollow
+import com.tokopedia.people.model.VideoPostReimderModel
 import com.tokopedia.people.views.uimodel.profile.*
 import javax.inject.Inject
 
@@ -54,8 +57,8 @@ class UserProfileUiMapperImpl @Inject constructor() : UserProfileUiMapper {
         )
     }
 
-    override fun mapUserWhitelist(response: WhitelistQuery): ProfileWhitelistUiModel {
-        val authorUgc = response.whitelist.authors.find { it.type == Author.TYPE_USER }
+    override fun mapUserWhitelist(response: GetCheckWhitelistResponse): ProfileWhitelistUiModel {
+        val authorUgc = response.whitelist.authors.find { it.type == ContentCommonUserType.TYPE_USER }
 
         return ProfileWhitelistUiModel(
             isWhitelist = authorUgc != null,
@@ -128,5 +131,6 @@ class UserProfileUiMapperImpl @Inject constructor() : UserProfileUiMapper {
         private const val TAB_KEY_FEEDS = "feeds"
         private const val TAB_KEY_VIDEO = "video"
         private const val SUCCESS_UPDATE_REMINDER_CODE = 200
+        private const val SUCCESS_UNFOLLOW_CODE = "1"
     }
 }

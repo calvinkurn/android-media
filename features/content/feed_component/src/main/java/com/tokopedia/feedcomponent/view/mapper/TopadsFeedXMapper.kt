@@ -72,8 +72,6 @@ object TopadsFeedXMapper {
             transitionFollow = cpmData.data.firstOrNull()?.cpm?.cpmShop?.isFollowed ?: false
         )
 
-
-
         return FeedXCard(
             typename = TYPE_TOPADS_HEADLINE_NEW,
             id = cpmData.data.firstOrNull()?.id ?: "",
