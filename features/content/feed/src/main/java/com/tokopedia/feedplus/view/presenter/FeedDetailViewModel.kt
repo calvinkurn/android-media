@@ -18,6 +18,7 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import java.net.HttpURLConnection
 import javax.inject.Inject
 
 class FeedDetailViewModel @Inject constructor(private var feedDetailRepository: FeedDetailRepository,
@@ -66,7 +67,7 @@ class FeedDetailViewModel @Inject constructor(private var feedDetailRepository: 
         launchCatchError(dispatcherProvider.io, block = {
             val response = mvcSummaryUseCase.getResponse(mvcSummaryUseCase.getQueryParams(shopId))
 
-            if (response.data?.resultStatus?.code != "200") {
+            if (response.data?.resultStatus?.code != HttpURLConnection.HTTP_OK.toString()) {
                 throw ResponseErrorException(response.data?.resultStatus?.message.toString())
             }
 

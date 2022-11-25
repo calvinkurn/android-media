@@ -1013,16 +1013,16 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
         outState.putString(ARGS_DETAIL_ID, detailId)
     }
 
-    var impressionProductList: ArrayList<FeedXProduct>? = null
+    var impressionProductList: MutableList<FeedXProduct>? = null
 
     private fun trackImpression(postTagItemList: List<FeedXProduct>) {
         if (impressionProductList == null) {
-            impressionProductList = ArrayList()
+            impressionProductList = mutableListOf()
             if (lastScrollPosition < postTagItemList.size && lastScrollPosition >= 0) {
                 impressionProductList?.addAll(postTagItemList.slice(0..lastScrollPosition))
             }
         } else {
-            impressionProductList = ArrayList()
+            impressionProductList = mutableListOf()
         }
         if (impressionProductList?.size!! > 0) {
             feedAnalytics.eventImpressionProductBottomSheet(

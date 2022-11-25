@@ -118,8 +118,6 @@ class FeedXCardSubtitlesAnimationHandler(
     ) {
 
         viewOne.get()?.let { v1 ->
-
-
             viewTwo.get()?.let { v2 ->
                 val translateAnimPropOne =
                     PropertyValuesHolder.ofFloat(View.TRANSLATION_Y, 0f, -dpToPx(48))
@@ -131,6 +129,7 @@ class FeedXCardSubtitlesAnimationHandler(
                 val translateAnimObjTwo: ObjectAnimator =
                     ObjectAnimator.ofPropertyValuesHolder(v2, translateAnimPropTwo)
 
+                animatorSet?.cancel()
                 animatorSet = AnimatorSet()
                 animatorSet?.playTogether(
                     translateAnimObjOne,
