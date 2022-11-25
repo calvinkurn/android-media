@@ -3,6 +3,7 @@ package com.tokopedia.tokopedianow.common.domain.usecase
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.tokopedianow.common.domain.model.AddToWishListResponse
 import com.tokopedia.tokopedianow.common.domain.query.AddToWishlistQuery
 import com.tokopedia.usecase.RequestParams
@@ -21,7 +22,7 @@ class AddToWishlistUseCase @Inject constructor(graphqlRepository: GraphqlReposit
         graphql.apply {
 
             val requestParams = RequestParams().apply {
-                putInt(PARAM_PRODUCT_ID, productId.toIntOrZero())
+                putLong(PARAM_PRODUCT_ID, productId.toLongOrZero())
                 putInt(PARAM_USER_ID, userID.toIntOrZero())
             }.parameters
 
