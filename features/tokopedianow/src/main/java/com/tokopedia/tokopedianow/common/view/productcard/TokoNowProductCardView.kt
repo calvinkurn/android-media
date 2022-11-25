@@ -24,10 +24,10 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.model.LIGHT_GREEN
 import com.tokopedia.tokopedianow.common.model.LIGHT_RED
-import com.tokopedia.tokopedianow.common.model.TokoNowProductCardViewUiModel.LabelGroup
 import com.tokopedia.tokopedianow.common.model.TEXT_DARK_ORANGE
 import com.tokopedia.tokopedianow.common.model.TRANSPARENT_BLACK
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardViewUiModel
+import com.tokopedia.tokopedianow.common.model.TokoNowProductCardViewUiModel.LabelGroup
 import com.tokopedia.tokopedianow.common.util.ViewUtil.getDpFromDimen
 import com.tokopedia.tokopedianow.common.util.ViewUtil.safeParseColor
 import com.tokopedia.tokopedianow.databinding.LayoutTokopedianowProductCardViewBinding
@@ -511,15 +511,5 @@ class TokoNowProductCardView @JvmOverloads constructor(
         onClickVariantListener: (Int) -> Unit
     ) {
         binding.quantityEditor.onClickVariantListener = onClickVariantListener
-    }
-
-    fun setOnAnimationFinishedListener(
-        onAnimationFinished: (Int) -> Unit
-    ) {
-        binding.quantityEditor.onAnimationFinished = onAnimationFinished
-    }
-
-    fun setListeners(listener: ProductItemListener){
-        this.listener = listener
     }
 }
