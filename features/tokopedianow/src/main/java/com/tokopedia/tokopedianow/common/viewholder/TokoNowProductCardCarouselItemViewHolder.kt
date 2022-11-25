@@ -55,14 +55,10 @@ class TokoNowProductCardCarouselItemViewHolder(
     }
 
     override fun bind(element: TokoNowProductCardCarouselItemUiModel?, payloads: MutableList<Any>) {
-        val payload = payloads.firstOrNull()
-
-        if (payload != null && element != null) {
+        if (payloads.firstOrNull() == true && element != null) {
             binding?.productCard?.setData(
                 model = element.productCardModel
             )
-        } else {
-            super.bind(element, payloads)
         }
     }
 
