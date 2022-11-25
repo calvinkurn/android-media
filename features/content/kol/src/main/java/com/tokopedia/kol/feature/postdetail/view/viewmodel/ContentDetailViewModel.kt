@@ -205,7 +205,7 @@ class ContentDetailViewModel @Inject constructor(
 
     fun followUnFollowUser(isFollow: Boolean, encryptedUserID: String, currentPosition: Int) {
         launchCatchError(block = {
-            when (repository.followUnfollowUser(isFollow, encryptedUserID)) {
+            when (val request = repository.followUnfollowUser(isFollow, encryptedUserID)) {
                 is MutationUiModel.Success -> _followUserObservable.value =
                     ContentDetailResult.Success(
                         UGCFollowUnfollowModel(
@@ -213,7 +213,7 @@ class ContentDetailViewModel @Inject constructor(
                             isFollow = isFollow,
                         )
                     )
-                is MutationUiModel.Error -> throw Throwable()
+                is MutationUiModel.Error -> throw Throwable(request.message)
             }
         }, onError = {
             _followUserObservable.value = ContentDetailResult.Failure(it) {
