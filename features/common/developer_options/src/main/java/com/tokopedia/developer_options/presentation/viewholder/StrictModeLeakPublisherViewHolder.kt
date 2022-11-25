@@ -4,15 +4,13 @@ import android.view.View
 import android.widget.CompoundButton
 import android.widget.Toast
 import androidx.annotation.LayoutRes
-import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.config.GlobalConfig
 import com.tokopedia.developer_options.R
-import com.tokopedia.developer_options.presentation.activity.DeveloperOptionActivity.Companion.LEAK_CANARY_TOGGLE_SP_NAME
-import com.tokopedia.developer_options.presentation.activity.DeveloperOptionActivity.Companion.STRICT_MODE_LEAK_PUBLISHER_DEFAULT_TOGGLE
 import com.tokopedia.developer_options.presentation.activity.DeveloperOptionActivity.Companion.STRICT_MODE_LEAK_PUBLISHER_TOGGLE_KEY
 import com.tokopedia.developer_options.presentation.activity.DeveloperOptionActivity.Companion.STRICT_MODE_LEAK_PUBLISHER_TOGGLE_KEY_SELLER
 import com.tokopedia.developer_options.presentation.model.StrictModeLeakPublisherUiModel
+import com.tokopedia.developer_options.utils.getIsEnableSharedPrefLeak
+import com.tokopedia.developer_options.utils.setIsEnableSharedPrefLeak
 import com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
 
 class StrictModeLeakPublisherViewHolder(
@@ -25,24 +23,17 @@ class StrictModeLeakPublisherViewHolder(
 
     override fun bind(element: StrictModeLeakPublisherUiModel) {
         itemView.context?.apply {
-            val sharedPref = getSharedPreferences(
-                LEAK_CANARY_TOGGLE_SP_NAME,
-                BaseActivity.MODE_PRIVATE
-            )
             val cb = itemView.findViewById<CheckboxUnify>(R.id.strict_mode_cb)
-            cb.isChecked =  if (GlobalConfig.isSellerApp()){
-               sharedPref.getBoolean(STRICT_MODE_LEAK_PUBLISHER_TOGGLE_KEY_SELLER, STRICT_MODE_LEAK_PUBLISHER_DEFAULT_TOGGLE)
-            }else{
-               sharedPref.getBoolean(STRICT_MODE_LEAK_PUBLISHER_TOGGLE_KEY, STRICT_MODE_LEAK_PUBLISHER_DEFAULT_TOGGLE)
-            }
+            cb.isChecked = getIsEnableSharedPrefLeak(
+                STRICT_MODE_LEAK_PUBLISHER_TOGGLE_KEY,
+                STRICT_MODE_LEAK_PUBLISHER_TOGGLE_KEY_SELLER
+            )
             cb.setOnCheckedChangeListener { _: CompoundButton, state: Boolean ->
-                val editor  = if (GlobalConfig.isSellerApp()){
-                   sharedPref.edit().putBoolean(
-                        STRICT_MODE_LEAK_PUBLISHER_TOGGLE_KEY_SELLER, state)
-                }else{
-                    sharedPref.edit().putBoolean(STRICT_MODE_LEAK_PUBLISHER_TOGGLE_KEY, state)
-                }
-                editor.apply()
+                setIsEnableSharedPrefLeak(
+                    STRICT_MODE_LEAK_PUBLISHER_TOGGLE_KEY,
+                    STRICT_MODE_LEAK_PUBLISHER_TOGGLE_KEY_SELLER,
+                    state
+                )
 
                 Toast.makeText(this, "Please Restart the App", Toast.LENGTH_SHORT).show()
             }
