@@ -588,21 +588,12 @@ class TokoNowCategoryFragment:
 
     override fun refreshLayout() {
         super.refreshLayout()
-
-        productRecommendationViewModel.updateProductRecommendation(
-            requestParam = getViewModel().createProductRecommendationRequestParam(
-                pageName = TOKONOW_CLP
-            )
-        )
+        refreshProductRecommendation(TOKONOW_CLP)
     }
 
     override fun updateProductRecommendation(needToUpdate: Boolean) {
         if (needToUpdate) {
-            productRecommendationViewModel.updateProductRecommendation(
-                requestParam = getViewModel().createProductRecommendationRequestParam(
-                    pageName = TOKONOW_CLP
-                )
-            )
+            refreshProductRecommendation(TOKONOW_CLP)
         }
     }
 }

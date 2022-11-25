@@ -50,8 +50,10 @@ class TokoNowProductRecommendationViewModel @Inject constructor(
     private val _miniCartRemove = MutableLiveData<Result<Pair<String, String>>>()
     private val _productModelsUpdate = MutableLiveData<List<Visitable<*>>>()
     private val _atcDataTracker = MutableLiveData<AddToCartDataTrackerModel>()
+    private val _loadingState = MutableLiveData<Boolean>()
 
     private var productModels: MutableList<Visitable<*>> = mutableListOf()
+    private var productRecommendationPageNames: MutableList<String> = mutableListOf()
     private var mMiniCartSimplifiedData: MiniCartSimplifiedData? = null
     private var job: Job? = null
 
@@ -67,10 +69,16 @@ class TokoNowProductRecommendationViewModel @Inject constructor(
         get() = _productModelsUpdate
     val atcDataTracker: LiveData<AddToCartDataTrackerModel>
         get() = _atcDataTracker
+    val loadingState: LiveData<Boolean>
+        get() = _loadingState
 
     private fun getMiniCartItem(productId: String): MiniCartItem.MiniCartItemProduct? {
         val items = mMiniCartSimplifiedData?.miniCartItems.orEmpty()
         return items.getMiniCartItemProduct(productId)
+    }
+
+    fun setRecommendationPageName(type: String) {
+        if (type !in productRecommendationPageNames) productRecommendationPageNames.add(type)
     }
 
     fun getRecommendationCarousel(
@@ -79,6 +87,7 @@ class TokoNowProductRecommendationViewModel @Inject constructor(
         job?.cancel()
         job = launchCatchError(
             block = {
+                _loadingState.postValue(true)
                 val result = getRecommendationUseCase.getData(requestParam)
                 if (result.isNotEmpty()) {
                     val productRecommendation = mapResponseToProductRecommendation(
@@ -97,9 +106,11 @@ class TokoNowProductRecommendationViewModel @Inject constructor(
                 } else {
                     _productRecommendation.postValue(Fail(Throwable()))
                 }
+                _loadingState.postValue(false)
             },
             onError = { throwable ->
                 _productRecommendation.postValue(Fail(throwable))
+                _loadingState.postValue(false)
             }
         )
     }
@@ -262,25 +273,6 @@ class TokoNowProductRecommendationViewModel @Inject constructor(
         }
     }
 
-    fun updateUi(
-        productId: String,
-        quantity: Int
-    ) {
-        val miniCartItem = getMiniCartItem(productId)
-        if (quantity.isZero() && miniCartItem != null) {
-            removeItemCart(
-                miniCartItem = miniCartItem
-            )
-        } else {
-            updateProductQuantity(
-                productId = productId,
-                quantity = quantity
-            )
-
-            _productModelsUpdate.value = productModels
-        }
-    }
-
     fun updateMiniCartSimplified(miniCartSimplifiedData: MiniCartSimplifiedData?) {
         mMiniCartSimplifiedData = miniCartSimplifiedData
 
@@ -298,7 +290,7 @@ class TokoNowProductRecommendationViewModel @Inject constructor(
     }
 
     fun updateProductRecommendation(requestParam: GetRecommendationRequestParam) {
-        if (job != null) {
+        if (job != null && requestParam.pageName in productRecommendationPageNames) {
             getRecommendationCarousel(requestParam)
         }
     }

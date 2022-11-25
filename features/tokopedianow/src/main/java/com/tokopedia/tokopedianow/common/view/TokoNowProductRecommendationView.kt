@@ -7,6 +7,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.kotlin.extensions.view.showIfWithBlock
+import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.tokopedianow.common.di.component.DaggerCommonComponent
 import com.tokopedia.tokopedianow.common.listener.TokoNowProductRecommendationCallback
@@ -49,7 +50,7 @@ class TokoNowProductRecommendationView @JvmOverloads constructor(
 
     private fun initInjector() {
         DaggerCommonComponent.builder()
-            .baseAppComponent((context.applicationContext as BaseMainApplication).baseAppComponent)
+            .baseAppComponent((context.applicationContext as? BaseMainApplication)?.baseAppComponent)
             .build()
             .inject(this)
     }
@@ -66,6 +67,14 @@ class TokoNowProductRecommendationView @JvmOverloads constructor(
     private fun TokoNowProductRecommendationViewModel.observeProductModelsUpdate() {
         productModelsUpdate.observe(context as AppCompatActivity) {
             binding.productCardCarousel.updateItems(it)
+        }
+    }
+
+    private fun TokoNowProductRecommendationViewModel.observeLoadingState() {
+        loadingState.observe(context as AppCompatActivity) { isShown ->
+            binding.productCardShimmering.root.showWithCondition(isShown)
+            binding.productCardCarousel.showWithCondition(!isShown)
+            binding.header.showWithCondition(!isShown)
         }
     }
 
@@ -103,7 +112,7 @@ class TokoNowProductRecommendationView @JvmOverloads constructor(
     /**
      * set data via fetching gql
      */
-    fun setRequstParam(
+    fun setRequestParam(
         getRecommendationRequestParam: GetRecommendationRequestParam? = null
     ) {
         requestParam = getRecommendationRequestParam
@@ -158,8 +167,10 @@ class TokoNowProductRecommendationView @JvmOverloads constructor(
             viewModel?.run {
                 observeRecommendationWidget()
                 observeProductModelsUpdate()
+                observeLoadingState()
 
                 requestParam?.let { requestParam ->
+                    setRecommendationPageName(requestParam.pageName)
                     getRecommendationCarousel(requestParam)
                 }
             }
