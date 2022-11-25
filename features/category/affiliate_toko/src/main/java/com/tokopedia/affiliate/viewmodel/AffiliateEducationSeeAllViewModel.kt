@@ -3,6 +3,11 @@ package com.tokopedia.affiliate.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.affiliate.PAGE_EDUCATION_ARTICLE
+import com.tokopedia.affiliate.PAGE_EDUCATION_ARTICLE_TOPIC
+import com.tokopedia.affiliate.PAGE_EDUCATION_EVENT
+import com.tokopedia.affiliate.PAGE_EDUCATION_TUTORIAL
+import com.tokopedia.affiliate.PAGE_ZERO
 import com.tokopedia.affiliate.adapter.AffiliateAdapterTypeFactory
 import com.tokopedia.affiliate.model.response.AffiliateEducationArticleCardsResponse
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEduCategoryChipModel
@@ -18,6 +23,12 @@ import javax.inject.Inject
 class AffiliateEducationSeeAllViewModel @Inject constructor(
     private val educationArticleCardsUseCase: AffiliateEducationArticleCardsUseCase
 ) : BaseViewModel() {
+    companion object {
+        private const val TYPE_ARTICLE_TOPIC = 1222
+        private const val TYPE_ARTICLE = 1232
+        private const val TYPE_EVENT = 1238
+        private const val TYPE_TUTORIAL = 1224
+    }
 
     private var offset: Int = 0
 
@@ -34,6 +45,9 @@ class AffiliateEducationSeeAllViewModel @Inject constructor(
                     categoryID.toIntOrZero(),
                     offset = offset
                 )
+            if (educationCategoryChip.value.isNullOrEmpty()) {
+                loadCategory(pageType)
+            }
             convertToVisitable(educationArticleCards, pageType)
         }, onError = { Timber.e(it) })
     }
@@ -41,6 +55,35 @@ class AffiliateEducationSeeAllViewModel @Inject constructor(
     fun resetList(pageType: String?, categoryID: String?) {
         offset = 0
         fetchSeeAllData(pageType, categoryID)
+    }
+
+    private suspend fun loadCategory(pageType: String?) {
+        val categoryID = when (pageType) {
+            PAGE_EDUCATION_EVENT -> TYPE_EVENT
+            PAGE_EDUCATION_ARTICLE -> TYPE_ARTICLE
+            PAGE_EDUCATION_ARTICLE_TOPIC -> TYPE_ARTICLE_TOPIC
+            PAGE_EDUCATION_TUTORIAL -> TYPE_TUTORIAL
+            else -> PAGE_ZERO
+        }
+        educationArticleCardsUseCase.getEducationArticleCards(categoryID).let { response ->
+            response.cardsArticle?.data?.cards?.let {
+                if (it.isNotEmpty()) {
+                    val categories = it[0]?.articles?.mapNotNull { data ->
+                        data?.categories
+                    }
+                    educationCategoryChip.value =
+                        categories?.flatten()
+                            ?.distinctBy { cat -> cat?.id }
+                            ?.mapIndexedNotNull { index, categoriesItem ->
+                                AffiliateEduCategoryChipModel(
+                                    categoriesItem.apply {
+                                        this?.isSelected = index == PAGE_ZERO
+                                    }
+                                )
+                            }
+                }
+            }
+        }
     }
 
     private fun convertToVisitable(
@@ -53,21 +96,6 @@ class AffiliateEducationSeeAllViewModel @Inject constructor(
                 hasMoreData.value = it[0]?.hasMore
                 totalCount.value = it[0]?.totalCount.orZero()
                 offset = it[0]?.offset.orZero()
-                val categories = it[0]?.articles?.mapNotNull { data ->
-                    data?.categories
-                }
-                if (educationCategoryChip.value.isNullOrEmpty()) {
-                    educationCategoryChip.value =
-                        categories?.flatten()
-                            ?.distinctBy { cat -> cat?.id }
-                            ?.mapIndexedNotNull { index, categoriesItem ->
-                                AffiliateEduCategoryChipModel(
-                                    categoriesItem.apply {
-                                        this?.isSelected = index == 0
-                                    }
-                                )
-                            }
-                }
                 it[0]?.articles?.mapNotNull { data ->
                     tempList.add(
                         AffiliateEducationSeeAllUiModel(

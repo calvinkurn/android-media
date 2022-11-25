@@ -168,6 +168,7 @@ class AffiliateAdapterFactory(
             AffiliateEducationSocialVH.LAYOUT -> AffiliateEducationSocialVH(parent,educationSocialCTAClickInterface)
             AffiliateEducationLearnVH.LAYOUT -> AffiliateEducationLearnVH(parent, affiliateEducationLearnClickInterface)
             AffiliateEducationSeeAllVH.LAYOUT -> AffiliateEducationSeeAllVH(parent, educationSeeAllCardClickInterface)
+            AffiliateEduCategoryChipVH.LAYOUT -> AffiliateEduCategoryChipVH(parent, affiliateEduCategoryChipClick)
             else -> super.createViewHolder(parent, type)
         }
     }
