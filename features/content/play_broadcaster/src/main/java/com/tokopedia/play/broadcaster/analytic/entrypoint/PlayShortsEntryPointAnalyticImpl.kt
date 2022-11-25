@@ -54,14 +54,14 @@ class PlayShortsEntryPointAnalyticImpl @Inject constructor(
     }
 
     /**
-     * Row 69 : eventCategory is "play broadcast short" instead "play broadcast"?
+     * Row 69
      */
     override fun clickCloseShortsEntryPointCoachMark(accountId: String, accountType: String) {
         TrackApp.getInstance().gtm.sendGeneralEvent(
             mapOf(
                 KEY_EVENT to KEY_TRACK_CLICK_EVENT_SELLER,
                 KEY_EVENT_ACTION to "click - close entry point coachmark",
-                KEY_EVENT_CATEGORY to KEY_TRACK_CATEGORY_SHORTS,
+                KEY_EVENT_CATEGORY to KEY_TRACK_CATEGORY_PLAY,
                 KEY_EVENT_LABEL to "$accountId - ${getAccountType(accountType)}",
                 KEY_CURRENT_SITE to currentSite,
                 KEY_USER_ID to userSession.userId,
