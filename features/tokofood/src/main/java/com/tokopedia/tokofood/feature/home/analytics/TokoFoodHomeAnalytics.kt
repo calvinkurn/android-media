@@ -229,6 +229,7 @@ class TokoFoodHomeAnalytics: BaseTrackerConst() {
         val eventDataLayer = Bundle().apply {
             putString(TrackAppUtils.EVENT_ACTION, TokoFoodAnalyticsConstants.VIEW_COACHMARK)
             putString(TrackAppUtils.EVENT_LABEL, String.EMPTY)
+            putString(TRACKER_ID, TokoFoodAnalyticsConstants.TRACKER_ID_39609)
         }
         eventDataLayer.putParcelableArrayList(Promotion.KEY, getPromotionSearchBarCoachmark(title, subtitle))
         eventDataLayer.viewItem(userId, destinationId)
@@ -299,7 +300,7 @@ class TokoFoodHomeAnalytics: BaseTrackerConst() {
         return promotionBundle
     }
 
-    fun getPromotionSearchBarCoachmark(title: String, subtitle: String): ArrayList<Bundle> {
+    private fun getPromotionSearchBarCoachmark(title: String, subtitle: String): ArrayList<Bundle> {
         val promotionBundle = arrayListOf<Bundle>()
         promotionBundle.add(
             Bundle().apply {
