@@ -1,4 +1,4 @@
-package com.tokopedia.tokochat.util
+package com.tokochat.tokochat_config_common.util
 
 import com.google.gson.Gson
 import com.tokopedia.logger.ServerLogger
@@ -6,8 +6,7 @@ import com.tokopedia.logger.utils.Priority
 
 object TokoChatErrorLogger {
 
-    //todo need update after add into configru
-    private const val ERROR_TAG = "BUYER_FLOW_TOKOCHAT"
+    private const val ERROR_TAG = "TOKOCHAT_ERROR"
 
     // new relic Error Keys
     private const val ERROR_TYPE_KEY = "error_type"
@@ -17,22 +16,22 @@ object TokoChatErrorLogger {
     private const val EXTRAS_KEY = "extras"
     private const val DESCRIPTION_KEY = "description"
 
-    internal const val PAGE_KEY = "page"
+    const val PAGE_KEY = "page"
 
     object PAGE {
-        internal const val TOKOCHAT = "TokoChat"
+        const val TOKOCHAT = "TokoChat"
     }
 
     object ErrorDescription {
-        internal const val RENDER_PAGE_ERROR = "error render page"
-        internal const val POOL_ORDER_PROGRESS_ERROR = "error of pool based order progress"
-        internal const val RENDER_ORDER_PROGRESS_ERROR = "error of render order progress"
+        const val RENDER_PAGE_ERROR = "error render page"
+        const val POOL_ORDER_PROGRESS_ERROR = "error of pool based order progress"
+        const val RENDER_ORDER_PROGRESS_ERROR = "error of render order progress"
     }
 
     object ErrorType {
-        internal const val ERROR_PAGE = "error_page"
-        internal const val ERROR_POOL_ORDER_PROGRESS = "error_pool_order_progress"
-        internal const val ERROR_LOAD_ORDER_PROGRESS = "error_load_order_progress"
+        const val ERROR_PAGE = "error_page"
+        const val ERROR_POOL_ORDER_PROGRESS = "error_pool_order_progress"
+        const val ERROR_LOAD_ORDER_PROGRESS = "error_load_order_progress"
     }
 
     fun logExceptionToServerLogger(

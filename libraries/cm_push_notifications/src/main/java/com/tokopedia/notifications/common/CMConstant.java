@@ -133,6 +133,7 @@ public interface CMConstant {
         String WEBHOOK_PARAM = "webhook_params";
         String NOTIFCENTER_NOTIFICATION_ID = "nc_notif_id";
         String NOTIFCENTER_NOTIFICATION_TYPE = "nc_type_of_notif";
+        String NOTIFCENTER_NOTIFICATION_TEMPLATE_KEY = "nc_template_key";
 
         String NOTIFICATION_PRODUCT_TYPE = "notificationProductType";
         String FREE_DELIVERY = "bebasOngkir";
