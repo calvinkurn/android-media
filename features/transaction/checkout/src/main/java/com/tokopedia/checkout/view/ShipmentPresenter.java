@@ -2499,6 +2499,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                     if (!shipmentCartItemModel.isError() && shipmentCartItemModel.getHasEthicalProducts()) {
                         boolean updated = false;
                         boolean shouldResetCourier = false;
+                        int productErrorCount = 0;
+                        int firstProductErrorIndex = -1;
                         int position = getView().getShipmentCartItemModelAdapterPositionByUniqueId(shipmentCartItemModel.getCartString());
                         if (position > 0) {
                             for (GroupData.EpharmacyGroup epharmacyGroup : groupsData.getEpharmacyGroups()) {
@@ -2520,7 +2522,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                                         break;
                                                     }
                                                     if (product != null && product.getProductId() != null) {
-                                                        for (CartItemModel cartItemModel : shipmentCartItemModel.getCartItemModels()) {
+                                                        for (int i = shipmentCartItemModel.getCartItemModels().size() - 1; i >= 0; i--) {
+                                                            CartItemModel cartItemModel = shipmentCartItemModel.getCartItemModels().get(i);
                                                             if (product.getProductId() == cartItemModel.getProductId() && !cartItemModel.isError()) {
                                                                 if (epharmacyGroup.getConsultationData() != null && epharmacyGroup.getConsultationData().getConsultationStatus() != null && epharmacyGroup.getConsultationData().getConsultationStatus() == 4) {
                                                                     shipmentCartItemModel.setTokoConsultationId("");
@@ -2560,6 +2563,10 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                                                     break;
                                                                 }
                                                             }
+                                                            if (cartItemModel.isError()) {
+                                                                productErrorCount += 1;
+                                                                firstProductErrorIndex = i;
+                                                            }
                                                         }
                                                     }
                                                 }
@@ -2569,6 +2576,14 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                 }
                             }
                             if (shouldResetCourier) {
+                                if (shipmentCartItemModel.getCartItemModels().size() > productErrorCount) {
+                                    shipmentCartItemModel.setHasUnblockingError(true);
+                                    shipmentCartItemModel.setFirstProductErrorIndex(firstProductErrorIndex);
+                                    shipmentCartItemModel.setUnblockingErrorMessage("Yaah, ada " + productErrorCount + " barang yang tidak bisa diproses");
+                                } else {
+                                    shipmentCartItemModel.setError(true);
+                                    shipmentCartItemModel.setErrorTitle(uploadPrescriptionUiModel.getRejectedWording());
+                                }
                                 shipmentCartItemModel.setSpId(0);
                                 shipmentCartItemModel.setShouldResetCourier(true);
                                 getView().resetCourier(shipmentCartItemModel);
@@ -2616,6 +2631,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                     }
                     boolean updated = false;
                     boolean shouldResetCourier = false;
+                    int productErrorCount = 0;
+                    int firstProductErrorIndex = -1;
                     int position = getView().getShipmentCartItemModelAdapterPositionByUniqueId(shipmentCartItemModel.getCartString());
                     if (position > 0) {
                         for (EPharmacyMiniConsultationResult result : results) {
@@ -2636,7 +2653,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                                 break;
                                             }
                                             if (product != null && product.getProductId() != null) {
-                                                for (CartItemModel cartItemModel : shipmentCartItemModel.getCartItemModels()) {
+                                                for (int i = shipmentCartItemModel.getCartItemModels().size() - 1; i >= 0; i--) {
+                                                    CartItemModel cartItemModel = shipmentCartItemModel.getCartItemModels().get(i);
                                                     if (!cartItemModel.isError() && product.getProductId() == cartItemModel.getProductId()) {
                                                         if (result.getConsultationStatus() != null && result.getConsultationStatus() == 4) {
                                                             shipmentCartItemModel.setTokoConsultationId("");
@@ -2677,6 +2695,10 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                                             break;
                                                         }
                                                     }
+                                                    if (cartItemModel.isError()) {
+                                                        productErrorCount += 1;
+                                                        firstProductErrorIndex = i;
+                                                    }
                                                 }
                                             }
                                         }
@@ -2685,6 +2707,14 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                             }
                         }
                         if (shouldResetCourier) {
+                            if (shipmentCartItemModel.getCartItemModels().size() > productErrorCount) {
+                                shipmentCartItemModel.setHasUnblockingError(true);
+                                shipmentCartItemModel.setFirstProductErrorIndex(firstProductErrorIndex);
+                                shipmentCartItemModel.setUnblockingErrorMessage("Yaah, ada " + productErrorCount + " barang yang tidak bisa diproses");
+                            } else {
+                                shipmentCartItemModel.setError(true);
+                                shipmentCartItemModel.setErrorTitle(uploadPrescriptionUiModel.getRejectedWording());
+                            }
                             shipmentCartItemModel.setSpId(0);
                             getView().resetCourier(shipmentCartItemModel);
                         } else if (!updated) {
