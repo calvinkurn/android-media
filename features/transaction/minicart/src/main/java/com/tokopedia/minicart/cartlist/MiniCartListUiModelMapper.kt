@@ -30,9 +30,9 @@ import com.tokopedia.minicart.common.data.tracker.ProductBundleRecomAtcItemTrack
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
 import com.tokopedia.minicart.common.domain.data.MiniCartItemType
-import com.tokopedia.minicart.common.domain.data.ProductBundleRecomResponse
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.data.MiniCartWidgetData
+import com.tokopedia.minicart.common.domain.data.ProductBundleRecomResponse
 import com.tokopedia.purchase_platform.common.utils.isNotBlankOrZero
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeBundleProductUiModel
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeProductBundleDetailUiModel
@@ -40,7 +40,6 @@ import com.tokopedia.shop.common.widget.bundle.model.ShopHomeProductBundleItemUi
 import java.text.NumberFormat
 import java.util.*
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 import kotlin.math.min
 
 class MiniCartListUiModelMapper @Inject constructor() {
@@ -381,7 +380,7 @@ class MiniCartListUiModelMapper @Inject constructor() {
             productVariantName = product.variantDescriptionDetail.variantName.joinToString(", ")
             productSlashPriceLabel = product.slashPriceLabel
             productOriginalPrice = product.productOriginalPrice
-            productWholeSalePrice = 0
+            productWholeSalePrice = 0.0
             productInitialPriceBeforeDrop = product.initialPrice
             productPrice = product.productPrice
             productInformation = product.productInformation
