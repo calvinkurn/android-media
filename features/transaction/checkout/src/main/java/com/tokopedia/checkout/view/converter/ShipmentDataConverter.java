@@ -226,6 +226,7 @@ public class ShipmentDataConverter {
             shipmentCartItemModel.setTokoNow(groupShop.getShop().isTokoNow());
             shipmentCartItemModel.setShopTickerTitle(groupShop.getShop().getShopTickerTitle());
             shipmentCartItemModel.setShopTicker(groupShop.getShop().getShopTicker());
+            shipmentCartItemModel.setEnablerLabel(groupShop.getShop().getEnablerLabel());
             shipmentCartItemModels.add(shipmentCartItemModel);
         }
 
@@ -310,6 +311,13 @@ public class ShipmentDataConverter {
         shipmentCartItemModel.setProductFcancelPartial(fobject.isFcancelPartial() == 1);
         shipmentCartItemModel.setCartItemModels(cartItemModels);
         shipmentCartItemModel.setProductIsPreorder(fobject.isPreOrder() == 1);
+
+        for (Product product : products) {
+            if (product.getEthicalDrugs().getNeedPrescription()) {
+                shipmentCartItemModel.setHasEthicalProducts(true);
+                break;
+            }
+        }
 
         shipmentCartItemModel.setShipmentCartData(new RatesDataConverter()
                 .getShipmentCartData(userAddress, groupShop, shipmentCartItemModel, keroToken, keroUnixTime));

@@ -119,6 +119,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private Ticker tickerError;
     private LinearLayout layoutWarning;
     private Typography tvShopName;
+    private Label labelEpharmacy;
     private LinearLayout layoutWarningAndError;
     private Ticker tickerWarningCloseable;
 
@@ -272,6 +273,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         layoutWarning.setVisibility(View.GONE);
         layoutWarningAndError = itemView.findViewById(R.id.layout_warning_and_error);
         tvShopName = itemView.findViewById(R.id.tv_shop_name);
+        labelEpharmacy = itemView.findViewById(R.id.label_epharmacy);
         customTickerError = itemView.findViewById(R.id.checkout_custom_ticker_error);
         customTickerDescription = itemView.findViewById(R.id.checkout_custom_ticker_description);
         customTickerAction = itemView.findViewById(R.id.checkout_custom_ticker_action);
@@ -641,8 +643,14 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         }
 
         String shopName = shipmentCartItemModel.getShopName();
-
         tvShopName.setText(shopName);
+
+        if (TextUtils.isEmpty(shipmentCartItemModel.getEnablerLabel())) {
+            labelEpharmacy.setVisibility(View.GONE);
+        } else {
+            labelEpharmacy.setLabel(shipmentCartItemModel.getEnablerLabel());
+            labelEpharmacy.setVisibility(View.VISIBLE);
+        }
     }
 
     @SuppressLint("StringFormatInvalid")
@@ -748,7 +756,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                 layoutProductInfo.addView(productInfo);
             }
             layoutProductInfo.setVisibility(View.VISIBLE);
-            renderEthicalDrugsProperty(cartItemModel);
         } else {
             layoutProductInfo.setVisibility(View.GONE);
         }
@@ -756,10 +763,10 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     }
 
     private void renderEthicalDrugsProperty(CartItemModel cartItemModel) {
-        if(cartItemModel.getEthicalDrugDataModel().getNeedPrescription()){
+        if (cartItemModel.getEthicalDrugDataModel().getNeedPrescription()) {
             View ethicalDrugView = createProductInfoTextWithIcon(cartItemModel);
-            if(layoutProductInfo.getChildCount() > 0){
-                ethicalDrugView.setPadding(itemView.getResources().getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_4),0,0,0);
+            if (layoutProductInfo.getChildCount() > 0) {
+                ethicalDrugView.setPadding(itemView.getResources().getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.unify_space_4), 0, 0, 0);
             }
             layoutProductInfo.addView(ethicalDrugView);
             layoutProductInfo.setVisibility(View.VISIBLE);
@@ -898,8 +905,16 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         layoutStateHasSelectedNormalShipping.setVisibility(View.GONE);
         layoutStateFailedShipping.setVisibility(View.GONE);
 
-        labelErrorShippingTitle.setText(shipmentCartItemModel.getCourierSelectionErrorTitle());
-        labelErrorShippingDescription.setText(shipmentCartItemModel.getCourierSelectionErrorDescription());
+        if (TextUtils.isEmpty(shipmentCartItemModel.getCourierSelectionErrorTitle())) {
+            labelErrorShippingTitle.setText(itemView.getResources().getString(R.string.checkout_error_shipping_title));
+        } else {
+            labelErrorShippingTitle.setText(shipmentCartItemModel.getCourierSelectionErrorTitle());
+        }
+        if (TextUtils.isEmpty(shipmentCartItemModel.getCourierSelectionErrorDescription())) {
+            labelErrorShippingDescription.setText(itemView.getResources().getString(R.string.checkout_error_shipping_description));
+        } else {
+            labelErrorShippingDescription.setText(shipmentCartItemModel.getCourierSelectionErrorDescription());
+        }
         layoutStateHasErrorShipping.setVisibility(View.VISIBLE);
 
         llShippingExperienceStateLoading.setVisibility(View.GONE);

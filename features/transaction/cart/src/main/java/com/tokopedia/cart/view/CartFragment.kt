@@ -180,6 +180,7 @@ import rx.subscriptions.CompositeSubscription
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
+import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -1399,6 +1400,12 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener,
             RouteManager.route(it, UriUtil.buildUri(ApplinkConst.GIFTING, addOnId))
         }
         cartPageAnalytics.eventClickAddOnsWidget(productId)
+    }
+
+    override fun onClickEpharmacyInfoCart(enablerLabel: String) {
+        activity?.let {
+            RouteManager.route(it, "tokopedia://epharmacy/edu/${enablerLabel.lowercase(Locale.ROOT)}/obat_keras_tnc")
+        }
     }
 
     override fun addOnImpression(productId: String) {
