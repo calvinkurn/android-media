@@ -30,7 +30,7 @@ class GetRecommendationFilterChips @Inject constructor(
     init {
         graphqlUseCase.setGraphqlQuery(
             if (remoteConfig.getBoolean(
-                    RemoteConfigKey.RECOM_USE_QUERY_V2,
+                    RemoteConfigKey.RECOM_USE_GQL_FED_QUERY,
                     true
                 )
             ) {

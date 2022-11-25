@@ -30,7 +30,7 @@ constructor(private val context: Context, private val graphqlRepository: Graphql
         val queryParam = ChooseAddressUtils.getLocalizingAddressData(context)?.toQueryParam(inputParameter.queryParam) ?: inputParameter.queryParam
         graphqlUseCase.setTypeClass(SingleProductRecommendationEntity::class.java)
         graphqlUseCase.setRequestParams(inputParameter.copy(queryParam = queryParam).toGqlRequest())
-        if (remoteConfig.getBoolean(RemoteConfigKey.RECOM_USE_QUERY_V2, true)) {
+        if (remoteConfig.getBoolean(RemoteConfigKey.RECOM_USE_GQL_FED_QUERY, true)) {
             graphqlUseCase.setGraphqlQuery(ProductRecommendationSingleQueryV2())
         } else {
             graphqlUseCase.setGraphqlQuery(ProductRecommendationSingleQuery())

@@ -26,7 +26,7 @@ class RecommendationModule {
         val remoteConfig = FirebaseRemoteConfigImpl(context)
         return com.tokopedia.recommendation_widget_common.domain.GetRecommendationUseCase(
             context,
-            if (remoteConfig.getBoolean(RemoteConfigKey.RECOM_USE_QUERY_V2, true)) {
+            if (remoteConfig.getBoolean(RemoteConfigKey.RECOM_USE_GQL_FED_QUERY, true)) {
                 QueryListProductRecommendationV2.LIST_PRODUCT_RECOMMENDATION_V2_QUERY
             } else {
                 GetRecommendationUseCaseRequest.widgetListQuery
@@ -44,7 +44,7 @@ class RecommendationModule {
     ): com.tokopedia.recommendation_widget_common.domain.GetSingleRecommendationUseCase {
         val remoteConfig = FirebaseRemoteConfigImpl(context)
         val query =
-            if (remoteConfig.getBoolean(RemoteConfigKey.RECOM_USE_QUERY_V2, true)) {
+            if (remoteConfig.getBoolean(RemoteConfigKey.RECOM_USE_GQL_FED_QUERY, true)) {
                 QueryProductRecommendationSingleV2.PRODUCT_RECOMMENDATION_SINGLE_V2_QUERY
             } else {
                 GetRecommendationUseCaseRequest.singleQuery

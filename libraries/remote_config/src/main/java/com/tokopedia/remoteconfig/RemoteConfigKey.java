@@ -305,6 +305,6 @@ public class RemoteConfigKey {
 
     public static final String ENABLE_NEW_SHARE_SELLER = "android_sellerapp_enable_new_share";
 
-    public static final String RECOM_USE_QUERY_V2 = "android_recom_use_query_v2";
+    public static final String RECOM_USE_GQL_FED_QUERY = "android_recom_use_gql_fed_query";
 
 }
