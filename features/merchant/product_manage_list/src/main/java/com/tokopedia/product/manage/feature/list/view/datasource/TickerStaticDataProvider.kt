@@ -7,7 +7,6 @@ import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerData
 import java.text.SimpleDateFormat
 import java.util.*
-import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 class TickerStaticDataProvider @Inject constructor(private val resourceProvider: ResourceProvider) {
