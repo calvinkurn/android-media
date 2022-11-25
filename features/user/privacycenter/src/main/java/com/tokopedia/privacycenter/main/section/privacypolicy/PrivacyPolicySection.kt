@@ -15,6 +15,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.privacycenter.R
 import com.tokopedia.privacycenter.databinding.SectionPrivacyPolicyBinding
+import com.tokopedia.privacycenter.main.analytics.MainPrivacyCenterAnalytics
 import com.tokopedia.privacycenter.main.section.BasePrivacyCenterSection
 import com.tokopedia.privacycenter.main.section.privacypolicy.PrivacyPolicyConst.DEFAULT_TITLE
 import com.tokopedia.privacycenter.main.section.privacypolicy.PrivacyPolicyConst.KEY_TITLE
@@ -55,6 +56,8 @@ class PrivacyPolicySection constructor(
             }
 
             menuCurrentPrivacyPolicy.setOnClickListener {
+                MainPrivacyCenterAnalytics.sendClickOnButtonBacaKebijakanPrivasiEvent()
+
                 val intent = RouteManager.getIntent(
                     context,
                     ApplinkConstInternalGlobal.WEBVIEW_TITLE,
@@ -70,6 +73,8 @@ class PrivacyPolicySection constructor(
             }
 
             buttonShowAllList.setOnClickListener {
+                MainPrivacyCenterAnalytics.sendClickOnButtonLihatSemuaEvent()
+
                 if (privacyPolicySectionBottomSheet == null) {
                     privacyPolicySectionBottomSheet = PrivacyPolicySectionBottomSheet()
                 }

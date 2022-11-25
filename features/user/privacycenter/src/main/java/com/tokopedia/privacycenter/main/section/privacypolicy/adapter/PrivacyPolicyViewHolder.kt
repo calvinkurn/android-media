@@ -5,8 +5,8 @@ import androidx.core.content.ContextCompat
 import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.privacycenter.databinding.PrivacyPolicyItemViewBinding
+import com.tokopedia.privacycenter.main.analytics.MainPrivacyCenterAnalytics
 import com.tokopedia.privacycenter.main.section.privacypolicy.domain.data.PrivacyPolicyDataModel
-import com.tokopedia.utils.view.binding.viewBinding
 
 class PrivacyPolicyViewHolder(
     itemView: View,
@@ -24,6 +24,7 @@ class PrivacyPolicyViewHolder(
 
                 text = item.sectionTitle
                 setOnClickListener {
+                    MainPrivacyCenterAnalytics.sendClickOnRiwayatKebijakanPrivasiEvent(item.sectionTitle)
                     listener.onItemClicked(item)
                 }
             }
