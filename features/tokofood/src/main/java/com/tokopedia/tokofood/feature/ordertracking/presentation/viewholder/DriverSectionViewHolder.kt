@@ -28,8 +28,8 @@ class DriverSectionViewHolder(
         @LayoutRes
         val LAYOUT = R.layout.item_tokofood_order_tracking_driver_section
 
-        private const val ICON_DEFAULT_PERCENTAGE_X_POSITION = 1.6f
-        private const val ICON_DEFAULT_PERCENTAGE_Y_POSITION = -0.55f
+        private const val ICON_DEFAULT_PERCENTAGE_X_POSITION = 0.9f
+        private const val ICON_DEFAULT_PERCENTAGE_Y_POSITION = -0.45f
     }
 
     private val binding = ItemTokofoodOrderTrackingDriverSectionBinding.bind(itemView)
