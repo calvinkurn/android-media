@@ -294,6 +294,7 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
     override fun onDestroy() {
         super.onDestroy()
         removeScrollChangedListener()
+        removeSearchCoachMark()
     }
 
     override fun getFragmentPage(): Fragment = this
@@ -814,6 +815,11 @@ class TokoFoodHomeFragment : BaseDaggerFragment(),
         onScrollChangedListenerList.forEach {
             view?.viewTreeObserver?.removeOnScrollChangedListener(it)
         }
+    }
+
+    private fun removeSearchCoachMark() {
+        searchCoachMark?.onDismissListener = {}
+        searchCoachMark = null
     }
 
     private fun createLoadMoreListener(): RecyclerView.OnScrollListener {
