@@ -64,4 +64,7 @@ object DsarConstants {
 
     const val OTP_MODE_EMAIL = "email"
 
+
+    const val LABEL_ERROR_REQUEST = "Terjadi kesalahan"
+
 }

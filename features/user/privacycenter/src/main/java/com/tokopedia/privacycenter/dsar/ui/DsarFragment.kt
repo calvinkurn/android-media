@@ -17,9 +17,7 @@ import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.datepicker.LocaleUtils
 import com.tokopedia.datepicker.OnDateChangedListener
 import com.tokopedia.datepicker.datetimepicker.DateTimePickerUnify
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.invisible
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.privacycenter.R
 import com.tokopedia.privacycenter.common.di.PrivacyCenterComponent
@@ -56,12 +54,9 @@ class DsarFragment: BaseDaggerFragment(), OnDateChangedListener {
 
     var state = STATE_START
 
-    var startDate: Long = 0L
-    var endDate: Long = 0L
-
-    lateinit var rangePickerDialogBinding: BottomSheetRangePickerBinding
-    lateinit var rangePickerBottomSheet: BottomSheetUnify
-    lateinit var datePicker: DateTimePickerUnify
+    private var rangePickerDialogBinding: BottomSheetRangePickerBinding? = null
+    private var rangePickerBottomSheet: BottomSheetUnify? = null
+    private var datePicker: DateTimePickerUnify? = null
 
     private val viewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(
@@ -122,13 +117,50 @@ class DsarFragment: BaseDaggerFragment(), OnDateChangedListener {
             showToasterError(it)
         }
 
+        viewModel.transactionHistoryModel.observe(viewLifecycleOwner) {
+            if(it.showBottomSheet) {
+                showTransactionHistoryBtmSheet(it.itemRange)
+            } else {
+                rangePickerBottomSheet?.dismiss()
+            }
+            binding?.layoutOptions?.itemTransactionHistory?.checkIcon?.showWithCondition(it.isChecked)
+            if(it.isChecked) {
+                val selectedItem = it.itemRange.find { item -> item.selected }
+                if(selectedItem != null) {
+                    val shouldShowDate = selectedItem.transactionDate.startDate.isNotEmpty() && selectedItem.transactionDate.endDate.isNotEmpty()
+                    binding?.layoutOptions?.itemTransactionHistory?.txtChoosenDate?.showWithCondition(shouldShowDate)
+                    val startDate = DateUtil.formatDate(DateUtil.YYYYMMDD, DateUtil.DEFAULT_VIEW_FORMAT, selectedItem.transactionDate.startDate)
+                    val endDate = DateUtil.formatDate(DateUtil.YYYYMMDD, DateUtil.DEFAULT_VIEW_FORMAT, selectedItem.transactionDate.endDate)
+                    if(shouldShowDate) {
+                        binding?.layoutOptions?.itemTransactionHistory?.txtChoosenDate?.text = "${startDate} - ${endDate}"
+                    }
+                    if(selectedItem.id == DATE_RANGE_CUSTOM) {
+                        rangePickerDialogBinding?.txtStartDate?.editText?.setText(startDate)
+                        rangePickerDialogBinding?.txtEndDate?.editText?.setText(endDate)
+                    }
+                }
+            } else {
+                binding?.layoutOptions?.itemTransactionHistory?.txtChoosenDate?.hide()
+            }
+        }
+
         viewModel.itemRangeData.observe(viewLifecycleOwner) {
             if(it.isNotEmpty()) {
-                if(::rangePickerBottomSheet.isInitialized && rangePickerBottomSheet.isVisible) {
-                    updateRangeItemsView(it)
-                    binding?.layoutOptions?.itemTransactionHistory
-                } else {
-                    showTransactionHistoryBtmSheet(it)
+                updateRangeItemsView(it)
+                val selectedItem = it.find { item -> item.selected }
+                if(selectedItem != null) {
+                    val shouldShowDate = selectedItem.transactionDate.startDate.isNotEmpty() && selectedItem.transactionDate.endDate.isNotEmpty()
+                    binding?.layoutOptions?.itemTransactionHistory?.txtChoosenDate?.showWithCondition(shouldShowDate)
+                    val startDate = DateUtil.formatDate(DateUtil.YYYYMMDD, DateUtil.DEFAULT_VIEW_FORMAT, selectedItem.transactionDate.startDate)
+                    val endDate = DateUtil.formatDate(DateUtil.YYYYMMDD, DateUtil.DEFAULT_VIEW_FORMAT, selectedItem.transactionDate.endDate)
+
+                    if(shouldShowDate) {
+                        binding?.layoutOptions?.itemTransactionHistory?.txtChoosenDate?.text = "${startDate} - ${endDate}"
+                    }
+                    if(selectedItem.id == DATE_RANGE_CUSTOM) {
+                        rangePickerDialogBinding?.txtStartDate?.editText?.setText(startDate)
+                        rangePickerDialogBinding?.txtEndDate?.editText?.setText(endDate)
+                    }
                 }
             }
         }
@@ -137,15 +169,9 @@ class DsarFragment: BaseDaggerFragment(), OnDateChangedListener {
             renderOnProgressView(it)
         }
 
-        viewModel.submitRequest.observe(viewLifecycleOwner) {
-            onSubmitSuccess(it.email, it.deadline)
-        }
-
-        viewModel.customDate.observe(viewLifecycleOwner) {
-            if (::rangePickerDialogBinding.isInitialized) {
-                rangePickerDialogBinding.txtStartDate.editText
-                    .setText(it.startDate)
-                rangePickerDialogBinding.txtEndDate.editText.setText(it.endDate)
+        viewModel.submitRequestState.observe(viewLifecycleOwner) {
+            if(it.email.isNotEmpty() && it.deadline.isNotEmpty()) {
+                onSubmitSuccess(it.email, it.deadline)
             }
         }
 
@@ -216,18 +242,6 @@ class DsarFragment: BaseDaggerFragment(), OnDateChangedListener {
         }
     }
 
-    private fun updateRangeItemsView(items: List<ItemRangeModel>) {
-        if(items.count() == rangePickerDialogBinding.layoutDateRange.childCount) {
-            items.forEach {
-                val view = rangePickerDialogBinding.layoutDateRange.getChildAt(it.id)
-                val radio = view.findViewById<RadioButtonUnify>(R.id.radioTransactionHistoryItem)
-                if(radio is RadioButtonUnify) {
-                    radio.isChecked = it.selected
-                }
-            }
-        }
-    }
-
     private fun renderProfileHeader() {
         binding?.personalInfo?.apply {
             txtProfileName.text = userSession.name
@@ -270,9 +284,10 @@ class DsarFragment: BaseDaggerFragment(), OnDateChangedListener {
                     viewModel.removeFilter(FILTER_TYPE_TRANSACTION)
                     checkIcon.invisible()
                 } else {
-                    viewModel.addFilter(FILTER_TYPE_TRANSACTION)
-                    viewModel.populateRangeItems()
-                    checkIcon.visible()
+                    viewModel.onTransactionHistorySelected()
+//                    viewModel.addFilter(FILTER_TYPE_TRANSACTION)
+//                    viewModel.populateRangeItems()
+//                    checkIcon.visible()
                 }
             }
         }
@@ -284,11 +299,11 @@ class DsarFragment: BaseDaggerFragment(), OnDateChangedListener {
     override fun onDateChanged(date: Long) {}
 
     private fun renderEndState() {
-        datePicker.setTitle("Sampai")
+        datePicker?.setTitle("Sampai")
     }
 
     private fun renderInitialState() {
-        datePicker.setTitle(getString(R.string.dsar_date_picker_start_title))
+        datePicker?.setTitle(getString(R.string.dsar_date_picker_start_title))
     }
 
     private fun showDatePicker() {
@@ -309,7 +324,7 @@ class DsarFragment: BaseDaggerFragment(), OnDateChangedListener {
                 DateTimePickerUnify.TYPE_DATEPICKER
             )
 
-            datePicker.apply {
+            datePicker?.apply {
                 setCloseClickListener { dismiss() }
                 datePickerButton.text = it?.getString(R.string.dsar_date_picker_choose_btn_title)
                 datePickerButton.setOnClickListener {
@@ -318,60 +333,70 @@ class DsarFragment: BaseDaggerFragment(), OnDateChangedListener {
             }
 
             renderInitialState()
-            datePicker.show(parentFragmentManager, "")
+            datePicker?.show(parentFragmentManager, "")
         }
     }
 
     private fun onDateSelected() {
-        val selected = datePicker.getDate()
-
+        val selected = datePicker?.getDate()
         if(state == STATE_START) {
-            viewModel.setStartDate(selected.time)
             state = STATE_END
-            startDate = selected.time.time
+//            startDate = selected?.time
+            viewModel.setSelectedCustomDate(startDate = selected?.time)
             renderEndState()
         } else {
-            viewModel.setEndDate(selected.time)
-            endDate = selected.time.time
+//            endDate = selected?.time
             state = STATE_START
             renderInitialState()
-            datePicker.dismiss()
+            datePicker?.dismiss()
+            viewModel.setSelectedCustomDate(endDate = selected?.time)
+//            viewModel.setSelectedCustomDate(startDate, endDate)
         }
     }
 
     private fun onCheckedChanged(id: Int, isChecked: Boolean) {
         if(isChecked) {
-            viewModel.setSelectedRangeItems(id)
             if(id == DATE_RANGE_CUSTOM) {
                 showDatePicker()
-                rangePickerDialogBinding.layoutCustomDate.visible()
+                rangePickerDialogBinding?.layoutCustomDate?.visible()
             } else {
-                rangePickerDialogBinding.layoutCustomDate.gone()
+                viewModel.setSelectedRangeItems(id)
+                rangePickerDialogBinding?.layoutCustomDate?.gone()
+            }
+        }
+    }
+
+    private fun updateRangeItemsView(items: List<ItemRangeModel>) {
+        if(items.count() == rangePickerDialogBinding?.layoutDateRange?.childCount) {
+            items.forEach {
+                val view = rangePickerDialogBinding?.layoutDateRange?.getChildAt(it.id)
+                val radio = view?.findViewById<RadioButtonUnify>(R.id.radioTransactionHistoryItem)
+                if(radio is RadioButtonUnify) {
+                    radio.isChecked = it.selected
+                }
             }
         }
     }
 
     private fun showTransactionHistoryBtmSheet(itemRange: ArrayList<ItemRangeModel>) {
-        if(!::rangePickerDialogBinding.isInitialized) {
+        if(rangePickerBottomSheet == null) {
             rangePickerDialogBinding = BottomSheetRangePickerBinding.inflate(LayoutInflater.from(activity))
-        }
-
-        if(!::rangePickerBottomSheet.isInitialized) {
             rangePickerBottomSheet = BottomSheetUnify()
-
             itemRange.forEachIndexed { index, itemRangeModel ->
                 val binding = ItemTransactionHistoryRangeBinding.inflate(LayoutInflater.from(requireContext()))
                 binding.root.layoutParams = MarginLayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT)
                 binding.mainTextTransactionHistoryItem.text = itemRangeModel.title
                 binding.radioTransactionHistoryItem.setOnCheckedChangeListener { _, isChecked -> onCheckedChanged(itemRangeModel.id, isChecked) }
-                rangePickerDialogBinding.layoutDateRange.addView(binding.root)
+                rangePickerDialogBinding?.layoutDateRange?.addView(binding.root)
             }
-            rangePickerBottomSheet.setChild(rangePickerDialogBinding.root)
-            rangePickerDialogBinding.btnApplyFilter.setOnClickListener {
-                rangePickerBottomSheet.dismiss()
+            rangePickerBottomSheet?.setChild(rangePickerDialogBinding?.root)
+            rangePickerDialogBinding?.btnApplyFilter?.setOnClickListener {
+                rangePickerBottomSheet?.dismiss()
             }
+        } else {
+            updateRangeItemsView(itemRange)
         }
-        rangePickerBottomSheet.show(parentFragmentManager, "")
+        rangePickerBottomSheet?.show(parentFragmentManager, "")
     }
 
     private fun renderOnProgressView(searchResult: GetRequestDetailResponse) {
