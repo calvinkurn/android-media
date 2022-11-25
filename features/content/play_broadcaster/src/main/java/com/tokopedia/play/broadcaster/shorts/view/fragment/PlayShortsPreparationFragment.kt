@@ -109,6 +109,9 @@ class PlayShortsPreparationFragment @Inject constructor(
         super.onDestroyView()
         coachMarkManager.dismissAllCoachMark()
         idleManager.clear()
+        exitConfirmationDialog = null
+        switchAccountConfirmationDialog = null
+
         _binding = null
     }
 
