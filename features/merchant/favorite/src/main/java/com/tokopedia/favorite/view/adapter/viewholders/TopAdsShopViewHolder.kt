@@ -16,15 +16,13 @@ import com.tokopedia.favorite.view.viewmodel.TopAdsShopItem
 import com.tokopedia.favorite.view.viewmodel.TopAdsShopUiModel
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.topads.sdk.TopAdsConstants.LAYOUT_13
 import com.tokopedia.topads.sdk.domain.model.ShopProductModel
 import com.tokopedia.topads.sdk.listener.FollowButtonClickListener
 import com.tokopedia.topads.sdk.listener.ShopAdsProductListener
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
-import com.tokopedia.topads.sdk.widget.ShopAdsWithOneProductView
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.unifyprinciples.Typography
 
 /**
  * @author kulomady on 1/24/17.
@@ -46,6 +44,9 @@ class TopAdsShopViewHolder(
     private var recShopRecyclerView: RecyclerView =
         itemView.findViewById(R.id.rec_shop_recycler_view)
 
+    private var title: Typography = itemView.findViewById(R.id.favorite_title)
+    private var subtitle: Typography = itemView.findViewById(R.id.favorite_subtitle)
+
     private val context: Context = itemView.context
 
     override fun bind(element: TopAdsShopUiModel?) {
@@ -57,7 +58,11 @@ class TopAdsShopViewHolder(
             recShopRecyclerView.layoutManager = linearLayoutManager
             recShopRecyclerView.adapter = topAdsShopAdapter
             element?.adsShopItems?.let { topAdsShopAdapter.setData(it) }
+            title.text = getString(R.string.shop_reccomendation)
+            subtitle.visibility = View.GONE
         } else {
+            title.text = getString(R.string.recommendations_for_you)
+            subtitle.visibility = View.VISIBLE
             val topAdsShopAdapter_v2 =
                 TopAdsShopAdapter_v2(
                     object : ShopAdsProductListener {
@@ -101,7 +106,6 @@ class TopAdsShopViewHolder(
             val linearLayoutManager =
                 LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
             recShopRecyclerView.layoutManager = linearLayoutManager
-            recShopRecyclerView.setHasFixedSize(true)
             recShopRecyclerView.adapter = topAdsShopAdapter_v2
             topAdsShopAdapter_v2.setList(getShopProductItem(element))
         }

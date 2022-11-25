@@ -19,6 +19,7 @@
             android:background="@color/Unify_N0">
 
             <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/favorite_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:maxLines="1"
@@ -28,8 +29,8 @@
                 android:paddingBottom="@dimen/padding_vs"
                 android:text="@string/recommendations_for_you"
                 android:textColor="@color/Unify_NN600"
-                app:typographyType="display_2"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                app:typographyType="display_2" />
 
         </RelativeLayout>
 
@@ -52,6 +53,7 @@
             android:background="@color/Unify_N0">
 
             <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/favorite_subtitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:maxLines="1"
@@ -61,7 +63,7 @@
                 android:paddingBottom="@dimen/padding_vs"
                 android:text="@string/my_favorite_shop"
                 android:textColor="@color/Unify_NN600"
-                app:typographyType="display_2"/>
+                app:typographyType="display_2" />
 
         </RelativeLayout>
     </LinearLayout>
