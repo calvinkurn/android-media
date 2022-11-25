@@ -50,7 +50,7 @@ class BroadMatchViewHolder(
     override fun bind(element: BroadMatchDataView?, payloads: MutableList<Any>) {
         if (payloads.firstOrNull() == true && element != null) {
             binding?.setItems(
-                items = element.broadMatchItemModelList,
+                items = element.broadMatchItemModelList.map { it.copy() },
                 seeMoreModel = element.seeMoreModel
             )
         }

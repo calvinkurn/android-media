@@ -213,7 +213,6 @@ class TokoNowSearchViewModel @Inject constructor (
         related = null
     }
 
-
     private fun createCategoryJumperDataView(): CategoryJumperDataView {
         val categoryJumperItemList =
                 searchCategoryJumper
@@ -266,43 +265,6 @@ class TokoNowSearchViewModel @Inject constructor (
 
     }
 
-    override fun updateQuantityInVisitable(
-        visitable: Visitable<*>,
-        index: Int,
-        updatedProductIndices: MutableList<Int>,
-    ) {
-        super.updateQuantityInVisitable(visitable, index, updatedProductIndices)
-
-        if (visitable is BroadMatchDataView)
-            updateBroadMatchQuantities(visitable, index, updatedProductIndices)
-    }
-
-    private fun updateBroadMatchQuantities(
-        broadMatchDataView: BroadMatchDataView,
-        index: Int,
-        updatedProductIndices: MutableList<Int>,
-    ) {
-        broadMatchDataView.broadMatchItemModelList.forEach { broadMatchItemDataView ->
-            updateBroadMatchItemQuantity(broadMatchItemDataView, index, updatedProductIndices)
-        }
-    }
-
-    private fun updateBroadMatchItemQuantity(
-        broadMatchItemDataView: TokoNowProductCardCarouselItemUiModel,
-        index: Int,
-        updatedProductIndices: MutableList<Int>,
-    ) {
-        val productCardQuantity = broadMatchItemDataView.productCardModel.orderQuantity
-        val miniCartQuantity = cartService.getProductQuantity(broadMatchItemDataView.productCardModel.productId)
-
-        if (productCardQuantity != miniCartQuantity) {
-            broadMatchItemDataView.productCardModel = broadMatchItemDataView.productCardModel.copy(orderQuantity = miniCartQuantity)
-
-            if (!updatedProductIndices.contains(index))
-                updatedProductIndices.add(index)
-        }
-    }
-
     fun onViewATCBroadMatchItem(
         broadMatchItem: TokoNowProductCardCarouselItemUiModel,
         quantity: Int,
@@ -317,18 +279,18 @@ class TokoNowSearchViewModel @Inject constructor (
             quantity = quantity,
             onSuccessAddToCart = {
                 sendAddToCartBroadMatchItemTracking(quantity, it, broadMatchItem)
-                onAddToCartSuccessBroadMatchItem(broadMatchItem, it.data.quantity)
                 updateCartMessageSuccess(it.errorMessage.joinToString(separator = ", "))
                 updateToolbarNotification()
+                refreshMiniCart()
             },
             onSuccessUpdateCart = {
-                onAddToCartSuccessBroadMatchItem(broadMatchItem, quantity)
                 updateToolbarNotification()
+                refreshMiniCart()
             },
             onSuccessDeleteCart = {
-                onAddToCartSuccessBroadMatchItem(broadMatchItem, 0)
                 updateCartMessageSuccess(it.errorMessage.joinToString(separator = ", "))
                 updateToolbarNotification()
+                refreshMiniCart()
             },
             onError = ::onAddToCartFailed,
             handleCartEventNonLogin = {
@@ -344,21 +306,6 @@ class TokoNowSearchViewModel @Inject constructor (
     ) {
         addToCartBroadMatchTrackingMutableLiveData.value =
             Triple(quantity, addToCartDataModel.data.cartId, broadMatchItem)
-    }
-
-    private fun onAddToCartSuccessBroadMatchItem(
-        broadMatchItem: TokoNowProductCardCarouselItemUiModel,
-        updatedQuantity: Int,
-    ) {
-        updateBroadMatchItemQuantity(broadMatchItem, updatedQuantity)
-        refreshMiniCart()
-    }
-
-    private fun updateBroadMatchItemQuantity(
-        broadMatchItem: TokoNowProductCardCarouselItemUiModel,
-        updatedQuantity: Int,
-    ) {
-        broadMatchItem.productCardModel = broadMatchItem.productCardModel.copy(orderQuantity = updatedQuantity)
     }
 
     companion object {
