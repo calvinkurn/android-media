@@ -68,6 +68,7 @@ const val GQL_FETCH_CHECKOUT_DETAILS_QUERY = """
       }
     }
 """
+
 val GQL_FETCH_MINI_CONSULTATION_MASTER_QUERY = """
     query getEpharmacyStaticData(${"$"}data_type: String!,${'$'}params: EpharmacyStaticInfoParams!) {
     getEpharmacyStaticData(data_type: ${"$"}data_type, params: ${"$"}params) {
@@ -85,6 +86,21 @@ val GQL_FETCH_MINI_CONSULTATION_MASTER_QUERY = """
           logo_url
           logo_title
           info_title
+        }
+    }
+}
+""".trimIndent()
+
+val GQL_EPHARMACY_REMINDER_SCREEN_QUERY = """
+    query SubmitEpharmacyUserReminder(${"$"}reminder_type: Long!,${'$'}params: EpharmacyConsultationInfoParams!) {
+    submitEpharmacyUserReminder(reminder_type: ${"$"}reminder_type, params: ${"$"}params) {
+        header {
+            process_time
+            error_code
+        }
+        data {
+          is_success
+          error
         }
     }
 }
