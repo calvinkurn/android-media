@@ -231,6 +231,26 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         initView()
         requestFeedTab()
         initFab()
+
+        WorkManager.getInstance(requireActivity().applicationContext)
+            .getWorkInfosForUniqueWorkLiveData("SHORTS_UPLOAD")
+            .observe(this, Observer {
+                it.firstOrNull()?.let { workInfo ->
+                    postProgressUpdateView?.show()
+
+                    if(workInfo.state == WorkInfo.State.SUCCEEDED) {
+                        Log.d("<LOG>", "FEED - SUCCEEDED")
+                    }
+                    else if(workInfo.state == WorkInfo.State.FAILED) {
+                        Log.d("<LOG>", "FEED - FAILED")
+                    }
+                    else {
+                        val progress = workInfo.progress.getInt("progress", 0)
+                        Log.d("<LOG>", "FEED - PROGRESS $progress")
+                        postProgressUpdateView?.setProgressUpdate(progress, 100)
+                    }
+                }
+            })
     }
 
     override fun onAttachFragment(childFragment: Fragment) {
@@ -343,26 +363,6 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         } else {
             updateVisibility(false)
         }
-
-        WorkManager.getInstance(requireActivity().applicationContext)
-            .getWorkInfosForUniqueWorkLiveData("SHORTS_UPLOAD")
-            .observe(this, Observer {
-                it.firstOrNull()?.let { workInfo ->
-                    postProgressUpdateView?.show()
-
-                    if(workInfo.state == WorkInfo.State.SUCCEEDED) {
-                        Log.d("<LOG>", "FEED - SUCCEEDED")
-                    }
-                    else if(workInfo.state == WorkInfo.State.FAILED) {
-                        Log.d("<LOG>", "FEED - FAILED")
-                    }
-                    else {
-                        val progress = workInfo.progress.getInt("progress", 0)
-                        Log.d("<LOG>", "FEED - PROGRESS $progress")
-                        postProgressUpdateView?.setProgressUpdate(progress, 100)
-                    }
-                }
-            })
     }
 
     override fun onDestroy() {
