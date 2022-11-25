@@ -29,7 +29,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform
-import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform.PATH_SRC
 import com.tokopedia.applink.internal.ApplinkConstInternalPurchasePlatform.WISHLIST_COLLECTION_DETAIL_INTERNAL
 import com.tokopedia.atc_common.AtcFromExternalSource
 import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
@@ -135,8 +134,12 @@ import com.tokopedia.wishlistcollection.view.bottomsheet.BottomSheetWishlistColl
 import com.tokopedia.wishlistcollection.view.bottomsheet.listener.ActionListenerBottomSheetMenu
 import com.tokopedia.wishlistcollection.view.bottomsheet.listener.ActionListenerFromPdp
 import com.tokopedia.wishlistcollection.view.viewmodel.WishlistCollectionDetailViewModel
+import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
+import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
+import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
 import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.IS_PRODUCT_ACTIVE
+import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts.OPEN_WISHLIST
 import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -1952,37 +1955,10 @@ class WishlistCollectionDetailFragment :
                                 }
                             }
                             MENU_ADD_ITEM_TO_COLLECTION -> {
-                                val applinkCollection =
-                                    "${ApplinkConstInternalPurchasePlatform.WISHLIST_COLLECTION_BOTTOMSHEET}?${ApplinkConstInternalPurchasePlatform.PATH_PRODUCT_ID}=${wishlistItem.id}&${ApplinkConstInternalPurchasePlatform.PATH_SRC}=$SRC_WISHLIST"
-                                val intentBottomSheetWishlistCollection =
-                                    RouteManager.getIntent(context, applinkCollection)
-                                intentBottomSheetWishlistCollection.putExtra(
-                                    IS_PRODUCT_ACTIVE,
-                                    wishlistItem.available
-                                )
-                                startActivityForResult(
-                                    intentBottomSheetWishlistCollection,
-                                    ApplinkConstInternalPurchasePlatform.REQUEST_CODE_ADD_WISHLIST_COLLECTION
-                                )
+                                showWishlistCollectionHostBottomSheetActivity(wishlistItem, false)
                             }
                             MENU_ADD_WISHLIST -> {
-                                var applinkCollection =
-                                    "${ApplinkConstInternalPurchasePlatform.WISHLIST_COLLECTION_BOTTOMSHEET}?${ApplinkConstInternalPurchasePlatform.PATH_PRODUCT_ID}=${wishlistItem.id}"
-                                if (collectionType == TYPE_COLLECTION_PUBLIC_OTHERS) {
-                                    applinkCollection += "&${ApplinkConstInternalPurchasePlatform.PATH_SRC}=$SRC_WISHLIST_SHARING"
-                                } else {
-                                    applinkCollection += "&${ApplinkConstInternalPurchasePlatform.PATH_SRC}=$SRC_WISHLIST"
-                                }
-                                val intentBottomSheetWishlistCollection =
-                                    RouteManager.getIntent(context, applinkCollection)
-                                intentBottomSheetWishlistCollection.putExtra(
-                                    IS_PRODUCT_ACTIVE,
-                                    wishlistItem.available
-                                )
-                                startActivityForResult(
-                                    intentBottomSheetWishlistCollection,
-                                    ApplinkConstInternalPurchasePlatform.REQUEST_CODE_ADD_WISHLIST_COLLECTION
-                                )
+                                addToWishlist(wishlistItem, userSession.userId, collectionId)
                             }
                         }
                     }
@@ -1990,6 +1966,69 @@ class WishlistCollectionDetailFragment :
                 }
             })
         bottomSheetThreeDotsMenu.show(childFragmentManager)
+    }
+
+    private fun showWishlistCollectionHostBottomSheetActivity(wishlistItem: WishlistV2UiModel.Item, checkSourceWishlist: Boolean) {
+        var applinkCollection =
+            "${ApplinkConstInternalPurchasePlatform.WISHLIST_COLLECTION_BOTTOMSHEET}?${ApplinkConstInternalPurchasePlatform.PATH_PRODUCT_ID}=${wishlistItem.id}"
+        applinkCollection += if (collectionType == TYPE_COLLECTION_PUBLIC_OTHERS && checkSourceWishlist) {
+            "&${ApplinkConstInternalPurchasePlatform.PATH_SRC}=$SRC_WISHLIST_SHARING"
+        } else {
+            "&${ApplinkConstInternalPurchasePlatform.PATH_SRC}=$SRC_WISHLIST"
+        }
+        val intentBottomSheetWishlistCollection =
+            RouteManager.getIntent(context, applinkCollection)
+        intentBottomSheetWishlistCollection.putExtra(
+            IS_PRODUCT_ACTIVE,
+            wishlistItem.available
+        )
+        startActivityForResult(
+            intentBottomSheetWishlistCollection,
+            ApplinkConstInternalPurchasePlatform.REQUEST_CODE_ADD_WISHLIST_COLLECTION
+        )
+    }
+
+    private fun addToWishlist(wishlistItem: WishlistV2UiModel.Item, userId: String, collectionId: String) {
+        wishlistCollectionDetailViewModel.addWishListV2(
+            productId = wishlistItem.id,
+            userId = userId,
+            listener = object : WishlistV2ActionListener {
+                override fun onErrorAddWishList(throwable: Throwable, productId: String) {
+                    val errorMessage = ErrorHandler.getErrorMessage(context, throwable)
+                    showToasterActionOke(
+                        message = errorMessage,
+                        type = Toaster.TYPE_ERROR
+                    )
+                }
+
+                override fun onSuccessAddWishlist(
+                    result: AddToWishlistV2Response.Data.WishlistAddV2,
+                    productId: String
+                ) {
+                    if (result.success) {
+                        showWishlistCollectionHostBottomSheetActivity(wishlistItem, true)
+                    } else {
+                        showToasterWithCTA(
+                            message = result.message,
+                            actionText = result.button.text,
+                            type = Toaster.TYPE_ERROR
+                        ) {
+                            if (result.button.action == OPEN_WISHLIST) {
+                                goToWishlistCollectionDetailShowCleanerBottomSheet(COLLECTION_ID_SEMUA_WISHLIST)
+                            }
+                        }
+                    }
+                }
+
+                override fun onErrorRemoveWishlist(throwable: Throwable, productId: String) {}
+
+                override fun onSuccessRemoveWishlist(
+                    result: DeleteWishlistV2Response.Data.WishlistRemoveV2,
+                    productId: String
+                ) {}
+            },
+            sourceCollectionId = collectionId
+        )
     }
 
     private fun showBulkAddConfirmationDialog() {
