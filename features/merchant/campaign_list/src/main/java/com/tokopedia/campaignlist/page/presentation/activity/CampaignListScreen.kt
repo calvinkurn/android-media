@@ -1,4 +1,4 @@
-package com.tokopedia.campaignlist.page.presentation.fragment
+package com.tokopedia.campaignlist.page.presentation.activity
 
 import android.content.res.Configuration
 import androidx.compose.foundation.Image
