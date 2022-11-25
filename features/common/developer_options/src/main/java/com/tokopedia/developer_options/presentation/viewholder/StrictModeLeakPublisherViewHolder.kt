@@ -30,20 +30,20 @@ class StrictModeLeakPublisherViewHolder(
                 BaseActivity.MODE_PRIVATE
             )
             val cb = itemView.findViewById<CheckboxUnify>(R.id.strict_mode_cb)
-            if (GlobalConfig.isSellerApp()){
-                cb.isChecked = sharedPref.getBoolean(STRICT_MODE_LEAK_PUBLISHER_TOGGLE_KEY_SELLER, STRICT_MODE_LEAK_PUBLISHER_DEFAULT_TOGGLE)
+            cb.isChecked =  if (GlobalConfig.isSellerApp()){
+               sharedPref.getBoolean(STRICT_MODE_LEAK_PUBLISHER_TOGGLE_KEY_SELLER, STRICT_MODE_LEAK_PUBLISHER_DEFAULT_TOGGLE)
             }else{
-                cb.isChecked = sharedPref.getBoolean(STRICT_MODE_LEAK_PUBLISHER_TOGGLE_KEY, STRICT_MODE_LEAK_PUBLISHER_DEFAULT_TOGGLE)
+               sharedPref.getBoolean(STRICT_MODE_LEAK_PUBLISHER_TOGGLE_KEY, STRICT_MODE_LEAK_PUBLISHER_DEFAULT_TOGGLE)
             }
             cb.setOnCheckedChangeListener { _: CompoundButton, state: Boolean ->
-                if (GlobalConfig.isSellerApp()){
-                    val editor = sharedPref.edit().putBoolean(
+                val editor  = if (GlobalConfig.isSellerApp()){
+                   sharedPref.edit().putBoolean(
                         STRICT_MODE_LEAK_PUBLISHER_TOGGLE_KEY_SELLER, state)
-                    editor.apply()
                 }else{
-                    val editor = sharedPref.edit().putBoolean(STRICT_MODE_LEAK_PUBLISHER_TOGGLE_KEY, state)
-                    editor.apply()
+                    sharedPref.edit().putBoolean(STRICT_MODE_LEAK_PUBLISHER_TOGGLE_KEY, state)
                 }
+                editor.apply()
+
                 Toast.makeText(this, "Please Restart the App", Toast.LENGTH_SHORT).show()
             }
         }

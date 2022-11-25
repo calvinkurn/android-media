@@ -31,19 +31,18 @@ class LeakCanaryViewHolder(
                 BaseActivity.MODE_PRIVATE
             )
             val cb = itemView.findViewById<CheckboxUnify>(R.id.leak_canary_cb)
-            if (GlobalConfig.isSellerApp()){
-                cb.isChecked = sharedPref.getBoolean(LEAK_CANARY_TOGGLE_KEY_SELLER, LEAK_CANARY_DEFAULT_TOGGLE)
+            cb.isChecked = if (GlobalConfig.isSellerApp()){
+                sharedPref.getBoolean(LEAK_CANARY_TOGGLE_KEY_SELLER, LEAK_CANARY_DEFAULT_TOGGLE)
             }else{
-                cb.isChecked = sharedPref.getBoolean(LEAK_CANARY_TOGGLE_KEY, LEAK_CANARY_DEFAULT_TOGGLE)
+                sharedPref.getBoolean(LEAK_CANARY_TOGGLE_KEY, LEAK_CANARY_DEFAULT_TOGGLE)
             }
             cb.setOnCheckedChangeListener { _: CompoundButton, state: Boolean ->
-                if (GlobalConfig.isSellerApp()){
-                    val editor = sharedPref.edit().putBoolean(LEAK_CANARY_TOGGLE_KEY_SELLER, state)
-                    editor.apply()
+                val editor = if (GlobalConfig.isSellerApp()){
+                    sharedPref.edit().putBoolean(LEAK_CANARY_TOGGLE_KEY_SELLER, state)
                 }else{
-                    val editor = sharedPref.edit().putBoolean(LEAK_CANARY_TOGGLE_KEY, state)
-                    editor.apply()
+                    sharedPref.edit().putBoolean(LEAK_CANARY_TOGGLE_KEY, state)
                 }
+                editor.apply()
                 Toast.makeText(this, "Please Restart the App", Toast.LENGTH_SHORT).show()
             }
         }
