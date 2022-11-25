@@ -74,6 +74,10 @@ class CampaignListActivity : AppCompatActivity(), ShareBottomsheetListener {
         setupDependencyInjection()
         super.onCreate(savedInstanceState)
 
+        viewModel.checkTickerState()
+        viewModel.getSellerMetaData()
+        viewModel.getCampaignList()
+
         setContent {
             NestTheme {
                 CampaignListScreen(
