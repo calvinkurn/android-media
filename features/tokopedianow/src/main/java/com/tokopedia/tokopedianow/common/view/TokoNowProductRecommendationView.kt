@@ -9,6 +9,9 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.kotlin.extensions.view.showIfWithBlock
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
+import com.tokopedia.tokopedianow.common.constant.TokoNowProductRecommendationState
+import com.tokopedia.tokopedianow.common.constant.TokoNowProductRecommendationState.LOADED
+import com.tokopedia.tokopedianow.common.constant.TokoNowProductRecommendationState.LOADING
 import com.tokopedia.tokopedianow.common.di.component.DaggerCommonComponent
 import com.tokopedia.tokopedianow.common.listener.TokoNowProductRecommendationCallback
 import com.tokopedia.tokopedianow.common.model.TokoNowDynamicHeaderUiModel
@@ -38,6 +41,7 @@ class TokoNowProductRecommendationView @JvmOverloads constructor(
     private var viewModel: TokoNowProductRecommendationViewModel? = null
     private var listener: TokoNowProductRecommendationListener? = null
     private var requestParam: GetRecommendationRequestParam? = null
+    private var widgetState: TokoNowProductRecommendationState = LOADED
 
     init {
         initInjector()
@@ -97,31 +101,37 @@ class TokoNowProductRecommendationView @JvmOverloads constructor(
     }
 
     /**
-     * set data outside of this widget
+     * setting the state first if wanna change the state
+     * before setting the data to the items and header
+     * (data outside of this widget)
+     */
+    fun setState(state: TokoNowProductRecommendationState) {
+        widgetState = state
+        binding.productCardShimmering.root.showWithCondition(state == LOADING)
+    }
+
+    /**
+     * setting the data from outside of this widget
      */
     fun setItems(
         items: List<Visitable<*>> = listOf(),
         seeMoreModel: TokoNowSeeMoreCardCarouselUiModel? = null
     ) {
-        binding.productCardCarousel.bindItems(
-            items = items,
-            seeMoreModel = seeMoreModel
-        )
+        binding.productCardCarousel.showIfWithBlock(widgetState == LOADED) {
+            bindItems(
+                items = items,
+                seeMoreModel = seeMoreModel
+            )
+        }
     }
 
     /**
-     * set data via fetching gql
+     * setting the data from outside of this widget
      */
-    fun setRequestParam(
-        getRecommendationRequestParam: GetRecommendationRequestParam? = null
-    ) {
-        requestParam = getRecommendationRequestParam
-    }
-
     fun setHeader(
         header: TokoNowDynamicHeaderUiModel? = null
     ) {
-        binding.header.showIfWithBlock(header != null) {
+        binding.header.showIfWithBlock(header != null && widgetState == LOADED) {
             header?.apply {
                 setModel(this)
             }
@@ -141,6 +151,15 @@ class TokoNowProductRecommendationView @JvmOverloads constructor(
         binding.header.setListener(
             headerListener =  headerCarouselListener
         )
+    }
+
+    /**
+     * setting the data via fetching gql
+     */
+    fun setRequestParam(
+        getRecommendationRequestParam: GetRecommendationRequestParam? = null
+    ) {
+        requestParam = getRecommendationRequestParam
     }
 
     /**
