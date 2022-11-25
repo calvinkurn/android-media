@@ -11,9 +11,9 @@ import javax.inject.Inject
 
 class TickerStaticDataProvider @Inject constructor(private val resourceProvider: ResourceProvider) {
 
-    private val EXPIRED_DATE_TICKER_STOCK_AVAILABLE = "23/01/2023"
 
     private fun MutableList<TickerData>.addStockAvailableTicker() {
+        val EXPIRED_DATE_TICKER_STOCK_AVAILABLE:Long = 1674406800000 //23/01/2023
         if (!isExpiredTicker(EXPIRED_DATE_TICKER_STOCK_AVAILABLE)) {
             add(
                 TickerData(
@@ -93,12 +93,8 @@ class TickerStaticDataProvider @Inject constructor(private val resourceProvider:
         )
     )
 
-    private fun isExpiredTicker(expiredDate:String) : Boolean{
-        val expiredDateFormat = SimpleDateFormat("dd/MM/yyyy", Locale.getDefault())
-        val expiredCalendar = expiredDateFormat.parse(expiredDate).time
-
+    private fun isExpiredTicker(expiredDate:Long) : Boolean{
         val currentDate = Calendar.getInstance().timeInMillis
-
-        return currentDate > expiredCalendar
+        return currentDate > expiredDate
     }
 }
