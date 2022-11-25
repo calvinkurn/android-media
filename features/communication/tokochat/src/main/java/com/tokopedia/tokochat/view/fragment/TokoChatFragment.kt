@@ -37,6 +37,7 @@ import com.tokopedia.tokochat.databinding.TokochatChatroomFragmentBinding
 import com.tokopedia.tokochat.di.TokoChatComponent
 import com.tokopedia.tokochat.domain.response.orderprogress.TokoChatOrderProgressResponse
 import com.tokopedia.tokochat.util.TokoChatMediaCleanupStorageWorker
+import com.tokopedia.tokochat.util.TokoChatValueUtil.CHAT_CLOSED_CODE
 import com.tokopedia.tokochat.util.TokoChatValueUtil.NOTIFCENTER_NOTIFICATION_TEMPLATE_KEY
 import com.tokopedia.tokochat.view.bottomsheet.MaskingPhoneNumberBottomSheet
 import com.tokopedia.tokochat.view.bottomsheet.TokoChatGeneralUnavailableBottomSheet
@@ -670,14 +671,14 @@ class TokoChatFragment :
 
     override fun onGroupBookingChannelCreationError(error: ConversationsNetworkError) {
         removeShimmering()
-        var errorMessage = error.getErrorMessage()
-        if (errorMessage.isEmpty()) {
-            errorMessage = error.toString()
-            showSnackbarError(errorMessage)
+        val errorMessage = error.errorList.firstOrNull()?.code ?: ""
+        if (errorMessage.contains(CHAT_CLOSED_CODE, ignoreCase = true)) {
+            showUnavailableBottomSheet()
+        } else {
+            showGlobalErrorLayout(onActionClick = {
+                initializeChatRoom(null)
+            })
         }
-        showGlobalErrorLayout(onActionClick = {
-            initializeChatRoom(null)
-        })
     }
 
     override fun onGroupBookingChannelCreationStarted() {

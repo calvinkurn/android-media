@@ -9,6 +9,11 @@ object TokoChatValueUtil {
     const val STICKER = "gochat.sticker"
 
     /**
+     * Error values
+     */
+    const val CHAT_CLOSED_CODE = "CHAT:SERVICE:CHAT_CLOSED"
+
+    /**
      * Push Notif values
      */
     const val NOTIFCENTER_NOTIFICATION_TEMPLATE_KEY = "nc_template_key"
