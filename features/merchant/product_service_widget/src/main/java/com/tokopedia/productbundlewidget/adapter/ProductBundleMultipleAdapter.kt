@@ -37,7 +37,7 @@ class ProductBundleMultipleAdapter(
         val bundleProduct = bundleProducts.getOrNull(position) ?: BundleProductUiModel()
         when (holder) {
             is ProductBundleMultiplePackageViewHolder ->
-                holder.bind(Pair(bundleDetail.minOrder, bundleProduct), ::onViewImpression, ::onClickImpression)
+                holder.bind(bundleProduct, ::onViewImpression, ::onClickImpression)
             is ProductBundleMultiplePackageGroupViewHolder ->
                 holder.bind(bundleProductGrouped, ::onMoreProductClick)
         }

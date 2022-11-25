@@ -96,15 +96,12 @@ class ProductBundleWidgetUiMapper @Inject constructor(@ApplicationContext privat
     ): List<BundleDetailUiModel> {
         val bundlePrice = sumOf { it.getPreviewBundlePrice() }
         val originalPrice = sumOf { it.getPreviewOriginalPrice() }
-        var productCount = minOfOrNull { it.getPreviewMinOrder() }.orZero()
-        if (productCount.isZero()) productCount = MIN_DISPLAYED_PRODUCT_COUNT
         val preorder = getPreorderWording(context, bundleInfo.preorder)
         val productSoldInfo = bundleInfo.getProductSoldInfo()
 
         return listOf(
             initializeBundleDetail(originalPrice, bundlePrice, shopInfo, this).apply {
                 this.bundleId = bundleInfo.bundleID.toString()
-                this.minOrder = productCount
                 this.preOrderInfo = preorder.orEmpty()
                 this.isPreOrder = !preorder.isNullOrBlank()
                 this.useProductSoldInfo = productSoldInfo.isNotBlank()
@@ -132,7 +129,8 @@ class ProductBundleWidgetUiMapper @Inject constructor(@ApplicationContext privat
                     productId = it.productID.toString(),
                     productName = it.name,
                     productImageUrl = it.picURL,
-                    hasVariant = it.children.isNotEmpty()
+                    hasVariant = it.children.isNotEmpty(),
+                    productCount = it.getPreviewMinOrder()
                 )
             }
         )
