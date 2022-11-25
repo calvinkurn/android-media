@@ -98,6 +98,9 @@ class BroadMatchViewHolder(
                     discountPercentage = if (it.discountPercentage > 0) "${it.discountPercentage}%"
                                          else "",
                     slashedPrice = if (it.discountPercentage > 0) it.originalPrice else "",
+                    stockBarPercentage = it.stockBarDataView.percentageValue,
+                    stockBarLabel = it.stockBarDataView.value,
+                    stockBarLabelColor = it.stockBarDataView.color,
                 )
             },
             carouselProductCardOnItemClickListener = object : CarouselProductCardListener.OnItemClickListener {

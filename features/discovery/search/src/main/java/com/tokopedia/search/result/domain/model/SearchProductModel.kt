@@ -916,6 +916,10 @@ data class SearchProductModel(
             @SerializedName("min_order")
             @Expose
             val minOrder: String = "",
+
+            @SerializedName("stockbar")
+            @Expose
+            val stockBar: InspirationCarouselStockBar = InspirationCarouselStockBar(),
     ) {
         fun isOrganicAds(): Boolean = ads.id.isNotEmpty()
     }
@@ -954,6 +958,28 @@ data class SearchProductModel(
         @SerializedName("image_url")
         @Expose
         val imageUrl: String = ""
+    )
+
+    data class InspirationCarouselStockBar(
+        @SerializedName("stock")
+        @Expose
+        val stock: Int = 0,
+
+        @SerializedName("original_stock")
+        @Expose
+        val originalStock: Int = 0,
+
+        @SerializedName("percentage_value")
+        @Expose
+        val percentageValue: Int = 0,
+
+        @SerializedName("value")
+        @Expose
+        val value: String = "",
+
+        @SerializedName("color")
+        @Expose
+        val color: String = "",
     )
 
     data class InspirationCarouselCardButton(
