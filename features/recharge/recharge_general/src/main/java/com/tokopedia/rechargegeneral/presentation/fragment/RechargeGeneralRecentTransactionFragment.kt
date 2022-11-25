@@ -9,16 +9,19 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.common.topupbills.data.TopupBillsRecommendation
 import com.tokopedia.common.topupbills.view.model.TopupBillsTrackRecentTransaction
 import com.tokopedia.common.topupbills.widget.TopupBillsRecentNumberListener
-import com.tokopedia.rechargegeneral.R
+import com.tokopedia.rechargegeneral.databinding.FragmentRechargeGeneralRecommendationBinding
 import com.tokopedia.rechargegeneral.di.RechargeGeneralComponent
 import com.tokopedia.rechargegeneral.presentation.viewmodel.SharedRechargeGeneralViewModel
-import kotlinx.android.synthetic.main.fragment_recharge_general_recommendation.*
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
-class RechargeGeneralRecentTransactionFragment: BaseDaggerFragment(), TopupBillsRecentNumberListener {
+class RechargeGeneralRecentTransactionFragment : BaseDaggerFragment(), TopupBillsRecentNumberListener {
+
+    private var binding by autoClearedNullable<FragmentRechargeGeneralRecommendationBinding>()
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
     @Inject
     lateinit var viewModel: SharedRechargeGeneralViewModel
 
@@ -26,7 +29,8 @@ class RechargeGeneralRecentTransactionFragment: BaseDaggerFragment(), TopupBills
     private var showTitle = true
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_recharge_general_recommendation, container, false)
+        binding = FragmentRechargeGeneralRecommendationBinding.inflate(inflater, container, false)
+        return binding?.root
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -46,7 +50,7 @@ class RechargeGeneralRecentTransactionFragment: BaseDaggerFragment(), TopupBills
             showTitle = it.getBoolean(EXTRA_PARAM_SHOW_TITLE, true)
         }
 
-        with(recent_transaction_widget) {
+        binding?.recentTransactionWidget?.run {
             setListener(this@RechargeGeneralRecentTransactionFragment)
             if (::recommendationList.isInitialized && recommendationList.isNotEmpty()) {
                 setRecentNumbers(recommendationList)
@@ -61,7 +65,6 @@ class RechargeGeneralRecentTransactionFragment: BaseDaggerFragment(), TopupBills
     }
 
     override fun onTrackImpressionRecentList(topupBillsTrackRecentList: List<TopupBillsTrackRecentTransaction>) {
-
     }
 
     override fun getScreenName(): String {
@@ -85,5 +88,4 @@ class RechargeGeneralRecentTransactionFragment: BaseDaggerFragment(), TopupBills
             return fragment
         }
     }
-
 }

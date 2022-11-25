@@ -88,8 +88,6 @@ import com.tokopedia.unifycomponents.ticker.TickerPagerCallback
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-// import kotlinx.android.synthetic.main.fragment_recharge_general.*
-// import kotlinx.android.synthetic.main.view_recharge_general_product_input_info_bottom_sheet.view.*
 import javax.inject.Inject
 
 class RechargeGeneralFragment :
