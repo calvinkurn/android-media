@@ -59,6 +59,7 @@ object LeftCarouselMapper {
                     warehouseId = channelGrid.warehouseId,
                     campaignCode = channelGrid.campaignCode,
                     productCardModel = mapChannelGridToProductCard(channelGrid, miniCartData),
+                    categoryBreadcrumbs = channelGrid.categoryBreadcrumbs
                 )
             )
         }
@@ -87,7 +88,7 @@ object LeftCarouselMapper {
                 ctaText = "",
                 ctaTextLink = channelModel.channelHeader.applink,
                 expiredTime = channelModel.channelHeader.expiredTime,
-                serverTimeOffset = ServerTimeOffsetUtil.getServerTimeOffsetFromUnix(channelModel.channelHeader.serverTimeUnix),
+                serverTimeOffset = channelModel.channelConfig.serverTimeOffset,
                 backColor = channelModel.channelHeader.backColor
             ),
             productList = productList,

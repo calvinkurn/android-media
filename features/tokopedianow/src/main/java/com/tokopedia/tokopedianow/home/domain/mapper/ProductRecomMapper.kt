@@ -84,7 +84,7 @@ object ProductRecomMapper {
 
         val layout = HomeProductRecomUiModel(
             id = channelModel.id,
-            title = channelModel.name,
+            title = channelModel.channelHeader.name,
             productList = channelModel.channelGrids.map { channelGrid ->
                 TokoNowProductCardCarouselItemUiModel(
                     recomType = channelGrid.recommendationType,
@@ -95,7 +95,8 @@ object ProductRecomMapper {
                     shopType = getShopType(channelGrid.shop),
                     isTopAds = channelGrid.isTopads,
                     appLink = channelGrid.applink,
-                    parentId = channelGrid.parentProductId
+                    parentId = channelGrid.parentProductId,
+                    categoryBreadcrumbs = channelGrid.categoryBreadcrumbs
                 )
             },
             seeMoreModel = TokoNowSeeMoreCardCarouselUiModel(
@@ -109,7 +110,7 @@ object ProductRecomMapper {
                 ctaText = "",
                 ctaTextLink = channelModel.channelHeader.applink,
                 expiredTime = channelModel.channelHeader.expiredTime,
-                serverTimeOffset = ServerTimeOffsetUtil.getServerTimeOffsetFromUnix(channelModel.channelHeader.serverTimeUnix),
+                serverTimeOffset = channelModel.channelConfig.serverTimeOffset,
                 backColor = channelModel.channelHeader.backColor
             ),
             realTimeRecom = HomeRealTimeRecomUiModel(
