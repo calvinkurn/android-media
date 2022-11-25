@@ -592,7 +592,7 @@ class FeedViewModel @Inject constructor(
             }
             val result = shopRecomMapper.mapShopFollow(response)
             toggleFavoriteShopResp.value = Success(
-                FavoriteShopViewModel(
+                FavoriteShopModel(
                     rowNumber = rowNumber,
                     adapterPosition = adapterPosition,
                     shopId = shopId,
@@ -729,7 +729,7 @@ class FeedViewModel @Inject constructor(
         }
     }
 
-    private fun deletePost(id: String, rowNumber: Int): DeletePostViewModel {
+    private fun deletePost(id: String, rowNumber: Int): DeletePostModel {
         try {
             val data = DeletePostModel()
             data.id = id
