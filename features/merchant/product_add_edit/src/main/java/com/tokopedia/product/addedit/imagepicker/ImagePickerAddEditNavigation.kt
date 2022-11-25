@@ -9,13 +9,6 @@ import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalMedia
 import com.tokopedia.imagepicker.common.*
 import com.tokopedia.picker.common.*
-import com.tokopedia.picker.common.ImageRatioType
-import com.tokopedia.picker.common.types.EditorToolType.Companion.BRIGHTNESS
-import com.tokopedia.picker.common.types.EditorToolType.Companion.CONTRAST
-import com.tokopedia.picker.common.types.EditorToolType.Companion.CROP
-import com.tokopedia.picker.common.types.EditorToolType.Companion.REMOVE_BACKGROUND
-import com.tokopedia.picker.common.types.EditorToolType.Companion.ROTATE
-import com.tokopedia.picker.common.types.EditorToolType.Companion.WATERMARK
 import com.tokopedia.picker.common.types.ModeType
 import com.tokopedia.product.addedit.R
 import com.tokopedia.product.addedit.common.constant.AddEditProductConstants
@@ -25,7 +18,6 @@ import com.tokopedia.product.addedit.tracking.ProductAddEditImageTracking
 import com.tokopedia.product.addedit.tracking.ProductEditChooseImageTracking
 import com.tokopedia.product.addedit.tracking.ProductEditEditImageTracking
 import com.tokopedia.user.session.UserSession
-import java.io.File
 
 object ImagePickerAddEditNavigation {
     private const val NONE_VIDEO_UPLOAD =0
@@ -38,10 +30,28 @@ object ImagePickerAddEditNavigation {
         return intent
     }
 
-    fun getIntent(context: Context, maxImageCount: Int, source : PageSource, imageFile : ArrayList<String> = arrayListOf()): Intent {
+    fun getIntentMultiplePicker(context: Context, maxImageCount: Int, source : PageSource, imageFile : ArrayList<String> = arrayListOf()): Intent {
         return MediaPicker.intentWithGalleryFirst(context) {
             pageSource(source)
             multipleSelectionMode()
+            modeType(ModeType.IMAGE_ONLY)
+            maxMediaItem(maxImageCount)
+            maxVideoItem(NONE_VIDEO_UPLOAD)
+            cameraRatio(CameraRatio.Square)
+            includeMedias(imageFile)
+            withEditor {
+                autoCrop1to1()
+                createDefaultEditorTools()
+                withRemoveBackground()
+                withWatermark()
+            }
+        }
+    }
+
+    fun getIntentSinglePicker(context: Context, maxImageCount: Int, source : PageSource, imageFile : ArrayList<String> = arrayListOf()): Intent {
+        return MediaPicker.intentWithGalleryFirst(context) {
+            pageSource(source)
+            singleSelectionMode()
             modeType(ModeType.IMAGE_ONLY)
             maxMediaItem(maxImageCount)
             maxVideoItem(NONE_VIDEO_UPLOAD)

@@ -1060,7 +1060,7 @@ class AddEditProductVariantFragment :
     private fun showImagePickerForVariant(position: Int) {
         val ctx = context ?: return
         val pageSourceState = variantPhotoAdapter?.getAddOrEditPickerState(position)?:return
-        val intent = ImagePickerAddEditNavigation.getIntent(
+        val intent = ImagePickerAddEditNavigation.getIntentSinglePicker(
             ctx,
             MAX_IMAGE_VARIANT,
             pageSourceState
@@ -1436,7 +1436,7 @@ class AddEditProductVariantFragment :
 
     private fun showImagePickerSizeGuide(){
         val ctx = context ?: return
-        val intent = ImagePickerAddEditNavigation.getIntent(
+        val intent = ImagePickerAddEditNavigation.getIntentSinglePicker(
             ctx,
             MAX_IMAGE_VARIANT,
             PageSource.EditVariant

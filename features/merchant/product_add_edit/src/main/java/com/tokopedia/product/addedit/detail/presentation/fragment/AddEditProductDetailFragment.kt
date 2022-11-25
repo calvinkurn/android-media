@@ -118,9 +118,6 @@ import com.tokopedia.product.addedit.specification.presentation.activity.AddEdit
 import com.tokopedia.product.addedit.tooltip.model.NumericWithDescriptionTooltipModel
 import com.tokopedia.product.addedit.tooltip.presentation.TooltipBottomSheet
 import com.tokopedia.product.addedit.tracking.MediaImprovementTracker
-import com.tokopedia.product.addedit.tracking.MediaImprovementTracker.ADD_PRODUCT_ENTRY_POINT
-import com.tokopedia.product.addedit.tracking.MediaImprovementTracker.EDIT_PRODUCT_ENTRY_POINT
-import com.tokopedia.product.addedit.tracking.MediaImprovementTracker.sendTrackerImprovementOfMediaPicker
 import com.tokopedia.product.addedit.tracking.ProductAddMainTracking
 import com.tokopedia.product.addedit.tracking.ProductEditMainTracking
 import com.tokopedia.product.addedit.variant.presentation.activity.AddEditProductVariantDetailActivity
@@ -1418,7 +1415,7 @@ class AddEditProductDetailFragment : AddEditProductFragment(),
         if(RollanceUtil.getImagePickerRollence()) {
             val pageSource = if(!isEditing) PageSource.AddProduct else PageSource.EditProduct
             doTracking(isEditing)
-            val intent = ImagePickerAddEditNavigation.getIntent(
+            val intent = ImagePickerAddEditNavigation.getIntentMultiplePicker(
                 ctx,
                 maxProductPhotoCount,
                 pageSource,

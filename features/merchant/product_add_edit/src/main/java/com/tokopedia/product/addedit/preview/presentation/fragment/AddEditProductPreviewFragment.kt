@@ -1399,7 +1399,7 @@ class AddEditProductPreviewFragment :
             if (RollanceUtil.getImagePickerRollence()) {
                 val pageSource = if(!isEditing()) PageSource.AddProduct else PageSource.EditProduct
                 doTracking(isEditing())
-                val intent = ImagePickerAddEditNavigation.getIntent(
+                val intent = ImagePickerAddEditNavigation.getIntentMultiplePicker(
                     requireContext(), maxProductPhotoCount,
                     pageSource,
                     ArrayList(imageUrlOrPathList)
