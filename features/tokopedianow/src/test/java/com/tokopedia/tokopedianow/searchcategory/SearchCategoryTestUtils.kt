@@ -27,6 +27,7 @@ import com.tokopedia.tokopedianow.searchcategory.presentation.model.TokoNowFeedb
 import org.hamcrest.CoreMatchers.instanceOf
 import org.hamcrest.CoreMatchers.notNullValue
 import org.hamcrest.CoreMatchers.nullValue
+import org.junit.Assert
 import org.junit.Assert.assertThat
 import java.io.File
 import org.hamcrest.CoreMatchers.`is` as shouldBe
@@ -220,4 +221,9 @@ fun assertTokonowRecommendationCarouselRequestParams(
     assertThat(getRecommendationRequestParam.isTokonow, shouldBe(true))
     assertThat(getRecommendationRequestParam.pageNumber, shouldBe(PAGE_NUMBER_RECOM_WIDGET))
     assertThat(getRecommendationRequestParam.xDevice, shouldBe(DEFAULT_VALUE_OF_PARAMETER_DEVICE))
+}
+
+fun List<Visitable<*>>.assertNotProductFeedbackWidget(){
+   val tempList = this.filterIsInstance<TokoNowFeedbackWidgetUiModel>()
+    Assert.assertEquals(tempList.size,0)
 }

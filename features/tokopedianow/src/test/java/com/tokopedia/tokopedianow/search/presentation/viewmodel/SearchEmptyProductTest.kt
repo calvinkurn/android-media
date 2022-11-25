@@ -18,7 +18,7 @@ class SearchEmptyProductTest: SearchTestFixtures(), EmptyProductTestHelper.Callb
     }
 
     override fun `Given first page product list is empty`(feedbackFieldToggle:Boolean) {
-        var emptyProductModel = "search/emptyproduct/empty-product.json".jsonToObject<SearchModel>()
+        val emptyProductModel = "search/emptyproduct/empty-product.json".jsonToObject<SearchModel>()
         if(feedbackFieldToggle)
             emptyProductModel.feedbackFieldToggle.tokonowFeedbackFieldToggle.data.isActive = true
         `Given get search first page use case will be successful`(emptyProductModel)
