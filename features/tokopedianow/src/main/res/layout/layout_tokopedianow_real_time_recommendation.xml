@@ -57,7 +57,7 @@
         app:srcCompat="@drawable/iconunify_close"
         app:tint="@color/Unify_NN950" />
 
-    <com.tokopedia.tokopedianow.common.view.productcard.TokoNowProductCardCarouselView
+    <com.tokopedia.tokopedianow.common.view.TokoNowProductRecommendationView
         android:id="@+id/product_carousel"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
