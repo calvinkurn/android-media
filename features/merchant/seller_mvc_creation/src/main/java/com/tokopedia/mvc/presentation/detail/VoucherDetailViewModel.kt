@@ -6,6 +6,7 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
+import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.mvc.domain.entity.VoucherDetailData
 import com.tokopedia.mvc.domain.entity.enums.VoucherStatus
 import com.tokopedia.mvc.domain.usecase.MerchantPromotionGetMVDataByIDUseCase
@@ -15,7 +16,6 @@ import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import javax.inject.Inject
-import kotlin.math.roundToInt
 
 class VoucherDetailViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
@@ -51,10 +51,10 @@ class VoucherDetailViewModel @Inject constructor(
     }
 
     fun getPercentage(value: Long, total: Long): Int {
-        return try {
-            ((value.toDouble() / total.toDouble()) * DEFAULT_PERCENTAGE_NORMALIZATION).roundToInt()
-        } catch (t: Throwable) {
+        return if (total.isZero()) {
             Int.ZERO
+        } else {
+            ((value / total) * DEFAULT_PERCENTAGE_NORMALIZATION).toInt()
         }
     }
 
