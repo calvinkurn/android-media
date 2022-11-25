@@ -1,6 +1,7 @@
 package com.tokopedia.tokopedianow.similarproduct.di.component
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
+import com.tokopedia.tokopedianow.similarproduct.bottomsheet.TokoNowSimilarSimilarProductBottomSheet
 import com.tokopedia.tokopedianow.similarproduct.di.module.SimilarProductModule
 import com.tokopedia.tokopedianow.similarproduct.di.module.SimilarProductViewModelModule
 import com.tokopedia.tokopedianow.similarproduct.di.scope.SimilarProductScope
@@ -17,4 +18,5 @@ import dagger.Component
 )
 interface SimilarProductComponent {
     fun inject(fragment: TokoNowSimilarProductFragment)
+    fun inject(bottomsheet: TokoNowSimilarSimilarProductBottomSheet)
 }

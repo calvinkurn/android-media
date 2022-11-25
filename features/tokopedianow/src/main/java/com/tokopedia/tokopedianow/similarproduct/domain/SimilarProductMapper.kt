@@ -14,6 +14,7 @@ object SimilarProductMapper {
                         SimilarProductUiModel(
                             id = product.id.toString(),
                             shopId = product.shop?.id.toString(),
+                            shopName = product.shop?.name.toString(),
                             name = product.name.toString(),
                             stock = stock,
                             minOrder = product.wholesalePrice?.firstOrNull()?.quantityMin?:1,

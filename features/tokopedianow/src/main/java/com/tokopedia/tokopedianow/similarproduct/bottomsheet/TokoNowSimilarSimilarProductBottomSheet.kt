@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -20,41 +21,53 @@ import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.util.BottomSheetUtil.configureMaxHeight
 import com.tokopedia.tokopedianow.databinding.BottomsheetTokopedianowSimilarProductsBinding
+import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ProductItemListener
+import com.tokopedia.tokopedianow.searchcategory.utils.ChooseAddressWrapper
 import com.tokopedia.tokopedianow.similarproduct.adapter.SimilarProductAdapter
 import com.tokopedia.tokopedianow.similarproduct.adapter.SimilarProductAdapterTypeFactory
-import com.tokopedia.tokopedianow.similarproduct.analytic.ProductAnalytics
+import com.tokopedia.tokopedianow.similarproduct.analytic.SimilarProductAnalytics
+import com.tokopedia.tokopedianow.similarproduct.di.component.DaggerSimilarProductComponent
 import com.tokopedia.tokopedianow.similarproduct.model.SimilarProductUiModel
 import com.tokopedia.tokopedianow.similarproduct.viewholder.SimilarProductViewHolder
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import javax.inject.Inject
 
-class TokoNowSimilarProductBottomSheet : BottomSheetUnify() {
+class TokoNowSimilarSimilarProductBottomSheet : BottomSheetUnify(), SimilarProductAnalytics {
 
     companion object {
 
-        fun newInstance(): TokoNowSimilarProductBottomSheet {
-            return TokoNowSimilarProductBottomSheet()
+        fun newInstance(): TokoNowSimilarSimilarProductBottomSheet {
+            return TokoNowSimilarSimilarProductBottomSheet()
         }
 
-        private val TAG: String = TokoNowSimilarProductBottomSheet::class.java.simpleName
+        private val TAG: String = TokoNowSimilarSimilarProductBottomSheet::class.java.simpleName
     }
 
+    var triggerProductId = ""
     var items: List<Visitable<*>> = emptyList()
         set(value) {
             field = value
             submitList(value)
         }
     var productListener: SimilarProductViewHolder.SimilarProductListener? = null
-    var productAnalytics: ProductAnalytics? = null
+
+    private var listener: ProductItemListener? = null
 
     private var binding by autoClearedNullable<BottomsheetTokopedianowSimilarProductsBinding>()
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
+
+    @Inject
+    lateinit var chooseAddressWrapper: ChooseAddressWrapper
 
     private val adapter by lazy {
         SimilarProductAdapter(
             SimilarProductAdapterTypeFactory(
                 productListener = productListener,
-                productAnalytics = productAnalytics
             )
         )
     }
@@ -72,6 +85,7 @@ class TokoNowSimilarProductBottomSheet : BottomSheetUnify() {
         binding = BottomsheetTokopedianowSimilarProductsBinding.inflate(LayoutInflater.from(context))
         setChild(binding?.root)
         configureBottomSheet()
+        injectDependencies()
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
@@ -121,11 +135,15 @@ class TokoNowSimilarProductBottomSheet : BottomSheetUnify() {
         isDragable = true
         isHideable = true
         showKnob = true
+        setCloseClickListener {
+            listener?.trackClickCloseBottomsheet(chooseAddressWrapper.getChooseAddressData().warehouse_id, triggerProductId, items as ArrayList<SimilarProductUiModel>)
+            dismiss()
+        }
     }
 
     private fun setupRecyclerView() {
         binding?.recyclerView?.apply {
-            adapter = this@TokoNowSimilarProductBottomSheet.adapter
+            adapter = this@TokoNowSimilarSimilarProductBottomSheet.adapter
             layoutManager = LinearLayoutManager(context)
         }
         submitList(items)
@@ -211,6 +229,29 @@ class TokoNowSimilarProductBottomSheet : BottomSheetUnify() {
         indexList.forEach {
             adapter.notifyItemChanged(it)
         }
+    }
+
+    override fun trackClickProduct(
+        product: SimilarProductUiModel
+    ) {
+        listener?.trackClickProduct(userSession.userId.toString(), chooseAddressWrapper.getChooseAddressData().warehouse_id, product.id, items as ArrayList<SimilarProductUiModel>)
+    }
+
+    override fun trackClickAddToCart(
+        product: SimilarProductUiModel
+    ) {
+        listener?.trackClickAddToCart(userSession.userId.toString(), chooseAddressWrapper.getChooseAddressData().warehouse_id, product, items as ArrayList<SimilarProductUiModel>)
+    }
+
+    fun setListener(listener: ProductItemListener?){
+        this.listener = listener
+    }
+
+    private fun injectDependencies() {
+        DaggerSimilarProductComponent.builder()
+            .baseAppComponent((requireContext().applicationContext as BaseMainApplication).baseAppComponent)
+            .build()
+            .inject(this)
     }
 
 }

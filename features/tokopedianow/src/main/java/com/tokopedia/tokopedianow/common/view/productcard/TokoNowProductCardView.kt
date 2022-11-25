@@ -30,6 +30,7 @@ import com.tokopedia.tokopedianow.common.model.TokoNowProductCardViewUiModel
 import com.tokopedia.tokopedianow.common.util.ViewUtil.getDpFromDimen
 import com.tokopedia.tokopedianow.common.util.ViewUtil.safeParseColor
 import com.tokopedia.tokopedianow.databinding.LayoutTokopedianowProductCardViewBinding
+import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ProductItemListener
 import com.tokopedia.tokopedianow.similarproduct.activity.TokoNowSimilarProductActivity
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.ProgressBarUnify
@@ -46,6 +47,7 @@ class TokoNowProductCardView @JvmOverloads constructor(
         private const val BOUND_DEFAULT_VALUE = 0
     }
 
+    private var listener: ProductItemListener? = null
     private var binding: LayoutTokopedianowProductCardViewBinding
 
     init {
@@ -237,7 +239,8 @@ class TokoNowProductCardView @JvmOverloads constructor(
                 )
             )
             setOnClickListener {
-                val intent = TokoNowSimilarProductActivity.createNewIntent(context, productId)
+                listener?.trackClickSimilarProductBtn(productId)
+                val intent = TokoNowSimilarProductActivity.createNewIntent(context, productId, listener)
                 context.startActivity(intent)
             }
         }
@@ -512,5 +515,9 @@ class TokoNowProductCardView @JvmOverloads constructor(
         onAnimationFinished: (Int) -> Unit
     ) {
         binding.quantityEditor.onAnimationFinished = onAnimationFinished
+    }
+
+    fun setListeners(listener: ProductItemListener){
+        this.listener = listener
     }
 }

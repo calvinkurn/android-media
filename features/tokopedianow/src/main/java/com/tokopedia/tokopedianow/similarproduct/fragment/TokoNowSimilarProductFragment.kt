@@ -18,9 +18,10 @@ import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
 import com.tokopedia.tokopedianow.R
+import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ProductItemListener
+import com.tokopedia.tokopedianow.searchcategory.utils.ChooseAddressWrapper
 import com.tokopedia.tokopedianow.similarproduct.activity.TokoNowSimilarProductActivity.Companion.EXTRA_SIMILAR_PRODUCT_ID
-import com.tokopedia.tokopedianow.similarproduct.analytic.SimilarProductAnalytics
-import com.tokopedia.tokopedianow.similarproduct.bottomsheet.TokoNowSimilarProductBottomSheet
+import com.tokopedia.tokopedianow.similarproduct.bottomsheet.TokoNowSimilarSimilarProductBottomSheet
 import com.tokopedia.tokopedianow.similarproduct.di.component.DaggerSimilarProductComponent
 import com.tokopedia.tokopedianow.similarproduct.domain.SimilarProductMapper
 import com.tokopedia.tokopedianow.similarproduct.model.SimilarProductUiModel
@@ -47,18 +48,20 @@ class TokoNowSimilarProductFragment : Fragment(), SimilarProductViewHolder.Simil
         }
     }
 
+    private var listener: ProductItemListener? = null
+
     @Inject
     lateinit var userSession: UserSessionInterface
 
     @Inject
     lateinit var viewModel : TokoNowSimilarProductViewModel
 
-    private val analytics by lazy { SimilarProductAnalytics(userSession) }
+    @Inject
+    lateinit var chooseAddressWrapper: ChooseAddressWrapper
 
     private val productList = ArrayList<SimilarProductUiModel>()
 
-    private var bottomSheet: TokoNowSimilarProductBottomSheet? = null
-
+    private var bottomSheet: TokoNowSimilarSimilarProductBottomSheet? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -73,7 +76,6 @@ class TokoNowSimilarProductFragment : Fragment(), SimilarProductViewHolder.Simil
         observeLiveData()
         super.onViewCreated(view, savedInstanceState)
         setupBottomSheet()
-        trackImpression()
 
         arguments?.getString(EXTRA_SIMILAR_PRODUCT_ID, "")?.let {
             viewModel.getSimilarProductList(userSession.userId.toIntOrZero(),
@@ -85,6 +87,10 @@ class TokoNowSimilarProductFragment : Fragment(), SimilarProductViewHolder.Simil
     override fun onAttach(context: Context) {
         injectDependencies()
         super.onAttach(context)
+    }
+
+    fun setListener(listener: ProductItemListener?){
+        this.listener = listener
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -126,14 +132,15 @@ class TokoNowSimilarProductFragment : Fragment(), SimilarProductViewHolder.Simil
     private fun setupBottomSheet() {
         val title = getString(R.string.tokopedianow_recipe_similar_product_title)
 
-        bottomSheet = TokoNowSimilarProductBottomSheet.newInstance().apply {
+        bottomSheet = TokoNowSimilarSimilarProductBottomSheet.newInstance().apply {
             productListener = this@TokoNowSimilarProductFragment
-            productAnalytics = analytics
             items = emptyList()
             setTitle(title)
+            triggerProductId = arguments?.getString(EXTRA_SIMILAR_PRODUCT_ID, "").toString()
         }
 
         bottomSheet?.show(childFragmentManager)
+        bottomSheet?.setListener(listener)
     }
 
     private fun observeLiveData() {
@@ -156,6 +163,8 @@ class TokoNowSimilarProductFragment : Fragment(), SimilarProductViewHolder.Simil
                 // show no products ui
                 bottomSheet?.showEmptyProductListUi()
             }
+            trackImpression()
+
         })
         observe(viewModel.visitableItems) {
             bottomSheet?.items = it
@@ -191,11 +200,13 @@ class TokoNowSimilarProductFragment : Fragment(), SimilarProductViewHolder.Simil
                     val data = it.data
                     val indexList = arrayListOf<Int>()
                     data.miniCartItems.values.forEach {
-                        val cartProduct = (it as MiniCartItem.MiniCartItemProduct)
-                        val index = productList.indexOfFirst { it.id == cartProduct.productId }
-                        if(index != -1){
-                            indexList.add(index)
-                            productList[index].quantity = cartProduct.quantity
+                        if(it is MiniCartItem.MiniCartItemProduct){
+                            val cartProduct = it
+                            val index = productList.indexOfFirst { it.id == cartProduct.productId }
+                            if(index != -1){
+                                indexList.add(index)
+                                productList[index].quantity = cartProduct.quantity
+                            }
                         }
                     }
                     bottomSheet?.updateList(indexList)
@@ -254,7 +265,21 @@ class TokoNowSimilarProductFragment : Fragment(), SimilarProductViewHolder.Simil
     }
 
     private fun trackImpression() {
-        analytics.trackImpressionBottomSheet()
+            if(productList.isNotEmpty()) {
+                listener?.trackImpressionBottomSheet(
+                    userSession.userId,
+                    warehouseId = chooseAddressWrapper.getChooseAddressData().warehouse_id,
+                    productId = arguments?.getString(EXTRA_SIMILAR_PRODUCT_ID, "")
+                        .toString(),
+                    similarProducts = productList,
+                )
+            }
+            else{
+                listener?.trackImpressionEmptyState(
+                    chooseAddressWrapper.getChooseAddressData().warehouse_id,
+                    arguments?.getString(EXTRA_SIMILAR_PRODUCT_ID, "").toString()
+                )
+            }
     }
 
     private fun injectDependencies() {

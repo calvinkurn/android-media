@@ -41,20 +41,22 @@ import com.tokopedia.tokopedianow.category.presentation.typefactory.CategoryType
 import com.tokopedia.tokopedianow.category.presentation.viewmodel.TokoNowCategoryViewModel
 import com.tokopedia.tokopedianow.category.utils.RECOM_QUERY_PARAM_CATEGORY_ID
 import com.tokopedia.tokopedianow.category.utils.RECOM_QUERY_PARAM_REF
+import com.tokopedia.tokopedianow.common.model.ShareTokonow
+import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
+import com.tokopedia.tokopedianow.common.util.StringUtil.getOrDefaultZeroString
 import com.tokopedia.tokopedianow.common.util.TokoNowUniversalShareUtil
 import com.tokopedia.tokopedianow.common.util.TokoNowUniversalShareUtil.shareRequest
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowCategoryGridViewHolder
-import com.tokopedia.tokopedianow.common.model.ShareTokonow
-import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
-import com.tokopedia.tokopedianow.common.util.StringUtil.getOrDefaultZeroString
 import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment
 import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst.Misc.VALUE_LIST_OOC
 import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst.Misc.VALUE_TOPADS
 import com.tokopedia.tokopedianow.searchcategory.data.model.QuerySafeModel
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.view.BaseSearchCategoryFragment
+import com.tokopedia.tokopedianow.searchcategory.utils.ChooseAddressWrapper
 import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW_DIRECTORY
+import com.tokopedia.tokopedianow.similarproduct.model.SimilarProductUiModel
 import com.tokopedia.universal_sharing.view.bottomsheet.ScreenshotDetector
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.PermissionListener
@@ -100,6 +102,9 @@ class TokoNowCategoryFragment:
     private var shareCategoryTokonow: ShareTokonow? = null
     private var categoryIdLvl2 = ""
     private var categoryIdLvl3 = ""
+
+    @Inject
+    lateinit var chooseAddressWrapper: ChooseAddressWrapper
 
     override val toolbarPageName = "TokoNow Category"
 
@@ -225,6 +230,49 @@ class TokoNowCategoryFragment:
                 getUserId(),
                 getViewModel().categoryIdTracking,
         )
+    }
+
+    override fun trackClickSimilarProductBtn(productId: String) {
+        CategoryTracking.trackClickSimilarProductBtn(chooseAddressWrapper.getChooseAddressData().warehouse_id, productId, userSession.userId.toString())
+    }
+
+    override fun trackImpressionBottomSheet(
+        userId: String,
+        warehouseId: String,
+        productId: String,
+        similarProducts: ArrayList<SimilarProductUiModel>,
+    ) {
+        CategoryTracking.trackImpressionBottomSheet(warehouseId, productId, similarProducts, userId)
+    }
+
+    override fun trackClickProduct(
+        userId: String,
+        warehouseId: String,
+        productId: String,
+        similarProducts: ArrayList<SimilarProductUiModel>
+    ) {
+        CategoryTracking.trackClickProduct(warehouseId, productId, similarProducts, userId)
+    }
+
+    override fun trackClickAddToCart(
+        userId: String,
+        warehouseId: String,
+        product: SimilarProductUiModel,
+        similarProducts: ArrayList<SimilarProductUiModel>
+    ) {
+        CategoryTracking.trackClickAddToCart(userId, warehouseId, product, similarProducts)
+    }
+
+    override fun trackClickCloseBottomsheet(
+        warehouseId: String,
+        productId: String,
+        similarProducts: ArrayList<SimilarProductUiModel>
+    ) {
+        CategoryTracking.trackClickCloseBottomsheet(warehouseId, productId, similarProducts, userSession.userId.toString())
+    }
+
+    override fun trackImpressionEmptyState(warehouseId: String, productId: String) {
+        CategoryTracking.trackImpressionEmptyState(warehouseId, productId, userSession.userId.toString())
     }
 
     override fun screenShotTaken() {

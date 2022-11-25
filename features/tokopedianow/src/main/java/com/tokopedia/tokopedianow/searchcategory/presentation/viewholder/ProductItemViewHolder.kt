@@ -54,6 +54,7 @@ class ProductItemViewHolder(
                     productItemDataView = element
                 )
             }
+            setListeners(listener)
         }
     }
 }

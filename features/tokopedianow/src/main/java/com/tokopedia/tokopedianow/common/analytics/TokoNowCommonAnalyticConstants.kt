@@ -8,6 +8,8 @@ object TokoNowCommonAnalyticConstants {
         const val EVENT_VIEW_TOKONOW_IRIS = "viewTokoNowIris"
         const val EVENT_CLICK_TOKONOW = "clickTokoNow"
         const val EVENT_CLICK_PG = "clickPG"
+        const val EVENT_CLICK_GROCERIES = "clickGroceries"
+        const val EVENT_VIEW_GROCERIES = "viewGroceriesIris"
         const val EVENT_SELECT_CONTENT = "select_content"
         const val EVENT_VIEW_ITEM = "view_item"
         const val EVENT_VIEW_ITEM_LIST = "view_item_list"
@@ -30,6 +32,8 @@ object TokoNowCommonAnalyticConstants {
     object CATEGORY{
         const val EVENT_CATEGORY_TOP_NAV = "tokonow - top nav"
         const val EVENT_CATEGORY_TOKOPEDIA_NOW = "tokopedia now"
+        const val EVENT_CATEGORY_TOKOPEDIA_NOW_SEARCH = "tokonow - search result"
+        const val EVENT_CATEGORY_TOKOPEDIA_CATEGORY_PAGE = "tokonow category page"
         const val EVENT_CATEGORY_TOP_NAV_TOKOPEDIA_NOW = "top nav - tokopedia now"
     }
 
@@ -54,6 +58,7 @@ object TokoNowCommonAnalyticConstants {
         const val KEY_SHOP_TYPE = "shop_type"
         const val KEY_USER_ID = "userId"
         const val KEY_PRODUCT_ID = "productId"
+        const val KEY_TRACKER_ID = "trackerId"
         const val KEY_CATEGORY_ID = "category_id"
         const val KEY_CHANNEL_ID = "channelId"
         const val KEY_CAMPAIGN_CODE = "campaignCode"

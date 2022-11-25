@@ -10,6 +10,7 @@ import kotlinx.parcelize.Parcelize
 data class SimilarProductUiModel(
     val id: String,
     val shopId: String,
+    val shopName: String,
     val name: String,
     var quantity: Int = 0,
     val stock: Int,
