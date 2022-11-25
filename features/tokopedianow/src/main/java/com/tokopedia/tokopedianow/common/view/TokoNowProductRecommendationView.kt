@@ -9,6 +9,9 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.kotlin.extensions.view.showIfWithBlock
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
+import com.tokopedia.tokopedianow.common.constant.TokoNowProductRecommendationState
+import com.tokopedia.tokopedianow.common.constant.TokoNowProductRecommendationState.LOADED
+import com.tokopedia.tokopedianow.common.constant.TokoNowProductRecommendationState.LOADING
 import com.tokopedia.tokopedianow.common.di.component.DaggerCommonComponent
 import com.tokopedia.tokopedianow.common.listener.TokoNowProductRecommendationCallback
 import com.tokopedia.tokopedianow.common.model.TokoNowDynamicHeaderUiModel
@@ -97,31 +100,22 @@ class TokoNowProductRecommendationView @JvmOverloads constructor(
     }
 
     /**
-     * set data outside of this widget
+     * setting the data from outside of this widget
      */
-    fun setItems(
+    fun bind(
         items: List<Visitable<*>> = listOf(),
-        seeMoreModel: TokoNowSeeMoreCardCarouselUiModel? = null
+        seeMoreModel: TokoNowSeeMoreCardCarouselUiModel? = null,
+        header: TokoNowDynamicHeaderUiModel? = null,
+        state: TokoNowProductRecommendationState = LOADED
     ) {
-        binding.productCardCarousel.bindItems(
-            items = items,
-            seeMoreModel = seeMoreModel
-        )
-    }
-
-    /**
-     * set data via fetching gql
-     */
-    fun setRequestParam(
-        getRecommendationRequestParam: GetRecommendationRequestParam? = null
-    ) {
-        requestParam = getRecommendationRequestParam
-    }
-
-    fun setHeader(
-        header: TokoNowDynamicHeaderUiModel? = null
-    ) {
-        binding.header.showIfWithBlock(header != null) {
+        binding.productCardShimmering.root.showWithCondition(state == LOADING)
+        binding.productCardCarousel.showIfWithBlock(state == LOADED) {
+            bindItems(
+                items = items,
+                seeMoreModel = seeMoreModel
+            )
+        }
+        binding.header.showIfWithBlock(header != null && state == LOADED) {
             header?.apply {
                 setModel(this)
             }
@@ -141,6 +135,15 @@ class TokoNowProductRecommendationView @JvmOverloads constructor(
         binding.header.setListener(
             headerListener =  headerCarouselListener
         )
+    }
+
+    /**
+     * setting the data via fetching gql
+     */
+    fun setRequestParam(
+        getRecommendationRequestParam: GetRecommendationRequestParam? = null
+    ) {
+        requestParam = getRecommendationRequestParam
     }
 
     /**

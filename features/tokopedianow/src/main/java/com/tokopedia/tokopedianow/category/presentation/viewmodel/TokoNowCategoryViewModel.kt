@@ -12,7 +12,6 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
-import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.TOKONOW_CLP
 import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.TOKONOW_NO_RESULT
 import com.tokopedia.tokopedianow.category.analytics.CategoryTracking.Misc.PREFIX_ALL
@@ -76,7 +75,6 @@ class TokoNowCategoryViewModel @Inject constructor (
     getMiniCartListSimplifiedUseCase: GetMiniCartListSimplifiedUseCase,
     cartService: CartService,
     getWarehouseUseCase: GetChosenAddressWarehouseLocUseCase,
-    getRecommendationUseCase: GetRecommendationUseCase,
     private val getCategoryListUseCase: GetCategoryListUseCase,
     setUserPreferenceUseCase: SetUserPreferenceUseCase,
     chooseAddressWrapper: ChooseAddressWrapper,

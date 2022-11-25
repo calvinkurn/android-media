@@ -37,11 +37,9 @@ class HomeProductRecomViewHolder(
             channelId = element.id
             headerName = element.headerModel?.title.orEmpty()
 
-            productRecommendation.setItems(
+            productRecommendation.bind(
                 items = element.productList,
-                seeMoreModel = element.seeMoreModel
-            )
-            productRecommendation.setHeader(
+                seeMoreModel = element.seeMoreModel,
                 header = element.headerModel
             )
             productRecommendation.setListener(
@@ -53,9 +51,10 @@ class HomeProductRecomViewHolder(
 
     override fun bind(element: HomeProductRecomUiModel?, payloads: MutableList<Any>) {
         if (payloads.firstOrNull() == true && element != null) {
-            binding?.productRecommendation?.setItems(
+            binding?.productRecommendation?.bind(
                 items = element.productList,
-                seeMoreModel = element.seeMoreModel
+                seeMoreModel = element.seeMoreModel,
+                header = element.headerModel
             )
         }
     }
