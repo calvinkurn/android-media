@@ -70,31 +70,31 @@
         </LinearLayout>
 
 
-        <LinearLayout
-            android:id="@+id/fav_area"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_centerVertical="true"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
+<!--        <LinearLayout-->
+<!--            android:id="@+id/fav_area"-->
+<!--            android:layout_width="wrap_content"-->
+<!--            android:layout_height="wrap_content"-->
+<!--            android:layout_alignParentEnd="true"-->
+<!--            android:layout_centerVertical="true"-->
+<!--            android:gravity="center_vertical"-->
+<!--            android:orientation="horizontal">-->
 
-            <View
-                android:layout_width="0.5dp"
-                android:layout_height="@dimen/img_thumb_m"
-                android:layout_marginEnd="@dimen/margin_small"
-                android:background="@color/Unify_N300" />
+<!--            <View-->
+<!--                android:layout_width="0.5dp"-->
+<!--                android:layout_height="@dimen/img_thumb_m"-->
+<!--                android:layout_marginEnd="@dimen/margin_small"-->
+<!--                android:background="@color/Unify_N300" />-->
 
-            <ImageView
-                android:id="@+id/fav_button"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:paddingLeft="@dimen/padding_small"
-                android:paddingRight="@dimen/padding_small"
-                app:srcCompat="@drawable/ic_fav"
-                android:contentDescription="@string/home_fav_store"/>
-        </LinearLayout>
+<!--            <ImageView-->
+<!--                android:id="@+id/fav_button"-->
+<!--                android:layout_width="wrap_content"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:gravity="center"-->
+<!--                android:paddingLeft="@dimen/padding_small"-->
+<!--                android:paddingRight="@dimen/padding_small"-->
+<!--                app:srcCompat="@drawable/ic_fav"-->
+<!--                android:contentDescription="@string/home_fav_store"/>-->
+<!--        </LinearLayout>-->
 
     </RelativeLayout>
 

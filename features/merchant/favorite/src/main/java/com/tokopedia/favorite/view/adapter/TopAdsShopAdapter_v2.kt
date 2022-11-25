@@ -114,8 +114,8 @@ class TopAdsShopAdapter_v2 (
             productShopBadge.shouldShowWithAction(isImageShopBadgeVisible) {
                 when {
                     shopProductModelItem.isOfficial -> productShopBadge.loadImage(R.drawable.ic_official_store)
-                    shopProductModelItem.isPMPro -> productShopBadge.loadImage(com.tokopedia.shopwidget.R.drawable.shopwidget_ic_pm_pro)
-                    shopProductModelItem.isGoldShop -> productShopBadge.loadImage(com.tokopedia.gm.common.R.drawable.ic_power_merchant)
+                    shopProductModelItem.isPMPro -> productShopBadge.loadImage(R.drawable.shopwidget_ic_pm_pro)
+                    shopProductModelItem.isGoldShop -> productShopBadge.loadImage(R.drawable.ic_power_merchant)
                 }
             }
         }
