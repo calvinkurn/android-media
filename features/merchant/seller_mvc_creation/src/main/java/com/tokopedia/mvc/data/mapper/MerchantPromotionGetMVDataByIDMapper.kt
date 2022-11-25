@@ -1,0 +1,82 @@
+package com.tokopedia.mvc.data.mapper
+
+import com.tokopedia.mvc.data.response.MerchantPromotionGetMVDataByIDResponse
+import com.tokopedia.mvc.domain.entity.VoucherDetailData
+import com.tokopedia.mvc.domain.entity.enums.PromoType
+import com.tokopedia.mvc.domain.entity.enums.VoucherStatus
+import com.tokopedia.mvc.domain.entity.enums.VoucherTargetBuyer
+import javax.inject.Inject
+
+class MerchantPromotionGetMVDataByIDMapper @Inject constructor() {
+
+    fun map(response: MerchantPromotionGetMVDataByIDResponse): VoucherDetailData {
+        return with(response.merchantPromotionGetMVDataByID.data) {
+            VoucherDetailData(
+                voucherId,
+                shopId,
+                voucherName,
+                PromoType.values().firstOrNull { value -> value.type == voucherDiscountType }
+                    ?: PromoType.FREE_SHIPPING,
+                voucherImage,
+                voucherImageSquare,
+                voucherImagePortrait,
+                VoucherStatus.values().firstOrNull { value -> value.type == voucherStatus }
+                    ?: VoucherStatus.PROCESSING,
+                voucherDiscountType,
+                voucherDiscountAmount,
+                voucherDiscountAmountMax,
+                voucherDiscountAmountMin,
+                voucherQuota,
+                voucherStartTime,
+                voucherFinishTime,
+                voucherCode,
+                galadrielVoucherId,
+                galadrielCatalogId,
+                createTime,
+                createBy,
+                updateTime,
+                updateBy,
+                isPublic,
+                isQuotaAvailable,
+                voucherTypeFormatted,
+                voucherStatusFormatted,
+                voucherDiscountTypeFormatted,
+                voucherDiscountAmountFormatted,
+                voucherDiscountAmountMaxFormatted,
+                remainingQuota,
+                tnc,
+                bookedGlobalQuota,
+                confirmedGlobalQuota,
+                VoucherTargetBuyer.values().firstOrNull { value -> value.type == targetBuyer }
+                    ?: VoucherTargetBuyer.ALL_BUYER,
+                minimumTierLevel,
+                isLockToProduct,
+                isVps,
+                packageName,
+                vpsUniqueId,
+                voucherPackageId,
+                vpsBundlingId,
+                isSubsidy,
+                appLink,
+                webLink,
+                warehouseId,
+                voucherMinimumAmountType,
+                voucherMinimumAmountTypeFormatted,
+                isPeriod,
+                totalPeriod,
+                voucherLockType,
+                voucherLockId,
+                toProductIds()
+            )
+        }
+    }
+
+    private fun MerchantPromotionGetMVDataByIDResponse.MerchantPromotionGetMVDataByID.Data.toProductIds(): List<VoucherDetailData.ProductId> {
+        return productIds.map {
+            VoucherDetailData.ProductId(
+                it.parentProductId,
+                it.chilProductId
+            )
+        }
+    }
+}

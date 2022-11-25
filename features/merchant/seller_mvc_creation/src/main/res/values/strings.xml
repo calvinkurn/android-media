@@ -102,6 +102,10 @@
     <string name="smvc_bottomsheet_edu_center_title">Pusat Edukasi</string>
 
     <!--Share Component-->
+    <string name="smvc_placeholder_share_component_outgoing_title">Kupon Produk dari %s</string>
+    <string name="smvc_share_component_outgoing_text_description">Yuk, belanja dan pakai Kupon Produknya sekarang!</string>
+    <string name="smvc_placeholder_share_component_text_description">Dapatkan Kupon Produk %s di \@Tokopedia hingga %s pukul %s WIB hanya untukmu!</string>
+<!--    <string name="smvc_placeholder_product_price">%s - %s</string>-->
     <string name="smvc_placeholder_share_component_outgoing_title_product_voucher">Kupon Produk dari %s</string>
     <string name="smvc_placeholder_share_component_outgoing_title_shop_voucher">Voucher Toko dari %s</string>
 
@@ -130,5 +134,69 @@
     <string name="mvc_bottomsheet_quota_information_title">Kuota Penggunaan Kupon</string>
     <string name="mvc_bottomsheet_quota_information_point_one">Kuota penggunaan kupon akan berkurang saat transaksi selesai.</string>
     <string name="mvc_bottomsheet_quota_information_point_two">1 kuota penggunaan berlaku untuk 1 kali transaksi dari 1 pembeli selama periode berlangsung kupon. Kamu tidak perlu membayar kupon yang tidak digunakan oleh pembeli.</string>
+
+
+    <!--Voucher detail page-->
+    <string name="smvc_ubah_kupon_label">Ubah Kupon</string>
+    <string name="smvc_kuota_terpakai_label">Kuota terpakai</string>
+    <string name="smvc_jenis_kupon_label">Jenis Kupon</string>
+    <string name="smvc_informasi_kupon_label">Informasi Kupon</string>
+    <string name="smvc_target_kupon_label">Target Kupon</string>
+    <string name="smvc_nama_kupon_label">Nama Kupon</string>
+    <string name="smvc_kode_kupon_label">Kode Kupon</string>
+    <string name="smvc_periode_mulai_label">Periode Mulai</string>
+    <string name="smvc_periode_berakhir_label">Periode Berakhir</string>
+    <string name="smvc_pengaturan_kupon_label">Pengaturan Kupon</string>
+    <string name="smvc_tipe_promo_label">Tipe Promo</string>
+    <string name="smvc_tipe_potongan_label">Tipe Potongan</string>
+    <string name="smvc_maks_potongan_harga_label">Maks. Potongan Harga</string>
+    <string name="smvc_minimum_pembelian_label">Minimum Pembelian</string>
+    <string name="smvc_kuota_label">Kuota</string>
+    <string name="smvc_target_pembeli_label">Target Pembeli</string>
+    <string name="smvc_daftar_produk_label">Daftar Produk</string>
+    <string name="smvc_produk_terdaftar_label">Produk Terdaftar</string>
+    <string name="smvc_lihat_produk_label">Lihat Produk</string>
+    <string name="smvc_placeholder_stopped_date">Dihentikan pada %s</string>
+    <string name="smvc_placeholder_voucher_quota">/%d</string>
+    <string name="smvc_voucher_product_label">Kupon Produk</string>
+    <string name="smvc_voucher_store_label">Kupon Toko</string>
+    <string name="smvc_voucher_public_label">Publik</string>
+    <string name="smvc_voucher_private_label">Khusus</string>
+    <string name="smvc_status_upcoming_label">Mendatang</string>
+    <string name="smvc_status_ongoing_label">Berlangsung</string>
+    <string name="smvc_status_ended_label">Berakhir</string>
+    <string name="smvc_status_stopped_label">Dihentikan</string>
+    <string name="smvc_free_shipping_label">Gratis Ongkir</string>
+    <string name="smvc_discount_label">Diskon</string>
+    <string name="smvc_cashback_label">Cashback</string>
+    <string name="smvc_nominal_label">Nominal</string>
+    <string name="smvc_percentage_label">Persentase</string>
+    <string name="smvc_nominal_free_shipping_label">Nominal Gratis Ongkir</string>
+    <string name="smvc_nominal_cashback_label">Nominal Cashback</string>
+    <string name="smvc_percentage_cashback_label">Persentase Cashback</string>
+    <string name="smvc_nominal_discount_label">Nominal Diskon</string>
+    <string name="smvc_percentage_discount_label">Persentase Diskon</string>
+    <string name="smvc_all_buyer_label">Semua Pembeli</string>
+    <string name="smvc_new_follower_label">Pengikut Baru</string>
+    <string name="smvc_new_user_label">Pengguna Baru</string>
+    <string name="smvc_member_label">Member</string>
+    <string name="smvc_broadcast_chat_label">Broadcast Chat</string>
+    <string name="smvc_sharing_label">Bagikan</string>
+    <string name="smvc_duplicate_label">Duplikat</string>
+    <string name="smvc_promotion_package_label">Paket Promosi</string>
+    <string name="smvc_from_tokopedia_label">Dari Tokopedia</string>
+    <string name="smvc_product_count_placeholder">%d Produk</string>
+    <string name="smvc_spending_estimation_title_1">Estimasi Maks. Pengeluaran</string>
+    <string name="smvc_spending_estimation_title_2">Pengeluaran hingga saat ini</string>
+    <string name="smvc_spending_estimation_title_3">Total pengeluaran</string>
+    <string name="smvc_spending_estimation_description_1">Dipotong dari transaksi selesai.</string>
+    <string name="smvc_spending_estimation_description_2">Tidak ada potongan biaya karena kupon berasal dari Paket Promosi.</string>
+    <string name="smvc_spending_estimation_description_3">Tidak ada potongan biaya karena kupon berasal dari Tokopedia.</string>
+    <string name="coupon_code_copied_to_clipboard">Kode kupon berhasil disalin</string>
+    <string name="smvc_oke_label">oke</string>
+    <string name="smvc_dash_label">-</string>
+    <string name="smvc_see_tnc_title_label"><![CDATA[Lihat Syarat & Ketentuan Penggunaan Kupon]]></string>
+    <string name="smvc_cancel_label">Batalkan</string>
+    <string name="smvc_stop_label">Hentikan</string>
 
 </resources>

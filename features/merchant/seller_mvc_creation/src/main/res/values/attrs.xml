@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="SpendingEstimationLabelView">
+        <attr name="title_placeholder_text" format="string" />
+        <attr name="description_placeholder_text" format="string" />
+        <attr name="spending_estimation_placeholder_text" format="string" />
+    </declare-styleable>
+    <declare-styleable name="VerticalDateTimeView">
+        <attr name="date_time_placeholder_text" format="string"/>
+        <attr name="time_placeholder_text" format="string"/>
+    </declare-styleable>
+</resources>
