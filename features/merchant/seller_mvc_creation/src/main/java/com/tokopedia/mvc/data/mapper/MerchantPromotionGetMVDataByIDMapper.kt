@@ -2,6 +2,9 @@ package com.tokopedia.mvc.data.mapper
 
 import com.tokopedia.mvc.data.response.MerchantPromotionGetMVDataByIDResponse
 import com.tokopedia.mvc.domain.entity.VoucherDetailData
+import com.tokopedia.mvc.domain.entity.enums.PromoType
+import com.tokopedia.mvc.domain.entity.enums.VoucherStatus
+import com.tokopedia.mvc.domain.entity.enums.VoucherTargetBuyer
 import javax.inject.Inject
 
 class MerchantPromotionGetMVDataByIDMapper @Inject constructor() {
@@ -12,11 +15,13 @@ class MerchantPromotionGetMVDataByIDMapper @Inject constructor() {
                 voucherId,
                 shopId,
                 voucherName,
-                voucherType,
+                PromoType.values().firstOrNull { value -> value.type == voucherDiscountType }
+                    ?: PromoType.FREE_SHIPPING,
                 voucherImage,
                 voucherImageSquare,
                 voucherImagePortrait,
-                voucherStatus,
+                VoucherStatus.values().firstOrNull { value -> value.type == voucherStatus }
+                    ?: VoucherStatus.PROCESSING,
                 voucherDiscountType,
                 voucherDiscountAmount,
                 voucherDiscountAmountMax,
@@ -42,7 +47,8 @@ class MerchantPromotionGetMVDataByIDMapper @Inject constructor() {
                 tnc,
                 bookedGlobalQuota,
                 confirmedGlobalQuota,
-                targetBuyer,
+                VoucherTargetBuyer.values().firstOrNull { value -> value.type == targetBuyer }
+                    ?: VoucherTargetBuyer.ALL_BUYER,
                 minimumTierLevel,
                 isLockToProduct,
                 isVps,

@@ -9,6 +9,7 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.campaign.utils.constant.DateConstant
+import com.tokopedia.campaign.utils.extension.routeToUrl
 import com.tokopedia.campaign.utils.extension.showToaster
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.*
@@ -17,6 +18,9 @@ import com.tokopedia.mvc.R
 import com.tokopedia.mvc.databinding.*
 import com.tokopedia.mvc.di.component.DaggerMerchantVoucherCreationComponent
 import com.tokopedia.mvc.domain.entity.VoucherDetailData
+import com.tokopedia.mvc.domain.entity.enums.PromoType
+import com.tokopedia.mvc.domain.entity.enums.VoucherStatus
+import com.tokopedia.mvc.domain.entity.enums.VoucherTargetBuyer
 import com.tokopedia.mvc.presentation.bottomsheet.ExpenseEstimationBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.ThreeDotsMenuBottomSheet
 import com.tokopedia.mvc.util.SharingUtil
@@ -47,6 +51,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
         private const val TRUE = 1
         private const val FALSE = 0
         private const val COPY_PROMO_CODE_LABEL = "promo_code"
+        private const val broadCastChatUrl = "https://m.tokopedia.com/broadcast-chat/create/content?voucher_id="
     }
 
     // binding
@@ -59,9 +64,6 @@ class VoucherDetailFragment : BaseDaggerFragment() {
     private var btnState1Binding by autoClearedNullable<SmvcVoucherDetailButtonSectionState1Binding>()
     private var btnState2Binding by autoClearedNullable<SmvcVoucherDetailButtonSectionState2Binding>()
     private var btnState3Binding by autoClearedNullable<SmvcVoucherDetailButtonSectionState3Binding>()
-
-    //bottom sheet
-    private var threeDotsMenuBottomSheet = ThreeDotsMenuBottomSheet.newInstance()
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
@@ -160,7 +162,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                 R.string.smvc_placeholder_voucher_quota,
                 data.remainingQuota
             )
-            pgbUsedVoucher.setValue(usedQuotaPercentage.toInt(), true)
+            pgbUsedVoucher.setValue(usedQuotaPercentage, true)
         }
     }
 
@@ -170,22 +172,28 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                 labelVoucherSource.invisible()
                 tpgVpsPackage.gone()
             } else {
-                if (data.isVps == TRUE) {
-                    labelVoucherSource.apply {
-                        visible()
-                        text = getString(R.string.smvc_promotion_package_label)
-                    }
-                    tpgVpsPackage.apply {
-                        visible()
-                        text = data.packageName
-                    }
-                } else {
-                    labelVoucherSource.apply {
-                        visible()
-                        text = getString(R.string.smvc_from_tokopedia_label)
-                    }
-                    tpgVpsPackage.gone()
+                setPackageName(data)
+            }
+        }
+    }
+
+    private fun setPackageName(data: VoucherDetailData) {
+        headerBinding?.run {
+            if (data.isVps == TRUE) {
+                labelVoucherSource.apply {
+                    visible()
+                    text = getString(R.string.smvc_promotion_package_label)
                 }
+                tpgVpsPackage.apply {
+                    visible()
+                    text = data.packageName
+                }
+            } else {
+                labelVoucherSource.apply {
+                    visible()
+                    text = getString(R.string.smvc_from_tokopedia_label)
+                }
+                tpgVpsPackage.gone()
             }
         }
     }
@@ -193,21 +201,21 @@ class VoucherDetailFragment : BaseDaggerFragment() {
     private fun setupVoucherStatus(data: VoucherDetailData) {
         headerBinding?.run {
             when (data.voucherStatus) {
-                VoucherStatusConstant.NOT_STARTED -> {
+                VoucherStatus.NOT_STARTED -> {
                     tpgVoucherStatus.apply {
                         text = getString(R.string.smvc_status_upcoming_label)
                         setTextColorCompat(com.tokopedia.unifyprinciples.R.color.Unify_NN600)
                     }
                     imgCampaignStatusIndicator.loadImage(ImageUrlConstant.IMAGE_URL_RIBBON_GREY)
                 }
-                VoucherStatusConstant.ONGOING -> {
+                VoucherStatus.ONGOING -> {
                     tpgVoucherStatus.apply {
                         text = getString(R.string.smvc_status_ongoing_label)
                         setTextColorCompat(com.tokopedia.unifyprinciples.R.color.Green_G500)
                     }
                     imgCampaignStatusIndicator.loadImage(ImageUrlConstant.IMAGE_URL_RIBBON_GREEN)
                 }
-                VoucherStatusConstant.STOPPED -> {
+                VoucherStatus.STOPPED -> {
                     tpgVoucherStatus.apply {
                         text = getString(R.string.smvc_status_stopped_label)
                         setTextColorCompat(com.tokopedia.unifyprinciples.R.color.Red_R500)
@@ -228,18 +236,18 @@ class VoucherDetailFragment : BaseDaggerFragment() {
     private fun setupVoucherAction(data: VoucherDetailData) {
         headerBinding?.run {
             when (data.voucherStatus) {
-                VoucherStatusConstant.NOT_STARTED -> {
+                VoucherStatus.NOT_STARTED -> {
                     btnUbahKupon.visible()
                     timer.invisible()
                     tpgPeriodStop.invisible()
                 }
-                VoucherStatusConstant.ONGOING -> {
+                VoucherStatus.ONGOING -> {
                     btnUbahKupon.invisible()
                     timer.visible()
                     tpgPeriodStop.invisible()
                     startTimer(data.voucherFinishTime.toDate(DateConstant.DATE_WITH_SECOND_PRECISION_ISO_8601))
                 }
-                VoucherStatusConstant.ENDED -> {
+                VoucherStatus.ENDED -> {
                     btnUbahKupon.invisible()
                     timer.invisible()
                     tpgPeriodStop.invisible()
@@ -341,10 +349,10 @@ class VoucherDetailFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun Typography.setPromoType(voucherType: Int) {
+    private fun Typography.setPromoType(voucherType: PromoType) {
         this.text = when (voucherType) {
-            PromoTypeConstant.SHIPPING -> getString(R.string.smvc_free_shipping_label)
-            PromoTypeConstant.DISCOUNT -> getString(R.string.smvc_discount_label)
+            PromoType.FREE_SHIPPING -> getString(R.string.smvc_free_shipping_label)
+            PromoType.DISCOUNT -> getString(R.string.smvc_discount_label)
             else -> getString(R.string.smvc_cashback_label)
         }
     }
@@ -352,7 +360,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
     private fun setDeductionType(data: VoucherDetailData) {
         voucherSettingBinding?.run {
             llDeductionType.visibility = when (data.voucherType) {
-                PromoTypeConstant.SHIPPING -> View.GONE
+                PromoType.FREE_SHIPPING -> View.GONE
                 else -> View.VISIBLE
             }
             tpgDeductionType.text = when (data.voucherDiscountType) {
@@ -365,12 +373,12 @@ class VoucherDetailFragment : BaseDaggerFragment() {
     private fun setDeductionAmount(data: VoucherDetailData) {
         voucherSettingBinding?.run {
             when (data.voucherType) {
-                PromoTypeConstant.SHIPPING -> {
+                PromoType.FREE_SHIPPING -> {
                     tpgVoucherNominalLabel.text =
                         getString(R.string.smvc_nominal_free_shipping_label)
                     tpgVoucherNominal.text = data.voucherDiscountAmount.getCurrencyFormatted()
                 }
-                PromoTypeConstant.CASHBACK -> {
+                PromoType.CASHBACK -> {
                     when (data.voucherDiscountType) {
                         DiscountTypeConstant.NOMINAL -> {
                             tpgVoucherNominalLabel.text =
@@ -409,7 +417,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
     private fun setMaxPriceDeduction(data: VoucherDetailData) {
         voucherSettingBinding?.run {
             when (data.voucherType) {
-                PromoTypeConstant.SHIPPING -> {
+                PromoType.FREE_SHIPPING -> {
                     llVoucherMaxPriceDeduction.gone()
                 }
                 else -> {
@@ -430,9 +438,9 @@ class VoucherDetailFragment : BaseDaggerFragment() {
 
     private fun Typography.setTargetBuyer(data: VoucherDetailData) {
         this.text = when (data.targetBuyer) {
-            TargetBuyerConstant.ALL_USER -> getString(R.string.smvc_all_buyer_label)
-            TargetBuyerConstant.NEW_FOLLOWER -> getString(R.string.smvc_new_follower_label)
-            TargetBuyerConstant.NEW_USER -> getString(R.string.smvc_new_user_label)
+            VoucherTargetBuyer.ALL_BUYER -> getString(R.string.smvc_all_buyer_label)
+            VoucherTargetBuyer.NEW_FOLLOWER -> getString(R.string.smvc_new_follower_label)
+            VoucherTargetBuyer.NEW_BUYER -> getString(R.string.smvc_new_user_label)
             else -> getString(R.string.smvc_member_label)
         }
     }
@@ -459,8 +467,8 @@ class VoucherDetailFragment : BaseDaggerFragment() {
     private fun setupSpendingEstimationSection(data: VoucherDetailData) {
         val spendingEstimation = viewModel.getSpendingEstimation(data)
         val title = when (data.voucherStatus) {
-            VoucherStatusConstant.ONGOING -> getString(R.string.smvc_spending_estimation_title_2)
-            VoucherStatusConstant.ENDED -> getString(R.string.smvc_spending_estimation_title_3)
+            VoucherStatus.ONGOING -> getString(R.string.smvc_spending_estimation_title_2)
+            VoucherStatus.ENDED -> getString(R.string.smvc_spending_estimation_title_3)
             else -> getString(R.string.smvc_spending_estimation_title_1)
         }
         val description = when {
@@ -483,7 +491,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
     private fun setupButtonSection(data: VoucherDetailData) {
         binding?.run {
             when (data.voucherStatus) {
-                VoucherStatusConstant.NOT_STARTED -> {
+                VoucherStatus.NOT_STARTED -> {
                     layoutButton.setOnInflateListener { _, view ->
                         btnState1Binding = SmvcVoucherDetailButtonSectionState1Binding.bind(view)
                     }
@@ -493,7 +501,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                         layoutButton.inflate()
                     }
                 }
-                VoucherStatusConstant.ONGOING -> {
+                VoucherStatus.ONGOING -> {
                     layoutButton.setOnInflateListener { _, view ->
                         btnState2Binding = SmvcVoucherDetailButtonSectionState2Binding.bind(view)
                     }
@@ -524,7 +532,8 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                 openThreeDotsBottomSheet(data)
             }
             btnBroadcastChat.setOnClickListener {
-                context?.let { ctx -> SharingUtil.shareToBroadCastChat(ctx, voucherId) }
+//                context?.let { ctx -> SharingUtil.shareToBroadCastChat(ctx, voucherId) }
+                shareToBroadcastChat(data.voucherId)
             }
         }
         btnState2Binding?.apply {
@@ -532,7 +541,8 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                 openThreeDotsBottomSheet(data)
             }
             btnBroadcastChat.setOnClickListener {
-                context?.let { ctx -> SharingUtil.shareToBroadCastChat(ctx, voucherId) }
+//                context?.let { ctx -> SharingUtil.shareToBroadCastChat(ctx, voucherId) }
+                shareToBroadcastChat(data.voucherId)
             }
             btnShare.setOnClickListener {
                 //TODO:open share component
@@ -550,8 +560,8 @@ class VoucherDetailFragment : BaseDaggerFragment() {
 
     private fun openThreeDotsBottomSheet(data: VoucherDetailData) {
         val bottomSheetType = viewModel.getThreeDotsBottomSheetType(data)
-        threeDotsMenuBottomSheet.setData(data.voucherName, bottomSheetType)
-        threeDotsMenuBottomSheet.show(childFragmentManager, "")
+        ThreeDotsMenuBottomSheet.newInstance(data.voucherName, bottomSheetType)
+            .show(childFragmentManager, "")
     }
 
     private fun getVoucherDetailData(voucherId: Long) {
@@ -606,5 +616,9 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                 }
             }
         }
+    }
+
+    private fun shareToBroadcastChat(voucherId: Long) {
+        routeToUrl(broadCastChatUrl+voucherId.toString())
     }
 }
