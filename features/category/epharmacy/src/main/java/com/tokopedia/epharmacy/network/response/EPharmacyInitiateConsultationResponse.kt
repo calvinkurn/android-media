@@ -1,6 +1,5 @@
 package com.tokopedia.epharmacy.network.response
 
-
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.common_epharmacy.network.response.EPharmacyPrepareProductsGroupResponse
 
@@ -15,19 +14,12 @@ data class InitiateConsultation(
     @SerializedName("error")
     val error: String? = "",
     @SerializedName("header")
-    val header: Header? = null
+    val header: EPharmacyHeader? = null
 ) {
     data class InitiateConsultationData(
         @SerializedName("toko_consultation_id")
         val tokoConsultationId: String?,
         @SerializedName("consultation_source")
         val consultationSource: EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ConsultationSource?
-    )
-
-    data class Header(
-        @SerializedName("code")
-        val code: Int? = null,
-        @SerializedName("server_process_time")
-        val serverProcessTime: String? = ""
     )
 }

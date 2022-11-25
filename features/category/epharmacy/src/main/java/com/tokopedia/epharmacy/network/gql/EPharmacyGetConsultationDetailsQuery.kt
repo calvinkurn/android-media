@@ -20,26 +20,6 @@ object EPharmacyGetConsultationDetailsQuery : GqlQueryInterface {
                     consultation_status
                     consultation_source_id
                     consultation_data {
-                        tokopedia_consultation_id
-                        partner_consultation_id
-                        medical_recommendation {
-                            product_id
-                            product_name
-                            quantity
-                        }
-                        patient {
-                            name
-                            address
-                            email
-                            phone_number
-                            date_of_birth
-                            gender
-                            partner_patient_id
-                       }
-                        doctor_details {
-                            name
-                            specialties
-                        }
                         prescription {
                             id
                             type

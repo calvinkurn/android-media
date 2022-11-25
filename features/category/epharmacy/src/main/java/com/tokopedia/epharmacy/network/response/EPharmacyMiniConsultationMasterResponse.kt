@@ -1,6 +1,5 @@
 package com.tokopedia.epharmacy.network.response
 
-
 import com.google.gson.annotations.SerializedName
 
 data class GetEpharmacyMiniConsultationStaticData(
@@ -14,7 +13,7 @@ data class EPharmacyMiniConsultationMasterResponse(
     @SerializedName("error")
     val error: String? = "",
     @SerializedName("header")
-    val header: Header? = null
+    val header: EPharmacyHeader? = null
 ) {
     data class EPharmacyMiniConsultationData(
         @SerializedName("info_title")
@@ -28,7 +27,7 @@ data class EPharmacyMiniConsultationMasterResponse(
         @SerializedName("logo_url")
         val logoUrl: String? = "",
         @SerializedName("logo_title")
-        val logoTitle: String? = "",
+        val logoTitle: String? = ""
     ) {
         data class ConsultationSteps(
             @SerializedName("image_url")
@@ -39,13 +38,6 @@ data class EPharmacyMiniConsultationMasterResponse(
             val subtitle: String? = ""
         )
     }
-
-    data class Header(
-        @SerializedName("code")
-        val code: Int? = null,
-        @SerializedName("server_process_time")
-        val serverProcessTime: String? = ""
-    )
 }
 
 data class PrescriptionStatusCount(
