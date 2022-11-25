@@ -98,8 +98,8 @@ class UserProfileFeedFragment @Inject constructor(
 
         binding.rvFeed.layoutManager = gridLayoutManager
         if (binding.rvFeed.itemDecorationCount == 0) {
-            val spacing = requireContext().resources.getDimensionPixelOffset(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl2)
-            binding.rvFeed.addItemDecoration(GridSpacingItemDecoration(GRID_SPAN_COUNT, spacing, true))
+            val spacing = requireContext().resources.getDimensionPixelOffset(com.tokopedia.feedcomponent.R.dimen.feed_component_dp_1)
+            binding.rvFeed.addItemDecoration(GridSpacingItemDecoration(GRID_SPAN_COUNT, spacing, false))
         }
         binding.rvFeed.adapter = mAdapter
     }
