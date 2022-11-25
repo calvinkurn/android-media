@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.widget.AutoCompleteTextView
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
@@ -17,6 +18,7 @@ import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.databinding.BottomsheetTokopedianowProductFeedbackBinding
+import com.tokopedia.tokopedianow.searchcategory.analytics.ProductFeedbackLoopTracker
 import com.tokopedia.tokopedianow.searchcategory.di.DaggerSearchCategoryComponent
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewmodel.AddFeedbackViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -38,6 +40,7 @@ class TokoNowProductFeedbackBottomSheet : BottomSheetUnify() {
     private var binding:BottomsheetTokopedianowProductFeedbackBinding? = null
 
     private var callingParentView:View?=null
+    private var trackerData:Triple<String,String,Boolean>?=null
 
     @Inject
     lateinit var viewModelFactory:ViewModelProvider.Factory
@@ -63,6 +66,21 @@ class TokoNowProductFeedbackBottomSheet : BottomSheetUnify() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        trackerData?.let {
+            ProductFeedbackLoopTracker.sendImpressionFeedbackSheet(
+                it.first,
+                it.second,
+                it.third
+            )
+            setCloseClickListener { _ ->
+                ProductFeedbackLoopTracker.sendCloseFeedbackSheet(
+                    it.first,
+                    it.second,
+                    it.third
+                )
+                dismiss()
+            }
+        }
         observeViewModel()
     }
 
@@ -99,6 +117,21 @@ class TokoNowProductFeedbackBottomSheet : BottomSheetUnify() {
             textInputLayout.isHintAnimationEnabled = false
             editText.hint = context?.resources?.getString(R.string.tokopedianow_feedback_bottomsheet_input_hint)
             editText.setHintTextColor(hintColor)
+            setupInputFocusListener(editText)
+        }
+    }
+
+    private fun setupInputFocusListener(inputField:AutoCompleteTextView){
+        inputField.setOnFocusChangeListener { _ , focus ->
+            if(focus){
+                trackerData?.let {
+                    ProductFeedbackLoopTracker.sendClickInputFeedbackSheet(
+                        it.first,
+                        it.second,
+                        it.third
+                    )
+                }
+            }
         }
     }
 
@@ -108,9 +141,25 @@ class TokoNowProductFeedbackBottomSheet : BottomSheetUnify() {
                 is Success -> {
                     dismiss()
                     setSuccessToast()
+                    trackerData?.let { it1 ->
+                        ProductFeedbackLoopTracker.sendImpressionSuccessToastFeedbackSheet(
+                            it1.first,
+                            it1.second,
+                            getUserInput(),
+                            it1.third
+                        )
+                    }
                 }
                 is Fail -> {
                     setErrorToast()
+                    trackerData?.let {it1 ->
+                        ProductFeedbackLoopTracker.sendImpressionFailureToastFeedbackSheet(
+                            it1.first,
+                            it1.second,
+                            getUserInput(),
+                            it1.third
+                        )
+                    }
                 }
             }
         }
@@ -124,6 +173,14 @@ class TokoNowProductFeedbackBottomSheet : BottomSheetUnify() {
                 binding?.feedbackBmCta?.isLoading = true
                 viewModel.addProductFeedback(it1.toString())
             }
+            trackerData?.let {
+                ProductFeedbackLoopTracker.sendClickCtaFeedbackSheet(
+                    it.first,
+                    it.second,
+                    getUserInput(),
+                    it.third
+                )
+            }
         }
     }
 
@@ -135,8 +192,9 @@ class TokoNowProductFeedbackBottomSheet : BottomSheetUnify() {
         binding?.feedbackBmCta?.isEnabled = true
     }
 
-    fun showBottomSheet(manager: FragmentManager?,view:View?){
+    fun showBottomSheet(manager: FragmentManager?,view:View?,trackerData:Triple<String,String,Boolean>? = null){
         callingParentView = view
+        this.trackerData = trackerData
         manager?.let { show(it, TokoNowProductFeedbackBottomSheet::class.simpleName) }
     }
 
@@ -149,7 +207,8 @@ class TokoNowProductFeedbackBottomSheet : BottomSheetUnify() {
                 view = it,
                 text = successText,
                 duration = Toaster.LENGTH_LONG,
-                actionText = actionText
+                actionText = actionText,
+                clickListener = {sendToasterClickEvent(true)}
                 ).show()
         }
     }
@@ -167,11 +226,35 @@ class TokoNowProductFeedbackBottomSheet : BottomSheetUnify() {
                     text = errorText,
                     duration = Toaster.LENGTH_LONG,
                     actionText = actionText,
-                    type = Toaster.TYPE_ERROR
+                    type = Toaster.TYPE_ERROR,
+                    clickListener = {sendToasterClickEvent(false)}
                 ).show()
             }
         }
     }
+
+    private fun sendToasterClickEvent(success:Boolean){
+        trackerData?.let {
+            if(success){
+                ProductFeedbackLoopTracker.sendClickSuccessToastOkFeedbackSheet(
+                    it.first,
+                    it.second,
+                    getUserInput(),
+                    it.third
+                )
+            }
+            else{
+                ProductFeedbackLoopTracker.sendClickFailureToastOkFeedbackSheet(
+                    it.first,
+                    it.second,
+                    getUserInput(),
+                    it.third
+                )
+            }
+        }
+    }
+
+    private fun getUserInput() : String = binding?.feedbackBmTextfield?.editText?.text.toString()
 
     private fun getNavigationBarHeight() : Int{
         if(Build.VERSION.SDK_INT < Build.VERSION_CODES.R){

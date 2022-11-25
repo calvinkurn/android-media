@@ -153,6 +153,7 @@ abstract class BaseSearchCategoryViewModel(
     private var recommendationPositionInVisitableList = -1
     private val recommendationList = mutableListOf<RecommendationWidget>()
     protected var feedbackFieldToggle = false
+    private var isFeedbackFieldVisible = false
 
     val queryParam: Map<String, String> = queryParamMutable
     val hasGlobalMenu: Boolean
@@ -255,6 +256,11 @@ abstract class BaseSearchCategoryViewModel(
 
     private val updateToolbarNotificationLiveData = MutableLiveData<Boolean>()
     val updateToolbarNotification: LiveData<Boolean> = updateToolbarNotificationLiveData
+
+    private val _feedbackLoopTrackingMutableLivedata:MutableLiveData<Pair<String,Boolean>> = MutableLiveData(null)
+    val feedbackLoopTrackingMutableLivedata:LiveData<Pair<String,Boolean>> = _feedbackLoopTrackingMutableLivedata
+
+    var isEmptyResult:Boolean = false
 
     init {
         updateQueryParams()
@@ -471,6 +477,7 @@ abstract class BaseSearchCategoryViewModel(
 
     protected open fun createVisitableListWithEmptyProduct() {
         val activeFilterList = filterController.getActiveFilterOptionList()
+        isEmptyResult = true
 
         visitableList.add(chooseAddressDataView)
         visitableList.add(TokoNowEmptyStateNoResultUiModel(activeFilterList = activeFilterList))
@@ -482,17 +489,33 @@ abstract class BaseSearchCategoryViewModel(
                 miniCartSource = miniCartSource
             )
         )
-        if(feedbackFieldToggle) visitableList.add(TokoNowFeedbackWidgetUiModel())
+        if(feedbackFieldToggle){
+            _feedbackLoopTrackingMutableLivedata.value = Pair(
+                first = chooseAddressData?.warehouse_id.orEmpty(),
+                second = false
+            )
+            isFeedbackFieldVisible = true
+            visitableList.add(TokoNowFeedbackWidgetUiModel())
+        }
+        else isFeedbackFieldVisible = false
     }
 
     private fun createVisitableListWithProduct(
             headerDataView: HeaderDataView,
             contentDataView: ContentDataView,
     ) {
+        isEmptyResult = false
         visitableList.addAll(createHeaderVisitableList(headerDataView))
         visitableList.addAll(createContentVisitableList(contentDataView))
-        if(isLastPage() && feedbackFieldToggle && headerDataView.aceSearchProductHeader.totalData<= MIN_PRODUCT_COUNT)
+        if(isLastPage() && feedbackFieldToggle && headerDataView.aceSearchProductHeader.totalData<= MIN_PRODUCT_COUNT){
+            _feedbackLoopTrackingMutableLivedata.value = Pair(
+                first = chooseAddressData?.warehouse_id.orEmpty(),
+                second = true
+            )
+            isFeedbackFieldVisible = true
             visitableList.add(TokoNowFeedbackWidgetUiModel(true))
+        }
+        else isFeedbackFieldVisible = false
         visitableList.addFooter()
     }
 
@@ -612,7 +635,7 @@ abstract class BaseSearchCategoryViewModel(
         chooseAddressData = chooseAddressWrapper.getChooseAddressData()
         chooseAddressDataView = ChooseAddressDataView(chooseAddressData)
         dynamicFilterModelMutableLiveData.value = null
-
+        isFeedbackFieldVisible = false
         showLoading()
         processLoadDataPage()
     }
@@ -1519,6 +1542,10 @@ abstract class BaseSearchCategoryViewModel(
                         && it.value == optionToCheck.value
             }
         }
+    }
+
+    fun isProductFeedbackLoopVisible() : Boolean {
+       return feedbackFieldToggle && isFeedbackFieldVisible
     }
 
     protected data class ContentDataView(

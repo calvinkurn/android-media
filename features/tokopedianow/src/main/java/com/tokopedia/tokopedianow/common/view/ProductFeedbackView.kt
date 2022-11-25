@@ -47,7 +47,7 @@ class ProductFeedbackView @JvmOverloads constructor(
 
     private fun initViews(){
         binding?.feebackWidgetCta?.setOnClickListener {
-            feedbackCtaListener?.onFeedbackCtaClicked(it)
+            feedbackCtaListener?.onFeedbackCtaClicked()
         }
         loadImage()
     }

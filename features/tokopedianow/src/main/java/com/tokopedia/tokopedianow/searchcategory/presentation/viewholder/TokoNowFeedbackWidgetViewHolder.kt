@@ -25,6 +25,6 @@ class TokoNowFeedbackWidgetViewHolder(itemView:View,private var listener: Feedba
     }
 
     interface FeedbackWidgetListener{
-        fun onFeedbackCtaClicked(view:View)
+        fun onFeedbackCtaClicked()
     }
 }

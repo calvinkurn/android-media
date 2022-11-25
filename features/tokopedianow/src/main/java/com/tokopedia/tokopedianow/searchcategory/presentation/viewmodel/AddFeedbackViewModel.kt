@@ -18,6 +18,10 @@ class AddFeedbackViewModel @Inject constructor(
     private val addProductFeedbackUseCase: UseCase<AddProductFeedbackModel>
 ) : BaseViewModel(dispatchers.io) {
 
+    companion object{
+        private const val SUCCESS_CODE = "200"
+    }
+
     private val _addFeedbackResult:MutableLiveData<Result<AddProductFeedbackModel>> = MutableLiveData(null)
     val addFeedbackResult: LiveData<Result<AddProductFeedbackModel>> = _addFeedbackResult
 
@@ -36,7 +40,18 @@ class AddFeedbackViewModel @Inject constructor(
     }
 
     private fun onAddFeedbackSuccess(result:AddProductFeedbackModel){
-      _addFeedbackResult.value = Success(result)
+        try{
+          result.tokonowAddFeedback?.header?.let {
+               if (it.errorCode == SUCCESS_CODE) {
+                   _addFeedbackResult.value = Success(result)
+               } else {
+                   throw Throwable(it.reason)
+               }
+           } ?: onAddFeedbackFailure(Throwable())
+        }
+        catch (err:Throwable){
+            onAddFeedbackFailure(err)
+        }
     }
 
     private fun onAddFeedbackFailure(error:Throwable){
