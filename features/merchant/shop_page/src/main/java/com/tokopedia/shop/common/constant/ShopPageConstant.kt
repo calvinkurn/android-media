@@ -23,7 +23,7 @@ object ShopPageConstant {
     // if the count data <= SMALL_DATA_LIMIT, the data become vertical list
     const val GO_TO_MEMBERSHIP_DETAIL = "membership detail"
     const val EMPTY_PRODUCT_SEARCH_IMAGE_URL =
-        "https://ecs7.tokopedia.net/android/others/illustration_product_empty.png"
+        "https://images.tokopedia.net/android/others/illustration_product_empty.png"
     const val KEY_MEMBERSHIP_DATA_MODEL = "KEY_MEMBERSHIP_DATA_MODEL_POSITION"
     const val KEY_MERCHANT_VOUCHER_DATA_MODEL = "KEY_MERCHANT_VOUCHER_DATA_MODEL_POSITION"
     const val KEY_FEATURED_PRODUCT_DATA_MODEL = "KEY_FEATURED_PRODUCT_DATA_MODEL_POSITION"
@@ -36,11 +36,11 @@ object ShopPageConstant {
         "KEY_SHOP_SELLER_EMPTY_PRODUCT_ALL_ETALASE_DATA_MODEL"
     const val KEY_SHOP_BUYER_EMPTY_PRODUCT_DATA_MODEL = "KEY_SHOP_BUYER_EMPTY_PRODUCT_DATA_MODEL"
     const val URL_IMAGE_SELLER_PRODUCT_ALL_ETALASE_EMPTY_STATE_BACKGROUND =
-        "https://ecs7.tokopedia.net/android/shop_page/seller_shop_product_empty_background.png"
+        "https://images.tokopedia.net/android/shop_page/seller_shop_product_empty_background.png"
     const val URL_IMAGE_BUYER_EMPTY_STATE_TOKOPEDIA_IMAGE =
-        "https://ecs7.tokopedia.net/android/shop_page/image_product_empty_state_buyer.png"
+        "https://images.tokopedia.net/android/shop_page/image_product_empty_state_buyer.png"
     const val URL_IMAGE_BUYER_SHOP_SEARCH_EMPTY_STATE =
-        "https://ecs7.tokopedia.net/android/empty_state_search_filter.png"
+        "https://images.tokopedia.net/android/empty_state_search_filter.png"
     const val ENABLE_SHOP_PAGE_HEADER_CHOOSE_ADDRESS_WIDGET =
         "android_shop_page_enable_choose_address_widget_on_shop_page_header"
     const val ENABLE_SHOP_PAGE_UNIVERSAL_BOTTOM_SHEET =
