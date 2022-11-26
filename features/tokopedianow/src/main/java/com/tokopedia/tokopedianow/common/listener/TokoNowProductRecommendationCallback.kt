@@ -1,6 +1,5 @@
 package com.tokopedia.tokopedianow.common.listener
 
-import android.os.Parcelable
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardCarouselItemUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowSeeMoreCardCarouselUiModel
 import com.tokopedia.tokopedianow.common.view.TokoNowDynamicHeaderView
@@ -76,6 +75,4 @@ class TokoNowProductRecommendationCallback(
     }
 
     override fun onChannelExpired() { /* nothing to do */ }
-    override fun saveScrollState(state: Parcelable?) { /* nothing to do */ }
-    override fun getScrollState(): Parcelable? = null
 }

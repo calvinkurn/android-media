@@ -1,6 +1,5 @@
 package com.tokopedia.tokopedianow.home.presentation.viewholder
 
-import android.os.Parcelable
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -8,7 +7,6 @@ import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardCarouselItemUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowSeeMoreCardCarouselUiModel
 import com.tokopedia.tokopedianow.common.view.TokoNowDynamicHeaderView
-import com.tokopedia.tokopedianow.common.view.TokoNowView
 import com.tokopedia.tokopedianow.common.view.productcard.TokoNowProductCardCarouselView
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowProductRecommendationBinding
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProductRecomUiModel
@@ -16,7 +14,6 @@ import com.tokopedia.utils.view.binding.viewBinding
 
 class HomeProductRecomViewHolder(
     itemView: View,
-    private val tokoNowView: TokoNowView? = null,
     private val listener: HomeProductRecomListener? = null
 ) : AbstractViewHolder<HomeProductRecomUiModel>(itemView),
     TokoNowProductCardCarouselView.TokoNowProductCardCarouselListener,
@@ -124,14 +121,6 @@ class HomeProductRecomViewHolder(
             product = product,
             position = position
         )
-    }
-
-    override fun saveScrollState(state: Parcelable?) {
-        tokoNowView?.saveScrollState(layoutPosition, state)
-    }
-
-    override fun getScrollState(): Parcelable? {
-        return tokoNowView?.getScrollState(layoutPosition)
     }
 
     override fun onChannelExpired() { /* nothing to do */ }
