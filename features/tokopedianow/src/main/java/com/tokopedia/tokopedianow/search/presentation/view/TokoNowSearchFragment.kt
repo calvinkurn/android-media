@@ -1,7 +1,6 @@
 package com.tokopedia.tokopedianow.search.presentation.view
 
 import android.os.Bundle
-import android.os.Parcelable
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -405,12 +404,6 @@ class TokoNowSearchFragment :
     ) {
         getViewModel().onViewATCBroadMatchItem(broadMatchItemDataView, quantity, broadMatchIndex)
     }
-
-    override fun onSaveCarouselScrollState(adapterPosition: Int, state: Parcelable?) {
-        carouselScrollState[adapterPosition] = state
-    }
-
-    override fun onGetCarouselScrollState(adapterPosition: Int): Parcelable? = carouselScrollState[adapterPosition]
 
     private fun sendATCBroadMatchTrackingEvent(
         atcTrackingData: Triple<Int, String, TokoNowProductCardCarouselItemUiModel>

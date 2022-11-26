@@ -1,6 +1,5 @@
 package com.tokopedia.tokopedianow.search.presentation.viewholder
 
-import android.os.Parcelable
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -132,14 +131,6 @@ class BroadMatchViewHolder(
             title = headerName,
             appLink = appLink
         )
-    }
-
-    override fun saveScrollState(state: Parcelable?) {
-        listener.onSaveCarouselScrollState(layoutPosition, state)
-    }
-
-    override fun getScrollState(): Parcelable? {
-        return listener.onGetCarouselScrollState(layoutPosition)
     }
 
     override fun onChannelExpired() { /* nothing to do */ }

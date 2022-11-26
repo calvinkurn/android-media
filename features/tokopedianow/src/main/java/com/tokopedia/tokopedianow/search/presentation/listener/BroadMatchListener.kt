@@ -1,6 +1,5 @@
 package com.tokopedia.tokopedianow.search.presentation.listener
 
-import android.os.Parcelable
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardCarouselItemUiModel
 
@@ -23,15 +22,6 @@ interface BroadMatchListener {
         quantity: Int,
         broadMatchIndex: Int,
     )
-
-    fun onSaveCarouselScrollState(
-        adapterPosition: Int,
-        state: Parcelable?
-    )
-
-    fun onGetCarouselScrollState(
-        adapterPosition: Int
-    ): Parcelable?
 
     fun onBroadMatchSeeAllClicked(
         title: String,
