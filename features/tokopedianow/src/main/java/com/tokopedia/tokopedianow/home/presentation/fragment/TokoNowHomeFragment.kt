@@ -275,7 +275,6 @@ class TokoNowHomeFragment: Fragment(),
     private var universalShareBottomSheet: UniversalShareBottomSheet? = null
     private var screenshotDetector : ScreenshotDetector? = null
     private var carouselScrollState = mutableMapOf<Int, Parcelable?>()
-    private var carouselParallaxState = mutableMapOf<Int, Map<String, Float>>()
     private var hasEducationalInformationAppeared = false
     private var pageLoadTimeMonitoring: HomePageLoadTimeMonitoring? = null
     private var switcherCoachMark: SwitcherCoachMark? = null
@@ -449,14 +448,6 @@ class TokoNowHomeFragment: Fragment(),
 
     override fun getScrollState(adapterPosition: Int): Parcelable? {
         return carouselScrollState[adapterPosition]
-    }
-
-    override fun saveParallaxState(adapterPosition: Int, mapParallaxState: Map<String, Float>) {
-        carouselParallaxState[adapterPosition] = mapParallaxState
-    }
-
-    override fun getParallaxState(adapterPosition: Int): Map<String, Float>? {
-        return carouselParallaxState[adapterPosition]
     }
 
     override fun onProductQuantityChanged(data: TokoNowProductCardUiModel, quantity: Int) {
@@ -795,7 +786,6 @@ class TokoNowHomeFragment: Fragment(),
         hideStickyLogin()
         rvLayoutManager?.setScrollEnabled(true)
         carouselScrollState.clear()
-        carouselParallaxState.clear()
         bannerComponentCallback?.resetImpression()
         loadLayout()
     }
