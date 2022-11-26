@@ -180,23 +180,42 @@
             app:typographyType="display_3"
             app:typographyWeight="bold" />
 
-        <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/top_ads_campaign_copywriting"
+        <LinearLayout
+            android:id="@+id/top_ads_campaign_copywriting_container"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="16dp"
             android:layout_marginStart="@dimen/spacing_lvl4"
-            android:ellipsize="end"
-            android:maxLines="1"
+            android:orientation="vertical"
             android:visibility="gone"
-            android:text="@string/feed_asgc_campaign_cta_copywriting_text"
-            app:layout_constrainedWidth="true"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toStartOf="@+id/chevron"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/top_ads_product_name"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:typographyType="paragraph_3"
-            tools:text="Eksklusif untuk Follower Toko"
-            />
+            tools:visibility="visible">
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/top_ads_campaign_copywriting_first"
+                android:layout_width="match_parent"
+                android:layout_height="16dp"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="@string/feed_asgc_campaign_cta_copywriting_text"
+                android:visibility="visible"
+                app:typographyType="paragraph_3"
+                tools:text="Eksklusif untuk Follower Toko" />
+
+            <com.tokopedia.unifyprinciples.Typography
+                android:id="@+id/top_ads_campaign_copywriting_second"
+                android:layout_width="match_parent"
+                android:layout_height="16dp"
+                android:ellipsize="end"
+                android:maxLines="1"
+                android:text="@string/feed_asgc_campaign_cta_copywriting_text"
+                android:visibility="visible"
+                app:typographyType="paragraph_3"
+                tools:text="Eksklusif untuk Follower Toko" />
+
+        </LinearLayout>
 
         <com.tokopedia.iconunify.IconUnify
             android:id="@+id/chevron"

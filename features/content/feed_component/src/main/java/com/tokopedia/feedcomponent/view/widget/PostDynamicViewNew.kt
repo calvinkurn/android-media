@@ -102,6 +102,7 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.cancelChildren
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import java.lang.ref.WeakReference
 import java.net.URLEncoder
 import kotlin.math.round
 import com.tokopedia.unifyprinciples.R as unifyPrinciplesR
@@ -185,7 +186,12 @@ class PostDynamicViewNew @JvmOverloads constructor(
     private val feedVODViewHolder: FeedVODViewHolder = findViewById(R.id.feed_vod_viewholder)
     private val topAdsCard = findViewById<ConstraintLayout>(R.id.top_ads_detail_card)
     private val asgcCtaProductName = findViewById<Typography>(R.id.top_ads_product_name)
-    private val asgcProductCampaignCopywring = findViewById<Typography>(R.id.top_ads_campaign_copywriting)
+    private val asgcProductCampaignCopywritingContainer =
+        findViewById<LinearLayout>(R.id.top_ads_campaign_copywriting_container)
+    private val asgcProductCampaignCopywritingFirst =
+        findViewById<Typography>(R.id.top_ads_campaign_copywriting_first)
+    private val asgcProductCampaignCopywritingSecond =
+        findViewById<Typography>(R.id.top_ads_campaign_copywriting_second)
     private val topAdsChevron = topAdsCard.findViewById<IconUnify>(R.id.chevron)
     private val pageControl: PageControl = findViewById(R.id.page_indicator)
     private val likeButton: IconUnify = findViewById(R.id.like_button)
@@ -553,12 +559,12 @@ class PostDynamicViewNew @JvmOverloads constructor(
                     TYPE_USE_ASGC_NEW_DESIGN
                 )
 
-                    if (feedXCard.typename == TYPE_FEED_X_CARD_POST || feedXCard.typename == TYPE_TOPADS_HEADLINE_NEW || feedXCard.typename == TYPE_FEED_X_CARD_VOD || isTypeNewASGC) {
-                        imagePostListener.userCarouselImpression(
-                            feedXCard,
-                            positionInFeed
-                        )
-                    }
+            if (feedXCard.typename == TYPE_FEED_X_CARD_POST || feedXCard.typename == TYPE_TOPADS_HEADLINE_NEW || feedXCard.typename == TYPE_FEED_X_CARD_VOD || isTypeNewASGC) {
+                imagePostListener.userCarouselImpression(
+                    feedXCard,
+                    positionInFeed
+                )
+            }
 
             if (feedXCard.typename == TYPE_FEED_X_CARD_POST || feedXCard.typename == TYPE_TOPADS_HEADLINE_NEW || feedXCard.typename == TYPE_FEED_X_CARD_VOD || isTypeNewASGC) {
                 listener?.onImpressionTracking(feedXCard, positionInFeed)
@@ -569,16 +575,40 @@ class PostDynamicViewNew @JvmOverloads constructor(
 
     private fun bindTopAds(feedXCard: FeedXCard) {
         asgcCtaProductName.text = getCTAButtonText(feedXCard)
-        val ctaSubtitle =
-            if (feedXCard.cta.subtitle.isNotEmpty()) feedXCard.cta.subtitle.firstOrNull()
-                ?: String.EMPTY else String.EMPTY
-        asgcProductCampaignCopywring.text = ctaSubtitle
+        val ctaSubtitle = getCTAButtonSubtitle(feedXCard)
+
+        ctaSubtitle.mapIndexed { index, item ->
+            if (index == ZERO) {
+                asgcProductCampaignCopywritingFirst.text = item
+            } else if (index == ONE) {
+                asgcProductCampaignCopywritingSecond.text = item
+            }
+        }
+
+        if (ctaSubtitle.size >= TWO && shouldShowCtaSubtitile(
+                ctaSubtitle,
+                feedXCard
+            )
+        ) {
+            animationHandler = FeedXCardSubtitlesAnimationHandler(
+                WeakReference(asgcProductCampaignCopywritingFirst),
+                WeakReference(asgcProductCampaignCopywritingSecond)
+            )
+            animationHandler?.subtitles = ctaSubtitle
+            animationHandler?.checkToCancelTimer()
+            animationHandler?.startTimer()
+        }
 
         topAdsCard.showWithCondition(
             shouldShow = (feedXCard.isTypeProductHighlight || feedXCard.isTopAds) &&
                 feedXCard.media.any { it.isImage }
         )
-        asgcProductCampaignCopywring.showWithCondition(shouldShowCtaSubtitile(ctaSubtitle, feedXCard))
+        asgcProductCampaignCopywritingContainer.showWithCondition(
+            shouldShowCtaSubtitile(
+                ctaSubtitle,
+                feedXCard
+            )
+        )
 
         topAdsCard.setOnClickListener {
             changeCTABtnColorAsPerWidget(feedXCard)
@@ -617,7 +647,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
         }
     }
 
-    private fun shouldShowCtaSubtitile(subtitle: String, card: FeedXCard) =
+    private fun shouldShowCtaSubtitile(subtitle: List<String>, card: FeedXCard) =
         subtitle.isNotEmpty() && card.campaign.isRilisanSpl && card.campaign.isRSFollowersRestrictionOn
 
     fun bindLike(feedXCard: FeedXCard) {
@@ -686,7 +716,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
         }
         bindContentSubInfo(
             shouldShow = type == TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT
-                    || ((!isFollowed || followers.transitionFollow)
+                || ((!isFollowed || followers.transitionFollow)
                 && !(type == TYPE_FEED_X_CARD_POST && author.type == 3)),
             value = contentSubInfoValue
         )
@@ -699,7 +729,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
         //region author info
         val activityName = ""
         val authorType = if (author.type == 3) FollowCta.AUTHOR_USER else FollowCta.AUTHOR_SHOP
-        val authorId = if (authorType == FollowCta.AUTHOR_USER) author.encryptedUserId else author.id
+        val authorId =
+            if (authorType == FollowCta.AUTHOR_USER) author.encryptedUserId else author.id
 
         val followCta = FollowCta(
             authorID = authorId,
@@ -1683,12 +1714,12 @@ class PostDynamicViewNew @JvmOverloads constructor(
     private fun bindPublishedAt(publishedAt: String) {
         val avatarDate = TimeConverter.generateTimeNew(context, publishedAt)
         val spannableString =
-                SpannableString(
-                    String.format(
-                        context.getString(R.string.feed_header_time_new),
-                        avatarDate
-                    )
+            SpannableString(
+                String.format(
+                    context.getString(R.string.feed_header_time_new),
+                    avatarDate
                 )
+            )
         timestampText.text = spannableString
         timestampText.show()
     }
@@ -1733,7 +1764,6 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 media.vodView?.onViewAttached()
             }
         }
-
     }
 
     fun detach(
@@ -1907,7 +1937,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 .addTarget(topAdsCard)
         )
         asgcCtaProductName.setTextColor(secondaryColor)
-        asgcProductCampaignCopywring.setTextColor(secondaryColor)
+        asgcProductCampaignCopywritingFirst.setTextColor(secondaryColor)
+        asgcProductCampaignCopywritingSecond.setTextColor(secondaryColor)
         topAdsChevron.setColorFilter(secondaryColor)
         topAdsCard.setBackgroundColor(primaryColor)
     }
@@ -1917,7 +1948,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
         secondaryColor: Int,
     ) {
         asgcCtaProductName.setTextColor(secondaryColor)
-        asgcProductCampaignCopywring.setTextColor(secondaryColor)
+        asgcProductCampaignCopywritingFirst.setTextColor(secondaryColor)
+        asgcProductCampaignCopywritingSecond.setTextColor(secondaryColor)
         topAdsChevron.setColorFilter(secondaryColor)
         topAdsCard.setGradientBackground(colorArray)
     }
@@ -1950,7 +1982,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
     private fun getCTAButtonSubtitle(card: FeedXCard) =
         if (card.isTypeProductHighlight && card.cta.subtitle.isNotEmpty())
             card.cta.subtitle
-        else null
+        else listOf()
 
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
