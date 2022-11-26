@@ -61,7 +61,7 @@
     <string name="invoice_id">ID: #%1$s</string>
     <string name="need_rating">Beri Penilaian</string>
     <string name="max_image_warning">Maksimal 5 lampiran diizinkan</string>
-    <string name="text_satisfied">Beri nilai untuk kualitas layanan Tokopedia Care</string>
+    <string name="text_satisfied">Seberapa puas kamu dengan layanan Tokopedia Care?</string>
     <string name="select_bad_reason">Keluhan tentang CS kami</string>
     <string name="cu_no_more_results">Tidak Ada Lagi Hasil</string>
     <string name="hint_attachment">Catatan: Mohon lampirkan data yang diminta</string>
@@ -127,6 +127,8 @@
     <string name="contactus_chat_bot_applink">tokopedia://chatbot/%s</string>
     <string name="contact_us_step_two_response_failure_message">Maaf, permintaan Anda tidak dapat diproses. Silahkan coba beberapa saat lagi.</string>
     <string name="contact_us_sent_error_message">Pesanmu gagal dikirim, coba kirim ulang</string>
+    <string name="contact_us_selesai_button">Selesai</string>
+
 
     <string name="contact_us_clear_cache_message">Dengan membersihkan cache, berarti Anda juga setuju untuk <b>keluar</b> dan <b>menutup aplikasi</b>.</string>
     <string name="contact_us_label_clear_cache_ok">Lakukan</string>

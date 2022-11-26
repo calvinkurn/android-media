@@ -15,7 +15,10 @@ buildscript {
         mavenLocal()
         maven { url 'https://plugins.gradle.org/m2/' }
         maven { url 'https://maven.fabric.io/public' }
-        maven { url 'http://central.maven.org/maven2/' }
+        maven {
+            url 'http://central.maven.org/maven2/'
+            allowInsecureProtocol = true
+        }
         mavenCentral()
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
         maven {
@@ -24,6 +27,7 @@ buildscript {
                 username = "${gcp_artifactory_username}"
                 password = "${gcp_artifactory_password}"
             }
+            allowInsecureProtocol = true
         }
         maven {
             url "${artifactory_url}" + "/libs-release-local";

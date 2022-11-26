@@ -41,7 +41,7 @@ object ShopPageConstant {
     const val ALL_SHOWCASE_ID = "etalase"
     const val CODE_STATUS_SUCCESS = "200"
     const val AFFILIATE_PAGE_ID = "pageID"
-    object ShopLayoutFeatures{
+    object ShopLayoutFeatures {
         const val DIRECT_PURCHASE = "direct_purchase"
     }
 
