@@ -1206,7 +1206,18 @@ class TokoNowHomeFragment: Fragment(),
         observe(viewModelTokoNow.referralEvaluate) {
             when (it) {
                 is Success -> {
-                    showDialogReceiverReferral(it.data)
+                    if (it.data.statusCode == SUCCESS_CODE) {
+                        showDialogReceiverReferral(it.data)
+                    } else {
+                        if (context != null && view != null) {
+                            Toaster.make(requireView(), it.data.getErrorMessage(requireContext()))
+                        }
+                    }
+                }
+                is Fail -> {
+                    view?.let { view ->
+                        Toaster.make(view, it.throwable.message ?: "")
+                    }
                 }
             }
         }

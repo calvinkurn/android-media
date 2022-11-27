@@ -63,7 +63,9 @@ data class ReferralEvaluateJoinResponse(
         fun toHomeReceiverDialogUiModel(): HomeReceiverReferralDialogUiModel {
             return HomeReceiverReferralDialogUiModel(
                 title = asset.title, subtitle = asset.subtitle,
-                description = asset.description, ctaText = actionButton.text)
+                description = asset.description, ctaText = actionButton.text,
+                statusCode = resultStatus.code, message = resultStatus.message.firstOrNull() ?: ""
+            )
         }
     }
 }

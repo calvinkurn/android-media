@@ -243,4 +243,8 @@
     <string name="tokopedianow_recipe_search_filter_empty_state_title">Pencarian tidak ditemukan</string>
     <string name="tokopedianow_recipe_search_filter_empty_state_description">Belum ada resep sesuai filtermu. Coba cari pakai filter lain.</string>
     <string name="tokopedianow_recipe_apply_filter_button_text">Tampilkan</string>
+    <string name="error_already_referral">Oops, kamu sudah pernah dapat kupon Belanja NOW! dari temanmu.</string>
+    <string name="error_referral_on_limit">Yaah, kupon Belanja NOW! dari temanmu sudah mencapai batas maksimum.</string>
+    <string name="error_referral_click_their_own_link">Kupon Belanja NOW! hanya bisa dipakai sama temanmu yang pengguna baru.</string>
+    <string name="error_referrral_recurring_user">Yaah, kupon Belanja NOW! hanya berlaku khusus pengguna baru saja.</string>
 </resources>

@@ -613,11 +613,7 @@ class TokoNowHomeViewModel @Inject constructor(
     fun getReceiverHomeDialog(referralData: String) {
         launchCatchError(block = {
             val data = referralEvaluateJoinUseCase.execute(referralData)
-            if (data.gamiReferralEvaluteJoinResponse.resultStatus.code == SUCCESS_CODE) {
-                _referralEvaluate.postValue(Success(data.gamiReferralEvaluteJoinResponse.toHomeReceiverDialogUiModel()))
-            } else {
-                _referralEvaluate.postValue(Fail(Exception("fail with status code ${data.gamiReferralEvaluteJoinResponse.resultStatus.code}")))
-            }
+            _referralEvaluate.postValue(Success(data.gamiReferralEvaluteJoinResponse.toHomeReceiverDialogUiModel()))
         }, onError = {
             _referralEvaluate.postValue(Fail(it))
         })
