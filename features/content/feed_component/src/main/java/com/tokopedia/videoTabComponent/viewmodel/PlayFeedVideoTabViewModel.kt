@@ -5,68 +5,68 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.play.widget.data.PlayWidgetReminder
-import com.tokopedia.play.widget.domain.PlayWidgetReminderUseCase
 import com.tokopedia.play.widget.ui.PlayWidgetState
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
-import com.tokopedia.play.widget.ui.model.reminded
-import com.tokopedia.play.widget.ui.model.switch
 import com.tokopedia.play.widget.util.PlayWidgetTools
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
+import com.tokopedia.videoTabComponent.domain.PlayVideoTabRepository
 import com.tokopedia.videoTabComponent.domain.mapper.FeedPlayVideoTabMapper
 import com.tokopedia.videoTabComponent.domain.model.data.ContentSlotResponse
-import com.tokopedia.videoTabComponent.domain.model.data.PlaySlot
 import com.tokopedia.videoTabComponent.domain.model.data.PlayWidgetFeedReminderInfoData
 import com.tokopedia.videoTabComponent.domain.model.data.VideoPageParams
-import com.tokopedia.videoTabComponent.domain.usecase.GetPlayContentUseCase
 import com.tokopedia.videoTabComponent.view.uimodel.SelectedPlayWidgetCard
-import dagger.Lazy
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import timber.log.Timber
 import javax.inject.Inject
-import kotlin.coroutines.CoroutineContext
 
 class PlayFeedVideoTabViewModel@Inject constructor(
-        private val baseDispatcher: CoroutineDispatchers,
-        private val userSession: UserSessionInterface,
-        private val getPlayContentUseCase: GetPlayContentUseCase,
-        private val lazyReminderUseCase: Lazy<PlayWidgetReminderUseCase>,
-        private val playWidgetTools: PlayWidgetTools,
-): BaseViewModel(baseDispatcher.main){
+    private val baseDispatcher: CoroutineDispatchers,
+    private val repository: PlayVideoTabRepository,
+    private val playWidgetTools: PlayWidgetTools,
+    private val userSession: UserSessionInterface
+) : BaseViewModel(baseDispatcher.main) {
 
     companion object {
         private const val DEFAULT_GROUP_VALUE = "feeds_channels"
         private const val DEFAULT_LIVE_GROUP_VALUE = "feeds_channels_live"
         private const val DEFAULT_UPCOMING_GROUP_VALUE = "feeds_channels_upco"
-        private const val WIDGET_LIVE ="live"
-        private const val WIDGET_UPCOMING ="upcoming"
+        private const val WIDGET_LIVE = "live"
+        private const val WIDGET_UPCOMING = "upcoming"
     }
 
-     var currentCursor = ""
-     var currentLivePageCursor = ""
+    var currentCursor = ""
+    var currentLivePageCursor = ""
 
-     var currentSourceType = ""
-     var currentSourceId = ""
+    var currentSourceType = ""
+    var currentSourceId = ""
+
     private var currentGroup = DEFAULT_GROUP_VALUE
     private var currentGroupSeeMorePage = DEFAULT_LIVE_GROUP_VALUE
-    val getPlayInitialDataRsp = MutableLiveData<Result<ContentSlotResponse>>()
-    val getPlayDataRsp = MutableLiveData<Result<ContentSlotResponse>>()
-    val getLivePlayDataRsp = MutableLiveData<Result<ContentSlotResponse>>()
-    val getPlayDataForSlotRsp = MutableLiveData<Result<ContentSlotResponse>>()
+    private val _getPlayInitialDataRsp = MutableLiveData<Result<ContentSlotResponse>>()
+    private val _getPlayDataRsp = MutableLiveData<Result<ContentSlotResponse>>()
+    private val _getPlayDataForSlotRsp = MutableLiveData<Result<ContentSlotResponse>>()
+    private val _getLiveOrUpcomingPlayDataRsp = MutableLiveData<Result<ContentSlotResponse>>()
     private val playWidgetUIMutableLiveData: MutableLiveData<PlayWidgetState?> = MutableLiveData(PlayWidgetState(isLoading = true))
     private val _reminderObservable = MutableLiveData<Result<PlayWidgetFeedReminderInfoData>>()
     private val _playWidgetReminderEvent = MutableLiveData<PlayWidgetFeedReminderInfoData>()
 
+    val getPlayInitialDataRsp: LiveData<Result<ContentSlotResponse>>
+        get() = _getPlayInitialDataRsp
+
+    val getPlayDataRsp: LiveData<Result<ContentSlotResponse>>
+        get() = _getPlayDataRsp
+
+    val getPlayDataForSlotRsp: LiveData<Result<ContentSlotResponse>>
+        get() = _getPlayDataForSlotRsp
+
+    val getLiveOrUpcomingPlayDataRsp: LiveData<Result<ContentSlotResponse>>
+        get() = _getLiveOrUpcomingPlayDataRsp
+
     val playWidgetReminderEvent: LiveData<PlayWidgetFeedReminderInfoData>
         get() = _playWidgetReminderEvent
 
-
-    private val reminderUseCase: PlayWidgetReminderUseCase
-        get() = lazyReminderUseCase.get()
     val reminderObservable: LiveData<Result<PlayWidgetFeedReminderInfoData>>
         get() = _reminderObservable
 
@@ -77,25 +77,23 @@ class PlayFeedVideoTabViewModel@Inject constructor(
             _selectedPlayWidgetCard.value = value
         }
 
-
-    fun setDefaultValuesOnRefresh(){
+    fun setDefaultValuesOnRefresh() {
         currentCursor = ""
         currentGroup = DEFAULT_GROUP_VALUE
         currentSourceId = ""
         currentSourceType = ""
-
     }
 
-    fun getInitialPlayData(){
+    fun getInitialPlayData() {
         launchCatchError(block = {
             val results = withContext(baseDispatcher.io) {
-                getPlayDataResult()
+                repository.getPlayData(VideoPageParams(cursor = currentCursor, sourceId = currentSourceId, sourceType = currentSourceType, group = currentGroup))
             }
             val tabData = FeedPlayVideoTabMapper.getTabData(results.playGetContentSlot)
-            if (tabData.isNotEmpty()){
+            if (tabData.isNotEmpty()) {
                 tabData.first().let {
                     val tabList = it.items
-                    if (tabList.isNotEmpty()){
+                    if (tabList.isNotEmpty()) {
                         tabList.let {
                             val firstListItem = tabList.first()
                             currentSourceId = firstListItem.source_id
@@ -106,16 +104,14 @@ class PlayFeedVideoTabViewModel@Inject constructor(
                 }
             }
             getPlayData(false, null)
-            getPlayInitialDataRsp.value = Success(results)
-
+            _getPlayInitialDataRsp.value = Success(results)
         }) {
-            getPlayInitialDataRsp.value = Fail(it)
+            _getPlayInitialDataRsp.value = Fail(it)
         }
     }
 
-
     fun getPlayData(isClickFromTabMenu: Boolean, videoPageParams: VideoPageParams?) {
-        if (isClickFromTabMenu){
+        if (isClickFromTabMenu) {
             videoPageParams?.let {
                 currentCursor = videoPageParams.cursor
                 currentSourceId = videoPageParams.sourceId
@@ -125,107 +121,86 @@ class PlayFeedVideoTabViewModel@Inject constructor(
         }
         launchCatchError(block = {
             val results = withContext(baseDispatcher.io) {
-                getPlayDataResult()
+                videoPageParams?.let { repository.getPlayData(videoPageParams) }
+                    ?: repository.getPlayData(
+                        VideoPageParams(
+                            cursor = currentCursor,
+                            sourceId = currentSourceId,
+                            sourceType = currentSourceType,
+                            group = currentGroup
+                        )
+                    )
             }
             currentCursor = results.playGetContentSlot.meta.next_cursor
             if (isClickFromTabMenu) {
-                getPlayDataForSlotRsp.value = Success(results)
-
+                _getPlayDataForSlotRsp.value = Success(results)
             } else {
-                getPlayDataRsp.value = Success(results)
+                _getPlayDataRsp.value = Success(results)
             }
-
         }) {
-            getPlayDataRsp.value = Fail(it)
+            if (isClickFromTabMenu) {
+                _getPlayDataForSlotRsp.value = Fail(it)
+            } else {
+                _getPlayDataRsp.value = Fail(it)
+            }
         }
     }
-    fun getLivePlayData(widgetType: String, sourceId: String = "", sourceType: String) {
-        if (widgetType == WIDGET_LIVE)
-            currentGroupSeeMorePage = DEFAULT_LIVE_GROUP_VALUE
-        else if (widgetType == WIDGET_UPCOMING)
-            currentGroupSeeMorePage = DEFAULT_UPCOMING_GROUP_VALUE
 
+    fun getPlayDetailPageData(widgetType: String, sourceId: String = "", sourceType: String) {
+        if (widgetType == WIDGET_LIVE) {
+            currentGroupSeeMorePage = DEFAULT_LIVE_GROUP_VALUE
+        } else if (widgetType == WIDGET_UPCOMING) {
+            currentGroupSeeMorePage = DEFAULT_UPCOMING_GROUP_VALUE
+        }
 
         launchCatchError(block = {
             val results = withContext(baseDispatcher.io) {
-                getLivePlayPageDataResult(sourceId, sourceType)
+                repository.getPlayDetailPageResult(
+                    cursor = currentLivePageCursor,
+                    sourceId = sourceId,
+                    sourceType = sourceType,
+                    group = currentGroupSeeMorePage
+                )
             }
             currentLivePageCursor = results.playGetContentSlot.meta.next_cursor
 
-            getLivePlayDataRsp.value = Success(results)
-
+            _getLiveOrUpcomingPlayDataRsp.value = Success(results)
         }) {
-            getLivePlayDataRsp.value = Fail(it)
-        }
-
-    }
-    private suspend fun updateToggleReminder(channelId: String,
-                                     reminderType: PlayWidgetReminderType,
-                                     coroutineContext: CoroutineContext = Dispatchers.IO): PlayWidgetReminder {
-        return withContext(coroutineContext) {
-            reminderUseCase.setRequestParams(PlayWidgetReminderUseCase.createParams(channelId, reminderType.reminded))
-            reminderUseCase.executeOnBackground()
+            _getLiveOrUpcomingPlayDataRsp.value = Fail(it)
         }
     }
 
-    fun updatePlayWidgetToggleReminder(channelId: String, reminderType: PlayWidgetReminderType, position: Int) {
-        if (!userSession.isLoggedIn) _playWidgetReminderEvent.value = PlayWidgetFeedReminderInfoData(channelId = channelId, reminderType = reminderType, itemPosition = position)
-        else {
-            updateWidget {
-                playWidgetTools.updateActionReminder(it, channelId, reminderType)
-            }
-
-            launchCatchError(block = {
-                val response = updateToggleReminder(
-                        channelId,
-                        reminderType
+    fun updatePlayWidgetToggleReminder(channelId: String, reminderType: PlayWidgetReminderType, position: Int, isLoggedIn: Boolean = userSession.isLoggedIn) {
+        if (!isLoggedIn) {
+            _playWidgetReminderEvent.value =
+                PlayWidgetFeedReminderInfoData(
+                    channelId = channelId,
+                    reminderType = reminderType,
+                    itemPosition = position
                 )
-
+        } else {
+            launchCatchError(block = {
+                val response = repository.updateToggleReminder(
+                    channelId,
+                    reminderType
+                )
 
                 when (val success = playWidgetTools.mapWidgetToggleReminder(response)) {
                     success -> {
-                        val playWidgetFeedReminderInfoData = PlayWidgetFeedReminderInfoData(channelId = channelId, reminderType = reminderType, itemPosition = position)
+                        val playWidgetFeedReminderInfoData = PlayWidgetFeedReminderInfoData(
+                            channelId = channelId,
+                            reminderType = reminderType,
+                            itemPosition = position
+                        )
                         _reminderObservable.postValue(Success(playWidgetFeedReminderInfoData))
                     }
                     else -> {
-                        updateWidget {
-                            playWidgetTools.updateActionReminder(it, channelId, reminderType.switch())
-                        }
                         _reminderObservable.postValue(Fail(Throwable()))
                     }
                 }
             }) { throwable ->
-                updateWidget {
-                    playWidgetTools.updateActionReminder(it, channelId, reminderType.switch())
-                }
                 _reminderObservable.postValue(Fail(throwable))
             }
-        }
-    }
-
-
-    private fun updateWidget(onUpdate: (oldVal: PlayWidgetState) -> PlayWidgetState) {
-        playWidgetUIMutableLiveData.value?.let { currentValue ->
-            playWidgetUIMutableLiveData.postValue(onUpdate(currentValue))
-        }
-    }
-
-
-
-    private suspend fun getPlayDataResult(): ContentSlotResponse {
-        try {
-            return getPlayContentUseCase.execute(VideoPageParams(cursor = currentCursor, sourceId = currentSourceId, sourceType = currentSourceType, group = currentGroup))
-        } catch (e: Throwable) {
-            Timber.e(e)
-            throw e
-        }
-    }
-    private suspend fun getLivePlayPageDataResult(sourceId: String, sourceType: String): ContentSlotResponse {
-        try {
-            return getPlayContentUseCase.execute(VideoPageParams(cursor = currentLivePageCursor, sourceId = sourceId, sourceType = sourceType, group = currentGroupSeeMorePage))
-        } catch (e: Throwable) {
-            Timber.e(e)
-            throw e
         }
     }
 }

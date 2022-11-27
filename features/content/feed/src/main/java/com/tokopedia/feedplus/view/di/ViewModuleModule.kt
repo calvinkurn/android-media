@@ -36,6 +36,4 @@ abstract class ViewModelModule {
     @IntoMap
     @ViewModelKey(PlayFeedVideoTabViewModel::class)
     internal abstract fun playFeedVideoTabViewModel(viewModel: PlayFeedVideoTabViewModel): ViewModel
-
-
 }
