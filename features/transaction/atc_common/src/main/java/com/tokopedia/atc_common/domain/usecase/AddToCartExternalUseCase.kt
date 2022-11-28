@@ -30,7 +30,7 @@ class AddToCartExternalUseCase @Inject constructor(@Named(MUTATION_ATC_EXTERNAL)
         const val PARAM_USER_ID = "userID"
     }
 
-    private fun getParams(productId: Long): Map<String, Any?> {
+    private fun getParams(productId: String): Map<String, Any?> {
         return mapOf(
                 PARAM_PRODUCT_ID to productId,
                 KEY_CHOSEN_ADDRESS to chosenAddressAddToCartRequestHelper.getChosenAddress()
@@ -38,7 +38,7 @@ class AddToCartExternalUseCase @Inject constructor(@Named(MUTATION_ATC_EXTERNAL)
     }
 
     override fun createObservable(requestParams: RequestParams): Observable<AddToCartExternalModel> {
-        val productId = requestParams.getLong(PARAM_PRODUCT_ID, 0)
+        val productId = requestParams.getString(PARAM_PRODUCT_ID, "0")
         val graphqlRequest = GraphqlRequest(queryString, AddToCartExternalGqlResponse::class.java, getParams(productId))
         graphqlUseCase.clearRequest()
         graphqlUseCase.addRequest(graphqlRequest)

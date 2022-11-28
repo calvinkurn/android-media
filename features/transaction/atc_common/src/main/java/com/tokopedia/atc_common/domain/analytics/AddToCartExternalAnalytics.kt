@@ -48,7 +48,7 @@ class AddToCartExternalAnalytics @Inject constructor() {
             putString(EE_PARAM_ITEM_BRAND, setValueOrDefault(data.brand))
             putString(EE_PARAM_ITEM_CATEGORY, setValueOrDefault(data.category))
             putString(EE_PARAM_ITEM_VARIANT, setValueOrDefault(data.variant))
-            putString(EE_PARAM_SHOP_ID, setValueOrDefault(data.shopId.toString()))
+            putString(EE_PARAM_SHOP_ID, setValueOrDefault(data.shopId))
             putString(EE_PARAM_SHOP_NAME, setValueOrDefault(data.shopName))
             putString(EE_PARAM_SHOP_TYPE, setValueOrDefault(data.shopType))
             putString(EE_PARAM_CATEGORY_ID, setValueOrDefault(data.categoryId))
@@ -57,7 +57,7 @@ class AddToCartExternalAnalytics @Inject constructor() {
             putString(EE_PARAM_PICTURE, data.picture)
             putString(EE_PARAM_URL, data.url)
             putString(EE_PARAM_DIMENSION_38, setValueOrDefault(data.trackerAttribution))
-            putString(EE_PARAM_DIMENSION_45, setValueOrDefault(data.cartId.toString()))
+            putString(EE_PARAM_DIMENSION_45, setValueOrDefault(data.cartId))
             putString(EE_PARAM_DIMENSION_54, if (data.isMultiOrigin) EE_VALUE_TOKOPEDIA else EE_VALUE_REGULAR)
             putString(EE_PARAM_DIMENSION_83, when {
                 data.isFreeOngkirExtra -> EE_VALUE_BEBAS_ONGKIR_EXTRA
