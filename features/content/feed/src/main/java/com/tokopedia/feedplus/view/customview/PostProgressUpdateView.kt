@@ -11,9 +11,6 @@ import androidx.core.content.ContextCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.tokopedia.affiliatecommon.*
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
-import com.tokopedia.content.common.const.PlayShortsUploadConst
-import com.tokopedia.content.common.model.shorts.PlayShortsUploadModel
-import com.tokopedia.content.common.uploader.PlayShortsUploader
 import com.tokopedia.createpost.common.DRAFT_ID
 import com.tokopedia.createpost.common.view.service.SubmitPostService
 import com.tokopedia.createpost.common.view.viewmodel.CreatePostViewModel
@@ -24,6 +21,8 @@ import com.tokopedia.unifycomponents.ProgressBarUnify
 import com.tokopedia.unifyprinciples.Typography
 import java.util.concurrent.TimeUnit
 import com.tokopedia.feedplus.R
+import com.tokopedia.play_common.shortsuploader.PlayShortsUploader
+import com.tokopedia.play_common.shortsuploader.model.PlayShortsUploadModel
 
 class PostProgressUpdateView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
@@ -57,7 +56,7 @@ class PostProgressUpdateView @JvmOverloads constructor(
             postIcon?.setImageDrawable(context.getDrawable((R.drawable.cp_common_rect_white_round)))
     }
 
-    fun setProgressUpdate(progress: Int, maxCount: Int) {
+    fun setProgress(progress: Int) {
         processingText?.text = context.getString(R.string.cp_common_progress_bar_text)
         processingText?.setTextColor(
             ContextCompat.getColor(context,
@@ -65,6 +64,10 @@ class PostProgressUpdateView @JvmOverloads constructor(
         progressBar?.progressBarColorType = ProgressBarUnify.COLOR_GREEN
         retryText?.gone()
 
+        setProgressUpdate(progress, MAX_PROGRESS_VALUE)
+    }
+
+    fun setProgressUpdate(progress: Int, maxCount: Int) {
         if (maxCount != 0)
             progressBar?.setValue(progress * MAX_PROGRESS_VALUE / maxCount, true)
         else

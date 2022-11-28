@@ -1,7 +1,8 @@
-package com.tokopedia.content.common.uploader.di
+package com.tokopedia.play_common.shortsuploader.di
 
 import com.tokopedia.graphql.coroutines.data.GraphqlInteractor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
+import com.tokopedia.play_common.domain.UpdateChannelUseCase
 import dagger.Module
 import dagger.Provides
 
@@ -16,4 +17,8 @@ internal class PlayShortsWorkerModule {
         return GraphqlInteractor.getInstance().graphqlRepository
     }
 
+    @Provides
+    fun provideUpdateChannelUseCase(graphqlRepository: GraphqlRepository): UpdateChannelUseCase {
+        return UpdateChannelUseCase(graphqlRepository)
+    }
 }

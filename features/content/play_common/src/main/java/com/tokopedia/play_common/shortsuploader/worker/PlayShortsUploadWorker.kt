@@ -1,4 +1,4 @@
-package com.tokopedia.content.common.uploader.worker
+package com.tokopedia.play_common.shortsuploader.worker
 
 import android.content.Context
 import android.util.Log
@@ -8,14 +8,16 @@ import androidx.work.WorkerParameters
 import androidx.work.workDataOf
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.content.common.const.PlayShortsUploadConst
-import com.tokopedia.content.common.model.shorts.PlayShortsUploadModel
-import com.tokopedia.content.common.uploader.di.DaggerPlayShortsUploaderComponent
-import com.tokopedia.content.common.usecase.BroadcasterAddMediasUseCase
-import com.tokopedia.content.common.util.VideoSnapshotHelper
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.mediauploader.UploaderUseCase
 import com.tokopedia.mediauploader.common.state.UploadResult
+import com.tokopedia.play_common.domain.UpdateChannelUseCase
+import com.tokopedia.play_common.domain.usecase.broadcaster.BroadcasterAddMediasUseCase
+import com.tokopedia.play_common.domain.usecase.broadcaster.PlayBroadcastUpdateChannelUseCase
+import com.tokopedia.play_common.shortsuploader.const.PlayShortsUploadConst
+import com.tokopedia.play_common.shortsuploader.di.DaggerPlayShortsUploaderComponent
+import com.tokopedia.play_common.shortsuploader.model.PlayShortsUploadModel
+import com.tokopedia.play_common.types.PlayChannelStatusType
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.withContext
@@ -34,8 +36,8 @@ class PlayShortsUploadWorker(
     @Inject
     lateinit var uploaderUseCase: UploaderUseCase
 
-//    @Inject
-//    lateinit var updateChannelUseCase: PlayBroadcastUpdateChannelUseCase
+    @Inject
+    lateinit var updateChannelUseCase: PlayBroadcastUpdateChannelUseCase
 
     @Inject
     lateinit var addMediaUseCase: BroadcasterAddMediasUseCase
@@ -44,7 +46,7 @@ class PlayShortsUploadWorker(
     lateinit var dispatchers: CoroutineDispatchers
 
     @Inject
-    lateinit var snapshotHelper: VideoSnapshotHelper
+    lateinit var snapshotHelper: com.tokopedia.play_common.util.VideoSnapshotHelper
 
     private var currentProgress = 0
 
@@ -61,56 +63,41 @@ class PlayShortsUploadWorker(
 
     override suspend fun doWork(): Result {
         return withContext(dispatchers.io) {
-
+            /**
+             * Upload Flow
+             * 1. Update channel status to Transcoding (value = 6)
+             * 2. Upload media to uploadpedia
+             * 3. If user doesnt upload cover:
+             *    3.a. Take first frame snapshot of selected media
+             *    3.a. Upload snapshot to uploadpedia
+             *    3.b. Update channel status (updating cover)
+             * 4. Add media to broadcaster backend
+             * 5. Update channel status to Active (value = 1)
+             *
+             * If error happens anywhere within the flow:
+             * 1. Update channel status to TranscodingFailed (value = 7)
+             */
             val uploadData = PlayShortsUploadModel.parse(inputData)
-            Log.d("<LOG>", "Start Uploading...")
-            Log.d("<LOG>", uploadData.toString())
-//            Log.d("<LOG>", updateChannelUseCase.toString())
-            Log.d("<LOG>", addMediaUseCase.toString())
-            Log.d("<LOG>", dispatchers.toString())
-            Log.d("<LOG>", snapshotHelper.toString())
 
-            delay(1000)
-            updateProgress()
-            delay(1000)
-            updateProgress()
-            delay(1000)
-            updateProgress()
-            delay(1000)
-            updateProgress()
-            delay(1000)
-            updateProgress()
+            try {
+                Log.d("<LOG>", "Start Uploading...")
+                Log.d("<LOG>", uploadData.toString())
+                Log.d("<LOG>", updateChannelUseCase.toString())
+                Log.d("<LOG>", addMediaUseCase.toString())
+                Log.d("<LOG>", dispatchers.toString())
+                Log.d("<LOG>", snapshotHelper.toString())
 
-            /**
-             * Upload Flow
-             * 1. Update channel status to Transcoding (value = 6)
-             * 2. Upload media to uploadpedia
-             * 3. If user doesnt upload cover:
-             *    3.a. Take first frame snapshot of selected media
-             *    3.a. Upload snapshot to uploadpedia
-             *    3.b. Update channel status (updating cover)
-             * 4. Add media to broadcaster backend
-             * 5. Update channel status to Active (value = 1)
-             *
-             * If error happens anywhere within the flow:
-             * 1. Update channel status to TranscodingFailed (value = 7)
-             */
+                delay(1000)
+                updateProgress()
+                delay(1000)
+                updateProgress()
+                delay(1000)
+                updateProgress()
+                delay(1000)
+                updateProgress()
+                delay(1000)
+                updateProgress()
 
-            /**
-             * Upload Flow
-             * 1. Update channel status to Transcoding (value = 6)
-             * 2. Upload media to uploadpedia
-             * 3. If user doesnt upload cover:
-             *    3.a. Take first frame snapshot of selected media
-             *    3.a. Upload snapshot to uploadpedia
-             *    3.b. Update channel status (updating cover)
-             * 4. Add media to broadcaster backend
-             * 5. Update channel status to Active (value = 1)
-             *
-             * If error happens anywhere within the flow:
-             * 1. Update channel status to TranscodingFailed (value = 7)
-             */
-//            try {
 //                updateChannelStatus(uploadData, PlayChannelStatusType.Transcoding)
 //
 //                val mediaUrl = uploadMedia(UploadType.Video, uploadData.mediaUri, withUpdateProgress = true)
@@ -124,26 +111,26 @@ class PlayShortsUploadWorker(
 //                } else {
 //                    addMediaAndUpdateChannel(uploadData, mediaUrl)
 //                }
-//            }
-//            catch (e: Exception) {
+            }
+            catch (e: Exception) {
 //                updateChannelStatus(uploadData, PlayChannelStatusType.TranscodingFailed)
 //
 //                snapshotHelper.deleteLocalFile()
-//
-//                Result.failure(inputData)
-//            }
+
+                Result.failure(inputData)
+            }
 
             Result.success()
         }
     }
 
-//    private suspend fun addMediaAndUpdateChannel(
-//        uploadData: PlayShortsUploadModel,
-//        mediaUrl: String
-//    ) {
-//        val activeMediaId = addMedia(uploadData, mediaUrl)
-//        updateChannelStatusWithMedia(uploadData, activeMediaId, PlayChannelStatusType.Active)
-//    }
+    private suspend fun addMediaAndUpdateChannel(
+        uploadData: PlayShortsUploadModel,
+        mediaUrl: String
+    ) {
+        val activeMediaId = addMedia(uploadData, mediaUrl)
+        updateChannelStatusWithMedia(uploadData, activeMediaId, PlayChannelStatusType.Active)
+    }
 
     private suspend fun uploadMedia(
         uploadType: UploadType,
@@ -174,36 +161,36 @@ class PlayShortsUploadWorker(
         }
     }
 
-//    private suspend fun uploadFirstSnapshotAsCover(
-//        scope: CoroutineScope,
-//        uploadData: PlayShortsUploadModel,
-//        onSuccess: suspend () -> Unit,
-//        onError: suspend (Throwable) -> Unit
-//    ) {
-//        snapshotHelper.snap(appContext, uploadData.mediaUri) {
-//            scope.launchCatchError(block = {
-//                val uploadId = uploadMedia(UploadType.Image, it.absolutePath, withUpdateProgress = false)
-//
-//                updateChannelUseCase.apply {
-//                    setQueryParams(
-//                        PlayBroadcastUpdateChannelUseCase.createUpdateFullCoverRequest(
-//                            channelId = uploadData.shortsId,
-//                            authorId = uploadData.authorId,
-//                            coverUrl = uploadId
-//                        )
-//                    )
-//                }.executeOnBackground()
-//
-//                snapshotHelper.deleteLocalFile()
-//
-//                updateProgress()
-//
-//                onSuccess()
-//            }) {
-//                onError(it)
-//            }
-//        }
-//    }
+    private suspend fun uploadFirstSnapshotAsCover(
+        scope: CoroutineScope,
+        uploadData: PlayShortsUploadModel,
+        onSuccess: suspend () -> Unit,
+        onError: suspend (Throwable) -> Unit
+    ) {
+        snapshotHelper.snap(appContext, uploadData.mediaUri) {
+            scope.launchCatchError(block = {
+                val uploadId = uploadMedia(UploadType.Image, it.absolutePath, withUpdateProgress = false)
+
+                updateChannelUseCase.apply {
+                    setQueryParams(
+                        PlayBroadcastUpdateChannelUseCase.createUpdateFullCoverRequest(
+                            channelId = uploadData.shortsId,
+                            authorId = uploadData.authorId,
+                            coverUrl = uploadId
+                        )
+                    )
+                }.executeOnBackground()
+
+                snapshotHelper.deleteLocalFile()
+
+                updateProgress()
+
+                onSuccess()
+            }) {
+                onError(it)
+            }
+        }
+    }
 
     private suspend fun addMedia(
         uploadData: PlayShortsUploadModel,
@@ -221,41 +208,41 @@ class PlayShortsUploadWorker(
         return result.wrapper.mediaIDs.first()
     }
 
-//    private suspend fun updateChannelStatus(
-//        uploadData: PlayShortsUploadModel,
-//        status: PlayChannelStatusType
-//    ) {
-//        updateChannelUseCase.apply {
-//            setQueryParams(
-//                UpdateChannelUseCase.createUpdateStatusRequest(
-//                    channelId = uploadData.shortsId,
-//                    authorId = uploadData.authorId,
-//                    status = status
-//                )
-//            )
-//        }.executeOnBackground()
-//
-//        updateProgress()
-//    }
-//
-//    private suspend fun updateChannelStatusWithMedia(
-//        uploadData: PlayShortsUploadModel,
-//        activeMediaId: String,
-//        status: PlayChannelStatusType
-//    ) {
-//        updateChannelUseCase.apply {
-//            setQueryParams(
-//                UpdateChannelUseCase.createUpdateStatusWithActiveMediaRequest(
-//                    channelId = uploadData.shortsId,
-//                    authorId = uploadData.authorId,
-//                    status = status,
-//                    activeMediaId = activeMediaId
-//                )
-//            )
-//        }.executeOnBackground()
-//
-//        updateProgress()
-//    }
+    private suspend fun updateChannelStatus(
+        uploadData: PlayShortsUploadModel,
+        status: PlayChannelStatusType
+    ) {
+        updateChannelUseCase.apply {
+            setQueryParams(
+                UpdateChannelUseCase.createUpdateStatusRequest(
+                    channelId = uploadData.shortsId,
+                    authorId = uploadData.authorId,
+                    status = status
+                )
+            )
+        }.executeOnBackground()
+
+        updateProgress()
+    }
+
+    private suspend fun updateChannelStatusWithMedia(
+        uploadData: PlayShortsUploadModel,
+        activeMediaId: String,
+        status: PlayChannelStatusType
+    ) {
+        updateChannelUseCase.apply {
+            setQueryParams(
+                UpdateChannelUseCase.createUpdateStatusWithActiveMediaRequest(
+                    channelId = uploadData.shortsId,
+                    authorId = uploadData.authorId,
+                    status = status,
+                    activeMediaId = activeMediaId
+                )
+            )
+        }.executeOnBackground()
+
+        updateProgress()
+    }
 
     private suspend fun updateProgress() {
         currentProgress += PROGRESS_PER_STEP

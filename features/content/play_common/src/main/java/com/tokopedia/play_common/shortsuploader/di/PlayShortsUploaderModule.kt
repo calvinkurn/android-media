@@ -1,10 +1,10 @@
-package com.tokopedia.content.common.uploader.di
+package com.tokopedia.play_common.shortsuploader.di
 
 import android.content.Context
 import androidx.work.WorkManager
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
-import com.tokopedia.content.common.uploader.PlayShortsUploader
-import com.tokopedia.content.common.uploader.PlayShortsUploaderImpl
+import com.tokopedia.play_common.shortsuploader.PlayShortsUploader
+import com.tokopedia.play_common.shortsuploader.PlayShortsUploaderImpl
 import dagger.Module
 import dagger.Provides
 

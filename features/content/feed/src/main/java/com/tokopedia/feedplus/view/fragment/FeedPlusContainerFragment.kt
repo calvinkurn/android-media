@@ -32,10 +32,7 @@ import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.coachmark.CoachMark
 import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
-import com.tokopedia.content.common.const.PlayShortsUploadConst
-import com.tokopedia.content.common.model.shorts.PlayShortsUploadModel
 import com.tokopedia.content.common.types.BundleData
-import com.tokopedia.content.common.uploader.PlayShortsUploader
 import com.tokopedia.content.common.util.coachmark.ContentCoachMarkConfig
 import com.tokopedia.content.common.util.coachmark.ContentCoachMarkManager
 import com.tokopedia.content.common.util.coachmark.ContentCoachMarkSharedPref
@@ -66,6 +63,9 @@ import com.tokopedia.navigation_common.listener.AllNotificationListener
 import com.tokopedia.navigation_common.listener.FragmentListener
 import com.tokopedia.navigation_common.listener.MainParentStatusBarListener
 import com.tokopedia.network.utils.ErrorHandler
+import com.tokopedia.play_common.shortsuploader.PlayShortsUploader
+import com.tokopedia.play_common.shortsuploader.const.PlayShortsUploadConst
+import com.tokopedia.play_common.shortsuploader.model.PlayShortsUploadModel
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
@@ -248,19 +248,19 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
                     postProgressUpdateView?.show()
 
                     if(workInfo.state == WorkInfo.State.SUCCEEDED) {
-                        Log.d("<LOG>", "FEED - SUCCEEDED - isFinished ${workInfo.state.isFinished()}")
-                        postProgressUpdateView?.hide()
                         /** TODO: handle on success */
+                        postProgressUpdateView?.hide()
+                        Log.d("<LOG>", "FEED - SUCCEEDED - isFinished ${workInfo.state.isFinished()}")
                     }
                     else if(workInfo.state == WorkInfo.State.FAILED) {
-                        Log.d("<LOG>", "FEED - FAILED")
                         val uploadData = PlayShortsUploadModel.parse(workInfo.outputData)
                         postProgressUpdateView?.handleShortsUploadFailed(uploadData, playShortsUploader)
+                        Log.d("<LOG>", "FEED - FAILED")
                     }
                     else {
                         val progress = workInfo.progress.getInt(PlayShortsUploadConst.PROGRESS, 0)
+                        postProgressUpdateView?.setProgress(progress)
                         Log.d("<LOG>", "FEED - PROGRESS $progress")
-                        postProgressUpdateView?.setProgressUpdate(progress, 100)
                     }
                 }
             })

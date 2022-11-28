@@ -1,4 +1,4 @@
-package com.tokopedia.content.common.model.shorts
+package com.tokopedia.play_common.shortsuploader.model
 
 import androidx.work.Data
 import androidx.work.workDataOf

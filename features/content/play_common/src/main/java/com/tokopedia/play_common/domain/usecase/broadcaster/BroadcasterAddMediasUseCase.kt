@@ -1,6 +1,5 @@
-package com.tokopedia.content.common.usecase
+package com.tokopedia.play_common.domain.usecase.broadcaster
 
-import com.tokopedia.content.common.model.shorts.BroadcasterAddMediasResponse
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -11,20 +10,20 @@ import javax.inject.Inject
 @GqlQuery(BroadcasterAddMediasUseCase.QUERY_NAME, BroadcasterAddMediasUseCase.QUERY)
 class BroadcasterAddMediasUseCase @Inject constructor(
     gqlRepository: GraphqlRepository,
-) : GraphqlUseCase<BroadcasterAddMediasResponse>(gqlRepository) {
+) : GraphqlUseCase<com.tokopedia.play_common.domain.model.broadcaster.BroadcasterAddMediasResponse>(gqlRepository) {
 
     init {
         setGraphqlQuery(BroadcasterAddMediasUseCaseQuery())
         setCacheStrategy(
             GraphqlCacheStrategy
                 .Builder(CacheType.ALWAYS_CLOUD).build())
-        setTypeClass(BroadcasterAddMediasResponse::class.java)
+        setTypeClass(com.tokopedia.play_common.domain.model.broadcaster.BroadcasterAddMediasResponse::class.java)
     }
 
     suspend fun executeOnBackground(
         creationId: String,
         source: String,
-    ): BroadcasterAddMediasResponse {
+    ): com.tokopedia.play_common.domain.model.broadcaster.BroadcasterAddMediasResponse {
         setRequestParams(
             mapOf(
                 PARAM_REQ to mapOf(

@@ -1,7 +1,7 @@
-package com.tokopedia.content.common.uploader.di
+package com.tokopedia.play_common.shortsuploader.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
-import com.tokopedia.content.common.uploader.worker.PlayShortsUploadWorker
+import com.tokopedia.play_common.shortsuploader.worker.PlayShortsUploadWorker
 import com.tokopedia.mediauploader.common.di.MediaUploaderModule
 import dagger.Component
 

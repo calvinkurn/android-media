@@ -1,9 +1,9 @@
 package com.tokopedia.feedplus.view.di
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
-import com.tokopedia.content.common.uploader.di.PlayShortsUploaderModule
 import com.tokopedia.feedplus.view.fragment.FeedPlusContainerFragment
 import com.tokopedia.play.widget.di.PlayWidgetModule
+import com.tokopedia.play_common.shortsuploader.di.PlayShortsUploaderModule
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Component
 

@@ -4,10 +4,10 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.tokopedia.play_common.util.extension.combine
 import com.google.android.exoplayer2.ExoPlayer
-import com.tokopedia.content.common.model.shorts.PlayShortsUploadModel
+import com.tokopedia.play_common.shortsuploader.model.PlayShortsUploadModel
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.content.common.ui.model.TermsAndConditionUiModel
-import com.tokopedia.content.common.uploader.PlayShortsUploader
+import com.tokopedia.play_common.shortsuploader.PlayShortsUploader
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play.broadcaster.shorts.domain.PlayShortsRepository
 import com.tokopedia.play.broadcaster.shorts.domain.manager.PlayShortsAccountManager

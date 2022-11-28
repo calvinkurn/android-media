@@ -1,10 +1,10 @@
-package com.tokopedia.content.common.uploader
+package com.tokopedia.play_common.shortsuploader
 
 import androidx.work.ExistingWorkPolicy
 import androidx.work.WorkManager
-import com.tokopedia.content.common.const.PlayShortsUploadConst
-import com.tokopedia.content.common.model.shorts.PlayShortsUploadModel
-import com.tokopedia.content.common.uploader.worker.PlayShortsUploadWorker
+import com.tokopedia.play_common.shortsuploader.const.PlayShortsUploadConst
+import com.tokopedia.play_common.shortsuploader.model.PlayShortsUploadModel
+import com.tokopedia.play_common.shortsuploader.worker.PlayShortsUploadWorker
 import javax.inject.Inject
 
 /**

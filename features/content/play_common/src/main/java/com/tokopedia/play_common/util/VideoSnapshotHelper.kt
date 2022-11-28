@@ -1,4 +1,4 @@
-package com.tokopedia.content.common.util
+package com.tokopedia.play_common.util
 
 import android.content.Context
 import android.graphics.Bitmap

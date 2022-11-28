@@ -1,4 +1,4 @@
-package com.tokopedia.content.common.const
+package com.tokopedia.play_common.shortsuploader.const
 
 /**
  * Created By : Jonathan Darwin on November 28, 2022
@@ -9,3 +9,4 @@ object PlayShortsUploadConst {
     const val CACHE_TAG = "PLAY_SHORTS_UPLOAD_CACHE_TAG"
     const val CACHE_ID = "PLAY_SHORTS_UPLOAD_CACHE_ID"
 }
+

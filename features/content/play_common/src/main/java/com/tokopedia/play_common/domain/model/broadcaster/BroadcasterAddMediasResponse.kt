@@ -1,4 +1,4 @@
-package com.tokopedia.content.common.model.shorts
+package com.tokopedia.play_common.domain.model.broadcaster
 
 import com.google.gson.annotations.SerializedName
 

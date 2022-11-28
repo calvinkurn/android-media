@@ -1,6 +1,6 @@
-package com.tokopedia.content.common.uploader
+package com.tokopedia.play_common.shortsuploader
 
-import com.tokopedia.content.common.model.shorts.PlayShortsUploadModel
+import com.tokopedia.play_common.shortsuploader.model.PlayShortsUploadModel
 
 /**
  * Created By : Jonathan Darwin on November 28, 2022
