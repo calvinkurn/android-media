@@ -83,6 +83,7 @@ import javax.inject.Inject
 import kotlin.Exception
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
+import com.tokopedia.iconunify.R as unifyIconR
 
 /**
  * Created by Rafli Syam 20/07/2020
@@ -706,7 +707,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
             platform = ImageGeneratorConstants.ImageGeneratorPlatforms.WHATSAPP
             shareOnlyLink = isImageOnlySharing
             appIntent = getAppIntent(MimeType.IMAGE, packageName)
-            socialMediaIcon = context?.let { AppCompatResources.getDrawable(it, R.drawable.universal_sharing_ic_whatsapp) }
+            socialMediaIcon = context?.let { AppCompatResources.getDrawable(it, unifyIconR.drawable.iconunify_whatsapp) }
         })
         socialMediaList.add(ShareModel.Facebook().apply {
             packageName = PACKAGE_NAME_FACEBOOK
@@ -726,7 +727,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
                 PACKAGE_NAME_FACEBOOK,
                 FACEBOOK_FEED_ACTIVITY
             )
-            socialMediaIcon = context?.let { AppCompatResources.getDrawable(it, R.drawable.universal_sharing_ic_facebook) }
+            socialMediaIcon = context?.let { AppCompatResources.getDrawable(it, unifyIconR.drawable.iconunify_facebook) }
         })
         if (!TextUtils.isEmpty(savedImagePath)) {
             socialMediaList.add(ShareModel.Facebook().apply {
@@ -740,7 +741,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
                 platform = ImageGeneratorConstants.ImageGeneratorPlatforms.FACEBOOK_STORY
                 shareOnlyLink = true
                 appIntent = getAppIntent(MimeType.IMAGE, packageName, actionType = FACEBOOK_STORY_INTENT_ACTION)
-                socialMediaIcon = context?.let { AppCompatResources.getDrawable(it, R.drawable.universal_sharing_icon_fbstories3) }
+                socialMediaIcon = context?.let { AppCompatResources.getDrawable(it, unifyIconR.drawable.iconunify_facebook_story) }
             })
             socialMediaList.add(ShareModel.Instagram().apply {
                 packageName = PACKAGE_NAME_INSTAGRAM
@@ -752,7 +753,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
                 socialMediaOrderingScore = getSocialMediaOrderingScore(socialMediaOrderingScore, KEY_IG_FEED)
                 shareOnlyLink = true
                 appIntent = getAppIntent(MimeType.IMAGE, packageName, "com.instagram.share.ADD_TO_FEED")
-                socialMediaIcon = context?.let { AppCompatResources.getDrawable(it, R.drawable.universal_sharing_ic_instagram) }
+                socialMediaIcon = context?.let { AppCompatResources.getDrawable(it, unifyIconR.drawable.iconunify_instagram) }
             })
             socialMediaList.add(ShareModel.Instagram().apply {
                 packageName = PACKAGE_NAME_INSTAGRAM
@@ -764,7 +765,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
                 platform = ImageGeneratorConstants.ImageGeneratorPlatforms.INSTAGRAM_STORY
                 shareOnlyLink = true
                 appIntent = getAppIntent(MimeType.IMAGE, packageName, "com.instagram.share.ADD_TO_STORY")
-                socialMediaIcon = context?.let { AppCompatResources.getDrawable(it, R.drawable.universal_sharing_ic_icon_igstory) }
+                socialMediaIcon = context?.let { AppCompatResources.getDrawable(it, unifyIconR.drawable.iconunify_instagram_story) }
             })
         } else {
             socialMediaList.add(ShareModel.Instagram().apply {
@@ -777,7 +778,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
                 socialMediaOrderingScore = getSocialMediaOrderingScore(socialMediaOrderingScore, KEY_IG_DM)
                 shareOnlyLink = false
                 appIntent = getAppIntent(MimeType.TEXT, packageName)
-                socialMediaIcon = context?.let { AppCompatResources.getDrawable(it, R.drawable.universal_sharing_ic_instagram_dm) }
+                socialMediaIcon = context?.let { AppCompatResources.getDrawable(it, unifyIconR.drawable.iconunify_instagram_dm) }
             })
         }
         socialMediaList.add(ShareModel.Line().apply {
@@ -794,7 +795,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
             } else {
                 appIntent = getAppIntent(MimeType.TEXT, packageName)
             }
-            socialMediaIcon = context?.let { AppCompatResources.getDrawable(it, R.drawable.universal_sharing_ic_line) }
+            socialMediaIcon = context?.let { AppCompatResources.getDrawable(it, unifyIconR.drawable.iconunify_line) }
         })
         socialMediaList.add(ShareModel.Twitter().apply {
             packageName = PACKAGE_NAME_TWITTER
@@ -806,7 +807,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
             socialMediaOrderingScore = getSocialMediaOrderingScore(socialMediaOrderingScore, KEY_TWITTER)
             shareOnlyLink = isImageOnlySharing
             appIntent = getAppIntent(MimeType.IMAGE, packageName)
-            socialMediaIcon = context?.let { AppCompatResources.getDrawable(it, R.drawable.universal_sharing_ic_twitter) }
+            socialMediaIcon = context?.let { AppCompatResources.getDrawable(it, unifyIconR.drawable.iconunify_twitter) }
         })
         socialMediaList.add(ShareModel.Telegram().apply {
             packageName = PACKAGE_NAME_TELEGRAM
@@ -818,7 +819,7 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
             socialMediaOrderingScore = getSocialMediaOrderingScore(socialMediaOrderingScore, KEY_TELEGRAM)
             shareOnlyLink = isImageOnlySharing
             appIntent = getAppIntent(MimeType.IMAGE, packageName)
-            socialMediaIcon = context?.let { AppCompatResources.getDrawable(it, R.drawable.universal_sharing_ic_icon_telegram) }
+            socialMediaIcon = context?.let { AppCompatResources.getDrawable(it, unifyIconR.drawable.iconunify_telegram) }
         })
         socialMediaList.sortBy { it.socialMediaOrderingScore }
         return socialMediaList.filterNot {
