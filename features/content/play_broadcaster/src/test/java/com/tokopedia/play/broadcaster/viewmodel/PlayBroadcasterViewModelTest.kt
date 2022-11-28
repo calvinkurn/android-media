@@ -252,6 +252,25 @@ class PlayBroadcasterViewModelTest {
     //endregion
 
     @Test
+    fun `when user is empty`() {
+        coEvery { mockRepo.getAccountList() } returns emptyList()
+
+        val robot = PlayBroadcastViewModelRobot(
+            dispatchers = testDispatcher,
+            channelRepo = mockRepo,
+            getChannelUseCase = mockGetChannelUseCase,
+            getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
+            productMapper = PlayBroProductUiMapper(),
+        )
+
+        robot.use {
+            it.recordState { it.getAccountConfiguration() }
+            val configInfo = it.getViewModel().observableConfigInfo.getOrAwaitValue()
+            configInfo.assertFailed()
+        }
+    }
+
+    @Test
     fun `when user only have shop and eligible then selected account is shop`() {
         val configMock = uiModelBuilder.buildConfigurationUiModel()
         val accountMock = uiModelBuilder.buildAccountListModel(onlyShop = true)

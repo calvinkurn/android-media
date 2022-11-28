@@ -402,7 +402,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
             is PlayBroadcastAction.SetSchedule -> handleSetSchedule(event.date)
             PlayBroadcastAction.DeleteSchedule -> handleDeleteSchedule()
             is PlayBroadcastAction.GetAccountList -> handleGetAccountList(event.selectedType)
-            is PlayBroadcastAction.SwitchAccount -> handleSwitchAccount()
+            is PlayBroadcastAction.SwitchAccount -> handleSwitchAccount(event.needLoading)
 
             /** Game */
             is PlayBroadcastAction.ClickGameOption -> handleClickGameOption(event.gameType)
@@ -1501,7 +1501,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         mIsBroadcastStopped = true
     }
 
-    private fun handleGetAccountList(selectedType: String = TYPE_UNKNOWN) {
+    private fun handleGetAccountList(selectedType: String) {
         viewModelScope.launchCatchError(block = {
             _accountStateInfo.value = AccountStateInfo()
             _observableConfigInfo.value = NetworkResult.Loading
@@ -1552,7 +1552,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         } else nonSellerAccount ?: ContentAccountUiModel.Empty
     }
 
-    private fun handleSwitchAccount(needLoading: Boolean = true) {
+    private fun handleSwitchAccount(needLoading: Boolean) {
         if (needLoading) _observableConfigInfo.value = NetworkResult.Loading
 
         val currentSelected = switchAccount(
