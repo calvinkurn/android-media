@@ -1153,6 +1153,7 @@ class ShopPageProductListResultViewModelTest : ShopPageProductListViewModelTestF
         )
         assert(shopPageProductListResultViewModel.miniCartAdd.value is Success)
         assert(shopPageProductListResultViewModel.shopPageAtcTracker.value?.atcType == ShopPageAtcTracker.AtcType.ADD)
+        assert(shopPageProductListResultViewModel.createAffiliateCookieAtcProduct.value != null)
     }
 
     @Test
@@ -1208,6 +1209,7 @@ class ShopPageProductListResultViewModelTest : ShopPageProductListViewModelTestF
         )
         assert(shopPageProductListResultViewModel.miniCartRemove.value is Success)
         assert(shopPageProductListResultViewModel.shopPageAtcTracker.value?.atcType == ShopPageAtcTracker.AtcType.REMOVE)
+        assert(shopPageProductListResultViewModel.createAffiliateCookieAtcProduct.value == null)
     }
 
     @Test
@@ -1264,6 +1266,7 @@ class ShopPageProductListResultViewModelTest : ShopPageProductListViewModelTestF
         )
         assert(shopPageProductListResultViewModel.miniCartUpdate.value is Success)
         assert(shopPageProductListResultViewModel.shopPageAtcTracker.value?.atcType == ShopPageAtcTracker.AtcType.UPDATE_ADD)
+        assert(shopPageProductListResultViewModel.createAffiliateCookieAtcProduct.value != null)
     }
 
     @Test
@@ -1296,6 +1299,7 @@ class ShopPageProductListResultViewModelTest : ShopPageProductListViewModelTestF
         )
         assert(shopPageProductListResultViewModel.miniCartUpdate.value is Success)
         assert(shopPageProductListResultViewModel.shopPageAtcTracker.value?.atcType == ShopPageAtcTracker.AtcType.UPDATE_REMOVE)
+        assert(shopPageProductListResultViewModel.createAffiliateCookieAtcProduct.value == null)
     }
 
     @Test
@@ -1369,5 +1373,66 @@ class ShopPageProductListResultViewModelTest : ShopPageProductListViewModelTestF
             mockShopId
         )
         coVerify { affiliateCookieHelper.initCookie(any(), any(), any()) }
+    }
+
+    @Test
+    fun `when call createAffiliateCookieShopAtcDirectPurchase is success`() {
+        val mockAffiliateChannel = "channel"
+        val mockIsVariant = true
+        val mockProductId = "678"
+        val mockStockQty = 11
+        val mockShopId = "125"
+        coEvery {
+            affiliateCookieHelper.initCookie(any(),any(),any())
+        } returns Unit
+        shopPageProductListResultViewModel.createAffiliateCookieShopAtcProduct(
+            affiliateCookieHelper,
+            mockAffiliateChannel,
+            mockProductId,
+            mockIsVariant,
+            mockStockQty,
+            mockShopId
+        )
+        coVerify { affiliateCookieHelper.initCookie(any(),any(),any()) }
+    }
+
+    @Test
+    fun `when call createAffiliateCookieShopAtcDirectPurchase is error`() {
+        val mockAffiliateChannel = "channel"
+        val mockIsVariant = true
+        val mockProductId = "678"
+        val mockStockQty = 11
+        val mockShopId = "125"
+        coEvery {
+            affiliateCookieHelper.initCookie(any(),any(),any())
+        } throws Exception()
+        shopPageProductListResultViewModel.createAffiliateCookieShopAtcProduct(
+            affiliateCookieHelper,
+            mockAffiliateChannel,
+            mockProductId,
+            mockIsVariant,
+            mockStockQty,
+            mockShopId
+        )
+        coVerify { affiliateCookieHelper.initCookie(any(),any(),any()) }
+    }
+
+    @Test
+    fun `when call getShopAffiliateChannel success, then shopAffiliateChannel should return mocked value`() {
+        val mockAffiliateChannel = "channel"
+        coEvery {
+            sharedPreferences.getString(any(), any())
+        } returns mockAffiliateChannel
+        shopPageProductListResultViewModel.getShopAffiliateChannel()
+        assert(shopPageProductListResultViewModel.shopAffiliateChannel.value == mockAffiliateChannel)
+    }
+
+    @Test
+    fun `when getShopAffiliateChannel error, then shopAffiliateChannel should be null`() {
+        coEvery {
+            sharedPreferences.getString(any(), any())
+        } throws Exception()
+        shopPageProductListResultViewModel.getShopAffiliateChannel()
+        assert(shopPageProductListResultViewModel.shopAffiliateChannel.value == null)
     }
 }

@@ -6,6 +6,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.atc_common.AtcFromExternalSource
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.cartcommon.data.request.updatecart.UpdateCartRequest
@@ -27,6 +28,7 @@ import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.shop.common.constant.ShopPageConstant
 import com.tokopedia.shop.common.constant.ShopPageConstant.CODE_STATUS_SUCCESS
+import com.tokopedia.shop.common.data.model.AffiliateAtcProductModel
 import com.tokopedia.shop.common.data.model.ShopPageAtcTracker
 import com.tokopedia.shop.common.domain.GetShopFilterBottomSheetDataUseCase
 import com.tokopedia.shop.common.domain.GetShopFilterProductCountUseCase
@@ -125,6 +127,10 @@ class ShopPageProductListViewModel @Inject constructor(
     val shopPageAtcTracker: LiveData<ShopPageAtcTracker>
         get() = _shopPageAtcTracker
     private val _shopPageAtcTracker = MutableLiveData<ShopPageAtcTracker>()
+
+    val createAffiliateCookieAtcProduct: LiveData<AffiliateAtcProductModel>
+        get() = _createAffiliateCookieAtcProduct
+    private val _createAffiliateCookieAtcProduct = MutableLiveData<AffiliateAtcProductModel>()
 
     fun getBuyerViewContentData(
         shopId: String,
@@ -590,10 +596,12 @@ class ShopPageProductListViewModel @Inject constructor(
             AddToCartUseCase.getMinimumParams(
                 productId = productId,
                 shopId = shopId,
-                quantity = quantity
+                quantity = quantity,
+                atcExternalSource = AtcFromExternalSource.ATC_FROM_SHOP
             )
         addToCartUseCase.setParams(addToCartRequestParams)
         addToCartUseCase.execute({
+            val atcType = ShopPageAtcTracker.AtcType.ADD
             trackAddToCart(
                 it.data.cartId,
                 it.data.productId.toString(),
@@ -601,9 +609,10 @@ class ShopPageProductListViewModel @Inject constructor(
                 shopProductUiModel.displayedPrice,
                 shopProductUiModel.isVariant,
                 it.data.quantity,
-                ShopPageAtcTracker.AtcType.ADD,
+                atcType,
                 componentName
             )
+            checkShouldCreateAffiliateCookieAtcProduct(atcType, shopProductUiModel)
             _miniCartAdd.postValue(Success(it))
         }, {
             _miniCartAdd.postValue(Fail(it))
@@ -644,10 +653,29 @@ class ShopPageProductListViewModel @Inject constructor(
                 atcType,
                 componentName
             )
+            checkShouldCreateAffiliateCookieAtcProduct(atcType, shopProductUiModel)
             _miniCartUpdate.value = Success(it)
         }, {
             _miniCartUpdate.postValue(Fail(it))
         })
+    }
+
+    private fun checkShouldCreateAffiliateCookieAtcProduct(
+        atcType: ShopPageAtcTracker.AtcType,
+        shopProductUiModel: ShopProductUiModel
+    ) {
+        when (atcType) {
+            ShopPageAtcTracker.AtcType.ADD, ShopPageAtcTracker.AtcType.UPDATE_ADD -> {
+                _createAffiliateCookieAtcProduct.postValue(
+                    AffiliateAtcProductModel(
+                        shopProductUiModel.id,
+                        shopProductUiModel.isVariant,
+                        shopProductUiModel.stock.toInt()
+                    )
+                )
+            }
+            else -> {}
+        }
     }
 
     private fun removeItemCart(

@@ -925,8 +925,17 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     override fun onVideoStopTrack(feedXCard: FeedXCard, duration: Long) {
     }
 
-    override fun onAddToCartSuccess() {
+    override fun onAddToCartSuccess(productId: String) {
+        createAffiliateCookieAtcDirectPurchase(productId)
         RouteManager.route(context, ApplinkConstInternalMarketplace.CART)
+    }
+
+    private fun createAffiliateCookieAtcDirectPurchase(productId: String) {
+        (activity as? ShopPageSharedListener)?.createAffiliateCookieAtcProduct(
+            productId,
+            false,
+            0
+        )
     }
 
     override fun onAddToCartFailed(pdpAppLink: String) {

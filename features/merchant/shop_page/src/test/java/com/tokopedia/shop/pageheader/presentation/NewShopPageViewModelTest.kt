@@ -1,13 +1,13 @@
 package com.tokopedia.shop.pageheader.presentation
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
-import com.tokopedia.media.loader.loadImageWithEmptyTarget
 import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
 import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.shop.common.data.model.*
@@ -92,6 +92,9 @@ class NewShopPageViewModelTest {
     lateinit var gqlGetShopOperationalHourStatusUseCase: Lazy<GQLGetShopOperationalHourStatusUseCase>
 
     @RelaxedMockK
+    lateinit var sharedPreferences: SharedPreferences
+
+    @RelaxedMockK
     lateinit var affiliateCookieHelper: AffiliateCookieHelper
 
     @RelaxedMockK
@@ -112,21 +115,22 @@ class NewShopPageViewModelTest {
     fun setup() {
         MockKAnnotations.init(this)
         shopPageViewModel = NewShopPageViewModel(
-            userSessionInterface,
-            gqlGetShopInfoForHeaderUseCase,
-            getBroadcasterShopConfigUseCase,
-            gqlGetShopInfobUseCaseCoreAndAssets,
-            shopQuestGeneralTrackerUseCase,
-            getShopPageP1DataUseCase,
-            newGetShopPageP1DataUseCase,
-            getShopProductListUseCase,
-            shopModerateRequestStatusUseCase,
-            shopRequestUnmoderateUseCase,
-            getShopPageHeaderLayoutUseCase,
-            getFollowStatusUseCase,
-            updateFollowStatusUseCase,
-            gqlGetShopOperationalHourStatusUseCase,
-            testCoroutineDispatcherProvider
+                userSessionInterface,
+                gqlGetShopInfoForHeaderUseCase,
+                getBroadcasterShopConfigUseCase,
+                gqlGetShopInfobUseCaseCoreAndAssets,
+                shopQuestGeneralTrackerUseCase,
+                getShopPageP1DataUseCase,
+                newGetShopPageP1DataUseCase,
+                getShopProductListUseCase,
+                shopModerateRequestStatusUseCase,
+                shopRequestUnmoderateUseCase,
+                getShopPageHeaderLayoutUseCase,
+                getFollowStatusUseCase,
+                updateFollowStatusUseCase,
+                gqlGetShopOperationalHourStatusUseCase,
+                sharedPreferences,
+                testCoroutineDispatcherProvider
         )
     }
 
@@ -717,14 +721,14 @@ class NewShopPageViewModelTest {
     }
 
     @Test
-    fun `check when call initAffiliateCookie is success`() {
+    fun `check when call shopLandingPageInitAffiliateCookie is success`() {
         val mockAffiliateUUId = "123"
         val mockAffiliateChannel = "channel"
         val mockShopId = "456"
         coEvery {
             affiliateCookieHelper.initCookie(any(), any(), any())
         } returns Unit
-        shopPageViewModel.initAffiliateCookie(
+        shopPageViewModel.shopLandingPageInitAffiliateCookie(
             affiliateCookieHelper,
             mockAffiliateUUId,
             mockAffiliateChannel,
@@ -734,19 +738,84 @@ class NewShopPageViewModelTest {
     }
 
     @Test
-    fun `when when call initAffiliateCookie is not success`() {
+    fun `when when call shopLandingPageInitAffiliateCookie is not success`() {
         val mockAffiliateUUId = "123"
         val mockAffiliateChannel = "channel"
         val mockShopId = "456"
         coEvery {
             affiliateCookieHelper.initCookie(any(), any(), any())
         } throws Exception()
-        shopPageViewModel.initAffiliateCookie(
+        shopPageViewModel.shopLandingPageInitAffiliateCookie(
             affiliateCookieHelper,
             mockAffiliateUUId,
             mockAffiliateChannel,
             mockShopId
         )
         coVerify { affiliateCookieHelper.initCookie(any(), any(), any()) }
+    }
+
+    @Test
+    fun `when call createAffiliateCookieShopAtcDirectPurchase is success`() {
+        val mockAffiliateChannel = "channel"
+        val mockUUID = "1234"
+        val mockIsVariant = true
+        val mockProductId = "678"
+        val mockStockQty = 11
+        val mockShopId = "5423"
+        coEvery {
+            affiliateCookieHelper.initCookie(any(),any(),any())
+        } returns Unit
+        shopPageViewModel.createAffiliateCookieShopAtcProduct(
+            mockUUID,
+            affiliateCookieHelper,
+            mockAffiliateChannel,
+            mockProductId,
+            mockIsVariant,
+            mockStockQty,
+            mockShopId
+        )
+        coVerify { affiliateCookieHelper.initCookie(any(),any(),any()) }
+    }
+
+    @Test
+    fun `when call createAffiliateCookieShopAtcDirectPurchase is error`() {
+        val mockAffiliateChannel = "channel"
+        val mockUUID = "1234"
+        val mockIsVariant = true
+        val mockProductId = "678"
+        val mockStockQty = 11
+        val mockShopId = "5423"
+        coEvery {
+            affiliateCookieHelper.initCookie(any(),any(),any())
+        } throws Exception()
+        shopPageViewModel.createAffiliateCookieShopAtcProduct(
+            mockUUID,
+            affiliateCookieHelper,
+            mockAffiliateChannel,
+            mockProductId,
+            mockIsVariant,
+            mockStockQty,
+            mockShopId
+        )
+        coVerify { affiliateCookieHelper.initCookie(any(),any(),any()) }
+    }
+
+    @Test
+    fun `when saveAffiliateTrackerId success, then shared preferences getString should return mocked value`() {
+        val mockAffiliateChannel = "channel"
+        every { sharedPreferences.getString(any(), any()) } returns mockAffiliateChannel
+        shopPageViewModel.saveAffiliateChannel(mockAffiliateChannel)
+        assert(sharedPreferences.getString("", "") == mockAffiliateChannel)
+    }
+
+    @Test
+    fun `when saveAffiliateTrackerId error, then shared preferences getString should return empty value`() {
+        val mockAffiliateChannel = "channel"
+        every { sharedPreferences.getString(any(), any()) } returns ""
+        coEvery {
+            sharedPreferences.edit().putString(any(), any())
+        } throws Exception()
+        shopPageViewModel.saveAffiliateChannel(mockAffiliateChannel)
+        assert(sharedPreferences.getString("", "")?.isEmpty() == true)
     }
 }

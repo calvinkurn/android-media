@@ -899,6 +899,23 @@ open class ShopPageHomeFragment :
         observeDeleteCartLiveData()
         observeUpdatedShopHomeWidgetQuantityData()
         observeShopAtcTrackerLiveData()
+        observeIsCreateAffiliateCookieAtcProduct()
+    }
+
+    private fun observeIsCreateAffiliateCookieAtcProduct() {
+        viewModel?.createAffiliateCookieAtcProduct?.observe(viewLifecycleOwner) {
+            it?.let {
+                createAffiliateCookieAtcProduct(it)
+            }
+        }
+    }
+
+    private fun createAffiliateCookieAtcProduct(affiliateAtcProductModel: AffiliateAtcProductModel) {
+        (activity as? ShopPageSharedListener)?.createAffiliateCookieAtcProduct(
+            affiliateAtcProductModel.productId,
+            affiliateAtcProductModel.isVariant,
+            affiliateAtcProductModel.stockQty
+        )
     }
 
     private fun observeShopAtcTrackerLiveData() {
@@ -906,6 +923,7 @@ open class ShopPageHomeFragment :
             when (it.atcType) {
                 ShopPageAtcTracker.AtcType.ADD -> {
                     sendClickAddToCartTracker(it)
+
                 }
                 ShopPageAtcTracker.AtcType.UPDATE_ADD, ShopPageAtcTracker.AtcType.UPDATE_REMOVE -> {
                     sendUpdateCartProductQuantityTracker(it)
