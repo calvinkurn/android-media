@@ -73,14 +73,17 @@ class ProductViewHolder(
             }
         }
 
-        if (binding?.imageStockReminder?.isVisible.orTrue()) {
-            if (!binding?.ivLabelGuaranteed?.isVisible.orFalse()) {
-                listener.onImpressionProductStockReminder()
-            }
-        } else if (binding?.btnMoreOptions?.isVisible.orTrue() && absoluteAdapterPosition.orZero() == Int.ZERO) {
-            if (!binding?.imageNotifyMeBuyer?.isVisible.orFalse()) {
-                listener.onImpressionMoreOption()
-            }
+        if (binding?.imageStockReminder?.isVisible.orTrue()
+            && !binding?.ivLabelGuaranteed?.isVisible.orFalse()) {
+
+            listener.onImpressionProductStockReminder()
+
+        } else if (binding?.btnMoreOptions?.isVisible.orTrue()
+            && absoluteAdapterPosition.orZero() == Int.ZERO
+            && !binding?.imageNotifyMeBuyer?.isVisible.orFalse()) {
+
+            listener.onImpressionMoreOption()
+
         }
 
     }
@@ -131,7 +134,12 @@ class ProductViewHolder(
             val marginLeft =
                 itemView.context?.resources?.getDimensionPixelSize(com.tokopedia.unifyprinciples.R.dimen.spacing_lvl4)
                     .orZero()
-            binding?.labelActive?.setMargin(marginLeft.toDp(), layoutParams.topMargin, Int.ZERO, Int.ZERO)
+            binding?.labelActive?.setMargin(
+                marginLeft.toDp(),
+                layoutParams.topMargin,
+                Int.ZERO,
+                Int.ZERO
+            )
         } else {
             binding?.labelActive?.setMargin(Int.ZERO, layoutParams.topMargin, Int.ZERO, Int.ZERO)
         }
