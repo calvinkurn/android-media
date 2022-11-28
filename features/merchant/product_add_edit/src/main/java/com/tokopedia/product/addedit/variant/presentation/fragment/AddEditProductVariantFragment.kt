@@ -56,7 +56,6 @@ import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProduc
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.CUSTOM_VARIANT_TYPE_ID
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.CUSTOM_VARIANT_UNIT_VALUE_ID
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.MAX_CUSTOM_VARIANT_TYPE
-import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.MAX_IMAGE_VARIANT
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.MAX_SELECTED_VARIANT_TYPE
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.REQUEST_CODE_EDITOR_SIZECHART_IMAGE_MEDIA_PICKER
 import com.tokopedia.product.addedit.variant.presentation.constant.AddEditProductVariantConstants.Companion.REQUEST_CODE_SIZECHART_IMAGE
@@ -1062,7 +1061,6 @@ class AddEditProductVariantFragment :
         val pageSourceState = variantPhotoAdapter?.getAddOrEditPickerState(position)?:return
         val intent = ImagePickerAddEditNavigation.getIntentSinglePicker(
             ctx,
-            MAX_IMAGE_VARIANT,
             pageSourceState
         )
         startActivityForResult(intent, REQUEST_CODE_VARIANT_PHOTO_IMAGE_MEDIA_PICKER)
@@ -1438,7 +1436,6 @@ class AddEditProductVariantFragment :
         val ctx = context ?: return
         val intent = ImagePickerAddEditNavigation.getIntentSinglePicker(
             ctx,
-            MAX_IMAGE_VARIANT,
             PageSource.EditVariant
         )
         startActivityForResult(intent, REQUEST_CODE_SIZECHART_IMAGE_MEDIA_PICKER)

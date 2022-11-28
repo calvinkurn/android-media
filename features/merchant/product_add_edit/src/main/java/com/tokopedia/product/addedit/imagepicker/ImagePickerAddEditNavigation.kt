@@ -48,12 +48,11 @@ object ImagePickerAddEditNavigation {
         }
     }
 
-    fun getIntentSinglePicker(context: Context, maxImageCount: Int, source : PageSource, imageFile : ArrayList<String> = arrayListOf()): Intent {
+    fun getIntentSinglePicker(context: Context, source : PageSource, imageFile : ArrayList<String> = arrayListOf()): Intent {
         return MediaPicker.intentWithGalleryFirst(context) {
             pageSource(source)
             singleSelectionMode()
             modeType(ModeType.IMAGE_ONLY)
-            maxMediaItem(maxImageCount)
             maxVideoItem(NONE_VIDEO_UPLOAD)
             cameraRatio(CameraRatio.Square)
             includeMedias(imageFile)
