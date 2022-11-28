@@ -10,6 +10,8 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.home_component.util.setGradientBackground
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.tokopedianow.R
+import com.tokopedia.tokopedianow.common.analytics.RealTimeRecommendationAnalytics
+import com.tokopedia.tokopedianow.common.listener.RealTimeRecommendationListener
 import com.tokopedia.tokopedianow.common.decoration.ProductCardCarouselDecoration
 import com.tokopedia.tokopedianow.common.util.CustomProductCardCarouselLinearLayoutManager
 import com.tokopedia.tokopedianow.common.view.TokoNowDynamicHeaderView
@@ -28,7 +30,9 @@ import kotlin.math.abs
 
 class HomeLeftCarouselAtcViewHolder(
     itemView: View,
-    private val homeLeftCarouselAtcCallback: HomeLeftCarouselAtcCallback? = null
+    private val homeLeftCarouselAtcCallback: HomeLeftCarouselAtcCallback? = null,
+    private val rtrListener: RealTimeRecommendationListener? = null,
+    private val rtrAnalytics: RealTimeRecommendationAnalytics? = null
 ) : AbstractViewHolder<HomeLeftCarouselAtcUiModel>(itemView), CoroutineScope {
 
     companion object {
@@ -88,6 +92,9 @@ class HomeLeftCarouselAtcViewHolder(
             setupParallaxImage(
                 element = element
             )
+            setupRealTimeRecommendation(
+                element = element
+            )
             adapter.submitList(ArrayList(element.productList))
         }
     }
@@ -95,6 +102,7 @@ class HomeLeftCarouselAtcViewHolder(
     override fun bind(element: HomeLeftCarouselAtcUiModel?, payloads: MutableList<Any>) {
         if (payloads.firstOrNull() == true && element != null) {
             adapter.submitList(ArrayList(element.productList))
+            setupRealTimeRecommendation(element)
         }
     }
 
@@ -109,6 +117,14 @@ class HomeLeftCarouselAtcViewHolder(
                 element = element
             )
         )
+    }
+
+    private fun setupRealTimeRecommendation(element: HomeLeftCarouselAtcUiModel) {
+        binding?.realTimeRecommendationCarousel?.apply {
+            listener = rtrListener
+            analytics = rtrAnalytics
+            bind(element.realTimeRecom)
+        }
     }
 
     @SuppressLint("ClickableViewAccessibility")

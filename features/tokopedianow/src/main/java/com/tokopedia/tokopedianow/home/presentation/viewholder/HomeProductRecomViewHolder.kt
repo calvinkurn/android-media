@@ -4,6 +4,8 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.tokopedianow.R
+import com.tokopedia.tokopedianow.common.analytics.RealTimeRecommendationAnalytics
+import com.tokopedia.tokopedianow.common.listener.RealTimeRecommendationListener
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardCarouselItemUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowSeeMoreCardCarouselUiModel
 import com.tokopedia.tokopedianow.common.view.TokoNowDynamicHeaderView
@@ -14,7 +16,9 @@ import com.tokopedia.utils.view.binding.viewBinding
 
 class HomeProductRecomViewHolder(
     itemView: View,
-    private val listener: HomeProductRecomListener? = null
+    private val listener: HomeProductRecomListener? = null,
+    private val rtrListener: RealTimeRecommendationListener? = null,
+    private val rtrAnalytics: RealTimeRecommendationAnalytics? = null
 ) : AbstractViewHolder<HomeProductRecomUiModel>(itemView),
     TokoNowProductCardCarouselView.TokoNowProductCardCarouselListener,
     TokoNowDynamicHeaderView.TokoNowDynamicHeaderListener {
@@ -43,6 +47,7 @@ class HomeProductRecomViewHolder(
                 productCardCarouselListener = this@HomeProductRecomViewHolder,
                 headerCarouselListener = this@HomeProductRecomViewHolder
             )
+            renderRealTimeRecommendation(element)
         }
     }
 
@@ -53,6 +58,15 @@ class HomeProductRecomViewHolder(
                 seeMoreModel = element.seeMoreModel,
                 header = element.headerModel
             )
+            renderRealTimeRecommendation(element)
+        }
+    }
+
+    private fun renderRealTimeRecommendation(element: HomeProductRecomUiModel) {
+        binding?.realTimeRecommendationCarousel?.apply {
+            listener = rtrListener
+            analytics = rtrAnalytics
+            bind(element.realTimeRecom)
         }
     }
 

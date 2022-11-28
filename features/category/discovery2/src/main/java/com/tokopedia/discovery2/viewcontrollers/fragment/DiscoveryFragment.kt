@@ -52,16 +52,16 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Compa
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.CAMPAIGN_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.CATEGORY_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.COMPONENT_ID
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.DYNAMIC_SUBTITLE
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.EMBED_CATEGORY
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.END_POINT
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.PIN_PRODUCT
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.PRODUCT_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.RECOM_PRODUCT_ID
-import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.DYNAMIC_SUBTITLE
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.SHOP_ID
-import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.TARGET_TITLE_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.SOURCE
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.TARGET_COMP_ID
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.TARGET_TITLE_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.VARIANT_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
@@ -681,6 +681,10 @@ class DiscoveryFragment :
                         it.data.addToCartDataModel.data.cartId
                     )
                 }else {
+                    analytics.trackEventProductATCTokonow(
+                        it.data.requestParams.requestingComponent,
+                        it.data.addToCartDataModel.data.cartId
+                    )
                     getMiniCart()
                     showToaster(
                         message = it.data.addToCartDataModel.errorMessage.joinToString(separator = ", "),
@@ -698,6 +702,10 @@ class DiscoveryFragment :
 
         discoveryViewModel.miniCartUpdate.observe(viewLifecycleOwner, {
             if(it is Success) {
+                analytics.trackEventProductATCTokonow(
+                    it.data.requestParams.requestingComponent,
+                    it.data.cartId
+                )
                 getMiniCart()
             }else if(it is Fail){
                 if(it.throwable is ResponseErrorException)
@@ -710,9 +718,13 @@ class DiscoveryFragment :
 
         discoveryViewModel.miniCartRemove.observe(viewLifecycleOwner, {
             if(it is Success) {
+                analytics.trackEventProductATCTokonow(
+                    it.data.requestParams.requestingComponent,
+                    it.data.cartId
+                )
                 getMiniCart()
                 showToaster(
-                    message = it.data.second,
+                    message = it.data.message,
                     type = Toaster.TYPE_NORMAL
                 )
             }else if(it is Fail){
@@ -1766,14 +1778,18 @@ class DiscoveryFragment :
     }
 
     private fun smoothScrollToComponentWithPosition(position: Int) {
-        val smoothScroller: RecyclerView.SmoothScroller =
-            object : LinearSmoothScroller(context) {
-                override fun getVerticalSnapPreference(): Int {
-                    return SNAP_TO_START
+        try {
+            val smoothScroller: RecyclerView.SmoothScroller =
+                object : LinearSmoothScroller(context) {
+                    override fun getVerticalSnapPreference(): Int {
+                        return SNAP_TO_START
+                    }
                 }
-            }
-        smoothScroller.targetPosition = position
-        staggeredGridLayoutManager?.startSmoothScroll(smoothScroller)
+            smoothScroller.targetPosition = position
+            staggeredGridLayoutManager?.startSmoothScroll(smoothScroller)
+        } catch (e: Exception) {
+
+        }
     }
 
     fun updateSelectedSection(sectionID: String) {

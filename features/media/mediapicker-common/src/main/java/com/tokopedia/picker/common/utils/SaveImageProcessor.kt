@@ -2,10 +2,15 @@ package com.tokopedia.picker.common.utils
 
 import android.content.ContentValues
 import android.content.Context
+import android.net.Uri
 import android.os.Build
 import android.os.Environment
 import android.provider.MediaStore
+import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
+import com.tokopedia.picker.common.PICKER_SAVE_GALLERY
 import com.tokopedia.picker.common.utils.wrapper.PickerFile
 import com.tokopedia.picker.common.utils.wrapper.PickerFile.Companion.asPickerFile
 import com.tokopedia.utils.file.FileUtil
@@ -23,63 +28,90 @@ object SaveImageProcessor {
     private const val MIME_VIDEO_TYPE = "video/mp4"
 
     fun saveToGallery(context: Context, filePath: String): File? {
-        if (filePath.isEmpty()) return null
+        try {
+            if (filePath.isEmpty()) return null
 
-        val file = filePath.asPickerFile()
+            val file = filePath.asPickerFile()
 
-        val contentUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+            val contentUri: Uri
+            val mimeType: String
+            if (file.isImage()) {
+                contentUri = MediaStore.Images.Media.EXTERNAL_CONTENT_URI
+                mimeType = MIME_IMAGE_TYPE
+            } else {
+                contentUri = MediaStore.Video.Media.EXTERNAL_CONTENT_URI
+                mimeType = MIME_VIDEO_TYPE
+            }
 
-        var resultFile: File? = null
-        val fileName = fileName(file)
+            var resultFile: File? = null
+            val fileName = fileName(file)
 
-        val contentValues = ContentValues()
-        contentValues.put(MediaStore.MediaColumns.DISPLAY_NAME, fileName)
+            val contentValues = ContentValues()
+            contentValues.put(MediaStore.MediaColumns.DISPLAY_NAME, fileName)
 
-        val mimeType = if (isImageFormat(filePath)) MIME_IMAGE_TYPE else MIME_VIDEO_TYPE
-        contentValues.put(MediaStore.MediaColumns.MIME_TYPE, mimeType)
+            contentValues.put(MediaStore.MediaColumns.MIME_TYPE, mimeType)
 
-        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
-            val basePath =
-                ContextCompat.getExternalFilesDirs(context, Environment.DIRECTORY_PICTURES)
-            resultFile = File("${basePath.first().path}/$fileName")
-            resultFile.createNewFile()
+            if (Build.VERSION.SDK_INT < Build.VERSION_CODES.Q) {
+                val basePath = getBasePath(context, file.isImage())
 
-            // copy image to pictures dir
-            copyFile(file, resultFile)
+                resultFile = File("${basePath.first().path}/$fileName")
+                resultFile.createNewFile()
 
-            contentValues.put(MediaStore.MediaColumns.DATA, resultFile.path)
+                // copy image to pictures dir
+                copyFile(file, resultFile)
 
-            context.contentResolver.insert(contentUri, contentValues)
-        } else {
-            contentValues.put(
-                MediaStore.Images.Media.RELATIVE_PATH,
-                Environment.DIRECTORY_PICTURES
-            )
+                contentValues.put(MediaStore.MediaColumns.DATA, resultFile.path)
 
-            context.contentResolver.insert(contentUri, contentValues)?.let { uriResult ->
-                context.contentResolver.openOutputStream(uriResult)?.let { outputStream ->
-                    var inputStream: FileInputStream? = null
-                    try {
-                        inputStream = FileInputStream(file)
-                        copy(inputStream, outputStream)
-                    } finally {
-                        inputStream?.close()
-                        outputStream.close()
-                    }
+                context.contentResolver.insert(contentUri, contentValues)
+            } else {
+                val mediaContentValue = getQContentValue(file.isImage())
+                contentValues.put(mediaContentValue.first, mediaContentValue.second)
 
-                    FileUtil.getPath(context.contentResolver, uriResult)?.let { resultPath ->
-                        val tempResultFile = File(resultPath)
-                        val renamedResultFile = File(fileName)
+                context.contentResolver.insert(contentUri, contentValues)?.let { uriResult ->
+                    context.contentResolver.openOutputStream(uriResult)?.let { outputStream ->
+                        var inputStream: FileInputStream? = null
+                        try {
+                            inputStream = FileInputStream(file)
+                            copy(inputStream, outputStream)
+                        } finally {
+                            inputStream?.close()
+                            outputStream.close()
+                        }
 
-                        tempResultFile.renameTo(renamedResultFile)
+                        FileUtil.getPath(context.contentResolver, uriResult)?.let { resultPath ->
+                            val tempResultFile = File(resultPath)
+                            val renamedResultFile = File(fileName)
 
-                        resultFile = tempResultFile
+                            tempResultFile.renameTo(renamedResultFile)
+
+                            resultFile = tempResultFile
+                        }
                     }
                 }
             }
-        }
 
-        return resultFile
+            return resultFile
+        } catch (e: Exception) {
+            ServerLogger.log(Priority.P2, PICKER_SAVE_GALLERY, mapOf("Error" to e.toString()))
+            return null
+        }
+    }
+
+    private fun getBasePath(context: Context, isImage: Boolean): Array<File> {
+        return if (isImage) {
+            ContextCompat.getExternalFilesDirs(context, Environment.DIRECTORY_PICTURES)
+        } else {
+            ContextCompat.getExternalFilesDirs(context, Environment.DIRECTORY_MOVIES)
+        }
+    }
+
+    @RequiresApi(Build.VERSION_CODES.Q)
+    private fun getQContentValue(isImage: Boolean): Pair<String, String> {
+        return if (isImage) {
+            Pair(MediaStore.Images.Media.RELATIVE_PATH, Environment.DIRECTORY_PICTURES)
+        } else {
+            Pair(MediaStore.Video.Media.RELATIVE_PATH, Environment.DIRECTORY_MOVIES)
+        }
     }
 
     @Throws(IOException::class)

@@ -10,16 +10,17 @@ import com.tokopedia.home_account.account_settings.data.model.UserProfileSetting
 import com.tokopedia.home_account.account_settings.domain.UserProfileSafeModeUseCase
 import com.tokopedia.home_account.data.model.*
 import com.tokopedia.home_account.domain.usecase.*
+import com.tokopedia.home_account.pref.AccountPreference
 import com.tokopedia.home_account.privacy_account.data.LinkStatusResponse
 import com.tokopedia.home_account.privacy_account.domain.GetLinkStatusUseCase
 import com.tokopedia.home_account.privacy_account.domain.GetUserProfile
-import com.tokopedia.home_account.pref.AccountPreference
 import com.tokopedia.loginfingerprint.data.model.CheckFingerprintPojo
 import com.tokopedia.loginfingerprint.data.model.CheckFingerprintResult
 import com.tokopedia.loginfingerprint.domain.usecase.CheckFingerprintToggleStatusUseCase
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
+import com.tokopedia.sessioncommon.data.fingerprint.FingerprintPreference
 import com.tokopedia.sessioncommon.data.profile.ProfileInfo
 import com.tokopedia.sessioncommon.data.profile.ProfilePojo
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
@@ -65,6 +66,7 @@ class HomeAccountUserViewModelTest {
     private val checkFingerprintToggleUseCase = mockk<CheckFingerprintToggleStatusUseCase>(relaxed = true)
     private val saveAttributeOnLocal = mockk<SaveAttributeOnLocalUseCase>(relaxed = true)
     private val tokopediaPlusUseCase = mockk<TokopediaPlusUseCase>(relaxed = true)
+    private val offerInterruptUseCase = mockk<OfferInterruptUseCase>(relaxed = true)
 
     private val shortCutResponse = mockk<Observer<Result<ShortcutResponse>>>(relaxed = true)
     private val centralizedUserAssetConfigObserver = mockk<Observer<Result<CentralizedUserAssetConfig>>>(relaxed = true)
@@ -75,6 +77,7 @@ class HomeAccountUserViewModelTest {
 
     private val userSession = mockk<UserSessionInterface>(relaxed = true)
     private val accountPref = mockk<AccountPreference>(relaxed = true)
+    private val fingerprintPreferenceManager = mockk<FingerprintPreference>(relaxed = true)
 
     private val dispatcher = CoroutineTestDispatchersProvider
     private lateinit var viewModel: HomeAccountUserViewModel
@@ -85,6 +88,7 @@ class HomeAccountUserViewModelTest {
     private val shortcut = ShortcutResponse()
     private val responseResult = UserAccountDataModel()
     private val linkStatusResult = LinkStatusResponse()
+    private val offerInterruptResponse = OfferInterruptResponse()
     private val profilePojo = ProfilePojo(profileInfo = ProfileInfo(phone = "089123456789"))
     private val throwableMock = mockk<Throwable>(relaxed = true)
 
@@ -93,6 +97,7 @@ class HomeAccountUserViewModelTest {
         viewModel = HomeAccountUserViewModel(
             userSession,
             accountPref,
+            fingerprintPreferenceManager,
             homeAccountUserUsecase,
             homeAccountShortcutUseCase,
             homeAccountSafeSettingProfileUseCase,
@@ -109,6 +114,7 @@ class HomeAccountUserViewModelTest {
             checkFingerprintToggleUseCase,
             tokopediaPlusUseCase,
             saveAttributeOnLocal,
+            offerInterruptUseCase,
             dispatcher
         )
 
@@ -153,6 +159,7 @@ class HomeAccountUserViewModelTest {
         coEvery { homeAccountUserUsecase(Unit) } returns responseResult
         coEvery { homeAccountShortcutUseCase(Unit) } returns shortcut
         coEvery { getLinkStatusUseCase.invoke(any()) } returns linkStatusResult
+        coEvery { offerInterruptUseCase.invoke(any()) } returns offerInterruptResponse
 
         viewModel.getBuyerData()
 
@@ -167,6 +174,7 @@ class HomeAccountUserViewModelTest {
         val exception = Exception("error")
         coEvery { homeAccountUserUsecase.invoke(Unit) } throws exception
         coEvery { getLinkStatusUseCase.invoke(any()) } throws exception
+        coEvery { offerInterruptUseCase.invoke(any()) } returns offerInterruptResponse
 
         viewModel.getBuyerData()
         val actual = viewModel.buyerAccountDataData.getOrAwaitValue()

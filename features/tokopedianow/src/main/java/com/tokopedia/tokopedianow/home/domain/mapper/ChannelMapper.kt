@@ -107,7 +107,8 @@ object ChannelMapper {
                         it.benefit.value
                     ),
                     textColor = it.textColor,
-                    param = it.param
+                    param = it.param,
+                    categoryBreadcrumbs = it.categoryBreadcrumbs
                 )
             }
         )

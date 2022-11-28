@@ -2,6 +2,7 @@ package com.tokopedia.chatbot.view.adapter.util
 
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.RecyclerView.SCROLL_STATE_IDLE
 import com.tokopedia.chat_common.domain.pojo.ChatReplies
 
 abstract class RecyclerViewScrollListener(
@@ -21,8 +22,9 @@ abstract class RecyclerViewScrollListener(
 
     abstract fun loadMoreDown()
 
-    override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+    abstract fun scrollDone()
 
+    override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
         val totalItem = layoutManager?.itemCount ?: return
 
         val lastVisiblePosition = layoutManager.findLastVisibleItemPosition()
@@ -36,6 +38,15 @@ abstract class RecyclerViewScrollListener(
             isLoadingBottom = true
             loadMoreDown()
         }
+    }
+
+    override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+        when (newState) {
+            SCROLL_STATE_IDLE -> {
+                scrollDone()
+            }
+        }
+        super.onScrollStateChanged(recyclerView, newState)
     }
 
     private fun isThisValidForShowingTopChat(lastVisiblePosition: Int, totalItem: Int): Boolean {

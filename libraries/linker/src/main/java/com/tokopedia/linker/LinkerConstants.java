@@ -23,6 +23,7 @@ public interface LinkerConstants {
     String PLAY = "tokopedia://play/{channel_id}";
     String NOW = "tokopedia://now/{content}";
     String NOW_RECIPE = "tokopedia://now/recipe/detail/{id}";
+    String WISHLIST_COLLECTION = "tokopedia://wishlist/collection/{id}";
     String WEBVIEW = "tokopedia://webview?{content}";
     String APPLINKS = "tokopedia";
     String WEB_DOMAIN = "https://www.tokopedia.com/";
@@ -63,6 +64,7 @@ public interface LinkerConstants {
     int EVENT_DIGITAL_HOMEPAGE = 10;
     int EVENT_DIGITAL_SCREEN_LAUNCH = 11;
     int EVENT_SEARCH = 12;
+    int ENUM_EVENT_PAGE_VIEW_STORE = 13;
 
     String KEY_ANDROID_DEEPLINK_PATH = "$android_deeplink_path";
     String KEY_IOS_DEEPLINK_PATH = "$ios_deeplink_path";
@@ -100,6 +102,7 @@ public interface LinkerConstants {
     String EVENT_REGISTER_LABLE = "sign_up";
     String EVENT_FLIGHT_PURCHASE = "FLIGHT_PURCHASE ";
     String EVENT_MARKETPLACE_FIRST_TXN = "marketplace_first_txn";
+    String EVENT_PAGE_VIEW_STORE = "pageview_store";
 
     // Recharge Events
     String EVENT_DIGITAL_SUBHOMEPAGE_LAUNCHED = "digital_subhomepage_launched";

@@ -29,7 +29,6 @@ import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.common.data.Sort
 import com.tokopedia.kotlin.extensions.view.EMPTY
-import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.localizationchooseaddress.domain.mapper.TokonowWarehouseMapper
@@ -45,6 +44,7 @@ import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.Locatio
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
 import com.tokopedia.tokofood.common.domain.response.Merchant
 import com.tokopedia.tokofood.common.presentation.adapter.viewholder.TokoFoodErrorStateViewHolder
+import com.tokopedia.tokofood.common.presentation.listener.TokofoodScrollChangedListener
 import com.tokopedia.tokofood.common.presentation.view.BaseTokofoodActivity
 import com.tokopedia.tokofood.common.util.TokofoodErrorLogger
 import com.tokopedia.tokofood.common.util.TokofoodExt.addAndReturnImpressionListener
@@ -93,7 +93,8 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
     ChooseAddressWidget.ChooseAddressWidgetListener,
     TokofoodQuickPriceRangeBottomsheet.Listener,
     TokofoodSearchErrorStateViewHolder.Listener,
-    MerchantSearchOOCViewHolder.Listener {
+    MerchantSearchOOCViewHolder.Listener,
+    TokofoodScrollChangedListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -108,7 +109,7 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
         ViewModelProvider(this, viewModelFactory).get(TokofoodSearchResultPageViewModel::class.java)
     }
     private val adapterTypeFactory by lazy(LazyThreadSafetyMode.NONE) {
-        TokofoodSearchResultAdapterTypeFactory(this, this, this, this, this, this)
+        TokofoodSearchResultAdapterTypeFactory(this, this, this, this, this, this, this)
     }
     private val merchantResultAdapter by lazy(LazyThreadSafetyMode.NONE) {
         val differ = TokofoodSearchResultDiffer()
@@ -130,7 +131,6 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
 
     private var keyword: String = ""
     private var itemsScrollChangedListenerList: MutableList<ViewTreeObserver.OnScrollChangedListener> = mutableListOf()
-    private var addressWidgetScrollChangedListener: ViewTreeObserver.OnScrollChangedListener? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -241,10 +241,6 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
         TokofoodRouteManager.routePrioritizeInternal(context, merchant.branchApplink)
     }
 
-    override fun onImpressionListenerAdded(listener: ViewTreeObserver.OnScrollChangedListener) {
-        itemsScrollChangedListenerList.add(listener)
-    }
-
     override fun onResetFilterButtonClicked() {
         viewModel.resetFilterSearch()
     }
@@ -333,6 +329,10 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
         return true
     }
 
+    override fun onScrollChangedListenerAdded(onScrollChangedListener: ViewTreeObserver.OnScrollChangedListener) {
+        itemsScrollChangedListenerList.add(onScrollChangedListener)
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         when(requestCode) {
@@ -347,7 +347,6 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
         tokofoodSearchFilterTab = null
         removeAllScrollListener()
         itemsScrollChangedListenerList.clear()
-        addressWidgetScrollChangedListener = null
         searchParameter = null
         sortFilterBottomSheet = null
         super.onDestroyView()
@@ -360,6 +359,7 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
     fun showSearchResultState(keyword: String) {
         this.searchResultViewUpdateListener?.showSearchResultView()
         this.keyword = keyword
+        viewModel.resetFilterSearch()
         viewModel.setKeyword(keyword)
     }
 
@@ -383,10 +383,9 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
     private fun setupAddressWidget() {
         binding?.addressTokofoodSearchResult?.run {
             bindChooseAddress(this@SearchResultFragment)
-            val scrollChangedListener = addAndReturnImpressionListener(addressWidgetImpressHolder) {
+            addAndReturnImpressionListener(addressWidgetImpressHolder, this@SearchResultFragment) {
                 analytics.sendAddressWidgetImpressionTracking(getDestinationId())
             }
-            addressWidgetScrollChangedListener = scrollChangedListener
         }
     }
 
@@ -790,7 +789,8 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
     private fun showDetailFilterBottomSheet(dynamicFilterModel: DynamicFilterModel?) {
         if (!isAdded) return
         if (sortFilterBottomSheet == null) {
-            sortFilterBottomSheet = SortFilterBottomSheet()
+            val customTitle = context?.getString(com.tokopedia.tokofood.R.string.search_srp_filter_title).orEmpty()
+            sortFilterBottomSheet = SortFilterBottomSheet.createInstance(customTitle)
         }
         hideKeyboard()
         sortFilterBottomSheet?.show(
@@ -853,9 +853,6 @@ class SearchResultFragment : BaseDaggerFragment(), TokofoodSearchFilterTab.Liste
 
     private fun removeAllScrollListener() {
         itemsScrollChangedListenerList.forEach {
-            view?.viewTreeObserver?.removeOnScrollChangedListener(it)
-        }
-        addressWidgetScrollChangedListener?.let {
             view?.viewTreeObserver?.removeOnScrollChangedListener(it)
         }
     }

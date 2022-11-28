@@ -31,6 +31,12 @@ class ProfileWhitelistUiModelBuilder {
         hasAcceptTnc = true,
     )
 
+    fun buildHasNotAcceptTnc() = buildWhitelist(
+        isWhitelist = false,
+        hasUsername = false,
+        hasAcceptTnc = false,
+    )
+
     private fun buildWhitelist(
         isWhitelist: Boolean = false,
         hasUsername: Boolean = false,
