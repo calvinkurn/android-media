@@ -1,5 +1,7 @@
 package com.tokopedia.tokopedianow.home.presentation.viewholder
 
+import android.annotation.SuppressLint
+import android.view.MotionEvent
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -34,6 +36,7 @@ class HomeLeftCarouselAtcViewHolder(
         private const val NO_SCROLLED = 0
         private const val IMAGE_PARALLAX_ALPHA = 0.5f
         private const val EXPECTED_IMAGE_PARALLAX_RATIO = 0.2f
+        private const val X_RANGE_COORDINATE = 0f
 
         @LayoutRes
         val LAYOUT = R.layout.item_tokopedianow_home_left_carousel_atc
@@ -108,6 +111,7 @@ class HomeLeftCarouselAtcViewHolder(
         )
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private fun ItemTokopedianowHomeLeftCarouselAtcBinding.setupParallaxImage(
         element: HomeLeftCarouselAtcUiModel
     ) {
@@ -116,18 +120,39 @@ class HomeLeftCarouselAtcViewHolder(
                 .load(element.imageBanner)
                 .fitCenter()
                 .into(this)
-
-            setOnClickListener {
-                homeLeftCarouselAtcCallback?.onLeftCarouselLeftImageClicked(
-                    appLink = element.imageBannerAppLink,
-                    channelId = element.id,
-                    headerName = element.header.title
-                )
-            }
         }
+
         parallaxBackground.setGradientBackground(
             colorArray = element.backgroundColorArray
         )
+
+        var xCoordinateActionDown = 0f
+        rvProduct.setOnTouchListener { _, motionEvent ->
+            /**
+             * check empty space of recyclerview
+             */
+            if (rvProduct.findChildViewUnder(motionEvent.x, motionEvent.y) != null) return@setOnTouchListener false
+
+            when (motionEvent.action) {
+                MotionEvent.ACTION_DOWN -> {
+                    xCoordinateActionDown = motionEvent.x
+                }
+                MotionEvent.ACTION_UP -> {
+                     /**
+                     * xRange is used to decide there is any move or not, if not call the listener
+                     */
+                    val xRange = abs(xCoordinateActionDown - motionEvent.x)
+                    if (xRange == X_RANGE_COORDINATE) {
+                        homeLeftCarouselAtcCallback?.onLeftCarouselLeftImageClicked(
+                            appLink = element.imageBannerAppLink,
+                            channelId = element.id,
+                            headerName = element.header.title
+                        )
+                    }
+                }
+            }
+            false
+        }
     }
 
     private fun ItemTokopedianowHomeLeftCarouselAtcBinding.hitLeftCarouselImpressionTracker(
