@@ -594,12 +594,12 @@ class PostDynamicViewNew @JvmOverloads constructor(
             animationHandler?.checkToCancelTimer()
             animationHandler?.startTimer()
         }
+        asgcProductCampaignCopywritingContainer.showWithCondition(shouldShowCtaSubtitile(ctaSubtitle))
 
         topAdsCard.showWithCondition(
             shouldShow = (feedXCard.isTypeProductHighlight || feedXCard.isTopAds) &&
                 feedXCard.media.any { it.isImage }
         )
-//        asgcProductCampaignCopywritingContainer.showWithCondition(shouldShowCtaSubtitile(ctaSubtitle))
 
         topAdsCard.setOnClickListener {
             changeCTABtnColorAsPerWidget(feedXCard)
