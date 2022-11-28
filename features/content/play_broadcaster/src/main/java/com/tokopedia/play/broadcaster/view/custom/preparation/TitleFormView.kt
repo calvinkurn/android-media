@@ -7,6 +7,7 @@ import android.util.AttributeSet
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchersProvider
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -49,7 +50,19 @@ class TitleFormView : ConstraintLayout {
     private val scope = CoroutineScope(dispatchers.io)
 
     init {
+        setupInsets()
         setupView()
+    }
+
+    private fun setupInsets() {
+        binding.btnSave.doOnApplyWindowInsets { v, insets, _, margin ->
+            val marginLayoutParams = v.layoutParams as ViewGroup.MarginLayoutParams
+            val newBottomMargin = margin.bottom + insets.systemWindowInsetBottom
+            if (marginLayoutParams.bottomMargin != newBottomMargin) {
+                marginLayoutParams.updateMargins(bottom = newBottomMargin)
+                v.parent.requestLayout()
+            }
+        }
     }
 
     private fun setupView() {
