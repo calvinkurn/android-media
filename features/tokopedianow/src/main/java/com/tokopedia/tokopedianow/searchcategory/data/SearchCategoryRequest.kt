@@ -151,6 +151,7 @@ private const val ACE_SEARCH_PRODUCT_QUERY = """
               type_variant
               hex_color
             }
+            wishlist
           }
         }
       }
