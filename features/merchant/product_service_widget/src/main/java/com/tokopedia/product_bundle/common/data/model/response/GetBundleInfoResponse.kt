@@ -81,11 +81,17 @@ data class BundleItem(
         @SerializedName("productStatus")
         @Expose val productStatus: String = ""
 ): Parcelable {
-        fun getPreviewOriginalPrice() = if (originalPrice > 0) originalPrice else
-                children.minByOrNull { it.bundlePrice }?.originalPrice.orZero()
+        fun getPreviewOriginalPrice() = if (originalPrice > 0) {
+            originalPrice
+        } else {
+            children.minByOrNull { it.bundlePrice }?.originalPrice.orZero()
+        } * getPreviewMinOrder()
 
-        fun getPreviewBundlePrice() = if (bundlePrice > 0) bundlePrice else
-                children.minByOrNull { it.bundlePrice }?.bundlePrice.orZero()
+        fun getPreviewBundlePrice() = if (bundlePrice > 0) {
+            bundlePrice
+        } else {
+            children.minByOrNull { it.bundlePrice }?.bundlePrice.orZero()
+        } * getPreviewMinOrder()
 
         fun getPreviewMinOrder() = if (minOrder > 0) minOrder else
             children.minByOrNull { it.minOrder }?.minOrder.orZero()

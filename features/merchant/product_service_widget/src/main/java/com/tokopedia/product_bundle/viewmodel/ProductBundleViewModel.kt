@@ -255,7 +255,7 @@ class ProductBundleViewModel @Inject constructor(
                 productId = bundleItem.productID,
                 productName = bundleItem.name,
                 productImageUrl = bundleItem.picURL,
-                productQuantity = bundleItem.quantity,
+                productQuantity = bundleItem.minOrder,
                 originalPrice = bundleItem.getPreviewOriginalPrice(),
                 bundlePrice = bundleItem.getPreviewBundlePrice(),
                 warehouseId = warehouseId,
@@ -272,7 +272,7 @@ class ProductBundleViewModel @Inject constructor(
         return productBundleDetails.map { productBundleDetail ->
             ProductDetail(
                 productId = productBundleDetail.selectedVariantId?: productBundleDetail.productId.toString(),
-                quantity = ATC_BUNDLE_QUANTITY,
+                quantity = productBundleDetail.productQuantity,
                 shopId = shopId,
                 isProductParent = parentProductID == productBundleDetail.productId,
                 customerId = userId,

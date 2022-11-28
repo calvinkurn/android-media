@@ -161,7 +161,6 @@ class ProductBundleWidgetUiMapper @Inject constructor(@ApplicationContext privat
     }
 
     companion object {
-        private const val MIN_DISPLAYED_PRODUCT_COUNT = 1
         private const val PREORDER_STATUS_ACTIVE: String = "ACTIVE"
         private const val PRODUCT_SOLD_INFO_MIN_THRESHOLD = 1
     }
