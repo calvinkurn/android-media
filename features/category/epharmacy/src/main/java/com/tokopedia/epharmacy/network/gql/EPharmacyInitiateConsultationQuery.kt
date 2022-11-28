@@ -9,12 +9,7 @@ object EPharmacyInitiateConsultationQuery : GqlQueryInterface {
 
     override fun getQuery() = """
             mutation $OPERATION_NAME(${'$'}input: initiateConsultationParam!) {
-              initiateConsultation(input: ${"$"}input) 
-              {
-                header {
-                  process_time
-                  error_code
-                }
+              initiateConsultation(input: ${"$"}input) {
                 data {
                     toko_consultation_id
                     consultation_source {

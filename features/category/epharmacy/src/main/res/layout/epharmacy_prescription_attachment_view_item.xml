@@ -149,17 +149,28 @@
         android:visibility="gone"
         />
 
-    <include
+    <LinearLayout
         android:id="@+id/chat_dokter_upload_layout"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/product_accordion_view"
-        layout="@layout/epharmacy_chat_upload_widget"
+        app:layout_constraintBottom_toTopOf="@id/divider"
         tools:visibility="visible"
         android:visibility="gone"
-        />
+        android:padding="16dp"
+        >
+        <include
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/product_accordion_view"
+            layout="@layout/epharmacy_chat_upload_widget"
+            />
+
+    </LinearLayout>
 
     <com.tokopedia.unifycomponents.DividerUnify
         android:id="@+id/divider"

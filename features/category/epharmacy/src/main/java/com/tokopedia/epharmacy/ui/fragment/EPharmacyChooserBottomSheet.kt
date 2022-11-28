@@ -7,7 +7,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.applink.RouteManager
+import com.tokopedia.common_epharmacy.EPHARMACY_MINI_CONSULTATION_REQUEST_CODE
+import com.tokopedia.common_epharmacy.EPHARMACY_UPLOAD_REQUEST_CODE
 import com.tokopedia.epharmacy.databinding.EpharmacyChooserBottomSheetBinding
 import com.tokopedia.epharmacy.di.DaggerEPharmacyComponent
 import com.tokopedia.epharmacy.di.EPharmacyComponent
@@ -21,13 +22,11 @@ class EPharmacyChooserBottomSheet : BottomSheetUnify() {
 
     private var binding by autoClearedNullable<EpharmacyChooserBottomSheetBinding>()
     private var enableImageURL = ""
-    private var checkoutId = ""
-    private var consultationWebLink = ""
+    private var groupId = ""
     companion object {
         fun newInstance(
             enableImageURL: String,
-            checkoutId: String,
-            consultationWebLink : String
+            groupId: String
         ): EPharmacyChooserBottomSheet {
             return EPharmacyChooserBottomSheet().apply {
                 showCloseIcon = false
@@ -38,8 +37,7 @@ class EPharmacyChooserBottomSheet : BottomSheetUnify() {
                 customPeekHeight = 800
                 arguments = Bundle().apply {
                     putString(ENABLER_IMAGE_URL, enableImageURL)
-                    putString(EXTRA_CHECKOUT_ID_STRING, checkoutId)
-                    putString(EXTRA_CONSULTATION_WEB_LINK_STRING, consultationWebLink)
+                    putString(EPHARMACY_GROUP_ID, groupId)
                 }
             }
         }
@@ -81,8 +79,7 @@ class EPharmacyChooserBottomSheet : BottomSheetUnify() {
 
     private fun extractArguments() {
         enableImageURL = arguments?.getString(ENABLER_IMAGE_URL) ?: ""
-        checkoutId = arguments?.getString(EXTRA_CHECKOUT_ID_STRING) ?: ""
-        consultationWebLink = arguments?.getString(EXTRA_CONSULTATION_WEB_LINK_STRING) ?: ""
+        groupId = arguments?.getString(EPHARMACY_GROUP_ID) ?: ""
     }
 
     private fun setupBottomSheetUiData() {
@@ -117,43 +114,16 @@ class EPharmacyChooserBottomSheet : BottomSheetUnify() {
     }
 
     private fun uploadResepAction() {
-        RouteManager.getIntent(activity, EPHARMACY_APPLINK).apply {
-            putExtra(EXTRA_CHECKOUT_ID_STRING, checkoutId)
-        }.also {
-            startActivityForResult(it, EPHARMACY_UPLOAD_REQUEST_CODE)
-        }
+        activity?.setResult(EPHARMACY_UPLOAD_REQUEST_CODE,Intent().apply {
+            putExtra(EPHARMACY_GROUP_ID,groupId)
+        })
+        closeBottomSheet()
     }
 
     private fun miniConsultationAction() {
-        if(consultationWebLink.isNotBlank()){
-            activity?.let { safeContext ->
-                startActivityForResult(RouteManager.getIntent(context,
-                    "tokopedia://webview?url=https://accounts-staging.tokopedia.com/oauth/sandbox/in"),
-                    EPHARMACY_MINI_CONSULTATION_REQUEST_CODE)
-            }
-        }
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
-        when (requestCode) {
-            EPHARMACY_UPLOAD_REQUEST_CODE -> {
-                Intent().apply {
-                    putStringArrayListExtra(EPHARMACY_PRESCRIPTION_IDS, arrayListOf<String?>().apply {
-                        add("1")
-                        add("2")
-                        add("3")
-                    })
-                    putExtra(EPHARMACY_GROUP_ID,checkoutId)
-                    activity?.setResult(EPHARMACY_UPLOAD_REQUEST_CODE,this)
-                    activity?.finish()
-                }
-            }
-
-            EPHARMACY_MINI_CONSULTATION_REQUEST_CODE -> {
-                activity?.setResult(EPHARMACY_MINI_CONSULTATION_REQUEST_CODE,null)
-            }
-        }
+        activity?.setResult(EPHARMACY_MINI_CONSULTATION_REQUEST_CODE,Intent().apply {
+            putExtra(EPHARMACY_GROUP_ID,groupId)
+        })
         closeBottomSheet()
     }
 

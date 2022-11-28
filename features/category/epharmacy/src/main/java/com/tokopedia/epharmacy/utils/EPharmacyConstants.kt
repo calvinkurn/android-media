@@ -5,16 +5,12 @@ const val EXTRA_CHECKOUT_ID_STRING = "extra_checkout_id_string"
 const val EXTRA_ENTRY_POINT_STRING = "extra_entry_point_string"
 const val EXTRA_SOURCE_STRING = "source"
 const val EXTRA_CONSULTATION_WEB_LINK_STRING = "extra_consultation_web_link_string"
-const val EPHARMACY_MINI_CONSULTATION_RESULT_EXTRA = "epharmacy_mini_consultation_result"
 
 const val DEFAULT_ZERO_VALUE = 0L
 
 const val MAX_MEDIA_ITEM = 5
 
 const val MEDIA_PICKER_REQUEST_CODE = 10020
-const val EPHARMACY_UPLOAD_REQUEST_CODE = 10021
-const val EPHARMACY_CHOOSER_REQUEST_CODE = 10022
-const val EPHARMACY_MINI_CONSULTATION_REQUEST_CODE = 10023
 const val EPHARMACY_PRESCRIPTION_IDS = "epharmacy_prescription_ids"
 const val EPHARMACY_GROUP_ID = "epharmacy_group_id"
 
@@ -93,3 +89,5 @@ const val CONSULTATION_SOURCE_ID = "consultation_source_id"
 const val YYYY_MM_DD_T_HH_MM_SS_Z = "yyyy-MM-dd'T'HH:mm:ss'Z'"
 const val NEW_DATE_FORMAT = "dd MMM yyyy, HH:mm"
 const val UTC = "UTC"
+
+const val WEB_LINK_PREFIX = "tokopedia://webview?url="

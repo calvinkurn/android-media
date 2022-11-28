@@ -8,7 +8,7 @@ object EPharmacyGetConsultationDetailsQuery : GqlQueryInterface {
     override fun getOperationNameList() = listOf(OPERATION_NAME)
 
     override fun getQuery() = """
-            query $OPERATION_NAME(${"$"}(tokopedia_consultation_id: String!) {
+            query $OPERATION_NAME(${"$"}tokopedia_consultation_id: String!) {
               getEpharmacyConsultationDetails(tokopedia_consultation_id: ${"$"}tokopedia_consultation_id) 
               {
                 header {

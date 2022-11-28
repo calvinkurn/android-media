@@ -17,7 +17,7 @@ object EPharmacyUtils {
         }
     }
 
-    fun formatDate(currentFormat: String = YYYY_MM_DD_T_HH_MM_SS_Z, newFormat: String = NEW_DATE_FORMAT, dateString: String): String {
+    private fun formatDateToLocal(currentFormat: String = YYYY_MM_DD_T_HH_MM_SS_Z, newFormat: String = NEW_DATE_FORMAT, dateString: String): Date? {
         return try {
             val fromFormat: DateFormat = SimpleDateFormat(currentFormat, Locale.ENGLISH)
             fromFormat.isLenient = false
@@ -26,12 +26,18 @@ object EPharmacyUtils {
             toFormat.isLenient = false
             toFormat.timeZone = TimeZone.getDefault()
 
-            val date = fromFormat.parse(dateString)
-            toFormat.format(date)
+            fromFormat.parse(dateString)
         } catch (e: ParseException) {
             e.printStackTrace()
-            dateString
+            null
         }
+    }
+
+    fun isOutsideWorkingHours(openTime : String , closeTime : String) : Boolean {
+        val openTimeLocal : Date? = formatDateToLocal(dateString = openTime)
+        val closeTimeLocal : Date? = formatDateToLocal(dateString = closeTime)
+        val currentLocal = Calendar.getInstance().time
+        return (openTimeLocal != null) && ((currentLocal < openTimeLocal) || (currentLocal > closeTimeLocal))
     }
 }
 

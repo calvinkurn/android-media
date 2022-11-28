@@ -26,7 +26,7 @@ data class EPharmacyPrepareProductsGroupResponse(
             val epharmacyGroups: List<EpharmacyGroup?>?,
             @SerializedName("toaster")
             val toaster: EPharmacyToaster?,
-            @SerializedName("prescription_cta")
+            @SerializedName("pap_primary_cta")
             val papPrimaryCTA : PapPrimaryCTA?
         ) : Parcelable {
 
