@@ -20,7 +20,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tfProductName"
+            android:id="@+id/textProductName"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
@@ -35,18 +35,18 @@
             tool:text="Nama Produk Maksimal Dua Baris Oke... - Varian medium," />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tfProductSku"
+            android:id="@+id/textProductSku"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:textColor="@color/Unify_NN600"
             app:layout_constraintStart_toEndOf="@+id/imgProduct"
-            app:layout_constraintTop_toBottomOf="@id/tfProductName"
+            app:layout_constraintTop_toBottomOf="@id/textProductName"
             app:typographyType="paragraph_3"
             tool:text="SKU: 123" />
 
         <com.tokopedia.unifyprinciples.Typography
-            android:id="@+id/tfErrorMessage"
+            android:id="@+id/textErrorMessage"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"

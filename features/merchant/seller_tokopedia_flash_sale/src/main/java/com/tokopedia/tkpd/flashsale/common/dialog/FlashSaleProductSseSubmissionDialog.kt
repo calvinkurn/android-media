@@ -3,6 +3,7 @@ package com.tokopedia.tkpd.flashsale.common.dialog
 import android.content.Context
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.seller_tokopedia_flash_sale.R
+import com.tokopedia.tkpd.flashsale.util.constant.RemoteImageUrlConstant.IMAGE_URL_SSE_SUBMIT_PRODUCT_ERROR
 
 class FlashSaleProductSseSubmissionDialog(context: Context) {
     private val dialog =
@@ -11,7 +12,7 @@ class FlashSaleProductSseSubmissionDialog(context: Context) {
     fun show(title: String, onPrimaryCtaClicked: () -> Unit) = with(dialog) {
         setCancelable(false)
         setOverlayClose(false)
-        setImageUrl("https://images.tokopedia.net/img/android/campaign/fs-tkpd/ic_ineligible_access_fs_tokopedia.png")
+        setImageUrl(IMAGE_URL_SSE_SUBMIT_PRODUCT_ERROR)
         setTitle(title)
         setDescription(context.getString(R.string.stfs_dialog_error_product_submission_sse_error_description))
         setPrimaryCTAText(context.getString(R.string.stfs_dialog_error_product_submission_sse_error_cta))

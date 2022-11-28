@@ -12,9 +12,9 @@ class ProductSseSubmissionErrorItemViewHolder(private val binding: StfsItemProdu
 
     fun bind(uiModel: FlashSaleProductSubmissionProgress.CampaignProductError) {
         binding.apply {
-            tfProductName.text = uiModel.productName
-            tfProductSku.text = getString(R.string.stfs_bottomsheet_error_product_submission_sse_item_sku, uiModel.sku)
-            tfErrorMessage.text = uiModel.message
+            textProductName.text = uiModel.productName
+            textProductSku.text = getString(R.string.stfs_bottomsheet_error_product_submission_sse_item_sku, uiModel.sku)
+            textErrorMessage.text = uiModel.message
             imgProduct.loadImage(uiModel.productPicture)
         }
     }
