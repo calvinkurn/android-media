@@ -14,8 +14,8 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
 
 class ShopHomeProductListSellerEmptyViewHolder(
-        val itemView: View,
-        val listener: ShopHomeProductListSellerEmptyListener
+    val itemView: View,
+    val listener: ShopHomeProductListSellerEmptyListener
 ) : AbstractViewHolder<ShopHomeProductListEmptyUiModel>(itemView) {
 
     companion object {
@@ -23,7 +23,7 @@ class ShopHomeProductListSellerEmptyViewHolder(
         val LAYOUT = R.layout.item_shop_home_product_list_seller_empty_state
     }
 
-    private val viewBinding : ItemShopHomeProductListSellerEmptyStateBinding? by viewBinding()
+    private val viewBinding: ItemShopHomeProductListSellerEmptyStateBinding? by viewBinding()
     private var cardAddProduct: CardUnify2? = viewBinding?.cardAddProduct
     private var cardDescription: Typography? = viewBinding?.cardDescriptionLabel
     private var cardDescriptionBackground: ImageUnify? = viewBinding?.cardDescriptionBackground
@@ -31,7 +31,7 @@ class ShopHomeProductListSellerEmptyViewHolder(
     override fun bind(element: ShopHomeProductListEmptyUiModel) {
         cardDescriptionBackground?.loadImage(ShopPageConstant.URL_IMAGE_SELLER_PRODUCT_ALL_ETALASE_EMPTY_STATE_BACKGROUND)
         cardDescription?.text = MethodChecker.fromHtml(
-                itemView.resources.getString(R.string.shop_product_seller_empty_state_label)
+            itemView.resources.getString(R.string.shop_product_seller_empty_state_label)
         )
         cardAddProduct?.setOnClickListener {
             listener.chooseProduct()
