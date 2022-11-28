@@ -35,7 +35,7 @@
         android:textColor="@color/discovery2_dms_white"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/title"
-        app:typographyType="display_3"
+        app:typographyType="display_2"
         tools:text="50.000+ promo buat {First Name}!" />
 
     <ImageView
