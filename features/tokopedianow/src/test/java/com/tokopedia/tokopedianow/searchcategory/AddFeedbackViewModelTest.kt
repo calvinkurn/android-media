@@ -20,6 +20,8 @@ class AddFeedbackViewModelTest {
 
     private lateinit var viewModel:AddFeedbackViewModel
     private var addFeedbackUseCase:UseCase<AddProductFeedbackModel> = mockk()
+    private val successCode = "200"
+    private val errorCode = "300"
 
     @get:Rule
     val instantTaskExecutorRule = InstantTaskExecutorRule()
@@ -34,13 +36,37 @@ class AddFeedbackViewModelTest {
 
     @Test
     fun `add feedback success`(){
-        val response = AddProductFeedbackModel()
+        val response = mockk<AddProductFeedbackModel>(relaxed = true)
+        every {response.tokonowAddFeedback?.header?.errorCode} returns successCode
         val query = ""
         every { addFeedbackUseCase.execute(any(),any(),any()) }answers {
             firstArg<(AddProductFeedbackModel) -> Unit>().invoke(response)
         }
         viewModel.addProductFeedback(query)
         Assert.assertEquals((viewModel.addFeedbackResult.value as Success).data,response)
+    }
+
+    @Test
+    fun `ad feedback null response error`(){
+        val response = AddProductFeedbackModel(AddProductFeedbackModel.TokonowAddFeedback())
+        val query = ""
+        every { addFeedbackUseCase.execute(any(),any(),any()) }answers {
+            firstArg<(AddProductFeedbackModel) -> Unit>().invoke(response)
+        }
+        viewModel.addProductFeedback(query)
+        Assert.assertEquals(viewModel.addFeedbackResult.value is Fail,true)
+    }
+
+    @Test
+    fun `ad feedback error code not equal to success code`(){
+        val response = mockk<AddProductFeedbackModel>(relaxed = true)
+        every {response.tokonowAddFeedback?.header?.errorCode} returns errorCode
+        val query = ""
+        every { addFeedbackUseCase.execute(any(),any(),any()) }answers {
+            firstArg<(AddProductFeedbackModel) -> Unit>().invoke(response)
+        }
+        viewModel.addProductFeedback(query)
+        Assert.assertEquals(viewModel.addFeedbackResult.value is Fail,true)
     }
 
     @Test

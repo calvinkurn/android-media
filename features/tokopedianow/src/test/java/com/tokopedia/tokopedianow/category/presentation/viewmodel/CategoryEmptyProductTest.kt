@@ -10,6 +10,7 @@ import com.tokopedia.usecase.RequestParams
 import io.mockk.verify
 import org.hamcrest.CoreMatchers.instanceOf
 import org.hamcrest.MatcherAssert.assertThat
+import org.junit.Assert
 import org.junit.Test
 import org.hamcrest.CoreMatchers.`is` as shouldBe
 
@@ -78,5 +79,6 @@ class CategoryEmptyProductTest: CategoryTestFixtures(), EmptyProductTestHelper.C
     @Test
     fun `empty product list with feedback widget active should show feedback view`(){
         emptyProductTestHelper.`empty product list with feedback widget active should show feedback view`()
+        Assert.assertEquals(tokoNowCategoryViewModel.isProductFeedbackLoopVisible(),true)
     }
 }

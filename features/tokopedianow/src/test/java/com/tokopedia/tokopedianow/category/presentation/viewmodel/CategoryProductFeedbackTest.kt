@@ -4,6 +4,7 @@ import com.tokopedia.tokopedianow.category.domain.model.CategoryModel
 import com.tokopedia.tokopedianow.searchcategory.assertNotProductFeedbackWidget
 import com.tokopedia.tokopedianow.searchcategory.assertProductFeedbackWidget
 import com.tokopedia.tokopedianow.searchcategory.jsonToObject
+import org.junit.Assert
 import org.junit.Test
 
 class CategoryProductFeedbackTest:CategoryTestFixtures() {
@@ -21,6 +22,7 @@ class CategoryProductFeedbackTest:CategoryTestFixtures() {
 
         val visitableList = tokoNowCategoryViewModel.visitableListLiveData.value!!
         visitableList[PRODUCT_FEEDBACK_DATA_VIEW_POSITION].assertProductFeedbackWidget()
+        Assert.assertEquals(tokoNowCategoryViewModel.isProductFeedbackLoopVisible(),true)
     }
 
     @Test
@@ -33,5 +35,6 @@ class CategoryProductFeedbackTest:CategoryTestFixtures() {
 
         val visitableList = tokoNowCategoryViewModel.visitableListLiveData.value!!
         visitableList.assertNotProductFeedbackWidget()
+        Assert.assertEquals(tokoNowCategoryViewModel.isProductFeedbackLoopVisible(),false)
     }
 }
