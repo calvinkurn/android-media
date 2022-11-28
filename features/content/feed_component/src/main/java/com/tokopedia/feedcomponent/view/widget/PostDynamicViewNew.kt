@@ -599,7 +599,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
             shouldShow = (feedXCard.isTypeProductHighlight || feedXCard.isTopAds) &&
                 feedXCard.media.any { it.isImage }
         )
-        asgcProductCampaignCopywritingContainer.showWithCondition(shouldShowCtaSubtitile(ctaSubtitle))
+//        asgcProductCampaignCopywritingContainer.showWithCondition(shouldShowCtaSubtitile(ctaSubtitle))
 
         topAdsCard.setOnClickListener {
             changeCTABtnColorAsPerWidget(feedXCard)
@@ -1967,13 +1967,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
         if (card.isTypeProductHighlight) card.cta.text
         else context.getString(R.string.feeds_cek_sekarang)
 
-    /**
-     * get subtitles from FeedXCard model
-     */
-    private fun getCTAButtonSubtitle(card: FeedXCard) =
-        if (card.isTypeProductHighlight && card.cta.subtitle.isNotEmpty())
-            card.cta.subtitle
-        else listOf()
+    private fun getCTAButtonSubtitle(card: FeedXCard) = card.cta.subtitle
 
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
