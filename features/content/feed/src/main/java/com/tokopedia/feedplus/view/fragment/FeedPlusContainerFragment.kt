@@ -243,13 +243,10 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
             .observe(viewLifecycleOwner, Observer {
                 Log.d("<LOG>", it.toString())
                 it.firstOrNull()?.let { workInfo ->
-
-                    /** TODO: handle set initial data (image, etc) */
-                    postProgressUpdateView?.show()
-
                     if(workInfo.state == WorkInfo.State.SUCCEEDED) {
                         /** TODO: handle on success */
                         postProgressUpdateView?.hide()
+
                         Log.d("<LOG>", "FEED - SUCCEEDED - isFinished ${workInfo.state.isFinished()}")
                     }
                     else if(workInfo.state == WorkInfo.State.FAILED) {
@@ -258,8 +255,14 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
                         Log.d("<LOG>", "FEED - FAILED")
                     }
                     else {
+                        postProgressUpdateView?.show()
+
                         val progress = workInfo.progress.getInt(PlayShortsUploadConst.PROGRESS, 0)
+                        val coverUrl = workInfo.progress.getString(PlayShortsUploadConst.COVER_URL).orEmpty()
+
+                        postProgressUpdateView?.setIcon(coverUrl)
                         postProgressUpdateView?.setProgress(progress)
+
                         Log.d("<LOG>", "FEED - PROGRESS $progress")
                     }
                 }

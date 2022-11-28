@@ -50,6 +50,11 @@ class PlayShortsUploadWorker(
 
     private var currentProgress = 0
 
+    private val uploadData = PlayShortsUploadModel.parse(inputData)
+
+    private val coverUrl: String
+        get() = uploadData.coverUri.ifEmpty { uploadData.mediaUri }
+
     init {
         inject()
     }
@@ -77,9 +82,8 @@ class PlayShortsUploadWorker(
              * If error happens anywhere within the flow:
              * 1. Update channel status to TranscodingFailed (value = 7)
              */
-            val uploadData = PlayShortsUploadModel.parse(inputData)
-
             try {
+                setInitialProgress()
                 Log.d("<LOG>", "Start Uploading...")
                 Log.d("<LOG>", uploadData.toString())
                 Log.d("<LOG>", updateChannelUseCase.toString())
@@ -98,6 +102,7 @@ class PlayShortsUploadWorker(
                 delay(1000)
                 updateProgress()
 
+//                setInitialProgress()
 //                updateChannelStatus(uploadData, PlayChannelStatusType.Transcoding)
 //
 //                val mediaUrl = uploadMedia(UploadType.Video, uploadData.mediaUri, withUpdateProgress = true)
@@ -244,9 +249,22 @@ class PlayShortsUploadWorker(
         updateProgress()
     }
 
+    private suspend fun setInitialProgress() {
+        broadcastProgress(0)
+    }
+
     private suspend fun updateProgress() {
         currentProgress += PROGRESS_PER_STEP
-        setProgress(workDataOf(PlayShortsUploadConst.PROGRESS to currentProgress))
+        broadcastProgress(currentProgress)
+    }
+
+    private suspend fun broadcastProgress(progress: Int) {
+        setProgress(
+            workDataOf(
+                PlayShortsUploadConst.PROGRESS to progress,
+                PlayShortsUploadConst.COVER_URL to coverUrl,
+            )
+        )
     }
 
     enum class UploadType(

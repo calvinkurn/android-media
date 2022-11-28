@@ -51,9 +51,14 @@ class PostProgressUpdateView @JvmOverloads constructor(
         if (productImage != null)
             postIcon?.setImageUrl(productImage)
     }
+
     fun setIconVisibility(isEditPost: Boolean) {
         if (isEditPost)
             postIcon?.setImageDrawable(context.getDrawable((R.drawable.cp_common_rect_white_round)))
+    }
+
+    fun setIcon(iconUrl: String) {
+        postIcon?.setImageUrl(iconUrl)
     }
 
     fun setProgress(progress: Int) {
