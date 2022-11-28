@@ -1083,6 +1083,7 @@ class PlayViewModel @AssistedInject constructor(
         removeCastStateListener()
 
         resetChannelReportLoadedStatus()
+        cancelJob(FOLLOW_POP_UP_ID)
     }
 
     private fun focusVideoPlayer(channelData: PlayChannelData) {
@@ -2674,15 +2675,19 @@ class PlayViewModel @AssistedInject constructor(
         val cache = playPreference.isFollowPopup(streamerId)
 
         viewModelScope.launch {
-            val job = launch(dispatchers.computation) {
+            cancelJob(FOLLOW_POP_UP_ID)
+            jobMap[FOLLOW_POP_UP_ID] = launch(dispatchers.computation) {
                 delay(config.duration)
+                val needToBeShown = !isFreezeOrBanned && cache && config.isEnabled
+                if (!needToBeShown) return@launch
+                _isFollowPopUpShown.update { it.copy(shouldShow = true, partnerId = streamerId.toLong()) }
+                playPreference.setFollowPopUp(streamerId)
             }
-            job.join()
-            val needToBeShown = !isFreezeOrBanned && cache && config.isEnabled
-            if (!needToBeShown) return@launch
-            _isFollowPopUpShown.update { it.copy(shouldShow = true, partnerId = streamerId.toLong()) }
-            playPreference.setFollowPopUp(streamerId)
         }
+    }
+
+    private fun cancelJob(identifier: String) {
+        jobMap[identifier]?.cancel()
     }
 
     private fun CoroutineScope.launch(
@@ -2735,8 +2740,9 @@ class PlayViewModel @AssistedInject constructor(
         private const val INTERVAL_LIKE_REMINDER_IN_MIN = 5L
         private const val DURATION_DIVIDER = 1000
         private const val REMINDER_JOB_ID = "RJ"
-
         private const val SUBSCRIBE_AWAY_THRESHOLD = 5000L
         private val defaultSharingStarted = SharingStarted.WhileSubscribed(SUBSCRIBE_AWAY_THRESHOLD)
+
+        private const val FOLLOW_POP_UP_ID  = "FOLLOW_POP_UP"
     }
 }
