@@ -8,6 +8,7 @@ import androidx.work.OneTimeWorkRequest
 import androidx.work.WorkManager
 import com.tokopedia.play_common.util.extension.combine
 import com.google.android.exoplayer2.ExoPlayer
+import com.tokopedia.content.common.const.PlayShortsUploadConst
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.content.common.ui.model.TermsAndConditionUiModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -470,20 +471,18 @@ class PlayShortsViewModel @Inject constructor(
     }
 
     private fun uploadMedia() {
-        val uploadWorkerInputData = PlayShortsUploadUiModel(
-            shortsId = shortsId,
-            authorId = selectedAccount.id,
-            authorType = selectedAccount.type,
-            mediaUri = _media.value.mediaUri,
-            coverUri = _coverForm.value.coverUri,
-        ).format()
-
-        val uploadWorker = OneTimeWorkRequest.Builder(PlayShortsUploadWorker::class.java)
-            .setInputData(uploadWorkerInputData)
-            .build()
+        val uploadWorker = PlayShortsUploadWorker.build(
+            PlayShortsUploadUiModel(
+                shortsId = shortsId,
+                authorId = selectedAccount.id,
+                authorType = selectedAccount.type,
+                mediaUri = _media.value.mediaUri,
+                coverUri = _coverForm.value.coverUri,
+            )
+        )
 
         workManager.enqueueUniqueWork(
-            "SHORTS_UPLOAD",
+            PlayShortsUploadConst.PLAY_SHORTS_UPLOAD,
             ExistingWorkPolicy.KEEP,
             uploadWorker,
         )

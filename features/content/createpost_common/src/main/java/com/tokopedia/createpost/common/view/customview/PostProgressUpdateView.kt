@@ -108,6 +108,26 @@ class PostProgressUpdateView @JvmOverloads constructor(
 
     }
 
+    private fun retryPostShorts(draftId: String){
+        processingText?.text = context.getString(R.string.cp_common_progress_bar_text)
+        processingText?.setTextColor(ContextCompat.getColor(context,
+            com.tokopedia.unifyprinciples.R.color.Unify_NN950))
+
+        val cacheManager = SaveInstanceCacheManager(this.context, draftId)
+        val viewModel: CreatePostViewModel = cacheManager.get(
+            CreatePostViewModel.TAG,
+            CreatePostViewModel::class.java
+        ) ?: CreatePostViewModel()
+        setCreatePostData(viewModel)
+        cacheManager.put(
+            CreatePostViewModel.TAG,
+            viewModel, TimeUnit.DAYS.toMillis(7)
+        )
+        cacheManager.id?.let { draftId -> SubmitPostService.startService(this.context, draftId) }
+        retryText?.gone()
+
+    }
+
     private val submitPostReceiver: BroadcastReceiver by lazy {
         object : BroadcastReceiver() {
             override fun onReceive(context: Context?, intent: Intent?) {

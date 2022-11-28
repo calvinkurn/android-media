@@ -2,12 +2,10 @@ package com.tokopedia.play.broadcaster.shorts.domain.worker
 
 import android.content.Context
 import android.util.Log
-import androidx.work.CoroutineWorker
-import androidx.work.Worker
-import androidx.work.WorkerParameters
-import androidx.work.workDataOf
+import androidx.work.*
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.content.common.const.PlayShortsUploadConst
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.mediauploader.UploaderUseCase
 import com.tokopedia.mediauploader.common.state.UploadResult
@@ -24,6 +22,7 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
+import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
 /**
@@ -48,6 +47,8 @@ class PlayShortsUploadWorker(
 
     @Inject
     lateinit var snapshotHelper: PlayShortsSnapshotHelper
+
+    private var currentProgress = 0
 
     init {
         inject()
@@ -100,7 +101,7 @@ class PlayShortsUploadWorker(
 //            try {
 //                updateChannelStatus(uploadData, PlayChannelStatusType.Transcoding)
 //
-//                val mediaUrl = uploadMedia(UploadType.Video, uploadData.mediaUri)
+//                val mediaUrl = uploadMedia(UploadType.Video, uploadData.mediaUri, withUpdateProgress = true)
 //
 //                if (uploadData.coverUri.isEmpty()) {
 //                    uploadFirstSnapshotAsCover(this, uploadData, {
@@ -136,7 +137,8 @@ class PlayShortsUploadWorker(
 
     private suspend fun uploadMedia(
         uploadType: UploadType,
-        mediaUri: String
+        mediaUri: String,
+        withUpdateProgress: Boolean,
     ): String {
         val param = uploaderUseCase.createParams(
             sourceId = uploadType.id,
@@ -144,18 +146,12 @@ class PlayShortsUploadWorker(
             withTranscode = uploadType.withTranscode
         )
 
-        uploaderUseCase.trackProgress {
-            /** TODO: update progress
-             * need to note that the you cant take the number and update the UI progress directly
-             * because there's a lot of action that needs to be done here,
-             * so don't forget NORMALIZE the progress percentage on the UI
-             * */
-        }
-
         val result = uploaderUseCase(param)
 
         return when (result) {
             is UploadResult.Success -> {
+                if(withUpdateProgress) updateProgress()
+
                 if (uploadType.type == UPLOAD_TYPE_IMAGE) {
                     result.uploadId
                 } else {
@@ -176,7 +172,7 @@ class PlayShortsUploadWorker(
     ) {
         snapshotHelper.snap(appContext, uploadData.mediaUri) {
             scope.launchCatchError(block = {
-                val uploadId = uploadMedia(UploadType.Image, it.absolutePath)
+                val uploadId = uploadMedia(UploadType.Image, it.absolutePath, withUpdateProgress = false)
 
                 updateChannelUseCase.apply {
                     setQueryParams(
@@ -189,6 +185,8 @@ class PlayShortsUploadWorker(
                 }.executeOnBackground()
 
                 snapshotHelper.deleteLocalFile()
+
+                updateProgress()
 
                 onSuccess()
             }) {
@@ -208,6 +206,8 @@ class PlayShortsUploadWorker(
 
         if (result.wrapper.mediaIDs.isEmpty()) throw Exception("Active media ID is empty")
 
+        updateProgress()
+
         return result.wrapper.mediaIDs.first()
     }
 
@@ -224,6 +224,8 @@ class PlayShortsUploadWorker(
                 )
             )
         }.executeOnBackground()
+
+        updateProgress()
     }
 
     private suspend fun updateChannelStatusWithMedia(
@@ -241,6 +243,13 @@ class PlayShortsUploadWorker(
                 )
             )
         }.executeOnBackground()
+
+        updateProgress()
+    }
+
+    private suspend fun updateProgress() {
+        currentProgress += PROGRESS_PER_STEP
+        setProgress(workDataOf(PlayShortsUploadConst.PROGRESS to currentProgress))
     }
 
     enum class UploadType(
@@ -255,5 +264,12 @@ class PlayShortsUploadWorker(
     companion object {
         private const val UPLOAD_TYPE_IMAGE = "UPLOAD_TYPE_IMAGE"
         private const val UPLOAD_TYPE_VIDEO = "UPLOAD_TYPE_VIDEO"
+        private const val PROGRESS_PER_STEP = 20
+
+        fun build(uploadModel: PlayShortsUploadUiModel): OneTimeWorkRequest {
+            return OneTimeWorkRequest.Builder(PlayShortsUploadWorker::class.java)
+                .setInputData(uploadModel.format())
+                .build()
+        }
     }
 }

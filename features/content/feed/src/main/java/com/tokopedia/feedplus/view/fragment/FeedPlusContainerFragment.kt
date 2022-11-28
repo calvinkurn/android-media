@@ -32,6 +32,7 @@ import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.coachmark.CoachMark
 import com.tokopedia.coachmark.CoachMarkBuilder
 import com.tokopedia.coachmark.CoachMarkItem
+import com.tokopedia.content.common.const.PlayShortsUploadConst
 import com.tokopedia.content.common.types.BundleData
 import com.tokopedia.content.common.util.coachmark.ContentCoachMarkConfig
 import com.tokopedia.content.common.util.coachmark.ContentCoachMarkManager
@@ -233,15 +234,16 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         initFab()
 
         WorkManager.getInstance(requireActivity().applicationContext)
-            .getWorkInfosForUniqueWorkLiveData("SHORTS_UPLOAD")
+            .getWorkInfosForUniqueWorkLiveData(PlayShortsUploadConst.PLAY_SHORTS_UPLOAD)
             .observe(viewLifecycleOwner, Observer {
+                Log.d("<LOG>", it.toString())
                 it.firstOrNull()?.let { workInfo ->
 
                     /** TODO: handle set initial data (image, etc) */
                     postProgressUpdateView?.show()
 
                     if(workInfo.state == WorkInfo.State.SUCCEEDED) {
-                        Log.d("<LOG>", "FEED - SUCCEEDED")
+                        Log.d("<LOG>", "FEED - SUCCEEDED - isFinished ${workInfo.state.isFinished()}")
                         postProgressUpdateView?.hide()
                         /** TODO: handle on success */
                     }
