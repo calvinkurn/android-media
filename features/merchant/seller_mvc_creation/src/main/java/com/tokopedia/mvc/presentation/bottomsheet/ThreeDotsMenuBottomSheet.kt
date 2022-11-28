@@ -6,7 +6,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.mvc.R
 import com.tokopedia.mvc.databinding.SmvcBottomsheetThreeDotsMenuBinding
 import com.tokopedia.mvc.domain.entity.Voucher
@@ -18,15 +17,14 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 class VoucherThreeDotsBottomSheet : BottomSheetUnify() {
 
     private var context: FragmentActivity? = null
-    private var entryPoint: MVCBottomSheetType = MVCBottomSheetType.UpcomingEntryPoint
     private var voucher: Voucher? = null
-    private var menuAdapter: MoreMenuAdapter? = null
     private var menuItem: List<MoreMenuUiModel> = emptyList()
     private var binding by autoClearedNullable<SmvcBottomsheetThreeDotsMenuBinding>()
 
     init {
         isFullpage = false
     }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -35,13 +33,8 @@ class VoucherThreeDotsBottomSheet : BottomSheetUnify() {
         binding = SmvcBottomsheetThreeDotsMenuBinding.inflate(LayoutInflater.from(context))
         setChild(binding?.root)
         setTitle(context?.getString(R.string.voucher_three_bots_title) ?: "")
-        binding?.recyclerView?.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-//        val adapter = ThreeBotsBottomSheetAdapter(context, entryPoint)
-//        when(entryPoint) {
-//            is MVCBottomSheetType.UpcomingEntryPoint -> adapter.setUpcomingOptionsList()
-//            is MVCBottomSheetType.OngoingEntryPoint -> adapter.setOngoingOptionsList()
-//            is MVCBottomSheetType.CancelledEntryPoint -> adapter.setCancelledOptionsList()
-//        }
+        binding?.recyclerView?.layoutManager =
+            LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         val adapter = MoreMenuAdapter()
         adapter?.clearAllElements()
         adapter?.addElement(menuItem)
@@ -58,7 +51,7 @@ class VoucherThreeDotsBottomSheet : BottomSheetUnify() {
             return VoucherThreeDotsBottomSheet().apply {
                 this.context = context
                 this.voucher = voucher
-                this.menuItem = getUpcomingOptionsListMenu()
+                this.menuItem = getOngoingOptionsListMenu()
 //                voucher?.type?.let { type ->
 //                    val getMenuItem =
 //                        when(type) {
@@ -133,88 +126,72 @@ class VoucherThreeDotsBottomSheet : BottomSheetUnify() {
 //                        }
 //                    menuAdapter?.clearAllElements()
 //                    menuAdapter?.addElement(getMenuItem)
-                }
-
-
-
             }
+
+
         }
+    }
 
     private fun getUpcomingOptionsListMenu(): List<MoreMenuUiModel> {
         return listOf(
             MoreMenuUiModel.Coupon(
                 context?.getString(R.string.voucher_bs_ubah_kuota).orEmpty(),
-                IconUnify.COUPON
             ),
             MoreMenuUiModel.Calendar(
                 context?.getString(R.string.voucher_bs_ubah_periode).orEmpty(),
-                IconUnify.CALENDAR
             ),
             MoreMenuUiModel.Edit(
                 context?.getString(R.string.voucher_bs_ubah).orEmpty(),
-                IconUnify.EDIT
             ),
             MoreMenuUiModel.Clipboard(
                 context?.getString(R.string.voucher_bs_ubah_lihat_detail).orEmpty(),
-                IconUnify.CLIPBOARD
             ),
             MoreMenuUiModel.Broadcast(
                 context?.getString(R.string.voucher_bs_ubah_broadcast_chat).orEmpty(),
-                IconUnify.BROADCAST
             ),
             MoreMenuUiModel.Download(
-                context?.getString(R.string.voucher_bs_ubah_download).orEmpty(), IconUnify.DOWNLOAD
+                context?.getString(R.string.voucher_bs_ubah_download).orEmpty()
             ),
             MoreMenuUiModel.Clear(
-                context?.getString(R.string.voucher_bs_ubah_batalkan).orEmpty(),
-                IconUnify.CLEAR
+                context?.getString(R.string.voucher_bs_ubah_batalkan).orEmpty()
             )
         )
-//        optionsList.add(Pair(context?.getString(R.string.voucher_bs_ubah_kuota) ?: "", IconUnify.COUPON))
-//        optionsList.add(Pair(context?.getString(R.string.voucher_bs_ubah_periode) ?: "", IconUnify.CALENDAR))
-//        optionsList.add(Pair(context?.getString(R.string.voucher_bs_ubah) ?: "", IconUnify.EDIT))
-//        optionsList.add(Pair(context?.getString(R.string.voucher_bs_ubah_lihat_detail) ?: "",
-//            IconUnify.CLIPBOARD))
-//        optionsList.add(Pair(context?.getString(R.string.voucher_bs_ubah_broadcast_chat) ?: "",
-//            IconUnify.BROADCAST))
-//        optionsList.add(Pair(context?.getString(R.string.voucher_bs_ubah_download) ?: "", IconUnify.DOWNLOAD))
-//        optionsList.add(Pair(context?.getString(R.string.voucher_bs_ubah_batalkan) ?: "", IconUnify.CLEAR))
     }
 
-
-//    fun setUpcomingOptionsList() {
-//        this.optionsList.clear()
-//        optionsList.add(Pair(context?.getString(R.string.voucher_bs_ubah_kuota) ?: "",IconUnify.COUPON))
-//        optionsList.add(Pair(context?.getString(R.string.voucher_bs_ubah_periode) ?: "",IconUnify.CALENDAR))
-//        optionsList.add(Pair(context?.getString(R.string.voucher_bs_ubah) ?: "",IconUnify.EDIT))
-//        optionsList.add(Pair(context?.getString(R.string.voucher_bs_ubah_lihat_detail) ?: "",IconUnify.CLIPBOARD))
-//        optionsList.add(Pair(context?.getString(R.string.voucher_bs_ubah_broadcast_chat) ?: "",IconUnify.BROADCAST))
-//        optionsList.add(Pair(context?.getString(R.string.voucher_bs_ubah_download) ?: "",IconUnify.DOWNLOAD))
-//        optionsList.add(Pair(context?.getString(R.string.voucher_bs_ubah_batalkan) ?: "",IconUnify.CLEAR))
-//    }
-//
-//    fun setOngoingOptionsList() {
-//        this.optionsList.clear()
-//        optionsList.add(Pair(context?.getString(R.string.voucher_bs_ubah_kuota) ?: "",IconUnify.COUPON))
-//        optionsList.add(Pair(context?.getString(R.string.voucher_bs_ubah_lihat_detail) ?: "",IconUnify.CLIPBOARD))
-//        optionsList.add(Pair(context?.getString(R.string.voucher_bs_ubah_broadcast_chat) ?: "",IconUnify.BROADCAST))
-//        optionsList.add(Pair(context?.getString(R.string.voucher_bs_ubah_bagikan) ?: "",IconUnify.SHARE_MOBILE))
-//        optionsList.add(Pair(context?.getString(R.string.voucher_bs_ubah_download) ?: "",IconUnify.DOWNLOAD))
-//        optionsList.add(Pair(context?.getString(R.string.voucher_bs_ubah_hentikan) ?: "",IconUnify.CLEAR))
-//    }
-//
-//    fun setCancelledOptionsList() {
-//        this.optionsList.clear()
-//        optionsList.add(Pair(context?.getString(R.string.voucher_bs_duplikat) ?: "",IconUnify.COPY))
-//        optionsList.add(Pair(context?.getString(R.string.voucher_bs_ubah_lihat_detail) ?: "",IconUnify.CLIPBOARD))
-//    }
-
-
+    private fun getOngoingOptionsListMenu(): List<MoreMenuUiModel> {
+        return listOf(
+            MoreMenuUiModel.Coupon(
+                context?.getString(R.string.voucher_bs_ubah_kuota).orEmpty(),
+            ),
+            MoreMenuUiModel.Clipboard(
+                context?.getString(R.string.voucher_bs_ubah_lihat_detail).orEmpty(),
+            ),
+            MoreMenuUiModel.ItemDivider,
+            MoreMenuUiModel.Broadcast(
+                context?.getString(R.string.voucher_bs_ubah_broadcast_chat).orEmpty(),
+            ),
+            MoreMenuUiModel.Share(
+                context?.getString(R.string.voucher_bs_ubah_bagikan).orEmpty()
+            ),
+            MoreMenuUiModel.Download(
+                context?.getString(R.string.voucher_bs_ubah_download).orEmpty()
+            ),
+            MoreMenuUiModel.ItemDivider,
+            MoreMenuUiModel.Hentikan(
+                context?.getString(R.string.voucher_bs_ubah_hentikan).orEmpty()
+            )
+        )
     }
 
+    private fun getEndedOrCancelledOptionsListMenu(): List<MoreMenuUiModel> {
+        return listOf(
+            MoreMenuUiModel.Copy(
+                context?.getString(R.string.voucher_bs_duplikat).orEmpty(),
+            ),
+            MoreMenuUiModel.Clipboard(
+                context?.getString(R.string.voucher_bs_ubah_lihat_detail).orEmpty(),
+            ),
+        )
+    }
 
-sealed class MVCBottomSheetType {
-    object UpcomingEntryPoint : MVCBottomSheetType()
-    object OngoingEntryPoint: MVCBottomSheetType()
-    object CancelledEntryPoint: MVCBottomSheetType()
 }

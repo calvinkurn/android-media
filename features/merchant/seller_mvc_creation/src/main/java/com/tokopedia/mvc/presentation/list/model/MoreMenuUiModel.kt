@@ -58,5 +58,23 @@ sealed class MoreMenuUiModel(
         override val icon: Int = IconUnify.CLEAR
     ): MoreMenuUiModel(title,icon)
 
+    data class Share(
+        override val title: String,
+        @DrawableRes
+        override val icon: Int = IconUnify.SHARE_MOBILE
+    ): MoreMenuUiModel(title,icon)
+
+    data class Hentikan(
+        override val title: String,
+        @DrawableRes
+        override val icon: Int = IconUnify.CLEAR
+    ): MoreMenuUiModel(title,icon)
+
+    data class Copy(
+        override val title: String,
+        @DrawableRes
+        override val icon: Int = IconUnify.COPY
+    ): MoreMenuUiModel(title,icon)
+
     object ItemDivider : MoreMenuUiModel()
 }
