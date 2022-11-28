@@ -114,64 +114,6 @@ class FeedEntryPointAnalytic @Inject constructor(
             )
     }
 
-    /**
-     * Mynakama Tracker
-     * https://mynakama.tokopedia.com/datatracker/requestdetail/view/3511
-     *
-     * Row 1 : eventLabel is {partnerId} - {seller / user} but we can't identified the user
-     * as seller / user bcs it can be both
-     */
-    fun clickCreateShortsEntryPoint() {
-        TrackApp.getInstance().gtm
-            .sendGeneralEvent(
-                mapOf(
-                    EVENT_NAME to EVENT_CLICK_CONTENT,
-                    EVENT_ACTION to String.format(
-                        EVENT_ACTION_CLICK_FORMAT,
-                        "buat video"
-                    ),
-                    EVENT_CATEGORY to CONTENT_FEED_TIMELINE,
-                    EVENT_LABEL to String.format(
-                        /** TODO: need to determine {partnerId} - {seller / user} */
-                        FORMAT_TWO_PARAM,
-                        "",
-                        ""
-                    ),
-                    EVENT_BUSINESSUNIT to PLAY,
-                    EVENT_CURRENTSITE to MARKETPLACE,
-                    EVENT_TRACKER_ID to "37524",
-                    EVENT_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId
-                )
-            )
-    }
-
-    /**
-     * Row 79 : eventLabel is {partnerId} - {seller / user} but we can't identified the user
-     * as seller / user bcs it can be both
-     */
-    fun viewShortsEntryPoint() {
-        TrackApp.getInstance().gtm
-            .sendGeneralEvent(
-                mapOf(
-                    EVENT_NAME to EVENT_VIEW_CONTENT,
-                    EVENT_ACTION to String.format(
-                        EVENT_ACTION_VIEW_FORMAT,
-                        "buat video"
-                    ),
-                    EVENT_CATEGORY to CONTENT_FEED_TIMELINE,
-                    EVENT_LABEL to String.format(
-                        /** TODO: need to determine {partnerId} - {seller / user} */
-                        FORMAT_TWO_PARAM,
-                        "",
-                        ""
-                    ),
-                    EVENT_BUSINESSUNIT to PLAY,
-                    EVENT_CURRENTSITE to MARKETPLACE,
-                    EVENT_TRACKER_ID to "37602",
-                    EVENT_SESSION_IRIS to TrackApp.getInstance().gtm.irisSessionId
-                )
-            )
-    }
 
     companion object {
         private const val EVENT_NAME = "event"
