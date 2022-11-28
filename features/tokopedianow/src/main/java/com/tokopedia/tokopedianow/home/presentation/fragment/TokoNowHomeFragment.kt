@@ -1210,13 +1210,13 @@ class TokoNowHomeFragment: Fragment(),
                         showDialogReceiverReferral(it.data)
                     } else {
                         if (context != null && view != null) {
-                            Toaster.make(requireView(), it.data.getErrorMessage(requireContext()))
+                            Toaster.make(requireView(), it.data.getErrorMessage(requireContext()), Toaster.TYPE_ERROR)
                         }
                     }
                 }
                 is Fail -> {
                     view?.let { view ->
-                        Toaster.make(view, it.throwable.message ?: "")
+                        Toaster.make(view, it.throwable.message ?: "", Toaster.TYPE_ERROR)
                     }
                 }
             }
