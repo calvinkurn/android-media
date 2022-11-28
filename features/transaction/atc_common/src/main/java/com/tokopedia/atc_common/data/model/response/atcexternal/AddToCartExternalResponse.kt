@@ -25,13 +25,13 @@ data class DataResponse(
 
 data class AddToCartExternalDataResponse(
         @SerializedName("product_id")
-        val productId: Long = 0,
+        val productId: String = "",
         @SerializedName("product_name")
         val productName: String = "",
         @SerializedName("quantity")
         val quantity: Int = 0,
         @SerializedName("price")
-        val price: Int = 0,
+        val price: Double = 0.0,
         @SerializedName("category")
         val category: String = "",
         @SerializedName("shop_id")

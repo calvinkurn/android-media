@@ -52,12 +52,12 @@ object AtcCommonMapper {
         return when (actionButtonCart) {
             ProductDetailCommonConstant.OCS_BUTTON -> {
                 AddToCartOcsRequestParams().apply {
-                    productId = selectedChild?.productId?.toLongOrZero() ?: 0L
-                    shopId = shopIdInt
+                    productId = selectedChild?.productId ?: "0"
+                    shopId = shopIdInt.toString()
                     quantity = selectedChild?.getFinalMinOrder() ?: 0
                     notes = ""
-                    customerId = userId.toIntOrZero()
-                    warehouseId = selectedWarehouse?.id?.toIntOrZero() ?: 0
+                    customerId = userId
+                    warehouseId = selectedWarehouse?.id ?: "0"
                     trackerAttribution = trackerAttributionPdp
                     trackerListName = trackerListNamePdp
                     isTradeIn = false

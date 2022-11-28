@@ -17,6 +17,7 @@ import com.tokopedia.usecase.UseCase
 import rx.Observable
 import javax.inject.Inject
 import javax.inject.Named
+import kotlin.math.roundToLong
 
 class AddToCartExternalUseCase @Inject constructor(@Named(MUTATION_ATC_EXTERNAL) private val queryString: String,
                                                    private val graphqlUseCase: GraphqlUseCase,
@@ -48,9 +49,11 @@ class AddToCartExternalUseCase @Inject constructor(@Named(MUTATION_ATC_EXTERNAL)
                 if (result.success == 1) {
                     val data = result.data
                     analytics.sendEnhancedEcommerceTracking(data)
-                    AddToCartBaseAnalytics.sendAppsFlyerTracking(data.productId.toString(), data.productName, data.price.toString(),
+                    AddToCartBaseAnalytics.sendAppsFlyerTracking(
+                        data.productId, data.productName, data.price.roundToLong().toString(),
                             data.quantity.toString(), data.category)
-                    AddToCartBaseAnalytics.sendBranchIoTracking(data.productId.toString(), data.productName, data.price.toString(),
+                    AddToCartBaseAnalytics.sendBranchIoTracking(
+                        data.productId, data.productName, data.price.roundToLong().toString(),
                             data.quantity.toString(), data.category, "",
                             "", "", "",
                             "", "", requestParams.getString(PARAM_USER_ID, ""))

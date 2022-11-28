@@ -283,8 +283,7 @@ import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts
 import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil
 import rx.subscriptions.CompositeSubscription
 import timber.log.Timber
-import java.util.Locale
-import java.util.UUID
+import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -4523,12 +4522,12 @@ open class DynamicProductDetailFragment :
             when (actionButton) {
                 ProductDetailCommonConstant.OCS_BUTTON -> {
                     val addToCartOcsRequestParams = AddToCartOcsRequestParams().apply {
-                        productId = data.basic.productID.toLongOrNull() ?: 0
-                        shopId = data.basic.shopID.toIntOrZero()
+                        productId = data.basic.productID
+                        shopId = data.basic.shopID
                         quantity = data.basic.minOrder
                         notes = ""
-                        customerId = viewModel.userId.toIntOrZero()
-                        warehouseId = selectedWarehouseId
+                        customerId = viewModel.userId
+                        warehouseId = selectedWarehouseId.toString()
                         trackerAttribution = trackerAttributionPdp ?: ""
                         trackerListName = trackerListNamePdp ?: ""
                         isTradeIn = data.data.isTradeIn

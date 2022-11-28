@@ -71,9 +71,11 @@ open class AddToCartOcsUseCase @Inject constructor(@Named("atcOcsMutation") priv
             val addToCartOcsGqlResponse = it.getData<AddToCartOcsGqlResponse>(AddToCartOcsGqlResponse::class.java)
             val result = addToCartDataMapper.mapAddToCartOcsResponse(addToCartOcsGqlResponse)
             if (!result.isStatusError()) {
-                AddToCartBaseAnalytics.sendAppsFlyerTracking(addToCartRequest.productId.toString(), addToCartRequest.productName, addToCartRequest.price,
+                AddToCartBaseAnalytics.sendAppsFlyerTracking(
+                    addToCartRequest.productId, addToCartRequest.productName, addToCartRequest.price,
                         addToCartRequest.quantity.toString(), addToCartRequest.category)
-                AddToCartBaseAnalytics.sendBranchIoTracking(addToCartRequest.productId.toString(), addToCartRequest.productName, addToCartRequest.price,
+                AddToCartBaseAnalytics.sendBranchIoTracking(
+                    addToCartRequest.productId, addToCartRequest.productName, addToCartRequest.price,
                         addToCartRequest.quantity.toString(), addToCartRequest.category, addToCartRequest.categoryLevel1Id,
                         addToCartRequest.categoryLevel1Name, addToCartRequest.categoryLevel2Id, addToCartRequest.categoryLevel2Name,
                         addToCartRequest.categoryLevel3Id, addToCartRequest.categoryLevel3Name, addToCartRequest.userId)
