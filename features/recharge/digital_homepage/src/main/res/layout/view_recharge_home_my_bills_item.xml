@@ -4,7 +4,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="312dp"
-    android:layout_height="wrap_content"
+    android:layout_height="120dp"
     android:minHeight="110dp"
     app:cardCornerRadius="8dp"
     app:cardElevation="4dp">
@@ -12,20 +12,24 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="12dp">
+        android:padding="8dp">
 
         <View
             android:id="@+id/bg_product_icon"
             android:layout_width="48dp"
             android:layout_height="48dp"
+            android:layout_marginTop="4dp"
             android:background="@drawable/bg_product_icon"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/iv_product_icon"
-            android:layout_width="0dp"
-            android:layout_height="0dp"
+            android:layout_width="32dp"
+            android:layout_height="32dp"
+            android:scaleType="fitCenter"
+            app:unify_image_type="rect"
+            app:unify_image_corner_radius="0"
             app:layout_constraintBottom_toBottomOf="@id/bg_product_icon"
             app:layout_constraintEnd_toEndOf="@id/bg_product_icon"
             app:layout_constraintStart_toStartOf="@id/bg_product_icon"
@@ -64,6 +68,7 @@
             app:layout_constraintStart_toEndOf="@id/bg_product_icon"
             app:layout_constraintTop_toBottomOf="@id/tv_product_detail_name"
             app:typographyType="display_3"
+            android:ellipsize="end"
             tools:text="Rumah Papa (802930293023)" />
 
         <com.tokopedia.unifyprinciples.Typography
