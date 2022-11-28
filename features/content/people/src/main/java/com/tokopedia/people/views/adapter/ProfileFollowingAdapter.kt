@@ -5,6 +5,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.device.info.DeviceConnectionInfo
@@ -95,7 +96,7 @@ open class ProfileFollowingAdapter(
     private fun setData(holder: ViewHolder, item: ProfileFollowerV2, position: Int) {
         val itemContext = holder.itemView.context
         holder.imgProfile.setImageUrl(item.profile.imageCover)
-        holder.textName.text = item.profile.name
+        holder.textName.text = MethodChecker.fromHtml(item.profile.name)
 
         if (item.profile.username.isNotBlank()) {
             holder.textUsername.show()
