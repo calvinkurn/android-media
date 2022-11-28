@@ -12,6 +12,7 @@ import com.gojek.courier.di.UsernameProvider
 import com.gojek.mqtt.client.MqttInterceptor
 import com.google.gson.Gson
 import com.tokochat.tokochat_config_common.di.qualifier.TokoChatQualifier
+import com.tokochat.tokochat_config_common.util.CourierEventLogger
 import com.tokochat.tokochat_config_common.util.TokoChatCourierConnectionLifecycle
 import com.tokopedia.config.BuildConfig
 import com.tokopedia.user.session.UserSessionInterface
@@ -55,7 +56,9 @@ class TokoChatCourierClientProvider @Inject constructor(
 
     private fun getEventTracker(): EventTracker {
         return object : EventTracker {
-            override fun trackEvent(name: String, properties: Map<String, Any>) {}
+            override fun trackEvent(name: String, properties: Map<String, Any>) {
+                CourierEventLogger.logCourierEventToServerLogger(name, properties)
+            }
         }
     }
 

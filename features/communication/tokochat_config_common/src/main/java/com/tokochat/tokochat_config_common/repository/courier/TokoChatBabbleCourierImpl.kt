@@ -9,7 +9,7 @@ import com.gojek.courier.common.AppType
 import com.gojek.courier.messageadapter.gson.GsonMessageAdapterFactory
 import com.gojek.courier.messageadapter.text.TextMessageAdapterFactory
 import com.gojek.courier.streamadapter.rxjava.RxJavaStreamAdapterFactory
-import com.tokochat.tokochat_config_common.util.TokoChatCourierRemoteConfigImpl.Companion.SHOULD_TRACK_MESSAGE_RECEIVE_EVENT
+import com.tokochat.tokochat_config_common.remote_config.TokoChatCourierRemoteConfigImpl.Companion.SHOULD_TRACK_MESSAGE_RECEIVE_EVENT
 import com.tokochat.tokochat_config_common.util.TokoChatCourierStateObservable
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.user.session.UserSessionInterface

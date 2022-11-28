@@ -1,4 +1,4 @@
-package com.tokochat.tokochat_config_common.util
+package com.tokochat.tokochat_config_common.remote_config
 
 import com.gojek.courier.auth.cache.TokenCachingMechanism
 import com.gojek.courier.config.CourierRemoteConfig
@@ -8,7 +8,9 @@ import com.gojek.mqtt.policies.connectretrytime.ConnectRetryTimeConfig
 import com.gojek.mqtt.policies.connecttimeout.ConnectTimeoutConfig
 import com.gojek.mqtt.policies.subscriptionretry.SubscriptionRetryConfig
 import com.gojek.timer.pingsender.TimerPingSenderFactory
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.google.gson.Gson
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
 import com.tokopedia.remoteconfig.RemoteConfig
 import javax.inject.Inject
 
@@ -16,19 +18,49 @@ class TokoChatCourierRemoteConfigImpl @Inject constructor(
     private val remoteConfig: RemoteConfig
 ) : CourierRemoteConfig {
 
+    private var courierConfigData = CourierConfigData()
+
+    init {
+        initCourierRemoteConfigData()
+    }
+
+    private fun initCourierRemoteConfigData() {
+        val data = remoteConfig.getString(COURIER_CONFIG_JSON)
+        try {
+            if (data.isNotBlank()) {
+                courierConfigData = Gson().fromJson(data, CourierConfigData::class.java)
+            }
+        } catch (throwable: Throwable) {
+            ServerLogger.log(Priority.P2, ERROR_TAG, createErrorMessage(data, throwable))
+        }
+    }
+
+    private fun createErrorMessage(
+        data: String,
+        throwable: Throwable,
+    ): Map<String, String> {
+        return mutableMapOf(
+            DATA_KEY to data,
+            STACKTRACE_KEY to throwable.stackTraceToString()
+        )
+    }
+
     /**
      * How many events want to log, relate to tracker
      * can be 0 and the value is in percentage
      */
     override val courierEventProbability: Int
-        get() = remoteConfig.getString(COURIER_EVENT_PROBABILITY, "0").toIntOrZero()
+        get() = courierConfigData.courierEventProbability
+
+    override val courierEventSamplingUpperBound: Int
+        get() = courierConfigData.courierEventSamplingUpperBound
 
     /**
      * Ping interval to keep the mqtt alive
      * value is in seconds
      */
     override val courierKeepAliveInterval: Int
-        get() = remoteConfig.getString(COURIER_KEEP_ALIVE_INTERVAL, "30").toIntOrZero()
+        get() = courierConfigData.courierKeepAliveInterval
 
     /**
      * On connection, a client sets the “clean session” flag.
@@ -42,17 +74,17 @@ class TokoChatCourierRemoteConfigImpl @Inject constructor(
      * For default set to false
      */
     override val courierCleanSessionFlag: Boolean
-        get() = remoteConfig.getBoolean(COURIER_CLEAN_SESSION_FLAG, false)
+        get() = courierConfigData.courierCleanSessionFlag
 
     /**
      * Retry configuration
      */
     override val connectRetryConfig: ConnectRetryTimeConfig
         get() {
-            val maxRetryTimeConfig = remoteConfig.getString(MAX_RETRY_TIME_CONFIG, "10").toIntOrZero()
-            val reconnectTimeFixed = remoteConfig.getString(RECONNECT_TIME_FIXED, "0").toIntOrZero()
-            val reconnectTimeRandom = remoteConfig.getString(RECONNECT_TIME_RANDOM, "10").toIntOrZero()
-            val maxReconnectTime = remoteConfig.getString(MAX_RECONNECT_TIME, "30").toIntOrZero()
+            val maxRetryTimeConfig = courierConfigData.maxRetryTimeConfig
+            val reconnectTimeFixed = courierConfigData.reconnectTimeFixed
+            val reconnectTimeRandom = courierConfigData.reconnectTimeRandom
+            val maxReconnectTime = courierConfigData.maxReconnectTime
             return ConnectRetryTimeConfig(
                 maxRetryTimeConfig,
                 reconnectTimeFixed,
@@ -66,9 +98,9 @@ class TokoChatCourierRemoteConfigImpl @Inject constructor(
      */
     override val connectTimeoutConfig: ConnectTimeoutConfig
         get() {
-            val sslHandshakeTimeOut = remoteConfig.getString(SSL_HAND_SHAKE_TIMEOUT, "30").toIntOrZero()
-            val sslUpperBoundConnTimeOut = remoteConfig.getString(SSL_UPPER_BOUND_CONN_TIMEOUT, "10").toIntOrZero()
-            val upperBoundCountTimeOut = remoteConfig.getString(UPPER_BOUND_COUNT_TIMEOUT, "10").toIntOrZero()
+            val sslHandshakeTimeOut = courierConfigData.sslHandshakeTimeOut
+            val sslUpperBoundConnTimeOut = courierConfigData.sslUpperBoundConnTimeOut
+            val upperBoundCountTimeOut = courierConfigData.upperBoundCountTimeOut
             return ConnectTimeoutConfig(
                 sslHandshakeTimeOut,
                 sslUpperBoundConnTimeOut,
@@ -81,7 +113,7 @@ class TokoChatCourierRemoteConfigImpl @Inject constructor(
      */
     override val subscriptionRetryConfig: SubscriptionRetryConfig
         get() {
-            val maxRetryCount = remoteConfig.getString(MAX_RETRY_COUNT, "3").toIntOrZero()
+            val maxRetryCount = courierConfigData.maxRetryCount
             return SubscriptionRetryConfig(maxRetryCount)
         }
 
@@ -92,7 +124,7 @@ class TokoChatCourierRemoteConfigImpl @Inject constructor(
      * Value in seconds
      */
     override val readTimeoutSeconds: Int
-        get() = remoteConfig.getString(READ_TIMEOUT_SECONDS, "40").toIntOrZero()
+        get() = courierConfigData.readTimeoutSeconds
 
     /**
      * Interval to reset connection config
@@ -100,7 +132,7 @@ class TokoChatCourierRemoteConfigImpl @Inject constructor(
      * Value in seconds
      */
     override val courierPolicyResetTime: Int
-        get() = remoteConfig.getString(COURIER_POLICY_RESET_TIME, "120").toIntOrZero()
+        get() = courierConfigData.courierPolicyResetTime
 
     /**
      * Timeout for acknowledgement (server send back the response),
@@ -108,7 +140,7 @@ class TokoChatCourierRemoteConfigImpl @Inject constructor(
      * Value in seconds
      */
     override val courierInactivityTimeout: Int
-        get() = remoteConfig.getString(COURIER_INACTIVITY_TIMEOUT, "45").toIntOrZero()
+        get() = courierConfigData.courierInactivityTimeout
 
     /**
      * Interval for checking inactivity
@@ -117,7 +149,7 @@ class TokoChatCourierRemoteConfigImpl @Inject constructor(
      * Value in seconds
      */
     override val courierActivityCheckInterval: Int
-        get() = remoteConfig.getString(COURIER_ACTIVITY_CHECK_INTERVAL, "15").toIntOrZero()
+        get() = courierConfigData.courierActivityCheckInterval
 
     /**
      * Set the strategy on how to store the token
@@ -126,7 +158,7 @@ class TokoChatCourierRemoteConfigImpl @Inject constructor(
      */
     override val tokenCachingMechanism: TokenCachingMechanism
         get() {
-            return when (remoteConfig.getString(TOKEN_CACHING_MECHANISM, "disk")) {
+            return when (courierConfigData.tokenCachingMechanism) {
                 "default" -> TokenCachingMechanism.NO_OP
                 "memory" -> TokenCachingMechanism.IN_MEMORY
                 "disk" -> TokenCachingMechanism.DISK_BASED
@@ -141,35 +173,35 @@ class TokoChatCourierRemoteConfigImpl @Inject constructor(
      * Value in seconds
      */
     override val disconnectDelaySeconds: Int
-        get() = remoteConfig.getString(DISCONNECT_DELAY_SECONDS, "30").toIntOrZero()
+        get() = courierConfigData.disconnectDelaySeconds
 
     /**
      * Retry for background connection
      * Depend on shouldDisconnectCourierOnBackground
      */
     override val isAuthRetryWorkerEnabled: Boolean
-        get() = remoteConfig.getBoolean(IS_AUTH_RETRY_WORKER_ENABLED, false)
+        get() = courierConfigData.isAuthRetryWorkerEnabled
 
     /**
      * Save the incoming message and wait before delete the message if there is no topic listener
      * Value in seconds
      */
     override val incomingMessagesTTL: Long
-        get() = remoteConfig.getLong(INCOMING_MESSAGES_TTL, 86400)
+        get() = courierConfigData.incomingMessagesTTL
 
     /**
      * Message clean up interval
      * Value in seconds
      */
     override val incomingMessagesCleanupInterval: Long
-        get() = remoteConfig.getLong(INCOMING_MESSAGES_CLEANUP_INTERVAL, 60)
+        get() = courierConfigData.incomingMessagesCleanupInterval
 
     /**
      * Logging purpose
      * App version, app state, OS version, & network
      */
     override val shouldLogUserProperties: Boolean
-        get() = remoteConfig.getBoolean(SHOULD_LOG_USER_PROPERTIES, false)
+        get() = courierConfigData.shouldLogUserProperties
 
     /**
      * Enabling Application-Layer Protocol Negotiation (ALPN) Protocol
@@ -179,7 +211,7 @@ class TokoChatCourierRemoteConfigImpl @Inject constructor(
      * the application-layer protocols.
      */
     override val shouldUseAlpnProtocol: Boolean
-        get() = remoteConfig.getBoolean(SHOULD_USE_ALPN_PROTOCOL, false)
+        get() = courierConfigData.shouldUseAlpnProtocol
 
     /**
      * Timer ping sender is only for  foreground
@@ -193,75 +225,41 @@ class TokoChatCourierRemoteConfigImpl @Inject constructor(
      * It finds the optimal time to keep the connection alive for background connection
      */
     override val isAdaptiveKeepAliveEnabled: Boolean
-        get() = remoteConfig.getBoolean(IS_ADAPTIVE_KEEP_ALIVE_ENABLED, false)
+        get() = courierConfigData.isAdaptiveKeepAliveEnabled
 
     override val adaptiveKeepAliveLowerBound: Int?
-        get() = getIntOrNull(ADAPTIVE_KEEP_ALIVE_LOWER_BOUND)
+        get() = courierConfigData.adaptiveKeepAliveLowerBound
 
     override val adaptiveKeepAliveUpperBound: Int?
-        get() = getIntOrNull(ADAPTIVE_KEEP_ALIVE_UPPER_BOUND)
+        get() = courierConfigData.adaptiveKeepAliveLowerBound
 
     override val adaptiveKeepAliveStep: Int?
-        get() = getIntOrNull(ADAPTIVE_KEEP_ALIVE_STEP)
+        get() = courierConfigData.adaptiveKeepAliveStep
 
     override val optimalKeepAliveResetLimit: Int?
-        get() = getIntOrNull(OPTIMAL_KEEP_ALIVE_RESET_LIMIT)
+        get() = courierConfigData.optimalKeepAliveResetLimit
 
     override val adaptivePingSender: AdaptiveMqttPingSender? = null
-
-    private fun getIntOrNull(key: String): Int? {
-        val value = remoteConfig.getString(key, "")
-        return if (value.isNotEmpty()) {
-            value.toIntOrZero()
-        } else {
-            null
-        }
-    }
 
     /**
      * Setup to enable the receiver when device idle
      * Only usable for background connection
      */
     override val isDeviceIdleModeReceiverEnabled: Boolean
-        get() = remoteConfig.getBoolean(IS_DEVICE_IDLE_MODE_RECEIVER_ENABLED, false)
+        get() = courierConfigData.isDeviceIdleModeReceiverEnabled
 
     /**
      * Enable / Disable Envelope Messages (Represents Byte Array in MQTT Message Courier)
      * The usage is for end-to-end tracking purposes
      */
     override val isMessageEnvelopeEnabled: Boolean
-        get() = remoteConfig.getBoolean(IS_MESSAGE_ENVELOPE_ENABLED, true)
+        get() = courierConfigData.isMessageEnvelopeEnabled
 
     companion object {
-        private const val COURIER_EVENT_PROBABILITY = "android_tokochat_courierEventProbability"
-        private const val COURIER_KEEP_ALIVE_INTERVAL = "android_tokochat_courierKeepAliveInterval"
-        private const val COURIER_CLEAN_SESSION_FLAG = "android_tokochat_courierCleanSessionFlag"
-        private const val READ_TIMEOUT_SECONDS = "android_tokochat_readTimeoutSeconds"
-        private const val COURIER_POLICY_RESET_TIME = "android_tokochat_courierPolicyResetTime"
-        private const val COURIER_INACTIVITY_TIMEOUT = "android_tokochat_courierInactivityTimeout"
-        private const val COURIER_ACTIVITY_CHECK_INTERVAL = "android_tokochat_courierActivityCheckInterval"
-        private const val TOKEN_CACHING_MECHANISM = "android_tokochat_tokenCachingMechanism"
-        private const val DISCONNECT_DELAY_SECONDS = "android_tokochat_disconnectDelaySeconds"
-        private const val IS_AUTH_RETRY_WORKER_ENABLED = "android_tokochat_isAuthRetryWorkerEnabled"
-        private const val INCOMING_MESSAGES_TTL = "android_tokochat_incomingMessagesTTL"
-        private const val INCOMING_MESSAGES_CLEANUP_INTERVAL = "android_tokochat_incomingMessagesCleanupInterval"
-        private const val SHOULD_LOG_USER_PROPERTIES = "android_tokochat_shouldLogUserProperties"
-        private const val IS_ADAPTIVE_KEEP_ALIVE_ENABLED = "android_tokochat_isAdaptiveKeepAliveEnabled"
-        private const val ADAPTIVE_KEEP_ALIVE_LOWER_BOUND = "android_tokochat_adaptiveKeepAliveLowerBound"
-        private const val ADAPTIVE_KEEP_ALIVE_UPPER_BOUND = "android_tokochat_adaptiveKeepAliveUpperBound"
-        private const val ADAPTIVE_KEEP_ALIVE_STEP = "android_tokochat_adaptiveKeepAliveStep"
-        private const val OPTIMAL_KEEP_ALIVE_RESET_LIMIT = "android_tokochat_optimalKeepAliveResetLimit"
-        private const val IS_DEVICE_IDLE_MODE_RECEIVER_ENABLED = "android_tokochat_isDeviceIdleModeReceiverEnabled"
-        private const val MAX_RETRY_TIME_CONFIG = "android_tokochat_maxRetryTimeConfig"
-        private const val RECONNECT_TIME_FIXED = "android_tokochat_reconnectTimeFixed"
-        private const val RECONNECT_TIME_RANDOM = "android_tokochat_reconnectTimeRandom"
-        private const val MAX_RECONNECT_TIME = "android_tokochat_maxReconnectTime"
-        private const val SSL_HAND_SHAKE_TIMEOUT = "android_tokochat_sslHandshakeTimeOut"
-        private const val SSL_UPPER_BOUND_CONN_TIMEOUT = "android_tokochat_sslUpperBoundConnTimeOut"
-        private const val UPPER_BOUND_COUNT_TIMEOUT = "android_tokochat_upperBoundCountTimeOut"
-        private const val MAX_RETRY_COUNT = "android_tokochat_maxRetryCount"
-        private const val SHOULD_USE_ALPN_PROTOCOL = "android_should_use_alpn_protocol"
-        private const val IS_MESSAGE_ENVELOPE_ENABLED = "android_is_message_envelope_enabled"
+        private const val COURIER_CONFIG_JSON = "android_courier_config_json"
+        private const val ERROR_TAG = "COURIER_CONNECTION_CONFIG"
+        private const val DATA_KEY = "data"
+        private const val STACKTRACE_KEY = "stacktrace"
 
         const val SHOULD_TRACK_MESSAGE_RECEIVE_EVENT = "android_tokochat_shouldTrackMessageReceiveEvent"
     }

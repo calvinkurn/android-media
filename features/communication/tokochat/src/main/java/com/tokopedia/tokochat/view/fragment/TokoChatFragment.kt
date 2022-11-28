@@ -201,6 +201,17 @@ class TokoChatFragment :
         observeLoadOrderTransactionStatus()
         observeUpdateOrderTransactionStatus()
         observeChatConnection()
+        observeError()
+    }
+
+    private fun observeError() {
+        observe(viewModel.error) {
+            logExceptionTokoChat(
+                it,
+                TokoChatErrorLogger.ErrorType.ERROR_PAGE,
+                TokoChatErrorLogger.ErrorDescription.RENDER_PAGE_ERROR
+            )
+        }
     }
 
     override fun disableSendButton(isExceedLimit: Boolean) {
@@ -397,7 +408,6 @@ class TokoChatFragment :
                 is Success -> setHeaderData(it.data)
                 is Fail -> {
                     hideShimmeringHeader()
-                    showSnackbarError(it.throwable.message.toString())
                     showGlobalErrorLayout(onActionClick = {
                         initializeChatRoom(null)
                     })
