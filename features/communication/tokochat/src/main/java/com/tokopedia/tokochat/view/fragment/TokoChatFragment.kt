@@ -671,8 +671,8 @@ class TokoChatFragment :
 
     override fun onGroupBookingChannelCreationError(error: ConversationsNetworkError) {
         removeShimmering()
-        val errorMessage = error.errorList.firstOrNull()?.code ?: ""
-        if (errorMessage.contains(CHAT_CLOSED_CODE, ignoreCase = true)) {
+        val errorCode = error.errorList.firstOrNull()?.code ?: ""
+        if (errorCode.contains(CHAT_CLOSED_CODE, ignoreCase = true)) {
             showUnavailableBottomSheet()
         } else {
             showGlobalErrorLayout(onActionClick = {

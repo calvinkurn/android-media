@@ -9,6 +9,7 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.tokochat.di.DaggerTokoChatComponent
 import com.tokopedia.tokochat.di.TokoChatComponent
+import com.tokopedia.tokochat.util.TokoChatValueUtil
 import com.tokopedia.tokochat.view.fragment.TokoChatFragment
 import com.tokopedia.tokochat.view.fragment.factory.TokoChatFragmentFactory
 import com.tokopedia.tokochat_common.util.TokoChatViewUtil.setBackIconUnify
@@ -88,11 +89,13 @@ class TokoChatActivity : TokoChatBaseActivity<TokoChatComponent>() {
         val gojekOrderId = intent.data?.getQueryParameter(ApplinkConst.TokoChat.ORDER_ID_GOJEK) ?: ""
         val tkpdOrderId = intent.data?.getQueryParameter(ApplinkConst.TokoChat.ORDER_ID_TKPD) ?: ""
         val isFromTokoFoodPostPurchase = intent?.getBooleanExtra(ApplinkConst.TokoChat.IS_FROM_TOKOFOOD_POST_PURCHASE, false) ?: false
+        val pushNotifTemplateKey = intent?.getStringExtra(TokoChatValueUtil.NOTIFCENTER_NOTIFICATION_TEMPLATE_KEY).toString()
         return Bundle().apply {
             putString(ApplinkConst.TokoChat.PARAM_SOURCE, source)
             putString(ApplinkConst.TokoChat.ORDER_ID_GOJEK, gojekOrderId)
             putString(ApplinkConst.TokoChat.ORDER_ID_TKPD, tkpdOrderId)
             putBoolean(ApplinkConst.TokoChat.IS_FROM_TOKOFOOD_POST_PURCHASE, isFromTokoFoodPostPurchase)
+            putString(TokoChatValueUtil.NOTIFCENTER_NOTIFICATION_TEMPLATE_KEY, pushNotifTemplateKey)
         }
     }
 }
