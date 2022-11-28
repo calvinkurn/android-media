@@ -2552,11 +2552,11 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
     private fun doAtc() {
         showLoadingDialog()
         val atcParam = AddToCartRequestParams(
-            productId = wishlistItemOnAtc.id.toLong(),
+            productId = wishlistItemOnAtc.id,
             productName = wishlistItemOnAtc.name,
             price = wishlistItemOnAtc.originalPriceFmt,
             quantity = wishlistItemOnAtc.minOrder.toIntOrZero(),
-            shopId = wishlistItemOnAtc.shop.id.toIntOrZero(),
+            shopId = wishlistItemOnAtc.shop.id,
             atcFromExternalSource = AtcFromExternalSource.ATC_FROM_WISHLIST
         )
         wishlistCollectionDetailViewModel.doAtc(atcParam)

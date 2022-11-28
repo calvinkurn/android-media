@@ -74,8 +74,8 @@ class DataManager @Inject constructor(
         
         fun atcParams(productId: String, shopId: Int?, productName: String, price: String, userId: String): RequestParams {
             val addToCartRequestParams = AddToCartRequestParams()
-            addToCartRequestParams.productId = productId.toLongOrNull()?: 0
-            addToCartRequestParams.shopId = shopId?: -1
+            addToCartRequestParams.productId = productId
+            addToCartRequestParams.shopId = shopId?.toString() ?: "0"
             addToCartRequestParams.quantity = 1
             addToCartRequestParams.notes = ""
             addToCartRequestParams.productName = productName

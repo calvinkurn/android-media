@@ -93,8 +93,8 @@ open class AddToCartUseCase @Inject constructor(@ApplicationContext private val 
         fun getMinimumParams(productId: String, shopId: String, quantity: Int = 1, notes: String = "", atcExternalSource: String = AtcFromExternalSource.ATC_FROM_OTHERS,
                 /*tracking data*/ productName: String = "", category: String = "", price: String = "", userId: String = ""): AddToCartRequestParams {
             return AddToCartRequestParams(
-                    productId = productId.toLong(),
-                    shopId = shopId.toInt(),
+                    productId = productId,
+                    shopId = shopId,
                     quantity = quantity,
                     notes = notes,
                     atcFromExternalSource = atcExternalSource,

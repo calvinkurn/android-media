@@ -5,7 +5,6 @@ import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.search.di.scope.SearchScope
 import com.tokopedia.search.result.product.SearchParameterProvider
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
@@ -81,8 +80,8 @@ class InspirationListAtcPresenterDelegate @Inject constructor(
 
     private fun InspirationCarouselDataView.Option.Product.createAddToCartRequestParams(): AddToCartRequestParams {
         return AddToCartRequestParams(
-            productId = id.toLongOrZero(),
-            shopId = shopId.toIntOrZero(),
+            productId = id,
+            shopId = shopId,
             quantity = minOrder.toIntOrZero(),
             productName = name,
             price = priceStr,

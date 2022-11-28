@@ -1668,11 +1668,11 @@ class CartListPresenter @Inject constructor(
         }
 
         val addToCartRequestParams = AddToCartRequestParams().apply {
-            this.productId = productId
-            this.shopId = shopId
+            this.productId = productId.toString()
+            this.shopId = shopId.toString()
             this.quantity = quantity
             this.notes = ""
-            this.warehouseId = 0
+            this.warehouseId = "0"
             this.atcFromExternalSource = externalSource
             this.productName = productName
             this.category = productCategory

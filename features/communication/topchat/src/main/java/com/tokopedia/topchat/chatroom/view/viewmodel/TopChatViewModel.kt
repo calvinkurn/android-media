@@ -1,6 +1,5 @@
 package com.tokopedia.topchat.chatroom.view.viewmodel
 
-import android.util.Log
 import androidx.collection.ArrayMap
 import androidx.lifecycle.*
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -16,11 +15,8 @@ import com.tokopedia.chat_common.data.*
 import com.tokopedia.chat_common.data.parentreply.ParentReply
 import com.tokopedia.chat_common.domain.pojo.ChatSocketPojo
 import com.tokopedia.chat_common.domain.pojo.roommetadata.RoomMetaData
-import com.tokopedia.topchat.chatroom.domain.mapper.TopChatRoomWebSocketMessageMapper
 import com.tokopedia.device.info.DeviceInfo
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.logger.ServerLogger
@@ -36,6 +32,7 @@ import com.tokopedia.topchat.chatroom.data.UploadImageDummy
 import com.tokopedia.topchat.chatroom.data.activityresult.UpdateProductStockResult
 import com.tokopedia.topchat.chatroom.domain.mapper.ChatAttachmentMapper
 import com.tokopedia.topchat.chatroom.domain.mapper.TopChatRoomGetExistingChatMapper
+import com.tokopedia.topchat.chatroom.domain.mapper.TopChatRoomWebSocketMessageMapper
 import com.tokopedia.topchat.chatroom.domain.pojo.GetChatResult
 import com.tokopedia.topchat.chatroom.domain.pojo.ShopFollowingPojo
 import com.tokopedia.topchat.chatroom.domain.pojo.chatattachment.Attachment
@@ -62,7 +59,6 @@ import com.tokopedia.topchat.chatroom.view.uimodel.ReminderTickerUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.SendablePreview
 import com.tokopedia.topchat.chatroom.view.uimodel.TopchatProductAttachmentPreviewUiModel
 import com.tokopedia.topchat.common.Constant
-import com.tokopedia.topchat.common.analytics.TopChatAnalyticsKt
 import com.tokopedia.topchat.common.data.Resource
 import com.tokopedia.topchat.common.domain.MutationMoveChatToTrashUseCase
 import com.tokopedia.topchat.common.mapper.ImageUploadMapper
@@ -88,7 +84,6 @@ import okhttp3.internal.toImmutableList
 import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
-import kotlin.collections.ArrayList
 
 open class TopChatViewModel @Inject constructor(
     private var getExistingMessageIdUseCase: GetExistingMessageIdUseCase,
@@ -531,11 +526,11 @@ open class TopChatViewModel @Inject constructor(
 
     private fun setupAddToCartParam(addToCartParam: AddToCartParam) {
         val addToCartRequestParams = AddToCartRequestParams(
-            productId = addToCartParam.productId.toLongOrZero(),
-            shopId = addToCartParam.shopId.toIntOrZero(),
+            productId = addToCartParam.productId,
+            shopId = addToCartParam.shopId,
             quantity = addToCartParam.minOrder,
             atcFromExternalSource = AtcFromExternalSource.ATC_FROM_TOPCHAT,
-            warehouseId = attachProductWarehouseId.toIntOrZero()
+            warehouseId = attachProductWarehouseId
         )
         addToCartUseCase.addToCartRequestParams = addToCartRequestParams
     }

@@ -16,8 +16,6 @@ import com.tokopedia.atc_common.data.model.request.AddToCartRequestParams
 import com.tokopedia.common.network.util.CommonUtil
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.product.detail.common.AtcVariantMapper
 import com.tokopedia.product.detail.common.ProductDetailCommonConstant
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantAggregatorUiData
@@ -95,13 +93,13 @@ object AtcCommonMapper {
                     selectedChild?.getFinalMinOrder() ?: 0
 
                 AddToCartRequestParams().apply {
-                    productId = selectedChild?.productId?.toLongOrZero() ?: 0L
-                    shopId = shopIdInt
+                    productId = selectedChild?.productId ?: "0"
+                    shopId = shopIdInt.toString()
                     quantity = quantityData
                     notes = ""
                     attribution = trackerAttributionPdp
                     listTracker = trackerListNamePdp
-                    warehouseId = selectedWarehouse?.id?.toIntOrZero() ?: 0
+                    warehouseId = selectedWarehouse?.id ?: "0"
                     atcFromExternalSource = AtcFromExternalSource.ATC_FROM_PDP
                     productName = selectedChild?.name ?: ""
                     category = categoryName

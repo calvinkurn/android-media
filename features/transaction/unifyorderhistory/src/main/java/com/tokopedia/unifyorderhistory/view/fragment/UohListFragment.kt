@@ -2139,11 +2139,11 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
 
     override fun atcRecommendationItem(recommendationItem: RecommendationItem) {
         val atcParam = AddToCartRequestParams(
-                productId = recommendationItem.productId,
+                productId = recommendationItem.productId.toString(),
                 productName = recommendationItem.name,
                 price = recommendationItem.priceInt.toString(),
                 quantity = recommendationItem.quantity,
-                shopId = recommendationItem.shopId,
+                shopId = recommendationItem.shopId.toString(),
                 category = recommendationItem.categoryBreadcrumbs,
                 atcFromExternalSource = AtcFromExternalSource.ATC_FROM_RECOMMENDATION)
         uohListViewModel.doAtc(atcParam)

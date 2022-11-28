@@ -4544,13 +4544,13 @@ open class DynamicProductDetailFragment :
                 }
                 else -> {
                     val addToCartRequestParams = AddToCartRequestParams().apply {
-                        productId = data.basic.productID.toLongOrNull() ?: 0
-                        shopId = data.basic.shopID.toIntOrZero()
+                        productId = data.basic.productID
+                        shopId = data.basic.shopID
                         quantity = data.basic.minOrder
                         notes = ""
                         attribution = trackerAttributionPdp ?: ""
                         listTracker = trackerListNamePdp ?: ""
-                        warehouseId = selectedWarehouseId
+                        warehouseId = selectedWarehouseId.toString()
                         atcFromExternalSource = AtcFromExternalSource.ATC_FROM_PDP
                         productName = data.getProductName
                         category = data.basic.category.name
