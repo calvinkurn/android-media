@@ -4,11 +4,11 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.tokopedianow.R
-import com.tokopedia.tokopedianow.common.analytics.RealTimeRecommendationAnalytics
-import com.tokopedia.tokopedianow.common.listener.RealTimeRecommendationListener
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardCarouselItemUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowSeeMoreCardCarouselUiModel
 import com.tokopedia.tokopedianow.common.view.TokoNowDynamicHeaderView
+import com.tokopedia.tokopedianow.common.analytics.RealTimeRecommendationAnalytics
+import com.tokopedia.tokopedianow.common.listener.RealTimeRecommendationListener
 import com.tokopedia.tokopedianow.common.view.productcard.TokoNowProductCardCarouselView
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowProductRecommendationBinding
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProductRecomUiModel
@@ -38,31 +38,32 @@ class HomeProductRecomViewHolder(
             channelId = element.id
             headerName = element.headerModel?.title.orEmpty()
 
-            productRecommendation.bind(
-                items = element.productList,
-                seeMoreModel = element.seeMoreModel,
-                header = element.headerModel
-            )
+            renderProductItems(element)
+            renderRealTimeRecom(element)
+
             productRecommendation.setListener(
                 productCardCarouselListener = this@HomeProductRecomViewHolder,
                 headerCarouselListener = this@HomeProductRecomViewHolder
             )
-            renderRealTimeRecommendation(element)
         }
     }
 
     override fun bind(element: HomeProductRecomUiModel?, payloads: MutableList<Any>) {
         if (payloads.firstOrNull() == true && element != null) {
-            binding?.productRecommendation?.bind(
-                items = element.productList,
-                seeMoreModel = element.seeMoreModel,
-                header = element.headerModel
-            )
-            renderRealTimeRecommendation(element)
+            renderProductItems(element)
+            renderRealTimeRecom(element)
         }
     }
 
-    private fun renderRealTimeRecommendation(element: HomeProductRecomUiModel) {
+    private fun renderProductItems(element: HomeProductRecomUiModel) {
+        binding?.productRecommendation?.bind(
+            items = element.productList,
+            seeMoreModel = element.seeMoreModel,
+            header = element.headerModel
+        )
+    }
+
+    private fun renderRealTimeRecom(element: HomeProductRecomUiModel) {
         binding?.realTimeRecommendationCarousel?.apply {
             listener = rtrListener
             analytics = rtrAnalytics

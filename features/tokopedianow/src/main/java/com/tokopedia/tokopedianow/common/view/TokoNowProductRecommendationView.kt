@@ -180,6 +180,10 @@ class TokoNowProductRecommendationView @JvmOverloads constructor(
         }
     }
 
+    fun scrollToPosition(position: Int) {
+        binding.productCardCarousel.scrollToPosition(position)
+    }
+
     interface TokoNowProductRecommendationListener {
         fun getProductRecommendationViewModel(): TokoNowProductRecommendationViewModel?
         fun hideProductRecommendationWidget()

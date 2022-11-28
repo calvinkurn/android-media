@@ -10,11 +10,11 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.home_component.util.setGradientBackground
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.tokopedianow.R
-import com.tokopedia.tokopedianow.common.analytics.RealTimeRecommendationAnalytics
-import com.tokopedia.tokopedianow.common.listener.RealTimeRecommendationListener
 import com.tokopedia.tokopedianow.common.decoration.ProductCardCarouselDecoration
 import com.tokopedia.tokopedianow.common.util.CustomProductCardCarouselLinearLayoutManager
 import com.tokopedia.tokopedianow.common.view.TokoNowDynamicHeaderView
+import com.tokopedia.tokopedianow.common.analytics.RealTimeRecommendationAnalytics
+import com.tokopedia.tokopedianow.common.listener.RealTimeRecommendationListener
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowHomeLeftCarouselAtcBinding
 import com.tokopedia.tokopedianow.home.presentation.adapter.leftcarousel.HomeLeftCarouselAtcProductCardAdapter
 import com.tokopedia.tokopedianow.home.presentation.adapter.leftcarousel.HomeLeftCarouselAtcProductCardDiffer
@@ -89,20 +89,27 @@ class HomeLeftCarouselAtcViewHolder(
             hitLeftCarouselImpressionTracker(
                 element = element
             )
+            setupRealTimeRecommendation(
+                element = element
+            )
             setupParallaxImage(
                 element = element
             )
             setupRealTimeRecommendation(
                 element = element
             )
-            adapter.submitList(ArrayList(element.productList))
+            submitList(
+                element = element
+            )
         }
     }
 
     override fun bind(element: HomeLeftCarouselAtcUiModel?, payloads: MutableList<Any>) {
         if (payloads.firstOrNull() == true && element != null) {
-            adapter.submitList(ArrayList(element.productList))
-            setupRealTimeRecommendation(element)
+            binding?.apply {
+                submitList(element = element)
+                setupRealTimeRecommendation(element = element)
+            }
         }
     }
 
@@ -169,6 +176,20 @@ class HomeLeftCarouselAtcViewHolder(
             }
             false
         }
+    }
+
+    private fun ItemTokopedianowHomeLeftCarouselAtcBinding.setupRealTimeRecommendation(
+        element: HomeLeftCarouselAtcUiModel
+    ) {
+        realTimeRecommendationCarousel.apply {
+            listener = rtrListener
+            analytics = rtrAnalytics
+            bind(element.realTimeRecom)
+        }
+    }
+
+    private fun submitList(element: HomeLeftCarouselAtcUiModel) {
+        adapter.submitList(ArrayList(element.productList))
     }
 
     private fun ItemTokopedianowHomeLeftCarouselAtcBinding.hitLeftCarouselImpressionTracker(

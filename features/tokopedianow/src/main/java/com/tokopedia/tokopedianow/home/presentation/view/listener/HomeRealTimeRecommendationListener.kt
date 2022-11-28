@@ -4,10 +4,9 @@ import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.VariantPageSource
-import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
-import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType
 import com.tokopedia.tokopedianow.common.listener.RealTimeRecommendationListener
+import com.tokopedia.tokopedianow.common.model.TokoNowProductCardCarouselItemUiModel
 import com.tokopedia.tokopedianow.common.view.TokoNowView
 import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeRealTimeRecomUiModel
@@ -23,27 +22,23 @@ class HomeRealTimeRecommendationListener(
     private val context by lazy { tokoNowView.getFragmentPage().context }
 
     override fun onRecomProductCardClicked(
-        recomItem: RecommendationItem,
-        headerName: String,
-        position: String,
-        applink: String
+        position: Int,
+        product: TokoNowProductCardCarouselItemUiModel
     ) {
-        RouteManager.route(context, applink)
+        RouteManager.route(context, product.appLink)
     }
 
     override fun onAddToCartProductNonVariant(
         channelId: String,
-        recomItem: RecommendationItem,
-        quantity: Int,
-        headerName: String,
-        position: String
+        item: TokoNowProductCardCarouselItemUiModel,
+        quantity: Int
     ) {
         if (userSession.isLoggedIn) {
             viewModel.addProductToCart(
                 channelId = channelId,
-                productId = recomItem.productId.toString(),
+                productId = item.getProductId(),
                 quantity = quantity,
-                shopId = recomItem.shopId.toString(),
+                shopId = item.shopId,
                 type = TokoNowLayoutType.PRODUCT_RECOM
             )
         } else {
@@ -52,19 +47,18 @@ class HomeRealTimeRecommendationListener(
     }
 
     override fun onAddToCartProductVariantClick(
-        data: RecommendationCarouselData,
-        recomItem: RecommendationItem,
-        adapterPosition: Int
+        position: Int,
+        item: TokoNowProductCardCarouselItemUiModel
     ) {
         context?.let {
             if (userSession.isLoggedIn) {
                 val fragment = tokoNowView.getFragmentPage() as TokoNowHomeFragment
                 AtcVariantHelper.goToAtcVariant(
                     context = it,
-                    productId = recomItem.productId.toString(),
+                    productId = item.getProductId(),
                     pageSource = VariantPageSource.TOKONOW_PAGESOURCE,
                     isTokoNow = true,
-                    shopId = recomItem.shopId.toString(),
+                    shopId = item.shopId,
                     startActivitResult = fragment::startActivityForResult
                 )
             } else {

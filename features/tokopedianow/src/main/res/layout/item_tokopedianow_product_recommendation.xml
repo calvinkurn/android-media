@@ -7,7 +7,7 @@
     <com.tokopedia.tokopedianow.common.view.TokoNowProductRecommendationView
         android:id="@+id/product_recommendation"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content" />
 
     <com.tokopedia.tokopedianow.common.view.RealTimeRecommendationCarouselView
         android:id="@+id/realTimeRecommendationCarousel"

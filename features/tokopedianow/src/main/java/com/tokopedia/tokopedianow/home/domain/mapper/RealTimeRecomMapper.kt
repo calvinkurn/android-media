@@ -38,7 +38,7 @@ object RealTimeRecomMapper {
     ) {
         val realTimeRecom = getRealTimeRecom(channelId)
         val productId = realTimeRecom?.parentProductId.orEmpty()
-        val rtrWidget = realTimeRecom?.widget
+        val rtrWidget = realTimeRecom?.productList
 
         if (rtrWidget != null) {
             mapRealTimeRecomState(channelId, productId, RealTimeRecomWidgetState.READY, type)
@@ -108,14 +108,22 @@ object RealTimeRecomMapper {
     }
 
     private fun HomeProductRecomUiModel.getProductRecomRtr(productId: String?): HomeRealTimeRecomProductUiModel? {
-        return realTimeRecom.widget?.recommendationItemList?.firstOrNull { it.productId.toString() == productId }?.let {
-            HomeRealTimeRecomProductUiModel(it.productId.toString(), it.imageUrl, it.categoryBreadcrumbs)
+        return realTimeRecom.productList.firstOrNull { it.productCardModel.productId == productId }?.let {
+            HomeRealTimeRecomProductUiModel(
+                it.productCardModel.productId,
+                it.productCardModel.imageUrl,
+                it.categoryBreadcrumbs
+            )
         }
     }
 
     private fun HomeProductRecomUiModel.getProductRecom(productId: String?): HomeRealTimeRecomProductUiModel? {
         return productList.firstOrNull { it.productCardModel.productId == productId }?.let {
-            HomeRealTimeRecomProductUiModel(it.productCardModel.productId, it.productCardModel.imageUrl, it.categoryBreadcrumbs)
+            HomeRealTimeRecomProductUiModel(
+                it.productCardModel.productId,
+                it.productCardModel.imageUrl,
+                it.categoryBreadcrumbs
+            )
         }
     }
 
@@ -132,9 +140,13 @@ object RealTimeRecomMapper {
     }
 
     private fun HomeLeftCarouselAtcUiModel.mapProductRecomToRtrProduct(productId: String?): HomeRealTimeRecomProductUiModel? {
-        val recommendationItemList = realTimeRecom.widget?.recommendationItemList
-        return recommendationItemList?.firstOrNull { it.productId.toString() == productId }?.let {
-            HomeRealTimeRecomProductUiModel(it.productId.toString(), it.imageUrl, it.categoryBreadcrumbs)
+        val productList = realTimeRecom.productList
+        return productList.firstOrNull { it.productCardModel.productId == productId }?.let {
+            HomeRealTimeRecomProductUiModel(
+                it.productCardModel.productId,
+                it.productCardModel.imageUrl,
+                it.categoryBreadcrumbs
+            )
         }
     }
 
