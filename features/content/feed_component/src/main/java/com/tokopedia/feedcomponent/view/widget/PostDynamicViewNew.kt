@@ -585,11 +585,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
             }
         }
 
-        if (ctaSubtitle.size >= TWO && shouldShowCtaSubtitile(
-                ctaSubtitle,
-                feedXCard
-            )
-        ) {
+        if (ctaSubtitle.size >= TWO && shouldShowCtaSubtitile(ctaSubtitle)) {
             animationHandler = FeedXCardSubtitlesAnimationHandler(
                 WeakReference(asgcProductCampaignCopywritingFirst),
                 WeakReference(asgcProductCampaignCopywritingSecond)
@@ -603,12 +599,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
             shouldShow = (feedXCard.isTypeProductHighlight || feedXCard.isTopAds) &&
                 feedXCard.media.any { it.isImage }
         )
-        asgcProductCampaignCopywritingContainer.showWithCondition(
-            shouldShowCtaSubtitile(
-                ctaSubtitle,
-                feedXCard
-            )
-        )
+        asgcProductCampaignCopywritingContainer.showWithCondition(shouldShowCtaSubtitile(ctaSubtitle))
 
         topAdsCard.setOnClickListener {
             changeCTABtnColorAsPerWidget(feedXCard)
@@ -647,8 +638,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
         }
     }
 
-    private fun shouldShowCtaSubtitile(subtitle: List<String>, card: FeedXCard) =
-        subtitle.isNotEmpty() && card.campaign.isRilisanSpl && card.campaign.isRSFollowersRestrictionOn
+    private fun shouldShowCtaSubtitile(subtitle: List<String>) =
+        subtitle.isNotEmpty()
 
     fun bindLike(feedXCard: FeedXCard) {
         val isLongVideo =

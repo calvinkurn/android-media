@@ -325,14 +325,14 @@ class FeedAnalyticTracker
         val mediaType = feedTrackerData.mediaType
         val finalLabel =
             if (feedTrackerData.campaignStatus.isNotEmpty() && isFollowed) KEY_EVENT_LABEL to String.format(
-                FORMAT_FOUR_PARAM,
+                FORMAT_FIVE_PARAM,
                 activityId,
                 shopId,
                 feedTrackerData.contentSlotValue,
                 feedTrackerData.campaignStatus,
                 feedTrackerData.hasVoucher
             ) else KEY_EVENT_LABEL to String.format(
-                FORMAT_THREE_PARAM,
+                FORMAT_FOUR_PARAM,
                 activityId,
                 shopId,
                 feedTrackerData.contentSlotValue,
@@ -1375,7 +1375,7 @@ class FeedAnalyticTracker
                 feedTrackerData.hasVoucher
             ) else
                 KEY_EVENT_LABEL to String.format(
-                    FORMAT_THREE_PARAM,
+                    FORMAT_FOUR_PARAM,
                     activityId,
                     shopId,
                     feedTrackerData.contentSlotValue,
