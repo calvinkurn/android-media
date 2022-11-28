@@ -276,7 +276,6 @@ class SettingBankFragment : BaseDaggerFragment(), BankAccountClickListener {
     private fun showLoadingState(show: Boolean) {
         if (show) {
             account_list_rv.gone()
-            view_btn_top_shadow.gone()
             add_account_button.gone()
 
             iv_noBankAccountAdded.gone()
@@ -289,7 +288,6 @@ class SettingBankFragment : BaseDaggerFragment(), BankAccountClickListener {
 
     private fun showBankAccountDisplayState() {
         account_list_rv.visible()
-        view_btn_top_shadow.visible()
         add_account_button.visible()
 
         iv_noBankAccountAdded.gone()
@@ -301,7 +299,6 @@ class SettingBankFragment : BaseDaggerFragment(), BankAccountClickListener {
 
     private fun showNoBankAccountState() {
         account_list_rv.gone()
-        view_btn_top_shadow.visible()
         add_account_button.visible()
 
         iv_noBankAccountAdded.visible()
