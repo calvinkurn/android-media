@@ -740,7 +740,6 @@ object DynamicProductDetailMapper {
         return ProductCustomInfoTitleDataModel(
             name = component.componentName,
             type = component.type,
-            componentName = data.componentName,
             title = data.title,
             status = ProductCustomInfoTitleDataModel.Status.fromString(data.status)
         )

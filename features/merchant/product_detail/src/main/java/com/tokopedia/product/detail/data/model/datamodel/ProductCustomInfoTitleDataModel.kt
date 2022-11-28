@@ -12,9 +12,8 @@ import com.tokopedia.product.detail.view.adapter.factory.DynamicProductDetailAda
 data class ProductCustomInfoTitleDataModel(
     val name: String = "",
     val type: String = "",
-    val componentName: String = "",
-    val title: String = "",
-    val status: Status = Status.HIDE
+    var title: String = "",
+    var status: Status = Status.HIDE
 ) : DynamicPdpDataModel {
 
     enum class Status(val value: String) {
