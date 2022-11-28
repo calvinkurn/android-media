@@ -2776,9 +2776,6 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener,
     private fun renderCartAvailableItems(cartData: CartData) {
         if (cartData.availableSection.availableGroupGroups.isNotEmpty()) {
             val availableShopList = CartUiModelMapper.mapAvailableShopUiModel(cartData)
-            availableShopList.forEach {
-                checkBoAffordability(it)
-            }
             cartAdapter.addItems(availableShopList)
         }
     }
@@ -4144,6 +4141,7 @@ class CartFragment : BaseCheckoutFragment(), ICartListView, ActionListener,
     override fun updateCartBoAffordability(cartShopHolderData: CartShopHolderData) {
         val (data, index) = cartAdapter.getCartShopHolderDataAndIndexByCartString(cartShopHolderData.cartString)
         if (data != null) {
+            data.isNeedToRefreshWeight = true
             onNeedToUpdateViewItem(index)
         }
     }
