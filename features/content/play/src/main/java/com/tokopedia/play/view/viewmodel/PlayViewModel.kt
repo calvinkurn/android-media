@@ -2673,12 +2673,14 @@ class PlayViewModel @AssistedInject constructor(
         val config = channelData.channelDetail.popupConfig
         val cache = playPreference.isFollowPopup(streamerId)
 
-        viewModelScope.launch(dispatchers.computation){
-            delay(config.duration)
-            val shouldShow = !isFreezeOrBanned && cache && config.isEnabled
-            if (!shouldShow) return@launch
-            _isFollowPopUpShown.update { it.copy(shouldShow = shouldShow, partnerId = streamerId.toLong()) }
-        }.invokeOnCompletion {
+        viewModelScope.launch {
+            val job = launch(dispatchers.computation) {
+                delay(config.duration)
+            }
+            job.join()
+            val needToBeShown = !isFreezeOrBanned && cache && config.isEnabled
+            if (!needToBeShown) return@launch
+            _isFollowPopUpShown.update { it.copy(shouldShow = true, partnerId = streamerId.toLong()) }
             playPreference.setFollowPopUp(streamerId)
         }
     }
