@@ -38,4 +38,9 @@
     <string name="up_block_user_dialog_confirm">Ya, Blokir</string>
     <string name="up_block_user_dialog_title">Blokir %s?</string>
     <string name="up_block_user_dialog_desc">Jika diblokir, pengguna tidak bisa melihat maupun berinteraksi dengan konten dengan pengguna ini. Mereka tidak akan diberi tahu jika kamu memblokir.</string>
+    <string name="up_block_user_success_toaster">Pengguna ini telah diblokir.</string>
+    <string name="up_block_user_error_toaster">Permintaan blokir gagal dikirim. Cek koneksi internetmu dan coba lagi, ya.</string>
+
+    <string name="up_unblock_user_success_toaster">Pengguna ini kembali tidak diblokir.</string>
+    <string name="up_unblock_user_error_toaster">Permintaan blokir gagal dikirim. Cek koneksi internetmu dan coba lagi, ya.</string>
 </resources>

@@ -26,4 +26,6 @@ sealed interface UserProfileAction {
         val position: Int,
         val isActive: Boolean,
     ) : UserProfileAction
+
+    object BlockUser : UserProfileAction
 }

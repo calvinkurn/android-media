@@ -115,6 +115,8 @@ class UserProfileFragment @Inject constructor(
     private val mainBinding: UpLayoutUserProfileHeaderBinding
         get() = _binding!!.mainLayout
 
+    private var mBlockDialog: DialogUnify? = null
+
     private val viewModel: UserProfileViewModel by activityViewModels {
         viewModelFactoryCreator.create(
             this,
@@ -230,6 +232,9 @@ class UserProfileFragment @Inject constructor(
         mainBinding.appBarUserProfile.removeOnOffsetChangedListener(feedFloatingButtonManager.offsetListener)
         feedFloatingButtonManager.cancel()
 
+        dismissBlockUserDialog()
+        mBlockDialog = null
+
         _binding = null
     }
 
@@ -276,26 +281,9 @@ class UserProfileFragment @Inject constructor(
             }
             is UserProfileOptionBottomSheet -> {
                 childFragment.setListener(object : UserProfileOptionBottomSheet.Listener {
-                    @SuppressLint("PII Data Exposure")
                     override fun onBlockingUser(bottomSheet: UserProfileOptionBottomSheet) {
                         bottomSheet.dismiss()
-                        DialogUnify(
-                            context = requireContext(),
-                            actionType = DialogUnify.HORIZONTAL_ACTION,
-                            imageType = DialogUnify.NO_IMAGE
-                        ).apply {
-                            setTitle(
-                                getString(R.string.up_block_user_dialog_title, viewModel.displayName)
-                            )
-                            setDescription(
-                                getString(R.string.up_block_user_dialog_desc)
-                            )
-
-                            setPrimaryCTAText(getString(R.string.up_block_user_dialog_confirm))
-                            setPrimaryCTAClickListener {  }
-                            setSecondaryCTAText(getString(R.string.up_block_user_dialog_cancel))
-                            setSecondaryCTAClickListener { dismiss() }
-                        }.show()
+                        getBlockUserDialog().show()
                     }
                 })
             }
@@ -434,6 +422,22 @@ class UserProfileFragment @Inject constructor(
                                 else -> SERVER_ERROR
                             },
                         )
+                    }
+                    is UserProfileUiEvent.SuccessBlockUser -> {
+                        dismissBlockUserDialog()
+                        val message = getString(
+                            if (event.isBlocking) R.string.up_block_user_success_toaster
+                            else R.string.up_unblock_user_success_toaster
+                        )
+                        view?.showToast(message)
+                    }
+                    is UserProfileUiEvent.ErrorBlockUser -> {
+                        dismissBlockUserDialog()
+                        val message = getString(
+                            if (event.isBlocking) R.string.up_block_user_error_toaster
+                            else R.string.up_unblock_user_error_toaster
+                        )
+                        view?.showErrorToast(message)
                     }
                 }
             }
@@ -852,6 +856,48 @@ class UserProfileFragment @Inject constructor(
     private fun emptyPostVisitor() {
         mainBinding.emptyPost.textErrorEmptyTitle.text = getString(R.string.up_empty_post_on_visitor)
         mainBinding.emptyPost.textErrorEmptyDesc.hide()
+    }
+
+    @SuppressLint("PII Data Exposure")
+    private fun getBlockUserDialog(): DialogUnify {
+        if (mBlockDialog == null) {
+            mBlockDialog = DialogUnify(
+                context = requireContext(),
+                actionType = DialogUnify.HORIZONTAL_ACTION,
+                imageType = DialogUnify.NO_IMAGE
+            ).apply {
+                setOverlayClose(false)
+
+                setTitle(
+                    getString(R.string.up_block_user_dialog_title, viewModel.displayName)
+                )
+                setDescription(
+                    getString(R.string.up_block_user_dialog_desc)
+                )
+
+                setPrimaryCTAText(getString(R.string.up_block_user_dialog_confirm))
+                setPrimaryCTAClickListener {
+                    dialogPrimaryCTA.isLoading = true
+                    dialogPrimaryCTA.isEnabled = false
+
+                    viewModel.submitAction(UserProfileAction.BlockUser)
+                }
+                setSecondaryCTAText(getString(R.string.up_block_user_dialog_cancel))
+                setSecondaryCTAClickListener { dismiss() }
+
+                setOnDismissListener {
+                    dialogPrimaryCTA.isLoading = false
+                    dialogPrimaryCTA.isEnabled = true
+                }
+            }
+        }
+        return mBlockDialog!!
+    }
+
+    private fun dismissBlockUserDialog() {
+        if (mBlockDialog == null) return
+        val dialog = getBlockUserDialog()
+        if (dialog.isShowing) dialog.dismiss()
     }
 
     override fun onShopRecomCloseClicked(itemID: Long) {

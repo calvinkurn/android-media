@@ -136,6 +136,7 @@ class UserProfileViewModel @AssistedInject constructor(
                 action.position,
                 action.isActive,
             )
+            UserProfileAction.BlockUser -> handleBlockUser()
         }
     }
 
@@ -205,6 +206,15 @@ class UserProfileViewModel @AssistedInject constructor(
                 _uiEvent.emit(UserProfileUiEvent.ErrorLoadNextPageShopRecom(it))
             },
         )
+    }
+
+    private fun handleBlockUser() {
+        viewModelScope.launchCatchError(block = {
+            repo.blockUser(profileUserID)
+            _uiEvent.emit(UserProfileUiEvent.SuccessBlockUser(isBlocking = true))
+        }) {
+            _uiEvent.emit(UserProfileUiEvent.ErrorBlockUser(isBlocking = true))
+        }
     }
 
     private fun handleClickFollowButton(isFromLogin: Boolean) {

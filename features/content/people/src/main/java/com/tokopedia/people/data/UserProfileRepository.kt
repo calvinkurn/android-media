@@ -63,4 +63,6 @@ interface UserProfileRepository {
     ): ProfileFollowingListBase
 
     suspend fun getUserProfileTab(userID: String): ProfileTabUiModel
+
+    suspend fun blockUser(userId: String)
 }
