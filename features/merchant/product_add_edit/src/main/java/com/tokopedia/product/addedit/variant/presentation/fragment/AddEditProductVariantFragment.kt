@@ -1389,15 +1389,15 @@ class AddEditProductVariantFragment :
     private fun doTrackingVariant(position: Int){
         val userId = UserSession(context).userId
         val shopId = UserSession(context).shopId
-        val isEdit = variantPhotoAdapter?.isPictIdIsEmpty(position = position).orFalse()
-        if(isEdit){
+        val isEmptyId = variantPhotoAdapter?.isPictIdIsEmpty(position = position).orFalse()
+        if(isEmptyId){
             MediaImprovementTracker.sendTrackerImprovementOfMediaPicker(
-                "${MediaImprovementTracker.EDIT_VARIANT_ENTRY_POINT}-$userId-$shopId",
+                "${MediaImprovementTracker.ADD_VARIANT_ENTRY_POINT}-$userId-$shopId",
                 userId
             )
         } else {
             MediaImprovementTracker.sendTrackerImprovementOfMediaPicker(
-                "${MediaImprovementTracker.ADD_VARIANT_ENTRY_POINT}-$userId-$shopId",
+                "${MediaImprovementTracker.EDIT_VARIANT_ENTRY_POINT}-$userId-$shopId",
                 userId
             )
         }
