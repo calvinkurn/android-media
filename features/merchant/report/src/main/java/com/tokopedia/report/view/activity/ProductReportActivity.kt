@@ -5,14 +5,13 @@ import android.content.Intent
 import android.os.Bundle
 import androidx.activity.compose.setContent
 import androidx.appcompat.app.AppCompatActivity
-import androidx.compose.runtime.LaunchedEffect
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewTreeLifecycleOwner
 import androidx.lifecycle.ViewTreeViewModelStoreOwner
-import androidx.savedstate.ViewTreeSavedStateRegistryOwner
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.common_compose.ui.NestTheme
 import com.tokopedia.report.data.constant.GeneralConstant
 import com.tokopedia.report.data.model.ProductReportReason
 import com.tokopedia.report.data.util.MerchantReportTracking
@@ -21,7 +20,6 @@ import com.tokopedia.report.view.fragment.ProductReportScreen
 import com.tokopedia.report.view.fragment.models.ProductReportUiEvent
 import com.tokopedia.report.view.util.extensions.argsExtraString
 import com.tokopedia.report.view.viewmodel.ProductReportViewModel
-import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
 class ProductReportActivity : AppCompatActivity() {
@@ -47,31 +45,26 @@ class ProductReportActivity : AppCompatActivity() {
     private fun setViewTree() {
         ViewTreeLifecycleOwner.set(this.window.decorView, this)
         ViewTreeViewModelStoreOwner.set(this.window.decorView, this)
-        ViewTreeSavedStateRegistryOwner.set(this.window.decorView, this)
+        //ViewTreeSavedStateRegistryOwner.set(this.window.decorView, this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         injectComponent()
         super.onCreate(savedInstanceState)
-        setViewTree()
+        //setViewTree()
 
         setContent {
-            LaunchedEffect(key1 = viewModel.uiEvent, block = {
-                viewModel.uiEvent.collectLatest {
-                    when (it) {
-                        is ProductReportUiEvent.OnFooterClicked -> onFooterClicked()
-                        is ProductReportUiEvent.OnScrollTop -> onScrollTop(it.reason)
-                        is ProductReportUiEvent.OnGoToForm -> gotoForm(it.reason)
-                        is ProductReportUiEvent.OnBackPressed -> {
-                            finish()
-                        }
-                        else -> {
-                        }
+            NestTheme {
+                ProductReportScreen(
+                    viewModel = viewModel,
+                    onFooterClicked = ::onFooterClicked,
+                    onScrollTop = ::onScrollTop,
+                    onGoToForm = ::gotoForm,
+                    onFinish = {
+                        finish()
                     }
-                }
-            })
-
-            ProductReportScreen(viewModel = viewModel)
+                )
+            }
         }
     }
 
