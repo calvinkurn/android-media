@@ -27,7 +27,6 @@ import com.tokopedia.product.detail.view.fragment.ProductVideoDetailFragment
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
 
-
 /**
  * For navigating to this class
  * @see ApplinkConstInternalMarketplace.PRODUCT_DETAIL or
@@ -139,6 +138,11 @@ open class ProductDetailActivity : BaseSimpleActivity(), ProductDetailActivityIn
         pageLoadTimePerformanceMonitoring?.stopRenderPerformanceMonitoring()
         pageLoadTimePerformanceMonitoring?.stopMonitoring()
         productDetailLoadTimeMonitoringListener?.onStopPltListener()
+    }
+
+    fun stopPLTRenderPageAndMonitoringP1(isVariant: Boolean) {
+        stopMonitoringPltRenderPage(isVariant = isVariant)
+        stopMonitoringP1()
     }
 
     fun getPltPerformanceResultData(): PltPerformanceData? = pageLoadTimePerformanceMonitoring?.getPltPerformanceData()
