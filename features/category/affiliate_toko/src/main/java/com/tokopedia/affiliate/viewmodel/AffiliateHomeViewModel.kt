@@ -2,7 +2,9 @@ package com.tokopedia.affiliate.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.affiliate.AFFILIATE_SHOP_ADP
 import com.tokopedia.affiliate.NO_UI_METRICS
 import com.tokopedia.affiliate.PAGE_ANNOUNCEMENT_HOME
@@ -15,6 +17,14 @@ import com.tokopedia.affiliate.model.response.AffiliatePerformanceListData
 import com.tokopedia.affiliate.model.response.AffiliateUserPerformaListItemData
 import com.tokopedia.affiliate.model.response.AffiliateValidateUserData
 import com.tokopedia.affiliate.model.response.ItemTypesItem
+import com.tokopedia.affiliate.sse.AffiliateSSE
+import com.tokopedia.affiliate.sse.AffiliateSSEMapper
+import com.tokopedia.affiliate.sse.AffiliateSSEPageSource
+import com.tokopedia.affiliate.sse.model.AffiliateSSEAction
+import com.tokopedia.affiliate.sse.model.AffiliateSSEAdpTotalClick
+import com.tokopedia.affiliate.sse.model.AffiliateSSEAdpTotalClickItem
+import com.tokopedia.affiliate.sse.model.AffiliateSSECloseReason
+import com.tokopedia.affiliate.sse.model.AffiliateSSEResponse
 import com.tokopedia.affiliate.ui.bottomsheet.AffiliateBottomDatePicker
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateDateFilterModel
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateNoPromoItemFoundModel
@@ -33,6 +43,10 @@ import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.user.session.UserSessionInterface
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import kotlin.collections.ArrayList
 
@@ -42,7 +56,9 @@ class AffiliateHomeViewModel @Inject constructor(
     private val affiliateAffiliateAnnouncementUseCase: AffiliateAnnouncementUseCase,
     private val affiliateUserPerformanceUseCase: AffiliateUserPerformanceUseCase,
     private val affiliatePerformanceItemTypeUseCase: AffiliatePerformanceItemTypeUseCase,
-    private val affiliatePerformanceDataUseCase: AffiliatePerformanceDataUseCase
+    private val affiliatePerformanceDataUseCase: AffiliatePerformanceDataUseCase,
+    private val dispatchers: CoroutineDispatchers,
+    private val affiliateSSE: AffiliateSSE
 ) : BaseViewModel() {
     var staticSize: Int = 0
     private val shimmerVisibility = MutableLiveData<Boolean>()
@@ -64,6 +80,7 @@ class AffiliateHomeViewModel @Inject constructor(
     var lastSelectedChip: ItemTypesItem? = null
 
     private var itemTypes = emptyList<ItemTypesItem>()
+    private var sseJob: Job? = null
 
     companion object {
         private const val FILTER_LAST_THIRTY_DAYS = "LastThirtyDays"
@@ -100,57 +117,59 @@ class AffiliateHomeViewModel @Inject constructor(
     }
 
     fun getAffiliatePerformance(page: Int, isFullLoad: Boolean = false) {
-        launchCatchError(block = {
-            if (firstTime) {
-                affiliateUserPerformanceUseCase.getAffiliateFilter().let { filters ->
-                    filters.data?.getAffiliateDateFilter?.forEach { filter ->
-                        if (filter?.filterType == FILTER_LAST_THIRTY_DAYS) {
-                            filter.filterDescription?.let { selectedDateMessage = it }
-                            filter.filterValue?.let { selectedDateValue = it }
-                            filter.filterTitle?.let { selectedDateRange = it }
-                            filter.updateDescription?.let { dateUpdateDescription = it }
+        launchCatchError(
+            block = {
+                if (firstTime) {
+                    affiliateUserPerformanceUseCase.getAffiliateFilter().let { filters ->
+                        filters.data?.getAffiliateDateFilter?.forEach { filter ->
+                            if (filter?.filterType == FILTER_LAST_THIRTY_DAYS) {
+                                filter.filterDescription?.let { selectedDateMessage = it }
+                                filter.filterValue?.let { selectedDateValue = it }
+                                filter.filterTitle?.let { selectedDateRange = it }
+                                filter.updateDescription?.let { dateUpdateDescription = it }
+                            }
                         }
+                        firstTime = false
                     }
-                    firstTime = false
                 }
-            }
-            var performanceList: AffiliateUserPerformaListItemData? = null
-            if (page == PAGE_ZERO) {
-                lastID = "0"
-                if (isFullLoad) {
-                    dataPlatformShimmerVisibility.value = true
-                    noMoreDataAvailable.value = false
-                    lastSelectedChip = null
-                    performanceList =
-                        affiliateUserPerformanceUseCase.affiliateUserperformance(selectedDateValue)
+                var performanceList: AffiliateUserPerformaListItemData? = null
+                if (page == PAGE_ZERO) {
+                    lastID = "0"
+                    if (isFullLoad) {
+                        dataPlatformShimmerVisibility.value = true
+                        noMoreDataAvailable.value = false
+                        lastSelectedChip = null
+                        performanceList =
+                            affiliateUserPerformanceUseCase.affiliateUserperformance(selectedDateValue)
+                    }
                 }
-            }
-            if (!isFullLoad) shimmerVisibility.value = true
-            if (isAffiliateShopAdpEnabled() && (firstTime || isFullLoad)) {
-                itemTypes =
-                    affiliatePerformanceItemTypeUseCase
-                        .affiliatePerformanceItemTypeList()
-                        .getItemTypeList.data.itemTypes
-            }
+                if (!isFullLoad) shimmerVisibility.value = true
+                if (isAffiliateShopAdpEnabled() && (firstTime || isFullLoad)) {
+                    itemTypes =
+                        affiliatePerformanceItemTypeUseCase
+                            .affiliatePerformanceItemTypeList()
+                            .getItemTypeList.data.itemTypes
+                }
 
-            affiliatePerformanceDataUseCase.affiliateItemPerformanceList(
-                selectedDateValue,
-                lastID,
-                lastSelectedChip?.pageType?.toIntOrZero() ?: 0
-            ).getAffiliatePerformanceList?.data?.data.let {
-                lastID = it?.lastID ?: "0"
-                if (page == PAGE_ZERO && isFullLoad) dataPlatformShimmerVisibility.value = false
-                convertDataToVisitable(
-                    it,
-                    performanceList,
-                    itemTypes,
-                    page,
-                    isFullLoad
-                )?.let { visitable ->
-                    affiliateDataList.value = visitable
+                affiliatePerformanceDataUseCase.affiliateItemPerformanceList(
+                    selectedDateValue,
+                    lastID,
+                    lastSelectedChip?.pageType?.toIntOrZero() ?: 0
+                ).getAffiliatePerformanceList?.data?.data.let {
+                    lastID = it?.lastID ?: "0"
+                    if (page == PAGE_ZERO && isFullLoad) dataPlatformShimmerVisibility.value = false
+                    convertDataToVisitable(
+                        it,
+                        performanceList,
+                        itemTypes,
+                        page,
+                        isFullLoad
+                    )?.let { visitable ->
+                        affiliateDataList.value = visitable
+                    }
                 }
-            }
-        }, onError = {
+            },
+            onError = {
                 if (page == PAGE_ZERO) {
                     dataPlatformShimmerVisibility.value = false
                 } else {
@@ -158,7 +177,8 @@ class AffiliateHomeViewModel @Inject constructor(
                 }
                 it.printStackTrace()
                 errorMessage.value = it
-            })
+            }
+        )
     }
 
     fun getUserName(): String {
@@ -266,6 +286,54 @@ class AffiliateHomeViewModel @Inject constructor(
             selectedDateMessage = range.message
             dateUpdateDescription = range.updateDescription
             rangeChanged.value = true
+        }
+    }
+
+    /**
+     * SSE
+     */
+    fun startSSE(channelId: String) {
+        sseJob?.cancel()
+        sseJob = viewModelScope.launch {
+            connectSSE(channelId, AffiliateSSEPageSource.AffiliateADP.source)
+            affiliateSSE.listen().collect {
+                when (it) {
+                    is AffiliateSSEAction.Message -> handleSSEMessage(it.message, channelId)
+                    is AffiliateSSEAction.Close -> {
+                        if (it.reason == AffiliateSSECloseReason.ERROR) {
+                            connectSSE(channelId, AffiliateSSEPageSource.AffiliateADP.source)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private fun connectSSE(channelId: String, pageSource: String) {
+        affiliateSSE.connect(channelId, pageSource)
+    }
+
+    private fun stopSSE() {
+        sseJob?.cancel()
+        affiliateSSE.close()
+    }
+
+    private suspend fun handleSSEMessage(message: AffiliateSSEResponse, channelId: String) {
+        val result = withContext(dispatchers.computation) {
+            val sseMapper = AffiliateSSEMapper(message)
+            sseMapper.mapping()
+        }
+
+        when (result) {
+            is AffiliateSSEAdpTotalClickItem -> handleUpdateChannelStatus(message, channelId)
+            is AffiliateSSEAdpTotalClick -> handleUpdateChannelStatus(message, channelId)
+        }
+    }
+
+    private fun handleUpdateChannelStatus(changedChannelId: AffiliateSSEResponse, currentChannelId: String) {
+        if (changedChannelId.event == currentChannelId) {
+//            _upcomingState.emit(PlayUpcomingState.WatchNow)
+            stopSSE()
         }
     }
 
