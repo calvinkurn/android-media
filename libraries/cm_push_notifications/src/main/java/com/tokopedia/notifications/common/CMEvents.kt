@@ -169,7 +169,8 @@ object IrisAnalyticsEvents {
         if (cmInApp.isTest) return
         val irisAnalytics = IrisAnalytics(context)
         trackEvent(
-            context, irisAnalytics,
+            context,
+            irisAnalytics,
             addBaseValues(context, eventName, cmInApp).apply {
                 put(LABEL, AMPLIFICATION)
             }
@@ -287,9 +288,6 @@ object IrisAnalyticsEvents {
             }
             it.sessionId?.let { sessionId ->
                 setSessionId(eventName, values, sessionId)
-            }
-            it.tokoChat?.let { tokoChat ->
-                values[TOKOCHAT] = tokoChat.toString()
             }
         }
     }

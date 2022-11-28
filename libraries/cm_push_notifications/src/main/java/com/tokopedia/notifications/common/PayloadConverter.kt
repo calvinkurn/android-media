@@ -12,7 +12,6 @@ import com.tokopedia.notification.common.utils.NotificationTargetPriorities
 import com.tokopedia.notifications.CMPushNotificationManager
 import com.tokopedia.notifications.common.CMConstant.PayloadKeys.*
 import com.tokopedia.notifications.model.*
-import com.tokopedia.notifications.model.payload_extra.TokoChat
 import com.tokopedia.notifications.model.payload_extra.Topchat
 import org.json.JSONObject
 import kotlin.collections.ArrayList
@@ -412,8 +411,7 @@ object PayloadConverter {
             journeyName = data.getString(PayloadExtraDataKey.JOURNEY_NAME, null),
             sessionId = data.getString(PayloadExtraDataKey.SESSION_ID, null),
             intentAction = data.getString(PayloadExtraDataKey.INTENT_ACTION, null),
-            topchat = getTopChatData(data),
-            tokoChat = getTokoChatData(data)
+            topchat = getTopChatData(data)
         )
     }
 
@@ -421,16 +419,6 @@ object PayloadConverter {
         return try {
             val topChatDataString = data.getString(PayloadExtraDataKey.TOPCHAT)
             Gson().fromJson(topChatDataString, Topchat::class.java)
-        } catch (e: Exception) {
-            e.printStackTrace()
-            null
-        }
-    }
-
-    private fun getTokoChatData(data: Bundle): TokoChat? {
-        return try {
-            val tokoChatDataString = data.getString(PayloadExtraDataKey.TOKOCHAT)
-            Gson().fromJson(tokoChatDataString, TokoChat::class.java)
         } catch (e: Exception) {
             e.printStackTrace()
             null

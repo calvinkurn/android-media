@@ -3,7 +3,6 @@ package com.tokopedia.notifications.model
 import android.os.Parcelable
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.notifications.common.CMConstant.PayloadKeys.PayloadExtraDataKey
-import com.tokopedia.notifications.model.payload_extra.TokoChat
 import com.tokopedia.notifications.model.payload_extra.Topchat
 import kotlinx.android.parcel.Parcelize
 
@@ -25,9 +24,6 @@ data class PayloadExtra(
     var intentAction: String? = null,
 
     @SerializedName(PayloadExtraDataKey.TOPCHAT)
-    var topchat: Topchat? = null,
-
-    @SerializedName(PayloadExtraDataKey.TOKOCHAT)
-    var tokoChat: TokoChat? = null
+    var topchat: Topchat? = null
 
 ) : Parcelable
