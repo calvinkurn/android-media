@@ -198,6 +198,7 @@ class PlayViewModel @AssistedInject constructor(
 
     /** Needed to decide whether we need to call setResult() or no when leaving play room */
     private val _isChannelReportLoaded = MutableStateFlow(false)
+    private val _exploreWidget = MutableStateFlow(emptyList<ExploreWidgetUiModel>())
 
     private val _winnerBadgeUiState = combine(
         _leaderboard, _bottomInsets, _status, _channelDetail, _leaderboardUserBadgeState
@@ -309,6 +310,15 @@ class PlayViewModel @AssistedInject constructor(
 
     }.flowOn(dispatchers.computation)
 
+    private val _explore = combine(_status, _bottomInsets, _exploreWidget){
+        status, bottomInsets, widgets -> ExploreWidgetUiState(
+            shouldShow =  !bottomInsets.isAnyShown &&
+                status.channelStatus.statusType.isActive &&
+                !videoPlayer.isYouTube,
+            data = widgets,
+        )
+    }.flowOn(dispatchers.computation)
+
     /**
      * Until repeatOnLifecycle is available (by updating library version),
      * this can be used as an alternative to "complete" un-completable flow when page is not focused
@@ -333,10 +343,11 @@ class PlayViewModel @AssistedInject constructor(
         _addressUiState,
         _featuredProducts.distinctUntilChanged(),
         _engagementUiState,
+        _explore,
     ) { channelDetail, interactive, partner, winnerBadge, bottomInsets,
         like, totalView, rtn, title, tagItems,
         status, quickReply, selectedVariant, isLoadingBuy, address,
-        featuredProducts, engagement ->
+        featuredProducts, engagement, explore ->
         PlayViewerNewUiState(
             channel = channelDetail,
             interactive = interactive,
@@ -355,6 +366,7 @@ class PlayViewModel @AssistedInject constructor(
             address = address,
             featuredProducts = featuredProducts,
             engagement = engagement,
+            exploreWidget = explore,
         )
     }.stateIn(
         viewModelScope,

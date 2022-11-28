@@ -43,6 +43,7 @@ import com.tokopedia.play.gesture.PlayClickTouchListener
 import com.tokopedia.play.ui.component.UiComponent
 import com.tokopedia.play.ui.engagement.model.EngagementUiModel
 import com.tokopedia.play.util.changeConstraint
+import com.tokopedia.play.util.isChanged
 import com.tokopedia.play.util.measureWithTimeout
 import com.tokopedia.play.util.observer.DistinctObserver
 import com.tokopedia.play.util.video.state.BufferSource
@@ -136,7 +137,8 @@ class PlayUserInteractionFragment @Inject constructor(
         ProductSeeMoreViewComponent.Listener,
         InteractiveGameResultViewComponent.Listener,
         ChooseAddressViewComponent.Listener,
-        EngagementCarouselViewComponent.Listener
+        EngagementCarouselViewComponent.Listener,
+        ExploreWidgetViewComponent.Listener
 {
     private val viewSize by viewComponent { EmptyViewComponent(it, R.id.view_size) }
     private val gradientBackgroundView by viewComponent { EmptyViewComponent(it, R.id.view_gradient_background) }
@@ -172,6 +174,8 @@ class PlayUserInteractionFragment @Inject constructor(
      * Interactive
      */
     private val interactiveResultView by viewComponentOrNull(isEagerInit = true) { InteractiveGameResultViewComponent(it, this, viewLifecycleOwner.lifecycleScope) }
+
+    private val exploreView by viewComponentOrNull { ExploreWidgetViewComponent(it, this) }
 
     private val activityResultHelper by lifecycleBound({
         ActivityResultHelper(this)
@@ -832,6 +836,7 @@ class PlayUserInteractionFragment @Inject constructor(
 
                 handleStatus(state.status)
                 renderEngagement(prevState?.engagement, state.engagement)
+                if(cachedState.isChanged { it.exploreWidget.shouldShow }) renderExploreView(state.exploreWidget.shouldShow)
 
                 if (prevState?.tagItems?.product != state.tagItems.product &&
                         prevState?.tagItems?.voucher != state.tagItems.voucher) {
@@ -1816,6 +1821,18 @@ class PlayUserInteractionFragment @Inject constructor(
                 newAnalytic.impressActiveInteractive(shopId = playViewModel.partnerId.toString(), interactiveId = engagement.game.id, channelId = playViewModel.channelId)
             }
         }
+    }
+
+    /**
+     * Explore Widget
+     */
+
+    private fun renderExploreView(shouldShow: Boolean) {
+        exploreView?.setupVisibility(shouldShow)
+    }
+
+    override fun onExploreClicked(viewComponent: ExploreWidgetViewComponent) {
+        //TODO () show dialog
     }
 
     companion object {
