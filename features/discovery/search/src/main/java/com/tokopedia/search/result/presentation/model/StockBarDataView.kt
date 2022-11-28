@@ -1,6 +1,6 @@
 package com.tokopedia.search.result.presentation.model
 
-import com.tokopedia.search.result.domain.model.SearchProductModel
+import com.tokopedia.search.result.domain.model.SearchProductModel.InspirationCarouselStockBar
 
 data class StockBarDataView(
     val stock: Int = 0,
@@ -10,7 +10,7 @@ data class StockBarDataView(
     val color: String = "",
 ) {
     companion object {
-        fun create(stockBarModel: SearchProductModel.InspirationCarouselStockBar): StockBarDataView {
+        fun create(stockBarModel: InspirationCarouselStockBar): StockBarDataView {
             return StockBarDataView(
                 stockBarModel.stock,
                 stockBarModel.originalStock,
