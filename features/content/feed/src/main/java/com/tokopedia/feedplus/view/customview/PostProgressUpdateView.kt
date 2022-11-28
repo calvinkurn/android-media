@@ -13,6 +13,7 @@ import com.tokopedia.affiliatecommon.*
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.content.common.const.PlayShortsUploadConst
 import com.tokopedia.content.common.model.shorts.PlayShortsUploadModel
+import com.tokopedia.content.common.uploader.PlayShortsUploader
 import com.tokopedia.createpost.common.DRAFT_ID
 import com.tokopedia.createpost.common.view.service.SubmitPostService
 import com.tokopedia.createpost.common.view.viewmodel.CreatePostViewModel
@@ -67,14 +68,17 @@ class PostProgressUpdateView @JvmOverloads constructor(
         mPostUpdateSwipe = postUpdateSwipe
     }
 
-    fun handleShortsUploadFailed(uploadData: PlayShortsUploadModel) {
+    fun handleShortsUploadFailed(
+        uploadData: PlayShortsUploadModel,
+        uploader: PlayShortsUploader
+    ) {
         mPostUpdateSwipe?.updateVisibility(true)
         progressBar?.progressBarColorType = ProgressBarUnify.COLOR_RED
         retryText?.show()
         processingText?.text = context.getString(R.string.cp_common_progress_bar_failed_text)
         processingText?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_RN500))
         retryText?.setOnClickListener {
-            retryPostShorts(uploadData)
+            retryPostShorts(uploadData, uploader)
             /** TODO: attach tracker */
         }
     }
@@ -112,7 +116,10 @@ class PostProgressUpdateView @JvmOverloads constructor(
 
     }
 
-    private fun retryPostShorts(uploadData: PlayShortsUploadModel){
+    private fun retryPostShorts(
+        uploadData: PlayShortsUploadModel,
+        uploader: PlayShortsUploader
+    ){
         processingText?.text = context.getString(R.string.cp_common_progress_bar_text)
         processingText?.setTextColor(
             ContextCompat.getColor(context,
@@ -122,7 +129,7 @@ class PostProgressUpdateView @JvmOverloads constructor(
 
         setProgressUpdate(0, 0)
 
-        /** TODO: start workmanager here */
+        uploader.upload(uploadData)
     }
 
     private val submitPostReceiver: BroadcastReceiver by lazy {

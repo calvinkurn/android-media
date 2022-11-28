@@ -35,6 +35,7 @@ import com.tokopedia.coachmark.CoachMarkItem
 import com.tokopedia.content.common.const.PlayShortsUploadConst
 import com.tokopedia.content.common.model.shorts.PlayShortsUploadModel
 import com.tokopedia.content.common.types.BundleData
+import com.tokopedia.content.common.uploader.PlayShortsUploader
 import com.tokopedia.content.common.util.coachmark.ContentCoachMarkConfig
 import com.tokopedia.content.common.util.coachmark.ContentCoachMarkManager
 import com.tokopedia.content.common.util.coachmark.ContentCoachMarkSharedPref
@@ -137,6 +138,9 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
 
     @Inject
     lateinit var entryPointAnalytic: FeedEntryPointAnalytic
+
+    @Inject
+    lateinit var playShortsUploader: PlayShortsUploader
 
     @JvmField @Inject
     var coachMarkManager: ContentCoachMarkManager? = null
@@ -250,9 +254,8 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
                     }
                     else if(workInfo.state == WorkInfo.State.FAILED) {
                         Log.d("<LOG>", "FEED - FAILED")
-                        /** TODO: handle on fail & retry */
                         val uploadData = PlayShortsUploadModel.parse(workInfo.outputData)
-                        postProgressUpdateView?.handleShortsUploadFailed(uploadData)
+                        postProgressUpdateView?.handleShortsUploadFailed(uploadData, playShortsUploader)
                     }
                     else {
                         val progress = workInfo.progress.getInt("progress", 0)

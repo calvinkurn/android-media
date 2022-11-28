@@ -66,20 +66,20 @@ class PlayShortsUploadWorker(
             Log.d("<LOG>", "Start Uploading...")
             Log.d("<LOG>", uploadData.toString())
 //            Log.d("<LOG>", updateChannelUseCase.toString())
-//            Log.d("<LOG>", addMediaUseCase.toString())
-//            Log.d("<LOG>", dispatchers.toString())
+            Log.d("<LOG>", addMediaUseCase.toString())
+            Log.d("<LOG>", dispatchers.toString())
             Log.d("<LOG>", snapshotHelper.toString())
 
             delay(1000)
-            setProgress(workDataOf("progress" to 20))
+            updateProgress()
             delay(1000)
-            setProgress(workDataOf("progress" to 40))
+            updateProgress()
             delay(1000)
-            setProgress(workDataOf("progress" to 60))
+            updateProgress()
             delay(1000)
-            setProgress(workDataOf("progress" to 80))
+            updateProgress()
             delay(1000)
-            setProgress(workDataOf("progress" to 100))
+            updateProgress()
 
             /**
              * Upload Flow
