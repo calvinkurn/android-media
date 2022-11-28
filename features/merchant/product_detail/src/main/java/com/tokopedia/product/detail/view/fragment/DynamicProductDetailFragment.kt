@@ -4013,7 +4013,7 @@ open class DynamicProductDetailFragment :
 
             setIcon(
                 IconBuilder()
-                    .addIcon(IconList.ID_SHARE) {
+                    .addIcon(getShareIcon()) {
                         onClickShareProduct()
                     }
                     .addIcon(IconList.ID_CART) {}
@@ -4024,6 +4024,15 @@ open class DynamicProductDetailFragment :
             setToolbarPageName(ProductTrackingConstant.Category.PDP)
             show()
         }
+    }
+
+    private fun getShareIcon(): Int {
+        val isAbTestEnabled = RemoteConfigInstance.getInstance().abTestPlatform.getString(
+            RollenceKey.PDP_SHOW_SHARE_AFFILIATE
+        ) == RollenceKey.PDP_SHOW_SHARE_AFFILIATE
+
+        if (isAbTestEnabled) return IconList.ID_SHARE_AB_TEST
+        else return IconList.ID_SHARE
     }
 
     private fun getDarkToolbarIconColor(): Int = ContextCompat.getColor(
