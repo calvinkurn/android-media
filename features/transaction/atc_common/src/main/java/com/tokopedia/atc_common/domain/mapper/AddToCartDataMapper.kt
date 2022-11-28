@@ -8,10 +8,22 @@ import com.tokopedia.atc_common.data.model.response.occ.DataOccMultiResponse
 import com.tokopedia.atc_common.data.model.response.occ.DetailOccMultiResponse
 import com.tokopedia.atc_common.data.model.response.ocs.AddToCartOcsGqlResponse
 import com.tokopedia.atc_common.data.model.response.ocs.OcsDataResponse
-import com.tokopedia.atc_common.domain.model.response.*
+import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
+import com.tokopedia.atc_common.domain.model.response.AddToCartOccMultiCartData
+import com.tokopedia.atc_common.domain.model.response.AddToCartOccMultiData
+import com.tokopedia.atc_common.domain.model.response.AddToCartOccMultiDataModel
+import com.tokopedia.atc_common.domain.model.response.DataModel
+import com.tokopedia.atc_common.domain.model.response.ErrorReporterModel
+import com.tokopedia.atc_common.domain.model.response.ErrorReporterTextModel
+import com.tokopedia.atc_common.domain.model.response.OvoInsufficientBalance
+import com.tokopedia.atc_common.domain.model.response.OvoInsufficientButton
+import com.tokopedia.atc_common.domain.model.response.OvoInsufficientDetails
+import com.tokopedia.atc_common.domain.model.response.OvoInsufficientTopup
+import com.tokopedia.atc_common.domain.model.response.OvoValidationDataModel
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import javax.inject.Inject
+import kotlin.math.roundToLong
 
 /**
  * Created by Irfan Khoirul on 2019-09-11.
@@ -89,12 +101,12 @@ class AddToCartDataMapper @Inject constructor() {
     private fun mapDataModelOcs(it: OcsDataResponse): DataModel {
         val dataModel = DataModel()
         dataModel.cartId = it.ocsData.cartId
-        dataModel.productId = it.ocsData.productId
+        dataModel.productId = it.ocsData.productId.toLongOrZero()
         dataModel.quantity = it.ocsData.quantity
         dataModel.notes = it.ocsData.notes
-        dataModel.shopId = it.ocsData.shopId
-        dataModel.customerId = it.ocsData.customerId
-        dataModel.warehouseId = it.ocsData.warehouseId
+        dataModel.shopId = it.ocsData.shopId.toLongOrZero()
+        dataModel.customerId = it.ocsData.customerId.toLongOrZero()
+        dataModel.warehouseId = it.ocsData.warehouseId.toLongOrZero()
         dataModel.trackerAttribution = it.ocsData.trackerAttribution
         dataModel.trackerListName = it.ocsData.trackerListName
         dataModel.ucUtParam = it.ocsData.ucUtParam
@@ -107,7 +119,7 @@ class AddToCartDataMapper @Inject constructor() {
                         it.ocsData.ovoValidation.ovoInsufficientBalance.title,
                         it.ocsData.ovoValidation.ovoInsufficientBalance.description,
                         OvoInsufficientDetails(
-                                it.ocsData.ovoValidation.ovoInsufficientBalance.details.productPrice,
+                                it.ocsData.ovoValidation.ovoInsufficientBalance.details.productPrice.roundToLong(),
                                 it.ocsData.ovoValidation.ovoInsufficientBalance.details.shippingEstimation,
                                 it.ocsData.ovoValidation.ovoInsufficientBalance.details.ovoBalance,
                                 it.ocsData.ovoValidation.ovoInsufficientBalance.details.topupBalance
