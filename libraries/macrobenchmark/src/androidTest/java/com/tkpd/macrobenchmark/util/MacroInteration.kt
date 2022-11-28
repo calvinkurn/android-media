@@ -74,13 +74,7 @@ object MacroInteration {
     fun waitForComposableWidgetVisible(widgetContentDescription: String) {
         val instrumentation = InstrumentationRegistry.getInstrumentation()
         val device = UiDevice.getInstance(instrumentation)
-
         device.wait(Until.hasObject(By.descContains(widgetContentDescription)), DEFAULT_TIMEOUT)
-
-        val recycler = device
-            .findObject(By.descContains(widgetContentDescription))
-
-        recycler.wait(Until.scrollable(true), DEFAULT_TIMEOUT)
         device.waitForIdle(IDLE_DURATION)
     }
 
