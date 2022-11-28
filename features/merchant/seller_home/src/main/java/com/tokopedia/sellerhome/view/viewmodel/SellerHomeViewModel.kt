@@ -11,9 +11,11 @@ import com.tokopedia.sellerhome.common.config.SellerHomeRemoteConfig
 import com.tokopedia.sellerhome.domain.model.ShippingLoc
 import com.tokopedia.sellerhome.domain.usecase.GetShopInfoByIdUseCase
 import com.tokopedia.sellerhome.domain.usecase.GetShopLocationUseCase
+import com.tokopedia.sellerhome.domain.usecase.GetShopStateInfoUseCase
 import com.tokopedia.sellerhome.view.helper.SellerHomeLayoutHelper
 import com.tokopedia.sellerhome.view.helper.handleSseMessage
 import com.tokopedia.sellerhome.view.model.ShopShareDataUiModel
+import com.tokopedia.sellerhome.view.model.ShopStateInfoUiModel
 import com.tokopedia.sellerhomecommon.common.const.DateFilterType
 import com.tokopedia.sellerhomecommon.domain.model.DynamicParameterModel
 import com.tokopedia.sellerhomecommon.domain.model.TableAndPostDataKey
@@ -55,6 +57,7 @@ import com.tokopedia.sellerhomecommon.presentation.model.TickerItemUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.UnificationDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.UnificationWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.WidgetDismissalResultUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.WidgetLayoutUiModel
 import com.tokopedia.sellerhomecommon.sse.SellerHomeWidgetSSE
 import com.tokopedia.sellerhomecommon.utils.DateTimeUtil
 import com.tokopedia.shop.common.data.model.ShopQuestGeneralTracker
@@ -99,6 +102,7 @@ class SellerHomeViewModel @Inject constructor(
     private val getShopInfoByIdUseCase: Lazy<GetShopInfoByIdUseCase>,
     private val shopQuestTrackerUseCase: Lazy<ShopQuestGeneralTrackerUseCase>,
     private val submitWidgetDismissUseCase: Lazy<SubmitWidgetDismissUseCase>,
+    private val getShopStateInfoUseCase: Lazy<GetShopStateInfoUseCase>,
     private val sellerHomeLayoutHelper: Lazy<SellerHomeLayoutHelper>,
     private val widgetSse: Lazy<SellerHomeWidgetSSE>,
     private val remoteConfig: SellerHomeRemoteConfig,
@@ -109,6 +113,7 @@ class SellerHomeViewModel @Inject constructor(
         private const val SELLER_HOME_PAGE_NAME = "seller-home"
         private const val SELLER_HOME_SSE = "home"
         private const val TICKER_PAGE_NAME = "seller"
+        private const val SELLER_INFO_STATE_KEY = "shopStateChanged"
     }
 
     private val shopId: String by lazy { userSession.get().shopId }
@@ -126,7 +131,7 @@ class SellerHomeViewModel @Inject constructor(
         private set
 
     private val _homeTicker = MutableLiveData<Result<List<TickerItemUiModel>>>()
-    private val _widgetLayout = MutableLiveData<Result<List<BaseWidgetUiModel<*>>>>()
+    private val _widgetLayout = MutableLiveData<Result<WidgetLayoutUiModel>>()
     private val _shopLocation = MutableLiveData<Result<ShippingLoc>>()
     private val _cardWidgetData = MutableLiveData<Result<List<CardDataUiModel>>>()
     private val _lineGraphWidgetData = MutableLiveData<Result<List<LineGraphDataUiModel>>>()
@@ -149,10 +154,11 @@ class SellerHomeViewModel @Inject constructor(
     private val _shopShareData = MutableLiveData<Result<ShopShareDataUiModel>>()
     private val _shopShareTracker = MutableLiveData<Result<ShopQuestGeneralTracker>>()
     private val _submitWidgetDismissal = MutableLiveData<Result<WidgetDismissalResultUiModel>>()
+    private val _shopStateInfo = MutableLiveData<Result<ShopStateInfoUiModel>>()
 
     val homeTicker: LiveData<Result<List<TickerItemUiModel>>>
         get() = _homeTicker
-    val widgetLayout: LiveData<Result<List<BaseWidgetUiModel<*>>>>
+    val widgetLayout: LiveData<Result<WidgetLayoutUiModel>>
         get() = _widgetLayout
     val shopLocation: LiveData<Result<ShippingLoc>>
         get() = _shopLocation
@@ -194,6 +200,8 @@ class SellerHomeViewModel @Inject constructor(
         get() = _shopShareTracker
     val submitWidgetDismissal: LiveData<Result<WidgetDismissalResultUiModel>>
         get() = _submitWidgetDismissal
+    val shopStateInfo: LiveData<Result<ShopStateInfoUiModel>>
+        get() = _shopStateInfo
 
     init {
         sellerHomeLayoutHelper.get().init(
@@ -249,14 +257,14 @@ class SellerHomeViewModel @Inject constructor(
             val useCase = getLayoutUseCase.get()
             useCase.params = params
             if (heightDp == null) {
-                getDataFromUseCase(useCase, _widgetLayout) { widgets ->
-                    saveRawWidgets(widgets)
+                getDataFromUseCase(useCase, _widgetLayout) { layout ->
+                    saveRawWidgets(layout.widgetList)
                 }
             } else {
-                getDataFromUseCase(useCase, _widgetLayout) { widgets, isFromCache ->
-                    saveRawWidgets(widgets)
+                getDataFromUseCase(useCase, _widgetLayout) { layout, isFromCache ->
+                    saveRawWidgets(layout.widgetList)
                     return@getDataFromUseCase sellerHomeLayoutHelper.get()
-                        .getInitialWidget(widgets, heightDp, isFromCache)
+                        .getInitialWidget(layout, heightDp, isFromCache)
                         .flowOn(dispatcher.io)
                 }
             }
@@ -449,6 +457,20 @@ class SellerHomeViewModel @Inject constructor(
         })
     }
 
+    fun getShopStateInfo() {
+        launchCatchError(context = dispatcher.io, block = {
+            val useCase = getShopStateInfoUseCase.get()
+            val response = useCase.execute(
+                shopId = userSession.get().shopId,
+                dataKey = SELLER_INFO_STATE_KEY,
+                pageSource = SELLER_HOME_PAGE_NAME
+            )
+            _shopStateInfo.postValue(Success(response))
+        }, onError = {
+            _shopStateInfo.postValue(Fail(it))
+        })
+    }
+
     fun sendShopShareQuestTracker(socialMediaName: String) {
         launchCatchError(context = dispatcher.io, block = {
             val useCase = shopQuestTrackerUseCase.get()
@@ -525,27 +547,35 @@ class SellerHomeViewModel @Inject constructor(
         }
     }
 
-    private suspend fun <T : Any> getDataFromUseCase(
-        useCase: BaseGqlUseCase<T>,
-        liveData: MutableLiveData<Result<T>>,
-        getTransformerFlow: suspend (widgets: T, isFromCache: Boolean) -> Flow<T>
+    private suspend fun getDataFromUseCase(
+        useCase: BaseGqlUseCase<WidgetLayoutUiModel>,
+        liveData: MutableLiveData<Result<WidgetLayoutUiModel>>,
+        getTransformerFlow: suspend (widgets: WidgetLayoutUiModel, isFromCache: Boolean) -> Flow<List<BaseWidgetUiModel<*>>>
     ) {
         if (remoteConfig.isSellerHomeDashboardCachingEnabled() && useCase.isFirstLoad) {
             useCase.isFirstLoad = false
             try {
                 useCase.setUseCache(true)
-                val useCaseResult = useCase.executeOnBackground()
+                val useCaseResult: WidgetLayoutUiModel = useCase.executeOnBackground()
                 getTransformerFlow(useCaseResult, true).collect {
-                    liveData.value = Success(it)
+                    liveData.value = Success(
+                        useCaseResult.copy(
+                            widgetList = it
+                        )
+                    )
                 }
             } catch (_: Exception) {
                 // ignore exception from cache
             }
         }
         useCase.setUseCache(false)
-        val useCaseResult = useCase.executeOnBackground()
+        val useCaseResult: WidgetLayoutUiModel = useCase.executeOnBackground()
         getTransformerFlow(useCaseResult, false).collect {
-            liveData.value = Success(it)
+            liveData.value = Success(
+                useCaseResult.copy(
+                    widgetList = it
+                )
+            )
         }
     }
 }

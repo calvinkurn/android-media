@@ -226,10 +226,6 @@
     <string name="text_checkbox_in_detail_centralize_promo">Jangan tampilkan informasi fitur ini lagi</string>
     <string name="text_badge_new">Baru</string>
     <string name="sah_new_other_tokomember">TokoMember</string>
-    <string name="sah_new_seller_dialog_first_order_title">Wuih, pecah telor! Kamu dapat pesanan pertama</string>
-    <string name="sah_new_seller_dialog_first_order_description">Segera diproses, yuk. Agar banyak pembeli yang puas dan Performa Toko kamu pun naik.</string>
-    <string name="sah_later">Nanti Saja</string>
-    <string name="sah_process_order">Proses Pesanan</string>
     <string name="sah_new_seller_welcoming_dialog_title">Halo, %1$s. Selamat datang di Tokopedia Seller!</string>
     <string name="sah_new_seller_welcoming_dialog_description">Kelola toko jadi lebih mudah dengan tampilan baru. Pelajari dulu, yuk.</string>
     <string name="sah_learn_a_new_look">Pelajari Tampilan Baru</string>

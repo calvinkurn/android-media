@@ -9,6 +9,7 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.sellerhome.R
 import com.tokopedia.sellerhome.data.SellerHomeSharedPref
+import com.tokopedia.sellerhome.view.dialog.NewSellerDialog
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
@@ -22,45 +23,19 @@ class NewSellerJourneyHelper @Inject constructor(
     private val userSession: UserSessionInterface
 ) {
 
-    companion object {
-        private const val IMG_WELCOMING_DIALOG =
-            "https://images.tokopedia.net/img/android/seller_home/img_sah_new_seller_dialog.png"
-    }
-
     private var sectionWidgetView: View? = null
     private var notificationView: View? = null
     private var navigationView: View? = null
     private var otherMenuView: View? = null
 
-    fun showDialog() {
+    fun showNewSellerDialog() {
         if (!sharedPref.getNewSellerWelcomingDialogEligibility(userSession.userId)) {
             return
         }
 
-        val dialog = DialogUnify(
-            context,
-            DialogUnify.SINGLE_ACTION,
-            DialogUnify.WITH_ILLUSTRATION
-        )
-
-        with(dialog) {
-            setImageUrl(IMG_WELCOMING_DIALOG)
-            setTitle(
-                context.getString(
-                    R.string.sah_new_seller_welcoming_dialog_title,
-                    userSession.shopName
-                )
-            )
-            setDescription(context.getString(R.string.sah_new_seller_welcoming_dialog_description))
-            setPrimaryCTAText(context.getString(R.string.sah_learn_a_new_look))
-            setPrimaryCTAClickListener {
-                dismiss()
-            }
-            setOnDismissListener {
-                showNewSellerCoachMark()
-                sharedPref.makeNewSellerWelcomingDialogNotEligible(userSession.userId)
-            }
-            show()
+        NewSellerDialog.showNewSellerJourneyDialog(context, userSession.shopName) {
+            showNewSellerCoachMark()
+            sharedPref.makeNewSellerWelcomingDialogNotEligible(userSession.userId)
         }
     }
 
@@ -81,7 +56,7 @@ class NewSellerJourneyHelper @Inject constructor(
     }
 
     private fun showNewSellerCoachMark() {
-        if (!sharedPref.getNewSellerWelcomingCoachMarkEligibility()) {
+        if (!sharedPref.getNewSellerWelcomingCoachMarkEligibility(userSession.userId)) {
             return
         }
 
@@ -91,7 +66,7 @@ class NewSellerJourneyHelper @Inject constructor(
         coachMark.onDismissListener = {
             val isTheLastIndex = coachMark.currentIndex == coachMarkItems.size.minus(Int.ONE)
             if (isTheLastIndex) {
-                sharedPref.makeNewSellerWelcomingCoachMarkNotEligible()
+                sharedPref.makeNewSellerWelcomingCoachMarkNotEligible(userSession.userId)
             }
         }
         coachMark.showCoachMark(coachMarkItems)

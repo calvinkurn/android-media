@@ -85,8 +85,10 @@ import com.tokopedia.sellerhome.domain.model.ShippingLoc
 import com.tokopedia.sellerhome.view.SellerHomeDiffUtilCallback
 import com.tokopedia.sellerhome.view.activity.SellerHomeActivity
 import com.tokopedia.sellerhome.view.customview.NotificationDotBadge
+import com.tokopedia.sellerhome.view.dialog.NewSellerDialog
 import com.tokopedia.sellerhome.view.helper.NewSellerJourneyHelper
 import com.tokopedia.sellerhome.view.model.ShopShareDataUiModel
+import com.tokopedia.sellerhome.view.model.ShopStateInfoUiModel
 import com.tokopedia.sellerhome.view.viewhelper.SellerHomeLayoutManager
 import com.tokopedia.sellerhome.view.viewhelper.ShopShareHelper
 import com.tokopedia.sellerhome.view.viewmodel.SellerHomeViewModel
@@ -129,6 +131,7 @@ import com.tokopedia.sellerhomecommon.presentation.model.ProgressWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.RecommendationItemUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.RecommendationWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.SectionWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.ShopStateUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.SubmitWidgetDismissUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.TableRowsUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.TableWidgetUiModel
@@ -245,7 +248,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     private val notificationDotBadge: NotificationDotBadge? by lazy {
         NotificationDotBadge(context ?: return@lazy null)
     }
-
     private val isNewLazyLoad by lazy {
         Build.VERSION.SDK_INT > Build.VERSION_CODES.N_MR1 && remoteConfig.isSellerHomeDashboardNewLazyLoad()
     }
@@ -255,12 +257,9 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     private var isErrorToastShown = false
     private var isReloading = false
     private var shouldShowSuccessToaster: Boolean = false
-
     private var performanceMonitoringSellerHomePltCompleted = false
     private var performanceMonitoringSellerHomePlt: HomeLayoutLoadTimeMonitoring? = null
-
     private var emptyState: EmptyStateUnify? = null
-
     private var rebateWidgetView: View? = null
     private var unificationWidgetTitleView: View? = null
     private var navigationOtherMenuView: View? = null
@@ -332,6 +331,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         observeShopShareData()
         observeShopShareTracker()
         observeWidgetDismissalStatus()
+        observeShopStateInf()
 
         context?.let { UpdateShopActiveWorker.execute(it) }
     }
@@ -969,9 +969,9 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         showNotificationBadge()
     }
 
-    fun setNotificationCoachMarkView() {
-        menu?.findItem(NOTIFICATION_MENU_ID)?.let {
-            newSellerJourneyHelper.setNotificationView(it.actionView)
+    private fun setNotificationCoachMarkView() {
+        menu?.findItem(NOTIFICATION_MENU_ID)?.actionView?.let {
+            newSellerJourneyHelper.setNotificationView(it)
         }
     }
 
@@ -1470,8 +1470,9 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         sellerHomeViewModel.widgetLayout.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Success -> {
-                    stopLayoutCustomMetric(result.data)
-                    setOnSuccessGetLayout(result.data)
+                    stopLayoutCustomMetric(result.data.widgetList)
+                    setOnSuccessGetLayout(result.data.widgetList)
+                    setupShopState(result.data.shopState)
                     startWidgetSse()
                 }
                 is Fail -> {
@@ -1880,6 +1881,19 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             when (it) {
                 is Success -> setSubmitDismissalSuccess(it.data)
                 is Fail -> it.throwable.showErrorToaster()
+            }
+        }
+    }
+
+    private fun observeShopStateInf() {
+        viewLifecycleOwner.observe(sellerHomeViewModel.shopStateInfo) {
+            if (it is Success) {
+                val info = it.data
+                if (info.subtitle.isBlank()) return@observe
+                when (info.subType) {
+                    ShopStateInfoUiModel.SubType.TOAST -> showShopStateToaster(info)
+                    ShopStateInfoUiModel.SubType.POPUP -> showShopStatePopup(info)
+                }
             }
         }
     }
@@ -2672,6 +2686,50 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     private fun stopWidgetSse() {
         sellerHomeViewModel.stopSSE()
+    }
+
+    private fun showShopStatePopup(info: ShopStateInfoUiModel) {
+        context?.let {
+            NewSellerDialog.showFirstOrderDialog(it, info) {
+                sendShopStateDismissal(info.dataSign)
+            }
+        }
+    }
+
+    private fun showShopStateToaster(info: ShopStateInfoUiModel) {
+        binding?.run {
+            Toaster.build(
+                root,
+                info.subtitle,
+                TOAST_DURATION.toInt(),
+                Toaster.TYPE_NORMAL,
+                info.button.name
+            ) {
+                if (info.button.appLink.isNotBlank()) {
+                    RouteManager.route(root.context, info.button.appLink)
+                }
+                sendShopStateDismissal(info.dataSign)
+            }.show()
+        }
+    }
+
+    private fun sendShopStateDismissal(dataSign: String) {
+        val param = SubmitWidgetDismissUiModel(
+            action = SubmitWidgetDismissUiModel.Action.DISMISS,
+            dismissKey = NewSellerDialog.DISMISSAL_KEY,
+            dismissSign = dataSign,
+            dismissObjectIDs = listOf(Int.ZERO.toString()),
+            shopId = userSession.shopId,
+            isFeedbackPositive = true
+        )
+        sellerHomeViewModel.submitWidgetDismissal(param)
+    }
+
+    private fun setupShopState(shopState: ShopStateUiModel) {
+        when (shopState) {
+            ShopStateUiModel.NewRegisteredShop -> newSellerJourneyHelper.showNewSellerDialog()
+            else -> sellerHomeViewModel.getShopStateInfo()
+        }
     }
 
     interface Listener {
