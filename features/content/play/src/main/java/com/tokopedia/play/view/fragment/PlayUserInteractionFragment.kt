@@ -931,21 +931,9 @@ class PlayUserInteractionFragment @Inject constructor(
                             )
                         }
 
-                        val (actionText, listener) = when (event.action) {
-                            RetryAction.Follow -> Pair(getString(commonR.string.play_interactive_retry),
-                                View.OnClickListener {
-                                    newAnalytic.clickRetryToasterPopUp(channelId, channelType = playViewModel.channelType.value)
-                                    playViewModel.submitAction(PlayViewerNewAction.FollowInteractive)
-                                }
-                            )
-                            else ->  Pair("", View.OnClickListener {} )
-                        }
-
                         doShowToaster(
                             toasterType = Toaster.TYPE_ERROR,
                             message = errMessage,
-                            actionText = actionText,
-                            clickListener = listener
                         )
                     }
                     is CopyToClipboardEvent -> copyToClipboard(event.content)
@@ -990,6 +978,17 @@ class PlayUserInteractionFragment @Inject constructor(
                     }
                     HideCoachMarkWinnerEvent -> {
                         interactiveResultView?.hideCoachMark()
+                    }
+                    FailedFollow -> {
+                        doShowToaster(
+                            toasterType = Toaster.TYPE_ERROR,
+                            message = getString(R.string.play_failed_follow),
+                            actionText = getString(commonR.string.play_interactive_retry),
+                            clickListener = {
+                                newAnalytic.clickRetryToasterPopUp(channelId, channelType = playViewModel.channelType.value)
+                                playViewModel.submitAction(PlayViewerNewAction.FollowInteractive)
+                            }
+                        )
                     }
                 }
             }

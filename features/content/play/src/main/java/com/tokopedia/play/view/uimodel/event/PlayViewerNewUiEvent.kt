@@ -22,11 +22,7 @@ object HideCoachMarkWinnerEvent : PlayViewerNewUiEvent()
 data class OpenPageEvent(val applink: String, val params: List<String> = emptyList(), val requestCode: Int? = null, val pipMode: Boolean = false) : PlayViewerNewUiEvent()
 
 data class ShowInfoEvent(val message: UiString) : PlayViewerNewUiEvent()
-data class ShowErrorEvent(val error: Throwable, val errMessage: UiString? = null, val action: RetryAction = RetryAction.Unknown) : PlayViewerNewUiEvent()
-
-enum class RetryAction {
-    Follow, Unknown;
-}
+data class ShowErrorEvent(val error: Throwable, val errMessage: UiString? = null) : PlayViewerNewUiEvent()
 
 data class CopyToClipboardEvent(val content: String) : PlayViewerNewUiEvent()
 
@@ -121,3 +117,10 @@ object OpenUserReportEvent : PlayViewerNewUiEvent()
  */
 data class ChangeCampaignReminderSuccess(val isReminded: Boolean, val message: String) : PlayViewerNewUiEvent()
 data class ChangeCampaignReminderFailed(val error: Throwable) : PlayViewerNewUiEvent()
+
+/**
+ * Follow
+ */
+
+object FailedFollow: PlayViewerNewUiEvent()
+
