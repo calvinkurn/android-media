@@ -27,35 +27,28 @@
         android:orientation="vertical"
         app:layout_constraintGuide_end="@dimen/unify_space_16" />
 
-    <com.tokopedia.unifycomponents.TextAreaUnify
+    <com.tokopedia.unifycomponents.TextFieldUnify2
         android:id="@+id/textAreaBankName"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/unify_space_16"
         android:clickable="false"
         android:focusable="false"
+        app:unify_text_field_append_drawable_icon_2="@drawable/sbank_chevron_down"
         app:layout_constraintEnd_toStartOf="@+id/guidelineEnd"
         app:layout_constraintStart_toStartOf="@+id/guidelineStart"
         app:layout_constraintTop_toTopOf="@+id/guidelineTop"
         app:text_area_clearable="false"
         app:text_area_max_lines="1"
-        app:text_area_label="@string/bank_name_title"
-        app:text_area_label_static="true"
+        app:unify_text_field_label="@string/bank_name_title"
         app:text_field_placeholder="@string/bank_name_title" />
 
-    <com.tokopedia.iconunify.IconUnify
-        android:layout_width="@dimen/unify_space_16"
-        android:layout_height="@dimen/unify_space_16"
-        app:icon_name="CHEVRON_DOWN"
-        android:layout_marginTop="@dimen/unify_space_16"
-        app:layout_constraintTop_toTopOf="@+id/textAreaBankName"
-        app:layout_constraintEnd_toEndOf="@+id/textAreaBankName" />
 
     <com.tokopedia.unifycomponents.TextAreaUnify
         android:id="@+id/textAreaBankAccountNumber"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/unify_space_16"
+        android:layout_marginTop="@dimen/unify_space_32"
         android:layout_marginEnd="@dimen/unify_space_16"
         app:layout_constraintEnd_toStartOf="@+id/btnPeriksa"
         app:layout_constraintStart_toStartOf="@+id/guidelineStart"

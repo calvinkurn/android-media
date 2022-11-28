@@ -19,6 +19,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.getDimens
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
@@ -134,7 +135,7 @@ class AddBankFragment : BaseDaggerFragment() {
     }
 
     private fun initializeTextAreaField() {
-        textAreaBankName.textAreaInput.apply {
+        textAreaBankName.editText.apply {
             isClickable = false
             isFocusable = false
             isSingleLine = true
@@ -380,7 +381,7 @@ class AddBankFragment : BaseDaggerFragment() {
     private fun setBankName() {
         if (::bank.isInitialized) {
             builder.bank(bank.bankID, bank.bankName)
-            textAreaBankName.textAreaInput.setText("${bank.abbreviation ?: ""} (${bank.bankName})")
+            textAreaBankName.editText.setText("${bank.abbreviation ?: ""} (${bank.bankName})")
         }
     }
 
