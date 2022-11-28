@@ -26,6 +26,8 @@ import java.security.GeneralSecurityException;
 import java.security.KeyStoreException;
 import java.util.HashMap;
 
+import timber.log.Timber;
+
 public class MigratedUserSession {
     public static final String suffix = "_v2";
     protected Context context;
@@ -220,6 +222,7 @@ public class MigratedUserSession {
                 return EncoderDecoder.Decrypt(message, UserSession.KEY_IV);
             }
         } catch (Exception e) {
+            Timber.e(e);
             if(e instanceof InvalidProtocolBufferException ||
                     e instanceof GeneralSecurityException ||
                     e instanceof KeyStoreException ||
