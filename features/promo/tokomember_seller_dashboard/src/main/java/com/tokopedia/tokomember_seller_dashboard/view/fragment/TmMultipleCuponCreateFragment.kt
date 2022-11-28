@@ -1143,7 +1143,12 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
             isCollapsedVip = if (isCollapsedVip) {
                 icArrowVip?.animate()?.rotation(ROTATION_180)?.duration = 100L
                 expand(tmVipCoupon)
-                setTickerText(context?.resources?.getString(R.string.tm_vip_coupon_ticker_text).orEmpty())
+                if(isCollapsedPremium){
+                    setTickerText(context?.resources?.getString(R.string.tm_vip_coupon_ticker_text).orEmpty())
+                }
+                else{
+                    setTickerText(context?.resources?.getString(R.string.tm_premium_coupon_ticker_text).orEmpty())
+                }
                 !isCollapsedVip
             } else{
                 icArrowVip?.animate()?.rotation(0f)?.duration = 100L
