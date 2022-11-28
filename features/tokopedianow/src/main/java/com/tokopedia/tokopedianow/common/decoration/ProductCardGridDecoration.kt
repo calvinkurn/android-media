@@ -29,17 +29,21 @@ class ProductCardGridDecoration(
                                 state: RecyclerView.State) {
 
         val absolutePos = parent.getChildAdapterPosition(view)
+        val halfSpace = spacing / DIVIDED_BY_TWO
+        val quarterSpace = spacing / DIVIDED_BY_FOUR
 
         if (isProductItem(parent, absolutePos)) {
             val spanIndex = getSpanIndex(view)
             val spanCount = getSpanCount(parent)
 
-            outRect.left = getLeftProductOffset(spanIndex)
+            outRect.left = getLeftProductOffset(spanIndex, halfSpace)
             outRect.top = getTopOffset(parent, absolutePos, spanIndex, spanCount)
-            outRect.right = getRightProductOffset(spanIndex)
-            outRect.bottom = getBottomOffset()
+            outRect.right = getRightProductOffset(spanIndex, halfSpace)
+            outRect.bottom = quarterSpace
         } else if (isChooseAddressWidget(parent, absolutePos)) {
-            outRect.top = spacing / DIVIDED_BY_TWO
+            outRect.top = halfSpace
+        } else if (isProductRecommendation(parent, absolutePos)) {
+            outRect.bottom = halfSpace
         }
     }
 
@@ -55,27 +59,27 @@ class ProductCardGridDecoration(
 
     private fun getTopOffset(parent: RecyclerView, absolutePos: Int, relativePos: Int, totalSpanCount: Int): Int = if (isTopProductItem(parent, absolutePos, relativePos, totalSpanCount)) spacing / DIVIDED_BY_TWO else spacing / DIVIDED_BY_FOUR
 
-    private fun getLeftProductOffset(relativePos: Int): Int = when (relativePos) {
+    private fun getLeftProductOffset(relativePos: Int, halfSpace: Int): Int = when (relativePos) {
         START_PRODUCT_POSITION -> spacing
-        MIDDLE_PRODUCT_POSITION -> spacing / DIVIDED_BY_TWO
+        MIDDLE_PRODUCT_POSITION -> halfSpace
         else -> DEFAULT_OFFSET
     }
 
-    private fun getRightProductOffset(relativePos: Int): Int {
+    private fun getRightProductOffset(relativePos: Int, halfSpace: Int): Int {
         return when (relativePos) {
             END_PRODUCT_POSITION -> spacing
-            MIDDLE_PRODUCT_POSITION -> spacing / DIVIDED_BY_TWO
+            MIDDLE_PRODUCT_POSITION -> halfSpace
             else -> DEFAULT_OFFSET
         }
     }
-
-    private fun getBottomOffset() = spacing / DIVIDED_BY_FOUR
 
     private fun isTopProductItem(parent: RecyclerView, absolutePos: Int, relativePos: Int, totalSpanCount: Int): Boolean = !isProductItem(parent, absolutePos - relativePos % totalSpanCount - 1)
 
     private fun isProductItem(parent: RecyclerView, viewPosition: Int): Boolean = R.layout.item_tokopedianow_product_grid_card == getRecyclerViewViewType(parent, viewPosition)
 
     private fun isChooseAddressWidget(parent: RecyclerView, viewPosition: Int): Boolean = R.layout.item_tokopedianow_choose_address_widget == getRecyclerViewViewType(parent, viewPosition)
+
+    private fun isProductRecommendation(parent: RecyclerView, viewPosition: Int): Boolean = R.layout.item_tokopedianow_product_recommendation == getRecyclerViewViewType(parent, viewPosition)
 
     private fun getRecyclerViewViewType(parent: RecyclerView, viewPosition: Int): Int {
         val adapter = parent.adapter ?: return INVALID_VIEW_TYPE

@@ -78,7 +78,7 @@ import com.tokopedia.tokopedianow.common.util.RecyclerViewGridUtil.addProductIte
 import com.tokopedia.tokopedianow.common.util.TokoNowServiceTypeUtil
 import com.tokopedia.tokopedianow.common.util.TokoNowSharedPreference
 import com.tokopedia.tokopedianow.common.util.TokoNowSwitcherUtil.switchService
-import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateNoResultViewHolder
+import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateNoResultViewHolder.TokoNowEmptyStateNoResultListener
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowEmptyStateOocViewHolder
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowProductCardViewHolder.TokoNowProductCardListener
 import com.tokopedia.tokopedianow.common.viewmodel.TokoNowProductRecommendationViewModel
@@ -126,7 +126,7 @@ abstract class BaseSearchCategoryFragment:
     MiniCartWidgetListener,
     ProductItemListener,
     SwitcherWidgetListener,
-    TokoNowEmptyStateNoResultViewHolder.TokoNowEmptyStateNoResultListener,
+    TokoNowEmptyStateNoResultListener,
     TokoNowProductCardListener
 {
 
@@ -135,6 +135,7 @@ abstract class BaseSearchCategoryFragment:
         private const val SPAN_FULL_SPACE = 1
         private const val QUERY_PARAM_SERVICE_TYPE_NOW2H = "?service_type=2h"
         private const val DEFAULT_POSITION = 0
+        private const val NO_PADDING = 0
     }
 
     private var binding by autoClearedNullable<FragmentTokopedianowSearchCategoryBinding>()
@@ -163,8 +164,6 @@ abstract class BaseSearchCategoryFragment:
     protected var statusBarBackground: View? = null
     protected var headerBackground: AppCompatImageView? = null
     protected var loaderUnify: LoaderUnify? = null
-    protected var carouselScrollState = mutableMapOf<Int, Parcelable?>()
-    protected val carouselScrollPosition = SparseIntArray()
     protected val recycledViewPool = RecyclerView.RecycledViewPool()
 
     private var movingPosition = 0
@@ -393,7 +392,6 @@ abstract class BaseSearchCategoryFragment:
 
     protected open fun refreshLayout() {
         resetMovingPosition()
-        carouselScrollPosition.clear()
         getViewModel().onViewReloadPage()
         refreshProductRecommendation(TOKONOW_NO_RESULT)
     }
@@ -759,6 +757,23 @@ abstract class BaseSearchCategoryFragment:
     private fun updateMiniCartWidgetVisibility(isVisible: Boolean?) {
         miniCartWidget?.showWithCondition(isVisible == true)
         if (!isVisible()) miniCartWidget?.hideCoachMark()
+        setupPadding(isVisible == true)
+    }
+
+    private fun setupPadding(isShowMiniCartWidget: Boolean) {
+        miniCartWidget?.post {
+            val paddingBottom = if (isShowMiniCartWidget) {
+                getMiniCartHeight()
+            } else {
+                context?.resources?.getDimensionPixelSize(
+                    com.tokopedia.unifyprinciples.R.dimen.layout_lvl0).orZero()
+            }
+            stickyView?.setPadding(NO_PADDING, NO_PADDING, NO_PADDING, paddingBottom)
+        }
+    }
+
+    private fun getMiniCartHeight(): Int {
+        return miniCartWidget?.height.orZero() - context?.resources?.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_16)?.toInt().orZero()
     }
 
     private fun notifyAdapterItemChange(indices: List<Int>) {
@@ -989,7 +1004,7 @@ abstract class BaseSearchCategoryFragment:
                     )
 
                     //Refresh the page
-                    gridLayoutManager?.scrollToPosition(DEFAULT_POSITION)
+                    gridLayoutManager?.scrollToPosition(0)
                     refreshLayout()
 
                     //Show toaster
