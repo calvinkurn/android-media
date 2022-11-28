@@ -34,6 +34,7 @@ import com.tokopedia.media.editor.databinding.FragmentDetailEditorBinding
 import com.tokopedia.media.editor.ui.activity.detail.DetailEditorActivity
 import com.tokopedia.media.editor.ui.activity.detail.DetailEditorViewModel
 import com.tokopedia.media.editor.ui.component.*
+import com.tokopedia.media.editor.ui.uimodel.EditorAddLogoUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorCropRotateUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel.Companion.REMOVE_BG_TYPE_WHITE
@@ -114,6 +115,19 @@ class DetailEditorFragment @Inject constructor(
 
     fun isShowDialogConfirmation(): Boolean {
         return isEdited
+    }
+
+    private fun saveOverlay() {
+        viewBinding?.imgPreviewOverlay?.let {
+            val logoBitmap = it.drawable.toBitmap()
+            viewModel.saveImageCache(it.drawable.toBitmap(), sourcePath = "image.png")?.let { fileResult ->
+                data.addLogoValue = EditorAddLogoUiModel(
+                    Pair(logoBitmap.width, logoBitmap.height),
+                    fileResult.path,
+                    addLogoComponent.getLogoUrl()
+                )
+            }
+        }
     }
 
     fun saveAndExit() {
@@ -299,6 +313,7 @@ class DetailEditorFragment @Inject constructor(
         viewBinding?.imgPreviewOverlay?.apply {
             show()
             setImageBitmap(bitmap)
+            isEdited = true
         }
     }
 
@@ -819,6 +834,10 @@ class DetailEditorFragment @Inject constructor(
                         saveAndExit()
                     }
                 } else {
+                    if (data.isToolAddLogo()) {
+                        saveOverlay()
+                    }
+
                     onEditSaveAnalytics()
                     saveAndExit()
                 }

@@ -97,6 +97,17 @@ class EditorUiModel(
         return editList.size > backValue
     }
 
+    fun getOverlayLogoValue(): EditorAddLogoUiModel? {
+        var searchResult: EditorAddLogoUiModel? = null
+        getFilteredStateList().forEach {
+            if (it.isToolAddLogo()) {
+                searchResult = it.addLogoValue
+            }
+        }
+
+        return searchResult
+    }
+
     companion object {
         private const val UNDO_LIMIT_NON_CROP = 0
         private const val UNDO_LIMIT_AUTO_CROP = 1

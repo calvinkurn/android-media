@@ -3,7 +3,7 @@ package com.tokopedia.media.editor.ui.widget
 import android.content.Context
 import android.util.AttributeSet
 import android.widget.ImageView
-import android.widget.LinearLayout
+import android.widget.RelativeLayout
 import androidx.viewpager.widget.ViewPager
 import com.tokopedia.media.editor.R
 import com.tokopedia.media.editor.ui.adapter.EditorViewPagerAdapter
@@ -58,8 +58,8 @@ class EditorViewPager(context: Context, attrSet: AttributeSet) : ViewPager(conte
         editorAdapter?.stopVideo(index)
     }
 
-    fun updateImage(index: Int, newImageUrl: String, onImageUpdated: () -> Unit = {}) {
-        val layout = findViewWithTag<LinearLayout>(viewPagerTag(index))
+    fun updateImage(index: Int, newImageUrl: String, overlayImageUrl: String = "", onImageUpdated: () -> Unit = {}) {
+        val layout = findViewWithTag<RelativeLayout>(viewPagerTag(index))
         val view = layout.findViewById<ImageView>(R.id.img_main_preview)
         view?.loadImage(newImageUrl) {
             listener(
@@ -69,6 +69,14 @@ class EditorViewPager(context: Context, attrSet: AttributeSet) : ViewPager(conte
                     }
                 }
             )
+        }
+
+        layout.findViewById<ImageView>(R.id.img_main_overlay).apply {
+            if (overlayImageUrl.isNotEmpty()) {
+                loadImage(overlayImageUrl)
+            } else {
+                setImageDrawable(null)
+            }
         }
     }
 
