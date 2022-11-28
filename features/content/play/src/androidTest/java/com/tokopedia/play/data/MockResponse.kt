@@ -41,7 +41,7 @@ const val RESPONSE_MOCK_CHANNEL_DETAIL_LIVE = """
                       "id": "6496952",
                       "type": "shop",
                       "name": "RAVPower Official Store",
-                      "thumbnail_url": "https://ecs7-p.tokopedia.net/img/cache/215-square/shops-1/2019/12/26/6496952/6496952_9cd123f1-53fa-4a14-ae74-25aaafe3e982.png",
+                      "thumbnail_url": "https://images.tokopedia.net/img/cache/215-square/shops-1/2019/12/26/6496952/6496952_9cd123f1-53fa-4a14-ae74-25aaafe3e982.png",
                       "badge_url": "https://images.tokopedia.net/img/official_store/badge_os.png"
                     },
                     "video": {
