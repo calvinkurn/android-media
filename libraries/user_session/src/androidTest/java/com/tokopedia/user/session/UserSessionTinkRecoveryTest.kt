@@ -90,7 +90,8 @@ class UserSessionTinkRecoveryTest {
          * */
         UserSessionDataStoreClient.reCreate(context)
         val ctName = "Pak Edi"
-        userSession.name = ctName
+//        userSession.name = ctName
+        newUserSession.name = ctName
 
         UserSessionMap.map.clear()
         val ctActual = newUserSession.name
