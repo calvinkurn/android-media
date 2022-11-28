@@ -1134,8 +1134,7 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
             } else{
                 icArrowPremium?.animate()?.rotation(0f)?.duration = 100L
                 collapse(tmPremiumCoupon)
-                if(isCollapsedVip)
-                    setTickerText(context?.resources?.getString(R.string.tm_vip_coupon_ticker_text).orEmpty())
+                setTickerText(context?.resources?.getString(R.string.tm_vip_coupon_ticker_text).orEmpty())
                 !isCollapsedPremium
             }
         }
