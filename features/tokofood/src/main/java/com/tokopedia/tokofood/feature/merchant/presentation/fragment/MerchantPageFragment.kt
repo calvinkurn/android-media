@@ -297,7 +297,6 @@ class MerchantPageFragment : BaseMultiFragment(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setToolbarBackIconUnify()
-        setBackgroundBgColor()
         setBackgroundDefaultColor()
         setHeaderBackground()
         setupMerchantLogo()
@@ -361,17 +360,6 @@ class MerchantPageFragment : BaseMultiFragment(),
         }
     }
 
-    private fun setBackgroundBgColor() {
-        activity?.window?.decorView?.run {
-            setBackgroundColor(
-                ContextCompat.getColor(
-                    context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_Background
-                )
-            )
-        }
-    }
-
     private fun setHeaderBackground() {
         context?.let {
             val backgroundResourceId =
@@ -423,26 +411,28 @@ class MerchantPageFragment : BaseMultiFragment(),
     }
 
     private fun setupCardSticky() {
-        binding?.cardUnifySticky?.setOnClickListener {
-            hideKeyboard()
-            val cacheManager = context?.let { SaveInstanceCacheManager(it, true) }
-            val categoryFilter =
-                TokoFoodMerchantUiModelMapper.mapProductListItemToCategoryFilterUiModel(
-                    viewModel.filterList, viewModel.filterNameSelected
+        binding?.cardUnifySticky?.run {
+            setOnClickListener {
+                hideKeyboard()
+                val cacheManager = context?.let { SaveInstanceCacheManager(it, true) }
+                val categoryFilter =
+                    TokoFoodMerchantUiModelMapper.mapProductListItemToCategoryFilterUiModel(
+                        viewModel.filterList, viewModel.filterNameSelected
+                    )
+                cacheManager?.put(
+                    CategoryFilterBottomSheet.KEY_CATEGORY_FILTER_LIST,
+                    categoryFilter
                 )
-            cacheManager?.put(
-                CategoryFilterBottomSheet.KEY_CATEGORY_FILTER_LIST,
-                categoryFilter
-            )
-            val bundle = Bundle().apply {
-                putString(
-                    CategoryFilterBottomSheet.KEY_CACHE_MANAGER_ID,
-                    cacheManager?.id.orEmpty()
-                )
+                val bundle = Bundle().apply {
+                    putString(
+                        CategoryFilterBottomSheet.KEY_CACHE_MANAGER_ID,
+                        cacheManager?.id.orEmpty()
+                    )
+                }
+                val bottomSheet = CategoryFilterBottomSheet.createInstance(bundle)
+                bottomSheet.setCategoryFilterListener(this@MerchantPageFragment)
+                bottomSheet.show(childFragmentManager)
             }
-            val bottomSheet = CategoryFilterBottomSheet.createInstance(bundle)
-            bottomSheet.setCategoryFilterListener(this)
-            bottomSheet.show(childFragmentManager)
         }
     }
 
