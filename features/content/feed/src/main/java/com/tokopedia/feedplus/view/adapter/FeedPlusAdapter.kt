@@ -13,7 +13,7 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopAdsHeadline
 import com.tokopedia.feedcomponent.view.viewmodel.DynamicPostUiModel
 import com.tokopedia.feedcomponent.view.viewmodel.carousel.CarouselPlayCardViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.shimmer.ShimmerUiModel
-import com.tokopedia.feedcomponent.view.viewmodel.shoprecommendation.ShopRecomWidgetModel
+import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomWidgetModel
 import com.tokopedia.feedplus.view.adapter.typefactory.feed.FeedPlusTypeFactory
 import com.tokopedia.feedplus.view.util.EndlessScrollRecycleListener
 import com.tokopedia.feedplus.view.util.FeedDiffUtilCallback
@@ -30,6 +30,7 @@ class FeedPlusAdapter(
     private var list: MutableList<Visitable<*>> = mutableListOf()
     private val emptyModel: EmptyModel = EmptyModel()
     private val loadingMoreModel: LoadingMoreModel = LoadingMoreModel()
+
     private var unsetListener: Boolean = false
     private var recyclerView: RecyclerView? = null
 

@@ -1,6 +1,6 @@
 package com.tokopedia.search.result.product.samesessionrecommendation
 
-import com.tokopedia.discovery.common.constants.SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_GRID
+import com.tokopedia.search.result.product.inspirationcarousel.LAYOUT_INSPIRATION_CAROUSEL_GRID
 import com.tokopedia.discovery.common.constants.SearchConstant.InspirationCarousel.TYPE_SAME_SESSION_RECOMMENDATION
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.search.result.domain.model.SearchProductModel

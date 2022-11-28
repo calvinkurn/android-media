@@ -116,13 +116,13 @@ object TokoFoodMerchantUiModelMapper {
         val optionMap = selectedVariants.groupBy { it.variantId }
         optionMap.keys.forEach { variantId ->
             val selectedOptionIds = optionMap[variantId]?.map { it.optionId } ?: listOf()
-            val selectedCustomListItem = selectedCustomListItems.first { it.addOnUiModel?.id == variantId }
-            selectedCustomListItem.addOnUiModel?.isSelected = true
-            selectedCustomListItem.addOnUiModel?.options?.forEach {
+            val selectedCustomListItem = selectedCustomListItems.firstOrNull { it.addOnUiModel?.id == variantId }
+            selectedCustomListItem?.addOnUiModel?.isSelected = true
+            selectedCustomListItem?.addOnUiModel?.options?.forEach {
                 if (selectedOptionIds.contains(it.id)) it.isSelected = true
             }
-            val options = selectedCustomListItem.addOnUiModel?.options?: listOf()
-            selectedCustomListItem.addOnUiModel?.selectedAddOns = options.filter { it.isSelected }.map { it.name }
+            val options = selectedCustomListItem?.addOnUiModel?.options?: listOf()
+            selectedCustomListItem?.addOnUiModel?.selectedAddOns = options.filter { it.isSelected }.map { it.name }
         }
         // set order note
         val customOrderWidgetUiModel = selectedCustomListItems.firstOrNull() { it.addOnUiModel == null }
