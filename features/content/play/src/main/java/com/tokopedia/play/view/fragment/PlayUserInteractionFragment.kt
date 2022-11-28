@@ -980,6 +980,7 @@ class PlayUserInteractionFragment @Inject constructor(
                         interactiveResultView?.hideCoachMark()
                     }
                     FailedFollow -> {
+                        newAnalytic.impressToasterPopUp(channelId, channelType = playViewModel.channelType.value, isSuccess = false)
                         doShowToaster(
                             toasterType = Toaster.TYPE_ERROR,
                             message = getString(R.string.play_failed_follow),
