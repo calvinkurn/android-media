@@ -35,6 +35,8 @@ class RechargeHomepageMyBillsWidgetViewHolder(
     val listener: RechargeHomepageItemListener
 ) : AbstractViewHolder<RechargeHomepageMyBillsWidgetModel>(itemView) {
 
+    var itemDecoration: RechargeItemSpaceDecorator? = null
+
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.view_recharge_home_my_bills
@@ -78,7 +80,13 @@ class RechargeHomepageMyBillsWidgetViewHolder(
                 itemList.toList()
             )
             layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
-            addItemDecoration(RechargeItemSpaceDecorator(ITEMS_MARGIN.dpToPx(displayMetrics)))
+            if (itemDecoration == null) {
+                itemDecoration = RechargeItemSpaceDecorator(ITEMS_MARGIN.dpToPx(displayMetrics))
+            }
+            itemDecoration?.let {
+                removeItemDecoration(it)
+                addItemDecoration(it)
+            }
         }
     }
 
@@ -105,6 +113,10 @@ class RechargeHomepageMyBillsWidgetViewHolder(
 
                 renderProductInfo(this, element.item)
                 renderExpiredInfo(this, element.item)
+
+                itemView.setOnClickListener {
+                    RouteManager.route(itemView.context, element.item.applink)
+                }
             }
         }
 
@@ -159,7 +171,7 @@ class RechargeHomepageMyBillsWidgetViewHolder(
             val binding = ContentRechargeHomepageMyBillsLastItemBinding.bind(itemView)
             with(binding) {
                 imgBackground.loadImage(element.items.mediaUrl)
-                tvTitle.text = element.items.title
+                tvTitle.text = element.items.content
                 containerCta.setOnClickListener {
                     RouteManager.route(itemView.context, element.items.applink)
                 }
