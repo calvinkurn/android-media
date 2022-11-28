@@ -20,8 +20,8 @@
     </string-array>
 
     <string-array name="promo_type_items">
-        <item>Cashback</item>
         <item>Gratis Ongkir</item>
+        <item>Cashback</item>
         <item>Diskon</item>
     </string-array>
 

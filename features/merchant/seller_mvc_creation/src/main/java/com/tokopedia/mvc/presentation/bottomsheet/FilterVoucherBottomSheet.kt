@@ -12,7 +12,12 @@ import com.tokopedia.kotlin.extensions.view.isLessThanZero
 import com.tokopedia.mvc.R
 import com.tokopedia.mvc.databinding.SmvcBottomsheetFilterVoucherBinding
 import com.tokopedia.mvc.di.component.DaggerMerchantVoucherCreationComponent
+import com.tokopedia.mvc.domain.entity.enums.PromoType
+import com.tokopedia.mvc.domain.entity.enums.VoucherSource
 import com.tokopedia.mvc.domain.entity.enums.VoucherStatus
+import com.tokopedia.mvc.domain.entity.enums.VoucherTarget
+import com.tokopedia.mvc.domain.entity.enums.VoucherTargetBuyer
+import com.tokopedia.mvc.domain.entity.enums.VoucherType
 import com.tokopedia.mvc.presentation.bottomsheet.adapter.FilterVoucherAdapter
 import com.tokopedia.mvc.presentation.bottomsheet.viewmodel.FilterVoucherViewModel
 import com.tokopedia.mvc.presentation.list.model.FilterModel
@@ -53,7 +58,14 @@ class FilterVoucherBottomSheet(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding?.setupContentViews()
+        viewModel.setupFilterData(filter)
+        viewModel.filterData.observe(viewLifecycleOwner) { filterResult ->
+            binding?.btnSubmit?.setOnClickListener {
+                listener?.onFilterVoucherChanged(filterResult)
+                dismiss()
+            }
+        }
+        binding?.setupContentViews(filter)
     }
 
     private fun setupBottomSheet(inflater: LayoutInflater, container: ViewGroup?) {
@@ -66,17 +78,20 @@ class FilterVoucherBottomSheet(
         setTitle(getString(R.string.smvc_bottomsheet_filter_voucher_title))
     }
 
-    private fun SmvcBottomsheetFilterVoucherBinding.setupContentViews() {
-        rvStatus.setupListItems(R.array.status_items, ::onRvStatusItemClicked)
-        rvType.setupListItems(R.array.type_items, ::onRvTypeItemClicked)
-        rvSource.setupListItems(R.array.source_items, ::onRvSourceItemClicked)
-        rvPromoType.setupListItems(R.array.promo_type_items, ::onRvPromoTypeItemClicked)
-        rvTarget.setupListItems(R.array.target_items, ::onRvTargetItemClicked)
-        rvTargetBuyer.setupListItems(R.array.target_buyer_items, ::onRvTargetBuyerItemClicked)
-        btnSubmit.setOnClickListener {
-            listener?.onFilterVoucherChanged(filter)
-            dismiss()
-        }
+    private fun SmvcBottomsheetFilterVoucherBinding.setupContentViews(filter: FilterModel) {
+        val status = filter.status.map { it.type }
+        val type = filter.voucherType.map { it.type }
+        val source = filter.source.map { it.type }
+        val promoType = filter.promoType.map { it.type.dec() }
+        val target = filter.target.map { it.type }
+        val targetBuyer = filter.targetBuyer.map { it.type }
+
+        rvStatus.setupListItems(R.array.status_items, status, ::onRvStatusItemClicked)
+        rvType.setupListItems(R.array.type_items, type, ::onRvTypeItemClicked)
+        rvSource.setupListItems(R.array.source_items, source, ::onRvSourceItemClicked)
+        rvPromoType.setupListItems(R.array.promo_type_items, promoType, ::onRvPromoTypeItemClicked)
+        rvTarget.setupListItems(R.array.target_items, target, ::onRvTargetItemClicked)
+        rvTargetBuyer.setupListItems(R.array.target_buyer_items, targetBuyer, ::onRvTargetBuyerItemClicked)
     }
 
     private fun onActionTextClicked(view: View) {
@@ -84,48 +99,52 @@ class FilterVoucherBottomSheet(
     }
 
     private fun onRvStatusItemClicked(position: Int, isSelected: Boolean) {
-        val value = VoucherStatus.values().getOrNull(position) ?: return
-        if (filter.status.indexOf(value).isLessThanZero()) {
-            filter.status.add(value)
-        } else {
-            filter.status.remove(value)
-        }
-
+        val status = VoucherStatus.values().find { it.type == position } ?: return
+        viewModel.setStatusFilter(status)
     }
 
     private fun onRvTypeItemClicked(position: Int, isSelected: Boolean) {
-
+        val type = VoucherType.values().find { it.type == position } ?: return
+        viewModel.setVoucherType(type)
     }
 
     private fun onRvSourceItemClicked(position: Int, isSelected: Boolean) {
-
+        val source = VoucherSource.values().find { it.type == position } ?: return
+        viewModel.setSource(source)
     }
 
     private fun onRvPromoTypeItemClicked(position: Int, isSelected: Boolean) {
-
+        val promo = PromoType.values().getOrNull(position) ?: return
+        viewModel.setPromoType(promo)
     }
 
     private fun onRvTargetItemClicked(position: Int, isSelected: Boolean) {
-
+        val target = VoucherTarget.values().find { it.type == position } ?: return
+        viewModel.setTarget(target)
     }
 
     private fun onRvTargetBuyerItemClicked(position: Int, isSelected: Boolean) {
-
+        val targetBuyer = VoucherTargetBuyer.values().find { it.type == position } ?: return
+        viewModel.setTargetBuyer(targetBuyer)
     }
 
-    private fun RecyclerView.setupListItems(itemsResource: Int, onItemClicked: (Int, Boolean) -> Unit) {
+    private fun RecyclerView.setupListItems(
+        itemsResource: Int,
+        selectedIds: List<Int>,
+        onItemClicked: (Int, Boolean) -> Unit
+    ) {
         val flexboxLayoutManager = FlexboxLayoutManager(context)
         flexboxLayoutManager.alignItems = AlignItems.FLEX_START
         layoutManager = flexboxLayoutManager
         adapter = FilterVoucherAdapter().apply {
-            setDataList(getListFromResource(itemsResource))
+            setDataList(getListFromResource(itemsResource, selectedIds))
             setOnClickListener(onItemClicked)
         }
     }
 
-    private fun getListFromResource(itemsResource: Int): List<Pair<String, Boolean>> =
-        context?.resources?.getStringArray(itemsResource).orEmpty().toList().map {
-            Pair(it, true)
+    private fun getListFromResource(itemsResource: Int, selectedIds: List<Int>): List<Pair<String, Boolean>> =
+        context?.resources?.getStringArray(itemsResource).orEmpty().toList().mapIndexed { index, s ->
+            Pair(s, selectedIds.any { it == index })
         }
 
     fun setListener(listener: FilterVoucherBottomSheetListener) {

@@ -4,6 +4,16 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.kotlin.extensions.view.isDataExist
+import com.tokopedia.kotlin.extensions.view.isLessThanZero
+import com.tokopedia.kotlin.extensions.view.toggleData
+import com.tokopedia.mvc.domain.entity.Voucher
+import com.tokopedia.mvc.domain.entity.enums.PromoType
+import com.tokopedia.mvc.domain.entity.enums.VoucherSource
+import com.tokopedia.mvc.domain.entity.enums.VoucherStatus
+import com.tokopedia.mvc.domain.entity.enums.VoucherTarget
+import com.tokopedia.mvc.domain.entity.enums.VoucherTargetBuyer
+import com.tokopedia.mvc.domain.entity.enums.VoucherType
 import com.tokopedia.mvc.presentation.list.model.FilterModel
 import javax.inject.Inject
 
@@ -14,5 +24,45 @@ class FilterVoucherViewModel @Inject constructor(
     private val _filterData = MutableLiveData<FilterModel>()
     val filterData: LiveData<FilterModel> get() = _filterData
 
+    fun setupFilterData(filter: FilterModel) {
+        _filterData.value = filter
+    }
 
+    fun setStatusFilter(status: VoucherStatus) {
+        _filterData.getValueOrDefault().status.toggleData(status)
+        _filterData.triggerChange()
+    }
+
+    fun setVoucherType(type: VoucherType) {
+        _filterData.getValueOrDefault().voucherType.toggleData(type)
+        _filterData.triggerChange()
+    }
+
+    fun setPromoType(type: PromoType) {
+        _filterData.getValueOrDefault().promoType.toggleData(type)
+        _filterData.triggerChange()
+    }
+
+    fun setSource(source: VoucherSource) {
+        _filterData.getValueOrDefault().source.toggleData(source)
+        _filterData.triggerChange()
+    }
+
+    fun setTarget(target: VoucherTarget) {
+        _filterData.getValueOrDefault().target.toggleData(target)
+        _filterData.triggerChange()
+    }
+
+    fun setTargetBuyer(targetBuyer: VoucherTargetBuyer) {
+        _filterData.getValueOrDefault().targetBuyer.toggleData(targetBuyer)
+        _filterData.triggerChange()
+    }
+
+    fun MutableLiveData<FilterModel>.getValueOrDefault(): FilterModel {
+        return value ?: FilterModel()
+    }
+
+    fun MutableLiveData<FilterModel>.triggerChange() {
+        value = _filterData.value
+    }
 }
