@@ -23,14 +23,22 @@ class ShopCardUseCase @Inject constructor(private val shopCardRepository: ShopCa
         component?.let {
             val isDynamic = it.properties?.dynamic ?: false
             val (shopCardListData, nextPage) = shopCardRepository.getShopCardData(
-                    if (isDynamic && !component.dynamicOriginalId.isNullOrEmpty())
-                        component.dynamicOriginalId!! else componentId,
-                    getQueryParameterMap(PAGE_START,
-                            shopLimit,
-                            it.nextPageKey,
-                            it.userAddressData
-                    ),
-                    pageEndPoint, it.name)
+                if (isDynamic && !component.dynamicOriginalId.isNullOrEmpty()) {
+                    component.dynamicOriginalId!!
+                } else {
+                    componentId
+                },
+                getQueryParameterMap(
+                    PAGE_START,
+                    shopLimit,
+                    it.nextPageKey,
+                    it.userAddressData,
+                    it.selectedFilters,
+                    it.selectedSort
+                ),
+                pageEndPoint,
+                it.name
+            )
             it.showVerticalLoader = shopCardListData.isNotEmpty()
             it.setComponentsItem(shopCardListData, component.tabName)
             it.noOfPagesLoaded = PAGE_START
@@ -48,13 +56,18 @@ class ShopCardUseCase @Inject constructor(private val shopCardRepository: ShopCa
         component?.let {
             val isDynamic = it.properties?.dynamic ?: false
             val (shopCardListData, nextPage) = shopCardRepository.getShopCardData(
-                    if (isDynamic && !component.dynamicOriginalId.isNullOrEmpty()) component.dynamicOriginalId!! else componentId,
-                    getQueryParameterMap(it.pageLoadedCounter,
-                            shopLimit,
-                            it.nextPageKey,
-                            it.userAddressData),
-                    pageEndPoint,
-                    it.name)
+                if (isDynamic && !component.dynamicOriginalId.isNullOrEmpty()) component.dynamicOriginalId!! else componentId,
+                getQueryParameterMap(
+                    it.pageLoadedCounter,
+                    shopLimit,
+                    it.nextPageKey,
+                    it.userAddressData,
+                    it.selectedFilters,
+                    it.selectedSort
+                ),
+                pageEndPoint,
+                it.name
+            )
             component.nextPageKey = nextPage
             if (shopCardListData.isEmpty()) return false else it.pageLoadedCounter += 1
 
@@ -69,22 +82,30 @@ class ShopCardUseCase @Inject constructor(private val shopCardRepository: ShopCa
         val parentComponent = component?.parentComponentId?.let { getComponent(it, pageEndPoint) }
         parentComponent?.let { component1 ->
             val isDynamic = component1.properties?.dynamic ?: false
-            val (shopCardListData,nextPage) = shopCardRepository.getShopCardData(
-                    if (isDynamic && !component1.dynamicOriginalId.isNullOrEmpty())
-                        component1.dynamicOriginalId!! else component1.id,
-                    getQueryParameterMap(component1.pageLoadedCounter,
-                            shopLimit,
-                            component1.nextPageKey,
-                            component1.userAddressData),
-                    pageEndPoint,
-                    component1.name)
+            val (shopCardListData, nextPage) = shopCardRepository.getShopCardData(
+                if (isDynamic && !component1.dynamicOriginalId.isNullOrEmpty()) {
+                    component1.dynamicOriginalId!!
+                } else {
+                    component1.id
+                },
+                getQueryParameterMap(
+                    component1.pageLoadedCounter,
+                    shopLimit,
+                    component1.nextPageKey,
+                    component1.userAddressData,
+                    component1.selectedFilters,
+                    component1.selectedSort
+                ),
+                pageEndPoint,
+                component1.name
+            )
             component1.nextPageKey = nextPage
             if (shopCardListData.isEmpty()) {
                 component1.showVerticalLoader = false
             } else {
                 component1.pageLoadedCounter += 1
                 component1.showVerticalLoader = true
-                updatePaginatedData(shopCardListData,component1)
+                updatePaginatedData(shopCardListData, component1)
                 (component1.getComponentsItem() as ArrayList<ComponentsItem>).addAll(shopCardListData)
             }
             component1.verticalProductFailState = false
@@ -93,23 +114,37 @@ class ShopCardUseCase @Inject constructor(private val shopCardRepository: ShopCa
         return false
     }
 
-    private fun getQueryParameterMap(pageNumber: Int,
-                                     shopPerPage: Int,
-                                     nextPageKey: String?,
-                                     userAddressData: LocalCacheModel?): MutableMap<String, Any> {
-
+    private fun getQueryParameterMap(
+        pageNumber: Int,
+        shopPerPage: Int,
+        nextPageKey: String?,
+        userAddressData: LocalCacheModel?,
+        selectedFilters: HashMap<String, String>?,
+        selectedSort: HashMap<String, String>?
+    ): MutableMap<String, Any> {
         val queryParameterMap = mutableMapOf<String, Any>()
 
         queryParameterMap[Utils.RPC_PAGE_SIZE] = shopPerPage.toString()
         queryParameterMap[RPC_PAGE_NUMBER] = pageNumber.toString()
         queryParameterMap[RPC_NEXT_PAGE] = nextPageKey ?: ""
 
+        selectedFilters?.let {
+            for (map in it) {
+                queryParameterMap[Utils.RPC_FILTER_KEY + map.key] = map.value
+            }
+        }
+        selectedSort?.let {
+            for (map in it) {
+                queryParameterMap[Utils.RPC_FILTER_KEY + map.key] = map.value
+            }
+        }
+
         queryParameterMap.putAll(addAddressQueryMapWithWareHouse(userAddressData))
 
         return queryParameterMap
     }
 
-    private fun updatePaginatedData(shopListData:ArrayList<ComponentsItem>,parentComponentsItem: ComponentsItem){
+    private fun updatePaginatedData(shopListData: ArrayList<ComponentsItem>, parentComponentsItem: ComponentsItem) {
         shopListData.forEach {
             it.parentComponentId = parentComponentsItem.id
             it.pageEndPoint = parentComponentsItem.pageEndPoint

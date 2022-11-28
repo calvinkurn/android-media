@@ -5,12 +5,14 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.discovery2.ComponentNames
 import com.tokopedia.discovery2.Utils
+import com.tokopedia.discovery2.Utils.Companion.areFiltersApplied
 import com.tokopedia.discovery2.data.ComponentsItem
+import com.tokopedia.discovery2.data.ErrorState
 import com.tokopedia.discovery2.datamapper.discoveryPageData
+import com.tokopedia.discovery2.datamapper.getComponent
 import com.tokopedia.discovery2.usecase.shopcardusecase.ShopCardUseCase
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.user.session.UserSession
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -35,7 +37,6 @@ class ShopCardViewModel(val application: Application, val components: Components
     fun getShopLoadState(): LiveData<Boolean> = shopCardLoadError
     fun hideShimmer(): LiveData<Boolean> = _hideShimmer
 
-
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + SupervisorJob()
 
@@ -54,16 +55,30 @@ class ShopCardViewModel(val application: Application, val components: Components
 
     fun fetchShopCardData() {
         launchCatchError(block = {
-            shopCardUseCase.loadFirstPageComponents(components.id, components.pageEndPoint, SHOP_PER_PAGE)
-            components.shouldRefreshComponent = null
+            val shouldSync = shopCardUseCase.loadFirstPageComponents(
+                components.id,
+                components.pageEndPoint,
+                SHOP_PER_PAGE
+            )
+            if (shouldSync) {
+                getComponent(components.id, components.pageEndPoint)?.let {
+                    if (it.getComponentsItem().isNullOrEmpty() && !it.areFiltersApplied()) {
+                        it.verticalProductFailState = true
+                        it.errorState = ErrorState.EmptyComponentState
+                        components.shouldRefreshComponent = null
+                    } else {
+                        it.verticalProductFailState = false
+                    }
+                }
+            }
             setShopList()
         }, onError = {
-            components.noOfPagesLoaded = 1
-            components.verticalProductFailState = true
-            components.shouldRefreshComponent = null
-            shopCardLoadError.value = true
-            _hideShimmer.value = true
-        })
+                components.noOfPagesLoaded = 1
+                components.verticalProductFailState = true
+                components.shouldRefreshComponent = null
+                shopCardLoadError.value = true
+                _hideShimmer.value = true
+            })
     }
 
     private fun handleShopCardBackground() {
@@ -104,8 +119,8 @@ class ShopCardViewModel(val application: Application, val components: Components
                 paginatedErrorData()
             }
         }, onError = {
-            paginatedErrorData()
-        })
+                paginatedErrorData()
+            })
     }
 
     private fun paginatedErrorData() {
@@ -121,13 +136,15 @@ class ShopCardViewModel(val application: Application, val components: Components
         val shopCardDataLoadState: ArrayList<ComponentsItem> = ArrayList()
         shopCardDataLoadState.addAll(shopCardDataList)
         if (Utils.nextPageAvailable(components, SHOP_PER_PAGE)) {
-            shopCardDataLoadState.add(ComponentsItem(name = ComponentNames.LoadMore.componentName).apply {
-                pageEndPoint = components.pageEndPoint
-                parentComponentId = components.id
-                id = ComponentNames.LoadMore.componentName
-                loadForHorizontal = true
-                discoveryPageData[this.pageEndPoint]?.componentMap?.set(this.id, this)
-            })
+            shopCardDataLoadState.add(
+                ComponentsItem(name = ComponentNames.LoadMore.componentName).apply {
+                    pageEndPoint = components.pageEndPoint
+                    parentComponentId = components.id
+                    id = ComponentNames.LoadMore.componentName
+                    loadForHorizontal = true
+                    discoveryPageData[this.pageEndPoint]?.componentMap?.set(this.id, this)
+                }
+            )
         }
         return shopCardDataLoadState
     }
@@ -135,14 +152,16 @@ class ShopCardViewModel(val application: Application, val components: Components
     private fun addErrorReLoadView(shopCardDataList: ArrayList<ComponentsItem>): ArrayList<ComponentsItem> {
         val shopCardDataLoadState: ArrayList<ComponentsItem> = ArrayList()
         shopCardDataLoadState.addAll(shopCardDataList)
-        shopCardDataLoadState.add(ComponentsItem(name = ComponentNames.CarouselErrorLoad.componentName).apply {
-            pageEndPoint = components.pageEndPoint
-            parentComponentId = components.id
-            parentComponentName = components.name
-            id = ComponentNames.CarouselErrorLoad.componentName
-            parentComponentPosition = components.position
-            discoveryPageData[this.pageEndPoint]?.componentMap?.set(this.id, this)
-        })
+        shopCardDataLoadState.add(
+            ComponentsItem(name = ComponentNames.CarouselErrorLoad.componentName).apply {
+                pageEndPoint = components.pageEndPoint
+                parentComponentId = components.id
+                parentComponentName = components.name
+                id = ComponentNames.CarouselErrorLoad.componentName
+                parentComponentPosition = components.position
+                discoveryPageData[this.pageEndPoint]?.componentMap?.set(this.id, this)
+            }
+        )
         return shopCardDataLoadState
     }
 
