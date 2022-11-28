@@ -57,27 +57,20 @@ class ProductArAssertAssistant {
 
             when (index) {
                 0 -> {
-                    //Merah
-                    val colorRgb = Color.argb(255, 255, 0, 0)
+                    val colorRgb = Color.argb(255, 110, 49, 44)
                     assertEmptyData(makeupLook, colorRgb)
                 }
-                1 -> {
-                    //Merah Muda
-                    assertFullyProvidedData(makeupLook)
-                }
+
                 2 -> {
-                    //Ungu
-                    val colorRgb = Color.argb(255, 191, 0, 255)
+                    val colorRgb = Color.argb(255, 49, 55, 115)
                     assertEmptyData(makeupLook, colorRgb)
                 }
                 3 -> {
-                    //Orange
-                    val colorRgb = Color.argb(255, 255, 165, 0)
+                    val colorRgb = Color.argb(255, 104, 3, 12)
                     assertEmptyData(makeupLook, colorRgb)
                 }
                 4 -> {
-                    //Coklat
-                    val colorRgb = Color.argb(255, 194, 114, 107)
+                    val colorRgb = Color.argb(255, 144, 39, 23)
                     assertEmptyData(makeupLook, colorRgb)
                 }
             }
@@ -117,7 +110,7 @@ class ProductArAssertAssistant {
 
     private fun assertFullyProvidedData(data: MFEMakeupLook) {
         val product = data.lipLayers.firstOrNull()?.product ?: MFEMakeupProduct()
-        val colorRgb = Color.argb(255, 218, 153, 155)
+        val colorRgb = Color.argb(255, 115, 55, 49)
 
         Assert.assertEquals(product.color, colorRgb)
 
@@ -126,22 +119,22 @@ class ProductArAssertAssistant {
         Assert.assertEquals(product.wetness, 1F)
         Assert.assertEquals(product.glitter, 1F)
 
-        val glitterColorRgb = Color.rgb(231, 234, 123)
+        val glitterColorRgb = Color.rgb(255, 210, 230)
         Assert.assertEquals(product.glitterColor, glitterColorRgb)
         Assert.assertEquals(product.matteness, 1F)
         Assert.assertEquals(product.glitterDensity, 1F)
-        Assert.assertEquals(product.glitterSize, 1F)
+        Assert.assertEquals(product.glitterSize, 2.04F)
         Assert.assertEquals(product.glitterColorVariation, 1F)
         Assert.assertEquals(product.glitterSizeVariation, 1F)
         Assert.assertEquals(product.glitterBaseReflectivity, 1F)
         Assert.assertEquals(product.envMappingIntensity, 1F)
-        val envMappingColorRgb = Color.rgb(255, 231, 12)
+        val envMappingColorRgb = Color.rgb(255, 255, 255)
         Assert.assertEquals(product.envMappingColor, envMappingColorRgb)
-        Assert.assertEquals(product.envMappingBumpIntensity, 1F)
-        Assert.assertEquals(product.envMappingCurve, 1F)
+        Assert.assertEquals(product.envMappingBumpIntensity, 0.6F)
+        Assert.assertEquals(product.envMappingCurve, 2.3F)
         Assert.assertEquals(product.envMappingRotationY, 1F)
-        Assert.assertEquals(product.metallicIntensity, 1F)
-        Assert.assertEquals(product.vinylIntensity, 1F)
+        Assert.assertEquals(product.metallicIntensity, 0F)
+        Assert.assertEquals(product.vinylIntensity, 0F)
         Assert.assertEquals(product.amount, 1F)
 
         Assert.assertEquals(data.lipVolume, 0.2F)
