@@ -8,9 +8,7 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.mvc.domain.entity.VoucherDetailData
-import com.tokopedia.mvc.domain.entity.enums.VoucherStatus
 import com.tokopedia.mvc.domain.usecase.MerchantPromotionGetMVDataByIDUseCase
-import com.tokopedia.mvc.presentation.bottomsheet.ThreeDotsMenuBottomSheet
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Result
 import com.tokopedia.usecase.coroutines.Success
@@ -59,17 +57,18 @@ class VoucherDetailViewModel @Inject constructor(
         }
     }
 
-    fun getThreeDotsBottomSheetType(data: VoucherDetailData): Int {
-        return when (data.voucherStatus) {
-            VoucherStatus.NOT_STARTED -> {
-                ThreeDotsMenuBottomSheet.TYPE_CANCEL
-            }
-            VoucherStatus.ONGOING -> {
-                ThreeDotsMenuBottomSheet.TYPE_STOP
-            }
-            else -> {
-                ThreeDotsMenuBottomSheet.TYPE_DEFAULT
-            }
-        }
-    }
+    //TODO ask for this usage
+ //   fun getThreeDotsBottomSheetType(data: VoucherDetailData): Int {
+//        return when (data.voucherStatus) {
+//            VoucherStatus.NOT_STARTED -> {
+//                ThreeDotsMenuBottomSheet.TYPE_CANCEL
+//            }
+//            VoucherStatus.ONGOING -> {
+//                ThreeDotsMenuBottomSheet.TYPE_STOP
+//            }
+//            else -> {
+//                ThreeDotsMenuBottomSheet.TYPE_DEFAULT
+//            }
+//        }
+ //   }
 }

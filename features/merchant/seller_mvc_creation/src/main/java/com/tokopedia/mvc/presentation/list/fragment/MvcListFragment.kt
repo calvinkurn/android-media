@@ -35,7 +35,6 @@ import com.tokopedia.mvc.domain.entity.enums.VoucherStatus
 import com.tokopedia.mvc.presentation.bottomsheet.EduCenterBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.FilterVoucherBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.FilterVoucherStatusBottomSheet
-import com.tokopedia.mvc.presentation.bottomsheet.MVCBottomSheetType
 import com.tokopedia.mvc.presentation.bottomsheet.VoucherThreeDotsBottomSheet
 import com.tokopedia.mvc.presentation.list.adapter.VoucherAdapterListener
 import com.tokopedia.mvc.presentation.list.adapter.VouchersAdapter
@@ -86,7 +85,7 @@ class MvcListFragment: BaseDaggerFragment(), HasPaginatedList by HasPaginatedLis
         activity?.let {
             val mvcThreeDotsBottomSheet =
                 VoucherThreeDotsBottomSheet.newInstance(it,
-                    MVCBottomSheetType.UpcomingEntryPoint)
+                    voucher)
             mvcThreeDotsBottomSheet.show(childFragmentManager, "")
         }
     }
