@@ -1,8 +1,10 @@
 package com.tkpd.macrobenchmark.util
 
 import androidx.test.platform.app.InstrumentationRegistry
-import androidx.test.uiautomator.*
-import java.util.concurrent.TimeUnit
+import androidx.test.uiautomator.By
+import androidx.test.uiautomator.Direction
+import androidx.test.uiautomator.UiDevice
+import androidx.test.uiautomator.Until
 
 object MacroInteration {
     private val DEFAULT_TIMEOUT = 60000L
@@ -82,6 +84,7 @@ object MacroInteration {
         val instrumentation = InstrumentationRegistry.getInstrumentation()
         val device = UiDevice.getInstance(instrumentation)
 
+        device.wait(Until.hasObject(By.descContains(contentDescription)), DEFAULT_TIMEOUT)
         val list = device.findObject(By.descContains(contentDescription))
 
         // Set gesture margin to avoid triggering gesture navigation
