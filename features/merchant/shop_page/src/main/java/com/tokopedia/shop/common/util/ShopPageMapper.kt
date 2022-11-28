@@ -8,14 +8,14 @@ object ShopPageMapper {
     fun mapToVoucherCouponUiModel(data: TokopointsCatalogMVCSummary?, shopId: String?): MerchantVoucherCouponUiModel? {
         data?.let {
             return MerchantVoucherCouponUiModel(
-                    resultStatus = ResultStatus(
-                            code = data.resultStatus?.code,
-                            message = data.resultStatus?.message,
-                            status = data.resultStatus?.status
-                    ),
-                    animatedInfoList = data.animatedInfoList,
-                    isShown = data.isShown,
-                    shopId = shopId
+                resultStatus = ResultStatus(
+                    code = data.resultStatus?.code,
+                    message = data.resultStatus?.message,
+                    status = data.resultStatus?.status
+                ),
+                animatedInfoList = data.animatedInfoList,
+                isShown = data.isShown,
+                shopId = shopId
             )
         }
         return null

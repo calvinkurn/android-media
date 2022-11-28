@@ -383,6 +383,13 @@ public class BranchWrapper implements WrapperInterface {
                     BranchHelper.sendSearchEvent(context, (ArrayList<String>) linkerGenericRequest.getDataObj());
                 }
                 break;
+            case LinkerConstants.ENUM_EVENT_PAGE_VIEW_STORE:
+                if (linkerGenericRequest != null && linkerGenericRequest.getDataObj() != null &&
+                        linkerGenericRequest.getDataObj() instanceof String) {
+                    String userId = (String) linkerGenericRequest.getDataObj();
+                    BranchHelper.sendPageViewShop(context, userId);
+                }
+
         }
     }
 
