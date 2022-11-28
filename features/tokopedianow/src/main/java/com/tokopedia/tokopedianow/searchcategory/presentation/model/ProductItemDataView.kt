@@ -6,7 +6,6 @@ import com.tokopedia.tokopedianow.common.model.TokoNowProductCardViewUiModel
 import com.tokopedia.tokopedianow.searchcategory.presentation.typefactory.BaseSearchCategoryTypeFactory
 
 data class ProductItemDataView(
-        val id: String = "",
         val shop: Shop = Shop(),
         val position: Int = 0,
         val parentId: String = "",

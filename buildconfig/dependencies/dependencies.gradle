@@ -23,7 +23,7 @@ ext {
     protobufLiteVersion = '3.19.1'
     googleTinkVersion = '1.6.1'
     exifInterfaceVersion = '1.2.0'
-    androidxCoreVersion = '1.6.0'
+    androidxCoreVersion = '1.8.0'
     supportLegacyLibraryVersion = '1.0.0'
     playServiceVersion = '11.0.4'
     coroutineVersion = '1.5.1'
@@ -34,7 +34,8 @@ ext {
     glideVersion = '4.9.0'
     viewPager2 = '1.0.0'
     deeplinkDispatchVersion = '4.1.0'
-    espressoVersion = "3.1.0"
+    espressoVersion = "3.4.0"
+    accessibilityTestFrameworkVersion = "4.0.0"
     runnerVersion = "1.4.0"
     rulesVersion = "1.4.0"
     apolloVersion = '0.3.0'

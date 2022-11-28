@@ -1062,7 +1062,7 @@ abstract class BaseSearchCategoryViewModel(
             productItem: ProductItemDataView,
             updatedProductIndices: MutableList<Int>,
     ) {
-        val productId = productItem.id
+        val productId = productItem.productCardModel.productId
         val parentProductId = productItem.parentId
         val quantity = cartService.getProductQuantity(productId, parentProductId)
 
@@ -1088,7 +1088,7 @@ abstract class BaseSearchCategoryViewModel(
         productItem: ProductItemDataView,
         quantity: Int
     ) {
-        val productId = productItem.id
+        val productId = productItem.productCardModel.productId
         val shopId = productItem.shop.id
         val currentQuantity = productItem.productCardModel.orderQuantity
 
@@ -1145,13 +1145,13 @@ abstract class BaseSearchCategoryViewModel(
 
     private fun sendTrackingUpdateQuantity(newQuantity: Int, productItem: ProductItemDataView) {
         if (productItem.productCardModel.orderQuantity > newQuantity)
-            decreaseQtyTrackingMutableLiveData.value = productItem.id
+            decreaseQtyTrackingMutableLiveData.value = productItem.productCardModel.productId
         else if (productItem.productCardModel.orderQuantity < newQuantity)
-            increaseQtyTrackingMutableLiveData.value = productItem.id
+            increaseQtyTrackingMutableLiveData.value = productItem.productCardModel.productId
     }
 
     private fun sendDeleteCartTracking(productItem: ProductItemDataView) {
-        deleteCartTrackingMutableLiveData.value = productItem.id
+        deleteCartTrackingMutableLiveData.value = productItem.productCardModel.productId
     }
 
     protected open fun handleAddToCartEventNonLogin(updatedVisitableIndex: Int) {

@@ -14,6 +14,7 @@ object ProductItemMapper {
         product: AceSearchProductModel.Product,
         cartService: CartService,
     ): TokoNowProductCardViewUiModel = TokoNowProductCardViewUiModel(
+        productId = product.id,
         imageUrl = product.imageUrl300,
         minOrder = product.minOrder,
         maxOrder = product.maxOrder,
@@ -44,7 +45,6 @@ object ProductItemMapper {
         product: AceSearchProductModel.Product,
         cartService: CartService
     ): ProductItemDataView = ProductItemDataView(
-        id = product.id,
         parentId = product.parentId,
         boosterList = product.boosterList,
         sourceEngine = product.sourceEngine,

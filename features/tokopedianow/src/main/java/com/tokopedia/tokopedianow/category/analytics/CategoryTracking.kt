@@ -291,7 +291,7 @@ object CategoryTracking {
                 KEY_BUSINESS_UNIT, BUSINESS_UNIT_PHYSICAL_GOODS,
                 KEY_CURRENT_SITE, CURRENT_SITE_TOKOPEDIA_MARKET_PLACE,
                 USER_ID, userId,
-                PRODUCT_ID, productItemDataView.id,
+                PRODUCT_ID, productItemDataView.productCardModel.productId,
                 ECOMMERCE, DataLayer.mapOf(
                     CURRENCYCODE, IDR,
                     IMPRESSIONS, DataLayer.listOf(
@@ -307,7 +307,7 @@ object CategoryTracking {
         return DataLayer.mapOf(
                 "brand", NONE_OTHER,
                 "category", NONE_OTHER,
-                "id", id,
+                "id", productCardModel.productId,
                 "name", productCardModel.name,
                 "price", productCardModel.price.getDigits(),
                 "variant", NONE_OTHER,
@@ -331,7 +331,7 @@ object CategoryTracking {
                 KEY_BUSINESS_UNIT, BUSINESS_UNIT_PHYSICAL_GOODS,
                 KEY_CURRENT_SITE, CURRENT_SITE_TOKOPEDIA_MARKET_PLACE,
                 USER_ID, userId,
-                PRODUCT_ID, productItemDataView.id,
+                PRODUCT_ID, productItemDataView.productCardModel.productId,
                 ECOMMERCE, DataLayer.mapOf(
                     CLICK, DataLayer.mapOf(
                         ACTION_FIELD, DataLayer.mapOf(LIST, TOKONOW_CATEGORY_ORGANIC),
@@ -459,7 +459,7 @@ object CategoryTracking {
                 "category", NONE_OTHER,
                 "category_id", categoryId,
                 "dimension45", cartId,
-                "id", id,
+                "id", productCardModel.productId,
                 "name", productCardModel.name,
                 "price", productCardModel.price.getDigits(),
                 "quantity", quantity,

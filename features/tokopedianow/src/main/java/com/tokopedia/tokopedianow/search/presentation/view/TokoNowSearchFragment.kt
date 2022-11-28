@@ -258,7 +258,7 @@ class TokoNowSearchFragment :
     }
 
     override fun onProductChooseVariantClicked(productItemDataView: ProductItemDataView) {
-        SearchTracking.sendChooseVariantEvent(tokoNowSearchViewModel.query, productItemDataView.id)
+        SearchTracking.sendChooseVariantEvent(tokoNowSearchViewModel.query, productItemDataView.productCardModel.productId)
 
         super.onProductChooseVariantClicked(productItemDataView)
     }

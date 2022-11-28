@@ -25,8 +25,8 @@ import com.tokopedia.utils.view.binding.viewBinding
  */
 
 class ShopHomeSliderSquareViewHolder(
-        itemView: View,
-        private val listener: ShopHomeDisplayWidgetListener
+    itemView: View,
+    private val listener: ShopHomeDisplayWidgetListener
 ) : AbstractViewHolder<ShopHomeDisplayWidgetUiModel>(itemView) {
 
     companion object {
@@ -60,12 +60,12 @@ class ShopHomeSliderSquareViewHolder(
                 rvCarouselShopPageHome?.apply {
                     val layoutParams = layoutParams as ViewGroup.MarginLayoutParams
                     val marginTop = 8.toPx().takeIf { adapterPosition == 0 }
-                            ?: layoutParams.topMargin
+                        ?: layoutParams.topMargin
                     setMargin(
-                            layoutParams.leftMargin,
-                            marginTop,
-                            layoutParams.rightMargin,
-                            layoutParams.bottomMargin
+                        layoutParams.leftMargin,
+                        marginTop,
+                        layoutParams.rightMargin,
+                        layoutParams.bottomMargin
                     )
                 }
             } else {
