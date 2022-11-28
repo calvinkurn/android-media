@@ -243,7 +243,8 @@ class EditorFragment @Inject constructor(
         viewModel.undoState(activeImageUrl)?.apply {
             viewBinding?.viewPager?.updateImage(
                 thumbnailDrawerComponent.getCurrentIndex(),
-                this.getImageUrl()
+                this.getImageUrl(),
+                overlayImageUrl = this.getOverlayLogoValue()?.overlayLogoUrl ?: ""
             )
 
             renderUndoButton(this)
@@ -263,7 +264,8 @@ class EditorFragment @Inject constructor(
         viewModel.redoState(activeImageUrl)?.apply {
             viewBinding?.viewPager?.updateImage(
                 thumbnailDrawerComponent.getCurrentIndex(),
-                this.getImageUrl()
+                this.getImageUrl(),
+                overlayImageUrl = this.getOverlayLogoValue()?.overlayLogoUrl ?: ""
             )
 
             renderUndoButton(this)
@@ -355,7 +357,10 @@ class EditorFragment @Inject constructor(
 
                 renderToolsIconActiveState(editorUiModel)
 
-                viewBinding?.viewPager?.updateImage(it, editorUiModel.getImageUrl())
+                viewBinding?.viewPager?.updateImage(it,
+                    editorUiModel.getImageUrl(),
+                    overlayImageUrl = editorUiModel.getOverlayLogoValue()?.overlayLogoUrl ?: ""
+                )
             }
         }
     }

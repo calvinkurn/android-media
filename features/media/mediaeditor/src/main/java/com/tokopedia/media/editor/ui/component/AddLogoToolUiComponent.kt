@@ -47,6 +47,8 @@ class AddLogoToolUiComponent constructor(
     private var toaster: Snackbar? = null
     private var retryNumber = 0
 
+    private var logoUrl: String = ""
+
     fun bottomSheet() = BottomSheetUnify().apply {
         val child = AddLogoTipsBottomsheetBinding.inflate(
             LayoutInflater.from(container().context),
@@ -64,6 +66,21 @@ class AddLogoToolUiComponent constructor(
 
         setTitle(BOTTOM_SHEET_TITLE)
         setChild(child.root)
+    }
+
+    fun setupView(imageWidth: Int, imageHeight: Int, avatarUrl: String) {
+        originalImageWidth = imageWidth
+        originalImageHeight = imageHeight
+
+        shopAvatarUrl = avatarUrl
+
+        initShopAvatar()
+        initListener()
+        container().show()
+    }
+
+    fun getLogoUrl(): String {
+        return logoUrl
     }
 
     private fun getTipsMoreText(): SpannableString {
@@ -93,17 +110,6 @@ class AddLogoToolUiComponent constructor(
         ).spannedString
     }
 
-    fun setupView(imageWidth: Int, imageHeight: Int, avatarUrl: String) {
-        originalImageWidth = imageWidth
-        originalImageHeight = imageHeight
-
-        shopAvatarUrl = avatarUrl
-
-        initShopAvatar()
-        initListener()
-        container().show()
-    }
-
     private fun initShopAvatar() {
         loadImageWithEmptyTarget(context, shopAvatarUrl, {},
             MediaBitmapEmptyTarget(
@@ -112,6 +118,7 @@ class AddLogoToolUiComponent constructor(
                         roundedBitmap(it, isCircular = true)
                     )
                     isShopAvatarReady = true
+                    logoUrl = shopAvatarUrl
                 },
                 onFailed = {
                     shopAvatar.setImageDrawable(it)
@@ -129,6 +136,7 @@ class AddLogoToolUiComponent constructor(
                     uploadAvatar.setImageBitmap(
                         roundedBitmap(it, cornerRadius = 8f)
                     )
+                    logoUrl = shopAvatarUrl
                 }
             )
         )

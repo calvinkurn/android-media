@@ -1,29 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
     <ImageView
-        tools:visibility="visible"
-        android:visibility="gone"
-        android:elevation="1dp"
-        android:id="@+id/img_main_preview"
+        android:id="@+id/img_main_overlay"
+        android:elevation="2dp"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/Unify_NN50"
         android:contentDescription="@string/cd_img_preview"
         android:scaleType="fitCenter"/>
 
-    <com.google.android.exoplayer2.ui.SimpleExoPlayerView
-        android:visibility="gone"
-        android:elevation="1dp"
-        android:id="@+id/vid_main_preview"
+    <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/Unify_NN50"
-        android:contentDescription="@string/cd_img_preview"
-        android:scaleType="fitCenter"/>
+        android:layout_height="match_parent">
 
-</LinearLayout>
+        <ImageView
+            tools:visibility="visible"
+            android:visibility="gone"
+            android:elevation="1dp"
+            android:id="@+id/img_main_preview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/Unify_NN50"
+            android:contentDescription="@string/cd_img_preview"
+            android:scaleType="fitCenter"/>
+
+        <com.google.android.exoplayer2.ui.SimpleExoPlayerView
+            android:visibility="gone"
+            android:elevation="1dp"
+            android:id="@+id/vid_main_preview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@color/Unify_NN50"
+            android:contentDescription="@string/cd_img_preview"
+            android:scaleType="fitCenter"/>
+
+    </LinearLayout>
+
+</RelativeLayout>
