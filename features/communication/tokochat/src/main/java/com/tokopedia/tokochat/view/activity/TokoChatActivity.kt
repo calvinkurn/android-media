@@ -89,7 +89,7 @@ class TokoChatActivity : TokoChatBaseActivity<TokoChatComponent>() {
         val gojekOrderId = intent.data?.getQueryParameter(ApplinkConst.TokoChat.ORDER_ID_GOJEK) ?: ""
         val tkpdOrderId = intent.data?.getQueryParameter(ApplinkConst.TokoChat.ORDER_ID_TKPD) ?: ""
         val isFromTokoFoodPostPurchase = intent?.getBooleanExtra(ApplinkConst.TokoChat.IS_FROM_TOKOFOOD_POST_PURCHASE, false) ?: false
-        val pushNotifTemplateKey = intent?.getStringExtra(TokoChatValueUtil.NOTIFCENTER_NOTIFICATION_TEMPLATE_KEY).toString()
+        val pushNotifTemplateKey = intent?.getStringExtra(TokoChatValueUtil.NOTIFCENTER_NOTIFICATION_TEMPLATE_KEY) ?: ""
         return Bundle().apply {
             putString(ApplinkConst.TokoChat.PARAM_SOURCE, source)
             putString(ApplinkConst.TokoChat.ORDER_ID_GOJEK, gojekOrderId)

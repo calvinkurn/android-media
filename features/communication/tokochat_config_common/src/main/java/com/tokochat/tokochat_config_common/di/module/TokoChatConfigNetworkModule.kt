@@ -13,6 +13,8 @@ import com.tokopedia.network.converter.StringResponseConverter
 import com.tokopedia.network.data.model.response.TkpdV4ResponseError
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.network.utils.OkHttpRetryPolicy
+import com.tokopedia.url.Env
+import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
@@ -26,8 +28,9 @@ import java.util.concurrent.TimeUnit
 @Module
 object TokoChatConfigNetworkModule {
 
-    //TODO: Move this to TokopediaUrl
-    const val BASE_URL = "https://chat-staging.tokopedia.com/tokochat/"
+    // TODO: Move this to TokopediaUrl
+    const val BASE_URL_STAGING = "https://chat-staging.tokopedia.com/tokochat/"
+    const val BASE_URL_PRODUCTION = "https://chat.tokopedia.com/tokochat/"
 
     private const val NET_READ_TIMEOUT = 300
     private const val NET_WRITE_TIMEOUT = 300
@@ -110,8 +113,14 @@ object TokoChatConfigNetworkModule {
         @TokoChatQualifier retrofitBuilder: Retrofit.Builder,
         @TokoChatQualifier okHttpClient: OkHttpClient
     ): Retrofit {
+        // Temporary ENV change
+        val baseUrl = if (TokopediaUrl.getInstance().TYPE == Env.LIVE) {
+            BASE_URL_PRODUCTION
+        } else {
+            BASE_URL_STAGING
+        }
         return retrofitBuilder
-            .baseUrl(BASE_URL)
+            .baseUrl(baseUrl)
             .addConverterFactory(StringResponseConverter())
             .client(okHttpClient).build()
     }
@@ -138,9 +147,10 @@ object TokoChatConfigNetworkModule {
 
     @Provides
     @TokoChatQualifier
-    fun provideTkpdAuthInterceptor(@TokoChatQualifier context: Context,
-                                   @TokoChatQualifier networkRouter: NetworkRouter,
-                                   @TokoChatQualifier userSessionInterface: UserSessionInterface
+    fun provideTkpdAuthInterceptor(
+        @TokoChatQualifier context: Context,
+        @TokoChatQualifier networkRouter: NetworkRouter,
+        @TokoChatQualifier userSessionInterface: UserSessionInterface
     ): TkpdAuthInterceptor {
         return TkpdAuthInterceptor(context, networkRouter, userSessionInterface)
     }

@@ -37,6 +37,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.chuckMqtt
 
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
+    implementation rootProject.ext.tkpdInternalLibDependencies.url
 
     kapt rootProject.ext.miscDependencies.daggerCompiler
     implementation rootProject.ext.miscDependencies.dagger
