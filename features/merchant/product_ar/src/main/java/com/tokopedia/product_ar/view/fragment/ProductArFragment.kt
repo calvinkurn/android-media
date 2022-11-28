@@ -142,7 +142,7 @@ class ProductArFragment : Fragment(), ProductArListener, MFEMakeupEngine.MFEMake
             }
         }
 
-        binding?.imgShadowBackground?.setImageResource(R.drawable.ic_gradient_ar)
+        binding?.imgShadowBackground?.setBackgroundResource(R.drawable.ic_gradient_ar)
         setupNavToolbar()
     }
 
