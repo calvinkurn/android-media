@@ -130,6 +130,30 @@ class SearchHistoryViewModelTest {
     }
 
     @Test
+    fun `delete one search history with item null then throwable`() {
+        val position = 0
+        val itemSearch: ItemSearch? = null
+        val throwable = Throwable()
+        val expected = DeleteSearchHistoryResult.Failed(position, false, throwable)
+        val parameter = DeleteSearchHistoryParam(
+            clearAll = false,
+            query = itemSearch?.title.toString(),
+            type = itemSearch?.type.toString(),
+            id = itemSearch?.id.toString(),
+            position = position
+        )
+
+        coEvery { deleteHistoryUseCase(parameter) } throws throwable
+        viewModel.deleteSearchHistory(position = position, itemSearch = itemSearch)
+
+        val result = viewModel.deleteSearchHistory.getOrAwaitValue()
+        assertTrue(result is DeleteSearchHistoryResult.Failed)
+        assertEquals(expected.throwable, result.throwable)
+        assertEquals(expected.position, result.position)
+        assertEquals(expected.isClearAll, result.isClearAll)
+    }
+
+    @Test
     fun `delete all search history then success delete`() {
         val position = -1
         val expected = DeleteSearchHistoryResult.Success(position = position, isClearAll = true)

@@ -4,6 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.privacycenter.sharingwishlist.viewmodel.SharingWishlistSharedViewModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
@@ -36,8 +37,9 @@ class SharingWishlistSharedViewModelTest {
 
             viewModel?.notifyPager(0)
             collectorJob.cancel()
-        }
 
-        assertEquals(accessOptionValue, 0)
+            val result = viewModel?.wishlistCollectionState?.first()
+            assertEquals(accessOptionValue, result)
+        }
     }
 }
