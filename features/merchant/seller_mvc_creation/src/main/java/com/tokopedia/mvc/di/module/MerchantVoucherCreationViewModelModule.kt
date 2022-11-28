@@ -5,6 +5,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.mvc.di.scope.MerchantVoucherCreationScope
+import com.tokopedia.mvc.presentation.bottomsheet.viewmodel.FilterVoucherViewModel
 import com.tokopedia.mvc.presentation.list.viewmodel.MvcListViewModel
 import com.tokopedia.mvc.presentation.product.add.AddProductViewModel
 import com.tokopedia.mvc.presentation.product.variant.SelectVariantViewModel
@@ -31,5 +32,10 @@ abstract class MerchantVoucherCreationViewModelModule {
     @Binds
     @IntoMap
     @ViewModelKey(SelectVariantViewModel::class)
-    internal abstract fun provideSelectVariantViewModel(viewModel: SelectVariantViewModel) : ViewModel
+    internal abstract fun provideSelectVariantViewModel(viewModel: SelectVariantViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(FilterVoucherViewModel::class)
+    internal abstract fun provideFilterVoucherViewModel(viewModel: FilterVoucherViewModel): ViewModel
 }

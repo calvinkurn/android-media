@@ -4,6 +4,7 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.mvc.di.module.MerchantVoucherCreationModule
 import com.tokopedia.mvc.di.module.MerchantVoucherCreationViewModelModule
 import com.tokopedia.mvc.di.scope.MerchantVoucherCreationScope
+import com.tokopedia.mvc.presentation.bottomsheet.FilterVoucherBottomSheet
 import com.tokopedia.mvc.presentation.list.fragment.MvcListFragment
 import com.tokopedia.mvc.presentation.product.add.AddProductActivity
 import com.tokopedia.mvc.presentation.product.add.AddProductFragment
@@ -19,5 +20,6 @@ interface MerchantVoucherCreationComponent {
     fun inject(activity: AddProductActivity)
     fun inject(fragment: AddProductFragment)
     fun inject(fragment: MvcListFragment)
-    fun inject(fragment: SelectVariantBottomSheet)
+    fun inject(bottomsheet: SelectVariantBottomSheet)
+    fun inject(bottomsheet: FilterVoucherBottomSheet)
 }

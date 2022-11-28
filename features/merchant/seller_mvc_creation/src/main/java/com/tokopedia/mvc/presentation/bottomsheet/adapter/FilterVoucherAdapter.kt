@@ -9,8 +9,8 @@ import com.tokopedia.unifycomponents.ChipsUnify
 
 class FilterVoucherAdapter: RecyclerView.Adapter<FilterVoucherAdapter.ViewHolder>() {
 
-    private var data: List<String> = emptyList()
-    private var onClickListener: (position: Int) -> Unit = {}
+    private var data: List<Pair<String, Boolean>> = emptyList()
+    private var onClickListener: (position: Int, isSelected: Boolean) -> Unit = { _, _ -> }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding = SmvcItemFilterVoucherBinding.inflate(LayoutInflater.from(parent.context),
@@ -26,31 +26,30 @@ class FilterVoucherAdapter: RecyclerView.Adapter<FilterVoucherAdapter.ViewHolder
         }
     }
 
-    fun setDataList(newData: List<String>) {
+    fun setDataList(newData: List<Pair<String, Boolean>>) {
         data = newData
         notifyItemRangeChanged(Int.ZERO, newData.size)
     }
 
-    fun setOnClickListener(listener: (position: Int) -> Unit) {
+    fun setOnClickListener(listener: (position: Int, isSelected: Boolean) -> Unit) {
         onClickListener = listener
     }
 
     inner class ViewHolder(
         private val binding: SmvcItemFilterVoucherBinding,
-        private val onClickListener: (position: Int) -> Unit
+        private val onClickListener: (position: Int, isSelected: Boolean) -> Unit
     ): RecyclerView.ViewHolder(binding.root) {
         init {
             binding.chipsItem.setOnClickListener {
-                binding.chipsItem.chipType =
-                    if (binding.chipsItem.chipType == ChipsUnify.TYPE_SELECTED)
-                        ChipsUnify.TYPE_NORMAL
-                    else ChipsUnify.TYPE_SELECTED
-                onClickListener(absoluteAdapterPosition)
+                val isSelected = binding.chipsItem.chipType == ChipsUnify.TYPE_SELECTED
+                binding.chipsItem.chipType = if (isSelected) ChipsUnify.TYPE_NORMAL else ChipsUnify.TYPE_SELECTED
+                onClickListener(absoluteAdapterPosition, isSelected)
             }
         }
-        fun bind(item: String) {
+        fun bind(item: Pair<String, Boolean>) {
             with(binding) {
-                chipsItem.chipText = item
+                chipsItem.chipType = if (!item.second) ChipsUnify.TYPE_NORMAL else ChipsUnify.TYPE_SELECTED
+                chipsItem.chipText = item.first
             }
         }
     }
