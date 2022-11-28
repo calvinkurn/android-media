@@ -550,7 +550,7 @@ class AddEditProductVariantFragment :
 
     private fun showImagePicker(position: Int){
         if(RollanceUtil.getImagePickerRollence()) {
-            doTracking()
+            doTrackingVariant(position)
             showImagePickerForVariant(position)
         } else {
             showPhotoVariantPicker()
@@ -1370,7 +1370,7 @@ class AddEditProductVariantFragment :
 
     fun showImagePickerVariantSizeGuide(){
         if(RollanceUtil.getImagePickerRollence()) {
-            doTracking()
+            doTrackingForVariantSize()
             showImagePickerSizeGuide()
         } else {
             showSizechartPicker()
@@ -1379,17 +1379,34 @@ class AddEditProductVariantFragment :
 
     fun showImageEditorVariantSizeGuide(){
         if(RollanceUtil.getImagePickerRollence()) {
-            doTracking()
+            doTrackingForVariantSize()
             showEditorImagePickerSizeGuide()
         } else {
             showEditorSizechartPicker()
         }
     }
 
-    private fun doTracking(){
+    private fun doTrackingVariant(position: Int){
         val userId = UserSession(context).userId
         val shopId = UserSession(context).shopId
-        val isEdit = viewModel.isEditMode.value ?: false
+        val isEdit = variantPhotoAdapter?.isPictIdIsEmpty(position = position).orFalse()
+        if(isEdit){
+            MediaImprovementTracker.sendTrackerImprovementOfMediaPicker(
+                "${MediaImprovementTracker.EDIT_VARIANT_ENTRY_POINT}-$userId-$shopId",
+                userId
+            )
+        } else {
+            MediaImprovementTracker.sendTrackerImprovementOfMediaPicker(
+                "${MediaImprovementTracker.ADD_VARIANT_ENTRY_POINT}-$userId-$shopId",
+                userId
+            )
+        }
+    }
+
+    private fun doTrackingForVariantSize(){
+        val userId = UserSession(context).userId
+        val shopId = UserSession(context).shopId
+        val isEdit =  viewModel.isEditMode.value ?: false
         if(isEdit){
             MediaImprovementTracker.sendTrackerImprovementOfMediaPicker(
                 "${MediaImprovementTracker.EDIT_VARIANT_ENTRY_POINT}-$userId-$shopId",

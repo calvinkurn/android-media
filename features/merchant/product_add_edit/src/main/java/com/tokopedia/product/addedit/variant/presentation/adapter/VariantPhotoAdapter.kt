@@ -66,9 +66,13 @@ class VariantPhotoAdapter(private val onItemClickedListener: OnItemClickListener
     }
 
     fun getAddOrEditPickerState(position: Int): PageSource {
-        return if (this.items[position].picID.isEmpty())
+        return if (isPictIdIsEmpty(position))
             PageSource.AddVariant
         else PageSource.EditVariant
+    }
+
+    fun isPictIdIsEmpty(position: Int): Boolean{
+        return this.items[position].picID.isEmpty()
     }
 
     override fun onItemClicked(position: Int) {
