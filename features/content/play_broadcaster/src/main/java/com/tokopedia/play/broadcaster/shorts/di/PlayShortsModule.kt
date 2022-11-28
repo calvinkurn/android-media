@@ -82,11 +82,6 @@ class PlayShortsModule(
             )
     }
 
-    @Provides
-    fun provideWorkManager(@ApplicationContext context: Context): WorkManager {
-        return WorkManager.getInstance(context)
-    }
-
     /** Play Broadcaster Analytic */
     @Provides
     @PlayShortsScope

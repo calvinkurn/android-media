@@ -1,12 +1,12 @@
-package com.tokopedia.play.broadcaster.shorts.ui.model
+package com.tokopedia.content.common.model.shorts
 
 import androidx.work.Data
 import androidx.work.workDataOf
 
 /**
- * Created By : Jonathan Darwin on November 15, 2022
+ * Created By : Jonathan Darwin on November 28, 2022
  */
-data class PlayShortsUploadUiModel(
+data class PlayShortsUploadModel(
     val shortsId: String,
     val authorId: String,
     val authorType: String,
@@ -24,8 +24,8 @@ data class PlayShortsUploadUiModel(
     }
 
     companion object {
-        fun parse(inputData: Data): PlayShortsUploadUiModel {
-            return PlayShortsUploadUiModel(
+        fun parse(inputData: Data): PlayShortsUploadModel {
+            return PlayShortsUploadModel(
                 shortsId = inputData.getString(KEY_SHORTS_ID).orEmpty(),
                 authorId = inputData.getString(KEY_ACCOUNT_ID).orEmpty(),
                 authorType = inputData.getString(KEY_ACCOUNT_TYPE).orEmpty(),

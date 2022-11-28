@@ -1,16 +1,13 @@
-package com.tokopedia.play.broadcaster.shorts.domain.usecase
+package com.tokopedia.content.common.usecase
 
+import com.tokopedia.content.common.model.shorts.BroadcasterAddMediasResponse
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
-import com.tokopedia.play.broadcaster.shorts.domain.model.BroadcasterAddMediasResponse
 import javax.inject.Inject
 
-/**
- * Created By : Jonathan Darwin on November 15, 2022
- */
 @GqlQuery(BroadcasterAddMediasUseCase.QUERY_NAME, BroadcasterAddMediasUseCase.QUERY)
 class BroadcasterAddMediasUseCase @Inject constructor(
     gqlRepository: GraphqlRepository,

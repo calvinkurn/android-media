@@ -1,4 +1,4 @@
-package com.tokopedia.createpost.common.view.customview
+package com.tokopedia.feedplus.view.customview
 
 import android.content.BroadcastReceiver
 import android.content.Context
@@ -11,7 +11,10 @@ import androidx.core.content.ContextCompat
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.tokopedia.affiliatecommon.*
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
+import com.tokopedia.content.common.const.PlayShortsUploadConst
+import com.tokopedia.content.common.model.shorts.PlayShortsUploadModel
 import com.tokopedia.createpost.common.DRAFT_ID
+import com.tokopedia.createpost.common.view.service.SubmitPostService
 import com.tokopedia.createpost.common.view.viewmodel.CreatePostViewModel
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
@@ -19,8 +22,7 @@ import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.ProgressBarUnify
 import com.tokopedia.unifyprinciples.Typography
 import java.util.concurrent.TimeUnit
-import com.tokopedia.createpost.common.R
-import com.tokopedia.createpost.common.view.service.SubmitPostService
+import com.tokopedia.feedplus.R
 
 class PostProgressUpdateView @JvmOverloads constructor(
     context: Context, attrs: AttributeSet? = null, defStyleAttr: Int = 0
@@ -34,7 +36,7 @@ class PostProgressUpdateView @JvmOverloads constructor(
     private var mPostUpdateSwipe: PostUpdateSwipe? = null
 
     init {
-        View.inflate(this.context, R.layout.cp_common_upload_post_progress_view, this)
+        View.inflate(this.context, R.layout.view_post_progress_update, this)
         postIcon = findViewById(R.id.product_img)
         processingText = findViewById(R.id.progress_bar_title)
         retryText = findViewById(R.id.retry_text)
@@ -65,14 +67,15 @@ class PostProgressUpdateView @JvmOverloads constructor(
         mPostUpdateSwipe = postUpdateSwipe
     }
 
-    fun handleShortsUploadFailed() {
+    fun handleShortsUploadFailed(uploadData: PlayShortsUploadModel) {
         mPostUpdateSwipe?.updateVisibility(true)
         progressBar?.progressBarColorType = ProgressBarUnify.COLOR_RED
         retryText?.show()
         processingText?.text = context.getString(R.string.cp_common_progress_bar_failed_text)
         processingText?.setTextColor(ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_RN500))
         retryText?.setOnClickListener {
-
+            retryPostShorts(uploadData)
+            /** TODO: attach tracker */
         }
     }
 
@@ -90,7 +93,8 @@ class PostProgressUpdateView @JvmOverloads constructor(
 
     private fun retryPostingOnFeed(draftId: String){
         processingText?.text = context.getString(R.string.cp_common_progress_bar_text)
-        processingText?.setTextColor(ContextCompat.getColor(context,
+        processingText?.setTextColor(
+            ContextCompat.getColor(context,
             com.tokopedia.unifyprinciples.R.color.Unify_NN950))
 
         val cacheManager = SaveInstanceCacheManager(this.context, draftId)
@@ -108,24 +112,17 @@ class PostProgressUpdateView @JvmOverloads constructor(
 
     }
 
-    private fun retryPostShorts(draftId: String){
+    private fun retryPostShorts(uploadData: PlayShortsUploadModel){
         processingText?.text = context.getString(R.string.cp_common_progress_bar_text)
-        processingText?.setTextColor(ContextCompat.getColor(context,
+        processingText?.setTextColor(
+            ContextCompat.getColor(context,
             com.tokopedia.unifyprinciples.R.color.Unify_NN950))
-
-        val cacheManager = SaveInstanceCacheManager(this.context, draftId)
-        val viewModel: CreatePostViewModel = cacheManager.get(
-            CreatePostViewModel.TAG,
-            CreatePostViewModel::class.java
-        ) ?: CreatePostViewModel()
-        setCreatePostData(viewModel)
-        cacheManager.put(
-            CreatePostViewModel.TAG,
-            viewModel, TimeUnit.DAYS.toMillis(7)
-        )
-        cacheManager.id?.let { draftId -> SubmitPostService.startService(this.context, draftId) }
+        progressBar?.progressBarColorType = ProgressBarUnify.COLOR_GREEN
         retryText?.gone()
 
+        setProgressUpdate(0, 0)
+
+        /** TODO: start workmanager here */
     }
 
     private val submitPostReceiver: BroadcastReceiver by lazy {
@@ -176,7 +173,8 @@ class PostProgressUpdateView @JvmOverloads constructor(
     fun resetProgressBarState(isEditPost: Boolean) {
         processingText?.text =
             context.getString(R.string.cp_common_progress_bar_text)
-        processingText?.setTextColor(ContextCompat.getColor(context,
+        processingText?.setTextColor(
+            ContextCompat.getColor(context,
             com.tokopedia.unifyprinciples.R.color.Unify_NN950))
         progressBar?.progressBarColorType = ProgressBarUnify.COLOR_GREEN
         retryText?.gone()
@@ -231,3 +229,4 @@ class PostProgressUpdateView @JvmOverloads constructor(
         private const val MAX_PROGRESS_VALUE = 100
     }
 }
+

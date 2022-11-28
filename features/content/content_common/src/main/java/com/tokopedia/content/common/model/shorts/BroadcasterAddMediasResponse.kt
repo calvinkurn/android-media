@@ -1,10 +1,11 @@
-package com.tokopedia.play.broadcaster.shorts.domain.model
+package com.tokopedia.content.common.model.shorts
 
 import com.google.gson.annotations.SerializedName
 
 /**
- * Created By : Jonathan Darwin on November 15, 2022
+ * Created By : Jonathan Darwin on November 28, 2022
  */
+
 data class BroadcasterAddMediasResponse(
     @SerializedName("BroadcasterAddMedias")
     val wrapper: Wrapper = Wrapper(),

@@ -144,4 +144,8 @@ dari Feed.</string>
 
     <!-- User Profile Entry Point -->
     <string name="feed_user_profile_entry_point_coach_mark">Kayak apa si halaman\nprofilmu? Cek di sini, yuk!</string>
+
+    <!-- Upload -->
+    <string name="cp_common_progress_bar_text">Memproses...</string>
+    <string name="cp_common_progress_bar_failed_text">Gagal Diproses</string>
 </resources>
