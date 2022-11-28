@@ -34,7 +34,8 @@ ext {
     glideVersion = '4.9.0'
     viewPager2 = '1.0.0'
     deeplinkDispatchVersion = '4.1.0'
-    espressoVersion = "3.1.0"
+    espressoVersion = "3.4.0"
+    accessibilityTestFrameworkVersion = "4.0.0"
     runnerVersion = "1.4.0"
     rulesVersion = "1.4.0"
     apolloVersion = '0.3.0'
