@@ -8,21 +8,20 @@ import com.tokopedia.mvc.presentation.bottomsheet.adapter.viewHolder.MenuDivider
 import com.tokopedia.mvc.presentation.bottomsheet.adapter.viewHolder.MenuViewHolder
 import com.tokopedia.mvc.presentation.list.model.MoreMenuUiModel
 
-class MenuAdapterFactoryImpl: BaseAdapterTypeFactory(), MenuAdapterFactory {
+class MenuAdapterFactoryImpl(private val callback: (MoreMenuUiModel) -> Unit) : BaseAdapterTypeFactory(), MenuAdapterFactory {
 
     override fun type(model: MoreMenuUiModel): Int {
-        return when(model) {
+        return when (model) {
             is MoreMenuUiModel.ItemDivider -> MenuDividerViewHolder.RES_LAYOUT
             else -> MenuViewHolder.RES_LAYOUT
         }
     }
 
     override fun createViewHolder(parent: View?, type: Int): AbstractViewHolder<out Visitable<*>> {
-        return when(type) {
-            MenuViewHolder.RES_LAYOUT -> MenuViewHolder(parent)
+        return when (type) {
+            MenuViewHolder.RES_LAYOUT -> MenuViewHolder(parent, callback)
             MenuDividerViewHolder.RES_LAYOUT -> MenuDividerViewHolder(parent)
             else -> super.createViewHolder(parent, type)
         }
     }
-
 }

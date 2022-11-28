@@ -14,13 +14,13 @@ import com.tokopedia.mvc.presentation.list.model.MoreMenuUiModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
-class VoucherThreeDotsBottomSheet : BottomSheetUnify() {
+class MoreMenuBottomSheet : BottomSheetUnify() {
 
     private var context: FragmentActivity? = null
     private var voucher: Voucher? = null
     private var menuItem: List<MoreMenuUiModel> = emptyList()
     private var binding by autoClearedNullable<SmvcBottomsheetThreeDotsMenuBinding>()
-
+    private var adapter: MoreMenuAdapter? = null
     init {
         isFullpage = false
     }
@@ -35,9 +35,7 @@ class VoucherThreeDotsBottomSheet : BottomSheetUnify() {
         setTitle(context?.getString(R.string.voucher_three_bots_title) ?: "")
         binding?.recyclerView?.layoutManager =
             LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
-        val adapter = MoreMenuAdapter()
-        adapter?.clearAllElements()
-        adapter?.addElement(menuItem)
+
         binding?.recyclerView?.adapter = adapter
         return super.onCreateView(inflater, container, savedInstanceState)
     }
@@ -46,9 +44,10 @@ class VoucherThreeDotsBottomSheet : BottomSheetUnify() {
         @JvmStatic
         fun newInstance(
             context: FragmentActivity,
-            voucher: Voucher?
-        ): VoucherThreeDotsBottomSheet {
-            return VoucherThreeDotsBottomSheet().apply {
+            voucher: Voucher?,
+            callback: (MoreMenuUiModel) -> Unit
+        ): MoreMenuBottomSheet {
+            return MoreMenuBottomSheet().apply {
                 this.context = context
                 this.voucher = voucher
                 this.menuItem = getOngoingOptionsListMenu()
@@ -126,10 +125,14 @@ class VoucherThreeDotsBottomSheet : BottomSheetUnify() {
 //                        }
 //                    menuAdapter?.clearAllElements()
 //                    menuAdapter?.addElement(getMenuItem)
+
+                adapter = MoreMenuAdapter(callback)
+                adapter?.clearAllElements()
+                adapter?.addElement(menuItem)
             }
-
-
         }
+
+        const val TAG: String = "MoreMenuBottomSheet"
     }
 
     private fun getUpcomingOptionsListMenu(): List<MoreMenuUiModel> {

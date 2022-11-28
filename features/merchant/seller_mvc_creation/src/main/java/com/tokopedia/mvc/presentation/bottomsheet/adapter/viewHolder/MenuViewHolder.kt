@@ -8,7 +8,7 @@ import com.tokopedia.mvc.databinding.SmvcItemThreeDotsMenuBinding
 import com.tokopedia.mvc.presentation.list.model.MoreMenuUiModel
 import com.tokopedia.utils.view.binding.viewBinding
 
-class MenuViewHolder(itemView: View?) :
+class MenuViewHolder(itemView: View?, private val callback: (MoreMenuUiModel) -> Unit) :
     AbstractViewHolder<MoreMenuUiModel>(itemView) {
 
     companion object {
@@ -17,10 +17,13 @@ class MenuViewHolder(itemView: View?) :
     }
 
     private var binding: SmvcItemThreeDotsMenuBinding? by viewBinding()
-    override fun bind(element: MoreMenuUiModel?) {
+    override fun bind(element: MoreMenuUiModel) {
         binding?.apply {
-            bottomSheetText.text = element?.title
-            icon.setImage(element?.icon)
+            bottomSheetText.text = element.title
+            icon.setImage(element.icon)
+            root.setOnClickListener {
+                callback(element)
+            }
         }
     }
 }

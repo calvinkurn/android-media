@@ -35,9 +35,10 @@ import com.tokopedia.mvc.domain.entity.enums.VoucherStatus
 import com.tokopedia.mvc.presentation.bottomsheet.EduCenterBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.FilterVoucherBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.FilterVoucherStatusBottomSheet
-import com.tokopedia.mvc.presentation.bottomsheet.VoucherThreeDotsBottomSheet
+import com.tokopedia.mvc.presentation.bottomsheet.MoreMenuBottomSheet
 import com.tokopedia.mvc.presentation.list.adapter.VoucherAdapterListener
 import com.tokopedia.mvc.presentation.list.adapter.VouchersAdapter
+import com.tokopedia.mvc.presentation.list.model.MoreMenuUiModel
 import com.tokopedia.mvc.presentation.list.viewmodel.MvcListViewModel
 import com.tokopedia.mvc.presentation.product.add.AddProductActivity
 import com.tokopedia.sortfilter.SortFilter
@@ -46,12 +47,16 @@ import com.tokopedia.unifycomponents.SearchBarUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
-class MvcListFragment: BaseDaggerFragment(), HasPaginatedList by HasPaginatedListImpl(),
-    VoucherAdapterListener, FilterVoucherStatusBottomSheet.FilterVoucherStatusBottomSheetListener {
+class MvcListFragment :
+    BaseDaggerFragment(),
+    HasPaginatedList by HasPaginatedListImpl(),
+    VoucherAdapterListener,
+    FilterVoucherStatusBottomSheet.FilterVoucherStatusBottomSheetListener {
 
     private val filterList = ArrayList<SortFilterItem>()
     private val filterItem by lazy { SortFilterItem(getString(R.string.smvc_bottomsheet_filter_voucher_all)) }
     private var binding by autoClearedNullable<SmvcFragmentMvcListBinding>()
+    private var moreMenuBottomSheet: MoreMenuBottomSheet? = null
 
     @Inject
     lateinit var viewModel: MvcListViewModel
@@ -83,11 +88,24 @@ class MvcListFragment: BaseDaggerFragment(), HasPaginatedList by HasPaginatedLis
 
     override fun onVoucherListMoreMenuClicked(voucher: Voucher) {
         activity?.let {
-            val mvcThreeDotsBottomSheet =
-                VoucherThreeDotsBottomSheet.newInstance(it,
-                    voucher)
-            mvcThreeDotsBottomSheet.show(childFragmentManager, "")
+            moreMenuBottomSheet =
+                MoreMenuBottomSheet.newInstance(
+                    it,
+                    voucher,
+                    onClickListenerForMoreMenu
+                )
+            moreMenuBottomSheet?.show(childFragmentManager, "")
         }
+    }
+
+    private val onClickListenerForMoreMenu: (MoreMenuUiModel) -> Unit = {
+        moreMenuBottomSheet?.dismiss()
+//        when(it) {
+//            is MoreMenuUiModel.Coupon -> {
+//
+//            }
+//
+//        }
     }
 
     override fun onVoucherListCopyCodeClicked(voucher: Voucher) {
@@ -193,7 +211,8 @@ class MvcListFragment: BaseDaggerFragment(), HasPaginatedList by HasPaginatedLis
             pageSize = PAGE_SIZE,
             onLoadNextPage = {
                 // TODO: Implement loading
-            }, onLoadNextPageFinished = {
+            },
+            onLoadNextPageFinished = {
                 // TODO: Implement loading
             }
         )
@@ -210,14 +229,13 @@ class MvcListFragment: BaseDaggerFragment(), HasPaginatedList by HasPaginatedLis
         }
         dismissListener = parentListener
 
-
         filterItem.listener = {
             val bottomSheet = FilterVoucherStatusBottomSheet()
             bottomSheet.setSelected(filterItem.selectedItem)
             bottomSheet.setListener(this@MvcListFragment)
             bottomSheet.show(childFragmentManager, "")
         }
-        filterItem.refChipUnify.setChevronClickListener {  }
+        filterItem.refChipUnify.setChevronClickListener { }
     }
 
     private fun loadInitialDataList() {
@@ -232,7 +250,7 @@ class MvcListFragment: BaseDaggerFragment(), HasPaginatedList by HasPaginatedLis
     }
 
     private fun redirectToCreateVoucherPage() {
-        //For sample only. Will redirect to add product page.
+        // For sample only. Will redirect to add product page.
         val voucherConfiguration = VoucherConfiguration(
             benefitIdr = 25_000,
             benefitMax = 500_000,
@@ -253,6 +271,6 @@ class MvcListFragment: BaseDaggerFragment(), HasPaginatedList by HasPaginatedLis
     }
 
     private fun redirectToQuotaVoucherPage() {
-        //TODO: create redirection here
+        // TODO: create redirection here
     }
 }

@@ -19,62 +19,61 @@ sealed class MoreMenuUiModel(
         override val title: String,
         @DrawableRes
         override val icon: Int = IconUnify.COUPON
-    ): MoreMenuUiModel(title,icon)
-
+    ) : MoreMenuUiModel(title, icon)
 
     data class Calendar(
         override val title: String,
         @DrawableRes
         override val icon: Int = IconUnify.CALENDAR
-    ): MoreMenuUiModel(title,icon)
+    ) : MoreMenuUiModel(title, icon)
 
     data class Edit(
         override val title: String,
         @DrawableRes
         override val icon: Int = IconUnify.EDIT
-    ): MoreMenuUiModel(title,icon)
+    ) : MoreMenuUiModel(title, icon)
 
     data class Clipboard(
         override val title: String,
         @DrawableRes
         override val icon: Int = IconUnify.CLIPBOARD
-    ): MoreMenuUiModel(title,icon)
+    ) : MoreMenuUiModel(title, icon)
 
     data class Broadcast(
         override val title: String,
         @DrawableRes
         override val icon: Int = IconUnify.BROADCAST
-    ): MoreMenuUiModel(title,icon)
+    ) : MoreMenuUiModel(title, icon)
 
     data class Download(
         override val title: String,
         @DrawableRes
         override val icon: Int = IconUnify.DOWNLOAD
-    ): MoreMenuUiModel(title,icon)
+    ) : MoreMenuUiModel(title, icon)
 
     data class Clear(
         override val title: String,
         @DrawableRes
         override val icon: Int = IconUnify.CLEAR
-    ): MoreMenuUiModel(title,icon)
+    ) : MoreMenuUiModel(title, icon)
 
     data class Share(
         override val title: String,
         @DrawableRes
         override val icon: Int = IconUnify.SHARE_MOBILE
-    ): MoreMenuUiModel(title,icon)
+    ) : MoreMenuUiModel(title, icon)
 
     data class Hentikan(
         override val title: String,
         @DrawableRes
         override val icon: Int = IconUnify.CLEAR
-    ): MoreMenuUiModel(title,icon)
+    ) : MoreMenuUiModel(title, icon)
 
     data class Copy(
         override val title: String,
         @DrawableRes
         override val icon: Int = IconUnify.COPY
-    ): MoreMenuUiModel(title,icon)
+    ) : MoreMenuUiModel(title, icon)
 
     object ItemDivider : MoreMenuUiModel()
 }
