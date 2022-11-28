@@ -5,7 +5,6 @@ import android.graphics.Color
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.core.content.ContextCompat
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.hide
@@ -30,6 +29,7 @@ class RealTimeRecommendationCarouselView @JvmOverloads constructor(
 
     companion object {
         private const val FIRST_ITEM_POSITION = 0
+        private const val SCROLL_DELAY = 500L
     }
 
     var listener: RealTimeRecommendationListener? = null
@@ -64,10 +64,10 @@ class RealTimeRecommendationCarouselView @JvmOverloads constructor(
     }
 
     private fun scrollToFirstPosition() {
-        if(previousState == RealTimeRecomWidgetState.REFRESH) {
-            itemView?.productCarousel
-                ?.findViewById<RecyclerView>(R.id.recycler_view)
-                ?.scrollToPosition(FIRST_ITEM_POSITION)
+        if (previousState == RealTimeRecomWidgetState.REFRESH) {
+            itemView?.productCarousel?.postDelayed({
+                itemView?.productCarousel?.scrollToPosition(FIRST_ITEM_POSITION
+            )}, SCROLL_DELAY)
         }
     }
 
