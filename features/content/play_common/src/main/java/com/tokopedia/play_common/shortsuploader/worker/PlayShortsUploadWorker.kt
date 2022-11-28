@@ -91,7 +91,7 @@ class PlayShortsUploadWorker(
     override suspend fun doWork(): Result {
         return withContext(dispatchers.io) {
             try {
-                broadcastProgress(0)
+                broadcastProgress(PlayShortsUploadConst.PROGRESS_INIT)
                 Log.d("<LOG>", "Start Uploading...")
                 Log.d("<LOG>", uploadData.toString())
                 Log.d("<LOG>", updateChannelUseCase.toString())
@@ -112,7 +112,7 @@ class PlayShortsUploadWorker(
                 updateProgress()
                 delay(1000)
 
-//                broadcastProgress(0)
+//                broadcastProgress(PlayShortsUploadConst.PROGRESS_INIT)
 //                updateChannelStatus(uploadData, PlayChannelStatusType.Transcoding)
 //
 //                val mediaUrl = uploadMedia(UploadType.Video, uploadData.mediaUri, withUpdateProgress = true)
