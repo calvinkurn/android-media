@@ -131,7 +131,7 @@ class RealTimeRecommendationCarouselView @JvmOverloads constructor(
     private fun renderProductCarousel(data: HomeRealTimeRecomUiModel) {
         itemView?.productCarousel?.apply {
             setListener(this@RealTimeRecommendationCarouselView)
-            bind(items = data.productList)
+            bind(items = data.productList, state = data.carouselState)
             show()
         }
     }

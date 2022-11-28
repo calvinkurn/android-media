@@ -2,11 +2,10 @@ package com.tokopedia.tokopedianow.home.domain.mapper
 
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home_component.model.ChannelGrid
-import com.tokopedia.home_component.util.ServerTimeOffsetUtil
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
-import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType
+import com.tokopedia.tokopedianow.common.constant.TokoNowProductRecommendationState
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardViewUiModel.LabelGroup
 import com.tokopedia.tokopedianow.common.model.TokoNowDynamicHeaderUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardViewUiModel
@@ -156,7 +155,7 @@ object LeftCarouselMapper {
             category = categoryBreadcrumbs.substringAfterLast(CATEGORY_DIVIDER),
             productList = productList,
             widgetState = HomeRealTimeRecomUiModel.RealTimeRecomWidgetState.READY,
-            carouselState = RecommendationCarouselData.STATE_READY,
+            carouselState = TokoNowProductRecommendationState.LOADED,
             type = TokoNowLayoutType.MIX_LEFT_CAROUSEL_ATC
         )
 
@@ -172,7 +171,7 @@ object LeftCarouselMapper {
         val realTimeRecom = item.realTimeRecom.copy(
             parentProductId = productId,
             widgetState = state,
-            carouselState = RecommendationCarouselData.STATE_READY
+            carouselState = TokoNowProductRecommendationState.LOADED
         )
         val homeRtrWidgetItem = item.copy(realTimeRecom = realTimeRecom)
         return HomeLayoutItemUiModel(homeRtrWidgetItem, HomeLayoutItemState.LOADED)
@@ -181,7 +180,7 @@ object LeftCarouselMapper {
     fun mapLoadingLeftAtcRTR(item: HomeLeftCarouselAtcUiModel): HomeLayoutItemUiModel {
         val realTimeRecom = item.realTimeRecom.copy(
             widgetState = HomeRealTimeRecomUiModel.RealTimeRecomWidgetState.READY,
-            carouselState = RecommendationCarouselData.STATE_LOADING
+            carouselState = TokoNowProductRecommendationState.LOADING
         )
         val homeRtrWidgetItem = item.copy(realTimeRecom = realTimeRecom)
         return HomeLayoutItemUiModel(homeRtrWidgetItem, HomeLayoutItemState.LOADED)
