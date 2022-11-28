@@ -200,7 +200,6 @@
                 android:layout_height="16dp"
                 android:ellipsize="end"
                 android:maxLines="1"
-                android:text="@string/feed_asgc_campaign_cta_copywriting_text"
                 android:visibility="visible"
                 app:typographyType="paragraph_3"
                 tools:text="Eksklusif untuk Follower Toko" />
@@ -211,7 +210,6 @@
                 android:layout_height="16dp"
                 android:ellipsize="end"
                 android:maxLines="1"
-                android:text="@string/feed_asgc_campaign_cta_copywriting_text"
                 android:visibility="visible"
                 app:typographyType="paragraph_3"
                 tools:text="Eksklusif untuk Follower Toko" />
