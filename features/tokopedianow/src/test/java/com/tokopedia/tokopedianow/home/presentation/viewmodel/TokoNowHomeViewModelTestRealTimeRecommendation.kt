@@ -4,9 +4,9 @@ import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
-import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType
+import com.tokopedia.tokopedianow.common.constant.TokoNowProductRecommendationState
 import com.tokopedia.tokopedianow.common.model.TokoNowChooseAddressWidgetUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowDynamicHeaderUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardCarouselItemUiModel
@@ -117,7 +117,7 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
             enabled = rtrEnabled,
             pageName = rtrPageName,
             widgetState = RealTimeRecomWidgetState.READY,
-            carouselState = RecommendationCarouselData.STATE_READY,
+            carouselState = TokoNowProductRecommendationState.LOADED,
             type = TokoNowLayoutType.PRODUCT_RECOM
         )
 
@@ -284,7 +284,7 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
             enabled = rtrEnabled,
             pageName = rtrPageName,
             widgetState = RealTimeRecomWidgetState.REFRESH,
-            carouselState = RecommendationCarouselData.STATE_READY,
+            carouselState = TokoNowProductRecommendationState.LOADED,
             type = TokoNowLayoutType.PRODUCT_RECOM
         )
 
@@ -434,7 +434,7 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
             enabled = rtrEnabled,
             pageName = rtrPageName,
             widgetState = RealTimeRecomWidgetState.READY,
-            carouselState = RecommendationCarouselData.STATE_READY,
+            carouselState = TokoNowProductRecommendationState.LOADED,
             type = TokoNowLayoutType.PRODUCT_RECOM
         )
 
@@ -563,7 +563,7 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
             enabled = rtrEnabled,
             pageName = rtrPageName,
             widgetState = RealTimeRecomWidgetState.IDLE,
-            carouselState = RecommendationCarouselData.STATE_LOADING,
+            carouselState = TokoNowProductRecommendationState.LOADING,
             type = TokoNowLayoutType.PRODUCT_RECOM
         )
 
@@ -733,7 +733,7 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
             enabled = rtrEnabled,
             pageName = rtrPageName,
             widgetState = RealTimeRecomWidgetState.READY,
-            carouselState = RecommendationCarouselData.STATE_READY,
+            carouselState = TokoNowProductRecommendationState.LOADED,
             type = TokoNowLayoutType.PRODUCT_RECOM
         )
 
