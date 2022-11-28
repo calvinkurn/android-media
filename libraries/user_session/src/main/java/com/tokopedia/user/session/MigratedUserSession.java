@@ -211,6 +211,7 @@ public class MigratedUserSession {
     }
 
     private String decryptString(String message, String keyName) {
+        Timber.i("decrypting %s with key %s", message, keyName);
         try {
 	    /*
             Check PII data from SET, if keyName is PII data decrypt with aead (tink)

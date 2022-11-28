@@ -27,7 +27,7 @@ class UserSessionDataStoreClientTest {
         }
         AeadEncryptorImpl(ctx).delete()
         // Re create without deleting the file:
-        // Simulating exisisting issue with GeneralSecurityException
+        // Simulating existing issue with GeneralSecurityException
         UserSessionDataStoreClient.reCreate(ctx, false)
         with(UserSessionDataStoreClient.getInstance(ctx)) {
             getName().first()

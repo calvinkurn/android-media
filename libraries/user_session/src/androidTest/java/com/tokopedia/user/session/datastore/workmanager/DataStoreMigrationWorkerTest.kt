@@ -6,7 +6,7 @@ import androidx.test.ext.junit.runners.AndroidJUnit4
 import androidx.work.ListenableWorker.Result
 import androidx.work.testing.TestListenableWorkerBuilder
 import androidx.work.workDataOf
-import com.tokopedia.di.FakeComponentFactory
+import com.tokopedia.user.session.di.FakeComponentFactory
 import com.tokopedia.encryption.security.AeadEncryptorImpl
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.datastore.DataStorePreference

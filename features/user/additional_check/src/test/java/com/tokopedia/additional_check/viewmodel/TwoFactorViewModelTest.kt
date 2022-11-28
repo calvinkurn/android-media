@@ -49,6 +49,7 @@ class TwoFactorViewModelTest {
     @Before
     fun setUp() {
         viewModel = TwoFactorViewModel(
+            mockk(),
             userSession,
             pref,
             useCase,
