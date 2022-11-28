@@ -4,67 +4,61 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.orZero
+import androidx.fragment.app.FragmentActivity
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.mvc.R
-import com.tokopedia.mvc.databinding.SmvcBottomsheet3DotsMenuBinding
-import com.tokopedia.mvc.util.constant.BundleConstant
+import com.tokopedia.mvc.databinding.SmvcBottomsheetThreeDotsMenuBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
-class ThreeDotsMenuBottomSheet : BottomSheetUnify() {
+class VoucherThreeDotsBottomSheet : BottomSheetUnify() {
 
-    companion object {
-        @JvmStatic
-        fun newInstance(voucherName: String, type: Int): ThreeDotsMenuBottomSheet {
-            return ThreeDotsMenuBottomSheet().apply {
-                arguments = Bundle().apply {
-                    putString(BundleConstant.BUNDLE_VOUCHER_NAME, voucherName)
-                    putInt(BundleConstant.BUNDLE_BOTTOMSHEET_TYPE, type)
-                }
-            }
-        }
-        const val TYPE_CANCEL = 1
-        const val TYPE_STOP = 2
-        const val TYPE_DEFAULT = 3
-    }
+    private var context: FragmentActivity? = null
+    private var entryPoint: MVCBottomSheetType = MVCBottomSheetType.UpcomingEntryPoint
 
-    private var binding by autoClearedNullable<SmvcBottomsheet3DotsMenuBinding>()
-    private val bottomSheetType by lazy {
-        arguments?.getInt(BundleConstant.BUNDLE_BOTTOMSHEET_TYPE).orZero()
-    }
-    private val voucherName by lazy {
-        arguments?.getString(BundleConstant.BUNDLE_VOUCHER_NAME).orEmpty()
-    }
+    private var binding by autoClearedNullable<SmvcBottomsheetThreeDotsMenuBinding>()
 
+    init {
+        isFullpage = false
+    }
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val viewBinding = SmvcBottomsheet3DotsMenuBinding.inflate(inflater, container, false)
-        binding = viewBinding
-        setChild(viewBinding.root)
-        setLayout()
-        clearContentPadding = true
+        binding = SmvcBottomsheetThreeDotsMenuBinding.inflate(LayoutInflater.from(context))
+        setChild(binding?.root)
+        setTitle(context?.getString(R.string.voucher_three_bots_title) ?: "")
+        binding?.recyclerView?.layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
+        val adapter = VoucherThreeBotsBottomSheetAdapter(context, entryPoint)
+        when(entryPoint) {
+            is MVCBottomSheetType.UpcomingEntryPoint -> adapter.setUpcomingOptionsList()
+            is MVCBottomSheetType.OngoingEntryPoint -> adapter.setOngoingOptionsList()
+            is MVCBottomSheetType.CancelledEntryPoint -> adapter.setCancelledOptionsList()
+        }
+
+        binding?.recyclerView?.adapter = adapter
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
-    private fun setLayout() {
-        setTitle(voucherName)
-        binding?.run {
-            when(bottomSheetType) {
-                TYPE_CANCEL -> {
-                    tpgCancel.text = getString(R.string.smvc_cancel_label)
-                }
-                TYPE_STOP -> {
-                    tpgCancel.text = getString(R.string.smvc_stop_label)
-                }
-                else -> {
-                    iconCancel.gone()
-                    tpgCancel.gone()
-                }
+    companion object {
+        @JvmStatic
+        fun newInstance(
+            context: FragmentActivity,
+            entryPoint: MVCBottomSheetType
+        ): VoucherThreeDotsBottomSheet {
+            return VoucherThreeDotsBottomSheet().apply {
+                this.context = context
+                this.entryPoint = entryPoint
             }
         }
+
     }
+
+}
+
+sealed class MVCBottomSheetType {
+    object UpcomingEntryPoint : MVCBottomSheetType()
+    object OngoingEntryPoint: MVCBottomSheetType()
+    object CancelledEntryPoint: MVCBottomSheetType()
 }

@@ -199,4 +199,16 @@
     <string name="smvc_cancel_label">Batalkan</string>
     <string name="smvc_stop_label">Hentikan</string>
 
+    <!--Voucher detail page-->
+    <string name="voucher_three_bots_title">Nama Kupon Maks. 30 character</string>
+    <string name="voucher_bs_ubah_kuota">Ubah Kuota</string>
+    <string name="voucher_bs_ubah_periode">Ubah Periode</string>
+    <string name="voucher_bs_ubah">Ubah</string>
+    <string name="voucher_bs_ubah_lihat_detail">Lihat Detail</string>
+    <string name="voucher_bs_ubah_broadcast_chat">Broadcast Chat</string>
+    <string name="voucher_bs_ubah_download">Download</string>
+    <string name="voucher_bs_ubah_batalkan">Batalkan</string>
+    <string name="voucher_bs_ubah_hentikan">Hentikan</string>
+    <string name="voucher_bs_ubah_bagikan">Bagikan</string>
+    <string name="voucher_bs_duplikat">Duplikat</string>
 </resources>
