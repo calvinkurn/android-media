@@ -17,6 +17,7 @@ import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlist.data.model.WishlistV2BulkRemoveAdditionalParams
 import com.tokopedia.wishlist.data.model.WishlistV2RecommendationDataModel
 import com.tokopedia.wishlist.data.model.WishlistV2TypeLayoutData
@@ -25,18 +26,16 @@ import com.tokopedia.wishlist.data.model.response.DeleteWishlistProgressResponse
 import com.tokopedia.wishlist.domain.BulkDeleteWishlistV2UseCase
 import com.tokopedia.wishlist.domain.DeleteWishlistProgressUseCase
 import com.tokopedia.wishlist.util.WishlistV2Consts
-import com.tokopedia.wishlistcollection.data.params.AddWishlistCollectionsHostBottomSheetParams
-import com.tokopedia.wishlistcollection.data.params.GetWishlistCollectionItemsParams
-import com.tokopedia.wishlistcollection.data.params.UpdateWishlistCollectionParams
+import com.tokopedia.wishlistcollection.data.params.*
 import com.tokopedia.wishlistcollection.data.response.*
 import com.tokopedia.wishlistcollection.domain.*
 import com.tokopedia.wishlistcollection.view.viewmodel.WishlistCollectionDetailViewModel
+import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
 import com.tokopedia.wishlistcommon.data.response.DeleteWishlistV2Response
 import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
-import io.mockk.MockKAnnotations
-import io.mockk.coEvery
+import com.tokopedia.wishlistcommon.listener.WishlistV2ActionListener
+import io.mockk.*
 import io.mockk.impl.annotations.RelaxedMockK
-import io.mockk.spyk
 import org.assertj.core.api.SoftAssertions.assertSoftly
 import org.junit.Before
 import org.junit.Rule
@@ -55,6 +54,9 @@ class WishlistCollectionDetailViewModelTest {
 
     private var collectionDetailFiveItemList = listOf<GetWishlistCollectionItemsResponse.GetWishlistCollectionItems.ItemsItem>()
     private var collectionDetailFourItemList = listOf<GetWishlistCollectionItemsResponse.GetWishlistCollectionItems.ItemsItem>()
+
+    @RelaxedMockK
+    lateinit var userSessionInterface: UserSessionInterface
 
     @RelaxedMockK
     lateinit var getWishlistCollectionItemsUseCase: GetWishlistCollectionItemsUseCase
@@ -205,6 +207,20 @@ class WishlistCollectionDetailViewModelTest {
         GetWishlistCollectionSharingDataResponse.GetWishlistCollectionSharingData(status = "ERROR", errorMessage = arrayListOf("error"))
     )
 
+    private var getCollectionTypeData_StatusOk =
+        GetWishlistCollectionTypeResponse(
+            GetWishlistCollectionTypeResponse.GetWishlistCollectionItems(
+                collectionType = 4
+            )
+        )
+
+    private var addWishlistBulk_StatusOk =
+        AddWishlistBulkResponse(
+            AddWishlistBulkResponse.AddWishlistBulk(
+                success = true
+            )
+        )
+
     private val throwable = Fail(Throwable(message = "Error"))
 
     private val getWishlistCollectionItemsParams = GetWishlistCollectionItemsParams()
@@ -317,6 +333,9 @@ class WishlistCollectionDetailViewModelTest {
     private var collectionId = 1L
 
     private val timber = WishlistMockTimber()
+
+    private var getWishlistCollectionTypeParams = GetWishlistCollectionTypeParams()
+    private var addWishlistBulkParams = AddWishlistBulkParams()
 
     @Before
     fun setUp() {
@@ -1156,7 +1175,6 @@ class WishlistCollectionDetailViewModelTest {
     @Test
     fun `Execute GetCollectionSharingData Failed`() {
         // given
-        updateWishlistAccessParam = UpdateWishlistCollectionParams(id = 1L)
         coEvery {
             getWishlistCollectionSharingDataUseCase(collectionId)
         } throws throwable.throwable
@@ -1166,5 +1184,99 @@ class WishlistCollectionDetailViewModelTest {
 
         // then
         assert(wishlistCollectionDetailViewModel.getWishlistCollectionSharingDataResult.value is Fail)
+    }
+
+    // get wishlist collection type
+    @Test
+    fun `Execute GetWishlistCollectionType Success Status OK`() {
+        // given
+        getWishlistCollectionTypeParams = GetWishlistCollectionTypeParams(collectionId = "1")
+        coEvery {
+            getWishlistCollectionTypeUseCase(getWishlistCollectionTypeParams)
+        } returns getCollectionTypeData_StatusOk
+
+        // when
+        wishlistCollectionDetailViewModel.getWishlistCollectionType(getWishlistCollectionTypeParams)
+
+        // then
+        assert(wishlistCollectionDetailViewModel.collectionType.value is Success)
+        assert((wishlistCollectionDetailViewModel.collectionType.value as Success).data.collectionType == 4)
+    }
+
+    @Test
+    fun `Execute GetWishlistCollectionType Failed`() {
+        // given
+        coEvery {
+            getWishlistCollectionTypeUseCase(getWishlistCollectionTypeParams)
+        } throws throwable.throwable
+
+        // when
+        wishlistCollectionDetailViewModel.getWishlistCollectionType(getWishlistCollectionTypeParams)
+
+        // then
+        assert(wishlistCollectionDetailViewModel.collectionType.value is Fail)
+    }
+
+    // get wishlist collection type
+    @Test
+    fun `Execute AddWishlistBulk Success Status OK`() {
+        // given
+        coEvery {
+            addWishlistBulkUseCase(addWishlistBulkParams)
+        } returns addWishlistBulk_StatusOk
+
+        // when
+        wishlistCollectionDetailViewModel.addWishlistBulk(addWishlistBulkParams)
+
+        // then
+        assert(wishlistCollectionDetailViewModel.addWishlistBulkResult.value is Success)
+        assert((wishlistCollectionDetailViewModel.addWishlistBulkResult.value as Success).data.success)
+    }
+
+    @Test
+    fun `Execute AddWishlistBulk Failed`() {
+        // given
+        coEvery {
+            addWishlistBulkUseCase(addWishlistBulkParams)
+        } throws throwable.throwable
+
+        // when
+        wishlistCollectionDetailViewModel.addWishlistBulk(addWishlistBulkParams)
+
+        // then
+        assert(wishlistCollectionDetailViewModel.addWishlistBulkResult.value is Fail)
+    }
+
+    @Test
+    fun `verify add to wishlistv2 returns success`() {
+        val productId = "123"
+        val sourceCollectionId = "888"
+        val resultWishlistAddV2 = AddToWishlistV2Response.Data.WishlistAddV2(success = true)
+
+        every { addToWishlistV2UseCase.setParams(any(), any()) } just Runs
+        coEvery { addToWishlistV2UseCase.executeOnBackground() } returns Success(resultWishlistAddV2)
+
+        val mockListener: WishlistV2ActionListener = mockk(relaxed = true)
+        wishlistCollectionDetailViewModel.addWishListV2(productId, userSessionInterface.userId, mockListener, sourceCollectionId)
+
+        verify { addToWishlistV2UseCase.setParams(productId, userSessionInterface.userId, sourceCollectionId) }
+        coVerify { addToWishlistV2UseCase.executeOnBackground() }
+    }
+
+    @Test
+    fun `verify add to wishlistv2 returns fail`() {
+        val productId = "123"
+        val sourceCollectionId = "888"
+        val recommendationItem = RecommendationItem(isTopAds = false, productId = 123L)
+        val mockThrowable = mockk<Throwable>("fail")
+
+        every { addToWishlistV2UseCase.setParams(any(), any()) } just Runs
+        coEvery { addToWishlistV2UseCase.executeOnBackground() } returns Fail(mockThrowable)
+
+        val mockListener: WishlistV2ActionListener = mockk(relaxed = true)
+        wishlistCollectionDetailViewModel.addWishListV2(productId, userSessionInterface.userId, mockListener, sourceCollectionId)
+
+        verify { addToWishlistV2UseCase.setParams(recommendationItem.productId.toString(), userSessionInterface.userId, sourceCollectionId) }
+        coVerify { addToWishlistV2UseCase.executeOnBackground() }
     }
 }
