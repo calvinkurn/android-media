@@ -125,7 +125,7 @@ class PlayShortsUploadWorker(
                 Result.failure(inputData)
             }
 
-            Result.success()
+            Result.success(workDataOf(PlayShortsUploadConst.SHORTS_ID to uploadData.shortsId))
         }
     }
 

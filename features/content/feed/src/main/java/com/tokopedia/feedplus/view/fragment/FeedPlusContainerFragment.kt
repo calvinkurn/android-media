@@ -238,35 +238,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         requestFeedTab()
         initFab()
 
-        WorkManager.getInstance(requireActivity().applicationContext)
-            .getWorkInfosForUniqueWorkLiveData(PlayShortsUploadConst.PLAY_SHORTS_UPLOAD)
-            .observe(viewLifecycleOwner, Observer {
-                Log.d("<LOG>", it.toString())
-                it.firstOrNull()?.let { workInfo ->
-                    if(workInfo.state == WorkInfo.State.SUCCEEDED) {
-                        /** TODO: handle on success */
-                        postProgressUpdateView?.hide()
-
-                        Log.d("<LOG>", "FEED - SUCCEEDED - isFinished ${workInfo.state.isFinished()}")
-                    }
-                    else if(workInfo.state == WorkInfo.State.FAILED) {
-                        val uploadData = PlayShortsUploadModel.parse(workInfo.outputData)
-                        postProgressUpdateView?.handleShortsUploadFailed(uploadData, playShortsUploader)
-                        Log.d("<LOG>", "FEED - FAILED")
-                    }
-                    else {
-                        postProgressUpdateView?.show()
-
-                        val progress = workInfo.progress.getInt(PlayShortsUploadConst.PROGRESS, 0)
-                        val coverUrl = workInfo.progress.getString(PlayShortsUploadConst.COVER_URL).orEmpty()
-
-                        postProgressUpdateView?.setIcon(coverUrl)
-                        postProgressUpdateView?.setProgress(progress)
-
-                        Log.d("<LOG>", "FEED - PROGRESS $progress")
-                    }
-                }
-            })
+        observeUploadShorts()
     }
 
     override fun onAttachFragment(childFragment: Fragment) {
@@ -527,6 +499,48 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
                 .getInstance(requireActivity().applicationContext)
                 .unregisterReceiver(newFeedReceiver)
         }
+    }
+
+    private fun observeUploadShorts() {
+        WorkManager.getInstance(requireActivity().applicationContext)
+            .getWorkInfosForUniqueWorkLiveData(PlayShortsUploadConst.PLAY_SHORTS_UPLOAD)
+            .observe(viewLifecycleOwner, Observer {
+                Log.d("<LOG>", it.toString())
+
+                it.firstOrNull()?.let { workInfo ->
+                    if(workInfo.state == WorkInfo.State.SUCCEEDED) {
+                        postProgressUpdateView?.hide()
+                        Toaster.build(
+                            view = requireView(),
+                            text = getString(R.string.feed_upload_shorts_success),
+                            duration = Toaster.LENGTH_LONG,
+                            type = Toaster.TYPE_NORMAL,
+                            actionText = getString(R.string.feed_upload_shorts_see_video),
+                            clickListener = View.OnClickListener {
+                                val shortsId = workInfo.outputData.getString(PlayShortsUploadConst.SHORTS_ID).orEmpty()
+                                RouteManager.route(requireContext(), ApplinkConst.PLAY_DETAIL, shortsId)
+                            }
+                        ).show()
+                        Log.d("<LOG>", "FEED - SUCCEEDED - shortsId : ${workInfo.outputData.getString(PlayShortsUploadConst.SHORTS_ID).orEmpty()}")
+                    }
+                    else if(workInfo.state == WorkInfo.State.FAILED) {
+                        val uploadData = PlayShortsUploadModel.parse(workInfo.outputData)
+                        postProgressUpdateView?.handleShortsUploadFailed(uploadData, playShortsUploader)
+                        Log.d("<LOG>", "FEED - FAILED")
+                    }
+                    else {
+                        postProgressUpdateView?.show()
+
+                        val progress = workInfo.progress.getInt(PlayShortsUploadConst.PROGRESS, 0)
+                        val coverUrl = workInfo.progress.getString(PlayShortsUploadConst.COVER_URL).orEmpty()
+
+                        postProgressUpdateView?.setIcon(coverUrl)
+                        postProgressUpdateView?.setProgress(progress)
+
+                        Log.d("<LOG>", "FEED - PROGRESS $progress")
+                    }
+                }
+            })
     }
 
     private fun initFab() {

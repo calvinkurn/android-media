@@ -7,6 +7,7 @@ object PlayShortsUploadConst {
     const val PLAY_SHORTS_UPLOAD = "PLAY_SHORTS_UPLOAD"
     const val PROGRESS = "PROGRESS"
     const val COVER_URL = "COVER_URL"
+    const val SHORTS_ID = "SHORTS_ID"
     const val CACHE_TAG = "PLAY_SHORTS_UPLOAD_CACHE_TAG"
     const val CACHE_ID = "PLAY_SHORTS_UPLOAD_CACHE_ID"
 }
