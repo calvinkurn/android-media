@@ -55,6 +55,7 @@ import com.tokopedia.play.view.contract.PlayFullscreenManager
 import com.tokopedia.play.view.contract.PlayNavigation
 import com.tokopedia.play.view.contract.PlayOrientationListener
 import com.tokopedia.play.view.custom.dialog.InteractiveWinningDialogFragment
+import com.tokopedia.play.view.dialog.PlayExploreWidgetFragment
 import com.tokopedia.play.view.dialog.interactive.giveaway.InteractiveDialogFragment
 import com.tokopedia.play.view.measurement.ScreenOrientationDataSource
 import com.tokopedia.play.view.measurement.bounds.manager.chatlistheight.ChatHeightMapKey
@@ -1832,7 +1833,8 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     override fun onExploreClicked(viewComponent: ExploreWidgetViewComponent) {
-        //TODO () show dialog
+        PlayExploreWidgetFragment.getOrCreate(childFragmentManager, requireActivity().classLoader)
+            .showNow(childFragmentManager)
     }
 
     companion object {
