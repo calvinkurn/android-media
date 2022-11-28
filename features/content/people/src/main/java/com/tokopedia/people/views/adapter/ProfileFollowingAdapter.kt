@@ -38,6 +38,7 @@ open class ProfileFollowingAdapter(
 
     inner class ViewHolder(view: View) : BaseVH(view) {
         internal var imgProfile: ImageUnify = view.findViewById(R.id.img_profile_image)
+        internal var imgBadge: ImageUnify = view.findViewById(R.id.img_badge)
         internal var btnAction: UnifyButton = view.findViewById(R.id.btn_action_follow)
         internal var textName: TextView = view.findViewById(R.id.text_display_name)
         internal var textUsername: TextView = view.findViewById(R.id.text_user_name)
@@ -97,6 +98,15 @@ open class ProfileFollowingAdapter(
         val itemContext = holder.itemView.context
         holder.imgProfile.setImageUrl(item.profile.imageCover)
         holder.textName.text = MethodChecker.fromHtml(item.profile.name)
+
+        val badgeUrl = item.profile.badges.getOrNull(BADGE_URL_IDX).orEmpty()
+        if(badgeUrl.isNotEmpty()) {
+            holder.imgBadge.show()
+            holder.imgBadge.setImageUrl(badgeUrl)
+        }
+        else {
+            holder.imgBadge.hide()
+        }
 
         if (item.profile.username.isNotBlank()) {
             holder.textUsername.show()
@@ -214,5 +224,7 @@ open class ProfileFollowingAdapter(
 
     companion object {
         const val PAGE_COUNT = 20
+
+        private const val BADGE_URL_IDX = 1
     }
 }
