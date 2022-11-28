@@ -26,7 +26,20 @@ class FilterVoucherViewModel @Inject constructor(
     }
 
     fun setStatusFilter(status: VoucherStatus) {
-        _filterData.getValueOrDefault().status.toggleData(status)
+        if (status == VoucherStatus.PROCESSING) {
+            _filterData.getValueOrDefault().status.apply {
+                clear()
+                add(VoucherStatus.NOT_STARTED)
+                add(VoucherStatus.ONGOING)
+                add(VoucherStatus.ENDED)
+                add(VoucherStatus.STOPPED)
+            }
+        } else {
+            _filterData.getValueOrDefault().status.apply {
+                clear()
+                add(status)
+            }
+        }
         _filterData.triggerChange()
     }
 
@@ -36,7 +49,10 @@ class FilterVoucherViewModel @Inject constructor(
     }
 
     fun setPromoType(type: PromoType) {
-        _filterData.getValueOrDefault().promoType.toggleData(type)
+        _filterData.getValueOrDefault().promoType.apply {
+            clear()
+            add(type)
+        }
         _filterData.triggerChange()
     }
 

@@ -49,7 +49,7 @@ class MvcListViewModel @Inject constructor(
             dispatchers.io,
             block = {
                 val param = VoucherListParam.createParam(
-                    type = null,
+                    type = filter.promoType.firstOrNull(),
                     status = filter.status,
                     sort = VoucherSort.VOUCHER_STATUS,
                     target = null,

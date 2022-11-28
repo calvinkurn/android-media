@@ -31,6 +31,16 @@ class FilterVoucherAdapter: RecyclerView.Adapter<FilterVoucherAdapter.ViewHolder
         notifyItemRangeChanged(Int.ZERO, newData.size)
     }
 
+    fun setSelectionAt(selectedIndex: Int) {
+        data = data.mapIndexed { index, data -> Pair(data.first, index == selectedIndex) }
+        notifyItemRangeChanged(Int.ZERO, data.size)
+    }
+
+    fun resetSelection() {
+        data = data.map { Pair(it.first, false) }
+        notifyItemRangeChanged(Int.ZERO, data.size)
+    }
+
     fun setOnClickListener(listener: (position: Int, isSelected: Boolean) -> Unit) {
         onClickListener = listener
     }

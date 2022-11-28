@@ -2,8 +2,8 @@
 <resources>
     <string-array name="status_items">
         <item>Semua</item>
-        <item>Berlangsung</item>
         <item>Mendatang</item>
+        <item>Berlangsung</item>
         <item>Berakhir</item>
         <item>Dihentikan</item>
     </string-array>

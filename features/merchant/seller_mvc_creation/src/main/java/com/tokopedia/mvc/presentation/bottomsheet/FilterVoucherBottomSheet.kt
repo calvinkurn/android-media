@@ -99,6 +99,8 @@ class FilterVoucherBottomSheet(
 
     private fun onRvStatusItemClicked(position: Int, isSelected: Boolean) {
         val status = VoucherStatus.values().find { it.type == position } ?: return
+        val adapter = binding?.rvStatus?.adapter as? FilterVoucherAdapter
+        adapter?.setSelectionAt(position)
         viewModel.setStatusFilter(status)
     }
 
@@ -114,6 +116,8 @@ class FilterVoucherBottomSheet(
 
     private fun onRvPromoTypeItemClicked(position: Int, isSelected: Boolean) {
         val promo = PromoType.values().getOrNull(position) ?: return
+        val adapter = binding?.rvPromoType?.adapter as? FilterVoucherAdapter
+        adapter?.setSelectionAt(position)
         viewModel.setPromoType(promo)
     }
 
