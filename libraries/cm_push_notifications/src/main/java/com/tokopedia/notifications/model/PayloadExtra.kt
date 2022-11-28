@@ -9,16 +9,16 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 data class PayloadExtra(
     @SerializedName(PayloadExtraDataKey.CAMPAIGN_NAME)
-    val campaignName: String? = null,
+    val campaignName : String? = null,
 
     @SerializedName(PayloadExtraDataKey.JOURNEY_ID)
-    val journeyId: String? = null,
+    val journeyId : String? = null,
 
     @SerializedName(PayloadExtraDataKey.JOURNEY_NAME)
-    val journeyName: String? = null,
+    val journeyName : String? = null,
 
     @SerializedName(PayloadExtraDataKey.SESSION_ID)
-    val sessionId: String? = null,
+    val sessionId : String? = null,
 
     @SerializedName(PayloadExtraDataKey.INTENT_ACTION)
     var intentAction: String? = null,
