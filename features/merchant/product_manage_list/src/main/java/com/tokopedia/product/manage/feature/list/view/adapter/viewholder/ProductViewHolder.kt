@@ -28,7 +28,6 @@ class ProductViewHolder(
         @LayoutRes
         var LAYOUT = R.layout.item_manage_product_list
         const val MAX_SHOWING_STOCK = 999_999
-        const val POSITION_TICKET_BTN_MORE_OPTION = 0
     }
 
     private val binding by viewBinding<ItemManageProductListBinding>()
@@ -78,9 +77,7 @@ class ProductViewHolder(
             if (!binding?.ivLabelGuaranteed?.isVisible.orFalse()) {
                 listener.onImpressionProductStockReminder()
             }
-        } else if (binding?.btnMoreOptions?.isVisible.orTrue() && absoluteAdapterPosition.orZero() == POSITION_TICKET_BTN_MORE_OPTION &&
-            GlobalConfig.isSellerApp()
-        ) {
+        } else if (binding?.btnMoreOptions?.isVisible.orTrue() && absoluteAdapterPosition.orZero() == Int.ZERO) {
             if (!binding?.imageNotifyMeBuyer?.isVisible.orFalse()) {
                 listener.onImpressionMoreOption()
             }

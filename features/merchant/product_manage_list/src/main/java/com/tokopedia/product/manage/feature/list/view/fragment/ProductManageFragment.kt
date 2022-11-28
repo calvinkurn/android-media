@@ -3278,7 +3278,9 @@ open class ProductManageFragment :
                     it,
                     SHARED_PREF_PRODUCT_MANAGE_MENU_OPTIONS_COACH_MARK
                 ) -> {
-                    showCoachMoreOptionMenu(false)
+                    if (GlobalConfig.isSellerApp()){
+                        showCoachMoreOptionMenu(false)
+                    }
                 }
             }
         }
