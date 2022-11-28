@@ -38,7 +38,7 @@
             "show_cancel_button": true,
             "show_help_page": true,
             "ticker_message": "Bayar sebelum 12 May 2021, 16:47 WIB",
-            "app_link": "tokopedia://howtopay?deadline\u003dRabu%2C+12+May+2021%2C+16%3A47+WIB\u0026gateway_code\u003dCIMBVA\u0026gateway_logo\u003dhttps%3A%2F%2Fecs7.tokopedia.net%2Fimg%2Ftoppay%2Fpayment-logo%2Fcimb-va.png\u0026gateway_name\u003dVirtual+Account+CIMB\u0026payment_code\u003d644908118805559\u0026payment_type\u003dVA\u0026total_amount\u003d204.100\u0026transaction_id\u003d11855338"
+            "app_link": "tokopedia://howtopay?deadline\u003dRabu%2C+12+May+2021%2C+16%3A47+WIB\u0026gateway_code\u003dCIMBVA\u0026gateway_logo\u003dhttps%3A%2F%2Fimages.tokopedia.net%2Fimg%2Ftoppay%2Fpayment-logo%2Fcimb-va.png\u0026gateway_name\u003dVirtual+Account+CIMB\u0026payment_code\u003d644908118805559\u0026payment_type\u003dVA\u0026total_amount\u003d204.100\u0026transaction_id\u003d11855338"
           },
           {
             "transaction_id": "11855433",
@@ -72,7 +72,7 @@
             "show_cancel_button": true,
             "show_help_page": true,
             "ticker_message": "Bayar sebelum 12 May 2021, 19:18 WIB",
-            "app_link": "tokopedia://howtopay?deadline\u003dRabu%2C+12+May+2021%2C+19%3A18+WIB\u0026gateway_code\u003dBCAKLIKBCA\u0026gateway_logo\u003dhttps%3A%2F%2Fecs7.tokopedia.net%2Fimg%2Ftoppay%2Fpayment-logo%2Fbca-klikbca.png\u0026gateway_name\u003dKlikBCA\u0026payment_code\u003dtest1234\u0026payment_type\u003dKLIKBCA\u0026total_amount\u003d11.100\u0026transaction_id\u003d11855433"
+            "app_link": "tokopedia://howtopay?deadline\u003dRabu%2C+12+May+2021%2C+19%3A18+WIB\u0026gateway_code\u003dBCAKLIKBCA\u0026gateway_logo\u003dhttps%3A%2F%2Fimages.tokopedia.net%2Fimg%2Ftoppay%2Fpayment-logo%2Fbca-klikbca.png\u0026gateway_name\u003dKlikBCA\u0026payment_code\u003dtest1234\u0026payment_type\u003dKLIKBCA\u0026total_amount\u003d11.100\u0026transaction_id\u003d11855433"
           },
           {
             "transaction_id": "11855421",
@@ -106,7 +106,7 @@
             "show_cancel_button": true,
             "show_help_page": true,
             "ticker_message": "Bayar sebelum 12 May 2021, 19:08 WIB",
-            "app_link": "tokopedia://howtopay?bank_info\u003dKedoya+Permai\u0026bank_logo\u003dhttps%3A%2F%2Fecs7.tokopedia.net%2Fimg%2Ficon-bca.png\u0026bank_name\u003dPT.+Tokopedia+\u0026bank_num\u003d372+309+8781\u0026deadline\u003dRabu%2C+12+May+2021%2C+19%3A08+WIB\u0026gateway_code\u003dMANUALTRANSFER\u0026gateway_logo\u003dhttps%3A%2F%2Fecs7.tokopedia.net%2Fimg%2Ftoppay\u0026gateway_name\u003dTransfer+Bank\u0026payment_code\u003d\u0026payment_type\u003dTRANSFER\u0026total_amount\u003d11.421\u0026transaction_id\u003d11855421"
+            "app_link": "tokopedia://howtopay?bank_info\u003dKedoya+Permai\u0026bank_logo\u003dhttps%3A%2F%2Fimages.tokopedia.net%2Fimg%2Ficon-bca.png\u0026bank_name\u003dPT.+Tokopedia+\u0026bank_num\u003d372+309+8781\u0026deadline\u003dRabu%2C+12+May+2021%2C+19%3A08+WIB\u0026gateway_code\u003dMANUALTRANSFER\u0026gateway_logo\u003dhttps%3A%2F%2Fimages.tokopedia.net%2Fimg%2Ftoppay\u0026gateway_name\u003dTransfer+Bank\u0026payment_code\u003d\u0026payment_type\u003dTRANSFER\u0026total_amount\u003d11.421\u0026transaction_id\u003d11855421"
           },
           {
             "transaction_id": "11855335",
@@ -140,7 +140,7 @@
             "show_cancel_button": true,
             "show_help_page": true,
             "ticker_message": "Bayar sebelum 12 May 2021, 16:38 WIB",
-            "app_link": "tokopedia://howtopay?deadline\u003dRabu%2C+12+May+2021%2C+16%3A38+WIB\u0026gateway_code\u003dCIMBVA\u0026gateway_logo\u003dhttps%3A%2F%2Fecs7.tokopedia.net%2Fimg%2Ftoppay%2Fpayment-logo%2Fcimb-va.png\u0026gateway_name\u003dVirtual+Account+CIMB\u0026payment_code\u003d644908118805559\u0026payment_type\u003dVA\u0026total_amount\u003d204.100\u0026transaction_id\u003d11855335"
+            "app_link": "tokopedia://howtopay?deadline\u003dRabu%2C+12+May+2021%2C+16%3A38+WIB\u0026gateway_code\u003dCIMBVA\u0026gateway_logo\u003dhttps%3A%2F%2Fimages.tokopedia.net%2Fimg%2Ftoppay%2Fpayment-logo%2Fcimb-va.png\u0026gateway_name\u003dVirtual+Account+CIMB\u0026payment_code\u003d644908118805559\u0026payment_type\u003dVA\u0026total_amount\u003d204.100\u0026transaction_id\u003d11855335"
           }
         ]
       }
