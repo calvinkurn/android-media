@@ -27,7 +27,7 @@ class RepurchaseProductCardListener(
     override fun onAddToCartVariant(item: RepurchaseProductUiModel) {
         AtcVariantHelper.goToAtcVariant(
             context = context,
-            productId = item.id,
+            productId = item.productCardModel.productId,
             pageSource = VariantPageSource.TOKONOW_PAGESOURCE,
             isTokoNow = true,
             shopId = item.shopId,
@@ -37,7 +37,7 @@ class RepurchaseProductCardListener(
 
     override fun onAddToCartNonVariant(item: RepurchaseProductUiModel, quantity: Int) {
         if (userSession.isLoggedIn) {
-            viewModel.onClickAddToCart(item.id, quantity, PRODUCT_REPURCHASE, item.shopId)
+            viewModel.onClickAddToCart(item.productCardModel.productId, quantity, PRODUCT_REPURCHASE, item.shopId)
         } else {
             RouteManager.route(context, ApplinkConst.LOGIN)
         }

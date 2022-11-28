@@ -16,7 +16,7 @@ class RepurchaseListDiffer : BaseTokopediaNowDiffer() {
         return if(oldItem is RepurchaseSortFilterUiModel && newItem is RepurchaseSortFilterUiModel) {
             oldItem.id == newItem.id
         } else if (oldItem is RepurchaseProductUiModel && newItem is RepurchaseProductUiModel) {
-            oldItem.id == newItem.id
+            oldItem.productCardModel.productId == newItem.productCardModel.productId
         } else {
             oldItem == newItem
         }

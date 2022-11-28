@@ -38,7 +38,6 @@ object RepurchaseProductMapper {
 
     fun List<RepurchaseProduct>.mapToProductListUiModel() = mapIndexed { index, repurchaseProduct ->
         RepurchaseProductUiModel(
-            id = repurchaseProduct.id,
             parentId = repurchaseProduct.parentProductId,
             shopId = repurchaseProduct.shop.id,
             categoryId = repurchaseProduct.categoryId,

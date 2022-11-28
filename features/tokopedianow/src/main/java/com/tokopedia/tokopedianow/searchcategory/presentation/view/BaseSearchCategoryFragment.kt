@@ -4,8 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.os.Bundle
-import android.os.Parcelable
-import android.util.SparseIntArray
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -789,12 +787,12 @@ abstract class BaseSearchCategoryFragment:
         RouteManager.route(
                 context,
                 ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
-                productItemDataView.id,
+                productItemDataView.productCardModel.productId,
         )
     }
 
     override fun onProductChooseVariantClicked(productItemDataView: ProductItemDataView) {
-        val productId = productItemDataView.id
+        val productId = productItemDataView.productCardModel.productId
         val shopId = productItemDataView.shop.id
 
         openATCVariantBottomSheet(productId, shopId)

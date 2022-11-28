@@ -6,7 +6,6 @@ import com.tokopedia.tokopedianow.common.model.TokoNowProductCardViewUiModel
 import com.tokopedia.tokopedianow.repurchase.presentation.adapter.RepurchaseTypeFactory
 
 data class RepurchaseProductUiModel(
-    val id: String,
     val parentId: String,
     val shopId: String,
     val categoryId: String,

@@ -56,7 +56,7 @@ class RepurchaseProductViewHolder(
         RouteManager.route(
             itemView.context,
             ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
-            item.id
+            item.productCardModel.productId
         )
     }
 
