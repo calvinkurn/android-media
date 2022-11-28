@@ -20,12 +20,13 @@ import com.tokopedia.play.broadcaster.ui.state.ChannelSummaryUiState
 import com.tokopedia.play.broadcaster.ui.state.LiveReportUiState
 import com.tokopedia.play.broadcaster.ui.state.PlayBroadcastSummaryUiState
 import com.tokopedia.play.broadcaster.ui.state.TagUiState
-import com.tokopedia.play.broadcaster.util.error.DefaultErrorThrowable
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
 import com.tokopedia.play_common.domain.UpdateChannelUseCase
+import com.tokopedia.play_common.domain.usecase.broadcaster.PlayBroadcastUpdateChannelUseCase
 import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.play_common.types.PlayChannelStatusType
 import com.tokopedia.play_common.util.datetime.PlayDateTimeFormatter
+import com.tokopedia.play_common.util.error.DefaultErrorThrowable
 import com.tokopedia.play_common.util.extension.setValue
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.assisted.Assisted

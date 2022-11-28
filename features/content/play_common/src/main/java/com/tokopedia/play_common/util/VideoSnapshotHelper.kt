@@ -1,4 +1,4 @@
-package com.tokopedia.play.broadcaster.shorts.util
+package com.tokopedia.play_common.util
 
 import android.content.Context
 import android.graphics.Bitmap
@@ -13,7 +13,7 @@ import javax.inject.Inject
 /**
  * Created By : Jonathan Darwin on November 15, 2022
  */
-class PlayShortsSnapshotHelper @Inject constructor() {
+class VideoSnapshotHelper @Inject constructor() {
 
     private var tempFile: File? = null
 

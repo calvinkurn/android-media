@@ -11,6 +11,7 @@ import com.tokopedia.play.broadcaster.shorts.ui.model.PlayShortsConfigUiModel
 import kotlinx.coroutines.delay
 import com.tokopedia.play.broadcaster.ui.model.ConfigurationUiModel
 import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagUiModel
+import com.tokopedia.play_common.domain.usecase.broadcaster.PlayBroadcastUpdateChannelUseCase
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
@@ -127,8 +128,11 @@ class PlayShortsRepositoryImpl @Inject constructor(
         shortsId: String,
         tags: Set<String>
     ): Boolean = withContext(dispatchers.io) {
-        setChannelTagsUseCase.apply {
-            setParams(shortsId, tags)
-        }.executeOnBackground().recommendedTags.success
+        true
+
+        /** TODO: will uncomment this later */
+//        setChannelTagsUseCase.apply {
+//            setParams(shortsId, tags)
+//        }.executeOnBackground().recommendedTags.success
     }
 }

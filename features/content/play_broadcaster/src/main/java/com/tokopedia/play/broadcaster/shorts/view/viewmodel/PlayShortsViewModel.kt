@@ -2,20 +2,18 @@ package com.tokopedia.play.broadcaster.shorts.view.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.work.OneTimeWorkRequest
-import androidx.work.WorkManager
 import com.tokopedia.play_common.util.extension.combine
 import com.google.android.exoplayer2.ExoPlayer
+import com.tokopedia.play_common.shortsuploader.model.PlayShortsUploadModel
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.content.common.ui.model.TermsAndConditionUiModel
+import com.tokopedia.play_common.shortsuploader.PlayShortsUploader
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.play.broadcaster.shorts.domain.PlayShortsRepository
 import com.tokopedia.play.broadcaster.shorts.domain.manager.PlayShortsAccountManager
-import com.tokopedia.play.broadcaster.shorts.domain.worker.PlayShortsUploadWorker
 import com.tokopedia.play.broadcaster.shorts.factory.PlayShortsMediaSourceFactory
 import com.tokopedia.play.broadcaster.shorts.ui.model.PlayShortsConfigUiModel
 import com.tokopedia.play.broadcaster.shorts.ui.model.PlayShortsMediaUiModel
-import com.tokopedia.play.broadcaster.shorts.ui.model.PlayShortsUploadUiModel
 import com.tokopedia.play.broadcaster.shorts.ui.model.action.PlayShortsAction
 import com.tokopedia.play.broadcaster.shorts.ui.model.event.PlayShortsUiEvent
 import com.tokopedia.play.broadcaster.shorts.ui.model.state.PlayShortsCoverFormUiState
@@ -25,14 +23,13 @@ import com.tokopedia.play.broadcaster.shorts.ui.model.state.PlayShortsUploadUiSt
 import com.tokopedia.play.broadcaster.shorts.view.custom.DynamicPreparationMenu
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagUiModel
-import com.tokopedia.play.broadcaster.util.error.DefaultErrorThrowable
 import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
 import com.tokopedia.play_common.model.result.NetworkResult
+import com.tokopedia.play_common.util.error.DefaultErrorThrowable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -48,7 +45,7 @@ class PlayShortsViewModel @Inject constructor(
     private val exoPlayer: ExoPlayer,
     private val mediaSourceFactory: PlayShortsMediaSourceFactory,
     private val accountManager: PlayShortsAccountManager,
-    private val workManager: WorkManager,
+    private val playShortsUploader: PlayShortsUploader,
 ) : ViewModel() {
 
     /** Public Getter */
@@ -103,7 +100,7 @@ class PlayShortsViewModel @Inject constructor(
     private val _titleForm = MutableStateFlow(PlayShortsTitleFormUiState.Empty)
     private val _coverForm = MutableStateFlow(PlayShortsCoverFormUiState.Empty)
 
-    private val _menuListUiState = kotlinx.coroutines.flow.combine(
+    private val _menuListUiState = combine(
         _menuList,
         _titleForm,
         _coverForm,
@@ -469,18 +466,13 @@ class PlayShortsViewModel @Inject constructor(
     }
 
     private fun uploadMedia() {
-        val uploadWorkerInputData = PlayShortsUploadUiModel(
+        val uploadData = PlayShortsUploadModel(
             shortsId = shortsId,
             authorId = selectedAccount.id,
             authorType = selectedAccount.type,
             mediaUri = _media.value.mediaUri,
             coverUri = _coverForm.value.coverUri,
-        ).format()
-
-        val uploadWorker = OneTimeWorkRequest.Builder(PlayShortsUploadWorker::class.java)
-            .setInputData(uploadWorkerInputData)
-            .build()
-
-        workManager.beginWith(uploadWorker).enqueue()
+        )
+        playShortsUploader.upload(uploadData)
     }
 }

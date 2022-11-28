@@ -8,6 +8,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.play.broadcaster.databinding.FragmentPlayShortsSummaryBinding
 import com.tokopedia.play.broadcaster.shorts.analytic.PlayShortsAnalytic
 import com.tokopedia.play.broadcaster.shorts.ui.model.action.PlayShortsAction
@@ -161,7 +162,7 @@ class PlayShortsSummaryFragment @Inject constructor(
         }
 
         if (prev?.selectedAccount != curr.selectedAccount) {
-            binding.tvName.text = curr.selectedAccount.name
+            binding.tvName.text = MethodChecker.fromHtml(curr.selectedAccount.name)
             binding.ivProfile.setImageUrl(curr.selectedAccount.iconUrl)
         }
     }

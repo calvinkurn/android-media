@@ -1,33 +1,29 @@
-package com.tokopedia.play.broadcaster.shorts.domain.usecase
+package com.tokopedia.play_common.domain.usecase.broadcaster
 
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
-import com.tokopedia.play.broadcaster.shorts.domain.model.BroadcasterAddMediasResponse
 import javax.inject.Inject
 
-/**
- * Created By : Jonathan Darwin on November 15, 2022
- */
 @GqlQuery(BroadcasterAddMediasUseCase.QUERY_NAME, BroadcasterAddMediasUseCase.QUERY)
 class BroadcasterAddMediasUseCase @Inject constructor(
     gqlRepository: GraphqlRepository,
-) : GraphqlUseCase<BroadcasterAddMediasResponse>(gqlRepository) {
+) : GraphqlUseCase<com.tokopedia.play_common.domain.model.broadcaster.BroadcasterAddMediasResponse>(gqlRepository) {
 
     init {
         setGraphqlQuery(BroadcasterAddMediasUseCaseQuery())
         setCacheStrategy(
             GraphqlCacheStrategy
                 .Builder(CacheType.ALWAYS_CLOUD).build())
-        setTypeClass(BroadcasterAddMediasResponse::class.java)
+        setTypeClass(com.tokopedia.play_common.domain.model.broadcaster.BroadcasterAddMediasResponse::class.java)
     }
 
     suspend fun executeOnBackground(
         creationId: String,
         source: String,
-    ): BroadcasterAddMediasResponse {
+    ): com.tokopedia.play_common.domain.model.broadcaster.BroadcasterAddMediasResponse {
         setRequestParams(
             mapOf(
                 PARAM_REQ to mapOf(
