@@ -24,6 +24,7 @@ import com.tokopedia.content.common.onboarding.view.fragment.UGCOnboardingParent
 import com.tokopedia.content.common.types.BundleData.KEY_IS_OPEN_FROM
 import com.tokopedia.content.common.types.ContentCommonUserType.KEY_AUTHOR_TYPE
 import com.tokopedia.content.common.types.ContentCommonUserType.TYPE_USER
+import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.feedcomponent.shoprecom.callback.ShopRecomWidgetCallback
 import com.tokopedia.feedcomponent.shoprecom.cordinator.ShopRecomImpressCoordinator
 import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomUiModelItem
@@ -59,6 +60,7 @@ import com.tokopedia.people.views.activity.FollowerFollowingListingActivity
 import com.tokopedia.people.views.activity.UserProfileActivity.Companion.EXTRA_USERNAME
 import com.tokopedia.people.views.adapter.UserProfilePagerAdapter
 import com.tokopedia.people.views.adapter.UserProfilePagerAdapter.Companion.FRAGMENT_KEY_FEEDS
+import com.tokopedia.people.views.fragment.bottomsheet.UserProfileOptionBottomSheet
 import com.tokopedia.people.views.adapter.UserProfilePagerAdapter.Companion.FRAGMENT_KEY_VIDEO
 import com.tokopedia.people.views.uimodel.action.UserProfileAction
 import com.tokopedia.people.views.uimodel.event.UserProfileUiEvent
@@ -192,6 +194,20 @@ class UserProfileFragment @Inject constructor(
             )
         }
 
+        mainBinding.btnKebabOption.setDrawable(
+            getIconUnifyDrawable(
+                requireContext(),
+                IconUnify.MENU_KEBAB_HORIZONTAL
+            )
+        )
+
+        mainBinding.btnKebabOption.setOnClickListener {
+            UserProfileOptionBottomSheet.getOrCreate(
+                childFragmentManager,
+                requireContext().classLoader,
+            ).show(childFragmentManager)
+        }
+
         initFabUserProfile()
         initTab()
     }
@@ -257,6 +273,31 @@ class UserProfileFragment @Inject constructor(
                         }
                     },
                 )
+            }
+            is UserProfileOptionBottomSheet -> {
+                childFragment.setListener(object : UserProfileOptionBottomSheet.Listener {
+                    @SuppressLint("PII Data Exposure")
+                    override fun onBlockingUser(bottomSheet: UserProfileOptionBottomSheet) {
+                        bottomSheet.dismiss()
+                        DialogUnify(
+                            context = requireContext(),
+                            actionType = DialogUnify.HORIZONTAL_ACTION,
+                            imageType = DialogUnify.NO_IMAGE
+                        ).apply {
+                            setTitle(
+                                getString(R.string.up_block_user_dialog_title, viewModel.displayName)
+                            )
+                            setDescription(
+                                getString(R.string.up_block_user_dialog_desc)
+                            )
+
+                            setPrimaryCTAText(getString(R.string.up_block_user_dialog_confirm))
+                            setPrimaryCTAClickListener {  }
+                            setSecondaryCTAText(getString(R.string.up_block_user_dialog_cancel))
+                            setSecondaryCTAClickListener { dismiss() }
+                        }.show()
+                    }
+                })
             }
         }
     }
@@ -495,7 +536,9 @@ class UserProfileFragment @Inject constructor(
                 buttonActionUIEditProfile()
                 mainBinding.btnAction.show()
             }
-            ProfileType.Unknown -> mainBinding.btnAction.hide()
+            ProfileType.Unknown -> {
+                mainBinding.btnAction.hide()
+            }
         }
     }
 
