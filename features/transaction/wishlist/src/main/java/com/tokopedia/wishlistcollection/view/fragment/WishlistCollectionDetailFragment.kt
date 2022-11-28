@@ -2966,7 +2966,7 @@ class WishlistCollectionDetailFragment :
 
     private fun onCollectionSettingsClicked(collectionId: String, collectionName: String) {
         bottomSheetCollectionSettings =
-            BottomSheetWishlistCollectionSettings.newInstance(collectionName, collectionId, listSettingButtons)
+            BottomSheetWishlistCollectionSettings.newInstance(collectionName, collectionId, collectionType, listSettingButtons)
         bottomSheetCollectionSettings.setListener(this@WishlistCollectionDetailFragment)
         if (bottomSheetCollectionSettings.isAdded || childFragmentManager.isStateSaved) return
         bottomSheetCollectionSettings.show(childFragmentManager)
@@ -3590,6 +3590,7 @@ class WishlistCollectionDetailFragment :
     override fun onShareCollection(
         collectionId: String,
         collectionName: String,
+        collectionType: Int,
         actionText: String,
         _collectionIndicatorTitle: String
     ) {

@@ -35,6 +35,7 @@ object WishlistCollectionConsts {
 
     const val COLLECTION_NAME = "collection_name"
     const val COLLECTION_ID = "collection_id"
+    const val COLLECTION_TYPE = "collection_type"
     const val COLLECTION_INDICATOR_TITLE = "collection_indicator_title"
     const val COLLECTION_ACTIONS = "collection_actions"
 }

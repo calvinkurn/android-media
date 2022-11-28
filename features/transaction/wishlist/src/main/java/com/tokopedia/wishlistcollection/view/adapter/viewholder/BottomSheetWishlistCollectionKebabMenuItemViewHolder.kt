@@ -10,12 +10,15 @@ import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.ACTION_KEB
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.ACTION_KEBAB_UPDATE_COLLECTION
 import com.tokopedia.wishlistcollection.view.bottomsheet.listener.ActionListenerBottomSheetMenu
 
-class BottomSheetWishlistCollectionKebabMenuItemViewHolder(private val binding: BottomsheetKebabMenuWishlistCollectionItemBinding,
-                                                           private val listener: ActionListenerBottomSheetMenu?) : RecyclerView.ViewHolder(binding.root) {
+class BottomSheetWishlistCollectionKebabMenuItemViewHolder(
+    private val binding: BottomsheetKebabMenuWishlistCollectionItemBinding,
+    private val listener: ActionListenerBottomSheetMenu?
+) : RecyclerView.ViewHolder(binding.root) {
     fun bind(
         actionItem: BottomSheetKebabActionItemData,
         _collectionId: String,
         _collectionName: String,
+        _collectionType: Int,
         _collectionIndicatorTitle: String
     ) {
         binding.run {
@@ -35,7 +38,7 @@ class BottomSheetWishlistCollectionKebabMenuItemViewHolder(private val binding: 
                     iconKebabMenu.setImage(IconUnify.SHARE_MOBILE)
                     listener?.onShareItemShown(iconKebabMenu)
                     root.setOnClickListener {
-                        listener?.onShareCollection(_collectionId, _collectionName, actionItem.text, _collectionIndicatorTitle)
+                        listener?.onShareCollection(_collectionId, _collectionName, _collectionType, actionItem.text, _collectionIndicatorTitle)
                     }
                 }
             }

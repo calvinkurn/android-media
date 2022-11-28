@@ -8,6 +8,7 @@ interface ActionListenerBottomSheetMenu {
     fun onShareCollection(
         collectionId: String,
         collectionName: String,
+        collectionType: Int,
         actionText: String,
         _collectionIndicatorTitle: String
     )

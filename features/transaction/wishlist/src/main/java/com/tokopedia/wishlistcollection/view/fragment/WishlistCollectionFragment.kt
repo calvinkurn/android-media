@@ -51,7 +51,6 @@ import com.tokopedia.wishlist.databinding.FragmentCollectionWishlistBinding
 import com.tokopedia.wishlist.util.WishlistV2Analytics
 import com.tokopedia.wishlist.util.WishlistV2Consts.EXTRA_TOASTER_WISHLIST_COLLECTION_DETAIL
 import com.tokopedia.wishlist.view.adapter.WishlistV2Adapter.Companion.LAYOUT_RECOMMENDATION_TITLE
-import com.tokopedia.wishlistcollection.di.WishlistCollectionModule
 import com.tokopedia.wishlist.view.fragment.WishlistV2Fragment
 import com.tokopedia.wishlistcollection.analytics.WishlistCollectionAnalytics
 import com.tokopedia.wishlistcollection.data.model.WishlistCollectionCarouselEmptyStateData
@@ -59,6 +58,7 @@ import com.tokopedia.wishlistcollection.data.params.UpdateWishlistCollectionPara
 import com.tokopedia.wishlistcollection.data.response.CreateWishlistCollectionResponse
 import com.tokopedia.wishlistcollection.data.response.GetWishlistCollectionResponse
 import com.tokopedia.wishlistcollection.di.DaggerWishlistCollectionComponent
+import com.tokopedia.wishlistcollection.di.WishlistCollectionModule
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.COLLECTION_ID
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.COLLECTION_NAME
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.DELAY_REFETCH_PROGRESS_DELETION
@@ -81,9 +81,13 @@ import javax.inject.Inject
 import kotlin.math.roundToInt
 
 @Keep
-class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapter.ActionListener,
-    ActionListenerFromCollectionPage, BottomSheetUpdateWishlistCollectionName.ActionListener,
-    BottomSheetOnboardingWishlistCollection.ActionListener, ActionListenerBottomSheetMenu {
+class WishlistCollectionFragment :
+    BaseDaggerFragment(),
+    WishlistCollectionAdapter.ActionListener,
+    ActionListenerFromCollectionPage,
+    BottomSheetUpdateWishlistCollectionName.ActionListener,
+    BottomSheetOnboardingWishlistCollection.ActionListener,
+    ActionListenerBottomSheetMenu {
     private var onlyAllCollection: Boolean = false
     private var binding by autoClearedNullable<FragmentCollectionWishlistBinding>()
     private lateinit var collectionAdapter: WishlistCollectionAdapter
@@ -380,7 +384,6 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
                             onlyAllCollection = true
                             checkOnboarding()
                         } else if (result.data.data.collections.size > 1) {
-
                         }
                     } else {
                         // TODO: show global error page?
@@ -527,7 +530,8 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
                                 finishDeletionWidget(data)
                             } else {
                                 updateDeletionWidget(data)
-                                handler.postDelayed(progressDeletionRunnable,
+                                handler.postDelayed(
+                                    progressDeletionRunnable,
                                     DELAY_REFETCH_PROGRESS_DELETION
                                 )
                             }
@@ -562,7 +566,8 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
                                     userId = userSession.userId,
                                     view = view,
                                     childFragmentManager = childFragmentManager,
-                                    fragment = this@WishlistCollectionFragment)
+                                    fragment = this@WishlistCollectionFragment
+                                )
                             }
                         }
                     } else {
@@ -661,7 +666,9 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
 
     private fun showBottomSheetCreateNewCollection() {
         val bottomSheetCreateCollection = BottomSheetCreateNewCollectionWishlist.newInstance(
-            arrayListOf(), WISHLIST_PAGE)
+            arrayListOf(),
+            WISHLIST_PAGE
+        )
         bottomSheetCreateCollection.setListener(this@WishlistCollectionFragment)
         if (bottomSheetCreateCollection.isAdded || childFragmentManager.isStateSaved) return
         bottomSheetCreateCollection.show(childFragmentManager)
@@ -688,6 +695,7 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
     override fun onShareCollection(
         collectionId: String,
         collectionName: String,
+        collectionType: Int,
         actionText: String,
         _collectionIndicatorTitle: String
     ) {
@@ -698,6 +706,7 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
         } else {
             collectionViewModel.getWishlistCollectionSharingData(collectionId.toLongOrZero())
         }
+        WishlistCollectionAnalytics.sendClickShareButtonCollectionEvent(collectionId, collectionType, collectionId, userSession.userId, collectionId)
     }
 
     private fun showDialogSharePermission(collectionId: String, collectionName: String) {
@@ -737,8 +746,8 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
     }
 
     override fun onCreateCollectionItemBind(allCollectionView: View, createCollectionView: View) {
-        if (!CoachMarkPreference.hasShown(requireContext(), COACHMARK_WISHLIST)
-            && onlyAllCollection
+        if (!CoachMarkPreference.hasShown(requireContext(), COACHMARK_WISHLIST) &&
+            onlyAllCollection
         ) {
             _allCollectionView = allCollectionView
             _createCollectionView = createCollectionView
@@ -804,13 +813,17 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
                 )
             )
         }
-        if (coachMarkSharing1 == null)
+        if (coachMarkSharing1 == null) {
             coachMarkSharing1 = CoachMark2(requireContext())
+        }
 
         coachMarkSharing1?.let {
             it.onFinishListener = {
                 showBottomSheetKebabMenu(
-                    collectionId, collectionName, actions, collectionIndicatorTitle
+                    collectionId,
+                    collectionName,
+                    actions,
+                    collectionIndicatorTitle
                 )
             }
 
@@ -844,18 +857,23 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
                 )
             )
         }
-        if (coachMarkSharing2 == null)
+        if (coachMarkSharing2 == null) {
             coachMarkSharing2 = CoachMark2(requireContext())
+        }
 
         coachMarkSharing2?.let {
-            it.setStepListener(object: CoachMark2.OnStepListener {
+            it.setStepListener(object : CoachMark2.OnStepListener {
                 override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
                     if (currentIndex == 0) {
                         coachMarkSharing2?.hideCoachMark()
                         bottomSheetKebabMenu.dismiss()
                         _firstAnchorKebabMenuView?.let { it1 ->
                             showWishlistCollectionSharingCoachMark(
-                                it1, _firstCollectionId, _firstCollectionName, _firstActionsCollection, _firstCollectionIndicatorTitle
+                                it1,
+                                _firstCollectionId,
+                                _firstCollectionName,
+                                _firstActionsCollection,
+                                _firstCollectionIndicatorTitle
                             )
                         }
                     }
@@ -892,8 +910,9 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
                 )
             )
         }
-        if (coachMark == null)
+        if (coachMark == null) {
             coachMark = CoachMark2(requireContext())
+        }
 
         coachMark?.let {
             it.onFinishListener = {
@@ -961,7 +980,8 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
         bottomSheetOnboarding.dismiss()
         _allCollectionView?.let { v1 ->
             _createCollectionView?.let { v2 ->
-                showWishlistCollectionCoachMark(v1, v2) }
+                showWishlistCollectionCoachMark(v1, v2)
+            }
         }
     }
 
@@ -970,7 +990,7 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
     }
 
     override fun onRecommendationItemImpression(recommendationItem: RecommendationItem, position: Int) {
-        if(recommendationItem.isTopAds) {
+        if (recommendationItem.isTopAds) {
             TopAdsUrlHitter(context).hitImpressionUrl(
                 this::class.java.simpleName,
                 recommendationItem.trackerImageUrl,
@@ -984,7 +1004,7 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
 
     override fun onRecommendationItemClick(recommendationItem: RecommendationItem, position: Int) {
         WishlistV2Analytics.clickRecommendationItem(recommendationItem, position, userSession.userId)
-        if(recommendationItem.isTopAds) {
+        if (recommendationItem.isTopAds) {
             TopAdsUrlHitter(context).hitClickUrl(
                 this::class.java.simpleName,
                 recommendationItem.clickUrl,
@@ -997,8 +1017,11 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
             val intent = if (recommendationItem.appUrl.isNotEmpty()) {
                 RouteManager.getIntent(it, recommendationItem.appUrl)
             } else {
-                RouteManager.getIntent(it, ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
-                    recommendationItem.productId.toString())
+                RouteManager.getIntent(
+                    it,
+                    ApplinkConstInternalMarketplace.PRODUCT_DETAIL,
+                    recommendationItem.productId.toString()
+                )
             }
             startActivityForResult(intent, REQUEST_CODE_COLLECTION_DETAIL)
         }
