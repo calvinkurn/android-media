@@ -1,9 +1,12 @@
 package com.tokopedia.play.broadcaster.viewmodel
 
+import android.os.Bundle
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.content.common.types.ContentCommonUserType.TYPE_SHOP
 import com.tokopedia.content.common.types.ContentCommonUserType.TYPE_USER
 import com.tokopedia.content.common.ui.model.AccountStateInfoType
+import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
+import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastDataStore
 import com.tokopedia.play.broadcaster.domain.model.GetAddedChannelTagsResponse
 import com.tokopedia.play.broadcaster.domain.model.GetChannelResponse
 import com.tokopedia.play.broadcaster.domain.repository.PlayBroadcastRepository
@@ -16,10 +19,16 @@ import com.tokopedia.play.broadcaster.robot.PlayBroadcastViewModelRobot
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroProductUiMapper
 import com.tokopedia.play.broadcaster.ui.model.ChannelStatus
+import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
+import com.tokopedia.play.broadcaster.ui.model.title.PlayTitleUiModel
 import com.tokopedia.play.broadcaster.util.assertEmpty
 import com.tokopedia.play.broadcaster.util.assertEqualTo
 import com.tokopedia.play.broadcaster.util.assertTrue
+import com.tokopedia.play.broadcaster.util.getOrAwaitValue
 import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
+import com.tokopedia.play.broadcaster.view.state.CoverSetupState
+import com.tokopedia.play.broadcaster.view.state.SetupDataState
+import com.tokopedia.play_common.model.result.NetworkResult
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.*
@@ -44,12 +53,15 @@ class PlayBroadcasterViewModelTest {
     private val mockGetAddedTagUseCase: GetAddedChannelTagsUseCase = mockk(relaxed = true)
     private val mockUserSessionInterface: UserSessionInterface = mockk(relaxed = true)
     private val mockHydraSharedPreferences: HydraSharedPreferences = mockk(relaxed = true)
+    private val mockDataStore: PlayBroadcastDataStore = mockk(relaxed = true)
+    private val mockHydraConfigStore: HydraConfigStore = mockk(relaxed = true)
 
     private val productSetupUiModelBuilder = ProductSetupUiModelBuilder()
     private val uiModelBuilder = UiModelBuilder()
 
     private val mockChannel = GetChannelResponse.Channel(
         basic = GetChannelResponse.ChannelBasic(
+            channelId = "123",
             coverUrl = "https://tokopedia.com"
         )
     )
@@ -564,6 +576,7 @@ class PlayBroadcasterViewModelTest {
     fun `when entry point from whatever that require open as seller but seller not eligible then selected account should be non-seller`() {
         val configMock = uiModelBuilder.buildConfigurationUiModel()
         val accountMock = uiModelBuilder.buildAccountListModel(tncShop = false)
+        val mockCover = PlayCoverUiModel(croppedCover = CoverSetupState.Blank, state = SetupDataState.Draft)
 
         coEvery { mockRepo.getAccountList() } returns accountMock
         coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns configMock
@@ -578,9 +591,102 @@ class PlayBroadcasterViewModelTest {
 
         robot.use {
             val state = robot.recordState {
-                it.getAccountConfiguration(TYPE_SHOP)
+                getAccountConfiguration(TYPE_SHOP)
+                getViewModel().submitAction(PlayBroadcastAction.SetCover(mockCover))
             }
             state.selectedContentAccount.type.assertEqualTo(TYPE_USER)
+        }
+    }
+
+    @Test
+    fun `when user as shop setup channel and success`() {
+        val configMock = uiModelBuilder.buildConfigurationUiModel(channelId = "123")
+        val accountMock = uiModelBuilder.buildAccountListModel()
+        val mockTitle = PlayTitleUiModel.HasTitle("Title 1")
+        val mockCover = PlayCoverUiModel(croppedCover = CoverSetupState.Blank, state = SetupDataState.Draft)
+
+        coEvery { mockRepo.getAccountList() } returns accountMock
+        coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns configMock
+        coEvery { mockDataStore.getSetupDataStore().getTitle() } returns mockTitle
+        coEvery { mockHydraConfigStore.getChannelId() } returns "123"
+
+        val robot = PlayBroadcastViewModelRobot(
+            dispatchers = testDispatcher,
+            channelRepo = mockRepo,
+            getChannelUseCase = mockGetChannelUseCase,
+            getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
+            productMapper = PlayBroProductUiMapper(),
+            mDataStore = mockDataStore,
+            hydraConfigStore = mockHydraConfigStore,
+        )
+
+        robot.use {
+            it.recordState {
+                getAccountConfiguration(TYPE_SHOP)
+                getViewModel().submitAction(PlayBroadcastAction.SetCover(mockCover))
+            }
+            it.getViewModel().channelId.assertEqualTo("123")
+            it.getViewModel().channelTitle.assertEqualTo("Title 1")
+            it.getViewModel().remainingDurationInMillis.assertEqualTo(0L)
+            it.getViewModel().productSectionList.assertEqualTo(mockProductTagSectionList)
+
+
+            val configInfo = it.getViewModel().observableConfigInfo.getOrAwaitValue()
+            configInfo.assertEqualTo(NetworkResult.Success(configMock))
+        }
+    }
+
+    @Test
+    fun `when user as shop setup channel and empty`() {
+        val configMock = uiModelBuilder.buildConfigurationUiModel()
+        val accountMock = uiModelBuilder.buildAccountListModel()
+        val mockTitle = PlayTitleUiModel.NoTitle
+
+        coEvery { mockRepo.getAccountList() } returns accountMock
+        coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns configMock
+        coEvery { mockDataStore.getSetupDataStore().getTitle() } returns mockTitle
+        coEvery { mockHydraConfigStore.getChannelId() } returns ""
+
+        val robot = PlayBroadcastViewModelRobot(
+            dispatchers = testDispatcher,
+            channelRepo = mockRepo,
+            getChannelUseCase = mockGetChannelUseCase,
+            getAddedChannelTagsUseCase = mockGetAddedTagUseCase,
+            productMapper = PlayBroProductUiMapper(),
+            mDataStore = mockDataStore,
+            hydraConfigStore = mockHydraConfigStore,
+        )
+
+        robot.use {
+            it.recordState { getAccountConfiguration(TYPE_SHOP) }
+            it.getViewModel().channelId.assertEqualTo("")
+            it.getViewModel().channelTitle.assertEqualTo("")
+            it.getViewModel().remainingDurationInMillis.assertEqualTo(0L)
+            it.getViewModel().productSectionList.assertEqualTo(mockProductTagSectionList)
+
+            val configInfo = it.getViewModel().observableConfigInfo.getOrAwaitValue()
+            configInfo.assertEqualTo(NetworkResult.Success(configMock))
+        }
+    }
+
+    @Test
+    fun `when user save state`() {
+        val accountMock = uiModelBuilder.buildAccountListModel().first()
+        val mockConfig = uiModelBuilder.buildConfigurationUiModel()
+        val bundle = Bundle().apply {
+            putParcelable("channel_id", mockConfig)
+            putBoolean("key_is_live_stream_ended", true)
+            putParcelable("key_author", accountMock)
+        }
+
+        coEvery { mockHydraConfigStore.getAuthor() } returns accountMock
+        coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns mockConfig
+
+        val robot = PlayBroadcastViewModelRobot(hydraConfigStore = mockHydraConfigStore, channelRepo = mockRepo)
+
+        robot.use {
+            it.getViewModel().saveState(bundle)
+            it.getViewModel().restoreState(bundle)
         }
     }
 
