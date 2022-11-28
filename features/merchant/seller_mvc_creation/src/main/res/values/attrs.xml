@@ -9,4 +9,9 @@
         <attr name="date_time_placeholder_text" format="string"/>
         <attr name="time_placeholder_text" format="string"/>
     </declare-styleable>
+    <declare-styleable name="VoucherTypeSelectionView">
+        <attr name="is_active" format="boolean"/>
+        <attr name="title_text" format="string"/>
+        <attr name="description_text" format="string"/>
+    </declare-styleable>
 </resources>

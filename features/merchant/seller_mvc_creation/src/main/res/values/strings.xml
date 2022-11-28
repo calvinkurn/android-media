@@ -105,7 +105,7 @@
     <string name="smvc_placeholder_share_component_outgoing_title">Kupon Produk dari %s</string>
     <string name="smvc_share_component_outgoing_text_description">Yuk, belanja dan pakai Kupon Produknya sekarang!</string>
     <string name="smvc_placeholder_share_component_text_description">Dapatkan Kupon Produk %s di \@Tokopedia hingga %s pukul %s WIB hanya untukmu!</string>
-<!--    <string name="smvc_placeholder_product_price">%s - %s</string>-->
+    <!--    <string name="smvc_placeholder_product_price">%s - %s</string>-->
     <string name="smvc_placeholder_share_component_outgoing_title_product_voucher">Kupon Produk dari %s</string>
     <string name="smvc_placeholder_share_component_outgoing_title_shop_voucher">Voucher Toko dari %s</string>
 
@@ -198,5 +198,14 @@
     <string name="smvc_see_tnc_title_label"><![CDATA[Lihat Syarat & Ketentuan Penggunaan Kupon]]></string>
     <string name="smvc_cancel_label">Batalkan</string>
     <string name="smvc_stop_label">Hentikan</string>
+
+    <!--Voucher Creation Step One-->
+    <string name="smvc_kupon_toko_label">Kupon Toko</string>
+    <string name="smvc_kupon_toko_description">Berlaku untuk semua produk yang ada di tokomu.</string>
+    <string name="smvc_kupon_produk_label">Kupon Produk</string>
+    <string name="smvc_kupon_produk_description">Hanya berlaku untuk produk-produk yang kamu pilih.</string>
+    <string name="smvc_choose_coupon_type_label">Pilih Jenis Kupon</string>
+    <string name="smvc_creation_step_one_out_of_three_sub_title_label">Langkah 1 dari 3</string>
+    <string name="smvc_creation_step_one_out_of_four_sub_title_label">Langkah 1 dari 4</string>
 
 </resources>
