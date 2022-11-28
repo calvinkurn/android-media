@@ -37,8 +37,8 @@ object RollenceKey {
     const val SEARCH_BROAD_MATCH_TRACKER_UNIFICATION = "keyword_track_broad"
 
     // Purchase Platform
-    const val WISHLIST_CONTROL_VARIANT = "control_variant"
-    const val WISHLIST_EXPERIMENT_VARIANT = "experiment_variant"
+    const val CONTROL_VARIANT = "control_variant"
+    const val EXPERIMENT_VARIANT = "experiment_variant"
     const val WISHLIST_COLLECTION = "WL_collection_andro"
     const val WISHLIST_COLLECTION_SHARING = "WL_sharing_andro"
     const val UOH_REPURCHASE = "uoh_buyagainexp_andr"
