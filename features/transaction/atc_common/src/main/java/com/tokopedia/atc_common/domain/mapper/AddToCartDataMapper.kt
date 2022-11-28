@@ -21,7 +21,6 @@ import com.tokopedia.atc_common.domain.model.response.OvoInsufficientDetails
 import com.tokopedia.atc_common.domain.model.response.OvoInsufficientTopup
 import com.tokopedia.atc_common.domain.model.response.OvoValidationDataModel
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import javax.inject.Inject
 import kotlin.math.roundToLong
 
@@ -101,12 +100,12 @@ class AddToCartDataMapper @Inject constructor() {
     private fun mapDataModelOcs(it: OcsDataResponse): DataModel {
         val dataModel = DataModel()
         dataModel.cartId = it.ocsData.cartId
-        dataModel.productId = it.ocsData.productId.toLongOrZero()
+        dataModel.productId = it.ocsData.productId
         dataModel.quantity = it.ocsData.quantity
         dataModel.notes = it.ocsData.notes
-        dataModel.shopId = it.ocsData.shopId.toLongOrZero()
-        dataModel.customerId = it.ocsData.customerId.toLongOrZero()
-        dataModel.warehouseId = it.ocsData.warehouseId.toLongOrZero()
+        dataModel.shopId = it.ocsData.shopId
+        dataModel.customerId = it.ocsData.customerId
+        dataModel.warehouseId = it.ocsData.warehouseId
         dataModel.trackerAttribution = it.ocsData.trackerAttribution
         dataModel.trackerListName = it.ocsData.trackerListName
         dataModel.ucUtParam = it.ocsData.ucUtParam
@@ -179,12 +178,12 @@ class AddToCartDataMapper @Inject constructor() {
                 success = data.success,
                 message = ArrayList(data.message),
                 cartId = cart.cartId,
-                productId = cart.productId.toLongOrZero(),
+                productId = cart.productId,
                 quantity = cart.quantity,
                 notes = cart.notes,
-                shopId = cart.shopId.toLongOrZero(),
-                customerId = cart.customerId.toLongOrZero(),
-                warehouseId = cart.warehouseId.toLongOrZero()
+                shopId = cart.shopId,
+                customerId = cart.customerId,
+                warehouseId = cart.warehouseId
         )
     }
 

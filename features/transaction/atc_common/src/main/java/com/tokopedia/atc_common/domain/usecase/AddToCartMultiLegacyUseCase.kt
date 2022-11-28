@@ -49,14 +49,14 @@ class AddToCartMultiLegacyUseCase @Inject constructor(private val graphqlUseCase
                     for (jsonElement in jsonArray) {
                         try {
                             val product = jsonElement.asJsonObject
-                            val productId = product[PRODUCT_ID_KEY].asLong
+                            val productId = product[PRODUCT_ID_KEY].asString
                             val productName = product[PRODUCT_NAME_KEY].asString
                             val quantity = product[QUANTITY_KEY].asInt
                             val productPrice = product[PRODUCT_PRICE_KEY].asString
                             val category = product[CATEGORY_KEY].asString
-                            AddToCartBaseAnalytics.sendAppsFlyerTracking(productId.toString(), productName, productPrice,
+                            AddToCartBaseAnalytics.sendAppsFlyerTracking(productId, productName, productPrice,
                                     quantity.toString(), category)
-                            AddToCartBaseAnalytics.sendBranchIoTracking(productId.toString(), productName, productPrice,
+                            AddToCartBaseAnalytics.sendBranchIoTracking(productId, productName, productPrice,
                                     quantity.toString(), category, "",
                                     "", "", "",
                                     "", "", userId)
