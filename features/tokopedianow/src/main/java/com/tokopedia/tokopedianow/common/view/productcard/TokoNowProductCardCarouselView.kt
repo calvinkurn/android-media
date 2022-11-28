@@ -1,11 +1,9 @@
 package com.tokopedia.tokopedianow.common.view.productcard
 
 import android.content.Context
-import android.os.Parcelable
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.tokopedianow.common.adapter.TokoNowProductCardCarouselAdapter
 import com.tokopedia.tokopedianow.common.adapter.differ.TokoNowProductCardCarouselDiffer
@@ -21,7 +19,6 @@ import com.tokopedia.unifycomponents.BaseCustomView
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.launch
 import kotlin.coroutines.CoroutineContext
 
 class TokoNowProductCardCarouselView @JvmOverloads constructor(
@@ -42,16 +39,8 @@ class TokoNowProductCardCarouselView @JvmOverloads constructor(
         )
     }
 
-    private var layoutManager: LinearLayoutManager = CustomProductCardCarouselLinearLayoutManager(context)
-
-    private val scrollListener = object : RecyclerView.OnScrollListener() {
-        override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
-            super.onScrolled(recyclerView, dx, dy)
-            saveInstanceStateToLayoutManager(recyclerView)
-        }
-    }
-
     private var binding: LayoutTokopedianowProductCardCarouselViewBinding
+    private var layoutManager: LinearLayoutManager = CustomProductCardCarouselLinearLayoutManager(context)
     private var listener: TokoNowProductCardCarouselListener? = null
 
     init {
@@ -60,12 +49,11 @@ class TokoNowProductCardCarouselView @JvmOverloads constructor(
             this,
             true
         ).apply {
-            root.addOnScrollListener(scrollListener)
             root.addItemDecoration(ProductCardCarouselDecoration(context))
+            root.itemAnimator = null
+            root.layoutManager = layoutManager
+            root.adapter = adapter
         }
-
-        binding.root.layoutManager = layoutManager
-        binding.root.adapter = adapter
     }
 
     override val coroutineContext: CoroutineContext = SupervisorJob() + Dispatchers.Main
@@ -77,18 +65,6 @@ class TokoNowProductCardCarouselView @JvmOverloads constructor(
         listener?.onProductCardAddVariantClicked(
             position = position,
             product = product
-        )
-    }
-
-    override fun onProductCardAnimationFinished(
-        position: Int,
-        product: TokoNowProductCardCarouselItemUiModel,
-        quantity: Int
-    ) {
-        listener?.onProductCardAnimationFinished(
-            position = position,
-            product = product,
-            quantity = quantity
         )
     }
 
@@ -132,23 +108,6 @@ class TokoNowProductCardCarouselView @JvmOverloads constructor(
         )
     }
 
-    private fun saveInstanceStateToLayoutManager(
-        recyclerView: RecyclerView
-    ) {
-        launch {
-            val scrollState = recyclerView.layoutManager?.onSaveInstanceState()
-            listener?.saveScrollState(scrollState)
-        }
-    }
-
-    private fun restoreInstanceStateToLayoutManager() {
-        launch {
-            listener?.getScrollState()?.let {
-                layoutManager.onRestoreInstanceState(it)
-            }
-        }
-    }
-
     fun bindItems(
         items: List<Visitable<*>>,
         seeMoreModel: TokoNowSeeMoreCardCarouselUiModel? = null
@@ -160,7 +119,6 @@ class TokoNowProductCardCarouselView @JvmOverloads constructor(
         } else {
             adapter.submitList(items)
         }
-        restoreInstanceStateToLayoutManager()
     }
 
     fun updateItems(
@@ -184,11 +142,6 @@ class TokoNowProductCardCarouselView @JvmOverloads constructor(
             position: Int,
             product: TokoNowProductCardCarouselItemUiModel
         )
-        fun onProductCardAnimationFinished(
-            position: Int,
-            product: TokoNowProductCardCarouselItemUiModel,
-            quantity: Int
-        )
         fun onProductCardQuantityChanged(
             position: Int,
             product: TokoNowProductCardCarouselItemUiModel,
@@ -201,16 +154,10 @@ class TokoNowProductCardCarouselView @JvmOverloads constructor(
         fun onSeeMoreClicked(
             seeMoreUiModel: TokoNowSeeMoreCardCarouselUiModel
         )
-        fun saveScrollState(
-            state: Parcelable?
-        )
-        fun getScrollState(): Parcelable?
     }
 
 
     interface TokoNowProductCardCarouseBasicListener: TokoNowProductCardCarouselListener{
         override fun onSeeMoreClicked(seeMoreUiModel: TokoNowSeeMoreCardCarouselUiModel) {}
-        override fun saveScrollState(state: Parcelable?) {}
-        override fun getScrollState(): Parcelable? = null
     }
 }

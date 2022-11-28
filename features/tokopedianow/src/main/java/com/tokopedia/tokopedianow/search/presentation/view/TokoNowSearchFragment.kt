@@ -1,7 +1,6 @@
 package com.tokopedia.tokopedianow.search.presentation.view
 
 import android.os.Bundle
-import android.os.Parcelable
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -20,7 +19,6 @@ import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
-import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardCarouselItemUiModel
 import com.tokopedia.tokopedianow.search.analytics.SearchTracking
@@ -404,22 +402,8 @@ class TokoNowSearchFragment :
         quantity: Int,
         broadMatchIndex: Int,
     ) {
-        getViewModel().onViewATCBroadMatchItem(broadMatchItemDataView, quantity, broadMatchIndex, false)
+        getViewModel().onViewATCBroadMatchItem(broadMatchItemDataView, quantity, broadMatchIndex)
     }
-
-    override fun onBroadMatchItemATCNonVariantAnimationFinished(
-        broadMatchItemDataView: TokoNowProductCardCarouselItemUiModel,
-        quantity: Int,
-        broadMatchIndex: Int
-    ) {
-        getViewModel().onViewATCBroadMatchItemAnimationFinished(broadMatchItemDataView, quantity, broadMatchIndex, true)
-    }
-
-    override fun onSaveCarouselScrollState(adapterPosition: Int, state: Parcelable?) {
-        carouselScrollState[adapterPosition] = state
-    }
-
-    override fun onGetCarouselScrollState(adapterPosition: Int): Parcelable? = carouselScrollState[adapterPosition]
 
     private fun sendATCBroadMatchTrackingEvent(
         atcTrackingData: Triple<Int, String, TokoNowProductCardCarouselItemUiModel>

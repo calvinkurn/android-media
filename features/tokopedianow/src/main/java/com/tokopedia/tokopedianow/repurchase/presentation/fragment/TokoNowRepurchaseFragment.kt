@@ -22,6 +22,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalNavigation
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
+import com.tokopedia.discovery.common.constants.SearchApiConst.Companion.DEFAULT_VALUE_OF_PARAMETER_DEVICE
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observe
@@ -42,7 +43,11 @@ import com.tokopedia.minicart.common.widget.MiniCartWidget
 import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.VariantPageSource
+import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant
+import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.PAGE_NUMBER_RECOM_WIDGET
+import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.RECOM_WIDGET
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.searchbar.helper.ViewHelper
@@ -55,6 +60,7 @@ import com.tokopedia.tokopedianow.categoryfilter.presentation.activity.TokoNowCa
 import com.tokopedia.tokopedianow.categoryfilter.presentation.activity.TokoNowCategoryFilterActivity.Companion.REQUEST_CODE_CATEGORY_FILTER_BOTTOM_SHEET
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.SCREEN_NAME_TOKONOW_OOC
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalytics
+import com.tokopedia.tokopedianow.common.constant.ConstantValue.PAGE_NAME_RECOMMENDATION_NO_RESULT_PARAM
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference.SetUserPreferenceData
 import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
@@ -365,10 +371,6 @@ class TokoNowRepurchaseFragment:
 
     override fun saveScrollState(adapterPosition: Int, scrollState: Parcelable?) { /* nothing to do */ }
 
-    override fun getParallaxState(adapterPosition: Int): Map<String, Float>? = null
-
-    override fun saveParallaxState(adapterPosition: Int, mapParallaxState: Map<String, Float>) { /* nothing to do */ }
-
     private fun initInjector() {
         DaggerRepurchaseComponent.builder()
             .baseAppComponent((requireContext().applicationContext as BaseMainApplication).baseAppComponent)
@@ -467,6 +469,7 @@ class TokoNowRepurchaseFragment:
             rvRepurchase?.apply {
                 addProductItemDecoration()
                 adapter = this@TokoNowRepurchaseFragment.adapter
+                itemAnimator = null
                 layoutManager = GridLayoutManager(context, SPAN_COUNT).apply {
                     spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
                         override fun getSpanSize(position: Int): Int {
@@ -939,6 +942,19 @@ class TokoNowRepurchaseFragment:
         viewModel.clearSelectedFilters()
         viewModel.showLoading()
         refreshMiniCart()
+        refreshProductRecommendation()
+    }
+
+    private fun refreshProductRecommendation() {
+        productRecommendationViewModel.updateProductRecommendation(
+            GetRecommendationRequestParam(
+                pageName = PAGE_NAME_RECOMMENDATION_NO_RESULT_PARAM,
+                xSource = RECOM_WIDGET,
+                isTokonow = true,
+                pageNumber = PAGE_NUMBER_RECOM_WIDGET,
+                xDevice = DEFAULT_VALUE_OF_PARAMETER_DEVICE,
+            )
+        )
     }
 
     private fun refreshMiniCart() {

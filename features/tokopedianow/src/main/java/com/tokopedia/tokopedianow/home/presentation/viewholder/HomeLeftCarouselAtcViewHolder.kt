@@ -7,14 +7,12 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.home_component.util.setGradientBackground
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
-import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.decoration.ProductCardCarouselDecoration
 import com.tokopedia.tokopedianow.common.util.CustomProductCardCarouselLinearLayoutManager
 import com.tokopedia.tokopedianow.common.view.TokoNowDynamicHeaderView
 import com.tokopedia.tokopedianow.common.analytics.RealTimeRecommendationAnalytics
 import com.tokopedia.tokopedianow.common.listener.RealTimeRecommendationListener
-import com.tokopedia.tokopedianow.common.view.TokoNowView
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowHomeLeftCarouselAtcBinding
 import com.tokopedia.tokopedianow.home.presentation.adapter.leftcarousel.HomeLeftCarouselAtcProductCardAdapter
 import com.tokopedia.tokopedianow.home.presentation.adapter.leftcarousel.HomeLeftCarouselAtcProductCardDiffer
@@ -31,27 +29,21 @@ import kotlin.math.abs
 class HomeLeftCarouselAtcViewHolder(
     itemView: View,
     private val homeLeftCarouselAtcCallback: HomeLeftCarouselAtcCallback? = null,
-    private val tokoNowView: TokoNowView? = null,
     private val rtrListener: RealTimeRecommendationListener? = null,
     private val rtrAnalytics: RealTimeRecommendationAnalytics? = null
 ) : AbstractViewHolder<HomeLeftCarouselAtcUiModel>(itemView), CoroutineScope {
 
     companion object {
-        private const val IMAGE_TRANSLATION_X = "image_translation_x"
-        private const val IMAGE_ALPHA = "image_alpha"
-
         private const val FIRST_VISIBLE_ITEM_POSITION = 0
         private const val NO_SCROLLED = 0
         private const val IMAGE_PARALLAX_ALPHA = 0.5f
         private const val EXPECTED_IMAGE_PARALLAX_RATIO = 0.2f
-        private const val DEFAULT_IMAGE_TRANSLATION_VALUE = 0f
-        private const val DEFAULT_IMAGE_ALPHA_VALUE = 1f
 
         @LayoutRes
         val LAYOUT = R.layout.item_tokopedianow_home_left_carousel_atc
     }
 
-    private var binding: ItemTokopedianowHomeLeftCarouselAtcBinding? by viewBinding()
+    private val binding: ItemTokopedianowHomeLeftCarouselAtcBinding? by viewBinding()
 
     private val adapter by lazy {
         HomeLeftCarouselAtcProductCardAdapter(
@@ -63,15 +55,12 @@ class HomeLeftCarouselAtcViewHolder(
         )
     }
 
-    private var layoutManager: LinearLayoutManager = CustomProductCardCarouselLinearLayoutManager(itemView.context)
+    private val layoutManager: LinearLayoutManager = CustomProductCardCarouselLinearLayoutManager(itemView.context)
 
     private val scrollListener = object : RecyclerView.OnScrollListener() {
         override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
             super.onScrolled(recyclerView, dx, dy)
-            binding?.apply {
-                calculateParallaxImage(dx)
-                saveInstanceStateToLayoutManager(recyclerView)
-            }
+            binding?.calculateParallaxImage(dx)
         }
     }
 
@@ -94,16 +83,16 @@ class HomeLeftCarouselAtcViewHolder(
             setupHeader(
                 element = element
             )
-            setupParallaxImage(
-                element = element
-            )
-            setupRecyclerView(
+            hitLeftCarouselImpressionTracker(
                 element = element
             )
             setupRealTimeRecommendation(
                 element = element
             )
-            hitLeftCarouselImpressionTracker(
+            setupParallaxImage(
+                element = element
+            )
+            submitList(
                 element = element
             )
         }
@@ -112,7 +101,7 @@ class HomeLeftCarouselAtcViewHolder(
     override fun bind(element: HomeLeftCarouselAtcUiModel?, payloads: MutableList<Any>) {
         if (payloads.firstOrNull() == true && element != null) {
             binding?.apply {
-                setupRecyclerView(element = element)
+                submitList(element = element)
                 setupRealTimeRecommendation(element = element)
             }
         }
@@ -135,7 +124,11 @@ class HomeLeftCarouselAtcViewHolder(
         element: HomeLeftCarouselAtcUiModel
     ) {
         parallaxImageView.apply {
-            loadImage(element.imageBanner)
+            com.bumptech.glide.Glide.with(itemView.context)
+                .load(element.imageBanner)
+                .fitCenter()
+                .into(this)
+
             setOnClickListener {
                 homeLeftCarouselAtcCallback?.onLeftCarouselLeftImageClicked(
                     appLink = element.imageBannerAppLink,
@@ -149,13 +142,6 @@ class HomeLeftCarouselAtcViewHolder(
         )
     }
 
-    private fun ItemTokopedianowHomeLeftCarouselAtcBinding.setupRecyclerView(
-        element: HomeLeftCarouselAtcUiModel
-    ) {
-        adapter.submitList(ArrayList(element.productList))
-        restoreInstanceStateToLayoutManager()
-    }
-
     private fun ItemTokopedianowHomeLeftCarouselAtcBinding.setupRealTimeRecommendation(
         element: HomeLeftCarouselAtcUiModel
     ) {
@@ -164,6 +150,10 @@ class HomeLeftCarouselAtcViewHolder(
             analytics = rtrAnalytics
             bind(element.realTimeRecom)
         }
+    }
+
+    private fun submitList(element: HomeLeftCarouselAtcUiModel) {
+        adapter.submitList(ArrayList(element.productList))
     }
 
     private fun ItemTokopedianowHomeLeftCarouselAtcBinding.hitLeftCarouselImpressionTracker(
@@ -189,40 +179,6 @@ class HomeLeftCarouselAtcViewHolder(
                     val alpha = (abs(distanceLeftFirstItem).toFloat() / itemSize * IMAGE_PARALLAX_ALPHA)
                     parallaxImageView.alpha = alpha + (abs(rvProduct.paddingStart).toFloat() / itemSize * IMAGE_PARALLAX_ALPHA)
                 }
-            }
-        }
-    }
-
-    private fun ItemTokopedianowHomeLeftCarouselAtcBinding.saveInstanceStateToLayoutManager(
-        recyclerView: RecyclerView
-    ) {
-        launch {
-            val scrollState = recyclerView.layoutManager?.onSaveInstanceState()
-            tokoNowView?.saveScrollState(
-                adapterPosition = layoutPosition,
-                scrollState = scrollState
-            )
-
-            val mapParallaxState = mapOf(
-                IMAGE_TRANSLATION_X to parallaxImageView.translationX,
-                IMAGE_ALPHA to parallaxImageView.alpha
-            )
-            tokoNowView?.saveParallaxState(
-                adapterPosition = layoutPosition,
-                mapParallaxState = mapParallaxState
-            )
-        }
-    }
-
-    private fun ItemTokopedianowHomeLeftCarouselAtcBinding.restoreInstanceStateToLayoutManager() {
-        launch {
-            tokoNowView?.apply {
-                val scrollState = getScrollState(
-                    adapterPosition = layoutPosition
-                )
-                rvProduct.layoutManager?.onRestoreInstanceState(scrollState)
-                parallaxImageView.translationX = tokoNowView.getParallaxState(layoutPosition)?.get(IMAGE_TRANSLATION_X) ?: DEFAULT_IMAGE_TRANSLATION_VALUE
-                parallaxImageView.alpha = tokoNowView.getParallaxState(layoutPosition)?.get(IMAGE_ALPHA) ?: DEFAULT_IMAGE_ALPHA_VALUE
             }
         }
     }

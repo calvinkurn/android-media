@@ -10,7 +10,5 @@ interface ProductItemListener {
 
     fun onProductNonVariantQuantityChanged(productItemDataView: ProductItemDataView, quantity: Int)
 
-    fun onProductNonVariantAnimationFinished(productItemDataView: ProductItemDataView, quantity: Int)
-
     fun onProductChooseVariantClicked(productItemDataView: ProductItemDataView)
 }

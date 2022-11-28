@@ -5,7 +5,7 @@ import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendati
 import com.tokopedia.tokopedianow.common.adapter.typefactory.TokoNowProductRecommendationTypeFactory
 
 class TokoNowProductRecommendationUiModel(
-    var requestParam: GetRecommendationRequestParam
+    val requestParam: GetRecommendationRequestParam
 ): Visitable<TokoNowProductRecommendationTypeFactory> {
     override fun type(typeFactory: TokoNowProductRecommendationTypeFactory): Int {
         return typeFactory.type(this)

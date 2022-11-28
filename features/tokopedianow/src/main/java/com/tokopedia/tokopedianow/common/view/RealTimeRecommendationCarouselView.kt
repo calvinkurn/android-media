@@ -131,7 +131,7 @@ class RealTimeRecommendationCarouselView @JvmOverloads constructor(
     private fun renderProductCarousel(data: HomeRealTimeRecomUiModel) {
         itemView?.productCarousel?.apply {
             setListener(this@RealTimeRecommendationCarouselView)
-            setItems(items = data.productList)
+            bind(items = data.productList)
             show()
         }
     }
@@ -234,14 +234,6 @@ class RealTimeRecommendationCarouselView @JvmOverloads constructor(
         product: TokoNowProductCardCarouselItemUiModel
     ) {
         trackProductImpression(position, product)
-    }
-
-    override fun onProductCardAnimationFinished(
-        position: Int,
-        product: TokoNowProductCardCarouselItemUiModel,
-        quantity: Int
-    ) {
-
     }
 
     override fun onProductCardQuantityChanged(

@@ -48,8 +48,6 @@ import com.tokopedia.unifycomponents.ChipsUnify
 object RepurchaseLayoutMapper {
 
     const val PRODUCT_REPURCHASE = "product_repurchase"
-    const val PRODUCT_RECOMMENDATION = "product_recom"
-    const val PRODUCT_REPURCHASE_ANIMATION_FINISHED = "product_repurchase_animation_finished"
 
     private const val DEFAULT_QUANTITY = 0
     private const val DEFAULT_PARENT_ID = "0"
@@ -281,7 +279,7 @@ object RepurchaseLayoutMapper {
 
     fun MutableList<Visitable<*>>.updateDeletedATCQuantity(miniCart: MiniCartSimplifiedData, type: String) {
         when (type) {
-            PRODUCT_REPURCHASE_ANIMATION_FINISHED -> {
+            PRODUCT_REPURCHASE -> {
                 val productList = filterIsInstance<RepurchaseProductUiModel>()
                 val cartProductIds = miniCart.miniCartItems.values.mapNotNull {
                     if (it is MiniCartItem.MiniCartItemProduct) it.productId else null

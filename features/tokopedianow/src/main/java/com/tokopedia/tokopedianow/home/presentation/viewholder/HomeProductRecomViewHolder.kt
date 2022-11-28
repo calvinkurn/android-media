@@ -1,6 +1,5 @@
 package com.tokopedia.tokopedianow.home.presentation.viewholder
 
-import android.os.Parcelable
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -10,7 +9,6 @@ import com.tokopedia.tokopedianow.common.model.TokoNowSeeMoreCardCarouselUiModel
 import com.tokopedia.tokopedianow.common.view.TokoNowDynamicHeaderView
 import com.tokopedia.tokopedianow.common.analytics.RealTimeRecommendationAnalytics
 import com.tokopedia.tokopedianow.common.listener.RealTimeRecommendationListener
-import com.tokopedia.tokopedianow.common.view.TokoNowView
 import com.tokopedia.tokopedianow.common.view.productcard.TokoNowProductCardCarouselView
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowProductRecommendationBinding
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeProductRecomUiModel
@@ -18,7 +16,6 @@ import com.tokopedia.utils.view.binding.viewBinding
 
 class HomeProductRecomViewHolder(
     itemView: View,
-    private val tokoNowView: TokoNowView? = null,
     private val listener: HomeProductRecomListener? = null,
     private val rtrListener: RealTimeRecommendationListener? = null,
     private val rtrAnalytics: RealTimeRecommendationAnalytics? = null
@@ -44,9 +41,6 @@ class HomeProductRecomViewHolder(
             renderProductItems(element)
             renderRealTimeRecom(element)
 
-            productRecommendation.setHeader(
-                header = element.headerModel
-            )
             productRecommendation.setListener(
                 productCardCarouselListener = this@HomeProductRecomViewHolder,
                 headerCarouselListener = this@HomeProductRecomViewHolder
@@ -62,9 +56,10 @@ class HomeProductRecomViewHolder(
     }
 
     private fun renderProductItems(element: HomeProductRecomUiModel) {
-        binding?.productRecommendation?.setItems(
+        binding?.productRecommendation?.bind(
             items = element.productList,
-            seeMoreModel = element.seeMoreModel
+            seeMoreModel = element.seeMoreModel,
+            header = element.headerModel
         )
     }
 
@@ -121,13 +116,6 @@ class HomeProductRecomViewHolder(
         )
     }
 
-    override fun onProductCardAnimationFinished(
-        position: Int,
-        product: TokoNowProductCardCarouselItemUiModel,
-        quantity: Int
-    ) {
-    }
-
     override fun onProductCardQuantityChanged(
         position: Int,
         product: TokoNowProductCardCarouselItemUiModel,
@@ -148,14 +136,6 @@ class HomeProductRecomViewHolder(
             product = product,
             position = position
         )
-    }
-
-    override fun saveScrollState(state: Parcelable?) {
-        tokoNowView?.saveScrollState(layoutPosition, state)
-    }
-
-    override fun getScrollState(): Parcelable? {
-        return tokoNowView?.getScrollState(layoutPosition)
     }
 
     override fun onChannelExpired() { /* nothing to do */ }

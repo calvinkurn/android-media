@@ -41,12 +41,6 @@ class HomeLeftCarouselAtcCallback(
         }
     }
 
-    override fun onProductCardAnimationFinished(
-        product: HomeLeftCarouselAtcProductCardUiModel,
-        quantity: Int
-    ) {
-    }
-
     override fun onProductCardQuantityChanged(
         product: HomeLeftCarouselAtcProductCardUiModel,
         quantity: Int

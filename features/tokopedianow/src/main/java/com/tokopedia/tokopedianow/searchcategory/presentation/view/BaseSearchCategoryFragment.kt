@@ -56,6 +56,7 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
+import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.TOKONOW_NO_RESULT
 import com.tokopedia.recommendation_widget_common.widget.ProductRecommendationTracking
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.helper.ViewHelper
@@ -394,6 +395,15 @@ abstract class BaseSearchCategoryFragment:
         resetMovingPosition()
         carouselScrollPosition.clear()
         getViewModel().onViewReloadPage()
+        refreshProductRecommendation(TOKONOW_NO_RESULT)
+    }
+
+    protected open fun refreshProductRecommendation(pageName: String) {
+        productRecommendationViewModel.updateProductRecommendation(
+            requestParam = getViewModel().createProductRecommendationRequestParam(
+                pageName = pageName
+            )
+        )
     }
 
     private fun resetMovingPosition() {
@@ -756,7 +766,7 @@ abstract class BaseSearchCategoryFragment:
 
         indices.forEach {
             if (it in searchCategoryAdapter.list.indices)
-                searchCategoryAdapter.notifyItemChanged(it)
+                searchCategoryAdapter.notifyItemChanged(it, true)
         }
     }
 
@@ -795,14 +805,7 @@ abstract class BaseSearchCategoryFragment:
             productItemDataView: ProductItemDataView,
             quantity: Int,
     ) {
-        getViewModel().onViewATCProductNonVariant(productItemDataView, quantity, false)
-    }
-
-    override fun onProductNonVariantAnimationFinished(
-        productItemDataView: ProductItemDataView,
-        quantity: Int
-    ) {
-        getViewModel().onViewATCProductNonVariantAnimationFinished(productItemDataView, quantity, true)
+        getViewModel().onViewATCProductNonVariant(productItemDataView, quantity)
     }
 
     protected open fun showSuccessATCMessage(message: String?) {

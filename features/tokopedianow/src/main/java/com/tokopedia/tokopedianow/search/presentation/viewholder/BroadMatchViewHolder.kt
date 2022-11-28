@@ -1,6 +1,5 @@
 package com.tokopedia.tokopedianow.search.presentation.viewholder
 
-import android.os.Parcelable
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -43,6 +42,15 @@ class BroadMatchViewHolder(
             setListener(
                 productCardCarouselListener = this@BroadMatchViewHolder,
                 headerCarouselListener = this@BroadMatchViewHolder
+            )
+        }
+    }
+
+    override fun bind(element: BroadMatchDataView?, payloads: MutableList<Any>) {
+        if (payloads.firstOrNull() == true && element != null) {
+            binding?.setItems(
+                items = element.broadMatchItemModelList.map { it.copy() },
+                seeMoreModel = element.seeMoreModel
             )
         }
     }
@@ -99,18 +107,6 @@ class BroadMatchViewHolder(
         )
     }
 
-    override fun onProductCardAnimationFinished(
-        position: Int,
-        product: TokoNowProductCardCarouselItemUiModel,
-        quantity: Int
-    ) {
-        listener.onBroadMatchItemATCNonVariantAnimationFinished(
-            broadMatchItemDataView = product,
-            quantity = quantity,
-            broadMatchIndex = position
-        )
-    }
-
     override fun onProductCardQuantityChanged(
         position: Int,
         product: TokoNowProductCardCarouselItemUiModel,
@@ -135,14 +131,6 @@ class BroadMatchViewHolder(
             title = headerName,
             appLink = appLink
         )
-    }
-
-    override fun saveScrollState(state: Parcelable?) {
-        listener.onSaveCarouselScrollState(layoutPosition, state)
-    }
-
-    override fun getScrollState(): Parcelable? {
-        return listener.onGetCarouselScrollState(layoutPosition)
     }
 
     override fun onChannelExpired() { /* nothing to do */ }
