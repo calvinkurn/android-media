@@ -349,17 +349,6 @@
         android:background="@color/transparent"
         />
 
-    <com.tokopedia.unifycomponents.ImageUnify
-        android:id="@+id/background_image"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:scaleType="fitXY"
-        android:src="@drawable/universal_share_bottomsheet_image_bg"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/card_register_affiliate"
-        app:layout_constraintVertical_bias="0.0" />
-
     <androidx.constraintlayout.widget.Group
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

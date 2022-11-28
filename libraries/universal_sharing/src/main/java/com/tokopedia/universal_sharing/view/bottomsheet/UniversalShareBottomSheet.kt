@@ -267,7 +267,6 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
     private var previewImage: ImageUnify? = null
     private var revImageOptionsContainer: RecyclerView? = null
     private var imageListViewGroup: Group? = null
-    private var bottomBackgroundImage: ImageUnify? = null
     private var affiliateRegisterMsg: Typography? = null
     private var affiliateRegisterTitle: Typography? = null
     private var affiliateRegisterIcon: ImageView? = null
@@ -596,16 +595,6 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
             previewImage = findViewById(R.id.preview_image)
             revImageOptionsContainer = findViewById(R.id.image_list_container)
             imageListViewGroup = findViewById(R.id.image_selection_view_group)
-            bottomBackgroundImage = findViewById(R.id.background_image)
-
-            //setting background image for light and dark mode
-            if (context?.isDarkMode() == true) {
-                // set dark mode background
-                bottomBackgroundImage?.setImageResource(R.drawable.universal_share_bottomsheet_image_dark_mode_bg)
-            } else {
-                // set light mode background
-                bottomBackgroundImage?.setImageResource(R.drawable.universal_share_bottomsheet_image_bg)
-            }
 
             //setting click listeners for fixed options
             copyLinkImage = findViewById(R.id.copy_link_img)
