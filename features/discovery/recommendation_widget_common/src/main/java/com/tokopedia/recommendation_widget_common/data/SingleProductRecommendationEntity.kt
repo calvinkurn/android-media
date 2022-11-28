@@ -9,7 +9,7 @@ import com.google.gson.annotations.SerializedName
 
 @SuppressLint("Invalid Data Type")
 data class SingleProductRecommendationEntity(
-    @SerializedName("productRecommendationWidgetSingle", alternate = ["productRecommendationWidgetSingleHTTPV2"])
+    @SerializedName("productRecommendationWidgetSingle", alternate = ["productRecommendationWidgetSingleV2"])
     val productRecommendationWidget: ProductRecommendationWidgetSingle
 ) {
     data class ProductRecommendationWidgetSingle(@SerializedName("data") val data: RecommendationEntity.RecommendationData = RecommendationEntity.RecommendationData())

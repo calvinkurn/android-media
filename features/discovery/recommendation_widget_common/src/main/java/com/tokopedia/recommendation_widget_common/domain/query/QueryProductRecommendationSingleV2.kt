@@ -12,7 +12,7 @@ internal object QueryProductRecommendationSingleV2 {
     const val PRODUCT_RECOMMENDATION_SINGLE_V2_QUERY_NAME = "ProductRecommendationSingleQueryV2"
     const val PRODUCT_RECOMMENDATION_SINGLE_V2_QUERY: String = "" +
         "query productRecommendationSingleV2(${'$'}pageNumber: Int!, ${'$'}pageName: String!, ${'$'}productIDs: String!, ${'$'}queryParam: String!) {\n" +
-        "                productRecommendationWidgetSingleHTTPV2(pageNumber: ${'$'}pageNumber, pageName: ${'$'}pageName, productIDs: ${'$'}productIDs, queryParam: ${'$'}queryParam){\n" +
+        "                productRecommendationWidgetSingleV2(pageNumber: ${'$'}pageNumber, pageName: ${'$'}pageName, productIDs: ${'$'}productIDs, queryParam: ${'$'}queryParam){\n" +
         "                   data {\n" +
         "                       tID\n" +
         "                       source\n" +
