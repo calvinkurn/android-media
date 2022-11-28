@@ -16,7 +16,6 @@ import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.LoaderUnify
 import kotlin.math.roundToInt
 
-
 /**
  * Created by dhaba
  */
@@ -50,7 +49,6 @@ class LayoutIconPullRefreshView : ConstraintLayout, LayoutIconPullRefreshListene
     private var offsetY: Float = 0.0f
     private var pullRefreshIcon: ImageUnify? = null
     private var heightLayoutScroll: Int = 0
-    private val pathInterpolator = PathInterpolatorCompat.create(.2f, .64f, .21f, 1f)
 
     companion object {
         private const val MAXIMUM_HEIGHT_SCROLL = 120
@@ -61,6 +59,7 @@ class LayoutIconPullRefreshView : ConstraintLayout, LayoutIconPullRefreshListene
         private const val MAXIMUM_ALPHA = 1.0
         private const val TYPE_WHITE = 0
         private const val TYPE_GREEN = 1
+        private val pathInterpolator = PathInterpolatorCompat.create(.2f, .64f, .21f, 1f)
     }
 
     init {

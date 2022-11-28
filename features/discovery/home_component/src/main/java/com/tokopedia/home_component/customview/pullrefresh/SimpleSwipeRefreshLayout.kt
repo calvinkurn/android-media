@@ -239,12 +239,6 @@ open class SimpleSwipeRefreshLayout @JvmOverloads constructor(
         ValueAnimator.ofFloat(MINIMUM_PROGRESS, MAXIMUM_PROGRESS).apply {
             duration = ROLL_BACK_DURATION
             interpolator = DecelerateInterpolator(FACTOR_ACCELERATE)
-            addUpdateListener {
-            }
-            addListener(object : AnimatorListenerAdapter() {
-                override fun onAnimationEnd(animation: Animator?) {
-                }
-            })
             start()
         }
     }
@@ -314,8 +308,10 @@ open class SimpleSwipeRefreshLayout @JvmOverloads constructor(
 
     // NestedScrollingParent
     override fun onStartNestedScroll(child: View, target: View, nestedScrollAxes: Int): Boolean {
-        return (isEnabled && currentState != State.ROLLING && !isRefreshing
-            && nestedScrollAxes and ViewCompat.SCROLL_AXIS_VERTICAL != Int.ZERO)
+        return (
+            isEnabled && currentState != State.ROLLING && !isRefreshing &&
+                nestedScrollAxes and ViewCompat.SCROLL_AXIS_VERTICAL != Int.ZERO
+            )
     }
 
     override fun onNestedScrollAccepted(child: View, target: View, axes: Int) {
@@ -375,12 +371,18 @@ open class SimpleSwipeRefreshLayout @JvmOverloads constructor(
     }
 
     override fun onNestedScroll(
-        target: View, dxConsumed: Int, dyConsumed: Int,
-        dxUnconsumed: Int, dyUnconsumed: Int
+        target: View,
+        dxConsumed: Int,
+        dyConsumed: Int,
+        dxUnconsumed: Int,
+        dyUnconsumed: Int
     ) {
         // Dispatch up to the nested parent first
         dispatchNestedScroll(
-            dxConsumed, dyConsumed, dxUnconsumed, dyUnconsumed,
+            dxConsumed,
+            dyConsumed,
+            dxUnconsumed,
+            dyUnconsumed,
             mParentOffsetInWindow
         )
 
@@ -418,12 +420,18 @@ open class SimpleSwipeRefreshLayout @JvmOverloads constructor(
     }
 
     override fun dispatchNestedScroll(
-        dxConsumed: Int, dyConsumed: Int, dxUnconsumed: Int,
-        dyUnconsumed: Int, offsetInWindow: IntArray?
+        dxConsumed: Int,
+        dyConsumed: Int,
+        dxUnconsumed: Int,
+        dyUnconsumed: Int,
+        offsetInWindow: IntArray?
     ): Boolean {
         return mNestedScrollingChildHelper.dispatchNestedScroll(
-            dxConsumed, dyConsumed,
-            dxUnconsumed, dyUnconsumed, offsetInWindow
+            dxConsumed,
+            dyConsumed,
+            dxUnconsumed,
+            dyUnconsumed,
+            offsetInWindow
         )
     }
 
@@ -434,7 +442,10 @@ open class SimpleSwipeRefreshLayout @JvmOverloads constructor(
         offsetInWindow: IntArray?
     ): Boolean {
         return mNestedScrollingChildHelper.dispatchNestedPreScroll(
-            dx, dy, consumed, offsetInWindow
+            dx,
+            dy,
+            consumed,
+            offsetInWindow
         )
     }
 
