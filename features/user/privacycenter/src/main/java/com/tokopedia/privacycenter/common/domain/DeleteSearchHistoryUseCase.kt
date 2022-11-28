@@ -30,7 +30,7 @@ class DeleteSearchHistoryUseCase @Inject constructor(
         """.trimIndent()
 
     override suspend fun execute(params: DeleteSearchHistoryParam): DeleteSearchHistoryResult {
-        if (params.position < 0) {
+        if (!params.clearAll && params.position < 0) {
             return DeleteSearchHistoryResult.Failed(0, params.clearAll)
         }
 

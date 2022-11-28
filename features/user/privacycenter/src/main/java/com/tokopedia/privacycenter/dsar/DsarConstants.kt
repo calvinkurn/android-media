@@ -19,8 +19,8 @@ object DsarConstants {
     const val STATUS_COMPLETED = "COMPLETED"
     const val STATUS_CLOSED = "CLOSED"
 
-    const val PERSONAL_LABEL = "<b>Informasi Pribadi:</b><br>User ID, Nama Lengkap, Nomor HP, E-mail, Tanggal Lahir, Jenis Kelamin, Daftar Alamat Pengiriman"
-    const val PAYMENT_LABEL = "<b>Informasi Pembayaran:</b><br>Daftar Rekening Bank, Daftar Kartu Kredit, Daftar Kartu Debit"
+    const val PERSONAL_LABEL = "<b>Informasi Pribadi:</b><br>User ID, nama lengkap, nomor HP, e-mail, tanggal lahir, jenis kelamin, daftar alamat pengiriman"
+    const val PAYMENT_LABEL = "<b>Informasi Pembayaran:</b><br>Daftar rekening bank, daftar kartu kredit, daftar kartu debit"
     const val TRANSACTION_LABEL = "<b>Riwayat Transaksi:</b><br>"
 
     const val SUMMARY_ERROR = "Pilih minimal 1 data"
@@ -63,5 +63,8 @@ object DsarConstants {
     const val LANG_US = "en-us"
 
     const val OTP_MODE_EMAIL = "email"
+
+
+    const val LABEL_ERROR_REQUEST = "Terjadi kesalahan"
 
 }

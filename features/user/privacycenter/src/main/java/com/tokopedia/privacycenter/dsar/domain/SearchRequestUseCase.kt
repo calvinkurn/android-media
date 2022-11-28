@@ -2,6 +2,8 @@ package com.tokopedia.privacycenter.dsar.domain
 
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
+import com.tokopedia.network.exception.MessageErrorException
+import com.tokopedia.privacycenter.dsar.DsarConstants
 import com.tokopedia.privacycenter.dsar.model.GetRequestDetailResponse
 import com.tokopedia.privacycenter.dsar.model.SearchRequestBody
 import com.tokopedia.user.session.UserSessionInterface
@@ -17,14 +19,16 @@ class SearchRequestUseCase @Inject constructor(
     override suspend fun execute(params: SearchRequestBody): GetRequestDetailResponse {
         val credentials = getCredentialsApi.fetchCredential()
         credentials?.let {
-            val bearerHeader = HeaderUtils.createHeader(token = it.accessToken)
-            val searchResult = oneTrustApi.searchRequest(params, bearerHeader).body()
-            if(searchResult?.results?.isNotEmpty() == true) {
-                val latestRequest = searchResult.results.first()
-                return oneTrustApi.getRequest(latestRequest.requestQueueRefId, bearerHeader).body() ?: GetRequestDetailResponse()
+            if(it.accessToken.isNotEmpty()) {
+                val bearerHeader = HeaderUtils.createHeader(token = it.accessToken)
+                val searchResult = oneTrustApi.searchRequest(params, bearerHeader).body()
+                if (searchResult?.results?.isNotEmpty() == true) {
+                    val latestRequest = searchResult.results.first()
+                    return oneTrustApi.getRequest(latestRequest.requestQueueRefId, bearerHeader).body() ?: GetRequestDetailResponse()
+                }
             }
         }
-        return GetRequestDetailResponse()
+        throw MessageErrorException(DsarConstants.LABEL_ERROR_REQUEST)
     }
 
     override fun graphqlQuery(): String = ""

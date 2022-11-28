@@ -23,6 +23,8 @@ import com.tokopedia.filter.common.data.DataValue
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.kotlin.extensions.view.isZero
+import com.tokopedia.play.widget.data.PlayWidget
+import com.tokopedia.play.widget.data.PlayWidgetReminder
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartItemKey
@@ -32,8 +34,6 @@ import com.tokopedia.mvcwidget.ResultStatus
 import com.tokopedia.mvcwidget.TokopointsCatalogMVCSummary
 import com.tokopedia.mvcwidget.TokopointsCatalogMVCSummaryResponse
 import com.tokopedia.mvcwidget.usecases.MVCSummaryUseCase
-import com.tokopedia.play.widget.data.PlayWidget
-import com.tokopedia.play.widget.data.PlayWidgetReminder
 import com.tokopedia.play.widget.ui.PlayWidgetState
 import com.tokopedia.play.widget.ui.model.*
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
@@ -1854,6 +1854,7 @@ class ShopHomeViewModelTest {
         )
         assert(viewModel.miniCartAdd.value is Success)
         assert(viewModel.shopPageAtcTracker.value?.atcType == ShopPageAtcTracker.AtcType.ADD)
+        assert(viewModel.createAffiliateCookieAtcProduct.value != null)
     }
 
     @Test
@@ -1909,6 +1910,7 @@ class ShopHomeViewModelTest {
         )
         assert(viewModel.miniCartRemove.value is Success)
         assert(viewModel.shopPageAtcTracker.value?.atcType == ShopPageAtcTracker.AtcType.REMOVE)
+        assert(viewModel.createAffiliateCookieAtcProduct.value == null)
     }
 
     @Test
@@ -1965,6 +1967,7 @@ class ShopHomeViewModelTest {
         )
         assert(viewModel.miniCartUpdate.value is Success)
         assert(viewModel.shopPageAtcTracker.value?.atcType == ShopPageAtcTracker.AtcType.UPDATE_ADD)
+        assert(viewModel.createAffiliateCookieAtcProduct.value != null)
     }
 
     @Test
@@ -1997,6 +2000,7 @@ class ShopHomeViewModelTest {
         )
         assert(viewModel.miniCartUpdate.value is Success)
         assert(viewModel.shopPageAtcTracker.value?.atcType == ShopPageAtcTracker.AtcType.UPDATE_REMOVE)
+        assert(viewModel.createAffiliateCookieAtcProduct.value == null)
     }
 
     @Test
