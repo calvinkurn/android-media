@@ -4,16 +4,13 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.kotlin.extensions.view.isDataExist
-import com.tokopedia.kotlin.extensions.view.isLessThanZero
 import com.tokopedia.kotlin.extensions.view.toggleData
-import com.tokopedia.mvc.domain.entity.Voucher
 import com.tokopedia.mvc.domain.entity.enums.PromoType
+import com.tokopedia.mvc.domain.entity.enums.VoucherServiceType
 import com.tokopedia.mvc.domain.entity.enums.VoucherSource
 import com.tokopedia.mvc.domain.entity.enums.VoucherStatus
 import com.tokopedia.mvc.domain.entity.enums.VoucherTarget
 import com.tokopedia.mvc.domain.entity.enums.VoucherTargetBuyer
-import com.tokopedia.mvc.domain.entity.enums.VoucherType
 import com.tokopedia.mvc.presentation.list.model.FilterModel
 import javax.inject.Inject
 
@@ -33,7 +30,7 @@ class FilterVoucherViewModel @Inject constructor(
         _filterData.triggerChange()
     }
 
-    fun setVoucherType(type: VoucherType) {
+    fun setVoucherType(type: VoucherServiceType) {
         _filterData.getValueOrDefault().voucherType.toggleData(type)
         _filterData.triggerChange()
     }

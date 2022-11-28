@@ -8,16 +8,15 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.flexbox.AlignItems
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.kotlin.extensions.view.isLessThanZero
 import com.tokopedia.mvc.R
 import com.tokopedia.mvc.databinding.SmvcBottomsheetFilterVoucherBinding
 import com.tokopedia.mvc.di.component.DaggerMerchantVoucherCreationComponent
 import com.tokopedia.mvc.domain.entity.enums.PromoType
+import com.tokopedia.mvc.domain.entity.enums.VoucherServiceType
 import com.tokopedia.mvc.domain.entity.enums.VoucherSource
 import com.tokopedia.mvc.domain.entity.enums.VoucherStatus
 import com.tokopedia.mvc.domain.entity.enums.VoucherTarget
 import com.tokopedia.mvc.domain.entity.enums.VoucherTargetBuyer
-import com.tokopedia.mvc.domain.entity.enums.VoucherType
 import com.tokopedia.mvc.presentation.bottomsheet.adapter.FilterVoucherAdapter
 import com.tokopedia.mvc.presentation.bottomsheet.viewmodel.FilterVoucherViewModel
 import com.tokopedia.mvc.presentation.list.model.FilterModel
@@ -104,7 +103,7 @@ class FilterVoucherBottomSheet(
     }
 
     private fun onRvTypeItemClicked(position: Int, isSelected: Boolean) {
-        val type = VoucherType.values().find { it.type == position } ?: return
+        val type = VoucherServiceType.values().find { it.type == position } ?: return
         viewModel.setVoucherType(type)
     }
 
