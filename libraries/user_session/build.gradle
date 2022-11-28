@@ -18,7 +18,7 @@ buildscript {
 android {
     defaultConfig {
         testInstrumentationRunner "com.tokopedia.test.application.environment.InstrumentationTestRunner"
-//        testInstrumentationRunnerArguments clearPackageData: 'true'
+        testInstrumentationRunnerArguments clearPackageData: 'true'
     }
     buildFeatures {
         buildConfig true
@@ -68,3 +68,5 @@ project.ext {
 }
 
 apply from: '../../publish_local.gradle'
+apply from: '../../../jacoco_task.gradle'
+apply from: '../../../sonar_config.gradle'
