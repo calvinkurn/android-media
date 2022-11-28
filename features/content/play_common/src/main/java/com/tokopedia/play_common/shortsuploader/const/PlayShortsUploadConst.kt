@@ -8,7 +8,10 @@ object PlayShortsUploadConst {
     const val PROGRESS = "PROGRESS"
     const val COVER_URL = "COVER_URL"
     const val SHORTS_ID = "SHORTS_ID"
-    const val CACHE_TAG = "PLAY_SHORTS_UPLOAD_CACHE_TAG"
-    const val CACHE_ID = "PLAY_SHORTS_UPLOAD_CACHE_ID"
+    const val UPLOAD_DATA = "UPLOAD_DATA"
+
+    const val PROGRESS_INIT = 0
+    const val PROGRESS_COMPLETED = 100
+    const val PROGRESS_FAILED = -1
 }
 

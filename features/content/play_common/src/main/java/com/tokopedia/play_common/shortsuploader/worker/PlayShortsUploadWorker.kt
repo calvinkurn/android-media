@@ -2,10 +2,7 @@ package com.tokopedia.play_common.shortsuploader.worker
 
 import android.content.Context
 import android.util.Log
-import androidx.work.CoroutineWorker
-import androidx.work.OneTimeWorkRequest
-import androidx.work.WorkerParameters
-import androidx.work.workDataOf
+import androidx.work.*
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -66,24 +63,35 @@ class PlayShortsUploadWorker(
             .inject(this)
     }
 
+    /**
+     * Upload Flow
+     * 1. Update channel status to Transcoding (value = 6)
+     * 2. Upload media to uploadpedia
+     * 3. If user doesnt upload cover:
+     *    3.a. Take first frame snapshot of selected media
+     *    3.a. Upload snapshot to uploadpedia
+     *    3.b. Update channel status (updating cover)
+     * 4. Add media to broadcaster backend
+     * 5. Update channel status to Active (value = 1)
+     *
+     * If error happens anywhere within the flow:
+     * 1. Update channel status to TranscodingFailed (value = 7)
+     *
+     * Note:
+     * Result.success & Result.failure() is not used here because
+     * WorkManager has caching mechanism for the last emitted state.
+     * Handling Result.success & Result.failure will show the last state
+     * in the upcoming observe.
+     * So, to determine whether the result is success or not,
+     * we are using [progress] variable:
+     * 100 : success
+     * -1 : failed
+     * else : loading
+     */
     override suspend fun doWork(): Result {
         return withContext(dispatchers.io) {
-            /**
-             * Upload Flow
-             * 1. Update channel status to Transcoding (value = 6)
-             * 2. Upload media to uploadpedia
-             * 3. If user doesnt upload cover:
-             *    3.a. Take first frame snapshot of selected media
-             *    3.a. Upload snapshot to uploadpedia
-             *    3.b. Update channel status (updating cover)
-             * 4. Add media to broadcaster backend
-             * 5. Update channel status to Active (value = 1)
-             *
-             * If error happens anywhere within the flow:
-             * 1. Update channel status to TranscodingFailed (value = 7)
-             */
             try {
-                setInitialProgress()
+                broadcastProgress(0)
                 Log.d("<LOG>", "Start Uploading...")
                 Log.d("<LOG>", uploadData.toString())
                 Log.d("<LOG>", updateChannelUseCase.toString())
@@ -95,14 +103,16 @@ class PlayShortsUploadWorker(
                 updateProgress()
                 delay(1000)
                 updateProgress()
+                throw Exception("test")
                 delay(1000)
                 updateProgress()
                 delay(1000)
                 updateProgress()
                 delay(1000)
                 updateProgress()
+                delay(1000)
 
-//                setInitialProgress()
+//                broadcastProgress(0)
 //                updateChannelStatus(uploadData, PlayChannelStatusType.Transcoding)
 //
 //                val mediaUrl = uploadMedia(UploadType.Video, uploadData.mediaUri, withUpdateProgress = true)
@@ -116,16 +126,20 @@ class PlayShortsUploadWorker(
 //                } else {
 //                    addMediaAndUpdateChannel(uploadData, mediaUrl)
 //                }
+
+                updateCompleted()
+
+                Result.success(workDataOf(PlayShortsUploadConst.SHORTS_ID to uploadData.shortsId))
             }
             catch (e: Exception) {
 //                updateChannelStatus(uploadData, PlayChannelStatusType.TranscodingFailed)
 //
 //                snapshotHelper.deleteLocalFile()
+                Log.d("<LOG>", "ERROR UPLOAD : $e")
+                updateFailed()
 
                 Result.failure(inputData)
             }
-
-            Result.success(workDataOf(PlayShortsUploadConst.SHORTS_ID to uploadData.shortsId))
         }
     }
 
@@ -249,20 +263,26 @@ class PlayShortsUploadWorker(
         updateProgress()
     }
 
-    private suspend fun setInitialProgress() {
-        broadcastProgress(0)
-    }
-
     private suspend fun updateProgress() {
         currentProgress += PROGRESS_PER_STEP
         broadcastProgress(currentProgress)
+    }
+
+    private suspend fun updateCompleted() {
+        broadcastProgress(PlayShortsUploadConst.PROGRESS_COMPLETED)
+        delay(UPLOAD_FINISH_DELAY)
+    }
+
+    private suspend fun updateFailed() {
+        broadcastProgress(PlayShortsUploadConst.PROGRESS_FAILED)
+        delay(UPLOAD_FINISH_DELAY)
     }
 
     private suspend fun broadcastProgress(progress: Int) {
         setProgress(
             workDataOf(
                 PlayShortsUploadConst.PROGRESS to progress,
-                PlayShortsUploadConst.COVER_URL to coverUrl,
+                PlayShortsUploadConst.UPLOAD_DATA to uploadData.toString(),
             )
         )
     }
@@ -280,6 +300,7 @@ class PlayShortsUploadWorker(
         private const val UPLOAD_TYPE_IMAGE = "UPLOAD_TYPE_IMAGE"
         private const val UPLOAD_TYPE_VIDEO = "UPLOAD_TYPE_VIDEO"
         private const val PROGRESS_PER_STEP = 20
+        private const val UPLOAD_FINISH_DELAY = 1000L
 
         fun build(uploadModel: PlayShortsUploadModel): OneTimeWorkRequest {
             return OneTimeWorkRequest.Builder(PlayShortsUploadWorker::class.java)
