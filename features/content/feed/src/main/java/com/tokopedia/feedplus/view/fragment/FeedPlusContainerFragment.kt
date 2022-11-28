@@ -258,7 +258,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
                         postProgressUpdateView?.handleShortsUploadFailed(uploadData, playShortsUploader)
                     }
                     else {
-                        val progress = workInfo.progress.getInt("progress", 0)
+                        val progress = workInfo.progress.getInt(PlayShortsUploadConst.PROGRESS, 0)
                         Log.d("<LOG>", "FEED - PROGRESS $progress")
                         postProgressUpdateView?.setProgressUpdate(progress, 100)
                     }

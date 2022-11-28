@@ -58,6 +58,13 @@ class PostProgressUpdateView @JvmOverloads constructor(
     }
 
     fun setProgressUpdate(progress: Int, maxCount: Int) {
+        processingText?.text = context.getString(R.string.cp_common_progress_bar_text)
+        processingText?.setTextColor(
+            ContextCompat.getColor(context,
+                com.tokopedia.unifyprinciples.R.color.Unify_NN950))
+        progressBar?.progressBarColorType = ProgressBarUnify.COLOR_GREEN
+        retryText?.gone()
+
         if (maxCount != 0)
             progressBar?.setValue(progress * MAX_PROGRESS_VALUE / maxCount, true)
         else

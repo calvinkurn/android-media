@@ -2,7 +2,6 @@ package com.tokopedia.play.broadcaster.shorts.view.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.work.WorkManager
 import com.tokopedia.play_common.util.extension.combine
 import com.google.android.exoplayer2.ExoPlayer
 import com.tokopedia.content.common.model.shorts.PlayShortsUploadModel
@@ -24,10 +23,10 @@ import com.tokopedia.play.broadcaster.shorts.ui.model.state.PlayShortsUploadUiSt
 import com.tokopedia.play.broadcaster.shorts.view.custom.DynamicPreparationMenu
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagUiModel
-import com.tokopedia.play.broadcaster.util.error.DefaultErrorThrowable
 import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
 import com.tokopedia.play_common.model.result.NetworkResult
+import com.tokopedia.play_common.util.error.DefaultErrorThrowable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
