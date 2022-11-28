@@ -24,9 +24,11 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.model.LIGHT_GREEN
 import com.tokopedia.tokopedianow.common.model.LIGHT_RED
+import com.tokopedia.tokopedianow.common.model.TokoNowProductCardViewUiModel.LabelGroup
 import com.tokopedia.tokopedianow.common.model.TEXT_DARK_ORANGE
 import com.tokopedia.tokopedianow.common.model.TRANSPARENT_BLACK
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardViewUiModel
+import com.tokopedia.tokopedianow.common.util.ViewUtil.doOnPreDraw
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardViewUiModel.LabelGroup
 import com.tokopedia.tokopedianow.common.util.ViewUtil.getDpFromDimen
 import com.tokopedia.tokopedianow.common.util.ViewUtil.safeParseColor
@@ -64,7 +66,7 @@ class TokoNowProductCardView @JvmOverloads constructor(
     private fun setupUi(
         model: TokoNowProductCardViewUiModel
     ) {
-        OneShotPreDrawListener.add(binding.root) {
+        binding.root.doOnPreDraw {
             binding.apply {
                 initImageFilterView(
                     imageUrl = model.imageUrl,

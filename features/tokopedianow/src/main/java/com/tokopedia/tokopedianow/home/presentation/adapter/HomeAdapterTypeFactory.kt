@@ -182,7 +182,7 @@ class HomeAdapterTypeFactory(
 
             // region TokoNow Home Component
             HomeTickerViewHolder.LAYOUT -> HomeTickerViewHolder(view, homeTickerListener)
-            HomeProductRecomViewHolder.LAYOUT -> HomeProductRecomViewHolder(view, tokoNowView, homeProductRecomListener)
+            HomeProductRecomViewHolder.LAYOUT -> HomeProductRecomViewHolder(view, homeProductRecomListener)
             HomeEmptyStateViewHolder.LAYOUT -> HomeEmptyStateViewHolder(view, tokoNowView)
             HomeLoadingStateViewHolder.LAYOUT -> HomeLoadingStateViewHolder(view)
             HomeSharingWidgetViewHolder.LAYOUT -> HomeSharingWidgetViewHolder(view, homeSharingEducationListener)
@@ -193,7 +193,7 @@ class HomeAdapterTypeFactory(
             HomeQuestTitleViewHolder.LAYOUT -> HomeQuestTitleViewHolder(view, homeQuestSequenceWidgetListener)
             HomeQuestAllClaimedWidgetViewHolder.LAYOUT -> HomeQuestAllClaimedWidgetViewHolder(view, homeQuestSequenceWidgetListener)
             HomeSwitcherViewHolder.LAYOUT -> HomeSwitcherViewHolder(view, homeSwitcherListener)
-            HomeLeftCarouselAtcViewHolder.LAYOUT -> HomeLeftCarouselAtcViewHolder(view, homeLeftCarouselAtcListener, tokoNowView)
+            HomeLeftCarouselAtcViewHolder.LAYOUT -> HomeLeftCarouselAtcViewHolder(view, homeLeftCarouselAtcListener)
             HomePlayWidgetViewHolder.LAYOUT -> HomePlayWidgetViewHolder(createPlayWidgetViewHolder(view))
             // endregion
 
