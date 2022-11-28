@@ -17,6 +17,7 @@ import com.gojek.conversations.groupbooking.GroupBookingChannelDetails
 import com.gojek.conversations.network.ConversationsNetworkError
 import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
+import com.tokochat.tokochat_config_common.util.TokoChatErrorLogger
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.iconunify.IconUnify
@@ -36,8 +37,9 @@ import com.tokopedia.tokochat.analytics.TokoChatAnalyticsConstants
 import com.tokopedia.tokochat.databinding.TokochatChatroomFragmentBinding
 import com.tokopedia.tokochat.di.TokoChatComponent
 import com.tokopedia.tokochat.domain.response.orderprogress.TokoChatOrderProgressResponse
-import com.tokopedia.tokochat.util.TokoChatErrorLogger
 import com.tokopedia.tokochat.util.TokoChatMediaCleanupStorageWorker
+import com.tokopedia.tokochat.util.TokoChatValueUtil.CHAT_CLOSED_CODE
+import com.tokopedia.tokochat.util.TokoChatValueUtil.NOTIFCENTER_NOTIFICATION_TEMPLATE_KEY
 import com.tokopedia.tokochat.view.bottomsheet.MaskingPhoneNumberBottomSheet
 import com.tokopedia.tokochat.view.bottomsheet.TokoChatGeneralUnavailableBottomSheet
 import com.tokopedia.tokochat.view.mapper.TokoChatConversationUiMapper
@@ -105,6 +107,7 @@ class TokoChatFragment :
     private var tkpdOrderId: String = ""
     private var firstTimeOpen = true
     private var isFromTokoFoodPostPurchase = false
+    private var pushNotifTemplateKey = ""
     private var readModeStartsAt: Long = 0
 
     override var adapter: TokoChatBaseAdapter = TokoChatBaseAdapter(
@@ -180,6 +183,12 @@ class TokoChatFragment :
             savedInstanceState,
             false
         )
+        pushNotifTemplateKey = getParamString(
+            NOTIFCENTER_NOTIFICATION_TEMPLATE_KEY,
+            arguments,
+            savedInstanceState,
+            ""
+        )
     }
 
     private fun renderBackground(url: String) {
@@ -207,9 +216,9 @@ class TokoChatFragment :
     private fun observeError() {
         observe(viewModel.error) {
             logExceptionTokoChat(
-                it,
+                it.first,
                 TokoChatErrorLogger.ErrorType.ERROR_PAGE,
-                TokoChatErrorLogger.ErrorDescription.RENDER_PAGE_ERROR
+                it.second
             )
         }
     }
@@ -666,14 +675,14 @@ class TokoChatFragment :
 
     override fun onGroupBookingChannelCreationError(error: ConversationsNetworkError) {
         removeShimmering()
-        var errorMessage = error.getErrorMessage()
-        if (errorMessage.isEmpty()) {
-            errorMessage = error.toString()
-            showSnackbarError(errorMessage)
+        val errorCode = error.errorList.firstOrNull()?.code ?: ""
+        if (errorCode.contains(CHAT_CLOSED_CODE, ignoreCase = true)) {
+            showUnavailableBottomSheet()
+        } else {
+            showGlobalErrorLayout(onActionClick = {
+                initializeChatRoom(null)
+            })
         }
-        showGlobalErrorLayout(onActionClick = {
-            initializeChatRoom(null)
-        })
     }
 
     override fun onGroupBookingChannelCreationStarted() {
@@ -689,6 +698,19 @@ class TokoChatFragment :
         observeChatHistory()
         observeLiveChannel()
         viewModel.doCheckChatConnection()
+        trackFromPushNotif()
+    }
+
+    private fun trackFromPushNotif() {
+        if (pushNotifTemplateKey.isNotBlank()) {
+            tokoChatAnalytics.clickChatFromPushNotif(
+                channelId,
+                tkpdOrderId,
+                pushNotifTemplateKey,
+                TokoChatAnalyticsConstants.BUYER,
+                source
+            )
+        }
     }
 
     override fun onLoadMore() {

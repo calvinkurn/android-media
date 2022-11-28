@@ -45,7 +45,7 @@ class TokoChatTypingViewModelTest : TokoChatViewModelTestFixture() {
             // Then
             Assert.assertEquals(
                 throwableDummy,
-                viewModel.error.observeAwaitValue()
+                viewModel.error.observeAwaitValue()?.first
             )
         }
     }
@@ -82,7 +82,7 @@ class TokoChatTypingViewModelTest : TokoChatViewModelTestFixture() {
             // Then
             Assert.assertEquals(
                 throwableDummy,
-                viewModel.error.observeAwaitValue()
+                viewModel.error.observeAwaitValue()?.first
             )
         }
     }
@@ -114,7 +114,7 @@ class TokoChatTypingViewModelTest : TokoChatViewModelTestFixture() {
             // Then
             Assert.assertEquals(
                 throwableDummy,
-                viewModel.error.observeAwaitValue()
+                viewModel.error.observeAwaitValue()?.first
             )
         }
     }
