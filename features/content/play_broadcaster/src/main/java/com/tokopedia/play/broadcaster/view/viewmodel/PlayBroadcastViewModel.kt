@@ -224,7 +224,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
 
     private val _accountStateInfo = MutableStateFlow(AccountStateInfo())
     var warningInfoType: WarningType = WarningType.UNKNOWN
-    var tncList: List<TermsAndConditionUiModel> = emptyList()
+    val tncList = mutableListOf<TermsAndConditionUiModel>()
 
     private val _accountListState = MutableStateFlow<List<ContentAccountUiModel>>(emptyList())
 
@@ -234,7 +234,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         get() = _accountListState.value
 
     val isAllowChangeAccount: Boolean
-        get() = if (GlobalConfig.isSellerApp()) false else _accountListState.value.size > 1
+        get() = _accountListState.value.size > 1
 
     val authorId: String
         get() = _selectedAccount.value.id
@@ -1605,7 +1605,10 @@ class PlayBroadcastViewModel @AssistedInject constructor(
                         selectedAccount = selectedAccount,
                     )
                 }
-                if (selectedAccount.isShop) tncList = configUiModel.tnc
+                if (selectedAccount.isShop) {
+                    tncList.clear()
+                    tncList.addAll(configUiModel.tnc)
+                }
                 false
             }
             else -> true

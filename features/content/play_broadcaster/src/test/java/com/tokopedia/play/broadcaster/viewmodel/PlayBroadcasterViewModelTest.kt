@@ -4,7 +4,9 @@ import android.os.Bundle
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.content.common.types.ContentCommonUserType.TYPE_SHOP
 import com.tokopedia.content.common.types.ContentCommonUserType.TYPE_USER
+import com.tokopedia.content.common.ui.bottomsheet.WarningInfoBottomSheet
 import com.tokopedia.content.common.ui.model.AccountStateInfoType
+import com.tokopedia.content.common.ui.model.TermsAndConditionUiModel
 import com.tokopedia.play.broadcaster.data.config.HydraConfigStore
 import com.tokopedia.play.broadcaster.data.datastore.PlayBroadcastDataStore
 import com.tokopedia.play.broadcaster.domain.model.GetAddedChannelTagsResponse
@@ -23,6 +25,8 @@ import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
 import com.tokopedia.play.broadcaster.ui.model.title.PlayTitleUiModel
 import com.tokopedia.play.broadcaster.util.assertEmpty
 import com.tokopedia.play.broadcaster.util.assertEqualTo
+import com.tokopedia.play.broadcaster.util.assertFailed
+import com.tokopedia.play.broadcaster.util.assertFalse
 import com.tokopedia.play.broadcaster.util.assertTrue
 import com.tokopedia.play.broadcaster.util.getOrAwaitValue
 import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
@@ -273,7 +277,9 @@ class PlayBroadcasterViewModelTest {
 
     @Test
     fun `when user only have shop and not eligible then selected account is shop with info`() {
-        val configMock = uiModelBuilder.buildConfigurationUiModel()
+        val configMock = uiModelBuilder.buildConfigurationUiModel(tnc = listOf(
+            TermsAndConditionUiModel("apa aja")
+        ))
         val accountMock = uiModelBuilder.buildAccountListModel(tncShop = false, onlyShop = true)
 
         coEvery { mockRepo.getAccountList() } returns accountMock
@@ -294,6 +300,8 @@ class PlayBroadcasterViewModelTest {
             state.selectedContentAccount.type.assertEqualTo(TYPE_SHOP)
             state.accountStateInfo.type.assertEqualTo(AccountStateInfoType.NotAcceptTNC)
             state.accountStateInfo.selectedAccount.type.assertEqualTo(TYPE_SHOP)
+            it.getViewModel().isAllowChangeAccount.assertFalse()
+            it.getViewModel().tncList.assertEqualTo(listOf(TermsAndConditionUiModel("apa aja")))
         }
     }
 
@@ -318,6 +326,9 @@ class PlayBroadcasterViewModelTest {
                 it.getAccountConfiguration()
             }
             state.selectedContentAccount.type.assertEqualTo(TYPE_USER)
+            it.getViewModel().isAllowChangeAccount.assertFalse()
+            it.getViewModel().tncList.assertEmpty()
+            it.getViewModel().warningInfoType.assertEqualTo(WarningInfoBottomSheet.WarningType.UNKNOWN)
         }
     }
 
@@ -344,6 +355,8 @@ class PlayBroadcasterViewModelTest {
             state.selectedContentAccount.type.assertEqualTo(TYPE_USER)
             state.accountStateInfo.type.assertEqualTo(AccountStateInfoType.NotAcceptTNC)
             state.accountStateInfo.selectedAccount.type.assertEqualTo(TYPE_USER)
+            it.getViewModel().isAllowChangeAccount.assertFalse()
+            it.getViewModel().warningInfoType.assertEqualTo(WarningInfoBottomSheet.WarningType.UNKNOWN)
         }
     }
 
@@ -370,6 +383,7 @@ class PlayBroadcasterViewModelTest {
                 it.getAccountConfiguration()
             }
             state.selectedContentAccount.type.assertEqualTo(TYPE_USER)
+            it.getViewModel().isAllowChangeAccount.assertTrue()
         }
     }
 
@@ -496,6 +510,7 @@ class PlayBroadcasterViewModelTest {
             state.selectedContentAccount.type.assertEqualTo(TYPE_SHOP)
             state.accountStateInfo.type.assertEqualTo(AccountStateInfoType.Live)
             state.selectedContentAccount.type.assertEqualTo(TYPE_SHOP)
+            it.getViewModel().warningInfoType.assertEqualTo(WarningInfoBottomSheet.WarningType.LIVE)
         }
     }
 
@@ -595,6 +610,7 @@ class PlayBroadcasterViewModelTest {
                 getViewModel().submitAction(PlayBroadcastAction.SetCover(mockCover))
             }
             state.selectedContentAccount.type.assertEqualTo(TYPE_USER)
+            it.getViewModel().contentAccountList.assertEqualTo(accountMock)
         }
     }
 
@@ -687,6 +703,17 @@ class PlayBroadcasterViewModelTest {
         robot.use {
             it.getViewModel().saveState(bundle)
             it.getViewModel().restoreState(bundle)
+        }
+    }
+
+    @Test
+    fun `when user end live stream`() {
+        val robot = PlayBroadcastViewModelRobot()
+
+        robot.use {
+            it.getViewModel().setIsLiveStreamEnded()
+
+            it.getViewModel().isLiveStreamEnded().assertTrue()
         }
     }
 
