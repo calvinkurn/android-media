@@ -127,7 +127,7 @@ class HomeLeftCarouselAtcViewHolder(
         )
 
         var xCoordinateActionDown = 0f
-        rvProduct.setOnTouchListener { view, motionEvent ->
+        rvProduct.setOnTouchListener { _, motionEvent ->
             /**
              * check empty space of recyclerview
              */

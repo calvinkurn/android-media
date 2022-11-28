@@ -1004,7 +1004,7 @@ abstract class BaseSearchCategoryFragment:
                     )
 
                     //Refresh the page
-                    gridLayoutManager?.scrollToPosition(0)
+                    gridLayoutManager?.scrollToPosition(DEFAULT_POSITION)
                     refreshLayout()
 
                     //Show toaster
