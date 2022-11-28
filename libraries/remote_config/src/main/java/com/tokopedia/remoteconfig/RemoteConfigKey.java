@@ -305,6 +305,5 @@ public class RemoteConfigKey {
 
     public static final String ENABLE_NEW_SHARE_SELLER = "android_sellerapp_enable_new_share";
 
-
     public static final String HOME_USE_NEW_PULL_REFRESH = "android_home_use_new_pull_refresh";
 }
