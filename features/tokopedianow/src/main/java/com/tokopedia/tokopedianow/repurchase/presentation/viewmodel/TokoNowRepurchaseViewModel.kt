@@ -558,7 +558,7 @@ class TokoNowRepurchaseViewModel @Inject constructor(
 
     private fun trackRepurchaseAddToCart(productId: String, quantity: Int, cartId: String) {
         val items = layoutList.filterIsInstance(RepurchaseProductUiModel::class.java)
-        val item = items.firstOrNull { it.id == productId }
+        val item = items.firstOrNull { it.productCardModel.productId == productId }
 
         item?.let {
             val data = RepurchaseAddToCartTracker(quantity, cartId, it)
