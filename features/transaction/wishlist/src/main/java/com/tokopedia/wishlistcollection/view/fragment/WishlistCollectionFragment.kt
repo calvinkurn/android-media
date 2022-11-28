@@ -706,7 +706,7 @@ class WishlistCollectionFragment :
         } else {
             collectionViewModel.getWishlistCollectionSharingData(collectionId.toLongOrZero())
         }
-        WishlistCollectionAnalytics.sendClickShareButtonCollectionEvent(collectionId, collectionType, collectionId, userSession.userId, collectionId)
+        WishlistCollectionAnalytics.sendClickShareButtonCollectionEvent(collectionId, collectionType, userSession.userId)
     }
 
     private fun showDialogSharePermission(collectionId: String, collectionName: String) {

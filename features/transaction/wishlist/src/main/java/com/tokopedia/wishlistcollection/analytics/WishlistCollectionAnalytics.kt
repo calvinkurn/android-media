@@ -174,7 +174,6 @@ object WishlistCollectionAnalytics {
     private const val CLICK_NEW_COLLECTION_BOTTOMSHEET_TRACKER_ID = "36184"
     private const val CLICK_SHARE_BUTTON_TRACKER_ID = "25504"
     private const val CLICK_CLOSE_SHARE_BOTTOMSHEET_TRACKER_ID = "25505"
-    private const val CLICK_SHARING_CHANNEL_TRACKER_ID = "25506"
     private const val VIEW_ON_SHARING_CHANNEL_TRACKER_ID = "25507"
     private const val CLICK_SHARE_BUTTON_COLLECTION_TRACKER_ID = "36010"
     private const val CLICK_CLOSE_SHARE_BUTTON_COLLECTION_TRACKER_ID = "36011"
@@ -792,110 +791,58 @@ object WishlistCollectionAnalytics {
             .send()
     }
 
-    // probably duplicated, will delete this after testing is done
-    fun sendClickShareButtonEvent(productId: Long, userId: String, wishlistId: String) {
-        wishlistSharingTrackerBuilder()
-            .setEvent(CLICK_COMMUNICATION)
-            .setEventAction(CLICK_SHARE_BUTTON)
-            .setEventCategory(WISHLIST_PAGE)
-            .setEventLabel(wishlistId)
-            .setCustomProperty(TRACKER_ID, CLICK_SHARE_BUTTON_TRACKER_ID)
-            .setCustomProperty(PRODUCT_ID, productId)
-            .setUserId(userId)
-            .setCustomProperty("wishlistId", wishlistId)
-            .build()
-            .send()
-    }
-    fun sendClickCloseShareBottomSheetEvent(productId: Long, userId: String, wishlistId: Long) {
-        wishlistSharingTrackerBuilder()
-            .setEvent(CLICK_COMMUNICATION)
-            .setEventAction(CLICK_CLOSE_SHARE_BOTTOMSHEET)
-            .setEventCategory(WISHLIST_PAGE)
-            .setEventLabel(wishlistId.toString())
-            .setCustomProperty(TRACKER_ID, CLICK_CLOSE_SHARE_BOTTOMSHEET_TRACKER_ID)
-            .setCustomProperty(PRODUCT_ID, productId)
-            .setUserId(userId)
-            .setCustomProperty("wishlistId", wishlistId)
-            .build()
-            .send()
-    }
-    fun sendClickSharingChannelEvent(channelName: String, productId: Long, userId: String, wishlistId: Long) {
-        wishlistSharingTrackerBuilder()
-            .setEvent(CLICK_COMMUNICATION)
-            .setEventAction(CLICK_SHARING_CHANNEL)
-            .setEventCategory(WISHLIST_PAGE)
-            .setEventLabel("$channelName - $wishlistId")
-            .setCustomProperty(TRACKER_ID, CLICK_SHARING_CHANNEL_TRACKER_ID)
-            .setCustomProperty(PRODUCT_ID, productId)
-            .setUserId(userId)
-            .setCustomProperty("wishlistId", wishlistId)
-            .build()
-            .send()
-    }
-
-    // probably duplicated, will delete this after testing is done
-    fun sendViewOnSharingChannelEvent(eventLabel: String, productId: Long, userId: String, wishlistId: String) {
-        wishlistSharingTrackerBuilder()
-            .setEvent("viewCommunicationIris")
-            .setEventAction(VIEW_SHARING_CHANNEL)
-            .setEventCategory(WISHLIST_PAGE)
-            .setEventLabel(wishlistId)
-            .setCustomProperty(TRACKER_ID, VIEW_ON_SHARING_CHANNEL_TRACKER_ID)
-            .setCustomProperty(PRODUCT_ID, productId)
-            .setUserId(userId)
-            .setCustomProperty("wishlistId", wishlistId)
-            .build()
-            .send()
-    }
-    fun sendClickShareButtonCollectionEvent(collectionId: String, typeCollection: Int, productId: String, userId: String, wishlistId: String) {
+    fun sendClickShareButtonCollectionEvent(collectionId: String, typeCollection: Int, userId: String) {
         wishlistSharingTrackerBuilder()
             .setEvent(CLICK_COMMUNICATION)
             .setEventAction(CLICK_SHARE_BUTTON_COLLECTION)
             .setEventCategory(WISHLIST_PAGE)
             .setEventLabel("$collectionId - $typeCollection")
             .setCustomProperty(TRACKER_ID, CLICK_SHARE_BUTTON_COLLECTION_TRACKER_ID)
-            .setCustomProperty(PRODUCT_ID, productId)
+            .setCustomProperty(PRODUCT_ID, "")
             .setUserId(userId)
-            .setCustomProperty("wishlistId", wishlistId)
+            .setCustomProperty("wishlistId", "")
             .build()
             .send()
     }
-    fun sendClickCloseShareButtonCollectionEvent(collectionId: Long, typeCollection: Long, productId: Long, userId: String, wishlistId: Long) {
+
+    fun sendClickCloseShareButtonCollectionEvent(collectionId: Long, typeCollection: Long, userId: String) {
         wishlistSharingTrackerBuilder()
             .setEvent(CLICK_COMMUNICATION)
             .setEventAction(CLICK_CLOSE_SHARE_BUTTON_COLLECTION)
             .setEventCategory(WISHLIST_PAGE)
             .setEventLabel("$collectionId - $typeCollection")
             .setCustomProperty(TRACKER_ID, CLICK_CLOSE_SHARE_BUTTON_COLLECTION_TRACKER_ID)
-            .setCustomProperty(PRODUCT_ID, productId)
+            .setCustomProperty(PRODUCT_ID, "")
             .setUserId(userId)
-            .setCustomProperty("wishlistId", wishlistId)
+            .setCustomProperty(WISHLIST_ID, "")
             .build()
             .send()
     }
-    fun sendClickSharingChannelCollectionEvent(channelName: String, collectionId: Long, typeCollection: Long, productId: Long, userId: String, wishlistId: Long) {
+
+    fun sendClickSharingChannelCollectionEvent(channelName: String, collectionId: Long, typeCollection: Long, userId: String) {
         wishlistSharingTrackerBuilder()
             .setEvent(CLICK_COMMUNICATION)
             .setEventAction(CLICK_SHARING_CHANNEL_COLLECTION)
             .setEventCategory(WISHLIST_PAGE)
             .setEventLabel("$channelName - $collectionId - $typeCollection")
-            .setCustomProperty(TRACKER_ID, CLICK_SHARING_CHANNEL_TRACKER_ID)
-            .setCustomProperty(PRODUCT_ID, productId)
+            .setCustomProperty(TRACKER_ID, CLICK_SHARING_CHANNEL_COLLECTION_TRACKER_ID)
+            .setCustomProperty(PRODUCT_ID, "")
             .setUserId(userId)
-            .setCustomProperty("wishlistId", wishlistId)
+            .setCustomProperty(WISHLIST_ID, "")
             .build()
             .send()
     }
-    fun sendViewOnSharingChannelCollectionEvent(collectionId: Long, typeCollection: Long, productId: Long, userId: String, wishlistId: Long) {
+
+    fun sendViewOnSharingChannelCollectionEvent(collectionId: Long, typeCollection: Long, userId: String) {
         wishlistSharingTrackerBuilder()
             .setEvent(VIEW_COMMUNICATION_IRIS)
             .setEventAction(VIEW_SHARING_CHANNEL_COLLECTION)
             .setEventCategory(WISHLIST_PAGE)
             .setEventLabel("$collectionId - $typeCollection")
-            .setCustomProperty(TRACKER_ID, VIEW_ON_SHARING_CHANNEL_TRACKER_ID)
-            .setCustomProperty(PRODUCT_ID, productId)
+            .setCustomProperty(TRACKER_ID, VIEW_ON_SHARING_CHANNEL_COLLECTION_TRACKER_ID)
+            .setCustomProperty(PRODUCT_ID, "")
             .setUserId(userId)
-            .setCustomProperty("wishlistId", wishlistId)
+            .setCustomProperty(WISHLIST_ID, "")
             .build()
             .send()
     }

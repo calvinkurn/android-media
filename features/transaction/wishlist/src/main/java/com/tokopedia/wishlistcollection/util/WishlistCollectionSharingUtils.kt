@@ -57,7 +57,8 @@ class WishlistCollectionSharingUtils() {
 
                 LinkerManager.getInstance().executeShareRequest(
                     LinkerUtils.createShareRequest(
-                        0, linkerShareResult,
+                        0,
+                        linkerShareResult,
                         object : ShareCallback {
                             override fun urlCreated(linkerShareResult: LinkerShareResult?) {
                                 val shareString = activity.getString(R.string.sharing_collection_desc, data.collection.name) + " ${linkerShareResult?.url}"
@@ -70,8 +71,7 @@ class WishlistCollectionSharingUtils() {
                                     shareString
                                 )
                                 collectionShareBottomSheet?.dismiss()
-                                WishlistCollectionAnalytics.sendClickSharingChannelEvent(shareModel.platform, data.collection.id, userId, data.collection.id)
-                                WishlistCollectionAnalytics.sendClickSharingChannelCollectionEvent(shareModel.platform, data.collection.id, data.collection.access, data.collection.id, userId, data.collection.id)
+                                WishlistCollectionAnalytics.sendClickSharingChannelCollectionEvent(shareModel.platform, data.collection.id, data.collection.access, userId)
                             }
 
                             override fun onError(linkerError: LinkerError?) {
@@ -91,8 +91,7 @@ class WishlistCollectionSharingUtils() {
             }
 
             override fun onCloseOptionClicked() {
-                WishlistCollectionAnalytics.sendClickCloseShareBottomSheetEvent(data.collection.id, userId, data.collection.id)
-                WishlistCollectionAnalytics.sendClickCloseShareButtonCollectionEvent(data.collection.id, data.collection.access, data.collection.id, userId, data.collection.id)
+                WishlistCollectionAnalytics.sendClickCloseShareButtonCollectionEvent(data.collection.id, data.collection.access, userId)
             }
         }
         collectionShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
@@ -108,7 +107,7 @@ class WishlistCollectionSharingUtils() {
             )
         }
         collectionShareBottomSheet?.show(childFragmentManager, fragment)
-        WishlistCollectionAnalytics.sendViewOnSharingChannelCollectionEvent(data.collection.id, data.collection.access, data.collection.id, userId, data.collection.id)
+        WishlistCollectionAnalytics.sendViewOnSharingChannelCollectionEvent(data.collection.id, data.collection.access, userId)
     }
 
     fun mapParamImageGenerator(data: GetWishlistCollectionSharingDataResponse.GetWishlistCollectionSharingData.Data): WishlistCollectionParamModel {
