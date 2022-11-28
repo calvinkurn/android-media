@@ -14,6 +14,7 @@ import com.tokopedia.kotlin.extensions.view.getScreenWidth
 import com.tokopedia.play.databinding.FragmentPlayExploreWidgetBinding
 import javax.inject.Inject
 import kotlin.math.roundToInt
+import com.tokopedia.play.R as playR
 
 /**
  * @author by astidhiyaa on 24/11/22
@@ -53,6 +54,7 @@ class PlayExploreWidgetFragment @Inject constructor() : DialogFragment() {
             EXPLORE_HEIGHT
         )
         window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+        window.setWindowAnimations(playR.style.ExploreWidgetWindowAnim)
     }
 
     override fun onDestroyView() {
