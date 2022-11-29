@@ -7,7 +7,6 @@ import android.animation.ObjectAnimator
 import android.animation.PropertyValuesHolder
 import android.annotation.SuppressLint
 import android.content.res.Resources
-import android.util.Log
 import android.view.View
 import java.lang.ref.WeakReference
 import java.util.*
@@ -94,8 +93,6 @@ class FeedXCardSubtitlesAnimationHandler(
         //reset position
         if (currentPositionAnimationInfo == subtitles.size)
             currentPositionAnimationInfo = 0
-
-        Log.d("FEED_ANIM", "Masuk After Animation Complete")
     }
 
     private fun reset() {
@@ -120,10 +117,18 @@ class FeedXCardSubtitlesAnimationHandler(
 
         viewOne.get()?.let { v1 ->
             viewTwo.get()?.let { v2 ->
+                val alphaAnimPropOne = PropertyValuesHolder.ofFloat(View.ALPHA, 1f, 0f)
+                val alphaAnimObjOne: ObjectAnimator =
+                    ObjectAnimator.ofPropertyValuesHolder(v1, alphaAnimPropOne)
+
                 val translateAnimPropOne =
                     PropertyValuesHolder.ofFloat(View.TRANSLATION_Y, 0f, -dpToPx(20))
                 val translateAnimObjOne: ObjectAnimator =
                     ObjectAnimator.ofPropertyValuesHolder(v1, translateAnimPropOne)
+
+                val alphaAnimPropTwo = PropertyValuesHolder.ofFloat(View.ALPHA, 0f, 1f)
+                val alphaAnimObjTwo: ObjectAnimator =
+                    ObjectAnimator.ofPropertyValuesHolder(v2, alphaAnimPropTwo)
 
                 val translateAnimPropTwo =
                     PropertyValuesHolder.ofFloat(View.TRANSLATION_Y, dpToPx(20), 0f)
@@ -135,7 +140,6 @@ class FeedXCardSubtitlesAnimationHandler(
                     }
 
                     override fun onAnimationEnd(animation: Animator?) {
-                        Log.d("FEED_ANIM", "Masuk animation End")
                         afterAnimationComplete()
                         translateAnimObjTwo.removeAllListeners()
                     }
@@ -151,7 +155,9 @@ class FeedXCardSubtitlesAnimationHandler(
                 animatorSet?.cancel()
                 animatorSet = AnimatorSet()
                 animatorSet?.playTogether(
+                    alphaAnimObjOne,
                     translateAnimObjOne,
+                    alphaAnimObjTwo,
                     translateAnimObjTwo
                 )
                 animatorSet?.duration = DURATION
