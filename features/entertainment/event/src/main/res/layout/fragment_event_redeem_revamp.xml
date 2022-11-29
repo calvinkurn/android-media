@@ -124,8 +124,33 @@
         />
 
     <com.tokopedia.unifyprinciples.Typography
-        android:id="@+id/tg_title_detail_product"
+        android:id="@+id/tg_detail_visitor"
         app:layout_constraintTop_toBottomOf="@+id/tg_title_booker_name"
+        app:layout_constraintLeft_toLeftOf="parent"
+        android:layout_marginTop="32dp"
+        android:layout_marginStart="16dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:typographyType="display_1"
+        app:typographyWeight="bold"
+        android:textColor="@color/Unify_NN950"
+        android:text="@string/ent_redeem_revamp_visitor_detail_ticket_title"
+        android:visibility="gone"
+        />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_detail_visitor"
+        app:layout_constraintTop_toBottomOf="@+id/tg_detail_visitor"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tg_title_detail_product"
+        app:layout_constraintTop_toBottomOf="@+id/rv_detail_visitor"
         app:layout_constraintLeft_toLeftOf="parent"
         android:layout_marginTop="32dp"
         android:layout_marginStart="16dp"

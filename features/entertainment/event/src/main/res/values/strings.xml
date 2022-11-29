@@ -120,6 +120,7 @@
     
     <string name="ent_redeem_revamp_booker_data_title">Data Pemesan</string>
     <string name="ent_redeem_revamp_booker_detail_ticket_title">Detail Tiket</string>
+    <string name="ent_redeem_revamp_visitor_detail_ticket_title">Data Pengunjung</string>
     <string name="ent_redeem_revamp_name">Nama</string>
     <string name="ent_redeem_revamp_product">Produk</string>
     <string name="ent_redeem_revamp_ticket">Jenis Tiket</string>

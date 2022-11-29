@@ -7,14 +7,18 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.entertainment.databinding.FragmentEventRedeemRevampBinding
 import com.tokopedia.entertainment.pdp.activity.EventRedeemActivity.Companion.EXTRA_URL_REDEEM
+import com.tokopedia.entertainment.pdp.adapter.EventRedeemVisitorAdapter
 import com.tokopedia.entertainment.pdp.bottomsheet.EventRedeemRevampBottomSheet
 import com.tokopedia.entertainment.pdp.common.util.EventRedeemMapper.getAllRedeemedTime
+import com.tokopedia.entertainment.pdp.common.util.EventRedeemMapper.getListParticipantDetails
 import com.tokopedia.entertainment.pdp.common.util.EventRedeemMapper.isEmptyParticipant
 import com.tokopedia.entertainment.pdp.common.util.EventRedeemMapper.isOneParticipant
 import com.tokopedia.entertainment.pdp.common.util.EventRedeemMapper.getOneRedemptionPair
@@ -22,6 +26,7 @@ import com.tokopedia.entertainment.pdp.common.util.EventRedeemMapper.isStatusNot
 import com.tokopedia.entertainment.pdp.common.util.EventRedeemMapper.participantToVisitableMapper
 import com.tokopedia.entertainment.pdp.data.redeem.redeemable.Data
 import com.tokopedia.entertainment.pdp.data.redeem.redeemable.Participant
+import com.tokopedia.entertainment.pdp.data.redeem.redeemable.ParticipantDetail
 import com.tokopedia.entertainment.pdp.di.EventPDPComponent
 import com.tokopedia.entertainment.pdp.viewmodel.EventRedeemRevampViewModel
 import com.tokopedia.kotlin.extensions.view.ZERO
@@ -314,6 +319,20 @@ class EventRedeemRevampFragment : BaseDaggerFragment(),
         }
     }
 
+    private fun showVisitorLayout() {
+        binding?.run {
+            rvDetailVisitor.show()
+            tgDetailVisitor.show()
+        }
+    }
+
+    private fun hideVisitorLayout() {
+        binding?.run {
+            rvDetailVisitor.hide()
+            tgDetailVisitor.hide()
+        }
+    }
+
     private fun hideRedeemLayout() {
         binding?.run {
             containerSuccessRedeem.hide()
@@ -329,6 +348,15 @@ class EventRedeemRevampFragment : BaseDaggerFragment(),
             tgValueDate.text = redeem.schedule.showData
             tgValueSumTicket.text = redeem.quantity.toString()
             renderRedeemLayout(redeem)
+        }
+    }
+
+    private fun renderVisitorLayout(participants: List<ParticipantDetail>) {
+        binding?.run {
+            val adapter = EventRedeemVisitorAdapter()
+            rvDetailVisitor.layoutManager = LinearLayoutManager(context, RecyclerView.VERTICAL, false)
+            rvDetailVisitor.adapter = adapter
+            adapter.addParticipant(participants)
         }
     }
 
@@ -368,7 +396,16 @@ class EventRedeemRevampFragment : BaseDaggerFragment(),
                         getDimens(dimenUnify.unify_space_0)
                     )
                 }
+
+                if (isOneParticipant(getUpdateListRedemption()) &&
+                    getListParticipantDetails(getUpdateListRedemption()).isNotEmpty()) {
+                    showVisitorLayout()
+                    renderVisitorLayout(getListParticipantDetails(getUpdateListRedemption()))
+                } else {
+                    hideVisitorLayout()
+                }
             } else if (isStatusNotAllDisabled(getUpdateListRedemption())) {
+                hideVisitorLayout()
                 tfRedeem.addOnFocusChangeListener = { _, hasFocus ->
                     if (hasFocus) {
                         showBottomSheet(redeem.schedule.name)

@@ -124,6 +124,12 @@ object EventRedeemMapper {
             Pair(id, true)
         }
     }
+
+    fun getListParticipantDetails(participants: List<Participant>): List<ParticipantDetail>{
+        val redemption = participants.firstOrNull()
+        return redemption?.participantDetails ?: emptyList<ParticipantDetail>()
+    }
+
     private fun dayTitle(day: Int, context: Context) : String {
         return context.resources.getString(stringRedeem.ent_redeem_revamp_day, day)
     }
