@@ -34,8 +34,7 @@ ext {
     glideVersion = '4.9.0'
     viewPager2 = '1.0.0'
     deeplinkDispatchVersion = '4.1.0'
-    espressoCoreVersion = "3.4.0"
-    espressoVersion = "3.3.0"
+    espressoVersion = "3.5.0-alpha06"
     runnerVersion = "1.4.0"
     rulesVersion = "1.4.0"
     apolloVersion = '0.3.0'
@@ -330,7 +329,7 @@ ext {
             uiautomator           : 'com.android.support.test.uiautomator:uiautomator-v18:2.1.2',
             spoon                 : 'com.squareup.spoon:spoon-client:1.6.4',
             androidAnnotation     : "androidx.annotation:annotation:$supportLibraryVersion",
-            espressoCore          : "androidx.test.espresso:espresso-core:$espressoCoreVersion",
+            espressoCore          : "androidx.test.espresso:espresso-core:$espressoVersion",
             androidTestRunner     : "androidx.test:runner:$runnerVersion",
             androidRulesVersion   : "androidx.test:rules:$rulesVersion",
             espressoIntents       : "androidx.test.espresso:espresso-intents:$espressoVersion",

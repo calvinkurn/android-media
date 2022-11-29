@@ -6,7 +6,7 @@ import androidx.test.internal.runner.junit4.AndroidJUnit4ClassRunner
 import androidx.test.platform.app.InstrumentationRegistry
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.cassavatest.CassavaTestRule
+import com.tokopedia.analyticsdebugger.cassava.cassavatest.CassavaTestRule
 import com.tokopedia.content.test.cassava.containsEventAction
 import com.tokopedia.play.di.DaggerPlayTestComponent
 import com.tokopedia.play.di.PlayInjector
