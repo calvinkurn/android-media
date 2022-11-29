@@ -15,6 +15,7 @@ import com.tokopedia.smartbills.presentation.fragment.SmartBillsFragment.Compani
 import com.tokopedia.smartbills.util.RechargeSmartBillsAccordionView.getAccordionwithAction
 import com.tokopedia.smartbills.util.RechargeSmartBillsAccordionView.getAccordionwithPaid
 import com.tokopedia.smartbills.util.RechargeSmartBillsMapper.addAccordionData
+import com.tokopedia.utils.view.binding.viewBinding
 
 class SmartBillsAccordionViewHolder(
     view: View,
@@ -23,9 +24,10 @@ class SmartBillsAccordionViewHolder(
     private val accordionListener: SBMAccordionListener
 ) : AbstractViewHolder<Section>(view) {
 
+    private val binding: ViewSmartBillsItemAccordionBinding? by viewBinding()
+
     override fun bind(element: Section) {
-        val binding = ViewSmartBillsItemAccordionBinding.bind(itemView)
-        with(binding) {
+        binding?.run {
             if (element.type == ACTION_TYPE) {
                 Handler().run {
                     postDelayed(

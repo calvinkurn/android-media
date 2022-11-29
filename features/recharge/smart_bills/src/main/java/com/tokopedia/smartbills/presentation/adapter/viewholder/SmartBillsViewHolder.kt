@@ -20,6 +20,7 @@ import com.tokopedia.smartbills.presentation.fragment.SmartBillsFragment.Compani
 import com.tokopedia.smartbills.presentation.widget.SmartBillsItemDetailBottomSheet
 import com.tokopedia.smartbills.util.RechargeSmartBillsAccordionView.disableView
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.utils.view.binding.viewBinding
 
 /**
  * @author by resakemal on 17/05/20
@@ -38,11 +39,11 @@ class SmartBillsViewHolder(
         const val ZERO_PERCENT = 0
     }
 
-    private val binding = ViewSmartBillsItemBinding.bind(itemView)
+    private val binding: ViewSmartBillsItemBinding? by viewBinding()
 
     override fun bind(element: RechargeBills) {
         super.bind(element)
-        with(binding) {
+        binding?.run {
             if (accordionType == ACTION_TYPE) {
                 // showing overlay white
                 smartBillsViewDisable.show()
@@ -236,8 +237,8 @@ class SmartBillsViewHolder(
         }
     }
 
-    override fun getCheckable(): CompoundButton {
-        return binding.cbSmartBillsItem
+    override fun getCheckable(): CompoundButton? {
+        return binding?.cbSmartBillsItem
     }
 
     interface DetailListener {
