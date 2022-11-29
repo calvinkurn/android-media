@@ -83,9 +83,9 @@ class FeedXCardSubtitlesAnimationHandler(
 
     private fun afterAnimationComplete() {
         //switch container reference
-//        val tempContainer = visibleContainer
-//        visibleContainer = invisibleContainer
-//        invisibleContainer = tempContainer
+        val tempContainer = visibleContainer
+        visibleContainer = invisibleContainer
+        invisibleContainer = tempContainer
 
         //increment pos
         currentPositionAnimationInfo += 1
@@ -117,6 +117,8 @@ class FeedXCardSubtitlesAnimationHandler(
 
         viewOne.get()?.let { v1 ->
             viewTwo.get()?.let { v2 ->
+                setDataIntoViews()
+
                 val alphaAnimPropOne = PropertyValuesHolder.ofFloat(View.ALPHA, 1f, 0f)
                 val alphaAnimObjOne: ObjectAnimator =
                     ObjectAnimator.ofPropertyValuesHolder(v1, alphaAnimPropOne)
@@ -140,6 +142,7 @@ class FeedXCardSubtitlesAnimationHandler(
                     }
 
                     override fun onAnimationEnd(animation: Animator?) {
+                        setDataIntoViews()
                         afterAnimationComplete()
                         translateAnimObjTwo.removeAllListeners()
                     }
