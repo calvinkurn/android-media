@@ -16,6 +16,7 @@ import android.text.style.ClickableSpan
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
@@ -187,7 +188,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
     private val topAdsCard = findViewById<ConstraintLayout>(R.id.top_ads_detail_card)
     private val asgcCtaProductName = findViewById<Typography>(R.id.top_ads_product_name)
     private val asgcProductCampaignCopywritingContainer =
-        findViewById<LinearLayout>(R.id.top_ads_campaign_copywriting_container)
+        findViewById<FrameLayout>(R.id.top_ads_campaign_copywriting_container)
     private val asgcProductCampaignCopywritingFirst =
         findViewById<Typography>(R.id.top_ads_campaign_copywriting_first)
     private val asgcProductCampaignCopywritingSecond =
