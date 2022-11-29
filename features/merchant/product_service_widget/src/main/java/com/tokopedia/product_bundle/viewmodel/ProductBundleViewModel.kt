@@ -255,7 +255,7 @@ class ProductBundleViewModel @Inject constructor(
                 productId = bundleItem.productID,
                 productName = bundleItem.name,
                 productImageUrl = bundleItem.picURL,
-                productQuantity = bundleItem.minOrder,
+                productQuantity = bundleItem.minOrder.coerceAtLeast(ATC_BUNDLE_QUANTITY),
                 originalPrice = bundleItem.getPreviewOriginalPrice(),
                 bundlePrice = bundleItem.getPreviewBundlePrice(),
                 warehouseId = warehouseId,
