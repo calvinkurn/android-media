@@ -37,7 +37,10 @@ data class EligibleCommission (
     val sellerAmount: String? = "",
 
     @SerializedName("SellerAmountFormatted")
-    val sellerAmountFormatted: String? = ""
+    val sellerAmountFormatted: String? = "",
+
+    @SerializedName("SsaStatus")
+    val ssaStatus: Boolean? = false
 )
 
 data class Banner (
