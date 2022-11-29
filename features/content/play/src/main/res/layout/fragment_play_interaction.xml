@@ -204,9 +204,9 @@
         android:layout_marginEnd="@dimen/play_offset_12"
         android:visibility="visible"
         app:layout_constraintEnd_toEndOf="@id/view_size"
+        app:layout_constraintStart_toEndOf="@id/view_partner_info"
         app:layout_constraintTop_toBottomOf="@id/view_toolbar_room"
-        tools:visibility="visible"
-        />
+        tools:visibility="visible" />
 
     <include
         android:id="@+id/view_end_live_info"
@@ -240,7 +240,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/play_offset_12"
         android:layout_marginEnd="@dimen/spacing_lvl5"
-        app:layout_constraintEnd_toStartOf="@id/btn_play_cast"
+        app:layout_constraintEnd_toStartOf="@id/view_explore_widget"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@id/view_toolbar_room"
         app:layout_constraintTop_toBottomOf="@id/view_toolbar_room"
