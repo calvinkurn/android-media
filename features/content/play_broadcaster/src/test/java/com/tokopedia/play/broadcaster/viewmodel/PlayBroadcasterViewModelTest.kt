@@ -19,12 +19,16 @@ import com.tokopedia.play.broadcaster.model.setup.product.ProductSetupUiModelBui
 import com.tokopedia.play.broadcaster.pusher.timer.PlayBroadcastTimer
 import com.tokopedia.play.broadcaster.robot.PlayBroadcastViewModelRobot
 import com.tokopedia.play.broadcaster.ui.action.PlayBroadcastAction
+import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastEvent
 import com.tokopedia.play.broadcaster.ui.mapper.PlayBroProductUiMapper
+import com.tokopedia.play.broadcaster.ui.model.BroadcastScheduleUiModel
 import com.tokopedia.play.broadcaster.ui.model.ChannelStatus
 import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
+import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizFormStateUiModel
 import com.tokopedia.play.broadcaster.ui.model.title.PlayTitleUiModel
 import com.tokopedia.play.broadcaster.util.assertEmpty
 import com.tokopedia.play.broadcaster.util.assertEqualTo
+import com.tokopedia.play.broadcaster.util.assertEvent
 import com.tokopedia.play.broadcaster.util.assertFailed
 import com.tokopedia.play.broadcaster.util.assertFalse
 import com.tokopedia.play.broadcaster.util.assertTrue
@@ -39,6 +43,7 @@ import io.mockk.*
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
+import java.util.*
 
 /**
  * Created By : Jonathan Darwin on October 18, 2021
@@ -733,6 +738,87 @@ class PlayBroadcasterViewModelTest {
             it.getViewModel().setIsLiveStreamEnded()
 
             it.getViewModel().isLiveStreamEnded().assertTrue()
+        }
+    }
+
+    @Test
+    fun `when user set up schedule and scheduled`() {
+        val calendar = Calendar.getInstance()
+        val mockDate = Date(calendar.timeInMillis)
+
+        coEvery { mockRepo.updateSchedule(any(), mockDate) } returns BroadcastScheduleUiModel.Scheduled(
+            mockDate, "yyyy/mm/dd"
+        )
+
+        val robot = PlayBroadcastViewModelRobot(channelRepo = mockRepo)
+
+        robot.use {
+            val state = robot.recordEvent {
+                getViewModel().submitAction(PlayBroadcastAction.SetSchedule(mockDate))
+            }
+            state.last().assertEvent(PlayBroadcastEvent.SetScheduleSuccess(true))
+        }
+    }
+
+    @Test
+    fun `when user set up schedule and not scheduled`() {
+        val calendar = Calendar.getInstance()
+        val mockDate = Date(calendar.timeInMillis)
+
+        coEvery { mockRepo.updateSchedule(any(), mockDate) } returns BroadcastScheduleUiModel.NoSchedule
+
+        val robot = PlayBroadcastViewModelRobot(channelRepo = mockRepo)
+
+        robot.use {
+            val state = robot.recordEvent {
+                getViewModel().submitAction(PlayBroadcastAction.SetSchedule(mockDate))
+            }
+            state.last().assertEvent(PlayBroadcastEvent.SetScheduleSuccess(false))
+        }
+    }
+
+    @Test
+    fun `when user set up schedule and fails`() {
+        val calendar = Calendar.getInstance()
+        val mockDate = Date(calendar.timeInMillis)
+
+        coEvery { mockRepo.updateSchedule(any(), mockDate) } throws Exception("any exception")
+
+        val robot = PlayBroadcastViewModelRobot(channelRepo = mockRepo)
+
+        robot.use {
+            val state = robot.recordEvent {
+                getViewModel().submitAction(PlayBroadcastAction.SetSchedule(mockDate))
+            }
+            state.last().assertEvent(PlayBroadcastEvent.ShowScheduleError(Exception("any exception")))
+        }
+    }
+
+    @Test
+    fun `when user delete schedule and success`() {
+        coEvery { mockRepo.updateSchedule(any(), null) } returns BroadcastScheduleUiModel.NoSchedule
+
+        val robot = PlayBroadcastViewModelRobot(channelRepo = mockRepo)
+
+        robot.use {
+            val state = robot.recordEvent {
+                getViewModel().submitAction(PlayBroadcastAction.DeleteSchedule)
+            }
+            state.last().assertEvent(PlayBroadcastEvent.DeleteScheduleSuccess)
+        }
+    }
+
+    @Test
+    fun `when user delete schedule and fails`() {
+        coEvery { mockRepo.updateSchedule(any(), null) } throws Exception("any exception")
+
+        val robot = PlayBroadcastViewModelRobot(channelRepo = mockRepo)
+
+        robot.use {
+            val state = robot.recordEvent {
+                getViewModel().submitAction(PlayBroadcastAction.DeleteSchedule)
+            }
+            state.last().assertEvent(PlayBroadcastEvent.ShowScheduleError(Exception("any exception")))
         }
     }
 
