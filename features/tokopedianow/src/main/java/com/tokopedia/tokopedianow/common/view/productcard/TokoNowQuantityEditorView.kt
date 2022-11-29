@@ -38,6 +38,7 @@ class TokoNowQuantityEditorView @JvmOverloads constructor(
         private const val NO_PROGRESS = 0F
         private const val HIDE_SOFT_INPUT_KEYBOARD_FLAG = 0
         private const val MAX_ALPHA = 1f
+        private const val MIN_ALPHA = 0f
     }
 
     private var binding: LayoutTokopedianowQuantityEditorViewBinding
@@ -358,6 +359,7 @@ class TokoNowQuantityEditorView @JvmOverloads constructor(
             clearFocus()
             setEditTextPadding()
         }
+        addButton.alpha = MIN_ALPHA
     }
 
     private fun executeTimer() {
