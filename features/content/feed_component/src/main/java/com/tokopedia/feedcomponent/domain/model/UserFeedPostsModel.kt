@@ -95,8 +95,6 @@ data class Author(
     val webLink: String = "",
     @SerializedName("appLink")
     val appLink: String = "",
-    @SerializedName("encryptedUserID")
-    val encryptedUserID: String = "",
 )
 
 data class Comment(
@@ -119,8 +117,6 @@ data class CommentList(
     val author: Author = Author(),
     @SerializedName("text")
     val text: String = "",
-    @SerializedName("mods")
-    val mods: List<String> = emptyList(),
 )
 
 data class Followers(
@@ -193,38 +189,22 @@ data class Tag(
     val bebasOngkirStatus: String = "",
     @SerializedName("bebasOngkirURL")
     val bebasOngkirURL: String = "",
-    @SerializedName("bestSellerFmt")
-    val bestSellerFmt: String = "",
     @SerializedName("cashbackFmt")
     val cashbackFmt: String = "",
-    @SerializedName("countReview")
-    val countReview: Int = 0,
-    @SerializedName("countReviewFmt")
-    val countReviewFmt: String = "",
     @SerializedName("coverURL")
     val coverURL: String = "",
     @SerializedName("discount")
     val discount: Int = 0,
     @SerializedName("discountFmt")
     val discountFmt: String = "",
-    @SerializedName("etaShipping")
-    val etaShipping: String = "",
-    @SerializedName("halalFmt")
-    val halalFmt: String = "",
     @SerializedName("id")
     val id: String = "",
     @SerializedName("isBebasOngkir")
     val isBebasOngkir: Boolean = false,
-    @SerializedName("isBestSeller")
-    val isBestSeller: Boolean = false,
     @SerializedName("isCashback")
     val isCashback: Boolean = false,
     @SerializedName("isDiscount")
     val isDiscount: Boolean = false,
-    @SerializedName("isHalal")
-    val isHalal: Boolean = false,
-    @SerializedName("isPricePerPiece")
-    val isPricePerPiece: Boolean = false,
     @SerializedName("mods")
     val mods: List<String> = emptyList(),
     @SerializedName("name")
@@ -241,24 +221,14 @@ data class Tag(
     val priceOriginal: Double = 0.0,
     @SerializedName("priceOriginalFmt")
     val priceOriginalFmt: String = "",
-    @SerializedName("pricePerPieceFmt")
-    val pricePerPieceFmt: String = "",
-    @SerializedName("shopBadgeURL")
-    val shopBadgeURL: String = "",
     @SerializedName("shopID")
     val shopID: String = "",
     @SerializedName("shopName")
     val shopName: String = "",
-    @SerializedName("shopType")
-    val shopType: Int = 0,
-    @SerializedName("shopTypeName")
-    val shopTypeName: String = "",
     @SerializedName("star")
     val star: Int = 0,
     @SerializedName("totalSold")
     val totalSold: Int = 0,
-    @SerializedName("totalSoldFmt")
-    val totalSoldFmt: String = "",
     @SerializedName("webLink")
     val webLink: String = "",
 )

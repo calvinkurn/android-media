@@ -61,7 +61,6 @@ class GetUserProfileFeedPostsUseCase @Inject constructor(
                       logoURL
                       webLink
                       appLink
-                      encryptedUserID
                     }
                     title
                     subTitle
@@ -89,9 +88,6 @@ class GetUserProfileFeedPostsUseCase @Inject constructor(
                       id
                       shopID
                       shopName
-                      shopType
-                      shopTypeName
-                      shopBadgeURL
                       name
                       coverURL
                       webLink
@@ -108,22 +104,12 @@ class GetUserProfileFeedPostsUseCase @Inject constructor(
                       priceOriginalFmt
                       priceDiscount
                       priceDiscountFmt
-                      countReview
-                      countReviewFmt
                       totalSold
-                      totalSoldFmt
                       isBebasOngkir
                       bebasOngkirStatus
                       bebasOngkirURL
-                      isBestSeller
-                      bestSellerFmt
                       isCashback
                       cashbackFmt
-                      isHalal
-                      halalFmt
-                      isPricePerPiece
-                      pricePerPieceFmt
-                      etaShipping
                       mods
                     }
                     hashtagAppLinkFmt
@@ -152,6 +138,7 @@ class GetUserProfileFeedPostsUseCase @Inject constructor(
                       countFmt
                       items {
                         id
+                        text
                         author {
                           id
                           type
@@ -162,8 +149,6 @@ class GetUserProfileFeedPostsUseCase @Inject constructor(
                           webLink
                           appLink
                         }
-                        text
-                        mods
                       }
                       mods
                     }
