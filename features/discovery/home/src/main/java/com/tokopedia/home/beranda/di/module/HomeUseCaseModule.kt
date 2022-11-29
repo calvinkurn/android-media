@@ -41,7 +41,7 @@ import com.tokopedia.home.beranda.domain.interactor.GetHomeRecommendationUseCase
 import com.tokopedia.home.beranda.domain.interactor.GetHomeRecommendationV2UseCase
 import com.tokopedia.home.beranda.domain.interactor.GetHomeTokopointsListDataUseCase
 import com.tokopedia.home.beranda.domain.interactor.GetRecommendationTabUseCase
-import com.tokopedia.home.beranda.domain.interactor.HomeRecommendationUseCase
+import com.tokopedia.home.beranda.domain.interactor.HomeRecommendationFeedUseCase
 import com.tokopedia.home.beranda.domain.interactor.InjectCouponTimeBasedUseCase
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeAtfRepository
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeBusinessUnitDataRepository
@@ -176,7 +176,7 @@ class HomeUseCaseModule {
         graphqlRepository: GraphqlRepository,
         homeRecommendationMapper: HomeRecommendationMapper,
         remoteConfig: RemoteConfig
-    ): HomeRecommendationUseCase {
+    ): HomeRecommendationFeedUseCase {
         val isUsingV2 = remoteConfig.getBoolean(RemoteConfigKey.HOME_USE_GQL_FED_QUERY, true)
         return if (isUsingV2) {
             GetHomeRecommendationV2UseCase(

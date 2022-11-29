@@ -13,7 +13,7 @@ import javax.inject.Inject
 class GetHomeRecommendationV2UseCase @Inject constructor(
     private val graphqlUseCase: GraphqlUseCase<GetHomeRecommendationContent>,
     private val homeRecommendationMapper: HomeRecommendationMapper
-) : HomeRecommendationUseCase() {
+) : HomeRecommendationFeedUseCase() {
     private val params = RequestParams.create()
 
     init {
