@@ -41,6 +41,7 @@ import com.tokopedia.mvc.presentation.list.adapter.VouchersAdapter
 import com.tokopedia.mvc.presentation.list.model.MoreMenuUiModel
 import com.tokopedia.mvc.presentation.list.viewmodel.MvcListViewModel
 import com.tokopedia.mvc.presentation.product.add.AddProductActivity
+import com.tokopedia.mvc.util.SharingUtil
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.SearchBarUnify
@@ -92,20 +93,49 @@ class MvcListFragment :
                 MoreMenuBottomSheet.newInstance(
                     it,
                     voucher,
-                    onClickListenerForMoreMenu
                 )
+            moreMenuBottomSheet?.setOnMenuClickListener { menu ->
+                onClickListenerForMoreMenu(menu, voucher)
+            }
             moreMenuBottomSheet?.show(childFragmentManager, "")
         }
     }
 
-    private val onClickListenerForMoreMenu: (MoreMenuUiModel) -> Unit = {
+    private fun onClickListenerForMoreMenu(menuUiModel: MoreMenuUiModel, voucher: Voucher) {
         moreMenuBottomSheet?.dismiss()
-//        when(it) {
-//            is MoreMenuUiModel.Coupon -> {
-//
-//            }
-//
-//        }
+        when (menuUiModel) {
+            is MoreMenuUiModel.Coupon -> {
+
+            }
+            is MoreMenuUiModel.Calendar -> {
+
+            }
+            is MoreMenuUiModel.Edit -> {
+
+            }
+            is MoreMenuUiModel.Clipboard -> {
+
+            }
+            is MoreMenuUiModel.Broadcast -> {
+                SharingUtil.shareToBroadCastChat(requireContext(), voucher.id)
+            }
+            is MoreMenuUiModel.Download -> {
+
+            }
+            is MoreMenuUiModel.Clear -> {
+
+            }
+            is MoreMenuUiModel.Share -> {
+
+            }
+            is MoreMenuUiModel.Hentikan -> {
+
+            }
+
+            is MoreMenuUiModel.Copy -> {
+
+            }
+        }
     }
 
     override fun onVoucherListCopyCodeClicked(voucher: Voucher) {

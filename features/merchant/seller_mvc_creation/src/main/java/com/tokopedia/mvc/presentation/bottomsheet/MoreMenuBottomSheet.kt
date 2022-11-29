@@ -36,8 +36,15 @@ class MoreMenuBottomSheet : BottomSheetUnify() {
         binding?.recyclerView?.layoutManager =
             LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
 
+        adapter?.clearAllElements()
+        adapter?.addElement(menuItem)
+
         binding?.recyclerView?.adapter = adapter
         return super.onCreateView(inflater, container, savedInstanceState)
+    }
+
+    fun setOnMenuClickListener(callback: (MoreMenuUiModel) -> Unit) {
+        this.adapter = MoreMenuAdapter(callback)
     }
 
     companion object {
@@ -45,12 +52,11 @@ class MoreMenuBottomSheet : BottomSheetUnify() {
         fun newInstance(
             context: FragmentActivity,
             voucher: Voucher?,
-            callback: (MoreMenuUiModel) -> Unit
         ): MoreMenuBottomSheet {
             return MoreMenuBottomSheet().apply {
                 this.context = context
                 this.voucher = voucher
-                this.menuItem = getOngoingOptionsListMenu()
+                this.menuItem = getUpcomingOptionsListMenu()
 //                voucher?.type?.let { type ->
 //                    val getMenuItem =
 //                        when(type) {
@@ -126,9 +132,7 @@ class MoreMenuBottomSheet : BottomSheetUnify() {
 //                    menuAdapter?.clearAllElements()
 //                    menuAdapter?.addElement(getMenuItem)
 
-                adapter = MoreMenuAdapter(callback)
-                adapter?.clearAllElements()
-                adapter?.addElement(menuItem)
+
             }
         }
 
@@ -196,5 +200,18 @@ class MoreMenuBottomSheet : BottomSheetUnify() {
             ),
         )
     }
+
+    private fun getVoucherDetailUpcomingOngoingOptionsListMenu(): List<MoreMenuUiModel> {
+        return listOf(
+            MoreMenuUiModel.TermsAndConditions(
+                context?.getString(R.string.voucher_bs_terms_conditions).orEmpty(),
+            ),
+            MoreMenuUiModel.Clear(
+                context?.getString(R.string.voucher_bs_ubah_batalkan).orEmpty()
+            )
+        )
+    }
+
+
 
 }

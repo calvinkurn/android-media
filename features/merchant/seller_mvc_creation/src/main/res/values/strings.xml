@@ -199,7 +199,7 @@
     <string name="smvc_cancel_label">Batalkan</string>
     <string name="smvc_stop_label">Hentikan</string>
 
-    <!--Voucher detail page-->
+    <!--Voucher 3 dots menu-->
     <string name="voucher_three_bots_title">Nama Kupon Maks. 30 character</string>
     <string name="voucher_bs_ubah_kuota">Ubah Kuota</string>
     <string name="voucher_bs_ubah_periode">Ubah Periode</string>
@@ -211,4 +211,5 @@
     <string name="voucher_bs_ubah_hentikan">Hentikan</string>
     <string name="voucher_bs_ubah_bagikan">Bagikan</string>
     <string name="voucher_bs_duplikat">Duplikat</string>
+    <string name="voucher_bs_terms_conditions">Lihat Syarat &amp; Ketentuan Penggunaan Kupon</string>
 </resources>
