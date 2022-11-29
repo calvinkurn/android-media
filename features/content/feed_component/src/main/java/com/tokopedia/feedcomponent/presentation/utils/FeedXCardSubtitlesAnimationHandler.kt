@@ -1,11 +1,13 @@
 package com.tokopedia.feedcomponent.presentation.utils
 
+import android.animation.Animator
+import android.animation.Animator.AnimatorListener
 import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.animation.PropertyValuesHolder
 import android.annotation.SuppressLint
 import android.content.res.Resources
-import android.os.Handler
+import android.util.Log
 import android.view.View
 import java.lang.ref.WeakReference
 import java.util.*
@@ -92,6 +94,8 @@ class FeedXCardSubtitlesAnimationHandler(
         //reset position
         if (currentPositionAnimationInfo == subtitles.size)
             currentPositionAnimationInfo = 0
+
+        Log.d("FEED_ANIM", "Masuk After Animation Complete")
     }
 
     private fun reset() {
@@ -126,6 +130,24 @@ class FeedXCardSubtitlesAnimationHandler(
                 val translateAnimObjTwo: ObjectAnimator =
                     ObjectAnimator.ofPropertyValuesHolder(v2, translateAnimPropTwo)
 
+                translateAnimObjTwo.addListener(object : AnimatorListener {
+                    override fun onAnimationStart(animation: Animator?) {
+                    }
+
+                    override fun onAnimationEnd(animation: Animator?) {
+                        Log.d("FEED_ANIM", "Masuk animation End")
+                        afterAnimationComplete()
+                        translateAnimObjTwo.removeAllListeners()
+                    }
+
+                    override fun onAnimationCancel(animation: Animator?) {
+                    }
+
+                    override fun onAnimationRepeat(animation: Animator?) {
+                    }
+
+                })
+
                 animatorSet?.cancel()
                 animatorSet = AnimatorSet()
                 animatorSet?.playTogether(
@@ -134,8 +156,6 @@ class FeedXCardSubtitlesAnimationHandler(
                 )
                 animatorSet?.duration = DURATION
                 animatorSet?.start()
-
-                Handler().postDelayed({ afterAnimationComplete() }, animatorSet?.duration ?: DURATION)
             }
         }
     }
