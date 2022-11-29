@@ -5,7 +5,8 @@ import com.tokopedia.privacycenter.dsar.model.uimodel.CustomDateModel
 data class TransactionHistoryModel(
     var showBottomSheet: Boolean = false,
     var isChecked: Boolean = false,
-    var itemRange: ArrayList<ItemRangeModel> = arrayListOf()
+    var selectedDate: CustomDateModel = CustomDateModel()
+//    var itemRange: ArrayList<ItemRangeModel> = arrayListOf()
 )
 
 data class ItemRangeModel(

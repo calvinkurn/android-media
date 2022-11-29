@@ -14,12 +14,15 @@
         android:text="@string/dsar_bottom_sheet_detail_subtitle"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:layout_marginBottom="12dp"
         app:typographyType="paragraph_2" />
 
     <include
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
         android:id="@+id/personalInfo"
         layout="@layout/item_dsar_profile"
+        android:layout_marginHorizontal="1dp"
+        android:layout_marginTop="12dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/txtBtmSheetTitle" />

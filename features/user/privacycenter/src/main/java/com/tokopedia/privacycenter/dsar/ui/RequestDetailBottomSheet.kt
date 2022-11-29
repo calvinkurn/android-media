@@ -25,7 +25,6 @@ import com.tokopedia.utils.date.DateUtil.YYYYMMDD
 import com.tokopedia.utils.date.toDate
 import com.tokopedia.utils.date.toString
 import java.util.*
-import java.util.concurrent.TimeUnit
 
 object RequestDetailBottomSheet {
 
@@ -77,29 +76,7 @@ object RequestDetailBottomSheet {
             val splitTransaction = match.split("_")
             val startDate = splitTransaction[2].toDate(YYYYMMDD)
             val endDate = splitTransaction[3].toDate(YYYYMMDD)
-
-            val diff = TimeUnit.MILLISECONDS.toDays(endDate.time - startDate.time)
-
-            val firstDayOfThisYear = GregorianCalendar(Locale.getDefault()).apply {
-                set(GregorianCalendar.MONTH, GregorianCalendar.JANUARY)
-                set(GregorianCalendar.DAY_OF_MONTH, 1)
-            }
-
-            val thisYearDiff =
-                TimeUnit.MILLISECONDS.toDays(endDate.time - firstDayOfThisYear.time.time)
-
-            val dateString = when (diff) {
-                DsarConstants.DAYS_7 -> { DsarConstants.LABEL_RANGE_WEEKLY }
-                DsarConstants.DAYS_30 -> { DsarConstants.LABEL_RANGE_30_DAYS }
-                in DsarConstants.DAYS_90..DsarConstants.DAYS_92 -> { DsarConstants.LABEL_RANGE_3_MONTHS }
-                DsarConstants.DAYS_3_YEARS -> { DsarConstants.LABEL_RANGE_3_YEARS }
-                in (thisYearDiff - 1)..(thisYearDiff + 1) -> { DsarConstants.LABEL_RANGE_YEARS }
-                else -> {
-                    "${startDate.toString(DEFAULT_VIEW_FORMAT)} - ${
-                        endDate.toString(DEFAULT_VIEW_FORMAT)
-                    }"
-                }
-            }
+            val dateString = "${startDate.toString(DEFAULT_VIEW_FORMAT)} - ${endDate.toString(DEFAULT_VIEW_FORMAT)}"
             finalText += "$TRANSACTION_LABEL$dateString$HTML_NEW_LINE"
         }
         return finalText
