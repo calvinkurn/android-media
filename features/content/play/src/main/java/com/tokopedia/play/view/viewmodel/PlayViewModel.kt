@@ -203,10 +203,11 @@ class PlayViewModel @AssistedInject constructor(
 
     private val _isThreeDotsOpened = MutableStateFlow(false)
     private val _isSharingOpened = MutableStateFlow(false)
+    private val _videoProperty = MutableStateFlow(VideoPropertyUiModel.Empty)
 
-    private val _followPopUpUiState = combine(_bottomInsets, _isFollowPopUpShown, _partnerInfo, _isThreeDotsOpened, _isSharingOpened, _interactive) {
-        bottomInsets, popUp, partner, kebab, sharing, interactive ->
-            !bottomInsets.isAnyShown && popUp.shouldShow && partner.needFollow && partner.id == popUp.partnerId && !kebab && !sharing && !interactive.isPlaying && !viewerVideoState.hasNoData
+    private val _followPopUpUiState = combine(_bottomInsets, _isFollowPopUpShown, _partnerInfo, _isThreeDotsOpened, _isSharingOpened, _interactive, _videoProperty) {
+        bottomInsets, popUp, partner, kebab, sharing, interactive, videoState ->
+            !bottomInsets.isAnyShown && popUp.shouldShow && partner.needFollow && partner.id == popUp.partnerId && !kebab && !sharing && !interactive.isPlaying && !videoState.state.hasNoData
     }.flowOn(dispatchers.computation)
 
     private val _winnerBadgeUiState = combine(
@@ -502,7 +503,7 @@ class PlayViewModel @AssistedInject constructor(
 
     private val _observableChannelInfo = MutableLiveData<PlayChannelInfoUiModel>()
     private val _observablePinnedMessage = MutableLiveData<PinnedMessageUiModel>()
-    private val _observableVideoProperty = MutableLiveData<VideoPropertyUiModel>()
+    private val _observableVideoProperty = MutableLiveData<VideoPropertyUiModel>() /**Added StateFlow*/
     private val _observableVideoMeta = MutableLiveData<PlayVideoMetaInfoUiModel>() /**Changed**/
     private val _observableBottomInsetsState = MutableLiveData<Map<BottomInsetsType, BottomInsetsState>>()
     private val _observableKebabSheets = MutableLiveData<Map<KebabMenuType, BottomInsetsState>>()
@@ -530,7 +531,9 @@ class PlayViewModel @AssistedInject constructor(
     private val videoStateListener = object : PlayViewerVideoStateListener {
         override fun onStateChanged(state: PlayViewerVideoState) {
             viewModelScope.launch(dispatchers.immediate) {
-                _observableVideoProperty.value = VideoPropertyUiModel(state)
+                val newState =  VideoPropertyUiModel(state)
+                _observableVideoProperty.value = newState
+                _videoProperty.update { newState }
             }
         }
     }
