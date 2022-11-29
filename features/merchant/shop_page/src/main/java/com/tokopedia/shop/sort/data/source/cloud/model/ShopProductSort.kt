@@ -16,6 +16,7 @@ class ShopProductSort {
     @SerializedName("name")
     @Expose
     var name: String? = null
+
     /**
      * @return The key
      */
@@ -25,6 +26,7 @@ class ShopProductSort {
     @SerializedName("key")
     @Expose
     var key: String? = null
+
     /**
      * @return The value
      */
@@ -34,6 +36,7 @@ class ShopProductSort {
     @SerializedName("value")
     @Expose
     var value: String? = null
+
     /**
      * @return The inputType
      */

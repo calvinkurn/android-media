@@ -101,7 +101,6 @@ open class FlightSearchFragment :
         savedInstanceState: Bundle?
     ): View? {
         val viewRoot = inflater.inflate(getLayout(), container, false)
-        viewRoot.setBackgroundResource(com.tokopedia.unifyprinciples.R.color.Unify_N0)
         promoChipsWidget = viewRoot.findViewById(R.id.flight_promo_chips_view)
         return viewRoot
     }

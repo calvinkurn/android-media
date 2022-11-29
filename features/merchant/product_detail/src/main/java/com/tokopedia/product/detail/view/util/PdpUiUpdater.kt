@@ -10,6 +10,7 @@ import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.pdp.fintech.view.FintechPriceDataModel
 import com.tokopedia.play.widget.ui.PlayWidgetState
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.common.data.model.ar.ProductArInfo
 import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkirImage
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.pdplayout.Media
@@ -20,6 +21,7 @@ import com.tokopedia.product.detail.common.extensions.ifNullOrBlank
 import com.tokopedia.product.detail.common.getCurrencyFormatted
 import com.tokopedia.product.detail.data.model.ProductInfoP2Other
 import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
+import com.tokopedia.product.detail.data.model.datamodel.ArButtonDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ContentWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
 import com.tokopedia.product.detail.data.model.datamodel.FintechWidgetDataModel
@@ -156,6 +158,9 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
 
     val dilayaniTokopedia: ProductShopAdditionalDataModel?
         get() = mapOfData[ProductDetailConstant.DILAYANI_TOKOPEDIA] as? ProductShopAdditionalDataModel
+
+    val productArData: ArButtonDataModel?
+        get() = mapOfData[ProductDetailConstant.AR_BUTTON] as? ArButtonDataModel
 
     private val verticalRecommendationItems = mutableListOf<ProductRecommendationVerticalDataModel>()
 
@@ -485,6 +490,20 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                     appLink = it.shopAdditional.appLink
                     linkText = it.shopAdditional.linkText
                 }
+            }
+
+            updateArData(productId, it.arInfo)
+        }
+    }
+
+    fun updateArData(selectedProductId: String, arInfo: ProductArInfo) {
+        updateData(ProductDetailConstant.AR_BUTTON) {
+            if (arInfo.isProductIdContainsAr(selectedProductId)) {
+                productArData?.applink = arInfo.applink
+                productArData?.message = arInfo.message
+                productArData?.imageUrl = arInfo.imageUrl
+            } else {
+                productArData?.message = ""
             }
         }
     }

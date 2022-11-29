@@ -3,7 +3,7 @@ package com.tokopedia.shop.analyticvalidator.util
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 
 class ShopPagePrepareAnalyticHelper {
-    fun mockLogin(){
+    fun mockLogin() {
         InstrumentationAuthHelper.loginInstrumentationTestUser1()
     }
 
