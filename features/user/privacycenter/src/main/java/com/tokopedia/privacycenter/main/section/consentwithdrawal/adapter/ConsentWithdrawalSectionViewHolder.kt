@@ -19,7 +19,7 @@ class ConsentWithdrawalSectionViewHolder(
             description = item.groupSubtitle
             setIcon(item.groupImage)
 
-            onNavigationButtonClicked {
+            rootView.setOnClickListener {
                 listener.onItemClicked(item)
             }
         }
