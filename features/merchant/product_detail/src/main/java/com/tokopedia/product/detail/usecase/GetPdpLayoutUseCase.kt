@@ -348,6 +348,15 @@ open class GetPdpLayoutUseCase @Inject constructor(private val gqlUseCase: Multi
                        separator
                        icon
                        isVisible
+                       eduLink {
+                          appLink
+                       }
+                    },
+                    ... on pdpDataBundleComponentInfo {
+                       title
+                       widgetType
+                       productID
+                       whID
                     }
                   }
                 }

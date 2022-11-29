@@ -10,7 +10,8 @@ data class HomeProductRecomUiModel(
     val title: String,
     val productList: List<TokoNowProductCardCarouselItemUiModel>,
     val seeMoreModel: TokoNowSeeMoreCardCarouselUiModel? = null,
-    val headerModel: TokoNowDynamicHeaderUiModel? = null
+    val headerModel: TokoNowDynamicHeaderUiModel? = null,
+    val realTimeRecom: HomeRealTimeRecomUiModel = HomeRealTimeRecomUiModel()
 ) : HomeLayoutUiModel(id) {
     override fun type(typeFactory: HomeTypeFactory): Int {
         return typeFactory.type(this)
@@ -20,9 +21,12 @@ data class HomeProductRecomUiModel(
         val newItem = newModel as HomeProductRecomUiModel
         val oldProductList = productList
         val newProductList = newItem.productList
+        val oldRtrWidget = realTimeRecom
+        val newRtrWidget = newItem.realTimeRecom
 
         return when {
-            oldProductList != newProductList -> true
+            oldProductList != newProductList ||
+            oldRtrWidget != newRtrWidget -> true
             else -> null
         }
     }

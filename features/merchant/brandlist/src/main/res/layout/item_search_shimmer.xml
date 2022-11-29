@@ -8,7 +8,7 @@
     <androidx.cardview.widget.CardView
         android:id="@+id/search_shimmer"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/layout_lvl0"
+        android:layout_height="0dp"
         app:cardBackgroundColor="@color/Unify_N0"
         app:cardCornerRadius="4dp"
         app:cardElevation="4dp"
@@ -25,7 +25,7 @@
             <com.tokopedia.unifycomponents.LoaderUnify
                 android:id="@+id/iv_brand_logo_shimmer"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/layout_lvl0"
+                android:layout_height="0dp"
                 android:layout_marginStart="12dp"
                 android:layout_marginTop="10dp"
                 android:layout_marginEnd="12dp"
@@ -41,7 +41,7 @@
             <com.tokopedia.unifycomponents.LoaderUnify
                 android:id="@+id/iv_brand_image_shimmer"
                 android:layout_width="match_parent"
-                android:layout_height="@dimen/layout_lvl0"
+                android:layout_height="0dp"
                 android:layout_marginStart="12dp"
                 android:layout_marginTop="@dimen/dp_11"
                 android:layout_marginEnd="12dp"
@@ -62,8 +62,8 @@
         android:id="@+id/tv_brand_name_shimmer"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="@dimen/layout_lvl3"
-        android:layout_marginRight="@dimen/layout_lvl3"
+        android:layout_marginLeft="24dp"
+        android:layout_marginRight="24dp"
         android:layout_marginTop="8dp"
         android:lineSpacingExtra="6sp"
         app:loader_corner_radius="0dp"

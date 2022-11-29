@@ -34,6 +34,7 @@ class TableMapper @Inject constructor(
         private const val COLUMN_TEXT = 1
         private const val COLUMN_IMAGE = 2
         private const val COLUMN_HTML = 4
+        private const val COLUMN_HTML_WITH_ICON = 8
 
         private const val MAX_ROWS_PER_PAGE = 5
 
@@ -89,7 +90,7 @@ class TableMapper @Inject constructor(
         val oneRowCount = CONST_ONE
         tableRows.forEachIndexed { i, row ->
             val firstTextColumn = row.columns.firstOrNull {
-                it.type == COLUMN_TEXT || it.type == COLUMN_HTML
+                it.type == COLUMN_TEXT || it.type == COLUMN_HTML || it.type == COLUMN_HTML_WITH_ICON
             }
             row.columns.forEachIndexed { j, col ->
                 if (j < headers.size) {
@@ -102,13 +103,23 @@ class TableMapper @Inject constructor(
                             isLeftAlign = firstTextColumn == col
                         )
                         COLUMN_IMAGE -> TableRowsUiModel.RowColumnImage(col.value, width)
-                        else -> TableRowsUiModel.RowColumnHtml(
-                            valueStr = col.value,
-                            width = width,
+
+                        COLUMN_HTML -> TableRowsUiModel.RowColumnHtml(
+                            col.value,
+                            width,
                             meta = getTableRowMeta(col.meta),
                             isLeftAlign = firstTextColumn == col,
                             colorInt = getColorFromHtml(col.value)
-                        ) //it's COLUMN_HTML
+                        )
+                        else ->
+                            TableRowsUiModel.RowColumnHtmlWithIcon(
+                                col.value,
+                                width,
+                                col.iconUrl.orEmpty(),
+                                meta = getTableRowMeta(col.meta),
+                                isLeftAlign = firstTextColumn == col,
+                                getColorFromHtml(col.value)
+                            ) // it's COLUMN_HTML WITH ICON
                     }
                     rows.add(rowColumn)
                 }

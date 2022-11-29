@@ -20,8 +20,9 @@ data class HomeLeftCarouselAtcProductCardUiModel(
     var recommendationType: String = "",
     var warehouseId: String = "",
     var campaignCode: String = "",
-    val position: Int = 0,
+    val categoryBreadcrumbs: String = "",
     val productCardModel: TokoNowProductCardViewUiModel,
+    val position: Int = 0
 ): Visitable<HomeLeftCarouselAtcProductCardTypeFactory>, ImpressHolder() {
     override fun type(typeFactory: HomeLeftCarouselAtcProductCardTypeFactory): Int {
         return typeFactory.type(this)

@@ -1,13 +1,11 @@
 package com.tokopedia.play.broadcaster.ui.mapper
 
-import android.graphics.Typeface
-import android.text.SpannableStringBuilder
-import android.text.Spanned
-import android.text.style.StyleSpan
 import com.tokopedia.broadcaster.revamp.util.statistic.BroadcasterMetric
+import com.tokopedia.content.common.model.GetCheckWhitelistResponse
+import com.tokopedia.content.common.types.ContentCommonUserType.TYPE_SHOP
+import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.content.common.ui.model.TermsAndConditionUiModel
 import com.tokopedia.kotlin.extensions.toFormattedString
-import com.tokopedia.play.broadcaster.data.model.ProductData
 import com.tokopedia.play.broadcaster.domain.model.*
 import com.tokopedia.play.broadcaster.domain.model.interactive.GetInteractiveConfigResponse
 import com.tokopedia.play.broadcaster.domain.model.interactive.GetSellerLeaderboardSlotResponse
@@ -35,12 +33,10 @@ import com.tokopedia.play.broadcaster.util.extension.DATE_FORMAT_RFC3339
 import com.tokopedia.play.broadcaster.util.extension.toDateWithFormat
 import com.tokopedia.play.broadcaster.util.helper.UriParser
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
-import com.tokopedia.play.broadcaster.view.state.SelectableState
 import com.tokopedia.play.broadcaster.view.state.SetupDataState
 import com.tokopedia.play_common.model.ui.*
 import com.tokopedia.play_common.transformer.HtmlTextTransformer
 import com.tokopedia.play_common.view.game.quiz.PlayQuizOptionState
-import com.tokopedia.shop.common.graphql.data.shopetalase.ShopEtalaseModel
 import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
@@ -53,88 +49,32 @@ class PlayBroadcastUiMapper @Inject constructor(
     private val uriParser: UriParser,
 ) : PlayBroadcastMapper {
 
-    override fun mapEtalaseList(etalaseList: List<ShopEtalaseModel>): List<EtalaseContentUiModel> =
-        etalaseList.map {
-            val type = EtalaseType.getByType(it.type, it.id)
-            EtalaseContentUiModel(
-                id = if (type is EtalaseType.Group) type.fMenu else it.id,
-                name = it.name,
-                productMap = mutableMapOf(),
-                totalProduct = it.count,
-                stillHasProduct = true
+    override fun mapLiveStream(channelId: String, media: CreateLiveStreamChannelResponse.GetMedia) =
+        LiveStreamInfoUiModel(
+            ingestUrl = media.ingestUrl,
+
+            )
+
+    override fun mapToLiveTrafficUiMetrics(authorType: String, metrics: LiveStats): List<TrafficMetricUiModel> =
+        if (authorType == TYPE_SHOP) {
+            mutableListOf(
+                TrafficMetricUiModel(TrafficMetricType.TotalViews, metrics.visitChannelFmt),
+                TrafficMetricUiModel(TrafficMetricType.VideoLikes, metrics.likeChannelFmt),
+                TrafficMetricUiModel(TrafficMetricType.NewFollowers, metrics.followShopFmt),
+                TrafficMetricUiModel(TrafficMetricType.ShopVisit, metrics.visitShopFmt),
+                TrafficMetricUiModel(TrafficMetricType.ProductVisit, metrics.visitPdpFmt),
+                TrafficMetricUiModel(TrafficMetricType.NumberOfAtc, metrics.addToCartFmt),
+                TrafficMetricUiModel(TrafficMetricType.NumberOfPaidOrders, metrics.paymentVerifiedFmt)
+            )
+        } else {
+            mutableListOf(
+                TrafficMetricUiModel(TrafficMetricType.TotalViews, metrics.visitChannelFmt),
+                TrafficMetricUiModel(TrafficMetricType.VideoLikes, metrics.likeChannelFmt),
+                TrafficMetricUiModel(TrafficMetricType.ProductVisit, metrics.visitPdpFmt),
+                TrafficMetricUiModel(TrafficMetricType.NumberOfAtc, metrics.addToCartFmt),
+                TrafficMetricUiModel(TrafficMetricType.NumberOfPaidOrders, metrics.paymentVerifiedFmt)
             )
         }
-
-    override fun mapProductList(
-        productsResponse: GetProductsByEtalaseResponse.GetProductListData,
-        isSelectedHandler: (String) -> Boolean,
-        isSelectableHandler: (Boolean) -> SelectableState
-    ) = productsResponse.data.map {
-        ProductContentUiModel(
-            id = it.id,
-            name = it.name,
-            imageUrl = it.pictures.firstOrNull()?.urlThumbnail.orEmpty(),
-            originalImageUrl = it.pictures.firstOrNull()?.urlThumbnail.orEmpty(),
-            stock = if (it.stock > 0) StockAvailable(it.stock) else OutOfStock,
-            price = PriceUnknown,
-            isSelectedHandler = isSelectedHandler,
-            isSelectable = isSelectableHandler
-        )
-    }
-
-    override fun mapSearchSuggestionList(
-        keyword: String,
-        productsResponse: GetProductsByEtalaseResponse.GetProductListData
-    ) = productsResponse.data.map {
-        val fullSuggestedText = it.name
-        val startIndex = fullSuggestedText.indexOf(keyword)
-        val lastIndex = startIndex + keyword.length
-
-        SearchSuggestionUiModel(
-            queriedText = keyword,
-            suggestedId = it.id,
-            suggestedText = it.name,
-            spannedSuggestion = SpannableStringBuilder(fullSuggestedText).apply {
-                if (startIndex >= 0) setSpan(
-                    StyleSpan(Typeface.BOLD),
-                    startIndex,
-                    lastIndex,
-                    Spanned.SPAN_INCLUSIVE_EXCLUSIVE
-                )
-            }
-        )
-    }
-
-    override fun mapLiveFollowers(
-        response: GetLiveFollowersResponse
-    ): FollowerDataUiModel {
-        val totalRetrievedFollowers = response.shopFollowerList.data.size
-        return FollowerDataUiModel(
-            followersList = List(TOTAL_FOLLOWERS) {
-                if (it >= totalRetrievedFollowers) FollowerUiModel.Unknown.fromIndex(it)
-                else FollowerUiModel.User(response.shopFollowerList.data[it].photo)
-            },
-            totalFollowers = response.shopInfoById.result.firstOrNull()?.favoriteData?.totalFavorite
-                ?: 0
-        )
-    }
-
-    override fun mapLiveStream(channelId: String, media: CreateLiveStreamChannelResponse.GetMedia) =
-            LiveStreamInfoUiModel(
-                    ingestUrl = media.ingestUrl,
-
-        )
-
-    override fun mapToLiveTrafficUiMetrics(metrics: LiveStats): List<TrafficMetricUiModel> =
-        mutableListOf(
-            TrafficMetricUiModel(TrafficMetricType.TotalViews, metrics.visitChannelFmt),
-            TrafficMetricUiModel(TrafficMetricType.VideoLikes, metrics.likeChannelFmt),
-            TrafficMetricUiModel(TrafficMetricType.NewFollowers, metrics.followShopFmt),
-            TrafficMetricUiModel(TrafficMetricType.ShopVisit, metrics.visitShopFmt),
-            TrafficMetricUiModel(TrafficMetricType.ProductVisit, metrics.visitPdpFmt),
-            TrafficMetricUiModel(TrafficMetricType.NumberOfAtc, metrics.addToCartFmt),
-            TrafficMetricUiModel(TrafficMetricType.NumberOfPaidOrders, metrics.paymentVerifiedFmt)
-        )
 
     override fun mapTotalView(totalView: TotalView): TotalViewUiModel = TotalViewUiModel(
         totalView.totalViewFmt
@@ -150,31 +90,6 @@ class PlayBroadcastUiMapper @Inject constructor(
                 spannedSentence = textTransformer.transform(it.sentence),
                 type = it.metricType,
                 interval = it.interval
-            )
-        }
-
-    override fun mapProductTag(productTag: ProductTagging): List<ProductData> =
-        productTag.productList.map {
-            ProductData(
-                id = it.id.toString(),
-                name = it.name,
-                imageUrl = it.imageUrl,
-                originalImageUrl = it.imageUrl,
-                stock = if (it.isAvailable) StockAvailable(it.quantity) else OutOfStock,
-                price = if (it.discount != 0L) {
-                    DiscountedPrice(
-                        originalPrice = it.originalPriceFormatted,
-                        originalPriceNumber = it.originalPrice,
-                        discountedPrice = it.priceFormatted,
-                        discountedPriceNumber = it.price,
-                        discountPercent = it.discount
-                    )
-                } else {
-                    OriginalPrice(
-                        price = it.originalPriceFormatted,
-                        priceNumber = it.originalPrice
-                    )
-                }
             )
         }
 
@@ -232,31 +147,6 @@ class PlayBroadcastUiMapper @Inject constructor(
         status = ChannelStatus.getByValue(channel.basic.status.id)
     )
 
-    override fun mapChannelProductTags(productTags: List<GetChannelResponse.ProductTag>) =
-        productTags.map {
-            ProductData(
-                id = it.productID,
-                name = it.productName,
-                imageUrl = it.imageUrl,
-                originalImageUrl = it.imageUrl,
-                stock = if (it.isAvailable) StockAvailable(it.quantity) else OutOfStock,
-                price = if (it.discount.toLong() != 0L) {
-                    DiscountedPrice(
-                        originalPrice = it.originalPriceFmt,
-                        originalPriceNumber = it.originalPrice.toDouble(),
-                        discountedPrice = it.priceFmt,
-                        discountedPriceNumber = it.price.toDouble(),
-                        discountPercent = it.discount.toLong()
-                    )
-                } else {
-                    OriginalPrice(
-                        price = it.originalPriceFmt,
-                        priceNumber = it.originalPrice.toDouble()
-                    )
-                }
-            )
-        }
-
     override fun mapChannelSchedule(
         timestamp: GetChannelResponse.Timestamp,
         status: GetChannelResponse.ChannelBasicStatus
@@ -305,13 +195,15 @@ class PlayBroadcastUiMapper @Inject constructor(
         coverUrl: String,
         date: String,
         duration: String,
-        isEligiblePostVideo: Boolean
+        isEligiblePostVideo: Boolean,
+        author: ContentAccountUiModel,
     ) = ChannelSummaryUiModel(
         title = title,
         coverUrl = coverUrl,
         date = date,
         duration = duration,
         isEligiblePostVideo = isEligiblePostVideo,
+        author = author,
     )
 
     override fun mapIncomingChat(chat: Chat): PlayChatUiModel = PlayChatUiModel(
@@ -340,7 +232,7 @@ class PlayBroadcastUiMapper @Inject constructor(
             buttonTitle = bannedEvent.btnText
         )
 
-    override fun mapInteractiveConfig(response: GetInteractiveConfigResponse): InteractiveConfigUiModel {
+    override fun mapInteractiveConfig(authorType: String, response: GetInteractiveConfigResponse): InteractiveConfigUiModel {
         val interactiveDuration = response.interactiveConfig.tapTapConfig.interactiveDuration
 
         val quizDurationInMs = response.interactiveConfig.quizConfig.quizDurationsInSeconds.map {
@@ -349,7 +241,7 @@ class PlayBroadcastUiMapper @Inject constructor(
 
         return InteractiveConfigUiModel(
             giveawayConfig = GiveawayConfigUiModel(
-                isActive = response.interactiveConfig.tapTapConfig.isActive,
+                isActive = if (authorType == TYPE_SHOP) response.interactiveConfig.tapTapConfig.isActive else false,
                 nameGuidelineHeader = response.interactiveConfig.tapTapConfig.interactiveNamingGuidelineHeader,
                 nameGuidelineDetail = response.interactiveConfig.tapTapConfig.interactiveNamingGuidelineDetail,
                 timeGuidelineHeader = response.interactiveConfig.tapTapConfig.interactiveTimeGuidelineHeader,
@@ -361,7 +253,8 @@ class PlayBroadcastUiMapper @Inject constructor(
                 },
             ),
             quizConfig = QuizConfigUiModel(
-                isActive = response.interactiveConfig.quizConfig.isActive,
+                isActive = if (authorType == TYPE_SHOP) response.interactiveConfig.tapTapConfig.isActive else false,
+                isGiftActive = authorType == TYPE_SHOP,
                 maxTitleLength = response.interactiveConfig.quizConfig.maxTitleLength,
                 maxChoicesCount = response.interactiveConfig.quizConfig.maxChoicesCount,
                 minChoicesCount = response.interactiveConfig.quizConfig.minChoicesCount,
@@ -413,7 +306,10 @@ class PlayBroadcastUiMapper @Inject constructor(
         )
     }
 
-    override fun mapQuizDetail(response: GetInteractiveQuizDetailResponse, interactiveId: String): QuizDetailDataUiModel {
+    override fun mapQuizDetail(
+        response: GetInteractiveQuizDetailResponse,
+        interactiveId: String
+    ): QuizDetailDataUiModel {
         return with(response.playInteractiveQuizDetail) {
             QuizDetailDataUiModel(
                 question = textTransformer.transform(question),
@@ -432,11 +328,9 @@ class PlayBroadcastUiMapper @Inject constructor(
         }
     }
 
-    override fun mapQuizDetailToLeaderBoard(dataUiModel: QuizDetailDataUiModel): PlayLeaderboardUiModel {
-        return PlayLeaderboardUiModel(
-            title = textTransformer.transform(dataUiModel.question),
-            reward = textTransformer.transform(dataUiModel.reward),
-            choices = dataUiModel.choices.mapIndexed { index, choice ->
+    override fun mapQuizDetailToLeaderBoard(dataUiModel: QuizDetailDataUiModel, endTime: Calendar?): List<LeaderboardGameUiModel> {
+        val choices = dataUiModel.choices.mapIndexed { index, choice ->
+            LeaderboardGameUiModel.QuizOption(
                 QuizChoicesUiModel(
                     index = index,
                     id = choice.id,
@@ -450,14 +344,12 @@ class PlayBroadcastUiMapper @Inject constructor(
                     interactiveId = dataUiModel.interactiveId,
                     interactiveTitle = textTransformer.transform(dataUiModel.question),
                 )
-            },
-            endsIn = dataUiModel.countDownEnd,
-            otherParticipant = 0,
-            otherParticipantText = "",
-            winners = emptyList(),
-            leaderBoardType = LeadeboardType.Quiz,
-            id = dataUiModel.interactiveId,
-        )
+            )
+        }
+        return mutableListOf<LeaderboardGameUiModel>().apply {
+            add(LeaderboardGameUiModel.Header(title = dataUiModel.question, endsIn = endTime, leaderBoardType = LeadeboardType.Quiz,id = dataUiModel.interactiveId))
+            addAll(choices)
+        }
     }
 
     override fun mapChoiceDetail(
@@ -502,57 +394,81 @@ class PlayBroadcastUiMapper @Inject constructor(
         }
     }
 
+    @OptIn(ExperimentalStdlibApi::class)
     override fun mapLeaderBoardWithSlot(
         response: GetSellerLeaderboardSlotResponse,
         allowChat: Boolean
-    ): List<PlayLeaderboardUiModel> {
-        return response.data.slots.map { slot ->
-            PlayLeaderboardUiModel(
-                title = slot.getSlotTitle(),
-                winners = slot.winner.mapIndexed { index, winner ->
-                    PlayWinnerUiModel(
-                        rank = index + 1,
-                        id = winner.userID,
-                        name = winner.userName,
-                        imageUrl = winner.imageUrl,
-                        allowChat = { allowChat },
-                        topChatMessage =
-                        if (getLeaderboardType(slot.type) == LeadeboardType.Giveaway)
-                            response.data.config.topchatMessage
-                                .replace(FORMAT_FIRST_NAME, winner.userName)
-                                .replace(FORMAT_TITLE, slot.getSlotTitle())
-                        else
-                            response.data.config.topchatMessageQuiz
-                                .replace(FORMAT_FIRST_NAME, winner.userName)
-                                .replace(FORMAT_TITLE, slot.getSlotTitle())
-                        ,
+    ): List<LeaderboardGameUiModel> {
+        return buildList {
+            response.data.slots.forEach {
+                //Header
+                add(
+                    LeaderboardGameUiModel.Header(
+                        id = it.interactiveId,
+                        reward = if (getLeaderboardType(it.type) == LeadeboardType.Quiz) "" else textTransformer.transform(it.reward),
+                        leaderBoardType = getLeaderboardType(it.type),
+                        title = it.getSlotTitle()
                     )
-                },
-                choices = slot.choices.mapIndexed { index, choice ->
-                    QuizChoicesUiModel(
-                        index = index,
-                        id = choice.id,
-                        text = textTransformer.transform(choice.text),
-                        type = PlayQuizOptionState.Participant(
-                            alphabet = generateAlphabetChoices(index),
-                            isCorrect = choice.isCorrectAnswer,
-                            count = choice.participantCount.toString(),
-                            showArrow = true
-                        ),
-                        interactiveId = slot.interactiveId,
-                        interactiveTitle = slot.getSlotTitle()
+                )
+
+                // Quiz if any
+                if (it.choices.isNotEmpty()) addAll(it.choices.mapIndexed { index, choice ->
+                    LeaderboardGameUiModel.QuizOption(
+                        QuizChoicesUiModel(
+                            index = index,
+                            id = choice.id,
+                            text = textTransformer.transform(choice.text),
+                            type = PlayQuizOptionState.Participant(
+                                alphabet = generateAlphabetChoices(index),
+                                isCorrect = choice.isCorrectAnswer,
+                                count = choice.participantCount.toString(),
+                                showArrow = true
+                            ),
+                            interactiveId = it.interactiveId,
+                            interactiveTitle = it.getSlotTitle()
+                        )
                     )
-                },
-                otherParticipantText = slot.otherParticipantCountText,
-                otherParticipant = slot.otherParticipantCount.toLong(),
-                reward = textTransformer.transform(slot.reward),
-                leaderBoardType = getLeaderboardType(slot.type),
-                id = slot.interactiveId,
-            )
+                })
+
+                //Winner if any
+                if (it.winner.isNotEmpty()) addAll(
+                    it.winner.mapIndexed { index, winner ->
+                        LeaderboardGameUiModel.Winner(
+                            rank = index + 1,
+                            id = winner.userID,
+                            name = winner.userName,
+                            imageUrl = winner.imageUrl,
+                            allowChat = { allowChat },
+                            topChatMessage =
+                            if (getLeaderboardType(it.type) == LeadeboardType.Giveaway)
+                                response.data.config.topchatMessage
+                                    .replace(FORMAT_FIRST_NAME, winner.userName)
+                                    .replace(FORMAT_TITLE, it.getSlotTitle())
+                            else
+                                response.data.config.topchatMessageQuiz
+                                    .replace(FORMAT_FIRST_NAME, winner.userName)
+                                    .replace(FORMAT_TITLE, it.getSlotTitle()),
+                        )
+                    }
+                )
+                // need to add topChat
+
+                //Footer
+                add(
+                    LeaderboardGameUiModel.Footer(
+                        otherParticipantText = it.otherParticipantCountText,
+                        otherParticipant = it.otherParticipantCount.toLong(),
+                        leaderBoardType = getLeaderboardType(it.type),
+                        totalParticipant = it.winner.size.toLong(),
+                        emptyLeaderBoardCopyText = it.otherParticipantCountText,
+                        id = it.interactiveId,
+                    )
+                )
+            }
         }
     }
 
-    private fun GetSellerLeaderboardSlotResponse.SlotData.getSlotTitle() : String {
+    private fun GetSellerLeaderboardSlotResponse.SlotData.getSlotTitle(): String {
         return if (getLeaderboardType(this.type) == LeadeboardType.Giveaway)
             this.title
         else textTransformer.transform(
@@ -591,6 +507,20 @@ class PlayBroadcastUiMapper @Inject constructor(
         videoBufferTimestamp = metric.videoBufferTimestamp,
         audioBufferTimestamp = metric.audioBufferTimestamp,
     )
+
+    override fun mapAuthorList(response: GetCheckWhitelistResponse): List<ContentAccountUiModel> {
+        return response.whitelist.authors.map {
+            ContentAccountUiModel(
+                id = it.id,
+                name = it.name,
+                iconUrl = it.thumbnail,
+                badge = it.badge,
+                type = it.type,
+                hasUsername = it.livestream.hasUsername,
+                hasAcceptTnc = it.livestream.enable,
+            )
+        }
+    }
 
     companion object {
         private const val FORMAT_INTERACTIVE_DURATION = "${'$'}{second}"

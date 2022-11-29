@@ -25,5 +25,4 @@
     <!--EXPLICIT PROFILE-->
     <string name="explicit_failed_title">Konten gagal ditampilkan</string>
     <string name="explicit_failed_subtitle">Klik ikon di samping buat coba lagi.</string>
-    <string name="explicit_succes_message_action">Lihat detail</string>
 </resources>
