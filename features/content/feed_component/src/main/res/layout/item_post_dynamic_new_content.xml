@@ -176,6 +176,7 @@
             app:layout_constraintEnd_toStartOf="@+id/chevron"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toTopOf="@id/top_ads_campaign_copywriting_container"
             app:layout_constraintVertical_chainStyle="packed"
             app:typographyType="display_3"
             app:typographyWeight="bold" />
