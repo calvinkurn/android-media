@@ -20,7 +20,6 @@ import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
 import retrofit2.Retrofit
-import javax.inject.Named
 
 /**
  * @author sebastianuskh on 4/13/17.
@@ -54,9 +53,11 @@ class ShopModule(val context: Context) {
     }
 
     @Provides
-    fun provideTkpdAuthInterceptor(@ShopPageContext context: Context,
-                                    userSession: UserSessionInterface,
-                                    networkRouter: NetworkRouter): TkpdAuthInterceptor {
+    fun provideTkpdAuthInterceptor(
+        @ShopPageContext context: Context,
+        userSession: UserSessionInterface,
+        networkRouter: NetworkRouter
+    ): TkpdAuthInterceptor {
         return TkpdAuthInterceptor(context, networkRouter, userSession)
     }
 

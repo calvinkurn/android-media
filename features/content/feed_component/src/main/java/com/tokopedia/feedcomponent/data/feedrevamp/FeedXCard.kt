@@ -24,6 +24,8 @@ data class FeedXCard(
     var deletable: Boolean = false,
     @SerializedName("mods")
     var mods: List<String> = emptyList(),
+    @SerializedName("detailScore")
+    var detailScore: List<FeedXScore> = emptyList(),
 
     //FeedXCardTopAds Data Type
     @SerializedName("promos")
@@ -44,6 +46,12 @@ data class FeedXCard(
     var subTitle: String = "",
     @SerializedName("totalProducts")
     var totalProducts: Int = 0,
+    @SerializedName("cta")
+    val cta: FeedXCta = FeedXCta(),
+    @SerializedName("ribbonImageURL")
+    val ribbonImageURL: String = "",
+    @SerializedName("campaign")
+    val campaign: FeedXCampaign = FeedXCampaign(),
     @SerializedName("text")
     var text: String = "",
     @SerializedName("title")
@@ -120,13 +128,14 @@ data class FeedXCard(
         get() =  media.isNotEmpty() && media.first().type == TYPE_VIDEO
     val isTypeSGC: Boolean
         get() = typename == TYPE_FEED_X_CARD_POST && media.isNotEmpty() && media.first().type != TYPE_LONG_VIDEO
-
-
     val useASGCNewDesign: Boolean
         get() = mods.contains(USE_ASGC_NEW_DESIGN)
-
     val isASGCDiscountToko: Boolean
          get() = type == ASGC_DISCOUNT_TOKO
+    val contentScore
+        get() = detailScore.filter { feedXScore ->
+            feedXScore.isContentScore
+        }
 
     fun copyPostData(): FeedXCard {
         return FeedXCard(
@@ -141,6 +150,9 @@ data class FeedXCard(
             products = products,
             subTitle = subTitle,
             text = text,
+            cta = cta,
+            ribbonImageURL = ribbonImageURL,
+            campaign = campaign,
             deletable = deletable,
             appLink = appLink,
             webLink = webLink,
@@ -162,6 +174,7 @@ data class FeedXCard(
             maxDiscPercent = maxDiscPercent,
             publishedAt = publishedAt,
             mods = mods,
+            detailScore = detailScore,
             impressHolder = impressHolder,
             isTopAds = isTopAds,
             adViewUrl = adViewUrl,
@@ -177,9 +190,7 @@ data class FeedXCard(
         private const val TYPE_LONG_VIDEO: String = "long-video"
         private const val TYPE_VIDEO: String = "video"
 
-
         private const val USE_ASGC_NEW_DESIGN: String = "use_new_design"
         private const val ASGC_DISCOUNT_TOKO = "asgc_discount_toko"
-
     }
 }

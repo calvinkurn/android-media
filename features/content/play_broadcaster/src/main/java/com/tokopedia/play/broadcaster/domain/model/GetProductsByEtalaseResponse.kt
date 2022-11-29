@@ -7,70 +7,56 @@ import com.google.gson.annotations.SerializedName
  * Created by jegul on 02/06/20
  */
 data class GetProductsByEtalaseResponse(
-        @SerializedName("ProductList")
-        val productList: GetProductListData
+        @SerializedName("broadcasterGetProductList")
+        val wrapper: Wrapper
 ) {
+    data class Wrapper(
+        @SerializedName("products")
+        val products: List<Product> = emptyList(),
 
-        data class GetProductListData(
+        @SerializedName("pagerCursor")
+        val pagerCursor: PagerCursor = PagerCursor(),
+    )
 
-                @SerializedName("header")
-                val header: Header = Header(),
+    data class Product(
+        @SerializedName("ID")
+        val id: String = "",
 
-                @SerializedName("data")
-                val data: List<Data> = emptyList(),
+        @SerializedName("name")
+        val name: String = "",
 
-                @SerializedName("meta")
-                val meta: Meta = Meta()
-        )
+        @SerializedName("stock")
+        val stock: Int = 0,
 
-        data class Header(
+        @SerializedName("pictures")
+        val pictures: List<Picture> = emptyList(),
 
-                @SerializedName("messages")
-                val messages: List<String> = emptyList(),
+        @SuppressLint("Invalid Data Type")
+        @SerializedName("price")
+        val price: Price = Price(),
+    )
 
-                @SerializedName("reason")
-                val reason: String = "",
+    data class Picture(
+        @SerializedName("urlThumbnail")
+        val urlThumbnail: String = ""
+    )
 
-                @SerializedName("errorCode")
-                val errorCode: String = ""
-        )
+    data class Price(
+        @SerializedName("min")
+        val min: Double? = 0.0,
 
-        data class Data(
+        @SerializedName("max")
+        val max: Double? = 0.0,
+    )
 
-                @SerializedName("id")
-                val id: String = "",
+    data class PagerCursor(
+        @SerializedName("limit")
+        val limit: Int = 0,
 
-                @SerializedName("name")
-                val name: String = "",
+        @SerializedName("cursor")
+        val cursor: String = "",
 
-                @SerializedName("stock")
-                val stock: Int = 0,
-
-                @SerializedName("pictures")
-                val pictures: List<Picture> = emptyList(),
-
-                @SuppressLint("Invalid Data Type")
-                @SerializedName("price")
-                val price: Price = Price(),
-        )
-
-        data class Picture(
-
-                @SerializedName("urlThumbnail")
-                val urlThumbnail: String = ""
-        )
-
-        data class Price(
-                @SerializedName("min")
-                val min: Double? = 0.0,
-
-                @SerializedName("max")
-                val max: Double? = 0.0,
-        )
-
-        data class Meta(
-
-                @SerializedName("totalHits")
-                val totalHits: Int = 0
-        )
+        @SerializedName("hasNext")
+        val hasNext: Boolean = false,
+    )
 }

@@ -256,4 +256,27 @@ public interface CMConstant {
         String FIVE_STAR = "5";
     }
 
+    interface GtmTrackerEvents {
+        String KEY_USER_ID = "userId";
+        String KEY_CURRENT_SITE = "currentSite";
+        String KEY_BUSINESS_UNIT = "businessUnit";
+        String KEY_TRACKER_ID = "trackerId";
+        String KEY_DEVICE_ID = "deviceId";
+        String VALUE_BUSINESS_UNIT = "cm";
+        String VALUE_TRACKER_ID_VIEW = "35363";
+        String VALUE_TRACKER_ID_NOT_ALLOW = "35365";
+        String VALUE_TRACKER_ID_ALLOW = "35364";
+        String VALUE_TRACKER_ID_VIEW_SA = "37113";
+        String VALUE_TRACKER_ID_NOT_ALLOW_SA = "37115";
+        String VALUE_TRACKER_ID_ALLOW_SA = "37114";
+        String VALUE_CURRENT_SITE = "tokopediamarketplace";
+        String VALUE_EVENT_CLICK_CONTENT = "clickContent";
+        String VALUE_EVENT_VIEW_CONTENT = "viewContentIris";
+        String VALUE_CATEGORY = "native android push prompt";
+        String VALUE_CATEGORY_SA = "native android seller push prompt";
+        String VALUE_ACTION_IMPRESSION = "impression";
+        String VALUE_ACTION_NOT_ALLOW = "click not allow";
+        String VALUE_ACTION_ALLOW = "click allow";
+    }
+
 }

@@ -6,7 +6,11 @@ import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection
 import com.tokopedia.checkout.data.model.response.shipmentaddressform.ShipmentAddressFormDataResponse
 import com.tokopedia.checkout.domain.mapper.ShipmentMapper
 import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData
-import com.tokopedia.checkout.domain.usecase.*
+import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressGqlUseCase
+import com.tokopedia.checkout.domain.usecase.CheckoutGqlUseCase
+import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormV3UseCase
+import com.tokopedia.checkout.domain.usecase.ReleaseBookingUseCase
+import com.tokopedia.checkout.domain.usecase.SaveShipmentStateGqlUseCase
 import com.tokopedia.checkout.view.ShipmentContract
 import com.tokopedia.checkout.view.ShipmentPresenter
 import com.tokopedia.checkout.view.converter.ShipmentDataConverter
@@ -18,6 +22,7 @@ import com.tokopedia.logisticcart.shipping.features.shippingduration.view.RatesR
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesApiUseCase
 import com.tokopedia.logisticcart.shipping.usecase.GetRatesUseCase
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCourierSelection
+import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.usecase.GetPrescriptionIdsUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldClearCacheAutoApplyStackUseCase
 import com.tokopedia.purchase_platform.common.feature.promo.domain.usecase.OldValidateUsePromoRevampUseCase
 import com.tokopedia.purchase_platform.common.schedulers.TestSchedulers
@@ -27,7 +32,9 @@ import io.mockk.Runs
 import io.mockk.coEvery
 import io.mockk.impl.annotations.MockK
 import io.mockk.just
-import org.junit.Assert.*
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertNotNull
+import org.junit.Assert.assertNull
 import org.junit.Before
 import org.junit.Test
 import rx.subscriptions.CompositeSubscription
@@ -134,13 +141,13 @@ class ShipmentPresenterDisableFeatureTest {
         val dataResponse = gson.fromJson(unitTestFileUtils.getJsonFromAsset(PATH_JSON_SAF_DISABLE_DROPSHIPPER), ShipmentAddressFormDataResponse::class.java)
         val data = shipmentMapper.convertToShipmentAddressFormData(dataResponse)
 
-        coEvery { getShipmentAddressFormV3UseCase.setParams(any(), any(), any(), any(), any(), any()) } just Runs
+        coEvery { getShipmentAddressFormV3UseCase.setParams(any(), any(), any(), any(), any(), any(), any()) } just Runs
         coEvery { getShipmentAddressFormV3UseCase.execute(any(), any()) } answers {
             firstArg<(CartShipmentAddressFormData) -> Unit>().invoke(data)
         }
 
         // When
-        presenter.processInitialLoadCheckoutPage(false, false, false, false, false, null, "", "")
+        presenter.processInitialLoadCheckoutPage(false, false, false, false, false, null, "", "", false)
 
         // Then
         presenter.shipmentCartItemModelList.each { assertEquals(true, isDropshipperDisable) }
@@ -156,13 +163,13 @@ class ShipmentPresenterDisableFeatureTest {
         val dataResponse = gson.fromJson(unitTestFileUtils.getJsonFromAsset(PATH_JSON_SAF_DISABLE_ORDER_PRIORITAS), ShipmentAddressFormDataResponse::class.java)
         val data = shipmentMapper.convertToShipmentAddressFormData(dataResponse)
 
-        coEvery { getShipmentAddressFormV3UseCase.setParams(any(), any(), any(), any(), any(), any()) } just Runs
+        coEvery { getShipmentAddressFormV3UseCase.setParams(any(), any(), any(), any(), any(), any(), any()) } just Runs
         coEvery { getShipmentAddressFormV3UseCase.execute(any(), any()) } answers {
             firstArg<(CartShipmentAddressFormData) -> Unit>().invoke(data)
         }
 
         // When
-        presenter.processInitialLoadCheckoutPage(false, false, false, false, false, null, "", "")
+        presenter.processInitialLoadCheckoutPage(false, false, false, false, false, null, "", "", false)
 
         // Then
         presenter.shipmentCartItemModelList.each { assertEquals(false, isDropshipperDisable) }
@@ -178,13 +185,13 @@ class ShipmentPresenterDisableFeatureTest {
         val dataResponse = gson.fromJson(unitTestFileUtils.getJsonFromAsset(PATH_JSON_SAF_DISABLE_EGOLD), ShipmentAddressFormDataResponse::class.java)
         val data = shipmentMapper.convertToShipmentAddressFormData(dataResponse)
 
-        coEvery { getShipmentAddressFormV3UseCase.setParams(any(), any(), any(), any(), any(), any()) } just Runs
+        coEvery { getShipmentAddressFormV3UseCase.setParams(any(), any(), any(), any(), any(), any(), any()) } just Runs
         coEvery { getShipmentAddressFormV3UseCase.execute(any(), any()) } answers {
             firstArg<(CartShipmentAddressFormData) -> Unit>().invoke(data)
         }
 
         // When
-        presenter.processInitialLoadCheckoutPage(false, false, false, false, false, null, "", "")
+        presenter.processInitialLoadCheckoutPage(false, false, false, false, false, null, "", "", false)
 
         // Then
         presenter.shipmentCartItemModelList.each { assertEquals(false, isDropshipperDisable) }
@@ -200,13 +207,13 @@ class ShipmentPresenterDisableFeatureTest {
         val dataResponse = gson.fromJson(unitTestFileUtils.getJsonFromAsset(PATH_JSON_SAF_DISABLE_PPP), ShipmentAddressFormDataResponse::class.java)
         val data = shipmentMapper.convertToShipmentAddressFormData(dataResponse)
 
-        coEvery { getShipmentAddressFormV3UseCase.setParams(any(), any(), any(), any(), any(), any()) } just Runs
+        coEvery { getShipmentAddressFormV3UseCase.setParams(any(), any(), any(), any(), any(), any(), any()) } just Runs
         coEvery { getShipmentAddressFormV3UseCase.execute(any(), any()) } answers {
             firstArg<(CartShipmentAddressFormData) -> Unit>().invoke(data)
         }
 
         // When
-        presenter.processInitialLoadCheckoutPage(false, false, false, false, false, null, "", "")
+        presenter.processInitialLoadCheckoutPage(false, false, false, false, false, null, "", "", false)
 
         // Then
         presenter.shipmentCartItemModelList.each { assertEquals(false, isDropshipperDisable) }
@@ -222,13 +229,13 @@ class ShipmentPresenterDisableFeatureTest {
         val dataResponse = gson.fromJson(unitTestFileUtils.getJsonFromAsset(PATH_JSON_SAF_DISABLE_DONATION), ShipmentAddressFormDataResponse::class.java)
         val data = shipmentMapper.convertToShipmentAddressFormData(dataResponse)
 
-        coEvery { getShipmentAddressFormV3UseCase.setParams(any(), any(), any(), any(), any(), any()) } just Runs
+        coEvery { getShipmentAddressFormV3UseCase.setParams(any(), any(), any(), any(), any(), any(), any()) } just Runs
         coEvery { getShipmentAddressFormV3UseCase.execute(any(), any()) } answers {
             firstArg<(CartShipmentAddressFormData) -> Unit>().invoke(data)
         }
 
         // When
-        presenter.processInitialLoadCheckoutPage(false, false, false, false, false, null, "", "")
+        presenter.processInitialLoadCheckoutPage(false, false, false, false, false, null, "", "", false)
 
         // Then
         presenter.shipmentCartItemModelList.each { assertEquals(false, isDropshipperDisable) }
@@ -244,13 +251,13 @@ class ShipmentPresenterDisableFeatureTest {
         val dataResponse = gson.fromJson(unitTestFileUtils.getJsonFromAsset(PATH_JSON_SAF_DISABLE_ALL), ShipmentAddressFormDataResponse::class.java)
         val data = shipmentMapper.convertToShipmentAddressFormData(dataResponse)
 
-        coEvery { getShipmentAddressFormV3UseCase.setParams(any(), any(), any(), any(), any(), any()) } just Runs
+        coEvery { getShipmentAddressFormV3UseCase.setParams(any(), any(), any(), any(), any(), any(), any()) } just Runs
         coEvery { getShipmentAddressFormV3UseCase.execute(any(), any()) } answers {
             firstArg<(CartShipmentAddressFormData) -> Unit>().invoke(data)
         }
 
         // When
-        presenter.processInitialLoadCheckoutPage(false, false, false, false, false, null, "", "")
+        presenter.processInitialLoadCheckoutPage(false, false, false, false, false, null, "", "", false)
 
         // Then
         presenter.shipmentCartItemModelList.each { assertEquals(true, isDropshipperDisable) }

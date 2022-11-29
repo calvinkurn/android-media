@@ -17,6 +17,7 @@ import com.tokopedia.play.view.type.PlayChannelType
 import com.tokopedia.play_common.player.PlayVideoManager
 import com.tokopedia.play_common.player.PlayVideoWrapper
 import com.tokopedia.play_common.util.ExoPlaybackExceptionParser
+import com.tokopedia.test.application.annotations.UiTest
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.test.*
@@ -29,6 +30,7 @@ import java.net.HttpURLConnection
 /**
  * Created by jegul on 15/09/20
  */
+@UiTest
 class PlayViewerVideoStateProcessorTest {
 
     private val appContext = InstrumentationRegistry.getInstrumentation().context.applicationContext

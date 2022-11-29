@@ -82,4 +82,10 @@ data class Properties(
         @SerializedName("mix_left")
         val mixLeft: MixLeft? = null,
 
+        @SerializedName("index")
+        val index: Int = 0,
+
+        @SerializedName("targeted_component_id")
+        val targetedComponentId: String = "",
+
 )

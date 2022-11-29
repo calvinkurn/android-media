@@ -13,8 +13,10 @@
         <activity
             android:name=".MediaUploaderActivity"
             android:label="MediaUploader"
+            android:exported="false"
             android:screenOrientation="portrait"
-            android:theme="@style/Theme.White">
+            android:theme="@style/Theme.White"
+            >
 
             <intent-filter>
                 <action android:name="com.tokopedia.internal.VIEW" />

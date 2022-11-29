@@ -3,6 +3,7 @@ package com.tokopedia.tokofood.feature.merchant.analytics
 import android.os.Bundle
 import com.tokopedia.atc_common.domain.analytics.AddToCartExternalAnalytics
 import com.tokopedia.kotlin.extensions.view.EMPTY
+import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalytics
 import com.tokopedia.tokofood.common.analytics.TokoFoodAnalyticsConstants
@@ -381,6 +382,46 @@ class MerchantPageAnalytics @Inject constructor(private val userSession: UserSes
         tracker.sendGeneralEvent(mapData)
     }
 
+    fun impressPromoMvc(promoName: String, merchantId: String) {
+        val promotionBundleList = arrayListOf(getMvcPromotionBundle(promoName))
+
+        val eventDataLayer = Bundle().apply {
+            putString(TrackAppUtils.EVENT, TokoFoodAnalytics.EVENT_VIEW_ITEM)
+            putString(TrackAppUtils.EVENT_ACTION, TokoFoodAnalyticsConstants.IMPRESSION_ON_PROMO_BUTTON)
+            putString(TrackAppUtils.EVENT_CATEGORY, TokoFoodAnalyticsConstants.TOKOFOOD_MERCHANT_PAGE)
+            putString(TrackAppUtils.EVENT_LABEL, String.EMPTY)
+            putString(TokoFoodAnalytics.KEY_TRACKER_ID, TokoFoodAnalyticsConstants.TRACKER_ID_37402)
+            putString(TokoFoodAnalyticsConstants.BUSSINESS_UNIT, TokoFoodAnalyticsConstants.PHYSICAL_GOODS)
+            putString(TokoFoodAnalyticsConstants.CURRENT_SITE, TokoFoodAnalyticsConstants.TOKOPEDIA_MARKETPLACE)
+            putString(TokoFoodAnalyticsConstants.SHOP_ID, merchantId)
+            putString(TokoFoodAnalyticsConstants.PROMO_ID, String.EMPTY)
+            putString(TokoFoodAnalyticsConstants.USER_ID, userSession.userId)
+            putParcelableArrayList(TokoFoodAnalyticsConstants.KEY_EE_PROMOTIONS, promotionBundleList)
+        }
+
+        tracker.sendEnhanceEcommerceEvent(TokoFoodAnalytics.EVENT_VIEW_ITEM, eventDataLayer)
+    }
+
+    fun clickPromoMvc(promoName: String, merchantId: String) {
+        val promotionBundleList = arrayListOf(getMvcPromotionBundle(promoName))
+
+        val eventDataLayer = Bundle().apply {
+            putString(TrackAppUtils.EVENT, TokoFoodAnalytics.EVENT_SELECT_CONTENT)
+            putString(TrackAppUtils.EVENT_ACTION, TokoFoodAnalyticsConstants.CLICK_ON_PROMO_BUTTON)
+            putString(TrackAppUtils.EVENT_CATEGORY, TokoFoodAnalyticsConstants.TOKOFOOD_MERCHANT_PAGE)
+            putString(TrackAppUtils.EVENT_LABEL, String.EMPTY)
+            putString(TokoFoodAnalytics.KEY_TRACKER_ID, TokoFoodAnalyticsConstants.TRACKER_ID_37403)
+            putString(TokoFoodAnalyticsConstants.BUSSINESS_UNIT, TokoFoodAnalyticsConstants.PHYSICAL_GOODS)
+            putString(TokoFoodAnalyticsConstants.CURRENT_SITE, TokoFoodAnalyticsConstants.TOKOPEDIA_MARKETPLACE)
+            putString(TokoFoodAnalyticsConstants.SHOP_ID, merchantId)
+            putString(TokoFoodAnalyticsConstants.PROMO_ID, String.EMPTY)
+            putString(TokoFoodAnalyticsConstants.USER_ID, userSession.userId)
+            putParcelableArrayList(TokoFoodAnalyticsConstants.KEY_EE_PROMOTIONS, promotionBundleList)
+        }
+
+        tracker.sendEnhanceEcommerceEvent(TokoFoodAnalytics.EVENT_SELECT_CONTENT, eventDataLayer)
+    }
+
     private fun getItemsBundle(
         productListItem: ProductListItem,
         position: Int
@@ -484,10 +525,24 @@ class MerchantPageAnalytics @Inject constructor(private val userSession: UserSes
         }
     }
 
+    private fun getMvcPromotionBundle(promoName: String): Bundle {
+        return Bundle().apply {
+            putString(
+                TokoFoodAnalyticsConstants.KEY_EE_CREATIVE_NAME,
+                PROMO_TYPE_TICKER
+            )
+            putInt(TokoFoodAnalyticsConstants.KEY_EE_CREATIVE_SLOT, Int.ZERO)
+            putString(TokoFoodAnalyticsConstants.KEY_EE_ITEM_ID, String.EMPTY)
+            putString(TokoFoodAnalyticsConstants.KEY_EE_ITEM_NAME, promoName)
+        }
+    }
+
     companion object {
         private const val MINICART_TRACKER_ID = "31320"
 
         private const val COMMA_SEPARATOR = ","
+
+        private const val PROMO_TYPE_TICKER = "ticker"
     }
 
 }

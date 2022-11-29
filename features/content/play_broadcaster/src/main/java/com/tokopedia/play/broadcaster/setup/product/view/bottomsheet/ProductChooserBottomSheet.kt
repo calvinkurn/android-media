@@ -10,7 +10,7 @@ import androidx.lifecycle.lifecycleScope
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
+import com.tokopedia.content.common.util.Router
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.play.broadcaster.R
@@ -42,7 +42,6 @@ import com.tokopedia.play_common.lifecycle.whenLifecycle
 import com.tokopedia.play_common.util.PlayToaster
 import com.tokopedia.play_common.util.extension.withCache
 import com.tokopedia.play_common.viewcomponent.viewComponent
-import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
@@ -55,6 +54,7 @@ class ProductChooserBottomSheet @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     private val dialogCustomizer: PlayBroadcastDialogCustomizer,
     private val analyticManager: ProductChooserAnalyticManager,
+    private val router: Router,
 ) : BaseProductSetupBottomSheet(), ProductSortBottomSheet.Listener {
 
     private var _binding: BottomSheetPlayBroProductChooserBinding? = null
@@ -142,6 +142,10 @@ class ProductChooserBottomSheet @Inject constructor(
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
         mListener = null
     }
 
@@ -425,7 +429,7 @@ class ProductChooserBottomSheet @Inject constructor(
         when (event) {
             is ProductListViewComponent.Event.OnSelected -> {
                 isSelectedProductsChanged = true
-                viewModel.submitAction(ProductSetupAction.SelectProduct(event.product))
+                viewModel.submitAction(ProductSetupAction.ToggleSelectProduct(event.product))
             }
             is ProductListViewComponent.Event.OnLoadMore -> {
                 viewModel.submitAction(
@@ -454,7 +458,7 @@ class ProductChooserBottomSheet @Inject constructor(
     private fun handleProductErrorEvent(event: ProductErrorViewComponent.Event) {
         when (event) {
             ProductErrorViewComponent.Event.AddProductClicked -> {
-                RouteManager.route(context, ApplinkConst.PRODUCT_ADD)
+                router.route(context, ApplinkConst.PRODUCT_ADD)
             }
             ProductErrorViewComponent.Event.RetryClicked -> {
                 viewModel.submitAction(ProductSetupAction.RetryFetchProducts)
