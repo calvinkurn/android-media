@@ -489,7 +489,7 @@ class BaseTokoFoodOrderTrackingFragment :
                     orderStatus,
                     merchantData
                 )
-                setUnreadCounterChatWhenCompletedOrder(orderStatus, orderDetailList)
+                setUnreadChatCounterWhenCompletedOrder(orderStatus, orderDetailList)
             } else {
                 orderLiveTrackingFragment = TokoFoodOrderLiveTrackingFragment(
                     binding,
