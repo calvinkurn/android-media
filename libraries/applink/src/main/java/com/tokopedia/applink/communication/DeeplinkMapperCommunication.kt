@@ -9,7 +9,7 @@ import com.tokopedia.remoteconfig.RollenceKey
 
 object DeeplinkMapperCommunication {
     fun getRegisteredNavigationTokoChat(deeplink: String): String {
-        return if (isTokoChatRollenceActive() ) {
+        return if (isTokoChatRollenceActive()) {
             deeplink.replace(
                 DeeplinkConstant.SCHEME_TOKOPEDIA_SLASH,
                 ApplinkConstInternalCommunication.INTERNAL_COMMUNICATION + "/"
@@ -20,9 +20,16 @@ object DeeplinkMapperCommunication {
     }
 
     @VisibleForTesting
-    fun isTokoChatRollenceActive(): Boolean = RemoteConfigInstance
-        .getInstance()
-        .abTestPlatform.getString(
-            RollenceKey.KEY_ROLLENCE_TOKOCHAT, ""
-        ) == RollenceKey.KEY_ROLLENCE_TOKOCHAT
+    fun isTokoChatRollenceActive(): Boolean {
+        return try {
+            RemoteConfigInstance
+                .getInstance()
+                .abTestPlatform.getString(
+                    RollenceKey.KEY_ROLLENCE_TOKOCHAT,
+                    ""
+                ) == RollenceKey.KEY_ROLLENCE_TOKOCHAT
+        } catch (throwable: Throwable) {
+            true
+        }
+    }
 }

@@ -9,6 +9,8 @@ import com.jakewharton.threetenabp.AndroidThreeTen
 import com.tokochat.tokochat_config_common.di.component.DaggerTokoChatConfigComponent
 import com.tokochat.tokochat_config_common.di.component.TokoChatConfigComponent
 import com.tokochat.tokochat_config_common.di.module.TokoChatConfigContextModule
+import com.tokopedia.remoteconfig.RemoteConfigInstance
+import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.user.session.UserSession
 
 object TokoChatConnection {
@@ -18,6 +20,9 @@ object TokoChatConnection {
 
     fun init(context: Context): Boolean {
         if (!UserSession(context).isLoggedIn) return false
+
+        // If rollence turned off, return false
+        if (!isTokoChatActive()) return false
 
         // Initialize AndroidThreeTen for Conversation SDK
         AndroidThreeTen.init(context.applicationContext)
@@ -39,6 +44,9 @@ object TokoChatConnection {
 
     fun disconnect() {
         try {
+            // If rollence turned off, return
+            if (!isTokoChatActive()) return
+
             courierConnection?.handleAppEvent(AppLogout)
             Thread {
                 ConversationsRepository.instance?.resetConversationsData()
@@ -46,6 +54,17 @@ object TokoChatConnection {
             }.start()
         } catch (ex: Throwable) {
             ex.printStackTrace()
+        }
+    }
+
+    private fun isTokoChatActive(): Boolean {
+        return try {
+            RemoteConfigInstance.getInstance().abTestPlatform.getString(
+                RollenceKey.KEY_ROLLENCE_TOKOCHAT,
+                ""
+            ) == RollenceKey.KEY_ROLLENCE_TOKOCHAT
+        } catch (e: Throwable) {
+            true
         }
     }
 }
