@@ -20,7 +20,11 @@ data class TokoNowProductCardViewUiModel(
     val isWishlistShown: Boolean = false,
     val isVariant: Boolean = false,
     val needToShowQuantityEditor: Boolean = false,
-    val labelGroupList: List<LabelGroup> = listOf()
+    val labelGroupList: List<LabelGroup> = listOf(),
+    /**
+     * use pre draw only if need dynamic height of product card (ex: carousel)
+     */
+    val usePreDraw: Boolean = false
 ) {
     private companion object {
         private const val NORMAL_BRIGHTNESS = 1f

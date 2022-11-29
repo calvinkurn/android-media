@@ -16,9 +16,9 @@ import com.tokopedia.shop.home.view.model.ShopHomeShowcaseListItemUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeShowcaseListSliderUiModel
 
 class ShopHomeShowcaseListWidgetAdapter(
-        showcaseListItemData: List<ShopHomeShowcaseListItemUiModel> = listOf(),
-        val showcaseListWidgetListener: ShopHomeShowcaseListWidgetListener
-): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+    showcaseListItemData: List<ShopHomeShowcaseListItemUiModel> = listOf(),
+    val showcaseListWidgetListener: ShopHomeShowcaseListWidgetListener
+) : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
     private var showcaseListItem: List<ShopHomeShowcaseListItemUiModel> = showcaseListItemData
     private var shopHomeShowcaseListSliderUiModel: ShopHomeShowcaseListSliderUiModel = ShopHomeShowcaseListSliderUiModel()
@@ -28,43 +28,43 @@ class ShopHomeShowcaseListWidgetAdapter(
         return when (viewType) {
             ShopHomeShowcaseListSliderSmallViewHolder.ITEM_SLIDER_SMALL_LAYOUT -> {
                 ShopHomeShowcaseListSliderSmallViewHolder(
-                        View.inflate(
-                                parent.context,
-                                ShopHomeShowcaseListSliderSmallViewHolder.ITEM_SLIDER_SMALL_LAYOUT,
-                                null
-                        ),
-                        showcaseListWidgetListener
+                    View.inflate(
+                        parent.context,
+                        ShopHomeShowcaseListSliderSmallViewHolder.ITEM_SLIDER_SMALL_LAYOUT,
+                        null
+                    ),
+                    showcaseListWidgetListener
                 )
             }
             ShopHomeShowcaseListSliderMediumViewHolder.ITEM_SLIDER_MEDIUM_LAYOUT -> {
                 ShopHomeShowcaseListSliderMediumViewHolder(
-                        View.inflate(
-                                parent.context,
-                                ShopHomeShowcaseListSliderMediumViewHolder.ITEM_SLIDER_MEDIUM_LAYOUT,
-                                null
-                        ),
-                        showcaseListWidgetListener
+                    View.inflate(
+                        parent.context,
+                        ShopHomeShowcaseListSliderMediumViewHolder.ITEM_SLIDER_MEDIUM_LAYOUT,
+                        null
+                    ),
+                    showcaseListWidgetListener
                 )
             }
             ShopHomeShowcaseListGridViewHolder.ITEM_GRID_LAYOUT -> {
                 ShopHomeShowcaseListGridViewHolder(
-                        View.inflate(
-                                parent.context,
-                                ShopHomeShowcaseListGridViewHolder.ITEM_GRID_LAYOUT,
-                                null
-                        ),
-                        showcaseListWidgetListener
+                    View.inflate(
+                        parent.context,
+                        ShopHomeShowcaseListGridViewHolder.ITEM_GRID_LAYOUT,
+                        null
+                    ),
+                    showcaseListWidgetListener
                 )
             }
             else -> {
                 // default type is slider small viewholder
                 ShopHomeShowcaseListSliderSmallViewHolder(
-                        View.inflate(
-                                parent.context,
-                                ShopHomeShowcaseListSliderSmallViewHolder.ITEM_SLIDER_SMALL_LAYOUT,
-                                null
-                        ),
-                        showcaseListWidgetListener
+                    View.inflate(
+                        parent.context,
+                        ShopHomeShowcaseListSliderSmallViewHolder.ITEM_SLIDER_SMALL_LAYOUT,
+                        null
+                    ),
+                    showcaseListWidgetListener
                 )
             }
         }
@@ -105,5 +105,4 @@ class ShopHomeShowcaseListWidgetAdapter(
     fun setParentPosition(adapterPosition: Int) {
         this.parentPosition = adapterPosition
     }
-
 }

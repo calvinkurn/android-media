@@ -8,4 +8,5 @@
     android:paddingBottom="8dp"
     android:paddingStart="16dp"
     android:clipToPadding="false"
+    android:id="@+id/recycler_view"
     tools:ignore="RtlSymmetry" />

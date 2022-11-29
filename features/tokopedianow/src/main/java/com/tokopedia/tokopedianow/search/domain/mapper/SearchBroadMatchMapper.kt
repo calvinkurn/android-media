@@ -43,7 +43,8 @@ object SearchBroadMatchMapper {
                             maxOrder = otherRelatedProduct.maxOrder,
                             availableStock = otherRelatedProduct.stock,
                             orderQuantity = cartService.getProductQuantity(otherRelatedProduct.id),
-                            needToShowQuantityEditor = true
+                            needToShowQuantityEditor = true,
+                            usePreDraw = true
                         ),
                         alternativeKeyword = otherRelated.keyword,
                         shopId = otherRelatedProduct.shop.id

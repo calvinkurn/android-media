@@ -40,7 +40,8 @@ data class ShipmentInfoUiModel(
         val isFreeShipping: Boolean,
         val boBadgeUrl: String,
         val etaChanged: Boolean,
-        val etaUserInfo: String
+        val etaUserInfo: String,
+        val pod: Pod?
     ) : BaseVisitableUiModel {
         override fun type(typeFactory: BuyerOrderDetailTypeFactory?): Int {
             return typeFactory?.type(this).orZero()
@@ -53,6 +54,14 @@ data class ShipmentInfoUiModel(
         override fun getCoachMarkItemManager(): BuyerOrderDetailCoachMarkItemManager? {
             return null
         }
+
+        data class Pod(
+            val podPictureUrl: String,
+            val podLabel: String,
+            val podCtaText: String,
+            val podCtaUrl: String,
+            val accessToken: String
+        )
     }
 
     data class CourierDriverInfoUiModel(

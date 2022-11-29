@@ -42,7 +42,8 @@ object ProductRecommendationMapper {
                 title = it.title,
                 imageUrl = it.imageUrl
             )
-        }
+        },
+        usePreDraw = true
     )
 
     fun mapResponseToProductRecommendation(

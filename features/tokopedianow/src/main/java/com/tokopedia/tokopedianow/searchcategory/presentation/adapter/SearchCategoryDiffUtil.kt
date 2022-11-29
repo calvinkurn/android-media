@@ -48,7 +48,7 @@ open class SearchCategoryDiffUtil: BaseTokopediaNowDiffer() {
     }
 
     private fun areProductItemTheSame(oldItem: ProductItemDataView, newItem: ProductItemDataView) =
-            oldItem.id == newItem.id
+            oldItem.productCardModel.productId == newItem.productCardModel.productId
 
     override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int) =
             safeGuardPosition(oldItemPosition, newItemPosition) { oldItem, newItem ->

@@ -625,7 +625,6 @@ public class TopChatAnalytics {
         );
     }
 
-
     public void trackClickUpdateStock(ProductAttachmentUiModel product) {
         String eventLabel = "seller - " +
                 product.getProductId() + " - " + product.getProductSource() + " - " +

@@ -35,14 +35,14 @@ class FollowerFollowingListingActivity : BaseSimpleActivity() {
         return FollowerFollowingListingFragment.getFragment(
             supportFragmentManager,
             classLoader,
-            bundle ?: Bundle()
+            bundle ?: Bundle(),
         )
     }
 
     private fun inject() {
         DaggerUserProfileComponent.builder()
             .baseAppComponent(
-                (applicationContext as BaseMainApplication).baseAppComponent
+                (applicationContext as BaseMainApplication).baseAppComponent,
             )
             .build()
             .inject(this)

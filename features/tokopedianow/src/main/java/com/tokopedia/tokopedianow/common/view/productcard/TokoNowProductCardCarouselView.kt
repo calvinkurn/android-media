@@ -50,7 +50,6 @@ class TokoNowProductCardCarouselView @JvmOverloads constructor(
             true
         ).apply {
             root.addItemDecoration(ProductCardCarouselDecoration(context))
-            root.itemAnimator = null
             root.layoutManager = layoutManager
             root.adapter = adapter
         }
@@ -133,6 +132,12 @@ class TokoNowProductCardCarouselView @JvmOverloads constructor(
         listener = productCardCarouselListener
     }
 
+    fun scrollToPosition(position: Int) {
+        binding.root.post {
+            layoutManager.scrollToPosition(position)
+        }
+    }
+
     interface TokoNowProductCardCarouselListener {
         fun onProductCardClicked(
             position: Int,
@@ -154,5 +159,10 @@ class TokoNowProductCardCarouselView @JvmOverloads constructor(
         fun onSeeMoreClicked(
             seeMoreUiModel: TokoNowSeeMoreCardCarouselUiModel
         )
+    }
+
+
+    interface TokoNowProductCardCarouseBasicListener: TokoNowProductCardCarouselListener{
+        override fun onSeeMoreClicked(seeMoreUiModel: TokoNowSeeMoreCardCarouselUiModel) {}
     }
 }

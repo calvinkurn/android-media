@@ -284,9 +284,9 @@ object RepurchaseLayoutMapper {
                 val cartProductIds = miniCart.miniCartItems.values.mapNotNull {
                     if (it is MiniCartItem.MiniCartItemProduct) it.productId else null
                 }
-                val deletedProducts = productList.filter { it.id !in cartProductIds }
+                val deletedProducts = productList.filter { it.productCardModel.productId !in cartProductIds }
                 deletedProducts.forEach { model ->
-                    val productId = model.id
+                    val productId = model.productCardModel.productId
                     val parentId = model.parentId
 
                     if (parentId != DEFAULT_PARENT_ID) {
@@ -307,7 +307,7 @@ object RepurchaseLayoutMapper {
     fun MutableList<Visitable<*>>.updateProductQuantity(productId: String, quantity: Int) {
         val productList = filterIsInstance<RepurchaseProductUiModel>()
 
-        productList.firstOrNull { it.id == productId }?.let {
+        productList.firstOrNull { it.productCardModel.productId == productId }?.let {
             if (!it.isStockEmpty) {
                 val index = indexOf(it)
                 val productCard = it.productCardModel.copy(orderQuantity = quantity)

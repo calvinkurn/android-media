@@ -612,7 +612,8 @@ open class DynamicPostViewHolder(v: View,
             isFollow: Boolean,
             postType: String = "",
             isVideo: Boolean,
-            isBottomSheetMenuOnFeed: Boolean = false
+            isBottomSheetMenuOnFeed: Boolean = false,
+            isFollowedFromFollowRestrictionBottomSheet: Boolean = false
         )
 
         fun onMenuClick(
@@ -734,15 +735,17 @@ open class DynamicPostViewHolder(v: View,
         fun removeOngoingCampaignSaleWidget(card: FeedXCard, positionInFeed: Int)
 
         fun onReadMoreClicked(
-            postId: String,
-            shopId: String = "",
-            type: String,
-            isFollowed: Boolean,
-            mediaType: String
+            card: FeedXCard,
+            positionInFeed: Int
         )
 
 
-        fun muteUnmuteVideo(postId: String, mute: Boolean, id: String, isFollowed: Boolean, isVOD: Boolean, mediaType: String)
+        fun muteUnmuteVideo(
+            card: FeedXCard,
+            mute: Boolean,
+            positionInFeed: Int,
+            mediaType: String
+        )
 
         fun onImpressionTracking(feedXCard: FeedXCard, positionInFeed: Int)
 

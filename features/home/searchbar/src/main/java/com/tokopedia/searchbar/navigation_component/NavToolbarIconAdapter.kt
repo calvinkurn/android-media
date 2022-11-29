@@ -144,6 +144,11 @@ internal class NavToolbarIconAdapter(private var iconConfig: IconConfig,
         model?.let { return iconConfig.iconList.indexOf(model) }
         return null
     }
+    fun getShareIconPosition(): Int? {
+        val model = iconConfig.iconList.find { it.id == IconList.ID_SHARE }
+        model?.let { return iconConfig.iconList.indexOf(model) }
+        return null
+    }
 }
 
 internal abstract class IconHolder(view: View) : RecyclerView.ViewHolder(view) {
@@ -171,14 +176,14 @@ internal class ImageIconHolder(view: View, val topNavComponentListener: TopNavCo
             unwrappedDrawable?.let {
                 val wrappedDrawable: Drawable = DrawableCompat.wrap(unwrappedDrawable)
                 if (themeState == NavToolbarIconAdapter.STATE_THEME_DARK) {
-                    if (iconToolbar.imageRes != IconList.ID_INBOX) {
+                    if (iconToolbar.imageRes != IconList.ID_INBOX && iconToolbar.imageRes != IconList.ID_SHARE_AB_TEST) {
                         DrawableCompat.setTint(wrappedDrawable, getDarkIconColor())
                     } else {
                         val unifyColor = getDarkIconColor()
                         unwrappedDrawable.colorFilter = BlendModeColorFilterCompat.createBlendModeColorFilterCompat(unifyColor, BlendModeCompat.SRC_ATOP)
                     }
                 } else if (themeState == NavToolbarIconAdapter.STATE_THEME_LIGHT) {
-                    if (iconToolbar.imageRes != IconList.ID_INBOX) {
+                    if (iconToolbar.imageRes != IconList.ID_INBOX && iconToolbar.imageRes != IconList.ID_SHARE_AB_TEST) {
                         DrawableCompat.setTint(wrappedDrawable, ContextCompat.getColor(context, getLightIconColor()))
                     } else {
                         val unifyColor = getLightIconColor()

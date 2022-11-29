@@ -80,6 +80,7 @@ class HomeProductRecomCallback(
     ) {
         if (userSession.isLoggedIn) {
             viewModel.addProductToCart(
+                channelId = channelId,
                 productId = product.productCardModel.productId,
                 quantity = quantity,
                 shopId = product.shopId,

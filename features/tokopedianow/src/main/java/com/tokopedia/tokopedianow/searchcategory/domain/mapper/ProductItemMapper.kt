@@ -45,7 +45,6 @@ object ProductItemMapper {
         product: AceSearchProductModel.Product,
         cartService: CartService
     ): ProductItemDataView = ProductItemDataView(
-        id = product.id,
         parentId = product.parentId,
         boosterList = product.boosterList,
         sourceEngine = product.sourceEngine,

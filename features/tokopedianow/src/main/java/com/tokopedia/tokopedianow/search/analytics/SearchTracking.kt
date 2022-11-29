@@ -180,7 +180,7 @@ object SearchTracking {
                 "dimension61", filterSortValue,
                 "dimension81", SearchCategoryTrackingConst.Misc.TOKO_NOW,
                 "dimension96", boosterList,
-                "id", id,
+                "id", productCardModel.productId,
                 "name", productCardModel.name,
                 "price", productCardModel.price.getDigits(),
                 "variant", SearchCategoryTrackingConst.Misc.NONE_OTHER,

@@ -22,6 +22,7 @@ import com.tokopedia.wishlist.data.model.response.BulkDeleteWishlistV2Response
 import com.tokopedia.wishlist.data.model.response.DeleteWishlistProgressResponse
 import com.tokopedia.wishlist.domain.BulkDeleteWishlistV2UseCase
 import com.tokopedia.wishlist.domain.DeleteWishlistProgressUseCase
+import com.tokopedia.wishlist.util.WishlistIdlingResource
 import com.tokopedia.wishlist.util.WishlistV2Consts
 import com.tokopedia.wishlist.util.WishlistV2Consts.EMPTY_WISHLIST_PAGE_NAME
 import com.tokopedia.wishlist.util.WishlistV2Consts.WISHLIST_TOPADS_ADS_COUNT
@@ -32,14 +33,10 @@ import com.tokopedia.wishlist.util.WishlistV2Utils.convertRecommendationIntoProd
 import com.tokopedia.wishlist.util.WishlistV2Utils.organizeWishlistV2Data
 import com.tokopedia.wishlistcollection.data.params.AddWishlistCollectionsHostBottomSheetParams
 import com.tokopedia.wishlistcollection.data.params.GetWishlistCollectionItemsParams
-import com.tokopedia.wishlistcollection.data.response.AddWishlistCollectionItemsResponse
-import com.tokopedia.wishlistcollection.data.response.DeleteWishlistCollectionItemsResponse
-import com.tokopedia.wishlistcollection.data.response.DeleteWishlistCollectionResponse
-import com.tokopedia.wishlistcollection.data.response.GetWishlistCollectionItemsResponse
-import com.tokopedia.wishlistcollection.domain.AddWishlistCollectionItemsUseCase
-import com.tokopedia.wishlistcollection.domain.DeleteWishlistCollectionItemsUseCase
-import com.tokopedia.wishlistcollection.domain.DeleteWishlistCollectionUseCase
-import com.tokopedia.wishlistcollection.domain.GetWishlistCollectionItemsUseCase
+import com.tokopedia.wishlistcollection.data.params.GetWishlistCollectionSharingDataParams
+import com.tokopedia.wishlistcollection.data.params.UpdateWishlistCollectionParams
+import com.tokopedia.wishlistcollection.data.response.*
+import com.tokopedia.wishlistcollection.domain.*
 import com.tokopedia.wishlistcommon.util.WishlistV2CommonConsts
 import kotlinx.coroutines.launch
 import timber.log.Timber
@@ -56,7 +53,9 @@ class WishlistCollectionDetailViewModel @Inject constructor(
     private val deleteWishlistCollectionUseCase: DeleteWishlistCollectionUseCase,
     private val deleteWishlistProgressUseCase: DeleteWishlistProgressUseCase,
     private val atcUseCase: AddToCartUseCase,
-    private val addWishlistCollectionItemsUseCase: AddWishlistCollectionItemsUseCase
+    private val addWishlistCollectionItemsUseCase: AddWishlistCollectionItemsUseCase,
+    private val updateWishlistCollectionUseCase: UpdateWishlistCollectionUseCase,
+    private val getWishlistCollectionSharingDataUseCase: GetWishlistCollectionSharingDataUseCase
 ) : BaseViewModel(dispatcher.main) {
     private var recommSrc = ""
 
@@ -101,11 +100,20 @@ class WishlistCollectionDetailViewModel @Inject constructor(
     val addWishlistCollectionItem: LiveData<Result<AddWishlistCollectionItemsResponse.AddWishlistCollectionItems>>
         get() = _addWishlistCollectionItem
 
+    private val _updateWishlistCollectionResult = MutableLiveData<Result<UpdateWishlistCollectionResponse.UpdateWishlistCollection>>()
+    val updateWishlistCollectionResult: LiveData<Result<UpdateWishlistCollectionResponse.UpdateWishlistCollection>>
+        get() = _updateWishlistCollectionResult
+
+    private val _getWishlistCollectionSharingDataResult = MutableLiveData<Result<GetWishlistCollectionSharingDataResponse.GetWishlistCollectionSharingData>>()
+    val getWishlistCollectionSharingDataResult: LiveData<Result<GetWishlistCollectionSharingDataResponse.GetWishlistCollectionSharingData>>
+        get() = _getWishlistCollectionSharingDataResult
+
     fun getWishlistCollectionItems(
         params: GetWishlistCollectionItemsParams,
         typeLayout: String?,
         isAutomaticDelete: Boolean
     ) {
+        WishlistIdlingResource.increment()
         launchCatchError(block = {
             val result = getWishlistCollectionItemsUseCase(params)
             recommSrc = if (result.getWishlistCollectionItems.totalData == 0) EMPTY_WISHLIST_PAGE_NAME else WISHLIST_PAGE_NAME
@@ -120,12 +128,15 @@ class WishlistCollectionDetailViewModel @Inject constructor(
                     getTopAdsData(), true
                 )
             )
+            WishlistIdlingResource.decrement()
         }, onError = {
             _collectionItems.value = Fail(it)
+            WishlistIdlingResource.decrement()
         })
     }
 
     fun loadRecommendation(page: Int) {
+        WishlistIdlingResource.increment()
         val listData = arrayListOf<WishlistV2TypeLayoutData>()
         launch {
             try {
@@ -140,8 +151,10 @@ class WishlistCollectionDetailViewModel @Inject constructor(
                     )
                 }
                 _collectionData.value = Success(listData)
+                WishlistIdlingResource.decrement()
             } catch (e: Exception) {
                 Timber.d(e)
+                WishlistIdlingResource.decrement()
             }
         }
     }
@@ -263,6 +276,32 @@ class WishlistCollectionDetailViewModel @Inject constructor(
             }
         }, onError = {
             _addWishlistCollectionItem.value = Fail(it)
+        })
+    }
+
+    fun updateAccessWishlistCollection(updateWishlistCollectionParams: UpdateWishlistCollectionParams) {
+        launchCatchError(block = {
+            val result = updateWishlistCollectionUseCase(updateWishlistCollectionParams)
+            if (result.updateWishlistCollection.status == WishlistV2CommonConsts.OK && result.updateWishlistCollection.data.success) {
+                _updateWishlistCollectionResult.value = Success(result.updateWishlistCollection)
+            } else {
+                _updateWishlistCollectionResult.value = Fail(Throwable())
+            }
+        }, onError = {
+            _updateWishlistCollectionResult.value = Fail(it)
+        })
+    }
+
+    fun getWishlistCollectionSharingData(collectionId: Long) {
+        launchCatchError(block = {
+            val result = getWishlistCollectionSharingDataUseCase(collectionId)
+            if (result.getWishlistCollectionSharingData.status == WishlistV2CommonConsts.OK) {
+                _getWishlistCollectionSharingDataResult.value = Success(result.getWishlistCollectionSharingData)
+            } else {
+                _getWishlistCollectionSharingDataResult.value = Fail(Throwable())
+            }
+        }, onError = {
+            _getWishlistCollectionSharingDataResult.value = Fail(it)
         })
     }
 

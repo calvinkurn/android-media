@@ -6,7 +6,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.shop.R
 import com.tokopedia.shop_widget.thematicwidget.uimodel.ThematicWidgetUiModel
 
-class ShopCampaignThematicWidgetLoadingStateViewHolder (
+class ShopCampaignThematicWidgetLoadingStateViewHolder(
     itemView: View
 ) : AbstractViewHolder<ThematicWidgetUiModel>(itemView) {
 
@@ -16,6 +16,6 @@ class ShopCampaignThematicWidgetLoadingStateViewHolder (
     }
 
     override fun bind(element: ThematicWidgetUiModel) {
-       /* nothing to do */
+        /* nothing to do */
     }
 }
