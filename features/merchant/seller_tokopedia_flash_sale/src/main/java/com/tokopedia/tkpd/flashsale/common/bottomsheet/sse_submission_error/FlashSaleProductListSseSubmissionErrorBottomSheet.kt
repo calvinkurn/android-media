@@ -31,6 +31,7 @@ class FlashSaleProductListSseSubmissionErrorBottomSheet :
     companion object {
         private val TAG = FlashSaleProductListSseSubmissionErrorBottomSheet::class.java.simpleName
         private const val KEY_CAMPAIGN_ID = "campaign_id"
+        private const val PRODUCT_PER_PAGE = 10
 
         fun createInstance(campaignId: String): FlashSaleProductListSseSubmissionErrorBottomSheet =
             FlashSaleProductListSseSubmissionErrorBottomSheet().apply {
@@ -94,14 +95,6 @@ class FlashSaleProductListSseSubmissionErrorBottomSheet :
         productSseErrorSubmissionAdapter.removeItem(ProductSseSubmissionErrorShimmeringItem)
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        bottomSheetTitle.apply {
-            maxLines = 2
-            isSingleLine = false
-        }
-    }
-
     private fun observeProductSubmissionSseErrorLiveData() {
         viewModel.productSubmissionSseError.observe(viewLifecycleOwner) {
             hideProductListShimmering()
@@ -151,7 +144,7 @@ class FlashSaleProductListSseSubmissionErrorBottomSheet :
 
     private fun setupRecyclerView() {
         val pagingConfig = HasPaginatedList.Config(
-            pageSize = 10,
+            pageSize = PRODUCT_PER_PAGE,
             onLoadNextPage = {
                 productSseErrorSubmissionAdapter.addItem(LoadingItem)
             }, onLoadNextPageFinished = {
