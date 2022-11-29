@@ -32,7 +32,7 @@ import javax.inject.Inject
 class TokoNowProductFeedbackBottomSheet : BottomSheetUnify() {
 
     companion object{
-        private const val INPUT_LIMIT = 144
+        private const val INPUT_LIMIT = 70
         private const val MIN_TEXT_LEN = 4
         private const val TOAST_BOTTOM_MARGIN = 8
     }
