@@ -6,6 +6,10 @@ import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
  * @author by astidhiyaa on 29/11/22
  */
 interface PlayExploreWidgetRepository {
+    /**
+     * Setup return data
+     */
+
     suspend fun getWidgets(
         group: String,
         cursor: String = "",

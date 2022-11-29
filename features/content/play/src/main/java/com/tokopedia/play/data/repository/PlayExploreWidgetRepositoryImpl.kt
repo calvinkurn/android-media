@@ -5,6 +5,7 @@ import com.tokopedia.content.common.usecase.GetPlayWidgetSlotUseCase
 import com.tokopedia.play.domain.repository.PlayExploreWidgetRepository
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
 import com.tokopedia.play.widget.util.PlayWidgetTools
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
@@ -21,10 +22,17 @@ class PlayExploreWidgetRepositoryImpl @Inject constructor(
         sourceType: String,
         sourceId: String
     ) {
-        TODO("Not yet implemented")
+        withContext(dispatcher.io) {
+            getPlayWidgetSlotUseCase.executeOnBackground(
+                group = group,
+                cursor = cursor,
+                sourceId = sourceId,
+                sourceType = sourceType,
+            )
+        }
     }
 
     override suspend fun updateReminder(channelId: String, type: PlayWidgetReminderType) {
-        TODO("Not yet implemented")
+        playWidgetTools.updateToggleReminder(channelId = channelId, reminderType = type)
     }
 }
