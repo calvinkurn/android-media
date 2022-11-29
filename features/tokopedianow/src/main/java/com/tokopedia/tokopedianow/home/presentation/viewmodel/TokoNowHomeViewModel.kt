@@ -277,22 +277,22 @@ class TokoNowHomeViewModel @Inject constructor(
     }
 
     /**
-     * Handle on scroll event, load more if reached bottom of TokoMart Home.
+     * Handle on scroll event, load more if reached bottom of the homepage.
      * All items loaded when token returned from dynamic channel is empty.
      *
      * @param lastVisibleItemIndex last item index visible on user screen
      * @param localCacheModel address data cache from choose address widget
      * @param removeAbleWidgets list of widgets that can be dismissed by user
      */
-    fun onScrollTokoMartHome(
+    fun onScroll(
         lastVisibleItemIndex: Int,
         localCacheModel: LocalCacheModel,
         removeAbleWidgets: List<HomeRemoveAbleWidget>
     ) {
-        launchCatchError(block = {
-            if (shouldLoadMore(lastVisibleItemIndex)) {
-                showProgressBar()
+        if (shouldLoadMore(lastVisibleItemIndex)) {
+            showProgressBar()
 
+            launchCatchError(block = {
                 val homeLayoutResponse = getHomeLayoutDataUseCase.execute(
                     token = channelToken,
                     localCacheModel = localCacheModel
@@ -316,9 +316,9 @@ class TokoNowHomeViewModel @Inject constructor(
                 )
 
                 _homeLayoutList.postValue(Success(data))
+            }) {
+                // do nothing
             }
-        }) {
-            // do nothing
         }
     }
 
