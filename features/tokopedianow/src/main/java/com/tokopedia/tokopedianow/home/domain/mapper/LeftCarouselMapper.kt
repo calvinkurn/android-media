@@ -111,6 +111,7 @@ object LeftCarouselMapper {
                 title = it.title,
                 imageUrl = it.url
             )
-        }
+        },
+        usePreDraw = true
     )
 }

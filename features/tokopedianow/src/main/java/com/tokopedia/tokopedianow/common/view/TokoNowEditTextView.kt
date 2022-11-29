@@ -3,6 +3,7 @@ package com.tokopedia.tokopedianow.common.view
 import android.content.Context
 import android.graphics.Rect
 import android.util.AttributeSet
+import android.view.KeyEvent
 import androidx.appcompat.widget.AppCompatEditText
 import androidx.core.content.ContextCompat
 import com.tokopedia.unifyprinciples.Typography
@@ -12,7 +13,13 @@ class TokoNowEditTextView constructor(
     attrs: AttributeSet? = null
 ) : AppCompatEditText(context, attrs) {
 
-    var focusChangedListener: ((focused: Boolean) -> Unit)? = null
+    var onFocusChangedListener: ((focused: Boolean) -> Unit)? = null
+
+    /**
+     * only hard button will listen (ex: enter, erase, etc)
+     */
+    var onEnterClickedListener: (() -> Unit)? = null
+    var onAnyKeysClickedListener: (() -> Unit)? = null
 
     init {
         typeface = Typography.getFontType(
@@ -29,8 +36,18 @@ class TokoNowEditTextView constructor(
         direction: Int,
         previouslyFocusedRect: Rect?
     ) {
-        focusChangedListener?.invoke(focused)
+        onFocusChangedListener?.invoke(focused)
         super.onFocusChanged(focused, direction, previouslyFocusedRect)
+    }
+
+    override fun onKeyUp(keyCode: Int, event: KeyEvent?): Boolean {
+        if (keyCode == KeyEvent.KEYCODE_ENTER) {
+            clearFocus()
+            onEnterClickedListener?.invoke()
+        } else {
+            onAnyKeysClickedListener?.invoke()
+        }
+        return super.onKeyUp(keyCode, event)
     }
 
 }

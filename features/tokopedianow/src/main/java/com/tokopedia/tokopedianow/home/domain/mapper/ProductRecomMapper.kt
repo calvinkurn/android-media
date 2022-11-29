@@ -48,7 +48,8 @@ object ProductRecomMapper {
                 title = it.title,
                 imageUrl = it.url
             )
-        }
+        },
+        usePreDraw = true
     )
 
     private fun getShopType(shop: ChannelShop): String{

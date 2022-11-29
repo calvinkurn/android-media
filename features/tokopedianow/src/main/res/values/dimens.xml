@@ -23,6 +23,7 @@
     <dimen name="tokopedianow_product_card_rating_icon_start_margin_normal_state">9dp</dimen>
     <dimen name="tokopedianow_product_card_rating_typography_start_margin_normal_state">5dp</dimen>
     <dimen name="tokopedianow_product_card_rating_typography_bottom_margin_normal_state">8dp</dimen>
+    <dimen name="tokopedianow_product_card_rating_icon_top_margin_normal_state">4dp</dimen>
     <dimen name="tokopedianow_product_card_similar_product_typography_width_right">15dp</dimen>
     <dimen name="tokopedianow_product_card_similar_product_typography_height_bottom">15dp</dimen>
     <dimen name="tokopedianow_product_card_progress_bar_width">11dp</dimen>
