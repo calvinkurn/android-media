@@ -510,7 +510,7 @@ class BaseTokoFoodOrderTrackingFragment :
         }
     }
 
-    private fun setUnreadCounterChatWhenCompletedOrder(
+    private fun setUnreadChatCounterWhenCompletedOrder(
         orderStatus: String,
         orderDetailList: List<BaseOrderTrackingTypeFactory>
     ) {
