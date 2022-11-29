@@ -47,7 +47,7 @@ class TokoNowEditTextView constructor(
         } else {
             onAnyKeysClickedListener?.invoke()
         }
-        return super.onKeyUp(keyCode, event)
+        return true
     }
 
 }
