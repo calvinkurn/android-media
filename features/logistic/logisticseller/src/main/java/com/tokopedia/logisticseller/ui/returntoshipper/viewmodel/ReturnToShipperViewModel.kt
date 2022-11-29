@@ -5,7 +5,7 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.logisticseller.data.param.GetGeneralInfoRtsParam
+import com.tokopedia.logisticseller.data.param.GeneralInfoRtsParam
 import com.tokopedia.logisticseller.data.response.GetGeneralInfoRtsResponse
 import com.tokopedia.logisticseller.domain.usecase.GetGeneralInfoRtsUseCase
 import com.tokopedia.logisticseller.domain.usecase.RequestGeneralInfoRtsUseCase
@@ -27,14 +27,16 @@ class ReturnToShipperViewModel @Inject constructor(
             block = {
                 _confirmationRtsState.value = ReturnToShipperState.ShowLoading(true)
                 val response = getGeneralInfoRtsUseCase(
-                    GetGeneralInfoRtsParam(
-                        orderId = orderId,
-                        action = GetGeneralInfoRtsParam.ACTION_RTS_CONFIRMATION
+                    GeneralInfoRtsParam(
+                        input = GeneralInfoRtsParam.GeneralInfoRtsInput(
+                            orderId = orderId,
+                            action = GeneralInfoRtsParam.ACTION_RTS_CONFIRMATION
+                        )
                     )
                 )
                 _confirmationRtsState.value = ReturnToShipperState.ShowLoading(false)
 
-                if (response.isSuccess) {
+                if (response.isSuccess && response.data != null) {
                     _confirmationRtsState.value =
                         ReturnToShipperState.ShowRtsConfirmDialog(response.data)
                 } else {
@@ -58,9 +60,11 @@ class ReturnToShipperViewModel @Inject constructor(
                     _confirmationRtsState.value = ReturnToShipperState.ShowLoading(true)
                 }
                 val response = requestGeneralInfoRtsUseCase(
-                    GetGeneralInfoRtsParam(
-                        orderId = orderId,
-                        action = action
+                    GeneralInfoRtsParam(
+                        input = GeneralInfoRtsParam.GeneralInfoRtsInput(
+                            orderId = orderId,
+                            action = action
+                        )
                     )
                 )
 
@@ -87,5 +91,5 @@ class ReturnToShipperViewModel @Inject constructor(
     }
 
     private fun isActionConfirmation(action: String): Boolean =
-        action == GetGeneralInfoRtsParam.ACTION_RTS_CONFIRMATION
+        action == GeneralInfoRtsParam.ACTION_RTS_CONFIRMATION
 }

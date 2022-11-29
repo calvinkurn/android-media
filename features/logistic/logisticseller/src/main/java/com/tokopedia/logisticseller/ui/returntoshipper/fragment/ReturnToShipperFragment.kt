@@ -14,7 +14,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.logisticseller.common.LogisticSellerConst
-import com.tokopedia.logisticseller.data.param.GetGeneralInfoRtsParam
+import com.tokopedia.logisticseller.data.param.GeneralInfoRtsParam
 import com.tokopedia.logisticseller.data.response.GetGeneralInfoRtsResponse
 import com.tokopedia.logisticseller.databinding.FragmentReturnToShipperBinding
 import com.tokopedia.logisticseller.di.returntoshipper.DaggerReturnToShipperComponent
@@ -98,13 +98,13 @@ class ReturnToShipperFragment : BaseDaggerFragment() {
                     onPrimaryCTAClickListener = {
                         viewModel.requestGeneralInformation(
                             orderId = orderId,
-                            action = GetGeneralInfoRtsParam.ACTION_RTS_CONFIRMATION
+                            action = GeneralInfoRtsParam.ACTION_RTS_CONFIRMATION
                         )
                     },
                     onSecondaryCTAClickListener = {
                         viewModel.requestGeneralInformation(
                             orderId = orderId,
-                            action = GetGeneralInfoRtsParam.ACTION_RTS_HELPER
+                            action = GeneralInfoRtsParam.ACTION_RTS_HELPER
                         )
                         openWebview(data.articleUrl)
                     },

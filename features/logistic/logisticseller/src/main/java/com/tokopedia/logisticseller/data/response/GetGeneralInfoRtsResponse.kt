@@ -8,7 +8,7 @@ data class GetGeneralInfoRtsResponse(
     @SerializedName("message_error")
     val messageError: String = "",
     @SerializedName("data")
-    val data: GeneralInfoRtsData = GeneralInfoRtsData(),
+    val data: GeneralInfoRtsData? = null,
 ) {
     data class GeneralInfoRtsData(
         @SerializedName("title")
