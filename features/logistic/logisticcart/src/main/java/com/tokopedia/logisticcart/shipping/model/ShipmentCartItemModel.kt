@@ -16,6 +16,7 @@ class ShipmentCartItemModel(
     var unblockingErrorMessage: String? = null,
     var firstProductErrorIndex: Int = -1,
     var isTriggerScrollToErrorProduct: Boolean = false,
+    var isCustomEpharmacyError: Boolean = false,
 
     var shipmentCartData: ShipmentCartData? = null,
     var selectedShipmentDetailData: ShipmentDetailData? = null,

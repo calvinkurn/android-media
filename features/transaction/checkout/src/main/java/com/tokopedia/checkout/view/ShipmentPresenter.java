@@ -2435,53 +2435,53 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     @Override
     public void fetchEpharmacyData() {
         epharmacyUseCase.getEPharmacyPrepareProductsGroup(ePharmacyPrepareProductsGroupResponse -> {
-//            ArrayList<GroupData.EpharmacyGroup> epharmacyGroups = new ArrayList<>();
-//            ArrayList<GroupData.EpharmacyGroup.ProductsInfo> shopInfo = new ArrayList<>();
-//            ArrayList<GroupData.EpharmacyGroup.ProductsInfo.Product> products = new ArrayList<>();
-//            products.add(new GroupData.EpharmacyGroup.ProductsInfo.Product(
-//                    true,
-//                    null,
-//                    null,
-//                    2150458249L,
-//                    null,
-//                    null,
-//                    null
-//            ));
-//            shopInfo.add(new GroupData.EpharmacyGroup.ProductsInfo(
-//                    null,
-//                    products,
-//                    "6554231",
-//                    null,
-//                    null,
-//                    null,
-//                    null
-//            ));
-//            epharmacyGroups.add(new GroupData.EpharmacyGroup(
-//                    new GroupData.EpharmacyGroup.ConsultationData(
-//                            4,
-//                            "",
-//                            null,
-//                            null,
-//                            null,
-//                            null, null,
-//                            null, null
-//                    ),
-//                    null,
-//                    "1",
-//                    null,
-//                    null,
-//                    null,
-//                    shopInfo
-//            ));
-//            EPharmacyPrepareProductsGroupResponse ePharmacyPrepareProductsGroupResponse1 = new EPharmacyPrepareProductsGroupResponse(
-//                    new EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData(
-//                            new GroupData(
-//                                    "",
-//                                    epharmacyGroups
-//                            )
-//                    )
-//            );
-            processEpharmacyData(ePharmacyPrepareProductsGroupResponse);
+            ArrayList<GroupData.EpharmacyGroup> epharmacyGroups = new ArrayList<>();
+            ArrayList<GroupData.EpharmacyGroup.ProductsInfo> shopInfo = new ArrayList<>();
+            ArrayList<GroupData.EpharmacyGroup.ProductsInfo.Product> products = new ArrayList<>();
+            products.add(new GroupData.EpharmacyGroup.ProductsInfo.Product(
+                    true,
+                    null,
+                    null,
+                    2150458249L,
+                    null,
+                    null,
+                    null
+            ));
+            shopInfo.add(new GroupData.EpharmacyGroup.ProductsInfo(
+                    null,
+                    products,
+                    "6554231",
+                    null,
+                    null,
+                    null,
+                    null
+            ));
+            epharmacyGroups.add(new GroupData.EpharmacyGroup(
+                    new GroupData.EpharmacyGroup.ConsultationData(
+                            4,
+                            "",
+                            null,
+                            null,
+                            null,
+                            null, null,
+                            null, null
+                    ),
+                    null,
+                    "1",
+                    null,
+                    null,
+                    null,
+                    shopInfo
+            ));
+            EPharmacyPrepareProductsGroupResponse ePharmacyPrepareProductsGroupResponse1 = new EPharmacyPrepareProductsGroupResponse(
+                    new EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData(
+                            new GroupData(
+                                    "",
+                                    epharmacyGroups
+                            )
+                    )
+            );
+            processEpharmacyData(ePharmacyPrepareProductsGroupResponse1);
             return Unit.INSTANCE;
         }, throwable -> {
             Timber.d(throwable);
@@ -2535,9 +2535,11 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                                                         cartItemModel.setErrorMessage(uploadPrescriptionUiModel.getRejectedWording());
                                                                         shouldResetCourier = true;
                                                                     } else {
+                                                                        shipmentCartItemModel.setFirstProductErrorIndex(0);
                                                                         shipmentCartItemModel.setError(true);
                                                                         shipmentCartItemModel.setAllItemError(true);
-                                                                        shipmentCartItemModel.setErrorTitle(uploadPrescriptionUiModel.getRejectedWording());
+                                                                        shipmentCartItemModel.setErrorTitle(getView().getActivityContext().getString(R.string.checkout_error_unblocking_message, shipmentCartItemModel.getCartItemModels().size()));
+                                                                        shipmentCartItemModel.setCustomEpharmacyError(true);
                                                                         shipmentCartItemModel.setSpId(0);
                                                                         getView().resetCourier(shipmentCartItemModel);
                                                                         updated = true;
@@ -2581,8 +2583,10 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                     shipmentCartItemModel.setFirstProductErrorIndex(firstProductErrorIndex);
                                     shipmentCartItemModel.setUnblockingErrorMessage(getView().getActivityContext().getString(R.string.checkout_error_unblocking_message, productErrorCount));
                                 } else {
+                                    shipmentCartItemModel.setFirstProductErrorIndex(0);
                                     shipmentCartItemModel.setError(true);
-                                    shipmentCartItemModel.setErrorTitle(uploadPrescriptionUiModel.getRejectedWording());
+                                    shipmentCartItemModel.setErrorTitle(getView().getActivityContext().getString(R.string.checkout_error_unblocking_message, shipmentCartItemModel.getCartItemModels().size()));
+                                    shipmentCartItemModel.setCustomEpharmacyError(true);
                                 }
                                 shipmentCartItemModel.setSpId(0);
                                 shipmentCartItemModel.setShouldResetCourier(true);
@@ -2666,8 +2670,10 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                                                 cartItemModel.setErrorMessage(uploadPrescriptionUiModel.getRejectedWording());
                                                                 shouldResetCourier = true;
                                                             } else {
+                                                                shipmentCartItemModel.setFirstProductErrorIndex(0);
                                                                 shipmentCartItemModel.setError(true);
-                                                                shipmentCartItemModel.setErrorTitle(uploadPrescriptionUiModel.getRejectedWording());
+                                                                shipmentCartItemModel.setErrorTitle(getView().getActivityContext().getString(R.string.checkout_error_unblocking_message, shipmentCartItemModel.getCartItemModels().size()));
+                                                                shipmentCartItemModel.setCustomEpharmacyError(true);
                                                                 shipmentCartItemModel.setSpId(0);
                                                                 getView().resetCourier(shipmentCartItemModel);
                                                                 updated = true;
@@ -2712,8 +2718,10 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                 shipmentCartItemModel.setFirstProductErrorIndex(firstProductErrorIndex);
                                 shipmentCartItemModel.setUnblockingErrorMessage(getView().getActivityContext().getString(R.string.checkout_error_unblocking_message, productErrorCount));
                             } else {
+                                shipmentCartItemModel.setFirstProductErrorIndex(0);
                                 shipmentCartItemModel.setError(true);
-                                shipmentCartItemModel.setErrorTitle(uploadPrescriptionUiModel.getRejectedWording());
+                                shipmentCartItemModel.setErrorTitle(getView().getActivityContext().getString(R.string.checkout_error_unblocking_message, shipmentCartItemModel.getCartItemModels().size()));
+                                shipmentCartItemModel.setCustomEpharmacyError(true);
                             }
                             shipmentCartItemModel.setSpId(0);
                             getView().resetCourier(shipmentCartItemModel);
