@@ -14,8 +14,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.broadcaster.revamp.util.error.BroadcasterErrorType
 import com.tokopedia.broadcaster.revamp.util.error.BroadcasterException
 import com.tokopedia.content.common.onboarding.view.fragment.UGCOnboardingParentFragment
-import com.tokopedia.content.common.onboarding.view.fragment.UGCOnboardingParentFragment.Companion.VALUE_ONBOARDING_TYPE_COMPLETE
-import com.tokopedia.content.common.onboarding.view.fragment.UGCOnboardingParentFragment.Companion.VALUE_ONBOARDING_TYPE_TNC
 import com.tokopedia.content.common.types.ContentCommonUserType.TYPE_USER
 import com.tokopedia.content.common.ui.bottomsheet.ContentAccountTypeBottomSheet
 import com.tokopedia.content.common.ui.bottomsheet.SellerTncBottomSheet
@@ -23,6 +21,7 @@ import com.tokopedia.content.common.ui.bottomsheet.WarningInfoBottomSheet
 import com.tokopedia.content.common.ui.model.AccountStateInfo
 import com.tokopedia.content.common.ui.model.AccountStateInfoType
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
+import com.tokopedia.content.common.ui.model.TermsAndConditionUiModel
 import com.tokopedia.content.common.ui.toolbar.ContentColor
 import com.tokopedia.content.common.util.coachmark.ContentCoachMarkConfig
 import com.tokopedia.content.common.util.coachmark.ContentCoachMarkManager
@@ -215,6 +214,26 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                     }
 
                     override fun isEligibleForPin(): Boolean = false
+
+                    override fun getSelectedAccount(): ContentAccountUiModel {
+                        return parentViewModel.uiState.value.selectedContentAccount
+                    }
+
+                    override fun creationId(): String {
+                        return parentViewModel.channelId
+                    }
+
+                    override fun maxProduct(): Int {
+                        return parentViewModel.maxProduct
+                    }
+                })
+
+                childFragment.setListener(object : ProductSetupFragment.Listener {
+                    override fun onProductChanged(productTagSectionList: List<ProductTagSectionUiModel>) {
+                        parentViewModel.submitAction(
+                            PlayBroadcastAction.SetProduct(productTagSectionList)
+                        )
+                    }
                 })
             }
             is PlayBroadcastSetupBottomSheet -> {
@@ -279,7 +298,16 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                 })
             }
             is SellerTncBottomSheet -> {
-                childFragment.initViews(parentViewModel.tncList)
+                childFragment.setDataSource(object : SellerTncBottomSheet.DataSource {
+                    override fun getTitle(): String {
+                        return getString(com.tokopedia.content.common.R.string.play_bro_tnc_title)
+                    }
+
+                    override fun getTermsAndCondition(): List<TermsAndConditionUiModel> {
+                        return parentViewModel.tncList
+                    }
+                })
+
                 childFragment.setListener(object : SellerTncBottomSheet.Listener {
                     override fun clickCloseIcon() { closeBottomSheet() }
                 })
@@ -668,10 +696,12 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                 if (state.selectedAccount.isShop) {
                     showTermsAndConditionBottomSheet()
                 } else {
-                    showUGCOnboardingBottomSheet(VALUE_ONBOARDING_TYPE_TNC)
+                    showUGCOnboardingBottomSheet(UGCOnboardingParentFragment.OnboardingType.Tnc)
                 }
             }
-            AccountStateInfoType.NoUsername -> showUGCOnboardingBottomSheet(VALUE_ONBOARDING_TYPE_COMPLETE)
+            AccountStateInfoType.NoUsername -> {
+                showUGCOnboardingBottomSheet(UGCOnboardingParentFragment.OnboardingType.Complete)
+            }
             AccountStateInfoType.Unknown -> return
         }
     }
@@ -964,14 +994,13 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         return dialog
     }
 
-    private fun showUGCOnboardingBottomSheet(onboardingType: Int) {
+    private fun showUGCOnboardingBottomSheet(onboardingType: UGCOnboardingParentFragment.OnboardingType) {
         childFragmentManager.executePendingTransactions()
         val existingFragment = childFragmentManager.findFragmentByTag(UGCOnboardingParentFragment.TAG)
         if (existingFragment is UGCOnboardingParentFragment && existingFragment.isVisible) return
         try {
-            val bundle = Bundle().apply {
-                putInt(UGCOnboardingParentFragment.KEY_ONBOARDING_TYPE, onboardingType)
-            }
+            val bundle = UGCOnboardingParentFragment.createBundle(onboardingType)
+
             childFragmentManager.beginTransaction()
                 .add(UGCOnboardingParentFragment::class.java, bundle, UGCOnboardingParentFragment.TAG)
                 .commit()

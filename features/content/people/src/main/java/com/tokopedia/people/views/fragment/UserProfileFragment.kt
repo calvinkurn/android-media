@@ -22,8 +22,6 @@ import com.tokopedia.config.GlobalConfig
 import com.tokopedia.content.common.navigation.shorts.PlayShorts
 import com.tokopedia.content.common.navigation.shorts.PlayShortsParam
 import com.tokopedia.content.common.onboarding.view.fragment.UGCOnboardingParentFragment
-import com.tokopedia.content.common.onboarding.view.fragment.UGCOnboardingParentFragment.Companion.VALUE_ONBOARDING_TYPE_COMPLETE
-import com.tokopedia.content.common.onboarding.view.fragment.UGCOnboardingParentFragment.Companion.VALUE_ONBOARDING_TYPE_TNC
 import com.tokopedia.content.common.types.ContentCommonUserType.KEY_AUTHOR_TYPE
 import com.tokopedia.content.common.types.ContentCommonUserType.TYPE_USER
 import com.tokopedia.content.common.util.coachmark.ContentCoachMarkConfig
@@ -861,13 +859,11 @@ class UserProfileFragment @Inject constructor(
         childFragmentManager.executePendingTransactions()
         val existingFragment = childFragmentManager.findFragmentByTag(UGCOnboardingParentFragment.TAG)
         if (existingFragment is UGCOnboardingParentFragment && existingFragment.isVisible) return
-        val bundle = Bundle().apply {
-            putInt(
-                UGCOnboardingParentFragment.KEY_ONBOARDING_TYPE,
-                if (viewModel.profileUsername.isEmpty()) VALUE_ONBOARDING_TYPE_COMPLETE
-                else VALUE_ONBOARDING_TYPE_TNC
-            )
-        }
+
+        val bundle = UGCOnboardingParentFragment.createBundle(
+            if (viewModel.profileUsername.isEmpty()) UGCOnboardingParentFragment.OnboardingType.Complete
+            else UGCOnboardingParentFragment.OnboardingType.Tnc
+        )
         childFragmentManager.beginTransaction()
             .add(UGCOnboardingParentFragment::class.java, bundle, UGCOnboardingParentFragment.TAG)
             .commit()

@@ -14,7 +14,6 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.play.broadcaster.databinding.ViewPlayBroPreparationTitleFormBinding
 import com.tokopedia.play_common.util.extension.doOnLayout
 import com.tokopedia.play_common.util.extension.showKeyboard
-import com.tokopedia.play_common.view.requestApplyInsetsWhenAttached
 import com.tokopedia.unifyprinciples.R as unifyR
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play_common.view.doOnApplyWindowInsets
@@ -51,7 +50,19 @@ class TitleFormView : ConstraintLayout {
     private val scope = CoroutineScope(dispatchers.io)
 
     init {
+        setupInsets()
         setupView()
+    }
+
+    private fun setupInsets() {
+        binding.btnSave.doOnApplyWindowInsets { v, insets, _, margin ->
+            val marginLayoutParams = v.layoutParams as ViewGroup.MarginLayoutParams
+            val newBottomMargin = margin.bottom + insets.systemWindowInsetBottom
+            if (marginLayoutParams.bottomMargin != newBottomMargin) {
+                marginLayoutParams.updateMargins(bottom = newBottomMargin)
+                v.parent.requestLayout()
+            }
+        }
     }
 
     private fun setupView() {
@@ -94,8 +105,22 @@ class TitleFormView : ConstraintLayout {
                 return@setOnKeyListener false
             }
 
+            textFieldTitle.clearIconView.setOnClickListener {
+                textFieldTitle.editText.text.clear()
+                mListener?.onClearTitle()
+            }
+
             icCloseTitleForm.setOnClickListener {
                 mListener?.onCloseTitleForm(this@TitleFormView)
+            }
+
+            btnSave.setOnClickListener {
+                if(textFieldTitle.editText.text.isNotEmpty()) {
+                    mListener?.onTitleSaved(
+                        view = this@TitleFormView,
+                        title = textFieldTitle.editText.text.toString()
+                    )
+                }
             }
         }
     }
@@ -112,9 +137,11 @@ class TitleFormView : ConstraintLayout {
         if (isLoading) {
             binding.loaderLoadingTitleForm.visibility = View.VISIBLE
             binding.textFieldTitle.visibility = View.GONE
+            binding.btnSave.visibility = View.GONE
         } else {
             binding.loaderLoadingTitleForm.visibility = View.GONE
             binding.textFieldTitle.visibility = View.VISIBLE
+            binding.btnSave.visibility = View.VISIBLE
         }
     }
 
@@ -142,7 +169,7 @@ class TitleFormView : ConstraintLayout {
 
     override fun setVisibility(visibility: Int) {
         super.setVisibility(visibility)
-        if (visibility == View.VISIBLE) showInputMethod()
+        if (isAllowShowKeyboard(visibility)) showInputMethod()
     }
 
     private fun showInputMethod() {
@@ -151,7 +178,7 @@ class TitleFormView : ConstraintLayout {
                 delay(DELAY_SHOW_KEYBOARD)
 
                 withContext(dispatchers.main) {
-                    if(visibility == View.VISIBLE) {
+                    if(isAllowShowKeyboard(visibility)) {
                         binding.textFieldTitle.editText.requestFocus()
                         binding.textFieldTitle.editText.showKeyboard()
                     }
@@ -160,7 +187,13 @@ class TitleFormView : ConstraintLayout {
         }
     }
 
+    private fun isAllowShowKeyboard(formVisibility: Int): Boolean {
+        return formVisibility == View.VISIBLE && binding.textFieldTitle.visibility == View.VISIBLE
+    }
+
     interface Listener {
+        fun onClearTitle() { }
+
         fun onCloseTitleForm(view: TitleFormView)
         fun onTitleSaved(view: TitleFormView, title: String)
     }

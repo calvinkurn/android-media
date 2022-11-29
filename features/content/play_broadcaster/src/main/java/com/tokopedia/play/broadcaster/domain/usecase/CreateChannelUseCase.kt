@@ -26,12 +26,14 @@ class CreateChannelUseCase @Inject constructor(
     private val query = """
            mutation createChannel(
                ${"$$PARAMS_AUTHOR_ID"}: String!, 
-               ${"$$PARAMS_AUTHOR_TYPE"}: Int!, 
+               ${"$$PARAMS_AUTHOR_TYPE"}: Int!,
+               ${"$$PARAMS_TYPE"}: Int!,
                ${"$$PARAMS_STATUS"}: Int!
            ){
             broadcasterCreateChannel(req: {
                $PARAMS_AUTHOR_ID: ${"$$PARAMS_AUTHOR_ID"},
-               $PARAMS_AUTHOR_TYPE: ${"$$PARAMS_AUTHOR_TYPE"}, 
+               $PARAMS_AUTHOR_TYPE: ${"$$PARAMS_AUTHOR_TYPE"},
+               $PARAMS_TYPE: ${"$$PARAMS_TYPE"},
                $PARAMS_STATUS: ${"$$PARAMS_STATUS"}
               }){
                 channelID
@@ -58,11 +60,13 @@ class CreateChannelUseCase @Inject constructor(
         private const val PARAMS_AUTHOR_ID = "authorID"
         private const val PARAMS_AUTHOR_TYPE = "authorType"
         private const val PARAMS_STATUS = "status"
+        private const val PARAMS_TYPE = "type"
 
         fun createParams(
             authorId: String,
             authorType: String,
-            status: PlayChannelStatusType = PlayChannelStatusType.Draft
+            type: Type,
+            status: PlayChannelStatusType = PlayChannelStatusType.Draft,
         ): Map<String, Any> = mapOf(
             PARAMS_AUTHOR_ID to authorId,
             PARAMS_AUTHOR_TYPE to when (authorType) {
@@ -70,8 +74,12 @@ class CreateChannelUseCase @Inject constructor(
                 TYPE_SHOP -> VALUE_TYPE_ID_SHOP
                 else -> 0
             },
-            PARAMS_STATUS to status.value.toIntOrZero()
+            PARAMS_STATUS to status.value.toIntOrZero(),
+            PARAMS_TYPE to type.value,
         )
     }
 
+    enum class Type(val value: Int) {
+        Livestream(1), Shorts(3)
+    }
 }
