@@ -71,7 +71,7 @@ class PrivacyCenterItemView : FrameLayout {
     }
 
     fun setIcon(url: String) {
-        loadImageWithEmptyTarget(context, url.trim(), {
+        loadImageWithEmptyTarget(context, url, {
             fitCenter()
         }, MediaBitmapEmptyTarget(
             onReady = { bitmap ->
