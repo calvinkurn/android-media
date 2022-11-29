@@ -183,7 +183,7 @@
         <LinearLayout
             android:id="@+id/top_ads_campaign_copywriting_container"
             android:layout_width="0dp"
-            android:layout_height="16dp"
+            android:layout_height="20dp"
             android:layout_marginStart="16dp"
             android:orientation="vertical"
             android:visibility="visible"
@@ -197,7 +197,7 @@
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/top_ads_campaign_copywriting_first"
                 android:layout_width="match_parent"
-                android:layout_height="16dp"
+                android:layout_height="20dp"
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:visibility="visible"
@@ -207,7 +207,7 @@
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/top_ads_campaign_copywriting_second"
                 android:layout_width="match_parent"
-                android:layout_height="16dp"
+                android:layout_height="20dp"
                 android:ellipsize="end"
                 android:maxLines="1"
                 android:visibility="visible"
