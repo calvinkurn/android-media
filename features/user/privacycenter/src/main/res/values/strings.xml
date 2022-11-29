@@ -91,9 +91,9 @@
     <string name="dsar_section_description">Download datamu yang tersimpan di Tokopedia</string>
     <string name="dsar_activity_title">Download Data</string>
     <string name="dsar_bottom_sheet_title">Detail Pengajuan</string>
-    <string name="dsar_bottom_sheet_info_prefix">Salinan data akan dikirim ke e-mail diatas paling lambat </string>
+    <string name="dsar_bottom_sheet_info_prefix">Datamu akan dikirim ke e-mail di atas paling lambat </string>
     <string name="dsar_btn_lanjut_title">Lanjut</string>
-    <string name="dsar_progress_description">Kami bakal kabari lewat e-mail %1$s maks. %2$s.\nSilahkan cek secara berkala, ya! </string>
+    <string name="dsar_progress_description">Info selanjutnya akan dikirim ke e-mail %1$s, paling lambat %2$s.\nNanti cek e-mail kamu, ya! </string>
 
 
     <!--Search History-->
@@ -115,15 +115,15 @@
     <string name="dsar_on_progress_title">Pengajuan download data kamu masih diproses</string>
     <string name="dsar_btn_on_progress_back_title">Balik ke Privasi Akun</string>
     <string name="dsar_btn_on_progress_details_btn">Lihat Detail Pengajuan</string>
-    <string name="dsar_success_page_title">Sip, pengajuan download data sudah terkirim. Kami proses dulu, ya!</string>
-    <string name="dsar_choose_data_title">Data yang ingin di download</string>
+    <string name="dsar_success_page_title">Oke, pengajuan download data sudah terkirim!</string>
+    <string name="dsar_choose_data_title">Jenis data yang di-download</string>
     <string name="dsar_pick_min_data_label">Pilih min. 1 data</string>
     <string name="dsar_payment_info_description">Daftar rekening bank, daftar kartu kredit, daftar kartu debit</string>
     <string name="dsar_payment_info_title">Informasi Pembayaran</string>
     <string name="dsar_personal_info_title">Informasi Pribadi</string>
     <string name="dsar_personal_info_description">User ID, nama lengkap, nomor HP, e-mail, tanggal lahir, jenis kelamin, daftar alamat pengiriman</string>
     <string name="dsar_transcion_info_title">Riwayat Transaksi</string>
-    <string name="dsar_bottom_sheet_detail_subtitle">Data akan didownload dari akun kamu yang ini:</string>
+    <string name="dsar_bottom_sheet_detail_subtitle">Download data dari akun ini:</string>
     <string name="dsar_date_picker_title">Pilih rentang riwayat transaksi</string>
     <string name="dsar_date_picker_btn_title">Simpan</string>
     <string name="dsar_failed_otp_label">Gagal Verifikasi</string>
@@ -146,7 +146,7 @@
     <string name="sharing_wishlist_label_public">Publik</string>
     <string name="sharing_wishlist_oke">Oke</string>
     <string name="sharing_wishlist_message_update">Koleksi “%1$s” sudah berhasil menjadi %2$s.</string>
-    <string name="dsar_summary_ticker_info">Salinan data akan dikirim ke e-mail diatas maks. 2 hari kerja</string>
+    <string name="dsar_summary_ticker_info">Datamu akan dikirim ke e-mail di atas dalam maks. 2 hari kerja.</string>
 
 
 </resources>
