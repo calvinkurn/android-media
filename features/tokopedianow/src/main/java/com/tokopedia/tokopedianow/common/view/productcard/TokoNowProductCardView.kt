@@ -290,21 +290,22 @@ class TokoNowProductCardView @JvmOverloads constructor(
                     com.tokopedia.unifycomponents.R.color.Unify_RN500
                 )
             )
-            progressTypography.showIfWithBlock(isFlashSale) {
-                text = progressBarLabel
-                val colorRes = if (progressBarLabel.equals(WORDING_SEGERA_HABIS, ignoreCase = true)) {
-                    com.tokopedia.unifyprinciples.R.color.Unify_RN500
-                } else {
-                    R.color.tokopedianow_product_card_dms_progress_bar_label_text_color
-                }
-                setTextColor(
-                    ContextCompat.getColor(
-                        context,
-                        colorRes
-                    )
-                )
-            }
             adjustFireIcon(progressBarLabel)
+        }
+
+        progressTypography.showIfWithBlock(isFlashSale) {
+            text = progressBarLabel
+            val colorRes = if (progressBarLabel.equals(WORDING_SEGERA_HABIS, ignoreCase = true)) {
+                com.tokopedia.unifyprinciples.R.color.Unify_RN500
+            } else {
+                R.color.tokopedianow_product_card_dms_progress_bar_label_text_color
+            }
+            setTextColor(
+                ContextCompat.getColor(
+                    context,
+                    colorRes
+                )
+            )
         }
     }
 
