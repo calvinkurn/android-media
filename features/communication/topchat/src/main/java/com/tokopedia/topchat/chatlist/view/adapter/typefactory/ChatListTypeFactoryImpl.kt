@@ -26,8 +26,8 @@ import com.tokopedia.topchat.chatlist.view.uimodel.ChatListTickerUiModel
  */
 class ChatListTypeFactoryImpl(
     private val listener: ChatListItemListener,
-    private val chatListAnalytics: ChatListAnalytic,
-    private val chatListTickerListener: ChatListTickerListener
+    private val chatListTickerListener: ChatListTickerListener,
+    private val chatListAnalytics: ChatListAnalytic
 ) : BaseAdapterTypeFactory(), ChatListTypeFactory {
 
     override fun type(emptyChatItemListViewModel: EmptyChatModel): Int {

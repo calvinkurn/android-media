@@ -179,7 +179,7 @@ class PlayBroadcasterViewModelTest {
         )
 
         robot.use {
-            it.getViewModel().getShopIconUrl().assertEmpty()
+            it.getViewModel().getAuthorImage().assertEmpty()
         }
     }
 
@@ -193,7 +193,7 @@ class PlayBroadcasterViewModelTest {
         )
 
         robot.use {
-            it.getViewModel().getShopName().assertEmpty()
+            it.getViewModel().authorName.assertEmpty()
         }
     }
     //endregion

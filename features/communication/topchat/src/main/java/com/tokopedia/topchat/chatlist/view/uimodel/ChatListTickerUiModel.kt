@@ -5,14 +5,15 @@ import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.topchat.chatlist.view.adapter.typefactory.ChatListTypeFactory
 
 data class ChatListTickerUiModel(
-    val message: String,
-    val tickerType: Int,
-    val appLink: String
+    var message: String = "",
+    var tickerType: Int = Int.ZERO,
+    var applink: String = ""
 ): Visitable<ChatListTypeFactory> {
 
     val impressHolder = ImpressHolder()
 
-    var showCloseButton = false
+    var showCloseButton: Boolean = false
+    var sharedPreferenceKey: String = ""
 
     override fun type(typeFactory: ChatListTypeFactory): Int {
         return typeFactory.type(this)

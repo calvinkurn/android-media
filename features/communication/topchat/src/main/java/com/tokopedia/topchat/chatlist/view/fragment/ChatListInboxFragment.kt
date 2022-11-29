@@ -475,6 +475,8 @@ open class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
         viewModel.chatOperationalInsight.observe(viewLifecycleOwner) {
             if (it is Success && it.data.showTicker == true) {
                 adapter?.addElement(0, it.data)
+            } else if (viewModel.shouldShowBubbleTicker()) {
+                addBubbleChatTicker()
             }
         }
 
@@ -509,6 +511,32 @@ open class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
                 appLink = String.EMPTY
             )
             adapter?.addElement(Int.ZERO, tickerChatListSeller)
+        }
+    }
+
+    private fun addBubbleChatTicker() {
+        val chatListTicker: ChatListTickerUiModel = ChatListTickerUiModel(
+            message = getString(com.tokopedia.topchat.R.string.topchat_bubble_ticker_message),
+            applink = ApplinkConstInternalMarketplace.TOPCHAT_BUBBLE_ACTIVATION
+        ).apply {
+            this.showCloseButton = true
+            this.sharedPreferenceKey = ChatItemListViewModel.BUBBLE_TICKER_PREF_NAME
+        }
+        adapter?.addElement(Int.ZERO, chatListTicker)
+    }
+
+    override fun onChatListTickerClicked(applink: String) {
+        context?.let {
+            if (applink.isNotBlank()) {
+                RouteManager.route(it, applink)
+            }
+        }
+    }
+
+    override fun onDismissTicker(element: ChatListTickerUiModel) {
+        adapter?.removeElement(element)
+        if (element.sharedPreferenceKey.isNotBlank()) {
+            viewModel.saveTickerPref(ChatItemListViewModel.BUBBLE_TICKER_PREF_NAME)
         }
     }
 
@@ -653,7 +681,7 @@ open class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
     }
 
     override fun getAdapterTypeFactory(): ChatListTypeFactoryImpl {
-        return ChatListTypeFactoryImpl(this, chatListAnalytics, this)
+        return ChatListTypeFactoryImpl(this, this, chatListAnalytics)
     }
 
     override fun createAdapterInstance(): BaseListAdapter<Visitable<*>, BaseAdapterTypeFactory> {

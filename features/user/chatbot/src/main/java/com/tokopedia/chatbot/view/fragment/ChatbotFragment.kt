@@ -519,7 +519,7 @@ class ChatbotFragment :
                     attachInvoiceSingleViewModel
                 )
             val generatedInvoice = presenter.generateInvoice(invoice, opponentId)
-            getViewState()?.onShowInvoiceToChat(generatedInvoice)
+   //         getViewState()?.onShowInvoiceToChat(generatedInvoice)
             presenter.sendInvoiceAttachment(
                 messageId,
                 invoice,
@@ -957,7 +957,8 @@ class ChatbotFragment :
 
     override fun onInvoiceSelected(invoiceLinkPojo: InvoiceLinkPojo) {
         val generatedInvoice = presenter.generateInvoice(invoiceLinkPojo, opponentId)
-        getViewState()?.onShowInvoiceToChat(generatedInvoice)
+        getViewState()?.removeInvoiceCarousel()
+        hideActionBubble()
         presenter.sendInvoiceAttachment(
             messageId,
             invoiceLinkPojo,

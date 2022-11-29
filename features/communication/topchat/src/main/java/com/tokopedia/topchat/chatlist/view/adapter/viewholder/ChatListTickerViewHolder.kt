@@ -11,8 +11,9 @@ import com.tokopedia.topchat.databinding.ItemChatListTickerBinding
 import com.tokopedia.unifycomponents.ticker.TickerCallback
 import com.tokopedia.utils.view.binding.viewBinding
 
-class ChatListTickerViewHolder(view: View,
-                               private val chatListTickerListener: ChatListTickerListener
+class ChatListTickerViewHolder(
+    view: View,
+    private val chatListTickerListener: ChatListTickerListener
 ): AbstractViewHolder<ChatListTickerUiModel>(view) {
 
     companion object {
@@ -25,24 +26,25 @@ class ChatListTickerViewHolder(view: View,
     override fun bind(element: ChatListTickerUiModel) {
         binding?.chatListTicker?.run {
             tickerType = element.tickerType
-            closeButtonVisibility = if (element.showCloseButton) {
-                View.VISIBLE
-            } else {
-                View.GONE
-            }
+            closeButtonVisibility = getCloseButtonVisibility(element)
             setHtmlDescription(element.message)
             setDescriptionClickEvent(object : TickerCallback {
                 override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                    chatListTickerListener.onChatListTickerClicked(element.appLink)
+                    chatListTickerListener.onChatListTickerClicked(element.applink)
                 }
 
                 override fun onDismiss() {
-                    //no op
+                    chatListTickerListener.onDismissTicker(element)
                 }
             })
-            addOnImpressionListener(element.impressHolder) {
-                chatListTickerListener.onChatListTickerImpressed()
-            }
+        }
+    }
+
+    private fun getCloseButtonVisibility(element: ChatListTickerUiModel): Int {
+        return if (element.showCloseButton) {
+            View.VISIBLE
+        } else {
+            View.GONE
         }
     }
 }
