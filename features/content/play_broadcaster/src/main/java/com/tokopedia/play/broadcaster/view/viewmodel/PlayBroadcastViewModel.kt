@@ -234,7 +234,7 @@ class PlayBroadcastViewModel @AssistedInject constructor(
         get() = _accountListState.value
 
     val isAllowChangeAccount: Boolean
-        get() = _accountListState.value.size > 1
+        get() = if (GlobalConfig.isSellerApp()) false else _accountListState.value.size > 1
 
     val authorId: String
         get() = _selectedAccount.value.id
