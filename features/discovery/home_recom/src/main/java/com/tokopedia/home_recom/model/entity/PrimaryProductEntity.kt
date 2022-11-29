@@ -57,7 +57,7 @@ data class ProductDetailData(
     val imageUrl: String = "",
     @SerializedName("isTopads")
     var isTopads: Boolean = false,
-    @SerializedName("IsWishlist")
+    @SerializedName("IsWishlist", alternate = ["isWishlist"])
     val isWishlist: Boolean = false,
     @SerializedName("labels")
     val labels: List<Any> = listOf(),
