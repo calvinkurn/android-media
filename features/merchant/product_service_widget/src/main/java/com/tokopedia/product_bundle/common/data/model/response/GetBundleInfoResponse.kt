@@ -193,6 +193,6 @@ data class ShopInformation (
 
 @Parcelize
 data class BundleStats (
-    @SerializedName("Sold")
+    @SerializedName("SoldItem")
     @Expose val totalSold: String = ""
 ): Parcelable
