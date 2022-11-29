@@ -25,7 +25,7 @@ class TokoChatCourierRemoteConfigImpl @Inject constructor(
     }
 
     private fun initCourierRemoteConfigData() {
-        val data = remoteConfig.getString(COURIER_CONFIG_JSON)
+        val data = remoteConfig.getString(COURIER_CONFIG_JSON, "")
         try {
             if (data.isNotBlank()) {
                 courierConfigData = Gson().fromJson(data, CourierConfigData::class.java)

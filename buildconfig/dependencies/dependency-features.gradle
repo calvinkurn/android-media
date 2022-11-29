@@ -3,6 +3,7 @@ ext {
     // Sort and categorize alphabetically by folder name
     features = [
 			shopDiscount		: ":features:merchant:shop_discount",
+			productAr		                : ":features:merchant:product_ar",
             campaignShakeLanding            : ":features:user:campaign_shake_landing",
 
             appCommon                       : ":features:common:app_common",
