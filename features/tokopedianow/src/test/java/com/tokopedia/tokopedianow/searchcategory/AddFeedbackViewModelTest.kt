@@ -48,6 +48,17 @@ class AddFeedbackViewModelTest {
 
     @Test
     fun `ad feedback null response error`(){
+        val response = AddProductFeedbackModel(null)
+        val query = ""
+        every { addFeedbackUseCase.execute(any(),any(),any()) }answers {
+            firstArg<(AddProductFeedbackModel) -> Unit>().invoke(response)
+        }
+        viewModel.addProductFeedback(query)
+        Assert.assertEquals(viewModel.addFeedbackResult.value is Fail,true)
+    }
+
+    @Test
+    fun `ad feedback null header error`(){
         val response = AddProductFeedbackModel(AddProductFeedbackModel.TokonowAddFeedback())
         val query = ""
         every { addFeedbackUseCase.execute(any(),any(),any()) }answers {
