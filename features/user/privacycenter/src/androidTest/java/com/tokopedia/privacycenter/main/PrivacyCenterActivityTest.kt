@@ -50,6 +50,7 @@ class PrivacyCenterActivityTest {
             shouldShowCorrectName("Hai, Erick Samuel (test)")
             shouldShowIconLinked()
             shouldShowRecommendationSection()
+            shouldShowPrivacyPolicy()
         }
     }
 
