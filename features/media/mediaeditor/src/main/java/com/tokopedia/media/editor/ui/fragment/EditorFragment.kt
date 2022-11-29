@@ -194,6 +194,7 @@ class EditorFragment @Inject constructor(
                     paramData.watermarkMode = item.watermarkMode
                     paramData.removeBackgroundUrl = item.removeBackgroundUrl
                     paramData.cropRotateValue = item.cropRotateValue
+                    paramData.addLogoValue = item.addLogoValue
 
                     // need to store brightness / contrast implement sequence (result will be diff)
                     // if contrast is latest filter then isContrastExecuteFirst = false
