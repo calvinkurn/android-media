@@ -42,6 +42,10 @@ class PurposeViewHolder(
                 listener.onActivationButtonClicked(layoutPosition, isActive, item.data)
             }
 
+            itemTitle.setOnClickListener {
+                listener.onActivationButtonClicked(layoutPosition, isActive, item.data)
+            }
+
             itemSwitch.apply {
                 isChecked = isActive
                 setOnClickListener {

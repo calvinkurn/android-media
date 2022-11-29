@@ -69,6 +69,7 @@ abstract class BasePrivacyCenterSection(context: Context?) {
         sectionBaseViewBinding.apply {
             baseSection.showWithCondition(!isLoading)
             loadingView.root.showWithCondition(isLoading)
+            if (isLoading) sectionLocalLoad.hide()
         }
     }
 
