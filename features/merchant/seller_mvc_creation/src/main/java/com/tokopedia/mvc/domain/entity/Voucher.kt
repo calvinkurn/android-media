@@ -37,4 +37,5 @@ data class Voucher(
     val targetBuyer: VoucherTargetBuyer = VoucherTargetBuyer.ALL_BUYER
 ) {
     fun isOngoingPromo() = status == VoucherStatus.ONGOING
+    fun isUpComingPromo() = status == VoucherStatus.NOT_STARTED
 }

@@ -21,7 +21,7 @@ sealed class MoreMenuUiModel(
         override val icon: Int = IconUnify.COUPON
     ) : MoreMenuUiModel(title, icon)
 
-    data class Calendar(
+    data class EditPeriod(
         override val title: String,
         @DrawableRes
         override val icon: Int = IconUnify.CALENDAR
@@ -75,7 +75,7 @@ sealed class MoreMenuUiModel(
         override val icon: Int = IconUnify.COPY
     ) : MoreMenuUiModel(title, icon)
 
-    //TODO change the icon
+    // TODO change the icon
     data class TermsAndConditions(
         override val title: String,
         @DrawableRes

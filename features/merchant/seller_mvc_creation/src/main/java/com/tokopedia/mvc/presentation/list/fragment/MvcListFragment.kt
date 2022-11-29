@@ -92,7 +92,7 @@ class MvcListFragment :
             moreMenuBottomSheet =
                 MoreMenuBottomSheet.newInstance(
                     it,
-                    voucher,
+                    voucher
                 )
             moreMenuBottomSheet?.setOnMenuClickListener { menu ->
                 onClickListenerForMoreMenu(menu, voucher)
@@ -105,37 +105,33 @@ class MvcListFragment :
         moreMenuBottomSheet?.dismiss()
         when (menuUiModel) {
             is MoreMenuUiModel.Coupon -> {
-
             }
-            is MoreMenuUiModel.Calendar -> {
-
+            is MoreMenuUiModel.EditPeriod -> {
+                // Ubah Periode
+                showEditPeriodBottomSheet()
             }
             is MoreMenuUiModel.Edit -> {
-
             }
             is MoreMenuUiModel.Clipboard -> {
-
             }
             is MoreMenuUiModel.Broadcast -> {
                 SharingUtil.shareToBroadCastChat(requireContext(), voucher.id)
             }
             is MoreMenuUiModel.Download -> {
-
             }
             is MoreMenuUiModel.Clear -> {
-
             }
             is MoreMenuUiModel.Share -> {
-
             }
             is MoreMenuUiModel.Hentikan -> {
-
             }
 
             is MoreMenuUiModel.Copy -> {
-
             }
         }
+    }
+
+    private fun showEditPeriodBottomSheet() {
     }
 
     override fun onVoucherListCopyCodeClicked(voucher: Voucher) {
