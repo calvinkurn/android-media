@@ -1253,7 +1253,7 @@ class WishlistCollectionDetailViewModelTest {
         val sourceCollectionId = "888"
         val resultWishlistAddV2 = AddToWishlistV2Response.Data.WishlistAddV2(success = true)
 
-        every { addToWishlistV2UseCase.setParams(any(), any()) } just Runs
+        every { addToWishlistV2UseCase.setParams(any(), any(), any()) } just Runs
         coEvery { addToWishlistV2UseCase.executeOnBackground() } returns Success(resultWishlistAddV2)
 
         val mockListener: WishlistV2ActionListener = mockk(relaxed = true)
@@ -1270,7 +1270,7 @@ class WishlistCollectionDetailViewModelTest {
         val recommendationItem = RecommendationItem(isTopAds = false, productId = 123L)
         val mockThrowable = mockk<Throwable>("fail")
 
-        every { addToWishlistV2UseCase.setParams(any(), any()) } just Runs
+        every { addToWishlistV2UseCase.setParams(any(), any(), any()) } just Runs
         coEvery { addToWishlistV2UseCase.executeOnBackground() } returns Fail(mockThrowable)
 
         val mockListener: WishlistV2ActionListener = mockk(relaxed = true)

@@ -1,5 +1,6 @@
 package com.tokopedia.wishlist.view.adapter
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -302,8 +303,9 @@ class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                         element,
                         holder.adapterPosition,
                         isShowCheckbox,
-                        isAutoSelected
-                    , isAddBulkModeFromOthers)
+                        isAutoSelected,
+                        isAddBulkModeFromOthers
+                    )
                 }
                 TYPE_GRID -> {
                     val params =
@@ -314,8 +316,9 @@ class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                         element,
                         holder.adapterPosition,
                         isShowCheckbox,
-                        isAutoSelected
-                    , isAddBulkModeFromOthers)
+                        isAutoSelected,
+                        isAddBulkModeFromOthers
+                    )
                 }
                 TYPE_EMPTY_STATE -> {
                     val params =
@@ -512,6 +515,7 @@ class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         notifyDataSetChanged()
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun showCheckboxAddBulkFromOthers() {
         isShowCheckbox = true
         isAddBulkModeFromOthers = true

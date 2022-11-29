@@ -60,9 +60,6 @@ class BottomSheetWishlistCollectionItemViewHolder(
                 }
                 mainCollectionTotalItem.text = totalItemText
 
-
-
-
                 if (item.dataObject.isContainProduct && source != SRC_WISHLIST_COLLECTION_BULK_ADD) {
                     icCheck.visible()
                 } else {

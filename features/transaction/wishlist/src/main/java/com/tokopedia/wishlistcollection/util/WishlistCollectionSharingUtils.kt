@@ -71,7 +71,7 @@ class WishlistCollectionSharingUtils() {
                                     shareString
                                 )
                                 collectionShareBottomSheet?.dismiss()
-                                WishlistCollectionAnalytics.sendClickSharingChannelCollectionEvent(shareModel.platform, data.collection.id, data.collection.access, userId)
+                                WishlistCollectionAnalytics.sendClickSharingChannelCollectionEvent(shareModel.socialMediaName ?: shareModel.platform, data.collection.id, data.collection.access, userId)
                             }
 
                             override fun onError(linkerError: LinkerError?) {
