@@ -180,7 +180,7 @@ class TokoFoodPurchaseConsentBottomSheet : BottomSheetUnify(),
         }
     }
 
-    private fun onLinkClicked(url: String) {
+    private fun onLinkClicked(url: String, text: String) {
         context?.let {
             RouteManager.route(it, ApplinkConstInternalGlobal.WEBVIEW, url)
         }

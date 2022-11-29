@@ -4,5 +4,4 @@
     <string name="brizzi_please_activate_nfc_from_settings">Silahkan aktifkan pengaturan NFC pada handphone Anda, untuk melanjutkan</string>
     <string name="brizzi_activate" translatable="false">Aktifkan</string>
     <string name="brizzi_cancel" translatable="false">Batalkan</string>
-    <string name="brizzi_nfc_no_need_to_check_logic">No need to check logic</string>
 </resources>

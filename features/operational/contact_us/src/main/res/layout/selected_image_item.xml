@@ -7,9 +7,8 @@
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:id="@+id/selected_image"
-        android:layout_width="@dimen/dp_80"
-        android:layout_height="@dimen/dp_80"
-        android:layout_marginLeft="8dp"
+        android:layout_width="80dp"
+        android:layout_height="80dp"
         android:layout_marginStart="8dp"
         android:scaleType="centerInside"
         app:unify_image_corner_radius= "10"
@@ -23,13 +22,15 @@
         android:id="@+id/delete_image"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="@dimen/padding_vvvs"
-        android:layout_marginRight="@dimen/margin_default"
-        android:layout_marginTop="@dimen/padding_vvvs"
-        app:layout_goneMarginTop="@dimen/dp_30"
+        android:layout_marginEnd="2dp"
+        android:layout_marginRight="16dp"
+        android:layout_marginTop="2dp"
+        app:layout_goneMarginTop="30dp"
         app:layout_constraintCircleAngle="45"
-        app:layout_constraintCircleRadius="@dimen/dp_52"
+        app:layout_constraintCircleRadius="52dp"
         app:layout_constraintCircle="@id/selected_image"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintEnd_toEndOf="@id/selected_image"
         app:srcCompat="@drawable/contact_us_ic_circular_cross" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

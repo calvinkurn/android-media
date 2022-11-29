@@ -4,6 +4,7 @@ import android.text.TextUtils
 import com.tokopedia.abstraction.base.view.presenter.BaseDaggerPresenter
 import com.tokopedia.affiliatecommon.domain.DeletePostUseCase
 import com.tokopedia.affiliatecommon.domain.TrackAffiliateClickUseCase
+import com.tokopedia.atc_common.AtcFromExternalSource
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
 import com.tokopedia.config.GlobalConfig
@@ -228,7 +229,7 @@ class FeedShopPresenter @Inject constructor(
         })
     }
 
-    override fun likeKol(id: Int, rowNumber: Int, likeListener: KolPostLikeListener) {
+    override fun likeKol(id: Long, rowNumber: Int, likeListener: KolPostLikeListener) {
         if (isViewAttached) {
             likeKolPostUseCase.execute(
                     LikeKolPostUseCase.getParam(id, LikeKolPostUseCase.LikeKolPostAction.Like),
@@ -241,7 +242,7 @@ class FeedShopPresenter @Inject constructor(
         }
     }
 
-    override fun unlikeKol(id: Int, rowNumber: Int, likeListener: KolPostLikeListener) {
+    override fun unlikeKol(id: Long, rowNumber: Int, likeListener: KolPostLikeListener) {
         if (isViewAttached) {
             likeKolPostUseCase.execute(
                     LikeKolPostUseCase.getParam(id, LikeKolPostUseCase.LikeKolPostAction.Unlike),
@@ -254,9 +255,9 @@ class FeedShopPresenter @Inject constructor(
         }
     }
 
-    override fun deletePost(id: Int, rowNumber: Int) {
+    override fun deletePost(id: String, rowNumber: Int) {
         deletePostUseCase.execute(
-                DeletePostUseCase.createRequestParams(id.toString()),
+                DeletePostUseCase.createRequestParams(id),
                 object : Subscriber<Boolean>() {
                     override fun onNext(isSuccess: Boolean?) {
                         if (isSuccess == null || isSuccess.not()) {
@@ -334,8 +335,12 @@ class FeedShopPresenter @Inject constructor(
         if (postTagItem.shop.isNotEmpty()) {
             atcUseCase.execute(
                     AddToCartUseCase.getMinimumParams(
-                            postTagItem.id, postTagItem.shop.first().shopId, productName = postTagItem.text,
-                            price = postTagItem.price, userId = getUserId()
+                        postTagItem.id,
+                        postTagItem.shop.first().shopId,
+                        productName = postTagItem.text,
+                        price = postTagItem.price,
+                        userId = getUserId(),
+                        atcExternalSource = AtcFromExternalSource.ATC_FROM_SHOP
                     ),
                     object : Subscriber<AddToCartDataModel>() {
                         override fun onNext(model: AddToCartDataModel?) {
@@ -344,7 +349,7 @@ class FeedShopPresenter @Inject constructor(
                                 if(isNotSuccess)
                                     view.onAddToCartFailed(postTagItem.applink)
                                 else
-                                    view.onAddToCartSuccess()
+                                    view.onAddToCartSuccess(model.data.productId.toString())
                             } else {
                                 view.onAddToCartFailed(postTagItem.applink)
                             }

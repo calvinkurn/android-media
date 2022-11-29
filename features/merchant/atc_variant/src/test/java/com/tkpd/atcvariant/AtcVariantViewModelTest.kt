@@ -577,6 +577,21 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
     }
 
     @Test
+    fun `on atc fail cause by throw`() {
+        `render initial variant with given child id and hit gql tokonow campaign hide gimmick`()
+        val actionButtonAtc = 2
+
+        coEvery {
+            addToCartUseCase.createObservable(any()).toBlocking().single()
+        } throws Throwable()
+
+        viewModel.hitAtc(actionButtonAtc, 1234, "", "321", 0.0, "", "", true)
+
+        Assert.assertTrue(viewModel.addToCartLiveData.value is Fail)
+        assertButton(expectedIsBuyable = true)
+    }
+
+    @Test
     fun `on success update atc tokonow`() = runBlocking {
         decideSuccessValueHitGqlAggregator("2147818576", true, true)
         val actionButtonAtc = 2
@@ -615,6 +630,21 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
         coVerify {
             updateCartUseCase.setParams(capture(updateCartRequest), any())
         }
+
+        Assert.assertTrue(viewModel.updateCartLiveData.value is Fail)
+        assertButton(expectedCartText = "Simpan Perubahan", expectedIsBuyable = true)
+    }
+
+    @Test
+    fun `on fail update atc by throwable`() = runBlocking {
+        decideSuccessValueHitGqlAggregator("2147818576", true, true)
+        val actionButtonAtc = 2
+
+        coEvery {
+            updateCartUseCase.executeOnBackground()
+        } throws Throwable()
+
+        viewModel.hitAtc(actionButtonAtc, 1234, "", "321", 0.0, "", "", true)
 
         Assert.assertTrue(viewModel.updateCartLiveData.value is Fail)
         assertButton(expectedCartText = "Simpan Perubahan", expectedIsBuyable = true)

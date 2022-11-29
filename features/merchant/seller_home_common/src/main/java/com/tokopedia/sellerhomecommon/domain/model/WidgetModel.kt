@@ -1,62 +1,51 @@
 package com.tokopedia.sellerhomecommon.domain.model
 
-import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.kotlin.extensions.view.EMPTY
 
 /**
  * Created By @ilhamsuaib on 21/05/20
  */
 
 data class WidgetModel(
-    @Expose
     @SerializedName("ID")
     val id: Long?,
-    @Expose
     @SerializedName("applink")
     val appLink: String?,
-    @Expose
     @SerializedName("ctaText")
     val ctaText: String?,
-    @Expose
     @SerializedName("gridSize")
     val gridSize: Int?,
-    @Expose
     @SerializedName("maxData")
     val maxData: Int? = 0,
-    @Expose
     @SerializedName("maxDisplay")
     val maxDisplay: Int? = 0,
-    @Expose
     @SerializedName("dataKey")
     val dataKey: String?,
-    @Expose
     @SerializedName("subtitle")
     val subtitle: String?,
-    @Expose
     @SerializedName("tooltip")
     val tooltip: TooltipModel,
-    @Expose
     @SerializedName("tag")
     val tag: String? = "",
-    @Expose
     @SerializedName("title")
     val title: String?,
-    @Expose
     @SerializedName("widgetType")
     val widgetType: String?,
-    @Expose
     @SerializedName("showEmpty")
     val isShowEmpty: Boolean?,
-    @Expose
     @SerializedName("postFilter")
     val postFilter: List<PostFilterModel>?,
-    @Expose
     @SerializedName("emptyState")
     val emptyStateModel: WidgetEmptyStateModel,
-    @Expose
     @SerializedName("comparePeriode")
-    val isComparePeriodeOnly: Boolean = false,
-    @Expose
+    val isComparePeriodOnly: Boolean = false,
     @SerializedName("searchTableColumnFilter")
-    val searchTableColumnFilters: List<SearchTableColumnFilterModel>?
+    val searchTableColumnFilters: List<SearchTableColumnFilterModel>?,
+    @SerializedName("isDismissible")
+    val isDismissible: Boolean = false,
+    @SerializedName("dismissibleState")
+    val dismissibleState: String = String.EMPTY,
+    @SerializedName("useRealtime")
+    val useRealtime: Boolean = false,
 )

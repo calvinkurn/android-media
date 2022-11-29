@@ -16,6 +16,7 @@ import com.tokopedia.filter.R
 import com.tokopedia.filter.bottomsheet.filter.FilterViewListener
 import com.tokopedia.filter.bottomsheet.filter.FilterViewModel
 import com.tokopedia.filter.bottomsheet.filter.OptionViewModel
+import com.tokopedia.filter.bottomsheet.filter.pricerangecheckbox.PriceRangeFilterCheckboxDataView
 import com.tokopedia.filter.bottomsheet.filtercategorydetail.FilterCategoryDetailBottomSheet
 import com.tokopedia.filter.bottomsheet.filtergeneraldetail.FilterGeneralDetailBottomSheet
 import com.tokopedia.filter.bottomsheet.keywordfilter.KeywordFilterDataView
@@ -23,12 +24,12 @@ import com.tokopedia.filter.bottomsheet.keywordfilter.KeywordFilterListener
 import com.tokopedia.filter.bottomsheet.pricefilter.PriceFilterViewListener
 import com.tokopedia.filter.bottomsheet.pricefilter.PriceFilterViewModel
 import com.tokopedia.filter.bottomsheet.pricefilter.PriceOptionViewModel
+import com.tokopedia.filter.bottomsheet.filter.pricerangecheckbox.PriceRangeFilterCheckboxListener
 import com.tokopedia.filter.bottomsheet.sort.SortItemViewModel
 import com.tokopedia.filter.bottomsheet.sort.SortViewListener
 import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.common.helper.configureBottomSheetHeight
-import com.tokopedia.filter.common.helper.isPostProcessingFilter
 import com.tokopedia.filter.common.helper.setBottomSheetActionBold
 import com.tokopedia.filter.databinding.SortFilterBottomSheetBinding
 import com.tokopedia.filter.newdynamicfilter.analytics.FilterTracking
@@ -44,6 +45,17 @@ class SortFilterBottomSheet: BottomSheetUnify() {
 
     companion object {
         private const val SORT_FILTER_BOTTOM_SHEET_TAG = "SORT_FILTER_BOTTOM_SHEET_TAG"
+
+        private const val SORT_FILTER_TITLE_KEY = "sort_filter_title_key"
+
+        @JvmStatic
+        fun createInstance(title: String): SortFilterBottomSheet {
+            return SortFilterBottomSheet().apply {
+                arguments = Bundle().apply {
+                    putString(SORT_FILTER_TITLE_KEY, title)
+                }
+            }
+        }
     }
 
     private var mapParameter: Map<String, String> = mapOf()
@@ -124,12 +136,23 @@ class SortFilterBottomSheet: BottomSheetUnify() {
         }
     }
 
+    private val priceRangeFilterCheckboxListener = object : PriceRangeFilterCheckboxListener {
+
+        override fun onPriceRangeFilterCheckboxItemClicked(
+            priceRangeFilterCheckboxDataView: PriceRangeFilterCheckboxDataView,
+            optionViewModel: OptionViewModel
+        ) {
+            sortFilterBottomSheetViewModel?.onOptionClick(priceRangeFilterCheckboxDataView, optionViewModel)
+        }
+    }
+
     private val sortFilterBottomSheetAdapter = SortFilterBottomSheetAdapter(
             SortFilterBottomSheetTypeFactoryImpl(
                 sortViewListener,
                 filterViewListener,
                 priceFilterListener,
                 keywordFilterListener,
+                priceRangeFilterCheckboxListener,
             )
     )
 
@@ -174,7 +197,11 @@ class SortFilterBottomSheet: BottomSheetUnify() {
     private fun initView() {
         initBottomSheetSettings()
 
-        setTitle(getString(R.string.discovery_filter))
+        val bottomSheetTitle =
+            arguments?.getString(SORT_FILTER_TITLE_KEY)?.takeIf { it.isNotBlank() }
+                ?: getString(R.string.discovery_filter)
+
+        setTitle(bottomSheetTitle)
 
         initBottomSheetAction()
 

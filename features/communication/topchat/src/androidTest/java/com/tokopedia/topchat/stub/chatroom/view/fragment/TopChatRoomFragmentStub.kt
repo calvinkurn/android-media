@@ -29,9 +29,10 @@ open class TopChatRoomFragmentStub : TopChatRoomFragment() {
 
     override fun onCreateViewState(view: View): BaseChatViewState {
         return FakeTopChatViewStateImpl(
-                view, this, this, this,
-                this, this, this, this,
-                (activity as BaseChatToolbarActivity).getToolbar(), analytics,
+            view, this, this, this,
+            this, this, this,
+            this, this,
+            (activity as BaseChatToolbarActivity).getToolbar(), analytics, session
         ).also {
             topchatViewState = it
         }

@@ -28,7 +28,6 @@ class CreateReviewVideoPreviewThumbnail @JvmOverloads constructor(
 ), ReviewVideoPlayerListener {
 
     companion object {
-        private const val TRANSITION_DURATION = 300L
         private const val MIN_NON_LEADING_ZERO_DURATION = 10
     }
 
@@ -164,7 +163,7 @@ class CreateReviewVideoPreviewThumbnail @JvmOverloads constructor(
     private inner class TransitionHandler {
         private val fadeTransition by lazy(LazyThreadSafetyMode.NONE) {
             Fade().apply {
-                duration = TRANSITION_DURATION
+                duration = ANIMATION_DURATION
                 addTarget(binding.viewCreateReviewVideoPreviewOverlayUploading)
                 addTarget(binding.loaderCreateReviewVideoPreviewUploadProgress)
                 addTarget(binding.viewCreateReviewVideoPreviewOverlayFailed)

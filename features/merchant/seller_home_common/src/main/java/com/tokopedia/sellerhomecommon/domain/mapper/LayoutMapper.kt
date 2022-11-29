@@ -1,8 +1,10 @@
 package com.tokopedia.sellerhomecommon.domain.mapper
 
 import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.sellerhomecommon.common.DismissibleState
 import com.tokopedia.sellerhomecommon.common.EmptyLayoutException
 import com.tokopedia.sellerhomecommon.common.WidgetType
 import com.tokopedia.sellerhomecommon.common.const.WidgetGridSize
@@ -102,7 +104,8 @@ class LayoutMapper @Inject constructor(
             isLoaded = false,
             isLoading = false,
             isFromCache = isFromCache,
-            emptyState = widget.emptyStateModel.mapToUiModel()
+            emptyState = widget.emptyStateModel.mapToUiModel(),
+            useRealtime = widget.useRealtime
         )
     }
 
@@ -123,7 +126,8 @@ class LayoutMapper @Inject constructor(
             isLoaded = false,
             isLoading = false,
             isFromCache = fromCache,
-            emptyState = widget.emptyStateModel.mapToUiModel()
+            emptyState = widget.emptyStateModel.mapToUiModel(),
+            useRealtime = widget.useRealtime
         )
     }
 
@@ -147,7 +151,8 @@ class LayoutMapper @Inject constructor(
             isLoaded = false,
             isLoading = false,
             isFromCache = fromCache,
-            emptyState = widget.emptyStateModel.mapToUiModel()
+            emptyState = widget.emptyStateModel.mapToUiModel(),
+            useRealtime = widget.useRealtime
         )
     }
 
@@ -171,7 +176,8 @@ class LayoutMapper @Inject constructor(
             isLoaded = false,
             isLoading = false,
             isFromCache = fromCache,
-            emptyState = widget.emptyStateModel.mapToUiModel()
+            emptyState = widget.emptyStateModel.mapToUiModel(),
+            useRealtime = widget.useRealtime
         )
     }
 
@@ -195,7 +201,8 @@ class LayoutMapper @Inject constructor(
             isLoaded = false,
             isLoading = false,
             isFromCache = fromCache,
-            emptyState = widget.emptyStateModel.mapToUiModel()
+            emptyState = widget.emptyStateModel.mapToUiModel(),
+            useRealtime = widget.useRealtime
         )
     }
 
@@ -212,7 +219,11 @@ class LayoutMapper @Inject constructor(
             ctaText = widget.ctaText.orEmpty(),
             gridSize = getGridSize(widget.gridSize.orZero(), WidgetGridSize.GRID_SIZE_4),
             maxData = widget.maxData.orZero(),
-            maxDisplay = widget.maxDisplay.orZero(),
+            maxDisplay = if (widget.maxDisplay.isMoreThanZero()) {
+                widget.maxDisplay.orZero()
+            } else {
+                PostMapper.MAX_ITEM_PER_PAGE
+            },
             isShowEmpty = widget.isShowEmpty.orFalse(),
             data = null,
             postFilter = widget.postFilter?.mapIndexed { i, filter ->
@@ -225,7 +236,14 @@ class LayoutMapper @Inject constructor(
             isLoaded = false,
             isLoading = false,
             isFromCache = fromCache,
-            emptyState = widget.emptyStateModel.mapToUiModel()
+            emptyState = widget.emptyStateModel.mapToUiModel(),
+            isDismissible = widget.isDismissible,
+            dismissibleState = when (widget.dismissibleState) {
+                DismissibleState.ALWAYS.value -> DismissibleState.ALWAYS
+                DismissibleState.TRIGGER.value -> DismissibleState.TRIGGER
+                else -> DismissibleState.NONE
+            },
+            useRealtime = widget.useRealtime
         )
     }
 
@@ -249,7 +267,8 @@ class LayoutMapper @Inject constructor(
             isLoaded = false,
             isLoading = false,
             isFromCache = fromCache,
-            emptyState = widget.emptyStateModel.mapToUiModel()
+            emptyState = widget.emptyStateModel.mapToUiModel(),
+            useRealtime = widget.useRealtime
         )
     }
 
@@ -279,7 +298,8 @@ class LayoutMapper @Inject constructor(
                     filter.value.orEmpty(),
                     isSelected = i.isZero()
                 )
-            }.orEmpty()
+            }.orEmpty(),
+            useRealtime = widget.useRealtime
         )
     }
 
@@ -292,7 +312,7 @@ class LayoutMapper @Inject constructor(
             tooltip = tooltipMapper.mapRemoteModelToUiModel(widget.tooltip),
             tag = widget.tag.orEmpty(),
             appLink = widget.appLink.orEmpty(),
-            dataKey = widget.dataKey.orEmpty(),
+            dataKey = widget.id.orZero().toString(),
             ctaText = widget.ctaText.orEmpty(),
             gridSize = WidgetGridSize.GRID_SIZE_4,
             isShowEmpty = widget.isShowEmpty.orFalse(),
@@ -324,7 +344,8 @@ class LayoutMapper @Inject constructor(
             isLoaded = false,
             isLoading = false,
             isFromCache = fromCache,
-            emptyState = widget.emptyStateModel.mapToUiModel()
+            emptyState = widget.emptyStateModel.mapToUiModel(),
+            useRealtime = widget.useRealtime
         )
     }
 
@@ -348,7 +369,8 @@ class LayoutMapper @Inject constructor(
             isLoaded = false,
             isLoading = false,
             isFromCache = fromCache,
-            emptyState = widget.emptyStateModel.mapToUiModel()
+            emptyState = widget.emptyStateModel.mapToUiModel(),
+            useRealtime = widget.useRealtime
         )
     }
 
@@ -373,7 +395,8 @@ class LayoutMapper @Inject constructor(
             isLoading = false,
             isFromCache = isFromCache,
             emptyState = widget.emptyStateModel.mapToUiModel(),
-            isComparePeriodeOnly = widget.isComparePeriodeOnly
+            isComparePeriodOnly = widget.isComparePeriodOnly,
+            useRealtime = widget.useRealtime
         )
     }
 
@@ -397,7 +420,14 @@ class LayoutMapper @Inject constructor(
             isLoaded = false,
             isLoading = false,
             isFromCache = isFromCache,
-            emptyState = widget.emptyStateModel.mapToUiModel()
+            emptyState = widget.emptyStateModel.mapToUiModel(),
+            isDismissible = widget.isDismissible,
+            dismissibleState = when (widget.dismissibleState) {
+                DismissibleState.ALWAYS.value -> DismissibleState.ALWAYS
+                DismissibleState.TRIGGER.value -> DismissibleState.TRIGGER
+                else -> DismissibleState.NONE
+            },
+            useRealtime = widget.useRealtime
         )
     }
 
@@ -421,7 +451,8 @@ class LayoutMapper @Inject constructor(
             isLoaded = false,
             isLoading = false,
             isFromCache = isFromCache,
-            emptyState = widget.emptyStateModel.mapToUiModel()
+            emptyState = widget.emptyStateModel.mapToUiModel(),
+            useRealtime = widget.useRealtime
         )
     }
 
@@ -445,7 +476,8 @@ class LayoutMapper @Inject constructor(
             isLoaded = false,
             isLoading = false,
             isFromCache = isFromCache,
-            emptyState = widget.emptyStateModel.mapToUiModel()
+            emptyState = widget.emptyStateModel.mapToUiModel(),
+            useRealtime = widget.useRealtime
         )
     }
 
@@ -469,7 +501,8 @@ class LayoutMapper @Inject constructor(
             isLoaded = false,
             isLoading = false,
             isFromCache = fromCache,
-            emptyState = widget.emptyStateModel.mapToUiModel()
+            emptyState = widget.emptyStateModel.mapToUiModel(),
+            useRealtime = widget.useRealtime
         )
     }
 

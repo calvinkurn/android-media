@@ -179,6 +179,9 @@ abstract class TopchatRoomTest {
     protected lateinit var getChatPreAttachPayloadUseCase: GetChatPreAttachPayloadUseCaseStub
 
     @Inject
+    protected lateinit var addToWishlistV2UseCase: AddToWishlistV2UseCaseStub
+
+    @Inject
     protected lateinit var cacheManager: TopchatCacheManager
 
     @Inject

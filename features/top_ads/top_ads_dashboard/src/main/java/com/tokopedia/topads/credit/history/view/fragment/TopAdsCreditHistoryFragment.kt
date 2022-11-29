@@ -145,9 +145,9 @@ class TopAdsCreditHistoryFragment :
         context?.let {
             autoTopupStatus?.setTextColor(ContextCompat.getColor(it,
                 if (data.status == ACTIVE_STATUS) {
-                    com.tokopedia.topads.common.R.color.topads_common_select_color_checked
+                    com.tokopedia.topads.common.R.color.Unify_G500
                 } else {
-                    com.tokopedia.topads.common.R.color.topads_common_text_disabled
+                    com.tokopedia.topads.common.R.color.Unify_N700_32
                 }
             ))
         }

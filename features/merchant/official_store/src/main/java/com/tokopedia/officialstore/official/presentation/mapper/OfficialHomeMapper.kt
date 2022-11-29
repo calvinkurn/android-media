@@ -9,9 +9,9 @@ import com.tokopedia.home_component.visitable.MerchantVoucherDataModel
 import com.tokopedia.home_component.visitable.DynamicLegoBannerDataModel
 import com.tokopedia.home_component.visitable.MixTopDataModel
 import com.tokopedia.home_component.visitable.SpecialReleaseDataModel
-import com.tokopedia.home_component.visitable.HomeComponentVisitable
 import com.tokopedia.kotlin.extensions.view.toEmptyStringIfNull
 import com.tokopedia.officialstore.official.data.mapper.OfficialStoreDynamicChannelComponentMapper
+import com.tokopedia.officialstore.official.data.model.HeaderShop
 import com.tokopedia.officialstore.official.data.model.OfficialStoreBanners
 import com.tokopedia.officialstore.official.data.model.OfficialStoreBenefits
 import com.tokopedia.officialstore.official.data.model.OfficialStoreChannel
@@ -23,8 +23,10 @@ import com.tokopedia.officialstore.official.presentation.adapter.datamodel.Produ
 import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialLoadingDataModel
 import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialBannerDataModel
 import com.tokopedia.officialstore.official.presentation.adapter.datamodel.ProductRecommendationWithTopAdsHeadline
+import com.tokopedia.officialstore.official.presentation.adapter.datamodel.OfficialTopAdsBannerDataModel
 import com.tokopedia.officialstore.official.presentation.dynamic_channel.DynamicChannelDataModel
 import com.tokopedia.recommendation_widget_common.widget.bestseller.model.BestSellerDataModel
+import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
 
 object OfficialHomeMapper {
     const val BANNER_POSITION = 0
@@ -32,6 +34,7 @@ object OfficialHomeMapper {
     const val FEATURE_SHOP_POSITION = 2
     const val RECOM_WIDGET_POSITION = 3
     const val WIDGET_NOT_FOUND = -1
+    private val atfSize = 3
 
     fun mappingBanners(
         banner: OfficialStoreBanners,
@@ -117,12 +120,16 @@ object OfficialHomeMapper {
         currentList: List<Visitable<*>>,
         action: (updatedList: MutableList<Visitable<*>>) -> Unit
     ) {
-        val newList = currentList.toMutableList()
-        val dcList = mutableListOf<Visitable<*>>()
-        officialStoreChannels.forEachIndexed { position, officialStore ->
+        val newList = mutableListOf<Visitable<*>>()
+        val atfList = currentList.subList(0, atfSize.coerceAtMost(currentList.size)).filter {
+            it is OfficialBannerDataModel || it is OfficialBenefitDataModel || it is OfficialFeaturedShopDataModel
+        }
+        newList.addAll(atfList)
+        officialStoreChannels.forEachIndexed { pos, officialStore ->
+            val position = pos + atfList.size + 1
             when (officialStore.channel.layout) {
                 DynamicChannelLayout.LAYOUT_MIX_LEFT -> {
-                    dcList.add(
+                    newList.add(
                         MixLeftDataModel(
                             OfficialStoreDynamicChannelComponentMapper.mapChannelToComponent(
                                 officialStore.channel,
@@ -132,7 +139,7 @@ object OfficialHomeMapper {
                     )
                 }
                 DynamicChannelLayout.LAYOUT_MIX_TOP -> {
-                    dcList.add(
+                    newList.add(
                         MixTopDataModel(
                             OfficialStoreDynamicChannelComponentMapper.mapChannelToComponent(
                                 officialStore.channel,
@@ -141,8 +148,13 @@ object OfficialHomeMapper {
                         )
                     )
                 }
+                DynamicChannelLayout.LAYOUT_BANNER_ADS_CAROUSEL -> {
+                    newList.add(
+                        OfficialTopAdsBannerDataModel(officialStore.channel.header?.name)
+                    )
+                }
                 DynamicChannelLayout.LAYOUT_FEATURED_BRAND -> {
-                    dcList.add(
+                    newList.add(
                         FeaturedBrandDataModel(
                             OfficialStoreDynamicChannelComponentMapper.mapChannelToComponent(
                                 officialStore.channel,
@@ -152,7 +164,7 @@ object OfficialHomeMapper {
                     )
                 }
                 DynamicChannelLayout.LAYOUT_FEATURED_SHOP -> {
-                    dcList.add(
+                    newList.add(
                         FeaturedShopDataModel(
                             channelModel = OfficialStoreDynamicChannelComponentMapper.mapChannelToComponentBannerToHeader(
                                 officialStore.channel,
@@ -165,7 +177,7 @@ object OfficialHomeMapper {
                 }
                 DynamicChannelLayout.LAYOUT_BEST_SELLING -> {
                     val channel = officialStore.channel
-                    dcList.add(
+                    newList.add(
                         BestSellerDataModel(
                             channelId = channel.id,
                             widgetParam = channel.widgetParam,
@@ -177,7 +189,7 @@ object OfficialHomeMapper {
                 DynamicChannelLayout.LAYOUT_LEGO_3_IMAGE,
                 DynamicChannelLayout.LAYOUT_LEGO_2_IMAGE,
                 DynamicChannelLayout.LAYOUT_LEGO_4_IMAGE -> {
-                    dcList.add(
+                    newList.add(
                         DynamicLegoBannerDataModel(
                             OfficialStoreDynamicChannelComponentMapper.mapChannelToComponent(
                                 officialStore.channel,
@@ -187,7 +199,7 @@ object OfficialHomeMapper {
                     )
                 }
                 DynamicChannelLayout.LAYOUT_MERCHANT_VOUCHER -> {
-                    dcList.add(
+                    newList.add(
                         MerchantVoucherDataModel(
                             OfficialStoreDynamicChannelComponentMapper.mapChannelToComponent(
                                 officialStore.channel,
@@ -196,13 +208,12 @@ object OfficialHomeMapper {
                         )
                     )
                 }
-                DynamicChannelLayout.LAYOUT_SPRINT_LEGO,
-                DynamicChannelLayout.LAYOUT_BANNER_CAROUSEL -> dcList.add(
+                DynamicChannelLayout.LAYOUT_SPRINT_LEGO -> newList.add(
                     DynamicChannelDataModel(
                         officialStore
                     )
                 )
-                DynamicChannelLayout.LAYOUT_CAMPAIGN_FEATURING -> dcList.add(
+                DynamicChannelLayout.LAYOUT_CAMPAIGN_FEATURING -> newList.add(
                     SpecialReleaseDataModel(
                         OfficialStoreDynamicChannelComponentMapper.mapChannelToComponent(
                             officialStore.channel,
@@ -211,10 +222,6 @@ object OfficialHomeMapper {
                     )
                 )
             }
-        }
-        if(dcList.isNotEmpty()){
-            newList.removeAll { it is DynamicChannelDataModel || it is DynamicLegoBannerDataModel || it is HomeComponentVisitable }
-            newList.addAll(dcList)
         }
         action.invoke(newList)
     }
@@ -274,6 +281,24 @@ object OfficialHomeMapper {
                 newList.add(featuredShopDataModel)
             }
             else {
+                newList.add(it)
+            }
+        }
+        action.invoke(newList)
+    }
+
+    fun updateTopAdsBanner(
+        officialTopAdsBannerDataModel: OfficialTopAdsBannerDataModel,
+        tdnBanner: ArrayList<TopAdsImageViewModel>,
+        currentList: List<Visitable<*>>,
+        action: (updatedList: MutableList<Visitable<*>>) -> Unit
+    ) {
+        val newList = mutableListOf<Visitable<*>>()
+        currentList.forEach {
+            if (it is OfficialTopAdsBannerDataModel) {
+                officialTopAdsBannerDataModel.tdnBanner = tdnBanner
+                newList.add(officialTopAdsBannerDataModel)
+            } else {
                 newList.add(it)
             }
         }

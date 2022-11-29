@@ -7,7 +7,7 @@ import androidx.recyclerview.widget.AsyncDifferConfig
 import androidx.recyclerview.widget.ListAdapter
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.base.view.adapter.viewholders.HideViewHolder
-import com.tokopedia.product.info.model.productdetail.uidata.ProductDetailInfoVisitable
+import com.tokopedia.product.info.view.models.ProductDetailInfoVisitable
 
 /**
  * Created by Yehezkiel on 12/10/20

@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:layout_margin="@dimen/unify_space_8"
     android:background="@drawable/show_more_card_bg"
-    tools:background="@color/green_200">
+    tools:background="@color/Unify_GN600">
 
     <com.tokopedia.unifycomponents.ImageUnify
         android:layout_width="match_parent"

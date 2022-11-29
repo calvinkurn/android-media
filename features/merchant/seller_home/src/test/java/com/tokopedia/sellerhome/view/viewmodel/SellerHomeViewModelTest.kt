@@ -31,6 +31,7 @@ import com.tokopedia.sellerhomecommon.domain.usecase.GetRecommendationDataUseCas
 import com.tokopedia.sellerhomecommon.domain.usecase.GetSellerHomeTickerUseCase
 import com.tokopedia.sellerhomecommon.domain.usecase.GetTableDataUseCase
 import com.tokopedia.sellerhomecommon.domain.usecase.GetUnificationDataUseCase
+import com.tokopedia.sellerhomecommon.domain.usecase.SubmitWidgetDismissUseCase
 import com.tokopedia.sellerhomecommon.presentation.model.AnnouncementDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.AnnouncementWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.BarChartDataUiModel
@@ -58,6 +59,7 @@ import com.tokopedia.sellerhomecommon.presentation.model.ProgressWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.RecommendationDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.RecommendationWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.SectionWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.SubmitWidgetDismissUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.TableDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.TablePageUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.TableWidgetUiModel
@@ -65,13 +67,16 @@ import com.tokopedia.sellerhomecommon.presentation.model.TickerItemUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.TooltipUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.UnificationDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.UnificationWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.WidgetDismissalResultUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.WidgetEmptyStateUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.WidgetFilterUiModel
+import com.tokopedia.sellerhomecommon.sse.SellerHomeWidgetSSE
 import com.tokopedia.shop.common.data.model.ShopQuestGeneralTracker
 import com.tokopedia.shop.common.data.model.ShopQuestGeneralTrackerInput
 import com.tokopedia.shop.common.domain.interactor.ShopQuestGeneralTrackerUseCase
 import com.tokopedia.unit.test.ext.verifyErrorEquals
 import com.tokopedia.unit.test.ext.verifySuccessEquals
+import com.tokopedia.unit.test.ext.verifyValueEquals
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -84,6 +89,9 @@ import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.runBlocking
 import org.junit.Before
 import org.junit.Rule
@@ -176,7 +184,13 @@ class SellerHomeViewModelTest {
     lateinit var shopQuestGeneralTrackerUseCase: ShopQuestGeneralTrackerUseCase
 
     @RelaxedMockK
+    lateinit var submitWidgetDismissUseCase: SubmitWidgetDismissUseCase
+
+    @RelaxedMockK
     lateinit var remoteConfig: SellerHomeRemoteConfig
+
+    @RelaxedMockK
+    lateinit var widgetSse: SellerHomeWidgetSSE
 
     @get:Rule
     val rule = InstantTaskExecutorRule()
@@ -233,7 +247,9 @@ class SellerHomeViewModelTest {
             { getUnificationDataUseCase },
             { getShopInfoByIdUseCase },
             { shopQuestGeneralTrackerUseCase },
+            { submitWidgetDismissUseCase },
             { sellerHomeLayoutHelper },
+            { widgetSse },
             remoteConfig,
             coroutineTestRule.dispatchers
         )
@@ -397,6 +413,7 @@ class SellerHomeViewModelTest {
         }
 
         Assertions.assertEquals(Success(layoutList), viewModel.widgetLayout.value)
+        Assertions.assertEquals(layoutList, viewModel.rawWidgetList)
     }
 
     @Test
@@ -498,6 +515,7 @@ class SellerHomeViewModelTest {
         assert((viewModel.widgetLayout.value as? Success)?.data?.all { actualWidget ->
             successLayoutList.find { it.data == actualWidget.data } != null
         } == true)
+        Assertions.assertEquals(layoutList, viewModel.rawWidgetList)
     }
 
     @Test
@@ -593,6 +611,7 @@ class SellerHomeViewModelTest {
             assert((viewModel.widgetLayout.value as? Success)?.data?.all { actualWidget ->
                 successLayoutList.find { it.data == actualWidget.data } != null
             } == true)
+            Assertions.assertEquals(layoutList, viewModel.rawWidgetList)
         }
     }
 
@@ -649,6 +668,7 @@ class SellerHomeViewModelTest {
         coVerify(exactly = 1) {
             getLayoutUseCase.executeOnBackground()
         }
+        Assertions.assertEquals(layoutList, viewModel.rawWidgetList)
     }
 
     @Test
@@ -1439,6 +1459,52 @@ class SellerHomeViewModelTest {
 
         val expectedResult = Fail(networkException)
         viewModel.postListWidgetData.verifyErrorEquals(expectedResult)
+    }
+
+    @Test
+    fun `when submit feedback dismissal widget should return success result`() {
+        coroutineTestRule.runBlockingTest {
+            val param = SubmitWidgetDismissUiModel()
+            val mockResult = WidgetDismissalResultUiModel()
+
+            coEvery {
+                submitWidgetDismissUseCase.execute(any())
+            } returns mockResult
+
+            viewModel.submitWidgetDismissal(param)
+
+            coVerify {
+                submitWidgetDismissUseCase.execute(param)
+            }
+
+            assert(param.action == mockResult.action)
+
+            val expected = Success(mockResult)
+            viewModel.submitWidgetDismissal.verifySuccessEquals(expected)
+        }
+    }
+
+    @Test
+    fun `when submit feedback dismissal widget should return error result`() {
+        coroutineTestRule.runBlockingTest {
+            val param = SubmitWidgetDismissUiModel(
+                action = SubmitWidgetDismissUiModel.Action.DISMISS
+            )
+            val exception = MessageErrorException()
+
+            coEvery {
+                submitWidgetDismissUseCase.execute(any())
+            } throws exception
+
+            viewModel.submitWidgetDismissal(param)
+
+            coVerify {
+                submitWidgetDismissUseCase.execute(param)
+            }
+
+            val expectedResult = Fail(exception)
+            viewModel.submitWidgetDismissal.verifyValueEquals(expectedResult)
+        }
     }
 
     @Test
@@ -2964,6 +3030,59 @@ class SellerHomeViewModelTest {
         assert((viewModel.widgetLayout.value as? Success)?.data?.any { it.id == DATA_KEY_ANNOUNCEMENT } == false)
     }
 
+    @Test
+    fun `on stop sse`() {
+        viewModel.stopSSE()
+        verify { widgetSse.closeSse() }
+    }
+
+    @Test
+    fun `on start SSE when realTimeDataKeys is not empty then set card widgets data liveData`() {
+        coroutineTestRule.runBlockingTest {
+            val page = "home"
+            val param = listOf("cardWidget")
+            val cardData = CardDataUiModel()
+            val mockResponse = listOf(cardData)
+            every { widgetSse.listen() } returns flow { flowOf(mockResponse) }
+
+            viewModel.startSse(param)
+
+            verify { widgetSse.connect(page, param) }
+            coVerify { widgetSse.listen() }
+
+            widgetSse.listen().collect {
+                viewModel.cardWidgetData.verifySuccessEquals(Success(listOf(cardData)))
+            }
+        }
+    }
+
+    @Test
+    fun `on start SSE when realTimeDataKeys is not empty then set milestone widgets data liveData`() {
+        coroutineTestRule.runBlockingTest {
+            val page = "home"
+            val param = listOf("milestoneWidget")
+            val milestoneData = MilestoneDataUiModel()
+            val mockResponse = listOf(milestoneData)
+            every { widgetSse.listen() } returns flow { flowOf(mockResponse) }
+
+            viewModel.startSse(param)
+
+            verify { widgetSse.connect(page, param) }
+            coVerify { widgetSse.listen() }
+            widgetSse.listen().collect {
+                viewModel.milestoneWidgetData.verifySuccessEquals(Success(listOf(milestoneData)))
+            }
+        }
+    }
+
+    @Test
+    fun `on start SSE when realTimeDataKeys is empty`() {
+        val param = emptyList<String>()
+        viewModel.startSse(param)
+        verify(inverse = true) { widgetSse.connect(anyString(), param) }
+        verify(inverse = true) { widgetSse.listen() }
+    }
+
     private fun provideCompleteSuccessWidgetLayout(): List<BaseWidgetUiModel<*>> {
         return listOf(
             CardWidgetUiModel(
@@ -3171,7 +3290,7 @@ class SellerHomeViewModelTest {
                 isFromCache = false,
                 isNeedToBeRemoved = false,
                 emptyState = WidgetEmptyStateUiModel("", "", "", "", ""),
-                isComparePeriodeOnly = false
+                isComparePeriodOnly = false
             ),
             RecommendationWidgetUiModel(
                 id = DATA_KEY_RECOMMENDATION,

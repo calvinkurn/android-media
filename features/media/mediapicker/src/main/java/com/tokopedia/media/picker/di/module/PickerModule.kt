@@ -68,4 +68,12 @@ object PickerModule {
         return CreateMediaRepositoryImpl()
     }
 
+    @Provides
+    @ActivityScope
+    fun provideBitmapConverterRepository(
+        @ApplicationContext context: Context
+    ): BitmapConverterRepository {
+        return BitmapConverterRepositoryImpl(context)
+    }
+
 }

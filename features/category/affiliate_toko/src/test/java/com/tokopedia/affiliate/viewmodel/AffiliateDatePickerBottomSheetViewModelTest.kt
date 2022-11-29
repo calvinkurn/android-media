@@ -2,11 +2,8 @@ package com.tokopedia.affiliate.viewmodel
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.google.gson.Gson
-import com.tokopedia.affiliate.PAGE_ZERO
 import com.tokopedia.affiliate.model.response.*
 import com.tokopedia.affiliate.usecase.*
-import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -20,7 +17,7 @@ import org.junit.Rule
 import org.junit.Test
 
 @ExperimentalCoroutinesApi
-class AffiliateDatePickerBottomSheetViewModelTest{
+class AffiliateDatePickerBottomSheetViewModelTest {
     private val affiliateUserPerformanceUseCase: AffiliateUserPerformanceUseCase = mockk()
     private var aff = spyk(AffiliateDatePickerBottomSheetViewModel(affiliateUserPerformanceUseCase))
 
@@ -42,14 +39,16 @@ class AffiliateDatePickerBottomSheetViewModelTest{
 
     @Test
     fun getAffiliateFilterDataTest() {
-        var ticker : AffiliateDateFilterResponse.Data.Ticker? = null
-        var list :ArrayList<AffiliateDateFilterResponse.Data.GetAffiliateDateFilter>? =  null
+        var ticker: AffiliateDateFilterResponse.Data.Ticker? = null
+        var list: ArrayList<AffiliateDateFilterResponse.Data.GetAffiliateDateFilter>? = null
         val filterResponse = AffiliateDateFilterResponse(null)
-        coEvery { affiliateUserPerformanceUseCase.getAffiliateFilter() }returns filterResponse
+        coEvery { affiliateUserPerformanceUseCase.getAffiliateFilter() } returns filterResponse
         aff.getAffiliateFilterData()
-        ticker = AffiliateDateFilterResponse.Data.Ticker("info","")
-        list = arrayListOf(AffiliateDateFilterResponse.Data.GetAffiliateDateFilter("","30 Hari Terakhir","LastThirtyDays","30"),
-            AffiliateDateFilterResponse.Data.GetAffiliateDateFilter("","7 Hari Terakhir","LastSevenDays","7"))
+        ticker = AffiliateDateFilterResponse.Data.Ticker("info", "")
+        list = arrayListOf(
+            AffiliateDateFilterResponse.Data.GetAffiliateDateFilter("", "", "30 Hari Terakhir", "LastThirtyDays", "30"),
+            AffiliateDateFilterResponse.Data.GetAffiliateDateFilter("", "", "7 Hari Terakhir", "LastSevenDays", "7")
+        )
         filterResponse.data = AffiliateDateFilterResponse.Data(null, null)
         aff.getAffiliateFilterData()
         filterResponse.data?.ticker = arrayListOf()
@@ -62,17 +61,19 @@ class AffiliateDatePickerBottomSheetViewModelTest{
         aff.getAffiliateFilterData()
         assertEquals(Gson().toJson(aff.getAffiliateFilterItems().value), Gson().toJson(response))
         assertEquals(Gson().toJson(aff.getItemList()), Gson().toJson(response))
-        assertEquals(aff.getTickerInfo().value,ticker.tickerDescription)
-        assertEquals(aff.getShimmerVisibility().value,false)
+        assertEquals(aff.getTickerInfo().value, ticker.tickerDescription)
+        assertEquals(aff.getShimmerVisibility().value, false)
     }
 
     @Test
     fun updateItemTest() {
-       val ticker = AffiliateDateFilterResponse.Data.Ticker("info","")
-       val list = arrayListOf(AffiliateDateFilterResponse.Data.GetAffiliateDateFilter("","30 Hari Terakhir","LastThirtyDays","30"),
-            AffiliateDateFilterResponse.Data.GetAffiliateDateFilter("","7 Hari Terakhir","LastSevenDays","7"))
+        val ticker = AffiliateDateFilterResponse.Data.Ticker("info", "")
+        val list = arrayListOf(
+            AffiliateDateFilterResponse.Data.GetAffiliateDateFilter("", "", "30 Hari Terakhir", "LastThirtyDays", "30"),
+            AffiliateDateFilterResponse.Data.GetAffiliateDateFilter("", "", "7 Hari Terakhir", "LastSevenDays", "7")
+        )
         val filterResponse = AffiliateDateFilterResponse(AffiliateDateFilterResponse.Data(list, arrayListOf(ticker)))
-        coEvery { affiliateUserPerformanceUseCase.getAffiliateFilter() }returns filterResponse
+        coEvery { affiliateUserPerformanceUseCase.getAffiliateFilter() } returns filterResponse
         aff.getAffiliateFilterData()
         val response = aff.convertFilterToVisitable(filterResponse.data?.getAffiliateDateFilter)
         assertEquals(Gson().toJson(aff.getItemList()), Gson().toJson(response))
@@ -86,6 +87,5 @@ class AffiliateDatePickerBottomSheetViewModelTest{
         aff.getAffiliateFilterData()
         assertEquals(aff.getShimmerVisibility().value, false)
         assertEquals(aff.getError().value, true)
-
     }
 }

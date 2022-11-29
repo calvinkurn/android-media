@@ -188,9 +188,6 @@ data class Grid(
     @SerializedName("isTopads")
     val isTopads: Boolean = false,
     @Expose
-    @SerializedName("freeOngkir")
-    val freeOngkir: FreeOngkir = FreeOngkir(),
-    @Expose
     @SerializedName("productViewCountFormatted")
     val productViewCountFormatted: String = "",
     @Expose
@@ -222,7 +219,10 @@ data class Grid(
     val textColor: String = "",
     @Expose
     @SerializedName("param")
-    val param: String = ""
+    val param: String = "",
+    @Expose
+    @SerializedName("categoryBreadcrumbs")
+    val categoryBreadcrumbs: String = ""
 )
 
 data class Benefit(
@@ -322,16 +322,6 @@ data class Shop(
     @SerializedName("shopID")
     val shopId: String = ""
 )
-
-data class FreeOngkir(
-    @SerializedName("isActive")
-    @Expose
-    val isActive: Boolean = false,
-    @SerializedName("imageUrl")
-    @Expose
-    val imageUrl: String = ""
-)
-
 data class LabelGroup(
     @SerializedName("title")
     @Expose

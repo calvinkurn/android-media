@@ -1,5 +1,6 @@
 package com.tokopedia.loginregister.login.behaviour.base
 
+import android.text.InputType
 import androidx.test.espresso.Espresso
 import androidx.test.espresso.action.ViewActions
 import androidx.test.espresso.assertion.ViewAssertions
@@ -17,15 +18,20 @@ open class LoginRegisterBase {
     }
 
     fun clearEmailInput() {
-        val viewInteraction = Espresso.onView(ViewMatchers.withId(R.id.input_email_phone))
+        val viewInteraction = Espresso.onView(ViewMatchers.withInputType(InputType.TYPE_TEXT_FLAG_AUTO_COMPLETE))
             .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
         viewInteraction.perform(ViewActions.clearText())
     }
 
     fun inputEmailOrPhone(value: String) {
-        val viewInteraction = Espresso.onView(ViewMatchers.withId(R.id.input_email_phone))
+        val viewInteraction = Espresso.onView(ViewMatchers.withInputType(InputType.TYPE_TEXT_FLAG_AUTO_COMPLETE))
             .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
         viewInteraction.perform(ViewActions.typeText(value))
+    }
+
+    fun shouldBeDisabledWithInputType(inputType: Int) {
+        Espresso.onView(ViewMatchers.withInputType(inputType))
+            .check(ViewAssertions.matches(CoreMatchers.not(ViewMatchers.isEnabled())))
     }
 
     fun shouldBeDisabled(id: Int) {
@@ -43,11 +49,25 @@ open class LoginRegisterBase {
             .check(ViewAssertions.matches(CoreMatchers.not(ViewMatchers.isDisplayed())))
     }
 
+    fun isDisplayingGivenText(givenText: String) {
+        Espresso.onView(ViewMatchers.withText(givenText))
+            .check(ViewAssertions.matches(ViewMatchers.withText(givenText))).check(
+                ViewAssertions.matches(ViewMatchers.isDisplayed())
+            )
+    }
+
     fun isDisplayingGivenText(id: Int, givenText: String) {
         Espresso.onView(ViewMatchers.withId(id))
             .check(ViewAssertions.matches(ViewMatchers.withText(givenText))).check(
             ViewAssertions.matches(ViewMatchers.isDisplayed())
         )
+    }
+
+    fun isDisplayingSubGivenText(givenText: String) {
+        Espresso.onView(ViewMatchers.withText(givenText))
+            .check(ViewAssertions.matches(ViewMatchers.withSubstring(givenText))).check(
+                ViewAssertions.matches(ViewMatchers.isDisplayed())
+            )
     }
 
     fun isDisplayingSubGivenText(id: Int, givenText: String) {
@@ -71,7 +91,7 @@ open class LoginRegisterBase {
     }
 
     fun deleteEmailOrPhoneInput() {
-        val viewInteraction = Espresso.onView(ViewMatchers.withId(R.id.input_email_phone))
+        val viewInteraction = Espresso.onView(ViewMatchers.withInputType(InputType.TYPE_TEXT_FLAG_AUTO_COMPLETE))
             .check(ViewAssertions.matches(ViewMatchers.isDisplayed()))
         viewInteraction.perform(ViewActions.clearText())
     }

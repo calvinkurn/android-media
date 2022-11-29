@@ -1,8 +1,11 @@
 package com.tokopedia.shop.home.domain
 
 import com.tokopedia.graphql.coroutines.domain.interactor.MultiRequestGraphqlUseCase
-import com.tokopedia.graphql.data.model.*
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.graphql.data.model.CacheType
+import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
+import com.tokopedia.graphql.data.model.GraphqlError
+import com.tokopedia.graphql.data.model.GraphqlRequest
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.shop.home.data.model.GetMerchantCampaignTNCRequest
 import com.tokopedia.shop.home.data.model.ShopHomeCampaignNplTncModel
@@ -10,7 +13,7 @@ import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
 class GetShopHomeMerchantCampaignTncUseCase @Inject constructor(
-        private val gqlUseCase: MultiRequestGraphqlUseCase
+    private val gqlUseCase: MultiRequestGraphqlUseCase
 ) : UseCase<ShopHomeCampaignNplTncModel>() {
 
     companion object {
@@ -19,14 +22,14 @@ class GetShopHomeMerchantCampaignTncUseCase @Inject constructor(
 
         @JvmStatic
         fun createParams(
-                campaignId: String = ""
-        ):Map<String, Any>{
+            campaignId: String = ""
+        ): Map<String, Any> {
             val paramGetCampaignTnc = GetMerchantCampaignTNCRequest(
-                campaignId.toIntOrZero(),
+                campaignId.toLongOrZero(),
                 BUYER
             )
             return mapOf<String, Any>(
-                    KEY_PARAM to paramGetCampaignTnc
+                KEY_PARAM to paramGetCampaignTnc
             )
         }
     }
@@ -48,8 +51,10 @@ class GetShopHomeMerchantCampaignTncUseCase @Inject constructor(
 
     override suspend fun executeOnBackground(): ShopHomeCampaignNplTncModel {
         gqlUseCase.clearRequest()
-        gqlUseCase.setCacheStrategy(GraphqlCacheStrategy
-                .Builder(CacheType.CLOUD_THEN_CACHE).build())
+        gqlUseCase.setCacheStrategy(
+            GraphqlCacheStrategy
+                .Builder(CacheType.CLOUD_THEN_CACHE).build()
+        )
         val gqlRequest = GraphqlRequest(query, ShopHomeCampaignNplTncModel.Response::class.java, params)
         gqlUseCase.addRequest(gqlRequest)
         val gqlResponse = gqlUseCase.executeOnBackground()
@@ -57,7 +62,7 @@ class GetShopHomeMerchantCampaignTncUseCase @Inject constructor(
         val error = gqlResponse.getError(GraphqlError::class.java)
         if (error == null || error.isEmpty()) {
             return gqlResponse.getData<ShopHomeCampaignNplTncModel.Response>(ShopHomeCampaignNplTncModel.Response::class.java)
-                    .campaignTnc
+                .campaignTnc
         } else {
             throw MessageErrorException(error.joinToString(", ") { it.message })
         }
@@ -66,5 +71,4 @@ class GetShopHomeMerchantCampaignTncUseCase @Inject constructor(
     fun clearCache() {
         gqlUseCase.clearCache()
     }
-
 }

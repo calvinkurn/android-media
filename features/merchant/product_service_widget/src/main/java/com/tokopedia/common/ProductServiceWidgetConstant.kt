@@ -1,9 +1,14 @@
 package com.tokopedia.common
 
+import com.tokopedia.applink.ApplinkConst
+
 object ProductServiceWidgetConstant {
     const val SQUAD_VALUE = "android_minion_ken"
     const val USECASE_BUNDLE_VALUE = "product_bundle_page"
     const val USECASE_GIFTING_VALUE = "product_gifting_page"
+    const val PRODUCT_BUNDLE_APPLINK_WITH_PARAM = ApplinkConst.PRODUCT_BUNDLE + "?bundleId={bundle_id}&source={page_source}"
+    const val BUNDLE_ID_DEFAULT_VALUE = "0"
+    const val PRODUCT_BUNDLE_STATUS_ACTIVE = "1"
 
     object TrackerId {
         const val CLICK_BUNDLE_OPTIONS = "20007"

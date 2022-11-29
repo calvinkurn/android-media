@@ -24,7 +24,7 @@ class ProductLineItemDecoration(
 
     private val offset2 = context.resources.getDimensionPixelOffset(unifyR.dimen.unify_space_2)
     private val offset4 = context.resources.getDimensionPixelOffset(unifyR.dimen.unify_space_4)
-    private val offset10 = context.resources.getDimensionPixelOffset(playCommonR.dimen.play_dp_10)
+    private val offset8 = context.resources.getDimensionPixelOffset(unifyR.dimen.unify_space_8)
     private val offset14 = context.resources.getDimensionPixelOffset(playCommonR.dimen.play_dp_14)
     private val offset16 = context.resources.getDimensionPixelOffset(unifyR.dimen.unify_space_16)
 
@@ -125,7 +125,7 @@ class ProductLineItemDecoration(
         position: Int,
     ) {
         //the previous item of a section is always a product
-        outRect.top = if (position == 0) offset16 else offset14
+        outRect.top = if (position == 0) 0 else offset14
         outRect.left = offset16
         outRect.right = offset16
     }
@@ -136,7 +136,7 @@ class ProductLineItemDecoration(
         position: Int,
     ) {
         //the previous item of a section is always a product
-        if (position == 0) outRect.top = offset16
+        if (position == 0) outRect.top = offset8
         else if (position > 0) {
             outRect.top = if (adapter.getItem(position - 1) is ProductSheetAdapter.Item.Section) {
                 offset2
@@ -145,8 +145,8 @@ class ProductLineItemDecoration(
 
         if (position == adapter.itemCount - 1) outRect.bottom = offset4
 
-        outRect.left = offset10
-        outRect.right = offset10
+        outRect.left = offset14
+        outRect.right = offset14
     }
 
     private fun setColorBackground(

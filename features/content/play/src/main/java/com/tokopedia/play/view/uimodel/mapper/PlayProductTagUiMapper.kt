@@ -58,7 +58,7 @@ class PlayProductTagUiMapper @Inject constructor() {
             shopId = input.shopId,
             imageUrl = input.image,
             title = input.name,
-            price = if (input.discount != 0) {
+            price = if (input.discount != 0L) {
                 DiscountedPrice(
                     originalPrice = input.originalPriceFormatted,
                     discountedPrice = input.priceFormatted,

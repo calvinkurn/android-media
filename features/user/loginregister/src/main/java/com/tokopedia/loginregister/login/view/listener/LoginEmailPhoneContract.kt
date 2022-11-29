@@ -32,10 +32,6 @@ interface LoginEmailPhoneContract {
 
         fun onSuccessReloginAfterSQ(loginTokenPojo: LoginTokenPojo)
 
-        fun showLoadingDiscover()
-
-        fun dismissLoadingDiscover()
-
         fun onErrorDiscoverLogin(throwable: Throwable)
 
         fun onSuccessDiscoverLogin(discoverData: DiscoverData)
@@ -119,5 +115,7 @@ interface LoginEmailPhoneContract {
         fun showLocationAdminPopUp()
 
         fun showGetAdminTypeError(throwable: Throwable)
+
+        fun onLocationAdminRedirection()
     }
 }

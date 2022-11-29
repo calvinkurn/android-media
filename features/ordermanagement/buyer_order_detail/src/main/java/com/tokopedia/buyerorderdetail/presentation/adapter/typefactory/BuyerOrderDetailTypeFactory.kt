@@ -12,6 +12,7 @@ import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.CourierDri
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.CourierInfoViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.DigitalRecommendationViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.DriverTippingInfoViewHolder
+import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.OrderInsuranceViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.OrderResolutionViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.OrderStatusHeaderViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.OrderStatusInfoViewHolder
@@ -20,6 +21,7 @@ import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.PaymentGra
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.PaymentInfoItemViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.PgRecommendationViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.PlainHeaderViewHolder
+import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.PlatformFeeInfoViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.ProductBundlingViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.ProductListHeaderViewHolder
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.ProductViewHolder
@@ -29,11 +31,13 @@ import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.ThinDivide
 import com.tokopedia.buyerorderdetail.presentation.adapter.viewholder.TickerViewHolder
 import com.tokopedia.buyerorderdetail.presentation.model.AddonsListUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.DigitalRecommendationUiModel
-import com.tokopedia.buyerorderdetail.presentation.model.OrderResolutionUIModel
+import com.tokopedia.buyerorderdetail.presentation.model.OrderInsuranceUiModel
+import com.tokopedia.buyerorderdetail.presentation.model.OrderResolutionUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.OrderStatusUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.PGRecommendationWidgetUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.PaymentInfoUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.PlainHeaderUiModel
+import com.tokopedia.buyerorderdetail.presentation.model.PlatformFeeInfoUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.ShipmentInfoUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.SimpleCopyableKeyValueUiModel
@@ -52,7 +56,8 @@ open class BuyerOrderDetailTypeFactory(
     private val courierInfoViewHolderListener: CourierInfoViewHolder.CourierInfoViewHolderListener,
     protected val productViewListener: PartialProductItemViewHolder.ProductViewListener,
     protected val navigator: BuyerOrderDetailNavigator,
-    protected val buyerOrderDetailBindRecomWidgetListener: PgRecommendationViewHolder.BuyerOrderDetailBindRecomWidgetListener
+    protected val buyerOrderDetailBindRecomWidgetListener: PgRecommendationViewHolder.BuyerOrderDetailBindRecomWidgetListener,
+    protected val orderResolutionListener: OrderResolutionViewHolder.OrderResolutionListener
 ) : BaseAdapterTypeFactory() {
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<out Visitable<*>> {
@@ -62,7 +67,8 @@ open class BuyerOrderDetailTypeFactory(
             CourierDriverInfoViewHolder.LAYOUT -> CourierDriverInfoViewHolder(parent, navigator)
             CourierInfoViewHolder.LAYOUT -> CourierInfoViewHolder(
                 parent,
-                courierInfoViewHolderListener
+                courierInfoViewHolderListener,
+                navigator
             )
             OrderStatusHeaderViewHolder.LAYOUT -> OrderStatusHeaderViewHolder(parent, navigator)
             OrderStatusInfoViewHolder.LAYOUT -> OrderStatusInfoViewHolder(parent, navigator)
@@ -91,7 +97,9 @@ open class BuyerOrderDetailTypeFactory(
             )
             DriverTippingInfoViewHolder.LAYOUT -> DriverTippingInfoViewHolder(parent, navigator)
             AddonsViewHolder.LAYOUT -> AddonsViewHolder(parent)
-            OrderResolutionViewHolder.LAYOUT -> OrderResolutionViewHolder(parent, navigator)
+            OrderResolutionViewHolder.LAYOUT -> OrderResolutionViewHolder(parent, navigator, orderResolutionListener)
+            PlatformFeeInfoViewHolder.LAYOUT -> PlatformFeeInfoViewHolder(parent, navigator)
+            OrderInsuranceViewHolder.LAYOUT -> OrderInsuranceViewHolder(parent, navigator)
             else -> super.createViewHolder(parent, type)
         }
     }
@@ -174,7 +182,15 @@ open class BuyerOrderDetailTypeFactory(
         return AddonsViewHolder.LAYOUT
     }
 
-    fun type(orderResolutionUIModel: OrderResolutionUIModel): Int {
+    fun type(orderResolutionUIModel: OrderResolutionUiModel): Int {
         return OrderResolutionViewHolder.LAYOUT
+    }
+
+    fun type(platformFeeInfoUiModel: PlatformFeeInfoUiModel): Int {
+        return PlatformFeeInfoViewHolder.LAYOUT
+    }
+
+    fun type(orderInsuranceUiModel: OrderInsuranceUiModel): Int {
+        return OrderInsuranceViewHolder.LAYOUT
     }
 }

@@ -58,8 +58,10 @@ const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_CUE_WIDGET_CATEGORY = "tracker/home
 const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_CAMPAIGN_WIDGET = "tracker/home/campaign_widget.json"
 const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_VPS_WIDGET = "tracker/home/vps_widget.json"
 const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_MISSION_WIDGET = "tracker/home/mission_widget.json"
+const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_LEGO_4_PRODUCT = "tracker/home/lego_4_product.json"
 const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_BALANCE_WIDGET_GOPAY_LINKED = "tracker/home/balance_widget.json"
 const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_BALANCE_WIDGET_GOPAY_NOT_LINKED = "tracker/home/balance_widget_gopay_not_linked.json"
+const val ANALYTIC_VALIDATOR_QUERY_FILE_NAME_DYNAMIC_ICON = "tracker/home/home_icon.json"
 
 private const val CHOOSE_ADDRESS_PREFERENCE_NAME = "coahmark_choose_address"
 private const val CHOOSE_ADDRESS_EXTRA_IS_COACHMARK = "EXTRA_IS_COACHMARK"
@@ -270,6 +272,11 @@ fun actionOnMissionWidget(viewHolder: RecyclerView.ViewHolder) {
     clickOnEachItemRecyclerView(viewHolder.itemView, R.id.home_component_mission_widget_rcv, 0)
 }
 
+fun actionOnLego4Product(viewHolder: RecyclerView.ViewHolder, itemPosition: Int) {
+    clickLihatSemuaButtonIfAvailable(viewHolder.itemView, itemPosition, -200)
+    clickOnEachItemRecyclerView(viewHolder.itemView, R.id.home_component_lego_4_product_rv, 0)
+}
+
 fun clickOnEachItemRecyclerViewMerchantVoucher(view: View, recyclerViewId: Int, fixedItemPositionLimit: Int) {
     val childRecyclerView: RecyclerView = view.findViewById(recyclerViewId)
 
@@ -450,13 +457,13 @@ private fun clickHomeBannerItemAndViewAll(viewHolder: RecyclerView.ViewHolder) {
     }
 }
 
-private fun clickLihatSemuaButtonIfAvailable(view: View, itemPos: Int) {
+private fun clickLihatSemuaButtonIfAvailable(view: View, itemPos: Int, scrollVerticalBy: Int = 0) {
     val childView = view
     val seeAllButton = childView.findViewById<View>(R.id.see_all_button)
     if (seeAllButton.visibility == View.VISIBLE) {
         try {
             Espresso.onView(ViewMatchers.withId(R.id.home_fragment_recycler_view))
-                    .perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(itemPos, clickOnViewChild(R.id.see_all_button)))
+                    .perform(actionOnItemAtPosition<RecyclerView.ViewHolder>(itemPos, clickOnViewChild(R.id.see_all_button, scrollVerticalBy)))
         } catch (e: PerformException) {
             e.printStackTrace()
         }
@@ -516,6 +523,10 @@ fun actionOnBalanceWidget(viewHolder: RecyclerView.ViewHolder) {
     clickOnEachItemRecyclerView(viewHolder.itemView, R.id.rv_balance_widget_data, 0)
 }
 
+fun actionOnDynamicIcon(viewHolder: RecyclerView.ViewHolder) {
+    clickOnEachItemRecyclerView(viewHolder.itemView, R.id.dynamic_icon_recycler_view, 0)
+}
+
 //==================================== end of item action ======================================
 
 
@@ -536,13 +547,17 @@ private fun <T> firstView(matcher: Matcher<T>): Matcher<T>? {
     }
 }
 
-private fun clickOnViewChild(viewId: Int) = object: ViewAction {
+private fun clickOnViewChild(viewId: Int, scrollVerticalBy: Int = 0) = object: ViewAction {
     override fun getDescription(): String  = ""
 
     override fun getConstraints() = null
 
-    override fun perform(uiController: UiController, view: View)
-            = ViewActions.click().perform(uiController, view.findViewById<View>(viewId))
+    override fun perform(uiController: UiController, view: View) {
+        if(scrollVerticalBy != 0) {
+            view.scrollBy(0, scrollVerticalBy)
+        }
+        ViewActions.click().perform(uiController, view.findViewById<View>(viewId))
+    }
 }
 
 private fun selectTabAtPosition(tabIndex: Int): ViewAction {

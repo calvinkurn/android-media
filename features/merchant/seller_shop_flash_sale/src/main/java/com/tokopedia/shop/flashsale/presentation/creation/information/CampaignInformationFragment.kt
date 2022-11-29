@@ -436,7 +436,6 @@ class CampaignInformationFragment : BaseDaggerFragment() {
             }
 
             switchTeaser.setOnCheckedChangeListener { _, isChecked ->
-                viewModel.setShowTeaser(isChecked)
                 handleSwitchTeaser(isChecked)
             }
 
@@ -854,10 +853,10 @@ class CampaignInformationFragment : BaseDaggerFragment() {
         val selectedVpsPackage = viewModel.findSelectedVpsPackage(
             campaign.packageInfo.packageId,
             campaignWithSelectedVpsPackage.vpsPackages
-        )
+        ) ?: return
 
         val updatedVpsPackage = viewModel.findSuggestedVpsPackage(now, selectedVpsPackage, campaignWithSelectedVpsPackage.vpsPackages) ?: return
-        val isSelectedVpsPackageExpired = now.after(selectedVpsPackage?.packageEndTime)
+        val isSelectedVpsPackageExpired = now.after(selectedVpsPackage.packageEndTime)
 
         val campaignStartDate = if (isSelectedVpsPackageExpired) {
             now.advanceHourBy(TWO_HOURS)
@@ -904,7 +903,6 @@ class CampaignInformationFragment : BaseDaggerFragment() {
 
         viewModel.setSelectedStartDate(campaignStartDate)
         viewModel.setSelectedEndDate(campaignEndDate)
-        viewModel.setShowTeaser(campaign.useUpcomingWidget)
         viewModel.setSelectedColor(campaign.gradientColor)
         viewModel.setPaymentType(campaign.paymentType)
         viewModel.storeVpsPackage(campaignWithSelectedVpsPackage.vpsPackages)

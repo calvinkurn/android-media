@@ -5,7 +5,7 @@
     android:id="@+id/layout_item_ticket"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:background="@color/contact_us_unread_ticket_bg_color"
+    android:background="@color/contact_us_dms_detail_background"
     android:clickable="true"
     android:focusable="true"
     android:longClickable="true">
@@ -17,17 +17,15 @@
         app:typographyType="small"
         app:typographyWeight="bold"
         android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
         android:layout_marginTop="12dp"
         android:gravity="center"
         android:paddingLeft="4dp"
         android:paddingTop="4dp"
         android:paddingRight="4dp"
         android:paddingBottom="4dp"
-        android:textColor="@color/contact_us_in_process"
+        android:textColor="@color/Unify_RN500"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:background="@drawable/rounded_rect_yellow"
         tools:text="Dalam Proses" />
 
 
@@ -44,7 +42,6 @@
         android:layout_width="5dp"
         android:layout_height="5dp"
         android:layout_marginStart="12dp"
-        android:layout_marginLeft="12dp"
         android:background="@drawable/grey_rounded_dot"
         app:layout_constraintBottom_toBottomOf="@id/tv_ticket_status"
         app:layout_constraintStart_toEndOf="@id/tv_ticket_status"
@@ -55,19 +52,18 @@
         android:layout_width="16dp"
         android:layout_height="16dp"
         android:layout_marginStart="12dp"
-        android:layout_marginLeft="12dp"
         app:srcCompat="@drawable/priority_label_image"
         app:layout_constraintBottom_toBottomOf="@+id/view"
         app:layout_constraintStart_toEndOf="@+id/view"
-        app:layout_constraintTop_toTopOf="@+id/view" />
+        app:layout_constraintTop_toTopOf="@+id/view"
+        android:contentDescription="@string/contact_us_priority_image"/>
 
     <View
         android:id="@+id/verticalView"
-        android:layout_width="@dimen/dp_1"
+        android:layout_width="1dp"
         android:layout_height="16dp"
         android:layout_marginStart="4dp"
-        android:layout_marginLeft="4dp"
-        android:background="@color/grey_300"
+        android:background="@color/Unify_NN300"
         app:layout_constraintBottom_toBottomOf="@id/priorityImage"
         app:layout_constraintLeft_toRightOf="@id/priorityImage"
         app:layout_constraintTop_toTopOf="@id/priorityImage" />
@@ -79,9 +75,8 @@
         app:typographyType="small"
         app:typographyWeight="bold"
         android:layout_marginStart="4dp"
-        android:layout_marginLeft="4dp"
         android:gravity="center"
-        android:textColor="@color/contact_us_priority_label_color"
+        android:textColor="@color/contact_us_dms_priority_color"
         app:layout_constraintBottom_toBottomOf="@id/verticalView"
         app:layout_constraintStart_toEndOf="@id/verticalView"
         app:layout_constraintTop_toTopOf="@id/verticalView"
@@ -99,7 +94,7 @@
         android:layout_marginRight="16dp"
         android:ellipsize="marquee"
         android:singleLine="true"
-        android:textColor="@color/contact_us_grey_n_700_96"
+        android:textColor="@color/contact_us_dms_detail_header_text"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tv_ticket_status"
@@ -111,9 +106,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
-        android:layout_marginLeft="16dp"
         android:layout_marginBottom="12dp"
-        android:textColor="@color/contact_us_grey_n_700_44"
+        android:textColor="@color/contact_us_dms_detail_hint_bg"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_ticket_title"
@@ -126,11 +120,20 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
-        android:layout_marginRight="16dp"
-        android:textColor="@color/contact_us_grey_n_700_44"
+        android:textColor="@color/contact_us_dms_detail_date"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:typographyType="body_3"
         tools:text="29 Mar" />
+
+    <View
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:id="@+id/view_end"
+        android:background="@color/Unify_NN300"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintLeft_toLeftOf="@id/tv_ticket_title"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintStart_toStartOf="@id/tv_ticket_title"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

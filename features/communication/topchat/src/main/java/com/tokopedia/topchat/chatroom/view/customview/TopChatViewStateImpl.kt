@@ -13,6 +13,7 @@ import androidx.collection.ArrayMap
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.chat_common.data.*
 import com.tokopedia.chat_common.domain.pojo.attachmentmenu.AttachmentMenu
 import com.tokopedia.chat_common.util.ChatTimeConverter
@@ -32,6 +33,7 @@ import com.tokopedia.topchat.chatroom.view.adapter.viewholder.factory.Attachment
 import com.tokopedia.topchat.chatroom.view.custom.ChatMenuStickerView
 import com.tokopedia.topchat.chatroom.view.custom.ChatMenuView
 import com.tokopedia.topchat.chatroom.view.custom.ChatTextAreaTabLayout
+import com.tokopedia.topchat.chatroom.view.custom.ChatTextAreaTabLayoutListener
 import com.tokopedia.topchat.chatroom.view.listener.HeaderMenuListener
 import com.tokopedia.topchat.chatroom.view.listener.ImagePickerListener
 import com.tokopedia.topchat.chatroom.view.listener.SendButtonListener
@@ -42,6 +44,7 @@ import com.tokopedia.topchat.chattemplate.view.adapter.TemplateChatAdapter
 import com.tokopedia.topchat.chattemplate.view.adapter.TemplateChatTypeFactoryImpl
 import com.tokopedia.topchat.chattemplate.view.listener.ChatTemplateListener
 import com.tokopedia.topchat.common.analytics.TopChatAnalytics
+import com.tokopedia.topchat.common.analytics.TopChatAnalyticsKt
 import com.tokopedia.topchat.common.data.TopchatItemMenu
 import com.tokopedia.topchat.common.data.TopchatItemMenu.Companion.ID_ALLOW_PROMO
 import com.tokopedia.topchat.common.data.TopchatItemMenu.Companion.ID_BLOCK_CHAT
@@ -56,6 +59,7 @@ import com.tokopedia.topchat.common.util.ImageUtil
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.user.session.UserSessionInterface
 import java.util.Locale
 
 /**
@@ -63,16 +67,18 @@ import java.util.Locale
  */
 
 open class TopChatViewStateImpl constructor(
-        @NonNull override val view: View,
-        private val typingListener: TypingListener,
-        protected val sendListener: SendButtonListener,
-        private val templateListener: ChatTemplateListener,
-        private val imagePickerListener: ImagePickerListener,
-        private val attachmentMenuListener: AttachmentMenu.AttachmentMenuListener,
-        private val stickerMenuListener: ChatMenuStickerView.StickerMenuListener,
-        private val headerMenuListener: HeaderMenuListener,
-        toolbar: Toolbar,
-        val analytics: TopChatAnalytics
+    @NonNull override val view: View,
+    private val typingListener: TypingListener,
+    protected val sendListener: SendButtonListener,
+    private val templateListener: ChatTemplateListener,
+    private val imagePickerListener: ImagePickerListener,
+    private val attachmentMenuListener: AttachmentMenu.AttachmentMenuListener,
+    private val stickerMenuListener: ChatMenuStickerView.StickerMenuListener,
+    private val headerMenuListener: HeaderMenuListener,
+    private val chatTextAreaTabLayoutListener: ChatTextAreaTabLayoutListener,
+    toolbar: Toolbar,
+    val analytics: TopChatAnalytics,
+    private val userSession: UserSessionInterface,
 ) : BaseChatViewStateImpl(view, toolbar, typingListener, attachmentMenuListener),
         TopChatViewState,
         AttachmentPreviewAdapter.AttachmentPreviewListener {
@@ -166,6 +172,7 @@ open class TopChatViewStateImpl constructor(
         setupChatStickerMenu()
 
         chatTextAreaTabLayout = view.findViewById(R.id.layout_chat_text_area)
+        chatTextAreaTabLayout?.setupListener(chatTextAreaTabLayoutListener)
         chatTextAreaShimmer = view.findViewById(R.id.chat_area_shimmer)
     }
 
@@ -177,6 +184,9 @@ open class TopChatViewStateImpl constructor(
     override fun setupChatMenu() {
         chatMenu?.setupAttachmentMenu(attachmentMenuListener)
         chatMenuButton.setOnClickListener {
+            if (isFromBubble) {
+                TopChatAnalyticsKt.clickAddAttachmentFromBubble(userSession.shopId)
+            }
             chatMenu?.toggleAttachmentMenu()
         }
     }
@@ -422,6 +432,7 @@ open class TopChatViewStateImpl constructor(
             showHeaderMenuBottomSheet(
                     chatRoomViewModel, headerMenuListener
             )
+            headerMenuListener.onClickHeaderMenu()
         }
     }
 
@@ -430,6 +441,9 @@ open class TopChatViewStateImpl constructor(
             headerMenuListener: HeaderMenuListener
     ) {
         if (roomMenu.isAdded) return
+        if (isFromBubble) {
+            KeyboardHandler.DropKeyboard(view.context, view)
+        }
         roomMenu.apply {
             setItemMenuList(createRoomMenu(chatroomViewModel))
             setOnItemMenuClickListener { itemMenus, _ ->
@@ -561,6 +575,8 @@ open class TopChatViewStateImpl constructor(
             ID_REPORT_USER -> headerMenuListener.onGoToReportUser()
             ID_CHAT_SETTING -> headerMenuListener.onGoToChatSetting()
         }
+
+        headerMenuListener.onClickHeaderMenuItem(itemMenus.title)
     }
 
     override fun showConfirmationBlockChat() {

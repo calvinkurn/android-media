@@ -29,6 +29,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
+import com.tokopedia.content.common.types.BundleData
 import com.tokopedia.createpost.common.analyics.FeedTrackerImagePickerInsta
 import com.tokopedia.createpost.common.view.viewmodel.CreatePostViewModel
 import com.tokopedia.dialog.DialogUnify
@@ -36,47 +37,6 @@ import com.tokopedia.feed_shop.R
 import com.tokopedia.feed_shop.analytics.ShopAnalytics
 import com.tokopedia.feed_shop.databinding.FragmentFeedShopBinding
 import com.tokopedia.feed_shop.di.DaggerFeedShopComponent
-import com.tokopedia.feedcomponent.analytics.posttag.PostTagAnalytics
-import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker
-import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCard
-import com.tokopedia.feedcomponent.data.feedrevamp.FeedXMedia
-import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
-import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta
-import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem
-import com.tokopedia.feedcomponent.data.pojo.whitelist.Author
-import com.tokopedia.feedcomponent.util.FeedScrollListener
-import com.tokopedia.feedcomponent.util.util.ShareBottomSheets
-import com.tokopedia.feedcomponent.view.adapter.viewholder.banner.BannerAdapter
-import com.tokopedia.feedcomponent.view.adapter.viewholder.highlight.HighlightAdapter
-import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder
-import com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid.GridPostAdapter
-import com.tokopedia.feedcomponent.view.adapter.viewholder.post.image.ImagePostViewHolder
-import com.tokopedia.feedcomponent.view.adapter.viewholder.post.poll.PollAdapter
-import com.tokopedia.feedcomponent.view.adapter.viewholder.post.video.VideoViewHolder
-import com.tokopedia.feedcomponent.view.adapter.viewholder.post.youtube.YoutubeViewHolder
-import com.tokopedia.feedcomponent.view.adapter.viewholder.recommendation.RecommendationCardAdapter
-import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopAdsBannerViewHolder
-import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopadsShopViewHolder
-import com.tokopedia.feedcomponent.view.viewmodel.highlight.HighlightCardViewModel
-import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
-import com.tokopedia.feedcomponent.view.viewmodel.post.TrackingPostModel
-import com.tokopedia.feedcomponent.view.viewmodel.posttag.ProductPostTagViewModelNew
-import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopUiModel
-import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
-import com.tokopedia.feedcomponent.view.widget.CardTitleView
-import com.tokopedia.feedcomponent.view.widget.FeedMultipleImageView
-import com.tokopedia.iconunify.IconUnify
-import com.tokopedia.kolcommon.domain.usecase.LikeKolPostUseCase
-import com.tokopedia.kolcommon.util.PostMenuListener
-import com.tokopedia.kolcommon.util.createBottomMenu
-import com.tokopedia.kolcommon.view.listener.KolPostLikeListener
-import com.tokopedia.kolcommon.view.listener.KolPostViewHolderListener
-import com.tokopedia.seller_migration_common.analytics.SellerMigrationTracking
-import com.tokopedia.seller_migration_common.analytics.SellerMigrationTrackingConstants
-import com.tokopedia.seller_migration_common.isSellerMigrationEnabled
-import com.tokopedia.seller_migration_common.presentation.util.goToInformationWebview
-import com.tokopedia.seller_migration_common.presentation.util.goToSellerApp
-import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.feed_shop.shop.domain.WhitelistDomain
 import com.tokopedia.feed_shop.shop.view.InterfaceShopPageFab
 import com.tokopedia.feed_shop.shop.view.adapter.factory.FeedShopFactoryImpl
@@ -84,18 +44,49 @@ import com.tokopedia.feed_shop.shop.view.contract.FeedShopContract
 import com.tokopedia.feed_shop.shop.view.model.EmptyFeedShopSellerMigrationUiModel
 import com.tokopedia.feed_shop.shop.view.model.EmptyFeedShopUiModel
 import com.tokopedia.feed_shop.shop.view.model.WhitelistUiModel
-import com.tokopedia.imagepicker_insta.common.BundleData
+import com.tokopedia.feedcomponent.analytics.posttag.PostTagAnalytics
+import com.tokopedia.feedcomponent.analytics.tracker.FeedAnalyticTracker
+import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCard
+import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
+import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.FollowCta
+import com.tokopedia.feedcomponent.data.pojo.feed.contentitem.PostTagItem
+import com.tokopedia.feedcomponent.util.FeedScrollListener
+import com.tokopedia.feedcomponent.util.util.ShareBottomSheets
+import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostViewHolder
+import com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid.GridPostAdapter
+import com.tokopedia.feedcomponent.view.adapter.viewholder.post.image.ImagePostViewHolder
+import com.tokopedia.feedcomponent.view.adapter.viewholder.post.poll.PollAdapter
+import com.tokopedia.feedcomponent.view.adapter.viewholder.post.video.VideoViewHolder
+import com.tokopedia.feedcomponent.view.adapter.viewholder.post.youtube.YoutubeViewHolder
+import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopAdsBannerViewHolder
+import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopadsShopViewHolder
+import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.post.TrackingPostModel
+import com.tokopedia.feedcomponent.view.viewmodel.topads.TopadsShopUiModel
+import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
+import com.tokopedia.feedcomponent.view.widget.CardTitleView
+import com.tokopedia.feedcomponent.view.widget.FeedMultipleImageView
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.imagepicker_insta.common.trackers.TrackerProvider
+import com.tokopedia.kolcommon.domain.usecase.LikeKolPostUseCase
+import com.tokopedia.kolcommon.util.PostMenuListener
+import com.tokopedia.kolcommon.util.createBottomMenu
+import com.tokopedia.kolcommon.view.listener.KolPostLikeListener
+import com.tokopedia.seller_migration_common.analytics.SellerMigrationTracking
+import com.tokopedia.seller_migration_common.analytics.SellerMigrationTrackingConstants
+import com.tokopedia.seller_migration_common.isSellerMigrationEnabled
+import com.tokopedia.seller_migration_common.presentation.util.goToInformationWebview
+import com.tokopedia.seller_migration_common.presentation.util.goToSellerApp
+import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.common.view.interfaces.HasSharedViewModel
 import com.tokopedia.shop.common.view.interfaces.ISharedViewModel
 import com.tokopedia.shop.common.view.interfaces.ShopPageSharedListener
 import com.tokopedia.shop.common.view.model.ShopPageFabConfig
-import com.tokopedia.topads.sdk.domain.model.CpmData
-import com.tokopedia.topads.sdk.domain.model.Product
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.floatingbutton.FloatingButtonItem
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.view.binding.viewBinding
+import java.util.*
 import javax.inject.Inject
 import com.tokopedia.universal_sharing.R as universalSharingR
 
@@ -103,11 +94,9 @@ import com.tokopedia.universal_sharing.R as universalSharingR
  * @author by yfsx on 08/05/19.
  */
 class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(),
-        KolPostViewHolderListener, KolPostLikeListener,
+        KolPostLikeListener,
         DynamicPostViewHolder.DynamicPostListener,
-        BannerAdapter.BannerItemListener,
         TopadsShopViewHolder.TopadsShopListener,
-        RecommendationCardAdapter.RecommendationCardListener,
         CardTitleView.CardTitleListener,
         ImagePostViewHolder.ImagePostListener,
         YoutubeViewHolder.YoutubePostListener,
@@ -115,7 +104,6 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         GridPostAdapter.GridItemListener,
         VideoViewHolder.VideoViewListener,
         FeedMultipleImageView.FeedMultipleImageViewListener,
-        HighlightAdapter.HighlightListener,
         FeedShopContract.View, TopAdsBannerViewHolder.TopAdsBannerListener,
         InterfaceShopPageFab {
 
@@ -170,6 +158,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         private const val KOL_COMMENT_CODE = 13
         private const val PARAM_SOURCE = "source"
         private const val SHOP_PAGE = "shop_page"
+        private const val WEBVIEW_URL_FORMAT = "%s?url=%s"
 
         private const val PARAM_CREATE_POST_URL: String = "PARAM_CREATE_POST_URL"
         private const val PARAM_SHOP_ID: String = "PARAM_SHOP_ID"
@@ -294,9 +283,6 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
 
     override fun getAdapterTypeFactory(): BaseAdapterTypeFactory {
         return FeedShopFactoryImpl(this,
-                this,
-                this,
-                this,
                 this,
                 this,
                 this,
@@ -490,7 +476,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         reshowFloatingActionButton()
     }
 
-    override fun onErrorDeletePost(errorMessage: String, id: Int, rowNumber: Int) {
+    override fun onErrorDeletePost(errorMessage: String, id: String, rowNumber: Int) {
         view?.let {
             Toaster.make(it, errorMessage, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR, getString(com.tokopedia.abstraction.R.string.title_try_again), View.OnClickListener {
                 presenter.deletePost(id, rowNumber)
@@ -528,29 +514,8 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
 
     override fun onLikeKolError(message: String) = showError(message)
 
-    override fun onGoToKolProfile(rowNumber: Int, userId: String, postId: Int) {
-    }
 
-    override fun onGoToKolProfileUsingApplink(rowNumber: Int, applink: String) {
-    }
-
-    override fun onOpenKolTooltip(rowNumber: Int, uniqueTrackingId: String, url: String) {
-        onGoToLink(url ?: "")
-    }
-
-    override fun trackContentClick(hasMultipleContent: Boolean, activityId: String, activityType: String, position: String) {
-    }
-
-    override fun trackTooltipClick(hasMultipleContent: Boolean, activityId: String, activityType: String, position: String) {
-    }
-
-    override fun onFollowKolClicked(rowNumber: Int, id: Int) {
-    }
-
-    override fun onUnfollowKolClicked(rowNumber: Int, id: Int) {
-    }
-
-    override fun onLikeKolClicked(rowNumber: Int, id: Int, hasMultipleContent: Boolean, activityType: String) {
+    fun onLikeKolClicked(rowNumber: Int, id: Long, hasMultipleContent: Boolean, activityType: String) {
         if (userSession.isLoggedIn) {
             presenter.likeKol(id, rowNumber, this)
         } else {
@@ -558,23 +523,9 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         }
     }
 
-    override fun onUnlikeKolClicked(rowNumber: Int, id: Int, hasMultipleContent: Boolean, activityType: String) {
-        if (userSession.isLoggedIn) {
-            presenter.unlikeKol(id, rowNumber, this)
-        } else {
-            goToLogin()
-        }
-    }
-
-    override fun onLikeClick(positionInFeed: Int, columnNumber: Int, id: Int, isLiked: Boolean) {
-    }
-
-    override fun onCommentClick(positionInFeed: Int, columnNumber: Int, id: Int) {
-    }
-
-    override fun onGoToKolComment(
+    fun onGoToKolComment(
         rowNumber: Int,
-        id: Int,
+        id: String,
         hasMultipleContent: Boolean,
         activityType: String,
     ) {
@@ -586,17 +537,14 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
                     COMMENT_ARGS_POSITION to rowNumber.toString()
                 )
             ),
-            id.toString()
+            id
         ).run { startActivityForResult(this, KOL_COMMENT_CODE) }
-    }
-
-    override fun onEditClicked(hasMultipleContent: Boolean, activityId: String, activityType: String) {
     }
 
     override fun onAvatarClick(
         positionInFeed: Int,
         redirectUrl: String,
-        activityId: Int,
+        activityId: String,
         activityName: String,
         followCta: FollowCta,
         type: String,
@@ -614,7 +562,8 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         isFollow: Boolean,
         postType: String,
         isVideo: Boolean,
-        isBottomSheetMenuOnFeed: Boolean
+        isBottomSheetMenuOnFeed: Boolean,
+        isFollowedFromFollowRestrictionBottomSheet: Boolean
     ) {
         if (type == FollowCta.AUTHOR_USER) {
             var userIdInt = 0
@@ -630,7 +579,27 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         }
     }
 
-    override fun onMenuClick(positionInFeed: Int, postId: Int, reportable: Boolean, deletable: Boolean, editable: Boolean, isFollowed: Boolean, id: String, authorType: String, postType: String, mediaType: String, caption: String, playChannelId: String) {
+    fun onFollowKolClicked(rowNumber: Int, id: Int) {
+    }
+
+    fun onUnfollowKolClicked(rowNumber: Int, id: Int) {
+    }
+
+
+    override fun onMenuClick(
+        positionInFeed: Int,
+        postId: String,
+        reportable: Boolean,
+        deletable: Boolean,
+        editable: Boolean,
+        isFollowed: Boolean,
+        id: String,
+        authorType: String,
+        postType: String,
+        mediaType: String,
+        caption: String,
+        playChannelId: String
+    ) {
         context?.let {
             val menus =
                     createBottomMenu(it, deletable, reportable, editable, object : PostMenuListener {
@@ -668,7 +637,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         onGoToLink(redirectUrl)
     }
 
-    override fun onLikeClick(positionInFeed: Int, id: Int, isLiked: Boolean, postType: String, isFollowed: Boolean, type: Boolean, shopId: String, mediaType: String?, playChannelId: String) {
+    override fun onLikeClick(positionInFeed: Int, id: Long, isLiked: Boolean, postType: String, isFollowed: Boolean, type: Boolean, shopId: String, mediaType: String?, playChannelId: String) {
         if (isLiked) {
             onUnlikeKolClicked(positionInFeed, id, false, "")
         } else {
@@ -676,13 +645,31 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         }
     }
 
-    override fun onCommentClick(positionInFeed: Int, id: Int, authorType: String, type: String, isFollowed: Boolean, mediaType: String, shopId: String, playChannelId: String, isVideo: Boolean) {
+    fun onUnlikeKolClicked(rowNumber: Int, id: Long, hasMultipleContent: Boolean, activityType: String) {
+        if (userSession.isLoggedIn) {
+            presenter.unlikeKol(id, rowNumber, this)
+        } else {
+            goToLogin()
+        }
+    }
+
+    override fun onCommentClick(
+        positionInFeed: Int,
+        id: String,
+        authorType: String,
+        type: String,
+        isFollowed: Boolean,
+        mediaType: String,
+        shopId: String,
+        playChannelId: String,
+        isVideo: Boolean
+    ) {
         onGoToKolComment(positionInFeed, id, false, "")
     }
 
     override fun onShareClick(
             positionInFeed: Int,
-            id: Int,
+            id: String,
             title: String,
             description: String,
             url: String,
@@ -760,10 +747,6 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         presenter.doTopAdsTracker(url, shopId, shopName, imageUrl, false)
     }
 
-    override fun onHighlightItemClicked(positionInFeed: Int, item: HighlightCardViewModel) {
-
-    }
-
     override fun onPostTagItemBuyClicked(
         positionInFeed: Int,
         postTagItem: PostTagItem,
@@ -795,17 +778,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         }
     }
 
-    override fun userCarouselImpression(
-        activityId: String,
-        media: FeedXMedia,
-        positionInFeed: Int,
-        postType: String,
-        isFollowed: Boolean,
-        shopId: String,
-        postPosition: Int,
-        cpmData: CpmData,
-        products: List<Product>
-    ) {
+    override fun userCarouselImpression(feedXCard: FeedXCard, positionInFeed: Int) {
     }
 
     override fun userGridPostImpression(
@@ -866,10 +839,6 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         }
     }
 
-    override fun onBannerItemClick(positionInFeed: Int, adapterPosition: Int, redirectUrl: String) {
-        onGoToLink(redirectUrl)
-    }
-
     override fun onShopItemClicked(positionInFeed: Int, adapterPosition: Int, shop: com.tokopedia.topads.sdk.domain.model.Shop) {
         if (adapter.list[positionInFeed] is TopadsShopUiModel) {
             val (_, dataList, _, _) = adapter.list[positionInFeed] as TopadsShopUiModel
@@ -880,13 +849,6 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     }
 
     override fun onAddFavorite(positionInFeed: Int, adapterPosition: Int, data: com.tokopedia.topads.sdk.domain.model.Data) {
-    }
-
-    override fun onRecommendationAvatarClick(positionInFeed: Int, adapterPosition: Int, redirectLink: String, postType: String, authorId: String) {
-        onGoToLink(redirectLink)
-    }
-
-    override fun onRecommendationActionClick(positionInFeed: Int, adapterPosition: Int, id: String, type: String, isFollow: Boolean) {
     }
 
     override fun onActionRedirect(redirectUrl: String) {
@@ -910,7 +872,17 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         }
     }
 
-    override fun onGridItemClick(positionInFeed: Int, contentPosition: Int, productPosition: String, redirectLink: String, type: String, isFollowed: Boolean, shopId: String, feedXProducts: List<FeedXProduct>, index: Int) {
+    override fun onGridItemClick(
+        positionInFeed: Int,
+        productPosition: String,
+        productId: String,
+        redirectLink: String,
+        type: String,
+        isFollowed: Boolean,
+        shopId: String,
+        feedXProducts: List<FeedXProduct>,
+        index: Int
+    ) {
         onGoToLink(redirectLink)
     }
 
@@ -951,8 +923,17 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     override fun onVideoStopTrack(feedXCard: FeedXCard, duration: Long) {
     }
 
-    override fun onAddToCartSuccess() {
+    override fun onAddToCartSuccess(productId: String) {
+        createAffiliateCookieAtcDirectPurchase(productId)
         RouteManager.route(context, ApplinkConstInternalMarketplace.CART)
+    }
+
+    private fun createAffiliateCookieAtcDirectPurchase(productId: String) {
+        (activity as? ShopPageSharedListener)?.createAffiliateCookieAtcProduct(
+            productId,
+            false,
+            0
+        )
     }
 
     override fun onAddToCartFailed(pdpAppLink: String) {
@@ -971,22 +952,42 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         )
     }
 
-    override fun onReadMoreClicked(
-            postId: String,
-            shopId: String,
-            type: String,
-            isFollowed: Boolean,
-            mediaType: String
+    override fun onReadMoreClicked(card: FeedXCard, positionInFeed: Int) {
+    }
+
+    override fun onImageClicked(card: FeedXCard) {
+    }
+
+    override fun onTagClicked(
+        card: FeedXCard,
+        products: List<FeedXProduct>,
+        listener: DynamicPostViewHolder.DynamicPostListener,
+        mediaType: String,
+        positionInFeed: Int
     ) {
     }
 
-    override fun onImageClicked(activityId: String, type: String, isFollowed: Boolean, shopId: String) {
+    override fun onIngatkanSayaBtnImpressed(card: FeedXCard, positionInFeed: Int) {
+
     }
 
-    override fun onTagClicked(postId: Int, products: List<FeedXProduct>, listener: DynamicPostViewHolder.DynamicPostListener, id: String, type: String, isFollowed: Boolean, mediaType: String, positionInFeed: Int, playChannelId: String, shopName: String) {
+    override fun onIngatkanSayaBtnClicked(card: FeedXCard, positionInFeed: Int) {
+
+    }
+    override fun changeUpcomingWidgetToOngoing(card: FeedXCard, positionInFeed: Int) {
+
     }
 
-    override fun muteUnmuteVideo(postId: String, mute: Boolean, id: String, isFollowed: Boolean, isVOD: Boolean, mediaType: String) {
+    override fun removeOngoingCampaignSaleWidget(card: FeedXCard, positionInFeed: Int) {
+
+    }
+
+    override fun muteUnmuteVideo(
+        card: FeedXCard,
+        mute: Boolean,
+        positionInFeed: Int,
+        mediaType: String
+    ) {
     }
 
     override fun onImpressionTracking(feedXCard: FeedXCard, positionInFeed: Int) {
@@ -1036,7 +1037,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         } else {
             RouteManager.route(
                     activity,
-                    String.format("%s?url=%s", ApplinkConst.WEBVIEW, updatedUrl)
+                String.format(Locale.ENGLISH, WEBVIEW_URL_FORMAT, ApplinkConst.WEBVIEW, updatedUrl)
             )
         }
     }
@@ -1062,7 +1063,7 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
     }
 
 
-    private fun createDeleteDialog(rowNumber: Int, id: Int): DialogUnify? {
+    private fun createDeleteDialog(rowNumber: Int, id: String): DialogUnify? {
         return context?.let{
             val dialog = DialogUnify(requireContext(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE)
             dialog.setTitle(getString(com.tokopedia.kolcommon.R.string.kol_delete_post))
@@ -1078,13 +1079,13 @@ class FeedShopFragment : BaseListFragment<Visitable<*>, BaseAdapterTypeFactory>(
         }
     }
 
-    private fun goToContentReport(contentId: Int) {
+    private fun goToContentReport(contentId: String) {
         if (context != null) {
             if (userSession.isLoggedIn) {
                 val intent = RouteManager.getIntent(
                         requireContext(),
                         ApplinkConstInternalContent.CONTENT_REPORT,
-                        contentId.toString()
+                        contentId
                 )
                 startActivityForResult(intent, OPEN_CONTENT_REPORT)
             } else {

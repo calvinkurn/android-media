@@ -24,6 +24,10 @@ abstract class PostUpdateProgressManager(
     private var currentProgress = 0
     private var imgUrl=""
 
+    init {
+        onAddProgress()
+    }
+
     fun onAddProgress() {
         sendBroadcast(currentProgress, imgUrl)
     }

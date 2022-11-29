@@ -4,15 +4,17 @@ import android.text.TextUtils;
 
 import androidx.annotation.NonNull;
 
-import com.tokopedia.checkout.domain.model.cartshipmentform.UpsellData;
-import com.tokopedia.checkout.view.uimodel.ShipmentCrossSellModel;
 import com.tokopedia.checkout.domain.model.cartshipmentform.AddressesData;
 import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.checkout.domain.model.cartshipmentform.GroupShop;
+import com.tokopedia.checkout.domain.model.cartshipmentform.NewUpsellData;
 import com.tokopedia.checkout.domain.model.cartshipmentform.Product;
 import com.tokopedia.checkout.domain.model.cartshipmentform.ShipmentInformationData;
 import com.tokopedia.checkout.domain.model.cartshipmentform.Shop;
+import com.tokopedia.checkout.domain.model.cartshipmentform.UpsellData;
+import com.tokopedia.checkout.view.uimodel.ShipmentCrossSellModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentDonationModel;
+import com.tokopedia.checkout.view.uimodel.ShipmentNewUpsellModel;
 import com.tokopedia.checkout.view.uimodel.ShipmentUpsellModel;
 import com.tokopedia.logisticCommon.data.entity.address.LocationDataModel;
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel;
@@ -107,11 +109,12 @@ public class ShipmentDataConverter {
     public ArrayList<ShipmentCrossSellModel> getListShipmentCrossSellModel(CartShipmentAddressFormData cartShipmentAddressFormData) {
         ArrayList<ShipmentCrossSellModel> listCrossSellModel = new ArrayList<>();
         if (!cartShipmentAddressFormData.getCrossSell().isEmpty()) {
-            for (int i = 0; i<cartShipmentAddressFormData.getCrossSell().size(); i++) {
+            for (int i = 0; i < cartShipmentAddressFormData.getCrossSell().size(); i++) {
                 ShipmentCrossSellModel shipmentCrossSellModel = new ShipmentCrossSellModel();
                 shipmentCrossSellModel.setChecked(cartShipmentAddressFormData.getCrossSell().get(i).isChecked());
                 shipmentCrossSellModel.setEnabled(!cartShipmentAddressFormData.getCrossSell().get(i).getCheckboxDisabled());
                 shipmentCrossSellModel.setCrossSellModel(cartShipmentAddressFormData.getCrossSell().get(i));
+                shipmentCrossSellModel.setIndex(i);
                 listCrossSellModel.add(shipmentCrossSellModel);
             }
             return listCrossSellModel;
@@ -277,6 +280,7 @@ public class ShipmentDataConverter {
         shipmentCartItemModel.setCartString(groupShop.getCartString());
         shipmentCartItemModel.setShippingId(groupShop.getShippingId());
         shipmentCartItemModel.setSpId(groupShop.getSpId());
+        shipmentCartItemModel.setBoCode(groupShop.getBoCode());
         shipmentCartItemModel.setDropshiperName(groupShop.getDropshipperName());
         shipmentCartItemModel.setDropshiperPhone(groupShop.getDropshipperPhone());
         shipmentCartItemModel.setInsurance(groupShop.isUseInsurance());
@@ -425,6 +429,24 @@ public class ShipmentDataConverter {
         shipmentUpsellModel.setDescription(upsellData.getDescription());
         shipmentUpsellModel.setAppLink(upsellData.getAppLink());
         shipmentUpsellModel.setImage(upsellData.getImage());
+        return shipmentUpsellModel;
+    }
+
+    public ShipmentNewUpsellModel getShipmentNewUpsellModel(NewUpsellData upsellData) {
+        ShipmentNewUpsellModel shipmentUpsellModel = new ShipmentNewUpsellModel();
+        shipmentUpsellModel.setShow(upsellData.isShow());
+        shipmentUpsellModel.setSelected(upsellData.isSelected());
+        shipmentUpsellModel.setDescription(upsellData.getDescription());
+        shipmentUpsellModel.setAppLink(upsellData.getAppLink());
+        shipmentUpsellModel.setImage(upsellData.getImage());
+        shipmentUpsellModel.setPrice(upsellData.getPrice());
+        shipmentUpsellModel.setPriceWording(upsellData.getPriceWording());
+        shipmentUpsellModel.setDuration(upsellData.getDuration());
+        shipmentUpsellModel.setSummaryInfo(upsellData.getSummaryInfo());
+        shipmentUpsellModel.setButtonText(upsellData.getButtonText());
+        shipmentUpsellModel.setId(upsellData.getId());
+        shipmentUpsellModel.setAdditionalVerticalId(upsellData.getAdditionalVerticalId());
+        shipmentUpsellModel.setTransactionType(upsellData.getTransactionType());
         return shipmentUpsellModel;
     }
 

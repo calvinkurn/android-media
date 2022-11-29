@@ -101,6 +101,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
     private var departmentId: String = ""
     private var categoryId : String = ""
     private var brand : String = ""
+    private var productSortingStatus : Int = 0
 
     var productNavListAdapter: CatalogProductNavListAdapter? = null
     private var sortFilterBottomSheet: SortFilterBottomSheet? = null
@@ -123,6 +124,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
         private const val ARG_EXTRA_CATALOG_NAME = "ARG_EXTRA_CATALOG_NAME"
         private const val ARG_EXTRA_CATALOG_CATEGORY_ID = "ARG_EXTRA_CATALOG_CATEGORY_ID"
         private const val ARG_EXTRA_CATALOG_BRAND = "ARG_EXTRA_CATALOG_BRAND"
+        private const val ARG_EXTRA_CATALOG_PRODUCT_SORTING_STATUS = "ARG_EXTRA_CATALOG_PRODUCT_SORTING_STATUS"
 
         private const val REQUEST_ACTIVITY_SORT_PRODUCT = 102
         private const val REQUEST_ACTIVITY_FILTER_PRODUCT = 103
@@ -130,9 +132,10 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
         private const val REQUEST_ACTIVITY_OPEN_PRODUCT_PAGE = 1002
         const val MORE_CATALOG_WIDGET_INDEX = 3
         const val MINIMUM_SCROLL_FOR_ANIMATION = 15
+        const val SHOP_TIER_VALUE = 2
 
         @JvmStatic
-        fun newInstance(catalogId: String , catalogName : String, catalogUrl : String?,categoryId : String?,catalogBrand : String?): BaseCategorySectionFragment {
+        fun newInstance(catalogId: String , catalogName : String, catalogUrl : String?,categoryId : String?,catalogBrand : String?,productSortingStatus : Int?=0): BaseCategorySectionFragment {
             val fragment = CatalogDetailProductListingFragment()
             val bundle = Bundle()
             bundle.putString(ARG_EXTRA_CATALOG_ID, catalogId)
@@ -140,6 +143,9 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
             bundle.putString(ARG_EXTRA_CATALOG_URL, catalogUrl)
             bundle.putString(ARG_EXTRA_CATALOG_CATEGORY_ID, categoryId)
             bundle.putString(ARG_EXTRA_CATALOG_BRAND, catalogBrand)
+            if (productSortingStatus != null) {
+                bundle.putInt(ARG_EXTRA_CATALOG_PRODUCT_SORTING_STATUS, productSortingStatus)
+            }
             fragment.arguments = bundle
             return fragment
         }
@@ -161,6 +167,7 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
                 catalogUrl = it.getString(ARG_EXTRA_CATALOG_URL, "")
                 categoryId = it.getString(ARG_EXTRA_CATALOG_CATEGORY_ID, "")
                 brand = it.getString(ARG_EXTRA_CATALOG_BRAND, "")
+                productSortingStatus = it.getInt(ARG_EXTRA_CATALOG_PRODUCT_SORTING_STATUS, 0)
             }
         }
         initView()
@@ -434,6 +441,9 @@ class CatalogDetailProductListingFragment : BaseCategorySectionFragment(),
             putString(CategoryNavConstants.USER_CITY_ID, userAddressData?.city_id ?: "")
             putString(CategoryNavConstants.USER_DISTRICT_ID, userAddressData?.district_id ?: "")
             putString(CategoryNavConstants.Q, catalogName)
+            if (productSortingStatus == 1) {
+                putInt(CategoryNavConstants.SHOP_TIER, SHOP_TIER_VALUE)
+            }
             viewModel.searchParametersMap.value?.let { safeSearchParams ->
                 putAllString(safeSearchParams)
             }

@@ -728,6 +728,8 @@ open class SomDetailFragment : BaseDaggerFragment(),
                     }
                 }
                 setChild(dialogView)
+
+                setAcceptOrderFreeShippingDialogDismissListener()
             }
             dialogUnify.show()
         }
@@ -973,6 +975,7 @@ open class SomDetailFragment : BaseDaggerFragment(),
 
     override fun onResoClicked(redirectPath: String) {
         SomNavigator.openAppLink(context, redirectPath)
+        SomAnalytics.sendClickOnResolutionWidgetEvent(userSession.userId)
     }
 
     private fun doRejectOrder(orderRejectRequestParam: SomRejectRequestParam) {
@@ -983,7 +986,7 @@ open class SomDetailFragment : BaseDaggerFragment(),
     }
 
     private fun observingRejectOrder() {
-        somDetailViewModel.rejectOrderResult.observe(viewLifecycleOwner, {
+        somDetailViewModel.rejectOrderResult.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> onSuccessRejectOrder(it.data.rejectOrder)
                 is Fail -> {
@@ -998,7 +1001,7 @@ open class SomDetailFragment : BaseDaggerFragment(),
                     it.throwable.showErrorToaster()
                 }
             }
-        })
+        }
     }
 
     override fun onDialPhone(strPhoneNo: String) {
@@ -1294,6 +1297,12 @@ open class SomDetailFragment : BaseDaggerFragment(),
                     show()
                 }
             }
+        }
+    }
+
+    private fun DialogUnify.setAcceptOrderFreeShippingDialogDismissListener() {
+        setOnDismissListener {
+            binding?.btnPrimary?.isLoading = false
         }
     }
 

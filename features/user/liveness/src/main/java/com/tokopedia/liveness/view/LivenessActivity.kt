@@ -16,13 +16,20 @@ import com.google.android.play.core.splitcompat.SplitCompat
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.PARAM_PROJECT_ID
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.liveness.R
 import com.tokopedia.liveness.di.DaggerLivenessDetectionComponent
 import com.tokopedia.liveness.di.LivenessDetectionComponent
 import com.tokopedia.liveness.utils.LivenessConstants
+import com.tokopedia.liveness.utils.LivenessConstants.REMOTE_CONFIG_KEY_LIVENESS_RANDOM_DETECTION
+import com.tokopedia.remoteconfig.RemoteConfig
+import javax.inject.Inject
 
 open class LivenessActivity: PermissionActivity(), HasComponent<LivenessDetectionComponent> {
+
+    @Inject
+    lateinit var remoteConfig: RemoteConfig
 
     private var fragment: Fragment? = null
 
@@ -37,20 +44,23 @@ open class LivenessActivity: PermissionActivity(), HasComponent<LivenessDetectio
         requestWindowFeature(Window.FEATURE_NO_TITLE)
         window.addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN)
 
+        component.inject(this)
+
         livenessSdk.initOffLine(application)
         livenessSdk.letSDKHandleCameraPermission()
         livenessSdk.setDeviceType(DeviceType.RealPhone)
-        livenessSdk.setActionSequence(true,
+        livenessSdk.setActionSequence(
+            isRandomDetection(),
             Detector.DetectionType.MOUTH,
             Detector.DetectionType.BLINK,
             Detector.DetectionType.POS_YAW
         )
 
         intent?.data?.let {
-            val projectId = it.getQueryParameter(ApplinkConstInternalGlobal.PARAM_PROJECT_ID).orEmpty()
+            val projectId = it.getQueryParameter(PARAM_PROJECT_ID)?.toIntOrNull()
 
             intent?.extras?.apply {
-                putInt(ApplinkConstInternalGlobal.PARAM_PROJECT_ID, projectId.toInt())
+                projectId?.let { it1 -> putInt(PARAM_PROJECT_ID, it1) }
             }
         }
 
@@ -148,4 +158,9 @@ open class LivenessActivity: PermissionActivity(), HasComponent<LivenessDetectio
                     finish()
                 }.create().show()
     }
+
+    private fun isRandomDetection(): Boolean = remoteConfig.getBoolean(
+        REMOTE_CONFIG_KEY_LIVENESS_RANDOM_DETECTION,
+        false
+    )
 }
