@@ -10,6 +10,7 @@ import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import com.google.android.exoplayer2.ExoPlayer
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.content.common.ui.bottomsheet.ContentAccountTypeBottomSheet
 import com.tokopedia.content.common.ui.model.ContentAccountUiModel
@@ -24,6 +25,7 @@ import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.databinding.FragmentPlayShortsPreparationBinding
 import com.tokopedia.play.broadcaster.setup.product.view.ProductSetupFragment
+import com.tokopedia.play.broadcaster.shorts.factory.PlayShortsMediaSourceFactory
 import com.tokopedia.play.broadcaster.shorts.ui.model.action.PlayShortsAction
 import com.tokopedia.play.broadcaster.shorts.ui.model.event.PlayShortsUiEvent
 import com.tokopedia.play.broadcaster.shorts.ui.model.state.PlayShortsCoverFormUiState
@@ -56,6 +58,8 @@ import javax.inject.Inject
 class PlayShortsPreparationFragment @Inject constructor(
     private val viewModelFactory: ViewModelProvider.Factory,
     private val userSession: UserSessionInterface,
+    private val exoPlayer: ExoPlayer,
+    private val mediaSourceFactory: PlayShortsMediaSourceFactory,
     private val coachMarkManager: ContentCoachMarkManager,
     private val idleManager: PlayShortsIdleManager
 ) : PlayShortsBaseFragment() {
@@ -89,12 +93,12 @@ class PlayShortsPreparationFragment @Inject constructor(
 
     override fun onStart() {
         super.onStart()
-        viewModel.submitAction(PlayShortsAction.StartMedia)
+        exoPlayer.playWhenReady = true
     }
 
     override fun onStop() {
         super.onStop()
-        viewModel.submitAction(PlayShortsAction.StopMedia)
+        exoPlayer.playWhenReady = false
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -117,7 +121,10 @@ class PlayShortsPreparationFragment @Inject constructor(
 
     override fun onDestroy() {
         super.onDestroy()
-        viewModel.submitAction(PlayShortsAction.ReleaseMedia)
+        exoPlayer.apply {
+            stop()
+            release()
+        }
     }
 
     override fun onAttachFragment(childFragment: Fragment) {
@@ -360,8 +367,10 @@ class PlayShortsPreparationFragment @Inject constructor(
         prev: PlayShortsUiState?,
         curr: PlayShortsUiState
     ) {
-        if (binding.exoPlayer.player == null) {
-            binding.exoPlayer.player = curr.media.exoPlayer
+        if (binding.exoPlayer.player == null || prev?.media?.mediaUri != curr.media.mediaUri) {
+            val mediaSource = mediaSourceFactory.create(curr.media.mediaUri)
+            exoPlayer.prepare(mediaSource)
+            binding.exoPlayer.player = exoPlayer
         }
     }
 

@@ -42,8 +42,6 @@ import kotlin.coroutines.CoroutineContext
 class PlayShortsViewModel @Inject constructor(
     private val repo: PlayShortsRepository,
     private val sharedPref: HydraSharedPreferences,
-    private val exoPlayer: ExoPlayer,
-    private val mediaSourceFactory: PlayShortsMediaSourceFactory,
     private val accountManager: PlayShortsAccountManager,
     private val playShortsUploader: PlayShortsUploader,
 ) : ViewModel() {
@@ -89,7 +87,7 @@ class PlayShortsViewModel @Inject constructor(
 
     private val _globalLoader = MutableStateFlow(false)
     private val _config = MutableStateFlow(PlayShortsConfigUiModel.Empty)
-    private val _media = MutableStateFlow(PlayShortsMediaUiModel.create(exoPlayer))
+    private val _media = MutableStateFlow(PlayShortsMediaUiModel.Empty)
     private val _accountList = MutableStateFlow<List<ContentAccountUiModel>>(emptyList())
     private val _selectedAccount = MutableStateFlow(ContentAccountUiModel.Empty)
     private val _menuList = MutableStateFlow<List<DynamicPreparationMenu>>(emptyList())
@@ -167,9 +165,6 @@ class PlayShortsViewModel @Inject constructor(
 
             /** Media */
             is PlayShortsAction.SetMedia -> handleSetMedia(action.mediaUri)
-            is PlayShortsAction.StartMedia -> handleStartMedia()
-            is PlayShortsAction.StopMedia -> handleStopMedia()
-            is PlayShortsAction.ReleaseMedia -> handleReleaseMedia()
 
             /** Account */
             is PlayShortsAction.ClickSwitchAccount -> handleClickSwitchAccount()
@@ -213,27 +208,7 @@ class PlayShortsViewModel @Inject constructor(
     private fun handleSetMedia(mediaUri: String) {
         if (mediaUri == _media.value.mediaUri) return
 
-        _media.update {
-            val mediaSource = mediaSourceFactory.create(mediaUri)
-            it.exoPlayer.prepare(mediaSource)
-
-            it.copy(mediaUri = mediaUri)
-        }
-    }
-
-    private fun handleStartMedia() {
-        _media.value.exoPlayer.playWhenReady = true
-    }
-
-    private fun handleStopMedia() {
-        _media.value.exoPlayer.playWhenReady = false
-    }
-
-    private fun handleReleaseMedia() {
-        _media.value.exoPlayer.apply {
-            stop()
-            release()
-        }
+        _media.update { it.copy(mediaUri = mediaUri) }
     }
 
     private fun handleClickSwitchAccount() {
