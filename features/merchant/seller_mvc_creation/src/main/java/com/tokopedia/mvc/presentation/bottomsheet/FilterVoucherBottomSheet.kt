@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.flexbox.AlignItems
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.mvc.R
 import com.tokopedia.mvc.databinding.SmvcBottomsheetFilterVoucherBinding
 import com.tokopedia.mvc.di.component.DaggerMerchantVoucherCreationComponent
@@ -59,12 +60,14 @@ class FilterVoucherBottomSheet(
         super.onViewCreated(view, savedInstanceState)
         viewModel.setupFilterData(filter)
         viewModel.filterData.observe(viewLifecycleOwner) { filterResult ->
+            bottomSheetAction.isVisible = true
             binding?.btnSubmit?.setOnClickListener {
                 listener?.onFilterVoucherChanged(filterResult)
                 dismiss()
             }
         }
         binding?.setupContentViews(filter)
+        view.post { bottomSheetAction.isVisible = false }
     }
 
     private fun setupBottomSheet(inflater: LayoutInflater, container: ViewGroup?) {
@@ -94,7 +97,16 @@ class FilterVoucherBottomSheet(
     }
 
     private fun onActionTextClicked(view: View) {
-
+        binding?.apply {
+            rvStatus.resetSelection()
+            rvType.resetSelection()
+            rvSource.resetSelection()
+            rvPromoType.resetSelection()
+            rvTarget.resetSelection()
+            rvTargetBuyer.resetSelection()
+            viewModel.resetSelection()
+            bottomSheetAction.isVisible = false
+        }
     }
 
     private fun onRvStatusItemClicked(position: Int, isSelected: Boolean) {
@@ -143,6 +155,11 @@ class FilterVoucherBottomSheet(
             setDataList(getListFromResource(itemsResource, selectedIds))
             setOnClickListener(onItemClicked)
         }
+    }
+
+    private fun RecyclerView.resetSelection() {
+        val adapter = adapter as? FilterVoucherAdapter
+        adapter?.resetSelection()
     }
 
     private fun getListFromResource(itemsResource: Int, selectedIds: List<Int>): List<Pair<String, Boolean>> =

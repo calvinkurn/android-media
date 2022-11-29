@@ -80,4 +80,8 @@ class FilterVoucherViewModel @Inject constructor(
     fun MutableLiveData<FilterModel>.triggerChange() {
         value = _filterData.value
     }
+
+    fun resetSelection() {
+        _filterData.value = FilterModel()
+    }
 }
