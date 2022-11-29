@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shape
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:shape="oval">
+    <solid android:color="@color/Unify_Static_Black_68"/>
+    <size
+        android:width="@dimen/feed_component_dp_60"
+        android:height="@dimen/feed_component_dp_60"/>
+</shape>

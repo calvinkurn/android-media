@@ -18,6 +18,7 @@ import com.tokopedia.feedcomponent.view.adapter.post.FeedPostCarouselAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.grid.GridPostAdapter
 import com.tokopedia.feedcomponent.view.widget.FeedExoPlayer
 import com.tokopedia.feedcomponent.view.widget.VideoStateListener
+import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -37,7 +38,7 @@ class CarouselVideoViewHolder(
 
     private var videoPlayer: FeedExoPlayer? = null
 
-    private val playButtonVideo = itemView.findViewById<ImageView>(R.id.ic_play)
+    private val playButtonVideo = itemView.findViewById<IconUnify>(R.id.ic_play)
     private val frameVideo = itemView.findViewById<ConstraintLayout>(R.id.frame_video)
     private val layoutVideo = itemView.findViewById<PlayerView>(R.id.layout_video)
     private val videoPreviewImage = itemView.findViewById<ImageUnify>(R.id.videoPreviewImage)
@@ -45,7 +46,7 @@ class CarouselVideoViewHolder(
     private val tvLihatProduct = itemView.findViewById<TextView>(R.id.tv_lihat_product)
     private val volumeIcon = itemView.findViewById<ImageView>(R.id.volume_icon)
     private val loader = itemView.findViewById<LoaderUnify>(R.id.loader)
-    private val icPlay = itemView.findViewById<ImageView>(R.id.ic_play)
+    private val icPlay = itemView.findViewById<IconUnify>(R.id.ic_play)
     private val timerView = itemView.findViewById<Typography>(R.id.timer_view)
 
     private var mMedia = FeedXMedia()
