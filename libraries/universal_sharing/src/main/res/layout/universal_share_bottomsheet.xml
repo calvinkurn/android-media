@@ -60,7 +60,8 @@
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/thumb_nail_title"
         android:layout_marginStart="16dp"
-        android:layout_width="@dimen/dp_250"
+        android:layout_marginEnd="16dp"
+        android:layout_width="0dp"
         android:layout_height="@dimen/dp_19"
         android:text="@string/tn_title"
         android:textColor="@color/Unify_NN950"
@@ -72,7 +73,8 @@
         app:layout_constraintTop_toTopOf="@id/thumb_nail_image"
         app:layout_constraintVertical_chainStyle="packed"
         app:layout_constraintBottom_toTopOf="@+id/affilate_commision"
-        app:layout_constraintLeft_toRightOf="@id/thumb_nail_image"/>
+        app:layout_constraintLeft_toRightOf="@id/thumb_nail_image"
+        app:layout_constraintRight_toRightOf="parent"/>
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/affilate_commision"
         android:layout_width="wrap_content"
