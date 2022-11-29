@@ -76,8 +76,8 @@
       "trackerId": "38075",
       "businessUnit": "play",
       "currentSite": "tokopediamarketplace",
-      "sessionIris": "{session_iris}",
-      "userId": "{user_id}"
+      "sessionIris": ".*",
+      "userId": ".*"
     }
   ]
 }
