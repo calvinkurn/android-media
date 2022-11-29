@@ -18,7 +18,7 @@ import com.tokopedia.play.view.fragment.PlayUserInteractionFragment
 import com.tokopedia.play.view.uimodel.action.ClickPartnerNameAction
 import com.tokopedia.play.view.uimodel.action.DismissFollowPopUp
 import com.tokopedia.play.view.uimodel.action.PlayViewerNewAction
-import com.tokopedia.play.view.uimodel.event.ShowErrorEvent
+import com.tokopedia.play.view.uimodel.event.FailedFollow
 import com.tokopedia.play.view.uimodel.event.ShowInfoEvent
 import com.tokopedia.play.view.uimodel.recom.PlayPartnerInfo
 import com.tokopedia.play.view.viewmodel.PlayViewModel
@@ -85,7 +85,7 @@ class PlayFollowBottomSheet @Inject constructor(private val analytic: PlayNewAna
                         analytic.impressToasterPopUp(playViewModel.channelId, playViewModel.channelType.value, isSuccess = true)
                         dismiss()
                     }
-                    is ShowErrorEvent -> {
+                    is FailedFollow -> {
                         analytic.impressToasterPopUp(playViewModel.channelId, playViewModel.channelType.value, isSuccess = false)
                         dismiss()
                     }
