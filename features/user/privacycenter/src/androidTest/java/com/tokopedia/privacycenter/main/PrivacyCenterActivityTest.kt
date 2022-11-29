@@ -9,6 +9,7 @@ import com.tokopedia.privacycenter.main.di.DaggerTestAppComponent
 import com.tokopedia.privacycenter.main.di.FakeAppModule
 import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
+import org.junit.After
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -28,6 +29,11 @@ class PrivacyCenterActivityTest {
         val component = DaggerTestAppComponent.builder().appModule(FakeAppModule(ctx)).build()
 //        fakeGql = component.fakeGraphql() as FakeGraphqlUseCase
         ApplicationProvider.getApplicationContext<BaseMainApplication>().setComponent(component)
+    }
+
+    @After
+    fun tear() {
+        InstrumentationAuthHelper.clearUserSession()
     }
 
     @Test
