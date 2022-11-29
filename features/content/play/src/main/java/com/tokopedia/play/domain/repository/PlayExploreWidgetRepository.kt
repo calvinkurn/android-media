@@ -1,5 +1,6 @@
 package com.tokopedia.play.domain.repository
 
+import com.tokopedia.content.common.model.WidgetSlot
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
 
 /**
@@ -15,7 +16,7 @@ interface PlayExploreWidgetRepository {
         cursor: String = "",
         sourceType: String,
         sourceId: String //channelId == sourceId
-    )
+    ) : WidgetSlot
 
     suspend fun updateReminder(channelId: String, type: PlayWidgetReminderType)
 }

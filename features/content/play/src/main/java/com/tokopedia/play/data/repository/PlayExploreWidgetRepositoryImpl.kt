@@ -21,15 +21,13 @@ class PlayExploreWidgetRepositoryImpl @Inject constructor(
         cursor: String,
         sourceType: String,
         sourceId: String
-    ) {
-        withContext(dispatcher.io) {
-            getPlayWidgetSlotUseCase.executeOnBackground(
-                group = group,
-                cursor = cursor,
-                sourceId = sourceId,
-                sourceType = sourceType,
-            )
-        }
+    ) = withContext(dispatcher.io) {
+        getPlayWidgetSlotUseCase.executeOnBackground(
+            group = group,
+            cursor = cursor,
+            sourceId = sourceId,
+            sourceType = sourceType,
+        )
     }
 
     override suspend fun updateReminder(channelId: String, type: PlayWidgetReminderType) {

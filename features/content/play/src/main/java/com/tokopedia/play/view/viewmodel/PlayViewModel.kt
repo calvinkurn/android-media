@@ -993,6 +993,7 @@ class PlayViewModel @AssistedInject constructor(
             PlayViewerNewAction.AutoOpenInteractive -> handleAutoOpen()
             is SendWarehouseId -> handleWarehouse(action.id, action.isOOC)
             OpenCart -> openWithLogin(ApplinkConstInternalMarketplace.CART, REQUEST_CODE_LOGIN_CART)
+            FetchWidgets -> fetchWidgets()
         }
     }
 
@@ -2660,6 +2661,18 @@ class PlayViewModel @AssistedInject constructor(
     private fun sendInitialLog(){
         playLog.logDownloadSpeed(liveRoomMetricsCommon.getInetSpeed())
         playLog.sendAll(channelId, videoPlayer)
+    }
+
+    private fun fetchWidgets() {
+        viewModelScope.launch {
+            val config = _channelDetail.value.exploreWidgetConfig
+            val data = repo.getWidgets(
+                group = config.group,
+                sourceType = config.sourceType,
+                sourceId = config.sourceId,
+                cursor = "", //put in uiModel -> _explore
+            )
+        }
     }
 
     private fun CoroutineScope.launch(

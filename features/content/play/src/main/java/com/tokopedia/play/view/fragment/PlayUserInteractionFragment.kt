@@ -1833,6 +1833,7 @@ class PlayUserInteractionFragment @Inject constructor(
     }
 
     override fun onExploreClicked(viewComponent: ExploreWidgetViewComponent) {
+        playViewModel.submitAction(FetchWidgets)
         PlayExploreWidgetFragment.getOrCreate(childFragmentManager, requireActivity().classLoader)
             .showNow(childFragmentManager)
     }
