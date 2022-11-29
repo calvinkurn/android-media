@@ -23,8 +23,6 @@ private const val WIDGET_LIVE ="live"
 const val WIDGET_UPCOMING ="upcoming"
 private const val FEED_SEE_MORE_LIVE_APP_LINK = "${ApplinkConst.FEED_PlAY_LIVE_DETAIL}?${ApplinkConstInternalFeed.PLAY_LIVE_PARAM_WIDGET_TYPE}=${WIDGET_LIVE}"
 private const val FEED_SEE_MORE_UPCOMING_APP_LINK = "${ApplinkConst.FEED_PlAY_LIVE_DETAIL}?${ApplinkConstInternalFeed.PLAY_LIVE_PARAM_WIDGET_TYPE}=${WIDGET_UPCOMING}"
-private const val  UPCOMING_WIDGET_TITLE = "Nantikan live seru lainnya!"
-private const val  LIVE_WIDGET_TITLE = "Lagi Live, nih!"
 private const val GIVEAWAY = "GIVEAWAY"
 
 

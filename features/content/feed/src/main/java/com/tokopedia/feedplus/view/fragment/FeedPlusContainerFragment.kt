@@ -115,6 +115,10 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         const val FEED_IS_VISIBLE = "FEED_IS_VISIBLE"
 
         private const val USER_ICON_COACH_MARK_DURATION = 7000L
+        const val PARAM_FEED_TAB_POSITION = "FEED_TAB_POSITION"
+        const val UPDATE_TAB_POSITION = "1"
+        const val EXPLORE_TAB_POSITION = "2"
+        const val VIDEO_TAB_POSITION = "3"
 
         @JvmStatic
         fun newInstance(bundle: Bundle?) = FeedPlusContainerFragment().apply { arguments = bundle }
@@ -411,14 +415,19 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
                 .forEach { it.onParentFragmentHiddenChanged(hidden) }
     }
 
-    @JvmOverloads
-    fun goToExplore(shouldResetCategory: Boolean = false) {
+    private fun goToExplore(shouldResetCategory: Boolean = false) {
         if (canGoToExplore()) {
             viewPager?.currentItem = pagerAdapter.getContentExploreIndex()
 
             if (shouldResetCategory) {
                 pagerAdapter.getContentExplore()?.onCategoryReset()
             }
+        }
+    }
+    private fun goToVideo() {
+        if (canGoToVideo()) {
+            view_pager.currentItem = pagerAdapter.getVideoTabIndex()
+
         }
     }
 
@@ -593,8 +602,18 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         if (hasCategoryIdParam()) {
             goToExplore()
         }
+        if (hasFeedTabParam()){
+            openTabAsPerParamValue()
+        }
 
         viewModel.getWhitelist()
+    }
+    private fun openTabAsPerParamValue() {
+
+        when (arguments?.getString(PARAM_FEED_TAB_POSITION) ?: UPDATE_TAB_POSITION ) {
+            EXPLORE_TAB_POSITION -> goToExplore()
+            VIDEO_TAB_POSITION -> goToVideo()
+        }
     }
 
     private fun handleWhitelistData(whitelistDomain: WhitelistDomain) {
@@ -620,6 +639,9 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
                 showCreatePostOnBoarding()
             } else feedFloatingButton.hide()
         } catch (e: Exception) { }
+    }
+    private fun canGoToVideo(): Boolean {
+        return pagerAdapter.isVideoTabExist()
     }
 
     private fun createLiveFab(): FloatingButtonItem {
@@ -724,6 +746,11 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     private fun hasCategoryIdParam(): Boolean {
         return !arguments?.getString(ContentExploreFragment.PARAM_CATEGORY_ID).isNullOrBlank()
     }
+
+    private fun hasFeedTabParam(): Boolean {
+        return !arguments?.getString(PARAM_FEED_TAB_POSITION).isNullOrBlank()
+    }
+
 
     private fun canGoToExplore(): Boolean {
         return pagerAdapter.isContextExploreExist()

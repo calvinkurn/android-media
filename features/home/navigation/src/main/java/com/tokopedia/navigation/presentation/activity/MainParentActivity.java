@@ -144,6 +144,8 @@ public class MainParentActivity extends BaseActivity implements
 
     public static final String MO_ENGAGE_COUPON_CODE = "coupon_code";
     public static final String ARGS_TAB_POSITION = "TAB_POSITION";
+    public static final String ARGS_FEED_TAB_POSITION = "FEED_TAB_POSITION";
+    public static final String ARGS_FEED_VIDEO_TAB_SELECT_CHIP = "tab";
     public static final int HOME_MENU = 0;
     public static final int FEED_MENU = 1;
     public static final int OS_MENU = 2;
@@ -455,6 +457,14 @@ public class MainParentActivity extends BaseActivity implements
                 } else {
                     ((OfficialHomeContainerFragment) fragment).selectTabByCategoryId(keyCategory);
                 }
+            }
+            if (getIntent() != null &&
+                    getIntent().getData() != null &&
+                    getIntent().getData().getQueryParameter(ARGS_FEED_TAB_POSITION) != null) {
+                Bundle args = new Bundle();
+                args.putString(ARGS_FEED_TAB_POSITION, getIntent().getData().getQueryParameter(ARGS_FEED_TAB_POSITION));
+                args.putString(ARGS_FEED_VIDEO_TAB_SELECT_CHIP, getIntent().getData().getQueryParameter(ARGS_FEED_VIDEO_TAB_SELECT_CHIP));
+                fragment.setArguments(args);
             }
             selectFragment(fragment);
         }
@@ -1354,6 +1364,11 @@ public class MainParentActivity extends BaseActivity implements
             presenter.get().getNotificationData();
             Intent intent = new Intent(BROADCAST_FEED);
             intent.putExtra(FEED_IS_VISIBLE, true);
+            if (getIntent() != null &&
+                    getIntent().getData() != null &&
+                    getIntent().getData().getQueryParameter(ARGS_TAB_POSITION) != null) {
+                intent.putExtra(getIntent().getStringExtra(ARGS_FEED_TAB_POSITION), -1);
+            }
             LocalBroadcastManager.getInstance(getContext().getApplicationContext()).sendBroadcast(intent);
         }
 
