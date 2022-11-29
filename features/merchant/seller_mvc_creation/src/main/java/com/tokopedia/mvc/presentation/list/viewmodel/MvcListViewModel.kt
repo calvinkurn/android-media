@@ -57,7 +57,8 @@ class MvcListViewModel @Inject constructor(
                     voucherType = filter.voucherType,
                     page = page,
                     perPage = pageSize,
-                    targetBuyer = filter.targetBuyer
+                    targetBuyer = filter.targetBuyer,
+                    source = filter.source
                 )
                 _voucherList.postValue(getVoucherListUseCase.execute(param))
             },

@@ -5,6 +5,7 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.mvc.domain.entity.enums.PromoType
 import com.tokopedia.mvc.domain.entity.enums.VoucherServiceType
 import com.tokopedia.mvc.domain.entity.enums.VoucherSort
+import com.tokopedia.mvc.domain.entity.enums.VoucherSource
 import com.tokopedia.mvc.domain.entity.enums.VoucherStatus
 import com.tokopedia.mvc.domain.entity.enums.VoucherSubsidy
 import com.tokopedia.mvc.domain.entity.enums.VoucherTarget
@@ -50,7 +51,8 @@ data class VoucherListParam (
             perPage: Int? = Int.ZERO,
             voucherName: String? = null,
             voucherType: List<VoucherServiceType> = emptyList(),
-            targetBuyer: List<VoucherTargetBuyer> = emptyList()
+            targetBuyer: List<VoucherTargetBuyer> = emptyList(),
+            source: List<VoucherSource> = emptyList()
         ): VoucherListParam {
             return VoucherListParam(
                 voucherType = type?.type,
@@ -60,12 +62,24 @@ data class VoucherListParam (
                 perPage = perPage,
                 sortBy = sort?.type,
                 isInverted = false,
-                includeSubsidy = VoucherSubsidy.SELLER_AND_TOKOPEDIA.type,
-                isVps = listOf(VoucherVps.VPS.type, VoucherVps.NON_VPS.type).joinToString(VALUE_DELIMITER),
+                includeSubsidy = source.mapToSubsidy(),
+                isVps = if (source.any { it == VoucherSource.VPS_PROMOTION }) VoucherVps.VPS.type.toString() else "",
                 voucherName = voucherName,
                 targetBuyer = targetBuyer.map { it.type }.joinToString(VALUE_DELIMITER),
                 isLockToProduct = voucherType.map { it.type }.joinToString(VALUE_DELIMITER)
             )
+        }
+
+        private fun List<VoucherSource>.mapToSubsidy(): Int {
+            return if (any { it == VoucherSource.SELLER_BUDGET } && any { it == VoucherSource.SELLER_BUDGET }) {
+                VoucherSubsidy.SELLER_AND_TOKOPEDIA.type
+            } else if (any { it == VoucherSource.TOKOPEDIA_BUDGET }) {
+                VoucherSubsidy.SELLER.type
+            } else if (any { it == VoucherSource.TOKOPEDIA_BUDGET }) {
+                VoucherSubsidy.TOKOPEDIA.type
+            } else {
+                VoucherSubsidy.SELLER_AND_TOKOPEDIA.type
+            }
         }
     }
 }
