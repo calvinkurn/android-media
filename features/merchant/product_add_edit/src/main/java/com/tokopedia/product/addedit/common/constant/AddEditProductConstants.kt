@@ -49,4 +49,6 @@ object AddEditProductConstants {
 
     // only applied to CE (Commission Engine) service
     const val GET_COMMISSION_ENGINE_REGULAR_MERCHANT = 999
+
+    const val CATEGORY_EDU_URL = "CATEGORY_EDU_URL"
 }
