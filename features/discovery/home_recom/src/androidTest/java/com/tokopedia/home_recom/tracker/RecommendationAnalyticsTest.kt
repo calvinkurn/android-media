@@ -13,6 +13,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.home_recom.HomeRecommendationActivity
 import com.tokopedia.home_recom.R
+import com.tokopedia.home_recom.ui.HomeRecomMockValueHelper
 import com.tokopedia.home_recom.view.viewholder.ProductInfoViewHolder
 import com.tokopedia.home_recom.view.viewholder.RecommendationCarouselViewHolder
 import com.tokopedia.home_recom.view.viewholder.RecommendationItemViewHolder
@@ -46,6 +47,7 @@ class RecommendationAnalyticsTest {
 
     @Before
     fun setup() {
+        HomeRecomMockValueHelper.setupRemoteConfig()
         setupGraphqlMockResponse(RecommendationMockResponseConfig())
         activityRule.launchActivity(
             HomeRecommendationActivity.newInstance(InstrumentationRegistry.getInstrumentation().targetContext, "547113763").apply {

@@ -13,6 +13,7 @@ import androidx.test.platform.app.InstrumentationRegistry
 import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.home_recom.R
 import com.tokopedia.home_recom.SimilarProductRecommendationActivity
+import com.tokopedia.home_recom.ui.HomeRecomMockValueHelper
 import com.tokopedia.home_recom.view.viewholder.RecommendationItemViewHolder
 import com.tokopedia.test.application.annotations.CassavaTest
 import com.tokopedia.test.application.assertion.topads.TopAdsVerificationTestReportUtil
@@ -44,6 +45,7 @@ class SimilarRecommendationAnalyticsTest {
 
     @Before
     fun setup() {
+        HomeRecomMockValueHelper.setupRemoteConfig()
         setupGraphqlMockResponse(SimilarRecommendationMockResponseConfig())
         activityRule.launchActivity(Intent(InstrumentationRegistry.getInstrumentation().targetContext, SimilarProductRecommendationActivity::class.java))
     }
