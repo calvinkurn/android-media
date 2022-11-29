@@ -143,6 +143,7 @@ data class FeedXCard(
             typename = typename,
             id = id,
             type = type,
+            hasVoucher = hasVoucher,
             playChannelID = playChannelID,
             mediaRatio = mediaRatio,
             author = author,
