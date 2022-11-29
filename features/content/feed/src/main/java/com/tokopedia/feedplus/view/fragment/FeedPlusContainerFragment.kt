@@ -110,6 +110,9 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         const val FEED_BACKGROUND_CROSSFADER_DURATION = 200
         const val FEED_FRAGMENT_INDEX = 0
 
+        const val ARGS_FEED_TAB_POSITION = "FEED_TAB_POSITION"
+        const val ARGS_FEED_VIDEO_TAB_SELECT_CHIP = "tab"
+
         private const val BROADCAST_FEED = "BROADCAST_FEED"
         const val FEED_IS_VISIBLE = "FEED_IS_VISIBLE"
 
@@ -210,6 +213,11 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         })
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        addDataToArgument()
+    }
+
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
                               savedInstanceState: Bundle?): View? {
         return inflater.inflate(R.layout.fragment_feed_plus_container, container, false)
@@ -228,6 +236,21 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         initView()
         requestFeedTab()
         initFab()
+    }
+
+    private fun addDataToArgument(){
+        activity?.intent?.let {
+            val args = Bundle()
+            args.putString(
+                ARGS_FEED_TAB_POSITION,
+                it.data?.getQueryParameter(ARGS_FEED_TAB_POSITION)
+            )
+            args.putString(
+                ARGS_FEED_VIDEO_TAB_SELECT_CHIP,
+                it.data?.getQueryParameter(ARGS_FEED_VIDEO_TAB_SELECT_CHIP)
+            )
+            arguments = args
+        }
     }
 
     override fun onAttachFragment(childFragment: Fragment) {

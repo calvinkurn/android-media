@@ -13,17 +13,12 @@ import com.tokopedia.user.session.UserSession
 
 object DeeplinkMapperHome {
 
-    const val EXTRA_TAB_POSITION = "TAB_POSITION"
-    const val EXTRA_FEED_TAB_POSITION = "FEED_TAB_POSITION"
-    const val ARGS_FEED_VIDEO_TAB_SELECT_CHIP = "tab"
-
     const val EXTRA_ACCOUNT_TAB = "ACCOUNT_TAB"
     const val EXTRA_ACCOUNT_TAB_VALUE_SELLER = "ACCOUNT_TAB_SELLER"
     const val EXTRA_RECOMMEND_LIST = "recommend_list"
 
     const val TAB_POSITION_FEED = 1
-    const val TAB_POSITION_EXPLORE = 2
-    const val TAB_POSITION_VIDEO = 3
+    const val EXTRA_TAB_POSITION = "TAB_POSITION"
     const val TAB_POSITION_ACCOUNT = 4
     const val TAB_POSITION_OS = 2
     const val TAB_POSITION_RECOM = 5
@@ -105,21 +100,6 @@ object DeeplinkMapperHome {
 
     fun getRegisteredNavigationHomeFeed(): String {
         return UriUtil.buildUriAppendParams(ApplinkConsInternalHome.HOME_NAVIGATION, mapOf(EXTRA_TAB_POSITION to TAB_POSITION_FEED))
-    }
-    fun getRegisteredNavigationHomeFeedExplore(): String {
-        return UriUtil.buildUriAppendParams(ApplinkConsInternalHome.HOME_NAVIGATION, mapOf(EXTRA_TAB_POSITION to TAB_POSITION_FEED, EXTRA_FEED_TAB_POSITION to TAB_POSITION_EXPLORE))
-    }
-    fun getRegisteredNavigationHomeFeedVideo(deeplink: String): String {
-        val selectedChip =
-            Uri.parse(deeplink).getQueryParameter(ARGS_FEED_VIDEO_TAB_SELECT_CHIP) ?: ""
-        return UriUtil.buildUriAppendParams(
-            ApplinkConsInternalHome.HOME_NAVIGATION,
-            mapOf(
-                EXTRA_TAB_POSITION to TAB_POSITION_FEED,
-                EXTRA_FEED_TAB_POSITION to TAB_POSITION_VIDEO,
-                ARGS_FEED_VIDEO_TAB_SELECT_CHIP to selectedChip
-            )
-        )
     }
 
     fun getRegisteredNavigationHomeContentExplore(deeplink: String): String {
