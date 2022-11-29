@@ -4,18 +4,25 @@ import com.google.gson.Gson
 import com.tokopedia.common.network.coroutines.repository.RestRepository
 import com.tokopedia.common.network.data.model.RestRequest
 import com.tokopedia.common.network.data.model.RestResponse
+import com.tokopedia.privacycenter.main.section.privacypolicy.PrivacyPolicyConst
 import com.tokopedia.privacycenter.main.section.privacypolicy.domain.data.PrivacyPolicyListResponse
 import timber.log.Timber
 import java.lang.reflect.Type
 
-class FakeRestRepo: RestRepository {
+class FakeRestRepo : RestRepository {
     override suspend fun getResponse(request: RestRequest): RestResponse {
-        Timber.d("getting request $request")
-        val obj = Gson().fromJson(responseJson, PrivacyPolicyListResponse::class.java)
-        return RestResponse(obj, 200, false).apply {
-            type = request.typeOfT
-            isError = false
+        Timber.d("processing request $request")
+        return when {
+            request.url.contains(PrivacyPolicyConst.GET_LIST_URL) -> {
+                val obj = Gson().fromJson(responseJson, PrivacyPolicyListResponse::class.java)
+                RestResponse(obj, 200, false).apply {
+                    type = request.typeOfT
+                    isError = false
+                }
+            }
+            else -> TODO()
         }
+
     }
 
     override suspend fun getResponses(requests: List<RestRequest>): Map<Type, RestResponse> {
