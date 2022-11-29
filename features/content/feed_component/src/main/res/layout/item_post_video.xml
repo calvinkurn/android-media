@@ -52,6 +52,8 @@
             android:background="@drawable/bg_circle_play_button"
             app:icon_color_light_enable="@color/Unify_Static_White"
             app:icon_color_night_enable="@color/Unify_Static_White"
+            app:icon_color_light_disabled="@color/Unify_Static_White"
+            app:icon_color_night_disabled="@color/Unify_Static_White"
             app:icon_name="PLAY"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
