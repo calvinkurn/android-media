@@ -1,26 +1,8 @@
 package com.tokopedia.play.di.module
 
-import com.tokopedia.play.data.repository.PlayViewerBroTrackerRepositoryImpl
-import com.tokopedia.play.data.repository.PlayViewerCartRepositoryImpl
-import com.tokopedia.play.data.repository.PlayViewerChannelRepositoryImpl
-import com.tokopedia.play.data.repository.PlayViewerInteractiveRepositoryImpl
-import com.tokopedia.play.data.repository.PlayViewerLikeRepositoryImpl
-import com.tokopedia.play.data.repository.PlayViewerPartnerRepositoryImpl
-import com.tokopedia.play.data.repository.PlayViewerRepositoryImpl
-import com.tokopedia.play.data.repository.PlayViewerSocketRepositoryImpl
-import com.tokopedia.play.data.repository.PlayViewerTagItemRepositoryImpl
-import com.tokopedia.play.data.repository.PlayViewerUserReportRepositoryImpl
+import com.tokopedia.play.data.repository.*
 import com.tokopedia.play.di.PlayScope
-import com.tokopedia.play.domain.repository.PlayViewerBroTrackerRepository
-import com.tokopedia.play.domain.repository.PlayViewerCartRepository
-import com.tokopedia.play.domain.repository.PlayViewerChannelRepository
-import com.tokopedia.play.domain.repository.PlayViewerInteractiveRepository
-import com.tokopedia.play.domain.repository.PlayViewerLikeRepository
-import com.tokopedia.play.domain.repository.PlayViewerPartnerRepository
-import com.tokopedia.play.domain.repository.PlayViewerRepository
-import com.tokopedia.play.domain.repository.PlayViewerSocketRepository
-import com.tokopedia.play.domain.repository.PlayViewerTagItemRepository
-import com.tokopedia.play.domain.repository.PlayViewerUserReportRepository
+import com.tokopedia.play.domain.repository.*
 import com.tokopedia.play.view.storage.interactive.PlayInteractiveStorage
 import com.tokopedia.play.view.storage.interactive.PlayInteractiveStorageImpl
 import dagger.Binds
@@ -75,4 +57,8 @@ abstract class PlayRepositoryModule {
     @Binds
     @PlayScope
     abstract fun bindRepository(repo: PlayViewerRepositoryImpl): PlayViewerRepository
+
+    @Binds
+    @PlayScope
+    abstract fun bindWidgetRepository(repo: PlayExploreWidgetRepositoryImpl) : PlayExploreWidgetRepository
 }
