@@ -275,7 +275,6 @@ class ProductSheetViewComponent(
         if (shouldShow) {
             tvSheetTitle.show()
             rvProductList.show()
-            voucherInfo.show()
 
             globalError.hide()
             clProductEmpty.hide()
