@@ -148,8 +148,8 @@ class WishlistCollectionDetailViewModel @Inject constructor(
             WishlistIdlingResource.decrement()
         }, onError = {
                 _collectionItems.value = Fail(it)
-            WishlistIdlingResource.decrement()
-        })
+                WishlistIdlingResource.decrement()
+            })
     }
 
     fun loadRecommendation(page: Int) {
@@ -351,8 +351,8 @@ class WishlistCollectionDetailViewModel @Inject constructor(
                 withContext(dispatcher.io) { addToWishlistV2UseCase.executeOnBackground() }
             if (result is Success) {
                 listener.onSuccessAddWishlist(result.data, productId)
-            } else if (result is Fail) {
-                listener.onErrorAddWishList(result.throwable, productId)
+            } else {
+                listener.onErrorAddWishList((result as Fail).throwable, productId)
             }
         }
     }
