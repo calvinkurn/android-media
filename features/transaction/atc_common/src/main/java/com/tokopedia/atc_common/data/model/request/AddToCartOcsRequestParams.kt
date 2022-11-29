@@ -38,7 +38,7 @@ data class AddToCartOcsRequestParams(
         var isTradeIn: Boolean = false,
 
         @SerializedName("shipping_price")
-        var shippingPrice: Int = 0,
+        var shippingPrice: Double = 0.0,
 
         // analytics data
         var productName: String = "",

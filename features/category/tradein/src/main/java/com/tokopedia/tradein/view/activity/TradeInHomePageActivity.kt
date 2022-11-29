@@ -39,7 +39,6 @@ import com.tokopedia.tradein.viewmodel.liveState.GoToCheckout
 import com.tokopedia.unifycomponents.Toaster
 import timber.log.Timber
 import javax.inject.Inject
-import kotlin.math.roundToInt
 
 const val APP_SETTINGS = 9988
 const val LOGIN_REQUEST = 514
@@ -279,7 +278,7 @@ class TradeInHomePageActivity : BaseViewModelActivity<TradeInHomePageVM>(),
                 trackerAttribution = data.trackerAttributionPdp ?: ""
                 trackerListName = data.trackerListNamePdp ?: ""
                 isTradeIn = true
-                shippingPrice = data.shippingMinimumPrice.roundToInt()
+                shippingPrice = data.shippingMinimumPrice
                 productName = data.getProductName ?: ""
                 category = data.categoryName ?: ""
                 price = finalPrice

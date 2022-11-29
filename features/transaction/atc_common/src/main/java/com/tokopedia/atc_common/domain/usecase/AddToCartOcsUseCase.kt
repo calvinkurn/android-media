@@ -15,6 +15,7 @@ import com.tokopedia.usecase.UseCase
 import rx.Observable
 import javax.inject.Inject
 import javax.inject.Named
+import kotlin.math.roundToLong
 
 /**
  * Created by Irfan Khoirul on 2019-07-10.
@@ -56,7 +57,7 @@ open class AddToCartOcsUseCase @Inject constructor(@Named("atcOcsMutation") priv
                         PARAM_TRACKER_LIST_NAME to ocsRequestParams.trackerListName,
                         PARAM_UC_UT to ocsRequestParams.utParam,
                         PARAM_IS_TRADE_IN to ocsRequestParams.isTradeIn,
-                        PARAM_SHIPPING_PRICE to ocsRequestParams.shippingPrice,
+                        PARAM_SHIPPING_PRICE to ocsRequestParams.shippingPrice.roundToLong(),
                         KEY_CHOSEN_ADDRESS to chosenAddressAddToCartRequestHelper.getChosenAddress()
                 )
         )

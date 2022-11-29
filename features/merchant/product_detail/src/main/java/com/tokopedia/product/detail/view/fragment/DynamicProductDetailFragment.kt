@@ -4531,7 +4531,7 @@ open class DynamicProductDetailFragment :
                         trackerAttribution = trackerAttributionPdp ?: ""
                         trackerListName = trackerListNamePdp ?: ""
                         isTradeIn = data.data.isTradeIn
-                        shippingPrice = viewModel.shippingMinimumPrice.roundToIntOrZero()
+                        shippingPrice = viewModel.shippingMinimumPrice
                         productName = data.getProductName
                         category = data.basic.category.name
                         price = data.finalPrice.toString()
