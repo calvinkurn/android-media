@@ -64,7 +64,7 @@ object TokoChatConnection {
                 ""
             ) == RollenceKey.KEY_ROLLENCE_TOKOCHAT
         } catch (e: Throwable) {
-            true
+            false
         }
     }
 }
