@@ -1,6 +1,5 @@
 package com.tokopedia.campaignlist.page.presentation.activity
 
-import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
@@ -12,17 +11,12 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
-import androidx.compose.material.MaterialTheme
+import androidx.compose.material.Surface
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.State
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.contentDescription
-import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -36,6 +30,7 @@ import com.tokopedia.campaignlist.page.presentation.model.ActiveCampaign
 import com.tokopedia.campaignlist.page.presentation.model.CampaignStatusSelection
 import com.tokopedia.campaignlist.page.presentation.model.CampaignTypeSelection
 import com.tokopedia.campaignlist.page.presentation.viewmodel.CampaignListViewModel
+import com.tokopedia.common_compose.extensions.tag
 import com.tokopedia.common_compose.principles.NestButton
 import com.tokopedia.common_compose.principles.NestHeader
 import com.tokopedia.common_compose.principles.NestImage
@@ -47,12 +42,13 @@ import com.tokopedia.common_compose.principles.NestTicker
 import com.tokopedia.common_compose.principles.NestTypography
 import com.tokopedia.common_compose.principles.SortFilter
 import com.tokopedia.common_compose.principles.TickerType
+import com.tokopedia.common_compose.ui.NestNN
 import com.tokopedia.common_compose.ui.NestTheme
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 
 @Composable
 fun CampaignListScreen(
-    uiState: State<CampaignListViewModel.UiState>,
+    uiState: CampaignListViewModel.UiState,
     onTapCampaignStatusFilter: (List<CampaignStatusSelection>) -> Unit,
     onTapCampaignTypeFilter: (List<CampaignTypeSelection>) -> Unit,
     onClearFilter: () -> Unit,
@@ -62,47 +58,55 @@ fun CampaignListScreen(
     onTapShareCampaignButton : (ActiveCampaign) -> Unit,
     onToolbarBackIconPressed: () -> Unit
 ) {
-    Column(modifier = Modifier
-        .background(color = MaterialTheme.colors.primary)
-        .fillMaxSize()
-        .semantics { contentDescription = "Campaign List" }
-    ) {
-        Toolbar(
-            title = stringResource(id = R.string.active_campaign_list),
-            onToolbarBackIconPressed = onToolbarBackIconPressed
-        )
 
-        SearchBar(
-            modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
-            onSearchBarKeywordSubmit = onSearchBarKeywordSubmit,
-            onSearchbarCleared = onSearchbarCleared
-        )
+    Surface(modifier = Modifier.background(NestNN.light._0).fillMaxSize()) {
+        Column {
+            Toolbar(
+                title = stringResource(id = R.string.active_campaign_list),
+                onToolbarBackIconPressed = onToolbarBackIconPressed
+            )
 
-        PageSortFilter(
-            modifier = Modifier.padding(horizontal = 16.dp),
-            selectedCampaignStatus = uiState.value.selectedCampaignStatus?.statusText.orEmpty(),
-            selectedCampaignType = uiState.value.selectedCampaignType?.campaignTypeName.orEmpty(),
-            onTapCampaignStatusFilter = { onTapCampaignStatusFilter(uiState.value.campaignStatus) },
-            onTapCampaignTypeFilter = { onTapCampaignTypeFilter(uiState.value.campaignType) },
-            onClearFilter = onClearFilter,
-            shouldShowClearFilterIcon = uiState.value.showClearFilterIcon
-        )
-
-        if (!uiState.value.isTickerDismissed) {
-            CampaignTicker(
+            SearchBar(
                 modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
-                onDismissed = onTickerDismissed
+                onSearchBarKeywordSubmit = onSearchBarKeywordSubmit,
+                onSearchbarCleared = onSearchbarCleared
+            )
+
+            FilterWidget(
+                modifier = Modifier.padding(horizontal = 16.dp),
+                selectedCampaignStatus = uiState.selectedCampaignStatus?.statusText.orEmpty(),
+                selectedCampaignType = uiState.selectedCampaignType?.campaignTypeName.orEmpty(),
+                onTapCampaignStatusFilter = { onTapCampaignStatusFilter(uiState.campaignStatus) },
+                onTapCampaignTypeFilter = { onTapCampaignTypeFilter(uiState.campaignType) },
+                onClearFilter = onClearFilter,
+                shouldShowClearFilterIcon = uiState.showClearFilterIcon
+            )
+
+            if (!uiState.isTickerDismissed) {
+                CampaignTicker(
+                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 12.dp),
+                    onDismissed = onTickerDismissed
+                )
+            }
+
+            List(
+                modifier = Modifier.tag(tag = "List"),
+                campaigns = uiState.campaigns,
+                onTapShareButton = onTapShareCampaignButton
             )
         }
-
-        List(campaigns = uiState.value.campaigns, onTapShareCampaignButton)
     }
+
 }
 
 @Composable
-fun List(campaigns: List<ActiveCampaign>, onTapShareButton: (ActiveCampaign) -> Unit) {
-    LazyColumn {
-        items(campaigns) {
+fun List(
+    modifier: Modifier = Modifier,
+    campaigns: List<ActiveCampaign>,
+    onTapShareButton: (ActiveCampaign) -> Unit
+) {
+    LazyColumn(modifier = modifier) {
+        items(campaigns, key = { it.campaignId }) {
             CampaignItem(it, onTapShareButton)
         }
     }
@@ -136,7 +140,7 @@ private fun Toolbar(
 }
 
 @Composable
-private fun PageSortFilter(
+private fun FilterWidget(
     modifier: Modifier = Modifier,
     selectedCampaignStatus: String,
     selectedCampaignType: String,
@@ -356,70 +360,6 @@ fun CampaignLabel(modifier: Modifier, campaignStatus: String, campaignStatusId: 
     NestLabel(modifier = modifier, labelText = campaignStatus, nestLabelType = nestLabelType)
 }
 
-@Preview(name = "Campaign List Page")
-@Composable
-fun CampaignListPagePreview() {
-    NestTheme {
-        val campaigns = listOf(
-            ActiveCampaign(
-                campaignName = "Flash Sale 9.9",
-                campaignStatus = "Dibatalkan",
-                startDate = "09-09-2020",
-                endDate = "10-09-2020",
-                startTime = "00:00",
-                endTime = "23:59",
-                productQty = "9",
-                campaignType = "Rilisan Spesial"
-            )
-        )
-        val state = remember { mutableStateOf(CampaignListViewModel.UiState(campaigns = campaigns)) }
-        CampaignListScreen(
-            uiState = state,
-            onTapCampaignStatusFilter = {},
-            onTapCampaignTypeFilter = {},
-            onTapShareCampaignButton = {},
-            onClearFilter = {},
-            onSearchBarKeywordSubmit = {},
-            onSearchbarCleared = {},
-            onTickerDismissed = {},
-            onToolbarBackIconPressed = {}
-        )
-    }
-
-}
-
-
-@Preview(name = "Campaign List Page [Dark]", uiMode = Configuration.UI_MODE_NIGHT_YES)
-@Composable
-fun CampaignListPageDarkPreview() {
-    NestTheme {
-        val campaigns = listOf(
-            ActiveCampaign(
-                campaignName = "Flash Sale 9.9",
-                campaignStatus = "Dibatalkan",
-                startDate = "09-09-2020",
-                endDate = "10-09-2020",
-                startTime = "00:00",
-                endTime = "23:59",
-                productQty = "9",
-                campaignType = "Rilisan Spesial"
-            )
-        )
-        val state = remember { mutableStateOf(CampaignListViewModel.UiState(campaigns = campaigns)) }
-        CampaignListScreen(
-            uiState = state,
-            onTapCampaignStatusFilter = {},
-            onTapCampaignTypeFilter = {},
-            onTapShareCampaignButton = {},
-            onClearFilter = {},
-            onSearchBarKeywordSubmit = {},
-            onSearchbarCleared = {},
-            onTickerDismissed = {},
-            onToolbarBackIconPressed = {}
-        )
-    }
-
-}
 
 @Preview(name = "Campaign Item")
 @Composable
