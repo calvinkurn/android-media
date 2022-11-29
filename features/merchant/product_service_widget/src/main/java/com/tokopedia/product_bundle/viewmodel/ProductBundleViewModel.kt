@@ -255,7 +255,7 @@ class ProductBundleViewModel @Inject constructor(
                 productId = bundleItem.productID,
                 productName = bundleItem.name,
                 productImageUrl = bundleItem.picURL,
-                productQuantity = bundleItem.minOrder.coerceAtLeast(ATC_BUNDLE_QUANTITY),
+                productQuantity = bundleItem.getPreviewMinOrder().coerceAtLeast(ATC_BUNDLE_QUANTITY),
                 originalPrice = bundleItem.getPreviewOriginalPrice(),
                 bundlePrice = bundleItem.getPreviewBundlePrice(),
                 warehouseId = warehouseId,
@@ -293,8 +293,8 @@ class ProductBundleViewModel @Inject constructor(
             target?.apply {
                 val selectedProductVariant = productVariant?.getChildByProductId(selectedVariantId.toString())
                 this.selectedVariantId = selectedProductVariant?.productId
-                this.originalPrice = selectedProductVariant?.finalMainPrice.orZero()
-                this.bundlePrice = selectedProductVariant?.finalPrice.orZero()
+                this.originalPrice = selectedProductVariant?.finalMainPrice.orZero() * this.productQuantity
+                this.bundlePrice = selectedProductVariant?.finalPrice.orZero() * this.productQuantity
                 this.discountAmount = calculateDiscountPercentage(originalPrice, bundlePrice)
                 this.selectedVariantText = getSelectedVariantText(productVariant, this.selectedVariantId ?: "")
                 this.productImageUrl = selectedProductVariant?.picture?.url100.orEmpty()
