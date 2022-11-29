@@ -27,9 +27,9 @@ import com.tokopedia.tokopedianow.common.model.TEXT_DARK_ORANGE
 import com.tokopedia.tokopedianow.common.model.TRANSPARENT_BLACK
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardViewUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardViewUiModel.LabelGroup
-import com.tokopedia.tokopedianow.common.util.ViewUtil.doOnPreDraw
 import com.tokopedia.tokopedianow.common.util.ViewUtil.getDpFromDimen
 import com.tokopedia.tokopedianow.common.util.ViewUtil.safeParseColor
+import com.tokopedia.tokopedianow.common.util.doOnPreDraw
 import com.tokopedia.tokopedianow.databinding.LayoutTokopedianowProductCardViewBinding
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ProductItemListener
 import com.tokopedia.tokopedianow.similarproduct.activity.TokoNowSimilarProductActivity
@@ -113,7 +113,8 @@ class TokoNowProductCardView @JvmOverloads constructor(
         )
         initSimilarProductTypography(
             isOos = model.isOos(),
-            isShown = model.isSimilarProductShown
+            isShown = model.isSimilarProductShown,
+            productId = model.productId
         )
         initProgressBar(
             isFlashSale = model.isFlashSale(),
