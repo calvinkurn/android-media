@@ -301,9 +301,8 @@ class PlayBroadcasterViewModelTest {
 
     @Test
     fun `when user only have shop and not eligible then selected account is shop with info`() {
-        val configMock = uiModelBuilder.buildConfigurationUiModel(tnc = listOf(
-            TermsAndConditionUiModel("apa aja")
-        ))
+        val mockTnc = listOf(TermsAndConditionUiModel("apa aja"))
+        val configMock = uiModelBuilder.buildConfigurationUiModel(tnc = mockTnc)
         val accountMock = uiModelBuilder.buildAccountListModel(tncShop = false, onlyShop = true)
 
         coEvery { mockRepo.getAccountList() } returns accountMock
@@ -325,7 +324,7 @@ class PlayBroadcasterViewModelTest {
             state.accountStateInfo.type.assertEqualTo(AccountStateInfoType.NotAcceptTNC)
             state.accountStateInfo.selectedAccount.type.assertEqualTo(TYPE_SHOP)
             it.getViewModel().isAllowChangeAccount.assertFalse()
-            it.getViewModel().tncList.assertEqualTo(listOf(TermsAndConditionUiModel("apa aja")))
+            it.getViewModel().tncList.assertEqualTo(mockTnc)
         }
     }
 
