@@ -35,12 +35,18 @@ class AddLogoFilterRepositoryImpl(
                 .submit()
                 .get()
 
-            val addedBitmap = Glide
+            var addedBitmap = Glide
                 .with(context)
                 .asBitmap()
                 .load(imageAddedUrl)
                 .submit()
                 .get()
+
+            val widthValidation = baseBitmap.width != addedBitmap.width
+            val heightValidation = baseBitmap.height != addedBitmap.height
+            if (widthValidation || heightValidation) {
+                addedBitmap = Bitmap.createScaledBitmap(addedBitmap, baseBitmap.width, baseBitmap.height, true)
+            }
 
             val canvas = Canvas(baseBitmap)
             canvas.drawBitmap(addedBitmap, XY_FLATTEN_COORDINATE, XY_FLATTEN_COORDINATE, Paint())

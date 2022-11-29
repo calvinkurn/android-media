@@ -42,8 +42,6 @@
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/img_preview_overlay"
             android:translationZ="2dp"
-            android:background="@color/Unify_RN500"
-            android:alpha="0.2"
             android:layout_centerVertical="true"
             android:layout_centerHorizontal="true"
             android:layout_width="100dp"
