@@ -18,11 +18,14 @@ class AffiliateEducationLearnVH(
         var LAYOUT = R.layout.affiliate_education_learn_item
     }
 
+    private val bantuanContainer = itemView.findViewById<View>(R.id.bantuan_container)
+    private val kamusContainer = itemView.findViewById<View>(R.id.kamus_container)
+
     override fun bind(element: AffiliateEducationLearnUiModel?) {
-        itemView.findViewById<View>(R.id.bantuan_container).setOnClickListener {
+        bantuanContainer.setOnClickListener {
             affiliateEducationLearnClickInterface?.onBantuanClick()
         }
-        itemView.findViewById<View>(R.id.kamus_container).setOnClickListener {
+        kamusContainer.setOnClickListener {
             affiliateEducationLearnClickInterface?.onKamusClick()
         }
     }

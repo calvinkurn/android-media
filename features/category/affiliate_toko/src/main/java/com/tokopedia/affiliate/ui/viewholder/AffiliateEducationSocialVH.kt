@@ -26,7 +26,6 @@ class AffiliateEducationSocialVH(
 ) : AbstractViewHolder<AffiliateEducationSocialUiModel>(itemView) {
 
     companion object {
-
         private const val ROUND_RADIUS = 0.5f
 
         @JvmField
@@ -44,7 +43,8 @@ class AffiliateEducationSocialVH(
             this.fillColor = ColorStateList(
                 arrayOf(
                     intArrayOf(android.R.attr.state_enabled)
-                ), intArrayOf(
+                ),
+                intArrayOf(
                     MethodChecker.getColor(
                         itemView.context,
                         com.tokopedia.unifyprinciples.R.color.Unify_Background
@@ -54,19 +54,23 @@ class AffiliateEducationSocialVH(
         }
     }
 
+    private val headerImage = itemView.findViewById<ImageView>(R.id.header_image_social)
+    private val shareChannel = itemView.findViewById<Typography>(R.id.share_channel)
+    private val socialFollowers = itemView.findViewById<Typography>(R.id.social_followers)
+    private val socialIcon = itemView.findViewById<IconUnify>(R.id.social_icon)
+    private val socialIconContainer = itemView.findViewById<CardView>(R.id.social_icon_container)
+    private val followButton = itemView.findViewById<UnifyButton>(R.id.button_social_follow)
+
     override fun bind(element: AffiliateEducationSocialUiModel?) {
-        itemView.findViewById<ImageView>(R.id.header_image_social)
-            ?.loadImage(element?.socialItem?.headerImage)
-        itemView.findViewById<Typography>(R.id.share_channel)?.text =
-            element?.socialItem?.socialChannel
-        itemView.findViewById<Typography>(R.id.social_followers)?.text =
-            element?.socialItem?.followCount
-        itemView.findViewById<IconUnify>(R.id.social_icon).setImage(element?.socialItem?.icon)
+        headerImage.loadImage(element?.socialItem?.headerImage)
+        shareChannel.text = element?.socialItem?.socialChannel
+        socialFollowers.text = element?.socialItem?.followCount
+        socialIcon.setImage(element?.socialItem?.icon)
         ViewCompat.setBackground(
-            itemView.findViewById<CardView>(R.id.social_icon_container),
+            socialIconContainer,
             roundedShape
         )
-        itemView.findViewById<UnifyButton>(R.id.button_social_follow)?.setOnClickListener {
+        followButton.setOnClickListener {
             socialCTAClickInterface?.onSocialClick(
                 element?.socialItem?.socialChannel.orEmpty(),
                 element?.socialItem?.url.orEmpty()

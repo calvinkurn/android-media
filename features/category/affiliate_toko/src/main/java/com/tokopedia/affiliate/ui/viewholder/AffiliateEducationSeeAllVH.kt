@@ -25,12 +25,15 @@ class AffiliateEducationSeeAllVH(
         var LAYOUT = R.layout.affiliate_education_see_all_item
     }
 
+    private val imageSeeAll = itemView.findViewById<ImageUnify>(R.id.image_see_all_result)
+    private val seeAllTitle = itemView.findViewById<Typography>(R.id.see_all_item_title)
+    private val seeAllDetail = itemView.findViewById<Typography>(R.id.see_all_item_detail)
+    private val seeAllContainer = itemView.findViewById<View>(R.id.see_all_container)
+
     override fun bind(element: AffiliateEducationSeeAllUiModel?) {
-        itemView.findViewById<ImageUnify>(R.id.image_see_all_result)
-            .loadImage(element?.article?.thumbnail?.android)
-        itemView.findViewById<Typography>(R.id.see_all_item_title).text =
-            element?.article?.title
-        itemView.findViewById<Typography>(R.id.see_all_item_detail).text =
+        imageSeeAll.loadImage(element?.article?.thumbnail?.android)
+        seeAllTitle.text = element?.article?.title
+        seeAllDetail.text =
             when (element?.pageType) {
                 PAGE_EDUCATION_EVENT -> {
                     itemView.context.getString(
@@ -56,7 +59,7 @@ class AffiliateEducationSeeAllVH(
                     )
                 }
             }
-        itemView.findViewById<View>(R.id.see_all_container)?.setOnClickListener {
+        seeAllContainer?.setOnClickListener {
             seeAllCardClickInterface?.onCardClick(
                 element?.pageType.orEmpty(),
                 element?.article?.slug.orEmpty()

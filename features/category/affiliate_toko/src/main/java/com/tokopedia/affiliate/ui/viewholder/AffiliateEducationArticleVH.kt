@@ -25,16 +25,19 @@ class AffiliateEducationArticleVH(
         var LAYOUT = R.layout.affiliate_education_article_widget_item
     }
 
+    private val imageArticleWidget = itemView.findViewById<ImageUnify>(R.id.image_article_widget)
+    private val itemTitle = itemView.findViewById<Typography>(R.id.article_widget_item_title)
+    private val itemDetail = itemView.findViewById<Typography>(R.id.article_widget_item_detail)
+    private val widgetContainer = itemView.findViewById<View>(R.id.article_widget_container)
+
     override fun bind(element: AffiliateEducationArticleUiModel?) {
-        itemView.findViewById<ImageUnify>(R.id.image_article_widget)
-            .loadImage(element?.article?.thumbnail?.android)
-        itemView.findViewById<Typography>(R.id.article_widget_item_title).text =
-            element?.article?.title
+        imageArticleWidget.loadImage(element?.article?.thumbnail?.android)
+        itemTitle.text = element?.article?.title
         val readMinute = itemView.context.getString(
             R.string.article_widget_detail_read,
             element?.article?.attributes?.readTime
         )
-        itemView.findViewById<Typography>(R.id.article_widget_item_detail).text =
+        itemDetail.text =
             itemView.context.getString(
                 R.string.article_widget_detail,
                 element?.article?.categories?.get(0)?.title,
@@ -45,7 +48,7 @@ class AffiliateEducationArticleVH(
                 ),
                 readMinute
             )
-        itemView.findViewById<View>(R.id.article_widget_container)?.setOnClickListener {
+        widgetContainer?.setOnClickListener {
             affiliateEducationEventArticleClickInterface?.onDetailClick(
                 PAGE_EDUCATION_ARTICLE,
                 element?.article?.slug.orEmpty()
