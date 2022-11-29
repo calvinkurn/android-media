@@ -83,9 +83,9 @@ class FeedXCardSubtitlesAnimationHandler(
 
     private fun afterAnimationComplete() {
         //switch container reference
-        val tempContainer = visibleContainer
-        visibleContainer = invisibleContainer
-        invisibleContainer = tempContainer
+//        val tempContainer = visibleContainer
+//        visibleContainer = invisibleContainer
+//        invisibleContainer = tempContainer
 
         //increment pos
         currentPositionAnimationInfo += 1
