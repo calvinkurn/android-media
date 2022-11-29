@@ -1,8 +1,12 @@
 package com.tokopedia.product.detail.view.fragment
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.ProgressDialog
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Context
+import android.content.Context.CLIPBOARD_SERVICE
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -10,6 +14,7 @@ import android.os.Handler
 import android.text.TextUtils
 import android.util.Log
 import android.util.SparseIntArray
+import android.view.KeyEvent
 import android.view.View
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
@@ -24,6 +29,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.Actions.interfaces.ActionCreator
 import com.tokopedia.abstraction.Actions.interfaces.ActionUIDelegate
+import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.common.utils.FindAndReplaceHelper
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
@@ -563,6 +569,46 @@ open class DynamicProductDetailFragment :
                 permissionListener = shareProductInstance?.universalSharePermissionListener
             )
         }
+
+        setPDPDebugMode()
+    }
+
+    private fun setPDPDebugMode() {
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            val maxPressVolumeDown = 3
+            var countPressVolumeDown = 0
+            var currentMillis = 0L
+            val interval = 1_000L // 1s
+
+            (activity as? BaseActivity)?.addListener { keyCode, _ ->
+                if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
+                    if (System.currentTimeMillis() - currentMillis < interval) {
+                        countPressVolumeDown++
+
+                        if (countPressVolumeDown == maxPressVolumeDown - 1) {
+                            countPressVolumeDown = 0
+                            showRequestIdToaster()
+                        }
+                    } else {
+                        countPressVolumeDown = 0
+                    }
+
+                    currentMillis = System.currentTimeMillis()
+                }
+            }
+        }
+    }
+
+    @SuppressLint("DeprecatedMethod")
+    private fun showRequestIdToaster() {
+        val view = binding?.root ?: return
+        val requestID = viewModel.getDynamicProductInfoP1?.requestId.orEmpty()
+
+        Toaster.build(view, "RequestID: $requestID", actionText = "Copy") {
+            val clipboard = activity?.getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
+            val clip = ClipData.newPlainText("RequestID", requestID)
+            clipboard.setPrimaryClip(clip)
+        }.show()
     }
 
     override fun onSwipeRefresh() {
@@ -2393,7 +2439,8 @@ open class DynamicProductDetailFragment :
             if (pdpUiUpdater?.productSingleVariant != null) {
                 pdpUiUpdater?.productSingleVariant?.mapOfSelectedVariant?.values?.toList().orEmpty()
             } else {
-                pdpUiUpdater?.productNewVariantDataModel?.mapOfSelectedVariant?.values?.toList().orEmpty()
+                pdpUiUpdater?.productNewVariantDataModel?.mapOfSelectedVariant?.values?.toList()
+                    .orEmpty()
             }
 
         val selectedChild = VariantCommonMapper.selectedProductData(
@@ -2469,7 +2516,7 @@ open class DynamicProductDetailFragment :
             val cartTypeData = viewModel.getCartTypeByProductId()
             val selectedMiniCartItem =
                 if (it.basic.isTokoNow && cartTypeData?.availableButtons?.firstOrNull()
-                    ?.isCartTypeDisabledOrRemindMe() == false
+                        ?.isCartTypeDisabledOrRemindMe() == false
                 ) {
                     viewModel.getMiniCartItem()
                 } else {
@@ -2480,7 +2527,8 @@ open class DynamicProductDetailFragment :
                 viewModel.p2Data.value?.getTotalStockMiniCartByParentId(it.data.variant.parentID)
 
             val shouldShowTokoNow = it.basic.isTokoNow &&
-                cartTypeData?.availableButtons?.firstOrNull()?.isCartTypeDisabledOrRemindMe() == false &&
+                cartTypeData?.availableButtons?.firstOrNull()
+                    ?.isCartTypeDisabledOrRemindMe() == false &&
                 (totalStockAtcVariant != 0 || selectedMiniCartItem != null)
 
             val tokonowVariantButtonData = if (shouldShowTokoNow) {
@@ -2919,8 +2967,7 @@ open class DynamicProductDetailFragment :
                 when (result.data.ovoValidationDataModel.status) {
                     ProductDetailCommonConstant.OVO_INACTIVE_STATUS -> {
                         val applink = "${result.data.ovoValidationDataModel.applink}&product_id=${
-                        viewModel.getDynamicProductInfoP1?.parentProductId
-                            ?: ""
+                            viewModel.getDynamicProductInfoP1?.parentProductId.orEmpty()
                         }"
                         DynamicProductDetailTracking.Click.eventActivationOvo(
                             viewModel.getDynamicProductInfoP1?.parentProductId ?: "",
@@ -3560,7 +3607,8 @@ open class DynamicProductDetailFragment :
                 if (viewModel.getShopInfo().isShopInfoNotEmpty()) viewModel.getShopInfo() else null
             val affiliateData =
                 generateAffiliateShareData(productInfo, shopInfo, viewModel.variantData)
-            val pdpImageGeneratorParam = generateImageGeneratorData(productInfo, viewModel.getBebasOngkirDataByProductId())
+            val pdpImageGeneratorParam =
+                generateImageGeneratorData(productInfo, viewModel.getBebasOngkirDataByProductId())
             checkAndExecuteReferralAction(productData, affiliateData, pdpImageGeneratorParam)
         }
     }
@@ -4743,7 +4791,7 @@ open class DynamicProductDetailFragment :
     private fun setLoadingNplShopFollowers(isLoading: Boolean) {
         val restrictionData = viewModel.p2Data.value?.restrictionInfo
         if (restrictionData?.restrictionData?.firstOrNull()
-            ?.restrictionShopFollowersType() == false
+                ?.restrictionShopFollowersType() == false
         ) {
             return
         }
