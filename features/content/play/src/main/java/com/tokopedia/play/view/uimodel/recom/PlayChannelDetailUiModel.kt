@@ -12,4 +12,5 @@ data class PlayChannelDetailUiModel(
         val videoInfo: PlayVideoConfigUiModel = PlayVideoConfigUiModel(),
         val emptyBottomSheetInfo: PlayEmptyBottomSheetInfoUiModel = PlayEmptyBottomSheetInfoUiModel(),
         val bottomSheetTitle: String = "",
+        val exploreWidgetConfig: ExploreWidgetConfig = ExploreWidgetConfig(),
 )

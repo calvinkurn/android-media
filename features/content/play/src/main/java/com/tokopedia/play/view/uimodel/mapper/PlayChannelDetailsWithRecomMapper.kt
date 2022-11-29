@@ -44,7 +44,8 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
                         it.config.realTimeNotif
                     ),
                     videoInfo = mapVideoInfo(it.video),
-                    emptyBottomSheetInfo = mapEmptyBottomSheet(it)
+                    emptyBottomSheetInfo = mapEmptyBottomSheet(it),
+                    exploreWidgetConfig = mapExploreWidgetConfig(it.config.exploreWidgetConfig)
                 ),
                 partnerInfo = mapPartnerInfo(it.partner, it.config.hasFollowButton),
                 likeInfo = mapLikeInfo(it.config.feedLikeParam, it.config.multipleLikeConfig),
@@ -280,6 +281,12 @@ class PlayChannelDetailsWithRecomMapper @Inject constructor(
     private fun mapEmptyBottomSheet(data: ChannelDetailsWithRecomResponse.Data) = with(data.config.emptyBottomSheet){
         PlayEmptyBottomSheetInfoUiModel(header = headerText, body = bodyText, button = redirectButtonText, partnerAppLink = data.partner.appLink, imageUrl = imageUrl)
     }
+
+    private fun mapExploreWidgetConfig(
+        config: ChannelDetailsWithRecomResponse.ExploreWidgetConfig
+    ) = ExploreWidgetConfig(
+       group = config.group, sourceType = config.sourceType, sourceId = config.sourceId,
+    )
 
     companion object {
         private const val MS_PER_SECOND = 1000
