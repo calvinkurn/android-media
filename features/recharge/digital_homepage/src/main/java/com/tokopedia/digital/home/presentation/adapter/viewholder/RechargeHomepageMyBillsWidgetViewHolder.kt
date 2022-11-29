@@ -15,11 +15,10 @@ import com.tokopedia.digital.home.databinding.ViewRechargeHomeMyBillsItemBinding
 import com.tokopedia.digital.home.model.RechargeHomepageMyBillsWidgetModel
 import com.tokopedia.digital.home.model.RechargeHomepageSections
 import com.tokopedia.digital.home.presentation.adapter.RechargeHomepageMyBillsAdapterTypeFactory
-import com.tokopedia.digital.home.presentation.adapter.decoration.RechargeItemSpaceDecorator
+import com.tokopedia.digital.home.presentation.adapter.decoration.RechargeMyBillsItemSpaceDecorator
 import com.tokopedia.digital.home.presentation.listener.RechargeHomepageItemListener
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
-import com.tokopedia.kotlin.extensions.view.dpToPx
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImage
@@ -35,13 +34,11 @@ class RechargeHomepageMyBillsWidgetViewHolder(
     val listener: RechargeHomepageItemListener
 ) : AbstractViewHolder<RechargeHomepageMyBillsWidgetModel>(itemView) {
 
-    var itemDecoration: RechargeItemSpaceDecorator? = null
+    var myBillsItemDecoration: RechargeMyBillsItemSpaceDecorator? = null
 
     companion object {
         @LayoutRes
         val LAYOUT = R.layout.view_recharge_home_my_bills
-
-        private const val ITEMS_MARGIN = 8
     }
 
     override fun bind(element: RechargeHomepageMyBillsWidgetModel) {
@@ -67,7 +64,9 @@ class RechargeHomepageMyBillsWidgetViewHolder(
         section: RechargeHomepageSections.Section
     ) {
         val itemList = mutableListOf<Visitable<RechargeHomepageMyBillsAdapterTypeFactory>>()
-        val newItems = section.items.map { RechargeHomepageMyBillsWidgetModel.RechargeHomepageMyBillsItemModel(it) }
+        val newItems = section.items.map {
+            RechargeHomepageMyBillsWidgetModel.RechargeHomepageMyBillsItemModel(it)
+        }
 
         itemList.addAll(newItems.subList(Int.ZERO, newItems.size - Int.ONE))
         itemList.add(RechargeHomepageMyBillsWidgetModel.RechargeHomepageMyBillsLastItemModel(section.items.last()))
@@ -79,11 +78,12 @@ class RechargeHomepageMyBillsWidgetViewHolder(
                 RechargeHomepageMyBillsAdapterTypeFactory(),
                 itemList.toList()
             )
-            layoutManager = LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
-            if (itemDecoration == null) {
-                itemDecoration = RechargeItemSpaceDecorator(ITEMS_MARGIN.dpToPx(displayMetrics))
+            layoutManager =
+                LinearLayoutManager(itemView.context, LinearLayoutManager.HORIZONTAL, false)
+            if (myBillsItemDecoration == null) {
+                myBillsItemDecoration = RechargeMyBillsItemSpaceDecorator(displayMetrics)
             }
-            itemDecoration?.let {
+            myBillsItemDecoration?.let {
                 removeItemDecoration(it)
                 addItemDecoration(it)
             }
@@ -92,15 +92,17 @@ class RechargeHomepageMyBillsWidgetViewHolder(
 
     class RechargeHomepageMyBillsItemViewHolder(
         itemView: View
-    ) : AbstractViewHolder<RechargeHomepageMyBillsWidgetModel.RechargeHomepageMyBillsItemModel>(itemView) {
+    ) : AbstractViewHolder<RechargeHomepageMyBillsWidgetModel.RechargeHomepageMyBillsItemModel>(
+        itemView
+    ) {
 
         companion object {
             @LayoutRes
             val LAYOUT = R.layout.view_recharge_home_my_bills_item
 
-            private const val LABEL_TEAL = "Teal"
-            private const val LABEL_ORANGE = "Orange"
-            private const val LABEL_RED = "Red"
+            private const val LABEL_RED = "RED"
+            private const val LABEL_ORANGE = "ORANGE"
+            private const val LABEL_TEAL = "TEAL"
         }
 
         override fun bind(element: RechargeHomepageMyBillsWidgetModel.RechargeHomepageMyBillsItemModel) {
@@ -109,7 +111,6 @@ class RechargeHomepageMyBillsWidgetViewHolder(
             with(binding) {
                 ivProductIcon.loadImage(element.item.attributes.iconUrl)
                 tvMainPrice.text = element.item.label2
-                tvMainPrice.setTextColor(element.item.attributes.titleColor)
 
                 renderProductInfo(this, element.item)
                 renderExpiredInfo(this, element.item)
@@ -144,7 +145,7 @@ class RechargeHomepageMyBillsWidgetViewHolder(
                 LABEL_TEAL -> Label.GENERAL_TEAL
                 LABEL_ORANGE -> Label.GENERAL_ORANGE
                 LABEL_RED -> Label.GENERAL_RED
-                else -> Label.GENERAL_TEAL
+                else -> Label.GENERAL_GREY
             }
             setLabelType(type)
         }
@@ -160,7 +161,9 @@ class RechargeHomepageMyBillsWidgetViewHolder(
 
     class RechargeHomepageMyBillsLastItemViewHolder(
         itemView: View
-    ) : AbstractViewHolder<RechargeHomepageMyBillsWidgetModel.RechargeHomepageMyBillsLastItemModel>(itemView) {
+    ) : AbstractViewHolder<RechargeHomepageMyBillsWidgetModel.RechargeHomepageMyBillsLastItemModel>(
+        itemView
+    ) {
 
         companion object {
             @LayoutRes
@@ -169,10 +172,13 @@ class RechargeHomepageMyBillsWidgetViewHolder(
 
         override fun bind(element: RechargeHomepageMyBillsWidgetModel.RechargeHomepageMyBillsLastItemModel) {
             val binding = ContentRechargeHomepageMyBillsLastItemBinding.bind(itemView)
-            with(binding) {
-                imgBackground.loadImage(element.items.mediaUrl)
-                tvTitle.text = element.items.content
-                containerCta.setOnClickListener {
+            itemView.setOnClickListener {
+                RouteManager.route(itemView.context, element.items.applink)
+            }
+            with(binding.myBillsLastItem) {
+                titleView.weightType = Typography.REGULAR
+                title = element.items.content
+                setCta("") {
                     RouteManager.route(itemView.context, element.items.applink)
                 }
             }

@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.tokopedia.unifycomponents.CardUnify2
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<com.tokopedia.unifycomponents.CardUnify2 xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="312dp"
-    android:layout_height="120dp"
+    android:layout_height="132dp"
     android:minHeight="110dp"
     app:cardCornerRadius="8dp"
-    app:cardElevation="4dp">
+    app:cardElevation="3dp"
+    app:cardUseCompatPadding="true">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -18,7 +18,6 @@
             android:id="@+id/bg_product_icon"
             android:layout_width="48dp"
             android:layout_height="48dp"
-            android:layout_marginTop="4dp"
             android:background="@drawable/bg_product_icon"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -28,22 +27,22 @@
             android:layout_width="32dp"
             android:layout_height="32dp"
             android:scaleType="fitCenter"
-            app:unify_image_type="rect"
-            app:unify_image_corner_radius="0"
             app:layout_constraintBottom_toBottomOf="@id/bg_product_icon"
             app:layout_constraintEnd_toEndOf="@id/bg_product_icon"
             app:layout_constraintStart_toStartOf="@id/bg_product_icon"
-            app:layout_constraintTop_toTopOf="@id/bg_product_icon" />
+            app:layout_constraintTop_toTopOf="@id/bg_product_icon"
+            app:unify_image_corner_radius="0"
+            app:unify_image_type="rect" />
 
         <com.tokopedia.unifycomponents.Label
             android:id="@+id/tv_product_detail_category"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
+            app:labelType="general_grey"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/bg_product_icon"
             app:layout_constraintTop_toTopOf="parent"
-            app:labelType="general_grey"
             tools:text="Tagihan Listrik" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -64,11 +63,11 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
+            android:ellipsize="end"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/bg_product_icon"
             app:layout_constraintTop_toBottomOf="@id/tv_product_detail_name"
             app:typographyType="display_3"
-            android:ellipsize="end"
             tools:text="Rumah Papa (802930293023)" />
 
         <com.tokopedia.unifyprinciples.Typography
@@ -77,6 +76,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
+            android:textColor="@color/Unify_NN950"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/bg_product_icon"
             app:layout_constraintTop_toBottomOf="@id/tv_product_detail_number"
