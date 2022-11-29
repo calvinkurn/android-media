@@ -1102,6 +1102,7 @@ class NewShopPageFragment :
     }
 
     private fun setAffiliateData(uri: Uri) {
+        val affiliateTrackerId = UUID.randomUUID().toString()
         val affiliateChannel = uri.getQueryParameter(QUERY_AFFILIATE_CHANNEL).orEmpty()
         shopViewModel?.saveAffiliateChannel(affiliateChannel)
         affiliateData = ShopAffiliateData(
@@ -1686,7 +1687,6 @@ class NewShopPageFragment :
         if (selectedTabName.isNotEmpty()) {
             if (!isMyShop) {
                 shopPageTracking?.sendScreenShopPage(shopId, isLogin, selectedTabName, campaignId, variantId, affiliateData)
-                shopPageTracking?.sendScreenShopPage(shopId, isLogin, selectedTabName, campaignId, variantId)
                 shopPageTracking?.sendBranchScreenShop(userId)
             }
         }
