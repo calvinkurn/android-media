@@ -82,6 +82,39 @@ data class ContentItem(
 
     @SerializedName("partner")
     val partner: Partner,
+
+    //Banner
+    @SerializedName("created_time")
+    val createdTime: String,
+
+    @SerializedName("updated_time")
+    val updatedTime: String,
+
+    @SerializedName("slug")
+    val slug: String,
+
+    @SerializedName("broadcaster_name")
+    val broadcaster_name: String,
+
+    @SerializedName("image_url")
+    val imageUrl: String,
+
+    //Tab
+    @SerializedName("label")
+    val label: String,
+    @SerializedName("icon_url")
+    val iconUrl: String,
+    @SerializedName("group")
+    val group: String,
+
+    @SerializedName("source_type")
+    val sourceType: String,
+
+    @SerializedName("source_id")
+    val sourceId: String,
+
+    @SerializedName("slug_id")
+    val slugId: String,
 ) {
 
     data class Partner(

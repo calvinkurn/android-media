@@ -61,6 +61,29 @@ class GetPlayWidgetSlotUseCase @Inject constructor(
                     title
                     type
                     items {
+                    ... on PlayBanner {
+                      id
+                      title
+                      created_time
+                      updated_time
+                      slug
+                      description
+                      app_link
+                      web_link
+                      broadcaster_name
+                      image_url
+                      start_time
+                      end_time
+                    }
+                    ... on PlaySlotTabMenu {
+                          id
+                          slug_id
+                          label
+                          icon_url
+                          group
+                          source_type
+                          source_id
+                      }
                       ... on PlayChannelDetails {
                         id
                         title
