@@ -4,6 +4,7 @@ import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.home.beranda.di.module.query.QueryHomeIcon.HOME_ICON_QUERY
 import com.tokopedia.home.beranda.di.module.query.QueryHomeIcon.HOME_ICON_QUERY_NAME
 
+@Deprecated("Has been migrated to QueryHomeIconV2")
 @GqlQuery(HOME_ICON_QUERY_NAME, HOME_ICON_QUERY)
 object QueryHomeIcon {
     const val HOME_ICON_QUERY_NAME = "HomeIconQuery"
