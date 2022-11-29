@@ -47,8 +47,8 @@ class PrivacyPolicySectionViewModel @Inject constructor(
     }
 
     fun toggleContentVisibility() {
-        val currentState = _state.value ?: return
-        _state.value = currentState.copy(expanded = currentState.expanded.not())
+        val currentShown = _state.value?.expanded ?: false
+        _state.value = _state.value?.copy(expanded = !currentShown)
     }
 
 }
