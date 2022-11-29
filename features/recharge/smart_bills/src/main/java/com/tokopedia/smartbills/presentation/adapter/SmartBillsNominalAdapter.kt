@@ -2,11 +2,9 @@ package com.tokopedia.smartbills.presentation.adapter
 
 import android.graphics.Paint
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.smartbills.R
 import com.tokopedia.smartbills.data.RechargeProduct
 import com.tokopedia.smartbills.databinding.ViewSmartBillsItemNominalBinding
 
@@ -14,10 +12,11 @@ class SmartBillsNominalAdapter(val listener: SmartBillNominalListener) : Recycle
 
     var listRechargeProduct = emptyList<RechargeProduct>()
 
-    inner class SmartBillsNominalViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    inner class SmartBillsNominalViewHolder(
+        private val binding: ViewSmartBillsItemNominalBinding
+    ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(rechargeProduct: RechargeProduct) {
-            val binding = ViewSmartBillsItemNominalBinding.bind(itemView)
             with(binding) {
                 root.setOnClickListener {
                     listener.onClickProduct(rechargeProduct)
@@ -47,8 +46,12 @@ class SmartBillsNominalAdapter(val listener: SmartBillNominalListener) : Recycle
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SmartBillsNominalViewHolder {
-        val itemView = LayoutInflater.from(parent.context).inflate(R.layout.view_smart_bills_item_nominal, parent, false)
-        return SmartBillsNominalViewHolder(itemView)
+        val binding = ViewSmartBillsItemNominalBinding.inflate(
+            LayoutInflater.from(parent.context),
+            parent,
+            false
+        )
+        return SmartBillsNominalViewHolder(binding)
     }
 
     interface SmartBillNominalListener {
