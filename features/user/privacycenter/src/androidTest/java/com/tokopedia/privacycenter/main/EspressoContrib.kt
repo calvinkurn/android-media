@@ -1,4 +1,4 @@
-package com.tokopedia.privacycenter.main.espresso
+package com.tokopedia.privacycenter.main
 
 import android.view.View
 import androidx.core.widget.NestedScrollView
