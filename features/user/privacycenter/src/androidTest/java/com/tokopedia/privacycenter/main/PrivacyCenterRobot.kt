@@ -4,7 +4,6 @@ import androidx.test.espresso.Espresso.onView
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import com.tokopedia.privacycenter.R
-import com.tokopedia.privacycenter.main.espresso.nestedScrollTo
 
 class PrivacyCenterRobot {
 
