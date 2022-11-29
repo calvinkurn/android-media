@@ -18,6 +18,12 @@ interface PlayShortsAnalyticSender {
         trackerId: String
     )
 
+    fun sendGeneralViewEvent(
+        eventAction: String,
+        eventLabel: String,
+        trackerId: String
+    )
+
     fun sendGeneralClickEvent(
         eventAction: String,
         account: ContentAccountUiModel,

@@ -1,5 +1,6 @@
 package com.tokopedia.play.broadcaster.di
 
+import com.tokopedia.content.common.producttag.analytic.product.ContentProductTagAnalytic
 import com.tokopedia.play.broadcaster.analytic.entrypoint.PlayShortsEntryPointAnalytic
 import com.tokopedia.play.broadcaster.analytic.entrypoint.PlayShortsEntryPointAnalyticImpl
 import com.tokopedia.play.broadcaster.analytic.interactive.PlayBroadcastInteractiveAnalytic
@@ -20,6 +21,7 @@ import com.tokopedia.play.broadcaster.analytic.summary.PlayBroadcastSummaryAnaly
 import com.tokopedia.play.broadcaster.analytic.summary.PlayBroadcastSummaryAnalyticImpl
 import com.tokopedia.play.broadcaster.analytic.ugc.PlayBroadcastAccountAnalytic
 import com.tokopedia.play.broadcaster.analytic.ugc.PlayBroadcastAccountAnalyticImpl
+import com.tokopedia.play.broadcaster.analytic.ugc.ProductPickerUGCAnalytic
 import com.tokopedia.play.broadcaster.pusher.timer.PlayBroadcastTimer
 import com.tokopedia.play.broadcaster.pusher.timer.PlayBroadcastTimerImpl
 import com.tokopedia.play.broadcaster.util.bottomsheet.NavigationBarColorDialogCustomizer
@@ -92,6 +94,10 @@ abstract class PlayBroadcastBindModule {
     @Binds
     @ActivityRetainedScope
     abstract fun bindPlayShortsEntryPointAnalytic(shortsEntryPointAnalytic: PlayShortsEntryPointAnalyticImpl): PlayShortsEntryPointAnalytic
+
+    @Binds
+    @ActivityRetainedScope
+    abstract fun bindProductPickerUGCAnalytic(productPickerUGCAnalytic: ProductPickerUGCAnalytic): ContentProductTagAnalytic
 
     @ActivityRetainedScope
     @Binds

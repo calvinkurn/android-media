@@ -1,5 +1,6 @@
 package com.tokopedia.play.broadcaster.shorts.di
 
+import com.tokopedia.content.common.producttag.analytic.product.ContentProductTagAnalytic
 import com.tokopedia.play.broadcaster.analytic.entrypoint.PlayShortsEntryPointAnalytic
 import com.tokopedia.play.broadcaster.analytic.entrypoint.PlayShortsEntryPointAnalyticImpl
 import com.tokopedia.play.broadcaster.analytic.interactive.PlayBroadcastInteractiveAnalytic
@@ -25,6 +26,7 @@ import com.tokopedia.play.broadcaster.data.repository.*
 import com.tokopedia.play.broadcaster.domain.repository.*
 import com.tokopedia.play.broadcaster.shorts.analytic.PlayShortsAnalytic
 import com.tokopedia.play.broadcaster.shorts.analytic.PlayShortsAnalyticImpl
+import com.tokopedia.play.broadcaster.shorts.analytic.product.PlayShortsProductPickerUGCAnalytic
 import com.tokopedia.play.broadcaster.shorts.analytic.product.PlayShortsSetupProductAnalyticImpl
 import com.tokopedia.play.broadcaster.shorts.analytic.sender.PlayShortsAnalyticSender
 import com.tokopedia.play.broadcaster.shorts.analytic.sender.PlayShortsAnalyticSenderImpl
@@ -66,6 +68,10 @@ abstract class PlayShortsBindModule {
     @Binds
     @PlayShortsScope
     abstract fun bindPlayShortsAnalytic(analytic: PlayShortsAnalyticImpl): PlayShortsAnalytic
+
+    @Binds
+    @PlayShortsScope
+    abstract fun bindPlayShortsProductPickerUGCAnalytic(analytic: PlayShortsProductPickerUGCAnalytic): ContentProductTagAnalytic
 
     @Binds
     @PlayShortsScope
