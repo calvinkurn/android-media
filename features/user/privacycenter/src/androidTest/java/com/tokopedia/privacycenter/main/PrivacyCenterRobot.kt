@@ -1,12 +1,20 @@
 package com.tokopedia.privacycenter.main
 
 import androidx.test.espresso.Espresso.onView
+import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.*
 import com.tokopedia.privacycenter.R
 
 class PrivacyCenterRobot {
+    fun scrollToBottom() {
+        onView(withText("Butuh info lebih lanjut?"))
+            .perform(nestedScrollTo())
+    }
 
+    fun clickRiwayatKebijakan() {
+        onView(withId(R.id.menuListPrivacyPolicy)).perform(click())
+    }
 }
 
 class PrivacyResultRobot {
@@ -19,9 +27,8 @@ class PrivacyResultRobot {
     fun shouldShowRecommendationSection() {
         onView(withText("Rekomendasi & promo")).check(matches(isDisplayed()))
     }
-    fun shouldShowPrivacyPolicy() {
-        onView(withText("Kebijakan Privasi Tokopedia"))
-            .perform(nestedScrollTo())
+    fun shouldDisplayPrivacyTestData() {
+        onView(withText("Privacy test - 06 Apr 2021"))
             .check(matches(isDisplayed()))
     }
 }

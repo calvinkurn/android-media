@@ -44,13 +44,17 @@ class PrivacyCenterActivityTest {
         activityTestRule.launchActivity(Intent())
         Thread.sleep(500)
 
-        privacyCenterRobot {
-
-        } assert {
+        privacyCenterRobot { } assert {
             shouldShowCorrectName("Hai, Erick Samuel (test)")
             shouldShowIconLinked()
             shouldShowRecommendationSection()
-            shouldShowPrivacyPolicy()
+        }
+
+        privacyCenterRobot {
+            scrollToBottom()
+            clickRiwayatKebijakan()
+        } assert {
+            shouldDisplayPrivacyTestData()
         }
     }
 
