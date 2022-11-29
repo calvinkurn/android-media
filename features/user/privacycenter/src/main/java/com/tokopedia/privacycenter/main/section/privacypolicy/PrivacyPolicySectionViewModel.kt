@@ -36,10 +36,9 @@ class PrivacyPolicySectionViewModel @Inject constructor(
         _state.value = _state.value?.copy(innerState = PrivacyPolicyUiModel.InnerState.Loading)
         launch {
             _state.value = try {
+                 val data = getPrivacyPolicyList(5)
                 _state.value?.copy(
-                    innerState = PrivacyPolicyUiModel.InnerState.Success(
-                        getPrivacyPolicyList(5)
-                    )
+                    innerState = PrivacyPolicyUiModel.InnerState.Success(data)
                 )
             } catch (e: Exception) {
                 _state.value?.copy(innerState = PrivacyPolicyUiModel.InnerState.Error)

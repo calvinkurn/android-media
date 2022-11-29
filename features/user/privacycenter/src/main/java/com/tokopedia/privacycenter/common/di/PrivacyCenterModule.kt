@@ -20,7 +20,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
 @Module
-class PrivacyCenterModule {
+open class PrivacyCenterModule {
 
     @Provides
     @ActivityScope
@@ -44,7 +44,7 @@ class PrivacyCenterModule {
 
     @Provides
     @ActivityScope
-    fun provideRestRepository(
+    open fun provideRestRepository(
         interceptors: MutableList<Interceptor>,
         @ApplicationContext context: Context
     ): RestRepository {
