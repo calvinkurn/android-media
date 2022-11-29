@@ -16,9 +16,6 @@ data class ProfileUiModel(
     val liveInfo: LivePlayChannelUiModel,
 ) {
 
-    val badgeUrl: String
-        get() = badges.getOrNull(1).orEmpty()
-
     companion object {
         val Empty: ProfileUiModel
             get() = ProfileUiModel(
