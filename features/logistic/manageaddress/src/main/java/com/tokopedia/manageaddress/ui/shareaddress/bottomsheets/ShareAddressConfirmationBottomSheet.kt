@@ -13,7 +13,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.di.component.HasComponent
@@ -75,16 +74,13 @@ class ShareAddressConfirmationBottomSheet :
     }
 
     private fun initObserver() {
-        viewModel.shareAddressResponse.observe(
-            viewLifecycleOwner,
-            Observer {
-                when (it) {
-                    is ShareAddressBottomSheetState.Success -> onSuccessShareAddress()
-                    is ShareAddressBottomSheetState.Fail -> onFailedShareAddress(it.errorMessage)
-                    is ShareAddressBottomSheetState.Loading -> onLoadingShareAddress(it.isShowLoading)
-                }
+        viewModel.shareAddressResponse.observe(viewLifecycleOwner) {
+            when (it) {
+                is ShareAddressBottomSheetState.Success -> onSuccessShareAddress()
+                is ShareAddressBottomSheetState.Fail -> onFailedShareAddress(it.errorMessage)
+                is ShareAddressBottomSheetState.Loading -> onLoadingShareAddress(it.isShowLoading)
             }
-        )
+        }
     }
 
     private fun onSuccessShareAddress() {

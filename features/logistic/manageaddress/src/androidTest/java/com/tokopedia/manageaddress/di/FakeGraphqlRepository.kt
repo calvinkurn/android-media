@@ -20,38 +20,38 @@ import com.tokopedia.test.application.graphql.GqlMockUtil
 import com.tokopedia.test.application.graphql.GqlQueryParser
 import com.tokopedia.test.application.util.InstrumentationMockHelper
 
-class FakeGraphqlRepository(private val context: Context) : GraphqlRepository {
+class FakeGraphqlRepository(private val context: Context, private val gson: Gson) : GraphqlRepository {
 
     private val deleteShareAddressResponse: DeleteShareAddressResponse by lazy {
-        Gson().fromJson(InstrumentationMockHelper.getRawString(context, R.raw.kero_delete_share_address), DeleteShareAddressResponse::class.java)
+        gson.fromJson(InstrumentationMockHelper.getRawString(context, R.raw.kero_delete_share_address), DeleteShareAddressResponse::class.java)
     }
 
     private val saveShareAddressResponse: SaveShareAddressResponse by lazy {
-        Gson().fromJson(InstrumentationMockHelper.getRawString(context, R.raw.kero_save_share_address), SaveShareAddressResponse::class.java)
+        gson.fromJson(InstrumentationMockHelper.getRawString(context, R.raw.kero_save_share_address), SaveShareAddressResponse::class.java)
     }
 
     private val selectAddressForShareResponse: SelectShareAddressResponse by lazy {
-        Gson().fromJson(InstrumentationMockHelper.getRawString(context, R.raw.kero_select_address_for_share), SelectShareAddressResponse::class.java)
+        gson.fromJson(InstrumentationMockHelper.getRawString(context, R.raw.kero_select_address_for_share), SelectShareAddressResponse::class.java)
     }
 
     private val sendShareAddressReqResponse: KeroShareAddrRequestResponse by lazy {
-        Gson().fromJson(InstrumentationMockHelper.getRawString(context, R.raw.kero_send_share_address_request), KeroShareAddrRequestResponse::class.java)
+        gson.fromJson(InstrumentationMockHelper.getRawString(context, R.raw.kero_send_share_address_request), KeroShareAddrRequestResponse::class.java)
     }
 
     private val shareAddressToUserResponse: KeroShareAddrToUserResponse by lazy {
-        Gson().fromJson(InstrumentationMockHelper.getRawString(context, R.raw.kero_share_address_to_user), KeroShareAddrToUserResponse::class.java)
+        gson.fromJson(InstrumentationMockHelper.getRawString(context, R.raw.kero_share_address_to_user), KeroShareAddrToUserResponse::class.java)
     }
 
     private val getSharedAddressListResponse: GetSharedAddressListResponse by lazy {
-        Gson().fromJson(InstrumentationMockHelper.getRawString(context, R.raw.kero_shared_address_list), GetSharedAddressListResponse::class.java)
+        gson.fromJson(InstrumentationMockHelper.getRawString(context, R.raw.kero_shared_address_list), GetSharedAddressListResponse::class.java)
     }
 
     private val validateShareAddressAsReceiverResponse: ValidateShareAddressAsReceiverResponse by lazy {
-        Gson().fromJson(InstrumentationMockHelper.getRawString(context, R.raw.kero_validate_share_address_as_receiver), ValidateShareAddressAsReceiverResponse::class.java)
+        gson.fromJson(InstrumentationMockHelper.getRawString(context, R.raw.kero_validate_share_address_as_receiver), ValidateShareAddressAsReceiverResponse::class.java)
     }
 
     private val validateShareAddressAsSenderResponse: ValidateShareAddressAsSenderResponse by lazy {
-        Gson().fromJson(InstrumentationMockHelper.getRawString(context, R.raw.kero_validate_share_address_as_sender), ValidateShareAddressAsSenderResponse::class.java)
+        gson.fromJson(InstrumentationMockHelper.getRawString(context, R.raw.kero_validate_share_address_as_sender), ValidateShareAddressAsSenderResponse::class.java)
     }
 
     override suspend fun response(requests: List<GraphqlRequest>, cacheStrategy: GraphqlCacheStrategy): GraphqlResponse {

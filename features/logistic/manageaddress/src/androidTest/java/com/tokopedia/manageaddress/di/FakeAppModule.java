@@ -2,6 +2,7 @@ package com.tokopedia.manageaddress.di;
 
 import android.content.Context;
 
+import com.google.gson.Gson;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.di.module.net.NetModule;
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext;
@@ -63,7 +64,7 @@ public class FakeAppModule {
     @Provides
     @ApplicationContext
     public GraphqlRepository provideGraphqlRepository() {
-        return new FakeGraphqlRepository(context);
+        return new FakeGraphqlRepository(context, new Gson());
     }
 
     @ApplicationScope

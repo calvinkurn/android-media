@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -124,102 +123,95 @@ class FromFriendFragment :
     }
 
     private fun initObserver() {
-        viewModel.getFromFriendAddressState.observe(
-            viewLifecycleOwner,
-            Observer {
-                when (it) {
-                    is FromFriendAddressListState.Success -> {
-                        binding?.apply {
-                            totalAddressTicker.apply {
-                                it.data?.message?.takeIf { it.isNotBlank() }?.apply {
-                                    visible()
-                                    setTextDescription(this)
-                                } ?: kotlin.run {
-                                    gone()
-                                }
-                            }
-
-                            groupCardAndList.visible()
-                            if (viewModel.isShareAddressFromNotif && viewModel.addressList.isEmpty()) {
-                                groupBottomView.gone()
-                                globalError.apply {
-                                    visible()
-                                    setType(GlobalError.MAINTENANCE)
-                                    errorIllustration.loadImage(IMAGE_SHARE_ADDRESS)
-                                    errorIllustration.adjustViewBounds = true
-                                    errorTitle.text =
-                                        getString(R.string.title_failed_saved_share_address_from_notif)
-                                    errorDescription.text =
-                                        getString(R.string.description_failed_saved_share_address_from_notif)
-                                }
-                            } else {
-                                globalError.gone()
-                                groupBottomView.visible()
+        viewModel.getFromFriendAddressState.observe(viewLifecycleOwner) {
+            when (it) {
+                is FromFriendAddressListState.Success -> {
+                    binding?.apply {
+                        totalAddressTicker.apply {
+                            it.data?.message?.takeIf { it.isNotBlank() }?.apply {
+                                visible()
+                                setTextDescription(this)
+                            } ?: kotlin.run {
+                                gone()
                             }
                         }
 
-                        adapter.refreshAdapter()
-                        mListener?.updateFromFriendsTabText(it.data?.numberOfRequest ?: 0)
-                    }
-                    is FromFriendAddressListState.Fail -> {
-                        if (it.throwable != null) {
-                            handleError(it.throwable)
+                        groupCardAndList.visible()
+                        if (viewModel.isShareAddressFromNotif && viewModel.addressList.isEmpty()) {
+                            groupBottomView.gone()
+                            globalError.apply {
+                                visible()
+                                setType(GlobalError.MAINTENANCE)
+                                errorIllustration.loadImage(IMAGE_SHARE_ADDRESS)
+                                errorIllustration.adjustViewBounds = true
+                                errorTitle.text =
+                                    getString(R.string.title_failed_saved_share_address_from_notif)
+                                errorDescription.text =
+                                    getString(R.string.description_failed_saved_share_address_from_notif)
+                            }
+                        } else {
+                            globalError.gone()
+                            groupBottomView.visible()
                         }
                     }
-                    is FromFriendAddressListState.Loading -> {
-                        binding?.apply {
-                            swipeRefresh.isRefreshing = it.isShowLoading
-                            cbAllAddress.isVisible = viewModel.isHaveAddressList && it.isShowLoading.not()
-                        }
-                    }
-                }
-            }
-        )
 
-        viewModel.saveAddressState.observe(
-            viewLifecycleOwner,
-            Observer {
-                when (it) {
-                    is FromFriendAddressActionState.Success -> {
-                        ShareAddressAnalytics.onClickSaveButton(isSuccess = true)
-                        showToaster(it.message)
-                        mListener?.apply {
-                            removeArgumentsFromNotif()
-                            onSuccessSaveShareAddress()
-                        }
+                    adapter.refreshAdapter()
+                    mListener?.updateFromFriendsTabText(it.data?.numberOfRequest ?: 0)
+                }
+                is FromFriendAddressListState.Fail -> {
+                    if (it.throwable != null) {
+                        handleError(it.throwable)
                     }
-                    is FromFriendAddressActionState.Fail -> {
-                        ShareAddressAnalytics.onClickSaveButton(isSuccess = false)
-                        showToaster(it.errorMessage, Toaster.TYPE_ERROR)
-                    }
-                    is FromFriendAddressActionState.Loading -> {
-                        binding?.btnSave?.isLoading = it.isShowLoading
+                }
+                is FromFriendAddressListState.Loading -> {
+                    binding?.apply {
+                        swipeRefresh.isRefreshing = it.isShowLoading
+                        cbAllAddress.isVisible =
+                            viewModel.isHaveAddressList && it.isShowLoading.not()
                     }
                 }
             }
-        )
+        }
 
-        viewModel.deleteAddressState.observe(
-            viewLifecycleOwner,
-            Observer {
-                when (it) {
-                    is FromFriendAddressActionState.Success -> {
-                        ShareAddressAnalytics.onClickDeleteButton(isSuccess = true)
-                        if (viewModel.isShareAddressFromNotif) {
-                            viewModel.isShareAddressFromNotif = false
-                            mListener?.removeArgumentsFromNotif()
-                        }
-                        viewModel.getFromFriendAddressList()
+        viewModel.saveAddressState.observe(viewLifecycleOwner) {
+            when (it) {
+                is FromFriendAddressActionState.Success -> {
+                    ShareAddressAnalytics.onClickSaveButton(isSuccess = true)
+                    showToaster(it.message)
+                    mListener?.apply {
+                        removeArgumentsFromNotif()
+                        onSuccessSaveShareAddress()
                     }
-                    is FromFriendAddressActionState.Fail -> {
-                        ShareAddressAnalytics.onClickDeleteButton(isSuccess = false)
-                        refreshListAndButton()
-                        showToaster(it.errorMessage, Toaster.TYPE_ERROR)
-                    }
-                    is FromFriendAddressActionState.Loading -> refreshListAndButton()
+                }
+                is FromFriendAddressActionState.Fail -> {
+                    ShareAddressAnalytics.onClickSaveButton(isSuccess = false)
+                    showToaster(it.errorMessage, Toaster.TYPE_ERROR)
+                }
+                is FromFriendAddressActionState.Loading -> {
+                    binding?.btnSave?.isLoading = it.isShowLoading
                 }
             }
-        )
+        }
+
+
+        viewModel.deleteAddressState.observe(viewLifecycleOwner) {
+            when (it) {
+                is FromFriendAddressActionState.Success -> {
+                    ShareAddressAnalytics.onClickDeleteButton(isSuccess = true)
+                    if (viewModel.isShareAddressFromNotif) {
+                        viewModel.isShareAddressFromNotif = false
+                        mListener?.removeArgumentsFromNotif()
+                    }
+                    viewModel.getFromFriendAddressList()
+                }
+                is FromFriendAddressActionState.Fail -> {
+                    ShareAddressAnalytics.onClickDeleteButton(isSuccess = false)
+                    refreshListAndButton()
+                    showToaster(it.errorMessage, Toaster.TYPE_ERROR)
+                }
+                is FromFriendAddressActionState.Loading -> refreshListAndButton()
+            }
+        }
     }
 
     private fun refreshListAndButton() {

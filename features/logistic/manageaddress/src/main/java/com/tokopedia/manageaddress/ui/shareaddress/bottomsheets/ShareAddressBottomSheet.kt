@@ -11,7 +11,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.common.di.component.HasComponent
@@ -70,27 +69,21 @@ class ShareAddressBottomSheet :
     }
 
     private fun initObserver() {
-        viewModel.requestAddressResponse.observe(
-            viewLifecycleOwner,
-            Observer {
-                when (it) {
-                    is ShareAddressBottomSheetState.Success -> onSuccessRequestAddress()
-                    is ShareAddressBottomSheetState.Fail -> showInputError(it.errorMessage)
-                    is ShareAddressBottomSheetState.Loading -> onLoadingRequestAddress(it.isShowLoading)
-                }
+        viewModel.requestAddressResponse.observe(viewLifecycleOwner) {
+            when (it) {
+                is ShareAddressBottomSheetState.Success -> onSuccessRequestAddress()
+                is ShareAddressBottomSheetState.Fail -> showInputError(it.errorMessage)
+                is ShareAddressBottomSheetState.Loading -> onLoadingRequestAddress(it.isShowLoading)
             }
-        )
+        }
 
-        viewModel.checkShareAddressResponse.observe(
-            viewLifecycleOwner,
-            Observer {
-                when (it) {
-                    is ShareAddressBottomSheetState.Success -> onSuccessCheckingShareAddress()
-                    is ShareAddressBottomSheetState.Fail -> showInputError(it.errorMessage)
-                    is ShareAddressBottomSheetState.Loading -> onLoadingRequestAddress(it.isShowLoading)
-                }
+        viewModel.checkShareAddressResponse.observe(viewLifecycleOwner) {
+            when (it) {
+                is ShareAddressBottomSheetState.Success -> onSuccessCheckingShareAddress()
+                is ShareAddressBottomSheetState.Fail -> showInputError(it.errorMessage)
+                is ShareAddressBottomSheetState.Loading -> onLoadingRequestAddress(it.isShowLoading)
             }
-        )
+        }
     }
 
     private fun onSuccessRequestAddress() {

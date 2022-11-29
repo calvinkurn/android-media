@@ -15,6 +15,5 @@ import dagger.Component
 )
 interface ShareAddressComponent {
     fun inject(fragment: ShareAddressBottomSheet)
-
     fun inject(fragment: ShareAddressConfirmationBottomSheet)
 }

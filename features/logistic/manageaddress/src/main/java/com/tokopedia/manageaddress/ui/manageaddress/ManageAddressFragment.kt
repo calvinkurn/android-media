@@ -11,7 +11,6 @@ import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.widget.ViewPager2
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -110,46 +109,43 @@ class ManageAddressFragment :
     }
 
     private fun observerValidateShareAddress() {
-        viewModel.validateShareAddressState.observe(
-            viewLifecycleOwner,
-            Observer {
-                when (it) {
-                    is ValidateShareAddressState.Success -> {
-                        it.receiverUserName?.takeIf { receiverUserName -> receiverUserName.isNotBlank() }
-                            ?.apply {
-                                arguments?.putString(
-                                    ManageAddressConstant.EXTRA_RECEIVER_USER_NAME,
-                                    this
-                                )
-                            }
-                        bindView()
-                    }
-                    is ValidateShareAddressState.Fail -> {
-                        if (viewModel.isNeedToShareAddress) {
-                            viewModel.receiverUserId = null
-                            arguments?.putString(ManageAddressConstant.QUERY_PARAM_RUID, null)
-                        } else {
-                            arguments?.putBoolean(
-                                ManageAddressConstant.EXTRA_SHARE_ADDRESS_FROM_NOTIF,
-                                true
+        viewModel.validateShareAddressState.observe(viewLifecycleOwner) {
+            when (it) {
+                is ValidateShareAddressState.Success -> {
+                    it.receiverUserName?.takeIf { receiverUserName -> receiverUserName.isNotBlank() }
+                        ?.apply {
+                            arguments?.putString(
+                                ManageAddressConstant.EXTRA_RECEIVER_USER_NAME,
+                                this
                             )
                         }
-                        bindView()
+                    bindView()
+                }
+                is ValidateShareAddressState.Fail -> {
+                    if (viewModel.isNeedToShareAddress) {
+                        viewModel.receiverUserId = null
+                        arguments?.putString(ManageAddressConstant.QUERY_PARAM_RUID, null)
+                    } else {
+                        arguments?.putBoolean(
+                            ManageAddressConstant.EXTRA_SHARE_ADDRESS_FROM_NOTIF,
+                            true
+                        )
                     }
-                    is ValidateShareAddressState.Loading -> {
-                        binding?.apply {
-                            if (it.isShowLoading) {
-                                llMainView.gone()
-                                progressBar.visible()
-                            } else {
-                                llMainView.visible()
-                                progressBar.gone()
-                            }
+                    bindView()
+                }
+                is ValidateShareAddressState.Loading -> {
+                    binding?.apply {
+                        if (it.isShowLoading) {
+                            llMainView.gone()
+                            progressBar.visible()
+                        } else {
+                            llMainView.visible()
+                            progressBar.gone()
                         }
                     }
                 }
             }
-        )
+        }
     }
 
     private fun bindView() {
