@@ -143,7 +143,12 @@ class InboxListActivity : InboxBaseActivity(), InboxListView, ChatWidgetToolTip.
         (mPresenter as InboxListContract.Presenter).getTicketList(null)
         (mPresenter as InboxListContract.Presenter).getTopBotStatus()
         settingOnClickListener()
-        btnFilterTv?.setCompoundDrawablesWithIntrinsicBounds(MethodChecker.getDrawable(this, R.drawable.contactus_ic_filter_list), null, null, null)
+        btnFilterTv?.setCompoundDrawablesWithIntrinsicBounds(
+            MethodChecker.getDrawable(
+                this,
+                R.drawable.contactus_ic_filter_list
+            ), null, null, null
+        )
         rvEmailList?.addOnScrollListener(rvOnScrollListener)
         editText?.setListener((mPresenter as InboxListContract.Presenter).getSearchListener())
     }

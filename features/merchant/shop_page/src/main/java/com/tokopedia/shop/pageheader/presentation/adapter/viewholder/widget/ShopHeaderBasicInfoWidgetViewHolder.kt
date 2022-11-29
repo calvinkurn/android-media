@@ -2,7 +2,6 @@ package com.tokopedia.shop.pageheader.presentation.adapter.viewholder.widget
 
 import android.view.View
 import android.widget.ImageView
-import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.*
@@ -21,8 +20,8 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
 
 class ShopHeaderBasicInfoWidgetViewHolder(
-        itemView: View,
-        private val shopHeaderBasicInfoWidgetListener: Listener
+    itemView: View,
+    private val shopHeaderBasicInfoWidgetListener: Listener
 ) : AbstractViewHolder<ShopHeaderWidgetUiModel>(itemView) {
 
     companion object {
@@ -31,13 +30,13 @@ class ShopHeaderBasicInfoWidgetViewHolder(
 
     interface Listener {
         fun onShopBasicInfoWidgetComponentClicked(
-                componentModel: ShopHeaderBadgeTextValueComponentUiModel?,
-                shopHeaderWidgetUiModel: ShopHeaderWidgetUiModel?
+            componentModel: ShopHeaderBadgeTextValueComponentUiModel?,
+            shopHeaderWidgetUiModel: ShopHeaderWidgetUiModel?
         )
 
         fun onImpressionShopBasicInfoWidgetComponent(
-                componentModel: ShopHeaderBadgeTextValueComponentUiModel?,
-                shopHeaderWidgetUiModel: ShopHeaderWidgetUiModel?
+            componentModel: ShopHeaderBadgeTextValueComponentUiModel?,
+            shopHeaderWidgetUiModel: ShopHeaderWidgetUiModel?
         )
     }
 
@@ -55,14 +54,14 @@ class ShopHeaderBasicInfoWidgetViewHolder(
         for (component in model.components) {
             when {
                 isMatchWidgetIdentifier(
-                        component,
-                        IMAGE_ONLY,
-                        SHOP_LOGO
+                    component,
+                    IMAGE_ONLY,
+                    SHOP_LOGO
                 ) -> setShopLogo(component as? ShopHeaderImageOnlyComponentUiModel)
                 isMatchWidgetIdentifier(
-                        component,
-                        BADGE_TEXT_VALUE,
-                        SHOP_NAME
+                    component,
+                    BADGE_TEXT_VALUE,
+                    SHOP_NAME
                 ) -> setShopNameAndInfoSection(component as? ShopHeaderBadgeTextValueComponentUiModel)
             }
         }
@@ -85,8 +84,8 @@ class ShopHeaderBasicInfoWidgetViewHolder(
                 loadImage(badgeImageUrl)
                 setOnClickListener {
                     shopHeaderBasicInfoWidgetListener.onShopBasicInfoWidgetComponentClicked(
-                            component,
-                            shopHeaderWidgetUiModel
+                        component,
+                        shopHeaderWidgetUiModel
                     )
                 }
             } else {
@@ -97,8 +96,8 @@ class ShopHeaderBasicInfoWidgetViewHolder(
             text = MethodChecker.fromHtml(shopName)
             setOnClickListener {
                 shopHeaderBasicInfoWidgetListener.onShopBasicInfoWidgetComponentClicked(
-                        component,
-                        shopHeaderWidgetUiModel
+                    component,
+                    shopHeaderWidgetUiModel
                 )
             }
         }
@@ -115,8 +114,8 @@ class ShopHeaderBasicInfoWidgetViewHolder(
                 loadImage(shopChevronImageUrl)
                 setOnClickListener {
                     shopHeaderBasicInfoWidgetListener.onShopBasicInfoWidgetComponentClicked(
-                            component,
-                            shopHeaderWidgetUiModel
+                        component,
+                        shopHeaderWidgetUiModel
                     )
                 }
             } else {
@@ -124,29 +123,28 @@ class ShopHeaderBasicInfoWidgetViewHolder(
             }
         }
         shopOnlineImageView?.apply {
-            if(shopOnlineIcon.isNotEmpty()){
+            if (shopOnlineIcon.isNotEmpty()) {
                 show()
                 loadImage(shopOnlineIcon)
-            }else{
+            } else {
                 hide()
             }
         }
-        component?.let{
-            itemView.addOnImpressionListener(component){
+        component?.let {
+            itemView.addOnImpressionListener(component) {
                 shopHeaderBasicInfoWidgetListener.onImpressionShopBasicInfoWidgetComponent(
-                        it,
-                        shopHeaderWidgetUiModel
+                    it,
+                    shopHeaderWidgetUiModel
                 )
             }
         }
     }
 
     private fun isMatchWidgetIdentifier(
-            component: BaseShopHeaderComponentUiModel,
-            componentType: String,
-            componentName: String
+        component: BaseShopHeaderComponentUiModel,
+        componentType: String,
+        componentName: String
     ): Boolean = component.let {
         it.type.toLowerCase() == componentType.toLowerCase() && it.name.toLowerCase() == componentName.toLowerCase()
     }
-
 }

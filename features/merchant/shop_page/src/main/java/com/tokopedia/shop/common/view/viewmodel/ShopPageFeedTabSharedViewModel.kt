@@ -9,7 +9,7 @@ import com.tokopedia.shop.common.view.model.ShopPageFabConfig
 /**
  * Shared ViewModel to share live data between NewShopPageFragment.kt and FeedShopFragment.kt
  */
-class ShopPageFeedTabSharedViewModel: ViewModel(), ISharedViewModel {
+class ShopPageFeedTabSharedViewModel : ViewModel(), ISharedViewModel {
 
     companion object {
         const val FAB_ACTION_SETUP = 0

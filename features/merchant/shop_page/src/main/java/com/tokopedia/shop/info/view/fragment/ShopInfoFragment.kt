@@ -24,9 +24,9 @@ import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.observe
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.removeObservers
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImageFitCenter
 import com.tokopedia.network.constant.TkpdBaseURL
 import com.tokopedia.network.exception.UserNotLoginException
@@ -46,12 +46,12 @@ import com.tokopedia.shop.info.view.activity.ShopInfoActivity.Companion.EXTRA_SH
 import com.tokopedia.shop.info.view.adapter.ShopInfoLogisticAdapter
 import com.tokopedia.shop.info.view.adapter.ShopInfoLogisticAdapterTypeFactory
 import com.tokopedia.shop.info.view.viewmodel.ShopInfoViewModel
-import com.tokopedia.shop_widget.note.view.adapter.ShopNoteAdapterTypeFactory
-import com.tokopedia.shop_widget.note.view.adapter.viewholder.ShopNoteViewHolder
-import com.tokopedia.shop_widget.note.view.model.ShopNoteUiModel
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity.Companion.SHOP_ID
 import com.tokopedia.shop.report.activity.ReportShopWebViewActivity
 import com.tokopedia.shop_widget.note.view.activity.ShopNoteDetailActivity
+import com.tokopedia.shop_widget.note.view.adapter.ShopNoteAdapterTypeFactory
+import com.tokopedia.shop_widget.note.view.adapter.viewholder.ShopNoteViewHolder
+import com.tokopedia.shop_widget.note.view.model.ShopNoteUiModel
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.Toaster
@@ -60,7 +60,9 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import javax.inject.Inject
 
-class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback,
+class ShopInfoFragment :
+    BaseDaggerFragment(),
+    BaseEmptyViewHolder.Callback,
     ShopNoteViewHolder.OnNoteClicked {
 
     companion object {
@@ -206,11 +208,14 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback,
     }
 
     private fun observeShopBadgeReputation() {
-        shopViewModel?.shopBadgeReputation?.observe(viewLifecycleOwner, Observer {
-            if (it is Success) {
-                showShopBadgeReputation(it.data)
+        shopViewModel?.shopBadgeReputation?.observe(
+            viewLifecycleOwner,
+            Observer {
+                if (it is Success) {
+                    showShopBadgeReputation(it.data)
+                }
             }
-        })
+        )
     }
 
     private fun observerMessageIdOnChatExist() {
@@ -241,9 +246,9 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback,
         }
     }
 
-    private fun redirectToLoginPage(requestCode: Int = REQUEST_CODER_USER_LOGIN){
+    private fun redirectToLoginPage(requestCode: Int = REQUEST_CODER_USER_LOGIN) {
         val intent = RouteManager.getIntent(activity, ApplinkConst.LOGIN)
-        startActivityForResult(intent,requestCode)
+        startActivityForResult(intent, requestCode)
     }
 
     private fun hideProgressGetMessageId() {
@@ -267,7 +272,6 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback,
             val intent = ReportShopWebViewActivity.getStartIntent(it, reportUrl)
             startActivityForResult(intent, REQUEST_REPORT_USER)
         }
-
     }
 
     private fun showShopBadgeReputation(shopBadge: ShopBadge) {
@@ -469,14 +473,16 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback,
     }
 
     private fun showEmptyShopNotes(isMyShop: Boolean) {
-        noteAdapter?.addElement(EmptyModel().apply {
-            if (isMyShop) {
-                title = getString(R.string.shop_note_empty_note_title_seller)
-                callback = this@ShopInfoFragment
-            } else {
-                title = getString(R.string.shop_note_empty_note_title_buyer)
+        noteAdapter?.addElement(
+            EmptyModel().apply {
+                if (isMyShop) {
+                    title = getString(R.string.shop_note_empty_note_title_seller)
+                    callback = this@ShopInfoFragment
+                } else {
+                    title = getString(R.string.shop_note_empty_note_title_buyer)
+                }
             }
-        })
+        )
     }
 
     private fun setToolbarTitle(title: String) {
@@ -510,5 +516,4 @@ class ShopInfoFragment : BaseDaggerFragment(), BaseEmptyViewHolder.Callback,
                 .show()
         }
     }
-
 }

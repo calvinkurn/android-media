@@ -9,8 +9,8 @@ import com.tokopedia.shop.product.view.datamodel.ShopProductSortFilterUiModel
 import com.tokopedia.shop_widget.thematicwidget.uimodel.ThematicWidgetUiModel
 
 class ShopPageHomeDiffUtilCallback(
-        private val oldItems: List<Visitable<*>>,
-        private val newItems: List<Visitable<*>>
+    private val oldItems: List<Visitable<*>>,
+    private val newItems: List<Visitable<*>>
 ) : DiffUtil.Callback() {
     override fun areItemsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
         val oldItem = oldItems.getOrNull(oldItemPosition)
@@ -31,17 +31,17 @@ class ShopPageHomeDiffUtilCallback(
     override fun areContentsTheSame(oldItemPosition: Int, newItemPosition: Int): Boolean {
         val oldItem = oldItems.getOrNull(oldItemPosition)
         val newItem = newItems.getOrNull(newItemPosition)
-        if(isItemMatchWithUiModel<BaseShopHomeWidgetUiModel>(oldItem, newItem)){
+        if (isItemMatchWithUiModel<BaseShopHomeWidgetUiModel>(oldItem, newItem)) {
             val oldShopHomeWidgetData = oldItem as? BaseShopHomeWidgetUiModel
             val newShopHomeWidgetData = newItem as? BaseShopHomeWidgetUiModel
             return oldShopHomeWidgetData?.isNewData == false && newShopHomeWidgetData?.isNewData == false
         }
-        if(isItemMatchWithUiModel<ThematicWidgetUiModel>(oldItem, newItem)){
+        if (isItemMatchWithUiModel<ThematicWidgetUiModel>(oldItem, newItem)) {
             val oldShopHomeWidgetData = oldItem as? ThematicWidgetUiModel
             val newShopHomeWidgetData = newItem as? ThematicWidgetUiModel
             return oldShopHomeWidgetData?.isNewData == false && newShopHomeWidgetData?.isNewData == false
         }
-        if(isItemMatchWithUiModel<ShopHomeProductUiModel>(oldItem, newItem)){
+        if (isItemMatchWithUiModel<ShopHomeProductUiModel>(oldItem, newItem)) {
             val oldShopHomeProductData = oldItem as? ShopHomeProductUiModel
             val newShopHomeProductData = newItem as? ShopHomeProductUiModel
             return oldShopHomeProductData?.isNewData == false && newShopHomeProductData?.isNewData == false
@@ -56,5 +56,4 @@ class ShopPageHomeDiffUtilCallback(
     override fun getNewListSize(): Int {
         return newItems.size
     }
-
 }

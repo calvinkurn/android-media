@@ -18,7 +18,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="@dimen/tp_margin_xsmall"
-            android:background="@color/Unify_N0"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager" />
     </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
 
