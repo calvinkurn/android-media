@@ -1830,6 +1830,7 @@ class PlayViewModel @AssistedInject constructor(
                 val result = if(isFollowing) PartnerFollowableStatus.Followed else PartnerFollowableStatus.NotFollowed
                 copy(isLoadingFollow = false, status = PlayPartnerFollowStatus.Followable(result))
             }
+            _uiEvent.emit(ShowInfoEvent(message = UiString.Resource(R.string.play_interactive_follow_success)))
         }) {
             _partnerInfo.setValue { (copy(isLoadingFollow = false)) }
             _uiEvent.emit(FailedFollow)
@@ -2079,14 +2080,6 @@ class PlayViewModel @AssistedInject constructor(
     private fun handleClickFollowInteractive() = needLogin(REQUEST_CODE_LOGIN_FOLLOW_INTERACTIVE) {
         if (_partnerInfo.value.status !is PlayPartnerFollowStatus.NotFollowable) {
             doFollowUnfollow(shouldForceFollow = true) ?: return@needLogin
-
-            viewModelScope.launch {
-                _uiEvent.emit(
-                    ShowInfoEvent(message = UiString.Resource(R.string.play_interactive_follow_success))
-                )
-            }
-
-            val interactiveId = repo.getActiveInteractiveId() ?: return@needLogin
         }
     }
 
