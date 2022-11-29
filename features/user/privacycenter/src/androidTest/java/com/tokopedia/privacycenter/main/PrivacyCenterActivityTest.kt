@@ -9,7 +9,6 @@ import com.tokopedia.privacycenter.main.di.DaggerTestAppComponent
 import com.tokopedia.privacycenter.main.di.FakeAppModule
 import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
-
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -29,11 +28,20 @@ class PrivacyCenterActivityTest {
         val component = DaggerTestAppComponent.builder().appModule(FakeAppModule(ctx)).build()
 //        fakeGql = component.fakeGraphql() as FakeGraphqlUseCase
         ApplicationProvider.getApplicationContext<BaseMainApplication>().setComponent(component)
-        activityTestRule.launchActivity(Intent())
     }
 
     @Test
     fun basic_test() {
-        Thread.sleep(3000)
+        activityTestRule.launchActivity(Intent())
+        Thread.sleep(500)
+
+        privacyCenterRobot {
+
+        } assert {
+            shouldShowCorrectName("Hai, Erick Samuel (test)")
+            shouldShowIconLinked()
+            shouldShowRecommendationSection()
+        }
     }
+
 }
