@@ -127,7 +127,7 @@ class ProductTagSourceBottomSheet @Inject constructor(
         mAuthorType = authorType
     }
 
-    fun setAnalytic(analytic: ContentProductTagAnalytic) {
+    fun setAnalytic(analytic: ContentProductTagAnalytic?) {
         mAnalytic = analytic
     }
 

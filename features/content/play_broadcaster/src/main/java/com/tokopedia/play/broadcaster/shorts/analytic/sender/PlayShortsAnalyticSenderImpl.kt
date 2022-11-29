@@ -63,6 +63,17 @@ class PlayShortsAnalyticSenderImpl @Inject constructor(
         )
     }
 
+    override fun sendGeneralViewEvent(eventAction: String, eventLabel: String, trackerId: String) {
+        sendGeneralEvent(
+            Tracker.Builder()
+                .setEvent(SHORTS_VIEW_CONTENT)
+                .setEventCategory(SHORTS_EVENT_CATEGORY)
+                .setEventAction(eventAction)
+                .setEventLabel(eventLabel)
+                .setCustomProperty(TRACKER_ID_LABEL, trackerId)
+        )
+    }
+
     override fun sendGeneralClickEvent(
         eventAction: String,
         account: ContentAccountUiModel,

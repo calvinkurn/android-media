@@ -130,21 +130,19 @@ class ProductTagParentFragment @Inject constructor(
 
         when(childFragment) {
             is ProductTagSourceBottomSheet -> {
-                childFragment.apply {
-                    setListener(object : ProductTagSourceBottomSheet.Listener {
-                        override fun onSelectProductTagSource(source: ProductTagSource) {
-                            mAnalytic?.clickProductTagSource(source, viewModel.authorId, viewModel.authorType)
-                            viewModel.submitAction(ProductTagAction.SelectProductTagSource(source))
-                        }
-                    })
-                    setData(
-                        viewModel.productTagSourceList,
-                        viewModel.shopBadge,
-                        viewModel.authorId,
-                        viewModel.authorType,
-                    )
-                    setAnalytic(mAnalytic)
-                }
+                childFragment.setListener(object : ProductTagSourceBottomSheet.Listener {
+                    override fun onSelectProductTagSource(source: ProductTagSource) {
+                        mAnalytic?.clickProductTagSource(source, viewModel.authorId, viewModel.authorType)
+                        viewModel.submitAction(ProductTagAction.SelectProductTagSource(source))
+                    }
+                })
+                childFragment.setData(
+                    viewModel.productTagSourceList,
+                    viewModel.shopBadge,
+                    viewModel.authorId,
+                    viewModel.authorType,
+                )
+                childFragment.setAnalytic(mAnalytic)
             }
         }
     }
