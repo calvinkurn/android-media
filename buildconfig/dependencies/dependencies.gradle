@@ -315,7 +315,8 @@ ext {
             jjwtJson              : "io.jsonwebtoken:jjwt-orgjson:0.11.2",
             gojekSSO              : "com.gojek.android:icp-identity-login-sso:$gojekSSOVersion",
             dynamicAnimation      : "androidx.dynamicanimation:dynamicanimation:1.0.0",
-            playIntegrityApi      : "com.google.android.play:integrity:$playIntegrityVersion"
+            playIntegrityApi      : "com.google.android.play:integrity:$playIntegrityVersion",
+            modifaceMakeUpKit     : "com.tokopedia.modiface:mfemakeupkit:0.0.18@aar"
     ]
 
     testDependencies = [
