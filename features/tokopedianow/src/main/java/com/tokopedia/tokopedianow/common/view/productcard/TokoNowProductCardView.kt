@@ -9,7 +9,6 @@ import android.view.LayoutInflater
 import androidx.cardview.widget.CardView
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
-import androidx.core.view.OneShotPreDrawListener
 import com.tokopedia.home_component.util.getHexColorFromIdColor
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.iconunify.getIconUnifyDrawable
@@ -27,8 +26,8 @@ import com.tokopedia.tokopedianow.common.model.LIGHT_RED
 import com.tokopedia.tokopedianow.common.model.TEXT_DARK_ORANGE
 import com.tokopedia.tokopedianow.common.model.TRANSPARENT_BLACK
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardViewUiModel
-import com.tokopedia.tokopedianow.common.util.ViewUtil.doOnPreDraw
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardViewUiModel.LabelGroup
+import com.tokopedia.tokopedianow.common.util.ViewUtil.doOnPreDraw
 import com.tokopedia.tokopedianow.common.util.ViewUtil.getDpFromDimen
 import com.tokopedia.tokopedianow.common.util.ViewUtil.safeParseColor
 import com.tokopedia.tokopedianow.databinding.LayoutTokopedianowProductCardViewBinding
