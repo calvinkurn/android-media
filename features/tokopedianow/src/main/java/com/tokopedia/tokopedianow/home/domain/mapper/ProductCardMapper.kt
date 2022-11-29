@@ -43,7 +43,8 @@ object ProductCardMapper {
                     rating = product.ratingAverage,
                     isVariant = parentId != DEFAULT_PARENT_PRODUCT_ID && parentId.isNotBlank(),
                     needToShowQuantityEditor = product.minOrder <= product.maxOrder && product.maxOrder != DEFAULT_MAX_ORDER,
-                    labelGroupList = mapLabelGroup(product)
+                    labelGroupList = mapLabelGroup(product),
+                    usePreDraw = true
                 )
             )
         }

@@ -27,9 +27,9 @@ import com.tokopedia.tokopedianow.common.model.TokoNowProductCardViewUiModel.Lab
 import com.tokopedia.tokopedianow.common.model.TEXT_DARK_ORANGE
 import com.tokopedia.tokopedianow.common.model.TRANSPARENT_BLACK
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardViewUiModel
-import com.tokopedia.tokopedianow.common.util.ViewUtil.doOnPreDraw
 import com.tokopedia.tokopedianow.common.util.ViewUtil.getDpFromDimen
 import com.tokopedia.tokopedianow.common.util.ViewUtil.safeParseColor
+import com.tokopedia.tokopedianow.common.util.doOnPreDraw
 import com.tokopedia.tokopedianow.databinding.LayoutTokopedianowProductCardViewBinding
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.ProgressBarUnify
@@ -58,69 +58,65 @@ class TokoNowProductCardView @JvmOverloads constructor(
         )
     }
 
-    private fun setupUi(
+    private fun LayoutTokopedianowProductCardViewBinding.setupUi(
         model: TokoNowProductCardViewUiModel
     ) {
-        binding.root.doOnPreDraw {
-            binding.apply {
-                initImageFilterView(
-                    imageUrl = model.imageUrl,
-                    brightness = model.getImageBrightness()
-                )
-                initQuantityEditor(
-                    isVariant = model.isVariant,
-                    minOrder = model.minOrder,
-                    maxOrder = model.maxOrder,
-                    orderQuantity = model.orderQuantity,
-                    isOos = model.isOos(),
-                    needToShowQuantityEditor = model.needToShowQuantityEditor
-                )
-                initAssignedValueTypography(
-                    labelGroup = model.getAssignedValueLabelGroup()
-                )
-                initMainPriceTypography(
-                    price = model.price
-                )
-                initPromoLabel(
-                    discount = model.discount,
-                    discountInt = model.discountInt,
-                    labelGroup = model.getPriceLabelGroup()
-                )
-                initSlashPriceTypography(
-                    slashPrice = model.slashPrice,
-                )
-                initProductNameTypography(
-                    productName = model.name
-                )
-                initRatingTypography(
-                    rating = model.rating,
-                    isFlashSale = model.isFlashSale(),
-                    isNormal = model.isNormal()
-                )
-                initWeight(
-                    labelGroup = model.getWeightLabelGroup()
-                )
-                initOosLabel(
-                    labelGroup = model.getOosLabelGroup(),
-                    isOos = model.isOos()
-                )
-                initWishlistButton(
-                    isOos = model.isOos(),
-                    isShown = model.isWishlistShown,
-                    hasBeenWishlist = model.hasBeenWishlist,
-                    productId = model.productId,
-                )
-                initSimilarProductTypography(
-                    isOos = model.isOos(),
-                    isShown = model.isSimilarProductShown
-                )
-                initProgressBar(
-                    isFlashSale = model.isFlashSale(),
-                    progressBarLabel = model.progressBarLabel,
-                    progressBarPercentage = model.progressBarPercentage
-                )
-            }
-        }
+        initImageFilterView(
+            imageUrl = model.imageUrl,
+            brightness = model.getImageBrightness()
+        )
+        initQuantityEditor(
+            isVariant = model.isVariant,
+            minOrder = model.minOrder,
+            maxOrder = model.maxOrder,
+            orderQuantity = model.orderQuantity,
+            isOos = model.isOos(),
+            needToShowQuantityEditor = model.needToShowQuantityEditor
+        )
+        initAssignedValueTypography(
+            labelGroup = model.getAssignedValueLabelGroup()
+        )
+        initMainPriceTypography(
+            price = model.price
+        )
+        initPromoLabel(
+            discount = model.discount,
+            discountInt = model.discountInt,
+            labelGroup = model.getPriceLabelGroup()
+        )
+        initSlashPriceTypography(
+            slashPrice = model.slashPrice,
+        )
+        initProductNameTypography(
+            productName = model.name
+        )
+        initRatingTypography(
+            rating = model.rating,
+            isFlashSale = model.isFlashSale(),
+            isNormal = model.isNormal()
+        )
+        initWeight(
+            labelGroup = model.getWeightLabelGroup()
+        )
+        initOosLabel(
+            labelGroup = model.getOosLabelGroup(),
+            isOos = model.isOos()
+        )
+        initWishlistButton(
+            isOos = model.isOos(),
+            isShown = model.isWishlistShown,
+            hasBeenWishlist = model.hasBeenWishlist,
+            productId = model.productId,
+        )
+        initSimilarProductTypography(
+            isOos = model.isOos(),
+            isShown = model.isSimilarProductShown
+        )
+        initProgressBar(
+            isFlashSale = model.isFlashSale(),
+            progressBarLabel = model.progressBarLabel,
+            progressBarPercentage = model.progressBarPercentage
+        )
     }
 
     private fun LayoutTokopedianowProductCardViewBinding.initImageFilterView(
@@ -178,14 +174,14 @@ class TokoNowProductCardView @JvmOverloads constructor(
         labelGroup: LabelGroup?
     ) {
         val isDiscountNotBlankOrZero = (discount.isNotBlank() && discount != NO_DISCOUNT_STRING) || !discountInt.isZero()
-        promoLabel.showIfWithBlock(isDiscountNotBlankOrZero || labelGroup != null) {
+        promoLayout.showIfWithBlock(isDiscountNotBlankOrZero || labelGroup != null) {
             if (isDiscountNotBlankOrZero) {
-                text = if (discountInt.isZero()) discount else context.getString(R.string.tokopedianow_product_card_percentage, discountInt)
-                adjustLabelType(LIGHT_RED)
+                promoLabel.text = if (discountInt.isZero()) discount else context.getString(R.string.tokopedianow_product_card_percentage, discountInt)
+                promoLabel.adjustLabelType(LIGHT_RED)
             } else {
                 labelGroup?.let { labelGroup ->
-                    text = labelGroup.title
-                    adjustLabelType(labelGroup.type)
+                    promoLabel.text = labelGroup.title
+                    promoLabel.adjustLabelType(labelGroup.type)
                 }
             }
         }
@@ -217,9 +213,7 @@ class TokoNowProductCardView @JvmOverloads constructor(
         ratingTypography.showIfWithBlock(rating.isNotBlank() && !isFlashSale) {
             ratingIcon.show()
             text = rating
-            if (isNormal) {
-                adjustRatingPosition()
-            }
+            adjustRatingPosition(isNormal)
         }
     }
 
@@ -296,54 +290,59 @@ class TokoNowProductCardView @JvmOverloads constructor(
                     com.tokopedia.unifycomponents.R.color.Unify_RN500
                 )
             )
-            progressTypography.showIfWithBlock(isFlashSale) {
-                text = progressBarLabel
-                val colorRes = if (progressBarLabel.equals(WORDING_SEGERA_HABIS, ignoreCase = true)) {
-                    com.tokopedia.unifyprinciples.R.color.Unify_RN500
-                } else {
-                    R.color.tokopedianow_product_card_dms_progress_bar_label_text_color
-                }
-                setTextColor(
-                    ContextCompat.getColor(
-                        context,
-                        colorRes
-                    )
-                )
-            }
             adjustFireIcon(progressBarLabel)
+        }
+
+        progressTypography.showIfWithBlock(isFlashSale) {
+            text = progressBarLabel
+            val colorRes = if (progressBarLabel.equals(WORDING_SEGERA_HABIS, ignoreCase = true)) {
+                com.tokopedia.unifyprinciples.R.color.Unify_RN500
+            } else {
+                R.color.tokopedianow_product_card_dms_progress_bar_label_text_color
+            }
+            setTextColor(
+                ContextCompat.getColor(
+                    context,
+                    colorRes
+                )
+            )
         }
     }
 
-    private fun LayoutTokopedianowProductCardViewBinding.adjustRatingPosition() {
+    private fun LayoutTokopedianowProductCardViewBinding.adjustRatingPosition(isNormal: Boolean) {
         val constraintSet = ConstraintSet()
 
         constraintSet.clone(root)
 
-        constraintSet.clear(
-            ratingTypography.id,
-            ConstraintSet.END
-        )
+        if (isNormal) {
+            constraintSet.clear(
+                ratingTypography.id,
+                ConstraintSet.END
+            )
 
-        constraintSet.clear(
-            ratingIcon.id,
-            ConstraintSet.START
-        )
+            constraintSet.clear(
+                ratingIcon.id,
+                ConstraintSet.START
+            )
 
-        constraintSet.setVerticalBias(
-            ratingTypography.id,
-            VERTICAL_BIAS_RATING_TYPOGRAPHY
-        )
+            constraintSet.setVerticalBias(
+                ratingTypography.id,
+                VERTICAL_BIAS_RATING_TYPOGRAPHY
+            )
 
-        constraintSet.connect(
-            ratingTypography.id,
-            ConstraintSet.START,
-            ratingIcon.id,
-            ConstraintSet.END,
-            getDpFromDimen(
-                context = context,
-                id = R.dimen.tokopedianow_product_card_rating_typography_start_margin_normal_state
-            ).toIntSafely()
-        )
+            constraintSet.connect(
+                ratingTypography.id,
+                ConstraintSet.BOTTOM,
+                ConstraintSet.PARENT_ID,
+                ConstraintSet.BOTTOM,
+                NO_MARGIN
+            )
+        } else {
+            constraintSet.clear(
+                ratingTypography.id,
+                ConstraintSet.BOTTOM
+            )
+        }
 
         constraintSet.connect(
             ratingIcon.id,
@@ -358,10 +357,13 @@ class TokoNowProductCardView @JvmOverloads constructor(
 
         constraintSet.connect(
             ratingTypography.id,
-            ConstraintSet.BOTTOM,
-            ConstraintSet.PARENT_ID,
-            ConstraintSet.BOTTOM,
-            NO_MARGIN
+            ConstraintSet.START,
+            ratingIcon.id,
+            ConstraintSet.END,
+            getDpFromDimen(
+                context = context,
+                id = R.dimen.tokopedianow_product_card_rating_typography_start_margin_normal_state
+            ).toIntSafely()
         )
 
         constraintSet.applyTo(root)
@@ -488,7 +490,13 @@ class TokoNowProductCardView @JvmOverloads constructor(
     }
 
     fun setData(model: TokoNowProductCardViewUiModel) {
-        setupUi(model)
+        if (model.usePreDraw) {
+            binding.root.doOnPreDraw {
+                binding.setupUi(model)
+            }
+        } else {
+            binding.setupUi(model)
+        }
     }
 
     fun setOnClickQuantityEditorListener(

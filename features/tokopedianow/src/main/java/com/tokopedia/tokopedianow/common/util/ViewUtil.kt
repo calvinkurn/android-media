@@ -32,14 +32,14 @@ object ViewUtil {
             defaultColor
         }
     }
+}
 
-    fun View.doOnPreDraw(block: View.() -> Unit) {
-        viewTreeObserver.addOnPreDrawListener(object : ViewTreeObserver.OnPreDrawListener {
-            override fun onPreDraw(): Boolean {
-                viewTreeObserver.removeOnPreDrawListener(this)
-                block(this@doOnPreDraw)
-                return true
-            }
-        })
-    }
+fun View.doOnPreDraw(block: View.() -> Unit) {
+    viewTreeObserver.addOnPreDrawListener(object : ViewTreeObserver.OnPreDrawListener {
+        override fun onPreDraw(): Boolean {
+            viewTreeObserver.removeOnPreDrawListener(this)
+            block(this@doOnPreDraw)
+            return true
+        }
+    })
 }
