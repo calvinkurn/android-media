@@ -52,7 +52,7 @@ class MvcListViewModel @Inject constructor(
                     type = filter.promoType.firstOrNull(),
                     status = filter.status,
                     sort = VoucherSort.VOUCHER_STATUS,
-                    target = null,
+                    target = filter.target,
                     page = page,
                     perPage = pageSize,
                     voucherName = filter.keyword

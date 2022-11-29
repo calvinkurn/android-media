@@ -44,7 +44,7 @@ data class VoucherListParam (
             type: PromoType? = null,
             status: List<VoucherStatus> = emptyList(),
             sort: VoucherSort? = null,
-            target: VoucherTarget? = null,
+            target: List<VoucherTarget> = emptyList(),
             page: Int? = null,
             perPage: Int? = Int.ZERO,
             voucherName: String? = null
@@ -52,13 +52,13 @@ data class VoucherListParam (
             return VoucherListParam(
                 voucherType = type?.type,
                 voucherStatus = status.map { it.type }.joinToString(VALUE_DELIMITER),
-                isPublic = target?.type?.toString(),
+                isPublic = target.map { it.type }.joinToString(VALUE_DELIMITER),
                 page = page,
                 perPage = perPage,
                 sortBy = sort?.type,
                 isInverted = false,
                 includeSubsidy = VoucherSubsidy.SELLER_AND_TOKOPEDIA.type,
-                isVps = listOf(VoucherVps.VPS, VoucherVps.NON_VPS).joinToString(VALUE_DELIMITER),
+                isVps = listOf(VoucherVps.VPS.type, VoucherVps.NON_VPS.type).joinToString(VALUE_DELIMITER),
                 voucherName = voucherName,
                 targetBuyer = null,
                 isLockToProduct = listOf(

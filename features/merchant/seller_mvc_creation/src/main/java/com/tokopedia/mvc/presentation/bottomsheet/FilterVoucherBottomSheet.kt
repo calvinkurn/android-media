@@ -82,7 +82,7 @@ class FilterVoucherBottomSheet(
         val type = filter.voucherType.map { it.type }
         val source = filter.source.map { it.type }
         val promoType = filter.promoType.map { it.type.dec() }
-        val target = filter.target.map { it.type }
+        val target = filter.target.map { it.ordinal }
         val targetBuyer = filter.targetBuyer.map { it.type }
 
         rvStatus.setupListItems(R.array.status_items, status, ::onRvStatusItemClicked)
@@ -122,7 +122,7 @@ class FilterVoucherBottomSheet(
     }
 
     private fun onRvTargetItemClicked(position: Int, isSelected: Boolean) {
-        val target = VoucherTarget.values().find { it.type == position } ?: return
+        val target = VoucherTarget.values().getOrNull(position) ?: return
         viewModel.setTarget(target)
     }
 

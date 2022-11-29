@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.kotlin.extensions.view.isDataExist
 import com.tokopedia.kotlin.extensions.view.toggleData
 import com.tokopedia.mvc.domain.entity.enums.PromoType
 import com.tokopedia.mvc.domain.entity.enums.VoucherServiceType
@@ -62,6 +63,7 @@ class FilterVoucherViewModel @Inject constructor(
     }
 
     fun setTarget(target: VoucherTarget) {
+        val a = _filterData.getValueOrDefault().target.isDataExist(target)
         _filterData.getValueOrDefault().target.toggleData(target)
         _filterData.triggerChange()
     }

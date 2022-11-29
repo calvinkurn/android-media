@@ -99,7 +99,7 @@ fun <T> MutableList<T>.moveTo(fromPosition: Int, toPosition: Int) {
     }
 }
 
-fun <E> MutableList<E>.isDataExist(data: E) = indexOf(data).isMoreThanZero()
+fun <E> MutableList<E>.isDataExist(data: E) = !indexOf(data).isLessThanZero()
 
 fun <E> MutableList<E>.toggleData(data: E) {
     if (isDataExist(data)) {
