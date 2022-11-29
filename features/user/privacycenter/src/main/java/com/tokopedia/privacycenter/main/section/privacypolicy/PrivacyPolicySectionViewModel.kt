@@ -33,21 +33,22 @@ class PrivacyPolicySectionViewModel @Inject constructor(
     }
 
     fun getPrivacyPolicyTopFiveList() {
-        _state.value = _state.value?.copy(innerState = PrivacyPolicyUiModel.InnerState.Loading)
         launch {
+            val currentState = _state.value ?: return@launch
+            _state.value = currentState.copy(innerState = PrivacyPolicyUiModel.InnerState.Loading)
             _state.value = try {
                  val data = getPrivacyPolicyList(5)
-                _state.value?.copy(
+                currentState.copy(
                     innerState = PrivacyPolicyUiModel.InnerState.Success(data)
                 )
             } catch (e: Exception) {
-                _state.value?.copy(innerState = PrivacyPolicyUiModel.InnerState.Error)
+                currentState.copy(innerState = PrivacyPolicyUiModel.InnerState.Error)
             }
         }
     }
 
     fun toggleContentVisibility() {
-        val currentState = checkNotNull(_state.value)
+        val currentState = _state.value ?: return
         _state.value = currentState.copy(expanded = currentState.expanded.not())
     }
 
