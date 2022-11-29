@@ -117,12 +117,12 @@ class FeedXCardSubtitlesAnimationHandler(
         viewOne.get()?.let { v1 ->
             viewTwo.get()?.let { v2 ->
                 val translateAnimPropOne =
-                    PropertyValuesHolder.ofFloat(View.TRANSLATION_Y, 0f, -dpToPx(48))
+                    PropertyValuesHolder.ofFloat(View.TRANSLATION_Y, 0f, -dpToPx(20))
                 val translateAnimObjOne: ObjectAnimator =
                     ObjectAnimator.ofPropertyValuesHolder(v1, translateAnimPropOne)
 
                 val translateAnimPropTwo =
-                    PropertyValuesHolder.ofFloat(View.TRANSLATION_Y, dpToPx(48), 0f)
+                    PropertyValuesHolder.ofFloat(View.TRANSLATION_Y, dpToPx(20), 0f)
                 val translateAnimObjTwo: ObjectAnimator =
                     ObjectAnimator.ofPropertyValuesHolder(v2, translateAnimPropTwo)
 
@@ -135,7 +135,7 @@ class FeedXCardSubtitlesAnimationHandler(
                 animatorSet?.duration = DURATION
                 animatorSet?.start()
 
-                Handler().postDelayed({ afterAnimationComplete() }, animatorSet?.duration ?: 600L)
+                Handler().postDelayed({ afterAnimationComplete() }, animatorSet?.duration ?: DURATION)
             }
         }
     }
@@ -146,7 +146,7 @@ class FeedXCardSubtitlesAnimationHandler(
 
     companion object {
         private const val START_DELAY = 2000L
-        private const val INTERVAL = 3000L
+        private const val INTERVAL = 2000L
         private const val DURATION = 600L
     }
 }
