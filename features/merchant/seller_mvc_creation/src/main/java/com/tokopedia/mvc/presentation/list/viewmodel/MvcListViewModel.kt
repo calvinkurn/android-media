@@ -79,4 +79,17 @@ class MvcListViewModel @Inject constructor(
             }
         )
     }
+
+    fun getFilterCount(): Int {
+        var count = 0
+        filter.apply {
+            if (status.isNotEmpty()) count = count.inc()
+            if (voucherType.isNotEmpty()) count = count.inc()
+            if (promoType.isNotEmpty()) count = count.inc()
+            if (source.isNotEmpty()) count = count.inc()
+            if (target.isNotEmpty()) count = count.inc()
+            if (targetBuyer.isNotEmpty()) count = count.inc()
+        }
+        return count
+    }
 }

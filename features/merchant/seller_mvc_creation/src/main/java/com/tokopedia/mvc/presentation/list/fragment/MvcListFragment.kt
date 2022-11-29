@@ -109,6 +109,7 @@ class MvcListFragment: BaseDaggerFragment(), HasPaginatedList by HasPaginatedLis
     override fun onFilterVoucherChanged(filter: FilterModel) {
         viewModel.filter = filter
         loadInitialDataList()
+        binding?.sortFilter?.indicatorCounter = viewModel.getFilterCount()
     }
 
     private fun setupObservables() {
@@ -214,14 +215,13 @@ class MvcListFragment: BaseDaggerFragment(), HasPaginatedList by HasPaginatedLis
         }
         dismissListener = parentListener
 
-
         filterItem.listener = {
             val bottomSheet = FilterVoucherStatusBottomSheet()
             bottomSheet.setSelected(filterItem.selectedItem)
             bottomSheet.setListener(this@MvcListFragment)
             bottomSheet.show(childFragmentManager, "")
         }
-        filterItem.refChipUnify.setChevronClickListener {  }
+        filterItem.refChipUnify.setChevronClickListener { filterItem.listener.invoke() }
     }
 
     private fun loadInitialDataList() {
