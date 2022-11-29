@@ -18,8 +18,6 @@ import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendati
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.topads.sdk.domain.interactor.TopAdsImageViewUseCase
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel
-import com.tokopedia.unifyorderhistory.analytics.UohAnalytics
-import com.tokopedia.unifyorderhistory.analytics.data.model.ECommerceAdd
 import com.tokopedia.unifyorderhistory.data.model.*
 import com.tokopedia.unifyorderhistory.domain.*
 import com.tokopedia.unifyorderhistory.util.UohConsts
@@ -133,9 +131,11 @@ class UohListViewModel @Inject constructor(
         launch {
             try {
                 val recommendationData = getRecommendationUseCase.getData(
-                        GetRecommendationRequestParam(
-                                pageNumber = pageNumber,
-                                pageName = UohConsts.PAGE_NAME))
+                    GetRecommendationRequestParam(
+                        pageNumber = pageNumber,
+                        pageName = UohConsts.PAGE_NAME
+                    )
+                )
                 _recommendationListResult.value = (recommendationData.asSuccess())
             } catch (e: Exception) {
                 Timber.d(e)
@@ -158,29 +158,6 @@ class UohListViewModel @Inject constructor(
         launch {
             val result = (atcMultiProductsUseCase.execute(userId, atcMultiQuery, listParam))
             _atcMultiResult.value = result
-
-            // analytics
-            val arrayListProducts = arrayListOf<ECommerceAdd.Add.Products>()
-            listParam.forEachIndexed { index, product ->
-                arrayListProducts.add(
-                        ECommerceAdd.Add.Products(
-                                name = product.productName,
-                                id = product.productId.toString(),
-                                price = product.productPrice.toString(),
-                                quantity = product.qty.toString(),
-                                dimension79 = product.shopId.toString()
-                        ))
-            }
-
-            if (result is Success) {
-                UohAnalytics.clickBeliLagiOnOrderCardMP(
-                    "",
-                    userId,
-                    arrayListProducts,
-                    verticalCategory,
-                    result.data.atcMulti.buyAgainData.listProducts.firstOrNull()?.cartId.toString()
-                )
-            }
             UohIdlingResource.decrement()
         }
     }
@@ -244,7 +221,6 @@ class UohListViewModel @Inject constructor(
             }
         }
     }
-
 
     fun doAtc(atcParams: AddToCartRequestParams) {
         UohIdlingResource.increment()

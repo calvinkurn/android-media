@@ -48,6 +48,7 @@ class UohListViewModelTest {
     private var listMsg = arrayListOf<String>()
     private var atcOccResponseSuccess = AddToCartDataModel()
     private var atcOccResponseFailed = AddToCartDataModel()
+    private var atcOccResponseFailedErrorNull = AddToCartDataModel()
 
     @RelaxedMockK
     lateinit var getUohFilterCategoryUseCase: GetUohFilterCategoryUseCase
@@ -134,6 +135,7 @@ class UohListViewModelTest {
 
         atcOccResponseSuccess = AddToCartDataModel(data = DataModel(success = 1, productId = 2147818593L), status = "OK")
         atcOccResponseFailed = AddToCartDataModel(data = DataModel(success = 0), status = "", errorMessage = arrayListOf("error"))
+        atcOccResponseFailedErrorNull = AddToCartDataModel(data = DataModel(success = 0, message = arrayListOf()), status = "", errorMessage = arrayListOf())
     }
 
     // uoh filter category
@@ -392,6 +394,23 @@ class UohListViewModelTest {
         coEvery {
             atcOccMultiUseCase.setParams(any()).executeOnBackground().mapToAddToCartDataModel()
         } returns atcOccResponseFailed
+
+        // when
+        uohListViewModel.doAtcOccMulti(AddToCartOccMultiRequestParams(carts = emptyList()))
+
+        // then
+        coVerify() {
+            atcOccMultiUseCase.setParams(any()).executeOnBackground()
+        }
+        assert(uohListViewModel.atcOccMultiResult.value is Fail)
+    }
+
+    @Test
+    fun atcOccMulti_shouldReturnError_butErrorisNull() {
+        // given
+        coEvery {
+            atcOccMultiUseCase.setParams(any()).executeOnBackground().mapToAddToCartDataModel()
+        } returns atcOccResponseFailedErrorNull
 
         // when
         uohListViewModel.doAtcOccMulti(AddToCartOccMultiRequestParams(carts = emptyList()))
