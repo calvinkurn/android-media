@@ -6,7 +6,6 @@ data class TransactionHistoryModel(
     var showBottomSheet: Boolean = false,
     var isChecked: Boolean = false,
     var selectedDate: CustomDateModel = CustomDateModel()
-//    var itemRange: ArrayList<ItemRangeModel> = arrayListOf()
 )
 
 data class ItemRangeModel(
