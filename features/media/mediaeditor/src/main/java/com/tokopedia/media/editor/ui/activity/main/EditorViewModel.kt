@@ -1,9 +1,13 @@
 package com.tokopedia.media.editor.ui.activity.main
 
 import android.graphics.Bitmap
+import android.graphics.Canvas
+import android.graphics.Paint
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.bumptech.glide.Glide
+import com.tokopedia.media.editor.data.repository.AddLogoFilterRepository
 import com.tokopedia.media.editor.data.repository.SaveImageRepository
 import com.tokopedia.media.editor.ui.uimodel.EditorDetailUiModel
 import com.tokopedia.media.editor.ui.uimodel.EditorUiModel
@@ -14,7 +18,8 @@ import java.io.File
 import javax.inject.Inject
 
 class EditorViewModel @Inject constructor(
-    private val saveImageRepository: SaveImageRepository
+    private val saveImageRepository: SaveImageRepository,
+    private val addLogoFilterRepository: AddLogoFilterRepository
 ) : ViewModel() {
 
     private var _editStateList = mutableMapOf<String, EditorUiModel>()
@@ -102,7 +107,16 @@ class EditorViewModel @Inject constructor(
 
         val filteredData = dataList.map {
             if (it.isImageEdited()) {
-                it.getImageUrl()
+                // if use 'add logo' feature then need to flatten image first
+                it.getOverlayLogoValue()?.let { overlayData ->
+                    addLogoFilterRepository.flattenImage(
+                        it.getImageUrl(),
+                        overlayData.overlayLogoUrl,
+                        it.getOriginalUrl()
+                    )
+                } ?: run {
+                    it.getImageUrl()
+                }
             } else {
                 it.getOriginalUrl().apply {
                     if (contains(pickerCameraCacheDir) && !contains(PICKER_URL_FILE_CODE)) {

@@ -10,6 +10,8 @@ import com.tokopedia.media.editor.analytics.editorhome.EditorHomeAnalyticsImpl
 import com.tokopedia.media.editor.analytics.editordetail.EditorDetailAnalytics
 import com.tokopedia.media.editor.analytics.editordetail.EditorDetailAnalyticsImpl
 import com.tokopedia.media.editor.data.EditorNetworkServices
+import com.tokopedia.media.editor.data.repository.AddLogoFilterRepository
+import com.tokopedia.media.editor.data.repository.AddLogoFilterRepositoryImpl
 import com.tokopedia.media.editor.data.repository.BitmapConverterRepository
 import com.tokopedia.media.editor.data.repository.BitmapConverterRepositoryImpl
 import com.tokopedia.media.editor.data.repository.RemoveBackgroundRepository
@@ -101,6 +103,15 @@ object EditorModule {
     @ActivityScope
     fun provideRotateFilterRepository(): RotateFilterRepository {
         return RotateFilterRepositoryImpl()
+    }
+
+    @Provides
+    @ActivityScope
+    fun provideAddLogoFilterRepository(
+        @ApplicationContext context: Context,
+        saveImageRepo: SaveImageRepository
+    ): AddLogoFilterRepository {
+        return AddLogoFilterRepositoryImpl(context, saveImageRepo)
     }
 
     @Provides
