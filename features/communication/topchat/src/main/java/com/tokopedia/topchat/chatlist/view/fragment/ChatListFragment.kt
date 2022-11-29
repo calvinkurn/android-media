@@ -34,6 +34,7 @@ import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
 import com.tokopedia.chat_common.util.EndlessRecyclerViewScrollUpListener
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.inboxcommon.RoleType
+import com.tokopedia.kotlin.extensions.view.EMPTY
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -64,15 +65,11 @@ import com.tokopedia.topchat.chatlist.view.adapter.typefactory.ChatListTypeFacto
 import com.tokopedia.topchat.chatlist.view.adapter.viewholder.ChatItemListViewHolder
 import com.tokopedia.topchat.chatlist.view.listener.ChatListContract
 import com.tokopedia.topchat.chatlist.view.listener.ChatListItemListener
+import com.tokopedia.topchat.chatlist.view.listener.ChatListTickerListener
+import com.tokopedia.topchat.chatlist.view.uimodel.ChatListTickerUiModel
 import com.tokopedia.topchat.chatlist.view.uimodel.EmptyChatModel
 import com.tokopedia.topchat.chatlist.view.uimodel.IncomingChatWebSocketModel
 import com.tokopedia.topchat.chatlist.view.uimodel.IncomingTypingWebSocketModel
-import com.tokopedia.topchat.chatlist.domain.pojo.ChatChangeStateResponse
-import com.tokopedia.topchat.chatlist.domain.pojo.ChatListDataPojo
-import com.tokopedia.topchat.chatlist.domain.pojo.ItemChatListPojo
-import com.tokopedia.topchat.chatlist.domain.pojo.operational_insight.ShopChatTicker
-import com.tokopedia.topchat.chatlist.view.listener.ChatListTickerListener
-import com.tokopedia.topchat.chatlist.view.uimodel.ChatListTickerUiModel
 import com.tokopedia.topchat.chatlist.view.viewmodel.ChatItemListViewModel
 import com.tokopedia.topchat.chatlist.view.viewmodel.ChatItemListViewModel.Companion.arrayFilterParam
 import com.tokopedia.topchat.chatlist.view.widget.FilterMenu
@@ -394,7 +391,7 @@ open class ChatListFragment constructor() :
             val tickerChatListBuyer = ChatListTickerUiModel(
                 result.tickerBuyer.message,
                 result.tickerBuyer.tickerType,
-                appLink = ApplinkConst.TokoFood.TOKOFOOD_ORDER
+                applink = ApplinkConst.TokoFood.TOKOFOOD_ORDER
             )
             adapter?.addElement(Int.ZERO, tickerChatListBuyer)
         }
@@ -405,7 +402,7 @@ open class ChatListFragment constructor() :
             val tickerChatListSeller = ChatListTickerUiModel(
                 result.tickerSeller.message,
                 result.tickerSeller.tickerType,
-                appLink = String.EMPTY
+                applink = String.EMPTY
             )
             adapter?.addElement(Int.ZERO, tickerChatListSeller)
         }
@@ -423,8 +420,11 @@ open class ChatListFragment constructor() :
     }
 
     override fun onChatListTickerClicked(applink: String) {
-        context?.let {
-            if (applink.isNotBlank()) {
+        if (applink.isNotBlank()) {
+            context?.let {
+                if (applink == ApplinkConst.TokoFood.TOKOFOOD_ORDER) {
+                    chatListAnalytics.clickChatDriverTicker(getRoleStr())
+                }
                 RouteManager.route(it, applink)
             }
         }
@@ -566,15 +566,6 @@ open class ChatListFragment constructor() :
     }
 
     override fun onItemClicked(t: Visitable<*>?) {
-    }
-
-    override fun onChatListTickerClicked(appLink: String) {
-        if (appLink.isNotBlank()) {
-            context?.let {
-                chatListAnalytics.clickChatDriverTicker(getRoleStr())
-                RouteManager.route(it, appLink)
-            }
-        }
     }
 
     override fun onChatListTickerImpressed() {

@@ -14,7 +14,7 @@ import com.tokopedia.utils.view.binding.viewBinding
 class ChatListTickerViewHolder(
     view: View,
     private val chatListTickerListener: ChatListTickerListener
-): AbstractViewHolder<ChatListTickerUiModel>(view) {
+) : AbstractViewHolder<ChatListTickerUiModel>(view) {
 
     companion object {
         @LayoutRes
@@ -37,6 +37,9 @@ class ChatListTickerViewHolder(
                     chatListTickerListener.onDismissTicker(element)
                 }
             })
+            addOnImpressionListener(element.impressHolder) {
+                chatListTickerListener.onChatListTickerImpressed()
+            }
         }
     }
 
