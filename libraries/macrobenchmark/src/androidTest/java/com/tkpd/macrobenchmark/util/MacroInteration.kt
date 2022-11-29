@@ -80,18 +80,22 @@ object MacroInteration {
         device.waitForIdle(IDLE_DURATION)
     }
 
-    fun basicComposableListInteraction(contentDescription: String){
+    fun basicComposableListInteraction(
+        contentDescription: String,
+        scrollDirection: Direction = Direction.DOWN,
+        scrollPercent: Float = 2f
+    ) {
         val instrumentation = InstrumentationRegistry.getInstrumentation()
         val device = UiDevice.getInstance(instrumentation)
 
-        device.wait(Until.hasObject(By.descContains(contentDescription)), DEFAULT_TIMEOUT)
-        val list = device.findObject(By.descContains(contentDescription))
+        device.wait(Until.hasObject(By.desc(contentDescription)), DEFAULT_TIMEOUT)
+        val list = device.findObject(By.desc(contentDescription))
 
         // Set gesture margin to avoid triggering gesture navigation
         // with input events from automation.
         list.setGestureMargin(device.displayWidth / 5)
         for (i in 1..(MacroArgs.getRecyclerViewScrollIterations(InstrumentationRegistry.getArguments()))) {
-            list.scroll(Direction.DOWN, 2f)
+            list.scroll(scrollDirection, scrollPercent)
             device.waitForIdle()
         }
     }
