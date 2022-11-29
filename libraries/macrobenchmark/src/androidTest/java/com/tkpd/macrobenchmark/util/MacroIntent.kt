@@ -191,7 +191,7 @@ object MacroIntent {
     object CampaignList {
         const val PACKAGE_NAME = TKPD_PACKAGE_SELLER_APP
 
-        const val RECYCLER_VIEW_WIDGET_CONTENT_DESCRIPTION = "Campaign List"
+        const val RECYCLER_VIEW_WIDGET_CONTENT_DESCRIPTION = "List"
 
         fun getCampaignListIntent(): Intent {
             val intent = Intent("com.tokopedia.internal.VIEW")
