@@ -33,16 +33,15 @@ class PrivacyPolicySectionViewModel @Inject constructor(
     }
 
     fun getPrivacyPolicyTopFiveList() {
+        _state.value = _state.value?.copy(innerState = PrivacyPolicyUiModel.InnerState.Loading)
         launch {
-            val currentState = _state.value ?: return@launch
-            _state.value = currentState.copy(innerState = PrivacyPolicyUiModel.InnerState.Loading)
             _state.value = try {
                  val data = getPrivacyPolicyList(5)
-                currentState.copy(
+                _state.value?.copy(
                     innerState = PrivacyPolicyUiModel.InnerState.Success(data)
                 )
             } catch (e: Exception) {
-                currentState.copy(innerState = PrivacyPolicyUiModel.InnerState.Error)
+                _state.value?.copy(innerState = PrivacyPolicyUiModel.InnerState.Error)
             }
         }
     }
