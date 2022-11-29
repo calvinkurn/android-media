@@ -11,7 +11,6 @@ import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.track.interfaces.ContextAnalytics
 import com.tokopedia.user.session.UserSessionInterface
 
-
 class NotificationSettingsGtmEvents constructor(
     private val userSession: UserSessionInterface,
     private val context: Context
@@ -28,11 +27,11 @@ class NotificationSettingsGtmEvents constructor(
     private var frequency: Int = 0
 
     fun updateFrequency() {
+        frequency = sharedPreference.getInt(FREQ_KEY, 0)
         val editor = sharedPreference.edit()
         editor.putInt(FREQ_KEY, frequency + 1)
         editor.apply()
     }
-
 
     fun sendPromptImpressionEvent(context: Context) {
         if (GlobalConfig.isSellerApp()) {
@@ -42,22 +41,28 @@ class NotificationSettingsGtmEvents constructor(
             eventCategory = GtmTrackerEvents.VALUE_CATEGORY_SA
         }
         createMapAndSendEvent(
-            GtmTrackerEvents.VALUE_EVENT_VIEW_CONTENT, GtmTrackerEvents.VALUE_ACTION_IMPRESSION,
-            trackerIdView, context
+            GtmTrackerEvents.VALUE_EVENT_VIEW_CONTENT,
+            GtmTrackerEvents.VALUE_ACTION_IMPRESSION,
+            trackerIdView,
+            context
         )
     }
 
     fun sendActionNotAllowEvent(context: Context) {
         createMapAndSendEvent(
-            GtmTrackerEvents.VALUE_EVENT_CLICK_CONTENT, GtmTrackerEvents.VALUE_ACTION_NOT_ALLOW,
-            trackerIdNotAllow, context
+            GtmTrackerEvents.VALUE_EVENT_CLICK_CONTENT,
+            GtmTrackerEvents.VALUE_ACTION_NOT_ALLOW,
+            trackerIdNotAllow,
+            context
         )
     }
 
     fun sendActionAllowEvent(context: Context) {
         createMapAndSendEvent(
-            GtmTrackerEvents.VALUE_EVENT_CLICK_CONTENT, GtmTrackerEvents.VALUE_ACTION_ALLOW,
-            trackerIdAllow, context
+            GtmTrackerEvents.VALUE_EVENT_CLICK_CONTENT,
+            GtmTrackerEvents.VALUE_ACTION_ALLOW,
+            trackerIdAllow,
+            context
         )
     }
 
