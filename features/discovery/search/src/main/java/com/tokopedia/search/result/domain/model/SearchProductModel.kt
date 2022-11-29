@@ -50,6 +50,9 @@ data class SearchProductModel(
     val isPostProcessing: Boolean
         get() = searchProduct.header.meta.isPostProcessing
 
+    val isShowButtonAtc: Boolean
+        get() = searchProduct.header.meta.showButtonAtc
+
     val backendFilters: String
         get() = searchProduct.backendFilters
 
@@ -126,6 +129,9 @@ data class SearchProductModel(
 
         @SerializedName("isPostProcessing")
         val isPostProcessing: Boolean = false,
+
+        @SerializedName("showButtonAtc")
+        val showButtonAtc: Boolean = false,
     )
 
     data class SearchProductData(
@@ -497,6 +503,10 @@ data class SearchProductModel(
             @SerializedName("customVideoURL")
             @Expose
             val customVideoURL: String = "",
+
+            @SerializedName("parentId")
+            @Expose
+            val parentId: String = "",
     ) {
 
         fun isOrganicAds(): Boolean = ads.id.isNotEmpty()
@@ -898,6 +908,14 @@ data class SearchProductModel(
             @SerializedName("bundle_id")
             @Expose
             val bundleId: String = "",
+
+            @SerializedName("parent_id")
+            @Expose
+            val parentId: String = "",
+
+            @SerializedName("min_order")
+            @Expose
+            val minOrder: String = "",
     ) {
         fun isOrganicAds(): Boolean = ads.id.isNotEmpty()
     }
@@ -917,6 +935,9 @@ data class SearchProductModel(
     )
 
     data class InspirationCarouselProductShop(
+            @SerializedName("id")
+            @Expose
+            val id: String = "",
             @SerializedName("name")
             @Expose
             val name: String = "",

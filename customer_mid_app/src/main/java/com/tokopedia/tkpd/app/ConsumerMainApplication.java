@@ -62,6 +62,7 @@ import com.tokopedia.devicefingerprint.header.FingerprintModelGenerator;
 import com.tokopedia.encryption.security.AESEncryptorECB;
 import com.tokopedia.graphql.util.GqlActivityCallback;
 import com.tokopedia.inappupdate.InAppUpdateLifecycleCallback;
+import com.tokopedia.journeydebugger.JourneySubscriber;
 import com.tokopedia.keys.Keys;
 import com.tokopedia.logger.LogManager;
 import com.tokopedia.logger.LoggerProxy;
@@ -90,6 +91,7 @@ import com.tokopedia.unifyprinciples.Typography;
 import com.tokopedia.url.TokopediaUrl;
 import com.tokopedia.weaver.WeaveInterface;
 import com.tokopedia.weaver.Weaver;
+import com.tokopedia.tokopatch.TokoPatch;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -161,6 +163,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
         com.tokopedia.akamai_bot_lib.UtilsKt.initAkamaiBotManager(ConsumerMainApplication.this);
         createAndCallPreSeq();
         super.onCreate();
+        TokoPatch.init(this);
         createAndCallPostSeq();
         initializeAbTestVariant();
         createAndCallFetchAbTest();
@@ -249,6 +252,7 @@ public abstract class ConsumerMainApplication extends ConsumerRouterApplication 
             }
             registerActivityLifecycleCallbacks(new ViewInspectorSubscriber());
             registerActivityLifecycleCallbacks(new DevOptsSubscriber());
+            registerActivityLifecycleCallbacks(new JourneySubscriber());
         }
         registerActivityLifecycleCallbacks(new TwoFactorCheckerSubscriber());
         registerActivityLifecycleCallbacks(new MediaLoaderActivityLifecycle(this));

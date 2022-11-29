@@ -17,7 +17,7 @@ import com.tokopedia.shop.info.view.fragment.ShopInfoFragment
  * Navigate to ShopInfoActivity
  * use [com.tokopedia.applink.internal.ApplinkConstInternalMarketplace.SHOP_INFO]
  */
-class ShopInfoActivity: BaseSimpleActivity(), HasComponent<ShopComponent> {
+class ShopInfoActivity : BaseSimpleActivity(), HasComponent<ShopComponent> {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -69,9 +69,9 @@ class ShopInfoActivity: BaseSimpleActivity(), HasComponent<ShopComponent> {
 
     companion object {
         fun createIntent(
-                context: Context,
-                shopId: String? = null,
-                shopInfo: ShopInfoData? = null
+            context: Context,
+            shopId: String? = null,
+            shopInfo: ShopInfoData? = null
         ): Intent {
             return Intent(context, ShopInfoActivity::class.java).apply {
                 putExtra(SHOP_ID, shopId)

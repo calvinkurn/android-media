@@ -21,4 +21,5 @@ interface AtcVariantListener {
     fun onClickRefresh() {}
     fun hideVariantName(): Boolean = false
     fun shouldHideTextHabis(): Boolean = false
+    fun showVariantWithChipGroup(): Boolean = false
 }

@@ -264,6 +264,19 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
     }
 
     @Test
+    fun testLego4Product() {
+        HomeDCCassavaTest {
+            initTest()
+            doActivityTestByModelClass(dataModelClass = Lego4ProductDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
+                actionOnLego4Product(viewHolder, i)
+            }
+        } validateAnalytics {
+            addDebugEnd()
+            hasPassedAnalytics(cassavaTestRule, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_LEGO_4_PRODUCT)
+        }
+    }
+
+    @Test
     fun testOpenScreenHomepage() {
         HomeDCCassavaTest {
             initTest()
@@ -452,6 +465,19 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
         } validateAnalytics {
             addDebugEnd()
             hasPassedAnalytics(cassavaTestRule, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_CAMPAIGN_WIDGET)
+        }
+    }
+
+    @Test
+    fun testHomeDynamicIcon() {
+        HomeDCCassavaTest {
+            initTest()
+            doActivityTestByModelClass(dataModelClass = DynamicIconComponentDataModel::class) { viewHolder: RecyclerView.ViewHolder, i: Int ->
+                actionOnDynamicIcon(viewHolder)
+            }
+        } validateAnalytics {
+            addDebugEnd()
+            hasPassedAnalytics(cassavaTestRule, ANALYTIC_VALIDATOR_QUERY_FILE_NAME_DYNAMIC_ICON)
         }
     }
 

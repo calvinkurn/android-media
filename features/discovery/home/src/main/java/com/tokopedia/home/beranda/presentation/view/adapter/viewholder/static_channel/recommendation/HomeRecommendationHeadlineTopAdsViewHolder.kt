@@ -22,15 +22,18 @@ class HomeRecommendationHeadlineTopAdsViewHolder(view: View, private  val topAds
     private var binding: HomeRecommedationHeadlineAdsLayoutBinding? by viewBinding()
 
     override fun bind(element: HomeRecommendationHeadlineTopAdsDataModel, listener: SmartListener) {
-        binding?.headlineAds?.setTopAdsBannerClickListener(TopAdsBannerClickListener { position, applink, data ->
-            topAdsBannerClickListener.onBannerAdsClicked(
-                position,
-                applink,
-                data
-            )
+        binding?.headlineAds?.setTopAdsBannerClickListener(object : TopAdsBannerClickListener {
+            override fun onBannerAdsClicked(position: Int, applink: String?, data: CpmData?) {
+                topAdsBannerClickListener.onBannerAdsClicked(
+                    position,
+                    applink,
+                    data
+                )
+            }
+
         })
         binding?.headlineAds?.setTopAdsImpressionListener(object : TopAdsItemImpressionListener() {
-            override fun onImpressionHeadlineAdsItem(position: Int, data: CpmData?) {
+            override fun onImpressionHeadlineAdsItem(position: Int, data: CpmData) {
             }
         })
         if (!element.headlineAds.data.isNullOrEmpty()){

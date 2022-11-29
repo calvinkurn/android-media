@@ -30,9 +30,12 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.analytics)
     implementation projectOrAar(rootProject.ext.libraries.logger)
 
+    implementation projectOrAar(rootProject.ext.libraries.network)
+
     kapt rootProject.ext.networkDependencies.glideProcessor
     implementation rootProject.ext.networkDependencies.glide
     implementation rootProject.ext.networkDependencies.glideOkhttp
+    implementation rootProject.ext.debugToolsDependencies.chuck
 
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation projectOrAar(rootProject.ext.libraries.usersession)

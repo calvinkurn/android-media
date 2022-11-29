@@ -9,6 +9,7 @@ import com.tokopedia.search.result.product.SearchParameterProvider
 import com.tokopedia.search.result.product.ViewUpdater
 import com.tokopedia.search.result.product.productfilterindicator.ProductFilterIndicator
 import com.tokopedia.search.result.product.productfilterindicator.ProductFilterIndicatorDelegate
+import com.tokopedia.search.utils.FragmentProvider
 import dagger.Binds
 import dagger.Module
 import dagger.Provides
@@ -53,4 +54,8 @@ abstract class ProductListProvidersModule {
     @Binds
     @SearchScope
     abstract fun provideScreenNameProvider(provider: ProductListFragment): ScreenNameProvider
+
+    @Binds
+    @SearchScope
+    abstract fun provideFragmentProvider(provider: ProductListFragment): FragmentProvider
 }

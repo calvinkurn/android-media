@@ -1,4 +1,4 @@
 <vector xmlns:android="http://schemas.android.com/apk/res/android" android:width="32dp" android:height="32dp" android:viewportWidth="32" android:viewportHeight="32">
-    <path android:pathData="M6 16c0-5.523 4.477-10 10-10s10 4.477 10 10c0 5.522-4.477 10-10 10S6 21.522 6 16zm11.08-3.973c-0.257 0.29-0.627 0.423-1.08 0.423-0.845 0-1.45-0.624-1.45-1.462 0-0.859 0.594-1.439 1.45-1.439 0.825 0 1.45 0.612 1.45 1.44 0 0.407-0.12 0.76-0.37 1.038zM17.25 22c-1.38 0-2.5-1.119-2.5-2.5V14h2.5v8z" android:fillColor="#ffffff" android:fillType="evenOdd"/>
-    <path android:pathData="M1 16a15 15 0 1 1 30 0 15 15 0 1 1-30 0" android:strokeWidth="2" android:strokeColor="#ffffff"/>
+    <path android:pathData="M6 16c0-5.523 4.477-10 10-10s10 4.477 10 10c0 5.522-4.477 10-10 10S6 21.522 6 16zm11.08-3.973c-0.257 0.29-0.627 0.423-1.08 0.423-0.845 0-1.45-0.624-1.45-1.462 0-0.859 0.594-1.439 1.45-1.439 0.825 0 1.45 0.612 1.45 1.44 0 0.407-0.12 0.76-0.37 1.038zM17.25 22c-1.38 0-2.5-1.119-2.5-2.5V14h2.5v8z" android:fillColor="@color/Unify_Static_White" android:fillType="evenOdd"/>
+    <path android:pathData="M1 16a15 15 0 1 1 30 0 15 15 0 1 1-30 0" android:strokeWidth="2" android:strokeColor="@color/Unify_Static_White"/>
 </vector>

@@ -349,6 +349,7 @@ class SearchProductFirstPageGqlUseCase(
                                     show
                                 }
                               	shop {
+                                    id
                                     name
                                     city
                                 }
@@ -364,6 +365,8 @@ class SearchProductFirstPageGqlUseCase(
                                 }
                                 customvideo_url
                                 bundle_id
+                                parent_id
+                                min_order
                             }
                             card_button {
                                 title

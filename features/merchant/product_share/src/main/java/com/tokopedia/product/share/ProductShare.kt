@@ -31,6 +31,9 @@ import com.tokopedia.product.share.tracker.ProductShareTracking.onCloseShareWidg
 import com.tokopedia.product.share.tracker.ProductShareTracking.onImpressShareWidget
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 import com.tokopedia.remoteconfig.RemoteConfigKey
+import com.tokopedia.universal_sharing.constants.ImageGeneratorConstants
+import com.tokopedia.universal_sharing.model.ImageGeneratorParamModel
+import com.tokopedia.universal_sharing.model.PdpParamModel
 import com.tokopedia.universal_sharing.view.bottomsheet.ScreenshotDetector
 import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
@@ -430,7 +433,8 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
         productImgList: ArrayList<String>? = null,
         preBuildImg: () -> Unit,
         postBuildImg: () -> Unit,
-        screenshotDetector: ScreenshotDetector? = null
+        screenshotDetector: ScreenshotDetector? = null,
+        paramImageGenerator: PdpParamModel,
     ) {
         cancelShare = false
         resetLog()
@@ -449,7 +453,10 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
             screenshotDetector = screenshotDetector
         ) {
             UniversalShareBottomSheet.createInstance().apply {
+                getImageFromMedia(true)
                 setupAffiliate(affiliateInput, this)
+                setMediaPageSourceId(ImageGeneratorConstants.ImageGeneratorSourceId.PDP)
+                setImageGeneratorParam(paramImageGenerator)
                 init(object : ShareBottomsheetListener {
                     override fun onShareOptionClicked(shareModel: ShareModel) {
                         shareChannelClicked(shareModel)
@@ -466,6 +473,7 @@ class ProductShare(private val activity: Activity, private val mode: Int = MODE_
                     productData.productImageUrl ?: "",
                     "", productImgList
                 )
+                universalShareBottomSheet = this
             }
         }
         onImpressShareWidget(

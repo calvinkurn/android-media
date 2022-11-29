@@ -13,6 +13,7 @@ allprojects {
                 username = "${gcp_artifactory_username}"
                 password = "${gcp_artifactory_password}"
             }
+            allowInsecureProtocol = true
         }
         maven {
             url "${artifactory_url}" + "/libs-release-local";
@@ -20,6 +21,7 @@ allprojects {
                 username = "${artifactory_username}"
                 password = "${artifactory_password}"
             }
+            allowInsecureProtocol = true
         }
         maven {
             url "https://jitpack.io"
@@ -103,6 +105,7 @@ subprojects {
                 substitute module('com.google.code.gson:gson') with module("com.google.code.gson:gson:$gsonDebugVersion")
                 substitute module("androidx.room:room-runtime") with module("androidx.room:room-runtime:$roomVersion")
                 substitute module("androidx.room:room-compiler") with module("androidx.room:room-compiler:$roomVersion")
+                substitute module("com.google.android.apps.common.testing.accessibility.framework:accessibility-test-framework") with module("com.google.android.apps.common.testing.accessibility.framework:accessibility-test-framework:${accessibilityTestFrameworkVersion}")
 
                 if (!rootProject.ext.debugToolsEnabled) {
                     substitute module(rootProject.ext.debugToolsDependencies.chuck) with module(rootProject.ext.debugToolsDependencies.chuckNoop)

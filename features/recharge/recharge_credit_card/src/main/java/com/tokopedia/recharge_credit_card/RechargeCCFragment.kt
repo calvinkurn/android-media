@@ -503,6 +503,11 @@ class RechargeCCFragment :
     override fun onManualInput() {
         token = ""
     }
+
+    override fun onNavigateTokoCardWebView() {
+        // TODO: [Misael] Add tracker here
+    }
+
     //endregion
 
     //region ClientNumberInputFieldListener
@@ -652,6 +657,7 @@ class RechargeCCFragment :
                             orderClientNumber.operatorId,
                             orderClientNumber.inputNumberActionTypeIndex,
                         )
+                        token = orderClientNumber.token
                     } else {
                         handleCallbackAnySavedNumberCancel()
                     }

@@ -4,7 +4,7 @@ import android.content.Context
 import android.net.Uri
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.internal.ApplinkConstInternalTravel
-import com.tokopedia.applink.order.DeeplinkMapperUohOrder
+import com.tokopedia.applink.purchaseplatform.DeeplinkMapperUoh
 
 object DeeplinkMapperTravel {
     private const val HOTEL_LAST_PATH_DETAIL = "detail"
@@ -16,7 +16,7 @@ object DeeplinkMapperTravel {
                 ApplinkConstInternalTravel.HOTEL_SRP
             }
             deeplink.equals(ApplinkConst.HOTEL_ORDER, true) -> {
-                DeeplinkMapperUohOrder.getRegisteredNavigationUohOrder(context, deeplink)
+                DeeplinkMapperUoh.getRegisteredNavigationUohOrder(context, deeplink)
             }
             deeplink.startsWith(ApplinkConst.HOTEL_DASHBOARD, true) -> {
                 ApplinkConstInternalTravel.DASHBOARD_HOTEL

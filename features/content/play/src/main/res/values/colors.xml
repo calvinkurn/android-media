@@ -19,16 +19,9 @@
 
     <color name="play_dms_discount_price">#FF5C84</color>
 
-    <color name="play_dms_voucher_bg">#AD31353B</color>
-    <color name="play_dms_voucher_placeholder_bg">#31353B</color>
-
     <!--Engagement Tools-->
-    <color name="play_dms_interactive_live_bg_1">#FFC400</color>
-    <color name="play_dms_interactive_live_bg_2">#FF8B00</color>
 
     <color name="play_dms_interactive_winning_dialog_subtitle">#D6DFEB</color>
-
-    <color name="play_dms_interactive_loader_bg">#66FFFFFF</color>
 
     <!--Real Time Notification-->
     <color name="play_dms_default_real_time_notif_bg">#AD009F92</color>
@@ -37,7 +30,6 @@
     <color name="play_dms_N600">#40454C</color>
     <color name="play_dms_N700">#31353B</color>
     <color name="play_dms_N700_32">#5231353B</color>
-    <color name="play_dms_transparent">#00FFFFFF</color>
 
     <!-- MultipleLike Icon Background -->
     <color name="play_dms_multiplelike_red">#F94D63</color>

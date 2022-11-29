@@ -92,7 +92,7 @@ public class ImageLoader {
                         imageView.setImageBitmap(resource);
                         if (!shop.isLoaded()) {
                             shop.setLoaded(true);
-                            new ImpresionTask(className).execute(shop.getImageShop().getsUrl());
+                            new ImpresionTask(className).execute(shop.getImageShop().getSUrl());
                         }
                     }
 
@@ -140,7 +140,7 @@ public class ImageLoader {
 
                         if (!shop.isLoaded()) {
                             shop.setLoaded(true);
-                            new ImpresionTask(className).execute(shop.getImageShop().getsUrl());
+                            new ImpresionTask(className).execute(shop.getImageShop().getSUrl());
                         }
                     }
                 });

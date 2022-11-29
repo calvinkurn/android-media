@@ -4,17 +4,19 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.shop.common.data.model.HomeLayoutData
+import com.tokopedia.shop.common.data.model.ShopPageWidgetLayoutUiModel
 import com.tokopedia.shop.common.data.source.cloud.model.LabelGroup
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeBundleProductUiModel
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeProductBundleDetailUiModel
 import com.tokopedia.shop.common.widget.bundle.model.ShopHomeProductBundleItemUiModel
-import com.tokopedia.shop.home.view.model.ShopHomeProductBundleListUiModel
 import com.tokopedia.shop.home.WidgetName.BIG_CAMPAIGN_THEMATIC
 import com.tokopedia.shop.home.WidgetName.ETALASE_THEMATIC
 import com.tokopedia.shop.home.WidgetName.FLASH_SALE_TOKO
 import com.tokopedia.shop.home.WidgetName.IS_SHOW_ETALASE_NAME
 import com.tokopedia.shop.home.WidgetName.NEW_PRODUCT_LAUNCH_CAMPAIGN
 import com.tokopedia.shop.home.WidgetName.PRODUCT
+import com.tokopedia.shop.home.WidgetName.RECENT_ACTIVITY
+import com.tokopedia.shop.home.WidgetName.REMINDER
 import com.tokopedia.shop.home.WidgetName.SHOWCASE_SLIDER_TWO_ROWS
 import com.tokopedia.shop.home.WidgetName.VOUCHER_STATIC
 import com.tokopedia.shop.home.WidgetType.BUNDLE
@@ -38,16 +40,13 @@ import com.tokopedia.shop.home.view.model.ShopHomeDisplayWidgetUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeFlashSaleTncUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeFlashSaleUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeNewProductLaunchCampaignUiModel
+import com.tokopedia.shop.home.view.model.ShopHomeProductBundleListUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeProductUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeShowcaseListItemUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeShowcaseListSliderUiModel
 import com.tokopedia.shop.home.view.model.ShopHomeVoucherUiModel
 import com.tokopedia.shop.home.view.model.ShopPageHomeWidgetLayoutUiModel
 import com.tokopedia.shop.home.view.model.StatusCampaign
-import com.tokopedia.shop.common.data.model.ShopPageGetHomeType
-import com.tokopedia.shop.common.data.model.ShopPageWidgetLayoutUiModel
-import com.tokopedia.shop.home.WidgetName.RECENT_ACTIVITY
-import com.tokopedia.shop.home.WidgetName.REMINDER
 import com.tokopedia.shop.product.data.model.ShopProduct
 import com.tokopedia.shop.product.view.datamodel.LabelGroupUiModel
 import com.tokopedia.shop_widget.common.uimodel.DynamicHeaderUiModel
@@ -64,7 +63,7 @@ object ShopPageHomeMapper {
     fun mapToHomeProductViewModelForAllProduct(
         shopProduct: ShopProduct,
         isMyOwnProduct: Boolean,
-        isEnableDirectPurchase: Boolean,
+        isEnableDirectPurchase: Boolean
     ): ShopHomeProductUiModel =
         with(shopProduct) {
             ShopHomeProductUiModel().also {
@@ -126,7 +125,8 @@ object ShopPageHomeMapper {
         }
 
         val freeOngkirObject = ProductCardModel.FreeOngkir(
-            shopHomeProductViewModel.isShowFreeOngkir, shopHomeProductViewModel.freeOngkirPromoIcon
+            shopHomeProductViewModel.isShowFreeOngkir,
+            shopHomeProductViewModel.freeOngkirPromoIcon
                 ?: ""
         )
 
@@ -210,7 +210,8 @@ object ShopPageHomeMapper {
         }
 
         val freeOngkirObject = ProductCardModel.FreeOngkir(
-            shopHomeProductViewModel.isShowFreeOngkir, shopHomeProductViewModel.freeOngkirPromoIcon
+            shopHomeProductViewModel.isShowFreeOngkir,
+            shopHomeProductViewModel.freeOngkirPromoIcon
                 ?: ""
         )
         val baseProductCardModel = ProductCardModel(
@@ -308,7 +309,8 @@ object ShopPageHomeMapper {
         }
 
         val freeOngkirObject = ProductCardModel.FreeOngkir(
-            shopHomeProductViewModel.isShowFreeOngkir, shopHomeProductViewModel.freeOngkirPromoIcon
+            shopHomeProductViewModel.isShowFreeOngkir,
+            shopHomeProductViewModel.freeOngkirPromoIcon
                 ?: ""
         )
         val baseProductCardModel = ProductCardModel(
@@ -333,8 +335,8 @@ object ShopPageHomeMapper {
         return if (isShopCampaignWidgetEnableDirectPurchase(
                 shopHomeProductViewModel.isEnableDirectPurchase,
                 widgetName
-            ) && isProductCardIsNotSoldOut(shopHomeProductViewModel.isSoldOut)
-            && isStatusCampaignIsOngoing(statusCampaign)
+            ) && isProductCardIsNotSoldOut(shopHomeProductViewModel.isSoldOut) &&
+            isStatusCampaignIsOngoing(statusCampaign)
         ) {
             if (shopHomeProductViewModel.isVariant) {
                 createProductCardWithVariantAtcModel(shopHomeProductViewModel, baseProductCardModel)
@@ -388,11 +390,12 @@ object ShopPageHomeMapper {
     }
 
     private fun mapToWidgetUiModel(
-            widgetResponse: ShopLayoutWidget.Widget,
-            isMyOwnProduct: Boolean,
-            isLoggedIn: Boolean,
-            isThematicWidgetShown: Boolean,
-            isEnableDirectPurchase: Boolean
+        widgetResponse: ShopLayoutWidget.Widget,
+        isMyOwnProduct: Boolean,
+        isLoggedIn: Boolean,
+        isThematicWidgetShown: Boolean,
+        isEnableDirectPurchase: Boolean,
+        shopId: String
     ): Visitable<*>? {
         if (widgetResponse.name == VOUCHER_STATIC) {
             return mapToVoucherUiModel(widgetResponse)
@@ -406,7 +409,7 @@ object ShopPageHomeMapper {
             }
             CAMPAIGN.toLowerCase() -> {
                 if (isThematicWidgetShown) {
-                    when(widgetResponse.name) {
+                    when (widgetResponse.name) {
                         ETALASE_THEMATIC -> mapToThematicWidget(widgetResponse)
                         BIG_CAMPAIGN_THEMATIC -> mapToThematicWidget(widgetResponse)
                         FLASH_SALE_TOKO -> mapToFlashSaleUiModel(widgetResponse, isEnableDirectPurchase)
@@ -417,13 +420,14 @@ object ShopPageHomeMapper {
                         else -> null
                     }
                 } else {
-                    when(widgetResponse.name) {
+                    when (widgetResponse.name) {
                         FLASH_SALE_TOKO -> mapToFlashSaleUiModel(
                             widgetResponse,
                             isEnableDirectPurchase
                         )
                         NEW_PRODUCT_LAUNCH_CAMPAIGN -> mapToNewProductLaunchCampaignUiModel(
-                            widgetResponse, isLoggedIn
+                            widgetResponse,
+                            isLoggedIn
                         )
                         else -> null
                     }
@@ -437,7 +441,7 @@ object ShopPageHomeMapper {
             )
             SHOWCASE.toLowerCase(Locale.getDefault()) -> mapToShowcaseListUiModel(widgetResponse)
             CARD.lowercase() -> mapToCardDonationUiModel(widgetResponse)
-            BUNDLE.toLowerCase(Locale.getDefault()) -> mapToProductBundleListUiModel(widgetResponse)
+            BUNDLE.toLowerCase(Locale.getDefault()) -> mapToProductBundleListUiModel(widgetResponse, shopId)
             else -> {
                 null
             }
@@ -488,19 +492,21 @@ object ShopPageHomeMapper {
     }
 
     private fun mapToProductBundleListUiModel(
-            widgetResponse: ShopLayoutWidget.Widget
+        widgetResponse: ShopLayoutWidget.Widget,
+        shopId: String
     ) = ShopHomeProductBundleListUiModel(
-            widgetId = widgetResponse.widgetID,
-            layoutOrder = widgetResponse.layoutOrder,
-            name = widgetResponse.name,
-            type = widgetResponse.type,
-            header = mapToHeaderModel(widgetResponse.header),
-            productBundleList = mapToProductBundleListItemUiModel(widgetResponse.data, widgetResponse.name)
+        widgetId = widgetResponse.widgetID,
+        layoutOrder = widgetResponse.layoutOrder,
+        name = widgetResponse.name,
+        type = widgetResponse.type,
+        header = mapToHeaderModel(widgetResponse.header),
+        productBundleList = mapToProductBundleListItemUiModel(widgetResponse.data, widgetResponse.name, shopId)
     )
 
     private fun mapToProductBundleListItemUiModel(
-            widgetData: List<ShopLayoutWidget.Widget.Data>,
-            widgetName: String,
+        widgetData: List<ShopLayoutWidget.Widget.Data>,
+        widgetName: String,
+        shopId: String
     ): List<ShopHomeProductBundleItemUiModel> {
         return widgetData.map {
             ShopHomeProductBundleItemUiModel().apply {
@@ -530,6 +536,7 @@ object ShopPageHomeMapper {
                         productAppLink = bundleProduct.productAppLink
                     }
                 }
+                this.shopId = shopId
             }
         }
     }
@@ -730,36 +737,36 @@ object ShopPageHomeMapper {
             name = widgetResponse.name,
             type = widgetResponse.type,
             header = DynamicHeaderUiModel(
-                    title = widgetResponse.data.firstOrNull()?.name.orEmpty(),
-                    subTitle = widgetResponse.data.firstOrNull()?.timeDescription.orEmpty(),
-                    ctaText = widgetResponse.header.ctaText,
-                    ctaTextLink = widgetResponse.header.ctaLink,
-                    statusCampaign = widgetResponse.data.firstOrNull()?.statusCampaign.orEmpty().lowercase(Locale.getDefault()),
-                    endDate = widgetResponse.data.firstOrNull()?.endDate.orEmpty(),
-                    timerCounter = widgetResponse.data.firstOrNull()?.timeCounter.orEmpty()
+                title = widgetResponse.data.firstOrNull()?.name.orEmpty(),
+                subTitle = widgetResponse.data.firstOrNull()?.timeDescription.orEmpty(),
+                ctaText = widgetResponse.header.ctaText,
+                ctaTextLink = widgetResponse.header.ctaLink,
+                statusCampaign = widgetResponse.data.firstOrNull()?.statusCampaign.orEmpty().lowercase(Locale.getDefault()),
+                endDate = widgetResponse.data.firstOrNull()?.endDate.orEmpty(),
+                timerCounter = widgetResponse.data.firstOrNull()?.timeCounter.orEmpty()
             ),
             widgetMasterId = widgetResponse.widgetMasterID,
             productList = widgetResponse.data.firstOrNull()?.listProduct?.map {
-                    val labelGroups = it.labelGroups.filter { labelGroup ->  labelGroup.position == LABEL_POSITION_INTEGRITY }
-                    ProductCardUiModel(
-                     id = it.id,
-                     name = it.name,
-                     displayedPrice = it.discountedPrice,
-                     originalPrice = it.displayedPrice,
-                     discountPercentage = it.discountPercentage,
-                     imageUrl = it.imageUrl,
-                     imageUrl300 = "",
-                     productUrl = it.urlApps,
-                     hideGimmick = it.hideGimmick,
-                     labelGroupList = labelGroups.map { labelGroup ->
-                         com.tokopedia.shop_widget.thematicwidget.uimodel.LabelGroupUiModel(
-                             position = labelGroup.position,
-                             title = labelGroup.title,
-                             url = labelGroup.url,
-                             type = labelGroup.type
-                         )
-                     }
-                 )
+                val labelGroups = it.labelGroups.filter { labelGroup -> labelGroup.position == LABEL_POSITION_INTEGRITY }
+                ProductCardUiModel(
+                    id = it.id,
+                    name = it.name,
+                    displayedPrice = it.discountedPrice,
+                    originalPrice = it.displayedPrice,
+                    discountPercentage = it.discountPercentage,
+                    imageUrl = it.imageUrl,
+                    imageUrl300 = "",
+                    productUrl = it.urlApps,
+                    hideGimmick = it.hideGimmick,
+                    labelGroupList = labelGroups.map { labelGroup ->
+                        com.tokopedia.shop_widget.thematicwidget.uimodel.LabelGroupUiModel(
+                            position = labelGroup.position,
+                            title = labelGroup.title,
+                            url = labelGroup.url,
+                            type = labelGroup.type
+                        )
+                    }
+                )
             } ?: listOf(),
             imageBanner = widgetResponse.data.firstOrNull()?.listBanner?.firstOrNull()?.imageUrl.orEmpty(),
             firstBackgroundColor = widgetResponse.data.firstOrNull()?.backgroundGradientColor?.firstColor.orEmpty(),
@@ -941,15 +948,16 @@ object ShopPageHomeMapper {
     )
 
     fun mapToListShopHomeWidget(
-            responseWidgetData: List<ShopLayoutWidget.Widget>,
-            myShop: Boolean,
-            isLoggedIn: Boolean,
-            isThematicWidgetShown: Boolean,
-            isEnableDirectPurchase: Boolean
+        responseWidgetData: List<ShopLayoutWidget.Widget>,
+        myShop: Boolean,
+        isLoggedIn: Boolean,
+        isThematicWidgetShown: Boolean,
+        isEnableDirectPurchase: Boolean,
+        shopId: String
     ): List<Visitable<*>> {
         return mutableListOf<Visitable<*>>().apply {
-            responseWidgetData.filter { it.data.isNotEmpty() || it.type.equals(DYNAMIC, ignoreCase = true) || it.name == VOUCHER_STATIC || it.type.equals(CARD, ignoreCase = true)}.onEach {
-                when (val widgetUiModel = mapToWidgetUiModel(it, myShop, isLoggedIn, isThematicWidgetShown, isEnableDirectPurchase)) {
+            responseWidgetData.filter { it.data.isNotEmpty() || it.type.equals(DYNAMIC, ignoreCase = true) || it.name == VOUCHER_STATIC || it.type.equals(CARD, ignoreCase = true) }.onEach {
+                when (val widgetUiModel = mapToWidgetUiModel(it, myShop, isLoggedIn, isThematicWidgetShown, isEnableDirectPurchase, shopId)) {
                     is BaseShopHomeWidgetUiModel -> {
                         widgetUiModel.let { model ->
                             model.widgetMasterId = it.widgetMasterID
@@ -983,21 +991,27 @@ object ShopPageHomeMapper {
     }
 
     fun mapShopHomeWidgetLayoutToListShopHomeWidget(
-            listWidgetLayout: List<ShopPageWidgetLayoutUiModel>,
-            myShop: Boolean,
-            isLoggedIn: Boolean,
-            isThematicWidgetShown: Boolean,
-            isEnableDirectPurchase: Boolean
+        listWidgetLayout: List<ShopPageWidgetLayoutUiModel>,
+        myShop: Boolean,
+        isLoggedIn: Boolean,
+        isThematicWidgetShown: Boolean,
+        isEnableDirectPurchase: Boolean,
+        shopId: String
     ): List<Visitable<*>> {
         return mutableListOf<Visitable<*>>().apply {
             listWidgetLayout.onEach {
                 mapToWidgetUiModel(
-                        ShopLayoutWidget.Widget(
-                                widgetID = it.widgetId,
-                                type = it.widgetType,
-                                name = it.widgetName,
-                        ), myShop, isLoggedIn, isThematicWidgetShown, isEnableDirectPurchase
-                )?.let{ resModel ->
+                    ShopLayoutWidget.Widget(
+                        widgetID = it.widgetId,
+                        type = it.widgetType,
+                        name = it.widgetName
+                    ),
+                    myShop,
+                    isLoggedIn,
+                    isThematicWidgetShown,
+                    isEnableDirectPurchase,
+                    shopId
+                )?.let { resModel ->
                     when (resModel) {
                         is BaseShopHomeWidgetUiModel -> {
                             resModel.widgetMasterId = it.widgetMasterId
@@ -1018,9 +1032,9 @@ object ShopPageHomeMapper {
     }
 
     private fun getMaximumOrderForGetShopProduct(shopProductResponse: ShopProduct): Int {
-        return shopProductResponse.campaign.maxOrder.takeIf { !it.isZero() } ?:
-        shopProductResponse.maximumOrder.takeIf { !it.isZero() } ?:
-        shopProductResponse.campaign.customStock.toIntOrZero().takeIf { !it.isZero() } ?:
-        shopProductResponse.stock
+        return shopProductResponse.campaign.maxOrder.takeIf { !it.isZero() }
+            ?: shopProductResponse.maximumOrder.takeIf { !it.isZero() }
+            ?: shopProductResponse.campaign.customStock.toIntOrZero().takeIf { !it.isZero() }
+            ?: shopProductResponse.stock
     }
 }

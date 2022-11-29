@@ -3,9 +3,9 @@ package com.tokopedia.search.result.presentation.view.adapter
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.discovery.common.constants.SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_INFO
-import com.tokopedia.discovery.common.constants.SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_GRID
-import com.tokopedia.discovery.common.constants.SearchConstant.InspirationCarousel.LAYOUT_INSPIRATION_CAROUSEL_GRID_BANNER
+import com.tokopedia.search.result.product.inspirationcarousel.LAYOUT_INSPIRATION_CAROUSEL_INFO
+import com.tokopedia.search.result.product.inspirationcarousel.LAYOUT_INSPIRATION_CAROUSEL_GRID
+import com.tokopedia.search.result.product.inspirationcarousel.LAYOUT_INSPIRATION_CAROUSEL_GRID_BANNER
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.InspirationCarouselOptionGridBannerViewHolder
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.InspirationCarouselOptionGridViewHolder
 import com.tokopedia.search.result.presentation.view.adapter.viewholder.product.InspirationCarouselOptionInfoViewHolder
@@ -27,10 +27,14 @@ class InspirationCarouselOptionAdapterTypeFactory(
 
     override fun createViewHolder(parent: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
-            InspirationCarouselOptionListViewHolder.LAYOUT -> InspirationCarouselOptionListViewHolder(parent, listener)
-            InspirationCarouselOptionInfoViewHolder.LAYOUT -> InspirationCarouselOptionInfoViewHolder(parent, listener)
-            InspirationCarouselOptionGridViewHolder.LAYOUT -> InspirationCarouselOptionGridViewHolder(parent, listener)
-            InspirationCarouselOptionGridBannerViewHolder.LAYOUT -> InspirationCarouselOptionGridBannerViewHolder(parent, listener)
+            InspirationCarouselOptionListViewHolder.LAYOUT ->
+                InspirationCarouselOptionListViewHolder(parent, listener)
+            InspirationCarouselOptionInfoViewHolder.LAYOUT ->
+                InspirationCarouselOptionInfoViewHolder(parent, listener)
+            InspirationCarouselOptionGridViewHolder.LAYOUT ->
+                InspirationCarouselOptionGridViewHolder(parent, listener)
+            InspirationCarouselOptionGridBannerViewHolder.LAYOUT ->
+                InspirationCarouselOptionGridBannerViewHolder(parent, listener)
             else -> super.createViewHolder(parent, type)
         }
     }

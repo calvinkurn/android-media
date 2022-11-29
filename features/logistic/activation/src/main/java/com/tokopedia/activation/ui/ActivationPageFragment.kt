@@ -35,7 +35,7 @@ import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.visible
-import com.tokopedia.unifycomponents.CardUnify
+import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.HtmlLinkHelper
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.Toaster
@@ -89,7 +89,7 @@ class ActivationPageFragment: BaseDaggerFragment() {
     private var codCheckboxRL: RelativeLayout? = null
     private var codLabel: Label? = null
     private var swipeRefreshLayout: SwipeRefreshLayout? = null
-    private var itemLayout: CardUnify? = null
+    private var itemLayout: CardUnify2? = null
     private var globalError: GlobalError? = null
 
     private var codValue: Boolean = false
