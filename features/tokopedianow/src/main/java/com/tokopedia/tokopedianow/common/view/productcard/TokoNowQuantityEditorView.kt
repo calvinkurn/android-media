@@ -53,23 +53,23 @@ class TokoNowQuantityEditorView @JvmOverloads constructor(
 
     var maxQuantity: Int = Int.MAX_VALUE
         set(value) {
-            field = value
-            if (text.isNotBlank()) {
+            if (value != field) {
+                field = value
                 binding.setCounter()
             }
         }
 
     var minQuantity: Int = MIN_NUMBER
         set(value) {
-            field = value
-            if (text.isNotBlank()) {
+            if (value != field) {
+                field = value
                 binding.setCounter()
             }
         }
 
     var isVariant: Boolean = false
-    var onClickListener: (counter: Int) -> Unit = {}
-    var onClickVariantListener: (counter: Int) -> Unit = {}
+    var onClickListener: ((counter: Int) -> Unit)? = null
+    var onClickVariantListener: ((counter: Int) -> Unit)? = null
 
     init {
         binding = LayoutTokopedianowQuantityEditorViewBinding.inflate(LayoutInflater.from(context), this, true).apply {
@@ -95,9 +95,13 @@ class TokoNowQuantityEditorView @JvmOverloads constructor(
         val styledAttrs = context.obtainStyledAttributes(attrs, R.styleable.TokoNowQuantityEditorView)
 
         try {
-            setQuantity(styledAttrs.getInt(R.styleable.TokoNowQuantityEditorView_quantity, DEFAULT_NUMBER))
-            maxQuantity = styledAttrs.getInt(R.styleable.TokoNowQuantityEditorView_maxQuantity, maxQuantity)
-            minQuantity = styledAttrs.getInt(R.styleable.TokoNowQuantityEditorView_minQuantity, minQuantity)
+            val quantityAttribute = styledAttrs.getInt(R.styleable.TokoNowQuantityEditorView_quantity, DEFAULT_NUMBER)
+            val maxAttribute = styledAttrs.getInt(R.styleable.TokoNowQuantityEditorView_maxQuantity, maxQuantity)
+            val minAttribute = styledAttrs.getInt(R.styleable.TokoNowQuantityEditorView_minQuantity, minQuantity)
+
+            if (quantityAttribute != DEFAULT_NUMBER) setQuantity(quantityAttribute)
+            if (maxAttribute != maxQuantity) maxQuantity = maxAttribute
+            if (minAttribute != minQuantity) minQuantity = minAttribute
         } finally {
             styledAttrs.recycle()
         }
@@ -118,7 +122,7 @@ class TokoNowQuantityEditorView @JvmOverloads constructor(
 
     private fun initializeTimerTask() {
         timerTaskChangingQuantity = TimerTaskImpl {
-            onClickListener(counter)
+            onClickListener?.invoke(counter)
         }
         timerTaskCollapsingWidget = TimerTaskImpl {
             binding.collapseAnimation()
@@ -170,7 +174,6 @@ class TokoNowQuantityEditorView @JvmOverloads constructor(
     private fun LayoutTokopedianowQuantityEditorViewBinding.setCounter() {
         val currentCounter = text.toIntOrZero()
         counter = if (currentCounter >= maxQuantity) {
-            editText.setText(maxQuantity.toString())
             editText.setSelection(text.length)
             addButton.setColorFilter(
                 getEnabledColor(
@@ -204,7 +207,7 @@ class TokoNowQuantityEditorView @JvmOverloads constructor(
     private fun LayoutTokopedianowQuantityEditorViewBinding.setupAddButton() {
         addButton.setOnClickListener {
             if (isVariant) {
-                onClickVariantListener(if (counter > minQuantity) counter else minQuantity)
+                onClickVariantListener?.invoke(if (counter > minQuantity) counter else minQuantity)
             } else {
                 onClickAddNonVariant()
             }
@@ -241,7 +244,7 @@ class TokoNowQuantityEditorView @JvmOverloads constructor(
         subButton.setOnClickListener {
             counter--
             if (counter < minQuantity) {
-                onClickListener(counter)
+                onClickListener?.invoke(counter)
                 collapseAnimation()
             } else {
                 executeTimerAfterTextChanged = false
@@ -273,7 +276,7 @@ class TokoNowQuantityEditorView @JvmOverloads constructor(
         )
 
         editText.onEnterClickedListener = {
-            onClickListener(counter)
+            onClickListener?.invoke(counter)
             collapseAnimation()
         }
 
