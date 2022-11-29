@@ -32,7 +32,7 @@
 
     <string-array name="target_buyer_items">
         <item>Semua Pembeli</item>
-        <item>Pembeli Baru</item>
         <item>Follower Baru</item>
+        <item>Pembeli Baru</item>
     </string-array>
 </resources>

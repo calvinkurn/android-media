@@ -8,6 +8,7 @@ import com.tokopedia.mvc.domain.entity.enums.VoucherSort
 import com.tokopedia.mvc.domain.entity.enums.VoucherStatus
 import com.tokopedia.mvc.domain.entity.enums.VoucherSubsidy
 import com.tokopedia.mvc.domain.entity.enums.VoucherTarget
+import com.tokopedia.mvc.domain.entity.enums.VoucherTargetBuyer
 import com.tokopedia.mvc.domain.entity.enums.VoucherVps
 
 data class VoucherListParam (
@@ -47,7 +48,9 @@ data class VoucherListParam (
             target: List<VoucherTarget> = emptyList(),
             page: Int? = null,
             perPage: Int? = Int.ZERO,
-            voucherName: String? = null
+            voucherName: String? = null,
+            voucherType: List<VoucherServiceType> = emptyList(),
+            targetBuyer: List<VoucherTargetBuyer> = emptyList()
         ): VoucherListParam {
             return VoucherListParam(
                 voucherType = type?.type,
@@ -60,10 +63,8 @@ data class VoucherListParam (
                 includeSubsidy = VoucherSubsidy.SELLER_AND_TOKOPEDIA.type,
                 isVps = listOf(VoucherVps.VPS.type, VoucherVps.NON_VPS.type).joinToString(VALUE_DELIMITER),
                 voucherName = voucherName,
-                targetBuyer = null,
-                isLockToProduct = listOf(
-                    VoucherServiceType.SHOP_VOUCHER.type,
-                    VoucherServiceType.PRODUCT_VOUCHER.type).joinToString(VALUE_DELIMITER)
+                targetBuyer = targetBuyer.map { it.type }.joinToString(VALUE_DELIMITER),
+                isLockToProduct = voucherType.map { it.type }.joinToString(VALUE_DELIMITER)
             )
         }
     }

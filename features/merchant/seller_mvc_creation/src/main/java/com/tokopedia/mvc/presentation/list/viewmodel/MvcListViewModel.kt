@@ -49,13 +49,15 @@ class MvcListViewModel @Inject constructor(
             dispatchers.io,
             block = {
                 val param = VoucherListParam.createParam(
+                    voucherName = filter.keyword,
                     type = filter.promoType.firstOrNull(),
                     status = filter.status,
                     sort = VoucherSort.VOUCHER_STATUS,
                     target = filter.target,
+                    voucherType = filter.voucherType,
                     page = page,
                     perPage = pageSize,
-                    voucherName = filter.keyword
+                    targetBuyer = filter.targetBuyer
                 )
                 _voucherList.postValue(getVoucherListUseCase.execute(param))
             },
