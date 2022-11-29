@@ -6,6 +6,7 @@ import com.tokopedia.play.analytic.KEY_TRACK_BUSINESS_UNIT
 import com.tokopedia.play.analytic.KEY_TRACK_CURRENT_SITE
 import com.tokopedia.play.analytic.KEY_TRACK_GROUP_CHAT_ROOM
 import com.tokopedia.play.analytic.KEY_TRACK_VIEW_CONTENT_IRIS
+import com.tokopedia.play.ui.toolbar.model.convertPartnerType
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.builder.Tracker
 import com.tokopedia.user.session.UserSessionInterface
@@ -34,7 +35,7 @@ class PlayFollowPopupAnalyticImpl @Inject constructor(
             .setEvent(KEY_TRACK_VIEW_CONTENT_IRIS)
             .setEventAction("impression - follow pop up")
             .setEventCategory(KEY_TRACK_GROUP_CHAT_ROOM)
-            .setEventLabel("$channelId - $channelType - $partnerType - $partnerId")
+            .setEventLabel("$channelId - $channelType - ${partnerType.convertPartnerType} - $partnerId")
             .setCustomProperty(KEY_TRACK_TRACKER, "38068")
             .setBusinessUnit(KEY_TRACK_BUSINESS_UNIT)
             .setCurrentSite(KEY_TRACK_CURRENT_SITE)
@@ -54,7 +55,7 @@ class PlayFollowPopupAnalyticImpl @Inject constructor(
             .setEvent(KEY_TRACK_CLICK_CONTENT)
             .setEventAction("click - dismiss follow pop up")
             .setEventCategory(KEY_TRACK_GROUP_CHAT_ROOM)
-            .setEventLabel("$channelId - $channelType - $partnerType - $partnerId")
+            .setEventLabel("$channelId - $channelType - ${partnerType.convertPartnerType} - $partnerId")
             .setCustomProperty(KEY_TRACK_TRACKER, "38069")
             .setBusinessUnit(KEY_TRACK_BUSINESS_UNIT)
             .setCurrentSite(KEY_TRACK_CURRENT_SITE)
@@ -74,7 +75,7 @@ class PlayFollowPopupAnalyticImpl @Inject constructor(
             .setEvent(KEY_TRACK_CLICK_CONTENT)
             .setEventAction("click - follow creator pop up")
             .setEventCategory(KEY_TRACK_GROUP_CHAT_ROOM)
-            .setEventLabel("$channelId - $channelType - $partnerType - $partnerId")
+            .setEventLabel("$channelId - $channelType - ${partnerType.convertPartnerType} - $partnerId")
             .setCustomProperty(KEY_TRACK_TRACKER, "38070")
             .setBusinessUnit(KEY_TRACK_BUSINESS_UNIT)
             .setCurrentSite(KEY_TRACK_CURRENT_SITE)
@@ -94,7 +95,7 @@ class PlayFollowPopupAnalyticImpl @Inject constructor(
             .setEvent(KEY_TRACK_CLICK_CONTENT)
             .setEventAction("click - creator name follow pop up")
             .setEventCategory(KEY_TRACK_GROUP_CHAT_ROOM)
-            .setEventLabel("$channelId - $channelType - $partnerType - $partnerId")
+            .setEventLabel("$channelId - $channelType - ${partnerType.convertPartnerType} - $partnerId")
             .setCustomProperty(KEY_TRACK_TRACKER, "38071")
             .setBusinessUnit(KEY_TRACK_BUSINESS_UNIT)
             .setCurrentSite(KEY_TRACK_CURRENT_SITE)
