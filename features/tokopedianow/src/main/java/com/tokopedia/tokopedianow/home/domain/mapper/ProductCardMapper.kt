@@ -25,6 +25,7 @@ object ProductCardMapper {
                 shopId = product.shopId.toString(),
                 shopName = product.shopName,
                 shopType = product.shopType,
+                appLink = product.appUrl,
                 parentId = parentId,
                 headerName = headerName,
                 categoryBreadcrumbs = product.categoryBreadcrumbs,

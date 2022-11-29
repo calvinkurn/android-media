@@ -40,7 +40,8 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
                 productId = 5,
                 shopId = 5,
                 name = "Tahu Bulat",
-                categoryBreadcrumbs = "Bahan Masak/Sayur"
+                categoryBreadcrumbs = "Bahan Masak/Sayur",
+                appUrl = "tokopedia://product/detail/1"
             )
         )
 
@@ -98,6 +99,7 @@ class TokoNowHomeViewModelTestRealTimeRecommendation : TokoNowHomeViewModelTestF
         val rtrProductList = listOf(
             TokoNowProductCardCarouselItemUiModel(
                 shopId = "5",
+                appLink = "tokopedia://product/detail/1",
                 headerName = "Lagi Diskon",
                 categoryBreadcrumbs = "Bahan Masak/Sayur",
                 productCardModel = TokoNowProductCardViewUiModel(
