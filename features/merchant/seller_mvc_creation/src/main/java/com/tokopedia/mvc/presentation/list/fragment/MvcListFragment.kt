@@ -35,7 +35,8 @@ import com.tokopedia.mvc.domain.entity.enums.VoucherStatus
 import com.tokopedia.mvc.presentation.bottomsheet.EduCenterBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.FilterVoucherBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.FilterVoucherStatusBottomSheet
-import com.tokopedia.mvc.presentation.bottomsheet.MoreMenuBottomSheet
+import com.tokopedia.mvc.presentation.bottomsheet.moremenu.MoreMenuBottomSheet
+import com.tokopedia.mvc.presentation.bottomsheet.moremenu.VoucherEditPeriodBottomSheet
 import com.tokopedia.mvc.presentation.list.adapter.VoucherAdapterListener
 import com.tokopedia.mvc.presentation.list.adapter.VouchersAdapter
 import com.tokopedia.mvc.presentation.list.model.MoreMenuUiModel
@@ -58,6 +59,7 @@ class MvcListFragment :
     private val filterItem by lazy { SortFilterItem(getString(R.string.smvc_bottomsheet_filter_voucher_all)) }
     private var binding by autoClearedNullable<SmvcFragmentMvcListBinding>()
     private var moreMenuBottomSheet: MoreMenuBottomSheet? = null
+    private var voucherEditPeriodBottomSheet: VoucherEditPeriodBottomSheet? = null
 
     @Inject
     lateinit var viewModel: MvcListViewModel
@@ -108,7 +110,7 @@ class MvcListFragment :
             }
             is MoreMenuUiModel.EditPeriod -> {
                 // Ubah Periode
-                showEditPeriodBottomSheet()
+                showEditPeriodBottomSheet(voucher)
             }
             is MoreMenuUiModel.Edit -> {
             }
@@ -131,7 +133,18 @@ class MvcListFragment :
         }
     }
 
-    private fun showEditPeriodBottomSheet() {
+    private fun showEditPeriodBottomSheet(voucher: Voucher) {
+        activity?.let {
+            voucherEditPeriodBottomSheet =
+                VoucherEditPeriodBottomSheet.newInstance(
+                    voucher
+                )
+//            voucherEditPeriodBottomSheet?.setOnMenuClickListener { menu ->
+//                onClickListenerForMoreMenu(menu, voucher)
+//            }
+            voucherEditPeriodBottomSheet?.show(childFragmentManager, "")
+
+        }
     }
 
     override fun onVoucherListCopyCodeClicked(voucher: Voucher) {

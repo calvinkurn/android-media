@@ -1,4 +1,4 @@
-package com.tokopedia.mvc.presentation.bottomsheet
+package com.tokopedia.mvc.presentation.bottomsheet.moremenu
 
 import android.os.Bundle
 import android.view.LayoutInflater

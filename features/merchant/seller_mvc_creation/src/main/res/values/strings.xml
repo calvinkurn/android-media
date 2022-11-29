@@ -212,4 +212,13 @@
     <string name="voucher_bs_ubah_bagikan">Bagikan</string>
     <string name="voucher_bs_duplikat">Duplikat</string>
     <string name="voucher_bs_terms_conditions">Lihat Syarat &amp; Ketentuan Penggunaan Kupon</string>
+
+    <!--Edit Period -->
+    <string name="edit_period_title">Ubah Periode</string>
+    <string name="edit_period_ticker">Perubahan akan berlaku ke jadwal-jadwal berikutnya dari kupon ini.</string>
+    <string name="edit_period_reset">Reset</string>
+    <string name="edit_period_start_date">Mulai</string>
+    <string name="edit_period_end_date">Berakhir</string>
+    <string name="edit_period_button_text">Oke</string>
+
 </resources>
