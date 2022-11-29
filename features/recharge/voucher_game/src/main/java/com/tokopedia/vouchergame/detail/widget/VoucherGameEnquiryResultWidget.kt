@@ -2,30 +2,34 @@ package com.tokopedia.vouchergame.detail.widget
 
 import android.content.Context
 import android.util.AttributeSet
-import android.view.View
+import android.view.LayoutInflater
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.vouchergame.R
-import kotlinx.android.synthetic.main.view_enquiry_result.view.*
+import com.tokopedia.vouchergame.databinding.ViewEnquiryResultBinding
 import org.jetbrains.annotations.NotNull
 
 /**
  * Created by resakemal on 20/08/19.
  */
-open class VoucherGameEnquiryResultWidget @JvmOverloads constructor(@NotNull context: Context,
-                                                                    attrs: AttributeSet? = null,
-                                                                    defStyleAttr: Int = 0)
-    : BaseCustomView(context, attrs, defStyleAttr) {
+open class VoucherGameEnquiryResultWidget @JvmOverloads constructor(
+    @NotNull context: Context,
+    attrs: AttributeSet? = null,
+    defStyleAttr: Int = 0
+) :
+    BaseCustomView(context, attrs, defStyleAttr) {
+
+    private var binding = ViewEnquiryResultBinding.inflate(LayoutInflater.from(context))
 
     init {
-        View.inflate(context, getLayout(), this)
+        addView(binding.root)
     }
 
     fun setEnquiryResultField(title: String) {
-        enquiry_result_field.text = title
+        binding.enquiryResultField.text = title
     }
 
     fun setEnquiryResultValue(value: String) {
-        enquiry_result_value.text = value
+        binding.enquiryResultValue.text = value
     }
 
     fun setEnquiryResult(field: String, value: String) {
