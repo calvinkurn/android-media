@@ -252,6 +252,8 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private Typography tvAddOnCostLabel;
     private Typography tvAddOnPrice;
 
+    private static final String TICKER_LIHAT_CTA_SUFFIX = " <a href=\"scroll\">Lihat</a>";
+
     public ShipmentItemViewHolder(View itemView) {
         super(itemView);
     }
@@ -522,7 +524,7 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                 && !TextUtils.isEmpty(shipmentCartItemModel.getUnblockingErrorMessage()) && shipmentCartItemModel.getFirstProductErrorIndex() > -1) {
             final String errorMessage = shipmentCartItemModel.getUnblockingErrorMessage();
             layoutWarningAndError.setVisibility(View.VISIBLE);
-            tickerError.setHtmlDescription(errorMessage + " <a href=\"scroll\">Lihat</a>");
+            tickerError.setHtmlDescription(errorMessage + " " + itemView.getContext().getString(R.string.checkout_ticker_lihat_cta_suffix));
             tickerError.setDescriptionClickEvent(new TickerCallback() {
                 @Override
                 public void onDescriptionViewClick(@NonNull CharSequence charSequence) {

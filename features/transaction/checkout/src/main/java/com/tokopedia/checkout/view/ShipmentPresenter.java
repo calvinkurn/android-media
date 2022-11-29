@@ -2579,7 +2579,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                 if (shipmentCartItemModel.getCartItemModels().size() > productErrorCount) {
                                     shipmentCartItemModel.setHasUnblockingError(true);
                                     shipmentCartItemModel.setFirstProductErrorIndex(firstProductErrorIndex);
-                                    shipmentCartItemModel.setUnblockingErrorMessage("Yaah, ada " + productErrorCount + " barang yang tidak bisa diproses");
+                                    shipmentCartItemModel.setUnblockingErrorMessage(getView().getActivityContext().getString(R.string.checkout_error_unblocking_message, productErrorCount));
                                 } else {
                                     shipmentCartItemModel.setError(true);
                                     shipmentCartItemModel.setErrorTitle(uploadPrescriptionUiModel.getRejectedWording());
@@ -2710,7 +2710,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                             if (shipmentCartItemModel.getCartItemModels().size() > productErrorCount) {
                                 shipmentCartItemModel.setHasUnblockingError(true);
                                 shipmentCartItemModel.setFirstProductErrorIndex(firstProductErrorIndex);
-                                shipmentCartItemModel.setUnblockingErrorMessage("Yaah, ada " + productErrorCount + " barang yang tidak bisa diproses");
+                                shipmentCartItemModel.setUnblockingErrorMessage(getView().getActivityContext().getString(R.string.checkout_error_unblocking_message, productErrorCount));
                             } else {
                                 shipmentCartItemModel.setError(true);
                                 shipmentCartItemModel.setErrorTitle(uploadPrescriptionUiModel.getRejectedWording());
