@@ -460,7 +460,6 @@ class PlayBroQuizViewModelTest {
         coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns mockConfig
         coEvery { mockRepo.getInteractiveConfig(any(), any()) } returns mockInteractiveConfigResponse
         coEvery { mockRepo.getSellerLeaderboardWithSlot(any(), any()) } returns emptyList()
-        coEvery { mockSharedPref.setNotFirstSelectQuizOption() }
 
         every { mockBroadcastTimer.remainingDuration } returns Long.MAX_VALUE
 
