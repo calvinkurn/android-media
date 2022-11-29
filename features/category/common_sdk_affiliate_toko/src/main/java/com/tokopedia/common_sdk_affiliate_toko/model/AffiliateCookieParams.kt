@@ -1,14 +1,14 @@
 package com.tokopedia.common_sdk_affiliate_toko.model
 
+import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateAtcSource
 import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateSdkConstant
-
 
 internal class AffiliateCookieParams(
     val affiliateUUID: String,
     val affiliateChannel: String,
     val affiliatePageDetail: AffiliatePageDetail,
     val uuid: String = "",
-    val additionalParam: List<AdditionalParam> = emptyList(),
+    val additionalParam: List<AdditionalParam> = emptyList()
 )
 
 /**
@@ -34,7 +34,7 @@ class AffiliatePageDetail(
     val pageId: String,
     val source: AffiliateSdkPageSource,
     val siteId: String = "1",
-    val verticalId: String = "1",
+    val verticalId: String = "1"
 )
 
 /**
@@ -45,9 +45,11 @@ class AffiliatePageDetail(
  */
 sealed class AffiliateSdkPageSource(
     internal val shopId: String,
+    internal val atcSource: AffiliateAtcSource = AffiliateAtcSource.PDP,
     internal val productInfo: AffiliateSdkProductInfo = AffiliateSdkProductInfo("", false, 0)
 ) {
     internal open fun getType() = ""
+    internal open fun shouldCallCheckCookie() = false
 
     /**
      * Encapsulates info for PDP page source.
@@ -56,7 +58,7 @@ sealed class AffiliateSdkPageSource(
      * @param[productInfo] [AffiliateSdkProductInfo]
      */
     class PDP(shopId: String, productInfo: AffiliateSdkProductInfo) :
-        AffiliateSdkPageSource(shopId, productInfo) {
+        AffiliateSdkPageSource(shopId, productInfo = productInfo) {
         override fun getType() = AffiliateSdkConstant.PDP
     }
 
@@ -68,7 +70,27 @@ sealed class AffiliateSdkPageSource(
     class Shop(shopId: String = "") :
         AffiliateSdkPageSource(shopId) {
         override fun getType() = AffiliateSdkConstant.SHOP
+        override fun shouldCallCheckCookie() = true
+    }
 
+    /**
+     * Encapsulates info for DirectATC.
+     *
+     * @param[atcSource] [AffiliateAtcSource]
+     * @param[shopId] shopId of shop
+     * @param[productInfo] [AffiliateSdkProductInfo]
+     */
+    class DirectATC(
+        atcSource: AffiliateAtcSource,
+        shopId: String?,
+        productInfo: AffiliateSdkProductInfo?
+    ) :
+        AffiliateSdkPageSource(
+            shopId.orEmpty(),
+            atcSource,
+            productInfo = productInfo ?: AffiliateSdkProductInfo("", false, 0)
+        ) {
+        override fun getType() = AffiliateSdkConstant.PDP
     }
 }
 

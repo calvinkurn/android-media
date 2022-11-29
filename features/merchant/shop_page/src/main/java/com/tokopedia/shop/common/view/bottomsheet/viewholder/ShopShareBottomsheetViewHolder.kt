@@ -19,13 +19,13 @@ class ShopShareBottomsheetViewHolder(itemView: View, private val bottomsheetList
         val LAYOUT = R.layout.item_shop_page_share_bottom_sheet
     }
 
-    private val viewBinding : ItemShopPageShareBottomSheetBinding? by viewBinding()
+    private val viewBinding: ItemShopPageShareBottomSheetBinding? by viewBinding()
     private val itemSeparator: View? = viewBinding?.itemSeparator
     private val ivSocialMediaLogo: ImageView? = viewBinding?.ivSocialMediaLogo
     private val tvSocialMediaName: Typography? = viewBinding?.tvSocialMediaName
 
     fun bind(shop: ShopShareModel) {
-        if(shop is ShopShareModel.Others) {
+        if (shop is ShopShareModel.Others) {
             itemSeparator?.invisible()
         }
         ivSocialMediaLogo?.setImageDrawable(shop.socialMediaIcon)
@@ -34,5 +34,4 @@ class ShopShareBottomsheetViewHolder(itemView: View, private val bottomsheetList
             bottomsheetListener.onItemBottomsheetShareClicked(shop)
         }
     }
-
 }
