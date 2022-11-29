@@ -93,6 +93,8 @@ import com.tokopedia.search.result.product.separator.VerticalSeparator
 import com.tokopedia.search.result.product.suggestion.SuggestionPresenter
 import com.tokopedia.search.result.product.tdn.TopAdsImageViewPresenterDelegate
 import com.tokopedia.search.result.product.ticker.TickerPresenter
+import com.tokopedia.search.result.product.visitable.VisitableController
+import com.tokopedia.search.result.product.visitable.VisitableControllerData
 import com.tokopedia.search.result.product.wishlist.WishlistPresenter
 import com.tokopedia.search.result.product.wishlist.WishlistPresenterDelegate
 import com.tokopedia.search.utils.SchedulersProvider
@@ -157,12 +159,10 @@ class ProductListPresenter @Inject constructor(
     private val suggestionPresenter: SuggestionPresenter,
     private val tickerPresenter: TickerPresenter,
     private val safeSearchPresenter: SafeSearchPresenter,
-    private val topAdsImageViewPresenterDelegate: TopAdsImageViewPresenterDelegate,
     wishlistPresenterDelegate: WishlistPresenterDelegate,
-    private val inspirationWidgetPresenter: InspirationWidgetPresenterDelegate,
-    private val inspirationCarouselPresenter: InspirationCarouselPresenterDelegate,
     dynamicFilterModelProvider: DynamicFilterModelProvider,
     bottomSheetFilterPresenter: BottomSheetFilterPresenter,
+    private val visitableController: VisitableController,
 ): BaseDaggerPresenter<ProductListSectionContract.View>(),
     ProductListSectionContract.Presenter,
     Pagination by paginationImpl,
@@ -205,8 +205,6 @@ class ProductListPresenter @Inject constructor(
     private var dimension90 = ""
     private var autoCompleteApplink = ""
     private var externalReference = ""
-    private var isGlobalNavWidgetAvailable = false
-    private var isShowHeadlineAdsBasedOnGlobalNav = false
 
     private var productList = mutableListOf<Visitable<*>>()
     override val quickFilterList = mutableListOf<Filter>()
@@ -389,7 +387,7 @@ class ProductListPresenter @Inject constructor(
             list.addAll(index, broadMatch)
         }
 
-        addSearchInTokopedia(list)
+        visitableController.addSearchInTokopedia(list, isLocalSearch(), constructGlobalSearchApplink())
 
         view.removeLoading()
         view.addProductList(list)
@@ -423,17 +421,17 @@ class ProductListPresenter @Inject constructor(
         productList.addAll(list)
 
         processHeadlineAdsLoadMore(searchProductModel, list)
-        processTopAdsImageViewModel(searchParameter, list)
-        processInspirationWidgetPosition(list)
-        processInspirationCarouselPosition(list)
-        processBannerAndBroadMatchInSamePosition(list)
+        visitableController.processTopAdsImageViewModel(list, productList)
+        visitableController.processInspirationWidgetPosition(list, productList)
+        visitableController.processInspirationCarouselPosition(list, productList, externalReference)
+        visitableController.processBannerAndBroadMatchInSamePosition(list, productList, responseCode)
         bannerDelegate.processBanner(list, productList) { index, banner ->
             list.add(index, banner)
         }
         broadMatchDelegate.processBroadMatch(responseCode, productList, list) { index, broadMatch ->
             list.addAll(index, broadMatch)
         }
-        addSearchInTokopedia(list)
+        visitableController.addSearchInTokopedia(list, isLocalSearch(), constructGlobalSearchApplink())
 
         return list
     }
@@ -469,18 +467,23 @@ class ProductListPresenter @Inject constructor(
         searchProductModel: SearchProductModel,
         list: MutableList<Visitable<*>>,
     ) {
-        if (!isHeadlineAdsAllowed()) return
+        if (!visitableController.isHeadlineAdsAllowed(isLocalSearch())) return
 
         topAdsHeadlineHelper.processHeadlineAds(searchProductModel.cpmModel) { _, cpmDataList, isUseSeparator ->
             val verticalSeparator = if (isUseSeparator)
                 VerticalSeparator.Both
             else VerticalSeparator.None
-            val cpmDataView = createCpmDataView(
+            val cpmDataView = visitableController.createCpmDataView(
                 searchProductModel.cpmModel,
                 cpmDataList,
                 verticalSeparator
             )
-            processHeadlineAdsAtPosition(list, productList.size, cpmDataView)
+            visitableController.processHeadlineAdsAtPosition(
+                list,
+                productList.size,
+                cpmDataView,
+                productList
+            )
         }
     }
 
@@ -886,37 +889,11 @@ class ProductListPresenter @Inject constructor(
         )
     }
 
-
     private fun getViewToShowProductList(
             searchParameter: Map<String, Any>,
             searchProductModel: SearchProductModel,
             productDataView: ProductDataView,
     ) {
-        val list = mutableListOf<Visitable<*>>()
-
-        addPageTitle(list)
-
-        isGlobalNavWidgetAvailable = getIsGlobalNavWidgetAvailable(productDataView)
-        if (isGlobalNavWidgetAvailable) {
-            productDataView.globalNavDataView?.let {
-                list.add(it)
-                isShowHeadlineAdsBasedOnGlobalNav = it.isShowTopAds
-            }
-        }
-
-        addLastFilterDataView(list, productDataView)
-
-        list.add(ChooseAddressDataView())
-
-        productDataView.tickerModel?.let {
-            if (!isTickerHasDismissed && it.text.isNotEmpty())
-                list.add(it)
-        }
-
-        suggestionPresenter.processSuggestion(responseCode) {
-            list.add(it)
-        }
-
         adsInjector.resetTopAdsPosition()
         productList = createProductItemVisitableList(
             productDataView,
@@ -924,68 +901,32 @@ class ProductListPresenter @Inject constructor(
             searchProductModel.getProductListType(),
             searchProductModel.isShowButtonAtc,
         ).toMutableList()
-        list.addAll(productList)
 
-        runCustomMetric(performanceMonitoring, SEARCH_RESULT_PLT_RENDER_LOGIC_HEADLINE_ADS) {
-            processHeadlineAdsFirstPage(searchProductModel, list)
-        }
+        val visitableList = visitableController.createFirstPageVisitableList(
+            VisitableControllerData(
+                productDataView,
+                pageTitle,
+                getIsGlobalNavWidgetAvailable(productDataView),
+                isLocalSearch(),
+                isTickerHasDismissed,
+                responseCode,
+                productList,
+                searchProductModel,
+                externalReference,
+                constructGlobalSearchApplink(),
+            )
+        )
 
         additionalParams = productDataView.additionalParams
-
-        runCustomMetric(performanceMonitoring, SEARCH_RESULT_PLT_RENDER_LOGIC_INSPIRATION_CAROUSEL) {
-            inspirationCarouselPresenter.setInspirationCarouselDataViewList(
-                productDataView.inspirationCarouselDataView
-            )
-            processInspirationCarouselPosition(list)
-        }
-
-        runCustomMetric(performanceMonitoring, SEARCH_RESULT_PLT_RENDER_LOGIC_INSPIRATION_WIDGET) {
-            inspirationWidgetPresenter.setInspirationWidgetDataViewList(
-                productDataView.inspirationWidgetDataView
-            )
-            processInspirationWidgetPosition(list)
-        }
-
-        processBannerAndBroadMatchInSamePosition(list)
-
-        bannerDelegate.processBanner(list, productList) { index, banner ->
-            list.add(index, banner)
-        }
-
-        runCustomMetric(performanceMonitoring, SEARCH_RESULT_PLT_RENDER_LOGIC_BROADMATCH) {
-            broadMatchDelegate.processBroadMatch(responseCode, productList, list) { index, broadMatch ->
-                list.addAll(index, broadMatch)
-            }
-        }
-
-        runCustomMetric(performanceMonitoring, SEARCH_RESULT_PLT_RENDER_LOGIC_TDN) {
-            topAdsImageViewPresenterDelegate.setTopAdsImageViewModelList(
-                searchProductModel.getTopAdsImageViewModelList()
-            )
-            processTopAdsImageViewModel(searchParameter, list)
-        }
-
-        addSearchInTokopedia(list)
-        firstProductPositionWithBOELabel = getFirstProductPositionWithBOELabel(list)
+        firstProductPositionWithBOELabel = getFirstProductPositionWithBOELabel(visitableList)
 
         view.removeLoading()
-        view.setProductList(list)
+        view.setProductList(visitableList)
         view.backToTop()
         if (hasNextPage())
             view.addLoading()
 
         view.updateScrollListener()
-    }
-
-    private fun addLastFilterDataView(
-        visitableList: MutableList<Visitable<*>>,
-        productDataView: ProductDataView,
-    ) {
-        val lastFilterDataView = productDataView.lastFilterDataView
-
-        if (lastFilterDataView.shouldShow()) {
-            visitableList.add(lastFilterDataView)
-        }
     }
 
     private fun getFirstProductPositionWithBOELabel(list: List<Visitable<*>>): Int {
@@ -999,25 +940,11 @@ class ProductListPresenter @Inject constructor(
         return max(firstProductPositionWithBOELabel, -1)
     }
 
-    private fun addPageTitle(list: MutableList<Visitable<*>>) {
-        if (pageTitle.isEmpty()) return
-
-        list.add(SearchProductTitleDataView(pageTitle, isRecommendationTitle = false))
-    }
-
     private fun getIsGlobalNavWidgetAvailable(productDataView: ProductDataView): Boolean {
         return productDataView.globalNavDataView != null
                 && enableGlobalNavWidget
                 && !view.isAnyFilterActive
                 && !view.isAnySortActive
-    }
-
-    private fun addSearchInTokopedia(list: MutableList<Visitable<*>>) {
-        if (isLastPage() && isLocalSearch()) {
-            val globalSearchApplink = constructGlobalSearchApplink()
-            val searchInTokopediaDataView = SearchInTokopediaDataView(globalSearchApplink)
-            list.add(searchInTokopediaDataView)
-        }
     }
 
     private fun constructGlobalSearchApplink(): String {
@@ -1026,153 +953,6 @@ class ProductListPresenter @Inject constructor(
 
         return ApplinkConstInternalDiscovery.SEARCH_RESULT +
                 (if (globalSearchQueryParams.isNotEmpty()) "?$globalSearchQueryParams" else "")
-    }
-
-    private fun processHeadlineAdsFirstPage(
-        searchProductModel: SearchProductModel,
-        list: MutableList<Visitable<*>>,
-    ) {
-        if (!isHeadlineAdsAllowed()) return
-        topAdsHeadlineHelper.processHeadlineAds(searchProductModel.cpmModel, 1) { index, cpmDataList,  isUseSeparator ->
-            val verticalSeparator = if(isUseSeparator && index != 0)
-                VerticalSeparator.Both
-            else VerticalSeparator.None
-            val cpmDataView = createCpmDataView(
-                searchProductModel.cpmModel,
-                cpmDataList,
-                verticalSeparator
-            )
-            if (index == 0)
-                processHeadlineAdsAtTop(list, cpmDataView)
-            else
-                processHeadlineAdsAtPosition(list, productList.size, cpmDataView)
-        }
-    }
-
-    private fun isHeadlineAdsAllowed(): Boolean {
-        return !isLocalSearch()
-                && (!isGlobalNavWidgetAvailable || isShowHeadlineAdsBasedOnGlobalNav)
-    }
-
-    private fun createCpmDataView(
-        cpmModel: CpmModel,
-        cpmData: ArrayList<CpmData>,
-        verticalSeparator: VerticalSeparator,
-    ): CpmDataView {
-        val cpmForViewModel = createCpmForViewModel(cpmModel, cpmData)
-        return CpmDataView(cpmForViewModel, verticalSeparator)
-    }
-
-    private fun createCpmForViewModel(cpmModel: CpmModel, cpmData: ArrayList<CpmData>): CpmModel {
-        return CpmModel().apply {
-            header = cpmModel.header
-            status = cpmModel.status
-            error = cpmModel.error
-            data = cpmData
-        }
-    }
-
-    private fun processHeadlineAdsAtTop(visitableList: MutableList<Visitable<*>>, cpmDataView: CpmDataView) {
-        if (productList.isEmpty()) return
-
-        val firstProductIndex = visitableList.indexOf(productList[0])
-        if (firstProductIndex !in visitableList.indices) return
-
-        visitableList.add(firstProductIndex, cpmDataView)
-    }
-
-    private fun processHeadlineAdsAtPosition(
-            visitableList: MutableList<Visitable<*>>,
-            position: Int,
-            cpmDataView: CpmDataView,
-    ) {
-        val headlineAdsVisitableList = arrayListOf<Visitable<ProductListTypeFactory>>()
-        headlineAdsVisitableList.add(cpmDataView)
-
-
-        val product = productList[position - 1]
-        val headlineAdsIndex = visitableList.indexOf(product) + 1
-        visitableList.addAll(headlineAdsIndex, headlineAdsVisitableList)
-    }
-
-    private fun processInspirationWidgetPosition(list: MutableList<Visitable<*>>) {
-        inspirationWidgetPresenter.processInspirationWidgetPosition(productList) { position, data ->
-            val visitableIndex = getVisitableIndex(list, position)
-            list.add(visitableIndex, data)
-        }
-    }
-
-    private fun getVisitableIndex(list: List<Visitable<*>>, widgetPosition: Int): Int {
-        val productListPosition = maxOf(widgetPosition, 1)
-        val product = productList[productListPosition - 1]
-        val addIndex = minOf(widgetPosition, 1)
-
-        return list.indexOf(product) + addIndex
-    }
-
-    private fun processInspirationCarouselPosition(list: MutableList<Visitable<*>>) {
-        inspirationCarouselPresenter.processInspirationCarouselPosition(
-            productList,
-            externalReference,
-        ) { position, inspirationCarouselVisitableList ->
-            val visitableIndex = getVisitableIndex(list, position)
-            list.addAll(visitableIndex, inspirationCarouselVisitableList)
-        }
-    }
-
-    private fun processBannerAndBroadMatchInSamePosition(list: MutableList<Visitable<*>>) {
-        if (!willShowBroadMatchAndBanner()) return
-
-        if (isShowBroadMatchAndBannerAtBottom())
-            processBroadMatchAndBannerAtBottom(list)
-        else if (isShowBannerAndBroadMatchAtTop())
-            processBroadMatchAndBannerAtTop(list)
-    }
-
-    private fun willShowBroadMatchAndBanner() =
-        bannerDelegate.isShowBanner() && broadMatchDelegate.isShowBroadMatch(responseCode)
-
-    private fun isShowBroadMatchAndBannerAtBottom() =
-        bannerDelegate.isLastPositionBanner && broadMatchDelegate.isLastPositionBroadMatch
-
-    private fun processBroadMatchAndBannerAtBottom(list: MutableList<Visitable<*>>) {
-        broadMatchDelegate.processBroadMatchAtBottom(list) { _, broadMatch ->
-            list.addAll(broadMatch)
-        }
-
-        bannerDelegate.processBannerAtBottom(list) { _, banner ->
-            list.add(banner)
-        }
-    }
-
-    private fun isShowBannerAndBroadMatchAtTop() =
-        broadMatchDelegate.isFirstPositionBroadMatch && bannerDelegate.isFirstPositionBanner
-
-    private fun processBroadMatchAndBannerAtTop(list: MutableList<Visitable<*>>) {
-        broadMatchDelegate.processBroadMatchAtTop(productList, list) { index, broadMatch ->
-            list.addAll(index, broadMatch)
-        }
-
-        bannerDelegate.processBannerAtTop(list, productList) { index, banner ->
-            list.add(index, banner)
-        }
-    }
-
-    private fun processTopAdsImageViewModel(
-        searchParameter: Map<String, Any>,
-        list: MutableList<Visitable<*>>,
-    ) {
-        topAdsImageViewPresenterDelegate.processTopAdsImageViewModel(
-            list,
-            productList,
-            action = { index, topAdsImageView -> list.add(index, topAdsImageView) },
-            { exception ->
-                val paramString = UrlParamUtils.generateUrlParamString(
-                    searchParameter as Map<String?, Any>
-                )
-                view.logWarning(paramString, exception)
-            },
-        )
     }
 
     private fun processFilters(searchProductModel: SearchProductModel) {

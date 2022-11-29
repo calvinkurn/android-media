@@ -44,6 +44,7 @@ import com.tokopedia.search.result.product.samesessionrecommendation.SameSession
 import com.tokopedia.search.result.product.suggestion.SuggestionPresenter
 import com.tokopedia.search.result.product.tdn.TopAdsImageViewPresenterDelegate
 import com.tokopedia.search.result.product.ticker.TickerPresenterDelegate
+import com.tokopedia.search.result.product.visitable.VisitableController
 import com.tokopedia.search.result.product.wishlist.WishlistPresenterDelegate
 import com.tokopedia.search.result.product.wishlist.WishlistView
 import com.tokopedia.search.shouldBe
@@ -136,6 +137,7 @@ internal open class ProductListPresenterTestFixtures {
         dynamicFilterModel,
     )
     protected val inspirationCarouselView = mockk<InspirationCarouselView>(relaxed = true)
+    private val visitableController = mockk<VisitableController>(relaxed = true)
 
     protected lateinit var productListPresenter: ProductListPresenter
 
@@ -204,15 +206,10 @@ internal open class ProductListPresenterTestFixtures {
             suggestionPresenter,
             tickerPresenter,
             safeSearchPresenter,
-            topAdsImageViewPresenter,
             WishlistPresenterDelegate(wishlistView),
-            InspirationWidgetPresenterDelegate(),
-            InspirationCarouselPresenterDelegate(
-                inspirationCarouselView,
-                inspirationListAtcPresenterDelegate,
-            ),
             dynamicFilterModel,
             bottomSheetFilterPresenter,
+            visitableController,
         )
         productListPresenter.attachView(productListView)
     }
