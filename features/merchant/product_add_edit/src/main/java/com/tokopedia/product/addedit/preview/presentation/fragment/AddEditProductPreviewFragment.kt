@@ -1396,7 +1396,7 @@ class AddEditProductPreviewFragment :
                 else urlOrPath
             }.orEmpty()
 
-            if (RollanceUtil.getImagePickerRollence()) {
+            if (Rollence.getImagePickerRollence()) {
                 val pageSource = if(!isEditing()) PageSource.AddProduct else PageSource.EditProduct
                 doTracking(isEditing())
                 val intent = ImagePickerAddEditNavigation.getIntentMultiplePicker(
@@ -1418,17 +1418,7 @@ class AddEditProductPreviewFragment :
     private fun doTracking(isEdit : Boolean){
         val userId = UserSession(context).userId
         val shopId = UserSession(context).shopId
-        if(isEdit){
-            MediaImprovementTracker.sendTrackerImprovementOfMediaPicker(
-                "${MediaImprovementTracker.EDIT_PRODUCT_ENTRY_POINT}-$userId-$shopId",
-                userId
-            )
-        } else {
-            MediaImprovementTracker.sendTrackerImprovementOfMediaPicker(
-                "${MediaImprovementTracker.ADD_PRODUCT_ENTRY_POINT}-$userId-$shopId",
-                userId
-            )
-        }
+        MediaImprovementTracker.sendProductActionTracker(isEdit, userId, shopId)
     }
 
     private fun moveToDetailFragment(productInputModel: ProductInputModel, isFirstMoved: Boolean) {
@@ -1499,7 +1489,7 @@ class AddEditProductPreviewFragment :
     }
 
     private fun updateProductImage(){
-        if(RollanceUtil.getImagePickerRollence()){
+        if(Rollence.getImagePickerRollence()){
             updateProductImageList()
         } else {
             updateImageList()

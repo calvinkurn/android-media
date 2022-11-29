@@ -27,6 +27,7 @@ import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.imagepicker.common.*
 import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.picker.common.MediaPicker
@@ -549,7 +550,7 @@ class AddEditProductVariantFragment :
     }
 
     private fun showImagePicker(position: Int){
-        if(RollanceUtil.getImagePickerRollence()) {
+        if(Rollence.getImagePickerRollence()) {
             doTrackingVariant(position)
             showImagePickerForVariant(position)
         } else {
@@ -1369,7 +1370,7 @@ class AddEditProductVariantFragment :
     }
 
     fun showImagePickerVariantSizeGuide(){
-        if(RollanceUtil.getImagePickerRollence()) {
+        if(Rollence.getImagePickerRollence()) {
             doTrackingForVariantSize()
             showImagePickerSizeGuide()
         } else {
@@ -1378,7 +1379,7 @@ class AddEditProductVariantFragment :
     }
 
     fun showImageEditorVariantSizeGuide(){
-        if(RollanceUtil.getImagePickerRollence()) {
+        if(Rollence.getImagePickerRollence()) {
             doTrackingForVariantSize()
             showEditorImagePickerSizeGuide()
         } else {
@@ -1389,35 +1390,15 @@ class AddEditProductVariantFragment :
     private fun doTrackingVariant(position: Int){
         val userId = UserSession(context).userId
         val shopId = UserSession(context).shopId
-        val isEmptyId = variantPhotoAdapter?.isPictIdIsEmpty(position = position).orFalse()
-        if(isEmptyId){
-            MediaImprovementTracker.sendTrackerImprovementOfMediaPicker(
-                "${MediaImprovementTracker.ADD_VARIANT_ENTRY_POINT}-$userId-$shopId",
-                userId
-            )
-        } else {
-            MediaImprovementTracker.sendTrackerImprovementOfMediaPicker(
-                "${MediaImprovementTracker.EDIT_VARIANT_ENTRY_POINT}-$userId-$shopId",
-                userId
-            )
-        }
+        val isEdit = !variantPhotoAdapter?.isPictIdIsEmpty(position = position).orTrue()
+        MediaImprovementTracker.sendVariantActionTracker(isEdit, userId, shopId)
     }
 
     private fun doTrackingForVariantSize(){
         val userId = UserSession(context).userId
         val shopId = UserSession(context).shopId
         val isEdit =  viewModel.isEditMode.value ?: false
-        if(isEdit){
-            MediaImprovementTracker.sendTrackerImprovementOfMediaPicker(
-                "${MediaImprovementTracker.EDIT_VARIANT_ENTRY_POINT}-$userId-$shopId",
-                userId
-            )
-        } else {
-            MediaImprovementTracker.sendTrackerImprovementOfMediaPicker(
-                "${MediaImprovementTracker.ADD_VARIANT_ENTRY_POINT}-$userId-$shopId",
-                userId
-            )
-        }
+        MediaImprovementTracker.sendVariantActionTracker(isEdit, userId, shopId)
     }
 
     private fun removeVariant() {

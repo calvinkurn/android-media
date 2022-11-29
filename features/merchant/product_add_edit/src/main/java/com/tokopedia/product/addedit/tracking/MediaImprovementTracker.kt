@@ -18,7 +18,26 @@ object MediaImprovementTracker {
         return ProductAddEditTracking.gtmTracker!!
     }
 
-    fun sendTrackerImprovementOfMediaPicker(eventLabel : String, userId: String){
+    fun sendProductActionTracker(isEdit: Boolean, userId: String, shopId: String){
+        val label = if(isEdit) EDIT_PRODUCT_ENTRY_POINT else ADD_PRODUCT_ENTRY_POINT
+        val eventLabel = "$label-$userId-$shopId"
+        Tracker.Builder()
+            .setEvent("clickCommunication")
+            .setEventAction("click tambah")
+            .setEventCategory("media product service")
+            .setEventLabel(eventLabel)
+            .setCustomProperty("trackerId", "38949")
+            .setBusinessUnit("media")
+            .setCurrentSite("tokopediamarketplace")
+            .setUserId(userId)
+            .build()
+            .send()
+
+    }
+
+    fun sendVariantActionTracker(isEdit: Boolean, userId: String, shopId: String){
+        val label = if(isEdit) EDIT_VARIANT_ENTRY_POINT else ADD_VARIANT_ENTRY_POINT
+        val eventLabel = "$label-$userId-$shopId"
         Tracker.Builder()
             .setEvent("clickCommunication")
             .setEventAction("click tambah")
