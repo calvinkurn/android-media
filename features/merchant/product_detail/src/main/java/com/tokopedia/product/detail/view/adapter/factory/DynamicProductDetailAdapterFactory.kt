@@ -2,6 +2,7 @@ package com.tokopedia.product.detail.view.adapter.factory
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.product.detail.data.model.datamodel.ArButtonDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ContentWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.FintechWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.GlobalBundlingDataModel
@@ -74,5 +75,6 @@ interface DynamicProductDetailAdapterFactory {
     fun type(data: LoadingDataModel): Int
     fun type(data: GlobalBundlingDataModel): Int
     fun type(data: ProductShopAdditionalDataModel): Int
+    fun type(data: ArButtonDataModel): Int
     fun createViewHolder(view: View, type: Int): AbstractViewHolder<*>
 }

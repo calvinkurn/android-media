@@ -51,7 +51,6 @@ import com.tokopedia.wishlist.databinding.FragmentCollectionWishlistBinding
 import com.tokopedia.wishlist.util.WishlistV2Analytics
 import com.tokopedia.wishlist.util.WishlistV2Consts.EXTRA_TOASTER_WISHLIST_COLLECTION_DETAIL
 import com.tokopedia.wishlist.view.adapter.WishlistV2Adapter.Companion.LAYOUT_RECOMMENDATION_TITLE
-import com.tokopedia.wishlistcollection.di.WishlistCollectionModule
 import com.tokopedia.wishlist.view.fragment.WishlistV2Fragment
 import com.tokopedia.wishlistcollection.analytics.WishlistCollectionAnalytics
 import com.tokopedia.wishlistcollection.data.model.WishlistCollectionCarouselEmptyStateData
@@ -59,6 +58,7 @@ import com.tokopedia.wishlistcollection.data.params.UpdateWishlistCollectionPara
 import com.tokopedia.wishlistcollection.data.response.CreateWishlistCollectionResponse
 import com.tokopedia.wishlistcollection.data.response.GetWishlistCollectionResponse
 import com.tokopedia.wishlistcollection.di.DaggerWishlistCollectionComponent
+import com.tokopedia.wishlistcollection.di.WishlistCollectionModule
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.COLLECTION_ID
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.COLLECTION_NAME
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.DELAY_REFETCH_PROGRESS_DELETION
@@ -747,7 +747,6 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
 
     override fun onShareItemShown(anchorView: View) {
         if (!CoachMarkPreference.hasShown(requireContext(), COACHMARK_WISHLIST_SHARING)) {
-            coachMarkSharing1?.hideCoachMark()
             showCoachmarkKebabItem2(anchorView)
         }
     }
@@ -809,20 +808,19 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
             coachMarkSharing1 = CoachMark2(requireContext())
 
         coachMarkSharing1?.let {
-            it.setStepListener(object: CoachMark2.OnStepListener {
-                override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
-                    if (currentIndex == 1) {
-                        showBottomSheetKebabMenu(
-                            collectionId, collectionName, actions, collectionIndicatorTitle
-                        )
-                    }
-                }
-            })
+            it.onFinishListener = {
+                showBottomSheetKebabMenu(
+                    collectionId, collectionName, actions, collectionIndicatorTitle
+                )
+            }
+
             it.stepButtonTextLastChild =
                 getString(R.string.collection_coachmark_lanjut)
 
             if (!it.isShowing) {
-                it.showCoachMark(coachMarkItemSharing1, null)
+                it.showCoachMark(coachMarkItemSharing1, null, 1)
+                it.stepPrev?.visibility = View.GONE
+                it.stepPagination?.visibility = View.GONE
             }
         }
     }
@@ -868,6 +866,8 @@ class WishlistCollectionFragment : BaseDaggerFragment(), WishlistCollectionAdapt
 
             if (!it.isShowing) {
                 it.showCoachMark(coachMarkItemSharing2, null, 1)
+                it.stepPrev?.visibility = View.GONE
+                it.stepPagination?.visibility = View.GONE
             }
             CoachMarkPreference.setShown(requireContext(), COACHMARK_WISHLIST_SHARING, true)
         }
