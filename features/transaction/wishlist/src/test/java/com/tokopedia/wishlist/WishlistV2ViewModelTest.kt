@@ -62,6 +62,7 @@ class WishlistV2ViewModelTest {
     private var wishlistFiveItemList = listOf<WishlistV2Response.Data.WishlistV2.Item>()
     private var emptyWishlistItem = listOf<WishlistV2Response.Data.WishlistV2.Item>()
     private var wishlistV2Response = WishlistV2Response()
+    private var wishlistV2ResponseWith1Data = WishlistV2Response(data = WishlistV2Response.Data(wishlistV2 = WishlistV2Response.Data.WishlistV2(totalData = 1)))
     private var recommendationWidget = RecommendationWidget()
     private var wishlistRecommendation = WishlistV2RecommendationDataModel()
     private var listProductCardModel = listOf<ProductCardModel>()
@@ -248,6 +249,38 @@ class WishlistV2ViewModelTest {
         coEvery {
             wishlistV2UseCase.executeSuspend(any())
         } returns wishlistV2Response.data
+
+        coEvery {
+            getSingleRecommendationUseCase.getData(any())
+        } returns recommendationWidget
+
+        // when
+        wishlistV2ViewModel.loadWishlistV2(
+            WishlistV2Params(),
+            "",
+            isAutomaticDelete = true,
+            isUsingCollection = false
+        )
+
+        // then
+        assert(wishlistV2ViewModel.wishlistV2.value is Success)
+    }
+
+    @Test
+    fun loadWishlistV2_return1Data_shouldReturnSuccess_isAutomaticDeleteTrue_isUsingCollectionFalse() {
+        // given
+
+        coEvery {
+            wishlistV2ViewModel.getRecommendationWishlistV2(any(), listOf(), any())
+        } returns wishlistRecommendation
+
+        coEvery {
+            wishlistV2ViewModel.getTopAdsData()
+        } returns topAdsImageViewModel
+
+        coEvery {
+            wishlistV2UseCase.executeSuspend(any())
+        } returns wishlistV2ResponseWith1Data.data
 
         coEvery {
             getSingleRecommendationUseCase.getData(any())

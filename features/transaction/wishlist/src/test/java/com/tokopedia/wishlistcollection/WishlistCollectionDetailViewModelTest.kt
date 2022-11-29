@@ -462,6 +462,35 @@ class WishlistCollectionDetailViewModelTest {
     }
 
     @Test
+    fun `Execute GetWishlistCollectionItems Success Status OK but Topads throws error`() {
+        // given
+        coEvery {
+            getWishlistCollectionItemsUseCase(getWishlistCollectionItemsParams)
+        } returns getWishlistCollectionItemsResponseDataStatusOk
+
+        coEvery {
+            wishlistCollectionDetailViewModel.getRecommendationWishlistV2(any(), listOf(), any())
+        } returns wishlistRecommendation
+
+        coEvery { topAdsImageViewUseCase.getImageData(any()) } throws throwable.throwable
+
+        coEvery {
+            wishlistCollectionDetailViewModel.getTopAdsData()
+        } returns null
+
+        coEvery {
+            singleRecommendationUseCase.getData(any())
+        } returns recommendationWidget
+
+        // when
+        wishlistCollectionDetailViewModel.getWishlistCollectionItems(getWishlistCollectionItemsParams, typeLayout, false)
+
+        // then
+        assert(wishlistCollectionDetailViewModel.collectionItems.value is Success)
+        assert((wishlistCollectionDetailViewModel.collectionItems.value as Success).data.getWishlistCollectionItems.errorMessage.isEmpty())
+    }
+
+    @Test
     fun `Execute GetWishlistCollections Success Status ERROR`() {
         // given
         coEvery {
