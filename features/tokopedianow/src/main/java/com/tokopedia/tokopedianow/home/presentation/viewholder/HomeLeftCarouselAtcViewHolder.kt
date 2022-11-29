@@ -95,9 +95,6 @@ class HomeLeftCarouselAtcViewHolder(
             setupParallaxImage(
                 element = element
             )
-            setupRealTimeRecommendation(
-                element = element
-            )
             submitList(
                 element = element
             )
@@ -124,14 +121,6 @@ class HomeLeftCarouselAtcViewHolder(
                 element = element
             )
         )
-    }
-
-    private fun setupRealTimeRecommendation(element: HomeLeftCarouselAtcUiModel) {
-        binding?.realTimeRecommendationCarousel?.apply {
-            listener = rtrListener
-            analytics = rtrAnalytics
-            bind(element.realTimeRecom)
-        }
     }
 
     @SuppressLint("ClickableViewAccessibility")
