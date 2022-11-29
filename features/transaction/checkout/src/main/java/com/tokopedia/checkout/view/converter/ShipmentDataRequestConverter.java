@@ -156,10 +156,17 @@ public class ShipmentDataRequestConverter {
                     shopProductCheckout.setGiftingAddOnOrderLevel(convertGiftingAddOnModelRequest(shipmentCartItemModel.getAddOnsOrderLevelModel()));
                 }
 
-                shopProductCheckout.setNeedPrescription(shipmentCartItemModel.getHasEthicalProducts());
+                if (shipmentCartItemModel.getHasEthicalProducts()) {
+                    for (CartItemModel cartItemModel : shipmentCartItemModel.getCartItemModels()) {
+                        if (!cartItemModel.isError() && cartItemModel.getEthicalDrugDataModel().getNeedPrescription()) {
+                            shopProductCheckout.setNeedPrescription(true);
 
-                shopProductCheckout.setPrescriptionIds(shipmentCartItemModel.getPrescriptionIds());
-                shopProductCheckout.setConsultationDataString(shipmentCartItemModel.getConsultationDataString());
+                            shopProductCheckout.setPrescriptionIds(shipmentCartItemModel.getPrescriptionIds());
+                            shopProductCheckout.setConsultationDataString(shipmentCartItemModel.getConsultationDataString());
+                            break;
+                        }
+                    }
+                }
 
                 return shopProductCheckout;
             }
