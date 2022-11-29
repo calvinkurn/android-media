@@ -4,24 +4,25 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
-import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.smartbills.R
 import com.tokopedia.smartbills.data.SmartBillsCatalogMenu
-import kotlinx.android.synthetic.main.view_smart_bills_item_icon_bottom_sheet.view.*
+import com.tokopedia.smartbills.databinding.ViewSmartBillsItemIconBottomSheetBinding
 
 class SmartBillsAddBillsAdapter(private val listener: SmartBillsCatalogsListener) : RecyclerView.Adapter<SmartBillsAddBillsAdapter.SmartBillsAddBillViewHolder>() {
 
     var listCatalogMenu = emptyList<SmartBillsCatalogMenu>()
 
-    inner class SmartBillsAddBillViewHolder(view: View): RecyclerView.ViewHolder(view) {
+    inner class SmartBillsAddBillViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 
         fun bind(catalogMenu: SmartBillsCatalogMenu) {
-            with(itemView) {
-                setOnClickListener {
+            val binding = ViewSmartBillsItemIconBottomSheetBinding.bind(itemView)
+            with(binding) {
+                root.setOnClickListener {
                     listener.onCatalogClicked(catalogMenu.applink, catalogMenu.label)
                 }
-                img_catalog_smart_bills.loadImage(catalogMenu.icon)
-                txt_catalog_title_smart_bills.text = catalogMenu.label
+                imgCatalogSmartBills.loadImage(catalogMenu.icon)
+                txtCatalogTitleSmartBills.text = catalogMenu.label
             }
         }
     }
@@ -39,7 +40,7 @@ class SmartBillsAddBillsAdapter(private val listener: SmartBillsCatalogsListener
         return SmartBillsAddBillViewHolder(itemView)
     }
 
-    interface SmartBillsCatalogsListener{
+    interface SmartBillsCatalogsListener {
         fun onCatalogClicked(applink: String, category: String)
     }
 }

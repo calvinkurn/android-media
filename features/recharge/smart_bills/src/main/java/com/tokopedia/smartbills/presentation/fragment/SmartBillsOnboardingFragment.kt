@@ -1,8 +1,8 @@
 package com.tokopedia.smartbills.presentation.fragment
 
 import android.app.Activity
+import android.content.Context
 import android.content.Intent
-import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.text.SpannableString
@@ -17,16 +17,17 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConsInternalDigital
-import com.tokopedia.applink.internal.ApplinkConstInternalDeals
-import com.tokopedia.applink.internal.ApplinkConstInternalTestApp
-import com.tokopedia.common.topupbills.view.fragment.BaseTopupBillsFragment
 import com.tokopedia.smartbills.R
-import kotlinx.android.synthetic.main.fragment_smart_bills_onboarding.*
+import com.tokopedia.smartbills.databinding.FragmentSmartBillsOnboardingBinding
+import com.tokopedia.utils.lifecycle.autoClearedNullable
 
-class SmartBillsOnboardingFragment: BaseDaggerFragment() {
+class SmartBillsOnboardingFragment : BaseDaggerFragment() {
+
+    private var binding by autoClearedNullable<FragmentSmartBillsOnboardingBinding>()
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
-        return inflater.inflate(R.layout.fragment_smart_bills_onboarding, container, false)
+        binding = FragmentSmartBillsOnboardingBinding.inflate(inflater, container, false)
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -34,8 +35,8 @@ class SmartBillsOnboardingFragment: BaseDaggerFragment() {
 
         activity?.let { activity ->
             val bulletSpan: BulletSpan
-            val gapWidth = dpToPx(BULLET_GAP_WIDTH_PX)
-            val radius = dpToPx(BULLET_RADIUS_PX)
+            val gapWidth = dpToPx(activity, BULLET_GAP_WIDTH_PX)
+            val radius = dpToPx(activity, BULLET_RADIUS_PX)
             val bulletColor = ContextCompat.getColor(activity, com.tokopedia.unifyprinciples.R.color.Unify_N700)
             bulletSpan = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.P) {
                 BulletSpan(gapWidth, bulletColor, radius)
@@ -45,14 +46,14 @@ class SmartBillsOnboardingFragment: BaseDaggerFragment() {
 
             val firstDesc = SpannableString(getString(R.string.smart_bills_onboarding_desc_1))
             firstDesc.setSpan(bulletSpan, 0, firstDesc.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-            smart_bills_onboarding_desc_1.text = firstDesc
+            binding?.smartBillsOnboardingDesc1?.text = firstDesc
 
             val secondDesc = SpannableString(getString(R.string.smart_bills_onboarding_desc_2))
             secondDesc.setSpan(bulletSpan, 0, firstDesc.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
-            smart_bills_onboarding_desc_2.text = secondDesc
+            binding?.smartBillsOnboardingDesc2?.text = secondDesc
 
             // Request login from user
-            smart_bills_onboarding_button.setOnClickListener {
+            binding?.smartBillsOnboardingButton?.setOnClickListener {
                 val intent = RouteManager.getIntent(activity, ApplinkConst.LOGIN)
                 startActivityForResult(intent, REQUEST_CODE_LOGIN)
             }
@@ -69,8 +70,8 @@ class SmartBillsOnboardingFragment: BaseDaggerFragment() {
         }
     }
 
-    private fun dpToPx(dp: Float): Int {
-        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, resources.displayMetrics).toInt()
+    private fun dpToPx(context: Context, dp: Float): Int {
+        return TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, dp, context.resources.displayMetrics).toInt()
     }
 
     override fun getScreenName(): String {
@@ -78,7 +79,6 @@ class SmartBillsOnboardingFragment: BaseDaggerFragment() {
     }
 
     override fun initInjector() {
-
     }
 
     companion object {

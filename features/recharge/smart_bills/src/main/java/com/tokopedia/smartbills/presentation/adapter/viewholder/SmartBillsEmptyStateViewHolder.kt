@@ -4,10 +4,8 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.applink.ApplinkConst
-import com.tokopedia.applink.RouteManager
 import com.tokopedia.smartbills.R
-import kotlinx.android.synthetic.main.view_smart_bills_empty_state.view.*
+import com.tokopedia.smartbills.databinding.ViewSmartBillsEmptyStateBinding
 
 class SmartBillsEmptyStateViewHolder(itemView: View, val listener: EmptyStateSBMListener) : AbstractViewHolder<EmptyModel>(itemView) {
 
@@ -17,14 +15,15 @@ class SmartBillsEmptyStateViewHolder(itemView: View, val listener: EmptyStateSBM
     }
 
     override fun bind(element: EmptyModel) {
-        with (itemView) {
-            smart_bills_empty_state_button.setOnClickListener {
+        val binding = ViewSmartBillsEmptyStateBinding.bind(itemView)
+        with(binding) {
+            smartBillsEmptyStateButton.setOnClickListener {
                 listener.clickEmptyButton()
             }
         }
     }
 
-    interface EmptyStateSBMListener{
+    interface EmptyStateSBMListener {
         fun clickEmptyButton()
     }
 }
