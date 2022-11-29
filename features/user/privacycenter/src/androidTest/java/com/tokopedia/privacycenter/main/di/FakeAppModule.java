@@ -11,10 +11,6 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository;
 import dagger.Module;
 import dagger.Provides;
 
-
-/**
- * @author kulomady on 1/9/17.
- */
 public class FakeAppModule extends AppModule {
 
     public FakeAppModule(Context context) {
