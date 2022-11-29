@@ -28,4 +28,5 @@ sealed interface UserProfileAction {
     ) : UserProfileAction
 
     object BlockUser : UserProfileAction
+    object UnblockUser : UserProfileAction
 }

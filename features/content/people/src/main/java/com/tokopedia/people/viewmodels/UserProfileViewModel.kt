@@ -59,6 +59,9 @@ class UserProfileViewModel @AssistedInject constructor(
     val profileCover: String
         get() = _profileInfo.value.imageCover
 
+    val isBlocking: Boolean
+        get() = _profileInfo.value.isBlocking
+
     val totalFollower: String
         get() = _profileInfo.value.stats.totalFollowerFmt
 
@@ -91,6 +94,7 @@ class UserProfileViewModel @AssistedInject constructor(
     private val _profileTab = MutableStateFlow(ProfileTabUiModel())
     private val _feedPostsContent = MutableStateFlow(UserFeedPostsUiModel())
     private val _videoPostContent = MutableStateFlow(UserPostModel())
+    private val _userSessionId = MutableStateFlow(userSession.userId)
 
     private val _uiEvent = MutableSharedFlow<UserProfileUiEvent>()
 
@@ -137,6 +141,7 @@ class UserProfileViewModel @AssistedInject constructor(
                 action.isActive,
             )
             UserProfileAction.BlockUser -> handleBlockUser()
+            UserProfileAction.UnblockUser -> handleUnblockUser()
         }
     }
 
@@ -211,9 +216,20 @@ class UserProfileViewModel @AssistedInject constructor(
     private fun handleBlockUser() {
         viewModelScope.launchCatchError(block = {
             repo.blockUser(profileUserID)
+            _profileInfo.update { it.copy(isBlocking = true) }
             _uiEvent.emit(UserProfileUiEvent.SuccessBlockUser(isBlocking = true))
         }) {
             _uiEvent.emit(UserProfileUiEvent.ErrorBlockUser(isBlocking = true))
+        }
+    }
+
+    private fun handleUnblockUser() {
+        viewModelScope.launchCatchError(block = {
+            repo.unblockUser(profileUserID)
+            _profileInfo.update { it.copy(isBlocking = false) }
+            _uiEvent.emit(UserProfileUiEvent.SuccessBlockUser(isBlocking = false))
+        }) {
+            _uiEvent.emit(UserProfileUiEvent.ErrorBlockUser(isBlocking = false))
         }
     }
 

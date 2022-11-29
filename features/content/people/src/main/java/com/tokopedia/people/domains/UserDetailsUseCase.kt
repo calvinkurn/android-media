@@ -8,6 +8,10 @@ import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.people.model.ProfileHeaderBase
 import javax.inject.Inject
 
+/**
+isBlocking
+isBlockedBy
+ */
 @GqlQuery(UserDetailsUseCase.QUERY_NAME, UserDetailsUseCase.QUERY)
 class UserDetailsUseCase @Inject constructor(
     graphqlRepository: GraphqlRepository,

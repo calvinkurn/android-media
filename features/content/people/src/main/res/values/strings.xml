@@ -41,6 +41,8 @@
     <string name="up_block_user_success_toaster">Pengguna ini telah diblokir.</string>
     <string name="up_block_user_error_toaster">Permintaan blokir gagal dikirim. Cek koneksi internetmu dan coba lagi, ya.</string>
 
+    <string name="up_unblock_action">Unblock</string>
+    <string name="up_unblock_user">Buka blokir pengguna</string>
     <string name="up_unblock_user_success_toaster">Pengguna ini kembali tidak diblokir.</string>
-    <string name="up_unblock_user_error_toaster">Permintaan blokir gagal dikirim. Cek koneksi internetmu dan coba lagi, ya.</string>
+    <string name="up_unblock_user_error_toaster">Permintaan pembukaan blokir gagal dikirim. Cek koneksi internetmu dan coba lagi, ya.</string>
 </resources>

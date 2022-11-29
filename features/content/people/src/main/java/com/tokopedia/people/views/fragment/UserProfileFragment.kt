@@ -6,7 +6,10 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewGroup.MarginLayoutParams
 import androidx.core.content.ContextCompat
+import androidx.core.view.updateMargins
+import androidx.core.view.updateMarginsRelative
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.activityViewModels
@@ -116,6 +119,10 @@ class UserProfileFragment @Inject constructor(
         get() = _binding!!.mainLayout
 
     private var mBlockDialog: DialogUnify? = null
+
+    private val dp8 by lazy(LazyThreadSafetyMode.NONE) {
+        8.dpToPx(mainBinding.root.resources.displayMetrics)
+    }
 
     private val viewModel: UserProfileViewModel by activityViewModels {
         viewModelFactoryCreator.create(
@@ -281,9 +288,19 @@ class UserProfileFragment @Inject constructor(
             }
             is UserProfileOptionBottomSheet -> {
                 childFragment.setListener(object : UserProfileOptionBottomSheet.Listener {
-                    override fun onBlockingUser(bottomSheet: UserProfileOptionBottomSheet) {
+                    override fun onBlockingUser(
+                        bottomSheet: UserProfileOptionBottomSheet,
+                        shouldBlock: Boolean
+                    ) {
                         bottomSheet.dismiss()
-                        getBlockUserDialog().show()
+
+                        if (shouldBlock) getBlockUserDialog().show()
+                        else viewModel.submitAction(UserProfileAction.UnblockUser)
+                    }
+                })
+                childFragment.setDataSource(object : UserProfileOptionBottomSheet.DataSource {
+                    override fun isBlocking(): Boolean {
+                        return viewModel.isBlocking
                     }
                 })
             }
@@ -317,6 +334,8 @@ class UserProfileFragment @Inject constructor(
                         RouteManager.getIntent(activity, ApplinkConst.LOGIN),
                         REQUEST_CODE_LOGIN_TO_FOLLOW,
                     )
+                } else if (viewModel.isBlocking) {
+                    viewModel.submitAction(UserProfileAction.UnblockUser)
                 } else {
                     doFollowUnfollow()
                 }
@@ -359,6 +378,7 @@ class UserProfileFragment @Inject constructor(
             viewModel.uiState.withCache().collectLatest {
                 renderProfileInfo(it.prevValue?.profileInfo, it.value.profileInfo)
                 renderButtonAction(it.prevValue, it.value)
+                renderButtonOption(it.prevValue, it.value)
                 renderCreateContentButton(it.prevValue, it.value)
                 renderProfileReminder(it.prevValue, it.value)
                 renderShopRecom(it.prevValue, it.value)
@@ -430,6 +450,7 @@ class UserProfileFragment @Inject constructor(
                             else R.string.up_unblock_user_success_toaster
                         )
                         view?.showToast(message)
+                        initUserPost(viewModel.profileUserID)
                     }
                     is UserProfileUiEvent.ErrorBlockUser -> {
                         dismissBlockUserDialog()
@@ -522,14 +543,20 @@ class UserProfileFragment @Inject constructor(
         value: UserProfileUiState,
     ) {
         if (prev?.followInfo == value.followInfo &&
-            prev.profileType == value.profileType
+            prev.profileType == value.profileType &&
+            prev.profileInfo.isBlocking == value.profileInfo.isBlocking
         ) {
             return
         }
 
         when (value.profileType) {
-            ProfileType.NotLoggedIn, ProfileType.OtherUser -> {
-                if (userSession.isLoggedIn && value.followInfo.status) {
+            ProfileType.NotLoggedIn -> {
+                buttonActionUIUnFollow()
+                mainBinding.btnAction.show()
+            }
+            ProfileType.OtherUser -> {
+                if (value.profileInfo.isBlocking) buttonActionUIUnblock()
+                else if (value.followInfo.status) {
                     buttonActionUIFollow()
                 } else {
                     buttonActionUIUnFollow()
@@ -544,6 +571,22 @@ class UserProfileFragment @Inject constructor(
                 mainBinding.btnAction.hide()
             }
         }
+
+        (mainBinding.btnAction.layoutParams as MarginLayoutParams)
+            .updateMarginsRelative(
+                end = if (value.profileType == ProfileType.OtherUser) dp8 else 0
+            )
+    }
+
+    private fun renderButtonOption(
+        prev: UserProfileUiState?,
+        value: UserProfileUiState,
+    ) {
+        if (prev?.profileType == value.profileType) return
+
+        mainBinding.btnKebabOption.showWithCondition(
+            shouldShow = value.profileType == ProfileType.OtherUser
+        )
     }
 
     private fun renderCreateContentButton(
@@ -671,6 +714,12 @@ class UserProfileFragment @Inject constructor(
         text = getString(R.string.up_btn_profile)
         buttonVariant = UnifyButton.Variant.GHOST
         buttonType = UnifyButton.Type.ALTERNATE
+    }
+
+    private fun buttonActionUIUnblock() = with(mainBinding.btnAction) {
+        text = getString(R.string.up_unblock_action)
+        buttonVariant = UnifyButton.Variant.FILLED
+        buttonType = UnifyButton.Type.MAIN
     }
 
     private fun setProfileImg(profile: ProfileUiModel) {

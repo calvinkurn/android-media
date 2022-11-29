@@ -184,6 +184,11 @@ class UserProfileRepositoryImpl @Inject constructor(
         if (!response.data.success) error("Failed to block user $userId")
     }
 
+    override suspend fun unblockUser(userId: String) = withContext(dispatcher.io) {
+        val response = postBlockUserUseCase.execute(userId, false)
+        if (!response.data.success) error("Failed to unblock user $userId")
+    }
+
     companion object {
         private const val VAL_FEEDS_PROFILE = "feeds-profile"
         private const val VAL_SOURCE_BUYER = "buyer"
