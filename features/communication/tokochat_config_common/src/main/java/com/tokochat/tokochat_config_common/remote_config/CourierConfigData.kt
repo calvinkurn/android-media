@@ -91,5 +91,8 @@ data class CourierConfigData(
     val isDeviceIdleModeReceiverEnabled: Boolean = false,
 
     @SerializedName("messageEnvelopeEnabled")
-    val isMessageEnvelopeEnabled: Boolean = true
+    val isMessageEnvelopeEnabled: Boolean = true,
+
+    @SerializedName("shouldUseNewSSLFlow")
+    val shouldUseNewSSLFlow: Boolean = true
 )

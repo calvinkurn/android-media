@@ -37,7 +37,7 @@ class TokoChatCourierRemoteConfigImpl @Inject constructor(
 
     private fun createErrorMessage(
         data: String,
-        throwable: Throwable,
+        throwable: Throwable
     ): Map<String, String> {
         return mutableMapOf(
             DATA_KEY to data,
@@ -257,6 +257,9 @@ class TokoChatCourierRemoteConfigImpl @Inject constructor(
      */
     override val isMessageEnvelopeEnabled: Boolean
         get() = courierConfigData.isMessageEnvelopeEnabled
+
+    override val shouldUseNewSSLFlow: Boolean
+        get() = courierConfigData.shouldUseNewSSLFlow
 
     companion object {
         private const val COURIER_CONFIG_JSON = "android_courier_config_json"
