@@ -2671,7 +2671,7 @@ class PlayViewModel @AssistedInject constructor(
                 sourceType = config.sourceType,
                 sourceId = config.sourceId,
                 cursor = "", //put in uiModel -> _explore
-            )
+            ) //if it has subSlot, fetch again with first index
         }) {
 
         }

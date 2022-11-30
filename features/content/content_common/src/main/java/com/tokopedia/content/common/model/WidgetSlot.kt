@@ -12,7 +12,7 @@ data class WidgetSlot(
 
 data class ContentSlot(
     @SerializedName("data")
-    val data: MutableList<Content>,
+    val data: List<Content>,
 
     @SerializedName("meta")
     val playGetContentSlot: ContentSlotMeta,
@@ -43,7 +43,7 @@ data class Content(
     val id: String,
 
     @SerializedName("items")
-    val items: MutableList<ContentItem>,
+    val items: List<ContentItem>,
 )
 
 data class ContentItem(
