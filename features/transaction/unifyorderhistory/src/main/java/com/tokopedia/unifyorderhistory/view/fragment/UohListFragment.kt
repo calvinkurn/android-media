@@ -68,9 +68,7 @@ import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
-import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RemoteConfigKey.HOME_ENABLE_AUTO_REFRESH_UOH
-import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.helper.ViewHelper
 import com.tokopedia.searchbar.navigation_component.NavToolbar
@@ -261,13 +259,15 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     private var gson = Gson()
     private var activityOrderHistory = ""
     private var searchQuery = ""
-    private lateinit var remoteConfigInstance: RemoteConfigInstance
-    private lateinit var firebaseRemoteConfig: FirebaseRemoteConfigImpl
-    private lateinit var trackingQueue: TrackingQueue
     private var _arrayListStatusFilterBundle = arrayListOf<UohFilterBundle>()
     private var _arrayListCategoryProductFilterBundle = arrayListOf<UohFilterBundle>()
     private var _listParamAtcMulti = arrayListOf<AddToCartMultiParam>()
     private var _atcVerticalCategory = ""
+    private lateinit var firebaseRemoteConfig: FirebaseRemoteConfigImpl
+
+    private val trackingQueue: TrackingQueue by lazy {
+        (context as UohListFragment).trackingQueue
+    }
 
     private var binding by autoClearedNullable<FragmentUohListBinding>()
 
@@ -340,14 +340,6 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         const val OPEN_ORDER_REQUEST_CODE = 500
     }
 
-    // unused, is this safe to remove? ab test platform will get from util?
-    private fun getAbTestPlatform(): AbTestPlatform {
-        if (!::remoteConfigInstance.isInitialized) {
-            remoteConfigInstance = RemoteConfigInstance(activity?.application)
-        }
-        return remoteConfigInstance.abTestPlatform
-    }
-
     private fun getFirebaseRemoteConfig(): FirebaseRemoteConfigImpl? {
         if (!::firebaseRemoteConfig.isInitialized) {
             context?.let {
@@ -375,7 +367,6 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
             filterStatus = arguments?.getString(SOURCE_FILTER).toString()
         }
         checkLogin()
-        initTrackingQueue()
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
@@ -403,12 +394,6 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
             loadFilters()
         } else {
             startActivityForResult(RouteManager.getIntent(context, ApplinkConst.LOGIN), REQUEST_CODE_LOGIN)
-        }
-    }
-
-    private fun initTrackingQueue() {
-        activity?.let {
-            trackingQueue = TrackingQueue(it)
         }
     }
 
@@ -1864,7 +1849,11 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         val toasterSuccess = Toaster
         view?.let { v ->
             toasterSuccess.build(
-                v, message, Toaster.LENGTH_SHORT, type, CTA_ATC,
+                v,
+                message,
+                Toaster.LENGTH_SHORT,
+                type,
+                CTA_ATC,
                 View.OnClickListener {
                     RouteManager.route(context, ApplinkConst.CART)
                     userSession.userId?.let { it1 -> UohAnalytics.clickLihatButtonOnAtcSuccessToaster(it1) }

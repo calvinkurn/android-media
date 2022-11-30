@@ -25,12 +25,12 @@ object OrderDataMapper {
                         warehouseId = objParam.get(UohConsts.WAREHOUSE_ID).asString,
 
                         productName = objParam.get(UohConsts.PRODUCT_NAME).asString,
-                        price = objParam.get(UohConsts.PRODUCT_PRICE).asString,
+                        price = objParam.get(UohConsts.PRODUCT_PRICE).asString
                     )
                 )
             }
         } catch (e: Exception) {
-            e.printStackTrace()
+            // no op
         }
         return AddToCartOccMultiRequestParams(
             carts = listAtcOccMulti,
