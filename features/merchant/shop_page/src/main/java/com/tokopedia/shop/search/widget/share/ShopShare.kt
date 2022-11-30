@@ -35,14 +35,18 @@ class ShopShare(private val activity: Activity) {
 
     private fun generateBranchLink(data: ShopShareData) {
         LinkerManager.getInstance().executeShareRequest(
-                LinkerUtils.createShareRequest(0,
-                productDataToLinkerDataMapper(data), object : ShareCallback {
-            override fun urlCreated(linkerShareData: LinkerShareResult) {
-                openIntentShare(data.shopShareLabel, linkerShareData.shareContents)
-            }
+            LinkerUtils.createShareRequest(
+                0,
+                productDataToLinkerDataMapper(data),
+                object : ShareCallback {
+                    override fun urlCreated(linkerShareData: LinkerShareResult) {
+                        openIntentShare(data.shopShareLabel, linkerShareData.shareContents)
+                    }
 
-            override fun onError(linkerError: LinkerError) {}
-        }))
+                    override fun onError(linkerError: LinkerError) {}
+                }
+            )
+        )
     }
 
     private fun productDataToLinkerDataMapper(shopShareData: ShopShareData): LinkerShareData {

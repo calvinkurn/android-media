@@ -74,7 +74,6 @@ dependencies {
 
     implementation rootProject.ext.tkpdLibDependencies.youtubePlayer
     implementation projectOrAar(rootProject.ext.libraries.youtubeutil)
-    implementation projectOrAar(rootProject.ext.libraries.videoplayer)
 
     implementation projectOrAar(rootProject.ext.features.sellerMigrationCommon)
 

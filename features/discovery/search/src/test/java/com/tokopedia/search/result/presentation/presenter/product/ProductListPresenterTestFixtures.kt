@@ -23,9 +23,12 @@ import com.tokopedia.search.result.product.broadmatch.BroadMatchPresenterDelegat
 import com.tokopedia.search.result.product.broadmatch.BroadMatchView
 import com.tokopedia.search.result.product.chooseaddress.ChooseAddressPresenterDelegate
 import com.tokopedia.search.result.product.chooseaddress.ChooseAddressView
+import com.tokopedia.search.result.product.filter.bottomsheetfilter.BottomSheetFilterPresenterDelegate
+import com.tokopedia.search.result.product.filter.bottomsheetfilter.BottomSheetFilterView
+import com.tokopedia.search.result.product.filter.dynamicfilter.MutableDynamicFilterModelProviderDelegate
+import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDynamicProductView
 import com.tokopedia.search.result.product.inspirationlistatc.InspirationListAtcPresenterDelegate
 import com.tokopedia.search.result.product.inspirationlistatc.InspirationListAtcView
-import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDynamicProductView
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselPresenterDelegate
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselView
 import com.tokopedia.search.result.product.inspirationwidget.InspirationWidgetPresenterDelegate
@@ -118,15 +121,26 @@ internal open class ProductListPresenterTestFixtures {
     protected val applinkModifier = mockk<ApplinkModifier>(relaxed = true)
     protected val safeSearchPreference = mockk<MutableSafeSearchPreference>(relaxed = true)
     protected val safeSearchView = mockk<SafeSearchView>(relaxed = true)
+    protected val dynamicFilterModel = MutableDynamicFilterModelProviderDelegate()
+    protected val bottomSheetFilterView = mockk<BottomSheetFilterView>(relaxed = true)
+    private val pagination = PaginationImpl()
+    private val chooseAddressPresenterDelegate = ChooseAddressPresenterDelegate(chooseAddressView)
+    private val requestParamsGenerator = RequestParamsGenerator(userSession, pagination)
+    protected val bottomSheetFilterPresenter = BottomSheetFilterPresenterDelegate(
+        bottomSheetFilterView,
+        queryKeyProvider,
+        requestParamsGenerator,
+        chooseAddressPresenterDelegate,
+        { getProductCountUseCase },
+        { getDynamicFilterUseCase },
+        dynamicFilterModel,
+    )
     protected val inspirationCarouselView = mockk<InspirationCarouselView>(relaxed = true)
 
     protected lateinit var productListPresenter: ProductListPresenter
 
     @Before
     open fun setUp() {
-        val pagination = PaginationImpl()
-        val chooseAddressPresenterDelegate = ChooseAddressPresenterDelegate(chooseAddressView)
-        val requestParamsGenerator = RequestParamsGenerator(userSession, pagination)
         val sameSessionRecommendationPresenterDelegate = SameSessionRecommendationPresenterDelegate(
             viewUpdater,
             requestParamsGenerator,
@@ -197,6 +211,8 @@ internal open class ProductListPresenterTestFixtures {
                 inspirationCarouselView,
                 inspirationListAtcPresenterDelegate,
             ),
+            dynamicFilterModel,
+            bottomSheetFilterPresenter,
         )
         productListPresenter.attachView(productListView)
     }
