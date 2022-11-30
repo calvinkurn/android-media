@@ -3,7 +3,7 @@ package com.tokopedia.affiliate.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
-import com.tokopedia.affiliate.*
+import com.tokopedia.affiliate.AffiliateAnalytics
 import com.tokopedia.affiliate.PAGE_EDUCATION_ARTICLE
 import com.tokopedia.affiliate.PAGE_EDUCATION_ARTICLE_TOPIC
 import com.tokopedia.affiliate.PAGE_EDUCATION_EVENT
@@ -54,7 +54,6 @@ class AffiliateEducationSeeAllViewModel @Inject constructor(
                 loadCategory(pageType)
             }
             convertToVisitable(educationArticleCards, pageType)
-
         }, onError = { Timber.e(it) })
     }
 
