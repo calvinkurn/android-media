@@ -168,10 +168,10 @@ class ProductBundleViewModel @Inject constructor(
                     usecase = ProductServiceWidgetConstant.USECASE_BUNDLE_VALUE,
                     requestData = RequestData(
                         variantDetail = true,
-                        CheckCampaign = true,
-                        BundleGroup = true,
-                        Preorder = true,
-                        BundleStats = true,
+                        checkCampaign = true,
+                        bundleGroup = true,
+                        preorder = true,
+                        bundleStats = true,
                         inventoryDetail = InventoryDetail(
                             required = true,
                             userLocation = UserLocation(
