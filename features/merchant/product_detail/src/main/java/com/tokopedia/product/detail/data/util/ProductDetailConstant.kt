@@ -2,6 +2,7 @@ package com.tokopedia.product.detail.data.util
 
 object ProductDetailConstant {
     const val PARAM_PRODUCT_ID = "product_id"
+    const val PARAM_SHOP_ID = "shopId"
 
     const val PARAM_DIRECTED_FROM_MANAGE_OR_PDP = "directed_from_manage_or_pdp"
 
@@ -103,6 +104,7 @@ object ProductDetailConstant {
     const val FINTECH_WIDGET_TYPE = "chips_carousel"
     const val FINTECH_WIDGET_NAME = "paylater_cicilan"
     const val DILAYANI_TOKOPEDIA = "dt_info"
+    const val AR_BUTTON = "button_ar"
 
     //Arguments
     const val ARG_PRODUCT_ID = "ARG_PRODUCT_ID"

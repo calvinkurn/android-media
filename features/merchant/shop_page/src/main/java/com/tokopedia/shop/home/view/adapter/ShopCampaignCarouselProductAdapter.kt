@@ -8,8 +8,6 @@ import com.tokopedia.abstraction.base.view.adapter.adapter.BaseListAdapter
  */
 
 class ShopCampaignCarouselProductAdapter(
-        typeFactory: ShopCampaignCarouselProductAdapterTypeFactory
-) : BaseListAdapter<Visitable<*>, ShopCampaignCarouselProductAdapterTypeFactory>(typeFactory){
-
-
+    typeFactory: ShopCampaignCarouselProductAdapterTypeFactory
+) : BaseListAdapter<Visitable<*>, ShopCampaignCarouselProductAdapterTypeFactory>(typeFactory) {
 }
