@@ -45,6 +45,8 @@ class DsarFragment: BaseDaggerFragment(), OnDateChangedListener {
 
     private var rangePickerBottomSheet: DsarHistoryTransactionBottomSheet? = null
 
+    private var isNeedOtp = true
+
     private val viewModel by lazy {
         ViewModelProvider(this, viewModelFactory).get(
             DsarViewModel::class.java
@@ -171,10 +173,9 @@ class DsarFragment: BaseDaggerFragment(), OnDateChangedListener {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == REQUEST_SECURITY_QUESTION) {
+            isNeedOtp = resultCode != Activity.RESULT_OK
             if(resultCode == Activity.RESULT_OK && data != null) {
                 viewModel.submitRequest()
-            } else if(resultCode == Activity.RESULT_CANCELED) {
-                showToasterError(getString(R.string.dsar_failed_otp_label))
             }
         } else if(requestCode == REQUEST_ADD_EMAIL) {
             if(resultCode == Activity.RESULT_OK) {
@@ -201,7 +202,13 @@ class DsarFragment: BaseDaggerFragment(), OnDateChangedListener {
         binding?.layoutSummary?.txtSummary?.text = Html.fromHtml(data)
         binding?.btnNext?.apply {
             text = getString(R.string.dsar_submit_download_btn_title)
-            setOnClickListener { toVerification() }
+            setOnClickListener {
+                if(isNeedOtp) {
+                    toVerification()
+                } else {
+                    viewModel.submitRequest()
+                }
+            }
         }
         binding?.layoutOptions?.root?.gone()
     }
@@ -212,7 +219,10 @@ class DsarFragment: BaseDaggerFragment(), OnDateChangedListener {
 
         binding?.btnNext?.apply {
             text = getString(R.string.dsar_btn_lanjut_title)
-            setOnClickListener { viewModel.showSummary() }
+            setOnClickListener {
+                viewModel.showSummary()
+                isNeedOtp = true
+            }
         }
     }
 
@@ -313,6 +323,15 @@ class DsarFragment: BaseDaggerFragment(), OnDateChangedListener {
 
     private fun hideMainLoader() {
         binding?.mainLoader?.gone()
+    }
+
+    override fun onFragmentBackPressed(): Boolean {
+        return if(viewModel.showSummary.value?.isNotEmpty() == true) {
+            viewModel.backToFormPage()
+            true
+        } else {
+            super.onFragmentBackPressed()
+        }
     }
 
     companion object {

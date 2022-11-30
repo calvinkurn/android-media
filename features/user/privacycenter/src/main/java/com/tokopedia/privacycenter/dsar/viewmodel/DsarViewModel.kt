@@ -103,6 +103,10 @@ class DsarViewModel @Inject constructor(
         }
     }
 
+    fun backToFormPage() {
+        _showSummary.value = ""
+    }
+
     fun removeFilter(filter: String) {
         _filterItems.remove(filter)
     }
@@ -127,10 +131,9 @@ class DsarViewModel @Inject constructor(
                 val result = submitRequestUseCase(param)
                 _submitRequestState.value = SubmitRequestUiModel(email = result.email, deadline = result.deadline)
             } catch (e: Exception) {
-                _globalError.value = GlobalErrorCustomUiModel(true) {
-                    submitRequest()
-                }
+                _toasterError.value = DsarConstants.LABEL_ERROR_REQUEST
             } finally {
+                _showMainLayout.value = true
                 _mainLoader.value = false
             }
         }
