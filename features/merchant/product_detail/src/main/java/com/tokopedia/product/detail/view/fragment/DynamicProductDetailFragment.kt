@@ -11,6 +11,7 @@ import android.text.TextUtils
 import android.util.Log
 import android.util.SparseIntArray
 import android.view.View
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
@@ -120,6 +121,7 @@ import com.tokopedia.product.detail.common.VariantConstant
 import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.product.detail.common.bottomsheet.OvoFlashDealsBottomSheet
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantResult
+import com.tokopedia.product.detail.common.data.model.ar.ProductArInfo
 import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkir
 import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkirImage
 import com.tokopedia.product.detail.common.data.model.carttype.CartTypeData
@@ -202,6 +204,8 @@ import com.tokopedia.product.detail.tracking.ProductTopAdsLogger.TOPADS_PDP_IS_N
 import com.tokopedia.product.detail.tracking.ShopAdditionalTracking
 import com.tokopedia.product.detail.tracking.ShopCredibilityTracker
 import com.tokopedia.product.detail.tracking.ShopCredibilityTracking
+import com.tokopedia.product.detail.tracking.ProductArTrackerData
+import com.tokopedia.product.detail.tracking.ProductArTracking
 import com.tokopedia.product.detail.view.activity.ProductDetailActivity
 import com.tokopedia.product.detail.view.activity.WholesaleActivity
 import com.tokopedia.product.detail.view.adapter.diffutil.ProductDetailDiffUtilCallback
@@ -262,6 +266,7 @@ import com.tokopedia.shop.common.widget.PartialButtonShopFollowersView
 import com.tokopedia.topads.detail_sheet.TopAdsDetailSheet
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.trackingoptimizer.TrackingQueue
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.universal_sharing.model.PdpParamModel
 import com.tokopedia.universal_sharing.view.bottomsheet.ScreenshotDetector
@@ -1237,6 +1242,21 @@ open class DynamicProductDetailFragment :
         RouteManager.route(context, url)
     }
 
+    override fun goToArPage(componentTrackDataModel: ComponentTrackDataModel) {
+        ProductArTracking.clickArComponent(
+            data = ProductArTrackerData(
+                productInfo = viewModel.getDynamicProductInfoP1,
+                componentTrackDataModel = componentTrackDataModel
+            )
+        )
+        val productId = viewModel.getDynamicProductInfoP1?.basic?.productID ?: ""
+        val shopId = viewModel.getDynamicProductInfoP1?.basic?.shopID ?: ""
+
+        val intent = RouteManager.getIntent(requireContext(), ApplinkConst.PRODUCT_AR, productId)
+        intent.putExtra(ProductDetailConstant.PARAM_SHOP_ID, shopId)
+        startActivity(intent)
+    }
+
     override fun goToEducational(url: String) {
         val context = context ?: return
         ProductEducationalHelper.goToEducationalBottomSheet(
@@ -1247,10 +1267,10 @@ open class DynamicProductDetailFragment :
         )
     }
 
-    override fun showCustomInfoCoachMark(componentName: String, viewTarget: View) {
-        if (componentName == ProductDetailConstant.HAMPERS_INFO) {
-            pdpCoachmarkHelper?.showCoachMarkHampers(viewTarget)
-        }
+    override fun showOneLinersImsCoachMark(
+        view: ImageUnify?
+    ) {
+        pdpCoachmarkHelper?.showCoachMarkOneLiners(view)
     }
 
     override fun onBbiInfoClick(
@@ -2460,6 +2480,10 @@ open class DynamicProductDetailFragment :
                 getComponentPositionBeforeUpdate(pdpUiUpdater?.productNewVariantDataModel)
             )
         }
+
+        pdpUiUpdater?.updateArData(productId ?: "",
+                viewModel.p2Data.value?.arInfo ?: ProductArInfo())
+
         updateUi()
         doSomethingAfterVariantUpdated?.invoke()
     }
@@ -2696,6 +2720,16 @@ open class DynamicProductDetailFragment :
             )
             stickyLoginView?.loadContent()
         }
+    }
+
+    override fun showArCoachMark(view: ConstraintLayout?) {
+        pdpCoachmarkHelper?.showCoachMarkAr(view)
+    }
+
+    override fun hideArCoachMark() {
+        pdpCoachmarkHelper?.hideCoachMark(
+            key = ProductDetailCoachMarkHelper.Companion.PRODUCT_DETAIL_AR_PAGE_COACHMARK
+        )
     }
 
     private fun openBottomSheetTopAds() {

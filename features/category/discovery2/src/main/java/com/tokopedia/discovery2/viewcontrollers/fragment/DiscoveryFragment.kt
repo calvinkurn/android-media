@@ -6,6 +6,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.res.Resources
 import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.os.Bundle
 import android.util.DisplayMetrics
@@ -22,6 +23,7 @@ import androidx.recyclerview.widget.LinearSmoothScroller
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.StaggeredGridLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.google.android.material.appbar.AppBarLayout
 import com.google.android.material.snackbar.Snackbar
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -38,6 +40,7 @@ import com.tokopedia.discovery.common.manager.ProductCardOptionsResult
 import com.tokopedia.discovery.common.manager.ProductCardOptionsWishlistCallback
 import com.tokopedia.discovery.common.manager.handleProductCardOptionsActivityResult
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
+import com.tokopedia.discovery.common.utils.toDpInt
 import com.tokopedia.discovery2.Constant
 import com.tokopedia.discovery2.R
 import com.tokopedia.discovery2.Utils
@@ -113,6 +116,7 @@ import com.tokopedia.searchbar.data.HintData
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconList
+import com.tokopedia.searchbar.navigation_component.listener.NavRecyclerViewScrollListener
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.unifycomponents.*
 import com.tokopedia.unifyprinciples.Typography
@@ -126,6 +130,7 @@ import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
+import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import com.tokopedia.unifyprinciples.R as RUnify
@@ -152,6 +157,8 @@ class DiscoveryFragment :
     PermissionListener,
     MiniCartWidgetListener {
 
+    private var thematicHeaderColor: String = ""
+    private var navScrollListener: NavRecyclerViewScrollListener? = null
     private var autoScrollSectionID: String? = null
     private var anchorViewHolder: AnchorTabsViewHolder? = null
     private lateinit var discoveryViewModel: DiscoveryViewModel
@@ -171,6 +178,7 @@ class DiscoveryFragment :
     private var shouldShowChooseAddressWidget:Boolean = true
     private lateinit var coordinatorLayout:CoordinatorLayout
     private lateinit var parentLayout: FrameLayout
+    private lateinit var appBarLayout: AppBarLayout
     private var pageInfoHolder:PageInfo? = null
     private var miniCartWidget: MiniCartWidget? = null
     private var miniCartData:MiniCartSimplifiedData? = null
@@ -202,6 +210,8 @@ class DiscoveryFragment :
 
     private var isManualScroll = true
     private var stickyHeaderShowing = false
+    private var hasColouredHeader: Boolean = false
+    private var isLightThemeStatusBar: Boolean? = null
 
     companion object {
         fun getInstance(endPoint: String?, queryParameterMap: Map<String, String?>?): DiscoveryFragment {
@@ -318,6 +328,7 @@ class DiscoveryFragment :
         ivToTop = view.findViewById(R.id.toTopImg)
         coordinatorLayout = view.findViewById(R.id.parent_coordinator)
         parentLayout = view.findViewById(R.id.parent_frame)
+        appBarLayout = view.findViewById(R.id.appbarLayout)
         miniCartWidget = view.findViewById(R.id.miniCartWidget)
 
         mProgressBar.show()
@@ -359,7 +370,11 @@ class DiscoveryFragment :
                 } else if (scrollDist < -MINIMUM) {
                     if (discoveryViewModel.getAddressVisibilityValue()) {
                         chooseAddressWidget?.show()
-                        chooseAddressWidgetDivider?.show()
+                        if (isLightThemeStatusBar != true) {
+                            chooseAddressWidgetDivider?.show()
+                        } else {
+                            chooseAddressWidgetDivider?.hide()
+                        }
                         shouldShowChooseAddressWidget = true
                     }
                     scrollDist = 0
@@ -372,6 +387,7 @@ class DiscoveryFragment :
                 }
             }
         })
+
         recyclerView.setOnTouchListenerRecyclerView{ v, event ->
             userPressed = true
             if(event.actionMasked == MotionEvent.ACTION_UP)
@@ -392,6 +408,51 @@ class DiscoveryFragment :
                 userPressed = true
             }
         } )
+
+        val searchBarTransitionRange = context?.resources?.getDimensionPixelSize(R.dimen.dp_16) ?: 0
+        navScrollListener = NavRecyclerViewScrollListener(
+            navToolbar = navToolbar,
+            startTransitionPixel = homeMainToolbarHeight,
+            toolbarTransitionRangePixel = searchBarTransitionRange,
+            navScrollCallback = object : NavRecyclerViewScrollListener.NavScrollCallback {
+                override fun onAlphaChanged(offsetAlpha: Float) {
+
+                }
+
+                override fun onSwitchToDarkToolbar() {
+                    if (hasColouredHeader) {
+                        if (isLightThemeStatusBar != true) {
+                            requestStatusBarLight()
+                            navToolbar.hideShadow()
+                            if (discoveryViewModel.getAddressVisibilityValue()) {
+                                setupHexBackgroundColor(thematicHeaderColor)
+                            }
+                        }
+                    }
+                }
+
+                override fun onSwitchToLightToolbar() {
+                    if (hasColouredHeader) {
+                        if (isLightThemeStatusBar != false) {
+                            requestStatusBarDark()
+                            navToolbar.setShowShadowEnabled(true)
+                            navToolbar.showShadow(true)
+                            if (discoveryViewModel.getAddressVisibilityValue()) {
+                                context?.let {
+                                    chooseAddressWidget?.background =
+                                        ColorDrawable(it.resources.getColor(com.tokopedia.unifyprinciples.R.color.Unify_Background))
+                                    chooseAddressWidget?.updateWidget()
+                                }
+                            }
+                        }
+                    }
+                }
+
+                override fun onYposChanged(yOffset: Int) {
+                }
+            }
+        )
+
     }
 
     private fun scrollToLastSection() {
@@ -593,6 +654,7 @@ class DiscoveryFragment :
                 is Success -> {
                     pageInfoHolder = it.data
                     setToolBarPageInfoOnSuccess(it.data)
+                    setupBackgroundForHeader(it.data)
                     addMiniCartToPageFirstTime()
                 }
                 is Fail -> {
@@ -749,6 +811,50 @@ class DiscoveryFragment :
                 }
             }
         })
+    }
+
+    private fun setupBackgroundForHeader(data: PageInfo?) {
+        if (!data?.thematicHeader?.color.isNullOrEmpty()) {
+            hasColouredHeader = true
+            activity?.let { navToolbar.setupToolbarWithStatusBar(it) }
+            context?.let {
+                navToolbar.setIconCustomColor(getDarkIconColor(it),getLightIconColor(it))
+            }
+            if (isLightThemeStatusBar == true) {
+                navToolbar.hideShadow()
+            } else {
+                navToolbar.setShowShadowEnabled(true)
+                navToolbar.showShadow(true)
+            }
+            appBarLayout.elevation = 0f
+            setupHexBackgroundColor(data?.thematicHeader?.color ?: "")
+            setupNavScrollListener()
+        } else {
+            hasColouredHeader = false
+        }
+
+    }
+
+    private fun setupHexBackgroundColor(color: String) {
+        thematicHeaderColor = color
+        try {
+            val colorResource = Color.parseColor(color)
+            if (discoveryViewModel.getAddressVisibilityValue() && isLightThemeStatusBar != false) {
+                chooseAddressWidget?.background = ColorDrawable(colorResource)
+                chooseAddressWidget?.updateWidget()
+                chooseAddressWidgetDivider?.hide()
+            }
+            appBarLayout.setBackgroundColor(colorResource)
+        } catch (e: Exception) {
+            e
+        }
+    }
+
+    private fun setupNavScrollListener() {
+        navScrollListener?.let {
+            recyclerView.removeOnScrollListener(it)
+            recyclerView.addOnScrollListener(it)
+        }
     }
 
     private fun setupAnchorTabComponent(it: Success<ComponentsItem>) {
@@ -1603,6 +1709,13 @@ class DiscoveryFragment :
                 EMPTY_STRING
     }
 
+    override fun onChangeTextColor(): Int {
+        return if (hasColouredHeader && isLightThemeStatusBar != false)
+            com.tokopedia.unifyprinciples.R.color.Unify_Static_White
+        else
+            com.tokopedia.unifyprinciples.R.color.Unify_N700_96
+    }
+
     private fun fetchUserLatestAddressData() {
         context?.let {
             userAddressData = ChooseAddressUtils.getLocalizingAddressData(it)
@@ -1822,6 +1935,51 @@ class DiscoveryFragment :
             mAnchorHeaderView.removeAllViews()
         }
         stickyHeaderShowing = true
+    }
+
+    private val homeMainToolbarHeight: Int
+        get() {
+            var height = 0
+            navToolbar.let {
+                height = navToolbar.height
+                height += 8f.toDpInt()
+            }
+            return height
+        }
+
+    private fun requestStatusBarDark() {
+        isLightThemeStatusBar = false
+        (activity as? DiscoveryActivity)?.requestStatusBarDark()
+    }
+
+    private fun requestStatusBarLight() {
+        isLightThemeStatusBar = true
+        (activity as? DiscoveryActivity)?.requestStatusBarLight()
+    }
+
+    private fun getLightIconColor(context: Context): Int {
+        return if (context.isDarkMode()) {
+            ContextCompat.getColor(
+                context,
+                com.tokopedia.unifyprinciples.R.color.Unify_Static_White
+            )
+        } else {
+            ContextCompat.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_N0)
+        }
+    }
+
+    private fun getDarkIconColor(context: Context): Int {
+        return if (context.isDarkMode()) {
+            ContextCompat.getColor(
+                context,
+                com.tokopedia.unifyprinciples.R.color.Unify_Static_White
+            )
+        } else {
+            ContextCompat.getColor(
+                context,
+                com.tokopedia.searchbar.R.color.searchbar_dms_state_light_icon
+            )
+        }
     }
 
 }
