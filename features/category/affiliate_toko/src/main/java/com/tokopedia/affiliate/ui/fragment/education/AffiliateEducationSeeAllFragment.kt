@@ -10,7 +10,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
-import com.tokopedia.affiliate.EDUCATION_ARTICLE_DETAIL_URL
+import com.tokopedia.affiliate.EDUCATION_ARTICLE_DETAIL_PROD_URL
+import com.tokopedia.affiliate.EDUCATION_ARTICLE_DETAIL_STAGING_URL
 import com.tokopedia.affiliate.PAGE_EDUCATION_ARTICLE
 import com.tokopedia.affiliate.PAGE_EDUCATION_EVENT
 import com.tokopedia.affiliate.PAGE_EDUCATION_TUTORIAL
@@ -27,6 +28,7 @@ import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.basemvvm.viewmodel.ViewModelProviderFactory
 import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.url.TokopediaUrl
 import java.util.*
 import javax.inject.Inject
 
@@ -161,8 +163,11 @@ class AffiliateEducationSeeAllFragment :
                 it,
                 getArticleEventUrl(
                     slug,
-                    if (pageType == PAGE_EDUCATION_EVENT) getString(R.string.affiliate_event)
-                    else getString(R.string.affiliate_artikel)
+                    if (pageType == PAGE_EDUCATION_EVENT) {
+                        getString(R.string.affiliate_event)
+                    } else {
+                        getString(R.string.affiliate_artikel)
+                    }
                 )
             )
         }
@@ -174,7 +179,11 @@ class AffiliateEducationSeeAllFragment :
             "%s?title=%s&url=%s%s?navigation=hide",
             ApplinkConst.WEBVIEW,
             title.replace(" ", "+"),
-            EDUCATION_ARTICLE_DETAIL_URL,
+            if (TokopediaUrl.getInstance().GQL.contains("staging")) {
+                EDUCATION_ARTICLE_DETAIL_STAGING_URL
+            } else {
+                EDUCATION_ARTICLE_DETAIL_PROD_URL
+            },
             slug
         )
     }

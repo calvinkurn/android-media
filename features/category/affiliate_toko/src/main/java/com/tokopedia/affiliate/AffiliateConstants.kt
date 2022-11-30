@@ -146,8 +146,6 @@ const val YYYY_MM_DD_HH_MM_SS = "yyyy-MM-dd HH:mm:ss"
 
 const val NEW_DATE_FORMAT = "dd MMM yyyy, HH:mm"
 
-const val DD_MM_YYYY_HH_MM_A = "dd MMM yyyy, HH:mm a"
-
 const val UTC = "UTC"
 
 const val CLICK_TYPE = "totalClick"
@@ -193,7 +191,8 @@ const val PAGE_EDUCATION_EVENT = "education_event"
 const val PAGE_EDUCATION_ARTICLE = "education_article"
 const val PAGE_EDUCATION_ARTICLE_TOPIC = "education_article_topic"
 const val PAGE_EDUCATION_TUTORIAL = "education_tutorial"
-const val EDUCATION_ARTICLE_DETAIL_URL = "https://affiliate.tokopedia.com/edu/"
+const val EDUCATION_ARTICLE_DETAIL_STAGING_URL = "https://affiliate-staging.tokopedia.com/edu/"
+const val EDUCATION_ARTICLE_DETAIL_PROD_URL = "https://affiliate.tokopedia.com/edu/"
 const val FILTER_HIGHLIGHTED = "highlighted"
 
 const val FACEBOOK = "Facebook"
@@ -204,8 +203,8 @@ const val YOUTUBE = "Youtube"
 val SOCIAL_CHANNEL_FOLLOW_COUNT = mapOf(
     INSTAGRAM to "91k Followers",
     FACEBOOK to "1k Members",
-    YOUTUBE to "11k Members",
-    TELEGRAM to "1k Subscribers"
+    TELEGRAM to "11k Members",
+    YOUTUBE to "1k Subscribers"
 )
 val SOCIAL_CHANNEL_HEADER = mapOf(
     INSTAGRAM to "https://images.tokopedia.net/img/IG.png",

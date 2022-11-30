@@ -14,10 +14,18 @@ import com.tokopedia.affiliate_toko.R
 
 class AffiliateEducationArticleTopicRVVH(
     itemView: View,
-    private val affiliateEducationTopicTutorialClickInterface: AffiliateEducationTopicTutorialClickInterface?
+    affiliateEducationTopicTutorialClickInterface: AffiliateEducationTopicTutorialClickInterface?
 ) : AbstractViewHolder<AffiliateEducationArticleTopicRVUiModel>(itemView) {
 
-    private var articleTopicAdapter: AffiliateAdapter? = null
+    private var articleTopicAdapter = AffiliateAdapter(
+        AffiliateAdapterFactory(
+            affiliateEducationTopicTutorialClickInterface = affiliateEducationTopicTutorialClickInterface
+        )
+    )
+    private val rvArticleTopic =
+        itemView.findViewById<RecyclerView>(R.id.rv_education_article_topic)
+    private val rvLayoutManager =
+        LinearLayoutManager(itemView.context, RecyclerView.HORIZONTAL, false)
 
     companion object {
         @JvmField
@@ -26,20 +34,11 @@ class AffiliateEducationArticleTopicRVVH(
     }
 
     override fun bind(element: AffiliateEducationArticleTopicRVUiModel?) {
-        articleTopicAdapter =
-            AffiliateAdapter(
-                AffiliateAdapterFactory(
-                    affiliateEducationTopicTutorialClickInterface = affiliateEducationTopicTutorialClickInterface
-                )
-            )
-        val rvArticleTopic = itemView.findViewById<RecyclerView>(R.id.rv_education_article_topic)
-        val rvLayoutManager =
-            LinearLayoutManager(itemView.context, RecyclerView.HORIZONTAL, false)
         rvArticleTopic?.apply {
             layoutManager = rvLayoutManager
             adapter = articleTopicAdapter
         }
-        articleTopicAdapter?.addMoreData(
+        articleTopicAdapter.setVisitables(
             element?.articleTopicList?.map { AffiliateEducationArticleTopicUiModel(it) }
         )
     }

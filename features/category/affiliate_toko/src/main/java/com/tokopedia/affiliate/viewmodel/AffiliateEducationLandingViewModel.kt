@@ -31,6 +31,7 @@ import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.url.TokopediaUrl
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -41,10 +42,11 @@ class AffiliateEducationLandingViewModel @Inject constructor(
 ) : BaseViewModel() {
 
     companion object {
-        private const val TYPE_ARTICLE_TOPIC = 1222
-        private const val TYPE_ARTICLE = 1232
-        private const val TYPE_EVENT = 1238
-        private const val TYPE_TUTORIAL = 1224
+        private val isStaging = TokopediaUrl.getInstance().GQL.contains("staging")
+        private val TYPE_ARTICLE_TOPIC = if (isStaging) 1222 else 381
+        private val TYPE_ARTICLE = if (isStaging) 1232 else 395
+        private val TYPE_EVENT = if (isStaging) 1238 else 405
+        private val TYPE_TUTORIAL = if (isStaging) 1224 else 383
     }
 
     init {

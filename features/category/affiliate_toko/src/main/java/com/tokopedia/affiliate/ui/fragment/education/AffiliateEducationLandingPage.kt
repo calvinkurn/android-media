@@ -10,7 +10,8 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.affiliate.AFFILIATE_HELP_URL_WEBVIEW
-import com.tokopedia.affiliate.EDUCATION_ARTICLE_DETAIL_URL
+import com.tokopedia.affiliate.EDUCATION_ARTICLE_DETAIL_PROD_URL
+import com.tokopedia.affiliate.EDUCATION_ARTICLE_DETAIL_STAGING_URL
 import com.tokopedia.affiliate.PAGE_EDUCATION_EVENT
 import com.tokopedia.affiliate.adapter.AffiliateAdapter
 import com.tokopedia.affiliate.adapter.AffiliateAdapterFactory
@@ -32,6 +33,7 @@ import com.tokopedia.searchbar.navigation_component.NavToolbar
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.url.TokopediaUrl
 import timber.log.Timber
 import java.util.*
 import javax.inject.Inject
@@ -71,6 +73,11 @@ class AffiliateEducationLandingPage :
 
     companion object {
         fun getFragmentInstance() = AffiliateEducationLandingPage()
+        private val kamusSlug = if (TokopediaUrl.getInstance().GQL.contains("staging")) {
+            "imagetest"
+        } else {
+            "kamus-affiliate"
+        }
     }
 
     override fun onCreateView(
@@ -120,8 +127,11 @@ class AffiliateEducationLandingPage :
                 it,
                 getArticleEventUrl(
                     slug,
-                    if (pageType == PAGE_EDUCATION_EVENT) getString(R.string.affiliate_event)
-                    else getString(R.string.affiliate_artikel)
+                    if (pageType == PAGE_EDUCATION_EVENT) {
+                        getString(R.string.affiliate_event)
+                    } else {
+                        getString(R.string.affiliate_artikel)
+                    }
                 )
             )
         }
@@ -132,7 +142,10 @@ class AffiliateEducationLandingPage :
             context?.let {
                 RouteManager.route(
                     it,
-                    getArticleEventUrl("imagetest", getString(R.string.affiliate_artikel))
+                    getArticleEventUrl(
+                        kamusSlug,
+                        getString(R.string.affiliate_artikel)
+                    )
                 )
             }
         }
@@ -156,7 +169,11 @@ class AffiliateEducationLandingPage :
             "%s?title=%s&url=%s%s?navigation=hide",
             ApplinkConst.WEBVIEW,
             title.replace(" ", "+"),
-            EDUCATION_ARTICLE_DETAIL_URL,
+            if (TokopediaUrl.getInstance().GQL.contains("staging")) {
+                EDUCATION_ARTICLE_DETAIL_STAGING_URL
+            } else {
+                EDUCATION_ARTICLE_DETAIL_PROD_URL
+            },
             slug
         )
     }

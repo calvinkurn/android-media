@@ -37,7 +37,7 @@ class AffiliateEducationTutorialRVVH(
             layoutManager = rvLayoutManager
             adapter = articleTopicAdapter
         }
-        articleTopicAdapter.addMoreData(
+        articleTopicAdapter.setVisitables(
             element?.articleTopicList?.map { AffiliateEducationTutorialUiModel(it) }
         )
     }
