@@ -145,7 +145,7 @@ class ContentAccountToolbar @JvmOverloads constructor(
                     CoachMark2Item(
                         mBinding.textComToolbarSubtitle,
                         context.getString(contentCommonR.string.sa_coach_mark_title),
-                        context.getString(contentCommonR.string.sa_coach_mark_subtitle),
+                        context.getString(contentCommonR.string.sa_livestream_coach_mark_subtitle),
                         CoachMark2.POSITION_BOTTOM
                     )
                 )
