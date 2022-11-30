@@ -8,7 +8,4 @@ data class EditorAddLogoUiModel(
     val imageRealSize: Pair<Int, Int> = Pair(0,0),
     val overlayLogoUrl: String = "",
     val logoUrl: String = ""
-): Parcelable {
-    fun realWidth() = imageRealSize.first
-    fun realHeight() = imageRealSize.second
-}
+): Parcelable
