@@ -22,7 +22,16 @@ class AffiliateEducationArticleRVVH(
     private val affiliateEducationEventArticleClickInterface: AffiliateEducationEventArticleClickInterface?
 ) : AbstractViewHolder<AffiliateEducationArticleRVUiModel>(itemView) {
 
-    private var articleAdapter: AffiliateAdapter? = null
+    private var articleAdapter = AffiliateAdapter(
+        AffiliateAdapterFactory(
+            affiliateEducationEventArticleClickInterface = affiliateEducationEventArticleClickInterface
+        )
+    )
+
+    private val rvLayoutManager =
+        LinearLayoutManager(itemView.context, RecyclerView.VERTICAL, false)
+    private val rvArticle = itemView.findViewById<RecyclerView>(R.id.rv_article_widget)
+    private val tvSeeMore = itemView.findViewById<Typography>(R.id.article_widget_lihat_semua)
 
     companion object {
         @JvmField
@@ -34,14 +43,6 @@ class AffiliateEducationArticleRVVH(
     lateinit var userSessionInterface: UserSessionInterface
 
     override fun bind(element: AffiliateEducationArticleRVUiModel?) {
-        articleAdapter =
-            AffiliateAdapter(
-                AffiliateAdapterFactory(
-                    affiliateEducationEventArticleClickInterface = affiliateEducationEventArticleClickInterface
-                )
-            )
-        val rvArticle = itemView.findViewById<RecyclerView>(R.id.rv_article_widget)
-        val tvSeeMore = itemView.findViewById<Typography>(R.id.article_widget_lihat_semua)
         tvSeeMore.setOnClickListener {
             affiliateEducationEventArticleClickInterface?.onSeeMoreClick(
                 PAGE_EDUCATION_ARTICLE,
@@ -49,13 +50,11 @@ class AffiliateEducationArticleRVVH(
             )
             sendEducationClickEvent()
         }
-        val rvLayoutManager =
-            LinearLayoutManager(itemView.context, RecyclerView.VERTICAL, false)
         rvArticle?.apply {
             layoutManager = rvLayoutManager
             adapter = articleAdapter
         }
-        articleAdapter?.addMoreData(
+        articleAdapter.setVisitables(
             element?.article?.articles?.map { AffiliateEducationArticleUiModel(it) }
         )
     }
