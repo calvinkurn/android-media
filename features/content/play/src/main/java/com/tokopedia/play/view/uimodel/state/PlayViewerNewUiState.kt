@@ -141,13 +141,13 @@ data class EngagementUiState(
 
 data class ExploreWidgetUiState(
     val shouldShow: Boolean,
-    val data: List<ExploreWidgetUiModel>,
+    val data: ExploreWidgetUiModel,
 ) {
     companion object {
         val Empty: ExploreWidgetUiState
             get() = ExploreWidgetUiState(
                 shouldShow = false,
-                data = emptyList(),
+                data = ExploreWidgetUiModel.Empty,
             )
     }
 }

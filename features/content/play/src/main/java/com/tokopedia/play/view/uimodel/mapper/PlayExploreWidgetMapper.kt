@@ -12,13 +12,6 @@ import javax.inject.Inject
  */
 @PlayScope
 class PlayExploreWidgetMapper @Inject constructor() {
-    @Deprecated("Change to SubSlotUiModel")
-    val WidgetSlot.isSubSlotAvailable : Boolean
-        get() {
-            return this.playGetContentSlot.data.any {
-                it.type == SUB_SLOT_TYPE
-            }
-        }
 
     @OptIn(ExperimentalStdlibApi::class)
     fun map(widgetSlot: WidgetSlot): List<WidgetUiModel> {
@@ -29,6 +22,9 @@ class PlayExploreWidgetMapper @Inject constructor() {
                     SUB_SLOT_TYPE -> add(WidgetUiModel.SubSlotUiModel)
                     else -> {}
                 }
+            }
+            with(widgetSlot.playGetContentSlot.playGetContentSlot){
+                add(WidgetUiModel.PageConfig(isAutoPlay = this.isAutoplay, cursor = this.nextCursor))
             }
         }
     }

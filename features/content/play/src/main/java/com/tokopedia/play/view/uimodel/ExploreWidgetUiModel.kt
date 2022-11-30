@@ -53,5 +53,20 @@ sealed class WidgetUiModel {
 
     object SubSlotUiModel : WidgetUiModel()
 
-    //cursor
+    data class PageConfig(val cursor: String, val isAutoPlay: Boolean) : WidgetUiModel()
 }
+
+val List<WidgetUiModel>.isSubSlotAvailable : Boolean
+    get() {
+        return this.any {
+            it is WidgetUiModel.SubSlotUiModel
+        }
+    }
+
+val List<WidgetUiModel>.hasNextPage : Boolean
+    get() {
+        return this.any {
+            it is WidgetUiModel.PageConfig
+        }
+    }
+

@@ -198,7 +198,7 @@ class PlayViewModel @AssistedInject constructor(
 
     /** Needed to decide whether we need to call setResult() or no when leaving play room */
     private val _isChannelReportLoaded = MutableStateFlow(false)
-    private val _exploreWidget = MutableStateFlow(emptyList<ExploreWidgetUiModel>())
+    private val _exploreWidget = MutableStateFlow(ExploreWidgetUiModel.Empty)
 
     private val _winnerBadgeUiState = combine(
         _leaderboard, _bottomInsets, _status, _channelDetail, _leaderboardUserBadgeState
@@ -1161,6 +1161,9 @@ class PlayViewModel @AssistedInject constructor(
         updatePartnerInfo(channelData.partnerInfo)
         if (!channelData.status.channelStatus.statusType.isFreeze) {
             updateLikeAndTotalViewInfo(channelData.likeInfo, channelData.id)
+        }
+        with(channelData.channelDetail.exploreWidgetConfig){
+            updateWidgetParam(group, sourceType, sourceId)
         }
     }
 
@@ -2665,17 +2668,38 @@ class PlayViewModel @AssistedInject constructor(
 
     private fun fetchWidgets() {
         viewModelScope.launchCatchError(block = {
-            val config = _channelDetail.value.exploreWidgetConfig
-            val data = repo.getWidgets(
-                group = config.group,
-                sourceType = config.sourceType,
-                sourceId = config.sourceId,
-                cursor = "", //put in uiModel -> _explore
-            ) //if it has subSlot, fetch again with first index
+            val data = getWidgets() //handlePagination
+            if(data.isSubSlotAvailable && !data.hasNextPage) {
+                getWidgets() //get First Index
+            }
         }) {
 
         }
     }
+
+    private fun updateWidgetParam(group: String, sourceType: String, sourceId: String, cursor: String = ""){
+        _exploreWidget.update {
+            it.copy(
+                param = it.param.copy(
+                    group = group,
+                    sourceType = sourceType,
+                    sourceId = sourceId,
+                    cursor = cursor
+                )
+            )
+        }
+    }
+
+    private suspend fun getWidgets() : List<WidgetUiModel> {
+        val config = _exploreWidget.value.param
+        return repo.getWidgets(
+            group = config.group,
+            sourceType = config.sourceType,
+            sourceId = config.sourceId,
+            cursor = config.cursor
+        )
+    }
+
 
     private fun CoroutineScope.launch(
         jobId: String = "",
