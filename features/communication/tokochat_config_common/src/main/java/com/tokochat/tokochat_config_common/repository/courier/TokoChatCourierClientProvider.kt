@@ -13,7 +13,6 @@ import com.gojek.mqtt.client.MqttInterceptor
 import com.google.gson.Gson
 import com.tokochat.tokochat_config_common.di.qualifier.TokoChatQualifier
 import com.tokochat.tokochat_config_common.util.CourierEventLogger
-import com.tokochat.tokochat_config_common.util.TokoChatCourierConnectionLifecycle
 import com.tokopedia.config.BuildConfig
 import com.tokopedia.user.session.UserSessionInterface
 import retrofit2.Retrofit
@@ -39,7 +38,6 @@ class TokoChatCourierClientProvider @Inject constructor(
             mqttInterceptors = getMqttInterceptors(),
             debuggingEnabled = BuildConfig.DEBUG,
             courierRemoteConfig = courierRemoteConfig,
-            connectionLifecycle = TokoChatCourierConnectionLifecycle,
             appType = AppType.Tokopedia
         )
 
