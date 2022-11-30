@@ -644,8 +644,9 @@ object ShopPageHomeMapper {
                 imageUrl300 = ""
                 productUrl = it.urlApps
                 if (statusCampaign.toLowerCase() == StatusCampaign.ONGOING.statusCampaign.toLowerCase()) {
-                    stockLabel = it.stockWording.title
-                    stockSoldPercentage = it.stockSoldPercentage.toInt()
+                    val stockSoldPercentage = it.stockSoldPercentage.toInt()
+                    stockLabel = it.stockWording.title.takeIf { !stockSoldPercentage.isZero() }.orEmpty()
+                    this.stockSoldPercentage = stockSoldPercentage
                 }
                 hideGimmick = it.hideGimmick
                 labelGroupList =

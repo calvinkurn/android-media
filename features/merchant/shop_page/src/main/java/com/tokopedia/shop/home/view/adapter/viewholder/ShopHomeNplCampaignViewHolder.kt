@@ -104,10 +104,10 @@ class ShopHomeNplCampaignViewHolder(
     }
 
     private fun setVoucherPromoOffer(model: ShopHomeNewProductLaunchCampaignUiModel) {
-        val promoVoucherText = "Cashback hingga Rp10 Rb"
+        val promoVoucherText = model.data?.firstOrNull()?.voucherWording.orEmpty()
         if (promoVoucherText.isNotEmpty()) {
             nplPromoOfferContainer?.show()
-            textVoucherWording?.text = promoVoucherText
+            textVoucherWording?.text = MethodChecker.fromHtml(promoVoucherText)
         } else {
             nplPromoOfferContainer?.hide()
 
