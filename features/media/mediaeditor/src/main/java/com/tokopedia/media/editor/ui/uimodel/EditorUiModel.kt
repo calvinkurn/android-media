@@ -98,10 +98,13 @@ class EditorUiModel(
     }
 
     fun getOverlayLogoValue(): EditorAddLogoUiModel? {
+        val maxStateLimit = (editList.size - 1) - backValue
         var searchResult: EditorAddLogoUiModel? = null
-        getFilteredStateList().forEach {
-            if (it.isToolAddLogo()) {
-                searchResult = it.addLogoValue
+
+        editList.forEachIndexed { index, editorDetailUiModel ->
+            if (index > maxStateLimit) return@forEachIndexed
+            if (editorDetailUiModel.isToolAddLogo()) {
+                searchResult = editorDetailUiModel.addLogoValue
             }
         }
 
