@@ -110,6 +110,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.coroutines.UseCase
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 abstract class BaseSearchCategoryViewModel(
@@ -1338,6 +1339,20 @@ abstract class BaseSearchCategoryViewModel(
             return categoryOptionList.any {
                 it.key.removePrefix(OptionHelper.EXCLUDE_PREFIX) == optionToCheck.key
                         && it.value == optionToCheck.value
+            }
+        }
+    }
+
+    fun updateWishlistStatus(
+        productId: String,
+        hasBeenWishlist: Boolean
+    ) {
+        launch {
+            val product = visitableList.filterIsInstance<ProductItemDataView>().find { it.productCardModel.productId == productId }
+            product?.apply {
+                val index = visitableList.indexOf(this)
+                productCardModel = productCardModel.copy(hasBeenWishlist = hasBeenWishlist)
+                updatedVisitableIndicesMutableLiveData.postValue(listOf(index))
             }
         }
     }
