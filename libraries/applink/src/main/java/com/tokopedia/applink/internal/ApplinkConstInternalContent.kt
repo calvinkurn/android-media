@@ -45,7 +45,7 @@ object ApplinkConstInternalContent {
     const val INTERNAL_MEDIA_PREVIEW = "$MEDIA_PREVIEW?$ARG_MEDIA_INDEX=$DUMMY_MEDIA_INDEX"
 
     const val PLAY_PATH_LITE = "play/channel/"
-    const val FEED_VIDEO = "feed/video/"
+    const val FEED_VIDEO = "feed/video"
 
     const val TAB_POSITION_EXPLORE = 2
     const val TAB_POSITION_VIDEO = 3
