@@ -41,7 +41,13 @@ import com.tokopedia.kol.feature.postdetail.view.datamodel.PostDetailUiModel
 import com.tokopedia.kol.feature.video.view.adapter.MediaTagAdapter
 import com.tokopedia.kol.feature.video.view.viewmodel.FeedMediaPreviewViewModel
 import com.tokopedia.kolcommon.util.TimeConverter
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.loadImage
+import com.tokopedia.kotlin.extensions.view.loadImageCircle
+import com.tokopedia.kotlin.extensions.view.loadImageRounded
+import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
+import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.UnifyButton
@@ -155,7 +161,7 @@ class MediaPreviewFragment: BaseDaggerFragment() {
     }
 
     private fun onSuccessGetDetail(data: PostDetailUiModel) {
-        val dynamicPost = data.dynamicPostViewModel.postList.firstOrNull() as DynamicPostModel?
+        val dynamicPost = data.dynamicPostViewModel.postList.firstOrNull() as? DynamicPostModel
         dynamicPost?.let {
             bindToolbar(it)
             val mediaGrid = it.contentList.filterIsInstance<MultimediaGridModel>().firstOrNull()

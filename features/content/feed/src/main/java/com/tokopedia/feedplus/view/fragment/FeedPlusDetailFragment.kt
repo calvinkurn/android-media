@@ -71,6 +71,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlistcommon.data.response.AddToWishlistV2Response
 import kotlinx.android.synthetic.main.feed_detail_header.view.*
 import timber.log.Timber
+import java.util.*
 import javax.inject.Inject
 import com.tokopedia.feedcomponent.R as feedComponentR
 
@@ -910,7 +911,7 @@ class FeedPlusDetailFragment : BaseDaggerFragment(), FeedPlusDetailListener, Sha
                 } else {
                     RouteManager.route(
                         it,
-                        String.format("%s?url=%s", ApplinkConst.WEBVIEW, link)
+                        String.format(Locale.US, "%s?url=%s", ApplinkConst.WEBVIEW, link)
                     )
                 }
             }
