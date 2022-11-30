@@ -61,7 +61,7 @@
         android:id="@+id/tablayout"
         android:layout_width="match_parent"
         android:layout_height="64dp"
-        android:background="@color/Unify_N0"
+        android:background="@color/Unify_Background"
         android:minHeight="32dp"
         android:maxHeight="64dp"
         app:tabMode="scrollable"

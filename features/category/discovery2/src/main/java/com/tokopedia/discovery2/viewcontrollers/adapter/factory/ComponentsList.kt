@@ -129,5 +129,7 @@ enum class ComponentsList(val id: Int, val componentName: String) {
     ExplicitWidget(R.layout.explicit_widget_layout,ComponentNames.ExplicitWidget.componentName),
     ContentCard(R.layout.disco_content_card, ComponentNames.ContentCard.componentName),
     ContentCardItem(R.layout.disco_content_card_item, ComponentNames.ContentCardItem.componentName)
+    ThematicHeader(R.layout.disco_thematic_header_layout, ComponentNames.ThematicHeader.componentName),
+    ExplicitWidget(R.layout.explicit_widget_layout,ComponentNames.ExplicitWidget.componentName)
 
 }
