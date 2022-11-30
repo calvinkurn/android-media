@@ -417,7 +417,8 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         recyclerView?.post {
             val widgetList = mutableListOf<BaseWidgetUiModel<*>>()
             adapter.data.forEach {
-                if (it != widget) {
+                val isRemovedWidget = it != widget
+                if (isRemovedWidget) {
                     widgetList.add(it)
                 }
             }
@@ -1617,10 +1618,10 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         newWidget: BaseWidgetUiModel<*>
     ): Boolean {
         return oldWidget.widgetType == newWidget.widgetType && oldWidget.title == newWidget.title &&
-            oldWidget.subtitle == newWidget.subtitle && oldWidget.appLink == newWidget.appLink &&
-            oldWidget.tooltip == newWidget.tooltip && oldWidget.ctaText == newWidget.ctaText &&
-            oldWidget.dataKey == newWidget.dataKey && oldWidget.isShowEmpty == newWidget.isShowEmpty &&
-            oldWidget.emptyState == newWidget.emptyState
+                oldWidget.subtitle == newWidget.subtitle && oldWidget.appLink == newWidget.appLink &&
+                oldWidget.tooltip == newWidget.tooltip && oldWidget.ctaText == newWidget.ctaText &&
+                oldWidget.dataKey == newWidget.dataKey && oldWidget.isShowEmpty == newWidget.isShowEmpty &&
+                oldWidget.emptyState == newWidget.emptyState
     }
 
     @Suppress("UNCHECKED_CAST")
@@ -2344,7 +2345,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     private fun BaseWidgetUiModel<*>.isNeedToLoad(): Boolean {
         return !isLoaded && this !is SectionWidgetUiModel && this !is TickerWidgetUiModel &&
-            this !is DescriptionWidgetUiModel
+                this !is DescriptionWidgetUiModel
     }
 
     private fun handleRebateCoachMark() {
@@ -2353,9 +2354,9 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         getSellerHomeLayoutManager()?.let { layoutManager ->
             val rebateWidget = adapter.data.indexOfFirst {
                 val isRebateMvp = it.dataKey == CoachMarkPrefHelper.REBATE_MVP_DATA_KEY
-                    && !coachMarkPrefHelper.getRebateCoachMarkMvpStatus()
+                        && !coachMarkPrefHelper.getRebateCoachMarkMvpStatus()
                 val isRebateUltimate = !coachMarkPrefHelper.getRebateCoachMarkUltimateStatus() &&
-                    it.dataKey == CoachMarkPrefHelper.REBATE_ULTIMATE_DATA_KEY
+                        it.dataKey == CoachMarkPrefHelper.REBATE_ULTIMATE_DATA_KEY
                 return@indexOfFirst isRebateMvp || isRebateUltimate
             }
             val firstVisibleIndex = layoutManager.findFirstVisibleItemPosition()
