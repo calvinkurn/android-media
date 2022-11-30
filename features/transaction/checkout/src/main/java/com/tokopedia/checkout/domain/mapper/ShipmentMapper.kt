@@ -159,8 +159,8 @@ class ShipmentMapper @Inject constructor() {
             leftIconUrl = imageUpload.leftIconUrl,
             checkoutId = imageUpload.checkoutId,
             frontEndValidation = imageUpload.frontEndValidation,
-            consultationFlow = true,
-            rejectedWording = "imageUpload.rejectedWording"
+            consultationFlow = imageUpload.consultationFlow,
+            rejectedWording = imageUpload.rejectedWording
         )
     }
 
@@ -255,7 +255,7 @@ class ShipmentMapper @Inject constructor() {
                     }
                     isError = !product.errors.isNullOrEmpty() ||
                             shipmentAddressFormDataResponse.errorTicker.isNotEmpty() ||
-                            cartDetail.bundleDetail.bundleId.isNotBlankOrZero() && cartDetail.errors.isNotEmpty() || !product.ethicalDrugResponse.needPrescription
+                            cartDetail.bundleDetail.bundleId.isNotBlankOrZero() && cartDetail.errors.isNotEmpty()
                     errorMessage = if (shipmentAddressFormDataResponse.errorTicker.isNotEmpty()) {
                         ""
                     } else if (product.errors.isNotEmpty()) {

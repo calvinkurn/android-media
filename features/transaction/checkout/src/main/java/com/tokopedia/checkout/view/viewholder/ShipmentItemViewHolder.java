@@ -547,22 +547,9 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
             tickerError.setCloseButtonVisibility(View.GONE);
             tickerError.setVisibility(View.VISIBLE);
             layoutError.setVisibility(View.VISIBLE);
-//            customTickerDescription.setText(errorMessage);
-//            customTickerAction.setOnClickListener(v -> {
-//                mActionListener.onClickLihatOnTickerOrderError(String.valueOf(shipmentCartItemModel.getShopId()), errorMessage);
-//                if (!shipmentCartItemModel.isStateAllItemViewExpanded()) {
-//                    shipmentCartItemModel.setTriggerScrollToErrorProduct(true);
-//                    showAllProductListener(shipmentCartItemModel).onClick(tickerError);
-//                    return;
-//                }
-//                scrollToErrorProduct(shipmentCartItemModel);
-//            });
-//            customTickerError.setVisibility(View.VISIBLE);
             if (shipmentCartItemModel.isTriggerScrollToErrorProduct()) {
                 scrollToErrorProduct(shipmentCartItemModel);
             }
-        } else {
-            customTickerError.setVisibility(View.GONE);
         }
     }
 
