@@ -34,7 +34,7 @@ class AffiliateEducationSocialRVVH(
             layoutManager = rvLayoutManager
             adapter = socialAdapter
         }
-        socialAdapter.addMoreData(
+        socialAdapter.setVisitables(
             element?.socialList?.map { AffiliateEducationSocialUiModel(it) }
         )
     }

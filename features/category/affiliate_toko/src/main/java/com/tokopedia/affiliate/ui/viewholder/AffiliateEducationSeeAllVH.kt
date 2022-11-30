@@ -39,7 +39,7 @@ class AffiliateEducationSeeAllVH(
                     itemView.context.getString(
                         R.string.see_all_event_widget_detail,
                         element.article?.categories?.get(0)?.title,
-                        element.article?.modifiedDate
+                        element.article?.description.orEmpty()
                     )
                 }
                 else -> {

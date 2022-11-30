@@ -50,7 +50,7 @@ class AffiliateEducationEventRVVH(
             layoutManager = rvLayoutManager
             adapter = eventAdapter
         }
-        eventAdapter.addMoreData(
+        eventAdapter.setVisitables(
             element?.event?.articles?.map { AffiliateEducationEventUiModel(it) }
         )
     }

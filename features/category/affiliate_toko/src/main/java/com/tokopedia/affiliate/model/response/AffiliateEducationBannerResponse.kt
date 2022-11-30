@@ -50,24 +50,15 @@ data class AffiliateEducationBannerResponse(
             ) {
                 data class Attributes(
                     @SerializedName("start")
-                    val start: Start? = null,
+                    val start: ColorDensity? = null,
 
                     @SerializedName("background_fill")
                     val backgroundFill: String? = null,
 
                     @SerializedName("end")
-                    val end: End? = null
+                    val end: ColorDensity? = null
                 ) {
-                    data class Start(
-
-                        @SerializedName("color")
-                        val color: String? = null,
-
-                        @SerializedName("density")
-                        val density: Int? = null
-                    )
-
-                    data class End(
+                    data class ColorDensity(
 
                         @SerializedName("color")
                         val color: String? = null,
@@ -93,23 +84,12 @@ data class AffiliateEducationBannerResponse(
 
                 data class Text(
                     @SerializedName("secondary")
-                    val secondary: Secondary? = null,
+                    val secondary: TextData? = null,
 
                     @SerializedName("primary")
-                    val primary: Primary? = null
+                    val primary: TextData? = null
                 ) {
-                    data class Primary(
-                        @SerializedName("color")
-                        val color: String? = null,
-
-                        @SerializedName("title")
-                        val title: String? = null,
-
-                        @SerializedName("redirect_url")
-                        val redirectUrl: String? = null
-                    )
-
-                    data class Secondary(
+                    data class TextData(
                         @SerializedName("color")
                         val color: String? = null,
 
