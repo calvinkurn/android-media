@@ -398,12 +398,13 @@ class ProductManageViewModel @Inject constructor(
         })
     }
 
-    fun getTickerData() {
+    fun getTickerData(enableStockAvailable: Boolean) {
         val isMultiLocationShop = userSessionInterface.isMultiLocationShop
         _tickerData.value =
             tickerStaticDataProvider.getTickers(
                 isMultiLocationShop,
-                _shopStatus.value?.shopStatus.orEmpty()
+                _shopStatus.value?.shopStatus.orEmpty(),
+                enableStockAvailable
             )
     }
 

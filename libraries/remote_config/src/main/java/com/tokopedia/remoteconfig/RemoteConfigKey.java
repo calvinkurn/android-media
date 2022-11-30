@@ -305,4 +305,6 @@ public class RemoteConfigKey {
 
     public static final String ENABLE_NEW_SHARE_SELLER = "android_sellerapp_enable_new_share";
 
+    public static final String ENABLE_STOCK_AVAILABLE = "android_show_stock_available";
+
 }

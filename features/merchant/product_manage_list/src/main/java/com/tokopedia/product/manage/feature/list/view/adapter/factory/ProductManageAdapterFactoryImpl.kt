@@ -11,10 +11,12 @@ import com.tokopedia.product.manage.common.feature.quickedit.common.interfaces.P
 import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.EmptyStateViewHolder
 import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.LoadingViewHolder
 import com.tokopedia.product.manage.feature.list.view.adapter.viewholder.ProductViewHolder
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 
 class ProductManageAdapterFactoryImpl(
     private val listener: ProductViewHolder.ProductViewHolderView,
-    private val campaignListener: ProductCampaignInfoListener
+    private val campaignListener: ProductCampaignInfoListener,
+    private val firebaseRemoteConfigImpl: FirebaseRemoteConfigImpl
 ) : BaseAdapterTypeFactory(), ProductManageAdapterFactory {
 
     override fun type(uiModel: ProductUiModel): Int = ProductViewHolder.LAYOUT
@@ -25,7 +27,12 @@ class ProductManageAdapterFactoryImpl(
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
-            ProductViewHolder.LAYOUT -> ProductViewHolder(view, listener, campaignListener)
+            ProductViewHolder.LAYOUT -> ProductViewHolder(
+                view,
+                listener,
+                campaignListener,
+                firebaseRemoteConfigImpl
+            )
             EmptyStateViewHolder.LAYOUT -> EmptyStateViewHolder(view)
             LoadingViewHolder.LAYOUT -> LoadingViewHolder(view)
             else -> super.createViewHolder(view, type)

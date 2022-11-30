@@ -5,16 +5,15 @@ import com.tokopedia.product.manage.common.feature.getstatusshop.data.model.Stat
 import com.tokopedia.product.manage.common.feature.getstatusshop.data.model.StatusInfo.Companion.ON_MODERATED_STAGE
 import com.tokopedia.unifycomponents.ticker.Ticker
 import com.tokopedia.unifycomponents.ticker.TickerData
-import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
 
 class TickerStaticDataProvider @Inject constructor(private val resourceProvider: ResourceProvider) {
 
 
-    private fun MutableList<TickerData>.addStockAvailableTicker() {
+    private fun MutableList<TickerData>.addStockAvailableTicker(enableStockAvailable: Boolean) {
         val EXPIRED_DATE_TICKER_STOCK_AVAILABLE:Long = 1674406800000 //23/01/2023
-        if (!isExpiredTicker(EXPIRED_DATE_TICKER_STOCK_AVAILABLE)) {
+        if (!isExpiredTicker(EXPIRED_DATE_TICKER_STOCK_AVAILABLE) && enableStockAvailable) {
             add(
                 TickerData(
                     title = resourceProvider.getTickerStockAvailableTitle(),
@@ -49,7 +48,7 @@ class TickerStaticDataProvider @Inject constructor(private val resourceProvider:
         }
     }
 
-    fun getTickers(multiLocationSeller: Boolean, statusShop: String): List<TickerData> {
+    fun getTickers(multiLocationSeller: Boolean, statusShop: String, enableStockAvailable:Boolean): List<TickerData> {
         return when (statusShop.toIntSafely()) {
             ON_MODERATED_STAGE -> {
                 getTickerShopModerate()
@@ -59,7 +58,7 @@ class TickerStaticDataProvider @Inject constructor(private val resourceProvider:
             }
             else -> {
                 mutableListOf<TickerData>().apply {
-                    addStockAvailableTicker()
+                    addStockAvailableTicker(enableStockAvailable)
                     addMaxStockTicker()
                     addMultiLocationTicker(multiLocationSeller)
                 }.filter { it.description.isNotBlank() }

@@ -14,6 +14,8 @@ import com.tokopedia.product.manage.R
 import com.tokopedia.product.manage.common.feature.list.data.model.ProductUiModel
 import com.tokopedia.product.manage.common.feature.quickedit.common.interfaces.ProductCampaignInfoListener
 import com.tokopedia.product.manage.databinding.ItemManageProductListBinding
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfigKey.ENABLE_STOCK_AVAILABLE
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.toDp
 import com.tokopedia.utils.view.binding.viewBinding
@@ -22,7 +24,8 @@ import kotlin.math.abs
 class ProductViewHolder(
     view: View,
     private val listener: ProductViewHolderView,
-    private val campaignListener: ProductCampaignInfoListener
+    private val campaignListener: ProductCampaignInfoListener,
+    private val firebaseRemoteConfigImpl: FirebaseRemoteConfigImpl
 ) : AbstractViewHolder<ProductUiModel>(view) {
 
     companion object {
@@ -47,8 +50,9 @@ class ProductViewHolder(
         showProductImage(product)
         showNotifyMeBuyer(product)
         showStockHintImage(product)
-        showLabelGuaranteed(product)
-
+        if (firebaseRemoteConfigImpl.getBoolean(ENABLE_STOCK_AVAILABLE).orFalse()){
+            showLabelGuaranteed(product)
+        }
         if (!product.isVariant()) {
             showStockAlertImage(product)
             showStockAlertActiveImage(product)

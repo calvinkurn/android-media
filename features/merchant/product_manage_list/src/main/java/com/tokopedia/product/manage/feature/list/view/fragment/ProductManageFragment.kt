@@ -155,6 +155,8 @@ import com.tokopedia.product.manage.feature.quickedit.price.presentation.fragmen
 import com.tokopedia.product.manage.feature.quickedit.variant.presentation.ui.QuickEditVariantPriceBottomSheet
 import com.tokopedia.product.manage.feature.suspend.view.bottomsheet.SuspendReasonBottomSheet
 import com.tokopedia.product.manage.feature.violation.view.bottomsheet.ViolationReasonBottomSheet
+import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
+import com.tokopedia.remoteconfig.RemoteConfigKey.ENABLE_STOCK_AVAILABLE
 import com.tokopedia.seller.active.common.worker.UpdateShopActiveWorker
 import com.tokopedia.seller_migration_common.isSellerMigrationEnabled
 import com.tokopedia.seller_migration_common.listener.SellerHomeFragmentListener
@@ -224,6 +226,9 @@ open class ProductManageFragment :
 
     @Inject
     lateinit var productManageSession: ProductManageSession
+
+    @Inject
+    lateinit var firebaseRemoteConfigImpl: FirebaseRemoteConfigImpl
 
     protected var binding by autoClearedNullable<FragmentProductManageSellerBinding>()
 
@@ -1298,7 +1303,7 @@ open class ProductManageFragment :
     }
 
     override fun getAdapterTypeFactory(): ProductManageAdapterFactoryImpl {
-        return ProductManageAdapterFactoryImpl(this, this)
+        return ProductManageAdapterFactoryImpl(this, this, firebaseRemoteConfigImpl)
     }
 
     override fun getScreenName(): String = "/product list page"
@@ -2549,7 +2554,7 @@ open class ProductManageFragment :
     }
 
     private fun getTickerData() {
-        viewModel.getTickerData()
+        viewModel.getTickerData(firebaseRemoteConfigImpl.getBoolean(ENABLE_STOCK_AVAILABLE).orFalse())
     }
 
     private fun getFiltersTab(withDelay: Boolean = false) {
