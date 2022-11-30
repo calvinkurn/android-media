@@ -23,6 +23,9 @@ class NotificationGeneralPromptBottomSheet: BottomSheetUnify() {
         UserSession(context)
     }
 
+    private val activityName
+        get() = activity?.javaClass?.simpleName ?: ""
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -34,6 +37,10 @@ class NotificationGeneralPromptBottomSheet: BottomSheetUnify() {
         }
 
         initView()
+
+        sendEventImpression()
+
+        setCloseClickListener(::onCloseClick)
     }
 
     private fun initView() {
@@ -59,7 +66,33 @@ class NotificationGeneralPromptBottomSheet: BottomSheetUnify() {
                 R.string.cm_notifications_general_prompt_mainapp_description,
             )
 
+    private fun sendEventImpression() {
+        context?.let {
+            NotificationSettingsGtmEvents(
+                userSession,
+                it.applicationContext
+            ).sendGeneralPromptImpressionEvent(it, activityName)
+        }
+    }
+
+    private fun onCloseClick(ignored: View) {
+        sendEventClose()
+
+        dismiss()
+    }
+
+    private fun sendEventClose() {
+        context?.let {
+            NotificationSettingsGtmEvents(
+                userSession,
+                it.applicationContext
+            ).sendGeneralPromptClickCloseEvent(it, activityName)
+        }
+    }
+
     private fun onTurnOnNotificationClick(ignored: View) {
+        sendEventClickCta()
+
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.TIRAMISU) return
 
         context?.let {
@@ -72,6 +105,15 @@ class NotificationGeneralPromptBottomSheet: BottomSheetUnify() {
         )
     }
 
+    private fun sendEventClickCta() {
+        context?.let {
+            NotificationSettingsGtmEvents(
+                userSession,
+                it.applicationContext
+            ).sendGeneralPromptClickCtaEvent(it, activityName)
+        }
+    }
+
     override fun onRequestPermissionsResult(
         requestCode: Int,
         permissions: Array<out String>,
@@ -81,6 +123,8 @@ class NotificationGeneralPromptBottomSheet: BottomSheetUnify() {
 
         if (isPostNotificationPermissions(requestCode, permissions))
             sendEventPostNotificationPermissionResult(grantResults)
+
+        dismiss()
     }
 
     private fun isPostNotificationPermissions(
