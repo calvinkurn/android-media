@@ -20,11 +20,7 @@ class FakeKycUploadApi(var case: Case = Case.Success) : KycUploadApi {
         faceImage: MultipartBody.Part
     ): KycResponse {
         return when (case) {
-            Case.Success -> KycResponse(
-                data = KycData(
-                    isSuccessRegister = true,
-                )
-            )
+            Case.Success -> KycResponse(data = KycData(true))
             Case.NetworkFailed -> {
                 if (uploadCount == 0) {
                     uploadCount += 1
@@ -52,11 +48,7 @@ class FakeKycUploadApi(var case: Case = Case.Success) : KycUploadApi {
                         )
                     )
                 } else {
-                    KycResponse(
-                        data = KycData(
-                            isSuccessRegister = true,
-                        )
-                    )
+                    KycResponse(data = KycData(true))
                 }
             }
         }
@@ -68,7 +60,7 @@ class FakeKycUploadApi(var case: Case = Case.Success) : KycUploadApi {
         ktpImage: MultipartBody.Part,
         faceImage: MultipartBody.Part
     ): KycResponse {
-        TODO("Not yet implemented")
+        return uploadImages(projectId, params, ktpImage, faceImage)
     }
 
     sealed class Case {

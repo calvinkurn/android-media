@@ -52,6 +52,7 @@ class KycUploadViewModel @Inject constructor(
             isKtpFileUsingEncryption: Boolean,
             isFaceFileUsingEncryption: Boolean
     ) {
+        Timber.d("projectId: $tkpdProjectId")
         val startTimeLog = System.currentTimeMillis()
         var encryptionTimeKtp = 0L
         var encryptionTimeFace = 0L

@@ -1,7 +1,11 @@
 package com.tokopedia.kyc_centralized.view.activity
 
+import android.content.Intent
+import android.net.Uri
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.ext.junit.runners.AndroidJUnit4
+import com.tokopedia.applink.UriUtil
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.KYC_FORM
 import com.tokopedia.kyc_centralized.di.ActivityComponentFactory
 import com.tokopedia.kyc_centralized.di.FakeKycActivityComponentFactory
 import com.tokopedia.kyc_centralized.fakes.FakeKycUploadApi
@@ -26,7 +30,8 @@ class KycFlowUiTest {
 
     private val testComponent = FakeKycActivityComponentFactory()
     private val kycApi = testComponent.kycApi
-
+    private val projectId = "22"
+    private val url = "https://google.com"
 
     @Before
     fun setup() {
@@ -36,7 +41,10 @@ class KycFlowUiTest {
     @Test
     fun happyFlowTest() {
         kycApi.case = FakeKycUploadApi.Case.Success
-        activityTestRule.launchActivity(null)
+        val i = Intent().apply {
+            data = Uri.parse(UriUtil.buildUri(KYC_FORM, projectId, url))
+        }
+        activityTestRule.launchActivity(i)
         stubSampleForKtpAndLivenessPictures()
 
         kycRobot {
@@ -49,14 +57,17 @@ class KycFlowUiTest {
         } upload {
             shouldShowPendingPage()
             hasCameraIntent()
-            hasLivenessIntent()
+            hasLivenessIntent(1, projectId)
         }
     }
 
     @Test
     fun retakeFaceOnlyTest() {
         kycApi.case = FakeKycUploadApi.Case.Retake(arrayListOf(2))
-        activityTestRule.launchActivity(null)
+        val i = Intent().apply {
+            data = Uri.parse(UriUtil.buildUri(KYC_FORM, projectId, url))
+        }
+        activityTestRule.launchActivity(i)
         stubSampleForKtpAndLivenessPictures()
 
         kycRobot {
@@ -71,14 +82,17 @@ class KycFlowUiTest {
         } upload {
             shouldShowPendingPage()
             hasCameraIntent()
-            hasLivenessIntent(2)
+            hasLivenessIntent(2, projectId)
         }
     }
 
     @Test
     fun retakeKtpOnlyTest() {
         kycApi.case = FakeKycUploadApi.Case.Retake(arrayListOf(1))
-        activityTestRule.launchActivity(null)
+        val i = Intent().apply {
+            data = Uri.parse(UriUtil.buildUri(KYC_FORM, projectId, url))
+        }
+        activityTestRule.launchActivity(i)
         stubSampleForKtpAndLivenessPictures()
 
         kycRobot {
@@ -93,14 +107,17 @@ class KycFlowUiTest {
         } upload {
             shouldShowPendingPage()
             hasCameraIntent(2)
-            hasLivenessIntent(2)
+            hasLivenessIntent(2, projectId)
         }
     }
 
     @Test
     fun retakeKtpAndFaceTest() {
         kycApi.case = FakeKycUploadApi.Case.Retake(arrayListOf(1, 2))
-        activityTestRule.launchActivity(null)
+        val i = Intent().apply {
+            data = Uri.parse(UriUtil.buildUri(KYC_FORM, projectId, url))
+        }
+        activityTestRule.launchActivity(i)
         stubSampleForKtpAndLivenessPictures()
 
         kycRobot {
@@ -115,14 +132,17 @@ class KycFlowUiTest {
         } upload {
             shouldShowPendingPage()
             hasCameraIntent(2)
-            hasLivenessIntent(2)
+            hasLivenessIntent(2, projectId)
         }
     }
 
     @Test
     fun retryCausedByNetworkTest() {
         kycApi.case = FakeKycUploadApi.Case.NetworkFailed
-        activityTestRule.launchActivity(null)
+        val i = Intent().apply {
+            data = Uri.parse(UriUtil.buildUri(KYC_FORM, projectId, url))
+        }
+        activityTestRule.launchActivity(i)
         stubSampleForKtpAndLivenessPictures()
 
         kycRobot {
@@ -136,7 +156,7 @@ class KycFlowUiTest {
         } upload {
             shouldShowPendingPage()
             hasCameraIntent()
-            hasLivenessIntent(2)
+            hasLivenessIntent(2, projectId)
         }
     }
 
@@ -148,7 +168,7 @@ class KycFlowUiTest {
      * To simulate the real camera, you can use [IssueSimulatorUserIdentification]
      * */
     private fun stubSampleForKtpAndLivenessPictures() {
-        stubLiveness()
+        stubLiveness(projectId)
         stubKtpCamera()
     }
 }

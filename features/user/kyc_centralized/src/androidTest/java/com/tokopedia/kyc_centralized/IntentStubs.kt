@@ -16,9 +16,9 @@ import com.tokopedia.kyc_centralized.view.activity.UserIdentificationFormActivit
 import com.tokopedia.kyc_centralized.common.KYCConstant
 import com.tokopedia.utils.image.ImageProcessingUtil
 
-fun stubLiveness() {
+fun stubLiveness(projectId: String = "-1") {
     val ctx = ApplicationProvider.getApplicationContext<Context>()
-    intending(hasData(ApplinkConstInternalUserPlatform.KYC_LIVENESS.replace("{projectId}", "-1")))
+    intending(hasData(ApplinkConstInternalUserPlatform.KYC_LIVENESS.replace("{projectId}", projectId)))
         .respondWithFunction {
             val cameraResultFile = ImageProcessingUtil.getTokopediaPhotoPath(
                 Bitmap.CompressFormat.JPEG,
@@ -33,6 +33,20 @@ fun stubLiveness() {
                 )
             })
     }
+}
+
+fun stubLivenessFailed(projectId: String = "-1") {
+    val ctx = ApplicationProvider.getApplicationContext<Context>()
+    intending(hasData(ApplinkConstInternalUserPlatform.KYC_LIVENESS.replace("{projectId}", projectId)))
+        .respondWithFunction {
+            val cameraResultFile = ImageProcessingUtil.getTokopediaPhotoPath(
+                Bitmap.CompressFormat.JPEG,
+                UserIdentificationFormActivity.FILE_NAME_KYC
+            )
+            val sampleJpeg = ctx.assets.open("sample.jpeg")
+            sampleJpeg.copyTo(cameraResultFile.outputStream())
+            Instrumentation.ActivityResult(Activity.RESULT_OK, null)
+        }
 }
 
 fun stubKtpCamera() {
