@@ -69,7 +69,8 @@ enum class EPharmacyConsultationStatus(val status: Int) {
     EXPIRED(0),
     ACTIVE(1),
     APPROVED(2),
-    REJECTED(4)
+    REJECTED(4),
+    DOCTOR_NOT_AVAILABLE(5),
 }
 
 const val EPHARMACY_CHECKOUT_APPLINK = "tokopedia://checkout"
@@ -86,8 +87,9 @@ const val CLOSE_TIME = "close_time"
 const val REMINDER_TYPE = "reminder_type"
 const val CONSULTATION_SOURCE_ID = "consultation_source_id"
 
-const val YYYY_MM_DD_T_HH_MM_SS_Z = "yyyy-MM-dd'T'HH:mm:ss'Z'"
+const val YYYY_MM_DD_T_HH_MM_SS_Z = "yyyy-MM-dd'T'HH:mm:ssZ"
 const val NEW_DATE_FORMAT = "dd MMM yyyy, HH:mm"
 const val UTC = "UTC"
 
 const val WEB_LINK_PREFIX = "tokopedia://webview?url="
+const val TYPE_DOCTOR_NOT_AVAILABLE_REMINDER = 1L

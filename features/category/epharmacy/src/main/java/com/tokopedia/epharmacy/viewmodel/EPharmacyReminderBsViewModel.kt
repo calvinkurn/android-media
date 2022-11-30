@@ -15,7 +15,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
 
 class EPharmacyReminderBsViewModel @Inject constructor(
-    private val getEpharmcyReminderScreenUseCase: EpharmcyReminderScreenUseCase,
+    private val getEpharmcyReminderScreenUseCase: EPharmacyReminderScreenUseCase,
     @CoroutineBackgroundDispatcher private val dispatcherBackground: CoroutineDispatcher
 ) : BaseViewModel(dispatcherBackground) {
 

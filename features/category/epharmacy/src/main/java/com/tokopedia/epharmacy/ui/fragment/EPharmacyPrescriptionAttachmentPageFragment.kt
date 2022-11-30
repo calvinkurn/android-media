@@ -215,7 +215,7 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
                 EPharmacyReminderScreenBottomSheet.newInstance(
                     initiateConsultationData.consultationSource?.operatingSchedule?.daily?.openTime,
                     initiateConsultationData.consultationSource?.operatingSchedule?.daily?.closeTime,
-                    1,
+                    TYPE_DOCTOR_NOT_AVAILABLE_REMINDER,
                     initiateConsultationData.consultationSource?.id
                 ).show(childFragmentManager, EPharmacyReminderScreenBottomSheet::class.simpleName)
             } else {
@@ -240,7 +240,7 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
     }
 
     private fun onFailInitiateConsultation() {
-        showToast(Toaster.TYPE_ERROR,context?.resources?.getString(R.string.epharmacy_internet_error) ?: "")
+        showToast(TYPE_ERROR,context?.resources?.getString(R.string.epharmacy_internet_error) ?: "")
     }
 
     private fun onFailGroupData(it: Fail) {
@@ -272,10 +272,33 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
 
     private fun onSuccessGroupData(it: Success<EPharmacyDataModel>) {
         ePharmacyAttachmentUiUpdater.mapOfData.clear()
+        var showReminderScreen = false
         it.data.listOfComponents.forEach { component ->
             ePharmacyAttachmentUiUpdater.updateModel(component)
+            if(component is EPharmacyAttachmentDataModel
+                && !showReminderScreen){
+                if((component).consultationData?.consultationStatus == EPharmacyConsultationStatus.DOCTOR_NOT_AVAILABLE.status){
+                    showReminderScreen = true
+                    presentReminderScreen(
+                        component.consultationSource?.operatingSchedule?.daily?.openTime,
+                        component.consultationSource?.operatingSchedule?.daily?.closeTime,
+                        component.consultationSource?.id
+                        )
+
+                }
+            }
         }
         updateUi()
+    }
+
+    private fun presentReminderScreen(openTime : String?, closeTime : String?, consultationId : String?){
+        EPharmacyReminderScreenBottomSheet.newInstance(
+            openTime,
+            closeTime,
+            TYPE_DOCTOR_NOT_AVAILABLE_REMINDER,
+            consultationId
+        ).show(childFragmentManager, EPharmacyReminderScreenBottomSheet::class.simpleName)
+
     }
 
     private fun updateUi() {

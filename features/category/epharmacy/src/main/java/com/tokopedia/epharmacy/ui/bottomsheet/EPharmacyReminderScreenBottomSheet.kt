@@ -83,10 +83,14 @@ class EPharmacyReminderScreenBottomSheet : BottomSheetUnify() {
         viewModel?.reminderLiveData?.observe(viewLifecycleOwner) {
             when (it) {
                 is Success -> {
-                    // add toast here
+                    context?.resources?.let { res ->
+                        showToast(res.getString(com.tokopedia.epharmacy.R.string.epharmacy_reminder_success))
+                    }
                 }
                 is Fail -> {
-                    // add toast here for failed case
+                    context?.resources?.let { res ->
+                        showToast(res.getString(com.tokopedia.epharmacy.R.string.epharmacy_reminder_fail))
+                    }
                 }
             }
         }
@@ -121,8 +125,9 @@ class EPharmacyReminderScreenBottomSheet : BottomSheetUnify() {
                 )
             )
         } else {
-            // need to check for this case
-            showToast("request can't be processed")
+            context?.resources?.let { res ->
+                showToast(res.getString(com.tokopedia.epharmacy.R.string.epharmacy_reminder_fail))
+            }
             return null
         }
     }

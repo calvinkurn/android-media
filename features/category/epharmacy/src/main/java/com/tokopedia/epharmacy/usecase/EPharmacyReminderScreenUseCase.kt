@@ -10,7 +10,7 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import javax.inject.Inject
 
-class EpharmcyReminderScreenUseCase @Inject constructor(
+class EPharmacyReminderScreenUseCase @Inject constructor(
     @ApplicationContext private val repository: GraphqlRepository,
     dispatchers: CoroutineDispatchers
 ) : CoroutineUseCase<EPharmacyReminderScreenParam, EPharmacyReminderScreenResponse.SubmitEpharmacyUserReminderData
