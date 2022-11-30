@@ -209,7 +209,7 @@ import javax.inject.Inject
  * Created by fwidjaja on 29/06/20.
  */
 @Keep
-class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerListener, UohItemAdapter.ActionListener {
+open class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerListener, UohItemAdapter.ActionListener {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
@@ -263,10 +263,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     private var _arrayListCategoryProductFilterBundle = arrayListOf<UohFilterBundle>()
     private var _listParamAtcMulti = arrayListOf<AddToCartMultiParam>()
     private var _atcVerticalCategory = ""
-
-    private val trackingQueue: TrackingQueue by lazy {
-        (context as UohListFragment).trackingQueue
-    }
+    private var trackingQueue: TrackingQueue? = null
 
     private var binding by autoClearedNullable<FragmentUohListBinding>()
 
@@ -278,6 +275,12 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
 
     private val uohListViewModel by lazy {
         ViewModelProvider(this, viewModelFactory)[UohListViewModel::class.java]
+    }
+
+    init {
+        activity?.let {
+            trackingQueue = TrackingQueue(it)
+        }
     }
 
     companion object {
@@ -2160,7 +2163,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
             jsonArray = JsonParser().parse(order.metadata.listProducts).asJsonArray
         }
         userSession.userId?.let { userId ->
-            UohAnalytics.viewOrderCard(trackingQueue, order, userId, jsonArray, index.toString())
+            trackingQueue?.let { UohAnalytics.viewOrderCard(it, order, userId, jsonArray, index.toString()) }
         }
     }
 
@@ -2183,7 +2186,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
         }
 
         userSession.userId?.let { userId ->
-            UohAnalytics.productViewRecommendation(trackingQueue, userId, recommendationItem, topAds, index.toString())
+            trackingQueue?.let { UohAnalytics.productViewRecommendation(it, userId, recommendationItem, topAds, index.toString()) }
         }
     }
 
@@ -2382,6 +2385,6 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
 
     override fun onPause() {
         super.onPause()
-        trackingQueue.sendAll()
+        trackingQueue?.sendAll()
     }
 }
