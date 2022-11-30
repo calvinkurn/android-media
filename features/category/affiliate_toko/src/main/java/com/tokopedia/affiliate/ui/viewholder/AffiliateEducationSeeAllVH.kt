@@ -3,14 +3,12 @@ package com.tokopedia.affiliate.ui.viewholder
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
-import com.tokopedia.affiliate.AffiliateAnalytics
+import com.tokopedia.affiliate.*
 import com.tokopedia.affiliate.AffiliateAnalytics.ActionKeys
 import com.tokopedia.affiliate.AffiliateAnalytics.CategoryKeys
-import com.tokopedia.affiliate.PAGE_EDUCATION_ARTICLE
-import com.tokopedia.affiliate.PAGE_EDUCATION_EVENT
-import com.tokopedia.affiliate.PAGE_EDUCATION_TUTORIAL
 import com.tokopedia.affiliate.interfaces.AffiliateEducationSeeAllCardClickInterface
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEducationSeeAllUiModel
+import com.tokopedia.affiliate.utils.DateUtils
 import com.tokopedia.affiliate_toko.R
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.ImageUnify
@@ -29,47 +27,81 @@ class AffiliateEducationSeeAllVH(
         var LAYOUT = R.layout.affiliate_education_see_all_item
     }
 
+    private val imageSeeAll = itemView.findViewById<ImageUnify>(R.id.image_see_all_result)
+    private val seeAllTitle = itemView.findViewById<Typography>(R.id.see_all_item_title)
+    private val seeAllDetail = itemView.findViewById<Typography>(R.id.see_all_item_detail)
+    private val seeAllContainer = itemView.findViewById<View>(R.id.see_all_container)
+
     @Inject
     lateinit var userSessionInterface: UserSessionInterface
 
     override fun bind(element: AffiliateEducationSeeAllUiModel?) {
-        itemView.findViewById<ImageUnify>(R.id.image_see_all_result)
-            .loadImage(element?.article?.thumbnail?.android)
-        itemView.findViewById<Typography>(R.id.see_all_item_title).text =
-            element?.article?.title
-        itemView.findViewById<Typography>(R.id.see_all_item_detail).text =
+        imageSeeAll.loadImage(element?.article?.thumbnail?.android)
+        seeAllTitle.text = element?.article?.title
+        seeAllDetail.text =
             when (element?.pageType) {
                 PAGE_EDUCATION_EVENT -> {
                     itemView.context.getString(
                         R.string.see_all_event_widget_detail,
                         element.article?.categories?.get(0)?.title,
-                        element.article?.modifiedDate
+                        DateUtils().formatDate(
+                            currentFormat = YYYY_MM_DD_HH_MM_SS,
+                            newFormat = DD_MM_YYYY_HH_MM_A,
+                            dateString = element.article?.modifiedDate.orEmpty()
+                        )
                     )
                 }
-                PAGE_EDUCATION_ARTICLE -> {
+                else -> {
+                    val readMinute = itemView.context.getString(
+                        R.string.article_widget_detail_read,
+                        element?.article?.attributes?.readTime
+                    )
                     itemView.context.getString(
                         R.string.article_widget_detail,
-                        element.article?.categories?.get(0)?.title,
-                        element.article?.modifiedDate,
-                        element.article?.attributes?.readTime
+                        element?.article?.categories?.get(0)?.title,
+                        DateUtils().formatDate(
+                            currentFormat = YYYY_MM_DD_HH_MM_SS,
+                            newFormat = PATTERN,
+                            dateString = element?.article?.modifiedDate.orEmpty()
+                        ),
+                        readMinute
                     )
                 }
-                else -> ""
             }
-        itemView.findViewById<View>(R.id.see_all_container)?.setOnClickListener {
+        seeAllContainer?.setOnClickListener {
             seeAllCardClickInterface?.onCardClick(
                 element?.pageType.orEmpty(),
                 element?.article?.slug.orEmpty()
             )
             when (element?.pageType) {
-                PAGE_EDUCATION_EVENT -> sendEducationClickEvent(element.article?.title, element.article?.articleId.toString(), ActionKeys.CLICK_EVENT_CARD, CategoryKeys.AFFILIATE_EDUKASI_CATEGORY_LANDING_EVENT)
-                PAGE_EDUCATION_ARTICLE -> sendEducationClickEvent(element.article?.title, element.article?.articleId.toString(), ActionKeys.CLICK_ARTICLE_CARD, CategoryKeys.AFFILIATE_EDUKASI_CATEGORY_LANDING_ARTICLE)
-                PAGE_EDUCATION_TUTORIAL -> sendEducationClickEvent(element.article?.title, element.article?.articleId.toString(), ActionKeys.CLICK_TUTORIAL_CARD, CategoryKeys.AFFILIATE_EDUKASI_CATEGORY_LANDING_TUTORIAL)
+                PAGE_EDUCATION_EVENT -> sendEducationClickEvent(
+                    element.article?.title,
+                    element.article?.articleId.toString(),
+                    ActionKeys.CLICK_EVENT_CARD,
+                    CategoryKeys.AFFILIATE_EDUKASI_CATEGORY_LANDING_EVENT
+                )
+                PAGE_EDUCATION_ARTICLE -> sendEducationClickEvent(
+                    element.article?.title,
+                    element.article?.articleId.toString(),
+                    ActionKeys.CLICK_ARTICLE_CARD,
+                    CategoryKeys.AFFILIATE_EDUKASI_CATEGORY_LANDING_ARTICLE
+                )
+                PAGE_EDUCATION_TUTORIAL -> sendEducationClickEvent(
+                    element.article?.title,
+                    element.article?.articleId.toString(),
+                    ActionKeys.CLICK_TUTORIAL_CARD,
+                    CategoryKeys.AFFILIATE_EDUKASI_CATEGORY_LANDING_TUTORIAL
+                )
             }
         }
     }
 
-    private fun sendEducationClickEvent(creativeName: String?, eventId: String?, actionKeys: String, categoryKeys: String) {
+    private fun sendEducationClickEvent(
+        creativeName: String?,
+        eventId: String?,
+        actionKeys: String,
+        categoryKeys: String
+    ) {
         AffiliateAnalytics.sendEducationTracker(
             AffiliateAnalytics.EventKeys.SELECT_CONTENT,
             actionKeys,

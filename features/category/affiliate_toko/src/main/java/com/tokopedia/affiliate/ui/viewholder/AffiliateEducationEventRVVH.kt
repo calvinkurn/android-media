@@ -22,44 +22,41 @@ class AffiliateEducationEventRVVH(
     itemView: View,
     private val affiliateEducationEventArticleClickInterface: AffiliateEducationEventArticleClickInterface?
 ) : AbstractViewHolder<AffiliateEducationEventRVUiModel>(itemView) {
-
-    private var eventAdapter: AffiliateAdapter? = null
-    private var eventData: AffiliateEducationArticleCardsResponse.CardsArticle.Data.CardsItem? =
-        null
-
     companion object {
         @JvmField
         @LayoutRes
         var LAYOUT = R.layout.affiliate_education_event_list
     }
-
     @Inject
     lateinit var userSessionInterface: UserSessionInterface
 
+    private var eventAdapter: AffiliateAdapter = AffiliateAdapter(
+        AffiliateAdapterFactory(
+            affiliateEducationEventArticleClickInterface = affiliateEducationEventArticleClickInterface
+        )
+    )
+    private var eventData: AffiliateEducationArticleCardsResponse.CardsArticle.Data.CardsItem? =
+        null
+
+    private val rvEvent = itemView.findViewById<RecyclerView>(R.id.rv_edu_event)
+    private val tvSeeMore = itemView.findViewById<Typography>(R.id.event_lihat_semua)
+    private val rvLayoutManager =
+        LinearLayoutManager(itemView.context, RecyclerView.HORIZONTAL, false)
+
     override fun bind(element: AffiliateEducationEventRVUiModel?) {
         eventData = element?.event
-        eventAdapter =
-            AffiliateAdapter(
-                AffiliateAdapterFactory(
-                    affiliateEducationEventArticleClickInterface = affiliateEducationEventArticleClickInterface
-                )
-            )
-        val rvEvent = itemView.findViewById<RecyclerView>(R.id.rv_edu_event)
-        val tvSeeMore = itemView.findViewById<Typography>(R.id.event_lihat_semua)
         tvSeeMore.setOnClickListener {
             affiliateEducationEventArticleClickInterface?.onSeeMoreClick(
                 PAGE_EDUCATION_EVENT,
-                element?.event?.id.orEmpty()
+                element?.event?.articles?.getOrNull(0)?.categories?.getOrNull(0)?.id.toString()
             )
             sendEducationClickEvent()
         }
-        val rvLayoutManager =
-            LinearLayoutManager(itemView.context, RecyclerView.HORIZONTAL, false)
         rvEvent?.apply {
             layoutManager = rvLayoutManager
             adapter = eventAdapter
         }
-        eventAdapter?.addMoreData(
+        eventAdapter.addMoreData(
             element?.event?.articles?.map { AffiliateEducationEventUiModel(it) }
         )
     }

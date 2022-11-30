@@ -24,12 +24,15 @@ class AffiliateEducationLearnVH(
     @Inject
     lateinit var userSessionInterface: UserSessionInterface
 
+    private val bantuanContainer = itemView.findViewById<View>(R.id.bantuan_container)
+    private val kamusContainer = itemView.findViewById<View>(R.id.kamus_container)
+
     override fun bind(element: AffiliateEducationLearnUiModel?) {
-        itemView.findViewById<View>(R.id.bantuan_container).setOnClickListener {
+        bantuanContainer.setOnClickListener {
             affiliateEducationLearnClickInterface?.onBantuanClick()
             sendEducationClickEvent(AffiliateAnalytics.ActionKeys.CLICK_BANTUAN)
         }
-        itemView.findViewById<View>(R.id.kamus_container).setOnClickListener {
+        kamusContainer.setOnClickListener {
             affiliateEducationLearnClickInterface?.onKamusClick()
             sendEducationClickEvent(AffiliateAnalytics.ActionKeys.CLICK_KAMUS_AFFILIATE)
         }

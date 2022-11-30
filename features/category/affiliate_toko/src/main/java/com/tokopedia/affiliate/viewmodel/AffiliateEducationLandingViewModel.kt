@@ -6,6 +6,15 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.affiliate.AffiliateAnalytics
 import com.tokopedia.affiliate.AffiliateAnalytics.ActionKeys
 import com.tokopedia.affiliate.AffiliateAnalytics.CategoryKeys
+import com.tokopedia.affiliate.FACEBOOK
+import com.tokopedia.affiliate.FILTER_HIGHLIGHTED
+import com.tokopedia.affiliate.INSTAGRAM
+import com.tokopedia.affiliate.PAGE_ZERO
+import com.tokopedia.affiliate.SOCIAL_CHANNEL_FOLLOW_COUNT
+import com.tokopedia.affiliate.SOCIAL_CHANNEL_HEADER
+import com.tokopedia.affiliate.SOCIAL_CHANNEL_LINK
+import com.tokopedia.affiliate.TELEGRAM
+import com.tokopedia.affiliate.YOUTUBE
 import com.tokopedia.affiliate.adapter.AffiliateAdapterTypeFactory
 import com.tokopedia.affiliate.model.pojo.AffiliateEducationSocialData
 import com.tokopedia.affiliate.model.response.AffiliateEducationArticleCardsResponse
@@ -30,9 +39,10 @@ class AffiliateEducationLandingViewModel @Inject constructor(
 ) : BaseViewModel() {
 
     companion object {
-        private const val TYPE_ARTICLE = 1222L
-        private const val TYPE_EVENT = 1223L
-        private const val TYPE_TUTORIAL = 1224L
+        private const val TYPE_ARTICLE_TOPIC = 1222
+        private const val TYPE_ARTICLE = 1232
+        private const val TYPE_EVENT = 1238
+        private const val TYPE_TUTORIAL = 1224
     }
 
     init {
@@ -49,12 +59,12 @@ class AffiliateEducationLandingViewModel @Inject constructor(
             val educationBanners = educationBannerUseCase.getEducationBanners()
             val educationCategories = educationCategoryUseCase.getEducationCategoryTree()
             val educationEventCards = educationArticleCardsUseCase.getEducationArticleCards(
-                0,
+                TYPE_EVENT,
                 limit = 4,
-                filter = "highlighted"
+                filter = FILTER_HIGHLIGHTED
             )
             val educationArticleCards = educationArticleCardsUseCase.getEducationArticleCards(
-                0,
+                TYPE_ARTICLE,
                 limit = 4
             )
             convertToVisitable(
@@ -84,13 +94,12 @@ class AffiliateEducationLandingViewModel @Inject constructor(
         }
         educationCategoryResponse.categoryTree?.let { educationCategories ->
             val categoryGroup =
-                educationCategories.data?.categories?.groupBy { it?.id.orZero() }
-            val articleTopics = categoryGroup?.get(TYPE_ARTICLE)?.get(0)?.children
-            val tutorial = categoryGroup?.get(TYPE_TUTORIAL)?.get(0)?.children?.toMutableList()
+                educationCategories.data?.categories?.groupBy { it?.id?.toInt().orZero() }
+            val articleTopics = categoryGroup?.get(TYPE_ARTICLE_TOPIC)?.getOrNull(0)?.children
+            val tutorial =
+                categoryGroup?.get(TYPE_TUTORIAL)?.getOrNull(0)?.children?.toMutableList()
             if (articleTopics?.isNotEmpty() == true) {
-                tempList.add(
-                    AffiliateEducationArticleTopicRVUiModel(articleTopics)
-                )
+                tempList.add(AffiliateEducationArticleTopicRVUiModel(articleTopics))
             }
             educationEventCards.cardsArticle?.data?.cards?.let {
                 tempList.add(AffiliateEducationEventRVUiModel(it[0]))
@@ -112,46 +121,42 @@ class AffiliateEducationLandingViewModel @Inject constructor(
             }
             if (tutorial?.isNotEmpty() == true) {
                 tutorial.add(
-                    0,
-                    AffiliateEducationCategoryResponse.CategoryTree.CategoryTreeData.CategoriesItem.ChildrenItem(
-                        title = "Yuk pelajari tutorial biar jago promosi!"
-                    )
+                    PAGE_ZERO,
+                    AffiliateEducationCategoryResponse.CategoryTree.CategoryTreeData.CategoriesItem.ChildrenItem()
                 )
-                tempList.add(
-                    AffiliateEducationTutorialRVUiModel(tutorial)
-                )
+                tempList.add(AffiliateEducationTutorialRVUiModel(tutorial))
             }
         }
         tempList.add(
             AffiliateEducationSocialRVUiModel(
                 listOf(
                     AffiliateEducationSocialData(
-                        socialChannel = "Instagram",
-                        followCount = "91k Followers",
-                        headerImage = "https://images.unsplash.com/photo-1519638399535-1b036603ac77?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8YW5pbWV8ZW58MHx8MHx8&auto=format&fit=crop&w=800&q=60",
+                        socialChannel = INSTAGRAM,
+                        followCount = SOCIAL_CHANNEL_FOLLOW_COUNT[INSTAGRAM],
+                        headerImage = SOCIAL_CHANNEL_HEADER[INSTAGRAM],
                         icon = IconUnify.INSTAGRAM,
-                        url = "https://www.instagram.com/tokopediaffiliate"
+                        url = SOCIAL_CHANNEL_LINK[INSTAGRAM]
                     ),
                     AffiliateEducationSocialData(
-                        socialChannel = "Facebook",
-                        followCount = "1k Members",
-                        headerImage = "https://images.unsplash.com/photo-1519638399535-1b036603ac77?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8YW5pbWV8ZW58MHx8MHx8&auto=format&fit=crop&w=800&q=60",
+                        socialChannel = FACEBOOK,
+                        followCount = SOCIAL_CHANNEL_FOLLOW_COUNT[FACEBOOK],
+                        headerImage = SOCIAL_CHANNEL_HEADER[FACEBOOK],
                         icon = IconUnify.FACEBOOK,
-                        url = "https://www.facebook.com/groups/akademikreatortokopedia"
+                        url = SOCIAL_CHANNEL_LINK[FACEBOOK]
                     ),
                     AffiliateEducationSocialData(
-                        socialChannel = "Telegram",
-                        followCount = "11k Members",
-                        headerImage = "https://images.unsplash.com/photo-1519638399535-1b036603ac77?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8YW5pbWV8ZW58MHx8MHx8&auto=format&fit=crop&w=800&q=60",
+                        socialChannel = TELEGRAM,
+                        followCount = SOCIAL_CHANNEL_FOLLOW_COUNT[TELEGRAM],
+                        headerImage = SOCIAL_CHANNEL_HEADER[TELEGRAM],
                         icon = IconUnify.TELEGRAM,
-                        url = "https://t.me/+shJRVBgfGXc1MzZl"
+                        url = SOCIAL_CHANNEL_LINK[TELEGRAM]
                     ),
                     AffiliateEducationSocialData(
-                        socialChannel = "Youtube",
-                        followCount = "1k Subscribers",
-                        headerImage = "https://images.unsplash.com/photo-1519638399535-1b036603ac77?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MXx8YW5pbWV8ZW58MHx8MHx8&auto=format&fit=crop&w=800&q=60",
+                        socialChannel = YOUTUBE,
+                        followCount = SOCIAL_CHANNEL_FOLLOW_COUNT[YOUTUBE],
+                        headerImage = SOCIAL_CHANNEL_HEADER[YOUTUBE],
                         icon = IconUnify.YOUTUBE,
-                        url = "https://www.youtube.com/c/AkademiKreatorTokopedia"
+                        url = SOCIAL_CHANNEL_LINK[YOUTUBE]
                     )
                 )
             )

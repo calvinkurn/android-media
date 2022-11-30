@@ -37,6 +37,7 @@ class AffiliateEducationSeeAllViewModel @Inject constructor(
                     offset = offset
                 )
             convertToVisitable(educationArticleCards, pageType)
+
         }, onError = { Timber.e(it) })
     }
 
@@ -46,22 +47,45 @@ class AffiliateEducationSeeAllViewModel @Inject constructor(
     ) {
         val tempList = mutableListOf<Visitable<AffiliateAdapterTypeFactory>>()
         educationArticleCards.cardsArticle?.data?.cards?.let {
-            offset = it[0]?.offset.orZero()
-            hasMoreData.value = it[0]?.hasMore
-            totalCount.value = it[0]?.totalCount.orZero()
-            it[0]?.articles?.mapNotNull { data ->
-                tempList.add(
-                    AffiliateEducationSeeAllUiModel(
-                        data,
-                        pageType.orEmpty()
+            if (it.isNotEmpty()) {
+                hasMoreData.value = it[0]?.hasMore
+                totalCount.value = it[0]?.totalCount.orZero()
+                offset = it[0]?.offset.orZero()
+                it[0]?.articles?.mapNotNull { data ->
+                    tempList.add(
+                        AffiliateEducationSeeAllUiModel(
+                            data,
+                            pageType.orEmpty()
+                        )
                     )
-                )
+                }
+                offset = it[0]?.offset.orZero() + tempList.size
             }
             when (pageType) {
-                PAGE_EDUCATION_EVENT -> sendEducationImpressions(it[0]?.articles?.get(0)?.title, it[0]?.articles?.get(0)?.articleId.toString(), AffiliateAnalytics.ActionKeys.IMPRESSION_EVENT_CARD, AffiliateAnalytics.CategoryKeys.AFFILIATE_EDUKASI_CATEGORY_LANDING_EVENT)
-                PAGE_EDUCATION_ARTICLE -> sendEducationImpressions(it[0]?.articles?.get(0)?.title, it[0]?.articles?.get(0)?.articleId.toString(), AffiliateAnalytics.ActionKeys.IMPRESSION_ARTICLE_CARD, AffiliateAnalytics.CategoryKeys.AFFILIATE_EDUKASI_CATEGORY_LANDING_ARTICLE)
-                PAGE_EDUCATION_TUTORIAL -> sendEducationImpressions(it[0]?.articles?.get(0)?.title, it[0]?.articles?.get(0)?.articleId.toString(), AffiliateAnalytics.ActionKeys.IMPRESSION_TUTORIAL_CARD, AffiliateAnalytics.CategoryKeys.AFFILIATE_EDUKASI_CATEGORY_LANDING_TUTORIAL)
-                PAGE_EDUCATION_ARTICLE_TOPIC -> sendEducationImpressions(it[0]?.articles?.get(0)?.title, it[0]?.articles?.get(0)?.articleId.toString(), AffiliateAnalytics.ActionKeys.IMPRESSION_ARTICLE_CATEGORY, AffiliateAnalytics.CategoryKeys.AFFILIATE_EDUKASI_PAGE)
+                PAGE_EDUCATION_EVENT -> sendEducationImpressions(
+                    it[0]?.articles?.get(0)?.title,
+                    it[0]?.articles?.get(0)?.articleId.toString(),
+                    AffiliateAnalytics.ActionKeys.IMPRESSION_EVENT_CARD,
+                    AffiliateAnalytics.CategoryKeys.AFFILIATE_EDUKASI_CATEGORY_LANDING_EVENT
+                )
+                PAGE_EDUCATION_ARTICLE -> sendEducationImpressions(
+                    it[0]?.articles?.get(0)?.title,
+                    it[0]?.articles?.get(0)?.articleId.toString(),
+                    AffiliateAnalytics.ActionKeys.IMPRESSION_ARTICLE_CARD,
+                    AffiliateAnalytics.CategoryKeys.AFFILIATE_EDUKASI_CATEGORY_LANDING_ARTICLE
+                )
+                PAGE_EDUCATION_TUTORIAL -> sendEducationImpressions(
+                    it[0]?.articles?.get(0)?.title,
+                    it[0]?.articles?.get(0)?.articleId.toString(),
+                    AffiliateAnalytics.ActionKeys.IMPRESSION_TUTORIAL_CARD,
+                    AffiliateAnalytics.CategoryKeys.AFFILIATE_EDUKASI_CATEGORY_LANDING_TUTORIAL
+                )
+                PAGE_EDUCATION_ARTICLE_TOPIC -> sendEducationImpressions(
+                    it[0]?.articles?.get(0)?.title,
+                    it[0]?.articles?.get(0)?.articleId.toString(),
+                    AffiliateAnalytics.ActionKeys.IMPRESSION_ARTICLE_CATEGORY,
+                    AffiliateAnalytics.CategoryKeys.AFFILIATE_EDUKASI_PAGE
+                )
             }
         }
         educationPageData.value = tempList

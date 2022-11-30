@@ -61,7 +61,7 @@ data class AffiliateEducationCategoryResponse(
                     val id: Long? = null,
 
                     @SerializedName("title")
-                    val title: String? = null,
+                    var title: String? = null,
 
                     @SerializedName("url")
                     val url: String? = null

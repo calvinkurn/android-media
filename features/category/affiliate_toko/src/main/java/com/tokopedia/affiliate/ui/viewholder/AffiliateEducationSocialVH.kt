@@ -13,6 +13,8 @@ import com.google.android.material.shape.ShapeAppearanceModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.affiliate.AffiliateAnalytics
+import com.tokopedia.affiliate.INSTAGRAM
+import com.tokopedia.affiliate.YOUTUBE
 import com.tokopedia.affiliate.interfaces.AffiliateEducationSocialCTAClickInterface
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEducationSocialUiModel
 import com.tokopedia.affiliate_toko.R
@@ -29,7 +31,6 @@ class AffiliateEducationSocialVH(
 ) : AbstractViewHolder<AffiliateEducationSocialUiModel>(itemView) {
 
     companion object {
-
         private const val ROUND_RADIUS = 0.5f
 
         @JvmField
@@ -61,19 +62,28 @@ class AffiliateEducationSocialVH(
         }
     }
 
+    private val headerImage = itemView.findViewById<ImageView>(R.id.header_image_social)
+    private val shareChannel = itemView.findViewById<Typography>(R.id.share_channel)
+    private val socialFollowers = itemView.findViewById<Typography>(R.id.social_followers)
+    private val socialIcon = itemView.findViewById<IconUnify>(R.id.social_icon)
+    private val socialIconContainer = itemView.findViewById<CardView>(R.id.social_icon_container)
+    private val followButton = itemView.findViewById<UnifyButton>(R.id.button_social_follow)
+
     override fun bind(element: AffiliateEducationSocialUiModel?) {
-        itemView.findViewById<ImageView>(R.id.header_image_social)
-            ?.loadImage(element?.socialItem?.headerImage)
-        itemView.findViewById<Typography>(R.id.share_channel)?.text =
-            element?.socialItem?.socialChannel
-        itemView.findViewById<Typography>(R.id.social_followers)?.text =
-            element?.socialItem?.followCount
-        itemView.findViewById<IconUnify>(R.id.social_icon).setImage(element?.socialItem?.icon)
+        headerImage.loadImage(element?.socialItem?.headerImage)
+        shareChannel.text = element?.socialItem?.socialChannel
+        socialFollowers.text = element?.socialItem?.followCount
+        followButton.text =
+            if (element?.socialItem?.socialChannel in arrayOf(YOUTUBE, INSTAGRAM))
+                getString(R.string.affiliate_follow_cta)
+            else
+                getString(R.string.affiliate_join_cta)
+        socialIcon.setImage(element?.socialItem?.icon)
         ViewCompat.setBackground(
-            itemView.findViewById<CardView>(R.id.social_icon_container),
+            socialIconContainer,
             roundedShape
         )
-        itemView.findViewById<UnifyButton>(R.id.button_social_follow)?.setOnClickListener {
+        followButton.setOnClickListener {
             socialCTAClickInterface?.onSocialClick(
                 element?.socialItem?.socialChannel.orEmpty(),
                 element?.socialItem?.url.orEmpty()
@@ -86,7 +96,13 @@ class AffiliateEducationSocialVH(
             )
         }
     }
-    private fun sendEducationClickEvent(creativeName: String?, eventId: String?, actionKeys: String, categoryKeys: String) {
+
+    private fun sendEducationClickEvent(
+        creativeName: String?,
+        eventId: String?,
+        actionKeys: String,
+        categoryKeys: String
+    ) {
         AffiliateAnalytics.sendEducationTracker(
             AffiliateAnalytics.EventKeys.SELECT_CONTENT,
             actionKeys,

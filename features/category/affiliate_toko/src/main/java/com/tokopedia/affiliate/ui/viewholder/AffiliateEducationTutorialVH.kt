@@ -29,23 +29,28 @@ class AffiliateEducationTutorialVH(
         var LAYOUT = R.layout.affiliate_education_tutorial_item
     }
 
+    private val tutorialIcon = itemView.findViewById<ImageUnify>(R.id.ic_tutorial_topic)
+    private val tutorialTopic = itemView.findViewById<Typography>(R.id.tv_tutorial_topic)
+    private val tutorialContentContainer =
+        itemView.findViewById<View>(R.id.tutorial_content_container)
+    private val tutorialCover = itemView.findViewById<View>(R.id.tutorial_cover_bg)
+    private val tutorialContainer = itemView.findViewById<CardView>(R.id.cv_tutorial_topic)
+
     @Inject
     lateinit var userSessionInterface: UserSessionInterface
 
     override fun bind(element: AffiliateEducationTutorialUiModel?) {
-        itemView.findViewById<ImageUnify>(R.id.ic_tutorial_topic)
-            .loadImage(element?.articleTopic?.icon?.url)
-        itemView.findViewById<Typography>(R.id.tv_tutorial_topic).text =
-            element?.articleTopic?.title
+        tutorialIcon.loadImage(element?.articleTopic?.icon?.url)
+        tutorialTopic.text = element?.articleTopic?.title
 
         if (bindingAdapterPosition == 0) {
-            itemView.findViewById<ImageUnify>(R.id.ic_tutorial_topic).hide()
-            itemView.findViewById<View>(R.id.tutorial_content_container)
-                .setBackgroundResource(R.drawable.affiliate_education_tutorial_cover_gradient)
-            itemView.findViewById<View>(R.id.tutorial_cover_bg).show()
-            itemView.findViewById<Typography>(R.id.tv_tutorial_topic).apply {
+            tutorialIcon.hide()
+            tutorialContentContainer.setBackgroundResource(R.drawable.affiliate_education_tutorial_cover_gradient)
+            tutorialCover.show()
+            tutorialTopic.apply {
                 weightType = Typography.BOLD
                 setWeight(Typography.DISPLAY_3)
+                text = getString(R.string.affiliate_education_tutorial_cover_title)
                 setTextColor(
                     MethodChecker.getColor(
                         itemView.context,
@@ -54,7 +59,7 @@ class AffiliateEducationTutorialVH(
                 )
             }
         } else {
-            itemView.findViewById<CardView>(R.id.cv_tutorial_topic)?.setOnClickListener {
+            tutorialContainer.setOnClickListener {
                 affiliateEducationTopicTutorialClickInterface?.onCardClick(
                     PAGE_EDUCATION_TUTORIAL,
                     element?.articleTopic?.id.toString()
@@ -68,7 +73,13 @@ class AffiliateEducationTutorialVH(
             }
         }
     }
-    private fun sendEducationClickEvent(creativeName: String?, eventId: String?, actionKeys: String, categoryKeys: String) {
+
+    private fun sendEducationClickEvent(
+        creativeName: String?,
+        eventId: String?,
+        actionKeys: String,
+        categoryKeys: String
+    ) {
         AffiliateAnalytics.sendEducationTracker(
             AffiliateAnalytics.EventKeys.SELECT_CONTENT,
             actionKeys,
