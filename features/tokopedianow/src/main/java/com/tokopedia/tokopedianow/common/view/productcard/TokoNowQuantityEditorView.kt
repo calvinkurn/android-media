@@ -30,7 +30,7 @@ class TokoNowQuantityEditorView @JvmOverloads constructor(
 ) : BaseCustomView(context, attrs) {
 
     companion object {
-        private const val DELAY_TIME_BACK_TO_START_STATE = 2000L
+        private const val DELAY_TIME_BACK_TO_START_STATE = 3000L
         private const val DELAY_TIME_BEFORE_CHANGING_QUANTITY = 1000L
         private const val MIN_NUMBER = 1
         private const val DEFAULT_NUMBER = 0
@@ -174,6 +174,7 @@ class TokoNowQuantityEditorView @JvmOverloads constructor(
     private fun LayoutTokopedianowQuantityEditorViewBinding.setCounter() {
         val currentCounter = text.toIntOrZero()
         counter = if (currentCounter >= maxQuantity) {
+            editText.setText(maxQuantity.toString())
             editText.setSelection(text.length)
             addButton.setColorFilter(
                 getEnabledColor(
@@ -244,7 +245,7 @@ class TokoNowQuantityEditorView @JvmOverloads constructor(
         subButton.setOnClickListener {
             counter--
             if (counter < minQuantity) {
-                onClickListener?.invoke(counter)
+                onClickListener?.invoke(DEFAULT_NUMBER)
                 collapseAnimation()
             } else {
                 executeTimerAfterTextChanged = false
@@ -256,6 +257,13 @@ class TokoNowQuantityEditorView @JvmOverloads constructor(
     }
 
     private fun LayoutTokopedianowQuantityEditorViewBinding.setupEditText() {
+        editText.onFocusChangedListener = { isFocused ->
+            if (isFocused) {
+                executeTimerAfterTextChanged = false
+                executeTimer()
+            }
+        }
+
         editText.addTextChangedListener(TextWatcherImpl(
                 onTextChanged = {
                     executeTimerAfterTextChanged = if (executeTimerAfterTextChanged) {
@@ -293,7 +301,6 @@ class TokoNowQuantityEditorView @JvmOverloads constructor(
             executeTimerAfterTextChanged = false
 
             if (counter < minQuantity || binding.editText.text?.isBlank() == true) {
-                counter = 0
                 editText.text?.clear()
                 root.setTransition(R.id.end, R.id.start)
             } else {
