@@ -146,6 +146,8 @@ const val YYYY_MM_DD_HH_MM_SS = "yyyy-MM-dd HH:mm:ss"
 
 const val NEW_DATE_FORMAT = "dd MMM yyyy, HH:mm"
 
+const val DD_MM_YYYY_HH_MM_A = "dd MMM yyyy, HH:mm a"
+
 const val UTC = "UTC"
 
 const val CLICK_TYPE = "totalClick"

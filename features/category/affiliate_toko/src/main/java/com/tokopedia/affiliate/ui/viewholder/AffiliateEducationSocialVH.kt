@@ -12,6 +12,8 @@ import com.google.android.material.shape.RoundedCornerTreatment
 import com.google.android.material.shape.ShapeAppearanceModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.affiliate.INSTAGRAM
+import com.tokopedia.affiliate.YOUTUBE
 import com.tokopedia.affiliate.interfaces.AffiliateEducationSocialCTAClickInterface
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEducationSocialUiModel
 import com.tokopedia.affiliate_toko.R
@@ -65,6 +67,11 @@ class AffiliateEducationSocialVH(
         headerImage.loadImage(element?.socialItem?.headerImage)
         shareChannel.text = element?.socialItem?.socialChannel
         socialFollowers.text = element?.socialItem?.followCount
+        followButton.text =
+            if (element?.socialItem?.socialChannel in arrayOf(YOUTUBE, INSTAGRAM))
+                getString(R.string.affiliate_follow_cta)
+            else
+                getString(R.string.affiliate_join_cta)
         socialIcon.setImage(element?.socialItem?.icon)
         ViewCompat.setBackground(
             socialIconContainer,

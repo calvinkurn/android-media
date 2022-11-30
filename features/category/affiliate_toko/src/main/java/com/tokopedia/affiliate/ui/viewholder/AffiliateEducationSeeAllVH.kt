@@ -3,6 +3,7 @@ package com.tokopedia.affiliate.ui.viewholder
 import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.affiliate.DD_MM_YYYY_HH_MM_A
 import com.tokopedia.affiliate.PAGE_EDUCATION_EVENT
 import com.tokopedia.affiliate.PATTERN
 import com.tokopedia.affiliate.YYYY_MM_DD_HH_MM_SS
@@ -39,7 +40,11 @@ class AffiliateEducationSeeAllVH(
                     itemView.context.getString(
                         R.string.see_all_event_widget_detail,
                         element.article?.categories?.get(0)?.title,
-                        element.article?.modifiedDate
+                        DateUtils().formatDate(
+                            currentFormat = YYYY_MM_DD_HH_MM_SS,
+                            newFormat = DD_MM_YYYY_HH_MM_A,
+                            dateString = element.article?.modifiedDate.orEmpty()
+                        )
                     )
                 }
                 else -> {
