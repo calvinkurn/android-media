@@ -195,6 +195,7 @@ class MerchantPageFragment : BaseMultiFragment(),
 
     private var cartDataUpdateJob: Job? = null
     private var uiEventUpdateJob: Job? = null
+    private var updateQuantityJob: Job? = null
     private var onOffsetChangedListener: AppBarLayout.OnOffsetChangedListener? = null
     private var onScrollChangedListenerList: MutableList<ViewTreeObserver.OnScrollChangedListener> = mutableListOf()
 
@@ -285,6 +286,9 @@ class MerchantPageFragment : BaseMultiFragment(),
         uiEventUpdateJob = viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             collectUiEventFlow()
         }
+        updateQuantityJob = viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            collectUpdateQuantity()
+        }
     }
 
     override fun onResume() {
@@ -341,6 +345,7 @@ class MerchantPageFragment : BaseMultiFragment(),
         super.onStop()
         cartDataUpdateJob?.cancel()
         uiEventUpdateJob?.cancel()
+        updateQuantityJob?.cancel()
     }
 
     override fun navigateToNewFragment(fragment: Fragment) {
@@ -882,6 +887,12 @@ class MerchantPageFragment : BaseMultiFragment(),
         }
     }
 
+    private suspend fun collectUpdateQuantity() {
+        viewModel.updateQuantityParam.collect { updateParam ->
+            activityViewModel?.updateQuantity(updateParam, SOURCE)
+        }
+    }
+
     private fun initializeMiniCartWidget() {
         activityViewModel?.let {
             binding?.miniCartWidget?.initialize(it, viewLifecycleOwner.lifecycleScope, SOURCE)
@@ -1274,13 +1285,9 @@ class MerchantPageFragment : BaseMultiFragment(),
         viewModel.productMap[productId] = cardPositions
         val dataSetPosition = viewModel.getDataSetPosition(cardPositions)
         val productUiModel = productListAdapter?.getProductUiModel(dataSetPosition)
-        productUiModel?.orderQty = quantity
         productUiModel?.run {
-            val updateParam = viewModel.mapProductUiModelToAtcRequestParam(
-                    shopId = merchantId,
-                    productUiModel = productUiModel
-            )
-            activityViewModel?.updateQuantity(updateParam, SOURCE)
+            orderQty = quantity
+            viewModel.updateQuantity(merchantId, this)
         }
     }
 
@@ -1292,13 +1299,9 @@ class MerchantPageFragment : BaseMultiFragment(),
         viewModel.productMap[productId] = cardPositions
         val dataSetPosition = viewModel.getDataSetPosition(cardPositions)
         val productUiModel = productListAdapter?.getProductUiModel(dataSetPosition)
-        productUiModel?.orderQty = quantity
         productUiModel?.run {
-            val updateParam = viewModel.mapProductUiModelToAtcRequestParam(
-                shopId = merchantId,
-                productUiModel = productUiModel
-            )
-            activityViewModel?.updateQuantity(updateParam, SOURCE)
+            orderQty = quantity
+            viewModel.updateQuantity(merchantId, this)
         }
     }
 
@@ -1325,13 +1328,9 @@ class MerchantPageFragment : BaseMultiFragment(),
         viewModel.productMap[productId] = cardPositions
         val dataSetPosition = viewModel.getDataSetPosition(cardPositions)
         val productUiModel = productListAdapter?.getProductUiModel(dataSetPosition)
-        productUiModel?.orderQty = quantity
         productUiModel?.run {
-            val updateParam = viewModel.mapProductUiModelToAtcRequestParam(
-                shopId = merchantId,
-                productUiModel = productUiModel
-            )
-            activityViewModel?.updateQuantity(updateParam, SOURCE)
+            orderQty = quantity
+            viewModel.updateQuantity(merchantId, this)
         }
     }
 
@@ -1408,12 +1407,7 @@ class MerchantPageFragment : BaseMultiFragment(),
         customOrderDetail: CustomOrderDetail
     ) {
         customOrderDetail.qty = quantity
-        val updateParam = viewModel.mapCustomOrderDetailToAtcRequestParam(
-            shopId = merchantId,
-            productId = productId,
-            customOrderDetail = customOrderDetail
-        )
-        activityViewModel?.updateQuantity(updateParam, SOURCE)
+        viewModel.updateQuantity(merchantId, productId, customOrderDetail)
     }
 
     override fun onButtonCtaClickListener(appLink: String) {
