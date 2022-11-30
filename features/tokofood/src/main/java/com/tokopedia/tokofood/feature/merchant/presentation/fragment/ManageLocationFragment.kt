@@ -10,6 +10,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseMultiFragment
@@ -141,6 +142,7 @@ class ManageLocationFragment : BaseMultiFragment(), ChooseAddressBottomSheet.Cho
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        setupBackgroundColor()
         (activity as AppCompatActivity).setSupportActionBar(binding?.toolbar)
         viewModel.merchantId = arguments?.getString(BUNDLE_KEY_MERCHANT_ID).orEmpty()
         context?.run {
@@ -152,6 +154,14 @@ class ManageLocationFragment : BaseMultiFragment(), ChooseAddressBottomSheet.Cho
             }
         }
         observeLiveData()
+    }
+
+    private fun setupBackgroundColor() {
+        activity?.let {
+            it.window.decorView.setBackgroundColor(
+                ContextCompat.getColor(it, com.tokopedia.unifyprinciples.R.color.Unify_Background)
+            )
+        }
     }
 
     private fun observeLiveData() {

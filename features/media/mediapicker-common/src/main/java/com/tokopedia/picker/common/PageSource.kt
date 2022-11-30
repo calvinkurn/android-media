@@ -2,6 +2,10 @@ package com.tokopedia.picker.common
 
 enum class PageSource(val value: String) {
     AddEditProduct("Add Edit Product"),
+    AddProduct("Add Product"),
+    EditProduct("Edit Product"),
+    AddVariant("Add Variant"),
+    EditVariant("Edit Variant"),
     Feed("Feed"),
     ChatBot("Chat Bot"),
     TopChat("Top Chat"),
