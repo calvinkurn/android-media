@@ -92,7 +92,6 @@ import io.mockk.mockk
 import io.mockk.mockkObject
 import io.mockk.slot
 import io.mockk.verify
-import java.util.concurrent.TimeoutException
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Assert
@@ -100,6 +99,7 @@ import org.junit.Test
 import org.mockito.Matchers.anyInt
 import org.mockito.Matchers.anyString
 import rx.Observable
+import java.util.concurrent.TimeoutException
 
 @ExperimentalCoroutinesApi
 open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
@@ -583,7 +583,7 @@ open class DynamicProductDetailViewModelTest : BasePdpViewModelTest() {
     fun `on success normal atc tokonow`() = runBlockingTest {
         `on success get product info login`()
         val addToCartOcsRequestParams = AddToCartRequestParams()
-        val atcResponseSuccess = AddToCartDataModel(data = DataModel(success = 1, productId = 1234L, cartId = "111", quantity = 4), status = "OK")
+        val atcResponseSuccess = AddToCartDataModel(data = DataModel(success = 1, productId = "1234", cartId = "111", quantity = 4), status = "OK")
 
         coEvery {
             addToCartUseCase.createObservable(any()).toBlocking().single()
