@@ -1129,12 +1129,10 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
             isCollapsedPremium = if (isCollapsedPremium) {
                 icArrowPremium?.animate()?.rotation(ROTATION_180)?.duration = 100L
                 expand(tmPremiumCoupon)
-                setTickerText(context?.resources?.getString(R.string.tm_premium_coupon_ticker_text).orEmpty())
                 !isCollapsedPremium
             } else{
                 icArrowPremium?.animate()?.rotation(0f)?.duration = 100L
                 collapse(tmPremiumCoupon)
-                setTickerText(context?.resources?.getString(R.string.tm_vip_coupon_ticker_text).orEmpty())
                 !isCollapsedPremium
             }
         }
@@ -1143,21 +1141,10 @@ class TmMultipleCuponCreateFragment : BaseDaggerFragment() {
             isCollapsedVip = if (isCollapsedVip) {
                 icArrowVip?.animate()?.rotation(ROTATION_180)?.duration = 100L
                 expand(tmVipCoupon)
-                if(isCollapsedPremium){
-                    setTickerText(context?.resources?.getString(R.string.tm_vip_coupon_ticker_text).orEmpty())
-                }
-                else{
-                    setTickerText(context?.resources?.getString(R.string.tm_premium_coupon_ticker_text).orEmpty())
-                }
                 !isCollapsedVip
             } else{
                 icArrowVip?.animate()?.rotation(0f)?.duration = 100L
                 collapse(tmVipCoupon)
-                if(isCollapsedPremium)
-                    setTickerText(context?.resources?.getString(R.string.tm_vip_coupon_ticker_text).orEmpty())
-                else{
-                    setTickerText(context?.resources?.getString(R.string.tm_premium_coupon_ticker_text).orEmpty())
-                }
                 !isCollapsedVip
             }
         }
