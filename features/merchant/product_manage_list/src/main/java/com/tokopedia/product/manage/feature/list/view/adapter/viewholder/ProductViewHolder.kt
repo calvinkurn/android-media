@@ -17,6 +17,7 @@ import com.tokopedia.product.manage.databinding.ItemManageProductListBinding
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifycomponents.toDp
 import com.tokopedia.utils.view.binding.viewBinding
+import kotlin.math.abs
 
 class ProductViewHolder(
     view: View,
@@ -67,25 +68,23 @@ class ProductViewHolder(
 
     private fun impressionView() {
         val impressHolder = ImpressHolder()
-        if (absoluteAdapterPosition.orZero() == Int.ZERO) {
-            binding?.ivLabelGuaranteed?.addOnImpressionListener(impressHolder) {
-                listener.onImpressionLabelGuarantee()
+        binding?.apply {
+            if (absoluteAdapterPosition.orZero() == Int.ZERO) {
+                ivLabelGuaranteed.addOnImpressionListener(impressHolder) {
+                    listener.onImpressionLabelGuarantee(ivLabelGuaranteed)
+                }
+
+                btnMoreOptions.addOnImpressionListener(impressHolder) {
+                    if (!imageStockReminder.isVisible.orFalse()){
+                        listener.onImpressionProductStockReminder(btnMoreOptions)
+                    }
+                }
+            }
+
+            imageStockReminder.addOnImpressionListener(impressHolder) {
+                listener.onImpressionProductStockReminder(imageStockReminder)
             }
         }
-
-        if (binding?.imageStockReminder?.isVisible.orTrue()
-            && !binding?.ivLabelGuaranteed?.isVisible.orFalse()) {
-
-            listener.onImpressionProductStockReminder()
-
-        } else if (binding?.btnMoreOptions?.isVisible.orTrue()
-            && absoluteAdapterPosition.orZero() == Int.ZERO
-            && !binding?.imageNotifyMeBuyer?.isVisible.orFalse()) {
-
-            listener.onImpressionMoreOption()
-
-        }
-
     }
 
     private fun setTitleAndPrice(product: ProductUiModel) {
@@ -402,8 +401,8 @@ class ProductViewHolder(
         fun onClickEditVariantPriceButton(product: ProductUiModel)
         fun onClickEditVariantStockButton(product: ProductUiModel)
         fun onClickContactCsButton(product: ProductUiModel)
-        fun onImpressionMoreOption()
-        fun onImpressionProductStockReminder()
-        fun onImpressionLabelGuarantee()
+        fun onImpressionMoreOption(view: View)
+        fun onImpressionProductStockReminder(view: View)
+        fun onImpressionLabelGuarantee(view: View)
     }
 }
