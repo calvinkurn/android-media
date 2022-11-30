@@ -27,8 +27,8 @@ class FromFriendViewModel @Inject constructor(
 ) : BaseViewModel(dispatcher.main) {
 
     private val _getFromFriendAddressState =
-        MutableLiveData<FromFriendAddressListState<KeroAddrGetSharedAddressList?>>()
-    val getFromFriendAddressState: LiveData<FromFriendAddressListState<KeroAddrGetSharedAddressList?>>
+        MutableLiveData<FromFriendAddressListState>()
+    val getFromFriendAddressState: LiveData<FromFriendAddressListState>
         get() = _getFromFriendAddressState
 
     private val _saveAddressState =

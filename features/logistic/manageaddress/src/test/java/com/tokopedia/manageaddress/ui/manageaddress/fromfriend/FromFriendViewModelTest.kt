@@ -35,7 +35,7 @@ class FromFriendViewModelTest {
     private val deleteFromFriendAddressUseCase =
         mockk<DeleteFromFriendAddressUseCase>(relaxed = true)
     private val getShareAddressObserver =
-        mockk<Observer<FromFriendAddressListState<KeroAddrGetSharedAddressList?>>>(relaxed = true)
+        mockk<Observer<FromFriendAddressListState>>(relaxed = true)
     private val saveShareAddressObserver =
         mockk<Observer<FromFriendAddressActionState>>(relaxed = true)
     private val deleteShareAddressObserver =

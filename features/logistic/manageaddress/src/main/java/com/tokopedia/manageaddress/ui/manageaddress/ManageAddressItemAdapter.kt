@@ -72,22 +72,17 @@ class ManageAddressItemAdapter : RecyclerView.Adapter<ManageAddressItemAdapter.M
 
     fun addList(data: List<RecipientAddressModel>) {
         addressList.addAll(data)
-        refreshAdapter()
+        notifyDataSetChanged()
     }
 
     fun initAddressList(data: MutableList<RecipientAddressModel>) {
         addressList = data
     }
 
-    @SuppressLint("NotifyDataSetChanged")
-    fun refreshAdapter() {
-        notifyDataSetChanged()
-    }
-
     fun clearData() {
         selectedPos = RecyclerView.NO_POSITION
         addressList.clear()
-        refreshAdapter()
+        notifyDataSetChanged()
     }
 
     inner class ManageAddressViewHolder(

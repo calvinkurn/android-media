@@ -28,41 +28,41 @@ class ShareAddressViewModel @Inject constructor(
 
     fun requestShareAddress(param: SendShareAddressRequestParam) {
         launchCatchError(block = {
-            showRequestAddressLoadingState(true)
+            showLoadingRequestAddress(true)
             val result = sendShareAddressRequestUseCase(param)
-            showRequestAddressLoadingState(false)
+            showLoadingRequestAddress(false)
             mutableRequestAddressResponse.value = if (result.isSuccess) {
                 ShareAddressBottomSheetState.Success
             } else {
                 ShareAddressBottomSheetState.Fail(result.errorMessage)
             }
         }, onError = {
-            showRequestAddressLoadingState(false)
+            showLoadingRequestAddress(false)
             mutableRequestAddressResponse.value = ShareAddressBottomSheetState.Fail(it.message.orEmpty())
         })
     }
 
-    private fun showRequestAddressLoadingState(isShowLoading: Boolean) {
+    private fun showLoadingRequestAddress(isShowLoading: Boolean) {
         mutableRequestAddressResponse.value = ShareAddressBottomSheetState.Loading(isShowLoading)
     }
 
     fun checkShareAddress(param: ShareAddressToUserParam) {
         launchCatchError(block = {
-            showShareAddressLoadingState(true)
+            showLoadingCheckAddress(true)
             val result = shareAddressToUserUseCase(param)
-            showShareAddressLoadingState(false)
+            showLoadingCheckAddress(false)
             mutableCheckShareAddressResponse.value = if (result.isSuccessInitialCheck) {
                 ShareAddressBottomSheetState.Success
             } else {
                 ShareAddressBottomSheetState.Fail(result.errorMessage)
             }
         }, onError = {
-            showShareAddressLoadingState(false)
+            showLoadingCheckAddress(false)
             mutableCheckShareAddressResponse.value = ShareAddressBottomSheetState.Fail(it.message.orEmpty())
         })
     }
 
-    private fun showShareAddressLoadingState(isShowLoading: Boolean) {
-        mutableCheckShareAddressResponse.value = ShareAddressBottomSheetState.Loading(isShowLoading)
+    private fun showLoadingCheckAddress(isShow: Boolean) {
+        mutableCheckShareAddressResponse.value = ShareAddressBottomSheetState.Loading(isShow)
     }
 }

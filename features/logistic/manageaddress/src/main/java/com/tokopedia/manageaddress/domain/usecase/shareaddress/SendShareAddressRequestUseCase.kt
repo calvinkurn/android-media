@@ -5,12 +5,11 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
-import com.tokopedia.logisticCommon.data.query.KeroLogisticQuery
 import com.tokopedia.manageaddress.domain.request.SendShareAddressRequestParam
 import com.tokopedia.manageaddress.domain.response.shareaddress.KeroShareAddrRequestResponse
 import javax.inject.Inject
 
-open class SendShareAddressRequestUseCase @Inject constructor(
+class SendShareAddressRequestUseCase @Inject constructor(
     @ApplicationContext private val repository: GraphqlRepository,
     dispatcher: CoroutineDispatchers
 ) : CoroutineUseCase<SendShareAddressRequestParam, KeroShareAddrRequestResponse>(dispatcher.io) {
@@ -19,5 +18,17 @@ open class SendShareAddressRequestUseCase @Inject constructor(
         return repository.request(graphqlQuery(), params.toMapParam())
     }
 
-    override fun graphqlQuery(): String = KeroLogisticQuery.kero_send_share_addr_request
+    override fun graphqlQuery(): String = """
+        mutation KeroAddrSendShareAddressRequest(${'$'}param: KeroAddrSendShareAddressRequestInput!) {
+            KeroAddrSendShareAddressRequest(input: ${'$'}param) {
+                number_of_request
+                kero_addr_error {
+                    code
+                    detail
+                    category
+                    message
+                }
+            }
+        }
+    """.trimIndent()
 }

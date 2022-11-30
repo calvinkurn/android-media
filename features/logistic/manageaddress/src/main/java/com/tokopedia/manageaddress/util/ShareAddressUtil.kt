@@ -31,12 +31,12 @@ object ShareAddressUtil {
         var contactNumber = ""
         cursorPhone?.run {
             if (this.count > 0 && this.moveToNext()) {
-                if ((
-                        cursorPhone.getString(
-                            cursorPhone.getColumnIndexOrThrow(
-                                ContactsContract.Contacts.HAS_PHONE_NUMBER
-                            )
-                        ).toIntOrNull() ?: 0) > 0
+                if (
+                    (cursorPhone.getString(
+                        cursorPhone.getColumnIndexOrThrow(
+                            ContactsContract.Contacts.HAS_PHONE_NUMBER
+                        )
+                    ).toIntOrNull() ?: 0) > 0
                 ) {
                     givenName = cursorPhone.getString(
                         cursorPhone.getColumnIndexOrThrow(

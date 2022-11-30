@@ -5,12 +5,11 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
-import com.tokopedia.logisticCommon.data.query.KeroLogisticQuery
 import com.tokopedia.manageaddress.domain.model.shareaddress.ValidateShareAddressAsSenderParam
 import com.tokopedia.manageaddress.domain.response.shareaddress.ValidateShareAddressAsSenderResponse
 import javax.inject.Inject
 
-open class ValidateShareAddressAsSenderUseCase @Inject constructor(
+class ValidateShareAddressAsSenderUseCase @Inject constructor(
     @ApplicationContext private val repository: GraphqlRepository,
     dispatcher: CoroutineDispatchers
 ) : CoroutineUseCase<ValidateShareAddressAsSenderParam, ValidateShareAddressAsSenderResponse>(dispatcher.io) {
@@ -19,5 +18,18 @@ open class ValidateShareAddressAsSenderUseCase @Inject constructor(
         return repository.request(graphqlQuery(), params.toMapParam())
     }
 
-    override fun graphqlQuery(): String = KeroLogisticQuery.validate_share_address_request_as_sender
+    override fun graphqlQuery(): String = """
+        query KeroAddrValidateShareAddressRequestAsSender(${'$'}receiver_user_id: SuperInteger!, ${'$'}source: String!) {
+            KeroAddrValidateShareAddressRequestAsSender(receiver_user_id: ${'$'}receiver_user_id, source: ${'$'}source) {
+                is_valid
+                receiver_user_name
+                kero_addr_error {
+                    code
+                    detail
+                    category
+                    message
+                }
+            }
+        }
+    """.trimIndent()
 }

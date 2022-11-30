@@ -155,7 +155,7 @@ class FromFriendFragment :
                         }
                     }
 
-                    adapter.refreshAdapter()
+                    adapter.notifyDataSetChanged()
                     mListener?.updateFromFriendsTabText(it.data?.numberOfRequest ?: 0)
                 }
                 is FromFriendAddressListState.Fail -> {
@@ -216,7 +216,7 @@ class FromFriendFragment :
 
     private fun refreshListAndButton() {
         binding?.cbAllAddress?.isVisible = viewModel.isHaveAddressList
-        adapter.refreshAdapter()
+        adapter.notifyDataSetChanged()
         updateButton()
     }
 
