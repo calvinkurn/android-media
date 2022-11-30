@@ -3,9 +3,11 @@ package com.tokopedia.mvc.presentation.product.add.uimodel
 import com.tokopedia.mvc.domain.entity.Product
 import com.tokopedia.mvc.domain.entity.ProductCategoryOption
 import com.tokopedia.mvc.domain.entity.ProductSortOptions
-import com.tokopedia.mvc.domain.entity.ShopData
+import com.tokopedia.mvc.domain.entity.SelectedProduct
 import com.tokopedia.mvc.domain.entity.ShopShowcase
+import com.tokopedia.mvc.domain.entity.VoucherConfiguration
 import com.tokopedia.mvc.domain.entity.Warehouse
+import com.tokopedia.mvc.presentation.product.list.uimodel.ProductListEffect
 
 sealed class AddProductEffect {
     data class LoadNextPageSuccess(
@@ -25,7 +27,7 @@ sealed class AddProductEffect {
 
     data class ShowShowcasesBottomSheet(
         val showcases: List<ShopShowcase>,
-        val selectedShowcases: List<ShopShowcase>
+        val selectedShowcaseIds: List<Long>
     ) : AddProductEffect()
 
     data class ShowWarehouseLocationBottomSheet(
@@ -35,9 +37,18 @@ sealed class AddProductEffect {
 
     data class ShowVariantBottomSheet(val selectedParentProduct: Product) : AddProductEffect()
 
-    data class ConfirmAddProduct(
-        val selectedParentProducts: List<Product>,
+    data class ProductConfirmed(
+        val selectedProducts: List<SelectedProduct>,
         val selectedParentProductImageUrls: List<String>,
-        val shop: ShopData
+        val voucherConfiguration: VoucherConfiguration
     ) : AddProductEffect()
+
+    data class AddNewProducts(
+        val selectedProducts: List<Product>,
+        val selectedParentProductImageUrls: List<String>
+    ) : AddProductEffect()
+
+    data class ShowChangeWarehouseDialogConfirmation(val selectedWarehouseLocation: Warehouse) : AddProductEffect()
+
+    data class ShowError(val error: Throwable) : AddProductEffect()
 }

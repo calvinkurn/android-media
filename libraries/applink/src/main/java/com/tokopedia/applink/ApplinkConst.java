@@ -544,6 +544,8 @@ public interface ApplinkConst {
         String ADMIN_REDIRECTION = "sellerapp://shop-admin/redirection-page";
         String PRODUCT_MANAGE = "sellerapp://product/manage";
         String SELLER_MVC_LIST = "sellerapp://seller-mvc/list";
+        String SELLER_MVC_LIST_ACTIVE = "sellerapp://seller-mvc/list/active";
+        String SELLER_MVC_LIST_HISTORY = "sellerapp://seller-mvc/list/history";
         String SELLER_MVC_SHOP_CREATE = "sellerapp://seller-mvc/create/shop";
         String SELLER_MVC_PRODUCT_CREATE = "sellerapp://seller-mvc/create/product";
         String SELLER_MVC_DETAIL = "sellerapp://seller-mvc/detail/{voucher_id}";
