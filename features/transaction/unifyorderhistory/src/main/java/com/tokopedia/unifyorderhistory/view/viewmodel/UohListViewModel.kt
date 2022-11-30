@@ -12,6 +12,7 @@ import com.tokopedia.atc_common.domain.model.response.AtcMultiData
 import com.tokopedia.atc_common.domain.usecase.AddToCartMultiUseCase
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartOccMultiUseCase
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.recommendation_widget_common.domain.coroutines.GetRecommendationUseCase
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
@@ -164,7 +165,7 @@ class UohListViewModel @Inject constructor(
 
     fun doAtcOccMulti(atcOccParams: AddToCartOccMultiRequestParams) {
         UohIdlingResource.increment()
-        launch {
+        launchCatchError(block = {
             val result = addToCartOccUseCase.setParams(atcOccParams).executeOnBackground()
                 .mapToAddToCartDataModel()
             if (result.isStatusError()) {
@@ -174,7 +175,10 @@ class UohListViewModel @Inject constructor(
                 _atcOccMultiResult.postValue(result.asSuccess())
             }
             UohIdlingResource.decrement()
-        }
+        }, onError = {
+                _atcOccMultiResult.value = Fail(it)
+                UohIdlingResource.decrement()
+            })
     }
 
     fun doLsPrintFinishOrder(verticalId: String) {
