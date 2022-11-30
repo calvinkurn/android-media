@@ -519,6 +519,8 @@ class ShipmentPresenterPrescriptionIdsTest {
     fun `GIVEN rejected consultation WHEN fetch epharmacy data THEN should set error`() {
         // Given
         every { view.getShipmentCartItemModelAdapterPositionByUniqueId(any()) } returns 1
+        val errorWording = "error wording"
+        every { view.activityContext.getString(any(), any()) } returns errorWording
         every { epharmacyUseCase.getEPharmacyPrepareProductsGroup(any(), any()) } answers {
             (firstArg() as (EPharmacyPrepareProductsGroupResponse) -> Unit).invoke(
                 EPharmacyPrepareProductsGroupResponse(
@@ -630,7 +632,8 @@ class ShipmentPresenterPrescriptionIdsTest {
         )
 
         assertEquals(true, presenter.shipmentCartItemModelList[0].isError)
-        assertEquals(rejectedWording, presenter.shipmentCartItemModelList[0].errorTitle)
+        assertEquals(errorWording, presenter.shipmentCartItemModelList[0].errorTitle)
+        assertEquals(true, presenter.shipmentCartItemModelList[0].isCustomEpharmacyError)
 
         assertEquals(false, presenter.shipmentCartItemModelList[1].isError)
         assertEquals(true, presenter.shipmentCartItemModelList[1].cartItemModels[0].isError)
@@ -1608,6 +1611,8 @@ class ShipmentPresenterPrescriptionIdsTest {
     fun `GIVEN rejected consultation in the mixed order WHEN set mini consultation result THEN should set error`() {
         // Given
         every { view.getShipmentCartItemModelAdapterPositionByUniqueId(any()) } returns 1
+        val errorWording = "error wording"
+        every { view.activityContext.getString(any(), any()) } returns errorWording
         val result = arrayListOf(
             EPharmacyMiniConsultationResult(
                 epharmacyGroupId = "123",
@@ -1708,7 +1713,8 @@ class ShipmentPresenterPrescriptionIdsTest {
         )
 
         assertEquals(true, presenter.shipmentCartItemModelList[0].isError)
-        assertEquals(rejectedWording, presenter.shipmentCartItemModelList[0].errorTitle)
+        assertEquals(errorWording, presenter.shipmentCartItemModelList[0].errorTitle)
+        assertEquals(true, presenter.shipmentCartItemModelList[0].isCustomEpharmacyError)
 
         assertEquals(false, presenter.shipmentCartItemModelList[1].isError)
         assertEquals(true, presenter.shipmentCartItemModelList[1].cartItemModels[0].isError)

@@ -252,8 +252,6 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
     private Typography tvAddOnCostLabel;
     private Typography tvAddOnPrice;
 
-    private static final String TICKER_LIHAT_CTA_SUFFIX = " <a href=\"scroll\">Lihat</a>";
-
     public ShipmentItemViewHolder(View itemView) {
         super(itemView);
     }
