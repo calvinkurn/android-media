@@ -263,7 +263,6 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     private var _arrayListCategoryProductFilterBundle = arrayListOf<UohFilterBundle>()
     private var _listParamAtcMulti = arrayListOf<AddToCartMultiParam>()
     private var _atcVerticalCategory = ""
-    private lateinit var firebaseRemoteConfig: FirebaseRemoteConfigImpl
 
     private val trackingQueue: TrackingQueue by lazy {
         (context as UohListFragment).trackingQueue
@@ -341,15 +340,7 @@ class UohListFragment : BaseDaggerFragment(), RefreshHandler.OnRefreshHandlerLis
     }
 
     private fun getFirebaseRemoteConfig(): FirebaseRemoteConfigImpl? {
-        if (!::firebaseRemoteConfig.isInitialized) {
-            context?.let {
-                firebaseRemoteConfig = FirebaseRemoteConfigImpl(context)
-                return firebaseRemoteConfig
-            }
-            return null
-        } else {
-            return firebaseRemoteConfig
-        }
+        return FirebaseRemoteConfigImpl(context)
     }
 
     private fun isAutoRefreshEnabled(): Boolean {
