@@ -658,6 +658,7 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
 
     private fun renderLabelMerchantVouchers(cpmData: CpmData?) {
         val context = context ?: return
+        linearLayoutMerchantVoucher?.hide()
         val merchantVouchers = mutableListOf<String>()
         val campaignType = cpmData?.cpm?.flashSaleCampaignDetail?.campaignType
         val merchantVoucherList = cpmData?.cpm?.cpmShop?.merchantVouchers
