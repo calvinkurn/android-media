@@ -24,6 +24,7 @@ import com.tokopedia.privacycenter.dsar.model.GetRequestDetailResponse
 import com.tokopedia.privacycenter.dsar.model.SearchRequestBody
 import com.tokopedia.privacycenter.dsar.model.TransactionHistoryModel
 import com.tokopedia.privacycenter.dsar.model.uimodel.CustomDateModel
+import com.tokopedia.privacycenter.dsar.model.uimodel.GlobalErrorCustomUiModel
 import com.tokopedia.privacycenter.dsar.model.uimodel.SubmitRequestUiModel
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.date.DateUtil
@@ -52,11 +53,11 @@ class DsarViewModel @Inject constructor(
     private val _showSummary = MutableLiveData<String>()
     val showSummary: LiveData<String> = _showSummary
 
-    private val _mainButtonLoading = SingleLiveEvent<Boolean>()
-    val mainButtonLoading: LiveData<Boolean> = _mainButtonLoading
-
     private val _mainLoader = SingleLiveEvent<Boolean>()
     val mainLoader: LiveData<Boolean> = _mainLoader
+
+    private val _globalError = SingleLiveEvent<GlobalErrorCustomUiModel>()
+    val globalError: LiveData<GlobalErrorCustomUiModel> = _globalError
 
     private val _toasterError = SingleLiveEvent<String>()
     val toasterError: LiveData<String> = _toasterError
@@ -102,12 +103,16 @@ class DsarViewModel @Inject constructor(
         }
     }
 
+    fun backToFormPage() {
+        _showSummary.value = ""
+    }
+
     fun removeFilter(filter: String) {
         _filterItems.remove(filter)
     }
 
     fun submitRequest() {
-        _mainButtonLoading.value = true
+        _mainLoader.value = true
         launch {
             try {
                 val requests = arrayListOf<String>()
@@ -126,9 +131,10 @@ class DsarViewModel @Inject constructor(
                 val result = submitRequestUseCase(param)
                 _submitRequestState.value = SubmitRequestUiModel(email = result.email, deadline = result.deadline)
             } catch (e: Exception) {
-                _toasterError.value = e.message
+                _toasterError.value = DsarConstants.LABEL_ERROR_REQUEST
             } finally {
-                _mainButtonLoading.value = false
+                _showMainLayout.value = true
+                _mainLoader.value = false
             }
         }
     }
@@ -139,13 +145,15 @@ class DsarViewModel @Inject constructor(
             try {
                 val param = SearchRequestBody(email = userSession.email)
                 val result = searchRequestUseCase(param)
-                if(result.status.isEmpty()) {
-                    _showMainLayout.value = true
-                } else if(result.status != STATUS_REJECTED && result.status != STATUS_COMPLETED && result.status != STATUS_CLOSED) {
+                if(result.status != STATUS_REJECTED && result.status != STATUS_COMPLETED && result.status != STATUS_CLOSED) {
                     _requestDetails.value = result
+                } else {
+                    _showMainLayout.value = true
                 }
             } catch (e: Exception) {
-                _showMainLayout.value = true
+                _globalError.value = GlobalErrorCustomUiModel(true) {
+                    checkRequestStatus()
+                }
             } finally {
                 _mainLoader.value = false
             }
