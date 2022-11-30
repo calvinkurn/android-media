@@ -130,7 +130,6 @@ class TokoNowSimilarSimilarProductBottomSheet : BottomSheetUnify(), SimilarProdu
     private fun configureBottomSheet() {
         clearContentPadding = true
         showCloseIcon = true
-        isDragable = false
         isHideable = true
         showKnob = true
         setCloseClickListener {
