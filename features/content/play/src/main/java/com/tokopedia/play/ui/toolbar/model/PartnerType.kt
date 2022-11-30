@@ -22,3 +22,11 @@ enum class PartnerType(val value: String) {
         }
     }
 }
+
+/**
+ * Tracking purpose
+ */
+val String.convertPartnerType : String
+    get() {
+        return if (this == PartnerType.Buyer.value) "user" else this
+    }

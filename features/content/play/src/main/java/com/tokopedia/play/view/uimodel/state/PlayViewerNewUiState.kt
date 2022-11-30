@@ -1,5 +1,6 @@
 package com.tokopedia.play.view.uimodel.state
 
+import com.tokopedia.play.ui.engagement.model.EngagementUiModel
 import com.tokopedia.play.view.type.BottomInsetsState
 import com.tokopedia.play.view.type.BottomInsetsType
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
@@ -8,7 +9,6 @@ import com.tokopedia.play.view.uimodel.recom.PlayChannelDetailUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayPartnerInfo
 import com.tokopedia.play.view.uimodel.recom.PlayQuickReplyInfoUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayStatusUiModel
-import com.tokopedia.play.view.uimodel.recom.PlayPopUpConfigUiModel
 import com.tokopedia.play.view.uimodel.recom.interactive.InteractiveStateUiModel
 import com.tokopedia.play.view.uimodel.recom.interactive.LeaderboardUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.TagItemUiModel
@@ -35,7 +35,8 @@ data class PlayViewerNewUiState(
     val isLoadingBuy: Boolean,
     val address: AddressWidgetUiState,
     val featuredProducts: List<PlayProductUiModel.Product>,
-    val followPopUp: FollowPopUpUiState,
+    val engagement: EngagementUiState,
+    val followPopUp: Boolean,
 ) {
 
     companion object {
@@ -66,10 +67,8 @@ data class PlayViewerNewUiState(
                     warehouseInfo = WarehouseInfoUiModel.Empty,
                 ),
                 featuredProducts = emptyList(),
-                followPopUp = FollowPopUpUiState(
-                    shouldShow = false,
-                    popupConfig = PlayPopUpConfigUiModel.Empty,
-                ),
+                engagement = EngagementUiState.Empty,
+                followPopUp = false,
             )
     }
 }
@@ -130,7 +129,24 @@ data class AddressWidgetUiState(
     val warehouseInfo: WarehouseInfoUiModel
 )
 
+
+data class EngagementUiState(
+    val shouldShow: Boolean,
+    val data: List<EngagementUiModel>,
+) {
+    companion object {
+        val Empty: EngagementUiState get() = EngagementUiState(shouldShow = false, data = emptyList())
+    }
+}
 data class FollowPopUpUiState(
     val shouldShow: Boolean,
-    val popupConfig: PlayPopUpConfigUiModel,
-)
+    val partnerId: Long,
+){
+    companion object {
+        val Empty: FollowPopUpUiState
+            get() = FollowPopUpUiState(
+                shouldShow = false,
+                partnerId = 0L,
+            )
+    }
+}
