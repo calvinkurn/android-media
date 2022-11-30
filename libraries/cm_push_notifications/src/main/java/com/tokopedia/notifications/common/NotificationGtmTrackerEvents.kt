@@ -66,11 +66,60 @@ class NotificationSettingsGtmEvents constructor(
         )
     }
 
+    fun sendGeneralPromptImpressionEvent(context: Context, pagePath: String) {
+        eventCategory = GtmTrackerEvents.VALUE_GEN_CATEGORY
+        trackerIdView = if (GlobalConfig.isSellerApp()) {
+            GtmTrackerEvents.VALUE_TRACKER_ID_VIEW_GEN_SA
+        } else {
+            GtmTrackerEvents.VALUE_TRACKER_ID_VIEW_GEN_MA
+        }
+        createMapAndSendEvent(
+            GtmTrackerEvents.VALUE_EVENT_VIEW_CONTENT,
+            GtmTrackerEvents.VALUE_ACTION_IMPRESSION,
+            trackerIdView,
+            context,
+            pagePath
+        )
+    }
+
+    fun sendGeneralPromptClickCloseEvent(context: Context, pagePath: String) {
+        eventCategory = GtmTrackerEvents.VALUE_GEN_CATEGORY
+        trackerIdView = if (GlobalConfig.isSellerApp()) {
+            GtmTrackerEvents.VALUE_TRACKER_ID_CLICK_CLOSE_GEN_SA
+        } else {
+            GtmTrackerEvents.VALUE_TRACKER_ID_CLICK_CLOSE_GEN_MA
+        }
+        createMapAndSendEvent(
+            GtmTrackerEvents.VALUE_EVENT_CLICK_CONTENT,
+            GtmTrackerEvents.VALUE_ACTION_CLICK_CLOSE,
+            trackerIdView,
+            context,
+            pagePath
+        )
+    }
+
+    fun sendGeneralPromptClickCtaEvent(context: Context, pagePath: String) {
+        eventCategory = GtmTrackerEvents.VALUE_GEN_CATEGORY
+        trackerIdView = if (GlobalConfig.isSellerApp()) {
+            GtmTrackerEvents.VALUE_TRACKER_ID_CLICK_CTA_GEN_MA
+        } else {
+            GtmTrackerEvents.VALUE_TRACKER_ID_CLICK_CTA_GEN_SA
+        }
+        createMapAndSendEvent(
+            GtmTrackerEvents.VALUE_EVENT_CLICK_CONTENT,
+            GtmTrackerEvents.VALUE_ACTION_CLICK_CLOSE,
+            trackerIdView,
+            context,
+            pagePath
+        )
+    }
+
     private fun createMapAndSendEvent(
         event: String,
         eventAction: String,
         trackerId: String,
-        context: Context
+        context: Context,
+        pagePath: String = ""
     ) {
         val userId = if (userSession.userId.isEmpty() || userSession.userId.isBlank()) {
             ZERO
@@ -91,6 +140,9 @@ class NotificationSettingsGtmEvents constructor(
         map[GtmTrackerEvents.KEY_BUSINESS_UNIT] = GtmTrackerEvents.VALUE_BUSINESS_UNIT
         map[GtmTrackerEvents.KEY_CURRENT_SITE] = GtmTrackerEvents.VALUE_CURRENT_SITE
         map[GtmTrackerEvents.KEY_USER_ID] = userId
+        if (pagePath.isNotEmpty()) {
+            map[GtmTrackerEvents.KEY_PAGE_PATH] = pagePath
+        }
         analyticTracker.sendGeneralEvent(map)
     }
 
