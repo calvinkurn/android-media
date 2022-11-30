@@ -21,7 +21,6 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.extensions.view.thousandFormatted
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.pxToDp
 import com.tokopedia.shop.R
 import com.tokopedia.shop.home.util.DateHelper
 import com.tokopedia.shop.home.view.adapter.HeightMeasureListener
@@ -85,7 +84,7 @@ class ShopHomeFlashSaleViewHolder(
     override fun bind(element: ShopHomeFlashSaleUiModel) {
         this.uiModel = element
         val flashSaleItem = element.data?.firstOrNull()
-        val productSize = flashSaleItem?.productList?.size ?: 0
+        val productSize = flashSaleItem?.totalProduct.orZero()
         setupHeader(element.header.title ?: "")
         setupCtaSeeAll(productSize, element.data?.firstOrNull()?.statusCampaign)
         setupFlashSaleBackgroundView(
@@ -144,7 +143,7 @@ class ShopHomeFlashSaleViewHolder(
 
     private fun setupCtaSeeAll(productSize: Int, statusCampaign: String?) {
         val isUpcoming = isStatusCampaignUpcoming(statusCampaign.orEmpty())
-        if (productSize < MAX_PRODUCT_CARD_SIZE || isUpcoming) ctaSeeAllView?.hide()
+        if (productSize <= MAX_PRODUCT_CARD_SIZE || isUpcoming) ctaSeeAllView?.hide()
         else ctaSeeAllView?.show()
     }
 
