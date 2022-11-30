@@ -594,6 +594,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
             animationHandler?.subtitles = ctaSubtitle
             animationHandler?.checkToCancelTimer()
             animationHandler?.startTimer()
+        } else if (animationHandler != null) {
+            animationHandler?.stopAnimation()
         }
         asgcProductCampaignCopywritingContainer.showWithCondition(shouldShowCtaSubtitile(ctaSubtitle))
 

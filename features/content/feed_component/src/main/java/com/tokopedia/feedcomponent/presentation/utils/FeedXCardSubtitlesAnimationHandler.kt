@@ -117,8 +117,6 @@ class FeedXCardSubtitlesAnimationHandler(
 
         viewOne.get()?.let { v1 ->
             viewTwo.get()?.let { v2 ->
-                setDataIntoViews()
-
                 val alphaAnimPropOne = PropertyValuesHolder.ofFloat(View.ALPHA, 1f, 0f)
                 val alphaAnimObjOne: ObjectAnimator =
                     ObjectAnimator.ofPropertyValuesHolder(v1, alphaAnimPropOne)
