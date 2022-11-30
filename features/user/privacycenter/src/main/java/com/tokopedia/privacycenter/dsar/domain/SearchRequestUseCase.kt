@@ -25,6 +25,8 @@ class SearchRequestUseCase @Inject constructor(
                 if (searchResult?.results?.isNotEmpty() == true) {
                     val latestRequest = searchResult.results.first()
                     return oneTrustApi.getRequest(latestRequest.requestQueueRefId, bearerHeader).body() ?: GetRequestDetailResponse()
+                } else {
+                    return GetRequestDetailResponse()
                 }
             }
         }

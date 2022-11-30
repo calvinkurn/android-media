@@ -103,11 +103,10 @@ class DsarFragment: BaseDaggerFragment(), OnDateChangedListener {
         }
 
         viewModel.globalError.observe(viewLifecycleOwner) {
-            binding?.globarErrorDsar?.showWithCondition(it.isShow)
-            if(it.isShow) {
+            binding?.globarErrorDsar?.showWithCondition(it)
+            if(it) {
                 binding?.globarErrorDsar?.setOnClickListener { _ ->
-                    it.action()
-                    binding?.globarErrorDsar?.hide()
+                    viewModel.checkRequestStatus()
                 }
             }
         }

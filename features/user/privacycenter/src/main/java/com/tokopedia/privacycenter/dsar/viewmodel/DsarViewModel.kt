@@ -24,7 +24,6 @@ import com.tokopedia.privacycenter.dsar.model.GetRequestDetailResponse
 import com.tokopedia.privacycenter.dsar.model.SearchRequestBody
 import com.tokopedia.privacycenter.dsar.model.TransactionHistoryModel
 import com.tokopedia.privacycenter.dsar.model.uimodel.CustomDateModel
-import com.tokopedia.privacycenter.dsar.model.uimodel.GlobalErrorCustomUiModel
 import com.tokopedia.privacycenter.dsar.model.uimodel.SubmitRequestUiModel
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.date.DateUtil
@@ -48,7 +47,7 @@ class DsarViewModel @Inject constructor(
     private val _transactionHistoryModel = MutableLiveData(TransactionHistoryModel())
     val transactionHistoryModel: LiveData<TransactionHistoryModel> = _transactionHistoryModel
 
-    private val _filterItems = arrayListOf<String>()
+    val _filterItems = arrayListOf<String>()
 
     private val _showSummary = MutableLiveData<String>()
     val showSummary: LiveData<String> = _showSummary
@@ -56,8 +55,8 @@ class DsarViewModel @Inject constructor(
     private val _mainLoader = SingleLiveEvent<Boolean>()
     val mainLoader: LiveData<Boolean> = _mainLoader
 
-    private val _globalError = SingleLiveEvent<GlobalErrorCustomUiModel>()
-    val globalError: LiveData<GlobalErrorCustomUiModel> = _globalError
+    private val _globalError = SingleLiveEvent<Boolean>()
+    val globalError: LiveData<Boolean> = _globalError
 
     private val _toasterError = SingleLiveEvent<String>()
     val toasterError: LiveData<String> = _toasterError
@@ -111,22 +110,27 @@ class DsarViewModel @Inject constructor(
         _filterItems.remove(filter)
     }
 
+    fun formatRequest(): ArrayList<String> {
+        val requests = arrayListOf<String>()
+        _filterItems.forEach {
+            if(it == FILTER_TYPE_PERSONAL) {
+                requests.addAll(DsarConstants.DSAR_PERSONAL_DATA)
+            }
+            if(it == FILTER_TYPE_PAYMENT) {
+                requests.addAll(DsarConstants.DSAR_PAYMENT_DATA)
+            }
+            if(it == FILTER_TYPE_TRANSACTION) {
+                requests.add(DsarUtils.formatTransactionDateToParam(getSelectedRangeItems()))
+            }
+        }
+        return requests
+    }
+
     fun submitRequest() {
         _mainLoader.value = true
         launch {
             try {
-                val requests = arrayListOf<String>()
-                _filterItems.forEach {
-                    if(it == FILTER_TYPE_PERSONAL) {
-                        requests.addAll(DsarConstants.DSAR_PERSONAL_DATA)
-                    }
-                    if(it == FILTER_TYPE_PAYMENT) {
-                        requests.addAll(DsarConstants.DSAR_PAYMENT_DATA)
-                    }
-                    if(it == FILTER_TYPE_TRANSACTION) {
-                        requests.add(DsarUtils.formatTransactionDateToParam(getSelectedRangeItems()))
-                    }
-                }
+                val requests = formatRequest()
                 val param = submitRequestUseCase.constructParams(requests)
                 val result = submitRequestUseCase(param)
                 _submitRequestState.value = SubmitRequestUiModel(email = result.email, deadline = result.deadline)
@@ -145,15 +149,21 @@ class DsarViewModel @Inject constructor(
             try {
                 val param = SearchRequestBody(email = userSession.email)
                 val result = searchRequestUseCase(param)
-                if(result.status != STATUS_REJECTED && result.status != STATUS_COMPLETED && result.status != STATUS_CLOSED) {
-                    _requestDetails.value = result
+
+                if(result.status.isNotEmpty()) {
+                    if (result.status != STATUS_REJECTED &&
+                        result.status != STATUS_COMPLETED &&
+                        result.status != STATUS_CLOSED
+                    ) {
+                        _requestDetails.value = result
+                    } else {
+                        _showMainLayout.value = true
+                    }
                 } else {
                     _showMainLayout.value = true
                 }
             } catch (e: Exception) {
-                _globalError.value = GlobalErrorCustomUiModel(true) {
-                    checkRequestStatus()
-                }
+                _globalError.value = true
             } finally {
                 _mainLoader.value = false
             }
