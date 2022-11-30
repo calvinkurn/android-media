@@ -184,7 +184,10 @@ class PlayBroadcastPreparationFragment @Inject constructor(
 
     override fun onDestroyView() {
         super.onDestroyView()
+
         coachMark?.dismissCoachMark()
+        coachMark = null
+
         _binding = null
     }
 

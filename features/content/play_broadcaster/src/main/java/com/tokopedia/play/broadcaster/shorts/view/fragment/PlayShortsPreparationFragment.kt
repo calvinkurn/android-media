@@ -113,8 +113,12 @@ class PlayShortsPreparationFragment @Inject constructor(
 
     override fun onDestroyView() {
         super.onDestroyView()
+
         coachMark?.dismissCoachMark()
+        coachMark = null
+
         idleManager.clear()
+
         exitConfirmationDialog = null
         switchAccountConfirmationDialog = null
 
