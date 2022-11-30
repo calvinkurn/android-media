@@ -11,7 +11,7 @@ object DsarUtils {
     fun getInitialRangeItem(): ArrayList<ItemRangeModel> {
         return arrayListOf(
             ItemRangeModel(
-                DsarConstants.DATE_RANGE_YEARS, DsarConstants.LABEL_RANGE_YEARS),
+                DsarConstants.DATE_RANGE_YEARS, DsarConstants.LABEL_RANGE_YEARS, selected = true),
             ItemRangeModel(
                 DsarConstants.DATE_RANGE_3_YEARS, DsarConstants.LABEL_RANGE_3_YEARS),
             ItemRangeModel(
@@ -25,32 +25,32 @@ object DsarUtils {
         )
     }
 
-    fun calculateTransactionDate(selectedId: Int): String {
+    fun calculateTransactionDate(selectedId: String): String {
         val maxDate = GregorianCalendar(Locale.getDefault())
         val minDate = GregorianCalendar(Locale.getDefault())
         when(selectedId) {
-            DsarConstants.DATE_RANGE_YEARS -> {
+            DsarConstants.LABEL_RANGE_YEARS -> {
                 minDate.apply {
                     set(GregorianCalendar.MONTH, GregorianCalendar.JANUARY)
                     set(GregorianCalendar.DAY_OF_MONTH, 1)
                 }
             }
-            DsarConstants.DATE_RANGE_3_YEARS -> {
+            DsarConstants.LABEL_RANGE_3_YEARS -> {
                 minDate.apply {
                     add(Calendar.YEAR, -3)
                 }
             }
-            DsarConstants.DATE_RANGE_3_MONTHS -> {
+            DsarConstants.LABEL_RANGE_3_MONTHS -> {
                 minDate.apply {
                     add(Calendar.MONTH, -3)
                 }
             }
-            DsarConstants.DATE_RANGE_30_DAYS -> {
+            DsarConstants.LABEL_RANGE_30_DAYS -> {
                 minDate.apply {
                     add(Calendar.DAY_OF_MONTH, -30)
                 }
             }
-            DsarConstants.DATE_RANGE_WEEKLY -> {
+            DsarConstants.LABEL_RANGE_WEEKLY -> {
                 minDate.apply {
                     add(Calendar.DAY_OF_MONTH, -7)
                 }
@@ -69,32 +69,32 @@ object DsarUtils {
         return ""
     }
 
-    fun getDateFromSelectedId(selectedId: Int): CustomDateModel {
+    fun getDateFromSelectedId(selectedId: String): CustomDateModel {
         val maxDate = GregorianCalendar(Locale.getDefault())
         val minDate = GregorianCalendar(Locale.getDefault())
         when(selectedId) {
-            DsarConstants.DATE_RANGE_YEARS -> {
+            DsarConstants.LABEL_RANGE_YEARS -> {
                 minDate.apply {
                     set(GregorianCalendar.MONTH, GregorianCalendar.JANUARY)
                     set(GregorianCalendar.DAY_OF_MONTH, 1)
                 }
             }
-            DsarConstants.DATE_RANGE_3_YEARS -> {
+            DsarConstants.LABEL_RANGE_3_YEARS -> {
                 minDate.apply {
                     add(Calendar.YEAR, -3)
                 }
             }
-            DsarConstants.DATE_RANGE_3_MONTHS -> {
+            DsarConstants.LABEL_RANGE_3_MONTHS -> {
                 minDate.apply {
                     add(Calendar.MONTH, -3)
                 }
             }
-            DsarConstants.DATE_RANGE_30_DAYS -> {
+            DsarConstants.LABEL_RANGE_30_DAYS -> {
                 minDate.apply {
                     add(Calendar.DAY_OF_MONTH, -30)
                 }
             }
-            DsarConstants.DATE_RANGE_WEEKLY -> {
+            DsarConstants.LABEL_RANGE_WEEKLY -> {
                 minDate.apply {
                     add(Calendar.DAY_OF_MONTH, -7)
                 }

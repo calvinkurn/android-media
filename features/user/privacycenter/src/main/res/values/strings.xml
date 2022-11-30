@@ -130,6 +130,7 @@
     <string name="dsar_submit_download_btn_title">Ajukan Download Data</string>
     <string name="dsar_date_picker_start_title">Mulai dari</string>
     <string name="dsar_date_picker_choose_btn_title">Pilih</string>
+    <string name="dsar_date_picker_end_title">Sampai</string>
 
     <!-- SHARING WISHLIST -->
     <string name="sharing_wishlist_page_title">Bagikan Wishlist</string>
@@ -147,6 +148,12 @@
     <string name="sharing_wishlist_oke">Oke</string>
     <string name="sharing_wishlist_message_update">Koleksi “%1$s” sudah berhasil menjadi %2$s.</string>
     <string name="dsar_summary_ticker_info">Datamu akan dikirim ke e-mail di atas dalam maks. 2 hari kerja.</string>
+    <string name="dsar_range_item_6">Pilih Tanggal Sendiri</string>
+    <string name="dsar_range_item_5">7 Hari Terakhir</string>
+    <string name="dsar_range_item_4">30 Hari Terakhir</string>
+    <string name="dsar_range_item_3">3 Bulan Terakhir</string>
+    <string name="dsar_range_item_2">3 Tahun Terakhir</string>
+    <string name="dsar_range_item_1">Selama Tahun Ini</string>
 
 
 </resources>
