@@ -142,10 +142,10 @@ class DsarViewModel @Inject constructor(
             try {
                 val param = SearchRequestBody(email = userSession.email)
                 val result = searchRequestUseCase(param)
-                if(result.status.isEmpty()) {
-                    _showMainLayout.value = true
-                } else if(result.status != STATUS_REJECTED && result.status != STATUS_COMPLETED && result.status != STATUS_CLOSED) {
+                if(result.status != STATUS_REJECTED && result.status != STATUS_COMPLETED && result.status != STATUS_CLOSED) {
                     _requestDetails.value = result
+                } else {
+                    _showMainLayout.value = true
                 }
             } catch (e: Exception) {
                 _globalError.value = GlobalErrorCustomUiModel(true) {
