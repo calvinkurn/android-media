@@ -115,6 +115,20 @@ class DsarViewModelTest {
     }
 
     @Test
+    fun `checkRequest success - empty content` () {
+        val searchRequestResp = GetRequestDetailResponse()
+        coEvery { searchRequestUseCase(any()) } returns searchRequestResp
+
+        viewModel.checkRequestStatus()
+
+        verify(exactly = 1) {
+            mainLoaderObserver.onChanged(true)
+            mainLoaderObserver.onChanged(false)
+            mainLayoutObserver.onChanged(true)
+        }
+    }
+
+    @Test
     fun `checkRequest success - Completed` () {
         val status = DsarConstants.STATUS_COMPLETED
 
