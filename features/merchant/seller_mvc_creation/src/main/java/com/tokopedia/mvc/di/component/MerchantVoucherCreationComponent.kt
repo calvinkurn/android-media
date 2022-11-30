@@ -4,10 +4,16 @@ import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.mvc.di.module.MerchantVoucherCreationModule
 import com.tokopedia.mvc.di.module.MerchantVoucherCreationViewModelModule
 import com.tokopedia.mvc.di.scope.MerchantVoucherCreationScope
+import com.tokopedia.mvc.presentation.bottomsheet.FilterVoucherBottomSheet
+import com.tokopedia.mvc.presentation.detail.VoucherDetailActivity
+import com.tokopedia.mvc.presentation.detail.VoucherDetailFragment
 import com.tokopedia.mvc.presentation.list.fragment.MvcListFragment
 import com.tokopedia.mvc.presentation.product.add.AddProductActivity
 import com.tokopedia.mvc.presentation.product.add.AddProductFragment
-import com.tokopedia.mvc.presentation.product.variant.SelectVariantBottomSheet
+import com.tokopedia.mvc.presentation.product.list.ProductListActivity
+import com.tokopedia.mvc.presentation.product.list.ProductListFragment
+import com.tokopedia.mvc.presentation.product.variant.review.ReviewVariantBottomSheet
+import com.tokopedia.mvc.presentation.product.variant.select.SelectVariantBottomSheet
 import dagger.Component
 
 @MerchantVoucherCreationScope
@@ -18,8 +24,9 @@ import dagger.Component
 interface MerchantVoucherCreationComponent {
     fun inject(activity: AddProductActivity)
     fun inject(fragment: AddProductFragment)
-    fun inject(fragment: MvcListFragment)
     fun inject(bottomsheet: SelectVariantBottomSheet)
+
+    fun inject(fragment: MvcListFragment)
     fun inject(bottomsheet: FilterVoucherBottomSheet)
 
     fun inject(activity: VoucherDetailActivity)
