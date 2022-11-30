@@ -75,7 +75,7 @@ class FilterVoucherBottomSheet(
         showKnob = true
         showCloseIcon = false
         isDragable = true
-        setAction("Reset", ::onActionTextClicked)
+        setAction(getString(R.string.smvc_bottomsheet_filter_voucher_action_text), ::onActionTextClicked)
         setChild(binding?.root)
         setTitle(getString(R.string.smvc_bottomsheet_filter_voucher_title))
     }

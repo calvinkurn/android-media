@@ -65,6 +65,7 @@
 
     <!--Common Bottomsheet-->
     <string name="smvc_bottomsheet_filter_voucher_title">Filter</string>
+    <string name="smvc_bottomsheet_filter_voucher_action_text">Reset</string>
     <string name="smvc_bottomsheet_other_period_voucher_title">%d Jadwal Lainnya</string>
     <string name="smvc_bottomsheet_filter_status_voucher_title">Status</string>
     <string name="smvc_bottomsheet_filter_voucher_all">Semua Status</string>
