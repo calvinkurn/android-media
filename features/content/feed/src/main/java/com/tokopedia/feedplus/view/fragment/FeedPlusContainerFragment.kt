@@ -169,9 +169,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
                 }
     }
 
-    private val coachMarkHelper by lazy(LazyThreadSafetyMode.NONE) {
-        CoachMarkHelper(requireContext(), dispatchers ?: CoroutineDispatchersProvider)
-    }
+    private var coachMarkHelper: CoachMarkHelper? = null
 
     private var badgeNumberNotification: Int = 0
     private var badgeNumberInbox: Int = 0
@@ -199,12 +197,6 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
                 is Fail -> onErrorGetTab(it.throwable)
             }
         })
-        viewModel.whitelistResp.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is Success -> handleWhitelistData(it.data)
-                is Fail -> onErrorGetWhitelist(it.throwable)
-            }
-        })
     }
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
@@ -225,6 +217,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         initView()
         requestFeedTab()
         initFab()
+        setupObserver()
     }
 
     override fun onAttachFragment(childFragment: Fragment) {
@@ -236,6 +229,8 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
     }
 
     private fun setupView(view: View) {
+        coachMarkHelper = CoachMarkHelper(requireContext(), dispatchers ?: CoroutineDispatchersProvider)
+
         fabFeed = view.findViewById(R.id.fab_feed)
         feedFloatingButton = view.findViewById(R.id.feed_floating_button)
         ivFeedUser = view.findViewById(R.id.iv_feed_user)
@@ -344,7 +339,8 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         viewModel.flush()
         postProgressUpdateView?.unregisterBroadcastReceiver()
         postProgressUpdateView?.unregisterBroadcastReceiverProgress()
-        coachMarkHelper.dismissAllCoachMark()
+        coachMarkHelper?.dismissAllCoachMark()
+        coachMarkHelper = null
         super.onDestroy()
     }
 
@@ -400,7 +396,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
         super.setUserVisibleHint(isVisibleToUser)
         if (!isVisibleToUser) {
             hideAllFab()
-            coachMarkHelper.dismissAllCoachMark()
+            coachMarkHelper?.dismissAllCoachMark()
         }
     }
 
@@ -486,6 +482,15 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
                 .getInstance(requireActivity().applicationContext)
                 .unregisterReceiver(newFeedReceiver)
         }
+    }
+
+    private fun setupObserver() {
+        viewModel.whitelistResp.observe(viewLifecycleOwner, Observer {
+            when (it) {
+                is Success -> handleWhitelistData(it.data)
+                is Fail -> onErrorGetWhitelist(it.throwable)
+            }
+        })
     }
 
 
@@ -679,7 +684,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
             ivFeedUser.show()
 
             if(!affiliatePreference.isUserProfileEntryPointCoachMarkShown(userSession.userId)) {
-                coachMarkHelper.showCoachMark(
+                coachMarkHelper?.showCoachMark(
                     CoachMarkConfig(ivFeedUser)
                         .setSubtitle(getString(R.string.feed_user_profile_entry_point_coach_mark))
                         .setDuration(USER_ICON_COACH_MARK_DURATION)
@@ -696,7 +701,7 @@ class FeedPlusContainerFragment : BaseDaggerFragment(), FragmentListener, AllNot
 
     private fun dismissUserProfileCoachMark() {
         affiliatePreference.setUserProfileEntryPointCoachMarkShown(userSession.userId)
-        ivFeedUser?.let { coachMarkHelper.dismissCoachmark(it) }
+        ivFeedUser?.let { coachMarkHelper?.dismissCoachmark(it) }
     }
 
     private fun onErrorGetWhitelist(throwable: Throwable) {
