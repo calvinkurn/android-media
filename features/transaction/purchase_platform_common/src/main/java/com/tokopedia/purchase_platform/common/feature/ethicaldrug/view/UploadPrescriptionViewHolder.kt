@@ -27,6 +27,7 @@ class UploadPrescriptionViewHolder(
         @JvmStatic
         val ITEM_VIEW_UPLOAD = R.layout.item_upload_prescription
         const val EPharmacyAppLink = "tokopedia://epharmacy/"
+        const val EPharmacyMiniConsultationAppLink = "tokopedia://epharmacy/attach-prescription/"
         private const val VIBRATION_ANIMATION_DURATION = 1250
         private const val VIBRATION_ANIMATION_TRANSLATION_X = -10
         private const val VIBRATION_ANIMATION_CYCLE = 4f

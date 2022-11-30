@@ -3669,7 +3669,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 startActivityForResult(uploadPrescriptionIntent, REQUEST_CODE_UPLOAD_PRESCRIPTION);
             }
         } else {
-            Intent uploadPrescriptionIntent = RouteManager.getIntent(getActivityContext(), UploadPrescriptionViewHolder.EPharmacyAppLink);
+            Intent uploadPrescriptionIntent = RouteManager.getIntent(getActivityContext(), UploadPrescriptionViewHolder.EPharmacyMiniConsultationAppLink);
             startActivityForResult(uploadPrescriptionIntent, REQUEST_CODE_MINI_CONSULTATION);
         }
     }
