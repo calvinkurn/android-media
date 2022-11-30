@@ -60,13 +60,13 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.topads.sdk.domain.model.CpmData
 import com.tokopedia.unifycomponents.*
-import com.tokopedia.unifyprinciples.R as unifyPrinciplesR
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.android.synthetic.main.item_post_video_new.view.*
 import kotlinx.coroutines.*
 import java.net.URLEncoder
 import kotlin.math.round
+import com.tokopedia.unifyprinciples.R as unifyPrinciplesR
 
 private const val TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT: String = "FeedXCardProductsHighlight"
 private const val TYPE_USE_ASGC_NEW_DESIGN: String = "use_new_design"
@@ -306,15 +306,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
                         data.media.size <= position) return
 
                     imagePostListener.userCarouselImpression(
-                        data.id,
-                        data.media[position],
-                        position,
-                        data.typename,
-                        data.followers.isFollowed,
-                        data.author.id,
-                        positionInFeed,
-                        data.cpmData,
-                        data.listProduct
+                        data,
+                        positionInFeed
                     )
                 }
             }
@@ -358,11 +351,9 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 isMuted: Boolean
             ) {
                 listener?.muteUnmuteVideo(
-                    mData.playChannelID,
+                    mData,
                     isMuted,
-                    mData.author.id,
-                    mData.followers.isFollowed,
-                    mData.isTypeVOD,
+                    positionInFeed,
                     media.type,
                 )
             }
@@ -373,11 +364,9 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 isMuted: Boolean
             ) {
                 listener?.muteUnmuteVideo(
-                    mData.playChannelID,
+                    mData,
                     isMuted,
-                    mData.author.id,
-                    mData.followers.isFollowed,
-                    mData.isTypeVOD,
+                    positionInFeed,
                     media.type,
                 )
 
@@ -516,15 +505,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
 
                     if (feedXCard.typename == TYPE_FEED_X_CARD_POST || feedXCard.typename == TYPE_TOPADS_HEADLINE_NEW || feedXCard.typename == TYPE_FEED_X_CARD_VOD || isTypeNewASGC) {
                         imagePostListener.userCarouselImpression(
-                                feedXCard.id,
-                                feedXCard.media.first(),
-                                0,
-                                feedXCard.typename,
-                                feedXCard.followers.isFollowed,
-                                feedXCard.author.id,
-                                positionInFeed,
-                                feedXCard.cpmData,
-                                feedXCard.listProduct
+                            feedXCard,
+                            positionInFeed
                         )
                     }
 
@@ -650,8 +632,9 @@ class PostDynamicViewNew @JvmOverloads constructor(
             } else context.getString(R.string.feed_header_follow_count_less_text)
         }
         bindContentSubInfo(
-            shouldShow = (type == TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT)
-                    || (!isFollowed || followers.transitionFollow),
+            shouldShow = type == TYPE_FEED_X_CARD_PRODUCT_HIGHLIGHT
+                    || ((!isFollowed || followers.transitionFollow)
+                && !(type == TYPE_FEED_X_CARD_POST && author.type == 3)),
             value = contentSubInfoValue
         )
         //endregion
@@ -662,9 +645,11 @@ class PostDynamicViewNew @JvmOverloads constructor(
 
         //region author info
         val activityName = ""
-        val authorType = if (author.type == 1) FollowCta.AUTHOR_USER else FollowCta.AUTHOR_SHOP
+        val authorType = if (author.type == 3) FollowCta.AUTHOR_USER else FollowCta.AUTHOR_SHOP
+        val authorId = if (authorType == FollowCta.AUTHOR_USER) author.encryptedUserId else author.id
+
         val followCta = FollowCta(
-            authorID = author.id,
+            authorID = authorId,
             authorType = authorType,
             isFollow = isFollowed
         )
@@ -700,7 +685,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                     listener?.onFollowClickAds(positionInFeed, shopId, adId)
                 } else {
                     listener?.onHeaderActionClick(
-                        positionInFeed, author.id,
+                        positionInFeed, authorId,
                         authorType, isFollowed, type, isVideo
                     )
                 }
@@ -738,7 +723,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 deletable,
                 true,
                 isFollowed,
-                author.id,
+                authorId,
                 authorType,
                 type,
                 mediaType,
@@ -929,11 +914,8 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 captionText.setOnClickListener {
                     if (captionText.text.contains(context.getString(R.string.feed_component_read_more_button))) {
                         listener?.onReadMoreClicked(
-                            if (caption.typename == TYPE_FEED_X_CARD_VOD) caption.playChannelID else caption.id,
-                            caption.author.id,
-                            caption.typename,
-                            caption.followers.isFollowed,
-                            caption.media.firstOrNull()?.type?:""
+                            caption,
+                            positionInFeed
                         )
                         val txt: String = buildString {
                             append("<b>" + caption.author.name + "</b>" + " - ").appendLine(
@@ -1209,7 +1191,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 layout_video?.player = videoPlayer?.getExoPlayer()
                 layout_video?.videoSurfaceView?.setOnClickListener {
                     changeMuteStateVideo(volume_icon)
-                    setMuteUnmuteSgcVideo(volume_icon, postId, feedXCard.followers.isFollowed, authorId, true, false, feedMedia.type)
+                    setMuteUnmuteSgcVideo(volume_icon, true, feedMedia.type)
 
                 }
 
@@ -1306,11 +1288,9 @@ class PostDynamicViewNew @JvmOverloads constructor(
 
                 override fun onVolumeBtnClicked(feedXCard: FeedXCard, mute: Boolean, mediaType: String) {
                     it.muteUnmuteVideo(
-                        feedXCard.playChannelID,
+                        feedXCard,
                         mute,
-                        feedXCard.author.id,
-                        feedXCard.followers.isFollowed,
-                        true,
+                        positionInFeed,
                         mediaType
                     )
                 }
@@ -1357,7 +1337,11 @@ class PostDynamicViewNew @JvmOverloads constructor(
         }
     }
 
-    private fun setMuteUnmuteSgcVideo(volumeIcon: ImageView?, postId: String, isFollowed: Boolean, activityId: String, isVideoTap: Boolean, isVOD: Boolean, mediaType: String) {
+    private fun setMuteUnmuteSgcVideo(
+        volumeIcon: ImageView?,
+        isVideoTap: Boolean,
+        mediaType: String
+    ) {
         val countDownTimer = object : CountDownTimer(TIME_THREE_SEC, TIME_SECOND) {
             override fun onTick(millisUntilFinished: Long) {
 
@@ -1367,7 +1351,7 @@ class PostDynamicViewNew @JvmOverloads constructor(
                 volumeIcon?.gone()
             }
         }
-        listener?.muteUnmuteVideo(postId, GridPostAdapter.isMute, activityId, isFollowed, isVOD, mediaType)
+        listener?.muteUnmuteVideo(mData, GridPostAdapter.isMute, positionInFeed, mediaType)
         if (!volumeIcon?.isVisible!!)
             volumeIcon.visible()
         if (isVideoTap){
