@@ -79,7 +79,7 @@ sealed class MoreMenuUiModel(
     data class TermsAndConditions(
         override val title: String,
         @DrawableRes
-        override val icon: Int = IconUnify.COPY
+        override val icon: Int = IconUnify.POLICY_PRIVACY
     ) : MoreMenuUiModel(title, icon)
 
     object ItemDivider : MoreMenuUiModel()
