@@ -326,9 +326,9 @@ class WishlistCollectionDetailViewModel @Inject constructor(
             })
     }
 
-    fun getWishlistCollectionType(params: GetWishlistCollectionTypeParams) {
+    fun getWishlistCollectionType(collectionId: String) {
         launchCatchError(block = {
-            val result = getWishlistCollectionTypeUseCase(params)
+            val result = getWishlistCollectionTypeUseCase(collectionId)
             _collectionType.value = Success(result.getWishlistCollectionItems)
         }, onError = {
                 _collectionType.value = Fail(it)

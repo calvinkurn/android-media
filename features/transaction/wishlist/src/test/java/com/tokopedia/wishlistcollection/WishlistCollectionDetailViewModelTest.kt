@@ -331,10 +331,10 @@ class WishlistCollectionDetailViewModelTest {
 
     private var updateWishlistAccessParam = UpdateWishlistCollectionParams()
     private var collectionId = 1L
+    private var collectionIdStr = "1"
 
     private val timber = WishlistMockTimber()
 
-    private var getWishlistCollectionTypeParams = GetWishlistCollectionTypeParams()
     private var addWishlistBulkParams = AddWishlistBulkParams()
 
     @Before
@@ -1246,13 +1246,12 @@ class WishlistCollectionDetailViewModelTest {
     @Test
     fun `Execute GetWishlistCollectionType Success Status OK`() {
         // given
-        getWishlistCollectionTypeParams = GetWishlistCollectionTypeParams(collectionId = "1")
         coEvery {
-            getWishlistCollectionTypeUseCase(getWishlistCollectionTypeParams)
+            getWishlistCollectionTypeUseCase(collectionIdStr)
         } returns getCollectionTypeData_StatusOk
 
         // when
-        wishlistCollectionDetailViewModel.getWishlistCollectionType(getWishlistCollectionTypeParams)
+        wishlistCollectionDetailViewModel.getWishlistCollectionType(collectionIdStr)
 
         // then
         assert(wishlistCollectionDetailViewModel.collectionType.value is Success)
@@ -1263,11 +1262,11 @@ class WishlistCollectionDetailViewModelTest {
     fun `Execute GetWishlistCollectionType Failed`() {
         // given
         coEvery {
-            getWishlistCollectionTypeUseCase(getWishlistCollectionTypeParams)
+            getWishlistCollectionTypeUseCase(collectionIdStr)
         } throws throwable.throwable
 
         // when
-        wishlistCollectionDetailViewModel.getWishlistCollectionType(getWishlistCollectionTypeParams)
+        wishlistCollectionDetailViewModel.getWishlistCollectionType(collectionIdStr)
 
         // then
         assert(wishlistCollectionDetailViewModel.collectionType.value is Fail)

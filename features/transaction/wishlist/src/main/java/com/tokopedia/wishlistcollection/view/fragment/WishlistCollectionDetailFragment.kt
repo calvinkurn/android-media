@@ -3472,8 +3472,7 @@ class WishlistCollectionDetailFragment :
 
     private fun checkCollectionType(checkCollectionTypePurpose: Int) {
         _currCheckCollectionType = checkCollectionTypePurpose
-        val params = GetWishlistCollectionTypeParams(collectionId = collectionId)
-        wishlistCollectionDetailViewModel.getWishlistCollectionType(params)
+        wishlistCollectionDetailViewModel.getWishlistCollectionType(collectionId)
     }
 
     private fun turnOffBulkAddFromOtherCollection() {
