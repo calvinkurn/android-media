@@ -73,7 +73,7 @@ class ShopHomeFlashSaleViewHolder(
         private const val VALUE_INT_HUNDREDS = 100
         private const val DELAY_IN_THREE_SECONDS = 3000L
         private const val NOTIFY_ME_WRAPPER_BORDER_RADIUS = 16f
-        private const val BOTTOM_MARGIN = 8
+        private const val BOTTOM_MARGIN = 8f
     }
 
     init {
@@ -144,7 +144,7 @@ class ShopHomeFlashSaleViewHolder(
 
     private fun setupCtaSeeAll(productSize: Int, statusCampaign: String?) {
         val isUpcoming = isStatusCampaignUpcoming(statusCampaign.orEmpty())
-        if (productSize == SINGLE || isUpcoming) ctaSeeAllView?.hide()
+        if (productSize < MAX_PRODUCT_CARD_SIZE || isUpcoming) ctaSeeAllView?.hide()
         else ctaSeeAllView?.show()
     }
 
@@ -187,7 +187,7 @@ class ShopHomeFlashSaleViewHolder(
 
     private fun setBottomMarginOnMainContainer() {
         val paramsMargin = flashSaleContainer?.layoutParams as? ViewGroup.MarginLayoutParams
-        paramsMargin?.bottomMargin = flashSaleContainer?.context?.pxToDp(BOTTOM_MARGIN)?.toInt()
+        paramsMargin?.bottomMargin = BOTTOM_MARGIN.dpToPx().toInt()
         flashSaleContainer?.requestLayout()
     }
 
