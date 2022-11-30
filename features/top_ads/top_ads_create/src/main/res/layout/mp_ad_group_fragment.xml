@@ -41,6 +41,24 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:layout_marginEnd="19dp"
         />
+
+    <FrameLayout
+        android:id="@+id/ad_group_cta_container"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:padding="16dp"
+        android:background="@color/Unify_NN0"
+        >
+        <com.tokopedia.unifycomponents.UnifyButton
+            android:id="@+id/ad_group_cta"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/mp_ad_creation_grp_list_cta"
+            >
+        </com.tokopedia.unifycomponents.UnifyButton>
+    </FrameLayout>
     
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/ad_group_rv"
@@ -48,25 +66,9 @@
         android:layout_height="0dp"
         app:layout_constraintTop_toBottomOf="@id/ad_group_search"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/ad_group_cta_container"
         android:layout_marginTop="12dp"
         />
 
-    <FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"
-        android:elevation="8dp"
-        android:padding="16dp"
-        android:background="@color/Unify_NN0"
-        >
-        <com.tokopedia.unifycomponents.UnifyButton
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="@string/mp_ad_creation_grp_list_cta"
-            >
-        </com.tokopedia.unifycomponents.UnifyButton>
-    </FrameLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

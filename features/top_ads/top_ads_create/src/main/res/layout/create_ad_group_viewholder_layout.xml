@@ -14,8 +14,8 @@
        >
        <com.tokopedia.iconunify.IconUnify
            android:id="@+id/add_btn"
-           android:layout_width="20dp"
-           android:layout_height="20dp"
+           android:layout_width="21dp"
+           android:layout_height="21dp"
            app:layout_constraintTop_toTopOf="parent"
            app:layout_constraintStart_toStartOf="parent"
            app:icon_name="ADD_CIRCLE"
@@ -25,8 +25,9 @@
        <com.tokopedia.unifyprinciples.Typography
            android:layout_width="wrap_content"
            android:layout_height="wrap_content"
-           app:layout_constraintTop_toTopOf="parent"
+           app:layout_constraintTop_toTopOf="@+id/add_btn"
            app:layout_constraintStart_toEndOf="@+id/add_btn"
+           app:layout_constraintBottom_toBottomOf="@+id/add_btn"
            android:layout_marginStart="10dp"
            android:text="@string/mp_ad_creation_grp_list_add_grp_text"
            app:typographyType="display_2"
@@ -34,8 +35,8 @@
            />
 
        <com.tokopedia.iconunify.IconUnify
-           android:layout_width="7dp"
-           android:layout_height="11dp"
+           android:layout_width="21dp"
+           android:layout_height="21dp"
            app:layout_constraintTop_toTopOf="parent"
            app:layout_constraintEnd_toEndOf="parent"
            app:layout_constraintBottom_toBottomOf="parent"

@@ -51,8 +51,8 @@
            android:backgroundTint="@color/Unify_NN50"
            android:backgroundTintMode="add"
            android:orientation="vertical"
-           android:paddingVertical="8dp"
            android:paddingHorizontal="12dp"
+           android:paddingVertical="8dp"
            >
            <com.tokopedia.topads.view.customviews.AdStatsView
                android:id="@+id/ad_stats_top_row"

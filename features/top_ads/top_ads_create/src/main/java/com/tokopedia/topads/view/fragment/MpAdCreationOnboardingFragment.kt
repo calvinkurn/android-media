@@ -3,16 +3,16 @@ package com.tokopedia.topads.view.fragment
 import android.graphics.Typeface
 import android.os.Bundle
 import com.tokopedia.topads.create.R
-import android.text.SpannableString
-import android.text.Spanned
-import android.text.style.ForegroundColorSpan
-import android.text.style.StyleSpan
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.res.ResourcesCompat
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
+import com.tokopedia.topads.constants.SpanConstant
 import com.tokopedia.topads.create.databinding.MpAdCreationOnboardingFragmentBinding
+import com.tokopedia.topads.utils.Span
+import com.tokopedia.topads.utils.SpannableUtils
+import com.tokopedia.topads.utils.SpannedString
 import com.tokopedia.utils.image.ImageUtils
 
 class MpAdCreationOnboardingFragment : TkpdBaseV4Fragment() {
@@ -63,28 +63,17 @@ class MpAdCreationOnboardingFragment : TkpdBaseV4Fragment() {
 
     private fun setupFooterText(){
       binding?.footerText?.let {
-          val text = context?.resources?.getString(R.string.mp_ad_creation_onboarding_footer_text)
-          val spannable = SpannableString(text)
-          if(spannable.isNotEmpty()){
-              context?.resources?.let { it1 ->
-                  val startIndex = spannable.indexOf(FOOTER_LINK_TEXT)
-                  val endIndex = startIndex + FOOTER_LINK_TEXT.length
-                  val linkColor = ResourcesCompat.getColor(it1,com.tokopedia.unifyprinciples.R.color.Unify_GN500,null)
-                  spannable.setSpan(
-                      ForegroundColorSpan(linkColor),
-                      startIndex,
-                      endIndex,
-                      Spanned.SPAN_INCLUSIVE_EXCLUSIVE
-                  )
-                  spannable.setSpan(
-                      StyleSpan(Typeface.BOLD),
-                      startIndex,
-                      endIndex,
-                      Spanned.SPAN_INCLUSIVE_EXCLUSIVE
-                  )
-              }
-              it.text = spannable
-          }
+          val text = context?.resources?.getString(R.string.mp_ad_creation_onboarding_footer_text).orEmpty()
+          it.text = context?.resources?.let { it1 ->
+              val linkColor = ResourcesCompat.getColor(it1,com.tokopedia.unifyprinciples.R.color.Unify_GN500,null)
+              SpannableUtils.applySpannable(
+                  text,
+                  SpannedString(FOOTER_LINK_TEXT, listOf(
+                      Span(SpanConstant.COLOR_SPAN,linkColor),
+                      Span(SpanConstant.TYPEFACE_SPAN,Typeface.BOLD)
+                  ))
+              )
+          } ?: text
       }
     }
 
