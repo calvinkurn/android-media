@@ -4,7 +4,6 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import androidx.appcompat.app.AppCompatActivity
-import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.kotlin.extensions.view.showIfWithBlock
 import com.tokopedia.kotlin.extensions.view.showWithCondition
@@ -12,7 +11,6 @@ import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendati
 import com.tokopedia.tokopedianow.common.constant.TokoNowProductRecommendationState
 import com.tokopedia.tokopedianow.common.constant.TokoNowProductRecommendationState.LOADED
 import com.tokopedia.tokopedianow.common.constant.TokoNowProductRecommendationState.LOADING
-import com.tokopedia.tokopedianow.common.di.component.DaggerCommonComponent
 import com.tokopedia.tokopedianow.common.listener.TokoNowProductRecommendationCallback
 import com.tokopedia.tokopedianow.common.model.TokoNowDynamicHeaderUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardCarouselItemUiModel
@@ -25,16 +23,11 @@ import com.tokopedia.tokopedianow.databinding.LayoutTokopedianowProductRecommend
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
-import com.tokopedia.user.session.UserSession
-import javax.inject.Inject
 
 class TokoNowProductRecommendationView @JvmOverloads constructor(
     context: Context,
     attrs: AttributeSet? = null
 ): BaseCustomView(context, attrs) {
-
-    @Inject
-    lateinit var userSession: UserSession
 
     private var binding: LayoutTokopedianowProductRecommendationViewBinding
 
@@ -43,19 +36,11 @@ class TokoNowProductRecommendationView @JvmOverloads constructor(
     private var requestParam: GetRecommendationRequestParam? = null
 
     init {
-        initInjector()
         binding = LayoutTokopedianowProductRecommendationViewBinding.inflate(
             LayoutInflater.from(context),
             this,
             true
         )
-    }
-
-    private fun initInjector() {
-        DaggerCommonComponent.builder()
-            .baseAppComponent((context.applicationContext as? BaseMainApplication)?.baseAppComponent)
-            .build()
-            .inject(this)
     }
 
     private fun TokoNowProductRecommendationViewModel.observeRecommendationWidget() {
@@ -157,17 +142,16 @@ class TokoNowProductRecommendationView @JvmOverloads constructor(
 
             viewModel = listener?.getProductRecommendationViewModel()
 
-            val callback = TokoNowProductRecommendationCallback(
-                viewModel = viewModel,
-                listener = listener,
-                userSession = userSession
-            )
-            setListener(
-                productCardCarouselListener = callback,
-                headerCarouselListener = callback
-            )
-
             viewModel?.run {
+                val callback = TokoNowProductRecommendationCallback(
+                    viewModel = this,
+                    listener = listener
+                )
+                setListener(
+                    productCardCarouselListener = callback,
+                    headerCarouselListener = callback
+                )
+
                 observeRecommendationWidget()
                 observeProductModelsUpdate()
                 observeLoadingState()

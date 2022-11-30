@@ -28,6 +28,7 @@ import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.coroutines.Result
+import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -37,6 +38,7 @@ class TokoNowProductRecommendationViewModel @Inject constructor(
     private val addToCartUseCase: AddToCartUseCase,
     private val updateCartUseCase: UpdateCartUseCase,
     private val deleteCartUseCase: DeleteCartUseCase,
+    private val userSession: UserSessionInterface,
     dispatchers: CoroutineDispatchers
 ) : BaseViewModel(dispatchers.io) {
     companion object {
@@ -71,6 +73,11 @@ class TokoNowProductRecommendationViewModel @Inject constructor(
         get() = _atcDataTracker
     val loadingState: LiveData<Boolean>
         get() = _loadingState
+
+    val isLogin: Boolean
+        get() = userSession.isLoggedIn
+    val userId: String
+        get() = userSession.userId
 
     private fun getMiniCartItem(productId: String): MiniCartItem.MiniCartItemProduct? {
         val items = mMiniCartSimplifiedData?.miniCartItems.orEmpty()
