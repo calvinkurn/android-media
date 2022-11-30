@@ -20,6 +20,7 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import java.util.*
 import javax.inject.Inject
 
 class EPharmacyReminderScreenBottomSheet : BottomSheetUnify() {
@@ -84,12 +85,12 @@ class EPharmacyReminderScreenBottomSheet : BottomSheetUnify() {
             when (it) {
                 is Success -> {
                     context?.resources?.let { res ->
-                        showToast(res.getString(com.tokopedia.epharmacy.R.string.epharmacy_reminder_success))
+                        showToast(Toaster.TYPE_NORMAL, res.getString(com.tokopedia.epharmacy.R.string.epharmacy_reminder_success))
                     }
                 }
                 is Fail -> {
                     context?.resources?.let { res ->
-                        showToast(res.getString(com.tokopedia.epharmacy.R.string.epharmacy_reminder_fail))
+                        showToast(Toaster.TYPE_ERROR, res.getString(com.tokopedia.epharmacy.R.string.epharmacy_reminder_fail))
                     }
                 }
             }
@@ -101,7 +102,7 @@ class EPharmacyReminderScreenBottomSheet : BottomSheetUnify() {
             with(it) {
                 reminderParentView.errorIllustration.loadImageFitCenter("https://images.tokopedia.net/img/pharmacy-illustration.png")
                 reminderParentView.errorTitle.text = getString(com.tokopedia.epharmacy.R.string.epharmacy_reminder_title)
-                reminderParentView.errorDescription.text = getString(com.tokopedia.epharmacy.R.string.epharmacy_reminder_description)
+                reminderParentView.errorDescription.text = getMessageString()
                 reminderParentView.errorSecondaryAction.text = getString(com.tokopedia.epharmacy.R.string.epharmacy_reminder_button_text)
                 reminderParentView.setSecondaryActionClickListener {
                     requestParams()?.let { it1 -> viewModel?.setForReminder(it1) }
@@ -110,6 +111,14 @@ class EPharmacyReminderScreenBottomSheet : BottomSheetUnify() {
                 reminderParentView.errorAction.hide()
             }
         }
+    }
+
+    private fun getMessageString() : String {
+        val openTimeLocal : Date? = EPharmacyUtils.formatDateToLocal(dateString = arguments?.getString(OPEN_TIME) ?: "")
+        val closeTimeLocal : Date? = EPharmacyUtils.formatDateToLocal(dateString = arguments?.getString(CLOSE_TIME) ?: "")
+        return getString(com.tokopedia.epharmacy.R.string.epharmacy_reminder_description,
+            EPharmacyUtils.getTimeFromDate(openTimeLocal),
+            EPharmacyUtils.getTimeFromDate(closeTimeLocal))
     }
 
     private fun requestParams(): EPharmacyReminderScreenParam? {
@@ -126,15 +135,15 @@ class EPharmacyReminderScreenBottomSheet : BottomSheetUnify() {
             )
         } else {
             context?.resources?.let { res ->
-                showToast(res.getString(com.tokopedia.epharmacy.R.string.epharmacy_reminder_fail))
+                showToast(Toaster.TYPE_ERROR, res.getString(com.tokopedia.epharmacy.R.string.epharmacy_reminder_fail))
             }
             return null
         }
     }
 
-    private fun showToast(message: String) {
+    private fun showToast(toasterType : Int  = Toaster.TYPE_NORMAL, message: String) {
         view?.let { it ->
-            Toaster.build(it, message, Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+            Toaster.build(it, message, Toaster.LENGTH_LONG, toasterType).show()
         }
     }
 

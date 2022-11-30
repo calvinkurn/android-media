@@ -17,7 +17,7 @@ object EPharmacyUtils {
         }
     }
 
-    private fun formatDateToLocal(currentFormat: String = YYYY_MM_DD_T_HH_MM_SS_Z, newFormat: String = NEW_DATE_FORMAT, dateString: String): Date? {
+    fun formatDateToLocal(currentFormat: String = YYYY_MM_DD_T_HH_MM_SS_Z, newFormat: String = NEW_DATE_FORMAT, dateString: String): Date? {
         return try {
             val fromFormat: DateFormat = SimpleDateFormat(currentFormat, Locale.ENGLISH)
             fromFormat.isLenient = false
@@ -38,6 +38,16 @@ object EPharmacyUtils {
         val closeTimeLocal : Date? = formatDateToLocal(dateString = closeTime)
         val currentLocal = Calendar.getInstance().time
         return (openTimeLocal != null) && ((currentLocal < openTimeLocal) || (currentLocal > closeTimeLocal))
+    }
+
+    fun getTimeFromDate(date : Date?) : String{
+        date?.let {
+            val fromFormat: DateFormat = SimpleDateFormat("HH:MM", Locale.ENGLISH)
+            return fromFormat.format(date).toString()
+        } ?: kotlin.run {
+            return ""
+        }
+
     }
 }
 
