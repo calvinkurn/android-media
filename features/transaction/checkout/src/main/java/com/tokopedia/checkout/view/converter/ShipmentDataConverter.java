@@ -313,9 +313,10 @@ public class ShipmentDataConverter {
         shipmentCartItemModel.setProductIsPreorder(fobject.isPreOrder() == 1);
 
         for (Product product : products) {
-            if (product.getEthicalDrugs().getNeedPrescription()) {
+            if (product.getEthicalDrugs().getNeedPrescription() && !product.isError()) {
                 shipmentCartItemModel.setHasEthicalProducts(true);
-                break;
+            } else if (!product.isError()) {
+                shipmentCartItemModel.setHasNonEthicalProducts(true);
             }
         }
 

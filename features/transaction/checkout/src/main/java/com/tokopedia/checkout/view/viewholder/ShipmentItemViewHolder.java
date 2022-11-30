@@ -521,22 +521,33 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
         if (!shipmentCartItemModel.isError() && shipmentCartItemModel.isHasUnblockingError()
                 && !TextUtils.isEmpty(shipmentCartItemModel.getUnblockingErrorMessage()) && shipmentCartItemModel.getFirstProductErrorIndex() > -1) {
             final String errorMessage = shipmentCartItemModel.getUnblockingErrorMessage();
-            customTickerDescription.setText(errorMessage);
-            customTickerAction.setOnClickListener(v -> {
-                mActionListener.onClickLihatOnTickerOrderError(String.valueOf(shipmentCartItemModel.getShopId()), errorMessage);
-                if (!shipmentCartItemModel.isStateAllItemViewExpanded()) {
-                    shipmentCartItemModel.setTriggerScrollToErrorProduct(true);
-                    showAllProductListener(shipmentCartItemModel).onClick(tickerError);
-                    return;
+            layoutWarningAndError.setVisibility(View.VISIBLE);
+            tickerError.setHtmlDescription(errorMessage + " " + itemView.getContext().getString(R.string.checkout_ticker_lihat_cta_suffix));
+            tickerError.setDescriptionClickEvent(new TickerCallback() {
+                @Override
+                public void onDescriptionViewClick(@NonNull CharSequence charSequence) {
+                    mActionListener.onClickLihatOnTickerOrderError(String.valueOf(shipmentCartItemModel.getShopId()), errorMessage);
+                    if (!shipmentCartItemModel.isStateAllItemViewExpanded()) {
+                        shipmentCartItemModel.setTriggerScrollToErrorProduct(true);
+                        showAllProductListener(shipmentCartItemModel).onClick(tickerError);
+                        return;
+                    }
+                    scrollToErrorProduct(shipmentCartItemModel);
                 }
-                scrollToErrorProduct(shipmentCartItemModel);
+
+                @Override
+                public void onDismiss() {
+                    // no op
+                }
             });
-            customTickerError.setVisibility(View.VISIBLE);
+            tickerError.setTickerType(Ticker.TYPE_ERROR);
+            tickerError.setTickerShape(Ticker.SHAPE_LOOSE);
+            tickerError.setCloseButtonVisibility(View.GONE);
+            tickerError.setVisibility(View.VISIBLE);
+            layoutError.setVisibility(View.VISIBLE);
             if (shipmentCartItemModel.isTriggerScrollToErrorProduct()) {
                 scrollToErrorProduct(shipmentCartItemModel);
             }
-        } else {
-            customTickerError.setVisibility(View.GONE);
         }
     }
 
@@ -1922,8 +1933,54 @@ public class ShipmentItemViewHolder extends RecyclerView.ViewHolder implements S
                 if (!TextUtils.isEmpty(errorDescription)) {
                     tickerError.setTickerTitle(errorTitle);
                     tickerError.setTextDescription(errorDescription);
+                    tickerError.setDescriptionClickEvent(new TickerCallback() {
+                        @Override
+                        public void onDescriptionViewClick(@NonNull CharSequence charSequence) {
+                            // no op
+                        }
+
+                        @Override
+                        public void onDismiss() {
+                            // no op
+                        }
+                    });
                 } else {
-                    tickerError.setTextDescription(errorTitle);
+                    if (shipmentCartItemModel.isCustomEpharmacyError()) {
+                        tickerError.setHtmlDescription(errorTitle + " " + itemView.getContext().getString(R.string.checkout_ticker_lihat_cta_suffix));
+                        tickerError.setDescriptionClickEvent(new TickerCallback() {
+                            @Override
+                            public void onDescriptionViewClick(@NonNull CharSequence charSequence) {
+                                mActionListener.onClickLihatOnTickerOrderError(String.valueOf(shipmentCartItemModel.getShopId()), errorTitle);
+                                if (!shipmentCartItemModel.isStateAllItemViewExpanded()) {
+                                    shipmentCartItemModel.setTriggerScrollToErrorProduct(true);
+                                    showAllProductListener(shipmentCartItemModel).onClick(tickerError);
+                                    return;
+                                }
+                                scrollToErrorProduct(shipmentCartItemModel);
+                            }
+
+                            @Override
+                            public void onDismiss() {
+                                // no op
+                            }
+                        });
+                        if (shipmentCartItemModel.isTriggerScrollToErrorProduct()) {
+                            scrollToErrorProduct(shipmentCartItemModel);
+                        }
+                    } else {
+                        tickerError.setTextDescription(errorTitle);
+                        tickerError.setDescriptionClickEvent(new TickerCallback() {
+                            @Override
+                            public void onDescriptionViewClick(@NonNull CharSequence charSequence) {
+                                // no op
+                            }
+
+                            @Override
+                            public void onDismiss() {
+                                // no op
+                            }
+                        });
+                    }
                 }
                 tickerError.setTickerType(Ticker.TYPE_ERROR);
                 tickerError.setTickerShape(Ticker.SHAPE_LOOSE);

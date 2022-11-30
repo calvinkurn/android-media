@@ -666,15 +666,20 @@ public class ShipmentAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolde
                         }
                     }
                     if (shipmentCartItemModel.getHasEthicalProducts() && !shipmentCartItemModel.isError()) {
-                        boolean prescriptionIdsEmpty = shipmentCartItemModel.getPrescriptionIds().isEmpty();
-                        boolean consultationEmpty = (TextUtils.isEmpty(shipmentCartItemModel.getTokoConsultationId()) ||
-                                TextUtils.isEmpty(shipmentCartItemModel.getPartnerConsultationId()) ||
-                                shipmentCartItemModel.getTokoConsultationId().equals("0") ||
-                                shipmentCartItemModel.getPartnerConsultationId().equals("0") ||
-                                TextUtils.isEmpty(shipmentCartItemModel.getConsultationDataString()));
-                        if (prescriptionIdsEmpty && consultationEmpty) {
-                            isPrescriptionFrontEndValidationError = true;
-                            availableCheckout = false;
+                        for (CartItemModel cartItemModel : shipmentCartItemModel.getCartItemModels()) {
+                            if (!cartItemModel.isError() && cartItemModel.getEthicalDrugDataModel().getNeedPrescription()) {
+                                boolean prescriptionIdsEmpty = shipmentCartItemModel.getPrescriptionIds().isEmpty();
+                                boolean consultationEmpty = (TextUtils.isEmpty(shipmentCartItemModel.getTokoConsultationId()) ||
+                                        TextUtils.isEmpty(shipmentCartItemModel.getPartnerConsultationId()) ||
+                                        shipmentCartItemModel.getTokoConsultationId().equals("0") ||
+                                        shipmentCartItemModel.getPartnerConsultationId().equals("0") ||
+                                        TextUtils.isEmpty(shipmentCartItemModel.getConsultationDataString()));
+                                if (prescriptionIdsEmpty && consultationEmpty) {
+                                    isPrescriptionFrontEndValidationError = true;
+                                    availableCheckout = false;
+                                }
+                                break;
+                            }
                         }
                     }
                 }

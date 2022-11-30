@@ -16,6 +16,7 @@ class ShipmentCartItemModel(
     var unblockingErrorMessage: String? = null,
     var firstProductErrorIndex: Int = -1,
     var isTriggerScrollToErrorProduct: Boolean = false,
+    var isCustomEpharmacyError: Boolean = false,
 
     var shipmentCartData: ShipmentCartData? = null,
     var selectedShipmentDetailData: ShipmentDetailData? = null,
@@ -118,10 +119,12 @@ class ShipmentCartItemModel(
 
     // Epharmacy
     var hasEthicalProducts: Boolean = false,
+    var hasNonEthicalProducts: Boolean = false,
     var prescriptionIds: List<String> = emptyList(),
     var tokoConsultationId: String = "",
     var partnerConsultationId: String = "",
-    var consultationDataString: String = ""
+    var consultationDataString: String = "",
+    var shouldResetCourier: Boolean = false,
 ) : Parcelable {
 
     val isCustomPinpointError: Boolean

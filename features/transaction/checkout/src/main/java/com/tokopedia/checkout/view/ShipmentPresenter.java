@@ -2,6 +2,8 @@ package com.tokopedia.checkout.view;
 
 import static com.tokopedia.checkout.data.model.request.checkout.CheckoutRequestKt.FEATURE_TYPE_REGULAR_PRODUCT;
 import static com.tokopedia.checkout.data.model.request.checkout.CheckoutRequestKt.FEATURE_TYPE_TOKONOW_PRODUCT;
+import static com.tokopedia.common_epharmacy.EPharmacyCommonConstantsKt.EPHARMACY_CONSULTATION_STATUS_APPROVED;
+import static com.tokopedia.common_epharmacy.EPharmacyCommonConstantsKt.EPHARMACY_CONSULTATION_STATUS_REJECTED;
 import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.DEFAULT_ERROR_MESSAGE_FAIL_APPLY_BBO;
 import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.DEFAULT_ERROR_MESSAGE_VALIDATE_PROMO;
 
@@ -164,7 +166,6 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 import javax.inject.Inject;
 
@@ -781,7 +782,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 cartShipmentAddressFormData.getEpharmacyData().getLeftIconUrl(),
                 cartShipmentAddressFormData.getEpharmacyData().getCheckoutId(),
                 new ArrayList<>(),
-                0,"", false,
+                0, "", false,
                 cartShipmentAddressFormData.getEpharmacyData().getFrontEndValidation(),
                 cartShipmentAddressFormData.getEpharmacyData().getConsultationFlow(),
                 cartShipmentAddressFormData.getEpharmacyData().getRejectedWording(),
@@ -2436,6 +2437,52 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     @Override
     public void fetchEpharmacyData() {
         epharmacyUseCase.getEPharmacyPrepareProductsGroup(ePharmacyPrepareProductsGroupResponse -> {
+//            ArrayList<GroupData.EpharmacyGroup> epharmacyGroups = new ArrayList<>();
+//            ArrayList<GroupData.EpharmacyGroup.ProductsInfo> shopInfo = new ArrayList<>();
+//            ArrayList<GroupData.EpharmacyGroup.ProductsInfo.Product> products = new ArrayList<>();
+//            products.add(new GroupData.EpharmacyGroup.ProductsInfo.Product(
+//                    true,
+//                    null,
+//                    null,
+//                    2150458249L,
+//                    null,
+//                    null,
+//                    null
+//            ));
+//            shopInfo.add(new GroupData.EpharmacyGroup.ProductsInfo(
+//                    null,
+//                    products,
+//                    "6554231",
+//                    null,
+//                    null,
+//                    null,
+//                    null
+//            ));
+//            epharmacyGroups.add(new GroupData.EpharmacyGroup(
+//                    new GroupData.EpharmacyGroup.ConsultationData(
+//                            4,
+//                            "",
+//                            null,
+//                            null,
+//                            null,
+//                            null, null,
+//                            null, null
+//                    ),
+//                    null,
+//                    "1",
+//                    null,
+//                    null,
+//                    null,
+//                    shopInfo
+//            ));
+//            EPharmacyPrepareProductsGroupResponse ePharmacyPrepareProductsGroupResponse1 = new EPharmacyPrepareProductsGroupResponse(
+//                    new EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData(
+//                            new GroupData(
+//                                    "",
+//                                    epharmacyGroups
+//                            )
+//                    )
+//            );
             processEpharmacyData(ePharmacyPrepareProductsGroupResponse);
             return Unit.INSTANCE;
         }, throwable -> {
@@ -2453,6 +2500,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModelList) {
                     if (!shipmentCartItemModel.isError() && shipmentCartItemModel.getHasEthicalProducts()) {
                         boolean updated = false;
+                        boolean shouldResetCourier = false;
+                        int productErrorCount = 0;
+                        int firstProductErrorIndex = -1;
                         int position = getView().getShipmentCartItemModelAdapterPositionByUniqueId(shipmentCartItemModel.getCartString());
                         if (position > 0) {
                             for (GroupData.EpharmacyGroup epharmacyGroup : groupsData.getEpharmacyGroups()) {
@@ -2474,27 +2524,36 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                                         break;
                                                     }
                                                     if (product != null && product.getProductId() != null) {
-                                                        for (CartItemModel cartItemModel : shipmentCartItemModel.getCartItemModels()) {
-                                                            if (product.getProductId() == cartItemModel.getProductId()) {
-                                                                if (epharmacyGroup.getConsultationData() != null && !UtilsKt.isNullOrEmpty(epharmacyGroup.getConsultationData().getTokoConsultationId()) && !Objects.equals(epharmacyGroup.getConsultationData().getTokoConsultationId(), "0")) {
-                                                                    if (epharmacyGroup.getConsultationData().getConsultationStatus() != null && epharmacyGroup.getConsultationData().getConsultationStatus() == 4) {
+                                                        for (int i = shipmentCartItemModel.getCartItemModels().size() - 1; i >= 0; i--) {
+                                                            CartItemModel cartItemModel = shipmentCartItemModel.getCartItemModels().get(i);
+                                                            if (product.getProductId() == cartItemModel.getProductId() && !cartItemModel.isError()) {
+                                                                if (epharmacyGroup.getConsultationData() != null && epharmacyGroup.getConsultationData().getConsultationStatus() != null && epharmacyGroup.getConsultationData().getConsultationStatus() == EPHARMACY_CONSULTATION_STATUS_REJECTED) {
+                                                                    shipmentCartItemModel.setTokoConsultationId("");
+                                                                    shipmentCartItemModel.setPartnerConsultationId("");
+                                                                    shipmentCartItemModel.setConsultationDataString("");
+                                                                    hasInvalidPrescription = true;
+                                                                    if (shipmentCartItemModel.getHasNonEthicalProducts()) {
+                                                                        cartItemModel.setError(true);
+                                                                        cartItemModel.setErrorMessage(uploadPrescriptionUiModel.getRejectedWording());
+                                                                        shouldResetCourier = true;
+                                                                    } else {
+                                                                        shipmentCartItemModel.setFirstProductErrorIndex(0);
                                                                         shipmentCartItemModel.setError(true);
-                                                                        shipmentCartItemModel.setErrorTitle(uploadPrescriptionUiModel.getRejectedWording());
-                                                                        shipmentCartItemModel.setTokoConsultationId("");
-                                                                        shipmentCartItemModel.setPartnerConsultationId("");
-                                                                        shipmentCartItemModel.setConsultationDataString("");
+                                                                        shipmentCartItemModel.setAllItemError(true);
+                                                                        shipmentCartItemModel.setErrorTitle(getView().getActivityContext().getString(R.string.checkout_error_unblocking_message, shipmentCartItemModel.getCartItemModels().size()));
+                                                                        shipmentCartItemModel.setCustomEpharmacyError(true);
+                                                                        shipmentCartItemModel.setSpId(0);
                                                                         getView().resetCourier(shipmentCartItemModel);
-                                                                        updated = true;
-                                                                        hasInvalidPrescription = true;
-                                                                        break;
-                                                                    } else if (epharmacyGroup.getConsultationData().getConsultationStatus() != null && epharmacyGroup.getConsultationData().getConsultationStatus() == 2) {
-                                                                        shipmentCartItemModel.setTokoConsultationId(epharmacyGroup.getConsultationData().getTokoConsultationId());
-                                                                        shipmentCartItemModel.setPartnerConsultationId(epharmacyGroup.getConsultationData().getPartnerConsultationId());
-                                                                        shipmentCartItemModel.setConsultationDataString(epharmacyGroup.getConsultationData().getConsultationString());
-                                                                        mapPrescriptionCount.put(epharmacyGroup.getEpharmacyGroupId(), epharmacyGroup.getConsultationData().getPrescription().size());
                                                                         updated = true;
                                                                         break;
                                                                     }
+                                                                } else if (epharmacyGroup.getConsultationData() != null && epharmacyGroup.getConsultationData().getConsultationStatus() != null && epharmacyGroup.getConsultationData().getConsultationStatus() == EPHARMACY_CONSULTATION_STATUS_APPROVED) {
+                                                                    shipmentCartItemModel.setTokoConsultationId(epharmacyGroup.getConsultationData().getTokoConsultationId());
+                                                                    shipmentCartItemModel.setPartnerConsultationId(epharmacyGroup.getConsultationData().getPartnerConsultationId());
+                                                                    shipmentCartItemModel.setConsultationDataString(epharmacyGroup.getConsultationData().getConsultationString());
+                                                                    mapPrescriptionCount.put(epharmacyGroup.getEpharmacyGroupId(), epharmacyGroup.getConsultationData().getPrescription().size());
+                                                                    updated = true;
+                                                                    break;
                                                                 } else if (epharmacyGroup.getPrescriptionImages() != null && !epharmacyGroup.getPrescriptionImages().isEmpty()) {
                                                                     ArrayList<String> prescriptionIds = new ArrayList<>();
                                                                     for (GroupData.EpharmacyGroup.PrescriptionImage prescriptionImage : epharmacyGroup.getPrescriptionImages()) {
@@ -2508,6 +2567,10 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                                                     break;
                                                                 }
                                                             }
+                                                            if (cartItemModel.isError()) {
+                                                                productErrorCount += 1;
+                                                                firstProductErrorIndex = i;
+                                                            }
                                                         }
                                                     }
                                                 }
@@ -2515,6 +2578,14 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                         }
                                     }
                                 }
+                            }
+                            if (shouldResetCourier) {
+                                shipmentCartItemModel.setHasUnblockingError(true);
+                                shipmentCartItemModel.setFirstProductErrorIndex(firstProductErrorIndex);
+                                shipmentCartItemModel.setUnblockingErrorMessage(getView().getActivityContext().getString(R.string.checkout_error_unblocking_message, productErrorCount));
+                                shipmentCartItemModel.setSpId(0);
+                                shipmentCartItemModel.setShouldResetCourier(true);
+                                getView().resetCourier(shipmentCartItemModel);
                             }
                         }
                     }
@@ -2551,12 +2622,16 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
             HashMap<String, Integer> mapPrescriptionCount = new HashMap<>();
             boolean hasInvalidPrescription = false;
             boolean hasNonEthicalProduct = false;
-            int ethicalProductCount = 0;
-            int errorEthicalProductCount = 0;
+            boolean hasValidEthicalProduct = false;
             for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModelList) {
                 if (!shipmentCartItemModel.isError() && shipmentCartItemModel.getHasEthicalProducts()) {
-                    ethicalProductCount += 1;
+                    if (shipmentCartItemModel.getHasNonEthicalProducts()) {
+                        hasNonEthicalProduct = true;
+                    }
                     boolean updated = false;
+                    boolean shouldResetCourier = false;
+                    int productErrorCount = 0;
+                    int firstProductErrorIndex = -1;
                     int position = getView().getShipmentCartItemModelAdapterPositionByUniqueId(shipmentCartItemModel.getCartString());
                     if (position > 0) {
                         for (EPharmacyMiniConsultationResult result : results) {
@@ -2577,28 +2652,36 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                                 break;
                                             }
                                             if (product != null && product.getProductId() != null) {
-                                                for (CartItemModel cartItemModel : shipmentCartItemModel.getCartItemModels()) {
-                                                    if (product.getProductId() == cartItemModel.getProductId()) {
-                                                        if (result.getConsultationString() != null && !UtilsKt.isNullOrEmpty(result.getTokoConsultationId()) && !Objects.equals(result.getTokoConsultationId(), "0")) {
-                                                            if (result.getConsultationStatus() != null && result.getConsultationStatus() == 4) {
+                                                for (int i = shipmentCartItemModel.getCartItemModels().size() - 1; i >= 0; i--) {
+                                                    CartItemModel cartItemModel = shipmentCartItemModel.getCartItemModels().get(i);
+                                                    if (!cartItemModel.isError() && product.getProductId() == cartItemModel.getProductId()) {
+                                                        if (result.getConsultationStatus() != null && result.getConsultationStatus() == EPHARMACY_CONSULTATION_STATUS_REJECTED) {
+                                                            shipmentCartItemModel.setTokoConsultationId("");
+                                                            shipmentCartItemModel.setPartnerConsultationId("");
+                                                            shipmentCartItemModel.setConsultationDataString("");
+                                                            hasInvalidPrescription = true;
+                                                            if (shipmentCartItemModel.getHasNonEthicalProducts()) {
+                                                                cartItemModel.setError(true);
+                                                                cartItemModel.setErrorMessage(uploadPrescriptionUiModel.getRejectedWording());
+                                                                shouldResetCourier = true;
+                                                            } else {
+                                                                shipmentCartItemModel.setFirstProductErrorIndex(0);
                                                                 shipmentCartItemModel.setError(true);
-                                                                shipmentCartItemModel.setErrorTitle(uploadPrescriptionUiModel.getRejectedWording());
-                                                                shipmentCartItemModel.setTokoConsultationId("");
-                                                                shipmentCartItemModel.setPartnerConsultationId("");
-                                                                shipmentCartItemModel.setConsultationDataString("");
+                                                                shipmentCartItemModel.setErrorTitle(getView().getActivityContext().getString(R.string.checkout_error_unblocking_message, shipmentCartItemModel.getCartItemModels().size()));
+                                                                shipmentCartItemModel.setCustomEpharmacyError(true);
+                                                                shipmentCartItemModel.setSpId(0);
                                                                 getView().resetCourier(shipmentCartItemModel);
-                                                                updated = true;
-                                                                hasInvalidPrescription = true;
-                                                                errorEthicalProductCount += 1;
-                                                                break;
-                                                            } else if (result.getConsultationStatus() != null && result.getConsultationStatus() == 2) {
-                                                                shipmentCartItemModel.setTokoConsultationId(result.getTokoConsultationId());
-                                                                shipmentCartItemModel.setPartnerConsultationId(result.getPartnerConsultationId());
-                                                                shipmentCartItemModel.setConsultationDataString(result.getConsultationString());
-                                                                mapPrescriptionCount.put(result.getEpharmacyGroupId(), result.getPrescription().size());
                                                                 updated = true;
                                                                 break;
                                                             }
+                                                        } else if (result.getConsultationStatus() != null && result.getConsultationStatus() == EPHARMACY_CONSULTATION_STATUS_APPROVED) {
+                                                            shipmentCartItemModel.setTokoConsultationId(result.getTokoConsultationId());
+                                                            shipmentCartItemModel.setPartnerConsultationId(result.getPartnerConsultationId());
+                                                            shipmentCartItemModel.setConsultationDataString(result.getConsultationString());
+                                                            mapPrescriptionCount.put(result.getEpharmacyGroupId(), result.getPrescription().size());
+                                                            updated = true;
+                                                            hasValidEthicalProduct = true;
+                                                            break;
                                                         } else if (result.getPrescriptionImages() != null && !result.getPrescriptionImages().isEmpty()) {
                                                             ArrayList<String> prescriptionIds = new ArrayList<>();
                                                             for (GroupData.EpharmacyGroup.PrescriptionImage prescriptionImage : result.getPrescriptionImages()) {
@@ -2609,8 +2692,13 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                                             shipmentCartItemModel.setPrescriptionIds(prescriptionIds);
                                                             mapPrescriptionCount.put(result.getEpharmacyGroupId(), prescriptionIds.size());
                                                             updated = true;
+                                                            hasValidEthicalProduct = true;
                                                             break;
                                                         }
+                                                    }
+                                                    if (cartItemModel.isError()) {
+                                                        productErrorCount += 1;
+                                                        firstProductErrorIndex = i;
                                                     }
                                                 }
                                             }
@@ -2619,13 +2707,22 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                 }
                             }
                         }
+                        if (shouldResetCourier) {
+                            shipmentCartItemModel.setHasUnblockingError(true);
+                            shipmentCartItemModel.setFirstProductErrorIndex(firstProductErrorIndex);
+                            shipmentCartItemModel.setUnblockingErrorMessage(getView().getActivityContext().getString(R.string.checkout_error_unblocking_message, productErrorCount));
+                            shipmentCartItemModel.setSpId(0);
+                            getView().resetCourier(shipmentCartItemModel);
+                        } else if (!updated) {
+                            hasValidEthicalProduct = true;
+                        }
                     }
-                } else if (!shipmentCartItemModel.isError()) {
+                } else if (!shipmentCartItemModel.isError() && shipmentCartItemModel.getHasNonEthicalProducts()) {
                     hasNonEthicalProduct = true;
                 }
             }
 
-            if (!hasNonEthicalProduct && ethicalProductCount > 0 && ethicalProductCount == errorEthicalProductCount) {
+            if (!hasNonEthicalProduct && hasInvalidPrescription && !hasValidEthicalProduct) {
                 getView().onNoValidCheckoutItem();
             } else {
                 int totalPrescription = 0;

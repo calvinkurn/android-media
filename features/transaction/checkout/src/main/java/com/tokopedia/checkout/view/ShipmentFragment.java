@@ -3691,9 +3691,67 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     private void onMiniConsultationResult(Intent data) {
-        ArrayList<EPharmacyMiniConsultationResult> nr = data.getParcelableArrayListExtra(EPHARMACY_CONSULTATION_RESULT_EXTRA);
-        ArrayList<EPharmacyMiniConsultationResult> results = new ArrayList<>();
-        shipmentPresenter.setMiniConsultationResult(results);
+        ArrayList<EPharmacyMiniConsultationResult> results = data.getParcelableArrayListExtra(EPHARMACY_CONSULTATION_RESULT_EXTRA);
+//        ArrayList<EPharmacyMiniConsultationResult> results = new ArrayList<>();
+//        ArrayList<EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup> epharmacyGroups = new ArrayList<>();
+//        ArrayList<EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo> shopInfo = new ArrayList<>();
+//        ArrayList<EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo.Product> products = new ArrayList<>();
+//        products.add(new EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo.Product(
+//                true,
+//                null,
+//                null,
+//                2150458249L,
+//                null,
+//                null,
+//                null
+//        ));
+//        shopInfo.add(new EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo(
+//                null,
+//                products,
+//                "6554231",
+//                null,
+//                null,
+//                null,
+//                null
+//        ));
+//        epharmacyGroups.add(new EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup(
+//                new EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ConsultationData(
+//                        4,
+//                        "",
+//                        null,
+//                        null,
+//                        null,
+//                        null, null,
+//                        null, null
+//                ),
+//                null,
+//                "1",
+//                null,
+//                null,
+//                null,
+//                shopInfo
+//        ));
+//        EPharmacyPrepareProductsGroupResponse ePharmacyPrepareProductsGroupResponse1 = new EPharmacyPrepareProductsGroupResponse(
+//                new EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData(
+//                        new EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData(
+//                                "",
+//                                epharmacyGroups
+//                        )
+//                )
+//        );
+//        results.add(new EPharmacyMiniConsultationResult(
+//                "1",
+//                shopInfo,
+//                4,
+//                null,
+//                null,
+//                null,
+//                null,
+//                null
+//        ));
+        if (results != null) {
+            shipmentPresenter.setMiniConsultationResult(results);
+        }
     }
 
     @Override

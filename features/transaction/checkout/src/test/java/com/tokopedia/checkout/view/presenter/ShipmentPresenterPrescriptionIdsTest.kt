@@ -519,6 +519,8 @@ class ShipmentPresenterPrescriptionIdsTest {
     fun `GIVEN rejected consultation WHEN fetch epharmacy data THEN should set error`() {
         // Given
         every { view.getShipmentCartItemModelAdapterPositionByUniqueId(any()) } returns 1
+        val errorWording = "error wording"
+        every { view.activityContext.getString(any(), any()) } returns errorWording
         every { epharmacyUseCase.getEPharmacyPrepareProductsGroup(any(), any()) } answers {
             (firstArg() as (EPharmacyPrepareProductsGroupResponse) -> Unit).invoke(
                 EPharmacyPrepareProductsGroupResponse(
@@ -533,6 +535,25 @@ class ShipmentPresenterPrescriptionIdsTest {
                                             products = listOf(
                                                 ProductsInfo.Product(
                                                     productId = 2150389388,
+                                                    isEthicalDrug = true,
+                                                    itemWeight = 0.0,
+                                                    name = "",
+                                                    productImage = "",
+                                                    productTotalWeightFmt = "",
+                                                    quantity = 1,
+                                                )
+                                            ),
+                                            partnerLogoUrl = "",
+                                            shopLocation = "",
+                                            shopLogoUrl = "",
+                                            shopName = "",
+                                            shopType = "",
+                                        ),
+                                        ProductsInfo(
+                                            shopId = "6554232",
+                                            products = listOf(
+                                                ProductsInfo.Product(
+                                                    productId = 2150389387,
                                                     isEthicalDrug = true,
                                                     itemWeight = 0.0,
                                                     name = "",
@@ -580,6 +601,19 @@ class ShipmentPresenterPrescriptionIdsTest {
                     )
                 ),
                 hasEthicalProducts = true
+            ),
+            ShipmentCartItemModel(
+                shopId = 6554232,
+                cartItemModels = listOf(
+                    CartItemModel(
+                        productId = 2150389387
+                    ),
+                    CartItemModel(
+                        productId = 2150389386
+                    )
+                ),
+                hasEthicalProducts = true,
+                hasNonEthicalProducts = true
             )
         )
         val rejectedWording = "rejectedWording"
@@ -596,8 +630,15 @@ class ShipmentPresenterPrescriptionIdsTest {
             ),
             presenter.uploadPrescriptionUiModel
         )
+
         assertEquals(true, presenter.shipmentCartItemModelList[0].isError)
-        assertEquals(rejectedWording, presenter.shipmentCartItemModelList[0].errorTitle)
+        assertEquals(errorWording, presenter.shipmentCartItemModelList[0].errorTitle)
+        assertEquals(true, presenter.shipmentCartItemModelList[0].isCustomEpharmacyError)
+
+        assertEquals(false, presenter.shipmentCartItemModelList[1].isError)
+        assertEquals(true, presenter.shipmentCartItemModelList[1].cartItemModels[0].isError)
+        assertEquals(rejectedWording, presenter.shipmentCartItemModelList[1].cartItemModels[0].errorMessage)
+        assertEquals(false, presenter.shipmentCartItemModelList[1].cartItemModels[1].isError)
     }
 
     @Test
@@ -1564,6 +1605,123 @@ class ShipmentPresenterPrescriptionIdsTest {
         verify {
             view.onNoValidCheckoutItem()
         }
+    }
+
+    @Test
+    fun `GIVEN rejected consultation in the mixed order WHEN set mini consultation result THEN should set error`() {
+        // Given
+        every { view.getShipmentCartItemModelAdapterPositionByUniqueId(any()) } returns 1
+        val errorWording = "error wording"
+        every { view.activityContext.getString(any(), any()) } returns errorWording
+        val result = arrayListOf(
+            EPharmacyMiniConsultationResult(
+                epharmacyGroupId = "123",
+                shopInfo = listOf(
+                    ProductsInfo(
+                        shopId = "6554231",
+                        products = listOf(
+                            ProductsInfo.Product(
+                                productId = 2150389388,
+                                isEthicalDrug = true,
+                                itemWeight = 0.0,
+                                name = "",
+                                productImage = "",
+                                productTotalWeightFmt = "",
+                                quantity = 1,
+                            )
+                        ),
+                        partnerLogoUrl = "",
+                        shopLocation = "",
+                        shopLogoUrl = "",
+                        shopName = "",
+                        shopType = "",
+                    ),
+                    ProductsInfo(
+                        shopId = "6554232",
+                        products = listOf(
+                            ProductsInfo.Product(
+                                productId = 2150389387,
+                                isEthicalDrug = true,
+                                itemWeight = 0.0,
+                                name = "",
+                                productImage = "",
+                                productTotalWeightFmt = "",
+                                quantity = 1,
+                            )
+                        ),
+                        partnerLogoUrl = "",
+                        shopLocation = "",
+                        shopLogoUrl = "",
+                        shopName = "",
+                        shopType = "",
+                    )
+                ),
+                prescriptionImages = listOf(),
+                consultationStatus = 4,
+                consultationString = "",
+                tokoConsultationId = "123",
+                partnerConsultationId = "321",
+                prescription = listOf(),
+            )
+        )
+        presenter.shipmentCartItemModelList = arrayListOf(
+            ShipmentCartItemModel(
+                shopId = 6554231,
+                cartItemModels = listOf(
+                    CartItemModel(
+                        productId = 2150389388
+                    )
+                ),
+                hasEthicalProducts = true
+            ),
+            ShipmentCartItemModel(
+                shopId = 6554232,
+                cartItemModels = listOf(
+                    CartItemModel(
+                        productId = 2150389387
+                    ),
+                    CartItemModel(
+                        productId = 2150389386
+                    )
+                ),
+                hasEthicalProducts = true,
+                hasNonEthicalProducts = true
+            ),
+            ShipmentCartItemModel(
+                shopId = 6554233,
+                cartItemModels = listOf(
+                    CartItemModel(
+                        productId = 2150389385
+                    )
+                ),
+                hasNonEthicalProducts = true
+            )
+        )
+        val rejectedWording = "rejectedWording"
+        presenter.setUploadPrescriptionData(UploadPrescriptionUiModel(rejectedWording = rejectedWording))
+
+        // When
+        presenter.setMiniConsultationResult(result)
+
+        // Then
+        assertEquals(
+            UploadPrescriptionUiModel(
+                rejectedWording = rejectedWording,
+                hasInvalidPrescription = true
+            ),
+            presenter.uploadPrescriptionUiModel
+        )
+
+        assertEquals(true, presenter.shipmentCartItemModelList[0].isError)
+        assertEquals(errorWording, presenter.shipmentCartItemModelList[0].errorTitle)
+        assertEquals(true, presenter.shipmentCartItemModelList[0].isCustomEpharmacyError)
+
+        assertEquals(false, presenter.shipmentCartItemModelList[1].isError)
+        assertEquals(true, presenter.shipmentCartItemModelList[1].cartItemModels[0].isError)
+        assertEquals(rejectedWording, presenter.shipmentCartItemModelList[1].cartItemModels[0].errorMessage)
+        assertEquals(false, presenter.shipmentCartItemModelList[1].cartItemModels[1].isError)
+
+        assertEquals(false, presenter.shipmentCartItemModelList[2].isError)
     }
 
     @Test
