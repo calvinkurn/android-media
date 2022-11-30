@@ -8,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.ViewGroup.MarginLayoutParams
 import androidx.core.content.ContextCompat
-import androidx.core.view.updateMargins
 import androidx.core.view.updateMarginsRelative
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -180,7 +179,6 @@ class UserProfileFragment @Inject constructor(
         }
 
         refreshLandingPageData(true)
-        binding.viewFlipper.displayedChild = PAGE_LOADING
         mainBinding.userPostContainer.displayedChild = PAGE_LOADING
 
         mainBinding.appBarUserProfile.addOnOffsetChangedListener(
@@ -376,6 +374,8 @@ class UserProfileFragment @Inject constructor(
     private fun observeUiState() {
         viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             viewModel.uiState.withCache().collectLatest {
+                renderContent(it.prevValue, it.value)
+
                 renderProfileInfo(it.prevValue?.profileInfo, it.value.profileInfo)
                 renderButtonAction(it.prevValue, it.value)
                 renderButtonOption(it.prevValue, it.value)
@@ -383,6 +383,8 @@ class UserProfileFragment @Inject constructor(
                 renderProfileReminder(it.prevValue, it.value)
                 renderShopRecom(it.prevValue, it.value)
                 renderProfileTab(it.prevValue?.profileTab, it.value.profileTab)
+
+                renderGlobalError(it.prevValue, it.value)
             }
         }
     }
@@ -429,19 +431,19 @@ class UserProfileFragment @Inject constructor(
                             binding.swipeRefreshLayout.isRefreshing = false
                         }
 
-                        showGlobalError(
-                            when (event.throwable) {
-                                is UnknownHostException, is SocketTimeoutException -> NO_CONNECTION
-                                is IllegalStateException -> PAGE_FULL
-                                is RuntimeException -> {
-                                    when (event.throwable.localizedMessage?.toIntOrNull()) {
-                                        ReponseStatus.NOT_FOUND -> PAGE_NOT_FOUND
-                                        else -> SERVER_ERROR
-                                    }
-                                }
-                                else -> SERVER_ERROR
-                            },
-                        )
+//                        showGlobalError(
+//                            when (event.throwable) {
+//                                is UnknownHostException, is SocketTimeoutException -> NO_CONNECTION
+//                                is IllegalStateException -> PAGE_FULL
+//                                is RuntimeException -> {
+//                                    when (event.throwable.localizedMessage?.toIntOrNull()) {
+//                                        ReponseStatus.NOT_FOUND -> PAGE_NOT_FOUND
+//                                        else -> SERVER_ERROR
+//                                    }
+//                                }
+//                                else -> SERVER_ERROR
+//                            },
+//                        )
                     }
                     is UserProfileUiEvent.SuccessBlockUser -> {
                         dismissBlockUserDialog()
@@ -488,6 +490,19 @@ class UserProfileFragment @Inject constructor(
     }
 
     /** Render UI */
+    private fun renderContent(
+        prev: UserProfileUiState?,
+        curr: UserProfileUiState
+    ) {
+        if (prev == curr) return
+
+        binding.viewFlipper.displayedChild = when {
+            curr.profileInfo.isBlockedBy || curr.error != null -> PAGE_ERROR
+            curr.isLoading -> PAGE_LOADING
+            else -> PAGE_CONTENT
+        }
+    }
+
     private fun renderProfileInfo(
         prev: ProfileUiModel?,
         curr: ProfileUiModel,
@@ -694,6 +709,37 @@ class UserProfileFragment @Inject constructor(
         )
     }
 
+    private fun renderGlobalError(
+        prev: UserProfileUiState?,
+        value: UserProfileUiState
+    ) {
+        if (prev == value) return
+
+        if (value.profileInfo.isBlockedBy) {
+            binding.globalError.setType(PAGE_NOT_FOUND)
+            binding.globalError.setActionClickListener {
+                activity?.onBackPressed()
+            }
+        } else if (value.error != null) {
+            val type = when (value.error) {
+                is UnknownHostException, is SocketTimeoutException -> NO_CONNECTION
+                is IllegalStateException -> PAGE_FULL
+                is RuntimeException -> {
+                    when (value.error.localizedMessage?.toIntOrNull()) {
+                        ReponseStatus.NOT_FOUND -> PAGE_NOT_FOUND
+                        else -> SERVER_ERROR
+                    }
+                }
+                else -> SERVER_ERROR
+            }
+            binding.globalError.setType(type)
+            binding.globalError.setActionClickListener {
+                binding.viewFlipper.displayedChild = PAGE_LOADING
+                refreshLandingPageData(true)
+            }
+        }
+    }
+
     private fun buttonActionUIFollow() = with(mainBinding.btnAction) {
         text = getString(R.string.up_btn_text_following)
         buttonVariant = UnifyButton.Variant.GHOST
@@ -808,19 +854,6 @@ class UserProfileFragment @Inject constructor(
         }
 
         viewModel.submitAction(UserProfileAction.ClickFollowButton(isFromLogin))
-    }
-
-    private fun showGlobalError(type: Int) {
-        with(binding) {
-            viewFlipper.displayedChild = PAGE_ERROR
-            globalError.setType(type)
-            globalError.show()
-
-            globalError.setActionClickListener {
-                binding.viewFlipper.displayedChild = PAGE_LOADING
-                refreshLandingPageData(true)
-            }
-        }
     }
 
     private fun getDefaultErrorMessage() = getString(R.string.up_error_unknown)

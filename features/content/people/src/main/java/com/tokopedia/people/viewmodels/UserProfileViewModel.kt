@@ -15,6 +15,10 @@ import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomUiModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.people.data.UserProfileRepository
 import com.tokopedia.people.model.PlayGetContentSlot
+import com.tokopedia.people.Resources
+import com.tokopedia.people.Success
+import com.tokopedia.people.domains.repository.UserProfileRepository
+import com.tokopedia.people.model.PlayGetContentSlot
 import com.tokopedia.people.model.UserPostModel
 import com.tokopedia.people.views.uimodel.action.UserProfileAction
 import com.tokopedia.people.views.uimodel.content.UserFeedPostsUiModel
@@ -94,7 +98,8 @@ class UserProfileViewModel @AssistedInject constructor(
     private val _profileTab = MutableStateFlow(ProfileTabUiModel())
     private val _feedPostsContent = MutableStateFlow(UserFeedPostsUiModel())
     private val _videoPostContent = MutableStateFlow(UserPostModel())
-    private val _userSessionId = MutableStateFlow(userSession.userId)
+    private val _isLoading = MutableStateFlow(false)
+    private val _error = MutableStateFlow<Throwable?>(null)
 
     private val _uiEvent = MutableSharedFlow<UserProfileUiEvent>()
 
@@ -110,7 +115,10 @@ class UserProfileViewModel @AssistedInject constructor(
         _profileTab,
         _feedPostsContent,
         _videoPostContent,
-    ) { profileInfo, followInfo, profileType, profileWhitelist, shopRecom, profileTab, feedPostsContent, videoPostContent ->
+        _isLoading,
+        _error,
+    ) { profileInfo, followInfo, profileType, profileWhitelist, shopRecom, profileTab, feedPostsContent, videoPostContent,
+        isLoading, error ->
         UserProfileUiState(
             profileInfo = profileInfo,
             followInfo = followInfo,
@@ -120,6 +128,8 @@ class UserProfileViewModel @AssistedInject constructor(
             profileTab = profileTab,
             feedPostsContent = feedPostsContent,
             videoPostsContent = videoPostContent,
+            isLoading = isLoading,
+            error = error,
         )
     }
 
@@ -147,11 +157,15 @@ class UserProfileViewModel @AssistedInject constructor(
 
     /** Handle Action */
     private fun handleLoadProfile(isRefresh: Boolean) {
-        viewModelScope.launchCatchError(
-            block = {
-                loadProfileInfo(isRefresh)
-            },
-        ) {
+        _isLoading.value = true
+        _error.value = null
+        viewModelScope.launchCatchError(block = {
+            loadProfileInfo(isRefresh)
+            _isLoading.value = false
+            _error.value = null
+        },) {
+            _isLoading.value = false
+            _error.value = it
             _uiEvent.emit(UserProfileUiEvent.ErrorLoadProfile(it))
         }
     }
