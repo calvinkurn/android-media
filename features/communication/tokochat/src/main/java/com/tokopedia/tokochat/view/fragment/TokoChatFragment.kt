@@ -16,8 +16,8 @@ import com.gojek.conversations.groupbooking.ConversationsGroupBookingListener
 import com.gojek.conversations.groupbooking.GroupBookingChannelDetails
 import com.gojek.conversations.network.ConversationsNetworkError
 import com.google.android.material.snackbar.Snackbar
-import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokochat.tokochat_config_common.util.TokoChatErrorLogger
+import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.iconunify.IconUnify
@@ -552,6 +552,11 @@ class TokoChatFragment :
 
     private fun setShowTransactionLocalLoad() {
         baseBinding?.tokochatTransactionOrder?.showLocalLoadTransaction()
+
+        headerUiModel?.let { header ->
+            setupToolbarData(header)
+            showHeader()
+        }
     }
 
     private fun setupToolbarData(headerUiModel: TokoChatHeaderUiModel) {
