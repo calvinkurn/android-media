@@ -3,7 +3,7 @@
         "data": {
             "getHomeRecommendationProductV2": {
                 "pageName": "homepage",
-                "hasNextPage": true,
+                "hasNextPage": false,
                 "products": [
                     {
                         "id": 308696292,
