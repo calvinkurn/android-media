@@ -890,7 +890,6 @@ class ProductListPresenter @Inject constructor(
         )
     }
 
-
     private fun getViewToShowProductList(
             searchParameter: Map<String, Any>,
             searchProductModel: SearchProductModel,
