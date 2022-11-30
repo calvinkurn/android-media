@@ -13,16 +13,23 @@ import com.bumptech.glide.load.resource.bitmap.CenterCrop
 import com.bumptech.glide.load.resource.bitmap.RoundedCorners
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
+import com.tokochat.tokochat_config_common.util.TokoChatErrorLogger
+import com.tokochat.tokochat_config_common.util.TokoChatErrorLogger.ErrorType.ERROR_PAGE
+import com.tokochat.tokochat_config_common.util.TokoChatErrorLogger.PAGE.TOKOCHAT
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.config.GlobalConfig
 import com.tokopedia.tokochat_common.util.TokoChatViewUtil.EIGHT_DP
 import com.tokopedia.unifycomponents.toPx
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.file.FileUtil
 import java.io.File
 import java.io.InputStream
 import javax.inject.Inject
 
-class TokoChatViewUtil @Inject constructor(@ApplicationContext private val context: Context) {
+class TokoChatViewUtil @Inject constructor(
+    @ApplicationContext private val context: Context,
+    private val userSession: UserSessionInterface
+) {
 
     fun downloadAndSaveByteArrayImage(
         fileName: String,
@@ -36,7 +43,6 @@ class TokoChatViewUtil @Inject constructor(@ApplicationContext private val conte
             val imageResult: File? = writeImageToTokoChatPath(inputStream.readBytes(), fileName)
             onImageReady(imageResult)
         } catch (throwable: Throwable) {
-            throwable.printStackTrace()
             loadByteArrayImage(context, imageView, inputStream, onError, onDirectLoad)
         } finally {
             closeInputStream(inputStream)
@@ -80,7 +86,7 @@ class TokoChatViewUtil @Inject constructor(@ApplicationContext private val conte
                 onError()
             }
         } catch (throwable: Throwable) {
-            throwable.printStackTrace()
+            logError(throwable, ::loadByteArrayImage.name)
         } finally {
             closeInputStream(inputStream)
         }
@@ -120,6 +126,9 @@ class TokoChatViewUtil @Inject constructor(@ApplicationContext private val conte
             ): Boolean {
                 onError()
                 closeInputStream(inputStream)
+                e?.let {
+                    logError(it, ::onLoadFailed.name)
+                }
                 return false
             }
 
@@ -135,6 +144,16 @@ class TokoChatViewUtil @Inject constructor(@ApplicationContext private val conte
                 return false
             }
         }
+    }
+
+    private fun logError(throwable: Throwable, description: String) {
+        TokoChatErrorLogger.logExceptionToServerLogger(
+            TOKOCHAT,
+            throwable,
+            ERROR_PAGE,
+            userSession.deviceId.orEmpty(),
+            description
+        )
     }
 
     companion object {
