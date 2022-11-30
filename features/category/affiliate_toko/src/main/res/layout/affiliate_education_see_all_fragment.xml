@@ -21,13 +21,25 @@
         app:toolbarInitialFillColor="transparent"
         app:toolbarInitialTheme="light" />
 
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rv_education_category_chip"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:clipToPadding="false"
+        android:orientation="horizontal"
+        android:paddingHorizontal="8dp"
+        app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintTop_toBottomOf="@id/education_see_all_navToolbar"
+        tools:listitem="@layout/affiliate_item_performance_chip" />
+
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/tv_total_items"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/education_see_all_navToolbar"
+        app:layout_constraintTop_toBottomOf="@id/rv_education_category_chip"
         app:typographyType="heading_5" />
 
     <androidx.recyclerview.widget.RecyclerView

@@ -110,7 +110,9 @@ data class AffiliateEducationArticleCardsResponse(
                         val id: Long? = null,
 
                         @SerializedName("title")
-                        val title: String? = null
+                        val title: String? = null,
+
+                        var isSelected: Boolean = false
                     )
 
                     data class Thumbnail(
