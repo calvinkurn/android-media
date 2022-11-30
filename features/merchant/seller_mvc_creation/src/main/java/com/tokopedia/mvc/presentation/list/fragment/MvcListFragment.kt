@@ -52,7 +52,8 @@ import javax.inject.Inject
 
 class MvcListFragment: BaseDaggerFragment(), HasPaginatedList by HasPaginatedListImpl(),
     VoucherAdapterListener, FilterVoucherStatusBottomSheet.FilterVoucherStatusBottomSheetListener,
-    FilterVoucherBottomSheet.FilterVoucherBottomSheetListener {
+    FilterVoucherBottomSheet.FilterVoucherBottomSheetListener,
+    OtherPeriodBottomSheet.OtherPeriodBottomSheetListener {
 
     private val filterList = ArrayList<SortFilterItem>()
     private val filterItem by lazy { SortFilterItem(getString(R.string.smvc_bottomsheet_filter_voucher_all)) }
@@ -96,7 +97,7 @@ class MvcListFragment: BaseDaggerFragment(), HasPaginatedList by HasPaginatedLis
     }
 
     override fun onVoucherListMultiPeriodClicked(voucher: Voucher) {
-        OtherPeriodBottomSheet().show(this, voucher.totalChild)
+        viewModel.getVoucherListChild(voucher.id)
     }
 
     override fun onVoucherListClicked(voucher: Voucher) {
@@ -116,6 +117,10 @@ class MvcListFragment: BaseDaggerFragment(), HasPaginatedList by HasPaginatedLis
         binding?.sortFilter?.indicatorCounter = viewModel.getFilterCount()
     }
 
+    override fun onOtherPeriodMoreMenuClicked(voucher: Voucher) {
+        println(voucher.toString())
+    }
+
     private fun setupObservables() {
         viewModel.voucherList.observe(viewLifecycleOwner) { vouchers ->
             val adapter = binding?.rvVoucher?.adapter as? VouchersAdapter
@@ -127,6 +132,11 @@ class MvcListFragment: BaseDaggerFragment(), HasPaginatedList by HasPaginatedLis
         }
         viewModel.voucherQuota.observe(viewLifecycleOwner) {
             binding?.footer?.setupVoucherQuota(it)
+        }
+        viewModel.voucherChilds.observe(viewLifecycleOwner) {
+            val bottomSheet = OtherPeriodBottomSheet(it)
+            bottomSheet.setListener(this)
+                bottomSheet.show(this, it.size)
         }
     }
 

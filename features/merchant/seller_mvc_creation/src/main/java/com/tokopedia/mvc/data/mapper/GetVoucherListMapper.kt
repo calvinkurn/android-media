@@ -1,6 +1,7 @@
 package com.tokopedia.mvc.data.mapper
 
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.mvc.data.response.MerchantVoucherModel
 import com.tokopedia.mvc.domain.entity.Voucher
 import com.tokopedia.mvc.domain.entity.enums.VoucherStatus
@@ -21,7 +22,7 @@ class GetVoucherListMapper @Inject constructor() {
     fun mapRemoteModelToUiModel(merchantVoucherModel: MerchantVoucherModel): Voucher =
         merchantVoucherModel.let {
             Voucher(
-                id = it.voucherId.toIntOrZero(),
+                id = it.voucherId.toLongOrZero(),
                 name = it.voucherName,
                 type = it.voucherType,
                 typeFormatted = it.voucherTypeFormatted,

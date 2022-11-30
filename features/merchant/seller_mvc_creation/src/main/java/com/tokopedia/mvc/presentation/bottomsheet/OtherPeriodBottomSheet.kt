@@ -9,13 +9,19 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.mvc.R
 import com.tokopedia.mvc.databinding.SmvcBottomsheetOtherPeriodVoucherBinding
+import com.tokopedia.mvc.domain.entity.Voucher
 import com.tokopedia.mvc.presentation.bottomsheet.adapter.OtherPeriodAdapter
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
-class OtherPeriodBottomSheet: BottomSheetUnify() {
+class OtherPeriodBottomSheet(private val voucherChilds: List<Voucher>): BottomSheetUnify() {
+
+    interface OtherPeriodBottomSheetListener {
+        fun onOtherPeriodMoreMenuClicked(voucher: Voucher)
+    }
 
     private var binding by autoClearedNullable<SmvcBottomsheetOtherPeriodVoucherBinding>()
+    private var listener: OtherPeriodBottomSheetListener? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -44,8 +50,15 @@ class OtherPeriodBottomSheet: BottomSheetUnify() {
     private fun RecyclerView.setupOtherPeriodList() {
         layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         adapter = OtherPeriodAdapter().apply {
-            setDataList(listOf("hohoh", "hihihih", "hehehehe"))
+            setDataList(voucherChilds)
+            setOnItemClickListerner{
+                listener?.onOtherPeriodMoreMenuClicked(it)
+            }
         }
+    }
+
+    fun setListener(bottomSheetListener: OtherPeriodBottomSheetListener) {
+        listener = bottomSheetListener
     }
 
     fun show(fragment: Fragment, totalVoucherChild: Int) {

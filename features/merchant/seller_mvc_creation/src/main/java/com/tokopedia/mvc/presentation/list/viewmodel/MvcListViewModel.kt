@@ -9,6 +9,7 @@ import com.tokopedia.mvc.domain.entity.VoucherCreationQuota
 import com.tokopedia.mvc.domain.entity.VoucherListParam
 import com.tokopedia.mvc.domain.entity.enums.VoucherSort
 import com.tokopedia.mvc.domain.entity.enums.VoucherStatus
+import com.tokopedia.mvc.domain.usecase.GetVoucherListChildUseCase
 import com.tokopedia.mvc.domain.usecase.GetVoucherListUseCase
 import com.tokopedia.mvc.domain.usecase.GetVoucherQuotaUseCase
 import com.tokopedia.mvc.presentation.list.model.FilterModel
@@ -18,11 +19,15 @@ import javax.inject.Inject
 class MvcListViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     private val getVoucherListUseCase: GetVoucherListUseCase,
-    private val getVoucherQuotaUseCase: GetVoucherQuotaUseCase
+    private val getVoucherQuotaUseCase: GetVoucherQuotaUseCase,
+    private val getVoucherListChildUseCase: GetVoucherListChildUseCase
 ) : BaseViewModel(dispatchers.main) {
 
     private val _voucherList = MutableLiveData<List<Voucher>>()
     val voucherList: LiveData<List<Voucher>> get() = _voucherList
+
+    private val _voucherChilds = MutableLiveData<List<Voucher>>()
+    val voucherChilds: LiveData<List<Voucher>> get() = _voucherChilds
 
     private val _voucherQuota = MutableLiveData<VoucherCreationQuota>()
     val voucherQuota: LiveData<VoucherCreationQuota> get() = _voucherQuota
@@ -73,6 +78,19 @@ class MvcListViewModel @Inject constructor(
             dispatchers.io,
             block = {
                 _voucherQuota.postValue(getVoucherQuotaUseCase.execute())
+            },
+            onError = {
+                _error.postValue(it)
+            }
+        )
+    }
+
+    fun getVoucherListChild(voucherId: Long) {
+        launchCatchError(
+            dispatchers.io,
+            block = {
+                val result = getVoucherListChildUseCase.execute(voucherId)
+                _voucherChilds.postValue(result)
             },
             onError = {
                 _error.postValue(it)

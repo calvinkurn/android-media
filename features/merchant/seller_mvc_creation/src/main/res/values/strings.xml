@@ -70,6 +70,7 @@
     <string name="smvc_voucherlist_format_percent_desc">%s %s hingga %s</string>
     <string name="smvc_voucherlist_format_multiperiod">+%d Jadwal Lain</string>
     <string name="smvc_voucherlist_voucher_date_format">%s - %s</string>
+    <string name="smvc_voucherlist_voucher_quota_format">Kuota <b>%d</b></string>
     <string name="smvc_voucherlist_period_title">Periode</string>
     <string name="smvc_voucherlist_target_allbuyer_text">Semua Pembeli</string>
     <string name="smvc_voucherlist_target_newfollower_text">Follower Baru</string>

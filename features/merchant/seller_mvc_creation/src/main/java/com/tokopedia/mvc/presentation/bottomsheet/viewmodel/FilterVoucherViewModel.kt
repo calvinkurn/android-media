@@ -63,7 +63,6 @@ class FilterVoucherViewModel @Inject constructor(
     }
 
     fun setTarget(target: VoucherTarget) {
-        val a = _filterData.getValueOrDefault().target.isDataExist(target)
         _filterData.getValueOrDefault().target.toggleData(target)
         _filterData.triggerChange()
     }
