@@ -49,6 +49,6 @@ data class Url(
         val GOJEK_OTP: String,
         val GOPAY_PIN: String,
         val SSE: String,
-        val ONE_TRUST: String
+        val ONE_TRUST: String,
+        val TOKOCHAT: String
 )
-

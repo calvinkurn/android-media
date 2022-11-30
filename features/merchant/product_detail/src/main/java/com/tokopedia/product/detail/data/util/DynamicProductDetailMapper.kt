@@ -1,5 +1,6 @@
 package com.tokopedia.product.detail.data.util
 
+import android.os.Build
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.common_sdk_affiliate_toko.model.AffiliatePageDetail
 import com.tokopedia.common_sdk_affiliate_toko.model.AffiliateSdkPageSource
@@ -28,6 +29,7 @@ import com.tokopedia.product.detail.common.data.model.rates.UserLocationRequest
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.VariantChild
 import com.tokopedia.product.detail.common.getCurrencyFormatted
+import com.tokopedia.product.detail.data.model.datamodel.ArButtonDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ContentWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
 import com.tokopedia.product.detail.data.model.datamodel.FintechWidgetDataModel
@@ -234,11 +236,14 @@ object DynamicProductDetailMapper {
                 }
                 ProductDetailConstant.CONTENT_WIDGET -> {
                     listOfComponent.add(
-                        ContentWidgetDataModel(
-                            type = component.type,
-                            name = component.componentName
-                        )
+                            ContentWidgetDataModel(
+                                    type = component.type,
+                                    name = component.componentName
+                            )
                     )
+                }
+                ProductDetailConstant.AR_BUTTON -> {
+                    listOfComponent.add(ArButtonDataModel(type = component.type, name = component.componentName))
                 }
                 ProductDetailConstant.FINTECH_WIDGET_TYPE -> {
                     listOfComponent.add(
@@ -311,12 +316,13 @@ object DynamicProductDetailMapper {
         assignIdToMedia(newDataWithMedia.media)
 
         return DynamicProductInfoP1(
-                layoutName = data.generalName,
-                basic = data.basicInfo,
-                data = newDataWithMedia,
-                pdpSession = data.pdpSession,
-                bestSellerContent = bestSellerComponent,
-                stockAssuranceContent = stockAssuranceComponent
+            layoutName = data.generalName,
+            basic = data.basicInfo,
+            data = newDataWithMedia,
+            pdpSession = data.pdpSession,
+            bestSellerContent = bestSellerComponent,
+            stockAssuranceContent = stockAssuranceComponent,
+            requestId = data.requestId
         )
     }
 
@@ -652,6 +658,7 @@ object DynamicProductDetailMapper {
         val isOfficialStore = productInfo?.data?.isOS == true
         val isVariant = productInfo?.isProductVariant() ?: false
         val isVariantEmpty = variantData == null || !variantData.hasChildren
+        val higherThanLollipop = Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1
 
         return initialLayoutData.filterNot {
             (it.name() == ProductDetailConstant.TRADE_IN && (!isTradein || isShopOwner))
@@ -671,6 +678,11 @@ object DynamicProductDetailMapper {
                     || (it.name() == ProductDetailConstant.PRODUCT_FULLFILMENT)
                     || (it.name() == ProductDetailConstant.PRODUCT_INSTALLMENT_PAYLATER_INFO)
                     || (it.name() == ProductDetailConstant.ORDER_PRIORITY)
+                    /**
+                     * Remove when lollipop and product of seller itself
+                     */
+                    || (it.name() == ProductDetailConstant.AR_BUTTON
+                    && (GlobalConfig.isSellerApp() || !higherThanLollipop || isShopOwner))
         }.toMutableList()
     }
 
