@@ -81,10 +81,10 @@ class FeedPlusTabAdapter(fm: FragmentManager, itemList: List<FeedTabs.FeedData>,
         }
     }
 
-    fun getContentVideo(): VideoTabFragment? {
+    private fun getContentVideo(): VideoTabFragment? {
         val index: Int = getVideoTabIndex()
         return if (getRegisteredFragment(index) is VideoTabFragment) {
-            getRegisteredFragment(index) as VideoTabFragment?
+            getRegisteredFragment(index) as? VideoTabFragment?
         } else {
             null
         }
