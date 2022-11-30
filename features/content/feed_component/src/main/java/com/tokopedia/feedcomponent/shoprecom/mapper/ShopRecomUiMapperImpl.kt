@@ -30,6 +30,7 @@ class ShopRecomUiMapperImpl: ShopRecomUiMapper {
                 nextCursor = nextCursor,
                 title = title,
                 loadNextPage = nextCursor.isNotEmpty() && items.isNotEmpty(),
+                isRefresh = false,
             )
         }
     }

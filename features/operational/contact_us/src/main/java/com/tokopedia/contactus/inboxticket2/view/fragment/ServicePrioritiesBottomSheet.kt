@@ -31,7 +31,7 @@ class ServicePrioritiesBottomSheet(private val mContext: Context,
             override fun updateDrawState(ds: TextPaint) {
                 super.updateDrawState(ds)
                 ds.isUnderlineText = false
-                ds.color = MethodChecker.getColor(mContext, R.color.contact_us_green_250) // specific color for this link
+                ds.color = MethodChecker.getColor(mContext, com.tokopedia.unifyprinciples.R.color.Unify_GN300)
             }
         }, startIndexOfLink, startIndexOfLink + LEARN_MORE_TEXT.length, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE)
         link.highlightColor = Color.TRANSPARENT

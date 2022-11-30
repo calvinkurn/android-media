@@ -213,6 +213,7 @@ object DeeplinkDFMapper : CoroutineScope {
     const val DF_CATEGORY_EPHARMACY = "df_category_epharmacy"
     const val DF_MERCHANT_SELLER = "df_merchant_seller"
     const val DF_MERCHANT_NONLOGIN = "df_merchant_nonlogin"
+    const val DF_MERCHANT_PRODUCT_AR = "df_merchant_product_ar"
     const val DF_OPERATIONAL_CONTACT_US = "df_operational_contact_us"
     const val DF_SALAM_UMRAH = "df_salam_umrah"
     const val DF_TRAVEL = "df_travel"
@@ -437,6 +438,10 @@ object DeeplinkDFMapper : CoroutineScope {
                         it.startsWith(ApplinkConstInternalMarketplace.PRODUCT_DETAIL_DOMAIN) ||
                         it.startsWith(ApplinkConstInternalMarketplace.PRODUCT_DETAIL_DOMAIN_WITH_AFFILIATE)
             }, DF_BASE, R.string.title_product_detail))
+
+            add(DFP({
+                it.startsWithPattern(ApplinkConstInternalMarketplace.PRODUCT_AR)
+            }, DF_MERCHANT_PRODUCT_AR, R.string.title_product_ar))
 
             // Operational
             add(DFP({
