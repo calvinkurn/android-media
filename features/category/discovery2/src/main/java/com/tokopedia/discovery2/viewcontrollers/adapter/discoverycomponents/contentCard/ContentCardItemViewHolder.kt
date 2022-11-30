@@ -17,17 +17,19 @@ import com.tokopedia.media.loader.loadImage
 class ContentCardItemViewHolder(itemView: View, private val fragment: Fragment) :
     AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
     private val binding: DiscoContentCardItemBinding = DiscoContentCardItemBinding.bind(itemView)
-    private lateinit var contentCardItemViewModel: ContentCardItemViewModel
+    private var contentCardItemViewModel: ContentCardItemViewModel? = null
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         contentCardItemViewModel = discoveryBaseViewModel as ContentCardItemViewModel
         itemView.setOnClickListener {
-            contentCardItemViewModel.getNavigationUrl()?.let {
+            contentCardItemViewModel?.getNavigationUrl()?.let {
                 if (it.isNotEmpty()) {
                     RouteManager.route(fragment.activity, it)
                 }
-                (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()
-                    ?.trackContentCardClick(contentCardItemViewModel.components)
+                contentCardItemViewModel?.components?.let { componentItem ->
+                    (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()
+                        ?.trackContentCardClick(componentItem)
+                }
             }
         }
     }
@@ -35,8 +37,7 @@ class ContentCardItemViewHolder(itemView: View, private val fragment: Fragment) 
     override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
         super.setUpObservers(lifecycleOwner)
         lifecycleOwner?.let { it ->
-            contentCardItemViewModel.getComponentLiveData()
-                .observe(fragment.viewLifecycleOwner) { componentItem ->
+            contentCardItemViewModel?.getComponentLiveData()?.observe(fragment.viewLifecycleOwner) { componentItem ->
                     componentItem.data?.let {
                         if (it.isNotEmpty()) {
                             setupImage(it.first())
@@ -44,7 +45,7 @@ class ContentCardItemViewHolder(itemView: View, private val fragment: Fragment) 
                         }
                     }
                 }
-            contentCardItemViewModel.getTimerData().observe(it) { timerData ->
+            contentCardItemViewModel?.getTimerData()?.observe(it) { timerData ->
                 if (timerData.days > 0) {
                     binding.hoursLayout.text = String.format(TIME_DISPLAY_FORMAT, timerData.days)
                     binding.minutesLayout.text = itemView.context?.getString(R.string.hari_small)
@@ -55,7 +56,7 @@ class ContentCardItemViewHolder(itemView: View, private val fragment: Fragment) 
                     binding.hoursSeparatorTextView.show()
                 }
             }
-            contentCardItemViewModel.getTimerText().observe(it) {
+            contentCardItemViewModel?.getTimerText()?.observe(it) {
                 binding.titleTv.text = it
             }
         }
@@ -64,10 +65,10 @@ class ContentCardItemViewHolder(itemView: View, private val fragment: Fragment) 
     override fun removeObservers(lifecycleOwner: LifecycleOwner?) {
         super.removeObservers(lifecycleOwner)
         lifecycleOwner?.let {
-            contentCardItemViewModel.getComponentLiveData().removeObservers(it)
-            contentCardItemViewModel.stopTimer()
-            contentCardItemViewModel.getTimerText().removeObservers(it)
-            contentCardItemViewModel.getTimerData().removeObservers(it)
+            contentCardItemViewModel?.getComponentLiveData()?.removeObservers(it)
+            contentCardItemViewModel?.stopTimer()
+            contentCardItemViewModel?.getTimerText()?.removeObservers(it)
+            contentCardItemViewModel?.getTimerData()?.removeObservers(it)
         }
     }
 
@@ -101,9 +102,11 @@ class ContentCardItemViewHolder(itemView: View, private val fragment: Fragment) 
 
     override fun onViewAttachedToWindow() {
         super.onViewAttachedToWindow()
-        contentCardItemViewModel.startTimer()
-        (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()
-            ?.trackContentCardImpression(contentCardItemViewModel.components)
+        contentCardItemViewModel?.startTimer()
+        contentCardItemViewModel?.components?.let {
+            (fragment as? DiscoveryFragment)?.getDiscoveryAnalytics()
+                ?.trackContentCardImpression(it)
+        }
     }
 
 }

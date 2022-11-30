@@ -23,9 +23,11 @@ class ContentCardGQLRepository @Inject constructor() : BaseRepository(), Content
             DataResponse::class.java, Utils.getComponentsGQLParams(componentId, pageEndPoint, Utils.getQueryString(queryParamterMap)), GQL_COMPONENT_QUERY_NAME
         ) as DataResponse)
 
-        val componentData = response.data.component?.data
-        val componentProperties = response.data.component?.properties
-        val nextPage = response.data.component?.compAdditionalInfo?.nextPage
+        val component = response.data.component
+
+        val componentData = component?.data
+        val componentProperties = component?.properties
+        val nextPage = component?.compAdditionalInfo?.nextPage
         val componentItem  = getComponent(componentId, pageEndPoint)
         val componentsListSize = componentItem?.getComponentsItem()?.size ?: 0
         val list = when (contentCardComponentName) {

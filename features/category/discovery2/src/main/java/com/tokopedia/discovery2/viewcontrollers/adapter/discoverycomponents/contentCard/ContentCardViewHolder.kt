@@ -11,17 +11,17 @@ import com.tokopedia.discovery2.viewcontrollers.fragment.DiscoveryFragment
 
 class ContentCardViewHolder(itemView: View, private val fragment: Fragment) : AbstractViewHolder(itemView, fragment.viewLifecycleOwner) {
 
-    private lateinit var mContentCardViewModel: ContentCardViewModel
+    private var mContentCardViewModel: ContentCardViewModel? = null
 
     override fun bindView(discoveryBaseViewModel: DiscoveryBaseViewModel) {
         mContentCardViewModel = discoveryBaseViewModel as ContentCardViewModel
-        mContentCardViewModel.checkForDarkMode(itemView.context)
-        getSubComponent().inject(mContentCardViewModel)
+        mContentCardViewModel?.checkForDarkMode(itemView.context)
+        mContentCardViewModel?.let { getSubComponent().inject(it) }
     }
 
     override fun setUpObservers(lifecycleOwner: LifecycleOwner?) {
         lifecycleOwner?.let {
-            mContentCardViewModel.getSyncPageLiveData().observe(it) { needResync ->
+            mContentCardViewModel?.getSyncPageLiveData()?.observe(it) { needResync ->
                 if (needResync) {
                     (fragment as DiscoveryFragment).reSync()
                 }
@@ -32,7 +32,7 @@ class ContentCardViewHolder(itemView: View, private val fragment: Fragment) : Ab
     override fun removeObservers(lifecycleOwner: LifecycleOwner?) {
         super.removeObservers(lifecycleOwner)
         lifecycleOwner?.let {
-            mContentCardViewModel.getSyncPageLiveData().removeObservers(it)
+            mContentCardViewModel?.getSyncPageLiveData()?.removeObservers(it)
         }
     }
 }
