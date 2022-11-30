@@ -181,6 +181,7 @@ class ShopPageProductListResultFragment :
     private var navSource = ""
     private var isEnableDirectPurchase: Boolean = false
     private var isFulfillmentFilterActive: Boolean = false
+    private var affiliateChannel: String = ""
 
     private val staggeredGridLayoutManager: StaggeredGridLayoutManager by lazy {
         StaggeredGridLayoutManager(GRID_SPAN_COUNT, StaggeredGridLayoutManager.VERTICAL)
@@ -302,6 +303,11 @@ class ShopPageProductListResultFragment :
         }
         observeLiveData()
         initAffiliateCookie()
+        getShopAffiliateChannel()
+    }
+
+    private fun getShopAffiliateChannel() {
+        viewModel.getShopAffiliateChannel()
     }
 
     private fun initAffiliateCookie() {
@@ -635,6 +641,33 @@ class ShopPageProductListResultFragment :
         observeDeleteCartLiveData()
         observeUpdatedShopProductListQuantityData()
         observeShopAtcTrackerLiveData()
+        observeIsCreateAffiliateCookieAtcProduct()
+        observeShopAffiliateChannel()
+    }
+
+    private fun observeShopAffiliateChannel() {
+        viewModel.shopAffiliateChannel.observe(viewLifecycleOwner){
+            affiliateChannel = it
+        }
+    }
+
+    private fun observeIsCreateAffiliateCookieAtcProduct() {
+        viewModel.createAffiliateCookieAtcProduct.observe(viewLifecycleOwner) {
+            it?.let {
+                createAffiliateCookieAtcProduct(it)
+            }
+        }
+    }
+
+    private fun createAffiliateCookieAtcProduct(affiliateAtcProductModel: AffiliateAtcProductModel) {
+        viewModel.createAffiliateCookieShopAtcProduct(
+            affiliateCookieHelper,
+            affiliateChannel,
+            affiliateAtcProductModel.productId,
+            affiliateAtcProductModel.isVariant,
+            affiliateAtcProductModel.stockQty,
+            shopId.orEmpty()
+        )
     }
 
     private fun observeShopAtcTrackerLiveData() {
