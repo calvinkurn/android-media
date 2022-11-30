@@ -17,7 +17,6 @@ import androidx.test.espresso.intent.rule.IntentsTestRule
 import androidx.test.espresso.matcher.ViewMatchers
 import androidx.test.espresso.matcher.ViewMatchers.withId
 import androidx.test.platform.app.InstrumentationRegistry
-import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.cassavatest.CassavaTestRule
 import com.tokopedia.cassavatest.hasAllSuccess
 import com.tokopedia.home.R
@@ -214,10 +213,8 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
         HomeDCCassavaTest {
             initTest()
             login()
-            doActivityTestByModelClass(dataModelClass = HomeRecommendationFeedDataModel::class) { model: Visitable<*> ->
-                if (model is HomeRecommendationFeedDataModel) {
-                    clickAllRecommendationFeedTabs(model.recommendationTabDataModel?.size ?: 0)
-                }
+            doActivityTestByModelClass(dataModelClass = HomeRecommendationFeedDataModel::class) { viewHolder, _ ->
+                clickAllRecommendationFeedTabs(viewHolder.itemView)
             }
         } validateAnalytics {
             addDebugEnd()
@@ -517,27 +514,6 @@ class HomeRevampDynamicChannelComponentAnalyticsTest {
             if (delayBeforeRender > 0) Thread.sleep(delayBeforeRender)
             val targetModelViewHolder = homeRecyclerView.findViewHolderForAdapterPosition(targetModelIndex)
             targetModelViewHolder?.let { targetModelViewHolder -> isTypeClass.invoke(targetModelViewHolder, targetModelIndex) }
-        }
-        endActivityTest()
-    }
-
-    private fun <T : Any> doActivityTestByModelClass(
-        delayBeforeRender: Long = 2000L,
-        dataModelClass: KClass<T>,
-        predicate: (T?) -> Boolean = { true },
-        isTypeClass: (model: Visitable<*>) -> Unit
-    ) {
-        val homeRecyclerView = activityRule.activity.findViewById<RecyclerView>(R.id.home_fragment_recycler_view)
-        val homeRecycleAdapter = homeRecyclerView.adapter as? HomeRecycleAdapter
-
-        val visitableList = homeRecycleAdapter?.currentList ?: listOf()
-        val targetModel = visitableList.find { it.javaClass.simpleName == dataModelClass.simpleName && predicate.invoke(it as? T) }
-        val targetModelIndex = visitableList.indexOf(targetModel)
-
-        targetModelIndex.let { _ ->
-            scrollHomeRecyclerViewToPosition(homeRecyclerView, targetModelIndex)
-            if (delayBeforeRender > 0) Thread.sleep(delayBeforeRender)
-            targetModel?.let { isTypeClass.invoke(it) }
         }
         endActivityTest()
     }

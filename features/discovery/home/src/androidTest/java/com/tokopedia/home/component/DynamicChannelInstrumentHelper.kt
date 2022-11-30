@@ -15,6 +15,7 @@ import androidx.test.espresso.contrib.RecyclerViewActions.scrollToPosition
 import androidx.test.espresso.matcher.ViewMatchers
 import com.google.android.material.tabs.TabLayout
 import com.tokopedia.circular_view_pager.presentation.widgets.circularViewPager.CircularViewPager
+import com.tokopedia.collapsing.tab.layout.CollapsingTabLayout
 import com.tokopedia.home.R
 import com.tokopedia.home.beranda.presentation.view.adapter.HomeRecycleAdapter
 import com.tokopedia.home.beranda.presentation.view.helper.*
@@ -395,12 +396,12 @@ private fun clickRecommendationFeedTab() {
     }
 }
 
-fun clickAllRecommendationFeedTabs(count: Int) {
+fun clickAllRecommendationFeedTabs(view: View) {
     try {
-        if (count > 0) {
-            for (i in 0 until count) {
-                Espresso.onView(ViewMatchers.withId(R.id.tab_layout_home_feeds)).perform(selectTabAtPosition(i))
-            }
+        val tabLayout: CollapsingTabLayout = view.findViewById(R.id.tab_layout_home_feeds)
+        val count = tabLayout.tabCount
+        for (i in 0 until count) {
+            Espresso.onView(ViewMatchers.withId(R.id.tab_layout_home_feeds)).perform(selectTabAtPosition(i))
         }
     } catch (e: PerformException) {
         e.printStackTrace()
