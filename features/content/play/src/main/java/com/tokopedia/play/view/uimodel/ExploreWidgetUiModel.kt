@@ -66,7 +66,7 @@ val List<WidgetUiModel>.isSubSlotAvailable : Boolean
 val List<WidgetUiModel>.hasNextPage : Boolean
     get() {
         return this.any {
-            it is WidgetUiModel.PageConfig
+            if (it is WidgetUiModel.PageConfig) it.cursor.isNotBlank() else false
         }
     }
 
