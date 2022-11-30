@@ -39,7 +39,7 @@ object DeeplinkMapperContent {
             .joinToString("/")
             .startsWith(ApplinkConstInternalContent.FEED_VIDEO, false)
         ) {
-            handleNavigationFeed(uri)
+            handleNavigationFeedVideo(uri)
         } else {
             ""
         }
@@ -109,8 +109,9 @@ object DeeplinkMapperContent {
     private fun handleNavigationPlay(uri: Uri): String {
         return "${ApplinkConstInternalContent.INTERNAL_PLAY}/${uri.lastPathSegment}"
     }
-    private fun handleNavigationFeed(uri: Uri): String {
-        return "${ApplinkConstInternalContent.INTERNAL_FEED}/${uri.lastPathSegment}?${uri.query}"
+    private fun handleNavigationFeedVideo(uri: Uri): String {
+        val finalDeeplink = "${ApplinkConst.FEED_VIDEO}?${uri.query}"
+        return getRegisteredNavigationHomeFeedVideo(finalDeeplink)
     }
 
     /**
