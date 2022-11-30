@@ -34,7 +34,7 @@ import org.robolectric.RobolectricTestRunner
 class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
 
     companion object {
-        const val SIZE_MAPPER = 207
+        const val SIZE_MAPPER = 208
     }
 
     override fun setup() {
@@ -492,6 +492,16 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
 
         assertEqualsDeepLinkMapper(applink, expectedDeeplink)
         assertEqualsDeeplinkParameters(applink, "extParam" to extParam.decodeToUtf8())
+    }
+
+    @Test
+    fun `check product ar should return product ar internal`() {
+        val productId = "890495024"
+        val appLink = UriUtil.buildUri(ApplinkConst.PRODUCT_AR, productId)
+        val expectedDeepLink =
+            "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/productar/${productId}/"
+
+        assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
     }
 
     @Test

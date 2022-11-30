@@ -1,8 +1,12 @@
 package com.tokopedia.product.detail.view.fragment
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.ProgressDialog
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Context
+import android.content.Context.CLIPBOARD_SERVICE
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -10,7 +14,9 @@ import android.os.Handler
 import android.text.TextUtils
 import android.util.Log
 import android.util.SparseIntArray
+import android.view.KeyEvent
 import android.view.View
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.constraintlayout.widget.ConstraintSet
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentManager
@@ -24,6 +30,7 @@ import com.google.android.material.snackbar.Snackbar
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import com.tokopedia.abstraction.Actions.interfaces.ActionCreator
 import com.tokopedia.abstraction.Actions.interfaces.ActionUIDelegate
+import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.abstraction.common.utils.FindAndReplaceHelper
 import com.tokopedia.abstraction.common.utils.LocalCacheHandler
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
@@ -120,6 +127,7 @@ import com.tokopedia.product.detail.common.VariantConstant
 import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.product.detail.common.bottomsheet.OvoFlashDealsBottomSheet
 import com.tokopedia.product.detail.common.data.model.aggregator.ProductVariantResult
+import com.tokopedia.product.detail.common.data.model.ar.ProductArInfo
 import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkir
 import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkirImage
 import com.tokopedia.product.detail.common.data.model.carttype.CartTypeData
@@ -202,6 +210,8 @@ import com.tokopedia.product.detail.tracking.ProductTopAdsLogger.TOPADS_PDP_IS_N
 import com.tokopedia.product.detail.tracking.ShopAdditionalTracking
 import com.tokopedia.product.detail.tracking.ShopCredibilityTracker
 import com.tokopedia.product.detail.tracking.ShopCredibilityTracking
+import com.tokopedia.product.detail.tracking.ProductArTrackerData
+import com.tokopedia.product.detail.tracking.ProductArTracking
 import com.tokopedia.product.detail.view.activity.ProductDetailActivity
 import com.tokopedia.product.detail.view.activity.WholesaleActivity
 import com.tokopedia.product.detail.view.adapter.diffutil.ProductDetailDiffUtilCallback
@@ -262,6 +272,7 @@ import com.tokopedia.shop.common.widget.PartialButtonShopFollowersView
 import com.tokopedia.topads.detail_sheet.TopAdsDetailSheet
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.trackingoptimizer.TrackingQueue
+import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.universal_sharing.model.PdpParamModel
 import com.tokopedia.universal_sharing.view.bottomsheet.ScreenshotDetector
@@ -563,6 +574,46 @@ open class DynamicProductDetailFragment :
                 permissionListener = shareProductInstance?.universalSharePermissionListener
             )
         }
+
+        setPDPDebugMode()
+    }
+
+    private fun setPDPDebugMode() {
+        if (GlobalConfig.isAllowDebuggingTools()) {
+            val maxPressVolumeDown = 3
+            var countPressVolumeDown = 0
+            var currentMillis = 0L
+            val interval = 1_000L // 1s
+
+            (activity as? BaseActivity)?.addListener { keyCode, _ ->
+                if (keyCode == KeyEvent.KEYCODE_VOLUME_DOWN) {
+                    if (System.currentTimeMillis() - currentMillis < interval) {
+                        countPressVolumeDown++
+
+                        if (countPressVolumeDown == maxPressVolumeDown - 1) {
+                            countPressVolumeDown = 0
+                            showRequestIdToaster()
+                        }
+                    } else {
+                        countPressVolumeDown = 0
+                    }
+
+                    currentMillis = System.currentTimeMillis()
+                }
+            }
+        }
+    }
+
+    @SuppressLint("DeprecatedMethod")
+    private fun showRequestIdToaster() {
+        val view = binding?.root ?: return
+        val requestID = viewModel.getDynamicProductInfoP1?.requestId.orEmpty()
+
+        Toaster.build(view, "RequestID: $requestID", actionText = "Copy") {
+            val clipboard = activity?.getSystemService(CLIPBOARD_SERVICE) as ClipboardManager
+            val clip = ClipData.newPlainText("RequestID", requestID)
+            clipboard.setPrimaryClip(clip)
+        }.show()
     }
 
     override fun onSwipeRefresh() {
@@ -1237,6 +1288,21 @@ open class DynamicProductDetailFragment :
         RouteManager.route(context, url)
     }
 
+    override fun goToArPage(componentTrackDataModel: ComponentTrackDataModel) {
+        ProductArTracking.clickArComponent(
+            data = ProductArTrackerData(
+                productInfo = viewModel.getDynamicProductInfoP1,
+                componentTrackDataModel = componentTrackDataModel
+            )
+        )
+        val productId = viewModel.getDynamicProductInfoP1?.basic?.productID ?: ""
+        val shopId = viewModel.getDynamicProductInfoP1?.basic?.shopID ?: ""
+
+        val intent = RouteManager.getIntent(requireContext(), ApplinkConst.PRODUCT_AR, productId)
+        intent.putExtra(ProductDetailConstant.PARAM_SHOP_ID, shopId)
+        startActivity(intent)
+    }
+
     override fun goToEducational(url: String) {
         val context = context ?: return
         ProductEducationalHelper.goToEducationalBottomSheet(
@@ -1247,10 +1313,10 @@ open class DynamicProductDetailFragment :
         )
     }
 
-    override fun showCustomInfoCoachMark(componentName: String, viewTarget: View) {
-        if (componentName == ProductDetailConstant.HAMPERS_INFO) {
-            pdpCoachmarkHelper?.showCoachMarkHampers(viewTarget)
-        }
+    override fun showOneLinersImsCoachMark(
+        view: ImageUnify?
+    ) {
+        pdpCoachmarkHelper?.showCoachMarkOneLiners(view)
     }
 
     override fun onBbiInfoClick(
@@ -2393,7 +2459,8 @@ open class DynamicProductDetailFragment :
             if (pdpUiUpdater?.productSingleVariant != null) {
                 pdpUiUpdater?.productSingleVariant?.mapOfSelectedVariant?.values?.toList().orEmpty()
             } else {
-                pdpUiUpdater?.productNewVariantDataModel?.mapOfSelectedVariant?.values?.toList().orEmpty()
+                pdpUiUpdater?.productNewVariantDataModel?.mapOfSelectedVariant?.values?.toList()
+                    .orEmpty()
             }
 
         val selectedChild = VariantCommonMapper.selectedProductData(
@@ -2460,6 +2527,10 @@ open class DynamicProductDetailFragment :
                 getComponentPositionBeforeUpdate(pdpUiUpdater?.productNewVariantDataModel)
             )
         }
+
+        pdpUiUpdater?.updateArData(productId ?: "",
+                viewModel.p2Data.value?.arInfo ?: ProductArInfo())
+
         updateUi()
         doSomethingAfterVariantUpdated?.invoke()
     }
@@ -2469,7 +2540,7 @@ open class DynamicProductDetailFragment :
             val cartTypeData = viewModel.getCartTypeByProductId()
             val selectedMiniCartItem =
                 if (it.basic.isTokoNow && cartTypeData?.availableButtons?.firstOrNull()
-                    ?.isCartTypeDisabledOrRemindMe() == false
+                        ?.isCartTypeDisabledOrRemindMe() == false
                 ) {
                     viewModel.getMiniCartItem()
                 } else {
@@ -2480,7 +2551,8 @@ open class DynamicProductDetailFragment :
                 viewModel.p2Data.value?.getTotalStockMiniCartByParentId(it.data.variant.parentID)
 
             val shouldShowTokoNow = it.basic.isTokoNow &&
-                cartTypeData?.availableButtons?.firstOrNull()?.isCartTypeDisabledOrRemindMe() == false &&
+                cartTypeData?.availableButtons?.firstOrNull()
+                    ?.isCartTypeDisabledOrRemindMe() == false &&
                 (totalStockAtcVariant != 0 || selectedMiniCartItem != null)
 
             val tokonowVariantButtonData = if (shouldShowTokoNow) {
@@ -2696,6 +2768,16 @@ open class DynamicProductDetailFragment :
             )
             stickyLoginView?.loadContent()
         }
+    }
+
+    override fun showArCoachMark(view: ConstraintLayout?) {
+        pdpCoachmarkHelper?.showCoachMarkAr(view)
+    }
+
+    override fun hideArCoachMark() {
+        pdpCoachmarkHelper?.hideCoachMark(
+            key = ProductDetailCoachMarkHelper.Companion.PRODUCT_DETAIL_AR_PAGE_COACHMARK
+        )
     }
 
     private fun openBottomSheetTopAds() {
@@ -2919,8 +3001,7 @@ open class DynamicProductDetailFragment :
                 when (result.data.ovoValidationDataModel.status) {
                     ProductDetailCommonConstant.OVO_INACTIVE_STATUS -> {
                         val applink = "${result.data.ovoValidationDataModel.applink}&product_id=${
-                        viewModel.getDynamicProductInfoP1?.parentProductId
-                            ?: ""
+                            viewModel.getDynamicProductInfoP1?.parentProductId.orEmpty()
                         }"
                         DynamicProductDetailTracking.Click.eventActivationOvo(
                             viewModel.getDynamicProductInfoP1?.parentProductId ?: "",
@@ -3560,7 +3641,8 @@ open class DynamicProductDetailFragment :
                 if (viewModel.getShopInfo().isShopInfoNotEmpty()) viewModel.getShopInfo() else null
             val affiliateData =
                 generateAffiliateShareData(productInfo, shopInfo, viewModel.variantData)
-            val pdpImageGeneratorParam = generateImageGeneratorData(productInfo, viewModel.getBebasOngkirDataByProductId())
+            val pdpImageGeneratorParam =
+                generateImageGeneratorData(productInfo, viewModel.getBebasOngkirDataByProductId())
             checkAndExecuteReferralAction(productData, affiliateData, pdpImageGeneratorParam)
         }
     }
@@ -4743,7 +4825,7 @@ open class DynamicProductDetailFragment :
     private fun setLoadingNplShopFollowers(isLoading: Boolean) {
         val restrictionData = viewModel.p2Data.value?.restrictionInfo
         if (restrictionData?.restrictionData?.firstOrNull()
-            ?.restrictionShopFollowersType() == false
+                ?.restrictionShopFollowersType() == false
         ) {
             return
         }
