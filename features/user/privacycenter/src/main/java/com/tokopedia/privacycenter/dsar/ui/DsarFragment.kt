@@ -96,12 +96,18 @@ class DsarFragment: BaseDaggerFragment(), OnDateChangedListener {
             }
         }
 
-        viewModel.mainButtonLoading.observe(viewLifecycleOwner) {
-            binding?.btnNext?.isLoading = it
-        }
-
         viewModel.toasterError.observe(viewLifecycleOwner) {
             showToasterError(it)
+        }
+
+        viewModel.globalError.observe(viewLifecycleOwner) {
+            binding?.globarErrorDsar?.showWithCondition(it.isShow)
+            if(it.isShow) {
+                binding?.globarErrorDsar?.setOnClickListener { _ ->
+                    it.action()
+                    binding?.globarErrorDsar?.hide()
+                }
+            }
         }
 
         viewModel.transactionHistoryModel.observe(viewLifecycleOwner) {

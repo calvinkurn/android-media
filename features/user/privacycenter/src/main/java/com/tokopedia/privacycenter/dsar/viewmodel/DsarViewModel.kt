@@ -24,6 +24,7 @@ import com.tokopedia.privacycenter.dsar.model.GetRequestDetailResponse
 import com.tokopedia.privacycenter.dsar.model.SearchRequestBody
 import com.tokopedia.privacycenter.dsar.model.TransactionHistoryModel
 import com.tokopedia.privacycenter.dsar.model.uimodel.CustomDateModel
+import com.tokopedia.privacycenter.dsar.model.uimodel.GlobalErrorCustomUiModel
 import com.tokopedia.privacycenter.dsar.model.uimodel.SubmitRequestUiModel
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.date.DateUtil
@@ -52,11 +53,11 @@ class DsarViewModel @Inject constructor(
     private val _showSummary = MutableLiveData<String>()
     val showSummary: LiveData<String> = _showSummary
 
-    private val _mainButtonLoading = SingleLiveEvent<Boolean>()
-    val mainButtonLoading: LiveData<Boolean> = _mainButtonLoading
-
     private val _mainLoader = SingleLiveEvent<Boolean>()
     val mainLoader: LiveData<Boolean> = _mainLoader
+
+    private val _globalError = SingleLiveEvent<GlobalErrorCustomUiModel>()
+    val globalError: LiveData<GlobalErrorCustomUiModel> = _globalError
 
     private val _toasterError = SingleLiveEvent<String>()
     val toasterError: LiveData<String> = _toasterError
@@ -107,7 +108,7 @@ class DsarViewModel @Inject constructor(
     }
 
     fun submitRequest() {
-        _mainButtonLoading.value = true
+        _mainLoader.value = true
         launch {
             try {
                 val requests = arrayListOf<String>()
@@ -126,9 +127,11 @@ class DsarViewModel @Inject constructor(
                 val result = submitRequestUseCase(param)
                 _submitRequestState.value = SubmitRequestUiModel(email = result.email, deadline = result.deadline)
             } catch (e: Exception) {
-                _toasterError.value = e.message
+                _globalError.value = GlobalErrorCustomUiModel(true) {
+                    submitRequest()
+                }
             } finally {
-                _mainButtonLoading.value = false
+                _mainLoader.value = false
             }
         }
     }
@@ -145,7 +148,9 @@ class DsarViewModel @Inject constructor(
                     _requestDetails.value = result
                 }
             } catch (e: Exception) {
-                _showMainLayout.value = true
+                _globalError.value = GlobalErrorCustomUiModel(true) {
+                    checkRequestStatus()
+                }
             } finally {
                 _mainLoader.value = false
             }
