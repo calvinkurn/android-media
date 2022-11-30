@@ -12,16 +12,9 @@ import com.tokopedia.privacycenter.main.section.BasePrivacyCenterSection
 class DSARSection(
     val context: Context?
 ) : BasePrivacyCenterSection(context) {
-
-    override val sectionViewBinding: ViewBinding? = null
-
-    override val sectionTextTitle: String? = context?.getString(R.string.dsar_section_title)
-    override val sectionTextDescription: String? = context?.getString(R.string.dsar_section_description)
+    override val sectionTextTitle: String = context?.getString(R.string.dsar_section_title).orEmpty()
+    override val sectionTextDescription: String = context?.getString(R.string.dsar_section_description).orEmpty()
     override val isShowDirectionButton: Boolean = true
-
-    override fun initObservers() {
-        // no op
-    }
 
     override fun onViewRendered() {
         showShimmering(false)

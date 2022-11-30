@@ -2,7 +2,6 @@ package com.tokopedia.privacycenter.main.section.consentwithdrawal
 
 import android.content.Context
 import android.view.LayoutInflater
-import android.view.View
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.privacycenter.R
@@ -25,19 +24,13 @@ class ConsentWithdrawalSection constructor(
         LayoutInflater.from(context)
     )
 
-    override val sectionTextTitle: String? = context?.resources?.getString(
+    override val sectionTextTitle: String = context?.resources?.getString(
         R.string.consent_withdrawal_section_title
-    )
+    ).orEmpty()
 
-    override val sectionTextDescription: String? = context?.resources?.getString(
+    override val sectionTextDescription: String = context?.resources?.getString(
         R.string.consent_withdrawal_section_description
-    )
-
-    override val isShowDirectionButton: Boolean = false
-
-    override fun onButtonDirectionClick(view: View) {
-        // no op
-    }
+    ).orEmpty()
 
     override fun onViewRendered() {
         sectionViewBinding.consentGroupList.apply {

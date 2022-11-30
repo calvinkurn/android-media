@@ -5,7 +5,6 @@ import android.content.Intent
 import android.net.Uri
 import android.provider.Settings
 import android.view.LayoutInflater
-import android.view.View
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.IconUnify
@@ -38,7 +37,6 @@ class RecommendationSection(
         context?.getString(R.string.privacy_center_recommendation_title).orEmpty()
     override val sectionTextDescription: String =
         context?.getString(R.string.privacy_center_recommendation_subtitle).orEmpty()
-    override val isShowDirectionButton: Boolean = false
 
     private var verificationEnabledDataUsageBottomSheet: RecommendationFriendBottomSheet? = null
     private var verificationDisabledDataUsageDialog: DialogUnify? = null
@@ -243,10 +241,6 @@ class RecommendationSection(
             intent.data = uri
             it.startActivity(intent)
         }
-    }
-
-    override fun onButtonDirectionClick(view: View) {
-        // none
     }
 
     private fun showToasterError(message: String) {

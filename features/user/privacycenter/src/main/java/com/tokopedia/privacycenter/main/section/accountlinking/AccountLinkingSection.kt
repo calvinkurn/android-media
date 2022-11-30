@@ -2,7 +2,6 @@ package com.tokopedia.privacycenter.main.section.accountlinking
 
 import android.content.Context
 import android.view.LayoutInflater
-import android.view.View
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.privacycenter.R
 import com.tokopedia.privacycenter.common.PrivacyCenterStateResult
@@ -18,7 +17,7 @@ class AccountLinkingSection(
 ) : BasePrivacyCenterSection(context) {
 
     interface Listener {
-        fun onItemAccountLinkingClicked()
+        fun onItemAccountLinkingClicked(isLinked: Boolean)
     }
 
     override val sectionViewBinding: ItemAccountLinkingBinding = ItemAccountLinkingBinding.inflate(
@@ -26,12 +25,11 @@ class AccountLinkingSection(
     )
     override val sectionTextTitle: String = context?.getString(R.string.account_linking_title).orEmpty()
     override val sectionTextDescription: String = context?.getString(R.string.account_linking_subtitle).orEmpty()
-    override val isShowDirectionButton: Boolean = false
     private var isLinked: Boolean = false
 
     override fun initObservers() {
-        lifecycleOwner?.let {
-            viewModel.accountLinkingState.observe(it) {
+        lifecycleOwner?.let { lifecycleOwner ->
+            viewModel.accountLinkingState.observe(lifecycleOwner) {
                 when (it) {
                     is PrivacyCenterStateResult.Loading -> {
                         showShimmering(true)
@@ -52,7 +50,7 @@ class AccountLinkingSection(
 
     override fun onViewRendered() {
         sectionViewBinding.root.setOnClickListener {
-            listener.onItemAccountLinkingClicked()
+            listener.onItemAccountLinkingClicked(isLinked)
 
             MainPrivacyCenterAnalytics.sendClickOnButtonAccountLinkingEvent(
                 if (isLinked) {
@@ -98,10 +96,6 @@ class AccountLinkingSection(
         ) {
             viewModel.getAccountLinkingStatus()
         }
-    }
-
-    override fun onButtonDirectionClick(view: View) {
-        // none
     }
 
     companion object {

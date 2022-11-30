@@ -37,9 +37,10 @@ class PrivacyPolicySection constructor(
         SectionPrivacyPolicyBinding.inflate(
             LayoutInflater.from(context)
         )
-    override val sectionTextTitle: String? = context?.resources?.getString(R.string.privacy_policy_section_title)
-    override val sectionTextDescription: String? = context?.resources?.getString(R.string.privacy_policy_section_description)
-    override val isShowDirectionButton: Boolean = false
+    override val sectionTextTitle: String =
+        context?.resources?.getString(R.string.privacy_policy_section_title).orEmpty()
+    override val sectionTextDescription: String =
+        context?.resources?.getString(R.string.privacy_policy_section_description).orEmpty()
     override val isFromBottomSheet: Boolean = false
 
     override fun onButtonDirectionClick(view: View) {
