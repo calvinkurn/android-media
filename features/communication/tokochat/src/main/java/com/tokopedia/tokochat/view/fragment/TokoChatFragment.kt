@@ -552,6 +552,11 @@ class TokoChatFragment :
 
     private fun setShowTransactionLocalLoad() {
         baseBinding?.tokochatTransactionOrder?.showLocalLoadTransaction()
+
+        headerUiModel?.let { header ->
+            setupToolbarData(header)
+            showHeader()
+        }
     }
 
     private fun setupToolbarData(headerUiModel: TokoChatHeaderUiModel) {
