@@ -2,7 +2,6 @@
 <androidx.constraintlayout.widget.ConstraintLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -18,34 +17,22 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toLeftOf="@id/inspirationCarouselListAtcSeeMore"
         app:typographyType="display_1"
-        app:typographyWeight="bold"
-        tools:text="title"/>
-
-    <ImageView
-        android:id="@+id/inspirationCarouselListAtcSubtitleIcon"
-        android:layout_width="18dp"
-        android:layout_height="18dp"
-        android:layout_marginEnd="2dp"
-        android:visibility="gone"
-        app:layout_constraintTop_toTopOf="@id/inspirationCarouselListAtcSubtitle"
-        app:layout_constraintLeft_toLeftOf="@id/inspirationCarouselListAtcTitle" />
+        app:typographyWeight="bold"/>
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/inspirationCarouselListAtcSubtitle"
         android:layout_width="0dp"
-        android:layout_height="18dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
         android:layout_marginTop="4dp"
-        android:ellipsize="end"
+        android:layout_marginEnd="12dp"
         android:maxLines="1"
-        android:layout_marginStart="2dp"
-        android:visibility="gone"
-        app:layout_goneMarginStart="0dp"
-        app:layout_constraintRight_toLeftOf="@id/inspirationCarouselListAtcSeeMore"
-        app:layout_constraintStart_toEndOf="@+id/inspirationCarouselListAtcSubtitleIcon"
+        android:ellipsize="end"
+        app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/inspirationCarouselListAtcTitle"
+        app:layout_constraintRight_toLeftOf="@id/inspirationCarouselListAtcSeeMore"
         app:typographyType="paragraph_3"
-        app:typographyWeight="reguler"
-        tools:text="subtitle" />
+        app:typographyWeight="reguler"/>
 
     <androidx.constraintlayout.widget.Barrier
         android:id="@+id/inspirationCarouselListAtcHeaderBarrier"
