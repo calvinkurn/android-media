@@ -14,11 +14,14 @@ import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.kotlin.extensions.orTrue
 import com.tokopedia.kotlin.extensions.view.toZeroIfNull
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.databinding.BottomsheetTokopedianowProductFeedbackBinding
 import com.tokopedia.tokopedianow.searchcategory.analytics.ProductFeedbackLoopTracker
+import com.tokopedia.tokopedianow.searchcategory.di.ContextModule
 import com.tokopedia.tokopedianow.searchcategory.di.DaggerSearchCategoryComponent
 import com.tokopedia.tokopedianow.searchcategory.presentation.viewmodel.AddFeedbackViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
@@ -26,6 +29,7 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
 
@@ -36,6 +40,9 @@ class TokoNowProductFeedbackBottomSheet : BottomSheetUnify() {
         private const val MIN_TEXT_LEN = 4
         private const val TOAST_BOTTOM_MARGIN = 8
     }
+
+    @Inject
+    lateinit var userSession:UserSessionInterface
 
     private var binding:BottomsheetTokopedianowProductFeedbackBinding? = null
 
@@ -51,7 +58,12 @@ class TokoNowProductFeedbackBottomSheet : BottomSheetUnify() {
     override fun onCreate(savedInstanceState: Bundle?) {
         isKeyboardOverlap = false
         super.onCreate(savedInstanceState)
-        DaggerSearchCategoryComponent.builder().baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent).build().inject(this)
+        DaggerSearchCategoryComponent
+            .builder()
+            .baseAppComponent((activity?.application as BaseMainApplication).baseAppComponent)
+            .contextModule(ContextModule(requireContext()))
+            .build()
+            .inject(this)
     }
 
 
@@ -168,11 +180,6 @@ class TokoNowProductFeedbackBottomSheet : BottomSheetUnify() {
     private fun setupCta(){
         disableCta()
         binding?.feedbackBmCta?.setOnClickListener {
-            val feedback = binding?.feedbackBmTextfield?.editText?.text
-            feedback?.let { it1 ->
-                binding?.feedbackBmCta?.isLoading = true
-                viewModel.addProductFeedback(it1.toString())
-            }
             trackerData?.let {
                 ProductFeedbackLoopTracker.sendClickCtaFeedbackSheet(
                     it.first,
@@ -180,6 +187,10 @@ class TokoNowProductFeedbackBottomSheet : BottomSheetUnify() {
                     getUserInput(),
                     it.third
                 )
+            }
+            isLoggedIn {
+                binding?.feedbackBmCta?.isLoading = true
+                viewModel.addProductFeedback(getUserInput())
             }
         }
     }
@@ -266,6 +277,16 @@ class TokoNowProductFeedbackBottomSheet : BottomSheetUnify() {
         return if (resourceId > 0) {
             resources?.getDimensionPixelSize(resourceId) ?: 0
         } else 0
+    }
+
+    private fun isLoggedIn(block:() -> Unit){
+        if(userSession.isLoggedIn){
+            block.invoke()
+        }
+        else{
+            activity?.finish()
+            RouteManager.route(context, ApplinkConstInternalUserPlatform.LOGIN)
+        }
     }
 
 }

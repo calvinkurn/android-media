@@ -6,7 +6,9 @@ import dagger.Component
 
 @SearchCategoryScope
 @Component(
-    modules = [AddFeedbackViewModelModule::class],
+    modules = [AddFeedbackViewModelModule::class,
+        ContextModule::class,
+        UserSessionModule::class],
     dependencies = [BaseAppComponent::class]
 )
 interface SearchCategoryComponent {
