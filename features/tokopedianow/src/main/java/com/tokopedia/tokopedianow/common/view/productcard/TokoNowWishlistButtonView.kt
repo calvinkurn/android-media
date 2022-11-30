@@ -34,7 +34,7 @@ class TokoNowWishlistButtonView @JvmOverloads constructor(
 
     private var binding: LayoutTokopedianowWishlistButtonViewBinding
     private var mProductId: String = ""
-    private var hasBeenSelected: Boolean = false
+    private var hasBeenSelected: Boolean? = null
     private var listener: TokoNowWishlistButtonListener? = null
 
     init {
@@ -57,7 +57,7 @@ class TokoNowWishlistButtonView @JvmOverloads constructor(
         ).setDuration(ANIMATION_DURATION.toLong())
 
         parentWishlist.setOnClickListener {
-            if (!hasBeenSelected) {
+            if (hasBeenSelected != true) {
                 ringingAnimation.reverse()
                 viewModel.addToWishlist(mProductId)
             } else {
@@ -159,16 +159,24 @@ class TokoNowWishlistButtonView @JvmOverloads constructor(
     fun bind(isSelected: Boolean, productId: String) {
         if (isSelected == hasBeenSelected && productId == mProductId) return
 
-        hasBeenSelected = isSelected
-        mProductId = productId
-
-        if (hasBeenSelected) {
-            binding.root.setTransition(R.id.start, R.id.end)
-            binding.root.transitionToEnd()
+        if (hasBeenSelected == null) {
+            if (isSelected) {
+                binding.root.setTransition(R.id.end, R.id.start)
+            } else {
+                binding.root.setTransition(R.id.start, R.id.end)
+            }
         } else {
-            binding.root.setTransition(R.id.end, R.id.start)
-            binding.root.transitionToEnd()
+            if (isSelected) {
+                binding.root.setTransition(R.id.start, R.id.end)
+                binding.root.transitionToEnd()
+            } else {
+                binding.root.setTransition(R.id.end, R.id.start)
+                binding.root.transitionToEnd()
+            }
         }
+
+        mProductId = productId
+        hasBeenSelected = isSelected
     }
 
     interface TokoNowWishlistButtonListener {
