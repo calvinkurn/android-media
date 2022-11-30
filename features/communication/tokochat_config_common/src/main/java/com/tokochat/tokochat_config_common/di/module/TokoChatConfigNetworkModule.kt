@@ -27,9 +27,9 @@ import java.util.concurrent.TimeUnit
 @Module
 object TokoChatConfigNetworkModule {
 
-    private const val NET_READ_TIMEOUT = 300
-    private const val NET_WRITE_TIMEOUT = 300
-    private const val NET_CONNECT_TIMEOUT = 300
+    private const val NET_READ_TIMEOUT = 60
+    private const val NET_WRITE_TIMEOUT = 60
+    private const val NET_CONNECT_TIMEOUT = 60
     private const val NET_RETRY = 3
 
     private const val GSON_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ssZ"

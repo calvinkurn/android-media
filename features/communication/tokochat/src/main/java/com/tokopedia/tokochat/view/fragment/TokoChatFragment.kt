@@ -573,12 +573,14 @@ class TokoChatFragment :
             if ((!connect || !isConnectedToNetwork()) &&
                 viewModel.channelId.isNotBlank() && viewModel.getUserId().isNotBlank()
             ) {
-                errorBottomSheet.setErrorType(getErrorType())
-                errorBottomSheet.setButtonAction {
-                    initGroupBooking()
-                    errorBottomSheet.dismissBottomSheet()
+                if (!errorBottomSheet.isVisible) {
+                    errorBottomSheet.setErrorType(getErrorType())
+                    errorBottomSheet.setButtonAction {
+                        initGroupBooking()
+                        errorBottomSheet.dismissBottomSheet()
+                    }
+                    errorBottomSheet.show(childFragmentManager)
                 }
-                errorBottomSheet.show(childFragmentManager)
             } else {
                 errorBottomSheet.dismissBottomSheet()
             }
