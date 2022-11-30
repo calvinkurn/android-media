@@ -27,16 +27,19 @@ class GetPlayWidgetSlotUseCase @Inject constructor(
         sourceId: String,
     ): WidgetSlot {
         val request = mapOf(
-            KEY_GROUP to group,
-            KEY_CURSOR to cursor,
-            KEY_SOURCE_TYPE to sourceType,
-            KEY_SOURCE_ID to sourceId,
+            KEY_REQ to  mapOf(
+                KEY_GROUP to group,
+                KEY_CURSOR to cursor,
+                KEY_SOURCE_TYPE to sourceType,
+                KEY_SOURCE_ID to sourceId,
+            )
         )
         setRequestParams(request)
         return executeOnBackground()
     }
 
     companion object {
+        private const val KEY_REQ = "req"
         private const val KEY_GROUP = "group"
         private const val KEY_CURSOR = "cursor"
         private const val KEY_SOURCE_TYPE = "source_type"
@@ -45,17 +48,11 @@ class GetPlayWidgetSlotUseCase @Inject constructor(
         const val QUERY_NAME = "GetPlayWidgetSlotUseCaseQuery"
         const val QUERY = """
             query playGetWidgetSlot(
-                ${"$$KEY_GROUP"}: String, 
-                ${"$$KEY_CURSOR"}: String, 
-                ${"$$KEY_SOURCE_TYPE"}: String, 
-                ${"$$KEY_SOURCE_ID"}: String,
+                ${"$$KEY_REQ"}: PlayGetContentSlotRequest!
             ) {
-                playGetContentSlot(req: {
-                    $KEY_GROUP: ${"$$KEY_GROUP"}, 
-                    $KEY_CURSOR: ${"$$KEY_CURSOR"}, 
-                    $KEY_SOURCE_TYPE: ${"$$KEY_SOURCE_TYPE"}, 
-                    $KEY_SOURCE_ID: ${"$$KEY_SOURCE_ID"},
-                }) {
+                playGetContentSlot(
+                 $KEY_REQ: ${"$$KEY_REQ"}
+                ) {
                   data {
                     id
                     title

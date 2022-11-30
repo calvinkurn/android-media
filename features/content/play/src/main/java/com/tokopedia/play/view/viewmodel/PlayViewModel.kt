@@ -2664,7 +2664,7 @@ class PlayViewModel @AssistedInject constructor(
     }
 
     private fun fetchWidgets() {
-        viewModelScope.launch {
+        viewModelScope.launchCatchError(block = {
             val config = _channelDetail.value.exploreWidgetConfig
             val data = repo.getWidgets(
                 group = config.group,
@@ -2672,6 +2672,8 @@ class PlayViewModel @AssistedInject constructor(
                 sourceId = config.sourceId,
                 cursor = "", //put in uiModel -> _explore
             )
+        }) {
+
         }
     }
 
