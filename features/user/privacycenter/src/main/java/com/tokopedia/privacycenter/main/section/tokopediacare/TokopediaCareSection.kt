@@ -2,7 +2,6 @@ package com.tokopedia.privacycenter.main.section.tokopediacare
 
 import android.content.Context
 import android.view.LayoutInflater
-import android.view.View
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.iconunify.IconUnify
@@ -19,8 +18,6 @@ class TokopediaCareSection(private val context: Context?) : BasePrivacyCenterSec
     )
     override val sectionTextTitle: String =
         context?.getString(R.string.privacy_center_tokopedia_care_title).orEmpty()
-    override val sectionTextDescription: String = ""
-    override val isShowDirectionButton: Boolean = false
     override val isShowDivider: Boolean = false
 
     private fun goToTokopediaCare() {
@@ -29,10 +26,6 @@ class TokopediaCareSection(private val context: Context?) : BasePrivacyCenterSec
             ApplinkConstInternalGlobal.WEBVIEW,
             TokopediaUrl.getInstance().MOBILEWEB.plus(PATH_TOKOPEDIA_CARE)
         )
-    }
-
-    override fun initObservers() {
-        // none
     }
 
     override fun onViewRendered() {
@@ -48,10 +41,6 @@ class TokopediaCareSection(private val context: Context?) : BasePrivacyCenterSec
             MainPrivacyCenterAnalytics.sendClickOnButtonTokopediaCareEvent()
             goToTokopediaCare()
         }
-    }
-
-    override fun onButtonDirectionClick(view: View) {
-        // none
     }
 
     companion object {

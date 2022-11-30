@@ -19,20 +19,11 @@ class ActivitySection(private val context: Context?) : BasePrivacyCenterSection(
         context?.getString(R.string.privacy_center_activity_title).orEmpty()
     override val sectionTextDescription: String =
         context?.getString(R.string.privacy_center_activity_subtitle).orEmpty()
-    override val isShowDirectionButton: Boolean = false
-
-    override fun initObservers() {
-        // none
-    }
 
     override fun onViewRendered() {
         showShimmering(false)
         setUpView()
         initListener()
-    }
-
-    override fun onButtonDirectionClick(view: View) {
-        // none
     }
 
     private fun setUpView() {

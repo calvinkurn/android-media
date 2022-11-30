@@ -1,17 +1,13 @@
 package com.tokopedia.privacycenter
 
 import android.content.Context
-import android.graphics.drawable.BitmapDrawable
 import android.util.AttributeSet
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.FrameLayout
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
-import com.tokopedia.media.loader.loadImageWithEmptyTarget
-import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
 import com.tokopedia.privacycenter.PrivacyCenterItemView.PrivacyCenterItemType.DEFAULT
 import com.tokopedia.privacycenter.PrivacyCenterItemView.PrivacyCenterItemType.TOGGLE
 import com.tokopedia.privacycenter.databinding.CustomviewItemPrivacyCenterBinding
@@ -71,14 +67,10 @@ class PrivacyCenterItemView : FrameLayout {
     }
 
     fun setIcon(url: String) {
-        loadImageWithEmptyTarget(context, url, {
-            fitCenter()
-        }, MediaBitmapEmptyTarget(
-            onReady = { bitmap ->
-                val icon = BitmapDrawable(context.resources, bitmap)
-                viewBinding.itemImage.setImageDrawable(icon)
-            }
-        ))
+        viewBinding.itemImage.loadImage(url) {
+            setPlaceHolder(-1)
+            useCache(true)
+        }
     }
 
     fun onToggleClicked(onClicked: (buttonView: View, isChecked: Boolean) -> Unit) {

@@ -8,6 +8,7 @@ import com.tokopedia.applink.UriUtil
 import com.tokopedia.applink.account.DeeplinkMapperAccount
 import com.tokopedia.applink.constant.DeeplinkConstant
 import com.tokopedia.applink.home.DeeplinkMapperHome
+import com.tokopedia.applink.internal.ApplinkConsInternalHome
 import com.tokopedia.applink.internal.ApplinkConstInternalContent
 import com.tokopedia.applink.internal.ApplinkConstInternalDiscovery
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
@@ -1724,6 +1725,24 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     @Test
     fun `check privacy center appLink then should return tokopedia internal privacy center in customerapp`() {
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://user/privacy-center"
+        val rollencePrivacyCenter = "privacy_center_and"
+
+        every {
+            RemoteConfigInstance.getInstance().abTestPlatform.getString(rollencePrivacyCenter)
+        } returns rollencePrivacyCenter
+
+        assertEqualsDeepLinkMapper(ApplinkConst.PRIVACY_CENTER, expectedDeepLink)
+    }
+
+    @Test
+    fun `check privacy center appLink then should return tokopedia internal home navigation in customerapp`() {
+        val expectedDeepLink = ApplinkConsInternalHome.HOME_NAVIGATION
+        val rollencePrivacyCenter = "privacy_center_and"
+
+        every {
+            RemoteConfigInstance.getInstance().abTestPlatform.getString(rollencePrivacyCenter)
+        } returns ""
+
         assertEqualsDeepLinkMapper(ApplinkConst.PRIVACY_CENTER, expectedDeepLink)
     }
 

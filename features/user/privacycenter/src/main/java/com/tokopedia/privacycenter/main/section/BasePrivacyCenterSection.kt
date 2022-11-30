@@ -13,14 +13,14 @@ import com.tokopedia.privacycenter.databinding.SectionBaseBinding
 
 abstract class BasePrivacyCenterSection(context: Context?) {
 
-    protected abstract val sectionViewBinding: ViewBinding?
-    protected abstract val sectionTextTitle: String?
-    protected abstract val sectionTextDescription: String?
-    protected abstract val isShowDirectionButton: Boolean
+    open val sectionViewBinding: ViewBinding? = null
+    open val sectionTextTitle: String = ""
+    open val sectionTextDescription: String = ""
+    open val isShowDirectionButton: Boolean = false
     open val isShowDivider: Boolean = true
-    protected abstract fun initObservers()
-    protected abstract fun onViewRendered()
-    protected abstract fun onButtonDirectionClick(view: View)
+    open fun initObservers() {}
+    open fun onViewRendered() {}
+    open fun onButtonDirectionClick(view: View) {}
 
     var lifecycleOwner: LifecycleOwner? = context as? LifecycleOwner
 
@@ -32,10 +32,10 @@ abstract class BasePrivacyCenterSection(context: Context?) {
         initDirectionButton()
 
         sectionBaseViewBinding.apply {
-            sectionTitle.text = sectionTextTitle.orEmpty()
+            sectionTitle.text = sectionTextTitle
             sectionSubtitle.apply {
                 text = sectionTextDescription
-            }.showWithCondition(sectionTextDescription?.isNotEmpty() == true)
+            }.showWithCondition(sectionTextDescription.isNotEmpty())
 
             if (sectionViewBinding != null) {
                 sectionContent.addView(sectionViewBinding?.root)

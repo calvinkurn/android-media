@@ -17,11 +17,13 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.appbar.AppBarLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.privacycenter.R
+import com.tokopedia.privacycenter.accountlinking.LinkAccountWebViewActivity
 import com.tokopedia.privacycenter.accountlinking.LinkAccountWebviewFragment
 import com.tokopedia.privacycenter.common.di.PrivacyCenterComponent
 import com.tokopedia.privacycenter.common.utils.getDynamicColorStatusBar
@@ -318,21 +320,25 @@ class PrivacyCenterFragment :
         )
     }
 
-    override fun onItemAccountLinkingClicked() {
-        goToAccountLinkingWebview()
+    override fun onItemAccountLinkingClicked(isLinked: Boolean) {
+        goToAccountLinkingWebview(isLinked)
     }
 
-    private fun goToAccountLinkingWebview() {
-        val intent = RouteManager.getIntent(
-            activity,
-            ApplinkConstInternalUserPlatform.ACCOUNT_LINKING_WEBVIEW
-        ).apply {
-            putExtra(
-                ApplinkConstInternalGlobal.PARAM_LD,
-                LinkAccountWebviewFragment.BACK_BTN_APPLINK
-            )
+    private fun goToAccountLinkingWebview(isLinked: Boolean) {
+        if (isLinked) {
+            LinkAccountWebViewActivity.gotoSuccessPage(activity, LinkAccountWebviewFragment.BACK_BTN_APPLINK)
+        } else {
+            val intent = RouteManager.getIntent(
+                activity,
+                ApplinkConstInternalUserPlatform.ACCOUNT_LINKING_WEBVIEW
+            ).apply {
+                putExtra(
+                    ApplinkConstInternalGlobal.PARAM_LD,
+                    LinkAccountWebviewFragment.BACK_BTN_APPLINK
+                )
+            }
+            startActivityForResult(intent, REQUEST_ACCOUNT_WEBVIEW_REQUEST)
         }
-        startActivityForResult(intent, REQUEST_ACCOUNT_WEBVIEW_REQUEST)
     }
 
     inner class PrivacyCenterSectionDelegateImpl : PrivacyCenterSectionDelegate {
