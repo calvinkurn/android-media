@@ -6,12 +6,10 @@ import com.tokopedia.tokopedianow.common.view.TokoNowDynamicHeaderView
 import com.tokopedia.tokopedianow.common.view.TokoNowProductRecommendationView.TokoNowProductRecommendationListener
 import com.tokopedia.tokopedianow.common.view.productcard.TokoNowProductCardCarouselView
 import com.tokopedia.tokopedianow.common.viewmodel.TokoNowProductRecommendationViewModel
-import com.tokopedia.user.session.UserSession
 
 class TokoNowProductRecommendationCallback(
-    private val viewModel: TokoNowProductRecommendationViewModel?,
-    private val listener: TokoNowProductRecommendationListener?,
-    private val userSession: UserSession
+    private val viewModel: TokoNowProductRecommendationViewModel,
+    private val listener: TokoNowProductRecommendationListener?
 ): TokoNowProductCardCarouselView.TokoNowProductCardCarouselListener,
     TokoNowDynamicHeaderView.TokoNowDynamicHeaderListener {
 
@@ -22,8 +20,8 @@ class TokoNowProductRecommendationCallback(
         listener?.productCardClicked(
             position = position,
             product = product,
-            isLogin = userSession.isLoggedIn,
-            userId = userSession.userId
+            isLogin = viewModel.isLogin,
+            userId = viewModel.userId
         )
     }
 
@@ -34,8 +32,8 @@ class TokoNowProductRecommendationCallback(
         listener?.productCardImpressed(
             position = position,
             product = product,
-            isLogin = userSession.isLoggedIn,
-            userId = userSession.userId
+            isLogin = viewModel.isLogin,
+            userId = viewModel.userId
         )
     }
 
@@ -44,10 +42,10 @@ class TokoNowProductRecommendationCallback(
         product: TokoNowProductCardCarouselItemUiModel,
         quantity: Int
     ) {
-        if (!userSession.isLoggedIn) {
+        if (!viewModel.isLogin) {
             listener?.openLoginPage()
         } else {
-            viewModel?.addProductToCart(
+            viewModel.addProductToCart(
                 position = position,
                 shopId = product.shopId,
                 quantity = quantity,
