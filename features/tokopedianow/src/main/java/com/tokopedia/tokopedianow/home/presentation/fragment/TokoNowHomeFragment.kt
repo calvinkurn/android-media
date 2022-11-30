@@ -209,9 +209,8 @@ class TokoNowHomeFragment : Fragment(),
         const val DEFAULT_QUANTITY = 0
         const val SHARE_HOME_URL = "https://www.tokopedia.com/now"
         const val THUMBNAIL_AND_OG_IMAGE_SHARE_URL = "https://images.tokopedia.net/img/android/now/PN-RICH.jpg"
-        const val REFERRAL_PAGE_URL = "https://350-beta-feature.tokopedia.com/seru/undang-untung/"
 
-        //        const val REFERRAL_PAGE_URL = "https://www.tokopedia.com/seru/undang-untung/"
+        const val REFERRAL_PAGE_URL = "https://www.tokopedia.com/seru/undang-untung/"
         const val PAGE_SHARE_NAME = "Tokonow"
         const val SHARE = "share"
         const val PAGE_TYPE_HOME = "home"
