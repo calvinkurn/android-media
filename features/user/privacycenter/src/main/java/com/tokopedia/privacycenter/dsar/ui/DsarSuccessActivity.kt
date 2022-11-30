@@ -9,12 +9,12 @@ import com.tokopedia.utils.date.DateUtil
 
 class DsarSuccessActivity: BaseActivity() {
 
-    private lateinit var binding: FragmentDsarSuccessBinding
+    private var binding: FragmentDsarSuccessBinding? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = FragmentDsarSuccessBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+        setContentView(binding?.root)
         supportActionBar?.hide()
         setupViews()
     }
@@ -22,10 +22,10 @@ class DsarSuccessActivity: BaseActivity() {
     private fun setupViews() {
         val email = intent.getStringExtra(EXTRA_EMAIL)
         val date = intent.getStringExtra(EXTRA_DEADLINE) ?: ""
-        binding.imgSuccess.loadImage(getString(R.string.dsar_request_success_illustration))
+        binding?.imgSuccess?.loadImage(getString(R.string.dsar_request_success_illustration))
         val formattedDate = DateUtil.formatDate(DateUtil.YYYY_MM_DD_T_HH_MM_SS_SSS_Z, DateUtil.DEFAULT_VIEW_FORMAT, date)
-        binding.txtSuccessDescription.text = getString(R.string.dsar_progress_description, email, formattedDate)
-        binding.btnSuccess.setOnClickListener {
+        binding?.txtSuccessDescription?.text = getString(R.string.dsar_progress_description, email, formattedDate)
+        binding?.btnSuccess?.setOnClickListener {
             finish()
         }
     }

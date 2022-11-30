@@ -109,7 +109,7 @@ class LinkAccountWebviewFragment: BaseSessionWebViewFragment() {
 
     private fun getLinkAccountActivity(): LinkAccountWebViewActivity? {
         return try {
-            activity as LinkAccountWebViewActivity?
+            activity as? LinkAccountWebViewActivity
         } catch (e: Exception) {
             null
         }

@@ -43,10 +43,6 @@ class PrivacyPolicySection constructor(
         context?.resources?.getString(R.string.privacy_policy_section_description).orEmpty()
     override val isFromBottomSheet: Boolean = false
 
-    override fun onButtonDirectionClick(view: View) {
-        // no op
-    }
-
     override fun onViewRendered() {
         context?.let { NetworkClient.init(it) }
         showShimmering(false)
