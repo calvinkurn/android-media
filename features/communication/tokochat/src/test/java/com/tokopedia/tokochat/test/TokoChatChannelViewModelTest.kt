@@ -173,4 +173,46 @@ class TokoChatChannelViewModelTest : TokoChatViewModelTestFixture() {
             )
         }
     }
+
+    @Test
+    fun `test gojekOrderId in viewmodel`() {
+        val testGojekOrderId = "test gojek order id"
+        viewModel.gojekOrderId = testGojekOrderId
+        Assert.assertEquals(testGojekOrderId, viewModel.gojekOrderId)
+    }
+
+    @Test
+    fun `test source in viewmodel`() {
+        val testSource = "test source"
+        viewModel.source = testSource
+        Assert.assertEquals(testSource, viewModel.source)
+    }
+
+    @Test
+    fun `test tkpd order id viewmodel`() {
+        val testTkpdOrderId = "test tkpd order id"
+        viewModel.tkpdOrderId = testTkpdOrderId
+        Assert.assertEquals(testTkpdOrderId, viewModel.tkpdOrderId)
+    }
+
+    @Test
+    fun `test channel id viewmodel`() {
+        val testChannelId = "test channel id"
+        viewModel.channelId = testChannelId
+        Assert.assertEquals(testChannelId, viewModel.channelId)
+    }
+
+    @Test
+    fun `test isFromTokoFoodPost viewmodel`() {
+        val testIsFromTokoFoodPostPurchase = true
+        viewModel.isFromTokoFoodPostPurchase = testIsFromTokoFoodPostPurchase
+        Assert.assertEquals(testIsFromTokoFoodPostPurchase, viewModel.isFromTokoFoodPostPurchase)
+    }
+
+    @Test
+    fun `test `() {
+        val testPushNotifTemplateKey = "test_template"
+        viewModel.pushNotifTemplateKey = testPushNotifTemplateKey
+        Assert.assertEquals(testPushNotifTemplateKey, viewModel.pushNotifTemplateKey)
+    }
 }

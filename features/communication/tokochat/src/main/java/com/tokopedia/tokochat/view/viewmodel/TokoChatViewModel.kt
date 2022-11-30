@@ -97,9 +97,15 @@ class TokoChatViewModel @Inject constructor(
     val error: LiveData<Pair<Throwable, String>>
         get() = _error
 
+    var gojekOrderId: String = ""
+    var source: String = ""
+    var tkpdOrderId: String = ""
+    var isFromTokoFoodPostPurchase = false
+    var pushNotifTemplateKey = ""
+    var channelId = ""
+
     @VisibleForTesting
     var connectionCheckJob: Job? = null
-
     val orderStatusParamFlow = MutableSharedFlow<Pair<String, String>>(Int.ONE)
 
     init {
