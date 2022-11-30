@@ -50,7 +50,7 @@ data class GetFeedLastPurchaseProductResponse(
         val appLink: String = "",
 
         @SerializedName("star")
-        val star: String = "",
+        val star: Double = 0.0,
 
         @SerializedName("price")
         val price: Double = 0.0,

@@ -31,11 +31,9 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.applink.tokofood.DeeplinkMapperTokoFood
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
-import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.ONE
 import com.tokopedia.kotlin.extensions.view.ZERO
@@ -375,20 +373,13 @@ class MerchantPageFragment : BaseMultiFragment(),
     }
 
     private fun setToolbarTransparentColor() {
-        binding?.toolbarMerchantPage?.let {
-            it.background = null
-        }
+        setHeaderBackground()
     }
 
     private fun setToolbarWhiteColor() {
-        binding?.toolbarMerchantPage?.let {
-            it.setBackgroundColor(
-                ContextCompat.getColor(
-                    it.context,
-                    com.tokopedia.unifyprinciples.R.color.Unify_Background
-                )
-            )
-        }
+        try {
+            binding?.bgMerchantHeader?.setImageDrawable(null)
+        } catch (ignored: Exception) {}
     }
 
     private fun setupAppBarLayoutListener() {
@@ -420,26 +411,28 @@ class MerchantPageFragment : BaseMultiFragment(),
     }
 
     private fun setupCardSticky() {
-        binding?.cardUnifySticky?.setOnClickListener {
-            hideKeyboard()
-            val cacheManager = context?.let { SaveInstanceCacheManager(it, true) }
-            val categoryFilter =
-                TokoFoodMerchantUiModelMapper.mapProductListItemToCategoryFilterUiModel(
-                    viewModel.filterList, viewModel.filterNameSelected
+        binding?.cardUnifySticky?.run {
+            setOnClickListener {
+                hideKeyboard()
+                val cacheManager = context?.let { SaveInstanceCacheManager(it, true) }
+                val categoryFilter =
+                    TokoFoodMerchantUiModelMapper.mapProductListItemToCategoryFilterUiModel(
+                        viewModel.filterList, viewModel.filterNameSelected
+                    )
+                cacheManager?.put(
+                    CategoryFilterBottomSheet.KEY_CATEGORY_FILTER_LIST,
+                    categoryFilter
                 )
-            cacheManager?.put(
-                CategoryFilterBottomSheet.KEY_CATEGORY_FILTER_LIST,
-                categoryFilter
-            )
-            val bundle = Bundle().apply {
-                putString(
-                    CategoryFilterBottomSheet.KEY_CACHE_MANAGER_ID,
-                    cacheManager?.id.orEmpty()
-                )
+                val bundle = Bundle().apply {
+                    putString(
+                        CategoryFilterBottomSheet.KEY_CACHE_MANAGER_ID,
+                        cacheManager?.id.orEmpty()
+                    )
+                }
+                val bottomSheet = CategoryFilterBottomSheet.createInstance(bundle)
+                bottomSheet.setCategoryFilterListener(this@MerchantPageFragment)
+                bottomSheet.show(childFragmentManager)
             }
-            val bottomSheet = CategoryFilterBottomSheet.createInstance(bundle)
-            bottomSheet.setCategoryFilterListener(this)
-            bottomSheet.show(childFragmentManager)
         }
     }
 

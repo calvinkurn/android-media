@@ -494,6 +494,12 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
                 stock
               }
   	        }
+           arInfo{
+              productIDs
+              applink
+              message
+              imageUrl
+            }
             ticker {
               tickerInfo {
                 productIDs
@@ -608,6 +614,7 @@ class GetProductInfoP2DataUseCase @Inject constructor(private val graphqlReposit
             p2UiData.navBar = navBar
             p2UiData.shopFinishRate = responseData.shopFinishRate.finishRate
             p2UiData.shopAdditional = responseData.shopAdditional
+            p2UiData.arInfo = arInfo
         }
         return p2UiData
     }

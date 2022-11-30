@@ -13,7 +13,7 @@ import com.tokopedia.usecase.coroutines.UseCase
 import javax.inject.Inject
 
 class CheckCampaignNotifyMeUseCase @Inject constructor(
-        private val gqlUseCase: MultiRequestGraphqlUseCase
+    private val gqlUseCase: MultiRequestGraphqlUseCase
 ) : UseCase<CheckCampaignNotifyMeModel>() {
 
     companion object {
@@ -23,18 +23,18 @@ class CheckCampaignNotifyMeUseCase @Inject constructor(
 
         @JvmStatic
         fun createParams(
-                campaignId: String = "",
-                action: String = "",
-                source: String = DEFAULT_SOURCE_VALUE
+            campaignId: String = "",
+            action: String = "",
+            source: String = DEFAULT_SOURCE_VALUE
         ): Map<String, Any> {
             val paramsGetCampaignNotifyMe = CheckCampaignNotifyMeRequest(
-                    campaignId.toLongOrZero(),
-                    action,
-                    source,
-                    DEFAULT_REQUEST_TYPE_VALUE
+                campaignId.toLongOrZero(),
+                action,
+                source,
+                DEFAULT_REQUEST_TYPE_VALUE
             )
             return mapOf<String, Any>(
-                    KEY_PARAMS to paramsGetCampaignNotifyMe
+                KEY_PARAMS to paramsGetCampaignNotifyMe
             )
         }
     }
@@ -48,21 +48,23 @@ class CheckCampaignNotifyMeUseCase @Inject constructor(
                 error_message
               }
             }
-        """.trimIndent()
+    """.trimIndent()
 
     var params = mapOf<String, Any>()
 
     override suspend fun executeOnBackground(): CheckCampaignNotifyMeModel {
         gqlUseCase.clearRequest()
-        gqlUseCase.setCacheStrategy(GraphqlCacheStrategy
-                .Builder(CacheType.CLOUD_THEN_CACHE).build())
+        gqlUseCase.setCacheStrategy(
+            GraphqlCacheStrategy
+                .Builder(CacheType.CLOUD_THEN_CACHE).build()
+        )
         val gqlRequest = GraphqlRequest(query, CheckCampaignNotifyMeModel.Response::class.java, params)
         gqlUseCase.addRequest(gqlRequest)
         val gqlResponse = gqlUseCase.executeOnBackground()
         val error = gqlResponse.getError(GraphqlError::class.java)
         if (error == null || error.isEmpty()) {
             return gqlResponse.getData<CheckCampaignNotifyMeModel.Response>(CheckCampaignNotifyMeModel.Response::class.java)
-                    .checkCampaignNotifyMeModel
+                .checkCampaignNotifyMeModel
         } else {
             throw MessageErrorException(error.joinToString(", ") { it.message })
         }
@@ -71,5 +73,4 @@ class CheckCampaignNotifyMeUseCase @Inject constructor(
     fun clearCache() {
         gqlUseCase.clearCache()
     }
-
 }
