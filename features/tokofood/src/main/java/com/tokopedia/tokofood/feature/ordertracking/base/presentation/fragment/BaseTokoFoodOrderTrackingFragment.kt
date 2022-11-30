@@ -34,6 +34,7 @@ import com.tokopedia.tokofood.databinding.FragmentTokofoodOrderTrackingBinding
 import com.tokopedia.tokofood.feature.ordertracking.analytics.TokoFoodPostPurchaseAnalytics
 import com.tokopedia.tokofood.feature.ordertracking.di.component.DaggerTokoFoodOrderTrackingComponent
 import com.tokopedia.tokofood.feature.ordertracking.domain.constants.OrderStatusType
+import com.tokopedia.tokofood.feature.ordertracking.presentation.adapter.BaseOrderTrackingTypeFactory
 import com.tokopedia.tokofood.feature.ordertracking.presentation.adapter.OrderTrackingAdapter
 import com.tokopedia.tokofood.feature.ordertracking.presentation.adapter.OrderTrackingAdapterTypeFactoryImpl
 import com.tokopedia.tokofood.feature.ordertracking.presentation.adapter.OrderTrackingListener
@@ -328,7 +329,8 @@ class BaseTokoFoodOrderTrackingFragment :
                         it.data.orderStatusKey,
                         it.data.actionButtonsUiModel,
                         it.data.toolbarLiveTrackingUiModel,
-                        it.data.merchantData
+                        it.data.merchantData,
+                        it.data.orderDetailList
                     )
                     fetchOrderLiveTracking(orderId)
                 }
@@ -476,7 +478,8 @@ class BaseTokoFoodOrderTrackingFragment :
         orderStatus: String,
         actionButtonsUiModel: ActionButtonsUiModel,
         toolbarLiveTrackingUiModel: ToolbarLiveTrackingUiModel,
-        merchantData: MerchantDataUiModel
+        merchantData: MerchantDataUiModel,
+        orderDetailList: List<BaseOrderTrackingTypeFactory>
     ) {
         binding?.run {
             if (orderStatus in listOf(OrderStatusType.COMPLETED, OrderStatusType.CANCELLED)) {
@@ -486,6 +489,7 @@ class BaseTokoFoodOrderTrackingFragment :
                     orderStatus,
                     merchantData
                 )
+                setUnreadChatCounterWhenCompletedOrder(orderStatus, orderDetailList)
             } else {
                 orderLiveTrackingFragment = TokoFoodOrderLiveTrackingFragment(
                     binding,
@@ -502,6 +506,21 @@ class BaseTokoFoodOrderTrackingFragment :
                     toolbarLiveTrackingUiModel,
                     orderStatus
                 )
+            }
+        }
+    }
+
+    private fun setUnreadChatCounterWhenCompletedOrder(
+        orderStatus: String,
+        orderDetailList: List<BaseOrderTrackingTypeFactory>
+    ) {
+        if (orderStatus == OrderStatusType.COMPLETED) {
+            val goFoodOrderNumber = orderDetailList
+                .filterIsInstance<InvoiceOrderNumberUiModel>()
+                .firstOrNull()?.goFoodOrderNumber.orEmpty()
+
+            if (goFoodOrderNumber.isNotBlank()) {
+                initializeUnreadCounter(goFoodOrderNumber)
             }
         }
     }
