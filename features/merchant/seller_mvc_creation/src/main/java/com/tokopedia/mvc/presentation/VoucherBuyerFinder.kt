@@ -14,46 +14,18 @@ class VoucherBuyerFinder @Inject constructor() {
         promoType: PromoType
     ): List<VoucherTargetBuyer> {
         return when {
-            voucherType.isShopVoucher() && voucherTarget.isPublic() && promoType.isCashback() -> listOf(
-                VoucherTargetBuyer.ALL_BUYER,
-                VoucherTargetBuyer.NEW_FOLLOWER
-            )
-            voucherType.isShopVoucher() && voucherTarget.isPublic() && promoType.isFreeShipping() -> listOf(
-                VoucherTargetBuyer.ALL_BUYER
-            )
-            voucherType.isShopVoucher() && voucherTarget.isPublic() && promoType.isDiscount() -> listOf(
-                VoucherTargetBuyer.ALL_BUYER,
-                VoucherTargetBuyer.NEW_FOLLOWER
-            )
-            voucherType.isShopVoucher() && voucherTarget.isPrivate() && promoType.isCashback() -> listOf(
-                VoucherTargetBuyer.ALL_BUYER
-            )
-            voucherType.isShopVoucher() && voucherTarget.isPrivate() && promoType.isFreeShipping() -> listOf(
-                VoucherTargetBuyer.ALL_BUYER
-            )
-            voucherType.isShopVoucher() && voucherTarget.isPrivate() && promoType.isDiscount() -> listOf(
-                VoucherTargetBuyer.ALL_BUYER
-            )
-            voucherType.isProductVoucher() && voucherTarget.isPublic() && promoType.isCashback() -> listOf(
-                VoucherTargetBuyer.ALL_BUYER,
-                VoucherTargetBuyer.NEW_FOLLOWER
-            )
-            voucherType.isProductVoucher() && voucherTarget.isPublic() && promoType.isFreeShipping() -> listOf(
-                VoucherTargetBuyer.ALL_BUYER
-            )
-            voucherType.isProductVoucher() && voucherTarget.isPublic() && promoType.isDiscount() -> listOf(
-                VoucherTargetBuyer.ALL_BUYER,
-                VoucherTargetBuyer.NEW_FOLLOWER
-            )
-            voucherType.isProductVoucher() && voucherTarget.isPrivate() && promoType.isCashback() -> listOf(
-                VoucherTargetBuyer.ALL_BUYER
-            )
-            voucherType.isProductVoucher() && voucherTarget.isPrivate() && promoType.isFreeShipping() -> listOf(
-                VoucherTargetBuyer.ALL_BUYER
-            )
-            voucherType.isProductVoucher() && voucherTarget.isPrivate() && promoType.isDiscount() -> listOf(
-                VoucherTargetBuyer.ALL_BUYER
-            )
+            voucherType.isShopVoucher() && voucherTarget.isPublic() && promoType.isCashback() -> listOf(VoucherTargetBuyer.ALL_BUYER, VoucherTargetBuyer.NEW_FOLLOWER)
+            voucherType.isShopVoucher() && voucherTarget.isPublic() && promoType.isFreeShipping() -> listOf(VoucherTargetBuyer.ALL_BUYER)
+            voucherType.isShopVoucher() && voucherTarget.isPublic() && promoType.isDiscount() -> listOf(VoucherTargetBuyer.ALL_BUYER, VoucherTargetBuyer.NEW_FOLLOWER)
+            voucherType.isShopVoucher() && voucherTarget.isPrivate() && promoType.isCashback() -> listOf(VoucherTargetBuyer.ALL_BUYER)
+            voucherType.isShopVoucher() && voucherTarget.isPrivate() && promoType.isFreeShipping() -> listOf(VoucherTargetBuyer.ALL_BUYER)
+            voucherType.isShopVoucher() && voucherTarget.isPrivate() && promoType.isDiscount() -> listOf(VoucherTargetBuyer.ALL_BUYER)
+            voucherType.isProductVoucher() && voucherTarget.isPublic() && promoType.isCashback() -> listOf(VoucherTargetBuyer.ALL_BUYER, VoucherTargetBuyer.NEW_FOLLOWER)
+            voucherType.isProductVoucher() && voucherTarget.isPublic() && promoType.isFreeShipping() -> listOf(VoucherTargetBuyer.ALL_BUYER)
+            voucherType.isProductVoucher() && voucherTarget.isPublic() && promoType.isDiscount() -> listOf(VoucherTargetBuyer.ALL_BUYER, VoucherTargetBuyer.NEW_FOLLOWER)
+            voucherType.isProductVoucher() && voucherTarget.isPrivate() && promoType.isCashback() -> listOf(VoucherTargetBuyer.ALL_BUYER)
+            voucherType.isProductVoucher() && voucherTarget.isPrivate() && promoType.isFreeShipping() -> listOf(VoucherTargetBuyer.ALL_BUYER)
+            voucherType.isProductVoucher() && voucherTarget.isPrivate() && promoType.isDiscount() -> listOf(VoucherTargetBuyer.ALL_BUYER)
             else -> emptyList()
         }
     }
