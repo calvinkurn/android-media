@@ -40,6 +40,7 @@ import com.tokopedia.play.broadcaster.shorts.view.manager.idle.PlayShortsIdleMan
 import com.tokopedia.play.broadcaster.shorts.view.viewmodel.PlayShortsViewModel
 import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
+import com.tokopedia.play.broadcaster.ui.model.page.PlayBroPageSource
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.util.eventbus.EventBus
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayBroadcastSetupBottomSheet
@@ -175,12 +176,16 @@ class PlayShortsPreparationFragment @Inject constructor(
                         return viewModel.productSectionList.flatMap { it.products }
                     }
 
-                    override fun getAuthorId(): String {
-                        return viewModel.selectedAccount.id
+                    override fun getSelectedAccount(): ContentAccountUiModel {
+                        return viewModel.selectedAccount
                     }
 
                     override fun getChannelId(): String {
                         return viewModel.shortsId
+                    }
+
+                    override fun getPageSource(): PlayBroPageSource {
+                        return PlayBroPageSource.Shorts
                     }
                 })
             }

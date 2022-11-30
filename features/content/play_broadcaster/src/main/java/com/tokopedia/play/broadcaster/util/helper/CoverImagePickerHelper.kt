@@ -7,7 +7,9 @@ import android.net.Uri
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.tokopedia.content.common.ui.model.ContentAccountUiModel
 import com.tokopedia.play.broadcaster.ui.model.CoverSource
+import com.tokopedia.play.broadcaster.ui.model.page.PlayBroPageSource
 import com.tokopedia.play.broadcaster.view.activity.PlayCoverCameraActivity
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayCoverImageChooserBottomSheet
 import com.tokopedia.play.broadcaster.view.bottomsheet.PlayGalleryImagePickerBottomSheet
@@ -16,13 +18,15 @@ import com.tokopedia.play.broadcaster.view.bottomsheet.PlayGalleryImagePickerBot
  * Created by jegul on 22/06/20
  */
 class CoverImagePickerHelper(
-        private val context: Context,
-        private val fragmentManager: FragmentManager,
-        private val listener: OnChosenListener,
-        private val intentHandler: (Intent, Int) -> Unit
+    private val context: Context,
+    private val fragmentManager: FragmentManager,
+    private val pageSource: PlayBroPageSource,
+    private val account: ContentAccountUiModel,
+    private val listener: OnChosenListener,
+    private val intentHandler: (Intent, Int) -> Unit
 ) : PlayCoverImageChooserBottomSheet.Listener, PlayGalleryImagePickerBottomSheet.Listener {
 
-    private val cameraIntent = Intent(context, PlayCoverCameraActivity::class.java)
+    private val cameraIntent = PlayCoverCameraActivity.getIntent(context, pageSource, account)
 
     private lateinit var coverImageChooserBottomSheet: PlayCoverImageChooserBottomSheet
     private lateinit var galleryImagePickerBottomSheet: PlayGalleryImagePickerBottomSheet

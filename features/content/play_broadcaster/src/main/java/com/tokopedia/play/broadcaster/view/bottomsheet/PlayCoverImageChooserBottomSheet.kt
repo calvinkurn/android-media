@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.analytic.PlayBroadcastAnalytic
+import com.tokopedia.play.broadcaster.analytic.setup.cover.picker.PlayBroCoverPickerAnalytic
 import com.tokopedia.play.broadcaster.ui.itemdecoration.CarouselCoverItemDecoration
 import com.tokopedia.play.broadcaster.ui.model.CarouselCoverUiModel
 import com.tokopedia.play.broadcaster.ui.viewholder.PlayCoverCameraViewHolder
@@ -32,8 +33,8 @@ import javax.inject.Inject
  * @author by furqan on 03/06/2020
  */
 class PlayCoverImageChooserBottomSheet @Inject constructor(
-        private val analytic: PlayBroadcastAnalytic,
-        private val dialogCustomizer: PlayBroadcastDialogCustomizer
+    private val analytic: PlayBroCoverPickerAnalytic,
+    private val dialogCustomizer: PlayBroadcastDialogCustomizer
 ) : BottomSheetUnify() {
 
     var mListener: Listener? = null
@@ -47,20 +48,20 @@ class PlayCoverImageChooserBottomSheet @Inject constructor(
             coverProductListener = object : PlayCoverProductViewHolder.Listener {
                 override fun onProductCoverClicked(productId: String, imageUrl: String) {
                     mListener?.onChooseProductCover(this@PlayCoverImageChooserBottomSheet, productId, imageUrl)
-                    analytic.clickAddCoverFromPdpSource()
+                    analytic.clickAddCoverFromPdpSource(viewModel.account, viewModel.pageSource)
                 }
             },
             coverCameraListener = object : PlayCoverCameraViewHolder.Listener {
                 override fun onCameraButtonClicked() {
                     getCoverFromCamera()
-                    analytic.clickAddCoverFromCameraSource()
+                    analytic.clickAddCoverFromCameraSource(viewModel.account, viewModel.pageSource)
                 }
             }
     )
 
     override fun onStart() {
         super.onStart()
-        analytic.viewAddCoverSourceBottomSheet()
+        analytic.viewAddCoverSourceBottomSheet(viewModel.account, viewModel.pageSource)
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -128,7 +129,7 @@ class PlayCoverImageChooserBottomSheet @Inject constructor(
         llOpenGallery.setOnClickListener {
             if (isGalleryPermissionGranted()) chooseCoverFromGallery()
             else requestGalleryPermission()
-            analytic.clickAddCoverFromGallerySource()
+            analytic.clickAddCoverFromGallerySource(viewModel.account, viewModel.pageSource)
         }
 
         rvProductCover.adapter = pdpCoverAdapter
@@ -188,7 +189,6 @@ class PlayCoverImageChooserBottomSheet @Inject constructor(
                 )
             }
         }
-
     }
 
     interface Listener {

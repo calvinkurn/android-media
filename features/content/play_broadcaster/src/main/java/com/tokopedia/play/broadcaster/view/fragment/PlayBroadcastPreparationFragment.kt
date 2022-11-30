@@ -43,6 +43,7 @@ import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastEvent
 import com.tokopedia.play.broadcaster.ui.model.BroadcastScheduleUiModel
 import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
 import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
+import com.tokopedia.play.broadcaster.ui.model.page.PlayBroPageSource
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkState
 import com.tokopedia.play.broadcaster.ui.state.ScheduleUiModel
@@ -249,12 +250,16 @@ class PlayBroadcastPreparationFragment @Inject constructor(
                         return parentViewModel.productSectionList.flatMap { it.products }
                     }
 
-                    override fun getAuthorId(): String {
-                        return parentViewModel.authorId
+                    override fun getSelectedAccount(): ContentAccountUiModel {
+                        return parentViewModel.selectedAccount
                     }
 
                     override fun getChannelId(): String {
                         return parentViewModel.channelId
+                    }
+
+                    override fun getPageSource(): PlayBroPageSource {
+                        return PlayBroPageSource.Live
                     }
                 })
             }

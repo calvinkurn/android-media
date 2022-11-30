@@ -17,12 +17,16 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.content.common.ui.model.ContentAccountUiModel
+import com.tokopedia.content.common.ui.model.orUnknown
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.play.broadcaster.R
 import com.tokopedia.play.broadcaster.di.DaggerActivityRetainedComponent
 import com.tokopedia.play.broadcaster.di.PlayBroadcastModule
 import com.tokopedia.play.broadcaster.di.setup.DaggerPlayBroadcastSetupComponent
 import com.tokopedia.play.broadcaster.ui.model.PlayCoverUiModel
+import com.tokopedia.play.broadcaster.ui.model.page.PlayBroPageSource
+import com.tokopedia.play.broadcaster.ui.model.page.orUnknown
 import com.tokopedia.play.broadcaster.ui.model.product.ProductUiModel
 import com.tokopedia.play.broadcaster.util.bottomsheet.PlayBroadcastDialogCustomizer
 import com.tokopedia.play.broadcaster.util.delegate.retainedComponent
@@ -149,12 +153,16 @@ class PlayBroadcastSetupBottomSheet :
                         return mDataSource?.getProductList().orEmpty()
                     }
 
-                    override fun getAuthorId(): String {
-                        return mDataSource?.getAuthorId().orEmpty()
+                    override fun getSelectedAccount(): ContentAccountUiModel {
+                        return mDataSource?.getSelectedAccount().orUnknown()
                     }
 
                     override fun getChannelId(): String {
                         return mDataSource?.getChannelId().orEmpty()
+                    }
+
+                    override fun getPageSource(): PlayBroPageSource {
+                        return mDataSource?.getPageSource().orUnknown()
                     }
                 })
             }
@@ -235,8 +243,9 @@ class PlayBroadcastSetupBottomSheet :
 
     interface DataSource {
         fun getProductList(): List<ProductUiModel>
-        fun getAuthorId(): String
+        fun getSelectedAccount(): ContentAccountUiModel
         fun getChannelId(): String
+        fun getPageSource(): PlayBroPageSource
     }
 
     interface Listener {
