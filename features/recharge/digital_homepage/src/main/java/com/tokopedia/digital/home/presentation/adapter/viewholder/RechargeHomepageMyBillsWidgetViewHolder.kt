@@ -176,11 +176,11 @@ class RechargeHomepageMyBillsWidgetViewHolder(
                 RouteManager.route(itemView.context, element.items.applink)
             }
             with(binding.myBillsLastItem) {
-                titleView.weightType = Typography.REGULAR
                 title = element.items.content
                 setCta("") {
                     RouteManager.route(itemView.context, element.items.applink)
                 }
+                titleView.setType(Typography.PARAGRAPH_3)
             }
         }
     }
