@@ -11,7 +11,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:textColor="@color/Unify_N700_44"
-        android:textSize="@dimen/fontSize_lvl2"
+        android:textSize="12sp"
         app:typographyType="body_3"
         tools:text="Mulai dari" />
 
@@ -19,7 +19,7 @@
         android:id="@+id/tvShcDateText"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_lvl1"
+        android:layout_marginTop="2dp"
         android:text="@string/shc_select_date"
         android:textColor="@color/Unify_N700_44"
         app:typographyType="body_1" />
@@ -28,6 +28,6 @@
         android:id="@+id/horLineDtf"
         android:layout_width="match_parent"
         android:layout_height="@dimen/shc_dimen_1dp"
-        android:layout_marginTop="@dimen/spacing_lvl2"
+        android:layout_marginTop="4dp"
         android:background="@color/Unify_N150" />
 </LinearLayout>

@@ -1,5 +1,6 @@
 package com.tokopedia.product.detail.data.util
 
+import android.os.Build
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.common_sdk_affiliate_toko.model.AffiliatePageDetail
 import com.tokopedia.common_sdk_affiliate_toko.model.AffiliateSdkPageSource
@@ -28,10 +29,12 @@ import com.tokopedia.product.detail.common.data.model.rates.UserLocationRequest
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.VariantChild
 import com.tokopedia.product.detail.common.getCurrencyFormatted
-import com.tokopedia.product.detail.data.model.ProductInfoP2Data
+import com.tokopedia.product.detail.data.model.datamodel.ArButtonDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ContentWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
 import com.tokopedia.product.detail.data.model.datamodel.FintechWidgetDataModel
+import com.tokopedia.product.detail.data.model.datamodel.GlobalBundling
+import com.tokopedia.product.detail.data.model.datamodel.GlobalBundlingDataModel
 import com.tokopedia.product.detail.data.model.datamodel.LoadingDataModel
 import com.tokopedia.product.detail.data.model.datamodel.MediaDataModel
 import com.tokopedia.product.detail.data.model.datamodel.OneLinersDataModel
@@ -50,12 +53,13 @@ import com.tokopedia.product.detail.data.model.datamodel.ProductMostHelpfulRevie
 import com.tokopedia.product.detail.data.model.datamodel.ProductNotifyMeDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecomWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationVerticalPlaceholderDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductReportDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductShipmentDataModel
+import com.tokopedia.product.detail.data.model.datamodel.ProductShopAdditionalDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductShopCredibilityDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductSingleVariantDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ProductTickerInfoDataModel
-import com.tokopedia.product.detail.data.model.datamodel.ProductRecommendationVerticalPlaceholderDataModel
 import com.tokopedia.product.detail.data.model.datamodel.TopAdsImageDataModel
 import com.tokopedia.product.detail.data.model.datamodel.TopadsHeadlineUiModel
 import com.tokopedia.product.detail.data.model.datamodel.VariantDataModel
@@ -64,8 +68,10 @@ import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.Pro
 import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.ProductDetailInfoSeeMore
 import com.tokopedia.product.detail.data.model.datamodel.product_detail_info.asUiData
 import com.tokopedia.product.detail.data.model.review.ReviewImage
+import com.tokopedia.product.detail.data.util.ProductDetailConstant.GLOBAL_BUNDLING
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_7
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.PDP_9_TOKONOW
+import com.tokopedia.product.detail.data.util.ProductDetailConstant.PRODUCT_BUNDLING
 import com.tokopedia.product.detail.data.util.ProductDetailConstant.SHOPADS_CAROUSEL
 import com.tokopedia.product.detail.view.util.checkIfNumber
 import com.tokopedia.product.share.ProductData
@@ -77,18 +83,14 @@ import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uimodel.R
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uistate.ReviewMediaImageThumbnailUiState
 import com.tokopedia.reviewcommon.feature.media.thumbnail.presentation.uistate.ReviewMediaVideoThumbnailUiState
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
-import com.tokopedia.universal_sharing.tracker.PageType
-import com.tokopedia.track.TrackApp
 import com.tokopedia.universal_sharing.model.BoTypeImageGeneratorParam
 import com.tokopedia.universal_sharing.model.PdpParamModel
+import com.tokopedia.universal_sharing.tracker.PageType
 import com.tokopedia.universal_sharing.view.model.AffiliatePDPInput
 import com.tokopedia.universal_sharing.view.model.Product
 import com.tokopedia.universal_sharing.view.model.Shop
 
 object DynamicProductDetailMapper {
-
-    private const val PDP_SOURCE_AFFILIATE = "pdp"
-
     /**
      * Map network data into UI data by type, just assign type and name here. The data will be assigned in fragment
      * except info type
@@ -211,18 +213,38 @@ object DynamicProductDetailMapper {
                                         categoryList = carouselData.categoryCarouselList))
                     }
                 }
-                ProductDetailConstant.PRODUCT_BUNDLING -> {
-                    listOfComponent.add(ProductBundlingDataModel(type = component.type, name = component.componentName))
+                PRODUCT_BUNDLING -> {
+                    if (component.componentName == GLOBAL_BUNDLING) {
+                        val bundlingData = component.componentData.firstOrNull()
+                        if (bundlingData != null) {
+                            listOfComponent.add(
+                                GlobalBundlingDataModel(
+                                    type = component.type,
+                                    name = component.componentName,
+                                    data = generateGlobalBundlingData(bundlingData)
+                                )
+                            )
+                        }
+                    } else if (component.componentName == PRODUCT_BUNDLING) {
+                        listOfComponent.add(
+                            ProductBundlingDataModel(
+                                type = component.type,
+                                name = component.componentName
+                            )
+                        )
+                    }
                 }
                 ProductDetailConstant.CONTENT_WIDGET -> {
                     listOfComponent.add(
-                        ContentWidgetDataModel(
-                            type = component.type,
-                            name = component.componentName
-                        )
+                            ContentWidgetDataModel(
+                                    type = component.type,
+                                    name = component.componentName
+                            )
                     )
                 }
-
+                ProductDetailConstant.AR_BUTTON -> {
+                    listOfComponent.add(ArButtonDataModel(type = component.type, name = component.componentName))
+                }
                 ProductDetailConstant.FINTECH_WIDGET_TYPE -> {
                     listOfComponent.add(
                         FintechWidgetDataModel(
@@ -230,6 +252,13 @@ object DynamicProductDetailMapper {
                             name = component.componentName
                         )
                     )
+                }
+                ProductDetailConstant.PRODUCT_SHOP_ADDITIONAL -> {
+                    val shopAdditional = ProductShopAdditionalDataModel(
+                        name = component.componentName,
+                        type = component.type
+                    )
+                    listOfComponent.add(shopAdditional)
                 }
             }
         }
@@ -287,12 +316,13 @@ object DynamicProductDetailMapper {
         assignIdToMedia(newDataWithMedia.media)
 
         return DynamicProductInfoP1(
-                layoutName = data.generalName,
-                basic = data.basicInfo,
-                data = newDataWithMedia,
-                pdpSession = data.pdpSession,
-                bestSellerContent = bestSellerComponent,
-                stockAssuranceContent = stockAssuranceComponent
+            layoutName = data.generalName,
+            basic = data.basicInfo,
+            data = newDataWithMedia,
+            pdpSession = data.pdpSession,
+            bestSellerContent = bestSellerComponent,
+            stockAssuranceContent = stockAssuranceComponent,
+            requestId = data.requestId
         )
     }
 
@@ -304,14 +334,15 @@ object DynamicProductDetailMapper {
             it.componentName == componentName
         }?.componentData?.map {
             OneLinersContent(
-                    productID = it.productId,
-                    content = it.oneLinerContent,
-                    linkText = it.linkText,
-                    color = it.color,
-                    applink = it.applink,
-                    separator = it.separator,
-                    icon = it.icon,
-                    isVisible = it.isVisible
+                productID = it.productId,
+                content = it.oneLinerContent,
+                linkText = it.linkText,
+                color = it.color,
+                applink = it.applink,
+                separator = it.separator,
+                icon = it.icon,
+                isVisible = it.isVisible,
+                eduLink = it.eduLink
             )
         }?.associateBy { it.productID }
     }
@@ -627,6 +658,7 @@ object DynamicProductDetailMapper {
         val isOfficialStore = productInfo?.data?.isOS == true
         val isVariant = productInfo?.isProductVariant() ?: false
         val isVariantEmpty = variantData == null || !variantData.hasChildren
+        val higherThanLollipop = Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1
 
         return initialLayoutData.filterNot {
             (it.name() == ProductDetailConstant.TRADE_IN && (!isTradein || isShopOwner))
@@ -646,7 +678,11 @@ object DynamicProductDetailMapper {
                     || (it.name() == ProductDetailConstant.PRODUCT_FULLFILMENT)
                     || (it.name() == ProductDetailConstant.PRODUCT_INSTALLMENT_PAYLATER_INFO)
                     || (it.name() == ProductDetailConstant.ORDER_PRIORITY)
-                    || (it.name() == ProductDetailConstant.COD)
+                    /**
+                     * Remove when lollipop and product of seller itself
+                     */
+                    || (it.name() == ProductDetailConstant.AR_BUTTON
+                    && (GlobalConfig.isSellerApp() || !higherThanLollipop || isShopOwner))
         }.toMutableList()
     }
 
@@ -670,6 +706,15 @@ object DynamicProductDetailMapper {
                     stockQty = productInfo.getFinalStock().toIntOrZero()
                 )
             )
+        )
+    }
+
+    private fun generateGlobalBundlingData(bundlingData: ComponentData): GlobalBundling {
+        return GlobalBundling(
+            title = bundlingData.title,
+            widgetType = bundlingData.widgetType,
+            productId = bundlingData.productId,
+            whId = bundlingData.whId
         )
     }
 }

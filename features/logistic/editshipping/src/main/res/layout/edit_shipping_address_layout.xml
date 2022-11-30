@@ -67,11 +67,13 @@
         android:layout_alignLeft="@id/location_field_title"
         android:layout_below="@id/location_field_title"
         android:layout_marginTop="10dp"
-        android:hint="@string/title_activity_shop_address_form">
+        android:hint="@string/title_activity_shop_address_form"
+        android:textColorHint="@color/Unify_N400_68">
         <EditText
             android:id="@+id/address_text_field"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:textColor="@color/Unify_N700"/>
     </com.google.android.material.textfield.TextInputLayout>
 
     <include

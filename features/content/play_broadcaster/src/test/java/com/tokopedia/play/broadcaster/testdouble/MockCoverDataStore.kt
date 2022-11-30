@@ -13,10 +13,10 @@ import io.mockk.mockk
  * Created by jegul on 25/09/20
  */
 class MockCoverDataStore(
-        dispatcherProvider: CoroutineDispatchers,
+    dispatcherProvider: CoroutineDispatchers,
 ) : CoverDataStore {
 
-    private val realImpl = CoverDataStoreImpl(dispatcherProvider, mockk(), mockk())
+    private val realImpl = CoverDataStoreImpl(dispatcherProvider, mockk())
 
     private var isSuccess: Boolean = false
 
@@ -36,7 +36,10 @@ class MockCoverDataStore(
         realImpl.updateCoverState(state)
     }
 
-    override suspend fun uploadSelectedCover(channelId: String): NetworkResult<Unit> {
-        return realImpl.uploadSelectedCover(channelId)
+    override suspend fun uploadSelectedCover(
+        authorId: String,
+        channelId: String
+    ): NetworkResult<Unit> {
+        return realImpl.uploadSelectedCover(channelId, authorId)
     }
 }

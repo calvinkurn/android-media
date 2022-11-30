@@ -107,7 +107,7 @@ open class BaseDiscoveryAnalytics(val pageType: String = DISCOVERY_DEFAULT_PAGE_
     open fun trackUnifyShare(event: String = "", eventAction: String = "", userID: String?, eventLabel : String = "") {}
     open fun trackScrollDepth(screenScrollPercentage: Int, lastVisibleComponent: ComponentsItem?, isManualScroll : Boolean) {}
     open fun trackScreenshotAccess(eventAction : String = "", eventLabel : String = "", userID: String?, ) {}
-    open fun trackEventProductATCTokonow(componentsItems: ComponentsItem, userID: String?) {}
+    open fun trackEventProductATCTokonow(componentsItems: ComponentsItem, cartId: String) {}
     open fun trackEventProductATC(componentsItems: ComponentsItem, cartID:String) {}
     open fun trackEventViewMyCouponList(componentsItems: ComponentsItem, userID: String) {}
     open fun trackEventClickMyCouponList(componentsItems: ComponentsItem, userID: String) {}
@@ -159,6 +159,8 @@ open class BaseDiscoveryAnalytics(val pageType: String = DISCOVERY_DEFAULT_PAGE_
     open fun track3DotsOptionsClickedShareProduct() {}
     open fun trackShopBannerInfiniteImpression(componentsItems: ComponentsItem) {}
     open fun trackShopBannerInfiniteClick(componentsItems: ComponentsItem) {}
+    open fun trackContentCardImpression(componentsItems: ComponentsItem) {}
+    open fun trackContentCardClick(componentsItems: ComponentsItem) {}
     open fun trackEventClickProductBundlingChipSelection(componentsItems: ComponentsItem, selectedProduct: BundleProductUiModel, selectedSingleBundle: BundleDetailUiModel) {}
     open fun trackEventProductBundlingAtcClick(componentsItems: ComponentsItem, selectedMultipleBundle: BundleDetailUiModel) {}
     open fun trackEventProductBundlingViewImpression(componentsItems: ComponentsItem, selectedBundle: BundleDetailUiModel, bundlePosition: Int) {}

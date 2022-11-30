@@ -9,11 +9,11 @@ import com.tokopedia.buyerorderdetail.analytic.tracker.BuyerOrderDetailTrackerCo
 import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailActionButtonKey
 import com.tokopedia.buyerorderdetail.common.utils.BuyerOrderDetailNavigator
 import com.tokopedia.buyerorderdetail.presentation.model.ActionButtonsUiModel
+import com.tokopedia.buyerorderdetail.presentation.uistate.BuyerOrderDetailUiState
 import com.tokopedia.buyerorderdetail.presentation.viewmodel.BuyerOrderDetailViewModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
-import com.tokopedia.usecase.coroutines.Success
 
 class ReceiveConfirmationBottomSheet(
         context: Context,
@@ -138,12 +138,13 @@ class ReceiveConfirmationBottomSheet(
     }
 
     private fun trackClickActionButtonFromReceiveConfirmation(buttonName: String) {
-        viewModel.buyerOrderDetailResult.value?.let {
-            if (it is Success) {
+        viewModel.buyerOrderDetailUiState.value.let { uiState ->
+            if (uiState is BuyerOrderDetailUiState.HasData) {
+                val orderStatusUiModel = uiState.orderStatusUiState.data
                 BuyerOrderDetailTracker.eventClickActionButtonFromReceiveConfirmation(
                         buttonName = buttonName,
-                        orderId = it.data.orderStatusUiModel.orderStatusHeaderUiModel.orderId,
-                        orderStatusCode = it.data.orderStatusUiModel.orderStatusHeaderUiModel.orderStatusId)
+                        orderId = orderStatusUiModel.orderStatusHeaderUiModel.orderId,
+                        orderStatusCode = orderStatusUiModel.orderStatusHeaderUiModel.orderStatusId)
             }
         }
     }

@@ -2,6 +2,7 @@ package com.tokopedia.product.detail.data.model
 
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
+import com.tokopedia.product.detail.common.data.model.ar.ProductArInfo
 import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkir
 import com.tokopedia.product.detail.common.data.model.bundleinfo.BundleInfo
 import com.tokopedia.product.detail.common.data.model.carttype.AlternateCopy
@@ -17,6 +18,7 @@ import com.tokopedia.product.detail.data.model.purchaseprotection.ProductPurchas
 import com.tokopedia.product.detail.data.model.review.ProductRatingCount
 import com.tokopedia.product.detail.data.model.review.Review
 import com.tokopedia.product.detail.data.model.review.ReviewImage
+import com.tokopedia.product.detail.data.model.shop_additional.ProductShopAdditional
 import com.tokopedia.product.detail.data.model.ticker.ProductTicker
 import com.tokopedia.product.detail.data.model.ticker.TickerDataResponse
 import com.tokopedia.product.detail.data.model.tradein.ValidateTradeIn
@@ -34,7 +36,6 @@ data class ProductInfoP2UiData(
     var shopRating: Float = 0F,
     var productView: String = "",
     var wishlistCount: String = "",
-    var isGoApotik: Boolean = false,
     var shopBadge: String = "",
     var shopCommitment: ShopCommitment = ShopCommitment(),
     var productPurchaseProtectionInfo: ProductPurchaseProtectionInfo = ProductPurchaseProtectionInfo(),
@@ -59,7 +60,9 @@ data class ProductInfoP2UiData(
     var ticker: ProductTicker = ProductTicker(),
     var navBar: NavBar = NavBar(),
     var shopFinishRate: String = "",
-    var isToolbarTransparent: Boolean = false
+    var isToolbarTransparent: Boolean = false,
+    var shopAdditional: ProductShopAdditional = ProductShopAdditional(),
+    var arInfo: ProductArInfo = ProductArInfo()
 ) {
     fun getTickerByProductId(productId: String): List<TickerDataResponse>? {
         return ticker.tickerInfo.firstOrNull {

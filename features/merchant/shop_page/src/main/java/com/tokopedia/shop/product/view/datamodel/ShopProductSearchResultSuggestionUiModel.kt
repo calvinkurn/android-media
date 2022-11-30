@@ -8,8 +8,8 @@ import com.tokopedia.shop.product.view.adapter.ShopProductAdapterTypeFactory
  */
 
 data class ShopProductSearchResultSuggestionUiModel(
-        var suggestionText: String = "",
-        var queryString: String = ""
+    var suggestionText: String = "",
+    var queryString: String = ""
 ) : BaseShopProductViewModel {
 
     override fun type(typeFactory: ShopProductAdapterTypeFactory?): Int {

@@ -5,17 +5,17 @@ import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.shop.home.view.adapter.ShopHomeAdapterTypeFactory
 
 data class ShopHomeNewProductLaunchCampaignUiModel(
-        override val widgetId: String = "",
-        override val layoutOrder: Int = -1,
-        override val name: String = "",
-        override val type: String = "",
-        override val header: BaseShopHomeWidgetUiModel.Header = BaseShopHomeWidgetUiModel.Header(),
-        val data: List<NewProductLaunchCampaignItem>? = null
-) : BaseShopHomeWidgetUiModel(){
+    override val widgetId: String = "",
+    override val layoutOrder: Int = -1,
+    override val name: String = "",
+    override val type: String = "",
+    override val header: BaseShopHomeWidgetUiModel.Header = BaseShopHomeWidgetUiModel.Header(),
+    val data: List<NewProductLaunchCampaignItem>? = null
+) : BaseShopHomeWidgetUiModel() {
 
     val impressHolder = ImpressHolder()
 
-    companion object{
+    companion object {
         const val TOTAL_NOTIFY_WORDING_FORMAT_FOR_REPLACED = "{{number_of_users}}"
     }
 
@@ -41,15 +41,15 @@ data class ShopHomeNewProductLaunchCampaignUiModel(
     ) {
 
         data class BannerItem(
-                val imageId: String = "",
-                val imageUrl: String = "",
-                val bannerType: String = "",
-                val device: String = ""
+            val imageId: String = "",
+            val imageUrl: String = "",
+            val bannerType: String = "",
+            val device: String = ""
         ) : ImpressHolder()
 
         data class DynamicRule(
-                val descriptionHeader: String = "",
-                val dynamicRoleData: DynamicRoleData = DynamicRoleData()
+            val descriptionHeader: String = "",
+            val dynamicRoleData: DynamicRoleData = DynamicRoleData()
         ) {
             data class DynamicRoleData(
                     val ruleID: String = "",
@@ -61,5 +61,4 @@ data class ShopHomeNewProductLaunchCampaignUiModel(
     override fun type(typeFactory: ShopHomeAdapterTypeFactory): Int {
         return typeFactory.type(this)
     }
-
 }

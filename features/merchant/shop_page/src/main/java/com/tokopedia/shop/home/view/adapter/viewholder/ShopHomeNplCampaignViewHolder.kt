@@ -44,8 +44,8 @@ import java.util.Date
  */
 
 class ShopHomeNplCampaignViewHolder(
-        itemView: View,
-        private val shopHomeCampaignNplWidgetListener: ShopHomeCampaignNplWidgetListener
+    itemView: View,
+    private val shopHomeCampaignNplWidgetListener: ShopHomeCampaignNplWidgetListener
 ) : AbstractViewHolder<ShopHomeNewProductLaunchCampaignUiModel>(itemView), CoroutineScope {
 
     private val viewBinding: ItemShopHomeNewProductLaunchCampaignBinding? by viewBinding()
@@ -129,11 +129,11 @@ class ShopHomeNplCampaignViewHolder(
     private fun setProductCarousel(model: ShopHomeNewProductLaunchCampaignUiModel) {
         val productList = model.data?.firstOrNull()?.productList ?: listOf()
         productListCampaignAdapter = ShopCampaignCarouselProductAdapter(
-                ShopCampaignCarouselProductAdapterTypeFactory(
-                        model,
-                        shopHomeCampaignNplWidgetListener,
-                        adapterPosition
-                )
+            ShopCampaignCarouselProductAdapterTypeFactory(
+                model,
+                shopHomeCampaignNplWidgetListener,
+                adapterPosition
+            )
         )
         rvProductCarousel?.apply {
             launch {
@@ -142,22 +142,24 @@ class ShopHomeNplCampaignViewHolder(
                     if (null != rvState) {
                         rvProductCarousel?.layoutManager?.onRestoreInstanceState(rvState)
                     }
-                    val clickableBannerAreaWidth = (getScreenWidth() *  PADDING_LEFT_PERCENTAGE).toInt()
+                    val clickableBannerAreaWidth = (getScreenWidth() * PADDING_LEFT_PERCENTAGE).toInt()
                     productListCampaignAdapter?.clearAllElements()
-                    if(productList.isNotEmpty())
+                    if (productList.isNotEmpty())
                         productListCampaignAdapter?.addElement(ShopHomeCampaignCarouselClickableBannerAreaUiModel(clickableBannerAreaWidth))
                     productListCampaignAdapter?.addElement(productList)
                     isNestedScrollingEnabled = false
                     adapter = productListCampaignAdapter
-                    setHeightBasedOnProductCardMaxHeight(productList.map {
-                        ShopPageHomeMapper.mapToProductCardCampaignModel(
-                            isHasAddToCartButton = false,
-                            hasThreeDots = false,
-                            shopHomeProductViewModel = it,
-                            widgetName = model.name,
-                            statusCampaign = model.data?.firstOrNull()?.statusCampaign.orEmpty()
-                        )
-                    })
+                    setHeightBasedOnProductCardMaxHeight(
+                        productList.map {
+                            ShopPageHomeMapper.mapToProductCardCampaignModel(
+                                isHasAddToCartButton = false,
+                                hasThreeDots = false,
+                                shopHomeProductViewModel = it,
+                                widgetName = model.name,
+                                statusCampaign = model.data?.firstOrNull()?.statusCampaign.orEmpty()
+                            )
+                        }
+                    )
                 } catch (throwable: Exception) {
                     throwable.printStackTrace()
                 }
@@ -166,7 +168,8 @@ class ShopHomeNplCampaignViewHolder(
     }
 
     private suspend fun RecyclerView.setHeightBasedOnProductCardMaxHeight(
-            productCardModelList: List<ProductCardModel>) {
+        productCardModelList: List<ProductCardModel>
+    ) {
         val productCardHeight = getProductCardMaxHeight(productCardModelList)
         val carouselLayoutParams = this.layoutParams
         carouselLayoutParams?.height = productCardHeight
@@ -199,7 +202,7 @@ class ShopHomeNplCampaignViewHolder(
         }?.imageUrl.orEmpty()
         bannerBackground?.apply {
             try {
-                if(context.isValidGlideContext())
+                if (context.isValidGlideContext())
                     if (DeviceScreenInfo.isTablet(context)) {
                         setImageUrlTileMode(bannerUrl)
                     } else {
@@ -224,7 +227,7 @@ class ShopHomeNplCampaignViewHolder(
                 model.data?.firstOrNull()?.isHideRemindMeTextAfterXSeconds = true
             } else {
                 val isHideRemindMeTextAfterXSeconds = model.data?.firstOrNull()?.isHideRemindMeTextAfterXSeconds ?: false
-                if(isHideRemindMeTextAfterXSeconds){
+                if (isHideRemindMeTextAfterXSeconds) {
                     hideRemindMeText(model, it)
                 }else{
                     remindMeText?.show()
@@ -250,7 +253,7 @@ class ShopHomeNplCampaignViewHolder(
         remindMeText?.apply {
             val colorText = if(isRemindMe){
                 com.tokopedia.unifyprinciples.R.color.Unify_Background
-            }else{
+            } else {
                 com.tokopedia.unifyprinciples.R.color.Unify_N700_68
             }
             val iconRemindMe = if (isRemindMe) {
@@ -260,7 +263,7 @@ class ShopHomeNplCampaignViewHolder(
             }
             imageRemindMeNotification?.setImage(iconRemindMe)
             setTextColor(MethodChecker.getColor(itemView.context, colorText))
-            if(totalNotifyWording.isEmpty()) {
+            if (totalNotifyWording.isEmpty()) {
                 hide()
             } else {
                 val totalNotify = model.data?.firstOrNull()?.totalNotify ?: 0

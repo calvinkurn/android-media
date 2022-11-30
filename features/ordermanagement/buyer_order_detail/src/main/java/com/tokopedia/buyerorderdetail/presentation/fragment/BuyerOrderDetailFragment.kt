@@ -27,6 +27,7 @@ import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailImageUrl
 import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailIntentCode
 import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailIntentParamKey
 import com.tokopedia.buyerorderdetail.common.constants.BuyerOrderDetailMiscConstant
+import com.tokopedia.buyerorderdetail.common.extension.collectLatestWhenResumed
 import com.tokopedia.buyerorderdetail.common.utils.BuyerOrderDetailNavigator
 import com.tokopedia.buyerorderdetail.di.BuyerOrderDetailComponent
 import com.tokopedia.buyerorderdetail.domain.models.FinishOrderResponse
@@ -47,13 +48,13 @@ import com.tokopedia.buyerorderdetail.presentation.coachmark.CoachMarkManager
 import com.tokopedia.buyerorderdetail.presentation.dialog.RequestCancelResultDialog
 import com.tokopedia.buyerorderdetail.presentation.helper.BuyerOrderDetailStickyActionButtonHandler
 import com.tokopedia.buyerorderdetail.presentation.model.ActionButtonsUiModel
-import com.tokopedia.buyerorderdetail.presentation.model.BuyerOrderDetailUiModel
 import com.tokopedia.buyerorderdetail.presentation.model.MultiATCState
 import com.tokopedia.buyerorderdetail.presentation.model.ProductListUiModel
 import com.tokopedia.buyerorderdetail.presentation.partialview.BuyerOrderDetailMotionLayout
 import com.tokopedia.buyerorderdetail.presentation.partialview.BuyerOrderDetailStickyActionButton
 import com.tokopedia.buyerorderdetail.presentation.partialview.BuyerOrderDetailToolbarMenu
 import com.tokopedia.buyerorderdetail.presentation.scroller.BuyerOrderDetailRecyclerViewScroller
+import com.tokopedia.buyerorderdetail.presentation.uistate.BuyerOrderDetailUiState
 import com.tokopedia.buyerorderdetail.presentation.viewmodel.BuyerOrderDetailViewModel
 import com.tokopedia.cachemanager.SaveInstanceCacheManager
 import com.tokopedia.digital.digital_recommendation.presentation.model.DigitalRecommendationAdditionalTrackingData
@@ -62,6 +63,7 @@ import com.tokopedia.digital.digital_recommendation.utils.DigitalRecommendationD
 import com.tokopedia.empty_state.EmptyStateUnify
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.header.HeaderUnify
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.logisticCommon.ui.DelayedEtaBottomSheetFragment
 import com.tokopedia.network.exception.MessageErrorException
 import com.tokopedia.network.utils.ErrorHandler
@@ -76,14 +78,19 @@ import com.tokopedia.utils.text.currency.StringUtils
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
+import kotlin.coroutines.Continuation
+import kotlin.coroutines.resume
+import kotlin.coroutines.suspendCoroutine
 
-open class BuyerOrderDetailFragment : BaseDaggerFragment(),
+open class BuyerOrderDetailFragment :
+    BaseDaggerFragment(),
     PartialProductItemViewHolder.ProductViewListener,
     ProductBundlingViewHolder.Listener,
     TickerViewHolder.TickerViewHolderListener,
     DigitalRecommendationViewHolder.ActionListener,
     CourierInfoViewHolder.CourierInfoViewHolderListener,
-    PgRecommendationViewHolder.BuyerOrderDetailBindRecomWidgetListener {
+    PgRecommendationViewHolder.BuyerOrderDetailBindRecomWidgetListener,
+    OrderResolutionViewHolder.OrderResolutionListener {
 
     companion object {
         @JvmStatic
@@ -95,9 +102,6 @@ open class BuyerOrderDetailFragment : BaseDaggerFragment(),
 
         const val RESULT_CODE_INSTANT_CANCEL_BUYER_REQUEST = 100
         const val RESULT_CODE_CANCEL_ORDER_DISABLE = 102
-
-        private const val SAVED_INSTANCE_STATE_CACHE_MANAGER_KEY =
-            "buyerOrderDetailSavedInstanceState"
     }
 
     @Inject
@@ -138,6 +142,7 @@ open class BuyerOrderDetailFragment : BaseDaggerFragment(),
             this,
             this,
             navigator,
+            this,
             this
         )
     }
@@ -189,11 +194,13 @@ open class BuyerOrderDetailFragment : BaseDaggerFragment(),
         }
 
     private fun createToolbarMenuIcons(context: Context): BuyerOrderDetailToolbarMenu? {
-        return (View.inflate(
-            context,
-            R.layout.partial_buyer_order_detail_toolbar_menu,
-            null
-        ) as? BuyerOrderDetailToolbarMenu)?.apply {
+        return (
+            View.inflate(
+                context,
+                R.layout.partial_buyer_order_detail_toolbar_menu,
+                null
+            ) as? BuyerOrderDetailToolbarMenu
+            )?.apply {
             setViewModel(viewModel)
             setNavigator(navigator)
         }
@@ -218,16 +225,14 @@ open class BuyerOrderDetailFragment : BaseDaggerFragment(),
         setupViews()
         buyerOrderDetailLoadMonitoring?.startNetworkPerformanceMonitoring()
         if (savedInstanceState == null) {
-            loadInitialData()
+            loadInitialData(false)
         } else {
             restoreFragmentState(savedInstanceState)
         }
-        contentVisibilityAnimator.initPage {
-            observeBuyerOrderDetail()
-            observeReceiveConfirmation()
-            observeAddSingleToCart()
-            observeAddMultipleToCart()
-        }
+        observeBuyerOrderDetail()
+        observeReceiveConfirmation()
+        observeAddSingleToCart()
+        observeAddMultipleToCart()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -250,16 +255,6 @@ open class BuyerOrderDetailFragment : BaseDaggerFragment(),
         }
     }
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        viewModel.buyerOrderDetailResult.value?.let {
-            if (it is Success) {
-                cacheManager.put(SAVED_INSTANCE_STATE_CACHE_MANAGER_KEY, it.data)
-                outState.putString(BuyerOrderDetailCommonIntentParamKey.CACHE_ID, cacheManager.id)
-            }
-        }
-    }
-
     override fun onDestroy() {
         super.onDestroy()
         coachMarkManager?.dismissCoachMark()
@@ -267,7 +262,6 @@ open class BuyerOrderDetailFragment : BaseDaggerFragment(),
 
     override fun onBuyAgainButtonClicked(product: ProductListUiModel.ProductUiModel) {
         val productCopy = product.copy(isProcessing = true)
-        adapter.updateItem(product, productCopy)
         viewModel.addSingleToCart(productCopy)
         trackBuyAgainProduct()
     }
@@ -289,23 +283,23 @@ open class BuyerOrderDetailFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun restoreFragmentState(savedInstanceState: Bundle) {
-        val cacheManagerId =
-            savedInstanceState.getString(BuyerOrderDetailCommonIntentParamKey.CACHE_ID).orEmpty()
-        cacheManager.id = cacheManagerId
-        val savedBuyerOrderDetailData = cacheManager.get<BuyerOrderDetailUiModel>(
-            SAVED_INSTANCE_STATE_CACHE_MANAGER_KEY,
-            BuyerOrderDetailUiModel::class.java
+    override fun onResolutionWidgetClicked() {
+        BuyerOrderDetailTracker.sendClickOnResolutionWidgetEvent(
+            viewModel.getOrderStatusId(),
+            viewModel.getOrderId()
         )
-        if (savedBuyerOrderDetailData != null) {
-            viewModel.restoreBuyerOrderDetailData(savedBuyerOrderDetailData)
-        } else {
-            loadInitialData()
-        }
     }
 
-    private fun loadInitialData() {
-        loadBuyerOrderDetail()
+    private fun restoreFragmentState(savedInstanceState: Bundle) {
+        val cacheManagerId = savedInstanceState.getString(
+            BuyerOrderDetailCommonIntentParamKey.CACHE_ID
+        ).orEmpty()
+        cacheManager.id = cacheManagerId
+        loadInitialData(true)
+    }
+
+    private fun loadInitialData(shouldCheckCache: Boolean) {
+        loadBuyerOrderDetail(shouldCheckCache)
     }
 
     private fun setupViews() {
@@ -336,11 +330,7 @@ open class BuyerOrderDetailFragment : BaseDaggerFragment(),
     }
 
     private fun setupGlobalError() {
-        globalErrorBuyerOrderDetail?.setActionClickListener {
-            contentVisibilityAnimator.animateToLoadingState {
-                loadBuyerOrderDetail()
-            }
-        }
+        globalErrorBuyerOrderDetail?.setActionClickListener { loadBuyerOrderDetail(false) }
         emptyStateBuyerOrderDetail?.apply {
             try {
                 emptyStateImageID.setImageResource(com.tokopedia.globalerror.R.drawable.unify_globalerrors_500)
@@ -351,18 +341,13 @@ open class BuyerOrderDetailFragment : BaseDaggerFragment(),
             setPrimaryCTAText(
                 context?.getString(com.tokopedia.globalerror.R.string.error500Action).orEmpty()
             )
-            setPrimaryCTAClickListener {
-                contentVisibilityAnimator.animateToLoadingState {
-                    loadBuyerOrderDetail()
-                }
-            }
+            setPrimaryCTAClickListener { loadBuyerOrderDetail(false) }
         }
     }
 
     private fun setupSwipeRefreshLayout() {
-        swipeRefreshBuyerOrderDetail?.isEnabled = false
         swipeRefreshBuyerOrderDetail?.setOnRefreshListener {
-            loadBuyerOrderDetail()
+            loadBuyerOrderDetail(false)
         }
     }
 
@@ -380,24 +365,24 @@ open class BuyerOrderDetailFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun loadBuyerOrderDetail() {
+    private fun loadBuyerOrderDetail(shouldCheckCache: Boolean) {
         coachMarkManager?.resetCoachMarkState()
         val orderId = arguments?.getString(BuyerOrderDetailCommonIntentParamKey.ORDER_ID, "").orEmpty()
         val paymentId = arguments?.getString(BuyerOrderDetailIntentParamKey.PARAM_PAYMENT_ID, "").orEmpty()
         val cart = arguments?.getString(BuyerOrderDetailIntentParamKey.PARAM_CART_STRING, "").orEmpty()
-        viewModel.getBuyerOrderDetail(orderId, paymentId, cart)
+        viewModel.getBuyerOrderDetailData(orderId, paymentId, cart, shouldCheckCache)
     }
 
     private fun observeBuyerOrderDetail() {
-        viewModel.buyerOrderDetailResult.observe(viewLifecycleOwner) { result ->
-            setupRecyclerView()
-            buyerOrderDetailLoadMonitoring?.startRenderPerformanceMonitoring()
-            when (result) {
-                is Success -> onSuccessGetBuyerOrderDetail(result.data)
-                is Fail -> onFailedGetBuyerOrderDetail(result.throwable)
+        collectLatestWhenResumed(viewModel.buyerOrderDetailUiState) { uiState ->
+            suspendCoroutine { continuation ->
+                when (uiState) {
+                    is BuyerOrderDetailUiState.HasData.Showing -> onSuccessGetBuyerOrderDetail(uiState, continuation)
+                    is BuyerOrderDetailUiState.Error -> onFailedGetBuyerOrderDetail(uiState.throwable, continuation)
+                    is BuyerOrderDetailUiState.FullscreenLoading -> onFullscreenLoadingBuyerOrderDetail(continuation)
+                    is BuyerOrderDetailUiState.HasData.PullRefreshLoading -> onPullRefreshLoadingBuyerOrderDetail(uiState, continuation)
+                }
             }
-            swipeRefreshBuyerOrderDetail?.isRefreshing = false
-            swipeRefreshBuyerOrderDetail?.isEnabled = true
         }
     }
 
@@ -419,7 +404,6 @@ open class BuyerOrderDetailFragment : BaseDaggerFragment(),
                 }
                 is Fail -> onFailedSingleAddToCart(requestResult.throwable)
             }
-            adapter.updateItem(result.first, result.first.copy(isProcessing = false))
         }
     }
 
@@ -436,18 +420,44 @@ open class BuyerOrderDetailFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun onSuccessGetBuyerOrderDetail(data: BuyerOrderDetailUiModel) {
-        val orderId = viewModel.getOrderId()
-        stickyActionButton?.setupActionButtons(
-            data.actionButtonsUiModel,
-            containerBuyerOrderDetail?.isStickyActionButtonsShowed() ?: false
-        )
-        setupToolbarMenu(!containsAskSellerButton(data.actionButtonsUiModel) && orderId.isNotBlank() && orderId != BuyerOrderDetailMiscConstant.WAITING_INVOICE_ORDER_ID)
-        adapter.updateItems(context, data)
-        contentVisibilityAnimator.animateToShowContent(containsActionButtons(data.actionButtonsUiModel)) {
-            coachMarkManager?.notifyUpdatedAdapter()
-        }
+    private fun onSuccessGetBuyerOrderDetail(
+        uiState: BuyerOrderDetailUiState.HasData.Showing,
+        continuation: Continuation<Unit>
+    ) {
+        buyerOrderDetailLoadMonitoring?.startRenderPerformanceMonitoring()
+        updateToolbarMenu(uiState)
+        updateContent(uiState, continuation)
+        updateStickyButtons(uiState)
+        swipeRefreshBuyerOrderDetail?.isRefreshing = false
         stopLoadTimeMonitoring()
+    }
+
+    private fun updateToolbarMenu(uiState: BuyerOrderDetailUiState.HasData) {
+        val orderId = viewModel.getOrderId()
+        setupToolbarMenu(
+            !containsAskSellerButton(uiState.actionButtonsUiState.data) &&
+                orderId.isNotBlank() &&
+                orderId != BuyerOrderDetailMiscConstant.WAITING_INVOICE_ORDER_ID
+        )
+    }
+
+    private fun updateContent(
+        uiState: BuyerOrderDetailUiState.HasData,
+        continuation: Continuation<Unit>
+    ) {
+        setupRecyclerView()
+        adapter.updateItems(context, uiState)
+        contentVisibilityAnimator.animateToShowContent(containsActionButtons(uiState.actionButtonsUiState.data)) {
+            coachMarkManager?.notifyUpdatedAdapter()
+            continuation.resumeSafely(Unit)
+        }
+    }
+
+    private fun updateStickyButtons(uiState: BuyerOrderDetailUiState.HasData) {
+        stickyActionButton?.setupActionButtons(
+            actionButtonsUiModel = uiState.actionButtonsUiState.data,
+            animateChanges = containerBuyerOrderDetail?.isStickyActionButtonsShowed().orFalse()
+        )
     }
 
     private fun setupToolbarMenu(showChatIcon: Boolean) {
@@ -462,15 +472,14 @@ open class BuyerOrderDetailFragment : BaseDaggerFragment(),
 
     private fun containsAskSellerButton(actionButtonsUiModel: ActionButtonsUiModel): Boolean {
         return actionButtonsUiModel.primaryActionButton.key == BuyerOrderDetailActionButtonKey.ASK_SELLER ||
-                actionButtonsUiModel.secondaryActionButtons.any { it.key == BuyerOrderDetailActionButtonKey.ASK_SELLER }
+            actionButtonsUiModel.secondaryActionButtons.any { it.key == BuyerOrderDetailActionButtonKey.ASK_SELLER }
     }
 
     private fun onSuccessReceiveConfirmation(data: FinishOrderResponse.Data.FinishOrderBuyer) {
         bottomSheetManager.finishReceiveConfirmationBottomSheetLoading()
         bottomSheetManager.dismissBottomSheets()
         showCommonToaster(data.message.firstOrNull().orEmpty())
-        swipeRefreshBuyerOrderDetail?.isRefreshing = true
-        loadBuyerOrderDetail()
+        loadBuyerOrderDetail(false)
     }
 
     private fun onFailedReceiveConfirmation(throwable: Throwable) {
@@ -509,7 +518,8 @@ open class BuyerOrderDetailFragment : BaseDaggerFragment(),
         }
     }
 
-    private fun onFailedGetBuyerOrderDetail(throwable: Throwable) {
+    private fun onFailedGetBuyerOrderDetail(throwable: Throwable?, continuation: Continuation<Unit>) {
+        buyerOrderDetailLoadMonitoring?.startRenderPerformanceMonitoring()
         val errorType = when (throwable) {
             is MessageErrorException -> null
             is SocketTimeoutException, is UnknownHostException -> GlobalError.NO_CONNECTION
@@ -517,24 +527,42 @@ open class BuyerOrderDetailFragment : BaseDaggerFragment(),
         }
 
         if (errorType == null) {
-            emptyStateBuyerOrderDetail?.showMessageExceptionError(throwable)
+            emptyStateBuyerOrderDetail?.showMessageExceptionError(throwable, continuation)
         } else {
             globalErrorBuyerOrderDetail?.apply {
                 setType(errorType)
-                contentVisibilityAnimator.animateToErrorState()
+                contentVisibilityAnimator.animateToErrorState { continuation.resumeSafely(Unit) }
             }
         }
         toolbarMenuAnimator?.transitionToEmpty()
+        swipeRefreshBuyerOrderDetail?.isRefreshing = false
         stopLoadTimeMonitoring()
     }
 
-    private fun EmptyStateUnify.showMessageExceptionError(throwable: Throwable) {
+    private fun onFullscreenLoadingBuyerOrderDetail(continuation: Continuation<Unit>) {
+        contentVisibilityAnimator.animateToLoadingState { continuation.resumeSafely(Unit) }
+        toolbarMenuAnimator?.transitionToEmpty()
+    }
+
+    private fun onPullRefreshLoadingBuyerOrderDetail(
+        uiState: BuyerOrderDetailUiState.HasData.PullRefreshLoading,
+        continuation: Continuation<Unit>
+    ) {
+        swipeRefreshBuyerOrderDetail?.isRefreshing = true
+        updateToolbarMenu(uiState)
+        updateContent(uiState, continuation)
+        updateStickyButtons(uiState)
+    }
+
+    private fun EmptyStateUnify.showMessageExceptionError(
+        throwable: Throwable?,
+        continuation: Continuation<Unit>
+    ) {
         val errorMessage = context?.let {
             ErrorHandler.getErrorMessage(it, throwable)
-        } ?: this@BuyerOrderDetailFragment.context?.getString(R.string.failed_to_get_information)
-            .orEmpty()
+        } ?: this@BuyerOrderDetailFragment.context?.getString(R.string.failed_to_get_information).orEmpty()
         setDescription(errorMessage)
-        contentVisibilityAnimator.animateToEmptyStateError()
+        contentVisibilityAnimator.animateToEmptyStateError { continuation.resumeSafely(Unit) }
     }
 
     private fun setupToolbarMenuIcon() {
@@ -617,17 +645,16 @@ open class BuyerOrderDetailFragment : BaseDaggerFragment(),
                 }
             }
             if (result != BuyerOrderDetailMiscConstant.RESULT_BUYER_REQUEST_CANCEL_STATUS_FAILED) {
-                loadBuyerOrderDetail()
+                loadBuyerOrderDetail(false)
             }
         } else if (resultCode == RESULT_CODE_CANCEL_ORDER_DISABLE) {
-            loadBuyerOrderDetail()
+            loadBuyerOrderDetail(false)
         }
         bottomSheetManager.dismissBottomSheets()
     }
 
     private fun handleComplaintResult() {
-        swipeRefreshBuyerOrderDetail?.isRefreshing = true
-        loadBuyerOrderDetail()
+        loadBuyerOrderDetail(false)
         bottomSheetManager.dismissBottomSheets()
     }
 
@@ -662,8 +689,7 @@ open class BuyerOrderDetailFragment : BaseDaggerFragment(),
     }
 
     private fun handleResultRefreshOnly() {
-        swipeRefreshBuyerOrderDetail?.isRefreshing = true
-        loadBuyerOrderDetail()
+        loadBuyerOrderDetail(false)
         bottomSheetManager.dismissBottomSheets()
     }
 
@@ -733,5 +759,9 @@ open class BuyerOrderDetailFragment : BaseDaggerFragment(),
 
     override fun hidePgRecommendation() {
         rvBuyerOrderDetail?.post { adapter.removePgRecommendation() }
+    }
+
+    private fun <T> Continuation<T>.resumeSafely(any: T) {
+        try { resume(any) } catch (_: Throwable) { }
     }
 }
