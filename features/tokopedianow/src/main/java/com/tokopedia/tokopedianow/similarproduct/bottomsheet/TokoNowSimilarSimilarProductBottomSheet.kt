@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -17,6 +18,7 @@ import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
+import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.databinding.BottomsheetTokopedianowSimilarProductsBinding
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ProductItemListener
 import com.tokopedia.tokopedianow.searchcategory.utils.ChooseAddressWrapper
@@ -67,6 +69,11 @@ class TokoNowSimilarSimilarProductBottomSheet : BottomSheetUnify(), SimilarProdu
                 productListener = productListener,
             )
         )
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setStyle(DialogFragment.STYLE_NORMAL, R.style.DialogStyle)
     }
 
     override fun onCreateView(
@@ -123,7 +130,7 @@ class TokoNowSimilarSimilarProductBottomSheet : BottomSheetUnify(), SimilarProdu
     private fun configureBottomSheet() {
         clearContentPadding = true
         showCloseIcon = true
-        isDragable = true
+        isDragable = false
         isHideable = true
         showKnob = true
         setCloseClickListener {
