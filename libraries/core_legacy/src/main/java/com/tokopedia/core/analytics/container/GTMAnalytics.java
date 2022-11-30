@@ -124,6 +124,16 @@ public class GTMAnalytics extends ContextAnalytics {
     private static final String EMBRACE_EVENT_ACTION = "eventAction";
     private static final String EMBRACE_EVENT_LABEL = "eventLabel";
 
+    private static String UTM_SOURCE_HOLDER = "";
+    private static String UTM_MEDIUM_HOLDER = "";
+    private static String UTM_CAMPAIGN_HOLDER = "";
+
+    public static void setUTMParamsForSession(String utmSource, String utmMedium, String utmCampaign){
+        UTM_CAMPAIGN_HOLDER = utmCampaign;
+        UTM_MEDIUM_HOLDER = utmMedium;
+        UTM_SOURCE_HOLDER = utmSource;
+    }
+
     public GTMAnalytics(Context context) {
         super(context);
         if (GlobalConfig.isAllowDebuggingTools()) {
@@ -1428,6 +1438,9 @@ public class GTMAnalytics extends ContextAnalytics {
                             addGclIdIfNeeded(eventName, it);
                         }
                     }
+                    it.put(AppEventTracking.GTM.UTM_MEDIUM, UTM_MEDIUM_HOLDER);
+                    it.put(AppEventTracking.GTM.UTM_CAMPAIGN, UTM_CAMPAIGN_HOLDER);
+                    it.put(AppEventTracking.GTM.UTM_SOURCE, UTM_SOURCE_HOLDER);
                     pushIris("", it);
                     return true;
                 })
