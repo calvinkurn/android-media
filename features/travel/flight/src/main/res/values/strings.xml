@@ -1,5 +1,6 @@
 <resources>
     <string name="flight_search_return">Pulang Pergi</string>
+    <string name="flight_search_airport_departure_title">Asal</string>
     <string name="flight_search_airport_arrival_title">Tujuan</string>
     <string name="flight_search_passenger_class_title">Kelas Penerbangan</string>
     <string name="flight_search_search_ticket">Cari Tiket</string>
