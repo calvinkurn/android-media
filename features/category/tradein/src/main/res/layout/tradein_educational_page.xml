@@ -10,14 +10,12 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginBottom="72dp"
-        android:background="@color/Unify_Background"
         android:orientation="vertical"
         android:scrollbars="none">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/Unify_Background"
         android:clickable="true"
         android:focusable="true">
 
@@ -32,7 +30,6 @@
             app:toolbarAlwaysShowShadow="false"
             app:toolbarBackButton="back"
             app:toolbarContentType="typeTitle"
-            app:toolbarInitialFillColor="@color/Unify_N0"
             app:toolbarInitialTheme="light"
             app:toolbarTitle="Tukar Tambah" />
 
@@ -292,7 +289,6 @@
             android:layout_height="48dp"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
-            android:background="@color/Unify_N0"
             android:gravity="center"
             app:completeUrl="https://images.tokopedia.net/img/android/res/singleDpi/tradein_edu_1.png"
             app:imageDpiSupportType="singleDpi"
@@ -335,7 +331,6 @@
             android:layout_height="48dp"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
-            android:background="@color/Unify_N0"
             android:gravity="center"
             app:completeUrl=" https://images.tokopedia.net/img/android/res/singleDpi/tradein_edu_2.png"
             app:imageDpiSupportType="singleDpi"
@@ -378,7 +373,6 @@
             android:layout_height="48dp"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
-            android:background="@color/Unify_N0"
             android:gravity="center"
             app:completeUrl=" https://images.tokopedia.net/img/android/res/singleDpi/tradein_edu_3.png"
             app:imageDpiSupportType="singleDpi"
@@ -421,7 +415,6 @@
             android:layout_height="48dp"
             android:layout_marginLeft="16dp"
             android:layout_marginRight="16dp"
-            android:background="@color/Unify_N0"
             android:gravity="center"
             app:completeUrl=" https://images.tokopedia.net/img/android/res/singleDpi/tradein_edu_4.png"
             app:imageDpiSupportType="singleDpi"
@@ -484,7 +477,6 @@
             android:layout_marginLeft="16dp"
             android:layout_marginTop="16dp"
             android:layout_marginRight="16dp"
-            android:background="@color/Unify_N0"
             android:gravity="center"
             app:completeUrl=" https://images.tokopedia.net/img/android/res/singleDpi/tradein_edu_5.png"
             app:imageDpiSupportType="singleDpi"
@@ -534,7 +526,6 @@ Syarat &amp; Ketentuan yang berlaku." />
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/Unify_NN0"
         android:layout_margin="16dp"
         app:layout_constraintBottom_toBottomOf="parent">
 

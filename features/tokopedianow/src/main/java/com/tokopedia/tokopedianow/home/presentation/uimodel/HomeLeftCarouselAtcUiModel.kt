@@ -13,7 +13,8 @@ data class HomeLeftCarouselAtcUiModel(
     val backgroundColorArray: ArrayList<String> = arrayListOf(),
     val campaignId: String = "",
     var imageBanner: String = "",
-    var imageBannerAppLink: String = ""
+    var imageBannerAppLink: String = "",
+    val realTimeRecom: HomeRealTimeRecomUiModel = HomeRealTimeRecomUiModel()
 ): HomeLayoutUiModel(id) {
     override fun type(typeFactory: HomeTypeFactory): Int {
         return typeFactory.type(this)
@@ -24,6 +25,22 @@ data class HomeLeftCarouselAtcUiModel(
     }
 
     override fun equals(other: Any?): Boolean {
-        return (other as? HomeLeftCarouselAtcUiModel)?.id == id && (other as? HomeLeftCarouselAtcUiModel)?.productList == productList
+        return (other as? HomeLeftCarouselAtcUiModel)?.id == id &&
+            (other as? HomeLeftCarouselAtcUiModel)?.productList == productList &&
+            (other as? HomeLeftCarouselAtcUiModel)?.realTimeRecom == realTimeRecom
+    }
+
+    override fun getChangePayload(newModel: HomeLayoutUiModel): Any? {
+        val newItem = newModel as HomeLeftCarouselAtcUiModel
+        val oldProductList = productList
+        val newProductList = newItem.productList
+        val oldRtrWidget = realTimeRecom
+        val newRtrWidget = newItem.realTimeRecom
+
+        return when {
+            oldProductList != newProductList ||
+            oldRtrWidget != newRtrWidget -> true
+            else -> null
+        }
     }
 }

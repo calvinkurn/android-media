@@ -1901,8 +1901,10 @@ open class LoginEmailPhoneFragment : BaseDaggerFragment(), LoginEmailPhoneContra
     }
 
     private fun submitIntegrityApi() {
-        context?.let {
-            IntegrityApiWorker.scheduleWorker(it.applicationContext, IntegrityApiConstant.EVENT_LOGIN)
+        if(firebaseRemoteConfig.getBoolean(IntegrityApiConstant.LOGIN_CONFIG)) {
+            context?.let {
+                IntegrityApiWorker.scheduleWorker(it.applicationContext, IntegrityApiConstant.EVENT_LOGIN)
+            }
         }
     }
 
