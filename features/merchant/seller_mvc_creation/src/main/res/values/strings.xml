@@ -97,6 +97,7 @@
     <string name="smvc_bottomsheet_filter_voucher_title">Filter</string>
     <string name="smvc_bottomsheet_filter_voucher_action_text">Reset</string>
     <string name="smvc_bottomsheet_other_period_voucher_title">%d Jadwal Lainnya</string>
+    <string name="smvc_bottomsheet_other_period_header_info_text"><![CDATA[Semua jadwal berikut masih dalam periode <b>Mendatang</b>.]]></string>
     <string name="smvc_bottomsheet_filter_status_voucher_title">Status</string>
     <string name="smvc_bottomsheet_filter_voucher_all">Semua Status</string>
     <string name="smvc_bottomsheet_filter_voucher_notstarted">Mendatang</string>
