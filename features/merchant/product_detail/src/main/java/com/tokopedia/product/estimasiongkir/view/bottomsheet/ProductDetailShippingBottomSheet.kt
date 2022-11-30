@@ -29,6 +29,7 @@ import com.tokopedia.product.detail.view.util.ProductSeparatorItemDecoration
 import com.tokopedia.product.detail.view.util.doSuccessOrFail
 import com.tokopedia.product.detail.view.viewmodel.ProductDetailSharedViewModel
 import com.tokopedia.product.estimasiongkir.data.model.shipping.ProductShippingErrorDataModel
+import com.tokopedia.product.estimasiongkir.data.model.shipping.ProductShippingSellyDataModel
 import com.tokopedia.product.estimasiongkir.data.model.shipping.ProductShippingShimmerDataModel
 import com.tokopedia.product.estimasiongkir.di.DaggerRatesEstimationComponent
 import com.tokopedia.product.estimasiongkir.di.RatesEstimationModule
@@ -129,12 +130,16 @@ class ProductDetailShippingBottomSheet : BottomSheetDialogFragment(), ProductDet
 
         viewModel?.ratesVisitableResult?.observe(this.viewLifecycleOwner) { result ->
             result.doSuccessOrFail({
-                shippingAdapter?.submitList(it.data)
+                shippingAdapter?.submitList(it.data+dummySelly)
             }) { throwable ->
                 showError(throwable)
             }
         }
     }
+
+    private val dummySelly = listOf(
+        ProductShippingSellyDataModel()
+    )
 
     private fun showError(it: Throwable) {
         val errorType = if (it is SocketTimeoutException || it is UnknownHostException || it is ConnectException) {
