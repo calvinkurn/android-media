@@ -418,7 +418,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             val widgetList = mutableListOf<BaseWidgetUiModel<*>>()
             adapter.data.forEach {
                 if (it != widget) {
-                    widgetList.add(it.copyWidget())
+                    widgetList.add(it)
                 }
             }
             notifyWidgetWithSdkChecking {
