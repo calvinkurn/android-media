@@ -481,6 +481,9 @@ class PlayBroadcastPreparationFragment @Inject constructor(
         }
 
         coachMark?.showCoachMark(ArrayList(coachMarkItems))
+        coachMark?.onDismissListener = {
+            coachMarkSharedPref.setHasBeenShown(ContentCoachMarkSharedPref.Key.PlayShortsEntryPoint, userSession.userId)
+        }
         coachMark?.setStepListener(object : CoachMark2.OnStepListener {
             override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
                 if(coachMarkItem.anchorView == binding.toolbarContentCommon) {
