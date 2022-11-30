@@ -819,16 +819,24 @@ class ChatbotFragment :
 
     /**
      * Check the first item of the list , if it is of Attachment type 34 and content code 100,
-     * then need to check the first item only - to show/hide bigReplyBox,
-     * if first item is AT 34, then show the bigReplyBox else don't
+     * then need to check the whole list- to show/hide bigReplyBox,
+     * condition is - check whether after receiving that attachment user has not changed anything
+     * If the user has sent any message after that attachment, then return immediately else process
+     * that item
      * */
     private fun processDynamicAttachmentFromHistoryForContentCode100(chatroom: ChatroomViewModel) {
-        chatroom.listChat.getOrNull(0).let {
-            if (it !is FallbackAttachmentUiModel) {
+        chatroom.listChat.forEach {
+
+            if (it is MessageUiModel && it.isSender) {
                 return
             }
+
+            if (it !is FallbackAttachmentUiModel) {
+                return@forEach
+            }
+
             if (it.attachmentType != DYNAMIC_ATTACHMENT) {
-                return
+                return@forEach
             }
 
             if (it.attachment is Attachment) {
@@ -847,7 +855,7 @@ class ChatbotFragment :
                         return
                     }
                 } catch (e: JsonSyntaxException) {
-                    return
+                    return@forEach
                 }
             }
         }
@@ -855,7 +863,9 @@ class ChatbotFragment :
 
     /**
      * Check the first item of the list , if it is of Attachment type 34 and content code 101,
-     * then need to check the whole list, whether to show/hide the reply box,
+     * then need to check the whole list, whether to show/hide the reply box
+     * but only take action for the first element with type 34
+     * content code 101 , then return from the method, ,
      * */
     private fun processDynamicAttachmentFromHistoryForContentCode101(chatroom: ChatroomViewModel) {
         chatroom.listChat.forEach {
