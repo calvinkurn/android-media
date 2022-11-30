@@ -135,7 +135,7 @@ class RecyclerViewUpdater @Inject constructor(
     }
 
     override fun scrollToPosition(position: Int) {
-        recyclerView?.smoothScrollToPosition(position)
+        recyclerView?.scrollToPosition(position)
     }
 
     @OnLifecycleEvent(Lifecycle.Event.ON_DESTROY)
