@@ -4,6 +4,7 @@ import android.view.View
 import android.widget.ImageView
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
@@ -41,6 +42,11 @@ class TokoFoodHomeUSPViewHolder(
     private var tgThirdUsp: Typography? = null
     private var shimmeringLayout: View? = null
 
+    init {
+        setCardBackgroundColor()
+        setUspBackgroundColor()
+    }
+
     override fun bind(element: TokoFoodHomeUSPUiModel) {
         shimmeringLayout = binding?.uspLoadLayout?.root
         imgFirstUsp = binding?.imgFirstUsp
@@ -55,6 +61,20 @@ class TokoFoodHomeUSPViewHolder(
             TokoFoodLayoutState.SHOW -> onShowLayout(element)
             TokoFoodLayoutState.LOADING -> onLoadLayout()
         }
+    }
+
+    private fun setCardBackgroundColor() {
+        binding?.run {
+            mainLayout.setCardBackgroundColor(
+                MethodChecker.getColor(
+                    root.context, com.tokopedia.tokofood.R.color.food_cardview_background_dms_color
+                )
+            )
+        }
+    }
+
+    private fun setUspBackgroundColor() {
+        binding?.viewUsp?.setBackgroundResource(R.drawable.background_tokofood_usp_chevron)
     }
 
     private fun onLoadLayout(){

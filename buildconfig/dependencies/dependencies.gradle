@@ -34,7 +34,8 @@ ext {
     glideVersion = '4.9.0'
     viewPager2 = '1.0.0'
     deeplinkDispatchVersion = '4.1.0'
-    espressoVersion = "3.1.0"
+    espressoVersion = "3.4.0"
+    accessibilityTestFrameworkVersion = "4.0.0"
     runnerVersion = "1.4.0"
     rulesVersion = "1.4.0"
     apolloVersion = '0.3.0'
@@ -116,7 +117,7 @@ ext {
 
     unifyIconVersion = '0.0.4'
     unifyIconsVersion = '1.0.23.2'
-    unifyPrinciplesVersion = '1.4.1.2'
+    unifyPrinciplesVersion = '1.4.2'
     unifyComponentsVersion = '1.2.19.1'
     unifyCoachMarkVersion = '1.2.17.2'
     unifyCalendarVersion = '1.2.1.2'
@@ -314,7 +315,8 @@ ext {
             jjwtJson              : "io.jsonwebtoken:jjwt-orgjson:0.11.2",
             gojekSSO              : "com.gojek.android:icp-identity-login-sso:$gojekSSOVersion",
             dynamicAnimation      : "androidx.dynamicanimation:dynamicanimation:1.0.0",
-            playIntegrityApi      : "com.google.android.play:integrity:$playIntegrityVersion"
+            playIntegrityApi      : "com.google.android.play:integrity:$playIntegrityVersion",
+            modifaceMakeUpKit     : "com.tokopedia.modiface:mfemakeupkit:0.0.18@aar"
     ]
 
     testDependencies = [
