@@ -186,4 +186,7 @@
     <string name="label_report">Laporkan</string>
     <string name="label_report_success">Laporan berhasil terkirim.</string>
 
+    <!-- Content Creation -->
+    <string name="shop_page_broadcast_creation_label">Buat Live</string>
+    <string name="shop_page_shorts_creation_label">Buat Shorts Video</string>
 </resources>

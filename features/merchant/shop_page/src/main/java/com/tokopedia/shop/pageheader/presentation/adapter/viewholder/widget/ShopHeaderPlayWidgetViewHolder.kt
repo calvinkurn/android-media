@@ -12,6 +12,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.shop.R
 import com.tokopedia.shop.analytic.ShopPageTrackingSGCPlayWidget
+import com.tokopedia.shop.common.graphql.data.shopinfo.Broadcaster
 import com.tokopedia.shop.databinding.LayoutShopHeaderPlayWidgetBinding
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderDataModel
 import com.tokopedia.shop.pageheader.presentation.uimodel.component.ShopHeaderPlayWidgetButtonComponentUiModel
@@ -33,7 +34,8 @@ class ShopHeaderPlayWidgetViewHolder(
     interface Listener {
         fun onStartLiveStreamingClicked(
                 componentModel: ShopHeaderPlayWidgetButtonComponentUiModel,
-                shopHeaderWidgetUiModel: ShopHeaderWidgetUiModel
+                shopHeaderWidgetUiModel: ShopHeaderWidgetUiModel,
+                broadcasterConfig: Broadcaster.Config,
         )
 
         fun onImpressionPlayWidgetComponent(
@@ -60,7 +62,8 @@ class ShopHeaderPlayWidgetViewHolder(
                     shopPageTrackingSGCPlayWidget?.onClickSGCContent(shopId = shopPageHeaderDataModel.shopId)
                     listener.onStartLiveStreamingClicked(
                             modelComponent,
-                            shopHeaderWidgetUiModel
+                            shopHeaderWidgetUiModel,
+                            shopPageHeaderDataModel.broadcaster
                     )
                 }
             } else {
@@ -80,7 +83,7 @@ class ShopHeaderPlayWidgetViewHolder(
     }
 
     private fun allowLiveStreaming(dataModel: ShopPageHeaderDataModel): Boolean {
-        return dataModel.broadcaster.streamAllowed && GlobalConfig.isSellerApp()
+        return (dataModel.broadcaster.streamAllowed || dataModel.broadcaster.shortVideoAllowed) && GlobalConfig.isSellerApp()
     }
 
     private fun setupTextContentSgcWidget() {
