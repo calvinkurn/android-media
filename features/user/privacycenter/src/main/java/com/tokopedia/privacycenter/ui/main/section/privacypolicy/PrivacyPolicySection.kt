@@ -111,7 +111,6 @@ class PrivacyPolicySection constructor(
         context?.startActivity(intent)
     }
 
-    @SuppressLint("NotifyDataSetChanged")
     private fun showList(data: List<PrivacyPolicyDataModel>) {
         sectionViewBinding.run {
             localLoadPrivacyPolicy.hide()
