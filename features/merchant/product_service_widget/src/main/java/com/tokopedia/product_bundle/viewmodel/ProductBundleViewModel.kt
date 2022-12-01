@@ -260,8 +260,8 @@ class ProductBundleViewModel @Inject constructor(
                 bundlePrice = bundleItem.getPreviewBundlePrice(),
                 warehouseId = warehouseId,
                 discountAmount = calculateDiscountPercentage(
-                    originalPrice = bundleItem.getPreviewOriginalPrice(),
-                    bundlePrice = bundleItem.getPreviewBundlePrice()
+                    originalPrice = bundleItem.getMultipliedOriginalPrice(),
+                    bundlePrice = bundleItem.getMultipliedBundlePrice()
                 ),
                 productVariant = if (productVariant.hasVariant) productVariant else null
             )
@@ -293,8 +293,8 @@ class ProductBundleViewModel @Inject constructor(
             target?.apply {
                 val selectedProductVariant = productVariant?.getChildByProductId(selectedVariantId.toString())
                 this.selectedVariantId = selectedProductVariant?.productId
-                this.originalPrice = selectedProductVariant?.finalMainPrice.orZero() * this.productQuantity
-                this.bundlePrice = selectedProductVariant?.finalPrice.orZero() * this.productQuantity
+                this.originalPrice = selectedProductVariant?.finalMainPrice.orZero()
+                this.bundlePrice = selectedProductVariant?.finalPrice.orZero()
                 this.discountAmount = calculateDiscountPercentage(originalPrice, bundlePrice)
                 this.selectedVariantText = getSelectedVariantText(productVariant, this.selectedVariantId ?: "")
                 this.productImageUrl = selectedProductVariant?.picture?.url100.orEmpty()
@@ -335,11 +335,11 @@ class ProductBundleViewModel @Inject constructor(
     }
 
     fun calculateTotalPrice(productBundleDetails: List<ProductBundleDetail>): Double {
-        return productBundleDetails.map { it.originalPrice }.sum()
+        return productBundleDetails.map { it.originalPrice * it.productQuantity }.sum()
     }
 
     fun calculateTotalBundlePrice(productBundleDetails: List<ProductBundleDetail>): Double {
-        return productBundleDetails.map { it.bundlePrice }.sum()
+        return productBundleDetails.map { it.bundlePrice * it.productQuantity }.sum()
     }
 
     fun calculateTotalSaving(originalPrice: Double, bundlePrice: Double): Double {

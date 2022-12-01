@@ -73,8 +73,8 @@ class ProductBundleWidgetUiMapper @Inject constructor(@ApplicationContext privat
             } else {
                 bundleItem?.minOrder.orZero()
             }
-            val bundlePrice = bundleItem?.getPreviewBundlePrice().orZero()
-            val originalPrice = bundleItem?.getPreviewOriginalPrice().orZero()
+            val bundlePrice = bundleItem?.getMultipliedBundlePrice().orZero()
+            val originalPrice = bundleItem?.getMultipliedOriginalPrice().orZero()
             val preorder = getPreorderWording(context, it.preorder)
             val productSoldInfo = it.getProductSoldInfo()
 
@@ -94,8 +94,8 @@ class ProductBundleWidgetUiMapper @Inject constructor(@ApplicationContext privat
         bundleInfo: BundleInfo,
         shopInfo: BundleShopUiModel?
     ): List<BundleDetailUiModel> {
-        val bundlePrice = sumOf { it.getPreviewBundlePrice() }
-        val originalPrice = sumOf { it.getPreviewOriginalPrice() }
+        val bundlePrice = sumOf { it.getMultipliedBundlePrice() }
+        val originalPrice = sumOf { it.getMultipliedOriginalPrice() }
         val preorder = getPreorderWording(context, bundleInfo.preorder)
         val productSoldInfo = bundleInfo.getProductSoldInfo()
 
