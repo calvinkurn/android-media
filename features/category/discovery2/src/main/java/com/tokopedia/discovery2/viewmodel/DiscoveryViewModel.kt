@@ -123,6 +123,7 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
     var pagePath: String = ""
     var campaignCode: String = ""
     var chooseAddressVisibilityLiveData = MutableLiveData<Boolean>()
+    var isAffiliateInitialized = false
     private var bottomTabNavDataComponent : ComponentsItem?  = null
 
     @Inject

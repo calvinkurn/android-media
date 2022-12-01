@@ -37,6 +37,9 @@ data class PageInfo(
         @SerializedName("tokonow_has_mini_cart_active")
         val tokonowMiniCartActive : Boolean = false,
 
+        @SerializedName("is_affiliate")
+        val isAffiliate: Boolean = false,
+
         var additionalInfo: AdditionalInfo? = null,
 
         var redirectionUrl: String? = null,

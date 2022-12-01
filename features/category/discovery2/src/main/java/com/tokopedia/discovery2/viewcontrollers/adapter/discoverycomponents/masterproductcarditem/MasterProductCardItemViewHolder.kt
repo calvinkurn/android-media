@@ -226,7 +226,12 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
         when (view) {
             productCardView -> {
                 masterProductCardItemViewModel.sendTopAdsClick()
-                masterProductCardItemViewModel.navigate(fragment.context, dataItem?.applinks)
+                var applink = dataItem?.applinks ?: ""
+//               Todo:: Add trackerId, will there be any issue with randomized trackerID.
+                if ((fragment as DiscoveryFragment).isAffiliateInitialized)
+                    applink =
+                        fragment.affiliateCookieHelper?.createAffiliateLink(applink) ?: applink
+                masterProductCardItemViewModel.navigate(fragment.context, applink)
                 sendClickEvent()
             }
         }
@@ -273,8 +278,12 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
         if (masterProductCardItemViewModel.isUserLoggedIn()) {
             masterProductCardItemViewModel.getProductDataItem()?.let { productItem ->
                 productItem.productId?.let { productId ->
-                    if (productId.isNotEmpty())
-                        (fragment as DiscoveryFragment).addOrUpdateItemCart(
+                    if (productId.isNotEmpty()) {
+                        if ((fragment as DiscoveryFragment).isAffiliateInitialized) {
+//                          Todo:: Call for DirectATC case.
+//                            fragment.affiliateCookieHelper?.initCookie()
+                        }
+                        fragment.addOrUpdateItemCart(
                             DiscoATCRequestParams(
                                 parentPosition = masterProductCardItemViewModel.getParentPositionForCarousel(),
                                 position = masterProductCardItemViewModel.position,
@@ -285,6 +294,7 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
                                 requestingComponent = masterProductCardItemViewModel.components
                             )
                         )
+                    }
                 }
             }
         } else {

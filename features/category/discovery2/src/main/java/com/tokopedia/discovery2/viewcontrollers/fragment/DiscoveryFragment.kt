@@ -33,6 +33,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.ADD_PHONE
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
+import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
 import com.tokopedia.discovery.common.manager.AdultManager
 import com.tokopedia.discovery.common.manager.ProductCardOptionsResult
 import com.tokopedia.discovery.common.manager.ProductCardOptionsWishlistCallback
@@ -52,16 +53,16 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Compa
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.CAMPAIGN_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.CATEGORY_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.COMPONENT_ID
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.DYNAMIC_SUBTITLE
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.EMBED_CATEGORY
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.END_POINT
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.PIN_PRODUCT
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.PRODUCT_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.RECOM_PRODUCT_ID
-import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.DYNAMIC_SUBTITLE
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.SHOP_ID
-import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.TARGET_TITLE_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.SOURCE
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.TARGET_COMP_ID
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.TARGET_TITLE_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.VARIANT_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryBaseViewModel
 import com.tokopedia.discovery2.viewcontrollers.adapter.DiscoveryRecycleAdapter
@@ -128,6 +129,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
+import javax.inject.Inject
 import com.tokopedia.unifyprinciples.R as RUnify
 
 
@@ -177,6 +179,9 @@ class DiscoveryFragment :
     private var miniCartInitialized:Boolean = false
     private var userPressed: Boolean = false
 
+    @JvmField @Inject
+    var affiliateCookieHelper : AffiliateCookieHelper? = null
+
     private val analytics: BaseDiscoveryAnalytics by lazy {
         (context as DiscoveryActivity).getAnalytics()
     }
@@ -199,6 +204,8 @@ class DiscoveryFragment :
     private var screenshotDetector: ScreenshotDetector? = null
     private var shareType: Int = 1
     var currentTabPosition: Int? = null
+    var isAffiliateInitialized = false
+        private set
 
     private var isManualScroll = true
     private var stickyHeaderShowing = false
@@ -594,6 +601,7 @@ class DiscoveryFragment :
                     pageInfoHolder = it.data
                     setToolBarPageInfoOnSuccess(it.data)
                     addMiniCartToPageFirstTime()
+                    setupAffiliate()
                 }
                 is Fail -> {
                     discoveryAdapter.addDataList(ArrayList())
@@ -749,6 +757,15 @@ class DiscoveryFragment :
                 }
             }
         })
+    }
+
+    private fun setupAffiliate() {
+//      Todo:: Where will get the values for this function and what will be the default values ??
+        if (pageInfoHolder?.isAffiliate == true && !discoveryViewModel.isAffiliateInitialized) {
+            discoveryViewModel.isAffiliateInitialized = true
+            isAffiliateInitialized = true
+//            affiliateCookieHelper?.initCookie()
+        }
     }
 
     private fun setupAnchorTabComponent(it: Success<ComponentsItem>) {
