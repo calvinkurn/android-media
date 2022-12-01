@@ -188,7 +188,15 @@ class AffiliateEducationLandingPage :
 
     override fun onBannerClick(url: String) {
         context?.let {
-            RouteManager.route(it, url)
+            RouteManager.route(
+                it,
+                buildString {
+                    append(ApplinkConst.WEBVIEW)
+                    append("?titlebar=false")
+                    append("&url=$url")
+                    append("?navigation=hide")
+                }
+            )
         }
     }
 }
