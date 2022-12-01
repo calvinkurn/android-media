@@ -82,9 +82,11 @@ class VoucherEditPeriodBottomSheet : BottomSheetUnify() {
         viewModel.setEndDate(voucher?.finishTime ?: "")
         voucher?.let {
             startCalendar = getGregorianDate(it.startTime)
+            viewModel.setStartDateTime(startCalendar)
         }
         voucher?.let {
             endCalendar = getGregorianDate(it.finishTime)
+            viewModel.setEndDateTime(endCalendar)
         }
     }
 
@@ -99,10 +101,10 @@ class VoucherEditPeriodBottomSheet : BottomSheetUnify() {
     }
 
     private fun initObservers() {
-        viewModel.startDateLiveData.observe(viewLifecycleOwner) {
+        viewModel.fullStartDateLiveData.observe(viewLifecycleOwner) {
             binding?.edtMvcStartDate?.setPlaceholder(it.convertDate())
         }
-        viewModel.endDateLiveData.observe(viewLifecycleOwner) {
+        viewModel.fullEndDateLiveData.observe(viewLifecycleOwner) {
             binding?.edtMvcEndDate?.setPlaceholder(it.convertDate())
         }
     }
