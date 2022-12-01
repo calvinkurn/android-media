@@ -1,9 +1,7 @@
 package com.tokopedia.tokochat.view.activity
 
-import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import com.google.android.play.core.splitcompat.SplitCompat
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.kotlin.extensions.view.ZERO
@@ -40,11 +38,6 @@ class TokoChatActivity : TokoChatBaseActivity<TokoChatComponent>() {
 
     override fun setupFragmentFactory() {
         supportFragmentManager.fragmentFactory = TokoChatFragmentFactory()
-    }
-
-    override fun attachBaseContext(newBase: Context?) {
-        super.attachBaseContext(newBase)
-        SplitCompat.installActivity(this)
     }
 
     private fun initializeTokoChatComponent(): TokoChatComponent {
