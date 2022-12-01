@@ -21,6 +21,8 @@ import com.tokopedia.shop.R
 import com.tokopedia.shop.common.view.ShopCarouselBannerImageUnify
 import com.tokopedia.shop.databinding.ItemShopHomeNewProductLaunchCampaignBinding
 import com.tokopedia.shop.home.util.DateHelper
+import com.tokopedia.shop.home.util.DateHelper.SHOP_NPL_CAMPAIGN_WIDGET_MORE_THAT_1_DAY_DATE_FORMAT
+import com.tokopedia.shop.home.util.DateHelper.getDayDiffFromTodayWithoutTrim
 import com.tokopedia.shop.home.util.mapper.ShopPageHomeMapper
 import com.tokopedia.shop.home.view.adapter.ShopCampaignCarouselProductAdapter
 import com.tokopedia.shop.home.view.adapter.ShopCampaignCarouselProductAdapterTypeFactory
@@ -32,7 +34,9 @@ import com.tokopedia.shop.home.view.model.StatusCampaign
 import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.LoaderUnify
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
+import com.tokopedia.unifycomponents.timer.TimerUnifySingle.Companion.FORMAT_AUTO
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.utils.date.toString
 import com.tokopedia.utils.view.binding.viewBinding
 import kotlinx.coroutines.*
 import java.math.RoundingMode
@@ -54,6 +58,7 @@ class ShopHomeNplCampaignViewHolder(
     private val rvProductCarousel: RecyclerView? = viewBinding?.rvProductCarousel
     private val bannerBackground: ShopCarouselBannerImageUnify? = viewBinding?.bannerBackground
     private val timerUnify: TimerUnifySingle? = viewBinding?.nplTimer
+    private val timerMoreThanOneDay: Typography? = viewBinding?.textTimerMoreThan1Day
     private val textDescription: Typography? = viewBinding?.nplTimerDescription
     private val textSeeAll: Typography? = viewBinding?.textSeeAll
     private val loaderRemindMe: LoaderUnify? = viewBinding?.loaderRemindMe
@@ -299,35 +304,44 @@ class ShopHomeNplCampaignViewHolder(
             val timeDescription = model.data?.firstOrNull()?.timeDescription ?: ""
             val timeCounter = model.data?.firstOrNull()?.timeCounter ?: ""
             textDescription?.text = timeDescription
-            if (timeCounter.toLong() != 0L) {
-                textDescription?.show()
-                timerUnify?.apply {
-                    when {
-                        isStatusCampaignUpcoming(statusCampaign) -> {
-                            val startDate = DateHelper.getDateFromString(model.data?.firstOrNull()?.startDate ?: "").time
-                            val calendar = Calendar.getInstance()
-                            calendar.time = Date(startDate)
-                            targetDate = calendar
-                        }
-                        isStatusCampaignOngoing(statusCampaign) -> {
-                            val endDate = DateHelper.getDateFromString(model.data?.firstOrNull()?.endDate ?: "").time
-                            val calendar = Calendar.getInstance()
-                            calendar.time = Date(endDate)
-                            targetDate = calendar
-                        }
-                    }
-                    isShowClockIcon = false
-                    onFinish = {
-                        shopHomeCampaignNplWidgetListener.onTimerFinished(model)
-                    }
+            val dateCampaign = when {
+                isStatusCampaignUpcoming(statusCampaign) -> {
+                    DateHelper.getDateFromString(model.data?.firstOrNull()?.startDate ?: "")
+                }
+                isStatusCampaignOngoing(statusCampaign) -> {
+                    DateHelper.getDateFromString(model.data?.firstOrNull()?.endDate ?: "")
+                }
+                else -> {
+                    Date()
+                }
+            }
+            val dateDiff = dateCampaign.getDayDiffFromTodayWithoutTrim()
+            if (dateDiff > Int.ONE) {
+                timerUnify?.gone()
+                timerMoreThanOneDay?.apply {
+                    text = dateCampaign.toString(SHOP_NPL_CAMPAIGN_WIDGET_MORE_THAT_1_DAY_DATE_FORMAT)
                     show()
                 }
             } else {
-                timerUnify?.gone()
+                timerMoreThanOneDay?.gone()
+                if (timeCounter.toLong() != 0L) {
+                    timerUnify?.apply {
+                        show()
+                        targetDate = Calendar.getInstance().apply {
+                            time = dateCampaign
+                        }
+                        onFinish = {
+                            shopHomeCampaignNplWidgetListener.onTimerFinished(model)
+                        }
+                    }
+                } else {
+                    timerUnify?.gone()
+                }
             }
         }else{
             timerUnify?.gone()
             textDescription?.gone()
+            timerMoreThanOneDay?.gone()
         }
     }
 

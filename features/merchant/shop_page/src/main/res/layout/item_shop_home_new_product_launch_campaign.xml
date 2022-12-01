@@ -62,7 +62,27 @@
         app:layout_constraintBottom_toBottomOf="@id/npl_timer_description"
         app:layout_constraintStart_toEndOf="@id/npl_timer_description"
         app:layout_constraintTop_toTopOf="@id/npl_timer_description"
+        app:timer_unify_single_showClockIcon="true"
         app:timer_unify_single_variant="main" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/text_timer_more_than_1_day"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:background="@drawable/bg_shop_timer_red_rect"
+        android:paddingStart="8dp"
+        android:paddingTop="2dp"
+        android:paddingEnd="8dp"
+        android:paddingBottom="2dp"
+        android:textColor="@color/Unify_NN0"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@id/npl_timer_description"
+        app:layout_constraintStart_toEndOf="@id/npl_timer_description"
+        app:layout_constraintTop_toTopOf="@id/npl_timer_description"
+        app:typographyType="display_3"
+        app:typographyWeight="bold"
+        tools:text="2 Juli 2022" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/text_see_all"
@@ -149,8 +169,8 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            app:unify_image_corner_radius="0"
             app:layout_constraintVertical_bias="0"
+            app:unify_image_corner_radius="0"
             app:unify_image_type="rect" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -200,13 +220,13 @@
             android:clipToPadding="false"
             android:orientation="horizontal"
             android:paddingEnd="12dp"
-            tools:itemCount="10"
-            tools:listitem="@layout/item_shop_carousel_product_card"
             app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toLeftOf="@id/banner_background"
             app:layout_constraintTop_toTopOf="@id/banner_background"
-            app:layout_constraintVertical_bias="0" />
+            app:layout_constraintVertical_bias="0"
+            tools:itemCount="10"
+            tools:listitem="@layout/item_shop_carousel_product_card" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
