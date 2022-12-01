@@ -247,7 +247,7 @@ class CMNotificationHandler : CoroutineScope {
     }
 
     private fun handleMainClick(context: Context, intent: Intent, notificationId: Int, baseNotificationModel: BaseNotificationModel) {
-        startActivity(context, baseNotificationModel.appLink, intent, baseNotificationModel.webHookData())
+        startActivity(context, baseNotificationModel.appLink, intent)
 //        context.applicationContext.sendBroadcast(Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS))
         NotificationManagerCompat.from(context).cancel(notificationId)
     }
@@ -520,12 +520,11 @@ class CMNotificationHandler : CoroutineScope {
     private fun startActivity(
         context: Context,
         appLink: String?,
-        dataIntent: Intent?,
-        webHookData: WebHookParams.Data? = null
+        dataIntent: Intent?
     ) {
         try {
             val appLinkIntent = getAppLinkIntent(context, appLink)
-            copyDataIntentToAppLinkIntent(appLinkIntent, dataIntent, webHookData)
+            copyDataIntentToAppLinkIntent(appLinkIntent, dataIntent)
             appLinkIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
             context.applicationContext.startActivity(appLinkIntent)
             CMNotificationUtils.sendUTMParamsInGTM(appLink)
@@ -535,8 +534,7 @@ class CMNotificationHandler : CoroutineScope {
 
     private fun copyDataIntentToAppLinkIntent(
         appLinkIntent: Intent,
-        dataIntent: Intent?,
-        webHookData: WebHookParams.Data?
+        dataIntent: Intent?
     ) {
         try {
             dataIntent?.let { dataIntent ->
@@ -549,18 +547,20 @@ class CMNotificationHandler : CoroutineScope {
                     )
                 }
                 // to support video push and extra params
-                appLinkIntent.putExtras(getCustomDataBundle(dataIntent, webHookData))
+                appLinkIntent.putExtras(getCustomDataBundle(dataIntent))
             }
         } catch (e: Exception) {}
     }
 
-    private fun getCustomDataBundle(dataIntent: Intent, webHookData: WebHookParams.Data?): Bundle {
+    private fun getCustomDataBundle(dataIntent: Intent): Bundle {
         val baseNotificationModel: BaseNotificationModel? =
             dataIntent.getParcelableExtra(CMConstant.EXTRA_BASE_MODEL)
         var bundle = Bundle()
         if (baseNotificationModel != null) {
             baseNotificationModel.videoPushModel?.let {
-                bundle = jsonToBundle(bundle, JSONObject(it))
+                if (it.isNotBlank()) {
+                    bundle = jsonToBundle(bundle, JSONObject(it))
+                }
             }
             baseNotificationModel.customValues?.let {
                 if (it.isNotEmpty()) {
@@ -570,7 +570,7 @@ class CMNotificationHandler : CoroutineScope {
         }
         bundle.putString(
             CMConstant.PayloadKeys.NOTIFCENTER_NOTIFICATION_TEMPLATE_KEY,
-            webHookData?.notificationTemplateKey.toString()
+            baseNotificationModel?.webHookData()?.notificationTemplateKey.toString()
         )
         return bundle
     }
