@@ -673,7 +673,7 @@ class AtcVariantViewModelTest : BaseAtcVariantViewModelTest() {
         verifyAtcUsecase(verifyOcs = true)
 
         val requestParams = slot.captured.getObject("REQUEST_PARAM_KEY_ADD_TO_CART_REQUEST") as AddToCartOcsRequestParams
-        Assert.assertEquals(requestParams.shippingPrice, 30000)
+        Assert.assertEquals(requestParams.shippingPrice, 30000.0, 0.0)
 
         Assert.assertTrue(viewModel.addToCartLiveData.value is Success)
         assertButton(expectedIsBuyable = true)
