@@ -1,6 +1,6 @@
 package com.tokopedia.content.common.ui.bottomsheet
 
-import android.os.Bundle
+import android.content.Context
 import androidx.fragment.app.FragmentManager
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.content.common.R
@@ -15,8 +15,8 @@ class SellerTncBottomSheet : BottomSheetUnify() {
     private var mListener: Listener? = null
     private var view: PlayTermsAndConditionView? = null
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
         setupView()
     }
 
@@ -25,8 +25,8 @@ class SellerTncBottomSheet : BottomSheetUnify() {
         view = null
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onDetach() {
+        super.onDetach()
         mListener = null
     }
 
