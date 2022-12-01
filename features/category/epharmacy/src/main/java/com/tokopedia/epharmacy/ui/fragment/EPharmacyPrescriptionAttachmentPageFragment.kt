@@ -207,40 +207,43 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
 
     private fun onSuccessInitiateConsultation(initiateConsultationData: InitiateConsultation.InitiateConsultationData) {
         if (!initiateConsultationData.tokoConsultationId.isNullOrBlank()) {
-            val showReminder = isOutsideWorkingHours(
+            val showReminderScreen = isOutsideWorkingHours(
                 initiateConsultationData.consultationSource?.operatingSchedule?.daily?.openTime,
                 initiateConsultationData.consultationSource?.operatingSchedule?.daily?.closeTime
             )
-            if (showReminder) {
-                EPharmacyReminderScreenBottomSheet.newInstance(
+            if (showReminderScreen) {
+                presentReminderScreen(
                     initiateConsultationData.consultationSource?.operatingSchedule?.daily?.openTime,
                     initiateConsultationData.consultationSource?.operatingSchedule?.daily?.closeTime,
-                    TYPE_DOCTOR_NOT_AVAILABLE_REMINDER,
                     initiateConsultationData.consultationSource?.id
-                ).show(childFragmentManager, EPharmacyReminderScreenBottomSheet::class.simpleName)
+                )
             } else {
                 activity?.let { safeContext ->
 //                    startActivityForResult(
 //                        RouteManager.getIntent(safeContext, "${WEB_LINK_PREFIX}${initiateConsultationData.consultationSource?.pwaLink}"),
 //                        EPHARMACY_MINI_CONSULTATION_REQUEST_CODE
 //                    )
-                    startActivityForResult(RouteManager.getIntent(context,
-                        "tokopedia://webview?url=https://accounts-staging.tokopedia.com/oauth/sandbox/in"),
-                        EPHARMACY_MINI_CONSULTATION_REQUEST_CODE)
+                    startActivityForResult(
+                        RouteManager.getIntent(
+                            context,
+                            "tokopedia://webview?url=https://accounts-staging.tokopedia.com/oauth/sandbox/in"
+                        ),
+                        EPHARMACY_MINI_CONSULTATION_REQUEST_CODE
+                    )
                 }
             }
         }
     }
 
     private fun isOutsideWorkingHours(openTime: String?, closeTime: String?): Boolean {
-        if(!openTime.isNullOrBlank() && !closeTime.isNullOrBlank()){
-            return EPharmacyUtils.isOutsideWorkingHours(openTime,closeTime)
+        if (!openTime.isNullOrBlank() && !closeTime.isNullOrBlank()) {
+            return EPharmacyUtils.isOutsideWorkingHours(openTime, closeTime)
         }
         return false
     }
 
     private fun onFailInitiateConsultation() {
-        showToast(TYPE_ERROR,context?.resources?.getString(R.string.epharmacy_internet_error) ?: "")
+        showToast(TYPE_ERROR, context?.resources?.getString(R.string.epharmacy_internet_error) ?: "")
     }
 
     private fun onFailGroupData(it: Fail) {
@@ -275,30 +278,29 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
         var showReminderScreen = false
         it.data.listOfComponents.forEach { component ->
             ePharmacyAttachmentUiUpdater.updateModel(component)
-            if(component is EPharmacyAttachmentDataModel
-                && !showReminderScreen){
-                if((component).consultationData?.consultationStatus == EPharmacyConsultationStatus.DOCTOR_NOT_AVAILABLE.status){
+            if (component is EPharmacyAttachmentDataModel &&
+                !showReminderScreen
+            ) {
+                if ((component).consultationData?.consultationStatus == EPharmacyConsultationStatus.DOCTOR_NOT_AVAILABLE.status) {
                     showReminderScreen = true
                     presentReminderScreen(
                         component.consultationSource?.operatingSchedule?.daily?.openTime,
                         component.consultationSource?.operatingSchedule?.daily?.closeTime,
                         component.consultationSource?.id
-                        )
-
+                    )
                 }
             }
         }
         updateUi()
     }
 
-    private fun presentReminderScreen(openTime : String?, closeTime : String?, consultationId : String?){
+    private fun presentReminderScreen(openTime: String?, closeTime: String?, consultationId: String?) {
         EPharmacyReminderScreenBottomSheet.newInstance(
             openTime,
             closeTime,
             TYPE_DOCTOR_NOT_AVAILABLE_REMINDER,
             consultationId
         ).show(childFragmentManager, EPharmacyReminderScreenBottomSheet::class.simpleName)
-
     }
 
     private fun updateUi() {

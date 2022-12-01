@@ -22,7 +22,7 @@ class GetEPharmacyMiniConsultationMasterUseCase @Inject constructor(
     override fun graphqlQuery(): String = GQL_FETCH_MINI_CONSULTATION_MASTER_QUERY
 
     private fun createRequestParams(params: GetMiniConsultationBottomSheetParams): Map<String, Any> {
-        return mapOf<String, Any>(
+        return mapOf(
             PARAM_DATA_TYPE to params.dataType,
             PARAM_INPUT to params.params
         )

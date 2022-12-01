@@ -8,14 +8,11 @@ import com.tokopedia.epharmacy.databinding.EpharmacyMiniConsultationTransparentA
 import com.tokopedia.epharmacy.ui.fragment.EPharmacyChooserBottomSheet
 import com.tokopedia.epharmacy.utils.ENABLER_IMAGE_URL
 import com.tokopedia.epharmacy.utils.EPHARMACY_GROUP_ID
-import com.tokopedia.epharmacy.utils.EXTRA_CHECKOUT_ID_STRING
-import com.tokopedia.epharmacy.utils.EXTRA_CONSULTATION_WEB_LINK_STRING
 
 class EPharmacyChooserTransparentActivity : BaseActivity() {
 
     private var enableImageURL = ""
     private var groupId = ""
-
 
     private val binding: EpharmacyMiniConsultationTransparentActivityBinding by lazy {
         EpharmacyMiniConsultationTransparentActivityBinding.inflate(LayoutInflater.from(this))
@@ -33,8 +30,8 @@ class EPharmacyChooserTransparentActivity : BaseActivity() {
         groupId = intent.extras?.getString(EPHARMACY_GROUP_ID) ?: ""
     }
 
-    private fun openBottomSheet(){
-        EPharmacyChooserBottomSheet.newInstance(enableImageURL,groupId).show(supportFragmentManager,EPharmacyChooserBottomSheet::class.simpleName)
+    private fun openBottomSheet() {
+        EPharmacyChooserBottomSheet.newInstance(enableImageURL, groupId).show(supportFragmentManager, EPharmacyChooserBottomSheet::class.simpleName)
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

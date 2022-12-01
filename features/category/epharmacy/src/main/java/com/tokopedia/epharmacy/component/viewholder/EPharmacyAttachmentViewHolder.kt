@@ -3,7 +3,6 @@ package com.tokopedia.epharmacy.component.viewholder
 import android.view.View
 import android.widget.ImageView
 import android.widget.LinearLayout
-import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -103,7 +102,7 @@ class EPharmacyAttachmentViewHolder(private val view: View, private val ePharmac
     private fun renderProductsData() {
         dataModel?.shopInfo?.products?.firstOrNull()?.let { firstProduct ->
             productText.text = firstProduct.name
-            productQuantity.text = "${firstProduct.quantity} Barang (${firstProduct.productTotalWeightFmt})"
+            productQuantity.text = itemView.context.getString(R.string.epharmacy_quantity_weight_text, firstProduct.quantity, firstProduct.productTotalWeightFmt)
             productImageUnify.loadImage(firstProduct.productImage)
         }
 

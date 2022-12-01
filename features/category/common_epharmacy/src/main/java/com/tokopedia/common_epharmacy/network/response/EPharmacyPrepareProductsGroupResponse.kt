@@ -27,7 +27,7 @@ data class EPharmacyPrepareProductsGroupResponse(
             @SerializedName("toaster")
             val toaster: EPharmacyToaster?,
             @SerializedName("pap_primary_cta")
-            val papPrimaryCTA : PapPrimaryCTA?
+            val papPrimaryCTA: PapPrimaryCTA?
         ) : Parcelable {
 
             @Parcelize
@@ -187,7 +187,7 @@ data class EPharmacyPrepareProductsGroupResponse(
                         @SerializedName("product_total_weight_fmt")
                         val productTotalWeightFmt: String?,
                         @SerializedName("quantity")
-                        val quantity: Int?
+                        val quantity: String?
                     ) : Parcelable
                 }
             }
@@ -211,17 +211,4 @@ data class EPharmacyPrepareProductsGroupResponse(
         @SerializedName("state")
         val state: String?
     ) : Parcelable
-
 }
-
-@Parcelize
-data class EPharmacyItemButtonData(
-    @SerializedName("iconUrl")
-    var iconUrl: String? = "",
-    @SerializedName("text")
-    var text: String? = "",
-    @SerializedName("subText")
-    var subText: String? = "",
-    @SerializedName("appLink")
-    var appLink: String? = ""
-) : Parcelable

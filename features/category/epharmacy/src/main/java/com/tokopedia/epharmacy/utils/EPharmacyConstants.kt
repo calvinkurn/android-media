@@ -4,7 +4,6 @@ const val EXTRA_ORDER_ID_LONG = "extra_order_id_long"
 const val EXTRA_CHECKOUT_ID_STRING = "extra_checkout_id_string"
 const val EXTRA_ENTRY_POINT_STRING = "extra_entry_point_string"
 const val EXTRA_SOURCE_STRING = "source"
-const val EXTRA_CONSULTATION_WEB_LINK_STRING = "extra_consultation_web_link_string"
 
 const val DEFAULT_ZERO_VALUE = 0L
 
@@ -70,7 +69,7 @@ enum class EPharmacyConsultationStatus(val status: Int) {
     ACTIVE(1),
     APPROVED(2),
     REJECTED(4),
-    DOCTOR_NOT_AVAILABLE(5),
+    DOCTOR_NOT_AVAILABLE(5)
 }
 
 const val EPHARMACY_CHECKOUT_APPLINK = "tokopedia://checkout"

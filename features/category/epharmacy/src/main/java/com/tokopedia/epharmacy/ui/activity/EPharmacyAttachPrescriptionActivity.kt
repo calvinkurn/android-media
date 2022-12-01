@@ -1,7 +1,5 @@
 package com.tokopedia.epharmacy.ui.activity
 
-import android.content.Intent
-import android.net.Uri
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import com.tokopedia.abstraction.base.app.BaseMainApplication
@@ -11,15 +9,7 @@ import com.tokopedia.epharmacy.R
 import com.tokopedia.epharmacy.di.DaggerEPharmacyComponent
 import com.tokopedia.epharmacy.di.EPharmacyComponent
 import com.tokopedia.epharmacy.ui.fragment.EPharmacyPrescriptionAttachmentPageFragment
-import com.tokopedia.epharmacy.ui.fragment.UploadPrescriptionFragment
-import com.tokopedia.epharmacy.utils.*
-import com.tokopedia.epharmacy.utils.TrackerId.Companion.OPEN_SCREEN_ID
-import com.tokopedia.kotlin.extensions.view.toLongOrZero
-import com.tokopedia.remoteconfig.RemoteConfig
-import com.tokopedia.remoteconfig.RemoteConfigKey
-import com.tokopedia.track.builder.Tracker
 import com.tokopedia.user.session.UserSessionInterface
-import java.lang.NumberFormatException
 import javax.inject.Inject
 
 class EPharmacyAttachPrescriptionActivity : BaseSimpleActivity(), HasComponent<EPharmacyComponent> {
@@ -44,13 +34,7 @@ class EPharmacyAttachPrescriptionActivity : BaseSimpleActivity(), HasComponent<E
     override fun getParentViewResourceID(): Int = R.id.e_pharmacy_parent_view
 
     override fun getNewFragment(): Fragment {
-
         return EPharmacyPrescriptionAttachmentPageFragment.newInstance()
-
-    }
-
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
     }
 
     override fun getComponent() = ePharmacyComponent
@@ -60,5 +44,4 @@ class EPharmacyAttachPrescriptionActivity : BaseSimpleActivity(), HasComponent<E
             (applicationContext as BaseMainApplication)
                 .baseAppComponent
         ).build()
-    
 }

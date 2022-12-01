@@ -33,21 +33,20 @@ object EPharmacyUtils {
         }
     }
 
-    fun isOutsideWorkingHours(openTime : String , closeTime : String) : Boolean {
-        val openTimeLocal : Date? = formatDateToLocal(dateString = openTime)
-        val closeTimeLocal : Date? = formatDateToLocal(dateString = closeTime)
+    fun isOutsideWorkingHours(openTime: String, closeTime: String): Boolean {
+        val openTimeLocal: Date? = formatDateToLocal(dateString = openTime)
+        val closeTimeLocal: Date? = formatDateToLocal(dateString = closeTime)
         val currentLocal = Calendar.getInstance().time
         return (openTimeLocal != null) && ((currentLocal < openTimeLocal) || (currentLocal > closeTimeLocal))
     }
 
-    fun getTimeFromDate(date : Date?) : String{
+    fun getTimeFromDate(date: Date?): String {
         date?.let {
             val fromFormat: DateFormat = SimpleDateFormat("HH:MM", Locale.ENGLISH)
             return fromFormat.format(date).toString()
         } ?: kotlin.run {
             return ""
         }
-
     }
 }
 
@@ -55,6 +54,5 @@ enum class PrescriptionActionType(val type: String) {
     REDIRECT_PWA("REDIRECT_CONSULTATION_PWA"),
     REDIRECT_OPTION("SHOW_PRESCRIPTION_ATTACHMENT_OPTION"),
     REDIRECT_UPLOAD("REDIRECT_PRESCRIPTION_UPLOAD_PAGE"),
-    REDIRECT_PRESCRIPTION("REDIRECT_CONSULTATION_PRESCRIPTION"),
-    REDIRECT_NONE("NONE")
+    REDIRECT_PRESCRIPTION("REDIRECT_CONSULTATION_PRESCRIPTION")
 }
