@@ -30,7 +30,7 @@ class TokoNowQuantityEditorView @JvmOverloads constructor(
 ) : BaseCustomView(context, attrs) {
 
     companion object {
-        private const val DELAY_TIME_BACK_TO_START_STATE = 3000L
+        private const val DELAY_TIME_BACK_TO_START_STATE = 2000L
         private const val DELAY_TIME_BEFORE_CHANGING_QUANTITY = 1000L
         private const val MIN_NUMBER = 1
         private const val DEFAULT_NUMBER = 0
