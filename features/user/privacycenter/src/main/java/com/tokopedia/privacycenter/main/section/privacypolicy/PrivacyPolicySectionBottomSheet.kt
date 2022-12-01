@@ -1,5 +1,6 @@
 package com.tokopedia.privacycenter.main.section.privacypolicy
 
+import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -10,9 +11,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.privacycenter.R
-import com.tokopedia.privacycenter.common.PrivacyCenterStateResult
 import com.tokopedia.privacycenter.common.di.DaggerPrivacyCenterComponent
 import com.tokopedia.privacycenter.databinding.PrivacyPolicyBottomSheetBinding
 import com.tokopedia.privacycenter.main.section.privacypolicy.PrivacyPolicyConst.KEY_TITLE
@@ -93,6 +92,7 @@ class PrivacyPolicySectionBottomSheet : BottomSheetUnify(), PrivacyPolicyAdapter
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun onSuccessGetPrivacyPolicyAllList(data: List<PrivacyPolicyDataModel>) {
         viewBinding?.apply {
             listPrivacyPolicy.show()

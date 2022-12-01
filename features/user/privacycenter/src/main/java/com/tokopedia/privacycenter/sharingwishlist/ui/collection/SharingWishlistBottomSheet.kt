@@ -190,18 +190,15 @@ class SharingWishlistBottomSheet constructor(
 
     private fun updateWithMessage(message: String, isSuccess: Boolean) {
         val messageUpdate = if (isSuccess) {
-            val nameOption = getString(
-                if (selectedOption == COLLECTION_PUBLIC_ID) {
-                    R.string.sharing_wishlist_label_public
-                } else {
-                    R.string.sharing_wishlist_label_private
-                }
-            )
-
             String.format(
-                getString(R.string.sharing_wishlist_message_update),
-                nameCollection,
-                nameOption
+                getString(
+                    if (selectedOption == COLLECTION_PUBLIC_ID) {
+                        R.string.sharing_wishlist_success_public
+                    } else {
+                        R.string.sharing_wishlist_success_private
+                    }
+                ),
+                nameCollection
             )
         } else {
             message
