@@ -13,7 +13,7 @@ data class AddWishlistBulkResponse(
         val button: Button = Button(),
 
         @SerializedName("product_ids")
-        val productIds: List<Long> = emptyList(),
+        val productIds: List<String> = emptyList(),
 
         @SerializedName("success")
         val success: Boolean = false,
