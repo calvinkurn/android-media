@@ -6,18 +6,25 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import com.tokopedia.calendar.CalendarPickerView
-import com.tokopedia.calendar.SubTitle
+import com.tokopedia.calendar.Legend
 import com.tokopedia.mvc.R
 import com.tokopedia.mvc.databinding.SmvcBottomsheetEditPeriodCalendarBinding
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import java.util.*
 
-class VoucherEditCalendarBottomSheet: BottomSheetUnify() {
+class VoucherEditCalendarBottomSheet : BottomSheetUnify() {
 
     private var binding by autoClearedNullable<SmvcBottomsheetEditPeriodCalendarBinding>()
 
     var calendar: CalendarPickerView? = null
+
+    private var startDate: GregorianCalendar? = null
+    private var endDate: GregorianCalendar? = null
+    private var startCalendar: GregorianCalendar? = null
 
     init {
         isFullpage = true
@@ -28,7 +35,6 @@ class VoucherEditCalendarBottomSheet: BottomSheetUnify() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-
         binding = SmvcBottomsheetEditPeriodCalendarBinding.inflate(LayoutInflater.from(context))
         setChild(binding?.root)
         setTitle(context?.getString(R.string.edit_period_calender_title) ?: "")
@@ -39,84 +45,58 @@ class VoucherEditCalendarBottomSheet: BottomSheetUnify() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         calendar = binding?.voucherCreationCalendar?.calendarPickerView
-        renderCalendar()
-    }
+        renderCalendar(arrayListOf())
 
+        calendar?.setOnDateSelectedListener(object : CalendarPickerView.OnDateSelectedListener {
+            override fun onDateSelected(date: Date) {
+                // put your implementation here
+                // Save the currentDate to ViewModel
+                // Navigate To Time Picker Bottom Sheet
 
-    private fun renderCalendar() {
-        val nextYear = Calendar.getInstance()
-        nextYear.add(Calendar.YEAR, 1)
-
-        val yesterday = Calendar.getInstance()
-        yesterday.add(Calendar.DATE, -10)
-
-        var selectedDates: ArrayList<Date> = arrayListOf(nextYear.time)
-
-//        checkIn?.let { checkIn ->
-//            checkOut?.let { checkOut ->
-//                selectedDates = getRangeBetween(checkIn, checkOut)
-//            }
-//        }
-
-        val arraySubTitles = arrayListOf<SubTitle>()
-
-        val monthCounter = Calendar.getInstance()
-
-        var date = monthCounter.time
-        while (monthCounter.before(nextYear)) {
-            if (monthCounter.get(Calendar.DATE) % 7 == 0) {
-                arraySubTitles.add(SubTitle(date, "1000", "#42b549"))
-            } else {
-                arraySubTitles.add(SubTitle(date, "1000"))
+                GlobalScope.launch {
+                    delay(300)
+                    dismissAllowingStateLoss()
+                }
             }
 
-            monthCounter.add(Calendar.DATE, 1)
-            date = monthCounter.time
+            override fun onDateUnselected(date: Date) {
+                // put your implementation here
+            }
+        })
+    }
+
+    private fun renderCalendar(holidayArrayList: ArrayList<Legend>) {
+        var selectedDates = startCalendar?.let {
+            arrayListOf(it.time)
         }
 
-        val activeDates: ArrayList<Date> = ArrayList()
-        activeDates.add(Calendar.getInstance().time)
-        var activeDate = Calendar.getInstance()
-        activeDate.add(Calendar.DATE, 1)
-        activeDates.add(activeDate.time)
-        activeDate = Calendar.getInstance()
-        activeDate.add(Calendar.DATE, 2)
-        activeDates.add(activeDate.time)
-        activeDate.add(Calendar.DATE, 5)
-        activeDates.add(activeDate.time)
-
-        calendar?.init(yesterday.time, nextYear.time, ArrayList())
-            ?.inMode(CalendarPickerView.SelectionMode.RANGE)
-//            ?.maxRange(30)
-            ?.withSelectedDates(selectedDates)
-
-        calendar?.setSubTitles(arraySubTitles)
-
+        startDate?.time?.let {
+            endDate?.time?.let { it1 ->
+                calendar?.init(it, it1, holidayArrayList)
+                    ?.inMode(CalendarPickerView.SelectionMode.SINGLE)
+                    ?.withSelectedDates(selectedDates)
+            }
+        }
 
         calendar?.setMaxRangeListener(object : CalendarPickerView.OnMaxRangeListener {
             override fun onNotifyMax() {
                 Toast.makeText(activity, "woy udh max", Toast.LENGTH_SHORT).show()
             }
-
         })
-
-//        calendar?.setSubTitles(arraySubTitles)
-
-//        calendar?.onScrollMonthListener = object : CalendarPickerView.OnScrollMonthListener {
-//            override fun onScrolled(date: Date) {
-//                Toast.makeText(activity, dateFormat.format(date), Toast.LENGTH_SHORT).show()
-//            }
-//        }
     }
-
 
     companion object {
         @JvmStatic
-        fun newInstance(): VoucherEditCalendarBottomSheet {
+        fun newInstance(
+            startCalendar: GregorianCalendar?,
+            minDate: GregorianCalendar,
+            maxDate: GregorianCalendar
+        ): VoucherEditCalendarBottomSheet {
             return VoucherEditCalendarBottomSheet().apply {
-
+                this.startDate = minDate
+                this.endDate = maxDate
+                this.startCalendar = startCalendar
             }
         }
     }
-
 }
