@@ -315,6 +315,7 @@ public class MigratedUserSession {
             String oldValue = internalGetString(prefName, keyName, defValue);
 
             if (oldValue != null && !oldValue.equals(defValue)) {
+                Timber.d("cleaning %s", oldValue);
                 internalCleanKey(prefName, keyName);
                 internalSetString(newPrefName, newKeyName, encryptString(oldValue, newKeyName));
                 UserSessionMap.map.put(key, oldValue);

@@ -1,17 +1,16 @@
 package com.tokopedia.user.session;
 
+import static org.junit.Assert.assertEquals;
+
 import android.content.Context;
 import android.content.SharedPreferences;
 
 import androidx.test.platform.app.InstrumentationRegistry;
 
-//import static org.assertj.core.api.Assertions.*;
-import static org.junit.Assert.*;
-
 import org.junit.Before;
 import org.junit.Test;
 
-public class UserSessionTest {
+public class UserSessionJavaTest {
 
     @Before
     public void clearAll() {
