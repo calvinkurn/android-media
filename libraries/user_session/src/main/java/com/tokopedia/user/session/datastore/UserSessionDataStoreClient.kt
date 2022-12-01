@@ -6,21 +6,20 @@ import androidx.datastore.dataStoreFile
 import com.tokopedia.encryption.security.AeadEncryptorImpl
 import kotlinx.coroutines.*
 
-@Suppress("LateinitUsage")
 object UserSessionDataStoreClient {
 
-    private lateinit var userSessionDataStore: UserSessionDataStore
+    private var userSessionDataStore: UserSessionDataStore? = null
     private var scope: CoroutineScope? = null
     private const val DATA_STORE_FILE_NAME = "user_session.pb"
     private const val shortDelay = 100L
 
     @JvmStatic
     fun getInstance(context: Context): UserSessionDataStore {
-        if (::userSessionDataStore.isInitialized) {
-            return userSessionDataStore
+        if (userSessionDataStore != null) {
+            return userSessionDataStore!!
         }
         userSessionDataStore = initialize(context)
-        return userSessionDataStore
+        return userSessionDataStore!!
     }
 
     /**
