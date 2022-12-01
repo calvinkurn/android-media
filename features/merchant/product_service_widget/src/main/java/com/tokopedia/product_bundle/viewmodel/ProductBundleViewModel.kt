@@ -297,7 +297,7 @@ class ProductBundleViewModel @Inject constructor(
                 this.bundlePrice = selectedProductVariant?.finalPrice.orZero()
                 this.discountAmount = calculateDiscountPercentage(originalPrice, bundlePrice)
                 this.selectedVariantText = getSelectedVariantText(productVariant, this.selectedVariantId ?: "")
-                this.productImageUrl = selectedProductVariant?.picture?.url100.orEmpty()
+                this.productImageUrl = selectedProductVariant.getVariantPicture()
             }
         }
         return target
