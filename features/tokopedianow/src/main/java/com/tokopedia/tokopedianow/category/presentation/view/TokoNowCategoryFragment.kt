@@ -50,7 +50,6 @@ import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackin
 import com.tokopedia.tokopedianow.searchcategory.data.model.QuerySafeModel
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.view.BaseSearchCategoryFragment
-import com.tokopedia.tokopedianow.searchcategory.utils.ChooseAddressWrapper
 import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW_DIRECTORY
 import com.tokopedia.universal_sharing.view.bottomsheet.ScreenshotDetector
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
@@ -91,9 +90,6 @@ class TokoNowCategoryFragment:
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-
-    @Inject
-    lateinit var chooseAddressWrapper: ChooseAddressWrapper
 
     private lateinit var tokoNowCategoryViewModel: TokoNowCategoryViewModel
     private var universalShareBottomSheet: UniversalShareBottomSheet? = null
@@ -243,13 +239,13 @@ class TokoNowCategoryFragment:
     ) {
         if(isWishlistSelected) {
             CategoryTracking.trackClickAddToWishlist(
-                chooseAddressWrapper.getChooseAddressData().warehouse_id,
+                getViewModel().warehouseId,
                 productId
             )
         }
         else{
             CategoryTracking.trackClickRemoveFromWishlist(
-                chooseAddressWrapper.getChooseAddressData().warehouse_id,
+                getViewModel().warehouseId,
                 productId
             )
         }
