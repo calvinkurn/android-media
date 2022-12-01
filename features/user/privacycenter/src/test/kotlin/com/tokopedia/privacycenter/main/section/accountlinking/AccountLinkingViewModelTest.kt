@@ -2,8 +2,8 @@ package com.tokopedia.privacycenter.main.section.accountlinking
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.privacycenter.common.PrivacyCenterStateResult
-import com.tokopedia.privacycenter.common.domain.AccountLinkingStatus
-import com.tokopedia.privacycenter.common.domain.AccountLinkingUseCase
+import com.tokopedia.privacycenter.domain.AccountLinkingStatus
+import com.tokopedia.privacycenter.domain.AccountLinkingUseCase
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.unit.test.ext.getOrAwaitValue
 import io.mockk.coEvery

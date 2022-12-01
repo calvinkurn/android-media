@@ -5,10 +5,10 @@ import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.graphql.data.model.GraphqlResponse
-import com.tokopedia.privacycenter.common.data.AccountLinkingResponse
-import com.tokopedia.privacycenter.common.data.AccountsLinkerStatus
-import com.tokopedia.privacycenter.common.data.SocialNetworkGetConsentResponse
-import com.tokopedia.privacycenter.common.domain.AccountLinkingStatus
+import com.tokopedia.privacycenter.data.AccountLinkingResponse
+import com.tokopedia.privacycenter.data.AccountsLinkerStatus
+import com.tokopedia.privacycenter.data.SocialNetworkGetConsentResponse
+import com.tokopedia.privacycenter.domain.AccountLinkingStatus
 import com.tokopedia.test.application.graphql.GqlMockUtil
 import com.tokopedia.test.application.graphql.GqlQueryParser
 import timber.log.Timber
