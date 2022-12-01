@@ -12,7 +12,9 @@ import com.tokopedia.sellerapp.presentation.viewmodel.data.FakeNode
 import com.tokopedia.sellerapp.presentation.viewmodel.util.DataMapper.getUpdatedMenuCounter
 import com.tokopedia.sellerapp.presentation.viewmodel.util.DummyData.listOrderData
 import com.tokopedia.sellerapp.presentation.viewmodel.util.DummyData.listSummaryData
+import com.tokopedia.sellerapp.util.Action
 import com.tokopedia.sellerapp.util.MenuHelper.DATAKEY_NEW_ORDER
+import com.tokopedia.sellerapp.util.MenuHelper.DATAKEY_READY_TO_SHIP
 import com.tokopedia.sellerapp.util.UiState
 import io.mockk.coEvery
 import io.mockk.coVerify
@@ -30,29 +32,38 @@ import org.mockito.junit.MockitoJUnitRunner
 class SharedViewModelTest: SharedViewModelFixture() {
 
     @Test
-    fun `when calling checkPhoneState, it should call clientMessageDatasource with sendMessagesToNodes function`() = runTest {
-        viewModel.checkPhoneState()
+    fun `when calling openOrderPageBasedOnType, it should call sendMessagesToNodes function with OPEN_NEW_ORDER_LIST action`() = runTest {
+        viewModel.openOrderPageBasedOnType(DATAKEY_NEW_ORDER)
 
         coVerify {
-            clientMessageDatasource.sendMessagesToNodes(any())
+            clientMessageDatasource.sendMessagesToNodes(Action.OPEN_NEW_ORDER_LIST)
         }
     }
 
     @Test
-    fun `when calling sendRequestAcceptBulkOrder, it should call clientMessageDatasource with sendMessagesToNodes function`() = runTest {
+    fun `when calling openOrderPageBasedOnType, it should call sendMessagesToNodes function with OPEN_READY_TO_SHIP action`() = runTest {
+        viewModel.openOrderPageBasedOnType(DATAKEY_READY_TO_SHIP)
+
+        coVerify {
+            clientMessageDatasource.sendMessagesToNodes(Action.OPEN_READY_TO_SHIP)
+        }
+    }
+
+    @Test
+    fun `when calling sendRequestAcceptBulkOrder, it should call sendMessagesToNodes function with ACCEPT_BULK_ORDER action`() = runTest {
         viewModel.sendRequestAcceptBulkOrder(listOf("10"))
 
         coVerify {
-            clientMessageDatasource.sendMessagesToNodes(any(), any())
+            clientMessageDatasource.sendMessagesToNodes(Action.ACCEPT_BULK_ORDER, any())
         }
     }
 
     @Test
-    fun `when calling openLoginPageInApp, it should call clientMessageDatasource with sendMessagesToNodes function`() = runTest {
+    fun `when calling openLoginPageInApp, it should call sendMessagesToNodes function with OPEN_LOGIN_PAGE action`() = runTest {
         viewModel.openLoginPageInApp()
 
         coVerify {
-            clientMessageDatasource.sendMessagesToNodes(any())
+            clientMessageDatasource.sendMessagesToNodes(Action.OPEN_LOGIN_PAGE)
         }
     }
 

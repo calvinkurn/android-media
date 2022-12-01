@@ -2,7 +2,8 @@ package com.tokopedia.sellerapp.presentation
 
 import SetupNavigation
 import WearAppTheme
-import android.os.Build
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.os.CountDownTimer
 import androidx.activity.ComponentActivity
@@ -31,6 +32,7 @@ import com.tokopedia.sellerapp.presentation.viewmodel.SharedViewModel
 import com.tokopedia.sellerapp.util.CapabilityConstant.CAPABILITY_PHONE_APP
 import com.tokopedia.sellerapp.util.MessageConstant
 import com.tokopedia.sellerapp.R
+import com.tokopedia.sellerapp.util.MarketURIConstant
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -116,7 +118,11 @@ class SellerAppActivity : ComponentActivity(), CapabilityClient.OnCapabilityChan
                             sharedViewModel.openLoginPageInApp()
                             finish()
                         }) } else if (phoneStateFlow.value == STATE.COMPANION_NOT_INSTALLED) { mutableStateOf({
-                            sharedViewModel.openAppInStoreOnPhone()
+                            val intent = Intent(Intent.ACTION_VIEW)
+                                .addCategory(Intent.CATEGORY_BROWSABLE)
+                                .setData(Uri.parse(MarketURIConstant.MARKET_TOKOPEDIA))
+
+                            remoteActivityHelper.startRemoteActivity(intent)
                             finish()
                         }) } else { mutableStateOf({
                             phoneConnectionFailed.value = false
@@ -165,7 +171,7 @@ class SellerAppActivity : ComponentActivity(), CapabilityClient.OnCapabilityChan
         phoneStateProgressFlow.value = timeoutStartProgress
         phoneStateFlow.value = STATE.SYNC
         startStateTimeoutTimer()
-        sharedViewModel.checkPhoneState()
+        sharedViewModel.checkIfPhoneHasApp()
     }
 
     private fun startStateTimeoutTimer() {
