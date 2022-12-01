@@ -21,7 +21,7 @@ class NewSellerJourneyHelper @Inject constructor(
 ) {
 
     companion object {
-        const val WIDGET_DISMISSAL_ID = "942"
+        const val WIDGET_DISMISSAL_ID = "0"
     }
 
     private var sectionWidgetView: View? = null
