@@ -118,7 +118,7 @@ class MvcListFragment: BaseDaggerFragment(), HasPaginatedList by HasPaginatedLis
     }
 
     override fun onOtherPeriodMoreMenuClicked(voucher: Voucher) {
-        println(voucher.toString())
+        MoreMenuVoucherBottomSheet().show(childFragmentManager, "")
     }
 
     private fun setupObservables() {
@@ -134,9 +134,9 @@ class MvcListFragment: BaseDaggerFragment(), HasPaginatedList by HasPaginatedLis
             binding?.footer?.setupVoucherQuota(it)
         }
         viewModel.voucherChilds.observe(viewLifecycleOwner) {
-            val bottomSheet = OtherPeriodBottomSheet(it)
+            val bottomSheet = OtherPeriodBottomSheet.newInstance(it)
             bottomSheet.setListener(this)
-                bottomSheet.show(this, it.size)
+            bottomSheet.show(this, it.size)
         }
     }
 
@@ -223,7 +223,7 @@ class MvcListFragment: BaseDaggerFragment(), HasPaginatedList by HasPaginatedLis
         addItem(filterList)
         parentListener = {
             filterItem.selectedItem = arrayListOf()
-            val bottomSheet = FilterVoucherBottomSheet(viewModel.filter)
+            val bottomSheet = FilterVoucherBottomSheet.newInstance(viewModel.filter)
             bottomSheet.setListener(this@MvcListFragment)
             bottomSheet.show(childFragmentManager, "")
         }

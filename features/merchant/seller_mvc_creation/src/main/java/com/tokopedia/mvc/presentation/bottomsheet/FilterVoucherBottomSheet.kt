@@ -21,23 +21,33 @@ import com.tokopedia.mvc.domain.entity.enums.VoucherTargetBuyer
 import com.tokopedia.mvc.presentation.bottomsheet.adapter.FilterVoucherAdapter
 import com.tokopedia.mvc.presentation.bottomsheet.viewmodel.FilterVoucherViewModel
 import com.tokopedia.mvc.presentation.list.model.FilterModel
+import com.tokopedia.mvc.util.constant.BundleConstant
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
-class FilterVoucherBottomSheet(
-    var filter: FilterModel = FilterModel()
-): BottomSheetUnify() {
-
-    private var binding by autoClearedNullable<SmvcBottomsheetFilterVoucherBinding>()
-    private var listener: FilterVoucherBottomSheetListener? = null
-
-    @Inject
-    lateinit var viewModel: FilterVoucherViewModel
+class FilterVoucherBottomSheet: BottomSheetUnify() {
 
     interface FilterVoucherBottomSheetListener {
         fun onFilterVoucherChanged(filter: FilterModel)
     }
+
+    companion object {
+        @JvmStatic
+        fun newInstance(filter: FilterModel): FilterVoucherBottomSheet {
+            return FilterVoucherBottomSheet().apply {
+                arguments = Bundle().apply {
+                    putParcelable(BundleConstant.BUNDLE_KEY_VOUCHER_FILTER, filter)
+                }
+            }
+        }
+    }
+
+    @Inject
+    lateinit var viewModel: FilterVoucherViewModel
+    private var binding by autoClearedNullable<SmvcBottomsheetFilterVoucherBinding>()
+    private var listener: FilterVoucherBottomSheetListener? = null
+    private val filter by lazy { arguments?.getParcelable(BundleConstant.BUNDLE_KEY_VOUCHER_FILTER) as? FilterModel }
 
     private fun initInjector() {
         DaggerMerchantVoucherCreationComponent.builder()
@@ -58,16 +68,18 @@ class FilterVoucherBottomSheet(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        viewModel.setupFilterData(filter)
-        viewModel.filterData.observe(viewLifecycleOwner) { filterResult ->
-            bottomSheetAction.isVisible = true
-            binding?.btnSubmit?.setOnClickListener {
-                listener?.onFilterVoucherChanged(filterResult)
-                dismiss()
+        filter?.let {
+            viewModel.setupFilterData(it)
+            viewModel.filterData.observe(viewLifecycleOwner) { filterResult ->
+                bottomSheetAction.isVisible = true
+                binding?.btnSubmit?.setOnClickListener {
+                    listener?.onFilterVoucherChanged(filterResult)
+                    dismiss()
+                }
             }
+            binding?.setupContentViews(it)
+            view.post { bottomSheetAction.isVisible = false }
         }
-        binding?.setupContentViews(filter)
-        view.post { bottomSheetAction.isVisible = false }
     }
 
     private fun setupBottomSheet(inflater: LayoutInflater, container: ViewGroup?) {

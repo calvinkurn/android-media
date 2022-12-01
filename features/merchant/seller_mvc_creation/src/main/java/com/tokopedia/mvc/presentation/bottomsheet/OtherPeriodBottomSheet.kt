@@ -11,17 +11,30 @@ import com.tokopedia.mvc.R
 import com.tokopedia.mvc.databinding.SmvcBottomsheetOtherPeriodVoucherBinding
 import com.tokopedia.mvc.domain.entity.Voucher
 import com.tokopedia.mvc.presentation.bottomsheet.adapter.OtherPeriodAdapter
+import com.tokopedia.mvc.util.constant.BundleConstant
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 
-class OtherPeriodBottomSheet(private val voucherChilds: List<Voucher>): BottomSheetUnify() {
+class OtherPeriodBottomSheet: BottomSheetUnify() {
 
     interface OtherPeriodBottomSheetListener {
         fun onOtherPeriodMoreMenuClicked(voucher: Voucher)
     }
 
+    companion object {
+        @JvmStatic
+        fun newInstance(voucherChildren: List<Voucher>): OtherPeriodBottomSheet {
+            return OtherPeriodBottomSheet().apply {
+                arguments = Bundle().apply {
+                    putParcelableArrayList(BundleConstant.BUNDLE_KEY_VOUCHER_LIST, ArrayList(voucherChildren))
+                }
+            }
+        }
+    }
+
     private var binding by autoClearedNullable<SmvcBottomsheetOtherPeriodVoucherBinding>()
     private var listener: OtherPeriodBottomSheetListener? = null
+    private val voucherChildren by lazy { arguments?.getParcelableArrayList<Voucher>(BundleConstant.BUNDLE_KEY_VOUCHER_LIST) }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -50,7 +63,7 @@ class OtherPeriodBottomSheet(private val voucherChilds: List<Voucher>): BottomSh
     private fun RecyclerView.setupOtherPeriodList() {
         layoutManager = LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
         adapter = OtherPeriodAdapter().apply {
-            setDataList(voucherChilds)
+            setDataList(voucherChildren ?: return)
             setOnItemClickListerner{
                 listener?.onOtherPeriodMoreMenuClicked(it)
             }
