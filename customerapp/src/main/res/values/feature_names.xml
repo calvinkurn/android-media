@@ -63,7 +63,7 @@
     <!--    Dynamic feature for Privacy Account-->
     <string name="title_base_privacy_center">Privacy Center</string>
     <string name="title_privacy_center">Privacy Center</string>
-    <string name="dsar_activity_title">Download Data Pribadi</string>
+    <string name="dsar_activity_title">Download Data</string>
     <string name="privacy_center_search_history_title">Riwayat Pencarian</string>
     <string name="privacy_policy_label">Privacy Policy</string>
 

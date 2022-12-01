@@ -23,5 +23,4 @@ object RecommendationModule {
     fun providePermissionChecker(): PermissionCheckerHelper {
         return PermissionCheckerHelper()
     }
-
 }

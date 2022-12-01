@@ -23,5 +23,4 @@ class FakeActivityComponentFactory : ActivityComponentFactory() {
                 }
             }).build()
     }
-
 }

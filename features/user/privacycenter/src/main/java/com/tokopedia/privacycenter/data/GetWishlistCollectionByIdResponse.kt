@@ -15,21 +15,21 @@ data class WishlistCollectionByIdResponse(
     @SerializedName("status")
     val status: String = "",
     @SerializedName("data")
-    val data: WishlistBydIdDataModel = WishlistBydIdDataModel(),
+    val data: WishlistBydIdDataModel = WishlistBydIdDataModel()
 )
 
 data class WishlistBydIdDataModel(
     @SerializedName("ticker")
     val ticker: WishlistByIdTickerDataModel = WishlistByIdTickerDataModel(),
     @SerializedName("collection")
-    val collection: WishlistCollectionByIdDataModel = WishlistCollectionByIdDataModel(),
+    val collection: WishlistCollectionByIdDataModel = WishlistCollectionByIdDataModel()
 )
 
 data class WishlistByIdTickerDataModel(
     @SerializedName("title")
     val title: String = "",
     @SerializedName("descriptions")
-    val descriptions: List<String> = listOf(),
+    val descriptions: List<String> = listOf()
 )
 
 data class WishlistCollectionByIdDataModel(
@@ -39,6 +39,5 @@ data class WishlistCollectionByIdDataModel(
     @SerializedName("name")
     val name: String = "",
     @SerializedName("access")
-    var access: Int = 0,
+    var access: Int = 0
 )
-

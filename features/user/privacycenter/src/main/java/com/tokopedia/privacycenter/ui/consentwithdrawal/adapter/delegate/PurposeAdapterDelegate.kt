@@ -27,5 +27,4 @@ class PurposeAdapterDelegate(
     ): PurposeViewHolder {
         return PurposeViewHolder(basicView, listener)
     }
-
 }

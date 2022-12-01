@@ -6,9 +6,9 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.privacycenter.R
 import com.tokopedia.privacycenter.common.PrivacyCenterStateResult
-import com.tokopedia.privacycenter.databinding.SectionConsentwithdrawalBinding
 import com.tokopedia.privacycenter.data.ConsentGroupDataModel
 import com.tokopedia.privacycenter.data.ConsentGroupListDataModel
+import com.tokopedia.privacycenter.databinding.SectionConsentwithdrawalBinding
 import com.tokopedia.privacycenter.ui.main.analytics.MainPrivacyCenterAnalytics
 import com.tokopedia.privacycenter.ui.main.section.BasePrivacyCenterSection
 import com.tokopedia.privacycenter.ui.main.section.consentwithdrawal.adapter.ConsentWithdrawalSectionAdapter

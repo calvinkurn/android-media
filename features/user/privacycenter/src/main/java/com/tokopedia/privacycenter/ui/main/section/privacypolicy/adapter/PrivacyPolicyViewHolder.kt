@@ -4,9 +4,9 @@ import android.view.View
 import androidx.core.content.ContextCompat
 import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.privacycenter.data.PrivacyPolicyDataModel
 import com.tokopedia.privacycenter.databinding.PrivacyPolicyItemViewBinding
 import com.tokopedia.privacycenter.ui.main.analytics.MainPrivacyCenterAnalytics
-import com.tokopedia.privacycenter.data.PrivacyPolicyDataModel
 
 class PrivacyPolicyViewHolder(
     itemView: View,

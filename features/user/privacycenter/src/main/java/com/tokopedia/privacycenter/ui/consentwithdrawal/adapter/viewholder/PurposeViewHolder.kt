@@ -12,10 +12,10 @@ import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.kotlin.extensions.view.parseAsHtml
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.privacycenter.R
-import com.tokopedia.privacycenter.ui.consentwithdrawal.ConsentWithdrawalConst
-import com.tokopedia.privacycenter.ui.consentwithdrawal.adapter.uimodel.PurposeUiModel
 import com.tokopedia.privacycenter.databinding.ConsentWithdrawalPurposeItemViewBinding
+import com.tokopedia.privacycenter.ui.consentwithdrawal.ConsentWithdrawalConst
 import com.tokopedia.privacycenter.ui.consentwithdrawal.ConsentWithdrawalListener
+import com.tokopedia.privacycenter.ui.consentwithdrawal.adapter.uimodel.PurposeUiModel
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.noreflection.viewBinding
 

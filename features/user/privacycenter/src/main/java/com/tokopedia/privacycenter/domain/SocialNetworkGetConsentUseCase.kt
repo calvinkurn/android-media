@@ -31,7 +31,7 @@ class SocialNetworkGetConsentUseCase @Inject constructor(
             PARAM_RELATION_TYPE to VALUE_RELATION_TYPE
         )
 
-        val response : SocialNetworkGetConsentResponse = graphqlRepository.request(graphqlQuery(), parameters)
+        val response: SocialNetworkGetConsentResponse = graphqlRepository.request(graphqlQuery(), parameters)
         val status = response.socialNetworkGetConsent.data.optIn
 
         return GetRecommendationFriendState.Success(status)

@@ -14,6 +14,7 @@ import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.privacycenter.R
+import com.tokopedia.privacycenter.data.PrivacyPolicyDataModel
 import com.tokopedia.privacycenter.databinding.SectionPrivacyPolicyBinding
 import com.tokopedia.privacycenter.ui.main.analytics.MainPrivacyCenterAnalytics
 import com.tokopedia.privacycenter.ui.main.section.BasePrivacyCenterSection
@@ -21,7 +22,6 @@ import com.tokopedia.privacycenter.ui.main.section.privacypolicy.PrivacyPolicyCo
 import com.tokopedia.privacycenter.ui.main.section.privacypolicy.PrivacyPolicyConst.KEY_TITLE
 import com.tokopedia.privacycenter.ui.main.section.privacypolicy.PrivacyPolicyConst.SECTION_ID
 import com.tokopedia.privacycenter.ui.main.section.privacypolicy.adapter.PrivacyPolicyAdapter
-import com.tokopedia.privacycenter.data.PrivacyPolicyDataModel
 import com.tokopedia.privacycenter.ui.privacypolicywebview.PrivacyPolicyWebViewActivity
 
 class PrivacyPolicySection constructor(
@@ -93,7 +93,7 @@ class PrivacyPolicySection constructor(
                     when (it.innerState) {
                         is PrivacyPolicyUiModel.InnerState.Success -> showList(it.innerState.list)
                         PrivacyPolicyUiModel.InnerState.Loading -> loadingPrivacyPolicyList()
-                        PrivacyPolicyUiModel.InnerState.Error ->  showLocalLoad()
+                        PrivacyPolicyUiModel.InnerState.Error -> showLocalLoad()
                     }
                 }
             }
@@ -102,10 +102,12 @@ class PrivacyPolicySection constructor(
 
     override fun onItemClicked(item: PrivacyPolicyDataModel) {
         val intent = Intent(context, PrivacyPolicyWebViewActivity::class.java).apply {
-            putExtras(Bundle().apply {
-                putString(KEY_TITLE, item.sectionTitle)
-                putString(SECTION_ID, item.sectionId)
-            })
+            putExtras(
+                Bundle().apply {
+                    putString(KEY_TITLE, item.sectionTitle)
+                    putString(SECTION_ID, item.sectionId)
+                }
+            )
         }
 
         context?.startActivity(intent)

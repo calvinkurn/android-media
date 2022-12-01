@@ -32,7 +32,7 @@ class SocialNetworkSetConsentUseCase @Inject constructor(
             PARAM_RELATION_TYPE to VALUE_RELATION_TYPE
         )
 
-        val response : SocialNetworkSetConsentResponse = graphqlRepository.request(graphqlQuery(), parameters)
+        val response: SocialNetworkSetConsentResponse = graphqlRepository.request(graphqlQuery(), parameters)
         val status = response.socialNetworkSetConsent.data.isSuccess == SET_CONSENT_SUCCESS
 
         return PrivacyCenterStateResult.Success(status)

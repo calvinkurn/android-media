@@ -2,10 +2,10 @@ package com.tokopedia.privacycenter.ui.sharingwishlist
 
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 class SharingWishlistSharedViewModel @Inject constructor(
     dispatchers: CoroutineDispatchers

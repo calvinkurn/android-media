@@ -104,7 +104,7 @@ class ConsentWithdrawalViewModelTest {
         viewModelTest.submitConsentPreference(purposeId, transactionType)
 
         val result = viewModelTest.submitConsentPreference.getOrAwaitValue()
-        assertTrue(result is  PrivacyCenterStateResult.Success)
+        assertTrue(result is PrivacyCenterStateResult.Success)
         assertTrue(result.data.isSuccess)
     }
 
@@ -137,7 +137,6 @@ class ConsentWithdrawalViewModelTest {
         val purposeId = "0"
         val transactionType = ConsentWithdrawalConst.OPT_OUT
 
-
         coEvery {
             submitConsentPurposeByGroupUseCase(any())
         } throws throwable
@@ -147,5 +146,4 @@ class ConsentWithdrawalViewModelTest {
         assertTrue(result is PrivacyCenterStateResult.Fail)
         assertEquals(throwable, result.error)
     }
-
 }

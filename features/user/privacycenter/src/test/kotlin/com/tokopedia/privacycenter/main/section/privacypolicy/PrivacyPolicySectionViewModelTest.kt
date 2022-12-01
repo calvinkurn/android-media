@@ -52,6 +52,7 @@ class PrivacyPolicySectionViewModelTest {
             bsObserver.onChanged(PrivacyPolicyUiModel.InnerState.Error)
         }
     }
+
     @Test
     fun getPrivacyPolicyAllList_success() {
         coEvery { usecase.invoke(any()) } returns dummyModel

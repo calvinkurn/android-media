@@ -9,23 +9,19 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.show
-import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.kotlin.extensions.view.visibleWithCondition
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.privacycenter.R
 import com.tokopedia.privacycenter.common.PrivacyCenterStateResult
-import com.tokopedia.privacycenter.utils.getMessage
+import com.tokopedia.privacycenter.data.WishlistByIdTickerDataModel
+import com.tokopedia.privacycenter.data.WishlistBydIdDataModel
+import com.tokopedia.privacycenter.data.WishlistCollectionByIdDataModel
 import com.tokopedia.privacycenter.databinding.SharingWishlistBottomSheetBinding
 import com.tokopedia.privacycenter.di.DaggerPrivacyCenterComponent
 import com.tokopedia.privacycenter.ui.sharingwishlist.SharingWishlistConst.COLLECTION_PRIVATE_ID
 import com.tokopedia.privacycenter.ui.sharingwishlist.SharingWishlistConst.COLLECTION_PUBLIC_ID
 import com.tokopedia.privacycenter.ui.sharingwishlist.SharingWishlistConst.KEY_COLLECTION_ID
-import com.tokopedia.privacycenter.data.WishlistByIdTickerDataModel
-import com.tokopedia.privacycenter.data.WishlistBydIdDataModel
-import com.tokopedia.privacycenter.data.WishlistCollectionByIdDataModel
 import com.tokopedia.privacycenter.ui.sharingwishlist.SharingWishlistViewModel
+import com.tokopedia.privacycenter.utils.getMessage
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
@@ -112,9 +108,11 @@ class SharingWishlistBottomSheet constructor(
             }
 
             buttonSave.setOnClickListener {
-                viewModel.updateWishlist(collection.apply {
-                    access = selectedOption
-                })
+                viewModel.updateWishlist(
+                    collection.apply {
+                        access = selectedOption
+                    }
+                )
             }
 
             buttonAnotherSetup.setOnClickListener {
@@ -131,7 +129,7 @@ class SharingWishlistBottomSheet constructor(
 
     private fun initObservers() {
         viewModel.wishlistCollectionById.observe(viewLifecycleOwner) {
-            when(it) {
+            when (it) {
                 is PrivacyCenterStateResult.Fail -> {
                     updateWithMessage(it.error.getMessage(context), false)
                 }
@@ -146,7 +144,7 @@ class SharingWishlistBottomSheet constructor(
         }
 
         viewModel.updateWishlist.observe(viewLifecycleOwner) {
-            when(it) {
+            when (it) {
                 is PrivacyCenterStateResult.Fail -> {
                     updateWithMessage(it.error.getMessage(context), false)
                 }

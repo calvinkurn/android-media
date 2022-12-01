@@ -76,7 +76,6 @@ class DsarAddEmailViewModelTest {
 
     @Test
     fun `checkEmail failed - exception`() {
-
         coEvery { dsarCheckEmailUseCase(any()) } throws testException
 
         viewModel.checkEmail(testEmail)

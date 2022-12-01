@@ -47,7 +47,7 @@ class SearchHistoryViewModelTest {
         viewModel.getSearchHistory()
 
         val result = viewModel.listSearchHistory.getOrAwaitValue()
-        assertTrue(result is  PrivacyCenterStateResult.Success)
+        assertTrue(result is PrivacyCenterStateResult.Success)
         assertEquals(expected, result)
     }
 
@@ -60,7 +60,7 @@ class SearchHistoryViewModelTest {
         viewModel.getSearchHistory()
 
         val result = viewModel.listSearchHistory.getOrAwaitValue()
-        assertTrue(result is  PrivacyCenterStateResult.Fail)
+        assertTrue(result is PrivacyCenterStateResult.Fail)
         assertEquals(expected, result)
     }
 
@@ -198,5 +198,4 @@ class SearchHistoryViewModelTest {
         assertEquals(expected.position, result.position)
         assertEquals(expected.isClearAll, result.isClearAll)
     }
-
 }

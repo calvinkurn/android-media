@@ -1,7 +1,8 @@
 package com.tokopedia.privacycenter.domain
 
 sealed class GetRecommendationFriendState(
-    val isAllowed: Boolean? = null, val throwable: Throwable? = null
+    val isAllowed: Boolean? = null,
+    val throwable: Throwable? = null
 ) {
     class Loading : GetRecommendationFriendState()
     class Success(isAllowed: Boolean) : GetRecommendationFriendState(isAllowed = isAllowed)

@@ -25,5 +25,4 @@ class SharingWishlistCollectionAdapterDelegate(
     ): SharingWishlistCollectionViewHolder {
         return SharingWishlistCollectionViewHolder(basicView, listener)
     }
-
 }

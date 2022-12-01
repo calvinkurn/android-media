@@ -6,9 +6,9 @@ import com.tokopedia.common.network.data.model.RequestType
 import com.tokopedia.common.network.data.model.RestRequest
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.privacycenter.ui.main.section.privacypolicy.PrivacyPolicyConst
 import com.tokopedia.privacycenter.data.PrivacyPolicyDataModel
 import com.tokopedia.privacycenter.data.PrivacyPolicyListResponse
+import com.tokopedia.privacycenter.ui.main.section.privacypolicy.PrivacyPolicyConst
 import com.tokopedia.utils.date.DateUtil
 import javax.inject.Inject
 
@@ -36,11 +36,11 @@ class GetPrivacyPolicyListUseCase @Inject constructor(
                     it.lastUpdate
                 }.map {
                     it.sectionTitle = "${it.sectionTitle} - ${
-                        DateUtil.formatDate(
-                            DateUtil.YYYY_MM_DD_T_HH_MM_SS_SSS_Z,
-                            DateUtil.DEFAULT_VIEW_FORMAT,
-                            it.lastUpdate
-                        )
+                    DateUtil.formatDate(
+                        DateUtil.YYYY_MM_DD_T_HH_MM_SS_SSS_Z,
+                        DateUtil.DEFAULT_VIEW_FORMAT,
+                        it.lastUpdate
+                    )
                     }"
                 }
 
@@ -54,5 +54,4 @@ class GetPrivacyPolicyListUseCase @Inject constructor(
             }
         }
     }
-
 }

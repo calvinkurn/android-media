@@ -6,12 +6,8 @@ import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.privacycenter.common.PrivacyCenterStateResult
+import com.tokopedia.privacycenter.data.*
 import com.tokopedia.privacycenter.ui.sharingwishlist.SharingWishlistConst
-import com.tokopedia.privacycenter.data.UpdateWishlistCollectionParam
-import com.tokopedia.privacycenter.data.UpdateWishlistCollectionResponse
-import com.tokopedia.privacycenter.data.UpdateWishlistDataModel
-import com.tokopedia.privacycenter.data.UpdateWishlistParam
-import com.tokopedia.privacycenter.data.WishlistCollectionByIdDataModel
 import javax.inject.Inject
 
 class UpdateWishlistCollectionUseCase @Inject constructor(
@@ -25,7 +21,8 @@ class UpdateWishlistCollectionUseCase @Inject constructor(
         val param = UpdateWishlistParam(UpdateWishlistCollectionParam(params))
 
         val response = repository.request<UpdateWishlistParam, UpdateWishlistCollectionResponse>(
-            graphqlQuery(), param
+            graphqlQuery(),
+            param
         ).updateWishlistCollection
 
         return if (response.status == SharingWishlistConst.STATUS_OK) {

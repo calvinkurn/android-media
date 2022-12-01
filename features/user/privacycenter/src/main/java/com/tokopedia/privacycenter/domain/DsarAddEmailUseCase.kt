@@ -28,7 +28,7 @@ class DsarAddEmailUseCase @Inject constructor(
 
     override suspend fun execute(params: AddEmailParam): AddEmailResponse {
         val result: AddEmailResponse = repository.request(graphqlQuery(), params)
-        if(result.data.isSuccess) {
+        if (result.data.isSuccess) {
             saveEmailToUserSession(params.email)
         }
         return result

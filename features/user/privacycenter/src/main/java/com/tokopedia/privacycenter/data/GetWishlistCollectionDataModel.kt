@@ -7,7 +7,7 @@ import com.tokopedia.graphql.data.GqlParam
 data class WishlistCollectionsParams(
     @SerializedName("params")
     var param: GetWishlistCollectionsParams = GetWishlistCollectionsParams()
-): GqlParam
+) : GqlParam
 
 data class GetWishlistCollectionsParams(
     @SerializedName("collection_access")
@@ -16,7 +16,7 @@ data class GetWishlistCollectionsParams(
 
 data class GetWishlistCollectionResponse(
     @SerializedName("get_wishlist_collections")
-    val getWishlistCollections: WishlistCollectionResponse = WishlistCollectionResponse(),
+    val getWishlistCollections: WishlistCollectionResponse = WishlistCollectionResponse()
 )
 
 data class WishlistCollectionResponse(
@@ -25,7 +25,7 @@ data class WishlistCollectionResponse(
     @SerializedName("status")
     val status: String = "",
     @SerializedName("data")
-    val data: WishlistDataModel = WishlistDataModel(),
+    val data: WishlistDataModel = WishlistDataModel()
 )
 
 data class WishlistDataModel(
@@ -36,7 +36,7 @@ data class WishlistDataModel(
     @SerializedName("is_empty_state")
     val isEmptyState: Boolean = false,
     @SerializedName("total_collection")
-    val totalCollection: Int = 0,
+    val totalCollection: Int = 0
 )
 
 data class WishlistCollectionsDataModel(
@@ -52,4 +52,3 @@ data class WishlistCollectionsDataModel(
     @SerializedName("item_text")
     val itemText: String = ""
 )
-

@@ -5,10 +5,10 @@ import android.view.LayoutInflater
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.privacycenter.R
 import com.tokopedia.privacycenter.common.PrivacyCenterStateResult
-import com.tokopedia.privacycenter.utils.getMessage
 import com.tokopedia.privacycenter.databinding.ItemAccountLinkingBinding
 import com.tokopedia.privacycenter.ui.main.analytics.MainPrivacyCenterAnalytics
 import com.tokopedia.privacycenter.ui.main.section.BasePrivacyCenterSection
+import com.tokopedia.privacycenter.utils.getMessage
 
 class AccountLinkingSection(
     context: Context?,

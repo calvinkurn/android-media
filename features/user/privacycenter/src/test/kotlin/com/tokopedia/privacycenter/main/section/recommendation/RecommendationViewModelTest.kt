@@ -169,5 +169,4 @@ class RecommendationViewModelTest {
         assertTrue(resultSetConsent is PrivacyCenterStateResult.Fail)
         assertEquals(expected.error, resultSetConsent.error)
     }
-
 }

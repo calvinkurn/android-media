@@ -2,7 +2,6 @@ package com.tokopedia.privacycenter.ui.main.section.activity
 
 import android.content.Context
 import android.view.LayoutInflater
-import android.view.View
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.iconunify.IconUnify

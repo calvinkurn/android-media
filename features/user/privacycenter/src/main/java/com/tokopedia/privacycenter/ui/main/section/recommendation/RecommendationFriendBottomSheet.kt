@@ -120,8 +120,10 @@ class RecommendationFriendBottomSheet : BottomSheetUnify() {
 
     private fun goToTermAndCondition() {
         RouteManager.route(
-            activity, String.format(
-                STRING_FORMAT, ApplinkConst.WEBVIEW,
+            activity,
+            String.format(
+                STRING_FORMAT,
+                ApplinkConst.WEBVIEW,
                 "${TokopediaUrl.getInstance().MOBILEWEB}$TERM_AND_CONDITION_PATH"
             )
         )
@@ -129,8 +131,10 @@ class RecommendationFriendBottomSheet : BottomSheetUnify() {
 
     private fun goToPrivacyPolicy() {
         RouteManager.route(
-            activity, String.format(
-                STRING_FORMAT, ApplinkConst.WEBVIEW,
+            activity,
+            String.format(
+                STRING_FORMAT,
+                ApplinkConst.WEBVIEW,
                 "${TokopediaUrl.getInstance().MOBILEWEB}$PRIVACY_POLICY_PATH"
             )
         )
@@ -150,5 +154,4 @@ class RecommendationFriendBottomSheet : BottomSheetUnify() {
         private const val TERM_AND_CONDITION = "Syarat & Ketentuan"
         private const val PRIVACY_POLICY = "Kebijakan Privasi"
     }
-
 }

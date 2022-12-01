@@ -52,7 +52,7 @@ class ConsentWithdrawalViewModel @Inject constructor(
                 SubmitConsentPurposeReq(
                     PurposesParam(
                         purposeID = purposeID,
-                        transactionType = transactionType,
+                        transactionType = transactionType
                     )
                 )
             )

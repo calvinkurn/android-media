@@ -15,27 +15,27 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.privacycenter.R
-import com.tokopedia.privacycenter.di.PrivacyCenterComponent
+import com.tokopedia.privacycenter.data.WishlistCollectionsDataModel
+import com.tokopedia.privacycenter.data.WishlistDataModel
 import com.tokopedia.privacycenter.databinding.SharingWishlistPageBinding
+import com.tokopedia.privacycenter.di.PrivacyCenterComponent
 import com.tokopedia.privacycenter.ui.sharingwishlist.SharingWishlistConst.COLLECTION_PRIVATE
 import com.tokopedia.privacycenter.ui.sharingwishlist.SharingWishlistConst.COLLECTION_PUBLIC
 import com.tokopedia.privacycenter.ui.sharingwishlist.SharingWishlistConst.COLLECTION_PUBLIC_ID
 import com.tokopedia.privacycenter.ui.sharingwishlist.SharingWishlistConst.PARAM_COLLECTION_TYPE
-import com.tokopedia.privacycenter.data.WishlistCollectionsDataModel
-import com.tokopedia.privacycenter.data.WishlistDataModel
-import com.tokopedia.privacycenter.ui.sharingwishlist.collection.adapter.SharingWishlistCollectionAdapter
 import com.tokopedia.privacycenter.ui.sharingwishlist.SharingWishlistSharedViewModel
 import com.tokopedia.privacycenter.ui.sharingwishlist.SharingWishlistStateResult
 import com.tokopedia.privacycenter.ui.sharingwishlist.SharingWishlistViewModel
+import com.tokopedia.privacycenter.ui.sharingwishlist.collection.adapter.SharingWishlistCollectionAdapter
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 
-class SharingWishlistPageFragment : BaseDaggerFragment(),
+class SharingWishlistPageFragment :
+    BaseDaggerFragment(),
     SharingWishlistCollectionAdapter.Listener,
-    SharingWishlistBottomSheet.Listener
-{
+    SharingWishlistBottomSheet.Listener {
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
@@ -87,7 +87,7 @@ class SharingWishlistPageFragment : BaseDaggerFragment(),
 
     private fun initObservers() {
         viewModel.wishlistCollection.observe(viewLifecycleOwner) {
-            when(it) {
+            when (it) {
                 is SharingWishlistStateResult.Fail -> showLocalLoad()
                 is SharingWishlistStateResult.Loading -> showLoading()
                 is SharingWishlistStateResult.CollectionEmpty -> onCollectionEmpty()
@@ -181,7 +181,10 @@ class SharingWishlistPageFragment : BaseDaggerFragment(),
         var snackbar: Snackbar? = null
 
         snackbar = if (isSuccess) {
-            Toaster.build(view = requireView(), message, type = Toaster.TYPE_NORMAL,
+            Toaster.build(
+                view = requireView(),
+                message,
+                type = Toaster.TYPE_NORMAL,
                 actionText = getString(R.string.sharing_wishlist_oke),
                 clickListener = { snackbar?.dismiss() }
             )

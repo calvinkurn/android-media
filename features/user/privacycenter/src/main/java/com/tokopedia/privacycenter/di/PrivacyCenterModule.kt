@@ -32,7 +32,7 @@ open class PrivacyCenterModule {
     @ActivityScope
     fun provideInterceptors(
         @ApplicationContext context: Context,
-        loggingInterceptor: HttpLoggingInterceptor,
+        loggingInterceptor: HttpLoggingInterceptor
     ): MutableList<Interceptor> {
         return if (GlobalConfig.isAllowDebuggingTools()) {
             val chucker = ChuckerInterceptor(context)
@@ -78,6 +78,4 @@ open class PrivacyCenterModule {
     fun provideOneTrustApi(retrofit: Retrofit): OneTrustApi {
         return retrofit.create(OneTrustApi::class.java)
     }
-
-
 }

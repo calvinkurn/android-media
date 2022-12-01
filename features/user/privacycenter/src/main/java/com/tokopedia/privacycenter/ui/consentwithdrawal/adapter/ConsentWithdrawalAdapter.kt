@@ -8,7 +8,7 @@ import com.tokopedia.privacycenter.ui.consentwithdrawal.adapter.uimodel.ConsentW
 import com.tokopedia.privacycenter.ui.consentwithdrawal.adapter.uimodel.PurposeUiModel
 
 class ConsentWithdrawalAdapter(
-    mandatoryListener: ConsentWithdrawalListener.Mandatory,
+    mandatoryListener: ConsentWithdrawalListener.Mandatory
 ) : BaseAdapter<ConsentWithdrawalUiModel>() {
 
     init {
@@ -39,8 +39,8 @@ class ConsentWithdrawalAdapter(
                 if (consentWithdrawalUiModel is PurposeUiModel && index == position) {
                     consentWithdrawalUiModel.copy(
                         data = consentWithdrawalUiModel.data.apply {
-                        consentStatus = transactionType
-                    }
+                            consentStatus = transactionType
+                        }
                     )
                 } else {
                     consentWithdrawalUiModel

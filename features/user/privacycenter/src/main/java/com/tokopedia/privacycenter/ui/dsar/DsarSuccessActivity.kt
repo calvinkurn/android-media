@@ -7,7 +7,7 @@ import com.tokopedia.privacycenter.R
 import com.tokopedia.privacycenter.databinding.FragmentDsarSuccessBinding
 import com.tokopedia.utils.date.DateUtil
 
-class DsarSuccessActivity: BaseActivity() {
+class DsarSuccessActivity : BaseActivity() {
 
     private var binding: FragmentDsarSuccessBinding? = null
 

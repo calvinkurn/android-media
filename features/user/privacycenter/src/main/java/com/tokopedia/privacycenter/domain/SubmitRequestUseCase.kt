@@ -3,8 +3,6 @@ package com.tokopedia.privacycenter.domain
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.privacycenter.ui.dsar.DsarConstants
-import com.tokopedia.privacycenter.ui.dsar.DsarHelper
 import com.tokopedia.privacycenter.data.AdditionalData
 import com.tokopedia.privacycenter.data.CreateRequestBody
 import com.tokopedia.privacycenter.data.CreateRequestResponse
@@ -12,6 +10,8 @@ import com.tokopedia.privacycenter.data.UpdateRequestBody
 import com.tokopedia.privacycenter.remote.GetCredentialsApi
 import com.tokopedia.privacycenter.remote.HeaderUtils
 import com.tokopedia.privacycenter.remote.OneTrustApi
+import com.tokopedia.privacycenter.ui.dsar.DsarConstants
+import com.tokopedia.privacycenter.ui.dsar.DsarHelper
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 
@@ -28,18 +28,22 @@ class SubmitRequestUseCase @Inject constructor(
     override suspend fun execute(params: CreateRequestBody): CreateRequestResponse {
         val credentials = getCredentialsApi.fetchCredential()
         credentials?.let {
-            if(it.accessToken.isNotEmpty()) {
+            if (it.accessToken.isNotEmpty()) {
                 val request = oneTrustApi.createRequest(
-                    params, dsarHelper.getTemplateId(), HeaderUtils.createHeader(
-                        token = it.accessToken,
+                    params,
+                    dsarHelper.getTemplateId(),
+                    HeaderUtils.createHeader(
+                        token = it.accessToken
                     )
                 ).body()
                 oneTrustApi.updateRequest(
-                    UpdateRequestBody(), request?.requestQueueRefId ?: "", HeaderUtils.createHeader(
+                    UpdateRequestBody(),
+                    request?.requestQueueRefId ?: "",
+                    HeaderUtils.createHeader(
                         token = it.accessToken
                     )
                 )
-                if(request != null) {
+                if (request != null) {
                     return request
                 }
             }

@@ -70,16 +70,18 @@ class SharingWishlistFragment : BaseDaggerFragment(), TabLayout.OnTabSelectedLis
 
     private fun renderPages() {
         pages.clear()
-        pages.addAll(listOf(
-            SharingWishlistPagerUiModel(
-                COLLECTION_PRIVATE,
-                SharingWishlistPageFragment.createInstance(COLLECTION_PRIVATE_ID)
-            ),
-            SharingWishlistPagerUiModel(
-                COLLECTION_PUBLIC,
-                SharingWishlistPageFragment.createInstance(COLLECTION_PUBLIC_ID)
+        pages.addAll(
+            listOf(
+                SharingWishlistPagerUiModel(
+                    COLLECTION_PRIVATE,
+                    SharingWishlistPageFragment.createInstance(COLLECTION_PRIVATE_ID)
+                ),
+                SharingWishlistPagerUiModel(
+                    COLLECTION_PUBLIC,
+                    SharingWishlistPageFragment.createInstance(COLLECTION_PUBLIC_ID)
+                )
             )
-        ))
+        )
 
         sharingWishlistPageAdapter?.notifyItemRangeInserted(0, pages.size)
     }
@@ -105,11 +107,13 @@ class SharingWishlistFragment : BaseDaggerFragment(), TabLayout.OnTabSelectedLis
     }
 
     private fun updateTabView(isSelected: Boolean, view: Typography) {
-        view.setTextColor(if (isSelected) {
-            MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
-        } else {
-            MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN600)
-        })
+        view.setTextColor(
+            if (isSelected) {
+                MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_GN500)
+            } else {
+                MethodChecker.getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_NN600)
+            }
+        )
     }
 
     override fun onTabSelected(tab: TabLayout.Tab?) {

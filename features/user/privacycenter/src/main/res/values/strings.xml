@@ -117,7 +117,7 @@
     <string name="dsar_btn_on_progress_details_btn">Lihat Detail Pengajuan</string>
     <string name="dsar_success_page_title">Oke, pengajuan download data sudah terkirim!</string>
     <string name="dsar_choose_data_title">Jenis data yang di-download</string>
-    <string name="dsar_pick_min_data_label">Pilih min. 1 data</string>
+    <string name="dsar_pick_min_data_label">Pilih minimum satu jenis data</string>
     <string name="dsar_payment_info_description">Daftar rekening bank, daftar kartu kredit, daftar kartu debit</string>
     <string name="dsar_payment_info_title">Informasi Pembayaran</string>
     <string name="dsar_personal_info_title">Informasi Pribadi</string>

@@ -12,12 +12,12 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.privacycenter.R
+import com.tokopedia.privacycenter.data.PrivacyPolicyDataModel
 import com.tokopedia.privacycenter.databinding.PrivacyPolicyBottomSheetBinding
 import com.tokopedia.privacycenter.di.DaggerPrivacyCenterComponent
 import com.tokopedia.privacycenter.ui.main.section.privacypolicy.PrivacyPolicyConst.KEY_TITLE
 import com.tokopedia.privacycenter.ui.main.section.privacypolicy.PrivacyPolicyConst.SECTION_ID
 import com.tokopedia.privacycenter.ui.main.section.privacypolicy.adapter.PrivacyPolicyAdapter
-import com.tokopedia.privacycenter.data.PrivacyPolicyDataModel
 import com.tokopedia.privacycenter.ui.privacypolicywebview.PrivacyPolicyWebViewActivity
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
@@ -108,10 +108,12 @@ class PrivacyPolicySectionBottomSheet : BottomSheetUnify(), PrivacyPolicyAdapter
 
     private fun openDetailPrivacyPolicy(title: String, sectionId: String) {
         val intent = Intent(context, PrivacyPolicyWebViewActivity::class.java).apply {
-            putExtras(Bundle().apply {
-                putString(KEY_TITLE, title)
-                putString(SECTION_ID, sectionId)
-            })
+            putExtras(
+                Bundle().apply {
+                    putString(KEY_TITLE, title)
+                    putString(SECTION_ID, sectionId)
+                }
+            )
         }
 
         context?.startActivity(intent)

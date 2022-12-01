@@ -32,5 +32,4 @@ class DevicePermissionUseCase @Inject constructor(
     companion object {
         private const val KEY_PREF_SHAKE = "notification_shake_shake"
     }
-
 }

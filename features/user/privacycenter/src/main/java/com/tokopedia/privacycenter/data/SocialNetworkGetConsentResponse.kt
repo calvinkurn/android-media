@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 
 data class SocialNetworkGetConsentResponse(
     @SerializedName("SocialNetworkGetConsent")
-    val socialNetworkGetConsent: SocialNetworkGetConsent = SocialNetworkGetConsent(),
+    val socialNetworkGetConsent: SocialNetworkGetConsent = SocialNetworkGetConsent()
 )
 
 data class SocialNetworkGetConsent(

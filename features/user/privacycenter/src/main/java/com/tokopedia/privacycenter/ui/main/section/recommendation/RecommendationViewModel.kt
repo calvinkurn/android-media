@@ -36,7 +36,6 @@ class RecommendationViewModel @Inject constructor(
     private val _isRecommendationFriendAllowed = MutableLiveData<Boolean>()
     val isRecommendationFriendAllowed: LiveData<Boolean> get() = _isRecommendationFriendAllowed
 
-
     init {
         getConsentSocialNetwork()
         isShakeShakeAllowed()

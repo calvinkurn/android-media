@@ -15,17 +15,16 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.date.DateUtil
 import com.tokopedia.utils.date.toString
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
-import java.util.ArrayList
-import java.util.Date
-import javax.inject.Inject
 import kotlinx.coroutines.launch
+import java.util.*
+import javax.inject.Inject
 
 class DsarViewModel @Inject constructor(
     val submitRequestUseCase: SubmitRequestUseCase,
     val searchRequestUseCase: SearchRequestUseCase,
     val userSession: UserSessionInterface,
     dispatcher: CoroutineDispatchers
-): BaseViewModel(dispatcher.main) {
+) : BaseViewModel(dispatcher.main) {
 
     private val _submitRequestState = MutableLiveData<SubmitRequestUiModel>()
     val submitRequestState: LiveData<SubmitRequestUiModel>
@@ -59,7 +58,7 @@ class DsarViewModel @Inject constructor(
     }
 
     fun setSelectedDate(selectedItem: String, startDate: Date? = null, endDate: Date? = null) {
-        if(startDate != null && endDate != null) {
+        if (startDate != null && endDate != null) {
             _transactionHistoryModel.value = _transactionHistoryModel.value?.copy(
                 selectedDate = CustomDateModel(
                     startDate = startDate.toString(DateUtil.YYYYMMDD),
@@ -84,7 +83,7 @@ class DsarViewModel @Inject constructor(
     }
 
     fun addFilter(filter: String) {
-        if((_filterItems.count()) < DsarConstants.MAX_SELECTED_ITEM) {
+        if ((_filterItems.count()) < DsarConstants.MAX_SELECTED_ITEM) {
             _filterItems.add(filter)
         }
     }
@@ -100,13 +99,13 @@ class DsarViewModel @Inject constructor(
     fun formatRequest(): ArrayList<String> {
         val requests = arrayListOf<String>()
         _filterItems.forEach {
-            if(it == DsarConstants.FILTER_TYPE_PERSONAL) {
+            if (it == DsarConstants.FILTER_TYPE_PERSONAL) {
                 requests.addAll(DsarConstants.DSAR_PERSONAL_DATA)
             }
-            if(it == DsarConstants.FILTER_TYPE_PAYMENT) {
+            if (it == DsarConstants.FILTER_TYPE_PAYMENT) {
                 requests.addAll(DsarConstants.DSAR_PAYMENT_DATA)
             }
-            if(it == DsarConstants.FILTER_TYPE_TRANSACTION) {
+            if (it == DsarConstants.FILTER_TYPE_TRANSACTION) {
                 requests.add(DsarUtils.formatTransactionDateToParam(getSelectedRangeItems()))
             }
         }
@@ -138,7 +137,7 @@ class DsarViewModel @Inject constructor(
                 val param = SearchRequestBody(email = userSession.email)
                 val result = searchRequestUseCase(param)
 
-                if(result.status.isNotEmpty()) {
+                if (result.status.isNotEmpty()) {
                     if (result.status != DsarConstants.STATUS_REJECTED &&
                         result.status != DsarConstants.STATUS_COMPLETED &&
                         result.status != DsarConstants.STATUS_CLOSED
@@ -160,7 +159,7 @@ class DsarViewModel @Inject constructor(
 
     fun showSummary() {
         var text = ""
-        if(_filterItems.isNotEmpty()) {
+        if (_filterItems.isNotEmpty()) {
             _showSummary.value = _filterItems.joinToString { "," }
             _filterItems.forEachIndexed { index, s ->
                 if (s == DsarConstants.FILTER_TYPE_PERSONAL) {
@@ -183,7 +182,7 @@ class DsarViewModel @Inject constructor(
                             endDate
                         )
                         val transText = "$startDate - $endDate"
-                        text += "${DsarConstants.TRANSACTION_LABEL}${transText}"
+                        text += "${DsarConstants.TRANSACTION_LABEL}$transText"
                     }
                 }
                 text += if (index == (_filterItems.count()) - 1) {

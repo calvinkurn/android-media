@@ -13,5 +13,4 @@ class SearchHistoryActivity : BaseSimpleActivity(), HasComponent<PrivacyCenterCo
     override fun getComponent(): PrivacyCenterComponent {
         return ActivityComponentFactory.instance.createComponent(application)
     }
-
 }

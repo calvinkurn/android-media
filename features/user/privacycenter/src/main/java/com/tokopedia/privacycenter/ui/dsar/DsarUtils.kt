@@ -11,24 +11,37 @@ object DsarUtils {
     fun getInitialRangeItem(): ArrayList<ItemRangeModel> {
         return arrayListOf(
             ItemRangeModel(
-                DsarConstants.DATE_RANGE_YEARS, DsarConstants.LABEL_RANGE_YEARS, selected = true),
+                DsarConstants.DATE_RANGE_YEARS,
+                DsarConstants.LABEL_RANGE_YEARS,
+                selected = true
+            ),
             ItemRangeModel(
-                DsarConstants.DATE_RANGE_3_YEARS, DsarConstants.LABEL_RANGE_3_YEARS),
+                DsarConstants.DATE_RANGE_3_YEARS,
+                DsarConstants.LABEL_RANGE_3_YEARS
+            ),
             ItemRangeModel(
-                DsarConstants.DATE_RANGE_3_MONTHS, DsarConstants.LABEL_RANGE_3_MONTHS),
+                DsarConstants.DATE_RANGE_3_MONTHS,
+                DsarConstants.LABEL_RANGE_3_MONTHS
+            ),
             ItemRangeModel(
-                DsarConstants.DATE_RANGE_30_DAYS, DsarConstants.LABEL_RANGE_30_DAYS),
+                DsarConstants.DATE_RANGE_30_DAYS,
+                DsarConstants.LABEL_RANGE_30_DAYS
+            ),
             ItemRangeModel(
-                DsarConstants.DATE_RANGE_WEEKLY, DsarConstants.LABEL_RANGE_WEEKLY),
+                DsarConstants.DATE_RANGE_WEEKLY,
+                DsarConstants.LABEL_RANGE_WEEKLY
+            ),
             ItemRangeModel(
-                DsarConstants.DATE_RANGE_CUSTOM, DsarConstants.LABEL_RANGE_CUSTOM)
+                DsarConstants.DATE_RANGE_CUSTOM,
+                DsarConstants.LABEL_RANGE_CUSTOM
+            )
         )
     }
 
     fun calculateTransactionDate(selectedId: String): String {
         val maxDate = GregorianCalendar(Locale.getDefault())
         val minDate = GregorianCalendar(Locale.getDefault())
-        when(selectedId) {
+        when (selectedId) {
             DsarConstants.LABEL_RANGE_YEARS -> {
                 minDate.apply {
                     set(GregorianCalendar.MONTH, GregorianCalendar.JANUARY)
@@ -59,11 +72,11 @@ object DsarUtils {
         val formattedMaxDate = maxDate.time.toString(DateUtil.YYYYMMDD)
         val formattedMinDate = minDate.time.toString(DateUtil.YYYYMMDD)
 
-        return "${DsarConstants.TRANSACTION_HISTORY_PREFIX}_${formattedMinDate}_${formattedMaxDate}"
+        return "${DsarConstants.TRANSACTION_HISTORY_PREFIX}_${formattedMinDate}_$formattedMaxDate"
     }
 
     fun formatTransactionDateToParam(customDateModel: CustomDateModel?): String {
-        if(customDateModel != null) {
+        if (customDateModel != null) {
             return "${DsarConstants.TRANSACTION_HISTORY_PREFIX}_${customDateModel.startDate}_${customDateModel.endDate}"
         }
         return ""
@@ -72,7 +85,7 @@ object DsarUtils {
     fun getDateFromSelectedId(selectedId: String): CustomDateModel {
         val maxDate = GregorianCalendar(Locale.getDefault())
         val minDate = GregorianCalendar(Locale.getDefault())
-        when(selectedId) {
+        when (selectedId) {
             DsarConstants.LABEL_RANGE_YEARS -> {
                 minDate.apply {
                     set(GregorianCalendar.MONTH, GregorianCalendar.JANUARY)
@@ -105,5 +118,4 @@ object DsarUtils {
 
         return CustomDateModel(formattedMinDate, formattedMaxDate)
     }
-
 }

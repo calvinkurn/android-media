@@ -25,7 +25,7 @@ data class ConsentPurposeDataModel(
     @SerializedName("mandatory")
     val mandatory: List<ConsentPurposeItemDataModel> = listOf(),
     @SerializedName("optional")
-    val optional: List<ConsentPurposeItemDataModel> = listOf(),
+    val optional: List<ConsentPurposeItemDataModel> = listOf()
 )
 
 data class ConsentPurposeItemDataModel(
@@ -46,5 +46,5 @@ data class ConsentPurposeItemDataModel(
     @SerializedName("optOutAppLink")
     val optOutAppLink: String = "",
     @SerializedName("priority")
-    val priority: Int = 0,
+    val priority: Int = 0
 ) : ConsentWithdrawalUiModel

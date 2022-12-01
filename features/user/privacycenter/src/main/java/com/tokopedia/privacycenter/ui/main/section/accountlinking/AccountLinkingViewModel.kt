@@ -13,7 +13,7 @@ import javax.inject.Inject
 class AccountLinkingViewModel @Inject constructor(
     private val accountLinkingUseCase: AccountLinkingUseCase,
     dispatchers: CoroutineDispatchers
-): BaseViewModel(dispatchers.main) {
+) : BaseViewModel(dispatchers.main) {
 
     private val _accountLinkingState = MutableLiveData<PrivacyCenterStateResult<AccountLinkingStatus>>()
     val accountLinkingState: LiveData<PrivacyCenterStateResult<AccountLinkingStatus>> get() = _accountLinkingState
