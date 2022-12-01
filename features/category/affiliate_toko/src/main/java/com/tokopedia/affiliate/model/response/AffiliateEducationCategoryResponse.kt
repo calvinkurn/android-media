@@ -64,7 +64,9 @@ data class AffiliateEducationCategoryResponse(
                     var title: String? = null,
 
                     @SerializedName("url")
-                    val url: String? = null
+                    val url: String? = null,
+
+                    var isSelected: Boolean = false
                 )
             }
         }

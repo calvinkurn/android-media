@@ -20,7 +20,7 @@ import com.tokopedia.affiliate.adapter.AffiliateAdapterFactory
 import com.tokopedia.affiliate.di.DaggerAffiliateComponent
 import com.tokopedia.affiliate.interfaces.AffiliateEduCategoryChipClick
 import com.tokopedia.affiliate.interfaces.AffiliateEducationSeeAllCardClickInterface
-import com.tokopedia.affiliate.model.response.AffiliateEducationArticleCardsResponse
+import com.tokopedia.affiliate.model.response.AffiliateEducationCategoryResponse
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEduCategoryChipModel
 import com.tokopedia.affiliate.viewmodel.AffiliateEducationSeeAllViewModel
 import com.tokopedia.affiliate_toko.R
@@ -48,7 +48,7 @@ class AffiliateEducationSeeAllFragment :
     private val seeAllAdapter by lazy {
         AffiliateAdapter(
             AffiliateAdapterFactory(
-                educationSeeAllCardClickInterface = this,
+                educationSeeAllCardClickInterface = this
             )
         )
     }
@@ -126,7 +126,16 @@ class AffiliateEducationSeeAllFragment :
             loadMoreTriggerListener?.updateStateAfterGetData()
         }
         educationVM?.getEducationCategoryChip()?.observe(viewLifecycleOwner) {
-            categoryChipAdapter.addMoreData(it)
+            categoryChipAdapter.setVisitables(it)
+            view?.findViewById<RecyclerView>(R.id.rv_education_category_chip)?.let { rv ->
+                rv.post {
+                    rv.smoothScrollToPosition(
+                        categoryChipAdapter.list.indexOfFirst { visitable ->
+                            (visitable as? AffiliateEduCategoryChipModel)?.chipType?.isSelected == true
+                        }
+                    )
+                }
+            }
         }
         educationVM?.getTotalCount()?.observe(viewLifecycleOwner) {
             view?.findViewById<Typography>(R.id.tv_total_items)?.text = buildString {
@@ -204,7 +213,7 @@ class AffiliateEducationSeeAllFragment :
     }
 
     override fun onChipClick(
-        type: AffiliateEducationArticleCardsResponse.CardsArticle.Data.CardsItem.Article.CategoriesItem?
+        type: AffiliateEducationCategoryResponse.CategoryTree.CategoryTreeData.CategoriesItem.ChildrenItem?
     ) {
         val selectedIndex =
             categoryChipAdapter.list.indexOfFirst { (it as AffiliateEduCategoryChipModel).chipType == type }

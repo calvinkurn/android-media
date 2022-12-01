@@ -8,28 +8,31 @@ import com.tokopedia.affiliate.PAGE_EDUCATION_ARTICLE
 import com.tokopedia.affiliate.PAGE_EDUCATION_ARTICLE_TOPIC
 import com.tokopedia.affiliate.PAGE_EDUCATION_EVENT
 import com.tokopedia.affiliate.PAGE_EDUCATION_TUTORIAL
-import com.tokopedia.affiliate.PAGE_ZERO
 import com.tokopedia.affiliate.adapter.AffiliateAdapterTypeFactory
 import com.tokopedia.affiliate.model.response.AffiliateEducationArticleCardsResponse
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEduCategoryChipModel
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEducationSeeAllUiModel
 import com.tokopedia.affiliate.usecase.AffiliateEducationArticleCardsUseCase
+import com.tokopedia.affiliate.usecase.AffiliateEducationCategoryTreeUseCase
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSessionInterface
 import timber.log.Timber
 import javax.inject.Inject
 
 class AffiliateEducationSeeAllViewModel @Inject constructor(
+    private val educationCategoryUseCase: AffiliateEducationCategoryTreeUseCase,
     private val educationArticleCardsUseCase: AffiliateEducationArticleCardsUseCase
 ) : BaseViewModel() {
     companion object {
-        private const val TYPE_ARTICLE_TOPIC = 1222
-        private const val TYPE_ARTICLE = 1232
-        private const val TYPE_EVENT = 1238
-        private const val TYPE_TUTORIAL = 1224
+        private val isStaging = TokopediaUrl.getInstance().GQL.contains("staging")
+        private val TYPE_ARTICLE_TOPIC = if (isStaging) 1222 else 381
+        private val TYPE_ARTICLE = if (isStaging) 1232 else 395
+        private val TYPE_EVENT_L1 = if (isStaging) 1223 else 382
+        private val TYPE_TUTORIAL = if (isStaging) 1224 else 383
     }
 
     private var offset: Int = 0
@@ -51,7 +54,7 @@ class AffiliateEducationSeeAllViewModel @Inject constructor(
                     offset = offset
                 )
             if (educationCategoryChip.value.isNullOrEmpty()) {
-                loadCategory(pageType)
+                loadCategory(pageType, categoryID)
             }
             convertToVisitable(educationArticleCards, pageType)
         }, onError = { Timber.e(it) })
@@ -62,30 +65,25 @@ class AffiliateEducationSeeAllViewModel @Inject constructor(
         fetchSeeAllData(pageType, categoryID)
     }
 
-    private suspend fun loadCategory(pageType: String?) {
-        val categoryID = when (pageType) {
-            PAGE_EDUCATION_EVENT -> TYPE_EVENT
-            PAGE_EDUCATION_ARTICLE -> TYPE_ARTICLE
-            PAGE_EDUCATION_ARTICLE_TOPIC -> TYPE_ARTICLE_TOPIC
-            PAGE_EDUCATION_TUTORIAL -> TYPE_TUTORIAL
-            else -> PAGE_ZERO
-        }
-        educationArticleCardsUseCase.getEducationArticleCards(categoryID).let { response ->
-            response.cardsArticle?.data?.cards?.let {
-                if (it.isNotEmpty()) {
-                    val categories = it[0]?.articles?.mapNotNull { data ->
-                        data?.categories
+    private suspend fun loadCategory(pageType: String?, categoryID: String?) {
+        educationCategoryUseCase.getEducationCategoryTree().categoryTree.let { response ->
+            response?.data?.categories?.let { educationCategories ->
+                if (educationCategories.isNotEmpty()) {
+                    val categoryGroup = educationCategories.groupBy { it?.id?.toInt().orZero() }
+                    val type = when (pageType) {
+                        PAGE_EDUCATION_EVENT -> TYPE_EVENT_L1
+                        PAGE_EDUCATION_ARTICLE, PAGE_EDUCATION_ARTICLE_TOPIC -> TYPE_ARTICLE_TOPIC
+                        PAGE_EDUCATION_TUTORIAL -> TYPE_TUTORIAL
+                        else -> null
                     }
                     educationCategoryChip.value =
-                        categories?.flatten()
-                            ?.distinctBy { cat -> cat?.id }
-                            ?.mapIndexedNotNull { index, categoriesItem ->
-                                AffiliateEduCategoryChipModel(
-                                    categoriesItem.apply {
-                                        this?.isSelected = index == PAGE_ZERO
-                                    }
-                                )
-                            }
+                        categoryGroup[type]?.getOrNull(0)?.children?.mapNotNull { category ->
+                            AffiliateEduCategoryChipModel(
+                                category.apply {
+                                    this?.isSelected = this?.id.toString() == categoryID
+                                }
+                            )
+                        }
                 }
             }
         }
