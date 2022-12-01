@@ -4,10 +4,10 @@ import com.google.gson.annotations.SerializedName
 
 data class DeleteSearchHistoryResponse(
 	@SerializedName("universe_delete_recent_search")
-	val universeDeleteRecentSearch: UniverseDeleteRecentSearch
+	val universeDeleteRecentSearch: UniverseDeleteRecentSearch = UniverseDeleteRecentSearch()
 )
 
 data class UniverseDeleteRecentSearch(
 	@SerializedName("status")
-	val status: String
+	val status: String = ""
 )
