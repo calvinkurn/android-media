@@ -1054,17 +1054,7 @@ class MainNavViewModel @Inject constructor(
         return null
     }
 
-    fun findHeaderModelPosition(): Int? {
-        val findHeaderModel = _mainNavListVisitable.find {
-            it is AccountHeaderDataModel
-        }
-        findHeaderModel?.let {
-            return _mainNavListVisitable.indexOf(it)
-        }
-        return null
-    }
-
-    fun findBuStartIndexPosition(): Int? {
+    private fun findBuStartIndexPosition(): Int? {
         if (isMePageUsingRollenceVariant) {
             val findBU = _mainNavListVisitable.firstOrNull {
                 it is HomeNavExpandableDataModel && it.id == IDENTIFIER_TITLE_ALL_CATEGORIES
