@@ -1,7 +1,6 @@
 package com.tokopedia.digital.home.presentation.adapter.viewholder
 
 import android.graphics.Color
-import android.text.TextUtils
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -182,8 +181,6 @@ class RechargeHomepageMyBillsWidgetViewHolder(
                     RouteManager.route(itemView.context, element.items.applink)
                 }
                 titleView.setType(Typography.PARAGRAPH_3)
-                titleView.maxLines = Int.ONE
-                titleView.ellipsize = TextUtils.TruncateAt.END
             }
         }
     }
