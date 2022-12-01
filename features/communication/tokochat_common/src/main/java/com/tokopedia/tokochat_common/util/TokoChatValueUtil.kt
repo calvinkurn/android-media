@@ -5,7 +5,7 @@ object TokoChatValueUtil {
      * Role Value
      */
     const val DRIVER = "driver"
-    const val CUSTOMER = "customer"
+    const val CUSTOMER = "tokopedia_customer"
 
     /**
      * SOURCE

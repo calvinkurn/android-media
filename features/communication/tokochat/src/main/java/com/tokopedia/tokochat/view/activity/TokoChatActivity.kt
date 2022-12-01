@@ -98,4 +98,36 @@ class TokoChatActivity : TokoChatBaseActivity<TokoChatComponent>() {
             putString(TokoChatValueUtil.NOTIFCENTER_NOTIFICATION_TEMPLATE_KEY, pushNotifTemplateKey)
         }
     }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putString(
+            ApplinkConst.TokoChat.PARAM_SOURCE,
+            intent.data?.getQueryParameter(ApplinkConst.TokoChat.PARAM_SOURCE) ?: ""
+        )
+        outState.putString(
+            ApplinkConst.TokoChat.ORDER_ID_GOJEK,
+            intent.data?.getQueryParameter(ApplinkConst.TokoChat.ORDER_ID_GOJEK) ?: ""
+        )
+        outState.putString(
+            ApplinkConst.TokoChat.ORDER_ID_TKPD,
+            intent.data?.getQueryParameter(ApplinkConst.TokoChat.ORDER_ID_TKPD) ?: ""
+        )
+        outState.putBoolean(
+            ApplinkConst.TokoChat.IS_FROM_TOKOFOOD_POST_PURCHASE,
+            intent?.getBooleanExtra(
+                ApplinkConst.TokoChat.IS_FROM_TOKOFOOD_POST_PURCHASE,
+                false
+            ) ?: false
+        )
+        outState.putString(
+            TokoChatValueUtil.NOTIFCENTER_NOTIFICATION_TEMPLATE_KEY,
+            intent?.getStringExtra(TokoChatValueUtil.NOTIFCENTER_NOTIFICATION_TEMPLATE_KEY) ?: ""
+        )
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+        (fragment as TokoChatFragment?)?.onRestoreInstanceState(savedInstanceState)
+    }
 }
