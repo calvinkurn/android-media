@@ -125,7 +125,7 @@ class ProductItemInfoBottomSheet : BottomSheetUnify() {
                 postTagItem.totalSold,
                 postTagItem.star,
                 postTagItem.mods,
-                shopId,
+                postTagItem.shopID,
                 shopName = shopName,
                 description = postDescription,
                 isTopads = postTagItem.isTopads,
