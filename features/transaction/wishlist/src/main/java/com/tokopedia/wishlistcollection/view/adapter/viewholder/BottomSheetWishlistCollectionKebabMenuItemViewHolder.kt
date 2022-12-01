@@ -18,7 +18,6 @@ class BottomSheetWishlistCollectionKebabMenuItemViewHolder(
         actionItem: BottomSheetKebabActionItemData,
         _collectionId: String,
         _collectionName: String,
-        _collectionType: Int,
         _collectionIndicatorTitle: String
     ) {
         binding.run {

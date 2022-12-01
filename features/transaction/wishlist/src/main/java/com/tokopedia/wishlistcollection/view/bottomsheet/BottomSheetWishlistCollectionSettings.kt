@@ -83,9 +83,6 @@ class BottomSheetWishlistCollectionSettings : BottomSheetUnify() {
                 addList(collectionActionItems)
                 _collectionId = collectionId
                 _collectionName = collectionName
-                if (collectionType != null) {
-                    _collectionType = collectionType
-                }
             }
         }
         setChild(binding?.root)
