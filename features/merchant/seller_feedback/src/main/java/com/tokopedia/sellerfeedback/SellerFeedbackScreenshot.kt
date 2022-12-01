@@ -62,9 +62,13 @@ class SellerFeedbackScreenshot(private val context: Context) : Screenshot(contex
     private fun openFeedbackForm(uri: Uri, currentActivity: Activity) {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalSellerapp.SELLER_FEEDBACK)
         val activityName = if (currentActivity.intent.data?.query.orEmpty().isNotEmpty()) {
-            currentActivity::class.java.canonicalName + "?${
-                currentActivity.intent.data?.query.orEmpty()
-            }"
+            if (currentActivity::class.java.canonicalName.contains("webview")){
+                currentActivity::class.java.canonicalName + "?${
+                    currentActivity.intent.data?.query.orEmpty()
+                }"
+            }else{
+                currentActivity::class.java.canonicalName
+            }
         } else {
             currentActivity::class.java.canonicalName
         }
