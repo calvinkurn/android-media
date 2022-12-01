@@ -16,6 +16,7 @@ object ShopPageGqlQueryConstant {
                   product_id
                   name
                   product_url
+                  app_link
                   stock
                   minimum_order
                   max_order

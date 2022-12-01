@@ -10,6 +10,7 @@ import com.tokopedia.navigation.domain.model.*
 import com.tokopedia.navigation.presentation.adapter.viewholder.*
 import com.tokopedia.navigation.presentation.view.InboxAdapterListener
 import com.tokopedia.recommendation_widget_common.listener.RecommendationListener
+import com.tokopedia.topads.sdk.listener.TdnBannerResponseListener
 import com.tokopedia.topads.sdk.listener.TopAdsImageVieWApiResponseListener
 import com.tokopedia.topads.sdk.listener.TopAdsImageViewClickListener
 import com.tokopedia.user.session.UserSessionInterface
@@ -21,7 +22,7 @@ class InboxAdapterTypeFactory constructor(
         private val userSessionInterface: UserSessionInterface,
         private val listener: InboxAdapterListener,
         private val recommendationListener: RecommendationListener,
-        private val topAdsResponseListener: TopAdsImageVieWApiResponseListener,
+        private val tdnBannerResponseListener: TdnBannerResponseListener,
         private val topAdsClickListener: TopAdsImageViewClickListener
 ) : BaseAdapterTypeFactory(), InboxTypeFactory {
 
@@ -47,7 +48,7 @@ class InboxAdapterTypeFactory constructor(
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
-            InboxTopAdsBannerViewHolder.LAYOUT -> InboxTopAdsBannerViewHolder(view, topAdsResponseListener, topAdsClickListener)
+            InboxTopAdsBannerViewHolder.LAYOUT -> InboxTopAdsBannerViewHolder(view, tdnBannerResponseListener, topAdsClickListener)
             InboxViewHolder.LAYOUT -> InboxViewHolder(view, listener)
             RecommendationViewHolder.LAYOUT -> RecommendationViewHolder(view, recommendationListener)
             RecomTitleViewHolder.LAYOUT -> RecomTitleViewHolder(view)

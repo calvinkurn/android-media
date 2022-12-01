@@ -1,5 +1,6 @@
 package com.tokopedia.explore.view.fragment
 
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -13,10 +14,12 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrollListener
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.applink.UriUtil
 import com.tokopedia.explore.R
 import com.tokopedia.explore.di.ExploreComponent
 import com.tokopedia.explore.domain.entity.PostKol
 import com.tokopedia.explore.domain.entity.Tracking
+import com.tokopedia.explore.view.activity.HashtagLandingPageActivity
 import com.tokopedia.explore.view.adapter.HashtagLandingItemAdapter
 import com.tokopedia.explore.view.uimodel.PostKolUiModel
 import com.tokopedia.explore.view.viewmodel.HashtagLandingPageViewModel
@@ -39,6 +42,9 @@ class HashtagLandingPageFragment : BaseDaggerFragment(), HashtagLandingItemAdapt
 
     private var searchTag: String = ""
     private var isInitialLoad: Boolean = true
+    private var isFromContentDetailpage: Boolean = false
+    private var sourceFromContentDetail: String = ""
+
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -75,6 +81,8 @@ class HashtagLandingPageFragment : BaseDaggerFragment(), HashtagLandingItemAdapt
         viewModel = ViewModelProvider(this, viewModelFactory).get(HashtagLandingPageViewModel::class.java)
         arguments?.let {
             searchTag = it.getString(ARG_HASHTAG, "")
+            sourceFromContentDetail = it.getString(HashtagLandingPageActivity.CONTENT_DETAIL_PAGE_SOURCE, "")
+            isFromContentDetailpage = it.getBoolean(HashtagLandingPageActivity.ARG_IS_FROM_CONTENT_DETAIL_PAGE, false)
             viewModel.hashtag = searchTag
         }
     }
@@ -110,7 +118,7 @@ class HashtagLandingPageFragment : BaseDaggerFragment(), HashtagLandingItemAdapt
                     }
                 }
                 is RuntimeException -> {
-                    when (throwable.localizedMessage.toIntOrNull()) {
+                    when (throwable.localizedMessage?.toIntOrNull()) {
                         ReponseStatus.GATEWAY_TIMEOUT, ReponseStatus.REQUEST_TIMEOUT -> showGlobalError(
                             GlobalError.NO_CONNECTION
                         )
@@ -196,8 +204,24 @@ class HashtagLandingPageFragment : BaseDaggerFragment(), HashtagLandingItemAdapt
     }
 
     override fun onImageClick(post: PostKol, position: Int) {
-        activity?.let { RouteManager.route(it, ApplinkConst.CONTENT_DETAIL, post.id.toString()) }
-        feedAnalytics.eventHashtagPageClickThumbnail(post.id.toString(), searchTag, position)
+        val contentAppLink = UriUtil.buildUri(ApplinkConst.CONTENT_DETAIL, post.id)
+        val finaAppLink = Uri.parse(contentAppLink)
+            .buildUpon()
+            .appendQueryParameter(SOURCE, HASHTAG_PAGE)
+            .build().toString()
+
+        activity?.let {
+            RouteManager.route(it, finaAppLink)
+        }
+        if (isFromContentDetailpage)
+            feedAnalytics.eventContentDetailHashtagPageClickThumbnail(
+                post.id,
+                searchTag,
+                sourceFromContentDetail
+            )
+        else
+            feedAnalytics.eventHashtagPageClickThumbnail(post.id, searchTag, position)
+
     }
 
     override fun onUserImageClick(post: PostKol) {
@@ -249,10 +273,16 @@ class HashtagLandingPageFragment : BaseDaggerFragment(), HashtagLandingItemAdapt
     companion object{
         const val ARG_HASHTAG = "arg_hashtag"
         const val GRID_SPAN_COUNT = 2
+        private const val SOURCE = "source"
+        private const val HASHTAG_PAGE = "hashtag_page"
 
         @JvmStatic
-        fun createInstance(hashtag: String): Fragment = HashtagLandingPageFragment().also {
-            it.arguments = Bundle().apply { putString(ARG_HASHTAG, hashtag) }
+        fun createInstance(hashtag: String, isFromContentDetailPage: Boolean, sourceFromContentDetailPage: String): Fragment = HashtagLandingPageFragment().also {
+            it.arguments = Bundle().apply {
+                putString(ARG_HASHTAG, hashtag)
+                putString(HashtagLandingPageActivity.CONTENT_DETAIL_PAGE_SOURCE, sourceFromContentDetailPage)
+                putBoolean(HashtagLandingPageActivity.ARG_IS_FROM_CONTENT_DETAIL_PAGE, isFromContentDetailPage)
+            }
         }
     }
 }

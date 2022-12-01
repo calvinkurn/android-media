@@ -43,6 +43,7 @@ class ProductVideoViewHolder(val view: View,
     init {
         videoVolume = binding.pdpMainVideo.findViewById(R.id.pdp_volume_control)
         videoFullScreen = binding.pdpMainVideo.findViewById(R.id.pdp_maximize_control)
+        binding.pdpMainVideo.layoutTransition.setAnimateParentHierarchy(false)
     }
 
     override fun bind(data: MediaDataModel) {

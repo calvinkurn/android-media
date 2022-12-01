@@ -4,8 +4,8 @@ import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.network.NetworkRouter
 import com.tokopedia.productcard.options.topadswishlist.TopAdsWishlistUseCase
+import com.tokopedia.topads.sdk.UrlTopAdsSdk
 import com.tokopedia.topads.sdk.base.AuthInterceptor
-import com.tokopedia.topads.sdk.base.Config
 import com.tokopedia.topads.sdk.domain.TopAdsWishlistService
 import com.tokopedia.usecase.UseCase
 import com.tokopedia.user.session.UserSessionInterface
@@ -34,7 +34,7 @@ internal class TopAdsWishlistUseCaseModule {
     @ProductCardOptionsScope
     fun provideRetrofit(okHttpClient: OkHttpClient,
                         retrofitBuilder: Retrofit.Builder): Retrofit {
-        return retrofitBuilder.baseUrl(Config.TOPADS_BASE_URL).client(okHttpClient).build()
+        return retrofitBuilder.baseUrl(UrlTopAdsSdk.TOP_ADS_BASE_URL).client(okHttpClient).build()
     }
 
     @Provides

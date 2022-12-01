@@ -1,5 +1,6 @@
 package com.tokopedia.media.preview.ui.activity
 
+import android.Manifest
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
@@ -37,10 +38,12 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.flow.filter
 import javax.inject.Inject
+import android.content.pm.PackageManager
+import androidx.core.app.ActivityCompat
+import androidx.core.content.ContextCompat
 
-class PickerPreviewActivity : BaseActivity()
-    , NavToolbarComponent.Listener
-    , DrawerSelectionWidget.Listener {
+open class PickerPreviewActivity : BaseActivity(), NavToolbarComponent.Listener,
+    DrawerSelectionWidget.Listener {
 
     @Inject
     lateinit var param: ParamCacheManager
@@ -110,6 +113,11 @@ class PickerPreviewActivity : BaseActivity()
         if (param.get().isMultipleSelectionType()) {
             onBackPickerIntent()
         } else {
+            if (uiModel.isEmpty()) {
+                cancelIntent()
+                return
+            }
+
             onCancelOrRetakeMedia(uiModel.first())
         }
     }
@@ -156,6 +164,38 @@ class PickerPreviewActivity : BaseActivity()
     }
 
     override fun onContinueClicked() {
+        checkPermission()
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        if (requestCode == PERMISSION_REQUEST_CODE && grantResults.isNotEmpty() && grantResults.first() == PackageManager.PERMISSION_GRANTED) {
+            publishMediaList()
+        }
+    }
+
+    // need to check & re-request permission on API 28
+    // for prevention on future checker didn't only run on API 28
+    private fun checkPermission() {
+        val permissionCheck = ContextCompat.checkSelfPermission(
+            this,
+            Manifest.permission.WRITE_EXTERNAL_STORAGE
+        )
+        if (permissionCheck != PackageManager.PERMISSION_GRANTED) {
+            ActivityCompat.requestPermissions(
+                this,
+                arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),
+                PERMISSION_REQUEST_CODE
+            )
+        } else {
+            publishMediaList()
+        }
+    }
+
+    private fun publishMediaList() {
         viewModel.files(uiModel)
     }
 
@@ -230,8 +270,16 @@ class PickerPreviewActivity : BaseActivity()
         showContinueButtonAs(true)
         onToolbarThemeChanged(ToolbarTheme.Solid)
 
-        if (!param.get().isEditorEnabled()) {
-            navToolbar.setContinueTitle(getString(R.string.picker_button_upload))
+        param.get().apply {
+            if (!isEditorEnabled()) {
+                navToolbar.setContinueTitle(
+                    if (previewActionText().isNotEmpty()) {
+                        previewActionText()
+                    } else {
+                        getString(R.string.picker_button_upload)
+                    }
+                )
+            }
         }
     }
 
@@ -248,6 +296,11 @@ class PickerPreviewActivity : BaseActivity()
                 binding?.drawerSelector?.setThumbnailSelected(nextIndex = drawerIndexSelected)
             }
         } else {
+            if (uiModel.isEmpty()) {
+                cancelIntent()
+                return
+            }
+
             val media = uiModel.first()
             retakeButtonAction(media)
         }
@@ -306,7 +359,7 @@ class PickerPreviewActivity : BaseActivity()
         finish()
     }
 
-    private fun initInjector() {
+    protected open fun initInjector() {
         DaggerPreviewComponent.builder()
             .baseAppComponent((application as BaseMainApplication).baseAppComponent)
             .build()
@@ -315,6 +368,7 @@ class PickerPreviewActivity : BaseActivity()
 
     companion object {
         private const val CACHE_LAST_SELECTION = "cache_last_selection"
+        private const val PERMISSION_REQUEST_CODE = 135
 
         fun start(activity: ComponentActivity, medias: ArrayList<MediaUiModel>, reqCode: Int) {
             activity.startActivityForResult(

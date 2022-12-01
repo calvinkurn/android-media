@@ -7,8 +7,8 @@
 
     <ImageView
         android:id="@+id/iv_empty_state"
-        android:layout_width="@dimen/dp_280"
-        android:layout_height="@dimen/dp_140"
+        android:layout_width="280dp"
+        android:layout_height="140dp"
         android:layout_gravity="center_horizontal"
         android:layout_marginLeft="40dp"
         android:layout_marginTop="72dp"
@@ -43,9 +43,9 @@
         android:id="@+id/btn_add_empty"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/dp_18"
-        android:layout_marginRight="@dimen/dp_60"
-        android:layout_marginLeft="@dimen/dp_60"
+        android:layout_marginTop="18dp"
+        android:layout_marginRight="60dp"
+        android:layout_marginLeft="60dp"
         android:text="@string/tambah_alamat"
         android:textSize="14sp"
         android:textStyle="bold"

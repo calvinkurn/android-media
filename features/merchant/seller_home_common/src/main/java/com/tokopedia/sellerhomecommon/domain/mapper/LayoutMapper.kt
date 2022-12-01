@@ -1,8 +1,10 @@
 package com.tokopedia.sellerhomecommon.domain.mapper
 
 import com.tokopedia.kotlin.extensions.orFalse
+import com.tokopedia.kotlin.extensions.view.isMoreThanZero
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.sellerhomecommon.common.DismissibleState
 import com.tokopedia.sellerhomecommon.common.EmptyLayoutException
 import com.tokopedia.sellerhomecommon.common.WidgetType
 import com.tokopedia.sellerhomecommon.common.const.WidgetGridSize
@@ -25,6 +27,7 @@ import com.tokopedia.sellerhomecommon.presentation.model.ProgressWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.RecommendationWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.SectionWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.TableWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.UnificationWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.WidgetFilterUiModel
 import javax.inject.Inject
 
@@ -71,6 +74,7 @@ class LayoutMapper @Inject constructor(
                             WidgetType.RECOMMENDATION -> mapToRecommendationWidget(it, isFromCache)
                             WidgetType.MILESTONE -> mapToMilestoneWidget(it, isFromCache)
                             WidgetType.CALENDAR -> mapToCalendarWidget(it, isFromCache)
+                            WidgetType.UNIFICATION -> mapToUnificationWidget(it, isFromCache)
                             else -> mapToSectionWidget(it, isFromCache)
                         }
                     )
@@ -78,6 +82,30 @@ class LayoutMapper @Inject constructor(
             }
             return mappedList
         } else throw EmptyLayoutException(EMPTY_WIDGET_MESSAGE)
+    }
+
+    private fun mapToUnificationWidget(
+        widget: WidgetModel,
+        isFromCache: Boolean
+    ): UnificationWidgetUiModel {
+        return UnificationWidgetUiModel(
+            id = (widget.id.orZero()).toString(),
+            widgetType = widget.widgetType.orEmpty(),
+            title = widget.title.orEmpty(),
+            subtitle = widget.subtitle.orEmpty(),
+            tooltip = tooltipMapper.mapRemoteModelToUiModel(widget.tooltip),
+            tag = widget.tag.orEmpty(),
+            appLink = widget.appLink.orEmpty(),
+            dataKey = widget.dataKey.orEmpty(),
+            ctaText = widget.ctaText.orEmpty(),
+            gridSize = getGridSize(widget.gridSize.orZero(), WidgetGridSize.GRID_SIZE_1),
+            isShowEmpty = widget.isShowEmpty.orFalse(),
+            data = null,
+            isLoaded = false,
+            isLoading = false,
+            isFromCache = isFromCache,
+            emptyState = widget.emptyStateModel.mapToUiModel()
+        )
     }
 
     private fun mapToCardWidget(widget: WidgetModel, fromCache: Boolean): CardWidgetUiModel {
@@ -186,7 +214,11 @@ class LayoutMapper @Inject constructor(
             ctaText = widget.ctaText.orEmpty(),
             gridSize = getGridSize(widget.gridSize.orZero(), WidgetGridSize.GRID_SIZE_4),
             maxData = widget.maxData.orZero(),
-            maxDisplay = widget.maxDisplay.orZero(),
+            maxDisplay = if (widget.maxDisplay.isMoreThanZero()) {
+                widget.maxDisplay.orZero()
+            } else {
+                PostMapper.MAX_ITEM_PER_PAGE
+            },
             isShowEmpty = widget.isShowEmpty.orFalse(),
             data = null,
             postFilter = widget.postFilter?.mapIndexed { i, filter ->
@@ -199,7 +231,13 @@ class LayoutMapper @Inject constructor(
             isLoaded = false,
             isLoading = false,
             isFromCache = fromCache,
-            emptyState = widget.emptyStateModel.mapToUiModel()
+            emptyState = widget.emptyStateModel.mapToUiModel(),
+            isDismissible = widget.isDismissible,
+            dismissibleState = when (widget.dismissibleState) {
+                DismissibleState.ALWAYS.value -> DismissibleState.ALWAYS
+                DismissibleState.TRIGGER.value -> DismissibleState.TRIGGER
+                else -> DismissibleState.NONE
+            }
         )
     }
 
@@ -347,7 +385,7 @@ class LayoutMapper @Inject constructor(
             isLoading = false,
             isFromCache = isFromCache,
             emptyState = widget.emptyStateModel.mapToUiModel(),
-            isComparePeriodeOnly = widget.isComparePeriodeOnly
+            isComparePeriodeOnly = widget.isComparePeriodOnly
         )
     }
 
@@ -371,7 +409,13 @@ class LayoutMapper @Inject constructor(
             isLoaded = false,
             isLoading = false,
             isFromCache = isFromCache,
-            emptyState = widget.emptyStateModel.mapToUiModel()
+            emptyState = widget.emptyStateModel.mapToUiModel(),
+            isDismissible = widget.isDismissible,
+            dismissibleState = when (widget.dismissibleState) {
+                DismissibleState.ALWAYS.value -> DismissibleState.ALWAYS
+                DismissibleState.TRIGGER.value -> DismissibleState.TRIGGER
+                else -> DismissibleState.NONE
+            }
         )
     }
 

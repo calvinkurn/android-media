@@ -17,7 +17,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.wear.compose.foundation.*
 import androidx.wear.compose.material.*
-import com.tokopedia.tkpd.R
+import com.tokopedia.sellerapp.R
 
 enum class STATE {
     CONNECTED,

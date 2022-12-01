@@ -2,15 +2,13 @@ package com.tokopedia.notifications.inApp.viewEngine
 
 import android.content.Context
 import android.util.Log
-import com.google.firebase.messaging.RemoteMessage
-import com.google.gson.GsonBuilder
+import com.google.gson.Gson
 import com.tokopedia.logger.ServerLogger.log
 import com.tokopedia.logger.utils.Priority
 import com.tokopedia.notifications.common.CMConstant
 import com.tokopedia.notifications.common.IrisAnalyticsEvents
 import com.tokopedia.notifications.common.launchCatchError
 import com.tokopedia.notifications.inApp.ruleEngine.repository.RepositoryManager
-import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.SerializedCMInAppData
 import com.tokopedia.notifications.inApp.ruleEngine.storage.entities.inappdata.CMInApp
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -28,52 +26,35 @@ class CMInAppController(
         get() = Dispatchers.IO
 
 
-    fun processAndSaveCMInAppRemotePayload(remoteMessage: RemoteMessage) {
+    fun processAndSaveCMInApp(cmInApp: CMInApp) {
         try {
-            val cmInApp: CMInApp? = CmInAppBundleConvertor.getCmInApp(remoteMessage)
-            cmInApp?.let {
-                IrisAnalyticsEvents.trackCmINAppEvent(
-                    applicationContext, cmInApp,
-                    IrisAnalyticsEvents.INAPP_DELIVERED, null
-                )
-                downloadImagesAndUpdateDB(applicationContext, cmInApp)
-            }
+            sendInAppReceivedEvent(cmInApp)
+            downloadImagesAndUpdateDB(applicationContext, cmInApp)
         } catch (e: Exception) {
-            val data: Map<String, String> = remoteMessage.data
+            val data: String = Gson().toJson(cmInApp)
             val messageMap: MutableMap<String, String> = HashMap()
             messageMap["type"] = "exception"
             messageMap["err"] = Log.getStackTraceString(e).substring(
                 0,
                 Log.getStackTraceString(e).length.coerceAtMost(CMConstant.TimberTags.MAX_LIMIT)
             )
-            messageMap["data"] = data.toString()
+            messageMap["data"] = data
                 .substring(0, data.toString().length.coerceAtMost(CMConstant.TimberTags.MAX_LIMIT))
             log(Priority.P2, "CM_VALIDATION", messageMap)
         }
     }
 
-    fun processAndSaveCMInAppAmplificationData(dataString: String?) {
-        try {
-            val gson = GsonBuilder().excludeFieldsWithoutExposeAnnotation().create()
-            val amplificationCMInApp = gson.fromJson(dataString, SerializedCMInAppData::class.java)
-            val cmInApp = CmInAppBundleConvertor.getCmInApp(amplificationCMInApp)
-            cmInApp?.let {
-                IrisAnalyticsEvents.sendAmplificationInAppEvent(
-                    applicationContext, IrisAnalyticsEvents.INAPP_DELIVERED, cmInApp)
-                downloadImagesAndUpdateDB(applicationContext, cmInApp)
-            }
-        } catch (e: Exception) {
-            val messageMap: MutableMap<String, String> = HashMap()
-            messageMap["type"] = "exception"
-            messageMap["err"] = Log.getStackTraceString(e).substring(
-                0,
-                Log.getStackTraceString(e).length.coerceAtMost(CMConstant.TimberTags.MAX_LIMIT)
+    private fun sendInAppReceivedEvent(cmInApp: CMInApp){
+        if (cmInApp.isAmplification)
+            IrisAnalyticsEvents.sendAmplificationInAppEvent(
+                applicationContext, IrisAnalyticsEvents.INAPP_DELIVERED, cmInApp
             )
-            messageMap["data"] = ""
-            log(Priority.P2, "CM_VALIDATION", messageMap)
-        }
+        else
+            IrisAnalyticsEvents.trackCmINAppEvent(
+                applicationContext, cmInApp,
+                IrisAnalyticsEvents.INAPP_DELIVERED, null
+            )
     }
-
 
     private fun downloadImagesAndUpdateDB(context: Context, cmInApp: CMInApp) {
         launchCatchError(

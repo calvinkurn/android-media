@@ -5,6 +5,8 @@ import com.tokopedia.discovery2.Constant
 import com.tokopedia.discovery2.LABEL_PRICE
 import com.tokopedia.discovery2.LABEL_PRODUCT_STATUS
 import com.tokopedia.discovery2.StockWording
+import com.tokopedia.discovery2.data.productbundling.BundleDetails
+import com.tokopedia.discovery2.data.productbundling.BundleProducts
 import com.tokopedia.discovery2.data.productcarditem.Badges
 import com.tokopedia.discovery2.data.productcarditem.FreeOngkir
 import com.tokopedia.discovery2.data.productcarditem.LabelsGroup
@@ -410,7 +412,7 @@ data class DataItem(
         var titleLogoUrl: String? = null,
 
         @SerializedName("notify_campaign_id")
-        var notifyCampaignId: Int = 0,
+        var notifyCampaignId: String = "",
 
         @SerializedName("hasAddToCartButton")
         var hasATC: Boolean = false,
@@ -457,6 +459,9 @@ data class DataItem(
         @SerializedName("time_description")
         val timeDescription: String? = null,
 
+        @SerializedName("template_name")
+        var templateName: String? = "",
+
         var quantity: Int = 0,
 
         @SerializedName("backgroud_image_url")
@@ -464,6 +469,27 @@ data class DataItem(
 
         @SerializedName("catalog_slugs")
         var catalogSlug : List<String?>? = null,
+
+        @SerializedName("bundle_details")
+        var bundleDetails : List<BundleDetails?>? = null,
+
+        @SerializedName("bundle_group_id")
+        var bundleGroupId : Long? = null,
+
+        @SerializedName("bundle_name")
+        var bundleName : String? = "",
+
+        @SerializedName("bundle_products")
+        var bundleProducts : List<BundleProducts?>? = null,
+
+        @SerializedName("bundle_type")
+        var bundleType : String? = "",
+
+        @SerializedName("widget_home_banner")
+        val widgetHomeBanner: String? = "",
+
+        @SerializedName("gtm_item_name")
+        var gtmItemName : String? = "",
 
         @field:SerializedName("products")
         val products: List<ProductsItem?>? = null,
@@ -502,6 +528,8 @@ data class DataItem(
         var hasThreeDotsWishlist: Boolean = false,
 
         var hasATCWishlist: Boolean = false,
+
+        var hasSimilarProductWishlist: Boolean? = null,
 
         var isWishList: Boolean = false,
 

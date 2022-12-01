@@ -55,7 +55,7 @@ class CategoryGqlPageRepository(private val departmentName: String,
                             share = Share(
                                     enabled = true,
                                     description = "Beli ${basicInfo.name} Dengan Pilihan Terlengkap dan Harga Termurah. Belanja Produk ${basicInfo.name} Aman dan Nyaman di Tokopedia. Pengiriman Cepat dan Terpercaya.",
-                                    url = "https://www.tokopedia.com${basicInfo.url}", title = "", image = "")),
+                                    url = "https://www.tokopedia.com${basicInfo.url}", title = basicInfo.titleTag, image = basicInfo.iconImageURL)),
                     title = basicInfo.name ?: departmentName,
                     additionalInfo = AdditionalInfo(null, hashMapOf(
                             KEY_CATEGORY_ID_MAP to basicInfo.id.toString(),

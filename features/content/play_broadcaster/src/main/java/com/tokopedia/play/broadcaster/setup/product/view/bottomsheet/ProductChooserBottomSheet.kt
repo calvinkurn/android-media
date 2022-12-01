@@ -45,8 +45,6 @@ import com.tokopedia.play_common.viewcomponent.viewComponent
 import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
-import java.net.ConnectException
-import java.net.UnknownHostException
 import javax.inject.Inject
 
 /**
@@ -143,6 +141,10 @@ class ProductChooserBottomSheet @Inject constructor(
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
         mListener = null
     }
 
@@ -175,7 +177,7 @@ class ProductChooserBottomSheet @Inject constructor(
 
     private fun setupView() {
         binding.root.layoutParams = binding.root.layoutParams.apply {
-            height = (getScreenHeight() * 0.85f).toInt()
+            height = (getScreenHeight() * SHEET_HEIGHT_PERCENT).toInt()
         }
 
         setCloseClickListener {
@@ -241,9 +243,7 @@ class ProductChooserBottomSheet @Inject constructor(
                     is PlayBroProductChooserEvent.ShowError -> {
                         toaster.showError(
                             err = it.error,
-                            customErrMessage = getString(
-                                R.string.play_bro_product_chooser_error_save
-                            )
+                            customErrMessage = getString(R.string.play_bro_product_chooser_error_save)
                         )
                     }
                     else -> {}
@@ -428,7 +428,7 @@ class ProductChooserBottomSheet @Inject constructor(
         when (event) {
             is ProductListViewComponent.Event.OnSelected -> {
                 isSelectedProductsChanged = true
-                viewModel.submitAction(ProductSetupAction.SelectProduct(event.product))
+                viewModel.submitAction(ProductSetupAction.ToggleSelectProduct(event.product))
             }
             is ProductListViewComponent.Event.OnLoadMore -> {
                 viewModel.submitAction(
@@ -510,6 +510,7 @@ class ProductChooserBottomSheet @Inject constructor(
 
     companion object {
         private const val TAG = "PlayBroProductChooserBottomSheet"
+        private const val SHEET_HEIGHT_PERCENT = 0.85f
 
         fun getFragment(
             fragmentManager: FragmentManager,

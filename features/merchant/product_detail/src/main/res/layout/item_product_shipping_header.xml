@@ -4,8 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:paddingTop="12dp"
-    android:paddingBottom="12dp">
+    android:paddingVertical="16dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/pdp_shipping_header_container"
@@ -13,28 +12,28 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
-        tools:visibility="gone"
         android:background="@drawable/bg_border_pdp_small_radius"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="gone">
 
         <com.tokopedia.iconunify.IconUnify
             android:id="@+id/pdp_ic_location_from"
-            android:layout_width="@dimen/unify_space_16"
-            android:layout_height="@dimen/unify_space_16"
-            android:layout_marginStart="@dimen/spacing_lvl4"
-            android:layout_marginTop="@dimen/spacing_lvl4"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
             app:icon_name="LOCATION"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/txt_shipping_header_from"
-            android:layout_width="@dimen/layout_lvl0"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
-            android:layout_marginEnd="@dimen/layout_lvl1"
+            android:layout_marginEnd="8dp"
             android:ellipsize="end"
             android:maxLines="1"
             android:textColor="@color/Unify_N700_96"
@@ -49,20 +48,20 @@
             android:id="@+id/txt_shipping_tokocabang"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
             android:layout_marginEnd="26dp"
             android:textColor="@color/Unify_N700_68"
-            tools:visibility="visible"
+            android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="@+id/txt_shipping_header_from"
             app:layout_constraintTop_toBottomOf="@+id/txt_shipping_header_from"
-            android:layout_marginTop="4dp"
             app:typographyType="display_3"
-            android:visibility="gone"
-            tools:text="Lebih Cepat, Lebih Hemat. Barang dikirim dari penyimpanan Tokopedia terdekat. Pelajari" />
+            tools:text="Lebih Cepat, Lebih Hemat. Barang dikirim dari penyimpanan Tokopedia terdekat. Pelajari"
+            tools:visibility="visible" />
 
         <View
             android:id="@+id/pdp_shipping_header_separator"
-            android:layout_width="@dimen/spacing_lvl1"
+            android:layout_width="2dp"
             android:layout_height="0dp"
             android:background="@color/Unify_N75"
             app:layout_constraintBottom_toTopOf="@+id/txt_shipping_header_to"
@@ -74,15 +73,15 @@
             android:id="@+id/txt_shipping_header_to"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="@dimen/spacing_lvl4"
-            android:layout_marginBottom="@dimen/spacing_lvl4"
-            android:layout_marginEnd="10dp"
+            android:layout_marginStart="16dp"
             android:layout_marginTop="4dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="16dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/txt_shipping_tokocabang"
             app:layout_goneMarginTop="12dp"
-            tools:visibility="gone"/>
+            tools:visibility="gone" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -103,7 +102,7 @@
         android:id="@+id/txt_pdp_shipping_weight"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_lvl2"
+        android:layout_marginTop="4dp"
         android:textColor="@color/Unify_N700_96"
         app:layout_constraintStart_toStartOf="@id/label_pdp_shipping_simulation"
         app:layout_constraintTop_toBottomOf="@+id/label_pdp_shipping_simulation"
@@ -114,7 +113,7 @@
         android:id="@+id/label_pdp_shipping_weight"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_lvl2"
+        android:layout_marginTop="4dp"
         android:text="@string/pdp_shipping_weight_checkout_label"
         android:textColor="@color/Unify_N700_96"
         app:layout_constraintStart_toStartOf="@id/label_pdp_shipping_simulation"
@@ -125,15 +124,15 @@
         android:id="@+id/barrier_bottom_shipping"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:constraint_referenced_ids="txt_pdp_shipping_tokonow, img_pdp_shipping_bo"
-        app:barrierDirection="bottom"/>
+        app:barrierDirection="bottom"
+        app:constraint_referenced_ids="txt_pdp_shipping_tokonow, img_pdp_shipping_bo" />
 
     <androidx.constraintlayout.widget.Barrier
         android:id="@+id/barrier_top_shipping"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:constraint_referenced_ids="txt_pdp_shipping_tokonow, img_pdp_shipping_bo"
-        app:barrierDirection="top"/>
+        app:barrierDirection="top"
+        app:constraint_referenced_ids="txt_pdp_shipping_tokonow, img_pdp_shipping_bo" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/txt_pdp_shipping_bo_desc"
@@ -142,24 +141,24 @@
         android:layout_marginTop="2dp"
         android:textColor="@color/Unify_N700_96"
         android:visibility="gone"
-        tools:visibility="visible"
         app:layout_constraintStart_toStartOf="@id/label_pdp_shipping_simulation"
         app:layout_constraintTop_toBottomOf="@+id/barrier_bottom_shipping"
         app:typographyType="display_3"
-        tools:text="Bebas Ongkir 2 kg khusus Surabaya &amp; sekitarnya" />
+        tools:text="Bebas Ongkir 2 kg khusus Surabaya &amp; sekitarnya"
+        tools:visibility="visible" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/txt_pdp_shipping_bo_estimation"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_lvl1"
+        android:layout_marginTop="2dp"
         android:textColor="@color/Unify_N700_68"
         android:visibility="gone"
-        tools:visibility="visible"
         app:layout_constraintStart_toStartOf="@id/label_pdp_shipping_simulation"
         app:layout_constraintTop_toBottomOf="@+id/txt_pdp_shipping_bo_desc"
         app:typographyType="display_3"
-        tools:text="Estimasi tiba 23-25 Nov" />
+        tools:text="Estimasi tiba 23-25 Nov"
+        tools:visibility="visible" />
 
     <LinearLayout
         android:id="@+id/view_pdp_shipping_bo_etas"
@@ -176,7 +175,8 @@
         android:id="@+id/div_pdp_shipping_bo"
         android:layout_width="match_parent"
         android:layout_height="1dp"
-        android:layout_marginTop="12dp"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="16dp"
         android:visibility="gone"
         app:layout_constraintTop_toBottomOf="@id/label_pdp_shipping_weight"
         tools:visibility="visible" />
@@ -184,10 +184,9 @@
     <ImageView
         android:id="@+id/img_pdp_shipping_bo"
         android:layout_width="wrap_content"
-        android:layout_height="16dp"
-        android:layout_marginTop="12dp"
+        android:layout_height="20dp"
+        android:layout_marginTop="16dp"
         android:contentDescription="@null"
-        android:scaleType="centerInside"
         app:layout_constraintStart_toStartOf="@id/label_pdp_shipping_simulation"
         app:layout_constraintTop_toBottomOf="@+id/div_pdp_shipping_bo"
         tools:srcCompat="@drawable/ic_pdp_topchat" />
@@ -196,35 +195,39 @@
         android:id="@+id/txt_pdp_shipping_tokonow"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        app:typographyWeight="bold"
-        app:typographyType="display_3"
-        app:layout_constraintTop_toBottomOf="@+id/div_pdp_shipping_bo"
+        android:layout_marginTop="16dp"
         app:layout_constraintStart_toEndOf="@+id/img_pdp_shipping_bo"
-        tools:text="NOW! 2 jam tiba"/>
+        app:layout_constraintTop_toBottomOf="@+id/div_pdp_shipping_bo"
+        app:typographyType="display_3"
+        app:typographyWeight="bold"
+        tools:text="NOW! 2 jam tiba" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/txt_pdp_shipping_bo_price"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:layout_marginEnd="4dp"
-        app:layout_constraintEnd_toStartOf="@id/txt_pdp_shipping_bo_price_original"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="16dp"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toBottomOf="@id/div_pdp_shipping_bo"
         app:layout_goneMarginEnd="16dp"
         app:typographyType="display_3"
-        tools:text="Rp0" />
+        tools:text="Rp0"
+        tools:visibility="visible" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/txt_pdp_shipping_bo_price_original"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginEnd="4dp"
         android:textColor="@color/Unify_N700_68"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:visibility="gone"
+        app:layout_constraintEnd_toStartOf="@+id/txt_pdp_shipping_bo_price"
         app:layout_constraintTop_toBottomOf="@id/div_pdp_shipping_bo"
         app:typographyType="display_3"
-        tools:text="Rp30.000" />
+        tools:text="Rp30.000"
+        tools:visibility="visible" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -2,6 +2,7 @@ package com.tokopedia.oneclickcheckout.order.data.get
 
 import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
+import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.response.EthicalDrugResponse
 import com.tokopedia.purchase_platform.common.feature.gifting.data.response.AddOnsResponse
 import com.tokopedia.purchase_platform.common.feature.purchaseprotection.data.PurchaseProtectionPlanDataResponse
 import java.util.*
@@ -73,6 +74,8 @@ class ProductDataResponse(
         val freeShipping: FreeShipping = FreeShipping(),
         @SerializedName("free_shipping_extra")
         val freeShippingExtra: FreeShipping = FreeShipping(),
+        @SerializedName("free_shipping_general")
+        val freeShippingGeneral: FreeShippingGeneral = FreeShippingGeneral(),
         @SerializedName("product_preorder")
         val productPreorder: ProductPreorderResponse = ProductPreorderResponse(),
         @SerializedName("product_tracker_data")
@@ -88,7 +91,9 @@ class ProductDataResponse(
         @SerializedName("product_information")
         val productInformation: List<String> = emptyList(),
         @SerializedName("add_ons")
-        val addOns: AddOnsResponse = AddOnsResponse()
+        val addOns: AddOnsResponse = AddOnsResponse(),
+        @SerializedName("ethical_drug")
+        val ethicalDrug: EthicalDrugResponse = EthicalDrugResponse()
 )
 
 class ProductImage(

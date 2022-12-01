@@ -2,10 +2,20 @@
 <resources>
     <dimen name="go_pay_kyc_dp_1">1dp</dimen>
     <dimen name="go_pay_kyc_dp_6">6dp</dimen>
+    <dimen name="go_pay_kyc_dp_8">8dp</dimen>
     <dimen name="go_pay_kyc_dp_10">10dp</dimen>
+    <dimen name="go_pay_kyc_dp_11">11dp</dimen>
+    <dimen name="go_pay_kyc_dp_12">12dp</dimen>
+    <dimen name="go_pay_kyc_dp_16">16dp</dimen>
     <dimen name="go_pay_kyc_dp_20">20dp</dimen>
+    <dimen name="go_pay_kyc_dp_26">26dp</dimen>
+    <dimen name="go_pay_kyc_dp_27">27dp</dimen>
+    <dimen name="go_pay_kyc_dp_30">30dp</dimen>
+    <dimen name="go_pay_kyc_dp_31">31dp</dimen>
     <dimen name="go_pay_kyc_dp_40">40dp</dimen>
     <dimen name="go_pay_kyc_dp_56">56dp</dimen>
     <dimen name="go_pay_kyc_dp_72">72dp</dimen>
+    <dimen name="go_pay_kyc_dp_154">154dp</dimen>
+    <dimen name="go_pay_kyc_dp_158">158dp</dimen>
     <dimen name="go_pay_kyc_dp_210">210dp</dimen>
 </resources>

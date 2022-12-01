@@ -14,19 +14,29 @@ import com.tokopedia.kotlin.extensions.coroutines.asyncCatchError
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.user.session.UserSession
-import com.tokopedia.watch.TokopediaWatchActivity
 import com.tokopedia.watch.di.DaggerTkpdWatchComponent
 import com.tokopedia.watch.orderlist.model.AcceptBulkOrderModel
 import com.tokopedia.watch.orderlist.model.OrderListModel
 import com.tokopedia.watch.orderlist.model.SomListAcceptBulkOrderStatusUiModel
 import com.tokopedia.watch.orderlist.param.SomListGetAcceptBulkOrderStatusParam
 import com.tokopedia.watch.orderlist.usecase.GetOrderListUseCase
+import com.tokopedia.watch.orderlist.usecase.GetOrderListUseCase.Companion.ORDER_STATUS_NEW_ORDER
+import com.tokopedia.watch.orderlist.usecase.GetOrderListUseCase.Companion.ORDER_STATUS_READY_TO_SHIP
 import com.tokopedia.watch.orderlist.usecase.SomListAcceptBulkOrderUseCase
 import com.tokopedia.watch.orderlist.usecase.SomListGetAcceptBulkOrderStatusUseCase
 import com.tokopedia.watch.ordersummary.model.SummaryDataModel
 import com.tokopedia.watch.ordersummary.usecase.GetSummaryUseCase
 import dagger.Lazy
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.cancel
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.async
+import kotlinx.coroutines.awaitAll
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.tasks.await
 import rx.Subscriber
 import javax.inject.Inject
@@ -88,17 +98,15 @@ class DataLayerServiceListener: WearableListenerService(), CoroutineScope {
                 }
             }
             MESSAGE_CLIENT_START_ORDER_ACTIVITY -> {
-                startActivity(
-                    Intent(this, TokopediaWatchActivity::class.java)
-                        .addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-                )
+
             }
             MESSAGE_CLIENT_APP_DETECTION -> {
                 messageClient.sendMessage(messageEvent.sourceNodeId, MESSAGE_CLIENT_APP_DETECTION, byteArrayOf())
             }
             GET_ORDER_LIST_PATH -> {
                 runBlocking {
-                    getOrderList()
+                    getOrderList(ORDER_STATUS_NEW_ORDER)
+                    getOrderList(ORDER_STATUS_READY_TO_SHIP)
                 }
             }
             GET_SUMMARY_PATH -> {
@@ -107,7 +115,8 @@ class DataLayerServiceListener: WearableListenerService(), CoroutineScope {
                 }            }
             GET_ALL_DATA_PATH -> {
                 runBlocking {
-                    getOrderList()
+                    getOrderList(ORDER_STATUS_NEW_ORDER)
+                    getOrderList(ORDER_STATUS_READY_TO_SHIP)
                     getSummaryData()
                 }
             }
@@ -130,6 +139,14 @@ class DataLayerServiceListener: WearableListenerService(), CoroutineScope {
                 val intent = RouteManager.getIntent(this, ApplinkConst.LOGIN).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
                 startActivity(intent)
             }
+            OPEN_READY_TO_SHIP -> {
+                val intent = RouteManager.getIntent(this, ApplinkConst.SELLER_SHIPMENT).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                startActivity(intent)
+            }
+            OPEN_NEW_ORDER_LIST -> {
+                val intent = RouteManager.getIntent(this, ApplinkConst.SELLER_NEW_ORDER).addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+                startActivity(intent)
+            }
         }
     }
 
@@ -140,17 +157,39 @@ class DataLayerServiceListener: WearableListenerService(), CoroutineScope {
                 doAcceptOrderResponse?.data?.batchId.orEmpty()
             )
 
-            val orderListDataAsyncData = asyncCatchError(block = {
-                getOrderListUseCase.get().createObservable(RequestParams()).toBlocking().first()
+            val newOrderListDataAsyncData = asyncCatchError(block = {
+                getOrderListUseCase.get().createObservable(
+                    RequestParams().apply {
+                        putObject(GetOrderListUseCase.PARAM_STATUS_LIST, ORDER_STATUS_NEW_ORDER)
+                    },
+                ).toBlocking().first()
             }){
                 null
             }.await()
+
+            val readyToShipOrderListDataAsyncData = asyncCatchError(block = {
+                getOrderListUseCase.get().createObservable(
+                    RequestParams().apply {
+                        putObject(GetOrderListUseCase.PARAM_STATUS_LIST, ORDER_STATUS_READY_TO_SHIP)
+                    },
+                ).toBlocking().first()
+            }){
+                null
+            }.await()
+
             val orderSummaryAsyncData = asyncCatchError(block = {
                 getSummaryUseCase.get().createObservable(RequestParams()).toBlocking().first()
             }){
                 null
             }.await()
-            orderListDataAsyncData?.let { orderListData ->
+
+            newOrderListDataAsyncData?.let { orderListData ->
+                sendMessageToWatch(
+                    GET_ORDER_LIST_PATH,
+                    Gson().toJson(orderListData)
+                )
+            }
+            readyToShipOrderListDataAsyncData?.let { orderListData ->
                 sendMessageToWatch(
                     GET_ORDER_LIST_PATH,
                     Gson().toJson(orderListData)
@@ -190,12 +229,17 @@ class DataLayerServiceListener: WearableListenerService(), CoroutineScope {
         }
     }
 
-    private fun getOrderList() {
+    private fun getOrderList(orderStatus: List<Int>) {
         if (!userSession.get().isLoggedIn) {
             return
         }
 
-        getOrderListUseCase.get().executeSync(RequestParams(), getLoadOrderListDataSubscriber())
+        getOrderListUseCase.get().executeSync(
+            RequestParams().apply {
+                putObject(GetOrderListUseCase.PARAM_STATUS_LIST, orderStatus)
+            },
+            getLoadOrderListDataSubscriber()
+        )
     }
 
     private fun getSummaryData() {
@@ -214,7 +258,6 @@ class DataLayerServiceListener: WearableListenerService(), CoroutineScope {
             }
 
             override fun onError(e: Throwable?) {
-                Log.d(TAG, e?.message?:"")
             }
 
             override fun onNext(orderListModel: OrderListModel) {
@@ -252,8 +295,6 @@ class DataLayerServiceListener: WearableListenerService(), CoroutineScope {
 
                 // Send a message to all nodes in parallel
                 nodes.map { node ->
-                    Log.d(TAG, "Sending data to watch... ${node.displayName}")
-
                     async {
                         messageClient.sendMessage(
                             node.id,
@@ -263,12 +304,9 @@ class DataLayerServiceListener: WearableListenerService(), CoroutineScope {
                             .await()
                     }
                 }.awaitAll()
-                Log.d(TAG, "Send data to watch success: $message")
             } catch (cancellationException: CancellationException) {
-                Log.d(TAG, "Send data to watch failed (cancelled): $message")
                 throw cancellationException
             } catch (exception: Exception) {
-                Log.d(TAG, "Send data to watch failed: $exception")
             }
         }
     }
@@ -304,8 +342,10 @@ class DataLayerServiceListener: WearableListenerService(), CoroutineScope {
         const val GET_PHONE_STATE = "/get-phone-state"
 
         const val ACCEPT_BULK_ORDER_PATH = "/accept-bulk-order"
-        const val TAG = "DataLayerServiceListener"
         const val OPEN_LOGIN_PAGE = "/open-login-page"
+
+        const val OPEN_READY_TO_SHIP = "/open-ready-to-ship"
+        const val OPEN_NEW_ORDER_LIST = "/open-new-order-list"
         private val DELAY_GET_ACCEPT_ORDER_STATUS = 1000L
     }
 }

@@ -68,20 +68,31 @@ class GetSellerCampaignAttributeUseCase @Inject constructor(
     suspend fun execute(
         sellerCampaignType: Int = CAMPAIGN_TYPE_SHOP_FLASH_SALE,
         month: Int,
-        year: Int
+        year: Int,
+        vpsPackageId: Long
     ): CampaignAttribute {
-        val request = buildRequest(sellerCampaignType, month, year)
+        val request = buildRequest(sellerCampaignType, month, year, vpsPackageId)
         val response = repository.response(listOf(request))
         val data = response.getSuccessData<GetSellerCampaignAttributeResponse>()
         return mapper.map(data)
     }
 
-    private fun buildRequest(sellerCampaignType: Int, month: Int, year: Int): GraphqlRequest {
+    private fun buildRequest(
+        sellerCampaignType: Int,
+        month: Int,
+        year: Int,
+        vpsPackageId: Long
+    ): GraphqlRequest {
         val payload = GetSellerCampaignAttributeRequest(
             sellerCampaignType,
             month,
             year,
-            GetSellerCampaignAttributeRequest.Field(shopAttribute = true, campaignDetail = true)
+            GetSellerCampaignAttributeRequest.Field(
+                shopAttribute = true,
+                campaignDetail = true,
+                vpsAttribute = true
+            ),
+            vpsPackageId
         )
         val params = mapOf(REQUEST_PARAM_KEY to payload)
         return GraphqlRequest(

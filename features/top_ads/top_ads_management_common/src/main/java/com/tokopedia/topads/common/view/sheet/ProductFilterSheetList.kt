@@ -11,16 +11,16 @@ import com.tokopedia.topads.common.R
 import com.tokopedia.topads.common.data.response.ResponseEtalase
 import com.tokopedia.topads.common.view.adapter.etalase.EtalaseAdapter
 import com.tokopedia.topads.common.view.adapter.etalase.EtalaseAdapterTypeFactoryImpl
-import com.tokopedia.topads.common.view.adapter.etalase.viewmodel.EtalaseItemViewModel
-import com.tokopedia.topads.common.view.adapter.etalase.viewmodel.EtalaseShimerViewModel
-import com.tokopedia.topads.common.view.adapter.etalase.viewmodel.EtalaseViewModel
+import com.tokopedia.topads.common.view.adapter.etalase.uimodel.EtalaseItemUiModel
+import com.tokopedia.topads.common.view.adapter.etalase.uimodel.EtalaseShimerUiModel
+import com.tokopedia.topads.common.view.adapter.etalase.viewmodel.EtalaseUiModel
 import com.tokopedia.unifycomponents.BottomSheetUnify
 
 class ProductFilterSheetList : BottomSheetUnify() {
 
     private var recyclerView : RecyclerView ?= null
 
-    var elementList = mutableListOf<EtalaseViewModel>()
+    var elementList = mutableListOf<EtalaseUiModel>()
     private var adapter: EtalaseAdapter? = null
     private var selectedItem: ResponseEtalase.Data.ShopShowcasesByShopID.Result =
         ResponseEtalase.Data.ShopShowcasesByShopID.Result()
@@ -46,13 +46,13 @@ class ProductFilterSheetList : BottomSheetUnify() {
 
     private fun initView() {
         if (elementList.isEmpty()) {
-            elementList = mutableListOf<EtalaseViewModel>(
-                EtalaseShimerViewModel(),
-                EtalaseShimerViewModel(),
-                EtalaseShimerViewModel(),
-                EtalaseShimerViewModel(),
-                EtalaseShimerViewModel(),
-                EtalaseShimerViewModel()
+            elementList = mutableListOf<EtalaseUiModel>(
+                EtalaseShimerUiModel(),
+                EtalaseShimerUiModel(),
+                EtalaseShimerUiModel(),
+                EtalaseShimerUiModel(),
+                EtalaseShimerUiModel(),
+                EtalaseShimerUiModel()
             )
         }
         adapter = EtalaseAdapter(EtalaseAdapterTypeFactoryImpl(this::onItemClick), elementList)
@@ -62,7 +62,7 @@ class ProductFilterSheetList : BottomSheetUnify() {
         recyclerView?.adapter = adapter
     }
 
-    fun updateData(data: MutableList<EtalaseViewModel>) {
+    fun updateData(data: MutableList<EtalaseUiModel>) {
         elementList = data
         adapter?.updateData(data)
     }
@@ -73,10 +73,10 @@ class ProductFilterSheetList : BottomSheetUnify() {
 
     private fun onItemClick(pos: Int) {
         adapter?.items?.forEachIndexed { index, result ->
-            if (result is EtalaseItemViewModel) result.checked = index == pos
+            if (result is EtalaseItemUiModel) result.checked = index == pos
         }
         val item = adapter?.items?.get(pos)
-        if (item is EtalaseItemViewModel) {
+        if (item is EtalaseItemUiModel) {
             selectedItem = item.result
             onItemClick?.invoke(selectedItem)
         }

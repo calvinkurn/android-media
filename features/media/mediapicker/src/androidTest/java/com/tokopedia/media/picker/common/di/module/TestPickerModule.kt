@@ -5,6 +5,12 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.media.common.utils.ParamCacheManager
+import com.tokopedia.media.picker.analytics.PickerAnalytics
+import com.tokopedia.media.picker.analytics.camera.CameraAnalytics
+import com.tokopedia.media.picker.analytics.gallery.GalleryAnalytics
+import com.tokopedia.media.picker.common.analytics.TestCameraAnalytics
+import com.tokopedia.media.picker.common.analytics.TestGalleryAnalytics
+import com.tokopedia.media.picker.common.analytics.TestPickerAnalytics
 import com.tokopedia.media.picker.common.data.repository.TestAlbumRepository
 import com.tokopedia.media.picker.common.data.repository.TestDeviceInfoRepository
 import com.tokopedia.media.picker.common.data.repository.TestMediaRepository
@@ -17,7 +23,31 @@ import dagger.Module
 import dagger.Provides
 
 @Module
-class TestPickerModule {
+object TestPickerModule {
+
+    @Provides
+    @ActivityScope
+    fun provideTestCameraAnalytics(): CameraAnalytics {
+        return TestCameraAnalytics()
+    }
+
+    @Provides
+    @ActivityScope
+    fun provideTestGalleryAnalytics(): GalleryAnalytics {
+        return TestGalleryAnalytics()
+    }
+
+    @Provides
+    @ActivityScope
+    fun providePickerAnalytics(
+        cameraAnalytics: CameraAnalytics,
+        galleryAnalytics: GalleryAnalytics
+    ): PickerAnalytics {
+        return TestPickerAnalytics(
+            cameraAnalytics,
+            galleryAnalytics
+        )
+    }
 
     @Provides
     @ActivityScope

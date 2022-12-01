@@ -45,11 +45,12 @@ import com.tokopedia.tokopedianow.home.domain.model.TickerResponse
 import com.tokopedia.tokopedianow.home.domain.model.Tickers
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutListUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselAtcProductCardSpaceUiModel
+import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselAtcProductCardUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLeftCarouselAtcUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLoadingStateUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeTickerUiModel
 import com.tokopedia.tokopedianow.repurchase.presentation.fragment.TokoNowRepurchaseFragment
-import com.tokopedia.unifycomponents.ticker.Ticker.Companion.TYPE_ANNOUNCEMENT
+ import com.tokopedia.unifycomponents.ticker.Ticker.Companion.TYPE_ANNOUNCEMENT
 import com.tokopedia.unifycomponents.ticker.TickerData
 
 fun createHomeLayoutList(): List<HomeLayoutResponse> {
@@ -421,12 +422,16 @@ fun createSliderBannerDataModel(
 fun createLeftCarouselAtcDataModel(
     id: String,
     headerName: String,
+    productList: List<Visitable<*>> = listOf(HomeLeftCarouselAtcProductCardSpaceUiModel(
+        channelId = id,
+        channelHeaderName = headerName
+    ))
 ): HomeLeftCarouselAtcUiModel {
     return HomeLeftCarouselAtcUiModel(
         id = id,
         name = "",
         header = TokoNowDynamicHeaderUiModel(title = headerName),
-        productList = listOf(HomeLeftCarouselAtcProductCardSpaceUiModel(channelId = id, channelHeaderName = headerName))
+        productList = productList
     )
 }
 
@@ -476,9 +481,11 @@ fun createHomeProductCardUiModel(
     quantity: Int = 0,
     parentId: String = "",
     product: ProductCardModel = ProductCardModel(),
-    @TokoNowLayoutType type: String = TokoNowLayoutType.REPURCHASE_PRODUCT
+    @TokoNowLayoutType type: String = TokoNowLayoutType.REPURCHASE_PRODUCT,
+    position: Int = 0,
+    headerName: String = ""
 ): TokoNowProductCardUiModel {
-    return TokoNowProductCardUiModel(productId, shopId, quantity, parentId, product, type)
+    return TokoNowProductCardUiModel(productId, shopId, quantity, parentId, product, type, position, headerName)
 }
 
 fun createLocalCacheModel(

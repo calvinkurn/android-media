@@ -34,7 +34,7 @@ class RepurchaseProductViewHolder(
 
             setOnClickListener {
                 goToProductDetail(item)
-                listener?.onClickProduct(item, adapterPosition)
+                listener?.onClickProduct(item, item.position)
             }
 
             setAddVariantClickListener {

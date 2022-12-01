@@ -12,6 +12,7 @@ object ApplinkConstInternalCategory {
     private const val HOST_EXPLORE_CATEGORY = "category-explore"
     private const val HOST_BELANJA_CATEGORY = "category_belanja"
     private const val HOST_CATALOG = "catalog"
+    private const val HOST_E_PHARMACY = "epharmacy"
     const val AGE_RESTRICTION_REQUEST_CODE = 5838
     const val RESULT_CODE_DOB_VERIFICATION_SUCCESS = 980
     const val TRADEIN_HOME_REQUEST = 22345
@@ -33,6 +34,7 @@ object ApplinkConstInternalCategory {
     const val INTERNAL_EXPLORE_CATEGORY = "${DeeplinkConstant.SCHEME_INTERNAL}://${HOST_EXPLORE_CATEGORY}"
     const val INTERNAL_BELANJA_CATEGORY = "${DeeplinkConstant.SCHEME_INTERNAL}://${HOST_BELANJA_CATEGORY}"
     const val INTERNAL_CATALOG = "${DeeplinkConstant.SCHEME_INTERNAL}://${HOST_CATALOG}"
+    const val INTERNAL_E_PHARMACY = "${DeeplinkConstant.SCHEME_INTERNAL}://${HOST_E_PHARMACY}"
 
     fun getDiscoveryDeeplink(deeplink: String): String {
         return deeplink.replace(ApplinkConst.DISCOVERY, ApplinkConstInternalGlobal.DISCOVERY)

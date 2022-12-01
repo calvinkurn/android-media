@@ -54,6 +54,7 @@ class AffiliateLoginFragment : BaseDaggerFragment() {
 
     companion object {
         const val TAG = "AffiliateLoginFrament"
+        private const val TICKER_BOTTOM_SHEET = "bottomSheet"
         fun getFragmentInstance(): Fragment {
             return AffiliateLoginFragment()
         }
@@ -230,9 +231,12 @@ class AffiliateLoginFragment : BaseDaggerFragment() {
                 view?.findViewById<LoaderUnify>(R.id.login_progress)?.isVisible = it
             }
         })
-        affiliateLoginSharedViewModel.getAffiliateAnnouncement().observe(viewLifecycleOwner,{ announcementData ->
-            view?.findViewById<Ticker>(R.id.affiliate_login_ticker)?.setAnnouncementData(announcementData,activity)
-        })
+        affiliateLoginSharedViewModel.getAffiliateAnnouncement().observe(viewLifecycleOwner) { announcementData ->
+            if (announcementData.getAffiliateAnnouncementV2?.data?.subType != TICKER_BOTTOM_SHEET) {
+                view?.findViewById<Ticker>(R.id.affiliate_login_ticker)
+                    ?.setAnnouncementData(announcementData, activity)
+            }
+        }
     }
 
     private fun setSignupData() {

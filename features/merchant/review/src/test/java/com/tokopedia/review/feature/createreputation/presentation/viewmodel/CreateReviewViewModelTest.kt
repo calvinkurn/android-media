@@ -4,9 +4,6 @@ import android.os.Bundle
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.picker.common.utils.isVideoFormat
-import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.RollenceKey
-import com.tokopedia.remoteconfig.abtest.AbTestPlatform
 import com.tokopedia.review.R
 import com.tokopedia.review.feature.createreputation.domain.RequestState
 import com.tokopedia.review.feature.createreputation.domain.usecase.ProductrevSubmitReviewUseCase
@@ -15,6 +12,7 @@ import com.tokopedia.review.feature.createreputation.presentation.uimodel.Create
 import com.tokopedia.review.feature.createreputation.presentation.uimodel.CreateReviewToasterUiModel
 import com.tokopedia.review.feature.createreputation.presentation.uimodel.PostSubmitUiState
 import com.tokopedia.review.feature.createreputation.presentation.uimodel.visitable.CreateReviewMediaUiModel
+import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewAnonymousInfoBottomSheetUiState
 import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewAnonymousUiState
 import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewBadRatingCategoriesUiState
 import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewBottomSheetUiState
@@ -24,19 +22,18 @@ import com.tokopedia.review.feature.createreputation.presentation.uistate.Create
 import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewProgressBarUiState
 import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewRatingUiState
 import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewSubmitButtonUiState
-import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewTemplateItemUiState
 import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewTemplateUiState
 import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewTextAreaBottomSheetUiState
 import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewTextAreaTitleUiState
 import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewTextAreaUiState
 import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewTickerUiState
+import com.tokopedia.review.feature.createreputation.presentation.uistate.CreateReviewTopicsUiState
 import com.tokopedia.review.utils.assertInstanceOf
 import com.tokopedia.reviewcommon.uimodel.StringRes
 import com.tokopedia.unifycomponents.Toaster
 import io.mockk.coVerify
 import io.mockk.every
 import io.mockk.mockk
-import io.mockk.mockkStatic
 import io.mockk.verify
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runBlockingTest
@@ -284,13 +281,38 @@ class CreateReviewViewModelTest: CreateReviewViewModelTestFixture() {
     }
 
     @Test
-    fun `textAreaUiState textAreaHint stringRes id should equal to review_form_good_helper when selected rating is more than 3`() = runBlockingTest {
-        mockSuccessGetReputationForm()
+    fun `textAreaUiState textAreaHint stringRes id should equal to review_raw_string_format when selected rating is more than 3, placeholder from BE is not blank and review topics inspiration is enabled`() = runBlockingTest {
+        mockStringAb("review_inspiration", "experiment_variant", "experiment_variant") {
+            mockSuccessGetReputationForm()
+            mockSuccessGetReviewTemplate()
+            mockSuccessGetProductIncentiveOvo()
+            setInitialData(rating = 4)
+            val textAreaUiState = viewModel.textAreaUiState.first() as CreateReviewTextAreaUiState.Showing
+            Assert.assertEquals(R.string.review_raw_string_format, textAreaUiState.hint.id)
+            Assert.assertEquals(listOf("Contoh: Kualitas materialnya bagus, bikin panas & matangnya rata. Ukuran ini pas buat masak sehari-hari. Wajib punya, deh \uD83D\uDC4D"), textAreaUiState.hint.params)
+        }
+    }
+
+    @Test
+    fun `textAreaUiState textAreaHint stringRes id should equal to review_form_good_helper when selected rating is more than 3 and placeholder from BE is blank`() = runBlockingTest {
+        mockSuccessGetReputationForm(getReputationFormUseCaseResultSuccessValidWithEmptyPlaceholder)
         mockSuccessGetReviewTemplate()
         mockSuccessGetProductIncentiveOvo()
         setInitialData(rating = 4)
         val textAreaUiState = viewModel.textAreaUiState.first() as CreateReviewTextAreaUiState.Showing
         Assert.assertEquals(R.string.review_form_good_helper, textAreaUiState.hint.id)
+    }
+
+    @Test
+    fun `textAreaUiState textAreaHint stringRes id should equal to review_form_good_helper when selected rating is more than 3 and review topics inspiration is disabled`() = runBlockingTest {
+        mockStringAb("review_inspiration", "experiment_variant", "control_variant") {
+            mockSuccessGetReputationForm()
+            mockSuccessGetReviewTemplate()
+            mockSuccessGetProductIncentiveOvo()
+            setInitialData(rating = 4)
+            val textAreaUiState = viewModel.textAreaUiState.first() as CreateReviewTextAreaUiState.Showing
+            Assert.assertEquals(R.string.review_form_good_helper, textAreaUiState.hint.id)
+        }
     }
 
     @Test
@@ -400,17 +422,6 @@ class CreateReviewViewModelTest: CreateReviewViewModelTestFixture() {
     }
 
     @Test
-    fun `mediaPickerUiState mediaItems should contain CreateReviewMediaUiModel#AddSmall when contain 1 video added through old media picker`() = runBlockingTest {
-        mockSuccessGetReputationForm()
-        mockSuccessGetReviewTemplate()
-        mockSuccessGetProductIncentiveOvo()
-        setInitialData()
-        viewModel.updateMediaPicker(mutableListOf("video.mp4"), mutableListOf())
-        val mediaPickerUiState = viewModel.mediaPickerUiState.first() as CreateReviewMediaPickerUiState.HasMedia
-        assertInstanceOf<CreateReviewMediaUiModel.AddSmall>(mediaPickerUiState.mediaItems.last())
-    }
-
-    @Test
     fun `mediaPickerUiState mediaItems should contain CreateReviewMediaUiModel#AddSmall when contain at least 1 image added through new media picker`() = runBlockingTest {
         mockSuccessGetReputationForm()
         mockSuccessGetReviewTemplate()
@@ -419,55 +430,6 @@ class CreateReviewViewModelTest: CreateReviewViewModelTestFixture() {
         viewModel.updateMediaPicker(listOf("image.jpg"))
         val mediaPickerUiState = viewModel.mediaPickerUiState.first() as CreateReviewMediaPickerUiState.HasMedia
         assertInstanceOf<CreateReviewMediaUiModel.AddSmall>(mediaPickerUiState.mediaItems.last())
-    }
-
-    @Test
-    fun `mediaPickerUiState mediaItems should contain CreateReviewMediaUiModel#AddSmall when contain at least 1 image added through old media picker`() = runBlockingTest {
-        mockSuccessGetReputationForm()
-        mockSuccessGetReviewTemplate()
-        mockSuccessGetProductIncentiveOvo()
-        setInitialData()
-        viewModel.updateMediaPicker(mutableListOf("image.jpg"), mutableListOf())
-        val mediaPickerUiState = viewModel.mediaPickerUiState.first() as CreateReviewMediaPickerUiState.HasMedia
-        assertInstanceOf<CreateReviewMediaUiModel.AddSmall>(mediaPickerUiState.mediaItems.last())
-    }
-
-    @Test
-    fun `mediaPickerUiState mediaItems should not contain CreateReviewMediaUiModel#AddSmall when contain 5 image`() = runBlockingTest {
-        mockSuccessGetReputationForm()
-        mockSuccessGetReviewTemplate()
-        mockSuccessGetProductIncentiveOvo()
-        setInitialData()
-        viewModel.updateMediaPicker(
-            mutableListOf(
-                "image1.jpg",
-                "image2.jpg",
-                "image3.jpg",
-                "image4.jpg",
-                "image5.jpg"
-            ), mutableListOf()
-        )
-        val mediaPickerUiState = viewModel.mediaPickerUiState.first() as CreateReviewMediaPickerUiState.HasMedia
-        Assert.assertTrue(mediaPickerUiState.mediaItems.none { it is CreateReviewMediaUiModel.AddSmall })
-    }
-
-    @Test
-    fun `mediaPickerUiState mediaItems should not contain CreateReviewMediaUiModel#AddSmall when contain 1 video and 4 image`() = runBlockingTest {
-        mockSuccessGetReputationForm()
-        mockSuccessGetReviewTemplate()
-        mockSuccessGetProductIncentiveOvo()
-        setInitialData()
-        viewModel.updateMediaPicker(
-            mutableListOf(
-                "video.mp4",
-                "image1.jpg",
-                "image2.jpg",
-                "image3.jpg",
-                "image4.jpg"
-            ), mutableListOf()
-        )
-        val mediaPickerUiState = viewModel.mediaPickerUiState.first() as CreateReviewMediaPickerUiState.HasMedia
-        Assert.assertTrue(mediaPickerUiState.mediaItems.none { it is CreateReviewMediaUiModel.AddSmall })
     }
 
     @Test
@@ -866,6 +828,101 @@ class CreateReviewViewModelTest: CreateReviewViewModelTestFixture() {
     }
 
     @Test
+    fun `anonymousInfoBottomSheetUiState should equal to CreateReviewAnonymousInfoBottomSheetUiState#Hidden when canRenderForm is false`() = runBlockingTest {
+        mockSuccessGetReputationForm(getReputationFormUseCaseResultSuccessInvalid)
+        mockSuccessGetReviewTemplate()
+        mockSuccessGetProductIncentiveOvo()
+        setInitialData()
+        assertInstanceOf<CreateReviewAnonymousInfoBottomSheetUiState.Hidden>(viewModel.anonymousInfoBottomSheetUiState.first())
+    }
+
+    @Test
+    fun `anonymousInfoBottomSheetUiState should equal to CreateReviewAnonymousInfoBottomSheetUiState#Hidden when canRenderForm is true and shouldShowAnonymousInfoBottomSheet is false`() = runBlockingTest {
+        mockSuccessGetReputationForm()
+        mockSuccessGetReviewTemplate()
+        mockSuccessGetProductIncentiveOvo()
+        setInitialData()
+        assertInstanceOf<CreateReviewAnonymousInfoBottomSheetUiState.Hidden>(viewModel.anonymousInfoBottomSheetUiState.first())
+    }
+
+    @Test
+    fun `anonymousInfoBottomSheetUiState should equal to CreateReviewAnonymousInfoBottomSheetUiState#Showing when canRenderForm is true and shouldShowAnonymousInfoBottomSheet is true`() = runBlockingTest {
+        mockSuccessGetReputationForm()
+        mockSuccessGetReviewTemplate()
+        mockSuccessGetProductIncentiveOvo()
+        setInitialData()
+        viewModel.showAnonymousInfoBottomSheet()
+        assertInstanceOf<CreateReviewAnonymousInfoBottomSheetUiState.Showing>(viewModel.anonymousInfoBottomSheetUiState.first())
+    }
+
+    @Test
+    fun `dismissAnonymousInfoBottomSheet should change anonymousInfoBottomSheetUiState equal to CreateReviewAnonymousInfoBottomSheetUiState#Hidden`() = runBlockingTest {
+        mockSuccessGetReputationForm()
+        mockSuccessGetReviewTemplate()
+        mockSuccessGetProductIncentiveOvo()
+        setInitialData()
+        viewModel.showAnonymousInfoBottomSheet()
+        assertInstanceOf<CreateReviewAnonymousInfoBottomSheetUiState.Showing>(viewModel.anonymousInfoBottomSheetUiState.first())
+        viewModel.dismissAnonymousInfoBottomSheet()
+        assertInstanceOf<CreateReviewAnonymousInfoBottomSheetUiState.Hidden>(viewModel.anonymousInfoBottomSheetUiState.first())
+    }
+
+    @Test
+    fun `topicsUiState should equal to CreateReviewTopicsUiState#Hidden when canRenderForm is false and review topics inspiration is enabled`() = runBlockingTest {
+        mockSuccessGetReputationForm(getReputationFormUseCaseResultSuccessProductDeleted)
+        mockSuccessGetReviewTemplate()
+        mockSuccessGetProductIncentiveOvo()
+        setInitialData()
+        assertInstanceOf<CreateReviewTopicsUiState.Hidden>(viewModel.topicsUiState.first())
+    }
+
+    @Test
+    fun `topicsUiState should equal to CreateReviewTopicsUiState#Hidden when postSubmitReviewResult is not success and review topics inspiration is enabled`() = runBlockingTest {
+        mockStringAb("review_inspiration", "experiment_variant", "experiment_variant") {
+            mockErrorGetReputationForm()
+            mockSuccessGetReviewTemplate()
+            mockSuccessGetProductIncentiveOvo()
+            setInitialData()
+            assertInstanceOf<CreateReviewTopicsUiState.Hidden>(viewModel.topicsUiState.first())
+        }
+    }
+
+    @Test
+    fun `topicsUiState should equal to CreateReviewTopicsUiState#Hidden when keywords is empty and review topics inspiration is enabled`() = runBlockingTest {
+        mockStringAb("review_inspiration", "experiment_variant", "experiment_variant") {
+            mockSuccessGetReputationForm(getReputationFormUseCaseResultSuccessValidWithEmptyKeywords)
+            mockSuccessGetReviewTemplate()
+            mockSuccessGetProductIncentiveOvo()
+            setInitialData()
+            assertInstanceOf<CreateReviewTopicsUiState.Hidden>(viewModel.topicsUiState.first())
+        }
+    }
+
+    @Test
+    fun `topicsUiState should equal to CreateReviewTopicsUiState#Hidden when keywords is not empty and review topics inspiration is disabled`() = runBlockingTest {
+        mockStringAb("review_inspiration", "experiment_variant", "control_variant") {
+            setShouldRunReviewTopicsPeekAnimation()
+            mockSuccessGetReputationForm()
+            mockSuccessGetReviewTemplate()
+            mockSuccessGetProductIncentiveOvo()
+            setInitialData()
+            assertInstanceOf<CreateReviewTopicsUiState.Hidden>(viewModel.topicsUiState.first())
+        }
+    }
+
+    @Test
+    fun `topicsUiState should equal to CreateReviewTopicsUiState#Showing when keywords is not empty and review topics inspiration is enabled`() = runBlockingTest {
+        mockStringAb("review_inspiration", "experiment_variant", "experiment_variant") {
+            setShouldRunReviewTopicsPeekAnimation()
+            mockSuccessGetReputationForm()
+            mockSuccessGetReviewTemplate()
+            mockSuccessGetProductIncentiveOvo()
+            setInitialData()
+            assertInstanceOf<CreateReviewTopicsUiState.Showing>(viewModel.topicsUiState.first())
+        }
+    }
+
+    @Test
     fun `should enqueue toaster error when submit review returns error`() = runBlockingTest {
         val expectedToasterQueue = CreateReviewToasterUiModel(
             message = StringRes(R.string.review_create_fail_toaster),
@@ -992,7 +1049,7 @@ class CreateReviewViewModelTest: CreateReviewViewModelTestFixture() {
         mockSuccessGetReviewTemplate(getReviewTemplateUseCaseResultSuccessNonEmpty)
         mockSuccessGetProductIncentiveOvo()
         setInitialData()
-        val templateToSelect = (viewModel.templateUiState.first().templates.first().uiState as CreateReviewTemplateItemUiState.Showing).data
+        val templateToSelect = viewModel.templateUiState.first().templates.first().data
         viewModel.selectTemplate(templateToSelect)
         Assert.assertEquals(templateToSelect.text, (viewModel.textAreaUiState.first() as CreateReviewTextAreaUiState.Showing).reviewTextAreaTextUiModel.text)
     }
@@ -1323,7 +1380,7 @@ class CreateReviewViewModelTest: CreateReviewViewModelTestFixture() {
         mockSuccessGetReviewTemplate(getReviewTemplateUseCaseResultSuccessNonEmpty)
         mockSuccessGetProductIncentiveOvo()
         setInitialData()
-        val templateToSelect = (viewModel.templateUiState.first().templates.last().uiState as CreateReviewTemplateItemUiState.Showing).data
+        val templateToSelect = viewModel.templateUiState.first().templates.last().data
         viewModel.selectTemplate(templateToSelect)
         viewModel.templateUiState.first()
         Assert.assertEquals(1, viewModel.getSelectedTemplateCount())
@@ -1387,59 +1444,24 @@ class CreateReviewViewModelTest: CreateReviewViewModelTestFixture() {
     }
 
     @Test
-    fun `shouldUseUniversalMediaPicker should return true when new media picker enabled through rollence`() {
-        mockkStatic(RemoteConfigInstance::class) {
-            val mockRemoteConfigInstance = mockk<RemoteConfigInstance>(relaxed = true) {
-                val mockAbTestPlatform = mockk<AbTestPlatform>(relaxed = true) {
-                    every {
-                        getString(RollenceKey.CREATE_REVIEW_MEDIA_PICKER_EXPERIMENT_NAME)
-                    } returns RollenceKey.CREATE_REVIEW_MEDIA_PICKER_EXPERIMENT_NAME
-                }
-                every { abTestPlatform } returns mockAbTestPlatform
-            }
-            every { RemoteConfigInstance.getInstance() } returns mockRemoteConfigInstance
-
-            Assert.assertTrue(viewModel.shouldUseUniversalMediaPicker())
-        }
-    }
-
-    @Test
-    fun `shouldUseUniversalMediaPicker should return false when new media picker disabled through rollence`() {
-        mockkStatic(RemoteConfigInstance::class) {
-            val mockRemoteConfigInstance = mockk<RemoteConfigInstance>(relaxed = true) {
-                val mockAbTestPlatform = mockk<AbTestPlatform>(relaxed = true) {
-                    every {
-                        getString(RollenceKey.CREATE_REVIEW_MEDIA_PICKER_EXPERIMENT_NAME)
-                    } returns ""
-                }
-                every { abTestPlatform } returns mockAbTestPlatform
-            }
-            every { RemoteConfigInstance.getInstance() } returns mockRemoteConfigInstance
-
-            Assert.assertFalse(viewModel.shouldUseUniversalMediaPicker())
-        }
-    }
-
-    @Test
-    fun `updateMediaPicker should filter temp downloaded image from old media picker`() = runBlockingTest {
+    fun `enqueueDisabledAddMoreMediaToaster should enqueue new toaster`() = runBlockingTest {
+        val expectedToasterQueue = CreateReviewToasterUiModel(
+            message = StringRes(R.string.review_form_cannot_add_more_media_while_uploading),
+            actionText = StringRes(Int.ZERO),
+            duration = Toaster.LENGTH_SHORT,
+            type = Toaster.TYPE_NORMAL
+        )
         mockSuccessGetReputationForm()
         mockSuccessGetReviewTemplate()
         mockSuccessGetProductIncentiveOvo()
         setInitialData()
-        viewModel.updateMediaPicker(
-            mutableListOf(
-                "cached-image1.0",
-                "cached-image2.0",
-                "image3.jpg",
-                "image4.jpg",
-                "image5.jpg"
-            ), mutableListOf(
-                "https://www.tokopedia.com/image1.jpg",
-                "https://www.tokopedia.com/image2.jpg",
-            )
-        )
-        val mediaPickerUiState = viewModel.mediaPickerUiState.first() as CreateReviewMediaPickerUiState.HasMedia
-        Assert.assertTrue(mediaPickerUiState.mediaItems.none { it.uri.endsWith(".0") })
+        val toasterQueueCollectorJob = launchCatchError(block = {
+            val actualToasterQueue = viewModel.toasterQueue.first()
+            Assert.assertEquals(expectedToasterQueue, actualToasterQueue)
+            viewModel.flush()
+        }, onError = {})
+        viewModel.enqueueDisabledAddMoreMediaToaster()
+        toasterQueueCollectorJob.join()
     }
 
     @Test
@@ -1564,6 +1586,7 @@ class CreateReviewViewModelTest: CreateReviewViewModelTestFixture() {
             verify { putString("savedStateUtmSource", any()) }
             verify { putBoolean("savedStateShowIncentiveBottomSheet", any()) }
             verify { putBoolean("savedStateShowTextAreaBottomSheet", any()) }
+            verify { putBoolean("savedStateShowAnonymousInfoBottomSheet", any()) }
             verify { putBoolean("savedStateSendingReview", any()) }
             verify { putSerializable("savedStateReviewForm", any()) }
             verify { putSerializable("savedStateIncentiveOvo", any()) }
@@ -1579,7 +1602,7 @@ class CreateReviewViewModelTest: CreateReviewViewModelTestFixture() {
         mockk<Bundle>(relaxed = true) {
             every { this@mockk.get(any()) } answers {
                 when (args.first()) {
-                    "savedStateReviewForm" -> ReviewFormRequestSuccessState(getReputationFormUseCaseResultSuccessValid)
+                    "savedStateReviewForm" -> ReviewFormRequestSuccessState(getReputationFormUseCaseResultSuccessValidWithNonEmptyKeywords)
                     "savedStateIncentiveOvo" -> IncentiveOvoRequestSuccessState(getProductIncentiveOvoUseCaseResultSuccessIncentive)
                     "savedStateReviewTemplate" -> ReviewTemplateRequestSuccessState(emptyList())
                     "savedStateBadRatingCategories" -> BadRatingCategoriesRequestSuccessState(getBadRatingCategoryUseCaseResultSuccessNonEmpty.productrevGetBadRatingCategory.list)
@@ -1595,6 +1618,7 @@ class CreateReviewViewModelTest: CreateReviewViewModelTestFixture() {
                     "savedStateUtmSource" -> ""
                     "savedStateShowIncentiveBottomSheet" -> false
                     "savedStateShowTextAreaBottomSheet" -> false
+                    "savedStateShowAnonymousInfoBottomSheet" -> false
                     "savedStateSendingReview" -> false
                     "savedStateReviewText" -> CreateReviewTextAreaTextUiModel()
                     "savedStateShopId" -> ""
@@ -1620,11 +1644,24 @@ class CreateReviewViewModelTest: CreateReviewViewModelTestFixture() {
             verify { this@mockk.get("savedStateUtmSource") }
             verify { this@mockk.get("savedStateShowIncentiveBottomSheet") }
             verify { this@mockk.get("savedStateShowTextAreaBottomSheet") }
+            verify { this@mockk.get("savedStateShowAnonymousInfoBottomSheet") }
             verify { this@mockk.get("savedStateSendingReview") }
             verify { this@mockk.get("savedStateReviewText") }
             verify { this@mockk.get("savedStateShopId") }
             verify { this@mockk.get("savedStateProductId") }
             verify { this@mockk.get("savedStateReputationId") }
         }
+    }
+
+    @Test
+    fun `setBottomSheetBottomInset should update createReviewBottomSheetUiState when createReviewBottomSheetUiState is CreateReviewBottomSheetUiState#Showing`() = runBlockingTest {
+        val expectedInset = 100
+        mockSuccessGetReputationForm()
+        mockSuccessGetReviewTemplate()
+        mockSuccessGetProductIncentiveOvo()
+        setInitialData()
+        viewModel.setBottomSheetBottomInset(expectedInset)
+        val createReviewBottomSheetUiState = viewModel.createReviewBottomSheetUiState.first()
+        Assert.assertEquals(expectedInset, (createReviewBottomSheetUiState as CreateReviewBottomSheetUiState.Showing).bottomInset)
     }
 }

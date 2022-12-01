@@ -8,6 +8,7 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import javax.inject.Inject
 
+@Deprecated("please use com.tokopedia.kolcommon.domain.interactor.SubmitReportContentUseCase")
 class SendReportUseCase @Inject constructor(
         graphqlRepository: GraphqlRepository) : GraphqlUseCase<SendReportResponse>(graphqlRepository) {
 

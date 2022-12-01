@@ -109,7 +109,7 @@ class PlayBroSelectGameBottomSheet @Inject constructor(
     }
 
     fun show(fragmentManager: FragmentManager) {
-        show(fragmentManager, TAG)
+        if(!isAdded) showNow(fragmentManager, TAG)
     }
 
     companion object {

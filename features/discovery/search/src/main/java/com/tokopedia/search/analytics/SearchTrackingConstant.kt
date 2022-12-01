@@ -18,4 +18,5 @@ object SearchTrackingConstant {
     const val ANDROID_ID = "androidId"
     const val ECOMMERCE = "ecommerce"
     const val PROMOTIONS = "promotions"
+    const val NONE = "none"
 }

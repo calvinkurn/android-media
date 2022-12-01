@@ -13,8 +13,9 @@ import com.tokopedia.digital_checkout.data.request.CheckoutRelationships
 import com.tokopedia.digital_checkout.data.request.DigitalCheckoutDataParameter
 import com.tokopedia.digital_checkout.data.request.RequestBodyCheckout
 import com.tokopedia.digital_checkout.data.response.ResponseCheckout
+import com.tokopedia.digital_checkout.data.response.checkout.RechargeCheckoutResponse
 import com.tokopedia.digital_checkout.data.response.getcart.RechargeGetCart
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.promocheckout.common.view.model.PromoData
 import com.tokopedia.promocheckout.common.view.widget.TickerCheckoutView
@@ -37,7 +38,7 @@ object DigitalCheckoutMapper {
             if (!isEnableVoucher) {
                 promoData = PromoData(
                     description = it.discountAmountLabel,
-                    amount = it.discountAmount.toInt(),
+                    amount = it.discountAmount.toLong(),
                     state = TickerCheckoutView.State.INACTIVE
                 )
             } else if (it.isSuccess && !(cartInfo.attributes.isCouponActive == COUPON_NOT_ACTIVE && it.isCoupon == VOUCHER_IS_COUPON)) {
@@ -46,7 +47,7 @@ object DigitalCheckoutMapper {
                     description = it.messageSuccess,
                     promoCode = it.code,
                     typePromo = it.isCoupon,
-                    amount = it.discountAmount.toInt(),
+                    amount = it.discountAmount.toLong(),
                     state = TickerCheckoutView.State.ACTIVE
                 )
             }
@@ -154,6 +155,8 @@ object DigitalCheckoutMapper {
             cartDigitalInfoData.smsState = responseRechargeGetCart.response.sms_state
             cartDigitalInfoData.title = responseRechargeGetCart.response.title
             cartDigitalInfoData.channelId = responseRechargeGetCart.response.channelId
+            cartDigitalInfoData.collectionPointId =
+                responseRechargeGetCart.response.collectionPointId
 
             return cartDigitalInfoData
 
@@ -171,6 +174,18 @@ object DigitalCheckoutMapper {
             paymentPassData.queryString = queryString ?: ""
             paymentPassData.transactionId = parameter?.transactionId ?: ""
         }
+        return paymentPassData
+    }
+
+    fun mapToPaymentPassData(responseCheckoutData: RechargeCheckoutResponse): PaymentPassData {
+        val paymentPassData = PaymentPassData()
+
+        paymentPassData.callbackFailedUrl = responseCheckoutData.data.attributes.callbackUrlFailed
+        paymentPassData.callbackSuccessUrl = responseCheckoutData.data.attributes.callbackUrlSuccess
+        paymentPassData.redirectUrl = responseCheckoutData.data.attributes.redirectUrl
+        paymentPassData.queryString = responseCheckoutData.data.attributes.queryString
+        paymentPassData.transactionId = responseCheckoutData.data.attributes.parameter.transactionId
+
         return paymentPassData
     }
 
@@ -226,7 +241,7 @@ object DigitalCheckoutMapper {
             fintechProductsCheckout.add(
                 RequestBodyCheckout.FintechProductCheckout(
                     transactionType = fintech.transactionType,
-                    tierId = fintech.tierId.toIntOrZero(),
+                    tierId = fintech.tierId.toIntSafely(),
                     userId = attributes.identifier.userId?.toLongOrNull() ?: 0,
                     fintechAmount = fintech.fintechAmount.toLong(),
                     fintechPartnerAmount = fintech.fintechPartnerAmount.toLong(),

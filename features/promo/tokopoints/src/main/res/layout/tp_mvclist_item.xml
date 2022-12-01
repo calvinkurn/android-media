@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.tokopedia.mvcwidget.multishopmvc.MvcMultiShopView android:id="@+id/mvc_multishop"
-    android:layout_width="@dimen/dp_350"
+    android:layout_width="350dp"
     android:layout_height="wrap_content"
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toTopOf="parent"

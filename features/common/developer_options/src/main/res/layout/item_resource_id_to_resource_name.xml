@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <com.tokopedia.unifycomponents.TextFieldUnify
+        android:id="@+id/tvInputResourceId"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        app:text_field_placeholder="@string/input_resource_id"
+        app:text_field_prepend_text="@string/prefix_resource_id"
+        app:text_field_label_static="true"
+        app:text_field_label=""
+        app:text_field_input_type="text"/>
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tvResultResourceName"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        android:textIsSelectable="true"
+        app:typographyWeight="reguler"
+        app:typographyType="display_2"
+        tools:text="@string/prefix_resource_name"/>
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/convertResourceBtn"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="5dp"
+        android:gravity="center"
+        android:text="@string/convert_resource_id_to_resource_name"
+        android:layout_marginBottom="10dp"
+        app:unifyButtonType="main"
+        app:unifyButtonSize="medium"/>
+
+</LinearLayout>

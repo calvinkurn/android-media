@@ -48,7 +48,6 @@ class HomeQuestWidgetViewHolder(
             setCircularProgressBar(element)
             setTitle(element.title)
             setDesc(element.desc)
-            setClickListener(element.id)
         }
     }
 
@@ -105,12 +104,6 @@ class HomeQuestWidgetViewHolder(
                 goToQuestWebPage(id)
                 listener?.onClickQuestWidgetCard()
             }
-        }
-    }
-
-    private fun setClickListener(id: String) {
-        binding?.title?.setOnClickListener {
-            goToQuestWebPage(id)
         }
     }
 

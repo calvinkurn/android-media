@@ -11729,6 +11729,46 @@
             "child": []
           }
         ]
+      },
+      {
+        "title": "Rentang harga",
+        "subtitle": "",
+        "template_name": "template_pricing_food",
+        "options": [
+          {
+            "name": "$",
+            "description": "Di bawah Rp16.000",
+            "key": "pricing",
+            "value": "1",
+            "inputType": "checkbox",
+            "isNew": false,
+            "isPopular": true
+          },
+          {
+            "name": "$",
+            "description": "Di atas Rp16.000",
+            "key": "pricing",
+            "value": "2",
+            "inputType": "checkbox",
+            "isNew": false
+          },
+          {
+            "name": "$",
+            "description": "Rp40.000 sampai Rp100.000",
+            "key": "pricing",
+            "value": "3",
+            "inputType": "checkbox",
+            "isNew": false
+          },
+          {
+            "name": "$",
+            "description": "Di atas Rp100.000",
+            "key": "pricing",
+            "value": "4",
+            "inputType": "checkbox",
+            "isNew": false
+          }
+        ]
       }
     ],
     "sort": [

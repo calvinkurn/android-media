@@ -11,16 +11,28 @@
     <com.tokopedia.review.feature.createreputation.presentation.widget.CreateReviewTextArea
         android:id="@+id/text_area_expanded_create_review_bottom_sheet"
         android:layout_width="match_parent"
-        android:layout_height="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constrainedHeight="true"
         app:layout_constraintBottom_toTopOf="@id/review_template_expanded_create_review_bottom_sheet"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0" />
+
+    <com.tokopedia.unifycomponents.DividerUnify
+        android:id="@+id/divider_expanded_create_review_bottom_sheet"
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        app:layout_constraintBottom_toTopOf="@id/topics_expanded_create_review_bottom_sheet" />
+
+    <com.tokopedia.review.feature.createreputation.presentation.widget.CreateReviewTopics
+        android:id="@+id/topics_expanded_create_review_bottom_sheet"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintBottom_toTopOf="@id/review_template_expanded_create_review_bottom_sheet" />
 
     <com.tokopedia.review.feature.createreputation.presentation.widget.CreateReviewTemplate
         android:id="@+id/review_template_expanded_create_review_bottom_sheet"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
         app:layout_constraintBottom_toTopOf="@id/helper_text_area_expanded_create_review_bottom_sheet" />
 
     <com.tokopedia.review.feature.createreputation.presentation.widget.CreateReviewExpandedTextAreaHelper

@@ -40,7 +40,6 @@
     <string name="setting_menu_improve_sales">TINGKATKAN PENJUALAN</string>
     <string name="setting_menu_statistic">Statistik</string>
     <string name="setting_menu_ads_and_shop_promotion">Iklan &amp; Promosi Toko</string>
-    <string name="setting_menu_product_package">Kemasan Produk</string>
     <string name="setting_menu_finance_service">Layanan Keuangan</string>
     <string name="setting_menu_set_activation_page_cod">Layanan bayar di tempat</string>
     <string name="setting_menu_account_setting">Pengaturan akun</string>
@@ -74,7 +73,7 @@
     <string name="centralized_promo_toolbar_title">Iklan dan Promosi</string>
     <string name="sh_lbl_create_promotion">Buat Promosi</string>
     <string name="sh_lbl_create_promotion_desc">Pasang promosi untuk tingkatkan performa tokomu.</string>
-    <string name="sah_label_promo_and_ads">Iklan dan Promosimu</string>
+    <string name="sah_label_promo_and_ads">Fitur promosi aktifmu</string>
     <string name="sah_label_on_going_promotion_retry">Ketuk ikon untuk memuat ulang</string>
     <string name="sah_label_on_going_promotion_error">Data tidak dapat ditampilkan</string>
     <string name="sh_coachmark_title_on_going_promo">Promosi aktif dan selesai</string>
@@ -167,6 +166,8 @@
     <string name="sah_content_desc_image_widget_error">image widget error</string>
     <string name="sah_rebate_coach_mark_title">Sebagai Power Merchant PRO, kamu bisa ikutan Program Reward, lho!</string>
     <string name="sah_rebate_coach_mark_description">Pantau terus kemajuan tokomu dalam mencapai target di tiap periode dan dapatkan Reward-nya.</string>
+    <string name="sah_unification_coach_mark_title">Apa kabar produkmu hari ini?</string>
+    <string name="sah_unification_coach_mark_description">Ketahui dengan cepat keadaan produkmu untuk atur strategi selanjutnya.</string>
     <string name="settings_operational_hour_open">BUKA</string>
     <string name="settings_operational_hour_closed">TUTUP</string>
     <string name="settings_operational_hour_not_set">LIBUR</string>
@@ -179,7 +180,7 @@
     <string name="sah_share_text_with_link">Semakin mudah belanja produk %1$s di Tokopedia. Cek aja, pasti ada yang kamu suka\n%2$s</string>
     <string name="sah_share_to_social_media_text">Bagikan ke media sosial</string>
     <string name="sah_empty_layout_message">Oops, kamu tidak punya izin untuk melihat konten di halaman Home</string>
-
+    <string name="centralized_promo_description"><![CDATA[<b> %s </b> \u2022 %s]]></string>
     <!-- Admin Restriction -->
     <string name="sah_admin_restriction_label">Admin Restriction</string>
     <string name="sah_admin_restriction_title">Oops, kamu nggak punya izin untuk mengakses fitur ini</string>
@@ -222,4 +223,12 @@
     <string name="info_commission_breakdown">Untuk mempelajari detail biaya layanan per kategori bisa kamu pelajari &lt;a href="#"&gt;di sini&lt;/a&gt;.</string>
     <string name="sah_select_date_range">Pilih rentang waktu</string>
     <string name="trx_refresh">Refresh</string>
+    <string name="text_checkbox_in_detail_centralize_promo">Jangan tampilkan informasi fitur ini lagi</string>
+    <string name="text_badge_new">Baru</string>
+    <string name="sah_new_other_tokomember">TokoMember</string>
+
+    <!-- Wear Os -->
+    <string name="wearos_install_popup_title">Install Wear App</string>
+    <string name="wearos_install_popup_install">Install</string>
+    <string name="wearos_install_popup_later">Not Now</string>
 </resources>

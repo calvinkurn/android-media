@@ -11,7 +11,6 @@
 
     <com.tokopedia.play_common.view.game.GameHeaderView
         android:id="@+id/header_view"
-        app:layout_constraintWidth_percent="0.6"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -23,7 +22,6 @@
         />
 
     <com.tokopedia.play_common.view.RoundedLinearLayout
-        app:layout_constraintWidth_percent="0.6"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -57,18 +55,23 @@
             android:id="@+id/fl_tap"
             android:layout_width="@dimen/play_giveaway_tap_bg_size"
             android:layout_height="@dimen/play_giveaway_tap_bg_size"
-            android:layout_marginTop="@dimen/play_dp_12"
-            android:background="@drawable/bg_play_giveaway_tap"
-            >
+            android:layout_marginTop="@dimen/play_dp_12">
 
-            <com.tokopedia.iconunify.IconUnify
-                android:layout_width="@dimen/play_giveaway_tap_icon_size"
-                android:layout_height="@dimen/play_giveaway_tap_icon_size"
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/tap_lottie_bg"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:lottie_autoPlay="true"
+                android:translationZ="0dp"
+                />
+
+            <com.airbnb.lottie.LottieAnimationView
+                android:id="@+id/iv_tap"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                app:icon_color_light_enable="@color/Unify_Static_White"
-                app:icon_color_night_enable="@color/Unify_NN0"
-                app:icon_name="TAP"
-                tools:icon_color_light_enable="@color/Unify_Static_Black"
+                app:lottie_autoPlay="true"
+                android:translationZ="1dp"
                 />
 
         </FrameLayout>

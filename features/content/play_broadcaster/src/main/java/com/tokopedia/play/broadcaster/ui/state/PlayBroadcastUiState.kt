@@ -1,18 +1,20 @@
 package com.tokopedia.play.broadcaster.ui.state
 
+import com.tokopedia.content.common.ui.model.ContentAccountUiModel
+import com.tokopedia.content.common.ui.model.AccountStateInfo
 import com.tokopedia.play.broadcaster.ui.model.BroadcastScheduleUiModel
-import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
-import com.tokopedia.play.broadcaster.ui.model.TermsAndConditionUiModel
+import com.tokopedia.content.common.ui.model.TermsAndConditionUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizChoiceDetailStateUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizDetailStateUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizFormDataUiModel
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.QuizFormStateUiModel
 import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveConfigUiModel
 import com.tokopedia.play.broadcaster.ui.model.interactive.InteractiveSetupUiModel
+import com.tokopedia.play.broadcaster.ui.model.campaign.ProductTagSectionUiModel
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
 import com.tokopedia.play.broadcaster.ui.model.result.NetworkState
 import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
-import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
+import com.tokopedia.play_common.model.dto.interactive.GameUiModel
 import java.util.*
 
 /**
@@ -25,12 +27,14 @@ data class PlayBroadcastUiState(
     val schedule: ScheduleUiModel,
     val isExiting: Boolean,
     val quizForm: QuizFormUiState,
-    val interactive: InteractiveUiModel,
+    val game: GameUiModel,
     val interactiveConfig: InteractiveConfigUiModel,
     val interactiveSetup: InteractiveSetupUiModel,
     val quizDetail: QuizDetailStateUiModel,
     val onBoarding: OnboardingUiModel,
     val quizBottomSheetUiState: QuizBottomSheetUiState,
+    val selectedContentAccount: ContentAccountUiModel,
+    val accountStateInfo: AccountStateInfo,
 ) {
     companion object {
         val Empty: PlayBroadcastUiState
@@ -47,12 +51,14 @@ data class PlayBroadcastUiState(
                 schedule = ScheduleUiModel.Empty,
                 isExiting = false,
                 quizForm = QuizFormUiState.Empty,
-                interactive = InteractiveUiModel.Unknown,
+                game = GameUiModel.Unknown,
                 interactiveConfig = InteractiveConfigUiModel.empty(),
                 interactiveSetup = InteractiveSetupUiModel.Empty,
                 quizDetail = QuizDetailStateUiModel.Empty,
                 onBoarding = OnboardingUiModel.Empty,
                 quizBottomSheetUiState = QuizBottomSheetUiState.Empty,
+                selectedContentAccount = ContentAccountUiModel.Empty,
+                accountStateInfo = AccountStateInfo(),
             )
     }
 }

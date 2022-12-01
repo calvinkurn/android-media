@@ -48,5 +48,6 @@
     <dimen name="tm_dash_dp_250">250dp</dimen>
     <dimen name="tm_dash_dp_140">14dp</dimen>
     <dimen name="tm_dash_dp_160">160dp</dimen>
+    <dimen name="tm_dash_dp_48">48dp</dimen>
 
 </resources>

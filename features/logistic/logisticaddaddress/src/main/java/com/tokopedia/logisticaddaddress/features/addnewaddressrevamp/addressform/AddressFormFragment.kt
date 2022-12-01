@@ -8,7 +8,10 @@ import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.provider.ContactsContract
-import android.text.*
+import android.text.Editable
+import android.text.InputFilter
+import android.text.InputType
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.MotionEvent
 import android.view.View
@@ -19,6 +22,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
 import com.google.android.material.textfield.TextInputLayout
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
+import com.tokopedia.applink.internal.ApplinkConstInternalLogistic.PARAM_SOURCE
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.gone
@@ -141,6 +145,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
                 EditAddressRevampAnalytics.onViewEditAddressPageNew(userSession.userId)
                 addressId = it.getString(EXTRA_ADDRESS_ID, "")
             }
+            viewModel.source = it.getString(PARAM_SOURCE, "")
         }
         permissionCheckerHelper = PermissionCheckerHelper()
     }
@@ -406,7 +411,6 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
             showNegativeLayout()
             setupNegativePinpointCard()
             binding?.run {
-
                 cardAddressNegative.root.setOnClickListener {
                     AddNewAddressRevampAnalytics.onClickAturPinpointNegative(userSession.userId)
                     checkKotaKecamatan()
@@ -482,7 +486,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
             }
         }
 
-        val addressDetail = if (data.addressDetailNotes.isEmpty()) data.address1 else data.addressDetailStreet
+        val addressDetail = data.addressDetailStreet.ifEmpty { data.address1 }
 
         setOnTouchLabelAddress()
         setupRvLabelAlamatChips()
@@ -729,13 +733,27 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
         binding?.formAccount?.etNomorHp?.let { field ->
             val phoneNumber = field.textFieldInput.text.toString()
             return if (phoneNumber.length < MIN_CHAR_PHONE_NUMBER) {
-                if (phoneNumber.isEmpty()  || phoneNumber == " ") {
+                if (phoneNumber.isEmpty() || phoneNumber == " ") {
                     setWrapperError(field.textFieldWrapper, getString(R.string.tv_error_field))
                 }
-                view?.let { Toaster.build(it, getString(R.string.error_min_char_phone_number), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show() }
+                view?.let {
+                    Toaster.build(
+                        it,
+                        getString(R.string.error_min_char_phone_number),
+                        Toaster.LENGTH_SHORT,
+                        Toaster.TYPE_ERROR
+                    ).show()
+                }
                 false
             } else if (!isPhoneNumberValid(phoneNumber)) {
-                view?.let { Toaster.build(it, getString(R.string.error_invalid_format_phone_number), Toaster.LENGTH_SHORT, Toaster.TYPE_ERROR).show() }
+                view?.let {
+                    Toaster.build(
+                        it,
+                        getString(R.string.error_invalid_format_phone_number),
+                        Toaster.LENGTH_SHORT,
+                        Toaster.TYPE_ERROR
+                    ).show()
+                }
                 false
             } else {
                 true
@@ -744,7 +762,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
         return false
     }
 
-    private fun validateCourierNote() : Boolean {
+    private fun validateCourierNote(): Boolean {
         binding?.run {
             return if (isPositiveFlow) {
                 formAddress.etCourierNote.textFieldWrapper.error == null
@@ -755,7 +773,7 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
         return false
     }
 
-    private fun validateAlamat() : Boolean {
+    private fun validateAlamat(): Boolean {
         binding?.run {
             val field = if (isPositiveFlow) formAddress.etAlamatNew else formAddressNegative.etAlamat
             val alamat = field.textFieldInput.text.toString()
@@ -1131,7 +1149,6 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
                                 labelAlamatChipsAdapter.submitList(labelAlamatList.toList())
                             }
                         }
-
                     }
                 })
                 setOnTouchListener { view, event ->
@@ -1150,8 +1167,11 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
     }
 
     private fun showLabelAlamatList() {
-        if (isPositiveFlow) binding?.formAddress?.rvLabelAlamatChips?.visibility = View.VISIBLE
-        else binding?.formAddressNegative?.rvLabelAlamatChips?.visibility = View.VISIBLE
+        if (isPositiveFlow) {
+            binding?.formAddress?.rvLabelAlamatChips?.visibility = View.VISIBLE
+        } else {
+            binding?.formAddressNegative?.rvLabelAlamatChips?.visibility = View.VISIBLE
+        }
         binding?.formAddress?.rvLabelAlamatChips?.let { ViewCompat.setLayoutDirection(it, ViewCompat.LAYOUT_DIRECTION_LTR) }
         labelAlamatChipsAdapter.submitList(labelAlamatList.toList())
     }
@@ -1178,21 +1198,24 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
         binding?.run {
             saveDataModel?.receiverName = formAccount.etNamaPenerima.textFieldInput.text.toString()
             saveDataModel?.phone = formAccount.etNomorHp.textFieldInput.text.toString()
+            saveDataModel?.isTokonowRequest = viewModel.isTokonow
             if (isPositiveFlow) {
                 if (formAddress.etCourierNote.textFieldInput.text.isNotEmpty()) {
-                    saveDataModel?.address1 = "${formAddress.etAlamatNew.textFieldInput.text} (${formAddress.etCourierNote.textFieldInput.text})"
+                    saveDataModel?.address1 = "${formAddress.etAlamatNew.textFieldInput.text}"
+                    saveDataModel?.address1Notes = formAddress.etCourierNote.textFieldInput.text.toString()
                 } else {
                     saveDataModel?.address1 = "${formAddress.etAlamatNew.textFieldInput.text}"
                 }
-                saveDataModel?.addressName =  formAddress.etLabel.textFieldInput.text.toString()
+                saveDataModel?.addressName = formAddress.etLabel.textFieldInput.text.toString()
                 saveDataModel?.isAnaPositive = PARAM_ANA_POSITIVE
             } else {
                 if (formAddressNegative.etCourierNote.textFieldInput.text.isNotEmpty()) {
-                    saveDataModel?.address1 = "${formAddressNegative.etAlamat.textFieldInput.text} (${formAddressNegative.etCourierNote.textFieldInput.text})"
+                    saveDataModel?.address1 = "${formAddressNegative.etAlamat.textFieldInput.text}"
+                    saveDataModel?.address1Notes = formAddressNegative.etCourierNote.textFieldInput.text.toString()
                 } else {
                     saveDataModel?.address1 = "${formAddressNegative.etAlamat.textFieldInput.text}"
                 }
-                saveDataModel?.addressName =  formAddressNegative.etLabel.textFieldInput.text.toString()
+                saveDataModel?.addressName = formAddressNegative.etLabel.textFieldInput.text.toString()
                 saveDataModel?.isAnaPositive = PARAM_ANA_NEGATIVE
             }
         }
@@ -1276,15 +1299,20 @@ class AddressFormFragment : BaseDaggerFragment(), LabelAlamatChipsAdapter.Action
                     putBoolean(EXTRA_IS_POSITIVE_FLOW, extra.getBoolean(EXTRA_IS_POSITIVE_FLOW))
                     putString(EXTRA_KOTA_KECAMATAN, extra.getString(EXTRA_KOTA_KECAMATAN))
                     putBoolean(EXTRA_IS_EDIT, false)
+                    putString(PARAM_SOURCE, extra.getString(PARAM_SOURCE, "") )
                 }
             }
         }
 
-        fun newInstance(addressId: String?): AddressFormFragment {
+        fun newInstance(addressId: String?, extra: Bundle?): AddressFormFragment {
             return AddressFormFragment().apply {
                 arguments = Bundle().apply {
                     putString(EXTRA_ADDRESS_ID, addressId)
                     putBoolean(EXTRA_IS_EDIT, true)
+
+                    if (extra != null) {
+                        putString(PARAM_SOURCE, extra.getString(PARAM_SOURCE, "") )
+                    }
                 }
             }
         }

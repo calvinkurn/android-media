@@ -234,6 +234,10 @@ abstract class BaseSearchCategoryFragment:
         configureToolbarBackgroundInteraction()
     }
 
+    private fun updateToolbarNotification(update: Boolean) {
+        if(update) navToolbar?.updateNotification()
+    }
+
     protected open val isDisableSearchBarDefaultGtmTracker: Boolean
         get() = false
 
@@ -531,6 +535,7 @@ abstract class BaseSearchCategoryFragment:
         getViewModel().oocOpenScreenTrackingEvent.observe(::sendOOCOpenScreenTracking)
         getViewModel().setUserPreferenceLiveData.observe(::setUserPreferenceData)
         getViewModel().querySafeLiveData.observe(::showDialogAgeRestriction)
+        getViewModel().updateToolbarNotification.observe(::updateToolbarNotification)
     }
 
     protected open fun onShopIdUpdated(shopId: String) {
@@ -660,7 +665,7 @@ abstract class BaseSearchCategoryFragment:
 
     protected open fun setFilterProductCount(countText: String) {
         val productCountText = String.format(
-                getString(com.tokopedia.filter.R.string.bottom_sheet_filter_finish_button_template_text),
+                getString(R.string.tokopedianow_apply_filter_text),
                 countText
         )
 
@@ -715,6 +720,7 @@ abstract class BaseSearchCategoryFragment:
     }
 
     override fun onCartItemsUpdated(miniCartSimplifiedData: MiniCartSimplifiedData) {
+        getViewModel().updateToolbarNotification()
         getViewModel().onViewUpdateCartItems(miniCartSimplifiedData)
         recomWidgetViewModel?.updateMiniCartWithPageData(miniCartSimplifiedData)
     }

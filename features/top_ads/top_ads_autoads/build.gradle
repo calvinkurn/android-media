@@ -14,48 +14,26 @@ buildscript {
 }
 
 dependencies {
-    implementation projectOrAar(rootProject.ext.features.resourcesCommon)
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
     implementation projectOrAar(rootProject.ext.libraries.applink)
     implementation projectOrAar(rootProject.ext.features.topAdsManagementCommon)
     implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
-    implementation rootProject.ext.tkpdInternalLibDependencies.url
 
     implementation rootProject.ext.unifyDependencies.principles
     implementation rootProject.ext.unifyDependencies.components
     implementation rootProject.ext.unifyDependencies.icons
-    implementation rootProject.ext.unifyDependencies.global_error
-    implementation rootProject.ext.unifyDependencies.header
-    implementation rootProject.ext.unifyDependencies.calendar
     implementation projectOrAar(rootProject.ext.libraries.network)
     implementation projectOrAar(rootProject.ext.libraries.graphql)
     implementation projectOrAar(rootProject.ext.libraries.usersession)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
-    implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
 
     implementation rootProject.ext.supportLibDependencies.constraintLayout
-    implementation rootProject.ext.miscDependencies.roundCornerProgressBar
-    implementation rootProject.ext.playServicesDependencies.maps
-    
-    implementation rootProject.ext.supportLibDependencies.appCompactV7
-    implementation rootProject.ext.supportLibDependencies.cardViewV7
-    implementation rootProject.ext.supportLibDependencies.constraintLayout
-    implementation rootProject.ext.miscDependencies.scannerZxing
-    implementation rootProject.ext.playServicesDependencies.maps
     implementation rootProject.ext.miscDependencies.lottie
-    
-    implementation(rootProject.ext.tkpdLibDependencies.expandableOption) {
-        exclude group: "com.android.support"
-    }
-    implementation(rootProject.ext.tkpdLibDependencies.showcase) {
-        exclude group: "com.android.support"
-    }
+    implementation projectOrAar(rootProject.ext.libraries.track)
+
     implementation rootProject.ext.miscDependencies.dagger
-    implementation rootProject.ext.miscDependencies.multiDex
-    implementation rootProject.ext.supportLibDependencies.kotlinSupportJdk7
     implementation rootProject.ext.miscDependencies.lifeCycleExtentions
     kapt rootProject.ext.miscDependencies.daggerCompiler
-    kapt rootProject.ext.miscDependencies.lifeCycleRuntime
 
     //test
     testImplementation rootProject.ext.testDependencies.mockk

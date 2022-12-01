@@ -15,9 +15,7 @@ buildscript {
 
 dependencies {
     implementation projectOrAar(rootProject.ext.libraries.applink)
-    implementation projectOrAar(rootProject.ext.features.resourcesCommon)
     implementation projectOrAar(rootProject.ext.libraries.tkpdabstraction)
-    implementation projectOrAar(rootProject.ext.libraries.commonNetwork)
     implementation projectOrAar(rootProject.ext.features.topAdsManagementCommon)
     implementation projectOrAar(rootProject.ext.libraries.adapterDelegate)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
@@ -28,16 +26,8 @@ dependencies {
     implementation projectOrAar(rootProject.ext.libraries.usersession)
     implementation rootProject.ext.tkpdInternalLibDependencies.usecase
     implementation rootProject.ext.tkpdInternalLibDependencies.url
-    implementation rootProject.ext.miscDependencies.lifeCycleExtentions
-    implementation rootProject.ext.unifyDependencies.header
-    implementation rootProject.ext.miscDependencies.multiDex
     implementation rootProject.ext.unifyDependencies.components
-    implementation rootProject.ext.unifyDependencies.icons
-    implementation rootProject.ext.unifyDependencies.list
-    implementation rootProject.ext.unifyDependencies.sortFilter
-    implementation projectOrAar(rootProject.ext.libraries.remoteResourceRequest)
     implementation projectOrAar(rootProject.ext.libraries.kotlinExtensions)
-    kapt rootProject.ext.miscDependencies.lifeCycleRuntime
     implementation rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation
     kapt rootProject.ext.tkpdInternalLibDependencies.gqlquery_annotation_processor
     implementation rootProject.ext.miscDependencies.viewModelKtx
@@ -45,6 +35,7 @@ dependencies {
     implementation rootProject.ext.unifyDependencies.datepicker
     implementation rootProject.ext.unifyDependencies.dialog
     implementation projectOrAar(rootProject.ext.features.topAdsHeadlineUseCase)
+    implementation projectOrAar(rootProject.ext.libraries.track)
 
     //test
     testImplementation rootProject.ext.testDependencies.mockk

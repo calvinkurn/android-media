@@ -12,13 +12,26 @@ buildscript {
     repositories {
         google()
         mavenCentral()
-        maven { url 'https://maven-hansel.tokopedia.com/maven' }
+        maven {
+            url 'https://maven-hansel.tokopedia.com/maven'
+            allowInsecureProtocol = true
+        }
+
     }
     dependencies {
         classpath rootProject.ext.miscDependencies.hansel
         classpath "com.google.dagger:hilt-android-gradle-plugin:2.42"
     }
 }
+
+def getTkpdVersionName() {
+    return project.hasProperty('versionName') ? versionName : "2.198-wear";
+}
+
+def getTkpdVersionCode() {
+    return project.hasProperty('versionCode') ? Integer.parseInt(versionCode) : 1422128050;
+}
+
 kapt {
     correctErrorTypes = true
     generateStubs = false
@@ -26,6 +39,10 @@ kapt {
 android {
     packagingOptions {
         exclude 'META-INF/**'
+    }
+    project.ext {
+        defaultVersionCode = 000000001;
+        defaultVersionName = "0.1";
     }
     compileSdkVersion 32
     useLibrary 'org.apache.http.legacy'
@@ -40,7 +57,6 @@ android {
     }
     buildTypes {
         debug {
-            signingConfig signingConfigs.debug
             minifyEnabled false
             zipAlignEnabled false
             testCoverageEnabled false
@@ -51,16 +67,15 @@ android {
         release {
             minifyEnabled true
             buildConfigField "boolean", "ENABLE_DISTRIBUTION", "false"
-            signingConfig signingConfigs.debug
         }
     }
     defaultConfig {
-        minSdkVersion 25
+        minSdkVersion 21
         multiDexEnabled true
         targetSdkVersion rootProject.ext.targetSdkVersion
-        applicationId "com.tokopedia.tkpd"
-        versionCode 391100000
-        versionName "3.150"
+        applicationId "com.tokopedia.sellerapp"
+        versionCode getTkpdVersionCode()
+        versionName getTkpdVersionName()
         vectorDrawables.useSupportLibrary = true
         ndk {
             abiFilters "armeabi-v7a", "x86", "arm64-v8a", "x86_64"

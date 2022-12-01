@@ -13,6 +13,8 @@
         android:layout_height="wrap_content"
         android:layout_marginEnd="@dimen/spacing_lvl3"
         android:layout_marginRight="@dimen/spacing_lvl3"
+        android:maxHeight="19.5dp"
+        android:maxWidth="19.5dp"
         android:src="@drawable/circle_red"
         android:visibility="visible"
         tools:src="@drawable/ic_chat_icon_account"

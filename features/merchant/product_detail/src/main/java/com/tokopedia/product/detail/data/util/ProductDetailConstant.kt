@@ -29,6 +29,7 @@ object ProductDetailConstant {
     const val PAYLOAD_TOOGLE_FAVORITE = 2
     const val PAYLOAD_TOOGLE_AND_FAVORITE_SHOP = 3
     const val PAYLOAD_SCROLL_IMAGE_VARIANT = 5
+    const val PAYLOAD_MEDIA_UPDATE = 6
     const val PAYLOAD_VARIANT_COMPONENT = 1
     const val PAYLOAD_NOTIFY_ME = 1
     const val PAYLOAD_UPDATE_FILTER_RECOM = 1222
@@ -73,6 +74,7 @@ object ProductDetailConstant {
     const val PRODUCT_WHOLESALE_INFO = "wholesale"
     const val PRODUCT_SHOP_CREDIBILITY = "shop_credibility"
     const val PRODUCT_CUSTOM_INFO = "custom_info"
+    const val PRODUCT_SHOP_ADDITIONAL = "shop_additional"
     const val PRODUCT_INSTALLMENT_INFO = "installment"
     const val PRODUCT_INSTALLMENT_PAYLATER_INFO = "installment_paylater"
     const val PRODUCT_SHIPPING_INFO = "shipping"
@@ -88,15 +90,19 @@ object ProductDetailConstant {
     const val MINI_SHOP_WIDGET = "mini_shop_widget"
     const val CATEGORY_CAROUSEL = "category_carousel"
     const val HAMPERS_INFO = "palugada_hampers"
+    const val PRODUCT_LIST_VERTICAL = "product_list_vertical"
+    const val PDP_VERTICAL_LOADING = "pdp_vertical_loading"
 
     const val BEST_SELLER = "best_seller"
     const val STOCK_ASSURANCE = "stock_assurance"
     const val ONE_LINERS = "one_liners"
     const val PRODUCT_BUNDLING = "product_bundling"
+    const val GLOBAL_BUNDLING = "global_bundling"
     const val CONTENT_WIDGET = "content_widget"
     const val PLAY_CAROUSEL = "play_carousel"
     const val FINTECH_WIDGET_TYPE = "chips_carousel"
     const val FINTECH_WIDGET_NAME = "paylater_cicilan"
+    const val DILAYANI_TOKOPEDIA = "dt_info"
 
     //Arguments
     const val ARG_PRODUCT_ID = "ARG_PRODUCT_ID"
@@ -114,6 +120,8 @@ object ProductDetailConstant {
     const val REVIEW_PRD_NM = "x_prd_nm"
     const val ARG_QUERY_PARAMS = "ARG_QUERY_PARAMS"
     const val ARG_CHANNEL = "ARG_CHANNEL"
+    const val ARG_CAMPAIGN_ID = "ARG_CAMPAIGN_ID"
+    const val ARG_VARIANT_ID = "ARG_VARIANT_ID"
 
     //Animation
     const val CART_MAX_COUNT = 99
@@ -131,7 +139,7 @@ object ProductDetailConstant {
     const val ALREADY_FAVORITE_SHOP = 1
 
     //TopAds Banner
-    const val ADS_COUNT = 1
+    const val ADS_COUNT = 3
     const val DIMEN_ID = 3
     const val PAGE_SOURCE = "3"
 
@@ -175,4 +183,5 @@ object ProductDetailConstant {
     const val WISHLIST_STATUS_KEY = "wishlist_status"
     const val ADD_WISHLIST = "true"
     const val REMOVE_WISHLIST = "false"
+    const val PDP_SOURCE_WISHLIST = "pdp"
 }

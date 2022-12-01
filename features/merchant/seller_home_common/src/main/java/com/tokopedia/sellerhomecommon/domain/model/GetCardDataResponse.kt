@@ -40,5 +40,8 @@ data class CardDataModel(
         val state: String?,
         @Expose
         @SerializedName("value")
-        val value: String?
+        val value: String?,
+        @Expose
+        @SerializedName("badgeImageUrl")
+        val badgeImageUrl: String?
 )

@@ -29,6 +29,7 @@ object IconList {
     const val ID_INFORMATION = IconUnify.INFORMATION
     const val ID_BILL = IconUnify.BILL
     const val ID_LIST_TRANSACTION = IconUnify.LIST_TRANSACTION
+    const val ID_NOTEBOOK = IconUnify.NOTEBOOK
     const val NAME_MESSAGE = "Inbox"
     const val NAME_NOTIFICATION = "Notif"
     const val NAME_CART = "Cart"
@@ -42,6 +43,7 @@ object IconList {
     const val NAME_INFORMATION = "Information"
     const val NAME_BILL= "Bill"
     const val NAME_LIST_TRANSACTION = "List Transaction"
+    const val NAME_NOTEBOOK = "Notebook"
 
     const val ID_NAV_LOTTIE_WISHLIST = 91
     const val ID_NAV_ANIMATED_WISHLIST = 92
@@ -222,6 +224,20 @@ object IconList {
                 applink = "",
                 disableRouteManager = disableRouteManager,
                 name = NAME_LIST_TRANSACTION,
+                disableDefaultGtmTracker = disableDefaultGtmTracker
+            ) {
+                onClick.invoke()
+            }
+        }
+    }
+
+    internal object NotebookIcon: IconConfigItem {
+        override fun get(pageSource: String, disableRouteManager: Boolean, disableDefaultGtmTracker: Boolean, onClick: ()-> Unit): IconToolbar {
+            return IconToolbar(
+                id = ID_NOTEBOOK,
+                applink = "",
+                disableRouteManager = disableRouteManager,
+                name = NAME_NOTEBOOK,
                 disableDefaultGtmTracker = disableDefaultGtmTracker
             ) {
                 onClick.invoke()

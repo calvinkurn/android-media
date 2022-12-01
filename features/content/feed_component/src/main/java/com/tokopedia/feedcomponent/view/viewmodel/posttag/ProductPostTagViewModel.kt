@@ -27,7 +27,7 @@ data class ProductPostTagViewModel (
         val mediaType: String = "",
         override var feedType: String = "",
         override var positionInFeed: Int = 0,
-        override var postId: Int = 0
+        override var postId: String = "0"
 
 ): BasePostTagViewModel {
     override fun type(typeFactory: PostTagTypeFactory): Int {

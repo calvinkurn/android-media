@@ -35,12 +35,6 @@ class PlaySetupSelectProductViewModelTest {
     private val mockProductTagSectionList = productSetupUiModelBuilder.buildProductTagSectionList()
 
     private val mockSelectedProducts = mockProductTagSectionList.flatMap { it.products }
-//
-//    private val mockSelectedSections = List(1) {
-//        productSetupUiModelBuilder.buildProductTagSection(
-//            products = mockSelectedProducts
-//        )
-//    }
 
     @Test
     fun `when user select product, it should emit uiState with new selected products`() {
@@ -60,7 +54,7 @@ class PlaySetupSelectProductViewModelTest {
 
         robot.use {
             val state = robot.recordState {
-                robot.submitAction(ProductSetupAction.SelectProduct(mockAddedProduct))
+                robot.submitAction(ProductSetupAction.ToggleSelectProduct(mockAddedProduct))
             }
 
             state.selectedProductList.assertEqualTo(expectedSelectedProducts)
@@ -84,7 +78,7 @@ class PlaySetupSelectProductViewModelTest {
 
         robot.use {
             val state = robot.recordState {
-                robot.submitAction(ProductSetupAction.SelectProduct(mockAddedProduct))
+                robot.submitAction(ProductSetupAction.ToggleSelectProduct(mockAddedProduct))
             }
 
             state.selectedProductList
@@ -110,7 +104,7 @@ class PlaySetupSelectProductViewModelTest {
 
         robot.use {
             val state = robot.recordState {
-                robot.submitAction(ProductSetupAction.SelectProduct(mockUnselectedProduct))
+                robot.submitAction(ProductSetupAction.ToggleSelectProduct(mockUnselectedProduct))
             }
 
             state.selectedProductList
@@ -139,7 +133,7 @@ class PlaySetupSelectProductViewModelTest {
 
         robot.use {
             val state = robot.recordState {
-                robot.submitAction(ProductSetupAction.SelectProduct(mockAddedProduct))
+                robot.submitAction(ProductSetupAction.ToggleSelectProduct(mockAddedProduct))
             }
 
             Assertions.assertEquals(state.saveState.canSave, true)
@@ -168,10 +162,122 @@ class PlaySetupSelectProductViewModelTest {
 
         robot.use {
             val state = robot.recordState {
-                robot.submitAction(ProductSetupAction.SelectProduct(mockProduct))
+                robot.submitAction(ProductSetupAction.ToggleSelectProduct(mockProduct))
             }
 
             Assertions.assertEquals(state.saveState.canSave, false)
+        }
+    }
+
+    @Test
+    fun `when user set several products at once, products state should be those same products`() {
+        val mockProducts = List(5) {
+            ProductUiModel(
+                it.toString(),
+                "",
+                "",
+                1,
+                OriginalPrice("Rp 12.000", 12_000.0)
+            )
+        }
+        val mockInitialProductTagSectionList = emptyList<ProductTagSectionUiModel>()
+
+        coEvery { mockHydraConfigStore.getMaxProduct() } returns 30
+
+        val robot = PlayBroProductSetupViewModelRobot(
+            productSectionList = mockInitialProductTagSectionList,
+            hydraConfigStore = mockHydraConfigStore,
+            dispatchers = testDispatcher,
+            channelRepo = mockRepo
+        )
+
+        robot.use {
+            val state = robot.recordState {
+                robot.submitAction(ProductSetupAction.SetProducts(mockProducts))
+            }
+
+            state.selectedProductList
+                .assertEqualTo(mockProducts)
+        }
+    }
+
+    @Test
+    fun `when user set several products at once, old products should be overridden and products state should be those new set products`() {
+        val mockProducts = List(5) {
+            ProductUiModel(
+                it.toString(),
+                "",
+                "",
+                1,
+                OriginalPrice("Rp 12.000", 12_000.0)
+            )
+        }
+        val mockInitialProductTagSectionList = listOf(
+            ProductTagSectionUiModel(
+                name = "Test 1",
+                campaignStatus = CampaignStatus.Ongoing,
+                products = List(10) {
+                    ProductUiModel(
+                        (it*5001).toString(),
+                        "",
+                        "",
+                        1,
+                        OriginalPrice("Rp 12.000", 12_000.0)
+                    )
+                }
+            )
+        )
+
+        coEvery { mockHydraConfigStore.getMaxProduct() } returns 30
+
+        val robot = PlayBroProductSetupViewModelRobot(
+            productSectionList = mockInitialProductTagSectionList,
+            hydraConfigStore = mockHydraConfigStore,
+            dispatchers = testDispatcher,
+            channelRepo = mockRepo
+        )
+
+        robot.use {
+            val state = robot.recordState {
+                robot.submitAction(ProductSetupAction.SetProducts(mockProducts))
+            }
+
+            state.selectedProductList
+                .assertEqualTo(mockProducts)
+        }
+    }
+
+    @Test
+    fun `when user set several products at once more than the maximum, products count should be at most the maximum products allowed`() {
+        val mockProducts = List(40) {
+            ProductUiModel(
+                it.toString(),
+                "",
+                "",
+                1,
+                OriginalPrice("Rp 12.000", 12_000.0)
+            )
+        }
+        val mockInitialProductTagSectionList = emptyList<ProductTagSectionUiModel>()
+
+        val maxProduct = 30
+
+        coEvery { mockHydraConfigStore.getMaxProduct() } returns maxProduct
+
+        val robot = PlayBroProductSetupViewModelRobot(
+            productSectionList = mockInitialProductTagSectionList,
+            hydraConfigStore = mockHydraConfigStore,
+            dispatchers = testDispatcher,
+            channelRepo = mockRepo
+        )
+
+        robot.use {
+            val state = robot.recordState {
+                robot.submitAction(ProductSetupAction.SetProducts(mockProducts))
+            }
+
+            state.selectedProductList
+                .assertEqualTo(mockProducts.subList(0, maxProduct))
         }
     }
 }

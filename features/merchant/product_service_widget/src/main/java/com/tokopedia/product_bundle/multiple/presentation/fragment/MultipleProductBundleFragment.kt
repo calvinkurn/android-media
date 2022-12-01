@@ -28,12 +28,14 @@ import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.product.detail.common.AtcVariantHelper
+import com.tokopedia.product_bundle.activity.ProductBundleActivity
 import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants
 import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.EXTRA_IS_VARIANT_CHANGED
 import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.EXTRA_NEW_BUNDLE_ID
 import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.EXTRA_OLD_BUNDLE_ID
 import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.PAGE_SOURCE_CART
 import com.tokopedia.product_bundle.common.data.constant.ProductBundleConstants.PAGE_SOURCE_MINI_CART
+import com.tokopedia.product_bundle.common.data.mapper.ProductBundleAtcTrackerMapper
 import com.tokopedia.product_bundle.common.data.model.response.BundleInfo
 import com.tokopedia.product_bundle.common.di.ProductBundleComponentBuilder
 import com.tokopedia.product_bundle.common.extension.setBackgroundToWhite
@@ -41,7 +43,6 @@ import com.tokopedia.product_bundle.common.extension.setSubtitleText
 import com.tokopedia.product_bundle.common.extension.setTitleText
 import com.tokopedia.product_bundle.common.util.AtcVariantNavigation
 import com.tokopedia.product_bundle.common.util.Utility
-import com.tokopedia.product_bundle.fragment.EntrypointFragment
 import com.tokopedia.product_bundle.fragment.EntrypointFragment.Companion.tagFragment
 import com.tokopedia.product_bundle.multiple.di.DaggerMultipleProductBundleComponent
 import com.tokopedia.product_bundle.multiple.presentation.adapter.ProductBundleDetailAdapter
@@ -50,6 +51,7 @@ import com.tokopedia.product_bundle.multiple.presentation.adapter.ProductBundleM
 import com.tokopedia.product_bundle.multiple.presentation.adapter.ProductBundleMasterAdapter.ProductBundleMasterItemClickListener
 import com.tokopedia.product_bundle.multiple.presentation.model.ProductBundleDetail
 import com.tokopedia.product_bundle.multiple.presentation.model.ProductBundleMaster
+import com.tokopedia.product_bundle.multiple.presentation.model.ProductDetailBundleTracker
 import com.tokopedia.product_bundle.tracking.MultipleProductBundleTracking
 import com.tokopedia.product_bundle.viewmodel.ProductBundleViewModel
 import com.tokopedia.product_service_widget.R
@@ -203,7 +205,17 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
         // observe add to cart result
         viewModel.addToCartResult.observe(viewLifecycleOwner, { atcResult ->
             atcResult?.let {
+                val selectedProductIds = viewModel.getSelectedProductIds(viewModel.getSelectedProductBundleDetails())
+                val selectedBundleDetails = viewModel.getSelectedProductBundleDetails()
+                val productDetails = ProductBundleAtcTrackerMapper.mapMultipleBundlingDataToProductDataTracker(selectedBundleDetails, it)
+
                 if (viewModel.pageSource == PAGE_SOURCE_CART || viewModel.pageSource == PAGE_SOURCE_MINI_CART) {
+                    sendTrackerBundleAtcClickEvent(
+                            selectedProductIds = selectedProductIds,
+                            bundleId = it.requestParams.bundleId,
+                            productDetails = productDetails,
+                            shopId = it.requestParams.shopId
+                    )
                     val intent = Intent()
                     val oldBundleId = viewModel.selectedBundleId.toString()
                     intent.putExtra(EXTRA_OLD_BUNDLE_ID, oldBundleId)
@@ -213,6 +225,12 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
                     activity?.setResult(Activity.RESULT_OK, intent)
                     activity?.finish()
                 } else {
+                    sendTrackerBundleAtcClickEvent(
+                            selectedProductIds = selectedProductIds,
+                            bundleId = it.requestParams.bundleId,
+                            productDetails = productDetails,
+                            shopId = it.requestParams.shopId
+                    )
                     RouteManager.route(context, ApplinkConst.CART)
                 }
             }
@@ -235,6 +253,23 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
                 }
             }
         })
+    }
+
+    private fun sendTrackerBundleAtcClickEvent(
+            selectedProductIds: String,
+            bundleId: String,
+            productDetails: List<ProductDetailBundleTracker>,
+            shopId: String
+    ) {
+        val _userId = viewModel.getUserId()
+        MultipleProductBundleTracking.trackMultipleBuyClick(
+                userId = _userId,
+                bundleId = bundleId,
+                productIds = selectedProductIds,
+                source = viewModel.pageSource,
+                productDetails = productDetails,
+                shopId = shopId
+        )
     }
 
     private fun setupProductBundleMasterView(view: View) {
@@ -276,7 +311,6 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
                 if (isAddToCartInputValid) {
                     // collect required data
                     val bundleId = selectedProductBundleMaster.bundleId
-                    val selectedProductIds = viewModel.getSelectedProductIds(viewModel.getSelectedProductBundleDetails())
                     val userId = viewModel.getUserId()
                     val shopId = selectedProductBundleMaster.shopId
                     // map product bundle details to product details
@@ -284,11 +318,6 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
                         userId,
                         shopId,
                         selectedBundleDetails
-                    )
-                    // track the buy button click
-                    MultipleProductBundleTracking.trackMultipleBuyClick(
-                        bundleId = bundleId.toString(),
-                        productId = selectedProductIds
                     )
                     // add product bundle to cart
                     viewModel.addProductBundleToCart(
@@ -431,9 +460,12 @@ class MultipleProductBundleFragment : BaseDaggerFragment(),
     }
 
     private fun refreshPage() {
-        parentFragmentManager.beginTransaction()
-            .replace(R.id.parent_view, EntrypointFragment(), tagFragment)
-            .commit()
+        val parentActivity = activity as? ProductBundleActivity
+        parentActivity?.entrypointFragment?.let {
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.parent_view, it, tagFragment)
+                .commit()
+        }
     }
 
     private fun goToLoginPage() {

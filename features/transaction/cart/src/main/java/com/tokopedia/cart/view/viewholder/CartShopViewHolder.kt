@@ -345,14 +345,18 @@ class CartShopViewHolder(private val binding: ItemShopBinding,
                 ImageHandler.loadImageWithoutPlaceholderAndError(
                         imgFreeShipping, cartShopHolderData.freeShippingBadgeUrl
                 )
-                val contentDescriptionStringResource = if (cartShopHolderData.isFreeShippingExtra) {
-                    com.tokopedia.purchase_platform.common.R.string.pp_cd_image_badge_boe
+                val contentDescriptionStringResource = if (cartShopHolderData.isFreeShippingPlus) {
+                    com.tokopedia.purchase_platform.common.R.string.pp_cd_image_badge_plus
                 } else {
                     com.tokopedia.purchase_platform.common.R.string.pp_cd_image_badge_bo
                 }
                 imgFreeShipping.contentDescription = itemView.context.getString(contentDescriptionStringResource)
                 imgFreeShipping.show()
                 separatorFreeShipping.show()
+                if (!cartShopHolderData.hasSeenFreeShippingBadge && cartShopHolderData.isFreeShippingPlus) {
+                    cartShopHolderData.hasSeenFreeShippingBadge = true
+                    actionListener.onViewFreeShippingPlusBadge()
+                }
             } else {
                 imgFreeShipping.gone()
                 separatorFreeShipping.gone()

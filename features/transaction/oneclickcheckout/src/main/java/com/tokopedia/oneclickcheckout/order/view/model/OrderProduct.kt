@@ -1,5 +1,6 @@
 package com.tokopedia.oneclickcheckout.order.view.model
 
+import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.model.EthicalDrugDataModel
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnsDataModel
 import com.tokopedia.purchase_platform.common.feature.purchaseprotection.domain.PurchaseProtectionPlanData
 
@@ -22,6 +23,7 @@ data class OrderProduct(
         var orderQuantity: Int = 0,
         var isFreeOngkir: Boolean = false,
         var isFreeOngkirExtra: Boolean = false,
+        var freeShippingName: String = "",
         var weight: Int = 0,
         var weightActual: Int = 0,
         var notes: String = "",
@@ -48,7 +50,7 @@ data class OrderProduct(
         var errorMessage: String = "",
         var isError: Boolean = false,
         var addOn: AddOnsDataModel = AddOnsDataModel(),
-
+        var ethicalDrug: EthicalDrugDataModel = EthicalDrugDataModel(),
         // Analytics
         var hasTriggerViewErrorProductLevelTicker: Boolean = false
 ) {

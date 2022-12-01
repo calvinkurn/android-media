@@ -52,8 +52,10 @@ import com.tokopedia.remoteconfig.RemoteConfigKey;
 import com.tokopedia.topads.sdk.analytics.TopAdsGtmTracker;
 import com.tokopedia.topads.sdk.domain.model.CpmModel;
 import com.tokopedia.topads.sdk.domain.model.TopAdsImageViewModel;
+import com.tokopedia.topads.sdk.listener.TdnBannerResponseListener;
 import com.tokopedia.topads.sdk.listener.TopAdsImageVieWApiResponseListener;
 import com.tokopedia.topads.sdk.listener.TopAdsImageViewClickListener;
+import com.tokopedia.topads.sdk.utils.TdnHelper;
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter;
 import com.tokopedia.trackingoptimizer.TrackingQueue;
 import com.tokopedia.unifycomponents.Toaster;
@@ -67,6 +69,7 @@ import com.tokopedia.wishlistcommon.util.WishlistV2RemoteConfigRollenceUtil;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -78,7 +81,7 @@ import kotlin.jvm.functions.Function2;
  * Created by meta on 19/06/18.
  */
 public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent, InboxPresenter> implements
-        InboxView, InboxAdapterListener, RecommendationListener, TopAdsImageVieWApiResponseListener, TopAdsImageViewClickListener {
+        InboxView, InboxAdapterListener, RecommendationListener, TdnBannerResponseListener, TopAdsImageViewClickListener {
 
     public static final int CHAT_MENU = 0;
     public static final int DISCUSSION_MENU = 1;
@@ -128,7 +131,7 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
     private boolean isTopAdsBannerAdded;
     private int headlineExperimentPosition = HEADLINE_POS_NOT_TO_BE_ADDED;
     private int toAdsBannerExperimentPosition = TOP_ADS_BANNER_POS_NOT_TO_BE_ADDED;
-    private TopAdsImageViewModel topAdsBannerInProductCards;
+    private List<TopAdsImageViewModel> topAdsBannerInProductCards;
     private List<Integer> headlineIndexList;
 
     public static InboxFragment newInstance() {
@@ -179,17 +182,15 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
 
     private void handleWishlistActionForLoggedInUser(ProductCardOptionsModel productCardOptionsModel) {
         if (getContext() != null) {
-            boolean isUsingWishlistV2 = WishlistV2RemoteConfigRollenceUtil.INSTANCE.isUsingAddRemoveWishlistV2(getContext());
             if (productCardOptionsModel.getWishlistResult().isSuccess()) {
-                handleWishlistActionSuccess(productCardOptionsModel, isUsingWishlistV2);
+                handleWishlistActionSuccess(productCardOptionsModel);
             } else {
-                if (isUsingWishlistV2) handleWishlistActionFailedV2(productCardOptionsModel.getWishlistResult());
-                else handleWishlistActionFailed();
+                handleWishlistActionFailedV2(productCardOptionsModel.getWishlistResult());
             }
         }
     }
 
-    private void handleWishlistActionSuccess(ProductCardOptionsModel productCardOptionsModel, boolean isUsingWishlistV2) {
+    private void handleWishlistActionSuccess(ProductCardOptionsModel productCardOptionsModel) {
         if (getContext() == null) return;
 
         boolean isAddWishlist = productCardOptionsModel.getWishlistResult().isAddWishlist();
@@ -198,14 +199,10 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
         adapter.notifyItemChanged(productCardOptionsModel.getProductPosition(), isAddWishlist);
 
         if (isAddWishlist) {
-            if (isUsingWishlistV2) {
-                showSuccessAddWishlistV2(productCardOptionsModel.getWishlistResult());
-                if (productCardOptionsModel.isTopAds()) onClickTopAdsWishlistV2(productCardOptionsModel);
-            }
-            else showSuccessAddWishlist();
+            showSuccessAddWishlistV2(productCardOptionsModel.getWishlistResult());
+            if (productCardOptionsModel.isTopAds()) onClickTopAdsWishlistV2(productCardOptionsModel);
         } else {
-            if (isUsingWishlistV2) showSuccessRemoveWishlistV2(productCardOptionsModel.getWishlistResult());
-            else showSuccessRemoveWishlist();
+            showSuccessRemoveWishlistV2(productCardOptionsModel.getWishlistResult());
         }
     }
 
@@ -214,19 +211,6 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
         new TopAdsUrlHitter(getContext()).hitClickUrl(getActivity().getClass().getName(), clickUrl,
                 productCardOptionsModel.getProductId(), productCardOptionsModel.getProductName(),
                 productCardOptionsModel.getProductImageUrl(), COMPONENT_NAME_TOP_ADS);
-    }
-
-    private void showSuccessAddWishlist() {
-        if (getActivity() == null) return;
-
-        View view = getActivity().findViewById(android.R.id.content);
-        String message = getString(com.tokopedia.wishlist_common.R.string.on_success_add_to_wishlist_msg);
-
-        if (view == null) return;
-
-        Toaster.build(view, message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL,
-                getString(com.tokopedia.wishlist_common.R.string.cta_success_add_to_wishlist),
-                v -> RouteManager.route(getActivity(), ApplinkConst.WISHLIST)).show();
     }
 
     private void showSuccessAddWishlistV2(ProductCardOptionsModel.WishlistResult wishlistResult) {
@@ -238,22 +222,6 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
         AddRemoveWishlistV2Handler.INSTANCE.showAddToWishlistV2SuccessToaster(wishlistResult, getActivity(), view);
     }
 
-    private void goToWishList() {
-        RouteManager.getIntent(getContext(), ApplinkConst.NEW_WISHLIST);
-    }
-
-    private void showSuccessRemoveWishlist() {
-        if (getActivity() == null) return;
-
-        View view = getActivity().findViewById(android.R.id.content);
-        String message = getString(com.tokopedia.wishlist_common.R.string.on_success_remove_from_wishlist_msg);
-
-        if (view == null) return;
-
-        Toaster.build(view, message, Toaster.LENGTH_LONG, Toaster.TYPE_NORMAL,
-                getString(com.tokopedia.wishlist_common.R.string.cta_success_remove_from_wishlist), v -> {}).show();
-    }
-
     private void showSuccessRemoveWishlistV2(ProductCardOptionsModel.WishlistResult wishlistResult) {
         if (getActivity() == null) return;
 
@@ -261,16 +229,6 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
         if (view == null) return;
 
         AddRemoveWishlistV2Handler.INSTANCE.showRemoveWishlistV2SuccessToaster(wishlistResult, getActivity(), view);
-    }
-
-    private void handleWishlistActionFailed() {
-        if (getView() == null) return;
-
-        View rootView = getView().getRootView();
-
-        Toaster.build(rootView,
-                ErrorHandler.getErrorMessage(rootView.getContext(), null), Toaster.LENGTH_LONG,
-                Toaster.TYPE_ERROR).show();
     }
 
     private void handleWishlistActionFailedV2(ProductCardOptionsModel.WishlistResult wishlistResult) {
@@ -353,19 +311,6 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
             Inbox inbox = (Inbox) item;
             globalNavAnalytics.eventInboxPage(getString(inbox.getTitle()).toLowerCase());
             getCallingIntent(position);
-        }
-    }
-
-    @Override
-    public void onWishlistClick(@NotNull RecommendationItem item, boolean isAddWishlist, @NotNull Function2<? super Boolean, ? super Throwable, Unit> callback) {
-        if (presenter.isLoggedIn()) {
-            if (isAddWishlist) {
-                presenter.addWishlist(item, callback);
-            } else {
-                presenter.removeWishlist(item, callback);
-            }
-        } else {
-            RouteManager.route(getContext(), ApplinkConst.LOGIN);
         }
     }
 
@@ -704,16 +649,23 @@ public class InboxFragment extends BaseTestableParentFragment<GlobalNavComponent
         InboxGtmTracker.getInstance().eventInboxProductClick(getContext(), item, item.getPosition(), item.isTopAds());
     }
 
-    @Override
-    public void onImageViewResponse(@NotNull ArrayList<TopAdsImageViewModel> imageDataList) {
-        if (imageDataList.isEmpty()) return;
-        else if (imageDataList.size() == TOP_ADS_BANNER_COUNT) {
-            topAdsBannerInProductCards = imageDataList.get(TOP_ADS_BANNER_COUNT - 1);
-            toAdsBannerExperimentPosition = topAdsBannerInProductCards.getPosition()+ SHIFTING_INDEX
-                    + getStartProductPosition();
 
+
+    @Override
+    public void onTdnBannerResponse(@NonNull List<List<TopAdsImageViewModel>> categoriesList) {
+        if (categoriesList.isEmpty()) return;
+        if (categoriesList.size() == TOP_ADS_BANNER_COUNT) {
+            topAdsBannerInProductCards = categoriesList.get(1);
+            if (!topAdsBannerInProductCards.isEmpty()){
+                toAdsBannerExperimentPosition = topAdsBannerInProductCards.get(0).getPosition() + SHIFTING_INDEX
+                        + getStartProductPosition();
+            }
+        } else if (categoriesList.get(0).size() == TOP_ADS_BANNER_COUNT) {
+            topAdsBannerInProductCards = Collections.singletonList(categoriesList.get(0).get(1));
+                toAdsBannerExperimentPosition = topAdsBannerInProductCards.get(0).getPosition() + SHIFTING_INDEX
+                        + getStartProductPosition();
         }
-        adapter.updateTopAdsBanner(imageDataList.get(0));
+        adapter.updateTopAdsBanner(categoriesList.get(0));
     }
 
     @Override

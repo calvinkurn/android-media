@@ -45,7 +45,7 @@ public class DealCategoryAdapterPresenter extends BaseDaggerPresenter<DealCatego
         postUpdateDealLikesUseCase.unsubscribe();
     }
 
-    public boolean setDealLike(int id, boolean liked, final int position, int likes) {
+    public boolean setDealLike(long id, boolean liked, final int position, int likes) {
         if (userSession.isLoggedIn()) {
             LikeUpdateModel requestModel = new LikeUpdateModel();
             Rating rating = new Rating();
@@ -54,7 +54,7 @@ public class DealCategoryAdapterPresenter extends BaseDaggerPresenter<DealCatego
             } else {
                 rating.setIsLiked("true");
             }
-            rating.setUserId(Integer.parseInt(userSession.getUserId()));
+            rating.setUserId(Long.parseLong(userSession.getUserId()));
             rating.setProductId(id);
             rating.setFeedback("");
             requestModel.setRating(rating);

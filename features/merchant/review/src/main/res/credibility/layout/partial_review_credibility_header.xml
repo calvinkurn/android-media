@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/iv_review_credibility_header_reviewer_profile_picture"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:unify_image_type="circle" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_review_credibility_header_reviewer_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="8dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textAlignment="center"
+        android:textColor="@color/Unify_NN950"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintBottom_toTopOf="@id/tv_review_credibility_header_reviewer_join_date"
+        app:layout_constraintEnd_toStartOf="@id/btn_review_credibility_header_reviewer_see_profile"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintStart_toEndOf="@id/iv_review_credibility_header_reviewer_profile_picture"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed"
+        app:typographyType="display_2"
+        app:typographyWeight="bold"
+        tools:text="Smitty Werben Man Jensen #1" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/tv_review_credibility_header_reviewer_join_date"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="8dp"
+        android:layout_marginTop="2dp"
+        android:ellipsize="end"
+        android:maxLines="1"
+        android:textAlignment="center"
+        android:textColor="@color/Unify_NN600"
+        app:layout_constrainedWidth="true"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/btn_review_credibility_header_reviewer_see_profile"
+        app:layout_constraintHorizontal_bias="0"
+        app:layout_constraintStart_toEndOf="@id/iv_review_credibility_header_reviewer_profile_picture"
+        app:layout_constraintTop_toBottomOf="@id/tv_review_credibility_header_reviewer_name"
+        app:typographyType="paragraph_3"
+        tools:text="31 December 2022" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btn_review_credibility_header_reviewer_see_profile"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        tools:text="Lihat Profil"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:unifyButtonSize="micro"
+        app:unifyButtonVariant="ghost" />
+</androidx.constraintlayout.widget.ConstraintLayout>

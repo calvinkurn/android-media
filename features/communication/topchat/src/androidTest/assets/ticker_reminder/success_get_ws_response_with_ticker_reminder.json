@@ -1,0 +1,39 @@
+{
+  "code":103,
+  "data":{
+    "msg_id":"66961",
+    "from":"Buyer Testing",
+    "from_uid":7977933,
+    "from_user_name":"Buyer Testing",
+    "from_role":"User",
+    "thumbnail":"https://imagerouter-staging.tokopedia.com/image/v1/u/9075737/user_thumbnail/desktop",
+    "reminder_ticker":{
+      "enable":true,
+      "enable_close":true,
+      "feature_id":2,
+      "main_text":"",
+      "regex_message":"",
+      "reply_id":"localid",
+      "sub_text":"Hati-hati penipuan, ya! Hindari bertransaksi dan menghubungi penjual di luar Tokopedia. \u003ca href='https://www.tokopedia.com/help/article/st-1030-jaga-keamanan-akun-tokopedia'\u003eBaca Panduan\u003c/a\u003e",
+      "ticker_type":"warning",
+      "url":"",
+      "url_label":""
+    },
+    "is_opposite":false,
+    "to_uid":9075737,
+    "message":{
+      "censored_reply":"Fraud text 123",
+      "original_reply":"Fraud text 123",
+      "timestamp":"2022-08-30T17:31:52.128487702+07:00",
+      "timestamp_fmt":"30 August 2022, 17:31 WIB",
+      "timestamp_unix":1661855512128,
+      "timestamp_unix_nano":1661855512128488000
+    },
+    "start_time":"2022-08-30T10:31:51.553Z",
+    "show_rating":false,
+    "to_buyer":true,
+    "local_id":"localid",
+    "client_connect_time":"0001-01-01T00:00:00Z",
+    "source":"inbox"
+  }
+}

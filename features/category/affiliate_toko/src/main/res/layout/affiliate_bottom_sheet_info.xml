@@ -1,0 +1,64 @@
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingBottom="24dp"
+    tools:context="com.tokopedia.affiliate.ui.bottomsheet.AffiliateBottomSheetInfo">
+
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/info_image"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:visibility="gone"
+        android:scaleType="fitCenter"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:visibility="visible" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/info_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="24dp"
+        android:gravity="center"
+        app:layout_constraintTop_toBottomOf="@id/info_image"
+        app:typographyType="heading_2"
+        tools:text="Yuk, ikutan sesi di Akademi Kreator Tokopedia!" />
+
+    <com.tokopedia.unifyprinciples.Typography
+        android:id="@+id/info_description"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="16dp"
+        android:gravity="center"
+        app:layout_constraintTop_toBottomOf="@id/info_title"
+        app:typographyType="body_2"
+        tools:text="Mau tahu cara bikin konten sosmed yang bagus &amp; menarik banyak viewers? Yuk, kita belajar bareng!" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/info_button_primary"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="24dp"
+        app:layout_constraintTop_toBottomOf="@+id/info_description"
+        tools:text="Cek Akademi Kreator Tokopedia" />
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/info_button_secondary"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginHorizontal="16dp"
+        android:layout_marginTop="16dp"
+        android:visibility="gone"
+        app:layout_constraintTop_toBottomOf="@+id/info_button_primary"
+        app:unifyButtonVariant="ghost"
+        tools:text="Ingatkan Nanti"
+        tools:visibility="visible" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

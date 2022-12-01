@@ -14,6 +14,7 @@ import com.tokopedia.sellerapp.presentation.model.MenuItem
 import com.tokopedia.sellerapp.presentation.model.generateInitialMenu
 import com.tokopedia.sellerapp.util.Action
 import com.tokopedia.sellerapp.util.CapabilityConstant.CAPABILITY_PHONE_APP
+import com.tokopedia.sellerapp.util.MenuHelper
 import com.tokopedia.sellerapp.util.UiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -102,8 +103,8 @@ class SharedViewModel @Inject constructor(
     }
 
     fun checkPhoneState() {
-        launch {
-            clientMessageDatasource.sendMessagesToNodes(Action.GET_PHONE_STATE)
+        viewModelScope.launch {
+            checkIfPhoneHasApp()
         }
     }
 
@@ -165,6 +166,18 @@ class SharedViewModel @Inject constructor(
         }
     }
 
+    fun openNewOrderList() {
+        launch {
+            clientMessageDatasource.sendMessagesToNodes(Action.OPEN_NEW_ORDER_LIST)
+        }
+    }
+
+    fun openReadyToShip() {
+        launch {
+            clientMessageDatasource.sendMessagesToNodes(Action.OPEN_READY_TO_SHIP)
+        }
+    }
+
     fun openLoginPageInApp() {
         launch {
             clientMessageDatasource.sendMessagesToNodes(Action.OPEN_LOGIN_PAGE)
@@ -174,6 +187,14 @@ class SharedViewModel @Inject constructor(
     fun setAcceptOrderSuccess() {
         launch {
             _acceptBulkOrder.emit(UiState.Success())
+        }
+    }
+
+    fun openOrderPageBasedOnType(orderType: String) {
+        if (orderType == MenuHelper.DATAKEY_NEW_ORDER) {
+            openNewOrderList()
+        } else {
+            openReadyToShip()
         }
     }
 

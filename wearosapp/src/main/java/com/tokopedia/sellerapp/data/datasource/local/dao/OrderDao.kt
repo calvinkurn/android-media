@@ -30,7 +30,7 @@ interface OrderDao{
     @Query("SELECT count(*) FROM WearOrder wo WHERE wo.order_status_id IN (:status)")
     fun getOrderCount(status: Array<String>) : Flow<Int>
 
-    @Query("DELETE FROM WearOrder")
-    fun clear()
+    @Query("DELETE FROM WearOrder WHERE order_status_id IN (:status)")
+    fun clear(status: Array<String>)
 
 }

@@ -1,7 +1,7 @@
 package com.tokopedia.kyc_centralized.util
 
 import android.content.SharedPreferences
-import com.tokopedia.user_identification_common.KYCConstant.Companion.LIVENESS_TAG
+import com.tokopedia.kyc_centralized.common.KYCConstant.LIVENESS_TAG
 import timber.log.Timber
 import javax.inject.Inject
 

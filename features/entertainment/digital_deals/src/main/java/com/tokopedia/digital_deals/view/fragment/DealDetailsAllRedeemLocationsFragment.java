@@ -20,12 +20,12 @@ import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity;
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment;
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler;
 import com.tokopedia.abstraction.common.utils.view.MethodChecker;
+import com.tokopedia.common_entertainment.data.Outlet;
 import com.tokopedia.digital_deals.di.DealsComponent;
 import com.tokopedia.digital_deals.view.activity.CheckoutActivity;
 import com.tokopedia.digital_deals.view.activity.DealDetailsActivity;
 import com.tokopedia.digital_deals.view.adapter.DealDetailsAllLocationsAdapter;
 import com.tokopedia.digital_deals.view.customview.SearchInputView;
-import com.tokopedia.digital_deals.view.model.Outlet;
 import com.tokopedia.digital_deals.view.utils.DealFragmentCallbacks;
 
 import java.util.ArrayList;

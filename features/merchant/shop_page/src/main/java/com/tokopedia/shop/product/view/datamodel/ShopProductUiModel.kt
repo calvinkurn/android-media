@@ -13,9 +13,9 @@ import com.tokopedia.shop.product.data.source.cloud.model.ShopProduct
 
 class ShopProductUiModel : BaseShopProductViewModel, ImpressHolder {
 
-    var id: String? = null
-    var name: String? = null
-    var displayedPrice: String? = null
+    var id: String = ""
+    var name: String = ""
+    var displayedPrice: String = ""
     var originalPrice: String? = null
     var discountPercentage: String? = null
     var imageUrl: String? = null
@@ -28,7 +28,7 @@ class ShopProductUiModel : BaseShopProductViewModel, ImpressHolder {
     var isPo: Boolean = false
     var isFreeReturn: Boolean = false
     var isWishList: Boolean = false
-    var productUrl: String? = null
+    var productUrl: String = ""
     var isShowWishList: Boolean = false
     var isSoldOut: Boolean = false
     var isShowFreeOngkir: Boolean = false
@@ -58,13 +58,13 @@ class ShopProductUiModel : BaseShopProductViewModel, ImpressHolder {
     constructor() {}
 
     constructor(shopProduct: ShopProduct) {
-        id = shopProduct.productId
-        name = shopProduct.productName
-        displayedPrice = shopProduct.productPrice
+        id = shopProduct.productId.orEmpty()
+        name = shopProduct.productName.orEmpty()
+        displayedPrice = shopProduct.productPrice.orEmpty()
         imageUrl = shopProduct.productImage
         imageUrl300 = shopProduct.productImage300
         imageUrl700 = shopProduct.productImage700
-        productUrl = shopProduct.productUrl
+        productUrl = shopProduct.productUrl.orEmpty()
         rating = shopProduct.rating
         isPo = TextApiUtils.isValueTrue(shopProduct.productPreorder)
         totalReview = shopProduct.productReviewCount
@@ -94,11 +94,11 @@ class ShopProductUiModel : BaseShopProductViewModel, ImpressHolder {
     }
 
     constructor(gmFeaturedProduct: GMFeaturedProduct) {
-        id = gmFeaturedProduct.productId
-        name = gmFeaturedProduct.name
-        displayedPrice = gmFeaturedProduct.price?.toString()
+        id = gmFeaturedProduct.productId.orEmpty()
+        name = gmFeaturedProduct.name.orEmpty()
+        displayedPrice = gmFeaturedProduct.price?.toString().orEmpty()
         imageUrl = gmFeaturedProduct.imageUri
-        productUrl = gmFeaturedProduct.uri
+        productUrl = gmFeaturedProduct.uri.orEmpty()
 
         totalReview = gmFeaturedProduct.totalReview
         rating = gmFeaturedProduct.rating

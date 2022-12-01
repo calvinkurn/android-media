@@ -101,6 +101,33 @@ object AffiliateAnalytics {
 
         getTracker().sendEnhanceEcommerceEvent(event,bundle)
     }
+    fun sendTickerEvent(
+        event: String,
+        action: String,
+        category: String,
+        eventLabel: String,
+        position: Int,
+        itemId: Long,
+        itemName: String,
+        userId: String
+    ){
+        val bundle = Bundle()
+        val itemBundle = Bundle().apply {
+            putLong(EventKeys.KEY_ITEM_ID,itemId)
+            putString(EventKeys.KEY_CREATIVE_SLOT, (position + 1).toString())
+            putString(EventKeys.KEY_ITEM_NAME, itemName)
+        }
+        bundle.putString(EventKeys.KEY_EVENT , event)
+        bundle.putString(EventKeys.KEY_EVENT_CATEGORY,category)
+        bundle.putString(EventKeys.KEY_EVENT_ACTION,action)
+        bundle.putString(EventKeys.KEY_EVENT_LABEL,eventLabel)
+        bundle.putString(EventKeys.KEY_BUSINESS_UNIT,EventKeys.BUSINESS_UNIT_VALUE)
+        bundle.putString(EventKeys.KEY_CURRENT_SITE,EventKeys.CURRENT_SITE_VALUE)
+        bundle.putString(EventKeys.KEY_USER_ID,userId)
+        bundle.putParcelableArrayList(KEY_PROMOTIONS, arrayListOf(itemBundle))
+
+        getTracker().sendEnhanceEcommerceEvent(event,bundle)
+    }
 
     interface EventKeys {
         companion object {
@@ -167,6 +194,7 @@ object AffiliateAnalytics {
             const val AFFILIATE_PENDAPATAN_PAGE = "affiliate pendapatan page"
             const val AFFILIATE_PENDAPATAN_PAGE_FILTER = "affiliate pendapatan page - filter date"
             const val AFFILIATE_PROMOSIKAN_BOTTOM_SHEET = "affiliate promosikan page - bottom sheet"
+            const val AFFILIATE_HOME_BOTTOM_SHEET_COMMUNICATION = "affiliate home page - bottom sheet communication"
         }
     }
 
@@ -222,10 +250,22 @@ object AffiliateAnalytics {
             const val PROMISIKAN_PERNAH_DIBELI = "click - promosikan - pernah dibeli"
             const val PROMOSIKAN_PERNAH_DILIHAT = "click - promosikan - pernah dilihat"
             const val IMPRESSION_PRODUCT_SEARCH_RESULT_PAGE = "impression - product - search result page"
+            const val IMPRESSION_SHOP_SEARCH_RESULT_PAGE = "impression - shop - search result page"
             const val CLICK_PROMOSIKAN_SEARCH_RESULT_PAGE = "click - promosikan - search result page"
             const val CLICK_SALIN_LINK_RESULT_PAGE = "click - salin link - search result page"
             const val CLICK_TOTAL_KOMISI_CARD = "click - total komisi card"
             const val CLICK_KLIK_CARD= "click - klik card"
+            const val IMPRESSION_TICKER_COMMUNICATION= "impression - ticker communication"
+            const val CLICK_TICKER_COMMUNICATION= "click - ticker communication"
+            const val CLICK_CLOSE = "click - close"
+            const val CLICK_PRIMARY_BUTTON = "click - primary button"
+            const val CLICK_SECONDARY_BUTTON = "click - secondary button"
+            const val CLICK_SHOP_LINK_DENGAN_PERFORMA= "click - shop - link dengan performa"
+            const val CLICK_SALIN_LINK_SHOP_LINK_DENGAN_PERFORMA= "click - salin link - shop -  link dengan performa"
+            const val CLICK_SALIN_LINK_SHOP_SEARCH_RESULT= "click - salin link - shop - search result page"
+            const val CLICK_SHOP_SEARCH_RESULT_PAGE = "click - shop - search result page"
+            const val IMPRESSION_SHOP_LINK_DENGAN_PERFORMA = "impression - shop - link dengan performa"
+            const val CLICK_PROMOTED_PAGE_FILTER_TAB = "click - promoted page filter tab"
         }
     }
 
@@ -238,6 +278,10 @@ object AffiliateAnalytics {
             const val AFFILIATE_HOME_FRAGMENT = "/affiliate portal - affiliate home page - "
             const val AFFILIATE_PROMOSIKAN_PAGE = "/affiliate portal - affiliate promosikan page"
             const val AFFILIATE_PENDAPATAN_PAGE = "/affiliate portal - affiliate pendapatan page"
+            const val AFFILIATE_PENDAPATAN_PAGE_TRANSACTION_ORDER_SHOP = "/affiliate portal - affiliate pendapatan page - transaction detail - order - shop"
+            const val AFFILIATE_PENDAPATAN_PAGE_TRANSACTION_ORDER_PRODUCT = "/affiliate portal - affiliate pendapatan page - transaction detail - order - product"
+            const val AFFILIATE_PENDAPATAN_PAGE_TRANSACTION_TRAFFIC_SHOP = "/affiliate portal - affiliate pendapatan page - transaction detail - traffic - shop"
+            const val AFFILIATE_PENDAPATAN_PAGE_TRANSACTION_TRAFFIC_PRODUCT = "/affiliate portal - affiliate pendapatan page - transaction detail - traffic - product"
         }
     }
 
@@ -251,6 +295,11 @@ object AffiliateAnalytics {
             const val AFFILIATE_PROMOSIKAN_PERNAH_DIBEL = "/affiliate promosikan page - pernah dibeli"
             const val AFFILIATE_PROMOSIKAN_PERNAH_DILIHAT = "/affiliate promosikan page - pernah dilihat"
             const val AFFILIATE_SEARCH_PROMOSIKAN_CLICK = "/affiliate promosikan page - search result page"
+            const val AFFILIATE_HOME_TICKER_COMMUNICATION = "/affiliate home page - ticker communication"
+            const val AFFILIATE_PROMOSIKAN_TICKER_COMMUNICATION = "/affiliate promosikan page - ticker communication"
+            const val AFFILIATE_PENDAPATAN_TICKER_COMMUNICATION = "/affiliate pendapatan page - ticker communication"
+            const val AFFILAITE_HOME_SHOP_SELECT_CONTENT = "/affiliate home page - link dengan performa - shop"
+            const val AFFILIATE_SEARCH_SHOP_CLICK = "/affiliate promosikan page - search result page - shop"
         }
     }
 
@@ -276,6 +325,8 @@ object AffiliateAnalytics {
             const val ALMOST_OOS =  "almost OOS"
             const val SHOP_INACTIVE = "shop inactive"
             const val PRODUCT_INACTIVE = "product inactive"
+            const val SHOP_ACTIVE = "shop active"
+            const val SHOP_CLOSED = "shop closed"
 
         }
     }

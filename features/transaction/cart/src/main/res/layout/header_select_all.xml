@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="@dimen/select_all_view_holder_height"
     android:layout_alignParentTop="true"
-    android:background="@color/Unify_N0"
+    android:background="@color/Unify_Background"
     android:paddingStart="16dp"
     android:paddingEnd="0dp">
 

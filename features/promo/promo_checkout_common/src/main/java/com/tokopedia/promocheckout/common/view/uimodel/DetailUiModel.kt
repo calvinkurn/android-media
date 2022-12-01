@@ -11,20 +11,20 @@ data class DetailUiModel(
         var description: String = "",
         var type: String = "",
         var amountStr: String,
-        var amount: Int
+        var amount: Long
 ) : Parcelable {
     constructor(parcel: Parcel) : this(
             parcel.readString() ?: "",
             parcel.readString() ?: "",
             parcel.readString() ?: "",
-            parcel.readInt()) {
+            parcel.readLong()) {
     }
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeString(description)
         parcel.writeString(type)
         parcel.writeString(amountStr)
-        parcel.writeInt(amount)
+        parcel.writeLong(amount)
     }
 
     override fun describeContents(): Int {

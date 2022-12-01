@@ -9,7 +9,7 @@ import com.tokopedia.common.topupbills.data.constant.TelcoCategoryType
 import com.tokopedia.common.topupbills.data.constant.TelcoComponentName
 import com.tokopedia.common.topupbills.view.model.TopupBillsTrackPromo
 import com.tokopedia.common.topupbills.view.model.TopupBillsTrackRecentTransaction
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.track.TrackApp
 import com.tokopedia.track.TrackAppUtils
 
@@ -102,7 +102,7 @@ class DigitalTopupAnalytics {
     }
 
     fun eventClickDotsMenuTelco(categoryId: String, userId: String) {
-        var category = getTrackingCategoryName(categoryId.toIntOrNull() ?: 0)
+        var category = getTrackingCategoryName(categoryId.toIntSafely())
         if (categoryId.isEmpty()) category = categoryId
 
         val mapEvent = TrackAppUtils.gtmData(
@@ -336,7 +336,7 @@ class DigitalTopupAnalytics {
     }
 
     private fun getTrackingCategoryName(categoryId: String): String {
-        return getCategoryName(categoryId.toIntOrZero()).lowercase()
+        return getCategoryName(categoryId.toIntSafely()).lowercase()
     }
 
     fun getCategoryName(categoryId: Int): String {

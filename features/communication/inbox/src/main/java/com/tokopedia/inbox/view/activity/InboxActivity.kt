@@ -1,5 +1,6 @@
 package com.tokopedia.inbox.view.activity
 
+import android.content.Context
 import android.graphics.Color
 import android.net.Uri
 import android.os.Build
@@ -11,6 +12,7 @@ import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.coordinatorlayout.widget.CoordinatorLayout
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
+import com.google.android.play.core.splitcompat.SplitCompat
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.applink.ApplinkConst.Inbox.*
@@ -246,7 +248,7 @@ open class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFrag
     }
 
     override fun refreshNotificationCounter() {
-        viewModel.getNotifications()
+        viewModel.getNotifications(userSession.shopId)
     }
 
     override fun decreaseDiscussionUnreadCounter() {
@@ -303,12 +305,13 @@ open class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFrag
             return when (InboxConfig.page) {
                 InboxFragmentType.NOTIFICATION -> getString(R.string.inbox_title_notification)
                 InboxFragmentType.CHAT -> getString(R.string.inbox_title_chat)
-                InboxFragmentType.DISCUSSION -> getString(R.string.inbox)
+                InboxFragmentType.DISCUSSION ->
+                    getString(com.tokopedia.notifcenter.R.string.inbox)
                 InboxFragmentType.REVIEW -> getString(R.string.inbox_title_review)
-                else -> getString(R.string.inbox)
+                else -> getString(com.tokopedia.notifcenter.R.string.inbox)
             }
         }
-        return getString(R.string.inbox)
+        return getString(com.tokopedia.notifcenter.R.string.inbox)
     }
 
     protected open fun setupToolbarLifecycle() {
@@ -605,7 +608,7 @@ open class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFrag
     private fun setupInitialPage() {
         navigator?.start(InboxConfig.page)
         bottomNav?.setSelectedPage(InboxConfig.page)
-        viewModel.getNotifications()
+        viewModel.getNotifications(userSession.shopId)
     }
 
     private fun setupInitialToolbar() {
@@ -615,6 +618,11 @@ open class InboxActivity : BaseActivity(), InboxConfig.ConfigListener, InboxFrag
 
     private fun onBottomNavSelected(@InboxFragmentType page: Int) {
         navigator?.onPageSelected(page)
+    }
+
+    override fun attachBaseContext(newBase: Context?) {
+        super.attachBaseContext(newBase)
+        SplitCompat.installActivity(this)
     }
 
     companion object {

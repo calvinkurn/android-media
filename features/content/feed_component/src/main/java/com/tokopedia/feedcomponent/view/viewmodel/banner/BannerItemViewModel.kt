@@ -9,7 +9,7 @@ import com.tokopedia.kotlin.model.ImpressHolder
  */
 
 data class BannerItemViewModel(
-        val activityId: Int = 0,
+        val activityId: String = "",
         val imageUrl: String = "",
         val redirectUrl: String = "",
         val trackingBannerModel: TrackingBannerModel = TrackingBannerModel(),

@@ -19,10 +19,12 @@ class CreateReviewMediaPickerAddLargeViewHolder(
     private val binding = ItemCreateReviewMediaPickerAddLargeBinding.bind(view)
 
     init {
-        binding.root.setOnClickListener {
-            listener.onAddMediaClicked()
-        }
+        attachListener()
     }
 
     override fun bind(element: CreateReviewMediaUiModel.AddLarge) {}
+
+    private fun attachListener() {
+        binding.root.setOnClickListener { listener.onAddMediaClicked(true) }
+    }
 }

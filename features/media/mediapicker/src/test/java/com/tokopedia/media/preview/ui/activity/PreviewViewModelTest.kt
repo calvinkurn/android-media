@@ -1,25 +1,18 @@
 package com.tokopedia.media.preview.ui.activity
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.media.preview.managers.ImageCompressionManager
-import com.tokopedia.media.preview.managers.SaveToGalleryManager
-import com.tokopedia.picker.common.PickerResult
+import com.tokopedia.media.common.utils.ParamCacheManager
+import com.tokopedia.media.preview.data.repository.ImageCompressionRepository
+import com.tokopedia.media.preview.data.repository.SaveToGalleryRepository
+import com.tokopedia.media.util.test
+import com.tokopedia.picker.common.PickerParam
 import com.tokopedia.picker.common.uimodel.MediaUiModel
 import com.tokopedia.picker.common.utils.getFileFormatByMimeType
 import com.tokopedia.picker.common.utils.wrapper.PickerFile
 import com.tokopedia.unit.test.rule.CoroutineTestRule
-import io.mockk.clearAllMocks
-import io.mockk.every
-import io.mockk.mockk
-import io.mockk.mockkStatic
+import io.mockk.*
 import kotlinx.coroutines.ExperimentalCoroutinesApi
-import kotlinx.coroutines.cancel
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.flow
-import kotlinx.coroutines.flow.shareIn
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.test.TestCoroutineScope
+import kotlinx.coroutines.runBlocking
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Rule
@@ -27,16 +20,12 @@ import org.junit.Test
 
 @ExperimentalCoroutinesApi
 class PreviewViewModelTest {
-
     @get:Rule val instantTaskExecutorRule = InstantTaskExecutorRule()
     @get:Rule val coroutineScopeRule = CoroutineTestRule()
 
-    private val testCoroutineScope = TestCoroutineScope(
-        coroutineScopeRule.dispatchers.main
-    )
-
-    private val saveToGalleryManagerMock = mockk<SaveToGalleryManager>()
-    private val imageCompressorMock = mockk<ImageCompressionManager>()
+    private val saveToGalleryRepository = mockk<SaveToGalleryRepository>()
+    private val imageCompressorRepository = mockk<ImageCompressionRepository>()
+    private val paramCache = mockk<ParamCacheManager>()
 
     private lateinit var viewModel: PreviewViewModel
 
@@ -44,96 +33,183 @@ class PreviewViewModelTest {
     fun setup() {
         mockkStatic(::getFileFormatByMimeType)
 
+        // as we don't need to validate the save-to-gallery,
+        // then we can disabled it for all test cases.
+        `save to gallery disabled`()
+
+        `param manager get param detail`()
+
         viewModel = PreviewViewModel(
-            imageCompressorMock,
-            saveToGalleryManagerMock
+            imageCompressorRepository,
+            saveToGalleryRepository,
+            coroutineScopeRule.dispatchers,
+            paramCache
         )
     }
 
     @Test
-    fun `check isLoading not empty`() {
+    fun `it should be state of loading is invoked`() {
         // When
-        every { imageCompressorMock.compress(any()) } returns flow { }
-        viewModel.files(mockMediaUiModel)
+        coEvery { imageCompressorRepository.compress(any()) } returns listOf()
+        viewModel.files(mediaUiModelList)
 
         // Then
         assert(viewModel.isLoading.value != null)
-
         clearAllMocks()
     }
 
     @Test
-    fun `get result original asset`() {
-        // Given
-        lateinit var pickerResult: PickerResult
+    fun `it should be get an original media path`() = runBlocking {
+        viewModel.result.test {
+            // Given
+            `file format by mime type is`(false)
+            `image compression is`(false)
 
-        // When
-        every { getFileFormatByMimeType(any(), any(), any()) } returns false
-        every { saveToGalleryManagerMock.dispatch(any()) } returns null
-        every { imageCompressorMock.compress(any()) } returns flow {
-            emit(
-                listOf("")
-            )
+            // When
+            viewModel.files(mediaUiModelList)
+
+            // Then
+            assertEquals(mediaUiModelList.size, awaitItem().originalPaths.size)
         }
-
-        // Then
-        testCoroutineScope.launch {
-            viewModel.result
-                .shareIn(this, SharingStarted.Eagerly, 1)
-                .collect {
-                    pickerResult = it
-                    this.cancel()
-                }
-        }
-
-        viewModel.files(mockMediaUiModel)
-        assertEquals(mockMediaUiModel.size, pickerResult.originalPaths.size)
-
-        clearAllMocks()
     }
 
     @Test
-    fun `get result compressed image`() {
-        // Given
-        lateinit var pickerResult: PickerResult
+    fun `it should be cannot get an original media path`() = runBlocking {
+        viewModel.result.test {
+            // Given
+            `file format by mime type is`(false)
+            `image compression is`(false)
 
-        // When
-        every { getFileFormatByMimeType(any(), any(), any()) } returns true
-        every { saveToGalleryManagerMock.dispatch(any()) } returns null
-        every { imageCompressorMock.compress(any()) } answers {
-            flow {
-                emit(firstArg())
-            }
+            // When
+            viewModel.files(emptyList())
+
+            // Then
+            assert(awaitItem().originalPaths.isEmpty())
         }
+    }
 
-        // Then
-        testCoroutineScope.launch {
-            viewModel.result
-                .shareIn(this, SharingStarted.Eagerly, 1)
-                .collect {
-                    pickerResult = it
-                    this.cancel()
-                }
+    @Test
+    fun `it should be get a video file path`() = runBlocking {
+        viewModel.result.test {
+            // Given
+            `file format by mime type is`(true)
+            `image compression is`(false)
+
+            // When
+            viewModel.files(mediaUiModelList)
+
+            // Then
+            assert(awaitItem().videoFiles.isNotEmpty())
         }
+    }
 
-        viewModel.files(mockMediaUiModel)
-        assertEquals(expectedCompressedImageSize, pickerResult.compressedImages.size)
+    @Test
+    fun `it should be cannot get a video file path`() = runBlocking {
+        viewModel.result.test {
+            // Given
+            `file format by mime type is`(true)
+            `image compression is`(false)
 
-        clearAllMocks()
+            // When
+            viewModel.files(imageGalleryOnlyUiModelList)
+
+            // Then
+            assert(awaitItem().videoFiles.isEmpty())
+        }
+    }
+
+    @Test
+    fun `it should be get a compressed image path`() = runBlocking {
+        viewModel.result.test {
+            // Given
+            `file format by mime type is`(true)
+            `image compression is`(true)
+
+            // When
+            viewModel.files(mediaUiModelList)
+
+            // Then
+            assert(awaitItem().compressedImages.isNotEmpty())
+        }
+    }
+
+    @Test
+    fun `it should be cannot get a compressed image path`() = runBlocking {
+        viewModel.result.test {
+            // Given
+            `file format by mime type is`(true)
+            `image compression is`(true)
+
+            // When
+            viewModel.files(emptyList())
+
+            // Then
+            assert(awaitItem().compressedImages.isEmpty())
+        }
+    }
+
+    @Test
+    fun `it should ignore save to gallery on cache file when editor is true`() = runBlocking {
+        viewModel.result.test {
+            // Given
+            `file format by mime type is`(true)
+            `image compression is`(true)
+            `param manager get param detail with editor`()
+
+            // When
+            viewModel.files(mediaUiModelList)
+
+            // Then
+            assert(awaitItem().compressedImages.isNotEmpty())
+        }
+    }
+
+    private fun `param manager get param detail`() {
+        every { paramCache.get() } returns PickerParam()
+    }
+
+    private fun `param manager get param detail with editor`() {
+        every { paramCache.get() } returns PickerParam().apply {
+            withEditor {  }
+        }
+    }
+
+    private fun `file format by mime type is`(value: Boolean) {
+        every { getFileFormatByMimeType(any(), any(), any()) } returns value
+    }
+
+    private fun `save to gallery disabled`() {
+        every { saveToGalleryRepository.dispatch(any()) } returns null
+    }
+
+    private fun `image compression is`(enabled: Boolean) {
+        val compressor = coEvery { imageCompressorRepository.compress(any()) }
+
+        if (enabled) {
+            compressor answers { firstArg() }
+        } else {
+            compressor returns listOf()
+        }
     }
 
     companion object {
-        private val mockMediaUiModel = listOf(
-            MediaUiModel(1, PickerFile("/path/img2.jpg"), isFromPickerCamera = true),
-            MediaUiModel(2, PickerFile("/path/img3.jpg"), isFromPickerCamera = true),
-            MediaUiModel(3, PickerFile("/path/img1.jpg")),
-            MediaUiModel(4, PickerFile("/path/vid1.mp4")),
-            MediaUiModel(5, PickerFile("/path/vid2.mp4")),
-            MediaUiModel(6, PickerFile("/path/vid3.mp4")),
+        private val videoOnlyUiModelList = listOf(
+            MediaUiModel(5, PickerFile("/path/vid5.mp4")),
+            MediaUiModel(6, PickerFile("/path/vid6.mp4")),
         )
 
-        private val expectedCompressedImageSize =
-            mockMediaUiModel.filter { it.isFromPickerCamera }.size
-    }
+        private val imageGalleryOnlyUiModelList = listOf(
+            MediaUiModel(3, PickerFile("/path/img3.jpg")),
+            MediaUiModel(4, PickerFile("/path/img4.jpg")),
+        )
 
+        private val imageCameraOnlyUiModelList = listOf(
+            MediaUiModel(1, PickerFile("/path/img1.jpg"), isFromPickerCamera = true),
+            MediaUiModel(2, PickerFile("/path/img2.jpg"), isFromPickerCamera = true),
+        )
+
+        private val mediaUiModelList = imageCameraOnlyUiModelList
+            .plus(imageGalleryOnlyUiModelList)
+            .plus(videoOnlyUiModelList)
+    }
 }

@@ -2,7 +2,6 @@ package com.tokopedia.tokopoints.view.tokopointhome.header
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.fragment.app.FragmentManager
 import com.tokopedia.tokopoints.R
 import com.tokopedia.tokopoints.view.model.homeresponse.TopSectionResponse
 import com.tokopedia.tokopoints.view.tokopointhome.SectionItemViewBinder

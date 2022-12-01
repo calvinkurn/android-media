@@ -9,6 +9,7 @@ import com.tokopedia.shop.flashsale.presentation.creation.highlight.ManageHighli
 import com.tokopedia.shop.flashsale.presentation.creation.information.CampaignInformationActivity
 import com.tokopedia.shop.flashsale.presentation.creation.information.CampaignInformationFragment
 import com.tokopedia.shop.flashsale.presentation.creation.information.bottomsheet.CampaignDatePickerBottomSheet
+import com.tokopedia.shop.flashsale.presentation.creation.information.bottomsheet.VpsPackageBottomSheet
 import com.tokopedia.shop.flashsale.presentation.creation.manage.ChooseProductFragment
 import com.tokopedia.shop.flashsale.presentation.creation.manage.ManageProductActivity
 import com.tokopedia.shop.flashsale.presentation.creation.manage.ManageProductFragment
@@ -23,6 +24,7 @@ import com.tokopedia.shop.flashsale.presentation.draft.bottomsheet.DraftDeleteBo
 import com.tokopedia.shop.flashsale.presentation.list.container.CampaignListActivity
 import com.tokopedia.shop.flashsale.presentation.list.container.CampaignListContainerFragment
 import com.tokopedia.shop.flashsale.presentation.list.list.CampaignListFragment
+import com.tokopedia.shop.flashsale.presentation.list.quotamonitoring.QuotaMonitoringFragment
 import dagger.Component
 
 @ShopFlashSaleScope
@@ -34,9 +36,12 @@ interface ShopFlashSaleComponent {
     fun inject(activity: CampaignListActivity)
     fun inject(fragment: CampaignListContainerFragment)
     fun inject(fragment: CampaignListFragment)
+    fun inject(fragment: QuotaMonitoringFragment)
 
     fun inject(activity: CampaignInformationActivity)
     fun inject(fragment: CampaignInformationFragment)
+    fun inject(fragment: VpsPackageBottomSheet)
+
 
     fun inject(bottomSheet: DraftDeleteBottomSheet)
     fun inject(bottomSheet: CampaignDatePickerBottomSheet)

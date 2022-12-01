@@ -12,6 +12,9 @@ import com.tokopedia.videoTabComponent.domain.model.data.ContentSlotResponse
 import com.tokopedia.videoTabComponent.domain.model.data.VideoPageParams
 import javax.inject.Inject
 
+/**
+ * Duplicate with: com.tokopedia.people.domains.PlayPostContentUseCase
+ */
 const val GQL_QUERY : String = """
     query playGetContentSlot(${'$'}req:  PlayGetContentSlotRequest!) {
     playGetContentSlot(req:${'$'}req) {

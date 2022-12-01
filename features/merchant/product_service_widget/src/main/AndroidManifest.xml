@@ -38,13 +38,5 @@
             </intent-filter>
         </activity>
 
-        <activity
-            android:name="com.tokopedia.oldproductbundle.activity.ProductBundleActivity"
-            android:label="@string/title_bundling_selection_page"
-            android:screenOrientation="portrait"
-            android:configChanges="orientation"
-            android:theme="@style/Theme.White"
-            android:exported="false">
-        </activity>
     </application>
 </manifest>

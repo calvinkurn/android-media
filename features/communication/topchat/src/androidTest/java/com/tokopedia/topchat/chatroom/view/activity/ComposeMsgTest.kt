@@ -51,7 +51,7 @@ class ComposeMsgTest : TopchatRoomTest() {
         launchChatRoomActivity()
 
         //When
-        onView(withId(R.id.send_but)).perform(ViewActions.click())
+        clickSendBtn()
 
         //Then
         assertSnackbarText(context.getString(R.string.topchat_desc_empty_text_box))

@@ -2,7 +2,6 @@ package com.tokopedia.play.broadcaster.util.extension
 
 import android.content.Context
 import com.tokopedia.dialog.DialogUnify
-import com.wmspanel.libstream.Streamer
 import java.net.ConnectException
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
@@ -39,10 +38,6 @@ internal fun DialogUnify.setLoading(isLoading: Boolean) {
     dialogOverlay.setOnClickListener {
         if (!isLoading) dismiss()
     }
-}
-
-internal fun <T> Streamer.safeExecute(fn: Streamer.() -> T): T? {
-    return try { fn() } catch(e: Throwable) { null }
 }
 
 internal val Throwable.isNetworkError: Boolean

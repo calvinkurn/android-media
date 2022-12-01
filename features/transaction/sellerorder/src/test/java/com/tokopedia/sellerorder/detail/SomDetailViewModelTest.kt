@@ -2,14 +2,8 @@ package com.tokopedia.sellerorder.detail
 
 import com.tokopedia.abstraction.common.network.exception.ResponseErrorException
 import com.tokopedia.sellerorder.common.SomOrderBaseViewModelTest
-import com.tokopedia.sellerorder.detail.data.model.GetSomDetailResponse
-import com.tokopedia.sellerorder.detail.data.model.SetDelivered
-import com.tokopedia.sellerorder.detail.data.model.SetDeliveredResponse
-import com.tokopedia.sellerorder.detail.data.model.SomDetailOrder
-import com.tokopedia.sellerorder.detail.data.model.SomReasonRejectData
-import com.tokopedia.sellerorder.detail.domain.usecase.SomGetOrderDetailUseCase
-import com.tokopedia.sellerorder.detail.domain.usecase.SomReasonRejectUseCase
-import com.tokopedia.sellerorder.detail.domain.usecase.SomSetDeliveredUseCase
+import com.tokopedia.sellerorder.detail.data.model.*
+import com.tokopedia.sellerorder.detail.domain.usecase.*
 import com.tokopedia.sellerorder.detail.presentation.viewmodel.SomDetailViewModel
 import com.tokopedia.shop.common.domain.interactor.AuthorizeAccessUseCase
 import com.tokopedia.usecase.coroutines.Fail
@@ -35,7 +29,7 @@ class SomDetailViewModelTest : SomOrderBaseViewModelTest<SomDetailViewModel>() {
     private var listReasonReject = listOf(SomReasonRejectData.Data.SomRejectReason())
 
     @RelaxedMockK
-    lateinit var somGetOrderDetailUseCase: SomGetOrderDetailUseCase
+    lateinit var somGetOrderDetailUseCase: SomGetOrderDetailWithResolutionUseCase
 
     @RelaxedMockK
     lateinit var somReasonRejectUseCase: SomReasonRejectUseCase

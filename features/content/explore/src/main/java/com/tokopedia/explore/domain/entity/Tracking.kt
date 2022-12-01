@@ -30,5 +30,5 @@ data class Tracking(
 
         @SerializedName("recomID")
         @Expose
-        val recomID: Int = 0
+        val recomID: Long = 0
 )

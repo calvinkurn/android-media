@@ -2,7 +2,6 @@ package com.tokopedia.home.screenshot.dark
 
 import androidx.test.platform.app.InstrumentationRegistry
 import androidx.test.rule.ActivityTestRule
-import com.tokopedia.analyticsdebugger.debugger.data.source.GtmLogDBSource
 import com.tokopedia.home.component.disableCoachMark
 import com.tokopedia.home.component.name
 import com.tokopedia.home.environment.InstrumentationHomeRevampTestActivity
@@ -12,7 +11,6 @@ import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RollenceKey.BALANCE_EXP
 import com.tokopedia.remoteconfig.RollenceKey.BALANCE_VARIANT_NEW
 import com.tokopedia.test.application.annotations.ScreenshotTest
-
 import com.tokopedia.test.application.espresso_component.CommonActions.takeScreenShotVisibleViewInScreen
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import com.tokopedia.test.application.util.setupDarkModeTest
@@ -27,13 +25,11 @@ import org.junit.Test
 class HomeScreenshotNonLoggedInTest {
     private val TAG = "HomeScreenshotTest"
     private val context = InstrumentationRegistry.getInstrumentation().targetContext
-    private val gtmLogDBSource = GtmLogDBSource(context)
 
     @get:Rule
     var activityRule = object: ActivityTestRule<InstrumentationHomeRevampTestActivity>(InstrumentationHomeRevampTestActivity::class.java) {
         override fun beforeActivityLaunched() {
             InstrumentationAuthHelper.clearUserSession()
-            gtmLogDBSource.deleteAll().subscribe()
             super.beforeActivityLaunched()
             setupGraphqlMockResponse(HomeMockResponseConfig())
             setupDarkModeTest(true)

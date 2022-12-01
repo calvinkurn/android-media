@@ -11,7 +11,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.cartcommon.data.request.updatecart.UpdateCartRequest
-import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
@@ -25,6 +24,8 @@ import com.tokopedia.discovery2.data.PageInfo
 import com.tokopedia.discovery2.data.ScrollData
 import com.tokopedia.discovery2.data.productcarditem.DiscoATCRequestParams
 import com.tokopedia.discovery2.data.productcarditem.DiscoveryAddToCartDataModel
+import com.tokopedia.discovery2.data.productcarditem.DiscoveryRemoveFromCartDataModel
+import com.tokopedia.discovery2.data.productcarditem.DiscoveryUpdateCartDataModel
 import com.tokopedia.discovery2.datamapper.DiscoveryPageData
 import com.tokopedia.discovery2.datamapper.discoComponentQuery
 import com.tokopedia.discovery2.usecase.CustomTopChatUseCase
@@ -32,16 +33,19 @@ import com.tokopedia.discovery2.usecase.discoveryPageUseCase.DiscoveryDataUseCas
 import com.tokopedia.discovery2.usecase.discoveryPageUseCase.DiscoveryInjectCouponDataUseCase
 import com.tokopedia.discovery2.usecase.quickcouponusecase.QuickCouponUseCase
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.ACTIVE_TAB
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.CAMPAIGN_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.CATEGORY_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.COMPONENT_ID
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.DYNAMIC_SUBTITLE
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.EMBED_CATEGORY
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.PIN_PRODUCT
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.PRODUCT_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.RECOM_PRODUCT_ID
-import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.DYNAMIC_SUBTITLE
-import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.TARGET_TITLE_ID
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.SHOP_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.SOURCE
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.TARGET_COMP_ID
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.TARGET_TITLE_ID
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.VARIANT_ID
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.masterproductcarditem.WishListManager
 import com.tokopedia.discovery2.viewmodel.livestate.DiscoveryLiveState
 import com.tokopedia.discovery2.viewmodel.livestate.GoToAgeRestriction
@@ -99,13 +103,13 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
         get() = _miniCart
     private val _miniCart = MutableLiveData<Result<MiniCartSimplifiedData>>()
 
-    val miniCartUpdate: LiveData<Result<UpdateCartV2Data>>
+    val miniCartUpdate: LiveData<Result<DiscoveryUpdateCartDataModel>>
         get() = _miniCartUpdate
-    private val _miniCartUpdate = SingleLiveEvent<Result<UpdateCartV2Data>>()
+    private val _miniCartUpdate = SingleLiveEvent<Result<DiscoveryUpdateCartDataModel>>()
 
-    val miniCartRemove: LiveData<Result<Pair<String,String>>>
+    val miniCartRemove: LiveData<Result<DiscoveryRemoveFromCartDataModel>>
         get() = _miniCartRemove
-    private val _miniCartRemove = SingleLiveEvent<Result<Pair<String,String>>>()
+    private val _miniCartRemove = SingleLiveEvent<Result<DiscoveryRemoveFromCartDataModel>>()
 
     val miniCartOperationFailed:LiveData<Pair<Int,Int>>
         get() = _miniCartOperationFailed
@@ -149,17 +153,12 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
                 discoATCRequestParams
             )
             discoATCRequestParams.quantity.isZero() -> removeItemCart(
-                discoATCRequestParams.parentPosition,
-                discoATCRequestParams.position,
                 miniCartItem,
-                discoATCRequestParams.isGeneralCartATC
+                discoATCRequestParams
             )
             else -> updateItemCart(
-                discoATCRequestParams.parentPosition,
-                discoATCRequestParams.position,
                 miniCartItem,
-                discoATCRequestParams.quantity,
-                discoATCRequestParams.isGeneralCartATC
+                discoATCRequestParams
             )
         }
     }
@@ -188,13 +187,10 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
     }
 
     private fun updateItemCart(
-            parentPosition: Int,
-            position: Int,
             miniCartItem: MiniCartItem.MiniCartItemProduct,
-            quantity: Int,
-            isGeneralCartATC: Boolean
+            discoATCRequestParams: DiscoATCRequestParams
     ) {
-        miniCartItem.quantity = quantity
+        miniCartItem.quantity = discoATCRequestParams.quantity
         val updateCartRequest = UpdateCartRequest(
             cartId = miniCartItem.cartId,
             quantity = miniCartItem.quantity,
@@ -205,10 +201,21 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
             source = UpdateCartUseCase.VALUE_SOURCE_UPDATE_QTY_NOTES,
         )
         updateCartUseCase.execute({
-            _miniCartUpdate.value = Success(it)
+            _miniCartUpdate.value = Success(
+                DiscoveryUpdateCartDataModel(
+                    it,
+                    discoATCRequestParams,
+                    miniCartItem.cartId
+                )
+            )
         }, {
             _miniCartUpdate.postValue(Fail(it))
-            _miniCartOperationFailed.postValue(Pair(parentPosition,position))
+            _miniCartOperationFailed.postValue(
+                Pair(
+                    discoATCRequestParams.parentPosition,
+                    discoATCRequestParams.position
+                )
+            )
         })
     }
 
@@ -229,21 +236,31 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
     }
 
     private fun removeItemCart(
-        parentPosition: Int,
-        position: Int,
         miniCartItem: MiniCartItem.MiniCartItemProduct,
-        isGeneralCartATC: Boolean
+        discoATCRequestParams: DiscoATCRequestParams
     ) {
         deleteCartUseCase.setParams(
             cartIdList = listOf(miniCartItem.cartId)
         )
         deleteCartUseCase.execute({
-            val productId = miniCartItem.productId
-            val data = Pair(productId, it.data.message.joinToString(separator = ", "))
-            _miniCartRemove.postValue(Success(data))
+            _miniCartRemove.postValue(
+                Success(
+                    DiscoveryRemoveFromCartDataModel(
+                        miniCartItem.productId,
+                        it.data.message.joinToString(separator = ", "),
+                        discoATCRequestParams,
+                        cartId = miniCartItem.cartId
+                    )
+                )
+            )
         }, {
             _miniCartRemove.postValue(Fail(it))
-            _miniCartOperationFailed.postValue(Pair(parentPosition, position))
+            _miniCartOperationFailed.postValue(
+                Pair(
+                    discoATCRequestParams.parentPosition,
+                    discoATCRequestParams.position
+                )
+            )
         })
     }
 
@@ -362,7 +379,10 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
                 EMBED_CATEGORY to intentUri.getQueryParameter(EMBED_CATEGORY),
                 RECOM_PRODUCT_ID to intentUri.getQueryParameter(RECOM_PRODUCT_ID),
                 DYNAMIC_SUBTITLE to intentUri.getQueryParameter(DYNAMIC_SUBTITLE),
-                TARGET_TITLE_ID to intentUri.getQueryParameter(TARGET_TITLE_ID)
+                TARGET_TITLE_ID to intentUri.getQueryParameter(TARGET_TITLE_ID),
+                CAMPAIGN_ID to intentUri.getQueryParameter(CAMPAIGN_ID),
+                VARIANT_ID to intentUri.getQueryParameter(VARIANT_ID),
+                SHOP_ID to intentUri.getQueryParameter(SHOP_ID)
                 )
     }
 
@@ -387,7 +407,10 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
                 EMBED_CATEGORY to bundle?.getString(EMBED_CATEGORY, ""),
                 RECOM_PRODUCT_ID to bundle?.getString(RECOM_PRODUCT_ID,""),
                 DYNAMIC_SUBTITLE to bundle?.getString(DYNAMIC_SUBTITLE,""),
-                TARGET_TITLE_ID to bundle?.getString(TARGET_TITLE_ID,"")
+                TARGET_TITLE_ID to bundle?.getString(TARGET_TITLE_ID,""),
+                CAMPAIGN_ID to bundle?.getString(CAMPAIGN_ID,""),
+                VARIANT_ID to bundle?.getString(VARIANT_ID,""),
+                SHOP_ID to bundle?.getString(SHOP_ID,"")
         )
     }
 
@@ -472,5 +495,14 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
 
     fun resetScroll(){
         _scrollState.value = null
+    }
+
+    fun checkForSamePageOpened(queryParameterMapFromBundle: MutableMap<String, String?>) {
+        if (!queryParameterMapFromBundle[RECOM_PRODUCT_ID].isNullOrEmpty())
+            discoveryDataUseCase.getDiscoResponseIfPresent(pageIdentifier)?.queryParamMap?.let {
+                if (queryParameterMapFromBundle[RECOM_PRODUCT_ID] != it[RECOM_PRODUCT_ID]) {
+                    discoveryDataUseCase.clearPage(pageIdentifier)
+                }
+            }
     }
 }

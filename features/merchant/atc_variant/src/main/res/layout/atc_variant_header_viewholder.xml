@@ -11,6 +11,8 @@
         android:id="@+id/container_img_header_main"
         android:layout_width="144dp"
         android:layout_height="144dp"
+        android:background="@drawable/bg_image_outline"
+        android:padding="1dp"
         android:layout_marginStart="16dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
@@ -20,7 +22,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:adjustViewBounds="true"
-            android:scaleType="centerCrop"
+            android:scaleType="fitCenter"
             tools:src="@tools:sample/avatars" />
 
         <com.tokopedia.iconunify.IconUnify
@@ -30,7 +32,7 @@
             android:layout_gravity="end|bottom"
             android:layout_margin="8dp"
             android:adjustViewBounds="true"
-            android:background="@drawable/bg_circle_grey"
+            tools:background="@drawable/bg_circle_grey"
             android:scaleType="centerCrop"
             app:icon_color_light_enable="@color/Unify_NN0"
             app:icon_name="SCREEN_FIT" />
@@ -122,7 +124,7 @@
             android:layout_marginStart="4dp"
             android:ellipsize="end"
             android:maxLines="1"
-            android:textColor="@color/Unify_N700_68"
+            android:textColor="@color/Unify_NN400"
             android:visibility="gone"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0"
@@ -147,7 +149,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:textColor="@color/Unify_N700_68"
+            android:textColor="@color/Unify_NN950"
             app:layout_constraintStart_toStartOf="@+id/txt_header_main_price"
             app:layout_constraintTop_toBottomOf="@+id/barrier_cashback"
             app:typographyType="small"

@@ -5,16 +5,21 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.sellerorder.common.SomOrderBaseViewModelTest
 import com.tokopedia.sellerorder.common.util.BulkRequestPickupStatus
 import com.tokopedia.sellerorder.common.util.SomConsts
+import com.tokopedia.sellerorder.filter.SomFilterViewModelTestFixture
+import com.tokopedia.sellerorder.filter.domain.mapper.GetSomFilterMapper
+import com.tokopedia.sellerorder.filter.presentation.model.SomFilterUiModel
+import com.tokopedia.sellerorder.list.domain.mapper.FilterResultMapper
+import com.tokopedia.sellerorder.list.domain.model.SomListFilterResponse
 import com.tokopedia.sellerorder.list.domain.model.SomListGetOrderListParam
 import com.tokopedia.sellerorder.list.domain.usecases.SomListBulkAcceptOrderUseCase
 import com.tokopedia.sellerorder.list.domain.usecases.SomListBulkRequestPickupUseCase
 import com.tokopedia.sellerorder.list.domain.usecases.SomListGetBulkAcceptOrderStatusUseCase
 import com.tokopedia.sellerorder.list.domain.usecases.SomListGetFilterListUseCase
+import com.tokopedia.sellerorder.list.domain.usecases.SomListGetHeaderIconsInfoUseCase
 import com.tokopedia.sellerorder.list.domain.usecases.SomListGetMultiShippingStatusUseCase
 import com.tokopedia.sellerorder.list.domain.usecases.SomListGetOrderListUseCase
 import com.tokopedia.sellerorder.list.domain.usecases.SomListGetTickerUseCase
 import com.tokopedia.sellerorder.list.domain.usecases.SomListGetTopAdsCategoryUseCase
-import com.tokopedia.sellerorder.list.domain.usecases.SomListGetWaitingPaymentUseCase
 import com.tokopedia.sellerorder.list.presentation.models.AllFailEligible
 import com.tokopedia.sellerorder.list.presentation.models.AllNotEligible
 import com.tokopedia.sellerorder.list.presentation.models.AllSuccess
@@ -29,9 +34,9 @@ import com.tokopedia.sellerorder.list.presentation.models.RefreshOrder
 import com.tokopedia.sellerorder.list.presentation.models.SomListBulkAcceptOrderStatusUiModel
 import com.tokopedia.sellerorder.list.presentation.models.SomListBulkAcceptOrderUiModel
 import com.tokopedia.sellerorder.list.presentation.models.SomListBulkRequestPickupUiModel
-import com.tokopedia.sellerorder.list.presentation.models.SomListFilterUiModel
+import com.tokopedia.sellerorder.list.presentation.models.SomListHeaderIconsInfoUiModel
 import com.tokopedia.sellerorder.list.presentation.models.SomListOrderUiModel
-import com.tokopedia.sellerorder.list.presentation.models.WaitingPaymentCounter
+import com.tokopedia.sellerorder.util.TestHelper
 import com.tokopedia.sellerorder.util.TestHelper.invokeSuspend
 import com.tokopedia.sellerorder.util.observeAwaitValue
 import com.tokopedia.shop.common.domain.interactor.AuthorizeAccessUseCase
@@ -73,7 +78,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
     lateinit var somListGetFilterListUseCase: SomListGetFilterListUseCase
 
     @RelaxedMockK
-    lateinit var somListGetWaitingPaymentUseCase: SomListGetWaitingPaymentUseCase
+    lateinit var somListGetHeaderIconsInfoUseCase: SomListGetHeaderIconsInfoUseCase
 
     @RelaxedMockK
     lateinit var somListGetOrderListUseCase: SomListGetOrderListUseCase
@@ -142,7 +147,7 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
                 coroutineTestRule.dispatchers,
                 somListGetTickerUseCase,
                 somListGetFilterListUseCase,
-                somListGetWaitingPaymentUseCase,
+                somListGetHeaderIconsInfoUseCase,
                 somListGetOrderListUseCase,
                 somListGetTopAdsCategoryUseCase,
                 bulkAcceptOrderStatusUseCase,
@@ -1460,16 +1465,15 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
     }
 
     @Test
-    fun getFiltersFromCacheAndCloud_shouldSuccess() = coroutineTestRule.runBlockingTest {
+    fun `filterResult should equals to Success when get filters from cache and cloud is success`() = coroutineTestRule.runBlockingTest {
+        val mockResponse = TestHelper.createSuccessResponse<SomListFilterResponse.Data>(
+            "json/som_list_get_order_filter_success_response.json"
+        )
         coEvery {
             somListGetFilterListUseCase.executeOnBackground(any())
         } answers {
-            SomListFilterUiModel(emptyList(), fromCache = args.first() as Boolean)
+            FilterResultMapper().mapResponseToUiModel(mockResponse, args.first() as Boolean)
         }
-
-        every {
-            somListGetFilterListUseCase.isFirstLoad
-        } returns true
 
         getAdminPermission_shouldSuccess()
         (somCanShowOrderDataField.get(viewModel) as MediatorLiveData<*>).observeAwaitValue()
@@ -1486,39 +1490,16 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
     }
 
     @Test
-    fun getFiltersFromCloud_shouldSuccess() = coroutineTestRule.runBlockingTest {
+    fun `filterResult should equals to Success when get filters from cache is failed and cloud is success`() = coroutineTestRule.runBlockingTest {
+        val mockResponse = TestHelper.createSuccessResponse<SomListFilterResponse.Data>(
+            "json/som_list_get_order_filter_success_response.json"
+        )
         coEvery {
-            somListGetFilterListUseCase.executeOnBackground(any())
-        } answers {
-            SomListFilterUiModel(emptyList(), fromCache = args.first() as Boolean)
-        }
-
-        every {
-            somListGetFilterListUseCase.isFirstLoad
-        } returns false
-
-        getAdminPermission_shouldSuccess()
-        (somCanShowOrderDataField.get(viewModel) as MediatorLiveData<*>).observeAwaitValue()
-        viewModel.getFilters(true)
-
-        coVerify(exactly = 1) {
-            somListGetFilterListUseCase.executeOnBackground(false)
-        }
-
-        val result = viewModel.filterResult.observeAwaitValue()
-
-        assert(result is Success && !result.data.fromCache)
-    }
-
-    @Test
-    fun getFiltersFromCacheAndCloud_shouldFailed() = coroutineTestRule.runBlockingTest {
-        coEvery {
-            somListGetFilterListUseCase.executeOnBackground(any())
+            somListGetFilterListUseCase.executeOnBackground(true)
         } throws Throwable()
-
-        every {
-            somListGetFilterListUseCase.isFirstLoad
-        } returns true
+        coEvery {
+            somListGetFilterListUseCase.executeOnBackground(false)
+        } returns FilterResultMapper().mapResponseToUiModel(mockResponse, false)
 
         getAdminPermission_shouldSuccess()
         (somCanShowOrderDataField.get(viewModel) as MediatorLiveData<*>).observeAwaitValue()
@@ -1529,36 +1510,137 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
             somListGetFilterListUseCase.executeOnBackground(false)
         }
 
-        assert(viewModel.filterResult.observeAwaitValue() is Fail)
+        val result = viewModel.filterResult.observeAwaitValue()
+
+        assert(result is Success && !result.data.fromCache)
     }
 
     @Test
-    fun getFiltersFromCloud_shouldFailed() = coroutineTestRule.runBlockingTest {
+    fun `filterResult should equals to Fail when get filters from cache is success and cloud is failed`() = coroutineTestRule.runBlockingTest {
+        val mockResponse = TestHelper.createSuccessResponse<SomListFilterResponse.Data>(
+            "json/som_list_get_order_filter_success_response.json"
+        )
         coEvery {
-            somListGetFilterListUseCase.executeOnBackground(any())
+            somListGetFilterListUseCase.executeOnBackground(true)
+        } returns FilterResultMapper().mapResponseToUiModel(mockResponse, true)
+        coEvery {
+            somListGetFilterListUseCase.executeOnBackground(false)
         } throws Throwable()
-
-        every {
-            somListGetFilterListUseCase.isFirstLoad
-        } returns false
 
         getAdminPermission_shouldSuccess()
         (somCanShowOrderDataField.get(viewModel) as MediatorLiveData<*>).observeAwaitValue()
         viewModel.getFilters(true)
 
         coVerify(exactly = 1) {
+            somListGetFilterListUseCase.executeOnBackground(true)
             somListGetFilterListUseCase.executeOnBackground(false)
         }
 
-        assert(viewModel.filterResult.observeAwaitValue() is Fail)
+        val result = viewModel.filterResult.observeAwaitValue()
+
+        assert(result is Fail)
+    }
+
+    @Test
+    fun `filterResult should equals to Fail when get filters from cache and cloud is failed`() = coroutineTestRule.runBlockingTest {
+        coEvery {
+            somListGetFilterListUseCase.executeOnBackground(any())
+        } throws Throwable()
+
+        getAdminPermission_shouldSuccess()
+        (somCanShowOrderDataField.get(viewModel) as MediatorLiveData<*>).observeAwaitValue()
+        viewModel.getFilters(true)
+
+        coVerify(exactly = 1) {
+            somListGetFilterListUseCase.executeOnBackground(true)
+            somListGetFilterListUseCase.executeOnBackground(false)
+        }
+
+        val result = viewModel.filterResult.observeAwaitValue()
+
+        assert(result is Fail)
+    }
+
+    @Test
+    fun `filterResult#refreshOrder should true after get filter data from cloud when refresh order is requested and get filters from cache is failed and cloud is success`() = coroutineTestRule.runBlockingTest {
+        val mockResponse = TestHelper.createSuccessResponse<SomListFilterResponse.Data>(
+            "json/som_list_get_order_filter_success_response.json"
+        )
+        coEvery {
+            somListGetFilterListUseCase.executeOnBackground(true)
+        } throws Throwable()
+        coEvery {
+            somListGetFilterListUseCase.executeOnBackground(false)
+        } returns FilterResultMapper().mapResponseToUiModel(mockResponse, false)
+
+        getAdminPermission_shouldSuccess()
+        (somCanShowOrderDataField.get(viewModel) as MediatorLiveData<*>).observeAwaitValue()
+        viewModel.getFilters(true)
+
+        coVerify(exactly = 1) {
+            somListGetFilterListUseCase.executeOnBackground(true)
+            somListGetFilterListUseCase.executeOnBackground(false)
+        }
+
+        val result = viewModel.filterResult.observeAwaitValue()
+
+        assert(result is Success && result.data.refreshOrder)
+    }
+
+    @Test
+    fun `filterResult#refreshOrder should false after get filter data from cloud when refresh order is not requested and get filters from cache is failed and cloud is success`() = coroutineTestRule.runBlockingTest {
+        val mockResponse = TestHelper.createSuccessResponse<SomListFilterResponse.Data>(
+            "json/som_list_get_order_filter_success_response.json"
+        )
+        coEvery {
+            somListGetFilterListUseCase.executeOnBackground(true)
+        } throws Throwable()
+        coEvery {
+            somListGetFilterListUseCase.executeOnBackground(false)
+        } returns FilterResultMapper().mapResponseToUiModel(mockResponse, false)
+
+        getAdminPermission_shouldSuccess()
+        (somCanShowOrderDataField.get(viewModel) as MediatorLiveData<*>).observeAwaitValue()
+        viewModel.getFilters(false)
+
+        coVerify(exactly = 1) {
+            somListGetFilterListUseCase.executeOnBackground(true)
+            somListGetFilterListUseCase.executeOnBackground(false)
+        }
+
+        val result = viewModel.filterResult.observeAwaitValue()
+
+        assert(result is Success && !result.data.refreshOrder)
+    }
+
+    @Test
+    fun `filterResult#refreshOrder should false after get filter data from cloud when refresh order is requested and get filters from cache is success`() = coroutineTestRule.runBlockingTest {
+        val mockResponse = TestHelper.createSuccessResponse<SomListFilterResponse.Data>(
+            "json/som_list_get_order_filter_success_response.json"
+        )
+
+        coEvery {
+            somListGetFilterListUseCase.executeOnBackground(any())
+        } answers {
+            FilterResultMapper().mapResponseToUiModel(mockResponse, args.first() as Boolean)
+        }
+
+        getAdminPermission_shouldSuccess()
+        (somCanShowOrderDataField.get(viewModel) as MediatorLiveData<*>).observeAwaitValue()
+        viewModel.getFilters(true)
+
+        coVerify(exactly = 1) {
+            somListGetFilterListUseCase.executeOnBackground(true)
+            somListGetFilterListUseCase.executeOnBackground(false)
+        }
+
+        val result = viewModel.filterResult.observeAwaitValue()
+
+        assert(result is Success && !result.data.refreshOrder)
     }
 
     @Test
     fun getFilters_shouldNotSendRequest_whenCannotShowOrderData() = coroutineTestRule.runBlockingTest {
-        every {
-            somListGetFilterListUseCase.isFirstLoad
-        } returns true
-
         getAdminPermission_shouldFail()
         (somCanShowOrderDataField.get(viewModel) as MediatorLiveData<*>).observe({ lifecycle }) {}
         viewModel.getFilters(false)
@@ -1571,51 +1653,51 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
     }
 
     @Test
-    fun getWaitingPaymentCounter_shouldSuccess() = coroutineTestRule.runBlockingTest {
-        val waitingPaymentCounterData = WaitingPaymentCounter()
+    fun getHeaderIconsInfo_shouldSuccess() = coroutineTestRule.runBlockingTest {
+        val headerIconsInfoData = SomListHeaderIconsInfoUiModel(mockk(relaxed = true), mockk(relaxed = true))
         coEvery {
-            somListGetWaitingPaymentUseCase.executeOnBackground()
-        } returns waitingPaymentCounterData
+            somListGetHeaderIconsInfoUseCase.executeOnBackground()
+        } returns headerIconsInfoData
 
-        viewModel.getWaitingPaymentCounter()
+        viewModel.getHeaderIconsInfo()
 
         coVerify {
-            somListGetWaitingPaymentUseCase.executeOnBackground()
+            somListGetHeaderIconsInfoUseCase.executeOnBackground()
         }
-        val waitingPaymentCounterResult = viewModel.waitingPaymentCounterResult.observeAwaitValue()
-        assert(waitingPaymentCounterResult is Success && waitingPaymentCounterResult.data == waitingPaymentCounterData)
+        val waitingPaymentCounterResult = viewModel.somListHeaderIconsInfoResult.observeAwaitValue()
+        assert(waitingPaymentCounterResult is Success && waitingPaymentCounterResult.data == headerIconsInfoData)
     }
 
     @Test
-    fun getWaitingPaymentCounter_shouldFailed() = coroutineTestRule.runBlockingTest {
+    fun getHeaderIconsInfo_shouldFailed() = coroutineTestRule.runBlockingTest {
         coEvery {
-            somListGetWaitingPaymentUseCase.executeOnBackground()
+            somListGetHeaderIconsInfoUseCase.executeOnBackground()
         } throws Throwable()
 
-        viewModel.getWaitingPaymentCounter()
+        viewModel.getHeaderIconsInfo()
 
         coVerify {
-            somListGetWaitingPaymentUseCase.executeOnBackground()
+            somListGetHeaderIconsInfoUseCase.executeOnBackground()
         }
 
-        assert(viewModel.waitingPaymentCounterResult.observeAwaitValue() is Fail)
+        assert(viewModel.somListHeaderIconsInfoResult.observeAwaitValue() is Fail)
     }
 
     @Test
-    fun getWaitingPaymentCounter_shouldNotSuccess_whenCannotShowOrderData() = coroutineTestRule.runBlockingTest {
+    fun getHeaderIconsInfo_shouldNotSuccess_whenCannotShowOrderData() = coroutineTestRule.runBlockingTest {
         coEvery {
-            somListGetWaitingPaymentUseCase.executeOnBackground(any())
-        } returns WaitingPaymentCounter()
+            somListGetHeaderIconsInfoUseCase.executeOnBackground(any())
+        } returns SomListHeaderIconsInfoUiModel(mockk(relaxed = true), mockk(relaxed = true))
 
         somCanShowOrderDataField.set(viewModel, MediatorLiveData<Boolean>().apply { value = false })
 
-        viewModel.getWaitingPaymentCounter()
+        viewModel.getHeaderIconsInfo()
 
         coVerify(exactly = 0) {
-            somListGetWaitingPaymentUseCase.executeOnBackground(any())
+            somListGetHeaderIconsInfoUseCase.executeOnBackground(any())
         }
 
-        assertFalse(viewModel.waitingPaymentCounterResult.observeAwaitValue() is Success)
+        assertFalse(viewModel.somListHeaderIconsInfoResult.observeAwaitValue() is Success)
     }
     @Test
     fun getOrderList_shouldSuccessAndClearAllFailedRefreshOrder() = coroutineTestRule.runBlockingTest {
@@ -2003,14 +2085,6 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
     }
 
     @Test
-    fun setOrderTypeFilterTest() = coroutineTestRule.runBlockingTest {
-        val orderTypes = mutableSetOf<Long>(1, 2, 3, 4, 5)
-        setGetDataOrderListParams()
-        viewModel.setOrderTypeFilter(orderTypes)
-        assert(viewModel.getDataOrderListParams().orderTypeList == orderTypes)
-    }
-
-    @Test
     fun setSortOrderByTest() = coroutineTestRule.runBlockingTest {
         val sortBy = SomConsts.SORT_BY_TOTAL_OPEN_DESCENDING
         setGetDataOrderListParams()
@@ -2117,20 +2191,6 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
         isRefreshingAllOrder_shouldReturnTrueWhenJobIsNotYetComplete()
         isRefreshingSelectedOrder_shouldReturnTrueWhenThereIsAnyRunningJob()
         assert(viewModel.isRefreshingOrder())
-    }
-
-    @Test
-    fun isOrderStatusIdsChanged_shouldReturnFalse() = coroutineTestRule.runBlockingTest {
-        viewModel.setStatusOrderFilter(listOf(1, 2, 3, 4, 5))
-        val isChanged = viewModel.isOrderStatusIdsChanged(listOf(1, 2, 3, 4, 5))
-        assertFalse(isChanged)
-    }
-
-    @Test
-    fun isOrderStatusIdsChanged_shouldReturnTrue() = coroutineTestRule.runBlockingTest {
-        viewModel.setStatusOrderFilter(listOf())
-        val isChanged = viewModel.isOrderStatusIdsChanged(listOf(1, 2, 3, 4, 5))
-        assertTrue(isChanged)
     }
 
     @Test
@@ -2290,6 +2350,67 @@ class SomListViewModelTest : SomOrderBaseViewModelTest<SomListViewModel>() {
             bulkAcceptOrderStatusUseCase.executeOnBackground()
         }
         assertNull(viewModel.bulkAcceptOrderStatusResult.value)
+    }
+
+    @Test
+    fun addOrderTypeFilter_shouldUpdateGetOrderListParams() {
+        val orderTypeFilterId = 10L
+        viewModel.addOrderTypeFilter(orderTypeFilterId)
+        assertEquals(mutableSetOf(orderTypeFilterId), viewModel.getDataOrderListParams().orderTypeList)
+    }
+
+    @Test
+    fun removeOrderTypeFilter_shouldUpdateGetOrderListParams() {
+        val orderTypeFilterId = 10L
+        viewModel.addOrderTypeFilter(orderTypeFilterId)
+        viewModel.removeOrderTypeFilter(orderTypeFilterId)
+        assertEquals(mutableSetOf<Long>(), viewModel.getDataOrderListParams().orderTypeList)
+    }
+
+    @Test
+    fun addShippingFilter_shouldUpdateGetOrderListParams() {
+        val shippingFilterId = 10L
+        viewModel.addShippingFilter(shippingFilterId)
+        assertEquals(mutableSetOf(shippingFilterId), viewModel.getDataOrderListParams().shippingList)
+    }
+
+    @Test
+    fun removeShippingFilter_shouldUpdateGetOrderListParams() {
+        val shippingFilterId = 10L
+        viewModel.addShippingFilter(shippingFilterId)
+        viewModel.removeShippingFilter(shippingFilterId)
+        assertEquals(mutableSetOf<Long>(), viewModel.getDataOrderListParams().shippingList)
+    }
+
+    @Test
+    fun updateSomFilterUiModelList_shouldUpdateSomFilterUiModelList() {
+        val somFilterUiModelList = GetSomFilterMapper.mapToSomFilterVisitable(
+            TestHelper.createSuccessResponse(
+                SomFilterViewModelTestFixture.SOM_FILTER_SUCCESS_RESPONSE
+            )
+        ).filterIsInstance<SomFilterUiModel>()
+        viewModel.updateSomFilterUiModelList(somFilterUiModelList)
+        assertEquals(somFilterUiModelList, viewModel.getSomFilterUi())
+    }
+
+    @Test
+    fun clearSomFilterUiModelList_shouldUpdateSomFilterUiModelList() {
+        updateSomFilterUiModelList_shouldUpdateSomFilterUiModelList()
+        viewModel.clearSomFilterUiModelList()
+        assertEquals(emptyList<SomFilterUiModel>(), viewModel.getSomFilterUi())
+    }
+
+    @Test
+    fun getTabActive_shouldReturnCorrespondingOrderStatusFilterKeyWhenFilterResultIsNotNull() {
+        `filterResult should equals to Success when get filters from cache and cloud is success`()
+        viewModel.setStatusOrderFilter(listOf(220))
+        assertEquals("new_order", viewModel.getTabActive())
+    }
+
+    @Test
+    fun getTabActive_shouldReturnOrderStatusFilterFromAppLinkWhenFilterResultIsNull() {
+        viewModel.setTabActiveFromAppLink("new_order")
+        assertEquals("new_order", viewModel.getTabActive())
     }
 
     private fun doSuccessBulkAcceptOrder(

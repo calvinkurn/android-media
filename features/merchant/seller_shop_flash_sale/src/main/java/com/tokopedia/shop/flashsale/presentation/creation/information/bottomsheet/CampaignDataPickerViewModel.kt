@@ -56,13 +56,14 @@ class CampaignDataPickerViewModel @Inject constructor(
 
     }
 
-    fun getCampaignQuota(month : Int, year: Int) {
+    fun getCampaignQuota(month : Int, year: Int, vpsPackageId : Long) {
         launchCatchError(
             dispatchers.io,
             block = {
                 val campaignAttribute = getSellerCampaignAttributeUseCase.execute(
                     month = month,
-                    year = year
+                    year = year,
+                    vpsPackageId = vpsPackageId
                 )
 
                 _campaignQuota.postValue(Success(campaignAttribute.remainingCampaignQuota))
