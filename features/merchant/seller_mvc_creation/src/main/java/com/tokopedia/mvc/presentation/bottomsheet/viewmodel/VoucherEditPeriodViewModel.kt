@@ -27,6 +27,8 @@ class VoucherEditPeriodViewModel @Inject constructor(
     private val _dateStartLiveData = MutableLiveData<String>()
     private val _dateEndLiveData = MutableLiveData<String>()
     private val _hourStartLiveData = MutableLiveData<String>()
+    val hourStartLiveData: LiveData<String>
+        get() = _hourStartLiveData
     private val _hourEndLiveData = MutableLiveData<String>()
 
     private val _startDateCalendarLiveData = MutableLiveData<Calendar>()

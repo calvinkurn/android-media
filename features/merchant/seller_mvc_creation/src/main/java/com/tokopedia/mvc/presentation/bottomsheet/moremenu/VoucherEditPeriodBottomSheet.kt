@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.datepicker.LocaleUtils
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.mvc.R
 import com.tokopedia.mvc.databinding.SmvcBottomsheetEditPeriodBinding
 import com.tokopedia.mvc.di.component.DaggerMerchantVoucherCreationComponent
@@ -44,6 +45,8 @@ class VoucherEditPeriodBottomSheet : BottomSheetUnify() {
 
     private var startCalendar: GregorianCalendar? = null
     private var endCalendar: GregorianCalendar? = null
+    private var startHour: Int = 0
+    private var startMinute: Int = 0
 
     init {
         isFullpage = false
@@ -107,6 +110,16 @@ class VoucherEditPeriodBottomSheet : BottomSheetUnify() {
         viewModel.fullEndDateLiveData.observe(viewLifecycleOwner) {
             binding?.edtMvcEndDate?.setPlaceholder(it.convertDate())
         }
+        viewModel.hourStartLiveData.observe(viewLifecycleOwner) {
+            try {
+                var timeString = it.split(":").toTypedArray()
+                if (timeString.size >= 2) {
+                    startHour = timeString[0].toIntOrZero()
+                    startMinute = timeString[1].toIntOrZero()
+                }
+            } catch (e: Exception) {
+            }
+        }
     }
 
     private fun setUpView() {
@@ -118,8 +131,18 @@ class VoucherEditPeriodBottomSheet : BottomSheetUnify() {
                             context?.run {
                                 getMinStartDate().let { minDate ->
                                     getMaxStartDate().let { maxDate ->
-                                        voucherEditCalendarBottomSheet = VoucherEditCalendarBottomSheet.newInstance(startCalendar, minDate, maxDate)
-                                        voucherEditCalendarBottomSheet?.show(childFragmentManager, "")
+                                        voucherEditCalendarBottomSheet =
+                                            VoucherEditCalendarBottomSheet.newInstance(
+                                                startCalendar,
+                                                minDate,
+                                                maxDate,
+                                                startHour,
+                                                startMinute
+                                            )
+                                        voucherEditCalendarBottomSheet?.show(
+                                            childFragmentManager,
+                                            ""
+                                        )
                                     }
                                 }
                             }
@@ -138,7 +161,9 @@ class VoucherEditPeriodBottomSheet : BottomSheetUnify() {
                                         voucherEditCalendarBottomSheet = VoucherEditCalendarBottomSheet.newInstance(
                                             endCalendar,
                                             minDate,
-                                            maxDate
+                                            maxDate,
+                                            startHour,
+                                            startMinute
                                         )
                                         voucherEditCalendarBottomSheet?.show(childFragmentManager, "")
                                     }

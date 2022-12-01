@@ -28,6 +28,8 @@ class VoucherEditCalendarBottomSheet : BottomSheetUnify() {
     private var startDate: GregorianCalendar? = null
     private var endDate: GregorianCalendar? = null
     private var startCalendar: GregorianCalendar? = null
+    private var hour: Int = 0
+    private var minute: Int = 0
 
     private var timePicker: DateTimePickerUnify? = null
     val locale = Locale("id", "ID")
@@ -68,33 +70,33 @@ class VoucherEditCalendarBottomSheet : BottomSheetUnify() {
         })
     }
 
-    var minTime = GregorianCalendar(context?.let { LocaleUtils.getCurrentLocale(it) }).apply {
-        set(Calendar.HOUR_OF_DAY, 8)
-        set(Calendar.MINUTE, 30)
-    }
-    //    var defaultDate = GregorianCalendar(LocaleUtils.getCurrentLocale(this))
-    var maxTime = GregorianCalendar(context?.let { LocaleUtils.getCurrentLocale(it) }).apply {
-        set(Calendar.HOUR_OF_DAY, 23)
-        set(Calendar.MINUTE, 30)
-    }
-
-    var defaultDate = GregorianCalendar(2021, 7, 31).apply {
-        set(Calendar.HOUR, 6)
-        set(Calendar.MINUTE, 20)
-    }
-
-    var listener = object: OnDateChangedListener {
+    var listener = object : OnDateChangedListener {
         override fun onDateChanged(date: Long) {
             var calendarDate = GregorianCalendar.getInstance()
             calendarDate.timeInMillis = date
-            Log.d("DatePicker listener","${calendarDate.time}")
+            Log.d("DatePicker listener", "${calendarDate.time}")
         }
     }
 
     private fun showTimePickerBottomSheet(selectedDate: String) {
-        timePicker = context?.let {
+        var minTime = GregorianCalendar(context?.let { LocaleUtils.getCurrentLocale(it) }).apply {
+            set(Calendar.HOUR_OF_DAY, MIN_TIME_OF_DAY)
+            set(Calendar.MINUTE, MIN_TIME_OF_DAY)
+        }
+        //     var defaultDate = GregorianCalendar(LocaleUtils.getCurrentLocale(this))
+        var maxTime = GregorianCalendar(context?.let { LocaleUtils.getCurrentLocale(it) }).apply {
+            set(Calendar.HOUR_OF_DAY, MAX_HOUR_OF_DAY)
+            set(Calendar.MINUTE, MAX_MINUTE_OF_DAY)
+        }
+
+        var defaultDate = GregorianCalendar(context?.let { LocaleUtils.getCurrentLocale(it) }).apply {
+            set(Calendar.HOUR_OF_DAY, hour)
+            set(Calendar.MINUTE, minute)
+        }
+
+        timePicker = context?.let { timePickerContext ->
             DateTimePickerUnify(
-                it,
+                timePickerContext,
                 minTime,
                 defaultDate,
                 maxTime,
@@ -108,17 +110,19 @@ class VoucherEditCalendarBottomSheet : BottomSheetUnify() {
             minuteInterval = 1
 
             setTitle(
-                this@VoucherEditCalendarBottomSheet.getString (R.string.edit_period_time_picker_title)
-                    .toBlankOrString())
-            setInfo("${
-                this@VoucherEditCalendarBottomSheet.getString(R.string.edit_period_calender_title).toBlankOrString()}: $selectedDate")
+                this@VoucherEditCalendarBottomSheet.getString(R.string.edit_period_time_picker_title)
+                    .toBlankOrString()
+            )
+            setInfo(
+                "${
+                this@VoucherEditCalendarBottomSheet.getString(R.string.edit_period_calender_title).toBlankOrString()}: $selectedDate"
+            )
             setInfoVisible(true)
             datePickerButton.setOnClickListener {
-
             }
         }
 
-            timePicker?.show(childFragmentManager, "TimePicker Show")
+        timePicker?.show(childFragmentManager, "TimePicker Show")
     }
 
     private fun renderCalendar(holidayArrayList: ArrayList<Legend>) {
@@ -146,13 +150,21 @@ class VoucherEditCalendarBottomSheet : BottomSheetUnify() {
         fun newInstance(
             startCalendar: GregorianCalendar?,
             minDate: GregorianCalendar,
-            maxDate: GregorianCalendar
+            maxDate: GregorianCalendar,
+            hour: Int,
+            minute: Int
         ): VoucherEditCalendarBottomSheet {
             return VoucherEditCalendarBottomSheet().apply {
                 this.startDate = minDate
                 this.endDate = maxDate
                 this.startCalendar = startCalendar
+                this.hour = hour
+                this.minute = minute
             }
         }
+
+        const val MAX_HOUR_OF_DAY = 23
+        const val MAX_MINUTE_OF_DAY = 59
+        const val MIN_TIME_OF_DAY = 0
     }
 }
