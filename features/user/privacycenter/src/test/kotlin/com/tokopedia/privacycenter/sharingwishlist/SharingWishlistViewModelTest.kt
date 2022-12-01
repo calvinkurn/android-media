@@ -3,12 +3,7 @@ package com.tokopedia.privacycenter.sharingwishlist
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.privacycenter.common.PrivacyCenterStateResult
-import com.tokopedia.privacycenter.data.UpdateWishlistDataModel
-import com.tokopedia.privacycenter.data.WishlistByIdTickerDataModel
-import com.tokopedia.privacycenter.data.WishlistBydIdDataModel
-import com.tokopedia.privacycenter.data.WishlistCollectionByIdDataModel
-import com.tokopedia.privacycenter.data.WishlistCollectionsDataModel
-import com.tokopedia.privacycenter.data.WishlistDataModel
+import com.tokopedia.privacycenter.data.*
 import com.tokopedia.privacycenter.domain.GetWishlistCollectionByIdUseCase
 import com.tokopedia.privacycenter.domain.GetWishlistCollectionUseCase
 import com.tokopedia.privacycenter.domain.UpdateWishlistCollectionUseCase
@@ -138,7 +133,7 @@ class SharingWishlistViewModelTest {
                 descriptions = listOf(
                     "Description 1",
                     "Description 2",
-                    "Description 3",
+                    "Description 3"
                 )
             ),
             collection = WishlistCollectionByIdDataModel(

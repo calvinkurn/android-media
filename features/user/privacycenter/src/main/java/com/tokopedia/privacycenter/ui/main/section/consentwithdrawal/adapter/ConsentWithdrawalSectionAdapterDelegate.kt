@@ -8,7 +8,7 @@ import com.tokopedia.privacycenter.data.ConsentGroupDataModel
 
 class ConsentWithdrawalSectionAdapterDelegate(
     private val listener: ConsentWithdrawalSectionAdapter.Listener
-): TypedAdapterDelegate<ConsentGroupDataModel, ConsentGroupDataModel, ConsentWithdrawalSectionViewHolder>(
+) : TypedAdapterDelegate<ConsentGroupDataModel, ConsentGroupDataModel, ConsentWithdrawalSectionViewHolder>(
     R.layout.base_item_privacy_center
 ) {
 

@@ -6,9 +6,9 @@ import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
 import com.tokopedia.privacycenter.common.PrivacyCenterStateResult
-import com.tokopedia.privacycenter.ui.sharingwishlist.SharingWishlistConst
 import com.tokopedia.privacycenter.data.GetWishlistCollectionByIdResponse
 import com.tokopedia.privacycenter.data.WishlistBydIdDataModel
+import com.tokopedia.privacycenter.ui.sharingwishlist.SharingWishlistConst
 import javax.inject.Inject
 
 class GetWishlistCollectionByIdUseCase @Inject constructor(

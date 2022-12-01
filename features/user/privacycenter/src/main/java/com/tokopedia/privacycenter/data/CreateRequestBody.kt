@@ -2,7 +2,7 @@ package com.tokopedia.privacycenter.data
 
 import com.google.gson.annotations.SerializedName
 
-data class CreateRequestBody (
+data class CreateRequestBody(
     @SerializedName("language")
     var languange: String = "",
     @SerializedName("email")

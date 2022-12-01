@@ -3,66 +3,66 @@ package com.tokopedia.privacycenter.data
 import com.google.gson.annotations.SerializedName
 
 data class SearchHistoryResponse(
-	@SerializedName("universe_initial_state")
-	val universeInitialState: UniverseInitialState = UniverseInitialState()
+    @SerializedName("universe_initial_state")
+    val universeInitialState: UniverseInitialState = UniverseInitialState()
 )
 
 data class ItemSearch(
     @SerializedName("applink")
-	val applink: String = "",
+    val applink: String = "",
 
     @SerializedName("icon_subtitle")
-	val iconSubtitle: String = "",
+    val iconSubtitle: String = "",
 
     @SerializedName("icon_title")
-	val iconTitle: String = "",
+    val iconTitle: String = "",
 
     @SerializedName("image_url")
-	val imageUrl: String = "",
+    val imageUrl: String = "",
 
     @SerializedName("subtitle")
-	val subtitle: String = "",
+    val subtitle: String = "",
 
     @SerializedName("label_type")
-	val labelType: String = "",
+    val labelType: String = "",
 
     @SerializedName("id")
-	val id: String = "",
+    val id: String = "",
 
     @SerializedName("label")
-	val label: String = "",
+    val label: String = "",
 
     @SerializedName("title")
-	val title: String = "",
+    val title: String = "",
 
     @SerializedName("type")
-	val type: String = "",
+    val type: String = "",
 
     @SerializedName("url")
-	val url: String = "",
+    val url: String = "",
 
     @SerializedName("shortcut_image")
-	val shortcutImage: String = ""
+    val shortcutImage: String = ""
 )
 
 data class DataItem(
-	@SerializedName("feature_id")
-	val featureId: String = "",
+    @SerializedName("feature_id")
+    val featureId: String = "",
 
-	@SerializedName("label_action")
-	val labelAction: String = "",
+    @SerializedName("label_action")
+    val labelAction: String = "",
 
-	@SerializedName("header")
-	val header: String = "",
+    @SerializedName("header")
+    val header: String = "",
 
-	@SerializedName("id")
-	val id: String = "",
+    @SerializedName("id")
+    val id: String = "",
 
-	@SerializedName("items")
-	val items: List<ItemSearch> = emptyList()
+    @SerializedName("items")
+    val items: List<ItemSearch> = emptyList()
 )
 
 data class UniverseInitialState(
-	@SerializedName("data")
-	val data: List<DataItem> = emptyList()
+    @SerializedName("data")
+    val data: List<DataItem> = emptyList()
 )

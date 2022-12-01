@@ -15,7 +15,7 @@ data class SubmitConsentDataModel(
     @SerializedName("errorMessages")
     val errorMessages: List<String> = listOf(),
     @SerializedName("receipts")
-    val receipts: List<ReceiptDataModel> = listOf(),
+    val receipts: List<ReceiptDataModel> = listOf()
 )
 
 data class ReceiptDataModel(
@@ -30,5 +30,5 @@ data class ReceiptDataModel(
     @SerializedName("transactionType")
     val transactionType: String = "",
     @SerializedName("version")
-    val version: String = "",
+    val version: String = ""
 )

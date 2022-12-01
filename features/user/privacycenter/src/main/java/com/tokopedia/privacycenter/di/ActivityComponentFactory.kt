@@ -3,7 +3,6 @@ package com.tokopedia.privacycenter.di
 import android.app.Application
 import androidx.annotation.VisibleForTesting
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.privacycenter.di.DaggerPrivacyCenterComponent
 
 open class ActivityComponentFactory {
 

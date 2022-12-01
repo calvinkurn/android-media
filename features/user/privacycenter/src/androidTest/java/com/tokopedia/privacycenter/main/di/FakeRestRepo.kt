@@ -22,7 +22,6 @@ class FakeRestRepo : RestRepository {
             }
             else -> TODO()
         }
-
     }
 
     override suspend fun getResponses(requests: List<RestRequest>): Map<Type, RestResponse> {

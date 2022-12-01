@@ -8,7 +8,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.privacycenter.di.DaggerPrivacyCenterComponent
 import com.tokopedia.privacycenter.di.PrivacyCenterComponent
 
-class DsarAddEmailActivity: BaseSimpleActivity(), HasComponent<PrivacyCenterComponent> {
+class DsarAddEmailActivity : BaseSimpleActivity(), HasComponent<PrivacyCenterComponent> {
 
     override fun getNewFragment(): Fragment {
         return DsarAddEmailFragment.newInstance()

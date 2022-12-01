@@ -15,11 +15,7 @@ import com.tokopedia.unit.test.ext.getOrAwaitValue
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.date.DateUtil
 import com.tokopedia.utils.date.toString
-import io.mockk.coEvery
-import io.mockk.every
-import io.mockk.mockk
-import io.mockk.mockkObject
-import io.mockk.verify
+import io.mockk.*
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
@@ -55,13 +51,12 @@ class DsarViewModelTest {
     }
 
     @Test
-    fun `submitRequest success` () {
+    fun `submitRequest success`() {
         val deadline = "2022-12-04T04:59:21.630Z"
         val submitSuccessResponse = CreateRequestResponse(email = email, deadline = deadline)
         coEvery { submitRequestUseCase(any()) } returns submitSuccessResponse
 
         viewModel.submitRequest()
-
 
         assert(viewModel.submitRequestState.value?.email == email)
         assert(viewModel.submitRequestState.value?.deadline == deadline)
@@ -78,7 +73,7 @@ class DsarViewModelTest {
     }
 
     @Test
-    fun `submitRequest exception` () {
+    fun `submitRequest exception`() {
         coEvery { submitRequestUseCase(any()) } throws exception
 
         viewModel.submitRequest()
@@ -93,7 +88,7 @@ class DsarViewModelTest {
     }
 
     @Test
-    fun `formatRequest executed` () {
+    fun `formatRequest executed`() {
         viewModel.addFilter(DsarConstants.FILTER_TYPE_PAYMENT)
         viewModel.addFilter(DsarConstants.FILTER_TYPE_TRANSACTION)
         viewModel.addFilter(DsarConstants.FILTER_TYPE_PERSONAL)
@@ -103,7 +98,7 @@ class DsarViewModelTest {
     }
 
     @Test
-    fun `checkRequest success` () {
+    fun `checkRequest success`() {
         val status = "SVP Approval"
 
         val searchRequestResp = GetRequestDetailResponse(requestQueueRefId = "123", status = status)
@@ -121,7 +116,7 @@ class DsarViewModelTest {
     }
 
     @Test
-    fun `checkRequest success - empty content` () {
+    fun `checkRequest success - empty content`() {
         val searchRequestResp = GetRequestDetailResponse()
         coEvery { searchRequestUseCase(any()) } returns searchRequestResp
 
@@ -135,7 +130,7 @@ class DsarViewModelTest {
     }
 
     @Test
-    fun `checkRequest success - Completed` () {
+    fun `checkRequest success - Completed`() {
         val status = DsarConstants.STATUS_COMPLETED
 
         val searchRequestResp = GetRequestDetailResponse(requestQueueRefId = "123", status = status)
@@ -151,7 +146,7 @@ class DsarViewModelTest {
     }
 
     @Test
-    fun `checkRequest exception` () {
+    fun `checkRequest exception`() {
         coEvery { searchRequestUseCase(any()) } throws exception
 
         viewModel.checkRequestStatus()
@@ -299,5 +294,4 @@ class DsarViewModelTest {
         assert(viewModel.getSelectedRangeItems()?.startDate == startDate.toString(DateUtil.YYYYMMDD))
         assert(viewModel.getSelectedRangeItems()?.endDate == endDate.toString(DateUtil.YYYYMMDD))
     }
-
 }

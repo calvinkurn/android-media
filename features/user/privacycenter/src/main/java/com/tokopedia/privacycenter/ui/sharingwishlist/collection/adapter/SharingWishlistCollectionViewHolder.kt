@@ -2,8 +2,8 @@ package com.tokopedia.privacycenter.ui.sharingwishlist.collection.adapter
 
 import android.view.View
 import com.tokopedia.adapterdelegate.BaseViewHolder
-import com.tokopedia.privacycenter.databinding.SharingWishlistItemBinding
 import com.tokopedia.privacycenter.data.WishlistCollectionsDataModel
+import com.tokopedia.privacycenter.databinding.SharingWishlistItemBinding
 import com.tokopedia.utils.view.binding.viewBinding
 
 class SharingWishlistCollectionViewHolder(

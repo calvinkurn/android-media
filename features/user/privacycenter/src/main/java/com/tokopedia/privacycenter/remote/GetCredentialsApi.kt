@@ -3,9 +3,9 @@ package com.tokopedia.privacycenter.remote
 import com.tokopedia.privacycenter.data.GetCredentialResponse
 import com.tokopedia.privacycenter.ui.dsar.DsarConstants
 import com.tokopedia.privacycenter.ui.dsar.DsarHelper
-import javax.inject.Inject
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.RequestBody.Companion.toRequestBody
+import javax.inject.Inject
 
 class GetCredentialsApi @Inject constructor(
     val oneTrustApi: OneTrustApi,

@@ -13,7 +13,7 @@ import com.tokopedia.privacycenter.databinding.ItemSearchHistoryBinding
 class SearchHistoryAdapter(
     private val list: MutableList<ItemSearch>,
     private val onClick: (ItemSearch, Int) -> Unit
-): RecyclerView.Adapter<SearchHistoryAdapter.ViewHolder>() {
+) : RecyclerView.Adapter<SearchHistoryAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder(
@@ -40,7 +40,7 @@ class SearchHistoryAdapter(
 
     inner class ViewHolder(
         private val binding: ItemSearchHistoryBinding
-    ): RecyclerView.ViewHolder(binding.root) {
+    ) : RecyclerView.ViewHolder(binding.root) {
 
         private var currentItem: ItemSearch? = null
 
@@ -58,7 +58,6 @@ class SearchHistoryAdapter(
         }
 
         fun bind(item: ItemSearch) {
-
             this.currentItem = item
 
             val isShopType = item.type == KEY_TYPE_SHOP
@@ -88,11 +87,9 @@ class SearchHistoryAdapter(
                 imgIconSearch.loadImageWithoutPlaceholder(item.imageUrl)
             }
         }
-
     }
 
     companion object {
         private const val KEY_TYPE_SHOP = "shop"
     }
-
 }

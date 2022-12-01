@@ -6,7 +6,7 @@ import com.tokopedia.graphql.data.GqlParam
 data class UpdateWishlistParam(
     @SerializedName("params")
     val params: UpdateWishlistCollectionParam = UpdateWishlistCollectionParam()
-): GqlParam
+) : GqlParam
 
 data class UpdateWishlistCollectionParam(
     @SerializedName("collection")
@@ -15,7 +15,7 @@ data class UpdateWishlistCollectionParam(
 
 data class UpdateWishlistCollectionResponse(
     @SerializedName("update_wishlist_collection")
-    val updateWishlistCollection: UpdateWishlistResponse =  UpdateWishlistResponse()
+    val updateWishlistCollection: UpdateWishlistResponse = UpdateWishlistResponse()
 )
 
 data class UpdateWishlistResponse(
@@ -24,7 +24,7 @@ data class UpdateWishlistResponse(
     @SerializedName("status")
     val status: String = "",
     @SerializedName("data")
-    val data: UpdateWishlistDataModel = UpdateWishlistDataModel(),
+    val data: UpdateWishlistDataModel = UpdateWishlistDataModel()
 )
 
 data class UpdateWishlistDataModel(

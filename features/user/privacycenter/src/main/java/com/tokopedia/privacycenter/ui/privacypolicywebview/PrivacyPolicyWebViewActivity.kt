@@ -9,10 +9,12 @@ class PrivacyPolicyWebViewActivity : BaseSimpleWebViewActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        updateTitle(intent.extras?.getString(
-            PrivacyPolicyConst.KEY_TITLE,
-            PrivacyPolicyConst.DEFAULT_TITLE
-        ))
+        updateTitle(
+            intent.extras?.getString(
+                PrivacyPolicyConst.KEY_TITLE,
+                PrivacyPolicyConst.DEFAULT_TITLE
+            )
+        )
     }
 
     override fun getNewFragment(): Fragment = PrivacyPolicyWebViewFragment.instance(intent.extras)

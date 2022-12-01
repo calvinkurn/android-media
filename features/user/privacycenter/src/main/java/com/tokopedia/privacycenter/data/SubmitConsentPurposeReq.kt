@@ -14,5 +14,5 @@ data class PurposesParam(
     @SerializedName("transactionType")
     val transactionType: String = "",
     @SerializedName("version")
-    val version: String = "",
+    val version: String = ""
 )

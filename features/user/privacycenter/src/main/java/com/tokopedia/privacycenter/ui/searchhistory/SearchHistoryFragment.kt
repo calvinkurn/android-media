@@ -14,10 +14,10 @@ import com.tokopedia.media.loader.loadImageWithoutPlaceholder
 import com.tokopedia.privacycenter.R
 import com.tokopedia.privacycenter.common.PrivacyCenterStateResult
 import com.tokopedia.privacycenter.data.ItemSearch
+import com.tokopedia.privacycenter.databinding.FragmentSearchHistoryBinding
 import com.tokopedia.privacycenter.di.PrivacyCenterComponent
 import com.tokopedia.privacycenter.domain.DeleteSearchHistoryResult
 import com.tokopedia.privacycenter.utils.getMessage
-import com.tokopedia.privacycenter.databinding.FragmentSearchHistoryBinding
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
@@ -34,7 +34,7 @@ class SearchHistoryFragment : BaseDaggerFragment() {
         )
     }
 
-    private var adapter : SearchHistoryAdapter? = null
+    private var adapter: SearchHistoryAdapter? = null
     private var loaderDeleteAllSearchHistory: LoaderDialog? = null
 
     override fun onCreateView(

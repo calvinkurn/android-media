@@ -18,14 +18,14 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.privacycenter.R
 import com.tokopedia.privacycenter.common.PrivacyCenterConst.ERROR_NETWORK_IMAGE
 import com.tokopedia.privacycenter.common.PrivacyCenterStateResult
-import com.tokopedia.privacycenter.di.PrivacyCenterComponent
 import com.tokopedia.privacycenter.data.ConsentPurposeDataModel
 import com.tokopedia.privacycenter.data.ConsentPurposeItemDataModel
 import com.tokopedia.privacycenter.data.SubmitConsentDataModel
+import com.tokopedia.privacycenter.databinding.FragmentConsentWithdrawalPrivacyCenterBinding
+import com.tokopedia.privacycenter.di.PrivacyCenterComponent
 import com.tokopedia.privacycenter.ui.consentwithdrawal.adapter.ConsentWithdrawalAdapter
 import com.tokopedia.privacycenter.ui.consentwithdrawal.adapter.uimodel.PurposeUiModel
 import com.tokopedia.privacycenter.ui.consentwithdrawal.adapter.uimodel.TitleDividerUiModel
-import com.tokopedia.privacycenter.databinding.FragmentConsentWithdrawalPrivacyCenterBinding
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
@@ -119,7 +119,7 @@ class ConsentWithdrawalFragment : BaseDaggerFragment(), ConsentWithdrawalListene
                 consentWithdrawalAdapter.addItem(
                     TitleDividerUiModel(
                         isDivider = true,
-                        isSmallDivider = false,
+                        isSmallDivider = false
                     )
                 )
             }
@@ -130,7 +130,7 @@ class ConsentWithdrawalFragment : BaseDaggerFragment(), ConsentWithdrawalListene
                 consentWithdrawalAdapter.addItem(
                     TitleDividerUiModel(
                         isDivider = true,
-                        isSmallDivider = false,
+                        isSmallDivider = false
                     )
                 )
             }
@@ -161,7 +161,7 @@ class ConsentWithdrawalFragment : BaseDaggerFragment(), ConsentWithdrawalListene
                 consentWithdrawalAdapter.addItem(
                     TitleDividerUiModel(
                         isDivider = true,
-                        isSmallDivider = true,
+                        isSmallDivider = true
                     )
                 )
             }
@@ -190,7 +190,7 @@ class ConsentWithdrawalFragment : BaseDaggerFragment(), ConsentWithdrawalListene
                 consentWithdrawalAdapter.addItem(
                     TitleDividerUiModel(
                         isDivider = true,
-                        isSmallDivider = true,
+                        isSmallDivider = true
                     )
                 )
             }
@@ -209,7 +209,6 @@ class ConsentWithdrawalFragment : BaseDaggerFragment(), ConsentWithdrawalListene
         isActive: Boolean,
         data: ConsentPurposeItemDataModel
     ) {
-
         val intent = if (data.consentStatus == ConsentWithdrawalConst.OPT_IN) {
             RouteManager.getIntent(context, data.optIntAppLink)
         } else {

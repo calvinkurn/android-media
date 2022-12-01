@@ -27,12 +27,12 @@ fun Activity.getDynamicColorStatusBar(): Int {
     }
 }
 
-//This method has no effect on API < 23.
+// This method has no effect on API < 23.
 fun Activity.setTextStatusBar(setToWhite: Boolean) {
     WindowInsetsControllerCompat(window, findRootView(this)).isAppearanceLightStatusBars = !setToWhite
 }
 
-//true for white, false for black
+// true for white, false for black
 fun Activity.getIconBackWithColor(getWhite: Boolean): Drawable? {
     return getIconUnifyDrawable(
         this,
@@ -41,7 +41,7 @@ fun Activity.getIconBackWithColor(getWhite: Boolean): Drawable? {
     )
 }
 
-//true for white, false for black
+// true for white, false for black
 fun Activity.getIdColor(getWhite: Boolean): Int {
     return ContextCompat.getColor(
         this,
@@ -49,10 +49,11 @@ fun Activity.getIdColor(getWhite: Boolean): Int {
     )
 }
 
-//true for white, false for black
+// true for white, false for black
 fun getColor(getWhite: Boolean): Int {
-    return if (getWhite)
+    return if (getWhite) {
         android.R.color.white
-    else
+    } else {
         android.R.color.black
+    }
 }

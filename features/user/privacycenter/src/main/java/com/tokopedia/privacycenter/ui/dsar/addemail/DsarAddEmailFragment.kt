@@ -20,7 +20,7 @@ import com.tokopedia.privacycenter.ui.dsar.uimodel.AddEmailModel
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
-class DsarAddEmailFragment: BaseDaggerFragment() {
+class DsarAddEmailFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -61,7 +61,7 @@ class DsarAddEmailFragment: BaseDaggerFragment() {
     private fun renderViewModel(data: AddEmailModel) {
         data.let {
             binding?.btnAddEmail?.isLoading = it.btnLoading
-            if(it.inputError.isNotEmpty()) {
+            if (it.inputError.isNotEmpty()) {
                 binding?.txtFieldEmail?.isInputError = true
                 binding?.txtFieldEmail?.editText?.error = it.inputError
             } else {
@@ -80,7 +80,7 @@ class DsarAddEmailFragment: BaseDaggerFragment() {
         }
 
         viewModel.routeToVerification.observe(viewLifecycleOwner) {
-            if(it.isNotEmpty()) {
+            if (it.isNotEmpty()) {
                 goToVerificationActivity(it)
             }
         }
@@ -100,17 +100,19 @@ class DsarAddEmailFragment: BaseDaggerFragment() {
 
     private fun goToVerificationActivity(email: String) {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalUserPlatform.COTP)
-        intent.putExtras(Bundle().apply {
-            putString(ApplinkConstInternalGlobal.PARAM_EMAIL, email)
-            putString(ApplinkConstInternalGlobal.PARAM_MSISDN, "")
-            putBoolean(ApplinkConstInternalGlobal.PARAM_CAN_USE_OTHER_METHOD, false)
-            putInt(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, OTP_TYPE_ADD_EMAIL)
-            putString(
-                ApplinkConstInternalGlobal.PARAM_REQUEST_OTP_MODE,
-                DsarConstants.OTP_MODE_EMAIL
-            )
-            putBoolean(ApplinkConstInternalGlobal.PARAM_IS_SHOW_CHOOSE_METHOD, false)
-        })
+        intent.putExtras(
+            Bundle().apply {
+                putString(ApplinkConstInternalGlobal.PARAM_EMAIL, email)
+                putString(ApplinkConstInternalGlobal.PARAM_MSISDN, "")
+                putBoolean(ApplinkConstInternalGlobal.PARAM_CAN_USE_OTHER_METHOD, false)
+                putInt(ApplinkConstInternalGlobal.PARAM_OTP_TYPE, OTP_TYPE_ADD_EMAIL)
+                putString(
+                    ApplinkConstInternalGlobal.PARAM_REQUEST_OTP_MODE,
+                    DsarConstants.OTP_MODE_EMAIL
+                )
+                putBoolean(ApplinkConstInternalGlobal.PARAM_IS_SHOW_CHOOSE_METHOD, false)
+            }
+        )
         startActivityForResult(intent, REQUEST_ADD_EMAIL)
     }
 

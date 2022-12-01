@@ -17,11 +17,10 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
 import com.tokopedia.utils.date.DateUtil
 import com.tokopedia.utils.date.toString
-import java.util.Calendar
-import java.util.Date
-import java.util.GregorianCalendar
+import java.util.*
 
-class DsarHistoryTransactionBottomSheet(private val mContext: Context, val onClicked: (String, Boolean, Pair<Date, Date>?) -> Unit): BottomSheetUnify(),
+class DsarHistoryTransactionBottomSheet(private val mContext: Context, val onClicked: (String, Boolean, Pair<Date, Date>?) -> Unit) :
+    BottomSheetUnify(),
     OnDateChangedListener {
 
     private val rangePickerDialogBinding: BottomSheetRangePickerBinding =
@@ -40,7 +39,7 @@ class DsarHistoryTransactionBottomSheet(private val mContext: Context, val onCli
 
     private fun onDateSelected() {
         val selected = datePicker?.getDate()
-        if(state == DsarFragment.STATE_START) {
+        if (state == DsarFragment.STATE_START) {
             state = DsarFragment.STATE_END
             startDate = selected?.time
             datePicker?.setTitle(getString(R.string.dsar_date_picker_end_title))
@@ -60,7 +59,7 @@ class DsarHistoryTransactionBottomSheet(private val mContext: Context, val onCli
     }
 
     private fun getDatePicker(): DateTimePickerUnify? {
-        if(datePicker == null) {
+        if (datePicker == null) {
             val minDate = GregorianCalendar(LocaleUtils.getCurrentLocale(requireContext())).apply {
                 add(Calendar.YEAR, -3)
             }
@@ -93,7 +92,7 @@ class DsarHistoryTransactionBottomSheet(private val mContext: Context, val onCli
         super.onViewCreated(view, savedInstanceState)
         rangePickerDialogBinding.radioGroup.setOnCheckedChangeListener { _, checkedId ->
             val checked = rangePickerDialogBinding.root.findViewById<RadioButtonUnify>(checkedId)
-            if(checked.text.toString() == DsarConstants.LABEL_RANGE_CUSTOM) {
+            if (checked.text.toString() == DsarConstants.LABEL_RANGE_CUSTOM) {
                 getDatePicker()?.show(parentFragmentManager, "")
             } else {
                 rangePickerDialogBinding.layoutCustomDate.hide()
@@ -102,8 +101,8 @@ class DsarHistoryTransactionBottomSheet(private val mContext: Context, val onCli
 
         rangePickerDialogBinding.btnApplyFilter.setOnClickListener {
             val checked = rangePickerDialogBinding.root.findViewById<RadioButtonUnify>(rangePickerDialogBinding.radioGroup.checkedRadioButtonId)
-            if(checked.text.toString() == DsarConstants.LABEL_RANGE_CUSTOM) {
-                if(startDate != null && endDate != null){
+            if (checked.text.toString() == DsarConstants.LABEL_RANGE_CUSTOM) {
+                if (startDate != null && endDate != null) {
                     onClicked(checked.text.toString(), true, Pair(startDate!!, endDate!!))
                 }
             } else {
@@ -119,7 +118,7 @@ class DsarHistoryTransactionBottomSheet(private val mContext: Context, val onCli
     fun boldText() {
         for (i in 0 until rangePickerDialogBinding.radioGroup.childCount) {
             val radio = rangePickerDialogBinding.radioGroup.getChildAt(i)
-            if(radio is RadioButtonUnify) {
+            if (radio is RadioButtonUnify) {
                 radio.setTextBold(true)
             }
         }

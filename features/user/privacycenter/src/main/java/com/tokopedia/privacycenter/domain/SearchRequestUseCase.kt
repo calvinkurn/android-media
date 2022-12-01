@@ -22,7 +22,7 @@ class SearchRequestUseCase @Inject constructor(
     override suspend fun execute(params: SearchRequestBody): GetRequestDetailResponse {
         val credentials = getCredentialsApi.fetchCredential()
         credentials?.let {
-            if(it.accessToken.isNotEmpty()) {
+            if (it.accessToken.isNotEmpty()) {
                 val bearerHeader = HeaderUtils.createHeader(token = it.accessToken)
                 val searchResult = oneTrustApi.searchRequest(params, bearerHeader).body()
                 if (searchResult?.results?.isNotEmpty() == true) {

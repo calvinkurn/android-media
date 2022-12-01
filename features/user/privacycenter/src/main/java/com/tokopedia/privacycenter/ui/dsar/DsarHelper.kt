@@ -17,5 +17,4 @@ class DsarHelper @Inject constructor(@ApplicationContext val context: Context) {
     fun getTemplateId(): String {
         return context.getString(com.tokopedia.keys.R.string.one_trust_template_id)
     }
-
 }

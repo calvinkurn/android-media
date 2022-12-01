@@ -18,7 +18,7 @@ class SearchHistoryViewModel @Inject constructor(
     private val searchHistoryUseCase: SearchHistoryUseCase,
     private val deleteSearchHistoryUseCase: DeleteSearchHistoryUseCase,
     dispatcher: CoroutineDispatchers
-): BaseViewModel(dispatcher.main) {
+) : BaseViewModel(dispatcher.main) {
 
     private val _listSearchHistory = MutableLiveData<PrivacyCenterStateResult<List<ItemSearch>>>()
     val listSearchHistory: LiveData<PrivacyCenterStateResult<List<ItemSearch>>> get() = _listSearchHistory
@@ -58,5 +58,4 @@ class SearchHistoryViewModel @Inject constructor(
             _deleteSearchHistory.value = DeleteSearchHistoryResult.Failed(position, clearAll, it)
         })
     }
-
 }

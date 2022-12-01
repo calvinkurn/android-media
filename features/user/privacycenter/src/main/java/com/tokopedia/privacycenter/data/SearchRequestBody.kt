@@ -5,5 +5,5 @@ import com.tokopedia.graphql.data.GqlParam
 
 data class SearchRequestBody(
     @SerializedName("term")
-    var email: String = "",
-): GqlParam
+    var email: String = ""
+) : GqlParam

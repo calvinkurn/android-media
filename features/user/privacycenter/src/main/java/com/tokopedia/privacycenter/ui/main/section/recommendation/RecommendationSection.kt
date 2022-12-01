@@ -11,11 +11,11 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.loaderdialog.LoaderDialog
 import com.tokopedia.privacycenter.R
 import com.tokopedia.privacycenter.common.PrivacyCenterStateResult
-import com.tokopedia.privacycenter.domain.GetRecommendationFriendState
-import com.tokopedia.privacycenter.utils.getMessage
 import com.tokopedia.privacycenter.databinding.SectionRecomendationAndPromoBinding
+import com.tokopedia.privacycenter.domain.GetRecommendationFriendState
 import com.tokopedia.privacycenter.ui.main.analytics.MainPrivacyCenterAnalytics
 import com.tokopedia.privacycenter.ui.main.section.BasePrivacyCenterSection
+import com.tokopedia.privacycenter.utils.getMessage
 import com.tokopedia.unifycomponents.Toaster
 
 class RecommendationSection(

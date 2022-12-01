@@ -2,7 +2,7 @@ package com.tokopedia.privacycenter.ui.main.analytics
 
 import com.tokopedia.track.builder.Tracker
 
-//List tracker on MyNakama: https://mynakama.tokopedia.com/datatracker/requestdetail/view/3571
+// List tracker on MyNakama: https://mynakama.tokopedia.com/datatracker/requestdetail/view/3571
 object MainPrivacyCenterAnalytics {
 
     const val LABEL_SHARE_WISHLIST = "share wishlist"

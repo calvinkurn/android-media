@@ -5,12 +5,12 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.graphql.domain.coroutine.CoroutineUseCase
-import com.tokopedia.privacycenter.ui.sharingwishlist.SharingWishlistConst
-import com.tokopedia.privacycenter.ui.sharingwishlist.SharingWishlistStateResult
 import com.tokopedia.privacycenter.data.GetWishlistCollectionResponse
 import com.tokopedia.privacycenter.data.GetWishlistCollectionsParams
 import com.tokopedia.privacycenter.data.WishlistCollectionsParams
 import com.tokopedia.privacycenter.data.WishlistDataModel
+import com.tokopedia.privacycenter.ui.sharingwishlist.SharingWishlistConst
+import com.tokopedia.privacycenter.ui.sharingwishlist.SharingWishlistStateResult
 import javax.inject.Inject
 
 class GetWishlistCollectionUseCase @Inject constructor(
@@ -28,9 +28,9 @@ class GetWishlistCollectionUseCase @Inject constructor(
         )
 
         val response = graphqlRepository.request<WishlistCollectionsParams, GetWishlistCollectionResponse>(
-                graphqlQuery(),
-                param
-            ).getWishlistCollections
+            graphqlQuery(),
+            param
+        ).getWishlistCollections
 
         return if (response.status == SharingWishlistConst.STATUS_OK && response.errorMessage.isEmpty()) {
             if (response.data.collections.isEmpty()) {

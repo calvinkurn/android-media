@@ -75,8 +75,11 @@ class DeleteSearchHistoryUseCase @Inject constructor(
     }
 
     private fun getUniqueId(userId: String, registrationId: String) =
-        if (userId.isNotEmpty()) AuthHelper.getMD5Hash(userId)
-        else AuthHelper.getMD5Hash(registrationId)
+        if (userId.isNotEmpty()) {
+            AuthHelper.getMD5Hash(userId)
+        } else {
+            AuthHelper.getMD5Hash(registrationId)
+        }
 
     companion object {
         private const val PARAM = "param"

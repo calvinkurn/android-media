@@ -5,7 +5,6 @@ object DsarConstants {
     const val FILTER_TYPE_PAYMENT = "payment"
     const val FILTER_TYPE_TRANSACTION = "transaction"
 
-
     const val DATE_RANGE_YEARS = 0
     const val DATE_RANGE_3_YEARS = 1
     const val DATE_RANGE_3_MONTHS = 2
@@ -36,11 +35,17 @@ object DsarConstants {
     const val LABEL_RANGE_CUSTOM = "Pilih Tanggal Sendiri"
 
     val DSAR_PERSONAL_DATA = listOf(
-        "full_name", "mailing_address", "phone_number", "email", "dob", "gender"
+        "full_name",
+        "mailing_address",
+        "phone_number",
+        "email",
+        "dob",
+        "gender"
     )
 
     val DSAR_PAYMENT_DATA = listOf(
-        "bank_account", "payment"
+        "bank_account",
+        "payment"
     )
 
     const val DAYS_7 = 7L
@@ -64,7 +69,5 @@ object DsarConstants {
 
     const val OTP_MODE_EMAIL = "email"
 
-
     const val LABEL_ERROR_REQUEST = "Yaah, lagi ada gangguan. Tunggu sebentar & coba lagi, ya."
-
 }

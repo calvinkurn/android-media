@@ -8,13 +8,13 @@ import com.tokopedia.privacycenter.di.PrivacyCenterViewModelModule
 import com.tokopedia.privacycenter.di.RecommendationModule
 import dagger.Component
 
-
 @ActivityScope
-@Component(modules = [
-    RecommendationModule::class,
-    PrivacyCenterModule::class,
-    PrivacyCenterViewModelModule::class
-], dependencies = [BaseAppComponent::class])
-interface FakePrivacyCenterComponent: PrivacyCenterComponent {
-
-}
+@Component(
+    modules = [
+        RecommendationModule::class,
+        PrivacyCenterModule::class,
+        PrivacyCenterViewModelModule::class
+    ],
+    dependencies = [BaseAppComponent::class]
+)
+interface FakePrivacyCenterComponent : PrivacyCenterComponent

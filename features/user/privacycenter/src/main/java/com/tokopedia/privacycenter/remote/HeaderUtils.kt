@@ -7,7 +7,7 @@ object HeaderUtils {
         val header = HashMap<String, String>()
         header[DsarConstants.HEADER_ACCEPT] = DsarConstants.APPLICATION_JSON
         header[DsarConstants.HEADER_CONTENT_TYPE] = contentType
-        if(token.isNotEmpty()) {
+        if (token.isNotEmpty()) {
             header[DsarConstants.HEADER_AUTHORIZATION] = "${DsarConstants.BEARER} $token"
         }
         return header

@@ -13,11 +13,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.datepicker.OnDateChangedListener
-import com.tokopedia.kotlin.extensions.view.gone
-import com.tokopedia.kotlin.extensions.view.hide
-import com.tokopedia.kotlin.extensions.view.invisible
-import com.tokopedia.kotlin.extensions.view.showWithCondition
-import com.tokopedia.kotlin.extensions.view.visible
+import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.privacycenter.R
 import com.tokopedia.privacycenter.data.GetRequestDetailResponse
@@ -28,10 +24,10 @@ import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.date.DateUtil
 import com.tokopedia.utils.lifecycle.autoClearedNullable
-import java.util.Date
+import java.util.*
 import javax.inject.Inject
 
-class DsarFragment: BaseDaggerFragment(), OnDateChangedListener {
+class DsarFragment : BaseDaggerFragment(), OnDateChangedListener {
 
     private var binding by autoClearedNullable<FragmentDsarLayoutBinding>()
 
@@ -59,7 +55,7 @@ class DsarFragment: BaseDaggerFragment(), OnDateChangedListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        if(userSession.email.isEmpty()) {
+        if (userSession.email.isEmpty()) {
             goToAddEmail()
         }
     }
@@ -84,7 +80,7 @@ class DsarFragment: BaseDaggerFragment(), OnDateChangedListener {
         setupViews()
 
         viewModel.showMainLayout.observe(viewLifecycleOwner) {
-            if(it) {
+            if (it) {
                 binding?.mainLayout?.visible()
             } else {
                 binding?.mainLayout?.gone()
@@ -92,7 +88,7 @@ class DsarFragment: BaseDaggerFragment(), OnDateChangedListener {
         }
 
         viewModel.mainLoader.observe(viewLifecycleOwner) {
-            if(it) {
+            if (it) {
                 showMainLoader()
             } else {
                 hideMainLoader()
@@ -105,7 +101,7 @@ class DsarFragment: BaseDaggerFragment(), OnDateChangedListener {
 
         viewModel.globalError.observe(viewLifecycleOwner) {
             binding?.globarErrorDsar?.showWithCondition(it)
-            if(it) {
+            if (it) {
                 binding?.globarErrorDsar?.setOnClickListener { _ ->
                     viewModel.checkRequestStatus()
                 }
@@ -113,7 +109,7 @@ class DsarFragment: BaseDaggerFragment(), OnDateChangedListener {
         }
 
         viewModel.transactionHistoryModel.observe(viewLifecycleOwner) {
-            if(it.showBottomSheet) {
+            if (it.showBottomSheet) {
                 showTransactionHistoryBtmSheet()
             } else {
                 rangePickerBottomSheet?.dismiss()
@@ -126,13 +122,13 @@ class DsarFragment: BaseDaggerFragment(), OnDateChangedListener {
         }
 
         viewModel.submitRequestState.observe(viewLifecycleOwner) {
-            if(it.email.isNotEmpty() && it.deadline.isNotEmpty()) {
+            if (it.email.isNotEmpty() && it.deadline.isNotEmpty()) {
                 onSubmitSuccess(it.email, it.deadline)
             }
         }
 
         viewModel.showSummary.observe(viewLifecycleOwner) {
-            if(it.isNotEmpty()) {
+            if (it.isNotEmpty()) {
                 showSummary(it)
             } else {
                 hideSummary()
@@ -143,7 +139,7 @@ class DsarFragment: BaseDaggerFragment(), OnDateChangedListener {
 
     private fun renderSelectedDateLayout(transactionHistoryModel: TransactionHistoryModel) {
         binding?.layoutOptions?.itemTransactionHistory?.checkIcon?.showWithCondition(transactionHistoryModel.isChecked)
-        if(transactionHistoryModel.isChecked) {
+        if (transactionHistoryModel.isChecked) {
             val shouldShowDate = transactionHistoryModel.selectedDate.startDate.isNotEmpty() && transactionHistoryModel.selectedDate.endDate.isNotEmpty()
             binding?.layoutOptions?.itemTransactionHistory?.txtChoosenDate?.showWithCondition(shouldShowDate)
             val startDate = DateUtil.formatDate(
@@ -156,8 +152,8 @@ class DsarFragment: BaseDaggerFragment(), OnDateChangedListener {
                 DateUtil.DEFAULT_VIEW_FORMAT,
                 transactionHistoryModel.selectedDate.endDate
             )
-            if(shouldShowDate) {
-                binding?.layoutOptions?.itemTransactionHistory?.txtChoosenDate?.text = "${startDate} - ${endDate}"
+            if (shouldShowDate) {
+                binding?.layoutOptions?.itemTransactionHistory?.txtChoosenDate?.text = "$startDate - $endDate"
             }
         } else {
             binding?.layoutOptions?.itemTransactionHistory?.mainLayout?.isActivated = false
@@ -182,17 +178,16 @@ class DsarFragment: BaseDaggerFragment(), OnDateChangedListener {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == REQUEST_SECURITY_QUESTION) {
             isNeedOtp = resultCode != Activity.RESULT_OK
-            if(resultCode == Activity.RESULT_OK && data != null) {
+            if (resultCode == Activity.RESULT_OK && data != null) {
                 viewModel.submitRequest()
             }
-        } else if(requestCode == REQUEST_ADD_EMAIL) {
-            if(resultCode == Activity.RESULT_OK) {
+        } else if (requestCode == REQUEST_ADD_EMAIL) {
+            if (resultCode == Activity.RESULT_OK) {
                 renderProfileHeader()
-            }else {
+            } else {
                 activity?.finish()
             }
-        }
-        else {
+        } else {
             super.onActivityResult(requestCode, resultCode, data)
         }
     }
@@ -211,7 +206,7 @@ class DsarFragment: BaseDaggerFragment(), OnDateChangedListener {
         binding?.btnNext?.apply {
             text = getString(R.string.dsar_submit_download_btn_title)
             setOnClickListener {
-                if(isNeedOtp) {
+                if (isNeedOtp) {
                     toVerification()
                 } else {
                     viewModel.submitRequest()
@@ -260,7 +255,7 @@ class DsarFragment: BaseDaggerFragment(), OnDateChangedListener {
         binding?.layoutOptions?.itemPaymentInfo?.apply {
             mainLayout.setOnClickListener {
                 it.isActivated = !it.isActivated
-                if(!it.isActivated) {
+                if (!it.isActivated) {
                     viewModel.removeFilter(DsarConstants.FILTER_TYPE_PAYMENT)
                     checkIcon.invisible()
                 } else {
@@ -272,7 +267,7 @@ class DsarFragment: BaseDaggerFragment(), OnDateChangedListener {
         binding?.layoutOptions?.itemTransactionHistory?.apply {
             mainLayout.setOnClickListener {
                 it.isActivated = !it.isActivated
-                if(!it.isActivated) {
+                if (!it.isActivated) {
                     viewModel.onTransactionHistoryDeselected()
                 } else {
                     viewModel.onTransactionHistorySelected()
@@ -287,7 +282,7 @@ class DsarFragment: BaseDaggerFragment(), OnDateChangedListener {
     override fun onDateChanged(date: Long) {}
 
     private fun onItemRangeClicked(item: String, isChecked: Boolean, customDateModel: Pair<Date, Date>?) {
-        if(item == DsarConstants.LABEL_RANGE_CUSTOM) {
+        if (item == DsarConstants.LABEL_RANGE_CUSTOM) {
             viewModel.setSelectedDate(item, customDateModel?.first, customDateModel?.second)
         } else {
             viewModel.setSelectedDate(item, null, null)
@@ -296,7 +291,7 @@ class DsarFragment: BaseDaggerFragment(), OnDateChangedListener {
 
     private fun showTransactionHistoryBtmSheet() {
         activity?.supportFragmentManager?.let {
-            if(rangePickerBottomSheet == null) {
+            if (rangePickerBottomSheet == null) {
                 rangePickerBottomSheet =
                     DsarHistoryTransactionBottomSheet(requireActivity()) { item, isChecked, customDate ->
                         onItemRangeClicked(item, isChecked, customDate)
@@ -339,7 +334,7 @@ class DsarFragment: BaseDaggerFragment(), OnDateChangedListener {
     }
 
     override fun onFragmentBackPressed(): Boolean {
-        return if(viewModel.showSummary.value?.isNotEmpty() == true) {
+        return if (viewModel.showSummary.value?.isNotEmpty() == true) {
             viewModel.backToFormPage()
             true
         } else {

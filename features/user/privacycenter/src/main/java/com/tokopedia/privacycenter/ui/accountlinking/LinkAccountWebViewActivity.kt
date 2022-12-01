@@ -27,7 +27,7 @@ import com.tokopedia.webview.BaseSimpleWebViewActivity
  * Created by Yoris on 10/08/21.
  */
 
-class LinkAccountWebViewActivity: BaseSimpleWebViewActivity(), HasComponent<PrivacyCenterComponent> {
+class LinkAccountWebViewActivity : BaseSimpleWebViewActivity(), HasComponent<PrivacyCenterComponent> {
 
     companion object {
         const val KEY_URL = "webview_url"
@@ -58,7 +58,7 @@ class LinkAccountWebViewActivity: BaseSimpleWebViewActivity(), HasComponent<Priv
             activity?.run {
                 try {
                     val baseUrl = getLinkAccountUrl(redirectionApplink)
-                    if(baseUrl != null) {
+                    if (baseUrl != null) {
                         val i = newInstance(this, getSuccessUrl(baseUrl).toString())
                         startActivityForResult(i, LINK_ACCOUNT_WEBVIEW_REQUEST)
                     }
@@ -71,10 +71,10 @@ class LinkAccountWebViewActivity: BaseSimpleWebViewActivity(), HasComponent<Priv
                 val uri = Uri.parse(getAccountLinkUrl())
                 val clientID = TrackApp.getInstance().gtm.cachedClientIDString
                 return uri.buildUpon()
-                        .appendQueryParameter(QUERY_APP_CLIENT_ID, clientID)
-                        .appendQueryParameter(QUERY_LD, redirectionApplink.encodeToUtf8())
-                        .build()
-            }catch (_: Exception) {}
+                    .appendQueryParameter(QUERY_APP_CLIENT_ID, clientID)
+                    .appendQueryParameter(QUERY_LD, redirectionApplink.encodeToUtf8())
+                    .build()
+            } catch (_: Exception) {}
             return null
         }
     }
@@ -107,7 +107,7 @@ class LinkAccountWebViewActivity: BaseSimpleWebViewActivity(), HasComponent<Priv
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        if(item.itemId == R.id.menu_link_account_skip) {
+        if (item.itemId == R.id.menu_link_account_skip) {
             (fragment as LinkAccountWebviewFragment).showSkipDialog()
         }
         return super.onOptionsItemSelected(item)
@@ -129,9 +129,12 @@ class LinkAccountWebViewActivity: BaseSimpleWebViewActivity(), HasComponent<Priv
 
         val item = menu.findItem(R.id.menu_link_account_skip)
         val s = SpannableString(this.getString(R.string.account_linking_skip_for_now))
-        s.setSpan(ForegroundColorSpan(
-            ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_G500)
-        ), 0, s.length, 0)
+        s.setSpan(
+            ForegroundColorSpan(
+                ContextCompat.getColor(this, com.tokopedia.unifyprinciples.R.color.Unify_G500)
+            ),
+            0, s.length, 0
+        )
         item.title = s
         return true
     }
@@ -140,11 +143,11 @@ class LinkAccountWebViewActivity: BaseSimpleWebViewActivity(), HasComponent<Priv
         var url = intent.getStringExtra(KEY_URL).orEmpty()
         val source = intent.getStringExtra(ApplinkConstInternalGlobal.PARAM_SOURCE).orEmpty()
 
-        if(url.isEmpty()) {
+        if (url.isEmpty()) {
             val redirection = intent.getStringExtra(ApplinkConstInternalGlobal.PARAM_LD) ?: ApplinkConst.HOME
             val uri = getLinkAccountUrl(redirection)
             url = uri.toString()
-            if(source.isNotEmpty() && url.isNotEmpty()) {
+            if (source.isNotEmpty() && url.isNotEmpty()) {
                 url = "$url&source=$source"
             }
         }

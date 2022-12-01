@@ -6,16 +6,16 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.abstraction.common.di.scope.ActivityScope
 import com.tokopedia.privacycenter.ui.consentwithdrawal.ConsentWithdrawalViewModel
-import com.tokopedia.privacycenter.ui.dsar.addemail.DsarAddEmailViewModel
 import com.tokopedia.privacycenter.ui.dsar.DsarViewModel
+import com.tokopedia.privacycenter.ui.dsar.addemail.DsarAddEmailViewModel
 import com.tokopedia.privacycenter.ui.main.PrivacyCenterViewModel
 import com.tokopedia.privacycenter.ui.main.section.accountlinking.AccountLinkingViewModel
 import com.tokopedia.privacycenter.ui.main.section.consentwithdrawal.ConsentWithdrawalSectionViewModel
 import com.tokopedia.privacycenter.ui.main.section.privacypolicy.PrivacyPolicySectionViewModel
 import com.tokopedia.privacycenter.ui.main.section.recommendation.RecommendationViewModel
+import com.tokopedia.privacycenter.ui.searchhistory.SearchHistoryViewModel
 import com.tokopedia.privacycenter.ui.sharingwishlist.SharingWishlistSharedViewModel
 import com.tokopedia.privacycenter.ui.sharingwishlist.SharingWishlistViewModel
-import com.tokopedia.privacycenter.ui.searchhistory.SearchHistoryViewModel
 import dagger.Binds
 import dagger.Module
 import dagger.multibindings.IntoMap
@@ -72,7 +72,6 @@ abstract class PrivacyCenterViewModelModule {
     @ActivityScope
     @ViewModelKey(DsarAddEmailViewModel::class)
     abstract fun provideDsarAddEmailViewModel(viewModel: DsarAddEmailViewModel): ViewModel
-
 
     @Binds
     @IntoMap

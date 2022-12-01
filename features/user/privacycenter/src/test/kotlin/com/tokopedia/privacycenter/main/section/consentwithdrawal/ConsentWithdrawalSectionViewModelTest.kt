@@ -70,5 +70,4 @@ class ConsentWithdrawalSectionViewModelTest {
         assertTrue(result is PrivacyCenterStateResult.Fail)
         assertEquals(expected.error, result.error)
     }
-
 }

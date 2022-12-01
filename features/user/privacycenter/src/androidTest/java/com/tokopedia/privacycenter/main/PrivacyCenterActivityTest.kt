@@ -58,5 +58,4 @@ class PrivacyCenterActivityTest {
             shouldDisplayPrivacyTestData()
         }
     }
-
 }

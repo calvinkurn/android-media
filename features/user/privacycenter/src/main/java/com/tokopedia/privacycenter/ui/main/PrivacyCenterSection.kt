@@ -5,9 +5,9 @@ import com.tokopedia.privacycenter.ui.main.section.BasePrivacyCenterSection
 import com.tokopedia.privacycenter.ui.main.section.accountlinking.AccountLinkingSection
 import com.tokopedia.privacycenter.ui.main.section.activity.ActivitySection
 import com.tokopedia.privacycenter.ui.main.section.consentwithdrawal.ConsentWithdrawalSection
-import com.tokopedia.privacycenter.ui.main.section.privacypolicy.PrivacyPolicySection
 import com.tokopedia.privacycenter.ui.main.section.dsar.DSARSection
 import com.tokopedia.privacycenter.ui.main.section.faqPrivacySection.FaqPrivacySection
+import com.tokopedia.privacycenter.ui.main.section.privacypolicy.PrivacyPolicySection
 import com.tokopedia.privacycenter.ui.main.section.recommendation.RecommendationSection
 import com.tokopedia.privacycenter.ui.main.section.tokopediacare.TokopediaCareSection
 

@@ -44,7 +44,7 @@ object RequestDetailBottomSheet {
                 requestDetailResponse.deadline
             )
             val summaryInfoPrefix = context.getString(R.string.dsar_bottom_sheet_info_prefix)
-            binding.layoutSummary.tickerInfoSummary.setTextDescription(Html.fromHtml("$summaryInfoPrefix <b>${formattedDate}</b>"))
+            binding.layoutSummary.tickerInfoSummary.setTextDescription(Html.fromHtml("$summaryInfoPrefix <b>$formattedDate</b>"))
             binding.layoutSummary.txtSummary.text = Html.fromHtml(mapAdditionalData(additionalData))
         }
         bottomSheet.show(fragmentManager, "")

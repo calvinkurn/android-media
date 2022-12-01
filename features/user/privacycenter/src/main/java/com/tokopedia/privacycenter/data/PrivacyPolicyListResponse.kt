@@ -21,5 +21,5 @@ data class PrivacyPolicyDataModel(
     @SerializedName("language")
     val language: String = "",
     @SerializedName("last_update")
-    val lastUpdate: String = "",
+    val lastUpdate: String = ""
 )

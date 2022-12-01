@@ -17,7 +17,7 @@ import javax.inject.Inject
  * Created by Yoris on 27/08/21.
  */
 
-class LinkAccountWebviewFragment: BaseSessionWebViewFragment() {
+class LinkAccountWebviewFragment : BaseSessionWebViewFragment() {
 
     @Inject lateinit var analytics: LinkAccountTracker
 
@@ -33,9 +33,12 @@ class LinkAccountWebviewFragment: BaseSessionWebViewFragment() {
     private fun checkForStatusQuery(url: String): Boolean {
         return try {
             val status = Uri.parse(url).getQueryParameter(KEY_STATUS).orEmpty()
-            activity?.setResult(Activity.RESULT_OK, Intent().apply {
-                putExtra(ApplinkConstInternalGlobal.PARAM_STATUS, status)
-            })
+            activity?.setResult(
+                Activity.RESULT_OK,
+                Intent().apply {
+                    putExtra(ApplinkConstInternalGlobal.PARAM_STATUS, status)
+                }
+            )
             activity?.finish()
             return status.isNotEmpty()
         } catch (_: Exception) {
@@ -45,9 +48,9 @@ class LinkAccountWebviewFragment: BaseSessionWebViewFragment() {
 
     override fun shouldOverrideUrlLoading(webview: WebView?, url: String): Boolean {
         when {
-            url.startsWith(TKPD_SCHEME, ignoreCase = true)
-                || url.startsWith(TKPD_INTERNAL_SCHEME, ignoreCase = true) -> {
-                if(url.startsWith(BACK_BTN_APPLINK)) {
+            url.startsWith(TKPD_SCHEME, ignoreCase = true) ||
+                url.startsWith(TKPD_INTERNAL_SCHEME, ignoreCase = true) -> {
+                if (url.startsWith(BACK_BTN_APPLINK)) {
                     // Finish activity from webview
                     if (url.contains(KEY_STATUS) && checkForStatusQuery(url)) {
                         return true
@@ -116,7 +119,7 @@ class LinkAccountWebviewFragment: BaseSessionWebViewFragment() {
     }
 
     fun showSkipDialog() {
-        if(activity != null){
+        if (activity != null) {
             analytics.trackClickLewatinToolbar()
             DialogUnify(requireActivity(), DialogUnify.HORIZONTAL_ACTION, DialogUnify.NO_IMAGE).apply {
                 setTitle(getString(R.string.account_linking_title_skip_gopay_dialog))
@@ -126,7 +129,7 @@ class LinkAccountWebviewFragment: BaseSessionWebViewFragment() {
                 setPrimaryCTAClickListener {
                     analytics.trackSkipPopupYes()
                     val baseUrl = LinkAccountWebViewActivity.getLinkAccountUrl("")
-                    if(baseUrl != null) {
+                    if (baseUrl != null) {
                         webView?.loadUrl(
                             LinkAccountWebViewActivity.getSuccessUrl(baseUrl).toString()
                         )
@@ -142,7 +145,7 @@ class LinkAccountWebviewFragment: BaseSessionWebViewFragment() {
     }
 
     fun trackClickBackBtn() {
-        if(getWebView().url?.contains(TokopediaUrl.Companion.getInstance().GOJEK_OTP) == true) {
+        if (getWebView().url?.contains(TokopediaUrl.Companion.getInstance().GOJEK_OTP) == true) {
             analytics.trackClickBtnBack()
         }
     }

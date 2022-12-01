@@ -17,7 +17,8 @@ class LinkAccountTracker @Inject constructor() {
                 EVENT_VIEW_ACC_IRIS,
                 CATEGORY_GOTO_ACC_LINKING,
                 ACTION_VIEW_GOJEK_OTP,
-                "")
+                ""
+            )
         )
     }
 
@@ -28,7 +29,8 @@ class LinkAccountTracker @Inject constructor() {
                 EVENT_CLICK_ACCOUNT,
                 CATEGORY_GOTO_ACC_LINKING,
                 ACTION_CLICK_BACK_BTN,
-                LABEL_GOJEK_OTP_PAGE)
+                LABEL_GOJEK_OTP_PAGE
+            )
         )
     }
 
@@ -39,7 +41,8 @@ class LinkAccountTracker @Inject constructor() {
                 EVENT_VIEW_ACC_IRIS,
                 CATEGORY_GOTO_ACC_LINKING,
                 ACTION_VIEW_GOPAY_PIN,
-                "")
+                ""
+            )
         )
     }
 
@@ -50,7 +53,8 @@ class LinkAccountTracker @Inject constructor() {
                 EVENT_CLICK_ACCOUNT,
                 CATEGORY_GOTO_ACC_LINKING,
                 ACTION_CLICK_ON_LEWATIN_DULU_TOOLBAR,
-                "")
+                ""
+            )
         )
     }
 
@@ -61,7 +65,8 @@ class LinkAccountTracker @Inject constructor() {
                 EVENT_CLICK_ACCOUNT,
                 CATEGORY_GOTO_ACC_LINKING,
                 ACTION_CLICK_ON_SAMBUNGIN_GOPAY_LAIN_KALI,
-                LABEL_NO),
+                LABEL_NO
+            ),
             clientId = false
         )
     }
@@ -73,7 +78,8 @@ class LinkAccountTracker @Inject constructor() {
                 EVENT_CLICK_ACCOUNT,
                 CATEGORY_GOTO_ACC_LINKING,
                 ACTION_CLICK_ON_SAMBUNGIN_GOPAY_LAIN_KALI,
-                LABEL_YES),
+                LABEL_YES
+            ),
             clientId = false
         )
     }
@@ -81,7 +87,7 @@ class LinkAccountTracker @Inject constructor() {
     private fun track(map: MutableMap<String, Any>, clientId: Boolean = true) {
         map[KEY_BUSINESS_UNIT] = BUSSINESS_UNIT
         map[KEY_CURRENT_SITE] = CURRENT_SITE
-        if(clientId){
+        if (clientId) {
             map[KEY_EXT_CLIENT_ID] = TrackApp.getInstance().gtm.cachedClientIDString
         }
         TrackApp.getInstance().gtm.sendGeneralEvent(map)
