@@ -247,7 +247,7 @@ class CMNotificationHandler : CoroutineScope {
     }
 
     private fun handleMainClick(context: Context, intent: Intent, notificationId: Int, baseNotificationModel: BaseNotificationModel) {
-        startActivity(context, baseNotificationModel.appLink, intent, baseNotificationModel.webHookData())
+        startActivity(context, baseNotificationModel.appLink, intent)
 //        context.applicationContext.sendBroadcast(Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS))
         NotificationManagerCompat.from(context).cancel(notificationId)
     }
@@ -520,13 +520,11 @@ class CMNotificationHandler : CoroutineScope {
     private fun startActivity(
         context: Context,
         appLink: String?,
-        dataIntent: Intent?,
-        webHookData: WebHookParams.Data? = null
+        dataIntent: Intent?
     ) {
         try {
             val appLinkIntent = getAppLinkIntent(context, appLink)
             copyDataIntentToAppLinkIntent(appLinkIntent, dataIntent)
-            copyWebHookDataToApplinkIntent(appLinkIntent, webHookData)
             appLinkIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP)
             context.applicationContext.startActivity(appLinkIntent)
             CMNotificationUtils.sendUTMParamsInGTM(appLink)
@@ -560,7 +558,9 @@ class CMNotificationHandler : CoroutineScope {
         var bundle = Bundle()
         if (baseNotificationModel != null) {
             baseNotificationModel.videoPushModel?.let {
-                bundle = jsonToBundle(bundle, JSONObject(it))
+                if (it.isNotBlank()) {
+                    bundle = jsonToBundle(bundle, JSONObject(it))
+                }
             }
             baseNotificationModel.customValues?.let {
                 if (it.isNotEmpty()) {
@@ -568,19 +568,11 @@ class CMNotificationHandler : CoroutineScope {
                 }
             }
         }
+        bundle.putString(
+            CMConstant.PayloadKeys.NOTIFCENTER_NOTIFICATION_TEMPLATE_KEY,
+            baseNotificationModel?.webHookData()?.notificationTemplateKey.toString()
+        )
         return bundle
-    }
-
-    private fun copyWebHookDataToApplinkIntent(
-        appLinkIntent: Intent,
-        webHookData: WebHookParams.Data?
-    ) {
-        try {
-            appLinkIntent.putExtra(
-                CMConstant.PayloadKeys.NOTIFCENTER_NOTIFICATION_TEMPLATE_KEY,
-                webHookData?.notificationTemplateKey.toString()
-            )
-        } catch (e: Exception) {}
     }
 
     private fun jsonToBundle(bundle: Bundle, jsonObject: JSONObject?): Bundle {
