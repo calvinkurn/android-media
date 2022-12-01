@@ -12,6 +12,7 @@ import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.campaign.utils.constant.DateConstant
 import com.tokopedia.campaign.utils.extension.routeToUrl
 import com.tokopedia.campaign.utils.extension.showToaster
+import com.tokopedia.campaign.utils.extension.showToasterError
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.linker.LinkerManager
@@ -23,6 +24,7 @@ import com.tokopedia.media.loader.loadImage
 import com.tokopedia.mvc.R
 import com.tokopedia.mvc.databinding.*
 import com.tokopedia.mvc.di.component.DaggerMerchantVoucherCreationComponent
+import com.tokopedia.mvc.domain.entity.GenerateVoucherImageMetadata
 import com.tokopedia.mvc.domain.entity.VoucherDetailData
 import com.tokopedia.mvc.domain.entity.enums.BenefitType
 import com.tokopedia.mvc.domain.entity.enums.PromoType
@@ -118,6 +120,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         observeData()
+        observeGenerateVoucherImageResult()
         getVoucherDetailData(voucherId)
     }
 
@@ -134,6 +137,20 @@ class VoucherDetailFragment : BaseDaggerFragment() {
             }
         }
     }
+
+    private fun observeGenerateVoucherImageResult() {
+        viewModel.generateVoucherImageMetadata.observe(viewLifecycleOwner) { result ->
+            when (result) {
+                is Success -> {
+                    displayShareBottomSheet(result.data)
+                }
+                is Fail -> {
+                    binding?.nsvContent.showToasterError(result.throwable)
+                }
+            }
+        }
+    }
+
 
     private fun setupView(data: VoucherDetailData) {
         binding?.run {
@@ -566,34 +583,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                 shareToBroadcastChat(data.voucherId)
             }
             btnShare.setOnClickListener {
-                // TODO:open share component
-
-                val topSellingProductImageUrls: List<String> = listOf(
-                    "https://ecs7.tokopedia.net/img/cache/200-square/VqbcmM/2022/9/21/c420466b-98cc-4d8c-9d0e-5924ba0ca554.jpg",
-                    "https://ecs7.tokopedia.net/img/cache/200-square/VqbcmM/2022/9/21/42595f85-1663-43c5-9c45-1e6c5b894e71.jpg",
-                    "https://ecs7.tokopedia.net/img/cache/200-square/VqbcmM/2022/9/21/dede8c1d-9799-4313-bece-7d69c1637071.jpg"
-                )
-
-                //TODO: This is just a sample usage. Please fill these values with the real data
-                val shareComponentParam = ShareComponentInstanceBuilder.Param(
-                    isVoucherProduct = true,
-                    voucherId = 1239,
-                    isPublic = true,
-                    voucherCode = "UNVRCUAN",
-                    voucherStartDate = Date(),
-                    voucherEndDate = Date(),
-                    promoType = PromoType.CASHBACK,
-                    benefitType = BenefitType.NOMINAL,
-                    shopLogo = "https://ecs7.tokopedia.net/img/cache/200-square/VqbcmM/2022/9/21/dede8c1d-9799-4313-bece-7d69c1637071.jpg",
-                    shopName = "UNILEVER",
-                    shopDomain = "UNVR",
-                    discountAmount = 500_000,
-                    discountAmountMax = 1_000_000,
-                    productImageUrls = topSellingProductImageUrls,
-                    discountPercentage = 10
-                )
-
-                displayShareBottomSheet(shareComponentParam)
+                viewModel.generateVoucherImage()
             }
         }
         stateButtonDuplicateBinding?.apply {
@@ -670,7 +660,40 @@ class VoucherDetailFragment : BaseDaggerFragment() {
         routeToUrl(broadCastChatUrl + voucherId.toString())
     }
 
-    private fun displayShareBottomSheet(shareComponentParam: ShareComponentInstanceBuilder.Param) {
+    private fun displayShareBottomSheet(voucherImageMetadata: GenerateVoucherImageMetadata) {
+        val voucherDetail = voucherImageMetadata.voucherDetail
+        val voucherStartDate = voucherDetail.voucherStartTime.toDate(DateConstant.DATE_WITH_SECOND_PRECISION_ISO_8601)
+        val voucherEndDate = voucherDetail.voucherFinishTime.toDate(DateConstant.DATE_WITH_SECOND_PRECISION_ISO_8601)
+        val benefitType = when(voucherDetail.voucherDiscountType) {
+            DiscountTypeConstant.NOMINAL -> BenefitType.NOMINAL
+            DiscountTypeConstant.PERCENTAGE -> BenefitType.PERCENTAGE
+            else -> BenefitType.NOMINAL
+        }
+        val productImageUrls = if (voucherDetail.isLockToProduct == TRUE) {
+            voucherImageMetadata.topSellingProductImageUrls
+        } else {
+            emptyList()
+        }
+
+        val shareComponentParam = ShareComponentInstanceBuilder.Param(
+            isVoucherProduct = voucherDetail.isLockToProduct == TRUE,
+            voucherId = voucherDetail.voucherId,
+            isPublic = voucherDetail.isPublic == TRUE,
+            voucherCode = voucherDetail.voucherCode,
+            voucherStartDate = voucherStartDate,
+            voucherEndDate = voucherEndDate,
+            promoType = voucherDetail.voucherType,
+            benefitType = benefitType,
+            shopLogo = voucherImageMetadata.shopData.logo,
+            shopName = voucherImageMetadata.shopData.name,
+            shopDomain =  voucherImageMetadata.shopData.domain,
+            discountAmount = voucherDetail.voucherDiscountAmount,
+            discountAmountMax = voucherDetail.voucherDiscountAmountMax,
+            productImageUrls = productImageUrls,
+            discountPercentage = voucherDetail.voucherDiscountAmount.toInt(),
+            targetBuyer = voucherDetail.targetBuyer
+        )
+
         val endDate = shareComponentParam.voucherEndDate.formatTo(DateConstant.DATE_YEAR_PRECISION)
         val endHour = shareComponentParam.voucherEndDate.formatTo(DateConstant.TIME_MINUTE_PRECISION)
 
