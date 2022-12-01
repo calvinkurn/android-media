@@ -45,7 +45,7 @@ fun mapDiscoveryResponseToPageData(discoveryResponse: DiscoveryResponse,
     val pageInfo = discoveryResponse.pageInfo
     val discoveryPageData = DiscoveryPageData(pageInfo, discoveryResponse.additionalInfo)
     discoComponentQuery = queryParameterMap
-    val discoveryDataMapper = DiscoveryPageDataMapper(pageInfo, queryParameterMap, userAddressData,isLoggedIn,shouldHideSingleProdCard)
+    val discoveryDataMapper = DiscoveryPageDataMapper(pageInfo, queryParameterMap, discoveryResponse.queryParamMapWithRpc, discoveryResponse.queryParamMapWithoutRpc, userAddressData, isLoggedIn, shouldHideSingleProdCard)
     if (!discoveryResponse.components.isNullOrEmpty()) {
         discoveryPageData.components = discoveryDataMapper.getDiscoveryComponentListWithQueryParam(discoveryResponse.components.filter {
             pageInfo.identifier?.let { identifier ->
@@ -65,6 +65,8 @@ fun mapDiscoveryResponseToPageData(discoveryResponse: DiscoveryResponse,
 class DiscoveryPageDataMapper(
     private val pageInfo: PageInfo,
     private val queryParameterMap: Map<String, String?>,
+    private val queryParameterMapWithRpc: Map<String, String?>,
+    private val queryParameterMapWithoutRpc: Map<String, String?>,
     private val localCacheModel: LocalCacheModel?,
     private val isLoggedIn: Boolean,
     private val shouldHideSingleProdCard: Boolean
@@ -597,4 +599,18 @@ fun getPageInfo(pageName: String): PageInfo {
         return it.pageInfo
     }
     return PageInfo()
+}
+
+fun getMapWithoutRpc(pageName: String): Map<String, String?>? {
+    discoveryPageData[pageName]?.let {
+        return it.queryParamMapWithoutRpc
+    }
+    return null
+}
+
+fun getMapWithRpc(pageName: String): Map<String, String?>? {
+    discoveryPageData[pageName]?.let {
+        return it.queryParamMapWithRpc
+    }
+    return null
 }
