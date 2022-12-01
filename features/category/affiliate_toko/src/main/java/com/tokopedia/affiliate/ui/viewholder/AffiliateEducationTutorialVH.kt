@@ -5,6 +5,7 @@ import androidx.annotation.LayoutRes
 import androidx.cardview.widget.CardView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.affiliate.AffiliateAnalytics
 import com.tokopedia.affiliate.PAGE_EDUCATION_TUTORIAL
 import com.tokopedia.affiliate.interfaces.AffiliateEducationTopicTutorialClickInterface
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEducationTutorialUiModel
@@ -14,6 +15,8 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.user.session.UserSessionInterface
+import javax.inject.Inject
 
 class AffiliateEducationTutorialVH(
     itemView: View,
@@ -32,6 +35,9 @@ class AffiliateEducationTutorialVH(
         itemView.findViewById<View>(R.id.tutorial_content_container)
     private val tutorialCover = itemView.findViewById<View>(R.id.tutorial_cover_bg)
     private val tutorialContainer = itemView.findViewById<CardView>(R.id.cv_tutorial_topic)
+
+    @Inject
+    lateinit var userSessionInterface: UserSessionInterface
 
     override fun bind(element: AffiliateEducationTutorialUiModel?) {
         tutorialIcon.loadImage(element?.articleTopic?.icon?.url)
@@ -58,7 +64,31 @@ class AffiliateEducationTutorialVH(
                     PAGE_EDUCATION_TUTORIAL,
                     element?.articleTopic?.id.toString()
                 )
+                sendEducationClickEvent(
+                    element?.articleTopic?.title,
+                    element?.articleTopic?.id.toString(),
+                    AffiliateAnalytics.ActionKeys.CLICK_TUTORIAL_CATEGORY,
+                    AffiliateAnalytics.CategoryKeys.AFFILIATE_EDUKASI_PAGE
+                )
             }
         }
+    }
+
+    private fun sendEducationClickEvent(
+        creativeName: String?,
+        eventId: String?,
+        actionKeys: String,
+        categoryKeys: String
+    ) {
+        AffiliateAnalytics.sendEducationTracker(
+            AffiliateAnalytics.EventKeys.SELECT_CONTENT,
+            actionKeys,
+            categoryKeys,
+            eventId,
+            position = 0,
+            eventId,
+            userSessionInterface.userId,
+            creativeName
+        )
     }
 }

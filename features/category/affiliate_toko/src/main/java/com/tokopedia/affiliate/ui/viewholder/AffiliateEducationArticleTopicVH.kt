@@ -9,6 +9,7 @@ import com.google.android.material.shape.MaterialShapeDrawable
 import com.google.android.material.shape.ShapeAppearanceModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.affiliate.AffiliateAnalytics
 import com.tokopedia.affiliate.PAGE_EDUCATION_ARTICLE_TOPIC
 import com.tokopedia.affiliate.interfaces.AffiliateEducationTopicTutorialClickInterface
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEducationArticleTopicUiModel
@@ -16,6 +17,8 @@ import com.tokopedia.affiliate_toko.R
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.user.session.UserSessionInterface
+import javax.inject.Inject
 
 class AffiliateEducationArticleTopicVH(
     itemView: View,
@@ -31,6 +34,9 @@ class AffiliateEducationArticleTopicVH(
         private const val CORNER_SIZE_64 = 64f
     }
 
+    @Inject
+    lateinit var userSessionInterface: UserSessionInterface
+
     private val customCornerShape: MaterialShapeDrawable by lazy {
         val shape = ShapeAppearanceModel
             .builder()
@@ -43,7 +49,8 @@ class AffiliateEducationArticleTopicVH(
             this.fillColor = ColorStateList(
                 arrayOf(
                     intArrayOf(android.R.attr.state_enabled)
-                ), intArrayOf(
+                ),
+                intArrayOf(
                     MethodChecker.getColor(
                         itemView.context,
                         com.tokopedia.unifyprinciples.R.color.Unify_Background
@@ -62,10 +69,29 @@ class AffiliateEducationArticleTopicVH(
                 PAGE_EDUCATION_ARTICLE_TOPIC,
                 element?.articleTopic?.id.toString()
             )
+            sendEducationClickEvent(
+                element?.articleTopic?.title,
+                element?.articleTopic?.id.toString(),
+                AffiliateAnalytics.ActionKeys.CLICK_ARTICLE_CATEGORY,
+                AffiliateAnalytics.CategoryKeys.AFFILIATE_EDUKASI_PAGE
+            )
         }
         ViewCompat.setBackground(
             itemView.findViewById<CardView>(R.id.cv_artice_topic),
             customCornerShape
+        )
+    }
+
+    private fun sendEducationClickEvent(creativeName: String?, eventId: String?, actionKeys: String, categoryKeys: String) {
+        AffiliateAnalytics.sendEducationTracker(
+            AffiliateAnalytics.EventKeys.SELECT_CONTENT,
+            actionKeys,
+            categoryKeys,
+            eventId,
+            position = 0,
+            eventId,
+            userSessionInterface.userId,
+            creativeName
         )
     }
 }
