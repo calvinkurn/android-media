@@ -27,6 +27,37 @@
         android:layout_marginHorizontal="16dp"
         app:sort_filter_type="advanced"/>
 
+    <com.tokopedia.unifycomponents.LoaderUnify
+        android:id="@+id/loaderPage"
+        android:visibility="gone"
+        android:layout_gravity="center"
+        android:layout_marginTop="48dp"
+        android:layout_width="48dp"
+        android:layout_height="48dp"/>
+
+    <com.tokopedia.empty_state.EmptyStateUnify
+        android:id="@+id/errorPageLarge"
+        android:visibility="gone"
+        app:unifyEmptyStateTitle=""
+        app:unifyEmptyStateDescription="@string/smvc_voucherlist_empty_data_description_text"
+        app:unifyEmptyStateImageUrl="https://images.tokopedia.net/android/merchant_voucher/il_mvc_no_result.webp"
+        app:unifyEmptyStatePrimaryCTAText="@string/smvc_voucherlist_empty_data_description_buttontext"
+        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"/>
+
+    <com.tokopedia.empty_state.EmptyStateUnify
+        android:id="@+id/errorPageSmall"
+        android:visibility="gone"
+        app:unifyEmptyStateTitle="@string/smvc_voucherlist_empty_data_search_title_text"
+        app:unifyEmptyStateDescription="@string/smvc_voucherlist_empty_data_search_description_text"
+        app:unifyEmptyStateImageUrl="https://images.tokopedia.net/android/merchant_voucher/il_mvc_no_result.webp"
+        app:unifyEmptyStateType="section"
+        app:unifyEmptyStateOrientation="horizontal"
+        android:layout_weight="1"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"/>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvVoucher"
         android:layout_weight="1"

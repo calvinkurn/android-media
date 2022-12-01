@@ -2,6 +2,7 @@ package com.tokopedia.mvc.presentation.list.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.mvc.domain.entity.Voucher
@@ -12,6 +13,7 @@ import com.tokopedia.mvc.domain.entity.enums.VoucherStatus
 import com.tokopedia.mvc.domain.usecase.GetVoucherListChildUseCase
 import com.tokopedia.mvc.domain.usecase.GetVoucherListUseCase
 import com.tokopedia.mvc.domain.usecase.GetVoucherQuotaUseCase
+import com.tokopedia.mvc.presentation.list.helper.MvcListPageStateHelper
 import com.tokopedia.mvc.presentation.list.model.FilterModel
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import javax.inject.Inject
@@ -32,8 +34,15 @@ class MvcListViewModel @Inject constructor(
     private val _voucherQuota = MutableLiveData<VoucherCreationQuota>()
     val voucherQuota: LiveData<VoucherCreationQuota> get() = _voucherQuota
 
+    private val _isLoading = MutableLiveData<Boolean>()
+    val isLoading: LiveData<Boolean> get() = _isLoading
+
     private val _error = MutableLiveData<Throwable>()
     val error: LiveData<Throwable> get() = _error
+
+    val pageState = Transformations.map(voucherList) {
+        MvcListPageStateHelper.getPageState(it, filter)
+    }
 
     var filter = FilterModel()
 

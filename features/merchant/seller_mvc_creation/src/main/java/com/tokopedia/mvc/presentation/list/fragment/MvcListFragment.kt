@@ -21,6 +21,7 @@ import com.tokopedia.campaign.utils.extension.slideUp
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.applyUnifyBackgroundColor
 import com.tokopedia.kotlin.extensions.view.attachOnScrollListener
+import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.mvc.R
 import com.tokopedia.mvc.common.util.PaginationConstant.INITIAL_PAGE
 import com.tokopedia.mvc.common.util.PaginationConstant.PAGE_SIZE
@@ -40,6 +41,8 @@ import com.tokopedia.mvc.presentation.bottomsheet.MoreMenuVoucherBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.OtherPeriodBottomSheet
 import com.tokopedia.mvc.presentation.list.adapter.VoucherAdapterListener
 import com.tokopedia.mvc.presentation.list.adapter.VouchersAdapter
+import com.tokopedia.mvc.presentation.list.constant.PageState
+import com.tokopedia.mvc.presentation.list.helper.MvcListPageStateHelper
 import com.tokopedia.mvc.presentation.list.model.FilterModel
 import com.tokopedia.mvc.presentation.list.viewmodel.MvcListViewModel
 import com.tokopedia.mvc.presentation.product.add.AddProductActivity
@@ -128,6 +131,7 @@ class MvcListFragment: BaseDaggerFragment(), HasPaginatedList by HasPaginatedLis
             notifyLoadResult(vouchers.size >= PAGE_SIZE)
         }
         viewModel.error.observe(viewLifecycleOwner) {
+            binding?.loaderPage?.isVisible = false
             view?.showToasterError(it)
         }
         viewModel.voucherQuota.observe(viewLifecycleOwner) {
@@ -137,6 +141,13 @@ class MvcListFragment: BaseDaggerFragment(), HasPaginatedList by HasPaginatedLis
             val bottomSheet = OtherPeriodBottomSheet.newInstance(it)
             bottomSheet.setListener(this)
             bottomSheet.show(this, it.size)
+        }
+        viewModel.pageState.observe(viewLifecycleOwner) {
+            when (it) {
+                PageState.NO_DATA_PAGE -> displayNoData()
+                PageState.NO_DATA_SEARCH_PAGE -> displayNoDataSearch()
+                else -> displayList()
+            }
         }
     }
 
@@ -241,12 +252,45 @@ class MvcListFragment: BaseDaggerFragment(), HasPaginatedList by HasPaginatedLis
     private fun loadInitialDataList() {
         val adapter = binding?.rvVoucher?.adapter as? VouchersAdapter
         adapter?.clearDataList()
+        binding?.loaderPage?.isVisible = true
         viewModel.getVoucherList(INITIAL_PAGE, PAGE_SIZE)
         viewModel.getVoucherQuota()
     }
 
     private fun getDataList(page: Int, pageSize: Int) {
         viewModel.getVoucherList(page, pageSize)
+    }
+
+    private fun displayNoDataSearch() {
+        binding?.apply {
+            loaderPage.isVisible = false
+            rvVoucher.isVisible = false
+            errorPageSmall.isVisible = true
+            errorPageLarge.isVisible = false
+        }
+    }
+
+    private fun displayNoData() {
+        binding?.apply {
+            loaderPage.isVisible = false
+            rvVoucher.isVisible = false
+            errorPageSmall.isVisible = false
+            errorPageLarge.isVisible = true
+            val statusName = MvcListPageStateHelper.getStatusName(context, viewModel.filter)
+            errorPageLarge.emptyStateTitleID.text = getString(R.string.smvc_voucherlist_empty_data_title_text, statusName)
+            errorPageLarge.setPrimaryCTAClickListener {
+                binding?.footer?.btnAddCoupon?.performClick()
+            }
+        }
+    }
+
+    private fun displayList() {
+        binding?.apply {
+            loaderPage.isVisible = false
+            rvVoucher.isVisible = true
+            errorPageSmall.isVisible = false
+            errorPageLarge.isVisible = false
+        }
     }
 
     private fun redirectToCreateVoucherPage() {

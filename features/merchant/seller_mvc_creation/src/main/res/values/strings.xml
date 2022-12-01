@@ -204,5 +204,10 @@
     <string name="smvc_see_tnc_title_label"><![CDATA[Lihat Syarat & Ketentuan Penggunaan Kupon]]></string>
     <string name="smvc_cancel_label">Batalkan</string>
     <string name="smvc_stop_label">Hentikan</string>
+    <string name="smvc_voucherlist_empty_data_description_text">Yuk, buat kupon untuk tarik minat pembeli belanja di tokomu.</string>
+    <string name="smvc_voucherlist_empty_data_description_buttontext">Buat Kupon</string>
+    <string name="smvc_voucherlist_empty_data_title_text">Belum ada kupon %s, nih!</string>
+    <string name="smvc_voucherlist_empty_data_search_title_text">Kupon yang kamu cari nggak ditemukan</string>
+    <string name="smvc_voucherlist_empty_data_search_description_text">Coba ulangi pencarian dengan kata kunci atau filter lain, ya.</string>
 
 </resources>
