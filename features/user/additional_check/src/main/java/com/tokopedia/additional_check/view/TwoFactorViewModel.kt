@@ -8,7 +8,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.additional_check.data.OfferingData
 import com.tokopedia.additional_check.data.ShowInterruptData
 import com.tokopedia.additional_check.data.pref.AdditionalCheckPreference
-import com.tokopedia.additional_check.domain.usecase.GetSimpleProfileUseCase
+import com.tokopedia.additional_check.domain.usecase.RecoverGoogleTinkUseCase
 import com.tokopedia.additional_check.domain.usecase.OfferInterruptUseCase
 import com.tokopedia.additional_check.domain.usecase.ShowInterruptUseCase
 import com.tokopedia.additional_check.internal.AdditionalCheckConstants
@@ -16,9 +16,7 @@ import com.tokopedia.encryption.security.AeadEncryptor
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.sessioncommon.data.fingerprint.FingerprintPreference
 import com.tokopedia.sessioncommon.di.SessionModule
-import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
-import com.tokopedia.user.session.datastore.UserSessionDataStoreClient
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.Job
 import javax.inject.Inject
@@ -26,15 +24,13 @@ import javax.inject.Named
 
 @SuppressLint("StaticFieldLeak")
 class TwoFactorViewModel @Inject constructor(
-    @ApplicationContext private val context: Context,
     @Named(SessionModule.SESSION_MODULE)
     private val userSession: UserSessionInterface,
     private val additionalCheckPreference: AdditionalCheckPreference,
     private val showInterruptUseCase: ShowInterruptUseCase,
     private val offerInterruptUseCase: OfferInterruptUseCase,
     private val fingerprintPreference: FingerprintPreference,
-    private val getSimpleProfileUseCase: GetSimpleProfileUseCase,
-    private val aeadEncryptorImpl: AeadEncryptor,
+    private val recoverGoogleTink: RecoverGoogleTinkUseCase,
     dispatcher: CoroutineDispatcher
 ) : BaseViewModel(dispatcher) {
 
@@ -83,17 +79,7 @@ class TwoFactorViewModel @Inject constructor(
     fun refreshUserSession(onSuccess: (Boolean) -> Unit) {
         if (job == null) {
             job = launchCatchError(block = {
-                val profile = getSimpleProfileUseCase(Unit).data
-
-                // delete Android Keystore and DataStore
-                aeadEncryptorImpl.delete()
-                UserSessionDataStoreClient.reCreate(context)
-
-                val session = UserSession(context)
-                session.name = profile.fullName
-                session.email = profile.email
-                session.profilePicture = profile.profilePicture
-                session.phoneNumber = profile.phone
+                recoverGoogleTink(Unit)
                 onSuccess.invoke(true)
                 job = null
             }, onError = {
