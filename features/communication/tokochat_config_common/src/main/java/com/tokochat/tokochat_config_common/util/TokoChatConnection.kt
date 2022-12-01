@@ -8,6 +8,7 @@ import com.jakewharton.threetenabp.AndroidThreeTen
 import com.tokochat.tokochat_config_common.di.component.DaggerTokoChatConfigComponent
 import com.tokochat.tokochat_config_common.di.component.TokoChatConfigComponent
 import com.tokochat.tokochat_config_common.di.module.TokoChatConfigContextModule
+import com.tokopedia.config.GlobalConfig
 import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.remoteconfig.RollenceKey
 import com.tokopedia.user.session.UserSession
@@ -65,7 +66,7 @@ object TokoChatConnection {
             RemoteConfigInstance.getInstance().abTestPlatform.getString(
                 RollenceKey.KEY_ROLLENCE_TOKOCHAT,
                 ""
-            ) == RollenceKey.KEY_ROLLENCE_TOKOCHAT
+            ) == RollenceKey.KEY_ROLLENCE_TOKOCHAT && !GlobalConfig.isSellerApp()
         } catch (e: Throwable) {
             false
         }
