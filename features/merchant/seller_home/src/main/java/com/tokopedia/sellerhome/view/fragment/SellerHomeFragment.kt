@@ -2719,10 +2719,10 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             action = SubmitWidgetDismissUiModel.Action.DISMISS,
             dismissKey = NewSellerDialog.DISMISSAL_KEY,
             dismissSign = dataSign,
-            dismissObjectIDs = listOf("942"),
+            dismissObjectIDs = listOf(NewSellerJourneyHelper.WIDGET_DISMISSAL_ID),
             shopId = userSession.shopId,
             isFeedbackPositive = true,
-            feedbackWidgetIDParent = "942"
+            feedbackWidgetIDParent = NewSellerJourneyHelper.WIDGET_DISMISSAL_ID
         )
         sellerHomeViewModel.submitWidgetDismissal(param)
     }
