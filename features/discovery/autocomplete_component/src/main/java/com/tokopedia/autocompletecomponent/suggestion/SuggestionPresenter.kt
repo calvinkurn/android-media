@@ -29,12 +29,12 @@ import com.tokopedia.topads.sdk.domain.model.CpmModel
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.usecase.RequestParams
 import com.tokopedia.usecase.coroutines.UseCase
-import com.tokopedia.usecase.UseCase as RxUseCase
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Lazy
 import rx.Subscriber
 import javax.inject.Inject
 import javax.inject.Named
+import com.tokopedia.usecase.UseCase as RxUseCase
 
 class SuggestionPresenter @Inject constructor(
     @Named(GET_SUGGESTION_USE_CASE)
@@ -118,7 +118,7 @@ class SuggestionPresenter @Inject constructor(
         )
 
         for (item in items) {
-            if (items.isEmpty() || shopSuggestionProcessing.shouldSkipSuggestionItem(item)) continue
+            if (shopSuggestionProcessing.shouldSkipSuggestionItem(item)) continue
 
             when (item.template) {
                 SUGGESTION_HEADER -> addTitleToVisitable(item)
@@ -143,7 +143,9 @@ class SuggestionPresenter @Inject constructor(
     }
 
     private fun addTitleToVisitable(item: SuggestionItem) {
-        listVisitable.add(item.convertToTitleHeader())
+        if(item.title.isNotEmpty()) {
+            listVisitable.add(item.convertToTitleHeader())
+        }
     }
 
     private fun addSingleLineToVisitable(typePosition: HashMap<String, Int?>, item: SuggestionItem) {

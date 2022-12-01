@@ -410,6 +410,54 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
     }
 
     @Test
+    fun `When updatePhotos expect not any update photo`(){
+        val originalImage = arrayListOf("www.blank.com/cache/", "www.blank.com/cache/", "www.blank.com/cache/")
+        val imagePickerResult = arrayListOf("","","")
+        val product = inputProductModelDummy()
+        viewModel.productInputModel.value = product
+        viewModel.productInputModel.getOrAwaitValue()
+
+        viewModel.updateProductPhotos(imagePickerResult, originalImage)
+        assert(viewModel.imageUrlOrPathList.getOrAwaitValue().isNotEmpty())
+        assertEquals(viewModel.imageUrlOrPathList.getOrAwaitValue(), originalImage)
+    }
+
+    @Test
+    fun `When updatePhotos expect have update photo`(){
+        val originalImage = arrayListOf("0/tkpd/cache/1", "0/tkpd/cache/2", "0/tkpd/cache/3")
+        val imagePickerResult = arrayListOf("a/0/tkpd/102012.jpg","","")
+        val product = inputProductModelDummy()
+        val expectedResult = arrayListOf("a/0/tkpd/102012.jpg","www.blank.com/cache/", "www.blank.com/cache/")
+        viewModel.productInputModel.value = product
+        viewModel.productInputModel.getOrAwaitValue()
+
+        viewModel.updateProductPhotos(imagePickerResult, originalImage)
+        assert(viewModel.imageUrlOrPathList.getOrAwaitValue().isNotEmpty())
+        assertEquals(viewModel.imageUrlOrPathList.getOrAwaitValue(), expectedResult)
+    }
+
+    @Test
+    fun `When updatePhotos expect have new photo but not edited and edited photo`(){
+        val originalImage = arrayListOf("0/tkpd/cache/1", "0/tkpd/cache/2", "0/tkpd/cache/3", "a/0/tkpd/102013.jpg")
+        val imagePickerResult = arrayListOf("a/0/tkpd/102012.jpg","", "","")
+        val product = inputProductModelDummy()
+        val expectedResult = arrayListOf("a/0/tkpd/102012.jpg","www.blank.com/cache/", "www.blank.com/cache/", "a/0/tkpd/102013.jpg")
+        viewModel.productInputModel.value = product
+        viewModel.productInputModel.getOrAwaitValue()
+
+        viewModel.updateProductPhotos(imagePickerResult, originalImage)
+        assert(viewModel.imageUrlOrPathList.getOrAwaitValue().isNotEmpty())
+        assertEquals(viewModel.imageUrlOrPathList.getOrAwaitValue(), expectedResult)
+    }
+
+    @Test
+    fun `When updatePhotos but productInputModel is null`(){
+        val originalImage = arrayListOf("0/tkpd/cache/1", "0/tkpd/cache/2", "0/tkpd/cache/3", "a/0/tkpd/102013.jpg")
+        val imagePickerResult = arrayListOf("a/0/tkpd/102012.jpg","", "","")
+        viewModel.updateProductPhotos(imagePickerResult, originalImage)
+    }
+
+    @Test
     fun `When update product status Expect should update product status`() {
         val product = MediatorLiveData<ProductInputModel>()
         product.value = null
@@ -1132,6 +1180,20 @@ class AddEditProductPreviewViewModelTest: AddEditProductPreviewViewModelTestFixt
 
     private fun verifyValidateShopIsNotModerate() {
         assertTrue(viewModel.isOnModerationMode.value == Success(false))
+    }
+
+    private fun inputProductModelDummy() : ProductInputModel{
+        var pictureInputModel = PictureInputModel().apply {
+            urlOriginal = "www.blank.com/cache/"
+            fileName = "apa"
+            urlThumbnail = "www.gmail.com"
+        }
+        var product = ProductInputModel().apply {
+            detailInputModel.pictureList = listOf(pictureInputModel, pictureInputModel, pictureInputModel)
+            detailInputModel.imageUrlOrPathList = listOf("ada", "apa", "ada")
+        }
+
+        return product
     }
 
 }

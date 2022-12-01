@@ -316,12 +316,13 @@ object DynamicProductDetailMapper {
         assignIdToMedia(newDataWithMedia.media)
 
         return DynamicProductInfoP1(
-                layoutName = data.generalName,
-                basic = data.basicInfo,
-                data = newDataWithMedia,
-                pdpSession = data.pdpSession,
-                bestSellerContent = bestSellerComponent,
-                stockAssuranceContent = stockAssuranceComponent
+            layoutName = data.generalName,
+            basic = data.basicInfo,
+            data = newDataWithMedia,
+            pdpSession = data.pdpSession,
+            bestSellerContent = bestSellerComponent,
+            stockAssuranceContent = stockAssuranceComponent,
+            requestId = data.requestId
         )
     }
 
