@@ -70,7 +70,7 @@
     <string name="smvc_voucherlist_format_percent_desc">%s %s hingga %s</string>
     <string name="smvc_voucherlist_format_multiperiod">+%d Jadwal Lain</string>
     <string name="smvc_voucherlist_voucher_date_format">%s - %s</string>
-    <string name="smvc_voucherlist_voucher_quota_format">Kuota <b>%d</b></string>
+    <string name="smvc_voucherlist_voucher_quota_format"><![CDATA[Kuota <b>%d</b>]]></string>
     <string name="smvc_voucherlist_period_title">Periode</string>
     <string name="smvc_voucherlist_target_allbuyer_text">Semua Pembeli</string>
     <string name="smvc_voucherlist_target_newfollower_text">Follower Baru</string>
@@ -93,6 +93,7 @@
     <string name="smvc_voucherlist_quota_remaining_text">Sisa Kuota</string>
     <string name="smvc_voucherlist_create_voucher_text">Buat Kupon</string>
     <string name="smvc_voucherlist_copy_to_clipboard_message">Kode kupon berhasil disalin</string>
+    <string name="smvc_voucherlist_search_placeholder">Cari Nama Kupon</string>
 
     <!--Common Bottomsheet-->
     <string name="smvc_bottomsheet_filter_voucher_title">Filter</string>
@@ -110,7 +111,7 @@
     <string name="smvc_placeholder_share_component_outgoing_title">Kupon Produk dari %s</string>
     <string name="smvc_share_component_outgoing_text_description">Yuk, belanja dan pakai Kupon Produknya sekarang!</string>
     <string name="smvc_placeholder_share_component_text_description">Dapatkan Kupon Produk %s di \@Tokopedia hingga %s pukul %s WIB hanya untukmu!</string>
-<!--    <string name="smvc_placeholder_product_price">%s - %s</string>-->
+    <!-- <string name="smvc_placeholder_product_price">%s - %s</string>-->
     <string name="smvc_placeholder_share_component_outgoing_title_product_voucher">Kupon Produk dari %s</string>
     <string name="smvc_placeholder_share_component_outgoing_title_shop_voucher">Voucher Toko dari %s</string>
 

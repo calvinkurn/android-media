@@ -63,7 +63,9 @@ class OtherPeriodAdapter: RecyclerView.Adapter<OtherPeriodAdapter.ViewHolder>() 
             with(binding) {
                 val context = root.context
                 tfText.text = context.getString(R.string.smvc_voucherlist_voucher_date_format, startDate, finishDate)
-                tfSubText.text = context.getString(R.string.smvc_voucherlist_voucher_quota_format, item.quota)
+                tfSubText.text = MethodChecker.fromHtml(
+                    context.getString(R.string.smvc_voucherlist_voucher_quota_format, item.quota)
+                )
             }
         }
     }

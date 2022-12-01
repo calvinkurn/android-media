@@ -12,6 +12,7 @@
 
     <com.tokopedia.unifycomponents.SearchBarUnify
         android:id="@+id/searchBar"
+        app:search_bar_placeholder="@string/smvc_voucherlist_search_placeholder"
         app:search_bar_show_icon="false"
         android:layout_marginTop="12dp"
         android:layout_marginHorizontal="16dp"
