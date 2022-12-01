@@ -14,8 +14,7 @@ import com.tokopedia.affiliate_toko.R
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
-import com.tokopedia.user.session.UserSessionInterface
-import javax.inject.Inject
+import com.tokopedia.user.session.UserSession
 
 class AffiliateEducationArticleVH(
     itemView: View,
@@ -27,9 +26,6 @@ class AffiliateEducationArticleVH(
         @LayoutRes
         var LAYOUT = R.layout.affiliate_education_article_widget_item
     }
-
-    @Inject
-    lateinit var userSessionInterface: UserSessionInterface
 
     private val imageArticleWidget = itemView.findViewById<ImageUnify>(R.id.image_article_widget)
     private val itemTitle = itemView.findViewById<Typography>(R.id.article_widget_item_title)
@@ -71,7 +67,7 @@ class AffiliateEducationArticleVH(
             bannerId,
             position = 0,
             bannerId,
-            userSessionInterface.userId,
+            UserSession(itemView.context).userId,
             creativeName
         )
     }

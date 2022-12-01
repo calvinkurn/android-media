@@ -22,8 +22,7 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
-import com.tokopedia.user.session.UserSessionInterface
-import javax.inject.Inject
+import com.tokopedia.user.session.UserSession
 
 class AffiliateEducationSocialVH(
     itemView: View,
@@ -37,9 +36,6 @@ class AffiliateEducationSocialVH(
         @LayoutRes
         var LAYOUT = R.layout.affiliate_education_social_item
     }
-
-    @Inject
-    lateinit var userSessionInterface: UserSessionInterface
 
     private val roundedShape: MaterialShapeDrawable by lazy {
         val shape = ShapeAppearanceModel
@@ -74,10 +70,11 @@ class AffiliateEducationSocialVH(
         shareChannel.text = element?.socialItem?.socialChannel
         socialFollowers.text = element?.socialItem?.followCount
         followButton.text =
-            if (element?.socialItem?.socialChannel in arrayOf(YOUTUBE, INSTAGRAM))
+            if (element?.socialItem?.socialChannel in arrayOf(YOUTUBE, INSTAGRAM)) {
                 getString(R.string.affiliate_follow_cta)
-            else
+            } else {
                 getString(R.string.affiliate_join_cta)
+            }
         socialIcon.setImage(element?.socialItem?.icon)
         ViewCompat.setBackground(
             socialIconContainer,
@@ -110,7 +107,7 @@ class AffiliateEducationSocialVH(
             eventId,
             position = 0,
             eventId,
-            userSessionInterface.userId,
+            UserSession(itemView.context).userId,
             creativeName
         )
     }

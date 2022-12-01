@@ -17,8 +17,7 @@ import com.tokopedia.affiliate_toko.R
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
-import com.tokopedia.user.session.UserSessionInterface
-import javax.inject.Inject
+import com.tokopedia.user.session.UserSession
 
 class AffiliateEducationArticleTopicVH(
     itemView: View,
@@ -33,9 +32,6 @@ class AffiliateEducationArticleTopicVH(
         private const val CORNER_SIZE_16 = 16f
         private const val CORNER_SIZE_64 = 64f
     }
-
-    @Inject
-    lateinit var userSessionInterface: UserSessionInterface
 
     private val customCornerShape: MaterialShapeDrawable by lazy {
         val shape = ShapeAppearanceModel
@@ -82,7 +78,12 @@ class AffiliateEducationArticleTopicVH(
         )
     }
 
-    private fun sendEducationClickEvent(creativeName: String?, eventId: String?, actionKeys: String, categoryKeys: String) {
+    private fun sendEducationClickEvent(
+        creativeName: String?,
+        eventId: String?,
+        actionKeys: String,
+        categoryKeys: String
+    ) {
         AffiliateAnalytics.sendEducationTracker(
             AffiliateAnalytics.EventKeys.SELECT_CONTENT,
             actionKeys,
@@ -90,7 +91,7 @@ class AffiliateEducationArticleTopicVH(
             eventId,
             position = 0,
             eventId,
-            userSessionInterface.userId,
+            UserSession(itemView.context).userId,
             creativeName
         )
     }

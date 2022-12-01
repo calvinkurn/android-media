@@ -15,8 +15,7 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
-import com.tokopedia.user.session.UserSessionInterface
-import javax.inject.Inject
+import com.tokopedia.user.session.UserSession
 
 class AffiliateEducationTutorialVH(
     itemView: View,
@@ -35,9 +34,6 @@ class AffiliateEducationTutorialVH(
         itemView.findViewById<View>(R.id.tutorial_content_container)
     private val tutorialCover = itemView.findViewById<View>(R.id.tutorial_cover_bg)
     private val tutorialContainer = itemView.findViewById<CardView>(R.id.cv_tutorial_topic)
-
-    @Inject
-    lateinit var userSessionInterface: UserSessionInterface
 
     override fun bind(element: AffiliateEducationTutorialUiModel?) {
         tutorialIcon.loadImage(element?.articleTopic?.icon?.url)
@@ -87,7 +83,7 @@ class AffiliateEducationTutorialVH(
             eventId,
             position = 0,
             eventId,
-            userSessionInterface.userId,
+            UserSession(itemView.context).userId,
             creativeName
         )
     }

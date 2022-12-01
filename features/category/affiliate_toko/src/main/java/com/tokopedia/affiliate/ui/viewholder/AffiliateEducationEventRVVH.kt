@@ -15,8 +15,7 @@ import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEducationEventRV
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEducationEventUiModel
 import com.tokopedia.affiliate_toko.R
 import com.tokopedia.unifyprinciples.Typography
-import com.tokopedia.user.session.UserSessionInterface
-import javax.inject.Inject
+import com.tokopedia.user.session.UserSession
 
 class AffiliateEducationEventRVVH(
     itemView: View,
@@ -27,8 +26,6 @@ class AffiliateEducationEventRVVH(
         @LayoutRes
         var LAYOUT = R.layout.affiliate_education_event_list
     }
-    @Inject
-    lateinit var userSessionInterface: UserSessionInterface
 
     private var eventAdapter: AffiliateAdapter = AffiliateAdapter(
         AffiliateAdapterFactory(
@@ -60,12 +57,13 @@ class AffiliateEducationEventRVVH(
             element?.event?.articles?.map { AffiliateEducationEventUiModel(it) }
         )
     }
+
     private fun sendEducationClickEvent() {
         AffiliateAnalytics.sendEducationTracker(
             AffiliateAnalytics.EventKeys.CLICK_CONTENT,
             AffiliateAnalytics.ActionKeys.CLICK_LIHAT_SEMUA_EVENT_CARD,
             AffiliateAnalytics.CategoryKeys.AFFILIATE_EDUKASI_PAGE,
-            userId = userSessionInterface.userId,
+            userId = UserSession(itemView.context).userId,
             eventLabel = ""
         )
     }

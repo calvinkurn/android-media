@@ -18,8 +18,7 @@ import com.tokopedia.affiliate_toko.R
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
-import com.tokopedia.user.session.UserSessionInterface
-import javax.inject.Inject
+import com.tokopedia.user.session.UserSession
 
 class AffiliateEducationSeeAllVH(
     itemView: View,
@@ -36,9 +35,6 @@ class AffiliateEducationSeeAllVH(
     private val seeAllTitle = itemView.findViewById<Typography>(R.id.see_all_item_title)
     private val seeAllDetail = itemView.findViewById<Typography>(R.id.see_all_item_detail)
     private val seeAllContainer = itemView.findViewById<View>(R.id.see_all_container)
-
-    @Inject
-    lateinit var userSessionInterface: UserSessionInterface
 
     override fun bind(element: AffiliateEducationSeeAllUiModel?) {
         imageSeeAll.loadImage(element?.article?.thumbnail?.android)
@@ -110,7 +106,7 @@ class AffiliateEducationSeeAllVH(
             eventId,
             position = 0,
             eventId,
-            userSessionInterface.userId,
+            UserSession(itemView.context).userId,
             creativeName
         )
     }

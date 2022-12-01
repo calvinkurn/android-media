@@ -7,8 +7,7 @@ import com.tokopedia.affiliate.AffiliateAnalytics
 import com.tokopedia.affiliate.interfaces.AffiliateEducationLearnClickInterface
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEducationLearnUiModel
 import com.tokopedia.affiliate_toko.R
-import com.tokopedia.user.session.UserSessionInterface
-import javax.inject.Inject
+import com.tokopedia.user.session.UserSession
 
 class AffiliateEducationLearnVH(
     itemView: View,
@@ -20,9 +19,6 @@ class AffiliateEducationLearnVH(
         @LayoutRes
         var LAYOUT = R.layout.affiliate_education_learn_item
     }
-
-    @Inject
-    lateinit var userSessionInterface: UserSessionInterface
 
     private val bantuanContainer = itemView.findViewById<View>(R.id.bantuan_container)
     private val kamusContainer = itemView.findViewById<View>(R.id.kamus_container)
@@ -43,7 +39,7 @@ class AffiliateEducationLearnVH(
             AffiliateAnalytics.EventKeys.CLICK_CONTENT,
             actionKeys,
             AffiliateAnalytics.CategoryKeys.AFFILIATE_EDUKASI_PAGE,
-            userId = userSessionInterface.userId,
+            userId = UserSession(itemView.context).userId,
             eventLabel = ""
         )
     }

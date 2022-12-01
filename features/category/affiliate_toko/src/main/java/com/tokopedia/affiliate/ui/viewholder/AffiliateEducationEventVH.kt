@@ -12,8 +12,7 @@ import com.tokopedia.affiliate_toko.R
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
-import com.tokopedia.user.session.UserSessionInterface
-import javax.inject.Inject
+import com.tokopedia.user.session.UserSession
 
 class AffiliateEducationEventVH(
     itemView: View,
@@ -31,9 +30,6 @@ class AffiliateEducationEventVH(
     private val eventTitle = itemView.findViewById<Typography>(R.id.event_title)
     private val eventDate = itemView.findViewById<Typography>(R.id.event_date)
     private val eventDetail = itemView.findViewById<UnifyButton>(R.id.button_event_detail)
-
-    @Inject
-    lateinit var userSessionInterface: UserSessionInterface
 
     override fun bind(element: AffiliateEducationEventUiModel?) {
         imageEvent.loadImage(element?.event?.thumbnail?.android)
@@ -57,7 +53,7 @@ class AffiliateEducationEventVH(
             eventId,
             position = 0,
             eventId,
-            userSessionInterface.userId,
+            UserSession(itemView.context).userId,
             creativeName
         )
     }
