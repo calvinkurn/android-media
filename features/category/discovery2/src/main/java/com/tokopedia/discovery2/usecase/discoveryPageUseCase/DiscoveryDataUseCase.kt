@@ -18,16 +18,18 @@ import com.tokopedia.remoteconfig.RemoteConfigKey
 import com.tokopedia.user.session.UserSession
 import javax.inject.Inject
 
-class DiscoveryDataUseCase @Inject constructor(private val discoveryPageRepository: DiscoveryPageRepository,@ApplicationContext private val  context: Context) {
+class DiscoveryDataUseCase @Inject constructor(private val discoveryPageRepository: DiscoveryPageRepository, @ApplicationContext private val context: Context) {
 
-    suspend fun getDiscoveryPageDataUseCase(pageIdentifier: String,
-                                            queryParameterMap: MutableMap<String, String?>,
-                                            queryParameterMapWithRpc: MutableMap<String, String?>,
-                                            queryParameterMapWithoutRpc: MutableMap<String, String?>,
-                                            userAddressData: LocalCacheModel?): DiscoveryPageData {
+    suspend fun getDiscoveryPageDataUseCase(
+        pageIdentifier: String,
+        queryParameterMap: MutableMap<String, String?>,
+        queryParameterMapWithRpc: MutableMap<String, String>,
+        queryParameterMapWithoutRpc: MutableMap<String, String>,
+        userAddressData: LocalCacheModel?
+    ): DiscoveryPageData {
         var userAddressDataCopy = userAddressData
-        val paramMap :MutableMap<String,Any> = mutableMapOf()
-        val localCacheModel = userAddressData?:ChooseAddressUtils.getLocalizingAddressData(context)
+        val paramMap: MutableMap<String, Any> = mutableMapOf()
+        val localCacheModel = userAddressData ?: ChooseAddressUtils.getLocalizingAddressData(context)
         localCacheModel?.let {
             paramMap[USER_ADDRESS_KEY] = it
         }
@@ -43,14 +45,17 @@ class DiscoveryDataUseCase @Inject constructor(private val discoveryPageReposito
                 this.queryParamMapWithRpc = queryParameterMapWithRpc
                 this.queryParamMapWithoutRpc = queryParameterMapWithoutRpc
                 componentMap = HashMap()
-                if (this.pageInfo.showChooseAddress && userAddressDataCopy == null)
+                if (this.pageInfo.showChooseAddress && userAddressDataCopy == null) {
                     userAddressDataCopy = localCacheModel
+                }
                 /***Chip Filter Require parent ID to function. Need to check on this later.***/
 //            component = ComponentsItem(id = "PARENT_ID",pageEndPoint = pageInfo.identifier?:"").apply {
 //                componentMap[id] = this
 //            }
             },
-            queryParameterMap, userAddressDataCopy, UserSession(context).isLoggedIn,
+            queryParameterMap,
+            userAddressDataCopy,
+            UserSession(context).isLoggedIn,
             config.getBoolean(RemoteConfigKey.DISCOVERY_DISABLE_SINGLE_PROD_CARD, false)
         )
     }
