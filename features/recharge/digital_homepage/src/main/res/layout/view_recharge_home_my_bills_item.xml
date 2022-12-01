@@ -18,6 +18,7 @@
             android:id="@+id/bg_product_icon"
             android:layout_width="48dp"
             android:layout_height="48dp"
+            android:alpha="0.6"
             android:background="@drawable/bg_product_icon"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
