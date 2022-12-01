@@ -112,7 +112,10 @@ class HomeSharingWidgetViewHolder(
                 R.string.tokopedianow_home_referral_widget_desc_receiver, element.ogDescription))
             btnSharing.hide()
             containerWidgetSharing.setBackgroundColor(ContextCompat.getColor(itemView.context, com.tokopedia.unifyprinciples.R.color.Unify_GN50))
-            tpTitle.text = element.titleSection
+            if (element.titleSection.isNotEmpty()) {
+                tpTitle.visible()
+                tpTitle.text = element.titleSection
+            }
             iuSharing.hide()
             playAnimation()
             ivBgImageBtm.loadImage(IMG_SHARING_REFERRAL_BG_BTM)
