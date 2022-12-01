@@ -12,7 +12,6 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.privacycenter.R
-import com.tokopedia.privacycenter.common.di.DaggerPrivacyCenterComponent
 import com.tokopedia.privacycenter.databinding.PrivacyPolicyBottomSheetBinding
 import com.tokopedia.privacycenter.di.DaggerPrivacyCenterComponent
 import com.tokopedia.privacycenter.ui.main.section.privacypolicy.PrivacyPolicyConst.KEY_TITLE
