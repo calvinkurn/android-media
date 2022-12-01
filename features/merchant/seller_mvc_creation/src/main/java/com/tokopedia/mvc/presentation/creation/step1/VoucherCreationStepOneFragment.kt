@@ -38,6 +38,7 @@ class VoucherCreationStepOneFragment : BaseDaggerFragment() {
             .build()
             .inject(this)
     }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -46,8 +47,8 @@ class VoucherCreationStepOneFragment : BaseDaggerFragment() {
         return binding?.root
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         binding?.run {
             voucherTypeSelectionShop.apply {
                 radioButton?.setOnClickListener {
@@ -56,15 +57,16 @@ class VoucherCreationStepOneFragment : BaseDaggerFragment() {
             }
             voucherTypeSelectionProduct.apply {
                 radioButton?.setOnClickListener {
-                selectProductVoucherType()
-            }
+                    selectProductVoucherType()
+                }
             }
         }
     }
 
     private fun selectStoreVoucherType() {
         binding?.run {
-            header.headerSubTitle = getString(R.string.smvc_creation_step_one_out_of_three_sub_title_label)
+            header.headerSubTitle =
+                getString(R.string.smvc_creation_step_one_out_of_three_sub_title_label)
             voucherTypeSelectionShop.isActive = true
             voucherTypeSelectionProduct.isActive = false
         }
@@ -72,7 +74,8 @@ class VoucherCreationStepOneFragment : BaseDaggerFragment() {
 
     private fun selectProductVoucherType() {
         binding?.run {
-            header.headerSubTitle = getString(R.string.smvc_creation_step_one_out_of_four_sub_title_label)
+            header.headerSubTitle =
+                getString(R.string.smvc_creation_step_one_out_of_four_sub_title_label)
             voucherTypeSelectionShop.isActive = false
             voucherTypeSelectionProduct.isActive = true
         }
