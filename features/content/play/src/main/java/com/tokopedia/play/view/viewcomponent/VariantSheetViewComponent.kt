@@ -144,8 +144,7 @@ class VariantSheetViewComponent(
     }
 
     fun setAction(button: ProductButtonUiModel) {
-        btnAction.text = button.text
-        btnAction.generateButton(button.color)
+        btnAction.text = if(button.type == ProductButtonType.ATC) getString(R.string.play_product_add_to_card) else button.text
 
         mAction = button.type.toAction
     }

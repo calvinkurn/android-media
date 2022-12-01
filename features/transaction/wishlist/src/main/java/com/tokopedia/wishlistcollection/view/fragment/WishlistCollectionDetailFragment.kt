@@ -112,6 +112,7 @@ import com.tokopedia.wishlistcollection.di.DaggerWishlistCollectionComponent
 import com.tokopedia.wishlistcollection.di.WishlistCollectionModule
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.DELAY_REFETCH_PROGRESS_DELETION
+import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.DELAY_SHOW_COACHMARK_TOOLBAR
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.EXTRA_COLLECTION_ID_DESTINATION
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.EXTRA_COLLECTION_NAME_DESTINATION
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.EXTRA_IS_BULK_ADD
@@ -179,6 +180,9 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
     private var isOnProgressDeleteWishlist = false
     private val progressDeletionRunnable = Runnable {
         getDeleteWishlistProgress()
+    }
+    private val showCoarchmarkRunnable = Runnable {
+        showCoachMarkSharingIcon()
     }
     private var collectionId = ""
     private var collectionName = ""
@@ -930,7 +934,7 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
             activity?.window?.decorView?.setBackgroundColor(
                 ContextCompat.getColor(
                     it,
-                    com.tokopedia.unifyprinciples.R.color.Unify_N0
+                    com.tokopedia.unifyprinciples.R.color.Unify_Background
                 )
             )
         }
@@ -1017,27 +1021,25 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
     }
 
     private fun showCoachMarkOnSharingIcon(view: View) {
-        if (!CoachMarkPreference.hasShown(requireContext(), COACHMARK_WISHLIST_SHARING_ICON_DETAIL_PAGE)) {
-            if (coachMarkItemSharingIcon.isEmpty()) {
-                coachMarkItemSharingIcon.add(
-                    CoachMark2Item(
-                        view,
-                        "",
-                        getString(com.tokopedia.wishlist.R.string.collection_coachmark_wishlist_detail),
-                        CoachMark2.POSITION_BOTTOM
-                    )
+        if (coachMarkItemSharingIcon.isEmpty()) {
+            coachMarkItemSharingIcon.add(
+                CoachMark2Item(
+                    view,
+                    "",
+                    getString(com.tokopedia.wishlist.R.string.collection_coachmark_wishlist_detail),
+                    CoachMark2.POSITION_BOTTOM
                 )
-            }
-            if (coachMarkSharingIcon == null)
-                coachMarkSharingIcon = CoachMark2(requireContext())
+            )
+        }
+        if (coachMarkSharingIcon == null)
+            coachMarkSharingIcon = CoachMark2(requireContext())
 
-            coachMarkSharingIcon?.let {
-                if (!it.isShowing) {
-                    it.showCoachMark(coachMarkItemSharingIcon, null, 1)
-                }
-                CoachMarkPreference.setShown(requireContext(),
-                    COACHMARK_WISHLIST_SHARING_ICON_DETAIL_PAGE, true)
+        coachMarkSharingIcon?.let {
+            if (!it.isShowing) {
+                it.showCoachMark(coachMarkItemSharingIcon, null)
             }
+            CoachMarkPreference.setShown(requireContext(),
+                COACHMARK_WISHLIST_SHARING_ICON_DETAIL_PAGE, true)
         }
     }
 
@@ -1072,7 +1074,20 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
                 }
             }
             wishlistCollectionDetailNavtoolbar.setIcon(icons)
-            wishlistCollectionDetailNavtoolbar.getShareIconView()?.let { showCoachMarkOnSharingIcon(it) }
+            if (collectionType != TYPE_COLLECTION_PUBLIC_OTHERS && !CoachMarkPreference.hasShown(requireContext(), COACHMARK_WISHLIST_SHARING_ICON_DETAIL_PAGE)) {
+                Handler().postDelayed(
+                    showCoarchmarkRunnable,
+                    DELAY_SHOW_COACHMARK_TOOLBAR
+                )
+            }
+        }
+    }
+
+    private fun showCoachMarkSharingIcon() {
+        binding?.run {
+            wishlistCollectionDetailNavtoolbar.getShareIconView()?.let {
+                showCoachMarkOnSharingIcon(it)
+            }
         }
     }
 
@@ -1152,8 +1167,11 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
     }
 
     private fun updateCustomToolbarSubTitle(subtitle: String) {
-        val customToolbar = LayoutInflater.from(context).inflate(Rv2.layout.toolbar_custom_add_bulk, null, false)
+        val customToolbar = LayoutInflater.from(context).inflate(Rv2.layout.toolbar_custom, null, false)
+        val titleLayout = customToolbar?.findViewById<Typography>(Rv2.id.toolbar_title)
         val subtitleLayout = customToolbar?.findViewById<Typography>(Rv2.id.toolbar_subtitle)
+
+        titleLayout?.text = getString(Rv2.string.wishlist_add_label_toolbar)
         subtitleLayout?.text = subtitle
 
         binding?.run {
@@ -1214,8 +1232,8 @@ class WishlistCollectionDetailFragment : BaseDaggerFragment(), WishlistV2Adapter
     }
 
     private fun setRefreshing() {
+        isAturMode = false
         isBulkDeleteShow = false
-        // listSelectedProductIds.clear()
         listExcludedBulkDelete.clear()
         collectionItemsAdapter.hideCheckbox()
         countRemovableAutomaticDelete = 0

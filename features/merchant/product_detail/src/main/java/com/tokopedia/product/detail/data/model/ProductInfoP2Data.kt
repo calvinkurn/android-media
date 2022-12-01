@@ -3,6 +3,7 @@ package com.tokopedia.product.detail.data.model
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.gallery.networkmodel.ImageReviewGqlResponse
+import com.tokopedia.product.detail.common.data.model.ar.ProductArInfo
 import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkir
 import com.tokopedia.product.detail.common.data.model.bundleinfo.BundleInfo
 import com.tokopedia.product.detail.common.data.model.carttype.CartRedirection
@@ -147,7 +148,12 @@ data class ProductInfoP2Data(
 
     @SerializedName("shopAdditional")
     @Expose
-    var shopAdditional: ProductShopAdditional = ProductShopAdditional()
+    var shopAdditional: ProductShopAdditional = ProductShopAdditional(),
+
+    @SerializedName("arInfo")
+    @Expose
+    var arInfo: ProductArInfo = ProductArInfo()
+
 ) {
     data class Response(
         @SerializedName("pdpGetData")

@@ -44,7 +44,7 @@ data class Profile(
     val sharelink: Link,
 
     @SerializedName("badges")
-    val badges: List<Any?>,
+    val badges: List<String>,
 
     @SerializedName("liveplaychannel")
     val liveplaychannel: Liveplaychannel,

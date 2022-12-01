@@ -1,7 +1,6 @@
 package com.tokopedia.play.model
 
 import com.tokopedia.play.view.type.*
-import com.tokopedia.play.view.uimodel.MerchantVoucherUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.PlayVoucherUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayProductTagsBasicInfoUiModel
@@ -59,7 +58,8 @@ class PlayProductTagsModelBuilder {
         description: String = "Min. Pembelanjaan 10rb",
         expiredDate: String = "2018-12-07T23:30:00Z",
         voucherStock: Int = 0,
-    ) = MerchantVoucherUiModel(
+        isPrivate: Boolean = false,
+    ) = PlayVoucherUiModel.Merchant(
         type = type,
         title = title,
         description = description,
@@ -68,7 +68,8 @@ class PlayProductTagsModelBuilder {
         copyable = true,
         highlighted = true,
         expiredDate = expiredDate,
-        voucherStock = voucherStock
+        voucherStock = voucherStock,
+        isPrivate = isPrivate,
     )
 
     fun buildOriginalProductPrice(

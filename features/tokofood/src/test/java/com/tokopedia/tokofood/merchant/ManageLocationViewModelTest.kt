@@ -14,6 +14,15 @@ import org.junit.Test
 class ManageLocationViewModelTest : ManageLocationViewModelTestFixture() {
 
     @Test
+    fun `when merchantId value changed, should reflect to view model value`() {
+        val expectedMerchantId = "123"
+
+        viewModel.merchantId = expectedMerchantId
+
+        assertEquals(expectedMerchantId, viewModel.merchantId)
+    }
+
+    @Test
     fun `when updatePinPoint is success expect the boolean result to be true`() {
         coEvery {
             keroEditAddressUseCase.execute("", "", "")
@@ -23,6 +32,18 @@ class ManageLocationViewModelTest : ManageLocationViewModelTestFixture() {
         viewModel.updatePinPoint("", "", "")
         coVerify { keroEditAddressUseCase.execute("", "", "") }
         assertEquals(expectedResult.keroEditAddress.data.isEditSuccess(), viewModel.updatePinPointState.value)
+    }
+
+    @Test
+    fun `when updatePinPoint is not success expect the boolean result to be false`() {
+        coEvery {
+            keroEditAddressUseCase.execute("", "", "")
+        } returns !generateTestKeroEditAddressResponse().keroEditAddress.data.isEditSuccess()
+        viewModel.updatePinPoint("", "", "")
+        val expectedResult = generateTestKeroEditAddressResponse()
+        viewModel.updatePinPoint("", "", "")
+        coVerify { keroEditAddressUseCase.execute("", "", "") }
+        assertEquals(!expectedResult.keroEditAddress.data.isEditSuccess(), viewModel.updatePinPointState.value)
     }
 
     @Test

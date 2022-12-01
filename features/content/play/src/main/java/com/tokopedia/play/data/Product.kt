@@ -52,7 +52,7 @@ data class Product(
         val text: String = "",
         @SerializedName("color")
         val color: String = "",
-        @SerializedName("buttonType")
+        @SerializedName("button_type")
         val buttonType: String = "",
     )
 }

@@ -11,8 +11,10 @@ import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastEvent
 import com.tokopedia.play.broadcaster.ui.model.game.GameType
 import com.tokopedia.play.broadcaster.ui.model.game.quiz.*
 import com.tokopedia.play.broadcaster.util.assertEqualTo
+import com.tokopedia.play.broadcaster.util.assertFalse
+import com.tokopedia.play.broadcaster.util.assertTrue
 import com.tokopedia.play.broadcaster.util.preference.HydraSharedPreferences
-import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
+import com.tokopedia.play_common.model.dto.interactive.GameUiModel
 import com.tokopedia.play_common.model.ui.LeadeboardType
 import com.tokopedia.play_common.model.ui.LeaderboardGameUiModel
 import com.tokopedia.play_common.model.ui.QuizChoicesUiModel
@@ -104,8 +106,8 @@ class PlayBroQuizViewModelTest {
                 getAccountConfiguration()
                 getViewModel().submitAction(PlayBroadcastAction.SubmitQuizForm)
             }
-            Assertions.assertThat(state.interactive)
-                .isInstanceOf(InteractiveUiModel.Quiz::class.java)
+            Assertions.assertThat(state.game)
+                .isInstanceOf(GameUiModel.Quiz::class.java)
         }
     }
 
@@ -121,7 +123,7 @@ class PlayBroQuizViewModelTest {
                 getAccountConfiguration()
                 it.getViewModel().submitAction(PlayBroadcastAction.QuizEnded)
             }
-            Assertions.assertThat(state.interactive).isInstanceOf(InteractiveUiModel.Unknown::class.java)
+            Assertions.assertThat(state.game).isInstanceOf(GameUiModel.Unknown::class.java)
         }
     }
 
@@ -376,4 +378,165 @@ class PlayBroQuizViewModelTest {
          state.quizForm.quizFormData.options[0].text.assertEqualTo("AAA")
         }
     }
+
+    @Test
+    fun `when user click back on quiz`() {
+        coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns mockConfig
+        coEvery { mockRepo.getInteractiveConfig(any(), any()) } returns mockInteractiveConfigResponse
+        coEvery { mockRepo.getSellerLeaderboardWithSlot(any(), any()) } returns emptyList()
+
+        val robot = PlayBroadcastViewModelRobot(
+            dispatchers = testDispatcher,
+            channelRepo = mockRepo,
+            sharedPref =  mockSharedPref,
+            broadcastTimer = mockBroadcastTimer,
+        )
+
+        robot.use {
+            val state = it.recordState {
+                getAccountConfiguration()
+                startLive()
+                it.getViewModel().submitAction(PlayBroadcastAction.ClickBackOnQuiz)
+            }
+
+            state.quizForm.quizFormState.assertEqualTo(QuizFormStateUiModel.Nothing)
+        }
+    }
+
+    @Test
+    fun `when user click next on quiz`() {
+        coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns mockConfig
+        coEvery { mockRepo.getInteractiveConfig(any(), any()) } returns mockInteractiveConfigResponse
+        coEvery { mockRepo.getSellerLeaderboardWithSlot(any(), any()) } returns emptyList()
+
+        val robot = PlayBroadcastViewModelRobot(
+            dispatchers = testDispatcher,
+            channelRepo = mockRepo,
+            sharedPref =  mockSharedPref,
+            broadcastTimer = mockBroadcastTimer,
+        )
+
+        robot.use {
+            val state = it.recordState {
+                getAccountConfiguration()
+                startLive()
+                it.getViewModel().submitAction(PlayBroadcastAction.ClickNextOnQuiz)
+            }
+
+            state.quizForm.quizFormState.assertEqualTo(QuizFormStateUiModel.Preparation)
+        }
+    }
+
+    @Test
+    fun `when user select quiz option`() {
+        coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns mockConfig
+        coEvery { mockRepo.getInteractiveConfig(any(), any()) } returns mockInteractiveConfigResponse
+        coEvery { mockRepo.getSellerLeaderboardWithSlot(any(), any()) } returns emptyList()
+
+        every { mockBroadcastTimer.remainingDuration } returns Long.MAX_VALUE
+
+        val robot = PlayBroadcastViewModelRobot(
+            dispatchers = testDispatcher,
+            channelRepo = mockRepo,
+            sharedPref =  mockSharedPref,
+            broadcastTimer = mockBroadcastTimer,
+        )
+
+        robot.use {
+            val state = it.recordState {
+                getAccountConfiguration()
+                startLive()
+                inputQuizOption(0, "AAA")
+                inputQuizOption(1, "BBB")
+                it.getViewModel().submitAction(PlayBroadcastAction.SelectQuizOption(0))
+            }
+
+            state.quizForm.quizFormData.options[0].isSelected.assertTrue()
+        }
+    }
+
+    @Test
+    fun `when user select quiz option and not valid`() {
+        coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns mockConfig
+        coEvery { mockRepo.getInteractiveConfig(any(), any()) } returns mockInteractiveConfigResponse
+        coEvery { mockRepo.getSellerLeaderboardWithSlot(any(), any()) } returns emptyList()
+
+        every { mockBroadcastTimer.remainingDuration } returns Long.MAX_VALUE
+
+        val robot = PlayBroadcastViewModelRobot(
+            dispatchers = testDispatcher,
+            channelRepo = mockRepo,
+            sharedPref =  mockSharedPref,
+            broadcastTimer = mockBroadcastTimer,
+        )
+
+        robot.use {
+            val state = it.recordState {
+                getAccountConfiguration()
+                startLive()
+                inputQuizOption(0, "AAA")
+                inputQuizOption(1, "BBB")
+                it.getViewModel().submitAction(PlayBroadcastAction.SelectQuizOption(-1))
+            }
+
+            state.quizForm.quizFormData.options[0].isSelected.assertFalse()
+        }
+    }
+
+    @Test
+    fun `when user save quiz data`() {
+        coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns mockConfig
+        coEvery { mockRepo.getInteractiveConfig(any(), any()) } returns mockInteractiveConfigResponse
+        coEvery { mockRepo.getSellerLeaderboardWithSlot(any(), any()) } returns emptyList()
+
+        every { mockBroadcastTimer.remainingDuration } returns Long.MAX_VALUE
+
+        val mockData = QuizFormDataUiModel("aBcD")
+
+        val robot = PlayBroadcastViewModelRobot(
+            dispatchers = testDispatcher,
+            channelRepo = mockRepo,
+            sharedPref =  mockSharedPref,
+            broadcastTimer = mockBroadcastTimer,
+        )
+
+        robot.use {
+            val state = it.recordState {
+                getAccountConfiguration()
+                startLive()
+                it.getViewModel().submitAction(PlayBroadcastAction.SaveQuizData(mockData))
+            }
+
+            state.quizForm.quizFormData.assertEqualTo(mockData)
+        }
+    }
+
+    @Test
+    fun `when user select quiz duration`() {
+        coEvery { mockRepo.getChannelConfiguration(any(), any()) } returns mockConfig
+        coEvery { mockRepo.getInteractiveConfig(any(), any()) } returns mockInteractiveConfigResponse
+        coEvery { mockRepo.getSellerLeaderboardWithSlot(any(), any()) } returns emptyList()
+
+        every { mockBroadcastTimer.remainingDuration } returns Long.MAX_VALUE
+
+        val mockData = 1000L
+
+        val robot = PlayBroadcastViewModelRobot(
+            dispatchers = testDispatcher,
+            channelRepo = mockRepo,
+            sharedPref =  mockSharedPref,
+            broadcastTimer = mockBroadcastTimer,
+        )
+
+        robot.use {
+            val state = it.recordState {
+                getAccountConfiguration()
+                startLive()
+                it.getViewModel().submitAction(PlayBroadcastAction.SelectQuizDuration(mockData))
+            }
+
+            state.quizForm.quizFormData.durationInMs.assertEqualTo(mockData)
+        }
+    }
+
 }

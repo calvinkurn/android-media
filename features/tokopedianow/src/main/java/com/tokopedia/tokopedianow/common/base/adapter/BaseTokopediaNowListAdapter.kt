@@ -11,7 +11,8 @@ open class BaseTokopediaNowListAdapter<T, F: AdapterTypeFactory>(
 ): BaseListAdapter<T, F>(baseListAdapterTypeFactory) {
 
     fun submitList(items: List<Visitable<*>>) {
-        val diffUtilCallback = differ.create(visitables, items)
+        val visitableItems = visitables.toMutableList()
+        val diffUtilCallback = differ.create(visitableItems, items)
         val result = DiffUtil.calculateDiff(diffUtilCallback)
         visitables.clear()
         visitables.addAll(items)

@@ -68,7 +68,7 @@ class GetProductTagItemSectionUseCase @Inject constructor(
                     available_buttons: AvailableButtons {
                         text
                         color
-                        buttonType
+                        button_type: buttonType
                     }
                   }
                 }
@@ -81,7 +81,7 @@ class GetProductTagItemSectionUseCase @Inject constructor(
                   voucher_type: VoucherType
                   voucher_image: VoucherImage
                   voucher_image_square: VoucherImageSquare
-                  voucher_quota: VoucherQuota
+                  is_quota_available: QuotaAvailable
                   voucher_finish_time: VoucherFinishTime
                   voucher_code: VoucherCode
                   is_highlighted: IsHighlighted

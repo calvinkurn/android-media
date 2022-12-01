@@ -15,7 +15,7 @@ import com.tokopedia.play.broadcaster.util.assertFalse
 import com.tokopedia.play.broadcaster.util.assertTrue
 import com.tokopedia.play.broadcaster.util.getOrAwaitValue
 import com.tokopedia.play.broadcaster.util.logger.PlayLogger
-import com.tokopedia.play_common.model.dto.interactive.InteractiveUiModel
+import com.tokopedia.play_common.model.dto.interactive.GameUiModel
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.coEvery
 import io.mockk.mockk
@@ -112,8 +112,10 @@ class PlayBroWebSocketViewModelTest {
             robot.executeViewModelPrivateFunction("startWebSocket")
             fakePlayWebSocket.fakeEmitMessage(mockChatString)
             val result = robot.getViewModel().observableChatList.getOrAwaitValue()
+            val resultNewChat = robot.getViewModel().observableNewChat.getOrAwaitValue()
 
             result.assertEqualTo(listOf(mockChat))
+            resultNewChat.peekContent().assertEqualTo(result.last())
         }
     }
 
@@ -341,8 +343,8 @@ class PlayBroWebSocketViewModelTest {
                 this.executeViewModelPrivateFunction("startWebSocket")
                 fakePlayWebSocket.fakeEmitMessage(mockUnknownQuizString)
             }
-            Assertions.assertThat(state.interactive)
-                .isInstanceOf(InteractiveUiModel.Unknown::class.java)
+            Assertions.assertThat(state.game)
+                .isInstanceOf(GameUiModel.Unknown::class.java)
         }
     }
 }
