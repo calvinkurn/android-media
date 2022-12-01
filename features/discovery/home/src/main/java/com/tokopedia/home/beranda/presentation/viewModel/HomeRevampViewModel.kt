@@ -127,8 +127,8 @@ open class HomeRevampViewModel @Inject constructor(
     val updateNetworkLiveData: LiveData<Result<Any>> get() = _updateNetworkLiveData
     private val _updateNetworkLiveData = MutableLiveData<Result<Any>>()
 
-    val hideShowLoading: LiveData<Boolean> get() = _hideShowLoadingLiveData
-    private val _hideShowLoadingLiveData = MutableLiveData<Boolean>()
+    val hideShowLoading: LiveData<Event<Boolean>> get() = _hideShowLoadingLiveData
+    private val _hideShowLoadingLiveData = MutableLiveData<Event<Boolean>>()
 
     val errorEventLiveData: LiveData<Event<Throwable>>
         get() = _errorEventLiveData
@@ -168,11 +168,11 @@ open class HomeRevampViewModel @Inject constructor(
         homeRateLimit.reset(HOME_LIMITER_KEY)
     }
 
-    private inline fun <reified T> findWidget(predicate: (T) -> Boolean = {true}, actionOnFound: (T, Int) -> Unit) {
+    private inline fun <reified T> findWidget(predicate: (T) -> Boolean = { true }, actionOnFound: (T, Int) -> Unit) {
         homeDataModel.list.withIndex().find { it.value is T && predicate.invoke(it.value as T) }.let {
             it?.let {
                 if (it.value is T) {
-                    actionOnFound.invoke(it.value as T, it. index)
+                    actionOnFound.invoke(it.value as T, it.index)
                 }
             }
         }
@@ -204,7 +204,7 @@ open class HomeRevampViewModel @Inject constructor(
 
     private fun removeDynamicChannelLoadingModel() {
         findWidget<DynamicChannelLoadingModel> { _, index ->
-            updateWidget(DynamicChannelRetryModel(false),index)
+            updateWidget(DynamicChannelRetryModel(false), index)
         }
         findWidget<DynamicChannelRetryModel> { retryWidget, index ->
             updateWidget(DynamicChannelRetryModel(false), index)
@@ -235,10 +235,11 @@ open class HomeRevampViewModel @Inject constructor(
                     this?.status = HomeBalanceModel.STATUS_LOADING
                 } ?: HomeBalanceModel()
                 val headerDataModel = headerModel.headerDataModel?.copy(
-                        homeBalanceModel = homeBalanceModel
+                    homeBalanceModel = homeBalanceModel
                 )
                 val initialHeaderModel = headerModel.copy(
-                        headerDataModel = headerDataModel)
+                    headerDataModel = headerDataModel
+                )
                 updateHeaderData(initialHeaderModel, index)
                 val currentHeaderDataModel = homeBalanceWidgetUseCase.get().onGetBalanceWidgetData()
                 val visitable = updateHeaderData(currentHeaderDataModel, index)
@@ -270,8 +271,9 @@ open class HomeRevampViewModel @Inject constructor(
                     }
                     updateHomeData(homeNewDataModel)
                     _trackingLiveData.postValue(Event(homeNewDataModel.list.filterIsInstance<HomeVisitable>()))
-                } else if (homeNewDataModel?.list?.size?:0 > 0) {
-                    homeNewDataModel?.let { updateHomeData(it)
+                } else if (homeNewDataModel?.list?.size ?: 0 > 0) {
+                    homeNewDataModel?.let {
+                        updateHomeData(it)
                     }
                 }
             }
@@ -288,11 +290,11 @@ open class HomeRevampViewModel @Inject constructor(
     @FlowPreview
     fun refreshHomeData() {
         if (getHomeDataJob?.isActive == true) {
-            _hideShowLoadingLiveData.postValue(true)
+            _hideShowLoadingLiveData.postValue(Event(true))
             return
         }
         if (!homeDataModel.flowCompleted) {
-            _hideShowLoadingLiveData.postValue(true)
+            _hideShowLoadingLiveData.postValue(Event(true))
             return
         }
         homeRateLimit.shouldFetch(HOME_LIMITER_KEY)
@@ -310,7 +312,7 @@ open class HomeRevampViewModel @Inject constructor(
                 if (it.status === Result.Status.ERROR_PAGINATION) {
                     removeDynamicChannelLoadingModel()
                 }
-                if (it.status === Result.Status.ERROR_ATF || it.status === Result.Status.ERROR_GENERAL ) {
+                if (it.status === Result.Status.ERROR_ATF || it.status === Result.Status.ERROR_GENERAL) {
                     _updateNetworkLiveData.postValue(it)
                 }
             }
@@ -325,7 +327,7 @@ open class HomeRevampViewModel @Inject constructor(
 
     fun getUserName() = userSession.get().name ?: ""
 
-    fun refreshWithThreeMinsRules(forceRefresh: Boolean = false, isFirstInstall: Boolean = false){
+    fun refreshWithThreeMinsRules(forceRefresh: Boolean = false, isFirstInstall: Boolean = false) {
         if ((forceRefresh && getHomeDataJob?.isActive == false) || (!fetchFirstData && homeRateLimit.shouldFetch(HOME_LIMITER_KEY))) {
             refreshHomeData()
             _isNeedRefresh.value = Event(true)
@@ -336,7 +338,7 @@ open class HomeRevampViewModel @Inject constructor(
     }
 
     fun removeViewHolderAtPosition(position: Int) {
-        if(position != -1 && position < homeDataModel.list.size) {
+        if (position != -1 && position < homeDataModel.list.size) {
             val detectViewHolder = homeDataModel.list[position]
             detectViewHolder.let {
                 deleteWidget(it, position)
@@ -344,34 +346,39 @@ open class HomeRevampViewModel @Inject constructor(
         }
     }
 
-    fun getRecommendationWidget(filterChip: RecommendationFilterChipsEntity.RecommendationFilterChip, bestSellerDataModel: BestSellerDataModel, selectedChipsPosition: Int){
+    fun getRecommendationWidget(filterChip: RecommendationFilterChipsEntity.RecommendationFilterChip, bestSellerDataModel: BestSellerDataModel, selectedChipsPosition: Int) {
         findWidget<BestSellerDataModel> { currentDataModel, index ->
             launch {
-                updateWidget(homeRecommendationUseCase.get().onHomeBestSellerFilterClick(
+                updateWidget(
+                    homeRecommendationUseCase.get().onHomeBestSellerFilterClick(
                         currentBestSellerDataModel = currentDataModel,
                         filterChip = filterChip,
                         selectedChipPosition = selectedChipsPosition
-                ), index)
+                    ),
+                    index
+                )
             }
         }
     }
 
-    fun getOneClickCheckoutHomeComponent(channel: ChannelModel, grid: ChannelGrid, position: Int){
+    fun getOneClickCheckoutHomeComponent(channel: ChannelModel, grid: ChannelGrid, position: Int) {
         launchCatchError(coroutineContext, block = {
-            _oneClickCheckoutHomeComponent.postValue(Event(
-                    homeListCarouselUseCase.get().onOneClickCheckOut(channel, grid, position, getUserId()))
+            _oneClickCheckoutHomeComponent.postValue(
+                Event(
+                    homeListCarouselUseCase.get().onOneClickCheckOut(channel, grid, position, getUserId())
+                )
             )
-        }){
+        }) {
             _oneClickCheckoutHomeComponent.postValue(Event(it))
             it.printStackTrace()
         }
     }
 
-    fun onCloseBuyAgain(channelId: String, position: Int){
+    fun onCloseBuyAgain(channelId: String, position: Int) {
         findWidget<RecommendationListCarouselDataModel> {
-            listCarouselModel, index ->
+                listCarouselModel, index ->
             launch {
-                if (homeListCarouselUseCase.get().onClickCloseListCarousel(channelId)){
+                if (homeListCarouselUseCase.get().onClickCloseListCarousel(channelId)) {
                     deleteWidget(listCarouselModel, position)
                 } else {
                     _errorEventLiveData.postValue(Event(Throwable()))
@@ -382,7 +389,7 @@ open class HomeRevampViewModel @Inject constructor(
 
     fun updateBannerTotalView(channelId: String?, totalView: String?) {
         if (channelId == null || totalView == null) return
-        findWidget<PlayCardDataModel>(predicate = { it.playCardHome?.channelId == channelId}) { playCard, index ->
+        findWidget<PlayCardDataModel>(predicate = { it.playCardHome?.channelId == channelId }) { playCard, index ->
             val newPlayCard = playCard.copy(playCardHome = playCard.playCardHome?.copy(totalView = totalView))
             updateWidget(newPlayCard, index)
         }
@@ -427,18 +434,18 @@ open class HomeRevampViewModel @Inject constructor(
         }
     }
 
-    fun getBusinessUnitTabData(position: Int){
+    fun getBusinessUnitTabData(position: Int) {
         findWidget<NewBusinessUnitWidgetDataModel> { buModel, _ ->
-            launch{
+            launch {
                 val buWidgetData = homeBusinessUnitUseCase.get().getBusinessUnitTab(buModel)
                 updateWidget(buWidgetData, position)
             }
         }
     }
 
-    fun getBusinessUnitData(tabId: Int, position: Int, tabName: String){
+    fun getBusinessUnitData(tabId: Int, position: Int, tabName: String) {
         findWidget<NewBusinessUnitWidgetDataModel> { buModel, index ->
-            launch{
+            launch {
                 val buData = homeBusinessUnitUseCase.get()
                     .getBusinessUnitData(tabId, position, tabName, homeDataModel, buModel, index)
                 updateWidget(buData, index)
@@ -446,11 +453,11 @@ open class HomeRevampViewModel @Inject constructor(
         }
     }
 
-    fun getDynamicChannelDataOnExpired(visitable: Visitable<*>, channelModel: ChannelModel, position: Int){
+    fun getDynamicChannelDataOnExpired(visitable: Visitable<*>, channelModel: ChannelModel, position: Int) {
         launchCatchError(coroutineContext, block = {
             val visitableList = homeUseCase.get().onDynamicChannelExpired(channelModel.groupId)
 
-            if(visitableList.isEmpty()){
+            if (visitableList.isEmpty()) {
                 deleteWidget(visitable, position)
             } else {
                 val lastIndex = position
@@ -460,22 +467,24 @@ open class HomeRevampViewModel @Inject constructor(
                 }
                 _trackingLiveData.postValue(Event(visitableList.filterIsInstance(HomeVisitable::class.java)))
             }
-        }){
+        }) {
             deleteWidget(visitable, position)
         }
     }
 
     fun declineRechargeRecommendationItem(requestParams: Map<String, String>) {
-        findWidget<ReminderWidgetModel>({it.source == ReminderEnum.RECHARGE}) { rechargeModel, index ->
-            deleteWidget(rechargeModel, index) }
+        findWidget<ReminderWidgetModel>({ it.source == ReminderEnum.RECHARGE }) { rechargeModel, index ->
+            deleteWidget(rechargeModel, index)
+        }
         launch {
             homeRechargeRecommendationUseCase.get().onDeclineRechargeRecommendation(requestParams)
         }
     }
 
-    fun declineSalamItem(requestParams: Map<String, Int>){
-        findWidget<ReminderWidgetModel>({it.source == ReminderEnum.SALAM}) { rechargeModel, index ->
-            deleteWidget(rechargeModel, index) }
+    fun declineSalamItem(requestParams: Map<String, Int>) {
+        findWidget<ReminderWidgetModel>({ it.source == ReminderEnum.SALAM }) { rechargeModel, index ->
+            deleteWidget(rechargeModel, index)
+        }
         launch {
             homeSalamRecommendationUseCase.get().onDeclineSalamRecommendation(requestParams)
         }
@@ -485,12 +494,14 @@ open class HomeRevampViewModel @Inject constructor(
         findWidget<RechargeBUWidgetDataModel> { rechargeBuModel, index ->
             launchCatchError(coroutineContext, block = {
                 val data = homeRechargeBuWidgetUseCase.get().onGetRechargeBuWidgetFromHolder(
-                        widgetSource = source,
-                        currentRechargeBuWidget = rechargeBuModel)
+                    widgetSource = source,
+                    currentRechargeBuWidget = rechargeBuModel
+                )
                 updateWidget(data, index)
             }) {
                 findWidget<RechargeBUWidgetDataModel> { rechargeBuModel, index ->
-                    deleteWidget(rechargeBuModel, index) }
+                    deleteWidget(rechargeBuModel, index)
+                }
             }
         }
     }
@@ -502,9 +513,13 @@ open class HomeRevampViewModel @Inject constructor(
     fun getPopularKeywordOnRefresh() {
         findWidget<PopularKeywordListDataModel> { popularKeywordListDataModel, index ->
             launch {
-                updateWidget(homePopularKeywordUseCase.get().onPopularKeywordRefresh(
-                        popularKeywordRefreshCount, popularKeywordListDataModel
-                ), index)
+                updateWidget(
+                    homePopularKeywordUseCase.get().onPopularKeywordRefresh(
+                        popularKeywordRefreshCount,
+                        popularKeywordListDataModel
+                    ),
+                    index
+                )
             }
             popularKeywordRefreshCount++
         }
@@ -519,7 +534,8 @@ open class HomeRevampViewModel @Inject constructor(
                 )
                 updateWidget(
                     homeMissionWidgetUseCase.get()
-                        .onMissionWidgetRefresh(missionWidgetListDataModel), position
+                        .onMissionWidgetRefresh(missionWidgetListDataModel),
+                    position
                 )
             }
         }
@@ -527,11 +543,13 @@ open class HomeRevampViewModel @Inject constructor(
 
     fun getSearchHint(isFirstInstall: Boolean) {
         launch {
-            _searchHint.postValue(homeSearchUseCase.get().onGetSearchHint(
+            _searchHint.postValue(
+                homeSearchUseCase.get().onGetSearchHint(
                     isFirstInstall = isFirstInstall,
                     deviceId = userSession.get().deviceId,
                     userId = userSession.get().userId
-            ))
+                )
+            )
         }
     }
 
@@ -558,23 +576,32 @@ open class HomeRevampViewModel @Inject constructor(
     }
 
     fun shouldUpdatePlayWidgetToggleReminder(channelId: String, reminderType: PlayWidgetReminderType) {
-        if (!userSession.get().isLoggedIn) _playWidgetReminderEvent.value = Pair(channelId, reminderType)
-        else {
+        if (!userSession.get().isLoggedIn) {
+            _playWidgetReminderEvent.value = Pair(channelId, reminderType)
+        } else {
             updateCarouselPlayWidget {
-                it.copy(widgetState = homePlayUseCase.get().onGetPlayWidgetUiModel(
-                        it.widgetState, channelId, reminderType
-                ))
+                it.copy(
+                    widgetState = homePlayUseCase.get().onGetPlayWidgetUiModel(
+                        it.widgetState,
+                        channelId,
+                        reminderType
+                    )
+                )
             }
             launch {
-                when(homePlayUseCase.get().onUpdatePlayWidgetToggleReminder(channelId, reminderType)) {
+                when (homePlayUseCase.get().onUpdatePlayWidgetToggleReminder(channelId, reminderType)) {
                     true -> {
                         _playWidgetReminderObservable.postValue(Result.success(reminderType))
                     }
                     else -> {
                         updateCarouselPlayWidget {
-                            it.copy(widgetState = homePlayUseCase.get().onGetPlayWidgetUiModel(
-                                    it.widgetState, channelId, reminderType
-                            ))
+                            it.copy(
+                                widgetState = homePlayUseCase.get().onGetPlayWidgetUiModel(
+                                    it.widgetState,
+                                    channelId,
+                                    reminderType
+                                )
+                            )
                         }
                         _playWidgetReminderObservable.postValue(Result.error(error = Throwable()))
                     }
@@ -598,7 +625,7 @@ open class HomeRevampViewModel @Inject constructor(
         findWidget<HomeHeaderDataModel> { homeHeaderModel, index ->
             homeHeaderModel.needToShowChooseAddress = false
             homeDataModel.homeChooseAddressData.isActive = false
-            homeDataModel.updateWidgetModel(homeHeaderModel, homeHeaderModel, index){}
+            homeDataModel.updateWidgetModel(homeHeaderModel, homeHeaderModel, index) {}
             updateHomeData(homeDataModel)
         }
     }
@@ -617,12 +644,13 @@ open class HomeRevampViewModel @Inject constructor(
                         val newCMHomeWidgetDataModel =
                             cmHomeWidgetDataModel.copy(cmHomeWidgetData = it.cmHomeWidgetData)
                         updateWidget(newCMHomeWidgetDataModel, index)
-                    }, {
+                    },
+                    {
                         deleteWidget(cmHomeWidgetDataModel, index)
                     },
                     isForceRefresh
                 )
-            }){
+            }) {
                 deleteWidget(cmHomeWidgetDataModel, index)
             }
         }
@@ -635,9 +663,12 @@ open class HomeRevampViewModel @Inject constructor(
                     deleteCMHomeWidgetUseCase.get().deleteCMHomeWidgetData(
                         {
                             deleteWidget(cmHomeWidgetDataModel, index)
-                        }, {
+                        },
+                        {
                             updateWidget(cmHomeWidgetDataModel.copy(), index)
-                        }, it.parentId, it.campaignId
+                        },
+                        it.parentId,
+                        it.campaignId
                     )
                 }
             }) {
@@ -646,7 +677,7 @@ open class HomeRevampViewModel @Inject constructor(
         }
     }
 
-    fun deleteCMHomeWidgetLocally(){
+    fun deleteCMHomeWidgetLocally() {
         findWidget<CMHomeWidgetDataModel> { cmHomeWidgetDataModel, index ->
             deleteWidget(cmHomeWidgetDataModel, index)
         }
@@ -665,11 +696,12 @@ open class HomeRevampViewModel @Inject constructor(
                         val newPaylaterHomeWidgetDataModel =
                             homePayLaterWidgetDataModel.copy(payLaterWidgetData = it)
                         updateWidget(newPaylaterHomeWidgetDataModel, index)
-                    }, {
+                    },
+                    {
                         deleteWidget(homePayLaterWidgetDataModel, index)
                     }
                 )
-            }){
+            }) {
                 deleteWidget(homePayLaterWidgetDataModel, index)
             }
         }
@@ -685,11 +717,10 @@ open class HomeRevampViewModel @Inject constructor(
             launchCatchError(coroutineContext, {
                 deletePayLaterWidgetUseCase.get().getPayLaterWidgetCloseData({
                     deleteWidget(homePayLaterWidgetDataModel, index)
-                },{ deleteWidget(homePayLaterWidgetDataModel, index)})
-            }){
+                }, { deleteWidget(homePayLaterWidgetDataModel, index) })
+            }) {
                 deleteWidget(homePayLaterWidgetDataModel, index)
             }
-
         }
     }
 }
