@@ -2666,16 +2666,6 @@ class WishlistCollectionDetailFragment :
         }
     }
 
-    /*private fun validateCheckedItem(position: Int, isChecked: Boolean): Boolean {
-        if (listSelectedProductIdsFromOtherCollection.size > _maxBulk && _toasterMaxBulk.isNotEmpty()) {
-            showToaster(message = _toasterMaxBulk, actionText = "", Toaster.TYPE_ERROR)
-        } else {
-            collectionItemsAdapter.setCheckbox(position, isChecked)
-            setBottomButton()
-        }
-        return isValidateToBeChecked
-    }*/
-
     private fun validateCheckedItem(): Boolean {
         return (listSelectedProductIdsFromOtherCollection.size < _maxBulk && _toasterMaxBulk.isNotEmpty())
     }
