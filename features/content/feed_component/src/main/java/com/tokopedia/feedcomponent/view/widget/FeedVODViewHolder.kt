@@ -22,11 +22,9 @@ import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCard
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXMedia
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
-import com.tokopedia.feedcomponent.domain.mapper.TYPE_FEED_X_CARD_PLAY
 import com.tokopedia.feedcomponent.util.util.hideViewWithAnimationVod
 import com.tokopedia.feedcomponent.util.util.productThousandFormatted
 import com.tokopedia.feedcomponent.util.util.showViewWithAnimationVOD
-import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifycomponents.LoaderUnify
@@ -44,7 +42,7 @@ class FeedVODViewHolder @JvmOverloads constructor(
     private val layoutFrameView: ConstraintLayout
     private val layoutPlayerView : PlayerView
     private val vodLihatProdukBtn : Typography
-    private val vodPlayIcon : IconUnify
+    private val vodPlayIcon : ImageUnify
     private val vodFullScreenIcon : ImageView
     private val vodVolumeIcon : ImageView
     private val vodLanjutMemontomBtn : Typography

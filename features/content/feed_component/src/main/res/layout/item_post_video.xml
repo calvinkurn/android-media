@@ -40,7 +40,7 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent" />
 
-        <com.tokopedia.iconunify.IconUnify
+        <com.tokopedia.unifycomponents.ImageUnify
             android:id="@+id/ic_play"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -48,13 +48,7 @@
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toRightOf="parent"
             app:layout_constraintTop_toTopOf="parent"
-            android:padding="16dp"
-            android:background="@drawable/bg_circle_play_button"
-            app:icon_color_light_enable="@color/Unify_Static_White"
-            app:icon_color_night_enable="@color/Unify_Static_White"
-            app:icon_color_light_disabled="@color/Unify_Static_White"
-            app:icon_color_night_disabled="@color/Unify_Static_White"
-            app:icon_name="PLAY"/>
+            android:src="@drawable/bg_circle_play_button"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
