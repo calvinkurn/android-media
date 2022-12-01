@@ -322,7 +322,6 @@ ext {
             modifaceMakeUpKit     : "com.tokopedia.modiface:mfemakeupkit:0.0.18@aar",
             conversation          : "com.gojek.android:conversations:$conversationsVersion",
             courier               : "com.gojek.courier:courier:$gojekCourierVersion",
-            chuckMqtt             : "com.gojek.courier:chuck-mqtt:$gojekCourierVersion",
             timerPingSender       : "com.gojek.courier:timer-pingsender:$gojekCourierVersion",
             gsonMessageAdapter    : "com.gojek.courier:courier-message-adapter-gson:$gojekCourierVersion",
             textMessageAdapter    : "com.gojek.courier:courier-message-adapter-text:$gojekCourierVersion",
@@ -381,7 +380,8 @@ ext {
             chuckNoop       : "com.github.ChuckerTeam.Chucker:library-no-op:$chuckerVersion",
             timber          : "com.jakewharton.timber:timber:4.7.1",
             tooLargeTool    : "com.gu.android:toolargetool:0.2.1@aar",
-            leakCanary      : "com.squareup.leakcanary:leakcanary-android:$leakCanaryVersion"
+            leakCanary      : "com.squareup.leakcanary:leakcanary-android:$leakCanaryVersion",
+            chuckMqtt       : "com.gojek.courier:chuck-mqtt:$gojekCourierVersion"
     ]
 
     tkpdLibDependencies = [

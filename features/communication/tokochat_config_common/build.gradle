@@ -34,7 +34,6 @@ dependencies {
     implementation rootProject.ext.miscDependencies.courierStreamAdapter
     implementation rootProject.ext.miscDependencies.courierAuth
     implementation rootProject.ext.miscDependencies.timerPingSender
-    implementation rootProject.ext.miscDependencies.chuckMqtt
 
     implementation rootProject.ext.tkpdInternalLibDependencies.globalconfig
     implementation rootProject.ext.tkpdInternalLibDependencies.url
@@ -43,6 +42,7 @@ dependencies {
     implementation rootProject.ext.miscDependencies.dagger
 
     implementation rootProject.ext.debugToolsDependencies.chuck
+    implementation rootProject.ext.debugToolsDependencies.chuckMqtt
 }
 
 project.ext {
