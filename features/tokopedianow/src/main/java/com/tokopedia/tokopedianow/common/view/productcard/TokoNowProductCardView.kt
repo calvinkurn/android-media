@@ -267,8 +267,10 @@ class TokoNowProductCardView @JvmOverloads constructor(
         productId: String
     ) {
         wishlistButton.showIfWithBlock(isShown && isOos) {
-            wishlistButton.setValue(hasBeenWishlist)
-            wishlistButton.setProductId(productId)
+            wishlistButton.bind(
+                isSelected = hasBeenWishlist,
+                productId = productId
+            )
         }
     }
 
@@ -509,5 +511,11 @@ class TokoNowProductCardView @JvmOverloads constructor(
         onClickVariantListener: (Int) -> Unit
     ) {
         binding.quantityEditor.onClickVariantListener = onClickVariantListener
+    }
+
+    fun setWishlistButtonListener(
+        wishlistButtonListener: TokoNowWishlistButtonView.TokoNowWishlistButtonListener
+    ) {
+        binding.wishlistButton.setListener(wishlistButtonListener)
     }
 }

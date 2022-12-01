@@ -903,14 +903,18 @@ class TokoNowRepurchaseFragment:
         viewModel.trackOpeningScreen(SCREEN_NAME_TOKONOW_OOC + REPURCHASE_TOKONOW)
     }
 
-    private fun showToaster(message: String, duration: Int = Toaster.LENGTH_SHORT, type: Int) {
+    private fun showToaster(message: String, duration: Int = Toaster.LENGTH_SHORT, type: Int, actionText: String = "", clickListener: () -> Unit = {}) {
         view?.let { view ->
             if (message.isNotBlank()) {
                 Toaster.build(
                     view = view,
                     text = message,
                     duration = duration,
-                    type = type
+                    type = type,
+                    actionText = actionText,
+                    clickListener = {
+                        clickListener()
+                    }
                 ).show()
             }
         }
@@ -990,7 +994,14 @@ class TokoNowRepurchaseFragment:
             userSession,
             analytics,
             this::startActivityForResult
-        )
+        ) { descriptionToaster, type, ctaToaster, clickListener ->
+            showToaster(
+                message = descriptionToaster,
+                type = type,
+                actionText = ctaToaster,
+                clickListener = clickListener
+            )
+        }
     }
 
     private fun createTokoNowEmptyStateOocListener(): TokoNowEmptyStateOocViewHolder.TokoNowEmptyStateOocListener {

@@ -110,6 +110,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.usecase.coroutines.UseCase
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.SingleLiveEvent
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
 abstract class BaseSearchCategoryViewModel(
@@ -125,6 +126,9 @@ abstract class BaseSearchCategoryViewModel(
         protected val abTestPlatformWrapper: ABTestPlatformWrapper,
         protected val userSession: UserSessionInterface,
 ): BaseViewModel(baseDispatcher.io) {
+    companion object {
+        private const val DEFAULT_HEADER_Y_COORDINATE = 0f
+    }
 
     protected var chooseAddressDataView = ChooseAddressDataView()
     protected val loadingMoreModel = LoadingMoreModel()
@@ -133,6 +137,7 @@ abstract class BaseSearchCategoryViewModel(
     protected var totalData = 0
     protected var chooseAddressData: LocalCacheModel? = null
 
+    private var headerYCoordinate = 0f
     private val filterController = FilterController()
     private var totalFetchedData = 0
     private var nextPage = 1
@@ -1339,6 +1344,33 @@ abstract class BaseSearchCategoryViewModel(
                 it.key.removePrefix(OptionHelper.EXCLUDE_PREFIX) == optionToCheck.key
                         && it.value == optionToCheck.value
             }
+        }
+    }
+
+    fun updateWishlistStatus(
+        productId: String,
+        hasBeenWishlist: Boolean
+    ) {
+        launch {
+            val product = visitableList.filterIsInstance<ProductItemDataView>().find { it.productCardModel.productId == productId }
+            product?.apply {
+                val index = visitableList.indexOf(this)
+                productCardModel = productCardModel.copy(hasBeenWishlist = hasBeenWishlist)
+                updatedVisitableIndicesMutableLiveData.postValue(listOf(index))
+            }
+        }
+    }
+
+    fun getTranslationYHeaderBackground(dy: Int, headerBackgroundHeight: Int): Float {
+        headerYCoordinate += dy
+        return if (-headerYCoordinate > DEFAULT_HEADER_Y_COORDINATE) {
+            headerYCoordinate = DEFAULT_HEADER_Y_COORDINATE
+            headerYCoordinate
+        } else if (headerYCoordinate <= -headerBackgroundHeight) {
+            headerYCoordinate = headerBackgroundHeight.toFloat()
+            -headerYCoordinate
+        } else  {
+            -headerYCoordinate
         }
     }
 

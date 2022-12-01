@@ -80,6 +80,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class TokoNowRepurchaseViewModel @Inject constructor(
@@ -503,6 +504,26 @@ class TokoNowRepurchaseViewModel @Inject constructor(
 
         if(scrolledToLastItem && hasNextPage) {
             loadMoreProduct()
+        }
+    }
+
+    fun updateWishlistStatus(
+        productId: String,
+        hasBeenWishlist: Boolean
+    ) {
+        launch {
+            val product = layoutList.filterIsInstance<RepurchaseProductUiModel>().find { it.productCardModel.productId == productId }
+            product?.apply {
+                val index = layoutList.indexOf(this)
+                layoutList[index] = copy(productCardModel = productCardModel.copy(hasBeenWishlist = hasBeenWishlist))
+
+                val layout = RepurchaseLayoutUiModel(
+                    layoutList = layoutList,
+                    state = TokoNowLayoutState.UPDATE
+                )
+
+                _getLayout.postValue(Success(layout))
+            }
         }
     }
 

@@ -132,8 +132,9 @@ abstract class BaseSearchCategoryFragment:
         private const val SPAN_COUNT = 3
         private const val SPAN_FULL_SPACE = 1
         private const val QUERY_PARAM_SERVICE_TYPE_NOW2H = "?service_type=2h"
-        private const val DEFAULT_POSITION = 0
+        private const val TOP_LIST = 0
         private const val NO_PADDING = 0
+        private const val WHILE_SCROLLING_VERTICALLY = 1
     }
 
     private var binding by autoClearedNullable<FragmentTokopedianowSearchCategoryBinding>()
@@ -163,8 +164,6 @@ abstract class BaseSearchCategoryFragment:
     protected var headerBackground: AppCompatImageView? = null
     protected var loaderUnify: LoaderUnify? = null
     protected val recycledViewPool = RecyclerView.RecycledViewPool()
-
-    private var movingPosition = 0
 
     protected abstract val toolbarPageName: String
 
@@ -389,7 +388,6 @@ abstract class BaseSearchCategoryFragment:
     }
 
     protected open fun refreshLayout() {
-        resetMovingPosition()
         getViewModel().onViewReloadPage()
         refreshProductRecommendation(TOKONOW_NO_RESULT)
     }
@@ -400,10 +398,6 @@ abstract class BaseSearchCategoryFragment:
                 pageName = pageName
             )
         )
-    }
-
-    private fun resetMovingPosition() {
-        movingPosition = DEFAULT_POSITION
     }
 
     private fun configureStatusBar() {
@@ -470,19 +464,16 @@ abstract class BaseSearchCategoryFragment:
             object : RecyclerView.OnScrollListener() {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                     super.onScrolled(recyclerView, dx, dy)
-                    evaluateNavToolbarShadow(recyclerView, dy)
+                    evaluateHeaderBackgroundOnScroll(recyclerView, dy)
                 }
             }
 
-    private fun evaluateNavToolbarShadow(recyclerView: RecyclerView, dy: Int) {
-        movingPosition += dy
-        headerBackground?.y = if(movingPosition >= DEFAULT_POSITION) {
-            -(movingPosition.toFloat())
-        } else {
-            resetMovingPosition()
-            movingPosition.toFloat()
-        }
-        if (recyclerView.canScrollVertically(1) || movingPosition != DEFAULT_POSITION) {
+    private fun evaluateHeaderBackgroundOnScroll(recyclerView: RecyclerView, dy: Int) {
+        headerBackground?.translationY = getViewModel().getTranslationYHeaderBackground(
+            dy = dy,
+            headerBackgroundHeight = headerBackground?.height.orZero()
+        )
+        if (recyclerView.canScrollVertically(WHILE_SCROLLING_VERTICALLY)) {
             navToolbar?.showShadow(lineShadow = false)
         } else {
             navToolbar?.hideShadow(lineShadow = false)
@@ -1002,7 +993,7 @@ abstract class BaseSearchCategoryFragment:
                     )
 
                     //Refresh the page
-                    gridLayoutManager?.scrollToPosition(DEFAULT_POSITION)
+                    gridLayoutManager?.scrollToPosition(TOP_LIST)
                     refreshLayout()
 
                     //Show toaster
@@ -1093,6 +1084,23 @@ abstract class BaseSearchCategoryFragment:
 
             override fun onLoginPreverified() {}
         })
+    }
+
+    override fun onWishlistButtonClicked(
+        productId: String,
+        isWishlistSelected: Boolean,
+        descriptionToaster: String,
+        ctaToaster: String,
+        type: Int,
+        ctaClickListener: (() -> Unit)?
+    ) {
+        getViewModel().updateWishlistStatus(
+            productId,
+            isWishlistSelected
+        )
+        showToaster(descriptionToaster, type, ctaToaster) {
+            ctaClickListener?.invoke()
+        }
     }
 
     open fun createProductRecommendationOocCallback() = ProductRecommendationOocCallback(

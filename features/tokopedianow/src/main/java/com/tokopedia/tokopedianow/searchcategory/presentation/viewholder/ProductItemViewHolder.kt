@@ -5,6 +5,7 @@ import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.tokopedianow.R
+import com.tokopedia.tokopedianow.common.view.productcard.TokoNowWishlistButtonView
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowProductGridCardBinding
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ProductItemListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
@@ -13,7 +14,7 @@ import com.tokopedia.utils.view.binding.viewBinding
 class ProductItemViewHolder(
         itemView: View,
         private val listener: ProductItemListener,
-): AbstractViewHolder<ProductItemDataView>(itemView) {
+): AbstractViewHolder<ProductItemDataView>(itemView), TokoNowWishlistButtonView.TokoNowWishlistButtonListener {
 
     companion object {
         @LayoutRes
@@ -43,6 +44,9 @@ class ProductItemViewHolder(
                     productItemDataView = element
                 )
             }
+            setWishlistButtonListener(
+                wishlistButtonListener = this@ProductItemViewHolder
+            )
             addOnImpressionListener(element) {
                 listener.onProductImpressed(
                     productItemDataView = element
@@ -57,5 +61,23 @@ class ProductItemViewHolder(
                 model = element.productCardModel
             )
         }
+    }
+
+    override fun onWishlistButtonClicked(
+        productId: String,
+        isWishlistSelected: Boolean,
+        descriptionToaster: String,
+        ctaToaster: String,
+        type: Int,
+        ctaClickListener: (() -> Unit)?
+    ) {
+        listener.onWishlistButtonClicked(
+            productId = productId,
+            isWishlistSelected = isWishlistSelected,
+            descriptionToaster = descriptionToaster,
+            ctaToaster = ctaToaster,
+            type = type,
+            ctaClickListener = ctaClickListener
+        )
     }
 }
