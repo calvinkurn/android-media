@@ -338,7 +338,6 @@ public class EditShippingPresenterImpl implements EditShippingPresenter {
                     view.refreshLocationViewListener(selectedAddress);
                 }
                 sortCourier(model);
-                activateCourierServices(model.courier);
                 displayCourierList(model);
                 view.onShowViewAfterLoading();
                 view.finishLoading();
