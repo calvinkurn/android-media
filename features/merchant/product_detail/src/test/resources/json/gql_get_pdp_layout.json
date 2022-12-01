@@ -588,6 +588,11 @@
             "type": "info"
           },
           {
+            "data": [],
+            "name": "button_ar",
+            "type": "button_ar"
+          },
+          {
             "data": [
               {
                 "applink": "",

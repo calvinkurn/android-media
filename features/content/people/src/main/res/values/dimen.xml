@@ -17,4 +17,6 @@
     <dimen name="user_profile_margin_64">64dp</dimen>
     <dimen name="user_profile_margin_8">8dp</dimen>
     <dimen name="user_profile_margin_96">96dp</dimen>
+
+    <dimen name="user_profile_badge_size">18dp</dimen>
 </resources>

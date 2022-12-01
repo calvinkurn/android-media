@@ -770,6 +770,12 @@
         "shopFinishRate": {
           "finishRate": "100%"
         },
+        "arInfo": {
+          "productIDs" : ["518076293"],
+          "message": "ar",
+          "applink": "applink ar",
+          "imageUrl": "image url ar"
+        },
         "ticker": {
           "tickerInfo": [
             {
