@@ -5,6 +5,7 @@ import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.affiliate.AffiliateAnalytics
 import com.tokopedia.affiliate.PAGE_EDUCATION_ARTICLE
 import com.tokopedia.affiliate.adapter.AffiliateAdapter
 import com.tokopedia.affiliate.adapter.AffiliateAdapterFactory
@@ -13,6 +14,8 @@ import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEducationArticle
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEducationArticleUiModel
 import com.tokopedia.affiliate_toko.R
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.user.session.UserSessionInterface
+import javax.inject.Inject
 
 class AffiliateEducationArticleRVVH(
     itemView: View,
@@ -36,12 +39,16 @@ class AffiliateEducationArticleRVVH(
         var LAYOUT = R.layout.affiliate_education_article_widget_list
     }
 
+    @Inject
+    lateinit var userSessionInterface: UserSessionInterface
+
     override fun bind(element: AffiliateEducationArticleRVUiModel?) {
         tvSeeMore.setOnClickListener {
             affiliateEducationEventArticleClickInterface?.onSeeMoreClick(
                 PAGE_EDUCATION_ARTICLE,
                 element?.article?.articles?.getOrNull(0)?.categories?.getOrNull(0)?.id.toString()
             )
+            sendEducationClickEvent()
         }
         rvArticle?.apply {
             layoutManager = rvLayoutManager
@@ -49,6 +56,16 @@ class AffiliateEducationArticleRVVH(
         }
         articleAdapter.setVisitables(
             element?.article?.articles?.map { AffiliateEducationArticleUiModel(it) }
+        )
+    }
+
+    private fun sendEducationClickEvent() {
+        AffiliateAnalytics.sendEducationTracker(
+            AffiliateAnalytics.EventKeys.CLICK_CONTENT,
+            AffiliateAnalytics.ActionKeys.CLICK_LIHAT_SEMUA_LATEST_ARTICLE_CARD,
+            AffiliateAnalytics.CategoryKeys.AFFILIATE_EDUKASI_PAGE,
+            userId = userSessionInterface.userId,
+            eventLabel = ""
         )
     }
 }

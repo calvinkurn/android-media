@@ -3,6 +3,9 @@ package com.tokopedia.affiliate.viewmodel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.adapter.Visitable
+import com.tokopedia.affiliate.AffiliateAnalytics
+import com.tokopedia.affiliate.AffiliateAnalytics.ActionKeys
+import com.tokopedia.affiliate.AffiliateAnalytics.CategoryKeys
 import com.tokopedia.affiliate.FACEBOOK
 import com.tokopedia.affiliate.FILTER_HIGHLIGHTED
 import com.tokopedia.affiliate.INSTAGRAM
@@ -17,13 +20,7 @@ import com.tokopedia.affiliate.model.pojo.AffiliateEducationSocialData
 import com.tokopedia.affiliate.model.response.AffiliateEducationArticleCardsResponse
 import com.tokopedia.affiliate.model.response.AffiliateEducationBannerResponse
 import com.tokopedia.affiliate.model.response.AffiliateEducationCategoryResponse
-import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEducationArticleRVUiModel
-import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEducationArticleTopicRVUiModel
-import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEducationBannerUiModel
-import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEducationEventRVUiModel
-import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEducationLearnUiModel
-import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEducationSocialRVUiModel
-import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEducationTutorialRVUiModel
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.*
 import com.tokopedia.affiliate.usecase.AffiliateEducationArticleCardsUseCase
 import com.tokopedia.affiliate.usecase.AffiliateEducationBannerUseCase
 import com.tokopedia.affiliate.usecase.AffiliateEducationCategoryTreeUseCase
@@ -31,6 +28,7 @@ import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.url.TokopediaUrl
 import timber.log.Timber
 import javax.inject.Inject
@@ -52,6 +50,9 @@ class AffiliateEducationLandingViewModel @Inject constructor(
     init {
         getEducationLandingPageData()
     }
+
+    @Inject
+    lateinit var userSessionInterface: UserSessionInterface
 
     private val educationPageData = MutableLiveData<List<Visitable<AffiliateAdapterTypeFactory>>>()
 
@@ -86,6 +87,12 @@ class AffiliateEducationLandingViewModel @Inject constructor(
         val tempList = mutableListOf<Visitable<AffiliateAdapterTypeFactory>>()
         educationBannerResponse.dynamicBanner?.let { educationBanners ->
             tempList.add(AffiliateEducationBannerUiModel(educationBanners.data?.banners))
+            sendEducationImpressions(
+                educationBanners.data?.banners?.get(0)?.title,
+                educationBanners.data?.banners?.get(0)?.bannerId.toString(),
+                ActionKeys.IMPRESSION_MAIN_BANNER,
+                CategoryKeys.AFFILIATE_EDUKASI_PAGE
+            )
         }
         educationCategoryResponse.categoryTree?.let { educationCategories ->
             val categoryGroup =
@@ -98,9 +105,21 @@ class AffiliateEducationLandingViewModel @Inject constructor(
             }
             educationEventCards.cardsArticle?.data?.cards?.let {
                 tempList.add(AffiliateEducationEventRVUiModel(it[0]))
+                sendEducationImpressions(
+                    it[0]?.title,
+                    it[0]?.id,
+                    ActionKeys.IMPRESSION_EVENT_CARD,
+                    CategoryKeys.AFFILIATE_EDUKASI_PAGE
+                )
             }
             educationArticleCards.cardsArticle?.data?.cards?.let {
                 tempList.add(AffiliateEducationArticleRVUiModel(it[0]))
+                sendEducationImpressions(
+                    it[0]?.title,
+                    it[0]?.id,
+                    ActionKeys.IMPRESSION_LATEST_ARTICLE_CARD,
+                    CategoryKeys.AFFILIATE_EDUKASI_PAGE
+                )
             }
             if (tutorial?.isNotEmpty() == true) {
                 tutorial.add(
@@ -150,4 +169,22 @@ class AffiliateEducationLandingViewModel @Inject constructor(
 
     fun getEducationPageData(): LiveData<List<Visitable<AffiliateAdapterTypeFactory>>> =
         educationPageData
+
+    private fun sendEducationImpressions(
+        creativeName: String?,
+        id: String?,
+        actionKeys: String,
+        categoryKeys: String
+    ) {
+        AffiliateAnalytics.sendEducationTracker(
+            AffiliateAnalytics.EventKeys.VIEW_ITEM,
+            actionKeys,
+            categoryKeys,
+            id,
+            position = 0,
+            id,
+            userSessionInterface.userId,
+            creativeName
+        )
+    }
 }

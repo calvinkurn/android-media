@@ -88,7 +88,11 @@ data class AffiliateEducationArticleCardsResponse(
                     val uploadDatetime: String? = null,
 
                     @SerializedName("slug")
-                    val slug: String? = null
+                    val slug: String? = null,
+
+                    @SerializedName("id")
+                    val articleId: Long? = null
+
                 ) {
 
                     data class Attributes(

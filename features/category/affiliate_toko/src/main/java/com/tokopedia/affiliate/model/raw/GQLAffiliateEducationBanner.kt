@@ -7,6 +7,7 @@ val GQL_Affiliate_Education_Banner: String = """query GetAffiliateEduBanner(
     data {
       status
       banners {
+        id
         title
         title_color
         description
@@ -45,4 +46,5 @@ val GQL_Affiliate_Education_Banner: String = """query GetAffiliateEduBanner(
       }
     }
   }
-}""".trimIndent()
+}
+""".trimIndent()

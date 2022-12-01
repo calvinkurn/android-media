@@ -12,6 +12,7 @@ import com.google.android.material.shape.RoundedCornerTreatment
 import com.google.android.material.shape.ShapeAppearanceModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
+import com.tokopedia.affiliate.AffiliateAnalytics
 import com.tokopedia.affiliate.INSTAGRAM
 import com.tokopedia.affiliate.YOUTUBE
 import com.tokopedia.affiliate.interfaces.AffiliateEducationSocialCTAClickInterface
@@ -21,6 +22,8 @@ import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.unifycomponents.UnifyButton
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.user.session.UserSessionInterface
+import javax.inject.Inject
 
 class AffiliateEducationSocialVH(
     itemView: View,
@@ -34,6 +37,9 @@ class AffiliateEducationSocialVH(
         @LayoutRes
         var LAYOUT = R.layout.affiliate_education_social_item
     }
+
+    @Inject
+    lateinit var userSessionInterface: UserSessionInterface
 
     private val roundedShape: MaterialShapeDrawable by lazy {
         val shape = ShapeAppearanceModel
@@ -82,6 +88,30 @@ class AffiliateEducationSocialVH(
                 element?.socialItem?.socialChannel.orEmpty(),
                 element?.socialItem?.url.orEmpty()
             )
+            sendEducationClickEvent(
+                element?.socialItem?.socialChannel,
+                element?.socialItem?.socialChannel,
+                AffiliateAnalytics.ActionKeys.CLICK_SOCIAL_MEDIA_CARD,
+                AffiliateAnalytics.CategoryKeys.AFFILIATE_EDUKASI_PAGE
+            )
         }
+    }
+
+    private fun sendEducationClickEvent(
+        creativeName: String?,
+        eventId: String?,
+        actionKeys: String,
+        categoryKeys: String
+    ) {
+        AffiliateAnalytics.sendEducationTracker(
+            AffiliateAnalytics.EventKeys.SELECT_CONTENT,
+            actionKeys,
+            categoryKeys,
+            eventId,
+            position = 0,
+            eventId,
+            userSessionInterface.userId,
+            creativeName
+        )
     }
 }
