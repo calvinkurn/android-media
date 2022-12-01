@@ -12,7 +12,6 @@ import com.tokopedia.topads.sdk.utils.ImpressionTaskAlert.Companion.getInstance
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import java.io.IOException
 
