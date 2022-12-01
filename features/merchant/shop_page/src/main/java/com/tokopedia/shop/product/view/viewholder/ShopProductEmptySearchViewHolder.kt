@@ -11,19 +11,21 @@ import com.tokopedia.shop.product.view.datamodel.ShopProductEmptySearchUiModel
 import com.tokopedia.shop.product.view.listener.ShopProductEmptySearchListener
 import com.tokopedia.utils.view.binding.viewBinding
 
-class ShopProductEmptySearchViewHolder(val view: View,
-                                       private val shopProductEmptySearchListener: ShopProductEmptySearchListener?): AbstractViewHolder<ShopProductEmptySearchUiModel>(view) {
+class ShopProductEmptySearchViewHolder(
+    val view: View,
+    private val shopProductEmptySearchListener: ShopProductEmptySearchListener?
+) : AbstractViewHolder<ShopProductEmptySearchUiModel>(view) {
 
     companion object {
         val LAYOUT = R.layout.shop_search_product_empty_state
     }
 
-    private val viewBinding : ShopSearchProductEmptyStateBinding? by viewBinding()
+    private val viewBinding: ShopSearchProductEmptyStateBinding? by viewBinding()
     private val shopSearchEmptyState: EmptyStateUnify? = viewBinding?.shopSearchEmptyState
 
     override fun bind(element: ShopProductEmptySearchUiModel) {
         try {
-            if(shopSearchEmptyState?.context?.isValidGlideContext() == true)
+            if (shopSearchEmptyState?.context?.isValidGlideContext() == true)
                 shopSearchEmptyState.setImageUrl(ShopPageConstant.URL_IMAGE_BUYER_SHOP_SEARCH_EMPTY_STATE)
         } catch (e: Throwable) { }
         shopSearchEmptyState?.setPrimaryCTAClickListener {
@@ -33,5 +35,4 @@ class ShopProductEmptySearchViewHolder(val view: View,
             shopProductEmptySearchListener?.onSecondaryButtonEmptyClicked()
         }
     }
-
 }

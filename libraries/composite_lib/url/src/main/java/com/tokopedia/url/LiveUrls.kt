@@ -48,5 +48,7 @@ internal val live = Url(
         PCIDSS_CREDIT_CARD = "https://pay.tokopedia.id/",
         GOJEK_OTP = "https://accounts.gojek.com/",
         GOPAY_PIN = "https://merchants-gws-app.gopayapi.com/",
-        SSE = "https://sse.tokopedia.com/"
+        SSE = "https://sse.tokopedia.com/",
+        ONE_TRUST = "https://app-apac.onetrust.com/",
+        TOKOCHAT = "https://chat.tokopedia.com/tokochat/"
 )

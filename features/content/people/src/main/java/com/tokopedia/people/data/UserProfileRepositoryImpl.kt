@@ -3,23 +3,22 @@ package com.tokopedia.people.data
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.content.common.usecase.GetWhiteListNewUseCase
 import com.tokopedia.content.common.usecase.GetWhiteListNewUseCase.Companion.WHITELIST_ENTRY_POINT
-import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomUiModel
 import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowAction
 import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowUseCase
 import com.tokopedia.feedcomponent.domain.usecase.shoprecom.ShopRecomUseCase
-import com.tokopedia.feedcomponent.domain.usecase.shoprecom.ShopRecomUseCase.Companion.VAL_CURSOR
 import com.tokopedia.feedcomponent.domain.usecase.shoprecom.ShopRecomUseCase.Companion.VAL_LIMIT
 import com.tokopedia.feedcomponent.domain.usecase.shoprecom.ShopRecomUseCase.Companion.VAL_SCREEN_NAME_USER_PROFILE
+import com.tokopedia.feedcomponent.people.mapper.ProfileMutationMapper
+import com.tokopedia.feedcomponent.people.model.MutationUiModel
+import com.tokopedia.feedcomponent.people.usecase.ProfileFollowUseCase
+import com.tokopedia.feedcomponent.people.usecase.ProfileUnfollowedUseCase
 import com.tokopedia.feedcomponent.shoprecom.mapper.ShopRecomUiMapper
+import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomUiModel
 import com.tokopedia.people.domains.*
 import com.tokopedia.people.domains.repository.UserProfileRepository
 import com.tokopedia.people.model.ProfileFollowerListBase
 import com.tokopedia.people.model.ProfileFollowingListBase
 import com.tokopedia.people.model.UserPostModel
-import com.tokopedia.feedcomponent.people.model.MutationUiModel
-import com.tokopedia.feedcomponent.people.usecase.ProfileFollowUseCase
-import com.tokopedia.feedcomponent.people.mapper.ProfileMutationMapper
-import com.tokopedia.feedcomponent.people.usecase.ProfileUnfollowedUseCase
 import com.tokopedia.people.views.uimodel.mapper.UserProfileUiMapper
 import com.tokopedia.people.views.uimodel.profile.FollowInfoUiModel
 import com.tokopedia.people.views.uimodel.profile.ProfileUiModel
@@ -107,19 +106,19 @@ class UserProfileRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun getShopRecom(): ShopRecomUiModel = withContext(dispatcher.io) {
+    override suspend fun getShopRecom(cursor: String): ShopRecomUiModel = withContext(dispatcher.io) {
         val result = shopRecomUseCase.executeOnBackground(
             screenName = VAL_SCREEN_NAME_USER_PROFILE,
             limit = VAL_LIMIT,
-            cursor = VAL_CURSOR,
+            cursor = cursor,
         )
 
-        return@withContext shopRecomMapper.mapShopRecom(result)
+        return@withContext shopRecomMapper.mapShopRecom(result, VAL_LIMIT)
     }
 
     override suspend fun shopFollowUnfollow(
         shopId: String,
-        action: ShopFollowAction
+        action: ShopFollowAction,
     ): MutationUiModel = withContext(dispatcher.io) {
         val result = shopFollowUseCase.executeOnBackground(
             shopId = shopId,
@@ -132,7 +131,7 @@ class UserProfileRepositoryImpl @Inject constructor(
     override suspend fun getFollowerList(
         username: String,
         cursor: String,
-        limit: Int
+        limit: Int,
     ): ProfileFollowerListBase = withContext(dispatcher.io) {
         return@withContext getFollowerListUseCase.executeOnBackground(
             username = username,
@@ -144,7 +143,7 @@ class UserProfileRepositoryImpl @Inject constructor(
     override suspend fun getFollowingList(
         username: String,
         cursor: String,
-        limit: Int
+        limit: Int,
     ): ProfileFollowingListBase = withContext(dispatcher.io) {
         return@withContext getFollowingListUseCase.executeOnBackground(
             username = username,

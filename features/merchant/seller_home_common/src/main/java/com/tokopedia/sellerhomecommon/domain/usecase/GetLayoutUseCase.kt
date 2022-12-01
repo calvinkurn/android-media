@@ -95,6 +95,7 @@ class GetLayoutUseCase(
                   }
                   isDismissible
                   dismissibleState
+                  useRealtime
                 }
               }
             }

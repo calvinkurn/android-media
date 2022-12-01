@@ -29,7 +29,7 @@ class UserProfileViewModelFactory @AssistedInject constructor(
     override fun <T : ViewModel?> create(
         key: String,
         modelClass: Class<T>,
-        handle: SavedStateHandle
+        handle: SavedStateHandle,
     ): T {
         return userProfileViewModelFactory.create(username) as T
     }

@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    tools:layout_margin="@dimen/spacing_lvl4">
+    tools:layout_margin="16dp">
 
     <com.tokopedia.unifycomponents.ticker.Ticker
         android:id="@+id/ticker_product_manage_ongoing_promotion"

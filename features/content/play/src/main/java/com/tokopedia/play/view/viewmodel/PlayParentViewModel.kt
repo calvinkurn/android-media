@@ -19,14 +19,17 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.play.domain.repository.PlayViewerRepository
 import com.tokopedia.play_common.util.event.Event
 import com.tokopedia.user.session.UserSessionInterface
+import dagger.assisted.Assisted
+import dagger.assisted.AssistedFactory
+import dagger.assisted.AssistedInject
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 /**
  * Created by jegul on 19/01/21
  */
-class PlayParentViewModel constructor(
-    private val handle: SavedStateHandle,
+class PlayParentViewModel @AssistedInject constructor(
+    @Assisted private val handle: SavedStateHandle,
     private val playChannelStateStorage: PlayChannelStateStorage,
     private val dispatchers: CoroutineDispatchers,
     private val userSession: UserSessionInterface,
@@ -34,24 +37,9 @@ class PlayParentViewModel constructor(
     pageMonitoring: PlayPltPerformanceCallback,
 ) : ViewModel() {
 
-    class Factory @Inject constructor(
-        private val playChannelStateStorage: PlayChannelStateStorage,
-        private val dispatchers: CoroutineDispatchers,
-        private val userSession: UserSessionInterface,
-        private val pageMonitoring: PlayPltPerformanceCallback,
-        private val repo: PlayViewerRepository,
-    ) {
-
-        fun create(handle: SavedStateHandle): PlayParentViewModel {
-            return PlayParentViewModel(
-                handle,
-                playChannelStateStorage,
-                dispatchers,
-                userSession,
-                repo,
-                pageMonitoring,
-            )
-        }
+    @AssistedFactory
+    interface Factory {
+        fun create(handle: SavedStateHandle): PlayParentViewModel
     }
 
     val userId: String
@@ -141,19 +129,16 @@ class PlayParentViewModel constructor(
 
         viewModelScope.launchCatchError(block = {
             withContext(dispatchers.io) {
-                val response = repo.getChannelList(
-                    nextKey,
-                    PlayChannelDetailsWithRecomMapper.ExtraParams(
-                        channelId = startingChannelId,
-                        videoStartMillis = mVideoStartMillis?.toLong() ?: 0,
-                        shouldTrack = shouldTrack?.toBoolean() ?: true,
-                        sourceType = source.type
-                    )
-                )
+                val response = repo.getChannels(nextKey, PlayChannelDetailsWithRecomMapper.ExtraParams(
+                    channelId = startingChannelId,
+                    videoStartMillis = mVideoStartMillis?.toLong() ?: 0,
+                    shouldTrack = shouldTrack?.toBoolean() ?: true,
+                    sourceType = source.type
+                ))
 
                 mNextKey = GetChannelDetailsWithRecomUseCase.ChannelDetailNextKey.Cursor(response.cursor)
 
-                response.channelData.forEach {
+                response.channelList.forEach {
                     playChannelStateStorage.setData(it.id, it)
                 }
             }

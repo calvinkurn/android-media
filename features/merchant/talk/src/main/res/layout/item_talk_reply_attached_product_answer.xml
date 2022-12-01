@@ -7,8 +7,8 @@
 
     <View
         android:id="@+id/blankSpace"
-        android:layout_width="@dimen/layout_lvl5"
-        android:layout_height="@dimen/layout_lvl0"
+        android:layout_width="40dp"
+        android:layout_height="0dp"
         android:clickable="true"
         android:focusable="true"
         android:visibility="gone"
@@ -20,7 +20,7 @@
         android:id="@+id/attachedProductCard"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:padding="@dimen/layout_lvl1"
+        android:padding="8dp"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:card_type="border">
@@ -40,10 +40,10 @@
 
             <com.tokopedia.unifyprinciples.Typography
                 android:id="@+id/replyAttachedProductName"
-                android:layout_width="@dimen/layout_lvl9"
+                android:layout_width="128dp"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/layout_lvl1"
-                android:layout_marginLeft="@dimen/layout_lvl1"
+                android:layout_marginStart="8dp"
+                android:layout_marginLeft="8dp"
                 android:maxLines="1"
                 android:ellipsize="end"
                 app:layout_constraintStart_toEndOf="@id/replyAttachedProductImage"
@@ -65,8 +65,8 @@
                 android:id="@+id/replyAttachedProductRemoveButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/layout_lvl1"
-                android:layout_marginLeft="@dimen/layout_lvl1"
+                android:layout_marginStart="8dp"
+                android:layout_marginLeft="8dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toEndOf="@id/replyAttachedProductName"
                 app:layout_constraintTop_toTopOf="@id/replyAttachedProductImage"

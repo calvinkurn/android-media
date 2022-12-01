@@ -5,6 +5,7 @@ import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.common.ProductServiceWidgetConstant.PRODUCT_BUNDLE_STATUS_ACTIVE
 import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
+import com.tokopedia.kotlin.extensions.view.getNumberFormatted
 import com.tokopedia.kotlin.extensions.view.isZero
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.thousandFormatted
@@ -73,14 +74,15 @@ class ProductBundleWidgetUiMapper @Inject constructor(@ApplicationContext privat
             } else {
                 bundleItem?.minOrder.orZero()
             }
-            val bundlePrice = bundleItem?.getMultipliedBundlePrice().orZero()
-            val originalPrice = bundleItem?.getMultipliedOriginalPrice().orZero()
+
+            val bundlePrice = bundleItem?.getPreviewBundlePrice().orZero() * minOrder
+            val originalPrice = bundleItem?.getPreviewOriginalPrice().orZero() * minOrder
             val preorder = getPreorderWording(context, it.preorder)
             val productSoldInfo = it.getProductSoldInfo()
 
             initializeBundleDetail(originalPrice, bundlePrice, shopInfo, it.bundleItems).apply {
                 this.minOrder = minOrder
-                this.minOrderWording = context.getString(R.string.bundlewidget_min_order_format, minOrder)
+                this.minOrderWording = context.getString(R.string.bundlewidget_min_order_format, minOrder.getNumberFormatted())
                 this.bundleId = it.bundleID.toString()
                 this.preOrderInfo = preorder.orEmpty()
                 this.isPreOrder = !preorder.isNullOrBlank()
