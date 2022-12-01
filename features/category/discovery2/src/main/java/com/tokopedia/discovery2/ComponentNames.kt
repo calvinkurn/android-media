@@ -131,5 +131,8 @@ enum class ComponentNames(val componentName: String) {
 
     ThematicHeader("thematic_header"),
 
-    ExplicitWidget("explicit_widget")
+    ExplicitWidget("explicit_widget"),
+
+    ContentCard("content_card"),
+    ContentCardItem("content_card_item")
 }
