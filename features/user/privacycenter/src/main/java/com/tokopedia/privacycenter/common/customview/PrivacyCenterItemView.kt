@@ -1,4 +1,4 @@
-package com.tokopedia.privacycenter
+package com.tokopedia.privacycenter.common.customview
 
 import android.content.Context
 import android.util.AttributeSet
@@ -8,8 +8,9 @@ import android.widget.FrameLayout
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.media.loader.loadImage
-import com.tokopedia.privacycenter.PrivacyCenterItemView.PrivacyCenterItemType.DEFAULT
-import com.tokopedia.privacycenter.PrivacyCenterItemView.PrivacyCenterItemType.TOGGLE
+import com.tokopedia.privacycenter.R
+import com.tokopedia.privacycenter.common.customview.PrivacyCenterItemView.PrivacyCenterItemType.DEFAULT
+import com.tokopedia.privacycenter.common.customview.PrivacyCenterItemView.PrivacyCenterItemType.TOGGLE
 import com.tokopedia.privacycenter.databinding.CustomviewItemPrivacyCenterBinding
 import com.tokopedia.unifyprinciples.Typography
 

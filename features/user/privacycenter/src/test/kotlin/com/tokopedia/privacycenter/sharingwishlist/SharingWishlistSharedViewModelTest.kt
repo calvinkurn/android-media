@@ -1,7 +1,7 @@
 package com.tokopedia.privacycenter.sharingwishlist
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.tokopedia.privacycenter.sharingwishlist.viewmodel.SharingWishlistSharedViewModel
+import com.tokopedia.privacycenter.ui.sharingwishlist.SharingWishlistSharedViewModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.first

@@ -4,8 +4,8 @@ import com.google.gson.Gson
 import com.tokopedia.common.network.coroutines.repository.RestRepository
 import com.tokopedia.common.network.data.model.RestRequest
 import com.tokopedia.common.network.data.model.RestResponse
-import com.tokopedia.privacycenter.main.section.privacypolicy.PrivacyPolicyConst
-import com.tokopedia.privacycenter.main.section.privacypolicy.domain.data.PrivacyPolicyListResponse
+import com.tokopedia.privacycenter.data.PrivacyPolicyListResponse
+import com.tokopedia.privacycenter.ui.main.section.privacypolicy.PrivacyPolicyConst
 import timber.log.Timber
 import java.lang.reflect.Type
 

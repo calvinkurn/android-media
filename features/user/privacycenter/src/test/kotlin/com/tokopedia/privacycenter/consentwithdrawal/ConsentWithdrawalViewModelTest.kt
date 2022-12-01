@@ -2,12 +2,12 @@ package com.tokopedia.privacycenter.consentwithdrawal
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.privacycenter.common.PrivacyCenterStateResult
-import com.tokopedia.privacycenter.consentwithdrawal.common.ConsentWithdrawalConst
-import com.tokopedia.privacycenter.consentwithdrawal.data.ConsentPurposeGroupDataModel
-import com.tokopedia.privacycenter.consentwithdrawal.data.SubmitConsentDataModel
-import com.tokopedia.privacycenter.consentwithdrawal.domain.GetConsentPurposeByGroupUseCase
-import com.tokopedia.privacycenter.consentwithdrawal.domain.SubmitConsentPreferenceUseCase
-import com.tokopedia.privacycenter.consentwithdrawal.viewmodel.ConsentWithdrawalViewModel
+import com.tokopedia.privacycenter.data.ConsentPurposeGroupDataModel
+import com.tokopedia.privacycenter.data.SubmitConsentDataModel
+import com.tokopedia.privacycenter.domain.GetConsentPurposeByGroupUseCase
+import com.tokopedia.privacycenter.domain.SubmitConsentPreferenceUseCase
+import com.tokopedia.privacycenter.ui.consentwithdrawal.ConsentWithdrawalConst
+import com.tokopedia.privacycenter.ui.consentwithdrawal.ConsentWithdrawalViewModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.unit.test.ext.getOrAwaitValue
 import io.mockk.coEvery

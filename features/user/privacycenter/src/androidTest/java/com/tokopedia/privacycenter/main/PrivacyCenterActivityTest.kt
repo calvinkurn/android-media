@@ -5,10 +5,11 @@ import android.content.Intent
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.intent.rule.IntentsTestRule
 import com.tokopedia.abstraction.base.app.BaseMainApplication
-import com.tokopedia.privacycenter.common.di.ActivityComponentFactory
+import com.tokopedia.privacycenter.di.ActivityComponentFactory
 import com.tokopedia.privacycenter.main.di.DaggerTestAppComponent
 import com.tokopedia.privacycenter.main.di.FakeActivityComponentFactory
 import com.tokopedia.privacycenter.main.di.FakeAppModule
+import com.tokopedia.privacycenter.ui.main.PrivacyCenterActivity
 import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import org.junit.After

@@ -4,9 +4,9 @@ import android.app.Application
 import android.content.Context
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.common.network.coroutines.repository.RestRepository
-import com.tokopedia.privacycenter.common.di.ActivityComponentFactory
-import com.tokopedia.privacycenter.common.di.PrivacyCenterComponent
-import com.tokopedia.privacycenter.common.di.PrivacyCenterModule
+import com.tokopedia.privacycenter.di.ActivityComponentFactory
+import com.tokopedia.privacycenter.di.PrivacyCenterComponent
+import com.tokopedia.privacycenter.di.PrivacyCenterModule
 import okhttp3.Interceptor
 
 class FakeActivityComponentFactory : ActivityComponentFactory() {

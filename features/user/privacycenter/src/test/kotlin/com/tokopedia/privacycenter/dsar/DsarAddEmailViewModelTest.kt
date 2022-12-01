@@ -2,13 +2,13 @@ package com.tokopedia.privacycenter.dsar
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
-import com.tokopedia.privacycenter.dsar.domain.DsarAddEmailUseCase
-import com.tokopedia.privacycenter.dsar.domain.DsarCheckEmailUseCase
-import com.tokopedia.privacycenter.dsar.model.AddEmailResponse
-import com.tokopedia.privacycenter.dsar.model.DsarCheckEmailResponse
-import com.tokopedia.privacycenter.dsar.model.UserProfileCompletionUpdateEmail
-import com.tokopedia.privacycenter.dsar.model.UserProfileCompletionValidate
-import com.tokopedia.privacycenter.dsar.viewmodel.DsarAddEmailViewModel
+import com.tokopedia.privacycenter.data.AddEmailResponse
+import com.tokopedia.privacycenter.data.DsarCheckEmailResponse
+import com.tokopedia.privacycenter.data.UserProfileCompletionUpdateEmail
+import com.tokopedia.privacycenter.data.UserProfileCompletionValidate
+import com.tokopedia.privacycenter.domain.DsarAddEmailUseCase
+import com.tokopedia.privacycenter.domain.DsarCheckEmailUseCase
+import com.tokopedia.privacycenter.ui.dsar.addemail.DsarAddEmailViewModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.unit.test.ext.getOrAwaitValue
 import io.mockk.coEvery

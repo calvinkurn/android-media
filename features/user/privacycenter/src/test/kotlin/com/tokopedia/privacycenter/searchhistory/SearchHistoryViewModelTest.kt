@@ -2,11 +2,12 @@ package com.tokopedia.privacycenter.searchhistory
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.privacycenter.common.PrivacyCenterStateResult
-import com.tokopedia.privacycenter.common.data.DeleteSearchHistoryParam
-import com.tokopedia.privacycenter.common.data.ItemSearch
-import com.tokopedia.privacycenter.common.domain.DeleteSearchHistoryResult
-import com.tokopedia.privacycenter.common.domain.DeleteSearchHistoryUseCase
-import com.tokopedia.privacycenter.common.domain.SearchHistoryUseCase
+import com.tokopedia.privacycenter.data.DeleteSearchHistoryParam
+import com.tokopedia.privacycenter.data.ItemSearch
+import com.tokopedia.privacycenter.domain.DeleteSearchHistoryResult
+import com.tokopedia.privacycenter.domain.DeleteSearchHistoryUseCase
+import com.tokopedia.privacycenter.domain.SearchHistoryUseCase
+import com.tokopedia.privacycenter.ui.searchhistory.SearchHistoryViewModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.unit.test.ext.getOrAwaitValue
 import io.mockk.coEvery

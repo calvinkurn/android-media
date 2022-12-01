@@ -7,7 +7,7 @@
         android:supportsRtl="true">
 
         <activity
-            android:name="com.tokopedia.privacycenter.main.PrivacyCenterActivity"
+            android:name=".ui.main.PrivacyCenterActivity"
             android:theme="@style/Theme.WhiteUnify"
             android:exported="false"
             android:screenOrientation="portrait">
@@ -25,7 +25,7 @@
         </activity>
 
         <activity
-            android:name=".consentwithdrawal.ui.ConsentWithdrawalActivity"
+            android:name=".ui.consentwithdrawal.ConsentWithdrawalActivity"
             android:label="Consent Withdrawal"
             android:theme="@style/Theme.WhiteUnify"
             android:exported="false"
@@ -45,13 +45,13 @@
         </activity>
 
         <activity
-            android:name=".main.section.privacypolicy.webview.PrivacyPolicyWebViewActivity"
+            android:name=".ui.privacypolicywebview.PrivacyPolicyWebViewActivity"
             android:label="@string/privacy_policy_label"
             android:theme="@style/Theme.WhiteUnify"
             android:exported="false"
             android:screenOrientation="portrait" />
 
-        <activity android:name="com.tokopedia.privacycenter.accountlinking.LinkAccountWebViewActivity"
+        <activity android:name=".ui.accountlinking.LinkAccountWebViewActivity"
             android:theme="@style/Theme.WhiteUnify"
             android:exported="false"
             android:screenOrientation="portrait">
@@ -69,7 +69,7 @@
         </activity>
 
         <activity
-            android:name=".searchhistory.SearchHistoryActivity"
+            android:name=".ui.searchhistory.SearchHistoryActivity"
             android:label="@string/privacy_center_search_history_title"
             android:theme="@style/Theme.WhiteUnify"
             android:exported="false"
@@ -88,7 +88,7 @@
         </activity>
 
         <activity
-            android:name=".sharingwishlist.ui.SharingWishlistActivity"
+            android:name=".ui.sharingwishlist.SharingWishlistActivity"
             android:label="Consent Withdrawal"
             android:theme="@style/Theme.WhiteUnify"
             android:exported="false"
@@ -109,7 +109,7 @@
 
         <activity
             android:label="@string/dsar_activity_title"
-            android:name="com.tokopedia.privacycenter.dsar.ui.DsarActivity"
+            android:name=".ui.dsar.DsarActivity"
             android:theme="@style/Theme.WhiteUnify"
             android:exported="false"
             android:screenOrientation="portrait">
@@ -127,7 +127,7 @@
         </activity>
 
         <activity
-            android:name="com.tokopedia.privacycenter.dsar.ui.DsarAddEmailActivity"
+            android:name=".ui.dsar.addemail.DsarAddEmailActivity"
             android:theme="@style/Theme.WhiteUnify"
             android:exported="false"
             android:screenOrientation="portrait">
@@ -146,7 +146,7 @@
 
         <activity
             android:label="@string/dsar_activity_title"
-            android:name="com.tokopedia.privacycenter.dsar.ui.DsarSuccessActivity"
+            android:name=".ui.dsar.DsarSuccessActivity"
             android:theme="@style/Theme.WhiteUnify"
             android:exported="false"
             android:screenOrientation="portrait"/>
