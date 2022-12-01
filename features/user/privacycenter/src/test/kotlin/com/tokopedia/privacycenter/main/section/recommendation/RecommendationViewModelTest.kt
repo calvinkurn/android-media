@@ -6,6 +6,7 @@ import com.tokopedia.privacycenter.domain.DevicePermissionUseCase
 import com.tokopedia.privacycenter.domain.GetRecommendationFriendState
 import com.tokopedia.privacycenter.domain.SocialNetworkGetConsentUseCase
 import com.tokopedia.privacycenter.domain.SocialNetworkSetConsentUseCase
+import com.tokopedia.privacycenter.ui.main.section.recommendation.RecommendationViewModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.unit.test.ext.getOrAwaitValue
 import io.mockk.coEvery

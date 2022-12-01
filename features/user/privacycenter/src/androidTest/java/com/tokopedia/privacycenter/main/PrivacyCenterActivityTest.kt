@@ -9,6 +9,7 @@ import com.tokopedia.privacycenter.di.ActivityComponentFactory
 import com.tokopedia.privacycenter.main.di.DaggerTestAppComponent
 import com.tokopedia.privacycenter.main.di.FakeActivityComponentFactory
 import com.tokopedia.privacycenter.main.di.FakeAppModule
+import com.tokopedia.privacycenter.ui.main.PrivacyCenterActivity
 import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.test.application.util.InstrumentationAuthHelper
 import org.junit.After

@@ -1,6 +1,7 @@
 package com.tokopedia.privacycenter.main
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.privacycenter.ui.main.PrivacyCenterViewModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.user.session.UserSessionInterface
 import io.mockk.coEvery

@@ -4,6 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.privacycenter.common.PrivacyCenterStateResult
 import com.tokopedia.privacycenter.domain.AccountLinkingStatus
 import com.tokopedia.privacycenter.domain.AccountLinkingUseCase
+import com.tokopedia.privacycenter.ui.main.section.accountlinking.AccountLinkingViewModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.unit.test.ext.getOrAwaitValue
 import io.mockk.coEvery

@@ -3,22 +3,17 @@ package com.tokopedia.privacycenter.main.section.privacypolicy
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
 import com.tokopedia.network.exception.MessageErrorException
-import com.tokopedia.privacycenter.main.section.privacypolicy.domain.data.PrivacyPolicyDataModel
-import com.tokopedia.privacycenter.main.section.privacypolicy.domain.usecase.GetPrivacyPolicyListUseCase
-import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchers
+import com.tokopedia.privacycenter.data.PrivacyPolicyDataModel
+import com.tokopedia.privacycenter.domain.GetPrivacyPolicyListUseCase
+import com.tokopedia.privacycenter.ui.main.section.privacypolicy.PrivacyPolicySectionViewModel
+import com.tokopedia.privacycenter.ui.main.section.privacypolicy.PrivacyPolicyUiModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import io.mockk.coEvery
 import io.mockk.mockk
 import io.mockk.verifyOrder
 import io.mockk.verifySequence
-import kotlinx.coroutines.test.TestCoroutineDispatcher
-import kotlinx.coroutines.test.TestCoroutineScope
-import org.hamcrest.CoreMatchers.equalTo
-import org.hamcrest.core.Is.`is`
-import org.junit.Assert.*
 import org.junit.Before
 import org.junit.Rule
-
 import org.junit.Test
 
 class PrivacyPolicySectionViewModelTest {

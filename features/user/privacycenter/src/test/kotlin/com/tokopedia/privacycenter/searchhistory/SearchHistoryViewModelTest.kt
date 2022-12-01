@@ -7,6 +7,7 @@ import com.tokopedia.privacycenter.data.ItemSearch
 import com.tokopedia.privacycenter.domain.DeleteSearchHistoryResult
 import com.tokopedia.privacycenter.domain.DeleteSearchHistoryUseCase
 import com.tokopedia.privacycenter.domain.SearchHistoryUseCase
+import com.tokopedia.privacycenter.ui.searchhistory.SearchHistoryViewModel
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import com.tokopedia.unit.test.ext.getOrAwaitValue
 import io.mockk.coEvery
