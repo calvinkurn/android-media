@@ -113,9 +113,7 @@ class SameSessionRecommendationPresenterDelegate @Inject constructor(
         selectedProduct: ProductItemDataView,
     ) {
         val selectedProductIndex = viewUpdater.itemList?.indexOf(selectedProduct) ?: -1
-        val nextItem = viewUpdater.getItemAtIndex(selectedProductIndex + 1)?.takeIf {
-            it is ProductItemDataView
-        } ?: selectedProduct
+        val nextItem = getNextOfSelectedItem(selectedProductIndex, selectedProduct)
 
         val selectedProductPosition = productItemList?.indexOf(selectedProduct) ?: -1
 
@@ -124,6 +122,13 @@ class SameSessionRecommendationPresenterDelegate @Inject constructor(
         // prevent same session recommendation is displayed directly
         viewUpdater.scrollToPosition(selectedProductIndex)
     }
+
+    private fun getNextOfSelectedItem(
+        selectedProductIndex: Int,
+        selectedProduct: ProductItemDataView,
+    ) = viewUpdater.getItemAtIndex(selectedProductIndex + 1)?.takeIf {
+        it is ProductItemDataView
+    } ?: selectedProduct
 
     fun handleFeedbackItemClick(
         feedback: Feedback,
