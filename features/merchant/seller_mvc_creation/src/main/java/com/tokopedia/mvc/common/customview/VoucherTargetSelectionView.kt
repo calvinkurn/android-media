@@ -7,10 +7,9 @@ import com.tokopedia.mvc.R
 import com.tokopedia.unifycomponents.BaseCustomView
 import com.tokopedia.unifycomponents.CardUnify2
 import com.tokopedia.unifycomponents.ImageUnify
-import com.tokopedia.unifycomponents.selectioncontrol.RadioButtonUnify
 import com.tokopedia.unifyprinciples.Typography
 
-class VoucherTypeSelectionView: BaseCustomView {
+class VoucherTargetSelectionView: BaseCustomView {
     var isActive: Boolean = false
         set(value) {
             field = value
@@ -24,15 +23,14 @@ class VoucherTypeSelectionView: BaseCustomView {
         }
 
     var descriptionText: String = ""
-    set(value) {
-        field = value
-        refreshViews()
-    }
+        set(value) {
+            field = value
+            refreshViews()
+        }
 
     var tpgTitle: Typography? = null
     var tpgDescription: Typography? = null
-    var imgVoucherType: ImageUnify? = null
-    var radioButton: RadioButtonUnify? = null
+    var imgVoucherTarget: ImageUnify? = null
     var cardParent: CardUnify2? = null
 
     constructor(context: Context) : super(context) {
@@ -48,27 +46,26 @@ class VoucherTypeSelectionView: BaseCustomView {
     }
 
     private fun init(attrs: AttributeSet?) {
-        val view = View.inflate(context, R.layout.smvc_custom_view_voucher_type_selection, this)
+        val view = View.inflate(context, R.layout.smvc_custom_view_voucher_creation_voucher_target, this)
         setupViews(view)
         defineCustomAttributes(attrs)
         refreshViews()
     }
 
     private fun setupViews(view: View) {
-        tpgTitle = view.findViewById(R.id.tpg_title)
-        tpgDescription = view.findViewById(R.id.tpg_description)
-        imgVoucherType = view.findViewById(R.id.image_voucher)
-        radioButton = view.findViewById(R.id.radio_btn_voucher)
-        cardParent = view.findViewById(R.id.card_parent)
+        tpgTitle = view.findViewById(R.id.tpg_title_voucher_target)
+        tpgDescription = view.findViewById(R.id.tpg_description_voucher_target)
+        imgVoucherTarget = view.findViewById(R.id.icon_voucher_target)
+        cardParent = view.findViewById(R.id.card_parent_voucher_target)
     }
 
     private fun defineCustomAttributes(attrs: AttributeSet?) {
         if (attrs != null) {
-            val styledAttributes = context.obtainStyledAttributes(attrs, R.styleable.VoucherTypeSelectionView, 0, 0)
+            val styledAttributes = context.obtainStyledAttributes(attrs, R.styleable.VoucherTargetSelectionView, 0, 0)
             try {
-                titleText = styledAttributes.getString(R.styleable.VoucherTypeSelectionView_voucher_type_title_text).orEmpty()
-                descriptionText = styledAttributes.getString(R.styleable.VoucherTypeSelectionView_voucher_type_description_text).orEmpty()
-                isActive = styledAttributes.getBoolean(R.styleable.VoucherTypeSelectionView_is_voucher_type_active, false)
+                titleText = styledAttributes.getString(R.styleable.VoucherTargetSelectionView_voucher_target_title_text).orEmpty()
+                descriptionText = styledAttributes.getString(R.styleable.VoucherTargetSelectionView_voucher_target_description_text).orEmpty()
+                isActive = styledAttributes.getBoolean(R.styleable.VoucherTargetSelectionView_voucher_target_description_text, false)
             } finally {
                 styledAttributes.recycle()
             }
@@ -79,7 +76,6 @@ class VoucherTypeSelectionView: BaseCustomView {
         try {
             tpgTitle?.text = titleText
             tpgDescription?.text = descriptionText
-            radioButton?.isChecked = isActive
             if (isActive) {
                 cardParent?.cardType = CardUnify2.TYPE_BORDER_ACTIVE
             } else {
