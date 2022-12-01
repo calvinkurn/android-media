@@ -4,9 +4,9 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.manageaddress.domain.model.shareaddress.ShareAddressBottomSheetState
-import com.tokopedia.manageaddress.domain.request.SendShareAddressRequestParam
-import com.tokopedia.manageaddress.domain.request.ShareAddressToUserParam
+import com.tokopedia.manageaddress.ui.uimodel.ShareAddressBottomSheetState
+import com.tokopedia.manageaddress.domain.request.shareaddress.SendShareAddressRequestParam
+import com.tokopedia.manageaddress.domain.request.shareaddress.ShareAddressToUserParam
 import com.tokopedia.manageaddress.domain.usecase.shareaddress.SendShareAddressRequestUseCase
 import com.tokopedia.manageaddress.domain.usecase.shareaddress.ShareAddressToUserUseCase
 import com.tokopedia.usecase.launch_cache_error.launchCatchError

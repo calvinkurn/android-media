@@ -7,8 +7,7 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.logisticCommon.data.entity.address.RecipientAddressModel
 import com.tokopedia.manageaddress.domain.mapper.SharedAddressMapper
-import com.tokopedia.manageaddress.domain.model.shareaddress.SenderShareAddressParam
-import com.tokopedia.manageaddress.domain.response.shareaddress.KeroAddrGetSharedAddressList
+import com.tokopedia.manageaddress.domain.request.shareaddress.SenderShareAddressParam
 import com.tokopedia.manageaddress.domain.usecase.shareaddress.DeleteFromFriendAddressUseCase
 import com.tokopedia.manageaddress.domain.usecase.shareaddress.GetSharedAddressListUseCase
 import com.tokopedia.manageaddress.domain.usecase.shareaddress.SaveFromFriendAddressUseCase
@@ -91,8 +90,10 @@ class FromFriendViewModel @Inject constructor(
         launchCatchError(block = {
             showSaveAddressLoading(true)
             val param = SenderShareAddressParam(
-                senderUserIds = senderUserIds,
-                source = source
+                SenderShareAddressParam.SenderShareAddressData(
+                    senderUserIds = senderUserIds,
+                    source = source
+                )
             )
             val result = saveAddressUseCase(param)
             _saveAddressState.value = if (result.isSuccess) {
@@ -114,8 +115,10 @@ class FromFriendViewModel @Inject constructor(
     fun deleteAddress() = launch {
         isCancelDelete = false
         val param = SenderShareAddressParam(
-            senderUserIds = senderUserIds,
-            source = source
+            SenderShareAddressParam.SenderShareAddressData(
+                senderUserIds = senderUserIds,
+                source = source
+            )
         )
         temporaryList.clear()
         temporaryList.addAll(addressList.toTypedArray())

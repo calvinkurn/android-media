@@ -2,7 +2,7 @@ package com.tokopedia.manageaddress.ui.shareaddress.bottomsheets
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import androidx.lifecycle.Observer
-import com.tokopedia.manageaddress.domain.model.shareaddress.ShareAddressBottomSheetState
+import com.tokopedia.manageaddress.ui.uimodel.ShareAddressBottomSheetState
 import com.tokopedia.manageaddress.domain.response.shareaddress.KeroAddressError
 import com.tokopedia.manageaddress.domain.response.shareaddress.KeroAddrSendShareAddressData
 import com.tokopedia.manageaddress.domain.response.shareaddress.KeroShareAddrToUserResponse

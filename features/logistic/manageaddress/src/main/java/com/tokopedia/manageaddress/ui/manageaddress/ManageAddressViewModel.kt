@@ -22,8 +22,8 @@ import com.tokopedia.manageaddress.domain.model.DefaultAddressParam
 import com.tokopedia.manageaddress.domain.model.DeleteAddressParam
 import com.tokopedia.manageaddress.domain.model.EligibleForAddressFeatureModel
 import com.tokopedia.manageaddress.domain.model.ManageAddressState
-import com.tokopedia.manageaddress.domain.model.shareaddress.ValidateShareAddressAsReceiverParam
-import com.tokopedia.manageaddress.domain.model.shareaddress.ValidateShareAddressAsSenderParam
+import com.tokopedia.manageaddress.domain.request.shareaddress.ValidateShareAddressAsReceiverParam
+import com.tokopedia.manageaddress.domain.request.shareaddress.ValidateShareAddressAsSenderParam
 import com.tokopedia.manageaddress.domain.usecase.DeletePeopleAddressUseCase
 import com.tokopedia.manageaddress.domain.usecase.SetDefaultPeopleAddressUseCase
 import com.tokopedia.manageaddress.domain.usecase.shareaddress.ValidateShareAddressAsReceiverUseCase

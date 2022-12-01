@@ -195,7 +195,13 @@ class MainAddressFragment :
 
     private fun initView() {
         setButtonEnabled(false)
-        updateButton(getString(R.string.btn_share_adddress))
+        updateButton(
+            if (viewModel.isEligibleShareAddress && viewModel.isNeedToShareAddress) {
+                getString(R.string.btn_share_adddress)
+            } else {
+                getString(R.string.pilih_alamat)
+            }
+        )
 
         binding?.apply {
             emptyStateManageAddress?.ivEmptyState?.loadImage(EMPTY_STATE_PICT_URL)
@@ -760,7 +766,7 @@ class MainAddressFragment :
                     it.setResult(Activity.RESULT_OK, resultIntent)
                     it.finish()
                 }
-            } else if (viewModel.isNeedToShareAddress) {
+            } else if (viewModel.isEligibleShareAddress && viewModel.isNeedToShareAddress) {
                 addressData?.apply {
                     ShareAddressAnalytics.onClickShareAddress()
                     showShareAddressConfirmationBottomSheet(

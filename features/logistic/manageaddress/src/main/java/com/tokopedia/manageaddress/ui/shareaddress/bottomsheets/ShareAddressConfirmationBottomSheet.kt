@@ -19,7 +19,7 @@ import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.manageaddress.data.analytics.ShareAddressAnalytics
-import com.tokopedia.manageaddress.domain.model.shareaddress.ShareAddressBottomSheetState
+import com.tokopedia.manageaddress.ui.uimodel.ShareAddressBottomSheetState
 import com.tokopedia.manageaddress.databinding.BottomsheetShareAddressConfirmationBinding
 import com.tokopedia.manageaddress.di.DaggerShareAddressComponent
 import com.tokopedia.manageaddress.di.ShareAddressComponent
@@ -27,8 +27,8 @@ import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoCleared
 import javax.inject.Inject
 import com.tokopedia.manageaddress.R
-import com.tokopedia.manageaddress.domain.request.ShareAddressToUserParam
-import com.tokopedia.manageaddress.domain.model.shareaddress.SelectShareAddressParam
+import com.tokopedia.manageaddress.domain.request.shareaddress.ShareAddressToUserParam
+import com.tokopedia.manageaddress.domain.request.shareaddress.SelectShareAddressParam
 import com.tokopedia.media.loader.loadImage
 
 class ShareAddressConfirmationBottomSheet :
@@ -178,19 +178,23 @@ class ShareAddressConfirmationBottomSheet :
         if (isFromNotif()) {
             viewModel.shareAddressFromNotif(
                 SelectShareAddressParam(
-                    receiverUserId = receiverUserId.orEmpty(),
-                    senderAddressId = senderAddressId.orEmpty(),
-                    approve = true,
-                    source = source
+                    SelectShareAddressParam.SelectShareAddressData(
+                        receiverUserId = receiverUserId.orEmpty(),
+                        senderAddressId = senderAddressId.orEmpty(),
+                        approve = true,
+                        source = source
+                    )
                 )
             )
         } else {
             viewModel.shareAddress(
                 ShareAddressToUserParam(
-                    senderAddressId = senderAddressId.orEmpty(),
-                    receiverPhoneNumberOrEmail = receiverPhoneNumberOrEmail.orEmpty(),
-                    initialCheck = false,
-                    source = source
+                    ShareAddressToUserParam.ShareAddressToUserData(
+                        senderAddressId = senderAddressId.orEmpty(),
+                        receiverPhoneNumberOrEmail = receiverPhoneNumberOrEmail.orEmpty(),
+                        initialCheck = false,
+                        source = source
+                    )
                 )
             )
         }
@@ -202,9 +206,11 @@ class ShareAddressConfirmationBottomSheet :
         if (isFromNotif()) {
             viewModel.shareAddressFromNotif(
                 SelectShareAddressParam(
-                    receiverUserId = receiverUserId.orEmpty(),
-                    senderAddressId = senderAddressId.orEmpty(),
-                    approve = false
+                    SelectShareAddressParam.SelectShareAddressData(
+                        receiverUserId = receiverUserId.orEmpty(),
+                        senderAddressId = senderAddressId.orEmpty(),
+                        approve = false
+                    )
                 )
             )
         } else {

@@ -1,4 +1,4 @@
-package com.tokopedia.manageaddress.domain.model.shareaddress
+package com.tokopedia.manageaddress.domain.model
 
 data class ContactData(
         val name: String,

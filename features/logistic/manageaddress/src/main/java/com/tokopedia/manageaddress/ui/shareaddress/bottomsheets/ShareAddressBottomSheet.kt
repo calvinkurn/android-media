@@ -24,9 +24,9 @@ import com.tokopedia.manageaddress.data.analytics.ShareAddressAnalytics
 import com.tokopedia.manageaddress.databinding.BottomsheetShareAddressBinding
 import com.tokopedia.manageaddress.di.DaggerShareAddressComponent
 import com.tokopedia.manageaddress.di.ShareAddressComponent
-import com.tokopedia.manageaddress.domain.model.shareaddress.ShareAddressBottomSheetState
-import com.tokopedia.manageaddress.domain.request.SendShareAddressRequestParam
-import com.tokopedia.manageaddress.domain.request.ShareAddressToUserParam
+import com.tokopedia.manageaddress.ui.uimodel.ShareAddressBottomSheetState
+import com.tokopedia.manageaddress.domain.request.shareaddress.SendShareAddressRequestParam
+import com.tokopedia.manageaddress.domain.request.shareaddress.ShareAddressToUserParam
 import javax.inject.Inject
 
 class ShareAddressBottomSheet :
@@ -192,17 +192,21 @@ class ShareAddressBottomSheet :
         if (isRequestAddress) {
             viewModel.requestShareAddress(
                 SendShareAddressRequestParam(
-                    senderPhoneNumberOrEmail = phoneNumberOrEmail,
-                    source = source
+                    SendShareAddressRequestParam.SendShareAddressRequestData(
+                        senderPhoneNumberOrEmail = phoneNumberOrEmail,
+                        source = source
+                    )
                 )
             )
         } else {
             viewModel.checkShareAddress(
                 ShareAddressToUserParam(
-                    senderAddressId = senderAddressId ?: "",
-                    receiverPhoneNumberOrEmail = phoneNumberOrEmail,
-                    initialCheck = true,
-                    source = source
+                    ShareAddressToUserParam.ShareAddressToUserData(
+                        senderAddressId = senderAddressId ?: "",
+                        receiverPhoneNumberOrEmail = phoneNumberOrEmail,
+                        initialCheck = true,
+                        source = source
+                    )
                 )
             )
         }

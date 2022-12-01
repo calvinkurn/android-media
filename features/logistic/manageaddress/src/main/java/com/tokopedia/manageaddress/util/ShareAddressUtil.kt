@@ -3,7 +3,7 @@ package com.tokopedia.manageaddress.util
 import android.content.ContentResolver
 import android.net.Uri
 import android.provider.ContactsContract
-import com.tokopedia.manageaddress.domain.model.shareaddress.ContactData
+import com.tokopedia.manageaddress.domain.model.ContactData
 
 object ShareAddressUtil {
 
