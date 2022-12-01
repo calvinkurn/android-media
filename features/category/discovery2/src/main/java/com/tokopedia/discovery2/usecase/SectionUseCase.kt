@@ -21,9 +21,7 @@ class SectionUseCase @Inject constructor(private val sectionRepository: SectionR
         if (component?.noOfPagesLoaded == 1) return false
         component?.let {
             val components = sectionRepository.getComponents(
-                pageEndPoint,
-                it.sectionId,
-                getQueryFilterString(
+                pageEndPoint, it.sectionId, getQueryFilterString(
                     it.userAddressData,
                     paramWithoutRpc
                 )
@@ -91,12 +89,11 @@ class SectionUseCase @Inject constructor(private val sectionRepository: SectionR
                         comp.setComponentsItem(productListData, component.tabName)
                         comp.noOfPagesLoaded = 1
                         if (productListData?.isNotEmpty() == true) {
-                            if (comp.properties?.tokonowATCActive == true) {
+                            if (comp.properties?.tokonowATCActive == true)
                                 Utils.updateProductAddedInCart(
                                     productListData,
                                     getCartData(pageEndPoint)
                                 )
-                            }
                             comp.pageLoadedCounter = 2
                             comp.verticalProductFailState = false
                             comp.showVerticalLoader = true
@@ -104,9 +101,10 @@ class SectionUseCase @Inject constructor(private val sectionRepository: SectionR
                             comp.showVerticalLoader = false
                         }
                     }
+
                 }
             }
-            it.setComponentsItem(components, component.tabName)
+            it.setComponentsItem(components,component.tabName)
             it.noOfPagesLoaded = 1
             it.verticalProductFailState = false
             return true
@@ -122,4 +120,5 @@ class SectionUseCase @Inject constructor(private val sectionRepository: SectionR
         }
         return Utils.getQueryString(queryParameterMap)
     }
+
 }

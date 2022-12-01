@@ -21,6 +21,7 @@ class TokopointsListDataUseCase @Inject constructor(private val tokopointsReposi
         }
 
         return false
+
     }
 
     private fun getQueryParameterMap(pageNum: String, productPerPage: Int, queryParameterMapWithoutRpc: Map<String, String>?): MutableMap<String, Any> {

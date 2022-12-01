@@ -61,6 +61,7 @@ class ContentCardUseCase @Inject constructor(private val contentCardRepository: 
         queryParameterMapWithoutRpc: Map<String, String>?,
         userAddressData: LocalCacheModel?
     ): MutableMap<String, Any> {
+
         val queryParameterMap = mutableMapOf<String, Any>()
 
         queryParameterMap[Utils.RPC_PAGE_SIZE] = bannerPerPage.toString()

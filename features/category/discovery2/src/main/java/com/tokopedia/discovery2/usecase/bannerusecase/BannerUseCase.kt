@@ -18,15 +18,10 @@ class BannerUseCase @Inject constructor(private val repository: BannerRepository
         component?.let {
             val isDynamic = it.properties?.dynamic ?: false
             val bannerData = repository.getBanner(
-                if (isDynamic && !component.dynamicOriginalId.isNullOrEmpty()) {
-                    component.dynamicOriginalId!!
-                } else {
-                    componentId
-                },
-                getQueryParameterMap(isDarkMode, paramWithoutRpc, it.userAddressData),
-                pageEndPoint,
-                it.name
-            )
+                    if (isDynamic && !component.dynamicOriginalId.isNullOrEmpty())
+                        component.dynamicOriginalId!! else componentId,
+                    getQueryParameterMap(isDarkMode,paramWithoutRpc,it.userAddressData),
+                    pageEndPoint, it.name)
             val bannerListData = (bannerData?.data ?: emptyList()).toMutableList()
             it.noOfPagesLoaded = CONST_ONE
             it.verticalProductFailState = false
@@ -43,6 +38,7 @@ class BannerUseCase @Inject constructor(private val repository: BannerRepository
         }
         return false
     }
+
 
     private fun getPlaceHolderImage(listSize: Int, componentId: String, pageEndPoint: String): List<Pair<String?, Float>>? {
         val component = getComponent(componentId, pageEndPoint)
@@ -73,11 +69,10 @@ class BannerUseCase @Inject constructor(private val repository: BannerRepository
         return null
     }
 
-    private fun getQueryParameterMap(
-        isDarkMode: Boolean,
-        queryParameterMapWithoutRpc: Map<String, String>?,
-        userAddressData: LocalCacheModel?
-    ): MutableMap<String, Any> {
+    private fun getQueryParameterMap(isDarkMode: Boolean,
+                                     queryParameterMapWithoutRpc: Map<String, String>?,
+                                     userAddressData: LocalCacheModel?): MutableMap<String, Any> {
+
         val queryParameterMap = mutableMapOf<String, Any>()
 
         queryParameterMap[Utils.DARK_MODE] = isDarkMode
@@ -97,4 +92,5 @@ class BannerUseCase @Inject constructor(private val repository: BannerRepository
         const val CONST_THREE = 3
         val COMP_PAIR = Pair(DUMMY, WEIGHT)
     }
+
 }

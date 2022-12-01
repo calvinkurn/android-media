@@ -19,12 +19,9 @@ class MerchantVoucherUseCase @Inject constructor(private val repository: Merchan
         if (component?.noOfPagesLoaded == 1) return false
         component?.let {
             val isDynamic = it.properties?.dynamic ?: false
-            val (voucherListData, nextPage) = repository.getMerchantVouchers(
-                if (isDynamic && !component.dynamicOriginalId.isNullOrEmpty()) {
-                    component.dynamicOriginalId!!
-                } else {
-                    componentId
-                },
+            val (voucherListData,nextPage) = repository.getMerchantVouchers(
+                if (isDynamic && !component.dynamicOriginalId.isNullOrEmpty())
+                    component.dynamicOriginalId!! else componentId,
                 getQueryParameterMap(
                     PAGE_START,
                     productsLimit,
@@ -55,14 +52,10 @@ class MerchantVoucherUseCase @Inject constructor(private val repository: Merchan
         val parentComponent = component?.parentComponentId?.let { getComponent(it, pageEndPoint) }
         parentComponent?.let { component1 ->
             val isDynamic = component1.properties?.dynamic ?: false
-            val (voucherListData, nextPage) = repository.getMerchantVouchers(
-                if (isDynamic && !component1.dynamicOriginalId.isNullOrEmpty()) {
-                    component1.dynamicOriginalId!!
-                } else {
-                    component1.id
-                },
-                getQueryParameterMap(
-                    component1.pageLoadedCounter,
+            val (voucherListData,nextPage) = repository.getMerchantVouchers(
+                if (isDynamic && !component1.dynamicOriginalId.isNullOrEmpty())
+                    component1.dynamicOriginalId!! else component1.id,
+                getQueryParameterMap(component1.pageLoadedCounter,
                     productsLimit,
                     component1.nextPageKey,
                     component1.userAddressData,
@@ -71,15 +64,14 @@ class MerchantVoucherUseCase @Inject constructor(private val repository: Merchan
                     paramWithoutRpc
                 ),
                 pageEndPoint,
-                component1.name
-            )
+                component1.name)
             component1.nextPageKey = nextPage
             if (voucherListData.isEmpty()) {
                 component1.showVerticalLoader = false
             } else {
                 component1.pageLoadedCounter += 1
                 component1.showVerticalLoader = true
-                updatePaginatedData(voucherListData, component1)
+                updatePaginatedData(voucherListData,component1)
                 (component1.getComponentsItem() as ArrayList<ComponentsItem>).addAll(voucherListData)
             }
             component1.verticalProductFailState = false
@@ -94,14 +86,10 @@ class MerchantVoucherUseCase @Inject constructor(private val repository: Merchan
         val parentComponent = component?.parentComponentId?.let { getComponent(it, pageEndPoint) }
         parentComponent?.let { component1 ->
             val isDynamic = component1.properties?.dynamic ?: false
-            val (voucherListData, nextPage) = repository.getMerchantVouchers(
-                if (isDynamic && !component1.dynamicOriginalId.isNullOrEmpty()) {
-                    component1.dynamicOriginalId!!
-                } else {
-                    component1.id
-                },
-                getQueryParameterMap(
-                    component1.pageLoadedCounter,
+            val (voucherListData,nextPage) = repository.getMerchantVouchers(
+                if (isDynamic && !component1.dynamicOriginalId.isNullOrEmpty())
+                    component1.dynamicOriginalId!! else component1.id,
+                getQueryParameterMap(component1.pageLoadedCounter,
                     productsLimit,
                     component1.nextPageKey,
                     component1.userAddressData,
@@ -110,15 +98,14 @@ class MerchantVoucherUseCase @Inject constructor(private val repository: Merchan
                     paramWithoutRpc
                 ),
                 pageEndPoint,
-                component1.name
-            )
+                component1.name)
             component1.nextPageKey = nextPage
             if (voucherListData.isEmpty()) {
                 component1.showVerticalLoader = false
             } else {
                 component1.pageLoadedCounter += 1
                 component1.showVerticalLoader = true
-                updatePaginatedData(voucherListData, component1)
+                updatePaginatedData(voucherListData,component1)
                 (component1.getComponentsItem() as ArrayList<ComponentsItem>).addAll(voucherListData)
             }
             component1.verticalProductFailState = false
@@ -132,10 +119,9 @@ class MerchantVoucherUseCase @Inject constructor(private val repository: Merchan
         val paramWithoutRpc = getMapWithoutRpc(pageEndPoint)
         component?.let {
             val isDynamic = it.properties?.dynamic ?: false
-            val (voucherListData, nextPage) = repository.getMerchantVouchers(
+            val (voucherListData,nextPage) = repository.getMerchantVouchers(
                 if (isDynamic && !component.dynamicOriginalId.isNullOrEmpty()) component.dynamicOriginalId!! else componentId,
-                getQueryParameterMap(
-                    component.pageLoadedCounter,
+                getQueryParameterMap(component.pageLoadedCounter,
                     productsLimit,
                     component.nextPageKey,
                     component.userAddressData,
@@ -148,14 +134,14 @@ class MerchantVoucherUseCase @Inject constructor(private val repository: Merchan
             )
             component.nextPageKey = nextPage
             if (voucherListData.isEmpty()) return false else it.pageLoadedCounter += 1
-            updatePaginatedData(voucherListData, it)
+            updatePaginatedData(voucherListData,it)
             (it.getComponentsItem() as ArrayList<ComponentsItem>).addAll(voucherListData)
             return true
         }
         return false
     }
 
-    private fun updatePaginatedData(voucherListData: ArrayList<ComponentsItem>, parentComponentsItem: ComponentsItem) {
+    private fun updatePaginatedData(voucherListData:ArrayList<ComponentsItem>,parentComponentsItem: ComponentsItem){
         voucherListData.forEach {
             it.parentComponentId = parentComponentsItem.id
             it.pageEndPoint = parentComponentsItem.pageEndPoint

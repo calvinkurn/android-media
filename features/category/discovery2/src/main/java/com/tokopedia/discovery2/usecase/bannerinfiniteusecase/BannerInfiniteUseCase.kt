@@ -20,23 +20,13 @@ class BannerInfiniteUseCase @Inject constructor(private val bannerInfiniteReposi
         if (component?.noOfPagesLoaded == 1) return false
         component?.let {
             val isDynamic = it.properties?.dynamic ?: false
-            val (bannerListData, nextPage) = bannerInfiniteRepository.getBanners(
-                if (isDynamic && !component.dynamicOriginalId.isNullOrEmpty()) {
-                    component.dynamicOriginalId!!
-                } else {
-                    componentId
-                },
-                getQueryParameterMap(
-                    PAGE_START,
-                    bannersLimit,
-                    it.nextPageKey,
-                    isDarkMode,
-                    paramWithoutRpc,
-                    it.userAddressData
-                ),
-                pageEndPoint,
-                it.name
-            )
+            val (bannerListData,nextPage) = bannerInfiniteRepository.getBanners(
+                    if (isDynamic && !component.dynamicOriginalId.isNullOrEmpty())
+                        component.dynamicOriginalId!! else componentId,
+                    getQueryParameterMap(PAGE_START,
+                            bannersLimit,
+                            it.nextPageKey,isDarkMode,paramWithoutRpc,it.userAddressData),
+                    pageEndPoint, it.name)
             it.showVerticalLoader = bannerListData.isNotEmpty()
             it.setComponentsItem(bannerListData, component.tabName)
             it.noOfPagesLoaded = 1
@@ -55,30 +45,21 @@ class BannerInfiniteUseCase @Inject constructor(private val bannerInfiniteReposi
         val parentComponent = component?.parentComponentId?.let { getComponent(it, pageEndPoint) }
         parentComponent?.let { component1 ->
             val isDynamic = component1.properties?.dynamic ?: false
-            val (bannerListData, nextPage) = bannerInfiniteRepository.getBanners(
-                if (isDynamic && !component1.dynamicOriginalId.isNullOrEmpty()) {
-                    component1.dynamicOriginalId!!
-                } else {
-                    component1.id
-                },
-                getQueryParameterMap(
-                    component1.pageLoadedCounter,
-                    bannerLimit,
-                    component1.nextPageKey,
-                    isDarkMode,
-                    paramWithoutRpc,
-                    component1.userAddressData
-                ),
-                pageEndPoint,
-                component1.name
-            )
+            val (bannerListData,nextPage) = bannerInfiniteRepository.getBanners(
+                    if (isDynamic && !component1.dynamicOriginalId.isNullOrEmpty())
+                        component1.dynamicOriginalId!! else component1.id,
+                    getQueryParameterMap(component1.pageLoadedCounter,
+                            bannerLimit,
+                            component1.nextPageKey,isDarkMode,paramWithoutRpc,component1.userAddressData),
+                    pageEndPoint,
+                    component1.name)
             component1.nextPageKey = nextPage
             if (bannerListData.isEmpty()) {
                 component1.showVerticalLoader = false
             } else {
                 component1.pageLoadedCounter += 1
                 component1.showVerticalLoader = true
-                updatePaginatedData(bannerListData, component1)
+                updatePaginatedData(bannerListData,component1)
                 (component1.getComponentsItem() as ArrayList<ComponentsItem>).addAll(bannerListData)
             }
             component1.verticalProductFailState = false
@@ -87,14 +68,13 @@ class BannerInfiniteUseCase @Inject constructor(private val bannerInfiniteReposi
         return false
     }
 
-    private fun getQueryParameterMap(
-        pageNumber: Int,
-        bannerPerPage: Int,
-        nextPageKey: String?,
-        isDarkMode: Boolean,
-        queryParameterMapWithoutRpc: Map<String, String>?,
-        userAddressData: LocalCacheModel?
-    ): MutableMap<String, Any> {
+    private fun getQueryParameterMap(pageNumber: Int,
+                                     bannerPerPage: Int,
+                                     nextPageKey: String?,
+                                     isDarkMode: Boolean,
+                                     queryParameterMapWithoutRpc: Map<String, String>?,
+                                     userAddressData: LocalCacheModel?): MutableMap<String, Any> {
+
         val queryParameterMap = mutableMapOf<String, Any>()
 
         queryParameterMap[Utils.RPC_PAGE_SIZE] = bannerPerPage.toString()
@@ -109,11 +89,12 @@ class BannerInfiniteUseCase @Inject constructor(private val bannerInfiniteReposi
         return queryParameterMap
     }
 
-    private fun updatePaginatedData(bannerListData: ArrayList<ComponentsItem>, parentComponentsItem: ComponentsItem) {
+    private fun updatePaginatedData(bannerListData:ArrayList<ComponentsItem>,parentComponentsItem: ComponentsItem){
         bannerListData.forEach {
             it.parentComponentId = parentComponentsItem.id
             it.pageEndPoint = parentComponentsItem.pageEndPoint
             it.parentComponentPosition = parentComponentsItem.position
         }
     }
+
 }
