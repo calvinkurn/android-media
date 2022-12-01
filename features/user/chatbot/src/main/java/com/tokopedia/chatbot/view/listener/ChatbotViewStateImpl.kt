@@ -234,7 +234,7 @@ class ChatbotViewStateImpl(
         super.onReceiveMessageEvent(generatedInvoice)
     }
 
-    private fun removeInvoiceCarousel() {
+    override fun removeInvoiceCarousel() {
         var item: AttachInvoiceSelectionUiModel? = null
         for (it in adapter.list) {
             if (it is AttachInvoiceSelectionUiModel) {

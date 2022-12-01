@@ -17,5 +17,4 @@ object DateHelper {
             Date()
         }
     }
-
 }
