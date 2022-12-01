@@ -45,7 +45,6 @@ import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.recommendation_widget_common.domain.request.GetRecommendationRequestParam
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
-import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant
 import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.PAGE_NUMBER_RECOM_WIDGET
 import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.RECOM_WIDGET
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
@@ -104,6 +103,8 @@ import com.tokopedia.tokopedianow.repurchase.presentation.viewholder.RepurchaseE
 import com.tokopedia.tokopedianow.repurchase.presentation.viewholder.RepurchaseProductViewHolder
 import com.tokopedia.tokopedianow.repurchase.presentation.viewholder.RepurchaseSortFilterViewHolder.SortFilterListener
 import com.tokopedia.tokopedianow.repurchase.presentation.viewmodel.TokoNowRepurchaseViewModel
+import com.tokopedia.tokopedianow.searchcategory.presentation.listener.SimilarProductListener
+import com.tokopedia.tokopedianow.similarproduct.model.SimilarProductUiModel
 import com.tokopedia.tokopedianow.sortfilter.presentation.activity.TokoNowSortFilterActivity.Companion.REQUEST_CODE_SORT_FILTER_BOTTOMSHEET
 import com.tokopedia.tokopedianow.sortfilter.presentation.activity.TokoNowSortFilterActivity.Companion.SORT_VALUE
 import com.tokopedia.tokopedianow.sortfilter.presentation.bottomsheet.TokoNowSortFilterBottomSheet.Companion.FREQUENTLY_BOUGHT
@@ -124,7 +125,8 @@ class TokoNowRepurchaseFragment:
     TokoNowRecommendationCarouselListener,
     RepurchaseEmptyStateNoHistoryListener,
     SortFilterListener,
-    ServerErrorListener
+    ServerErrorListener,
+    SimilarProductListener
 {
 
     companion object {
@@ -161,6 +163,7 @@ class TokoNowRepurchaseFragment:
         RepurchaseAdapter(
             RepurchaseAdapterTypeFactory(
                 productCardListener = createProductCardListener(),
+                similarProductListener = this,
                 tokoNowEmptyStateOocListener = createTokoNowEmptyStateOocListener(),
                 tokoNowChooseAddressWidgetListener = this,
                 tokoNowListener = this,
@@ -1023,5 +1026,54 @@ class TokoNowRepurchaseFragment:
             activity = activity,
             startActivityForResult=::startActivityForResult
         )
+    }
+
+    override fun trackClickSimilarProductBtn(productId: String) {
+        context?.let {
+            analytics.trackClickSimilarProductBtn(
+                ChooseAddressUtils.getLocalizingAddressData(it).warehouse_id,
+                productId,
+                userSession.userId
+            )
+        }
+    }
+
+    override fun trackImpressionBottomSheet(
+        userId: String,
+        warehouseId: String,
+        productId: String,
+        similarProducts: ArrayList<SimilarProductUiModel>
+    ) {
+        analytics.trackImpressionBottomSheet(warehouseId, productId, similarProducts, userId)
+    }
+
+    override fun trackClickProduct(
+        userId: String,
+        warehouseId: String,
+        productId: String,
+        similarProducts: ArrayList<SimilarProductUiModel>
+    ) {
+        analytics.trackClickProduct(warehouseId, productId, similarProducts, userId)
+    }
+
+    override fun trackClickAddToCart(
+        userId: String,
+        warehouseId: String,
+        product: SimilarProductUiModel,
+        similarProducts: ArrayList<SimilarProductUiModel>
+    ) {
+        analytics.trackClickAddToCart(userId, warehouseId, product, similarProducts)
+    }
+
+    override fun trackClickCloseBottomsheet(
+        warehouseId: String,
+        productId: String,
+        similarProducts: ArrayList<SimilarProductUiModel>
+    ) {
+        analytics.trackClickCloseBottomsheet(warehouseId, productId, similarProducts, userSession.userId)
+    }
+
+    override fun trackImpressionEmptyState(warehouseId: String, productId: String) {
+        analytics.trackImpressionEmptyState(warehouseId, productId, userSession.userId)
     }
 }

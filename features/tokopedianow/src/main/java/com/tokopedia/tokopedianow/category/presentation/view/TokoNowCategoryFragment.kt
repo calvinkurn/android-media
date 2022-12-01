@@ -7,7 +7,6 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.discovery.common.manager.AdultManager
-import com.tokopedia.discovery.common.utils.UrlParamUtils
 import com.tokopedia.filter.bottomsheet.SortFilterBottomSheet
 import com.tokopedia.filter.common.data.Filter
 import com.tokopedia.filter.common.data.Option
@@ -18,7 +17,6 @@ import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.TOKONOW_CLP
-import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.category.analytics.CategoryTracking
@@ -39,14 +37,12 @@ import com.tokopedia.tokopedianow.category.presentation.listener.CategoryAisleLi
 import com.tokopedia.tokopedianow.category.presentation.model.CategoryAisleItemDataView
 import com.tokopedia.tokopedianow.category.presentation.typefactory.CategoryTypeFactoryImpl
 import com.tokopedia.tokopedianow.category.presentation.viewmodel.TokoNowCategoryViewModel
-import com.tokopedia.tokopedianow.category.utils.RECOM_QUERY_PARAM_CATEGORY_ID
-import com.tokopedia.tokopedianow.category.utils.RECOM_QUERY_PARAM_REF
 import com.tokopedia.tokopedianow.common.model.ShareTokonow
 import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
+import com.tokopedia.tokopedianow.common.util.StringUtil.getOrDefaultZeroString
 import com.tokopedia.tokopedianow.common.util.TokoNowUniversalShareUtil
 import com.tokopedia.tokopedianow.common.util.TokoNowUniversalShareUtil.shareRequest
-import com.tokopedia.tokopedianow.common.util.StringUtil.getOrDefaultZeroString
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowCategoryGridViewHolder
 import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment
 import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst.Misc.VALUE_LIST_OOC
@@ -102,9 +98,6 @@ class TokoNowCategoryFragment:
     private var shareCategoryTokonow: ShareTokonow? = null
     private var categoryIdLvl2 = ""
     private var categoryIdLvl3 = ""
-
-    @Inject
-    lateinit var chooseAddressWrapper: ChooseAddressWrapper
 
     override val toolbarPageName = "TokoNow Category"
 
@@ -190,6 +183,7 @@ class TokoNowCategoryFragment:
             quickFilterListener = this,
             categoryFilterListener = this,
             productItemListener = this,
+            similarProductListener = this,
             switcherWidgetListener = this,
             tokoNowEmptyStateNoResultListener = this,
             categoryAisleListener = this,
@@ -238,7 +232,7 @@ class TokoNowCategoryFragment:
     }
 
     override fun trackClickSimilarProductBtn(productId: String) {
-        CategoryTracking.trackClickSimilarProductBtn(chooseAddressWrapper.getChooseAddressData().warehouse_id, productId, userSession.userId.toString())
+        CategoryTracking.trackClickSimilarProductBtn(getViewModel().warehouseId, productId, userSession.userId.toString())
     }
 
     override fun trackImpressionBottomSheet(

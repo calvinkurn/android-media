@@ -7,12 +7,14 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowProductGridCardBinding
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ProductItemListener
+import com.tokopedia.tokopedianow.searchcategory.presentation.listener.SimilarProductListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.utils.view.binding.viewBinding
 
 class ProductItemViewHolder(
         itemView: View,
         private val listener: ProductItemListener,
+        private val similarProductListener: SimilarProductListener,
 ): AbstractViewHolder<ProductItemDataView>(itemView) {
 
     companion object {
@@ -48,7 +50,7 @@ class ProductItemViewHolder(
                     productItemDataView = element
                 )
             }
-            setListeners(listener)
+            setListeners(similarProductListener)
         }
     }
 

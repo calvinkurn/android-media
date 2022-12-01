@@ -21,7 +21,7 @@ import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.databinding.BottomsheetTokopedianowSimilarProductsBinding
-import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ProductItemListener
+import com.tokopedia.tokopedianow.searchcategory.presentation.listener.SimilarProductListener
 import com.tokopedia.tokopedianow.searchcategory.utils.ChooseAddressWrapper
 import com.tokopedia.tokopedianow.similarproduct.adapter.SimilarProductAdapter
 import com.tokopedia.tokopedianow.similarproduct.adapter.SimilarProductAdapterTypeFactory
@@ -54,7 +54,7 @@ class TokoNowSimilarSimilarProductBottomSheet : BottomSheetUnify(), SimilarProdu
         }
     var productListener: SimilarProductViewHolder.SimilarProductListener? = null
 
-    private var listener: ProductItemListener? = null
+    private var listener: SimilarProductListener? = null
 
     private var binding by autoClearedNullable<BottomsheetTokopedianowSimilarProductsBinding>()
 
@@ -241,7 +241,7 @@ class TokoNowSimilarSimilarProductBottomSheet : BottomSheetUnify(), SimilarProdu
         listener?.trackClickAddToCart(userSession.userId.toString(), chooseAddressWrapper.getChooseAddressData().warehouse_id, product, items as ArrayList<SimilarProductUiModel>)
     }
 
-    fun setListener(listener: ProductItemListener?){
+    fun setListener(listener: SimilarProductListener?){
         this.listener = listener
     }
 

@@ -93,6 +93,7 @@ import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ProductIt
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ProductRecommendationCallback
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ProductRecommendationOocCallback
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.QuickFilterListener
+import com.tokopedia.tokopedianow.searchcategory.presentation.listener.SimilarProductListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.SwitcherWidgetListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.TitleListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
@@ -123,6 +124,7 @@ abstract class BaseSearchCategoryFragment:
     CategoryChooserBottomSheet.Callback,
     MiniCartWidgetListener,
     ProductItemListener,
+    SimilarProductListener,
     SwitcherWidgetListener,
     TokoNowEmptyStateNoResultListener,
     TokoNowProductCardListener

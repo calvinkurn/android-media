@@ -31,7 +31,7 @@ import com.tokopedia.tokopedianow.common.util.ViewUtil.getDpFromDimen
 import com.tokopedia.tokopedianow.common.util.ViewUtil.safeParseColor
 import com.tokopedia.tokopedianow.common.util.doOnPreDraw
 import com.tokopedia.tokopedianow.databinding.LayoutTokopedianowProductCardViewBinding
-import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ProductItemListener
+import com.tokopedia.tokopedianow.searchcategory.presentation.listener.SimilarProductListener
 import com.tokopedia.tokopedianow.similarproduct.activity.TokoNowSimilarProductActivity
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.ProgressBarUnify
@@ -50,7 +50,7 @@ class TokoNowProductCardView @JvmOverloads constructor(
         private const val NO_DISCOUNT_STRING = "0"
     }
 
-    private var listener: ProductItemListener? = null
+    private var similarProductListener: SimilarProductListener? = null
     private var binding: LayoutTokopedianowProductCardViewBinding
 
     init {
@@ -226,7 +226,7 @@ class TokoNowProductCardView @JvmOverloads constructor(
         isShown: Boolean,
         productId: String
     ) {
-        similarProductTypography.showIfWithBlock(isOos && isShown) {
+        similarProductTypography.showIfWithBlock(true) {
             adjustChevronIcon(
                 drawable = getIconUnifyDrawable(
                     context = context,
@@ -238,8 +238,8 @@ class TokoNowProductCardView @JvmOverloads constructor(
                 )
             )
             setOnClickListener {
-                listener?.trackClickSimilarProductBtn(productId)
-                val intent = TokoNowSimilarProductActivity.createNewIntent(context, productId, listener)
+                similarProductListener?.trackClickSimilarProductBtn(productId)
+                val intent = TokoNowSimilarProductActivity.createNewIntent(context, productId, similarProductListener)
                 context.startActivity(intent)
             }
         }
@@ -521,7 +521,7 @@ class TokoNowProductCardView @JvmOverloads constructor(
         binding.quantityEditor.onClickVariantListener = onClickVariantListener
     }
 
-    fun setListeners(listener: ProductItemListener){
-        this.listener = listener
+    fun setListeners(similarProductListener: SimilarProductListener?){
+        this.similarProductListener = similarProductListener
     }
 }

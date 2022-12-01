@@ -36,6 +36,7 @@ object TokoNowCommonAnalyticConstants {
         const val EVENT_CATEGORY_TOKOPEDIA_NOW = "tokopedia now"
         const val EVENT_CATEGORY_TOKOPEDIA_NOW_SEARCH = "tokonow - search result"
         const val EVENT_CATEGORY_TOKOPEDIA_CATEGORY_PAGE = "tokonow category page"
+        const val EVENT_CATEGORY_TOKOPEDIA_REPURCHASE_PAGE = "tokonow repurchase page"
         const val EVENT_CATEGORY_TOP_NAV_TOKOPEDIA_NOW = "top nav - tokopedia now"
         const val EVENT_CATEGORY_TOKONOW_HOMEPAGE = "tokonow - homepage"
     }

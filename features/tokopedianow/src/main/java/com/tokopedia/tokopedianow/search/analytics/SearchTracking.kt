@@ -656,7 +656,7 @@ object SearchTracking {
             userId = userId
         ).apply {
             putString(TokoNowCommonAnalyticConstants.KEY.KEY_PRODUCT_ID, productId)
-            putString(TokoNowCommonAnalyticConstants.KEY.KEY_TRACKER_ID, TokonowSimilarProductConstants.TRACKER_ID_CLICK_SIMILAR_PRODUCT_BUTTON)
+            putString(TokoNowCommonAnalyticConstants.KEY.KEY_TRACKER_ID, TokonowSimilarProductConstants.TRACKER_ID_CLICK_SIMILAR_PRODUCT_BUTTON_SEARCH)
         }
 
         sendEnhanceEcommerceEvent(
@@ -687,7 +687,7 @@ object SearchTracking {
             userId = userId
         ).apply {
             putString(TokoNowCommonAnalyticConstants.KEY.KEY_PRODUCT_ID, productId)
-            putString(TokoNowCommonAnalyticConstants.KEY.KEY_TRACKER_ID, TokonowSimilarProductConstants.TRACKER_ID_VIEW_SIMILAR_PRODUCT_BOTTOMSHEET)
+            putString(TokoNowCommonAnalyticConstants.KEY.KEY_TRACKER_ID, TokonowSimilarProductConstants.TRACKER_ID_VIEW_SIMILAR_PRODUCT_BOTTOMSHEET_SEARCH)
             putString(TokoNowCommonAnalyticConstants.KEY.KEY_ITEM_LIST, "/tokonow - product card - similar product recom")
             putParcelableArrayList(TokoNowCommonAnalyticConstants.KEY.KEY_ITEMS, ArrayList(items))
         }
@@ -722,7 +722,7 @@ object SearchTracking {
             putString(TokoNowCommonAnalyticConstants.KEY.KEY_PRODUCT_ID, productId)
             putString(
                 TokoNowCommonAnalyticConstants.KEY.KEY_TRACKER_ID,
-                TokonowSimilarProductConstants.TRACKER_ID_CLICK_PRODUCT
+                TokonowSimilarProductConstants.TRACKER_ID_CLICK_PRODUCT_SEARCH
             )
             putString(TokoNowCommonAnalyticConstants.KEY.KEY_ITEM_LIST, "/tokonow - product card - similar product recom")
             putParcelableArrayList(TokoNowCommonAnalyticConstants.KEY.KEY_ITEMS, ArrayList(items))
@@ -757,7 +757,7 @@ object SearchTracking {
             putString(TokoNowCommonAnalyticConstants.KEY.KEY_USER_ID, userId)
             putString(TokoNowCommonAnalyticConstants.KEY.KEY_PRODUCT_ID, product.id)
             putString(
-                TokoNowCommonAnalyticConstants.KEY.KEY_TRACKER_ID, TokonowSimilarProductConstants.TRACKER_ID_ADD_TO_CART
+                TokoNowCommonAnalyticConstants.KEY.KEY_TRACKER_ID, TokonowSimilarProductConstants.TRACKER_ID_ADD_TO_CART_SEARCH
             )
             putParcelableArrayList(TokoNowCommonAnalyticConstants.KEY.KEY_ITEMS, ArrayList(items))
         }
@@ -782,7 +782,7 @@ object SearchTracking {
         ).apply {
             putString(
                 TokoNowCommonAnalyticConstants.KEY.KEY_TRACKER_ID,
-                TokonowSimilarProductConstants.TRACKER_ID_CLICK_CLOSE_BOTTOMSHEET
+                TokonowSimilarProductConstants.TRACKER_ID_CLICK_CLOSE_BOTTOMSHEET_SEARCH
             )
         }
 
@@ -801,7 +801,7 @@ object SearchTracking {
         ).apply {
             putString(
                 TokoNowCommonAnalyticConstants.KEY.KEY_TRACKER_ID,
-                TokonowSimilarProductConstants.TRACKER_ID_VIEW_EMPTY_STATE
+                TokonowSimilarProductConstants.TRACKER_ID_VIEW_EMPTY_STATE_SEARCH
             )
         }
 

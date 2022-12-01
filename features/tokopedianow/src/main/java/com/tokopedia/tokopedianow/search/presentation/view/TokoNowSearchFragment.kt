@@ -48,7 +48,6 @@ import com.tokopedia.tokopedianow.searchcategory.data.model.QuerySafeModel
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.SwitcherWidgetListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.view.BaseSearchCategoryFragment
-import com.tokopedia.tokopedianow.searchcategory.utils.ChooseAddressWrapper
 import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW
 import com.tokopedia.tokopedianow.similarproduct.model.SimilarProductUiModel
 import javax.inject.Inject
@@ -73,9 +72,6 @@ class TokoNowSearchFragment :
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
     private lateinit var tokoNowSearchViewModel: TokoNowSearchViewModel
-
-    @Inject
-    lateinit var chooseAddressWrapper: ChooseAddressWrapper
 
     override val toolbarPageName = "TokoNow Search"
 
@@ -152,6 +148,7 @@ class TokoNowSearchFragment :
             quickFilterListener = this,
             categoryFilterListener = this,
             productItemListener = this,
+            similarProductListener = this,
             switcherWidgetListener = this,
             tokoNowEmptyStateNoResultListener = this,
             suggestionListener = this,
@@ -223,7 +220,7 @@ class TokoNowSearchFragment :
     }
 
     override fun trackClickSimilarProductBtn(productId: String) {
-        SearchTracking.trackClickSimilarProductBtn(chooseAddressWrapper.getChooseAddressData().warehouse_id, productId, userSession.userId.toString())
+        SearchTracking.trackClickSimilarProductBtn(getViewModel().warehouseId, productId, userSession.userId.toString())
     }
 
     override fun trackImpressionBottomSheet(
