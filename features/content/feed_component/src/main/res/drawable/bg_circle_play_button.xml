@@ -4,6 +4,6 @@
     android:shape="oval">
     <solid android:color="@color/Unify_Static_Black_68"/>
     <size
-        android:width="@dimen/feed_component_dp_60"
-        android:height="@dimen/feed_component_dp_60"/>
+        android:width="@dimen/feed_component_dp_50"
+        android:height="@dimen/feed_component_dp_50"/>
 </shape>
