@@ -244,7 +244,7 @@ class PlayShortsPreparationFragment @Inject constructor(
             }
 
             root.setOnClickListener {
-                idleManager.toggleState()
+                idleManager.toggleState(viewLifecycleOwner.lifecycleScope)
             }
 
             preparationMenu.setOnMenuClickListener {
@@ -485,7 +485,7 @@ class PlayShortsPreparationFragment @Inject constructor(
         binding.groupPreparationMain.showWithCondition(isShow)
 
         if (isShow) {
-            idleManager.startIdleTimer()
+            idleManager.startIdleTimer(viewLifecycleOwner.lifecycleScope)
         } else {
             idleManager.forceStandByMode()
         }
