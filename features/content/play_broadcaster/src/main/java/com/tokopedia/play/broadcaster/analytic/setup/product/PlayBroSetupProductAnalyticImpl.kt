@@ -28,7 +28,11 @@ class PlayBroSetupProductAnalyticImpl @Inject constructor(
         /** Not applicable for broadcaster */
     }
 
-    override fun clickSearchBarOnProductSetup(search: String) {
+    override fun clickSearchBarOnProductSetup() {
+        /** Not applicable for broadcaster */
+    }
+
+    override fun clickSearchWhenParamChanged(search: String) {
         sendEvent(
             "click - search bar",
             "$shopId - $search"

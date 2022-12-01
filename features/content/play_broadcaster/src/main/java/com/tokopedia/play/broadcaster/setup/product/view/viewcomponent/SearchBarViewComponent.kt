@@ -15,6 +15,10 @@ class SearchBarViewComponent(
 
     init {
         view.setListener(object : PlaySearchBar.Listener {
+            override fun onSearchBarClicked(view: PlaySearchBar) {
+                eventBus.emit(Event.OnSearchBarClicked)
+            }
+
             override fun onNewKeyword(view: PlaySearchBar, keyword: String) {
                 eventBus.emit(Event.OnSearched(keyword))
             }
@@ -36,5 +40,6 @@ class SearchBarViewComponent(
 
     sealed class Event {
         data class OnSearched(val keyword: String) : Event()
+        object OnSearchBarClicked : Event()
     }
 }

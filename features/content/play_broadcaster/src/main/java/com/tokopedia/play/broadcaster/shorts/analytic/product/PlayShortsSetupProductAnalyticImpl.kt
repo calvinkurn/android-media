@@ -16,7 +16,6 @@ import javax.inject.Inject
  * https://mynakama.tokopedia.com/datatracker/requestdetail/view/3511
  */
 class PlayShortsSetupProductAnalyticImpl @Inject constructor(
-    private val userSession: UserSessionInterface,
     private val analyticSender: PlayShortsAnalyticSender,
 ) : PlayBroSetupProductAnalytic {
 
@@ -29,7 +28,7 @@ class PlayShortsSetupProductAnalyticImpl @Inject constructor(
     /**
      * Row 37
      */
-    override fun clickSearchBarOnProductSetup(search: String) {
+    override fun clickSearchBarOnProductSetup() {
         analyticSender.sendGeneralClickEvent(
             eventAction = "click - search product",
             account = account,
@@ -240,6 +239,10 @@ class PlayShortsSetupProductAnalyticImpl @Inject constructor(
     }
 
     override fun clickCancelCloseOnProductChooser() {
+        /** Not applicable for shorts */
+    }
+
+    override fun clickSearchWhenParamChanged(search: String) {
         /** Not applicable for shorts */
     }
 }

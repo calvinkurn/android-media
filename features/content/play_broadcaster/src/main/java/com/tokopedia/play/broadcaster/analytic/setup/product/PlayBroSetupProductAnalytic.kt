@@ -9,7 +9,9 @@ interface PlayBroSetupProductAnalytic {
 
     fun setSelectedAccount(account: ContentAccountUiModel)
 
-    fun clickSearchBarOnProductSetup(search: String)
+    fun clickSearchWhenParamChanged(search: String)
+
+    fun clickSearchBarOnProductSetup()
 
     fun clickSaveButtonOnProductSetup()
 
