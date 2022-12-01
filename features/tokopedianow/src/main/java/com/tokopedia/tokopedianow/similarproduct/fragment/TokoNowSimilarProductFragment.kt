@@ -227,6 +227,7 @@ class TokoNowSimilarProductFragment : Fragment(), SimilarProductViewHolder.Simil
         }
         bottomSheet?.changeQuantity(data.data.quantity, position)
         getMiniCart()
+        bottomSheet?.openMiniCartBottomsheet(this)
     }
 
     private fun onSuccessRemoveCartItem(data: Pair<String, String>) {
