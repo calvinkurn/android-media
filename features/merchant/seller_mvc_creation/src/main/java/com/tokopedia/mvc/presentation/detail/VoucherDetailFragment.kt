@@ -8,28 +8,41 @@ import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.campaign.utils.constant.DateConstant
 import com.tokopedia.campaign.utils.extension.routeToUrl
 import com.tokopedia.campaign.utils.extension.showToaster
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.linker.LinkerManager
+import com.tokopedia.linker.LinkerUtils
+import com.tokopedia.linker.interfaces.ShareCallback
+import com.tokopedia.linker.model.LinkerError
+import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.mvc.R
 import com.tokopedia.mvc.databinding.*
 import com.tokopedia.mvc.di.component.DaggerMerchantVoucherCreationComponent
 import com.tokopedia.mvc.domain.entity.VoucherDetailData
+import com.tokopedia.mvc.domain.entity.enums.BenefitType
 import com.tokopedia.mvc.domain.entity.enums.PromoType
 import com.tokopedia.mvc.domain.entity.enums.VoucherStatus
 import com.tokopedia.mvc.domain.entity.enums.VoucherTargetBuyer
 import com.tokopedia.mvc.presentation.bottomsheet.ExpenseEstimationBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.ThreeDotsMenuBottomSheet
+import com.tokopedia.mvc.presentation.share.LinkerDataGenerator
+import com.tokopedia.mvc.presentation.share.ShareComponentInstanceBuilder
 import com.tokopedia.mvc.util.SharingUtil
 import com.tokopedia.mvc.util.constant.*
 import com.tokopedia.mvc.util.constant.VoucherTargetConstant.VOUCHER_TARGET_PUBLIC
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.unifyprinciples.Typography
+import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil as ShareComponentUtil
+import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
+import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.date.toDate
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.text.SimpleDateFormat
@@ -67,6 +80,14 @@ class VoucherDetailFragment : BaseDaggerFragment() {
 
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
+
+    @Inject
+    lateinit var shareComponentInstanceBuilder: ShareComponentInstanceBuilder
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
+
+    private var universalShareBottomSheet : UniversalShareBottomSheet? = null
 
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(VoucherDetailViewModel::class.java) }
@@ -546,6 +567,33 @@ class VoucherDetailFragment : BaseDaggerFragment() {
             }
             btnShare.setOnClickListener {
                 // TODO:open share component
+
+                val topSellingProductImageUrls: List<String> = listOf(
+                    "https://ecs7.tokopedia.net/img/cache/200-square/VqbcmM/2022/9/21/c420466b-98cc-4d8c-9d0e-5924ba0ca554.jpg",
+                    "https://ecs7.tokopedia.net/img/cache/200-square/VqbcmM/2022/9/21/42595f85-1663-43c5-9c45-1e6c5b894e71.jpg",
+                    "https://ecs7.tokopedia.net/img/cache/200-square/VqbcmM/2022/9/21/dede8c1d-9799-4313-bece-7d69c1637071.jpg"
+                )
+
+                //TODO: This is just a sample usage. Please fill these values with the real data
+                val shareComponentParam = ShareComponentInstanceBuilder.Param(
+                    isVoucherProduct = true,
+                    voucherId = 1239,
+                    isPublic = true,
+                    voucherCode = "UNVRCUAN",
+                    voucherStartDate = Date(),
+                    voucherEndDate = Date(),
+                    promoType = PromoType.CASHBACK,
+                    benefitType = BenefitType.NOMINAL,
+                    shopLogo = "https://ecs7.tokopedia.net/img/cache/200-square/VqbcmM/2022/9/21/dede8c1d-9799-4313-bece-7d69c1637071.jpg",
+                    shopName = "UNILEVER",
+                    shopDomain = "UNVR",
+                    discountAmount = 500_000,
+                    discountAmountMax = 1_000_000,
+                    productImageUrls = topSellingProductImageUrls,
+                    discountPercentage = 10
+                )
+
+                displayShareBottomSheet(shareComponentParam)
             }
         }
         stateButtonDuplicateBinding?.apply {
@@ -621,4 +669,103 @@ class VoucherDetailFragment : BaseDaggerFragment() {
     private fun shareToBroadcastChat(voucherId: Long) {
         routeToUrl(broadCastChatUrl + voucherId.toString())
     }
+
+    private fun displayShareBottomSheet(shareComponentParam: ShareComponentInstanceBuilder.Param) {
+        val endDate = shareComponentParam.voucherEndDate.formatTo(DateConstant.DATE_YEAR_PRECISION)
+        val endHour = shareComponentParam.voucherEndDate.formatTo(DateConstant.TIME_MINUTE_PRECISION)
+
+        val formattedShopName = MethodChecker.fromHtml(shareComponentParam.shopName).toString()
+
+        val titleTemplate = if (shareComponentParam.isVoucherProduct) {
+            getString(R.string.smvc_placeholder_share_component_outgoing_title_product_voucher)
+        } else {
+            getString(R.string.smvc_placeholder_share_component_outgoing_title_shop_voucher)
+        }
+
+        val descriptionTemplate = if (shareComponentParam.isVoucherProduct) {
+            getString(R.string.smvc_placeholder_share_component_text_description_product_voucher)
+        } else {
+            getString(R.string.smvc_placeholder_share_component_text_description_shop_voucher)
+        }
+
+        val title = String.format(
+            titleTemplate,
+            formattedShopName
+        )
+        val description = String.format(
+            descriptionTemplate,
+            formattedShopName,
+            endDate,
+            endHour
+        )
+
+        universalShareBottomSheet = shareComponentInstanceBuilder.build(
+            shareComponentParam,
+            title,
+            onShareOptionsClicked = { shareModel ->
+                handleShareOptionSelection(
+                    shareComponentParam.isVoucherProduct,
+                    shareComponentParam.voucherId,
+                    shareModel,
+                    title,
+                    description,
+                    shareComponentParam.shopDomain
+                )
+            },
+            onCloseOptionClicked = {
+
+            })
+
+        universalShareBottomSheet?.show(childFragmentManager, universalShareBottomSheet?.tag)
+    }
+
+    private fun handleShareOptionSelection(
+        isVoucherProduct: Boolean,
+        voucherId: Long,
+        shareModel: ShareModel,
+        title: String,
+        description: String,
+        shopDomain: String
+    ) {
+        val shareCallback = object : ShareCallback {
+            override fun urlCreated(linkerShareData: LinkerShareResult?) {
+                val wording = "$description ${linkerShareData?.shareUri.orEmpty()}"
+                ShareComponentUtil.executeShareIntent(
+                    shareModel,
+                    linkerShareData,
+                    activity,
+                    view,
+                    wording
+                )
+                universalShareBottomSheet?.dismiss()
+            }
+
+            override fun onError(linkerError: LinkerError?) {}
+        }
+
+        val outgoingDescription = if (isVoucherProduct) {
+            getString(R.string.smvc_share_component_outgoing_text_description_product_voucher)
+        } else {
+            getString(R.string.smvc_share_component_outgoing_text_description_shop_voucher)
+        }
+
+
+        val linkerDataGenerator = LinkerDataGenerator()
+        val linkerShareData = linkerDataGenerator.generate(
+            voucherId,
+            userSession.shopId,
+            shopDomain,
+            shareModel,
+            title,
+            outgoingDescription
+        )
+        LinkerManager.getInstance().executeShareRequest(
+            LinkerUtils.createShareRequest(
+                Int.ZERO,
+                linkerShareData,
+                shareCallback
+            )
+        )
+    }
+
 }
