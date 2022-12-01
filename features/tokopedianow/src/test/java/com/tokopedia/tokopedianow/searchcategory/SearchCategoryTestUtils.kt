@@ -227,3 +227,12 @@ fun List<Visitable<*>>.assertNotProductFeedbackWidget(){
    val tempList = this.filterIsInstance<TokoNowFeedbackWidgetUiModel>()
     Assert.assertEquals(tempList.size,0)
 }
+
+fun assertNoProductFeedbackWidget(list:List<Visitable<*>>){
+    var found = false
+    list.forEach {
+        if(it is TokoNowFeedbackWidgetUiModel)
+           found = true
+    }
+    Assert.assertEquals(found,false)
+}
