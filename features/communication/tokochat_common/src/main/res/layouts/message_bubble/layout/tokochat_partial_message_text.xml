@@ -13,7 +13,7 @@
         android:layout_gravity="top"
         android:gravity="left|top"
         android:lineSpacingMultiplier="1.1"
-        android:textColor="@color/Unify_N700_96"
+        android:textColor="@color/Unify_NN950"
         android:textIsSelectable="false"
         app:typographyType="paragraph_2"
         tools:ignore="RtlHardcoded"
