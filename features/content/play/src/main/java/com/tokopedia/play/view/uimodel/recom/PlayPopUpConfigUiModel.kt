@@ -7,13 +7,4 @@ data class PlayPopUpConfigUiModel(
     val isEnabled: Boolean = false,
     val duration: Long = 0L,
     val text: String = "",
-){
-    companion object {
-        val Empty: PlayPopUpConfigUiModel
-            get() = PlayPopUpConfigUiModel(
-                isEnabled = false,
-                duration = 0L,
-                text = "",
-            )
-    }
-}
+)
