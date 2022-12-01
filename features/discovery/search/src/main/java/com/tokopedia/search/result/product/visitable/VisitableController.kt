@@ -402,4 +402,30 @@ class VisitableController @Inject constructor(
             list.add(searchInTokopediaDataView)
         }
     }
+
+    fun processHeadlineAdsLoadMore(
+        searchProductModel: SearchProductModel,
+        list: MutableList<Visitable<*>>,
+        isLocalSearch: Boolean,
+        productList: List<Visitable<*>>,
+    ) {
+        if (!isHeadlineAdsAllowed(isLocalSearch)) return
+
+        topAdsHeadlineHelper.processHeadlineAds(searchProductModel.cpmModel) { _, cpmDataList, isUseSeparator ->
+            val verticalSeparator = if (isUseSeparator)
+                VerticalSeparator.Both
+            else VerticalSeparator.None
+            val cpmDataView = createCpmDataView(
+                searchProductModel.cpmModel,
+                cpmDataList,
+                verticalSeparator
+            )
+            processHeadlineAdsAtPosition(
+                list,
+                productList.size,
+                cpmDataView,
+                productList
+            )
+        }
+    }
 }

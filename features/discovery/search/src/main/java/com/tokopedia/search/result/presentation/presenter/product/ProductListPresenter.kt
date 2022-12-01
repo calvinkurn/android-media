@@ -420,7 +420,7 @@ class ProductListPresenter @Inject constructor(
         ).toMutableList()
         productList.addAll(list)
 
-        processHeadlineAdsLoadMore(searchProductModel, list)
+        visitableController.processHeadlineAdsLoadMore(searchProductModel, list, isLocalSearch(), productList)
         visitableController.processTopAdsImageViewModel(list, productList)
         visitableController.processInspirationWidgetPosition(list, productList)
         visitableController.processInspirationCarouselPosition(list, productList, externalReference)
@@ -462,30 +462,6 @@ class ProductListPresenter @Inject constructor(
     }
 
     private fun isLocalSearch() = navSource.isNotEmpty() && pageId.isNotEmpty()
-
-    private fun processHeadlineAdsLoadMore(
-        searchProductModel: SearchProductModel,
-        list: MutableList<Visitable<*>>,
-    ) {
-        if (!visitableController.isHeadlineAdsAllowed(isLocalSearch())) return
-
-        topAdsHeadlineHelper.processHeadlineAds(searchProductModel.cpmModel) { _, cpmDataList, isUseSeparator ->
-            val verticalSeparator = if (isUseSeparator)
-                VerticalSeparator.Both
-            else VerticalSeparator.None
-            val cpmDataView = visitableController.createCpmDataView(
-                searchProductModel.cpmModel,
-                cpmDataList,
-                verticalSeparator
-            )
-            visitableController.processHeadlineAdsAtPosition(
-                list,
-                productList.size,
-                cpmDataView,
-                productList
-            )
-        }
-    }
 
     private fun loadMoreDataSubscriberOnComplete() {
         if (isViewNotAttached) return
