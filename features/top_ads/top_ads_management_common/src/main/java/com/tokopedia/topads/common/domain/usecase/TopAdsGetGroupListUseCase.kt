@@ -26,8 +26,8 @@ import kotlin.collections.set
  * Created by Pika on 29/5/20.
  */
 const val GROUP_LIST_QUERY = """
-    query GetTopadsDashboardGroups(${'$'}queryInput: GetTopadsDashboardGroupsInputType!) {
-  GetTopadsDashboardGroups(queryInput: ${'$'}queryInput) {
+    query GetTopadsDashboardGroupsV3(${'$'}queryInput: GetTopadsDashboardGroupsInputTypeV3!) {
+  GetTopadsDashboardGroupsV3(queryInput: ${'$'}queryInput) {
        meta {
           page {
             per_page
@@ -75,7 +75,7 @@ class TopAdsGetGroupListUseCase @Inject constructor(val userSession: UserSession
     fun setParamsForKeyWord(search: String): RequestParams {
         val requestParams = RequestParams.create()
         val queryMap = HashMap<String, Any?>()
-        queryMap[ParamObject.SHOP_id] = userSession.shopId.toIntOrZero()
+        queryMap[ParamObject.SHOP_id] = userSession.shopId
         queryMap[ParamObject.SEPARATE_STAT] = "true"
         queryMap[KEYWORD] = search
         queryMap[GROUP_TYPE] = 1
