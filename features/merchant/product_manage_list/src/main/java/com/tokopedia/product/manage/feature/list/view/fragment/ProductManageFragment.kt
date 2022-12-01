@@ -296,72 +296,78 @@ open class ProductManageFragment :
         object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
-
-                if (coachMarkLabelGuarantee?.isDismissed == false) {
-                    val layoutManager = productManageLayoutManager
-                    val firstVisibleIndex = layoutManager?.findFirstVisibleItemPosition().orZero()
-                    val lastVisibleIndex = layoutManager?.findLastVisibleItemPosition().orZero()
-                    val currentStockAvailable =
-                        layoutManager?.findViewByPosition(Int.ZERO)
-                            ?.findViewById<ImageUnify>(R.id.ivLabelGuaranteed)
-                    if (coachMarkLabelGuarantee?.isDismissed == false && (
-                            Int.ZERO !in
-                                firstVisibleIndex..lastVisibleIndex || (
-                                currentStockAvailable != null &&
-                                    getVisiblePercent(currentStockAvailable) == -1
-                                )
-                            )
-                    ) {
-                        coachMarkLabelGuarantee?.dismissCoachMark()
-                    }
-                }
+                onCheckCoachMarkLabelGuarantee()
 
                 if (haveSetReminder == -1) {
-                    if (coachMarkMoreOption?.isDismissed == false) {
-                        val firstVisibleIndex =
-                            productManageLayoutManager?.findFirstVisibleItemPosition().orZero()
-                        val lastVisibleIndex =
-                            productManageLayoutManager?.findLastVisibleItemPosition().orZero()
-                        val currentMoreOptionButton =
-                            productManageLayoutManager?.findViewByPosition(Int.ZERO)
-                                ?.findViewById<IconUnify>(R.id.btnMoreOptions)
-                        if (coachMarkMoreOption?.isDismissed == false && (
-                                Int.ZERO !in firstVisibleIndex..lastVisibleIndex ||
-                                    (
-                                        currentMoreOptionButton != null && getVisiblePercent(
-                                            currentMoreOptionButton
-                                        ) == -1
-                                        )
-                                )
-                        ) {
-                            coachMarkMoreOption?.dismissCoachMark()
-                        }
-                    }
+                    onCheckCoachMarkMoreOption()
                 } else {
-                    if (coachMarkStockReminder?.isDismissed == false) {
-                        productManageLayoutManager?.let { layoutManager ->
-                            val firstVisibleIndex = layoutManager.findFirstVisibleItemPosition()
-                            val lastVisibleIndex = layoutManager.findLastVisibleItemPosition()
-                            val currentProductStockReminder =
-                                layoutManager.findViewByPosition(
-                                    currentPositionStockReminderCoachMark
-                                )
-                                    ?.findViewById<IconUnify>(R.id.imageStockReminder)
-                            if (coachMarkStockReminder?.isDismissed == false &&
-                                (
-                                    currentPositionStockReminderCoachMark !in
-                                        firstVisibleIndex..lastVisibleIndex ||
-                                        (
-                                            currentProductStockReminder != null && getVisiblePercent(
-                                                currentProductStockReminder
-                                            ) == -1
-                                            )
-                                    )
-                            ) {
-                                coachMarkStockReminder?.dismissCoachMark()
-                            }
-                        }
+                    onCheckCoachMarkStockReminder()
+                }
+            }
+
+            fun onCheckCoachMarkStockReminder(){
+                if (coachMarkStockReminder?.isDismissed == false) {
+                    productManageLayoutManager?.let { layoutManager ->
+                        val currentProductStockReminder =
+                            layoutManager.findViewByPosition(currentPositionStockReminderCoachMark)
+                                ?.findViewById<IconUnify>(R.id.imageStockReminder)
+                        onDismissCoachMarkWhenScroll(
+                            layoutManager,
+                            coachMarkMoreOption,
+                            currentProductStockReminder,
+                            currentPositionStockReminderCoachMark
+                        )
                     }
+                }
+            }
+
+            fun onCheckCoachMarkLabelGuarantee(){
+                if (coachMarkMoreOption?.isDismissed == false) {
+                    productManageLayoutManager?.let {
+                        val currentMoreOptionButton =
+                            it.findViewByPosition(Int.ZERO)
+                                ?.findViewById<IconUnify>(R.id.btnMoreOptions)
+                        onDismissCoachMarkWhenScroll(
+                            it,
+                            coachMarkMoreOption,
+                            currentMoreOptionButton,
+                            Int.ZERO
+                        )
+                    }
+                }
+            }
+
+            fun onCheckCoachMarkMoreOption(){
+                if (coachMarkLabelGuarantee?.isDismissed == false) {
+                    val layoutManager = productManageLayoutManager
+                    layoutManager?.let {
+                        val currentStockAvailable =
+                            layoutManager.findViewByPosition(Int.ZERO)
+                                ?.findViewById<ImageUnify>(R.id.ivLabelGuaranteed)
+                        onDismissCoachMarkWhenScroll(
+                            it,
+                            coachMarkLabelGuarantee,
+                            currentStockAvailable,
+                            Int.ZERO
+                        )
+                    }
+                }
+            }
+
+            fun onDismissCoachMarkWhenScroll(
+                layoutManager: LinearLayoutManager,
+                coachMark: CoachMark2?,
+                view: View?,
+                positionCoachMark: Int
+            ) {
+                val firstVisibleIndex = layoutManager.findFirstVisibleItemPosition()
+                val lastVisibleIndex = layoutManager.findLastVisibleItemPosition()
+                if (!coachMark?.isDismissed.orFalse() && (positionCoachMark !in
+                        firstVisibleIndex..lastVisibleIndex || (view != null && getVisiblePercent(
+                        view
+                    ) == -1))
+                ) {
+                    coachMark?.dismissCoachMark()
                 }
             }
         }
@@ -1989,20 +1995,22 @@ open class ProductManageFragment :
     }
 
     override fun onImpressionMoreOption(view: View) {
-        recyclerView?.post {
+        CoroutineScope(Dispatchers.Main).launch {
+            delay(100)
             manageShowCoachMark(isMenuOption = true, view = view)
         }
     }
 
     override fun onImpressionProductStockReminder(view: View) {
-        recyclerView?.post {
+        CoroutineScope(Dispatchers.Main).launch {
+            delay(100)
             manageShowCoachMark(isFlagStockReminder = true, view = view)
         }
     }
 
     override fun onImpressionLabelGuarantee(view: View) {
         CoroutineScope(Dispatchers.Main).launch {
-            delay(100)
+            delay(300)
             manageShowCoachMark(isLabelGuarantee = true, view = view)
         }
     }
@@ -2554,7 +2562,9 @@ open class ProductManageFragment :
     }
 
     private fun getTickerData() {
-        viewModel.getTickerData(firebaseRemoteConfigImpl.getBoolean(ENABLE_STOCK_AVAILABLE).orFalse())
+        viewModel.getTickerData(
+            firebaseRemoteConfigImpl.getBoolean(ENABLE_STOCK_AVAILABLE).orFalse()
+        )
     }
 
     private fun getFiltersTab(withDelay: Boolean = false) {
@@ -3210,7 +3220,7 @@ open class ProductManageFragment :
                     showCoachMarkLabelGuarantee(view)
                 }
                 isFlagStockReminder && !haveShowCoachMarkStockReminder -> {
-                    if (haveShowCoachMarkLabelGuarantee){
+                    if (haveShowCoachMarkLabelGuarantee) {
                         showCoachProductWithStockReminder(view)
                     }
                 }
@@ -3218,7 +3228,7 @@ open class ProductManageFragment :
                     it,
                     SHARED_PREF_PRODUCT_MANAGE_MENU_OPTIONS_COACH_MARK
                 ) -> {
-                    if (GlobalConfig.isSellerApp() && haveShowCoachMarkStockReminder) {
+                    if (GlobalConfig.isSellerApp()) {
                         showCoachMoreOptionMenu(view)
                     }
                 }
@@ -3427,6 +3437,16 @@ open class ProductManageFragment :
                 }
             }
         }
+    }
+
+    private fun RecyclerView.runWhenReady(action: () -> Unit) {
+        val globalLayoutListener = object: ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                action()
+                viewTreeObserver.removeOnGlobalLayoutListener(this)
+            }
+        }
+        viewTreeObserver.addOnGlobalLayoutListener(globalLayoutListener)
     }
 
     companion object {
