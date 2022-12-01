@@ -7,11 +7,14 @@ import androidx.core.view.animation.PathInterpolatorCompat
 import androidx.transition.Fade
 import androidx.transition.Transition
 import androidx.transition.TransitionManager
+import com.tokopedia.applink.RouteManager
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.showWithCondition
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.review.databinding.WidgetReviewCredibilityHeaderBinding
 import com.tokopedia.review.feature.createreputation.presentation.widget.BaseReviewCustomView
+import com.tokopedia.review.feature.credibility.analytics.ReviewCredibilityTracking
 import com.tokopedia.review.feature.credibility.presentation.uimodel.ReviewCredibilityHeaderUiModel
 import com.tokopedia.review.feature.credibility.presentation.uistate.ReviewCredibilityHeaderUiState
 
@@ -34,6 +37,18 @@ class ReviewCredibilityHeaderWidget @JvmOverloads constructor(
     }
 
     private var listener: Listener? = null
+
+    fun updateUiState(uiState: ReviewCredibilityHeaderUiState) {
+        when (uiState) {
+            is ReviewCredibilityHeaderUiState.Hidden -> hideWidget()
+            is ReviewCredibilityHeaderUiState.Loading -> showLoading()
+            is ReviewCredibilityHeaderUiState.Showed -> showData(uiState.data)
+        }
+    }
+
+    fun setListener(newListener: Listener) {
+        listener = newListener
+    }
 
     private fun hideWidget() {
         animateHide(onAnimationEnd = {
@@ -58,20 +73,42 @@ class ReviewCredibilityHeaderWidget @JvmOverloads constructor(
     }
 
     private fun showUIData(data: ReviewCredibilityHeaderUiModel) {
+        setupReviewerProfilePicture(data.reviewerProfilePicture)
         setupReviewerName(data.reviewerName)
-        setupReviewerJoinDate(data.reviewerJoinDate, data.showReviewerJoinDate)
+        setupReviewerJoinDate(data.reviewerJoinDate)
+        setupReviewerProfileButton(data.reviewerProfileButtonText, data.reviewerProfileButtonUrl, data.trackingData)
         headerLoadingBinding.root.gone()
         headerBinding.root.show()
+    }
+
+    private fun setupReviewerProfileButton(
+        reviewerProfileButtonText: String,
+        reviewerProfileUrl: String,
+        trackingData: ReviewCredibilityHeaderUiModel.TrackingData
+    ) {
+        headerBinding.btnReviewCredibilityHeaderReviewerSeeProfile.apply {
+            text = reviewerProfileButtonText
+            setOnClickListener {
+                if (RouteManager.route(context, reviewerProfileUrl)) {
+                    ReviewCredibilityTracking.trackClickSeeProfileButton(trackingData)
+                }
+            }
+            showWithCondition(shouldShow = reviewerProfileButtonText.isNotBlank() && reviewerProfileUrl.isNotBlank())
+        }
+    }
+
+    private fun setupReviewerProfilePicture(reviewerProfilePicture: String) {
+        headerBinding.ivReviewCredibilityHeaderReviewerProfilePicture.loadImage(reviewerProfilePicture)
     }
 
     private fun setupReviewerName(reviewerName: String) {
         headerBinding.tvReviewCredibilityHeaderReviewerName.text = reviewerName
     }
 
-    private fun setupReviewerJoinDate(reviewerJoinDate: String, showReviewerJoinDate: Boolean) {
-        headerBinding.tvReviewCredibilityHeaderJoinDate.apply {
-            text = reviewerJoinDate
-            showWithCondition(showReviewerJoinDate)
+    private fun setupReviewerJoinDate(reviewerFollowersCount: String) {
+        headerBinding.tvReviewCredibilityHeaderReviewerJoinDate.apply {
+            text = reviewerFollowersCount
+            showWithCondition(reviewerFollowersCount.isNotBlank())
         }
     }
 
@@ -86,18 +123,6 @@ class ReviewCredibilityHeaderWidget @JvmOverloads constructor(
     private fun runTransitions(transition: Transition) {
         TransitionManager.endTransitions(binding.root)
         TransitionManager.beginDelayedTransition(binding.root, transition)
-    }
-
-    fun updateUiState(uiState: ReviewCredibilityHeaderUiState) {
-        when (uiState) {
-            is ReviewCredibilityHeaderUiState.Hidden -> hideWidget()
-            is ReviewCredibilityHeaderUiState.Loading -> showLoading()
-            is ReviewCredibilityHeaderUiState.Showed -> showData(uiState.data)
-        }
-    }
-
-    fun setListener(newListener: Listener) {
-        listener = newListener
     }
 
     interface Listener {

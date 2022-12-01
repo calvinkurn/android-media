@@ -34,14 +34,14 @@ interface ChatbotViewState : BaseChatViewState {
 
     fun onShowInvoiceToChat(generatedInvoice: AttachInvoiceSentUiModel)
 
+    fun removeInvoiceCarousel()
+
     fun onSuccessSendRating(
         element: SendRatingPojo,
         rating: Int,
         chatRatingUiModel: ChatRatingUiModel,
         activity: Activity
     )
-
-    fun onClickReasonRating()
 
     fun onImageUpload(it: ImageUploadUiModel)
 

@@ -17,3 +17,9 @@ const val RESULT_INTENT_PREVIEW = "result-intent-preview"
 // picker to editor extras and result
 const val EXTRA_INTENT_EDITOR = "extra-intent-editor"
 const val RESULT_INTENT_EDITOR = "result-intent-preview"
+
+// picker editor rollence
+const val PICKER_TO_EDITOR_ROLLENCE = "android_editor"
+
+// picker new relic tag
+const val PICKER_SAVE_GALLERY = "PICKER_SAVE_GALLERY"

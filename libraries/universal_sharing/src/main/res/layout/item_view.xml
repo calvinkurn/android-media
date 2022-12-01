@@ -6,20 +6,18 @@
     android:paddingRight="4dp"
     android:layout_height="wrap_content">
     <com.tokopedia.unifycomponents.ImageUnify
-        android:layout_marginTop="13dp"
         android:id="@+id/image"
-        android:layout_width="@dimen/dp_145"
-        android:layout_height="@dimen/dp_145"
+        android:layout_width="144dp"
+        android:layout_height="144dp"
         android:scaleType="fitCenter"
         android:contentDescription="@string/desc_img_option"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
     <ImageView
-        android:layout_marginTop="13dp"
         android:id="@+id/border_view"
-        android:layout_width="@dimen/dp_145"
-        android:layout_height="@dimen/dp_145"
+        android:layout_width="144dp"
+        android:layout_height="144dp"
         android:src="@drawable/universal_share_border"
         android:contentDescription="@string/desc_img_border"
         app:layout_constraintLeft_toLeftOf="parent"

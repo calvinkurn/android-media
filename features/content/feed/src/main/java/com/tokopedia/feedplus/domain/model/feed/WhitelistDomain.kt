@@ -1,8 +1,9 @@
 package com.tokopedia.feedplus.domain.model.feed
 
-import com.tokopedia.feedcomponent.data.pojo.whitelist.Author
-import com.tokopedia.feedcomponent.data.pojo.whitelist.Author.Companion.TYPE_SHOP
-import com.tokopedia.feedcomponent.data.pojo.whitelist.Author.Companion.TYPE_USER
+import com.tokopedia.content.common.model.GetCheckWhitelistResponse
+import com.tokopedia.content.common.types.ContentCommonUserType.TYPE_SHOP
+import com.tokopedia.content.common.types.ContentCommonUserType.TYPE_USER
+
 
 /**
  * Created By : Jonathan Darwin on June 09, 2022
@@ -16,16 +17,23 @@ data class WhitelistDomain(
     val postSuccessMessage: String,
     val desc: String,
     val image: String,
-    val authors: List<Author>
+    val authors: List<GetCheckWhitelistResponse.Author>
 ) {
 
     val isShopAccountExists: Boolean
         get() = authors.find { it.type == TYPE_SHOP } != null
 
-    val isUserAccountPostEligible: Boolean
-        get() = authors.find{ it.type == TYPE_USER && it.post.hasAcceptTnc } != null
+    // for buyer/non-seller/ugc enable was meant for accepting tnc
+    val isBuyerAccountPostEligible: Boolean
+        get() = authors.find{ it.type == TYPE_USER && it.post.enable } != null
 
-    val userAccount: Author?
+    val isBuyerAccountExists: Boolean
+        get() = authors.find{ it.type == TYPE_USER } != null
+
+    val isShopAccountLiveEligible: Boolean
+        get() = authors.find { it.type == TYPE_SHOP && it.livestream.enable } != null
+
+    val userAccount: GetCheckWhitelistResponse.Author?
         get() = authors.find { it.type == TYPE_USER }
 
     companion object {

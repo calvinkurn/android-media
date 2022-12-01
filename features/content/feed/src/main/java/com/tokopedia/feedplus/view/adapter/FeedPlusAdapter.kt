@@ -13,6 +13,7 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopAdsHeadline
 import com.tokopedia.feedcomponent.view.viewmodel.DynamicPostUiModel
 import com.tokopedia.feedcomponent.view.viewmodel.carousel.CarouselPlayCardViewModel
 import com.tokopedia.feedcomponent.view.viewmodel.shimmer.ShimmerUiModel
+import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomWidgetModel
 import com.tokopedia.feedplus.view.adapter.typefactory.feed.FeedPlusTypeFactory
 import com.tokopedia.feedplus.view.util.EndlessScrollRecycleListener
 import com.tokopedia.feedplus.view.util.FeedDiffUtilCallback
@@ -29,6 +30,7 @@ class FeedPlusAdapter(
     private var list: MutableList<Visitable<*>> = mutableListOf()
     private val emptyModel: EmptyModel = EmptyModel()
     private val loadingMoreModel: LoadingMoreModel = LoadingMoreModel()
+
     private var unsetListener: Boolean = false
     private var recyclerView: RecyclerView? = null
 
@@ -221,6 +223,12 @@ class FeedPlusAdapter(
         diffResult.dispatchUpdatesTo(this)
     }
 
+    private fun updateListAndNotify(newList: List<Visitable<*>>, position: Int) {
+        list.clear()
+        list.addAll(newList)
+        notifyItemChanged(position)
+    }
+
     fun removePlayWidget() {
         val playCarousel = list.firstOrNull { it is CarouselPlayCardViewModel }
         if (playCarousel != null) remove(playCarousel)
@@ -232,6 +240,23 @@ class FeedPlusAdapter(
             else it
         }
         updateList(newList)
+    }
+
+    fun removeShopRecomWidget() {
+        val shopRecomWidget = list.firstOrNull { it is ShopRecomWidgetModel }
+        if (shopRecomWidget != null) remove(shopRecomWidget)
+    }
+
+    fun updateShopRecomWidget(newModel: ShopRecomWidgetModel) {
+        var position = 0
+        val newList = list.mapIndexed { index, visitable ->
+            if (visitable is ShopRecomWidgetModel) {
+                position = index
+                newModel
+            }
+            else visitable
+        }
+        updateListAndNotify(newList, position)
     }
 
     fun showShimmer() {

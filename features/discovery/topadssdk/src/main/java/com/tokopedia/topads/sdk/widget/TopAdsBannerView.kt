@@ -38,6 +38,7 @@ import com.tokopedia.topads.sdk.domain.model.*
 import com.tokopedia.topads.sdk.listener.*
 import com.tokopedia.topads.sdk.shopwidgetthreeproducts.listener.ShopWidgetAddToCartClickListener
 import com.tokopedia.topads.sdk.snaphelper.GravitySnapHelper
+import com.tokopedia.topads.sdk.utils.TopAdsSdkUtil
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.topads.sdk.view.BannerAdsContract
 import com.tokopedia.topads.sdk.view.adapter.BannerAdsAdapter
@@ -51,11 +52,16 @@ import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopUiModel
 import com.tokopedia.topads.sdk.view.adapter.viewmodel.banner.BannerShopViewMoreUiModel
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.UnifyButton
+import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.unifycomponents.toPx
+import com.tokopedia.unifyprinciples.Typography
 import kotlinx.android.synthetic.main.layout_ads_banner_digital.view.*
 import kotlinx.android.synthetic.main.layout_ads_banner_shop_a_pager.view.*
 import kotlinx.android.synthetic.main.layout_ads_banner_shop_b_pager.view.*
 import org.apache.commons.text.StringEscapeUtils
+import java.util.Calendar
+import java.util.Date
+import kotlin.collections.ArrayList
 
 /**
  * Created by errysuprayogi on 12/28/17.
@@ -80,10 +86,28 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
     private val className: String = "com.tokopedia.topads.sdk.widget.TopAdsBannerView"
     private var showProductShimmer: Boolean = false
     private var hasAddToCartButton: Boolean = false
+    private var isFlashSaleTokoLabel: Boolean = false
     private var isShowCta: Boolean = true
     var impressionCount: Int = 0
+    private var flashSaleTimerData: Date? = null
+    private var topAdsFlashSaleTimer:TimerUnifySingle? = null
+    private var linearLayoutMerchantVoucher:LinearLayout? = null
     private val topAdsUrlHitter: TopAdsUrlHitter by lazy {
         TopAdsUrlHitter(context.applicationContext)
+    }
+
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        if (isFlashSaleTokoLabel && flashSaleTimerData != null) {
+            if (Calendar.getInstance().time > flashSaleTimerData) {
+                hideFlashSaleToko()
+            } else {
+                showFlashSaleToko()
+            }
+        } else {
+            topAdsFlashSaleTimer?.hide()
+            topAdsFlashSaleTimerPrefixText.hide()
+        }
     }
 
     private var template = NO_TEMPLATE
@@ -131,6 +155,8 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
         val container = findViewById<View>(R.id.container)
         val cpmData = cpmModel?.data?.getOrNull(index)
         val shopAdsWithThreeProducts = findViewById<ShopAdsWithThreeProducts>(R.id.shopAdsWithThreeProducts)
+        linearLayoutMerchantVoucher = findViewById(R.id.linearLayoutMerchantVoucher)
+        topAdsFlashSaleTimer= findViewById(R.id.topAdsFlashSaleTimer)
 
         if (cpmData?.cpm?.layout != LAYOUT_6 && cpmData?.cpm?.layout != LAYOUT_5 && cpmData?.cpm?.layout != LAYOUT_8 && cpmData?.cpm?.layout != LAYOUT_9) {
             if (isEligible(cpmData)) {
@@ -210,6 +236,8 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
 
                     renderLabelMerchantVouchers(cpmData)
 
+                    renderFlashSaleTimer(cpmData.cpm.flashSaleCampaignDetail)
+
                     val items = ArrayList<Item<*>>()
                     items.add(
                         BannerShopUiModel(
@@ -276,6 +304,69 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
         }
 
     }
+
+    private fun hideFlashSaleToko() {
+        val topAdsFlashSaleTimerPrefixText:Typography = findViewById(R.id.topAdsFlashSaleTimerPrefixText)
+        linearLayoutMerchantVoucher?.hide()
+        topAdsFlashSaleTimer?.hide()
+        topAdsFlashSaleTimerPrefixText.hide()
+    }
+
+    private fun showFlashSaleToko() {
+        val topAdsFlashSaleTimerPrefixText:Typography = findViewById(R.id.topAdsFlashSaleTimerPrefixText)
+        linearLayoutMerchantVoucher?.show()
+        topAdsFlashSaleTimerPrefixText.show()
+        topAdsFlashSaleTimer?.show()
+    }
+
+    private fun renderFlashSaleTimer(flashSaleCampaignDetail: FlashSaleCampaignDetail) {
+        flashSaleTimerData = null
+        val startDate = TopAdsSdkUtil.parseData(flashSaleCampaignDetail.startTime)
+        val endDate = TopAdsSdkUtil.parseData(flashSaleCampaignDetail.endTime)
+        val isTimerValid = TopAdsSdkUtil.isTimerValid(startDate, endDate)
+        if (isTimerValid && endDate != null) {
+            flashSaleTimerData = endDate
+            val currentSystemTime = Calendar.getInstance().time
+            val saleTimeMillis = endDate.time - currentSystemTime.time
+            if (saleTimeMillis > Int.ZERO) {
+                val parsedCalendar: Calendar = Calendar.getInstance()
+                parsedCalendar.time = endDate
+                topAdsFlashSaleTimer?.targetDate = parsedCalendar
+                showFlashSaleToko()
+                topAdsFlashSaleTimer?.onFinish = {
+                    hideFlashSaleToko()
+                }
+            }
+
+        } else {
+            if (isFlashSaleTokoLabel) {
+                hideFlashSaleToko()
+            }
+        }
+    }
+//    fun isTimerValid(saleStartDate: String, saleEndDate: String, timerFormat: String = "yyyy-MM-dd HH:mm:ss"): Boolean {
+//        if (saleStartDate.isEmpty()) return false
+//        val currentSystemTime = Calendar.getInstance().time
+//        val startDate = parseData(saleStartDate,timerFormat)
+//        val endDate = parseData(saleEndDate,timerFormat)
+//        flashSaleTimerData = endDate
+//        return if (startDate != null && endDate != null) {
+//            currentSystemTime.time > startDate.time && currentSystemTime.time< endDate.time
+//        } else {
+//            false
+//        }
+//    }
+
+//    fun parseData(date: String?, timerFormat: String = "yyyy-MM-dd HH:mm:ss"): Date? {
+//        return date?.let {
+//            try {
+//                SimpleDateFormat(timerFormat, Locale.getDefault())
+//                    .parse(date)
+//            } catch (parseException: ParseException) {
+//                null
+//            }
+//        }
+//    }
 
     private fun setWidget(
         cpmData: CpmData,
@@ -595,17 +686,26 @@ class TopAdsBannerView : LinearLayout, BannerAdsContract.View {
 
     private fun renderLabelMerchantVouchers(cpmData: CpmData?) {
         val context = context ?: return
-        val linearLayoutMerchantVoucher = findViewById<LinearLayout?>(R.id.linearLayoutMerchantVoucher)
-                ?: return
-        val merchantVouchers = cpmData?.cpm?.cpmShop?.merchantVouchers ?: return
-
-        linearLayoutMerchantVoucher.removeAllViews()
+        val merchantVouchers = mutableListOf<String>()
+        val campaignType = cpmData?.cpm?.flashSaleCampaignDetail?.campaignType
+        val merchantVoucherList = cpmData?.cpm?.cpmShop?.merchantVouchers
+        isFlashSaleTokoLabel = false
+        if (!campaignType.isNullOrEmpty()) {
+            isFlashSaleTokoLabel = true
+            merchantVouchers.add(campaignType)
+        }else if (!merchantVoucherList.isNullOrEmpty()){
+            merchantVouchers.addAll(merchantVoucherList)
+        }else{
+            return
+        }
+        linearLayoutMerchantVoucher?.show()
+        linearLayoutMerchantVoucher?.removeAllViews()
 
         merchantVouchers.forEachIndexed { index, voucher ->
             val isFirstItem = index == 0
             val labelVoucher = createLabelVoucher(context, voucher, isFirstItem)
 
-            linearLayoutMerchantVoucher.addView(labelVoucher)
+            linearLayoutMerchantVoucher?.addView(labelVoucher)
         }
     }
 

@@ -15,6 +15,8 @@ import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.attachinvoice.domain.mapper.AttachInvoiceMapper
 import com.tokopedia.chatbot.data.invoice.AttachInvoiceSelectionUiModel
 import com.tokopedia.chatbot.data.invoice.AttachInvoiceSingleUiModel
+import com.tokopedia.chatbot.databinding.ItemCarouselInvoiceAttachBinding
+import com.tokopedia.chatbot.databinding.ItemChatInvoiceAttachSelectionBinding
 import com.tokopedia.chatbot.view.adapter.viewholder.listener.AttachedInvoiceSelectionListener
 import com.tokopedia.chatbot.view.util.InvoiceStatusLabelHelper
 import com.tokopedia.kotlin.extensions.view.hide
@@ -33,8 +35,9 @@ class AttachedInvoiceSelectionViewHolder(
     private val selectedListener: AttachedInvoiceSelectionListener
 ) :
     AbstractViewHolder<AttachInvoiceSelectionUiModel>(itemView) {
+    private val view = ItemChatInvoiceAttachSelectionBinding.bind(itemView)
     private val singleItemAdapter: AttachedInvoiceSelectionViewHolder.AttachedInvoicesItemsAdapter
-    private val invoiceSelection: RecyclerView = itemView.findViewById(R.id.attach_invoice_chat_invoice_selection)
+    private val invoiceSelection: RecyclerView = view.attachInvoiceChatInvoiceSelection
 
     init {
         singleItemAdapter = AttachedInvoicesItemsAdapter()
@@ -59,8 +62,7 @@ class AttachedInvoiceSelectionViewHolder(
         internal var list: List<AttachInvoiceSingleUiModel>? = null
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): AttachedInvoiceSingleItemViewHolder {
-            val itemView = LayoutInflater.from(parent.context)
-                .inflate(R.layout.item_carousel_invoice_attach, parent, false)
+            val itemView = ItemCarouselInvoiceAttachBinding.inflate(LayoutInflater.from(parent.context), parent, false)
             return AttachedInvoiceSingleItemViewHolder(itemView)
         }
 
@@ -90,7 +92,7 @@ class AttachedInvoiceSelectionViewHolder(
         }
     }
 
-    private inner class AttachedInvoiceSingleItemViewHolder internal constructor(itemView: View) : RecyclerView.ViewHolder(itemView) {
+    private inner class AttachedInvoiceSingleItemViewHolder internal constructor(itemView: ItemCarouselInvoiceAttachBinding) : RecyclerView.ViewHolder(itemView.root) {
 
         private val invoiceDate: TextView
         private val productName: TextView
@@ -102,14 +104,14 @@ class AttachedInvoiceSelectionViewHolder(
         val pilihButton: UnifyButton
 
         init {
-            invoiceDate = itemView.findViewById(R.id.tv_invoice_date)
-            productName = itemView.findViewById(R.id.tv_invoice_name)
-            productDesc = itemView.findViewById(R.id.tv_invoice_desc)
-            invoiceStatus = itemView.findViewById(R.id.tv_status)
-            pricePrefix = itemView.findViewById(R.id.tv_price_prefix)
-            price = itemView.findViewById(R.id.tv_price)
-            productImage = itemView.findViewById(R.id.iv_thumbnail)
-            pilihButton = itemView.findViewById(R.id.btn_pilih)
+            invoiceDate = itemView.containerAllInvoiceAttach.tvInvoiceDate
+            productName = itemView.containerAllInvoiceAttach.tvInvoiceName
+            productDesc = itemView.containerAllInvoiceAttach.tvInvoiceDesc
+            invoiceStatus = itemView.containerAllInvoiceAttach.tvStatus
+            pricePrefix = itemView.containerAllInvoiceAttach.tvPricePrefix
+            price = itemView.containerAllInvoiceAttach.tvPrice
+            productImage = itemView.containerAllInvoiceAttach.ivThumbnail
+            pilihButton = itemView.containerAllInvoiceAttach.btnPilih
         }
 
         fun bind(element: AttachInvoiceSingleUiModel) {

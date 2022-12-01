@@ -17,6 +17,7 @@ class FeedDetailViewModel @Inject constructor(private var feedDetailRepository: 
 
     private var feedDetailLiveData: MutableLiveData<FeedDetailViewState> = MutableLiveData()
     private var pagingLiveData: MutableLiveData<Boolean> = MutableLiveData()
+
     var cursor: String = ""
 
     fun getPagingLiveData(): LiveData<Boolean> {
@@ -30,11 +31,13 @@ class FeedDetailViewModel @Inject constructor(private var feedDetailRepository: 
     fun getFeedDetail(detailId: String, page: Int, shopId: String, activityId: String) {
         viewModelScope.launchCatchError(block = {
             if (page == 1) {
-                feedDetailLiveData.value = FeedDetailViewState.LoadingState(isLoading = true, loadingMore = false)
+                feedDetailLiveData.value =
+                    FeedDetailViewState.LoadingState(isLoading = true, loadingMore = false)
             } else {
-                feedDetailLiveData.value = FeedDetailViewState.LoadingState(isLoading = true, loadingMore = true)
+                feedDetailLiveData.value =
+                    FeedDetailViewState.LoadingState(isLoading = true, loadingMore = true)
             }
-            val feedQuery = feedDetailRepository.fetchFeedDetail(detailId,  cursor)
+            val feedQuery = feedDetailRepository.fetchFeedDetail(detailId, cursor)
             handleDataForFeedDetail(feedQuery, page, shopId, activityId)
         }, onError =
         {
@@ -43,7 +46,12 @@ class FeedDetailViewModel @Inject constructor(private var feedDetailRepository: 
         })
     }
 
-    private fun handleDataForFeedDetail(feedQuery: FeedXGQLResponse,page: Int,  shopId: String, activityId: String) {
+    private fun handleDataForFeedDetail(
+        feedQuery: FeedXGQLResponse,
+        page: Int,
+        shopId: String,
+        activityId: String
+    ) {
         cursor = feedQuery.data.nextCursor
         if (page == 1) {
             feedDetailLiveData.value = FeedDetailViewState.LoadingState(false, loadingMore = false)
@@ -60,9 +68,7 @@ class FeedDetailViewModel @Inject constructor(private var feedDetailRepository: 
         }
 
         feedQuery.data.let {
-
-            feedDetailLiveData.value = FeedDetailViewState.Success(it.products,
-                    it.nextCursor)
+            feedDetailLiveData.value = FeedDetailViewState.Success(it)
         }
     }
 
