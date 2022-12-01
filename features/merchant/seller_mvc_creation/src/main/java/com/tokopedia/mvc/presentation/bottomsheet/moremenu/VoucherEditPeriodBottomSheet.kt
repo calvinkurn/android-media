@@ -1,21 +1,24 @@
 package com.tokopedia.mvc.presentation.bottomsheet.moremenu
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AutoCompleteTextView
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.datepicker.LocaleUtils
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.mvc.R
 import com.tokopedia.mvc.databinding.SmvcBottomsheetEditPeriodBinding
 import com.tokopedia.mvc.di.component.DaggerMerchantVoucherCreationComponent
 import com.tokopedia.mvc.domain.entity.Voucher
 import com.tokopedia.mvc.presentation.bottomsheet.viewmodel.VoucherEditPeriodViewModel
+import com.tokopedia.mvc.util.convertUnsafeDateTime
+import com.tokopedia.mvc.util.formatTo
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import java.util.*
 import javax.inject.Inject
 
 class VoucherEditPeriodBottomSheet: BottomSheetUnify() {
@@ -24,6 +27,8 @@ class VoucherEditPeriodBottomSheet: BottomSheetUnify() {
 
     private var binding by autoClearedNullable<SmvcBottomsheetEditPeriodBinding>()
 
+    private var voucherEditCalendarBottomSheet: VoucherEditCalendarBottomSheet? = null
+
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
 
@@ -31,6 +36,12 @@ class VoucherEditPeriodBottomSheet: BottomSheetUnify() {
         ViewModelProvider(this, viewModelFactory).get(VoucherEditPeriodViewModel::class.java)
     }
 
+
+    private val locale by lazy {
+        LocaleUtils.getIDLocale()
+    }
+
+    private var startCalendar: GregorianCalendar? = null
 
     init {
         isFullpage = false
@@ -67,16 +78,28 @@ class VoucherEditPeriodBottomSheet: BottomSheetUnify() {
     private fun setUpData() {
         viewModel.setStartDate(voucher?.startTime ?: "")
         viewModel.setEndDate(voucher?.finishTime ?: "")
+        voucher?.let {
+            startCalendar = getGregorianDate(it.startTime)
+        }
     }
+
+    private fun String.convertDate(): String {
+        return this.convertUnsafeDateTime().formatTo(FULL_DAY_FORMAT, locale).toBlankOrString()
+    }
+
+    private fun getGregorianDate(date: String): GregorianCalendar {
+        return GregorianCalendar().apply {
+            time = date.convertUnsafeDateTime()
+        }
+    }
+
 
     private fun initObservers() {
         viewModel.startDateLiveData.observe(viewLifecycleOwner) {
-            Log.d("FATAL", "initObservers: start $it")
-            binding?.edtMvcStartDate?.setPlaceholder(it)
+            binding?.edtMvcStartDate?.setPlaceholder(it.convertDate())
         }
         viewModel.endDateLiveData.observe(viewLifecycleOwner) {
-            Log.d("FATAL", "initObservers: end $it")
-            binding?.edtMvcEndDate?.setPlaceholder(it)
+            binding?.edtMvcEndDate?.setPlaceholder(it.convertDate())
         }
     }
 
@@ -87,7 +110,8 @@ class VoucherEditPeriodBottomSheet: BottomSheetUnify() {
                 edtMvcStartDate.run {
                     editText.run {
                         setOnClickListener {
-
+                            voucherEditCalendarBottomSheet = VoucherEditCalendarBottomSheet.newInstance()
+                            voucherEditCalendarBottomSheet?.show(childFragmentManager, "")
                         }
                         labelText.text = context?.getString(R.string.edit_period_start_date).toBlankOrString()
                         disableText(this)
@@ -97,7 +121,8 @@ class VoucherEditPeriodBottomSheet: BottomSheetUnify() {
                 edtMvcEndDate.run {
                     editText.run {
                         setOnClickListener {
-
+                            voucherEditCalendarBottomSheet = VoucherEditCalendarBottomSheet.newInstance()
+                            voucherEditCalendarBottomSheet?.show(childFragmentManager, "")
                         }
                         labelText.text = context?.getString(R.string.edit_period_end_date).toBlankOrString()
                         disableText(this)
@@ -128,6 +153,7 @@ class VoucherEditPeriodBottomSheet: BottomSheetUnify() {
             }
         }
 
+        private const val FULL_DAY_FORMAT = "EEE, dd MMM yyyy, HH:mm"
     }
 
 }

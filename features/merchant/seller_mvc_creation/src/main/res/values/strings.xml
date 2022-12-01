@@ -220,5 +220,6 @@
     <string name="edit_period_start_date">Mulai</string>
     <string name="edit_period_end_date">Berakhir</string>
     <string name="edit_period_button_text">Oke</string>
+    <string name="edit_period_calender_title">Tanggal Mulai</string>
 
 </resources>
