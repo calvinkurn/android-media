@@ -22,6 +22,9 @@ class UserSessionTinkRecoveryTest {
     private lateinit var context: Context
     private lateinit var storePref: DataStorePreference
 
+    private val actual_key_set = "tkpd_master_keyset"
+
+
     @Before
     fun setup() {
         context = ApplicationProvider.getApplicationContext()
@@ -30,14 +33,13 @@ class UserSessionTinkRecoveryTest {
         }
     }
 
-
     @Test
     fun test_android_keystore_to_cleartext_migration() {
         val name = "Pak Toko"
 
         val keystoreAead = GoogleTinkExplorerLab.generateKey(
             context,
-            name = "tkpd_master_keyset",
+            name = actual_key_set,
             withKeystore = true
         )
         val userSession = UserSession(context, DataStorePreference(context), keystoreAead)
@@ -67,7 +69,7 @@ class UserSessionTinkRecoveryTest {
          * */
         val name = "Pak Toko"
 
-        val keystoreAead = GoogleTinkExplorerLab.generateKey(context, "tkpd_master_keyset")
+        val keystoreAead = GoogleTinkExplorerLab.generateKey(context, actual_key_set)
         val userSession = UserSession(context, storePref, keystoreAead)
 
         userSession.name = name
@@ -81,7 +83,7 @@ class UserSessionTinkRecoveryTest {
 
         GoogleTinkExplorerLab.delete(context)
 
-        val newKeystoreAead = GoogleTinkExplorerLab.generateKey(context, "tkpd_master_keyset")
+        val newKeystoreAead = GoogleTinkExplorerLab.generateKey(context, actual_key_set)
         val newUserSession = UserSession(context, storePref, newKeystoreAead)
         /**
          * To fix GeneralSecurityException, aead should be refreshed and datastore must be re-created
@@ -106,7 +108,7 @@ class UserSessionTinkRecoveryTest {
 
         val keystoreAead = GoogleTinkExplorerLab.generateKey(
             context,
-            name = "tkpd_master_keyset",
+            name = actual_key_set,
             withKeystore = true
         )
         val userSession = UserSession(context, DataStorePreference(context), keystoreAead)

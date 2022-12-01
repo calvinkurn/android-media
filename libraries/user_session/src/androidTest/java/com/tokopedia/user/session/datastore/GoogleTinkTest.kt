@@ -72,7 +72,7 @@ class GoogleTinkTest {
 
         val cipher = aead.simplyEncrypt("test")
 
-        context.getSharedPreferences("tkpd_master_key_preference", Context.MODE_PRIVATE).edit().clear().apply()
+        context.getSharedPreferences(GoogleTinkExplorerLab.PREFERENCE_FILE, Context.MODE_PRIVATE).edit().clear().apply()
         val newaead = GoogleTinkExplorerLab.generateKey(context, withKeystore = false)
 
         // Encrypt decrypt using new aead is normal
