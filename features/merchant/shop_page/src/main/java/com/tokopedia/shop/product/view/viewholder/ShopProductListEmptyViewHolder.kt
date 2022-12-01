@@ -5,7 +5,6 @@ import android.widget.ImageView
 import com.tokopedia.abstraction.base.view.adapter.model.EmptyModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.BaseEmptyViewHolder
 import com.tokopedia.media.loader.loadImage
-import com.tokopedia.productcard.ProductCardGridView
 import com.tokopedia.shop.R
 import com.tokopedia.shop.databinding.ShopProductListEmptyStateBinding
 import com.tokopedia.unifycomponents.UnifyButton
@@ -13,8 +12,8 @@ import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
 
 class ShopProductListEmptyViewHolder(
-        val view: View,
-        private val emptyProductOnClickListener: Callback?
+    val view: View,
+    private val emptyProductOnClickListener: Callback?
 ) : BaseEmptyViewHolder<EmptyModel>(view) {
 
     companion object {
@@ -22,7 +21,7 @@ class ShopProductListEmptyViewHolder(
         val LAYOUT = R.layout.shop_product_list_empty_state
     }
 
-    private val viewBinding : ShopProductListEmptyStateBinding? by viewBinding()
+    private val viewBinding: ShopProductListEmptyStateBinding? by viewBinding()
     private val noResultImage: ImageView? = viewBinding?.noResultImage
     private val textViewEmptyTitleText: Typography? = viewBinding?.textViewEmptyTitleText
     private val textViewEmptyContentText: Typography? = viewBinding?.textViewEmptyContentText

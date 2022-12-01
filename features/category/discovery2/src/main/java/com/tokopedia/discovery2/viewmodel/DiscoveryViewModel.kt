@@ -40,6 +40,7 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Compa
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.EMBED_CATEGORY
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.PIN_PRODUCT
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.PRODUCT_ID
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.QUERY_PARENT
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.RECOM_PRODUCT_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.SHOP_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.SOURCE
@@ -71,6 +72,7 @@ import kotlinx.coroutines.SupervisorJob
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
+
 
 private const val PINNED_COMPONENT_FAIL_STATUS = -1
 private const val IS_ADULT = 1
@@ -112,11 +114,11 @@ class DiscoveryViewModel @Inject constructor(
         get() = _miniCartRemove
     private val _miniCartRemove = SingleLiveEvent<Result<DiscoveryRemoveFromCartDataModel>>()
 
-    val miniCartOperationFailed: LiveData<Pair<Int, Int>>
+    val miniCartOperationFailed:LiveData<Pair<Int,Int>>
         get() = _miniCartOperationFailed
-    private val _miniCartOperationFailed = SingleLiveEvent<Pair<Int, Int>>()
+    private val _miniCartOperationFailed = SingleLiveEvent<Pair<Int,Int>>()
 
-    private val _scrollState = MutableLiveData<ScrollData>()
+    private val _scrollState  = MutableLiveData<ScrollData>()
     val scrollState: LiveData<ScrollData> = _scrollState
 
     var pageIdentifier: String = ""
@@ -124,7 +126,7 @@ class DiscoveryViewModel @Inject constructor(
     var pagePath: String = ""
     var campaignCode: String = ""
     var chooseAddressVisibilityLiveData = MutableLiveData<Boolean>()
-    private var bottomTabNavDataComponent: ComponentsItem? = null
+    private var bottomTabNavDataComponent : ComponentsItem?  = null
 
     @Inject
     lateinit var customTopChatUseCase: CustomTopChatUseCase
@@ -138,6 +140,7 @@ class DiscoveryViewModel @Inject constructor(
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.Main + SupervisorJob()
 
+
     fun getMiniCartItem(productId: String): MiniCartItem.MiniCartItemProduct? {
         val items = miniCartSimplifiedData?.miniCartItems.orEmpty()
         return items.getMiniCartItemProduct(productId)
@@ -146,11 +149,8 @@ class DiscoveryViewModel @Inject constructor(
     fun addProductToCart(
         discoATCRequestParams: DiscoATCRequestParams
     ) {
-        val miniCartItem = if (!discoATCRequestParams.isGeneralCartATC) {
-            getMiniCartItem(discoATCRequestParams.productId)
-        } else {
-            null
-        }
+        val miniCartItem = if (!discoATCRequestParams.isGeneralCartATC)
+            getMiniCartItem(discoATCRequestParams.productId) else null
         when {
             miniCartItem == null -> addItemToCart(
                 discoATCRequestParams
@@ -166,12 +166,13 @@ class DiscoveryViewModel @Inject constructor(
         }
     }
 
+
     private fun addItemToCart(
         discoATCRequestParams: DiscoATCRequestParams
     ) {
         val addToCartRequestParams = AddToCartUseCase.getMinimumParams(
             productId = discoATCRequestParams.productId,
-            shopId = discoATCRequestParams.shopId ?: "",
+            shopId = discoATCRequestParams.shopId?:"",
             quantity = discoATCRequestParams.quantity
         )
         addToCartUseCase.setParams(addToCartRequestParams)
@@ -189,8 +190,8 @@ class DiscoveryViewModel @Inject constructor(
     }
 
     private fun updateItemCart(
-        miniCartItem: MiniCartItem.MiniCartItemProduct,
-        discoATCRequestParams: DiscoATCRequestParams
+            miniCartItem: MiniCartItem.MiniCartItemProduct,
+            discoATCRequestParams: DiscoATCRequestParams
     ) {
         miniCartItem.quantity = discoATCRequestParams.quantity
         val updateCartRequest = UpdateCartRequest(
@@ -200,7 +201,7 @@ class DiscoveryViewModel @Inject constructor(
         )
         updateCartUseCase.setParams(
             updateCartRequestList = listOf(updateCartRequest),
-            source = UpdateCartUseCase.VALUE_SOURCE_UPDATE_QTY_NOTES
+            source = UpdateCartUseCase.VALUE_SOURCE_UPDATE_QTY_NOTES,
         )
         updateCartUseCase.execute({
             _miniCartUpdate.value = Success(
@@ -222,7 +223,7 @@ class DiscoveryViewModel @Inject constructor(
     }
 
     fun getMiniCart(shopId: List<String>, warehouseId: String?) {
-        if (!shopId.isNullOrEmpty() && warehouseId.toLongOrZero() != 0L && userSession.isLoggedIn) {
+        if(!shopId.isNullOrEmpty() && warehouseId.toLongOrZero() != 0L && userSession.isLoggedIn) {
             launchCatchError(block = {
                 getMiniCartUseCase.setParams(shopId, MiniCartSource.TokonowDiscoveryPage)
                 getMiniCartUseCase.execute({
@@ -269,39 +270,39 @@ class DiscoveryViewModel @Inject constructor(
     fun getDiscoveryData(queryParameterMap: MutableMap<String, String?>, userAddressData: LocalCacheModel?) {
         pageLoadTimePerformanceInterface?.stopPreparePagePerformanceMonitoring()
         launchCatchError(
-            block = {
-                pageLoadTimePerformanceInterface?.startNetworkRequestPerformanceMonitoring()
-                val data = discoveryDataUseCase.getDiscoveryPageDataUseCase(pageIdentifier, queryParameterMap, userAddressData)
-                pageLoadTimePerformanceInterface?.stopNetworkRequestPerformanceMonitoring()
-                pageLoadTimePerformanceInterface?.startRenderPerformanceMonitoring()
-                data.let {
-                    setDiscoveryLiveState(it.pageInfo)
-                    setPageInfo(it)
-                    withContext(Dispatchers.Default) {
-                        discoveryResponseList.postValue(Success(it.components))
-                        findCustomTopChatComponentsIfAny(it.components)
-                        findBottomTabNavDataComponentsIfAny(it.components)
-                        findAnchorTabComponentsIfAny(it.components)
+                block = {
+                    pageLoadTimePerformanceInterface?.startNetworkRequestPerformanceMonitoring()
+                    val data = discoveryDataUseCase.getDiscoveryPageDataUseCase(pageIdentifier, queryParameterMap, userAddressData)
+                    pageLoadTimePerformanceInterface?.stopNetworkRequestPerformanceMonitoring()
+                    pageLoadTimePerformanceInterface?.startRenderPerformanceMonitoring()
+                    data.let {
+                        setDiscoveryLiveState(it.pageInfo)
+                        setPageInfo(it)
+                        withContext(Dispatchers.Default) {
+                            discoveryResponseList.postValue(Success(it.components))
+                            findCustomTopChatComponentsIfAny(it.components)
+                            findBottomTabNavDataComponentsIfAny(it.components)
+                            findAnchorTabComponentsIfAny(it.components)
+                        }
                     }
+                },
+                onError = {
+                    discoveryPageInfo.value = Fail(it)
                 }
-            },
-            onError = {
-                discoveryPageInfo.value = Fail(it)
-            }
         )
     }
 
     private fun setDiscoveryLiveState(pageInfo: PageInfo) {
-        if (!pageInfo.redirectionUrl.isNullOrEmpty() && discoveryLiveStateData.value != RouteToApplink(pageInfo.redirectionUrl ?: "")) {
+        if(!pageInfo.redirectionUrl.isNullOrEmpty() && discoveryLiveStateData.value != RouteToApplink(pageInfo.redirectionUrl ?: "")){
             discoveryLiveStateData.value = RouteToApplink(pageInfo.redirectionUrl ?: "")
-        } else if (pageInfo.redirectionUrl.isNullOrEmpty() && pageInfo.isAdult == IS_ADULT && discoveryLiveStateData.value != GoToAgeRestriction(pageInfo.identifier, pageInfo.origin)) {
+        } else if(pageInfo.redirectionUrl.isNullOrEmpty() && pageInfo.isAdult == IS_ADULT && discoveryLiveStateData.value != GoToAgeRestriction(pageInfo.identifier, pageInfo.origin)){
             discoveryLiveStateData.value = GoToAgeRestriction(pageInfo.identifier, pageInfo.origin)
         }
     }
 
     private fun setPageInfo(discoPageData: DiscoveryPageData?) {
         discoPageData?.pageInfo?.let { pageInfoData ->
-            pageType = if (pageInfoData.type.isNullOrEmpty()) DISCOVERY_DEFAULT_PAGE_TYPE else pageInfoData.type
+            pageType = if(pageInfoData.type.isNullOrEmpty()) DISCOVERY_DEFAULT_PAGE_TYPE else pageInfoData.type
             pagePath = pageInfoData.path ?: ""
             chooseAddressVisibilityLiveData.value = pageInfoData.showChooseAddress
             pageInfoData.additionalInfo = discoPageData.additionalInfo
@@ -331,19 +332,19 @@ class DiscoveryViewModel @Inject constructor(
     private fun fetchTopChatMessageId(context: Context, appLinks: String, shopId: Int) {
         val queryMap: MutableMap<String, Any> = mutableMapOf("fabShopId" to shopId, "source" to "discovery")
         launchCatchError(
-            block = {
-                val customTopChatResponse = customTopChatUseCase.getCustomTopChatMessageId(queryMap)
-                customTopChatResponse?.let {
-                    it.chatExistingChat?.let { chatExistingChat ->
-                        if (chatExistingChat.messageId != 0) {
-                            RouteManager.route(context, appLinks.plus(chatExistingChat.messageId.toString()))
+                block = {
+                    val customTopChatResponse = customTopChatUseCase.getCustomTopChatMessageId(queryMap)
+                    customTopChatResponse?.let {
+                        it.chatExistingChat?.let { chatExistingChat ->
+                            if (chatExistingChat.messageId != 0) {
+                                RouteManager.route(context, appLinks.plus(chatExistingChat.messageId.toString()))
+                            }
                         }
                     }
+                },
+                onError = {
+                    it.printStackTrace()
                 }
-            },
-            onError = {
-                it.printStackTrace()
-            }
         )
     }
 
@@ -366,21 +367,22 @@ class DiscoveryViewModel @Inject constructor(
 
     fun getMapOfQueryParameter(intentUri: Uri): Map<String, String?> {
         return mapOf(
-            SOURCE to intentUri.getQueryParameter(SOURCE),
-            COMPONENT_ID to intentUri.getQueryParameter(COMPONENT_ID),
-            ACTIVE_TAB to intentUri.getQueryParameter(ACTIVE_TAB),
-            TARGET_COMP_ID to intentUri.getQueryParameter(TARGET_COMP_ID),
-            PRODUCT_ID to intentUri.getQueryParameter(PRODUCT_ID),
-            PIN_PRODUCT to intentUri.getQueryParameter(PIN_PRODUCT),
-            CATEGORY_ID to intentUri.getQueryParameter(CATEGORY_ID),
-            EMBED_CATEGORY to intentUri.getQueryParameter(EMBED_CATEGORY),
-            RECOM_PRODUCT_ID to intentUri.getQueryParameter(RECOM_PRODUCT_ID),
-            DYNAMIC_SUBTITLE to intentUri.getQueryParameter(DYNAMIC_SUBTITLE),
-            TARGET_TITLE_ID to intentUri.getQueryParameter(TARGET_TITLE_ID),
-            CAMPAIGN_ID to intentUri.getQueryParameter(CAMPAIGN_ID),
-            VARIANT_ID to intentUri.getQueryParameter(VARIANT_ID),
-            SHOP_ID to intentUri.getQueryParameter(SHOP_ID)
-        )
+                SOURCE to intentUri.getQueryParameter(SOURCE),
+                COMPONENT_ID to intentUri.getQueryParameter(COMPONENT_ID),
+                ACTIVE_TAB to intentUri.getQueryParameter(ACTIVE_TAB),
+                TARGET_COMP_ID to intentUri.getQueryParameter(TARGET_COMP_ID),
+                PRODUCT_ID to intentUri.getQueryParameter(PRODUCT_ID),
+                PIN_PRODUCT to intentUri.getQueryParameter(PIN_PRODUCT),
+                CATEGORY_ID to intentUri.getQueryParameter(CATEGORY_ID),
+                EMBED_CATEGORY to intentUri.getQueryParameter(EMBED_CATEGORY),
+                RECOM_PRODUCT_ID to intentUri.getQueryParameter(RECOM_PRODUCT_ID),
+                DYNAMIC_SUBTITLE to intentUri.getQueryParameter(DYNAMIC_SUBTITLE),
+                TARGET_TITLE_ID to intentUri.getQueryParameter(TARGET_TITLE_ID),
+                CAMPAIGN_ID to intentUri.getQueryParameter(CAMPAIGN_ID),
+                VARIANT_ID to intentUri.getQueryParameter(VARIANT_ID),
+                SHOP_ID to intentUri.getQueryParameter(SHOP_ID),
+                QUERY_PARENT to intentUri.query
+                )
     }
 
     fun scrollToPinnedComponent(listComponent: List<ComponentsItem>, pinnedComponentId: String?): Int {
@@ -394,20 +396,21 @@ class DiscoveryViewModel @Inject constructor(
 
     fun getQueryParameterMapFromBundle(bundle: Bundle?): MutableMap<String, String?> {
         return mutableMapOf(
-            SOURCE to bundle?.getString(SOURCE, ""),
-            COMPONENT_ID to bundle?.getString(COMPONENT_ID, ""),
-            ACTIVE_TAB to bundle?.getString(ACTIVE_TAB, ""),
-            TARGET_COMP_ID to bundle?.getString(TARGET_COMP_ID, ""),
-            PRODUCT_ID to bundle?.getString(PRODUCT_ID, ""),
-            PIN_PRODUCT to bundle?.getString(PIN_PRODUCT, ""),
-            CATEGORY_ID to getCategoryId(bundle),
-            EMBED_CATEGORY to bundle?.getString(EMBED_CATEGORY, ""),
-            RECOM_PRODUCT_ID to bundle?.getString(RECOM_PRODUCT_ID, ""),
-            DYNAMIC_SUBTITLE to bundle?.getString(DYNAMIC_SUBTITLE, ""),
-            TARGET_TITLE_ID to bundle?.getString(TARGET_TITLE_ID, ""),
-            CAMPAIGN_ID to bundle?.getString(CAMPAIGN_ID, ""),
-            VARIANT_ID to bundle?.getString(VARIANT_ID, ""),
-            SHOP_ID to bundle?.getString(SHOP_ID, "")
+                SOURCE to bundle?.getString(SOURCE, ""),
+                COMPONENT_ID to bundle?.getString(COMPONENT_ID, ""),
+                ACTIVE_TAB to bundle?.getString(ACTIVE_TAB, ""),
+                TARGET_COMP_ID to bundle?.getString(TARGET_COMP_ID, ""),
+                PRODUCT_ID to bundle?.getString(PRODUCT_ID, ""),
+                PIN_PRODUCT to bundle?.getString(PIN_PRODUCT, ""),
+                CATEGORY_ID to getCategoryId(bundle),
+                EMBED_CATEGORY to bundle?.getString(EMBED_CATEGORY, ""),
+                RECOM_PRODUCT_ID to bundle?.getString(RECOM_PRODUCT_ID,""),
+                DYNAMIC_SUBTITLE to bundle?.getString(DYNAMIC_SUBTITLE,""),
+                TARGET_TITLE_ID to bundle?.getString(TARGET_TITLE_ID,""),
+                CAMPAIGN_ID to bundle?.getString(CAMPAIGN_ID,""),
+                VARIANT_ID to bundle?.getString(VARIANT_ID,""),
+                SHOP_ID to bundle?.getString(SHOP_ID,""),
+                QUERY_PARENT to bundle?.getString(QUERY_PARENT,"")
         )
     }
 
@@ -454,8 +457,8 @@ class DiscoveryViewModel @Inject constructor(
         return null
     }
 
-    fun updateWishlist(productCardOptionsModel: ProductCardOptionsModel) {
-        WishListManager.onWishListUpdated(productCardOptionsModel, this.pageIdentifier)
+    fun updateWishlist(productCardOptionsModel: ProductCardOptionsModel){
+        WishListManager.onWishListUpdated(productCardOptionsModel,this.pageIdentifier)
     }
 
     fun checkAddressVisibility() = chooseAddressVisibilityLiveData
@@ -463,44 +466,43 @@ class DiscoveryViewModel @Inject constructor(
 
     fun sendCouponInjectDataForLoggedInUsers() {
         launchCatchError(
-            block = {
-                if (userSession.isLoggedIn) {
-                    discoveryInjectCouponDataUseCase.sendDiscoveryInjectCouponData()
+                block = {
+                    if (userSession.isLoggedIn) {
+                        discoveryInjectCouponDataUseCase.sendDiscoveryInjectCouponData()
+                    }
+                },
+                onError = {
+                    discoveryPageInfo.value = Fail(it)
                 }
-            },
-            onError = {
-                discoveryPageInfo.value = Fail(it)
-            }
         )
     }
 
     fun getScrollDepth(offset: Int, extent: Int, range: Int): Int {
-        return if (range > 0) SCROLL_DEPTH * (offset + extent) / range else 0
+        return if(range > 0) SCROLL_DEPTH * (offset + extent) / range else 0
     }
 
-    fun getShareUTM(data: PageInfo): String {
-        var campaignCode = if (data.campaignCode.isNullOrEmpty()) "0" else data.campaignCode
-        if (data.campaignCode != null && data.campaignCode.length > CONSTANT_11) {
+    fun getShareUTM(data:PageInfo) : String{
+        var campaignCode = if(data.campaignCode.isNullOrEmpty()) "0" else data.campaignCode
+        if(data.campaignCode != null && data.campaignCode.length > CONSTANT_11){
             campaignCode = data.campaignCode.substring(CONSTANT_0, CONSTANT_11)
         }
-        return "${data.identifier}-$campaignCode"
+        return "${data.identifier}-${campaignCode}"
     }
 
     fun updateScroll(dx: Int, dy: Int, newState: Int, userPressed: Boolean) {
-        _scrollState.value = ScrollData(dx, dy, newState, !userPressed)
+        _scrollState.value = ScrollData(dx,dy,newState,!userPressed)
     }
 
-    fun resetScroll() {
+    fun resetScroll(){
         _scrollState.value = null
     }
 
     fun checkForSamePageOpened(queryParameterMapFromBundle: MutableMap<String, String?>) {
-        if (!queryParameterMapFromBundle[RECOM_PRODUCT_ID].isNullOrEmpty()) {
+        if (!queryParameterMapFromBundle[RECOM_PRODUCT_ID].isNullOrEmpty())
             discoveryDataUseCase.getDiscoResponseIfPresent(pageIdentifier)?.queryParamMap?.let {
                 if (queryParameterMapFromBundle[RECOM_PRODUCT_ID] != it[RECOM_PRODUCT_ID]) {
                     discoveryDataUseCase.clearPage(pageIdentifier)
                 }
             }
-        }
     }
 }

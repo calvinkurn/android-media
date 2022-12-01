@@ -11,12 +11,14 @@ import com.tokopedia.filter.common.data.Option
 import com.tokopedia.remoteconfig.RemoteConfig
 import com.tokopedia.search.analytics.GeneralSearchTrackingModel
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
+import com.tokopedia.search.result.product.filter.bottomsheetfilter.BottomSheetFilterPresenter
 import com.tokopedia.search.result.product.broadmatch.BroadMatchPresenter
 import com.tokopedia.search.result.product.cpm.BannerAdsPresenter
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
 import com.tokopedia.search.result.product.pagination.Pagination
 import com.tokopedia.search.result.product.safesearch.SafeSearchPresenter
 import com.tokopedia.search.result.product.ticker.TickerPresenter
+import com.tokopedia.search.result.product.wishlist.WishlistPresenter
 import com.tokopedia.sortfilter.SortFilterItem
 import org.json.JSONArray
 
@@ -40,7 +42,6 @@ interface ProductListSectionContract {
         val lastProductItemPositionFromCache: Int
         fun updateScrollListener()
         val isAnyFilterActive: Boolean
-        fun launchLoginActivity(productId: String?)
         fun showAdultRestriction()
         fun redirectSearchToAnotherPage(applink: String?)
         fun setDefaultLayoutType(defaultView: Int)
@@ -50,13 +51,6 @@ interface ProductListSectionContract {
         fun trackScreenAuthenticated()
         fun reloadData()
         val abTestRemoteConfig: RemoteConfig?
-        fun trackWishlistRecommendationProductLoginUser(isAddWishlist: Boolean)
-        fun trackWishlistRecommendationProductNonLoginUser()
-        fun trackWishlistProduct(wishlistTrackingModel: WishlistTrackingModel)
-        fun updateWishlistStatus(productId: String?, isWishlisted: Boolean)
-        fun hitWishlistClickUrl(productCardOptionsModel: ProductCardOptionsModel)
-        fun showMessageSuccessWishlistAction(wishlistResult: ProductCardOptionsModel.WishlistResult)
-        fun showMessageFailedWishlistAction(wishlistResult: ProductCardOptionsModel.WishlistResult)
         val previousKeyword: String
         val isLandingPage: Boolean
         fun logWarning(message: String?, throwable: Throwable?)
@@ -74,11 +68,7 @@ interface ProductListSectionContract {
         fun setQuickFilter(items: List<SortFilterItem>)
         fun showOnBoarding(firstProductPosition: Int)
         fun isFilterSelected(option: Option?): Boolean
-        fun setProductCount(productCountText: String?)
         val className: String
-        fun sendTrackingOpenFilterPage()
-        fun openBottomSheetFilter(dynamicFilterModel: DynamicFilterModel?)
-        fun setDynamicFilter(dynamicFilterModel: DynamicFilterModel)
         fun redirectionStartActivity(applink: String?, url: String?)
         fun trackEventLongPress(productID: String)
         fun showProductCardOptions(productCardOptionsModel: ProductCardOptionsModel)
@@ -104,7 +94,9 @@ interface ProductListSectionContract {
         BannerAdsPresenter,
         BroadMatchPresenter,
         TickerPresenter,
-        SafeSearchPresenter {
+        SafeSearchPresenter,
+        WishlistPresenter,
+        BottomSheetFilterPresenter {
 
         fun loadMoreData(searchParameter: Map<String, Any>)
         fun loadData(searchParameter: Map<String, Any>)
@@ -113,17 +105,11 @@ interface ProductListSectionContract {
         val isUserLoggedIn: Boolean
         fun onViewCreated()
         fun onViewVisibilityChanged(isViewVisible: Boolean, isViewAdded: Boolean)
-        fun handleWishlistAction(productCardOptionsModel: ProductCardOptionsModel?)
         fun onProductImpressed(item: ProductItemDataView?, adapterPosition: Int)
         fun onProductClick(item: ProductItemDataView?, adapterPosition: Int)
         fun trackProductClick(item: ProductItemDataView)
         fun onProductAddToCart(item: ProductItemDataView)
         val quickFilterList: List<Filter>
-        fun getProductCount(mapParameter: Map<String, String>?)
-        fun openFilterPage(searchParameter: Map<String, Any>?)
-        val isBottomSheetFilterEnabled: Boolean
-        fun onBottomSheetFilterDismissed()
-        fun onApplySortFilter(mapParameter: Map<String, Any>)
         fun onInspirationCarouselProductImpressed(product: InspirationCarouselDataView.Option.Product)
         fun onInspirationCarouselProductClick(product: InspirationCarouselDataView.Option.Product)
         fun onThreeDotsClick(item: ProductItemDataView, adapterPosition: Int)

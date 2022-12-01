@@ -630,8 +630,8 @@ open class HomeRevampFragment : BaseDaggerFragment(),
                     this.add(
                         CoachMark2Item(
                             it,
-                            subscriptionBalanceCoachMark.title.parseAsHtml(),
-                            subscriptionBalanceCoachMark.description.parseAsHtml()
+                            if (subscriptionBalanceCoachMark.title.isBlank()) "" else subscriptionBalanceCoachMark.title.parseAsHtml(),
+                            if (subscriptionBalanceCoachMark.description.isBlank()) "" else subscriptionBalanceCoachMark.description.parseAsHtml()
                         )
                     )
                 }

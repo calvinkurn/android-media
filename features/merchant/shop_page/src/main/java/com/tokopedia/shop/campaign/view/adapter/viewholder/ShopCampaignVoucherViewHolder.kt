@@ -6,7 +6,6 @@ import android.text.SpannableStringBuilder
 import android.text.style.StyleSpan
 import android.view.View
 import android.widget.ImageView
-
 import androidx.annotation.LayoutRes
 import androidx.cardview.widget.CardView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -16,7 +15,6 @@ import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.mvcwidget.MvcData
 import com.tokopedia.mvcwidget.trackers.MvcSource
 import com.tokopedia.mvcwidget.views.MvcView
-
 import com.tokopedia.shop.R
 import com.tokopedia.shop.databinding.ItemShopCampaignMerchantVoucherBinding
 import com.tokopedia.shop.home.view.adapter.viewholder.ShopHomeVoucherViewHolder
@@ -31,7 +29,7 @@ import com.tokopedia.utils.view.binding.viewBinding
 
 class ShopCampaignVoucherViewHolder(
     itemView: View,
-    private val shopHomeVoucherViewHolderListener: ShopHomeVoucherViewHolder.ShopHomeVoucherViewHolderListener,
+    private val shopHomeVoucherViewHolderListener: ShopHomeVoucherViewHolder.ShopHomeVoucherViewHolderListener
 ) : AbstractViewHolder<ShopHomeVoucherUiModel>(itemView) {
 
     companion object {
@@ -71,7 +69,6 @@ class ShopCampaignVoucherViewHolder(
                 shopHomeVoucherViewHolderListener.onVoucherReloaded()
                 merchantVoucherShimmering?.show()
                 merchantVoucherReload?.hide()
-
             }
             imageReload?.setOnClickListener {
                 shopHomeVoucherViewHolderListener.onVoucherReloaded()
@@ -80,7 +77,7 @@ class ShopCampaignVoucherViewHolder(
             }
         } else {
             if (model.data != null && model.data.isShown == true) {
-                if(model.data.animatedInfoList?.size.orZero() > 1)
+                if (model.data.animatedInfoList?.size.orZero() > 1)
                     shopHomeVoucherViewHolderListener.onVoucherTokoMemberInformationImpression(model, adapterPosition)
                 else
                     shopHomeVoucherViewHolderListener.onVoucherImpression(model, adapterPosition)
@@ -90,11 +87,12 @@ class ShopCampaignVoucherViewHolder(
                 merchantVoucherUiModel = model
 
                 model.data.apply {
-                    merchantVoucherWidget?.setData(MvcData(
+                    merchantVoucherWidget?.setData(
+                        MvcData(
                             model.data.animatedInfoList
-                    ),
-                            shopId = model.data.shopId ?: "0",
-                            source = MvcSource.SHOP
+                        ),
+                        shopId = model.data.shopId ?: "0",
+                        source = MvcSource.SHOP
                     )
                 }
             }
@@ -105,10 +103,10 @@ class ShopCampaignVoucherViewHolder(
         val spannableStringBuilder = SpannableStringBuilder(getString(R.string.shop_page_reload))
         spannableStringBuilder.setSpan(StyleSpan(Typeface.BOLD), 0, getString(R.string.shop_page_reload).length, Spannable.SPAN_EXCLUSIVE_EXCLUSIVE)
         return SpannableStringBuilder()
-                .append(getString(R.string.shop_page_reload_beginning_of_description))
-                .append(" ")
-                .append(spannableStringBuilder)
-                .append(" ")
-                .append(getString(R.string.shop_page_reload_end_of_description))
+            .append(getString(R.string.shop_page_reload_beginning_of_description))
+            .append(" ")
+            .append(spannableStringBuilder)
+            .append(" ")
+            .append(getString(R.string.shop_page_reload_end_of_description))
     }
 }
