@@ -1,5 +1,6 @@
 package com.tokopedia.manageaddress.ui.manageaddress.fromfriend
 
+import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -72,7 +73,9 @@ class FromFriendFragment :
         super.onViewCreated(view, savedInstanceState)
         initArguments()
         bindView()
-        initObserver()
+        observeGetFromFriendAddressList()
+        observeSaveAddress()
+        observeDeleteAddress()
         viewModel.getFromFriendAddressList()
     }
 
@@ -122,7 +125,8 @@ class FromFriendFragment :
         }
     }
 
-    private fun initObserver() {
+    @SuppressLint("NotifyDataSetChanged")
+    private fun observeGetFromFriendAddressList() {
         viewModel.getFromFriendAddressState.observe(viewLifecycleOwner) {
             when (it) {
                 is FromFriendAddressListState.Success -> {
@@ -172,7 +176,9 @@ class FromFriendFragment :
                 }
             }
         }
+    }
 
+    private fun observeSaveAddress() {
         viewModel.saveAddressState.observe(viewLifecycleOwner) {
             when (it) {
                 is FromFriendAddressActionState.Success -> {
@@ -192,8 +198,9 @@ class FromFriendFragment :
                 }
             }
         }
+    }
 
-
+    private fun observeDeleteAddress() {
         viewModel.deleteAddressState.observe(viewLifecycleOwner) {
             when (it) {
                 is FromFriendAddressActionState.Success -> {
@@ -214,6 +221,7 @@ class FromFriendFragment :
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun refreshListAndButton() {
         binding?.cbAllAddress?.isVisible = viewModel.isHaveAddressList
         adapter.notifyDataSetChanged()
