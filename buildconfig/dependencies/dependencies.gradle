@@ -226,7 +226,7 @@ ext {
 
     analyticsDependencies = [
             installRef : "com.android.installreferrer:installreferrer:1.1",
-            branch     : "io.branch.sdk.android:library:5.0.4",
+            branch     : "io.branch.sdk.android:library:5.2.5",
     ]
 
     miscDependencies = [

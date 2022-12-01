@@ -239,8 +239,9 @@ class ProductSheetViewComponent(
         }
         val merchantVoucher = voucherList.filterIsInstance<PlayVoucherUiModel.Merchant>()
         voucherInfo.showWithCondition(merchantVoucher.isNotEmpty())
-        if (merchantVoucher.isEmpty()) return
-        voucherInfo.setupView(merchantVoucher.first(), merchantVoucher.size)
+        if (merchantVoucher.isNotEmpty()) {
+            voucherInfo.setupView(merchantVoucher.first(), merchantVoucher.size)
+        }
 
         impressionSet.clear()
         sendImpression()
@@ -284,7 +285,6 @@ class ProductSheetViewComponent(
         if (shouldShow) {
             tvSheetTitle.show()
             rvProductList.show()
-            voucherInfo.show()
 
             globalError.hide()
             clProductEmpty.hide()
@@ -407,6 +407,7 @@ class ProductSheetViewComponent(
         rvProductList.removeItemDecoration(itemDecoration)
         rvProductList.removeOnScrollListener(scrollListener)
         itemDecoration.release()
+        voucherInfo.setupListener(null)
     }
 
     companion object {

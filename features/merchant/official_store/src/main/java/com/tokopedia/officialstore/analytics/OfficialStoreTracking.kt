@@ -15,7 +15,6 @@ import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.track.builder.BaseTrackerBuilder
 import com.tokopedia.track.builder.util.BaseTrackerConst
 import com.tokopedia.track.builder.util.BaseTrackerConst.Event.CLICK_HOMEPAGE
-import com.tokopedia.track.builder.util.BaseTrackerConst.Event.PRODUCT_CLICK
 import com.tokopedia.track.builder.util.BaseTrackerConst.Event.PRODUCT_VIEW
 import com.tokopedia.track.builder.util.BaseTrackerConst.Event.PROMO_CLICK
 import com.tokopedia.track.builder.util.BaseTrackerConst.Event.PROMO_VIEW
@@ -157,7 +156,7 @@ class OfficialStoreTracking(context: Context) : BaseTrackerConst() {
             putString(TrackerId.KEY, VALUE_TRACKER_ID_CLICK_CATEGORY)
             putParcelableArrayList(Promotion.KEY, promotions)
         }
-        getTracker().sendEnhanceEcommerceEvent(PROMO_CLICK, bundle)
+        getTracker().sendEnhanceEcommerceEvent(SELECT_CONTENT, bundle)
     }
 
     // Row 2
@@ -225,7 +224,7 @@ class OfficialStoreTracking(context: Context) : BaseTrackerConst() {
             putString(TrackerId.KEY, VALUE_TRACKER_ID_CLICK_BANNER)
             putParcelableArrayList(Promotion.KEY, promotions)
         }
-        getTracker().sendEnhanceEcommerceEvent(PROMO_CLICK, bundle)
+        getTracker().sendEnhanceEcommerceEvent(SELECT_CONTENT, bundle)
     }
 
     // Row 4
@@ -347,7 +346,7 @@ class OfficialStoreTracking(context: Context) : BaseTrackerConst() {
             putString(TrackerId.KEY, VALUE_TRACKER_ID_CLICK_FEATURED_BRAND)
             putParcelableArrayList(Promotion.KEY, promotions)
         }
-        getTracker().sendEnhanceEcommerceEvent(PROMO_CLICK, bundle)
+        getTracker().sendEnhanceEcommerceEvent(SELECT_CONTENT, bundle)
     }
 
     // Row 8
@@ -457,7 +456,7 @@ class OfficialStoreTracking(context: Context) : BaseTrackerConst() {
             putString(TrackerId.KEY, VALUE_TRACKER_ID_CLICK_PDP_FLASH_SALE)
             putParcelableArrayList(Items.KEY, items)
         }
-        getTracker().sendEnhanceEcommerceEvent(PRODUCT_CLICK, bundle)
+        getTracker().sendEnhanceEcommerceEvent(SELECT_CONTENT, bundle)
     }
 
     // Row 11
@@ -522,7 +521,7 @@ class OfficialStoreTracking(context: Context) : BaseTrackerConst() {
             putString(TrackerId.KEY, VALUE_TRACKER_ID_CLICK_LEGO)
             putParcelableArrayList(Promotion.KEY, promotions)
         }
-        getTracker().sendEnhanceEcommerceEvent(PROMO_CLICK, bundle)
+        getTracker().sendEnhanceEcommerceEvent(SELECT_CONTENT, bundle)
     }
 
     // Row 13
@@ -667,7 +666,7 @@ class OfficialStoreTracking(context: Context) : BaseTrackerConst() {
             putString(TrackerId.KEY, trackerId)
             putParcelableArrayList(Items.KEY, items)
         }
-        getTracker().sendEnhanceEcommerceEvent(PRODUCT_CLICK, bundle)
+        getTracker().sendEnhanceEcommerceEvent(SELECT_CONTENT, bundle)
     }
 
     private fun formatPrice(price: String): String? {
@@ -758,7 +757,7 @@ class OfficialStoreTracking(context: Context) : BaseTrackerConst() {
             putString(TrackerId.KEY, VALUE_TRACKER_ID_CLICK_MIX_LEFT_BANNER)
             putParcelableArrayList(Promotion.KEY, promotions)
         }
-        getTracker().sendEnhanceEcommerceEvent(PROMO_CLICK, bundle)
+        getTracker().sendEnhanceEcommerceEvent(SELECT_CONTENT, bundle)
     }
 
     // Row 28

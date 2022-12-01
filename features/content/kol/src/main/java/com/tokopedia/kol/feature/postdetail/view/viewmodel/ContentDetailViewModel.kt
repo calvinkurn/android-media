@@ -5,6 +5,8 @@ import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.feedcomponent.data.feedrevamp.FeedASGCUpcomingReminderStatus
+import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCampaign
+import com.tokopedia.feedcomponent.data.feedrevamp.reversed
 import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.FeedAsgcCampaignResponseModel
 import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.FeedWidgetData
 import com.tokopedia.kol.common.util.ContentDetailResult
@@ -108,14 +110,24 @@ class ContentDetailViewModel @Inject constructor(
             _asgcReminderButtonInitialStatus.value = ContentDetailResult.Failure(it)
         }
     }
-    fun setUnsetReminder(campaignId: Long, reminderStatus: FeedASGCUpcomingReminderStatus, rowNumber: Int) {
+    fun setUnsetReminder(campaign: FeedXCampaign, rowNumber: Int) {
        launchCatchError(block = {
             val data = repository.subscribeUpcomingCampaign(
-                campaignId = campaignId,
-                reminderType = reminderStatus
+                campaignId = campaign.campaignId,
+                reminderType = campaign.reminder
             )
-            val reminderStatusRes = if (data.first) FeedASGCUpcomingReminderStatus.On(campaignId) else FeedASGCUpcomingReminderStatus.Off(campaignId)
-            _asgcReminderButtonStatus.value = ContentDetailResult.Success(FeedAsgcCampaignResponseModel(rowNumber = rowNumber, campaignId = campaignId, reminderStatus = reminderStatusRes))
+           if (data.first) {
+               val reminderStatusRes = campaign.reminder.reversed(campaign.campaignId)
+               _asgcReminderButtonStatus.value = ContentDetailResult.Success(
+                   FeedAsgcCampaignResponseModel(
+                       rowNumber = rowNumber,
+                       campaignId = campaign.campaignId,
+                       reminderStatus = reminderStatusRes
+                   )
+               )
+           } else {
+               _asgcReminderButtonStatus.value = ContentDetailResult.Failure(Throwable(data.second))
+           }
         }) {
             _asgcReminderButtonStatus.value = ContentDetailResult.Failure(it)
         }

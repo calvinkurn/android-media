@@ -85,7 +85,7 @@ object OSSpecialReleaseTracking : BaseTrackerConst() {
         val bundle = getSpecialReleaseItemClick(
             channelModel, channelGrid, position, userId, categoryName
         )
-        getTracker().sendEnhanceEcommerceEvent(PROMO_CLICK, bundle)
+        getTracker().sendEnhanceEcommerceEvent(Event.SELECT_CONTENT, bundle)
     }
 
     private fun getSpecialReleaseItemClick(channelModel: ChannelModel, channelGrid: ChannelGrid, position: Int, userId: String, categoryName: String) : Bundle {
