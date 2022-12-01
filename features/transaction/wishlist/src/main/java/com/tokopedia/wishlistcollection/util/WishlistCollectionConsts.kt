@@ -38,4 +38,12 @@ object WishlistCollectionConsts {
     const val COLLECTION_TYPE = "collection_type"
     const val COLLECTION_INDICATOR_TITLE = "collection_indicator_title"
     const val COLLECTION_ACTIONS = "collection_actions"
+
+    const val TYPE_COLLECTION_PRIVATE_SELF = 1
+    const val TYPE_COLLECTION_SHARE = 2
+    const val TYPE_COLLECTION_PUBLIC_SELF = 3
+    const val TYPE_COLLECTION_PUBLIC_OTHERS = 4
+
+    const val COLLECTION_PRIVATE = "private"
+    const val COLLECTION_PUBLIC = "public"
 }

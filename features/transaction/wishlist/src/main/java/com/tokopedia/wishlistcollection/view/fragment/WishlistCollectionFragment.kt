@@ -61,8 +61,11 @@ import com.tokopedia.wishlistcollection.di.DaggerWishlistCollectionComponent
 import com.tokopedia.wishlistcollection.di.WishlistCollectionModule
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.COLLECTION_ID
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.COLLECTION_NAME
+import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.COLLECTION_PRIVATE
+import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.COLLECTION_PUBLIC
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.DELAY_REFETCH_PROGRESS_DELETION
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.REQUEST_CODE_COLLECTION_DETAIL
+import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.TYPE_COLLECTION_SHARE
 import com.tokopedia.wishlistcollection.util.WishlistCollectionPrefs
 import com.tokopedia.wishlistcollection.util.WishlistCollectionSharingUtils
 import com.tokopedia.wishlistcollection.view.activity.WishlistCollectionEditActivity
@@ -166,7 +169,6 @@ class WishlistCollectionFragment :
         private const val COACHMARK_WISHLIST_SHARING = "coachmark-wishlist-sharing"
         private const val WISHLIST_PAGE = "wishlist page"
         private const val EDIT_WISHLIST_COLLECTION_REQUEST_CODE = 188
-        private const val TYPE_COLLECTION_SHARE = "2"
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -695,15 +697,17 @@ class WishlistCollectionFragment :
     override fun onShareCollection(
         collectionId: String,
         collectionName: String,
-        collectionType: Int,
         actionText: String,
         _collectionIndicatorTitle: String
     ) {
         _collectionIdShared = collectionId
         bottomSheetKebabMenu.dismiss()
+        var collectionType = ""
         if (_collectionIndicatorTitle.isEmpty()) {
+            collectionType = COLLECTION_PRIVATE
             showDialogSharePermission(collectionId, collectionName)
         } else {
+            collectionType = COLLECTION_PUBLIC
             collectionViewModel.getWishlistCollectionSharingData(collectionId.toLongOrZero())
         }
         WishlistCollectionAnalytics.sendClickShareButtonCollectionEvent(collectionId, collectionType, userSession.userId)
@@ -730,7 +734,7 @@ class WishlistCollectionFragment :
         val params = UpdateWishlistCollectionParams(
             id = collectionId.toLongOrZero(),
             name = collectionName,
-            access = TYPE_COLLECTION_SHARE.toLongOrZero()
+            access = TYPE_COLLECTION_SHARE.toLong()
         )
         collectionViewModel.updateAccessWishlistCollection(params)
     }

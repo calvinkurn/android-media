@@ -106,6 +106,7 @@ import com.tokopedia.wishlist.view.bottomsheet.WishlistV2CleanerBottomSheet
 import com.tokopedia.wishlist.view.bottomsheet.WishlistV2FilterBottomSheet
 import com.tokopedia.wishlist.view.bottomsheet.WishlistV2ThreeDotsMenuBottomSheet
 import com.tokopedia.wishlistcollection.analytics.WishlistCollectionAnalytics
+import com.tokopedia.wishlistcollection.analytics.WishlistCollectionAnalytics.sendClickShareButtonCollectionEvent
 import com.tokopedia.wishlistcollection.data.params.*
 import com.tokopedia.wishlistcollection.data.response.AddWishlistCollectionItemsResponse
 import com.tokopedia.wishlistcollection.data.response.GetWishlistCollectionItemsResponse
@@ -123,7 +124,12 @@ import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.SOURCE_COL
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.SRC_WISHLIST_COLLECTION
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.SRC_WISHLIST_COLLECTION_BULK_ADD
 import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.SRC_WISHLIST_COLLECTION_SHARING
+import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.TYPE_COLLECTION_PRIVATE_SELF
+import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.TYPE_COLLECTION_PUBLIC_OTHERS
+import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.TYPE_COLLECTION_PUBLIC_SELF
+import com.tokopedia.wishlistcollection.util.WishlistCollectionConsts.TYPE_COLLECTION_SHARE
 import com.tokopedia.wishlistcollection.util.WishlistCollectionSharingUtils
+import com.tokopedia.wishlistcollection.util.WishlistCollectionUtils.getStringCollectionType
 import com.tokopedia.wishlistcollection.view.activity.WishlistCollectionDetailActivity
 import com.tokopedia.wishlistcollection.view.activity.WishlistCollectionEditActivity
 import com.tokopedia.wishlistcollection.view.adapter.BottomSheetWishlistCollectionAdapter
@@ -308,10 +314,6 @@ class WishlistCollectionDetailFragment :
         private const val OPTION_CLEANER_AUTOMATIC = "otomatis"
         private const val TOTAL_LOADER = 5
         private const val COLLECTION_ITEMS_EMPTY = "COLLECTION_ITEMS_EMPTY"
-        private const val TYPE_COLLECTION_PRIVATE_SELF = 1
-        private const val TYPE_COLLECTION_SHARE = "2"
-        private const val TYPE_COLLECTION_PUBLIC_SELF = 3
-        private const val TYPE_COLLECTION_PUBLIC_OTHERS = 4
         private const val EDIT_WISHLIST_COLLECTION_REQUEST_CODE = 1888
         private const val COACHMARK_WISHLIST_SHARING_ICON_DETAIL_PAGE = "coachmark-wishlist-sharing-icon-detail-page"
         private const val CHECK_COLLECTION_TYPE_FOR_SHOWING_PILIH_BARANG = 1
@@ -854,6 +856,7 @@ class WishlistCollectionDetailFragment :
         wishlistCollectionDetailViewModel.collectionType.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Success -> {
+                    collectionType = result.data.collectionType
                     if (result.data.collectionType == TYPE_COLLECTION_PUBLIC_OTHERS) {
                         when (_currCheckCollectionType) {
                             CHECK_COLLECTION_TYPE_FOR_SHOWING_PILIH_BARANG -> {
@@ -1253,6 +1256,7 @@ class WishlistCollectionDetailFragment :
     }
 
     private fun handleCollectionSharing() {
+        sendClickShareButtonCollectionEvent(collectionId, collectionType.getStringCollectionType(), userSession.userId)
         if (collectionType == TYPE_COLLECTION_PRIVATE_SELF) {
             showDialogSharePermission()
         } else {
@@ -1296,7 +1300,7 @@ class WishlistCollectionDetailFragment :
         val params = UpdateWishlistCollectionParams(
             id = collectionId.toLongOrZero(),
             name = collectionName,
-            access = TYPE_COLLECTION_SHARE.toLongOrZero()
+            access = TYPE_COLLECTION_SHARE.toLong()
         )
         wishlistCollectionDetailViewModel.updateAccessWishlistCollection(params)
     }
@@ -3589,7 +3593,6 @@ class WishlistCollectionDetailFragment :
     override fun onShareCollection(
         collectionId: String,
         collectionName: String,
-        collectionType: Int,
         actionText: String,
         _collectionIndicatorTitle: String
     ) {

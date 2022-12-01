@@ -71,7 +71,7 @@ class WishlistCollectionSharingUtils() {
                                     shareString
                                 )
                                 collectionShareBottomSheet?.dismiss()
-                                WishlistCollectionAnalytics.sendClickSharingChannelCollectionEvent(shareModel.socialMediaName ?: shareModel.platform, data.collection.id, data.collection.access, userId)
+                                WishlistCollectionAnalytics.sendClickSharingChannelCollectionEvent(shareModel.socialMediaName ?: shareModel.platform, data.collection.id, userId)
                             }
 
                             override fun onError(linkerError: LinkerError?) {
@@ -91,7 +91,7 @@ class WishlistCollectionSharingUtils() {
             }
 
             override fun onCloseOptionClicked() {
-                WishlistCollectionAnalytics.sendClickCloseShareButtonCollectionEvent(data.collection.id, data.collection.access, userId)
+                WishlistCollectionAnalytics.sendClickCloseShareButtonCollectionEvent(data.collection.id, userId)
             }
         }
         collectionShareBottomSheet = UniversalShareBottomSheet.createInstance().apply {
@@ -107,7 +107,7 @@ class WishlistCollectionSharingUtils() {
             )
         }
         collectionShareBottomSheet?.show(childFragmentManager, fragment)
-        WishlistCollectionAnalytics.sendViewOnSharingChannelCollectionEvent(data.collection.id, data.collection.access, userId)
+        WishlistCollectionAnalytics.sendViewOnSharingChannelCollectionEvent(data.collection.id, userId)
     }
 
     fun mapParamImageGenerator(data: GetWishlistCollectionSharingDataResponse.GetWishlistCollectionSharingData.Data): WishlistCollectionParamModel {
