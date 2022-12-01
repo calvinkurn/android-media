@@ -1661,7 +1661,7 @@ class TokoNowHomeFragment: Fragment(),
                 HomeRemoveAbleWidget(SHARING_EDUCATION, SharedPreferencesUtil.isSharingEducationRemoved(activity)),
                 HomeRemoveAbleWidget(MAIN_QUEST, SharedPreferencesUtil.isQuestAllClaimedRemoved(activity))
             )
-            viewModelTokoNow.onScrollTokoMartHome(lastVisibleItemIndex, it, removeAbleWidgets)
+            viewModelTokoNow.onScroll(lastVisibleItemIndex, it, removeAbleWidgets)
         }
     }
 

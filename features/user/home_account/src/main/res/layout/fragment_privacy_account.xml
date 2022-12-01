@@ -12,28 +12,83 @@
         android:layout_height="wrap_content">
 
         <include
+            android:id="@+id/inc_loader_data_usage"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            layout="@layout/item_privacy_account_loader"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.tokopedia.unifycomponents.selectioncontrol.SwitchUnify
+            android:id="@+id/switch_permission_data_usage"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/txt_header_consent_social_network"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/opt_header"
+            app:typographyType="display_2"
+            app:typographyWeight="bold"
+            android:layout_marginTop="16dp"
+            android:layout_marginHorizontal="16dp"
+            app:layout_constrainedWidth="true"
+            app:layout_constraintEnd_toStartOf="@+id/switch_permission_data_usage"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.tokopedia.unifyprinciples.Typography
+            android:id="@+id/txt_desc_consent_social_network"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:text="@string/opt_desc"
+            app:typographyType="paragraph_3"
+            android:layout_marginTop="4dp"
+            app:layout_constrainedWidth="true"
+            android:textColor="@color/Unify_NN600"
+            app:layout_constraintEnd_toEndOf="@id/txt_header_consent_social_network"
+            app:layout_constraintStart_toStartOf="@id/txt_header_consent_social_network"
+            app:layout_constraintTop_toBottomOf="@id/txt_header_consent_social_network" />
+
+        <com.tokopedia.unifycomponents.DividerUnify
+            android:id="@+id/dividerUnify"
+            android:layout_width="0dp"
+            android:layout_height="8dp"
+            android:layout_marginTop="24dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/txt_desc_consent_social_network" />
+
+        <include
             android:id="@+id/inc_loader_link_account"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
-            android:layout_marginHorizontal="@dimen/unify_space_16"
+            android:layout_marginHorizontal="16dp"
             layout="@layout/item_privacy_account_loader"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"/>
+            app:layout_constraintTop_toBottomOf="@id/dividerUnify"/>
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/txt_header_link_account"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginHorizontal="@dimen/unify_space_16"
+            android:layout_marginHorizontal="16dp"
             android:layout_marginTop="24dp"
             android:text="@string/opt_link_account_header"
             app:typographyType="display_2"
             app:typographyWeight="bold"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@id/dividerUnify" />
 
         <com.tokopedia.unifyprinciples.Typography
             android:id="@+id/txt_desc_link_account"

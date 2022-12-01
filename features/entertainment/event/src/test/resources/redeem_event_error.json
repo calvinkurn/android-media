@@ -1,0 +1,14 @@
+{
+  "data": {
+    "message": "Unauthorized",
+    "code": "AU_USR_4003",
+    "status": 401,
+    "message_error": "Unauthorized"
+  },
+  "status": "OK",
+  "config": null,
+  "server_process_time": "8.071156ms",
+  "message_error": [
+    "Unauthorized"
+  ]
+}
