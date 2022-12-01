@@ -103,6 +103,7 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
         observerEPharmacyButtonData()
         observerPrescriptionError()
         observerInitiateConsultation()
+        observerConsultationDetails()
     }
 
     private fun initViews(view: View) {
@@ -184,6 +185,14 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
         }
     }
 
+    private fun observerConsultationDetails() {
+        ePharmacyPrescriptionAttachmentViewModel.consultationDetails.observe(viewLifecycleOwner) { consultationDetails ->
+            consultationDetails.epharmacyConsultationDetailsData?.consultationData?.prescription?.firstOrNull()?.documentUrl?.let { url ->
+                RouteManager.route(activity, "${WEB_LINK_PREFIX}$url")
+            }
+        }
+    }
+
     private fun observerEPharmacyButtonData() {
         ePharmacyPrescriptionAttachmentViewModel.buttonLiveData.observe(viewLifecycleOwner) { papCTA ->
             ePharmacyDoneButton?.show()
@@ -215,7 +224,9 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
                 presentReminderScreen(
                     initiateConsultationData.consultationSource?.operatingSchedule?.daily?.openTime,
                     initiateConsultationData.consultationSource?.operatingSchedule?.daily?.closeTime,
-                    initiateConsultationData.consultationSource?.id
+                    initiateConsultationData.consultationSource?.id,
+                    "",
+                    ""
                 )
             } else {
                 activity?.let { safeContext ->
@@ -286,7 +297,9 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
                     presentReminderScreen(
                         component.consultationSource?.operatingSchedule?.daily?.openTime,
                         component.consultationSource?.operatingSchedule?.daily?.closeTime,
-                        component.consultationSource?.id
+                        component.consultationSource?.id,
+                        "",
+                        ""
                     )
                 }
             }
@@ -294,13 +307,23 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
         updateUi()
     }
 
-    private fun presentReminderScreen(openTime: String?, closeTime: String?, consultationId: String?) {
-        EPharmacyReminderScreenBottomSheet.newInstance(
-            openTime,
-            closeTime,
-            TYPE_DOCTOR_NOT_AVAILABLE_REMINDER,
-            consultationId
-        ).show(childFragmentManager, EPharmacyReminderScreenBottomSheet::class.simpleName)
+    private fun presentReminderScreen(
+        openTime: String?,
+        closeTime: String?,
+        consultationId: String?,
+        groupId: String?,
+        enablerName: String?
+    ) {
+        if (!openTime.isNullOrBlank() && !closeTime.isNullOrBlank() && !consultationId.isNullOrBlank()) {
+            EPharmacyReminderScreenBottomSheet.newInstance(
+                openTime,
+                closeTime,
+                TYPE_DOCTOR_NOT_AVAILABLE_REMINDER,
+                consultationId,
+                groupId,
+                enablerName
+            ).show(childFragmentManager, EPharmacyReminderScreenBottomSheet::class.simpleName)
+        }
     }
 
     private fun updateUi() {

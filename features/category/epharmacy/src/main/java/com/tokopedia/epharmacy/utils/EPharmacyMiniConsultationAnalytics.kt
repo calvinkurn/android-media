@@ -3,7 +3,7 @@ package com.tokopedia.epharmacy.utils
 import com.tokopedia.track.builder.Tracker
 
 object EPharmacyMiniConsultationAnalytics {
-    private fun userViewAttachPrescriptionPage(isLoggedIn : Boolean, userId : String, totalShop: String, epGroupId: String) {
+    private fun userViewAttachPrescriptionPage(isLoggedIn: Boolean, userId: String, totalShop: String, epGroupId: String) {
         Tracker.Builder()
             .setEvent(EventKeys.OPEN_SCREEN)
             .setCustomProperty(EventKeys.TRACKER_ID, TrackerId.OPEN_SCREEN_ID_ATTACH)
@@ -38,8 +38,8 @@ object EPharmacyMiniConsultationAnalytics {
     }
 
     private fun viewMiniConsultationPage(
-        isLoggedIn : Boolean,
-        userId : String,
+        isLoggedIn: Boolean,
+        userId: String,
         enablerName: String,
         ePharmacyGroupId: String,
         consultationId: String
@@ -116,6 +116,40 @@ object EPharmacyMiniConsultationAnalytics {
             .setEventCategory(CategoryKeys.ATTACH_PRESCRIPTION_PAGE)
             .setEventLabel("$consultationId - $enablerName - $approvalReason - $ePharmacyGroupId - $prescriptionId")
             .setCustomProperty(EventKeys.TRACKER_ID, TrackerId.ATTACH_PRESCRIPTION_BUTTON)
+            .setBusinessUnit(EventKeys.BUSINESS_UNIT_VALUE)
+            .setCurrentSite(EventKeys.CURRENT_SITE_VALUE)
+            .build()
+            .send()
+    }
+
+    fun viewNoDoctorScreen(
+        groupId: String,
+        enablerName: String,
+        insideOrOutside: String
+    ) {
+        Tracker.Builder()
+            .setEvent(EventKeys.VIEW_PG_IRIS)
+            .setEventAction(ActionKeys.VIEW_NO_DOCTOR_PAGE)
+            .setEventCategory(CategoryKeys.ATTACH_PRESCRIPTION_PAGE)
+            .setEventLabel("$groupId - $enablerName - $insideOrOutside")
+            .setCustomProperty(EventKeys.TRACKER_ID, TrackerId.VIEW_NO_DOCTOR)
+            .setBusinessUnit(EventKeys.BUSINESS_UNIT_VALUE)
+            .setCurrentSite(EventKeys.CURRENT_SITE_VALUE)
+            .build()
+            .send()
+    }
+
+    fun clickIngatkanSaya(
+        groupId: String,
+        enablerName: String,
+        insideOrOutside: String
+    ) {
+        Tracker.Builder()
+            .setEvent(EventKeys.CLICK_PG)
+            .setEventAction(ActionKeys.CLICK_INGATKAN_SAYA)
+            .setEventCategory(CategoryKeys.ATTACH_PRESCRIPTION_PAGE)
+            .setEventLabel("$groupId - $enablerName - $insideOrOutside")
+            .setCustomProperty(EventKeys.TRACKER_ID, TrackerId.CLICK_INGATKAN_SAYA)
             .setBusinessUnit(EventKeys.BUSINESS_UNIT_VALUE)
             .setCurrentSite(EventKeys.CURRENT_SITE_VALUE)
             .build()

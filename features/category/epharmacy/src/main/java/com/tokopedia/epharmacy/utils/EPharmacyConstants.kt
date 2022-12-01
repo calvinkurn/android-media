@@ -12,6 +12,7 @@ const val MAX_MEDIA_ITEM = 5
 const val MEDIA_PICKER_REQUEST_CODE = 10020
 const val EPHARMACY_PRESCRIPTION_IDS = "epharmacy_prescription_ids"
 const val EPHARMACY_GROUP_ID = "epharmacy_group_id"
+const val EPHARMACY_ENABLER_NAME = "epharmacy_enabler_name"
 
 const val STATIC_INFO_COMPONENT = "static info component"
 const val PRESCRIPTION_COMPONENT = "prescription component"

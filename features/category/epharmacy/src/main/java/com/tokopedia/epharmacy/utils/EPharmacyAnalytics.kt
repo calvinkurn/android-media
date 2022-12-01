@@ -37,6 +37,15 @@ interface ActionKeys {
         const val CLICK_UPLOAD_RESEP_DOKTER = "click upload resep dokter"
         const val CLICK_CHAT_DOKTER = "click chat dokter"
         const val CLICK_LANJUT_KE_PENGIRIMAN = "click lanjut ke pengiriman"
+        const val VIEW_NO_DOCTOR_PAGE = "view no doctor page"
+        const val CLICK_INGATKAN_SAYA = "click ingatkan saya in error page"
+    }
+}
+
+interface LabelKeys {
+    companion object {
+        const val IN_WORKING_HOURS = "in working hours"
+        const val OUTSIDE_WORKING_HOURS = "outside working hours"
     }
 }
 
@@ -55,5 +64,7 @@ interface TrackerId {
         const val ATTACH_PRESCRIPTION_RESULT = "37742"
         const val CLICK_UPLOAD_RESEP_DOKTER = "37745"
         const val CLICK_CHAT_DOKTER = "37745"
+        const val VIEW_NO_DOCTOR = "37747"
+        const val CLICK_INGATKAN_SAYA = "37748"
     }
 }

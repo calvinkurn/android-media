@@ -1,0 +1,99 @@
+package com.tokopedia.epharmacy
+
+import androidx.arch.core.executor.testing.InstantTaskExecutorRule
+import com.tokopedia.epharmacy.network.request.EPharmacyReminderScreenParam
+import com.tokopedia.epharmacy.network.response.EPharmacyHeader
+import com.tokopedia.epharmacy.network.response.EPharmacyReminderScreenResponse
+import com.tokopedia.epharmacy.usecase.*
+import com.tokopedia.epharmacy.viewmodel.EPharmacyReminderBsViewModel
+import com.tokopedia.usecase.coroutines.Fail
+import io.mockk.coEvery
+import io.mockk.mockk
+import junit.framework.TestCase
+import kotlinx.coroutines.ExperimentalCoroutinesApi
+import kotlinx.coroutines.test.TestCoroutineDispatcher
+import org.junit.Before
+import org.junit.Rule
+import org.junit.Test
+import java.lang.Exception
+
+@ExperimentalCoroutinesApi
+class EPharmacyReminderBsViewModelTest {
+
+    @get:Rule
+    val instantTaskExecutorRule = InstantTaskExecutorRule()
+    private val ePharmacyReminderScreenUseCase = mockk<EPharmacyReminderScreenUseCase>(relaxed = true)
+
+    private val dispatcherBackground = TestCoroutineDispatcher()
+    private lateinit var viewModel: EPharmacyReminderBsViewModel
+
+    @Before
+    fun setUp() {
+        viewModel = EPharmacyReminderBsViewModel(
+            ePharmacyReminderScreenUseCase,
+            dispatcherBackground
+        )
+    }
+
+    /**************************** test for getEPharmacyMiniConsultationDetail() *******************************************/
+    @Test
+    fun `test for getEPharmacyMiniConsultationDetail when response is not null`() {
+        val params = EPharmacyReminderScreenParam(
+            input = EPharmacyReminderScreenParam.Input(
+                reminderType = 1,
+                EPharmacyReminderScreenParam.Input.EpharmacyConsultationInfoParams(
+                    consultationSourceId = "89737"
+                )
+            )
+        )
+        val headerData = mockk<EPharmacyHeader>()
+        val screenData = EPharmacyReminderScreenResponse.SubmitEpharmacyUserReminderData.ReminderScreenData(true, "")
+        val responseData = EPharmacyReminderScreenResponse.SubmitEpharmacyUserReminderData(headerData, screenData)
+        coEvery {
+            ePharmacyReminderScreenUseCase(params)
+        } returns responseData
+
+        viewModel.setForReminder(params)
+
+        TestCase.assertEquals(viewModel.reminderLiveData.value != null, true)
+    }
+
+    @Test
+    fun `test for getEPharmacyMiniConsultationDetail when when response is null`() {
+        val params = EPharmacyReminderScreenParam(
+            input = EPharmacyReminderScreenParam.Input(
+                reminderType = 1,
+                EPharmacyReminderScreenParam.Input.EpharmacyConsultationInfoParams(
+                    consultationSourceId = "89737"
+                )
+            )
+        )
+        val responseData = EPharmacyReminderScreenResponse.SubmitEpharmacyUserReminderData(null, null)
+        coEvery {
+            ePharmacyReminderScreenUseCase(params)
+        } returns responseData
+
+        viewModel.setForReminder(params)
+
+        TestCase.assertEquals(viewModel.reminderLiveData.value is Fail, true)
+    }
+
+    @Test
+    fun `test for getEPharmacyMiniConsultationDetail when when throws error`() {
+        val params = EPharmacyReminderScreenParam(
+            input = EPharmacyReminderScreenParam.Input(
+                reminderType = 1,
+                EPharmacyReminderScreenParam.Input.EpharmacyConsultationInfoParams(
+                    consultationSourceId = "89737"
+                )
+            )
+        )
+        coEvery {
+            ePharmacyReminderScreenUseCase(params)
+        } throws Exception()
+
+        viewModel.setForReminder(params)
+
+        TestCase.assertEquals(viewModel.reminderLiveData.value is Fail, true)
+    }
+}

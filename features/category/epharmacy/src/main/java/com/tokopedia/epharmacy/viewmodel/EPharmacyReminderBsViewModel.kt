@@ -15,7 +15,7 @@ import kotlinx.coroutines.CoroutineDispatcher
 import javax.inject.Inject
 
 class EPharmacyReminderBsViewModel @Inject constructor(
-    private val getEpharmcyReminderScreenUseCase: EPharmacyReminderScreenUseCase,
+    private val getEPharmacyReminderScreenUseCase: EPharmacyReminderScreenUseCase,
     @CoroutineBackgroundDispatcher private val dispatcherBackground: CoroutineDispatcher
 ) : BaseViewModel(dispatcherBackground) {
 
@@ -24,7 +24,7 @@ class EPharmacyReminderBsViewModel @Inject constructor(
 
     fun setForReminder(params: EPharmacyReminderScreenParam) {
         launchCatchError(block = {
-            val result = getEpharmcyReminderScreenUseCase(params)
+            val result = getEPharmacyReminderScreenUseCase(params)
             if (result.data?.isSuccess != null) {
                 _reminderLiveData.postValue(Success(result))
             } else {

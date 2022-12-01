@@ -10,6 +10,7 @@ import com.tokopedia.epharmacy.component.model.EPharmacyDataModel
 import com.tokopedia.epharmacy.component.model.EPharmacyTickerDataModel
 import com.tokopedia.epharmacy.di.qualifier.CoroutineBackgroundDispatcher
 import com.tokopedia.epharmacy.network.params.InitiateConsultationParam
+import com.tokopedia.epharmacy.network.response.EPharmacyConsultationDetails
 import com.tokopedia.epharmacy.network.response.EPharmacyConsultationDetailsResponse
 import com.tokopedia.epharmacy.network.response.EPharmacyInitiateConsultationResponse
 import com.tokopedia.epharmacy.network.response.InitiateConsultation
@@ -40,6 +41,9 @@ class EPharmacyPrescriptionAttachmentViewModel @Inject constructor(
 
     private val _uploadError = MutableLiveData<EPharmacyUploadError>()
     val uploadError: LiveData<EPharmacyUploadError> = _uploadError
+
+    private val _consultationDetails = MutableLiveData<EPharmacyConsultationDetails>()
+    val consultationDetails: LiveData<EPharmacyConsultationDetails> = _consultationDetails
 
     var ePharmacyPrepareProductsGroupResponseData: EPharmacyPrepareProductsGroupResponse ? = null
 
@@ -82,32 +86,28 @@ class EPharmacyPrescriptionAttachmentViewModel @Inject constructor(
         }
     }
 
-    private fun onSuccessInitiateConsultation(response : EPharmacyInitiateConsultationResponse) {
+    private fun onSuccessInitiateConsultation(response: EPharmacyInitiateConsultationResponse) {
         response.getInitiateConsultation?.let { data ->
-            if(data.initiateConsultationData?.tokoConsultationId?.isNotBlank() == true){
+            if (data.initiateConsultationData?.tokoConsultationId?.isNotBlank() == true) {
                 _initiateConsultation.postValue(Success(data.initiateConsultationData))
-            }else {
+            } else {
                 onFailInitiateConsultation(IllegalStateException("Data invalid"))
             }
         }
     }
 
-    private fun onSuccessGetConsultationDetails(response : EPharmacyConsultationDetailsResponse) {
+    private fun onSuccessGetConsultationDetails(response: EPharmacyConsultationDetailsResponse) {
         response.getEpharmacyConsultationDetails?.let { data ->
-//            if(data.initiateConsultationData?.tokoConsultationId?.isNotBlank() == true){
-//                _initiateConsultation.postValue(Success(data.initiateConsultationData))
-//            }else {
-//                onFailInitiateConsultation(IllegalStateException("Data invalid"))
-//            }
+            _consultationDetails.value = data
         }
     }
 
     private fun showToastData(toaster: EPharmacyPrepareProductsGroupResponse.EPharmacyToaster?) {
         toaster?.message?.let { message ->
-            if(PRESCRIPTION_ATTACH_SUCCESS == toaster.type){
-                _uploadError.value = EPharmacyMiniConsultationToaster(false ,message)
-            }else {
-                _uploadError.value = EPharmacyMiniConsultationToaster(true ,message)
+            if (PRESCRIPTION_ATTACH_SUCCESS == toaster.type) {
+                _uploadError.value = EPharmacyMiniConsultationToaster(false, message)
+            } else {
+                _uploadError.value = EPharmacyMiniConsultationToaster(true, message)
             }
         }
     }
