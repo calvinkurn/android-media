@@ -92,6 +92,7 @@ class PrivacyPolicySectionBottomSheet : BottomSheetUnify(), PrivacyPolicyAdapter
         }
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     private fun onSuccessGetPrivacyPolicyAllList(data: List<PrivacyPolicyDataModel>) {
         viewBinding?.apply {
             listPrivacyPolicy.show()
