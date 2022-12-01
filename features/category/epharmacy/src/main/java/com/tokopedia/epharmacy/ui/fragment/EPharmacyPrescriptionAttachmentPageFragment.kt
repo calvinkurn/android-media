@@ -187,10 +187,20 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
 
     private fun observerConsultationDetails() {
         ePharmacyPrescriptionAttachmentViewModel.consultationDetails.observe(viewLifecycleOwner) { consultationDetails ->
-            consultationDetails.epharmacyConsultationDetailsData?.consultationData?.prescription?.firstOrNull()?.documentUrl?.let { url ->
-                RouteManager.route(activity, "${WEB_LINK_PREFIX}$url")
+            when (consultationDetails) {
+                is Success -> {
+                    consultationDetails.data.epharmacyConsultationDetailsData?.consultationData?.prescription?.firstOrNull()?.documentUrl?.let { url ->
+                        RouteManager.route(activity, "${WEB_LINK_PREFIX}$url")
+                    }
+                }
+                is Fail -> {
+                    onFailGetConsultationDetails(consultationDetails.throwable)
+                }
             }
         }
+    }
+
+    private fun onFailGetConsultationDetails(throwable: Throwable) {
     }
 
     private fun observerEPharmacyButtonData() {

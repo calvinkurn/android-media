@@ -42,8 +42,8 @@ class EPharmacyPrescriptionAttachmentViewModel @Inject constructor(
     private val _uploadError = MutableLiveData<EPharmacyUploadError>()
     val uploadError: LiveData<EPharmacyUploadError> = _uploadError
 
-    private val _consultationDetails = MutableLiveData<EPharmacyConsultationDetails>()
-    val consultationDetails: LiveData<EPharmacyConsultationDetails> = _consultationDetails
+    private val _consultationDetails = MutableLiveData<Result<EPharmacyConsultationDetails>>()
+    val consultationDetails: LiveData<Result<EPharmacyConsultationDetails>> = _consultationDetails
 
     var ePharmacyPrepareProductsGroupResponseData: EPharmacyPrepareProductsGroupResponse ? = null
 
@@ -68,7 +68,7 @@ class EPharmacyPrescriptionAttachmentViewModel @Inject constructor(
         ePharmacyGetConsultationDetailsUseCase.cancelJobs()
         ePharmacyGetConsultationDetailsUseCase.getConsultationDetails(
             ::onSuccessGetConsultationDetails,
-            ::onFailInitiateConsultation,
+            ::onFailGetConsultationDetails,
             tokoConsultationId
         )
     }
@@ -98,7 +98,7 @@ class EPharmacyPrescriptionAttachmentViewModel @Inject constructor(
 
     private fun onSuccessGetConsultationDetails(response: EPharmacyConsultationDetailsResponse) {
         response.getEpharmacyConsultationDetails?.let { data ->
-            _consultationDetails.value = data
+            _consultationDetails.value = Success(data)
         }
     }
 
@@ -162,6 +162,10 @@ class EPharmacyPrescriptionAttachmentViewModel @Inject constructor(
 
     private fun onFailInitiateConsultation(throwable: Throwable) {
         _initiateConsultation.postValue(Fail(throwable))
+    }
+
+    private fun onFailGetConsultationDetails(throwable: Throwable) {
+        _consultationDetails.postValue(Fail(throwable))
     }
 
     override fun onCleared() {
