@@ -90,7 +90,8 @@ class MerchantPageViewModel @Inject constructor(
 
     init {
         viewModelScope.launch {
-            _quantityUpdateState.debounce(UPDATE_QUANTITY_DEBOUNCE)
+            _quantityUpdateState
+                .debounce(UPDATE_QUANTITY_DEBOUNCE)
                 .flatMapConcat {
                     flow {
                         getCurrentQuantityUpdateParams().forEach {
@@ -99,8 +100,8 @@ class MerchantPageViewModel @Inject constructor(
                     }
                 }
                 .collect {
-                    updateQuantityParam.emit(it)
                     _currentProductsWithUpdatedQuantity.clear()
+                    updateQuantityParam.emit(it)
                 }
         }
     }
