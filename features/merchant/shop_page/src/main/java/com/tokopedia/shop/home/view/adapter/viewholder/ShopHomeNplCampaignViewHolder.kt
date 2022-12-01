@@ -316,7 +316,7 @@ class ShopHomeNplCampaignViewHolder(
                 }
             }
             val dateDiff = dateCampaign.getDayDiffFromTodayWithoutTrim()
-            if (dateDiff > Int.ONE) {
+            if (dateDiff >= Int.ONE) {
                 timerUnify?.gone()
                 timerMoreThanOneDay?.apply {
                     text = dateCampaign.toString(SHOP_NPL_CAMPAIGN_WIDGET_MORE_THAT_1_DAY_DATE_FORMAT)
