@@ -10,6 +10,7 @@ import com.tokopedia.homenav.base.datamodel.HomeNavExpandableDataModel
 import com.tokopedia.homenav.base.datamodel.HomeNavMenuDataModel
 import com.tokopedia.homenav.base.datamodel.HomeNavTickerDataModel
 import com.tokopedia.homenav.base.datamodel.HomeNavTitleDataModel
+import com.tokopedia.homenav.base.diffutil.HomeNavVisitable
 import com.tokopedia.homenav.common.util.ClientMenuGenerator
 import com.tokopedia.homenav.mainnav.MainNavConst
 import com.tokopedia.homenav.mainnav.data.pojo.shop.ShopData
@@ -1023,9 +1024,9 @@ class TestMainNavViewModel {
         viewModel.setIsMePageUsingRollenceVariant(MOCK_IS_ME_PAGE_ROLLENCE_ENABLE)
 
         Assert.assertNotNull(viewModel.mainNavLiveData.value)
-        val wishlistModel = viewModel.mainNavLiveData.value?.dataList?.find { it is WishlistDataModel } as WishlistDataModel?
+        val wishlistModel = viewModel.mainNavLiveData.value?.dataList?.find { it is WishlistDataModel } as? WishlistDataModel
         Assert.assertTrue(wishlistModel != null && wishlistModel.wishlist.isEmpty())
-        val favoriteShopModel = viewModel.mainNavLiveData.value?.dataList?.find { it is FavoriteShopListDataModel } as FavoriteShopListDataModel?
+        val favoriteShopModel = viewModel.mainNavLiveData.value?.dataList?.find { it is FavoriteShopListDataModel } as? FavoriteShopListDataModel
         Assert.assertTrue(favoriteShopModel != null && favoriteShopModel.favoriteShops.isEmpty())
         val transactionListModel = viewModel.mainNavLiveData.value?.dataList?.find { it is TransactionListItemDataModel } as TransactionListItemDataModel?
         Assert.assertTrue(transactionListModel != null && transactionListModel.orderListModel.orderList.isEmpty())
@@ -1873,7 +1874,11 @@ class TestMainNavViewModel {
         val getNavNotification = mockk<GetNavNotification>()
         coEvery { getNavNotification.executeOnBackground() } throws MessageErrorException()
         viewModel = createViewModel(getNavNotification = getNavNotification)
-        viewModel.getMainNavData(true)
+        viewModel.setIsMePageUsingRollenceVariant(MOCK_IS_ME_PAGE_ROLLENCE_DISABLE)
+
+        val visitableList = viewModel.mainNavLiveData.value?.dataList
+        Assert.assertTrue((visitableList?.find { it is HomeNavVisitable && it.id() == ClientMenuGenerator.ID_COMPLAIN } as? HomeNavMenuDataModel)?.notifCount == "")
+        Assert.assertTrue((visitableList?.find { it is HomeNavVisitable && it.id() == ClientMenuGenerator.ID_TOKOPEDIA_CARE } as? HomeNavMenuDataModel)?.notifCount == "")
     }
 
     @Test
