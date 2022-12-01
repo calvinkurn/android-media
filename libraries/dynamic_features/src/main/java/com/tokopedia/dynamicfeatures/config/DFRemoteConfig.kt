@@ -22,20 +22,22 @@ class DFRemoteConfig {
                     }
                 }
             }
-            return dfConfig?: DFConfig()
+            return dfConfig ?: DFConfig()
         }
 
         /**
          * function to run SplitCompat.install(context)
          */
-        fun runSplitCompat(context: Context){
+        fun runSplitCompat(context: Context) {
             try {
                 val remoteConfig = FirebaseRemoteConfigImpl(context.applicationContext)
-                val splitCompatAfterInstall = remoteConfig.getBoolean(ANDROID_SPLIT_COMPAT_AFTER_INSTALL, true)
+                val splitCompatAfterInstall =
+                    remoteConfig.getBoolean(ANDROID_SPLIT_COMPAT_AFTER_INSTALL, true)
                 if (splitCompatAfterInstall) {
                     SplitCompat.install(context)
                 }
-            } catch (ignored:Exception) {}
+            } catch (ignored: Exception) {
+            }
         }
     }
 }
