@@ -8,8 +8,7 @@ import com.tokopedia.affiliate.interfaces.AffiliateEducationBannerClickInterface
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEducationBannerUiModel
 import com.tokopedia.affiliate_toko.R
 import com.tokopedia.carousel.CarouselUnify
-import com.tokopedia.user.session.UserSessionInterface
-import javax.inject.Inject
+import com.tokopedia.user.session.UserSession
 
 class AffiliateEducationBannerItemVH(
     itemView: View,
@@ -28,9 +27,6 @@ class AffiliateEducationBannerItemVH(
         setData(element)
     }
 
-    @Inject
-    lateinit var userSessionInterface: UserSessionInterface
-
     private fun setData(element: AffiliateEducationBannerUiModel?) {
         carousel.apply {
             stage.removeAllViews()
@@ -43,7 +39,11 @@ class AffiliateEducationBannerItemVH(
                 affiliateEducationBannerClickInterface?.onBannerClick(
                     element?.bannerList?.get(it)?.text?.primary?.redirectUrl.orEmpty()
                 )
-                sendEducationClickEvent(it, element?.bannerList?.get(it)?.title, element?.bannerList?.get(it)?.bannerId.toString())
+                sendEducationClickEvent(
+                    it,
+                    element?.bannerList?.get(it)?.title,
+                    element?.bannerList?.get(it)?.bannerId.toString()
+                )
             }
         }
     }
@@ -56,7 +56,7 @@ class AffiliateEducationBannerItemVH(
             bannerId,
             position,
             bannerId,
-            userSessionInterface.userId,
+            UserSession(itemView.context).userId,
             creativeName
         )
     }

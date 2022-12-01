@@ -14,8 +14,7 @@ import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEducationArticle
 import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEducationArticleUiModel
 import com.tokopedia.affiliate_toko.R
 import com.tokopedia.unifyprinciples.Typography
-import com.tokopedia.user.session.UserSessionInterface
-import javax.inject.Inject
+import com.tokopedia.user.session.UserSession
 
 class AffiliateEducationArticleRVVH(
     itemView: View,
@@ -39,9 +38,6 @@ class AffiliateEducationArticleRVVH(
         var LAYOUT = R.layout.affiliate_education_article_widget_list
     }
 
-    @Inject
-    lateinit var userSessionInterface: UserSessionInterface
-
     override fun bind(element: AffiliateEducationArticleRVUiModel?) {
         tvSeeMore.setOnClickListener {
             affiliateEducationEventArticleClickInterface?.onSeeMoreClick(
@@ -64,7 +60,7 @@ class AffiliateEducationArticleRVVH(
             AffiliateAnalytics.EventKeys.CLICK_CONTENT,
             AffiliateAnalytics.ActionKeys.CLICK_LIHAT_SEMUA_LATEST_ARTICLE_CARD,
             AffiliateAnalytics.CategoryKeys.AFFILIATE_EDUKASI_PAGE,
-            userId = userSessionInterface.userId,
+            userId = UserSession(itemView.context).userId,
             eventLabel = ""
         )
     }
