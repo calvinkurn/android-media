@@ -134,6 +134,7 @@ abstract class BaseSearchCategoryFragment:
         private const val QUERY_PARAM_SERVICE_TYPE_NOW2H = "?service_type=2h"
         private const val TOP_LIST = 0
         private const val NO_PADDING = 0
+        private const val WHILE_SCROLLING_VERTICALLY = 1
     }
 
     private var binding by autoClearedNullable<FragmentTokopedianowSearchCategoryBinding>()
@@ -472,7 +473,7 @@ abstract class BaseSearchCategoryFragment:
             dy = dy,
             headerBackgroundHeight = headerBackground?.height.orZero()
         )
-        if (recyclerView.canScrollVertically(1)) {
+        if (recyclerView.canScrollVertically(WHILE_SCROLLING_VERTICALLY)) {
             navToolbar?.showShadow(lineShadow = false)
         } else {
             navToolbar?.hideShadow(lineShadow = false)

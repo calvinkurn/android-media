@@ -198,6 +198,7 @@ class TokoNowHomeFragment: Fragment(),
         private const val ITEM_VIEW_CACHE_SIZE = 20
         private const val EXTRA_PLAY_CHANNEL_ID = "EXTRA_CHANNEL_ID"
         private const val EXTRA_PLAY_TOTAL_VIEW = "EXTRA_TOTAL_VIEW"
+        private const val WHILE_SCROLLING_VERTICALLY = 1
 
         const val CATEGORY_LEVEL_DEPTH = 1
         const val SOURCE = "tokonow"
@@ -892,7 +893,7 @@ class TokoNowHomeFragment: Fragment(),
             dy = dy,
             headerBackgroundHeight = ivHeaderBackground?.height.orZero()
         )
-        if (recyclerView.canScrollVertically(1)) {
+        if (recyclerView.canScrollVertically(WHILE_SCROLLING_VERTICALLY)) {
             navToolbar?.showShadow(lineShadow = true)
         } else {
             navToolbar?.hideShadow(lineShadow = true)
