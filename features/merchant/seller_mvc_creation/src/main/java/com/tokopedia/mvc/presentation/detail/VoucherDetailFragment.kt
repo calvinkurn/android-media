@@ -13,6 +13,8 @@ import com.tokopedia.campaign.utils.constant.DateConstant
 import com.tokopedia.campaign.utils.extension.routeToUrl
 import com.tokopedia.campaign.utils.extension.showToaster
 import com.tokopedia.campaign.utils.extension.showToasterError
+import com.tokopedia.campaign.utils.extension.startLoading
+import com.tokopedia.campaign.utils.extension.stopLoading
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kotlin.extensions.view.*
 import com.tokopedia.linker.LinkerManager
@@ -140,6 +142,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
 
     private fun observeGenerateVoucherImageResult() {
         viewModel.generateVoucherImageMetadata.observe(viewLifecycleOwner) { result ->
+            stateButtonShareBinding?.btnShare.stopLoading()
             when (result) {
                 is Success -> {
                     displayShareBottomSheet(result.data)
@@ -583,6 +586,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                 shareToBroadcastChat(data.voucherId)
             }
             btnShare.setOnClickListener {
+                stateButtonShareBinding?.btnShare.startLoading()
                 viewModel.generateVoucherImage()
             }
         }
