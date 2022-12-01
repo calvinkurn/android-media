@@ -1,6 +1,7 @@
 package com.tokopedia.cmhomewidget.domain.usecase
 
 import android.content.Context
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.cmhomewidget.domain.data.CMHomeWidgetDataResponse
 import com.tokopedia.cmhomewidget.domain.data.GetCMHomeWidgetDataGqlResponse
 import com.tokopedia.cmhomewidget.domain.query.GQL_QUERY_GET_CM_HOME_WIDGET_DATA
@@ -13,13 +14,14 @@ import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import javax.inject.Inject
 
 @GqlQuery("GetCMHomeWidgetData", GQL_QUERY_GET_CM_HOME_WIDGET_DATA)
-class GetCMHomeWidgetDataUseCase @Inject constructor(graphqlRepository: GraphqlRepository) :
-    GraphqlUseCase<GetCMHomeWidgetDataGqlResponse>(graphqlRepository) {
+class GetCMHomeWidgetDataUseCase @Inject constructor(
+    graphqlRepository: GraphqlRepository,
+    @ApplicationContext val context: Context
+) : GraphqlUseCase<GetCMHomeWidgetDataGqlResponse>(graphqlRepository) {
 
     private var previousRefreshTimeMillis = 0L
 
     fun getCMHomeWidgetData(
-        context: Context,
         onSuccess: (CMHomeWidgetDataResponse) -> Unit,
         onError: (Throwable) -> Unit,
         isForceRefresh: Boolean
@@ -37,7 +39,8 @@ class GetCMHomeWidgetDataUseCase @Inject constructor(graphqlRepository: GraphqlR
                         } else {
                             onError(Throwable())
                         }
-                    }, { error ->
+                    },
+                    { error ->
                         onError(error)
                     }
                 )
@@ -79,7 +82,7 @@ class GetCMHomeWidgetDataUseCase @Inject constructor(graphqlRepository: GraphqlR
         const val LONGITUDE = "user_longitude"
         const val LATITUDE = "user_latitude"
         const val WAREHOUSE_ID = "warehouse_ids"
-        const val REFRESH_INTERVAL_MILLIS = 60000L //60 sec
+        const val REFRESH_INTERVAL_MILLIS = 60000L // 60 sec
         const val STATUS_SUCCESS_CODE = 200
     }
 }
