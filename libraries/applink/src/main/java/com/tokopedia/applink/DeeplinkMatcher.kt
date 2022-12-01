@@ -57,7 +57,6 @@ class DeeplinkMatcher {
         add(Pattern(GT, 0, mapOf(0 to "category")) to CATEGORY)
         add(Pattern(GT, 0, mapOf(0 to "epharmacy")) to EPHARMACY)
         add(Pattern(GT, 0, mapOf(0 to "p")) to CATEGORY)
-        add(Pattern(GT, 0, mapOf(0 to "epharmacy")) to EPHARMACY)
         add(Pattern(GT, 0, mapOf(0 to "search")) to BROWSE)
         add(Pattern(EQ, 1, mapOf(0 to "hot")) to HOT_LIST)
         add(Pattern(GT, 1, mapOf(0 to "hot")) to HOT)
