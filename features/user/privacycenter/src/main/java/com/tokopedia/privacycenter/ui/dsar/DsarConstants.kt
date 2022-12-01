@@ -23,7 +23,7 @@ object DsarConstants {
     const val PAYMENT_LABEL = "<b>Informasi Pembayaran:</b><br>Daftar rekening bank, daftar kartu kredit, daftar kartu debit"
     const val TRANSACTION_LABEL = "<b>Riwayat Transaksi:</b><br>"
 
-    const val SUMMARY_ERROR = "Pilih minimal 1 data"
+    const val SUMMARY_ERROR = "Pilih jenis data yang mau di-download dulu, ya."
     const val HTML_NEW_LINE = "<br>"
 
     const val TRANSACTION_HISTORY_PREFIX = "transaction_history"
