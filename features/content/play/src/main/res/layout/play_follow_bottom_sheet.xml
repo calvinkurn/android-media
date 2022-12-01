@@ -100,7 +100,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="@dimen/unify_space_16"
         android:layout_marginBottom="@dimen/unify_space_24"
-        android:text="Follow"
+        android:text="@string/play_follow"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/tv_follow_desc"
         app:layout_constraintStart_toStartOf="@+id/tv_follow_desc"
