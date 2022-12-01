@@ -96,6 +96,7 @@ class GetLayoutUseCase(
                   dismissibleState
                   useRealtime
                 }
+                shopState
               }
             }
         """

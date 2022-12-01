@@ -6,5 +6,5 @@ package com.tokopedia.sellerhomecommon.presentation.model
 
 data class WidgetLayoutUiModel(
     val widgetList: List<BaseWidgetUiModel<*>> = emptyList(),
-    val shopState: ShopStateUiModel
+    val shopState: ShopStateUiModel = ShopStateUiModel.None
 )

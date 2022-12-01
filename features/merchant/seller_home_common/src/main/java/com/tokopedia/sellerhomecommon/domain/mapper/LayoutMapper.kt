@@ -51,7 +51,7 @@ class LayoutMapper @Inject constructor(
         response: GetLayoutResponse,
         isFromCache: Boolean
     ): WidgetLayoutUiModel {
-        val widgets = response.layout?.widget.orEmpty()
+        val widgets = response.layout.widget.orEmpty()
         if (widgets.isNotEmpty()) {
             val mappedList = ArrayList<BaseWidgetUiModel<out BaseDataUiModel>>()
             widgets.forEach {
@@ -85,7 +85,7 @@ class LayoutMapper @Inject constructor(
 
             return WidgetLayoutUiModel(
                 widgetList = mappedList,
-                shopState = getShopState(response.shopState)
+                shopState = getShopState(response.layout.shopState)
             )
         } else {
             throw EmptyLayoutException(EMPTY_WIDGET_MESSAGE)
@@ -94,10 +94,11 @@ class LayoutMapper @Inject constructor(
 
     private fun getShopState(shopState: Long): ShopStateUiModel {
         return when (shopState) {
-            ShopStateUiModel.NewRegisteredShop.stateValue -> ShopStateUiModel.NewRegisteredShop
-            ShopStateUiModel.AddedProduct.stateValue -> ShopStateUiModel.AddedProduct
-            ShopStateUiModel.ViewedProduct.stateValue -> ShopStateUiModel.ViewedProduct
-            else -> ShopStateUiModel.HasOrder
+            ShopStateUiModel.NEW_REGISTERED_SHOP -> ShopStateUiModel.NewRegisteredShop
+            ShopStateUiModel.ADDED_PRODUCT -> ShopStateUiModel.AddedProduct
+            ShopStateUiModel.VIEWED_PRODUCT -> ShopStateUiModel.ViewedProduct
+            ShopStateUiModel.HAS_ORDER -> ShopStateUiModel.HasOrder
+            else -> ShopStateUiModel.None
         }
     }
 

@@ -16,6 +16,7 @@ class SellerHomeSharedPref @Inject constructor(
     companion object {
         private const val PREF_NAME = "SellerHomeSharedPref"
         private const val KEY_NEW_SELLER_WELCOMING_DIALOG = "new_seller_welcoming_dialog_%s"
+        private const val KEY_NEW_SELLER_FIRST_ORDER_DIALOG = "new_seller_first_order_dialog_%s"
         private const val KEY_NEW_SELLER_WELCOMING_COACH_MARK = "new_seller_welcoming_coach_mark_%s"
     }
 
@@ -23,22 +24,32 @@ class SellerHomeSharedPref @Inject constructor(
         context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
     }
 
-    fun getNewSellerWelcomingDialogEligibility(userId: String): Boolean {
+    fun getWelcomingDialogEligibility(userId: String): Boolean {
         val key = String.format(KEY_NEW_SELLER_WELCOMING_DIALOG, userId)
         return sharedPref.getBoolean(key, true)
     }
 
-    fun makeNewSellerWelcomingDialogNotEligible(userId: String) {
+    fun makeWelcomingDialogNotEligible(userId: String) {
         val key = String.format(KEY_NEW_SELLER_WELCOMING_DIALOG, userId)
         sharedPref.edit().putBoolean(key, false).apply()
     }
 
-    fun getNewSellerWelcomingCoachMarkEligibility(userId: String): Boolean {
+    fun getFirstOrderDialogEligibility(userId: String): Boolean {
+        val key = String.format(KEY_NEW_SELLER_FIRST_ORDER_DIALOG, userId)
+        return sharedPref.getBoolean(key, true)
+    }
+
+    fun makeFirstOrderDialogNotEligible(userId: String) {
+        val key = String.format(KEY_NEW_SELLER_FIRST_ORDER_DIALOG, userId)
+        sharedPref.edit().putBoolean(key, false).apply()
+    }
+
+    fun getWelcomingCoachMarkEligibility(userId: String): Boolean {
         val key = String.format(KEY_NEW_SELLER_WELCOMING_COACH_MARK, userId)
         return sharedPref.getBoolean(key, true)
     }
 
-    fun makeNewSellerWelcomingCoachMarkNotEligible(userId: String) {
+    fun makeWelcomingCoachMarkNotEligible(userId: String) {
         val key = String.format(KEY_NEW_SELLER_WELCOMING_COACH_MARK, userId)
         sharedPref.edit().putBoolean(key, false).apply()
     }

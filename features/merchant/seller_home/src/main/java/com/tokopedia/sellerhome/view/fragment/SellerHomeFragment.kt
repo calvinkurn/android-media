@@ -261,8 +261,9 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     private var performanceMonitoringSellerHomePlt: HomeLayoutLoadTimeMonitoring? = null
     private var emptyState: EmptyStateUnify? = null
     private var rebateWidgetView: View? = null
+    private var navigationView: View? = null
+    private var otherMenuView: View? = null
     private var unificationWidgetTitleView: View? = null
-    private var navigationOtherMenuView: View? = null
     private var rebateCoachMark: CoachMark2? = null
     private var unificationWidgetCoachMark: CoachMark2? = null
     private var universalShareBottomSheet: UniversalShareBottomSheet? = null
@@ -393,7 +394,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
         this.menu = menu
         showNotificationBadge()
-        setNotificationCoachMarkView()
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
@@ -945,9 +945,10 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         SellerHomeTracking.sendClickWidgetPostDeleteEvent(element.dataKey)
     }
 
-    fun setNavigationOtherMenuView(view: View?) {
-        if (navigationOtherMenuView == null) {
-            navigationOtherMenuView = view
+    fun setNavigationNavigationView(navigationView: View?, otherMenuView: View?) {
+        lifecycleScope.launchWhenResumed {
+            this@SellerHomeFragment.navigationView = navigationView
+            this@SellerHomeFragment.otherMenuView = otherMenuView
         }
     }
 
@@ -967,12 +968,6 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     fun setNotifCenterCounter(count: Int) {
         this.notifCenterCount = count
         showNotificationBadge()
-    }
-
-    private fun setNotificationCoachMarkView() {
-        menu?.findItem(NOTIFICATION_MENU_ID)?.actionView?.let {
-            newSellerJourneyHelper.setNotificationView(it)
-        }
     }
 
     private fun getWidgetLayout() {
@@ -1472,8 +1467,8 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 is Success -> {
                     stopLayoutCustomMetric(result.data.widgetList)
                     setOnSuccessGetLayout(result.data.widgetList)
-                    setupShopState(result.data.shopState)
                     startWidgetSse()
+                    setupShopState(result.data.shopState)
                 }
                 is Fail -> {
                     stopCustomMetric(
@@ -1486,6 +1481,12 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         }
 
         setProgressBarVisibility(true)
+    }
+
+    private fun setupSectionWidgetView() {
+        recyclerView?.post {
+
+        }
     }
 
     private fun stopLayoutCustomMetric(widgets: List<BaseWidgetUiModel<*>>) {
@@ -2690,7 +2691,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     private fun showShopStatePopup(info: ShopStateInfoUiModel) {
         context?.let {
-            NewSellerDialog.showFirstOrderDialog(it, info) {
+            newSellerJourneyHelper.showFirstOrderDialog(it, info) {
                 sendShopStateDismissal(info.dataSign)
             }
         }
@@ -2718,18 +2719,46 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
             action = SubmitWidgetDismissUiModel.Action.DISMISS,
             dismissKey = NewSellerDialog.DISMISSAL_KEY,
             dismissSign = dataSign,
-            dismissObjectIDs = listOf(Int.ZERO.toString()),
+            dismissObjectIDs = listOf("942"),
             shopId = userSession.shopId,
-            isFeedbackPositive = true
+            isFeedbackPositive = true,
+            feedbackWidgetIDParent = "942"
         )
         sellerHomeViewModel.submitWidgetDismissal(param)
     }
 
     private fun setupShopState(shopState: ShopStateUiModel) {
-        when (shopState) {
-            ShopStateUiModel.NewRegisteredShop -> newSellerJourneyHelper.showNewSellerDialog()
-            else -> sellerHomeViewModel.getShopStateInfo()
+        val shouldGetShopStateInfo = shopState == ShopStateUiModel.AddedProduct ||
+                shopState == ShopStateUiModel.ViewedProduct || shopState == ShopStateUiModel.HasOrder
+        if (shopState == ShopStateUiModel.NewRegisteredShop) {
+            showNewSellerDialog()
+        } else if (shouldGetShopStateInfo) {
+            sellerHomeViewModel.getShopStateInfo()
         }
+    }
+
+    private fun showNewSellerDialog() {
+        recyclerView?.post {
+            newSellerJourneyHelper.showNewSellerDialog(
+                requireActivity(),
+                sectionWidgetAnchor = getSectionView(),
+                notificationAnchor = getNotificationView(),
+                navigationAnchor = navigationView,
+                otherMenuAnchor = otherMenuView
+            )
+        }
+    }
+
+    private fun getSectionView(): View? {
+        val firstSectionWidgetIndex = adapter.data.indexOfFirst { it is SectionWidgetUiModel }
+        if (firstSectionWidgetIndex != RecyclerView.NO_POSITION) {
+            return recyclerView?.layoutManager?.findViewByPosition(firstSectionWidgetIndex)
+        }
+        return null
+    }
+
+    private fun getNotificationView(): View? {
+        return menu?.findItem(NOTIFICATION_MENU_ID)?.actionView
     }
 
     interface Listener {

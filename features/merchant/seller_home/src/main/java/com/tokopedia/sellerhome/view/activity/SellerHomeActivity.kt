@@ -47,7 +47,6 @@ import com.tokopedia.sellerhome.analytic.performance.HomeLayoutLoadTimeMonitorin
 import com.tokopedia.sellerhome.common.DeepLinkHandler
 import com.tokopedia.sellerhome.common.FragmentType
 import com.tokopedia.sellerhome.common.PageFragment
-import com.tokopedia.sellerhome.common.appupdate.UpdateCheckerHelper
 import com.tokopedia.sellerhome.common.config.SellerHomeRemoteConfig
 import com.tokopedia.sellerhome.common.errorhandler.SellerHomeErrorHandler
 import com.tokopedia.sellerhome.databinding.ActivitySahSellerHomeBinding
@@ -384,13 +383,16 @@ open class SellerHomeActivity : BaseActivity(), SellerHomeFragment.Listener, IBo
             userSession,
             navigationHomeMenuView
         )
-        setNavigationOtherMenuView()
+        setNavigationView()
     }
 
-    private fun setNavigationOtherMenuView() {
-        val navigationOtherMenuView =
-            binding?.sahBottomNav?.getMenuViewByIndex(NAVIGATION_OTHER_MENU_POSITION)
-        navigator?.getHomeFragment()?.setNavigationOtherMenuView(navigationOtherMenuView)
+    private fun setNavigationView() {
+        val navigationOtherMenuView = binding
+            ?.sahBottomNav?.getMenuViewByIndex(NAVIGATION_OTHER_MENU_POSITION)
+        navigator?.getHomeFragment()?.setNavigationNavigationView(
+            navigationView = binding?.sahBottomNav,
+            otherMenuView = navigationOtherMenuView
+        )
     }
 
     private fun setupShadow() {

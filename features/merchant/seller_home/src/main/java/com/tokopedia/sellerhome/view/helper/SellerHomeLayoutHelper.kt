@@ -114,13 +114,13 @@ class SellerHomeLayoutHelper @Inject constructor(
      * @return  flow that emit mapped/combined widget layouts
      */
     suspend fun getInitialWidget(
-        layout: WidgetLayoutUiModel,
+        widgetList: List<BaseWidgetUiModel<*>>,
         deviceHeightDp: Float,
         isFromCache: Boolean
     ): Flow<List<BaseWidgetUiModel<out BaseDataUiModel>>> {
-        val widgetFlow = flow { emit(layout.widgetList) }
+        val widgetFlow = flow { emit(widgetList) }
         val predictedInitialWidgetFlow = getPredictedInitialWidget(
-            layout.widgetList, deviceHeightDp, isFromCache
+            widgetList, deviceHeightDp, isFromCache
         )
         return widgetFlow.combine(predictedInitialWidgetFlow) { widgetsFromFlow, initialWidgets ->
             widgetsFromFlow.map { widget ->
