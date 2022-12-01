@@ -151,7 +151,7 @@ class MainNavViewModel @Inject constructor(
     private val _profileDataLiveData: MutableLiveData<AccountHeaderDataModel> = MutableLiveData()
 
     private var allCategoriesCache = listOf<Visitable<*>>()
-    private lateinit var allCategories: HomeNavExpandableDataModel
+    private val allCategories: HomeNavExpandableDataModel by lazy { HomeNavExpandableDataModel(id = IDENTIFIER_TITLE_ALL_CATEGORIES) }
 
     private var isMePageUsingRollenceVariant: Boolean = false
 
@@ -160,31 +160,39 @@ class MainNavViewModel @Inject constructor(
     // ============================================================================================
 
     private fun updateWidget(visitable: Visitable<*>, position: Int) {
-        val newMainNavList = _mainNavListVisitable
-        newMainNavList[position] = visitable
-        _mainNavListVisitable = newMainNavList
-        _mainNavLiveData.postValue(_mainNavLiveData.value?.copy(dataList = newMainNavList.toMutableList()))
+        try {
+            val newMainNavList = _mainNavListVisitable
+            newMainNavList[position] = visitable
+            _mainNavListVisitable = newMainNavList
+            _mainNavLiveData.postValue(_mainNavLiveData.value?.copy(dataList = newMainNavList.toMutableList()))
+        } catch (e: Exception) { }
     }
 
     private fun addWidgetList(visitables: List<Visitable<*>>, position: Int) {
-        val newMainNavList = _mainNavListVisitable
-        newMainNavList.addAll(position, visitables)
-        _mainNavListVisitable = newMainNavList
-        _mainNavLiveData.postValue(_mainNavLiveData.value?.copy(dataList = newMainNavList.toMutableList()))
+        try {
+            val newMainNavList = _mainNavListVisitable
+            newMainNavList.addAll(position, visitables)
+            _mainNavListVisitable = newMainNavList
+            _mainNavLiveData.postValue(_mainNavLiveData.value?.copy(dataList = newMainNavList.toMutableList()))
+        } catch (e: Exception) { }
     }
 
     private fun deleteWidget(visitable: Visitable<*>) {
-        val newMainNavList = _mainNavListVisitable.toMutableList()
-        newMainNavList.remove(visitable)
-        _mainNavListVisitable = newMainNavList
-        _mainNavLiveData.postValue(_mainNavLiveData.value?.copy(dataList = newMainNavList))
+        try {
+            val newMainNavList = _mainNavListVisitable.toMutableList()
+            newMainNavList.remove(visitable)
+            _mainNavListVisitable = newMainNavList
+            _mainNavLiveData.postValue(_mainNavLiveData.value?.copy(dataList = newMainNavList))
+        } catch (e: Exception) { }
     }
 
     private fun deleteWidgetList(visitables: List<Visitable<*>>) {
-        val newMainNavList = _mainNavListVisitable.toMutableList()
-        newMainNavList.removeAll(visitables)
-        _mainNavListVisitable = newMainNavList
-        _mainNavLiveData.postValue(_mainNavLiveData.value?.copy(dataList = newMainNavList))
+        try {
+            val newMainNavList = _mainNavListVisitable.toMutableList()
+            newMainNavList.removeAll(visitables)
+            _mainNavListVisitable = newMainNavList
+            _mainNavLiveData.postValue(_mainNavLiveData.value?.copy(dataList = newMainNavList))
+        } catch (e: Exception) { }
     }
 
     fun setPageSource(pageSource: String = pageSourceDefault) {
@@ -281,7 +289,6 @@ class MainNavViewModel @Inject constructor(
 
     private fun MutableList<Visitable<*>>.addBUTitle() {
         if (isMePageUsingRollenceVariant) {
-            allCategories = HomeNavExpandableDataModel(id = IDENTIFIER_TITLE_ALL_CATEGORIES)
             this.add(allCategories)
             this.add(SeparatorDataModel(isUsingRollence = isMePageUsingRollenceVariant))
         } else {
