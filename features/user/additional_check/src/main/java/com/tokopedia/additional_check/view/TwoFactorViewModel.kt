@@ -1,18 +1,15 @@
 package com.tokopedia.additional_check.view
 
 import android.annotation.SuppressLint
-import android.content.Context
 import com.google.gson.Gson
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
-import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.additional_check.data.OfferingData
 import com.tokopedia.additional_check.data.ShowInterruptData
 import com.tokopedia.additional_check.data.pref.AdditionalCheckPreference
-import com.tokopedia.additional_check.domain.usecase.RecoverGoogleTinkUseCase
 import com.tokopedia.additional_check.domain.usecase.OfferInterruptUseCase
+import com.tokopedia.additional_check.domain.usecase.RecoverGoogleTinkUseCase
 import com.tokopedia.additional_check.domain.usecase.ShowInterruptUseCase
 import com.tokopedia.additional_check.internal.AdditionalCheckConstants
-import com.tokopedia.encryption.security.AeadEncryptor
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.sessioncommon.data.fingerprint.FingerprintPreference
 import com.tokopedia.sessioncommon.di.SessionModule

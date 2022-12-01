@@ -7,7 +7,6 @@ import com.tokopedia.utils.RawAccessPreference
 import org.hamcrest.CoreMatchers.equalTo
 import org.hamcrest.CoreMatchers.not
 import org.hamcrest.MatcherAssert.assertThat
-import org.hamcrest.core.Is.`is`
 import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Ignore

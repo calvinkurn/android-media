@@ -290,7 +290,7 @@ class TwoFactorViewModelTest {
 
     @Test
     fun `recover test`() {
-        viewModel.refreshUserSession {  }
+        viewModel.refreshUserSession { }
         coVerify {
             recoverGoogleTinkUseCase.invoke(Unit)
         }

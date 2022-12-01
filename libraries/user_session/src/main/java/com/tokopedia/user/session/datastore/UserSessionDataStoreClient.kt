@@ -6,11 +6,13 @@ import androidx.datastore.dataStoreFile
 import com.tokopedia.encryption.security.AeadEncryptorImpl
 import kotlinx.coroutines.*
 
+@Suppress("LateinitUsage")
 object UserSessionDataStoreClient {
 
     private lateinit var userSessionDataStore: UserSessionDataStore
     private var scope: CoroutineScope? = null
     private const val DATA_STORE_FILE_NAME = "user_session.pb"
+    private const val shortDelay = 100L
 
     @JvmStatic
     fun getInstance(context: Context): UserSessionDataStore {
@@ -28,14 +30,14 @@ object UserSessionDataStoreClient {
     suspend fun reCreate(context: Context, deleteFile: Boolean = true) {
         scope?.cancel()
         // This delay is required, otherwise we have IlleagalStateException's multiple datastore active
-        delay(100)
+        delay(shortDelay)
         if (deleteFile) context.dataStoreFile(DATA_STORE_FILE_NAME).delete()
         userSessionDataStore = initialize(context)
     }
 
     private fun initialize(context: Context): UserSessionDataStore {
         val aead = AeadEncryptorImpl(context)
-        with(CoroutineScope(Dispatchers.IO + SupervisorJob())){
+        with(CoroutineScope(Dispatchers.IO + SupervisorJob())) {
             scope = this
             val store = DataStoreFactory.create(
                 UserSessionSerializer(aead),

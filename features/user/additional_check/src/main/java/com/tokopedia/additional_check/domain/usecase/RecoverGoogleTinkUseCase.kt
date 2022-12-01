@@ -42,5 +42,6 @@ class RecoverGoogleTinkUseCase @Inject constructor(
             phone
             email
           }
-        } """.trimIndent()
+        } 
+        """.trimIndent()
 }
