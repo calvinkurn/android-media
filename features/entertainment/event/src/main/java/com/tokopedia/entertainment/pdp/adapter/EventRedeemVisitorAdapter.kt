@@ -5,6 +5,8 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.entertainment.databinding.ItemEventRedeemParticipantBinding
 import com.tokopedia.entertainment.pdp.data.redeem.redeemable.ParticipantDetail
+import com.tokopedia.kotlin.extensions.view.ONE
+import com.tokopedia.kotlin.extensions.view.ZERO
 
 class EventRedeemVisitorAdapter: RecyclerView.Adapter<EventRedeemVisitorAdapter.ViewHolder>() {
 
@@ -27,7 +29,7 @@ class EventRedeemVisitorAdapter: RecyclerView.Adapter<EventRedeemVisitorAdapter.
 
     fun addParticipant(participants: List<ParticipantDetail>) {
         this.participants = participants
-        notifyDataSetChanged()
+        notifyItemRangeChanged(Int.ZERO, (participants.size - Int.ONE))
     }
 
     inner class ViewHolder(private val binding: ItemEventRedeemParticipantBinding) : RecyclerView.ViewHolder(binding.root) {
