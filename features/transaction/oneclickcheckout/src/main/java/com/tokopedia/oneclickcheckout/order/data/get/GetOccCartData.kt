@@ -1,6 +1,5 @@
 package com.tokopedia.oneclickcheckout.order.data.get
 
-import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.response.ImageUploadResponse
 import com.tokopedia.purchase_platform.common.feature.gifting.data.response.AddOnWording
@@ -54,9 +53,8 @@ class GetOccCartData(
 )
 
 class CustomerData(
-        @SuppressLint("Invalid Data Type")
         @SerializedName("id")
-        val id: Long = 0,
+        val id: String = "",
         @SerializedName("name")
         val name: String = "",
         @SerializedName("email")

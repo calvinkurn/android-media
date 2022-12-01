@@ -13,15 +13,13 @@ class ProductDataResponse(
         @SerializedName("cart_id")
         val cartId: String = "",
         @SerializedName("product_id")
-        @SuppressLint("Invalid Data Type")
-        val productId: Long = 0,
+        val productId: String = "",
         @SerializedName("parent_id")
         val parentId: String = "",
         @SerializedName("product_name")
         val productName: String = "",
-        @SuppressLint("Invalid Data Type")
         @SerializedName("product_price")
-        val productPrice: Long = 0,
+        val productPrice: Double = 0.0,
         @SerializedName("category_id")
         val categoryId: String = "",
         @SerializedName("category")
@@ -57,19 +55,16 @@ class ProductDataResponse(
         val productQuantity: Int = 0,
         @SerializedName("campaign_id")
         val campaignId: String = "",
-        @SuppressLint("Invalid Data Type")
         @SerializedName("product_original_price")
-        val productOriginalPrice: Long = 0,
-        @SuppressLint("Invalid Data Type")
+        val productOriginalPrice: Double = 0.0,
         @SerializedName("initial_price")
-        val initialPrice: Long = 0,
+        val initialPrice: Double = 0.0,
         @SerializedName("slash_price_label")
         val slashPriceLabel: String = "",
         @SerializedName("product_finsurance")
         val productFinsurance: Int = 0,
         @SerializedName("warehouse_id")
-        @SuppressLint("Invalid Data Type")
-        val warehouseId: Long = 0,
+        val warehouseId: String = "",
         @SerializedName("free_shipping")
         val freeShipping: FreeShipping = FreeShipping(),
         @SerializedName("free_shipping_extra")
