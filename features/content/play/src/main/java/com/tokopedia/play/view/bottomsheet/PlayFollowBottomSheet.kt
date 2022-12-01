@@ -61,10 +61,10 @@ class PlayFollowBottomSheet @Inject constructor(private val analytic: PlayNewAna
         isFullpage = false
 
         if(requireParentFragment() is PlayUserInteractionFragment){
-            val grandParentActivity = ((requireParentFragment() as PlayUserInteractionFragment).parentFragment) as PlayFragment
+            val grandParentFragment = ((requireParentFragment() as? PlayUserInteractionFragment)?.parentFragment) as PlayFragment
 
             playViewModel = ViewModelProvider(
-                grandParentActivity, grandParentActivity.viewModelProviderFactory
+                grandParentFragment, grandParentFragment.viewModelProviderFactory
             ).get(PlayViewModel::class.java)
         }
     }
