@@ -115,8 +115,6 @@ class MainActivity : AppCompatActivity() {
          * RouteManager.route(this, ApplinkConstInternalMarketplace.SHOP_SETTINGS)
          * LEAVE THIS EMPTY AS DEFAULT!!
          * */
-
-        RouteManager.route(this, "tokopedia://shop/6555138")
         val appLink = etAppLink.text.toString()
         if(appLink.isNotBlank())
             RouteManager.route(this, appLink)
