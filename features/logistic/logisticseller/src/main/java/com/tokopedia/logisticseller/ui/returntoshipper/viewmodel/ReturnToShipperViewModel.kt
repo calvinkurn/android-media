@@ -2,6 +2,7 @@ package com.tokopedia.logisticseller.ui.returntoshipper.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.viewModelScope
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
@@ -10,6 +11,8 @@ import com.tokopedia.logisticseller.data.response.GetGeneralInfoRtsResponse
 import com.tokopedia.logisticseller.domain.usecase.GetGeneralInfoRtsUseCase
 import com.tokopedia.logisticseller.domain.usecase.RequestGeneralInfoRtsUseCase
 import com.tokopedia.logisticseller.ui.returntoshipper.uimodel.ReturnToShipperState
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class ReturnToShipperViewModel @Inject constructor(
@@ -92,4 +95,11 @@ class ReturnToShipperViewModel @Inject constructor(
 
     private fun isActionConfirmation(action: String): Boolean =
         action == GeneralInfoRtsParam.ACTION_RTS_CONFIRMATION
+
+    fun delayed(timemillis: Long, run: () -> Unit) {
+        viewModelScope.launch {
+            delay(timemillis)
+            run.invoke()
+        }
+    }
 }

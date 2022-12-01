@@ -3,16 +3,21 @@ package com.tokopedia.logisticseller.ui.returntoshipper.fragment
 import android.app.Activity
 import android.app.Activity.RESULT_CANCELED
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
+import com.tokopedia.logisticCommon.util.LogisticImageDeliveryHelper
 import com.tokopedia.logisticseller.common.LogisticSellerConst
 import com.tokopedia.logisticseller.data.param.GeneralInfoRtsParam
 import com.tokopedia.logisticseller.data.response.GetGeneralInfoRtsResponse
@@ -23,12 +28,16 @@ import com.tokopedia.logisticseller.ui.returntoshipper.dialog.ReturtToShipperDia
 import com.tokopedia.logisticseller.ui.returntoshipper.uimodel.ReturnToShipperState
 import com.tokopedia.logisticseller.ui.returntoshipper.viewmodel.ReturnToShipperViewModel
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
 class ReturnToShipperFragment : BaseDaggerFragment() {
 
     private var binding by autoClearedNullable<FragmentReturnToShipperBinding>()
+
+    @Inject
+    lateinit var userSession: UserSessionInterface
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -75,14 +84,14 @@ class ReturnToShipperFragment : BaseDaggerFragment() {
             viewLifecycleOwner
         ) {
             when (it) {
-                is ReturnToShipperState.ShowRtsConfirmDialog -> openReturnToShipperConfirmationDialog(
-                    it.data
-                )
+                is ReturnToShipperState.ShowRtsConfirmDialog -> openRTSConfirmationDialog(it.data)
                 is ReturnToShipperState.ShowRtsSuccessDialog -> showSuccessDialog()
                 is ReturnToShipperState.ShowRtsFailedDialog -> showFailedRtsDialog()
                 is ReturnToShipperState.ShowToaster -> {
                     showToaster(it.errorMessage)
-                    doFinishActivity()
+                    viewModel.delayed(DELAY_SHOWING_TOASTER) {
+                        doFinishActivity()
+                    }
                 }
                 is ReturnToShipperState.ShowLoading -> binding?.loaderRts?.isVisible =
                     it.isShowLoading
@@ -90,11 +99,11 @@ class ReturnToShipperFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun openReturnToShipperConfirmationDialog(data: GetGeneralInfoRtsResponse.GeneralInfoRtsData) {
+    private fun openRTSConfirmationDialog(data: GetGeneralInfoRtsResponse.GeneralInfoRtsData) {
         activity?.apply {
             ReturtToShipperDialog(this).apply {
                 showRtsConfirmationDialog(
-                    data = data,
+                    data = data.setUrlImage(),
                     onPrimaryCTAClickListener = {
                         viewModel.requestGeneralInformation(
                             orderId = orderId,
@@ -111,6 +120,22 @@ class ReturnToShipperFragment : BaseDaggerFragment() {
                     onDismissListener = {
                         doFinishActivity()
                     }
+                )
+            }
+        }
+    }
+
+    private fun GetGeneralInfoRtsResponse.GeneralInfoRtsData.setUrlImage(): GetGeneralInfoRtsResponse.GeneralInfoRtsData {
+        return this.apply {
+            image.apply {
+                accessToken = userSession.accessToken
+                urlImage = LogisticImageDeliveryHelper.getDeliveryImage(
+                    imageId = image.imageId,
+                    orderId = orderId.toLongOrZero(),
+                    size = LogisticImageDeliveryHelper.IMAGE_LARGE_SIZE,
+                    userId = userSession.userId,
+                    osType = LogisticImageDeliveryHelper.DEFAULT_OS_TYPE,
+                    deviceId = userSession.deviceId
                 )
             }
         }
@@ -158,7 +183,20 @@ class ReturnToShipperFragment : BaseDaggerFragment() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+
+        val window = activity?.window ?: return
+        window.setLayout(
+            WindowManager.LayoutParams.MATCH_PARENT,
+            WindowManager.LayoutParams.MATCH_PARENT
+        )
+        window.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
+    }
+
     companion object {
+        private const val DELAY_SHOWING_TOASTER = 3000L
+
         fun newInstance(orderId: String): ReturnToShipperFragment {
             return ReturnToShipperFragment().apply {
                 arguments = Bundle().apply {

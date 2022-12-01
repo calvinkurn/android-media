@@ -24,10 +24,10 @@ class RequestGeneralInfoRtsUseCase @Inject constructor(
 
     companion object {
         const val REQUEST_GENERAL_INFORMATION_QUERY = """
-          mutation requestGeneralInformation(${'$'}input:MpLogisticRequestGeneralInformationInputs!){
-            requestGeneralInformation(input: ${'$'}input) {
+          mutation mpLogisticInsertActionGeneralInformation(${'$'}input:MpLogisticInsertActionGeneralInformationInput!){
+            mpLogisticInsertActionGeneralInformation(input: ${'$'}input) {
               status
-              message
+              message_error
             }
           }  
         """

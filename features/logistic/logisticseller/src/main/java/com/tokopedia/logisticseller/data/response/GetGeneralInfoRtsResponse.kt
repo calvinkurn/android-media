@@ -21,21 +21,20 @@ data class GetGeneralInfoRtsResponse(
         val image: Image = Image(),
         @SerializedName("article_url")
         val articleUrl: String = "",
-    ) {
-        val urlImage: String
-            get() = BASE_URL_IMAGE + image.imageId
-    }
+    )
 
     data class Image(
         @SerializedName("image_id")
         val imageId: String = "",
-    )
+    ) {
+        var urlImage: String = ""
+        var accessToken: String = ""
+    }
 
     val isSuccess: Boolean
         get() = status == STATUS_SUCCESS
 
     companion object {
         private const val STATUS_SUCCESS = 200
-        private const val BASE_URL_IMAGE = ""
     }
 }

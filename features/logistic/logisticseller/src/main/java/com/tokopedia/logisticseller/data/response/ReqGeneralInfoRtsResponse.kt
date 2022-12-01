@@ -5,8 +5,8 @@ import com.google.gson.annotations.SerializedName
 data class ReqGeneralInfoRtsResponse(
     @SerializedName("status")
     val status: Int = 0,
-    @SerializedName("message")
-    val message: String = "",
+    @SerializedName("message_error")
+    val messageError: String = "",
 ) {
     val isSuccess: Boolean
         get() = status == STATUS_SUCCESS

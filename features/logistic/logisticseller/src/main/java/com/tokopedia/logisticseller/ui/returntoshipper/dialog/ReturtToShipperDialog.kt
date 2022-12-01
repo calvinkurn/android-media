@@ -4,12 +4,11 @@ import android.content.Context
 import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.getScreenWidth
+import com.tokopedia.logisticCommon.util.LogisticImageDeliveryHelper.loadImagePod
 import com.tokopedia.logisticseller.data.response.GetGeneralInfoRtsResponse
 import com.tokopedia.logisticseller.R
 
-class ReturtToShipperDialog(
-    private val context: Context
-) {
+class ReturtToShipperDialog(private val context: Context) {
 
     fun showRtsConfirmationDialog(
         data: GetGeneralInfoRtsResponse.GeneralInfoRtsData,
@@ -20,7 +19,7 @@ class ReturtToShipperDialog(
         showDialog(
             title = data.title,
             description = data.description,
-            imageUrl = data.urlImage,
+            imageData = data.image,
             primaryCtaText = context.getString(R.string.btn_rts_request),
             secondaryCtaText = context.getString(R.string.btn_rts_help),
             dialogAction = DialogUnify.HORIZONTAL_ACTION,
@@ -85,7 +84,7 @@ class ReturtToShipperDialog(
         onPrimaryCTAClickListener: (() -> Unit)? = null,
         onSecondaryCTAClickListener: (() -> Unit)? = null,
         onDismissListener: (() -> Unit)? = null,
-        imageUrl: String = "",
+        imageData: GetGeneralInfoRtsResponse.Image? = null,
         imageIcon: Int = 0
     ) {
         var isFromCTAClickListener = false
@@ -99,7 +98,13 @@ class ReturtToShipperDialog(
             setPrimaryCTAText(primaryCtaText)
             setSecondaryCTAText(secondaryCtaText.orEmpty())
             if (imageType == DialogUnify.WITH_ILLUSTRATION) {
-                setImageUrl(imageUrl)
+                imageData?.apply {
+                    dialogImage.loadImagePod(
+                        context,
+                        accessToken = accessToken,
+                        url = urlImage
+                    )
+                }
             } else {
                 setImageDrawable(imageIcon)
             }
