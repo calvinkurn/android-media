@@ -37,19 +37,20 @@ import com.tokopedia.tokopedianow.category.presentation.listener.CategoryAisleLi
 import com.tokopedia.tokopedianow.category.presentation.model.CategoryAisleItemDataView
 import com.tokopedia.tokopedianow.category.presentation.typefactory.CategoryTypeFactoryImpl
 import com.tokopedia.tokopedianow.category.presentation.viewmodel.TokoNowCategoryViewModel
+import com.tokopedia.tokopedianow.common.model.ShareTokonow
+import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
+import com.tokopedia.tokopedianow.common.util.StringUtil.getOrDefaultZeroString
 import com.tokopedia.tokopedianow.common.util.TokoNowUniversalShareUtil
 import com.tokopedia.tokopedianow.common.util.TokoNowUniversalShareUtil.shareRequest
 import com.tokopedia.tokopedianow.common.viewholder.TokoNowCategoryGridViewHolder.TokoNowCategoryGridListener
-import com.tokopedia.tokopedianow.common.model.ShareTokonow
-import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
-import com.tokopedia.tokopedianow.common.util.StringUtil.getOrDefaultZeroString
 import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment
 import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst.Misc.VALUE_LIST_OOC
 import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackingConst.Misc.VALUE_TOPADS
 import com.tokopedia.tokopedianow.searchcategory.data.model.QuerySafeModel
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.view.BaseSearchCategoryFragment
+import com.tokopedia.tokopedianow.searchcategory.utils.ChooseAddressWrapper
 import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW_DIRECTORY
 import com.tokopedia.universal_sharing.view.bottomsheet.ScreenshotDetector
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
@@ -90,6 +91,10 @@ class TokoNowCategoryFragment:
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    @Inject
+    lateinit var chooseAddressWrapper: ChooseAddressWrapper
+
     private lateinit var tokoNowCategoryViewModel: TokoNowCategoryViewModel
     private var universalShareBottomSheet: UniversalShareBottomSheet? = null
     private var screenshotDetector : ScreenshotDetector? = null
@@ -226,6 +231,35 @@ class TokoNowCategoryFragment:
                 getUserId(),
                 getViewModel().categoryIdTracking,
         )
+    }
+
+    override fun onWishlistButtonClicked(
+        productId: String,
+        isWishlistSelected: Boolean,
+        descriptionToaster: String,
+        ctaToaster: String,
+        type: Int,
+        ctaClickListener: (() -> Unit)?
+    ) {
+        if(isWishlistSelected) {
+            CategoryTracking.trackClickAddToWishlist(
+                chooseAddressWrapper.getChooseAddressData().warehouse_id,
+                productId
+            )
+        }
+        else{
+            CategoryTracking.trackClickRemoveFromWishlist(
+                chooseAddressWrapper.getChooseAddressData().warehouse_id,
+                productId
+            )
+        }
+        getViewModel().updateWishlistStatus(
+            productId,
+            isWishlistSelected
+        )
+        showToaster(descriptionToaster, type, ctaToaster) {
+            ctaClickListener?.invoke()
+        }
     }
 
     override fun screenShotTaken() {

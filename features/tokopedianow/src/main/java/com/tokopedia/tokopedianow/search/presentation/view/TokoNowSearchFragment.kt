@@ -48,6 +48,7 @@ import com.tokopedia.tokopedianow.searchcategory.data.model.QuerySafeModel
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.SwitcherWidgetListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.view.BaseSearchCategoryFragment
+import com.tokopedia.tokopedianow.searchcategory.utils.ChooseAddressWrapper
 import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW
 import javax.inject.Inject
 
@@ -70,6 +71,10 @@ class TokoNowSearchFragment :
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
+    @Inject
+    lateinit var chooseAddressWrapper: ChooseAddressWrapper
+
     private lateinit var tokoNowSearchViewModel: TokoNowSearchViewModel
 
     override val toolbarPageName = "TokoNow Search"
@@ -215,6 +220,36 @@ class TokoNowSearchFragment :
                 getUserId(),
                 sortFilterParams,
         )
+    }
+
+    override fun onWishlistButtonClicked(
+        productId: String,
+        isWishlistSelected: Boolean,
+        descriptionToaster: String,
+        ctaToaster: String,
+        type: Int,
+        ctaClickListener: (() -> Unit)?
+    ) {
+
+        if(isWishlistSelected) {
+            SearchTracking.trackClickAddToWishlist(
+                chooseAddressWrapper.getChooseAddressData().warehouse_id,
+                productId
+            )
+        }
+        else{
+            SearchTracking.trackClickRemoveFromWishlist(
+                chooseAddressWrapper.getChooseAddressData().warehouse_id,
+                productId
+            )
+        }
+        getViewModel().updateWishlistStatus(
+            productId,
+            isWishlistSelected
+        )
+        showToaster(descriptionToaster, type, ctaToaster) {
+            ctaClickListener?.invoke()
+        }
     }
 
     private fun getQueryParamWithoutExcludes(): Map<String, String> {
