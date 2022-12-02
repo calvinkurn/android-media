@@ -56,7 +56,10 @@ class TokoChatImageBubbleViewHolder(
             bindLayoutGravity(Gravity.START)
             binding?.tokochatLayoutImageBubbleContainer?.background = bgLeft
         }
-        binding?.tokochatImageBubble?.loadImage(R.drawable.tokochat_bg_image_bubble_gradient)
+
+        try {
+            binding?.tokochatImageBubble?.loadImage(R.drawable.tokochat_bg_image_bubble_gradient)
+        } catch (ignored: Throwable) {}
     }
 
     private fun bindLayoutGravity(gravity: Int) {

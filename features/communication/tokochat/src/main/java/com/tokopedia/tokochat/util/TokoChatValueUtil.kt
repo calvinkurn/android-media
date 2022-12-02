@@ -12,6 +12,7 @@ object TokoChatValueUtil {
      * Error values
      */
     const val CHAT_CLOSED_CODE = "CHAT:SERVICE:CHAT_CLOSED"
+    const val CHAT_DOES_NOT_EXIST = "conversation_service:messages_does_not_exists"
 
     /**
      * Push Notif values

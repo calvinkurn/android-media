@@ -1,4 +1,4 @@
-package com.tokopedia.tokochat.view.bottomsheet
+package com.tokopedia.tokochat.view.chatroom.bottomsheet
 
 import android.os.Bundle
 import android.view.LayoutInflater

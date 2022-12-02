@@ -1,4 +1,4 @@
-package com.tokopedia.tokochat.view.mapper
+package com.tokopedia.tokochat.view.chatroom
 
 import android.content.Context
 import android.text.format.DateFormat

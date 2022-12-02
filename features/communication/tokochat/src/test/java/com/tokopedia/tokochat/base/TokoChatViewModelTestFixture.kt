@@ -3,7 +3,7 @@ package com.tokopedia.tokochat.base
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.tokochat.domain.usecase.*
 import com.tokopedia.tokochat.util.TokoChatViewUtil
-import com.tokopedia.tokochat.view.viewmodel.TokoChatViewModel
+import com.tokopedia.tokochat.view.chatroom.TokoChatViewModel
 import com.tokopedia.tokochat_common.util.TokoChatCacheManager
 import com.tokopedia.unit.test.dispatcher.CoroutineTestDispatchersProvider
 import io.mockk.MockKAnnotations

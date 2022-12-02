@@ -1,4 +1,4 @@
-package com.tokopedia.tokochat.view.viewmodel
+package com.tokopedia.tokochat.view.chatroom
 
 import android.widget.ImageView
 import androidx.annotation.VisibleForTesting
@@ -97,9 +97,15 @@ class TokoChatViewModel @Inject constructor(
     val error: LiveData<Pair<Throwable, String>>
         get() = _error
 
+    var gojekOrderId: String = ""
+    var source: String = ""
+    var tkpdOrderId: String = ""
+    var isFromTokoFoodPostPurchase = false
+    var pushNotifTemplateKey = ""
+    var channelId = ""
+
     @VisibleForTesting
     var connectionCheckJob: Job? = null
-
     val orderStatusParamFlow = MutableSharedFlow<Pair<String, String>>(Int.ONE)
 
     init {
@@ -126,8 +132,8 @@ class TokoChatViewModel @Inject constructor(
         try {
             val messageMetaData = SendMessageMetaData()
             sendMessageUseCase.sendTextMessage(
-                channelId,
-                text,
+                channelUrl = channelId,
+                text = text,
                 messageMetaData
             )
         } catch (throwable: Throwable) {
@@ -159,6 +165,7 @@ class TokoChatViewModel @Inject constructor(
                 _channelDetail.postValue(Success(it))
             }, onError = {
                     _channelDetail.postValue(Fail(it))
+                    // Call from local group booking
                 })
         } catch (throwable: Throwable) {
             _error.value = Pair(throwable, ::getGroupBookingChannel.name)

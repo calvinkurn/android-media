@@ -1,17 +1,13 @@
-package com.tokopedia.tokochat.view.activity
+package com.tokopedia.tokochat.view.chatroom
 
-import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
-import com.google.android.play.core.splitcompat.SplitCompat
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.tokochat.di.DaggerTokoChatComponent
 import com.tokopedia.tokochat.di.TokoChatComponent
 import com.tokopedia.tokochat.util.TokoChatValueUtil
-import com.tokopedia.tokochat.view.fragment.TokoChatFragment
-import com.tokopedia.tokochat.view.fragment.factory.TokoChatFragmentFactory
 import com.tokopedia.tokochat_common.util.TokoChatViewUtil.setBackIconUnify
 import com.tokopedia.tokochat_common.view.activity.TokoChatBaseActivity
 
@@ -40,11 +36,6 @@ class TokoChatActivity : TokoChatBaseActivity<TokoChatComponent>() {
 
     override fun setupFragmentFactory() {
         supportFragmentManager.fragmentFactory = TokoChatFragmentFactory()
-    }
-
-    override fun attachBaseContext(newBase: Context?) {
-        super.attachBaseContext(newBase)
-        SplitCompat.installActivity(this)
     }
 
     private fun initializeTokoChatComponent(): TokoChatComponent {
@@ -97,5 +88,37 @@ class TokoChatActivity : TokoChatBaseActivity<TokoChatComponent>() {
             putBoolean(ApplinkConst.TokoChat.IS_FROM_TOKOFOOD_POST_PURCHASE, isFromTokoFoodPostPurchase)
             putString(TokoChatValueUtil.NOTIFCENTER_NOTIFICATION_TEMPLATE_KEY, pushNotifTemplateKey)
         }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putString(
+            ApplinkConst.TokoChat.PARAM_SOURCE,
+            intent.data?.getQueryParameter(ApplinkConst.TokoChat.PARAM_SOURCE) ?: ""
+        )
+        outState.putString(
+            ApplinkConst.TokoChat.ORDER_ID_GOJEK,
+            intent.data?.getQueryParameter(ApplinkConst.TokoChat.ORDER_ID_GOJEK) ?: ""
+        )
+        outState.putString(
+            ApplinkConst.TokoChat.ORDER_ID_TKPD,
+            intent.data?.getQueryParameter(ApplinkConst.TokoChat.ORDER_ID_TKPD) ?: ""
+        )
+        outState.putBoolean(
+            ApplinkConst.TokoChat.IS_FROM_TOKOFOOD_POST_PURCHASE,
+            intent?.getBooleanExtra(
+                ApplinkConst.TokoChat.IS_FROM_TOKOFOOD_POST_PURCHASE,
+                false
+            ) ?: false
+        )
+        outState.putString(
+            TokoChatValueUtil.NOTIFCENTER_NOTIFICATION_TEMPLATE_KEY,
+            intent?.getStringExtra(TokoChatValueUtil.NOTIFCENTER_NOTIFICATION_TEMPLATE_KEY) ?: ""
+        )
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+        (fragment as? TokoChatFragment)?.onRestoreInstanceState(savedInstanceState)
     }
 }

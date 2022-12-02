@@ -78,6 +78,7 @@ abstract class TokoFoodOrderTrackingViewModelTestFixture {
     companion object {
         const val ORDER_ID_DUMMY = "52af8a53-86cc-40b7-bb98-cc3adde8e32a"
         const val CHANNEL_ID = "1234567"
+        const val GOFOOD_ORDER_NUMBER = "f-52af8a53-86cc-40b7-bb98-cc3adde8e32a"
 
         const val ORDER_TRACKING_OTW_DESTINATION = "json/ordertracking/order_tracking_otw_destination.json"
         const val ORDER_TRACKING_CANCELLED = "json/ordertracking/orderdetailcancelled.json"

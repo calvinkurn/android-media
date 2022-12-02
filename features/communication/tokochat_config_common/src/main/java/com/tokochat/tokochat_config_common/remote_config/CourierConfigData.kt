@@ -43,20 +43,21 @@ data class CourierConfigData(
     val maxRetryCount: Int = 3,
 
     @SerializedName("courierPolicyResetTime")
-    val courierPolicyResetTime: Int = 120,
+    val courierPolicyResetTime: Int = 10,
 
     @SerializedName("courierInactivityTimeout")
     val courierInactivityTimeout: Int = 45,
 
     @SerializedName("courierActivityCheckInterval")
-    val courierActivityCheckInterval: Int = 15,
+    val courierActivityCheckInterval: Int = 12,
 
     @SerializedName("tokenCachingMechanism")
     val tokenCachingMechanism: String = "disk",
 
     @SerializedName("disconnectDelaySeconds")
-    val disconnectDelaySeconds: Int = 30,
+    val disconnectDelaySeconds: Int = 40,
 
+    // No need to fetch this
     @SerializedName("isAuthRetryWorkerEnabled")
     val isAuthRetryWorkerEnabled: Boolean = false,
 
@@ -67,29 +68,38 @@ data class CourierConfigData(
     val incomingMessagesCleanupInterval: Long = 60,
 
     @SerializedName("shouldLogUserProperties")
-    val shouldLogUserProperties: Boolean = false,
+    val shouldLogUserProperties: Boolean = true,
 
     @SerializedName("shouldUseAlpnProtocol")
-    val shouldUseAlpnProtocol: Boolean = false,
+    val shouldUseAlpnProtocol: Boolean = true,
 
+    // No need to fetch this
     @SerializedName("isAdaptiveKeepAliveEnabled")
     val isAdaptiveKeepAliveEnabled: Boolean = false,
 
+    // No need to fetch this
     @SerializedName("adaptiveKeepAliveLowerBound")
     val adaptiveKeepAliveLowerBound: Int? = null,
 
+    // No need to fetch this
     @SerializedName("adaptiveKeepAliveUpperBound")
     val adaptiveKeepAliveUpperBound: Int? = null,
 
+    // No need to fetch this
     @SerializedName("adaptiveKeepAliveStep")
     val adaptiveKeepAliveStep: Int? = null,
 
+    // No need to fetch this
     @SerializedName("optimalKeepAliveResetLimit")
     val optimalKeepAliveResetLimit: Int? = null,
 
+    // No need to fetch this
     @SerializedName("isDeviceIdleModeReceiverEnabled")
     val isDeviceIdleModeReceiverEnabled: Boolean = false,
 
     @SerializedName("messageEnvelopeEnabled")
-    val isMessageEnvelopeEnabled: Boolean = true
+    val isMessageEnvelopeEnabled: Boolean = true,
+
+    @SerializedName("shouldUseNewSSLFlow")
+    val shouldUseNewSSLFlow: Boolean = true
 )

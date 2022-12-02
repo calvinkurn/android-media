@@ -13,7 +13,6 @@ import com.tokopedia.network.converter.StringResponseConverter
 import com.tokopedia.network.data.model.response.TkpdV4ResponseError
 import com.tokopedia.network.interceptor.TkpdAuthInterceptor
 import com.tokopedia.network.utils.OkHttpRetryPolicy
-import com.tokopedia.url.Env
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
@@ -28,13 +27,9 @@ import java.util.concurrent.TimeUnit
 @Module
 object TokoChatConfigNetworkModule {
 
-    // TODO: Move this to TokopediaUrl
-    const val BASE_URL_STAGING = "https://chat-staging.tokopedia.com/tokochat/"
-    const val BASE_URL_PRODUCTION = "https://chat.tokopedia.com/tokochat/"
-
-    private const val NET_READ_TIMEOUT = 300
-    private const val NET_WRITE_TIMEOUT = 300
-    private const val NET_CONNECT_TIMEOUT = 300
+    private const val NET_READ_TIMEOUT = 60
+    private const val NET_WRITE_TIMEOUT = 60
+    private const val NET_CONNECT_TIMEOUT = 60
     private const val NET_RETRY = 3
 
     private const val GSON_DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ssZ"
@@ -113,14 +108,8 @@ object TokoChatConfigNetworkModule {
         @TokoChatQualifier retrofitBuilder: Retrofit.Builder,
         @TokoChatQualifier okHttpClient: OkHttpClient
     ): Retrofit {
-        // Temporary ENV change
-        val baseUrl = if (TokopediaUrl.getInstance().TYPE == Env.LIVE) {
-            BASE_URL_PRODUCTION
-        } else {
-            BASE_URL_STAGING
-        }
         return retrofitBuilder
-            .baseUrl(baseUrl)
+            .baseUrl(TokopediaUrl.getInstance().TOKOCHAT)
             .addConverterFactory(StringResponseConverter())
             .client(okHttpClient).build()
     }

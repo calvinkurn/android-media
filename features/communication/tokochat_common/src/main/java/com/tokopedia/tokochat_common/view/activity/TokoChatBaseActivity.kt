@@ -1,8 +1,10 @@
 package com.tokopedia.tokochat_common.view.activity
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
+import com.google.android.play.core.splitcompat.SplitCompat
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
@@ -19,7 +21,7 @@ import com.tokopedia.unifycomponents.ImageUnify
 import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 
-abstract class TokoChatBaseActivity<T>: BaseSimpleActivity(), HasComponent<T> {
+abstract class TokoChatBaseActivity<T> : BaseSimpleActivity(), HasComponent<T> {
 
     protected var tokoChatComponent: T? = null
     protected var bundle: Bundle? = null
@@ -37,6 +39,11 @@ abstract class TokoChatBaseActivity<T>: BaseSimpleActivity(), HasComponent<T> {
     protected var headerCustomView: View? = null
 
     protected abstract fun setupFragmentFactory()
+
+    override fun attachBaseContext(newBase: Context?) {
+        super.attachBaseContext(newBase)
+        SplitCompat.installActivity(this)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         setupFragmentFactory()

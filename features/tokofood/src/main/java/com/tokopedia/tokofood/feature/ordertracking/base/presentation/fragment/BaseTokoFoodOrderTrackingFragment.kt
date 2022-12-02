@@ -34,6 +34,7 @@ import com.tokopedia.tokofood.databinding.FragmentTokofoodOrderTrackingBinding
 import com.tokopedia.tokofood.feature.ordertracking.analytics.TokoFoodPostPurchaseAnalytics
 import com.tokopedia.tokofood.feature.ordertracking.di.component.DaggerTokoFoodOrderTrackingComponent
 import com.tokopedia.tokofood.feature.ordertracking.domain.constants.OrderStatusType
+import com.tokopedia.tokofood.feature.ordertracking.presentation.adapter.BaseOrderTrackingTypeFactory
 import com.tokopedia.tokofood.feature.ordertracking.presentation.adapter.OrderTrackingAdapter
 import com.tokopedia.tokofood.feature.ordertracking.presentation.adapter.OrderTrackingAdapterTypeFactoryImpl
 import com.tokopedia.tokofood.feature.ordertracking.presentation.adapter.OrderTrackingListener
@@ -96,10 +97,6 @@ class BaseTokoFoodOrderTrackingFragment :
     private var delayAutoRefreshFinishOrderTempJob: Job? = null
 
     private var loaderDialog: LoaderDialog? = null
-
-    private var channelId: String = ""
-
-    private var goFoodOrderNumber: String = ""
 
     override fun getScreenName(): String = ""
 
@@ -202,7 +199,7 @@ class BaseTokoFoodOrderTrackingFragment :
         tracking.clickChatIcon(
             orderStatus = viewModel.getOrderStatus(),
             orderId = viewModel.getOrderId(),
-            channelId = channelId,
+            channelId = viewModel.channelId,
             source = TokoFoodAnalyticsConstants.TOKOFOOD_SOURCE,
             role = TokoFoodAnalyticsConstants.BUYER,
             unReadChatCounter = unReadChatCounter
@@ -243,8 +240,8 @@ class BaseTokoFoodOrderTrackingFragment :
     }
 
     override fun onGroupBookingChannelCreationSuccess(channelUrl: String) {
-        this.channelId = channelUrl
-        observeUnreadChatCount(channelId)
+        viewModel.channelId = channelUrl
+        observeUnreadChatCount(viewModel.channelId)
     }
 
     /*
@@ -253,11 +250,11 @@ class BaseTokoFoodOrderTrackingFragment :
      * initGroupBooking -> channelId -> observeUnreadChatCount
      */
     private fun initializeUnreadCounter(goFoodOrderNumber: String) {
-        this.goFoodOrderNumber = goFoodOrderNumber
-        if (channelId.isBlank()) {
-            viewModel.initGroupBooking(goFoodOrderNumber, this)
+        this.viewModel.goFoodOrderNumber = goFoodOrderNumber
+        if (viewModel.channelId.isBlank()) {
+            viewModel.initGroupBooking(viewModel.goFoodOrderNumber, this)
         } else {
-            observeUnreadChatCount(channelId)
+            observeUnreadChatCount(viewModel.channelId)
         }
     }
 
@@ -328,7 +325,8 @@ class BaseTokoFoodOrderTrackingFragment :
                         it.data.orderStatusKey,
                         it.data.actionButtonsUiModel,
                         it.data.toolbarLiveTrackingUiModel,
-                        it.data.merchantData
+                        it.data.merchantData,
+                        it.data.orderDetailList
                     )
                     fetchOrderLiveTracking(orderId)
                 }
@@ -476,7 +474,8 @@ class BaseTokoFoodOrderTrackingFragment :
         orderStatus: String,
         actionButtonsUiModel: ActionButtonsUiModel,
         toolbarLiveTrackingUiModel: ToolbarLiveTrackingUiModel,
-        merchantData: MerchantDataUiModel
+        merchantData: MerchantDataUiModel,
+        orderDetailList: List<BaseOrderTrackingTypeFactory>
     ) {
         binding?.run {
             if (orderStatus in listOf(OrderStatusType.COMPLETED, OrderStatusType.CANCELLED)) {
@@ -486,6 +485,7 @@ class BaseTokoFoodOrderTrackingFragment :
                     orderStatus,
                     merchantData
                 )
+                setUnreadChatCounterWhenCompletedOrder(orderStatus, orderDetailList)
             } else {
                 orderLiveTrackingFragment = TokoFoodOrderLiveTrackingFragment(
                     binding,
@@ -502,6 +502,21 @@ class BaseTokoFoodOrderTrackingFragment :
                     toolbarLiveTrackingUiModel,
                     orderStatus
                 )
+            }
+        }
+    }
+
+    private fun setUnreadChatCounterWhenCompletedOrder(
+        orderStatus: String,
+        orderDetailList: List<BaseOrderTrackingTypeFactory>
+    ) {
+        if (orderStatus == OrderStatusType.COMPLETED) {
+            val goFoodOrderNumber = orderDetailList
+                .filterIsInstance<InvoiceOrderNumberUiModel>()
+                .firstOrNull()?.goFoodOrderNumber.orEmpty()
+
+            if (goFoodOrderNumber.isNotBlank()) {
+                initializeUnreadCounter(goFoodOrderNumber)
             }
         }
     }
