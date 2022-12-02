@@ -122,7 +122,7 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
                 channelId = "1234",
                 title = "Klarifikasi Bisa Tebak Siapa?",
                 description = "Yuk gabung sekarang di Play Klarifikasi Bisa Tebak siapa?",
-                coverUrl = "https://ecs7.tokopedia.net/defaultpage/banner/bannerbelanja1000.jpg",
+                coverUrl = "https://images.tokopedia.net/defaultpage/banner/bannerbelanja1000.jpg",
                 ingestUrl = LOCAL_RTMP_URL,
                 status = ChannelStatus.Draft
         )
@@ -144,7 +144,7 @@ class PlayBroadcastMockMapper : PlayBroadcastMapper {
                 id = "1234",
                 title = "Tokopedia PLAY seru!",
                 description = "Nonton siaran seru di Tokopedia PLAY!",
-                imageUrl = "https://ecs7.tokopedia.net/defaultpage/banner/bannerbelanja1000.jpg",
+                imageUrl = "https://images.tokopedia.net/defaultpage/banner/bannerbelanja1000.jpg",
                 redirectUrl = "https://beta.tokopedia.com/play/channel/10140",
                 textContent =  "\"testing\"\nYuk, nonton siaran dari MRG Audio di Tokopedia PLAY! Bakal seru banget lho!\n${'$'}{url}",
                 shortenUrl = true
