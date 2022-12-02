@@ -130,7 +130,6 @@
     <string name="shop_page_play_widget_sgc_performance">Lihat Performa</string>
     <string name="shop_sort_filter_default_label">Urutkan</string>
     <string name="shop_etalase_filter_default_label">Etalase Toko</string>
-    <string name="shop_page_lottie_sgc_url">https://ecs7.tokopedia.net/android/hydra/sgc_entry_point.json</string>
 
     <string name="shop_string_ok">OK</string>
     <string name="shop_change_grid_section_total_product">%s Produk</string>
@@ -189,4 +188,5 @@
     <!-- Content Creation -->
     <string name="shop_page_broadcast_creation_label">Buat Live</string>
     <string name="shop_page_shorts_creation_label">Buat Shorts Video</string>
+    <string name="shop_page_start_create_content">Yuk, Mulai</string>
 </resources>

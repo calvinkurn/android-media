@@ -47,7 +47,7 @@ class ShopHeaderPlayWidgetViewHolder(
     private val viewBinding: LayoutShopHeaderPlayWidgetBinding? by viewBinding()
     private val playSgcWidgetContainer = viewBinding?.playSgcWidgetContainer
     private val playSgcLetsTryLiveTypography = viewBinding?.playSgcLetsTryLive
-    private val playSgcBtnStartLiveLottieAnimationView = viewBinding?.playSgcBtnStartLive
+    private val playSgcBtnStartLive = viewBinding?.playSgcBtnStartLive
     private val widgetPlayRootContainer: FrameLayout? = viewBinding?.widgetPlayRootContainer
 
     override fun bind(shopHeaderWidgetUiModel: ShopHeaderWidgetUiModel) {
@@ -56,9 +56,8 @@ class ShopHeaderPlayWidgetViewHolder(
             if (allowLiveStreaming(shopPageHeaderDataModel)) {
                 showPlayWidget()
                 setupTextContentSgcWidget()
-                setLottieAnimationFromUrl(itemView.context.getString(R.string.shop_page_lottie_sgc_url))
                 shopPageTrackingSGCPlayWidget?.onImpressionSGCContent(shopId = shopPageHeaderDataModel.shopId)
-                playSgcBtnStartLiveLottieAnimationView?.setOnClickListener {
+                playSgcBtnStartLive?.setOnClickListener {
                     shopPageTrackingSGCPlayWidget?.onClickSGCContent(shopId = shopPageHeaderDataModel.shopId)
                     listener.onStartLiveStreamingClicked(
                             modelComponent,
@@ -88,15 +87,5 @@ class ShopHeaderPlayWidgetViewHolder(
 
     private fun setupTextContentSgcWidget() {
         if (playSgcLetsTryLiveTypography?.text?.isBlank() == true) playSgcLetsTryLiveTypography.text = MethodChecker.fromHtml(itemView.context.getString(R.string.shop_page_play_widget_title))
-    }
-
-    /**
-     * Fetch the animation from http URL and play the animation
-     */
-    private fun setLottieAnimationFromUrl(animationUrl: String) {
-        LottieCompositionFactory.fromUrl(itemView.context, animationUrl).addListener { result ->
-            playSgcBtnStartLiveLottieAnimationView?.setComposition(result)
-            playSgcBtnStartLiveLottieAnimationView?.playAnimation()
-        }
     }
 }
