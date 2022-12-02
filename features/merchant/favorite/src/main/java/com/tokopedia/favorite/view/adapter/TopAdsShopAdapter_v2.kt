@@ -72,6 +72,7 @@ class TopAdsShopAdapter_v2 (
                     buttonFollow.buttonVariant = UnifyButton.Variant.FILLED
                     buttonFollow.text = itemView.context.getString(com.tokopedia.topads.sdk.R.string.topads_followed)
                     followButtonClickListener?.onItemClicked(shopProductModelItem)
+                    shopProductModelItem.isFollowed = true
                 }
                 buttonFollow.show()
             }
