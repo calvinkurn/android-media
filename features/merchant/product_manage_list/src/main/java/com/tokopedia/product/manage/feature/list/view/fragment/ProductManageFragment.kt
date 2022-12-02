@@ -1417,9 +1417,9 @@ open class ProductManageFragment :
                 }
             }
         }
-        recyclerView?.postDelayed({
+        recyclerView?.post {
             recyclerView?.addOnScrollListener(recyclerViewScrollListener)
-        },100)
+        }
         renderCheckedView()
         showAddAsFeaturedProduct()
         if (extraCacheManagerId.isNotBlank()) {
