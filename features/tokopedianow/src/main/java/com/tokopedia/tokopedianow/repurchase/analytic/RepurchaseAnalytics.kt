@@ -283,6 +283,42 @@ class RepurchaseAnalytics {
         }
     }
 
+    fun trackClickAddToWishlist(warehouseId: String, productId: String){
+        val label = "$warehouseId - $productId"
+
+        val dataLayer = getDataLayer(
+            TokoNowCommonAnalyticConstants.EVENT.EVENT_CLICK_GROCERIES,
+            TokoNowCommonAnalyticConstants.ACTION.EVENT_ACTION_CLICK_ADD_TO_WISHLIST,
+            TokoNowCommonAnalyticConstants.CATEGORY.EVENT_CATEGORY_TOKOPEDIA_REPURCHASE_PAGE,
+            label
+        )
+
+        dataLayer[KEY_BUSINESS_UNIT] = BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE
+        dataLayer[KEY_CURRENT_SITE] = BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE
+        dataLayer[TokoNowCommonAnalyticConstants.KEY.KEY_TRACKER_ID] = TokoNowCommonAnalyticConstants.TRACKER_ID.TRACKER_ID_ADD_TO_WISHLIST_REPURCHASE
+        dataLayer[TokoNowCommonAnalyticConstants.KEY.KEY_PRODUCT_ID] = productId
+
+        getTracker().sendGeneralEvent(dataLayer)
+    }
+
+    fun trackClickRemoveFromWishlist(warehouseId: String, productId: String){
+        val label = "$warehouseId - $productId"
+
+        val dataLayer = getDataLayer(
+            TokoNowCommonAnalyticConstants.EVENT.EVENT_CLICK_GROCERIES,
+            TokoNowCommonAnalyticConstants.ACTION.EVENT_ACTION_CLICK_REMOVE_FROM_WISHLIST,
+            TokoNowCommonAnalyticConstants.CATEGORY.EVENT_CATEGORY_TOKOPEDIA_CATEGORY_PAGE,
+            label
+        )
+
+        dataLayer[KEY_BUSINESS_UNIT] = BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE
+        dataLayer[KEY_CURRENT_SITE] = BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE
+        dataLayer[TokoNowCommonAnalyticConstants.KEY.KEY_TRACKER_ID] = TokoNowCommonAnalyticConstants.TRACKER_ID.TRACKER_ID_REMOVE_FROM_WISHLIST_REPURCHASE
+        dataLayer[TokoNowCommonAnalyticConstants.KEY.KEY_PRODUCT_ID] = productId
+
+        getTracker().sendGeneralEvent(dataLayer)
+    }
+
     /* Similar Product Bottomsheet Trackers*/
 
     fun trackClickSimilarProductBtn(warehouseId: String, productId: String, userId: String) {

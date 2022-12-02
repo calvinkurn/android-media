@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
+import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.product.detail.common.AtcVariantHelper
 import com.tokopedia.product.detail.common.VariantPageSource
 import com.tokopedia.tokopedianow.repurchase.analytic.RepurchaseAnalytics
@@ -58,6 +59,12 @@ class RepurchaseProductCardListener(
         type: Int,
         ctaClickListener: (() -> Unit)?
     ) {
+        if(isWishlistSelected){
+            analytics.trackClickAddToWishlist(ChooseAddressUtils.getLocalizingAddressData(context).warehouse_id, productId)
+        }
+        else{
+            analytics.trackClickRemoveFromWishlist(ChooseAddressUtils.getLocalizingAddressData(context).warehouse_id, productId)
+        }
         showToaster(
             descriptionToaster,
             type,

@@ -113,5 +113,7 @@ object TokoNowCommonAnalyticConstants {
         const val TRACKER_ID_REMOVE_FROM_WISHLIST_CATEGORY = "39573"
         const val TRACKER_ID_ADD_TO_WISHLIST_SEARCH = "39601"
         const val TRACKER_ID_REMOVE_FROM_WISHLIST_SEARCH = "39602"
+        const val TRACKER_ID_ADD_TO_WISHLIST_REPURCHASE = ""
+        const val TRACKER_ID_REMOVE_FROM_WISHLIST_REPURCHASE = ""
     }
 }
