@@ -30,7 +30,7 @@ class DigitalRecommendationUseCaseTest {
     private lateinit var usecase: DigitalRecommendationUseCase
 
     private companion object{
-        const val DUMMY_BG = "https://ecs7.tokopedia.net/img/cache/200-square/attachment/2021/7/29/148831929/148831929_109ef2c3-c536-406a-80ba-9a86ef03477a.jpg"
+        const val DUMMY_BG = "https://images.tokopedia.net/img/cache/200-square/attachment/2021/7/29/148831929/148831929_109ef2c3-c536-406a-80ba-9a86ef03477a.jpg"
         const val ASSERT_DELTA = 0.0
     }
 

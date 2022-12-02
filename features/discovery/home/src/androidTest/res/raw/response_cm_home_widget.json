@@ -55,7 +55,7 @@
             }
           ],
           "payment": {
-            "image_url": "https://ecs7.tokopedia.net/img/og_image_default_new.jpg",
+            "image_url": "https://images.tokopedia.net/img/og_image_default_new.jpg",
             "gateway_name": "BCA",
             "account_number": "RN12345",
             "total_payment": "Rp 50.000",

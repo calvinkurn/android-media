@@ -263,7 +263,7 @@
               "destination": "Dikirim ke <b>Bontoala, Kota Makassar</b>",
               "eTAText": "Estimasi tiba 15 - 17 Aug",
               "errors": [],
-              "icon": "https://ecs7.tokopedia.net/img/pdp/info/icon/courier@3x.png",
+              "icon": "https://images.tokopedia.net/img/pdp/info/icon/courier@3x.png",
               "subtitle": "Kurir lainnya: ",
               "title": "Ongkir Reguler 43 rb",
               "totalService": 2
@@ -279,8 +279,8 @@
           }
         ],
         "reputationShop": {
-          "badge": "https://ecs7.tokopedia.net/img/repsys/badges-off.jpg",
-          "badgeHD": "https://ecs7.tokopedia.net/img/repsys/badges-off-hd.jpg",
+          "badge": "https://images.tokopedia.net/img/repsys/badges-off.jpg",
+          "badgeHD": "https://images.tokopedia.net/img/repsys/badges-off-hd.jpg",
           "score": "0",
           "scoreMap": "0"
         },
@@ -337,7 +337,7 @@
             {
               "awbStatus": 0,
               "code": "jne",
-              "image": "https://ecs7.tokopedia.net/img/kurir-jne.png",
+              "image": "https://images.tokopedia.net/img/kurir-jne.png",
               "isAvailable": 1,
               "isPickup": 0,
               "maxAddFee": 0,

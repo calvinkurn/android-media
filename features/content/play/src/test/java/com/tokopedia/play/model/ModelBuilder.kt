@@ -543,7 +543,7 @@ class ModelBuilder {
               {
                 "id": "205240239",
                 "name": "si tangan besi panas bisa melelehkan baja",
-                "image_url": "https://ecs7.tokopedia.net/img/cache/700/product-1/2017/7/28/17227058/17227058_cb279d46-7257-4ec9-b47a-991eb2e261d4_620_372.jpg",
+                "image_url": "https://images.tokopedia.net/img/cache/700/product-1/2017/7/28/17227058/17227058_cb279d46-7257-4ec9-b47a-991eb2e261d4_620_372.jpg",
                 "shop_id": "1961630",
                 "original_price": 131313,
                 "original_price_formatted": "Rp 131.313",
@@ -576,7 +576,7 @@ class ModelBuilder {
               {
                 "id": "233501860",
                 "name": "KOL belum digoreng",
-                "image_url": "https://ecs7.tokopedia.net/img/cache/700/product-1/2017/11/22/17227058/17227058_bb079da4-06f6-461e-bb5a-3d9f83339625_496_379.jpg",
+                "image_url": "https://images.tokopedia.net/img/cache/700/product-1/2017/11/22/17227058/17227058_bb079da4-06f6-461e-bb5a-3d9f83339625_496_379.jpg",
                 "shop_id": "1961630",
                 "original_price": 80000,
                 "original_price_formatted": "Rp 80.000",
@@ -626,7 +626,7 @@ class ModelBuilder {
               {
                 "id": "227295441",
                 "name": "Tengkurak",
-                "image_url": "https://ecs7.tokopedia.net/img/cache/700/product-1/2017/11/10/17227058/17227058_7ec00048-b473-406e-918a-ec45d3e8e02e_948_1300.jpg",
+                "image_url": "https://images.tokopedia.net/img/cache/700/product-1/2017/11/10/17227058/17227058_7ec00048-b473-406e-918a-ec45d3e8e02e_948_1300.jpg",
                 "shop_id": "1961630",
                 "original_price": 700,
                 "original_price_formatted": "Rp 700",
@@ -659,7 +659,7 @@ class ModelBuilder {
               {
                 "id": "193124774",
                 "name": "aku ingin begini aku ingin begitu ingin ini ingin itu banyak sekaliiii",
-                "image_url": "https://ecs7.tokopedia.net/img/cache/700/product-1/2017/7/7/17227058/17227058_2c250f2d-2fdd-4a85-a570-94fd49730e4f_1071_999.jpg",
+                "image_url": "https://images.tokopedia.net/img/cache/700/product-1/2017/7/7/17227058/17227058_2c250f2d-2fdd-4a85-a570-94fd49730e4f_1071_999.jpg",
                 "shop_id": "1961630",
                 "original_price": 3123123,
                 "original_price_formatted": "Rp 3.123.123",
@@ -692,7 +692,7 @@ class ModelBuilder {
               {
                 "id": "489530510",
                 "name": "sudahbreloom",
-                "image_url": "https://ecs7.tokopedia.net/img/cache/700/product-1/2019/6/17/17227058/17227058_d39d0414-e92a-4b0e-8f40-81776ee345db_500_500",
+                "image_url": "https://images.tokopedia.net/img/cache/700/product-1/2019/6/17/17227058/17227058_d39d0414-e92a-4b0e-8f40-81776ee345db_500_500",
                 "shop_id": "1961630",
                 "original_price": 200,
                 "original_price_formatted": "Rp 200",
@@ -797,8 +797,14 @@ class ModelBuilder {
             "title": "Gratis Ongkir Rp20.000",
             "subtitle": "Transaksi min. Rp50.000",
             "voucher_type": 1,
+<<<<<<< HEAD
             "voucher_image": "https://ecs7.tokopedia.net/img/BTJGre/2021/9/23/f71f1cce-47ac-4e0d-ab6f-e3810ed5e344.jpg",
             "voucher_image_square": "https://ecs7.tokopedia.net/img/BTJGre/2021/9/23/f71f1cce-47ac-4e0d-ab6f-e3810ed5e344.jpg",
+=======
+            "voucher_image": "https://images.tokopedia.net/img/BTJGre/2021/9/23/f71f1cce-47ac-4e0d-ab6f-e3810ed5e344.jpg",
+            "voucher_image_square": "https://images.tokopedia.net/img/BTJGre/2021/9/23/f71f1cce-47ac-4e0d-ab6f-e3810ed5e344.jpg",
+            "voucher_quota": 25,
+>>>>>>> 777f03f082e16ab66fd9e2fc731b1f0f1059a207
             "voucher_finish_time": "2050-12-31T23:59:00Z",
             "voucher_code": "KONGP0FL5B",
             "is_quota_available": 1,
@@ -871,7 +877,7 @@ class ModelBuilder {
               {
                 "id": "205240239",
                 "name": "si tangan besi panas bisa melelehkan baja",
-                "image_url": "https://ecs7.tokopedia.net/img/cache/700/product-1/2017/7/28/17227058/17227058_cb279d46-7257-4ec9-b47a-991eb2e261d4_620_372.jpg",
+                "image_url": "https://images.tokopedia.net/img/cache/700/product-1/2017/7/28/17227058/17227058_cb279d46-7257-4ec9-b47a-991eb2e261d4_620_372.jpg",
                 "shop_id": "1961630",
                 "original_price": 131313,
                 "original_price_formatted": "Rp 131.313",
@@ -904,7 +910,7 @@ class ModelBuilder {
               {
                 "id": "233501860",
                 "name": "KOL belum digoreng",
-                "image_url": "https://ecs7.tokopedia.net/img/cache/700/product-1/2017/11/22/17227058/17227058_bb079da4-06f6-461e-bb5a-3d9f83339625_496_379.jpg",
+                "image_url": "https://images.tokopedia.net/img/cache/700/product-1/2017/11/22/17227058/17227058_bb079da4-06f6-461e-bb5a-3d9f83339625_496_379.jpg",
                 "shop_id": "1961630",
                 "original_price": 80000,
                 "original_price_formatted": "Rp 80.000",
@@ -954,7 +960,7 @@ class ModelBuilder {
               {
                 "id": "227295441",
                 "name": "Tengkurak",
-                "image_url": "https://ecs7.tokopedia.net/img/cache/700/product-1/2017/11/10/17227058/17227058_7ec00048-b473-406e-918a-ec45d3e8e02e_948_1300.jpg",
+                "image_url": "https://images.tokopedia.net/img/cache/700/product-1/2017/11/10/17227058/17227058_7ec00048-b473-406e-918a-ec45d3e8e02e_948_1300.jpg",
                 "shop_id": "1961630",
                 "original_price": 700,
                 "original_price_formatted": "Rp 700",
@@ -987,7 +993,7 @@ class ModelBuilder {
               {
                 "id": "193124774",
                 "name": "aku ingin begini aku ingin begitu ingin ini ingin itu banyak sekaliiii",
-                "image_url": "https://ecs7.tokopedia.net/img/cache/700/product-1/2017/7/7/17227058/17227058_2c250f2d-2fdd-4a85-a570-94fd49730e4f_1071_999.jpg",
+                "image_url": "https://images.tokopedia.net/img/cache/700/product-1/2017/7/7/17227058/17227058_2c250f2d-2fdd-4a85-a570-94fd49730e4f_1071_999.jpg",
                 "shop_id": "1961630",
                 "original_price": 3123123,
                 "original_price_formatted": "Rp 3.123.123",
@@ -1020,7 +1026,7 @@ class ModelBuilder {
               {
                 "id": "489530510",
                 "name": "sudahbreloom",
-                "image_url": "https://ecs7.tokopedia.net/img/cache/700/product-1/2019/6/17/17227058/17227058_d39d0414-e92a-4b0e-8f40-81776ee345db_500_500",
+                "image_url": "https://images.tokopedia.net/img/cache/700/product-1/2019/6/17/17227058/17227058_d39d0414-e92a-4b0e-8f40-81776ee345db_500_500",
                 "shop_id": "1961630",
                 "original_price": 200,
                 "original_price_formatted": "Rp 200",
@@ -1125,8 +1131,9 @@ class ModelBuilder {
             "title": "Gratis Ongkir Rp20.000",
             "subtitle": "Transaksi min. Rp50.000",
             "voucher_type": 1,
-            "voucher_image": "https://ecs7.tokopedia.net/img/BTJGre/2021/9/23/f71f1cce-47ac-4e0d-ab6f-e3810ed5e344.jpg",
-            "voucher_image_square": "https://ecs7.tokopedia.net/img/BTJGre/2021/9/23/f71f1cce-47ac-4e0d-ab6f-e3810ed5e344.jpg",
+            "voucher_image": "https://images.tokopedia.net/img/BTJGre/2021/9/23/f71f1cce-47ac-4e0d-ab6f-e3810ed5e344.jpg",
+            "voucher_image_square": "https://images.tokopedia.net/img/BTJGre/2021/9/23/f71f1cce-47ac-4e0d-ab6f-e3810ed5e344.jpg",
+            "voucher_quota": 25,
             "voucher_finish_time": "2050-12-31T23:59:00Z",
             "voucher_code": "KONGP0FL5B",
             "is_quota_available": 1,
@@ -1199,8 +1206,8 @@ class ModelBuilder {
         					"productVariantOptionID": 47372624,
         					"variantUnitValueID": 9,
         					"picture": {
-        						"url": "https://ecs7.tokopedia.net/img/cache/700/product-1/2020/3/18/82764734/82764734_027a3f2c-f1a6-4353-be2f-ccbae8ede018_420_420",
-        						"url200": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2020/3/18/82764734/82764734_027a3f2c-f1a6-4353-be2f-ccbae8ede018_420_420"
+        						"url": "https://images.tokopedia.net/img/cache/700/product-1/2020/3/18/82764734/82764734_027a3f2c-f1a6-4353-be2f-ccbae8ede018_420_420",
+        						"url200": "https://images.tokopedia.net/img/cache/200-square/product-1/2020/3/18/82764734/82764734_027a3f2c-f1a6-4353-be2f-ccbae8ede018_420_420"
         					}
         				},
         				{
@@ -1209,8 +1216,8 @@ class ModelBuilder {
         					"productVariantOptionID": 47372625,
         					"variantUnitValueID": 5,
         					"picture": {
-        						"url": "https://ecs7.tokopedia.net/img/cache/700/product-1/2020/3/18/82764734/82764734_3d3dda2b-b9b7-4303-a560-e72b925f1f1f_491_491",
-        						"url200": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2020/3/18/82764734/82764734_3d3dda2b-b9b7-4303-a560-e72b925f1f1f_491_491"
+        						"url": "https://images.tokopedia.net/img/cache/700/product-1/2020/3/18/82764734/82764734_3d3dda2b-b9b7-4303-a560-e72b925f1f1f_491_491",
+        						"url200": "https://images.tokopedia.net/img/cache/200-square/product-1/2020/3/18/82764734/82764734_3d3dda2b-b9b7-4303-a560-e72b925f1f1f_491_491"
         					}
         				},
         				{
@@ -1219,8 +1226,8 @@ class ModelBuilder {
         					"productVariantOptionID": 47372626,
         					"variantUnitValueID": 18,
         					"picture": {
-        						"url": "https://ecs7.tokopedia.net/img/cache/700/product-1/2020/3/18/82764734/82764734_fd079472-0bd7-4fbd-abf0-1e1767bc0503_450_450",
-        						"url200": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2020/3/18/82764734/82764734_fd079472-0bd7-4fbd-abf0-1e1767bc0503_450_450"
+        						"url": "https://images.tokopedia.net/img/cache/700/product-1/2020/3/18/82764734/82764734_fd079472-0bd7-4fbd-abf0-1e1767bc0503_450_450",
+        						"url200": "https://images.tokopedia.net/img/cache/200-square/product-1/2020/3/18/82764734/82764734_fd079472-0bd7-4fbd-abf0-1e1767bc0503_450_450"
         					}
         				},
         				{
@@ -1229,8 +1236,8 @@ class ModelBuilder {
         					"productVariantOptionID": 47372627,
         					"variantUnitValueID": 2,
         					"picture": {
-        						"url": "https://ecs7.tokopedia.net/img/cache/700/product-1/2020/3/18/82764734/82764734_b1cbe38a-e398-4818-bc11-eee776cf5dc6_1000_1000",
-        						"url200": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2020/3/18/82764734/82764734_b1cbe38a-e398-4818-bc11-eee776cf5dc6_1000_1000"
+        						"url": "https://images.tokopedia.net/img/cache/700/product-1/2020/3/18/82764734/82764734_b1cbe38a-e398-4818-bc11-eee776cf5dc6_1000_1000",
+        						"url200": "https://images.tokopedia.net/img/cache/200-square/product-1/2020/3/18/82764734/82764734_b1cbe38a-e398-4818-bc11-eee776cf5dc6_1000_1000"
         					}
         				},
         				{
@@ -1239,8 +1246,8 @@ class ModelBuilder {
         					"productVariantOptionID": 47372628,
         					"variantUnitValueID": 6,
         					"picture": {
-        						"url": "https://ecs7.tokopedia.net/img/cache/700/product-1/2020/3/18/82764734/82764734_8536ec76-938b-4f02-ac1b-5f0047921813_1105_1105",
-        						"url200": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2020/3/18/82764734/82764734_8536ec76-938b-4f02-ac1b-5f0047921813_1105_1105"
+        						"url": "https://images.tokopedia.net/img/cache/700/product-1/2020/3/18/82764734/82764734_8536ec76-938b-4f02-ac1b-5f0047921813_1105_1105",
+        						"url200": "https://images.tokopedia.net/img/cache/200-square/product-1/2020/3/18/82764734/82764734_8536ec76-938b-4f02-ac1b-5f0047921813_1105_1105"
         					}
         				},
         				{
@@ -1249,8 +1256,8 @@ class ModelBuilder {
         					"productVariantOptionID": 47372629,
         					"variantUnitValueID": 16,
         					"picture": {
-        						"url": "https://ecs7.tokopedia.net/img/cache/700/product-1/2020/3/18/82764734/82764734_8c9f1db3-0bdf-45e6-987d-5299acbb0b8a_860_860",
-        						"url200": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2020/3/18/82764734/82764734_8c9f1db3-0bdf-45e6-987d-5299acbb0b8a_860_860"
+        						"url": "https://images.tokopedia.net/img/cache/700/product-1/2020/3/18/82764734/82764734_8c9f1db3-0bdf-45e6-987d-5299acbb0b8a_860_860",
+        						"url200": "https://images.tokopedia.net/img/cache/200-square/product-1/2020/3/18/82764734/82764734_8c9f1db3-0bdf-45e6-987d-5299acbb0b8a_860_860"
         					}
         				}
         			]
@@ -1294,8 +1301,8 @@ class ModelBuilder {
         					"alwaysAvailable": false
         				},
         				"picture": {
-        					"url": "https://ecs7.tokopedia.net/img/cache/700/product-1/2020/3/18/82764734/82764734_027a3f2c-f1a6-4353-be2f-ccbae8ede018_420_420",
-        					"url200": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2020/3/18/82764734/82764734_027a3f2c-f1a6-4353-be2f-ccbae8ede018_420_420"
+        					"url": "https://images.tokopedia.net/img/cache/700/product-1/2020/3/18/82764734/82764734_027a3f2c-f1a6-4353-be2f-ccbae8ede018_420_420",
+        					"url200": "https://images.tokopedia.net/img/cache/200-square/product-1/2020/3/18/82764734/82764734_027a3f2c-f1a6-4353-be2f-ccbae8ede018_420_420"
         				}
         			},
         			{
@@ -1337,8 +1344,8 @@ class ModelBuilder {
         					"alwaysAvailable": false
         				},
         				"picture": {
-        					"url": "https://ecs7.tokopedia.net/img/cache/700/product-1/2020/3/18/82764734/82764734_3d3dda2b-b9b7-4303-a560-e72b925f1f1f_491_491",
-        					"url200": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2020/3/18/82764734/82764734_3d3dda2b-b9b7-4303-a560-e72b925f1f1f_491_491"
+        					"url": "https://images.tokopedia.net/img/cache/700/product-1/2020/3/18/82764734/82764734_3d3dda2b-b9b7-4303-a560-e72b925f1f1f_491_491",
+        					"url200": "https://images.tokopedia.net/img/cache/200-square/product-1/2020/3/18/82764734/82764734_3d3dda2b-b9b7-4303-a560-e72b925f1f1f_491_491"
         				}
         			},
         			{
@@ -1380,8 +1387,8 @@ class ModelBuilder {
         					"alwaysAvailable": false
         				},
         				"picture": {
-        					"url": "https://ecs7.tokopedia.net/img/cache/700/product-1/2020/3/18/82764734/82764734_fd079472-0bd7-4fbd-abf0-1e1767bc0503_450_450",
-        					"url200": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2020/3/18/82764734/82764734_fd079472-0bd7-4fbd-abf0-1e1767bc0503_450_450"
+        					"url": "https://images.tokopedia.net/img/cache/700/product-1/2020/3/18/82764734/82764734_fd079472-0bd7-4fbd-abf0-1e1767bc0503_450_450",
+        					"url200": "https://images.tokopedia.net/img/cache/200-square/product-1/2020/3/18/82764734/82764734_fd079472-0bd7-4fbd-abf0-1e1767bc0503_450_450"
         				}
         			},
         			{
@@ -1423,8 +1430,8 @@ class ModelBuilder {
         					"alwaysAvailable": false
         				},
         				"picture": {
-        					"url": "https://ecs7.tokopedia.net/img/cache/700/product-1/2020/3/18/82764734/82764734_b1cbe38a-e398-4818-bc11-eee776cf5dc6_1000_1000",
-        					"url200": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2020/3/18/82764734/82764734_b1cbe38a-e398-4818-bc11-eee776cf5dc6_1000_1000"
+        					"url": "https://images.tokopedia.net/img/cache/700/product-1/2020/3/18/82764734/82764734_b1cbe38a-e398-4818-bc11-eee776cf5dc6_1000_1000",
+        					"url200": "https://images.tokopedia.net/img/cache/200-square/product-1/2020/3/18/82764734/82764734_b1cbe38a-e398-4818-bc11-eee776cf5dc6_1000_1000"
         				}
         			},
         			{
@@ -1466,8 +1473,8 @@ class ModelBuilder {
         					"alwaysAvailable": false
         				},
         				"picture": {
-        					"url": "https://ecs7.tokopedia.net/img/cache/700/product-1/2020/3/18/82764734/82764734_8536ec76-938b-4f02-ac1b-5f0047921813_1105_1105",
-        					"url200": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2020/3/18/82764734/82764734_8536ec76-938b-4f02-ac1b-5f0047921813_1105_1105"
+        					"url": "https://images.tokopedia.net/img/cache/700/product-1/2020/3/18/82764734/82764734_8536ec76-938b-4f02-ac1b-5f0047921813_1105_1105",
+        					"url200": "https://images.tokopedia.net/img/cache/200-square/product-1/2020/3/18/82764734/82764734_8536ec76-938b-4f02-ac1b-5f0047921813_1105_1105"
         				}
         			},
         			{
@@ -1509,8 +1516,8 @@ class ModelBuilder {
         					"alwaysAvailable": false
         				},
         				"picture": {
-        					"url": "https://ecs7.tokopedia.net/img/cache/700/product-1/2020/3/18/82764734/82764734_8c9f1db3-0bdf-45e6-987d-5299acbb0b8a_860_860",
-        					"url200": "https://ecs7.tokopedia.net/img/cache/200-square/product-1/2020/3/18/82764734/82764734_8c9f1db3-0bdf-45e6-987d-5299acbb0b8a_860_860"
+        					"url": "https://images.tokopedia.net/img/cache/700/product-1/2020/3/18/82764734/82764734_8c9f1db3-0bdf-45e6-987d-5299acbb0b8a_860_860",
+        					"url200": "https://images.tokopedia.net/img/cache/200-square/product-1/2020/3/18/82764734/82764734_8c9f1db3-0bdf-45e6-987d-5299acbb0b8a_860_860"
         				}
         			}
         		]
@@ -1522,7 +1529,7 @@ class ModelBuilder {
     {
        "id": "748953246",
        "name": "digimonroyalknightsberdasarkanwarna",
-       "image_url": "https://ecs7.tokopedia.net/img/cache/700/product-1/2020/3/20/82764734/82764734_5759a072-79f9-4b66-8cf8-65c0e94721e3_779_779",
+       "image_url": "https://images.tokopedia.net/img/cache/700/product-1/2020/3/20/82764734/82764734_5759a072-79f9-4b66-8cf8-65c0e94721e3_779_779",
        "shop_id": "7307032",
        "original_price": 1000000,
        "original_price_formatted": "Rp 1.000.000",

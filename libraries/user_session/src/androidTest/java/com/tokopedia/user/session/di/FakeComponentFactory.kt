@@ -1,4 +1,4 @@
-package com.tokopedia.di
+package com.tokopedia.user.session.di
 
 import android.content.Context
 import androidx.test.core.app.ApplicationProvider
