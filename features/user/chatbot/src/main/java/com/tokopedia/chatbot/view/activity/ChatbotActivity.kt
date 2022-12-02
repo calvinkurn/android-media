@@ -27,6 +27,7 @@ class ChatbotActivity : BaseChatToolbarActivity() {
     override fun getNewFragment(): Fragment {
         val bundle = Bundle()
         val list = intent?.data?.let {
+            bundle.putString(DEEP_LINK_URI, it.toString())
             UriUtil.destructureUri(
                 ApplinkConstInternalGlobal.CHAT_BOT + "/{id}",
                 it,
@@ -36,7 +37,6 @@ class ChatbotActivity : BaseChatToolbarActivity() {
         if (!list.isNullOrEmpty()) {
             bundle.putString(MESSAGE_ID, list[0])
         }
-        bundle.putString(DEEP_LINK_URI, intent?.data?.toString())
         val fragment = ChatbotFragment()
         fragment.arguments = bundle
         return fragment
