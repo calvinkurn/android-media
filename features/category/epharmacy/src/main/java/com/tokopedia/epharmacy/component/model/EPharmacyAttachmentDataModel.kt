@@ -24,7 +24,8 @@ data class EPharmacyAttachmentDataModel(
     var productsIsExpanded: Boolean = false,
     var prescriptionCTA: EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.PrescriptionCTA?,
     val showUploadWidget: Boolean = false,
-    val showDivider: Boolean = true
+    val showDivider: Boolean = true,
+    var isError : Boolean = false
 ) :
     BaseEPharmacyDataModel {
 

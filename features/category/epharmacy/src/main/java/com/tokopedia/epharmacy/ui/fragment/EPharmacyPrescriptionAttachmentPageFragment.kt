@@ -54,6 +54,7 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
     private var ePharmacyRecyclerView: RecyclerView? = null
     private var ePharmacyDoneButton: UnifyButton? = null
     private var ePharmacyGlobalError: GlobalError? = null
+    private var isFirstTimeLaunch = true
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
@@ -201,6 +202,7 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
     }
 
     private fun onFailGetConsultationDetails(throwable: Throwable) {
+        showToast(TYPE_ERROR, context?.resources?.getString(R.string.epharmacy_internet_error) ?: "")
     }
 
     private fun observerEPharmacyButtonData() {
@@ -235,8 +237,8 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
                     initiateConsultationData.consultationSource?.operatingSchedule?.daily?.openTime,
                     initiateConsultationData.consultationSource?.operatingSchedule?.daily?.closeTime,
                     initiateConsultationData.consultationSource?.id,
-                    "",
-                    ""
+                    initiateConsultationData.epharmacyGroupId,
+                    initiateConsultationData.consultationSource?.enablerName
                 )
             } else {
                 activity?.let { safeContext ->
@@ -308,8 +310,8 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
                         component.consultationSource?.operatingSchedule?.daily?.openTime,
                         component.consultationSource?.operatingSchedule?.daily?.closeTime,
                         component.consultationSource?.id,
-                        "",
-                        ""
+                        component.epharmacyGroupId,
+                        component.enablerName
                     )
                 }
             }
@@ -342,17 +344,36 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
     }
 
     private fun onDoneButtonClick(appLink: String?) {
-        if (appLink.isNullOrBlank() || appLink.contains(EPHARMACY_CHECKOUT_APPLINK)) {
-            activity?.setResult(
-                EPHARMACY_MINI_CONSULTATION_REQUEST_CODE,
-                Intent().apply {
-                    putParcelableArrayListExtra(EPHARMACY_CONSULTATION_RESULT_EXTRA, getResultForCheckout())
-                }
-            )
-            activity?.finish()
-        } else {
-            RouteManager.route(activity, appLink)
+        if(hasError()){
+            updateUi()
+        }else {
+            if (appLink.isNullOrBlank() || appLink.contains(EPHARMACY_CHECKOUT_APPLINK)) {
+                activity?.setResult(
+                    EPHARMACY_MINI_CONSULTATION_REQUEST_CODE,
+                    Intent().apply {
+                        putParcelableArrayListExtra(EPHARMACY_CONSULTATION_RESULT_EXTRA, getResultForCheckout())
+                    }
+                )
+                activity?.finish()
+            } else {
+                RouteManager.route(activity, appLink)
+            }
         }
+    }
+
+    private fun hasError(): Boolean {
+        ePharmacyAttachmentUiUpdater.mapOfData.forEach {
+            if(it.value is EPharmacyAttachmentDataModel){
+                if((it.value as EPharmacyAttachmentDataModel).consultationData == null
+                    || (it.value as EPharmacyAttachmentDataModel).prescriptionImages?.isNullOrEmpty() == true){
+                    val updated = (it.value as EPharmacyAttachmentDataModel).copy()
+                    updated.isError = true
+                    ePharmacyAttachmentUiUpdater.updateModel(updated)
+                    return true
+                }
+            }
+        }
+        return false
     }
 
     private fun getResultForCheckout(): ArrayList<EPharmacyMiniConsultationResult> {

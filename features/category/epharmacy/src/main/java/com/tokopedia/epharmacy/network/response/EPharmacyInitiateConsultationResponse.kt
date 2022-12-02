@@ -19,6 +19,8 @@ data class InitiateConsultation(
     data class InitiateConsultationData(
         @SerializedName("toko_consultation_id")
         val tokoConsultationId: String?,
+        @SerializedName("epharmacy_group_id")
+        var epharmacyGroupId: String?,
         @SerializedName("consultation_source")
         val consultationSource: EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ConsultationSource?
     )

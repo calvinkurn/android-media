@@ -86,9 +86,10 @@ class EPharmacyPrescriptionAttachmentViewModel @Inject constructor(
         }
     }
 
-    private fun onSuccessInitiateConsultation(response: EPharmacyInitiateConsultationResponse) {
+    private fun onSuccessInitiateConsultation(epGroupId : String, response: EPharmacyInitiateConsultationResponse) {
         response.getInitiateConsultation?.let { data ->
             if (data.initiateConsultationData?.tokoConsultationId?.isNotBlank() == true) {
+                data.initiateConsultationData.epharmacyGroupId = epGroupId
                 _initiateConsultation.postValue(Success(data.initiateConsultationData))
             } else {
                 onFailInitiateConsultation(IllegalStateException("Data invalid"))

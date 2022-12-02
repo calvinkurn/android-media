@@ -9,6 +9,7 @@ import com.tokopedia.epharmacy.R
 import com.tokopedia.epharmacy.di.DaggerEPharmacyComponent
 import com.tokopedia.epharmacy.di.EPharmacyComponent
 import com.tokopedia.epharmacy.ui.fragment.EPharmacyPrescriptionAttachmentPageFragment
+import com.tokopedia.epharmacy.utils.EPharmacyMiniConsultationAnalytics
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject
 

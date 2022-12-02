@@ -94,7 +94,7 @@ class EPharmacyPrescriptionAttachmentViewModelTest {
 
     @Test
     fun initiateConsultationSuccessTest() {
-        val responseGroup = InitiateConsultation.InitiateConsultationData("231324", null)
+        val responseGroup = InitiateConsultation.InitiateConsultationData("231324", null,null)
         val responseData = InitiateConsultation(responseGroup)
         val response = EPharmacyInitiateConsultationResponse(responseData)
         coEvery {

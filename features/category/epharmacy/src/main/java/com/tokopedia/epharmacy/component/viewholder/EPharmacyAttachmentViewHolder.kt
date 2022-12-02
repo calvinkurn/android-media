@@ -1,8 +1,11 @@
 package com.tokopedia.epharmacy.component.viewholder
 
+import android.animation.Animator
 import android.view.View
+import android.view.animation.CycleInterpolator
 import android.widget.ImageView
 import android.widget.LinearLayout
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
@@ -38,6 +41,7 @@ class EPharmacyAttachmentViewHolder(private val view: View, private val ePharmac
     private val productAccordionRV = view.findViewById<RecyclerView>(R.id.accordion_expandable_rv)
     private val productAccordionChevron = view.findViewById<IconUnify>(R.id.iv_expand_other_product)
     private val chatDokterUploadLayout = view.findViewById<LinearLayout>(R.id.chat_dokter_upload_layout)
+    private val containerUploadPrescription = view.findViewById<ConstraintLayout>(R.id.container_upload_prescription)
     private val chatDokterUploadText = view.findViewById<Typography>(R.id.upload_prescription_text)
     private val chatDokterUploadSubText = view.findViewById<Typography>(R.id.upload_description_text)
     private val chatDokterUploadIcon = view.findViewById<ImageUnify>(R.id.upload_icon)
@@ -57,12 +61,35 @@ class EPharmacyAttachmentViewHolder(private val view: View, private val ePharmac
     }
 
     private fun renderGroupData() {
+        renderError()
         renderPartnerData()
         renderShopData()
         renderProductsData()
         renderButton()
         renderDivider()
         renderObstruction()
+    }
+
+    private fun renderError() {
+        if (dataModel?.isError == true) {
+            containerUploadPrescription.setBackgroundResource(com.tokopedia.epharmacy.R.drawable.epharmacy_bg_rounded_red)
+//            containerUploadPrescription.animate()
+//                .translationX(VIBRATION_ANIMATION_TRANSLATION_X.toFloat())
+//                .setDuration(VIBRATION_ANIMATION_DURATION.toLong())
+//                .setInterpolator(CycleInterpolator(VIBRATION_ANIMATION_CYCLE))
+//                .setListener(object : Animator.AnimatorListener {
+//                    override fun onAnimationStart(animator: Animator) {}
+//                    override fun onAnimationEnd(animator: Animator) {
+//
+//                    }
+//
+//                    override fun onAnimationCancel(animator: Animator) {}
+//                    override fun onAnimationRepeat(animator: Animator) {}
+//                })
+//                .start()
+        } else {
+            containerUploadPrescription.setBackgroundResource(R.drawable.epharmacy_bg_rounded_grey)
+        }
     }
 
     private fun renderObstruction() {
