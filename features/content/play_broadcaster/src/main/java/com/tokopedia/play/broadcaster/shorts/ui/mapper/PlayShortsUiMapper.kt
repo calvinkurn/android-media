@@ -36,7 +36,7 @@ class PlayShortsUiMapper @Inject constructor(
     override fun mapShortsConfig(response: GetBroadcasterAuthorConfigResponse): PlayShortsConfigUiModel {
         val config = gson.fromJson<PlayShortsConfig>(
             response.authorConfig.config,
-            object : TypeToken<List<PlayShortsConfig>>() {}.type
+            object : TypeToken<PlayShortsConfig>() {}.type
         )
 
         return PlayShortsConfigUiModel(

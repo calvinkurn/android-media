@@ -30,88 +30,88 @@ class PlayShortsRepositoryImpl @Inject constructor(
 ) : PlayShortsRepository {
 
     override suspend fun getAccountList(): List<ContentAccountUiModel> = withContext(dispatchers.io) {
-        delay(500)
-
-        listOf(
-            ContentAccountUiModel(
-                id = "123",
-                name = "Shop",
-                iconUrl = "",
-                badge = "",
-                type = "content-shop",
-                hasUsername = true,
-                enable = true,
-            ),
-            ContentAccountUiModel(
-                id = "456",
-                name = "UGC",
-                iconUrl = "",
-                badge = "",
-                type = "content-user",
-                hasUsername = true,
-                enable = false,
-            )
-        )
+//        delay(500)
+//
+//        listOf(
+//            ContentAccountUiModel(
+//                id = "123",
+//                name = "Shop",
+//                iconUrl = "",
+//                badge = "",
+//                type = "content-shop",
+//                hasUsername = true,
+//                enable = true,
+//            ),
+//            ContentAccountUiModel(
+//                id = "456",
+//                name = "UGC",
+//                iconUrl = "",
+//                badge = "",
+//                type = "content-user",
+//                hasUsername = true,
+//                enable = false,
+//            )
+//        )
 
         /** TODO: will uncomment this later */
-//        val response = getWhiteListNewUseCase.execute(type = GetWhiteListNewUseCase.WHITELIST_ENTRY_POINT)
-//
-//        return@withContext mapper.mapAuthorList(response)
+        val response = getWhiteListNewUseCase.execute(type = GetWhiteListNewUseCase.WHITELIST_ENTRY_POINT)
+
+        return@withContext mapper.mapAuthorList(response)
     }
 
     override suspend fun getShortsConfiguration(
         authorId: String,
         authorType: String
     ): PlayShortsConfigUiModel = withContext(dispatchers.io) {
-        delay(500)
-
-        PlayShortsConfigUiModel(
-            shortsId = "123",
-            shortsAllowed = true,
-            tncList = List(3) {
-                TermsAndConditionUiModel("Desc $it")
-            },
-            maxTitleCharacter = 24,
-            maxTaggedProduct = 30,
-        )
+//        delay(500)
+//
+//        PlayShortsConfigUiModel(
+//            shortsId = "123",
+//            shortsAllowed = true,
+//            tncList = List(3) {
+//                TermsAndConditionUiModel("Desc $it")
+//            },
+//            maxTitleCharacter = 24,
+//            maxTaggedProduct = 30,
+//        )
 
         /** TODO: will uncomment this later */
-//        val response = getConfigurationUseCase.execute(authorId, authorType)
-//
-//        mapper.mapShortsConfig(response)
+        val response = getConfigurationUseCase.execute(authorId, authorType)
+
+        mapper.mapShortsConfig(response)
     }
 
     override suspend fun createShorts(authorId: String, authorType: String): String = withContext(dispatchers.io) {
-        delay(1000)
-        return@withContext "123"
+//        delay(1000)
+//        return@withContext "123"
 
         /** TODO: will uncomment this later */
-//        val response = createChannelUseCase.apply {
-//            params = CreateChannelUseCase.createParams(
-//                authorId = authorId,
-//                authorType = authorType,
-//                type = CreateChannelUseCase.Type.Shorts,
-//            )
-//        }.executeOnBackground()
-//
-//        return@withContext response.id
+        val response = createChannelUseCase.apply {
+            params = CreateChannelUseCase.createParams(
+                authorId = authorId,
+                authorType = authorType,
+                type = CreateChannelUseCase.Type.Shorts,
+            )
+        }.executeOnBackground()
+
+        return@withContext response.id
     }
 
     override suspend fun uploadTitle(title: String, shortsId: String, authorId: String) {
-        delay(1000)
+//        delay(1000)
 
         /** TODO: will uncomment this later */
-//        withContext(dispatchers.io) {
-//            updateChannelUseCase.apply {
-//                setQueryParams(
-//                    PlayBroadcastUpdateChannelUseCase.createUpdateTitleRequest(
-//                        channelId = shortsId,
-//                        authorId = authorId,
-//                        title = title
-//                    )
-//                )
-//            }.executeOnBackground()
-//        }
+        withContext(dispatchers.io) {
+            updateChannelUseCase.apply {
+                setQueryParams(
+                    PlayBroadcastUpdateChannelUseCase.createUpdateTitleRequest(
+                        channelId = shortsId,
+                        authorId = authorId,
+                        title = title
+                    )
+                )
+            }.executeOnBackground()
+        }
     }
 
     override suspend fun getTagRecommendation(
@@ -128,11 +128,11 @@ class PlayShortsRepositoryImpl @Inject constructor(
         shortsId: String,
         tags: Set<String>
     ): Boolean = withContext(dispatchers.io) {
-        true
+//        true
 
         /** TODO: will uncomment this later */
-//        setChannelTagsUseCase.apply {
-//            setParams(shortsId, tags)
-//        }.executeOnBackground().recommendedTags.success
+        setChannelTagsUseCase.apply {
+            setParams(shortsId, tags)
+        }.executeOnBackground().recommendedTags.success
     }
 }
