@@ -139,15 +139,13 @@ class AffiliateEducationLandingPage :
 
     override fun onKamusClick() {
         context?.let {
-            context?.let {
-                RouteManager.route(
-                    it,
-                    getArticleEventUrl(
-                        kamusSlug,
-                        getString(R.string.affiliate_artikel)
-                    )
+            RouteManager.route(
+                it,
+                getArticleEventUrl(
+                    kamusSlug,
+                    getString(R.string.affiliate_artikel)
                 )
-            }
+            )
         }
     }
 
@@ -192,7 +190,7 @@ class AffiliateEducationLandingPage :
                 it,
                 buildString {
                     append(ApplinkConst.WEBVIEW)
-                    append("?titlebar=false")
+                    append("?titlebar=true")
                     append("&url=$url")
                     append("?navigation=hide")
                 }
