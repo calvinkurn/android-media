@@ -279,7 +279,7 @@ class TokoNowSearchViewModel @Inject constructor (
             quantity = quantity,
             onSuccessAddToCart = {
                 sendAddToCartBroadMatchItemTracking(quantity, it, broadMatchItem)
-                updateCartMessageSuccess(it.errorMessage.joinToString(separator = ", "))
+                addToCartMessageSuccess(it.errorMessage.joinToString(separator = ", "))
                 updateToolbarNotification()
                 refreshMiniCart()
             },
@@ -288,7 +288,7 @@ class TokoNowSearchViewModel @Inject constructor (
                 refreshMiniCart()
             },
             onSuccessDeleteCart = {
-                updateCartMessageSuccess(it.errorMessage.joinToString(separator = ", "))
+                removeFromCartMessageSuccess(it.errorMessage.joinToString(separator = ", "))
                 updateToolbarNotification()
                 refreshMiniCart()
             },

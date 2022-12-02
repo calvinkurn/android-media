@@ -996,7 +996,7 @@ class TokoNowHomeFragment: Fragment(),
                     getMiniCart()
                     showToaster(
                         message = it.data.errorMessage.joinToString(separator = ", "),
-                        actionText = getString(R.string.tokopedianow_lihat),
+                        actionText = getString(R.string.tokopedianow_toaster_see),
                         onClickActionBtn = {
                             showMiniCartBottomSheet()
                         },
@@ -1032,6 +1032,7 @@ class TokoNowHomeFragment: Fragment(),
                 is Success -> {
                     getMiniCart()
                     showToaster(
+                        actionText = getString(R.string.tokopedianow_toaster_ok),
                         message = it.data.second,
                         type = TYPE_NORMAL
                     )
