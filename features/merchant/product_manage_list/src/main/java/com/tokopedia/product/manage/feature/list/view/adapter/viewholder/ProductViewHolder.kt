@@ -50,9 +50,7 @@ class ProductViewHolder(
         showProductImage(product)
         showNotifyMeBuyer(product)
         showStockHintImage(product)
-        if (firebaseRemoteConfigImpl.getBoolean(ENABLE_STOCK_AVAILABLE).orFalse()){
-            showLabelGuaranteed(product)
-        }
+        showLabelGuaranteed(product)
         if (!product.isVariant()) {
             showStockAlertImage(product)
             showStockAlertActiveImage(product)
@@ -65,30 +63,6 @@ class ProductViewHolder(
         showCampaignCountText(product)
 
         setOnClickListeners(product)
-
-        impressionView()
-
-    }
-
-    private fun impressionView() {
-        val impressHolder = ImpressHolder()
-        binding?.apply {
-            if (absoluteAdapterPosition.orZero() == Int.ZERO) {
-                ivLabelGuaranteed.addOnImpressionListener(impressHolder) {
-                    listener.onImpressionLabelGuarantee(ivLabelGuaranteed)
-                }
-
-                btnMoreOptions.addOnImpressionListener(impressHolder) {
-                    if (!imageStockReminder.isVisible.orFalse()){
-                        listener.onImpressionProductStockReminder(btnMoreOptions)
-                    }
-                }
-            }
-
-            imageStockReminder.addOnImpressionListener(impressHolder) {
-                listener.onImpressionProductStockReminder(imageStockReminder)
-            }
-        }
     }
 
     private fun setTitleAndPrice(product: ProductUiModel) {
@@ -405,8 +379,5 @@ class ProductViewHolder(
         fun onClickEditVariantPriceButton(product: ProductUiModel)
         fun onClickEditVariantStockButton(product: ProductUiModel)
         fun onClickContactCsButton(product: ProductUiModel)
-        fun onImpressionMoreOption(view: View)
-        fun onImpressionProductStockReminder(view: View)
-        fun onImpressionLabelGuarantee(view: View)
     }
 }
