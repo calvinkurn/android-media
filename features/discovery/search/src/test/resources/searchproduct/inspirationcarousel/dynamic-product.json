@@ -1005,6 +1005,13 @@
                 "free_ongkir": {
                   "is_active": false,
                   "img_url": ""
+                },
+                "stockbar": {
+                  "stock": 1000,
+                  "original_stock": 1000,
+                  "percentage_value": 0,
+                  "value": "Tersedia",
+                  "color": "#31353b"
                 }
               },
               {
