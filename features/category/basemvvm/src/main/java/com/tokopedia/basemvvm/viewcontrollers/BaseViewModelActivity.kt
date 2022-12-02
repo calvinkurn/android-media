@@ -20,7 +20,7 @@ abstract class BaseViewModelActivity<T : BaseViewModel> : BaseSimpleActivity(), 
     }
 
     private fun setViewModel() {
-        bVM = ViewModelProviders.of(this, getVMFactory()).get(getViewModelType())
+        bVM = ViewModelProvider(this, getVMFactory()).get(getViewModelType())
         setViewModel(bVM)
         lifecycle.addObserver(getLifeCycleObserver(bVM))
     }

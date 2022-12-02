@@ -18,7 +18,6 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
-import com.airbnb.lottie.LottieAnimationView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -1842,8 +1841,6 @@ class TokoNowHomeFragment : Fragment(),
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
                 evaluateHomeComponentOnScroll(recyclerView, dy)
-                val position = (recyclerView.layoutManager as LinearLayoutManager).findLastCompletelyVisibleItemPosition()
-                val vh = recyclerView.findViewHolderForAdapterPosition(position)
             }
         }
     }
@@ -1980,19 +1977,6 @@ class TokoNowHomeFragment : Fragment(),
             dialog.setImageUrl(URL_IMAGE_DIALOG_REFERRAL)
             dialog.show()
         }
-    }
-
-    private fun replaceImage(newView: View, oldView: View) {
-        val parent = oldView.parent as ViewGroup? ?: return
-        val index = parent.indexOfChild(newView)
-        removeView(oldView)
-        removeView(newView)
-        parent.addView(newView, index)
-    }
-
-    private fun removeView(view: View) {
-        val parent = view.parent as ViewGroup?
-        parent?.removeView(view)
     }
 
     private fun getDialogReceiverReferral() {

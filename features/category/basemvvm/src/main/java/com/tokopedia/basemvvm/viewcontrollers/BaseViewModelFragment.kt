@@ -24,7 +24,7 @@ abstract class BaseViewModelFragment< T : BaseViewModel>: TkpdBaseV4Fragment(),B
     }
 
     private fun setViewModel() {
-        bVM = ViewModelProviders.of(this, getVMFactory()).get(getViewModelType())
+        bVM = ViewModelProvider(this, getVMFactory()!!).get(getViewModelType())
         setViewModel(bVM)
         lifecycle.addObserver(getLifeCycleObserver(bVM))
     }
