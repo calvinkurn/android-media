@@ -612,7 +612,8 @@ open class DynamicPostViewHolder(v: View,
             isFollow: Boolean,
             postType: String = "",
             isVideo: Boolean,
-            isBottomSheetMenuOnFeed: Boolean = false
+            isBottomSheetMenuOnFeed: Boolean = false,
+            isFollowedFromFollowRestrictionBottomSheet: Boolean = false
         )
 
         fun onMenuClick(
@@ -719,31 +720,32 @@ open class DynamicPostViewHolder(v: View,
 
         fun onReadMoreClicked(trackingPostModel: TrackingPostModel)
 
-        fun onImageClicked(activityId: String, type: String, isFollowed: Boolean, shopId: String)
+        fun onImageClicked(card: FeedXCard)
 
         fun onTagClicked(
-                postId: String,
+                card: FeedXCard,
                 products: List<FeedXProduct>,
                 listener: DynamicPostListener,
-                id: String,
-                type: String,
-                isFollowed: Boolean,
                 mediaType: String = "",
-                positionInFeed: Int,
-                playChannelId: String = "",
-                shopName: String = ""
+                positionInFeed: Int
         )
+        fun onIngatkanSayaBtnImpressed(card: FeedXCard, positionInFeed: Int)
+        fun onIngatkanSayaBtnClicked(card: FeedXCard, positionInFeed: Int)
+        fun changeUpcomingWidgetToOngoing(card: FeedXCard, positionInFeed: Int)
+        fun removeOngoingCampaignSaleWidget(card: FeedXCard, positionInFeed: Int)
 
         fun onReadMoreClicked(
-            postId: String,
-            shopId: String = "",
-            type: String,
-            isFollowed: Boolean,
-            mediaType: String
+            card: FeedXCard,
+            positionInFeed: Int
         )
 
 
-        fun muteUnmuteVideo(postId: String, mute: Boolean, id: String, isFollowed: Boolean, isVOD: Boolean, mediaType: String)
+        fun muteUnmuteVideo(
+            card: FeedXCard,
+            mute: Boolean,
+            positionInFeed: Int,
+            mediaType: String
+        )
 
         fun onImpressionTracking(feedXCard: FeedXCard, positionInFeed: Int)
 

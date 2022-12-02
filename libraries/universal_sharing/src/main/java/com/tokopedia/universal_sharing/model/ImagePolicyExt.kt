@@ -36,6 +36,67 @@ private fun ImagePolicyResponse.generateToPDP(
     })
 }
 
+private fun ImagePolicyResponse.generateToWishlist(
+    data: WishlistCollectionParamModel
+): ArrayList<ImageGeneratorRequestData> {
+    return ArrayList(response.args.map { imagePolicy ->
+        when (imagePolicy.key) {
+            ImageGeneratorConstants.ImageGeneratorKeys.COLLECTION_NAME -> {
+                imagePolicy.toRequestParam(data.collectionName.toString())
+            }
+            ImageGeneratorConstants.ImageGeneratorKeys.COLLECTION_OWNER -> {
+                imagePolicy.toRequestParam(data.collectionOwner)
+            }
+            ImageGeneratorConstants.ImageGeneratorKeys.PRODUCT_COUNT -> {
+                imagePolicy.toRequestParam(data.productCount.toString())
+            }
+            ImageGeneratorConstants.ImageGeneratorKeys.PRODUCT_IMAGE_1 -> {
+                imagePolicy.toRequestParam(data.productImage1)
+            }
+            ImageGeneratorConstants.ImageGeneratorKeys.PRODUCT_PRICE_1 -> {
+                imagePolicy.toRequestParam(data.productPrice1.toString())
+            }
+            ImageGeneratorConstants.ImageGeneratorKeys.PRODUCT_IMAGE_2 -> {
+                imagePolicy.toRequestParam(data.productImage2)
+            }
+            ImageGeneratorConstants.ImageGeneratorKeys.PRODUCT_PRICE_2 -> {
+                imagePolicy.toRequestParam(data.productPrice2.toString())
+            }
+            ImageGeneratorConstants.ImageGeneratorKeys.PRODUCT_IMAGE_3 -> {
+                imagePolicy.toRequestParam(data.productImage3)
+            }
+            ImageGeneratorConstants.ImageGeneratorKeys.PRODUCT_PRICE_3 -> {
+                imagePolicy.toRequestParam(data.productPrice3.toString())
+            }
+            ImageGeneratorConstants.ImageGeneratorKeys.PRODUCT_IMAGE_4 -> {
+                imagePolicy.toRequestParam(data.productImage4)
+            }
+            ImageGeneratorConstants.ImageGeneratorKeys.PRODUCT_PRICE_4 -> {
+                imagePolicy.toRequestParam(data.productPrice4.toString())
+            }
+            ImageGeneratorConstants.ImageGeneratorKeys.PRODUCT_IMAGE_5 -> {
+                imagePolicy.toRequestParam(data.productImage5)
+            }
+            ImageGeneratorConstants.ImageGeneratorKeys.PRODUCT_PRICE_5 -> {
+                imagePolicy.toRequestParam(data.productPrice5.toString())
+            }
+            ImageGeneratorConstants.ImageGeneratorKeys.PRODUCT_IMAGE_6 -> {
+                imagePolicy.toRequestParam(data.productImage6)
+            }
+            ImageGeneratorConstants.ImageGeneratorKeys.PRODUCT_PRICE_6 -> {
+                imagePolicy.toRequestParam(data.productPrice6.toString())
+            }
+            ImageGeneratorConstants.ImageGeneratorKeys.PLATFORM -> {
+                imagePolicy.toRequestParam(data.platform)
+            }
+            else -> {
+                imagePolicy.toRequestParam("")
+            }
+
+        }
+    })
+}
+
 private fun ImagePolicyResponse.generateToShopPage(
     data: ShopPageParamModel
 ): ArrayList<ImageGeneratorRequestData> {
@@ -136,6 +197,9 @@ fun ImagePolicyResponse.generateImageGeneratorParam(data: ImageGeneratorParamMod
     return when (data) {
         is PdpParamModel -> {
             this.generateToPDP(data)
+        }
+        is WishlistCollectionParamModel -> {
+            this.generateToWishlist(data)
         }
         is ShopPageParamModel -> {
             this.generateToShopPage(data)

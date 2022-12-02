@@ -7,14 +7,16 @@
     android:background="@drawable/mvc_bg_button_download"
     android:gravity="center"
     android:orientation="horizontal"
-    android:padding="@dimen/spacing_lvl2">
+    android:padding="4dp">
 
     <ImageView
         android:layout_width="@dimen/mvc_dimen_12dp"
         android:layout_height="@dimen/mvc_dimen_12dp"
         android:tint="@color/Neutral_N0"
         app:srcCompat="@drawable/ic_mvc_download"
-        tools:src="@drawable/ic_mvc_download" />
+        tools:src="@drawable/ic_mvc_download"
+        android:contentDescription="@string/image_coupon_download_content_description"
+        />
 
     <com.tokopedia.unifyprinciples.Typography
         android:layout_width="wrap_content"

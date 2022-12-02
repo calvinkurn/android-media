@@ -33,7 +33,7 @@ import com.tokopedia.search.result.presentation.view.listener.InspirationCarouse
 import com.tokopedia.search.result.presentation.view.listener.ProductListener
 import com.tokopedia.search.result.product.suggestion.SuggestionListener
 import com.tokopedia.search.result.presentation.view.listener.TickerListener
-import com.tokopedia.search.result.presentation.view.listener.TopAdsImageViewListener
+import com.tokopedia.search.result.product.tdn.TopAdsImageViewListener
 import com.tokopedia.search.result.product.banned.BannedProductsEmptySearchDataView
 import com.tokopedia.search.result.product.banned.BannedProductsEmptySearchViewHolder
 import com.tokopedia.search.result.product.banner.BannerDataView
@@ -115,6 +115,7 @@ class ProductListTypeFactoryImpl(
     private val isUsingViewStub: Boolean = false,
     private val sameSessionRecommendationListener: SameSessionRecommendationListener,
     private val recycledViewPool: RecyclerView.RecycledViewPool,
+    private val isSneakPeekEnabled: Boolean = false,
 ) : BaseAdapterTypeFactory(), ProductListTypeFactory {
 
     override fun type(cpmDataView: CpmDataView): Int {
@@ -232,11 +233,11 @@ class ProductListTypeFactoryImpl(
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
             ListProductItemViewHolder.LAYOUT, ListProductItemViewHolder.LAYOUT_WITH_VIEW_STUB ->
-                ListProductItemViewHolder(view, productListener)
+                ListProductItemViewHolder(view, productListener, isSneakPeekEnabled)
             SmallGridProductItemViewHolder.LAYOUT, SmallGridProductItemViewHolder.LAYOUT_WITH_VIEW_STUB ->
-                SmallGridProductItemViewHolder(view, productListener)
+                SmallGridProductItemViewHolder(view, productListener, isSneakPeekEnabled)
             BigGridProductItemViewHolder.LAYOUT ->
-                BigGridProductItemViewHolder(view, productListener)
+                BigGridProductItemViewHolder(view, productListener, isSneakPeekEnabled)
             CpmViewHolder.LAYOUT -> CpmViewHolder(view, bannerAdsListener)
             TickerViewHolder.LAYOUT -> TickerViewHolder(view, tickerListener)
             SuggestionViewHolder.LAYOUT -> SuggestionViewHolder(view, suggestionListener)

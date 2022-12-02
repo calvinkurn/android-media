@@ -662,8 +662,8 @@ class ManageAddressFragment : BaseDaggerFragment(), SearchInputView.Listener, Ma
 
     companion object {
 
-        private const val EMPTY_STATE_PICT_URL = "https://ecs7.tokopedia.net/android/others/pilih_alamat_pengiriman3x.png"
-        private const val EMPTY_SEARCH_PICT_URL = "https://ecs7.tokopedia.net/android/others/address_not_found3x.png"
+        private const val EMPTY_STATE_PICT_URL = "https://images.tokopedia.net/android/others/pilih_alamat_pengiriman3x.png"
+        private const val EMPTY_SEARCH_PICT_URL = "https://images.tokopedia.net/android/others/address_not_found3x.png"
         private const val IS_SUCCESS = "success"
         private const val IS_NOT_SUCCESS = "not success"
 

@@ -130,7 +130,7 @@
     <string name="shop_page_play_widget_sgc_performance">Lihat Performa</string>
     <string name="shop_sort_filter_default_label">Urutkan</string>
     <string name="shop_etalase_filter_default_label">Etalase Toko</string>
-    <string name="shop_page_lottie_sgc_url">https://ecs7.tokopedia.net/android/hydra/sgc_entry_point.json</string>
+    <string name="shop_page_lottie_sgc_url">https://images.tokopedia.net/android/hydra/sgc_entry_point.json</string>
 
     <string name="shop_string_ok">OK</string>
     <string name="shop_change_grid_section_total_product">%s Produk</string>
@@ -182,6 +182,9 @@
     <string name="shop_page_product_bundle_failed_oos_dialog_desc_no_alt">Kamu tetap bisa beli barang dalam paket\nsecara satuan</string>
     <string name="shop_page_product_bundle_failed_oos_cta_text">Kembali</string>
     <string name="shop_page_product_bundle_failed_oos_cta_text_with_alt">Lihat Paket Lain</string>
+    <string name="store_problem_question">Toko bermasalah?</string>
+    <string name="label_report">Laporkan</string>
+    <string name="label_report_success">Laporan berhasil terkirim.</string>
 
     <!-- operational hours -->
     <string name="shop_ops_hour_open_all_day">Buka 24 jam</string>

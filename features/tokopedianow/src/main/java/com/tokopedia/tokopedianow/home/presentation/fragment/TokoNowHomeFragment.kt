@@ -74,6 +74,7 @@ import com.tokopedia.usercomponents.stickylogin.common.StickyLoginConstant
 import com.tokopedia.usercomponents.stickylogin.view.StickyLoginAction
 import com.tokopedia.usercomponents.stickylogin.view.StickyLoginView
 import com.tokopedia.tokopedianow.R
+import com.tokopedia.tokopedianow.common.analytics.RealTimeRecommendationAnalytics
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.SCREEN_NAME_TOKONOW_OOC
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalytics
 import com.tokopedia.tokopedianow.common.bottomsheet.TokoNowOnBoard20mBottomSheet
@@ -91,6 +92,7 @@ import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.MA
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.REPURCHASE_PRODUCT
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.SHARING_EDUCATION
 import com.tokopedia.tokopedianow.common.domain.model.SetUserPreference.SetUserPreferenceData
+import com.tokopedia.tokopedianow.common.listener.RealTimeRecommendationListener
 import com.tokopedia.tokopedianow.common.model.ShareTokonow
 import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardUiModel
@@ -151,7 +153,9 @@ import com.tokopedia.tokopedianow.home.presentation.viewholder.HomeTickerViewHol
 import com.tokopedia.tokopedianow.home.presentation.viewmodel.TokoNowHomeViewModel
 import com.tokopedia.tokopedianow.common.util.TokoNowSharedPreference
 import com.tokopedia.tokopedianow.home.analytic.HomePlayWidgetAnalyticModel
+import com.tokopedia.tokopedianow.home.analytic.HomeRealTimeRecomAnalytics
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomePlayWidgetUiModel
+import com.tokopedia.tokopedianow.home.presentation.view.listener.HomeRealTimeRecommendationListener
 import com.tokopedia.tokopedianow.home.presentation.view.listener.OnBoard20mBottomSheetCallback
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.unifycomponents.Toaster.LENGTH_SHORT
@@ -252,7 +256,9 @@ class TokoNowHomeFragment: Fragment(),
                 homeSwitcherListener = createHomeSwitcherListener(),
                 homeLeftCarouselAtcListener = createLeftCarouselAtcCallback(),
                 homeLeftCarouselListener = createLeftCarouselCallback(),
-                playWidgetCoordinator = createPlayWidgetCoordinator()
+                playWidgetCoordinator = createPlayWidgetCoordinator(),
+                rtrListener = createRealTimeRecommendationListener(),
+                rtrAnalytics = rtrAnalytics
             ),
             differ = HomeListDiffer()
         )
@@ -300,6 +306,7 @@ class TokoNowHomeFragment: Fragment(),
     private val loadMoreListener by lazy { createLoadMoreListener() }
     private val navBarScrollListener by lazy { createNavBarScrollListener() }
     private val homeComponentScrollListener by lazy { createHomeComponentScrollListener() }
+    private val rtrAnalytics by lazy { createRealTimeRecomAnalytics() }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         initPerformanceMonitoring()
@@ -436,8 +443,8 @@ class TokoNowHomeFragment: Fragment(),
         analytics.onClickAllCategory()
     }
 
-    override fun onCategoryClicked(position: Int, categoryId: String, headerName: String) {
-        analytics.onClickCategory(position, categoryId, headerName)
+    override fun onCategoryClicked(position: Int, categoryId: String, headerName: String, categoryName: String) {
+        analytics.onClickCategory(position, categoryId, headerName, categoryName)
     }
 
     override fun onCategoryImpression(data: TokoNowCategoryGridUiModel) {
@@ -497,6 +504,7 @@ class TokoNowHomeFragment: Fragment(),
     ) {
         if (userSession.isLoggedIn) {
             viewModelTokoNow.addProductToCart(
+                channelId,
                 recomItem.productId.toString(),
                 quantity,
                 recomItem.shopId.toString(),
@@ -526,6 +534,7 @@ class TokoNowHomeFragment: Fragment(),
     override fun onProductQuantityChanged(data: TokoNowProductCardUiModel, quantity: Int) {
         if (userSession.isLoggedIn) {
             viewModelTokoNow.addProductToCart(
+                data.channelId,
                 data.productId,
                 quantity,
                 data.shopId,
@@ -1652,7 +1661,7 @@ class TokoNowHomeFragment: Fragment(),
                 HomeRemoveAbleWidget(SHARING_EDUCATION, SharedPreferencesUtil.isSharingEducationRemoved(activity)),
                 HomeRemoveAbleWidget(MAIN_QUEST, SharedPreferencesUtil.isQuestAllClaimedRemoved(activity))
             )
-            viewModelTokoNow.onScrollTokoMartHome(lastVisibleItemIndex, it, removeAbleWidgets)
+            viewModelTokoNow.onScroll(lastVisibleItemIndex, it, removeAbleWidgets)
         }
     }
 
@@ -1920,6 +1929,14 @@ class TokoNowHomeFragment: Fragment(),
         }
         this.playWidgetCoordinator = playWidgetCoordinator
         return playWidgetCoordinator
+    }
+
+    private fun createRealTimeRecommendationListener(): RealTimeRecommendationListener {
+        return HomeRealTimeRecommendationListener(this, viewModelTokoNow, userSession)
+    }
+
+    private fun createRealTimeRecomAnalytics(): RealTimeRecommendationAnalytics {
+        return HomeRealTimeRecomAnalytics(userSession)
     }
 
     override fun onShareOptionClicked(shareModel: ShareModel) {

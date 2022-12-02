@@ -10,10 +10,10 @@ import com.tokopedia.shop.pageheader.presentation.uimodel.component.ShopHeaderIm
 import com.tokopedia.utils.view.binding.viewBinding
 
 class ShopPerformanceWidgetImageTextComponentImageViewHolder(
-        itemView: View
+    itemView: View
 ) : RecyclerView.ViewHolder(itemView) {
 
-    companion object{
+    companion object {
         val LAYOUT_RES = R.layout.layout_shop_performance_widget_image_text_image_component
     }
     private val viewBinding: LayoutShopPerformanceWidgetImageTextImageComponentBinding? by viewBinding()
@@ -22,5 +22,4 @@ class ShopPerformanceWidgetImageTextComponentImageViewHolder(
     fun bind(data: ShopHeaderImageTextComponentUiModel.Images.Data?) {
         imageView?.loadImage(data?.image)
     }
-
 }

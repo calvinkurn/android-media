@@ -8,6 +8,8 @@
         tools:ignore="HardcodedDebugMode"
         android:theme="@style/Theme.AppCompat.Light.NoActionBar"
         tools:replace="android:debuggable,android:label"
+        android:hardwareAccelerated="true"
+        android:largeHeap="true"
         android:debuggable="true">
 
         <activity

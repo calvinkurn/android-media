@@ -1,9 +1,13 @@
 package com.tokopedia.product.detail.tracking
 
 import android.content.Context
+import android.util.Log
 import com.tokopedia.analytics.performance.util.EmbraceMonitoring
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.logger.ServerLogger
+import com.tokopedia.logger.utils.Priority
+import com.tokopedia.product.detail.data.util.ProductDetailConstant
 import org.json.JSONObject
 
 object ProductDetailServerLogger {
@@ -27,6 +31,28 @@ object ProductDetailServerLogger {
     private const val ERROR_CODE_KEY = "errorCode"
     private const val IS_TOPADS_KEY = "isTopAds"
     private const val ATC_TYPE_KEY = "atcType"
+
+    private const val PDP_OPEN_FAIL = "PDP_OPEN_FAIL"
+
+    private const val TYPE_KEY = "type"
+    private const val DESC_KEY = "desc"
+    private const val ERR_KEY = "err"
+    private const val URI_KEY = "uri"
+
+    fun logNewRelicProductCannotOpen(uri: String, throwable: Throwable) {
+        ServerLogger.log(
+                Priority.P2,
+                PDP_OPEN_FAIL,
+                mapOf(
+                        TYPE_KEY to PDP_OPEN_FAIL,
+                        DESC_KEY to throwable.message.orEmpty(),
+                        URI_KEY to uri,
+                        ERR_KEY to Log.getStackTraceString(throwable)
+                                .take(ProductDetailConstant.LOG_MAX_LENGTH)
+                                .trim()
+                )
+        )
+    }
 
     fun logBreadCrumbFirstOpenPage(productId: String?,
                                    shopName: String?,

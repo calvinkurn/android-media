@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -12,6 +13,7 @@ import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
+import com.tokopedia.tokofood.common.presentation.listener.TokofoodScrollChangedListener
 import com.tokopedia.tokofood.common.presentation.view.BaseTokofoodActivity
 import com.tokopedia.tokofood.common.util.TokofoodErrorLogger
 import com.tokopedia.tokofood.common.util.TokofoodExt.getGlobalErrorType
@@ -40,7 +42,8 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
-class InitialSearchStateFragment : BaseDaggerFragment(), InitialStateListener, TokofoodSearchErrorStateViewHolder.Listener {
+class InitialSearchStateFragment : BaseDaggerFragment(), InitialStateListener,
+    TokofoodSearchErrorStateViewHolder.Listener, TokofoodScrollChangedListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -52,7 +55,7 @@ class InitialSearchStateFragment : BaseDaggerFragment(), InitialStateListener, T
     lateinit var userSession: UserSessionInterface
 
     private val initialSearchAdapterTypeFactory by lazy(LazyThreadSafetyMode.NONE) {
-        InitialStateTypeFactoryImpl(this, this)
+        InitialStateTypeFactoryImpl(this, this, this)
     }
 
     private val initialSearchAdapter by lazy(LazyThreadSafetyMode.NONE) {
@@ -70,6 +73,12 @@ class InitialSearchStateFragment : BaseDaggerFragment(), InitialStateListener, T
     private var initialStateViewUpdateListener: InitialStateViewUpdateListener? = null
     private var localCacheModel: LocalCacheModel? = null
     private var keyword: String = ""
+    private var onScrollChangedListenerList: MutableList<ViewTreeObserver.OnScrollChangedListener> =
+        mutableListOf()
+    private var cuisineScrollChangedListenerList: MutableList<ViewTreeObserver.OnScrollChangedListener> =
+        mutableListOf()
+    private var recentSearchScrollChangedListenerList: MutableList<ViewTreeObserver.OnScrollChangedListener> =
+        mutableListOf()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -91,6 +100,7 @@ class InitialSearchStateFragment : BaseDaggerFragment(), InitialStateListener, T
     override fun onDestroyView() {
         initialStateViewUpdateListener = null
         localCacheModel = null
+        removeScrollChangedListener()
         super.onDestroyView()
     }
 
@@ -143,6 +153,10 @@ class InitialSearchStateFragment : BaseDaggerFragment(), InitialStateListener, T
         )
     }
 
+    override fun onSetCuisineImpressionListener(listener: ViewTreeObserver.OnScrollChangedListener) {
+        cuisineScrollChangedListenerList.add(listener)
+    }
+
     override fun onHeaderAllRemovedClicked(labelAction: String) {
         initialSearchAdapter.removeAllRecentSearchSection()
         viewModel.removeRemoveRecentSearch(ALL_PARAM)
@@ -165,6 +179,10 @@ class InitialSearchStateFragment : BaseDaggerFragment(), InitialStateListener, T
             localCacheModel?.district_id.orEmpty(),
             position
         )
+    }
+
+    override fun onScrollChangedListenerAdded(onScrollChangedListener: ViewTreeObserver.OnScrollChangedListener) {
+        onScrollChangedListenerList.add(onScrollChangedListener)
     }
 
     override fun onSeeMoreCuisineBtnClicked(element: SeeMoreCuisineUiModel) {
@@ -262,6 +280,13 @@ class InitialSearchStateFragment : BaseDaggerFragment(), InitialStateListener, T
             userSession.deviceId.orEmpty(),
             errorDesc
         )
+    }
+
+    private fun removeScrollChangedListener() {
+        onScrollChangedListenerList.forEach {
+            view?.viewTreeObserver?.removeOnScrollChangedListener(it)
+        }
+        onScrollChangedListenerList.clear()
     }
 
     companion object {

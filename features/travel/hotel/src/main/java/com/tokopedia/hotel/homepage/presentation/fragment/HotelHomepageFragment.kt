@@ -786,7 +786,7 @@ class HotelHomepageFragment : HotelBaseFragment(),
 
         const val TAG_GUEST_INFO = "guestHotelInfo"
 
-        const val HOMEPAGE_BG_IMAGE_URL = "https://ecs7.tokopedia.net/img/android/res/singleDpi/bg_hotel_homepage_background.png"
+        const val HOMEPAGE_BG_IMAGE_URL = "https://images.tokopedia.net/img/android/res/singleDpi/bg_hotel_homepage_background.png"
 
         fun getInstance(): HotelHomepageFragment = HotelHomepageFragment()
 
