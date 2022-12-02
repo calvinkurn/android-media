@@ -321,10 +321,8 @@ open class ProductManageFragment :
                     productManageLayoutManager?.let {
                         val viewPosition =
                             getProductWithStockReminder(adapter.data.filterIsInstance<ProductUiModel>())
-                        val viewPositionStockGuarantee =
-                            getProductWithStockAvailable(adapter.data.filterIsInstance<ProductUiModel>())
 
-                        if (viewPosition != -1 && viewPositionStockGuarantee == -1) {
+                        if (viewPosition != -1) {
                             val view = it.findViewByPosition(viewPosition)
                                 ?.findViewById<IconUnify>(R.id.imageStockReminder)
                             view?.let { it1 ->
@@ -1419,9 +1417,9 @@ open class ProductManageFragment :
                 }
             }
         }
-        recyclerView?.post {
+        recyclerView?.postDelayed({
             recyclerView?.addOnScrollListener(recyclerViewScrollListener)
-        }
+        },100)
         renderCheckedView()
         showAddAsFeaturedProduct()
         if (extraCacheManagerId.isNotBlank()) {
