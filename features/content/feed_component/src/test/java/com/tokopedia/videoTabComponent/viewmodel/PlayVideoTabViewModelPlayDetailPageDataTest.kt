@@ -91,6 +91,22 @@ class PlayVideoTabViewModelPlayDetailPageDataTest {
     }
 
     @Test
+    fun `given user visits with widget empty on detail page data, then upcoming play data can be fetched`() {
+        val expectedResult = builder.getContentSlotResponse()
+        val widgetType = ""
+
+        coEvery { mockRepo.getPlayDetailPageResult(any(), any(), any(), any()) } returns expectedResult
+
+        viewModel.getPlayDetailPageData(widgetType, sourceType = "")
+
+        val result = viewModel.getLiveOrUpcomingPlayDataRsp.value
+
+        Assertions
+            .assertThat(result)
+            .isEqualTo(Success(expectedResult))
+    }
+
+    @Test
     fun `given error when fetching play upcoming data, then return error`() {
         val widgetType = "live"
 

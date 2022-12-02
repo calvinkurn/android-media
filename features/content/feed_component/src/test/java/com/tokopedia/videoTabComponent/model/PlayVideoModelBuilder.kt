@@ -1,6 +1,5 @@
 package com.tokopedia.videoTabComponent.model
 
-import com.tokopedia.play.widget.data.PlayWidgetReminder
 import com.tokopedia.videoTabComponent.domain.model.data.ContentSlotResponse
 import com.tokopedia.videoTabComponent.domain.model.data.PlayGetContentSlotResponse
 
@@ -17,5 +16,4 @@ class PlayVideoModelBuilder {
         playGetContentSlot = playGetContentSlot,
         isDataFromTabClick = isDataFromTabClick
     )
-    fun getPlaWidgetReminder() = PlayWidgetReminder()
 }

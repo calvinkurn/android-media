@@ -9,6 +9,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.videoTabComponent.domain.PlayVideoTabRepository
 import com.tokopedia.videoTabComponent.domain.model.data.VideoPageParams
 import com.tokopedia.videoTabComponent.model.PlayVideoModelBuilder
+import com.tokopedia.videoTabComponent.view.uimodel.SelectedPlayWidgetCard
 import io.mockk.coEvery
 import io.mockk.mockk
 import org.assertj.core.api.Assertions
@@ -69,5 +70,31 @@ class PlayFeedVideoTabViewModelInitialDataTest {
         Assertions
             .assertThat(result)
             .isInstanceOf(Fail::class.java)
+    }
+
+    @Test
+    fun `test selectedCard value`() {
+        val selectedPlayWidgetCard = SelectedPlayWidgetCard.Empty
+        viewModel.selectedPlayWidgetCard = selectedPlayWidgetCard
+        Assertions
+            .assertThat(viewModel.selectedPlayWidgetCard)
+            .isEqualTo(selectedPlayWidgetCard)
+    }
+
+    @Test
+    fun `test selectedCard for null value`() {
+        val expectedValue = SelectedPlayWidgetCard.Empty
+        Assertions
+            .assertThat(viewModel.selectedPlayWidgetCard)
+            .isEqualTo(expectedValue)
+    }
+
+    @Test
+    fun `test default values on refresh `() {
+        val currentCursor = ""
+        viewModel.setDefaultValuesOnRefresh()
+        Assertions
+            .assertThat(currentCursor)
+            .isEqualTo(viewModel.currentCursor)
     }
 }

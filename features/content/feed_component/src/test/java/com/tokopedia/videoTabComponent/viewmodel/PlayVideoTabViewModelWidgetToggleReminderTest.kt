@@ -74,14 +74,6 @@ class PlayVideoTabViewModelWidgetToggleReminderTest {
         val expectedMapReminder = true
 
         coEvery {
-            playWidgetTools.updateActionReminder(
-                fakeState,
-                channelId,
-                reminderType
-            )
-        } returns fakeState
-
-        coEvery {
             mockRepo.updateToggleReminder(channelId, reminderType)
         } returns expectedReminder
 
@@ -112,28 +104,12 @@ class PlayVideoTabViewModelWidgetToggleReminderTest {
         val expectedMapReminder = false
 
         coEvery {
-            playWidgetTools.updateActionReminder(
-                fakeState,
-                channelId,
-                reminderType
-            )
-        } returns fakeState
-
-        coEvery {
-            playWidgetTools.updateToggleReminder(channelId, reminderType)
+            mockRepo.updateToggleReminder(channelId, reminderType)
         } returns expectedReminder
 
         coEvery {
             playWidgetTools.mapWidgetToggleReminder(expectedReminder)
         } returns expectedMapReminder
-
-        coEvery {
-            playWidgetTools.updateActionReminder(
-                fakeState,
-                channelId,
-                reminderType.switch()
-            )
-        } returns fakeState
 
         viewModel.updatePlayWidgetToggleReminder(
             channelId,
@@ -201,6 +177,25 @@ class PlayVideoTabViewModelWidgetToggleReminderTest {
             reminderType,
             position,
             false
+        )
+
+        val result = viewModel.playWidgetReminderEvent.value
+
+        Assertions
+            .assertThat(result)
+            .isEqualTo(expectedResult)
+    }
+
+    @Test
+    fun `play widget redirects to login page with default login value`() {
+        val position = 0
+        val reminderType = PlayWidgetReminderType.Reminded
+        val expectedResult = PlayWidgetFeedReminderInfoData(channelId, reminderType, position)
+
+        viewModel.updatePlayWidgetToggleReminder(
+            channelId,
+            reminderType,
+            position
         )
 
         val result = viewModel.playWidgetReminderEvent.value

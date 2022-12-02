@@ -185,18 +185,15 @@ class PlayFeedVideoTabViewModel@Inject constructor(
                     reminderType
                 )
 
-                when (val success = playWidgetTools.mapWidgetToggleReminder(response)) {
-                    success -> {
-                        val playWidgetFeedReminderInfoData = PlayWidgetFeedReminderInfoData(
-                            channelId = channelId,
-                            reminderType = reminderType,
-                            itemPosition = position
-                        )
-                        _reminderObservable.postValue(Success(playWidgetFeedReminderInfoData))
-                    }
-                    else -> {
-                        _reminderObservable.postValue(Fail(Throwable()))
-                    }
+                if (playWidgetTools.mapWidgetToggleReminder(response)) {
+                    val playWidgetFeedReminderInfoData = PlayWidgetFeedReminderInfoData(
+                        channelId = channelId,
+                        reminderType = reminderType,
+                        itemPosition = position
+                    )
+                    _reminderObservable.postValue(Success(playWidgetFeedReminderInfoData))
+                } else {
+                    _reminderObservable.postValue(Fail(Throwable()))
                 }
             }) { throwable ->
                 _reminderObservable.postValue(Fail(throwable))

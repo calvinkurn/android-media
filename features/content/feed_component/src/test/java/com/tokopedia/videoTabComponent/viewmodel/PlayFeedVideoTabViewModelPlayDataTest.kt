@@ -92,7 +92,7 @@ class PlayFeedVideoTabViewModelPlayDataTest {
     fun `given user clicks on any chip to get play data, then if fail then return error`() {
         coEvery { mockRepo.getPlayData(any()) } throws Throwable()
 
-        viewModel.getPlayData(true, params)
+        viewModel.getPlayData(true, null)
 
         val result = viewModel.getPlayDataForSlotRsp.value
 
