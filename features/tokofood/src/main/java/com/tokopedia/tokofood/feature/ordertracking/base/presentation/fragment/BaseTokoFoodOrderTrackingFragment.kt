@@ -98,10 +98,6 @@ class BaseTokoFoodOrderTrackingFragment :
 
     private var loaderDialog: LoaderDialog? = null
 
-    private var channelId: String = ""
-
-    private var goFoodOrderNumber: String = ""
-
     override fun getScreenName(): String = ""
 
     override fun initInjector() {
@@ -203,7 +199,7 @@ class BaseTokoFoodOrderTrackingFragment :
         tracking.clickChatIcon(
             orderStatus = viewModel.getOrderStatus(),
             orderId = viewModel.getOrderId(),
-            channelId = channelId,
+            channelId = viewModel.channelId,
             source = TokoFoodAnalyticsConstants.TOKOFOOD_SOURCE,
             role = TokoFoodAnalyticsConstants.BUYER,
             unReadChatCounter = unReadChatCounter
@@ -244,8 +240,8 @@ class BaseTokoFoodOrderTrackingFragment :
     }
 
     override fun onGroupBookingChannelCreationSuccess(channelUrl: String) {
-        this.channelId = channelUrl
-        observeUnreadChatCount(channelId)
+        viewModel.channelId = channelUrl
+        observeUnreadChatCount(viewModel.channelId)
     }
 
     /*
@@ -254,11 +250,11 @@ class BaseTokoFoodOrderTrackingFragment :
      * initGroupBooking -> channelId -> observeUnreadChatCount
      */
     private fun initializeUnreadCounter(goFoodOrderNumber: String) {
-        this.goFoodOrderNumber = goFoodOrderNumber
-        if (channelId.isBlank()) {
-            viewModel.initGroupBooking(goFoodOrderNumber, this)
+        this.viewModel.goFoodOrderNumber = goFoodOrderNumber
+        if (viewModel.channelId.isBlank()) {
+            viewModel.initGroupBooking(viewModel.goFoodOrderNumber, this)
         } else {
-            observeUnreadChatCount(channelId)
+            observeUnreadChatCount(viewModel.channelId)
         }
     }
 

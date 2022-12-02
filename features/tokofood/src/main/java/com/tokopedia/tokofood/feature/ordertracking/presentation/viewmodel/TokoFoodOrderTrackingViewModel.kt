@@ -81,6 +81,9 @@ class TokoFoodOrderTrackingViewModel @Inject constructor(
     private var orderId = ""
     private var orderStatusKey = ""
 
+    var channelId: String = ""
+    var goFoodOrderNumber: String = ""
+
     init {
         viewModelScope.launch {
             orderIdFlow
@@ -121,12 +124,16 @@ class TokoFoodOrderTrackingViewModel @Inject constructor(
 
     fun onSavedInstanceState() {
         savedStateHandle[ORDER_ID] = orderId
+        savedStateHandle[GOFOOD_ORDER_NUMBER] = goFoodOrderNumber
+        savedStateHandle[CHANNEL_ID] = channelId
     }
 
     fun onRestoreSavedInstanceState() {
         orderIdFlow.tryEmit(
             savedStateHandle.get<String>(ORDER_ID).orEmpty()
         )
+        goFoodOrderNumber = savedStateHandle.get<String>(GOFOOD_ORDER_NUMBER).orEmpty()
+        channelId = savedStateHandle.get<String>(CHANNEL_ID).orEmpty()
     }
 
     fun fetchOrderDetail(orderId: String) {
@@ -211,5 +218,7 @@ class TokoFoodOrderTrackingViewModel @Inject constructor(
     companion object {
         const val DELAY_ORDER_STATE = 5000L
         const val ORDER_ID = "orderId"
+        const val CHANNEL_ID = "channelId"
+        const val GOFOOD_ORDER_NUMBER = "goFoodOrderNumber"
     }
 }
