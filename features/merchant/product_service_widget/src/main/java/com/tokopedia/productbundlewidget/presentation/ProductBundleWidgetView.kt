@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.common.ProductServiceWidgetConstant.BUNDLE_ID_DEFAULT_VALUE
+import com.tokopedia.common.ProductServiceWidgetConstant.PRODUCT_ID_DEFAULT_VALUE
 import com.tokopedia.common.ProductServiceWidgetConstant.PRODUCT_BUNDLE_APPLINK_WITH_PARAM
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.kotlin.extensions.view.setMargin
@@ -36,6 +36,7 @@ class ProductBundleWidgetView : BaseCustomView, ProductBundleAdapterListener {
 
     private var tfTitle: Typography? = null
     private var pageSource: String = ""
+    private var productId: String = ""
     private val bundleAdapter = ProductBundleWidgetAdapter()
     private var listener: ProductBundleWidgetListener? = null
 
@@ -66,16 +67,22 @@ class ProductBundleWidgetView : BaseCustomView, ProductBundleAdapterListener {
         selectedMultipleBundle: BundleDetailUiModel,
         productDetails: List<BundleProductUiModel>
     ) {
-        RouteManager.route(context, PRODUCT_BUNDLE_APPLINK_WITH_PARAM, BUNDLE_ID_DEFAULT_VALUE,
-            selectedMultipleBundle.bundleId, pageSource)
-        listener?.onMultipleBundleActionButtonClicked(selectedMultipleBundle, productDetails)
+        goToProductPage(selectedMultipleBundle, productDetails)
+    }
+
+    override fun onMultipleBundleMoreProductClicked(
+        selectedMultipleBundle: BundleDetailUiModel,
+        bundleProductGrouped: List<BundleProductUiModel>,
+        bundleProductAll: List<BundleProductUiModel>
+    ) {
+        goToProductPage(selectedMultipleBundle, bundleProductAll)
     }
 
     override fun onSingleBundleActionButtonClicked(
         selectedBundle: BundleDetailUiModel,
         bundleProducts: BundleProductUiModel
     ) {
-        RouteManager.route(context, PRODUCT_BUNDLE_APPLINK_WITH_PARAM, BUNDLE_ID_DEFAULT_VALUE,
+        RouteManager.route(context, PRODUCT_BUNDLE_APPLINK_WITH_PARAM, PRODUCT_ID_DEFAULT_VALUE,
             selectedBundle.bundleId, pageSource)
         listener?.onSingleBundleActionButtonClicked(selectedBundle, bundleProducts)
     }
@@ -110,6 +117,23 @@ class ProductBundleWidgetView : BaseCustomView, ProductBundleAdapterListener {
         productItemPosition: Int
     ) {
         listener?.impressionMultipleBundleProduct(selectedProduct, selectedMultipleBundle)
+    }
+
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+        val lifecycleOwner = context as? LifecycleOwner
+        lifecycleOwner?.run {
+            viewModel.bundleUiModels.observe(this) {
+                bundleAdapter.updateDataSet(it)
+            }
+            viewModel.error.observe(this) {
+                listener?.onError(it)
+            }
+            viewModel.isBundleEmpty.observe(this) {
+                tfTitle?.isVisible = !it
+                if (it) listener?.onBundleEmpty()
+            }
+        }
     }
 
     private fun setup(context: Context, attrs: AttributeSet?) {
@@ -156,21 +180,14 @@ class ProductBundleWidgetView : BaseCustomView, ProductBundleAdapterListener {
         }
     }
 
-    override fun onAttachedToWindow() {
-        super.onAttachedToWindow()
-        val lifecycleOwner = context as? LifecycleOwner
-        lifecycleOwner?.run {
-            viewModel.bundleUiModels.observe(this) {
-                bundleAdapter.updateDataSet(it)
-            }
-            viewModel.error.observe(this) {
-                listener?.onError(it)
-            }
-            viewModel.isBundleEmpty.observe(this) {
-                tfTitle?.isVisible = !it
-                if (it) listener?.onBundleEmpty()
-            }
-        }
+    private fun goToProductPage(
+        selectedMultipleBundle: BundleDetailUiModel,
+        productDetails: List<BundleProductUiModel>
+    ) {
+        val fixedProductId = if (productId.isNotEmpty()) productId else PRODUCT_ID_DEFAULT_VALUE
+        RouteManager.route(context, PRODUCT_BUNDLE_APPLINK_WITH_PARAM, fixedProductId,
+            selectedMultipleBundle.bundleId, pageSource)
+        listener?.onMultipleBundleActionButtonClicked(selectedMultipleBundle, productDetails)
     }
 
     fun setTitleText(text: String) {
@@ -183,6 +200,7 @@ class ProductBundleWidgetView : BaseCustomView, ProductBundleAdapterListener {
 
     fun getBundleData(param: GetBundleParam) {
         pageSource = param.pageSource
+        productId = param.productId
         param.apply {
             viewModel.getBundleInfo(param)
         }

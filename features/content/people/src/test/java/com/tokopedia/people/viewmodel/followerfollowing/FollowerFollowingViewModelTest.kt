@@ -2,7 +2,7 @@ package com.tokopedia.people.viewmodel.followerfollowing
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.people.Success
-import com.tokopedia.people.domains.repository.UserProfileRepository
+import com.tokopedia.people.data.UserProfileRepository
 import com.tokopedia.people.model.CommonModelBuilder
 import com.tokopedia.people.model.followerfollowing.FollowerListModelBuilder
 import com.tokopedia.people.model.followerfollowing.FollowingListModelBuilder

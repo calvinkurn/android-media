@@ -40,9 +40,9 @@ import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_ID
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.SHOP_PAGE_BUYER
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TOKOPEDIA_MARKETPLACE
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TRACKER_ID
+import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.USER_ID
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.VIEW_ITEM
-import com.tokopedia.shop.analytic.ShopPageTrackingConstant.TrackerId
 import com.tokopedia.shop.analytic.ShopPageTrackingConstant.VIEW_ITEM_LIST
 import com.tokopedia.track.TrackApp
 import javax.inject.Inject
@@ -81,7 +81,7 @@ class ShopCampaignTabTracker @Inject constructor() {
                     createShopBannerWidgetPromotions(
                         widgetName,
                         widgetId,
-                        position,
+                        position
                     )
                 )
             )
@@ -126,7 +126,7 @@ class ShopCampaignTabTracker @Inject constructor() {
                     createShopBannerWidgetPromotions(
                         widgetName,
                         widgetId,
-                        position,
+                        position
                     )
                 )
             )
@@ -143,7 +143,7 @@ class ShopCampaignTabTracker @Inject constructor() {
             EVENT_ACTION to ShopPageTrackingConstant.VIEW_COUPON_TOKO_MEMBER,
             EVENT_LABEL to ShopPageTrackingConstant.SHOP_PAGE_LABEL + shopId,
             BUSINESS_UNIT to PHYSICAL_GOODS,
-            CURRENT_SITE to TOKOPEDIA_MARKETPLACE,
+            CURRENT_SITE to TOKOPEDIA_MARKETPLACE
         )
         TrackApp.getInstance().gtm.sendGeneralEvent(eventMap)
     }
@@ -181,7 +181,7 @@ class ShopCampaignTabTracker @Inject constructor() {
                         productPrice,
                         widgetName,
                         bundlingType,
-                        bundlingId,
+                        bundlingId
                     )
                 )
             )
@@ -222,7 +222,7 @@ class ShopCampaignTabTracker @Inject constructor() {
                         productPrice,
                         widgetName,
                         bundlingType,
-                        bundlingId,
+                        bundlingId
                     )
                 )
             )
@@ -240,9 +240,9 @@ class ShopCampaignTabTracker @Inject constructor() {
         bundlingId: String
     ): Bundle {
         return Bundle().apply {
-            if(bundlingType.isNotEmpty())
+            if (bundlingType.isNotEmpty())
                 putString(DIMENSION_117, bundlingType)
-            if(bundlingId.isNotEmpty())
+            if (bundlingId.isNotEmpty())
                 putString(DIMENSION_118, bundlingId)
             putString(DIMENSION_40, "$SHOPPAGE - $widgetName")
             putInt(INDEX, position)

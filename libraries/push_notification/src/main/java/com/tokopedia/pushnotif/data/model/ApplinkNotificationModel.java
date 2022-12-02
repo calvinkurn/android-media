@@ -25,6 +25,13 @@ public class ApplinkNotificationModel {
     private Boolean isAdvanceTarget;
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
     private String[] images;
+    private Long sentTime;
+
+    public Long getSentTime() { return sentTime; }
+
+    public void setSentTime(Long sentTime) {
+        this.sentTime = sentTime;
+    }
 
     public String getDesc() {
         return desc;

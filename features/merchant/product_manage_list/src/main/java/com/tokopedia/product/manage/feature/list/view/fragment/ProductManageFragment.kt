@@ -779,18 +779,18 @@ open class ProductManageFragment :
                             }
                         }
                         addListener(object : Animator.AnimatorListener {
-                            override fun onAnimationStart(p0: Animator?) {}
+                            override fun onAnimationStart(p0: Animator) {}
 
-                            override fun onAnimationEnd(p0: Animator?) {
+                            override fun onAnimationEnd(p0: Animator) {
                                 tickerIsReady = false
                                 if (!isEnter) {
                                     this@run.invisible()
                                 }
                             }
 
-                            override fun onAnimationCancel(p0: Animator?) {}
+                            override fun onAnimationCancel(p0: Animator) {}
 
-                            override fun onAnimationRepeat(p0: Animator?) {}
+                            override fun onAnimationRepeat(p0: Animator) {}
                         })
                     }
 
@@ -897,7 +897,7 @@ open class ProductManageFragment :
     }
 
     private fun observeProductVariantBroadcast() {
-        observe(viewModel.getProductVariantsResult) {
+        viewLifecycleOwner.observe(viewModel.getProductVariantsResult) {
             when (it) {
                 is Success -> setVariantGoToBroadcastChat(it.data)
                 is Fail -> {
@@ -914,7 +914,7 @@ open class ProductManageFragment :
     }
 
     private fun observeUploadStatus() {
-        observe(viewModel.uploadStatus) {
+        viewLifecycleOwner.observe(viewModel.uploadStatus) {
             if (it.status == UploadStatusType.STATUS_DONE.name) {
                 viewModel.getPopupsInfo(it.productId)
                 getFiltersTab(withDelay = true)
@@ -2652,7 +2652,7 @@ open class ProductManageFragment :
 
     // region observers
     private fun observeSetFeaturedProduct() {
-        observe(viewModel.setFeaturedProductResult) {
+        viewLifecycleOwner.observe(viewModel.setFeaturedProductResult) {
             when (it) {
                 is Success -> onSuccessChangeFeaturedProduct(it.data.productId, it.data.status)
                 is Fail -> {
@@ -2671,7 +2671,7 @@ open class ProductManageFragment :
     }
 
     private fun observeGetPopUpInfo() {
-        observe(viewModel.getPopUpResult) {
+        viewLifecycleOwner.observe(viewModel.getPopUpResult) {
             when (it) {
                 is Success -> onSuccessGetPopUp(it.data.isSuccess, it.data.productId)
                 is Fail -> {
@@ -2690,7 +2690,7 @@ open class ProductManageFragment :
     }
 
     private fun observeEditPrice() {
-        observe(viewModel.editPriceResult) {
+        viewLifecycleOwner.observe(viewModel.editPriceResult) {
             when (it) {
                 is Success -> onSuccessEditPrice(
                     it.data.productId,
@@ -2713,7 +2713,7 @@ open class ProductManageFragment :
     }
 
     private fun observeEditStock() {
-        observe(viewModel.editStockResult) {
+        viewLifecycleOwner.observe(viewModel.editStockResult) {
             when (it) {
                 is Success -> {
                     with(it.data) {
@@ -2736,7 +2736,7 @@ open class ProductManageFragment :
     }
 
     private fun observeMultiEdit() {
-        observe(viewModel.multiEditProductResult) {
+        viewLifecycleOwner.observe(viewModel.multiEditProductResult) {
             when (it) {
                 is Success -> onSuccessMultiEditProducts(it.data)
                 is Fail -> {
@@ -2809,7 +2809,7 @@ open class ProductManageFragment :
     }
 
     private fun observeProductList() {
-        observe(viewModel.productListResult) {
+        viewLifecycleOwner.observe(viewModel.productListResult) {
             when (it) {
                 is Success -> {
                     initHeaderView()
@@ -2840,7 +2840,7 @@ open class ProductManageFragment :
     }
 
     private fun observeFilterTabs() {
-        observe(viewModel.productFiltersTab) {
+        viewLifecycleOwner.observe(viewModel.productFiltersTab) {
             when (it) {
                 is Success -> {
                     val data = it.data
@@ -2875,7 +2875,7 @@ open class ProductManageFragment :
     }
 
     private fun observeProductListFeaturedOnly() {
-        observe(viewModel.productListFeaturedOnlyResult) {
+        viewLifecycleOwner.observe(viewModel.productListFeaturedOnlyResult) {
             when (it) {
                 is Success -> productListFeaturedOnlySize = it.data
             }
@@ -2883,7 +2883,7 @@ open class ProductManageFragment :
     }
 
     private fun observeMultiSelect() {
-        observe(viewModel.toggleMultiSelect) { multiSelectEnabled ->
+        viewLifecycleOwner.observe(viewModel.toggleMultiSelect) { multiSelectEnabled ->
             if (multiSelectEnabled) {
                 showMultiSelectView()
             } else {
@@ -2937,7 +2937,7 @@ open class ProductManageFragment :
     }
 
     private fun observeDeleteProduct() {
-        observe(viewModel.deleteProductResult) {
+        viewLifecycleOwner.observe(viewModel.deleteProductResult) {
             when (it) {
                 is Success -> onSuccessDeleteProduct(it.data.productName, it.data.productId)
                 is Fail -> {
@@ -2956,7 +2956,7 @@ open class ProductManageFragment :
     }
 
     private fun observeFilter() {
-        observe(viewModel.selectedFilterAndSort) {
+        viewLifecycleOwner.observe(viewModel.selectedFilterAndSort) {
             clearAllData()
             resetMultiSelect()
             getProductList()
@@ -2965,7 +2965,7 @@ open class ProductManageFragment :
     }
 
     private fun observeShopInfo() {
-        observe(viewModel.shopInfoResult) {
+        viewLifecycleOwner.observe(viewModel.shopInfoResult) {
             if (it is Success) {
                 goldMerchant = it.data.isGoldMerchant
                 isOfficialStore = it.data.isOfficialStore
@@ -2975,7 +2975,7 @@ open class ProductManageFragment :
     }
 
     private fun observeViewState() {
-        observe(viewModel.viewState) {
+        viewLifecycleOwner.observe(viewModel.viewState) {
             when (it) {
                 is ShowProgressDialog -> showLoadingProgress()
                 is HideProgressDialog -> hideLoadingProgress()
@@ -2983,7 +2983,7 @@ open class ProductManageFragment :
                 is HideLoadingDialog -> hideProgressDialogVariant()
             }
         }
-        observe(viewModel.tickerData) { tickerData ->
+        viewLifecycleOwner.observe(viewModel.tickerData) { tickerData ->
             var tickerPagerAdapter = tickerPagerAdapter
             if (tickerPagerAdapter == null) {
                 tickerPagerAdapter = TickerPagerAdapter(context, tickerData)
@@ -3011,7 +3011,7 @@ open class ProductManageFragment :
                 }
             }
         }
-        observe(viewModel.showTicker) { shouldShow ->
+        viewLifecycleOwner.observe(viewModel.showTicker) { shouldShow ->
             if (shouldShow) {
                 tickerIsReady = true
             }
@@ -3019,7 +3019,7 @@ open class ProductManageFragment :
                 animateProductTicker(shouldShow)
             }
         }
-        observe(viewModel.refreshList) { shouldRefresh ->
+        viewLifecycleOwner.observe(viewModel.refreshList) { shouldRefresh ->
             if (shouldRefresh) {
                 resetProductList()
             }
@@ -3027,7 +3027,7 @@ open class ProductManageFragment :
     }
 
     private fun observeEditVariantPrice() {
-        observe(viewModel.editVariantPriceResult) {
+        viewLifecycleOwner.observe(viewModel.editVariantPriceResult) {
             when (it) {
                 is Success -> {
                     recyclerView?.post {
@@ -3055,7 +3055,7 @@ open class ProductManageFragment :
     }
 
     private fun observeEditVariantStock() {
-        observe(viewModel.editVariantStockResult) {
+        viewLifecycleOwner.observe(viewModel.editVariantStockResult) {
             when (it) {
                 is Success -> {
                     val message = context?.getString(
@@ -3081,7 +3081,7 @@ open class ProductManageFragment :
     }
 
     private fun observeClickTopAdsMenu() {
-        observe(viewModel.onClickPromoTopAds) {
+        viewLifecycleOwner.observe(viewModel.onClickPromoTopAds) {
             when (it) {
                 is OnBoarding -> goToTopAdsOnBoarding()
                 is ManualAds -> goToCreateTopAds()
@@ -3091,7 +3091,7 @@ open class ProductManageFragment :
     }
 
     private fun observeProductManageAccess() {
-        observe(viewModel.productManageAccess) {
+        viewLifecycleOwner.observe(viewModel.productManageAccess) {
             when (it) {
                 is Success -> {
                     val access = it.data
@@ -3120,7 +3120,7 @@ open class ProductManageFragment :
     }
 
     private fun observeDeleteProductDialog() {
-        observe(viewModel.deleteProductDialog) {
+        viewLifecycleOwner.observe(viewModel.deleteProductDialog) {
             when (it) {
                 is SingleProduct -> showDialogDeleteProduct(it)
                 is MultipleProduct -> showDeleteProductsConfirmationDialog(it)
@@ -3129,16 +3129,16 @@ open class ProductManageFragment :
     }
 
     private fun observeOptionsMenu() {
-        observe(viewModel.showAddProductOptionsMenu) {
+        viewLifecycleOwner.observe(viewModel.showAddProductOptionsMenu) {
             optionsMenu?.findItem(R.id.add_product_menu)?.isVisible = it
         }
-        observe(viewModel.showEtalaseOptionsMenu) {
+        viewLifecycleOwner.observe(viewModel.showEtalaseOptionsMenu) {
             optionsMenu?.findItem(R.id.action_more_menu)?.isVisible = it
         }
     }
 
     private fun observeShopStatus() {
-        observe(viewModel.shopStatus) { statusInfo ->
+        viewLifecycleOwner.observe(viewModel.shopStatus) { statusInfo ->
             disableOrEnableOptionMenuAddProduct(statusInfo.isOnModerationMode())
         }
     }
@@ -3502,7 +3502,7 @@ open class ProductManageFragment :
             } else {
                 optionsMenu?.findItem(R.id.add_product_menu)?.isEnabled = true
                 optionsMenu?.findItem(R.id.add_product_menu)?.let { menuItem ->
-                    menuItem.actionView.setOnClickListener {
+                    menuItem.actionView?.setOnClickListener {
                         onOptionsItemSelected(menuItem)
                     }
                 }
