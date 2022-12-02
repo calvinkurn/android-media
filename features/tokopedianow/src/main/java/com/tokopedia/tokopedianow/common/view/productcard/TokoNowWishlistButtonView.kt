@@ -83,14 +83,14 @@ class TokoNowWishlistButtonView @JvmOverloads constructor(
                             productId = mProductId,
                             isWishlistSelected = true,
                             descriptionToaster = context.getString(R.string.tokopedianow_product_card_wishlist_add_success),
-                            ctaToaster = context.getString(R.string.tokopedianow_product_card_wishlist_ok)
+                            ctaToaster = context.getString(R.string.tokopedianow_toaster_ok)
                         )
                     } else {
                         listener?.onWishlistButtonClicked(
                             productId = mProductId,
                             isWishlistSelected = false,
                             descriptionToaster = context.getString(R.string.tokopedianow_product_card_wishlist_add_fail),
-                            ctaToaster = context.getString(R.string.tokopedianow_product_card_wishlist_retry),
+                            ctaToaster = context.getString(R.string.tokopedianow_toaster_retry),
                             type = Toaster.TYPE_ERROR,
                             ctaClickListener = {
                                 viewModel.addToWishlist(mProductId)
@@ -103,7 +103,7 @@ class TokoNowWishlistButtonView @JvmOverloads constructor(
                         productId = mProductId,
                         isWishlistSelected = false,
                         descriptionToaster = context.getString(R.string.tokopedianow_product_card_wishlist_add_fail),
-                        ctaToaster = context.getString(R.string.tokopedianow_product_card_wishlist_retry),
+                        ctaToaster = context.getString(R.string.tokopedianow_toaster_retry),
                         type = Toaster.TYPE_ERROR,
                         ctaClickListener = {
                             viewModel.addToWishlist(mProductId)
@@ -121,14 +121,14 @@ class TokoNowWishlistButtonView @JvmOverloads constructor(
                             productId = mProductId,
                             isWishlistSelected = false,
                             descriptionToaster = context.getString(R.string.tokopedianow_product_card_wishlist_remove_success),
-                            ctaToaster = context.getString(R.string.tokopedianow_product_card_wishlist_ok)
+                            ctaToaster = context.getString(R.string.tokopedianow_toaster_ok)
                         )
                     } else {
                         listener?.onWishlistButtonClicked(
                             productId = mProductId,
                             isWishlistSelected = true,
                             descriptionToaster = context.getString(R.string.tokopedianow_product_card_wishlist_remove_fail),
-                            ctaToaster = context.getString(R.string.tokopedianow_product_card_wishlist_retry),
+                            ctaToaster = context.getString(R.string.tokopedianow_toaster_retry),
                             type = Toaster.TYPE_ERROR,
                             ctaClickListener = {
                                 viewModel.removeFromWishlist(mProductId)
@@ -141,7 +141,7 @@ class TokoNowWishlistButtonView @JvmOverloads constructor(
                         productId = mProductId,
                         isWishlistSelected = true,
                         descriptionToaster = context.getString(R.string.tokopedianow_product_card_wishlist_remove_fail),
-                        ctaToaster = context.getString(R.string.tokopedianow_product_card_wishlist_retry),
+                        ctaToaster = context.getString(R.string.tokopedianow_toaster_retry),
                         type = Toaster.TYPE_ERROR,
                         ctaClickListener = {
                             viewModel.removeFromWishlist(mProductId)

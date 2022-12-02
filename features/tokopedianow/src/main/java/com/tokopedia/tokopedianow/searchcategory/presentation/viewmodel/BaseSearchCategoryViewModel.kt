@@ -175,11 +175,13 @@ abstract class BaseSearchCategoryViewModel(
     val miniCartWidgetLiveData: LiveData<MiniCartSimplifiedData?> = miniCartWidgetMutableLiveData
 
     private val updatedVisitableIndicesMutableLiveData = SingleLiveEvent<List<Int>>()
-    val updatedVisitableIndicesLiveData: LiveData<List<Int>> =
-            updatedVisitableIndicesMutableLiveData
+    val updatedVisitableIndicesLiveData: LiveData<List<Int>> = updatedVisitableIndicesMutableLiveData
 
-    private val successATCMessageMutableLiveData = SingleLiveEvent<String>()
-    val successATCMessageLiveData: LiveData<String> = successATCMessageMutableLiveData
+    private val successAddToCartMessageMutableLiveData = SingleLiveEvent<String>()
+    val successAddToCartMessageLiveData: LiveData<String> = successAddToCartMessageMutableLiveData
+
+    private val successRemoveFromCartMessageMutableLiveData = SingleLiveEvent<String>()
+    val successRemoveFromCartMessageLiveData: LiveData<String> = successRemoveFromCartMessageMutableLiveData
 
     private val errorATCMessageMutableLiveData = SingleLiveEvent<String>()
     val errorATCMessageLiveData: LiveData<String> = errorATCMessageMutableLiveData
@@ -1101,9 +1103,9 @@ abstract class BaseSearchCategoryViewModel(
             cartProductItem = CartProductItem(productId, shopId, currentQuantity),
             quantity = quantity,
             onSuccessAddToCart = {
+                addToCartMessageSuccess(it.errorMessage.joinToString(separator = ", "))
                 sendAddToCartTracking(quantity, it.data.cartId, productItem)
                 onAddToCartSuccess(productItem, it.data.quantity)
-                updateCartMessageSuccess(it.errorMessage.joinToString(separator = ", "))
                 updateToolbarNotification()
             },
             onSuccessUpdateCart = {
@@ -1112,9 +1114,9 @@ abstract class BaseSearchCategoryViewModel(
                 updateToolbarNotification()
             },
             onSuccessDeleteCart = {
+                removeFromCartMessageSuccess(it.errorMessage.joinToString(separator = ", "))
                 sendDeleteCartTracking(productItem)
                 onAddToCartSuccess(productItem, 0)
-                updateCartMessageSuccess(it.errorMessage.joinToString(separator = ", "))
                 updateToolbarNotification()
             },
             onError = ::onAddToCartFailed,
@@ -1128,8 +1130,12 @@ abstract class BaseSearchCategoryViewModel(
         addToCartTrackingMutableLiveData.value = Triple(quantity, cartId, productItem)
     }
 
-    protected fun updateCartMessageSuccess(successMessage: String) {
-        successATCMessageMutableLiveData.value = successMessage
+    protected fun addToCartMessageSuccess(successMessage: String) {
+        successAddToCartMessageMutableLiveData.value = successMessage
+    }
+
+    protected fun removeFromCartMessageSuccess(successMessage: String) {
+        successRemoveFromCartMessageMutableLiveData.value = successMessage
     }
 
     private fun onAddToCartSuccess(productItem: ProductItemDataView, quantity: Int) {
@@ -1231,14 +1237,6 @@ abstract class BaseSearchCategoryViewModel(
 
     protected open fun getRecomKeywords() = listOf<String>()
 
-    private fun setRecommendationItemQuantity(recommendationItem: RecommendationItem) {
-        val productId = recommendationItem.productId.toString()
-        val parentProductId = recommendationItem.parentID.toString()
-        val quantity = cartService.getProductQuantity(productId, parentProductId)
-
-        recommendationItem.quantity = quantity
-    }
-
     fun updateToolbarNotification() {
         updateToolbarNotificationLiveData.postValue(true)
     }
@@ -1256,7 +1254,7 @@ abstract class BaseSearchCategoryViewModel(
             CartProductItem(productId, shopId, currentQuantity),
             quantity,
             onSuccessAddToCart = {
-                updateCartMessageSuccess(it.errorMessage.joinToString(separator = ", "))
+                addToCartMessageSuccess(it.errorMessage.joinToString(separator = ", "))
                 onSuccessATCRepurchaseWidgetProduct(repurchaseProduct, quantity)
                 sendAddToCartRepurchaseProductTracking(quantity, it.data.cartId, repurchaseProduct)
                 updateToolbarNotification()
@@ -1266,7 +1264,7 @@ abstract class BaseSearchCategoryViewModel(
                 updateToolbarNotification()
             },
             onSuccessDeleteCart = {
-                updateCartMessageSuccess(it.errorMessage.joinToString(separator = ", "))
+                removeFromCartMessageSuccess(it.errorMessage.joinToString(separator = ", "))
                 onSuccessATCRepurchaseWidgetProduct(repurchaseProduct, 0)
                 updateToolbarNotification()
             },

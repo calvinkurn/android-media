@@ -475,7 +475,7 @@ class TokoNowRecipeDetailFragment : Fragment(), RecipeDetailView, MiniCartWidget
 
     private fun onSuccessAddItemToCart(data: AddToCartDataModel) {
         val message = data.errorMessage.joinToString(separator = ", ")
-        val actionText = getString(R.string.tokopedianow_lihat)
+        val actionText = getString(R.string.tokopedianow_toaster_see)
         showToaster(message = message, actionText = actionText, onClickAction = {
             trackClickSeeAddToCartToaster()
             showMiniCartBottomSheet()
@@ -499,7 +499,7 @@ class TokoNowRecipeDetailFragment : Fragment(), RecipeDetailView, MiniCartWidget
                 R.string.tokopedianow_recipe_success_add_bookmark,
                 data.recipeTitle
             ),
-            actionText = getString(R.string.tokopedianow_lihat),
+            actionText = getString(R.string.tokopedianow_toaster_see),
             onClickAction = {
                 goToRecipeBookmark()
             }

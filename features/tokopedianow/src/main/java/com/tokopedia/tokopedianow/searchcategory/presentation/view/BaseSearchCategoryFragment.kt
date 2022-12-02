@@ -493,7 +493,8 @@ abstract class BaseSearchCategoryFragment:
         getViewModel().miniCartWidgetLiveData.observe(::updateMiniCartWidget)
         getViewModel().isShowMiniCartLiveData.observe(::updateMiniCartWidgetVisibility)
         getViewModel().updatedVisitableIndicesLiveData.observe(::notifyAdapterItemChange)
-        getViewModel().successATCMessageLiveData.observe(::showSuccessATCMessage)
+        getViewModel().successAddToCartMessageLiveData.observe(::showSuccessAddToCartMessage)
+        getViewModel().successRemoveFromCartMessageLiveData.observe(::showSuccessRemoveFromCartMessage)
         getViewModel().errorATCMessageLiveData.observe(::showErrorATCMessage)
         getViewModel().isHeaderBackgroundVisibleLiveData.observe(::updateHeaderBackgroundVisibility)
         getViewModel().isContentLoadingLiveData.observe(::updateContentVisibility)
@@ -515,7 +516,7 @@ abstract class BaseSearchCategoryFragment:
         productRecommendationViewModel.miniCartAdd.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Success -> {
-                    showSuccessATCMessage(result.data.errorMessage.joinToString(separator = ", "))
+                    showSuccessAddToCartMessage(result.data.errorMessage.joinToString(separator = ", "))
                     getViewModel().refreshMiniCart()
                 }
                 is Fail -> {
@@ -542,7 +543,7 @@ abstract class BaseSearchCategoryFragment:
         productRecommendationViewModel.miniCartRemove.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Success -> {
-                    showSuccessATCMessage(result.data.second)
+                    showSuccessRemoveFromCartMessage(result.data.second)
                     getViewModel().refreshMiniCart()
                 }
                 is Fail -> {
@@ -812,10 +813,14 @@ abstract class BaseSearchCategoryFragment:
         getViewModel().onViewATCProductNonVariant(productItemDataView, quantity)
     }
 
-    protected open fun showSuccessATCMessage(message: String?) {
-        showToaster(message, Toaster.TYPE_NORMAL, getString(R.string.tokopedianow_lihat)) {
+    protected open fun showSuccessAddToCartMessage(message: String?) {
+        showToaster(message, Toaster.TYPE_NORMAL, getString(R.string.tokopedianow_toaster_see)) {
             miniCartWidget?.showMiniCartListBottomSheet(this)
         }
+    }
+
+    protected open fun showSuccessRemoveFromCartMessage(message: String?) {
+        showToaster(message, Toaster.TYPE_NORMAL, getString(R.string.tokopedianow_toaster_ok))
     }
 
     protected open fun showToaster(
