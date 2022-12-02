@@ -99,42 +99,42 @@ class PlayShortsUploadWorker(
                 Log.d("<LOG>", dispatchers.toString())
                 Log.d("<LOG>", snapshotHelper.toString())
 
-                delay(1000)
-                updateProgress()
-                delay(1000)
-                updateProgress()
-                throw Exception("test")
-                delay(1000)
-                updateProgress()
-                delay(1000)
-                updateProgress()
-                delay(1000)
-                updateProgress()
-                delay(1000)
+//                delay(1000)
+//                updateProgress()
+//                delay(1000)
+//                updateProgress()
+//                throw Exception("test")
+//                delay(1000)
+//                updateProgress()
+//                delay(1000)
+//                updateProgress()
+//                delay(1000)
+//                updateProgress()
+//                delay(1000)
 
-//                broadcastProgress(PlayShortsUploadConst.PROGRESS_INIT)
-//                updateChannelStatus(uploadData, PlayChannelStatusType.Transcoding)
-//
-//                val mediaUrl = uploadMedia(UploadType.Video, uploadData.mediaUri, withUpdateProgress = true)
-//
-//                if (uploadData.coverUri.isEmpty()) {
-//                    uploadFirstSnapshotAsCover(this, uploadData, {
-//                        addMediaAndUpdateChannel(uploadData, mediaUrl)
-//                    }) {
-//                        throw it
-//                    }
-//                } else {
-//                    addMediaAndUpdateChannel(uploadData, mediaUrl)
-//                }
+                broadcastProgress(PlayShortsUploadConst.PROGRESS_INIT)
+                updateChannelStatus(uploadData, PlayChannelStatusType.Transcoding)
+
+                val mediaUrl = uploadMedia(UploadType.Video, uploadData.mediaUri, withUpdateProgress = true)
+
+                if (uploadData.coverUri.isEmpty()) {
+                    uploadFirstSnapshotAsCover(this, uploadData, {
+                        addMediaAndUpdateChannel(uploadData, mediaUrl)
+                    }) {
+                        throw it
+                    }
+                } else {
+                    addMediaAndUpdateChannel(uploadData, mediaUrl)
+                }
 
                 updateCompleted()
 
                 Result.success(workDataOf(PlayShortsUploadConst.SHORTS_ID to uploadData.shortsId))
             }
             catch (e: Exception) {
-//                updateChannelStatus(uploadData, PlayChannelStatusType.TranscodingFailed)
-//
-//                snapshotHelper.deleteLocalFile()
+                updateChannelStatus(uploadData, PlayChannelStatusType.TranscodingFailed)
+
+                snapshotHelper.deleteLocalFile()
                 Log.d("<LOG>", "ERROR UPLOAD : $e")
                 updateFailed()
 
@@ -241,7 +241,8 @@ class PlayShortsUploadWorker(
             )
         }.executeOnBackground()
 
-        updateProgress()
+        if(status != PlayChannelStatusType.TranscodingFailed)
+            updateProgress()
     }
 
     private suspend fun updateChannelStatusWithMedia(
@@ -279,6 +280,12 @@ class PlayShortsUploadWorker(
     }
 
     private suspend fun broadcastProgress(progress: Int) {
+        val data = workDataOf(
+            PlayShortsUploadConst.PROGRESS to progress,
+            PlayShortsUploadConst.UPLOAD_DATA to uploadData.toString(),
+        )
+        Log.d("<LOG>", data.toString())
+
         setProgress(
             workDataOf(
                 PlayShortsUploadConst.PROGRESS to progress,

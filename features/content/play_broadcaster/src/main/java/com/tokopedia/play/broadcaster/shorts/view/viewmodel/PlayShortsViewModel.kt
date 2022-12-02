@@ -63,10 +63,7 @@ class PlayShortsViewModel @Inject constructor(
         get() = _config.value.maxTaggedProduct
 
     val isAllMandatoryMenuChecked: Boolean
-        get() = _titleForm.value.title.isNotEmpty()
-
-    /** TODO: uncomment this later */
-//            && _productSectionList.value.any { it.products.isNotEmpty() }
+        get() = _titleForm.value.title.isNotEmpty() && _productSectionList.value.any { it.products.isNotEmpty() }
 
     val isAllowChangeAccount: Boolean
         get() = accountManager.isAllowChangeAccount(_accountList.value)
