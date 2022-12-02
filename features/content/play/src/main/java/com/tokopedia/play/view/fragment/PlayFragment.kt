@@ -17,7 +17,7 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.request.target.CustomTarget
 import com.bumptech.glide.request.transition.Transition
 import com.tokopedia.abstraction.base.view.fragment.TkpdBaseV4Fragment
-import com.tokopedia.applink.RouteManager
+import com.tokopedia.content.common.util.Router
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.invisible
 import com.tokopedia.kotlin.extensions.view.show
@@ -71,6 +71,7 @@ class PlayFragment @Inject constructor(
     private val pageMonitoring: PlayPltPerformanceCallback,
     private val analytic: PlayAnalytic,
     private val newAnalytic: PlayNewAnalytic,
+    private val router: Router,
 ) :
         TkpdBaseV4Fragment(),
         PlayFragmentContract,
@@ -490,7 +491,7 @@ class PlayFragment @Inject constructor(
             dialog.setPrimaryCTAClickListener {
                 dialog.dismiss()
                 it.finish()
-                if (buttonUrl.isNotEmpty()) RouteManager.route(it, buttonUrl)
+                if (buttonUrl.isNotEmpty()) router.route(it, buttonUrl)
             }
             dialog.setOverlayClose(false)
             dialog.show()

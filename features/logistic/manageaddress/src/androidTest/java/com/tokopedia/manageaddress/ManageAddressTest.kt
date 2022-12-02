@@ -4,8 +4,6 @@ import android.app.Activity.RESULT_OK
 import android.content.Intent
 import androidx.test.core.app.ApplicationProvider
 import androidx.test.espresso.Espresso.onView
-import androidx.test.espresso.Espresso.pressBack
-import androidx.test.espresso.action.ViewActions.click
 import androidx.test.espresso.assertion.ViewAssertions.matches
 import androidx.test.espresso.matcher.ViewMatchers.isDisplayed
 import androidx.test.ext.junit.runners.AndroidJUnit4
@@ -101,9 +99,8 @@ class ManageAddressTest {
                         .check(matches(not(isDisplayed())))
             } else {
                 onView(RecyclerViewMatcher(R.id.address_list)
-                        .atPositionOnView(pos, R.id.btn_secondary))
-                        .check(matches(isDisplayed())).perform(click())
-                pressBack()
+                    .atPositionOnView(pos, R.id.btn_secondary))
+                    .check(matches(isDisplayed()))
             }
         }
     }

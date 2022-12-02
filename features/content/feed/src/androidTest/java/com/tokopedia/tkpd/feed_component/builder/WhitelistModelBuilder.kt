@@ -1,32 +1,30 @@
 package com.tokopedia.tkpd.feed_component.builder
 
-import com.tokopedia.feedcomponent.data.pojo.whitelist.WhitelistQuery
-import com.tokopedia.feedcomponent.data.pojo.whitelist.Author
-import com.tokopedia.feedcomponent.data.pojo.whitelist.Whitelist
+import com.tokopedia.content.common.model.GetCheckWhitelistResponse
 
 /**
  * Created By : Jonathan Darwin on September 23, 2022
  */
 class WhitelistModelBuilder {
 
-    fun buildUgcOnly() = WhitelistQuery(
-        whitelist = Whitelist(
+    fun buildUgcOnly() = GetCheckWhitelistResponse(
+        whitelist = GetCheckWhitelistResponse.Whitelist(
             authors = listOf(
                 getAuthorUgc()
             )
         )
     )
 
-    fun buildSellerOnly() = WhitelistQuery(
-        whitelist = Whitelist(
+    fun buildSellerOnly() = GetCheckWhitelistResponse(
+        whitelist = GetCheckWhitelistResponse.Whitelist(
             authors = listOf(
                 getAuthorSeller()
             )
         )
     )
 
-    fun buildComplete() = WhitelistQuery(
-        whitelist = Whitelist(
+    fun buildComplete() = GetCheckWhitelistResponse(
+        whitelist = GetCheckWhitelistResponse.Whitelist(
             authors = listOf(
                 getAuthorUgc(),
                 getAuthorSeller()
@@ -34,12 +32,12 @@ class WhitelistModelBuilder {
         )
     )
 
-    private fun getAuthorUgc() = Author(
+    private fun getAuthorUgc() = GetCheckWhitelistResponse.Author(
         type = "content-user",
         thumbnail = "https://images.tokopedia.net/img/cache/100-square/default_picture_user/default_toped-24.jpg"
     )
 
-    private fun getAuthorSeller() = Author(
+    private fun getAuthorSeller() = GetCheckWhitelistResponse.Author(
         type = "content-shop",
         thumbnail = "https://images.tokopedia.net/img/cache/100-square/default_picture_user/default_toped-24.jpg"
     )

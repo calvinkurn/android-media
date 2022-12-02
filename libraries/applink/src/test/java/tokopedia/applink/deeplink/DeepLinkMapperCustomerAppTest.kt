@@ -34,7 +34,7 @@ import org.robolectric.RobolectricTestRunner
 class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
 
     companion object {
-        const val SIZE_MAPPER = 207
+        const val SIZE_MAPPER = 209
     }
 
     override fun setup() {
@@ -492,6 +492,16 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
 
         assertEqualsDeepLinkMapper(applink, expectedDeeplink)
         assertEqualsDeeplinkParameters(applink, "extParam" to extParam.decodeToUtf8())
+    }
+
+    @Test
+    fun `check product ar should return product ar internal`() {
+        val productId = "890495024"
+        val appLink = UriUtil.buildUri(ApplinkConst.PRODUCT_AR, productId)
+        val expectedDeepLink =
+            "${DeeplinkConstant.SCHEME_INTERNAL}://marketplace/productar/${productId}/"
+
+        assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
     }
 
     @Test
@@ -1298,6 +1308,13 @@ class DeepLinkMapperCustomerAppTest : DeepLinkMapperTestFixture() {
     fun `check pod appLink then should return tokopedia internal proof of delivery in customerapp`() {
         val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://logistic/shipping/pod/123456?image_id=22222"
         val appLink = UriUtil.buildUri(ApplinkConst.ORDER_POD, "123456?image_id=22222")
+        assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
+    }
+
+    @Test
+    fun `check share address appLink then should return tokopedia internal logistic manage address in customerapp`() {
+        val expectedDeepLink = "${DeeplinkConstant.SCHEME_INTERNAL}://logistic/manageaddress/"
+        val appLink = UriUtil.buildUri(ApplinkConst.SHARE_ADDRESS)
         assertEqualsDeepLinkMapper(appLink, expectedDeepLink)
     }
 
