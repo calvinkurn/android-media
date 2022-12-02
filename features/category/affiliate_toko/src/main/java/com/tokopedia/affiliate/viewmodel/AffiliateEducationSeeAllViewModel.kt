@@ -16,6 +16,7 @@ import com.tokopedia.affiliate.usecase.AffiliateEducationArticleCardsUseCase
 import com.tokopedia.affiliate.usecase.AffiliateEducationCategoryTreeUseCase
 import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.kotlin.extensions.orFalse
 import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.url.TokopediaUrl
@@ -30,7 +31,6 @@ class AffiliateEducationSeeAllViewModel @Inject constructor(
     companion object {
         private val isStaging = TokopediaUrl.getInstance().GQL.contains("staging")
         private val TYPE_ARTICLE_TOPIC = if (isStaging) 1222 else 381
-        private val TYPE_ARTICLE = if (isStaging) 1232 else 395
         private val TYPE_EVENT_L1 = if (isStaging) 1223 else 382
         private val TYPE_TUTORIAL = if (isStaging) 1224 else 383
     }
@@ -96,7 +96,7 @@ class AffiliateEducationSeeAllViewModel @Inject constructor(
         val tempList = mutableListOf<Visitable<AffiliateAdapterTypeFactory>>()
         educationArticleCards.cardsArticle?.data?.cards?.let {
             if (it.isNotEmpty()) {
-                hasMoreData.value = it[0]?.hasMore
+                hasMoreData.value = it[0]?.hasMore.orFalse()
                 totalCount.value = it[0]?.totalCount.orZero()
                 offset = it[0]?.offset.orZero()
                 it[0]?.articles?.mapNotNull { data ->
