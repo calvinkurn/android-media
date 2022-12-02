@@ -12,12 +12,6 @@ class ImageGeneratorConstants {
     object ImageGeneratorKeys{
         const val PRODUCT_IMAGE_URL = "product_image_url"
         const val PRODUCT_PRICE = "product_price"
-        const val PRODUCT_PRICE_1 = "product_price_1"
-        const val PRODUCT_PRICE_2 = "product_price_2"
-        const val PRODUCT_PRICE_3 = "product_price_3"
-        const val PRODUCT_PRICE_4 = "product_price_4"
-        const val PRODUCT_PRICE_5 = "product_price_5"
-        const val PRODUCT_PRICE_6 = "product_price_6"
         const val PRODUCT_TITLE = "product_title"
         const val IS_BEBAS_ONGKIR = "is_bebas_ongkir"
         const val BEBAS_ONGKIR_TYPE = "bebas_ongkir_type"
@@ -68,9 +62,6 @@ class ImageGeneratorConstants {
         const val PRODUCT_IMAGE_1 = "product_image_1"
         const val PRODUCT_IMAGE_2 = "product_image_2"
         const val PRODUCT_IMAGE_3 = "product_image_3"
-        const val PRODUCT_IMAGE_4 = "product_image_4"
-        const val PRODUCT_IMAGE_5 = "product_image_5"
-        const val PRODUCT_IMAGE_6 = "product_image_6"
         const val AUDIENCE_TARGET = "audience_target"
 
         // wishlist
