@@ -316,7 +316,7 @@ class DsarFragment : BaseDaggerFragment(), OnDateChangedListener {
             DateUtil.DEFAULT_VIEW_FORMAT,
             searchResult.deadline
         )
-        binding?.layoutProgress?.txtProgressDescription?.text = getString(R.string.dsar_progress_description, searchResult.email, formattedDate)
+        binding?.layoutProgress?.txtProgressDescription?.text = Html.fromHtml(getString(R.string.dsar_progress_description, searchResult.email, formattedDate))
     }
 
     private fun showBottomSheetDetails(searchResult: GetRequestDetailResponse) {
