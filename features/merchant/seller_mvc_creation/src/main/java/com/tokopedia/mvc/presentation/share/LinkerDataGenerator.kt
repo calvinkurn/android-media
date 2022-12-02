@@ -22,10 +22,10 @@ class LinkerDataGenerator @Inject constructor() {
             feature = shareModel.feature
             channel = shareModel.channel
             campaign = shareModel.campaign
-            id = "${shopId}/voucher/${galadrielVoucherId}?page_source=${ShareComponentConstant.VOUCHER_PRODUCT_FEATURE}"
+            id = "${shopId}/voucher/${galadrielVoucherId}?page_source=${ShareComponentConstant.FEATURE_NAME}"
             linkerData.type = LinkerData.SHOP_TYPE
             name = title
-            uri = "https://www.tokopedia.com/${shopDomain}/voucher/${galadrielVoucherId}?page_source=${ShareComponentConstant.VOUCHER_PRODUCT_FEATURE}"
+            uri = "https://www.tokopedia.com/${shopDomain}/voucher/${galadrielVoucherId}?page_source=${ShareComponentConstant.FEATURE_NAME}"
             ogTitle = title
             ogDescription = outgoingDescription
             if (!TextUtils.isEmpty(shareModel.ogImgUrl)) {

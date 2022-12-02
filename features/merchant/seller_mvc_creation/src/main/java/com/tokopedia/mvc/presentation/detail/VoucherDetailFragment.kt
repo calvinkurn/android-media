@@ -16,7 +16,17 @@ import com.tokopedia.campaign.utils.extension.showToasterError
 import com.tokopedia.campaign.utils.extension.startLoading
 import com.tokopedia.campaign.utils.extension.stopLoading
 import com.tokopedia.globalerror.GlobalError
-import com.tokopedia.kotlin.extensions.view.*
+import com.tokopedia.kotlin.extensions.view.ZERO
+import com.tokopedia.kotlin.extensions.view.formatTo
+import com.tokopedia.kotlin.extensions.view.getCurrencyFormatted
+import com.tokopedia.kotlin.extensions.view.getPercentFormatted
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.invisible
+import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.setTextColorCompat
+import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toCalendar
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.linker.LinkerManager
 import com.tokopedia.linker.LinkerUtils
 import com.tokopedia.linker.interfaces.ShareCallback
@@ -24,7 +34,15 @@ import com.tokopedia.linker.model.LinkerError
 import com.tokopedia.linker.model.LinkerShareResult
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.mvc.R
-import com.tokopedia.mvc.databinding.*
+import com.tokopedia.mvc.databinding.SmvcFragmentVoucherDetailBinding
+import com.tokopedia.mvc.databinding.SmvcVoucherDetailButtonSectionState1Binding
+import com.tokopedia.mvc.databinding.SmvcVoucherDetailButtonSectionState2Binding
+import com.tokopedia.mvc.databinding.SmvcVoucherDetailButtonSectionState3Binding
+import com.tokopedia.mvc.databinding.SmvcVoucherDetailHeaderSectionBinding
+import com.tokopedia.mvc.databinding.SmvcVoucherDetailProductSectionBinding
+import com.tokopedia.mvc.databinding.SmvcVoucherDetailVoucherInfoSectionBinding
+import com.tokopedia.mvc.databinding.SmvcVoucherDetailVoucherSettingSectionBinding
+import com.tokopedia.mvc.databinding.SmvcVoucherDetailVoucherTypeSectionBinding
 import com.tokopedia.mvc.di.component.DaggerMerchantVoucherCreationComponent
 import com.tokopedia.mvc.domain.entity.GenerateVoucherImageMetadata
 import com.tokopedia.mvc.domain.entity.VoucherDetailData
@@ -37,11 +55,12 @@ import com.tokopedia.mvc.presentation.bottomsheet.ThreeDotsMenuBottomSheet
 import com.tokopedia.mvc.presentation.share.LinkerDataGenerator
 import com.tokopedia.mvc.presentation.share.ShareComponentInstanceBuilder
 import com.tokopedia.mvc.util.SharingUtil
-import com.tokopedia.mvc.util.constant.*
+import com.tokopedia.mvc.util.constant.BundleConstant
+import com.tokopedia.mvc.util.constant.DiscountTypeConstant
+import com.tokopedia.mvc.util.constant.ImageUrlConstant
 import com.tokopedia.mvc.util.constant.VoucherTargetConstant.VOUCHER_TARGET_PUBLIC
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.unifyprinciples.Typography
-import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil as ShareComponentUtil
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.model.ShareModel
 import com.tokopedia.usecase.coroutines.Fail
@@ -52,6 +71,7 @@ import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.text.SimpleDateFormat
 import java.util.*
 import javax.inject.Inject
+import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil as ShareComponentUtil
 
 class VoucherDetailFragment : BaseDaggerFragment() {
 

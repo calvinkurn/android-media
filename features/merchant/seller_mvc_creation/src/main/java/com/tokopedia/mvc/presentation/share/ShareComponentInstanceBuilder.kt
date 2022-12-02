@@ -75,13 +75,13 @@ class ShareComponentInstanceBuilder @Inject constructor(
             setMediaPageSourceId(pageSourceId = ImageGeneratorConstants.ImageGeneratorSourceId.MVC_PRODUCT)
             setMetaData(
                 tnTitle = title,
-                tnImage = ShareComponentConstant.VOUCHER_PRODUCT_THUMBNAIL_ICON_IMAGE_URL
+                tnImage = ShareComponentConstant.THUMBNAIL_ICON_IMAGE_URL
             )
             setUtmCampaignData(
-                pageName = ShareComponentConstant.VOUCHER_PRODUCT_PAGE_NAME,
+                pageName = ShareComponentConstant.PAGE_NAME,
                 userId = userSession.userId,
                 pageIdConstituents = listOf(userSession.shopId, param.voucherId.toString()),
-                feature = ShareComponentConstant.VOUCHER_PRODUCT_FEATURE
+                feature = ShareComponentConstant.FEATURE_NAME
             )
 
             val cashbackType = when {
