@@ -283,8 +283,6 @@ class WishlistCollectionDetailFragment :
             }
         }
 
-        const val REQUEST_CODE_LOGIN_ATC = 1880
-        const val REQUEST_CODE_LOGIN_GO_TO_CART = 1881
         const val REQUEST_CODE_LOGIN = 288
         const val REQUEST_CODE_GO_TO_PDP = 788
         const val REQUEST_CODE_GO_TO_COLLECTION_DETAIL = 388
@@ -1266,12 +1264,9 @@ class WishlistCollectionDetailFragment :
 
     private fun handleGoToCartPage() {
         if (userSession.isLoggedIn) {
-            RouteManager.route(context, ApplinkConst.CART)
+            goToCartPage()
         } else {
-            startActivityForResult(
-                RouteManager.getIntent(context, ApplinkConst.LOGIN),
-                REQUEST_CODE_LOGIN_ATC
-            )
+            goToLoginPage()
         }
     }
 
@@ -1962,7 +1957,11 @@ class WishlistCollectionDetailFragment :
                                 showWishlistCollectionHostBottomSheetActivity(wishlistItem, false)
                             }
                             MENU_ADD_WISHLIST -> {
-                                addToWishlist(wishlistItem, userSession.userId, collectionId)
+                                if (userSession.isLoggedIn) {
+                                    addToWishlist(wishlistItem, userSession.userId, collectionId)
+                                } else {
+                                    goToLoginPage()
+                                }
                             }
                         }
                     }
@@ -2324,7 +2323,7 @@ class WishlistCollectionDetailFragment :
     private fun showIndefiniteToasterWithCTA(message: String, actionText: String, type: Int, listener: View.OnClickListener) {
         val toasterSuccess = Toaster
         view?.let { v ->
-            toasterSuccess.build(v, message, Toaster.LENGTH_INDEFINITE, type, actionText, listener).show()
+            toasterSuccess.build(v, message, Toaster.LENGTH_LONG, type, actionText, listener).show()
         }
     }
 
@@ -2368,7 +2367,7 @@ class WishlistCollectionDetailFragment :
         view?.let { v ->
             toasterSuccess.build(v, message, Toaster.LENGTH_SHORT, type, CTA_ATC) {
                 WishlistCollectionAnalytics.sendClickLihatButtonOnAtcSuccessToasterEvent()
-                RouteManager.route(context, ApplinkConst.CART)
+                goToCartPage()
             }.show()
         }
     }
@@ -2887,11 +2886,15 @@ class WishlistCollectionDetailFragment :
         if (userSession.isLoggedIn) {
             doAtc()
         } else {
-            startActivityForResult(
-                RouteManager.getIntent(context, ApplinkConst.LOGIN),
-                REQUEST_CODE_LOGIN_ATC
-            )
+            goToLoginPage()
         }
+    }
+
+    private fun goToLoginPage() {
+        startActivityForResult(
+            RouteManager.getIntent(context, ApplinkConst.LOGIN),
+            REQUEST_CODE_LOGIN
+        )
     }
 
     private fun doAtc() {
@@ -3493,7 +3496,11 @@ class WishlistCollectionDetailFragment :
                 wishlistCollectionDetailTypeLayoutIcon.visible()
                 wishlistCollectionSelectItemOption.visible()
                 wishlistCollectionSelectItemOption.setOnClickListener {
-                    checkCollectionType(CHECK_COLLECTION_TYPE_FOR_TURN_ON_SELECT_ITEMS_MODE)
+                    if (userSession.isLoggedIn) {
+                        checkCollectionType(CHECK_COLLECTION_TYPE_FOR_TURN_ON_SELECT_ITEMS_MODE)
+                    } else {
+                        goToLoginPage()
+                    }
                 }
             }
         }
@@ -3540,7 +3547,11 @@ class WishlistCollectionDetailFragment :
             }
             showToasterActionOke(errorMessage, Toaster.TYPE_ERROR)
         }
-        turnOffBulkDeleteMode()
+        if (!isBulkAddFromOtherCollectionShow) {
+            turnOffBulkDeleteMode()
+        } else {
+            turnOffBulkAddFromOtherCollection()
+        }
     }
 
     override fun onFailedSaveItemToCollection(errorMessage: String) {
