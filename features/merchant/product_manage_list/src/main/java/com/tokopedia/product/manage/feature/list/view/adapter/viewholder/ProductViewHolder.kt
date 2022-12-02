@@ -24,8 +24,7 @@ import kotlin.math.abs
 class ProductViewHolder(
     view: View,
     private val listener: ProductViewHolderView,
-    private val campaignListener: ProductCampaignInfoListener,
-    private val firebaseRemoteConfigImpl: FirebaseRemoteConfigImpl
+    private val campaignListener: ProductCampaignInfoListener
 ) : AbstractViewHolder<ProductUiModel>(view) {
 
     companion object {

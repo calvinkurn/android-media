@@ -19,7 +19,6 @@ import android.text.SpannableString
 import android.text.TextPaint
 import android.text.style.ClickableSpan
 import android.text.style.StyleSpan
-import android.util.Log
 import android.view.*
 import android.view.inputmethod.EditorInfo
 import android.widget.FrameLayout
@@ -1384,7 +1383,7 @@ open class ProductManageFragment :
     }
 
     override fun getAdapterTypeFactory(): ProductManageAdapterFactoryImpl {
-        return ProductManageAdapterFactoryImpl(this, this, firebaseRemoteConfigImpl)
+        return ProductManageAdapterFactoryImpl(this, this)
     }
 
     override fun getScreenName(): String = "/product list page"

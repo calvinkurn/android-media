@@ -15,8 +15,7 @@ import com.tokopedia.remoteconfig.FirebaseRemoteConfigImpl
 
 class ProductManageAdapterFactoryImpl(
     private val listener: ProductViewHolder.ProductViewHolderView,
-    private val campaignListener: ProductCampaignInfoListener,
-    private val firebaseRemoteConfigImpl: FirebaseRemoteConfigImpl
+    private val campaignListener: ProductCampaignInfoListener
 ) : BaseAdapterTypeFactory(), ProductManageAdapterFactory {
 
     override fun type(uiModel: ProductUiModel): Int = ProductViewHolder.LAYOUT
@@ -30,8 +29,7 @@ class ProductManageAdapterFactoryImpl(
             ProductViewHolder.LAYOUT -> ProductViewHolder(
                 view,
                 listener,
-                campaignListener,
-                firebaseRemoteConfigImpl
+                campaignListener
             )
             EmptyStateViewHolder.LAYOUT -> EmptyStateViewHolder(view)
             LoadingViewHolder.LAYOUT -> LoadingViewHolder(view)
