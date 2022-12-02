@@ -186,6 +186,9 @@ private fun ImagePolicyResponse.generateToShopPage(
             ImageGeneratorConstants.ImageGeneratorKeys.PRODUCT_PRICE_6 -> {
                 imagePolicy.toRequestParam(data.productPrice6.toString())
             }
+            ImageGeneratorConstants.ImageGeneratorKeys.SHOP_IS_HEADLESS -> {
+                imagePolicy.toRequestParam(data.isHeadless.toString())
+            }
             else -> {
                 imagePolicy.toRequestParam("")
             }

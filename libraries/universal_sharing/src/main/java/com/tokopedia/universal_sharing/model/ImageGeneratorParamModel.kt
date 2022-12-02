@@ -39,6 +39,7 @@ data class ShopPageParamModel(
     var productPrice5: Long = 0,
     var productImage6: String = "",
     var productPrice6: Long = 0,
+    var isHeadless: Boolean = false
 ): ImageGeneratorParamModel() {
     enum class ShopInfoType(val typeName: String = "") {
         SHOP_PERFORMANCE("shop_performance"),

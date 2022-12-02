@@ -88,6 +88,7 @@ class ImageGeneratorConstants {
         const val SHOP_INFO_TYPE_3 = "info_3_type"
         const val SHOP_INFO_VALUE_3 = "info_3_value"
         const val SHOP_INFO_LABEL_3 = "info_3_label"
+        const val SHOP_IS_HEADLESS = "is_headless"
     }
     object ImageGeneratorPlatforms{
         const val WHATSAPP = "wa"

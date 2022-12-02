@@ -3153,6 +3153,7 @@ class NewShopPageFragment :
         shopPageParamModel.shopBadge = shopType
 
         // shop performance info params
+        shopPageParamModel.isHeadless = shopPageHeaderWidgetList.isEmpty()
         if (shopPageHeaderWidgetList.isNotEmpty()) {
             val performanceWidget = shopPageHeaderWidgetList.filter { it.type == ShopPageParamModel.ShopInfoType.SHOP_PERFORMANCE.typeName }
             var totalShopInfo = Int.ZERO
