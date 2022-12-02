@@ -292,7 +292,7 @@ class CampaignListViewModelTest {
         runBlocking {
             //Given
             val campaignId : Long = 1001
-            val thumbnailImageUrl = "https://ecs.tokopedia.com/some-banner.png"
+            val thumbnailImageUrl = "https://images.tokopedia.com/some-banner.png"
             val campaign = buildCampaignUiModel(campaignId)
             val expected = Success(thumbnailImageUrl)
 
@@ -485,7 +485,7 @@ class CampaignListViewModelTest {
 
     @Test
     fun `When get thumbnail image url, should return correct values`() {
-        val thumbnailImageUrl = "https://ecs.tokopedia.com/some-banner.png"
+        val thumbnailImageUrl = "https://images.tokopedia.com/some-banner.png"
         viewModel.setThumbnailImageUrl(thumbnailImageUrl)
 
         assertEquals(thumbnailImageUrl, viewModel.getThumbnailImageUrl())
