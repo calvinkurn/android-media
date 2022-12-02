@@ -1,7 +1,7 @@
 [
   {
     "data": {
-      "notifier_getHtdw": {
+      "notifier_getHtdw_v2": {
         "status": 200,
         "data": {
           "notification_id": 234,
@@ -54,7 +54,8 @@
               ]
             }
           ],
-          "payment": {
+          "payment": [
+            {
             "image_url": "https://images.tokopedia.net/img/og_image_default_new.jpg",
             "gateway_name": "BCA",
             "account_number": "RN12345",
@@ -70,7 +71,8 @@
                 "app_link": "tokopedia://home"
               }
             ]
-          },
+          }
+          ],
           "card": {
             "label": "Lihat Semuaa",
             "description": "Cek produk lainnya di keranjang mu",

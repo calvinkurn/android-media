@@ -4,7 +4,7 @@ import android.content.Context
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel
 import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedUseCase
-import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.post.DynamicPostModel
 import com.tokopedia.kol.feature.post.view.viewmodel.PostDetailFooterModel
 import com.tokopedia.kol.feature.postdetail.view.datamodel.PostDetailUiModel
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -80,7 +80,7 @@ class GetPostDetailUseCaseSeller @Inject constructor(
         val footerModel = PostDetailFooterModel()
         if (dynamicFeedDomainModel.postList.isNotEmpty()) {
             val dynamicPostViewModel = dynamicFeedDomainModel.postList[0]
-            if (dynamicPostViewModel is DynamicPostViewModel) {
+            if (dynamicPostViewModel is DynamicPostModel) {
                 footerModel.contentId = dynamicPostViewModel.id.toString()
                 footerModel.isLiked = dynamicPostViewModel.footer.like.isChecked
                 footerModel.totalLike = dynamicPostViewModel.footer.like.value

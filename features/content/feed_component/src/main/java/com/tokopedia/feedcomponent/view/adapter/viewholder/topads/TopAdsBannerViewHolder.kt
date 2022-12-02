@@ -4,7 +4,7 @@ import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.feedcomponent.R
-import com.tokopedia.feedcomponent.view.viewmodel.banner.TopAdsBannerViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.banner.TopAdsBannerModel
 import com.tokopedia.feedcomponent.view.widget.CardTitleView
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.show
@@ -17,8 +17,8 @@ import kotlinx.android.synthetic.main.feed_item_topads_banner.view.*
 class TopAdsBannerViewHolder(view: View,
                              private val topAdsBannerListener: TopAdsBannerListener?,
                              private val cardTitleListener: CardTitleView.CardTitleListener?)
-    : AbstractViewHolder<TopAdsBannerViewModel>(view) {
-    private var topAdsBannerViewModel: TopAdsBannerViewModel? = null
+    : AbstractViewHolder<TopAdsBannerModel>(view) {
+    private var topAdsBannerModel: TopAdsBannerModel? = null
 
     private val topAdsImageView: TopAdsImageView = view.findViewById(R.id.top_ads_banner)
 
@@ -30,7 +30,7 @@ class TopAdsBannerViewHolder(view: View,
     init {
         topAdsImageView.setApiResponseListener(object : TopAdsImageVieWApiResponseListener {
             override fun onImageViewResponse(imageDataList: ArrayList<TopAdsImageViewModel>) {
-                topAdsBannerViewModel?.run {
+                topAdsBannerModel?.run {
                     topAdsBannerList = imageDataList
                     if (!topAdsBannerList.isNullOrEmpty()) {
                         bindTopAdsBanner(topAdsBannerList.first())
@@ -58,8 +58,8 @@ class TopAdsBannerViewHolder(view: View,
         itemView.top_ads_banner.show()
     }
 
-    override fun bind(element: TopAdsBannerViewModel?) {
-        topAdsBannerViewModel = element
+    override fun bind(element: TopAdsBannerModel?) {
+        topAdsBannerModel = element
         element?.run {
             if (!topAdsBannerList.isNullOrEmpty()) {
                 bindTopAdsBanner(topAdsBannerList.first())

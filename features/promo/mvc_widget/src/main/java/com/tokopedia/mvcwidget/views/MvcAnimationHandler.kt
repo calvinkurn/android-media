@@ -5,11 +5,7 @@ import android.animation.AnimatorSet
 import android.animation.ObjectAnimator
 import android.animation.PropertyValuesHolder
 import android.annotation.SuppressLint
-import android.app.Activity
-import android.os.Handler
-import android.util.Log
 import android.view.View
-import android.view.ViewPropertyAnimator
 import com.tokopedia.mvcwidget.AnimatedInfos
 import com.tokopedia.promoui.common.dpToPx
 import java.lang.ref.WeakReference
@@ -141,8 +137,6 @@ class MvcAnimationHandler(val firstContainer: WeakReference<MvcTextContainer>, v
     private fun animateTwoViews(viewOne:WeakReference<MvcTextContainer>, viewTwo:WeakReference<MvcTextContainer>){
 
         viewOne.get()?.let {v1->
-
-
             viewTwo.get()?.let {v2->
                 val alphaAnimPropOne = PropertyValuesHolder.ofFloat(View.ALPHA, 1f, 0f)
                 val alphaAnimObjOne: ObjectAnimator = ObjectAnimator.ofPropertyValuesHolder(v1, alphaAnimPropOne)

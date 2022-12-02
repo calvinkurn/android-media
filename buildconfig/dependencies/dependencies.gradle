@@ -58,7 +58,7 @@ ext {
 
     playCoreVersion = '1.8.0'
     playServiceGms = '16.0.0'
-    playServiceBase = '17.5.0'
+    playServiceBase = '18.0.1'
     playServiceAnalytics = '17.0.0'
     playServiceLocation = '17.0.0'
     playServiceMaps = '17.0.0'
@@ -71,6 +71,7 @@ ext {
     playServiceTagManager = '17.0.0'
     playServiceMeasurementBase = '18.0.0'
     playServiceMeasurementApi = '18.0.0'
+    playCastVersion = '21.0.1'
     bomVersion = '26.2.0'
 
     JunitVersion = '4.12'
@@ -199,7 +200,8 @@ ext {
             ads           : "com.google.android.gms:play-services-ads-identifier:${playServiceAds}",
             tagManagerImpl: "com.google.android.gms:play-services-tagmanager-v4-impl:${playServiceTagManager}",
             tagManager    : "com.google.android.gms:play-services-tagmanager:${playServiceTagManager}",
-            measurementApi: "com.google.android.gms:play-services-measurement-api:${playServiceMeasurementApi}"
+            measurementApi: "com.google.android.gms:play-services-measurement-api:${playServiceMeasurementApi}",
+            cast          :"com.google.android.gms:play-services-cast-framework:${playCastVersion}"
     ]
 
     firebase = [
