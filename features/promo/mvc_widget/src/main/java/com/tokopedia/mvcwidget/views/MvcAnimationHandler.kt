@@ -23,30 +23,30 @@ class MvcAnimationHandler(val firstContainer: WeakReference<MvcTextContainer>, v
     var isTokomember = false
 
     private val animListener = object :Animator.AnimatorListener{
-        override fun onAnimationStart(animation: Animator?) {
+        override fun onAnimationStart(animation: Animator) {
 
         }
 
-        override fun onAnimationEnd(animation: Animator?) {
+        override fun onAnimationEnd(animation: Animator) {
             afterAnimationComplete()
         }
 
-        override fun onAnimationCancel(animation: Animator?) {
+        override fun onAnimationCancel(animation: Animator) {
         }
 
-        override fun onAnimationRepeat(animation: Animator?) {
+        override fun onAnimationRepeat(animation: Animator) {
 
         }
     }
 
     private val onAttachListener = object :View.OnAttachStateChangeListener{
-        override fun onViewAttachedToWindow(v: View?) {
+        override fun onViewAttachedToWindow(v: View) {
             if (isTokomember){
                 startTimer()
             }
         }
 
-        override fun onViewDetachedFromWindow(v: View?) {
+        override fun onViewDetachedFromWindow(v: View) {
             if (isTokomember) {
                 stopAnimation()
             }
