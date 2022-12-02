@@ -11,6 +11,10 @@ import java.lang.ref.WeakReference
 /**
  * Created By : Jonathan Darwin on December 02, 2022
  */
+
+/**
+ * Source : https://stackoverflow.com/questions/43404526/android-imagespan-how-to-center-align-the-image-at-the-end-of-the-text
+ */
 class CenteredImageSpan(
     drawable: Drawable,
     verticalAlignment: Int = ALIGN_BOTTOM
@@ -19,6 +23,8 @@ class CenteredImageSpan(
     // Extra variables used to redefine the Font Metrics when an ImageSpan is added
     private var initialDescent = 0
     private var extraSpace = 0
+
+    private var mDrawableRef: WeakReference<Drawable>? = null
 
     // Method used to redefined the Font Metrics when an ImageSpan is added
     override fun getSize(
@@ -29,7 +35,7 @@ class CenteredImageSpan(
         fm: FontMetricsInt?
     ): Int {
         val d = getCachedDrawable()
-        val rect: Rect = d!!.bounds
+        val rect: Rect = d.bounds
         if (fm != null) {
             // Centers the text with the ImageSpan
             if (rect.bottom - (fm.descent - fm.ascent) >= 0) {
@@ -37,8 +43,8 @@ class CenteredImageSpan(
                 initialDescent = fm.descent
                 extraSpace = rect.bottom - (fm.descent - fm.ascent)
             }
-            fm.descent = extraSpace / 2 + initialDescent
-            fm.bottom = fm.descent + 5
+            fm.descent = extraSpace / EXTRA_SPACE_DIVIDER + initialDescent
+            fm.bottom = fm.descent + BOTTOM_BIAS
             fm.ascent = -rect.bottom + fm.descent
             fm.top = fm.ascent
         }
@@ -46,16 +52,25 @@ class CenteredImageSpan(
     }
 
     // Redefined locally because it is a private member from DynamicDrawableSpan
-    private fun getCachedDrawable(): Drawable? {
-        val wr: WeakReference<Drawable>? = mDrawableRef
-        var d: Drawable? = null
-        if (wr != null) d = wr.get()
-        if (d == null) {
-            d = drawable
-            mDrawableRef = WeakReference(d)
+    private fun getCachedDrawable(): Drawable {
+        return try {
+            mDrawableRef?.get() ?: kotlin.run {
+                getCurrentDrawable()
+            }
         }
-        return d
+        catch (e: Exception) {
+            getCurrentDrawable()
+        }
     }
 
-    private var mDrawableRef: WeakReference<Drawable>? = null
+    private fun getCurrentDrawable(): Drawable {
+        return drawable.apply {
+            mDrawableRef = WeakReference(this)
+        }
+    }
+
+    companion object {
+        private const val BOTTOM_BIAS = 5
+        private const val EXTRA_SPACE_DIVIDER = 2
+    }
 }
