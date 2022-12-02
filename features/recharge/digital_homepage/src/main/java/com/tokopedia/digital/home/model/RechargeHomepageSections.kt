@@ -5,6 +5,7 @@ import com.google.gson.annotations.SerializedName
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.digital.home.presentation.adapter.RechargeHomepageAdapterTypeFactory
 import com.tokopedia.digital.home.presentation.adapter.RechargeHomepageCustomLastItemAdapterTypeFactory
+import com.tokopedia.digital.home.presentation.adapter.RechargeHomepageMyBillsAdapterTypeFactory
 import com.tokopedia.digital.home.presentation.viewmodel.RechargeHomepageViewModel.Companion.ALL_CATEGORY_PLATFORM_ID
 import com.tokopedia.home_component.model.ChannelModel
 import com.tokopedia.kotlin.model.ImpressHolder
@@ -640,5 +641,51 @@ class RechargeHomepageOfferingWidgetModel(val section: RechargeHomepageSections.
 
     override fun type(typeFactory: RechargeHomepageAdapterTypeFactory): Int =
         typeFactory.type(this)
+
+}
+
+class RechargeHomepageMyBillsWidgetModel(val section: RechargeHomepageSections.Section)
+    : RechargeHomepageSectionModel {
+    override fun visitableId(): String = section.id
+
+    override fun equalsWith(b: Any?): Boolean {
+        return if (b is RechargeHomepageMyBillsWidgetModel) {
+            section == b.section
+        } else false
+    }
+
+    override fun type(typeFactory: RechargeHomepageAdapterTypeFactory): Int {
+        return typeFactory.type(this)
+    }
+
+    class RechargeHomepageMyBillsItemModel(val item: RechargeHomepageSections.Item)
+        :Visitable<RechargeHomepageMyBillsAdapterTypeFactory> {
+        override fun type(typeFactory: RechargeHomepageMyBillsAdapterTypeFactory): Int {
+            return typeFactory.type(this)
+        }
+    }
+
+    class RechargeHomepageMyBillsLastItemModel(val items: RechargeHomepageSections.Item)
+        :Visitable<RechargeHomepageMyBillsAdapterTypeFactory> {
+        override fun type(typeFactory: RechargeHomepageMyBillsAdapterTypeFactory): Int {
+            return typeFactory.type(this)
+        }
+    }
+}
+
+class RechargeHomepageMyBillsEntryPointModel(val section: RechargeHomepageSections.Section)
+    : RechargeHomepageSectionModel {
+
+    override fun visitableId(): String = section.id
+
+    override fun equalsWith(b: Any?): Boolean {
+        return if (b is RechargeHomepageMyBillsEntryPointModel) {
+            section == b.section
+        } else false
+    }
+
+    override fun type(typeFactory: RechargeHomepageAdapterTypeFactory): Int {
+        return typeFactory.type(this)
+    }
 
 }
