@@ -109,14 +109,18 @@ class CustomProductLogisticFragment : BaseDaggerFragment(), CPLItemAdapter.CPLIt
         val whitelabelServiceIndex = cplItemOnDemandAdapter.getWhitelabelServicePosition()
         return if (whitelabelServiceIndex != RecyclerView.NO_POSITION) {
             binding.rvOnDemandCpl.findViewHolderForAdapterPosition(whitelabelServiceIndex)?.itemView
-        } else null
+        } else {
+            null
+        }
     }
 
-    private fun getNormalServiceView() : View? {
+    private fun getNormalServiceView(): View? {
         val normalServiceIndex = cplItemOnDemandAdapter.getFirstNormalServicePosition()
         return if (normalServiceIndex != RecyclerView.NO_POSITION) {
             binding.rvOnDemandCpl.findViewHolderForAdapterPosition(normalServiceIndex)?.itemView
-        } else null
+        } else {
+            null
+        }
     }
 
     private fun showOnBoardingCoachmark(data: CustomProductLogisticModel) {
@@ -126,62 +130,78 @@ class CustomProductLogisticFragment : BaseDaggerFragment(), CPLItemAdapter.CPLIt
             context?.let {
                 val normalServiceView = getNormalServiceView()
 
-                val coachMarkItems = ArrayList<CoachMark2Item>()
-                val coachMark = CoachMark2(it)
-
-                // dummy only
-                coachMarkItems.add(
-                    CoachMark2Item(
-                        binding.tvAntarCpl,
-                        getString(R.string.whitelabel_instan_title_coachmark),
-                        getString(R.string.whitelabel_instan_description_coachmark)
-                    )
-                )
-
-                normalServiceView?.let { normalService ->
-                    coachMarkItems.add(
-                        CoachMark2Item(
-                            normalService,
-                            getString(R.string.whitelabel_onboarding_title_coachmark),
-                            getString(R.string.whitelabel_onboarding_description_coachmark),
-                            CoachMark2.POSITION_TOP
-                        )
-                    )
-                }
-
-                whitelabelView.let { whitelabel ->
-                    coachMarkItems.add(
-                        CoachMark2Item(
-                            whitelabel,
-                            getString(R.string.whitelabel_instan_title_coachmark),
-                            getString(R.string.whitelabel_instan_description_coachmark),
-                            CoachMark2.POSITION_TOP
-                        )
-                    )
-                }
-                coachMark.setStepListener(object : CoachMark2.OnStepListener {
-                    override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
-                        if (currentIndex < 1) {
-                            coachMark.dismissCoachMark()
-                            finishActivity(data.getActivatedSpIds())
-                        } else {
-                            coachMark.hideCoachMark()
-                            coachMarkItems.getOrNull(currentIndex)?.anchorView?.let { item ->
-                                binding.svShippingEditor.smoothScrollTo(0, item.top)
-                            }
-                            coachMark.showCoachMark(coachMarkItems, null, currentIndex)
-                        }
-                    }
-                })
-                coachMark.onFinishListener = {
-                    viewModel.setAlreadyShowOnBoarding()
-                }
-                // manual scroll to first item
-                coachMarkItems.getOrNull(1)?.anchorView?.let { rv ->
-                    binding.svShippingEditor.smoothScrollTo(0, rv.top)
-                    coachMark.showCoachMark(coachMarkItems, null, 1)
+                val coachMarkItems = generateOnBoardingCoachMark(normalServiceView, whitelabelView)
+                CoachMark2(it).apply {
+                    setOnBoardingListener(coachMarkItems, data)
+                    setStateAfterOnBoardingShown()
+                    manualScroll(coachMarkItems)
                 }
             }
+        }
+    }
+
+    private fun generateOnBoardingCoachMark(
+        normalService: View?,
+        whitelabelService: View
+    ): ArrayList<CoachMark2Item> {
+        val coachMarkItems = ArrayList<CoachMark2Item>()
+        // dummy only
+        coachMarkItems.add(
+            CoachMark2Item(
+                binding.tvAntarCpl,
+                getString(R.string.whitelabel_instan_title_coachmark),
+                getString(R.string.whitelabel_instan_description_coachmark)
+            )
+        )
+
+        normalService?.let { view ->
+            coachMarkItems.add(
+                CoachMark2Item(
+                    view,
+                    getString(R.string.whitelabel_onboarding_title_coachmark),
+                    getString(R.string.whitelabel_onboarding_description_coachmark),
+                    CoachMark2.POSITION_TOP
+                )
+            )
+        }
+
+        whitelabelService.let { view ->
+            coachMarkItems.add(
+                CoachMark2Item(
+                    view,
+                    getString(R.string.whitelabel_instan_title_coachmark),
+                    getString(R.string.whitelabel_instan_description_coachmark),
+                    CoachMark2.POSITION_TOP
+                )
+            )
+        }
+        return coachMarkItems
+    }
+
+    private fun CoachMark2.setOnBoardingListener(coachMarkItems: ArrayList<CoachMark2Item>, data: CustomProductLogisticModel) {
+        this.setStepListener(object : CoachMark2.OnStepListener {
+            override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
+                if (currentIndex < 1) {
+                    this@setOnBoardingListener.dismissCoachMark()
+                    finishActivity(data.getActivatedSpIds())
+                } else {
+                    this@setOnBoardingListener.hideCoachMark()
+                    manualScroll(coachMarkItems, currentIndex)
+                }
+            }
+        })
+    }
+
+    private fun CoachMark2.manualScroll(coachMarkItems: ArrayList<CoachMark2Item>, currentIndex: Int = 1) {
+        coachMarkItems.getOrNull(currentIndex)?.anchorView?.let { rv ->
+            binding.svShippingEditor.smoothScrollTo(0, rv.top)
+            this.showCoachMark(coachMarkItems, null, currentIndex)
+        }
+    }
+
+    private fun CoachMark2.setStateAfterOnBoardingShown() {
+        this.onFinishListener = {
+            viewModel.setAlreadyShowOnBoarding()
         }
     }
 
@@ -244,10 +264,12 @@ class CustomProductLogisticFragment : BaseDaggerFragment(), CPLItemAdapter.CPLIt
             populateShipperData(data.shipperList[0].shipper, SHIPPER_CONVENTIONAL)
         } else if (data.shipperList.size > 1) {
             populateShipperData(data.shipperList[CPL_ON_DEMAND_INDEX].shipper, SHIPPER_ON_DEMAND)
-            populateShipperData(data.shipperList[CPL_CONVENTIONAL_INDEX].shipper, SHIPPER_CONVENTIONAL)
+            populateShipperData(
+                data.shipperList[CPL_CONVENTIONAL_INDEX].shipper,
+                SHIPPER_CONVENTIONAL
+            )
         }
     }
-
 
     private fun populateShipperData(data: List<ShipperCPLModel>, shipperCase: Int) {
         when (shipperCase) {
@@ -287,9 +309,12 @@ class CustomProductLogisticFragment : BaseDaggerFragment(), CPLItemAdapter.CPLIt
 
     private fun finishActivity(shipperServices: List<Long>) {
         activity?.run {
-            setResult(Activity.RESULT_OK, Intent().apply {
-                putExtra(EXTRA_SHIPPER_SERVICES, shipperServices.toLongArray())
-            })
+            setResult(
+                Activity.RESULT_OK,
+                Intent().apply {
+                    putExtra(EXTRA_SHIPPER_SERVICES, shipperServices.toLongArray())
+                }
+            )
             finish()
         }
     }
@@ -347,7 +372,6 @@ class CustomProductLogisticFragment : BaseDaggerFragment(), CPLItemAdapter.CPLIt
         binding.btnSaveShipper.gone()
     }
 
-
     companion object {
         const val SHIPPER_ON_DEMAND = 1
         const val SHIPPER_CONVENTIONAL = 2
@@ -362,14 +386,16 @@ class CustomProductLogisticFragment : BaseDaggerFragment(), CPLItemAdapter.CPLIt
                     putLong(EXTRA_SHOP_ID, extra.getLong(EXTRA_SHOP_ID))
                     putLong(EXTRA_PRODUCT_ID, extra.getLong(EXTRA_PRODUCT_ID))
                     putBoolean(EXTRA_CPL_ACTIVATED, extra.getBoolean(EXTRA_CPL_ACTIVATED))
-                    putBoolean(EXTRA_SHOW_ONBOARDING_CPL, extra.getBoolean(EXTRA_SHOW_ONBOARDING_CPL))
+                    putBoolean(
+                        EXTRA_SHOW_ONBOARDING_CPL,
+                        extra.getBoolean(EXTRA_SHOW_ONBOARDING_CPL)
+                    )
                     putLongArray(EXTRA_SHIPPER_SERVICES, extra.getLongArray(EXTRA_SHIPPER_SERVICES))
                     putLongArray(EXTRA_CPL_PARAM, extra.getLongArray(EXTRA_CPL_PARAM))
                 }
             }
         }
     }
-
 
     override fun onShipperCheckboxClicked(shipperId: Long, check: Boolean) {
         binding.btnSaveShipper.isEnabled = true
@@ -385,5 +411,4 @@ class CustomProductLogisticFragment : BaseDaggerFragment(), CPLItemAdapter.CPLIt
         binding.btnSaveShipper.isEnabled = true
         viewModel.setWhitelabelServiceState(spIds, check)
     }
-
 }

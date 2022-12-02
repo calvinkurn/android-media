@@ -1,5 +1,6 @@
 package com.tokopedia.editshipping.ui.customproductlogistic
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -53,6 +54,7 @@ class CPLItemAdapter(private val listener: CPLItemAdapterListener) :
         return RecyclerView.NO_POSITION
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     fun addData(data: List<ShipperCPLModel>) {
         cplItem.clear()
         cplItem.addAll(data)

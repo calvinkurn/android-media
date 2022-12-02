@@ -117,7 +117,7 @@ class AddEditProductShipmentViewModelTest {
 
     @Test
     fun `Get CPL List success`() {
-        val cplParam = listOf<Long>(6,22)
+        val cplParam = listOf<Long>(6, 22)
         coEvery {
             customProductLogisticUseCase(any())
         } returns OngkirGetCPLQGLResponse()
@@ -236,8 +236,10 @@ class AddEditProductShipmentViewModelTest {
 
         viewModel.setProductActiveState(activatedSpIds)
 
-        val activatedShipperProduct = (viewModel.cplList.value as Success).data.shipperList[0].shipper[1].shipperProduct[0]
-        val notActivatedShipperProduct = (viewModel.cplList.value as Success).data.shipperList[0].shipper[2].shipperProduct[0]
+        val activatedShipperProduct =
+            (viewModel.cplList.value as Success).data.shipperList[0].shipper[1].shipperProduct[0]
+        val notActivatedShipperProduct =
+            (viewModel.cplList.value as Success).data.shipperList[0].shipper[2].shipperProduct[0]
         assertEquals(activatedShipperProduct.isActive, true)
         assertEquals(notActivatedShipperProduct.isActive, false)
     }

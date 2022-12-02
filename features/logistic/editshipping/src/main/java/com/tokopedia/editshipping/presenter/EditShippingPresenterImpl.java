@@ -111,6 +111,7 @@ public class EditShippingPresenterImpl implements EditShippingPresenter {
                     public void onSuccess(EditShippingCouriers model) {
                         initiateDatas(model);
                         bindDataToView(model);
+                        showOnBoarding();
                         getReverseGeocode();
                     }
 
@@ -248,6 +249,7 @@ public class EditShippingPresenterImpl implements EditShippingPresenter {
                     public void onSuccess(OpenShopData model) {
                         initiateDatasOpenShop(model);
                         bindDataToViewOpenShop(model);
+                        showOnBoarding();
                         getReverseGeocode();
                     }
 
@@ -268,6 +270,10 @@ public class EditShippingPresenterImpl implements EditShippingPresenter {
                         view.onFragmentNoConnection();
                     }
                 });
+    }
+
+    private void showOnBoarding() {
+        view.showOnBoarding(getWhitelabelServiceIndex(), getFirstNormalServiceIndex());
     }
 
     @Override
@@ -367,7 +373,6 @@ public class EditShippingPresenterImpl implements EditShippingPresenter {
             setCourierService(currentCourier);
             populateCurrentAdditionalOptions(currentCourier, currentCourier.urlAdditionalOption);
         }
-        view.showOnBoarding(getWhitelabelServiceIndex(), getFirstNormalServiceIndex());
     }
 
     private void displayCourierOpenShop(OpenShopData data) {
@@ -377,7 +382,6 @@ public class EditShippingPresenterImpl implements EditShippingPresenter {
             setCourierService(currentCourier);
             populateCurrentAdditionalOptions(currentCourier, currentCourier.urlAdditionalOption);
         }
-        view.showOnBoarding(getWhitelabelServiceIndex(), getFirstNormalServiceIndex());
     }
 
     private void setCourierService(Courier currentCourier) {

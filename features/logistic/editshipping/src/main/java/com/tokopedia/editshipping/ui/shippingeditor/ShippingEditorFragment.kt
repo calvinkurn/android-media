@@ -50,10 +50,14 @@ import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import javax.inject.Inject
 
-class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorItemAdapter.ShippingEditorItemAdapterListener, ShipperProductItemAdapter.ShipperProductItemListener {
+class ShippingEditorFragment :
+    BaseDaggerFragment(),
+    ShippingEditorItemAdapter.ShippingEditorItemAdapterListener,
+    ShipperProductItemAdapter.ShipperProductItemListener {
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
     @Inject
     lateinit var userSession: UserSessionInterface
 
@@ -103,7 +107,6 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorItemAdapter.Sh
     private var btnNonaktifkanValidationBO: UnifyButton? = null
     private var btnAktifkanValidateBO: UnifyButton? = null
 
-
     private var swipeRefreshLayout: SwipeRefreshLayout? = null
     private var scrollView: NestedScrollView? = null
     private var globalErrorLayout: GlobalError? = null
@@ -114,11 +117,16 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorItemAdapter.Sh
     override fun getScreenName(): String = ""
 
     override fun initInjector() {
-        DaggerShippingEditorComponent.builder().baseAppComponent((activity?.applicationContext as BaseMainApplication).baseAppComponent)
-                .build().inject(this)
+        DaggerShippingEditorComponent.builder()
+            .baseAppComponent((activity?.applicationContext as BaseMainApplication).baseAppComponent)
+            .build().inject(this)
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.fragment_shipping_editor_new, container, false)
     }
 
@@ -155,9 +163,9 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorItemAdapter.Sh
     private fun renderTickerOnDemand() {
         SpannableString(getString(R.string.awb_otomatis_list))
         tickerOnDemand?.setHtmlDescription(getString(R.string.ticker_dijemput_kurir_complete))
-        tickerOnDemand?.setDescriptionClickEvent(object: TickerCallback {
+        tickerOnDemand?.setDescriptionClickEvent(object : TickerCallback {
             override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                if (linkUrl == STATE_AWB_VALIDATION){
+                if (linkUrl == STATE_AWB_VALIDATION) {
                     bottomSheetShipperInfoType = 1
                     openBottomSheetShipperInfo()
                 } else {
@@ -165,10 +173,10 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorItemAdapter.Sh
                     openBottomSheetShipperInfo()
                 }
             }
-            override fun onDismiss() {
-                //no-op
-            }
 
+            override fun onDismiss() {
+                // no-op
+            }
         })
     }
 
@@ -177,13 +185,22 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorItemAdapter.Sh
         val selengkapnyaButton = getString(R.string.selengkapnya)
         val spannableString = SpannableString(textDetailCourier)
         val color = getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
-        spannableString.setSpan(ForegroundColorSpan(color), spannableString.length - selengkapnyaButton.length, spannableString.length, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
-        spannableString.setSpan(StyleSpan(Typeface.BOLD), spannableString.length - selengkapnyaButton.length, spannableString.length, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
+        spannableString.setSpan(
+            ForegroundColorSpan(color),
+            spannableString.length - selengkapnyaButton.length,
+            spannableString.length,
+            Spannable.SPAN_INCLUSIVE_EXCLUSIVE
+        )
+        spannableString.setSpan(
+            StyleSpan(Typeface.BOLD),
+            spannableString.length - selengkapnyaButton.length,
+            spannableString.length,
+            Spannable.SPAN_INCLUSIVE_EXCLUSIVE
+        )
         tvDetailCourier?.text = spannableString
         tvDetailCourier?.setOnClickListener {
             viewModel.getShipperDetail()
         }
-
     }
 
     private fun initAdapter() {
@@ -194,101 +211,120 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorItemAdapter.Sh
     }
 
     private fun initViewModel() {
-        viewModel.shopWhitelist.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is ShippingEditorState.Success -> {
-                    if (it.data.data.eligibilityState == 1) {
+        viewModel.shopWhitelist.observe(
+            viewLifecycleOwner,
+            Observer {
+                when (it) {
+                    is ShippingEditorState.Success -> {
+                        if (it.data.data.eligibilityState == 1) {
+                            swipeRefreshLayout?.isRefreshing = false
+                            fetchData()
+                        } else {
+                            activity?.finish()
+                            val intent =
+                                context?.let { context -> EditShippingActivity.createIntent(context) }
+                            startActivityForResult(intent, REQUEST_EDIT_SHIPPING)
+                        }
+                    }
+
+                    is ShippingEditorState.Fail -> {
+                        swipeRefreshLayout?.isRefreshing = false
+                        if (it.throwable != null) {
+                            handleError(it.throwable)
+                        }
+                    }
+
+                    else -> {
+                        swipeRefreshLayout?.isRefreshing = true
+                    }
+                }
+            }
+        )
+
+        viewModel.shipperList.observe(
+            viewLifecycleOwner,
+            Observer {
+                when (it) {
+                    is ShippingEditorState.Success -> {
+                        viewModel.getShipperTickerList(userSession.shopId.toLong())
+                        updateData(it.data.shippers)
+                        renderTicker(it.data.ticker)
+                        showOnBoarding()
+                    }
+
+                    is ShippingEditorState.Fail -> {
+                        swipeRefreshLayout?.isRefreshing = false
+                        if (it.throwable != null) {
+                            handleError(it.throwable)
+                        }
+                    }
+
+                    else -> {
+                        shippingEditorLayout?.gone()
+                        btnSaveShipper?.gone()
+                        swipeRefreshLayout?.isRefreshing = true
+                    }
+                }
+            }
+        )
+
+        viewModel.shipperTickerList.observe(
+            viewLifecycleOwner,
+            Observer {
+                when (it) {
+                    is ShippingEditorState.Success -> {
+                        swipeRefreshLayout?.isRefreshing = false
+                        shippingEditorLayout?.visible()
+                        btnSaveShipper?.visible()
+                        globalErrorLayout?.gone()
+                        updateTickerData(it.data)
+                        updateHeaderTickerData(it.data.headerTicker)
+                    }
+                }
+            }
+        )
+
+        viewModel.shipperDetail.observe(
+            viewLifecycleOwner,
+            Observer {
+                when (it) {
+                    is ShippingEditorState.Success -> {
+                        swipeRefreshLayout?.isRefreshing = false
+                        updateBottomsheetData(it.data)
+                    }
+                    is ShippingEditorState.Fail -> swipeRefreshLayout?.isRefreshing = false
+                    else -> swipeRefreshLayout?.isRefreshing = true
+                }
+            }
+        )
+
+        viewModel.validateDataShipper.observe(
+            viewLifecycleOwner,
+            Observer {
+                when (it) {
+                    is ShippingEditorState.Success -> {
+                        swipeRefreshLayout?.isRefreshing = false
+                        validateSaveData(it.data)
+                    }
+                    is ShippingEditorState.Fail -> swipeRefreshLayout?.isRefreshing = false
+                    else -> swipeRefreshLayout?.isRefreshing = true
+                }
+            }
+        )
+
+        viewModel.saveShippingData.observe(
+            viewLifecycleOwner,
+            Observer {
+                when (it) {
+                    is ShippingEditorState.Success -> {
                         swipeRefreshLayout?.isRefreshing = false
                         fetchData()
-                    } else {
-                        activity?.finish()
-                        val intent = context?.let { context -> EditShippingActivity.createIntent(context) }
-                        startActivityForResult(intent, REQUEST_EDIT_SHIPPING)
                     }
-                }
-
-                is ShippingEditorState.Fail -> {
-                    swipeRefreshLayout?.isRefreshing = false
-                    if (it.throwable != null) {
-                        handleError(it.throwable)
-                    }
-                }
-
-                else -> {
-                    swipeRefreshLayout?.isRefreshing = true
+                    is ShippingEditorState.Fail -> swipeRefreshLayout?.isRefreshing = false
+                    else -> swipeRefreshLayout?.isRefreshing = true
                 }
             }
-        })
-
-        viewModel.shipperList.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is ShippingEditorState.Success -> {
-                    viewModel.getShipperTickerList(userSession.shopId.toLong())
-                    updateData(it.data.shippers)
-                    renderTicker(it.data.ticker)
-                    showOnBoarding()
-                }
-
-                is ShippingEditorState.Fail -> {
-                    swipeRefreshLayout?.isRefreshing = false
-                    if (it.throwable != null) {
-                        handleError(it.throwable)
-                    }
-                }
-
-                else -> {
-                    shippingEditorLayout?.gone()
-                    btnSaveShipper?.gone()
-                    swipeRefreshLayout?.isRefreshing = true
-                }
-            }
-        })
-
-        viewModel.shipperTickerList.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is ShippingEditorState.Success -> {
-                    swipeRefreshLayout?.isRefreshing = false
-                    shippingEditorLayout?.visible()
-                    btnSaveShipper?.visible()
-                    globalErrorLayout?.gone()
-                    updateTickerData(it.data)
-                    updateHeaderTickerData(it.data.headerTicker)
-                }
-            }
-        })
-
-        viewModel.shipperDetail.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is ShippingEditorState.Success -> {
-                    swipeRefreshLayout?.isRefreshing = false
-                    updateBottomsheetData(it.data)
-                }
-                is ShippingEditorState.Fail ->  swipeRefreshLayout?.isRefreshing = false
-                else ->  swipeRefreshLayout?.isRefreshing = true
-            }
-        })
-
-        viewModel.validateDataShipper.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is ShippingEditorState.Success -> {
-                    swipeRefreshLayout?.isRefreshing = false
-                    validateSaveData(it.data)
-                }
-                is ShippingEditorState.Fail ->  swipeRefreshLayout?.isRefreshing = false
-                else ->  swipeRefreshLayout?.isRefreshing = true
-            }
-        })
-
-        viewModel.saveShippingData.observe(viewLifecycleOwner, Observer {
-            when (it) {
-                is ShippingEditorState.Success -> {
-                    swipeRefreshLayout?.isRefreshing = false
-                    fetchData()
-                }
-                is ShippingEditorState.Fail ->  swipeRefreshLayout?.isRefreshing = false
-                else ->  swipeRefreshLayout?.isRefreshing = true
-            }
-        })
+        )
     }
 
     private fun fetchData() {
@@ -328,20 +364,22 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorItemAdapter.Sh
                 visibility = View.VISIBLE
                 tickerTitle = data.header
                 setHtmlDescription(data.body + getString(R.string.ticker_header_clicked))
-                setDescriptionClickEvent(object: TickerCallback {
+                setDescriptionClickEvent(object : TickerCallback {
                     override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                        bottomSheetCourierInactiveState = BOTTOMSHEET_HEADER_WAREHOUSE_INACTIVE_STATE
+                        bottomSheetCourierInactiveState =
+                            BOTTOMSHEET_HEADER_WAREHOUSE_INACTIVE_STATE
                         bottomSheetCourierInactiveAdapter.setData(data.warehouseModel)
                         openBottomSheetWarehouseInactive(context, data.warehouseModel, "")
                     }
 
                     override fun onDismiss() {
-                        //no-op
+                        // no-op
                     }
-
                 })
             }
-        } else tickerHeader?.gone()
+        } else {
+            tickerHeader?.gone()
+        }
     }
 
     private fun renderTicker(tickers: List<TickerModel>) {
@@ -350,21 +388,33 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorItemAdapter.Sh
             for (item in tickers) {
                 val spannableString = SpannableString(item.body + " " + item.textLink)
                 val color = getColor(context, com.tokopedia.unifyprinciples.R.color.Unify_G500)
-                spannableString.setSpan(ForegroundColorSpan(color), spannableString.length - item.textLink.length, spannableString.length, Spannable.SPAN_INCLUSIVE_EXCLUSIVE)
-                messages.add(TickerData(item.header, item.body + " " + item.textLink, Ticker.TYPE_ANNOUNCEMENT, true, item.urlLink))
+                spannableString.setSpan(
+                    ForegroundColorSpan(color),
+                    spannableString.length - item.textLink.length,
+                    spannableString.length,
+                    Spannable.SPAN_INCLUSIVE_EXCLUSIVE
+                )
+                messages.add(
+                    TickerData(
+                        item.header,
+                        item.body + " " + item.textLink,
+                        Ticker.TYPE_ANNOUNCEMENT,
+                        true,
+                        item.urlLink
+                    )
+                )
             }
             val tickerPageAdapter = TickerPagerAdapter(context, messages)
             tickerShipperInfo?.addPagerView(tickerPageAdapter, messages)
-            tickerPageAdapter.setPagerDescriptionClickEvent(object: TickerPagerCallback {
+            tickerPageAdapter.setPagerDescriptionClickEvent(object : TickerPagerCallback {
                 override fun onPageDescriptionViewClick(linkUrl: CharSequence, itemData: Any?) {
                     val appLink = itemData.toString()
                     if (appLink.startsWith("tokopedia")) {
                         startActivity(RouteManager.getIntent(context, appLink))
                     } else {
-                        startActivity(RouteManager.getIntent(context, String.format("%s?titlebar=false&url=%s", ApplinkConst.WEBVIEW, appLink)))
+                        goToWebView(appLink)
                     }
                 }
-
             })
             tickerShipperInfo?.visible()
         } else {
@@ -380,7 +430,14 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorItemAdapter.Sh
         } else if (data.state == VALIDATE_BEBAS_ONGKIR_STATE) {
             openBottomSheetValidateBOData(data)
         } else {
-            viewModel.saveShippingData(userSession.shopId.toLong(), getListActivatedSpIds(shippingEditorConventionalAdapter.getActiveSpIds(), shippingEditorOnDemandAdapter.getActiveSpIds()), convertFeatureIdToString(data.featureId))
+            viewModel.saveShippingData(
+                userSession.shopId.toLong(),
+                getListActivatedSpIds(
+                    shippingEditorConventionalAdapter.getActiveSpIds(),
+                    shippingEditorOnDemandAdapter.getActiveSpIds()
+                ),
+                convertFeatureIdToString(data.featureId)
+            )
         }
     }
 
@@ -388,9 +445,14 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorItemAdapter.Sh
         return featureId?.joinToString(separator = ",")
     }
 
-    private fun openBottomSheetWarehouseInactive(ctx: Context, data: List<WarehousesModel>, shipperName: String) {
+    private fun openBottomSheetWarehouseInactive(
+        ctx: Context,
+        data: List<WarehousesModel>,
+        shipperName: String
+    ) {
         bottomSheetCourierInactive = BottomSheetUnify()
-        val viewBottomSheetWarehouseInactive = View.inflate(ctx, R.layout.bottomsheet_courier_inactive, null)
+        val viewBottomSheetWarehouseInactive =
+            View.inflate(ctx, R.layout.bottomsheet_courier_inactive, null)
         setupChildCourierInactive(viewBottomSheetWarehouseInactive, shipperName, data.size, null)
 
         bottomSheetCourierInactive?.apply {
@@ -408,9 +470,14 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorItemAdapter.Sh
     private fun openBottomSheetValidateCourierNotCovered(data: ValidateShippingEditorModel) {
         val uiContentModel = data.uiContent
         bottomSheetCourierInactive = BottomSheetUnify()
-        val viewBottomSheetWarehouseInactive = View.inflate(context, R.layout.bottomsheet_courier_inactive, null)
-        setupChildCourierInactive(viewBottomSheetWarehouseInactive, uiContentModel.headerLocation, uiContentModel.warehouses.size, data)
-
+        val viewBottomSheetWarehouseInactive =
+            View.inflate(context, R.layout.bottomsheet_courier_inactive, null)
+        setupChildCourierInactive(
+            viewBottomSheetWarehouseInactive,
+            uiContentModel.headerLocation,
+            uiContentModel.warehouses.size,
+            data
+        )
 
         if (bottomSheetCourierInactiveState == BOTTOMSHEET_VALIDATE_WAREHOUSE_INACTIVE_STATE) {
             bottomSheetCourierInactive?.setTitle(data.uiContent.header)
@@ -429,7 +496,6 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorItemAdapter.Sh
         }
     }
 
-
     private fun openBottomSheetValidateBOData(data: ValidateShippingEditorModel) {
         bottomSheetBOValidation = BottomSheetUnify()
         bottomSheetBOValidation?.setTitle(getString(R.string.bottomsheet_validation_title))
@@ -447,7 +513,10 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorItemAdapter.Sh
         }
     }
 
-    private fun setUpChildBottomSheetValidateBOData(child: View, data: ValidateShippingEditorModel) {
+    private fun setUpChildBottomSheetValidateBOData(
+        child: View,
+        data: ValidateShippingEditorModel
+    ) {
         val uiContentModel = data.uiContent
         tickerValidateBO = child.findViewById(R.id.ticker_validation_bo)
         textPointOne = child.findViewById(R.id.point_one)
@@ -458,14 +527,24 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorItemAdapter.Sh
 
         tickerValidateBO?.apply {
             tickerTitle = uiContentModel.ticker.header
-            setHtmlDescription(uiContentModel.ticker.body + HtmlLinkHelper(context, uiContentModel.ticker.textLink).spannedString.toString())
-            setDescriptionClickEvent(object: TickerCallback {
+            setHtmlDescription(
+                uiContentModel.ticker.body + HtmlLinkHelper(
+                    context,
+                    uiContentModel.ticker.textLink
+                ).spannedString.toString()
+            )
+            setDescriptionClickEvent(object : TickerCallback {
                 override fun onDescriptionViewClick(linkUrl: CharSequence) {
-                    RouteManager.getIntent(activity, String.format("%s?titlebar=false&url=%s", ApplinkConst.WEBVIEW, uiContentModel.ticker.urlLink))
+                    RouteManager.getIntent(
+                        activity,
+                        generateWebviewApplink(
+                            uiContentModel.ticker.urlLink
+                        )
+                    )
                 }
 
                 override fun onDismiss() {
-                    //no-op
+                    // no-op
                 }
             })
         }
@@ -477,16 +556,31 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorItemAdapter.Sh
             }
         }
         btnNonaktifkanValidationBO?.setOnClickListener {
-            viewModel.saveShippingData(userSession.shopId.toLong(), getListActivatedSpIds(shippingEditorConventionalAdapter.getActiveSpIds(), shippingEditorOnDemandAdapter.getActiveSpIds()), convertFeatureIdToString(data.featureId))
+            viewModel.saveShippingData(
+                userSession.shopId.toLong(),
+                getListActivatedSpIds(
+                    shippingEditorConventionalAdapter.getActiveSpIds(),
+                    shippingEditorOnDemandAdapter.getActiveSpIds()
+                ),
+                convertFeatureIdToString(data.featureId)
+            )
             bottomSheetBOValidation?.dismiss()
         }
         btnAktifkanValidateBO?.setOnClickListener {
             bottomSheetBOValidation?.dismiss()
         }
-
     }
 
-    private fun setupChildCourierInactive(child: View, header: String, courierCount: Int?, data: ValidateShippingEditorModel?) {
+    private fun generateWebviewApplink(url: String): String {
+        return "${ApplinkConst.WEBVIEW}?titlebar=false&url=$url"
+    }
+
+    private fun setupChildCourierInactive(
+        child: View,
+        header: String,
+        courierCount: Int?,
+        data: ValidateShippingEditorModel?
+    ) {
         tvCourierInactive = child.findViewById(R.id.tv_courier_inactive)
         warehouseListRv = child.findViewById(R.id.rv_warehouse_inactive)
         tickerChargeBoCourierInactive = child.findViewById(R.id.ticker_charge_bo)
@@ -519,7 +613,8 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorItemAdapter.Sh
     }
 
     private fun showBottomSheetShipperWarehouseInactive(header: String, courierCount: Int?) {
-        tvCourierInactive?.text = getString(R.string.text_header_courier_not_covered, header, courierCount)
+        tvCourierInactive?.text =
+            getString(R.string.text_header_courier_not_covered, header, courierCount)
         btnPrimaryVertical?.text = getString(R.string.button_understand)
         btnPrimaryVertical?.setOnClickListener {
             bottomSheetCourierInactive?.dismiss()
@@ -550,7 +645,14 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorItemAdapter.Sh
         }
         btnSecondaryVertical?.text = getString(R.string.button_save)
         btnSecondaryVertical?.setOnClickListener {
-            viewModel.saveShippingData(userSession.shopId.toLong(), getListActivatedSpIds(shippingEditorConventionalAdapter.getActiveSpIds(), shippingEditorOnDemandAdapter.getActiveSpIds()), convertFeatureIdToString(data?.featureId))
+            viewModel.saveShippingData(
+                userSession.shopId.toLong(),
+                getListActivatedSpIds(
+                    shippingEditorConventionalAdapter.getActiveSpIds(),
+                    shippingEditorOnDemandAdapter.getActiveSpIds()
+                ),
+                convertFeatureIdToString(data?.featureId)
+            )
             bottomSheetCourierInactive?.dismiss()
         }
         btnVerticalLayout?.visible()
@@ -559,11 +661,22 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorItemAdapter.Sh
         tickerChargeBoCourierInactive?.gone()
     }
 
-    private fun showBottomSheetValidateWarehouseInactiveBO(courierCount: Int?, data: ValidateShippingEditorModel?) {
-        tvCourierInactive?.text = getString(R.string.text_header_validate_courier_not_covered, courierCount)
+    private fun showBottomSheetValidateWarehouseInactiveBO(
+        courierCount: Int?,
+        data: ValidateShippingEditorModel?
+    ) {
+        tvCourierInactive?.text =
+            getString(R.string.text_header_validate_courier_not_covered, courierCount)
         btnPrimaryHorizontal?.text = getString(R.string.button_deactivate)
         btnPrimaryHorizontal?.setOnClickListener {
-            viewModel.saveShippingData(userSession.shopId.toLong(),  getListActivatedSpIds(shippingEditorConventionalAdapter.getActiveSpIds(), shippingEditorOnDemandAdapter.getActiveSpIds()), convertFeatureIdToString(data?.featureId))
+            viewModel.saveShippingData(
+                userSession.shopId.toLong(),
+                getListActivatedSpIds(
+                    shippingEditorConventionalAdapter.getActiveSpIds(),
+                    shippingEditorOnDemandAdapter.getActiveSpIds()
+                ),
+                convertFeatureIdToString(data?.featureId)
+            )
             bottomSheetCourierInactive?.dismiss()
         }
         btnSecondaryHorizontal?.text = getString(R.string.button_activate)
@@ -573,15 +686,14 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorItemAdapter.Sh
         tickerChargeBoCourierInactive?.apply {
             tickerTitle = data?.uiContent?.ticker?.header
             setHtmlDescription(data?.uiContent?.ticker?.body + data?.uiContent?.ticker?.textLink)
-            setDescriptionClickEvent(object: TickerCallback {
+            setDescriptionClickEvent(object : TickerCallback {
                 override fun onDescriptionViewClick(linkUrl: CharSequence) {
                     goToWebView(data?.uiContent?.ticker?.urlLink)
                 }
 
                 override fun onDismiss() {
-                    //no-op
+                    // no-op
                 }
-
             })
         }
         btnVerticalLayout?.gone()
@@ -590,14 +702,20 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorItemAdapter.Sh
     }
 
     private fun goToWebView(url: String?) {
-        if (activity != null) {
-            startActivity(RouteManager.getIntent(activity, String.format("%s?titlebar=false&url=%s", ApplinkConst.WEBVIEW, url)))
+        if (activity != null && url != null) {
+            startActivity(
+                RouteManager.getIntent(
+                    activity,
+                    generateWebviewApplink(url)
+                )
+            )
         }
     }
 
     private fun openBottomSheetFeatureInfo() {
         bottomSheetFeatureInfo = BottomSheetUnify()
-        val viewBottomSheetFeatureInfo = View.inflate(context, R.layout.bottomsheet_shipper_detail, null)
+        val viewBottomSheetFeatureInfo =
+            View.inflate(context, R.layout.bottomsheet_shipper_detail, null)
         setupFeatureChild(viewBottomSheetFeatureInfo)
 
         bottomSheetFeatureInfo?.apply {
@@ -622,7 +740,8 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorItemAdapter.Sh
 
     private fun openBottomSheetShipperInfo() {
         bottomSheetShipperInfo = BottomSheetUnify()
-        val viewBottomSheetShipperInfo = View.inflate(context, R.layout.bottomsheet_shipper_info, null)
+        val viewBottomSheetShipperInfo =
+            View.inflate(context, R.layout.bottomsheet_shipper_info, null)
         setupBottomSheetShipperInfoChild(viewBottomSheetShipperInfo)
 
         bottomSheetShipperInfo?.apply {
@@ -642,13 +761,22 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorItemAdapter.Sh
         bottomSheetInfoCourierDetail = child.findViewById(R.id.tv_info_courier_detail)
         btnShipperBottomSheet = child.findViewById(R.id.btn_close)
 
-        if(bottomSheetShipperInfoType == BOTTOMSHEET_AWB_OTOMATIS_INFO) {
-            bottomSheetImageInfo?.setImageDrawable(ContextCompat.getDrawable(child.context, R.drawable.ic_awb_otomatis))
+        if (bottomSheetShipperInfoType == BOTTOMSHEET_AWB_OTOMATIS_INFO) {
+            bottomSheetImageInfo?.setImageDrawable(
+                ContextCompat.getDrawable(
+                    child.context,
+                    R.drawable.ic_awb_otomatis
+                )
+            )
             bottomSheetInfoCourier?.text = getString(R.string.awb_otomatis_title)
             bottomSheetInfoCourierDetail?.text = getString(R.string.awb_otomatis_detail)
-
         } else {
-            bottomSheetImageInfo?.setImageDrawable(ContextCompat.getDrawable(child.context, R.drawable.ic_non_tunai))
+            bottomSheetImageInfo?.setImageDrawable(
+                ContextCompat.getDrawable(
+                    child.context,
+                    R.drawable.ic_non_tunai
+                )
+            )
             bottomSheetInfoCourier?.text = getString(R.string.non_tunai_title)
             bottomSheetInfoCourierDetail?.text = getString(R.string.non_tunai_detail)
         }
@@ -656,13 +784,28 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorItemAdapter.Sh
     }
 
     private fun saveButtonShippingEditor() {
-        val activatedSpIds = getListActivatedSpIds(shippingEditorOnDemandAdapter.getActiveSpIds(), shippingEditorConventionalAdapter.getActiveSpIds())
+        val activatedSpIds = getListActivatedSpIds(
+            shippingEditorOnDemandAdapter.getActiveSpIds(),
+            shippingEditorConventionalAdapter.getActiveSpIds()
+        )
         if (activatedSpIds.isEmpty()) {
-            view?.let { Toaster.build(it, EditShippingConstant.DEFAULT_ERROR_MESSAGE, Toaster.LENGTH_SHORT, type = Toaster.TYPE_ERROR).show() }
-        } else viewModel.validateShippingEditor(userSession.shopId.toLong(), activatedSpIds)
+            view?.let {
+                Toaster.build(
+                    it,
+                    EditShippingConstant.DEFAULT_ERROR_MESSAGE,
+                    Toaster.LENGTH_SHORT,
+                    type = Toaster.TYPE_ERROR
+                ).show()
+            }
+        } else {
+            viewModel.validateShippingEditor(userSession.shopId.toLong(), activatedSpIds)
+        }
     }
 
-    private fun getListActivatedSpIds(onDemandList: List<String>, conventionalList: List<String>): String {
+    private fun getListActivatedSpIds(
+        onDemandList: List<String>,
+        conventionalList: List<String>
+    ): String {
         val activatedListShipperIds = mutableListOf<String>()
         activatedListShipperIds.addAll(onDemandList)
         activatedListShipperIds.addAll(conventionalList)
@@ -678,14 +821,21 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorItemAdapter.Sh
             }
             is RuntimeException -> {
                 when (throwable.localizedMessage?.toIntOrNull()) {
-                    ReponseStatus.GATEWAY_TIMEOUT, ReponseStatus.REQUEST_TIMEOUT -> showGlobalError(GlobalError.NO_CONNECTION)
+                    ReponseStatus.GATEWAY_TIMEOUT, ReponseStatus.REQUEST_TIMEOUT -> showGlobalError(
+                        GlobalError.NO_CONNECTION
+                    )
                     ReponseStatus.NOT_FOUND -> showGlobalError(GlobalError.PAGE_NOT_FOUND)
                     ReponseStatus.INTERNAL_SERVER_ERROR -> showGlobalError(GlobalError.SERVER_ERROR)
 
                     else -> {
                         view?.let {
                             showGlobalError(GlobalError.SERVER_ERROR)
-                            Toaster.build(it, EditShippingConstant.DEFAULT_ERROR_MESSAGE, Toaster.LENGTH_SHORT, type = Toaster.TYPE_ERROR).show()
+                            Toaster.build(
+                                it,
+                                EditShippingConstant.DEFAULT_ERROR_MESSAGE,
+                                Toaster.LENGTH_SHORT,
+                                type = Toaster.TYPE_ERROR
+                            ).show()
                         }!!
                     }
                 }
@@ -694,10 +844,20 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorItemAdapter.Sh
                 view?.let {
                     showGlobalError(GlobalError.SERVER_ERROR)
                     if (throwable.message?.contains(ERROR_CODE_NO_ACCESS) == true) {
-                        Toaster.build(it, getString(R.string.txt_error_no_access), Toaster.LENGTH_SHORT, type = Toaster.TYPE_ERROR).show()
+                        Toaster.build(
+                            it,
+                            getString(R.string.txt_error_no_access),
+                            Toaster.LENGTH_SHORT,
+                            type = Toaster.TYPE_ERROR
+                        ).show()
                     } else {
-                        Toaster.build(it, throwable.message
-                                ?: EditShippingConstant.DEFAULT_ERROR_MESSAGE, Toaster.LENGTH_SHORT, type = Toaster.TYPE_ERROR).show()
+                        Toaster.build(
+                            it,
+                            throwable.message
+                                ?: EditShippingConstant.DEFAULT_ERROR_MESSAGE,
+                            Toaster.LENGTH_SHORT,
+                            type = Toaster.TYPE_ERROR
+                        ).show()
                     }
                 }
             }
@@ -724,14 +884,18 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorItemAdapter.Sh
         val whitelabelServiceIndex = shippingEditorOnDemandAdapter.getWhitelabelServicePosition()
         return if (whitelabelServiceIndex != RecyclerView.NO_POSITION) {
             shipperListOnDemand?.findViewHolderForAdapterPosition(whitelabelServiceIndex)?.itemView
-        } else null
+        } else {
+            null
+        }
     }
 
-    private fun getNormalServiceView() : View? {
+    private fun getNormalServiceView(): View? {
         val normalServiceIndex = shippingEditorOnDemandAdapter.getFirstNormalServicePosition()
         return if (normalServiceIndex != RecyclerView.NO_POSITION) {
             shipperListOnDemand?.findViewHolderForAdapterPosition(normalServiceIndex)?.itemView
-        } else null
+        } else {
+            null
+        }
     }
 
     private fun showOnBoarding() {
@@ -742,56 +906,74 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorItemAdapter.Sh
                     val whitelabelView = getWhitelabelView()
                     if (whitelabelView != null) {
                         val normalServiceView = getNormalServiceView()
+                        val coachMarkItems = generateOnBoardingCoachMark(normalServiceView, whitelabelView)
 
-                        val coachMarkItems = ArrayList<CoachMark2Item>()
-                        val coachMark = CoachMark2(it)
-
-                        normalServiceView?.let { normalService ->
-                            coachMarkItems.add(
-                                CoachMark2Item(
-                                    normalService,
-                                    getString(R.string.whitelabel_onboarding_title_coachmark),
-                                    getString(R.string.whitelabel_onboarding_description_coachmark),
-                                    CoachMark2.POSITION_TOP
-                                )
-                            )
-                        }
-
-                        whitelabelView.let { whitelabel ->
-                            coachMarkItems.add(
-                                CoachMark2Item(
-                                    whitelabel,
-                                    getString(R.string.whitelabel_instan_title_coachmark),
-                                    getString(R.string.whitelabel_instan_description_coachmark),
-                                    CoachMark2.POSITION_TOP
-                                )
-                            )
-                        }
-                        coachMark.setStepListener(object : CoachMark2.OnStepListener {
-                            override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
-                                coachMark.hideCoachMark()
-                                coachMarkItems.getOrNull(currentIndex)?.anchorView?.let { item ->
-                                    scrollView?.smoothScrollTo(0, item.top)
-                                }
-                                coachMark.showCoachMark(coachMarkItems, null, currentIndex)
-                            }
-                        })
-                        if (coachMarkItems.size > 1) {
-                            coachMark.onFinishListener = {
-                                sharedPref.setCoachMarkState(false)
-                            }
-                        } else if (coachMarkItems.isNotEmpty()) {
-                            sharedPref.setCoachMarkState(false)
-                        }
-
-                        // manual scroll to first item
-                        coachMarkItems.firstOrNull()?.anchorView?.let { rv ->
-                            scrollView?.smoothScrollTo(0, rv.top)
-                            coachMark.showCoachMark(coachMarkItems)
+                        CoachMark2(it).apply {
+                            setOnBoardingListener(coachMarkItems)
+                            setStateAfterOnBoardingShown(coachMarkItems, sharedPref)
+                            manualScroll(coachMarkItems)
                         }
                     }
                 }, COACHMARK_ON_BOARDING_DELAY)
             }
+        }
+    }
+
+    private fun generateOnBoardingCoachMark(
+        normalService: View?,
+        whitelabelService: View
+    ): ArrayList<CoachMark2Item> {
+        val coachMarkItems = ArrayList<CoachMark2Item>()
+        normalService?.let { view ->
+            coachMarkItems.add(
+                CoachMark2Item(
+                    view,
+                    getString(R.string.whitelabel_onboarding_title_coachmark),
+                    getString(R.string.whitelabel_onboarding_description_coachmark),
+                    CoachMark2.POSITION_TOP
+                )
+            )
+        }
+
+        whitelabelService.let { view ->
+            coachMarkItems.add(
+                CoachMark2Item(
+                    view,
+                    getString(R.string.whitelabel_instan_title_coachmark),
+                    getString(R.string.whitelabel_instan_description_coachmark),
+                    CoachMark2.POSITION_TOP
+                )
+            )
+        }
+        return coachMarkItems
+    }
+
+    private fun CoachMark2.setOnBoardingListener(coachMarkItems: ArrayList<CoachMark2Item>) {
+        this.setStepListener(object : CoachMark2.OnStepListener {
+            override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
+                this@setOnBoardingListener.hideCoachMark()
+                manualScroll(coachMarkItems, currentIndex)
+            }
+        })
+    }
+
+    private fun CoachMark2.manualScroll(coachMarkItems: ArrayList<CoachMark2Item>, currentIndex: Int = 0) {
+        coachMarkItems.getOrNull(currentIndex)?.anchorView?.let { rv ->
+            scrollView?.smoothScrollTo(0, rv.top)
+            this.showCoachMark(coachMarkItems, null, currentIndex)
+        }
+    }
+
+    private fun CoachMark2.setStateAfterOnBoardingShown(
+        coachMarkItems: ArrayList<CoachMark2Item>,
+        sharedPref: WhitelabelInstanCoachMarkSharePref
+    ) {
+        if (coachMarkItems.size > 1) {
+            this.onFinishListener = {
+                sharedPref.setCoachMarkState(false)
+            }
+        } else if (coachMarkItems.isNotEmpty()) {
+            sharedPref.setCoachMarkState(false)
         }
     }
 
@@ -818,5 +1000,4 @@ class ShippingEditorFragment: BaseDaggerFragment(), ShippingEditorItemAdapter.Sh
         private const val STATE_AWB_VALIDATION = "awb_otomatis"
         private const val ERROR_CODE_NO_ACCESS = "555"
     }
-
 }

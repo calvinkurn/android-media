@@ -1,10 +1,12 @@
 package com.tokopedia.logisticCommon.data.model
 
+import android.annotation.SuppressLint
+
 data class CustomProductLogisticModel(
     var shipperList: List<ShipperListCPLModel> = listOf(),
     var shouldShowOnBoarding: Boolean = false
 ) {
-    fun getActivatedSpIds() : List<Long> {
+    fun getActivatedSpIds(): List<Long> {
         val shipperProductIds = mutableListOf<Long>()
         shipperList.forEach { shipperGroup ->
             shipperGroup.shipper.filter { s -> s.isActive }.forEach { s ->
@@ -22,6 +24,7 @@ data class ShipperListCPLModel(
     var description: String = "",
     var shipper: List<ShipperCPLModel> = listOf()
 ) {
+    @SuppressLint("PII Data Exposure")
     fun getActiveServiceName(): String {
         val activeService = mutableListOf<String>()
         shipper.forEach { s ->
@@ -31,7 +34,7 @@ data class ShipperListCPLModel(
                 }
             }
         }
-       return activeService.joinToString()
+        return activeService.joinToString()
     }
 }
 

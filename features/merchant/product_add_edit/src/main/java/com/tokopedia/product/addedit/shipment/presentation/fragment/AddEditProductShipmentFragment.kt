@@ -48,6 +48,7 @@ import com.tokopedia.product.addedit.common.util.JsonUtil.mapJsonToObject
 import com.tokopedia.product.addedit.common.util.JsonUtil.mapObjectToJson
 import com.tokopedia.product.addedit.databinding.FragmentAddEditProductShipmentBinding
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.BUNDLE_CACHE_MANAGER_ID
+import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.ON_BOARDING_ITEMS
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_CODE_CPL
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_KEY_ADD_MODE
 import com.tokopedia.product.addedit.detail.presentation.constant.AddEditProductDetailConstants.Companion.REQUEST_KEY_SHIPMENT
@@ -72,7 +73,6 @@ import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProdu
 import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.EXTRA_SHIPPER_SERVICES
 import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.EXTRA_SHOP_ID
 import com.tokopedia.product.addedit.shipment.presentation.constant.AddEditProductShipmentConstants.Companion.EXTRA_SHOW_ONBOARDING_CPL
-import com.tokopedia.product.addedit.shipment.presentation.dialog.ShipmentInfoBottomSheet
 import com.tokopedia.product.addedit.shipment.presentation.dialog.ShipmentInsuranceBottomSheet
 import com.tokopedia.product.addedit.shipment.presentation.model.ShipmentInputModel
 import com.tokopedia.product.addedit.shipment.presentation.viewmodel.AddEditProductShipmentViewModel
@@ -90,9 +90,9 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoCleared
 import javax.inject.Inject
 
-class AddEditProductShipmentFragment:
-        AddEditProductFragment(),
-        AddEditProductPerformanceMonitoringListener {
+class AddEditProductShipmentFragment :
+    AddEditProductFragment(),
+    AddEditProductPerformanceMonitoringListener {
 
     private var binding by autoCleared<FragmentAddEditProductShipmentBinding>()
     private var mainLayout: ViewGroup? = null
@@ -117,7 +117,7 @@ class AddEditProductShipmentFragment:
     private var btnEnd: UnifyButton? = null
     private var btnSave: UnifyButton? = null
 
-    //private var productInputModel: ProductInputModel? = null
+    // private var productInputModel: ProductInputModel? = null
     private var isFragmentVisible = false
 
     private lateinit var shopId: String
@@ -125,6 +125,7 @@ class AddEditProductShipmentFragment:
 
     @Inject
     lateinit var userSession: UserSessionInterface
+
     @Inject
     lateinit var shipmentViewModel: AddEditProductShipmentViewModel
 
@@ -132,11 +133,13 @@ class AddEditProductShipmentFragment:
 
     override fun initInjector() {
         DaggerAddEditProductShipmentComponent
-                .builder()
-                .addEditProductComponent(AddEditProductComponentBuilder
-                        .getComponent(requireContext().applicationContext as BaseMainApplication))
-                .build()
-                .inject(this)
+            .builder()
+            .addEditProductComponent(
+                AddEditProductComponentBuilder
+                    .getComponent(requireContext().applicationContext as BaseMainApplication)
+            )
+            .build()
+            .inject(this)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -146,7 +149,8 @@ class AddEditProductShipmentFragment:
 
         arguments?.let {
             val cacheManagerId = AddEditProductShipmentFragmentArgs.fromBundle(it).cacheManagerId
-            val saveInstanceCacheManager = SaveInstanceCacheManager(requireContext(), cacheManagerId)
+            val saveInstanceCacheManager =
+                SaveInstanceCacheManager(requireContext(), cacheManagerId)
 
             cacheManagerId.run {
                 val productInputModel = saveInstanceCacheManager.get(
@@ -154,10 +158,21 @@ class AddEditProductShipmentFragment:
                     ProductInputModel::class.java
                 ) ?: ProductInputModel()
                 shipmentViewModel.setProductInputModel(productInputModel)
-                shipmentViewModel.isEditMode = saveInstanceCacheManager.get(EXTRA_IS_EDITING_PRODUCT, Boolean::class.java, false) ?: false
-                shipmentViewModel.isAddMode = saveInstanceCacheManager.get(EXTRA_IS_ADDING_PRODUCT, Boolean::class.java, false) ?: false
-                shipmentViewModel.isDraftMode = saveInstanceCacheManager.get(EXTRA_IS_DRAFTING_PRODUCT, Boolean::class.java) ?: false
-                shipmentViewModel.isFirstMoved = saveInstanceCacheManager.get(EXTRA_IS_FIRST_MOVED, Boolean::class.java) ?: false
+                shipmentViewModel.isEditMode = saveInstanceCacheManager.get(
+                    EXTRA_IS_EDITING_PRODUCT,
+                    Boolean::class.java,
+                    false
+                ) ?: false
+                shipmentViewModel.isAddMode = saveInstanceCacheManager.get(
+                    EXTRA_IS_ADDING_PRODUCT,
+                    Boolean::class.java,
+                    false
+                ) ?: false
+                shipmentViewModel.isDraftMode =
+                    saveInstanceCacheManager.get(EXTRA_IS_DRAFTING_PRODUCT, Boolean::class.java)
+                        ?: false
+                shipmentViewModel.isFirstMoved =
+                    saveInstanceCacheManager.get(EXTRA_IS_FIRST_MOVED, Boolean::class.java) ?: false
             }
             if (shipmentViewModel.isAddMode) {
                 ProductAddShippingTracking.trackScreen()
@@ -165,8 +180,11 @@ class AddEditProductShipmentFragment:
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?,
-                              savedInstanceState: Bundle?): View {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
         binding = FragmentAddEditProductShipmentBinding.inflate(inflater, container, false)
         return binding.root
     }
@@ -210,7 +228,10 @@ class AddEditProductShipmentFragment:
     override fun onSaveInstanceState(outState: Bundle) {
         if (isFragmentVisible) {
             inputAllDataInProductInputModel()
-            outState.putString(KEY_SAVE_INSTANCE_INPUT_MODEL, mapObjectToJson(shipmentViewModel.productInputModel))
+            outState.putString(
+                KEY_SAVE_INSTANCE_INPUT_MODEL,
+                mapObjectToJson(shipmentViewModel.productInputModel)
+            )
             outState.putBoolean(KEY_SAVE_INSTANCE_ISADDING, shipmentViewModel.isAddMode)
             outState.putBoolean(KEY_SAVE_INSTANCE_ISEDITING, shipmentViewModel.isEditMode)
             outState.putBoolean(KEY_SAVE_INSTANCE_ISDRAFTING, shipmentViewModel.isDraftMode)
@@ -223,12 +244,15 @@ class AddEditProductShipmentFragment:
         if (savedInstanceState != null) {
             val productInputModelJson = savedInstanceState.getString(KEY_SAVE_INSTANCE_INPUT_MODEL)
             shipmentViewModel.isAddMode = savedInstanceState.getBoolean(KEY_SAVE_INSTANCE_ISADDING)
-            shipmentViewModel.isEditMode = savedInstanceState.getBoolean(KEY_SAVE_INSTANCE_ISEDITING)
-            shipmentViewModel.isDraftMode = savedInstanceState.getBoolean(KEY_SAVE_INSTANCE_ISDRAFTING)
-            shipmentViewModel.isFirstMoved = savedInstanceState.getBoolean(KEY_SAVE_INSTANCE_ISFIRSTMOVED)
+            shipmentViewModel.isEditMode =
+                savedInstanceState.getBoolean(KEY_SAVE_INSTANCE_ISEDITING)
+            shipmentViewModel.isDraftMode =
+                savedInstanceState.getBoolean(KEY_SAVE_INSTANCE_ISDRAFTING)
+            shipmentViewModel.isFirstMoved =
+                savedInstanceState.getBoolean(KEY_SAVE_INSTANCE_ISFIRSTMOVED)
 
             if (!productInputModelJson.isNullOrBlank()) {
-                //set product input model and and ui of the page
+                // set product input model and and ui of the page
                 mapJsonToObject(productInputModelJson, ProductInputModel::class.java).apply {
                     shipmentViewModel.setProductInputModel(this)
                 }
@@ -267,14 +291,14 @@ class AddEditProductShipmentFragment:
 
     override fun startPerformanceMonitoring() {
         pageLoadTimePerformanceMonitoring = PageLoadTimePerformanceCallback(
-                ADD_EDIT_PRODUCT_SHIPMENT_PLT_PREPARE_METRICS,
-                ADD_EDIT_PRODUCT_SHIPMENT_PLT_NETWORK_METRICS,
-                ADD_EDIT_PRODUCT_SHIPMENT_PLT_RENDER_METRICS,
-                0,
-                0,
-                0,
-                0,
-                null
+            ADD_EDIT_PRODUCT_SHIPMENT_PLT_PREPARE_METRICS,
+            ADD_EDIT_PRODUCT_SHIPMENT_PLT_NETWORK_METRICS,
+            ADD_EDIT_PRODUCT_SHIPMENT_PLT_RENDER_METRICS,
+            0,
+            0,
+            0,
+            0,
+            null
         )
 
         pageLoadTimePerformanceMonitoring?.startMonitoring(ADD_EDIT_PRODUCT_SHIPMENT_TRACE)
@@ -377,7 +401,7 @@ class AddEditProductShipmentFragment:
         radioOptionalInsurance.setTitle(getString(R.string.title_shipment_optional))
         radiosInsurance?.setOnCheckedChangeListener { _, checkedId ->
             val isRequired = checkedId == R.id.radio_required_insurance
-            if (isRequired)  {
+            if (isRequired) {
                 if (shipmentViewModel.isEditMode) {
                     ProductEditShippingTracking.clickInsurance(shopId)
                 } else {
@@ -406,8 +430,12 @@ class AddEditProductShipmentFragment:
                 }
                 putExtra(EXTRA_SHOW_ONBOARDING_CPL, isOnBoarding)
                 putExtra(EXTRA_SHIPPER_SERVICES, shipperServicesIds?.toLongArray())
-                putExtra(EXTRA_CPL_PARAM, shipmentViewModel.productInputModel?.shipmentInputModel?.cplModel?.cplParam?.toLongArray())
-            }, REQUEST_CODE_CPL
+                putExtra(
+                    EXTRA_CPL_PARAM,
+                    shipmentViewModel.productInputModel?.shipmentInputModel?.cplModel?.cplParam?.toLongArray()
+                )
+            },
+            REQUEST_CODE_CPL
         )
     }
 
@@ -434,8 +462,14 @@ class AddEditProductShipmentFragment:
             btnCpl?.setOnClickListener {
                 goToCustomProductLogistic()
             }
-            cplShipmentGroupAdapter.updateData(data.shipperList.filter { it.getActiveServiceName().isNotEmpty() })
-            if (data.shouldShowOnBoarding) { doOnBoardingCpl() }
+            cplShipmentGroupAdapter.updateData(
+                data.shipperList.filter {
+                    it.getActiveServiceName().isNotEmpty()
+                }
+            )
+            if (data.shouldShowOnBoarding) {
+                doOnBoardingCpl()
+            }
         }
     }
 
@@ -449,49 +483,42 @@ class AddEditProductShipmentFragment:
 
     private fun showOnBoardingCoachmark() {
         context?.let {
-            val coachMarkItem = ArrayList<CoachMark2Item>()
-            val coachMark = CoachMark2(it)
-            cplLayout?.let {
-                card ->
-                coachMarkItem.add(
-                    CoachMark2Item(
-                        card,
-                        getString(R.string.cpl_onboarding_title),
-                        getString(R.string.cpl_onboarding_description),
-                    )
-                )
-                // duplicate to show `1 dari 3`
-                coachMarkItem.add(
-                    CoachMark2Item(
-                        card,
-                        getString(R.string.cpl_onboarding_title),
-                        getString(R.string.cpl_onboarding_description),
-                    )
-                )
+            val coachMarkItem = generateOnBoardingCoachmark()
+            CoachMark2(it).apply {
+                setOnBoardingListener()
+                showCoachMark(coachMarkItem)
+            }
+        }
+    }
 
-                // duplicate to show `1 dari 3`
-                coachMarkItem.add(
+    private fun generateOnBoardingCoachmark(): ArrayList<CoachMark2Item> {
+        val coachMarkItems = ArrayList<CoachMark2Item>()
+        cplLayout?.let { card ->
+            (0 until ON_BOARDING_ITEMS).forEach { _ ->
+                coachMarkItems.add(
                     CoachMark2Item(
                         card,
                         getString(R.string.cpl_onboarding_title),
-                        getString(R.string.cpl_onboarding_description),
+                        getString(R.string.cpl_onboarding_description)
                     )
                 )
             }
-            coachMark.showCoachMark(coachMarkItem)
-            coachMark.setStepListener(object: CoachMark2.OnStepListener {
-                override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
-                    if (currentIndex > 0) {
-                        coachMark.isDismissed = true
-                        coachMark.dismissCoachMark()
-                        shipmentViewModel.setAlreadyShowOnBoarding()
-                        SharedPreferencesUtil.setCPLWhitelabelOnBoarding(requireActivity(), false)
-                        goToCustomProductLogistic(isOnBoarding = true)
-                    }
-                }
-            })
-
         }
+        return coachMarkItems
+    }
+
+    private fun CoachMark2.setOnBoardingListener() {
+        this.setStepListener(object : CoachMark2.OnStepListener {
+            override fun onStep(currentIndex: Int, coachMarkItem: CoachMark2Item) {
+                if (currentIndex > 0) {
+                    this@setOnBoardingListener.isDismissed = true
+                    this@setOnBoardingListener.dismissCoachMark()
+                    shipmentViewModel.setAlreadyShowOnBoarding()
+                    activity?.let { SharedPreferencesUtil.setCPLWhitelabelOnBoarding(it, false) }
+                    goToCustomProductLogistic(isOnBoarding = true)
+                }
+            }
+        })
     }
 
     private fun changeShipmentType(isStandardShipment: Boolean) {
@@ -554,18 +581,20 @@ class AddEditProductShipmentFragment:
         }
     }
 
-
     private fun setupShipmentDescriptionTicker() {
-        tickerShipmentDescription?.setTextDescription(context?.resources?.getString(R.string.label_shipment_weight_ticker).toString())
+        tickerShipmentDescription?.setTextDescription(
+            context?.resources?.getString(R.string.label_shipment_weight_ticker).toString()
+        )
     }
 
     fun sendDataBack() {
-        if(shipmentViewModel.isAddMode && !shipmentViewModel.isDraftMode) {
+        if (shipmentViewModel.isAddMode && !shipmentViewModel.isDraftMode) {
             var dataBackPressed = NO_DATA
-            if(shipmentViewModel.isFirstMoved) {
+            if (shipmentViewModel.isFirstMoved) {
                 inputAllDataInProductInputModel()
                 dataBackPressed = SHIPMENT_DATA
-                shipmentViewModel.productInputModel?.requestCode = arrayOf(DETAIL_DATA, DESCRIPTION_DATA, SHIPMENT_DATA)
+                shipmentViewModel.productInputModel?.requestCode =
+                    arrayOf(DETAIL_DATA, DESCRIPTION_DATA, SHIPMENT_DATA)
             }
             setFragmentResultWithBundle(REQUEST_KEY_ADD_MODE, dataBackPressed)
         } else {
@@ -574,17 +603,20 @@ class AddEditProductShipmentFragment:
     }
 
     private fun setupOnBackPressed() {
-        requireActivity().onBackPressedDispatcher.addCallback(viewLifecycleOwner, object: OnBackPressedCallback(true) {
-            override fun handleOnBackPressed() {
-                sendDataBack()
+        requireActivity().onBackPressedDispatcher.addCallback(
+            viewLifecycleOwner,
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    sendDataBack()
 
-                if (shipmentViewModel.isEditMode) {
-                    ProductEditShippingTracking.clickBack(shopId)
-                } else {
-                    ProductAddShippingTracking.clickBack(shopId)
+                    if (shipmentViewModel.isEditMode) {
+                        ProductEditShippingTracking.clickBack(shopId)
+                    } else {
+                        ProductAddShippingTracking.clickBack(shopId)
+                    }
                 }
             }
-        })
+        )
     }
 
     private fun inputAllDataInProductInputModel() {
@@ -645,8 +677,11 @@ class AddEditProductShipmentFragment:
 
     private fun showProductLimitationBottomSheet(productLimitationModel: ProductLimitationModel) {
         val actionItems = productLimitationModel.actionItems
-        val bottomSheet = ProductLimitationBottomSheet(actionItems, productLimitationModel.isEligible,
-                productLimitationModel.limitAmount)
+        val bottomSheet = ProductLimitationBottomSheet(
+            actionItems,
+            productLimitationModel.isEligible,
+            productLimitationModel.limitAmount
+        )
 
         bottomSheet.setOnBottomSheetResult { urlResult ->
             when {
@@ -654,13 +689,19 @@ class AddEditProductShipmentFragment:
                     activity?.finish()
                 }
                 urlResult.startsWith(ProductLimitationBottomSheet.RESULT_SAVING_DRAFT) -> {
-                    val intent = RouteManager.getIntent(context, ApplinkConstInternalMechant.MERCHANT_PRODUCT_DRAFT)
+                    val intent = RouteManager.getIntent(
+                        context,
+                        ApplinkConstInternalMechant.MERCHANT_PRODUCT_DRAFT
+                    )
                     startActivity(intent)
                     shipmentViewModel.productInputModel?.let { shipmentViewModel.saveProductDraft(it) }
                     activity?.finish()
                 }
                 urlResult.startsWith(HTTP_PREFIX) -> {
-                    RouteManager.route(context, String.format("%s?url=%s", ApplinkConst.WEBVIEW, urlResult))
+                    RouteManager.route(
+                        context,
+                        "${ApplinkConst.WEBVIEW}?url=$urlResult"
+                    )
                 }
                 else -> {
                     val intent = RouteManager.getIntent(context, urlResult)
@@ -689,7 +730,7 @@ class AddEditProductShipmentFragment:
 
     @SuppressLint("ClickableViewAccessibility")
     private fun hideKeyboardWhenTouchOutside() {
-        mainLayout?.setOnTouchListener{ _, _ ->
+        mainLayout?.setOnTouchListener { _, _ ->
             activity?.apply {
                 KeyboardHandler.hideSoftKeyboard(this)
             }
@@ -711,7 +752,10 @@ class AddEditProductShipmentFragment:
         }
     }
 
-    private fun setFragmentResultWithBundle(requestKey: String, dataBackPressed: Int = SHIPMENT_DATA) {
+    private fun setFragmentResultWithBundle(
+        requestKey: String,
+        dataBackPressed: Int = SHIPMENT_DATA
+    ) {
         arguments?.let {
             val cacheManagerId = AddEditProductShipmentFragmentArgs.fromBundle(it).cacheManagerId
             SaveInstanceCacheManager(requireContext(), cacheManagerId)
@@ -721,7 +765,7 @@ class AddEditProductShipmentFragment:
                 putString(BUNDLE_CACHE_MANAGER_ID, cacheManagerId)
                 putInt(BUNDLE_BACK_PRESSED, dataBackPressed)
             }
-            setNavigationResult(bundle,requestKey)
+            setNavigationResult(bundle, requestKey)
             findNavController().navigateUp()
         }
     }

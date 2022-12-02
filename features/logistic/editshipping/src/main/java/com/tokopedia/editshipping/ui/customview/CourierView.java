@@ -1,5 +1,6 @@
 package com.tokopedia.editshipping.ui.customview;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.view.View;
 import android.widget.ImageView;
@@ -52,6 +53,7 @@ public class CourierView extends EditShippingCourierView<Courier,
     }
 
 
+    @SuppressLint({"DeprecatedMethod", "PII Data Exposure"})
     @Override
     public void renderData(@NonNull final Courier courier, final int courierIndex) {
         if (courier.isWhitelabelService()) {

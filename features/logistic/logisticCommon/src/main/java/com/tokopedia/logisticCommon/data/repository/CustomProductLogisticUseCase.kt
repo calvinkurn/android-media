@@ -10,13 +10,17 @@ import com.tokopedia.logisticCommon.data.response.customproductlogistic.OngkirGe
 import com.tokopedia.logisticCommon.domain.param.CPLParam
 import javax.inject.Inject
 
-class CustomProductLogisticUseCase @Inject constructor(@ApplicationContext private val gql: GraphqlRepository, dispatcher: CoroutineDispatchers) :
+class CustomProductLogisticUseCase @Inject constructor(
+    @ApplicationContext private val gql: GraphqlRepository,
+    dispatcher: CoroutineDispatchers
+) :
     CoroutineUseCase<CPLParam, OngkirGetCPLQGLResponse>(dispatcher.io) {
 
-    fun getParam(shopId: Long,
-                 productId: Long?,
-                 cplParam: List<Long>?
-    ) : CPLParam {
+    fun getParam(
+        shopId: Long,
+        productId: Long?,
+        cplParam: List<Long>?
+    ): CPLParam {
         return CPLParam(
             cplDataParam = CPLParam.CPLDataParam(
                 shopId = shopId,
