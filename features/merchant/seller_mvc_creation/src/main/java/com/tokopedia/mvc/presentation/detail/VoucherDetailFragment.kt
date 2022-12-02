@@ -739,9 +739,8 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                     shareComponentParam.shopDomain
                 )
             },
-            onCloseOptionClicked = {
-
-            })
+            onBottomSheetClosed = {}
+        )
 
         universalShareBottomSheet?.show(childFragmentManager, universalShareBottomSheet?.tag)
     }

@@ -56,7 +56,7 @@ class ShareComponentInstanceBuilder @Inject constructor(
         param: Param,
         title: String,
         onShareOptionsClicked: (ShareModel) -> Unit,
-        onCloseOptionClicked: () -> Unit
+        onBottomSheetClosed: () -> Unit
     ): UniversalShareBottomSheet {
         val formattedShopName = MethodChecker.fromHtml(param.shopName).toString()
         return UniversalShareBottomSheet.createInstance().apply {
@@ -66,7 +66,7 @@ class ShareComponentInstanceBuilder @Inject constructor(
                 }
 
                 override fun onCloseOptionClicked() {
-                    onCloseOptionClicked()
+                    onBottomSheetClosed()
                 }
             }
 
