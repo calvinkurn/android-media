@@ -60,9 +60,6 @@ data class AffiliateEducationArticleCardsResponse(
                     @SerializedName("thumbnail")
                     val thumbnail: Thumbnail? = null,
 
-                    @SerializedName("metadata")
-                    val metadata: String? = null,
-
                     @SerializedName("publish_time")
                     val publishTime: String? = null,
 

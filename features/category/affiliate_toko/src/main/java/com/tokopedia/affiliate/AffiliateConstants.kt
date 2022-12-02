@@ -193,7 +193,7 @@ const val PAGE_EDUCATION_ARTICLE_TOPIC = "education_article_topic"
 const val PAGE_EDUCATION_TUTORIAL = "education_tutorial"
 const val EDUCATION_ARTICLE_DETAIL_STAGING_URL = "https://affiliate-staging.tokopedia.com/edu/"
 const val EDUCATION_ARTICLE_DETAIL_PROD_URL = "https://affiliate.tokopedia.com/edu/"
-const val FILTER_HIGHLIGHTED = "highlighted"
+const val FILTER_HIGHLIGHTED = "highlights"
 
 const val FACEBOOK = "Facebook"
 const val INSTAGRAM = "Instagram"
