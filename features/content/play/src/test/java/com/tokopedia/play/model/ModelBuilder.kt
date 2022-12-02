@@ -797,14 +797,9 @@ class ModelBuilder {
             "title": "Gratis Ongkir Rp20.000",
             "subtitle": "Transaksi min. Rp50.000",
             "voucher_type": 1,
-<<<<<<< HEAD
-            "voucher_image": "https://ecs7.tokopedia.net/img/BTJGre/2021/9/23/f71f1cce-47ac-4e0d-ab6f-e3810ed5e344.jpg",
-            "voucher_image_square": "https://ecs7.tokopedia.net/img/BTJGre/2021/9/23/f71f1cce-47ac-4e0d-ab6f-e3810ed5e344.jpg",
-=======
             "voucher_image": "https://images.tokopedia.net/img/BTJGre/2021/9/23/f71f1cce-47ac-4e0d-ab6f-e3810ed5e344.jpg",
             "voucher_image_square": "https://images.tokopedia.net/img/BTJGre/2021/9/23/f71f1cce-47ac-4e0d-ab6f-e3810ed5e344.jpg",
             "voucher_quota": 25,
->>>>>>> 777f03f082e16ab66fd9e2fc731b1f0f1059a207
             "voucher_finish_time": "2050-12-31T23:59:00Z",
             "voucher_code": "KONGP0FL5B",
             "is_quota_available": 1,
