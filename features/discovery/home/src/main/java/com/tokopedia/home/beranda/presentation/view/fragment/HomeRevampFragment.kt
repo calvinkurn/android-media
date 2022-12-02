@@ -1191,7 +1191,7 @@ open class HomeRevampFragment :
                             (dataMap[HomeRevampViewModel.CHANNEL] as ChannelModel),
                             (dataMap[HomeRevampViewModel.GRID] as ChannelGrid),
                             dataMap[HomeRevampViewModel.POSITION] as Int,
-                            (dataMap[HomeRevampViewModel.ATC] as AddToCartDataModel?)!!.data.cartId,
+                            (dataMap[HomeRevampViewModel.ATC] as? AddToCartDataModel)!!.data.cartId,
                             DEFAULT_CART_QUANTITY,
                             getHomeViewModel().getUserId()
                         ) as HashMap<String, Any>
