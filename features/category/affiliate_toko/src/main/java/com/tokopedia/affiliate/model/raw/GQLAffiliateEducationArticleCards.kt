@@ -37,7 +37,6 @@ val GQL_Affiliate_Education_Article_Cards: String = """query GetEducationArticle
           youtube_url
           duration
           upload_datetime
-          metadata
         }
         action_title
         action_link
