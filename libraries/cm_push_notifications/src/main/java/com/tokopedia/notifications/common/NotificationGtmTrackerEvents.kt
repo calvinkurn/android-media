@@ -36,8 +36,6 @@ class NotificationSettingsGtmEvents constructor(
     fun sendPromptImpressionEvent(context: Context) {
         if (GlobalConfig.isSellerApp()) {
             trackerIdView = GtmTrackerEvents.VALUE_TRACKER_ID_VIEW_SA
-            trackerIdAllow = GtmTrackerEvents.VALUE_TRACKER_ID_ALLOW_SA
-            trackerIdNotAllow = GtmTrackerEvents.VALUE_TRACKER_ID_NOT_ALLOW_SA
             eventCategory = GtmTrackerEvents.VALUE_CATEGORY_SA
         }
         createMapAndSendEvent(
@@ -49,6 +47,10 @@ class NotificationSettingsGtmEvents constructor(
     }
 
     fun sendActionNotAllowEvent(context: Context) {
+        if (GlobalConfig.isSellerApp()) {
+            eventCategory = GtmTrackerEvents.VALUE_CATEGORY_SA
+            trackerIdNotAllow = GtmTrackerEvents.VALUE_TRACKER_ID_NOT_ALLOW_SA
+        }
         createMapAndSendEvent(
             GtmTrackerEvents.VALUE_EVENT_CLICK_CONTENT,
             GtmTrackerEvents.VALUE_ACTION_NOT_ALLOW,
@@ -58,6 +60,10 @@ class NotificationSettingsGtmEvents constructor(
     }
 
     fun sendActionAllowEvent(context: Context) {
+        if (GlobalConfig.isSellerApp()) {
+            eventCategory = GtmTrackerEvents.VALUE_CATEGORY_SA
+            trackerIdAllow = GtmTrackerEvents.VALUE_TRACKER_ID_ALLOW_SA
+        }
         createMapAndSendEvent(
             GtmTrackerEvents.VALUE_EVENT_CLICK_CONTENT,
             GtmTrackerEvents.VALUE_ACTION_ALLOW,
@@ -68,10 +74,11 @@ class NotificationSettingsGtmEvents constructor(
 
     fun sendGeneralPromptImpressionEvent(context: Context, pagePath: String) {
         eventCategory = GtmTrackerEvents.VALUE_GEN_CATEGORY
-        trackerIdView = if (GlobalConfig.isSellerApp()) {
-            GtmTrackerEvents.VALUE_TRACKER_ID_VIEW_GEN_SA
+        if (GlobalConfig.isSellerApp()) {
+            trackerIdView = GtmTrackerEvents.VALUE_TRACKER_ID_VIEW_GEN_SA
+            eventCategory = GtmTrackerEvents.VALUE_GEN_CATEGORY_SA
         } else {
-            GtmTrackerEvents.VALUE_TRACKER_ID_VIEW_GEN_MA
+            trackerIdView = GtmTrackerEvents.VALUE_TRACKER_ID_VIEW_GEN_MA
         }
         createMapAndSendEvent(
             GtmTrackerEvents.VALUE_EVENT_VIEW_CONTENT,
@@ -84,10 +91,11 @@ class NotificationSettingsGtmEvents constructor(
 
     fun sendGeneralPromptClickCloseEvent(context: Context, pagePath: String) {
         eventCategory = GtmTrackerEvents.VALUE_GEN_CATEGORY
-        trackerIdView = if (GlobalConfig.isSellerApp()) {
-            GtmTrackerEvents.VALUE_TRACKER_ID_CLICK_CLOSE_GEN_SA
+        if (GlobalConfig.isSellerApp()) {
+            trackerIdView = GtmTrackerEvents.VALUE_TRACKER_ID_CLICK_CLOSE_GEN_SA
+            eventCategory = GtmTrackerEvents.VALUE_GEN_CATEGORY_SA
         } else {
-            GtmTrackerEvents.VALUE_TRACKER_ID_CLICK_CLOSE_GEN_MA
+            trackerIdView = GtmTrackerEvents.VALUE_TRACKER_ID_CLICK_CLOSE_GEN_MA
         }
         createMapAndSendEvent(
             GtmTrackerEvents.VALUE_EVENT_CLICK_CONTENT,
@@ -100,10 +108,11 @@ class NotificationSettingsGtmEvents constructor(
 
     fun sendGeneralPromptClickCtaEvent(context: Context, pagePath: String) {
         eventCategory = GtmTrackerEvents.VALUE_GEN_CATEGORY
-        trackerIdView = if (GlobalConfig.isSellerApp()) {
-            GtmTrackerEvents.VALUE_TRACKER_ID_CLICK_CTA_GEN_MA
+        if (GlobalConfig.isSellerApp()) {
+            trackerIdView = GtmTrackerEvents.VALUE_TRACKER_ID_CLICK_CTA_GEN_SA
+            eventCategory = GtmTrackerEvents.VALUE_GEN_CATEGORY_SA
         } else {
-            GtmTrackerEvents.VALUE_TRACKER_ID_CLICK_CTA_GEN_SA
+            trackerIdView = GtmTrackerEvents.VALUE_TRACKER_ID_CLICK_CTA_GEN_MA
         }
         createMapAndSendEvent(
             GtmTrackerEvents.VALUE_EVENT_CLICK_CONTENT,

@@ -283,6 +283,7 @@ public interface CMConstant {
         String VALUE_CATEGORY = "native android push prompt";
         String VALUE_CATEGORY_SA = "native android seller push prompt";
         String VALUE_GEN_CATEGORY = "general android push prompt";
+        String VALUE_GEN_CATEGORY_SA = "general android seller push prompt";
         String VALUE_ACTION_IMPRESSION = "impression";
         String VALUE_ACTION_NOT_ALLOW = "click not allow";
         String VALUE_ACTION_ALLOW = "click allow";
