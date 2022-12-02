@@ -99,7 +99,7 @@ class PinCompleteFragment : BaseDaggerFragment() {
 
     companion object {
         const val COMPLETE_PICT_URL =
-            "https://ecs7.tokopedia.net/android/user/success_update_pin.png"
+            "https://images.tokopedia.net/android/user/success_update_pin.png"
 
         const val SOURCE_DEFAULT = 0
         const val SOURCE_ADD_PIN = 1

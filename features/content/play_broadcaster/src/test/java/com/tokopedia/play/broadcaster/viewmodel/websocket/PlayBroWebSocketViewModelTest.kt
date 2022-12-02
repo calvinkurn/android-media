@@ -112,8 +112,10 @@ class PlayBroWebSocketViewModelTest {
             robot.executeViewModelPrivateFunction("startWebSocket")
             fakePlayWebSocket.fakeEmitMessage(mockChatString)
             val result = robot.getViewModel().observableChatList.getOrAwaitValue()
+            val resultNewChat = robot.getViewModel().observableNewChat.getOrAwaitValue()
 
             result.assertEqualTo(listOf(mockChat))
+            resultNewChat.peekContent().assertEqualTo(result.last())
         }
     }
 

@@ -31,67 +31,77 @@
                 app:layout_constraintTop_toTopOf="parent"
                 app:unify_image_placeholder="@drawable/placeholder_img"/>
 
-            <GridLayout
-                android:id="@+id/gl_collection_item"
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:columnCount="2"
-                android:rowCount="2"
-                app:layout_constraintDimensionRatio="1:1"
-                app:layout_constraintStart_toStartOf="parent"
+                <GridLayout
+                    android:id="@+id/gl_collection_item"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:columnCount="2"
+                    android:rowCount="2"
+                    app:layout_constraintDimensionRatio="1:1"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <com.tokopedia.unifycomponents.ImageUnify
+                        android:id="@+id/img_collection_1"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:layout_columnWeight="1"
+                        android:layout_rowWeight="1"
+                        app:unify_image_corner_radius="0"
+                        app:unify_image_type="rect"
+                        android:layout_marginEnd="1.5dp"
+                        android:layout_marginBottom="1.5dp"
+                        app:unify_image_placeholder="@drawable/placeholder_img"
+                        />
+
+                    <com.tokopedia.unifycomponents.ImageUnify
+                        android:id="@+id/img_collection_2"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:layout_columnWeight="1"
+                        android:layout_rowWeight="1"
+                        app:unify_image_corner_radius="0"
+                        app:unify_image_type="rect"
+                        app:unify_image_placeholder="@drawable/placeholder_img"
+                        android:layout_marginStart="1.5dp"
+                        android:layout_marginBottom="1.5dp"/>
+
+                    <com.tokopedia.unifycomponents.ImageUnify
+                        android:id="@+id/img_collection_3"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:layout_columnWeight="1"
+                        android:layout_rowWeight="1"
+                        app:unify_image_corner_radius="0"
+                        app:unify_image_type="rect"
+                        app:unify_image_placeholder="@drawable/placeholder_img"
+                        android:layout_marginTop="1.5dp"
+                        android:layout_marginStart="1.5dp"/>
+
+                    <com.tokopedia.unifycomponents.ImageUnify
+                        android:id="@+id/img_collection_4"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:layout_columnWeight="1"
+                        android:layout_rowWeight="1"
+                        app:unify_image_corner_radius="0"
+                        app:unify_image_type="rect"
+                        app:unify_image_placeholder="@drawable/placeholder_img"
+                        android:layout_marginEnd="1.5dp"
+                        android:layout_marginTop="1.5dp"/>
+
+                </GridLayout>
+
+            <com.tokopedia.unifycomponents.Label
+                android:id="@+id/label_desc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <com.tokopedia.unifycomponents.ImageUnify
-                    android:id="@+id/img_collection_1"
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:layout_columnWeight="1"
-                    android:layout_rowWeight="1"
-                    app:unify_image_corner_radius="0"
-                    app:unify_image_type="rect"
-                    android:layout_marginEnd="1.5dp"
-                    android:layout_marginBottom="1.5dp"
-                    app:unify_image_placeholder="@drawable/placeholder_img"
-                    />
-
-                <com.tokopedia.unifycomponents.ImageUnify
-                    android:id="@+id/img_collection_2"
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:layout_columnWeight="1"
-                    android:layout_rowWeight="1"
-                    app:unify_image_corner_radius="0"
-                    app:unify_image_type="rect"
-                    app:unify_image_placeholder="@drawable/placeholder_img"
-                    android:layout_marginStart="1.5dp"
-                    android:layout_marginBottom="1.5dp"/>
-
-                <com.tokopedia.unifycomponents.ImageUnify
-                    android:id="@+id/img_collection_3"
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:layout_columnWeight="1"
-                    android:layout_rowWeight="1"
-                    app:unify_image_corner_radius="0"
-                    app:unify_image_type="rect"
-                    app:unify_image_placeholder="@drawable/placeholder_img"
-                    android:layout_marginTop="1.5dp"
-                    android:layout_marginStart="1.5dp"/>
-
-                <com.tokopedia.unifycomponents.ImageUnify
-                    android:id="@+id/img_collection_4"
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:layout_columnWeight="1"
-                    android:layout_rowWeight="1"
-                    app:unify_image_corner_radius="0"
-                    app:unify_image_type="rect"
-                    app:unify_image_placeholder="@drawable/placeholder_img"
-                    android:layout_marginEnd="1.5dp"
-                    android:layout_marginTop="1.5dp"/>
-
-            </GridLayout>
+                app:layout_constraintTop_toTopOf="parent"
+                android:visibility="gone"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

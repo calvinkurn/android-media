@@ -6,8 +6,8 @@
         "name": "Kredivo",
         "subheader": "Yuk, daftar sekarang!",
         "gateway_code": "KREDIVO",
-        "img_light_url": "https://ecs7.tokopedia.net/assets-fintech-frontend/pdp/kredivo/kredivo.png",
-        "img_dark_url": "https://ecs7.tokopedia.net/assets-fintech-frontend/pdp/kredivo/kredivo.png",
+        "img_light_url": "https://images.tokopedia.net/assets-fintech-frontend/pdp/kredivo/kredivo.png",
+        "img_dark_url": "https://images.tokopedia.net/assets-fintech-frontend/pdp/kredivo/kredivo.png",
         "benefit": [
           {
             "content": "Bunga 0% untuk bayar dalam 30 hari",
