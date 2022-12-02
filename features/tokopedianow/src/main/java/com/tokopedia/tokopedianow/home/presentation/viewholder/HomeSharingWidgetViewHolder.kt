@@ -1,12 +1,9 @@
 package com.tokopedia.tokopedianow.home.presentation.viewholder
 
-import android.text.Html
-import android.text.method.LinkMovementMethod
 import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.core.content.ContextCompat
 import androidx.vectordrawable.graphics.drawable.VectorDrawableCompat
-import com.airbnb.lottie.LottieDrawable
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.iconunify.IconUnify
@@ -23,8 +20,6 @@ import com.tokopedia.tokopedianow.home.presentation.fragment.TokoNowHomeFragment
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSharingWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSharingWidgetUiModel.HomeSharingEducationWidgetUiModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeSharingWidgetUiModel.HomeSharingReferralWidgetUiModel
-import com.tokopedia.unifycomponents.HtmlLinkHelper
-import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
 
 class HomeSharingWidgetViewHolder(
@@ -90,7 +85,9 @@ class HomeSharingWidgetViewHolder(
         binding?.apply {
             val context = itemView.context
             val greenColor = ContextCompat.getColor(
-                context, com.tokopedia.unifyprinciples.R.color.Unify_GN500).toString()
+                context,
+                com.tokopedia.unifyprinciples.R.color.Unify_GN500
+            ).toString()
             tpSharing.text = MethodChecker.fromHtml(context.getString(R.string.tokopedianow_home_referral_widget_desc_sender, greenColor))
             btnSharing.text = getString(R.string.tokopedianow_home_referral_widget_button_text_sender)
             if (element.titleSection.isNotEmpty()) {

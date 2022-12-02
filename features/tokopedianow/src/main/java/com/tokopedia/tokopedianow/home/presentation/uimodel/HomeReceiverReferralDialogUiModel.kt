@@ -13,7 +13,7 @@ data class HomeReceiverReferralDialogUiModel(
 ) {
     companion object {
         private const val ERROR_REFERRAL_NOT_FOUND = "42029"
-        private const val ERROR_ALREADY_REFERRAL= "42021"
+        private const val ERROR_ALREADY_REFERRAL = "42021"
         private const val ERROR_RECEIVE_LIMIT = "42027"
         private const val ERROR_REGISTERED_SENDER = "42040"
         private const val ERROR_MAX_RELATION = "42041"

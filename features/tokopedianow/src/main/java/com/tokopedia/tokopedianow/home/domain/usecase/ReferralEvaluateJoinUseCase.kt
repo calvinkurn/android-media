@@ -18,8 +18,9 @@ class ReferralEvaluateJoinUseCase @Inject constructor(
     }
 
     suspend fun execute(referralCode: String): ReferralEvaluateJoinResponse {
-        setRequestParams(RequestParams.create().apply {
-            putString(REFERRAL_CODE, referralCode)
+        setRequestParams(
+            RequestParams.create().apply {
+                putString(REFERRAL_CODE, referralCode)
         }.parameters)
         return executeOnBackground()
     }
