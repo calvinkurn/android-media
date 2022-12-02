@@ -24,15 +24,19 @@
             android:layout_height="wrap_content">
 
             <include
+                android:id="@+id/layoutType"
                 layout="@layout/smvc_voucher_detail_voucher_type_section"/>
 
             <include
+                android:id="@+id/layoutInfo"
                 layout="@layout/smvc_voucher_detail_voucher_info_section"/>
 
             <include
+                android:id="@+id/layoutSetting"
                 layout="@layout/smvc_voucher_detail_voucher_setting_section"/>
 
             <include
+                android:id="@+id/layoutProducts"
                 layout="@layout/smvc_voucher_detail_product_section"/>
 
             <include
