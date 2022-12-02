@@ -16,6 +16,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import timber.log.Timber
 
 object TokoChatConnection {
 
@@ -59,7 +60,7 @@ object TokoChatConnection {
     fun disconnect() {
         try {
             // If rollence turned off, return
-            if (!isTokoChatActive()) return
+            if (!isTokoChatActive() || !initializationStatus) return
 
             courierConnection?.handleAppEvent(AppLogout)
             GlobalScope.launch {
@@ -68,8 +69,8 @@ object TokoChatConnection {
                     ConversationsRepository.destroy()
                 }
             }
-        } catch (ex: Throwable) {
-            ex.printStackTrace()
+        } catch (throwable: Throwable) {
+            Timber.d(throwable)
         }
     }
 

@@ -4,8 +4,8 @@ import com.google.gson.annotations.SerializedName
 
 data class TokoChatMessageLanguage(
     @SerializedName("en_ID")
-    val enID: String? = "",
+    val enID: String? = null,
 
     @SerializedName("id_ID")
-    val idID: String? = ""
+    val idID: String? = null
 )

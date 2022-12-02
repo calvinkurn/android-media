@@ -22,6 +22,7 @@ import com.tokopedia.tokochat_common.util.TokoChatViewUtil.EIGHT_DP
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.file.FileUtil
+import timber.log.Timber
 import java.io.File
 import java.io.InputStream
 import javax.inject.Inject
@@ -53,7 +54,7 @@ class TokoChatViewUtil @Inject constructor(
         try {
             inputStream.close()
         } catch (throwable: Throwable) {
-            throwable.printStackTrace()
+            Timber.d(throwable)
         }
     }
 

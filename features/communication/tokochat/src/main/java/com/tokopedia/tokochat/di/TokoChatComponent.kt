@@ -10,7 +10,6 @@ import dagger.Component
 @Component(
     modules = [
         TokoChatModule::class,
-        TokoChatUseCaseModule::class,
         TokoChatViewModelModule::class,
         TokoChatImageAttachmentNetworkModule::class
     ],
