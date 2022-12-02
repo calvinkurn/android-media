@@ -3,7 +3,6 @@ package com.tokopedia.feedcomponent.view.mapper
 import com.tokopedia.createpost.common.data.feedrevamp.FeedXMediaTagging
 import com.tokopedia.feedcomponent.data.feedrevamp.*
 import com.tokopedia.feedcomponent.domain.mapper.TYPE_TOPADS_HEADLINE_NEW
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.kotlin.model.ImpressHolder
 import com.tokopedia.topads.sdk.domain.model.CpmData
@@ -20,23 +19,19 @@ object TopadsFeedXMapper {
         val topAdsShop = data?.cpm?.cpmShop
         shopName = topAdsShop?.domain.orEmpty()
         redirectWeblinkShop = data?.redirect ?: ""
-        val merchantVouchers = topAdsShop?.merchantVouchers
-
-        val feedXTagging = List(topAdsShop?.products?.size.orZero()) { index ->
-            getFeedxMediaTagging(index)
-        }
+        val merchantVouchers = topAdsShop?.merchantVouchers.orEmpty()
 
         val media = topAdsShop?.products?.mapIndexed { index, product ->
             cpmProductToFeedXMedia(
                 product,
                 variant,
-                merchantVouchers as ArrayList<String>,
+                merchantVouchers,
                 index
             )
         }
 
         val feedXProducts = topAdsShop?.products?.map { product ->
-            cpmProductToFeedXProduct(product, merchantVouchers as ArrayList<String>, topAdsShop.id)
+            cpmProductToFeedXProduct(product, merchantVouchers, topAdsShop.id)
         }
 
         val listOf = arrayListOf("medias:layout_single")
@@ -104,11 +99,12 @@ object TopadsFeedXMapper {
         )
     }
 
-    private fun cpmProductToFeedXMedia(product: Product,variant: Int, merchantVoucher: ArrayList<String>,index: Int): FeedXMedia {
-        var cashback=""
-        if (!merchantVoucher.isNullOrEmpty()){
-            cashback=merchantVoucher[0]
-        }
+    private fun cpmProductToFeedXMedia(
+        product: Product,
+        variant: Int,
+        merchantVoucher: List<String>,
+        index: Int
+    ): FeedXMedia {
         product.run {
             return FeedXMedia(
                 id = id,
@@ -124,7 +120,7 @@ object TopadsFeedXMapper {
                 discountPercentage = if (product.campaign.discountPercentage != 0) "${product.campaign.discountPercentage}%" else "",
                 isCashback = isProductCashback,
                 variant = variant,
-                cashBackFmt = cashback
+                cashBackFmt = merchantVoucher.firstOrNull().orEmpty()
             )
         }
     }
@@ -135,20 +131,15 @@ object TopadsFeedXMapper {
 
     private fun cpmProductToFeedXProduct(
         product: Product,
-        merchantVoucher: ArrayList<String>,
+        merchantVoucher: List<String>,
         shopId: String,
     ): FeedXProduct {
-        var cashback=""
-        if (!merchantVoucher.isNullOrEmpty()){
-            cashback=merchantVoucher[0]
-        }
         val isDiscount = product.campaign.discountPercentage > 0
-
         product.run {
             return FeedXProduct(
                 appLink = applinks,
                 discount = campaign.discountPercentage,
-                cashbackFmt = cashback,
+                cashbackFmt = merchantVoucher.firstOrNull().orEmpty(),
                 isBebasOngkir = freeOngkir.isActive,
                 isCashback = isProductCashback,
                 bebasOngkirURL = freeOngkir.imageUrl,
