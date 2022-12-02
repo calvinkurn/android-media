@@ -2524,18 +2524,18 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
             somListBinding?.containerBtnBulkAction?.height?.toFloat().orZero()
         )
         bulkAcceptButtonLeaveAnimation?.addListener(object : Animator.AnimatorListener {
-            override fun onAnimationRepeat(animation: Animator?) {}
+            override fun onAnimationRepeat(animation: Animator) {}
 
-            override fun onAnimationEnd(animation: Animator?) {
+            override fun onAnimationEnd(animation: Animator) {
                 somListBinding?.containerBtnBulkAction?.gone()
                 bulkAcceptButtonLeaveAnimation?.removeListener(this)
             }
 
-            override fun onAnimationCancel(animation: Animator?) {
+            override fun onAnimationCancel(animation: Animator) {
                 bulkAcceptButtonLeaveAnimation?.removeListener(this)
             }
 
-            override fun onAnimationStart(animation: Animator?) {}
+            override fun onAnimationStart(animation: Animator) {}
         })
     }
 
@@ -2571,18 +2571,18 @@ open class SomListFragment : BaseListFragment<Visitable<SomListAdapterTypeFactor
                             }
                         }
                         addListener(object : Animator.AnimatorListener {
-                            override fun onAnimationStart(p0: Animator?) {}
+                            override fun onAnimationStart(p0: Animator) {}
 
-                            override fun onAnimationEnd(p0: Animator?) {
+                            override fun onAnimationEnd(p0: Animator) {
                                 tickerIsReady = false
                                 if (!isEnter) {
                                     this@run.invisible()
                                 }
                             }
 
-                            override fun onAnimationCancel(p0: Animator?) {}
+                            override fun onAnimationCancel(p0: Animator) {}
 
-                            override fun onAnimationRepeat(p0: Animator?) {}
+                            override fun onAnimationRepeat(p0: Animator) {}
                         })
                     }
 

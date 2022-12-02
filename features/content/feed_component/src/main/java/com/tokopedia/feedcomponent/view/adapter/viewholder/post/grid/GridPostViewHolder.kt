@@ -4,7 +4,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.BasePostViewHolder
-import com.tokopedia.feedcomponent.view.viewmodel.post.grid.GridPostViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.post.grid.GridPostModel
 import com.tokopedia.kotlin.extensions.view.getDimens
 import kotlinx.android.synthetic.main.item_post_grid.view.*
 
@@ -12,7 +12,7 @@ import kotlinx.android.synthetic.main.item_post_grid.view.*
  * @author by milhamj on 07/12/18
  */
 class GridPostViewHolder(private val gridItemListener: GridPostAdapter.GridItemListener)
-    : BasePostViewHolder<GridPostViewModel>() {
+    : BasePostViewHolder<GridPostModel>() {
 
     companion object {
         private const val SPAN_SIZE_FULL = 6
@@ -22,7 +22,7 @@ class GridPostViewHolder(private val gridItemListener: GridPostAdapter.GridItemL
 
     override var layoutRes: Int = R.layout.item_post_grid
 
-    override fun bind(element: GridPostViewModel) {
+    override fun bind(element: GridPostModel) {
         val layoutManager = GridLayoutManager(
                 itemView.context,
                 SPAN_SIZE_FULL,
