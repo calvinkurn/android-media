@@ -358,7 +358,7 @@ class HomeRecommendationViewModelTest{
         val observerHomeRecommendation: Observer<HomeRecommendationDataModel> = mockk(relaxed = true)
         val item = HomeRecommendationItemDataModel(
                 Product(id = "12", isWishlist = false, trackerImageUrl = "coba",
-                        name = "Nama Produk", imageUrl = "https://ecs.tokopedia.com/blablabla.png"),
+                        name = "Nama Produk", imageUrl = "https://images.tokopedia.com/blablabla.png"),
                 position = 1
         )
         val homeRecommendationDataModel = HomeRecommendationDataModel(

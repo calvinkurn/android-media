@@ -24,9 +24,9 @@ object AddEditProductConstants {
     const val EXT_JPG = ".jpg"
     const val EXT_JPEG = ".jpeg"
 
-    const val PHOTO_TIPS_URL_1 = "https://ecs7.tokopedia.net/android/others/stuart/product_photo_choosing_tips_1.png"
-    const val PHOTO_TIPS_URL_2 = "https://ecs7.tokopedia.net/android/others/stuart/product_photo_choosing_tips_2.png"
-    const val PHOTO_TIPS_URL_3 = "https://ecs7.tokopedia.net/android/others/stuart/product_photo_choosing_tips_3.png"
+    const val PHOTO_TIPS_URL_1 = "https://images.tokopedia.net/android/others/stuart/product_photo_choosing_tips_1.png"
+    const val PHOTO_TIPS_URL_2 = "https://images.tokopedia.net/android/others/stuart/product_photo_choosing_tips_2.png"
+    const val PHOTO_TIPS_URL_3 = "https://images.tokopedia.net/android/others/stuart/product_photo_choosing_tips_3.png"
 
     const val PHOTO_NEW_USER_SPECIFICATION = "https://images.tokopedia.net/img/android/merchant/category_spesific_field/new_user_specification.png"
     const val PHOTO_SIGNAL_STATUS_SPECIFICATION = "https://images.tokopedia.net/img/android/product_service/add_edit_product/specification_signal_status.png"
