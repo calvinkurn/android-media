@@ -1,0 +1,11 @@
+{
+  "KeroAddrSelectAddressForShareAddressRequest": {
+    "is_success": true,
+    "message": "Alamat berhasil dibagi ke teman anda!",
+    "reply_status": 1,
+    "kero_addr_error": {
+      "code": 0,
+      "detail": ""
+    }
+  }
+}

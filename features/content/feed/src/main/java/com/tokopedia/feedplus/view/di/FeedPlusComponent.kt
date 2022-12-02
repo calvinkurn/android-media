@@ -4,6 +4,7 @@ import android.content.Context
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
 import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.feedcomponent.di.FeedComponentModule
+import com.tokopedia.feedcomponent.di.FeedComponentViewModelModule
 import com.tokopedia.feedcomponent.di.FeedFloatingButtonManagerModule
 import com.tokopedia.feedcomponent.people.di.PeopleModule
 import com.tokopedia.feedcomponent.shoprecom.di.ShopRecomModule
@@ -30,6 +31,7 @@ import retrofit2.Retrofit
         FeedFloatingButtonManagerModule::class,
         ShopRecomModule::class,
         PeopleModule::class,
+        FeedComponentViewModelModule::class,
         PlayVideoTabRepositoryModule::class
     ],
     dependencies = [BaseAppComponent::class]

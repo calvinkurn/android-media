@@ -42,6 +42,8 @@ data class FeedXCard(
     //FeedXCardProductsHighlight Data Type
     @SerializedName("products")
     var products: List<FeedXProduct> = emptyList(),
+    @SerializedName("hasVoucher")
+    var hasVoucher: Boolean = false,
     @SerializedName("subTitle")
     var subTitle: String = "",
     @SerializedName("totalProducts")
@@ -65,7 +67,7 @@ data class FeedXCard(
     @SerializedName("followers", alternate = ["fol"])
     var followers: FeedXFollowers = FeedXFollowers(),
     @SerializedName("maximumDiscountPercentage")
-    var maxDiscPercent:Int = 0,
+    var maxDiscPercent: Int = 0,
     @SerializedName("maximumDiscountPercentageFmt")
     var maximumDisPercentFmt: String = "",
 
@@ -94,25 +96,24 @@ data class FeedXCard(
     var hashtagWebLinkFmt: String = "",
     val impressHolder: ImpressHolder = ImpressHolder(),
     //Active carousel index
-    var lastCarouselIndex : Int = 0,
+    var lastCarouselIndex: Int = 0,
     var isAsgcColorChangedAsPerWidgetColor: Boolean = false,
     //Topads
     val isTopAds: Boolean = false,
     val shopId: String = "",
     val adId: String = "",
-    val adClickUrl:String="",
-    val adViewUrl:String="",
+    val adClickUrl: String = "",
+    val adViewUrl: String = "",
     val cpmData: CpmData = CpmData(),
     val listProduct: List<Product> = listOf(),
 
-   //FeedXCardPlay data type
+    //FeedXCardPlay data type
     @SerializedName("playChannelID")
     var playChannelID: String = "",
     @SerializedName("mediaRatio")
     var mediaRatio: FeedXMediaRatio = FeedXMediaRatio(),
     @SerializedName("views")
     var views: FeedXViews = FeedXViews(),
-
 
 
     ) : ImpressHolder() {
@@ -123,9 +124,9 @@ data class FeedXCard(
     val isTypeVOD: Boolean
         get() = typename == TYPE_FEED_X_CARD_VOD
     val isTypeLongVideo: Boolean
-        get() =  media.isNotEmpty() && media.first().type == TYPE_LONG_VIDEO
+        get() = media.isNotEmpty() && media.first().type == TYPE_LONG_VIDEO
     val isTypeSgcVideo: Boolean
-        get() =  media.isNotEmpty() && media.first().type == TYPE_VIDEO
+        get() = media.isNotEmpty() && media.first().type == TYPE_VIDEO
     val isTypeSGC: Boolean
         get() = typename == TYPE_FEED_X_CARD_POST && media.isNotEmpty() && media.first().type != TYPE_LONG_VIDEO
     val useASGCNewDesign: Boolean
@@ -142,6 +143,7 @@ data class FeedXCard(
             typename = typename,
             id = id,
             type = type,
+            hasVoucher = hasVoucher,
             playChannelID = playChannelID,
             mediaRatio = mediaRatio,
             author = author,
