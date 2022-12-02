@@ -32,6 +32,7 @@ import com.tokopedia.mvc.domain.entity.VoucherCreationQuota
 import com.tokopedia.mvc.domain.entity.enums.BenefitType
 import com.tokopedia.mvc.domain.entity.enums.PromoType
 import com.tokopedia.mvc.domain.entity.enums.VoucherStatus
+import com.tokopedia.mvc.domain.entity.enums.VoucherTargetBuyer
 import com.tokopedia.mvc.presentation.bottomsheet.EduCenterBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.FilterVoucherBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.FilterVoucherStatusBottomSheet
@@ -236,7 +237,8 @@ class MvcListFragment: BaseDaggerFragment(), HasPaginatedList by HasPaginatedLis
             promoType = PromoType.FREE_SHIPPING,
             isVoucherProduct = true,
             minPurchase = 50_000,
-            productIds = emptyList()
+            productIds = emptyList(),
+            targetBuyer = VoucherTargetBuyer.ALL_BUYER
         )
 
         val intent = AddProductActivity.buildCreateModeIntent(

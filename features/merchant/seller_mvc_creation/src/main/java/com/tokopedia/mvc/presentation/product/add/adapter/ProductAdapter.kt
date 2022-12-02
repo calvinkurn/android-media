@@ -22,7 +22,6 @@ import com.tokopedia.mvc.util.extension.resetGrayscale
 import com.tokopedia.unifyprinciples.Typography
 
 class ProductAdapter(
-    private val onItemClick: (Int) -> Unit,
     private val onCheckboxClick: (Int, Boolean) -> Unit,
     private val onVariantClick: (Int) -> Unit
 ) : RecyclerView.Adapter<ProductAdapter.ViewHolder>() {
@@ -55,7 +54,6 @@ class ProductAdapter(
     inner class ViewHolder(private val binding : SmvcItemProductBinding) : RecyclerView.ViewHolder(binding.root) {
 
         init {
-            binding.root.setOnClickListener { onItemClick(bindingAdapterPosition) }
             binding.tpgUpdateVariant.setOnClickListener { onVariantClick(bindingAdapterPosition) }
         }
 

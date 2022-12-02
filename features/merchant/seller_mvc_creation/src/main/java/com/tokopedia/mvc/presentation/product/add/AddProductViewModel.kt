@@ -166,7 +166,7 @@ class AddProductViewModel @Inject constructor(
 
                 val isSelectAllCheckboxActive = selectedProductCount == productsResponse.total || currentState.isSelectAllCheckboxActive
 
-                _uiEffect.emit(AddProductEffect.LoadNextPageSuccess(updatedParentProducts, allParentProducts))
+                _uiEffect.emit(AddProductEffect.LoadNextPageSuccess(allParentProducts.count(), productsResponse.total))
                 _uiState.update {
                     it.copy(
                         isLoading = false,
@@ -199,7 +199,8 @@ class AddProductViewModel @Inject constructor(
             promoType = voucherConfiguration.promoType,
             isVoucherProduct = voucherConfiguration.isVoucherProduct,
             minPurchase = voucherConfiguration.minPurchase,
-            productIds = currentPageParentProductIds
+            productIds = currentPageParentProductIds,
+            targetBuyer = voucherConfiguration.targetBuyer
         )
 
 

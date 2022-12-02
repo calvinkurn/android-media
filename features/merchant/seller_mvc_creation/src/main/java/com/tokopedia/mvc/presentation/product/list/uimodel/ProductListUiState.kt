@@ -5,6 +5,7 @@ import com.tokopedia.mvc.domain.entity.VoucherConfiguration
 import com.tokopedia.mvc.domain.entity.enums.BenefitType
 import com.tokopedia.mvc.domain.entity.enums.PageMode
 import com.tokopedia.mvc.domain.entity.enums.PromoType
+import com.tokopedia.mvc.domain.entity.enums.VoucherTargetBuyer
 
 data class ProductListUiState(
     val isLoading: Boolean = true,
@@ -18,7 +19,8 @@ data class ProductListUiState(
         promoType = PromoType.CASHBACK,
         minPurchase = 0,
         productIds = emptyList(),
-        isVoucherProduct = true
+        isVoucherProduct = true,
+        targetBuyer = VoucherTargetBuyer.ALL_BUYER
     ),
     val products: List<Product> = emptyList(),
     val maxProductSelection : Int = 0,

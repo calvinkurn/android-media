@@ -64,15 +64,21 @@ import javax.inject.Inject
 class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginatedListImpl() {
 
     companion object {
-        const val PAGE_SIZE = 10
+        const val PAGE_SIZE = 20
         private const val ONE_FILTER_SELECTED = 1
 
         @JvmStatic
-        fun newInstance(pageMode : PageMode, voucherConfiguration: VoucherConfiguration): AddProductFragment {
+        fun newInstance(
+            pageMode: PageMode,
+            voucherConfiguration: VoucherConfiguration
+        ): AddProductFragment {
             return AddProductFragment().apply {
                 arguments = Bundle().apply {
                     putParcelable(BundleConstant.BUNDLE_KEY_PAGE_MODE, pageMode)
-                    putParcelable(BundleConstant.BUNDLE_KEY_VOUCHER_CONFIGURATION, voucherConfiguration)
+                    putParcelable(
+                        BundleConstant.BUNDLE_KEY_VOUCHER_CONFIGURATION,
+                        voucherConfiguration
+                    )
                 }
             }
         }
@@ -89,7 +95,7 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
     private val sortChips by lazy { SortFilterItem(getString(R.string.smvc_sort)) }
 
     private val productAdapter by lazy {
-        ProductAdapter(onItemClick, onCheckboxClick, onVariantClick)
+        ProductAdapter(onCheckboxClick, onVariantClick)
     }
 
 
@@ -210,7 +216,7 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
     private fun handleEffect(effect: AddProductEffect) {
         when (effect) {
             is AddProductEffect.LoadNextPageSuccess -> {
-                val hasNextPage = effect.currentPageItems.size == PAGE_SIZE
+                val hasNextPage = effect.allItemCount < effect.totalProductCount
                 notifyLoadResult(hasNextPage)
             }
             is AddProductEffect.ShowSortBottomSheet -> {
@@ -421,13 +427,6 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
            viewModel.processEvent(AddProductEvent.ClearFilter)
         }
     }
-
-    private val onItemClick: (Int) -> Unit = { selectedItemPosition ->
-        val selectedItem = productAdapter.snapshot()[selectedItemPosition]
-
-        viewModel.processEvent(AddProductEvent.AddProductToSelection(selectedItem.id))
-    }
-
 
     private val onCheckboxClick: (Int, Boolean) -> Unit = { selectedItemPosition, isChecked ->
         val selectedItem = productAdapter.snapshot()[selectedItemPosition]
