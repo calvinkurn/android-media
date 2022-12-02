@@ -25,8 +25,4 @@ class HomeAdapter(
     fun findPosition(visitable: Visitable<*>): Int {
         return data.indexOf(visitable)
     }
-
-    override fun onBindViewHolder(holder: AbstractViewHolder<out Visitable<*>>, position: Int) {
-        super.onBindViewHolder(holder, position)
-    }
 }
