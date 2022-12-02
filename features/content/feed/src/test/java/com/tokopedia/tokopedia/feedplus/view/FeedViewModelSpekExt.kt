@@ -5,9 +5,9 @@ import com.tokopedia.affiliatecommon.domain.TrackAffiliateClickUseCase
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.atc_common.domain.model.response.DataModel
 import com.tokopedia.atc_common.domain.usecase.AddToCartUseCase
+import com.tokopedia.content.common.model.GetCheckWhitelistResponse
 import com.tokopedia.content.common.usecase.GetWhiteListNewUseCase
 import com.tokopedia.feedcomponent.analytics.topadstracker.SendTopAdsUseCase
-import com.tokopedia.feedcomponent.data.pojo.whitelist.WhitelistQuery
 import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel
 import com.tokopedia.feedcomponent.domain.usecase.*
 import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowUseCase
@@ -143,7 +143,7 @@ fun GetDynamicFeedNewUseCase.getMockData(data: MutableList<Visitable<*>>, cursor
             DynamicFeedDomainModel(postList = data)
 }
 
-fun GetWhiteListNewUseCase.getMockData(data: WhitelistQuery) {
+fun GetWhiteListNewUseCase.getMockData(data: GetCheckWhitelistResponse) {
     coEvery {
         execute("interest")
     } returns data

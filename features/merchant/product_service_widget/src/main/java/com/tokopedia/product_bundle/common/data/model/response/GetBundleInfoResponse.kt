@@ -81,14 +81,19 @@ data class BundleItem(
         @SerializedName("productStatus")
         @Expose val productStatus: String = ""
 ): Parcelable {
-        fun getPreviewOriginalPrice() = if (originalPrice > 0) originalPrice else
-                children.minByOrNull { it.bundlePrice }?.originalPrice.orZero()
 
-        fun getPreviewBundlePrice() = if (bundlePrice > 0) bundlePrice else
-                children.minByOrNull { it.bundlePrice }?.bundlePrice.orZero()
+    fun getPreviewOriginalPrice() = if (originalPrice > 0) originalPrice else
+        children.minByOrNull { it.bundlePrice }?.originalPrice.orZero()
 
-        fun getPreviewMinOrder() = if (minOrder > 0) minOrder else
-            children.minByOrNull { it.minOrder }?.minOrder.orZero()
+    fun getPreviewBundlePrice() = if (bundlePrice > 0) bundlePrice else
+        children.minByOrNull { it.bundlePrice }?.bundlePrice.orZero()
+
+    fun getMultipliedOriginalPrice() = getPreviewOriginalPrice() * getPreviewMinOrder()
+
+    fun getMultipliedBundlePrice() = getPreviewBundlePrice() * getPreviewMinOrder()
+
+    fun getPreviewMinOrder() = if (minOrder > 0) minOrder else
+        children.minByOrNull { it.minOrder }?.minOrder.orZero()
 }
 
 @Parcelize
@@ -187,6 +192,6 @@ data class ShopInformation (
 
 @Parcelize
 data class BundleStats (
-    @SerializedName("Sold")
+    @SerializedName("SoldItem")
     @Expose val totalSold: String = ""
 ): Parcelable

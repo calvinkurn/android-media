@@ -10,7 +10,10 @@ data class RecommendationTab(
     @SerializedName("name")
     @Expose
     val name: String = "",
-    @SerializedName("image_url")
+    @SerializedName("image_url", alternate = ["imageUrl"])
     @Expose
-    val imageUrl: String = ""
+    val imageUrl: String = "",
+    @SerializedName("sourceType")
+    @Expose
+    val sourceType: String = ""
 )
