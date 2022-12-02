@@ -73,7 +73,7 @@
                 android:layout_marginBottom="16dp"
                 android:translationZ="1dp"
                 android:layout_marginTop="@dimen/unify_space_32"
-                android:textColor="@color/Unify_NN600"
+                android:textColor="@color/Unify_NN950"
                 app:layout_constraintBottom_toTopOf="@+id/btn_sharing"
                 app:layout_constraintStart_toStartOf="@+id/iu_close_sharing"
                 app:layout_constraintEnd_toStartOf="@+id/barrier"
