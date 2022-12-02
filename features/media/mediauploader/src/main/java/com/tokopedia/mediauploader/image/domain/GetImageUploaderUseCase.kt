@@ -25,7 +25,7 @@ open class GetImageUploaderUseCase @Inject constructor(
         if (params.hasNoParams()) throw RuntimeException("No param found")
         val (sourceId, timeOut) = params
 
-        val uploadUrl = if (params.isSecure) url.imageUploadSecure(sourceId) else url.imageUpload(sourceId)
+        val uploadUrl = if (params.isSecure) params.hostUrl else url.imageUpload(sourceId)
 
         val extraBodyParam = HashMap<String, RequestBody>()
         for ((key, value) in params.extraBody){

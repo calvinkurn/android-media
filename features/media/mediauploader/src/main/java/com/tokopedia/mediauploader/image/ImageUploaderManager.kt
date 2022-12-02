@@ -19,7 +19,6 @@ import com.tokopedia.mediauploader.image.domain.GetImageUploaderUseCase
 import java.io.File
 import javax.inject.Inject
 
-
 class ImageUploaderManager @Inject constructor(
     private val policyManager: SourcePolicyManager,
     private val imagePolicyUseCase: GetImagePolicyUseCase,
@@ -65,7 +64,7 @@ class ImageUploaderManager @Inject constructor(
             extraHeader = extraHeader
         ))
 
-        val error = if (upload.header?.messages?.isNotEmpty() == true) {
+        val error = if (upload.header.messages.isNotEmpty()) {
             upload.header.messages.first()
         } else {
             UNKNOWN_ERROR
