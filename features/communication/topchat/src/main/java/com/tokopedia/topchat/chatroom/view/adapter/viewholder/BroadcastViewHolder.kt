@@ -38,6 +38,7 @@ import com.tokopedia.topchat.chatroom.view.listener.TopChatVoucherListener
 import com.tokopedia.topchat.chatroom.view.uimodel.BroadCastUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.product_bundling.MultipleProductBundlingUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.product_bundling.ProductBundlingUiModel
+import com.tokopedia.unifyprinciples.Typography
 
 class BroadcastViewHolder constructor(
     itemView: View?,
@@ -74,6 +75,7 @@ class BroadcastViewHolder constructor(
         R.id.broadcast_fx_chat
     )
     private val cta: LinearLayout? = itemView?.findViewById(R.id.ll_cta_container)
+    private val ctaText: Typography? = itemView?.findViewById(R.id.topchat_cta_broadcast_tv)
     private val rvProductCarousel: ProductCarouselRecyclerView? = itemView?.findViewById(
         R.id.rv_product_carousel
     )
@@ -358,7 +360,11 @@ class BroadcastViewHolder constructor(
 
     private fun bindCta(element: BroadCastUiModel) {
         val banner = element.banner ?: return
-        ImageAnnouncementViewHolderBinder.bindBannerClick(banner, cta, imageAnnouncementListener)
+        ctaText?.let {
+            val text: String = banner.broadcastCtaText ?: getString(R.string.title_topchat_see_detail)
+            it.text = text
+        }
+        ImageAnnouncementViewHolderBinder.bindCtaClick(banner, cta, imageAnnouncementListener)
     }
 
     companion object {

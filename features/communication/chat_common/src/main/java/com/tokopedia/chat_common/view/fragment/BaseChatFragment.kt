@@ -118,6 +118,13 @@ abstract class BaseChatFragment : BaseListFragment<Visitable<*>, BaseAdapterType
         }
     }
 
+    override fun onCtaBroadcastClicked(uiModel: ImageAnnouncementUiModel) {
+        val url = uiModel.broadcastCtaUrl ?: uiModel.redirectUrl
+        if (url.isNotBlank()) {
+            onGoToWebView(url, uiModel.attachmentId)
+        }
+    }
+
     override fun shouldHandleUrlManually(url: String): Boolean {
         val urlManualHandlingList = arrayOf<String>(TkpdBaseURL.BASE_CONTACT_US)
         return Arrays.asList(*urlManualHandlingList).contains(url)
