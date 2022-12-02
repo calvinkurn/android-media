@@ -36,7 +36,6 @@ import com.tokopedia.interceptors.authenticator.TkpdAuthenticatorGql;
 import com.tokopedia.interceptors.refreshtoken.RefreshTokenGql;
 import com.tokopedia.iris.IrisAnalytics;
 import com.tokopedia.linker.LinkerManager;
-import com.tokopedia.linker.interfaces.LinkerRouter;
 import com.tokopedia.network.NetworkRouter;
 import com.tokopedia.network.data.model.FingerprintModel;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
@@ -63,9 +62,7 @@ public class MyApplication extends BaseMainApplication
         implements AbstractionRouter,
         NetworkRouter,
         ApplinkRouter,
-        TkpdCoreRouter,
-        LinkerRouter
-{
+        TkpdCoreRouter {
 
     // Used to loadWishlist the 'native-lib' library on application startup.
     static {
@@ -388,15 +385,6 @@ public class MyApplication extends BaseMainApplication
         GlobalConfig.INTERNAL_FILE_DIR = this.getFilesDir().getAbsolutePath();
         GlobalConfig.EXTERNAL_CACHE_DIR = this.getExternalCacheDir() != null ? this.getExternalCacheDir().getAbsolutePath() : "";
         GlobalConfig.EXTERNAL_FILE_DIR = this.getExternalFilesDir(null) != null ? this.getExternalFilesDir(null).getAbsolutePath() : "";
-    }
-
-    @Override
-    public boolean getBooleanRemoteConfig(String key, boolean defaultValue) {
-        if (key.equals("mainapp_activate_branch_links")) {
-            return true;
-        } else {
-            return false;
-        }
     }
 
     public static class AppsflyerAnalytics extends DummyAnalytics {

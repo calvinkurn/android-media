@@ -7,16 +7,12 @@ import android.os.Bundle
 import android.view.View
 import android.widget.CompoundButton
 import android.widget.Toast
-import android.widget.Toast.LENGTH_LONG
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.app.AppCompatDelegate
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
-import com.tokopedia.applink.internal.ApplinkConstInternalSellerapp
-import com.tokopedia.applink.internal.ApplinkConstInternalTokopediaNow
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
 import com.tokopedia.tkpd.testgql.TestGqlUseCase
-import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.url.TokopediaUrl
 import com.tokopedia.user.session.UserSession
 import com.tokopedia.user.session.UserSessionInterface
@@ -97,9 +93,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun setLoginStatus() {
-        if (userSession.isLoggedIn) {
-            val identity = if (userSession.email.isNotEmpty()) userSession.email else userSession.phoneNumber
-            loginButton?.text = "Logged in as:\n$identity"
+        if(userSession.isLoggedIn) {
+            val identity = if(userSession.email.isNotEmpty()) userSession.email else userSession.phoneNumber
+            loginButton?.text = "Logged in as:\n${identity}"
             logoutButton.visibility = View.VISIBLE
         } else {
             loginButton?.text = "Login"
@@ -119,35 +115,10 @@ class MainActivity : AppCompatActivity() {
          * RouteManager.route(this, ApplinkConstInternalMarketplace.SHOP_SETTINGS)
          * LEAVE THIS EMPTY AS DEFAULT!!
          * */
-
-        //        val model = BottomSheetUiModel(date = ChooseDateUiModel(content =
-//        listOf(
-//            ButtonDateUiModel("Hari ini", "10 Agustus", false),
-//            ButtonDateUiModel("Besok", "11 Agustus"),
-//            ButtonDateUiModel("Selasa", "12 Agustus"))), availableTime = listOf(
-//            ChooseTimeUiModel(content = "Tiba 14:00 - 16:00 (Rp10.000)", note = "Sisa 1 Slot"),
-//            ChooseTimeUiModel(content = "Tiba 14:00 - 16:00 (Rp10.000)"),
-//            ChooseTimeUiModel(content = "Tiba 14:00 - 16:00 (Rp10.000)"),
-//            ChooseTimeUiModel(content = "Tiba 14:00 - 16:00 (Rp10.000)", note = "Sisa 2 Slot"),
-//
-//            ), listOf(
-//            ChooseTimeUiModel(content = "Tiba 14:00 - 16:00 (Rp10.000)"),
-//            ChooseTimeUiModel(content = "Tiba 14:00 - 16:00 (Rp10.000)"),
-//            ))
-//        ScheduleSlotBottomSheet.show(supportFragmentManager, model)
-
-        //staging
-        etAppLink?.setText(ApplinkConstInternalTokopediaNow.HOME)
-
-        //prod
-//        etAppLink?.setText("tokopedia://product/2150454745")
-
         val appLink = etAppLink.text.toString()
-        if (appLink.isNotBlank()) {
+        if(appLink.isNotBlank())
             RouteManager.route(this, appLink)
         else Toast.makeText(this, "Please input appLink / webLink", Toast.LENGTH_SHORT).show()
-//        val intent = Intent(this, HanselActivity::class.java)
-//        startActivity(intent)
     }
 
     private fun getDefaultAppLink(): String {
