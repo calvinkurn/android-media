@@ -39,9 +39,13 @@ class VoucherDetailViewModel @Inject constructor(
     val voucherDetail: LiveData<Result<VoucherDetailData>>
         get() = _voucherDetail
 
-    private var _generateVoucherImageMetadata = MutableLiveData<Result<GenerateVoucherImageMetadata>>()
+    private val _generateVoucherImageMetadata = MutableLiveData<Result<GenerateVoucherImageMetadata>>()
     val generateVoucherImageMetadata: LiveData<Result<GenerateVoucherImageMetadata>>
         get() = _generateVoucherImageMetadata
+
+    private val _openDownloadVoucherImageBottomSheet = MutableLiveData<VoucherDetailData>()
+    val openDownloadVoucherImageBottomSheet: LiveData<VoucherDetailData>
+        get() = _openDownloadVoucherImageBottomSheet
 
     fun getVoucherDetail(voucherId: Long) {
         launchCatchError(
@@ -124,6 +128,11 @@ class VoucherDetailViewModel @Inject constructor(
                 _generateVoucherImageMetadata.postValue(Fail(error))
             }
         )
+    }
+
+    fun onTapDownloadVoucherImage() {
+        val voucherDetail = _voucherDetail.value?.unwrapOrNull() ?: return
+        _openDownloadVoucherImageBottomSheet.value = voucherDetail
     }
 
 

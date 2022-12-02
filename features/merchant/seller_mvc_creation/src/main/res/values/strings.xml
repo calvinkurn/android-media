@@ -105,7 +105,7 @@
     <string name="smvc_placeholder_share_component_outgoing_title">Kupon Produk dari %s</string>
     <string name="smvc_share_component_outgoing_text_description">Yuk, belanja dan pakai Kupon Produknya sekarang!</string>
     <string name="smvc_placeholder_share_component_text_description">Dapatkan Kupon Produk %s di \@Tokopedia hingga %s pukul %s WIB hanya untukmu!</string>
-<!--    <string name="smvc_placeholder_product_price">%s - %s</string>-->
+
     <string name="smvc_placeholder_share_component_outgoing_title_product_voucher">Kupon Produk dari %s</string>
     <string name="smvc_placeholder_share_component_outgoing_title_shop_voucher">Voucher Toko dari %s</string>
 
@@ -199,4 +199,18 @@
     <string name="smvc_cancel_label">Batalkan</string>
     <string name="smvc_stop_label">Hentikan</string>
 
+    <!--Download Voucher-->
+    <string name="smvc_download_voucher_image">Download voucher image</string>
+    <string name="smvc_download_voucher">Download Kupon</string>
+    <string name="smvc_select_voucher_image_ratio">Pilih ukuran kupon</string>
+    <string name="smvc_download_voucher_description">Download kupon dengan ukuran yang sesuai dengan kebutuhanmu dari 3 ukuran berikut:</string>
+    <string name="smvc_placeholder_download_voucher_image_success">Kupon %s berhasil di-download</string>
+    <string name="smvc_download_voucher_image_failed">Download kupon gagal, cek koneksi internetmu dulu, ya.</string>
+    <string name="smvc_storage_permission_enabled_needed">Anda tidak memberikan izin akses untuk Media Penyimpanan.</string>
+    <string name="smvc_square">Square</string>
+    <string name="smvc_square_description">Untuk post Instagram, Facebook.</string>
+    <string name="smvc_vertical">Vertikal</string>
+    <string name="smvc_vertical_description">Untuk post Instagram Story.</string>
+    <string name="smvc_horizontal">Horizontal</string>
+    <string name="smvc_horizontal_description">Untuk banner toko</string>
 </resources>
