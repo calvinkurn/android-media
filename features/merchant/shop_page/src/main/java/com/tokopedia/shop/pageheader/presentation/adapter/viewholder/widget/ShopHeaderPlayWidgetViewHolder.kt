@@ -1,10 +1,10 @@
 package com.tokopedia.shop.pageheader.presentation.adapter.viewholder.widget
 
+import android.text.Spannable
+import android.text.SpannableString
 import android.view.View
 import android.widget.FrameLayout
-import androidx.cardview.widget.CardView
-import com.airbnb.lottie.LottieAnimationView
-import com.airbnb.lottie.LottieCompositionFactory
+import androidx.core.content.ContextCompat
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.config.GlobalConfig
@@ -15,9 +15,9 @@ import com.tokopedia.shop.analytic.ShopPageTrackingSGCPlayWidget
 import com.tokopedia.shop.common.graphql.data.shopinfo.Broadcaster
 import com.tokopedia.shop.databinding.LayoutShopHeaderPlayWidgetBinding
 import com.tokopedia.shop.pageheader.data.model.ShopPageHeaderDataModel
+import com.tokopedia.shop.pageheader.presentation.customview.CenteredImageSpan
 import com.tokopedia.shop.pageheader.presentation.uimodel.component.ShopHeaderPlayWidgetButtonComponentUiModel
 import com.tokopedia.shop.pageheader.presentation.uimodel.widget.ShopHeaderWidgetUiModel
-import com.tokopedia.unifyprinciples.Typography
 import com.tokopedia.utils.view.binding.viewBinding
 
 class ShopHeaderPlayWidgetViewHolder(
@@ -46,7 +46,7 @@ class ShopHeaderPlayWidgetViewHolder(
 
     private val viewBinding: LayoutShopHeaderPlayWidgetBinding? by viewBinding()
     private val playSgcWidgetContainer = viewBinding?.playSgcWidgetContainer
-    private val playSgcLetsTryLiveTypography = viewBinding?.playSgcLetsTryLive
+    private val tvStartCreateContentDesc = viewBinding?.tvStartCreateContentDesc
     private val playSgcBtnStartLive = viewBinding?.playSgcBtnStartLive
     private val widgetPlayRootContainer: FrameLayout? = viewBinding?.widgetPlayRootContainer
 
@@ -55,7 +55,7 @@ class ShopHeaderPlayWidgetViewHolder(
         modelComponent?.shopPageHeaderDataModel?.let { shopPageHeaderDataModel ->
             if (allowLiveStreaming(shopPageHeaderDataModel)) {
                 showPlayWidget()
-                setupTextContentSgcWidget()
+                setupTextContentSgcWidget(shopPageHeaderDataModel)
                 shopPageTrackingSGCPlayWidget?.onImpressionSGCContent(shopId = shopPageHeaderDataModel.shopId)
                 playSgcBtnStartLive?.setOnClickListener {
                     shopPageTrackingSGCPlayWidget?.onClickSGCContent(shopId = shopPageHeaderDataModel.shopId)
@@ -82,10 +82,53 @@ class ShopHeaderPlayWidgetViewHolder(
     }
 
     private fun allowLiveStreaming(dataModel: ShopPageHeaderDataModel): Boolean {
-        return (dataModel.broadcaster.streamAllowed || dataModel.broadcaster.shortVideoAllowed) && GlobalConfig.isSellerApp()
+        return (isStreamAllowed(dataModel) || isShortsVideoAllowed(dataModel)) && GlobalConfig.isSellerApp()
     }
 
-    private fun setupTextContentSgcWidget() {
-        if (playSgcLetsTryLiveTypography?.text?.isBlank() == true) playSgcLetsTryLiveTypography.text = MethodChecker.fromHtml(itemView.context.getString(R.string.shop_page_play_widget_title))
+    private fun setupTextContentSgcWidget(dataModel: ShopPageHeaderDataModel) {
+        if(tvStartCreateContentDesc?.text?.isNotBlank() == true) return
+
+        val betaTemplate = getString(R.string.shop_page_play_widget_beta_template)
+
+        val imgBeta = ContextCompat.getDrawable(itemView.context, R.drawable.ic_play_beta_badge)?.apply {
+            setBounds(0, 0, intrinsicWidth, intrinsicHeight)
+        }
+        val imgBetaSpan = imgBeta?.let { CenteredImageSpan(it) }
+
+        val span = SpannableString(
+            MethodChecker.fromHtml(
+                when {
+                    isStreamAllowed(dataModel) && isShortsVideoAllowed(dataModel) -> {
+                        getString(R.string.shop_page_play_widget_livestream_and_shorts_label)
+                    }
+                    isStreamAllowed(dataModel) -> {
+                        getString(R.string.shop_page_play_widget_livestream_only_label)
+                    }
+                    isShortsVideoAllowed(dataModel) -> {
+                        getString(R.string.shop_page_play_widget_shorts_only_label)
+                    }
+                    else -> {
+                        ""
+                    }
+                }
+            )
+        )
+
+        span.setSpan(
+            imgBetaSpan,
+            span.indexOf(betaTemplate),
+            span.indexOf(betaTemplate) + betaTemplate.length,
+            Spannable.SPAN_INCLUSIVE_EXCLUSIVE
+        )
+
+        tvStartCreateContentDesc?.text = span
+    }
+
+    private fun isStreamAllowed(dataModel: ShopPageHeaderDataModel): Boolean {
+        return dataModel.broadcaster.streamAllowed
+    }
+
+    private fun isShortsVideoAllowed(dataModel: ShopPageHeaderDataModel): Boolean {
+        return dataModel.broadcaster.shortVideoAllowed
     }
 }
