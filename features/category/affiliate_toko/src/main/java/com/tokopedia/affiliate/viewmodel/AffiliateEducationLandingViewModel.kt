@@ -20,7 +20,13 @@ import com.tokopedia.affiliate.model.pojo.AffiliateEducationSocialData
 import com.tokopedia.affiliate.model.response.AffiliateEducationArticleCardsResponse
 import com.tokopedia.affiliate.model.response.AffiliateEducationBannerResponse
 import com.tokopedia.affiliate.model.response.AffiliateEducationCategoryResponse
-import com.tokopedia.affiliate.ui.viewholder.viewmodel.*
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEducationArticleRVUiModel
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEducationArticleTopicRVUiModel
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEducationBannerUiModel
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEducationEventRVUiModel
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEducationLearnUiModel
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEducationSocialRVUiModel
+import com.tokopedia.affiliate.ui.viewholder.viewmodel.AffiliateEducationTutorialRVUiModel
 import com.tokopedia.affiliate.usecase.AffiliateEducationArticleCardsUseCase
 import com.tokopedia.affiliate.usecase.AffiliateEducationBannerUseCase
 import com.tokopedia.affiliate.usecase.AffiliateEducationCategoryTreeUseCase
@@ -28,8 +34,8 @@ import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.iconunify.IconUnify
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.url.TokopediaUrl
+import com.tokopedia.user.session.UserSessionInterface
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -90,8 +96,7 @@ class AffiliateEducationLandingViewModel @Inject constructor(
             sendEducationImpressions(
                 educationBanners.data?.banners?.get(0)?.title,
                 educationBanners.data?.banners?.get(0)?.bannerId.toString(),
-                ActionKeys.IMPRESSION_MAIN_BANNER,
-                CategoryKeys.AFFILIATE_EDUKASI_PAGE
+                ActionKeys.IMPRESSION_MAIN_BANNER
             )
         }
         educationCategoryResponse.categoryTree?.let { educationCategories ->
@@ -108,8 +113,7 @@ class AffiliateEducationLandingViewModel @Inject constructor(
                 sendEducationImpressions(
                     it[0]?.title,
                     it[0]?.id,
-                    ActionKeys.IMPRESSION_EVENT_CARD,
-                    CategoryKeys.AFFILIATE_EDUKASI_PAGE
+                    ActionKeys.IMPRESSION_EVENT_CARD
                 )
             }
             educationArticleCards.cardsArticle?.data?.cards?.let {
@@ -117,8 +121,7 @@ class AffiliateEducationLandingViewModel @Inject constructor(
                 sendEducationImpressions(
                     it[0]?.title,
                     it[0]?.id,
-                    ActionKeys.IMPRESSION_LATEST_ARTICLE_CARD,
-                    CategoryKeys.AFFILIATE_EDUKASI_PAGE
+                    ActionKeys.IMPRESSION_LATEST_ARTICLE_CARD
                 )
             }
             if (tutorial?.isNotEmpty() == true) {
@@ -173,13 +176,12 @@ class AffiliateEducationLandingViewModel @Inject constructor(
     private fun sendEducationImpressions(
         creativeName: String?,
         id: String?,
-        actionKeys: String,
-        categoryKeys: String
+        actionKeys: String
     ) {
         AffiliateAnalytics.sendEducationTracker(
             AffiliateAnalytics.EventKeys.VIEW_ITEM,
             actionKeys,
-            categoryKeys,
+            CategoryKeys.AFFILIATE_EDUKASI_PAGE,
             id,
             position = 0,
             id,

@@ -7,6 +7,7 @@ import com.tokopedia.affiliate.AffiliateAnalytics
 import com.tokopedia.affiliate.AffiliateAnalytics.ActionKeys
 import com.tokopedia.affiliate.AffiliateAnalytics.CategoryKeys
 import com.tokopedia.affiliate.PAGE_EDUCATION_ARTICLE
+import com.tokopedia.affiliate.PAGE_EDUCATION_ARTICLE_TOPIC
 import com.tokopedia.affiliate.PAGE_EDUCATION_EVENT
 import com.tokopedia.affiliate.PAGE_EDUCATION_TUTORIAL
 import com.tokopedia.affiliate.PATTERN
@@ -77,7 +78,7 @@ class AffiliateEducationSeeAllVH(
                     ActionKeys.CLICK_EVENT_CARD,
                     CategoryKeys.AFFILIATE_EDUKASI_CATEGORY_LANDING_EVENT
                 )
-                PAGE_EDUCATION_ARTICLE -> sendEducationClickEvent(
+                PAGE_EDUCATION_ARTICLE, PAGE_EDUCATION_ARTICLE_TOPIC -> sendEducationClickEvent(
                     element.article?.title,
                     element.article?.articleId.toString(),
                     ActionKeys.CLICK_ARTICLE_CARD,
