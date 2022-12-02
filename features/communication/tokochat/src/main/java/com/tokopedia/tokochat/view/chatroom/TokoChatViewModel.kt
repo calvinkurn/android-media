@@ -1,4 +1,4 @@
-package com.tokopedia.tokochat.view.viewmodel
+package com.tokopedia.tokochat.view.chatroom
 
 import android.widget.ImageView
 import androidx.annotation.VisibleForTesting
@@ -132,8 +132,8 @@ class TokoChatViewModel @Inject constructor(
         try {
             val messageMetaData = SendMessageMetaData()
             sendMessageUseCase.sendTextMessage(
-                channelId,
-                text,
+                channelUrl = channelId,
+                text = text,
                 messageMetaData
             )
         } catch (throwable: Throwable) {
@@ -165,6 +165,7 @@ class TokoChatViewModel @Inject constructor(
                 _channelDetail.postValue(Success(it))
             }, onError = {
                     _channelDetail.postValue(Fail(it))
+                    // Call from local group booking
                 })
         } catch (throwable: Throwable) {
             _error.value = Pair(throwable, ::getGroupBookingChannel.name)

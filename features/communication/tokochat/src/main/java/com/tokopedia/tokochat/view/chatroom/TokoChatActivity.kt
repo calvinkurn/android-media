@@ -1,4 +1,4 @@
-package com.tokopedia.tokochat.view.activity
+package com.tokopedia.tokochat.view.chatroom
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -8,8 +8,6 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.tokochat.di.DaggerTokoChatComponent
 import com.tokopedia.tokochat.di.TokoChatComponent
 import com.tokopedia.tokochat.util.TokoChatValueUtil
-import com.tokopedia.tokochat.view.fragment.TokoChatFragment
-import com.tokopedia.tokochat.view.fragment.factory.TokoChatFragmentFactory
 import com.tokopedia.tokochat_common.util.TokoChatViewUtil.setBackIconUnify
 import com.tokopedia.tokochat_common.view.activity.TokoChatBaseActivity
 
@@ -121,6 +119,6 @@ class TokoChatActivity : TokoChatBaseActivity<TokoChatComponent>() {
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
-        (fragment as TokoChatFragment?)?.onRestoreInstanceState(savedInstanceState)
+        (fragment as? TokoChatFragment)?.onRestoreInstanceState(savedInstanceState)
     }
 }
