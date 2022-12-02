@@ -11,7 +11,7 @@ import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolde
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.DynamicPostNewViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.topads.TopAdsHeadlineV2ViewHolder
 import com.tokopedia.feedcomponent.view.viewmodel.DynamicPostUiModel
-import com.tokopedia.feedcomponent.view.viewmodel.carousel.CarouselPlayCardViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.carousel.CarouselPlayCardModel
 import com.tokopedia.feedcomponent.view.viewmodel.shimmer.ShimmerUiModel
 import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomWidgetModel
 import com.tokopedia.feedplus.view.adapter.typefactory.feed.FeedPlusTypeFactory
@@ -230,13 +230,13 @@ class FeedPlusAdapter(
     }
 
     fun removePlayWidget() {
-        val playCarousel = list.firstOrNull { it is CarouselPlayCardViewModel }
+        val playCarousel = list.firstOrNull { it is CarouselPlayCardModel }
         if (playCarousel != null) remove(playCarousel)
     }
 
-    fun updatePlayWidget(newModel: CarouselPlayCardViewModel) {
+    fun updatePlayWidget(newModel: CarouselPlayCardModel) {
         val newList = list.map {
-            if (it is CarouselPlayCardViewModel) newModel
+            if (it is CarouselPlayCardModel) newModel
             else it
         }
         updateList(newList)

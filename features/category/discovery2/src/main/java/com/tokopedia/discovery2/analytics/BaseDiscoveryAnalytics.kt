@@ -159,6 +159,8 @@ open class BaseDiscoveryAnalytics(val pageType: String = DISCOVERY_DEFAULT_PAGE_
     open fun track3DotsOptionsClickedShareProduct() {}
     open fun trackShopBannerInfiniteImpression(componentsItems: ComponentsItem) {}
     open fun trackShopBannerInfiniteClick(componentsItems: ComponentsItem) {}
+    open fun trackContentCardImpression(componentsItems: ComponentsItem) {}
+    open fun trackContentCardClick(componentsItems: ComponentsItem) {}
     open fun trackEventClickProductBundlingChipSelection(componentsItems: ComponentsItem, selectedProduct: BundleProductUiModel, selectedSingleBundle: BundleDetailUiModel) {}
     open fun trackEventProductBundlingAtcClick(componentsItems: ComponentsItem, selectedMultipleBundle: BundleDetailUiModel) {}
     open fun trackEventProductBundlingViewImpression(componentsItems: ComponentsItem, selectedBundle: BundleDetailUiModel, bundlePosition: Int) {}

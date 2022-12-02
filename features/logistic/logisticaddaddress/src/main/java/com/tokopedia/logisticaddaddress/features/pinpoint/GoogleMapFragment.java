@@ -512,15 +512,19 @@ public class GoogleMapFragment extends BaseDaggerFragment implements
     private boolean isServiceConnected() {
         GoogleApiAvailability availability = GoogleApiAvailability.getInstance();
 
-        int resultCode = availability.isGooglePlayServicesAvailable(getContext());
+        Context context = getContext();
+        if (context != null) {
+            int resultCode = availability.isGooglePlayServicesAvailable(context);
 
-        if (ConnectionResult.SUCCESS == resultCode) {
-            Timber.d("Google play services available");
-            return true;
-        } else {
-            Timber.d("Google play services unavailable");
-            return false;
+            if (ConnectionResult.SUCCESS == resultCode) {
+                Timber.d("Google play services available");
+                return true;
+            } else {
+                Timber.d("Google play services unavailable");
+                return false;
+            }
         }
+        return false;
     }
 
     @Override
