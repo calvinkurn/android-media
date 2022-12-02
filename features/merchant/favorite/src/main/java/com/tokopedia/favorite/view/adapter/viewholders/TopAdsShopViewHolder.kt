@@ -98,6 +98,7 @@ class TopAdsShopViewHolder(
                                     null,
                                     getShopItem(shopProductModelItem)
                                 )
+                                element?.adsShopItems?.forEachIndexed{index, it -> if(it.shopId == shopProductModelItem.shopId) it.isFollowed = true }
                             }
 
                         }
