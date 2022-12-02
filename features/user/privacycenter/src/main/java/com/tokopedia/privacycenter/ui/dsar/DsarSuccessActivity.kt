@@ -1,6 +1,7 @@
 package com.tokopedia.privacycenter.ui.dsar
 
 import android.os.Bundle
+import android.text.Html
 import com.tokopedia.abstraction.base.view.activity.BaseActivity
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.privacycenter.R
@@ -28,7 +29,7 @@ class DsarSuccessActivity : BaseActivity() {
             DateUtil.DEFAULT_VIEW_FORMAT,
             date
         )
-        binding?.txtSuccessDescription?.text = getString(R.string.dsar_progress_description, email, formattedDate)
+        binding?.txtSuccessDescription?.text = Html.fromHtml(getString(R.string.dsar_progress_description, email, formattedDate))
         binding?.btnSuccess?.setOnClickListener {
             finish()
         }
