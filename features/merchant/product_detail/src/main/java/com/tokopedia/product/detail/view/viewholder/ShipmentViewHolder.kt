@@ -154,8 +154,7 @@ class ShipmentViewHolder(
         element: ProductShipmentDataModel,
         rates: P2RatesEstimateData
     ) = with(viewMain) {
-        val destination = if (element.localDestination.isEmpty()) rates.destination
-        else context.getString(R.string.pdp_shipping_to_builder, element.localDestination)
+        val destination = rates.destination
         pdpShipmentDestination.showIfWithBlock(destination.isNotEmpty()) {
             text = destination.renderHtmlBold(
                 context = context,
