@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/my_bills_last_item"
     android:layout_width="160dp"
-    android:layout_height="130dp"
+    android:layout_height="124dp"
     app:layout_constraintStart_toStartOf="parent"
     app:layout_constraintTop_toTopOf="parent"
     app:view_all_card_unify_mode="normal" />
