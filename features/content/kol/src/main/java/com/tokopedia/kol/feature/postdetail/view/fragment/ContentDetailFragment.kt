@@ -39,6 +39,7 @@ import com.tokopedia.kol.common.util.ContentDetailResult
 import com.tokopedia.kol.feature.postdetail.di.DaggerContentDetailComponent
 import com.tokopedia.kol.feature.postdetail.di.module.ContentDetailModule
 import com.tokopedia.kol.feature.postdetail.view.activity.ContentDetailActivity
+import com.tokopedia.kol.feature.postdetail.view.activity.ContentDetailActivity.Companion.SOURCE_USER_PROFILE
 import com.tokopedia.kol.feature.postdetail.view.adapter.ContentDetailAdapter
 import com.tokopedia.kol.feature.postdetail.view.adapter.viewholder.ContentDetailPostViewHolder
 import com.tokopedia.kol.feature.postdetail.view.analytics.ContentDetailNewPageAnalytics
@@ -78,6 +79,7 @@ import com.tokopedia.universal_sharing.view.bottomsheet.SharingUtil
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
 import com.tokopedia.universal_sharing.view.bottomsheet.listener.ShareBottomsheetListener
 import com.tokopedia.universal_sharing.view.model.ShareModel
+import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlistcommon.util.AddRemoveWishlistV2Handler
@@ -103,6 +105,10 @@ class ContentDetailFragment : BaseDaggerFragment(), ContentDetailPostViewHolder.
 
     private var cdpRecyclerView: RecyclerView? = null
     private var postId = "0"
+    private var visitedUserID = ""
+    private var visitedUserEncryptedID = ""
+    private var currentPosition = 0
+    private var contentDetailSource = ""
     private var rowNumberWhenShareClicked = 0
     private var dissmisByGreyArea = true
     private var endlessRecyclerViewScrollListener: EndlessRecyclerViewScrollListener? = null
@@ -114,8 +120,6 @@ class ContentDetailFragment : BaseDaggerFragment(), ContentDetailPostViewHolder.
     private val adapter = ContentDetailAdapter(
         ContentDetailListener = this
     )
-    private var contentDetailSource = ""
-
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -146,7 +150,6 @@ class ContentDetailFragment : BaseDaggerFragment(), ContentDetailPostViewHolder.
         const val OPEN_FEED_DETAIL = 1313
         private const val COMMENT_ARGS_SERVER_ERROR_MSG = "ARGS_SERVER_ERROR_MSG"
 
-
         @JvmStatic
         fun newInstance(bundle: Bundle?): ContentDetailFragment {
             val fragment = ContentDetailFragment()
@@ -162,14 +165,29 @@ class ContentDetailFragment : BaseDaggerFragment(), ContentDetailPostViewHolder.
     }
 
     private fun initVar() {
-        postId = arguments?.getString(ContentDetailActivity.PARAM_POST_ID)
-            ?: ContentDetailActivity.DEFAULT_POST_ID
+        contentDetailSource = arguments?.getString(ContentDetailActivity.PARAM_SOURCE) ?: ContentDetailActivity.SHARE_LINK
+        postId = arguments?.getString(ContentDetailActivity.PARAM_POST_ID) ?: ContentDetailActivity.DEFAULT_POST_ID
+
+        if (contentDetailSource == SOURCE_USER_PROFILE) {
+            currentPosition = arguments?.getInt(ContentDetailActivity.PARAM_POSITION) ?: 0
+            visitedUserID = arguments?.getString(ContentDetailActivity.PARAM_VISITED_USER_ID).orEmpty()
+            visitedUserEncryptedID = arguments?.getString(ContentDetailActivity.PARAM_VISITED_USER_ENCRYPTED_ID).orEmpty()
+        }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
         viewModel.run {
+            userProfileFeedPost.observe(
+                viewLifecycleOwner,
+                {
+                    when (it) {
+                        is Success -> onSuccessGetUserProfileFeedPost(it.data)
+                        is Fail -> showToast(getString(com.tokopedia.feedcomponent.R.string.feed_video_tab_error_reminder), Toaster.TYPE_ERROR)
+                    }
+                },
+            )
             getCDPPostFirstPostData.observe(viewLifecycleOwner, {
                 when (it) {
                     is Success -> {
@@ -210,7 +228,6 @@ class ContentDetailFragment : BaseDaggerFragment(), ContentDetailPostViewHolder.
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val activity = requireActivity() as ContentDetailActivity
-        contentDetailSource = activity.getSource()
 
         val backBtn = activity.getHeaderView()?.findViewById<AppCompatImageView>(kolR.id.content_detail_back_icon)
         backBtn?.setOnClickListener {
@@ -227,12 +244,13 @@ class ContentDetailFragment : BaseDaggerFragment(), ContentDetailPostViewHolder.
         }
 
         setupView(view)
-        viewModel.getContentDetail(postId)
 
+        if (contentDetailSource == SOURCE_USER_PROFILE) viewModel.fetchUserProfileFeedPost(visitedUserID, currentPosition)
+        else viewModel.getContentDetail(postId)
 
         observeLikeContent()
         observeWishlist()
-        observeFollowShop()
+        observeFollowUnfollow()
         observeDeleteContent()
         observeReportContent()
         observeVideoViewData()
@@ -257,7 +275,8 @@ class ContentDetailFragment : BaseDaggerFragment(), ContentDetailPostViewHolder.
     private fun getEndlessRecyclerViewScrollListener(): EndlessRecyclerViewScrollListener {
         return object : EndlessRecyclerViewScrollListener(cdpRecyclerView?.layoutManager) {
             override fun onLoadMore(page: Int, totalItemsCount: Int) {
-                viewModel.getContentDetailRecommendation(postId)
+                if (contentDetailSource == SOURCE_USER_PROFILE) viewModel.fetchUserProfileFeedPost(visitedUserID)
+                else viewModel.getContentDetailRecommendation(postId)
             }
 
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
@@ -322,6 +341,13 @@ class ContentDetailFragment : BaseDaggerFragment(), ContentDetailPostViewHolder.
         }
     }
 
+    private fun onSuccessGetUserProfileFeedPost(data: ContentDetailUiModel) {
+        endlessRecyclerViewScrollListener?.updateStateAfterGetData()
+        endlessRecyclerViewScrollListener?.setHasNextPage(viewModel.currentCursor.isNotEmpty())
+        adapter.setItemsAndAnimateChanges(data.postList)
+        cdpRecyclerView?.scrollToPosition(currentPosition)
+        currentPosition = adapter.lastIndex
+    }
 
     private fun onSuccessGetFirstPostCDPData(data: ContentDetailUiModel) {
         (activity as? ContentDetailActivity)?.setContentDetailMainPostData(
@@ -796,12 +822,20 @@ class ContentDetailFragment : BaseDaggerFragment(), ContentDetailPostViewHolder.
                 )
             )
 
-        viewModel.followShop(
-            shopId = feedXCard.author.id,
-            action = ShopFollowAction.getFollowAction(feedXCard.followers.isFollowed),
-            rowNumber = postPosition,
-            isFollowedFromRSRestrictionBottomSheet = isFollowedFromRSRestrictionBottomSheet
-        )
+        if (feedXCard.isTypeUGC) {
+            viewModel.followUnFollowUser(
+                isFollow = feedXCard.followers.isFollowed,
+                encryptedUserID = visitedUserEncryptedID,
+                currentPosition = postPosition,
+            )
+        } else {
+            viewModel.followShop(
+                shopId = feedXCard.author.id,
+                action = ShopFollowAction.getFollowAction(feedXCard.followers.isFollowed),
+                rowNumber = postPosition,
+                isFollowedFromRSRestrictionBottomSheet = isFollowedFromRSRestrictionBottomSheet
+            )
+        }
     }
 
     override fun onClickOnThreeDots(feedXCard: FeedXCard, postPosition: Int) {
@@ -1779,6 +1813,9 @@ class ContentDetailFragment : BaseDaggerFragment(), ContentDetailPostViewHolder.
     }
 
     private fun onSuccessDeletePost(rowNumber: Int) {
+        if (contentDetailSource == SOURCE_USER_PROFILE) {
+            (activity as ContentDetailActivity).setActionToRefresh(true)
+        }
         if (adapter.getList().size > rowNumber) {
             adapter.getList().removeAt(rowNumber)
             adapter.notifyItemRemoved(rowNumber)
@@ -1868,7 +1905,7 @@ class ContentDetailFragment : BaseDaggerFragment(), ContentDetailPostViewHolder.
         })
     }
 
-    private fun observeFollowShop() {
+    private fun observeFollowUnfollow() {
         viewModel.followShopObservable.observe(viewLifecycleOwner, Observer {
             when (it) {
                 is ContentDetailResult.Success -> {
@@ -1909,6 +1946,41 @@ class ContentDetailFragment : BaseDaggerFragment(), ContentDetailPostViewHolder.
                 }
             }
         })
+        viewModel.followUserObservable.observe(viewLifecycleOwner) {
+            when (it) {
+                is ContentDetailResult.Success -> {
+                    (activity as ContentDetailActivity).setActionToRefresh(true)
+                    currentPosition = it.data.currentPosition
+
+                    val toastMessage = if (it.data.isFollow) getString(com.tokopedia.feedcomponent.R.string.feed_unfollow_ugc_success_toaster_text)
+                    else getString(com.tokopedia.feedcomponent.R.string.feed_follow_ugc_success_toaster_text)
+                    showToast(toastMessage, Toaster.TYPE_NORMAL)
+                }
+                is ContentDetailResult.Failure -> {
+                    when (it.error) {
+                        is UnknownHostException, is SocketTimeoutException, is ConnectException -> {
+                            showNoInterNetDialog(requireContext())
+                        }
+                        else -> {
+                            val errorMessage = if (it.error is CustomUiMessageThrowable) {
+                                requireContext().getString(it.error.errorMessageId)
+                            } else ErrorHandler.getErrorMessage(requireContext(), it.error)
+
+                            Toaster.build(
+                                requireView(),
+                                errorMessage,
+                                Toaster.LENGTH_LONG,
+                                Toaster.TYPE_ERROR,
+                                getString(com.tokopedia.abstraction.R.string.title_try_again)
+                            ) { _ ->
+                                it.onRetry()
+                            }.show()
+                        }
+                    }
+                }
+                ContentDetailResult.Loading -> {}
+            }
+        }
     }
 
     private fun observeDeleteContent() {
