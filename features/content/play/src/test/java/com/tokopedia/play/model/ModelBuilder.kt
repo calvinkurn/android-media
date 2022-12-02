@@ -1531,6 +1531,7 @@ class ModelBuilder {
         isTokoNow: Boolean = false,
         isPinned: Boolean = false,
         isRilisanSpesial: Boolean = false,
+        buttons: List<ProductButtonUiModel> = emptyList(),
     ) = PlayProductUiModel.Product(
         id = id,
         shopId = shopId,
@@ -1545,6 +1546,7 @@ class ModelBuilder {
         isTokoNow = isTokoNow,
         isPinned = isPinned,
         isRilisanSpesial = isRilisanSpesial,
+        buttons = buttons,
     )
 
     fun buildProductStockAvailable(
