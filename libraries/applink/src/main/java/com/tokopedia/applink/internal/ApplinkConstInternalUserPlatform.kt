@@ -216,12 +216,6 @@ object ApplinkConstInternalUserPlatform {
     const val ADD_NAME_REGISTER = "${NEW_INTERNAL_USER}/add-name-register"
 
     /**
-     * AddNameRegisterPhoneActivity
-     * @Applink : tokopedia-android-internal://user/add-name-register/clean-view
-     **/
-    const val ADD_NAME_REGISTER_CLEAN_VIEW = "${NEW_INTERNAL_USER}/add-name-register/clean-view"
-
-    /**
      * ChangeGenderActivity
      * @Applink : tokopedia-android-internal://user/change-gender
      **/

@@ -111,7 +111,7 @@
                   "text_label": "Jaminan Tepat Waktu",
                   "text_detail": "Ongkir kembali jika barang tiba lebih dari 3 Jam <b>sejak diserahkan ke kurir</b> <a href=\"https://gw.tokopedia.com/rates/otdg_info\">S&K Berlaku</a>",
                   "url_detail": "https://gw.tokopedia.com/rates/otdg_info",
-                  "icon_url": "https://ecs7.tokopedia.net/img/ongkirapp/otdg-icon-v2.png"
+                  "icon_url": "https://images.tokopedia.net/img/ongkirapp/otdg-icon-v2.png"
                 },
                 "mvc": {
                   "is_mvc": 0,
@@ -358,7 +358,7 @@
                   "text_label": "Jaminan Tepat Waktu",
                   "text_detail": "Ongkir kembali jika barang tiba lebih dari 8 Jam <b>sejak diserahkan ke kurir</b> <a href=\"https://gw.tokopedia.com/rates/otdg_info\">S&K Berlaku</a>",
                   "url_detail": "https://gw.tokopedia.com/rates/otdg_info",
-                  "icon_url": "https://ecs7.tokopedia.net/img/ongkirapp/otdg-icon-v2.png"
+                  "icon_url": "https://images.tokopedia.net/img/ongkirapp/otdg-icon-v2.png"
                 },
                 "mvc": {
                   "is_mvc": 0,
@@ -540,7 +540,7 @@
                   "text_label": "Jaminan Tepat Waktu",
                   "text_detail": "Ongkir kembali jika barang tiba lebih dari 1 Hari <b>sejak diserahkan ke kurir</b> <a href=\"https://gw.tokopedia.com/rates/otdg_info\">S&K Berlaku</a>",
                   "url_detail": "https://gw.tokopedia.com/rates/otdg_info",
-                  "icon_url": "https://ecs7.tokopedia.net/img/ongkirapp/otdg-icon-v2.png"
+                  "icon_url": "https://images.tokopedia.net/img/ongkirapp/otdg-icon-v2.png"
                 },
                 "mvc": {
                   "is_mvc": 0,
@@ -1066,7 +1066,7 @@
         "shipper_disable_text": "Tidak dapat <b>ubah kurir</b> karena promo hanya berlaku untuk kurir yang ditentukan",
         "service_id": 1000,
         "is_applied": 0,
-        "image_url": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png",
+        "image_url": "https://images.tokopedia.net/img/ic_bebas_ongkir.png",
         "discounted_rate": 26000,
         "shipping_rate": 26000,
         "benefit_amount": 0,
@@ -1101,7 +1101,7 @@
         "shipper_disable_text": "Tidak dapat <b>ubah kurir</b> karena promo hanya berlaku untuk kurir yang ditentukan",
         "service_id": 1000,
         "is_applied": 0,
-        "image_url": "https://ecs7.tokopedia.net/img/ic_bebas_ongkir.png",
+        "image_url": "https://images.tokopedia.net/img/ic_bebas_ongkir.png",
         "discounted_rate": 26000,
         "shipping_rate": 26000,
         "benefit_amount": 0,

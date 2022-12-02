@@ -23,17 +23,14 @@ import com.tokopedia.home.beranda.di.module.query.DismissSuggestedQuery
 import com.tokopedia.home.beranda.di.module.query.DynamicChannelQuery
 import com.tokopedia.home.beranda.di.module.query.GetHomeBalanceWidgetQuery
 import com.tokopedia.home.beranda.di.module.query.HomeDataRevampQuery
-import com.tokopedia.home.beranda.di.module.query.HomeFeedQuery
-import com.tokopedia.home.beranda.di.module.query.HomeIconQuery
 import com.tokopedia.home.beranda.di.module.query.HomeQuery
-import com.tokopedia.home.beranda.di.module.query.HomeSlidesQuery
 import com.tokopedia.home.beranda.di.module.query.PendingCashbackQuery
 import com.tokopedia.home.beranda.di.module.query.PopularKeywordGqlQuery
-import com.tokopedia.home.beranda.di.module.query.RecommendationQuery
 import com.tokopedia.home.beranda.di.module.query.SuggestedReviewQuery
 import com.tokopedia.home.beranda.di.module.query.TokopoinstListQuery
 import com.tokopedia.home.beranda.domain.gql.CloseChannelMutation
 import com.tokopedia.home.beranda.domain.gql.ProductrevDismissSuggestion
+import com.tokopedia.home.beranda.domain.gql.feed.GetHomeRecommendationContent
 import com.tokopedia.home.beranda.domain.gql.feed.HomeFeedContentGqlResponse
 import com.tokopedia.home.beranda.domain.gql.feed.HomeFeedTabGqlResponse
 import com.tokopedia.home.beranda.domain.interactor.DismissHomeReviewUseCase
@@ -41,8 +38,10 @@ import com.tokopedia.home.beranda.domain.interactor.GetCoroutinePendingCashbackU
 import com.tokopedia.home.beranda.domain.interactor.GetDynamicChannelsUseCase
 import com.tokopedia.home.beranda.domain.interactor.GetHomeBalanceWidgetUseCase
 import com.tokopedia.home.beranda.domain.interactor.GetHomeRecommendationUseCase
+import com.tokopedia.home.beranda.domain.interactor.GetHomeRecommendationV2UseCase
 import com.tokopedia.home.beranda.domain.interactor.GetHomeTokopointsListDataUseCase
 import com.tokopedia.home.beranda.domain.interactor.GetRecommendationTabUseCase
+import com.tokopedia.home.beranda.domain.interactor.HomeRecommendationFeedUseCase
 import com.tokopedia.home.beranda.domain.interactor.InjectCouponTimeBasedUseCase
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeAtfRepository
 import com.tokopedia.home.beranda.domain.interactor.repository.HomeBusinessUnitDataRepository
@@ -108,79 +107,88 @@ class HomeUseCaseModule {
     @HomeScope
     @Provides
     fun provideGraphqlUseCase(graphqlRepository: GraphqlRepository) =
-            com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<Any>(graphqlRepository)
+        com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<Any>(graphqlRepository)
 
     @HomeScope
     @Provides
     fun homeRevampUseCase(
-            homeDataMapper: HomeDataMapper,
-            homeDynamicChannelsRepository: HomeDynamicChannelsRepository,
-            homeDataRepository: HomeDataRepository,
-            homeAtfRepository: HomeAtfRepository,
-            homeFlagRepository: HomeFlagRepository,
-            homePageBannerRepository: HomePageBannerRepository,
-            homeIconRepository: HomeIconRepository,
-            homeTickerRepository: HomeTickerRepository,
-            homeRoomDataSource: HomeRoomDataSource,
-            homeDynamicChannelDataMapper: HomeDynamicChannelDataMapper,
-            @ApplicationContext context: Context,
-            remoteConfig: RemoteConfig,
-            homePlayRepository: HomePlayRepository,
-            homeReviewSuggestedRepository: HomeReviewSuggestedRepository,
-            homePlayLiveDynamicRepository: HomePlayLiveDynamicRepository,
-            homePopularKeywordRepository: HomePopularKeywordRepository,
-            homeHeadlineAdsRepository: HomeHeadlineAdsRepository,
-            homeRecommendationRepository: HomeRecommendationRepository,
-            homeRecommendationChipRepository: HomeRecommendationChipRepository,
-            bestSellerMapper: BestSellerMapper,
-            homeTopadsImageRepository: HomeTopadsImageRepository,
-            homeRechargeRecommendationRepository: HomeRechargeRecommendationRepository,
-            homeSalamWidgetRepository: HomeSalamWidgetRepository,
-            homeBalanceWidgetUseCase: HomeBalanceWidgetUseCase,
-            homeChooseAddressRepository: HomeChooseAddressRepository,
-            homeRecommendationFeedTabRepository: HomeRecommendationFeedTabRepository,
-            userSession: UserSessionInterface,
-            homeMissionWidgetRepository: HomeMissionWidgetRepository
+        homeDataMapper: HomeDataMapper,
+        homeDynamicChannelsRepository: HomeDynamicChannelsRepository,
+        homeDataRepository: HomeDataRepository,
+        homeAtfRepository: HomeAtfRepository,
+        homeFlagRepository: HomeFlagRepository,
+        homePageBannerRepository: HomePageBannerRepository,
+        homeIconRepository: HomeIconRepository,
+        homeTickerRepository: HomeTickerRepository,
+        homeRoomDataSource: HomeRoomDataSource,
+        homeDynamicChannelDataMapper: HomeDynamicChannelDataMapper,
+        @ApplicationContext context: Context,
+        remoteConfig: RemoteConfig,
+        homePlayRepository: HomePlayRepository,
+        homeReviewSuggestedRepository: HomeReviewSuggestedRepository,
+        homePlayLiveDynamicRepository: HomePlayLiveDynamicRepository,
+        homePopularKeywordRepository: HomePopularKeywordRepository,
+        homeHeadlineAdsRepository: HomeHeadlineAdsRepository,
+        homeRecommendationRepository: HomeRecommendationRepository,
+        homeRecommendationChipRepository: HomeRecommendationChipRepository,
+        bestSellerMapper: BestSellerMapper,
+        homeTopadsImageRepository: HomeTopadsImageRepository,
+        homeRechargeRecommendationRepository: HomeRechargeRecommendationRepository,
+        homeSalamWidgetRepository: HomeSalamWidgetRepository,
+        homeBalanceWidgetUseCase: HomeBalanceWidgetUseCase,
+        homeChooseAddressRepository: HomeChooseAddressRepository,
+        homeRecommendationFeedTabRepository: HomeRecommendationFeedTabRepository,
+        userSession: UserSessionInterface,
+        homeMissionWidgetRepository: HomeMissionWidgetRepository
     ) = HomeDynamicChannelUseCase(
-            homeDataMapper = homeDataMapper,
-            homeDynamicChannelsRepository = homeDynamicChannelsRepository,
-            homeDataRepository = homeDataRepository,
-            atfDataRepository = homeAtfRepository,
-            homeFlagRepository = homeFlagRepository,
-            homePageBannerRepository = homePageBannerRepository,
-            homeIconRepository = homeIconRepository,
-            homeTickerRepository = homeTickerRepository,
-            getHomeRoomDataSource = homeRoomDataSource,
-            homeDynamicChannelDataMapper = homeDynamicChannelDataMapper,
-            applicationContext = context,
-            remoteConfig = remoteConfig,
-            homePlayRepository = homePlayRepository,
-            homeReviewSuggestedRepository = homeReviewSuggestedRepository,
-            homePlayLiveDynamicRepository = homePlayLiveDynamicRepository,
-            homePopularKeywordRepository = homePopularKeywordRepository,
-            homeHeadlineAdsRepository = homeHeadlineAdsRepository,
-            homeRecommendationRepository = homeRecommendationRepository,
-            homeRecommendationChipRepository = homeRecommendationChipRepository,
-            bestSellerMapper = bestSellerMapper,
-            homeTopadsImageRepository = homeTopadsImageRepository,
-            homeRechargeRecommendationRepository = homeRechargeRecommendationRepository,
-            homeSalamWidgetRepository = homeSalamWidgetRepository,
-            homeBalanceWidgetUseCase = homeBalanceWidgetUseCase,
-            homeChooseAddressRepository = homeChooseAddressRepository,
-            homeRecommendationFeedTabRepository = homeRecommendationFeedTabRepository,
-            userSessionInterface = userSession,
-            homeMissionWidgetRepository = homeMissionWidgetRepository
+        homeDataMapper = homeDataMapper,
+        homeDynamicChannelsRepository = homeDynamicChannelsRepository,
+        homeDataRepository = homeDataRepository,
+        atfDataRepository = homeAtfRepository,
+        homeFlagRepository = homeFlagRepository,
+        homePageBannerRepository = homePageBannerRepository,
+        homeIconRepository = homeIconRepository,
+        homeTickerRepository = homeTickerRepository,
+        getHomeRoomDataSource = homeRoomDataSource,
+        homeDynamicChannelDataMapper = homeDynamicChannelDataMapper,
+        applicationContext = context,
+        remoteConfig = remoteConfig,
+        homePlayRepository = homePlayRepository,
+        homeReviewSuggestedRepository = homeReviewSuggestedRepository,
+        homePlayLiveDynamicRepository = homePlayLiveDynamicRepository,
+        homePopularKeywordRepository = homePopularKeywordRepository,
+        homeHeadlineAdsRepository = homeHeadlineAdsRepository,
+        homeRecommendationRepository = homeRecommendationRepository,
+        homeRecommendationChipRepository = homeRecommendationChipRepository,
+        bestSellerMapper = bestSellerMapper,
+        homeTopadsImageRepository = homeTopadsImageRepository,
+        homeRechargeRecommendationRepository = homeRechargeRecommendationRepository,
+        homeSalamWidgetRepository = homeSalamWidgetRepository,
+        homeBalanceWidgetUseCase = homeBalanceWidgetUseCase,
+        homeChooseAddressRepository = homeChooseAddressRepository,
+        homeRecommendationFeedTabRepository = homeRecommendationFeedTabRepository,
+        userSessionInterface = userSession,
+        homeMissionWidgetRepository = homeMissionWidgetRepository
     )
 
     @Provides
     fun provideGetHomeRecommendationUseCase(
-            @ApplicationContext context: Context,
-            graphqlRepository: GraphqlRepository,
-            homeRecommendationMapper: HomeRecommendationMapper
-    ): GetHomeRecommendationUseCase {
-        val useCase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<HomeFeedContentGqlResponse>(graphqlRepository)
-        useCase.setGraphqlQuery(HomeFeedQuery())
-        return GetHomeRecommendationUseCase(useCase, homeRecommendationMapper)
+        graphqlRepository: GraphqlRepository,
+        homeRecommendationMapper: HomeRecommendationMapper,
+        remoteConfig: RemoteConfig
+    ): HomeRecommendationFeedUseCase {
+        val isUsingV2 = remoteConfig.getBoolean(RemoteConfigKey.HOME_USE_GQL_FED_QUERY, true)
+        return if (isUsingV2) {
+            GetHomeRecommendationV2UseCase(
+                com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<GetHomeRecommendationContent>(graphqlRepository),
+                homeRecommendationMapper
+            )
+        } else {
+            GetHomeRecommendationUseCase(
+                com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<HomeFeedContentGqlResponse>(graphqlRepository),
+                homeRecommendationMapper
+            )
+        }
     }
 
     @Provides
@@ -253,10 +261,10 @@ class HomeUseCaseModule {
 
     @HomeScope
     @Provides
-    fun getRecommendationTabUseCase(graphqlRepository: GraphqlRepository): GetRecommendationTabUseCase {
+    fun getRecommendationTabUseCase(graphqlRepository: GraphqlRepository, remoteConfig: RemoteConfig): GetRecommendationTabUseCase {
         val useCase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<HomeFeedTabGqlResponse>(graphqlRepository)
-        useCase.setGraphqlQuery(RecommendationQuery())
-        return GetRecommendationTabUseCase(useCase)
+        val isUsingV2 = remoteConfig.getBoolean(RemoteConfigKey.HOME_USE_GQL_FED_QUERY, true)
+        return GetRecommendationTabUseCase(useCase, isUsingV2)
     }
 
     @Provides
@@ -269,7 +277,7 @@ class HomeUseCaseModule {
 
     @Provides
     @HomeScope
-    fun provideGetDynamicChannels(@ApplicationContext context: Context, graphqlRepository: GraphqlRepository, homeDynamicChannelDataMapper: HomeDynamicChannelDataMapper): GetDynamicChannelsUseCase{
+    fun provideGetDynamicChannels(@ApplicationContext context: Context, graphqlRepository: GraphqlRepository, homeDynamicChannelDataMapper: HomeDynamicChannelDataMapper): GetDynamicChannelsUseCase {
         val useCase = com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase<HomeChannelData>(graphqlRepository)
         useCase.setGraphqlQuery(DynamicChannelQuery())
         return GetDynamicChannelsUseCase(useCase, homeDynamicChannelDataMapper)
@@ -277,7 +285,7 @@ class HomeUseCaseModule {
 
     @Provides
     @HomeScope
-    fun provideWalletEligibilityUseCase(graphqlRepository: GraphqlRepository): GetWalletEligibilityUseCase{
+    fun provideWalletEligibilityUseCase(graphqlRepository: GraphqlRepository): GetWalletEligibilityUseCase {
         return GetWalletEligibilityUseCase(graphqlRepository)
     }
 
@@ -350,17 +358,18 @@ class HomeUseCaseModule {
 
     @HomeScope
     @Provides
-    fun provideTopAdsImageViewUseCase(userSession: UserSessionInterface,topAdsIrisSession: TopAdsIrisSession): TopAdsImageViewUseCase {
-        return TopAdsImageViewUseCase(userSession.userId, TopAdsRepository(),topAdsIrisSession.getSessionId())
+    fun provideTopAdsImageViewUseCase(userSession: UserSessionInterface, topAdsIrisSession: TopAdsIrisSession): TopAdsImageViewUseCase {
+        return TopAdsImageViewUseCase(userSession.userId, TopAdsRepository(), topAdsIrisSession.getSessionId())
     }
 
     @HomeScope
     @Provides
-    fun providePlayWidget(playWidgetUseCase: PlayWidgetUseCase,
-                          playWidgetReminderUseCase: Lazy<PlayWidgetReminderUseCase>,
-                          playWidgetUpdateChannelUseCase: Lazy<PlayWidgetUpdateChannelUseCase>,
-                          mapper: PlayWidgetUiMapper,
-                          connectionUtil: PlayWidgetConnectionUtil
+    fun providePlayWidget(
+        playWidgetUseCase: PlayWidgetUseCase,
+        playWidgetReminderUseCase: Lazy<PlayWidgetReminderUseCase>,
+        playWidgetUpdateChannelUseCase: Lazy<PlayWidgetUpdateChannelUseCase>,
+        mapper: PlayWidgetUiMapper,
+        connectionUtil: PlayWidgetConnectionUtil
     ): PlayWidgetTools {
         return PlayWidgetTools(playWidgetUseCase, playWidgetReminderUseCase, playWidgetUpdateChannelUseCase, mapper, connectionUtil)
     }

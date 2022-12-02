@@ -54,6 +54,8 @@
               ]
             }
           ],
+          "payment": {
+            "image_url": "https://images.tokopedia.net/img/og_image_default_new.jpg",
           "payment": [
             {
             "image_url": "https://ecs7.tokopedia.net/img/og_image_default_new.jpg",
