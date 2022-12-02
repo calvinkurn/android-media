@@ -70,6 +70,7 @@ class TokoNowSearchFragment :
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
+
     private lateinit var tokoNowSearchViewModel: TokoNowSearchViewModel
 
     override val toolbarPageName = "TokoNow Search"
@@ -215,6 +216,36 @@ class TokoNowSearchFragment :
                 getUserId(),
                 sortFilterParams,
         )
+    }
+
+    override fun onWishlistButtonClicked(
+        productId: String,
+        isWishlistSelected: Boolean,
+        descriptionToaster: String,
+        ctaToaster: String,
+        type: Int,
+        ctaClickListener: (() -> Unit)?
+    ) {
+
+        if(isWishlistSelected) {
+            SearchTracking.trackClickAddToWishlist(
+                getViewModel().warehouseId,
+                productId
+            )
+        }
+        else{
+            SearchTracking.trackClickRemoveFromWishlist(
+                getViewModel().warehouseId,
+                productId
+            )
+        }
+        getViewModel().updateWishlistStatus(
+            productId,
+            isWishlistSelected
+        )
+        showToaster(descriptionToaster, type, ctaToaster) {
+            ctaClickListener?.invoke()
+        }
     }
 
     private fun getQueryParamWithoutExcludes(): Map<String, String> {

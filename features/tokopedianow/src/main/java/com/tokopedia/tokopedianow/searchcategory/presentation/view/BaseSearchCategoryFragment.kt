@@ -1086,23 +1086,6 @@ abstract class BaseSearchCategoryFragment:
         })
     }
 
-    override fun onWishlistButtonClicked(
-        productId: String,
-        isWishlistSelected: Boolean,
-        descriptionToaster: String,
-        ctaToaster: String,
-        type: Int,
-        ctaClickListener: (() -> Unit)?
-    ) {
-        getViewModel().updateWishlistStatus(
-            productId,
-            isWishlistSelected
-        )
-        showToaster(descriptionToaster, type, ctaToaster) {
-            ctaClickListener?.invoke()
-        }
-    }
-
     open fun createProductRecommendationOocCallback() = ProductRecommendationOocCallback(
         lifecycle = viewLifecycleOwner.lifecycle,
         userSession = userSession,
