@@ -29,9 +29,7 @@ import com.tokopedia.search.result.product.filter.dynamicfilter.MutableDynamicFi
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDynamicProductView
 import com.tokopedia.search.result.product.inspirationlistatc.InspirationListAtcPresenterDelegate
 import com.tokopedia.search.result.product.inspirationlistatc.InspirationListAtcView
-import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselPresenterDelegate
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselView
-import com.tokopedia.search.result.product.inspirationwidget.InspirationWidgetPresenterDelegate
 import com.tokopedia.search.result.product.lastfilter.LastFilterPresenterDelegate
 import com.tokopedia.search.result.product.pagination.PaginationImpl
 import com.tokopedia.search.result.product.productfilterindicator.ProductFilterIndicator
@@ -44,7 +42,7 @@ import com.tokopedia.search.result.product.samesessionrecommendation.SameSession
 import com.tokopedia.search.result.product.suggestion.SuggestionPresenter
 import com.tokopedia.search.result.product.tdn.TopAdsImageViewPresenterDelegate
 import com.tokopedia.search.result.product.ticker.TickerPresenterDelegate
-import com.tokopedia.search.result.product.visitable.VisitableController
+import com.tokopedia.search.result.product.visitable.VisitableGenerator
 import com.tokopedia.search.result.product.wishlist.WishlistPresenterDelegate
 import com.tokopedia.search.result.product.wishlist.WishlistView
 import com.tokopedia.search.shouldBe
@@ -137,7 +135,7 @@ internal open class ProductListPresenterTestFixtures {
         dynamicFilterModel,
     )
     protected val inspirationCarouselView = mockk<InspirationCarouselView>(relaxed = true)
-    private val visitableController = mockk<VisitableController>(relaxed = true)
+    private val visitableGenerator = mockk<VisitableGenerator>(relaxed = true)
 
     protected lateinit var productListPresenter: ProductListPresenter
 
@@ -209,7 +207,7 @@ internal open class ProductListPresenterTestFixtures {
             WishlistPresenterDelegate(wishlistView),
             dynamicFilterModel,
             bottomSheetFilterPresenter,
-            visitableController,
+            visitableGenerator,
         )
         productListPresenter.attachView(productListView)
     }

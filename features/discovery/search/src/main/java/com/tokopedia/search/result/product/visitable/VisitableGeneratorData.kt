@@ -4,7 +4,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.presentation.model.ProductDataView
 
-data class VisitableControllerData(
+data class VisitableGeneratorData(
     val productDataView: ProductDataView,
     val pageTitle: String,
     val isGlobalNavWidgetAvailable: Boolean,

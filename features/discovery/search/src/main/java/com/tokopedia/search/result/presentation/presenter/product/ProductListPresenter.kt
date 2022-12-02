@@ -39,13 +39,11 @@ import com.tokopedia.search.result.domain.model.SearchProductModel.ProductLabelG
 import com.tokopedia.search.result.presentation.ProductListSectionContract
 import com.tokopedia.search.result.presentation.mapper.ProductViewModelMapper
 import com.tokopedia.search.result.presentation.mapper.RecommendationViewModelMapper
-import com.tokopedia.search.result.presentation.model.ChooseAddressDataView
 import com.tokopedia.search.result.presentation.model.LabelGroupDataView
 import com.tokopedia.search.result.presentation.model.ProductDataView
 import com.tokopedia.search.result.presentation.model.ProductItemDataView
 import com.tokopedia.search.result.presentation.model.RecommendationTitleDataView
 import com.tokopedia.search.result.presentation.model.SearchProductTitleDataView
-import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
 import com.tokopedia.search.result.product.DynamicFilterModelProvider
 import com.tokopedia.search.result.product.banned.BannedProductsPresenterDelegate
 import com.tokopedia.search.result.product.banner.BannerPresenterDelegate
@@ -56,18 +54,15 @@ import com.tokopedia.search.result.product.broadmatch.RelatedDataView
 import com.tokopedia.search.result.product.chooseaddress.ChooseAddressPresenterDelegate
 import com.tokopedia.search.result.product.cpm.BannerAdsPresenter
 import com.tokopedia.search.result.product.cpm.BannerAdsPresenterDelegate
-import com.tokopedia.search.result.product.cpm.CpmDataView
 import com.tokopedia.search.result.product.emptystate.EmptyStateDataView
 import com.tokopedia.search.result.product.filter.bottomsheetfilter.BottomSheetFilterPresenter
 import com.tokopedia.search.result.product.globalnavwidget.GlobalNavDataView
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
-import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselPresenterDelegate
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselProductDataViewMapper
 import com.tokopedia.search.result.product.inspirationcarousel.LAYOUT_INSPIRATION_CAROUSEL_CHIPS
 import com.tokopedia.search.result.product.inspirationcarousel.LAYOUT_INSPIRATION_CAROUSEL_GRID
 import com.tokopedia.search.result.product.inspirationlistatc.InspirationListAtcPresenter
 import com.tokopedia.search.result.product.inspirationlistatc.InspirationListAtcPresenterDelegate
-import com.tokopedia.search.result.product.inspirationwidget.InspirationWidgetPresenterDelegate
 import com.tokopedia.search.result.product.lastfilter.LastFilterPresenter
 import com.tokopedia.search.result.product.lastfilter.LastFilterPresenterDelegate
 import com.tokopedia.search.result.product.localsearch.EMPTY_LOCAL_SEARCH_RESPONSE_CODE
@@ -75,26 +70,18 @@ import com.tokopedia.search.result.product.pagination.Pagination
 import com.tokopedia.search.result.product.pagination.PaginationImpl
 import com.tokopedia.search.result.product.performancemonitoring.PerformanceMonitoringProvider
 import com.tokopedia.search.result.product.performancemonitoring.SEARCH_RESULT_PLT_RENDER_LOGIC
-import com.tokopedia.search.result.product.performancemonitoring.SEARCH_RESULT_PLT_RENDER_LOGIC_BROADMATCH
-import com.tokopedia.search.result.product.performancemonitoring.SEARCH_RESULT_PLT_RENDER_LOGIC_HEADLINE_ADS
-import com.tokopedia.search.result.product.performancemonitoring.SEARCH_RESULT_PLT_RENDER_LOGIC_INSPIRATION_CAROUSEL
-import com.tokopedia.search.result.product.performancemonitoring.SEARCH_RESULT_PLT_RENDER_LOGIC_INSPIRATION_WIDGET
 import com.tokopedia.search.result.product.performancemonitoring.SEARCH_RESULT_PLT_RENDER_LOGIC_MAP_PRODUCT_DATA_VIEW
 import com.tokopedia.search.result.product.performancemonitoring.SEARCH_RESULT_PLT_RENDER_LOGIC_PROCESS_FILTER
 import com.tokopedia.search.result.product.performancemonitoring.SEARCH_RESULT_PLT_RENDER_LOGIC_SHOW_PRODUCT_LIST
-import com.tokopedia.search.result.product.performancemonitoring.SEARCH_RESULT_PLT_RENDER_LOGIC_TDN
 import com.tokopedia.search.result.product.performancemonitoring.runCustomMetric
 import com.tokopedia.search.result.product.postprocessing.PostProcessingFilter
 import com.tokopedia.search.result.product.requestparamgenerator.RequestParamsGenerator
 import com.tokopedia.search.result.product.safesearch.SafeSearchPresenter
 import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationPresenterDelegate
-import com.tokopedia.search.result.product.searchintokopedia.SearchInTokopediaDataView
-import com.tokopedia.search.result.product.separator.VerticalSeparator
 import com.tokopedia.search.result.product.suggestion.SuggestionPresenter
-import com.tokopedia.search.result.product.tdn.TopAdsImageViewPresenterDelegate
 import com.tokopedia.search.result.product.ticker.TickerPresenter
-import com.tokopedia.search.result.product.visitable.VisitableController
-import com.tokopedia.search.result.product.visitable.VisitableControllerData
+import com.tokopedia.search.result.product.visitable.VisitableGenerator
+import com.tokopedia.search.result.product.visitable.VisitableGeneratorData
 import com.tokopedia.search.result.product.wishlist.WishlistPresenter
 import com.tokopedia.search.result.product.wishlist.WishlistPresenterDelegate
 import com.tokopedia.search.utils.SchedulersProvider
@@ -103,8 +90,6 @@ import com.tokopedia.search.utils.createSearchProductDefaultQuickFilter
 import com.tokopedia.search.utils.getUserId
 import com.tokopedia.search.utils.getValueString
 import com.tokopedia.sortfilter.SortFilterItem
-import com.tokopedia.topads.sdk.domain.model.CpmData
-import com.tokopedia.topads.sdk.domain.model.CpmModel
 import com.tokopedia.topads.sdk.utils.TopAdsHeadlineHelper
 import com.tokopedia.topads.sdk.utils.TopAdsUrlHitter
 import com.tokopedia.unifycomponents.ChipsUnify
@@ -162,7 +147,7 @@ class ProductListPresenter @Inject constructor(
     wishlistPresenterDelegate: WishlistPresenterDelegate,
     dynamicFilterModelProvider: DynamicFilterModelProvider,
     bottomSheetFilterPresenter: BottomSheetFilterPresenter,
-    private val visitableController: VisitableController,
+    private val visitableGenerator: VisitableGenerator,
 ): BaseDaggerPresenter<ProductListSectionContract.View>(),
     ProductListSectionContract.Presenter,
     Pagination by paginationImpl,
@@ -381,13 +366,12 @@ class ProductListPresenter @Inject constructor(
     }
 
     private fun getViewToProcessEmptyResultDuringLoadMore() {
-        val list = mutableListOf<Visitable<*>>()
-
-        broadMatchDelegate.processBroadMatch(responseCode, productList, list) { index, broadMatch ->
-            list.addAll(index, broadMatch)
-        }
-
-        visitableController.addSearchInTokopedia(list, isLocalSearch(), constructGlobalSearchApplink())
+        val list = visitableGenerator.createEmptyResultDuringLoadMoreVisitableList(
+            responseCode,
+            productList,
+            isLocalSearch(),
+            constructGlobalSearchApplink()
+        )
 
         view.removeLoading()
         view.addProductList(list)
@@ -412,28 +396,28 @@ class ProductListPresenter @Inject constructor(
             searchProductModel: SearchProductModel,
             searchParameter: Map<String, Any>,
     ): List<Visitable<*>> {
-        val list = createProductItemVisitableList(
+        val loadMoreProductList = createProductItemVisitableList(
             productDataView,
             searchParameter,
             searchProductModel.getProductListType(),
             searchProductModel.isShowButtonAtc,
         ).toMutableList()
-        productList.addAll(list)
+        productList.addAll(loadMoreProductList)
 
-        visitableController.processHeadlineAdsLoadMore(searchProductModel, list, isLocalSearch(), productList)
-        visitableController.processTopAdsImageViewModel(list, productList)
-        visitableController.processInspirationWidgetPosition(list, productList)
-        visitableController.processInspirationCarouselPosition(list, productList, externalReference)
-        visitableController.processBannerAndBroadMatchInSamePosition(list, productList, responseCode)
-        bannerDelegate.processBanner(list, productList) { index, banner ->
-            list.add(index, banner)
-        }
-        broadMatchDelegate.processBroadMatch(responseCode, productList, list) { index, broadMatch ->
-            list.addAll(index, broadMatch)
-        }
-        visitableController.addSearchInTokopedia(list, isLocalSearch(), constructGlobalSearchApplink())
-
-        return list
+        return visitableGenerator.createLoadMoreVisitableList(
+            VisitableGeneratorData(
+                productDataView,
+                pageTitle,
+                getIsGlobalNavWidgetAvailable(productDataView),
+                isLocalSearch(),
+                isTickerHasDismissed,
+                responseCode,
+                loadMoreProductList,
+                searchProductModel,
+                externalReference,
+                constructGlobalSearchApplink(),
+            )
+        )
     }
 
     private fun createProductItemVisitableList(
@@ -698,39 +682,25 @@ class ProductListPresenter @Inject constructor(
     private fun getViewToHandleViolation(
         productDataView: ProductDataView,
     ) {
-        val violationProductsVisitableList =
-            createViolationVisitableList(productDataView)
+        val violationProductsVisitableList = visitableGenerator.createViolationVisitableList(
+                productDataView,
+                getGlobalNavViewModel(productDataView),
+            )
 
         view.removeLoading()
         view.addProductList(violationProductsVisitableList)
     }
 
-    private fun createViolationVisitableList(
-        productDataView: ProductDataView,
-    ) : List<Visitable<*>> {
-        val violation = productDataView.violation ?: return emptyList()
-        return mutableListOf<Visitable<*>>().apply {
-            getGlobalNavViewModel(productDataView)?.let { globalNavDataView ->
-                add(globalNavDataView)
-            }
-
-            add(violation)
-        }
-    }
-
     private fun getViewToShowEmptySearch(productDataView: ProductDataView) {
         clearData()
         view.removeLoading()
-        view.setProductList(constructEmptyStateProductList(productDataView))
+        view.setProductList(
+            visitableGenerator.constructEmptyStateProductList(
+                getGlobalNavViewModel(productDataView),
+                createEmptyStateDataView(),
+            )
+        )
     }
-
-    private fun constructEmptyStateProductList(
-        productDataView: ProductDataView,
-    ): List<Visitable<*>> =
-        mutableListOf<Visitable<*>>().apply {
-            getGlobalNavViewModel(productDataView)?.let { add(it) }
-            add(createEmptyStateDataView())
-        }
 
     private fun getGlobalNavViewModel(productDataView: ProductDataView): GlobalNavDataView? {
         val isGlobalNavWidgetAvailable = productDataView.globalNavDataView != null && enableGlobalNavWidget
@@ -878,8 +848,8 @@ class ProductListPresenter @Inject constructor(
             searchProductModel.isShowButtonAtc,
         ).toMutableList()
 
-        val visitableList = visitableController.createFirstPageVisitableList(
-            VisitableControllerData(
+        val visitableList = visitableGenerator.createFirstPageVisitableList(
+            VisitableGeneratorData(
                 productDataView,
                 pageTitle,
                 getIsGlobalNavWidgetAvailable(productDataView),

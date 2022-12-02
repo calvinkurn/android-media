@@ -4,12 +4,14 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
 import com.tokopedia.search.result.domain.model.SearchProductModel
 import com.tokopedia.search.result.presentation.model.ChooseAddressDataView
+import com.tokopedia.search.result.presentation.model.ProductDataView
 import com.tokopedia.search.result.presentation.model.SearchProductTitleDataView
 import com.tokopedia.search.result.presentation.model.TickerDataView
 import com.tokopedia.search.result.presentation.view.typefactory.ProductListTypeFactory
 import com.tokopedia.search.result.product.banner.BannerPresenterDelegate
 import com.tokopedia.search.result.product.broadmatch.BroadMatchPresenterDelegate
 import com.tokopedia.search.result.product.cpm.CpmDataView
+import com.tokopedia.search.result.product.emptystate.EmptyStateDataView
 import com.tokopedia.search.result.product.globalnavwidget.GlobalNavDataView
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselDataView
 import com.tokopedia.search.result.product.inspirationcarousel.InspirationCarouselPresenterDelegate
@@ -32,7 +34,7 @@ import com.tokopedia.topads.sdk.domain.model.CpmModel
 import com.tokopedia.topads.sdk.utils.TopAdsHeadlineHelper
 import javax.inject.Inject
 
-class VisitableController @Inject constructor(
+class VisitableGenerator @Inject constructor(
     private val suggestionPresenter: SuggestionPresenter,
     performanceMonitoringProvider: PerformanceMonitoringProvider,
     private val topAdsHeadlineHelper : TopAdsHeadlineHelper,
@@ -49,29 +51,21 @@ class VisitableController @Inject constructor(
     private val performanceMonitoring: PageLoadTimePerformanceInterface? =
         performanceMonitoringProvider.get()
 
-    fun createFirstPageVisitableList(data: VisitableControllerData): List<Visitable<*>> {
+    fun createFirstPageVisitableList(data: VisitableGeneratorData): List<Visitable<*>> {
         val visitableList = mutableListOf<Visitable<*>>()
-
-        addPageTitle(visitableList, data.pageTitle)
-
         val productDataView = data.productDataView
 
+        addPageTitle(visitableList, data.pageTitle)
         addGlobalNavWidget(
             visitableList,
             productDataView.globalNavDataView,
             data.isGlobalNavWidgetAvailable,
         )
-
         addLastFilter(visitableList, productDataView.lastFilterDataView)
-
         addChooseAddress(visitableList)
-
         addTicker(visitableList, productDataView.tickerModel, data.isTickerHasDismissed)
-
         addSuggestion(visitableList, data.responseCode)
-
         addProductList(visitableList, data.productList)
-
         runCustomMetric(performanceMonitoring, SEARCH_RESULT_PLT_RENDER_LOGIC_HEADLINE_ADS) {
             processHeadlineAdsFirstPage(
                 data.searchProductModel,
@@ -80,7 +74,6 @@ class VisitableController @Inject constructor(
                 data.productList,
             )
         }
-
         runCustomMetric(performanceMonitoring, SEARCH_RESULT_PLT_RENDER_LOGIC_INSPIRATION_CAROUSEL) {
             addInspirationCarousel(
                 productDataView.inspirationCarouselDataView,
@@ -89,7 +82,6 @@ class VisitableController @Inject constructor(
                 data.externalReference
             )
         }
-
         runCustomMetric(performanceMonitoring, SEARCH_RESULT_PLT_RENDER_LOGIC_INSPIRATION_WIDGET) {
             addInspirationWidget(
                 productDataView.inspirationWidgetDataView,
@@ -97,22 +89,17 @@ class VisitableController @Inject constructor(
                 data.productList,
             )
         }
-
         processBannerAndBroadMatchInSamePosition(visitableList, data.productList, data.responseCode)
-
         addBanner(visitableList, data.productList)
-
         runCustomMetric(performanceMonitoring, SEARCH_RESULT_PLT_RENDER_LOGIC_BROADMATCH) {
             addBroadMatch(visitableList, data.productList, data.responseCode)
         }
-
         runCustomMetric(performanceMonitoring, SEARCH_RESULT_PLT_RENDER_LOGIC_TDN) {
             topAdsImageViewPresenterDelegate.setTopAdsImageViewModelList(
                 data.searchProductModel.getTopAdsImageViewModelList()
             )
             processTopAdsImageViewModel(visitableList, data.productList)
         }
-
         addSearchInTokopedia(visitableList, data.isLocalSearch, data.globalSearchApplink)
 
         return visitableList
@@ -214,12 +201,12 @@ class VisitableController @Inject constructor(
     }
 
 
-    fun isHeadlineAdsAllowed(isLocalSearch: Boolean): Boolean {
+    private fun isHeadlineAdsAllowed(isLocalSearch: Boolean): Boolean {
         return !isLocalSearch
             && (!isGlobalNavWidgetAvailable || isShowHeadlineAdsBasedOnGlobalNav)
     }
 
-    fun processHeadlineAdsAtPosition(
+    private fun processHeadlineAdsAtPosition(
         visitableList: MutableList<Visitable<*>>,
         position: Int,
         cpmDataView: CpmDataView,
@@ -233,7 +220,7 @@ class VisitableController @Inject constructor(
         visitableList.addAll(headlineAdsIndex, headlineAdsVisitableList)
     }
 
-    fun createCpmDataView(
+    private fun createCpmDataView(
         cpmModel: CpmModel,
         cpmData: ArrayList<CpmData>,
         verticalSeparator: VerticalSeparator,
@@ -274,7 +261,7 @@ class VisitableController @Inject constructor(
         processInspirationWidgetPosition(list, productList)
     }
 
-    fun processInspirationWidgetPosition(
+    private fun processInspirationWidgetPosition(
         list: MutableList<Visitable<*>>,
         productList: List<Visitable<*>>,
     ) {
@@ -284,7 +271,7 @@ class VisitableController @Inject constructor(
         }
     }
 
-    fun processInspirationCarouselPosition(
+    private fun processInspirationCarouselPosition(
         list: MutableList<Visitable<*>>,
         productList: List<Visitable<*>>,
         externalReference: String,
@@ -428,4 +415,74 @@ class VisitableController @Inject constructor(
             )
         }
     }
+
+    fun createLoadMoreVisitableList(data: VisitableGeneratorData): List<Visitable<*>> {
+        val visitableList = mutableListOf<Visitable<*>>()
+
+        addProductList(visitableList, data.productList)
+        processHeadlineAdsLoadMore(
+            data.searchProductModel,
+            visitableList,
+            data.isLocalSearch,
+            data.productList,
+        )
+        processTopAdsImageViewModel(visitableList, data.productList)
+        processInspirationWidgetPosition(visitableList, data.productList)
+        processInspirationCarouselPosition(visitableList, data.productList, data.externalReference)
+        processBannerAndBroadMatchInSamePosition(
+            visitableList,
+            data.productList,
+            data.responseCode,
+        )
+        bannerDelegate.processBanner(visitableList, data.productList) { index, banner ->
+            visitableList.add(index, banner)
+        }
+        broadMatchDelegate.processBroadMatch(
+            data.responseCode,
+            data.productList,
+            visitableList,
+        ) { index, broadMatch ->
+            visitableList.addAll(index, broadMatch)
+        }
+        addSearchInTokopedia(visitableList, data.isLocalSearch, data.globalSearchApplink)
+
+        return visitableList
+    }
+
+    fun createEmptyResultDuringLoadMoreVisitableList(
+        responseCode: String,
+        productList: List<Visitable<*>>,
+        isLocalSearch: Boolean,
+        globalSearchApplink: String,
+    ): List<Visitable<*>> {
+        val visitableList = mutableListOf<Visitable<*>>()
+
+        broadMatchDelegate.processBroadMatch(responseCode, productList, visitableList) { index, broadMatch ->
+            visitableList.addAll(index, broadMatch)
+        }
+        addSearchInTokopedia(visitableList, isLocalSearch, globalSearchApplink)
+
+        return visitableList
+    }
+
+    fun createViolationVisitableList(
+        productDataView: ProductDataView,
+        globalNavDataView: GlobalNavDataView?,
+    ) : List<Visitable<*>> {
+        val violation = productDataView.violation ?: return emptyList()
+        return mutableListOf<Visitable<*>>().apply {
+            globalNavDataView?.let { add(it) }
+
+            add(violation)
+        }
+    }
+
+    fun constructEmptyStateProductList(
+        globalNavDataView: GlobalNavDataView?,
+        emptyStateDataView: EmptyStateDataView,
+    ): List<Visitable<*>> =
+        mutableListOf<Visitable<*>>().apply {
+            globalNavDataView?.let { add(it) }
+            add(emptyStateDataView)
+        }
 }
