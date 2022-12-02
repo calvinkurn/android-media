@@ -297,7 +297,7 @@ class VisitableGenerator @Inject constructor(
         return list.indexOf(product) + addIndex
     }
 
-    fun processBannerAndBroadMatchInSamePosition(
+    private fun processBannerAndBroadMatchInSamePosition(
         list: MutableList<Visitable<*>>,
         productList: List<Visitable<*>>,
         responseCode: String,
@@ -362,7 +362,7 @@ class VisitableGenerator @Inject constructor(
         }
     }
 
-    fun processTopAdsImageViewModel(
+    private fun processTopAdsImageViewModel(
         list: MutableList<Visitable<*>>,
         productList: List<Visitable<*>>,
     ) {
@@ -379,7 +379,7 @@ class VisitableGenerator @Inject constructor(
         )
     }
 
-    fun addSearchInTokopedia(
+    private fun addSearchInTokopedia(
         list: MutableList<Visitable<*>>,
         isLocalSearch: Boolean,
         globalSearchApplink: String,
@@ -390,7 +390,7 @@ class VisitableGenerator @Inject constructor(
         }
     }
 
-    fun processHeadlineAdsLoadMore(
+    private fun processHeadlineAdsLoadMore(
         searchProductModel: SearchProductModel,
         list: MutableList<Visitable<*>>,
         isLocalSearch: Boolean,
