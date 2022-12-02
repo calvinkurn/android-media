@@ -37,42 +37,56 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <include
-                android:id="@+id/wishlist_collection_sticky_progress_deletion_widget"
+            <RelativeLayout
+                android:id="@+id/rl_wishlist_collection_content"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:visibility="gone"
-                layout="@layout/wishlist_deletion_progress_item" />
+                android:layout_height="wrap_content">
 
-            <com.tokopedia.globalerror.GlobalError
-                android:id="@+id/global_error_wishlist_v2_collection"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:layout_marginTop="8dp"
-                android:background="@color/Unify_Background"
-                android:gravity="center"
-                android:visibility="gone"/>
+                <include
+                    android:id="@+id/wishlist_collection_sticky_progress_deletion_widget"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    layout="@layout/wishlist_deletion_progress_item" />
 
-            <com.tokopedia.empty_state.EmptyStateUnify
-                android:id="@+id/empty_state_wishlist_v2_collection"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:layout_marginTop="8dp"
-                android:visibility="gone"
-                android:background="@color/Unify_Background"/>
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rv_wishlist_collection"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginTop="8dp"
+                    android:visibility="visible"
+                    android:paddingStart="10dp"
+                    android:paddingEnd="10dp"
+                    android:layout_below="@id/wishlist_collection_sticky_progress_deletion_widget"/>
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rv_wishlist_collection"
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/rl_wishlist_collection_error"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="8dp"
-                android:layout_marginTop="8dp"
-                android:visibility="visible"
-                android:paddingStart="10dp"
-                android:paddingEnd="10dp"
-                android:layout_below="@id/wishlist_collection_sticky_progress_deletion_widget"/>
+                android:layout_height="wrap_content">
+
+                <com.tokopedia.empty_state.EmptyStateUnify
+                    android:id="@+id/empty_state_wishlist_collection"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginTop="8dp"
+                    android:visibility="gone"
+                    android:background="@color/Unify_Background"/>
+
+                <com.tokopedia.globalerror.GlobalError
+                    android:id="@+id/global_error_wishlist_collection"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="8dp"
+                    android:layout_marginTop="8dp"
+                    android:background="@color/Unify_Background"
+                    android:gravity="center"
+                    android:visibility="gone"/>
+
+            </RelativeLayout>
 
         </RelativeLayout>
 
