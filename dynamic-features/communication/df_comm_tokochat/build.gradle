@@ -1,5 +1,5 @@
 apply plugin: 'com.android.dynamic-feature'
-apply from: "$rootProject.projectDir/buildconfig/module.gradle"
+apply from: "$rootProject.projectDir/buildconfig/kotlin/core-module.gradle"
 apply plugin: 'io.hansel.preprocessor.feature'
 apply plugin: 'robust'
 

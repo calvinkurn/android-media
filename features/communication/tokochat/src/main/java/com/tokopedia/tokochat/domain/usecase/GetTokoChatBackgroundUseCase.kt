@@ -1,5 +1,6 @@
 package com.tokopedia.tokochat.domain.usecase
 
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.graphql.coroutines.data.extensions.request
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -11,10 +12,10 @@ import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 class GetTokoChatBackgroundUseCase @Inject constructor(
-    private val repository: GraphqlRepository,
+    @ApplicationContext private val repository: GraphqlRepository,
     private val cacheManager: TokoChatCacheManager,
-    dispatcher: CoroutineDispatchers,
-): FlowUseCase<Unit, String>(dispatcher.io) {
+    dispatcher: CoroutineDispatchers
+) : FlowUseCase<Unit, String>(dispatcher.io) {
 
     override fun graphqlQuery(): String = """
             query tokoChatBackground{
@@ -23,7 +24,7 @@ class GetTokoChatBackgroundUseCase @Inject constructor(
                 urlImageDarkMode
               }
             }
-        """.trimIndent()
+    """.trimIndent()
 
     override suspend fun execute(params: Unit): Flow<String> = flow {
         val cacheResult = getCacheUrl()
@@ -50,5 +51,4 @@ class GetTokoChatBackgroundUseCase @Inject constructor(
     companion object {
         private const val TOKO_CHAT_BACKGROUND_CACHE_KEY = "tokochat_key_chat_background_url"
     }
-
 }
