@@ -84,10 +84,24 @@ class TokoFoodOrderTrackingViewModelTest : TokoFoodOrderTrackingViewModelTestFix
             every {
                 savedStateHandle.get<String>(TokoFoodOrderTrackingViewModel.ORDER_ID)
             } returns ORDER_ID_DUMMY
+
+            every {
+                savedStateHandle.get<String>(TokoFoodOrderTrackingViewModel.GOFOOD_ORDER_NUMBER)
+            } returns GOFOOD_ORDER_NUMBER
+
+            every {
+                savedStateHandle.get<String>(TokoFoodOrderTrackingViewModel.CHANNEL_ID)
+            } returns CHANNEL_ID
+
+            viewModel.goFoodOrderNumber = GOFOOD_ORDER_NUMBER
+            viewModel.channelId = CHANNEL_ID
             viewModel.updateOrderId(ORDER_ID_DUMMY)
             viewModel.onSavedInstanceState()
             viewModel.onRestoreSavedInstanceState()
+
             assertEquals(ORDER_ID_DUMMY, viewModel.getOrderId())
+            assertEquals(CHANNEL_ID, viewModel.channelId)
+            assertEquals(GOFOOD_ORDER_NUMBER, viewModel.goFoodOrderNumber)
         }
     }
 
