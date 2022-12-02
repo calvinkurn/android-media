@@ -27,6 +27,7 @@ import com.tokopedia.play.view.uimodel.recom.PlayVideoPlayerUiModel
 import com.tokopedia.play.view.uimodel.recom.PlayVideoStreamUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.TagItemUiModel
 import com.tokopedia.play_common.model.result.ResultState
+import com.tokopedia.play_common.websocket.PlayWebSocket
 import com.tokopedia.test.application.annotations.CassavaTest
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import com.tokopedia.user.session.UserSessionInterface
@@ -64,6 +65,8 @@ class PlayPinnedProductAnalyticTest {
 
     private val mockUserSession = mockk<UserSessionInterface>(relaxed = true)
 
+    private val socket: PlayWebSocket = mockk(relaxed = true)
+
     init {
         coEvery { repo.getChannels(any(), any()) } returns PagingChannel(
             channelList = listOf(
@@ -99,7 +102,7 @@ class PlayPinnedProductAnalyticTest {
                     )
                 )
                 .baseAppComponent((targetContext.applicationContext as BaseMainApplication).baseAppComponent)
-                .playTestRepositoryModule(PlayTestRepositoryModule(repo))
+                .playTestRepositoryModule(PlayTestRepositoryModule(repo, socket))
                 .build()
         )
     }
@@ -108,7 +111,7 @@ class PlayPinnedProductAnalyticTest {
     fun onClicked_pinnedProduct_in_ProductCarousel() {
         val tagItem = buildTagItemWithPinned(hasPinned = { _, _ -> true })
 
-        coEvery { repo.getTagItem(any(), any()) } returns tagItem
+        coEvery { repo.getTagItem(any(), any(), any()) } returns tagItem
 
         val robot = createRobot()
         with(robot) {
@@ -125,7 +128,7 @@ class PlayPinnedProductAnalyticTest {
     fun onImpressed_pinnedProduct_in_ProductCarousel() {
         val tagItem = buildTagItemWithPinned(hasPinned = { _, _ -> true })
 
-        coEvery { repo.getTagItem(any(), any()) } returns tagItem
+        coEvery { repo.getTagItem(any(), any(), any()) } returns tagItem
 
         val robot = createRobot()
         with(robot) {
@@ -143,7 +146,7 @@ class PlayPinnedProductAnalyticTest {
         val cartId = "123"
 
         every { mockUserSession.isLoggedIn } returns true
-        coEvery { repo.getTagItem(any(), any()) } returns tagItem
+        coEvery { repo.getTagItem(any(), any(), any()) } returns tagItem
         coEvery { repo.addProductToCart(any(), any(), any(), any(), any()) } returns cartId
 
         val robot = createRobot()
@@ -163,7 +166,7 @@ class PlayPinnedProductAnalyticTest {
         val cartId = "123"
 
         every { mockUserSession.isLoggedIn } returns true
-        coEvery { repo.getTagItem(any(), any()) } returns tagItem
+        coEvery { repo.getTagItem(any(), any(), any()) } returns tagItem
         coEvery { repo.addProductToCart(any(), any(), any(), any(), any()) } returns cartId
 
         val robot = createRobot()
@@ -183,7 +186,7 @@ class PlayPinnedProductAnalyticTest {
         val cartId = "123"
 
         every { mockUserSession.isLoggedIn } returns true
-        coEvery { repo.getTagItem(any(), any()) } returns tagItem
+        coEvery { repo.getTagItem(any(), any(), any()) } returns tagItem
         coEvery { repo.addProductToCart(any(), any(), any(), any(), any()) } returns cartId
 
         val robot = createRobot()
@@ -203,7 +206,7 @@ class PlayPinnedProductAnalyticTest {
         val cartId = "123"
 
         every { mockUserSession.isLoggedIn } returns true
-        coEvery { repo.getTagItem(any(), any()) } returns tagItem
+        coEvery { repo.getTagItem(any(), any(), any()) } returns tagItem
         coEvery { repo.addProductToCart(any(), any(), any(), any(), any()) } returns cartId
 
         val robot = createRobot()

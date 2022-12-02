@@ -4,13 +4,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/swipe"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/Unify_Background">
+    android:layout_height="match_parent">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/Unify_NN0">
+        android:layout_height="match_parent">
 
         <com.tokopedia.searchbar.navigation_component.NavToolbar
             android:id="@+id/withdrawal_navToolbar"
@@ -25,7 +23,6 @@
             app:toolbarBackButton="back"
             app:toolbarContentType="typeCustom"
             app:toolbarCustomContent="@layout/affiliate_navbar_custom_content"
-            app:toolbarInitialFillColor="@color/Unify_N0"
             app:toolbarInitialTheme="light" />
 
 
@@ -39,7 +36,7 @@
                 android:id="@+id/appbar"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/Unify_N0"
+                android:background="@color/Unify_Background"
                 android:minHeight="?attr/actionBarSize"
                 app:elevation="@dimen/layout_lvl0">
 
@@ -238,7 +235,6 @@
                     android:id="@+id/affiliate_no__default_transaction_iv"
                     android:layout_width="match_parent"
                     android:layout_height="220dp"
-                    android:background="@color/Unify_N0"
                     android:gravity="center"
                     android:paddingTop="@dimen/unify_space_48"
                     android:visibility="gone"
@@ -251,7 +247,6 @@
                     android:layout_width="match_parent"
                     android:layout_height="220dp"
                     android:layout_below="@+id/affiliate_no__default_transaction_iv"
-                    android:background="@color/Unify_N0"
                     android:gravity="center"
                     android:paddingTop="@dimen/unify_space_48"
                     android:visibility="gone"
@@ -265,7 +260,6 @@
                     android:layout_height="wrap_content"
                     android:layout_below="@+id/affiliate_no_transaction_iv"
                     android:layout_marginTop="@dimen/spacing_lvl4"
-                    android:background="@color/Unify_N0"
                     android:gravity="center"
                     android:visibility="gone"
                     app:globalerrors_type="SERVER_ERROR"

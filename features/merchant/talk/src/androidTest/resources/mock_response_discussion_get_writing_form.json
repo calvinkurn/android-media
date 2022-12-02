@@ -1,0 +1,33 @@
+{
+  "discussionGetWritingForm": {
+    "productName": "Pr0dUct_dU4_g1fT1ng",
+    "productThumbnailURL": "https://images.tokopedia.net/img/cache/200-square/VqbcmM/2022/3/7/400b5cc5-6819-4784-8f33-75822c47c663.jpg",
+    "productID": "3144222742",
+    "productPrice": "10000",
+    "shopID": "11302803",
+    "minChar": 5,
+    "maxChar": 200,
+    "categories": [
+      {
+        "name": "Detail Produk",
+        "message": ""
+      },
+      {
+        "name": "Pengiriman",
+        "message": ""
+      },
+      {
+        "name": "Varian",
+        "message": ""
+      },
+      {
+        "name": "Stok",
+        "message": "Total \u003cb\u003estok \u003e100\u003c/b\u003e untuk barang ini."
+      },
+      {
+        "name": "Lainnya",
+        "message": ""
+      }
+    ]
+  }
+}

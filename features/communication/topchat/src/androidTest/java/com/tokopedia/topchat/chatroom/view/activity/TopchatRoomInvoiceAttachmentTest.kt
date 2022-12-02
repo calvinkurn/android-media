@@ -146,7 +146,7 @@ class TopchatRoomInvoiceAttachmentTest : BaseBuyerTopchatRoomTest() {
                 "sendal jepit 999^^\u0026%#^%#$%$%*\u0026^%")
             intent.putExtra(ApplinkConst.Chat.INVOICE_DATE, "22 Apr 2021")
             intent.putExtra(ApplinkConst.Chat.INVOICE_IMAGE_URL,
-                "https://ecs7.tokopedia.net/img/cache/100-square/VqbcmM/2021/2/16/61e5d2f7-f411-4b14-94fe-c5c401636952.jpg")
+                "https://images.tokopedia.net/img/cache/100-square/VqbcmM/2021/2/16/61e5d2f7-f411-4b14-94fe-c5c401636952.jpg")
             intent.putExtra(ApplinkConst.Chat.INVOICE_URL,
                 "https://www.tokopedia.com/invoice.pl?id\u003d770851031\u0026pdf\u003dInvoice-136513670-10825582-20210422132008-eHh4eHh4eHg3")
             intent.putExtra(ApplinkConst.Chat.INVOICE_STATUS_ID, "700")

@@ -8,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.analytics.performance.PerformanceMonitoring
@@ -210,7 +209,7 @@ class FlightHomepageFragment : BaseDaggerFragment(),
             }
         }
         fragmentManager?.let {
-            flightAirportPickerBottomSheet.show(it, FlightAirportPickerBottomSheet.TAG_FLIGHT_AIRPORT_PICKER)
+            flightAirportPickerBottomSheet.show(it, FlightAirportPickerBottomSheet.TAG_FLIGHT_DEPARTURE_AIRPORT_PICKER)
         }
     }
 
@@ -223,7 +222,7 @@ class FlightHomepageFragment : BaseDaggerFragment(),
         }
         flightAirportPickerBottomSheet.setShowListener { flightAirportPickerBottomSheet.bottomSheet.state = BottomSheetBehavior.STATE_EXPANDED }
         fragmentManager?.let {
-            flightAirportPickerBottomSheet.show(it, FlightAirportPickerBottomSheet.TAG_FLIGHT_AIRPORT_PICKER)
+            flightAirportPickerBottomSheet.show(it, FlightAirportPickerBottomSheet.TAG_FLIGHT_DESTINATION_AIRPORT_PICKER)
         }
     }
 

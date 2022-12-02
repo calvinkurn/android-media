@@ -383,6 +383,13 @@ public class BranchWrapper implements WrapperInterface {
                     BranchHelper.sendSearchEvent(context, (ArrayList<String>) linkerGenericRequest.getDataObj());
                 }
                 break;
+            case LinkerConstants.ENUM_EVENT_PAGE_VIEW_STORE:
+                if (linkerGenericRequest != null && linkerGenericRequest.getDataObj() != null &&
+                        linkerGenericRequest.getDataObj() instanceof String) {
+                    String userId = (String) linkerGenericRequest.getDataObj();
+                    BranchHelper.sendPageViewShop(context, userId);
+                }
+
         }
     }
 
@@ -499,6 +506,8 @@ public class BranchWrapper implements WrapperInterface {
                     }});
         } else if (LinkerData.FOOD_TYPE.equalsIgnoreCase(data.getType())) {
             deeplinkPath = data.getDeepLink();
+        } else if (LinkerData.WISHLIST_COLLECTION_TYPE.equalsIgnoreCase(data.getType())) {
+            deeplinkPath = getApplinkPath(LinkerConstants.WISHLIST_COLLECTION, data.getId());
         } else if (LinkerData.WEBVIEW_TYPE.equalsIgnoreCase(data.getType())) {
             deeplinkPath = getApplinkPath(LinkerConstants.WEBVIEW, data.getId());
         } else if (isAppShowReferralButtonActivated(context) && LinkerData.REFERRAL_TYPE.equalsIgnoreCase(data.getType())) {

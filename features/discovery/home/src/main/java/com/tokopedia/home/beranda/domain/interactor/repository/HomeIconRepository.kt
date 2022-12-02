@@ -6,13 +6,15 @@ import com.tokopedia.graphql.data.model.CacheType
 import com.tokopedia.graphql.data.model.GraphqlCacheStrategy
 import com.tokopedia.graphql.data.model.GraphqlRequest
 import com.tokopedia.home.beranda.di.module.query.HomeIconQuery
+import com.tokopedia.home.beranda.di.module.query.HomeIconV2Query
 import com.tokopedia.home.beranda.domain.interactor.HomeRepository
 import com.tokopedia.home.beranda.domain.model.HomeIconData
 import com.tokopedia.network.exception.MessageErrorException
 import javax.inject.Inject
 
 class HomeIconRepository @Inject constructor(
-        private val graphqlRepository: GraphqlRepository
+        private val graphqlRepository: GraphqlRepository,
+        private val isUsingV2: Boolean
 ): HomeRepository<HomeIconData> {
     suspend fun getIconData(param: String = "", locationParams: String = ""): HomeIconData {
         val gqlResponse  = graphqlRepository.response(
@@ -25,7 +27,8 @@ class HomeIconRepository @Inject constructor(
     }
 
     private fun buildRequest(param: String, locationParams: String): GraphqlRequest {
-        return GraphqlRequest(HomeIconQuery(), HomeIconData::class.java, mapOf(PARAM to param, PARAM_LOCATION to locationParams))
+        val query = if(isUsingV2) HomeIconV2Query() else HomeIconQuery()
+        return GraphqlRequest(query, HomeIconData::class.java, mapOf(PARAM to param, PARAM_LOCATION to locationParams))
     }
 
     companion object{

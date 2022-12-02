@@ -11,8 +11,9 @@ public interface Constant {
     String EXTRA_NOTIFICATION_ID = "notification_id";
     String CACHE_DELAY = "cache_delay";
     String PREV_TIME = "prev_time";
+    String DEFAULT_AVATAR_URL = "https://images.tokopedia.net/img/cache/300/default_picture_user/default_toped-20.jpg";
 
-     interface NotificationGroup {
+    interface NotificationGroup {
          String TALK = "com.tokopedia.tkpd.TALK";
          String TOPCHAT = "com.tokopedia.tkpd.TOPCHAT";
          String TRANSACTION = "com.tokopedia.tkpd.TRANSACTION";

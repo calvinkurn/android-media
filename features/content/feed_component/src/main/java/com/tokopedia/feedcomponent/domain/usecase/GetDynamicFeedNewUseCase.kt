@@ -42,6 +42,7 @@ query feedxhome(${'$'}req: FeedXHomeRequest!) {
           logoURL
           webLink
           appLink
+          encryptedUserID
         }
         title
         subTitle
@@ -145,6 +146,10 @@ query feedxhome(${'$'}req: FeedXHomeRequest!) {
         }
         publishedAt
         mods
+        detailScore {
+          label
+          value
+        }
       }
        ... on FeedXCardPlay {
         id
@@ -258,6 +263,10 @@ query feedxhome(${'$'}req: FeedXHomeRequest!) {
         }
         publishedAt
         mods
+        detailScore {
+          label
+          value
+        }
       }
       ... on FeedXCardTopAds {
         a: id
@@ -304,6 +313,7 @@ query feedxhome(${'$'}req: FeedXHomeRequest!) {
       ... on FeedXCardProductsHighlight {
         id
         type
+        hasVoucher
         author {
           id
           type
@@ -421,6 +431,10 @@ query feedxhome(${'$'}req: FeedXHomeRequest!) {
         publishedAt
         deletable
         mods
+        detailScore {
+          label
+          value
+        }
       }
       ... on FeedXCardPlaceholder {
         id
@@ -446,8 +460,10 @@ val DETAIL_ID = "sourceID"
 val SOURCE = "source"
 
 @GqlQuery("GetFeedXHomeQuery", FEED_X_QUERY)
-class GetDynamicFeedNewUseCase @Inject constructor(@ApplicationContext context: Context, graphqlRepository: GraphqlRepository)
-    : GraphqlUseCase<FeedXData>(graphqlRepository) {
+class GetDynamicFeedNewUseCase @Inject constructor(
+    @ApplicationContext context: Context,
+    graphqlRepository: GraphqlRepository
+) : GraphqlUseCase<FeedXData>(graphqlRepository) {
 
     var context: Context? = null
 
@@ -476,11 +492,17 @@ class GetDynamicFeedNewUseCase @Inject constructor(@ApplicationContext context: 
             DynamicFeedDomainModel {
         this.setParams(cursor, limit, detailId, screenName)
         val dynamicFeedResponse = executeOnBackground()
-        val shouldShowNewTopadsOnly = context?.let { TopadsRollenceUtil.shouldShowFeedNewDesignValue(it) }?:true
-        return DynamicFeedNewMapper.map(dynamicFeedResponse.feedXHome, cursor, shouldShowNewTopadsOnly)
+        val shouldShowNewTopadsOnly =
+            context?.let { TopadsRollenceUtil.shouldShowFeedNewDesignValue(it) } ?: true
+        return DynamicFeedNewMapper.map(
+            dynamicFeedResponse.feedXHome,
+            cursor,
+            shouldShowNewTopadsOnly
+        )
     }
+
     suspend fun executeForCDP(cursor: String = "", limit: Int = 5, detailId: String = ""):
-            FeedXData {
+        FeedXData {
         this.setParams(cursor, limit, detailId)
         return executeOnBackground()
     }
