@@ -10,6 +10,7 @@ import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.kotlin.extensions.view.shouldShowWithAction
 import com.tokopedia.kotlin.extensions.view.showWithCondition
 import com.tokopedia.kotlin.model.ImpressHolder
+import com.tokopedia.media.loader.loadImage
 import com.tokopedia.productcard.ProductCardModel
 import com.tokopedia.search.R
 import com.tokopedia.search.databinding.SearchResultProductBroadMatchLayoutBinding
@@ -35,6 +36,7 @@ class BroadMatchViewHolder(
     override fun bind(element: BroadMatchDataView) {
         bindTitle(element)
         bindSubtitle(element)
+        bindSubtitleImage(element)
         bindSeeMore(element)
         setupRecyclerView(element)
     }
@@ -53,6 +55,14 @@ class BroadMatchViewHolder(
 
         searchBroadMatchSubtitle.shouldShowWithAction(broadMatchDataView.subtitle.isNotEmpty()) {
             searchBroadMatchSubtitle.text = broadMatchDataView.subtitle
+        }
+    }
+
+    private fun bindSubtitleImage(broadMatchDataView: BroadMatchDataView) {
+        val searchBroadMatchSubtitleIcon = binding?.searchBroadMatchSubtitleIcon ?: return
+
+        searchBroadMatchSubtitleIcon.shouldShowWithAction(broadMatchDataView.iconSubtitle.isNotEmpty()) {
+            searchBroadMatchSubtitleIcon.loadImage(broadMatchDataView.iconSubtitle)
         }
     }
 

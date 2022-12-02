@@ -34,6 +34,7 @@ class InspirationCarouselDataView(
     class Option(
         val title: String = "",
         val subtitle: String = "",
+        val iconSubtitle: String = "",
         val url: String = "",
         val applink: String = "",
         val bannerImageUrl: String = "",

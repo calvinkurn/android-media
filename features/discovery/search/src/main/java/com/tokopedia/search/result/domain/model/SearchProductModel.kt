@@ -767,6 +767,10 @@ data class SearchProductModel(
             @Expose
             val subtitle: String = "",
 
+            @SerializedName("icon_subtitle")
+            @Expose
+            val iconSubtitle: String = "",
+
             @SerializedName("url")
             @Expose
             val url: String = "",
