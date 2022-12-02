@@ -58,6 +58,8 @@ class GetChatUseCaseStub @Inject constructor(
         "product_bundling/success_get_chat_broadcast_product_bundling_multiple.json"
     private val productBundlingBroadcastSingle =
         "product_bundling/success_get_chat_broadcast_product_bundling.json"
+    private val broadcastWithFlexibleCta =
+        "broadcast/success_get_chat_broadcast_with_flexible_cta.json"
 
     var response: GetExistingChatPojo = GetExistingChatPojo()
         set(value) {
@@ -113,11 +115,15 @@ class GetChatUseCaseStub @Inject constructor(
     val broadCastChatWithSingleProductBundlingMultipleItemResponse: GetExistingChatPojo
         get() = alterResponseOf(productBundlingBroadcastSingle) { response ->
             alterRepliesAttribute(
-                listPosition = 0, chatsPosition = 0, responseObj = response,
+                listPosition = 0,
+                chatsPosition = 0,
+                responseObj = response,
                 altercation = { replies ->
                     replies[1].asJsonObject.addProperty(attachmentIds, "1507930100")
                     replies[1].asJsonObject[attachment].asJsonObject.addProperty(
-                        id, "1507930100")
+                        id,
+                        "1507930100"
+                    )
                 }
             )
         }
@@ -125,13 +131,22 @@ class GetChatUseCaseStub @Inject constructor(
     val broadCastChatWithSingleProductBundlingOutOfStockResponse: GetExistingChatPojo
         get() = alterResponseOf(productBundlingBroadcastSingle) { response ->
             alterRepliesAttribute(
-                listPosition = 0, chatsPosition = 0, responseObj = response,
+                listPosition = 0,
+                chatsPosition = 0,
+                responseObj = response,
                 altercation = { replies ->
                     replies[1].asJsonObject.addProperty(attachmentIds, "1507930101")
                     replies[1].asJsonObject[attachment].asJsonObject.addProperty(
-                        id, "1507930101")
+                        id,
+                        "1507930101"
+                    )
                 }
             )
+        }
+
+    val broadCastChatWithFlexibleCta: GetExistingChatPojo
+        get() = alterResponseOf(broadcastWithFlexibleCta) { response ->
+            alterDateToToday(response)
         }
 
     /**
@@ -504,11 +519,13 @@ class GetChatUseCaseStub @Inject constructor(
         altercation: (JsonObject) -> Unit
     ): GetExistingChatPojo {
         val responseObj: JsonObject = AndroidFileUtil.parse(
-            responsePath, JsonObject::class.java
+            responsePath,
+            JsonObject::class.java
         )
         altercation(responseObj)
         return CommonUtil.fromJson(
-            responseObj.toString(), GetExistingChatPojo::class.java
+            responseObj.toString(),
+            GetExistingChatPojo::class.java
         )
     }
 
