@@ -651,7 +651,7 @@ object SearchTracking {
         val dataLayer = TokoNowCommonAnalytics.getDataLayer(
             TokoNowCommonAnalyticConstants.EVENT.EVENT_CLICK_GROCERIES,
             TokoNowCommonAnalyticConstants.ACTION.EVENT_ACTION_CLICK_ADD_TO_WISHLIST,
-            TokoNowCommonAnalyticConstants.CATEGORY.EVENT_CATEGORY_TOKOPEDIA_CATEGORY_PAGE,
+            TokoNowCommonAnalyticConstants.CATEGORY.EVENT_CATEGORY_TOKOPEDIA_NOW_SEARCH,
             label
         )
 
@@ -659,7 +659,7 @@ object SearchTracking {
             TokoNowCommonAnalyticConstants.VALUE.BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE
         dataLayer[KEY_CURRENT_SITE] =
             TokoNowCommonAnalyticConstants.VALUE.BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE
-        dataLayer[TokoNowCommonAnalyticConstants.KEY.KEY_TRACKER_ID] = TokoNowCommonAnalyticConstants.TRACKER_ID.TRACKER_ID_ADD_TO_WISHLIST_CATEGORY
+        dataLayer[TokoNowCommonAnalyticConstants.KEY.KEY_TRACKER_ID] = TokoNowCommonAnalyticConstants.TRACKER_ID.TRACKER_ID_ADD_TO_WISHLIST_SEARCH
         dataLayer[TokoNowCommonAnalyticConstants.KEY.KEY_PRODUCT_ID] = productId
 
         TokoNowCommonAnalytics.getTracker().sendGeneralEvent(dataLayer)
@@ -671,7 +671,7 @@ object SearchTracking {
         val dataLayer = TokoNowCommonAnalytics.getDataLayer(
             TokoNowCommonAnalyticConstants.EVENT.EVENT_CLICK_GROCERIES,
             TokoNowCommonAnalyticConstants.ACTION.EVENT_ACTION_CLICK_REMOVE_FROM_WISHLIST,
-            TokoNowCommonAnalyticConstants.CATEGORY.EVENT_CATEGORY_TOKOPEDIA_CATEGORY_PAGE,
+            TokoNowCommonAnalyticConstants.CATEGORY.EVENT_CATEGORY_TOKOPEDIA_NOW_SEARCH,
             label
         )
 
@@ -679,7 +679,7 @@ object SearchTracking {
             TokoNowCommonAnalyticConstants.VALUE.BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE
         dataLayer[KEY_CURRENT_SITE] =
             TokoNowCommonAnalyticConstants.VALUE.BUSINESS_UNIT_TOKOPEDIA_MARKET_PLACE
-        dataLayer[TokoNowCommonAnalyticConstants.KEY.KEY_TRACKER_ID] = TokoNowCommonAnalyticConstants.TRACKER_ID.TRACKER_ID_REMOVE_FROM_WISHLIST_CATEGORY
+        dataLayer[TokoNowCommonAnalyticConstants.KEY.KEY_TRACKER_ID] = TokoNowCommonAnalyticConstants.TRACKER_ID.TRACKER_ID_REMOVE_FROM_WISHLIST_SEARCH
         dataLayer[TokoNowCommonAnalyticConstants.KEY.KEY_PRODUCT_ID] = productId
 
         TokoNowCommonAnalytics.getTracker().sendGeneralEvent(dataLayer)

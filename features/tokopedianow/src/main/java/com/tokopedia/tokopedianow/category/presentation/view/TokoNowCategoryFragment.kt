@@ -50,7 +50,6 @@ import com.tokopedia.tokopedianow.searchcategory.analytics.SearchCategoryTrackin
 import com.tokopedia.tokopedianow.searchcategory.data.model.QuerySafeModel
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.view.BaseSearchCategoryFragment
-import com.tokopedia.tokopedianow.searchcategory.utils.ChooseAddressWrapper
 import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW_DIRECTORY
 import com.tokopedia.tokopedianow.similarproduct.model.SimilarProductUiModel
 import com.tokopedia.universal_sharing.view.bottomsheet.ScreenshotDetector
@@ -65,7 +64,7 @@ class TokoNowCategoryFragment:
         BaseSearchCategoryFragment(),
         CategoryAisleListener,
         ScreenShotListener,
-    TokoNowCategoryGridViewHolder.TokoNowCategoryGridListener,
+        TokoNowCategoryGridListener,
         ShareBottomsheetListener,
         PermissionListener {
 
