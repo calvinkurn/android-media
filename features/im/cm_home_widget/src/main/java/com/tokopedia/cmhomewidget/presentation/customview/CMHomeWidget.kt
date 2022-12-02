@@ -224,12 +224,11 @@ class CMHomeWidget @JvmOverloads constructor(
         productCardHeight = measuredHeight
     }
 
+    @SuppressLint("NotifyDataSetChanged")
     override fun timerUpWidgetClose() {
         cmHomeWidgetData?.let {
-            cmHomeWidgetCloseClickListener?.onCMHomeWidgetDismissClick(
-                it.parentId,
-                it.campaignId
-            )
+            cmHomeWidgetCloseClickListener?.updateCmMHomeWidget()
+            binding.rvCmHomeWidget.adapter?.notifyDataSetChanged()
         }
     }
 

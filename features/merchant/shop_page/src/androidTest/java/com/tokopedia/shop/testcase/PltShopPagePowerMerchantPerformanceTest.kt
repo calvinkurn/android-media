@@ -3,23 +3,21 @@ package com.tokopedia.shop.testcase
 import android.content.Context
 import android.content.Intent
 import androidx.test.platform.app.InstrumentationRegistry
-import com.tokopedia.test.application.TestRepeatRule
-import com.tokopedia.shop.environment.InstrumentationShopPageTestActivity
-import org.junit.Before
-import org.junit.Rule
-import org.junit.Test
 import androidx.test.rule.ActivityTestRule
 import com.tokopedia.analytics.performance.util.NetworkData
 import com.tokopedia.analytics.performance.util.PerformanceDataFileUtils
 import com.tokopedia.analytics.performance.util.PltPerformanceData
-import com.tokopedia.remoteconfig.RemoteConfigInstance
-import com.tokopedia.remoteconfig.RollenceKey
+import com.tokopedia.shop.environment.InstrumentationShopPageTestActivity
 import com.tokopedia.shop.mock.ShopPageMockResponseConfig
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity
 import com.tokopedia.shop.pageheader.presentation.activity.ShopPageActivity.Companion.FORCE_NOT_SHOWING_HOME_TAB
-import com.tokopedia.test.application.util.TokopediaGraphqlInstrumentationTestHelper
+import com.tokopedia.test.application.TestRepeatRule
 import com.tokopedia.test.application.environment.interceptor.size.GqlNetworkAnalyzerInterceptor
+import com.tokopedia.test.application.util.TokopediaGraphqlInstrumentationTestHelper
 import com.tokopedia.test.application.util.setupGraphqlMockResponse
+import org.junit.Before
+import org.junit.Rule
+import org.junit.Test
 
 class PltShopPagePowerMerchantPerformanceTest {
 
@@ -53,9 +51,9 @@ class PltShopPagePowerMerchantPerformanceTest {
         waitForData()
         activityRule.activity.getShopPageLoadTimePerformanceCallback()?.let {
             savePLTPerformanceResultData(
-                    it.getPltPerformanceData(),
-                    TEST_CASE_SHOP_PAGE_LOAD_TIME_PERFORMANCE,
-                    GqlNetworkAnalyzerInterceptor.getNetworkData()
+                it.getPltPerformanceData(),
+                TEST_CASE_SHOP_PAGE_LOAD_TIME_PERFORMANCE,
+                GqlNetworkAnalyzerInterceptor.getNetworkData()
             )
         }
         TokopediaGraphqlInstrumentationTestHelper.deleteAllDataInDb()
@@ -67,16 +65,15 @@ class PltShopPagePowerMerchantPerformanceTest {
     }
 
     private fun savePLTPerformanceResultData(
-            performanceData: PltPerformanceData,
-            testCaseName: String,
-            networkData: NetworkData? = null
+        performanceData: PltPerformanceData,
+        testCaseName: String,
+        networkData: NetworkData? = null
     ) {
         PerformanceDataFileUtils.writePLTPerformanceFile(
-                activityRule.activity,
-                testCaseName,
-                performanceData,
-                networkData = networkData
+            activityRule.activity,
+            testCaseName,
+            performanceData,
+            networkData = networkData
         )
     }
-
 }

@@ -3,10 +3,10 @@ package com.tokopedia.shop.info.view.viewmodel
 import com.tokopedia.network.exception.UserNotLoginException
 import com.tokopedia.shop.common.data.model.ShopInfoData
 import com.tokopedia.shop.common.graphql.data.shopinfo.ChatExistingChat
+import com.tokopedia.shop.common.graphql.data.shopinfo.ChatMessageId
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopBadge
 import com.tokopedia.shop.common.graphql.data.shopinfo.ShopInfo
 import com.tokopedia.shop.common.graphql.data.shopnote.ShopNoteModel
-import com.tokopedia.shop.common.graphql.data.shopinfo.ChatMessageId
 import com.tokopedia.shop_widget.note.view.model.ShopNoteUiModel
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
@@ -19,7 +19,7 @@ import org.junit.Assert.assertEquals
 import org.junit.Test
 
 @ExperimentalCoroutinesApi
-class ShopInfoViewModelTest: ShopInfoViewModelTestFixture() {
+class ShopInfoViewModelTest : ShopInfoViewModelTestFixture() {
 
     @Test
     fun when_get_shop_info_success__should_return_shop_info_data() {
@@ -31,7 +31,7 @@ class ShopInfoViewModelTest: ShopInfoViewModelTestFixture() {
             viewModel.getShopInfo("1")
 
             val expectedShopInfo = shopInfo
-                    .toShopInfoData()
+                .toShopInfoData()
 
             verifyGetShopInfoUseCaseCalled()
             verifyShopInfoEquals(expectedShopInfo)
@@ -72,7 +72,7 @@ class ShopInfoViewModelTest: ShopInfoViewModelTestFixture() {
     fun `check whether shopNoteId is 0 if id from response is null`() {
         runBlocking {
             val shopNoteModel = ShopNoteModel(
-                    id = null
+                id = null
             )
             val shopNotes = listOf(shopNoteModel)
 
@@ -89,7 +89,7 @@ class ShopInfoViewModelTest: ShopInfoViewModelTestFixture() {
     fun `check whether shopNoteId is 0 if id from response is string`() {
         runBlocking {
             val shopNoteModel = ShopNoteModel(
-                    id = "asd"
+                id = "asd"
             )
             val shopNotes = listOf(shopNoteModel)
 
@@ -105,7 +105,6 @@ class ShopInfoViewModelTest: ShopInfoViewModelTestFixture() {
     @Test
     fun when_get_shop_notes_error__should_post_fail() {
         runBlocking {
-
             onGetShopNotes_thenReturn_Error()
 
             viewModel.getShopNotes("1")
@@ -142,23 +141,23 @@ class ShopInfoViewModelTest: ShopInfoViewModelTestFixture() {
     fun `check whether userId should return mocked value`() {
         val mockUserId = "753348464"
         onGetUserId_thenReturn(mockUserId)
-        val userId =  viewModel.userId()
+        val userId = viewModel.userId()
         assert(userId == mockUserId)
     }
 
     @Test
     fun `when user is login and success to get chat existing message id`() {
         runBlocking {
-            //define return expected
+            // define return expected
             val shopMessageChat = ChatMessageId("123")
             onGetMessageIdChat_thenReturn(ChatExistingChat(shopMessageChat))
             isLoginSession_returnTrue()
 
-            //on exceute
+            // on exceute
             viewModel.getMessageIdOnChatExist("12")
             val resultInReal = viewModel.messageIdOnChatExist.value as Success<String>
 
-            //on assertion result
+            // on assertion result
             assert(viewModel.messageIdOnChatExist.value is Success)
             assertEquals("123", resultInReal.data)
         }
@@ -167,13 +166,13 @@ class ShopInfoViewModelTest: ShopInfoViewModelTestFixture() {
     @Test
     fun `when user not login to get chat existing message id`() {
         runBlocking {
-            //define return expected
+            // define return expected
             isLoginSession_returnFalse()
 
-            //on exceute
+            // on exceute
             viewModel.getMessageIdOnChatExist("0")
 
-            //on assertion result
+            // on assertion result
             val actualResultOfMessageId = (viewModel.messageIdOnChatExist.value)
             assert(actualResultOfMessageId is Fail)
             val failData = actualResultOfMessageId as Fail
@@ -184,14 +183,14 @@ class ShopInfoViewModelTest: ShopInfoViewModelTestFixture() {
     @Test
     fun `when user login but error to get chat existing message id`() {
         runBlocking {
-            //define return expected
+            // define return expected
             isLoginSession_returnTrue()
             onGetMessageIdChat_thenReturn_Error()
 
-            //on exceute
+            // on exceute
             viewModel.getMessageIdOnChatExist("0")
 
-            //on assertion result
+            // on assertion result
             val actualResultOfMessageId = (viewModel.messageIdOnChatExist.value)
             assert(actualResultOfMessageId is Fail)
         }
@@ -212,7 +211,6 @@ class ShopInfoViewModelTest: ShopInfoViewModelTestFixture() {
     private suspend fun onGetShopNotes_thenReturn_Error() {
         coEvery { getShopNotesUseCase.executeOnBackground() } throws Exception()
     }
-
 
     private fun onGetShopReputation_thenReturn(shopBadge: ShopBadge) {
         coEvery { getShopReputationUseCase.executeOnBackground() } returns shopBadge
@@ -261,8 +259,8 @@ class ShopInfoViewModelTest: ShopInfoViewModelTestFixture() {
     }
 
     private fun assertShopNoteEquals(
-            expectedShopNotes: Success<List<ShopNoteUiModel>>,
-            actualShopNotes: Success<List<ShopNoteUiModel>>
+        expectedShopNotes: Success<List<ShopNoteUiModel>>,
+        actualShopNotes: Success<List<ShopNoteUiModel>>
     ) {
         expectedShopNotes.data.forEachIndexed { index, expectedShopNote ->
             val actualShopNote = actualShopNotes.data[index]
@@ -282,23 +280,23 @@ class ShopInfoViewModelTest: ShopInfoViewModelTestFixture() {
     // region private methods
     private fun ShopInfo.toShopInfoData(): ShopInfoData {
         return ShopInfoData(
-                shopCore.shopID,
-                shopCore.name,
-                shopCore.description,
-                shopCore.url,
-                location,
-                shopAssets.cover,
-                shopCore.tagLine,
-                goldOS.isOfficial,
-                goldOS.isGold,
-                createdInfo.openSince,
-                emptyList(),
-                shopSnippetUrl,
-                isGoApotik,
-                epharmacyInfo.siaNumber,
-                epharmacyInfo.sipaNumber,
-                epharmacyInfo.apj,
-                partnerLabel
+            shopCore.shopID,
+            shopCore.name,
+            shopCore.description,
+            shopCore.url,
+            location,
+            shopAssets.cover,
+            shopCore.tagLine,
+            goldOS.isOfficial,
+            goldOS.isGold,
+            createdInfo.openSince,
+            emptyList(),
+            shopSnippetUrl,
+            isGoApotik,
+            epharmacyInfo.siaNumber,
+            epharmacyInfo.sipaNumber,
+            epharmacyInfo.apj,
+            partnerLabel
         )
     }
 
@@ -315,7 +313,7 @@ class ShopInfoViewModelTest: ShopInfoViewModelTestFixture() {
     }
     // endregion
 
-    //start GetMessageId
+    // start GetMessageId
     private suspend fun onGetMessageIdChat_thenReturn(shopMessageChat: ChatExistingChat) {
         coEvery { getMessageIdChatUseCase.executeOnBackground() } returns shopMessageChat
     }
@@ -331,5 +329,5 @@ class ShopInfoViewModelTest: ShopInfoViewModelTestFixture() {
     private fun isLoginSession_returnFalse() {
         every { userSessionInterface.isLoggedIn } returns false
     }
-    //end GetMessageId
+    // end GetMessageId
 }

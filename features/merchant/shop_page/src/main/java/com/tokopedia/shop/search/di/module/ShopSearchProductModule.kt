@@ -11,7 +11,6 @@ import com.tokopedia.user.session.UserSessionInterface
 import dagger.Module
 import dagger.Provides
 
-
 @Module(includes = [ShopSearchProductViewModelModule::class])
 class ShopSearchProductModule {
     @Provides
@@ -20,13 +19,13 @@ class ShopSearchProductModule {
     @ShopSearchProductScope
     @Provides
     fun provideUserSessionInterface(
-            @ShopPageContext context: Context
+        @ShopPageContext context: Context
     ): UserSessionInterface = UserSession(context)
 
     @ShopSearchProductScope
     @Provides
     fun provideNewShopPageTrackingShopSearchProduct(
-            trackingQueue: TrackingQueue
+        trackingQueue: TrackingQueue
     ) = ShopPageTrackingShopSearchProduct(trackingQueue)
 
     @ShopSearchProductScope

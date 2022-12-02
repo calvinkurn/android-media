@@ -18,6 +18,7 @@ class ShopRecomModelBuilder {
             title = if (isShown) "Toko lain sesuai rekomendasimu" else "",
             items = if (isShown) generateShopItem(type) else emptyList(),
             loadNextPage = if (isShown) nextCursor.isNotEmpty() && generateShopItem(type).isNotEmpty() else false,
+            isRefresh = if (isShown) nextCursor.isEmpty() else false,
         )
     }
 

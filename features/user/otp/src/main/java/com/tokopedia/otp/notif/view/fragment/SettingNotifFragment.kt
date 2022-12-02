@@ -178,7 +178,7 @@ class SettingNotifFragment : BaseOtpToolbarFragment(), IOnBackPressed {
 
         const val PARAM_DEVICE_STATUS = "device_status"
 
-        private const val LINK_IMG_PHONE_OTP_PUSH_NOTIF = "https://ecs7.tokopedia.net/android/user/phone_otp_push_notif.png"
+        private const val LINK_IMG_PHONE_OTP_PUSH_NOTIF = "https://images.tokopedia.net/android/user/phone_otp_push_notif.png"
 
         fun createInstance(bundle: Bundle): SettingNotifFragment {
             val fragment = SettingNotifFragment()

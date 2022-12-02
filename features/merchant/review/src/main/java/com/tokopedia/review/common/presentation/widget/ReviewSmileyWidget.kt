@@ -27,12 +27,12 @@ class ReviewSmileyWidget : BaseCustomView {
     }
 
     companion object {
-        private const val BAD_SMILEY_ANIMATION = "https://ecs7.tokopedia.net/android/reputation/reputation_smiley_bad.json"
-        private const val MEDIOCRE_SMILEY_ANIMATION = "https://ecs7.tokopedia.net/android/reputation/reputation_smiley_mediocre.json"
-        private const val EXCELLENT_SMILEY_ANIMATION = "https://ecs7.tokopedia.net/android/reputation/reputation_smiley_excellent.json"
-        private const val BAD_SMILEY_ANIMATION_REVERSE = "https://ecs7.tokopedia.net/android/reputation/reputation_smiley_bad_reverse.json"
-        private const val MEDIOCRE_SMILEY_ANIMATION_REVERSE = "https://ecs7.tokopedia.net/android/reputation/reputation_smiley_mediocre_reverse.json"
-        private const val EXCELLENT_SMILEY_ANIMATION_REVERSE = "https://ecs7.tokopedia.net/android/reputation/reputation_smiley_excellent_reverse.json"
+        private const val BAD_SMILEY_ANIMATION = "https://images.tokopedia.net/android/reputation/reputation_smiley_bad.json"
+        private const val MEDIOCRE_SMILEY_ANIMATION = "https://images.tokopedia.net/android/reputation/reputation_smiley_mediocre.json"
+        private const val EXCELLENT_SMILEY_ANIMATION = "https://images.tokopedia.net/android/reputation/reputation_smiley_excellent.json"
+        private const val BAD_SMILEY_ANIMATION_REVERSE = "https://images.tokopedia.net/android/reputation/reputation_smiley_bad_reverse.json"
+        private const val MEDIOCRE_SMILEY_ANIMATION_REVERSE = "https://images.tokopedia.net/android/reputation/reputation_smiley_mediocre_reverse.json"
+        private const val EXCELLENT_SMILEY_ANIMATION_REVERSE = "https://images.tokopedia.net/android/reputation/reputation_smiley_excellent_reverse.json"
     }
 
     private var isActive = false

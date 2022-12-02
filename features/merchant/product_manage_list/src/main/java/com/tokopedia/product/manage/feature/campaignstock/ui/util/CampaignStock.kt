@@ -8,7 +8,7 @@ import com.tokopedia.product.manage.R
 object CampaignStock {
     const val MAX_STOCK_COUNT = 999999
 
-    const val REDIRECTION_IMAGE_URL = "https://ecs7.tokopedia.net/android/img_campaign_stock_redirection.png"
+    const val REDIRECTION_IMAGE_URL = "https://images.tokopedia.net/android/img_campaign_stock_redirection.png"
 }
 
 /**
