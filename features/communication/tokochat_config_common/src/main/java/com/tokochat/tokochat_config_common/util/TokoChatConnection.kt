@@ -22,18 +22,20 @@ object TokoChatConnection {
     var tokoChatConfigComponent: TokoChatConfigComponent? = null
     var courierConnection: CourierConnection? = null
 
-    fun init(context: Context): Boolean {
-        if (!UserSession(context).isLoggedIn) return false
+    @Volatile
+    private var initializationStatus: Boolean = false
 
-        // If rollence turned off, return false
-        if (!isTokoChatActive()) return false
-
+    fun init(context: Context) {
         // Initialize AndroidThreeTen for Conversation SDK
         AndroidThreeTen.init(context.applicationContext)
 
-        tokoChatConfigComponent = DaggerTokoChatConfigComponent.builder()
-            .tokoChatConfigContextModule(TokoChatConfigContextModule(context.applicationContext))
-            .build()
+        injectTokoChatConfigComponent(context)
+
+        // If user does not login, return
+        if (!UserSession(context).isLoggedIn) return
+
+        // If rollence turned off, return
+        if (!isTokoChatActive()) return
 
         // Initialize Courier Connection
         courierConnection = tokoChatConfigComponent?.getCourierConnection()
@@ -41,7 +43,17 @@ object TokoChatConnection {
         if (courierConnection != null) {
             tokoChatConfigComponent?.getTokoChatRepository()?.initConversationRepository()
         }
-        return true
+
+        // Set initialization status to success
+        initializationStatus = true
+    }
+
+    private fun injectTokoChatConfigComponent(context: Context) {
+        if (tokoChatConfigComponent == null) {
+            tokoChatConfigComponent = DaggerTokoChatConfigComponent.builder()
+                .tokoChatConfigContextModule(TokoChatConfigContextModule(context.applicationContext))
+                .build()
+        }
     }
 
     fun disconnect() {
@@ -70,5 +82,9 @@ object TokoChatConnection {
         } catch (e: Throwable) {
             false
         }
+    }
+
+    fun hasBeenInitialized(): Boolean {
+        return initializationStatus
     }
 }
