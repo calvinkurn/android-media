@@ -303,182 +303,146 @@ object DeeplinkMapper {
     }
 
     val deeplinkPatternTokopediaSchemeList: MutableList<DLP> = mutableListOf(
-        DLP(
-            StartsWith(ApplinkConst.HOME),
-            targetDeeplink = { context, _, deeplink, _ -> getRegisteredNavigationHome(context, deeplink) }
-        ),
-        DLP.matchPattern(
-            ApplinkConst.PRODUCT_INFO,
-            targetDeeplink = { _, uri, _, idList -> getTokopediaInternalProduct(uri, idList) }
-        ),
-        DLP.host(ApplinkConst.WEBVIEW_HOST) { _, _, _, _ -> ApplinkConstInternalGlobal.WEBVIEW_BASE },
-        DLP.host(ApplinkConst.INBOX_HOST) { _, _, deeplink, _ -> DeeplinkMapperHome.getRegisteredInboxNavigation(deeplink) },
-        DLP.startWith(ApplinkConst.QRSCAN, ApplinkConstInternalMarketplace.QR_SCANNEER),
-        DLP.matchPattern(ApplinkConst.PRODUCT_REVIEW, targetDeeplink = { _, uri, _, _ -> DeeplinkMapperMerchant.getRegisteredNavigationProductDetailReview(uri) }),
-        DLP.host(ApplinkConst.ACCOUNT_HOST) { ctx, _, deeplink, _ -> DeeplinkMapperAccount.getAccountInternalApplink(deeplink) },
-        DLP.host(ApplinkConst.HOTEL_HOST) { ctx, _, deeplink, _ -> DeeplinkMapperTravel.getRegisteredNavigationTravel(ctx, deeplink) },
-        DLP(
-            DLPLogic { _, _, deeplink -> DeeplinkMapperUoh.isNavigationUohOrder(deeplink) },
-            targetDeeplink = { ctx, _, deeplink, _ -> DeeplinkMapperUoh.getRegisteredNavigationUohOrder(ctx, deeplink) }
-        ),
-        DLP.startWith(ApplinkConst.BUYER_ORDER_EXTENSION, ApplinkConstInternalOrder.MARKETPLACE_INTERNAL_BUYER_ORDER_EXTENSION),
-        DLP.exact(ApplinkConst.TRAVEL_SUBHOMEPAGE_HOME) { ctx, _, deeplink, _ -> getRegisteredNavigationDigital(ctx, deeplink) },
-        DLP.startWith(ApplinkConst.DIGITAL) { ctx, _, deeplink, _ -> getRegisteredNavigationDigital(ctx, deeplink) },
-        DLP.startWith(ApplinkConst.RECHARGE) { ctx, _, deeplink, _ -> getRegisteredNavigationDigital(ctx, deeplink) },
-        DLP.startWith(ApplinkConst.DISCOVERY_SEARCH) { _, _, deeplink, _ -> getRegisteredNavigationSearch(deeplink) },
-        DLP.startWith(ApplinkConst.CART) { ctx, _, deeplink, _ -> getRegisteredNavigationMarketplace(ctx, deeplink) },
-        DLP.startWith(ApplinkConst.CHECKOUT) { ctx, _, deeplink, _ -> getRegisteredNavigationMarketplace(ctx, deeplink) },
-        DLP.startWith(ApplinkConst.OCC) { ctx, _, deeplink, _ -> getRegisteredNavigationMarketplace(ctx, deeplink) },
-        DLP.startWith(ApplinkConst.DEALS_HOME) { ctx, _, deeplink, _ -> getRegisteredNavigationDeals(ctx, deeplink) },
-        DLP.startWith(ApplinkConst.FIND) { _, _, deeplink, _ -> getRegisteredFind(deeplink) },
-        DLP.startWith(ApplinkConst.AMP_FIND) { _, _, deeplink, _ -> getRegisteredFind(deeplink) },
-        DLP.matchPattern(ApplinkConst.PROFILE) { _, _, deeplink, _ -> DeeplinkMapperContent.getProfileDeeplink(deeplink) },
-        DLP.host(ApplinkConst.Digital.CATEGORY_EXPLORE_HOST) { _, _, deeplink, _ -> getRegisteredNavigationExploreCategory(deeplink) },
-        DLP.host(ApplinkConst.CATEGORY_HOST) { _, uri, deeplink, _ -> getRegisteredCategoryNavigation(deeplink, uri) },
-        DLP.matchPattern(ApplinkConst.PLAY_DETAIL) { _, _, deeplink, _ -> DeeplinkMapperContent.getRegisteredNavigation(deeplink) },
-        DLP.startWith(ApplinkConst.PLAY_BROADCASTER) { _, _, deeplink, _ -> DeeplinkMapperContent.getRegisteredNavigation(deeplink) },
-        DLP.host(ApplinkConst.HOME_HOT_HOST) { _, _, deeplink, _ -> getRegisteredHotlist(deeplink) },
-        DLP.matchPattern(ApplinkConst.PRODUCT_EDIT) { _, _, _, idList ->
-            DeepLinkMapperProductManage.getEditProductInternalAppLink(
-                idList?.getOrNull(0)
-                    ?: ""
-            )
-        },
-        DLP.matchPattern(ApplinkConst.SHOP_ETALASE_LIST) { _, _, _, idList ->
-            DeepLinkMapperEtalase.getEtalaseListInternalAppLink(idList?.getOrNull(0) ?: "")
-        },
-        DLP.startWith(ApplinkConst.PRODUCT_MANAGE) { _, _, deeplink, _ -> DeepLinkMapperProductManage.getProductListInternalAppLink(deeplink) },
-        DLP.startWith(ApplinkConst.PRODUCT_CREATE_REVIEW) { _, uri, _, _ -> getRegisteredNavigationProductReview(uri) },
-        DLP.host(ApplinkConst.REVIEW_HOST) { _, _, deeplink, _ -> getRegisteredNavigationReputation(deeplink) },
-        DLP.startWith(ApplinkConst.SELLER_REVIEW) { _, _, deeplink, _ -> ApplinkConstInternalMarketplace.SELLER_REVIEW_DETAIL },
-        DLP.startWith(ApplinkConst.TOKOPOINTS) { ctx, _, deeplink, _ -> getRegisteredNavigationTokopoints(deeplink) },
-        DLP.startWith(ApplinkConst.TOKOPEDIA_REWARD) { ctx, _, deeplink, _ -> getRegisteredNavigationTokopoints(deeplink) },
-        DLP.startWith(ApplinkConst.DEFAULT_RECOMMENDATION_PAGE) { _, _, deeplink, _ -> getRegisteredNavigationRecommendation(deeplink) },
-        DLP.startWith(ApplinkConst.HOME_EXPLORE) { _, _, deeplink, _ -> getRegisteredExplore(deeplink) },
-        DLP.host(ApplinkConst.CHATBOT_HOST) { _, _, deeplink, _ -> getChatbotDeeplink(deeplink) },
-        DLP.startWith(ApplinkConst.DISCOVERY_CATALOG) { _, _, deeplink, _ -> getRegisteredNavigationCatalog(deeplink) },
-        DLP.startWith(ApplinkConst.EPHARMACY) { _, _, deeplink, _ -> getRegisteredNavigationCategory(deeplink) },
-        DLP.matchPattern(ApplinkConst.AFFILIATE_TOKO) { _, _, deeplink, _ -> getRegisteredNavigationAffiliate(deeplink) },
-        DLP.matchPattern(ApplinkConst.AFFILIATE_TOKO_HELP) { _, _, deeplink, _ -> getRegisteredNavigationAffiliate(deeplink) },
-        DLP.matchPattern(ApplinkConst.AFFILIATE_TOKO_TRANSACTION_HISTORY) { _, _, deeplink, _ -> getRegisteredNavigationAffiliate(deeplink) },
-        DLP.matchPattern(ApplinkConst.AFFILIATE_TOKO_ONBOARDING) { _, _, deeplink, _ -> getRegisteredNavigationAffiliate(deeplink) },
-        DLP.startWith(ApplinkConst.MONEYIN) { _, _, deeplink, _ -> getRegisteredNavigationMoneyIn(deeplink) },
-        DLP.startWith(ApplinkConst.OQR_PIN_URL_ENTRY_LINK) { _, uri, _, _ -> getRegisteredNavigationForFintech(uri) },
-        DLP.startWith(ApplinkConst.LAYANAN_FINANSIAL) { _, _, deeplink, _ -> getRegisteredNavigationForLayanan(deeplink) },
-        DLP.startWith(ApplinkConst.SALAM_UMRAH) { ctx, _, deeplink, _ -> getRegisteredNavigationSalamUmrah(deeplink, ctx) },
-        DLP.startWith(ApplinkConst.SALAM_UMRAH_ORDER_DETAIL) { ctx, _, deeplink, _ -> getRegisteredNavigationSalamUmrahOrderDetail(deeplink, ctx) },
-        DLP.startWith(ApplinkConst.OFFICIAL_STORE) { _, _, deeplink, _ -> getRegisteredNavigationHomeOfficialStore(deeplink) },
-        DLP.startWith(ApplinkConst.GOLD_MERCHANT_STATISTIC_DASHBOARD) { ctx, _, deeplink, _ -> getRegisteredNavigationMarketplace(ctx, deeplink) },
-        DLP.startWith(ApplinkConst.SHOP_SCORE_DETAIL) { _, uri, _, _ -> ShopScoreDeepLinkMapper.getInternalAppLinkShopScore(uri) },
-        DLP.exact(ApplinkConst.SHOP_PENALTY, ApplinkConstInternalMarketplace.SHOP_PENALTY),
-        DLP.exact(ApplinkConst.SHOP_PENALTY_DETAIL, ApplinkConstInternalMarketplace.SHOP_PENALTY_DETAIL),
-        DLP.exact(ApplinkConst.ADMIN_INVITATION, ApplinkConstInternalMarketplace.ADMIN_INVITATION),
-        DLP.startWith(ApplinkConst.ADMIN_ACCEPTED) { _, uri, _, _ -> ShopAdminDeepLinkMapper.getInternalAppLinkAdminAccepted(uri) },
-        DLP.exact(ApplinkConst.ADMIN_REDIRECTION, ApplinkConstInternalMarketplace.ADMIN_REDIRECTION),
-        DLP.startWith(ApplinkConst.POWER_MERCHANT_PRO_INTERRUPT) { _, _, deeplink, _ -> PowerMerchantDeepLinkMapper.getInternalAppLinkPmProInterrupt(deeplink) },
-        DLP.startWith(ApplinkConst.Gamification.CRACK) { _, _, deeplink, _ -> DeeplinkMapperGamification.getGamificationDeeplink(deeplink) },
-        DLP.startWith(ApplinkConst.SELLER_ORDER_DETAIL) { context, uri, deeplink, _ -> getRegisteredNavigationOrder(context, uri, deeplink) },
-        DLP.startWith(ApplinkConst.LOGISTIC_SELLER_RESCHEDULE) { _, uri, _, _ -> DeeplinkMapperLogistic.getReschedulePickupDeeplink(uri) },
-        DLP.startWith(ApplinkConst.SETTING_EDIT_ADDRESS) { _, _, deeplink, _ -> DeeplinkMapperLogistic.getEditAddressDeeplink(deeplink) },
-        DLP(Host(ApplinkConst.TOPCHAT_HOST) or Host(ApplinkConst.TOPCHAT_OLD_HOST)) { _, uri, deeplink, _ -> getRegisteredNavigationTopChat(uri, deeplink) },
-        DLP.startWith(ApplinkConst.TALK) { _, _, deeplink, _ -> getRegisteredNavigationTalk(deeplink) },
-        DLP.startWith(ApplinkConst.EVENTS) { ctx, _, deeplink, _ -> getRegisteredNavigationEvents(deeplink, ctx) },
-        DLP.matchPattern(
-            ApplinkConst.PRODUCT_TALK,
-            targetDeeplink = { _, _, _, idList -> getRegisteredNavigationProductTalk(idList?.getOrNull(0)) }
-        ),
-        DLP.matchPattern(
-            ApplinkConst.SHOP_TALK,
-            targetDeeplink = { _, _, _, idList -> getRegisteredNavigationShopTalk(idList?.getOrNull(0)) }
-        ),
-        DLP.startWith(ApplinkConst.SELLER_NEW_ORDER) { _, uri, _, _ -> getSomNewOrderAppLink(uri) },
-        DLP.startWith(ApplinkConst.SELLER_PURCHASE_READY_TO_SHIP) { _, uri, _, _ -> getSomReadyToShipAppLink(uri) },
-        DLP.startWith(ApplinkConst.SELLER_PURCHASE_DELIVERED) { _, _, deeplink, _ -> getRegisteredNavigationMainAppSellerDelivered() },
-        DLP.startWith(ApplinkConst.SELLER_PURCHASE_WAITING_PICKUP) { _, _, deeplink, _ -> getRegisteredNavigationMainAppSellerWaitingPickup() },
-        DLP.startWith(ApplinkConst.SELLER_PURCHASE_WAITING_AWB) { _, _, deeplink, _ -> getRegisteredNavigationMainAppSellerWaitingAwb() },
-        DLP.startWith(ApplinkConst.SELLER_PURCHASE_AWB_INVALID) { _, _, deeplink, _ -> getRegisteredNavigationMainAppSellerAwbInvalid() },
-        DLP.startWith(ApplinkConst.SELLER_PURCHASE_AWB_CHANGE) { _, _, deeplink, _ -> getRegisteredNavigationMainAppSellerAwbChange() },
-        DLP.startWith(ApplinkConst.SELLER_PURCHASE_RETUR) { _, _, deeplink, _ -> getRegisteredNavigationMainAppSellerRetur() },
-        DLP.startWith(ApplinkConst.SELLER_PURCHASE_COMPLAINT) { _, _, deeplink, _ -> getRegisteredNavigationMainAppSellerComplaint() },
-        DLP.startWith(ApplinkConst.SELLER_HISTORY) { _, uri, _, _ -> getSomAllOrderAppLink(uri) },
-        DLP.startWith(ApplinkConst.SELLER_PURCHASE_SHIPPED) { _, uri, _, _ -> getSomShippedAppLink(uri) },
-        DLP.startWith(ApplinkConst.SELLER_SHIPMENT) { _, uri, _, _ -> getSomReadyToShipAppLink(uri) },
-        DLP.startWith(ApplinkConst.SELLER_PURCHASE_FINISHED) { _, uri, _, _ -> getSomDoneAppLink(uri) },
-        DLP.startWith(ApplinkConst.SELLER_PURCHASE_CANCELED) { _, uri, _, _ -> getSomCancelledAppLink(uri) },
-        DLP.startWith(ApplinkConst.SELLER_PURCHASE_CANCELLATION_REQUEST) { _, uri, _, _ -> getSomCancellationRequestAppLink(uri) },
-        DLP.startWith(ApplinkConst.SELLER_STATUS) { _, uri, _, _ -> getSomShippedAppLink(uri) },
-        DLP.startWith(ApplinkConst.FEED_DETAILS) { _, _, deeplink, _ -> getRegisteredFeed(deeplink) },
-        DLP.startWith(ApplinkConst.FEED_PlAY_LIVE_DETAIL, ApplinkConstInternalFeed.INTERNAL_PLAY_LIVE_DETAILS),
-        DLP.exact(
-            ApplinkConst.FEED,
-            targetDeeplink = { _, _, _, _ -> getRegisteredNavigationHomeFeed() }
-        ),
-        DLP.exact(
-            ApplinkConst.FEED_EXPLORE,
-            targetDeeplink = { _, _, _, _ -> getRegisteredNavigationHomeFeedExplore() }
-        ),
-        DLP.exact(
-            ApplinkConst.FEED_VIDEO,
-            targetDeeplink = { _, _, deeplink, _ -> getRegisteredNavigationHomeFeedVideo(deeplink) }
-        ),
-        DLP(
-            Exact(ApplinkConst.PROMO).or(Exact(ApplinkConst.PROMO_LIST)),
-            targetDeeplink = { _, _, _, _ -> ApplinkConstInternalPromo.PROMO_LIST }
-        ),
-        DLP.matchPattern(
-            ApplinkConst.PROMO_DETAIL,
-            targetDeeplink = { _, _, _, idList -> UriUtil.buildUri(ApplinkConstInternalPromo.PROMO_DETAIL, idList?.getOrNull(0)) }
-        ),
-        DLP.matchPattern(ApplinkConst.CONTENT_EXPLORE) { _, _, deeplink, _ -> getRegisteredNavigationHomeContentExplore(deeplink) },
-        DLP(
-            MatchPattern(ApplinkConst.SHOP),
-            targetDeeplink = { ctx, uri, deeplink, idList -> getShopPageInternalAppLink(ctx, uri, deeplink, UriUtil.buildUri(ApplinkConstInternalMarketplace.SHOP_PAGE, idList?.getOrNull(0)), idList?.getOrNull(0).orEmpty()) }
-        ),
-        DLP.matchPattern(
-            ApplinkConst.SHOP_HOME,
-            targetDeeplink = { ctx, uri, deeplink, idList -> getShopPageInternalAppLink(ctx, uri, deeplink, UriUtil.buildUri(ApplinkConstInternalMarketplace.SHOP_PAGE_HOME, idList?.getOrNull(0)), idList?.getOrNull(0).orEmpty()) }
-        ),
-        DLP.matchPattern(
-            ApplinkConst.SHOP_PRODUCT,
-            targetDeeplink = { ctx, uri, deeplink, idList -> getShopPageInternalAppLink(ctx, uri, deeplink, UriUtil.buildUri(ApplinkConstInternalMarketplace.SHOP_PAGE_PRODUCT, idList?.getOrNull(0)), idList?.getOrNull(0).orEmpty()) }
-        ),
-        DLP.matchPattern(
-            ApplinkConst.SHOP_FEED,
-            targetDeeplink = { ctx, uri, deeplink, idList -> getShopPageInternalAppLink(ctx, uri, deeplink, UriUtil.buildUri(ApplinkConstInternalMarketplace.SHOP_PAGE_FEED, idList?.getOrNull(0)), idList?.getOrNull(0).orEmpty()) }
-        ),
-        DLP.matchPattern(
-            ApplinkConst.SHOP_REVIEW,
-            targetDeeplink = { ctx, uri, deeplink, idList -> getShopPageInternalAppLink(ctx, uri, deeplink, UriUtil.buildUri(ApplinkConstInternalMarketplace.SHOP_PAGE_REVIEW, idList?.getOrNull(0)), idList?.getOrNull(0).orEmpty()) }
-        ),
-        DLP.matchPattern(
-            ApplinkConst.SHOP_FOLLOWER_LIST,
-            targetDeeplink = { ctx, uri, deeplink, idList -> getShopPageInternalAppLink(ctx, uri, deeplink, UriUtil.buildUri(ApplinkConstInternalMarketplace.SHOP_FAVOURITE_LIST_WITH_SHOP_ID, idList?.getOrNull(0)), idList?.getOrNull(0).orEmpty()) }
-        ),
-        DLP.matchPattern(
-            ApplinkConst.SHOP_SETTINGS_CUSTOMER_APP,
-            targetDeeplink = { ctx, uri, deeplink, idList -> getShopPageInternalAppLink(ctx, uri, deeplink, UriUtil.buildUri(ApplinkConstInternalMarketplace.SHOP_PAGE_SETTING_CUSTOMER_APP_WITH_SHOP_ID, idList?.getOrNull(0)), idList?.getOrNull(0).orEmpty()) }
-        ),
-        DLP.matchPattern(
-            ApplinkConst.SHOP_INFO,
-            targetDeeplink = { ctx, uri, deeplink, idList -> getShopPageInternalAppLink(ctx, uri, deeplink, UriUtil.buildUri(ApplinkConstInternalMarketplace.SHOP_PAGE_INFO, idList?.getOrNull(0)), idList?.getOrNull(0).orEmpty()) }
-        ),
-        DLP.matchPattern(
-            ApplinkConst.SHOP_NOTE,
-            targetDeeplink = { ctx, uri, deeplink, idList -> getShopPageInternalAppLink(ctx, uri, deeplink, UriUtil.buildUri(ApplinkConstInternalMarketplace.SHOP_PAGE_NOTE, idList?.getOrNull(0)), idList?.getOrNull(0).orEmpty()) }
-        ),
-        DLP.matchPattern(
-            ApplinkConst.SHOP_ETALASE,
-            targetDeeplink = { ctx, uri, deeplink, idList -> getShopPageInternalAppLink(ctx, uri, deeplink, UriUtil.buildUri(ApplinkConstInternalMarketplace.SHOP_PAGE_PRODUCT_LIST, idList?.getOrNull(0), idList?.getOrNull(1)), idList?.getOrNull(0).orEmpty()) }
-        ),
-        DLP.matchPattern(ApplinkConst.SHOP_OPERATIONAL_HOUR) { _, uri, _, idList -> DeeplinkMapperMarketplace.getShopOperationalHourInternalAppLink(idList?.getOrNull(0).orEmpty()) },
-        DLP.matchPattern(ApplinkConst.SHOP_MVC_LOCKED_TO_PRODUCT) { _, uri, _, idList ->
-            val shopId = idList?.getOrNull(0).orEmpty()
-            val voucherId = idList?.getOrNull(1).orEmpty()
-            DeeplinkMapperMarketplace.getShopMvcLockedToProductShopIdInternalAppLink(shopId, voucherId)
-        },
-        DLP.startWith(ApplinkConst.SELLER_INFO_DETAIL) { _, uri, _, _ -> DeeplinkMapperMerchant.getSellerInfoDetailApplink(uri) },
-        DLP.matchPattern(ApplinkConst.ORDER_TRACKING) { _, _, deeplink, _ -> DeeplinkMapperLogistic.getRegisteredNavigationOrder(deeplink) },
-        DLP.matchPattern(ApplinkConst.ORDER_POD) { _, _, deeplink, _ -> DeeplinkMapperLogistic.getRegisteredNavigationPod(deeplink) },
+            DLP(StartsWith(ApplinkConst.HOME),
+                    targetDeeplink = { context, _, deeplink, _ -> getRegisteredNavigationHome(context, deeplink) }),
+            DLP.matchPattern(ApplinkConst.PRODUCT_INFO,
+                    targetDeeplink = { _, uri, _, idList -> getTokopediaInternalProduct(uri, idList) }),
+            DLP.host(ApplinkConst.WEBVIEW_HOST) { _, _, _, _ -> ApplinkConstInternalGlobal.WEBVIEW_BASE },
+            DLP.host(ApplinkConst.INBOX_HOST) { _, _, deeplink, _ -> DeeplinkMapperHome.getRegisteredInboxNavigation(deeplink) },
+            DLP.startWith(ApplinkConst.QRSCAN, ApplinkConstInternalMarketplace.QR_SCANNEER),
+            DLP.matchPattern(ApplinkConst.PRODUCT_REVIEW, targetDeeplink = { _, uri, _, _ -> DeeplinkMapperMerchant.getRegisteredNavigationProductDetailReview(uri) }),
+            DLP.host(ApplinkConst.ACCOUNT_HOST) { ctx, _, deeplink, _ -> DeeplinkMapperAccount.getAccountInternalApplink(deeplink) },
+            DLP.host(ApplinkConst.HOTEL_HOST) { ctx, _, deeplink, _ -> DeeplinkMapperTravel.getRegisteredNavigationTravel(ctx, deeplink) },
+            DLP(DLPLogic { _, _, deeplink -> DeeplinkMapperUoh.isNavigationUohOrder(deeplink) },
+                    targetDeeplink = { ctx, _, deeplink, _ -> DeeplinkMapperUoh.getRegisteredNavigationUohOrder(ctx, deeplink) }),
+            DLP.startWith(ApplinkConst.BUYER_ORDER_EXTENSION, ApplinkConstInternalOrder.MARKETPLACE_INTERNAL_BUYER_ORDER_EXTENSION),
+            DLP.exact(ApplinkConst.TRAVEL_SUBHOMEPAGE_HOME) { ctx, _, deeplink, _ -> getRegisteredNavigationDigital(ctx, deeplink) },
+            DLP.startWith(ApplinkConst.DIGITAL) { ctx, _, deeplink, _ -> getRegisteredNavigationDigital(ctx, deeplink) },
+            DLP.startWith(ApplinkConst.RECHARGE) { ctx, _, deeplink, _ -> getRegisteredNavigationDigital(ctx, deeplink) },
+            DLP.startWith(ApplinkConst.DISCOVERY_SEARCH) { _, _, deeplink, _ -> getRegisteredNavigationSearch(deeplink) },
+            DLP.startWith(ApplinkConst.CART) { ctx, _, deeplink, _ -> getRegisteredNavigationMarketplace(ctx, deeplink) },
+            DLP.startWith(ApplinkConst.CHECKOUT) { ctx, _, deeplink, _ -> getRegisteredNavigationMarketplace(ctx, deeplink) },
+            DLP.startWith(ApplinkConst.OCC) { ctx, _, deeplink, _ -> getRegisteredNavigationMarketplace(ctx, deeplink) },
+            DLP.startWith(ApplinkConst.DEALS_HOME) { ctx, _, deeplink, _ -> getRegisteredNavigationDeals(ctx, deeplink) },
+            DLP.startWith(ApplinkConst.FIND) { _, _, deeplink, _ -> getRegisteredFind(deeplink) },
+            DLP.startWith(ApplinkConst.AMP_FIND) { _, _, deeplink, _ -> getRegisteredFind(deeplink) },
+            DLP.matchPattern(ApplinkConst.PROFILE) { _, _, deeplink, _ -> DeeplinkMapperContent.getProfileDeeplink(deeplink) },
+            DLP.host(ApplinkConst.Digital.CATEGORY_EXPLORE_HOST) { _, _, deeplink, _ -> getRegisteredNavigationExploreCategory(deeplink) },
+            DLP.host(ApplinkConst.CATEGORY_HOST) { _, uri, deeplink, _ -> getRegisteredCategoryNavigation(deeplink, uri) },
+            DLP.matchPattern(ApplinkConst.PLAY_DETAIL) { _, _, deeplink, _ -> DeeplinkMapperContent.getRegisteredNavigation(deeplink) },
+            DLP.startWith(ApplinkConst.PLAY_BROADCASTER) { _, _, deeplink, _ -> DeeplinkMapperContent.getRegisteredNavigation(deeplink) },
+            DLP.host(ApplinkConst.HOME_HOT_HOST) { _, _, deeplink, _ -> getRegisteredHotlist(deeplink) },
+            DLP.matchPattern(ApplinkConst.PRODUCT_EDIT) { _, _, _, idList ->
+                DeepLinkMapperProductManage.getEditProductInternalAppLink(idList?.getOrNull(0)
+                        ?: "")
+            },
+            DLP.matchPattern(ApplinkConst.SHOP_ETALASE_LIST) { _, _, _, idList ->
+                DeepLinkMapperEtalase.getEtalaseListInternalAppLink(idList?.getOrNull(0) ?: "")
+            },
+            DLP.startWith(ApplinkConst.PRODUCT_MANAGE) { _, _, deeplink, _ -> DeepLinkMapperProductManage.getProductListInternalAppLink(deeplink) },
+            DLP.startWith(ApplinkConst.PRODUCT_CREATE_REVIEW) { _, uri, _, _ -> getRegisteredNavigationProductReview(uri) },
+            DLP.host(ApplinkConst.REVIEW_HOST) { _, _, deeplink, _ -> getRegisteredNavigationReputation(deeplink) },
+            DLP.startWith(ApplinkConst.SELLER_REVIEW) { _, _, deeplink, _ -> ApplinkConstInternalMarketplace.SELLER_REVIEW_DETAIL },
+            DLP.startWith(ApplinkConst.TOKOPOINTS) { ctx, _, deeplink, _ -> getRegisteredNavigationTokopoints( deeplink) },
+            DLP.startWith(ApplinkConst.TOKOPEDIA_REWARD) { ctx, _, deeplink, _ -> getRegisteredNavigationTokopoints( deeplink) },
+            DLP.startWith(ApplinkConst.DEFAULT_RECOMMENDATION_PAGE) { _, _, deeplink, _ -> getRegisteredNavigationRecommendation(deeplink) },
+            DLP.startWith(ApplinkConst.HOME_EXPLORE) { _, _, deeplink, _ -> getRegisteredExplore(deeplink) },
+            DLP.host(ApplinkConst.CHATBOT_HOST) { _, _, deeplink, _ -> getChatbotDeeplink(deeplink) },
+            DLP.startWith(ApplinkConst.DISCOVERY_CATALOG) { _, _, deeplink, _ -> getRegisteredNavigationCatalog(deeplink) },
+            DLP.startWith(ApplinkConst.EPHARMACY) { _, _, deeplink, _ -> getRegisteredNavigationCategory(deeplink) },
+            DLP.matchPattern(ApplinkConst.AFFILIATE_TOKO) { _, _, deeplink, _ -> getRegisteredNavigationAffiliate(deeplink) },
+            DLP.matchPattern(ApplinkConst.AFFILIATE_TOKO_HELP) { _, _, deeplink, _ -> getRegisteredNavigationAffiliate(deeplink) },
+            DLP.matchPattern(ApplinkConst.AFFILIATE_TOKO_TRANSACTION_HISTORY) { _, _, deeplink, _ -> getRegisteredNavigationAffiliate(deeplink) },
+            DLP.matchPattern(ApplinkConst.AFFILIATE_TOKO_ONBOARDING) { _, _, deeplink, _ -> getRegisteredNavigationAffiliate(deeplink) },
+            DLP.startWith(ApplinkConst.MONEYIN) { _, _, deeplink, _ -> getRegisteredNavigationMoneyIn(deeplink) },
+            DLP.startWith(ApplinkConst.OQR_PIN_URL_ENTRY_LINK) { _, uri, _, _ -> getRegisteredNavigationForFintech(uri) },
+            DLP.startWith(ApplinkConst.LAYANAN_FINANSIAL) { _, _, deeplink, _ -> getRegisteredNavigationForLayanan(deeplink) },
+            DLP.startWith(ApplinkConst.SALAM_UMRAH) { ctx, _, deeplink, _ -> getRegisteredNavigationSalamUmrah(deeplink, ctx) },
+            DLP.startWith(ApplinkConst.SALAM_UMRAH_ORDER_DETAIL) { ctx, _, deeplink, _ -> getRegisteredNavigationSalamUmrahOrderDetail(deeplink, ctx) },
+            DLP.startWith(ApplinkConst.OFFICIAL_STORE) { _, _, deeplink, _ -> getRegisteredNavigationHomeOfficialStore(deeplink) },
+            DLP.startWith(ApplinkConst.GOLD_MERCHANT_STATISTIC_DASHBOARD) { ctx, _, deeplink, _ -> getRegisteredNavigationMarketplace(ctx, deeplink) },
+            DLP.startWith(ApplinkConst.SHOP_SCORE_DETAIL) { _, uri, _, _ -> ShopScoreDeepLinkMapper.getInternalAppLinkShopScore(uri) },
+            DLP.exact(ApplinkConst.SHOP_PENALTY, ApplinkConstInternalMarketplace.SHOP_PENALTY),
+            DLP.exact(ApplinkConst.SHOP_PENALTY_DETAIL, ApplinkConstInternalMarketplace.SHOP_PENALTY_DETAIL),
+            DLP.exact(ApplinkConst.ADMIN_INVITATION, ApplinkConstInternalMarketplace.ADMIN_INVITATION),
+            DLP.startWith(ApplinkConst.ADMIN_ACCEPTED) { _, uri, _, _ -> ShopAdminDeepLinkMapper.getInternalAppLinkAdminAccepted(uri) },
+            DLP.exact(ApplinkConst.ADMIN_REDIRECTION, ApplinkConstInternalMarketplace.ADMIN_REDIRECTION),
+            DLP.startWith(ApplinkConst.POWER_MERCHANT_PRO_INTERRUPT) { _, _, deeplink, _ -> PowerMerchantDeepLinkMapper.getInternalAppLinkPmProInterrupt(deeplink) },
+            DLP.startWith(ApplinkConst.Gamification.CRACK) { _, _, deeplink, _ -> DeeplinkMapperGamification.getGamificationDeeplink(deeplink) },
+            DLP.startWith(ApplinkConst.SELLER_ORDER_DETAIL) { context, uri, deeplink, _ -> getRegisteredNavigationOrder(context, uri, deeplink) },
+            DLP.startWith(ApplinkConst.LOGISTIC_SELLER_RESCHEDULE) { _, uri, _, _ -> DeeplinkMapperLogistic.getReschedulePickupDeeplink(uri) },
+            DLP.startWith(ApplinkConst.SETTING_EDIT_ADDRESS) { _, _, deeplink, _ -> DeeplinkMapperLogistic.getEditAddressDeeplink(deeplink) },
+            DLP(Host(ApplinkConst.TOPCHAT_HOST) or Host(ApplinkConst.TOPCHAT_OLD_HOST)) { _, uri, deeplink, _ -> getRegisteredNavigationTopChat(uri, deeplink) },
+            DLP.startWith(ApplinkConst.TALK) { _, _, deeplink, _ -> getRegisteredNavigationTalk(deeplink) },
+            DLP.startWith(ApplinkConst.EVENTS) { ctx, _, deeplink, _ -> getRegisteredNavigationEvents(deeplink, ctx) },
+            DLP.matchPattern(ApplinkConst.PRODUCT_TALK,
+                    targetDeeplink = { _, _, _, idList -> getRegisteredNavigationProductTalk(idList?.getOrNull(0)) }),
+            DLP.matchPattern(ApplinkConst.SHOP_TALK,
+                    targetDeeplink = { _, _, _, idList -> getRegisteredNavigationShopTalk(idList?.getOrNull(0)) }),
+            DLP.startWith(ApplinkConst.SELLER_NEW_ORDER) { _, uri, _, _ -> getSomNewOrderAppLink(uri) },
+            DLP.startWith(ApplinkConst.SELLER_PURCHASE_READY_TO_SHIP) { _, uri, _, _ -> getSomReadyToShipAppLink(uri) },
+            DLP.startWith(ApplinkConst.SELLER_PURCHASE_DELIVERED) { _, _, deeplink, _ -> getRegisteredNavigationMainAppSellerDelivered() },
+            DLP.startWith(ApplinkConst.SELLER_PURCHASE_WAITING_PICKUP) { _, _, deeplink, _ -> getRegisteredNavigationMainAppSellerWaitingPickup() },
+            DLP.startWith(ApplinkConst.SELLER_PURCHASE_WAITING_AWB) { _, _, deeplink, _ -> getRegisteredNavigationMainAppSellerWaitingAwb() },
+            DLP.startWith(ApplinkConst.SELLER_PURCHASE_AWB_INVALID) { _, _, deeplink, _ -> getRegisteredNavigationMainAppSellerAwbInvalid() },
+            DLP.startWith(ApplinkConst.SELLER_PURCHASE_AWB_CHANGE) { _, _, deeplink, _ -> getRegisteredNavigationMainAppSellerAwbChange() },
+            DLP.startWith(ApplinkConst.SELLER_PURCHASE_RETUR) { _, _, deeplink, _ -> getRegisteredNavigationMainAppSellerRetur() },
+            DLP.startWith(ApplinkConst.SELLER_PURCHASE_COMPLAINT) { _, _, deeplink, _ -> getRegisteredNavigationMainAppSellerComplaint() },
+            DLP.startWith(ApplinkConst.SELLER_HISTORY) { _, uri, _, _ -> getSomAllOrderAppLink(uri) },
+            DLP.startWith(ApplinkConst.SELLER_PURCHASE_SHIPPED) { _, uri, _, _ -> getSomShippedAppLink(uri) },
+            DLP.startWith(ApplinkConst.SELLER_SHIPMENT) { _, uri, _, _ -> getSomReadyToShipAppLink(uri) },
+            DLP.startWith(ApplinkConst.SELLER_PURCHASE_FINISHED) { _, uri, _, _ -> getSomDoneAppLink(uri) },
+            DLP.startWith(ApplinkConst.SELLER_PURCHASE_CANCELED) { _, uri, _, _ -> getSomCancelledAppLink(uri) },
+            DLP.startWith(ApplinkConst.SELLER_PURCHASE_CANCELLATION_REQUEST) { _, uri, _, _ -> getSomCancellationRequestAppLink(uri) },
+            DLP.startWith(ApplinkConst.SELLER_STATUS) { _, uri, _, _ -> getSomShippedAppLink(uri) },
+            DLP.startWith(ApplinkConst.FEED_DETAILS) { _, _, deeplink, _ -> getRegisteredFeed(deeplink) },
+            DLP.startWith(ApplinkConst.FEED_PlAY_LIVE_DETAIL, ApplinkConstInternalFeed.INTERNAL_PLAY_LIVE_DETAILS),
+            DLP.exact(ApplinkConst.FEED,
+                targetDeeplink = { _, _, _, _ -> getRegisteredNavigationHomeFeed() }),
+            DLP.exact(
+                ApplinkConst.FEED_EXPLORE,
+                targetDeeplink = { _, _, _, _ -> getRegisteredNavigationHomeFeedExplore() }
+            ),
+            DLP.exact(
+                ApplinkConst.FEED_VIDEO,
+                targetDeeplink = { _, _, deeplink, _ -> getRegisteredNavigationHomeFeedVideo(deeplink) }
+            ),
+            DLP(Exact(ApplinkConst.PROMO).or(Exact(ApplinkConst.PROMO_LIST)),
+                targetDeeplink = { _, _, _, _ -> ApplinkConstInternalPromo.PROMO_LIST }),
+            DLP.matchPattern(ApplinkConst.PROMO_DETAIL,
+                targetDeeplink = { _, _, _, idList -> UriUtil.buildUri(ApplinkConstInternalPromo.PROMO_DETAIL, idList?.getOrNull(0)) }),
+            DLP.matchPattern(ApplinkConst.CONTENT_EXPLORE) { _, _, deeplink, _ -> getRegisteredNavigationHomeContentExplore(deeplink) },
+            DLP(MatchPattern(ApplinkConst.SHOP),
+                    targetDeeplink = { ctx, uri, deeplink, idList -> getShopPageInternalAppLink(ctx, uri, deeplink, UriUtil.buildUri(ApplinkConstInternalMarketplace.SHOP_PAGE, idList?.getOrNull(0)), idList?.getOrNull(0).orEmpty()) }),
+            DLP.matchPattern(ApplinkConst.SHOP_HOME,
+                    targetDeeplink = { ctx, uri, deeplink, idList -> getShopPageInternalAppLink(ctx, uri, deeplink, UriUtil.buildUri(ApplinkConstInternalMarketplace.SHOP_PAGE_HOME, idList?.getOrNull(0)), idList?.getOrNull(0).orEmpty()) }),
+            DLP.matchPattern(ApplinkConst.SHOP_PRODUCT,
+                    targetDeeplink = { ctx, uri, deeplink, idList -> getShopPageInternalAppLink(ctx, uri, deeplink, UriUtil.buildUri(ApplinkConstInternalMarketplace.SHOP_PAGE_PRODUCT, idList?.getOrNull(0)), idList?.getOrNull(0).orEmpty()) }),
+            DLP.matchPattern(ApplinkConst.SHOP_FEED,
+                    targetDeeplink = { ctx, uri, deeplink, idList -> getShopPageInternalAppLink(ctx, uri, deeplink,UriUtil.buildUri(ApplinkConstInternalMarketplace.SHOP_PAGE_FEED, idList?.getOrNull(0)), idList?.getOrNull(0).orEmpty()) }),
+            DLP.matchPattern(ApplinkConst.SHOP_REVIEW,
+                    targetDeeplink = { ctx, uri, deeplink, idList -> getShopPageInternalAppLink(ctx, uri, deeplink,UriUtil.buildUri(ApplinkConstInternalMarketplace.SHOP_PAGE_REVIEW, idList?.getOrNull(0)), idList?.getOrNull(0).orEmpty()) }),
+            DLP.matchPattern(ApplinkConst.SHOP_FOLLOWER_LIST,
+                    targetDeeplink = { ctx, uri, deeplink, idList -> getShopPageInternalAppLink(ctx, uri, deeplink,UriUtil.buildUri(ApplinkConstInternalMarketplace.SHOP_FAVOURITE_LIST_WITH_SHOP_ID, idList?.getOrNull(0)), idList?.getOrNull(0).orEmpty()) }),
+            DLP.matchPattern(ApplinkConst.SHOP_SETTINGS_CUSTOMER_APP,
+                    targetDeeplink = { ctx, uri, deeplink, idList -> getShopPageInternalAppLink(ctx, uri, deeplink,UriUtil.buildUri(ApplinkConstInternalMarketplace.SHOP_PAGE_SETTING_CUSTOMER_APP_WITH_SHOP_ID, idList?.getOrNull(0)), idList?.getOrNull(0).orEmpty()) }),
+            DLP.matchPattern(ApplinkConst.SHOP_INFO,
+                    targetDeeplink = { ctx, uri, deeplink, idList -> getShopPageInternalAppLink(ctx, uri, deeplink,UriUtil.buildUri(ApplinkConstInternalMarketplace.SHOP_PAGE_INFO, idList?.getOrNull(0)), idList?.getOrNull(0).orEmpty()) }),
+            DLP.matchPattern(ApplinkConst.SHOP_NOTE,
+                    targetDeeplink = { ctx, uri, deeplink, idList -> getShopPageInternalAppLink(ctx, uri, deeplink,UriUtil.buildUri(ApplinkConstInternalMarketplace.SHOP_PAGE_NOTE, idList?.getOrNull(0)), idList?.getOrNull(0).orEmpty()) }),
+            DLP.matchPattern(ApplinkConst.SHOP_ETALASE,
+                    targetDeeplink = { ctx, uri, deeplink, idList -> getShopPageInternalAppLink(ctx, uri, deeplink,UriUtil.buildUri(ApplinkConstInternalMarketplace.SHOP_PAGE_PRODUCT_LIST, idList?.getOrNull(0), idList?.getOrNull(1)), idList?.getOrNull(0).orEmpty()) }),
+            DLP.matchPattern(ApplinkConst.SHOP_OPERATIONAL_HOUR) { _, uri, _, idList -> DeeplinkMapperMarketplace.getShopOperationalHourInternalAppLink(idList?.getOrNull(0).orEmpty()) },
+            DLP.matchPattern(ApplinkConst.SHOP_MVC_LOCKED_TO_PRODUCT) { _, uri, _, idList ->
+                val shopId = idList?.getOrNull(0).orEmpty()
+                val voucherId = idList?.getOrNull(1).orEmpty()
+                DeeplinkMapperMarketplace.getShopMvcLockedToProductShopIdInternalAppLink(shopId, voucherId)
+            },
+            DLP.startWith(ApplinkConst.SELLER_INFO_DETAIL) { _, uri, _, _ -> DeeplinkMapperMerchant.getSellerInfoDetailApplink(uri) },
+            DLP.matchPattern(ApplinkConst.ORDER_TRACKING) { _, _, deeplink, _ -> DeeplinkMapperLogistic.getRegisteredNavigationOrder(deeplink) },
+            DLP.matchPattern(ApplinkConst.ORDER_POD) { _, _, deeplink, _ -> DeeplinkMapperLogistic.getRegisteredNavigationPod(deeplink) },
+            DLP.matchPattern(ApplinkConst.SHARE_ADDRESS) { _, _, deeplink, _ -> DeeplinkMapperLogistic.getRegisteredNavigationShareAddress(deeplink) },
+
 
         DLP.matchPattern(ApplinkConst.ORDER_HISTORY_SHOP) { _, _, _, idList -> UriUtil.buildUri(ApplinkConstInternalMarketplace.ORDER_HISTORY, idList?.getOrNull(0)) },
         DLP.startWith(ApplinkConst.RESET_PASSWORD, ApplinkConstInternalUserPlatform.FORGOT_PASSWORD),

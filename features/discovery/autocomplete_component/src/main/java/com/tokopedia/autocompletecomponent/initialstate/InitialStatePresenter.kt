@@ -7,24 +7,23 @@ import com.tokopedia.autocompletecomponent.initialstate.chips.convertToInitialSt
 import com.tokopedia.autocompletecomponent.initialstate.curatedcampaign.CuratedCampaignDataView
 import com.tokopedia.autocompletecomponent.initialstate.curatedcampaign.convertToCuratedCampaignDataView
 import com.tokopedia.autocompletecomponent.initialstate.data.InitialStateUniverse
-import com.tokopedia.autocompletecomponent.initialstate.domain.InitialStateRequestUtils
-import com.tokopedia.autocompletecomponent.initialstate.domain.deleterecentsearch.DeleteRecentSearchUseCase
 import com.tokopedia.autocompletecomponent.initialstate.domain.InitialStateData
 import com.tokopedia.autocompletecomponent.initialstate.domain.InitialStateItem
+import com.tokopedia.autocompletecomponent.initialstate.domain.InitialStateRequestUtils
+import com.tokopedia.autocompletecomponent.initialstate.domain.deleterecentsearch.DeleteRecentSearchUseCase
 import com.tokopedia.autocompletecomponent.initialstate.dynamic.DynamicInitialStateItemTrackingModel
 import com.tokopedia.autocompletecomponent.initialstate.dynamic.DynamicInitialStateSearchDataView
 import com.tokopedia.autocompletecomponent.initialstate.dynamic.DynamicInitialStateTitleDataView
 import com.tokopedia.autocompletecomponent.initialstate.dynamic.convertToDynamicInitialStateSearchDataView
-import com.tokopedia.autocompletecomponent.initialstate.popularsearch.PopularSearchTitleDataView
 import com.tokopedia.autocompletecomponent.initialstate.popularsearch.PopularSearchDataView
+import com.tokopedia.autocompletecomponent.initialstate.popularsearch.PopularSearchTitleDataView
 import com.tokopedia.autocompletecomponent.initialstate.popularsearch.convertToPopularSearchDataView
 import com.tokopedia.autocompletecomponent.initialstate.productline.InitialStateProductLineTitleDataView
 import com.tokopedia.autocompletecomponent.initialstate.productline.convertToListInitialStateProductListDataView
-import com.tokopedia.autocompletecomponent.initialstate.recentview.RecentViewTitleDataView
 import com.tokopedia.autocompletecomponent.initialstate.recentsearch.*
 import com.tokopedia.autocompletecomponent.initialstate.recentview.RecentViewDataView
+import com.tokopedia.autocompletecomponent.initialstate.recentview.RecentViewTitleDataView
 import com.tokopedia.autocompletecomponent.initialstate.recentview.convertToRecentViewDataView
-import com.tokopedia.autocompletecomponent.initialstate.searchbareducation.SearchBarEducationDataView
 import com.tokopedia.autocompletecomponent.initialstate.searchbareducation.convertToSearchBarEducationDataView
 import com.tokopedia.autocompletecomponent.util.getShopIdFromApplink
 import com.tokopedia.discovery.common.constants.SearchApiConst
@@ -212,11 +211,13 @@ class InitialStatePresenter @Inject constructor(
                     addCuratedCampaignCard(data, initialStateData)
                 }
                 InitialStateData.INITIAL_STATE_RECENT_SEARCH -> {
-                    val title = RecentSearchTitleDataView(
-                        initialStateData.header,
-                        initialStateData.labelAction
-                    )
-                    data.add(title)
+                    if(initialStateData.header.isNotEmpty()) {
+                        val title = RecentSearchTitleDataView(
+                            initialStateData.header,
+                            initialStateData.labelAction
+                        )
+                        data.add(title)
+                    }
                     addRecentSearchData(data, initialStateData.items, initialStateData.trackingOption)
                 }
                 InitialStateData.INITIAL_STATE_RECENT_VIEW -> {

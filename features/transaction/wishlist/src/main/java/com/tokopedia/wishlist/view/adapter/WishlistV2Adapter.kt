@@ -1,5 +1,6 @@
 package com.tokopedia.wishlist.view.adapter
 
+import android.annotation.SuppressLint
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -66,6 +67,7 @@ class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     private var isTickerCloseClicked = false
     var isRefreshing = false
     private var isAutoSelected = false
+    private var isAddBulkModeFromOthers = false
 
     companion object {
         const val LAYOUT_LOADER_LIST = 0
@@ -93,6 +95,7 @@ class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         fun onNotFoundButtonClicked(keyword: String)
         fun onThreeDotsMenuClicked(itemWishlist: WishlistV2UiModel.Item)
         fun onCheckBulkOption(productId: String, isChecked: Boolean, position: Int)
+        fun onValidateCheckBulkOption(productId: String, isChecked: Boolean, position: Int)
         fun onUncheckAutomatedBulkDelete(productId: String, isChecked: Boolean, position: Int)
         fun onAtc(wishlistItem: WishlistV2UiModel.Item, position: Int)
         fun onCheckSimilarProduct(url: String)
@@ -300,7 +303,8 @@ class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                         element,
                         holder.adapterPosition,
                         isShowCheckbox,
-                        isAutoSelected
+                        isAutoSelected,
+                        isAddBulkModeFromOthers
                     )
                 }
                 TYPE_GRID -> {
@@ -312,7 +316,8 @@ class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
                         element,
                         holder.adapterPosition,
                         isShowCheckbox,
-                        isAutoSelected
+                        isAutoSelected,
+                        isAddBulkModeFromOthers
                     )
                 }
                 TYPE_EMPTY_STATE -> {
@@ -510,9 +515,17 @@ class WishlistV2Adapter : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         notifyDataSetChanged()
     }
 
+    @SuppressLint("NotifyDataSetChanged")
+    fun showCheckboxAddBulkFromOthers() {
+        isShowCheckbox = true
+        isAddBulkModeFromOthers = true
+        notifyDataSetChanged()
+    }
+
     fun hideCheckbox() {
         isShowCheckbox = false
         isAutoSelected = false
+        isAddBulkModeFromOthers = false
         clearCheckbox()
         notifyDataSetChanged()
     }
