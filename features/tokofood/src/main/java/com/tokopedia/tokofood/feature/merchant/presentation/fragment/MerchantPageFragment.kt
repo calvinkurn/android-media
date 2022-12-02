@@ -286,8 +286,10 @@ class MerchantPageFragment : BaseMultiFragment(),
         uiEventUpdateJob = viewLifecycleOwner.lifecycleScope.launchWhenStarted {
             collectUiEventFlow()
         }
-        updateQuantityJob = viewLifecycleOwner.lifecycleScope.launchWhenStarted {
-            collectUpdateQuantity()
+        if (getIsImplementDebounce()) {
+            updateQuantityJob = viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+                collectUpdateQuantity()
+            }
         }
     }
 
@@ -1287,7 +1289,15 @@ class MerchantPageFragment : BaseMultiFragment(),
         val productUiModel = productListAdapter?.getProductUiModel(dataSetPosition)
         productUiModel?.run {
             orderQty = quantity
-            viewModel.updateQuantity(merchantId, this)
+            if (getIsImplementDebounce()) {
+                viewModel.updateQuantity(merchantId, this)
+            } else {
+                val updateParam = viewModel.mapProductUiModelToAtcRequestParam(
+                    shopId = merchantId,
+                    productUiModel = productUiModel
+                )
+                activityViewModel?.updateQuantity(updateParam, SOURCE)
+            }
         }
     }
 
@@ -1301,7 +1311,15 @@ class MerchantPageFragment : BaseMultiFragment(),
         val productUiModel = productListAdapter?.getProductUiModel(dataSetPosition)
         productUiModel?.run {
             orderQty = quantity
-            viewModel.updateQuantity(merchantId, this)
+            if (getIsImplementDebounce()) {
+                viewModel.updateQuantity(merchantId, this)
+            } else {
+                val updateParam = viewModel.mapProductUiModelToAtcRequestParam(
+                    shopId = merchantId,
+                    productUiModel = productUiModel
+                )
+                activityViewModel?.updateQuantity(updateParam, SOURCE)
+            }
         }
     }
 
@@ -1330,7 +1348,15 @@ class MerchantPageFragment : BaseMultiFragment(),
         val productUiModel = productListAdapter?.getProductUiModel(dataSetPosition)
         productUiModel?.run {
             orderQty = quantity
-            viewModel.updateQuantity(merchantId, this)
+            if (getIsImplementDebounce()) {
+                viewModel.updateQuantity(merchantId, this)
+            } else {
+                val updateParam = viewModel.mapProductUiModelToAtcRequestParam(
+                    shopId = merchantId,
+                    productUiModel = productUiModel
+                )
+                activityViewModel?.updateQuantity(updateParam, SOURCE)
+            }
         }
     }
 
@@ -1407,7 +1433,16 @@ class MerchantPageFragment : BaseMultiFragment(),
         customOrderDetail: CustomOrderDetail
     ) {
         customOrderDetail.qty = quantity
-        viewModel.updateQuantity(merchantId, productId, customOrderDetail)
+        if (getIsImplementDebounce()) {
+            viewModel.updateQuantity(merchantId, productId, customOrderDetail)
+        } else {
+            val updateParam = viewModel.mapCustomOrderDetailToAtcRequestParam(
+                shopId = merchantId,
+                productId = productId,
+                customOrderDetail = customOrderDetail
+            )
+            activityViewModel?.updateQuantity(updateParam, SOURCE)
+        }
     }
 
     override fun onButtonCtaClickListener(appLink: String) {
@@ -1653,6 +1688,10 @@ class MerchantPageFragment : BaseMultiFragment(),
                 merchantId
             )
         )
+    }
+
+    private fun getIsImplementDebounce(): Boolean {
+        return true
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
