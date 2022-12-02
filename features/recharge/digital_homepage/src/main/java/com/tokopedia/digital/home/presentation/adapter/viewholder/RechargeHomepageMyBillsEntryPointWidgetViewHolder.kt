@@ -1,6 +1,5 @@
 package com.tokopedia.digital.home.presentation.adapter.viewholder
 
-import android.view.View
 import androidx.annotation.LayoutRes
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.applink.RouteManager
@@ -18,9 +17,9 @@ import com.tokopedia.media.loader.loadImage
  */
 
 class RechargeHomepageMyBillsEntryPointWidgetViewHolder(
-    itemView: View,
+    val binding: ViewRechargeHomeMyBillsEntrypointBinding,
     val listener: RechargeHomepageItemListener
-) : AbstractViewHolder<RechargeHomepageMyBillsEntryPointModel>(itemView) {
+) : AbstractViewHolder<RechargeHomepageMyBillsEntryPointModel>(binding.root) {
 
     companion object {
         @LayoutRes
@@ -28,8 +27,6 @@ class RechargeHomepageMyBillsEntryPointWidgetViewHolder(
     }
 
     override fun bind(element: RechargeHomepageMyBillsEntryPointModel) {
-        val binding = ViewRechargeHomeMyBillsEntrypointBinding.bind(itemView)
-
         if (element.section.items.isNotEmpty()) {
             binding.containerContent.visible()
             binding.containerShimmer.gone()

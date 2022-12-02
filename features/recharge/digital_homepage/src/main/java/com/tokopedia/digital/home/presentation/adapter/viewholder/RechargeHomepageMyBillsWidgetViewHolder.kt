@@ -1,7 +1,6 @@
 package com.tokopedia.digital.home.presentation.adapter.viewholder
 
 import android.graphics.Color
-import android.view.View
 import androidx.annotation.LayoutRes
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.tokopedia.abstraction.base.view.adapter.Visitable
@@ -30,9 +29,9 @@ import com.tokopedia.unifyprinciples.Typography
  */
 
 class RechargeHomepageMyBillsWidgetViewHolder(
-    itemView: View,
+    val binding: ViewRechargeHomeMyBillsBinding,
     val listener: RechargeHomepageItemListener
-) : AbstractViewHolder<RechargeHomepageMyBillsWidgetModel>(itemView) {
+) : AbstractViewHolder<RechargeHomepageMyBillsWidgetModel>(binding.root) {
 
     var myBillsItemDecoration: RechargeMyBillsItemSpaceDecorator? = null
 
@@ -42,8 +41,6 @@ class RechargeHomepageMyBillsWidgetViewHolder(
     }
 
     override fun bind(element: RechargeHomepageMyBillsWidgetModel) {
-        val binding = ViewRechargeHomeMyBillsBinding.bind(itemView)
-
         if (element.section.items.isNotEmpty()) {
             with(binding) {
                 shimmerMyBills.root.gone()
@@ -91,9 +88,9 @@ class RechargeHomepageMyBillsWidgetViewHolder(
     }
 
     class RechargeHomepageMyBillsItemViewHolder(
-        itemView: View
+        val binding: ViewRechargeHomeMyBillsItemBinding
     ) : AbstractViewHolder<RechargeHomepageMyBillsWidgetModel.RechargeHomepageMyBillsItemModel>(
-        itemView
+        binding.root
     ) {
 
         companion object {
@@ -106,8 +103,6 @@ class RechargeHomepageMyBillsWidgetViewHolder(
         }
 
         override fun bind(element: RechargeHomepageMyBillsWidgetModel.RechargeHomepageMyBillsItemModel) {
-            val binding = ViewRechargeHomeMyBillsItemBinding.bind(itemView)
-
             with(binding) {
                 ivProductIcon.loadImage(element.item.attributes.iconUrl)
                 tvMainPrice.text = element.item.label2
@@ -160,9 +155,9 @@ class RechargeHomepageMyBillsWidgetViewHolder(
     }
 
     class RechargeHomepageMyBillsLastItemViewHolder(
-        itemView: View
+        val binding: ContentRechargeHomepageMyBillsLastItemBinding
     ) : AbstractViewHolder<RechargeHomepageMyBillsWidgetModel.RechargeHomepageMyBillsLastItemModel>(
-        itemView
+        binding.root
     ) {
 
         companion object {
@@ -171,7 +166,6 @@ class RechargeHomepageMyBillsWidgetViewHolder(
         }
 
         override fun bind(element: RechargeHomepageMyBillsWidgetModel.RechargeHomepageMyBillsLastItemModel) {
-            val binding = ContentRechargeHomepageMyBillsLastItemBinding.bind(itemView)
             itemView.setOnClickListener {
                 RouteManager.route(itemView.context, element.items.applink)
             }

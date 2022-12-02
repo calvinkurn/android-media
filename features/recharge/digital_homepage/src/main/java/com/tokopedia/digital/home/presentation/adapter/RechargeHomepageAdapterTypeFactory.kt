@@ -7,6 +7,8 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingModel
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.digital.home.databinding.ViewRechargeHomeMyBillsBinding
+import com.tokopedia.digital.home.databinding.ViewRechargeHomeMyBillsEntrypointBinding
 import com.tokopedia.digital.home.databinding.ViewRechargeHomeProductCardCustomLastItemBinding
 import com.tokopedia.digital.home.databinding.ViewRechargeHomeProductCardsUnifyBinding
 import com.tokopedia.digital.home.databinding.ViewRechargeHomeRecommendationBannerBinding
@@ -330,14 +332,28 @@ class RechargeHomepageAdapterTypeFactory(
                 parent,
                 listener
             )
-            RechargeHomepageMyBillsWidgetViewHolder.LAYOUT -> RechargeHomepageMyBillsWidgetViewHolder(
-                parent,
-                listener
-            )
-            RechargeHomepageMyBillsEntryPointWidgetViewHolder.LAYOUT -> RechargeHomepageMyBillsEntryPointWidgetViewHolder(
-                parent,
-                listener
-            )
+            RechargeHomepageMyBillsWidgetViewHolder.LAYOUT -> {
+                val binding = ViewRechargeHomeMyBillsBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent as ViewGroup,
+                    false
+                )
+                RechargeHomepageMyBillsWidgetViewHolder(
+                    binding,
+                    listener
+                )
+            }
+            RechargeHomepageMyBillsEntryPointWidgetViewHolder.LAYOUT -> {
+                val binding = ViewRechargeHomeMyBillsEntrypointBinding.inflate(
+                    LayoutInflater.from(parent.context),
+                    parent as ViewGroup,
+                    false
+                )
+                RechargeHomepageMyBillsEntryPointWidgetViewHolder(
+                    binding,
+                    listener
+                )
+            }
             else -> super.createViewHolder(parent, type)
         }
     }
