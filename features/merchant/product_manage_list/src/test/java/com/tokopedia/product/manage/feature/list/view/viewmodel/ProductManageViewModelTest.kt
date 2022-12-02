@@ -2885,12 +2885,6 @@ class ProductManageViewModelTest : ProductManageViewModelTestFixture() {
         } returns tickerData
     }
 
-    private fun onGetIsShowNotifyMeTicker(isShow: Boolean) {
-        every {
-            remoteConfigImpl.getBoolean(ENABLE_TICKER_NOTIFY_ME)
-        } returns isShow
-    }
-
     private fun verifyEditPriceUseCaseCalled() {
         coVerify { editPriceUseCase.executeOnBackground() }
     }
