@@ -84,12 +84,9 @@ class PlayProductTagUiMapper @Inject constructor() {
         )
     }
 
-    @OptIn(ExperimentalStdlibApi::class)
     private fun mapButtons(buttons: List< Product.ProductButton>) : List<ProductButtonUiModel> {
-        return buildList {
-            buttons.map { btn ->
-                add(ProductButtonUiModel(text = btn.text, color = ProductButtonColor.getByValue(btn.color), type = ProductButtonType.getByValue(btn.buttonType)))
+        return buttons.map { btn ->
+                ProductButtonUiModel(text = btn.text, color = ProductButtonColor.getByValue(btn.color), type = ProductButtonType.getByValue(btn.buttonType))
             }
-        }
     }
 }

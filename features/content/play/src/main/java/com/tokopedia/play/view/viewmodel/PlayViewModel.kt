@@ -2404,14 +2404,6 @@ class PlayViewModel @AssistedInject constructor(
                         selectedVariant.data.sectionInfo,
                         selectedVariant.data.isFeatured,
                     )
-                    ProductAction.AddToCart ->
-                        AtcSuccessEvent(
-                            selectedVariant.data.variantDetail,
-                            true,
-                            cartId,
-                            selectedVariant.data.sectionInfo,
-                            selectedVariant.data.isFeatured,
-                        )
                     ProductAction.OCC -> OCCSuccessEvent(
                         selectedVariant.data.variantDetail,
                         true,
@@ -2419,6 +2411,14 @@ class PlayViewModel @AssistedInject constructor(
                         selectedVariant.data.sectionInfo,
                         selectedVariant.data.isFeatured,
                     )
+                    else ->
+                        AtcSuccessEvent(
+                            selectedVariant.data.variantDetail,
+                            true,
+                            cartId,
+                            selectedVariant.data.sectionInfo,
+                            selectedVariant.data.isFeatured,
+                        )
                 }
             )
         }
