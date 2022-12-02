@@ -133,11 +133,13 @@ class RequestParamsGenerator @Inject constructor(
 
     fun createSameSessionRecommendationParam(
         item: ProductItemDataView,
+        chooseAddressParams: Map<String, String>?,
     ) : RequestParams {
         val requestParams = RequestParams.create().apply {
             putString(SearchApiConst.DEVICE, SearchApiConst.DEFAULT_VALUE_OF_PARAMETER_DEVICE)
             putString(SearchApiConst.PRODUCT_ID, item.productID)
         }
+        putRequestParamsChooseAddress(requestParams, chooseAddressParams)
 
         return requestParams
     }
