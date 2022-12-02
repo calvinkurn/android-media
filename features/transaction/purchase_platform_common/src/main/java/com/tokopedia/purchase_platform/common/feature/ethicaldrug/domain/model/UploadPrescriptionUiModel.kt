@@ -5,14 +5,15 @@ import kotlinx.parcelize.Parcelize
 
 @Parcelize
 data class UploadPrescriptionUiModel(
-    var showImageUpload: Boolean? = false,
-    var uploadImageText: String? = "",
-    var leftIconUrl: String? = "",
-    var checkoutId: String? = "",
+    var showImageUpload: Boolean = false,
+    var uploadImageText: String = "",
+    var leftIconUrl: String = "",
+    var checkoutId: String = "",
 
+    var epharmacyGroupIds: ArrayList<String> = arrayListOf(),
     var prescriptionIds: ArrayList<String> = arrayListOf(),
-    var uploadedImageCount: Int? = 0,
-    var descriptionText: String? = "",
+    var uploadedImageCount: Int = 0,
+    var descriptionText: String = "",
     var isError: Boolean = false,
     var frontEndValidation: Boolean = false,
     var consultationFlow: Boolean = false,

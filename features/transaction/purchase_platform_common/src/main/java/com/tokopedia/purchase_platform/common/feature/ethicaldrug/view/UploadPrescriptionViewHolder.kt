@@ -34,7 +34,7 @@ class UploadPrescriptionViewHolder(
     }
 
     fun bindViewHolder(uploadPrescriptionUiModel: UploadPrescriptionUiModel) {
-        if (uploadPrescriptionUiModel.showImageUpload != true) {
+        if (!uploadPrescriptionUiModel.showImageUpload) {
             binding.root.gone()
             binding.root.layoutParams = RecyclerView.LayoutParams(0, 0)
             return
@@ -45,8 +45,8 @@ class UploadPrescriptionViewHolder(
                 ViewGroup.LayoutParams.WRAP_CONTENT
             )
         }
-        binding.uploadIcon.loadImage(uploadPrescriptionUiModel.leftIconUrl ?: "")
-        if (uploadPrescriptionUiModel.uploadedImageCount == null || uploadPrescriptionUiModel.uploadedImageCount == 0) {
+        binding.uploadIcon.loadImage(uploadPrescriptionUiModel.leftIconUrl)
+        if (uploadPrescriptionUiModel.uploadedImageCount == 0) {
             if (uploadPrescriptionUiModel.hasInvalidPrescription) {
                 binding.uploadPrescriptionText.text =
                     itemView.resources.getString(R.string.pp_epharmacy_upload_invalid_title_text)

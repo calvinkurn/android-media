@@ -164,6 +164,7 @@ import java.security.PublicKey;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
@@ -782,7 +783,10 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 cartShipmentAddressFormData.getEpharmacyData().getLeftIconUrl(),
                 cartShipmentAddressFormData.getEpharmacyData().getCheckoutId(),
                 new ArrayList<>(),
-                0, "", false,
+                new ArrayList<>(),
+                0,
+                "",
+                false,
                 cartShipmentAddressFormData.getEpharmacyData().getFrontEndValidation(),
                 cartShipmentAddressFormData.getEpharmacyData().getConsultationFlow(),
                 cartShipmentAddressFormData.getEpharmacyData().getRejectedWording(),
@@ -2495,6 +2499,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         if (ePharmacyPrepareProductsGroupResponse.getDetailData() != null && getView() != null && uploadPrescriptionUiModel != null) {
             GroupData groupsData = ePharmacyPrepareProductsGroupResponse.getDetailData().getGroupsData();
             if (groupsData != null && groupsData.getEpharmacyGroups() != null && shipmentCartItemModelList != null) {
+                HashSet<String> epharmacyGroupIds = new HashSet<>();
                 HashMap<String, Integer> mapPrescriptionCount = new HashMap<>();
                 boolean hasInvalidPrescription = false;
                 for (ShipmentCartItemModel shipmentCartItemModel : shipmentCartItemModelList) {
@@ -2510,6 +2515,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                     break;
                                 }
                                 if (epharmacyGroup != null && epharmacyGroup.getShopInfo() != null) {
+                                    epharmacyGroupIds.add(epharmacyGroup.getEpharmacyGroupId());
                                     for (GroupData.EpharmacyGroup.ProductsInfo productsInfo : epharmacyGroup.getShopInfo()) {
                                         if (updated) {
                                             break;
@@ -2594,6 +2600,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 for (Integer value : mapPrescriptionCount.values()) {
                     totalPrescription += value;
                 }
+                uploadPrescriptionUiModel.setEpharmacyGroupIds(new ArrayList<>(epharmacyGroupIds));
                 uploadPrescriptionUiModel.setError(false);
                 uploadPrescriptionUiModel.setUploadedImageCount(totalPrescription);
                 uploadPrescriptionUiModel.setHasInvalidPrescription(hasInvalidPrescription);
@@ -2619,6 +2626,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     @Override
     public void setMiniConsultationResult(ArrayList<EPharmacyMiniConsultationResult> results) {
         if (shipmentCartItemModelList != null && getView() != null) {
+            HashSet<String> epharmacyGroupIds = new HashSet<>();
             HashMap<String, Integer> mapPrescriptionCount = new HashMap<>();
             boolean hasInvalidPrescription = false;
             boolean hasNonEthicalProduct = false;
@@ -2639,6 +2647,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                 break;
                             }
                             if (result.getShopInfo() != null) {
+                                epharmacyGroupIds.add(result.getEpharmacyGroupId());
                                 for (GroupData.EpharmacyGroup.ProductsInfo productsInfo : result.getShopInfo()) {
                                     if (updated) {
                                         break;
@@ -2729,6 +2738,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 for (Integer value : mapPrescriptionCount.values()) {
                     totalPrescription += value;
                 }
+                uploadPrescriptionUiModel.setEpharmacyGroupIds(new ArrayList<>(epharmacyGroupIds));
                 uploadPrescriptionUiModel.setError(false);
                 uploadPrescriptionUiModel.setUploadedImageCount(totalPrescription);
                 uploadPrescriptionUiModel.setHasInvalidPrescription(hasInvalidPrescription);
@@ -3126,8 +3136,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     @Override
     public boolean validatePrescriptionOnBackPressed() {
         if (uploadPrescriptionUiModel != null && uploadPrescriptionUiModel.getShowImageUpload() && shipmentCartItemModelList != null && getView() != null) {
-            if (uploadPrescriptionUiModel.getUploadedImageCount() != null && uploadPrescriptionUiModel.getUploadedImageCount() > 0) {
-                getView().showPrescriptionReminderDialog();
+            if (uploadPrescriptionUiModel.getUploadedImageCount() > 0 || uploadPrescriptionUiModel.getHasInvalidPrescription()) {
+                getView().showPrescriptionReminderDialog(uploadPrescriptionUiModel);
                 return false;
             }
         }
