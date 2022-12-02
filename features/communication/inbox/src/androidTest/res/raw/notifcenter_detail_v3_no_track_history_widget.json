@@ -56,7 +56,7 @@
         "track_history": [],
         "image": [
           {
-            "url": "https://ecs7.tokopedia.net/img/recharge/category/education/colored-active.png",
+            "url": "https://images.tokopedia.net/img/recharge/category/education/colored-active.png",
             "width": 320,
             "height": 320,
             "ratio": {
@@ -68,7 +68,7 @@
         "data_notification": {
           "app_link": "tokopedia://digital/order/747330958",
           "desktop_link": "",
-          "info_thumbnail_url": "https://ecs7.tokopedia.net/img/recharge/category/education/colored-active.png",
+          "info_thumbnail_url": "https://images.tokopedia.net/img/recharge/category/education/colored-active.png",
           "mobile_link": "",
           "product_name": "",
           "product_url": "",

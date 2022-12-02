@@ -2,7 +2,6 @@ package com.tokopedia.play.cast
 
 import android.content.Context
 import android.content.Intent
-import com.google.android.gms.cast.framework.CastContext
 import com.google.android.gms.cast.framework.media.MediaIntentReceiver
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager

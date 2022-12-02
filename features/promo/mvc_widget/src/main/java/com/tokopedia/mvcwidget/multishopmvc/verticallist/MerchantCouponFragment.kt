@@ -6,29 +6,24 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.ViewTreeObserver
-import android.widget.ViewFlipper
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
-import com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceCallback
 import com.tokopedia.analytics.performance.util.PageLoadTimePerformanceInterface
-import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.library.baseadapter.AdapterCallback
 import com.tokopedia.mvcwidget.*
-import com.tokopedia.mvcwidget.customview.MerchantRewardToolbar
 import com.tokopedia.mvcwidget.di.components.MvcComponent
 import com.tokopedia.mvcwidget.multishopmvc.MvcPerformanceConstant
 import com.tokopedia.mvcwidget.multishopmvc.MvcPerformanceMonitoringListener
 import com.tokopedia.mvcwidget.trackers.MvcSource.Companion.DEFAULT
 import com.tokopedia.mvcwidget.trackers.Tracker.Constants.MERCHANT_COUPONLIST_SCREEN_NAME
 import com.tokopedia.promoui.common.dpToPx
-import kotlinx.android.synthetic.main.mvc_layout_multishop_merchat_coupon_list.*
-import kotlinx.android.synthetic.main.mvc_notfound_error.*
+import com.tokopedia.utils.lifecycle.autoClearedNullable
+import com.tokopedia.mvcwidget.databinding.MvcLayoutMultishopMerchatCouponListBinding
 import javax.inject.Inject
 
 class MerchantCouponFragment : BaseDaggerFragment(), MvcPerformanceMonitoringListener,
@@ -41,13 +36,7 @@ class MerchantCouponFragment : BaseDaggerFragment(), MvcPerformanceMonitoringLis
     private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
     private val mCouponAdapter: MerchantCouponListAdapter by lazy { MerchantCouponListAdapter(mViewModel, this, HashSet() , DEFAULT) }
 
-    private var merchantRewardToolbar: MerchantRewardToolbar? = null
-    private lateinit var exploreCouponRv: RecyclerView
-    private lateinit var swipeToRefresh: SwipeToRefresh
-    private lateinit var appBarLayout: View
-    private var statusBarBgView: View? = null
-    private var serverErrorView: GlobalError? = null
-    private var viewContainer: ViewFlipper? = null
+    private var binding by autoClearedNullable<MvcLayoutMultishopMerchatCouponListBinding>()
 
     override fun getScreenName(): String {
         return MERCHANT_COUPONLIST_SCREEN_NAME
@@ -65,28 +54,22 @@ class MerchantCouponFragment : BaseDaggerFragment(), MvcPerformanceMonitoringLis
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
         initInjector()
-        val view = inflater.inflate(R.layout.mvc_layout_multishop_merchat_coupon_list, container, false)
+        binding = MvcLayoutMultishopMerchatCouponListBinding.inflate(inflater, container, false)
 
-        exploreCouponRv = view.findViewById(R.id.rv_merchant_couponlist)
-        swipeToRefresh = view.findViewById(R.id.swipe_refresh_layout)
-        appBarLayout = view.findViewById(R.id.app_bar_layout)
-        merchantRewardToolbar = view.findViewById(R.id.toolbar_merchant)
-        statusBarBgView = view.findViewById(R.id.status_bar_bg)
-        viewContainer = view.findViewById(R.id.container)
-        (activity as BaseSimpleActivity).setSupportActionBar(merchantRewardToolbar)
+        (activity as BaseSimpleActivity).setSupportActionBar(binding?.merchantCouponRewardToolBar)
 
-        return view
+        return binding?.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        initViews(view)
+        initViews()
         initObserver()
-        serverErrorView?.errorSecondaryAction?.setOnClickListener {
+        binding?.merchantCouponErrorView?.errorSecondaryAction?.setOnClickListener {
             showLoader()
             mCouponAdapter.loadData(1)
         }
-        merchantRewardToolbar?.setTitle(R.string.mvc_kupon_toko)
+        binding?.merchantCouponRewardToolBar?.setTitle(R.string.mvc_kupon_toko)
 
         mViewModel.couponData.value = LiveDataResult.loading()
     }
@@ -95,22 +78,19 @@ class MerchantCouponFragment : BaseDaggerFragment(), MvcPerformanceMonitoringLis
         addListObserver()
     }
 
-    private fun initViews(view: View) {
-
-        serverErrorView = view.findViewById(R.id.server_error_view)
-
+    private fun initViews() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            appBarLayout.outlineProvider = null
+            binding?.merchantCouponAppBar?.outlineProvider = null
         }
-        swipeToRefresh.setOnRefreshListener(this)
+        binding?.merchantCouponSwipeRefresh?.setOnRefreshListener(this)
         val linearLayoutManager = LinearLayoutManager(context,
                 LinearLayoutManager.VERTICAL,
                 false)
-        exploreCouponRv.layoutManager = linearLayoutManager
-        exploreCouponRv.addItemDecoration(MerchantCouponItemDecoration(dpToPx(8).toInt()))
+        binding?.rvMerchantCouponList?.layoutManager = linearLayoutManager
+        binding?.rvMerchantCouponList?.addItemDecoration(MerchantCouponItemDecoration(dpToPx(8).toInt()))
         mCouponAdapter.adImpression = arguments?.getSerializable(MVC_ADINFO) as HashSet<String?>
         mCouponAdapter.source = arguments?.getInt(MVC_SOURCE_KEY) ?: DEFAULT
-        exploreCouponRv.adapter = mCouponAdapter
+        binding?.rvMerchantCouponList?.adapter = mCouponAdapter
     }
 
     private fun addListObserver() = mViewModel.couponData.observe(viewLifecycleOwner, Observer {
@@ -177,7 +157,7 @@ class MerchantCouponFragment : BaseDaggerFragment(), MvcPerformanceMonitoringLis
     }
 
     private fun setOnRecyclerViewLayoutReady() {
-        exploreCouponRv?.viewTreeObserver
+        binding?.rvMerchantCouponList?.viewTreeObserver
                 ?.addOnGlobalLayoutListener(object : ViewTreeObserver.OnGlobalLayoutListener {
                     override fun onGlobalLayout() {
                         if (pageLoadTimePerformanceMonitoring != null) {
@@ -185,7 +165,7 @@ class MerchantCouponFragment : BaseDaggerFragment(), MvcPerformanceMonitoringLis
                             stopPerformanceMonitoring()
                         }
                         pageLoadTimePerformanceMonitoring = null
-                        exploreCouponRv?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
+                        binding?.rvMerchantCouponList?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
                     }
                 })
     }
@@ -195,13 +175,13 @@ class MerchantCouponFragment : BaseDaggerFragment(), MvcPerformanceMonitoringLis
     }
 
     fun showLoader() {
-        viewContainer?.displayedChild = CONTAINER_LOADER
-        swipe_refresh_layout?.isRefreshing = false
+        binding?.merchantCouponContainer?.displayedChild = CONTAINER_LOADER
+        binding?.merchantCouponSwipeRefresh?.isRefreshing = false
     }
 
     fun hideLoader() {
-        container?.displayedChild = CONTAINER_DATA
-        swipe_refresh_layout?.isRefreshing = false
+        binding?.merchantCouponContainer?.displayedChild = CONTAINER_DATA
+        binding?.merchantCouponSwipeRefresh?.isRefreshing = false
     }
 
     companion object {
@@ -221,7 +201,7 @@ class MerchantCouponFragment : BaseDaggerFragment(), MvcPerformanceMonitoringLis
     override fun onRetryPageLoad(pageNumber: Int) {}
 
     override fun onFinishPageLoad(itemCount: Int, pageNumber: Int, rawObject: Any?) {
-        swipe_refresh_layout.isRefreshing = false
+        binding?.merchantCouponSwipeRefresh?.isRefreshing = false
     }
 
     override fun onStartPageLoad(pageNumber: Int) {}
@@ -232,14 +212,14 @@ class MerchantCouponFragment : BaseDaggerFragment(), MvcPerformanceMonitoringLis
 
     override fun onError(pageNumber: Int) {
         if (pageNumber == 1) {
-            container.displayedChild = CONTAINER_ERROR
+            binding?.merchantCouponContainer?.displayedChild = CONTAINER_ERROR
         }
-        swipe_refresh_layout.isRefreshing = false
+        binding?.merchantCouponSwipeRefresh?.isRefreshing = false
     }
 
     private fun showEmptyView() {
-        container?.displayedChild = CONTAINER_EMPTY
-        btnError.setOnClickListener {
+        binding?.merchantCouponContainer?.displayedChild = CONTAINER_EMPTY
+        binding?.errorLayout?.btnError?.setOnClickListener {
             onFragmentBackPressed()
         }
     }

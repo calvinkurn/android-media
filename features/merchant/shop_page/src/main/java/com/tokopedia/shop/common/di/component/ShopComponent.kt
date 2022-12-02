@@ -1,6 +1,7 @@
 package com.tokopedia.shop.common.di.component
 
 import android.content.Context
+import android.content.SharedPreferences
 import com.google.gson.Gson
 import com.tokopedia.abstraction.AbstractionRouter
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
@@ -49,6 +50,7 @@ interface ShopComponent {
     val graphqlRepository: GraphqlRepository
     val multiRequestGraphqlUseCase: MultiRequestGraphqlUseCase
     fun provideCoroutineDispatchers(): CoroutineDispatchers
+    fun provideShopPageSharedPref(): SharedPreferences
 
     @get:Named(GQLQueryNamedConstant.GQL_GET_SHOP_OPERATIONAL_HOUR_STATUS)
     val gqlQueryShopOperationalHourStatus: String

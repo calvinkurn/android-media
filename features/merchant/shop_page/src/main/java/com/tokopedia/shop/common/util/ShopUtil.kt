@@ -1,12 +1,10 @@
 package com.tokopedia.shop.common.util
 
 import android.content.Context
-import android.content.Intent
 import android.graphics.Bitmap
 import android.text.TextUtils
 import androidx.core.content.ContextCompat
 import com.tokopedia.device.info.DeviceScreenInfo
-import com.tokopedia.kotlin.extensions.view.getResColor
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
 import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.logger.ServerLogger
@@ -34,51 +32,49 @@ import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.EXTRA_PARAM_KEY
 import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.EXTRA_PARAM_KEY.SHOP_NAME_KEY
 import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.EXTRA_PARAM_KEY.TYPE
 import com.tokopedia.shop.common.constant.ShopPageLoggerConstant.EXTRA_PARAM_KEY.USER_ID_KEY
-import com.tokopedia.shop.pageheader.presentation.adapter.viewholder.widget.ShopHeaderBasicInfoWidgetViewHolder
 import com.tokopedia.universal_sharing.view.bottomsheet.UniversalShareBottomSheet
-import com.tokopedia.utils.image.ImageProcessingUtil
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 
 object ShopUtil {
-    fun getProductPerPage(context: Context?): Int{
-        return context?.let{
-            if(DeviceScreenInfo.isTablet(context)){
+    fun getProductPerPage(context: Context?): Int {
+        return context?.let {
+            if (DeviceScreenInfo.isTablet(context)) {
                 DEFAULT_PER_PAGE_TABLET
             } else {
                 DEFAULT_PER_PAGE_NON_TABLET
             }
-        }?: DEFAULT_PER_PAGE_NON_TABLET
+        } ?: DEFAULT_PER_PAGE_NON_TABLET
     }
 
     fun isHasNextPage(page: Int, perPage: Int, totalData: Int): Boolean = page * perPage < totalData
 
-    fun isMyShop(shopId: String, userSessionShopId: String)  = shopId == userSessionShopId
+    fun isMyShop(shopId: String, userSessionShopId: String) = shopId == userSessionShopId
 
     fun logTimberWarning(priority: Priority, tag: String, extraMessage: Map<String, String>) {
         ServerLogger.log(priority, tag, extraMessage)
     }
 
     fun logShopPageP2BuyerFlowAlerting(
-            tag: String,
-            functionName: String,
-            liveDataName: String = "",
-            userId: String = "",
-            shopId: String,
-            shopName: String = "",
-            errorMessage: String,
-            stackTrace: String,
-            errType: String
+        tag: String,
+        functionName: String,
+        liveDataName: String = "",
+        userId: String = "",
+        shopId: String,
+        shopName: String = "",
+        errorMessage: String,
+        stackTrace: String,
+        errType: String
     ) {
         val extraParam = mapOf(
-                TYPE to errType,
-                FUNCTION_NAME_KEY to functionName,
-                LIVE_DATA_NAME_KEY to liveDataName,
-                SHOP_ID_KEY to shopId,
-                USER_ID_KEY to userId,
-                SHOP_NAME_KEY to shopName,
-                REASON_KEY to errorMessage,
-                DATA_KEY to stackTrace
+            TYPE to errType,
+            FUNCTION_NAME_KEY to functionName,
+            LIVE_DATA_NAME_KEY to liveDataName,
+            SHOP_ID_KEY to shopId,
+            USER_ID_KEY to userId,
+            SHOP_NAME_KEY to shopName,
+            REASON_KEY to errorMessage,
+            DATA_KEY to stackTrace
         )
         logTimberWarning(Priority.P2, tag, extraParam)
     }
@@ -95,22 +91,22 @@ object ShopUtil {
     }
 
     fun getShopPageWidgetUserAddressLocalData(context: Context?): LocalCacheModel? {
-        return context?.let{
+        return context?.let {
             ChooseAddressUtils.getLocalizingAddressData(it)
         }
     }
 
     fun getShopFollowButtonAbTestVariant(): String? {
         return RemoteConfigInstance.getInstance().abTestPlatform?.getString(
-                AB_TEST_SHOP_FOLLOW_BUTTON_KEY,
-                AB_TEST_SHOP_FOLLOW_BUTTON_VARIANT_OLD
+            AB_TEST_SHOP_FOLLOW_BUTTON_KEY,
+            AB_TEST_SHOP_FOLLOW_BUTTON_VARIANT_OLD
         )
     }
 
     fun isUsingNewShareBottomSheet(context: Context): Boolean {
         return UniversalShareBottomSheet.isCustomSharingEnabled(
-                context,
-                ShopPageConstant.ENABLE_SHOP_PAGE_UNIVERSAL_BOTTOM_SHEET
+            context,
+            ShopPageConstant.ENABLE_SHOP_PAGE_UNIVERSAL_BOTTOM_SHEET
         )
     }
 
@@ -121,8 +117,8 @@ object ShopUtil {
         return TextUtils.join(delimiter, filteredListString)
     }
 
-    fun <E> MutableList<E>.setElement(index: Int, element: E){
-        if(index in 0 until size){
+    fun <E> MutableList<E>.setElement(index: Int, element: E) {
+        if (index in 0 until size) {
             set(index, element)
         }
     }
@@ -139,7 +135,7 @@ object ShopUtil {
         }
     }
 
-    fun getShopGridViewTypeString(gridType: ShopProductViewGridType) : String {
+    fun getShopGridViewTypeString(gridType: ShopProductViewGridType): String {
         return when (gridType) {
             ShopProductViewGridType.LIST -> ShopPageTrackingConstant.LIST_VIEW_TYPE
             ShopProductViewGridType.SMALL_GRID -> ShopPageTrackingConstant.GRID_VIEW_TYPE
@@ -147,7 +143,7 @@ object ShopUtil {
         }
     }
 
-    fun getActualPositionFromIndex(indexPosition: Int): Int{
+    fun getActualPositionFromIndex(indexPosition: Int): Int {
         return indexPosition + VALUE_INT_ONE
     }
 

@@ -25,7 +25,7 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoCleared
 import javax.inject.Inject
 
-class TalkInboxContainerFragment : BaseDaggerFragment(), HasComponent<TalkInboxContainerComponent>,
+open class TalkInboxContainerFragment : BaseDaggerFragment(), HasComponent<TalkInboxContainerComponent>,
     TalkInboxListener {
 
     companion object {
@@ -149,7 +149,7 @@ class TalkInboxContainerFragment : BaseDaggerFragment(), HasComponent<TalkInboxC
         binding.talkInboxViewPager.adapter = TalkInboxContainerAdapter(getFragmentList(), this)
     }
 
-    private fun getFragmentList(): List<Fragment> {
+    protected open fun getFragmentList(): List<Fragment> {
         return listOf(
             TalkInboxFragment.createNewInstance(TalkInboxTab.TalkShopInboxTab(), this),
             TalkInboxFragment.createNewInstance(TalkInboxTab.TalkBuyerInboxTab(), this)

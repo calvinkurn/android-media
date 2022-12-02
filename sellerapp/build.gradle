@@ -213,7 +213,6 @@ dependencies {
     } else {
         implementation projectOrAar(rootProject.ext.features.developerOptionsNoop)
     }
-    implementation projectOrAar(rootProject.ext.libraries.videoplayer)
     implementation projectOrAar(rootProject.ext.libraries.youtubeutil)
     implementation projectOrAar(rootProject.ext.features.appCommon)
     implementation projectOrAar(rootProject.ext.features.tkpdcore)

@@ -3,7 +3,11 @@ package com.tokopedia.checkout.view.presenter
 import com.google.gson.Gson
 import com.tokopedia.akamai_bot_lib.exception.AkamaiErrorException
 import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection
-import com.tokopedia.checkout.domain.usecase.*
+import com.tokopedia.checkout.domain.usecase.ChangeShippingAddressGqlUseCase
+import com.tokopedia.checkout.domain.usecase.CheckoutGqlUseCase
+import com.tokopedia.checkout.domain.usecase.GetShipmentAddressFormV3UseCase
+import com.tokopedia.checkout.domain.usecase.ReleaseBookingUseCase
+import com.tokopedia.checkout.domain.usecase.SaveShipmentStateGqlUseCase
 import com.tokopedia.checkout.view.ShipmentContract
 import com.tokopedia.checkout.view.ShipmentPresenter
 import com.tokopedia.checkout.view.converter.ShipmentDataConverter
@@ -34,6 +38,7 @@ import io.mockk.every
 import io.mockk.impl.annotations.MockK
 import io.mockk.just
 import io.mockk.mockkObject
+import io.mockk.verify
 import io.mockk.verifySequence
 import org.junit.Assert.assertEquals
 import org.junit.Before
@@ -97,7 +102,7 @@ class ShipmentPresenterValidateUseLogisticPromoTest {
     @MockK(relaxed = true)
     private lateinit var getShipmentAddressFormV3UseCase: GetShipmentAddressFormV3UseCase
 
-    @MockK
+    @MockK(relaxed = true)
     private lateinit var eligibleForAddressUseCase: EligibleForAddressUseCase
 
     @MockK
@@ -374,4 +379,18 @@ class ShipmentPresenterValidateUseLogisticPromoTest {
         }
     }
 
+    @Test
+    fun `WHEN validate use with detached view THEN should do nothing`() {
+        // Given
+        val cartPosition = 1
+        presenter.detachView()
+
+        // When
+        presenter.doValidateUseLogisticPromo(cartPosition, "", ValidateUsePromoRequest(), "")
+
+        // Then
+        verify(inverse = true) {
+            view.setStateLoadingCourierStateAtIndex(any(), any())
+        }
+    }
 }
