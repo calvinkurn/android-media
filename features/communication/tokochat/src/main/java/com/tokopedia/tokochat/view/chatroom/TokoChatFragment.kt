@@ -1,4 +1,4 @@
-package com.tokopedia.tokochat.view.fragment
+package com.tokopedia.tokochat.view.chatroom
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -41,10 +41,8 @@ import com.tokopedia.tokochat.util.TokoChatMediaCleanupStorageWorker
 import com.tokopedia.tokochat.util.TokoChatValueUtil.CHAT_CLOSED_CODE
 import com.tokopedia.tokochat.util.TokoChatValueUtil.CHAT_DOES_NOT_EXIST
 import com.tokopedia.tokochat.util.TokoChatValueUtil.NOTIFCENTER_NOTIFICATION_TEMPLATE_KEY
-import com.tokopedia.tokochat.view.bottomsheet.MaskingPhoneNumberBottomSheet
-import com.tokopedia.tokochat.view.bottomsheet.TokoChatGeneralUnavailableBottomSheet
-import com.tokopedia.tokochat.view.mapper.TokoChatConversationUiMapper
-import com.tokopedia.tokochat.view.viewmodel.TokoChatViewModel
+import com.tokopedia.tokochat.view.chatroom.bottomsheet.MaskingPhoneNumberBottomSheet
+import com.tokopedia.tokochat.view.chatroom.bottomsheet.TokoChatGeneralUnavailableBottomSheet
 import com.tokopedia.tokochat_common.util.OrderStatusType
 import com.tokopedia.tokochat_common.util.TokoChatUrlUtil.IC_TOKOFOOD_SOURCE
 import com.tokopedia.tokochat_common.util.TokoChatValueUtil.CUSTOMER

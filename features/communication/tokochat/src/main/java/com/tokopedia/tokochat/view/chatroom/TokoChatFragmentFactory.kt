@@ -1,8 +1,7 @@
-package com.tokopedia.tokochat.view.fragment.factory
+package com.tokopedia.tokochat.view.chatroom
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentFactory
-import com.tokopedia.tokochat.view.fragment.TokoChatFragment
 
 class TokoChatFragmentFactory: FragmentFactory() {
     override fun instantiate(classLoader: ClassLoader, className: String): Fragment {

@@ -1,4 +1,4 @@
-package com.tokopedia.tokochat.view.bottomsheet
+package com.tokopedia.tokochat.view.chatroom.bottomsheet
 
 import android.content.Intent
 import android.net.Uri
