@@ -400,14 +400,9 @@ class HomeRecommendationViewModelTest {
     fun `Get Success Data Home Recommendation Initial Page & Send Impression`() {
         val observerHomeRecommendation: Observer<HomeRecommendationDataModel> = mockk(relaxed = true)
         val item = HomeRecommendationItemDataModel(
-            Product(
-                id = "12",
-                isWishlist = false,
-                trackerImageUrl = "coba",
-                name = "Nama Produk",
-                imageUrl = "https://ecs.tokopedia.com/blablabla.png"
-            ),
-            position = 1
+                Product(id = "12", isWishlist = false, trackerImageUrl = "coba",
+                        name = "Nama Produk", imageUrl = "https://ecs.tokopedia.com/blablabla.png"),
+                position = 1
         )
         val homeRecommendationDataModel = HomeRecommendationDataModel(
             homeRecommendations = listOf(
