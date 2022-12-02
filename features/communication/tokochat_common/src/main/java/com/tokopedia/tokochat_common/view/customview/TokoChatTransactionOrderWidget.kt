@@ -33,9 +33,9 @@ class TokoChatTransactionOrderWidget : LinearLayout {
 
     private var shimmerOrderStatusWidgetBinding: TokochatItemOrderStatusShimmerBinding? = null
 
-    constructor(context: Context?) : super(context)
-    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
-    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(
+    constructor(context: Context) : super(context)
+    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
         context,
         attrs,
         defStyleAttr

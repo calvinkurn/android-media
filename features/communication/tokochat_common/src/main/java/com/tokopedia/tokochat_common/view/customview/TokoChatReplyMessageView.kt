@@ -39,16 +39,16 @@ class TokoChatReplyMessageView : ConstraintLayout, LifecycleObserver {
 
     private val numberFormat = NumberFormat.getInstance(Locale("in", "ID"))
 
-    constructor(context: Context?) : super(context)
-    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
-    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(
+    constructor(context: Context) : super(context)
+    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
         context,
         attrs,
         defStyleAttr
     )
 
     constructor(
-        context: Context?,
+        context: Context,
         attrs: AttributeSet?,
         defStyleAttr: Int,
         defStyleRes: Int
@@ -112,7 +112,7 @@ class TokoChatReplyMessageView : ConstraintLayout, LifecycleObserver {
             shadowGravity = Gravity.NO_GRAVITY,
             strokeColor = com.tokopedia.unifyprinciples.R.color.Unify_NN50,
             strokeWidthValue = ONE_DP,
-            //Hide the top shadow
+            // Hide the top shadow
             shadowTop = ZERO_DP,
             isInsetElevation = false
         )
@@ -134,7 +134,8 @@ class TokoChatReplyMessageView : ConstraintLayout, LifecycleObserver {
                         val formattedOffset = getFormattedOffset(offset)
                         errorComposeMsg?.show()
                         errorComposeMsg?.text = context?.getString(
-                            com.tokopedia.tokochat_common.R.string.tokochat_desc_max_char_exceeded, formattedOffset
+                            com.tokopedia.tokochat_common.R.string.tokochat_desc_max_char_exceeded,
+                            formattedOffset
                         ) ?: ""
                         composeArea?.setBackgroundResource(com.tokopedia.tokochat_common.R.drawable.bg_tokochat_error_too_long_msg)
                     }
@@ -143,7 +144,8 @@ class TokoChatReplyMessageView : ConstraintLayout, LifecycleObserver {
                         errorComposeMsg?.hide()
                         setDefaultComposeBackground()
                     }
-                })
+                }
+            )
             composeArea?.addTextChangedListener(sendButtonTextWatcher)
         }
     }

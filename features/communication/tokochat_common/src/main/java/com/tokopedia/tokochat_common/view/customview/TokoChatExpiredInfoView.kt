@@ -6,11 +6,11 @@ import android.view.LayoutInflater
 import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.tokochat_common.databinding.TokochatExpiredInfoBinding
 
-class TokoChatExpiredInfoView: ConstraintLayout {
+class TokoChatExpiredInfoView : ConstraintLayout {
 
-    constructor(context: Context?) : super(context)
-    constructor(context: Context?, attrs: AttributeSet?) : super(context, attrs)
-    constructor(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) : super(
+    constructor(context: Context) : super(context)
+    constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
+    constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
         context,
         attrs,
         defStyleAttr
@@ -33,5 +33,4 @@ class TokoChatExpiredInfoView: ConstraintLayout {
     fun setExpiredInfoDesc(description: String) {
         binding?.tokochatTvExpiredInfo?.text = description
     }
-
 }
