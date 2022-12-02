@@ -10,6 +10,8 @@ object WishlistV2CommonConsts {
     const val SOURCE = "source"
     const val PARAMS = "params"
     const val IS_PRODUCT_ACTIVE = "is_product_active"
+    const val SOURCE_COLLECTION_ID = "source_collection_id"
+    const val COLLECTION_SHARING = "collection_sharing"
 
     const val TYPE_COLLECTION_MAIN_SECTION = "main_section"
     const val TYPE_COLLECTION_ADDITIONAL_SECTION = "additional_section"

@@ -86,6 +86,7 @@ import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.async
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
+import org.junit.Assert.assertFalse
 import org.junit.Assert.assertNotNull
 import org.junit.Assert.assertTrue
 import org.junit.Before
@@ -1854,6 +1855,7 @@ class ShopHomeViewModelTest {
         )
         assert(viewModel.miniCartAdd.value is Success)
         assert(viewModel.shopPageAtcTracker.value?.atcType == ShopPageAtcTracker.AtcType.ADD)
+        assert(viewModel.createAffiliateCookieAtcProduct.value != null)
     }
 
     @Test
@@ -1909,6 +1911,7 @@ class ShopHomeViewModelTest {
         )
         assert(viewModel.miniCartRemove.value is Success)
         assert(viewModel.shopPageAtcTracker.value?.atcType == ShopPageAtcTracker.AtcType.REMOVE)
+        assert(viewModel.createAffiliateCookieAtcProduct.value == null)
     }
 
     @Test
@@ -1965,6 +1968,7 @@ class ShopHomeViewModelTest {
         )
         assert(viewModel.miniCartUpdate.value is Success)
         assert(viewModel.shopPageAtcTracker.value?.atcType == ShopPageAtcTracker.AtcType.UPDATE_ADD)
+        assert(viewModel.createAffiliateCookieAtcProduct.value != null)
     }
 
     @Test
@@ -1997,6 +2001,7 @@ class ShopHomeViewModelTest {
         )
         assert(viewModel.miniCartUpdate.value is Success)
         assert(viewModel.shopPageAtcTracker.value?.atcType == ShopPageAtcTracker.AtcType.UPDATE_REMOVE)
+        assert(viewModel.createAffiliateCookieAtcProduct.value == null)
     }
 
     @Test
@@ -2044,5 +2049,17 @@ class ShopHomeViewModelTest {
         assert(viewModel.miniCartUpdate.value == null)
         assert(viewModel.miniCartUpdate.value == null)
         assert(viewModel.shopPageAtcTracker.value == null)
+    }
+
+    @Test
+    fun `when widget type is bundle expect isWidgetBundle to return true`() {
+        val testData = ShopPageWidgetLayoutUiModel(widgetType = WidgetType.BUNDLE)
+        assertTrue(viewModel.isWidgetBundle(testData))
+    }
+
+    @Test
+    fun `when widget type is not bundle expect isWidgetBundle to return false`() {
+        val testData = ShopPageWidgetLayoutUiModel(widgetType = WidgetType.CAMPAIGN)
+        assertFalse(viewModel.isWidgetBundle(testData))
     }
 }
