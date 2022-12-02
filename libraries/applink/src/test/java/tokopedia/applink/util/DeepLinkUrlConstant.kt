@@ -162,7 +162,6 @@ object DeepLinkUrlConstant {
 
     object CONTENT {
         const val PLAY_CHANNEL_ID = "13114"
-        const val VIDEO_TAB = "video"
         const val PLAY_FROM_HOME = "https://www.tokopedia.com/play/channel/13114?source_type=HOME"
         const val PLAY_FROM_FEED = "https://www.tokopedia.com/play/channel/13114?source_type=FEED"
         const val PLAY_WITH_START_TIME = "https://www.tokopedia.com/play/channel/13114?start_time=60000"
