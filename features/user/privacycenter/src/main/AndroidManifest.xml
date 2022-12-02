@@ -1,0 +1,155 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.tokopedia.privacycenter">
+
+    <application
+        android:allowBackup="true"
+        android:supportsRtl="true">
+
+        <activity
+            android:name=".ui.main.PrivacyCenterActivity"
+            android:theme="@style/Theme.WhiteUnify"
+            android:exported="false"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_user"
+                    android:pathPattern="@string/path_privacy_center"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".ui.consentwithdrawal.ConsentWithdrawalActivity"
+            android:label="Consent Withdrawal"
+            android:theme="@style/Theme.WhiteUnify"
+            android:exported="false"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_user"
+                    android:pathPattern="@string/path_new_consent_withdrawal"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+
+        </activity>
+
+        <activity
+            android:name=".ui.privacypolicywebview.PrivacyPolicyWebViewActivity"
+            android:label="@string/privacy_policy_label"
+            android:theme="@style/Theme.WhiteUnify"
+            android:exported="false"
+            android:screenOrientation="portrait" />
+
+        <activity android:name=".ui.accountlinking.LinkAccountWebViewActivity"
+            android:theme="@style/Theme.WhiteUnify"
+            android:exported="false"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_user"
+                    android:pathPattern="@string/path_account_linking_webview"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".ui.searchhistory.SearchHistoryActivity"
+            android:label="@string/privacy_center_search_history_title"
+            android:theme="@style/Theme.WhiteUnify"
+            android:exported="false"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_user"
+                    android:pathPattern="@string/path_search_history"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".ui.sharingwishlist.SharingWishlistActivity"
+            android:label="Consent Withdrawal"
+            android:theme="@style/Theme.WhiteUnify"
+            android:exported="false"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_user"
+                    android:pathPattern="@string/path_sharing_wishlist"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+
+        </activity>
+
+        <activity
+            android:label="@string/dsar_activity_title"
+            android:name=".ui.dsar.DsarActivity"
+            android:theme="@style/Theme.WhiteUnify"
+            android:exported="false"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_user"
+                    android:pathPattern="@string/path_dsar"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".ui.dsar.addemail.DsarAddEmailActivity"
+            android:theme="@style/Theme.WhiteUnify"
+            android:exported="false"
+            android:screenOrientation="portrait">
+            <intent-filter>
+                <action android:name="com.tokopedia.internal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+
+                <data
+                    android:host="@string/host_user"
+                    android:pathPattern="@string/path_dsar_add_email"
+                    android:scheme="@string/internal_scheme" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:label="@string/dsar_activity_title"
+            android:name=".ui.dsar.DsarSuccessActivity"
+            android:theme="@style/Theme.WhiteUnify"
+            android:exported="false"
+            android:screenOrientation="portrait"/>
+    </application>
+
+</manifest>
