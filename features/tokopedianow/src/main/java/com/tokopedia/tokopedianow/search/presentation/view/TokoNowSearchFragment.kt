@@ -219,6 +219,36 @@ class TokoNowSearchFragment :
         )
     }
 
+    override fun onWishlistButtonClicked(
+        productId: String,
+        isWishlistSelected: Boolean,
+        descriptionToaster: String,
+        ctaToaster: String,
+        type: Int,
+        ctaClickListener: (() -> Unit)?
+    ) {
+
+        if(isWishlistSelected) {
+            SearchTracking.trackClickAddToWishlist(
+                getViewModel().warehouseId,
+                productId
+            )
+        }
+        else{
+            SearchTracking.trackClickRemoveFromWishlist(
+                getViewModel().warehouseId,
+                productId
+            )
+        }
+        getViewModel().updateWishlistStatus(
+            productId,
+            isWishlistSelected
+        )
+        showToaster(descriptionToaster, type, ctaToaster) {
+            ctaClickListener?.invoke()
+        }
+    }
+
     override fun trackClickSimilarProductBtn(productId: String) {
         SearchTracking.trackClickSimilarProductBtn(getViewModel().warehouseId, productId, userSession.userId.toString())
     }

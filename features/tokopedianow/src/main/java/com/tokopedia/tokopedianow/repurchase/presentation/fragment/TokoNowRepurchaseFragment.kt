@@ -55,6 +55,7 @@ import com.tokopedia.searchbar.navigation_component.icons.IconBuilder
 import com.tokopedia.searchbar.navigation_component.icons.IconBuilderFlag
 import com.tokopedia.searchbar.navigation_component.icons.IconList
 import com.tokopedia.searchbar.navigation_component.util.NavToolbarExt
+import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.categoryfilter.presentation.activity.TokoNowCategoryFilterActivity.Companion.EXTRA_SELECTED_CATEGORY_FILTER
 import com.tokopedia.tokopedianow.categoryfilter.presentation.activity.TokoNowCategoryFilterActivity.Companion.REQUEST_CODE_CATEGORY_FILTER_BOTTOM_SHEET
 import com.tokopedia.tokopedianow.common.analytics.TokoNowCommonAnalyticConstants.VALUE.SCREEN_NAME_TOKONOW_OOC
@@ -555,8 +556,12 @@ class TokoNowRepurchaseFragment:
                 is Success -> {
                     getMiniCart()
                     showToaster(
+                        actionText = getString(R.string.tokopedianow_toaster_see),
                         message = it.data.errorMessage.joinToString(separator = ", "),
-                        type = Toaster.TYPE_NORMAL
+                        type = Toaster.TYPE_NORMAL,
+                        clickListener = {
+                            miniCartWidget?.showMiniCartListBottomSheet(this)
+                        }
                     )
                 }
                 is Fail -> {
@@ -588,6 +593,7 @@ class TokoNowRepurchaseFragment:
                 is Success -> {
                     getMiniCart()
                     showToaster(
+                        actionText = getString(R.string.tokopedianow_toaster_ok),
                         message = it.data.second,
                         type = Toaster.TYPE_NORMAL
                     )
@@ -634,8 +640,12 @@ class TokoNowRepurchaseFragment:
                 is Success -> {
                     getMiniCart()
                     showToaster(
+                        actionText = getString(R.string.tokopedianow_toaster_see),
                         message = result.data.errorMessage.joinToString(separator = ", "),
-                        type = Toaster.TYPE_NORMAL
+                        type = Toaster.TYPE_NORMAL,
+                        clickListener = {
+                            miniCartWidget?.showMiniCartListBottomSheet(this)
+                        }
                     )
                 }
                 is Fail -> {
@@ -667,6 +677,7 @@ class TokoNowRepurchaseFragment:
                 is Success -> {
                     getMiniCart()
                     showToaster(
+                        actionText = getString(R.string.tokopedianow_toaster_ok),
                         message = result.data.second,
                         type = Toaster.TYPE_NORMAL
                     )
@@ -906,14 +917,23 @@ class TokoNowRepurchaseFragment:
         viewModel.trackOpeningScreen(SCREEN_NAME_TOKONOW_OOC + REPURCHASE_TOKONOW)
     }
 
-    private fun showToaster(message: String, duration: Int = Toaster.LENGTH_SHORT, type: Int) {
+    private fun getMiniCartHeight(): Int {
+        return miniCartWidget?.height.orZero() - context?.resources?.getDimension(com.tokopedia.unifyprinciples.R.dimen.unify_space_16)?.toInt().orZero()
+    }
+
+    private fun showToaster(message: String, duration: Int = Toaster.LENGTH_SHORT, type: Int, actionText: String = "", clickListener: () -> Unit = {}) {
         view?.let { view ->
             if (message.isNotBlank()) {
+                Toaster.toasterCustomBottomHeight = getMiniCartHeight()
                 Toaster.build(
                     view = view,
                     text = message,
                     duration = duration,
-                    type = type
+                    type = type,
+                    actionText = actionText,
+                    clickListener = {
+                        clickListener()
+                    }
                 ).show()
             }
         }
@@ -993,7 +1013,14 @@ class TokoNowRepurchaseFragment:
             userSession,
             analytics,
             this::startActivityForResult
-        )
+        ) { descriptionToaster, type, ctaToaster, clickListener ->
+            showToaster(
+                message = descriptionToaster,
+                type = type,
+                actionText = ctaToaster,
+                clickListener = clickListener
+            )
+        }
     }
 
     private fun createTokoNowEmptyStateOocListener(): TokoNowEmptyStateOocViewHolder.TokoNowEmptyStateOocListener {

@@ -196,9 +196,9 @@ class TokoNowHomeFragment: Fragment(),
         private const val REQUEST_CODE_LOGIN_STICKY_LOGIN = 130
         private const val REQUEST_CODE_PLAY_WIDGET = 100
         private const val ITEM_VIEW_CACHE_SIZE = 20
-
         private const val EXTRA_PLAY_CHANNEL_ID = "EXTRA_CHANNEL_ID"
         private const val EXTRA_PLAY_TOTAL_VIEW = "EXTRA_TOTAL_VIEW"
+        private const val WHILE_SCROLLING_VERTICALLY = 1
 
         const val CATEGORY_LEVEL_DEPTH = 1
         const val SOURCE = "tokonow"
@@ -274,7 +274,6 @@ class TokoNowHomeFragment: Fragment(),
     private var rvLayoutManager: CustomLinearLayoutManager? = null
     private var isShowFirstInstallSearch = false
     private var durationAutoTransition = DEFAULT_INTERVAL_HINT
-    private var movingPosition = 0
     private var isOpenMiniCartList = false
     private var externalServiceType = ""
     private var shareHomeTokonow: ShareTokonow? = null
@@ -789,7 +788,6 @@ class TokoNowHomeFragment: Fragment(),
 
     private fun onRefreshLayout() {
         refreshMiniCart()
-        resetMovingPosition()
         removeAllScrollListener()
         hideStickyLogin()
         rvLayoutManager?.setScrollEnabled(true)
@@ -890,15 +888,12 @@ class TokoNowHomeFragment: Fragment(),
         shareHomeTokonow?.sharingUrl = url
     }
 
-    private fun evaluateHomeComponentOnScroll(recyclerView: RecyclerView, dy: Int) {
-        movingPosition += dy
-        ivHeaderBackground?.y = if(movingPosition >= 0) {
-            -(movingPosition.toFloat())
-        } else {
-            resetMovingPosition()
-            movingPosition.toFloat()
-        }
-        if (recyclerView.canScrollVertically(1) || movingPosition != 0) {
+    private fun evaluateHeaderBackgroundOnScroll(recyclerView: RecyclerView, dy: Int) {
+        ivHeaderBackground?.translationY =  viewModelTokoNow.getTranslationYHeaderBackground(
+            dy = dy,
+            headerBackgroundHeight = ivHeaderBackground?.height.orZero()
+        )
+        if (recyclerView.canScrollVertically(WHILE_SCROLLING_VERTICALLY)) {
             navToolbar?.showShadow(lineShadow = true)
         } else {
             navToolbar?.hideShadow(lineShadow = true)
@@ -1001,7 +996,7 @@ class TokoNowHomeFragment: Fragment(),
                     getMiniCart()
                     showToaster(
                         message = it.data.errorMessage.joinToString(separator = ", "),
-                        actionText = getString(R.string.tokopedianow_lihat),
+                        actionText = getString(R.string.tokopedianow_toaster_see),
                         onClickActionBtn = {
                             showMiniCartBottomSheet()
                         },
@@ -1037,6 +1032,7 @@ class TokoNowHomeFragment: Fragment(),
                 is Success -> {
                     getMiniCart()
                     showToaster(
+                        actionText = getString(R.string.tokopedianow_toaster_ok),
                         message = it.data.second,
                         type = TYPE_NORMAL
                     )
@@ -1305,10 +1301,6 @@ class TokoNowHomeFragment: Fragment(),
     private fun resetSwipeLayout() {
         swipeLayout?.isEnabled = true
         swipeLayout?.isRefreshing = false
-    }
-
-    private fun resetMovingPosition() {
-        movingPosition = 0
     }
 
     private fun setupMiniCart(data: MiniCartSimplifiedData) {
@@ -1740,7 +1732,7 @@ class TokoNowHomeFragment: Fragment(),
         return object : RecyclerView.OnScrollListener() {
             override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                 super.onScrolled(recyclerView, dx, dy)
-                evaluateHomeComponentOnScroll(recyclerView, dy)
+                evaluateHeaderBackgroundOnScroll(recyclerView, dy)
             }
         }
     }

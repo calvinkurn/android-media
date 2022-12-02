@@ -58,6 +58,9 @@ data class RepurchaseProduct(
     @SerializedName("campaignCode")
     val campaignCode: String = "",
     @Expose
+    @SerializedName("wishlist")
+    val wishlist: Boolean = false,
+    @Expose
     @SerializedName("labelGroup")
     val labelGroup: List<LabelGroup> = emptyList(),
     @Expose

@@ -136,6 +136,7 @@ class TokoNowHomeViewModel @Inject constructor(
 
     companion object {
         private const val DEFAULT_INDEX = 1
+        private const val DEFAULT_HEADER_Y_COORDINATE = 0f
     }
 
     val homeLayoutList: LiveData<Result<HomeLayoutListUiModel>>
@@ -192,7 +193,7 @@ class TokoNowHomeViewModel @Inject constructor(
     private var miniCartSimplifiedData: MiniCartSimplifiedData? = null
     private var hasTickerBeenRemoved = false
     private var channelToken = ""
-
+    private var headerYCoordinate = 0f
     private var getHomeLayoutJob: Job? = null
     private var getMiniCartJob: Job? = null
 
@@ -1114,6 +1115,19 @@ class TokoNowHomeViewModel @Inject constructor(
                 )
             )
         }) { /* nothing to do */ }
+    }
+
+    fun getTranslationYHeaderBackground(dy: Int, headerBackgroundHeight: Int): Float {
+        headerYCoordinate += dy
+        return if (-headerYCoordinate > DEFAULT_HEADER_Y_COORDINATE) {
+            headerYCoordinate = DEFAULT_HEADER_Y_COORDINATE
+            headerYCoordinate
+        } else if (headerYCoordinate <= -headerBackgroundHeight) {
+            headerYCoordinate = headerBackgroundHeight.toFloat()
+            -headerYCoordinate
+        } else  {
+            -headerYCoordinate
+        }
     }
 
     private fun shouldLoadMore(lastVisibleItemIndex: Int): Boolean {

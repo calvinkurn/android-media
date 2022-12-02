@@ -7,6 +7,7 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalMarketplace
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.tokopedianow.R
+import com.tokopedia.tokopedianow.common.view.productcard.TokoNowWishlistButtonView
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowProductGridCardBinding
 import com.tokopedia.tokopedianow.repurchase.presentation.uimodel.RepurchaseProductUiModel
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.SimilarProductListener
@@ -16,7 +17,7 @@ class RepurchaseProductViewHolder(
     itemView: View,
     private val listener: RepurchaseProductCardListener? = null,
     private val similarProductListener: SimilarProductListener? = null
-): AbstractViewHolder<RepurchaseProductUiModel>(itemView) {
+): AbstractViewHolder<RepurchaseProductUiModel>(itemView), TokoNowWishlistButtonView.TokoNowWishlistButtonListener {
 
     companion object {
         @LayoutRes
@@ -40,6 +41,9 @@ class RepurchaseProductViewHolder(
             setOnClickQuantityEditorVariantListener {
                 listener?.onAddToCartVariant(item)
             }
+            setWishlistButtonListener(
+                wishlistButtonListener = this@RepurchaseProductViewHolder
+            )
             addOnImpressionListener(item) {
                 listener?.onProductImpressed(item)
             }
@@ -63,21 +67,52 @@ class RepurchaseProductViewHolder(
         )
     }
 
+    override fun onWishlistButtonClicked(
+        productId: String,
+        isWishlistSelected: Boolean,
+        descriptionToaster: String,
+        ctaToaster: String,
+        type: Int,
+        ctaClickListener: (() -> Unit)?
+    ) {
+        listener?.onWishlistButtonClicked(
+            productId = productId,
+            isWishlistSelected = isWishlistSelected,
+            descriptionToaster = descriptionToaster,
+            ctaToaster = ctaToaster,
+            type = type,
+            ctaClickListener = ctaClickListener
+        )
+    }
+
     interface RepurchaseProductCardListener {
         fun onClickProduct(
             item: RepurchaseProductUiModel,
             position: Int
         )
+
         fun onAddToCartVariant(
             item: RepurchaseProductUiModel
         )
+
         fun onAddToCartNonVariant(
             item: RepurchaseProductUiModel,
             quantity: Int
         )
+
         fun onProductImpressed(
             item: RepurchaseProductUiModel
         )
+
         fun onClickSimilarProduct()
+
+        fun onWishlistButtonClicked(
+            productId: String,
+            isWishlistSelected: Boolean,
+            descriptionToaster: String,
+            ctaToaster: String,
+            type: Int,
+            ctaClickListener: (() -> Unit)?
+        )
     }
 }

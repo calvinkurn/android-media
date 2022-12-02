@@ -2,6 +2,7 @@ package com.tokopedia.tokopedianow.common.viewholder
 
 import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.common.model.TokoNowProductRecommendationUiModel
 import com.tokopedia.tokopedianow.common.view.TokoNowProductRecommendationView
@@ -27,6 +28,6 @@ class TokoNowProductRecommendationViewHolder(
         binding?.productRecommendation?.setListener(
             productRecommendationListener = listener
         )
+        binding?.realTimeRecommendationCarousel?.hide()
     }
-
 }

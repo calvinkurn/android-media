@@ -104,5 +104,14 @@ object TokoNowCommonAnalyticConstants {
         const val EVENT_ACTION_IMPRESSION_SHARING_CHANNEL = "view on sharing channel"
         const val EVENT_ACTION_CLICK_SHARING_CHANNEL = "click - sharing channel"
         const val EVENT_ACTION_CLICK_CLOSE_SHARE_BOTTOM_SHEET  = "click - close share bottom sheet"
+        const val EVENT_ACTION_CLICK_ADD_TO_WISHLIST  = "click bell add to wishlist"
+        const val EVENT_ACTION_CLICK_REMOVE_FROM_WISHLIST  = "click bell remove from wishlist"
+    }
+
+    object TRACKER_ID{
+        const val TRACKER_ID_ADD_TO_WISHLIST_CATEGORY = "39572"
+        const val TRACKER_ID_REMOVE_FROM_WISHLIST_CATEGORY = "39573"
+        const val TRACKER_ID_ADD_TO_WISHLIST_SEARCH = "39601"
+        const val TRACKER_ID_REMOVE_FROM_WISHLIST_SEARCH = "39602"
     }
 }

@@ -134,8 +134,9 @@ abstract class BaseSearchCategoryFragment:
         private const val SPAN_COUNT = 3
         private const val SPAN_FULL_SPACE = 1
         private const val QUERY_PARAM_SERVICE_TYPE_NOW2H = "?service_type=2h"
-        private const val DEFAULT_POSITION = 0
+        private const val TOP_LIST = 0
         private const val NO_PADDING = 0
+        private const val WHILE_SCROLLING_VERTICALLY = 1
     }
 
     private var binding by autoClearedNullable<FragmentTokopedianowSearchCategoryBinding>()
@@ -165,8 +166,6 @@ abstract class BaseSearchCategoryFragment:
     protected var headerBackground: AppCompatImageView? = null
     protected var loaderUnify: LoaderUnify? = null
     protected val recycledViewPool = RecyclerView.RecycledViewPool()
-
-    private var movingPosition = 0
 
     protected abstract val toolbarPageName: String
 
@@ -391,7 +390,6 @@ abstract class BaseSearchCategoryFragment:
     }
 
     protected open fun refreshLayout() {
-        resetMovingPosition()
         getViewModel().onViewReloadPage()
         refreshProductRecommendation(TOKONOW_NO_RESULT)
     }
@@ -402,10 +400,6 @@ abstract class BaseSearchCategoryFragment:
                 pageName = pageName
             )
         )
-    }
-
-    private fun resetMovingPosition() {
-        movingPosition = DEFAULT_POSITION
     }
 
     private fun configureStatusBar() {
@@ -472,19 +466,16 @@ abstract class BaseSearchCategoryFragment:
             object : RecyclerView.OnScrollListener() {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                     super.onScrolled(recyclerView, dx, dy)
-                    evaluateNavToolbarShadow(recyclerView, dy)
+                    evaluateHeaderBackgroundOnScroll(recyclerView, dy)
                 }
             }
 
-    private fun evaluateNavToolbarShadow(recyclerView: RecyclerView, dy: Int) {
-        movingPosition += dy
-        headerBackground?.y = if(movingPosition >= DEFAULT_POSITION) {
-            -(movingPosition.toFloat())
-        } else {
-            resetMovingPosition()
-            movingPosition.toFloat()
-        }
-        if (recyclerView.canScrollVertically(1) || movingPosition != DEFAULT_POSITION) {
+    private fun evaluateHeaderBackgroundOnScroll(recyclerView: RecyclerView, dy: Int) {
+        headerBackground?.translationY = getViewModel().getTranslationYHeaderBackground(
+            dy = dy,
+            headerBackgroundHeight = headerBackground?.height.orZero()
+        )
+        if (recyclerView.canScrollVertically(WHILE_SCROLLING_VERTICALLY)) {
             navToolbar?.showShadow(lineShadow = false)
         } else {
             navToolbar?.hideShadow(lineShadow = false)
@@ -504,7 +495,8 @@ abstract class BaseSearchCategoryFragment:
         getViewModel().miniCartWidgetLiveData.observe(::updateMiniCartWidget)
         getViewModel().isShowMiniCartLiveData.observe(::updateMiniCartWidgetVisibility)
         getViewModel().updatedVisitableIndicesLiveData.observe(::notifyAdapterItemChange)
-        getViewModel().successATCMessageLiveData.observe(::showSuccessATCMessage)
+        getViewModel().successAddToCartMessageLiveData.observe(::showSuccessAddToCartMessage)
+        getViewModel().successRemoveFromCartMessageLiveData.observe(::showSuccessRemoveFromCartMessage)
         getViewModel().errorATCMessageLiveData.observe(::showErrorATCMessage)
         getViewModel().isHeaderBackgroundVisibleLiveData.observe(::updateHeaderBackgroundVisibility)
         getViewModel().isContentLoadingLiveData.observe(::updateContentVisibility)
@@ -526,7 +518,7 @@ abstract class BaseSearchCategoryFragment:
         productRecommendationViewModel.miniCartAdd.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Success -> {
-                    showSuccessATCMessage(result.data.errorMessage.joinToString(separator = ", "))
+                    showSuccessAddToCartMessage(result.data.errorMessage.joinToString(separator = ", "))
                     getViewModel().refreshMiniCart()
                 }
                 is Fail -> {
@@ -553,7 +545,7 @@ abstract class BaseSearchCategoryFragment:
         productRecommendationViewModel.miniCartRemove.observe(viewLifecycleOwner) { result ->
             when (result) {
                 is Success -> {
-                    showSuccessATCMessage(result.data.second)
+                    showSuccessRemoveFromCartMessage(result.data.second)
                     getViewModel().refreshMiniCart()
                 }
                 is Fail -> {
@@ -823,10 +815,14 @@ abstract class BaseSearchCategoryFragment:
         getViewModel().onViewATCProductNonVariant(productItemDataView, quantity)
     }
 
-    protected open fun showSuccessATCMessage(message: String?) {
-        showToaster(message, Toaster.TYPE_NORMAL, getString(R.string.tokopedianow_lihat)) {
+    protected open fun showSuccessAddToCartMessage(message: String?) {
+        showToaster(message, Toaster.TYPE_NORMAL, getString(R.string.tokopedianow_toaster_see)) {
             miniCartWidget?.showMiniCartListBottomSheet(this)
         }
+    }
+
+    protected open fun showSuccessRemoveFromCartMessage(message: String?) {
+        showToaster(message, Toaster.TYPE_NORMAL, getString(R.string.tokopedianow_toaster_ok))
     }
 
     protected open fun showToaster(
@@ -1004,7 +1000,7 @@ abstract class BaseSearchCategoryFragment:
                     )
 
                     //Refresh the page
-                    gridLayoutManager?.scrollToPosition(DEFAULT_POSITION)
+                    gridLayoutManager?.scrollToPosition(TOP_LIST)
                     refreshLayout()
 
                     //Show toaster

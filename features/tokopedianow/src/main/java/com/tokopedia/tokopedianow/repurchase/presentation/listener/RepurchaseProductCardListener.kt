@@ -18,7 +18,8 @@ class RepurchaseProductCardListener(
     private val viewModel: TokoNowRepurchaseViewModel,
     private val userSession: UserSessionInterface,
     private val analytics: RepurchaseAnalytics,
-    private val startActivityForResult: (Intent, Int) -> Unit
+    private val startActivityForResult: (Intent, Int) -> Unit,
+    private val showToaster: (String, Int, String, () -> Unit) -> Unit
 ) : RepurchaseProductCardListener {
     override fun onClickProduct(item: RepurchaseProductUiModel, position: Int) {
         analytics.onClickProduct(userSession.userId, item, position)
@@ -47,5 +48,27 @@ class RepurchaseProductCardListener(
 
     override fun onClickSimilarProduct() {
         analytics.onClickSimilarProduct(userSession.userId)
+    }
+
+    override fun onWishlistButtonClicked(
+        productId: String,
+        isWishlistSelected: Boolean,
+        descriptionToaster: String,
+        ctaToaster: String,
+        type: Int,
+        ctaClickListener: (() -> Unit)?
+    ) {
+        showToaster(
+            descriptionToaster,
+            type,
+            ctaToaster
+        ) {
+            ctaClickListener?.invoke()
+        }
+
+        viewModel.updateWishlistStatus(
+            productId = productId,
+            hasBeenWishlist = isWishlistSelected
+        )
     }
 }
