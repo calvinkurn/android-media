@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.appcompat.widget.LinearLayoutCompat
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:paddingHorizontal="16dp"
+    android:paddingVertical="11dp">
+
+    <com.tokopedia.mvc.common.customview.SpendingEstimationLabelView
+        android:id="@+id/labelSpendingEstimation"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        tools:title_placeholder_text="Pengeluaran hingga saat ini"
+        tools:description_placeholder_text="Tidak ada pemotongan karena kupon berasal dari Tokopedia"
+        tools:spending_estimation_placeholder_text="Rp3.200.000"/>
+
+    <com.tokopedia.unifycomponents.selectioncontrol.CheckboxUnify
+        android:id="@+id/cbTnc"
+        android:layout_marginTop="32dp"
+        tools:text="Saya menyetujui Syarat &amp; Ketentuan Pembuatan Kupon."
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <com.tokopedia.unifycomponents.UnifyButton
+        android:id="@+id/btnSubmit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:text="@string/smvc_summary_page_submit_text" />
+
+</androidx.appcompat.widget.LinearLayoutCompat>

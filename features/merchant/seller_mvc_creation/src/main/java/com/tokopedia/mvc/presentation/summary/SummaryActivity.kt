@@ -1,12 +1,12 @@
-package com.tokopedia.mvc.presentation.list
+package com.tokopedia.mvc.presentation.summary
 
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.mvc.R
-import com.tokopedia.mvc.presentation.list.fragment.MvcListFragment
+import com.tokopedia.mvc.presentation.summary.fragment.SummaryFragment
 
-class MvcListActivity: BaseSimpleActivity() {
+class SummaryActivity: BaseSimpleActivity() {
 
-    override fun getNewFragment() = MvcListFragment()
     override fun getLayoutRes() = R.layout.smvc_activity_common
+    override fun getNewFragment() = SummaryFragment()
     override fun getParentViewResourceID() = R.id.container
 }

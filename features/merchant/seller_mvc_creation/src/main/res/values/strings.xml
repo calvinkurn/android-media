@@ -210,4 +210,10 @@
     <string name="smvc_voucherlist_empty_data_search_title_text">Kupon yang kamu cari nggak ditemukan</string>
     <string name="smvc_voucherlist_empty_data_search_description_text">Coba ulangi pencarian dengan kata kunci atau filter lain, ya.</string>
 
+    <!--Voucher List-->
+    <string name="smvc_summary_page_title">Ringkasan Kupon</string>
+    <string name="smvc_summary_page_preview_button_text">Lihat Tampilan</string>
+    <string name="smvc_summary_page_tnc_text"><![CDATA[Saya menyetujui <font color=#00AA5B><b>Syarat & Ketentuan</b></font> Pembuatan Kupon.]]></string>
+    <string name="smvc_summary_page_submit_text">Buat Kupon</string>
+
 </resources>
