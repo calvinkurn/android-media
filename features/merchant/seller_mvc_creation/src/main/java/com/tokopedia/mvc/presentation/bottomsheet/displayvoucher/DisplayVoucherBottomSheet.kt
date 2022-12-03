@@ -7,6 +7,8 @@ import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
+import com.tokopedia.media.loader.loadImage
+import com.tokopedia.media.loader.wrapper.MediaCacheStrategy
 import com.tokopedia.mvc.R
 import com.tokopedia.mvc.databinding.SmvcBottomsheetCouponDisplayBinding
 import com.tokopedia.mvc.di.component.DaggerMerchantVoucherCreationComponent
@@ -41,6 +43,7 @@ class DisplayVoucherBottomSheet : BottomSheetUnify() {
         setTitle(context?.resources?.getString(R.string.voucher_bs_coupon_display_title).toBlankOrString())
         initInjector()
         initObservers()
+        viewModel.setSelectedVoucherChip(VoucherType.Horizontal)
 
         return super.onCreateView(inflater, container, savedInstanceState)
     }
@@ -58,6 +61,7 @@ class DisplayVoucherBottomSheet : BottomSheetUnify() {
                         horizontalChip.chipType = ChipsUnify.TYPE_SELECTED
                         squareChip.chipType = ChipsUnify.TYPE_NORMAL
                         verticalChip.chipType = ChipsUnify.TYPE_NORMAL
+                        setUpImage(voucher?.image)
                     }
                 }
                 is VoucherType.Square -> {
@@ -65,6 +69,7 @@ class DisplayVoucherBottomSheet : BottomSheetUnify() {
                         horizontalChip.chipType = ChipsUnify.TYPE_NORMAL
                         squareChip.chipType = ChipsUnify.TYPE_SELECTED
                         verticalChip.chipType = ChipsUnify.TYPE_NORMAL
+                        setUpImage(voucher?.imageSquare)
                     }
                 }
                 is VoucherType.Vertical -> {
@@ -72,9 +77,18 @@ class DisplayVoucherBottomSheet : BottomSheetUnify() {
                         horizontalChip.chipType = ChipsUnify.TYPE_NORMAL
                         squareChip.chipType = ChipsUnify.TYPE_NORMAL
                         verticalChip.chipType = ChipsUnify.TYPE_SELECTED
+                        setUpImage(voucher?.imagePortrait)
                     }
                 }
             }
+        }
+    }
+
+    private fun setUpImage(url : String?) {
+        if (url == null)
+            return
+        binding?.voucherImage?.loadImage(url){
+            setCacheStrategy(MediaCacheStrategy.RESOURCE)
         }
     }
 
