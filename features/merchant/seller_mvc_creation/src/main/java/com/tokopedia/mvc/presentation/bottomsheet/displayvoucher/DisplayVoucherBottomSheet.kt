@@ -12,12 +12,13 @@ import com.tokopedia.mvc.databinding.SmvcBottomsheetCouponDisplayBinding
 import com.tokopedia.mvc.di.component.DaggerMerchantVoucherCreationComponent
 import com.tokopedia.mvc.domain.entity.Voucher
 import com.tokopedia.mvc.presentation.bottomsheet.viewmodel.DisplayVoucherViewModel
+import com.tokopedia.mvc.presentation.bottomsheet.viewmodel.VoucherType
 import com.tokopedia.unifycomponents.BottomSheetUnify
 import com.tokopedia.unifycomponents.ChipsUnify
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
-class DisplayVoucherBottomSheet: BottomSheetUnify() {
+class DisplayVoucherBottomSheet : BottomSheetUnify() {
 
     private var binding by autoClearedNullable<SmvcBottomsheetCouponDisplayBinding>()
 
@@ -27,7 +28,6 @@ class DisplayVoucherBottomSheet: BottomSheetUnify() {
     private val viewModel: DisplayVoucherViewModel by lazy(LazyThreadSafetyMode.NONE) {
         ViewModelProvider(this, viewModelFactory).get(DisplayVoucherViewModel::class.java)
     }
-
 
     private var voucher: Voucher? = null
 
@@ -40,16 +40,55 @@ class DisplayVoucherBottomSheet: BottomSheetUnify() {
         setChild(binding?.root)
         setTitle(context?.resources?.getString(R.string.voucher_bs_coupon_display_title).toBlankOrString())
         initInjector()
+        initObservers()
 
         return super.onCreateView(inflater, container, savedInstanceState)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        binding?.squareChip?.chipType = ChipsUnify.TYPE_NORMAL
+        setOnClickListeners()
     }
 
+    private fun initObservers() {
+        viewModel.selectedDisplayVoucherType.observe(viewLifecycleOwner) { voucherType ->
+            when (voucherType) {
+                is VoucherType.Horizontal -> {
+                    binding?.apply {
+                        horizontalChip.chipType = ChipsUnify.TYPE_SELECTED
+                        squareChip.chipType = ChipsUnify.TYPE_NORMAL
+                        verticalChip.chipType = ChipsUnify.TYPE_NORMAL
+                    }
+                }
+                is VoucherType.Square -> {
+                    binding?.apply {
+                        horizontalChip.chipType = ChipsUnify.TYPE_NORMAL
+                        squareChip.chipType = ChipsUnify.TYPE_SELECTED
+                        verticalChip.chipType = ChipsUnify.TYPE_NORMAL
+                    }
+                }
+                is VoucherType.Vertical -> {
+                    binding?.apply {
+                        horizontalChip.chipType = ChipsUnify.TYPE_NORMAL
+                        squareChip.chipType = ChipsUnify.TYPE_NORMAL
+                        verticalChip.chipType = ChipsUnify.TYPE_SELECTED
+                    }
+                }
+            }
+        }
+    }
+
+    private fun setOnClickListeners() {
+        binding?.horizontalChip?.setOnClickListener {
+            viewModel.setSelectedVoucherChip(VoucherType.Horizontal)
+        }
+        binding?.verticalChip?.setOnClickListener {
+            viewModel.setSelectedVoucherChip(VoucherType.Vertical)
+        }
+        binding?.squareChip?.setOnClickListener {
+            viewModel.setSelectedVoucherChip(VoucherType.Square)
+        }
+    }
 
     private fun initInjector() {
         DaggerMerchantVoucherCreationComponent.builder()
@@ -66,5 +105,4 @@ class DisplayVoucherBottomSheet: BottomSheetUnify() {
             }
         }
     }
-
 }
