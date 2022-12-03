@@ -1,4 +1,4 @@
-package com.tokopedia.mvc.presentation.bottomsheet.moremenu
+package com.tokopedia.mvc.presentation.bottomsheet.editperiod
 
 import android.os.Bundle
 import android.util.Log

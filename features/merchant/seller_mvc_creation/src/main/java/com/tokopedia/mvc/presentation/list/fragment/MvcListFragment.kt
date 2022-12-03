@@ -35,8 +35,9 @@ import com.tokopedia.mvc.domain.entity.enums.VoucherStatus
 import com.tokopedia.mvc.presentation.bottomsheet.EduCenterBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.FilterVoucherBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.FilterVoucherStatusBottomSheet
+import com.tokopedia.mvc.presentation.bottomsheet.displayvoucher.DisplayVoucherBottomSheet
+import com.tokopedia.mvc.presentation.bottomsheet.editperiod.VoucherEditPeriodBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.moremenu.MoreMenuBottomSheet
-import com.tokopedia.mvc.presentation.bottomsheet.moremenu.VoucherEditPeriodBottomSheet
 import com.tokopedia.mvc.presentation.list.adapter.VoucherAdapterListener
 import com.tokopedia.mvc.presentation.list.adapter.VouchersAdapter
 import com.tokopedia.mvc.presentation.list.model.MoreMenuUiModel
@@ -60,6 +61,8 @@ class MvcListFragment :
     private var binding by autoClearedNullable<SmvcFragmentMvcListBinding>()
     private var moreMenuBottomSheet: MoreMenuBottomSheet? = null
     private var voucherEditPeriodBottomSheet: VoucherEditPeriodBottomSheet? = null
+    private var displayVoucherBottomSheet: DisplayVoucherBottomSheet? = null
+
 
     @Inject
     lateinit var viewModel: MvcListViewModel
@@ -107,9 +110,10 @@ class MvcListFragment :
         moreMenuBottomSheet?.dismiss()
         when (menuUiModel) {
             is MoreMenuUiModel.Coupon -> {
+                //TODO change this
+                showDisplayVoucherBottomSheet(voucher)
             }
             is MoreMenuUiModel.EditPeriod -> {
-                // Ubah Periode
                 showEditPeriodBottomSheet(voucher)
             }
             is MoreMenuUiModel.Edit -> {
@@ -143,6 +147,17 @@ class MvcListFragment :
 //                onClickListenerForMoreMenu(menu, voucher)
 //            }
             voucherEditPeriodBottomSheet?.show(childFragmentManager, "")
+
+        }
+    }
+
+    private fun showDisplayVoucherBottomSheet(voucher: Voucher) {
+        activity?.let {
+            displayVoucherBottomSheet =
+                DisplayVoucherBottomSheet.newInstance(
+                    voucher
+                )
+            displayVoucherBottomSheet?.show(childFragmentManager, "")
 
         }
     }

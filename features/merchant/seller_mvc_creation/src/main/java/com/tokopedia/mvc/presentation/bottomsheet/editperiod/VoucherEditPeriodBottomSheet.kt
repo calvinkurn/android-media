@@ -1,4 +1,4 @@
-package com.tokopedia.mvc.presentation.bottomsheet.moremenu
+package com.tokopedia.mvc.presentation.bottomsheet.editperiod
 
 import android.content.Context
 import android.os.Bundle
@@ -170,14 +170,15 @@ class VoucherEditPeriodBottomSheet : BottomSheetUnify() {
                             context?.run {
                                 getMinStartDate().let { minDate ->
                                     getMaxStartDate().let { maxDate ->
-                                        voucherEditCalendarBottomSheet = VoucherEditCalendarBottomSheet.newInstance(
-                                            endCalendar,
-                                            minDate,
-                                            maxDate,
-                                            endHour,
-                                            endMinute,
-                                            getSelectedDateEnding
-                                        )
+                                        voucherEditCalendarBottomSheet =
+                                            VoucherEditCalendarBottomSheet.newInstance(
+                                                endCalendar,
+                                                minDate,
+                                                maxDate,
+                                                endHour,
+                                                endMinute,
+                                                getSelectedDateEnding
+                                            )
                                         voucherEditCalendarBottomSheet?.show(childFragmentManager, "")
                                     }
                                 }

@@ -222,4 +222,12 @@
     <string name="edit_period_button_text">Oke</string>
     <string name="edit_period_calender_title">Tanggal Mulai</string>
     <string name="edit_period_time_picker_title">Pilih Waktu</string>
+
+    <!-- Coupon Display -->
+    <string name="voucher_bs_coupon_display_title">Tampilan Kupon</string>
+    <string name="voucher_bs_coupon_display_horizontal">Horizontal</string>
+    <string name="voucher_bs_coupon_display_square">Square</string>
+    <string name="voucher_bs_coupon_display_vertical">Vertikal</string>
+
+
 </resources>
