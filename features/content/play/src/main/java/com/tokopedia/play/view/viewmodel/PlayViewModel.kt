@@ -1,6 +1,7 @@
 package com.tokopedia.play.view.viewmodel
 
 import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.*
 import androidx.lifecycle.Observer
 import com.google.android.exoplayer2.ExoPlayer
@@ -2668,12 +2669,28 @@ class PlayViewModel @AssistedInject constructor(
 
     private fun fetchWidgets() {
         viewModelScope.launchCatchError(block = {
-            val data = getWidgets() //handlePagination
-            if(data.isSubSlotAvailable && !data.hasNextPage) {
-                getWidgets() //get First Index
+            val data = getWidgets() //chips
+            Log.d("suksess", data.toString())
+            _exploreWidget.update {
+                it.copy(chips = data.filterIsInstance<WidgetUiModel.TabMenuUiModel>().firstOrNull()?.items.orEmpty())
+            }
+            if(data.isSubSlotAvailable) {
+                val widgets = getWidgets()
+                _exploreWidget.update {
+                    it.copy(widgets = widgets.filterIsInstance<WidgetUiModel.WidgetItemUiModel>())
+                }
             }
         }) {
 
+        }
+    }
+
+    private fun getNextPage() { //oR ANY ACTION
+        if(!_exploreWidget.value.widgets.hasNextPage) return
+        viewModelScope.launch {
+            _exploreWidget.update {
+                it.copy(widgets = getWidgets().filterIsInstance<WidgetUiModel.WidgetItemUiModel>())
+            }
         }
     }
 

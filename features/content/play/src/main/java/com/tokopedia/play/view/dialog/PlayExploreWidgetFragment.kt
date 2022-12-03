@@ -3,15 +3,28 @@ package com.tokopedia.play.view.dialog
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.getScreenWidth
 import com.tokopedia.play.databinding.FragmentPlayExploreWidgetBinding
+import com.tokopedia.play.ui.explorewidget.ExploreWidgetAdapter
+import com.tokopedia.play.util.isChanged
+import com.tokopedia.play.util.withCache
+import com.tokopedia.play.view.fragment.PlayFragment
+import com.tokopedia.play.view.fragment.PlayUserInteractionFragment
+import com.tokopedia.play.view.uimodel.ChipWidgetUiModel
+import com.tokopedia.play.view.viewmodel.PlayViewModel
+import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 import kotlin.math.roundToInt
 import com.tokopedia.play.R as playR
@@ -32,8 +45,20 @@ class PlayExploreWidgetFragment @Inject constructor() : DialogFragment() {
         (getScreenHeight() * 0.95).roundToInt()
     }
 
+    private lateinit var viewModel : PlayViewModel
+
+    private val chipsAdapter = ExploreWidgetAdapter()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        if(requireParentFragment() is PlayUserInteractionFragment){
+            val grandParentActivity = ((requireParentFragment() as PlayUserInteractionFragment).parentFragment) as PlayFragment
+
+            viewModel = ViewModelProvider(
+                grandParentActivity, grandParentActivity.viewModelProviderFactory
+            ).get(PlayViewModel::class.java)
+        }
     }
 
     override fun onCreateView(
@@ -42,6 +67,31 @@ class PlayExploreWidgetFragment @Inject constructor() : DialogFragment() {
     ): View {
         _binding = FragmentPlayExploreWidgetBinding.inflate(inflater, container, false)
         return binding.root
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        binding.rvChips.adapter = chipsAdapter
+        binding.rvChips.layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
+
+        observeState()
+    }
+
+    private fun observeState(){
+        viewLifecycleOwner.lifecycleScope.launchWhenCreated {
+            viewModel.uiState.withCache().collectLatest {
+                val cachedState = it
+
+//                if (cachedState.isChanged { it.exploreWidget.data.chips })
+                    renderChips(it.value.exploreWidget.data.chips)
+            }
+        }
+    }
+
+    private fun renderChips(list: List<ChipWidgetUiModel>) {
+        Log.d("sukses", list.toString())
+        chipsAdapter.setItemsAndAnimateChanges(list)
     }
 
     override fun onResume() {
@@ -67,7 +117,7 @@ class PlayExploreWidgetFragment @Inject constructor() : DialogFragment() {
     }
 
     companion object {
-        private const val TAG = "InteractiveDialogFragment"
+        private const val TAG = "PlayExploreWidgetFragment"
 
         fun get(fragmentManager: FragmentManager): PlayExploreWidgetFragment? {
             return fragmentManager.findFragmentByTag(TAG) as? PlayExploreWidgetFragment
