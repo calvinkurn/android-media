@@ -2,7 +2,6 @@ package com.tokopedia.mvc.presentation.bottomsheet.moremenu
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -64,7 +63,7 @@ class VoucherEditPeriodBottomSheet : BottomSheetUnify() {
         setChild(binding?.root)
         setTitle(context?.getString(R.string.edit_period_title) ?: "")
         initInjector()
-        setUpData()
+        setUpDate()
 
         initObservers()
 
@@ -83,9 +82,7 @@ class VoucherEditPeriodBottomSheet : BottomSheetUnify() {
             .inject(this)
     }
 
-    private fun setUpData() {
-        //    viewModel.setStartDate(voucher?.startTime ?: "")
-        //   viewModel.setEndDate(voucher?.finishTime ?: "")
+    private fun setUpDate() {
         voucher?.let {
             startCalendar = getGregorianDate(it.startTime)
             viewModel.setStartDateTime(startCalendar)
@@ -115,12 +112,12 @@ class VoucherEditPeriodBottomSheet : BottomSheetUnify() {
         }
         viewModel.hourStartLiveData.observe(viewLifecycleOwner) {
             try {
-                var timeString = it.split(":").toTypedArray()
+                val timeString = it.split(":").toTypedArray()
                 if (timeString.size >= 2) {
                     startHour = timeString[0].toIntOrZero()
                     startMinute = timeString[1].toIntOrZero()
                 }
-            } catch (e: Exception) {
+            } catch (_: Exception) {
             }
         }
 
@@ -131,7 +128,7 @@ class VoucherEditPeriodBottomSheet : BottomSheetUnify() {
                     endHour = timeString[0].toIntOrZero()
                     endMinute = timeString[1].toIntOrZero()
                 }
-            } catch (e: Exception) {
+            } catch (_: Exception) {
             }
         }
     }
@@ -152,7 +149,7 @@ class VoucherEditPeriodBottomSheet : BottomSheetUnify() {
                                                 maxDate,
                                                 startHour,
                                                 startMinute,
-                                                getSelectedDate
+                                                getSelectedDateStarting
                                             )
                                         voucherEditCalendarBottomSheet?.show(
                                             childFragmentManager,
@@ -179,7 +176,7 @@ class VoucherEditPeriodBottomSheet : BottomSheetUnify() {
                                             maxDate,
                                             endHour,
                                             endMinute,
-                                            getSelectedDate
+                                            getSelectedDateEnding
                                         )
                                         voucherEditCalendarBottomSheet?.show(childFragmentManager, "")
                                     }
@@ -194,13 +191,16 @@ class VoucherEditPeriodBottomSheet : BottomSheetUnify() {
         }
 
         setAction(context?.getString(R.string.edit_period_reset).toBlankOrString()) {
+            setUpDate()
         }
     }
 
-    private var getSelectedDate: (Calendar) -> Unit = {
-        Log.d("FATAL", "Calendar date ${it.time}")
+    private var getSelectedDateStarting: (Calendar) -> Unit = {
         viewModel.setStartDateTime(it)
-        Log.d("FATAL", ": ${it.time.formatTo(TIME_STAMP_FORMAT, locale)}")
+    }
+
+    private var getSelectedDateEnding: (Calendar) -> Unit = {
+        viewModel.setEndDateTime(it)
     }
 
     fun Context.getMinStartDate() =
