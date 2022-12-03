@@ -69,7 +69,7 @@ class MoreMenuBottomSheet : BottomSheetUnify() {
                         }
                         else -> {
                             // ONGOING
-                            if (voucher.isUpComingPromo()) {
+                            if (voucher.isOngoingPromo()) {
                                 // return vps voucher menu
                                 if (voucher.isVps) {
                                     getOngoingOptionsListMenu()
@@ -83,7 +83,7 @@ class MoreMenuBottomSheet : BottomSheetUnify() {
                             }
                             // UPCOMING
                             // Intentionally changed for testing
-                            else if (voucher.isOngoingPromo()) {
+                            else if (voucher.isUpComingPromo()) {
                                 // return vps voucher menu
                                 if (voucher.isVps) {
                                     getUpcomingOptionsListMenu()

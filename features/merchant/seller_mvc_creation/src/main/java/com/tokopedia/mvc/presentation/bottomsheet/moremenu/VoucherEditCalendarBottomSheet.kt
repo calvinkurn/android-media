@@ -30,9 +30,10 @@ class VoucherEditCalendarBottomSheet : BottomSheetUnify() {
     private var startCalendar: GregorianCalendar? = null
     private var hour: Int = 0
     private var minute: Int = 0
+    private var callback: (Calendar) -> Unit = {}
 
     private var timePicker: DateTimePickerUnify? = null
-    val locale = Locale("id", "ID")
+    private val locale = Locale("id", "ID")
     val dateFormat = SimpleDateFormat("d MMMM", locale)
 
     init {
@@ -46,7 +47,8 @@ class VoucherEditCalendarBottomSheet : BottomSheetUnify() {
     ): View? {
         binding = SmvcBottomsheetEditPeriodCalendarBinding.inflate(LayoutInflater.from(context))
         setChild(binding?.root)
-        setTitle(context?.getString(R.string.edit_period_calender_title).toBlankOrString())
+        // TODO verify this
+        setTitle(context?.resources?.getString(R.string.edit_period_calender_title).toBlankOrString())
         dateFormat.timeZone = TimeZone.getDefault()
         return super.onCreateView(inflater, container, savedInstanceState)
     }
@@ -61,8 +63,8 @@ class VoucherEditCalendarBottomSheet : BottomSheetUnify() {
                 // put your implementation here
                 // Save the currentDate to ViewModel
                 // Navigate To Time Picker Bottom Sheet
-                val selectedDate = dateFormat.format(date)
-                showTimePickerBottomSheet(selectedDate)
+//                val selectedDate = dateFormat.format(date)
+                showTimePickerBottomSheet(date)
             }
 
             override fun onDateUnselected(date: Date) {
@@ -71,43 +73,47 @@ class VoucherEditCalendarBottomSheet : BottomSheetUnify() {
     }
 
     var listener = object : OnDateChangedListener {
-        override fun onDateChanged(date: Long) {
-            var calendarDate = GregorianCalendar.getInstance()
-            calendarDate.timeInMillis = date
-            Log.d("DatePicker listener", "${calendarDate.time}")
-        }
+        override fun onDateChanged(date: Long) {}
     }
 
-    private fun showTimePickerBottomSheet(selectedDate: String) {
-        var minTime = GregorianCalendar(context?.let { LocaleUtils.getCurrentLocale(it) }).apply {
+    private fun showTimePickerBottomSheet(selectedDate: Date) {
+        startDate = startDate?.apply {
             set(Calendar.HOUR_OF_DAY, MIN_TIME_OF_DAY)
             set(Calendar.MINUTE, MIN_TIME_OF_DAY)
         }
-        //     var defaultDate = GregorianCalendar(LocaleUtils.getCurrentLocale(this))
-        var maxTime = GregorianCalendar(context?.let { LocaleUtils.getCurrentLocale(it) }).apply {
+        endDate = endDate?.apply {
             set(Calendar.HOUR_OF_DAY, MAX_HOUR_OF_DAY)
             set(Calendar.MINUTE, MAX_MINUTE_OF_DAY)
         }
-
-        var defaultDate = GregorianCalendar(context?.let { LocaleUtils.getCurrentLocale(it) }).apply {
+        val currentDate = GregorianCalendar(
+            context?.let {
+                LocaleUtils.getIDLocale()
+            }
+        )
+        currentDate.time = selectedDate
+        var defaultDate = currentDate.apply {
             set(Calendar.HOUR_OF_DAY, hour)
             set(Calendar.MINUTE, minute)
         }
 
         timePicker = context?.let { timePickerContext ->
-            DateTimePickerUnify(
-                timePickerContext,
-                minTime,
-                defaultDate,
-                maxTime,
-                listener,
-                DateTimePickerUnify.TYPE_TIMEPICKER
-            )
+            startDate?.let { start ->
+                endDate?.let { end ->
+                    DateTimePickerUnify(
+                        timePickerContext,
+                        start,
+                        defaultDate,
+                        end,
+                        listener,
+                        DateTimePickerUnify.TYPE_TIMEPICKER
+                    )
+                }
+            }
         }
 
         timePicker?.apply {
-            hourInterval = 1
-            minuteInterval = 1
+            hourInterval = HOUR_INTERVAL
+            minuteInterval = MINUTE_INTERVAL
 
             setTitle(
                 this@VoucherEditCalendarBottomSheet.getString(R.string.edit_period_time_picker_title)
@@ -115,10 +121,17 @@ class VoucherEditCalendarBottomSheet : BottomSheetUnify() {
             )
             setInfo(
                 "${
-                this@VoucherEditCalendarBottomSheet.getString(R.string.edit_period_calender_title).toBlankOrString()}: $selectedDate"
+                this@VoucherEditCalendarBottomSheet.getString(R.string.edit_period_calender_title)
+                    .toBlankOrString()
+                }: ${dateFormat.format(selectedDate)}"
             )
             setInfoVisible(true)
             datePickerButton.setOnClickListener {
+                getDate()
+                Log.d("FATAL", "showTimePickerBottomSheet: ${getDate().time}")
+                callback.invoke(getDate())
+                dismiss()
+                this@VoucherEditCalendarBottomSheet.dismiss()
             }
         }
 
@@ -152,7 +165,8 @@ class VoucherEditCalendarBottomSheet : BottomSheetUnify() {
             minDate: GregorianCalendar,
             maxDate: GregorianCalendar,
             hour: Int,
-            minute: Int
+            minute: Int,
+            callback: (Calendar) -> Unit
         ): VoucherEditCalendarBottomSheet {
             return VoucherEditCalendarBottomSheet().apply {
                 this.startDate = minDate
@@ -160,11 +174,14 @@ class VoucherEditCalendarBottomSheet : BottomSheetUnify() {
                 this.startCalendar = startCalendar
                 this.hour = hour
                 this.minute = minute
+                this.callback = callback
             }
         }
 
         const val MAX_HOUR_OF_DAY = 23
         const val MAX_MINUTE_OF_DAY = 59
         const val MIN_TIME_OF_DAY = 0
+        const val HOUR_INTERVAL = 1
+        const val MINUTE_INTERVAL = 1
     }
 }

@@ -3,7 +3,11 @@ package com.tokopedia.mvc.util
 import android.content.Context
 import com.tokopedia.datepicker.LocaleUtils
 import com.tokopedia.kotlin.extensions.convertToDate
+import com.tokopedia.kotlin.extensions.toFormattedString
 import com.tokopedia.kotlin.extensions.view.orZero
+import com.tokopedia.kotlin.extensions.view.toBlankOrString
+import com.tokopedia.mvc.util.DateTimeUtils.FULL_DAY_FORMAT
+import com.tokopedia.mvc.util.DateTimeUtils.TIME_STAMP_FORMAT
 import timber.log.Timber
 import java.text.ParseException
 import java.text.SimpleDateFormat
@@ -17,6 +21,7 @@ object DateTimeUtils {
 
     const val TIME_STAMP_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'"
     const val TIME_STAMP_MILLISECONDS_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSSSS'Z'"
+    const val FULL_DAY_FORMAT = "EEE, dd MMM yyyy, HH:mm"
 
     const val DASH_DATE_FORMAT = "yyyy-MM-dd"
     const val DATE_FORMAT = "dd MMM yyyy"
@@ -48,7 +53,7 @@ object DateTimeUtils {
         return newSdf.format(oldSdf.parse(dateTime))
     }
 
-    fun reformatUnsafeDateTime(dateTime: String, newFormat: String) : String {
+    fun reformatUnsafeDateTime(dateTime: String, newFormat: String): String {
         val locale = Locale.getDefault()
         val firstFormatter = SimpleDateFormat(TIME_STAMP_FORMAT, locale)
         val secondFormatter = SimpleDateFormat(TIME_STAMP_MILLISECONDS_FORMAT, locale)
@@ -65,7 +70,7 @@ object DateTimeUtils {
         return dateTime
     }
 
-    fun convertUnsafeDateTime(dateTime: String) : Date {
+    fun convertUnsafeDateTime(dateTime: String): Date {
         val locale = Locale.getDefault()
         val firstFormatter = SimpleDateFormat(TIME_STAMP_FORMAT, locale)
         val secondFormatter = SimpleDateFormat(TIME_STAMP_MILLISECONDS_FORMAT, locale)
@@ -103,39 +108,39 @@ object DateTimeUtils {
      * Minimum start time should be 3 hours after current time
      */
     fun Context.getMinStartDate() =
-            getToday().apply {
-                add(Calendar.HOUR, EXTRA_HOUR)
-            }
+        getToday().apply {
+            add(Calendar.HOUR, EXTRA_HOUR)
+        }
 
     /**
      * Maximum start date should 30 days after current time
      */
     fun Context.getMaxStartDate() =
-            getToday().apply {
-                add(Calendar.DATE, EXTRA_DAYS)
-            }
+        getToday().apply {
+            add(Calendar.DATE, EXTRA_DAYS)
+        }
 
     /**
      * Minimum end time should be 30 minutes after starting time
      */
-    fun getMinEndDate(startCalendar: GregorianCalendar?) : GregorianCalendar? =
-            startCalendar?.let { startDate ->
-                GregorianCalendar().apply {
-                    time = startDate.time
-                    add(Calendar.MINUTE, EXTRA_MINUTE)
-                }
+    fun getMinEndDate(startCalendar: GregorianCalendar?): GregorianCalendar? =
+        startCalendar?.let { startDate ->
+            GregorianCalendar().apply {
+                time = startDate.time
+                add(Calendar.MINUTE, EXTRA_MINUTE)
             }
+        }
 
     /**
      * Maximum end date should be 30 days after start date
      */
     fun getMaxEndDate(startCalendar: GregorianCalendar?): GregorianCalendar? =
-            startCalendar?.let { startDate ->
-                GregorianCalendar().apply {
-                    time = startDate.time
-                    add(Calendar.DATE, EXTRA_DAYS)
-                }
+        startCalendar?.let { startDate ->
+            GregorianCalendar().apply {
+                time = startDate.time
+                add(Calendar.DATE, EXTRA_DAYS)
             }
+        }
 
     fun Context.getCouponMaxStartDate() =
         getToday().apply {
@@ -190,7 +195,6 @@ object DateTimeUtils {
         }
         return ""
     }
-
 }
 
 fun String.convertUnsafeDateTime(): Date {
@@ -209,7 +213,7 @@ fun String.convertUnsafeDateTime(): Date {
 
 fun Date.formatTo(
     desiredOutputFormat: String,
-    locale: Locale = Locale("id", "ID"),
+    locale: Locale = Locale("id", "ID")
 ): String {
     return try {
         val outputFormat = SimpleDateFormat(desiredOutputFormat, locale)
@@ -219,4 +223,12 @@ fun Date.formatTo(
     } catch (e: Exception) {
         ""
     }
+}
+
+fun Date.formatTo(locale: Locale): String {
+    return this.toFormattedString(TIME_STAMP_FORMAT).convertDate(locale)
+}
+
+private fun String.convertDate(locale: Locale): String {
+    return this.convertUnsafeDateTime().formatTo(FULL_DAY_FORMAT, locale).toBlankOrString()
 }

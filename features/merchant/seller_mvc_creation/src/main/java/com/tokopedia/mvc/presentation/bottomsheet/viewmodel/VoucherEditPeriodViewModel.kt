@@ -30,6 +30,8 @@ class VoucherEditPeriodViewModel @Inject constructor(
     val hourStartLiveData: LiveData<String>
         get() = _hourStartLiveData
     private val _hourEndLiveData = MutableLiveData<String>()
+    val hourEndLiveData: LiveData<String>
+        get() = _hourEndLiveData
 
     private val _startDateCalendarLiveData = MutableLiveData<Calendar>()
     val startDateCalendarLiveData: LiveData<Calendar>
@@ -50,11 +52,11 @@ class VoucherEditPeriodViewModel @Inject constructor(
         _hourEndLiveData.value = endDate?.time?.toFormattedString(HOUR_FORMAT)
     }
 
-    fun setStartDate(startDate: String) {
-        _fullStartDateLiveData.value = startDate
-    }
-
-    fun setEndDate(endDate: String) {
-        _fullEndDateLiveData.value = endDate
-    }
+//    fun setStartDate(startDate: String) {
+//        _fullStartDateLiveData.value = startDate
+//    }
+//
+//    fun setEndDate(endDate: String) {
+//        _fullEndDateLiveData.value = endDate
+//    }
 }
