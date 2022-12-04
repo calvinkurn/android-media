@@ -1,15 +1,19 @@
 package com.tokopedia.mvc.presentation.bottomsheet.viewmodel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
+import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.toFormattedString
+import com.tokopedia.mvc.domain.usecase.GetTokenUseCase
 import java.util.*
 import javax.inject.Inject
 
 class VoucherEditPeriodViewModel @Inject constructor(
-    private val dispatchers: CoroutineDispatchers
+    private val dispatchers: CoroutineDispatchers,
+    private val getTokenUseCase: GetTokenUseCase,
 ) : BaseViewModel(dispatchers.main) {
 
     companion object {
@@ -25,7 +29,11 @@ class VoucherEditPeriodViewModel @Inject constructor(
         get() = _fullEndDateLiveData
 
     private val _dateStartLiveData = MutableLiveData<String>()
+    val dateStartLiveData: LiveData<String>
+        get() = _dateStartLiveData
     private val _dateEndLiveData = MutableLiveData<String>()
+    val dateEndLiveData: LiveData<String>
+        get() = _dateEndLiveData
     private val _hourStartLiveData = MutableLiveData<String>()
     val hourStartLiveData: LiveData<String>
         get() = _hourStartLiveData
@@ -52,11 +60,20 @@ class VoucherEditPeriodViewModel @Inject constructor(
         _hourEndLiveData.value = endDate?.time?.toFormattedString(HOUR_FORMAT)
     }
 
-//    fun setStartDate(startDate: String) {
-//        _fullStartDateLiveData.value = startDate
-//    }
-//
-//    fun setEndDate(endDate: String) {
-//        _fullEndDateLiveData.value = endDate
-//    }
+    fun validateDateAndTime() {
+        _dateStartLiveData.value.let { dateStart ->
+            _dateEndLiveData.value.let { dateEnd ->
+                _hourStartLiveData.value.let { hourStart ->
+                    _hourEndLiveData.value.let { hourEnd ->
+                        launchCatchError(dispatchers.io,{
+                            val token = getTokenUseCase.executeOnBackground()
+                            Log.d("FATAL", "validateDateAndTime: $token")
+                        },{
+
+                        })
+                    }
+                }
+            }
+        }
+    }
 }

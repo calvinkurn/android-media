@@ -73,6 +73,9 @@ class VoucherEditPeriodBottomSheet : BottomSheetUnify() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         setUpView()
+        binding?.btnMvcSavePeriod?.setOnClickListener {
+            viewModel.validateDateAndTime()
+        }
     }
 
     private fun initInjector() {
