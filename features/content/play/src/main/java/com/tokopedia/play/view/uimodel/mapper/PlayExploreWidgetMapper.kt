@@ -8,6 +8,7 @@ import com.tokopedia.play.view.uimodel.WidgetUiModel
 import com.tokopedia.play.widget.ui.model.*
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
 import com.tokopedia.play.widget.ui.type.PlayWidgetPromoType
+import com.tokopedia.play_common.util.datetime.PlayDateTimeFormatter
 import javax.inject.Inject
 
 /**
@@ -64,24 +65,25 @@ class PlayExploreWidgetMapper @Inject constructor() {
                    ),
                    background = PlayWidgetBackgroundUiModel(overlayImageAppLink = "", overlayImageUrl = "", overlayImageWebLink = "", backgroundUrl = "", gradientColors = emptyList()),
                    items = content.items.map {
+                       val channelType = PlayWidgetChannelType.getByValue(it.airTime)
                        PlayWidgetChannelUiModel(
                            channelId = it.id,
                            title = it.title,
                            appLink = it.appLink,
-                           startTime = it.startTime,
-                           totalView = PlayWidgetTotalView(totalViewFmt = it.stats.view.formatted, isVisible = true),
+                           startTime = PlayDateTimeFormatter.formatDate(it.startTime),
+                           totalView = PlayWidgetTotalView(totalViewFmt = it.stats.view.formatted, isVisible = channelType != PlayWidgetChannelType.Upcoming),
                            promoType = PlayWidgetPromoType.getByType(it.configurations.promoLabels.firstOrNull()?.type.orEmpty(), it.configurations.promoLabels.firstOrNull()?.text.orEmpty()),
-                           reminderType = PlayWidgetReminderType.NotReminded,
+                           reminderType = getReminderType(it.configurations.reminder.isSet),
                            partner = PlayWidgetPartnerUiModel(it.partner.id, it.partner.name),
                            video = PlayWidgetVideoUiModel(it.video.id, it.isLive,it.coverUrl,it.video.streamUrl),
-                           channelType = PlayWidgetChannelType.getByValue(it.video.type),
-                           hasGame = false,
+                           channelType = channelType,
+                           hasGame = it.configurations.promoLabels.firstOrNull { it.type == GIVEAWAY } != null,
                            share = PlayWidgetShareUiModel(fullShareContent = "", isShow = false),
                            performanceSummaryLink = "",
                            poolType = "",
                            recommendationType = "",
-                           hasAction = false,
-                           channelTypeTransition = PlayWidgetChannelTypeTransition(PlayWidgetChannelType.Vod, PlayWidgetChannelType.Vod),
+                           hasAction = channelType == PlayWidgetChannelType.Vod && it.partner.id == "", //Ask user can remove here?
+                           channelTypeTransition = PlayWidgetChannelTypeTransition(PlayWidgetChannelType.Unknown, PlayWidgetChannelType.Unknown),
                        )
                    }
                )
@@ -89,8 +91,10 @@ class PlayExploreWidgetMapper @Inject constructor() {
     }
 
     companion object {
-        private val TAB_MENU_TYPE = "tabMenu"
-        private val SUB_SLOT_TYPE = "subSlot"
-        private val CHANNEL_BLOCK_TYPE = "channelBlock"
+        private const val TAB_MENU_TYPE = "tabMenu"
+        private const val SUB_SLOT_TYPE = "subSlot"
+        private const val CHANNEL_BLOCK_TYPE = "channelBlock"
+
+        private const val GIVEAWAY = "GIVEAWAY"
     }
 }
