@@ -2678,7 +2678,7 @@ class PlayViewModel @AssistedInject constructor(
             if(data.isSubSlotAvailable && chips.isNotEmpty()) {
                 updateWidgetParam(group = chips.first().group, sourceType = chips.first().sourceType, sourceId = chips.first().sourceId)
                 val widgets = getWidgets()
-                Log.d("sukses", data.toString())
+                Log.d("sukses after", widgets.toString())
                 _exploreWidget.update {
                     it.copy(widgets = widgets.filterIsInstance<WidgetUiModel.WidgetItemUiModel>())
                 }

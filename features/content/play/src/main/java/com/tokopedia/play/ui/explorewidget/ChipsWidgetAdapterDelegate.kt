@@ -11,7 +11,7 @@ import com.tokopedia.play_common.R as commonR
 /**
  * @author by astidhiyaa on 02/12/22
  */
-class ExploreWidgetAdapterDelegate {
+class ChipsWidgetAdapterDelegate {
     internal class Chips :
         TypedAdapterDelegate<ChipWidgetUiModel, ChipWidgetUiModel, ChipsViewHolder>(commonR.layout.view_play_empty) {
         override fun onBindViewHolder(item: ChipWidgetUiModel, holder: ChipsViewHolder) {

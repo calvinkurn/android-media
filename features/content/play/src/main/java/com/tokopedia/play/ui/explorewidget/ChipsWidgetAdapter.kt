@@ -11,9 +11,9 @@ import com.tokopedia.play.view.uimodel.ChipWidgetUiModel
  * Chips Only
  */
 
-class ExploreWidgetAdapter : BaseDiffUtilAdapter<ChipWidgetUiModel>() {
+class ChipsWidgetAdapter : BaseDiffUtilAdapter<ChipWidgetUiModel>() {
     init {
-        delegatesManager.addDelegate(ExploreWidgetAdapterDelegate.Chips())
+        delegatesManager.addDelegate(ChipsWidgetAdapterDelegate.Chips())
     }
     override fun areItemsTheSame(oldItem: ChipWidgetUiModel, newItem: ChipWidgetUiModel): Boolean {
         //TODO () change per id

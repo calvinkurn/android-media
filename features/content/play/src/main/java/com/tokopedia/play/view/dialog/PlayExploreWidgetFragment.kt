@@ -16,12 +16,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.getScreenWidth
 import com.tokopedia.play.databinding.FragmentPlayExploreWidgetBinding
-import com.tokopedia.play.ui.explorewidget.ExploreWidgetAdapter
+import com.tokopedia.play.ui.explorewidget.ChipsWidgetAdapter
+import com.tokopedia.play.ui.explorewidget.WidgetAdapter
 import com.tokopedia.play.util.isChanged
 import com.tokopedia.play.util.withCache
 import com.tokopedia.play.view.fragment.PlayFragment
 import com.tokopedia.play.view.fragment.PlayUserInteractionFragment
 import com.tokopedia.play.view.uimodel.ChipWidgetUiModel
+import com.tokopedia.play.view.uimodel.WidgetUiModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play.widget.sample.coordinator.PlayWidgetCoordinator
 import kotlinx.coroutines.flow.collectLatest
@@ -52,7 +54,8 @@ class PlayExploreWidgetFragment @Inject constructor() : DialogFragment() {
         PlayWidgetCoordinator(lifecycleOwner = this)
     }
 
-    private val chipsAdapter = ExploreWidgetAdapter()
+    private val chipsAdapter = ChipsWidgetAdapter()
+    private val widgetAdapter = WidgetAdapter(widgetCoordinator)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -91,7 +94,7 @@ class PlayExploreWidgetFragment @Inject constructor() : DialogFragment() {
 
     private fun setupList() {
         binding.rvChips.adapter = chipsAdapter
-        binding.rvChips.layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
+        binding.rvWidgets.adapter = widgetAdapter
     }
 
     private fun observeState(){
@@ -101,12 +104,19 @@ class PlayExploreWidgetFragment @Inject constructor() : DialogFragment() {
 
                 if (cachedState.isChanged { it.exploreWidget.data.chips })
                     renderChips(cachedState.value.exploreWidget.data.chips)
+
+                if (cachedState.isChanged { it.exploreWidget.data.widgets })
+                    renderWidgets(cachedState.value.exploreWidget.data.widgets)
             }
         }
     }
 
     private fun renderChips(list: List<ChipWidgetUiModel>) {
         chipsAdapter.setItemsAndAnimateChanges(list)
+    }
+
+    private fun renderWidgets(list: List<WidgetUiModel.WidgetItemUiModel>){
+        widgetAdapter.setItemsAndAnimateChanges(list)
     }
 
     override fun onResume() {
