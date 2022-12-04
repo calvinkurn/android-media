@@ -5,7 +5,7 @@ import android.content.Context;
 import com.tokopedia.abstraction.base.view.listener.CustomerView;
 import com.tokopedia.abstraction.base.view.presenter.CustomerPresenter;
 import com.tokopedia.explore.view.uimodel.ExploreViewModel;
-import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel;
+import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingModel;
 
 import org.jetbrains.annotations.NotNull;
 
@@ -58,7 +58,7 @@ public interface ContentExploreContract {
 
         void stopTrace();
 
-        void onAffiliateTrack(List<TrackingViewModel> trackingList, boolean isClick);
+        void onAffiliateTrack(List<TrackingModel> trackingList, boolean isClick);
 
         long getExploreCategory();
     }
