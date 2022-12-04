@@ -83,6 +83,9 @@ data class ContentItem(
     @SerializedName("partner")
     val partner: Partner,
 
+    @SerializedName("video")
+    val video: Video,
+
     //Banner
     @SerializedName("created_time")
     val createdTime: String,
@@ -123,6 +126,20 @@ data class ContentItem(
 
         @SerializedName("name")
         val name: String,
+    )
+
+    data class Video (
+        @SerializedName("id")
+        val id: String,
+
+        @SerializedName("stream_source")
+        val streamUrl: String,
+
+        @SerializedName("orientation")
+        val orientation: String,
+
+        @SerializedName("type")
+        val type: String,
     )
 }
 

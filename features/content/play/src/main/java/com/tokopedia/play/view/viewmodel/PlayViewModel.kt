@@ -2670,12 +2670,15 @@ class PlayViewModel @AssistedInject constructor(
     private fun fetchWidgets() {
         viewModelScope.launchCatchError(block = {
             val data = getWidgets() //chips
-            Log.d("suksess", data.toString())
+            val chips = data.filterIsInstance<WidgetUiModel.TabMenuUiModel>().firstOrNull()?.items.orEmpty()
+            Log.d("sukses", data.toString())
             _exploreWidget.update {
-                it.copy(chips = data.filterIsInstance<WidgetUiModel.TabMenuUiModel>().firstOrNull()?.items.orEmpty())
+                it.copy(chips = chips)
             }
-            if(data.isSubSlotAvailable) {
+            if(data.isSubSlotAvailable && chips.isNotEmpty()) {
+                updateWidgetParam(group = chips.first().group, sourceType = chips.first().sourceType, sourceId = chips.first().sourceId)
                 val widgets = getWidgets()
+                Log.d("sukses", data.toString())
                 _exploreWidget.update {
                     it.copy(widgets = widgets.filterIsInstance<WidgetUiModel.WidgetItemUiModel>())
                 }
@@ -2709,6 +2712,7 @@ class PlayViewModel @AssistedInject constructor(
 
     private suspend fun getWidgets() : List<WidgetUiModel> {
         val config = _exploreWidget.value.param
+        Log.d("sukses conf", config.toString())
         return repo.getWidgets(
             group = config.group,
             sourceType = config.sourceType,

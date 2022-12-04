@@ -93,8 +93,7 @@ class GetPlayWidgetSlotUseCase @Inject constructor(
                           id
                           orientation
                           type
-                          cover_url
-                          autoplay
+                          stream_source
                         }
                         stats {
                           view {

@@ -3,7 +3,6 @@ package com.tokopedia.play.view.dialog
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
-import android.util.Log
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -24,6 +23,7 @@ import com.tokopedia.play.view.fragment.PlayFragment
 import com.tokopedia.play.view.fragment.PlayUserInteractionFragment
 import com.tokopedia.play.view.uimodel.ChipWidgetUiModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
+import com.tokopedia.play.widget.sample.coordinator.PlayWidgetCoordinator
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 import kotlin.math.roundToInt
@@ -32,6 +32,7 @@ import com.tokopedia.play.R as playR
 /**
  * @author by astidhiyaa on 24/11/22
  */
+
 class PlayExploreWidgetFragment @Inject constructor() : DialogFragment() {
 
     private var _binding: FragmentPlayExploreWidgetBinding? = null
@@ -46,6 +47,10 @@ class PlayExploreWidgetFragment @Inject constructor() : DialogFragment() {
     }
 
     private lateinit var viewModel : PlayViewModel
+
+    private val widgetCoordinator by lazy {
+        PlayWidgetCoordinator(lifecycleOwner = this)
+    }
 
     private val chipsAdapter = ExploreWidgetAdapter()
 
@@ -72,10 +77,21 @@ class PlayExploreWidgetFragment @Inject constructor() : DialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        setupHeader()
+        setupList()
+        observeState()
+    }
+
+    private fun setupHeader() {
+        binding.widgetHeader.title = "Video lainnya"
+        binding.widgetHeader.closeListener = View.OnClickListener {
+            dismiss()
+        }
+    }
+
+    private fun setupList() {
         binding.rvChips.adapter = chipsAdapter
         binding.rvChips.layoutManager = LinearLayoutManager(context, RecyclerView.HORIZONTAL, false)
-
-        observeState()
     }
 
     private fun observeState(){
@@ -83,14 +99,13 @@ class PlayExploreWidgetFragment @Inject constructor() : DialogFragment() {
             viewModel.uiState.withCache().collectLatest {
                 val cachedState = it
 
-//                if (cachedState.isChanged { it.exploreWidget.data.chips })
-                    renderChips(it.value.exploreWidget.data.chips)
+                if (cachedState.isChanged { it.exploreWidget.data.chips })
+                    renderChips(cachedState.value.exploreWidget.data.chips)
             }
         }
     }
 
     private fun renderChips(list: List<ChipWidgetUiModel>) {
-        Log.d("sukses", list.toString())
         chipsAdapter.setItemsAndAnimateChanges(list)
     }
 

@@ -1,14 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <com.tokopedia.play_common.view.RoundedConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/parent_explore"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/Unify_Background"
-    app:rcl_topLeftRadius="@dimen/content_common_space_16"
     app:rcl_bottomRightRadius="@dimen/content_common_space_16"
+    app:rcl_topLeftRadius="@dimen/content_common_space_16"
+    android:padding="@dimen/content_common_space_16"
     tools:context=".view.dialog.PlayExploreWidgetFragment">
+
+    <com.tokopedia.play_common.view.PlayHeaderView
+        android:id="@+id/widget_header"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_chips"
@@ -17,7 +26,20 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/widget_header"
+        android:layout_marginTop="@dimen/content_common_space_16"
         tools:listitem="@layout/view_widget_chips" />
+
+    <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="@dimen/content_common_space_16"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="@+id/rv_chips"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="@+id/rv_chips"
+        app:layout_constraintTop_toBottomOf="@+id/rv_chips"
+        app:layout_constraintVertical_bias="0.0" />
+
 
 </com.tokopedia.play_common.view.RoundedConstraintLayout>
