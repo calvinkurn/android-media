@@ -93,12 +93,12 @@ class FilterVoucherBottomSheet: BottomSheetUnify() {
     }
 
     private fun SmvcBottomsheetFilterVoucherBinding.setupContentViews(filter: FilterModel) {
-        val status = filter.status.map { it.type }
-        val type = filter.voucherType.map { it.type }
-        val source = filter.source.map { it.type }
-        val promoType = filter.promoType.map { it.type.dec() }
+        val status = filter.status.map { it.id }
+        val type = filter.voucherType.map { it.id }
+        val source = filter.source.map { it.id }
+        val promoType = filter.promoType.map { it.id.dec() }
         val target = filter.target.map { it.ordinal }
-        val targetBuyer = filter.targetBuyer.map { it.type }
+        val targetBuyer = filter.targetBuyer.map { it.id }
 
         rvStatus.setupListItems(R.array.status_items, status, ::onRvStatusItemClicked)
         rvType.setupListItems(R.array.type_items, type, ::onRvTypeItemClicked)
@@ -122,19 +122,19 @@ class FilterVoucherBottomSheet: BottomSheetUnify() {
     }
 
     private fun onRvStatusItemClicked(position: Int, isSelected: Boolean) {
-        val status = VoucherStatus.values().find { it.type == position } ?: return
+        val status = VoucherStatus.values().find { it.id == position } ?: return
         val adapter = binding?.rvStatus?.adapter as? FilterVoucherAdapter
         adapter?.setSelectionAt(position)
         viewModel.setStatusFilter(status)
     }
 
     private fun onRvTypeItemClicked(position: Int, isSelected: Boolean) {
-        val type = VoucherServiceType.values().find { it.type == position } ?: return
+        val type = VoucherServiceType.values().find { it.id == position } ?: return
         viewModel.setVoucherType(type)
     }
 
     private fun onRvSourceItemClicked(position: Int, isSelected: Boolean) {
-        val source = VoucherSource.values().find { it.type == position } ?: return
+        val source = VoucherSource.values().find { it.id == position } ?: return
         viewModel.setSource(source)
     }
 
@@ -151,7 +151,7 @@ class FilterVoucherBottomSheet: BottomSheetUnify() {
     }
 
     private fun onRvTargetBuyerItemClicked(position: Int, isSelected: Boolean) {
-        val targetBuyer = VoucherTargetBuyer.values().find { it.type == position } ?: return
+        val targetBuyer = VoucherTargetBuyer.values().find { it.id == position } ?: return
         viewModel.setTargetBuyer(targetBuyer)
     }
 

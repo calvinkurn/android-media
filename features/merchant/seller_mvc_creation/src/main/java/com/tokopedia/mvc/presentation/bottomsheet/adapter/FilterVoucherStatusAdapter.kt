@@ -50,7 +50,7 @@ class FilterVoucherStatusAdapter: RecyclerView.Adapter<FilterVoucherStatusAdapte
         fun bind(item: VoucherStatusFilter, selectedStatusText: String) {
             with(binding) {
                 tfText.text = root.context.getString(item.captionRes)
-                root.setOnClickListener { onClickListener(item.type, tfText.text.toString() ) }
+                root.setOnClickListener { onClickListener(item.types, tfText.text.toString() ) }
                 iconCheck.isVisible = tfText.text == selectedStatusText
             }
         }

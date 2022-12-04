@@ -15,12 +15,12 @@ class MerchantPromotionGetMVDataByIDMapper @Inject constructor() {
                 voucherId,
                 shopId,
                 voucherName,
-                PromoType.values().firstOrNull { value -> value.type == voucherDiscountType }
+                PromoType.values().firstOrNull { value -> value.id == voucherDiscountType }
                     ?: PromoType.FREE_SHIPPING,
                 voucherImage,
                 voucherImageSquare,
                 voucherImagePortrait,
-                VoucherStatus.values().firstOrNull { value -> value.type == voucherStatus }
+                VoucherStatus.values().firstOrNull { value -> value.id == voucherStatus }
                     ?: VoucherStatus.PROCESSING,
                 voucherDiscountType,
                 voucherDiscountAmount,
@@ -47,7 +47,7 @@ class MerchantPromotionGetMVDataByIDMapper @Inject constructor() {
                 tnc,
                 bookedGlobalQuota,
                 confirmedGlobalQuota,
-                VoucherTargetBuyer.values().firstOrNull { value -> value.type == targetBuyer }
+                VoucherTargetBuyer.values().firstOrNull { value -> value.id == targetBuyer }
                     ?: VoucherTargetBuyer.ALL_BUYER,
                 minimumTierLevel,
                 isLockToProduct,

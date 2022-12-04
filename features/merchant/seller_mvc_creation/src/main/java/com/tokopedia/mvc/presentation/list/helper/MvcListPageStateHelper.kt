@@ -25,7 +25,7 @@ object MvcListPageStateHelper {
     fun getStatusName(context: Context?, filter: FilterModel): String {
         val resString = context?.resources?.getStringArray(R.array.status_items).orEmpty()
         val status = filter.status.firstOrNull() ?: return ""
-        val statusId = status.type
+        val statusId = status.id
         return resString.getOrNull(statusId).orEmpty()
     }
 }

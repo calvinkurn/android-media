@@ -1,6 +1,6 @@
 package com.tokopedia.mvc.domain.entity.enums
 
-enum class VoucherStatus(val type: Int) {
+enum class VoucherStatus(val id: Int) {
     DELETED(-1),
     PROCESSING(0),
     NOT_STARTED(1),
