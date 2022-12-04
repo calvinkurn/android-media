@@ -2680,7 +2680,8 @@ class PlayViewModel @AssistedInject constructor(
                 val widgets = getWidgets()
                 Log.d("sukses after", widgets.toString())
                 _exploreWidget.update {
-                    it.copy(widgets = widgets.filterIsInstance<WidgetUiModel.WidgetItemUiModel>())
+                    it.copy(widgets = widgets.filterIsInstance<WidgetUiModel.WidgetItemUiModel>(),
+                            param = it.param.copy(cursor = widgets.filterIsInstance<WidgetUiModel.PageConfig>().firstOrNull()?.cursor.orEmpty()))
                 }
             }
         }) {
@@ -2688,11 +2689,13 @@ class PlayViewModel @AssistedInject constructor(
         }
     }
 
-    private fun getNextPage() { //oR ANY ACTION
-        if(!_exploreWidget.value.widgets.hasNextPage) return
+    private fun getNextPage() { //OR ANY ACTION
+//        if(!_exploreWidget.value.widgets.hasNextPage) return
         viewModelScope.launch {
             _exploreWidget.update {
-                it.copy(widgets = getWidgets().filterIsInstance<WidgetUiModel.WidgetItemUiModel>())
+                val widgets = getWidgets()
+                it.copy(widgets = widgets.filterIsInstance<WidgetUiModel.WidgetItemUiModel>(),
+                    param = it.param.copy(cursor = widgets.filterIsInstance<WidgetUiModel.PageConfig>().firstOrNull()?.cursor.orEmpty()))
             }
         }
     }
