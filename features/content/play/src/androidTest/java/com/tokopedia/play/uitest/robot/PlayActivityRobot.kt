@@ -206,6 +206,23 @@ class PlayActivityRobot(
         )
     }
 
+    fun isErrorViewAvailable() {
+        Espresso.onView(withId(R.id.global_error)).check(matches(isDisplayed()))
+    }
+
+    fun swipeChannel() {
+        Espresso.onView(isRoot()).perform(ViewActions.swipeLeft())
+    }
+
+    fun endViewIsAvailable(title: String) {
+        Espresso.onView(
+            withId(R.id.txt_live_ended_title)
+        ).check(
+            matches(withText(title))
+        )
+    }
+
+
     private fun chainable(fn: () -> Unit): PlayActivityRobot {
         fn()
         return this
