@@ -50,7 +50,7 @@ import com.tokopedia.mvc.presentation.product.add.AddProductActivity
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.SearchBarUnify
-import com.tokopedia.utils.clipboard.ClipboardHandler
+import com.tokopedia.universal_sharing.view.bottomsheet.ClipboardHandler
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
@@ -96,7 +96,7 @@ class MvcListFragment: BaseDaggerFragment(), HasPaginatedList by HasPaginatedLis
     }
 
     override fun onVoucherListCopyCodeClicked(voucher: Voucher) {
-        context?.let { ClipboardHandler.copyToClipboard(it, voucher.code) }
+        activity?.let { ClipboardHandler().copyToClipboard (it, voucher.code) }
         binding?.footer?.root.showToaster(getString(R.string.smvc_voucherlist_copy_to_clipboard_message))
     }
 

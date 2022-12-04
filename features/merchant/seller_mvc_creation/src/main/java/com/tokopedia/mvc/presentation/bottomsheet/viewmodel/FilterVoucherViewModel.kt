@@ -4,8 +4,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
-import com.tokopedia.kotlin.extensions.view.isDataExist
-import com.tokopedia.kotlin.extensions.view.toggleData
 import com.tokopedia.mvc.domain.entity.enums.PromoType
 import com.tokopedia.mvc.domain.entity.enums.VoucherServiceType
 import com.tokopedia.mvc.domain.entity.enums.VoucherSource
@@ -82,5 +80,13 @@ class FilterVoucherViewModel @Inject constructor(
 
     fun resetSelection() {
         _filterData.value = FilterModel()
+    }
+
+    fun <E> MutableList<E>.toggleData(data: E) {
+        if (data in this) {
+            remove(data)
+        } else {
+            add(data)
+        }
     }
 }
