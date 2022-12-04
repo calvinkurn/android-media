@@ -995,9 +995,9 @@ open class ChatListInboxFragment : BaseListFragment<Visitable<*>, BaseAdapterTyp
 
     companion object {
         const val OPEN_DETAIL_MESSAGE = 1324
-        const val CHAT_SELLER_EMPTY = "https://ecs7.tokopedia.net/img/android/others/chat-seller-empty.png"
-        const val CHAT_BUYER_EMPTY = "https://ecs7.tokopedia.net/img/android/others/chat-buyer-empty.png"
-        const val CHAT_SELLER_EMPTY_SMART_REPLY = "https://ecs7.tokopedia.net/android/others/toped_confused.webp"
+        const val CHAT_SELLER_EMPTY = "https://images.tokopedia.net/img/android/others/chat-seller-empty.png"
+        const val CHAT_BUYER_EMPTY = "https://images.tokopedia.net/img/android/others/chat-buyer-empty.png"
+        const val CHAT_SELLER_EMPTY_SMART_REPLY = "https://images.tokopedia.net/android/others/toped_confused.webp"
         const val TAG = "ChatListFragment"
         private const val NO_INT_ARGUMENT = 0
 

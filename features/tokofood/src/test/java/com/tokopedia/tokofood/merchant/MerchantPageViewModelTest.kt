@@ -12,6 +12,7 @@ import com.tokopedia.tokofood.feature.merchant.presentation.enums.CustomListItem
 import com.tokopedia.tokofood.feature.merchant.presentation.enums.ProductListItemType
 import com.tokopedia.tokofood.feature.merchant.presentation.enums.SelectionControlType
 import com.tokopedia.tokofood.feature.merchant.presentation.model.*
+import com.tokopedia.tokofood.utils.collectFromSharedFlow
 import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import io.mockk.coEvery
@@ -472,6 +473,137 @@ class MerchantPageViewModelTest : MerchantPageViewModelTestFixture() {
         assertEquals(expectedResult.subTotalFmt, actualResult?.subTotalFmt)
         assertEquals(expectedResult.qty, actualResult?.qty)
         assertTrue(actualResult?.customListItems?.all { it.addOnUiModel?.options?.isEmpty() == true } == true)
+    }
+
+    @Test
+    fun `when updateQuantity with productUiModel should emit notice to hit update API after debounce time`() {
+        coroutineTestRule.runBlockingTest {
+            viewModel.updateQuantityParam.collectFromSharedFlow(
+                whenAction = {
+                    viewModel.updateQuantity("123", ProductUiModel())
+                    advanceTimeBy(500L)
+                },
+                then = {
+                    assert(it != null)
+                }
+            )
+        }
+    }
+
+    @Test
+    fun `when updateQuantity to replace with productUiModel should emit notice to hit update API after debounce time`() {
+        coroutineTestRule.runBlockingTest {
+            val expectedOrderQty = 5
+            viewModel.updateQuantityParam.collectFromSharedFlow(
+                whenAction = {
+                    viewModel.updateQuantity("123", ProductUiModel())
+                    advanceTimeBy(100L)
+                    viewModel.updateQuantity("123", ProductUiModel(orderQty = expectedOrderQty))
+                    advanceTimeBy(500L)
+                },
+                then = {
+                    assertEquals(expectedOrderQty, it?.productList?.firstOrNull()?.quantity)
+                }
+            )
+        }
+    }
+
+    @Test
+    fun `when updateQuantity with productUiModel should not emit notice to hit update API before debounce time`() {
+        coroutineTestRule.runBlockingTest {
+            viewModel.updateQuantityParam.collectFromSharedFlow(
+                whenAction = {
+                    viewModel.updateQuantity("123", ProductUiModel())
+                    advanceTimeBy(100L)
+                },
+                then = {
+                    assert(it == null)
+                }
+            )
+        }
+    }
+
+    @Test
+    fun `when updateQuantity with customOrderDetail should emit notice to hit update API after debounce time`() {
+        coroutineTestRule.runBlockingTest {
+            viewModel.updateQuantityParam.collectFromSharedFlow(
+                whenAction = {
+                    viewModel.updateQuantity("123", "123", CustomOrderDetail())
+                    advanceTimeBy(500L)
+                },
+                then = {
+                    assert(it != null)
+                }
+            )
+        }
+    }
+
+    @Test
+    fun `when updateQuantity with customOrderDetail should not emit notice to hit update API before debounce time`() {
+        coroutineTestRule.runBlockingTest {
+            viewModel.updateQuantityParam.collectFromSharedFlow(
+                whenAction = {
+                    viewModel.updateQuantity("123", "123", CustomOrderDetail())
+                    advanceTimeBy(100L)
+                },
+                then = {
+                    assert(it == null)
+                }
+            )
+        }
+    }
+
+    @Test
+    fun `when updateQuantity to replace with customOrderDetail should emit notice to hit update API after debounce time`() {
+        coroutineTestRule.runBlockingTest {
+            val cartId = "123"
+            val expectedQty = 10
+            viewModel.updateQuantityParam.collectFromSharedFlow(
+                whenAction = {
+                    viewModel.updateQuantity("123", "123", CustomOrderDetail(cartId = cartId, qty = 0))
+                    advanceTimeBy(100L)
+                    viewModel.updateQuantity("123", "123", CustomOrderDetail(cartId = cartId, qty = expectedQty))
+                    advanceTimeBy(500L)
+                },
+                then = {
+                    assertEquals(expectedQty, it?.productList?.firstOrNull()?.quantity)
+                }
+            )
+        }
+    }
+
+    @Test
+    fun `when updateQuantity same productId with different cartId should emit different product params`() {
+        coroutineTestRule.runBlockingTest {
+            viewModel.updateQuantityParam.collectFromSharedFlow(
+                whenAction = {
+                    viewModel.updateQuantity("123", ProductUiModel(cartId = "123", id = "123"))
+                    advanceTimeBy(100L)
+                    viewModel.updateQuantity("123", ProductUiModel(cartId = "1234", id = "123"))
+                    advanceTimeBy(500L)
+                },
+                then = {
+                    assertEquals(2, it?.productList?.size)
+                }
+            )
+        }
+    }
+
+    @Test
+    fun `when updateQuantity same cartId with different productId should emit different product params`() {
+        coroutineTestRule.runBlockingTest {
+            viewModel.updateQuantityParam.collectFromSharedFlow(
+                whenAction = {
+                    viewModel.updateQuantity("123", ProductUiModel(cartId = "123", id = "123"))
+                    advanceTimeBy(100L)
+                    viewModel.updateQuantity("123", ProductUiModel(cartId = "123", id = "1234"))
+                    advanceTimeBy(500L)
+                },
+                then = {
+                    assertEquals(2, it?.productList?.size)
+                }
+            )
+        }
     }
 
     @Test

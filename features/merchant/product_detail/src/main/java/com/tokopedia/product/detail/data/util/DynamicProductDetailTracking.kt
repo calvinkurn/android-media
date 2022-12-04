@@ -37,7 +37,8 @@ import com.tokopedia.track.TrackAppUtils
 import com.tokopedia.trackingoptimizer.TrackingQueue
 import org.json.JSONArray
 import org.json.JSONObject
-import java.util.*
+import java.util.Locale
+import java.util.ArrayList
 
 
 object DynamicProductDetailTracking {

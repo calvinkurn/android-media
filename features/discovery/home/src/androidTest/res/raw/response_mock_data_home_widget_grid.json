@@ -4,7 +4,7 @@
 			"widget_grid": [{
 				"id": 201,
 				"name": "PESAWAT",
-				"image_url": "https://ecs7.tokopedia.net/img/attachment/2020/3/16/47197054/47197054_22b87d4d-a0fa-4573-a201-9591dec56423.png",
+				"image_url": "https://images.tokopedia.net/img/attachment/2020/3/16/47197054/47197054_22b87d4d-a0fa-4573-a201-9591dec56423.png",
 				"url": "https://www.tokopedia.com/help/article/informasi-terkait-penyebaran-virus-covid19-pengembalian-dana-perubahan-jadwal-penerbangan",
 				"applink": "tokopedia://webview?url=https://www.tokopedia.com/help/article/informasi-terkait-penyebaran-virus-covid19-pengembalian-dana-perubahan-jadwal-penerbangan",
 				"title_1": "Pelajari informasi penerbangan terkait penyebaran virus corona",
@@ -20,7 +20,7 @@
 			}, {
 				"id": 202,
 				"name": "PESAWAT",
-				"image_url": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2019/1/9/20723472/20723472_b9ad0c64-dd19-41a1-833e-58d7602de0d3.png",
+				"image_url": "https://images.tokopedia.net/img/cache/100-square/attachment/2019/1/9/20723472/20723472_b9ad0c64-dd19-41a1-833e-58d7602de0d3.png",
 				"url": "https://www.tokopedia.com/flight/search/?term=CGK-DPS-20200402\u0026a=1\u0026c=0\u0026i=0\u0026k=1",
 				"applink": "tokopedia://pesawat/search?dest=CGK_Jakarta_DPS_Denpasar_2020-04-02\u0026a=1\u0026c=0\u0026i=0\u0026s=1\u0026auto_search=0",
 				"title_1": "Jakarta (CGK) → Denpasar (DPS)",
@@ -36,7 +36,7 @@
 			}, {
 				"id": 203,
 				"name": "KERETA",
-				"image_url": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2019/1/9/20723472/20723472_76b43cb4-e9e5-423f-a331-9b0af540a056.png",
+				"image_url": "https://images.tokopedia.net/img/cache/100-square/attachment/2019/1/9/20723472/20723472_76b43cb4-e9e5-423f-a331-9b0af540a056.png",
 				"url": "https://tiket.tokopedia.com/kereta-api/search/Jakarta-Gambir-GMR/Bandung-Bandung-BD?adult=1\u0026infant=0\u0026trip=departure\u0026dep_date=02-04-2020\u0026ori=GMR\u0026dest=BD",
 				"applink": "tokopedia://webview?url=https%3A%2F%2Ftiket.tokopedia.com%2Fkereta-api%2Fsearch%2FJakarta-Gambir-GMR%2FBandung-Bandung-BD%3Fadult%3D1%26infant%3D0%26trip%3Ddeparture%26dep_date%3D02-04-2020%26ori%3DGMR%26dest%3DBD",
 				"title_1": "Jakarta (GMR) → Bandung (BD)",
@@ -52,7 +52,7 @@
 			}, {
 				"id": 204,
 				"name": "PESAWAT",
-				"image_url": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2019/1/9/20723472/20723472_b9ad0c64-dd19-41a1-833e-58d7602de0d3.png",
+				"image_url": "https://images.tokopedia.net/img/cache/100-square/attachment/2019/1/9/20723472/20723472_b9ad0c64-dd19-41a1-833e-58d7602de0d3.png",
 				"url": "https://www.tokopedia.com/flight/search/?term=CGK-NRT-20200402\u0026a=1\u0026c=0\u0026i=0\u0026k=1",
 				"applink": "tokopedia://pesawat/search?dest=CGK_Jakarta_NRT_Tokyo_2020-04-02\u0026a=1\u0026c=0\u0026i=0\u0026s=1\u0026auto_search=0",
 				"title_1": "Jakarta (CGK) → Tokyo (NRT)",
@@ -68,7 +68,7 @@
 			}, {
 				"id": 205,
 				"name": "PESAWAT",
-				"image_url": "https://ecs7.tokopedia.net/img/cache/100-square/attachment/2019/1/9/20723472/20723472_b9ad0c64-dd19-41a1-833e-58d7602de0d3.png",
+				"image_url": "https://images.tokopedia.net/img/cache/100-square/attachment/2019/1/9/20723472/20723472_b9ad0c64-dd19-41a1-833e-58d7602de0d3.png",
 				"url": "https://www.tokopedia.com/flight/search/?term=CGK-KUL-20200402\u0026a=1\u0026c=0\u0026i=0\u0026k=1",
 				"applink": "tokopedia://pesawat/search?dest=CGK_Jakarta_KUL_Kuala Lumpur_2020-04-02\u0026a=1\u0026c=0\u0026i=0\u0026s=1\u0026auto_search=0",
 				"title_1": "Jakarta (CGK) → Kuala Lumpur (KUL)",
