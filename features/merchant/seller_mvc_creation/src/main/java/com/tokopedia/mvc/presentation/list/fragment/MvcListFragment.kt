@@ -21,7 +21,8 @@ import com.tokopedia.campaign.utils.extension.slideUp
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.applyUnifyBackgroundColor
 import com.tokopedia.kotlin.extensions.view.attachOnScrollListener
-import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.mvc.R
 import com.tokopedia.mvc.common.util.PaginationConstant.INITIAL_PAGE
 import com.tokopedia.mvc.common.util.PaginationConstant.PAGE_SIZE
@@ -131,7 +132,7 @@ class MvcListFragment: BaseDaggerFragment(), HasPaginatedList by HasPaginatedLis
             notifyLoadResult(vouchers.size >= PAGE_SIZE)
         }
         viewModel.error.observe(viewLifecycleOwner) {
-            binding?.loaderPage?.isVisible = false
+            binding?.loaderPage?.gone()
             view?.showToasterError(it)
         }
         viewModel.voucherQuota.observe(viewLifecycleOwner) {
@@ -252,7 +253,7 @@ class MvcListFragment: BaseDaggerFragment(), HasPaginatedList by HasPaginatedLis
     private fun loadInitialDataList() {
         val adapter = binding?.rvVoucher?.adapter as? VouchersAdapter
         adapter?.clearDataList()
-        binding?.loaderPage?.isVisible = true
+        binding?.loaderPage?.show()
         viewModel.getVoucherList(INITIAL_PAGE, PAGE_SIZE)
         viewModel.getVoucherQuota()
     }
@@ -263,19 +264,19 @@ class MvcListFragment: BaseDaggerFragment(), HasPaginatedList by HasPaginatedLis
 
     private fun displayNoDataSearch() {
         binding?.apply {
-            loaderPage.isVisible = false
-            rvVoucher.isVisible = false
-            errorPageSmall.isVisible = true
-            errorPageLarge.isVisible = false
+            loaderPage.gone()
+            rvVoucher.gone()
+            errorPageSmall.show()
+            errorPageLarge.gone()
         }
     }
 
     private fun displayNoData() {
         binding?.apply {
-            loaderPage.isVisible = false
-            rvVoucher.isVisible = false
-            errorPageSmall.isVisible = false
-            errorPageLarge.isVisible = true
+            loaderPage.gone()
+            rvVoucher.gone()
+            errorPageSmall.gone()
+            errorPageLarge.show()
             val statusName = MvcListPageStateHelper.getStatusName(context, viewModel.filter)
             errorPageLarge.emptyStateTitleID.text = getString(R.string.smvc_voucherlist_empty_data_title_text, statusName)
             errorPageLarge.setPrimaryCTAClickListener {
@@ -286,10 +287,10 @@ class MvcListFragment: BaseDaggerFragment(), HasPaginatedList by HasPaginatedLis
 
     private fun displayList() {
         binding?.apply {
-            loaderPage.isVisible = false
-            rvVoucher.isVisible = true
-            errorPageSmall.isVisible = false
-            errorPageLarge.isVisible = false
+            loaderPage.gone()
+            rvVoucher.show()
+            errorPageSmall.gone()
+            errorPageLarge.gone()
         }
     }
 

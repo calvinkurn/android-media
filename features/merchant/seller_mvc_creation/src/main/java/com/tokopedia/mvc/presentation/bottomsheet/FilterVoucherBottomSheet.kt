@@ -8,7 +8,9 @@ import androidx.recyclerview.widget.RecyclerView
 import com.google.android.flexbox.AlignItems
 import com.google.android.flexbox.FlexboxLayoutManager
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.isVisible
+import com.tokopedia.kotlin.extensions.view.visible
 import com.tokopedia.mvc.R
 import com.tokopedia.mvc.databinding.SmvcBottomsheetFilterVoucherBinding
 import com.tokopedia.mvc.di.component.DaggerMerchantVoucherCreationComponent
@@ -71,14 +73,14 @@ class FilterVoucherBottomSheet: BottomSheetUnify() {
         filter?.let {
             viewModel.setupFilterData(it)
             viewModel.filterData.observe(viewLifecycleOwner) { filterResult ->
-                bottomSheetAction.isVisible = true
+                bottomSheetAction.visible()
                 binding?.btnSubmit?.setOnClickListener {
                     listener?.onFilterVoucherChanged(filterResult)
                     dismiss()
                 }
             }
             binding?.setupContentViews(it)
-            view.post { bottomSheetAction.isVisible = false }
+            view.post { bottomSheetAction.gone() }
         }
     }
 
