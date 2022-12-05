@@ -260,7 +260,9 @@ data class ShopLayoutWidget(
                 @SerializedName("childIDs")
                 val listChildId: List<String> = listOf(),
                 @SerializedName("parentID")
-                val parentId: String = ""
+                val parentId: String = "",
+                @SerializedName("showStockbar")
+                val showStockBar: Boolean = false
             ) {
                 data class StockWording(
                     @SerializedName("title")

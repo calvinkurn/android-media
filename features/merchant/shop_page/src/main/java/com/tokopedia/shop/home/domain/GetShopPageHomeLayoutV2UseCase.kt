@@ -207,6 +207,7 @@ class GetShopPageHomeLayoutV2UseCase @Inject constructor(
                         maximumOrder
                         childIDs
                         parentID
+                        showStockbar
                       }
                       backgroundGradientColor {
                         firstColor

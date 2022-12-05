@@ -657,7 +657,8 @@ object ShopPageHomeMapper {
                 productUrl = it.urlApps
                 if (statusCampaign.toLowerCase() == StatusCampaign.ONGOING.statusCampaign.toLowerCase()) {
                     val stockSoldPercentage = it.stockSoldPercentage.toInt()
-                    stockLabel = it.stockWording.title.takeIf { !stockSoldPercentage.isZero() }.orEmpty()
+                    val showStockBar = it.showStockBar
+                    stockLabel = it.stockWording.title.takeIf { showStockBar }.orEmpty()
                     this.stockSoldPercentage = stockSoldPercentage
                 }
                 hideGimmick = it.hideGimmick
