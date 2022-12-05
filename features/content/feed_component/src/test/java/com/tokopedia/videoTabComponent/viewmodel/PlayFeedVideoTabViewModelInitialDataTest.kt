@@ -7,7 +7,6 @@ import com.tokopedia.usecase.coroutines.Fail
 import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.videoTabComponent.domain.PlayVideoTabRepository
-import com.tokopedia.videoTabComponent.domain.model.data.VideoPageParams
 import com.tokopedia.videoTabComponent.model.PlayVideoModelBuilder
 import com.tokopedia.videoTabComponent.view.uimodel.SelectedPlayWidgetCard
 import io.mockk.coEvery
@@ -41,12 +40,41 @@ class PlayFeedVideoTabViewModelInitialDataTest {
         userSession
     )
 
-    val params = VideoPageParams(cursor = "", group = "", sourceId = "", sourceType = "")
     private val builder = PlayVideoModelBuilder()
 
     @Test
-    fun `given there is video tab initial data, then initial data for video tab can be fetched`() {
+    fun `given there is video tab initial data, then initial data for video tab can be fetched such that tab data is empty`() {
         val expectedResult = builder.getContentSlotResponse()
+
+        coEvery { mockRepo.getPlayData(any()) } returns expectedResult
+
+        viewModel.getInitialPlayData()
+
+        val result = viewModel.getPlayInitialDataRsp.value
+
+        Assertions
+            .assertThat(result)
+            .isEqualTo(Success(expectedResult))
+    }
+
+    @Test
+    fun `given there is video tab initial data, then initial data for video tab can be fetched such that tab data is not empty`() {
+        val expectedResult = builder.getContentSlotResponseWithTabData()
+
+        coEvery { mockRepo.getPlayData(any()) } returns expectedResult
+
+        viewModel.getInitialPlayData()
+
+        val result = viewModel.getPlayInitialDataRsp.value
+
+        Assertions
+            .assertThat(result)
+            .isEqualTo(Success(expectedResult))
+    }
+
+    @Test
+    fun `given there is video tab initial data, fecth data such that tab data is not empty and tab list empty`() {
+        val expectedResult = builder.getContentSlotResponseWithTabDataTabListEmpty()
 
         coEvery { mockRepo.getPlayData(any()) } returns expectedResult
 
