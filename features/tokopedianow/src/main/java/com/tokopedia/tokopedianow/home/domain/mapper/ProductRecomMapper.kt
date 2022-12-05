@@ -27,7 +27,6 @@ import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeRealTimeRecomUiM
 
 object ProductRecomMapper {
     private const val DEFAULT_PARENT_PRODUCT_ID = "0"
-    private const val DEFAULT_MAX_ORDER = 0
     private const val CATEGORY_DIVIDER = "/"
 
     private const val SHOP_TYPE_GOLD = "gold"
@@ -52,7 +51,7 @@ object ProductRecomMapper {
         progressBarLabel = channelGrid.label,
         progressBarPercentage = channelGrid.soldPercentage,
         isVariant = channelGrid.parentProductId != DEFAULT_PARENT_PRODUCT_ID && channelGrid.parentProductId.isNotBlank(),
-        needToShowQuantityEditor = channelGrid.minOrder <= channelGrid.maxOrder && channelGrid.maxOrder != DEFAULT_MAX_ORDER,
+        needToShowQuantityEditor = true,
         labelGroupList = channelGrid.labelGroup.map {
             LabelGroup(
                 position = it.position,
@@ -136,7 +135,7 @@ object ProductRecomMapper {
         miniCartData: MiniCartSimplifiedData?
     ): HomeLayoutItemUiModel {
         val headerName = item.title
-        val productList = mapRecomWidgetToProductList(headerName, recomWidget, miniCartData)
+        val productList = mapRecomWidgetToProductList(headerName, recomWidget, miniCartData, true)
         val categoryBreadcrumbs = parentProduct.categoryBreadcrumbs
 
         val realTimeRecom = item.realTimeRecom.copy(

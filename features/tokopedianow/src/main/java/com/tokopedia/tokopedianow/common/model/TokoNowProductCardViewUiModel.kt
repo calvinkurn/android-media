@@ -21,6 +21,7 @@ data class TokoNowProductCardViewUiModel(
     val isVariant: Boolean = false,
     val needToShowQuantityEditor: Boolean = false,
     val labelGroupList: List<LabelGroup> = listOf(),
+    val needToChangeMaxLinesName: Boolean = false,
     /**
      * use pre draw only if need dynamic height of product card (ex: carousel)
      */

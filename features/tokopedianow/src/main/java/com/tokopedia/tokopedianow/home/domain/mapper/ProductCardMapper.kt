@@ -9,12 +9,12 @@ import com.tokopedia.tokopedianow.home.domain.mapper.HomeLayoutMapper.getAddToCa
 
 object ProductCardMapper {
     private const val DEFAULT_PARENT_PRODUCT_ID = "0"
-    private const val DEFAULT_MAX_ORDER = 0
 
     fun mapRecomWidgetToProductList(
         headerName: String,
         recomWidget: RecommendationWidget,
-        miniCartData: MiniCartSimplifiedData?
+        miniCartData: MiniCartSimplifiedData?,
+        needToChangeMaxLinesName: Boolean
     ): List<TokoNowProductCardCarouselItemUiModel> {
         return recomWidget.recommendationItemList.map { product ->
             val productId = product.productId.toString()
@@ -42,9 +42,10 @@ object ProductCardMapper {
                     name = product.name,
                     rating = product.ratingAverage,
                     isVariant = parentId != DEFAULT_PARENT_PRODUCT_ID && parentId.isNotBlank(),
-                    needToShowQuantityEditor = product.minOrder <= product.maxOrder && product.maxOrder != DEFAULT_MAX_ORDER,
+                    needToShowQuantityEditor = true,
                     labelGroupList = mapLabelGroup(product),
-                    usePreDraw = true
+                    usePreDraw = true,
+                    needToChangeMaxLinesName = needToChangeMaxLinesName
                 )
             )
         }

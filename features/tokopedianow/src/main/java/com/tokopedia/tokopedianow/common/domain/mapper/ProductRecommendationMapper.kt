@@ -5,7 +5,6 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
-import com.tokopedia.product.detail.common.VariantConstant
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationItem
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationLabel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
@@ -34,7 +33,7 @@ object ProductRecommendationMapper {
         name = item.name,
         rating = item.ratingAverage,
         isVariant = item.isProductHasParentID(),
-        needToShowQuantityEditor = item.minOrder <= item.maxOrder && item.maxOrder != VariantConstant.DEFAULT_MAX_ORDER,
+        needToShowQuantityEditor = true,
         labelGroupList = item.labelGroupList.map {
             LabelGroup(
                 position = it.position,

@@ -4,7 +4,7 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.home_component.model.ChannelGrid
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
-import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType
+import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutType.Companion.MIX_LEFT_CAROUSEL_ATC
 import com.tokopedia.tokopedianow.common.constant.TokoNowProductRecommendationState
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardViewUiModel.LabelGroup
 import com.tokopedia.tokopedianow.common.model.TokoNowDynamicHeaderUiModel
@@ -27,14 +27,14 @@ import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeRealTimeRecomUiM
 
 object LeftCarouselMapper {
     private const val DEFAULT_PARENT_PRODUCT_ID = "0"
-    private const val DEFAULT_MAX_ORDER = 0
     private const val CATEGORY_DIVIDER = "/"
 
     fun mapResponseToLeftCarousel(
         response: HomeLayoutResponse,
         state: HomeLayoutItemState,
         miniCartData: MiniCartSimplifiedData? = null,
-        warehouseId: String
+        warehouseId: String,
+        layoutType: String
     ): HomeLayoutItemUiModel {
         val channelModel = mapToChannelModel(response)
         val productList = mutableListOf<Visitable<*>>()
@@ -57,7 +57,7 @@ object LeftCarouselMapper {
                     recommendationType = channelGrid.recommendationType,
                     warehouseId = channelGrid.warehouseId,
                     campaignCode = channelGrid.campaignCode,
-                    productCardModel = mapChannelGridToProductCard(channelGrid, miniCartData),
+                    productCardModel = mapChannelGridToProductCard(channelGrid, miniCartData, layoutType),
                     categoryBreadcrumbs = channelGrid.categoryBreadcrumbs
                 )
             )
@@ -100,7 +100,7 @@ object LeftCarouselMapper {
                 warehouseId = warehouseId,
                 pageName = pageName,
                 enabled = enableRTR,
-                type = TokoNowLayoutType.MIX_LEFT_CAROUSEL_ATC
+                type = layoutType
             )
         )
 
@@ -112,7 +112,8 @@ object LeftCarouselMapper {
 
     private fun mapChannelGridToProductCard(
         channelGrid: ChannelGrid,
-        miniCartData: MiniCartSimplifiedData? = null
+        miniCartData: MiniCartSimplifiedData? = null,
+        layoutType: String
     ): TokoNowProductCardViewUiModel = TokoNowProductCardViewUiModel(
         productId = channelGrid.id,
         imageUrl = channelGrid.imageUrl,
@@ -128,7 +129,7 @@ object LeftCarouselMapper {
         progressBarLabel = channelGrid.label,
         progressBarPercentage = channelGrid.soldPercentage,
         isVariant = channelGrid.parentProductId != DEFAULT_PARENT_PRODUCT_ID && channelGrid.parentProductId.isNotBlank(),
-        needToShowQuantityEditor = channelGrid.minOrder <= channelGrid.maxOrder && channelGrid.maxOrder != DEFAULT_MAX_ORDER,
+        needToShowQuantityEditor = layoutType == MIX_LEFT_CAROUSEL_ATC,
         labelGroupList = channelGrid.labelGroup.map {
             LabelGroup(
                 position = it.position,
@@ -147,7 +148,7 @@ object LeftCarouselMapper {
         miniCartData: MiniCartSimplifiedData?
     ): HomeLayoutItemUiModel {
         val headerName = item.header.title
-        val productList = mapRecomWidgetToProductList(headerName, recomWidget, miniCartData)
+        val productList = mapRecomWidgetToProductList(headerName, recomWidget, miniCartData, true)
         val categoryBreadcrumbs = parentProduct.categoryBreadcrumbs
 
         val realTimeRecom = item.realTimeRecom.copy(
@@ -157,7 +158,7 @@ object LeftCarouselMapper {
             productList = productList,
             widgetState = HomeRealTimeRecomUiModel.RealTimeRecomWidgetState.READY,
             carouselState = TokoNowProductRecommendationState.LOADED,
-            type = TokoNowLayoutType.MIX_LEFT_CAROUSEL_ATC
+            type = MIX_LEFT_CAROUSEL_ATC
         )
 
         val homeRtrWidgetItem = item.copy(realTimeRecom = realTimeRecom)
