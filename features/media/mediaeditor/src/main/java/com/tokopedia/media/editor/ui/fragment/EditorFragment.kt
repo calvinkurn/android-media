@@ -30,10 +30,12 @@ import com.tokopedia.media.editor.utils.cropCenterImage
 import com.tokopedia.media.editor.utils.getToolEditorText
 import com.tokopedia.media.loader.loadImageWithEmptyTarget
 import com.tokopedia.media.loader.utils.MediaBitmapEmptyTarget
+import com.tokopedia.picker.common.EDITOR_ADD_LOGO_TOOL
 import com.tokopedia.picker.common.ImageRatioType
 import com.tokopedia.picker.common.basecomponent.uiComponent
 import com.tokopedia.picker.common.types.EditorToolType
 import com.tokopedia.picker.common.utils.isVideoFormat
+import com.tokopedia.remoteconfig.RemoteConfigInstance
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.view.binding.viewBinding
 import javax.inject.Inject
@@ -327,7 +329,15 @@ class EditorFragment @Inject constructor(
     }
 
     private fun observeEditorParam() {
-        viewModel.editorParam.observe(viewLifecycleOwner) {
+        viewModel.editorParam.observe(viewLifecycleOwner) { it ->
+            val isAddLogoEnable = RemoteConfigInstance.getInstance().abTestPlatform.getString(EDITOR_ADD_LOGO_TOOL) == EDITOR_ADD_LOGO_TOOL
+            if (!isAddLogoEnable) {
+                it.editorToolsList().apply {
+                    val removeIndex = find { toolId -> toolId == EditorToolType.ADD_LOGO }
+                    remove(removeIndex)
+                }
+            }
+
             editorToolComponent.setupView(it.editorToolsList())
             thumbnailDrawerComponent.setupView(viewModel.editStateList.values.toList())
 
