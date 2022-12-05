@@ -497,7 +497,7 @@ class ChatbotFragment :
                     attachInvoiceSingleViewModel
                 )
             val generatedInvoice = presenter.generateInvoice(invoice, opponentId)
-   //         getViewState()?.onShowInvoiceToChat(generatedInvoice)
+            //         getViewState()?.onShowInvoiceToChat(generatedInvoice)
             presenter.sendInvoiceAttachment(
                 messageId,
                 invoice,
@@ -547,7 +547,7 @@ class ChatbotFragment :
     }
 
     fun setDateIndicator(): (String) -> Unit = {
-        if (it.isNotEmpty() && it != getString(R.string.chatbot_placeholder_date)) {
+        if (it.isNotEmpty() && it != context?.resources?.getString(R.string.chatbot_placeholder_date).toBlankOrString()) {
             dateIndicator?.text = it
             dateIndicatorContainer?.show()
         }
@@ -826,7 +826,6 @@ class ChatbotFragment :
      * */
     private fun processDynamicAttachmentFromHistoryForContentCode100(chatroom: ChatroomViewModel) {
         chatroom.listChat.forEach {
-
             if (it is MessageUiModel && it.isSender) {
                 return
             }
@@ -1296,7 +1295,7 @@ class ChatbotFragment :
             } else {
                 Toaster.make(
                     it,
-                    getString(R.string.chatbot_float_invoice_input_length_zero),
+                    context?.resources?.getString(R.string.chatbot_float_invoice_input_length_zero).toBlankOrString(),
                     Toaster.LENGTH_LONG,
                     Toaster.TYPE_NORMAL
                 )
@@ -1412,19 +1411,19 @@ class ChatbotFragment :
 
     override fun onUploadUndersizedImage() {
         view?.let {
-            Toaster.make(it, getString(R.string.undersize_image), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
+            Toaster.make(it, context?.resources?.getString(R.string.undersize_image).toBlankOrString(), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
         }
     }
 
     override fun onUploadOversizedImage() {
         view?.let {
-            Toaster.make(it, getString(R.string.oversize_image), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
+            Toaster.make(it, context?.resources?.getString(R.string.oversize_image).toBlankOrString(), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
         }
     }
 
     override fun showSnackbarError(stringId: Int) {
         view?.let {
-            Toaster.make(it, getString(stringId), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
+            Toaster.make(it, context?.resources?.getString(stringId).toBlankOrString(), Snackbar.LENGTH_LONG, Toaster.TYPE_ERROR)
         }
     }
 
