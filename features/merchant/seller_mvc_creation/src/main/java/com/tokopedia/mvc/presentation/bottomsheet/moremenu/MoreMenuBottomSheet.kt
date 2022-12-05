@@ -179,7 +179,7 @@ class MoreMenuBottomSheet : BottomSheetUnify() {
                 context?.getString(R.string.voucher_bs_ubah_download).orEmpty()
             ),
             MoreMenuUiModel.ItemDivider,
-            MoreMenuUiModel.Hentikan(
+            MoreMenuUiModel.Stop(
                 context?.getString(R.string.voucher_bs_ubah_hentikan).orEmpty()
             )
         )
@@ -231,7 +231,7 @@ class MoreMenuBottomSheet : BottomSheetUnify() {
                 context?.getString(R.string.voucher_bs_ubah_download).orEmpty()
             ),
             MoreMenuUiModel.ItemDivider,
-            MoreMenuUiModel.Hentikan(
+            MoreMenuUiModel.Stop(
                 context?.getString(R.string.voucher_bs_ubah_hentikan).orEmpty()
             )
         )

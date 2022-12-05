@@ -63,7 +63,7 @@ sealed class MoreMenuUiModel(
         override val icon: Int = IconUnify.SHARE_MOBILE
     ) : MoreMenuUiModel(title, icon)
 
-    data class Hentikan(
+    data class Stop(
         override val title: String,
         @DrawableRes
         override val icon: Int = IconUnify.CLEAR

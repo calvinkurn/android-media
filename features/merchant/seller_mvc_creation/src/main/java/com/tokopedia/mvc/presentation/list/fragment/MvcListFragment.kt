@@ -63,7 +63,6 @@ class MvcListFragment :
     private var voucherEditPeriodBottomSheet: VoucherEditPeriodBottomSheet? = null
     private var displayVoucherBottomSheet: DisplayVoucherBottomSheet? = null
 
-
     @Inject
     lateinit var viewModel: MvcListViewModel
 
@@ -110,7 +109,7 @@ class MvcListFragment :
         moreMenuBottomSheet?.dismiss()
         when (menuUiModel) {
             is MoreMenuUiModel.Coupon -> {
-                //TODO change this
+                // TODO change this
                 showDisplayVoucherBottomSheet(voucher)
             }
             is MoreMenuUiModel.EditPeriod -> {
@@ -129,10 +128,13 @@ class MvcListFragment :
             }
             is MoreMenuUiModel.Share -> {
             }
-            is MoreMenuUiModel.Hentikan -> {
+            is MoreMenuUiModel.Stop -> {
             }
-
             is MoreMenuUiModel.Copy -> {
+            }
+            is MoreMenuUiModel.TermsAndConditions -> {
+            }
+            else -> {
             }
         }
     }
@@ -147,7 +149,6 @@ class MvcListFragment :
 //                onClickListenerForMoreMenu(menu, voucher)
 //            }
             voucherEditPeriodBottomSheet?.show(childFragmentManager, "")
-
         }
     }
 
@@ -158,7 +159,6 @@ class MvcListFragment :
                     voucher
                 )
             displayVoucherBottomSheet?.show(childFragmentManager, "")
-
         }
     }
 
