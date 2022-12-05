@@ -450,4 +450,7 @@
 
     <!-- Product Ar   -->
     <string name="title_product_ar">Product Ar</string>
+
+    <!-- Toko Chat -->
+    <string name="df_title_tokochat">Toko Chat</string>
 </resources>
