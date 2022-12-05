@@ -145,6 +145,8 @@ class VoucherDetailFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         observeData()
         observeGenerateVoucherImageResult()
+        observeOpenVoucherImageBottomSheetEvent()
+        observeRedirectionToProductListPage()
         getVoucherDetailData(voucherId)
     }
 
@@ -182,6 +184,12 @@ class VoucherDetailFragment : BaseDaggerFragment() {
         }
     }
 
+
+    private fun observeOpenVoucherImageBottomSheetEvent() {
+        viewModel.openDownloadVoucherImageBottomSheet.observe(viewLifecycleOwner) { voucherDetail ->
+            displayDownloadVoucherImageBottomSheet(voucherDetail)
+        }
+    }
 
     private fun setupView(data: VoucherDetailData) {
         binding?.run {
@@ -814,6 +822,39 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                 shareCallback
             )
         )
+    }
+
+    private fun displayDownloadVoucherImageBottomSheet(voucherDetail: VoucherDetailData) {
+        if (!isVisible) return
+
+        val bottomSheet = DownloadVoucherImageBottomSheet.newInstance(
+            voucherDetail.voucherImage,
+            voucherDetail.voucherImageSquare,
+            voucherDetail.voucherImagePortrait
+        )
+        bottomSheet.setOnDownloadSuccess {
+            binding?.layoutButtonGroup.showToaster(
+                getString(R.string.smvc_placeholder_download_voucher_image_success, voucherDetail.voucherName),
+                getString(R.string.smvc_ok)
+            )
+        }
+        bottomSheet.setOnDownloadError {
+            binding?.layoutButtonGroup.showToaster(
+                getString(R.string.smvc_download_voucher_image_failed),
+                getString(R.string.smvc_ok)
+            )
+        }
+        bottomSheet.show(childFragmentManager, bottomSheet.tag)
+    }
+
+    private fun redirectToProductListPage(voucherDetail: VoucherDetailData) {
+        val intent = ProductListActivity.buildEditModeIntent(
+            activity ?: return,
+            voucherDetail.toVoucherConfiguration(),
+            voucherDetail.toSelectedProducts()
+        )
+
+        startActivityForResult(intent, NumberConstant.REQUEST_CODE_ADD_PRODUCT_TO_SELECTION)
     }
 
 }
