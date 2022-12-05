@@ -5,6 +5,7 @@ import android.content.ActivityNotFoundException;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 
@@ -82,5 +83,13 @@ public class RedirectCreateShopActivity extends AppCompatActivity {
                 AppEventTracking.Category.SWITCHER,
                 AppEventTracking.Action.CLICK,
                 AppEventTracking.EventLabel.DOWNLOAD_APP);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == android.R.id.home) {
+            onBackPressed();
+        }
+        return super.onOptionsItemSelected(item);
     }
 }
