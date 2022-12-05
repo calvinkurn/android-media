@@ -1,7 +1,6 @@
 package com.tokopedia.play.view.viewmodel
 
 import android.net.Uri
-import android.util.Log
 import androidx.lifecycle.*
 import androidx.lifecycle.Observer
 import com.google.android.exoplayer2.ExoPlayer
@@ -2669,33 +2668,34 @@ class PlayViewModel @AssistedInject constructor(
 
     private fun fetchWidgets() {
         viewModelScope.launchCatchError(block = {
-            val data = getWidgets() //chips
-            val chips = data.filterIsInstance<WidgetUiModel.TabMenuUiModel>().firstOrNull()?.items.orEmpty()
-            Log.d("sukses", data.toString())
-            _exploreWidget.update {
-                it.copy(chips = chips)
-            }
+            val data = getWidgets()
+            val chips = data.filterIsInstance<TabMenuUiModel>().firstOrNull()?.items.orEmpty()
             if(data.isSubSlotAvailable && chips.isNotEmpty()) {
                 updateWidgetParam(group = chips.first().group, sourceType = chips.first().sourceType, sourceId = chips.first().sourceId)
-                val widgets = getWidgets()
-                Log.d("sukses after", widgets.toString())
+                val widgets = data.union(getWidgets()).toList()
                 _exploreWidget.update {
-                    it.copy(widgets = widgets.filterIsInstance<WidgetUiModel.WidgetItemUiModel>(),
-                            param = it.param.copy(cursor = widgets.filterIsInstance<WidgetUiModel.PageConfig>().firstOrNull()?.cursor.orEmpty()))
+                    it.copy(
+                        param = it.param.copy(cursor = widgets.filterIsInstance<PageConfig>().firstOrNull()?.cursor.orEmpty()),
+                        items = widgets
+                    )
                 }
             }
-        }) {
-
-        }
+        }) {}
     }
 
-    private fun getNextPage() { //OR ANY ACTION
-//        if(!_exploreWidget.value.widgets.hasNextPage) return
+    /**
+     * Next Page or Chips Clicked
+     */
+    private fun onActionWidget(isNextPage : Boolean = false) {
+        if(!_exploreWidget.value.widgets.hasNextPage && isNextPage) return
         viewModelScope.launch {
+            val widgets = getWidgets()
             _exploreWidget.update {
-                val widgets = getWidgets()
-                it.copy(widgets = widgets.filterIsInstance<WidgetUiModel.WidgetItemUiModel>(),
-                    param = it.param.copy(cursor = widgets.filterIsInstance<WidgetUiModel.PageConfig>().firstOrNull()?.cursor.orEmpty()))
+                val newList = if (isNextPage) it.items.union(widgets).toList() else widgets
+                it.copy(
+                    items = newList,
+                    param = it.param.copy(cursor = widgets.filterIsInstance<PageConfig>().firstOrNull()?.cursor.orEmpty())
+                )
             }
         }
     }
@@ -2719,7 +2719,6 @@ class PlayViewModel @AssistedInject constructor(
 
     private suspend fun getWidgets() : List<WidgetUiModel> {
         val config = _exploreWidget.value.param
-        Log.d("sukses conf", config.toString())
         return repo.getWidgets(
             group = config.group,
             sourceType = config.sourceType,

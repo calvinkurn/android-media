@@ -3,8 +3,7 @@ package com.tokopedia.play.view.uimodel.mapper
 import com.tokopedia.content.common.model.Content
 import com.tokopedia.content.common.model.WidgetSlot
 import com.tokopedia.play.di.PlayScope
-import com.tokopedia.play.view.uimodel.ChipWidgetUiModel
-import com.tokopedia.play.view.uimodel.WidgetUiModel
+import com.tokopedia.play.view.uimodel.*
 import com.tokopedia.play.widget.ui.model.*
 import com.tokopedia.play.widget.ui.type.PlayWidgetChannelType
 import com.tokopedia.play.widget.ui.type.PlayWidgetPromoType
@@ -23,18 +22,18 @@ class PlayExploreWidgetMapper @Inject constructor() {
             widgetSlot.playGetContentSlot.data.map {
                 when(it.type){
                     TAB_MENU_TYPE -> add(mapChips(it))
-                    SUB_SLOT_TYPE -> add(WidgetUiModel.SubSlotUiModel)
+                    SUB_SLOT_TYPE -> add(SubSlotUiModel)
                     CHANNEL_BLOCK_TYPE -> add(mapWidgets(it))
                     else -> {}
                 }
             }
             with(widgetSlot.playGetContentSlot.playGetContentSlot){
-                add(WidgetUiModel.PageConfig(isAutoPlay = this.isAutoplay, cursor = this.nextCursor))
+                add(PageConfig(isAutoPlay = this.isAutoplay, cursor = this.nextCursor))
             }
         }
     }
 
-    private fun mapChips(content: Content) : WidgetUiModel.TabMenuUiModel {
+    private fun mapChips(content: Content) : TabMenuUiModel {
         val newList = content.items.map {
             ChipWidgetUiModel(
                 group = it.group,
@@ -43,11 +42,11 @@ class PlayExploreWidgetMapper @Inject constructor() {
                 text = it.label,
             )
         }
-        return WidgetUiModel.TabMenuUiModel(items = newList)
+        return TabMenuUiModel(items = newList)
     }
 
-    private fun mapWidgets(content: Content) : WidgetUiModel.WidgetItemUiModel {
-           return WidgetUiModel.WidgetItemUiModel(
+    private fun mapWidgets(content: Content) : WidgetItemUiModel {
+           return WidgetItemUiModel(
                item =
                PlayWidgetUiModel(
                    title = content.title,
@@ -82,7 +81,7 @@ class PlayExploreWidgetMapper @Inject constructor() {
                            performanceSummaryLink = "",
                            poolType = "",
                            recommendationType = "",
-                           hasAction = channelType == PlayWidgetChannelType.Vod && it.partner.id == "", //Ask user can remove here?
+                           hasAction = false,
                            channelTypeTransition = PlayWidgetChannelTypeTransition(PlayWidgetChannelType.Unknown, PlayWidgetChannelType.Unknown),
                        )
                    }

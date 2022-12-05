@@ -11,8 +11,6 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.getScreenWidth
 import com.tokopedia.play.databinding.FragmentPlayExploreWidgetBinding
@@ -23,7 +21,7 @@ import com.tokopedia.play.util.withCache
 import com.tokopedia.play.view.fragment.PlayFragment
 import com.tokopedia.play.view.fragment.PlayUserInteractionFragment
 import com.tokopedia.play.view.uimodel.ChipWidgetUiModel
-import com.tokopedia.play.view.uimodel.WidgetUiModel
+import com.tokopedia.play.view.uimodel.WidgetItemUiModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play.widget.sample.coordinator.PlayWidgetCoordinator
 import kotlinx.coroutines.flow.collectLatest
@@ -115,7 +113,7 @@ class PlayExploreWidgetFragment @Inject constructor() : DialogFragment() {
         chipsAdapter.setItemsAndAnimateChanges(list)
     }
 
-    private fun renderWidgets(list: List<WidgetUiModel.WidgetItemUiModel>){
+    private fun renderWidgets(list: List<WidgetItemUiModel>){
         widgetAdapter.setItemsAndAnimateChanges(list)
     }
 
