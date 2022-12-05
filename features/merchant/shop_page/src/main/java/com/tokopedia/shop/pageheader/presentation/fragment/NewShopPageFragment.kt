@@ -58,7 +58,6 @@ import com.tokopedia.applink.merchant.DeeplinkMapperMerchant
 import com.tokopedia.applink.sellermigration.SellerMigrationFeatureName
 import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.content.common.navigation.shorts.PlayShorts
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.feedcomponent.util.util.ClipboardHandler
 import com.tokopedia.iconunify.IconUnify
@@ -1582,7 +1581,7 @@ class NewShopPageFragment :
     }
 
     private fun goToShortsCreation() {
-        RouteManager.route(context, PlayShorts.generateApplink())
+        RouteManager.route(context, ApplinkConst.PLAY_SHORTS)
     }
 
     private fun onSuccessGetShopPageP1Data(shopPageP1Data: NewShopPageP1HeaderData) {
