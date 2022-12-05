@@ -23,7 +23,8 @@ open class KolCommentNewModel : Visitable<KolCommentTypeFactory?>, Parcelable {
 
     constructor(id: String?, userId: String?, userUrl: String?, avatarUrl: String?, name: String?,
                 review: String?, time: String?, isOfficial: Boolean,
-                canDeleteComment: Boolean, userBadges: String?, isShop: Boolean, canReportComment: Boolean) {
+                canDeleteComment: Boolean, userBadges: String?, isShop: Boolean,
+                canReportComment: Boolean) {
         this.id = id
         this.userId = userId
         this.userUrl = userUrl
