@@ -193,15 +193,38 @@ class PinpointNewPageFragment : BaseDaggerFragment(), OnMapReadyCallback {
     }
 
     private fun goToLitePinpoint(context: Context) {
-        val intent = PinpointWebviewActivity.getIntent(
-            context = context,
-            saveAddressDataModel = viewModel.getAddress(),
-            districtId = districtId,
-            lat = currentLat,
-            lng = currentLong,
-            source = if (isEdit) PinpointSource.EDIT_ADDRESS else PinpointSource.ADD_ADDRESS
-        )
+        val intent = getLitePinpointIntent(context)
         startActivityForResult(intent, REQUEST_CODE_PINPOINT_LITE)
+    }
+
+    private fun getLitePinpointIntent(context: Context): Intent {
+        if (isEdit) {
+            if (currentLat != 0.0 && currentLong != 0.0) {
+                return PinpointWebviewActivity.getIntent(
+                    context = context,
+                    saveAddressDataModel = viewModel.getAddress(),
+                    lat = currentLat,
+                    lng = currentLong,
+                    source = PinpointSource.EDIT_ADDRESS
+                )
+            } else {
+                return PinpointWebviewActivity.getIntent(
+                    context = context,
+                    saveAddressDataModel = viewModel.getAddress(),
+                    districtId = districtId,
+                    source = PinpointSource.EDIT_ADDRESS
+                )
+            }
+        } else {
+            return PinpointWebviewActivity.getIntent(
+                context = context,
+                saveAddressDataModel = viewModel.getAddress(),
+                districtId = districtId,
+                lat = currentLat,
+                lng = currentLong,
+                source = PinpointSource.ADD_ADDRESS
+            )
+        }
     }
 
     private fun initView() {
