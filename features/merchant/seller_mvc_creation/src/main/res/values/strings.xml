@@ -135,7 +135,6 @@
     <string name="mvc_bottomsheet_quota_information_point_one">Kuota penggunaan kupon akan berkurang saat transaksi selesai.</string>
     <string name="mvc_bottomsheet_quota_information_point_two">1 kuota penggunaan berlaku untuk 1 kali transaksi dari 1 pembeli selama periode berlangsung kupon. Kamu tidak perlu membayar kupon yang tidak digunakan oleh pembeli.</string>
 
-
     <!--Voucher detail page-->
     <string name="smvc_ubah_kupon_label">Ubah Kupon</string>
     <string name="smvc_kuota_terpakai_label">Kuota terpakai</string>
@@ -207,6 +206,7 @@
     <string name="smvc_choose_coupon_type_label">Pilih Jenis Kupon</string>
     <string name="smvc_creation_step_one_out_of_three_sub_title_label">Langkah 1 dari 3</string>
     <string name="smvc_creation_step_one_out_of_four_sub_title_label">Langkah 1 dari 4</string>
+    <string name="smvc_ineligible_voucher_creation_error_text">ineligible</string>
 
     <!--Voucher Creation Step Two-->
     <string name="smvc_creation_step_two_out_of_three_sub_title_label">Langkah 2 dari 3</string>
