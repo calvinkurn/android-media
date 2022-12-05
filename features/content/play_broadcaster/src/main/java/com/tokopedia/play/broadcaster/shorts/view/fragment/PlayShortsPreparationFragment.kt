@@ -497,9 +497,7 @@ class PlayShortsPreparationFragment @Inject constructor(
     ) {
         if (prev?.menuList == curr.menuList) return
 
-        /** TODO: for mocking purpose */
-        binding.btnNext.isEnabled = true
-//        binding.btnNext.isEnabled = viewModel.isAllMandatoryMenuChecked
+        binding.btnNext.isEnabled = viewModel.isAllMandatoryMenuChecked
     }
 
     private fun showMainComponent(isShow: Boolean) {
