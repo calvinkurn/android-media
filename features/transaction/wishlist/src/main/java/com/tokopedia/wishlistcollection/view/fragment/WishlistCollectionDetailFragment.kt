@@ -226,6 +226,7 @@ class WishlistCollectionDetailFragment :
     private var _maxBulk = 0L
     private var _toasterMaxBulk = ""
     private var _isNeedRefreshAndTurnOffBulkModeFromOthers = false
+    private var _bulkModeIsAlreadyTurnedOff = false
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -666,12 +667,12 @@ class WishlistCollectionDetailFragment :
 
                         if (_isNeedRefreshAndTurnOffBulkModeFromOthers) {
                             _isNeedRefreshAndTurnOffBulkModeFromOthers = false
+                            _bulkModeIsAlreadyTurnedOff = true
                             showBottomSheetCollection(
                                 childFragmentManager,
                                 listSelectedProductIdsFromOtherCollection.joinToString(),
                                 SRC_WISHLIST_COLLECTION_SHARING
                             )
-                            listSelectedProductIdsFromOtherCollection.clear()
                         }
                     }
                 }
@@ -3022,6 +3023,7 @@ class WishlistCollectionDetailFragment :
     }
 
     private fun turnOnBulkAddFromOtherCollectionsMode() {
+        listSelectedProductIdsFromOtherCollection.clear()
         binding?.run {
             wishlistCollectionDetailStickyCountManageLabel.apply {
                 llAturDanLayout.visible().also {
@@ -3490,8 +3492,8 @@ class WishlistCollectionDetailFragment :
     private fun turnOffBulkAddFromOtherCollection() {
         if (!_isNeedRefreshAndTurnOffBulkModeFromOthers) {
             listSelectedProductIdsFromOtherCollection.clear()
+            isBulkAddFromOtherCollectionShow = false
         }
-        isBulkAddFromOtherCollectionShow = false
         if (isToolbarHasDesc) {
             updateCustomToolbarTitleAndSubTitle(toolbarTitle, toolbarDesc)
         } else {
@@ -3564,10 +3566,16 @@ class WishlistCollectionDetailFragment :
             }
             showToasterActionOke(errorMessage, Toaster.TYPE_ERROR)
         }
-        if (!isBulkAddFromOtherCollectionShow) {
-            turnOffBulkDeleteMode()
+        if (!_bulkModeIsAlreadyTurnedOff) {
+            if (!isBulkAddFromOtherCollectionShow) {
+                turnOffBulkDeleteMode()
+            } else {
+                turnOffBulkAddFromOtherCollection()
+            }
         } else {
-            turnOffBulkAddFromOtherCollection()
+            _bulkModeIsAlreadyTurnedOff = false
+            listSelectedProductIdsFromOtherCollection.clear()
+            isBulkAddFromOtherCollectionShow = false
         }
     }
 
