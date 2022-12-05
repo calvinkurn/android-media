@@ -31,7 +31,7 @@ class ExpActivity : AppCompatActivity() {
             NestTheme {
                 Surface(modifier = Modifier.fillMaxSize()) {
                     val darkMode by remember { mutableStateOf(getDarkModeStatus()) }
-                        Column {
+                    Column {
                         Row(
                             modifier = Modifier
                                 .weight(1.0f)
@@ -48,7 +48,12 @@ class ExpActivity : AppCompatActivity() {
                                 Text(text = "Display 3", style = NestTheme.typography.display3)
                                 Text(text = "Body 1", style = NestTheme.typography.body1)
                                 Button(onClick = {}) {
-                                    Text(text = "Click me!", color = Color.White)
+                                    Text(
+                                        text = "Click me!",
+                                        color = Color.White,
+                                        style = NestTheme.typography.display2,
+                                        fontWeight = FontWeight.Bold
+                                    )
                                 }
                             }
                             ExpDivider()
