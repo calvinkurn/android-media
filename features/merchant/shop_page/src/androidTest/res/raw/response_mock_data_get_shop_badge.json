@@ -1,8 +1,8 @@
 [{
   "data": {
     "reputation_shops": [{
-      "badge": "https://ecs7.tokopedia.net/img/repsys/diamond-2.gif",
-      "badge_hd": "https://ecs7.tokopedia.net/img/repsys/diamond-2-hd.gif",
+      "badge": "https://images.tokopedia.net/img/repsys/diamond-2.gif",
+      "badge_hd": "https://images.tokopedia.net/img/repsys/diamond-2-hd.gif",
       "score": "132.366",
       "score_map": "17"
     }]

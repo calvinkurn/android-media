@@ -34,6 +34,8 @@ interface ChatbotViewState : BaseChatViewState {
 
     fun onShowInvoiceToChat(generatedInvoice: AttachInvoiceSentUiModel)
 
+    fun removeInvoiceCarousel()
+
     fun onSuccessSendRating(
         element: SendRatingPojo,
         rating: Int,

@@ -40,6 +40,7 @@ import com.tokopedia.logger.utils.Priority;
 import com.tokopedia.media.common.Loader;
 import com.tokopedia.media.common.common.MediaLoaderActivityLifecycle;
 import com.tokopedia.network.authentication.AuthHelper;
+import com.tokopedia.notifications.settings.NotificationGeneralPromptLifecycleCallbacks;
 import com.tokopedia.pageinfopusher.PageInfoPusherSubscriber;
 import com.tokopedia.prereleaseinspector.ViewInspectorSubscriber;
 import com.tokopedia.remoteconfig.RemoteConfigInstance;
@@ -67,7 +68,6 @@ import javax.crypto.SecretKey;
 import io.embrace.android.embracesdk.Embrace;
 import kotlin.Pair;
 import kotlin.jvm.functions.Function1;
-import timber.log.Timber;
 
 import com.tokopedia.developer_options.notification.DevOptNotificationManager;
 
@@ -282,6 +282,7 @@ public class SellerMainApplication extends SellerRouterApplication implements Co
         registerActivityLifecycleCallbacks(new SellerFeedbackScreenshot(getApplicationContext()));
         registerActivityLifecycleCallbacks(new AnrActivityLifecycleCallback());
         registerActivityLifecycleCallbacks(new GqlActivityCallback());
+        registerActivityLifecycleCallbacks(new NotificationGeneralPromptLifecycleCallbacks());
     }
 
     @Override
