@@ -5,6 +5,7 @@ import static com.tokopedia.checkout.data.model.request.checkout.CheckoutRequest
 import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.DEFAULT_ERROR_MESSAGE_FAIL_APPLY_BBO;
 import static com.tokopedia.purchase_platform.common.constant.CheckoutConstant.DEFAULT_ERROR_MESSAGE_VALIDATE_PROMO;
 
+import android.util.Log;
 import android.util.Pair;
 
 import androidx.annotation.NonNull;
@@ -37,7 +38,6 @@ import com.tokopedia.checkout.data.model.request.saveshipmentstate.ShipmentState
 import com.tokopedia.checkout.data.model.request.saveshipmentstate.ShipmentStateRequestData;
 import com.tokopedia.checkout.data.model.request.saveshipmentstate.ShipmentStateShippingInfoData;
 import com.tokopedia.checkout.data.model.request.saveshipmentstate.ShipmentStateShopProductData;
-import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.response.GetPrescriptionIdsResponse;
 import com.tokopedia.checkout.domain.model.cartshipmentform.CampaignTimerUi;
 import com.tokopedia.checkout.domain.model.cartshipmentform.CartShipmentAddressFormData;
 import com.tokopedia.checkout.domain.model.cartshipmentform.GroupAddress;
@@ -53,6 +53,7 @@ import com.tokopedia.checkout.view.converter.RatesDataConverter;
 import com.tokopedia.checkout.view.converter.ShipmentDataConverter;
 import com.tokopedia.checkout.view.converter.ShipmentDataRequestConverter;
 import com.tokopedia.checkout.view.helper.ShipmentCartItemModelHelper;
+import com.tokopedia.checkout.view.helper.ShipmentGetCourierHolderData;
 import com.tokopedia.checkout.view.subscriber.ClearNotEligiblePromoSubscriber;
 import com.tokopedia.checkout.view.subscriber.ClearShipmentCacheAutoApplyAfterClashSubscriber;
 import com.tokopedia.checkout.view.subscriber.GetBoPromoCourierRecommendationSubscriber;
@@ -106,6 +107,7 @@ import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceCheckout;
 import com.tokopedia.purchase_platform.common.analytics.enhanced_ecommerce_data.EnhancedECommerceProductCartMapData;
 import com.tokopedia.purchase_platform.common.exception.CartResponseErrorException;
+import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.response.GetPrescriptionIdsResponse;
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.model.UploadPrescriptionUiModel;
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.domain.usecase.GetPrescriptionIdsUseCase;
 import com.tokopedia.purchase_platform.common.feature.gifting.data.model.AddOnBottomSheetModel;
@@ -165,6 +167,7 @@ import javax.inject.Inject;
 import kotlin.Unit;
 import rx.Observable;
 import rx.Subscriber;
+import rx.subjects.PublishSubject;
 import rx.subscriptions.CompositeSubscription;
 import timber.log.Timber;
 
@@ -229,6 +232,14 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private RatesResponseStateConverter stateConverter;
     private LastApplyUiModel lastApplyData;
     private UploadPrescriptionUiModel uploadPrescriptionUiModel;
+
+    private PublishSubject<ShipmentGetCourierHolderData> publisher = null;
+    private PublishSubject<Boolean> temporaryEmitter = null;
+
+    @Override
+    public PublishSubject<Boolean> getTemporaryEmitter() {
+        return temporaryEmitter;
+    }
 
     @Inject
     public ShipmentPresenter(CompositeSubscription compositeSubscription,
@@ -1295,7 +1306,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                             .subscribe(new Subscriber<ValidateUsePromoRevampUiModel>() {
                                 @Override
                                 public void onCompleted() {
-
+                                    Log.i("qwertyuiop", "complete validate");
+                                    temporaryEmitter.onCompleted();
                                 }
 
                                 @Override
@@ -1328,6 +1340,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                         boolean isValidatePromoRevampSuccess = validateUsePromoRevampUiModel.getStatus().equalsIgnoreCase(statusOK) && validateUsePromoRevampUiModel.getErrorCode().equals(statusCode200);
                                         if (isValidatePromoRevampSuccess) {
                                             getView().updateButtonPromoCheckout(validateUsePromoRevampUiModel.getPromoUiModel(), true);
+                                            Log.i("qwertyuiop", "next validate");
                                         } else {
                                             if (validateUsePromoRevampUiModel.getMessage().size() > 0) {
                                                 String errMessage = validateUsePromoRevampUiModel.getMessage().get(0);
@@ -2238,23 +2251,78 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         RatesParam param = ratesParamBuilder.build();
 
         Observable<ShippingRecommendationData> observable;
+//        ShipmentGetCourierHolderData holderData = new ShipmentGetCourierHolderData(
+//                shipperId,
+//                spId,
+//                itemPosition,
+//                shipmentDetailData,
+//                shipmentCartItemModel,
+//                shopShipmentList,
+//                isInitialLoad,
+//                products,
+//                cartString,
+//                isTradeInDropOff,
+//                recipientAddressModel,
+//                isForceReload,
+//                skipMvc,
+//                param
+//        );
         if (isTradeInDropOff) {
             observable = ratesApiUseCase.execute(param);
+            compositeSubscription.add(
+                    observable
+                            .map(shippingRecommendationData ->
+                                    stateConverter.fillState(shippingRecommendationData, shopShipmentList,
+                                            spId, 0))
+                            .subscribe(
+                                    new GetCourierRecommendationSubscriber(
+                                            getView(), this, shipperId, spId, itemPosition,
+                                            shippingCourierConverter, shipmentCartItemModel,
+                                            isInitialLoad, isTradeInDropOff, isForceReload, isBoUnstackEnabled, null
+                                    ))
+            );
         } else {
-            observable = ratesUseCase.execute(param);
+            if (publisher == null) {
+                temporaryEmitter = PublishSubject.create();
+                publisher = PublishSubject.create();
+//                compositeSubscription.add(
+                publisher
+                        .concatMap(shipmentGetCourierHolderData -> {
+                            Log.i("qwertyuiop", "concat");
+                            ratesUseCase.execute(shipmentGetCourierHolderData.getRatesParam())
+                                    .map(shippingRecommendationData ->
+                                            stateConverter.fillState(shippingRecommendationData, shipmentGetCourierHolderData.getShopShipmentList(),
+                                                    shipmentGetCourierHolderData.getSpId(), 0)
+                                    ).subscribe(
+                                            new GetCourierRecommendationSubscriber(
+                                                    getView(), this, shipmentGetCourierHolderData.getShipperId(), shipmentGetCourierHolderData.getSpId(), shipmentGetCourierHolderData.getItemPosition(),
+                                                    shippingCourierConverter, shipmentGetCourierHolderData.getShipmentCartItemModel(),
+                                                    shipmentGetCourierHolderData.isInitialLoad(), shipmentGetCourierHolderData.isTradeInDropOff(), shipmentGetCourierHolderData.isForceReload(), isBoUnstackEnabled,
+                                                    temporaryEmitter
+                                            ));
+                            return temporaryEmitter;
+                        })
+                        .subscribe();
+//                );
+            }
+            publisher.onNext(new ShipmentGetCourierHolderData(
+                    shipperId,
+                    spId,
+                    itemPosition,
+                    shipmentDetailData,
+                    shipmentCartItemModel,
+                    shopShipmentList,
+                    isInitialLoad,
+                    products,
+                    cartString,
+                    isTradeInDropOff,
+                    recipientAddressModel,
+                    isForceReload,
+                    skipMvc,
+                    param
+            ));
+//            observable = ratesUseCase.execute(param);
         }
-        compositeSubscription.add(
-                observable
-                        .map(shippingRecommendationData ->
-                                stateConverter.fillState(shippingRecommendationData, shopShipmentList,
-                                        spId, 0))
-                        .subscribe(
-                                new GetCourierRecommendationSubscriber(
-                                        getView(), this, shipperId, spId, itemPosition,
-                                        shippingCourierConverter, shipmentCartItemModel,
-                                        isInitialLoad, isTradeInDropOff, isForceReload, isBoUnstackEnabled
-                                ))
-        );
     }
 
     @Override

@@ -1124,30 +1124,28 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     String cartString = shipmentCartItemModel.getCartString();
 
                     ValidateUsePromoRequest validateUsePromoRequest = generateValidateUsePromoRequest();
-//                    if (courierItemData.getLogPromoCode() != null && courierItemData.getLogPromoCode().length() > 0) {
-                        for (OrdersItem ordersItem : validateUsePromoRequest.getOrders()) {
-                            if (ordersItem.getUniqueId().equals(shipmentCartItemModel.getCartString())) {
-                                if (!ordersItem.getCodes().contains(courierItemData.getLogPromoCode())) {
-                                    ordersItem.getCodes().add(courierItemData.getLogPromoCode());
-                                }
-                                ordersItem.setShippingId(courierItemData.getShipperId());
-                                ordersItem.setSpId(courierItemData.getShipperProductId());
-                                ordersItem.setFreeShippingMetadata(courierItemData.getFreeShippingMetadata());
-                                ordersItem.setShopId(shipmentCartItemModel.getShopId());
-                                ordersItem.setPo(shipmentCartItemModel.isProductIsPreorder());
-                                ordersItem.setPoDuration(shipmentCartItemModel.getCartItemModels()
-                                        .get(0).getPreOrderDurationDay());
-                                ordersItem.setWarehouseId(shipmentCartItemModel.getFulfillmentId());
-                                ordersItem.setBoCampaignId(courierItemData.getBoCampaignId());
-                                Log.i("qwertyuiop", "set bo campaign id " + courierItemData.getBoCampaignId());
-                                ordersItem.setShippingSubsidy(courierItemData.getShippingSubsidy());
-                                ordersItem.setBenefitClass(courierItemData.getBenefitClass());
-                                ordersItem.setShippingPrice(courierItemData.getShippingRate());
-                                ordersItem.setEtaText(courierItemData.getEtaText());
-                                break;
+                    for (OrdersItem ordersItem : validateUsePromoRequest.getOrders()) {
+                        if (ordersItem.getUniqueId().equals(shipmentCartItemModel.getCartString())) {
+                            if (!ordersItem.getCodes().contains(courierItemData.getLogPromoCode())) {
+                                ordersItem.getCodes().add(courierItemData.getLogPromoCode());
                             }
+                            ordersItem.setShippingId(courierItemData.getShipperId());
+                            ordersItem.setSpId(courierItemData.getShipperProductId());
+                            ordersItem.setFreeShippingMetadata(courierItemData.getFreeShippingMetadata());
+                            ordersItem.setShopId(shipmentCartItemModel.getShopId());
+                            ordersItem.setPo(shipmentCartItemModel.isProductIsPreorder());
+                            ordersItem.setPoDuration(shipmentCartItemModel.getCartItemModels()
+                                    .get(0).getPreOrderDurationDay());
+                            ordersItem.setWarehouseId(shipmentCartItemModel.getFulfillmentId());
+                            ordersItem.setBoCampaignId(courierItemData.getBoCampaignId());
+                            Log.i("qwertyuiop", "set bo campaign id " + courierItemData.getBoCampaignId());
+                            ordersItem.setShippingSubsidy(courierItemData.getShippingSubsidy());
+                            ordersItem.setBenefitClass(courierItemData.getBenefitClass());
+                            ordersItem.setShippingPrice(courierItemData.getShippingRate());
+                            ordersItem.setEtaText(courierItemData.getEtaText());
+                            break;
                         }
-//                    }
+                    }
 
                     List<ShipmentCartItemModel> shipmentCartItemModelLists = shipmentAdapter.getShipmentCartItemModelList();
                     if (shipmentCartItemModelLists != null && shipmentCartItemModelLists.size() > 0) {
@@ -1167,6 +1165,9 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                 }
                 checkCourierPromo(courierItemData, itemPosition);
                 shipmentAdapter.setSelectedCourier(itemPosition, courierItemData, false, shouldValidatePromo);
+                if (!shouldValidatePromo) {
+                    shipmentPresenter.getTemporaryEmitter().onCompleted();
+                }
             }
             onNeedUpdateViewItem(itemPosition);
             shipmentPresenter.processSaveShipmentState(shipmentCartItemModel);
@@ -2674,7 +2675,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
             ordersItem.setSpId(0);
             ordersItem.setFreeShippingMetadata("");
             ordersItem.setBoCampaignId(0);
-            Log.i("qwertyuiop", "1 set bo campaign id 0", new Throwable());
+            Log.i("qwertyuiop", "1 set bo campaign id 0 " + ordersItem.getShopId());
             ordersItem.setBenefitClass("");
             ordersItem.setShippingSubsidy(0);
             ordersItem.setShippingPrice(0);
@@ -2694,7 +2695,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     } else {
                         ordersItem.setFreeShippingMetadata("");
                         ordersItem.setBoCampaignId(0);
-                        Log.i("qwertyuiop", "2 set bo campaign id 0", new Throwable());
+                        Log.i("qwertyuiop", "2 set bo campaign id 0 " + ordersItem.getShopId());
                         ordersItem.setBenefitClass("");
                         ordersItem.setShippingSubsidy(0);
                         ordersItem.setShippingPrice(0);
@@ -2705,7 +2706,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     ordersItem.setSpId(0);
                     ordersItem.setFreeShippingMetadata("");
                     ordersItem.setBoCampaignId(0);
-                    Log.i("qwertyuiop", "3 set bo campaign id 0", new Throwable());
+                    Log.i("qwertyuiop", "3 set bo campaign id 0 " + ordersItem.getShopId());
                     ordersItem.setBenefitClass("");
                     ordersItem.setShippingSubsidy(0);
                     ordersItem.setShippingPrice(0);
@@ -2725,7 +2726,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     } else {
                         ordersItem.setFreeShippingMetadata("");
                         ordersItem.setBoCampaignId(0);
-                        Log.i("qwertyuiop", "4 set bo campaign id 0", new Throwable());
+                        Log.i("qwertyuiop", "4 set bo campaign id 0 " + ordersItem.getShopId());
                         ordersItem.setBenefitClass("");
                         ordersItem.setShippingSubsidy(0);
                         ordersItem.setShippingPrice(0);
@@ -2736,7 +2737,7 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                     ordersItem.setSpId(0);
                     ordersItem.setFreeShippingMetadata("");
                     ordersItem.setBoCampaignId(0);
-                    Log.i("qwertyuiop", "5 set bo campaign id 0", new Throwable());
+                    Log.i("qwertyuiop", "5 set bo campaign id 0 " + ordersItem.getShopId());
                     ordersItem.setBenefitClass("");
                     ordersItem.setShippingSubsidy(0);
                     ordersItem.setShippingPrice(0);

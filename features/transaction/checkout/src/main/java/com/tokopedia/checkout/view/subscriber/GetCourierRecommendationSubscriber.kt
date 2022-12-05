@@ -1,5 +1,6 @@
 package com.tokopedia.checkout.view.subscriber
 
+import android.util.Log
 import com.tokopedia.checkout.view.ShipmentContract
 import com.tokopedia.logisticcart.shipping.features.shippingcourier.view.ShippingCourierConverter
 import com.tokopedia.logisticcart.shipping.model.CourierItemData
@@ -9,6 +10,7 @@ import com.tokopedia.logisticcart.shipping.model.ShippingCourierUiModel
 import com.tokopedia.logisticcart.shipping.model.ShippingRecommendationData
 import com.tokopedia.network.exception.MessageErrorException
 import rx.Subscriber
+import rx.subjects.PublishSubject
 import timber.log.Timber
 
 class GetCourierRecommendationSubscriber(
@@ -22,10 +24,14 @@ class GetCourierRecommendationSubscriber(
     private val isInitialLoad: Boolean,
     private val isTradeInDropOff: Boolean,
     private val isForceReloadRates: Boolean,
-    private val isBoUnstackEnabled: Boolean
+    private val isBoUnstackEnabled: Boolean,
+    private val temporaryEmitter: PublishSubject<Boolean>?
 ) : Subscriber<ShippingRecommendationData?>() {
 
-    override fun onCompleted() {}
+    override fun onCompleted() {
+        Log.i("qwertyuiop", "complete")
+//        temporaryEmitter?.onCompleted()
+    }
 
     override fun onError(e: Throwable) {
         Timber.d(e)
@@ -35,9 +41,11 @@ class GetCourierRecommendationSubscriber(
             view.updateCourierBottomsheetHasNoData(itemPosition, shipmentCartItemModel)
         }
         view.logOnErrorLoadCourier(e, itemPosition)
+        temporaryEmitter?.onCompleted()
     }
 
     override fun onNext(shippingRecommendationData: ShippingRecommendationData?) {
+        Log.i("qwertyuiop", "on next")
         if (isInitialLoad || isForceReloadRates) {
             if (shippingRecommendationData?.shippingDurationUiModels != null && shippingRecommendationData.shippingDurationUiModels.isNotEmpty()) {
                 if (!isForceReloadRates && isBoUnstackEnabled && shipmentCartItemModel.boCode.isNotEmpty()) {
@@ -185,6 +193,7 @@ class GetCourierRecommendationSubscriber(
                                 shipmentCartItemModel,
                                 shippingRecommendationData.preOrderModel
                             )
+                            temporaryEmitter?.onCompleted()
                             return
                         }
                     }
@@ -192,6 +201,7 @@ class GetCourierRecommendationSubscriber(
             }
             view.updateCourierBottomsheetHasNoData(itemPosition, shipmentCartItemModel)
         }
+        temporaryEmitter?.onCompleted()
     }
 
     private fun generateCourierItemData(
