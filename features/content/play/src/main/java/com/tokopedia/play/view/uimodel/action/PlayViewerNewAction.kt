@@ -105,3 +105,4 @@ object OpenCart: PlayViewerNewAction()
  */
 object FetchWidgets: PlayViewerNewAction()
 data class ClickChipWidget(val item: ChipWidgetUiModel) : PlayViewerNewAction()
+object NextPageWidgets : PlayViewerNewAction()

@@ -996,6 +996,7 @@ class PlayViewModel @AssistedInject constructor(
             OpenCart -> openWithLogin(ApplinkConstInternalMarketplace.CART, REQUEST_CODE_LOGIN_CART)
             FetchWidgets -> fetchWidgets()
             is ClickChipWidget -> handleClickChip(action.item)
+            is NextPageWidgets -> onActionWidget(isNextPage = true)
         }
     }
 

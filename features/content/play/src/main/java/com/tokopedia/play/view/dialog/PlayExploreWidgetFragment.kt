@@ -11,6 +11,8 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.getScreenWidth
 import com.tokopedia.play.databinding.FragmentPlayExploreWidgetBinding
@@ -23,6 +25,7 @@ import com.tokopedia.play.view.fragment.PlayUserInteractionFragment
 import com.tokopedia.play.view.uimodel.ChipWidgetUiModel
 import com.tokopedia.play.view.uimodel.WidgetUiModel
 import com.tokopedia.play.view.uimodel.action.ClickChipWidget
+import com.tokopedia.play.view.uimodel.action.NextPageWidgets
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
@@ -49,6 +52,18 @@ class PlayExploreWidgetFragment @Inject constructor() : DialogFragment(), Widget
     private lateinit var viewModel : PlayViewModel
 
     private val widgetAdapter = WidgetAdapter(this)
+
+    private val layoutManager by lazy(LazyThreadSafetyMode.NONE) {
+        LinearLayoutManager(binding.rvWidgets.context, RecyclerView.VERTICAL, false)
+    }
+
+    private val scrollListener = object : RecyclerView.OnScrollListener() {
+        override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+           if(newState == RecyclerView.SCROLL_STATE_IDLE && layoutManager.childCount - 1 == layoutManager.findLastVisibleItemPosition()) {
+               viewModel.submitAction(NextPageWidgets)
+           }
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -87,6 +102,8 @@ class PlayExploreWidgetFragment @Inject constructor() : DialogFragment(), Widget
 
     private fun setupList() {
         binding.rvWidgets.adapter = widgetAdapter
+        binding.rvWidgets.layoutManager = layoutManager
+        binding.rvWidgets.addOnScrollListener(scrollListener)
     }
 
     private fun observeState(){
