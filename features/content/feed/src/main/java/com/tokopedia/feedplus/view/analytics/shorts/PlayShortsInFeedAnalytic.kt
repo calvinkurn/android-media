@@ -12,16 +12,15 @@ import javax.inject.Inject
 /**
  * Created By : Jonathan Darwin on November 28, 2022
  */
-class PlayShortsInFeedAnalytic @Inject constructor(
-    private val userSession: UserSessionInterface
-) {
+class PlayShortsInFeedAnalytic @Inject constructor() {
 
     /**
      * Mynakama Tracker
      * https://mynakama.tokopedia.com/datatracker/requestdetail/view/3511
-     *
-     * Row 1 : eventLabel is {partnerId} - {seller / user} but we can't identified the user
-     * as seller / user bcs it can be both
+     */
+
+    /**
+     * Row 1
      */
     fun clickCreateShortsEntryPoint() {
         TrackApp.getInstance().gtm
@@ -34,7 +33,12 @@ class PlayShortsInFeedAnalytic @Inject constructor(
                     ),
                     EVENT_CATEGORY to CONTENT_FEED_TIMELINE,
                     EVENT_LABEL to String.format(
-                        /** TODO: need to determine {partnerId} - {seller / user} */
+                        /**
+                         * Confirmed by PO & Data to not provide
+                         * {partnerId} & {partnerType} here
+                         * because frontend can't decide
+                         * which account is being used here
+                         */
                         FORMAT_TWO_PARAM,
                         "",
                         ""
@@ -99,8 +103,7 @@ class PlayShortsInFeedAnalytic @Inject constructor(
     }
 
     /**
-     * Row 79 : eventLabel is {partnerId} - {seller / user} but we can't identified the user
-     * as seller / user bcs it can be both
+     * Row 79
      */
     fun viewShortsEntryPoint() {
         TrackApp.getInstance().gtm
@@ -113,7 +116,12 @@ class PlayShortsInFeedAnalytic @Inject constructor(
                     ),
                     EVENT_CATEGORY to CONTENT_FEED_TIMELINE,
                     EVENT_LABEL to String.format(
-                        /** TODO: need to determine {partnerId} - {seller / user} */
+                        /**
+                         * Confirmed by PO & Data to not provide
+                         * {partnerId} & {partnerType} here
+                         * because frontend can't decide
+                         * which account is being used here
+                         */
                         FORMAT_TWO_PARAM,
                         "",
                         ""
