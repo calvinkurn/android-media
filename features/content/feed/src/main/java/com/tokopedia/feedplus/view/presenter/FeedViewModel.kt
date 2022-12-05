@@ -13,19 +13,9 @@ import com.tokopedia.atc_common.domain.usecase.coroutine.AddToCartUseCase
 import com.tokopedia.content.common.usecase.GetWhiteListNewUseCase
 import com.tokopedia.content.common.usecase.GetWhiteListNewUseCase.Companion.WHITELIST_INTEREST
 import com.tokopedia.feedcomponent.analytics.topadstracker.SendTopAdsUseCase
-import com.tokopedia.feedcomponent.data.feedrevamp.FeedASGCUpcomingReminderStatus
-import com.tokopedia.feedcomponent.data.feedrevamp.FeedXCampaign
-import com.tokopedia.feedcomponent.data.feedrevamp.FeedXData
-import com.tokopedia.feedcomponent.data.feedrevamp.FeedXProduct
-import com.tokopedia.feedcomponent.data.feedrevamp.reversed
+import com.tokopedia.feedcomponent.data.feedrevamp.*
 import com.tokopedia.feedcomponent.domain.model.DynamicFeedDomainModel
-import com.tokopedia.feedcomponent.domain.usecase.CheckUpcomingCampaignReminderUseCase
-import com.tokopedia.feedcomponent.domain.usecase.FeedBroadcastTrackerUseCase
-import com.tokopedia.feedcomponent.domain.usecase.FeedXTrackViewerUseCase
-import com.tokopedia.feedcomponent.domain.usecase.GetDynamicFeedNewUseCase
-import com.tokopedia.feedcomponent.domain.usecase.PostUpcomingCampaignReminderUseCase
-import com.tokopedia.feedcomponent.domain.usecase.SCREEN_NAME_UPDATE_TAB
-import com.tokopedia.feedcomponent.domain.usecase.SendReportUseCase
+import com.tokopedia.feedcomponent.domain.usecase.*
 import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowAction.Follow
 import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowAction.UnFollow
 import com.tokopedia.feedcomponent.domain.usecase.shopfollow.ShopFollowUseCase
@@ -38,20 +28,12 @@ import com.tokopedia.feedcomponent.people.usecase.ProfileFollowUseCase
 import com.tokopedia.feedcomponent.people.usecase.ProfileUnfollowedUseCase
 import com.tokopedia.feedcomponent.shoprecom.mapper.ShopRecomUiMapper
 import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomFollowState
-import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomFollowState.FOLLOW
-import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomFollowState.LOADING_FOLLOW
-import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomFollowState.LOADING_UNFOLLOW
-import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomFollowState.UNFOLLOW
+import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomFollowState.*
 import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomUiModelItem
 import com.tokopedia.feedcomponent.shoprecom.model.ShopRecomWidgetModel
 import com.tokopedia.feedcomponent.util.CustomUiMessageThrowable
 import com.tokopedia.feedcomponent.view.viewmodel.carousel.CarouselPlayCardModel
-import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.AtcModel
-import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.DeletePostModel
-import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.FavoriteShopModel
-import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.FeedAsgcCampaignResponseModel
-import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.FeedWidgetData
-import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.TrackAffiliateModel
+import com.tokopedia.feedcomponent.view.viewmodel.responsemodel.*
 import com.tokopedia.feedplus.R
 import com.tokopedia.feedplus.domain.model.DynamicFeedFirstPageDomainModel
 import com.tokopedia.feedplus.view.constants.Constants.FeedConstants.NON_LOGIN_USER_ID
@@ -540,7 +522,7 @@ class FeedViewModel @Inject constructor(
                 submitActionContentUseCase.executeOnBackground()
             }
             deletePostResp.value = Success(
-                DeletePostViewModel(
+                DeletePostModel(
                     id = id,
                     rowNumber = rowNumber,
                     isSuccess = TextUtils.isEmpty(response.content.error)
