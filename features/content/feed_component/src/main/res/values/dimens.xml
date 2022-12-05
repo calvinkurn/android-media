@@ -11,6 +11,7 @@
     <dimen name="feed_component_dp_14">14dp</dimen>
     <dimen name="feed_component_dp_200">200dp</dimen>
     <dimen name="feed_component_dp_3">3dp</dimen>
+    <dimen name="feed_component_dp_50">50dp</dimen>
     <dimen name="video_tab_slot_margin_dp_12">12dp</dimen>
     <dimen name="video_tab_slot_margin_top_dp_4">4dp</dimen>
     <dimen name="feed_component_dp_7">7dp</dimen>

@@ -8,7 +8,7 @@ import com.tokopedia.cmhomewidget.presentation.adapter.visitable.CMHomeWidgetVis
 
 @SuppressLint("Invalid Data Type")
 data class GetCMHomeWidgetDataGqlResponse(
-    @SerializedName("notifier_getHtdw")
+    @SerializedName("notifier_getHtdw_v2")
     @Expose
     val cmHomeWidgetDataResponse: CMHomeWidgetDataResponse
 )

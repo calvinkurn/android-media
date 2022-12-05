@@ -147,12 +147,16 @@ class ProductBundleSingleViewHolder(
     private fun initShopInfo(shopInfo: BundleShopUiModel?, bundleName: String) {
         val hasShopInfo = shopInfo != null
         viewBinding?.bundleWidgetHeaderContainer?.apply {
-            iconShop.isVisible = hasShopInfo
             tvShopName.isVisible = hasShopInfo
             tvBundleName.isVisible = hasShopInfo
             tvBundleNameLarge.isVisible = !hasShopInfo
             if (hasShopInfo) {
-                iconShop.loadImage(shopInfo?.shopIconUrl)
+                if(!shopInfo?.shopIconUrl.isNullOrEmpty()) {
+                    iconShop.visibility = View.VISIBLE
+                    iconShop.loadImage(shopInfo?.shopIconUrl)
+                }else{
+                    iconShop.visibility = View.GONE
+                }
                 tvShopName.text = shopInfo?.shopName
             } else {
                 tvBundleNameLarge.text = bundleName

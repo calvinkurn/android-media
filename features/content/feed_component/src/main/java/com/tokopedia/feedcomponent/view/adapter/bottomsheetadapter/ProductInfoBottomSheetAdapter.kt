@@ -7,9 +7,9 @@ import com.tokopedia.adapterdelegate.TypedAdapterDelegate
 import com.tokopedia.feedcomponent.R
 import com.tokopedia.feedcomponent.bottomsheets.ProductItemInfoBottomSheet
 import com.tokopedia.feedcomponent.view.adapter.viewholder.posttag.ProductPostTagViewHolderNew
-import com.tokopedia.feedcomponent.view.viewmodel.posttag.ProductPostTagViewModelNew
+import com.tokopedia.feedcomponent.view.viewmodel.posttag.ProductPostTagModelNew
 
-class ProductInfoBottomSheetAdapter(listener: ProductItemInfoBottomSheet.Listener) : BaseDiffUtilAdapter<ProductPostTagViewModelNew>(true)
+class ProductInfoBottomSheetAdapter(listener: ProductItemInfoBottomSheet.Listener) : BaseDiffUtilAdapter<ProductPostTagModelNew>(true)
 {
     init {
         delegatesManager
@@ -17,25 +17,25 @@ class ProductInfoBottomSheetAdapter(listener: ProductItemInfoBottomSheet.Listene
     }
 
     override fun areItemsTheSame(
-        oldItem: ProductPostTagViewModelNew,
-        newItem: ProductPostTagViewModelNew
+        oldItem: ProductPostTagModelNew,
+        newItem: ProductPostTagModelNew
     ): Boolean {
         return oldItem.id == newItem.id
     }
 
     override fun areContentsTheSame(
-        oldItem: ProductPostTagViewModelNew,
-        newItem: ProductPostTagViewModelNew
+        oldItem: ProductPostTagModelNew,
+        newItem: ProductPostTagModelNew
     ): Boolean {
         return oldItem == newItem
     }
 
     private class ProductItemDelegate(private val listener: ProductItemInfoBottomSheet.Listener) :
-        TypedAdapterDelegate<ProductPostTagViewModelNew, ProductPostTagViewModelNew, ProductPostTagViewHolderNew>
+        TypedAdapterDelegate<ProductPostTagModelNew, ProductPostTagModelNew, ProductPostTagViewHolderNew>
             (R.layout.item_producttag_list_new) {
 
         override fun onBindViewHolder(
-            item: ProductPostTagViewModelNew,
+            item: ProductPostTagModelNew,
             holder: ProductPostTagViewHolderNew
         ) {
             holder.bind(item)

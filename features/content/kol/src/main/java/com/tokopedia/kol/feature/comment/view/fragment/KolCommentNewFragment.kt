@@ -31,7 +31,7 @@ import com.tokopedia.feedcomponent.util.MentionTextHelper.createValidMentionText
 import com.tokopedia.feedcomponent.view.adapter.mention.MentionableUserAdapter
 import com.tokopedia.feedcomponent.view.adapter.mention.MentionableUserAdapter.MentionAdapterListener
 import com.tokopedia.feedcomponent.view.custom.MentionEditText
-import com.tokopedia.feedcomponent.view.viewmodel.mention.MentionableUserViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.mention.MentionableUserModel
 import com.tokopedia.globalerror.GlobalError
 import com.tokopedia.kol.KolComponentInstance
 import com.tokopedia.kol.R
@@ -310,7 +310,7 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
         setAvatar()
     }
 
-    override fun replyToUser(user: MentionableUserViewModel?) {
+    override fun replyToUser(user: MentionableUserModel?) {
 
         if (user?.isShop == false) {
             val userToMention = createValidMentionText(user.toString())
@@ -492,7 +492,7 @@ class KolCommentNewFragment : BaseDaggerFragment(), KolComment.View, KolComment.
         showToastMessage(message)
     }
 
-    override fun showMentionUserSuggestionList(userList: MutableList<MentionableUserViewModel>?) {
+    override fun showMentionUserSuggestionList(userList: MutableList<MentionableUserModel>?) {
         userList?.let {
             mentionAdapter?.setMentionableUser(it)
         }
