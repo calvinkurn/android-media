@@ -68,6 +68,7 @@ class VoucherEditPeriodViewModel @Inject constructor(
                         launchCatchError(dispatchers.io,{
                             val token = getTokenUseCase.executeOnBackground()
                             Log.d("FATAL", "validateDateAndTime: $token")
+                            Log.d("FATAL", "validateDateAndTime: $dateStart $dateEnd $hourStart $hourEnd")
                         },{
 
                         })
