@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
+import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.media.loader.wrapper.MediaCacheStrategy
@@ -62,6 +63,7 @@ class DisplayVoucherBottomSheet : BottomSheetUnify() {
                         squareChip.chipType = ChipsUnify.TYPE_NORMAL
                         verticalChip.chipType = ChipsUnify.TYPE_NORMAL
                         setUpImage(voucher?.image)
+                        changeImageViewHeight(getDeviceHeight() * SCREEN_HEIGHT_FULL)
                     }
                 }
                 is VoucherType.Square -> {
@@ -70,6 +72,7 @@ class DisplayVoucherBottomSheet : BottomSheetUnify() {
                         squareChip.chipType = ChipsUnify.TYPE_SELECTED
                         verticalChip.chipType = ChipsUnify.TYPE_NORMAL
                         setUpImage(voucher?.imageSquare)
+                        changeImageViewHeight(getDeviceHeight() * SCREEN_HEIGHT_ONE_HALF)
                     }
                 }
                 is VoucherType.Vertical -> {
@@ -78,10 +81,16 @@ class DisplayVoucherBottomSheet : BottomSheetUnify() {
                         squareChip.chipType = ChipsUnify.TYPE_NORMAL
                         verticalChip.chipType = ChipsUnify.TYPE_SELECTED
                         setUpImage(voucher?.imagePortrait)
+                        changeImageViewHeight(getDeviceHeight() * SCREEN_HEIGHT_MULTIPLIED)
                     }
                 }
             }
         }
+    }
+
+    private fun getDeviceHeight(): Float {
+        val displayMetrics = context?.resources?.displayMetrics
+        return displayMetrics?.heightPixels.orZero() / displayMetrics?.density.orZero()
     }
 
     private fun setUpImage(url : String?) {
@@ -111,6 +120,11 @@ class DisplayVoucherBottomSheet : BottomSheetUnify() {
             .inject(this)
     }
 
+    private fun changeImageViewHeight(height : Float) {
+        binding?.voucherImage?.layoutParams?.height = height.toInt()
+        binding?.voucherImage?.requestLayout()
+    }
+
     companion object {
         @JvmStatic
         fun newInstance(voucher: Voucher): DisplayVoucherBottomSheet {
@@ -118,5 +132,9 @@ class DisplayVoucherBottomSheet : BottomSheetUnify() {
                 this.voucher = voucher
             }
         }
+
+        private const val SCREEN_HEIGHT_FULL = 0.5f
+        private const val SCREEN_HEIGHT_ONE_HALF = 1f
+        private const val SCREEN_HEIGHT_MULTIPLIED = 1.5f
     }
 }
