@@ -53,14 +53,13 @@ class PinpointWebviewActivity : BaseSimpleActivity() {
     }
 
     private fun Uri.Builder.setDistrictId(): Uri.Builder {
-        val shouldSendDistrictId = getSource() != PinpointSource.EDIT_ADDRESS.source
         val districtId: Long = if (intent.hasExtra(KEY_DISTRICT_ID)) {
             intent.getLongExtra(KEY_DISTRICT_ID, 0L)
         } else {
             intent.data?.getQueryParameter(PARAM_DISTRICT_ID)?.toLongOrZero() ?: 0L
         }
 
-        districtId.takeIf { value -> value != 0L && shouldSendDistrictId }
+        districtId.takeIf { value -> value != 0L }
             ?.let { data ->
                 appendQueryParameter(PARAM_DISTRICT_ID, data.toString())
             }
@@ -110,21 +109,17 @@ class PinpointWebviewActivity : BaseSimpleActivity() {
     }
 
     private fun Uri.Builder.setSource(): Uri.Builder {
-        val source: String = getSource()
+        val source: String = if (intent.hasExtra(KEY_SOURCE_PINPOINT)) {
+            intent.getStringExtra(KEY_SOURCE_PINPOINT) ?: ""
+        } else {
+            intent.data?.getQueryParameter(PARAM_SOURCE) ?: ""
+        }
 
         source.takeIf { value -> value.isNotEmpty() }
             ?.let { data ->
                 appendQueryParameter(PARAM_SOURCE, data)
             }
         return this
-    }
-
-    private fun getSource(): String {
-        return if (intent.hasExtra(KEY_SOURCE_PINPOINT)) {
-            intent.getStringExtra(KEY_SOURCE_PINPOINT) ?: ""
-        } else {
-            intent.data?.getQueryParameter(PARAM_SOURCE) ?: ""
-        }
     }
 
     companion object {
