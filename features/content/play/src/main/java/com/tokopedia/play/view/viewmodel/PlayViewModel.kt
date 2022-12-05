@@ -1,6 +1,7 @@
 package com.tokopedia.play.view.viewmodel
 
 import android.net.Uri
+import android.util.Log
 import androidx.lifecycle.*
 import androidx.lifecycle.Observer
 import com.google.android.exoplayer2.ExoPlayer

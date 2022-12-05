@@ -22,6 +22,7 @@ import com.tokopedia.play.view.fragment.PlayFragment
 import com.tokopedia.play.view.fragment.PlayUserInteractionFragment
 import com.tokopedia.play.view.uimodel.ChipWidgetUiModel
 import com.tokopedia.play.view.uimodel.WidgetItemUiModel
+import com.tokopedia.play.view.uimodel.WidgetUiModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play.widget.sample.coordinator.PlayWidgetCoordinator
 import kotlinx.coroutines.flow.collectLatest
@@ -103,8 +104,8 @@ class PlayExploreWidgetFragment @Inject constructor() : DialogFragment() {
                 if (cachedState.isChanged { it.exploreWidget.data.chips })
                     renderChips(cachedState.value.exploreWidget.data.chips)
 
-                if (cachedState.isChanged { it.exploreWidget.data.widgets })
-                    renderWidgets(cachedState.value.exploreWidget.data.widgets)
+                if (cachedState.isChanged { it.exploreWidget.data.items })
+                    renderWidgets(cachedState.value.exploreWidget.data.items)
             }
         }
     }
@@ -113,7 +114,7 @@ class PlayExploreWidgetFragment @Inject constructor() : DialogFragment() {
         chipsAdapter.setItemsAndAnimateChanges(list)
     }
 
-    private fun renderWidgets(list: List<WidgetItemUiModel>){
+    private fun renderWidgets(list: List<WidgetUiModel>){
         widgetAdapter.setItemsAndAnimateChanges(list)
     }
 
