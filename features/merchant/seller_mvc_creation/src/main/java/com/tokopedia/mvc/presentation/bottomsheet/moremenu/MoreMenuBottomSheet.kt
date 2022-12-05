@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.FragmentActivity
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.mvc.R
 import com.tokopedia.mvc.databinding.SmvcBottomsheetThreeDotsMenuBinding
 import com.tokopedia.mvc.domain.entity.Voucher
@@ -21,6 +22,7 @@ class MoreMenuBottomSheet : BottomSheetUnify() {
     private var context: FragmentActivity? = null
     private var voucher: Voucher? = null
     private var menuItem: List<MoreMenuUiModel> = emptyList()
+    private var sheetTitle: String = ""
     private var binding by autoClearedNullable<SmvcBottomsheetThreeDotsMenuBinding>()
     private var adapter: MoreMenuAdapter? = null
     init {
@@ -34,7 +36,7 @@ class MoreMenuBottomSheet : BottomSheetUnify() {
     ): View? {
         binding = SmvcBottomsheetThreeDotsMenuBinding.inflate(LayoutInflater.from(context))
         setChild(binding?.root)
-        setTitle(context?.getString(R.string.voucher_three_bots_title) ?: "")
+        setTitle(sheetTitle)
         binding?.recyclerView?.layoutManager =
             LinearLayoutManager(context, LinearLayoutManager.VERTICAL, false)
 
@@ -54,11 +56,13 @@ class MoreMenuBottomSheet : BottomSheetUnify() {
         @JvmStatic
         fun newInstance(
             context: FragmentActivity,
-            voucher: Voucher?
+            voucher: Voucher?,
+            title: String = context.resources?.getString(R.string.voucher_three_bots_title).toBlankOrString()
         ): MoreMenuBottomSheet {
             return MoreMenuBottomSheet().apply {
                 this.context = context
                 this.voucher = voucher
+                this.sheetTitle = title
 
                 voucher?.type?.let { type ->
                     this.menuItem = when (type) {
@@ -72,25 +76,24 @@ class MoreMenuBottomSheet : BottomSheetUnify() {
                             if (voucher.isOngoingPromo()) {
                                 // return vps voucher menu
                                 if (voucher.isVps) {
-                                    getOngoingOptionsListMenu()
+                                    getOngoingVpsSubsidyMenu()
                                 }
                                 // return subsidy voucher menu, isVps is always false here
                                 else if (voucher.isSubsidy) {
-                                    getOngoingOptionsListMenu()
+                                    getOngoingVpsSubsidyMenu()
                                 }
                                 // return seller create voucher menu
                                 getOngoingOptionsListMenu()
                             }
                             // UPCOMING
-                            // Intentionally changed for testing
                             else if (voucher.isUpComingPromo()) {
                                 // return vps voucher menu
                                 if (voucher.isVps) {
-                                    getUpcomingOptionsListMenu()
+                                    getUpcomingVpsSubsidyMenu()
                                 }
                                 // return subsidy voucher menu
                                 else if (voucher.isSubsidy) {
-                                    getUpcomingOptionsListMenu()
+                                    getUpcomingVpsSubsidyMenu()
                                 }
                                 // return seller created voucher menu
                                 else {
@@ -102,18 +105,18 @@ class MoreMenuBottomSheet : BottomSheetUnify() {
                                 when (voucher.status) {
                                     VoucherStatus.ENDED -> {
                                         if (voucher.isVps) {
-                                            getEndedOrCancelledOptionsListMenu()
+                                            getEndedVpsSubsidyListMenu()
                                         } else if (voucher.isSubsidy) {
-                                            getEndedOrCancelledOptionsListMenu()
+                                            getEndedVpsSubsidyListMenu()
                                         } else {
                                             getEndedOrCancelledOptionsListMenu()
                                         }
                                     }
                                     VoucherStatus.STOPPED -> {
                                         if (voucher.isVps) {
-                                            getEndedOrCancelledOptionsListMenu()
+                                            getCancelledVpsSubsidyListMenu()
                                         } else if (voucher.isSubsidy) {
-                                            getEndedOrCancelledOptionsListMenu()
+                                            getCancelledVpsSubsidyListMenu()
                                         } else {
                                             getEndedOrCancelledOptionsListMenu()
                                         }
@@ -198,6 +201,94 @@ class MoreMenuBottomSheet : BottomSheetUnify() {
             MoreMenuUiModel.TermsAndConditions(
                 context?.getString(R.string.voucher_bs_terms_conditions).orEmpty()
             ),
+            MoreMenuUiModel.Clear(
+                context?.getString(R.string.voucher_bs_ubah_batalkan).orEmpty()
+            )
+        )
+    }
+
+    private fun getVoucherDetailEndedStoppedOptionsListMenu(): List<MoreMenuUiModel> {
+        return listOf(
+            MoreMenuUiModel.TermsAndConditions(
+                context?.getString(R.string.voucher_bs_terms_conditions).orEmpty()
+            )
+        )
+    }
+
+    private fun getOngoingVpsSubsidyMenu(): List<MoreMenuUiModel> {
+        return listOf(
+            MoreMenuUiModel.Clipboard(
+                context?.getString(R.string.voucher_bs_ubah_lihat_detail).orEmpty()
+            ),
+            MoreMenuUiModel.ItemDivider,
+            MoreMenuUiModel.Broadcast(
+                context?.getString(R.string.voucher_bs_ubah_broadcast_chat).orEmpty()
+            ),
+            MoreMenuUiModel.Share(
+                context?.getString(R.string.voucher_bs_ubah_bagikan).orEmpty()
+            ),
+            MoreMenuUiModel.Download(
+                context?.getString(R.string.voucher_bs_ubah_download).orEmpty()
+            ),
+            MoreMenuUiModel.ItemDivider,
+            MoreMenuUiModel.Hentikan(
+                context?.getString(R.string.voucher_bs_ubah_hentikan).orEmpty()
+            )
+        )
+    }
+
+    private fun getUpcomingVpsSubsidyMenu(): List<MoreMenuUiModel> {
+        return listOf(
+            MoreMenuUiModel.Clipboard(
+                context?.getString(R.string.voucher_bs_ubah_lihat_detail).orEmpty()
+            ),
+            MoreMenuUiModel.Broadcast(
+                context?.getString(R.string.voucher_bs_ubah_broadcast_chat).orEmpty()
+            ),
+            MoreMenuUiModel.Download(
+                context?.getString(R.string.voucher_bs_ubah_download).orEmpty()
+            ),
+            MoreMenuUiModel.Clear(
+                context?.getString(R.string.voucher_bs_ubah_batalkan).orEmpty()
+            )
+        )
+    }
+
+    private fun getEndedVpsSubsidyListMenu(): List<MoreMenuUiModel> {
+        return listOf(
+            MoreMenuUiModel.Clipboard(
+                context?.getString(R.string.voucher_bs_ubah_lihat_detail).orEmpty()
+            )
+        )
+    }
+
+    private fun getCancelledVpsSubsidyListMenu(): List<MoreMenuUiModel> {
+        return listOf(
+            MoreMenuUiModel.Copy(
+                context?.getString(R.string.voucher_bs_duplikat).orEmpty()
+            ),
+            MoreMenuUiModel.Clipboard(
+                context?.getString(R.string.voucher_bs_ubah_lihat_detail).orEmpty()
+            )
+        )
+    }
+
+    private fun getOtherScheduleListMenu(): List<MoreMenuUiModel> {
+        return listOf(
+            MoreMenuUiModel.Coupon(
+                context?.getString(R.string.voucher_bs_ubah_kuota).orEmpty()
+            ),
+            MoreMenuUiModel.Clipboard(
+                context?.getString(R.string.voucher_bs_ubah_lihat_detail).orEmpty()
+            ),
+            MoreMenuUiModel.ItemDivider,
+            MoreMenuUiModel.Broadcast(
+                context?.getString(R.string.voucher_bs_ubah_broadcast_chat).orEmpty()
+            ),
+            MoreMenuUiModel.Download(
+                context?.getString(R.string.voucher_bs_ubah_download).orEmpty()
+            ),
+            MoreMenuUiModel.ItemDivider,
             MoreMenuUiModel.Clear(
                 context?.getString(R.string.voucher_bs_ubah_batalkan).orEmpty()
             )
