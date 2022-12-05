@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.isVisible
 import com.tokopedia.mvc.R
 import com.tokopedia.mvc.databinding.SmvcItemSelectRepeatPeriodBinding
+import com.tokopedia.mvc.domain.entity.RepeatPeriodData
 
 class SelectRepeatPeriodAdapter(
     private val onPeriodClickListener: OnPeriodClickedListener
@@ -17,35 +18,35 @@ class SelectRepeatPeriodAdapter(
         fun onPeriodClicked(period: Int)
     }
 
-    private val diffUtilCallback = object : DiffUtil.ItemCallback<Pair<Int, Boolean>>() {
+    private val diffUtilCallback = object : DiffUtil.ItemCallback<RepeatPeriodData>() {
         override fun areItemsTheSame(
-            oldItem: Pair<Int, Boolean>,
-            newItem: Pair<Int, Boolean>
+            oldItem: RepeatPeriodData,
+            newItem: RepeatPeriodData
         ): Boolean {
-            return oldItem.second == newItem.second
+            return oldItem.isSelected == newItem.isSelected
         }
 
         override fun areContentsTheSame(
-            oldItem: Pair<Int, Boolean>,
-            newItem: Pair<Int, Boolean>
+            oldItem: RepeatPeriodData,
+            newItem: RepeatPeriodData
         ): Boolean {
             return oldItem == newItem
         }
     }
 
     private val differ = AsyncListDiffer(this, diffUtilCallback)
-    private var listRepeatPeriod: List<Pair<Int, Boolean>> = listOf(
-        1 to false,
-        2 to false,
-        3 to false,
-        4 to false,
-        5 to false,
-        6 to false,
-        7 to false,
-        8 to false,
-        9 to false,
-        10 to false,
-        11 to false
+    private var listRepeatPeriod: List<RepeatPeriodData> = listOf(
+        RepeatPeriodData(1, false),
+        RepeatPeriodData(2, false),
+        RepeatPeriodData(3, false),
+        RepeatPeriodData(4, false),
+        RepeatPeriodData(5, false),
+        RepeatPeriodData(6, false),
+        RepeatPeriodData(7, false),
+        RepeatPeriodData(8, false),
+        RepeatPeriodData(9, false),
+        RepeatPeriodData(10, false),
+        RepeatPeriodData(11, false)
     )
 
     init {
@@ -70,10 +71,10 @@ class SelectRepeatPeriodAdapter(
 
     fun setSelectedRepeatPeriod(selectedRepeatPeriod: Int) {
         val newList = listRepeatPeriod.map {
-            if (it.first == selectedRepeatPeriod) {
-                it.copy(second = true)
+            if (it.period == selectedRepeatPeriod) {
+                it.copy(isSelected = true)
             } else {
-                it
+                it.copy(isSelected = false)
             }
         }
         differ.submitList(newList)
@@ -83,14 +84,14 @@ class SelectRepeatPeriodAdapter(
         private val binding: SmvcItemSelectRepeatPeriodBinding,
         private val onPeriodClickListener: OnPeriodClickedListener
     ) : RecyclerView.ViewHolder(binding.root) {
-        fun bind(repeatPeriodData: Pair<Int, Boolean>) {
+        fun bind(repeatPeriodData: RepeatPeriodData) {
             with(binding) {
                 textRepeatPeriod.text = root.context.getString(
                     R.string.smvc_bottomsheet_select_repeat_period_month_format,
-                    repeatPeriodData.first
+                    repeatPeriodData.period
                 )
-                root.setOnClickListener { onPeriodClickListener.onPeriodClicked(repeatPeriodData.first) }
-                iconCheck.isVisible = repeatPeriodData.second
+                root.setOnClickListener { onPeriodClickListener.onPeriodClicked(repeatPeriodData.period) }
+                iconCheck.isVisible = repeatPeriodData.isSelected
             }
         }
     }
