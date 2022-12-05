@@ -4,15 +4,14 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
 
-
-class ProfileFollowUnfollowViewPagerAdapter(fm: FragmentManager) : FragmentStatePagerAdapter(fm,FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
+class ProfileFollowUnfollowViewPagerAdapter(fm: FragmentManager) : FragmentStatePagerAdapter(fm, FragmentStatePagerAdapter.BEHAVIOR_RESUME_ONLY_CURRENT_FRAGMENT) {
 
     private final val fragmentList1: MutableList<Fragment> = mutableListOf()
     private final val fragmentTitleList1: MutableList<String> = mutableListOf()
 
     // returns which item is selected from arraylist of fragments.
     override fun getItem(position: Int): Fragment {
-        return fragmentList1[position];
+        return fragmentList1[position]
     }
 
 //    // returns which item is selected from arraylist of titles.

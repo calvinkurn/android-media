@@ -104,7 +104,7 @@
             android:textColor="@color/Unify_N700"
             android:textSize="14sp"
             android:textIsSelectable="true"
-            tools:text="https://ecs.tokopedia.com/abcde.png"/>
+            tools:text="https://iamges.tokopedia.com/abcde.png"/>
 
         <TextView
             android:layout_width="match_parent"

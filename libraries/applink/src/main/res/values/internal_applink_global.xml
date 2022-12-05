@@ -10,7 +10,6 @@
     <string name="path_change_inactive_phone">/change-inactive-phone</string>
     <string name="path_withdraw">/withdraw</string>
     <string name="path_autoWithdrawSettings">/autoWithdrawSettings</string>
-    <string name="path_liveness_detection">/liveness-detection</string>
 
     <string name="path_inbox_talk">/inbox-talk</string>
     <string name="path_product_talk">/product-talk/.*\\/</string>
@@ -18,9 +17,6 @@
     <string name="path_add_talk">/add-talk</string>
     <string name="path_talk_seller_settings">/talk-seller-settings/</string>
     <string name="path_shop_talk">/shop-talk/.*\\/</string>
-    <string name="path_user_identification_info">/user-identification-info</string>
-    <string name="path_user_identification_form">/user-identification-form</string>
-    <string name="path_user_identification_only">/user-identification-only</string>
     <string name="path_change_phone_number">/change-phone-number</string>
     <string name="path_silent_verif">/silent-verification</string>
     <string name="path_otp_validator">/otp-validator</string>
@@ -49,6 +45,7 @@
 
     <string name="path_chat">/topchat</string>
     <string name="path_chat_room" translatable="false">/topchat/.*\</string>
+    <string name="path_chat_bubble_activation" translatable="false">/bubble-activation</string>
 
 
     <string name="path_add_fingerprint_onboarding">/add-fingerprint-onboarding</string>

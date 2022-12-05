@@ -1,9 +1,11 @@
 package com.tokopedia.people.views.uimodel.mapper
 
-import com.tokopedia.feedcomponent.data.pojo.whitelist.Author
-import com.tokopedia.feedcomponent.data.pojo.whitelist.WhitelistQuery
+import com.tokopedia.content.common.model.GetCheckWhitelistResponse
+import com.tokopedia.content.common.types.ContentCommonUserType
 import com.tokopedia.feedcomponent.people.model.MutationUiModel
-import com.tokopedia.people.model.*
+import com.tokopedia.people.model.ProfileHeaderBase
+import com.tokopedia.people.model.UserProfileIsFollow
+import com.tokopedia.people.model.VideoPostReimderModel
 import com.tokopedia.people.views.uimodel.profile.*
 import javax.inject.Inject
 
@@ -36,8 +38,8 @@ class UserProfileUiMapperImpl @Inject constructor() : UserProfileUiMapper {
                 channelLink = LinkUiModel(
                     webLink = response.profileHeader.profile.liveplaychannel.liveplaychannellink.weblink,
                     appLink = response.profileHeader.profile.liveplaychannel.liveplaychannellink.applink,
-                )
-            )
+                ),
+            ),
         )
     }
 
@@ -49,8 +51,8 @@ class UserProfileUiMapperImpl @Inject constructor() : UserProfileUiMapper {
         )
     }
 
-    override fun mapUserWhitelist(response: WhitelistQuery): ProfileWhitelistUiModel {
-        val authorUgc = response.whitelist.authors.find { it.type == Author.TYPE_USER }
+    override fun mapUserWhitelist(response: GetCheckWhitelistResponse): ProfileWhitelistUiModel {
+        val authorUgc = response.whitelist.authors.find { it.type == ContentCommonUserType.TYPE_USER }
 
         return ProfileWhitelistUiModel(
             isWhitelist = authorUgc != null,
@@ -61,7 +63,7 @@ class UserProfileUiMapperImpl @Inject constructor() : UserProfileUiMapper {
 
     override fun mapUpdateReminder(response: VideoPostReimderModel): MutationUiModel {
         return with(response.playToggleChannelReminder) {
-            if(header.status == SUCCESS_UPDATE_REMINDER_CODE) MutationUiModel.Success(header.message)
+            if (header.status == SUCCESS_UPDATE_REMINDER_CODE) MutationUiModel.Success(header.message)
             else MutationUiModel.Error(header.message)
         }
     }

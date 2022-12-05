@@ -40,6 +40,7 @@ import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Compa
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.EMBED_CATEGORY
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.PIN_PRODUCT
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.PRODUCT_ID
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.QUERY_PARENT
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.RECOM_PRODUCT_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.SHOP_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.SOURCE
@@ -382,7 +383,8 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
                 TARGET_TITLE_ID to intentUri.getQueryParameter(TARGET_TITLE_ID),
                 CAMPAIGN_ID to intentUri.getQueryParameter(CAMPAIGN_ID),
                 VARIANT_ID to intentUri.getQueryParameter(VARIANT_ID),
-                SHOP_ID to intentUri.getQueryParameter(SHOP_ID)
+                SHOP_ID to intentUri.getQueryParameter(SHOP_ID),
+                QUERY_PARENT to intentUri.query
                 )
     }
 
@@ -410,7 +412,8 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
                 TARGET_TITLE_ID to bundle?.getString(TARGET_TITLE_ID,""),
                 CAMPAIGN_ID to bundle?.getString(CAMPAIGN_ID,""),
                 VARIANT_ID to bundle?.getString(VARIANT_ID,""),
-                SHOP_ID to bundle?.getString(SHOP_ID,"")
+                SHOP_ID to bundle?.getString(SHOP_ID,""),
+                QUERY_PARENT to bundle?.getString(QUERY_PARENT,"")
         )
     }
 
