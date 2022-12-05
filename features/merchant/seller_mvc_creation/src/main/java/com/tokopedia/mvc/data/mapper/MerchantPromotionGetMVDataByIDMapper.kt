@@ -2,12 +2,18 @@ package com.tokopedia.mvc.data.mapper
 
 import com.tokopedia.mvc.data.response.MerchantPromotionGetMVDataByIDResponse
 import com.tokopedia.mvc.domain.entity.VoucherDetailData
+import com.tokopedia.mvc.domain.entity.enums.BenefitType
 import com.tokopedia.mvc.domain.entity.enums.PromoType
 import com.tokopedia.mvc.domain.entity.enums.VoucherStatus
 import com.tokopedia.mvc.domain.entity.enums.VoucherTargetBuyer
+import com.tokopedia.mvc.util.constant.DiscountTypeConstant
 import javax.inject.Inject
 
 class MerchantPromotionGetMVDataByIDMapper @Inject constructor() {
+
+    companion object {
+        private const val TRUE = 1
+    }
 
     fun map(response: MerchantPromotionGetMVDataByIDResponse): VoucherDetailData {
         return with(response.merchantPromotionGetMVDataByID.data) {
@@ -22,7 +28,7 @@ class MerchantPromotionGetMVDataByIDMapper @Inject constructor() {
                 voucherImagePortrait,
                 VoucherStatus.values().firstOrNull { value -> value.type == voucherStatus }
                     ?: VoucherStatus.PROCESSING,
-                voucherDiscountType,
+                voucherDiscountType.toBenefitType(),
                 voucherDiscountAmount,
                 voucherDiscountAmountMax,
                 voucherDiscountAmountMin,
@@ -50,7 +56,7 @@ class MerchantPromotionGetMVDataByIDMapper @Inject constructor() {
                 VoucherTargetBuyer.values().firstOrNull { value -> value.type == targetBuyer }
                     ?: VoucherTargetBuyer.ALL_BUYER,
                 minimumTierLevel,
-                isLockToProduct,
+                isLockToProduct == TRUE,
                 isVps,
                 packageName,
                 vpsUniqueId,
@@ -77,6 +83,14 @@ class MerchantPromotionGetMVDataByIDMapper @Inject constructor() {
                 it.parentProductId,
                 it.chilProductId
             )
+        }
+    }
+
+    private fun Int.toBenefitType(): BenefitType {
+        return when (this) {
+            DiscountTypeConstant.NOMINAL -> BenefitType.NOMINAL
+            DiscountTypeConstant.PERCENTAGE -> BenefitType.PERCENTAGE
+            else -> BenefitType.NOMINAL
         }
     }
 }

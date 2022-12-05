@@ -22,8 +22,8 @@
     <string name="smvc_change_location">Ganti lokasi?</string>
     <string name="smvc_confirm_change_location">Ganti Lokasi</string>
     <string name="smvc_change_location_description">Produk yang sudah kamu pilih akan tereset jika kamu ganti lokasi</string>
-    <string name="smvc_empty_state_no_product_title">Oops, produk nggak ditemukan</string>
-    <string name="smvc_empty_state_no_product_description">Coba gunakan kata kunci lain atau filter yang berbeda, ya.</string>
+    <string name="smvc_empty_state_search_result_title">Oops, produk nggak ditemukan</string>
+    <string name="smvc_empty_state_search_result_description">Coba gunakan kata kunci lain atau filter yang berbeda, ya.</string>
     <string name="smvc_no_showcase">Tokomu belum punya etalase</string>
     <string name="smvc_no_showcase_description">Etalase yang tampil di sini adalah etalase yang dibuat sendiri.</string>
 
@@ -63,6 +63,9 @@
     <string name="smvc_delete_variant">Hapus Varian?</string>
     <string name="smvc_proceed_delete">Ya, Hapus</string>
     <string name="smvc_update_product">Ubah Produk</string>
+    <string name="smvc_variant_list">Daftar Varian</string>
+    <string name="smvc_empty_state_no_product_title">Oops, kamu tidak punya produk</string>
+    <string name="smvc_empty_state_no_product_description">Buat produk pertamamu dulu di halaman Tambah Produk, ya.</string>
 
     <!--Voucher List-->
     <string name="smvc_voucherlist_page_title">Daftar Kupon</string>

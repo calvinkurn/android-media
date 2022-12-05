@@ -47,6 +47,10 @@ class VoucherDetailViewModel @Inject constructor(
     val openDownloadVoucherImageBottomSheet: LiveData<VoucherDetailData>
         get() = _openDownloadVoucherImageBottomSheet
 
+    private val _redirectToProductListPage = MutableLiveData<VoucherDetailData>()
+    val redirectToProductListPage: LiveData<VoucherDetailData>
+        get() = _redirectToProductListPage
+
     fun getVoucherDetail(voucherId: Long) {
         launchCatchError(
             dispatchers.io,
@@ -133,6 +137,11 @@ class VoucherDetailViewModel @Inject constructor(
     fun onTapDownloadVoucherImage() {
         val voucherDetail = _voucherDetail.value?.unwrapOrNull() ?: return
         _openDownloadVoucherImageBottomSheet.value = voucherDetail
+    }
+
+    fun onTapViewAllProductCta() {
+        val voucherDetail = _voucherDetail.value?.unwrapOrNull() ?: return
+        _redirectToProductListPage.value = voucherDetail
     }
 
 
