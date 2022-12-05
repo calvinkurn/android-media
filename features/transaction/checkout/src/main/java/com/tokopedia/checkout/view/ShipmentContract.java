@@ -263,7 +263,7 @@ public interface ShipmentContract {
 
     interface Presenter extends CustomerPresenter<View> {
 
-        PublishSubject<Boolean> getTemporaryEmitter();
+        PublishSubject<Boolean> getLogisticDonePublisher();
 
         void processInitialLoadCheckoutPage(boolean isReloadData, boolean isOneClickShipment,
                                             boolean isTradeIn, boolean skipUpdateOnboardingState,

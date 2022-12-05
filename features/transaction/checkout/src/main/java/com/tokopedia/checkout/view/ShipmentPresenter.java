@@ -233,13 +233,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private LastApplyUiModel lastApplyData;
     private UploadPrescriptionUiModel uploadPrescriptionUiModel;
 
-    private PublishSubject<ShipmentGetCourierHolderData> publisher = null;
-    private PublishSubject<Boolean> temporaryEmitter = null;
-
-    @Override
-    public PublishSubject<Boolean> getTemporaryEmitter() {
-        return temporaryEmitter;
-    }
+    private PublishSubject<ShipmentGetCourierHolderData> ratesPublisher = null;
+    private PublishSubject<Boolean> logisticDonePublisher = null;
 
     @Inject
     public ShipmentPresenter(CompositeSubscription compositeSubscription,
@@ -305,6 +300,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         if (eligibleForAddressUseCase != null) {
             eligibleForAddressUseCase.cancelJobs();
         }
+        ratesPublisher = null;
+        logisticDonePublisher = null;
     }
 
     @Override
@@ -1307,7 +1304,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                 @Override
                                 public void onCompleted() {
                                     Log.i("qwertyuiop", "complete validate");
-                                    temporaryEmitter.onCompleted();
+                                    if (logisticDonePublisher != null) {
+                                        logisticDonePublisher.onCompleted();
+                                    }
                                 }
 
                                 @Override
@@ -2251,22 +2250,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         RatesParam param = ratesParamBuilder.build();
 
         Observable<ShippingRecommendationData> observable;
-//        ShipmentGetCourierHolderData holderData = new ShipmentGetCourierHolderData(
-//                shipperId,
-//                spId,
-//                itemPosition,
-//                shipmentDetailData,
-//                shipmentCartItemModel,
-//                shopShipmentList,
-//                isInitialLoad,
-//                products,
-//                cartString,
-//                isTradeInDropOff,
-//                recipientAddressModel,
-//                isForceReload,
-//                skipMvc,
-//                param
-//        );
         if (isTradeInDropOff) {
             observable = ratesApiUseCase.execute(param);
             compositeSubscription.add(
@@ -2282,30 +2265,30 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                     ))
             );
         } else {
-            if (publisher == null) {
-                temporaryEmitter = PublishSubject.create();
-                publisher = PublishSubject.create();
-//                compositeSubscription.add(
-                publisher
-                        .concatMap(shipmentGetCourierHolderData -> {
-                            Log.i("qwertyuiop", "concat");
-                            ratesUseCase.execute(shipmentGetCourierHolderData.getRatesParam())
-                                    .map(shippingRecommendationData ->
-                                            stateConverter.fillState(shippingRecommendationData, shipmentGetCourierHolderData.getShopShipmentList(),
-                                                    shipmentGetCourierHolderData.getSpId(), 0)
-                                    ).subscribe(
-                                            new GetCourierRecommendationSubscriber(
-                                                    getView(), this, shipmentGetCourierHolderData.getShipperId(), shipmentGetCourierHolderData.getSpId(), shipmentGetCourierHolderData.getItemPosition(),
-                                                    shippingCourierConverter, shipmentGetCourierHolderData.getShipmentCartItemModel(),
-                                                    shipmentGetCourierHolderData.isInitialLoad(), shipmentGetCourierHolderData.isTradeInDropOff(), shipmentGetCourierHolderData.isForceReload(), isBoUnstackEnabled,
-                                                    temporaryEmitter
-                                            ));
-                            return temporaryEmitter;
-                        })
-                        .subscribe();
-//                );
+            if (ratesPublisher == null) {
+                logisticDonePublisher = PublishSubject.create();
+                ratesPublisher = PublishSubject.create();
+                compositeSubscription.add(
+                        ratesPublisher
+                                .concatMap(shipmentGetCourierHolderData -> {
+                                    Log.i("qwertyuiop", "concat");
+                                    ratesUseCase.execute(shipmentGetCourierHolderData.getRatesParam())
+                                            .map(shippingRecommendationData ->
+                                                    stateConverter.fillState(shippingRecommendationData, shipmentGetCourierHolderData.getShopShipmentList(),
+                                                            shipmentGetCourierHolderData.getSpId(), 0)
+                                            ).subscribe(
+                                                    new GetCourierRecommendationSubscriber(
+                                                            getView(), this, shipmentGetCourierHolderData.getShipperId(), shipmentGetCourierHolderData.getSpId(), shipmentGetCourierHolderData.getItemPosition(),
+                                                            shippingCourierConverter, shipmentGetCourierHolderData.getShipmentCartItemModel(),
+                                                            shipmentGetCourierHolderData.isInitialLoad(), shipmentGetCourierHolderData.isTradeInDropOff(), shipmentGetCourierHolderData.isForceReload(), isBoUnstackEnabled,
+                                                            logisticDonePublisher
+                                                    ));
+                                    return logisticDonePublisher;
+                                })
+                                .subscribe()
+                );
             }
-            publisher.onNext(new ShipmentGetCourierHolderData(
+            ratesPublisher.onNext(new ShipmentGetCourierHolderData(
                     shipperId,
                     spId,
                     itemPosition,
@@ -2321,7 +2304,6 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                     skipMvc,
                     param
             ));
-//            observable = ratesUseCase.execute(param);
         }
     }
 
@@ -2872,5 +2854,10 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 clearCacheAutoApplyStackUseCase.createObservable(RequestParams.create()).subscribe();
             }
         }
+    }
+
+    @Override
+    public PublishSubject<Boolean> getLogisticDonePublisher() {
+        return logisticDonePublisher;
     }
 }

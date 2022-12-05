@@ -25,7 +25,7 @@ class GetCourierRecommendationSubscriber(
     private val isTradeInDropOff: Boolean,
     private val isForceReloadRates: Boolean,
     private val isBoUnstackEnabled: Boolean,
-    private val temporaryEmitter: PublishSubject<Boolean>?
+    private val logisticDonePublisher: PublishSubject<Boolean>?
 ) : Subscriber<ShippingRecommendationData?>() {
 
     override fun onCompleted() {
@@ -41,7 +41,7 @@ class GetCourierRecommendationSubscriber(
             view.updateCourierBottomsheetHasNoData(itemPosition, shipmentCartItemModel)
         }
         view.logOnErrorLoadCourier(e, itemPosition)
-        temporaryEmitter?.onCompleted()
+        logisticDonePublisher?.onCompleted()
     }
 
     override fun onNext(shippingRecommendationData: ShippingRecommendationData?) {
@@ -70,6 +70,7 @@ class GetCourierRecommendationSubscriber(
                                                     shippingCourierUiModel.productData.error?.errorMessage
                                                 ), itemPosition
                                             )
+                                            logisticDonePublisher?.onCompleted()
                                             return
                                         } else {
                                             shippingCourierUiModel.isSelected = true
@@ -120,6 +121,7 @@ class GetCourierRecommendationSubscriber(
                                             ),
                                             itemPosition
                                         )
+                                        logisticDonePublisher?.onCompleted()
                                         return
                                     } else {
                                         val courierItemData = generateCourierItemData(
@@ -135,6 +137,7 @@ class GetCourierRecommendationSubscriber(
                                                 MessageErrorException("rates ui hidden but no promo"),
                                                 itemPosition
                                             )
+                                            logisticDonePublisher?.onCompleted()
                                             return
                                         }
                                         shippingCourierUiModel.isSelected = true
@@ -193,7 +196,7 @@ class GetCourierRecommendationSubscriber(
                                 shipmentCartItemModel,
                                 shippingRecommendationData.preOrderModel
                             )
-                            temporaryEmitter?.onCompleted()
+                            logisticDonePublisher?.onCompleted()
                             return
                         }
                     }
@@ -201,7 +204,7 @@ class GetCourierRecommendationSubscriber(
             }
             view.updateCourierBottomsheetHasNoData(itemPosition, shipmentCartItemModel)
         }
-        temporaryEmitter?.onCompleted()
+        logisticDonePublisher?.onCompleted()
     }
 
     private fun generateCourierItemData(
