@@ -1,5 +1,6 @@
 package com.tokopedia.checkout.data.model.response.shipmentaddressform
 
+import android.annotation.SuppressLint
 import com.google.gson.annotations.SerializedName
 
 data class BundleDetail(
@@ -18,11 +19,11 @@ data class BundleDetail(
         @SerializedName("bundle_name")
         val bundleName: String = "",
         @SerializedName("bundle_original_price")
-        val bundleOriginalPrice: Long = 0,
+        val bundleOriginalPrice: Double = 0.0,
         @SerializedName("bundle_original_price_fmt")
         val bundleOriginalPriceFmt: String = "",
         @SerializedName("bundle_price")
-        val bundlePrice: Long = 0,
+        val bundlePrice: Double = 0.0,
         @SerializedName("bundle_price_fmt")
         val bundlePriceFmt: String = "",
         @SerializedName("bundle_qty")

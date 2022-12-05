@@ -19,12 +19,13 @@ data class Product(
         val productName: String = "",
         @SerializedName("product_price_fmt")
         val productPriceFmt: String = "",
+        @SuppressLint("Invalid Data Type")
         @SerializedName("product_price")
         val productPrice: Long = 0,
         @SerializedName("product_original_price")
-        val productOriginalPrice: Long = 0,
+        val productOriginalPrice: Double = 0.0,
         @SerializedName("product_wholesale_price")
-        val productWholesalePrice: Long = 0,
+        val productWholesalePrice: Double = 0.0,
         @SerializedName("product_wholesale_price_fmt")
         val productWholesalePriceFmt: String = "",
         @SerializedName("product_weight_fmt")
