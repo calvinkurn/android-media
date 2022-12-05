@@ -68,7 +68,6 @@ object ProductDetailTestUtil {
             p2UiData.shopRating = shopRating.ratingScore
             p2UiData.productView = productView
             p2UiData.wishlistCount = wishlistCount
-            p2UiData.isGoApotik = shopFeature.isGoApotik
             p2UiData.shopBadge = shopBadge.badge
             p2UiData.shopCommitment = shopCommitment.shopCommitment
             p2UiData.productPurchaseProtectionInfo = productPurchaseProtectionInfo
@@ -89,6 +88,7 @@ object ProductDetailTestUtil {
             p2UiData.rating = rating
             p2UiData.ticker = ticker
             p2UiData.shopFinishRate = responseData.shopFinishRate.finishRate
+            p2UiData.arInfo = arInfo
         }
         return p2UiData
     }

@@ -28,6 +28,7 @@ import com.tokopedia.play.view.fragment.PlayBottomSheetFragment
 import com.tokopedia.play.view.fragment.PlayFragment
 import com.tokopedia.play.view.fragment.PlayUserInteractionFragment
 import com.tokopedia.play.view.fragment.PlayVideoFragment
+import com.tokopedia.play.view.storage.PagingChannel
 import com.tokopedia.play.view.storage.PlayChannelData
 import com.tokopedia.play.view.storage.PlayChannelStateStorage
 import com.tokopedia.play.view.type.*
@@ -45,6 +46,7 @@ import com.tokopedia.play_common.model.mapper.PlayInteractiveLeaderboardMapper
 import com.tokopedia.play_common.model.mapper.PlayInteractiveMapper
 import com.tokopedia.play_common.model.result.ResultState
 import com.tokopedia.play_common.transformer.DefaultHtmlTextTransformer
+import com.tokopedia.play_common.websocket.PlayWebSocket
 import com.tokopedia.test.application.annotations.UiTest
 import com.tokopedia.test.application.id_generator.FileWriter
 import com.tokopedia.test.application.id_generator.PrintCondition
@@ -76,6 +78,8 @@ class PlayViewerIdGenerator {
     private val repo: PlayViewerRepository = mockk(relaxed = true)
 
     private val decodeHtml = DefaultHtmlTextTransformer()
+
+    private val socket: PlayWebSocket = mockk(relaxed = true)
 
     private val mapper = PlayUiModelMapper(
         productTagMapper = PlayProductTagUiMapper(),
@@ -140,6 +144,7 @@ class PlayViewerIdGenerator {
                     mockk(relaxed = true),
                     mockk(relaxed = true),
                     mockk(relaxed = true),
+                    mockk(relaxed = true),
                 )
             },
             PlayUserInteractionFragment::class.java to {
@@ -152,7 +157,8 @@ class PlayViewerIdGenerator {
                     castAnalyticHelper = mockk(relaxed = true),
                     performanceClassConfig = mockk(relaxed = true),
                     newAnalytic = mockk(relaxed = true),
-                    analyticManagerFactory = mockk(relaxed = true),
+                    analyticManager = mockk(relaxed = true),
+                    router = mockk(relaxed = true),
                 )
             },
             PlayBottomSheetFragment::class.java to {
@@ -160,6 +166,7 @@ class PlayViewerIdGenerator {
                     viewModelFactory = mockViewModelFactory,
                     analytic = mockk(relaxed = true),
                     newAnalytic = mockk(relaxed = true),
+                    router = mockk(relaxed = true),
                 )
             },
             PlayVideoFragment::class.java to {
@@ -169,6 +176,7 @@ class PlayViewerIdGenerator {
                     analytic = mockk(relaxed = true),
                     pipSessionStorage = mockk(relaxed = true),
                     playLog = mockk(relaxed = true),
+                    router = mockk(relaxed = true),
                 )
             }
         )
@@ -241,9 +249,9 @@ class PlayViewerIdGenerator {
             resultState = ResultState.Success,
         )
 
-        coEvery { repo.getTagItem(any(), any()) } returns tagItem
-        coEvery { repo.getChannelList(any(), any()) } returns PlayViewerChannelRepository.ChannelListResponse(
-            channelData = listOf(
+        coEvery { repo.getTagItem(any(), any(), any()) } returns tagItem
+        coEvery { repo.getChannels(any(), any()) } returns PagingChannel(
+            channelList = listOf(
                 uiModelBuilder.buildChannelData(
                     id = "12669",
                     partnerInfo = PlayPartnerInfo(name = "test"),
@@ -273,7 +281,7 @@ class PlayViewerIdGenerator {
             DaggerPlayTestComponent.builder()
                 .playTestModule(PlayTestModule(targetContext))
                 .baseAppComponent((targetContext.applicationContext as BaseMainApplication).baseAppComponent)
-                .playTestRepositoryModule(PlayTestRepositoryModule(repo))
+                .playTestRepositoryModule(PlayTestRepositoryModule(repo, webSocket = socket))
                 .build()
         )
 
@@ -323,8 +331,8 @@ class PlayViewerIdGenerator {
 
     @Test
     fun youTubePlayer() {
-        coEvery { repo.getChannelList(any(), any()) } returns PlayViewerChannelRepository.ChannelListResponse(
-            channelData = listOf(
+        coEvery { repo.getChannels(any(), any()) } returns PagingChannel(
+            channelList = listOf(
                 PlayChannelData(
                     id = "12680",
                     channelDetail = PlayChannelDetailUiModel(),
@@ -354,7 +362,7 @@ class PlayViewerIdGenerator {
             DaggerPlayTestComponent.builder()
                 .playTestModule(PlayTestModule(targetContext))
                 .baseAppComponent((targetContext.applicationContext as BaseMainApplication).baseAppComponent)
-                .playTestRepositoryModule(PlayTestRepositoryModule(repo))
+                .playTestRepositoryModule(PlayTestRepositoryModule(repo, socket))
                 .build()
         )
 

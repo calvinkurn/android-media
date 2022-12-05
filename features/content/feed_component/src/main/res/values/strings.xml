@@ -126,6 +126,7 @@
 
     <!--Follow Functionalities ASSETS-->
     <string name="feed_component_unfollow_success_toast">Berhasil berhenti mengikuti toko ini</string>
+    <string name="feed_component_follow_success_toast">Berhasil mengikuti toko ini</string>
     <string name="feed_component_unfollow_fail_toast">Oops, gagal meng-unfollow.</string>
     <string name="feed_component_follow_fail_toast">Oops, gagal mem-follow.</string>
     <string name="feed_header_separator" formatted="false"><![CDATA["<font color='#31353B'><b> · </b></font> ]]></string>
@@ -213,6 +214,7 @@
     <string name="feed_asgc_reminder_activate_rs_message" tools:ignore="UnusedResources">Yay, kamu akan diingatkan sebelum Rilisan Spesial dimulai.</string>
     <string name="feed_asgc_reminder_deactivate_message" tools:ignore="UnusedResources">Pengingat telah dibatalkan.</string>
 
+    <string name="feed_fab_create_live">Buat Live</string>
     <string name="feed_fab_create_content">Buat Konten</string>
     <string name="feed_fab_create_post">Buat Post</string>
 
@@ -239,6 +241,8 @@
 
     <!--Follow Bottom Sheet-->
     <string name="feed_follow_bottom_sheet_success_toaster_text" tools:ignore="UnusedResources">Kamu berhasil follow toko. Yuk, buruan beli produknya sebelum kehabisan!</string>
+    <string name="feed_follow_ugc_success_toaster_text" tools:ignore="UnusedResources">Berhasil mengikuti akun ini</string>
+    <string name="feed_unfollow_ugc_success_toaster_text" tools:ignore="UnusedResources">Berhasil berhenti mengikuti akun ini</string>
     <string name="feed_asgc_campaign_cta_copywriting_text">Eksklusif untuk Follower Toko</string>
     <string name="feed_follow_bottom_sheet_button_text">Follow</string>
     <string name="feed_follow_bottom_sheet_title_text">Follow toko ini dulu, yuk!</string>

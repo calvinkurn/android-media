@@ -2,7 +2,6 @@ package com.tokopedia.play.cast
 
 import android.content.Context
 import android.content.Intent
-import com.google.android.gms.cast.framework.CastContext
 import com.google.android.gms.cast.framework.media.MediaIntentReceiver
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
@@ -10,7 +9,7 @@ import com.tokopedia.play.util.PlayCastHelper
 import java.lang.Exception
 
 class PlayCastMediaIntentReceiver: MediaIntentReceiver() {
-    override fun onReceiveOtherAction(context: Context?, actionName: String?, data: Intent?) {
+    override fun onReceiveOtherAction(context: Context?, actionName: String, data: Intent) {
         super.onReceiveOtherAction(context, actionName, data)
         context?.let {
             if(actionName == PlayCastNotificationAction.ACTION_OPEN_PLAY) {

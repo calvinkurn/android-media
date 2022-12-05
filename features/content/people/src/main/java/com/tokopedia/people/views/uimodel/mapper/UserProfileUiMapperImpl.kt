@@ -1,9 +1,17 @@
 package com.tokopedia.people.views.uimodel.mapper
 
-import com.tokopedia.feedcomponent.data.pojo.whitelist.Author
-import com.tokopedia.feedcomponent.data.pojo.whitelist.WhitelistQuery
+import com.tokopedia.feedcomponent.domain.model.UserFeedPostsModel
+import com.tokopedia.content.common.model.GetCheckWhitelistResponse
+import com.tokopedia.content.common.types.ContentCommonUserType
 import com.tokopedia.feedcomponent.people.model.MutationUiModel
 import com.tokopedia.people.model.*
+import com.tokopedia.people.views.uimodel.content.MediaUiModel
+import com.tokopedia.people.views.uimodel.content.PaginationUiModel
+import com.tokopedia.people.views.uimodel.content.PostUiModel
+import com.tokopedia.people.views.uimodel.content.UserFeedPostsUiModel
+import com.tokopedia.people.model.ProfileHeaderBase
+import com.tokopedia.people.model.UserProfileIsFollow
+import com.tokopedia.people.model.VideoPostReimderModel
 import com.tokopedia.people.views.uimodel.profile.*
 import javax.inject.Inject
 
@@ -36,8 +44,8 @@ class UserProfileUiMapperImpl @Inject constructor() : UserProfileUiMapper {
                 channelLink = LinkUiModel(
                     webLink = response.profileHeader.profile.liveplaychannel.liveplaychannellink.weblink,
                     appLink = response.profileHeader.profile.liveplaychannel.liveplaychannellink.applink,
-                )
-            )
+                ),
+            ),
         )
     }
 
@@ -49,8 +57,8 @@ class UserProfileUiMapperImpl @Inject constructor() : UserProfileUiMapper {
         )
     }
 
-    override fun mapUserWhitelist(response: WhitelistQuery): ProfileWhitelistUiModel {
-        val authorUgc = response.whitelist.authors.find { it.type == Author.TYPE_USER }
+    override fun mapUserWhitelist(response: GetCheckWhitelistResponse): ProfileWhitelistUiModel {
+        val authorUgc = response.whitelist.authors.find { it.type == ContentCommonUserType.TYPE_USER }
 
         return ProfileWhitelistUiModel(
             isWhitelist = authorUgc != null,
@@ -61,12 +69,67 @@ class UserProfileUiMapperImpl @Inject constructor() : UserProfileUiMapper {
 
     override fun mapUpdateReminder(response: VideoPostReimderModel): MutationUiModel {
         return with(response.playToggleChannelReminder) {
-            if(header.status == SUCCESS_UPDATE_REMINDER_CODE) MutationUiModel.Success(header.message)
-            else MutationUiModel.Error(header.message)
+            if (header.status == SUCCESS_UPDATE_REMINDER_CODE) {
+                MutationUiModel.Success(header.message)
+            } else {
+                MutationUiModel.Error(header.message)
+            }
+        }
+    }
+
+    override fun mapProfileTab(response: UserProfileTabModel): ProfileTabUiModel {
+        return with(response.feedXProfileTabs) {
+            val expectedTabs = tabs.filter {
+                it.isActive && (it.key == TAB_KEY_FEEDS || it.key == TAB_KEY_VIDEO)
+            }
+            ProfileTabUiModel(
+                showTabs = expectedTabs.size > 1,
+                tabs = if (expectedTabs.isNotEmpty()) {
+                    expectedTabs.map {
+                        ProfileTabUiModel.Tab(
+                            title = it.title,
+                            key = it.key,
+                            position = it.position,
+                        )
+                    }.sortedBy { it.position }
+                } else {
+                    emptyList()
+                },
+            )
+        }
+    }
+
+    override fun mapFeedPosts(response: UserFeedPostsModel): UserFeedPostsUiModel {
+        return with(response.feedXProfileGetProfilePosts) {
+            UserFeedPostsUiModel(
+                pagination = PaginationUiModel(
+                    cursor = pagination.cursor,
+                    hasNext = pagination.hasNext,
+                    totalData = pagination.totalData,
+                ),
+                posts = posts.map { post ->
+                    PostUiModel(
+                        id = post.id,
+                        appLink = post.appLink,
+                        media = post.media.map { media ->
+                            MediaUiModel(
+                                appLink = media.appLink,
+                                coverURL = media.coverURL,
+                                id = media.id,
+                                mediaURL = media.mediaURL,
+                                type = media.type,
+                                webLink = media.webLink,
+                            )
+                        }
+                    )
+                }
+            )
         }
     }
 
     companion object {
+        private const val TAB_KEY_FEEDS = "feeds"
+        private const val TAB_KEY_VIDEO = "video"
         private const val SUCCESS_UPDATE_REMINDER_CODE = 200
         private const val SUCCESS_UNFOLLOW_CODE = "1"
     }

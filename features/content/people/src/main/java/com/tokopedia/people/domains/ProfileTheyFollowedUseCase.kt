@@ -10,7 +10,7 @@ import javax.inject.Inject
 
 @GqlQuery(ProfileTheyFollowedUseCase.QUERY_NAME, ProfileTheyFollowedUseCase.QUERY)
 class ProfileTheyFollowedUseCase @Inject constructor(
-    graphqlRepository: GraphqlRepository
+    graphqlRepository: GraphqlRepository,
 ) : GraphqlUseCase<UserProfileIsFollow>(graphqlRepository) {
 
     init {
@@ -21,7 +21,7 @@ class ProfileTheyFollowedUseCase @Inject constructor(
 
     suspend fun executeOnBackground(profileIds: List<String>): UserProfileIsFollow {
         val request = mapOf(
-            KEY_USER_IDS to profileIds
+            KEY_USER_IDS to profileIds,
         )
         setRequestParams(request)
 

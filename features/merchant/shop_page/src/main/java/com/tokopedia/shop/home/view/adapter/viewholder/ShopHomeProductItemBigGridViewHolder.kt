@@ -1,9 +1,7 @@
 package com.tokopedia.shop.home.view.adapter.viewholder
 
 import android.view.View
-
 import androidx.annotation.LayoutRes
-
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
 import com.tokopedia.kotlin.extensions.view.ViewHintListener
 import com.tokopedia.productcard.ATCNonVariantListener
@@ -23,9 +21,9 @@ import com.tokopedia.utils.view.binding.viewBinding
  */
 
 open class ShopHomeProductItemBigGridViewHolder(
-        itemView: View,
-        private val shopHomeEndlessProductListener: ShopHomeEndlessProductListener?,
-        private val isShowTripleDot: Boolean
+    itemView: View,
+    private val shopHomeEndlessProductListener: ShopHomeEndlessProductListener?,
+    private val isShowTripleDot: Boolean
 ) : AbstractViewHolder<ShopHomeProductUiModel>(itemView) {
     private var productCard: ProductCardGridView? = null
     private val viewBinding: ItemShopHomeProductCardBigGridBinding? by viewBinding()
@@ -59,26 +57,29 @@ open class ShopHomeProductItemBigGridViewHolder(
     protected open fun setListener(productCardModel: ProductCardModel) {
         productCard?.setOnClickListener {
             shopHomeEndlessProductListener?.onAllProductItemClicked(
-                    adapterPosition,
-                    shopHomeProductViewModel
+                adapterPosition,
+                shopHomeProductViewModel
             )
         }
         shopHomeProductViewModel?.let { shopHomeProductViewModel ->
-            productCard?.setImageProductViewHintListener(shopHomeProductViewModel, object : ViewHintListener {
-                override fun onViewHint() {
-                    shopHomeEndlessProductListener?.onAllProductItemImpression(
+            productCard?.setImageProductViewHintListener(
+                shopHomeProductViewModel,
+                object : ViewHintListener {
+                    override fun onViewHint() {
+                        shopHomeEndlessProductListener?.onAllProductItemImpression(
                             adapterPosition,
                             shopHomeProductViewModel
-                    )
-                    if (productCardModel.isButtonAtcShown()) {
-                        shopHomeEndlessProductListener?.onImpressionProductAtc(
-                            shopHomeProductViewModel,
-                            adapterPosition,
-                            ShopPageConstant.ShopProductCardAtc.CARD_HOME
                         )
+                        if (productCardModel.isButtonAtcShown()) {
+                            shopHomeEndlessProductListener?.onImpressionProductAtc(
+                                shopHomeProductViewModel,
+                                adapterPosition,
+                                ShopPageConstant.ShopProductCardAtc.CARD_HOME
+                            )
+                        }
                     }
                 }
-            })
+            )
 
             productCard?.setAddToCartNonVariantClickListener(object : ATCNonVariantListener {
                 override fun onQuantityChanged(quantity: Int) {
@@ -103,8 +104,6 @@ open class ShopHomeProductItemBigGridViewHolder(
                     ShopPageConstant.ShopProductCardAtc.CARD_HOME
                 )
             }
-
-
         }
 
         productCard?.setThreeDotsOnClickListener {
