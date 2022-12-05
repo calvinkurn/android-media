@@ -29,7 +29,9 @@ class GetVoucherListMapper @Inject constructor() {
                 imageSquare = it.imageSquare,
                 imagePortrait = it.imagePortrait,
                 status = VoucherStatus.values().firstOrNull {
-                        value -> value.type == it.voucherStatus } ?: VoucherStatus.PROCESSING,
+                        value ->
+                    value.type == it.voucherStatus
+                } ?: VoucherStatus.PROCESSING,
                 discountUsingPercent = it.discountTypeFormatted == DISCOUNT_TYPE_PERCENT,
                 discountAmt = it.discountAmt,
                 discountAmtFormatted = it.discountAmtFormatted,
@@ -51,8 +53,10 @@ class GetVoucherListMapper @Inject constructor() {
                 isSubsidy = it.isSubsidy == VALUE_ACTIVE,
                 tnc = it.tnc,
                 targetBuyer = VoucherTargetBuyer.values().firstOrNull {
-                        value -> value.type == it.targetBuyer } ?: VoucherTargetBuyer.ALL_BUYER
+                        value ->
+                    value.type == it.targetBuyer
+                } ?: VoucherTargetBuyer.ALL_BUYER,
+                discountTypeFormatted = it.discountTypeFormatted
             )
         }
-
 }

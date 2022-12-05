@@ -34,7 +34,8 @@ data class Voucher(
     val packageName: String = "",
     val isSubsidy: Boolean = false,
     val tnc: String = "",
-    val targetBuyer: VoucherTargetBuyer = VoucherTargetBuyer.ALL_BUYER
+    val targetBuyer: VoucherTargetBuyer = VoucherTargetBuyer.ALL_BUYER,
+    val discountTypeFormatted: String = ""
 ) {
     fun isOngoingPromo() = status == VoucherStatus.ONGOING
     fun isUpComingPromo() = status == VoucherStatus.NOT_STARTED

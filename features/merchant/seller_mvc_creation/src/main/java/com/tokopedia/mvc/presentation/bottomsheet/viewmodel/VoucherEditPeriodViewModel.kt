@@ -7,6 +7,8 @@ import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.toFormattedString
+import com.tokopedia.mvc.domain.entity.Voucher
+import com.tokopedia.mvc.domain.usecase.ChangeVoucherPeriodUseCase
 import com.tokopedia.mvc.domain.usecase.GetTokenUseCase
 import java.util.*
 import javax.inject.Inject
@@ -14,6 +16,7 @@ import javax.inject.Inject
 class VoucherEditPeriodViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     private val getTokenUseCase: GetTokenUseCase,
+    private val changeVoucherPeriodUseCase: ChangeVoucherPeriodUseCase
 ) : BaseViewModel(dispatchers.main) {
 
     companion object {
@@ -60,18 +63,30 @@ class VoucherEditPeriodViewModel @Inject constructor(
         _hourEndLiveData.value = endDate?.time?.toFormattedString(HOUR_FORMAT)
     }
 
-    fun validateDateAndTime() {
-        _dateStartLiveData.value.let { dateStart ->
-            _dateEndLiveData.value.let { dateEnd ->
-                _hourStartLiveData.value.let { hourStart ->
-                    _hourEndLiveData.value.let { hourEnd ->
-                        launchCatchError(dispatchers.io,{
-                            val token = getTokenUseCase.executeOnBackground()
-                            Log.d("FATAL", "validateDateAndTime: $token")
-                            Log.d("FATAL", "validateDateAndTime: $dateStart $dateEnd $hourStart $hourEnd")
-                        },{
-
-                        })
+    fun validateAndUpdateDateTime(voucher: Voucher?) {
+        _dateStartLiveData.value?.let { dateStart ->
+            _dateEndLiveData.value?.let { dateEnd ->
+                _hourStartLiveData.value?.let { hourStart ->
+                    _hourEndLiveData.value?.let { hourEnd ->
+                        voucher?.let {
+                            launchCatchError(dispatchers.io, {
+                                val token = getTokenUseCase.executeOnBackground()
+                                Log.d("FATAL", "validateDateAndTime: $token")
+                                Log.d(
+                                    "FATAL",
+                                    "validateDateAndTime: $dateStart $dateEnd $hourStart $hourEnd"
+                                )
+                                changeVoucherPeriodUseCase.execute(
+                                    voucher,
+                                    token,
+                                    dateStart,
+                                    hourStart,
+                                    dateEnd,
+                                    hourEnd
+                                )
+                            }, {
+                            })
+                        }
                     }
                 }
             }

@@ -74,7 +74,7 @@ class VoucherEditPeriodBottomSheet : BottomSheetUnify() {
         super.onViewCreated(view, savedInstanceState)
         setUpView()
         binding?.btnMvcSavePeriod?.setOnClickListener {
-            viewModel.validateDateAndTime()
+            viewModel.validateAndUpdateDateTime(voucher)
         }
     }
 
