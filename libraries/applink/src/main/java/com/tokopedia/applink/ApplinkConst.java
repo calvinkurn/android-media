@@ -123,6 +123,7 @@ public interface ApplinkConst {
     String HOST_LOGIN = "login";
     String LOGIN = "tokopedia://login";
     String ADD_PHONE = "tokopedia://add-phone";
+    String PRIVACY_CENTER = "tokopedia://privacy-center";
     String OTP = "tokopedia://otp";
     String QR_LOGIN = "tokopedia://login/qr";
     String OTP_PUSH_NOTIF_RECEIVER = "tokopedia://otp-verify";
@@ -248,6 +249,7 @@ public interface ApplinkConst {
     String LOGISTIC_SELLER_RESCHEDULE = "tokopedia://seller/reschedulepickup";
     String ORDER_POD = "tokopedia://shipping/pod/{order_id}";
     String PINPOINT_WEBVIEW = "tokopedia://pin-point-picker-result";
+    String SHARE_ADDRESS = "tokopedia://share_address";
 
     String LINK_ACCOUNT = "tokopedia://gojek-account-link";
     String EXPLICIT_PROFILE = "tokopedia://explicit-profile";
