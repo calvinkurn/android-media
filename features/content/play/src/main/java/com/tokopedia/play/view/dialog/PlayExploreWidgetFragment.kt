@@ -21,7 +21,6 @@ import com.tokopedia.play.view.fragment.PlayFragment
 import com.tokopedia.play.view.fragment.PlayUserInteractionFragment
 import com.tokopedia.play.view.uimodel.WidgetUiModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
-import com.tokopedia.play.widget.sample.coordinator.PlayWidgetCoordinator
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 import kotlin.math.roundToInt
@@ -46,11 +45,7 @@ class PlayExploreWidgetFragment @Inject constructor() : DialogFragment() {
 
     private lateinit var viewModel : PlayViewModel
 
-    private val widgetCoordinator by lazy {
-        PlayWidgetCoordinator(lifecycleOwner = this)
-    }
-
-    private val widgetAdapter = WidgetAdapter(widgetCoordinator)
+    private val widgetAdapter = WidgetAdapter()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

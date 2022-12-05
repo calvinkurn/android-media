@@ -11,7 +11,6 @@ import com.tokopedia.play_common.R as commonR
 import com.tokopedia.play.databinding.ViewTabMenuBinding
 import com.tokopedia.play.databinding.ViewWidgetHolderBinding
 import com.tokopedia.play.view.uimodel.*
-import com.tokopedia.play.widget.sample.coordinator.PlayWidgetCoordinator
 
 /**
  * @author by astidhiyaa on 02/12/22
@@ -35,7 +34,7 @@ class WidgetAdapterDelegate {
 
     }
 
-    internal class Widget(private val widgetCoordinator: PlayWidgetCoordinator) :
+    internal class Widget :
         TypedAdapterDelegate<WidgetItemUiModel, WidgetUiModel, WidgetItemViewHolder.Medium>(R.layout.view_widget_holder) {
         override fun onBindViewHolder(
             item: WidgetItemUiModel,
@@ -51,7 +50,7 @@ class WidgetAdapterDelegate {
             val view = ViewWidgetHolderBinding.inflate(
                 LayoutInflater.from(parent.context), parent, false
             )
-            return WidgetItemViewHolder.Medium(widgetCoordinator, view)
+            return WidgetItemViewHolder.Medium(view)
         }
     }
     internal class NextPage : TypedAdapterDelegate<PageConfig, WidgetUiModel, ViewHolder>(commonR.layout.view_play_empty) {
