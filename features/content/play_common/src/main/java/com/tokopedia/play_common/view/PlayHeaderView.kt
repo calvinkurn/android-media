@@ -4,13 +4,13 @@ import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
 import android.view.View.OnClickListener
-import android.widget.LinearLayout
+import androidx.constraintlayout.widget.ConstraintLayout
 import com.tokopedia.play_common.databinding.BottomSheetHeaderBinding
 
 /**
  * @author by astidhiyaa on 02/12/22
  */
-class PlayHeaderView : LinearLayout {
+class PlayHeaderView : ConstraintLayout {
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet?) : super(context, attrs)
     constructor(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : super(
@@ -27,7 +27,7 @@ class PlayHeaderView : LinearLayout {
 
     private val binding = BottomSheetHeaderBinding.inflate(
         LayoutInflater.from(context),
-        this,
+        this
     )
 
     var title: String = ""
@@ -43,6 +43,4 @@ class PlayHeaderView : LinearLayout {
                 value.onClick(it)
             }
         }
-
-    override fun onLayout(changed: Boolean, l: Int, t: Int, r: Int, b: Int) {}
 }
