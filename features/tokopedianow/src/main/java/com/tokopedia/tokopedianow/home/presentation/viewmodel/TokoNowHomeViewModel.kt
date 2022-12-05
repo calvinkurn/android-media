@@ -1078,13 +1078,7 @@ class TokoNowHomeViewModel @Inject constructor(
         homeLayoutItemList.firstOrNull { it.layout is HomeLeftCarouselAtcUiModel }?.apply {
             val repurchase = layout as HomeLeftCarouselAtcUiModel
             val productList = repurchase.productList
-            val product = productList.firstOrNull {
-                if (it is HomeLeftCarouselAtcProductCardUiModel) {
-                    it.id == productId
-                } else {
-                    false
-                }
-            }
+            val product = productList.firstOrNull { it is HomeLeftCarouselAtcProductCardUiModel && it.productCardModel.productId == productId }
 
             product?.let {
                 val position = productList.indexOf(it)
