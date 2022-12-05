@@ -73,6 +73,7 @@
     <string name="smvc_voucherlist_format_percent_desc">%s %s hingga %s</string>
     <string name="smvc_voucherlist_format_multiperiod">+%d Jadwal Lain</string>
     <string name="smvc_voucherlist_voucher_date_format">%s - %s</string>
+    <string name="smvc_voucherlist_voucher_quota_format"><![CDATA[Kuota <b>%d</b>]]></string>
     <string name="smvc_voucherlist_period_title">Periode</string>
     <string name="smvc_voucherlist_target_allbuyer_text">Semua Pembeli</string>
     <string name="smvc_voucherlist_target_newfollower_text">Follower Baru</string>
@@ -94,9 +95,14 @@
     <string name="smvc_voucherlist_toaster_actiontext">Oke</string>
     <string name="smvc_voucherlist_quota_remaining_text">Sisa Kuota</string>
     <string name="smvc_voucherlist_create_voucher_text">Buat Kupon</string>
+    <string name="smvc_voucherlist_copy_to_clipboard_message">Kode kupon berhasil disalin</string>
+    <string name="smvc_voucherlist_search_placeholder">Cari Nama Kupon</string>
 
     <!--Common Bottomsheet-->
     <string name="smvc_bottomsheet_filter_voucher_title">Filter</string>
+    <string name="smvc_bottomsheet_filter_voucher_action_text">Reset</string>
+    <string name="smvc_bottomsheet_other_period_voucher_title">%d Jadwal Lainnya</string>
+    <string name="smvc_bottomsheet_other_period_header_info_text"><![CDATA[Semua jadwal berikut masih dalam periode <b>Mendatang</b>.]]></string>
     <string name="smvc_bottomsheet_filter_status_voucher_title">Status</string>
     <string name="smvc_bottomsheet_filter_voucher_all">Semua Status</string>
     <string name="smvc_bottomsheet_filter_voucher_notstarted">Mendatang</string>
@@ -108,7 +114,6 @@
     <string name="smvc_placeholder_share_component_outgoing_title">Kupon Produk dari %s</string>
     <string name="smvc_share_component_outgoing_text_description">Yuk, belanja dan pakai Kupon Produknya sekarang!</string>
     <string name="smvc_placeholder_share_component_text_description">Dapatkan Kupon Produk %s di \@Tokopedia hingga %s pukul %s WIB hanya untukmu!</string>
-
     <string name="smvc_placeholder_share_component_outgoing_title_product_voucher">Kupon Produk dari %s</string>
     <string name="smvc_placeholder_share_component_outgoing_title_shop_voucher">Voucher Toko dari %s</string>
 
@@ -201,6 +206,11 @@
     <string name="smvc_see_tnc_title_label"><![CDATA[Lihat Syarat & Ketentuan Penggunaan Kupon]]></string>
     <string name="smvc_cancel_label">Batalkan</string>
     <string name="smvc_stop_label">Hentikan</string>
+    <string name="smvc_voucherlist_empty_data_description_text">Yuk, buat kupon untuk tarik minat pembeli belanja di tokomu.</string>
+    <string name="smvc_voucherlist_empty_data_description_buttontext">Buat Kupon</string>
+    <string name="smvc_voucherlist_empty_data_title_text">Belum ada kupon %s, nih!</string>
+    <string name="smvc_voucherlist_empty_data_search_title_text">Kupon yang kamu cari nggak ditemukan</string>
+    <string name="smvc_voucherlist_empty_data_search_description_text">Coba ulangi pencarian dengan kata kunci atau filter lain, ya.</string>
 
     <!--Download Voucher-->
     <string name="smvc_download_voucher_image">Download voucher image</string>

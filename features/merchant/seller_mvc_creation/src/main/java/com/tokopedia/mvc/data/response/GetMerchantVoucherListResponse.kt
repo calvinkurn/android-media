@@ -3,7 +3,7 @@ package com.tokopedia.mvc.data.response
 import com.google.gson.annotations.SerializedName
 
 data class GetMerchantVoucherListResponse(
-    @SerializedName("MerchantPromotionGetMVList")
+    @SerializedName("MerchantPromotionGetMVList", alternate = ["MerchantPromotionGetChildMVList"])
     val result: MerchantVoucherDataModel = MerchantVoucherDataModel()
 )
 

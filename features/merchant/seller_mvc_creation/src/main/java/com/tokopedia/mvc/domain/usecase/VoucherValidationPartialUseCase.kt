@@ -137,7 +137,7 @@ class VoucherValidationPartialUseCase @Inject constructor(
             isLockToProduct = if (param.isVoucherProduct) PRODUCT_VOUCHER else SHOP_VOUCHER,
             minPurchase = param.minPurchase,
             productIds = formattedProductIds,
-            targetBuyer = param.targetBuyer.type
+            targetBuyer = param.targetBuyer.id
         )
 
         val params = mapOf(REQUEST_PARAM_VOUCHER_VALIDATION_PARTIAL_INPUT to payload)

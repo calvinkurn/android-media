@@ -14,12 +14,15 @@ import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.campaign.delegates.HasPaginatedList
 import com.tokopedia.campaign.delegates.HasPaginatedListImpl
+import com.tokopedia.campaign.utils.extension.showToaster
 import com.tokopedia.campaign.utils.extension.showToasterError
 import com.tokopedia.campaign.utils.extension.slideDown
 import com.tokopedia.campaign.utils.extension.slideUp
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.applyUnifyBackgroundColor
 import com.tokopedia.kotlin.extensions.view.attachOnScrollListener
+import com.tokopedia.kotlin.extensions.view.gone
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.mvc.R
 import com.tokopedia.mvc.common.util.PaginationConstant.INITIAL_PAGE
 import com.tokopedia.mvc.common.util.PaginationConstant.PAGE_SIZE
@@ -37,18 +40,25 @@ import com.tokopedia.mvc.presentation.bottomsheet.EduCenterBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.FilterVoucherBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.FilterVoucherStatusBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.MoreMenuVoucherBottomSheet
+import com.tokopedia.mvc.presentation.bottomsheet.OtherPeriodBottomSheet
 import com.tokopedia.mvc.presentation.list.adapter.VoucherAdapterListener
 import com.tokopedia.mvc.presentation.list.adapter.VouchersAdapter
+import com.tokopedia.mvc.presentation.list.constant.PageState
+import com.tokopedia.mvc.presentation.list.helper.MvcListPageStateHelper
+import com.tokopedia.mvc.presentation.list.model.FilterModel
 import com.tokopedia.mvc.presentation.list.viewmodel.MvcListViewModel
 import com.tokopedia.mvc.presentation.product.add.AddProductActivity
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.SearchBarUnify
+import com.tokopedia.universal_sharing.view.bottomsheet.ClipboardHandler
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
 class MvcListFragment: BaseDaggerFragment(), HasPaginatedList by HasPaginatedListImpl(),
-    VoucherAdapterListener, FilterVoucherStatusBottomSheet.FilterVoucherStatusBottomSheetListener {
+    VoucherAdapterListener, FilterVoucherStatusBottomSheet.FilterVoucherStatusBottomSheetListener,
+    FilterVoucherBottomSheet.FilterVoucherBottomSheetListener,
+    OtherPeriodBottomSheet.OtherPeriodBottomSheetListener {
 
     private val filterList = ArrayList<SortFilterItem>()
     private val filterItem by lazy { SortFilterItem(getString(R.string.smvc_bottomsheet_filter_voucher_all)) }
@@ -87,11 +97,12 @@ class MvcListFragment: BaseDaggerFragment(), HasPaginatedList by HasPaginatedLis
     }
 
     override fun onVoucherListCopyCodeClicked(voucher: Voucher) {
-        println("copy")
+        activity?.let { ClipboardHandler().copyToClipboard (it, voucher.code) }
+        binding?.footer?.root.showToaster(getString(R.string.smvc_voucherlist_copy_to_clipboard_message))
     }
 
     override fun onVoucherListMultiPeriodClicked(voucher: Voucher) {
-        println("multiperiod")
+        viewModel.getVoucherListChild(voucher.id)
     }
 
     override fun onVoucherListClicked(voucher: Voucher) {
@@ -105,6 +116,16 @@ class MvcListFragment: BaseDaggerFragment(), HasPaginatedList by HasPaginatedLis
         loadInitialDataList()
     }
 
+    override fun onFilterVoucherChanged(filter: FilterModel) {
+        viewModel.filter = filter
+        loadInitialDataList()
+        binding?.sortFilter?.indicatorCounter = viewModel.getFilterCount()
+    }
+
+    override fun onOtherPeriodMoreMenuClicked(voucher: Voucher) {
+        MoreMenuVoucherBottomSheet().show(childFragmentManager, "")
+    }
+
     private fun setupObservables() {
         viewModel.voucherList.observe(viewLifecycleOwner) { vouchers ->
             val adapter = binding?.rvVoucher?.adapter as? VouchersAdapter
@@ -112,10 +133,23 @@ class MvcListFragment: BaseDaggerFragment(), HasPaginatedList by HasPaginatedLis
             notifyLoadResult(vouchers.size >= PAGE_SIZE)
         }
         viewModel.error.observe(viewLifecycleOwner) {
+            binding?.loaderPage?.gone()
             view?.showToasterError(it)
         }
         viewModel.voucherQuota.observe(viewLifecycleOwner) {
             binding?.footer?.setupVoucherQuota(it)
+        }
+        viewModel.voucherChilds.observe(viewLifecycleOwner) {
+            val bottomSheet = OtherPeriodBottomSheet.newInstance(it)
+            bottomSheet.setListener(this)
+            bottomSheet.show(this, it.size)
+        }
+        viewModel.pageState.observe(viewLifecycleOwner) {
+            when (it) {
+                PageState.NO_DATA_PAGE -> displayNoData()
+                PageState.NO_DATA_SEARCH_PAGE -> displayNoDataSearch()
+                else -> displayList()
+            }
         }
     }
 
@@ -202,10 +236,11 @@ class MvcListFragment: BaseDaggerFragment(), HasPaginatedList by HasPaginatedLis
         addItem(filterList)
         parentListener = {
             filterItem.selectedItem = arrayListOf()
-            FilterVoucherBottomSheet().show(childFragmentManager, "")
+            val bottomSheet = FilterVoucherBottomSheet.newInstance(viewModel.filter)
+            bottomSheet.setListener(this@MvcListFragment)
+            bottomSheet.show(childFragmentManager, "")
         }
         dismissListener = parentListener
-
 
         filterItem.listener = {
             val bottomSheet = FilterVoucherStatusBottomSheet()
@@ -213,18 +248,51 @@ class MvcListFragment: BaseDaggerFragment(), HasPaginatedList by HasPaginatedLis
             bottomSheet.setListener(this@MvcListFragment)
             bottomSheet.show(childFragmentManager, "")
         }
-        filterItem.refChipUnify.setChevronClickListener {  }
+        filterItem.refChipUnify.setChevronClickListener { filterItem.listener.invoke() }
     }
 
     private fun loadInitialDataList() {
         val adapter = binding?.rvVoucher?.adapter as? VouchersAdapter
         adapter?.clearDataList()
+        binding?.loaderPage?.show()
         viewModel.getVoucherList(INITIAL_PAGE, PAGE_SIZE)
         viewModel.getVoucherQuota()
     }
 
     private fun getDataList(page: Int, pageSize: Int) {
         viewModel.getVoucherList(page, pageSize)
+    }
+
+    private fun displayNoDataSearch() {
+        binding?.apply {
+            loaderPage.gone()
+            rvVoucher.gone()
+            errorPageSmall.show()
+            errorPageLarge.gone()
+        }
+    }
+
+    private fun displayNoData() {
+        binding?.apply {
+            loaderPage.gone()
+            rvVoucher.gone()
+            errorPageSmall.gone()
+            errorPageLarge.show()
+            val statusName = MvcListPageStateHelper.getStatusName(context, viewModel.filter)
+            errorPageLarge.emptyStateTitleID.text = getString(R.string.smvc_voucherlist_empty_data_title_text, statusName)
+            errorPageLarge.setPrimaryCTAClickListener {
+                binding?.footer?.btnAddCoupon?.performClick()
+            }
+        }
+    }
+
+    private fun displayList() {
+        binding?.apply {
+            loaderPage.gone()
+            rvVoucher.show()
+            errorPageSmall.gone()
+            errorPageLarge.gone()
+        }
     }
 
     private fun redirectToCreateVoucherPage() {
