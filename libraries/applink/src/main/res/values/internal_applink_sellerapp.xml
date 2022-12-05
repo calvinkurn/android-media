@@ -51,7 +51,6 @@
     <string name="path_seller_mvc_list" translatable="false">/seller-mvc/list</string>
     <string name="path_seller_mvc_list_active" translatable="false">/seller-mvc/list/active</string>
     <string name="path_seller_mvc_list_history" translatable="false">/seller-mvc/list/history</string>
-    <string name="path_seller_mvc_shop_create" translatable="false">/seller-mvc/create/shop</string>
-    <string name="path_seller_mvc_product_create" translatable="false">/seller-mvc/create/product</string>
+    <string name="path_seller_mvc_create" translatable="false">/seller-mvc/create/.*\\/</string>
     <string name="path_seller_mvc_detail" translatable="false">/seller-mvc/detail/.*\\/</string>
 </resources>
