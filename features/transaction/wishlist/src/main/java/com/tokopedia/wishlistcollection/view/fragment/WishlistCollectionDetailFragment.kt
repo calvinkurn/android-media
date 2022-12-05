@@ -921,7 +921,10 @@ class WishlistCollectionDetailFragment :
                                     message = result.data.message,
                                     actionText = result.data.button.text,
                                     type = Toaster.TYPE_ERROR
-                                ) { goToWishlistCollectionDetailShowCleanerBottomSheet(COLLECTION_ID_SEMUA_WISHLIST) }
+                                ) {
+                                    _isNeedRefreshAndTurnOffBulkModeFromOthers = false
+                                    goToWishlistCollectionDetailShowCleanerBottomSheet(COLLECTION_ID_SEMUA_WISHLIST)
+                                }
                             }
 
                             ERROR_PARTIAL_MAX_QTY_VALIDATION_FAILURE_ADD_BULK -> {
@@ -929,7 +932,10 @@ class WishlistCollectionDetailFragment :
                                     message = result.data.message,
                                     actionText = result.data.button.text,
                                     type = Toaster.TYPE_ERROR
-                                ) { goToWishlistCollectionDetailShowCleanerBottomSheet(COLLECTION_ID_SEMUA_WISHLIST) }
+                                ) {
+                                    _isNeedRefreshAndTurnOffBulkModeFromOthers = false
+                                    goToWishlistCollectionDetailShowCleanerBottomSheet(COLLECTION_ID_SEMUA_WISHLIST)
+                                }
                             }
 
                             ERROR_COLLECTION_IS_PRIVATE_ADD_BULK -> {
