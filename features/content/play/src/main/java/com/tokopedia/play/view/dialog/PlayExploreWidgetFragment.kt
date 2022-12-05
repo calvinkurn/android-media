@@ -15,11 +15,14 @@ import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.getScreenWidth
 import com.tokopedia.play.databinding.FragmentPlayExploreWidgetBinding
 import com.tokopedia.play.ui.explorewidget.WidgetAdapter
+import com.tokopedia.play.ui.explorewidget.WidgetItemViewHolder
 import com.tokopedia.play.util.isChanged
 import com.tokopedia.play.util.withCache
 import com.tokopedia.play.view.fragment.PlayFragment
 import com.tokopedia.play.view.fragment.PlayUserInteractionFragment
+import com.tokopedia.play.view.uimodel.ChipWidgetUiModel
 import com.tokopedia.play.view.uimodel.WidgetUiModel
+import com.tokopedia.play.view.uimodel.action.ClickChipWidget
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
@@ -30,7 +33,7 @@ import com.tokopedia.play.R as playR
  * @author by astidhiyaa on 24/11/22
  */
 
-class PlayExploreWidgetFragment @Inject constructor() : DialogFragment() {
+class PlayExploreWidgetFragment @Inject constructor() : DialogFragment(), WidgetItemViewHolder.Chip.Listener {
 
     private var _binding: FragmentPlayExploreWidgetBinding? = null
     private val binding: FragmentPlayExploreWidgetBinding get() = _binding!!
@@ -45,7 +48,7 @@ class PlayExploreWidgetFragment @Inject constructor() : DialogFragment() {
 
     private lateinit var viewModel : PlayViewModel
 
-    private val widgetAdapter = WidgetAdapter()
+    private val widgetAdapter = WidgetAdapter(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -121,6 +124,10 @@ class PlayExploreWidgetFragment @Inject constructor() : DialogFragment() {
 
     fun showNow(manager: FragmentManager) {
         if (!isAdded) showNow(manager, TAG)
+    }
+
+    override fun onChipsClicked(item: ChipWidgetUiModel) {
+        viewModel.submitAction(ClickChipWidget(item))
     }
 
     companion object {

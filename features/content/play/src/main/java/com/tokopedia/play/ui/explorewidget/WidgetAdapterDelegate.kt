@@ -16,7 +16,7 @@ import com.tokopedia.play.view.uimodel.*
  * @author by astidhiyaa on 02/12/22
  */
 class WidgetAdapterDelegate {
-    internal class Chips :
+    internal class Chips(private val listener: WidgetItemViewHolder.Chip.Listener) :
         TypedAdapterDelegate<TabMenuUiModel, WidgetUiModel, WidgetItemViewHolder.Chip>(R.layout.view_widget_holder) {
         override fun onBindViewHolder(item: TabMenuUiModel, holder: WidgetItemViewHolder.Chip) {
             holder.bind(item)
@@ -29,7 +29,7 @@ class WidgetAdapterDelegate {
             val view = ViewTabMenuBinding.inflate(
                 LayoutInflater.from(parent.context), parent, false
             )
-            return WidgetItemViewHolder.Chip(view)
+            return WidgetItemViewHolder.Chip(view, listener)
         }
 
     }

@@ -12,7 +12,7 @@ import com.tokopedia.play_common.R as commonR
  * @author by astidhiyaa on 02/12/22
  */
 class ChipsWidgetAdapterDelegate {
-    internal class Chips :
+    internal class Chips (private val listener : ChipsViewHolder.Listener) :
         TypedAdapterDelegate<ChipWidgetUiModel, ChipWidgetUiModel, ChipsViewHolder>(commonR.layout.view_play_empty) {
         override fun onBindViewHolder(item: ChipWidgetUiModel, holder: ChipsViewHolder) {
             holder.bind(item)
@@ -22,7 +22,7 @@ class ChipsWidgetAdapterDelegate {
             val view = ViewWidgetChipsBinding.inflate(
                 LayoutInflater.from(parent.context), parent, false
             )
-            return ChipsViewHolder(view)
+            return ChipsViewHolder(view, listener)
         }
     }
 }

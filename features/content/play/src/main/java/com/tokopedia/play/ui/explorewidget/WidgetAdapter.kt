@@ -6,12 +6,12 @@ import com.tokopedia.play.view.uimodel.WidgetUiModel
 /**
  * @author by astidhiyaa on 02/12/22
  */
-class WidgetAdapter :
+class WidgetAdapter internal constructor(chipListener: WidgetItemViewHolder.Chip.Listener) :
     BaseDiffUtilAdapter<WidgetUiModel>() {
 
     init {
         delegatesManager.addDelegate(WidgetAdapterDelegate.Widget())
-        delegatesManager.addDelegate(WidgetAdapterDelegate.Chips())
+        delegatesManager.addDelegate(WidgetAdapterDelegate.Chips(chipListener))
         delegatesManager.addDelegate(WidgetAdapterDelegate.NextPage())
         delegatesManager.addDelegate(WidgetAdapterDelegate.SubSlot())
     }

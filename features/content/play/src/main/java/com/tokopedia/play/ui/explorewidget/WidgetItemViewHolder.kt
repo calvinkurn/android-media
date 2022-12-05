@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.tokopedia.adapterdelegate.BaseViewHolder
 import com.tokopedia.play.databinding.ViewTabMenuBinding
 import com.tokopedia.play.databinding.ViewWidgetHolderBinding
+import com.tokopedia.play.view.uimodel.ChipWidgetUiModel
 import com.tokopedia.play.view.uimodel.TabMenuUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
@@ -65,11 +66,18 @@ class WidgetItemViewHolder {
     }
 
     internal class Chip(
-        binding: ViewTabMenuBinding
+        binding: ViewTabMenuBinding,
+        listener: Listener
     ) : BaseViewHolder(binding.root) {
 
+        private val chipsListener = object : ChipsViewHolder.Listener {
+            override fun onChipsClicked(item: ChipWidgetUiModel) {
+                listener.onChipsClicked(item)
+            }
+        }
+
         private val chipsAdapter by lazy(LazyThreadSafetyMode.NONE) {
-            ChipsWidgetAdapter()
+            ChipsWidgetAdapter(chipsListener)
         }
 
         init {
@@ -78,6 +86,10 @@ class WidgetItemViewHolder {
 
         fun bind(item: TabMenuUiModel) {
             chipsAdapter.setItemsAndAnimateChanges(item.items)
+        }
+
+        interface Listener {
+            fun onChipsClicked(item: ChipWidgetUiModel)
         }
     }
 }

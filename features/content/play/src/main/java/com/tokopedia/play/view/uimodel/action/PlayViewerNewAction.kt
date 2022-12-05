@@ -1,5 +1,6 @@
 package com.tokopedia.play.view.uimodel.action
 
+import com.tokopedia.play.view.uimodel.ChipWidgetUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
 import com.tokopedia.play_common.model.ui.QuizChoicesUiModel
@@ -98,4 +99,9 @@ data class SendUpcomingReminder(val section: ProductSectionUiModel.Section): Pla
 data class SendWarehouseId(val id: String, val isOOC: Boolean) : PlayViewerNewAction()
 
 object OpenCart: PlayViewerNewAction()
+
+/**
+ * Explore Widget
+ */
 object FetchWidgets: PlayViewerNewAction()
+data class ClickChipWidget(val item: ChipWidgetUiModel) : PlayViewerNewAction()

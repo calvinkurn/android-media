@@ -11,13 +11,12 @@ import com.tokopedia.play.view.uimodel.ChipWidgetUiModel
  * Chips Only
  */
 
-class ChipsWidgetAdapter : BaseDiffUtilAdapter<ChipWidgetUiModel>() {
+class ChipsWidgetAdapter(private val chipsListener: ChipsViewHolder.Listener) : BaseDiffUtilAdapter<ChipWidgetUiModel>() {
     init {
-        delegatesManager.addDelegate(ChipsWidgetAdapterDelegate.Chips())
+        delegatesManager.addDelegate(ChipsWidgetAdapterDelegate.Chips(chipsListener))
     }
     override fun areItemsTheSame(oldItem: ChipWidgetUiModel, newItem: ChipWidgetUiModel): Boolean {
-        //TODO () change per id
-        return oldItem == newItem
+        return oldItem.group == newItem.group
     }
 
     override fun areContentsTheSame(oldItem: ChipWidgetUiModel, newItem: ChipWidgetUiModel): Boolean {
