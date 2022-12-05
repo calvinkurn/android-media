@@ -19,6 +19,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.room.util.TableInfo
 import com.tokopedia.common_compose.principles.NestButton
 import com.tokopedia.common_compose.principles.NestTypography
@@ -37,10 +38,10 @@ class ExpActivity : AppCompatActivity() {
                                 .weight(1.0f)
                                 .horizontalScroll(rememberScrollState())
                         ) {
-                            val widthEachColumn = 150.dp
+                            val widthEachColumn = 125.dp
                             Column(
                                 modifier = Modifier
-                                    .width(widthEachColumn)
+                                    .defaultMinSize(minWidth = widthEachColumn)
                                     .padding(4.dp)
                             ) {
                                 ColumnHeader(text = "ORGANIC")
@@ -59,7 +60,7 @@ class ExpActivity : AppCompatActivity() {
                             ExpDivider()
                             Column(
                                 modifier = Modifier
-                                    .width(widthEachColumn)
+                                    .defaultMinSize(minWidth = widthEachColumn)
                                     .padding(4.dp)
                             ) {
                                 ColumnHeader(text = "NEST CUSTOM")
@@ -77,7 +78,7 @@ class ExpActivity : AppCompatActivity() {
                             ExpDivider()
                             Column(
                                 modifier = Modifier
-                                    .width(widthEachColumn)
+                                    .defaultMinSize(minWidth = widthEachColumn)
                                     .padding(4.dp)
                             ) {
                                 ColumnHeader(text = "VIEWS IN COMPOSE")
