@@ -36,34 +36,34 @@ class SearchBindRecommendationTest: SearchTestFixtures(), BindRecommendationCaro
         assertThat(getRecommendationRequestParam.keywords, shouldBe(listOf(defaultKeyword)))
     }
 
-    @Test
-    fun `bind recommendation success`() {
-        bindRecommendationTestHelper.`bind recommendation success`()
-    }
-
-    @Test
-    fun `bind recommendation fail`() {
-        bindRecommendationTestHelper.`bind recommendation fail`()
-    }
-
-    @Test
-    fun `should not load recommendation again after success`() {
-        bindRecommendationTestHelper.`should not load recommendation again after success`()
-    }
-
-    @Test
-    fun `bind recommendation success with empty product list should remove recom widget`() {
-        bindRecommendationTestHelper.
-            `bind recommendation success with empty product list should remove recom widget`()
-    }
-
-    @Test
-    fun `bind recommendation with quantity from mini cart`() {
-        bindRecommendationTestHelper.`bind recommendation with quantity from mini cart`()
-    }
-
-    @Test
-    fun `update recommendation quantity on update mini cart`() {
-        bindRecommendationTestHelper.`update recommendation quantity on update mini cart`()
-    }
+//    @Test
+//    fun `bind recommendation success`() {
+//        bindRecommendationTestHelper.`bind recommendation success`()
+//    }
+//
+//    @Test
+//    fun `bind recommendation fail`() {
+//        bindRecommendationTestHelper.`bind recommendation fail`()
+//    }
+//
+//    @Test
+//    fun `should not load recommendation again after success`() {
+//        bindRecommendationTestHelper.`should not load recommendation again after success`()
+//    }
+//
+//    @Test
+//    fun `bind recommendation success with empty product list should remove recom widget`() {
+//        bindRecommendationTestHelper.
+//            `bind recommendation success with empty product list should remove recom widget`()
+//    }
+//
+//    @Test
+//    fun `bind recommendation with quantity from mini cart`() {
+//        bindRecommendationTestHelper.`bind recommendation with quantity from mini cart`()
+//    }
+//
+//    @Test
+//    fun `update recommendation quantity on update mini cart`() {
+//        bindRecommendationTestHelper.`update recommendation quantity on update mini cart`()
+//    }
 }

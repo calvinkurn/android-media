@@ -112,6 +112,7 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSessionInterface
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 class TokoNowHomeViewModel @Inject constructor(
@@ -227,23 +228,16 @@ class TokoNowHomeViewModel @Inject constructor(
     }
 
     fun getProductRecomOoc() {
-        launchCatchError(block = {
-            val recommendationWidgets = getRecommendationUseCase.getData(
-                GetRecommendationRequestParam(
-                    pageName = PAGE_NAME_RECOMMENDATION_OOC_PARAM,
-                    xSource = X_SOURCE_RECOMMENDATION_PARAM,
-                    xDevice = X_DEVICE_RECOMMENDATION_PARAM
-                )
+        launch {
+            homeLayoutItemList.addProductRecomOoc()
+
+            val data = HomeLayoutListUiModel(
+                items = getHomeVisitableList(),
+                state = TokoNowLayoutState.HIDE
             )
-            if (recommendationWidgets.first().recommendationItemList.isNotEmpty()) {
-                homeLayoutItemList.addProductRecomOoc(recommendationWidgets.first())
-                val data = HomeLayoutListUiModel(
-                    items = getHomeVisitableList(),
-                    state = TokoNowLayoutState.HIDE
-                )
-                _homeLayoutList.postValue(Success(data))
-            }
-        }) { /* nothing to do */ }
+
+            _homeLayoutList.postValue(Success(data))
+        }
     }
 
     fun getHomeLayout(localCacheModel: LocalCacheModel, removeAbleWidgets: List<HomeRemoveAbleWidget>) {
@@ -385,7 +379,7 @@ class TokoNowHomeViewModel @Inject constructor(
     ) {
         val miniCartItem = getMiniCartItem(productId)
         when {
-            miniCartItem == null && quantity.isZero() -> updateAddToCartQuantity(productId, quantity, type)
+            miniCartItem == null && quantity.isZero() -> { /* do nothing */ }
             miniCartItem == null -> addItemToCart(channelId, productId, shopId, quantity, type)
             quantity.isZero() -> removeItemCart(miniCartItem, type)
             else -> updateItemCart(miniCartItem, quantity, type)
@@ -428,7 +422,6 @@ class TokoNowHomeViewModel @Inject constructor(
 
     fun removeLeftCarouselAtc(id: String) {
         launchCatchError(block = {
-            hasTickerBeenRemoved = true
             homeLayoutItemList.removeItem(id)
 
             val data = HomeLayoutListUiModel(
@@ -1078,13 +1071,7 @@ class TokoNowHomeViewModel @Inject constructor(
         homeLayoutItemList.firstOrNull { it.layout is HomeLeftCarouselAtcUiModel }?.apply {
             val repurchase = layout as HomeLeftCarouselAtcUiModel
             val productList = repurchase.productList
-            val product = productList.firstOrNull {
-                if (it is HomeLeftCarouselAtcProductCardUiModel) {
-                    it.id == productId
-                } else {
-                    false
-                }
-            }
+            val product = productList.firstOrNull { it is HomeLeftCarouselAtcProductCardUiModel && it.id == productId }
 
             product?.let {
                 val position = productList.indexOf(it)
@@ -1122,7 +1109,7 @@ class TokoNowHomeViewModel @Inject constructor(
         return if (-headerYCoordinate > DEFAULT_HEADER_Y_COORDINATE) {
             headerYCoordinate = DEFAULT_HEADER_Y_COORDINATE
             headerYCoordinate
-        } else if (headerYCoordinate <= -headerBackgroundHeight) {
+        } else if (-headerYCoordinate <= -headerBackgroundHeight) {
             headerYCoordinate = headerBackgroundHeight.toFloat()
             -headerYCoordinate
         } else  {

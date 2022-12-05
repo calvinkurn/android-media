@@ -15,7 +15,7 @@ data class TokoNowProductCardCarouselItemUiModel(
     val shopType: String = "",
     val isTopAds: Boolean = false,
     val appLink: String = "",
-    val parentId: String = "0",
+    val parentId: String = "",
     val alternativeKeyword: String = "",
     val headerName: String = "",
     val recommendationType: String = "",

@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 import com.tokopedia.kotlin.extensions.view.toFloatOrZero
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
 
 data class RepurchaseProduct(
     @Expose
@@ -82,10 +81,6 @@ data class RepurchaseProduct(
     fun getDiscount(): String {
         val discount = discountPercentage.toFloatOrZero()
         return if(discount > 0f) "$discountPercentage$PERCENTAGE" else ""
-    }
-
-    fun isStockEmpty(): Boolean {
-        return stock == 0
     }
 
     data class LabelGroup(

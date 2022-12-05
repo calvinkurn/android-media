@@ -4,12 +4,10 @@ import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.model.LoadingMoreModel
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.localizationchooseaddress.domain.model.LocalCacheModel
-import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.TOKONOW_CLP
 import com.tokopedia.tokopedianow.category.domain.model.TokonowCategoryDetail.Navigation
 import com.tokopedia.tokopedianow.category.domain.model.TokonowCategoryDetail.NavigationItem
 import com.tokopedia.tokopedianow.category.presentation.model.CategoryAisleDataView
 import com.tokopedia.tokopedianow.category.presentation.model.CategoryAisleItemDataView
-import com.tokopedia.tokopedianow.searchcategory.assertRecommendationCarouselDataViewLoadingState
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.tokopedianow.searchcategory.utils.CATEGORY_ID
 import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW_QUERY_PARAMS
@@ -89,7 +87,7 @@ open class BaseCategoryPageLoadTest: CategoryTestFixtures() {
         val lastVisitableList = visitableList.subList(lastVisitableListIndex, visitableList.size)
 
         lastVisitableList[0].assertCategoryAisleDataView(categoryNavigation)
-        lastVisitableList[1].assertRecommendationCarouselDataViewLoadingState(TOKONOW_CLP)
+//        lastVisitableList[1].assertRecommendationCarouselDataViewLoadingState(TOKONOW_CLP)
     }
 
     private fun Visitable<*>.assertCategoryAisleDataView(categoryNavigation: Navigation) {

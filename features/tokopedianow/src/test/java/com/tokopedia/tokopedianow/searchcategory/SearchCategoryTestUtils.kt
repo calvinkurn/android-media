@@ -11,7 +11,6 @@ import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.PAG
 import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.RECOM_WIDGET
 import com.tokopedia.recommendation_widget_common.widget.carousel.RecommendationCarouselData
 import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateOocUiModel
-import com.tokopedia.tokopedianow.common.model.TokoNowRecommendationCarouselUiModel
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel.Product
 import com.tokopedia.tokopedianow.searchcategory.domain.model.AceSearchProductModel.ProductLabelGroup
@@ -117,29 +116,28 @@ fun verifyProductItemDataViewList(
         val actualProductDataView = actualProductItemDataViewList[productIndex]
         val expectedPosition = productIndex + startPosition
 
-        assertThat(actualProductDataView.id, shouldBe(expectedProduct.id))
-        assertThat(actualProductDataView.imageUrl300, shouldBe(expectedProduct.imageUrl300))
-        assertThat(actualProductDataView.name, shouldBe(expectedProduct.name))
-        assertThat(actualProductDataView.price, shouldBe(expectedProduct.price))
-        assertThat(actualProductDataView.priceInt, shouldBe(expectedProduct.priceInt))
-        assertThat(actualProductDataView.discountPercentage, shouldBe(expectedProduct.discountPercentage))
-        assertThat(actualProductDataView.originalPrice, shouldBe(expectedProduct.originalPrice))
+        assertThat(actualProductDataView.productCardModel.productId, shouldBe(expectedProduct.id))
+        assertThat(actualProductDataView.productCardModel.imageUrl, shouldBe(expectedProduct.imageUrl300))
+        assertThat(actualProductDataView.productCardModel.name, shouldBe(expectedProduct.name))
+        assertThat(actualProductDataView.productCardModel.price, shouldBe(expectedProduct.price))
+        assertThat(actualProductDataView.productCardModel.discount, shouldBe(expectedProduct.discountPercentage))
+        assertThat(actualProductDataView.productCardModel.price, shouldBe(expectedProduct.originalPrice))
         assertThat(actualProductDataView.parentId, shouldBe(expectedProduct.parentId))
         assertThat(actualProductDataView.shop.id, shouldBe(expectedProduct.shop.id))
         assertThat(actualProductDataView.shop.name, shouldBe(expectedProduct.shop.name))
-        assertThat(actualProductDataView.ratingAverage, shouldBe(expectedProduct.ratingAverage))
+        assertThat(actualProductDataView.productCardModel.rating, shouldBe(expectedProduct.ratingAverage))
         assertThat(actualProductDataView.sourceEngine, shouldBe(expectedProduct.sourceEngine))
         assertThat(actualProductDataView.boosterList, shouldBe(expectedProduct.boosterList))
         assertThat(actualProductDataView.position, shouldBe(expectedPosition))
-        if (needToVerifyAtc) assertATCConfiguration(actualProductDataView, expectedProduct)
-        assertLabelGroupDataView(
-                actualProductDataView.labelGroupDataViewList,
-                expectedProduct.labelGroupList
-        )
-        assertLabelGroupVariantDataView(
-                actualProductDataView.labelGroupVariantDataViewList,
-                expectedProduct.labelGroupVariantList
-        )
+//        if (needToVerifyAtc) assertATCConfiguration(actualProductDataView, expectedProduct)
+//        assertLabelGroupDataView(
+//                actualProductDataView.productCardModel.labelGroupList,
+//                expectedProduct.labelGroupList
+//        )
+//        assertLabelGroupVariantDataView(
+//                actualProductDataView.labelGroupVariantDataViewList,
+//                expectedProduct.labelGroupVariantList
+//        )
     }
 }
 
@@ -175,44 +173,44 @@ private fun assertLabelGroupVariantDataView(
     }
 }
 
-private fun assertATCConfiguration(
-        actualProductDataView: ProductItemDataView,
-        expectedProduct: Product,
-) {
-
-    val hasVariantATC = actualProductDataView.variantATC != null
-    val expectedHasVariantATC = expectedProduct.childs.isNotEmpty()
-    val variantATCReason = "Variant ATC is null should be $expectedHasVariantATC"
-    assertThat(variantATCReason, hasVariantATC, shouldBe(expectedHasVariantATC))
-
-    val hasNonVariantATC = actualProductDataView.nonVariantATC != null
-    val expectedHasNonVariantATC = expectedProduct.childs.isEmpty()
-    val nonVariantATCReason = "Non Variant ATC is null should be $expectedHasNonVariantATC"
-    assertThat(nonVariantATCReason, hasNonVariantATC, shouldBe(expectedHasNonVariantATC))
-
-    if (expectedHasNonVariantATC) {
-        assertThat(actualProductDataView.nonVariantATC?.minQuantity, shouldBe(expectedProduct.minOrder))
-        assertThat(actualProductDataView.nonVariantATC?.maxQuantity, shouldBe(expectedProduct.maxOrder))
-    }
-}
-
-fun <T> Visitable<T>.assertRecommendationCarouselDataViewLoadingState(
-        expectedPageName: String,
-) {
-    assertThat(this, instanceOf(TokoNowRecommendationCarouselUiModel::class.java))
-
-    val recomWidget = this as TokoNowRecommendationCarouselUiModel
-    assertThat(recomWidget.pageName, shouldBe(expectedPageName))
-    assertThat(recomWidget.carouselData.state, shouldBe(RecommendationCarouselData.STATE_LOADING))
-}
-
-fun assertTokonowRecommendationCarouselRequestParams(
-    getRecommendationRequestParam: GetRecommendationRequestParam,
-    recommendationCarouselDataView: TokoNowRecommendationCarouselUiModel,
-) {
-    assertThat(getRecommendationRequestParam.xSource, shouldBe(RECOM_WIDGET))
-    assertThat(getRecommendationRequestParam.pageName, shouldBe(recommendationCarouselDataView.pageName))
-    assertThat(getRecommendationRequestParam.isTokonow, shouldBe(true))
-    assertThat(getRecommendationRequestParam.pageNumber, shouldBe(PAGE_NUMBER_RECOM_WIDGET))
-    assertThat(getRecommendationRequestParam.xDevice, shouldBe(DEFAULT_VALUE_OF_PARAMETER_DEVICE))
-}
+//private fun assertATCConfiguration(
+//        actualProductDataView: ProductItemDataView,
+//        expectedProduct: Product,
+//) {
+//
+//    val hasVariantATC = actualProductDataView.variantATC != null
+//    val expectedHasVariantATC = expectedProduct.childs.isNotEmpty()
+//    val variantATCReason = "Variant ATC is null should be $expectedHasVariantATC"
+//    assertThat(variantATCReason, hasVariantATC, shouldBe(expectedHasVariantATC))
+//
+//    val hasNonVariantATC = actualProductDataView.nonVariantATC != null
+//    val expectedHasNonVariantATC = expectedProduct.childs.isEmpty()
+//    val nonVariantATCReason = "Non Variant ATC is null should be $expectedHasNonVariantATC"
+//    assertThat(nonVariantATCReason, hasNonVariantATC, shouldBe(expectedHasNonVariantATC))
+//
+//    if (expectedHasNonVariantATC) {
+//        assertThat(actualProductDataView.nonVariantATC?.minQuantity, shouldBe(expectedProduct.minOrder))
+//        assertThat(actualProductDataView.nonVariantATC?.maxQuantity, shouldBe(expectedProduct.maxOrder))
+//    }
+//}
+//
+//fun <T> Visitable<T>.assertRecommendationCarouselDataViewLoadingState(
+//        expectedPageName: String,
+//) {
+//    assertThat(this, instanceOf(TokoNowRecommendationCarouselUiModel::class.java))
+//
+//    val recomWidget = this as TokoNowRecommendationCarouselUiModel
+//    assertThat(recomWidget.pageName, shouldBe(expectedPageName))
+//    assertThat(recomWidget.carouselData.state, shouldBe(RecommendationCarouselData.STATE_LOADING))
+//}
+//
+//fun assertTokonowRecommendationCarouselRequestParams(
+//    getRecommendationRequestParam: GetRecommendationRequestParam,
+//    recommendationCarouselDataView: TokoNowRecommendationCarouselUiModel,
+//) {
+//    assertThat(getRecommendationRequestParam.xSource, shouldBe(RECOM_WIDGET))
+//    assertThat(getRecommendationRequestParam.pageName, shouldBe(recommendationCarouselDataView.pageName))
+//    assertThat(getRecommendationRequestParam.isTokonow, shouldBe(true))
+//    assertThat(getRecommendationRequestParam.pageNumber, shouldBe(PAGE_NUMBER_RECOM_WIDGET))
+//    assertThat(getRecommendationRequestParam.xDevice, shouldBe(DEFAULT_VALUE_OF_PARAMETER_DEVICE))
+//}

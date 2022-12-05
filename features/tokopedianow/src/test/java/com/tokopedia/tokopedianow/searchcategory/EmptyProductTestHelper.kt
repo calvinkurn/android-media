@@ -3,7 +3,7 @@ package com.tokopedia.tokopedianow.searchcategory
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.filter.common.data.Option
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
-import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.TOKONOW_NO_RESULT
+//import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.TOKONOW_NO_RESULT
 import com.tokopedia.tokopedianow.searchcategory.data.getTokonowQueryParam
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.CategoryFilterDataView
 import com.tokopedia.tokopedianow.common.model.TokoNowEmptyStateNoResultUiModel
@@ -39,7 +39,7 @@ class EmptyProductTestHelper(
 
         visitableList.first().assertChooseAddressDataView()
         visitableList[1].assertEmptyProductDataView()
-        visitableList.last().assertRecommendationCarouselDataViewLoadingState(TOKONOW_NO_RESULT)
+//        visitableList.last().assertRecommendationCarouselDataViewLoadingState(TOKONOW_NO_RESULT)
 
         callback.`Then assert empty result visitable list`(visitableList)
     }

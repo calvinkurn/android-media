@@ -65,6 +65,7 @@ import com.tokopedia.tokopedianow.repurchase.domain.mapper.RepurchaseLayoutMappe
 import com.tokopedia.tokopedianow.repurchase.domain.mapper.RepurchaseLayoutMapper.updateDeletedATCQuantity
 import com.tokopedia.tokopedianow.repurchase.domain.mapper.RepurchaseLayoutMapper.updateProductATCQuantity
 import com.tokopedia.tokopedianow.repurchase.domain.mapper.RepurchaseLayoutMapper.updateProductQuantity
+import com.tokopedia.tokopedianow.repurchase.domain.mapper.RepurchaseLayoutMapper.updateProductWishlist
 import com.tokopedia.tokopedianow.repurchase.domain.param.GetRepurchaseProductListParam
 import com.tokopedia.tokopedianow.repurchase.domain.usecase.GetRepurchaseProductListUseCase
 import com.tokopedia.tokopedianow.repurchase.presentation.fragment.TokoNowRepurchaseFragment.Companion.CATEGORY_LEVEL_DEPTH
@@ -512,18 +513,17 @@ class TokoNowRepurchaseViewModel @Inject constructor(
         hasBeenWishlist: Boolean
     ) {
         launch {
-            val product = layoutList.filterIsInstance<RepurchaseProductUiModel>().find { it.productCardModel.productId == productId }
-            product?.apply {
-                val index = layoutList.indexOf(this)
-                layoutList[index] = copy(productCardModel = productCardModel.copy(hasBeenWishlist = hasBeenWishlist))
+            layoutList.updateProductWishlist(
+                productId = productId,
+                hasBeenWishlist = hasBeenWishlist
+            )
 
-                val layout = RepurchaseLayoutUiModel(
-                    layoutList = layoutList,
-                    state = TokoNowLayoutState.UPDATE
-                )
+            val layout = RepurchaseLayoutUiModel(
+                layoutList = layoutList,
+                state = TokoNowLayoutState.UPDATE
+            )
 
-                _getLayout.postValue(Success(layout))
-            }
+            _getLayout.postValue(Success(layout))
         }
     }
 

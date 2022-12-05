@@ -10,6 +10,7 @@ import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.data.getMiniCartItemParentProduct
 import com.tokopedia.minicart.common.domain.data.getMiniCartItemProduct
+import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.recommendation_widget_common.presentation.model.RecommendationWidget
 import com.tokopedia.recommendation_widget_common.viewutil.RecomPageConstant.OOC_TOKONOW
@@ -55,7 +56,6 @@ import com.tokopedia.tokopedianow.home.domain.mapper.LegoBannerMapper.mapLegoBan
 import com.tokopedia.tokopedianow.home.domain.mapper.PlayWidgetMapper.mapToMediumPlayWidget
 import com.tokopedia.tokopedianow.home.domain.mapper.PlayWidgetMapper.mapToSmallPlayWidget
 import com.tokopedia.tokopedianow.home.domain.mapper.ProductRecomMapper.mapResponseToProductRecom
-import com.tokopedia.tokopedianow.home.domain.mapper.ProductRecomOocMapper.mapResponseToProductRecomOoc
 import com.tokopedia.tokopedianow.home.domain.mapper.QuestMapper.mapQuestUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.SharingMapper.mapSharingEducationUiModel
 import com.tokopedia.tokopedianow.home.domain.mapper.SharingMapper.mapSharingReferralUiModel
@@ -132,13 +132,11 @@ object HomeLayoutMapper {
         }
     }
 
-    fun MutableList<HomeLayoutItemUiModel>.addProductRecomOoc(recommendationWidget: RecommendationWidget) {
+    fun MutableList<HomeLayoutItemUiModel>.addProductRecomOoc() {
         val productRecomUiModel = TokoNowProductRecommendationOocUiModel(
             pageName = OOC_TOKONOW,
-            carouselData = RecommendationCarouselData(
-                recommendationData = recommendationWidget,
-                state = STATE_READY
-            )
+            isFirstLoad = true,
+            isBindWithPageName = true
         )
         add(HomeLayoutItemUiModel(productRecomUiModel, HomeLayoutItemState.LOADED))
     }
@@ -671,7 +669,6 @@ object HomeLayoutMapper {
             EDUCATIONAL_INFORMATION -> mapEducationalInformationUiModel(response, loadedState, serviceType)
             MIX_LEFT_CAROUSEL_ATC -> mapResponseToLeftCarousel(response, loadedState, miniCartData, warehouseId)
             MIX_LEFT_CAROUSEL -> mapResponseToLeftCarousel(response, loadedState, miniCartData, warehouseId)
-            PRODUCT_RECOM_OOC -> mapResponseToProductRecomOoc(loadedState)
             // endregion
 
             // region TokoNow Component

@@ -97,7 +97,6 @@ open class CategoryTestFixtures {
                 getMiniCartListSimplifiedUseCase,
                 cartService,
                 getWarehouseUseCase,
-                getRecommendationUseCase,
                 getCategoryListUseCase,
                 setUserPreferenceUseCase,
                 chooseAddressWrapper,

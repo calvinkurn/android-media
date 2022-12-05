@@ -256,7 +256,8 @@ class TokoNowHomeFragment: Fragment(),
                 homeLeftCarouselListener = createLeftCarouselCallback(),
                 playWidgetCoordinator = createPlayWidgetCoordinator(),
                 rtrListener = createRealTimeRecommendationListener(),
-                rtrAnalytics = rtrAnalytics
+                rtrAnalytics = rtrAnalytics,
+                productRecommendationBindOocListener = createProductRecomOocCallback()
             ),
             differ = HomeListDiffer()
         )
@@ -1827,7 +1828,8 @@ class TokoNowHomeFragment: Fragment(),
     private fun createProductRecomOocCallback(): HomeProductRecomOocCallback {
         return HomeProductRecomOocCallback(
             context = context,
-            analytics = analytics
+            analytics = analytics,
+            lifecycle = viewLifecycleOwner.lifecycle
         )
     }
 
