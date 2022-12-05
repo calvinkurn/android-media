@@ -52,6 +52,7 @@ import com.tokopedia.logisticaddaddress.R
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_DISTRICT_ID
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_DISTRICT_NAME
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_FROM_ADDRESS_FORM
+import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_GMS_AVAILABILITY
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_IS_EDIT
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_IS_POLYGON
 import com.tokopedia.logisticaddaddress.common.AddressConstants.EXTRA_IS_POSITIVE_FLOW
@@ -952,6 +953,7 @@ class PinpointNewPageFragment: BaseDaggerFragment(), OnMapReadyCallback {
             Intent(context, AddressFormActivity::class.java).apply {
                 putExtra(EXTRA_SAVE_DATA_UI_MODEL, saveModel)
                 putExtra(EXTRA_IS_POSITIVE_FLOW, isPositiveFlow)
+                putExtra(EXTRA_GMS_AVAILABILITY, true)
                 putExtra(PARAM_SOURCE, source)
                 startActivityForResult(this, REQUEST_ADDRESS_FORM_PAGE)
             }
