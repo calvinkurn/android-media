@@ -11,6 +11,7 @@ import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
@@ -127,7 +128,7 @@ class AddBankFragment : BaseDaggerFragment() {
         setTncText()
         startObservingViewModels()
         setBankName()
-        btnPeriksa.setOnClickListener { checkAccountNumber() }
+        textPeriksa.setOnClickListener { checkAccountNumber() }
         add_account_button.setOnClickListener { onClickAddBankAccount() }
         if (!::bank.isInitialized) {
             openBankListForSelection()
@@ -147,7 +148,7 @@ class AddBankFragment : BaseDaggerFragment() {
             val paddingEndDimen = getDimens(com.tokopedia.unifycomponents.R.dimen.unify_space_32)
             setPadding(paddingLeft, paddingTop, paddingEndDimen, paddingBottom)
         }
-        textAreaBankAccountNumber.textAreaInput.apply {
+        textAreaBankAccountNumber.editText.apply {
             setTextSize(
                 TypedValue.COMPLEX_UNIT_PX,
                 getDimens(com.tokopedia.unifycomponents.R.dimen.unify_font_16).toFloat()
@@ -173,7 +174,7 @@ class AddBankFragment : BaseDaggerFragment() {
             unregisterObserver()
             builder.getAccountName()?.let {
                 if (it.isNotBlank())
-                    textAreaBankAccountNumber.textAreaInput.setText(it)
+                    textAreaBankAccountNumber.editText.setText(it)
             }
             builder.getAccountName()?.let {
                 if (it.isNotBlank()) {
@@ -316,11 +317,11 @@ class AddBankFragment : BaseDaggerFragment() {
 
     private fun checkAccountNumber() {
         if (::bank.isInitialized) {
-            if (textAreaBankAccountNumber.textAreaInput.text != null) {
+            if (textAreaBankAccountNumber.editText.text != null) {
                 bankSettingAnalytics.eventOnPericsaButtonClick()
                 addAccountViewModel.checkAccountNumber(
                     bank.bankID,
-                    textAreaBankAccountNumber.textAreaInput.text.toString()
+                    textAreaBankAccountNumber.editText.text.toString()
                 )
             }
         } else {
@@ -341,14 +342,14 @@ class AddBankFragment : BaseDaggerFragment() {
     private fun onValidateAccountNumber(onTextChanged: ValidateAccountNumberSuccess) {
         setPeriksaButtonState(onTextChanged.isCheckEnable)
         add_account_button.isEnabled = onTextChanged.isAddBankButtonEnable
-        builder.setAccountNumber(textAreaBankAccountNumber.textAreaInput.text.toString())
+        builder.setAccountNumber(textAreaBankAccountNumber.editText.text.toString())
         setPeriksaButtonState(onTextChanged.isCheckEnable)
         add_account_button.isEnabled = onTextChanged.isAddBankButtonEnable
         hideAccountHolderNameUI()
     }
 
     private fun setAccountNumberError(errorStr: String?) {
-        textAreaBankAccountNumber.textAreaWrapper.error = errorStr
+       // textAreaBankAccountNumber.textAreaWrapper.error = errorStr
     }
 
     private fun hideAccountHolderNameUI() {
@@ -363,7 +364,7 @@ class AddBankFragment : BaseDaggerFragment() {
         bank = selectedBank
         this.checkAccountNameState = null
         setBankName()
-        textAreaBankAccountNumber.textAreaInput.setText("")
+        textAreaBankAccountNumber.editText.setText("")
         setAccountNumberInputFilter()
         hideAccountHolderNameUI()
     }
@@ -374,7 +375,7 @@ class AddBankFragment : BaseDaggerFragment() {
             val bankAccountNumberCount = getBankTypeFromAbbreviation(abbreviation)
             val filterArray = arrayOfNulls<InputFilter>(1)
             filterArray[0] = InputFilter.LengthFilter(bankAccountNumberCount.count)
-            textAreaBankAccountNumber.textAreaInput.filters = filterArray
+            textAreaBankAccountNumber.editText.filters = filterArray
         }
     }
 
@@ -404,7 +405,7 @@ class AddBankFragment : BaseDaggerFragment() {
                         } else {
                             addAccountViewModel.validateEditedAccountInfo(
                                 bank.bankID,
-                                textAreaBankAccountNumber.textAreaInput.text.toString(),
+                                textAreaBankAccountNumber.editText.text.toString(),
                                 accountHolderName
                             )
                         }
@@ -659,10 +660,12 @@ class AddBankFragment : BaseDaggerFragment() {
 
     private fun setPeriksaButtonState(isEnable: Boolean) {
         if (isEnable)
-            btnPeriksa.buttonVariant = UnifyButton.Variant.GHOST
+
+            textPeriksa.setTextColor(ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_GN500))
         else
-            btnPeriksa.buttonVariant = UnifyButton.Variant.FILLED
-        btnPeriksa.isEnabled = isEnable
+            textPeriksa.setTextColor(ContextCompat.getColor(requireContext(), com.tokopedia.unifyprinciples.R.color.Unify_NN400))
+
+        textPeriksa.isEnabled = isEnable
     }
 
 }
