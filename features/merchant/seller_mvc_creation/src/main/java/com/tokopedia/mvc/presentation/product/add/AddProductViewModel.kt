@@ -113,6 +113,7 @@ class AddProductViewModel @Inject constructor(
                         selectedWarehouseLocation = defaultWarehouse,
                         sortOptions = productListMeta.sortOptions,
                         categoryOptions = productListMeta.categoryOptions,
+                        selectedProductsIds = voucherConfiguration.productIds.toSet()
                     )
                 }
 
