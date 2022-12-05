@@ -429,7 +429,8 @@ class AddProductViewModel @Inject constructor(
                 selectedCategories = emptyList(),
                 selectedWarehouseLocation = Warehouse(currentState.defaultWarehouseLocationId, "", WarehouseType.DEFAULT_WAREHOUSE_LOCATION),
                 selectedShopShowcase = emptyList(),
-                selectedSort = ProductSortOptions("DEFAULT", "", "DESC")
+                selectedSort = ProductSortOptions("DEFAULT", "", "DESC"),
+                isFilterActive = false
             )
         }
 
@@ -457,7 +458,8 @@ class AddProductViewModel @Inject constructor(
                 page = NumberConstant.FIRST_PAGE,
                 isSelectAllCheckboxActive = false,
                 products = emptyList(),
-                selectedSort = selectedSort
+                selectedSort = selectedSort,
+                isFilterActive = selectedSort.id != "DEFAULT"
             )
         }
 
@@ -486,7 +488,8 @@ class AddProductViewModel @Inject constructor(
                 isSelectAllCheckboxActive = false,
                 selectedProductsIds = emptySet(),
                 selectedProductCount = 0,
-                selectedWarehouseLocation = newWarehouseLocation
+                selectedWarehouseLocation = newWarehouseLocation,
+                isFilterActive = newWarehouseLocation.warehouseId != currentState.defaultWarehouseLocationId
             )
         }
 
@@ -500,7 +503,8 @@ class AddProductViewModel @Inject constructor(
                 page = NumberConstant.FIRST_PAGE,
                 isSelectAllCheckboxActive = false,
                 products = emptyList(),
-                selectedShopShowcase = selectedShopShowcases
+                selectedShopShowcase = selectedShopShowcases,
+                isFilterActive = selectedShopShowcases.isNotEmpty()
             )
         }
 
@@ -514,7 +518,8 @@ class AddProductViewModel @Inject constructor(
                 page = NumberConstant.FIRST_PAGE,
                 isSelectAllCheckboxActive = false,
                 products = emptyList(),
-                selectedCategories = selectedCategories
+                selectedCategories = selectedCategories,
+                isFilterActive = selectedCategories.isNotEmpty()
             )
         }
 

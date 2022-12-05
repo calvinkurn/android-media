@@ -279,7 +279,7 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
         renderShopShowcaseChips(uiState.selectedShopShowcase)
 
         renderList(uiState.products)
-        renderEmptyState(uiState.totalProducts, uiState.isLoading)
+        renderEmptyState(uiState.totalProducts, uiState.isLoading, uiState.isFilterActive, uiState.searchKeyword.isNotEmpty())
 
         renderBottomSection(uiState)
     }
@@ -313,14 +313,26 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
         binding?.btnAddProduct?.isEnabled = uiState.selectedProductsIds.isNotEmpty()
     }
 
-    private fun renderEmptyState(totalProducts: Int, isLoading : Boolean) {
+    private fun renderEmptyState(
+        totalProducts: Int,
+        isLoading: Boolean,
+        isFilterActive: Boolean,
+        isOnSearchMode: Boolean
+    ) {
         binding?.recyclerView?.isVisible = totalProducts.isMoreThanZero()
         binding?.cardUnify2?.isVisible = totalProducts.isMoreThanZero()
         binding?.checkbox?.isVisible = totalProducts.isMoreThanZero()
         binding?.dividerList?.isVisible = totalProducts.isMoreThanZero()
         binding?.tpgSelectAll?.isVisible = totalProducts.isMoreThanZero()
         binding?.tpgMaxProductSelection?.isVisible = totalProducts.isMoreThanZero()
-        binding?.emptyStateAddProduct?.isVisible = totalProducts.isZero() && !isLoading
+
+        if (!isLoading){
+            val emptySearchResult = totalProducts.isZero() && (isFilterActive || isOnSearchMode)
+            binding?.emptyStateSearchResultNotFound?.isVisible = emptySearchResult
+
+            val noRegisteredProduct = totalProducts.isZero() && !isFilterActive && !isOnSearchMode
+            binding?.emptyStateNoRegisteredProduct?.isVisible = noRegisteredProduct
+        }
     }
 
     private fun renderSelectAllCheckbox(uiState: AddProductUiState) {

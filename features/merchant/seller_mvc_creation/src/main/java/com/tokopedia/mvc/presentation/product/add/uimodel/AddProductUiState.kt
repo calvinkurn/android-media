@@ -14,6 +14,7 @@ import com.tokopedia.mvc.util.constant.NumberConstant
 
 data class AddProductUiState(
     val isLoading: Boolean = true,
+    val isFilterActive: Boolean = false,
     val page: Int = NumberConstant.FIRST_PAGE,
     val totalProducts: Int = 0,
     val searchKeyword: String = "",
