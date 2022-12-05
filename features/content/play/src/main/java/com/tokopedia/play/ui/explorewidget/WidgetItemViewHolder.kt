@@ -18,7 +18,8 @@ import com.tokopedia.play.widget.ui.widget.medium.adapter.PlayWidgetMediumViewHo
  */
 class WidgetItemViewHolder {
     internal class Medium(
-        binding: ViewWidgetHolderBinding
+        binding: ViewWidgetHolderBinding,
+        listener: Listener,
     ) : BaseViewHolder(binding.root) {
 
         private val layoutManager by lazy(LazyThreadSafetyMode.NONE) {
@@ -36,7 +37,9 @@ class WidgetItemViewHolder {
                 view: View,
                 item: PlayWidgetChannelUiModel,
                 position: Int
-            ) {}
+            ) {
+                listener.onWidgetClicked(item)
+            }
 
             override fun onToggleReminderChannelClicked(
                 item: PlayWidgetChannelUiModel,
@@ -62,6 +65,10 @@ class WidgetItemViewHolder {
 
         fun bind(item: PlayWidgetUiModel) {
             cardAdapter.setItemsAndAnimateChanges(item.items)
+        }
+
+        interface Listener {
+            fun onWidgetClicked(item: PlayWidgetChannelUiModel)
         }
     }
 

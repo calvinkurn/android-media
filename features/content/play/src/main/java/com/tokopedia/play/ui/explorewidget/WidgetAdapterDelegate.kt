@@ -34,7 +34,7 @@ class WidgetAdapterDelegate {
 
     }
 
-    internal class Widget :
+    internal class Widget (private val listener: WidgetItemViewHolder.Medium.Listener):
         TypedAdapterDelegate<WidgetItemUiModel, WidgetUiModel, WidgetItemViewHolder.Medium>(R.layout.view_widget_holder) {
         override fun onBindViewHolder(
             item: WidgetItemUiModel,
@@ -50,7 +50,7 @@ class WidgetAdapterDelegate {
             val view = ViewWidgetHolderBinding.inflate(
                 LayoutInflater.from(parent.context), parent, false
             )
-            return WidgetItemViewHolder.Medium(view)
+            return WidgetItemViewHolder.Medium(view, listener)
         }
     }
     internal class NextPage : TypedAdapterDelegate<PageConfig, WidgetUiModel, ViewHolder>(commonR.layout.view_play_empty) {

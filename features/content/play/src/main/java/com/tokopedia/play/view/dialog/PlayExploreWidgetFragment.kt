@@ -13,6 +13,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.content.common.util.Router
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.getScreenWidth
 import com.tokopedia.play.databinding.FragmentPlayExploreWidgetBinding
@@ -27,6 +28,7 @@ import com.tokopedia.play.view.uimodel.WidgetUiModel
 import com.tokopedia.play.view.uimodel.action.ClickChipWidget
 import com.tokopedia.play.view.uimodel.action.NextPageWidgets
 import com.tokopedia.play.view.viewmodel.PlayViewModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 import kotlin.math.roundToInt
@@ -36,7 +38,11 @@ import com.tokopedia.play.R as playR
  * @author by astidhiyaa on 24/11/22
  */
 
-class PlayExploreWidgetFragment @Inject constructor() : DialogFragment(), WidgetItemViewHolder.Chip.Listener {
+class PlayExploreWidgetFragment @Inject constructor(
+    private val router: Router,
+) : DialogFragment(),
+    WidgetItemViewHolder.Chip.Listener,
+    WidgetItemViewHolder.Medium.Listener {
 
     private var _binding: FragmentPlayExploreWidgetBinding? = null
     private val binding: FragmentPlayExploreWidgetBinding get() = _binding!!
@@ -49,9 +55,9 @@ class PlayExploreWidgetFragment @Inject constructor() : DialogFragment(), Widget
         (getScreenHeight() * 0.95).roundToInt()
     }
 
-    private lateinit var viewModel : PlayViewModel
+    private lateinit var viewModel: PlayViewModel
 
-    private val widgetAdapter = WidgetAdapter(this)
+    private val widgetAdapter = WidgetAdapter(this, this)
 
     private val layoutManager by lazy(LazyThreadSafetyMode.NONE) {
         LinearLayoutManager(binding.rvWidgets.context, RecyclerView.VERTICAL, false)
@@ -59,17 +65,18 @@ class PlayExploreWidgetFragment @Inject constructor() : DialogFragment(), Widget
 
     private val scrollListener = object : RecyclerView.OnScrollListener() {
         override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
-           if(newState == RecyclerView.SCROLL_STATE_IDLE && layoutManager.childCount - 1 == layoutManager.findLastVisibleItemPosition()) {
-               viewModel.submitAction(NextPageWidgets)
-           }
+            if (newState == RecyclerView.SCROLL_STATE_IDLE && layoutManager.childCount - 1 == layoutManager.findLastVisibleItemPosition()) {
+                viewModel.submitAction(NextPageWidgets)
+            }
         }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        if(requireParentFragment() is PlayUserInteractionFragment){
-            val grandParentActivity = ((requireParentFragment() as PlayUserInteractionFragment).parentFragment) as PlayFragment
+        if (requireParentFragment() is PlayUserInteractionFragment) {
+            val grandParentActivity =
+                ((requireParentFragment() as PlayUserInteractionFragment).parentFragment) as PlayFragment
 
             viewModel = ViewModelProvider(
                 grandParentActivity, grandParentActivity.viewModelProviderFactory
@@ -106,7 +113,7 @@ class PlayExploreWidgetFragment @Inject constructor() : DialogFragment(), Widget
         binding.rvWidgets.addOnScrollListener(scrollListener)
     }
 
-    private fun observeState(){
+    private fun observeState() {
         viewLifecycleOwner.lifecycleScope.launchWhenCreated {
             viewModel.uiState.withCache().collectLatest {
                 val cachedState = it
@@ -117,7 +124,7 @@ class PlayExploreWidgetFragment @Inject constructor() : DialogFragment(), Widget
         }
     }
 
-    private fun renderWidgets(list: List<WidgetUiModel>){
+    private fun renderWidgets(list: List<WidgetUiModel>) {
         widgetAdapter.setItemsAndAnimateChanges(list)
     }
 
@@ -145,6 +152,10 @@ class PlayExploreWidgetFragment @Inject constructor() : DialogFragment(), Widget
 
     override fun onChipsClicked(item: ChipWidgetUiModel) {
         viewModel.submitAction(ClickChipWidget(item))
+    }
+
+    override fun onWidgetClicked(item: PlayWidgetChannelUiModel) {
+        router.route(requireContext(), item.appLink)
     }
 
     companion object {
