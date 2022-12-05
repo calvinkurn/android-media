@@ -14,14 +14,11 @@ import androidx.lifecycle.lifecycleScope
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.getScreenWidth
 import com.tokopedia.play.databinding.FragmentPlayExploreWidgetBinding
-import com.tokopedia.play.ui.explorewidget.ChipsWidgetAdapter
 import com.tokopedia.play.ui.explorewidget.WidgetAdapter
 import com.tokopedia.play.util.isChanged
 import com.tokopedia.play.util.withCache
 import com.tokopedia.play.view.fragment.PlayFragment
 import com.tokopedia.play.view.fragment.PlayUserInteractionFragment
-import com.tokopedia.play.view.uimodel.ChipWidgetUiModel
-import com.tokopedia.play.view.uimodel.WidgetItemUiModel
 import com.tokopedia.play.view.uimodel.WidgetUiModel
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play.widget.sample.coordinator.PlayWidgetCoordinator
@@ -53,7 +50,6 @@ class PlayExploreWidgetFragment @Inject constructor() : DialogFragment() {
         PlayWidgetCoordinator(lifecycleOwner = this)
     }
 
-    private val chipsAdapter = ChipsWidgetAdapter()
     private val widgetAdapter = WidgetAdapter(widgetCoordinator)
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -92,7 +88,6 @@ class PlayExploreWidgetFragment @Inject constructor() : DialogFragment() {
     }
 
     private fun setupList() {
-        binding.rvChips.adapter = chipsAdapter
         binding.rvWidgets.adapter = widgetAdapter
     }
 
@@ -101,17 +96,10 @@ class PlayExploreWidgetFragment @Inject constructor() : DialogFragment() {
             viewModel.uiState.withCache().collectLatest {
                 val cachedState = it
 
-                if (cachedState.isChanged { it.exploreWidget.data.chips })
-                    renderChips(cachedState.value.exploreWidget.data.chips)
-
                 if (cachedState.isChanged { it.exploreWidget.data.items })
                     renderWidgets(cachedState.value.exploreWidget.data.items)
             }
         }
-    }
-
-    private fun renderChips(list: List<ChipWidgetUiModel>) {
-        chipsAdapter.setItemsAndAnimateChanges(list)
     }
 
     private fun renderWidgets(list: List<WidgetUiModel>){
