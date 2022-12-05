@@ -928,7 +928,6 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
             shipmentData?.freeOngkirType = freeOngkirData.boType
             shipmentData?.freeOngkirUrl = freeOngkirData.imageURL
             shipmentData?.tokoCabangIconUrl = freeOngkirData.tokoCabangImageURL
-            shipmentData?.localDestination = if (userLocationLocalData.address_id == "" || userLocationLocalData.address_id == "0") "" else userLocationLocalData.label
         }
 
         updateData(ProductDetailConstant.SHIPMENT_V2) {
@@ -940,7 +939,6 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                 this.freeOngkirType = freeOngkirData.boType
                 this.freeOngkirUrl = freeOngkirData.imageURL
                 this.tokoCabangIconUrl = freeOngkirData.tokoCabangImageURL
-                this.localDestination = if (userLocationLocalData.address_id == "" || userLocationLocalData.address_id == "0") "" else userLocationLocalData.label
             }
         }
     }

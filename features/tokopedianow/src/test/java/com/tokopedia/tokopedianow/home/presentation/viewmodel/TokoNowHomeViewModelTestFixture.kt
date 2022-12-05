@@ -34,6 +34,7 @@ import com.tokopedia.tokopedianow.home.domain.model.GetQuestListResponse
 import com.tokopedia.tokopedianow.home.domain.model.GetRepurchaseResponse.RepurchaseData
 import com.tokopedia.tokopedianow.home.domain.model.HomeLayoutResponse
 import com.tokopedia.tokopedianow.home.domain.model.KeywordSearchData
+import com.tokopedia.tokopedianow.home.domain.model.ReferralEvaluateJoinResponse
 import com.tokopedia.tokopedianow.home.domain.model.SearchPlaceholder
 import com.tokopedia.tokopedianow.home.domain.model.TickerResponse
 import com.tokopedia.tokopedianow.home.domain.usecase.GetHomeLayoutDataUseCase
@@ -42,6 +43,7 @@ import com.tokopedia.tokopedianow.home.domain.usecase.GetKeywordSearchUseCase
 import com.tokopedia.tokopedianow.home.domain.usecase.GetQuestWidgetListUseCase
 import com.tokopedia.tokopedianow.home.domain.usecase.GetRepurchaseWidgetUseCase
 import com.tokopedia.tokopedianow.home.domain.usecase.GetTickerUseCase
+import com.tokopedia.tokopedianow.home.domain.usecase.ReferralEvaluateJoinUseCase
 import com.tokopedia.tokopedianow.home.presentation.adapter.HomeTypeFactory
 import com.tokopedia.tokopedianow.home.presentation.model.HomeReferralDataModel
 import com.tokopedia.tokopedianow.home.presentation.uimodel.HomeLayoutItemUiModel
@@ -99,6 +101,8 @@ abstract class TokoNowHomeViewModelTestFixture {
     @RelaxedMockK
     lateinit var getHomeReferralUseCase: GetHomeReferralUseCase
     @RelaxedMockK
+    lateinit var referralEvaluateJoinUseCase: ReferralEvaluateJoinUseCase
+    @RelaxedMockK
     lateinit var playWidgetTools: PlayWidgetTools
     @RelaxedMockK
     lateinit var userSession: UserSessionInterface
@@ -130,6 +134,7 @@ abstract class TokoNowHomeViewModelTestFixture {
                 getQuestWidgetListUseCase,
                 setUserPreferenceUseCase,
                 getHomeReferralUseCase,
+                referralEvaluateJoinUseCase,
                 playWidgetTools,
                 userSession,
                 CoroutineTestDispatchersProvider
@@ -489,6 +494,18 @@ abstract class TokoNowHomeViewModelTestFixture {
 
     protected fun onGetUserSession_returnNull() {
         viewModel.mockPrivateField("userSession", null)
+    }
+
+    protected fun onGetReferralEvalute_thenReturn(response: ReferralEvaluateJoinResponse) {
+        coEvery {
+            referralEvaluateJoinUseCase.execute(any())
+        } returns response
+    }
+
+    protected fun onGetReferralEvalute_thenReturn(error: Exception) {
+        coEvery {
+            referralEvaluateJoinUseCase.execute(any())
+        } throws error
     }
 
     object UnknownHomeLayout: HomeLayoutUiModel("1") {

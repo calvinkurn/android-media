@@ -778,6 +778,7 @@ internal class SearchProductInspirationCarouselTest: ProductListPresenterTestFix
     ) {
         keyword shouldBe inspirationCarouselOption.title
         subtitle shouldBe inspirationCarouselOption.subtitle
+        iconSubtitle shouldBe inspirationCarouselOption.iconSubtitle
         applink shouldBe inspirationCarouselOption.applink
         cardButton.applink shouldBe inspirationCarouselOption.cardButton.applink
         cardButton.title shouldBe inspirationCarouselOption.cardButton.title
