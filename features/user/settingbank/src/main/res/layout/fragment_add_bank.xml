@@ -82,12 +82,13 @@
         android:layout_height="wrap_content"
         app:typographyWeight="bold"
         app:typographyType="display_3"
+        android:clickable="false"
         android:textColor="@color/Unify_NN400"
         android:text="Cek Nama Pemilik"
         app:layout_constraintTop_toTopOf="@id/textAreaBankAccountNumber"
         app:layout_constraintBottom_toBottomOf="@id/textAreaBankAccountNumber"
         app:layout_constraintRight_toRightOf="@id/textAreaBankAccountNumber"
-        android:layout_marginRight="@dimen/unify_space_4"
+        android:layout_marginRight="@dimen/unify_space_12"
         />
 
 
