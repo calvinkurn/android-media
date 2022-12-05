@@ -8,4 +8,6 @@ object BundleConstant {
     const val BUNDLE_KEY_SELECTED_PRODUCTS = "selected_products"
     const val BUNDLE_KEY_VOUCHER_CONFIGURATION = "voucher_configuration"
     const val BUNDLE_KEY_PAGE_MODE = "page_mode"
+    const val BUNDLE_KEY_VOUCHER_FILTER = "voucher_filter"
+    const val BUNDLE_KEY_VOUCHER_LIST = "voucher_list"
 }

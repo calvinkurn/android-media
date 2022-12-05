@@ -8,7 +8,9 @@ import com.tokopedia.mvc.di.scope.MerchantVoucherCreationScope
 import com.tokopedia.mvc.presentation.creation.step1.VoucherCreationStepOneViewModel
 import com.tokopedia.mvc.presentation.creation.step2.VoucherCreationStepTwoViewModel
 import com.tokopedia.mvc.presentation.list.viewmodel.MvcListViewModel
+import com.tokopedia.mvc.presentation.bottomsheet.viewmodel.FilterVoucherViewModel
 import com.tokopedia.mvc.presentation.detail.VoucherDetailViewModel
+import com.tokopedia.mvc.presentation.list.viewmodel.MvcListViewModel
 import com.tokopedia.mvc.presentation.product.add.AddProductViewModel
 import com.tokopedia.mvc.presentation.product.list.ProductListViewModel
 import com.tokopedia.mvc.presentation.product.variant.review.ReviewVariantViewModel
@@ -36,7 +38,12 @@ abstract class MerchantVoucherCreationViewModelModule {
     @Binds
     @IntoMap
     @ViewModelKey(SelectVariantViewModel::class)
-    internal abstract fun provideSelectVariantViewModel(viewModel: SelectVariantViewModel) : ViewModel
+    internal abstract fun provideSelectVariantViewModel(viewModel: SelectVariantViewModel): ViewModel
+
+    @Binds
+    @IntoMap
+    @ViewModelKey(FilterVoucherViewModel::class)
+    internal abstract fun provideFilterVoucherViewModel(viewModel: FilterVoucherViewModel): ViewModel
 
     @Binds
     @IntoMap
