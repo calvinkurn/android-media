@@ -90,7 +90,7 @@ class ShopHeaderPlayWidgetViewHolder(
 
         val betaTemplate = getString(R.string.shop_page_play_widget_beta_template)
 
-        val imgBeta = ContextCompat.getDrawable(itemView.context, R.drawable.ic_play_beta_badge)?.apply {
+        val imgBeta = MethodChecker.getDrawable(itemView.context, R.drawable.ic_play_beta_badge)?.apply {
             setBounds(0, 0, intrinsicWidth, intrinsicHeight)
         }
         val imgBetaSpan = imgBeta?.let { CenteredImageSpan(it) }
