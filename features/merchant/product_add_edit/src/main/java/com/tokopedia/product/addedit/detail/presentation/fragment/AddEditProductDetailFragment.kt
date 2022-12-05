@@ -365,12 +365,15 @@ class AddEditProductDetailFragment :
         initPriceSuggestion(viewModel.isEditing)
         initProductShowcaseValue()
         initCommissionInfo(shopId)
-        getProductAutoMigratedStatus(viewModel.productInputModel.productId.toString())
         setupDefaultFieldMessage()
         setupSpecificationField()
         enableProductNameField()
         onFragmentResult()
         setupBackPressed()
+
+        if (viewModel.isEditing) {
+            getProductAutoMigratedStatus(viewModel.productInputModel.productId.toString())
+        }
 
         subscribeToProductNameInputStatus()
         subscribeToProductNameRecommendation()
@@ -953,6 +956,7 @@ class AddEditProductDetailFragment :
         if (detailInputModel.categoryName.isNotBlank()) {
             productCategoryLayout?.show()
             productCategoryRecListView?.setToDisplayText(detailInputModel.categoryName, requireContext())
+            // TODO add custom adapter + item layout for disabled auto migrated product category
             productCategoryId = detailInputModel.categoryId
         }
 
@@ -1372,7 +1376,7 @@ class AddEditProductDetailFragment :
 
     private fun subscribeToProductAutoMigratedStatus() {
         viewModel.productMigrateStatus.observe(viewLifecycleOwner) { productMigrateStatus ->
-            if (productMigrateStatus.isAutoMigrated) {
+            if (true) {
                 disabledCategoryInfoView?.visible()
             }
         }
