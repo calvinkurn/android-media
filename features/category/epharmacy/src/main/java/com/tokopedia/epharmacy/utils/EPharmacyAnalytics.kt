@@ -34,6 +34,7 @@ interface ActionKeys {
 
         const val CLICK_ATTACH_PRESCRIPTION_BUTTON = "click attach prescription button"
         const val VIEW_ATTACH_PRESCRIPTION_RESULT = "view attach prescription result"
+        const val VIEW_ATTACH_PRESCRIPTION_OPTION_PAGE = "view attach option page"
         const val CLICK_UPLOAD_RESEP_DOKTER = "click upload resep dokter"
         const val CLICK_CHAT_DOKTER = "click chat dokter"
         const val CLICK_LANJUT_KE_PENGIRIMAN = "click lanjut ke pengiriman"
@@ -62,6 +63,7 @@ interface TrackerId {
         const val ATTACH_PRESCRIPTION_BUTTON = "37739"
         const val VIEW_MINI_CONSULTATION = "37741"
         const val ATTACH_PRESCRIPTION_RESULT = "37742"
+        const val ATTACH_PRESCRIPTION_OPTIONS = "37744"
         const val CLICK_UPLOAD_RESEP_DOKTER = "37745"
         const val CLICK_CHAT_DOKTER = "37745"
         const val VIEW_NO_DOCTOR = "37747"

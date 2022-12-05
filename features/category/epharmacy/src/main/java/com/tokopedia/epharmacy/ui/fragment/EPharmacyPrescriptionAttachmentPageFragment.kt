@@ -54,7 +54,7 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
     private var ePharmacyRecyclerView: RecyclerView? = null
     private var ePharmacyDoneButton: UnifyButton? = null
     private var ePharmacyGlobalError: GlobalError? = null
-    private var isFirstTimeLaunch = true
+    private var trackingSentBoolean = false
 
     @Inject
     lateinit var viewModelFactory: dagger.Lazy<ViewModelProvider.Factory>
@@ -209,6 +209,7 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
         ePharmacyPrescriptionAttachmentViewModel.buttonLiveData.observe(viewLifecycleOwner) { papCTA ->
             ePharmacyDoneButton?.show()
             papCTA?.let { cta ->
+                EPharmacyMiniConsultationAnalytics.viewAttachPrescriptionResult("", "", "", "", "", "")
                 ePharmacyDoneButton?.text = cta.title
                 when (cta.state) {
                     EPharmacyButtonState.ACTIVE.state -> {
@@ -301,6 +302,7 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
         var showReminderScreen = false
         it.data.listOfComponents.forEach { component ->
             ePharmacyAttachmentUiUpdater.updateModel(component)
+
             if (component is EPharmacyAttachmentDataModel &&
                 !showReminderScreen
             ) {
@@ -316,6 +318,12 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
                 }
             }
         }
+        EPharmacyMiniConsultationAnalytics.userViewAttachPrescriptionPage(
+            userSession.isLoggedIn,
+            userSession.userId,
+            if (ePharmacyAttachmentUiUpdater.mapOfData.contains(TICKER_COMPONENT)) "${ePharmacyAttachmentUiUpdater.mapOfData.size - 1}" else "${ePharmacyAttachmentUiUpdater.mapOfData.size}",
+            ""
+        )
         updateUi()
     }
 
@@ -344,9 +352,10 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
     }
 
     private fun onDoneButtonClick(appLink: String?) {
-        if(hasError()){
+        if (hasError()) {
             updateUi()
-        }else {
+        } else {
+            EPharmacyMiniConsultationAnalytics.clickCTAButton("", "", "", "", "")
             if (appLink.isNullOrBlank() || appLink.contains(EPHARMACY_CHECKOUT_APPLINK)) {
                 activity?.setResult(
                     EPHARMACY_MINI_CONSULTATION_REQUEST_CODE,
@@ -363,9 +372,13 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
 
     private fun hasError(): Boolean {
         ePharmacyAttachmentUiUpdater.mapOfData.forEach {
-            if(it.value is EPharmacyAttachmentDataModel){
-                if((it.value as EPharmacyAttachmentDataModel).consultationData == null
-                    || (it.value as EPharmacyAttachmentDataModel).prescriptionImages?.isNullOrEmpty() == true){
+            if (it.value is EPharmacyAttachmentDataModel) {
+                if ((
+                    (it.value as EPharmacyAttachmentDataModel).consultationData == null ||
+                        (it.value as EPharmacyAttachmentDataModel).prescriptionImages?.isNullOrEmpty() == true
+                    ) &&
+                    (it.value as EPharmacyAttachmentDataModel).showUploadWidget
+                ) {
                     val updated = (it.value as EPharmacyAttachmentDataModel).copy()
                     updated.isError = true
                     ePharmacyAttachmentUiUpdater.updateModel(updated)
@@ -418,6 +431,21 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
             model.prescriptionCTA,
             model.tokoConsultationId
         )
+        EPharmacyMiniConsultationAnalytics.clickAttachPrescriptionButton(
+            "",
+            "",
+            "",
+            "",
+            "",
+            ""
+        )
+    }
+
+    override fun onError(adapterPosition: Int, modelKey: String?) {
+        super.onError(adapterPosition, modelKey)
+        val updated = (ePharmacyAttachmentUiUpdater.mapOfData[modelKey] as EPharmacyAttachmentDataModel).copy()
+        updated.isError = false
+        ePharmacyAttachmentUiUpdater.updateModel(updated)
     }
 
     private fun redirectAttachmentCTA(
@@ -480,10 +508,16 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
             EPHARMACY_CHOOSER_REQUEST_CODE -> {
                 when (resultCode) {
                     EPHARMACY_MINI_CONSULTATION_REQUEST_CODE -> {
-                        startMiniConsultation(data?.getStringExtra(EPHARMACY_GROUP_ID))
+                        data?.getStringExtra(EPHARMACY_GROUP_ID)?.let { groupId ->
+                            startMiniConsultation(groupId)
+                            EPharmacyMiniConsultationAnalytics.clickChatDokter(data.getStringExtra(EPHARMACY_ENABLER_NAME), groupId)
+                        }
                     }
                     EPHARMACY_UPLOAD_REQUEST_CODE -> {
-                        startPhotoUpload(data?.getStringExtra(EPHARMACY_GROUP_ID))
+                        data?.getStringExtra(EPHARMACY_GROUP_ID)?.let { groupId ->
+                            startPhotoUpload(groupId)
+                            EPharmacyMiniConsultationAnalytics.clickUploadResepDokter(data.getStringExtra(EPHARMACY_ENABLER_NAME), groupId)
+                        }
                     }
                 }
             }

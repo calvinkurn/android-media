@@ -3,7 +3,8 @@ package com.tokopedia.epharmacy.utils
 import com.tokopedia.track.builder.Tracker
 
 object EPharmacyMiniConsultationAnalytics {
-    private fun userViewAttachPrescriptionPage(isLoggedIn: Boolean, userId: String, totalShop: String, epGroupId: String) {
+
+    fun userViewAttachPrescriptionPage(isLoggedIn: Boolean, userId: String, totalShop: String, epGroupId: String) {
         Tracker.Builder()
             .setEvent(EventKeys.OPEN_SCREEN)
             .setCustomProperty(EventKeys.TRACKER_ID, TrackerId.OPEN_SCREEN_ID_ATTACH)
@@ -17,7 +18,7 @@ object EPharmacyMiniConsultationAnalytics {
             .send()
     }
 
-    private fun clickAttachPrescriptionButton(
+    fun clickAttachPrescriptionButton(
         buttonText: String,
         enablers: String,
         buttonPosition: String,
@@ -37,7 +38,7 @@ object EPharmacyMiniConsultationAnalytics {
             .send()
     }
 
-    private fun viewMiniConsultationPage(
+    fun viewMiniConsultationPage(
         isLoggedIn: Boolean,
         userId: String,
         enablerName: String,
@@ -57,7 +58,7 @@ object EPharmacyMiniConsultationAnalytics {
             .send()
     }
 
-    private fun viewAttachPrescriptionResult(
+    fun viewAttachPrescriptionResult(
         consultationId: String,
         enablerName: String,
         successFailed: String,
@@ -77,7 +78,20 @@ object EPharmacyMiniConsultationAnalytics {
             .send()
     }
 
-    private fun clickUploadResepDokter(enablerName: String, ePharmacyGroupId: String) {
+    fun viewAttachPrescriptionsOptionsPage(enablerName: String?, ePharmacyGroupId: String) {
+        Tracker.Builder()
+            .setEvent(EventKeys.VIEW_PG_IRIS)
+            .setEventAction(ActionKeys.VIEW_ATTACH_PRESCRIPTION_OPTION_PAGE)
+            .setEventCategory(CategoryKeys.ATTACH_PRESCRIPTION_PAGE)
+            .setEventLabel("$enablerName - $ePharmacyGroupId")
+            .setCustomProperty(EventKeys.TRACKER_ID, TrackerId.ATTACH_PRESCRIPTION_OPTIONS)
+            .setBusinessUnit(EventKeys.BUSINESS_UNIT_VALUE)
+            .setCurrentSite(EventKeys.CURRENT_SITE_VALUE)
+            .build()
+            .send()
+    }
+
+    fun clickUploadResepDokter(enablerName: String?, ePharmacyGroupId: String) {
         Tracker.Builder()
             .setEvent(EventKeys.CLICK_PG)
             .setEventAction(ActionKeys.CLICK_UPLOAD_RESEP_DOKTER)
@@ -90,7 +104,7 @@ object EPharmacyMiniConsultationAnalytics {
             .send()
     }
 
-    private fun clickChatDokter(enablerName: String, ePharmacyGroupId: String) {
+    fun clickChatDokter(enablerName: String?, ePharmacyGroupId: String) {
         Tracker.Builder()
             .setEvent(EventKeys.VIEW_PG_IRIS)
             .setEventAction(ActionKeys.CLICK_CHAT_DOKTER)
@@ -103,7 +117,7 @@ object EPharmacyMiniConsultationAnalytics {
             .send()
     }
 
-    private fun clickCTAButton(
+    fun clickCTAButton(
         consultationId: String,
         enablerName: String,
         approvalReason: String,

@@ -23,10 +23,12 @@ class EPharmacyChooserBottomSheet : BottomSheetUnify() {
     private var binding by autoClearedNullable<EpharmacyChooserBottomSheetBinding>()
     private var enableImageURL = ""
     private var groupId = ""
+    private var enablerName = ""
     companion object {
         fun newInstance(
             enableImageURL: String,
-            groupId: String
+            groupId: String,
+            enablerName: String
         ): EPharmacyChooserBottomSheet {
             return EPharmacyChooserBottomSheet().apply {
                 showCloseIcon = false
@@ -38,6 +40,7 @@ class EPharmacyChooserBottomSheet : BottomSheetUnify() {
                 arguments = Bundle().apply {
                     putString(ENABLER_IMAGE_URL, enableImageURL)
                     putString(EPHARMACY_GROUP_ID, groupId)
+                    putString(EPHARMACY_ENABLER_NAME, enablerName)
                 }
             }
         }
@@ -60,6 +63,7 @@ class EPharmacyChooserBottomSheet : BottomSheetUnify() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         init()
+        EPharmacyMiniConsultationAnalytics.viewAttachPrescriptionsOptionsPage(enablerName, groupId)
     }
 
     private fun init() {
@@ -80,6 +84,7 @@ class EPharmacyChooserBottomSheet : BottomSheetUnify() {
     private fun extractArguments() {
         enableImageURL = arguments?.getString(ENABLER_IMAGE_URL) ?: ""
         groupId = arguments?.getString(EPHARMACY_GROUP_ID) ?: ""
+        enablerName = arguments?.getString(EPHARMACY_ENABLER_NAME) ?: ""
     }
 
     private fun setupBottomSheetUiData() {
@@ -114,16 +119,24 @@ class EPharmacyChooserBottomSheet : BottomSheetUnify() {
     }
 
     private fun uploadResepAction() {
-        activity?.setResult(EPHARMACY_UPLOAD_REQUEST_CODE,Intent().apply {
-            putExtra(EPHARMACY_GROUP_ID,groupId)
-        })
+        activity?.setResult(
+            EPHARMACY_UPLOAD_REQUEST_CODE,
+            Intent().apply {
+                putExtra(EPHARMACY_GROUP_ID, groupId)
+                putExtra(EPHARMACY_ENABLER_NAME, enablerName)
+            }
+        )
         closeBottomSheet()
     }
 
     private fun miniConsultationAction() {
-        activity?.setResult(EPHARMACY_MINI_CONSULTATION_REQUEST_CODE,Intent().apply {
-            putExtra(EPHARMACY_GROUP_ID,groupId)
-        })
+        activity?.setResult(
+            EPHARMACY_MINI_CONSULTATION_REQUEST_CODE,
+            Intent().apply {
+                putExtra(EPHARMACY_GROUP_ID, groupId)
+                putExtra(EPHARMACY_ENABLER_NAME, enablerName)
+            }
+        )
         closeBottomSheet()
     }
 

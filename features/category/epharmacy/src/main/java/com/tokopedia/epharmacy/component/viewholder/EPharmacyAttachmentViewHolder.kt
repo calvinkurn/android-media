@@ -51,6 +51,9 @@ class EPharmacyAttachmentViewHolder(private val view: View, private val ePharmac
 
     companion object {
         val LAYOUT = R.layout.epharmacy_prescription_attachment_view_item
+        private const val VIBRATION_ANIMATION_DURATION = 1250
+        private const val VIBRATION_ANIMATION_TRANSLATION_X = -10
+        private const val VIBRATION_ANIMATION_CYCLE = 4f
     }
 
     private var dataModel: EPharmacyAttachmentDataModel? = null
@@ -73,20 +76,20 @@ class EPharmacyAttachmentViewHolder(private val view: View, private val ePharmac
     private fun renderError() {
         if (dataModel?.isError == true) {
             containerUploadPrescription.setBackgroundResource(com.tokopedia.epharmacy.R.drawable.epharmacy_bg_rounded_red)
-//            containerUploadPrescription.animate()
-//                .translationX(VIBRATION_ANIMATION_TRANSLATION_X.toFloat())
-//                .setDuration(VIBRATION_ANIMATION_DURATION.toLong())
-//                .setInterpolator(CycleInterpolator(VIBRATION_ANIMATION_CYCLE))
-//                .setListener(object : Animator.AnimatorListener {
-//                    override fun onAnimationStart(animator: Animator) {}
-//                    override fun onAnimationEnd(animator: Animator) {
-//
-//                    }
-//
-//                    override fun onAnimationCancel(animator: Animator) {}
-//                    override fun onAnimationRepeat(animator: Animator) {}
-//                })
-//                .start()
+            containerUploadPrescription.animate()
+                .translationX(VIBRATION_ANIMATION_TRANSLATION_X.toFloat())
+                .setDuration(VIBRATION_ANIMATION_DURATION.toLong())
+                .setInterpolator(CycleInterpolator(VIBRATION_ANIMATION_CYCLE))
+                .setListener(object : Animator.AnimatorListener {
+                    override fun onAnimationStart(animator: Animator) {}
+                    override fun onAnimationEnd(animator: Animator) {
+                    }
+
+                    override fun onAnimationCancel(animator: Animator) {}
+                    override fun onAnimationRepeat(animator: Animator) {}
+                })
+                .start()
+            ePharmacyListener?.onError(bindingAdapterPosition, dataModel?.name)
         } else {
             containerUploadPrescription.setBackgroundResource(R.drawable.epharmacy_bg_rounded_grey)
         }
