@@ -69,9 +69,7 @@ class ProductCustomInfoViewHolder(
     private fun ItemDynamicInfoContentBinding.impressComponent(element: ProductCustomInfoDataModel) {
         root.addOnImpressionListener(holder = element.impressHolder) {
             val componentTrack = getComponentTrackData(element)
-            itemView.addOnImpressionListener(element.impressHolder) {
-                listener.onImpressComponent(componentTrack)
-            }
+            listener.onImpressComponent(componentTrack)
         }
     }
 
