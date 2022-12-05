@@ -50,7 +50,7 @@ class BitmapConverterRepositoryImpl @Inject constructor(
     }
 
     private fun getFileName(path: String): String {
-        return path.substring(path.lastIndexOf("/")+1)
+        return path.substring(path.lastIndexOf("/") + 1)
     }
 
 }
