@@ -2,6 +2,7 @@ package com.tokopedia.mvc.presentation.list.viewmodel
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.Transformations
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.mvc.domain.entity.Voucher
@@ -9,8 +10,10 @@ import com.tokopedia.mvc.domain.entity.VoucherCreationQuota
 import com.tokopedia.mvc.domain.entity.VoucherListParam
 import com.tokopedia.mvc.domain.entity.enums.VoucherSort
 import com.tokopedia.mvc.domain.entity.enums.VoucherStatus
+import com.tokopedia.mvc.domain.usecase.GetVoucherListChildUseCase
 import com.tokopedia.mvc.domain.usecase.GetVoucherListUseCase
 import com.tokopedia.mvc.domain.usecase.GetVoucherQuotaUseCase
+import com.tokopedia.mvc.presentation.list.helper.MvcListPageStateHelper
 import com.tokopedia.mvc.presentation.list.model.FilterModel
 import com.tokopedia.usecase.launch_cache_error.launchCatchError
 import javax.inject.Inject
@@ -18,19 +21,30 @@ import javax.inject.Inject
 class MvcListViewModel @Inject constructor(
     private val dispatchers: CoroutineDispatchers,
     private val getVoucherListUseCase: GetVoucherListUseCase,
-    private val getVoucherQuotaUseCase: GetVoucherQuotaUseCase
+    private val getVoucherQuotaUseCase: GetVoucherQuotaUseCase,
+    private val getVoucherListChildUseCase: GetVoucherListChildUseCase
 ) : BaseViewModel(dispatchers.main) {
 
     private val _voucherList = MutableLiveData<List<Voucher>>()
     val voucherList: LiveData<List<Voucher>> get() = _voucherList
 
+    private val _voucherChilds = MutableLiveData<List<Voucher>>()
+    val voucherChilds: LiveData<List<Voucher>> get() = _voucherChilds
+
     private val _voucherQuota = MutableLiveData<VoucherCreationQuota>()
     val voucherQuota: LiveData<VoucherCreationQuota> get() = _voucherQuota
+
+    private val _isLoading = MutableLiveData<Boolean>()
+    val isLoading: LiveData<Boolean> get() = _isLoading
 
     private val _error = MutableLiveData<Throwable>()
     val error: LiveData<Throwable> get() = _error
 
-    private var filter = FilterModel()
+    val pageState = Transformations.map(voucherList) {
+        MvcListPageStateHelper.getPageState(it, filter)
+    }
+
+    var filter = FilterModel()
 
     fun setFilterKeyword(keyword: String) {
         filter = filter.copy(
@@ -49,13 +63,16 @@ class MvcListViewModel @Inject constructor(
             dispatchers.io,
             block = {
                 val param = VoucherListParam.createParam(
-                    type = null,
+                    voucherName = filter.keyword,
+                    type = filter.promoType.firstOrNull(),
                     status = filter.status,
                     sort = VoucherSort.VOUCHER_STATUS,
-                    target = null,
+                    target = filter.target,
+                    voucherType = filter.voucherType,
                     page = page,
                     perPage = pageSize,
-                    voucherName = filter.keyword
+                    targetBuyer = filter.targetBuyer,
+                    source = filter.source
                 )
                 _voucherList.postValue(getVoucherListUseCase.execute(param))
             },
@@ -75,5 +92,31 @@ class MvcListViewModel @Inject constructor(
                 _error.postValue(it)
             }
         )
+    }
+
+    fun getVoucherListChild(voucherId: Long) {
+        launchCatchError(
+            dispatchers.io,
+            block = {
+                val result = getVoucherListChildUseCase.execute(voucherId)
+                _voucherChilds.postValue(result)
+            },
+            onError = {
+                _error.postValue(it)
+            }
+        )
+    }
+
+    fun getFilterCount(): Int {
+        var count = 0
+        filter.apply {
+            if (status.isNotEmpty()) count = count.inc()
+            if (voucherType.isNotEmpty()) count = count.inc()
+            if (promoType.isNotEmpty()) count = count.inc()
+            if (source.isNotEmpty()) count = count.inc()
+            if (target.isNotEmpty()) count = count.inc()
+            if (targetBuyer.isNotEmpty()) count = count.inc()
+        }
+        return count
     }
 }

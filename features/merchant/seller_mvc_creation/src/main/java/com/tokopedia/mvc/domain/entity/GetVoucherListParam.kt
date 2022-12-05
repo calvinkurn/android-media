@@ -5,9 +5,11 @@ import com.tokopedia.kotlin.extensions.view.ZERO
 import com.tokopedia.mvc.domain.entity.enums.PromoType
 import com.tokopedia.mvc.domain.entity.enums.VoucherServiceType
 import com.tokopedia.mvc.domain.entity.enums.VoucherSort
+import com.tokopedia.mvc.domain.entity.enums.VoucherSource
 import com.tokopedia.mvc.domain.entity.enums.VoucherStatus
 import com.tokopedia.mvc.domain.entity.enums.VoucherSubsidy
 import com.tokopedia.mvc.domain.entity.enums.VoucherTarget
+import com.tokopedia.mvc.domain.entity.enums.VoucherTargetBuyer
 import com.tokopedia.mvc.domain.entity.enums.VoucherVps
 
 data class VoucherListParam (
@@ -44,27 +46,40 @@ data class VoucherListParam (
             type: PromoType? = null,
             status: List<VoucherStatus> = emptyList(),
             sort: VoucherSort? = null,
-            target: VoucherTarget? = null,
+            target: List<VoucherTarget> = emptyList(),
             page: Int? = null,
             perPage: Int? = Int.ZERO,
-            voucherName: String? = null
+            voucherName: String? = null,
+            voucherType: List<VoucherServiceType> = emptyList(),
+            targetBuyer: List<VoucherTargetBuyer> = emptyList(),
+            source: List<VoucherSource> = emptyList()
         ): VoucherListParam {
             return VoucherListParam(
-                voucherType = type?.type,
-                voucherStatus = status.map { it.type }.joinToString(VALUE_DELIMITER),
-                isPublic = target?.type?.toString(),
+                voucherType = type?.id,
+                voucherStatus = status.map { it.id }.joinToString(VALUE_DELIMITER),
+                isPublic = target.map { it.id }.joinToString(VALUE_DELIMITER),
                 page = page,
                 perPage = perPage,
                 sortBy = sort?.type,
                 isInverted = false,
-                includeSubsidy = VoucherSubsidy.SELLER_AND_TOKOPEDIA.type,
-                isVps = listOf(VoucherVps.VPS, VoucherVps.NON_VPS).joinToString(VALUE_DELIMITER),
+                includeSubsidy = source.mapToSubsidy(),
+                isVps = if (source.any { it == VoucherSource.VPS_PROMOTION }) VoucherVps.VPS.id.toString() else "",
                 voucherName = voucherName,
-                targetBuyer = null,
-                isLockToProduct = listOf(
-                    VoucherServiceType.SHOP_VOUCHER.type,
-                    VoucherServiceType.PRODUCT_VOUCHER.type).joinToString(VALUE_DELIMITER)
+                targetBuyer = targetBuyer.map { it.id }.joinToString(VALUE_DELIMITER),
+                isLockToProduct = voucherType.map { it.id }.joinToString(VALUE_DELIMITER)
             )
+        }
+
+        private fun List<VoucherSource>.mapToSubsidy(): Int {
+            return if (any { it == VoucherSource.SELLER_BUDGET } && any { it == VoucherSource.SELLER_BUDGET }) {
+                VoucherSubsidy.SELLER_AND_TOKOPEDIA.id
+            } else if (any { it == VoucherSource.TOKOPEDIA_BUDGET }) {
+                VoucherSubsidy.SELLER.id
+            } else if (any { it == VoucherSource.TOKOPEDIA_BUDGET }) {
+                VoucherSubsidy.TOKOPEDIA.id
+            } else {
+                VoucherSubsidy.SELLER_AND_TOKOPEDIA.id
+            }
         }
     }
 }

@@ -1,10 +1,13 @@
 package com.tokopedia.mvc.domain.entity
 
+import android.os.Parcelable
 import com.tokopedia.mvc.domain.entity.enums.VoucherStatus
 import com.tokopedia.mvc.domain.entity.enums.VoucherTargetBuyer
+import kotlinx.parcelize.Parcelize
 
+@Parcelize
 data class Voucher(
-    val id: Int = 0,
+    val id: Long = 0,
     val name: String = "",
     val type: Int = 0,
     val typeFormatted: String = "",
@@ -35,4 +38,4 @@ data class Voucher(
     val isSubsidy: Boolean = false,
     val tnc: String = "",
     val targetBuyer: VoucherTargetBuyer = VoucherTargetBuyer.ALL_BUYER
-)
+): Parcelable
