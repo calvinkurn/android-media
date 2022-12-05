@@ -2,6 +2,7 @@ package com.tokopedia.product.detail.data.model
 
 import com.tokopedia.merchantvoucher.common.model.MerchantVoucherViewModel
 import com.tokopedia.minicart.common.domain.data.MiniCartItem
+import com.tokopedia.product.detail.common.data.model.ar.ProductArInfo
 import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkir
 import com.tokopedia.product.detail.common.data.model.bundleinfo.BundleInfo
 import com.tokopedia.product.detail.common.data.model.carttype.AlternateCopy
@@ -63,6 +64,7 @@ data class ProductInfoP2UiData(
     var shopFinishRate: String = "",
     var isToolbarTransparent: Boolean = false,
     var shopAdditional: ProductShopAdditional = ProductShopAdditional(),
+    var arInfo: ProductArInfo = ProductArInfo(),
     var obatKeras: ObatKeras = ObatKeras(),
     var customInfoTitle: List<CustomInfoTitle> = emptyList()
 ) {

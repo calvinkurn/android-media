@@ -90,7 +90,7 @@ class ProductGeneralInfoViewHolder(
 
         renderDescription(element = element)
 
-        // general info have not the label
+        // general info not need the label
         infoLabel.gone()
 
         renderSeparator(element = element)

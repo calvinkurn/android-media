@@ -10,6 +10,7 @@ import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.pdp.fintech.view.FintechPriceDataModel
 import com.tokopedia.play.widget.ui.PlayWidgetState
 import com.tokopedia.product.detail.R
+import com.tokopedia.product.detail.common.data.model.ar.ProductArInfo
 import com.tokopedia.product.detail.common.data.model.bebasongkir.BebasOngkirImage
 import com.tokopedia.product.detail.common.data.model.pdplayout.DynamicProductInfoP1
 import com.tokopedia.product.detail.common.data.model.pdplayout.Media
@@ -20,6 +21,7 @@ import com.tokopedia.product.detail.common.extensions.ifNullOrBlank
 import com.tokopedia.product.detail.common.getCurrencyFormatted
 import com.tokopedia.product.detail.data.model.ProductInfoP2Other
 import com.tokopedia.product.detail.data.model.ProductInfoP2UiData
+import com.tokopedia.product.detail.data.model.datamodel.ArButtonDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ContentWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
 import com.tokopedia.product.detail.data.model.datamodel.FintechWidgetDataModel
@@ -161,11 +163,13 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
     val dilayaniTokopedia: ProductShopAdditionalDataModel?
         get() = mapOfData[ProductDetailConstant.DILAYANI_TOKOPEDIA] as? ProductShopAdditionalDataModel
 
+    val productArData: ArButtonDataModel?
+        get() = mapOfData[ProductDetailConstant.AR_BUTTON] as? ArButtonDataModel
+
+    private val verticalRecommendationItems = mutableListOf<ProductRecommendationVerticalDataModel>()
+
     val otherOffers: ProductCustomInfoTitleDataModel?
         get() = mapOfData[ProductDetailConstant.OTHER_OFFERS] as? ProductCustomInfoTitleDataModel
-
-    private val verticalRecommendationItems =
-        mutableListOf<ProductRecommendationVerticalDataModel>()
 
     fun updateDataP1(
         context: Context?,
@@ -318,17 +322,19 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                 subtitle = if (tradeinResponse.usedPrice.toIntOrZero() > 0) {
                     context?.getString(
                         com.tokopedia.common_tradein.R.string.text_price_holder,
+                        CurrencyFormatUtil.convertPriceValueToIdrFormat(tradeinResponse.usedPrice.toIntOrZero(), true)
+                    ).orEmpty()
+                    context?.getString(
+                        com.tokopedia.common_tradein.R.string.text_price_holder,
                         CurrencyFormatUtil.convertPriceValueToIdrFormat(
                             tradeinResponse.usedPrice.toIntOrZero(),
                             true
                         )
-                    )
-                        ?: ""
+                    ).orEmpty()
                 } else if (!tradeinResponse.widgetString.isNullOrEmpty()) {
                     tradeinResponse.widgetString
                 } else {
-                    context?.getString(com.tokopedia.common_tradein.R.string.trade_in_exchange)
-                        ?: ""
+                    context?.getString(com.tokopedia.common_tradein.R.string.trade_in_exchange).orEmpty()
                 }
             }
         }
@@ -399,9 +405,8 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
             updateData(ProductDetailConstant.PRODUCT_SHOP_CREDIBILITY) {
                 shopCredibility?.run {
                     shopLastActive =
-                        if (context == null) "" else it.shopInfo.shopLastActive.getRelativeDate(
-                            context
-                        )
+                        if (context == null) ""
+                        else it.shopInfo.shopLastActive.getRelativeDate(context)
                     shopName = it.shopInfo.shopCore.name
                     shopAva = it.shopInfo.shopAssets.avatar
                     partnerLabel = it.shopInfo.partnerLabel
@@ -471,8 +476,7 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                 updateData(ProductDetailConstant.PRODUCT_INSTALLMENT_INFO) {
                     productInstallmentInfoMap?.run {
                         subtitle = String.format(
-                            context?.getString(R.string.new_installment_template)
-                                ?: "",
+                            context?.getString(R.string.new_installment_template).orEmpty(),
                             CurrencyFormatUtil.convertPriceValueToIdrFormat(
                                 it.productFinancingRecommendationData.data.monthlyPrice.roundToLong(),
                                 false
@@ -523,6 +527,8 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                 }
             }
 
+            updateArData(productId, it.arInfo)
+
             updateData(ProductDetailConstant.INFO_OBAT_KERAS) {
                 infoObatKerasMap?.apply {
                     val newAppLink = it.obatKeras.applink
@@ -535,6 +541,18 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
 
             updateData(ProductDetailConstant.OTHER_OFFERS) {
                 updateCustomInfoTitleP2(p2 = it)
+            }
+        }
+    }
+
+    fun updateArData(selectedProductId: String, arInfo: ProductArInfo) {
+        updateData(ProductDetailConstant.AR_BUTTON) {
+            if (arInfo.isProductIdContainsAr(selectedProductId)) {
+                productArData?.applink = arInfo.applink
+                productArData?.message = arInfo.message
+                productArData?.imageUrl = arInfo.imageUrl
+            } else {
+                productArData?.message = ""
             }
         }
     }
@@ -586,10 +604,9 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
             basicContentMap?.run {
                 val selectedUpcoming = upcomingData?.get(productId)
                 upcomingNplData = UpcomingNplDataModel(
-                    selectedUpcoming?.upcomingType
-                        ?: "",
-                    selectedUpcoming?.campaignTypeName ?: "",
-                    selectedUpcoming?.startDate ?: ""
+                    selectedUpcoming?.upcomingType.orEmpty(),
+                    selectedUpcoming?.campaignTypeName.orEmpty(),
+                    selectedUpcoming?.startDate.orEmpty()
                 )
                 shouldShowTradein = if (productTradeinMap == null) false else eligibleTradein
                 this.freeOngkirImgUrl = freeOngkirImgUrl
@@ -613,9 +630,9 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                 notifyMe = selectedUpcoming?.notifyMe ?: false
                 bgColorUpcoming = selectedUpcoming?.bgColorUpcoming ?: ""
                 upcomingNplData = UpcomingNplDataModel(
-                    upcomingType = selectedUpcoming?.upcomingType ?: "",
-                    ribbonCopy = selectedUpcoming?.campaignTypeName ?: "",
-                    startDate = selectedUpcoming?.startDate ?: ""
+                    upcomingType = selectedUpcoming?.upcomingType.orEmpty(),
+                    ribbonCopy = selectedUpcoming?.campaignTypeName.orEmpty(),
+                    startDate = selectedUpcoming?.startDate.orEmpty()
                 )
             }
         }
@@ -633,10 +650,9 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
             basicContentMap?.run {
                 val selectedUpcoming = upcomingData?.get(productId)
                 upcomingNplData = UpcomingNplDataModel(
-                    selectedUpcoming?.upcomingType
-                        ?: "",
-                    selectedUpcoming?.campaignTypeName ?: "",
-                    selectedUpcoming?.startDate ?: ""
+                    selectedUpcoming?.upcomingType.orEmpty(),
+                    selectedUpcoming?.campaignTypeName.orEmpty(),
+                    selectedUpcoming?.startDate.orEmpty()
                 )
                 this.freeOngkirImgUrl = freeOngkirImgUrl
             }
@@ -669,16 +685,14 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                 PDP_7, PDP_9_TOKONOW -> {
                     (mapOfData[data.pageName] as? ProductRecomWidgetDataModel)?.run {
                         recomWidgetData = data
-                        cardModel =
-                            data.recommendationItemList.toProductCardModels(hasThreeDots = true)
+                        cardModel = data.recommendationItemList.toProductCardModels(hasThreeDots = true)
                         filterData = mapToAnnotateChip(data)
                     }
                 }
                 else -> {
                     (mapOfData[data.pageName] as? ProductRecommendationDataModel)?.run {
                         recomWidgetData = data
-                        cardModel =
-                            data.recommendationItemList.toProductCardModels(hasThreeDots = true)
+                        cardModel = data.recommendationItemList.toProductCardModels(hasThreeDots = true)
                         filterData = mapToAnnotateChip(data)
                     }
                 }
@@ -769,9 +783,8 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
             (mapOfData[data.name] as? ProductRecommendationDataModel)?.run {
                 filterData = data.filterData
                 recomWidgetData = data.recomWidgetData
-                cardModel =
-                    data.recomWidgetData?.recommendationItemList?.toProductCardModels(hasThreeDots = true)
-                        ?: listOf()
+                cardModel = data.recomWidgetData?.recommendationItemList
+                    ?.toProductCardModels(hasThreeDots = true).orEmpty()
             }
         }
     }
@@ -961,8 +974,6 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
             shipmentData?.freeOngkirType = freeOngkirData.boType
             shipmentData?.freeOngkirUrl = freeOngkirData.imageURL
             shipmentData?.tokoCabangIconUrl = freeOngkirData.tokoCabangImageURL
-            shipmentData?.localDestination =
-                if (userLocationLocalData.address_id == "" || userLocationLocalData.address_id == "0") "" else userLocationLocalData.label
         }
 
         updateData(ProductDetailConstant.SHIPMENT_V2) {
@@ -974,8 +985,6 @@ class PdpUiUpdater(var mapOfData: MutableMap<String, DynamicPdpDataModel>) {
                 this.freeOngkirType = freeOngkirData.boType
                 this.freeOngkirUrl = freeOngkirData.imageURL
                 this.tokoCabangIconUrl = freeOngkirData.tokoCabangImageURL
-                this.localDestination =
-                    if (userLocationLocalData.address_id == "" || userLocationLocalData.address_id == "0") "" else userLocationLocalData.label
             }
         }
     }

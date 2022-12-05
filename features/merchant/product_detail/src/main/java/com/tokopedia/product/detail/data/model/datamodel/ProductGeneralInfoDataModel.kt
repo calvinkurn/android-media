@@ -39,7 +39,8 @@ data class ProductGeneralInfoDataModel(
                 parentIcon == newData.parentIcon &&
                 subtitle == newData.subtitle &&
                 additionalIcon == newData.additionalIcon &&
-                additionalDesc == newData.additionalDesc
+                additionalDesc == newData.additionalDesc &&
+                separator == newData.separator
         } else {
             false
         }

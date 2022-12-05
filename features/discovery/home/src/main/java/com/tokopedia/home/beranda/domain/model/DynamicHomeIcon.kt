@@ -6,7 +6,7 @@ import com.tokopedia.kotlin.model.ImpressHolder
 
 data class DynamicHomeIcon (
     @Expose
-    @SerializedName("dynamicIcon")
+    @SerializedName("dynamicIcon", alternate = ["icons"])
     val dynamicIcon: List<DynamicIcon> = listOf(),
     var type: Int = 1
 ){
@@ -54,10 +54,10 @@ data class DynamicHomeIcon (
         val url: String = "",
 
         @Expose
-        @SerializedName("bu_identifier")
+        @SerializedName("bu_identifier", alternate = ["buIdentifier"])
         val bu_identifier: String = "",
 
-        @SerializedName("galaxy_attribution")
+        @SerializedName("galaxy_attribution", alternate = ["galaxyAttribution"])
         @Expose
         val galaxyAttribution: String = "",
 
@@ -65,11 +65,11 @@ data class DynamicHomeIcon (
         @Expose
         val persona: String = "",
 
-        @SerializedName("brand_id")
+        @SerializedName("brand_id", alternate = ["brandID"])
         @Expose
         val brandId: String = "",
 
-        @SerializedName("category_persona")
+        @SerializedName("category_persona", alternate = ["categoryPersona"])
         @Expose
         val categoryPersona: String = "",
 

@@ -1,5 +1,6 @@
 package com.tokopedia.product.detail.data.util
 
+import android.os.Build
 import com.tokopedia.abstraction.common.utils.view.MethodChecker
 import com.tokopedia.common_sdk_affiliate_toko.model.AffiliatePageDetail
 import com.tokopedia.common_sdk_affiliate_toko.model.AffiliateSdkPageSource
@@ -28,6 +29,7 @@ import com.tokopedia.product.detail.common.data.model.rates.UserLocationRequest
 import com.tokopedia.product.detail.common.data.model.variant.ProductVariant
 import com.tokopedia.product.detail.common.data.model.variant.VariantChild
 import com.tokopedia.product.detail.common.getCurrencyFormatted
+import com.tokopedia.product.detail.data.model.datamodel.ArButtonDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ContentWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.DynamicPdpDataModel
 import com.tokopedia.product.detail.data.model.datamodel.FintechWidgetDataModel
@@ -238,11 +240,14 @@ object DynamicProductDetailMapper {
                 }
                 ProductDetailConstant.CONTENT_WIDGET -> {
                     listOfComponent.add(
-                        ContentWidgetDataModel(
-                            type = component.type,
-                            name = component.componentName
-                        )
+                            ContentWidgetDataModel(
+                                    type = component.type,
+                                    name = component.componentName
+                            )
                     )
+                }
+                ProductDetailConstant.AR_BUTTON -> {
+                    listOfComponent.add(ArButtonDataModel(type = component.type, name = component.componentName))
                 }
                 ProductDetailConstant.FINTECH_WIDGET_TYPE -> {
                     listOfComponent.add(
@@ -336,7 +341,8 @@ object DynamicProductDetailMapper {
             data = newDataWithMedia,
             pdpSession = data.pdpSession,
             bestSellerContent = bestSellerComponent,
-            stockAssuranceContent = stockAssuranceComponent
+            stockAssuranceContent = stockAssuranceComponent,
+            requestId = data.requestId
         )
     }
 
@@ -679,26 +685,31 @@ object DynamicProductDetailMapper {
         val isOfficialStore = productInfo?.data?.isOS == true
         val isVariant = productInfo?.isProductVariant() ?: false
         val isVariantEmpty = variantData == null || !variantData.hasChildren
+        val higherThanLollipop = Build.VERSION.SDK_INT > Build.VERSION_CODES.LOLLIPOP_MR1
 
         return initialLayoutData.filterNot {
-            (it.name() == ProductDetailConstant.TRADE_IN && (!isTradein || isShopOwner)) ||
-                (it.name() == ProductDetailConstant.PRODUCT_SHIPPING_INFO) ||
-                (it.name() == ProductDetailConstant.PRODUCT_VARIANT_INFO) ||
-                (it.name() == ProductDetailConstant.VALUE_PROP && !isOfficialStore) ||
-                (it.name() == ProductDetailConstant.VARIANT_OPTIONS && (!isVariant || isVariantEmpty)) ||
-                (it.name() == ProductDetailConstant.MINI_VARIANT_OPTIONS && (!isVariant || isVariantEmpty)) ||
-                (it.type() == ProductDetailConstant.PRODUCT_LIST && GlobalConfig.isSellerApp()) ||
-                (it.name() == ProductDetailConstant.REPORT && (GlobalConfig.isSellerApp() || isShopOwner)) ||
-                (it.name() == ProductDetailConstant.PLAY_CAROUSEL && GlobalConfig.isSellerApp()) ||
-                /***
-                 * remove palugada type with name
-                 * (value_prop, wholesale, fullfilment, payment later install, order priority, cod)
-                 */
-                (it.name() == ProductDetailConstant.PRODUCT_WHOLESALE_INFO) ||
-                (it.name() == ProductDetailConstant.PRODUCT_FULLFILMENT) ||
-                (it.name() == ProductDetailConstant.PRODUCT_INSTALLMENT_PAYLATER_INFO) ||
-                (it.name() == ProductDetailConstant.ORDER_PRIORITY) ||
-                (it.name() == ProductDetailConstant.COD)
+            (it.name() == ProductDetailConstant.TRADE_IN && (!isTradein || isShopOwner))
+                    || (it.name() == ProductDetailConstant.PRODUCT_SHIPPING_INFO)
+                    || (it.name() == ProductDetailConstant.PRODUCT_VARIANT_INFO)
+                    || (it.name() == ProductDetailConstant.VALUE_PROP && !isOfficialStore)
+                    || (it.name() == ProductDetailConstant.VARIANT_OPTIONS && (!isVariant || isVariantEmpty))
+                    || (it.name() == ProductDetailConstant.MINI_VARIANT_OPTIONS && (!isVariant || isVariantEmpty))
+                    || (it.type() == ProductDetailConstant.PRODUCT_LIST && GlobalConfig.isSellerApp())
+                    || (it.name() == ProductDetailConstant.REPORT && (GlobalConfig.isSellerApp() || isShopOwner))
+                    || (it.name() == ProductDetailConstant.PLAY_CAROUSEL && GlobalConfig.isSellerApp())
+                    /***
+                     * remove palugada type with name
+                     * (value_prop, wholesale, fullfilment, payment later install, order priority, cod)
+                     */
+                    || (it.name() == ProductDetailConstant.PRODUCT_WHOLESALE_INFO)
+                    || (it.name() == ProductDetailConstant.PRODUCT_FULLFILMENT)
+                    || (it.name() == ProductDetailConstant.PRODUCT_INSTALLMENT_PAYLATER_INFO)
+                    || (it.name() == ProductDetailConstant.ORDER_PRIORITY)
+                    /**
+                     * Remove when lollipop and product of seller itself
+                     */
+                    || (it.name() == ProductDetailConstant.AR_BUTTON
+                    && (GlobalConfig.isSellerApp() || !higherThanLollipop || isShopOwner))
         }.toMutableList()
     }
 

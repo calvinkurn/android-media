@@ -51,6 +51,7 @@ import com.tokopedia.product.detail.view.viewholder.LoadingViewHolder
 import com.tokopedia.product.detail.view.viewholder.OneLinersViewHolder
 import com.tokopedia.product.detail.view.viewholder.PageErrorViewHolder
 import com.tokopedia.product.detail.view.viewholder.PdpComparisonWidgetViewHolder
+import com.tokopedia.product.detail.view.viewholder.ProductArViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductBundlingViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductCategoryCarouselViewHolder
 import com.tokopedia.product.detail.view.viewholder.ProductContentViewHolder
@@ -86,8 +87,7 @@ class DynamicProductDetailAdapterFactoryImpl(
     private val variantListener: AtcVariantListener,
     private val userId: String,
     private val playWidgetCoordinator: PlayWidgetCoordinator
-)
-    : BaseAdapterTypeFactory(), DynamicProductDetailAdapterFactory {
+) : BaseAdapterTypeFactory(), DynamicProductDetailAdapterFactory {
     override fun type(data: ProductRecommendationDataModel): Int {
         return ProductRecommendationViewHolder.LAYOUT
     }
@@ -234,8 +234,11 @@ class DynamicProductDetailAdapterFactoryImpl(
 
     override fun createViewHolder(view: View, type: Int): AbstractViewHolder<*> {
         return when (type) {
-            FintechWidgetViewHolder.LAYOUT -> FintechWidgetViewHolder(view,listener)
-            ProductRecommendationViewHolder.LAYOUT -> ProductRecommendationViewHolder(view, listener)
+            FintechWidgetViewHolder.LAYOUT -> FintechWidgetViewHolder(view, listener)
+            ProductRecommendationViewHolder.LAYOUT -> ProductRecommendationViewHolder(
+                view,
+                listener
+            )
             ProductDiscussionMostHelpfulViewHolder.LAYOUT -> ProductDiscussionMostHelpfulViewHolder(
                 view,
                 listener
@@ -261,20 +264,36 @@ class DynamicProductDetailAdapterFactoryImpl(
                 listener
             )
 
-            ProductMiniShopWidgetViewHolder.LAYOUT -> ProductMiniShopWidgetViewHolder(view, listener)
+            ProductMiniShopWidgetViewHolder.LAYOUT -> ProductMiniShopWidgetViewHolder(
+                view,
+                listener
+            )
             ProductTickerInfoViewHolder.LAYOUT -> ProductTickerInfoViewHolder(view, listener)
-            ProductShopCredibilityViewHolder.LAYOUT -> ProductShopCredibilityViewHolder(view, listener)
+            ProductShopCredibilityViewHolder.LAYOUT -> ProductShopCredibilityViewHolder(
+                view,
+                listener
+            )
             ProductCustomInfoViewHolder.LAYOUT -> ProductCustomInfoViewHolder(view, listener)
             ProductTopAdsImageViewHolder.LAYOUT -> ProductTopAdsImageViewHolder(view, listener)
             ProductDetailInfoViewHolder.LAYOUT -> ProductDetailInfoViewHolder(view, listener)
             ProductReportViewHolder.LAYOUT -> ProductReportViewHolder(view, listener)
             ShipmentViewHolder.LAYOUT -> ShipmentViewHolder(view, listener)
-            ProductMerchantVoucherSummaryViewHolder.LAYOUT -> ProductMerchantVoucherSummaryViewHolder(view, listener)
+            ProductMerchantVoucherSummaryViewHolder.LAYOUT -> ProductMerchantVoucherSummaryViewHolder(
+                view,
+                listener
+            )
             PdpComparisonWidgetViewHolder.LAYOUT -> PdpComparisonWidgetViewHolder(view, listener)
-            ProductSingleVariantViewHolder.LAYOUT -> ProductSingleVariantViewHolder(view, variantListener, listener)
+            ProductSingleVariantViewHolder.LAYOUT -> ProductSingleVariantViewHolder(
+                view,
+                variantListener,
+                listener
+            )
             OneLinersViewHolder.LAYOUT -> OneLinersViewHolder(view, listener)
             ProductRecomWidgetViewHolder.LAYOUT -> ProductRecomWidgetViewHolder(view, listener)
-            ProductCategoryCarouselViewHolder.LAYOUT -> ProductCategoryCarouselViewHolder(view, listener)
+            ProductCategoryCarouselViewHolder.LAYOUT -> ProductCategoryCarouselViewHolder(
+                view,
+                listener
+            )
             TopAdsHeadlineViewHolder.LAYOUT -> TopAdsHeadlineViewHolder(view, userId, listener)
             ProductBundlingViewHolder.LAYOUT -> ProductBundlingViewHolder(view, listener)
             ContentWidgetViewHolder.LAYOUT -> {
@@ -289,8 +308,14 @@ class DynamicProductDetailAdapterFactoryImpl(
                     )
                 } else super.createViewHolder(view, type)
             }
-            ProductRecommendationVerticalViewHolder.LAYOUT -> ProductRecommendationVerticalViewHolder(view, listener)
-            ProductRecommendationVerticalPlaceholderViewHolder.LAYOUT -> ProductRecommendationVerticalPlaceholderViewHolder(view, listener)
+            ProductRecommendationVerticalViewHolder.LAYOUT -> ProductRecommendationVerticalViewHolder(
+                view,
+                listener
+            )
+            ProductRecommendationVerticalPlaceholderViewHolder.LAYOUT -> ProductRecommendationVerticalPlaceholderViewHolder(
+                view,
+                listener
+            )
             LoadingViewHolder.LAYOUT -> LoadingViewHolder(view)
             GlobalBundlingViewHolder.LAYOUT -> GlobalBundlingViewHolder(view, listener)
             ProductShopAdditionalViewHolder.LAYOUT -> ProductShopAdditionalViewHolder(
@@ -301,6 +326,7 @@ class DynamicProductDetailAdapterFactoryImpl(
                 view = view,
                 listener = listener
             )
+            ProductArViewHolder.LAYOUT -> ProductArViewHolder(view, listener)
             else -> super.createViewHolder(view, type)
         }
     }

@@ -4,14 +4,14 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    style="@style/Theme.White.Background">
+    android:background="@color/contact_us_dms_detail_background_dark">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rv_selected_images"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingTop="10dp"
-        android:background="@color/contact_us_input_field_bg_color"
+        android:background="@color/contact_us_dms_detail_edit_text_bg"
         android:orientation="horizontal"
         android:scrollbars="horizontal"
         android:visibility="gone"
@@ -21,29 +21,18 @@
         app:layout_constraintLeft_toLeftOf="parent"
         tools:listitem="@layout/selected_image_item" />
 
-    <View
-        android:id="@+id/divider_rv"
-        android:layout_width="0dp"
-        android:layout_height="5dp"
-        android:background="@drawable/top_shadow_gradient"
-        android:visibility="visible"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/rv_selected_images" />
-
     <ImageView
         android:id="@+id/iv_upload_img"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
-        android:layout_marginLeft="16dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="16dp"
         android:visibility="visible"
         android:contentDescription="@null"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/divider_rv"
+        app:layout_constraintTop_toBottomOf="@+id/rv_selected_images"
         app:srcCompat="@drawable/contact_us_ic_image" />
 
     <EditText
@@ -56,44 +45,41 @@
         android:layout_marginTop="12dp"
         android:background="@drawable/rounded_grey_rectangle_border"
         android:hint="@string/contact_us_type_here"
-        android:textColorHint="@color/contact_us_grey_n_700_44"
+        android:textColorHint="@color/contact_us_dms_detail_hint_bg"
         android:includeFontPadding="false"
         android:lineSpacingExtra="6sp"
         android:maxLines="4"
         android:minHeight="40dp"
-        android:paddingLeft="16dp"
         android:paddingStart="16dp"
-        android:textColor="@color/black_70"
         android:textSize="14sp"
         android:maxLength="1000"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/iv_send_button"
         app:layout_constraintHeight_default="wrap"
         app:layout_constraintStart_toEndOf="@+id/iv_upload_img"
-        app:layout_constraintTop_toBottomOf="@+id/divider_rv" />
+        app:layout_constraintTop_toBottomOf="@+id/rv_selected_images" />
 
     <ImageView
         android:id="@+id/iv_send_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
-        android:layout_marginRight="16dp"
         android:layout_marginEnd="16dp"
         android:layout_marginTop="16dp"
         android:contentDescription="@null"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/divider_rv"
+        app:layout_constraintTop_toBottomOf="@+id/rv_selected_images"
         app:srcCompat="@drawable/contact_us_ic_send_button" />
 
     <com.tokopedia.unifycomponents.LoaderUnify
         android:id="@+id/send_progress"
-        android:layout_width="@dimen/dp_50"
-        android:layout_height="@dimen/dp_50"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         app:loader_type="circular"
         android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/divider_rv" />
+        app:layout_constraintTop_toBottomOf="@+id/rv_selected_images" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
