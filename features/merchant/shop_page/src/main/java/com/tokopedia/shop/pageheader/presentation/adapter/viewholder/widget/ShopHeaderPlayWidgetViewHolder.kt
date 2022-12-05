@@ -53,7 +53,7 @@ class ShopHeaderPlayWidgetViewHolder(
     override fun bind(shopHeaderWidgetUiModel: ShopHeaderWidgetUiModel) {
         val modelComponent = shopHeaderWidgetUiModel.components.filterIsInstance<ShopHeaderPlayWidgetButtonComponentUiModel>().firstOrNull()
         modelComponent?.shopPageHeaderDataModel?.let { shopPageHeaderDataModel ->
-            if (allowLiveStreaming(shopPageHeaderDataModel)) {
+            if (allowContentCreation(shopPageHeaderDataModel)) {
                 showPlayWidget()
                 setupTextContentSgcWidget(shopPageHeaderDataModel)
                 shopPageTrackingSGCPlayWidget?.onImpressionSGCContent(shopId = shopPageHeaderDataModel.shopId)
@@ -81,7 +81,7 @@ class ShopHeaderPlayWidgetViewHolder(
         playSgcWidgetContainer?.hide()
     }
 
-    private fun allowLiveStreaming(dataModel: ShopPageHeaderDataModel): Boolean {
+    private fun allowContentCreation(dataModel: ShopPageHeaderDataModel): Boolean {
         return (isStreamAllowed(dataModel) || isShortsVideoAllowed(dataModel)) && GlobalConfig.isSellerApp()
     }
 
