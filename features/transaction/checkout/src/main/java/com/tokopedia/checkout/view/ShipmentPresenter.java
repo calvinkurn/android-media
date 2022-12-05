@@ -234,7 +234,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
     private UploadPrescriptionUiModel uploadPrescriptionUiModel;
 
     private PublishSubject<ShipmentGetCourierHolderData> ratesPublisher = null;
+    private PublishSubject<ShipmentGetCourierHolderData> ratesPromoPublisher = null;
     private PublishSubject<Boolean> logisticDonePublisher = null;
+    private PublishSubject<Boolean> logisticPromoDonePublisher = null;
 
     @Inject
     public ShipmentPresenter(CompositeSubscription compositeSubscription,
@@ -302,6 +304,8 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         }
         ratesPublisher = null;
         logisticDonePublisher = null;
+        ratesPromoPublisher = null;
+        logisticPromoDonePublisher = null;
     }
 
     @Override
@@ -1307,6 +1311,9 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                                     if (logisticDonePublisher != null) {
                                         logisticDonePublisher.onCompleted();
                                     }
+                                    if (logisticPromoDonePublisher != null) {
+                                        logisticPromoDonePublisher.onCompleted();
+                                    }
                                 }
 
                                 @Override
@@ -2292,17 +2299,14 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                     shipperId,
                     spId,
                     itemPosition,
-                    shipmentDetailData,
                     shipmentCartItemModel,
                     shopShipmentList,
                     isInitialLoad,
-                    products,
-                    cartString,
+                    "",
                     isTradeInDropOff,
-                    recipientAddressModel,
                     isForceReload,
-                    skipMvc,
-                    param
+                    param,
+                    ""
             ));
         }
     }
@@ -2763,26 +2767,60 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
         RatesParam param = ratesParamBuilder.build();
 
         Observable<ShippingRecommendationData> observable;
-        if (isTradeInDropOff) {
-            observable = ratesApiUseCase.execute(param);
-        } else {
-            observable = ratesUseCase.execute(param);
-        }
         String promoCode = voucherOrdersItemUiModel.getCode();
         int shippingId = voucherOrdersItemUiModel.getShippingId();
         int spId = voucherOrdersItemUiModel.getSpId();
         getView().setStateLoadingCourierStateAtIndex(itemPosition, true);
-        compositeSubscription.add(
-                observable
-                        .map(shippingRecommendationData ->
-                                stateConverter.fillState(shippingRecommendationData, shopShipmentList,
-                                        spId, 0))
-                        .subscribe(
-                                new GetBoPromoCourierRecommendationSubscriber(
-                                        getView(), this, cartString, promoCode, shippingId, spId,
-                                        itemPosition, shippingCourierConverter, shipmentCartItemModel,
-                                        isTradeInDropOff, false
-                                )));
+        if (isTradeInDropOff) {
+            observable = ratesApiUseCase.execute(param);
+            compositeSubscription.add(
+                    observable
+                            .map(shippingRecommendationData ->
+                                    stateConverter.fillState(shippingRecommendationData, shopShipmentList,
+                                            spId, 0))
+                            .subscribe(
+                                    new GetBoPromoCourierRecommendationSubscriber(
+                                            getView(), this, cartString, promoCode, shippingId, spId,
+                                            itemPosition, shippingCourierConverter, shipmentCartItemModel,
+                                            isTradeInDropOff, false, null
+                                    )));
+        } else {
+            if (ratesPromoPublisher == null) {
+                logisticPromoDonePublisher = PublishSubject.create();
+                ratesPromoPublisher = PublishSubject.create();
+                compositeSubscription.add(
+                        ratesPromoPublisher
+                                .concatMap(shipmentGetCourierHolderData -> {
+                                    Log.i("qwertyuiop", "concat");
+                                    ratesUseCase.execute(shipmentGetCourierHolderData.getRatesParam())
+                                            .map(shippingRecommendationData ->
+                                                    stateConverter.fillState(shippingRecommendationData, shipmentGetCourierHolderData.getShopShipmentList(),
+                                                            shipmentGetCourierHolderData.getSpId(), 0)
+                                            ).subscribe(
+                                                    new GetBoPromoCourierRecommendationSubscriber(
+                                                            getView(), this, shipmentGetCourierHolderData.getCartString(), shipmentGetCourierHolderData.getPromoCode(), shipmentGetCourierHolderData.getShipperId(), shipmentGetCourierHolderData.getSpId(),
+                                                            shipmentGetCourierHolderData.getItemPosition(), shippingCourierConverter, shipmentGetCourierHolderData.getShipmentCartItemModel(),
+                                                            shipmentGetCourierHolderData.isTradeInDropOff(), false, logisticPromoDonePublisher
+                                                    ));
+                                    return logisticPromoDonePublisher;
+                                })
+                                .subscribe()
+                );
+            }
+            ratesPromoPublisher.onNext(new ShipmentGetCourierHolderData(
+                    shippingId,
+                    spId,
+                    itemPosition,
+                    shipmentCartItemModel,
+                    shopShipmentList,
+                    false,
+                    cartString,
+                    isTradeInDropOff,
+                    false,
+                    param,
+                    promoCode
+            ));
+        }
     }
 
     @Override
