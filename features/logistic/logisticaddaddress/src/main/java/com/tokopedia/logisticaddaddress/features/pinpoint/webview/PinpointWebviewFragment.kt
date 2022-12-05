@@ -16,6 +16,7 @@ import com.tokopedia.logisticaddaddress.common.AddressConstants.KEY_LAT_ID
 import com.tokopedia.logisticaddaddress.common.AddressConstants.KEY_LOCATION_PASS
 import com.tokopedia.logisticaddaddress.common.AddressConstants.KEY_LONG_ID
 import com.tokopedia.logisticaddaddress.common.AddressConstants.PARAM_LAT
+import com.tokopedia.logisticaddaddress.common.AddressConstants.PARAM_LONG
 import com.tokopedia.logisticaddaddress.di.pinpointwebview.DaggerPinpointWebviewComponent
 import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.usecase.coroutines.Fail
@@ -97,9 +98,7 @@ class PinpointWebviewFragment : BaseSessionWebViewFragment() {
 
         if (url.isNotEmpty() && url.contains(ApplinkConst.PINPOINT_WEBVIEW)) {
             val lat = uri.getQueryParameter(PARAM_LAT)?.toDoubleOrNull()
-            // todo revert this
-//            val long = uri.getQueryParameter(PARAM_LONG)?.toDoubleOrNull()
-            val long = uri.getQueryParameter("long")?.toDoubleOrNull()
+            val long = uri.getQueryParameter(PARAM_LONG)?.toDoubleOrNull()
             if (lat != null && long != null) {
                 viewModel.saveLatLong(lat, long)
             }

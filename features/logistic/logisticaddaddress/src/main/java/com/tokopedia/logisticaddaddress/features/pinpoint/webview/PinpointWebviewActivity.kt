@@ -24,6 +24,7 @@ import com.tokopedia.logisticaddaddress.common.AddressConstants.PARAM_DISTRICT_I
 import com.tokopedia.logisticaddaddress.common.AddressConstants.PARAM_LAT
 import com.tokopedia.logisticaddaddress.common.AddressConstants.PARAM_LONG
 import com.tokopedia.logisticaddaddress.common.AddressConstants.PARAM_SOURCE
+import com.tokopedia.url.TokopediaUrl
 
 class PinpointWebviewActivity : BaseSimpleActivity() {
 
@@ -40,9 +41,7 @@ class PinpointWebviewActivity : BaseSimpleActivity() {
     }
 
     private fun generateUrl(): String {
-        val tokopediaUrl: String = "https://282-beta-feature.tokopedia.com/"
-//        val tokopediaUrl: String = TokopediaUrl.getInstance().WEB
-        return Uri.parse(tokopediaUrl)
+        return Uri.parse(TokopediaUrl.getInstance().WEB)
             .buildUpon()
             .appendPath(URL_PINPOINT)
             .setDistrictId()
