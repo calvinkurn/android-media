@@ -146,6 +146,13 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
         setupPaging()
         setupSearchBar()
         setupButton()
+        setupToolbar()
+    }
+
+    private fun setupToolbar() {
+        binding?.header?.setNavigationOnClickListener {
+            activity?.finish()
+        }
     }
 
     private fun setupButton() {
