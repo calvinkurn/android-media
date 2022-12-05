@@ -46,7 +46,7 @@ class AddressFormViewModel @Inject constructor(private val repo: KeroRepository)
         get() = _pinpointValidation
 
     var source: String = ""
-    var isGmsAvailable: Boolean = false
+    var isGmsAvailable: Boolean = true
     val isTokonow: Boolean
         get() = source == ManageAddressSource.TOKONOW.source
 

@@ -1,5 +1,6 @@
 package com.tokopedia.editshipping.ui.shopeditaddress
 
+import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
@@ -11,7 +12,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.google.android.gms.maps.*
@@ -98,7 +98,8 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
     override fun getScreenName(): String = ""
 
     override fun initInjector() {
-        DaggerShopEditAddressComponent.builder().baseAppComponent((activity?.applicationContext as BaseMainApplication).baseAppComponent)
+        DaggerShopEditAddressComponent.builder()
+            .baseAppComponent((activity?.applicationContext as BaseMainApplication).baseAppComponent)
             .build().inject(this)
     }
 
@@ -111,7 +112,11 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
         }
     }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         return inflater.inflate(R.layout.fragment_shop_edit_address, container, false)
     }
 
@@ -132,7 +137,9 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
         if (resultCode == Activity.RESULT_OK) {
             when (requestCode) {
                 GET_DISTRICT_RECCOMENDATION_REQUEST_CODE -> {
-                    val address = data?.getParcelableExtra<DistrictRecommendationAddress>(RESULT_INTENT_DISTRICT_RECOMMENDATION)
+                    val address = data?.getParcelableExtra<DistrictRecommendationAddress>(
+                        RESULT_INTENT_DISTRICT_RECOMMENDATION
+                    )
                     etKotaKecamatan?.setText(address?.districtName + ", " + address?.cityName)
                     etZipCode?.setText("")
 
@@ -148,7 +155,8 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
                 }
 
                 OPEN_MAP_REQUEST_CODE -> {
-                    val addressModel = data?.getParcelableExtra<SaveAddressDataModel>(EXTRA_ADDRESS_MODEL)
+                    val addressModel =
+                        data?.getParcelableExtra<SaveAddressDataModel>(EXTRA_ADDRESS_MODEL)
                     addressModel?.let {
                         warehouseModel?.districtId = it.districtId
                         detailAddressHelper = it.formattedAddress
@@ -220,7 +228,10 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
         tvUserConsent = view?.findViewById(R.id.tv_user_consent)
         mapView = view?.findViewById(R.id.map_view_detail)
         btnOpenMap = view?.findViewById(R.id.btn_open_map)
+        initMaps()
+    }
 
+    private fun initMaps() {
         context?.let {
             if (!MapsAvailabilityHelper.isMapsAvailable(it)) {
                 mapView?.gone()
@@ -229,115 +240,128 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
     }
 
     private fun initViewModel() {
-        viewModel.zipCodeList.observe(
-            viewLifecycleOwner,
-            Observer {
-                when (it) {
-                    is Success -> {
-                        zipCodes = ArrayList(it.data.district[0].zipCode)
-                        initZipCode()
-                        if (zipCodes.isEmpty()) {
-                            etZipCode?.apply {
-                                isFocusableInTouchMode = true
-                                isFocusable = true
-                                setOnClickListener(null)
-                            }
+        viewModel.zipCodeList.observe(viewLifecycleOwner) {
+            when (it) {
+                is Success -> {
+                    zipCodes = ArrayList(it.data.district[0].zipCode)
+                    initZipCode()
+                    if (zipCodes.isEmpty()) {
+                        etZipCode?.apply {
+                            isFocusableInTouchMode = true
+                            isFocusable = true
+                            setOnClickListener(null)
                         }
                     }
-                    is Fail -> zipCodes = arrayListOf()
                 }
+                is Fail -> zipCodes = arrayListOf()
             }
-        )
+        }
 
-        viewModel.autoCompleteList.observe(
-            viewLifecycleOwner,
-            Observer {
-                when (it) {
-                    is Success -> viewModel.getDistrictLocation(it.data.data.first().placeId)
-                    is Fail -> Timber.d(it.throwable)
+        viewModel.autoCompleteList.observe(viewLifecycleOwner) {
+            when (it) {
+                is Success -> viewModel.getDistrictLocation(it.data.data.first().placeId)
+                is Fail -> Timber.d(it.throwable)
+            }
+        }
+
+        viewModel.districtLocation.observe(viewLifecycleOwner) {
+            when (it) {
+                is Success -> {
+                    val lat = it.data.latitude.toDouble()
+                    val long = it.data.longitude.toDouble()
+                    adjustMap(lat, long)
+                    detailAddressHelper = it.data.formattedAddress
+                    val addressDetailUser = etShopDetail?.text.toString()
+                    checkValidateAddressDetail(detailAddressHelper, addressDetailUser)
                 }
+                is Fail -> Timber.d(it.throwable)
             }
-        )
+        }
 
-        viewModel.districtLocation.observe(
-            viewLifecycleOwner,
-            Observer {
-                when (it) {
-                    is Success -> {
-                        val lat = it.data.latitude.toDouble()
-                        val long = it.data.longitude.toDouble()
-                        adjustMap(lat, long)
-                        detailAddressHelper = it.data.formattedAddress
-                        val addressDetailUser = etShopDetail?.text.toString()
-                        checkValidateAddressDetail(detailAddressHelper, addressDetailUser)
+        viewModel.districtGeocode.observe(viewLifecycleOwner) {
+            when (it) {
+                is Success -> detailAddressHelper = it.data.data.formattedAddress
+                is Fail -> detailAddressHelper = ""
+            }
+        }
+
+        viewModel.saveEditShop.observe(viewLifecycleOwner) {
+            when (it) {
+                is ShopEditAddressState.Success -> {
+                    swipeRefreshLayout?.isRefreshing = false
+                    view?.let { view ->
+                        Toaster.build(
+                            view,
+                            getString(R.string.save_edit_shop_success),
+                            Toaster.LENGTH_SHORT,
+                            type = Toaster.TYPE_NORMAL
+                        ).show()
                     }
-                    is Fail -> Timber.d(it.throwable)
-                }
-            }
-        )
-
-        viewModel.districtGeocode.observe(
-            viewLifecycleOwner,
-            Observer {
-                when (it) {
-                    is Success -> detailAddressHelper = it.data.data.formattedAddress
-                    is Fail -> detailAddressHelper = ""
-                }
-            }
-        )
-
-        viewModel.saveEditShop.observe(
-            viewLifecycleOwner,
-            Observer {
-                when (it) {
-                    is ShopEditAddressState.Success -> {
-                        swipeRefreshLayout?.isRefreshing = false
-                        view?.let { view -> Toaster.build(view, getString(R.string.save_edit_shop_success), Toaster.LENGTH_SHORT, type = Toaster.TYPE_NORMAL).show() }
-                        if (!uncoveredCourierFlag) {
-                            activity?.setResult(Activity.RESULT_OK)
-                        } else {
-                            startActivity(RouteManager.getIntent(context, ApplinkConstInternalMarketplace.SHOP_SETTINGS_SHIPPING))
-                        }
-                        activity?.finish()
+                    if (!uncoveredCourierFlag) {
+                        activity?.setResult(Activity.RESULT_OK)
+                    } else {
+                        startActivity(
+                            RouteManager.getIntent(
+                                context,
+                                ApplinkConstInternalMarketplace.SHOP_SETTINGS_SHIPPING
+                            )
+                        )
                     }
-                    is ShopEditAddressState.Fail -> {
-                        swipeRefreshLayout?.isRefreshing = false
-                        view?.let { view -> Toaster.build(view, DEFAULT_ERROR_MESSAGE, Toaster.LENGTH_SHORT, type = Toaster.TYPE_ERROR).show() }
-                    }
-
-                    else -> swipeRefreshLayout?.isRefreshing = true
+                    activity?.finish()
                 }
-            }
-        )
-
-        viewModel.checkCouriers.observe(
-            viewLifecycleOwner,
-            Observer {
-                when (it) {
-                    is ShopEditAddressState.Success -> {
-                        checkCouriersCoverage(it.data.data.isCovered)
+                is ShopEditAddressState.Fail -> {
+                    swipeRefreshLayout?.isRefreshing = false
+                    view?.let { view ->
+                        Toaster.build(
+                            view,
+                            DEFAULT_ERROR_MESSAGE,
+                            Toaster.LENGTH_SHORT,
+                            type = Toaster.TYPE_ERROR
+                        ).show()
                     }
-
-                    is ShopEditAddressState.Fail -> {
-                        swipeRefreshLayout?.isRefreshing = false
-                        view?.let { view -> Toaster.build(view, DEFAULT_ERROR_MESSAGE, Toaster.LENGTH_SHORT, type = Toaster.TYPE_ERROR).show() }
-                    }
-
-                    else -> swipeRefreshLayout?.isRefreshing = true
                 }
+
+                else -> swipeRefreshLayout?.isRefreshing = true
             }
-        )
+        }
+
+        viewModel.checkCouriers.observe(viewLifecycleOwner) {
+            when (it) {
+                is ShopEditAddressState.Success -> {
+                    checkCouriersCoverage(it.data.data.isCovered)
+                }
+
+                is ShopEditAddressState.Fail -> {
+                    swipeRefreshLayout?.isRefreshing = false
+                    view?.let { view ->
+                        Toaster.build(
+                            view,
+                            DEFAULT_ERROR_MESSAGE,
+                            Toaster.LENGTH_SHORT,
+                            type = Toaster.TYPE_ERROR
+                        ).show()
+                    }
+                }
+
+                else -> swipeRefreshLayout?.isRefreshing = true
+            }
+        }
     }
 
     private fun checkValidateAddressDetail(addressHelper: String, userAddress: String) {
         val normalizeAddressHelper = ShopEditAddressUtils.normalize(addressHelper)
         val normalizeUserAddress = ShopEditAddressUtils.normalize(userAddress)
-        if (ShopEditAddressUtils.validateAddressSimilarity(normalizeAddressHelper, normalizeUserAddress)) {
+        if (ShopEditAddressUtils.validateAddressSimilarity(
+                normalizeAddressHelper,
+                normalizeUserAddress
+            )
+        ) {
             validate = true
             helperShopDetail?.text = ""
         } else {
             validate = false
-            helperShopDetail?.text = getString(R.string.detail_alamat_error_helper, detailAddressHelper)
+            helperShopDetail?.text =
+                getString(R.string.detail_alamat_error_helper, detailAddressHelper)
         }
     }
 
@@ -358,7 +382,8 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
     }
 
     private fun showDialog() {
-        val dialog = context?.let { DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE) }
+        val dialog =
+            context?.let { DialogUnify(it, DialogUnify.VERTICAL_ACTION, DialogUnify.NO_IMAGE) }
         dialog?.apply {
             setTitle(getString(R.string.title_save_dialog))
             setDescription(getString(R.string.desc_save_dialog))
@@ -368,9 +393,15 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
                 val latLong = "$currentLat,$currentLong"
                 warehouseModel?.let {
                     viewModel.saveEditShopLocation(
-                        userSession.shopId.toLong(), it.warehouseId, etShopLocation?.text.toString(),
-                        it.districtId, latLong, userSession.email, etShopDetail?.text.toString(),
-                        etZipCode?.text.toString(), userSession.phoneNumber
+                        userSession.shopId.toLong(),
+                        it.warehouseId,
+                        etShopLocation?.text.toString(),
+                        it.districtId,
+                        latLong,
+                        userSession.email,
+                        etShopDetail?.text.toString(),
+                        etZipCode?.text.toString(),
+                        userSession.phoneNumber
                     )
                 }
             }
@@ -402,13 +433,19 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
         etZipCode?.setText(warehouseModel?.postalCode)
         etShopDetail?.setText(warehouseModel?.addressDetail)
 
-        tvPinpointText?.text = context?.let { HtmlLinkHelper(it, getString(R.string.tv_pinpoint_desc)).spannedString }
+        tvPinpointText?.text =
+            context?.let { HtmlLinkHelper(it, getString(R.string.tv_pinpoint_desc)).spannedString }
 
         btnOpenMap?.setOnClickListener {
             goToPinpointActivity(currentLat, currentLong, warehouseModel)
         }
 
-        LogisticUserConsentHelper.displayUserConsent(activity as Context, userSession.userId, tvUserConsent, getString(R.string.save_changes))
+        LogisticUserConsentHelper.displayUserConsent(
+            activity as Context,
+            userSession.userId,
+            tvUserConsent,
+            getString(R.string.save_changes)
+        )
 
         btnSave?.setOnClickListener {
             warehouseModel?.let { it ->
@@ -427,6 +464,7 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
         }
     }
 
+    @SuppressLint("ClickableViewAccessibility")
     private fun setViewListener() {
         etShopLocation?.apply {
             addTextChangedListener(setShopLocationWatcher())
@@ -434,7 +472,10 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
 
         etKotaKecamatan?.apply {
             setOnClickListener {
-                val intent = RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.DISTRICT_RECOMMENDATION_SHOP_SETTINGS)
+                val intent = RouteManager.getIntent(
+                    activity,
+                    ApplinkConstInternalMarketplace.DISTRICT_RECOMMENDATION_SHOP_SETTINGS
+                )
                 startActivityForResult(intent, GET_DISTRICT_RECCOMENDATION_REQUEST_CODE)
             }
         }
@@ -509,8 +550,8 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
     private fun moveMap(latLng: LatLng) {
         val cameraPosition = CameraPosition.Builder()
             .target(latLng)
-            .zoom(15f)
-            .bearing(0f)
+            .zoom(MAP_ZOOM)
+            .bearing(MAP_BEARING)
             .build()
 
         googleMap?.moveCamera(CameraUpdateFactory.newCameraPosition(cameraPosition))
@@ -532,6 +573,8 @@ class ShopEditAddressFragment : BaseDaggerFragment(), OnMapReadyCallback {
     companion object {
         private const val GET_DISTRICT_RECCOMENDATION_REQUEST_CODE = 100
         private const val OPEN_MAP_REQUEST_CODE = 200
+        private const val MAP_ZOOM = 15f
+        private const val MAP_BEARING = 0f
         private const val RESULT_INTENT_DISTRICT_RECOMMENDATION = "district_recommendation_address"
         private const val EXTRA_ADDRESS_MODEL = "EXTRA_ADDRESS_MODEL"
         const val EXTRA_SAVE_DATA_UI_MODEL = "EXTRA_SAVE_DATA_UI_MODEL"

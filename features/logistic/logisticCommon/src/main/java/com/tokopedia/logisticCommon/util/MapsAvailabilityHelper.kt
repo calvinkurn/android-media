@@ -6,10 +6,9 @@ import com.google.android.gms.common.GoogleApiAvailability
 
 object MapsAvailabilityHelper {
 
-    fun isMapsAvailable(context: Context) : Boolean {
+    fun isMapsAvailable(context: Context): Boolean {
         val availability = GoogleApiAvailability.getInstance()
         val resultCode = availability.isGooglePlayServicesAvailable(context)
         return resultCode == ConnectionResult.SUCCESS
     }
-
 }

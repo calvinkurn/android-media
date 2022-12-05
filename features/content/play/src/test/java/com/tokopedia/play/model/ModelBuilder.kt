@@ -559,7 +559,19 @@ class ModelBuilder {
                 "min_quantity": 1,
                 "is_free_shipping": false,
                 "is_toko_now": false,
-                "is_pinned": false
+                "is_pinned": false,
+                "available_buttons": [
+                  {
+                    "text": "+ Keranjang",
+                    "color": "SECONDARY_DISABLED",
+                    "button_type": "ATC"
+                  },
+                  {
+                    "text": "Beli",
+                    "color": "PRIMARY_DISABLED",
+                    "button_type": "GCR"
+                  }
+                ]
               },
               {
                 "id": "233501860",
@@ -580,7 +592,19 @@ class ModelBuilder {
                 "min_quantity": 1,
                 "is_free_shipping": false,
                 "is_toko_now": false,
-                "is_pinned": false
+                "is_pinned": false,
+                "available_buttons": [
+                  {
+                    "text": "+ Keranjang",
+                    "color": "SECONDARY_DISABLED",
+                    "button_type": "ATC"
+                  },
+                  {
+                    "text": "Beli",
+                    "color": "PRIMARY_DISABLED",
+                    "button_type": "GCR"
+                  }
+                ]
               }
             ]
           },
@@ -618,7 +642,19 @@ class ModelBuilder {
                 "min_quantity": 1,
                 "is_free_shipping": false,
                 "is_toko_now": false,
-                "is_pinned": false
+                "is_pinned": false,
+                "available_buttons": [
+                  {
+                    "text": "+ Keranjang",
+                    "color": "SECONDARY_DISABLED",
+                    "button_type": "ATC"
+                  },
+                  {
+                    "text": "Beli",
+                    "color": "PRIMARY_DISABLED",
+                    "button_type": "GCR"
+                  }
+                ]
               },
               {
                 "id": "193124774",
@@ -639,7 +675,19 @@ class ModelBuilder {
                 "min_quantity": 1,
                 "is_free_shipping": false,
                 "is_toko_now": false,
-                "is_pinned": false
+                "is_pinned": false,
+                "available_buttons": [
+                  {
+                    "text": "+ Keranjang",
+                    "color": "SECONDARY_DISABLED",
+                    "button_type": "ATC"
+                  },
+                  {
+                    "text": "Beli",
+                    "color": "PRIMARY_DISABLED",
+                    "button_type": "GCR"
+                  }
+                ]
               },
               {
                 "id": "489530510",
@@ -660,7 +708,19 @@ class ModelBuilder {
                 "min_quantity": 1,
                 "is_free_shipping": false,
                 "is_toko_now": false,
-                "is_pinned": false
+                "is_pinned": false,
+                "available_buttons": [
+                  {
+                    "text": "+ Keranjang",
+                    "color": "SECONDARY_DISABLED",
+                    "button_type": "ATC"
+                  },
+                  {
+                    "text": "Beli",
+                    "color": "PRIMARY_DISABLED",
+                    "button_type": "GCR"
+                  }
+                ]
               }
             ]
           }
@@ -675,9 +735,9 @@ class ModelBuilder {
             "voucher_type": 1,
             "voucher_image": "",
             "voucher_image_square": "",
-            "voucher_quota": 100,
             "voucher_finish_time": "2022-09-13T23:59:59Z",
             "voucher_code": "KONGT074OKE",
+            "is_quota_available": 1,
             "is_highlighted": true,
             "is_copyable": true,
             "is_private": true
@@ -691,12 +751,12 @@ class ModelBuilder {
             "voucher_type": 1,
             "voucher_image": "https://images.tokopedia.net/img/BTJGre/2022/8/31/876cf223-e031-4410-a61e-74d6d3e9c8bd.jpg",
             "voucher_image_square": "https://images.tokopedia.net/img/nNLhqY/2022/8/31/f47c1320-e630-4fec-9216-b9bb48de647a.jpg",
-            "voucher_quota": 25,
             "voucher_finish_time": "2022-09-30T23:30:00Z",
             "voucher_code": "KONGON40HU",
+            "is_quota_available": 1,
             "is_highlighted": false,
             "is_copyable": false,
-            "is_private": false
+            "is_private": true
           },
           {
             "voucher_id": "11968048",
@@ -707,12 +767,12 @@ class ModelBuilder {
             "voucher_type": 1,
             "voucher_image": "https://images.tokopedia.net/img/BTJGre/2022/8/31/a9660bff-3632-4929-a8ff-c056c81dc769.jpg",
             "voucher_image_square": "https://images.tokopedia.net/img/nNLhqY/2022/8/31/0997fcca-3a69-4dc3-bc9e-db646c4296b1.jpg",
-            "voucher_quota": 25,
             "voucher_finish_time": "2022-09-30T23:30:00Z",
             "voucher_code": "KONGGWPFRO",
+            "is_quota_available": 1,
             "is_highlighted": false,
             "is_copyable": false,
-            "is_private": false
+            "is_private": true
           },
           {
             "voucher_id": "11968115",
@@ -720,15 +780,15 @@ class ModelBuilder {
             "shop_id": "1961630",
             "title": "Cashback Rp20.000",
             "subtitle": "Transaksi min. Rp287.500",
-            "voucher_type": 3,
+            "voucher_type": 1,
             "voucher_image": "https://images.tokopedia.net/img/BTJGre/2022/8/31/79a73fb7-12ae-4292-80b7-8c8b5a85393b.jpg",
             "voucher_image_square": "https://images.tokopedia.net/img/nNLhqY/2022/8/31/f2a68a0e-70da-43ec-8dc2-d991eba517ff.jpg",
-            "voucher_quota": 15,
             "voucher_finish_time": "2022-09-30T23:30:00Z",
             "voucher_code": "KONG0NBOUE",
+            "is_quota_available": 1,
             "is_highlighted": false,
             "is_copyable": false,
-            "is_private": false
+            "is_private": true
           },
           {
             "voucher_id": "4946142",
@@ -742,9 +802,10 @@ class ModelBuilder {
             "voucher_quota": 25,
             "voucher_finish_time": "2050-12-31T23:59:00Z",
             "voucher_code": "KONGP0FL5B",
+            "is_quota_available": 1,
             "is_highlighted": false,
             "is_copyable": false,
-            "is_private": false
+            "is_private": true
           },
           {
             "voucher_id": "11968045",
@@ -752,15 +813,16 @@ class ModelBuilder {
             "shop_id": "1961630",
             "title": "Cashback Rp20.000",
             "subtitle": "Transaksi min. Rp287.500",
-            "voucher_type": 3,
+            "voucher_type": 1,
             "voucher_image": "https://images.tokopedia.net/img/BTJGre/2022/8/31/2b25f48d-b8c1-4c89-ab25-82fc5c8146b1.jpg",
             "voucher_image_square": "https://images.tokopedia.net/img/nNLhqY/2022/8/31/140e27e4-6f0d-4f70-a458-a386a91066f3.jpg",
             "voucher_quota": 15,
             "voucher_finish_time": "2022-09-30T23:30:00Z",
             "voucher_code": "KONG3LPOBC",
+            "is_quota_available": 1,
             "is_highlighted": false,
             "is_copyable": false,
-            "is_private": false
+            "is_private": true
           },
           {
             "voucher_id": "11968042",
@@ -774,6 +836,7 @@ class ModelBuilder {
             "voucher_quota": 25,
             "voucher_finish_time": "2022-09-30T23:30:00Z",
             "voucher_code": "KONG92U02Z",
+            "is_quota_available": 1,
             "is_highlighted": false,
             "is_copyable": false,
             "is_private": false
@@ -825,7 +888,19 @@ class ModelBuilder {
                 "min_quantity": 1,
                 "is_free_shipping": false,
                 "is_toko_now": false,
-                "is_pinned": false
+                "is_pinned": false,
+                "available_buttons": [
+                  {
+                    "text": "+ Keranjang",
+                    "color": "SECONDARY_DISABLED",
+                    "button_type": "ATC"
+                  },
+                  {
+                    "text": "Beli",
+                    "color": "PRIMARY_DISABLED",
+                    "button_type": "GCR"
+                  }
+                ]
               },
               {
                 "id": "233501860",
@@ -846,7 +921,19 @@ class ModelBuilder {
                 "min_quantity": 1,
                 "is_free_shipping": false,
                 "is_toko_now": false,
-                "is_pinned": false
+                "is_pinned": false,
+                "available_buttons": [
+                  {
+                    "text": "+ Keranjang",
+                    "color": "SECONDARY_DISABLED",
+                    "button_type": "ATC"
+                  },
+                  {
+                    "text": "Beli",
+                    "color": "PRIMARY_DISABLED",
+                    "button_type": "GCR"
+                  }
+                ]
               }
             ]
           },
@@ -884,7 +971,19 @@ class ModelBuilder {
                 "min_quantity": 1,
                 "is_free_shipping": false,
                 "is_toko_now": false,
-                "is_pinned": false
+                "is_pinned": false,
+                "available_buttons": [
+                  {
+                    "text": "+ Keranjang",
+                    "color": "SECONDARY_DISABLED",
+                    "button_type": "ATC"
+                  },
+                  {
+                    "text": "Beli",
+                    "color": "PRIMARY_DISABLED",
+                    "button_type": "GCR"
+                  }
+                ]
               },
               {
                 "id": "193124774",
@@ -905,7 +1004,19 @@ class ModelBuilder {
                 "min_quantity": 1,
                 "is_free_shipping": false,
                 "is_toko_now": false,
-                "is_pinned": false
+                "is_pinned": false,
+                "available_buttons": [
+                  {
+                    "text": "+ Keranjang",
+                    "color": "SECONDARY_DISABLED",
+                    "button_type": "ATC"
+                  },
+                  {
+                    "text": "Beli",
+                    "color": "PRIMARY_DISABLED",
+                    "button_type": "GCR"
+                  }
+                ]
               },
               {
                 "id": "489530510",
@@ -926,7 +1037,19 @@ class ModelBuilder {
                 "min_quantity": 1,
                 "is_free_shipping": false,
                 "is_toko_now": false,
-                "is_pinned": false
+                "is_pinned": false,
+                "available_buttons": [
+                  {
+                    "text": "+ Keranjang",
+                    "color": "SECONDARY_DISABLED",
+                    "button_type": "ATC"
+                  },
+                  {
+                    "text": "Beli",
+                    "color": "PRIMARY_DISABLED",
+                    "button_type": "GCR"
+                  }
+                ]
               }
             ]
           }
@@ -941,9 +1064,9 @@ class ModelBuilder {
             "voucher_type": 1,
             "voucher_image": "",
             "voucher_image_square": "",
-            "voucher_quota": 100,
             "voucher_finish_time": "2022-09-13T23:59:59Z",
             "voucher_code": "KONGT074OKE",
+            "is_quota_available": 1,
             "is_highlighted": true,
             "is_copyable": true,
             "is_private": true
@@ -957,9 +1080,9 @@ class ModelBuilder {
             "voucher_type": 1,
             "voucher_image": "https://images.tokopedia.net/img/BTJGre/2022/8/31/876cf223-e031-4410-a61e-74d6d3e9c8bd.jpg",
             "voucher_image_square": "https://images.tokopedia.net/img/nNLhqY/2022/8/31/f47c1320-e630-4fec-9216-b9bb48de647a.jpg",
-            "voucher_quota": 25,
             "voucher_finish_time": "2022-09-30T23:30:00Z",
             "voucher_code": "KONGON40HU",
+            "is_quota_available": 1,
             "is_highlighted": false,
             "is_copyable": false,
             "is_private": true
@@ -973,9 +1096,9 @@ class ModelBuilder {
             "voucher_type": 1,
             "voucher_image": "https://images.tokopedia.net/img/BTJGre/2022/8/31/a9660bff-3632-4929-a8ff-c056c81dc769.jpg",
             "voucher_image_square": "https://images.tokopedia.net/img/nNLhqY/2022/8/31/0997fcca-3a69-4dc3-bc9e-db646c4296b1.jpg",
-            "voucher_quota": 25,
             "voucher_finish_time": "2022-09-30T23:30:00Z",
             "voucher_code": "KONGGWPFRO",
+            "is_quota_available": 1,
             "is_highlighted": false,
             "is_copyable": false,
             "is_private": true
@@ -989,9 +1112,9 @@ class ModelBuilder {
             "voucher_type": 1,
             "voucher_image": "https://images.tokopedia.net/img/BTJGre/2022/8/31/79a73fb7-12ae-4292-80b7-8c8b5a85393b.jpg",
             "voucher_image_square": "https://images.tokopedia.net/img/nNLhqY/2022/8/31/f2a68a0e-70da-43ec-8dc2-d991eba517ff.jpg",
-            "voucher_quota": 15,
             "voucher_finish_time": "2022-09-30T23:30:00Z",
             "voucher_code": "KONG0NBOUE",
+            "is_quota_available": 1,
             "is_highlighted": false,
             "is_copyable": false,
             "is_private": true
@@ -1008,6 +1131,7 @@ class ModelBuilder {
             "voucher_quota": 25,
             "voucher_finish_time": "2050-12-31T23:59:00Z",
             "voucher_code": "KONGP0FL5B",
+            "is_quota_available": 1,
             "is_highlighted": false,
             "is_copyable": false,
             "is_private": true
@@ -1024,6 +1148,7 @@ class ModelBuilder {
             "voucher_quota": 15,
             "voucher_finish_time": "2022-09-30T23:30:00Z",
             "voucher_code": "KONG3LPOBC",
+            "is_quota_available": 1,
             "is_highlighted": false,
             "is_copyable": false,
             "is_private": true
@@ -1040,6 +1165,7 @@ class ModelBuilder {
             "voucher_quota": 25,
             "voucher_finish_time": "2022-09-30T23:30:00Z",
             "voucher_code": "KONG92U02Z",
+            "is_quota_available": 1,
             "is_highlighted": false,
             "is_copyable": false,
             "is_private": true
@@ -1531,6 +1657,7 @@ class ModelBuilder {
         isTokoNow: Boolean = false,
         isPinned: Boolean = false,
         isRilisanSpesial: Boolean = false,
+        buttons: List<ProductButtonUiModel> = emptyList(),
     ) = PlayProductUiModel.Product(
         id = id,
         shopId = shopId,
@@ -1545,6 +1672,7 @@ class ModelBuilder {
         isTokoNow = isTokoNow,
         isPinned = isPinned,
         isRilisanSpesial = isRilisanSpesial,
+        buttons = buttons,
     )
 
     fun buildProductStockAvailable(

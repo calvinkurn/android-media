@@ -17,7 +17,6 @@ import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.ViewCompat
-import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.beloo.widget.chipslayoutmanager.ChipsLayoutManager
 import com.google.android.material.textfield.TextInputLayout
@@ -150,17 +149,23 @@ class AddressFormFragment :
                 }
                 isPositiveFlow = it.getBoolean(EXTRA_IS_POSITIVE_FLOW)
                 currentKotaKecamatan = it.getString(EXTRA_KOTA_KECAMATAN)
-                viewModel.isGmsAvailable = it.getBoolean(EXTRA_GMS_AVAILABILITY, true)
             } else {
                 EditAddressRevampAnalytics.onViewEditAddressPageNew(userSession.userId)
                 addressId = it.getString(EXTRA_ADDRESS_ID, "")
-                context?.let { ctx ->
-                    viewModel.isGmsAvailable = MapsAvailabilityHelper.isMapsAvailable(ctx)
-                }
             }
+            checkMapsAvailability()
             viewModel.source = it.getString(PARAM_SOURCE, "")
         }
         permissionCheckerHelper = PermissionCheckerHelper()
+    }
+
+    private fun checkMapsAvailability() {
+        val gmsAvailable = if (isEdit) {
+            context?.let { ctx -> MapsAvailabilityHelper.isMapsAvailable(ctx) } ?: true
+        } else {
+            arguments?.getBoolean(EXTRA_GMS_AVAILABILITY, true) ?: true
+        }
+        viewModel.isGmsAvailable = gmsAvailable
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -291,207 +296,171 @@ class AddressFormFragment :
     }
 
     private fun initObserver() {
-        viewModel.districtDetail.observe(
-            viewLifecycleOwner,
-            Observer {
-                when (it) {
-                    is Success -> {
-                        prepareLayout(it.data.district.getOrNull(0))
-                    }
+        viewModel.districtDetail.observe(viewLifecycleOwner) {
+            when (it) {
+                is Success -> {
+                    prepareLayout(it.data.district.getOrNull(0))
+                }
 
-                    is Fail -> {
-                        it.throwable.printStackTrace()
-                    }
+                is Fail -> {
+                    it.throwable.printStackTrace()
                 }
             }
-        )
+        }
 
-        viewModel.saveAddress.observe(
-            viewLifecycleOwner,
-            Observer {
-                when (it) {
-                    is Success -> {
-                        if (it.data.isSuccess == 1) {
-                            saveDataModel?.id = it.data.addrId
-                            saveDataModel?.warehouseId = it.data.tokonow.warehouseId
-                            saveDataModel?.shopId = it.data.tokonow.shopId
-                            saveDataModel?.warehouses =
-                                AddAddressMapper.mapWarehouses(it.data.tokonow.warehouses)
-                            saveDataModel?.serviceType = it.data.tokonow.serviceType
-                            if (isPositiveFlow) {
-                                AddNewAddressRevampAnalytics.onClickSimpanPositive(
-                                    userSession.userId,
-                                    SUCCESS
-                                )
-                            } else {
-                                AddNewAddressRevampAnalytics.onClickSimpanNegative(
-                                    userSession.userId,
-                                    SUCCESS
-                                )
-                            }
-                            onSuccessAddAddress()
-                        }
-                    }
-
-                    is Fail -> {
+        viewModel.saveAddress.observe(viewLifecycleOwner) {
+            when (it) {
+                is Success -> {
+                    if (it.data.isSuccess == 1) {
+                        saveDataModel?.id = it.data.addrId
+                        saveDataModel?.warehouseId = it.data.tokonow.warehouseId
+                        saveDataModel?.shopId = it.data.tokonow.shopId
+                        saveDataModel?.warehouses =
+                            AddAddressMapper.mapWarehouses(it.data.tokonow.warehouses)
+                        saveDataModel?.serviceType = it.data.tokonow.serviceType
                         if (isPositiveFlow) {
-                            AddNewAddressRevampAnalytics.onClickSimpanErrorPositive(
-                                userSession.userId,
-                                ""
-                            )
                             AddNewAddressRevampAnalytics.onClickSimpanPositive(
                                 userSession.userId,
-                                NOT_SUCCESS
+                                SUCCESS
                             )
                         } else {
-                            AddNewAddressRevampAnalytics.onClickSimpanErrorNegative(
-                                userSession.userId,
-                                ""
-                            )
                             AddNewAddressRevampAnalytics.onClickSimpanNegative(
                                 userSession.userId,
-                                NOT_SUCCESS
+                                SUCCESS
                             )
                         }
-                        val msg = it.throwable.message.toString()
-                        view?.let { view ->
-                            Toaster.build(
-                                view,
-                                msg,
-                                Toaster.LENGTH_SHORT,
-                                Toaster.TYPE_ERROR
-                            ).show()
-                        }
+                        onSuccessAddAddress()
+                    }
+                }
+
+                is Fail -> {
+                    if (isPositiveFlow) {
+                        AddNewAddressRevampAnalytics.onClickSimpanErrorPositive(
+                            userSession.userId,
+                            ""
+                        )
+                        AddNewAddressRevampAnalytics.onClickSimpanPositive(
+                            userSession.userId,
+                            NOT_SUCCESS
+                        )
+                    } else {
+                        AddNewAddressRevampAnalytics.onClickSimpanErrorNegative(
+                            userSession.userId,
+                            ""
+                        )
+                        AddNewAddressRevampAnalytics.onClickSimpanNegative(
+                            userSession.userId,
+                            NOT_SUCCESS
+                        )
+                    }
+                    val msg = it.throwable.message.toString()
+                    view?.let { view ->
+                        Toaster.build(
+                            view,
+                            msg,
+                            Toaster.LENGTH_SHORT,
+                            Toaster.TYPE_ERROR
+                        ).show()
                     }
                 }
             }
-        )
+        }
 
-        viewModel.editAddress.observe(
-            viewLifecycleOwner,
-            Observer {
-                when (it) {
-                    is Success -> {
-                        if (it.data.isSuccess == 1) {
-                            onSuccessEditAddress(it.data.isStateChosenAddressChanged)
-                            EditAddressRevampAnalytics.onClickButtonSimpan(userSession.userId, true)
-                        } else {
-                            EditAddressRevampAnalytics.onClickButtonSimpan(
-                                userSession.userId,
-                                false
-                            )
-                        }
-                    }
-
-                    is Fail -> {
+        viewModel.editAddress.observe(viewLifecycleOwner) {
+            when (it) {
+                is Success -> {
+                    if (it.data.isSuccess == 1) {
+                        onSuccessEditAddress(it.data.isStateChosenAddressChanged)
+                        EditAddressRevampAnalytics.onClickButtonSimpan(userSession.userId, true)
+                    } else {
                         EditAddressRevampAnalytics.onClickButtonSimpan(userSession.userId, false)
-                        val msg = it.throwable.message.toString()
-                        view?.let { view ->
+                    }
+                }
+
+                is Fail -> {
+                    EditAddressRevampAnalytics.onClickButtonSimpan(userSession.userId, false)
+                    val msg = it.throwable.message.toString()
+                    view?.let { view ->
+                        Toaster.build(
+                            view,
+                            msg,
+                            Toaster.LENGTH_SHORT,
+                            Toaster.TYPE_ERROR
+                        ).show()
+                    }
+                }
+            }
+        }
+
+        viewModel.defaultAddress.observe(viewLifecycleOwner) {
+            when (it) {
+                is Success -> {
+                    if (it.data.addressId != 0L) {
+                        binding?.layoutCbDefaultLoc?.visibility = View.VISIBLE
+                    } else {
+                        binding?.layoutCbDefaultLoc?.visibility = View.GONE
+                    }
+                }
+            }
+        }
+
+        viewModel.addressDetail.observe(viewLifecycleOwner) {
+            binding?.loaderAddressForm?.visibility = View.GONE
+            when (it) {
+                is Success -> {
+                    it.data.keroGetAddress.data.firstOrNull()?.let { detailAddress ->
+                        saveDataModel =
+                            AddAddressMapper.mapAddressDetailToSaveAddressDataModel(detailAddress)
+                        isLatitudeNotEmpty = saveDataModel?.latitude?.isNotEmpty()
+                        isLatitudeNotEmpty?.let { notEmpty ->
+                            if (notEmpty) currentLat = saveDataModel?.latitude?.toDouble() ?: 0.0
+                        }
+
+                        isLongitudeNotEmpty = saveDataModel?.longitude?.isNotEmpty()
+                        isLongitudeNotEmpty?.let { notEmpty ->
+                            if (notEmpty) currentLong = saveDataModel?.longitude?.toDouble() ?: 0.0
+                        }
+                        isPositiveFlow = isLatitudeNotEmpty == true && isLongitudeNotEmpty == true
+                        currentKotaKecamatan =
+                            "${detailAddress.districtName}, ${detailAddress.cityName}, ${detailAddress.provinceName}"
+                        prepareEditLayout(detailAddress)
+                    }
+                }
+            }
+        }
+
+        viewModel.pinpointValidation.observe(viewLifecycleOwner) {
+            binding?.loaderAddressForm?.visibility = View.GONE
+            when (it) {
+                is Success -> {
+                    if (it.data.result) {
+                        saveDataModel?.let { addressData -> viewModel.saveEditAddress(addressData) }
+                    } else {
+                        view?.let { v ->
                             Toaster.build(
-                                view,
-                                msg,
+                                v,
+                                getString(R.string.error_district_pinpoint_mismatch),
                                 Toaster.LENGTH_SHORT,
                                 Toaster.TYPE_ERROR
                             ).show()
                         }
-                    }
-                }
-            }
-        )
-
-        viewModel.defaultAddress.observe(
-            viewLifecycleOwner,
-            Observer {
-                when (it) {
-                    is Success -> {
-                        if (it.data.addressId != 0L) {
-                            binding?.layoutCbDefaultLoc?.visibility = View.VISIBLE
-                        } else {
-                            binding?.layoutCbDefaultLoc?.visibility = View.GONE
-                        }
-                    }
-                }
-            }
-        )
-
-        viewModel.addressDetail.observe(
-            viewLifecycleOwner,
-            Observer {
-                binding?.loaderAddressForm?.visibility = View.GONE
-                when (it) {
-                    is Success -> {
-                        it.data.keroGetAddress.data.firstOrNull()?.let { detailAddress ->
-                            saveDataModel = AddAddressMapper.mapAddressDetailToSaveAddressDataModel(
-                                detailAddress
-                            )
-                            isLatitudeNotEmpty = saveDataModel?.latitude?.isNotEmpty()
-                            isLatitudeNotEmpty?.let { notEmpty ->
-                                if (notEmpty) {
-                                    currentLat =
-                                        saveDataModel?.latitude?.toDouble() ?: 0.0
-                                }
-                            }
-
-                            isLongitudeNotEmpty = saveDataModel?.longitude?.isNotEmpty()
-                            isLongitudeNotEmpty?.let { notEmpty ->
-                                if (notEmpty) {
-                                    currentLong =
-                                        saveDataModel?.longitude?.toDouble() ?: 0.0
-                                }
-                            }
-                            isPositiveFlow =
-                                isLatitudeNotEmpty == true && isLongitudeNotEmpty == true
-                            currentKotaKecamatan =
-                                "${detailAddress.districtName}, ${detailAddress.cityName}, ${detailAddress.provinceName}"
-                            prepareEditLayout(detailAddress)
-                        }
-                    }
-                }
-            }
-        )
-
-        viewModel.pinpointValidation.observe(
-            viewLifecycleOwner,
-            Observer {
-                binding?.loaderAddressForm?.visibility = View.GONE
-                when (it) {
-                    is Success -> {
-                        if (it.data.result) {
-                            saveDataModel?.let { addressData ->
-                                viewModel.saveEditAddress(
-                                    addressData
-                                )
-                            }
-                        } else {
-                            view?.let { v ->
-                                Toaster.build(
-                                    v,
-                                    getString(R.string.error_district_pinpoint_mismatch),
-                                    Toaster.LENGTH_SHORT,
-                                    Toaster.TYPE_ERROR
-                                ).show()
-                            }
-                            EditAddressRevampAnalytics.onClickButtonSimpan(
-                                userSession.userId,
-                                false
-                            )
-                        }
-                    }
-                    is Fail -> {
                         EditAddressRevampAnalytics.onClickButtonSimpan(userSession.userId, false)
-                        val msg = it.throwable.message.toString()
-                        view?.let { view ->
-                            Toaster.build(
-                                view,
-                                msg,
-                                Toaster.LENGTH_SHORT,
-                                Toaster.TYPE_ERROR
-                            ).show()
-                        }
+                    }
+                }
+                is Fail -> {
+                    EditAddressRevampAnalytics.onClickButtonSimpan(userSession.userId, false)
+                    val msg = it.throwable.message.toString()
+                    view?.let { view ->
+                        Toaster.build(
+                            view,
+                            msg,
+                            Toaster.LENGTH_SHORT,
+                            Toaster.TYPE_ERROR
+                        ).show()
                     }
                 }
             }
-        )
+        }
     }
 
     @SuppressLint("SetTextI18n")
