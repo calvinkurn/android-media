@@ -13,7 +13,6 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
-import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toIntSafely
 import com.tokopedia.minicart.common.analytics.MiniCartAnalytics
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
@@ -174,7 +173,7 @@ class TokoNowSimilarSimilarProductBottomSheet : BottomSheetUnify(), SimilarProdu
                 pageName = pageName,
                 source = source
             )
-            miniCartWidget?.show()
+//            miniCartWidget?.show()
         } else {
             hideMiniCart()
         }
