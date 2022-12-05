@@ -50,7 +50,7 @@
       "event": "add_to_cart",
       "eventAction": "click buy pinned product",
       "eventCategory": "groupchat room",
-      "eventLabel": "\\d+ - \\d+ - (live|vod) - is rilisan spesial (true|false)",
+      "eventLabel": "\\d+ - \\d+ - (live|vod) - is rilisan spesial (true|false) - beli langsung (true|false)",
       "businessUnit": "play",
       "currentSite": "tokopediamarketplace",
       "items": [

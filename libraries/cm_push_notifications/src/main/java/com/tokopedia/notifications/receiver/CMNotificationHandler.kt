@@ -38,11 +38,11 @@ import java.util.HashMap
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
-
-class CMNotificationHandler: CoroutineScope {
+class CMNotificationHandler : CoroutineScope {
 
     @Inject
     lateinit var dataManager: DataManager
+
     @Inject
     lateinit var userSession: UserSessionInterface
 
@@ -66,11 +66,10 @@ class CMNotificationHandler: CoroutineScope {
         } catch (e: Exception) {
             val messageMap: MutableMap<String, String> = HashMap()
             messageMap["type"] = "exception"
-            messageMap["err"] =  Log.getStackTraceString(e).take(CMConstant.TimberTags.MAX_LIMIT)
+            messageMap["err"] = Log.getStackTraceString(e).take(CMConstant.TimberTags.MAX_LIMIT)
             messageMap["data"] = ""
             ServerLogger.log(Priority.P2, "CM_VALIDATION", messageMap)
         }
-
     }
 
     fun handleIntent(context: Context, intent: Intent) {
@@ -124,7 +123,6 @@ class CMNotificationHandler: CoroutineScope {
                         sendClickPushEvent(context, IrisAnalyticsEvents.PUSH_DISMISSED, baseNotificationModel, CMConstant.NotificationType.PERSISTENT)
                     }
 
-
                     CMConstant.ReceiverAction.ACTION_GRID_CLICK -> {
                         baseNotificationModel?.let {
                             handleGridNotificationClick(context, intent, notificationId, baseNotificationModel)
@@ -140,11 +138,10 @@ class CMNotificationHandler: CoroutineScope {
                         handleCarouselMainClick(context, intent, notificationId, baseNotificationModel)
                     }
                     CMConstant.ReceiverAction.ACTION_CAROUSEL_IMAGE_CLICK -> {
-                        //has Base Notification Model
+                        // has Base Notification Model
                         baseNotificationModel?.let {
                             handleCarouselImageClick(context, intent, notificationId, baseNotificationModel)
                         }
-
                     }
                     CMConstant.ReceiverAction.ACTION_RIGHT_ARROW_CLICK -> {
                         CarouselNotification.onRightIconClick(context.applicationContext, baseNotificationModel!!)
@@ -156,7 +153,6 @@ class CMNotificationHandler: CoroutineScope {
                     CMConstant.ReceiverAction.ACTION_CAROUSEL_NOTIFICATION_DISMISS -> {
                         clearCarouselImages(context.applicationContext)
                         sendClickPushEvent(context, IrisAnalyticsEvents.PUSH_DISMISSED, baseNotificationModel, CMConstant.NotificationType.CAROUSEL_NOTIFICATION)
-
                     }
                     /*Image Carousel Handling*/
 
@@ -178,13 +174,13 @@ class CMNotificationHandler: CoroutineScope {
                         sendClickPushEvent(context, IrisAnalyticsEvents.PUSH_DISMISSED, baseNotificationModel, CMConstant.NotificationType.GENERAL)
                     }
                     CMConstant.ReceiverAction.ACTION_REVIEW_NOTIFICATION_STAR_CLICKED ->
-                        handleReviewStarClick(context,notificationId, intent, baseNotificationModel)
+                        handleReviewStarClick(context, notificationId, intent, baseNotificationModel)
                 }
             }
         } catch (e: Exception) {
             val messageMap: MutableMap<String, String> = HashMap()
             messageMap["type"] = "exception"
-            messageMap["err"] =  Log.getStackTraceString(e).take(CMConstant.TimberTags.MAX_LIMIT)
+            messageMap["err"] = Log.getStackTraceString(e).take(CMConstant.TimberTags.MAX_LIMIT)
             messageMap["data"] = "$intent"
             ServerLogger.log(Priority.P2, "CM_VALIDATION", messageMap)
             e.printStackTrace()
@@ -203,15 +199,22 @@ class CMNotificationHandler: CoroutineScope {
     }
 
     private fun handleReviewStarClick(
-        context: Context, notificationId: Int,
-        intent: Intent, baseNotificationModel: BaseNotificationModel?
+        context: Context,
+        notificationId: Int,
+        intent: Intent,
+        baseNotificationModel: BaseNotificationModel?
     ) {
         val updatedBaseNotificationModel = ReviewNotification
             .updateReviewAppLink(intent, baseNotificationModel)
         handleNotificationClick(context, intent, notificationId, updatedBaseNotificationModel)
         baseNotificationModel?.let {
-            sendElementClickPushEvent(context, IrisAnalyticsEvents.PUSH_CLICKED,
-                baseNotificationModel, CMConstant.NotificationType.GENERAL, baseNotificationModel.elementId)
+            sendElementClickPushEvent(
+                context,
+                IrisAnalyticsEvents.PUSH_CLICKED,
+                baseNotificationModel,
+                CMConstant.NotificationType.GENERAL,
+                baseNotificationModel.elementId
+            )
         }
     }
 
@@ -237,7 +240,7 @@ class CMNotificationHandler: CoroutineScope {
     }
 
     private fun handleMainClick(context: Context, intent: Intent, notificationId: Int) {
-        val baseNotificationModel: BaseNotificationModel = intent.getParcelableExtra(CMConstant.EXTRA_BASE_MODEL)?: BaseNotificationModel()
+        val baseNotificationModel: BaseNotificationModel = intent.getParcelableExtra(CMConstant.EXTRA_BASE_MODEL) ?: BaseNotificationModel()
         startActivity(context, baseNotificationModel.appLink, intent)
 //        context.applicationContext.sendBroadcast(Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS))
         NotificationManagerCompat.from(context).cancel(notificationId)
@@ -263,7 +266,7 @@ class CMNotificationHandler: CoroutineScope {
         notificationId: Int,
         element: BaseNotificationModel?
     ) {
-        val productInfo: ProductInfo = intent.getParcelableExtra(CMConstant.EXTRA_PRODUCT_INFO)?: ProductInfo()
+        val productInfo: ProductInfo = intent.getParcelableExtra(CMConstant.EXTRA_PRODUCT_INFO) ?: ProductInfo()
 
         element?.let {
             if (it.type == CMConstant.NotificationType.PRODUCT_NOTIIFICATION) {
@@ -282,8 +285,13 @@ class CMNotificationHandler: CoroutineScope {
         NotificationManagerCompat.from(context).cancel(notificationId)
         clearProductImages(context.applicationContext)
         element?.let {
-            sendElementClickPushEvent(context, IrisAnalyticsEvents.PUSH_CLICKED, it,
-                CMConstant.NotificationType.PRODUCT_NOTIIFICATION, it.elementId)
+            sendElementClickPushEvent(
+                context,
+                IrisAnalyticsEvents.PUSH_CLICKED,
+                it,
+                CMConstant.NotificationType.PRODUCT_NOTIIFICATION,
+                it.elementId
+            )
         }
     }
 
@@ -298,40 +306,57 @@ class CMNotificationHandler: CoroutineScope {
         ProductAnalytics.clickCollapsedBody(userSession.userId, baseNotificationModel, productInfo)
         clearProductImages(context.applicationContext)
         baseNotificationModel?.let {
-            sendElementClickPushEvent(context, IrisAnalyticsEvents.PUSH_CLICKED, it,
-                CMConstant.NotificationType.PRODUCT_NOTIIFICATION, it.elementId)
+            sendElementClickPushEvent(
+                context,
+                IrisAnalyticsEvents.PUSH_CLICKED,
+                it,
+                CMConstant.NotificationType.PRODUCT_NOTIIFICATION,
+                it.elementId
+            )
         }
     }
 
     private fun clearProductImages(context: Context) {
-        launchCatchError(block = {
-            CarouselUtilities.deleteProductImageDirectory(context.applicationContext)
-        },
+        launchCatchError(
+            block = {
+                CarouselUtilities.deleteProductImageDirectory(context.applicationContext)
+            },
             onError = {
-            })
+            }
+        )
     }
 
     private fun clearCarouselImages(context: Context) {
-        launchCatchError(block = {
-            CarouselUtilities.deleteCarouselImageDirectory(context.applicationContext)
-        },
+        launchCatchError(
+            block = {
+                CarouselUtilities.deleteCarouselImageDirectory(context.applicationContext)
+            },
             onError = {
-            })
+            }
+        )
     }
 
     private fun handleGridNotificationClick(context: Context, intent: Intent, notificationId: Int, baseNotificationModel: BaseNotificationModel) {
 //        context.applicationContext.sendBroadcast(Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS))
         val grid: Grid = intent.getParcelableExtra(CMConstant.ReceiverExtraData.EXTRA_GRID_DATA) ?: Grid()
-        sendElementClickPushEvent(context, IrisAnalyticsEvents.PUSH_CLICKED,
-            baseNotificationModel, CMConstant.NotificationType.GRID_NOTIFICATION, grid.element_id)
+        sendElementClickPushEvent(
+            context,
+            IrisAnalyticsEvents.PUSH_CLICKED,
+            baseNotificationModel,
+            CMConstant.NotificationType.GRID_NOTIFICATION,
+            grid.element_id
+        )
         startActivity(context, grid.appLink, intent)
         NotificationManagerCompat.from(context).cancel(notificationId)
     }
 
     private fun cancelPersistentNotification(context: Context, notificationId: Int) {
         CMEvents.postGAEvent(
-            PersistentEvent.EVENT, PersistentEvent.EVENT_CATEGORY,
-            PersistentEvent.EVENT_ACTION_CANCELED, PersistentEvent.EVENT_LABEL)
+            PersistentEvent.EVENT,
+            PersistentEvent.EVENT_CATEGORY,
+            PersistentEvent.EVENT_ACTION_CANCELED,
+            PersistentEvent.EVENT_LABEL
+        )
 //        context.sendBroadcast(Intent(Intent.ACTION_CLOSE_SYSTEM_DIALOGS))
         NotificationManagerCompat.from(context).cancel(notificationId)
     }
@@ -342,16 +367,21 @@ class CMNotificationHandler: CoroutineScope {
             val persistentButton: PersistentButton = intent.getParcelableExtra(CMConstant.ReceiverExtraData.PERSISTENT_BUTTON_DATA) ?: PersistentButton()
             if (persistentButton.isAppLogo) {
                 CMEvents.postGAEvent(
-                    PersistentEvent.EVENT, PersistentEvent.EVENT_CATEGORY,
-                    PersistentEvent.EVENT_ACTION_LOGO_CLICK, persistentButton.appLink ?: "")
+                    PersistentEvent.EVENT,
+                    PersistentEvent.EVENT_CATEGORY,
+                    PersistentEvent.EVENT_ACTION_LOGO_CLICK,
+                    persistentButton.appLink ?: ""
+                )
             } else {
                 CMEvents.postGAEvent(
-                    PersistentEvent.EVENT, PersistentEvent.EVENT_CATEGORY,
-                    persistentButton.text ?: "", persistentButton.appLink ?: "")
+                    PersistentEvent.EVENT,
+                    PersistentEvent.EVENT_CATEGORY,
+                    persistentButton.text ?: "",
+                    persistentButton.appLink ?: ""
+                )
             }
             startActivity(context, persistentButton.appLink, intent)
             sendElementClickPushEvent(context, IrisAnalyticsEvents.PUSH_CLICKED, baseNotificationModel, CMConstant.NotificationType.PERSISTENT, persistentButton.element_id)
-
         }
     }
 
@@ -413,10 +443,10 @@ class CMNotificationHandler: CoroutineScope {
         if (intent.hasExtra(CMConstant.CouponCodeExtra.COUPON_CODE)) {
             val coupon = intent.getStringExtra(CMConstant.CouponCodeExtra.COUPON_CODE)
             val gratificationId = intent.getStringExtra(CMConstant.CouponCodeExtra.GRATIFICATION_ID)
-            if(!gratificationId.isNullOrEmpty()){
+            if (!gratificationId.isNullOrEmpty()) {
                 return
             }
-            if(!coupon.isNullOrEmpty()){
+            if (!coupon.isNullOrEmpty()) {
                 copyToClipboard(context, coupon)
             }
         }
@@ -438,7 +468,7 @@ class CMNotificationHandler: CoroutineScope {
         }
 
         actionButton.let {
-            startActivity(context,it.appLink, null)
+            startActivity(context, it.appLink, null)
             sendElementClickPushEvent(
                 context,
                 notificationData,
@@ -478,14 +508,20 @@ class CMNotificationHandler: CoroutineScope {
 
         sendElementClickPushEvent(context, IrisAnalyticsEvents.PUSH_CLICKED, baseNotificationModel, CMConstant.NotificationType.CAROUSEL_NOTIFICATION, carousel?.element_id ?: "")
 
-        launchCatchError(block = {
-            CarouselUtilities.deleteCarouselImageDirectory(context)
-        },
+        launchCatchError(
+            block = {
+                CarouselUtilities.deleteCarouselImageDirectory(context)
+            },
             onError = {
-            })
+            }
+        )
     }
 
-    private fun startActivity(context: Context, appLink: String?, dataIntent : Intent?) {
+    private fun startActivity(
+        context: Context,
+        appLink: String?,
+        dataIntent: Intent?
+    ) {
         try {
             val appLinkIntent = getAppLinkIntent(context, appLink)
             copyDataIntentToAppLinkIntent(appLinkIntent, dataIntent)
@@ -496,35 +532,46 @@ class CMNotificationHandler: CoroutineScope {
         }
     }
 
-    private fun copyDataIntentToAppLinkIntent(appLinkIntent: Intent, dataIntent: Intent?){
+    private fun copyDataIntentToAppLinkIntent(
+        appLinkIntent: Intent,
+        dataIntent: Intent?
+    ) {
         try {
-            dataIntent?.let { dataIntent->
-                //this extra data is added to support gratification
-                if(dataIntent.hasExtra(CMConstant.CouponCodeExtra.GRATIFICATION_ID)){
+            dataIntent?.let { dataIntent ->
+                // this extra data is added to support gratification
+                if (dataIntent.hasExtra(CMConstant.CouponCodeExtra.GRATIFICATION_ID)) {
                     appLinkIntent.putExtra(CMConstant.EXTRA_BASE_MODEL, true)
-                    appLinkIntent.putExtra(CMConstant.CouponCodeExtra.GRATIFICATION_ID,
-                        dataIntent.getStringExtra(CMConstant.CouponCodeExtra.GRATIFICATION_ID))
+                    appLinkIntent.putExtra(
+                        CMConstant.CouponCodeExtra.GRATIFICATION_ID,
+                        dataIntent.getStringExtra(CMConstant.CouponCodeExtra.GRATIFICATION_ID)
+                    )
                 }
-                //to support video push and extra params
+                // to support video push and extra params
                 appLinkIntent.putExtras(getCustomDataBundle(dataIntent))
             }
-        }catch (e : Exception){}
-
+        } catch (e: Exception) {}
     }
 
     private fun getCustomDataBundle(dataIntent: Intent): Bundle {
-        val baseNotificationModel: BaseNotificationModel?
-                = dataIntent.getParcelableExtra(CMConstant.EXTRA_BASE_MODEL)
+        val baseNotificationModel: BaseNotificationModel? =
+            dataIntent.getParcelableExtra(CMConstant.EXTRA_BASE_MODEL)
         var bundle = Bundle()
-        if(baseNotificationModel!= null) {
+        if (baseNotificationModel != null) {
             baseNotificationModel.videoPushModel?.let {
-                bundle = jsonToBundle(bundle, JSONObject(it))
+                if (it.isNotBlank()) {
+                    bundle = jsonToBundle(bundle, JSONObject(it))
+                }
             }
             baseNotificationModel.customValues?.let {
-                if (it.isNotEmpty())
+                if (it.isNotEmpty()) {
                     bundle = jsonToBundle(bundle, JSONObject(it))
+                }
             }
         }
+        bundle.putString(
+            CMConstant.PayloadKeys.NOTIFCENTER_NOTIFICATION_TEMPLATE_KEY,
+            baseNotificationModel?.webHookData()?.notificationTemplateKey.toString()
+        )
         return bundle
     }
 
@@ -540,7 +587,7 @@ class CMNotificationHandler: CoroutineScope {
         return bundle
     }
 
-    private fun getAppLinkIntent(context: Context, appLink: String?) : Intent{
+    private fun getAppLinkIntent(context: Context, appLink: String?): Intent {
         return RouteManager.getIntent(context.applicationContext, appLink ?: ApplinkConst.HOME)
     }
 
@@ -582,5 +629,4 @@ class CMNotificationHandler: CoroutineScope {
         @JvmStatic
         val instance: CMNotificationHandler = CMNotificationHandler()
     }
-
 }

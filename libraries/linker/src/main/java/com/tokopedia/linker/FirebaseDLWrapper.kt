@@ -26,7 +26,7 @@ class FirebaseDLWrapper {
     fun getFirebaseDynamicLink(activity: Activity, intent: Intent) {
         Firebase.dynamicLinks
             .getDynamicLink(intent)
-            .addOnSuccessListener(activity) { pendingDynamicLinkData ->
+            .addOnSuccessListener(activity) { pendingDynamicLinkData: PendingDynamicLinkData? ->
                 // Get deep link from result ( null if no link found)
                 parseandLaunchFirebaseUrl(pendingDynamicLinkData,activity)
             }
