@@ -56,6 +56,10 @@ fun View.showWithCondition(shouldShow: Boolean) {
     if (shouldShow) show() else gone()
 }
 
+fun View.visibleWithCondition(isShown: Boolean) {
+    visibility = if (isShown) View.VISIBLE else View.INVISIBLE
+}
+
 fun View.shouldShowWithAction(shouldShow: Boolean, action: () -> Unit) {
     if (shouldShow) {
         show()
