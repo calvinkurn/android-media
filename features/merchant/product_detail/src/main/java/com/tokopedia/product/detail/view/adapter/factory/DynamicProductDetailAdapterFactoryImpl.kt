@@ -7,6 +7,7 @@ import com.tokopedia.play.widget.PlayWidgetViewHolder
 import com.tokopedia.play.widget.ui.coordinator.PlayWidgetCoordinator
 import com.tokopedia.product.detail.R
 import com.tokopedia.product.detail.common.view.AtcVariantListener
+import com.tokopedia.product.detail.data.model.datamodel.ArButtonDataModel
 import com.tokopedia.product.detail.data.model.datamodel.ContentWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.FintechWidgetDataModel
 import com.tokopedia.product.detail.data.model.datamodel.GlobalBundlingDataModel
@@ -204,6 +205,10 @@ class DynamicProductDetailAdapterFactoryImpl(
         return ContentWidgetViewHolder.LAYOUT
     }
 
+    override fun type(data: ArButtonDataModel): Int {
+        return ProductArViewHolder.LAYOUT
+    }
+
     override fun type(data: FintechWidgetDataModel): Int {
         return FintechWidgetViewHolder.LAYOUT
     }
@@ -322,11 +327,11 @@ class DynamicProductDetailAdapterFactoryImpl(
                 view = view,
                 listener = listener
             )
+            ProductArViewHolder.LAYOUT -> ProductArViewHolder(view, listener)
             ProductCustomInfoTitleViewHolder.LAYOUT -> ProductCustomInfoTitleViewHolder(
                 view = view,
                 listener = listener
             )
-            ProductArViewHolder.LAYOUT -> ProductArViewHolder(view, listener)
             else -> super.createViewHolder(view, type)
         }
     }
