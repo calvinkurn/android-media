@@ -225,6 +225,7 @@ class WishlistCollectionDetailFragment :
     private var _currCheckCollectionType = 0
     private var _maxBulk = 0L
     private var _toasterMaxBulk = ""
+    private var _isNeedRefreshAndTurnOffBulkModeFromOthers = false
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -662,6 +663,16 @@ class WishlistCollectionDetailFragment :
                         if (isShowingCleanerBottomSheet && collectionDetail.storageCleanerBottomsheet.title.isNotEmpty()) {
                             showBottomSheetCleaner(WishlistV2Utils.mapToStorageCleanerBottomSheet(collectionDetail.storageCleanerBottomsheet))
                         }
+
+                        if (_isNeedRefreshAndTurnOffBulkModeFromOthers) {
+                            _isNeedRefreshAndTurnOffBulkModeFromOthers = false
+                            showBottomSheetCollection(
+                                childFragmentManager,
+                                listSelectedProductIdsFromOtherCollection.joinToString(),
+                                SRC_WISHLIST_COLLECTION_SHARING
+                            )
+                            listSelectedProductIdsFromOtherCollection.clear()
+                        }
                     }
                 }
                 is Fail -> {
@@ -861,7 +872,11 @@ class WishlistCollectionDetailFragment :
                                 if (!isBulkAddFromOtherCollectionShow) showSelectItemsOption()
                             }
                             CHECK_COLLECTION_TYPE_FOR_TURN_ON_SELECT_ITEMS_MODE -> {
-                                turnOnBulkAddFromOtherCollectionsMode()
+                                if (userSession.isLoggedIn) {
+                                    turnOnBulkAddFromOtherCollectionsMode()
+                                } else {
+                                    goToLoginPage()
+                                }
                             }
                             CHECK_COLLECTION_TYPE_FOR_DIALOG_CONFIRMATION -> {
                                 showBulkAddFromOtherCollectionConfirmationDialog()
@@ -886,11 +901,10 @@ class WishlistCollectionDetailFragment :
             when (result) {
                 is Success -> {
                     if (result.data.success) {
-                        showBottomSheetCollection(
-                            childFragmentManager,
-                            listSelectedProductIdsFromOtherCollection.joinToString(),
-                            SRC_WISHLIST_COLLECTION_SHARING
-                        )
+                        if (_isNeedRefreshAndTurnOffBulkModeFromOthers) {
+                            turnOffBulkAddFromOtherCollection()
+                            getCollectionItems()
+                        }
                     } else {
                         when (result.data.errorType) {
                             ERROR_GENERAL_SYSTEM_FAILURE_ADD_BULK -> {
@@ -2058,6 +2072,7 @@ class WishlistCollectionDetailFragment :
         dialog?.setPrimaryCTAText(getString(Rv2.string.wishlist_save_label))
         dialog?.setPrimaryCTAClickListener {
             dialog.dismiss()
+            _isNeedRefreshAndTurnOffBulkModeFromOthers = true
             doAddWishlistBulk()
         }
         dialog?.setSecondaryCTAText(getString(Rv2.string.wishlist_cancel_manage_label))
@@ -3473,7 +3488,9 @@ class WishlistCollectionDetailFragment :
     }
 
     private fun turnOffBulkAddFromOtherCollection() {
-        listSelectedProductIdsFromOtherCollection.clear()
+        if (!_isNeedRefreshAndTurnOffBulkModeFromOthers) {
+            listSelectedProductIdsFromOtherCollection.clear()
+        }
         isBulkAddFromOtherCollectionShow = false
         if (isToolbarHasDesc) {
             updateCustomToolbarTitleAndSubTitle(toolbarTitle, toolbarDesc)
