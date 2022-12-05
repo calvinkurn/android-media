@@ -90,11 +90,11 @@ public class SplashScreen extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        boolean status = GCMHandler.isPlayServicesAvailable(SplashScreen.this);
         WeaveInterface moveToHomeFlowWeave = new WeaveInterface() {
             @NotNull
             @Override
             public Object execute() {
+                boolean status = GCMHandler.isPlayServicesAvailable(SplashScreen.this);
                 return executeMoveToHomeFlow(status);
             }
         };
