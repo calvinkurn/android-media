@@ -2681,10 +2681,6 @@ class PlayViewModel @AssistedInject constructor(
                 Log.d("sukses after", widgets.toString())
                 _exploreWidget.update {
                     it.copy(widgets = widgets.filterIsInstance<WidgetUiModel.WidgetItemUiModel>(),
-                            chips = it.chips.map { chip ->
-                                if (chip.group == it.param.group) chip.copy(isSelected = true)
-                                else chip
-                            },
                             param = it.param.copy(cursor = widgets.filterIsInstance<WidgetUiModel.PageConfig>().firstOrNull()?.cursor.orEmpty()))
                 }
             }
@@ -2712,7 +2708,11 @@ class PlayViewModel @AssistedInject constructor(
                     sourceType = sourceType,
                     sourceId = sourceId,
                     cursor = cursor
-                )
+                ),
+                chips = it.chips.map { chip ->
+                    if (group == chip.group) chip.copy(isSelected = true)
+                    else chip.copy(isSelected = false)
+                }
             )
         }
     }
