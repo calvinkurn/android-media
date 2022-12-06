@@ -70,6 +70,7 @@ import com.tokopedia.sellerhomecommon.presentation.model.UnificationWidgetUiMode
 import com.tokopedia.sellerhomecommon.presentation.model.WidgetDismissalResultUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.WidgetEmptyStateUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.WidgetFilterUiModel
+import com.tokopedia.sellerhomecommon.sse.SellerHomeWidgetSSE
 import com.tokopedia.shop.common.data.model.ShopQuestGeneralTracker
 import com.tokopedia.shop.common.data.model.ShopQuestGeneralTrackerInput
 import com.tokopedia.shop.common.domain.interactor.ShopQuestGeneralTrackerUseCase
@@ -88,14 +89,14 @@ import io.mockk.impl.annotations.RelaxedMockK
 import io.mockk.verify
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.flowOf
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.test.runBlockingTest
 import org.junit.Before
 import org.junit.Rule
 import org.junit.Test
 import org.junit.jupiter.api.Assertions
-import org.mockito.ArgumentMatchers.any
 import org.mockito.ArgumentMatchers.anyLong
 import org.mockito.ArgumentMatchers.anyString
 
@@ -188,6 +189,9 @@ class SellerHomeViewModelTest {
     @RelaxedMockK
     lateinit var remoteConfig: SellerHomeRemoteConfig
 
+    @RelaxedMockK
+    lateinit var widgetSse: SellerHomeWidgetSSE
+
     @get:Rule
     val rule = InstantTaskExecutorRule()
 
@@ -245,6 +249,7 @@ class SellerHomeViewModelTest {
             { shopQuestGeneralTrackerUseCase },
             { submitWidgetDismissUseCase },
             { sellerHomeLayoutHelper },
+            { widgetSse },
             remoteConfig,
             coroutineTestRule.dispatchers
         )
@@ -408,6 +413,7 @@ class SellerHomeViewModelTest {
         }
 
         Assertions.assertEquals(Success(layoutList), viewModel.widgetLayout.value)
+        Assertions.assertEquals(layoutList, viewModel.rawWidgetList)
     }
 
     @Test
@@ -509,6 +515,7 @@ class SellerHomeViewModelTest {
         assert((viewModel.widgetLayout.value as? Success)?.data?.all { actualWidget ->
             successLayoutList.find { it.data == actualWidget.data } != null
         } == true)
+        Assertions.assertEquals(layoutList, viewModel.rawWidgetList)
     }
 
     @Test
@@ -604,6 +611,7 @@ class SellerHomeViewModelTest {
             assert((viewModel.widgetLayout.value as? Success)?.data?.all { actualWidget ->
                 successLayoutList.find { it.data == actualWidget.data } != null
             } == true)
+            Assertions.assertEquals(layoutList, viewModel.rawWidgetList)
         }
     }
 
@@ -660,6 +668,7 @@ class SellerHomeViewModelTest {
         coVerify(exactly = 1) {
             getLayoutUseCase.executeOnBackground()
         }
+        Assertions.assertEquals(layoutList, viewModel.rawWidgetList)
     }
 
     @Test
@@ -3021,6 +3030,59 @@ class SellerHomeViewModelTest {
         assert((viewModel.widgetLayout.value as? Success)?.data?.any { it.id == DATA_KEY_ANNOUNCEMENT } == false)
     }
 
+    @Test
+    fun `on stop sse`() {
+        viewModel.stopSSE()
+        verify { widgetSse.closeSse() }
+    }
+
+    @Test
+    fun `on start SSE when realTimeDataKeys is not empty then set card widgets data liveData`() {
+        coroutineTestRule.runBlockingTest {
+            val page = "home"
+            val param = listOf("cardWidget")
+            val cardData = CardDataUiModel()
+            val mockResponse = listOf(cardData)
+            every { widgetSse.listen() } returns flow { flowOf(mockResponse) }
+
+            viewModel.startSse(param)
+
+            verify { widgetSse.connect(page, param) }
+            coVerify { widgetSse.listen() }
+
+            widgetSse.listen().collect {
+                viewModel.cardWidgetData.verifySuccessEquals(Success(listOf(cardData)))
+            }
+        }
+    }
+
+    @Test
+    fun `on start SSE when realTimeDataKeys is not empty then set milestone widgets data liveData`() {
+        coroutineTestRule.runBlockingTest {
+            val page = "home"
+            val param = listOf("milestoneWidget")
+            val milestoneData = MilestoneDataUiModel()
+            val mockResponse = listOf(milestoneData)
+            every { widgetSse.listen() } returns flow { flowOf(mockResponse) }
+
+            viewModel.startSse(param)
+
+            verify { widgetSse.connect(page, param) }
+            coVerify { widgetSse.listen() }
+            widgetSse.listen().collect {
+                viewModel.milestoneWidgetData.verifySuccessEquals(Success(listOf(milestoneData)))
+            }
+        }
+    }
+
+    @Test
+    fun `on start SSE when realTimeDataKeys is empty`() {
+        val param = emptyList<String>()
+        viewModel.startSse(param)
+        verify(inverse = true) { widgetSse.connect(anyString(), param) }
+        verify(inverse = true) { widgetSse.listen() }
+    }
+
     private fun provideCompleteSuccessWidgetLayout(): List<BaseWidgetUiModel<*>> {
         return listOf(
             CardWidgetUiModel(
@@ -3228,7 +3290,7 @@ class SellerHomeViewModelTest {
                 isFromCache = false,
                 isNeedToBeRemoved = false,
                 emptyState = WidgetEmptyStateUiModel("", "", "", "", ""),
-                isComparePeriodeOnly = false
+                isComparePeriodOnly = false
             ),
             RecommendationWidgetUiModel(
                 id = DATA_KEY_RECOMMENDATION,

@@ -87,7 +87,7 @@ class GetShopCreatedInfoUseCaseTest {
 
     private fun getExpectedShopInfo(): ShopInfoUiModel {
         return ShopInfoUiModel(
-                shopAvatar = "https://ecs7.tokopedia.net/img/cache/215-square/shops-1/2018/10/19/1479278/1479278_fa306e59-f15f-4048-b2f7-8ddc5d798926.jpeg",
+                shopAvatar = "https://images.tokopedia.net/img/cache/215-square/shops-1/2018/10/19/1479278/1479278_fa306e59-f15f-4048-b2f7-8ddc5d798926.jpeg",
                 shopName = "Tumbler Starbucks 123"
         )
     }

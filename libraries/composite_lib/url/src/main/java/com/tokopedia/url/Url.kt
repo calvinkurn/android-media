@@ -48,6 +48,7 @@ data class Url(
         val PCIDSS_CREDIT_CARD: String,
         val GOJEK_OTP: String,
         val GOPAY_PIN: String,
-        val SSE: String
+        val SSE: String,
+        val ONE_TRUST: String,
+        val TOKOCHAT: String
 )
-

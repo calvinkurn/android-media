@@ -21,18 +21,18 @@ class InstrumentationShopPageTestActivity : AppCompatActivity(), ShopPagePerform
 
         val shopPageFragment: Fragment = NewShopPageFragment()
         val fragmentTransaction = supportFragmentManager
-                .beginTransaction()
+            .beginTransaction()
         fragmentTransaction
-                .replace(R.id.container, shopPageFragment)
+            .replace(R.id.container, shopPageFragment)
         fragmentTransaction.addToBackStack(null)
         fragmentTransaction.commit()
     }
 
     private fun initPerformanceMonitoring() {
         performanceMonitoringShop = PageLoadTimePerformanceCallback(
-                "prepare",
-                "network",
-                "render"
+            "prepare",
+            "network",
+            "render"
         )
         performanceMonitoringShop?.startMonitoring("mp_shop")
         performanceMonitoringShop?.startPreparePagePerformanceMonitoring()

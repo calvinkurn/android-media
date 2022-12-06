@@ -11,8 +11,8 @@ import com.tokopedia.shop.home.view.model.CarouselPlayWidgetUiModel
  * Created by mzennis on 13/10/20.
  */
 class CarouselPlayWidgetViewHolder(
-        private val playWidgetViewHolder: PlayWidgetViewHolder,
-        private val shopHomePlayWidgetListener: ShopHomePlayWidgetListener
+    private val playWidgetViewHolder: PlayWidgetViewHolder,
+    private val shopHomePlayWidgetListener: ShopHomePlayWidgetListener
 ) : AbstractViewHolder<CarouselPlayWidgetUiModel>(playWidgetViewHolder.itemView) {
 
     override fun bind(element: CarouselPlayWidgetUiModel) {
