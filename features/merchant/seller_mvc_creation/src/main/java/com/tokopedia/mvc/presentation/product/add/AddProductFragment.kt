@@ -64,15 +64,21 @@ import javax.inject.Inject
 class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginatedListImpl() {
 
     companion object {
-        const val PAGE_SIZE = 10
+        const val PAGE_SIZE = 20
         private const val ONE_FILTER_SELECTED = 1
 
         @JvmStatic
-        fun newInstance(pageMode : PageMode, voucherConfiguration: VoucherConfiguration): AddProductFragment {
+        fun newInstance(
+            pageMode: PageMode,
+            voucherConfiguration: VoucherConfiguration
+        ): AddProductFragment {
             return AddProductFragment().apply {
                 arguments = Bundle().apply {
                     putParcelable(BundleConstant.BUNDLE_KEY_PAGE_MODE, pageMode)
-                    putParcelable(BundleConstant.BUNDLE_KEY_VOUCHER_CONFIGURATION, voucherConfiguration)
+                    putParcelable(
+                        BundleConstant.BUNDLE_KEY_VOUCHER_CONFIGURATION,
+                        voucherConfiguration
+                    )
                 }
             }
         }
@@ -89,7 +95,7 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
     private val sortChips by lazy { SortFilterItem(getString(R.string.smvc_sort)) }
 
     private val productAdapter by lazy {
-        ProductAdapter(onItemClick, onCheckboxClick, onVariantClick)
+        ProductAdapter(onCheckboxClick, onVariantClick)
     }
 
 
@@ -140,6 +146,13 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
         setupPaging()
         setupSearchBar()
         setupButton()
+        setupToolbar()
+    }
+
+    private fun setupToolbar() {
+        binding?.header?.setNavigationOnClickListener {
+            activity?.finish()
+        }
     }
 
     private fun setupButton() {
@@ -210,7 +223,7 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
     private fun handleEffect(effect: AddProductEffect) {
         when (effect) {
             is AddProductEffect.LoadNextPageSuccess -> {
-                val hasNextPage = effect.currentPageItems.size == PAGE_SIZE
+                val hasNextPage = effect.allItemCount < effect.totalProductCount
                 notifyLoadResult(hasNextPage)
             }
             is AddProductEffect.ShowSortBottomSheet -> {
@@ -273,7 +286,7 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
         renderShopShowcaseChips(uiState.selectedShopShowcase)
 
         renderList(uiState.products)
-        renderEmptyState(uiState.totalProducts, uiState.isLoading)
+        renderEmptyState(uiState.totalProducts, uiState.isLoading, uiState.isFilterActive, uiState.searchKeyword.isNotEmpty())
 
         renderBottomSection(uiState)
     }
@@ -307,14 +320,26 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
         binding?.btnAddProduct?.isEnabled = uiState.selectedProductsIds.isNotEmpty()
     }
 
-    private fun renderEmptyState(totalProducts: Int, isLoading : Boolean) {
+    private fun renderEmptyState(
+        totalProducts: Int,
+        isLoading: Boolean,
+        isFilterActive: Boolean,
+        isOnSearchMode: Boolean
+    ) {
         binding?.recyclerView?.isVisible = totalProducts.isMoreThanZero()
         binding?.cardUnify2?.isVisible = totalProducts.isMoreThanZero()
         binding?.checkbox?.isVisible = totalProducts.isMoreThanZero()
         binding?.dividerList?.isVisible = totalProducts.isMoreThanZero()
         binding?.tpgSelectAll?.isVisible = totalProducts.isMoreThanZero()
         binding?.tpgMaxProductSelection?.isVisible = totalProducts.isMoreThanZero()
-        binding?.emptyStateAddProduct?.isVisible = totalProducts.isZero() && !isLoading
+
+        if (!isLoading){
+            val emptySearchResult = totalProducts.isZero() && (isFilterActive || isOnSearchMode)
+            binding?.emptyStateSearchResultNotFound?.isVisible = emptySearchResult
+
+            val noRegisteredProduct = totalProducts.isZero() && !isFilterActive && !isOnSearchMode
+            binding?.emptyStateNoRegisteredProduct?.isVisible = noRegisteredProduct
+        }
     }
 
     private fun renderSelectAllCheckbox(uiState: AddProductUiState) {
@@ -421,13 +446,6 @@ class AddProductFragment : BaseDaggerFragment(), HasPaginatedList by HasPaginate
            viewModel.processEvent(AddProductEvent.ClearFilter)
         }
     }
-
-    private val onItemClick: (Int) -> Unit = { selectedItemPosition ->
-        val selectedItem = productAdapter.snapshot()[selectedItemPosition]
-
-        viewModel.processEvent(AddProductEvent.AddProductToSelection(selectedItem.id))
-    }
-
 
     private val onCheckboxClick: (Int, Boolean) -> Unit = { selectedItemPosition, isChecked ->
         val selectedItem = productAdapter.snapshot()[selectedItemPosition]

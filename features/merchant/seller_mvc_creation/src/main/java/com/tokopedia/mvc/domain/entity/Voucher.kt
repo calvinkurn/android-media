@@ -1,10 +1,13 @@
 package com.tokopedia.mvc.domain.entity
 
+import android.os.Parcelable
 import com.tokopedia.mvc.domain.entity.enums.VoucherStatus
 import com.tokopedia.mvc.domain.entity.enums.VoucherTargetBuyer
+import kotlinx.parcelize.Parcelize
 
+@Parcelize
 data class Voucher(
-    val id: Int = 0,
+    val id: Long = 0,
     val name: String = "",
     val type: Int = 0,
     val typeFormatted: String = "",
@@ -36,7 +39,7 @@ data class Voucher(
     val tnc: String = "",
     val targetBuyer: VoucherTargetBuyer = VoucherTargetBuyer.ALL_BUYER,
     val discountTypeFormatted: String = ""
-) {
+): Parcelable {
     fun isOngoingPromo() = status == VoucherStatus.ONGOING
     fun isUpComingPromo() = status == VoucherStatus.NOT_STARTED
 }

@@ -7,12 +7,11 @@ import com.tokopedia.mvc.domain.entity.SelectedProduct
 import com.tokopedia.mvc.domain.entity.ShopShowcase
 import com.tokopedia.mvc.domain.entity.VoucherConfiguration
 import com.tokopedia.mvc.domain.entity.Warehouse
-import com.tokopedia.mvc.presentation.product.list.uimodel.ProductListEffect
 
 sealed class AddProductEffect {
     data class LoadNextPageSuccess(
-        val currentPageItems: List<Product>,
-        val allItems: List<Product>
+        val allItemCount: Int,
+        val totalProductCount: Int
     ) : AddProductEffect()
 
     data class ShowSortBottomSheet(

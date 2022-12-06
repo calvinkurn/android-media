@@ -1,6 +1,6 @@
 package com.tokopedia.mvc.data.mapper
 
-import com.tokopedia.kotlin.extensions.view.toIntOrZero
+import com.tokopedia.kotlin.extensions.view.toLongOrZero
 import com.tokopedia.mvc.data.response.MerchantVoucherModel
 import com.tokopedia.mvc.domain.entity.Voucher
 import com.tokopedia.mvc.domain.entity.enums.VoucherStatus
@@ -21,7 +21,7 @@ class GetVoucherListMapper @Inject constructor() {
     fun mapRemoteModelToUiModel(merchantVoucherModel: MerchantVoucherModel): Voucher =
         merchantVoucherModel.let {
             Voucher(
-                id = it.voucherId.toIntOrZero(),
+                id = it.voucherId.toLongOrZero(),
                 name = it.voucherName,
                 type = it.voucherType,
                 typeFormatted = it.voucherTypeFormatted,
@@ -29,9 +29,7 @@ class GetVoucherListMapper @Inject constructor() {
                 imageSquare = it.imageSquare,
                 imagePortrait = it.imagePortrait,
                 status = VoucherStatus.values().firstOrNull {
-                        value ->
-                    value.type == it.voucherStatus
-                } ?: VoucherStatus.PROCESSING,
+                        value -> value.id == it.voucherStatus } ?: VoucherStatus.PROCESSING,
                 discountUsingPercent = it.discountTypeFormatted == DISCOUNT_TYPE_PERCENT,
                 discountAmt = it.discountAmt,
                 discountAmtFormatted = it.discountAmtFormatted,
@@ -53,10 +51,7 @@ class GetVoucherListMapper @Inject constructor() {
                 isSubsidy = it.isSubsidy == VALUE_ACTIVE,
                 tnc = it.tnc,
                 targetBuyer = VoucherTargetBuyer.values().firstOrNull {
-                        value ->
-                    value.type == it.targetBuyer
-                } ?: VoucherTargetBuyer.ALL_BUYER,
-                discountTypeFormatted = it.discountTypeFormatted
+                        value -> value.id == it.targetBuyer } ?: VoucherTargetBuyer.ALL_BUYER
             )
         }
 }
