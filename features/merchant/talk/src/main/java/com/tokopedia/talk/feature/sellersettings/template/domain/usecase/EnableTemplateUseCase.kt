@@ -1,5 +1,6 @@
 package com.tokopedia.talk.feature.sellersettings.template.domain.usecase
 
+import com.tokopedia.abstraction.common.di.qualifier.ApplicationContext
 import com.tokopedia.gql_query_annotation.GqlQuery
 import com.tokopedia.graphql.coroutines.domain.interactor.GraphqlUseCase
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
@@ -8,7 +9,10 @@ import com.tokopedia.talk.feature.sellersettings.template.util.TemplateConstants
 import com.tokopedia.usecase.RequestParams
 import javax.inject.Inject
 
-class EnableTemplateUseCase @Inject constructor(graphqlRepository: GraphqlRepository) : GraphqlUseCase<EnableTemplateResponseWrapper>(graphqlRepository) {
+class EnableTemplateUseCase @Inject constructor(
+    @ApplicationContext
+    graphqlRepository: GraphqlRepository
+) : GraphqlUseCase<EnableTemplateResponseWrapper>(graphqlRepository) {
 
     companion object {
         const val ENABLE_TEMPLATE_QUERY_CLASS_NAME = "EnableTemplate"

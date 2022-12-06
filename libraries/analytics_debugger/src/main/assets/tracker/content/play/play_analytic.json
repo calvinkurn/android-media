@@ -147,7 +147,7 @@
       "eventAction": "click buy in bottom sheet",
       "event": "add_to_cart",
       "eventCategory": "groupchat room",
-      "eventLabel": "\\d+ - \\d+ - (live|vod) - is pinned product (true|false)",
+      "eventLabel": "\\d+ - \\d+ - (live|vod) - is pinned product (true|false) - beli langsung (true|false)",
       "items": [
         {
           "shop_id": ".*",
@@ -448,7 +448,7 @@
       "eventAction": "click - buy in ongoing section",
       "event": "add_to_cart",
       "eventCategory": "groupchat room",
-      "eventLabel": "\\d+ - \\d+ - (live|vod) - \\d+ - is pinned product (true|false)",
+      "eventLabel": "\\d+ - \\d+ - (live|vod) - \\d+ - is pinned product (true|false) - beli langsung (true|false)",
       "items": [
         {
           "shop_id": ".*",

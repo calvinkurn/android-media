@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/container_followers"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -20,11 +21,21 @@
         app:layout_constraintTop_toTopOf="parent"
         app:unify_image_type="circle" />
 
+    <com.tokopedia.unifycomponents.ImageUnify
+        android:id="@+id/img_badge"
+        android:layout_width="@dimen/user_profile_badge_size"
+        android:layout_height="@dimen/user_profile_badge_size"
+        android:layout_marginStart="@dimen/unify_space_12"
+        app:layout_constraintBottom_toBottomOf="@id/text_display_name"
+        app:layout_constraintStart_toEndOf="@id/img_profile_image"
+        app:layout_constraintTop_toTopOf="@id/text_display_name"
+        app:unify_image_type="circle" />
+
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/text_display_name"
         android:layout_width="@dimen/unify_space_0"
         android:layout_height="wrap_content"
-        android:layout_marginStart="@dimen/unify_space_12"
+        android:layout_marginStart="@dimen/unify_space_4"
         android:layout_marginEnd="@dimen/dp_12"
         android:layout_marginRight="@dimen/dp_12"
         android:ellipsize="end"
@@ -33,23 +44,25 @@
         android:textColor="@color/Unify_NN950"
         app:layout_constraintBottom_toTopOf="@+id/text_user_name"
         app:layout_constraintEnd_toStartOf="@+id/btn_action_follow"
-        app:layout_constraintStart_toEndOf="@+id/img_profile_image"
+        app:layout_constraintStart_toEndOf="@+id/img_badge"
         app:layout_constraintTop_toTopOf="@+id/img_profile_image"
         app:layout_constraintWidth_default="spread"
         app:layout_goneMarginStart="@dimen/unify_space_12"
-        app:typographyType="heading_5" />
+        app:typographyType="heading_5"
+        tools:text="Testing Joe" />
 
     <com.tokopedia.unifyprinciples.Typography
         android:id="@+id/text_user_name"
         android:layout_width="@dimen/unify_space_0"
         android:layout_height="wrap_content"
+        android:layout_marginStart="@dimen/unify_space_12"
         android:gravity="left"
         android:textColor="@color/Unify_NN600"
         app:layout_constraintBottom_toBottomOf="@+id/img_profile_image"
         app:layout_constraintEnd_toEndOf="@+id/text_display_name"
         app:layout_constraintLeft_toLeftOf="@+id/text_display_name"
         app:layout_constraintRight_toRightOf="@+id/text_display_name"
-        app:layout_constraintStart_toStartOf="@+id/text_display_name"
+        app:layout_constraintStart_toEndOf="@id/img_profile_image"
         app:layout_constraintTop_toBottomOf="@+id/text_display_name"
         app:layout_constraintWidth_default="spread"
         app:typographyType="body_3" />

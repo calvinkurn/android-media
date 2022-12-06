@@ -70,6 +70,7 @@ import com.tokopedia.checkout.analytics.CheckoutAnalyticsPurchaseProtection;
 import com.tokopedia.checkout.analytics.CheckoutEgoldAnalytics;
 import com.tokopedia.checkout.analytics.CheckoutTradeInAnalytics;
 import com.tokopedia.checkout.analytics.CornerAnalytics;
+import com.tokopedia.logisticCommon.util.MapsAvailabilityHelper;
 import com.tokopedia.purchase_platform.common.analytics.EPharmacyAnalytics;
 import com.tokopedia.checkout.data.model.request.checkout.old.DataCheckoutRequest;
 import com.tokopedia.purchase_platform.common.feature.ethicaldrug.data.response.GetPrescriptionIdsResponse;
@@ -2311,12 +2312,17 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
     }
 
     private void navigateToPinpointActivity(LocationPass locationPass) {
-        Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalMarketplace.GEOLOCATION);
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(LogisticConstant.EXTRA_EXISTING_LOCATION, locationPass);
-        bundle.putBoolean(LogisticConstant.EXTRA_IS_FROM_MARKETPLACE_CART, true);
-        intent.putExtras(bundle);
-        startActivityForResult(intent, REQUEST_CODE_COURIER_PINPOINT);
+        if (getView() != null) {
+            MapsAvailabilityHelper.INSTANCE.onMapsAvailableState(getView(), null, () -> {
+                Intent intent = RouteManager.getIntent(getActivity(), ApplinkConstInternalMarketplace.GEOLOCATION);
+                Bundle bundle = new Bundle();
+                bundle.putParcelable(LogisticConstant.EXTRA_EXISTING_LOCATION, locationPass);
+                bundle.putBoolean(LogisticConstant.EXTRA_IS_FROM_MARKETPLACE_CART, true);
+                intent.putExtras(bundle);
+                startActivityForResult(intent, REQUEST_CODE_COURIER_PINPOINT);
+                return Unit.INSTANCE;
+            });
+        }
     }
 
     @Override

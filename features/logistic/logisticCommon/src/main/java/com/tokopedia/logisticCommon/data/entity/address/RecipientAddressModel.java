@@ -56,6 +56,9 @@ public class RecipientAddressModel implements Parcelable {
     private boolean isStateChosenAddress;
     private boolean radioButtonChecked;
 
+    // Share Address
+    private boolean isSharedAddress;
+
     public RecipientAddressModel() {
     }
 
@@ -308,6 +311,14 @@ public class RecipientAddressModel implements Parcelable {
         this.radioButtonChecked = radioButtonChecked;
     }
 
+    public boolean isSharedAddress() {
+        return isSharedAddress;
+    }
+
+    public void setSharedAddress(boolean sharedAddress) {
+        isSharedAddress = sharedAddress;
+    }
+
     public LocationDataModel getLocationDataModel() {
         return locationDataModel;
     }
@@ -445,6 +456,7 @@ public class RecipientAddressModel implements Parcelable {
         dest.writeParcelable(this.locationDataModel, flags);
         dest.writeByte(this.isStateChosenAddress ? (byte) 1 : (byte) 0);
         dest.writeByte(this.radioButtonChecked? (byte) 1 : (byte) 0);
+        dest.writeByte(this.isSharedAddress ? (byte) 1 : (byte) 0);
     }
 
     protected RecipientAddressModel(Parcel in) {
@@ -481,6 +493,7 @@ public class RecipientAddressModel implements Parcelable {
         this.locationDataModel = in.readParcelable(LocationDataModel.class.getClassLoader());
         this.isStateChosenAddress = in.readByte() != 0;
         this.radioButtonChecked = in.readByte() != 0;
+        this.isSharedAddress = in.readByte() != 0;
     }
 
     public static final Creator<RecipientAddressModel> CREATOR = new Creator<RecipientAddressModel>() {

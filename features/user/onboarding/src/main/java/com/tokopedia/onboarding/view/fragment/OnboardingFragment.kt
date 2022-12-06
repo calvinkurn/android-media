@@ -313,9 +313,9 @@ class OnboardingFragment : BaseDaggerFragment(), CoroutineScope, IOnBackPressed 
     }
 
     companion object {
-        const val ONBOARD_IMAGE_PAGE_1_URL = "https://ecs7.tokopedia.net/android/others/onboarding_image_page_1.png"
-        const val ONBOARD_IMAGE_PAGE_2_URL = "https://ecs7.tokopedia.net/android/others/onboarding_image_page_2.png"
-        const val ONBOARD_IMAGE_PAGE_3_URL = "https://ecs7.tokopedia.net/android/others/onboarding_image_page_3.png"
+        const val ONBOARD_IMAGE_PAGE_1_URL = "https://images.tokopedia.net/android/others/onboarding_image_page_1.png"
+        const val ONBOARD_IMAGE_PAGE_2_URL = "https://images.tokopedia.net/android/others/onboarding_image_page_2.png"
+        const val ONBOARD_IMAGE_PAGE_3_URL = "https://images.tokopedia.net/android/others/onboarding_image_page_3.png"
 
         const val KEY_FIRST_INSTALL_SEARCH = "KEY_FIRST_INSTALL_SEARCH"
         const val KEY_FIRST_INSTALL_TIME_SEARCH = "KEY_IS_FIRST_INSTALL_TIME_SEARCH"
