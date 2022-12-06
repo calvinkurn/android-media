@@ -872,9 +872,9 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
                 adjustGoCicilFee()
             }
         } else {
-            launch(executorDispatchers.immediate) {
-                calculator.calculateTotal(orderCart, orderProfile.value, orderShipment.value,
-                        validateUsePromoRevampUiModel, orderPayment.value, orderTotal.value)
+            dynamicPaymentFeeJob?.cancel()
+            dynamicPaymentFeeJob = launch(executorDispatchers.immediate) {
+                adjustPaymentFee()
             }
         }
     }
@@ -1047,6 +1047,22 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
         }
         calculator.calculateTotal(orderCart, orderProfile.value, orderShipment.value,
                 validateUsePromoRevampUiModel, orderPayment.value, orderTotal.value)
+    }
+
+    private suspend fun adjustPaymentFee() {
+        val (orderCost, _) = calculator.calculateOrderCostWithoutPaymentFee(orderCart, orderShipment.value,
+            validateUsePromoRevampUiModel, orderPayment.value)
+        val installmentTermList = paymentProcessor.get().getPaymentFee()
+        if (installmentTermList == null) {
+            val newOrderPayment = orderPayment.value
+            orderPayment.value = newOrderPayment.copy(paymentFees = newOrderPayment.paymentFees)
+            globalEvent.value = OccGlobalEvent.AdjustAdminFeeError
+        } else {
+            val newOrderPayment = orderPayment.value
+            orderPayment.value = newOrderPayment.copy(paymentFees = newOrderPayment.paymentFees)
+        }
+        calculator.calculateTotal(orderCart, orderProfile.value, orderShipment.value,
+            validateUsePromoRevampUiModel, orderPayment.value, orderTotal.value)
     }
 
     fun updateAddOn(saveAddOnStateResult: SaveAddOnStateResult) {

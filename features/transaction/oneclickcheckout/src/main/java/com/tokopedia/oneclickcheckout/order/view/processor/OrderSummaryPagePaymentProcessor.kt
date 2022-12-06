@@ -9,7 +9,14 @@ import com.tokopedia.oneclickcheckout.order.data.gocicil.GoCicilInstallmentOptio
 import com.tokopedia.oneclickcheckout.order.data.gocicil.GoCicilInstallmentRequest
 import com.tokopedia.oneclickcheckout.order.domain.CreditCardTenorListUseCase
 import com.tokopedia.oneclickcheckout.order.domain.GoCicilInstallmentOptionUseCase
-import com.tokopedia.oneclickcheckout.order.view.model.*
+import com.tokopedia.oneclickcheckout.order.view.model.OrderCart
+import com.tokopedia.oneclickcheckout.order.view.model.OrderCost
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPayment
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentCreditCard
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentGoCicilTerms
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentInstallmentTerm
+import com.tokopedia.oneclickcheckout.order.view.model.OrderProfile
+import com.tokopedia.oneclickcheckout.order.view.model.TenorListData
 import kotlinx.coroutines.withContext
 import timber.log.Timber
 import javax.inject.Inject
@@ -144,5 +151,18 @@ class OrderSummaryPagePaymentProcessor @Inject constructor(private val creditCar
             selectedTerm = installmentTerms.last()
         }
         return selectedTerm
+    }
+
+    suspend fun getPaymentFee() {
+        OccIdlingResource.increment()
+        val result = withContext(executorDispatchers.io) {
+            try {
+                return@withContext null
+            } catch (t: Throwable) {
+                Timber.d(t)
+                return@withContext null
+            }
+        }
+        OccIdlingResource.decrement()
     }
 }
