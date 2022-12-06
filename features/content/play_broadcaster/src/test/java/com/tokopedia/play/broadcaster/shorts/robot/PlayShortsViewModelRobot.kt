@@ -1,6 +1,9 @@
 package com.tokopedia.play.broadcaster.shorts.robot
 
 import androidx.lifecycle.viewModelScope
+import com.tokopedia.play.broadcaster.robot.PlayBroProductSetupViewModelRobot
+import com.tokopedia.play.broadcaster.setup.product.model.PlayBroProductChooserEvent
+import com.tokopedia.play.broadcaster.setup.product.model.ProductChooserUiState
 import com.tokopedia.play.broadcaster.shorts.domain.PlayShortsRepository
 import com.tokopedia.play.broadcaster.shorts.domain.manager.PlayShortsAccountManager
 import com.tokopedia.play.broadcaster.shorts.ui.model.action.PlayShortsAction
@@ -34,12 +37,31 @@ class PlayShortsViewModelRobot(
         playShortsUploader = playShortsUploader,
     )
 
+    fun setUp(fn: PlayShortsViewModelRobot.() -> Unit): PlayShortsViewModelRobot {
+        fn()
+        return this
+    }
+
     fun recordState(fn: suspend PlayShortsViewModelRobot.() -> Unit): PlayShortsUiState {
         val scope = CoroutineScope(dispatchers.coroutineDispatcher)
         lateinit var uiState: PlayShortsUiState
         scope.launch {
             viewModel.uiState.collect {
                 uiState = it
+            }
+        }
+        dispatchers.coroutineDispatcher.runBlockingTest { fn() }
+        dispatchers.coroutineDispatcher.advanceUntilIdle()
+        scope.cancel()
+        return uiState
+    }
+
+    fun recordStates(fn: suspend PlayShortsViewModelRobot.() -> Unit): List<PlayShortsUiState> {
+        val scope = CoroutineScope(dispatchers.coroutineDispatcher)
+        var uiState = mutableListOf<PlayShortsUiState>()
+        scope.launch {
+            viewModel.uiState.collect {
+                uiState.add(it)
             }
         }
         dispatchers.coroutineDispatcher.runBlockingTest { fn() }
@@ -62,7 +84,27 @@ class PlayShortsViewModelRobot(
         return uiEventList
     }
 
-    suspend fun submitAction(action: PlayShortsAction) = act {
+    fun recordStateAndEvent(fn: suspend PlayShortsViewModelRobot.() -> Unit): Pair<PlayShortsUiState, List<PlayShortsUiEvent>> {
+        val scope = CoroutineScope(dispatchers.coroutineDispatcher)
+        lateinit var uiState: PlayShortsUiState
+        val uiEvents = mutableListOf<PlayShortsUiEvent>()
+        scope.launch {
+            viewModel.uiState.collect {
+                uiState = it
+            }
+        }
+        scope.launch {
+            viewModel.uiEvent.collect {
+                uiEvents.add(it)
+            }
+        }
+        dispatchers.coroutineDispatcher.runBlockingTest { fn() }
+        dispatchers.coroutineDispatcher.advanceUntilIdle()
+        scope.cancel()
+        return uiState to uiEvents
+    }
+
+    fun submitAction(action: PlayShortsAction) {
         viewModel.submitAction(action)
     }
 
