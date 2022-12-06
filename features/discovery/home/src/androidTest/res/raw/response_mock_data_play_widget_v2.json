@@ -24,7 +24,7 @@
                         "video": {
                             "ID": "9463",
                             "type": "vod",
-                            "coverUrl": "https://ecs7.tokopedia.net/img/jJtrdn/2020/9/14/95c8e78e-33e8-4f1a-91a1-bf2a5596c1a5.jpg",
+                            "coverUrl": "https://images.tokopedia.net/img/jJtrdn/2020/9/14/95c8e78e-33e8-4f1a-91a1-bf2a5596c1a5.jpg",
                             "streamSource": "https://vod.tokopedia.com/view/adaptive.m3u8?id=8d9d740939f749bebe7b0a7e43b407e5",
                             "isShowTotalView": true,
                             "isLive": false
@@ -66,7 +66,7 @@
                         "video": {
                             "ID": "7511",
                             "type": "live",
-                            "coverUrl": "https://ecs7.tokopedia.net/img/jJtrdn/2020/9/14/a8ca126f-7a93-4be4-bcd7-f7c5bdb29a8d.jpg",
+                            "coverUrl": "https://images.tokopedia.net/img/jJtrdn/2020/9/14/a8ca126f-7a93-4be4-bcd7-f7c5bdb29a8d.jpg",
                             "streamSource": "https://chat.tokopedia.com/live/api/v1/livestream/adaptive.m3u8?id=53831953-f659-11ea-ba24-be21f8cc5a54",
                             "isShowTotalView": true,
                             "isLive": false
@@ -108,7 +108,7 @@
                         "video": {
                             "ID": "7512",
                             "type": "youtube",
-                            "coverUrl": "https://ecs7.tokopedia.net/img/jJtrdn/2020/9/14/eeb1d4c4-5ad3-41ad-80a2-5e34ef11b136.jpg",
+                            "coverUrl": "https://images.tokopedia.net/img/jJtrdn/2020/9/14/eeb1d4c4-5ad3-41ad-80a2-5e34ef11b136.jpg",
                             "streamSource": "6HVx4-vrb_k",
                             "isShowTotalView": true,
                             "isLive": false
@@ -155,7 +155,7 @@
                         "video": {
                             "ID": "9210",
                             "type": "vod",
-                            "coverUrl": "https://ecs7.tokopedia.net/img/jJtrdn/2020/10/6/168df1ac-d6a7-488c-ad79-81985cb5cfde.jpg?b=UrO%3A%40US4RQaet7W%3BofoM~pxGk9bat5niWVbH",
+                            "coverUrl": "https://images.tokopedia.net/img/jJtrdn/2020/10/6/168df1ac-d6a7-488c-ad79-81985cb5cfde.jpg?b=UrO%3A%40US4RQaet7W%3BofoM~pxGk9bat5niWVbH",
                             "streamSource": "https://vod.tokopedia.net/d02ebc97329e4112ab24aa902e5c105e/4a0bedaaf6de46b08b4d9bd0ebf2bff8-f22f568be46d7e4467162e6de7b32def-ld.m3u8",
                             "isShowTotalView": true,
                             "isLive": false
@@ -202,7 +202,7 @@
                         "video": {
                             "ID": "9207",
                             "type": "live",
-                            "coverUrl": "https://ecs7.tokopedia.net/img/jJtrdn/2020/10/6/f748e654-2926-4561-a79f-f2ed2107957a.jpg?b=USKKQK%5Dw%3Fw17AKRiE3WB-%3AIvIUxW%25fRo-jj%5B",
+                            "coverUrl": "https://images.tokopedia.net/img/jJtrdn/2020/10/6/f748e654-2926-4561-a79f-f2ed2107957a.jpg?b=USKKQK%5Dw%3Fw17AKRiE3WB-%3AIvIUxW%25fRo-jj%5B",
                             "streamSource": "https://chat.tokopedia.com/live/api/v1/livestream/adaptive.m3u8?id=b7a2be14-07c7-11eb-a69e-eac5e72d5a0c",
                             "isShowTotalView": true,
                             "isLive": true

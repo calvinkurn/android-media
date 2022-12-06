@@ -18,6 +18,7 @@ import android.view.animation.AnimationUtils
 import android.view.animation.LayoutAnimationController
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -105,6 +106,7 @@ import com.tokopedia.sellerhomecommon.presentation.model.BaseWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.CalendarEventUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.CalendarFilterDataKeyUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.CalendarWidgetUiModel
+import com.tokopedia.sellerhomecommon.presentation.model.CardDataUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.CardWidgetUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.CarouselItemUiModel
 import com.tokopedia.sellerhomecommon.presentation.model.CarouselWidgetUiModel
@@ -160,6 +162,7 @@ import com.tokopedia.utils.image.ImageProcessingUtil
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
 import java.util.*
@@ -331,12 +334,15 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
     override fun onResume() {
         super.onResume()
-        if (!isFirstLoad)
+        if (!isFirstLoad) {
             reloadPage()
+        }
+        startWidgetSse()
     }
 
     override fun onPause() {
         super.onPause()
+        stopWidgetSse()
         hideTooltipIfExist()
     }
 
@@ -1464,6 +1470,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 is Success -> {
                     stopLayoutCustomMetric(result.data)
                     setOnSuccessGetLayout(result.data)
+                    startWidgetSse()
                 }
                 is Fail -> {
                     stopCustomMetric(
@@ -1961,7 +1968,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     }
 
     @Suppress("UNCHECKED_CAST")
-    private inline fun <D : BaseDataUiModel, reified W : BaseWidgetUiModel<D>> List<D>.setOnSuccessWidgetState(
+    private fun <D : BaseDataUiModel> List<D>.setOnSuccessWidgetState(
         widgetType: String
     ) {
         isReloading = false
@@ -1987,16 +1994,21 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
         widgetDataList: List<D>,
         widgetType: String
     ) {
-        val newWidgetList = adapter.data.toMutableList()
+        val widgetList: MutableList<BaseWidgetUiModel<*>> = if (widgetType == WidgetType.CARD) {
+            getWidgetListForSse(widgetDataList).toMutableList()
+        } else {
+            adapter.data.toMutableList()
+        }
+
         widgetDataList.forEach { widgetData ->
-            newWidgetList.indexOfFirst {
+            widgetList.indexOfFirst {
                 it.dataKey == widgetData.dataKey && it.widgetType == widgetType
             }.takeIf { it > RecyclerView.NO_POSITION }?.let { index ->
-                val widget = newWidgetList.getOrNull(index)
+                val widget = widgetList.getOrNull(index)
                 if (widget is W) {
                     if (shouldRemoveWidget(widget, widgetData)) {
-                        newWidgetList.removeAt(index)
-                        removeEmptySections(newWidgetList, index)
+                        widgetList.removeAt(index)
+                        removeEmptySections(widgetList, index)
                     } else {
                         val copiedWidget = widget.copyWidget()
                         copiedWidget.data = widgetData
@@ -2005,15 +2017,48 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
 
                         handleShopShareMilestoneWidget(copiedWidget)
 
-                        newWidgetList[index] = copiedWidget
+                        widgetList[index] = copiedWidget
                     }
                 }
             }
         }
 
         notifyWidgetWithSdkChecking {
-            updateWidgets(newWidgetList as List<BaseWidgetUiModel<BaseDataUiModel>>)
+            updateWidgets(widgetList as List<BaseWidgetUiModel<BaseDataUiModel>>)
         }
+    }
+
+    /**
+     * SSE special case for Card Widgets
+     *
+     * We need to handle case for `zero to non zero` case, means we need to show up again
+     * the card widget if card widget data from SSE is more then 0.
+     * So this method to handle that and will return list of widgets
+     * */
+    private fun <D : BaseDataUiModel> getWidgetListForSse(widgetDataList: List<D>): List<BaseWidgetUiModel<*>> {
+        val widgetMap: Map<String, BaseWidgetUiModel<*>> = adapter.data.associateBy { it.dataKey }
+        val widgetList = mutableListOf<BaseWidgetUiModel<*>>()
+        val widgetDataMap = widgetDataList.associateBy { it.dataKey }
+
+        sellerHomeViewModel.rawWidgetList.forEach { w ->
+            val widget = widgetMap[w.dataKey]
+            if (w is CardWidgetUiModel) {
+                val data = widgetDataMap[w.dataKey]
+                if (data is CardDataUiModel) {
+                    widgetList.add(w)
+                } else {
+                    if (widget != null) {
+                        widgetList.add(widget)
+                    }
+                }
+            } else {
+                if (widget != null) {
+                    widgetList.add(widget)
+                }
+            }
+        }
+
+        return widgetList.toList()
     }
 
     private fun showWidgetSuccessToaster() {
@@ -2608,6 +2653,23 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                 )
             }
         }
+    }
+
+    private fun startWidgetSse() {
+        lifecycleScope.launchWhenResumed {
+            withContext(Dispatchers.IO) {
+                val widgets = sellerHomeViewModel.rawWidgetList
+                val isAnyRealtimeWidget = widgets.any { it.useRealtime }
+                if (isAnyRealtimeWidget) {
+                    val realTimeDataKeys = widgets.filter { it.useRealtime }.map { it.dataKey }
+                    sellerHomeViewModel.startSse(realTimeDataKeys)
+                }
+            }
+        }
+    }
+
+    private fun stopWidgetSse() {
+        sellerHomeViewModel.stopSSE()
     }
 
     interface Listener {

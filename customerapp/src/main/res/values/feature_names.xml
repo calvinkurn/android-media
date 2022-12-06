@@ -60,6 +60,13 @@
     <!--    Dynamic feature for Liveness Detection-->
     <string name="title_liveness_detection">Liveness Detection</string>
 
+    <!--    Dynamic feature for Privacy Account-->
+    <string name="title_base_privacy_center">Privacy Center</string>
+    <string name="title_privacy_center">Privacy Center</string>
+    <string name="dsar_activity_title">Download Data</string>
+    <string name="privacy_center_search_history_title">Riwayat Pencarian</string>
+    <string name="privacy_policy_label">Privacy Policy</string>
+
     <!--    Dynamic feature for Login Fingerprint-->
     <string name="title_feature_login_fingerprint_setting">Sidik Jari</string>
     <string name="title_login_fingerprint">Masuk dengan Sidik Jari</string>
@@ -440,4 +447,10 @@
 
     <!-- Shop Admin -->
     <string name="title_shop_admin">Shop Admin</string>
+
+    <!-- Product Ar   -->
+    <string name="title_product_ar">Product Ar</string>
+
+    <!-- Toko Chat -->
+    <string name="df_title_tokochat">Toko Chat</string>
 </resources>

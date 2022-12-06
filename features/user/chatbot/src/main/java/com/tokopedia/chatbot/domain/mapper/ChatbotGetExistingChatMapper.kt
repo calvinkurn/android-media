@@ -7,11 +7,13 @@ import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_INVOICES_SEL
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_INVOICE_SEND
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_QUICK_REPLY
 import com.tokopedia.chat_common.data.AttachmentType.Companion.TYPE_QUICK_REPLY_SEND
+import com.tokopedia.chat_common.data.FallbackAttachmentUiModel
 import com.tokopedia.chat_common.data.ImageUploadUiModel
 import com.tokopedia.chat_common.domain.mapper.GetExistingChatMapper
 import com.tokopedia.chat_common.domain.pojo.Reply
 import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.TYPE_SECURE_IMAGE_UPLOAD
 import com.tokopedia.chatbot.ChatbotConstant.AttachmentType.TYPE_VIDEO_UPLOAD
+import com.tokopedia.chatbot.ChatbotConstant.ReplyBoxType.DYNAMIC_ATTACHMENT
 import com.tokopedia.chatbot.attachinvoice.data.uimodel.AttachInvoiceSentUiModel
 import com.tokopedia.chatbot.attachinvoice.domain.pojo.InvoiceSentPojo
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionBubbleUiModel
@@ -72,8 +74,26 @@ open class ChatbotGetExistingChatMapper @Inject constructor() : GetExistingChatM
             TYPE_SECURE_IMAGE_UPLOAD -> convertToImageUpload(chatItemPojoByDateByTime)
             TYPE_INVOICE_SEND -> convertToInvoiceSentUiModel(chatItemPojoByDateByTime, attachmentIds)
             TYPE_VIDEO_UPLOAD -> convertToVideoUpload(chatItemPojoByDateByTime)
+            DYNAMIC_ATTACHMENT -> convertToDynamicAttachmentFallback(chatItemPojoByDateByTime)
             else -> super.mapAttachment(chatItemPojoByDateByTime, attachmentIds)
         }
+    }
+
+    /**
+     * We are using Dynamic Attachment with content_codes like 100,101 [As of now]. In future more will
+     * get added. If the user doesn't have the updated version to receive new content_code, we will
+     * show message to update the app
+     * */
+    private fun convertToDynamicAttachmentFallback(chatItemPojoByDateByTime: Reply): Visitable<*> {
+        var fallbackMessage = ""
+        chatItemPojoByDateByTime.attachment.fallback.let {
+            fallbackMessage = it.message
+        }
+        return FallbackAttachmentUiModel.Builder()
+            .withResponseFromGQL(chatItemPojoByDateByTime)
+            .withMsg(fallbackMessage)
+            .withAttachment(chatItemPojoByDateByTime.attachment)
+            .build()
     }
 
     private fun convertToInvoiceSentUiModel(pojo: Reply, attachmentIds: List<String>): AttachInvoiceSentUiModel {
