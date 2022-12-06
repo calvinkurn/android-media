@@ -1,15 +1,17 @@
 package com.tokopedia.mvc.presentation.bottomsheet.viewmodel
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.toFormattedString
+import com.tokopedia.mvc.domain.entity.UpdateVoucherResult
 import com.tokopedia.mvc.domain.entity.Voucher
 import com.tokopedia.mvc.domain.usecase.ChangeVoucherPeriodUseCase
 import com.tokopedia.mvc.domain.usecase.GetTokenUseCase
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import java.util.*
 import javax.inject.Inject
 
@@ -24,12 +26,6 @@ class VoucherEditPeriodViewModel @Inject constructor(
         private const val HOUR_FORMAT = "HH:mm"
     }
 
-    private val _fullStartDateLiveData = MutableLiveData<String>()
-    val fullStartDateLiveData: LiveData<String>
-        get() = _fullStartDateLiveData
-    private val _fullEndDateLiveData = MutableLiveData<String>()
-    val fullEndDateLiveData: LiveData<String>
-        get() = _fullEndDateLiveData
 
     private val _dateStartLiveData = MutableLiveData<String>()
     val dateStartLiveData: LiveData<String>
@@ -51,6 +47,10 @@ class VoucherEditPeriodViewModel @Inject constructor(
     val endDateCalendarLiveData: LiveData<Calendar>
         get() = _endDateCalendarLiveData
 
+    private val _updateVoucherPeriodStateLiveData = MutableLiveData<com.tokopedia.usecase.coroutines.Result<UpdateVoucherResult>>()
+    val updateVoucherPeriodStateLiveData: LiveData<com.tokopedia.usecase.coroutines.Result<UpdateVoucherResult>>
+        get() = _updateVoucherPeriodStateLiveData
+
     fun setStartDateTime(startDate: Calendar?) {
         _startDateCalendarLiveData.value = startDate
         _dateStartLiveData.value = startDate?.time?.toFormattedString(DATE_FORMAT)
@@ -71,12 +71,7 @@ class VoucherEditPeriodViewModel @Inject constructor(
                         voucher?.let {
                             launchCatchError(dispatchers.io, {
                                 val token = getTokenUseCase.executeOnBackground()
-                                Log.d("FATAL", "validateDateAndTime: $token")
-                                Log.d(
-                                    "FATAL",
-                                    "validateDateAndTime: $dateStart $dateEnd $hourStart $hourEnd"
-                                )
-                                changeVoucherPeriodUseCase.execute(
+                                val response = changeVoucherPeriodUseCase.execute(
                                     voucher,
                                     token,
                                     dateStart,
@@ -84,7 +79,9 @@ class VoucherEditPeriodViewModel @Inject constructor(
                                     dateEnd,
                                     hourEnd
                                 )
-                            }, {
+                                _updateVoucherPeriodStateLiveData.value = Success(response)
+                            }, onError =  {
+                                _updateVoucherPeriodStateLiveData.value = Fail(it)
                             })
                         }
                     }

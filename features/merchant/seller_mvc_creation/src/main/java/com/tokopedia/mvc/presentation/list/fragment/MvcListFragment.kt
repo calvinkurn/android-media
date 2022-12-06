@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.common.utils.view.KeyboardHandler
@@ -20,6 +21,7 @@ import com.tokopedia.campaign.utils.extension.slideUp
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.applyUnifyBackgroundColor
 import com.tokopedia.kotlin.extensions.view.attachOnScrollListener
+import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.mvc.R
 import com.tokopedia.mvc.common.util.PaginationConstant.INITIAL_PAGE
 import com.tokopedia.mvc.common.util.PaginationConstant.PAGE_SIZE
@@ -44,9 +46,11 @@ import com.tokopedia.mvc.presentation.list.model.MoreMenuUiModel
 import com.tokopedia.mvc.presentation.list.viewmodel.MvcListViewModel
 import com.tokopedia.mvc.presentation.product.add.AddProductActivity
 import com.tokopedia.mvc.util.SharingUtil
+import com.tokopedia.mvc.util.extension.showErrorToaster
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.SearchBarUnify
+import com.tokopedia.unifycomponents.Toaster
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
@@ -143,13 +147,34 @@ class MvcListFragment :
         activity?.let {
             voucherEditPeriodBottomSheet =
                 VoucherEditPeriodBottomSheet.newInstance(
-                    voucher
+                    voucher,
+                    onSuccessUpdateVoucherPeriod,
+                    onFailureUpdateVoucherPeriod
                 )
-//            voucherEditPeriodBottomSheet?.setOnMenuClickListener { menu ->
-//                onClickListenerForMoreMenu(menu, voucher)
-//            }
             voucherEditPeriodBottomSheet?.show(childFragmentManager, "")
         }
+    }
+
+    private var onSuccessUpdateVoucherPeriod: () -> Unit  = {
+        loadInitialDataList()
+        view?.run {
+            Toaster.build(
+                this,
+                context?.getString(R.string.edit_period_success_edit_period).toBlankOrString(),
+                Snackbar.LENGTH_LONG,
+                Toaster.TYPE_NORMAL,
+                context?.getString(R.string.edit_period_button_text).toBlankOrString()
+            )
+        }
+    }
+
+    private var onFailureUpdateVoucherPeriod: (String) -> Unit = { message ->
+        val errorMessage = if (message.isNotBlank()) {
+            message
+        } else {
+            context?.getString(R.string.smvc_general_error).toBlankOrString()
+        }
+        view?.showErrorToaster(errorMessage)
     }
 
     private fun showDisplayVoucherBottomSheet(voucher: Voucher) {

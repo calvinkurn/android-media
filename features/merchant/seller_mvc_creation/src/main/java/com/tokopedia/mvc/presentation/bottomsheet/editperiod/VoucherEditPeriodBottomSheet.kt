@@ -1,6 +1,5 @@
 package com.tokopedia.mvc.presentation.bottomsheet.editperiod
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -16,10 +15,12 @@ import com.tokopedia.mvc.databinding.SmvcBottomsheetEditPeriodBinding
 import com.tokopedia.mvc.di.component.DaggerMerchantVoucherCreationComponent
 import com.tokopedia.mvc.domain.entity.Voucher
 import com.tokopedia.mvc.presentation.bottomsheet.viewmodel.VoucherEditPeriodViewModel
-import com.tokopedia.mvc.util.DateTimeUtils.getMaxStartDate
+import com.tokopedia.mvc.util.DateTimeUtils
 import com.tokopedia.mvc.util.convertUnsafeDateTime
 import com.tokopedia.mvc.util.formatTo
 import com.tokopedia.unifycomponents.BottomSheetUnify
+import com.tokopedia.usecase.coroutines.Fail
+import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import java.util.*
 import javax.inject.Inject
@@ -49,6 +50,8 @@ class VoucherEditPeriodBottomSheet : BottomSheetUnify() {
     private var startMinute: Int = 0
     private var endHour: Int = 0
     private var endMinute: Int = 0
+    private var onSuccessListener: () -> Unit = {}
+    private var onFailListener: (String) -> Unit = {}
 
     init {
         isFullpage = false
@@ -75,6 +78,7 @@ class VoucherEditPeriodBottomSheet : BottomSheetUnify() {
         setUpView()
         binding?.btnMvcSavePeriod?.setOnClickListener {
             viewModel.validateAndUpdateDateTime(voucher)
+            binding?.btnMvcSavePeriod?.isLoading = true
         }
     }
 
@@ -134,6 +138,19 @@ class VoucherEditPeriodBottomSheet : BottomSheetUnify() {
             } catch (_: Exception) {
             }
         }
+
+        viewModel.updateVoucherPeriodStateLiveData.observe(viewLifecycleOwner) { result ->
+            when(result) {
+                is Success -> {
+                    onSuccessListener()
+                }
+                is Fail -> {
+                    onFailListener(result.throwable.message.toBlankOrString())
+                }
+            }
+            binding?.btnMvcSavePeriod?.isLoading = false
+            dismiss()
+        }
     }
 
     private fun setUpView() {
@@ -143,8 +160,8 @@ class VoucherEditPeriodBottomSheet : BottomSheetUnify() {
                     editText.run {
                         setOnClickListener {
                             context?.run {
-                                getMinStartDate().let { minDate ->
-                                    getMaxStartDate().let { maxDate ->
+                                DateTimeUtils.getMinDate(startCalendar)?.let { minDate ->
+                                    DateTimeUtils.getMaxDate(startCalendar)?.let { maxDate ->
                                         voucherEditCalendarBottomSheet =
                                             VoucherEditCalendarBottomSheet.newInstance(
                                                 startCalendar,
@@ -171,8 +188,8 @@ class VoucherEditPeriodBottomSheet : BottomSheetUnify() {
                     editText.run {
                         setOnClickListener {
                             context?.run {
-                                getMinStartDate().let { minDate ->
-                                    getMaxStartDate().let { maxDate ->
+                                DateTimeUtils.getMinDate(endCalendar)?.let { minDate ->
+                                    DateTimeUtils.getMaxDate(endCalendar)?.let { maxDate ->
                                         voucherEditCalendarBottomSheet =
                                             VoucherEditCalendarBottomSheet.newInstance(
                                                 endCalendar,
@@ -207,13 +224,6 @@ class VoucherEditPeriodBottomSheet : BottomSheetUnify() {
         viewModel.setEndDateTime(it)
     }
 
-    fun Context.getMinStartDate() =
-        getToday().apply {
-            add(Calendar.MONTH, -1)
-        }
-
-    fun Context.getToday() = GregorianCalendar(LocaleUtils.getCurrentLocale(this))
-
     private fun disableText(autoCompleteTextView: AutoCompleteTextView) {
         autoCompleteTextView.apply {
             isFocusable = false
@@ -224,9 +234,11 @@ class VoucherEditPeriodBottomSheet : BottomSheetUnify() {
 
     companion object {
         @JvmStatic
-        fun newInstance(voucher: Voucher): VoucherEditPeriodBottomSheet {
+        fun newInstance(voucher: Voucher, onSuccessListener: ()-> Unit = {}, onFailListener: (String) -> Unit = {}): VoucherEditPeriodBottomSheet {
             return VoucherEditPeriodBottomSheet().apply {
                 this.voucher = voucher
+                this.onSuccessListener = onSuccessListener
+                this.onFailListener = onFailListener
             }
         }
 

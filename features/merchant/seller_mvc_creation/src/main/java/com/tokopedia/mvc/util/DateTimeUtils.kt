@@ -29,16 +29,21 @@ object DateTimeUtils {
 
     const val EXTRA_HOUR = 3
     const val EXTRA_MINUTE = 30
-    const val EXTRA_WEEK = 7
     const val EXTRA_DAYS = 30
-    const val EXTRA_DAYS_COUPON = 31
-    const val MINUTE_INTERVAL = 30
-    const val ROLLOUT_DATE_THRESHOLD_TIME = 1647536401000L
+    const val PREVIOUS_EXTRA_DAYS = -30
 
     private const val DISPLAYED_DATE_FORMAT = "dd MMM yyyy"
     private const val RAW_DATE_FORMAT = "yyyy-MM-dd"
 
     fun Context.getToday() = GregorianCalendar(LocaleUtils.getCurrentLocale(this))
+
+    /**
+     * Minimum start time should be 30 days before current time
+     */
+    fun Context.getMinStartDate() =
+        getToday().apply {
+            add(Calendar.DATE, -30)
+        }
 
     /**
      * Maximum start date should 30 days after current time
@@ -47,12 +52,35 @@ object DateTimeUtils {
         getToday().apply {
             add(Calendar.DATE, EXTRA_DAYS)
         }
+
+    /**
+     * Minimum end time should be 30 days before ending time
+     */
+    fun getMinDate(startCalendar: GregorianCalendar?) : GregorianCalendar? =
+        startCalendar?.let { startDate ->
+            GregorianCalendar().apply {
+                time = startDate.time
+                add(Calendar.DATE, PREVIOUS_EXTRA_DAYS)
+            }
+        }
+
+    /**
+     * Maximum end date should be 30 days after ending date
+     */
+    fun getMaxDate(startCalendar: GregorianCalendar?): GregorianCalendar? =
+        startCalendar?.let { startDate ->
+            GregorianCalendar().apply {
+                time = startDate.time
+                add(Calendar.DATE, EXTRA_DAYS)
+            }
+        }
+
 }
 
 fun String.convertUnsafeDateTime(): Date {
     val locale = LocaleUtils.getIDLocale()
     return try {
-        convertToDate(DateTimeUtils.TIME_STAMP_FORMAT, locale)
+        convertToDate(TIME_STAMP_FORMAT, locale)
     } catch (ex: ParseException) {
         try {
             convertToDate(DateTimeUtils.TIME_STAMP_MILLISECONDS_FORMAT, locale)
