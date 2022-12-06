@@ -87,7 +87,6 @@ class EventPDPTicketItemPackageAdapter(
                     }
                 } else {
                     txtisRecommeded.show()
-                    showSoldOut(itemView)
                 }
 
                 if (!isListenerRegistered) {
