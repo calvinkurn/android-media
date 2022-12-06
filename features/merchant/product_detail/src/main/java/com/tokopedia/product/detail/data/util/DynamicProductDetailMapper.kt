@@ -650,7 +650,6 @@ object DynamicProductDetailMapper {
         return PdpParamModel(
             isBebasOngkir = isBebasOngkir(bebasOngkir.boType),
             bebasOngkirType = mapBebasOngkirType(bebasOngkir.boType),
-            productImageUrl = product.data.getProductImageUrl() ?: "",
             productPrice = product.data.price.value.toLong(),
             productRating = product.basic.stats.rating,
             productTitle = MethodChecker.fromHtml(product.getProductName).toString()
