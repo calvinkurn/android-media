@@ -85,11 +85,9 @@ val List<WidgetUiModel>.isSubSlotAvailable : Boolean
         }
     }
 
-val List<WidgetUiModel>.hasNextPage : Boolean
+val WidgetParamUiModel.hasNextPage : Boolean
     get() {
-        return this.any {
-            if (it is PageConfig) it.cursor.isNotBlank() else false
-        }
+        return this.cursor.isNotEmpty()
     }
 
 val List<WidgetUiModel>.getChannelBlock : WidgetItemUiModel

@@ -1,7 +1,6 @@
 package com.tokopedia.play.view.viewmodel
 
 import android.net.Uri
-import android.util.Log
 import androidx.lifecycle.*
 import androidx.lifecycle.Observer
 import com.google.android.exoplayer2.ExoPlayer
@@ -2700,7 +2699,7 @@ class PlayViewModel @AssistedInject constructor(
      * Next Page or Chips Clicked
      */
     private fun onActionWidget(isNextPage : Boolean = false) {
-        if(!_exploreWidget.value.widgets.hasNextPage && isNextPage) return
+        if(!_exploreWidget.value.param.hasNextPage && isNextPage) return
         viewModelScope.launchCatchError( block = {
             _exploreWidget.update { it.copy(state = ResultState.Loading) }
 
