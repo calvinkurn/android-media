@@ -17,6 +17,7 @@ import com.tokopedia.content.common.util.Router
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.getScreenWidth
 import com.tokopedia.play.databinding.FragmentPlayExploreWidgetBinding
+import com.tokopedia.play.ui.explorewidget.ChipItemDecoration
 import com.tokopedia.play.ui.explorewidget.ChipsViewHolder
 import com.tokopedia.play.ui.explorewidget.ChipsWidgetAdapter
 import com.tokopedia.play.util.isChanged
@@ -55,7 +56,7 @@ class PlayExploreWidgetFragment @Inject constructor(
     private val binding: FragmentPlayExploreWidgetBinding get() = _binding!!
 
     private val EXPLORE_WIDTH: Int by lazy {
-        (getScreenWidth() * 0.85).roundToInt()
+        (getScreenWidth() * 0.75).roundToInt()
     }
 
     private val EXPLORE_HEIGHT: Int by lazy {
@@ -78,6 +79,9 @@ class PlayExploreWidgetFragment @Inject constructor(
     }
 
     private val chipsAdapter = ChipsWidgetAdapter(this)
+    private val chipDecoration by lazy(LazyThreadSafetyMode.NONE) {
+        ChipItemDecoration(binding.rvChips.context)
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -109,7 +113,7 @@ class PlayExploreWidgetFragment @Inject constructor(
     }
 
     private fun setupHeader() {
-        binding.widgetHeader.title = "Video lainnya"
+        binding.widgetHeader.title = getString(playR.string.play_explore_widget_header_title)
         binding.widgetHeader.closeListener = View.OnClickListener {
             dismiss()
         }
@@ -117,6 +121,7 @@ class PlayExploreWidgetFragment @Inject constructor(
 
     private fun setupList() {
         binding.rvChips.adapter = chipsAdapter
+        binding.rvChips.addItemDecoration(chipDecoration)
 
         binding.rvWidgets.adapter = widgetAdapter
         binding.rvWidgets.layoutManager = layoutManager
