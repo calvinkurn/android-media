@@ -82,13 +82,13 @@ class TopAdsGetGroupProductDataUseCase @Inject constructor(
     }
 
     fun setParams(
-        groupId: Int?, page: Int, search: String, sort: String, status: Int?,
+        groupId: String?, page: Int, search: String, sort: String, status: Int?,
         startDate: String, endDate: String, type: String = "", goalId: Int = 0,
     ): RequestParams {
         val requestParams = RequestParams.create()
         val queryMap = HashMap<String, Any?>()
         queryMap[ParamObject.SHOP_id] = userSession.shopId
-        queryMap[ParamObject.GROUP] = groupId.toString()
+        queryMap[ParamObject.GROUP] = groupId
         queryMap[ParamObject.SORT] = sort
         queryMap[ParamObject.PAGE] = page
         queryMap[ParamObject.START_DATE] = startDate

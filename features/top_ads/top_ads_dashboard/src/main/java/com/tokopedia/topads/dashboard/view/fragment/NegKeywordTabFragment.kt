@@ -16,6 +16,7 @@ import com.tokopedia.abstraction.base.view.recyclerview.EndlessRecyclerViewScrol
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalTopAds
 import com.tokopedia.dialog.DialogUnify
+import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.topads.common.analytics.TopAdsCreateAnalytics
 import com.tokopedia.topads.common.data.internal.ParamObject
 import com.tokopedia.topads.dashboard.R
@@ -52,7 +53,7 @@ class NegKeywordTabFragment : BaseDaggerFragment() {
 
     private lateinit var adapter: NegKeywordAdapter
     private val groupId by lazy(LazyThreadSafetyMode.NONE) {
-        arguments?.getInt(TopAdsDashboardConstant.GROUP_ID, 0).toString()
+        arguments?.getString(TopAdsDashboardConstant.GROUP_ID)
     }
 
     companion object {
@@ -168,8 +169,7 @@ class NegKeywordTabFragment : BaseDaggerFragment() {
         val resources = context?.resources ?: return
         viewModel.getGroupKeywordData(resources,
             0,
-            arguments?.getInt(TopAdsDashboardConstant.GROUP_ID)
-                ?: 0,
+            arguments?.getString(TopAdsDashboardConstant.GROUP_ID).toIntOrZero(),
             searchBar?.searchBarTextField?.text.toString(), null, null,
             currentPage, ::onSuccessKeyword, ::onEmpty)
     }
@@ -191,7 +191,7 @@ class NegKeywordTabFragment : BaseDaggerFragment() {
     private fun startEditActivity() {
         val intent = RouteManager.getIntent(context, ApplinkConstInternalTopAds.TOPADS_EDIT_ADS)?.apply {
             putExtra(TopAdsDashboardConstant.TAB_POSITION, 1)
-            putExtra(TopAdsDashboardConstant.GROUPID, arguments?.getInt(TopAdsDashboardConstant.GROUP_ID).toString())
+            putExtra(TopAdsDashboardConstant.GROUPID, arguments?.getString(TopAdsDashboardConstant.GROUP_ID))
         }
         startActivityForResult(intent, TopAdsDashboardConstant.EDIT_GROUP_REQUEST_CODE)
         TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsDashboardEvent(
@@ -245,7 +245,7 @@ class NegKeywordTabFragment : BaseDaggerFragment() {
         adapter.notifyDataSetChanged()
         val resources = context?.resources ?: return
         viewModel.getGroupKeywordData(resources, 0,
-            arguments?.getInt(TopAdsDashboardConstant.GROUP_ID) ?: 0,
+            arguments?.getString(TopAdsDashboardConstant.GROUP_ID).toIntOrZero(),
             searchBar?.searchBarTextField?.text.toString(), null, null,
             currentPageNum, ::onSuccessKeyword, ::onEmpty)
     }
