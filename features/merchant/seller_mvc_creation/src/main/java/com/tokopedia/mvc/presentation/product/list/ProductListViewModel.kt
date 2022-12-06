@@ -341,9 +341,18 @@ class ProductListViewModel @Inject constructor(
 
     private fun handleAddNewProductToSelection(newProducts: List<Product>) {
         launch(dispatchers.computation) {
-            val newlyAddedProducts = newProducts.map { it.copy(isSelected = false) }
+            val toBeRemoveProductIds = currentState.selectedProductsIdsToBeRemoved
 
-            _uiState.update { it.copy(products = newlyAddedProducts) }
+            val updatedProducts = newProducts.map { newProduct ->
+                if (newProduct.id !in toBeRemoveProductIds) {
+                    //Newly added product should not be marked for removal
+                    newProduct.copy(isSelected = false)
+                } else {
+                    newProduct
+                }
+            }
+
+            _uiState.update { it.copy(products = updatedProducts) }
         }
     }
 
