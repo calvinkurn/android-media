@@ -35,7 +35,7 @@ public class AppUpdateDialogBuilder {
                 .setMessage(detail.getUpdateMessage())
                 .setPositiveButton(R.string.appupdate_update, null)
                 .setNegativeButton(detail.isForceUpdate() ? R.string.appupdate_close : R.string.appupdate_later, null)
-//                .setCancelable(false)
+                .setCancelable(false)
                 .create();
 
         alertDialog.setOnShowListener(dialog -> {

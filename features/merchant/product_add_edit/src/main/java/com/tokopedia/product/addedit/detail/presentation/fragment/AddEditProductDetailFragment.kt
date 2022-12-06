@@ -371,9 +371,9 @@ class AddEditProductDetailFragment :
         onFragmentResult()
         setupBackPressed()
 
-        if (viewModel.isEditing) {
-            getProductAutoMigratedStatus(viewModel.productInputModel.productId.toString())
-        }
+        // check product auto migrated status
+        val productId = viewModel.productInputModel.productId.toString()
+        if (productId.isNotEmpty()) { getProductAutoMigratedStatus(productId) }
 
         subscribeToProductNameInputStatus()
         subscribeToProductNameRecommendation()
@@ -397,10 +397,10 @@ class AddEditProductDetailFragment :
         subscribeToMaxStockThreshold()
         if (viewModel.isEditing) {
             subscribeToEditProductPriceSuggestion()
+            subscribeToProductAutoMigratedStatus()
         } else {
             subscribeToAddProductPriceSuggestion()
         }
-        subscribeToProductAutoMigratedStatus()
 
         // stop PLT monitoring, because no API hit at load page
         stopPreparePagePerformanceMonitoring()
@@ -956,7 +956,6 @@ class AddEditProductDetailFragment :
         if (detailInputModel.categoryName.isNotBlank()) {
             productCategoryLayout?.show()
             productCategoryRecListView?.setToDisplayText(detailInputModel.categoryName, requireContext())
-            // TODO add custom adapter + item layout for disabled auto migrated product category
             productCategoryId = detailInputModel.categoryId
         }
 
@@ -1376,7 +1375,12 @@ class AddEditProductDetailFragment :
 
     private fun subscribeToProductAutoMigratedStatus() {
         viewModel.productMigrateStatus.observe(viewLifecycleOwner) { productMigrateStatus ->
-            if (true) {
+            if (productMigrateStatus.isAutoMigrated) {
+                productCategoryPickerButton?.hide()
+                val detailInputModel = viewModel.productInputModel.detailInputModel
+                productCategoryRecListView?.setToFixedText(detailInputModel.categoryName, requireContext())
+                productCategoryRecListView?.isEnabled = false
+                disabledCategoryInfoView?.bringToFront()
                 disabledCategoryInfoView?.visible()
             }
         }
