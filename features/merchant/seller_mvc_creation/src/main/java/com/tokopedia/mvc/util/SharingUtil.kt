@@ -15,7 +15,7 @@ object SharingUtil {
     }
 
     //TODO change this to Long
-    fun shareToBroadCastChat(context: Context, voucherId: Int) {
+    fun shareToBroadCastChat(context: Context, voucherId: Long) {
         val broadCastChatUrl = "https://m.tokopedia.com/broadcast-chat/create/content?voucher_id=$voucherId"
         val broadCastChatIntent = BroadCastChatWebViewActivity.createNewIntent(
             context = context,

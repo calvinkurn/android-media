@@ -6,10 +6,9 @@ import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelKey
 import com.tokopedia.mvc.di.scope.MerchantVoucherCreationScope
 import com.tokopedia.mvc.presentation.bottomsheet.viewmodel.DisplayVoucherViewModel
-import com.tokopedia.mvc.presentation.bottomsheet.viewmodel.VoucherEditPeriodViewModel
 import com.tokopedia.mvc.presentation.bottomsheet.viewmodel.FilterVoucherViewModel
+import com.tokopedia.mvc.presentation.bottomsheet.viewmodel.VoucherEditPeriodViewModel
 import com.tokopedia.mvc.presentation.detail.VoucherDetailViewModel
-import com.tokopedia.mvc.presentation.list.viewmodel.MvcListViewModel
 import com.tokopedia.mvc.presentation.download.DownloadVoucherImageViewModel
 import com.tokopedia.mvc.presentation.list.viewmodel.MvcListViewModel
 import com.tokopedia.mvc.presentation.product.add.AddProductViewModel
@@ -70,8 +69,6 @@ abstract class MerchantVoucherCreationViewModelModule {
     @IntoMap
     @ViewModelKey(DisplayVoucherViewModel::class)
     internal abstract fun provideDisplayVoucherViewModel(viewModel: DisplayVoucherViewModel): ViewModel
-
-
 
     @Binds
     @IntoMap

@@ -103,10 +103,6 @@ class VoucherEditPeriodBottomSheet : BottomSheetUnify() {
         }
     }
 
-    private fun String.convertDate(): String {
-        return this.convertUnsafeDateTime().formatTo(FULL_DAY_FORMAT, locale).toBlankOrString()
-    }
-
     private fun getGregorianDate(date: String): GregorianCalendar {
         return GregorianCalendar().apply {
             time = date.convertUnsafeDateTime()
@@ -133,7 +129,7 @@ class VoucherEditPeriodBottomSheet : BottomSheetUnify() {
 
         viewModel.hourEndLiveData.observe(viewLifecycleOwner) {
             try {
-                var timeString = it.split(":").toTypedArray()
+                val timeString = it.split(":").toTypedArray()
                 if (timeString.size >= 2) {
                     endHour = timeString[0].toIntOrZero()
                     endMinute = timeString[1].toIntOrZero()
@@ -251,8 +247,5 @@ class VoucherEditPeriodBottomSheet : BottomSheetUnify() {
                 this.tickerVisibility = tickerVisibility
             }
         }
-
-        private const val FULL_DAY_FORMAT = "EEE, dd MMM yyyy, HH:mm"
-        const val TIME_STAMP_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'"
     }
 }

@@ -20,7 +20,7 @@
         android:layout_height="2dp"
         android:id="@+id/divider"
         app:layout_constraintTop_toBottomOf="@id/date_text"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@id/date_text"
         app:layout_constraintEnd_toEndOf="parent"/>
 
 

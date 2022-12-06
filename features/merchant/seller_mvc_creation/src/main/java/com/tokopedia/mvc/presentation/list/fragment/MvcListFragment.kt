@@ -22,9 +22,9 @@ import com.tokopedia.campaign.utils.extension.slideUp
 import com.tokopedia.header.HeaderUnify
 import com.tokopedia.kotlin.extensions.view.applyUnifyBackgroundColor
 import com.tokopedia.kotlin.extensions.view.attachOnScrollListener
-import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.kotlin.extensions.view.gone
 import com.tokopedia.kotlin.extensions.view.show
+import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.mvc.R
 import com.tokopedia.mvc.common.util.PaginationConstant.INITIAL_PAGE
 import com.tokopedia.mvc.common.util.PaginationConstant.PAGE_SIZE
@@ -41,7 +41,6 @@ import com.tokopedia.mvc.domain.entity.enums.VoucherTargetBuyer
 import com.tokopedia.mvc.presentation.bottomsheet.EduCenterBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.FilterVoucherBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.FilterVoucherStatusBottomSheet
-import com.tokopedia.mvc.presentation.bottomsheet.MoreMenuVoucherBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.OtherPeriodBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.displayvoucher.DisplayVoucherBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.editperiod.VoucherEditPeriodBottomSheet
@@ -59,8 +58,8 @@ import com.tokopedia.mvc.util.extension.showErrorToaster
 import com.tokopedia.sortfilter.SortFilter
 import com.tokopedia.sortfilter.SortFilterItem
 import com.tokopedia.unifycomponents.SearchBarUnify
-import com.tokopedia.universal_sharing.view.bottomsheet.ClipboardHandler
 import com.tokopedia.unifycomponents.Toaster
+import com.tokopedia.universal_sharing.view.bottomsheet.ClipboardHandler
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
@@ -223,7 +222,7 @@ class MvcListFragment: BaseDaggerFragment(), HasPaginatedList by HasPaginatedLis
     }
 
     override fun onOtherPeriodMoreMenuClicked(voucher: Voucher) {
-        MoreMenuVoucherBottomSheet().show(childFragmentManager, "")
+   //     MoreMenuVoucherBottomSheet().show(childFragmentManager, "")
     }
 
     private fun setupObservables() {
