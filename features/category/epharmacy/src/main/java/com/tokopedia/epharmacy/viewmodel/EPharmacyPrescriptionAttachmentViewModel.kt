@@ -81,18 +81,18 @@ class EPharmacyPrescriptionAttachmentViewModel @Inject constructor(
                 _buttonLiveData.postValue(ePharmacyPrepareProductsGroupResponse.detailData?.groupsData?.papPrimaryCTA)
                 showToastData(ePharmacyPrepareProductsGroupResponse.detailData?.groupsData?.toaster)
             } else {
-                onFailPrepareProductGroup(IllegalStateException("Data invalid"))
+                onFailPrepareProductGroup(IllegalStateException("Data Invalid"))
             }
         }
     }
 
-    private fun onSuccessInitiateConsultation(epGroupId : String, response: EPharmacyInitiateConsultationResponse) {
+    private fun onSuccessInitiateConsultation(epGroupId: String, response: EPharmacyInitiateConsultationResponse) {
         response.getInitiateConsultation?.let { data ->
             if (data.initiateConsultationData?.tokoConsultationId?.isNotBlank() == true) {
                 data.initiateConsultationData.epharmacyGroupId = epGroupId
                 _initiateConsultation.postValue(Success(data.initiateConsultationData))
             } else {
-                onFailInitiateConsultation(IllegalStateException("Data invalid"))
+                onFailInitiateConsultation(IllegalStateException("Data Invalid"))
             }
         }
     }

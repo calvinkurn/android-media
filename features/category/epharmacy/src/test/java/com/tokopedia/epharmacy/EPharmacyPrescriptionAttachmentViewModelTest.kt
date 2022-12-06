@@ -39,9 +39,9 @@ class EPharmacyPrescriptionAttachmentViewModelTest {
     private val mockThrowable = Throwable(message = fetchFailedErrorMessage)
 
     val epharmacyProduct = mockk<EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo.Product>(relaxed = true)
-    val epharmacyProductsInfo = EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo("", arrayListOf(epharmacyProduct),"","","","","")
-    val epharmacyGroup = EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup(null,null,null,null,null,null,arrayListOf(epharmacyProductsInfo),null)
-    val responseGroup = EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData("Hi ", "rqwrq", arrayListOf(epharmacyGroup), null, null)
+    val epharmacyProductsInfo = EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo("", arrayListOf(epharmacyProduct), "", "", "", "", "")
+    val epharmacyGroup = EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup(null, null, null, null, null, null, arrayListOf(epharmacyProductsInfo), null)
+    val responseGroup = EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData("Hi ", "rqwrq", arrayListOf(epharmacyGroup), EPharmacyPrepareProductsGroupResponse.EPharmacyToaster("PRESCRIPTION_ATTACH_SUCCESS", "sfa"), null)
     val responseData = EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData(responseGroup)
 
     @Before
@@ -68,7 +68,7 @@ class EPharmacyPrescriptionAttachmentViewModelTest {
 
     @Test
     fun `get groups fetch success but condition fail`() {
-        val responseGroup = EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData("Hi", "rqwrq", null , null, null)
+        val responseGroup = EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData("Hi", "rqwrq", null, null, null)
         val response = EPharmacyPrepareProductsGroupResponse(EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData(responseGroup))
         coEvery {
             ePharmacyPrepareProductsGroupUseCase.getEPharmacyPrepareProductsGroup(any(), any())
@@ -78,7 +78,7 @@ class EPharmacyPrescriptionAttachmentViewModelTest {
         viewModel.getPrepareProductGroup()
         Assert.assertEquals(
             (viewModel.productGroupLiveDataResponse.value as Fail).throwable.localizedMessage,
-            "Data invalid"
+            "Data Invalid"
         )
     }
 
@@ -98,16 +98,17 @@ class EPharmacyPrescriptionAttachmentViewModelTest {
 
     @Test
     fun initiateConsultationSuccessTest() {
-        val responseGroup = InitiateConsultation.InitiateConsultationData("231324", null,null)
+        val responseGroup = InitiateConsultation.InitiateConsultationData("231324", null, null)
         val responseData = InitiateConsultation(responseGroup)
         val response = EPharmacyInitiateConsultationResponse(responseData)
         coEvery {
             ePharmacyInitiateConsultationUseCase.initiateConsultation(any(), any(), any())
         } coAnswers {
-            firstArg<(String,EPharmacyInitiateConsultationResponse) -> Unit>().invoke("",response)
+            firstArg<(String, EPharmacyInitiateConsultationResponse) -> Unit>().invoke("", response)
         }
         viewModel.initiateConsultation(InitiateConsultationParam(InitiateConsultationParam.InitiateConsultationParamInput("123")))
         assert(viewModel.initiateConsultation.value is Success)
+        assert(viewModel.ePharmacyPrepareProductsGroupResponseData != null)
     }
 
     @Test
@@ -116,12 +117,12 @@ class EPharmacyPrescriptionAttachmentViewModelTest {
         coEvery {
             ePharmacyInitiateConsultationUseCase.initiateConsultation(any(), any(), any())
         } coAnswers {
-            firstArg<(String,EPharmacyInitiateConsultationResponse) -> Unit>().invoke("",response)
+            firstArg<(String, EPharmacyInitiateConsultationResponse) -> Unit>().invoke("", response)
         }
         viewModel.initiateConsultation(InitiateConsultationParam(InitiateConsultationParam.InitiateConsultationParamInput("123")))
         Assert.assertEquals(
             (viewModel.initiateConsultation.value as Fail).throwable.localizedMessage,
-            "Data invalid"
+            "Data Invalid"
         )
     }
 
@@ -154,9 +155,24 @@ class EPharmacyPrescriptionAttachmentViewModelTest {
     }
 
     @Test
+    fun `get consultation details fetch success but condition fail`() {
+        val response = EPharmacyConsultationDetailsResponse(null)
+        coEvery {
+            ePharmacyGetConsultationDetailsUseCase.getConsultationDetails(any(), any(), any())
+        } coAnswers {
+            firstArg<(EPharmacyConsultationDetailsResponse) -> Unit>().invoke(response)
+        }
+        viewModel.getConsultationDetails("2412")
+        Assert.assertEquals(
+            (viewModel.consultationDetails.value as Fail).throwable.localizedMessage,
+            "Data Invalid"
+        )
+    }
+
+    @Test
     fun `get consultation details fetch failed throws exception`() {
         coEvery {
-            ePharmacyGetConsultationDetailsUseCase.getConsultationDetails(any(), any(),any())
+            ePharmacyGetConsultationDetailsUseCase.getConsultationDetails(any(), any(), any())
         } coAnswers {
             secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
         }
