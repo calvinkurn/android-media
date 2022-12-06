@@ -52,12 +52,14 @@ import com.tokopedia.mvc.domain.entity.enums.VoucherStatus
 import com.tokopedia.mvc.domain.entity.enums.VoucherTargetBuyer
 import com.tokopedia.mvc.presentation.bottomsheet.ExpenseEstimationBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.ThreeDotsMenuBottomSheet
+import com.tokopedia.mvc.presentation.download.DownloadVoucherImageBottomSheet
+import com.tokopedia.mvc.presentation.product.list.ProductListActivity
 import com.tokopedia.mvc.presentation.share.LinkerDataGenerator
 import com.tokopedia.mvc.presentation.share.ShareComponentInstanceBuilder
 import com.tokopedia.mvc.util.SharingUtil
 import com.tokopedia.mvc.util.constant.BundleConstant
-import com.tokopedia.mvc.util.constant.DiscountTypeConstant
 import com.tokopedia.mvc.util.constant.ImageUrlConstant
+import com.tokopedia.mvc.util.constant.NumberConstant
 import com.tokopedia.mvc.util.constant.VoucherTargetConstant.VOUCHER_TARGET_PUBLIC
 import com.tokopedia.unifycomponents.timer.TimerUnifySingle
 import com.tokopedia.unifyprinciples.Typography
@@ -143,6 +145,8 @@ class VoucherDetailFragment : BaseDaggerFragment() {
         super.onViewCreated(view, savedInstanceState)
         observeData()
         observeGenerateVoucherImageResult()
+        observeOpenVoucherImageBottomSheetEvent()
+        observeRedirectionToProductListPage()
         getVoucherDetailData(voucherId)
     }
 
@@ -174,6 +178,18 @@ class VoucherDetailFragment : BaseDaggerFragment() {
         }
     }
 
+    private fun observeRedirectionToProductListPage() {
+        viewModel.redirectToProductListPage.observe(viewLifecycleOwner) { voucherDetail ->
+            redirectToProductListPage(voucherDetail)
+        }
+    }
+
+
+    private fun observeOpenVoucherImageBottomSheetEvent() {
+        viewModel.openDownloadVoucherImageBottomSheet.observe(viewLifecycleOwner) { voucherDetail ->
+            displayDownloadVoucherImageBottomSheet(voucherDetail)
+        }
+    }
 
     private fun setupView(data: VoucherDetailData) {
         binding?.run {
@@ -350,9 +366,10 @@ class VoucherDetailFragment : BaseDaggerFragment() {
             }
         }
         voucherTypeBinding?.run {
-            tpgVoucherType.text = when (data.isLockToProduct) {
-                TRUE -> getString(R.string.smvc_voucher_product_label)
-                else -> getString(R.string.smvc_voucher_store_label)
+            tpgVoucherType.text = if (data.isVoucherProduct) {
+                getString(R.string.smvc_voucher_product_label)
+            } else {
+                getString(R.string.smvc_voucher_store_label)
             }
         }
     }
@@ -425,7 +442,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                 else -> View.VISIBLE
             }
             tpgDeductionType.text = when (data.voucherDiscountType) {
-                DiscountTypeConstant.NOMINAL -> getString(R.string.smvc_nominal_label)
+                BenefitType.NOMINAL -> getString(R.string.smvc_nominal_label)
                 else -> getString(R.string.smvc_percentage_label)
             }
         }
@@ -441,7 +458,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                 }
                 PromoType.CASHBACK -> {
                     when (data.voucherDiscountType) {
-                        DiscountTypeConstant.NOMINAL -> {
+                        BenefitType.NOMINAL -> {
                             tpgVoucherNominalLabel.text =
                                 getString(R.string.smvc_nominal_cashback_label)
                             tpgVoucherNominal.text =
@@ -457,7 +474,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                 }
                 else -> {
                     when (data.voucherDiscountType) {
-                        DiscountTypeConstant.NOMINAL -> {
+                        BenefitType.NOMINAL -> {
                             tpgVoucherNominalLabel.text =
                                 getString(R.string.smvc_nominal_discount_label)
                             tpgVoucherNominal.text =
@@ -483,7 +500,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                 }
                 else -> {
                     when (data.voucherDiscountType) {
-                        DiscountTypeConstant.PERCENTAGE -> {
+                        BenefitType.PERCENTAGE -> {
                             llVoucherMaxPriceDeduction.visible()
                             tpgVoucherMaxPriceDeduction.text =
                                 data.voucherDiscountAmountMax.getCurrencyFormatted()
@@ -507,7 +524,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
     }
 
     private fun setupProductListSection(data: VoucherDetailData) {
-        if (data.isLockToProduct == TRUE) {
+        if (data.isVoucherProduct) {
             binding?.run {
                 if (layoutProductList.parent != null) {
                     layoutProductList.inflate()
@@ -518,9 +535,7 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                     R.string.smvc_product_count_placeholder,
                     data.productIds.count()
                 )
-                tpgSeeProduct.setOnClickListener {
-                    // TODO:go to product page
-                }
+                tpgSeeProduct.setOnClickListener { viewModel.onTapViewAllProductCta() }
             }
         }
     }
@@ -688,26 +703,21 @@ class VoucherDetailFragment : BaseDaggerFragment() {
         val voucherDetail = voucherImageMetadata.voucherDetail
         val voucherStartDate = voucherDetail.voucherStartTime.toDate(DateConstant.DATE_WITH_SECOND_PRECISION_ISO_8601)
         val voucherEndDate = voucherDetail.voucherFinishTime.toDate(DateConstant.DATE_WITH_SECOND_PRECISION_ISO_8601)
-        val benefitType = when(voucherDetail.voucherDiscountType) {
-            DiscountTypeConstant.NOMINAL -> BenefitType.NOMINAL
-            DiscountTypeConstant.PERCENTAGE -> BenefitType.PERCENTAGE
-            else -> BenefitType.NOMINAL
-        }
-        val productImageUrls = if (voucherDetail.isLockToProduct == TRUE) {
+        val productImageUrls = if (voucherDetail.isVoucherProduct) {
             voucherImageMetadata.topSellingProductImageUrls
         } else {
             emptyList()
         }
 
         val shareComponentParam = ShareComponentInstanceBuilder.Param(
-            isVoucherProduct = voucherDetail.isLockToProduct == TRUE,
+            isVoucherProduct = voucherDetail.isVoucherProduct,
             voucherId = voucherDetail.voucherId,
             isPublic = voucherDetail.isPublic == TRUE,
             voucherCode = voucherDetail.voucherCode,
             voucherStartDate = voucherStartDate,
             voucherEndDate = voucherEndDate,
             promoType = voucherDetail.voucherType,
-            benefitType = benefitType,
+            benefitType = voucherDetail.voucherDiscountType,
             shopLogo = voucherImageMetadata.shopData.logo,
             shopName = voucherImageMetadata.shopData.name,
             shopDomain =  voucherImageMetadata.shopData.domain,
@@ -812,6 +822,39 @@ class VoucherDetailFragment : BaseDaggerFragment() {
                 shareCallback
             )
         )
+    }
+
+    private fun displayDownloadVoucherImageBottomSheet(voucherDetail: VoucherDetailData) {
+        if (!isVisible) return
+
+        val bottomSheet = DownloadVoucherImageBottomSheet.newInstance(
+            voucherDetail.voucherImage,
+            voucherDetail.voucherImageSquare,
+            voucherDetail.voucherImagePortrait
+        )
+        bottomSheet.setOnDownloadSuccess {
+            binding?.layoutButtonGroup.showToaster(
+                getString(R.string.smvc_placeholder_download_voucher_image_success, voucherDetail.voucherName),
+                getString(R.string.smvc_ok)
+            )
+        }
+        bottomSheet.setOnDownloadError {
+            binding?.layoutButtonGroup.showToaster(
+                getString(R.string.smvc_download_voucher_image_failed),
+                getString(R.string.smvc_ok)
+            )
+        }
+        bottomSheet.show(childFragmentManager, bottomSheet.tag)
+    }
+
+    private fun redirectToProductListPage(voucherDetail: VoucherDetailData) {
+        val intent = ProductListActivity.buildEditModeIntent(
+            activity ?: return,
+            voucherDetail.toVoucherConfiguration(),
+            voucherDetail.toSelectedProducts()
+        )
+
+        startActivityForResult(intent, NumberConstant.REQUEST_CODE_ADD_PRODUCT_TO_SELECTION)
     }
 
 }

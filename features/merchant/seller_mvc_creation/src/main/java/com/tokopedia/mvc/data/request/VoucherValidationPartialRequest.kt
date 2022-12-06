@@ -23,5 +23,5 @@ data class VoucherValidationPartialRequest(
     @SerializedName("source")
     val source: String = "seller app",
     @SerializedName("target_buyer")
-    val targetBuyer: Int = 0
+    val targetBuyer: Int
 )

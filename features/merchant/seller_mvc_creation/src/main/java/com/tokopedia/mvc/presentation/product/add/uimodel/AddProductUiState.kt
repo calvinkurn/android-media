@@ -8,11 +8,13 @@ import com.tokopedia.mvc.domain.entity.VoucherConfiguration
 import com.tokopedia.mvc.domain.entity.Warehouse
 import com.tokopedia.mvc.domain.entity.enums.BenefitType
 import com.tokopedia.mvc.domain.entity.enums.PromoType
+import com.tokopedia.mvc.domain.entity.enums.VoucherTargetBuyer
 import com.tokopedia.mvc.domain.entity.enums.WarehouseType
 import com.tokopedia.mvc.util.constant.NumberConstant
 
 data class AddProductUiState(
     val isLoading: Boolean = true,
+    val isFilterActive: Boolean = false,
     val page: Int = NumberConstant.FIRST_PAGE,
     val totalProducts: Int = 0,
     val searchKeyword: String = "",
@@ -38,7 +40,8 @@ data class AddProductUiState(
         promoType = PromoType.CASHBACK,
         minPurchase = 0,
         productIds = emptyList(),
-        isVoucherProduct = true
+        isVoucherProduct = true,
+        targetBuyer = VoucherTargetBuyer.ALL_BUYER
     ),
     val error: Throwable? = null
 )

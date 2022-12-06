@@ -347,7 +347,8 @@ class ProductListViewModel @Inject constructor(
 
     private fun handleAddNewProductToSelection(newProducts: List<Product>) {
         launch(dispatchers.computation) {
-            val modifiedProducts = currentState.products + newProducts
+            val newlyAddedProducts = newProducts.map { it.copy(isSelected = false) }
+            val modifiedProducts = currentState.products + newlyAddedProducts
             _uiState.update { it.copy(products = modifiedProducts) }
         }
     }

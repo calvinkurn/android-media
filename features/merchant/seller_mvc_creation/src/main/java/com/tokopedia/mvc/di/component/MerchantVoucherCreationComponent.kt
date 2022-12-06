@@ -11,6 +11,7 @@ import com.tokopedia.mvc.presentation.creation.step2.VoucherCreationStepTwoActiv
 import com.tokopedia.mvc.presentation.creation.step2.VoucherCreationStepTwoFragment
 import com.tokopedia.mvc.presentation.detail.VoucherDetailActivity
 import com.tokopedia.mvc.presentation.detail.VoucherDetailFragment
+import com.tokopedia.mvc.presentation.download.DownloadVoucherImageBottomSheet
 import com.tokopedia.mvc.presentation.list.fragment.MvcListFragment
 import com.tokopedia.mvc.presentation.product.add.AddProductActivity
 import com.tokopedia.mvc.presentation.product.add.AddProductFragment
@@ -38,6 +39,8 @@ interface MerchantVoucherCreationComponent {
     fun inject(fragment: ReviewVariantBottomSheet)
     fun inject(activity: ProductListActivity)
     fun inject(fragment: ProductListFragment)
+
+    fun inject(fragment: DownloadVoucherImageBottomSheet)
 
     fun inject(activity: VoucherCreationStepOneActivity)
     fun inject(fragment: VoucherCreationStepOneFragment)
