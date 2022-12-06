@@ -37,7 +37,11 @@ class FeedProductTagAnalyticImpl @Inject constructor(
         )
     }
 
-    override fun clickProductTagSource(source: ProductTagSource) {
+    override fun clickProductTagSource(
+        source: ProductTagSource,
+        authorId: String,
+        authorType: String
+    ) {
         sendClickEvent("click - product tagging source", source.labelAnalytic)
     }
 
@@ -318,5 +322,13 @@ class FeedProductTagAnalyticImpl @Inject constructor(
             KEY_CREATIVE_ID to shop.shopId,
             KEY_CREATIVE_NAME to VAL_CREATIVE_NAME,
         )
+    }
+
+    override fun viewProductTagSourceBottomSheet(authorId: String, authorType: String) {
+        /** Not applicable for feed product tag */
+    }
+
+    override fun clickCloseOnProductTagSourceBottomSheet(authorId: String, authorType: String) {
+        /** Not applicable for feed product tag */
     }
 }
