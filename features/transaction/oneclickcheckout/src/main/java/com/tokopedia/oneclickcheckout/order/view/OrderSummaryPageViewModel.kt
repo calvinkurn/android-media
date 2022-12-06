@@ -1052,15 +1052,9 @@ class OrderSummaryPageViewModel @Inject constructor(private val executorDispatch
     private suspend fun adjustPaymentFee() {
         val (orderCost, _) = calculator.calculateOrderCostWithoutPaymentFee(orderCart, orderShipment.value,
             validateUsePromoRevampUiModel, orderPayment.value)
-        val installmentTermList = paymentProcessor.get().getPaymentFee()
-        if (installmentTermList == null) {
-            val newOrderPayment = orderPayment.value
-            orderPayment.value = newOrderPayment.copy(paymentFees = newOrderPayment.paymentFees)
-            globalEvent.value = OccGlobalEvent.AdjustAdminFeeError
-        } else {
-            val newOrderPayment = orderPayment.value
-            orderPayment.value = newOrderPayment.copy(paymentFees = newOrderPayment.paymentFees)
-        }
+        val dynamicPaymentFee = paymentProcessor.get().getPaymentFee()
+        val newOrderPayment = orderPayment.value
+        orderPayment.value = newOrderPayment.copy(dynamicPaymentFees = dynamicPaymentFee)
         calculator.calculateTotal(orderCart, orderProfile.value, orderShipment.value,
             validateUsePromoRevampUiModel, orderPayment.value, orderTotal.value)
     }

@@ -13,6 +13,7 @@ import com.tokopedia.oneclickcheckout.order.view.model.OrderCart
 import com.tokopedia.oneclickcheckout.order.view.model.OrderCost
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPayment
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentCreditCard
+import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentFee
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentGoCicilTerms
 import com.tokopedia.oneclickcheckout.order.view.model.OrderPaymentInstallmentTerm
 import com.tokopedia.oneclickcheckout.order.view.model.OrderProfile
@@ -153,16 +154,17 @@ class OrderSummaryPagePaymentProcessor @Inject constructor(private val creditCar
         return selectedTerm
     }
 
-    suspend fun getPaymentFee() {
+    suspend fun getPaymentFee(): List<OrderPaymentFee>? {
         OccIdlingResource.increment()
         val result = withContext(executorDispatchers.io) {
             try {
-                return@withContext null
+                return@withContext listOf(OrderPaymentFee("biaya dinamis", 2000.0, true, false, 0, "dinamis"))
             } catch (t: Throwable) {
                 Timber.d(t)
                 return@withContext null
             }
         }
         OccIdlingResource.decrement()
+        return result
     }
 }

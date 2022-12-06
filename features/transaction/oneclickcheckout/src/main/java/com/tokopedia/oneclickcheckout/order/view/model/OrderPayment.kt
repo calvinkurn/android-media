@@ -24,7 +24,8 @@ data class OrderPayment(
         val bid: String = "",
         val specificGatewayCampaignOnlyType: Int = 0,
         val walletData: OrderPaymentWalletAdditionalData = OrderPaymentWalletAdditionalData(),
-        val paymentFees: List<OrderPaymentFee> = emptyList(),
+        val originalPaymentFees: List<OrderPaymentFee> = emptyList(),
+        val dynamicPaymentFees: List<OrderPaymentFee>? = emptyList()
 ) {
     val isOvo: Boolean
         get() = gatewayCode.contains("OVO")
@@ -48,11 +49,7 @@ data class OrderPayment(
     }
 
     fun getTotalPaymentFee(): Double {
-        var totalPaymentFee = 0.0
-        for (paymentFee in paymentFees) {
-            totalPaymentFee += paymentFee.fee
-        }
-        return totalPaymentFee
+        return originalPaymentFees.sumOf { it.fee } + (dynamicPaymentFees?.sumOf { it.fee } ?: 0.0)
     }
 }
 
