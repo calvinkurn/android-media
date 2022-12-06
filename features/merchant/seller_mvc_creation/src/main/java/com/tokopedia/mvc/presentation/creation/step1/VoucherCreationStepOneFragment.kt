@@ -124,7 +124,6 @@ class VoucherCreationStepOneFragment : BaseDaggerFragment() {
     }
 
     private fun setupView() {
-        setVoucherType(voucherConfiguration.isVoucherProduct)
         binding?.run {
             voucherTypeSelectionShop.apply {
                 imgVoucherType?.setImageUrl(ImageUrlConstant.IMAGE_URL_SHOP_VOUCHER)
