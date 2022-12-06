@@ -271,8 +271,8 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
         launchCatchError(
                 block = {
                     pageLoadTimePerformanceInterface?.startNetworkRequestPerformanceMonitoring()
-                    var queryParameterMapWithRpc = mutableMapOf<String, String?>()
-                    var queryParameterMapWithoutRpc = mutableMapOf<String, String?>()
+                    var queryParameterMapWithRpc = mutableMapOf<String, String>()
+                    var queryParameterMapWithoutRpc = mutableMapOf<String, String>()
                     if (discoveryPageData[pageIdentifier] != null) {
                         discoveryPageData[pageIdentifier]?.let {
                             queryParameterMapWithRpc = it.queryParamMapWithRpc
@@ -520,7 +520,7 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
             }
     }
 
-    private fun setParameterMap(queryParameterMap: MutableMap<String, String?>, queryParameterMapWithRpc: MutableMap<String, String?>, queryParameterMapWithoutRpc: MutableMap<String, String?>) {
+    private fun setParameterMap(queryParameterMap: MutableMap<String, String?>, queryParameterMapWithRpc: MutableMap<String, String>, queryParameterMapWithoutRpc: MutableMap<String, String>) {
         launchCatchError(
             (this + Dispatchers.Default).coroutineContext,
             block = {

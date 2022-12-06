@@ -27,4 +27,14 @@ object ImageAnnouncementViewHolderBinder {
         }
     }
 
+    fun bindCtaClick(
+        uiModel: ImageAnnouncementUiModel,
+        view: View?,
+        listener: ImageAnnouncementListener
+    ) {
+        view?.setOnClickListener {
+            listener.onCtaBroadcastClicked(uiModel)
+        }
+    }
+
 }

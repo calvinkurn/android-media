@@ -22,8 +22,8 @@ class DiscoveryDataUseCase @Inject constructor(private val discoveryPageReposito
 
     suspend fun getDiscoveryPageDataUseCase(pageIdentifier: String,
                                             queryParameterMap: MutableMap<String, String?>,
-                                            queryParameterMapWithRpc: MutableMap<String, String?>,
-                                            queryParameterMapWithoutRpc: MutableMap<String, String?>,
+                                            queryParameterMapWithRpc: MutableMap<String, String>,
+                                            queryParameterMapWithoutRpc: MutableMap<String, String>,
                                             userAddressData: LocalCacheModel?): DiscoveryPageData {
         var userAddressDataCopy = userAddressData
         val paramMap :MutableMap<String,Any> = mutableMapOf()

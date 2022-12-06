@@ -151,8 +151,8 @@ import org.junit.runners.Suite
     DefaultComponentViewModelTest::class,
     ProductCardSprintSaleCarouselViewModelTest::class,
     ThematicHeaderViewModelTest::class,
+    ContentCardModelTest::class,
     ContentCardItemModelTest::class,
-    ContentCardModelTest::class
 )
 
 

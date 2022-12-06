@@ -1,5 +1,6 @@
 package com.tokopedia.play.broadcaster.util
 
+import com.tokopedia.play.broadcaster.ui.event.PlayBroadcastEvent
 import com.tokopedia.play.broadcaster.ui.model.result.PageResult
 import com.tokopedia.play.broadcaster.ui.model.result.PageResultState
 import com.tokopedia.play_common.model.result.NetworkResult
@@ -181,3 +182,9 @@ fun <T> PageResult<T>.assertWhenFailed(
 }
 
 fun <T> PageResult<T>.assertFailed() = assertWhenFailed { _, _ ->  }
+
+fun PlayBroadcastEvent.assertEvent(event: PlayBroadcastEvent) {
+    Assertions
+        .assertThat(this)
+        .isInstanceOf(event::class.java)
+}

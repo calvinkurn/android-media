@@ -22,6 +22,15 @@ object ScreenShootPageHelper {
     private val PAGE_REVIEW = R.string.feedback_from_review
     private val PAGE_COMPLAINED_ORDER = R.string.feedback_from_order_complaint
     private val PAGE_SHOP_SETTING = R.string.feedback_from_shop_setting
+    private val PAGE_TOPADS= R.string.feedback_from_topads
+    private val PAGE_FLASH_SALE_TOKOPEDIA= R.string.feedback_from_flashsaletokopedia
+    private val PAGE_TOKOPEDIA_PLAY = R.string.feedback_from_tokopedia_play
+    private val PAGE_FLASH_SALE_TOKO = R.string.feedback_from_flash_sale_toko
+    private val PAGE_DISCOUNT_TOKO = R.string.feedback_from_diskon_toko
+    private val PAGE_TOKOMEMBER = R.string.feedback_from_tokomember
+    private val PAGE_FREE_ONGKIR = R.string.feedback_from_bebas_ongkir
+    private val PAGE_BROADCAST_CHAT = R.string.feedback_from_broadcast_chat
+
     private val PAGE_OTHERS = R.string.feedback_from_others
 
     private const val SELLER_HOME_ACTIVITY =
@@ -51,6 +60,14 @@ object ScreenShootPageHelper {
             context.getString(PAGE_REVIEW),
             context.getString(PAGE_COMPLAINED_ORDER),
             context.getString(PAGE_SHOP_SETTING),
+            context.getString(PAGE_TOPADS),
+            context.getString(PAGE_FLASH_SALE_TOKOPEDIA),
+            context.getString(PAGE_TOKOPEDIA_PLAY),
+            context.getString(PAGE_FLASH_SALE_TOKO),
+            context.getString(PAGE_DISCOUNT_TOKO),
+            context.getString(PAGE_TOKOMEMBER),
+            context.getString(PAGE_FREE_ONGKIR),
+            context.getString(PAGE_BROADCAST_CHAT),
             context.getString(PAGE_OTHERS)
         )
     }
@@ -97,7 +114,15 @@ object ScreenShootPageHelper {
             getCentralizedPromoPageMapper(context),
             getShopPageMapper(context),
             getReviewPageMapper(context),
-            getShopSettingPageMapper(context)
+            getShopSettingPageMapper(context),
+            getTopAdsPageMapper(context),
+            getFlashSaleTokopediaPageMapper(context),
+            getTokopediaPlayPageMapper(context),
+            getFlashSaleTokoPageMapper(context),
+            getShopDiscountPageMapper(context),
+            getTokoMemberPageMapper(context),
+            getBebasOngkirPageMapper(context),
+            getBroadcastChatPageMapper(context)
         )
     }
 
@@ -203,6 +228,55 @@ object ScreenShootPageHelper {
         return context.getString(PAGE_HOME) to listOf(
             "com.tokopedia.sellerhome.view.activity.SellerHomeActivity",
             SELLER_HOME_PAGE
+        )
+    }
+
+    private fun getTopAdsPageMapper(context: Context): Pair<String, List<String>> {
+        return context.getString(PAGE_TOPADS) to listOf(
+            "com.tokopedia.topads.dashboard.view.activity.TopAdsDashboardActivity"
+        )
+    }
+
+    private fun getFlashSaleTokopediaPageMapper(context: Context): Pair<String, List<String>> {
+        return context.getString(PAGE_FLASH_SALE_TOKOPEDIA) to listOf(
+            "com.tokopedia.tkpd.flashsale.presentation.list.container.FlashSaleListActivity"
+        )
+    }
+
+    private fun getTokopediaPlayPageMapper(context: Context): Pair<String, List<String>> {
+        return context.getString(PAGE_TOKOPEDIA_PLAY) to listOf(
+            "com.tokopedia.play.broadcaster.view.activity.PlayBroadcastActivity"
+        )
+    }
+
+    private fun getBebasOngkirPageMapper(context: Context): Pair<String, List<String>> {
+        return context.getString(PAGE_FREE_ONGKIR) to listOf(
+            "com.tokopedia.webview.BaseSimpleWebViewActivity?url=https://m.tokopedia.com/bebas-ongkir"
+        )
+    }
+
+    private fun getBroadcastChatPageMapper(context: Context): Pair<String, List<String>> {
+        return context.getString(PAGE_BROADCAST_CHAT) to listOf(
+            "com.tokopedia.webview.BaseSimpleWebViewActivity?url=https://m.tokopedia.com/broadcast-chat"
+        )
+    }
+
+    private fun getFlashSaleTokoPageMapper(context: Context): Pair<String, List<String>> {
+        return context.getString(PAGE_FLASH_SALE_TOKO) to listOf(
+            "com.tokopedia.shop.flashsale.presentation.list.container.CampaignListActivity"
+        )
+    }
+
+    private fun getShopDiscountPageMapper(context: Context): Pair<String, List<String>> {
+        return context.getString(PAGE_DISCOUNT_TOKO) to listOf(
+            "com.tokopedia.shopdiscount.manage.presentation.container.DiscountedProductManageActivity"
+        )
+    }
+
+    private fun getTokoMemberPageMapper(context: Context): Pair<String, List<String>> {
+        return context.getString(PAGE_TOKOMEMBER) to listOf(
+            "com.tokopedia.tokomember_seller_dashboard.view.activity.TokomemberMainActivity",
+            "com.tokopedia.tokomember_seller_dashboard.view.activity.TokomemberDashIntroActivity"
         )
     }
 }

@@ -68,8 +68,8 @@ fun mapDiscoveryResponseToPageData(discoveryResponse: DiscoveryResponse,
 class DiscoveryPageDataMapper(
     private val pageInfo: PageInfo,
     private val queryParameterMap: Map<String, String?>,
-    private val queryParameterMapWithRpc: Map<String, String?>,
-    private val queryParameterMapWithoutRpc: Map<String, String?>,
+    private val queryParameterMapWithRpc: Map<String, String>,
+    private val queryParameterMapWithoutRpc: Map<String, String>,
     private val localCacheModel: LocalCacheModel?,
     private val isLoggedIn: Boolean,
     private val shouldHideSingleProdCard: Boolean
@@ -629,14 +629,14 @@ fun getPageInfo(pageName: String): PageInfo {
     return PageInfo()
 }
 
-fun getMapWithoutRpc(pageName: String): Map<String, String?>? {
+fun getMapWithoutRpc(pageName: String): Map<String, String>? {
     discoveryPageData[pageName]?.let {
         return it.queryParamMapWithoutRpc
     }
     return null
 }
 
-fun getMapWithRpc(pageName: String): Map<String, String?>? {
+fun getMapWithRpc(pageName: String): Map<String, String>? {
     discoveryPageData[pageName]?.let {
         return it.queryParamMapWithRpc
     }
