@@ -4,6 +4,7 @@ import android.view.View
 import com.tokopedia.abstraction.base.view.adapter.Visitable
 import com.tokopedia.abstraction.base.view.adapter.factory.BaseAdapterTypeFactory
 import com.tokopedia.abstraction.base.view.adapter.viewholders.AbstractViewHolder
+import com.tokopedia.tokofood.common.presentation.listener.TokofoodScrollChangedListener
 import com.tokopedia.tokofood.feature.search.common.presentation.adapter.TokofoodSearchTypeFactory
 import com.tokopedia.tokofood.feature.search.common.presentation.uimodel.TokofoodSearchErrorStateUiModel
 import com.tokopedia.tokofood.feature.search.common.presentation.viewholder.TokofoodSearchErrorStateViewHolder
@@ -25,7 +26,8 @@ import com.tokopedia.tokofood.feature.search.initialstate.presentation.viewholde
 
 class InitialStateTypeFactoryImpl(
     private val initialStateListener: InitialStateListener,
-    private val tokoFoodSearchStateListener: TokofoodSearchErrorStateViewHolder.Listener
+    private val tokoFoodSearchStateListener: TokofoodSearchErrorStateViewHolder.Listener,
+    private val tokofoodScrollChangedListener: TokofoodScrollChangedListener
 ): BaseAdapterTypeFactory(), InitialStateTypeFactory, TokofoodSearchTypeFactory {
 
     override fun type(type: HeaderItemInitialStateUiModel): Int {
@@ -64,11 +66,11 @@ class InitialStateTypeFactoryImpl(
         return when (type) {
             HeaderItemInitStateViewHolder.LAYOUT -> HeaderItemInitStateViewHolder(parent)
             HeaderRecentSearchViewHolder.LAYOUT -> HeaderRecentSearchViewHolder(parent, initialStateListener)
-            RecentSearchItemViewHolder.LAYOUT -> RecentSearchItemViewHolder(parent, initialStateListener)
+            RecentSearchItemViewHolder.LAYOUT -> RecentSearchItemViewHolder(parent, initialStateListener, tokofoodScrollChangedListener)
             SeeMoreCuisineViewHolder.LAYOUT -> SeeMoreCuisineViewHolder(parent, initialStateListener)
             SeeMoreRecentSearchViewHolder.LAYOUT -> SeeMoreRecentSearchViewHolder(parent, initialStateListener)
-            ChipsListViewHolder.LAYOUT -> ChipsListViewHolder(parent, initialStateListener)
-            CuisineItemViewHolder.LAYOUT -> CuisineItemViewHolder(parent, initialStateListener)
+            ChipsListViewHolder.LAYOUT -> ChipsListViewHolder(parent, initialStateListener, tokofoodScrollChangedListener)
+            CuisineItemViewHolder.LAYOUT -> CuisineItemViewHolder(parent, initialStateListener, tokofoodScrollChangedListener)
             TokofoodSearchErrorStateViewHolder.LAYOUT -> TokofoodSearchErrorStateViewHolder(parent, tokoFoodSearchStateListener)
             else ->  super.createViewHolder(parent, type)
         }

@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:text="@string/action_activate_preorder_state"
         android:textColor="@color/Unify_N700"
-        android:textSize="@dimen/fontSize_lvl3"
+        android:textSize="14sp"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
@@ -26,7 +26,7 @@
         android:id="@+id/preorder_input_layout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/spacing_lvl6"
+        android:layout_marginTop="32dp"
         android:visibility="gone"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintTop_toBottomOf="@id/tv_activate_preorder_header">
@@ -36,8 +36,8 @@
             android:contentDescription="@string/content_desc_tfu_duration_unit"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginEnd="@dimen/spacing_lvl4"
-            android:layout_marginRight="@dimen/spacing_lvl4"
+            android:layout_marginEnd="16dp"
+            android:layout_marginRight="16dp"
             app:layout_constraintHorizontal_weight="1"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintRight_toLeftOf="@id/tfu_duration"

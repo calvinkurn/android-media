@@ -49,6 +49,7 @@ import com.tokopedia.universal_sharing.model.ImageGeneratorParamModel
 import com.tokopedia.universal_sharing.di.DaggerUniversalShareComponent
 import com.tokopedia.universal_sharing.di.UniversalShareModule
 import com.tokopedia.universal_sharing.model.ImageGeneratorRequestData
+import com.tokopedia.universal_sharing.model.PdpParamModel
 import com.tokopedia.universal_sharing.model.generateImageGeneratorParam
 import com.tokopedia.universal_sharing.tracker.UniversalSharebottomSheetTracker
 import com.tokopedia.universal_sharing.usecase.ExtractBranchLinkUseCase
@@ -308,9 +309,6 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
     //parent fragment
     private var parentFragmentContainer: Fragment? = null
 
-    //parent fragment lifecycle observer
-    private lateinit var parentFragmentLifecycleObserver: DefaultLifecycleObserver
-
     //Image generator page source ID
     private lateinit var sourceId: String
 
@@ -337,6 +335,15 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
 
     private var  imageGeneratorParam: ImageGeneratorParamModel? = null
 
+    // parent fragment lifecycle observer
+    private val parentFragmentLifecycleObserver by lazy {
+        object : DefaultLifecycleObserver {
+            override fun onDestroy(owner: LifecycleOwner) {
+                removeFile(savedImagePath)
+                super.onDestroy(owner)
+            }
+        }
+    }
 
     @Inject lateinit var extractBranchLinkUseCase: ExtractBranchLinkUseCase
 
@@ -559,17 +566,15 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
         affiliateListener = callback
     }
 
-
     private fun setFragmentLifecycleObserverUniversalSharing(fragment: Fragment) {
         parentFragmentContainer = fragment
-        parentFragmentLifecycleObserver = object : DefaultLifecycleObserver {
-            override fun onDestroy(owner: LifecycleOwner) {
-                removeFile(savedImagePath)
-                parentFragmentContainer?.lifecycle?.removeObserver(parentFragmentLifecycleObserver)
-                super.onDestroy(owner)
-            }
-        }
         parentFragmentContainer?.lifecycle?.addObserver(parentFragmentLifecycleObserver)
+    }
+
+    override fun onDestroy() {
+        parentFragmentContainer?.lifecycle?.removeObserver(parentFragmentLifecycleObserver)
+        parentFragmentContainer = null
+        super.onDestroy()
     }
 
     private fun setupBottomSheetChildView(inflater: LayoutInflater, container: ViewGroup?) {
@@ -1036,9 +1041,10 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
     }
 
     private fun executePdpContextualImage(shareModel: ShareModel) {
-        if (imageGeneratorParam == null) return
-        imageGeneratorParam?.apply {
+        if (imageGeneratorParam == null || !(imageGeneratorParam is PdpParamModel)) return
+        (imageGeneratorParam as? PdpParamModel)?.apply {
             this.platform = shareModel.platform
+            this.productImageUrl = transformOgImageURL(ogImageUrl)
         }
 
         lifecycleScope.launchCatchError(block = {
@@ -1055,11 +1061,13 @@ open class UniversalShareBottomSheet : BottomSheetUnify() {
         imageGeneratorParam?.apply {
             this.platform = shareModel.platform
         }
-        lifecycleScope.launch {
+        lifecycleScope.launchCatchError(block = {
             val result = ImagePolicyUseCase(GraphqlInteractor.getInstance().graphqlRepository)(sourceId)
             val listOfParams = result.generateImageGeneratorParam(imageGeneratorParam!!)
             executeImageGeneratorUseCase(sourceId, listOfParams, shareModel)
-        }
+        }, onError = {
+            executeSharingFlow(shareModel)
+        })
     }
 
     private fun executeMediaImageSharingFlow(shareModel: ShareModel, mediaImageUrl: String) {
