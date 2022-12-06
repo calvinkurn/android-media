@@ -14,5 +14,7 @@ object SellerHomeConst {
 
     object Images {
         const val IMG_ERROR_500 = "https://images.tokopedia.net/img/android/unify/unify_globalerrors_500.png"
+        const val IMG_NEW_SELLER_LEFT = "https://images.tokopedia.net/img/android/seller_home/img_sah_new_seller_left.png"
+        const val IMG_NEW_SELLER_RIGHT = "https://images.tokopedia.net/img/android/seller_home/img_sah_new_seller_right.png"
     }
 }

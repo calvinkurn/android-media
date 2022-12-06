@@ -84,6 +84,7 @@ class GetShopStateInfoUseCase @Inject constructor(
                   }
                   widgetDataSign
                   subType
+                  showWidget
                 }
               }
             }

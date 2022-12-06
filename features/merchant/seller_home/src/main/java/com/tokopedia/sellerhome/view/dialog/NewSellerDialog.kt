@@ -17,9 +17,15 @@ object NewSellerDialog {
         "https://images.tokopedia.net/img/android/seller_home/img_sah_new_seller_dialog.png"
 
     fun showFirstOrderDialog(context: Context, info: ShopStateInfoUiModel, onDismiss: () -> Unit) {
+        val isVerticalAction = info.buttonAlt.name.isNotBlank()
+        val actionType = if (isVerticalAction) {
+            DialogUnify.VERTICAL_ACTION
+        } else {
+            DialogUnify.SINGLE_ACTION
+        }
         val dialog = DialogUnify(
             context,
-            DialogUnify.VERTICAL_ACTION,
+            actionType,
             DialogUnify.WITH_ILLUSTRATION
         )
 
@@ -28,14 +34,16 @@ object NewSellerDialog {
             setTitle(info.title)
             setDescription(info.subtitle)
             setPrimaryCTAText(info.button.name)
-            setSecondaryCTAText(info.buttonAlt.name)
             setPrimaryCTAClickListener {
                 openAppLink(context, info.button.appLink)
                 dismiss()
             }
-            setSecondaryCTAClickListener {
-                openAppLink(context, info.buttonAlt.appLink)
-                dismiss()
+            if (isVerticalAction) {
+                setSecondaryCTAText(info.buttonAlt.name)
+                setSecondaryCTAClickListener {
+                    openAppLink(context, info.buttonAlt.appLink)
+                    dismiss()
+                }
             }
             setOnDismissListener(onDismiss)
             show()

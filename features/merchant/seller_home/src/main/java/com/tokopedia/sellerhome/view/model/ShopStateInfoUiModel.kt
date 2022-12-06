@@ -15,6 +15,7 @@ data class ShopStateInfoUiModel(
     val buttonAlt: Button = Button(),
     val dataSign: String = String.EMPTY,
     val subType: SubType = SubType.TOAST,
+    val isNewSellerState: Boolean = false,
 ) {
     data class Button(
         val name: String = String.EMPTY,

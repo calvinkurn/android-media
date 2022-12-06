@@ -25,7 +25,8 @@ class ShopStateInfoMapper @Inject constructor() {
             button = getButton(info.button),
             buttonAlt = getButton(info.buttonAlt),
             dataSign = info.dataSign,
-            subType = getSubType(info.subType)
+            subType = getSubType(info.subType),
+            isNewSellerState = info.showWidget
         )
     }
 

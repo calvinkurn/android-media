@@ -16,8 +16,7 @@ import javax.inject.Inject
  */
 
 class NewSellerJourneyHelper @Inject constructor(
-    private val sharedPref: SellerHomeSharedPref,
-    private val userSession: UserSessionInterface
+    private val sharedPref: SellerHomeSharedPref, private val userSession: UserSessionInterface
 ) {
 
     companion object {
@@ -47,19 +46,25 @@ class NewSellerJourneyHelper @Inject constructor(
         showNewSellerDialog(context)
     }
 
-    fun showFirstOrderDialog(context: Context, info: ShopStateInfoUiModel, onDismiss: () -> Unit) {
-        if (!sharedPref.getFirstOrderDialogEligibility(userSession.userId) ||
-            isFirstOrderDialogShown
-        ) {
-            return
+    fun showFirstOrderDialog(
+        context: Context, info: ShopStateInfoUiModel, onDismiss: () -> Unit
+    ): Boolean {
+        if (!sharedPref.getFirstOrderDialogEligibility(userSession.userId) || isFirstOrderDialogShown) {
+            return false
         }
         isFirstOrderDialogShown = true
 
-        NewSellerDialog.showFirstOrderDialog(context, info) {
+        NewSellerDialog.showFirstOrderDialog(context, info, onDismiss = {
             sharedPref.makeFirstOrderDialogNotEligible(userSession.userId)
-            onDismiss()
             isFirstOrderDialogShown = false
-        }
+            onDismiss()
+        })
+        return true
+    }
+
+    fun shouldFetchShopInfo(): Boolean {
+        val userId = userSession.userId
+        return sharedPref.getFirstOrderDialogEligibility(userId)
     }
 
     private fun showNewSellerDialog(context: Context) {
