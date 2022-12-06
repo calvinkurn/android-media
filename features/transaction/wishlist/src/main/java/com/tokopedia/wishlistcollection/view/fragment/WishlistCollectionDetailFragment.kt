@@ -395,7 +395,6 @@ class WishlistCollectionDetailFragment :
         observeSavingItemToCollections()
         observeUpdateAccessWishlistCollection()
         observeGetCollectionSharingData()
-        observingCollectionType()
         observingAddWishlistBulk()
     }
 
@@ -1433,8 +1432,15 @@ class WishlistCollectionDetailFragment :
                 }
             } else {
                 wishlistCollectionDetailStickyCountManageLabel.apply {
-                    wishlistCollectionDetailManageLabel.gone()
-                    iconGearCollectionDetail.show()
+                    if (collectionType == TYPE_COLLECTION_PUBLIC_OTHERS) {
+                        wishlistCollectionDetailManageLabel.gone()
+                        iconGearCollectionDetail.gone()
+                        wishlistCollectionSelectItemOption.show()
+                    } else {
+                        wishlistCollectionSelectItemOption.gone()
+                        wishlistCollectionDetailManageLabel.gone()
+                        iconGearCollectionDetail.show()
+                    }
                 }
             }
         }
@@ -3468,14 +3474,6 @@ class WishlistCollectionDetailFragment :
         bottomSheetCreateCollection.setListener(this@WishlistCollectionDetailFragment)
         if (bottomSheetCreateCollection.isAdded || fragmentManager.isStateSaved) return
         bottomSheetCreateCollection.show(fragmentManager)
-    }
-
-    // new condition : when shared collection is opened from other user POV
-    private fun hideGearIcon() {
-        binding?.run {
-            wishlistCollectionDetailStickyCountManageLabel.iconGearCollectionDetail.gone()
-            wishlistCollectionDetailStickyCountManageLabel.wishlistDivider.gone()
-        }
     }
 
     private fun showSelectItemsOption() {
