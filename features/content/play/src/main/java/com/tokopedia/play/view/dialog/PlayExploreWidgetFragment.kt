@@ -156,7 +156,7 @@ class PlayExploreWidgetFragment @Inject constructor(
                 chipsAdapter.setItemsAndAnimateChanges(getChipsShimmering)
             }
             is ResultState.Fail -> {
-                Toaster.build(requireView(), state.error.message.orEmpty(), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+                Toaster.build(view = requireView(), text = state.error.message.orEmpty(), actionText = getString(playR.string.title_try_again), duration = Toaster.LENGTH_LONG, type = Toaster.TYPE_ERROR, clickListener = {viewModel.submitAction(RefreshWidget)}).show()
             }
         }
     }
@@ -170,7 +170,7 @@ class PlayExploreWidgetFragment @Inject constructor(
                 widgetAdapter.setItemsAndAnimateChanges(getWidgetShimmering)
             }
             is ResultState.Fail -> {
-                Toaster.build(requireView(), state.error.message.orEmpty(), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
+                Toaster.build(view = requireView(), text = state.error.message.orEmpty(), actionText = getString(playR.string.title_try_again), duration = Toaster.LENGTH_LONG, type = Toaster.TYPE_ERROR, clickListener = {viewModel.submitAction(RefreshWidget)}).show()
             }
         }
     }
