@@ -52,6 +52,8 @@ class PlayShortsUploadWorker(
     private val coverUrl: String
         get() = uploadData.coverUri.ifEmpty { uploadData.mediaUri }
 
+    private val progressPerStep = if(uploadData.coverUri.isEmpty()) PROGRESS_PER_STEP_WITHOUT_COVER else PROGRESS_PER_STEP_WITH_COVER
+
     init {
         inject()
     }
@@ -215,10 +217,12 @@ class PlayShortsUploadWorker(
         uploadData: PlayShortsUploadModel,
         mediaUrl: String
     ): String {
-        val result = addMediaUseCase.executeOnBackground(
+        val request = addMediaUseCase.getShortsRequest(
             creationId = uploadData.shortsId,
             source = mediaUrl
         )
+
+        val result = addMediaUseCase.executeOnBackground(request)
 
         if (result.wrapper.mediaIDs.isEmpty()) throw Exception("Active media ID is empty")
 
@@ -265,7 +269,7 @@ class PlayShortsUploadWorker(
     }
 
     private suspend fun updateProgress() {
-        currentProgress += PROGRESS_PER_STEP
+        currentProgress += progressPerStep
         broadcastProgress(currentProgress)
     }
 
@@ -306,7 +310,8 @@ class PlayShortsUploadWorker(
     companion object {
         private const val UPLOAD_TYPE_IMAGE = "UPLOAD_TYPE_IMAGE"
         private const val UPLOAD_TYPE_VIDEO = "UPLOAD_TYPE_VIDEO"
-        private const val PROGRESS_PER_STEP = 20
+        private const val PROGRESS_PER_STEP_WITHOUT_COVER = 20
+        private const val PROGRESS_PER_STEP_WITH_COVER = 25
         private const val UPLOAD_FINISH_DELAY = 1000L
 
         fun build(uploadModel: PlayShortsUploadModel): OneTimeWorkRequest {
