@@ -3,14 +3,20 @@ package com.tkpd.macrobenchmark.util
 import android.content.Intent
 import android.net.Uri
 import androidx.test.platform.app.InstrumentationRegistry
+import com.tkpd.macrobenchmark.test.R
 import com.tokopedia.macrobenchmark_util.env.mock.InstrumentationMockHelper.getRawString
 import com.tokopedia.macrobenchmark_util.env.mock.config.HomeMockResponseConfig
+import com.tokopedia.macrobenchmark_util.env.mock.config.ProductDetailMockResponseConfig
 import com.tokopedia.macrobenchmark_util.env.mock.config.SearchMockResponseConfig
-import com.tkpd.macrobenchmark.test.R
 
 fun Intent.putMockData(key: String, res: Int) {
-    this.putExtra(key, getRawString(
-        InstrumentationRegistry.getInstrumentation().context, res))
+    this.putExtra(
+        key,
+        getRawString(
+            InstrumentationRegistry.getInstrumentation().context,
+            res
+        )
+    )
 }
 
 object MacroIntent {
@@ -31,6 +37,7 @@ object MacroIntent {
         object Config {
             const val Home = "home"
             const val Search = "search"
+            const val ProductDetail = "product_detail"
         }
 
         fun getMockSetupIntent(configName: String): Intent {
@@ -59,6 +66,13 @@ object MacroIntent {
             intent.putMockData(SearchMockResponseConfig.KEY_QUERY_HEADLINE_ADS, R.raw.response_mock_search_topads_tdn_2)
             return intent
         }
+
+        fun getProductDetailMockIntent() = getMockSetupIntent(Mock.Config.ProductDetail).apply {
+            putMockData(ProductDetailMockResponseConfig.KEY_PDP_LAYOUT, R.raw.response_pdp_layout)
+            putMockData(ProductDetailMockResponseConfig.KEY_PDP_DATA, R.raw.response_pdp_data)
+            putMockData(ProductDetailMockResponseConfig.KEY_PDP_RECOMM, R.raw.response_pdp_recom)
+            putMockData(ProductDetailMockResponseConfig.KEY_PDP_PLAY, R.raw.response_pdp_play)
+        }
     }
 
     object Session {
@@ -67,7 +81,7 @@ object MacroIntent {
             intent.setPackage(TKPD_PACKAGE_NAME)
             intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
             var loginParam = "non-login"
-            if (MacroArgs.isLogin(InstrumentationRegistry.getArguments())){
+            if (MacroArgs.isLogin(InstrumentationRegistry.getArguments())) {
                 loginParam = "login"
             }
             intent.data = Uri.parse("tokopedia-android-internal://session-setting/opt/$loginParam")
@@ -205,6 +219,21 @@ object MacroIntent {
         fun getPlayLiveIntent(): Intent {
             val intent = Intent("com.tokopedia.internal.VIEW")
             intent.data = Uri.parse("tokopedia-android-internal://play/206778")
+            return intent
+        }
+    }
+
+    object ProductDetail {
+
+        private const val DF_MODULE_NAME = "df_base"
+        const val PACKAGE_NAME = "$TKPD_PACKAGE_NAME.$DF_MODULE_NAME"
+
+        const val RECYCLER_VIEW_ID = "rv_pdp"
+        const val TRACE = "pdp_result_trace"
+
+        fun getIntent(): Intent {
+            val intent = Intent("com.tokopedia.internal.VIEW")
+            intent.data = Uri.parse("tokopedia-android-internal://marketplace/product-detail/6961809872/?layoutID=4")
             return intent
         }
     }
