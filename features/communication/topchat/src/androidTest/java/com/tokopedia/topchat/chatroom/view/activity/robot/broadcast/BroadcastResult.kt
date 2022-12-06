@@ -8,6 +8,7 @@ import com.tokopedia.topchat.R
 import com.tokopedia.topchat.assertion.atPositionIsInstanceOf
 import com.tokopedia.topchat.chatroom.view.uimodel.BroadCastUiModel
 import com.tokopedia.topchat.chatroom.view.uimodel.BroadcastSpamHandlerUiModel
+import org.hamcrest.CoreMatchers.not
 
 object BroadcastResult {
 
@@ -23,9 +24,14 @@ object BroadcastResult {
         )
     }
 
-    fun assertBroadcastCtaText(text: String) {
+    fun assertBroadcastCtaText(text: String, match: Boolean = true) {
+        val matcher = if (match) {
+            withText(text)
+        } else {
+            not(withText(text))
+        }
         onView(withId(R.id.topchat_cta_broadcast_tv)).check(
-            matches(withText(text))
+            matches(matcher)
         )
     }
 }
