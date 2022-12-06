@@ -1,6 +1,7 @@
 package com.tokopedia.tkpd.flashsale.di.component
 
 import com.tokopedia.abstraction.common.di.component.BaseAppComponent
+import com.tokopedia.tkpd.flashsale.common.bottomsheet.sse_submission_error.FlashSaleProductListSseSubmissionErrorBottomSheet
 import com.tokopedia.tkpd.flashsale.di.module.TokopediaFlashSaleModule
 import com.tokopedia.tkpd.flashsale.di.module.TokopediaFlashSaleViewModelModule
 import com.tokopedia.tkpd.flashsale.di.scope.TokopediaFlashSaleScope
@@ -47,4 +48,7 @@ interface TokopediaFlashSaleComponent {
     fun inject(fragment: ManageProductNonVariantMultilocFragment)
     fun inject(fragment: FlashSaleManageProductListFragment)
     fun inject(fragment: ManageProductVariantFragment)
+
+    fun inject(bottomSheet: FlashSaleProductListSseSubmissionErrorBottomSheet)
+
 }
