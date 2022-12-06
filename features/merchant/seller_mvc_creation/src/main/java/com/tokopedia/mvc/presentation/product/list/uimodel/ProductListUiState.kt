@@ -24,7 +24,7 @@ data class ProductListUiState(
     ),
     val products: List<Product> = emptyList(),
     val maxProductSelection : Int = 0,
-    val selectedProductsIds: Set<Long> = emptySet(),
+    val selectedProductsIdsToBeRemoved: Set<Long> = emptySet(),
     val isSelectAllActive: Boolean = false,
     val error: Throwable? = null
 )

@@ -201,7 +201,6 @@ class ProductListFragment : BaseDaggerFragment() {
                     ), ctaText = getString(R.string.smvc_ok))
             ProductListEffect.ProductDeleted -> binding?.cardUnify2.showToaster(message = getString(R.string.smvc_product_deleted), ctaText = getString(R.string.smvc_ok))
             is ProductListEffect.ProceedToVoucherPreviewPage -> navigateToVoucherPreviewPage(effect.voucherConfiguration, effect.selectedProducts, effect.selectedParentProductImageUrls)
-            is ProductListEffect.SendResultToCallerPage -> sendResultToCallerActivity(effect.selectedProducts)
             is ProductListEffect.ShowError -> binding?.cardUnify2?.showToasterError(effect.error)
             ProductListEffect.BackToPreviousPage -> backToPreviousPage()
             is ProductListEffect.RedirectToAddProductPage -> redirectToAddProductPage(effect.voucherConfiguration)
@@ -215,9 +214,9 @@ class ProductListFragment : BaseDaggerFragment() {
         renderLoadingState(uiState.isLoading)
         renderList(uiState.products)
         renderEmptyState(uiState.products.count(), uiState.isLoading, uiState.currentPageMode, uiState.originalPageMode, uiState.voucherConfiguration)
-        renderProductCounter(uiState.products.count(), uiState.selectedProductsIds.count(), uiState.currentPageMode)
-        renderBulkDeleteIcon(uiState.selectedProductsIds.count())
-        renderSelectAllCheckbox(uiState.products.count(), uiState.selectedProductsIds.count(), uiState.currentPageMode)
+        renderProductCounter(uiState.products.count(), uiState.selectedProductsIdsToBeRemoved.count(), uiState.currentPageMode)
+        renderBulkDeleteIcon(uiState.selectedProductsIdsToBeRemoved.count())
+        renderSelectAllCheckbox(uiState.products.count(), uiState.selectedProductsIdsToBeRemoved.count(), uiState.currentPageMode)
         renderButton(uiState.originalPageMode)
     }
 
@@ -392,17 +391,6 @@ class ProductListFragment : BaseDaggerFragment() {
 
     private fun CompoundButton.isClickTriggeredByUserInteraction() : Boolean {
         return isPressed
-    }
-
-
-    private fun sendResultToCallerActivity(selectedProducts: List<SelectedProduct>) {
-        val returnIntent = Intent()
-        returnIntent.putParcelableArrayListExtra(
-            BundleConstant.BUNDLE_KEY_SELECTED_PRODUCTS,
-            ArrayList(selectedProducts)
-        )
-        activity?.setResult(Activity.RESULT_OK, returnIntent)
-        activity?.finish()
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

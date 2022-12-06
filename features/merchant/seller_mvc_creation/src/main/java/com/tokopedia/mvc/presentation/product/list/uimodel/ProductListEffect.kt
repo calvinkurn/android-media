@@ -21,11 +21,6 @@ sealed class ProductListEffect {
     data class RedirectToAddProductPage(val voucherConfiguration: VoucherConfiguration) : ProductListEffect()
     object BackToPreviousPage : ProductListEffect()
 
-    data class SendResultToCallerPage(
-        val selectedProducts: List<SelectedProduct>,
-        val selectedParentProductImageUrls: List<String>
-    ): ProductListEffect()
-
     data class ShowDeleteProductConfirmationDialog(val productId: Long) : ProductListEffect()
     data class ShowBulkDeleteProductConfirmationDialog(val toDeleteProductCount: Int) : ProductListEffect()
 
