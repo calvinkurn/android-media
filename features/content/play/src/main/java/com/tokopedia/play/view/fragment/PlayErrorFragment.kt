@@ -179,7 +179,7 @@ class PlayErrorFragment @Inject constructor(
         tvTitle.text = ""
 
         globalError.apply {
-            setType(GlobalError.PAGE_FULL)
+            setType(GlobalError.PAGE_NOT_FOUND)
             errorTitle.text = config.title
             errorDescription.text = config.description
             errorAction.text = config.btnTitle
