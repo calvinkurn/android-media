@@ -71,7 +71,8 @@ object ProductMapper {
                 haveNotifyMeOOS = it.haveNotifyMeOOS,
                 notifyMeOOSCount = it.notifyMeOOSCount,
                 notifyMeOOSWording = it.notifyMeOOSWording,
-                isEmptyStock = it.isEmptyStock
+                isEmptyStock = it.isEmptyStock,
+                isStockGuaranteed = it.manageProductData.isStockGuaranteed
             )
         } ?: emptyList()
     }

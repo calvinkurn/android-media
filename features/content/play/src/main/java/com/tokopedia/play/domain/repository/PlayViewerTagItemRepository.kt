@@ -8,7 +8,7 @@ import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOpt
 
 interface PlayViewerTagItemRepository {
 
-    suspend fun getTagItem(channelId: String, warehouseId: String): TagItemUiModel
+    suspend fun getTagItem(channelId: String, warehouseId: String, partnerName: String): TagItemUiModel
 
     suspend fun updateCampaignReminderStatus(
         productSections: List<ProductSectionUiModel.Section>,
@@ -43,4 +43,12 @@ interface PlayViewerTagItemRepository {
         val isReminded: Boolean,
         val message: String,
     )
+
+    suspend fun addProductToCartOcc(
+        id: String,
+        name: String,
+        shopId: String,
+        minQty: Int,
+        price: Double,
+    ): String
 }

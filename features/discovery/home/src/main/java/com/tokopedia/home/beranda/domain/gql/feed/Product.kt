@@ -5,85 +5,86 @@ import com.google.gson.annotations.Expose
 import com.google.gson.annotations.SerializedName
 
 data class Product(
-        @SerializedName("id") @Expose
-        var id: String = "",
-        @SerializedName("name")
-        @Expose
-        val name: String = "",
-        @SerializedName("category_breadcrumbs")
-        @Expose
-        val categoryBreadcrumbs: String = "",
-        @SerializedName("url")
-        @Expose
-        val url: String = "",
-        @SerializedName("click_url")
-        @Expose
-        val clickUrl: String = "",
-        @SerializedName("image_url")
-        @Expose
-        val imageUrl: String = "",
-        @SerializedName("is_wishlist")
-        @Expose
-        val isWishlist: Boolean = false,
-        @SerializedName("wishlist_url")
-        @Expose
-        val wishlistUrl: String = "",
-        @SerializedName("applink")
-        @Expose
-        val applink: String = "",
-        @SerializedName("is_topads")
-        @Expose
-        val isTopads: Boolean = false,
-        @SerializedName("tracker_image_url")
-        @Expose
-        val trackerImageUrl: String = "",
-        @SuppressLint("Invalid Data Type")
-        @SerializedName("price")
-        @Expose
-        val price: String = "",
-        @SerializedName("price_int")
-        @Expose
-        val priceInt: Int = 0,
-        @SerializedName("slashed_price")
-        @Expose
-        val slashedPrice: String = "",
-        @SerializedName("slashed_price_int")
-        @Expose
-        val slashedPriceInt: Int = 0,
-        @SerializedName("discount_percentage")
-        @Expose
-        val discountPercentage: Int = 0,
-        @SerializedName("clusterID")
-        @Expose
-        val clusterId: Int = -1,
-        @SerializedName("rating")
-        @Expose
-        val rating: Int = 0,
-        @SerializedName("count_review")
-        @Expose
-        val countReview: Int = 0,
-        @SerializedName("ratingAverage")
-        @Expose
-        val ratingFloat: String = "",
-        @SerializedName("recommendation_type")
-        @Expose
-        val recommendationType: String = "",
-        @SerializedName("labels")
-        @Expose
-        val labels: List<Label> = listOf(),
-        @SerializedName("label_group")
-        @Expose
-        val labelGroup: List<LabelGroup> = listOf(),
-        @SerializedName("badges")
-        @Expose
-        val badges: List<Badge> = listOf(),
-        @SerializedName("shop")
-        @Expose
-        val shop: Shop = Shop(),
-        @SerializedName("free_ongkir")
-        @Expose
-        val freeOngkirInformation: FreeOngkirInformation = FreeOngkirInformation()
-){
+    @SerializedName("id") @Expose
+    var id: String = "",
+    @SerializedName("name")
+    @Expose
+    val name: String = "",
+    @SerializedName("category_breadcrumbs", alternate = ["categoryBreadcrumbs"])
+    @Expose
+    val categoryBreadcrumbs: String = "",
+    @SerializedName("url")
+    @Expose
+    val url: String = "",
+    @SerializedName("click_url", alternate = ["clickUrl"])
+    @Expose
+    val clickUrl: String = "",
+    @SerializedName("image_url", alternate = ["imageUrl"])
+    @Expose
+    val imageUrl: String = "",
+    @SerializedName("is_wishlist", alternate = ["isWishlist"])
+    @Expose
+    val isWishlist: Boolean = false,
+    @SerializedName("wishlist_url", alternate = ["wishlistUrl"])
+    @Expose
+    val wishlistUrl: String = "",
+    @SerializedName("applink")
+    @Expose
+    val applink: String = "",
+    @SerializedName("is_topads", alternate = ["isTopads"])
+    @Expose
+    val isTopads: Boolean = false,
+    @SerializedName("tracker_image_url", alternate = ["trackerImageUrl"])
+    @Expose
+    val trackerImageUrl: String = "",
+    @SuppressLint("Invalid Data Type")
+    @SerializedName("price")
+    @Expose
+    val price: String = "",
+    @SerializedName("price_int", alternate = ["priceInt"])
+    @Expose
+    val priceInt: Int = 0,
+    @SerializedName("slashed_price", alternate = ["slashedPrice"])
+    @Expose
+    val slashedPrice: String = "",
+    @SerializedName("slashed_price_int", alternate = ["slashedPriceInt"])
+    @Expose
+    val slashedPriceInt: Int = 0,
+    @SerializedName("discount_percentage", alternate = ["discountPercentage"])
+    @Expose
+    val discountPercentage: Int = 0,
+    @SuppressLint("Invalid Data Type")
+    @SerializedName("clusterID")
+    @Expose
+    val clusterId: Int = -1,
+    @SerializedName("rating")
+    @Expose
+    val rating: Int = 0,
+    @SerializedName("count_review", alternate = ["countReview"])
+    @Expose
+    val countReview: Int = 0,
+    @SerializedName("ratingAverage")
+    @Expose
+    val ratingFloat: String = "",
+    @SerializedName("recommendation_type", alternate = ["recommendationType"])
+    @Expose
+    val recommendationType: String = "",
+    @SerializedName("labels")
+    @Expose
+    val labels: List<Label> = listOf(),
+    @SerializedName("label_group", alternate = ["labelGroup"])
+    @Expose
+    val labelGroup: List<LabelGroup> = listOf(),
+    @SerializedName("badges")
+    @Expose
+    val badges: List<Badge> = listOf(),
+    @SerializedName("shop")
+    @Expose
+    val shop: Shop = Shop(),
+    @SerializedName("free_ongkir", alternate = ["freeOngkir"])
+    @Expose
+    val freeOngkirInformation: FreeOngkirInformation = FreeOngkirInformation()
+) {
 
     override fun equals(other: Any?): Boolean {
         if (this === other) return true

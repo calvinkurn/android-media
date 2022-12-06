@@ -4,6 +4,7 @@ import androidx.arch.core.executor.testing.InstantTaskExecutorRule
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateParam
 import com.tokopedia.tokofood.common.presentation.uimodel.UpdateProductParam
 import com.tokopedia.tokofood.data.generateCustomListItemsWithError
+import com.tokopedia.tokofood.data.generateCustomListItemsWithoutError
 import com.tokopedia.tokofood.data.generateTestDataGetCustomListItems
 import com.tokopedia.tokofood.data.generateTestProductUiModel
 import com.tokopedia.tokofood.data.generateTestUiAddOnUiModel
@@ -15,6 +16,7 @@ import com.tokopedia.tokofood.feature.merchant.presentation.model.OptionUiModel
 import com.tokopedia.tokofood.feature.merchant.presentation.viewmodel.OrderCustomizationViewModel
 import io.mockk.MockKAnnotations
 import junit.framework.Assert.assertEquals
+import junit.framework.Assert.assertFalse
 import junit.framework.Assert.assertTrue
 import org.junit.Before
 import org.junit.Rule
@@ -43,6 +45,17 @@ class OrderCustomizationViewModelTest {
     }
 
     @Test
+    fun `when calculate subtotal price but no addOns applied expect simple calculated subtotal `() {
+        val baseProductPrice = 15000.0
+        val quantity = 2
+        val expectedResult = baseProductPrice * quantity
+        viewModel.baseProductPrice = baseProductPrice
+        val actualResult = viewModel.calculateSubtotalPrice(baseProductPrice, quantity, listOf(null))
+        assertEquals(expectedResult, actualResult)
+        assertEquals(viewModel.baseProductPrice, baseProductPrice)
+    }
+
+    @Test
     fun `when formatting subtotal price expect rupiah format`() {
         val testData = 10000.0
         val expectedResult = "Rp10.000"
@@ -59,9 +72,41 @@ class OrderCustomizationViewModelTest {
     }
 
     @Test
+    fun `when cart id is not empty but custom order details also empty expect same custom list items`() {
+        val testData = generateTestDataGetCustomListItems("cartId-garlicKnots", isCustomOrderDetailEmpty = true)
+        val expectedResult = testData.customListItems
+        val actualResult = viewModel.getCustomListItems("cartId-garlicKnots", testData)
+        assertEquals(expectedResult, actualResult)
+    }
+
+    @Test
+    fun `when cart id is empty but items don't have addOnUiModel expect same custom list items`() {
+        val testData = generateTestDataGetCustomListItems("", isAddOnUiModelNull = true, isCustomOrderDetailEmpty = true)
+        val expectedResult = testData.customListItems
+        val actualResult = viewModel.getCustomListItems("", testData)
+        assertEquals(expectedResult, actualResult)
+    }
+
+    @Test
+    fun `when cart id is empty but addOnUiModel option is empty expect same custom list items`() {
+        val testData = generateTestDataGetCustomListItems("", isAddOnUiModelNull = false, isAddOnOptionEmpty = true, isCustomOrderDetailEmpty = true)
+        val expectedResult = testData.customListItems
+        val actualResult = viewModel.getCustomListItems("", testData)
+        assertEquals(expectedResult, actualResult)
+    }
+
+    @Test
     fun `when cart id is not empty expect custom list items from custom order details when getting custom list items`() {
         val testData = generateTestDataGetCustomListItems("cartId-garlicKnots")
         val expectedResult = testData.customOrderDetails.first().customListItems
+        val actualResult = viewModel.getCustomListItems("cartId-garlicKnots", testData)
+        assertEquals(expectedResult, actualResult)
+    }
+
+    @Test
+    fun `when cart id is not empty but no order details matched that cartId, expect custom list items to be empty`() {
+        val testData = generateTestDataGetCustomListItems("cartId-garlicKnots", customCartId = "cartId-anotherGarlicKnots")
+        val expectedResult = listOf<CustomListItem>()
         val actualResult = viewModel.getCustomListItems("cartId-garlicKnots", testData)
         assertEquals(expectedResult, actualResult)
     }
@@ -74,44 +119,35 @@ class OrderCustomizationViewModelTest {
     }
 
     @Test
+    fun `when cartId is empty expect isEditingCustomOrder to be false`() {
+        val cartId = ""
+        val actualResult = viewModel.isEditingCustomOrder(cartId)
+        assertFalse(actualResult)
+    }
+
+    @Test
     fun `when selected option is less that mandatory minimum selection expect is error true and custom list items with error`() {
-        val original = OptionUiModel(
-                isSelected = false,
-                id = "379913bf-e89e-4a26-a2e6-a650ebe77aef",
-                status = 1,
-                name = "Original",
-                price = 0.0,
-                priceFmt = "Gratis",
-                selectionControlType = SelectionControlType.SINGLE_SELECTION
-        )
-        val hot = OptionUiModel(
-                isSelected = false,
-                id = "8af415a2-3406-4536-b2b6-0561f7b68148",
-                status = 1,
-                name = "Hot",
-                price = 0.0,
-                priceFmt = "Gratis",
-                selectionControlType = SelectionControlType.SINGLE_SELECTION
-        )
-        val spicyAddOnUiModel = AddOnUiModel(
-                isError = true,
-                id = "d105b801-75de-4306-93a6-cc7124193042",
-                name = "Spicy",
-                isRequired = true,
-                isSelected = true,
-                maxQty = 1,
-                minQty = 1,
-                options = listOf(hot, original),
-                outOfStockWording = "Stok habis"
-        )
-        val expectedResult = CustomListItem(
-                listItemType = CustomListItemType.PRODUCT_ADD_ON,
-                addOnUiModel = spicyAddOnUiModel
-        )
         val testData = generateCustomListItemsWithError()
         val actualResult = viewModel.validateCustomOrderInput(listOf(testData))
         assertTrue(actualResult.first)
-        assertEquals(expectedResult.addOnUiModel?.isError, actualResult.second.first().addOnUiModel?.isError)
+    }
+
+    @Test
+    fun `when selected option matched the mandatory minimum selection expect is error false and custom list items without error`() {
+        val testData = generateCustomListItemsWithoutError()
+        val actualResult = viewModel.validateCustomOrderInput(listOf(testData))
+        assertFalse(actualResult.first)
+    }
+
+    @Test
+    fun `when validateCustomOrderInput, should not apply error checking on items without addOns`() {
+        val testData = generateCustomListItemsWithError()
+        val listItemWithoutAddOns = CustomListItem(
+            listItemType = CustomListItemType.PRODUCT_ADD_ON,
+            addOnUiModel = null
+        )
+        val actualResult = viewModel.validateCustomOrderInput(listOf(testData, listItemWithoutAddOns))
+        assertEquals(listItemWithoutAddOns.addOnUiModel?.isError, actualResult.second[1].addOnUiModel?.isError)
     }
 
     @Test

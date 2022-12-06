@@ -120,7 +120,9 @@ class TokoNowSearchViewModel @Inject constructor (
                 aceSearchProductData = searchProduct.data,
         )
 
-        onGetFirstPageSuccess(headerDataView, contentDataView, searchProduct)
+        val isActive = searchModel.feedbackFieldToggle.tokonowFeedbackFieldToggle.data.isActive
+
+        onGetFirstPageSuccess(headerDataView, contentDataView, searchProduct,isActive)
     }
 
     override fun createTitleDataView(headerDataView: HeaderDataView): TitleDataView {

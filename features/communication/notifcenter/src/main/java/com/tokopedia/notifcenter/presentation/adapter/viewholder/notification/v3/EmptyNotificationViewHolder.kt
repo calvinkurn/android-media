@@ -31,6 +31,6 @@ class EmptyNotificationViewHolder(
 
     companion object {
         val LAYOUT = R.layout.item_notification_empty
-        const val emptyImageUrl = "https://ecs7.tokopedia.net/android/user/empty-state-notification.png"
+        const val emptyImageUrl = "https://images.tokopedia.net/android/user/empty-state-notification.png"
     }
 }

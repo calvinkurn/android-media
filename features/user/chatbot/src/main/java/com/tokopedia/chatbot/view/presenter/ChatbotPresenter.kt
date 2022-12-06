@@ -46,7 +46,6 @@ import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.TITLE
 import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.TOTAL_AMOUNT
 import com.tokopedia.chatbot.ChatbotConstant.ChatbotUnification.USED_BY
 import com.tokopedia.chatbot.ChatbotConstant.ImageUpload.DEFAULT_ONE_MEGABYTE
-import com.tokopedia.chatbot.ChatbotConstant.ImageUpload.MAX_FILE_SIZE
 import com.tokopedia.chatbot.ChatbotConstant.ImageUpload.MAX_FILE_SIZE_UPLOAD_SECURE
 import com.tokopedia.chatbot.ChatbotConstant.ImageUpload.MINIMUM_HEIGHT
 import com.tokopedia.chatbot.ChatbotConstant.ImageUpload.MINIMUM_WIDTH
@@ -55,13 +54,15 @@ import com.tokopedia.chatbot.ChatbotConstant.MODE_BOT
 import com.tokopedia.chatbot.ChatbotConstant.NewRelic.KEY_CHATBOT_GET_CHATLIST_RATING
 import com.tokopedia.chatbot.ChatbotConstant.NewRelic.KEY_CHATBOT_SECURE_UPLOAD_AVAILABILITY
 import com.tokopedia.chatbot.ChatbotConstant.NewRelic.KEY_SECURE_UPLOAD
+import com.tokopedia.chatbot.ChatbotConstant.ReplyBoxType.DYNAMIC_ATTACHMENT
+import com.tokopedia.chatbot.ChatbotConstant.ReplyBoxType.REPLY_BOX_TOGGLE_VALUE
+import com.tokopedia.chatbot.ChatbotConstant.ReplyBoxType.TYPE_BIG_REPLY_BOX
 import com.tokopedia.chatbot.R
 import com.tokopedia.chatbot.attachinvoice.domain.pojo.InvoiceLinkPojo
 import com.tokopedia.chatbot.data.TickerData.TickerDataResponse
 import com.tokopedia.chatbot.data.chatactionbubble.ChatActionBubbleUiModel
 import com.tokopedia.chatbot.data.csatoptionlist.CsatOptionsUiModel
 import com.tokopedia.chatbot.data.helpfullquestion.HelpFullQuestionsUiModel
-import com.tokopedia.chatbot.data.imageupload.ChatbotUploadImagePojo
 import com.tokopedia.chatbot.data.invoice.AttachInvoiceSingleUiModel
 import com.tokopedia.chatbot.data.network.ChatbotUrl
 import com.tokopedia.chatbot.data.newsession.TopBotNewSessionResponse
@@ -82,6 +83,10 @@ import com.tokopedia.chatbot.domain.pojo.livechatdivider.LiveChatDividerAttribut
 import com.tokopedia.chatbot.domain.pojo.quickreply.QuickReplyAttachmentAttributes
 import com.tokopedia.chatbot.domain.pojo.ratinglist.ChipGetChatRatingListInput
 import com.tokopedia.chatbot.domain.pojo.ratinglist.ChipGetChatRatingListResponse
+import com.tokopedia.chatbot.domain.pojo.replyBox.BigReplyBoxAttribute
+import com.tokopedia.chatbot.domain.pojo.replyBox.DynamicAttachment
+import com.tokopedia.chatbot.domain.pojo.replyBox.ReplyBoxAttribute
+import com.tokopedia.chatbot.domain.pojo.replyBox.SmallReplyBoxAttribute
 import com.tokopedia.chatbot.domain.pojo.submitchatcsat.ChipSubmitChatCsatInput
 import com.tokopedia.chatbot.domain.pojo.submitchatcsat.ChipSubmitChatCsatResponse
 import com.tokopedia.chatbot.domain.pojo.submitoption.SubmitOptionInput
@@ -106,6 +111,8 @@ import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.CHAT_DIVI
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.OPEN_CSAT
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.QUERY_SOURCE_TYPE
 import com.tokopedia.chatbot.view.presenter.ChatbotPresenter.companion.UPDATE_TOOLBAR
+import com.tokopedia.chatbot.view.util.Attachment34RenderType
+import com.tokopedia.chatbot.view.util.CheckDynamicAttachmentValidity
 import com.tokopedia.chatbot.websocket.ChatWebSocketResponse
 import com.tokopedia.chatbot.websocket.ChatbotWebSocket
 import com.tokopedia.chatbot.websocket.ChatbotWebSocketAction
@@ -113,8 +120,6 @@ import com.tokopedia.chatbot.websocket.ChatbotWebSocketImpl
 import com.tokopedia.chatbot.websocket.ChatbotWebSocketStateHandler
 import com.tokopedia.common.network.data.model.RestResponse
 import com.tokopedia.config.GlobalConfig
-import com.tokopedia.imageuploader.domain.UploadImageUseCase
-import com.tokopedia.imageuploader.domain.model.ImageUploadDomainModel
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
@@ -138,9 +143,6 @@ import kotlinx.coroutines.joinAll
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import okhttp3.Interceptor
-import okhttp3.MediaType.Companion.toMediaTypeOrNull
-import okhttp3.RequestBody
-import okhttp3.RequestBody.Companion.toRequestBody
 import rx.Subscriber
 import timber.log.Timber
 import java.io.File
@@ -161,7 +163,6 @@ class ChatbotPresenter @Inject constructor(
     private val tkpdAuthInterceptor: TkpdAuthInterceptor,
     private val fingerprintInterceptor: FingerprintInterceptor,
     private val sendChatRatingUseCase: SendChatRatingUseCase,
-    private val uploadImageUseCase: UploadImageUseCase<ChatbotUploadImagePojo>,
     private val submitCsatRatingUseCase: SubmitCsatRatingUseCase,
     private val getTickerDataUseCase: GetTickerDataUseCase,
     private val chipSubmitHelpfulQuestionsUseCase: ChipSubmitHelpfulQuestionsUseCase,
@@ -170,7 +171,7 @@ class ChatbotPresenter @Inject constructor(
     private val getResolutionLinkUseCase: GetResolutionLinkUseCase,
     private val getTopBotNewSessionUseCase: GetTopBotNewSessionUseCase,
     private val checkUploadSecureUseCase: CheckUploadSecureUseCase,
-    private val chatBotSecureImageUploadUseCase:ChatBotSecureImageUploadUseCase,
+    private val chatBotSecureImageUploadUseCase: ChatBotSecureImageUploadUseCase,
     private val getExistingChatMapper: ChatbotGetExistingChatMapper,
     private val uploaderUseCase: UploaderUseCase,
     private val chatbotVideoUploadVideoEligibilityUseCase: ChatbotUploadVideoEligibilityUseCase,
@@ -180,16 +181,12 @@ class ChatbotPresenter @Inject constructor(
 
 ) : BaseChatPresenter<ChatbotContract.View>(userSession, chatBotWebSocketMessageMapper), ChatbotContract.Presenter, CoroutineScope {
 
-
-    object companion{
-        const val ERROR_CODE ="400"
-        const val TEXT_HIDE = "hide"
+    object companion {
         const val OPEN_CSAT = "13"
         const val UPDATE_TOOLBAR = "14"
         const val CHAT_DIVIDER = "15"
         const val QUERY_SOURCE_TYPE = "Apps"
     }
-
 
     override fun clearText() {
         view.clearChatText()
@@ -330,11 +327,14 @@ class ChatbotPresenter @Inject constructor(
             EVENT_TOPCHAT_READ_MESSAGE -> view.onReceiveReadEvent()
             EVENT_TOPCHAT_REPLY_MESSAGE -> {
                 val attachmentType = chatResponse?.attachment?.type
-                if (attachmentType == SESSION_CHANGE || attachmentType == UPDATE_TOOLBAR)
+                if (attachmentType == SESSION_CHANGE ||
+                    attachmentType == UPDATE_TOOLBAR ||
+                    attachmentType == DYNAMIC_ATTACHMENT
+                ) {
                     return
+                }
                 view.onReceiveMessageEvent(mapToVisitable(pojo))
                 sendReadEventWebSocket(messageId)
-
             }
         }
     }
@@ -356,6 +356,7 @@ class ChatbotPresenter @Inject constructor(
                     UPDATE_TOOLBAR -> handleUpdateToolbarAttachment()
                     CHAT_DIVIDER -> handleChatDividerAttachment()
                     SESSION_CHANGE -> handleSessionChangeAttachment()
+                    DYNAMIC_ATTACHMENT -> handleDynamicAttachment34(pojo)
                 }
             }
         } catch (e: JsonSyntaxException) {
@@ -424,10 +425,86 @@ class ChatbotPresenter @Inject constructor(
         return list
     }
 
-    private fun onError(): (Throwable) -> Unit {
-        return {
-            view.showErrorToast(it)
+    @VisibleForTesting
+    fun handleDynamicAttachment34(pojo: ChatSocketPojo) {
+        val dynamicAttachmentContents =
+            Gson().fromJson(pojo.attachment?.attributes, DynamicAttachment::class.java)
+
+        val replyBoxAttribute =
+            dynamicAttachmentContents?.dynamicAttachmentAttribute?.replyBoxAttribute
+
+        if (Attachment34RenderType.mapTypeToDeviceType(replyBoxAttribute?.renderTarget)
+            == Attachment34RenderType.RenderAttachment34
+        ) {
+            when (replyBoxAttribute?.contentCode) {
+                TYPE_BIG_REPLY_BOX -> {
+                    convertToBigReplyBoxData(replyBoxAttribute.dynamicContent)
+                }
+                REPLY_BOX_TOGGLE_VALUE -> {
+                    convertToSmallReplyBoxData(replyBoxAttribute.dynamicContent)
+                }
+                else -> {
+                    // TODO need to show fallback message
+                    mapToVisitable(pojo)
+                }
+            }
         }
+    }
+
+    private fun convertToBigReplyBoxData(dynamicContent: String?) {
+        if (dynamicContent == null) {
+            return
+        }
+        val bigReplyBoxContent = Gson().fromJson(
+            dynamicContent,
+            BigReplyBoxAttribute::class.java
+        )
+        handleBigReplyBoxWS(bigReplyBoxContent)
+    }
+
+    private fun convertToSmallReplyBoxData(dynamicContent: String?) {
+        if (dynamicContent == null) {
+            return
+        }
+        val smallReplyBoxContent = Gson().fromJson(
+            dynamicContent,
+            SmallReplyBoxAttribute::class.java
+        )
+        handleSmallReplyBoxWS(smallReplyBoxContent)
+    }
+
+    private fun handleBigReplyBoxWS(bigReplyBoxContent: BigReplyBoxAttribute) {
+        if (bigReplyBoxContent.isActive) {
+            view.setBigReplyBoxTitle(bigReplyBoxContent.title, bigReplyBoxContent.placeholder)
+        }
+    }
+
+    private fun handleSmallReplyBoxWS(smallReplyBoxContent: SmallReplyBoxAttribute) {
+        if (smallReplyBoxContent.isHidden) {
+            view.hideReplyBox()
+        } else {
+            view.enableTyping()
+        }
+    }
+
+    fun validateHistoryForAttachment34(replyBoxAttribute: ReplyBoxAttribute?): Boolean {
+        if (replyBoxAttribute == null) {
+            return false
+        }
+
+        if (CheckDynamicAttachmentValidity.checkValidity(replyBoxAttribute.contentCode)) {
+            when (replyBoxAttribute.contentCode) {
+                TYPE_BIG_REPLY_BOX -> {
+                    convertToBigReplyBoxData(replyBoxAttribute.dynamicContent)
+                    return true
+                }
+                REPLY_BOX_TOGGLE_VALUE -> {
+                    convertToSmallReplyBoxData(replyBoxAttribute.dynamicContent)
+                    return true
+                }
+            }
+        }
+        return false
     }
 
     override fun showErrorSnackbar(stringId: Int) {
@@ -451,7 +528,7 @@ class ChatbotPresenter @Inject constructor(
         )
     }
 
-    private fun onFailureSendRating(throwable: Throwable, messageId : String) {
+    private fun onFailureSendRating(throwable: Throwable, messageId: String) {
         view.onError(throwable)
         ChatbotNewRelicLogger.logNewRelic(
             false,
@@ -598,60 +675,6 @@ class ChatbotPresenter @Inject constructor(
             .build()
     }
 
-    override fun uploadImages(
-        it: ImageUploadUiModel,
-        messageId: String,
-        opponentId: String,
-        onError: (Throwable, ImageUploadUiModel) -> Unit
-    ) {
-        if (validateImageAttachment(it.imageUrl, MAX_FILE_SIZE)) {
-            isUploading = true
-            uploadImageUseCase.unsubscribe()
-
-            val reqParam = HashMap<String, RequestBody>()
-            reqParam.put("web_service", createRequestBody("1"))
-            reqParam.put(
-                "id",
-                createRequestBody(String.format("%s%s", userSession.userId, it.imageUrl))
-            )
-            val params = uploadImageUseCase.createRequestParam(
-                it.imageUrl,
-                "/upload/attachment",
-                "fileToUpload\"; filename=\"image.jpg",
-                reqParam
-            )
-
-            uploadImageUseCase.execute(
-                params,
-                object : Subscriber<ImageUploadDomainModel<ChatbotUploadImagePojo>>() {
-                    override fun onNext(t: ImageUploadDomainModel<ChatbotUploadImagePojo>) {
-                        t.dataResultImageUpload.data?.run {
-                            sendUploadedImageToWebsocket(
-                                ChatbotSendableWebSocketParam
-                                    .generateParamSendImage(
-                                        messageId,
-                                        this.picSrc,
-                                        this.picObj,
-                                        it.startTime,
-                                        opponentId
-                                    )
-                            )
-                        }
-                        isUploading = false
-                    }
-
-                    override fun onCompleted() {
-                    }
-
-                    override fun onError(e: Throwable) {
-                        isUploading = false
-                        onError(e, it)
-                    }
-                }
-            )
-        }
-    }
-
     override fun uploadImageSecureUpload(
         imageUploadViewModel: ImageUploadUiModel,
         messageId: String,
@@ -674,21 +697,21 @@ class ChatbotPresenter @Inject constructor(
                     onErrorImageUpload(e, imageUploadViewModel)
                 }
 
-                    override fun onNext(t: Map<Type?, RestResponse?>?) {
-                        val token = object : TypeToken<UploadSecureResponse?>() {}.type
-                        val restResponse = t?.get(token)
-                        val uploadSecureResponse: UploadSecureResponse? = restResponse?.getData()
-                        sendUploadedImageToWebsocket(
-                            ChatbotSendableWebSocketParam
-                                .generateParamUploadSecureSendImage(
-                                    messageId,
-                                    uploadSecureResponse?.uploadSecureData?.urlImage ?: "",
-                                    imageUploadViewModel.startTime,
-                                    userSession.name
-                                )
-                        )
-                    }
-                })
+                override fun onNext(t: Map<Type?, RestResponse?>?) {
+                    val token = object : TypeToken<UploadSecureResponse?>() {}.type
+                    val restResponse = t?.get(token)
+                    val uploadSecureResponse: UploadSecureResponse? = restResponse?.getData()
+                    sendUploadedImageToWebsocket(
+                        ChatbotSendableWebSocketParam
+                            .generateParamUploadSecureSendImage(
+                                messageId,
+                                uploadSecureResponse?.uploadSecureData?.urlImage ?: "",
+                                imageUploadViewModel.startTime,
+                                userSession.name
+                            )
+                    )
+                }
+            })
         }
     }
 
@@ -769,7 +792,7 @@ class ChatbotPresenter @Inject constructor(
     }
 
     override fun cancelImageUpload() {
-        uploadImageUseCase.unsubscribe()
+        chatBotSecureImageUploadUseCase.unsubscribe()
     }
 
     fun sendUploadedImageToWebsocket(json: JsonObject) {
@@ -777,10 +800,6 @@ class ChatbotPresenter @Inject constructor(
         interceptors.add(tkpdAuthInterceptor)
         interceptors.add(fingerprintInterceptor)
         chatbotWebSocket.send(json, interceptors)
-    }
-
-    private fun createRequestBody(content: String): RequestBody {
-        return content.toRequestBody("text/plain".toMediaTypeOrNull())
     }
 
     private fun validateImageAttachment(uri: String?, maxFileSize: Int): Boolean {
@@ -999,7 +1018,7 @@ class ChatbotPresenter @Inject constructor(
     }
 
     private fun handleReplyBox(isTypingBlocked: Boolean) {
-        if (isTypingBlocked) view.blockTyping() else view.enableTyping()
+        if (isTypingBlocked) view.hideReplyBox() else view.enableTyping()
     }
 
     private fun handleNewSession(isNewSession: Boolean) {
@@ -1010,12 +1029,8 @@ class ChatbotPresenter @Inject constructor(
         val params = checkUploadSecureUseCase.createRequestParams(messageId)
         launchCatchError(
             block = {
-                val response = checkUploadSecureUseCase.checkUploadSecure(params)
-                val isSecureUpload =
-                    response.topbotUploadSecureAvailability.uploadSecureAvailabilityData.isUsingUploadSecure
-                if (isSecureUpload) view.uploadUsingSecureUpload(data) else view.uploadUsingOldMechanism(
-                    data
-                )
+                checkUploadSecureUseCase.checkUploadSecure(params)
+                view.uploadUsingSecureUpload(data)
             },
             onError = {
                 ChatbotNewRelicLogger.logNewRelic(
@@ -1034,7 +1049,7 @@ class ChatbotPresenter @Inject constructor(
         mediaUploadJobs.value.filterKeys(originalPaths::contains)
     }
 
-    fun updateMediaUris(paths : List<VideoUploadData>) {
+    fun updateMediaUris(paths: List<VideoUploadData>) {
         mediaUris.value = paths
     }
 
@@ -1065,7 +1080,6 @@ class ChatbotPresenter @Inject constructor(
             this@ChatbotPresenter.shouldResetFailedUploadStatus.value = false
         } else {
             videoData.forEach {
-
                 val currentUri = it.videoPath ?: ""
                 val hasActiveUploadJob = mediaUploadJobs.value[currentUri]?.isActive == true
                 val needToStartNewJob = !hasActiveUploadJob
@@ -1087,9 +1101,8 @@ class ChatbotPresenter @Inject constructor(
     fun startNewUploadMediaJob(
         uri: String,
         messageId: String,
-        startTime: String,
+        startTime: String
     ): Job {
-
         return launchCatchError(block = {
             val filePath = File(uri)
             val params = uploaderUseCase.createParams(
@@ -1100,7 +1113,7 @@ class ChatbotPresenter @Inject constructor(
             val uploadMediaResult = uploaderUseCase(params).let {
                 when (it) {
                     is UploadResult.Success -> {
-                        sendVideoAttachment(it.videoUrl,startTime,messageId)
+                        sendVideoAttachment(it.videoUrl, startTime, messageId)
                         ChatbotVideoUploadResult.Success(it.uploadId, it.videoUrl)
                     }
                     is UploadResult.Error -> {
@@ -1110,8 +1123,8 @@ class ChatbotPresenter @Inject constructor(
             }
             updateMediaUploadResults(uri, uploadMediaResult)
         }, onError = {
-            updateMediaUploadResults(uri, ChatbotVideoUploadResult.Error(it.message.orEmpty()))
-        })
+                updateMediaUploadResults(uri, ChatbotVideoUploadResult.Error(it.message.orEmpty()))
+            })
     }
 
     fun updateMediaUploadResults(
@@ -1127,18 +1140,21 @@ class ChatbotPresenter @Inject constructor(
     override fun sendVideoAttachment(filePath: String, startTime: String, messageId: String) {
         chatbotWebSocket.send(
             ChatbotSendableWebSocketParam.generateParamSendVideoAttachment(
-                filePath, startTime, messageId
-            ), listInterceptor
+                filePath,
+                startTime,
+                messageId
+            ),
+            listInterceptor
         )
     }
 
-    override fun cancelVideoUpload(file: String, sourceId: String,  onErrorVideoUpload: (Throwable) -> Unit) {
+    override fun cancelVideoUpload(file: String, sourceId: String, onErrorVideoUpload: (Throwable) -> Unit) {
         launchCatchError(
             block = {
                 uploaderUseCase.abortUpload(
                     filePath = file,
                     sourceId = sourceId
-            )
+                )
                 mediaUploadJobs.value.get(file)?.cancel()
             },
             onError = {
@@ -1156,12 +1172,12 @@ class ChatbotPresenter @Inject constructor(
         )
     }
 
-    private fun onSuccessVideoUploadEligibility(response : ChatbotUploadVideoEligibilityResponse) {
+    private fun onSuccessVideoUploadEligibility(response: ChatbotUploadVideoEligibilityResponse) {
         view.videoUploadEligibilityHandler(response.topbotUploadVideoEligibility.dataVideoEligibility.isEligible)
     }
 
     private fun onFailureVideoUploadEligibility(throwable: Throwable) {
-        //Add new Relic Here
+        // Add new Relic Here
     }
 
     override fun clearGetChatUseCase() {
@@ -1194,7 +1210,6 @@ class ChatbotPresenter @Inject constructor(
                     } else {
                         onSuccessGetChat(mappedResponse, chatReplies)
                     }
-
                 },
                 onError = {
                     onError.invoke(it)

@@ -311,6 +311,8 @@ class TradeInHomePageFragment : BaseViewModelFragment<TradeInHomePageFragmentVM>
                         )
                     }
                 }
+
+                findViewById<View>(R.id.tradein_promo_view).isVisible = tradeInDetail.activePromo.title.isNotEmpty()
             }
         }
     }

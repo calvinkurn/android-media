@@ -17,13 +17,12 @@
             android:layout_height="wrap_content"
             app:typographyType="heading_3"
             app:typographyWeight="bold"
-            android:layout_marginLeft="16dp"
             android:layout_marginStart="16dp"
             android:layout_marginTop="16dp"
             android:layout_marginBottom="16dp"
             android:drawablePadding="16dp"
             android:text="@string/filter"
-            android:textColor="@color/black_70"/>
+            android:textColor="@color/contact_us_dms_detail_text"/>
 
         <com.tokopedia.abstraction.base.view.recyclerview.VerticalRecyclerView
             android:id="@+id/rv_filter"
