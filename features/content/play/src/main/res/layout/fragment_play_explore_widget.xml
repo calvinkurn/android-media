@@ -36,7 +36,7 @@
     <com.tokopedia.abstraction.base.view.widget.SwipeToRefresh
         android:id="@+id/sr_explore_widget"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_marginTop="@dimen/content_common_space_16"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="@+id/rv_chips"
@@ -48,7 +48,7 @@
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/rv_widgets"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            tools:listitem="@layout/view_play_widget_card_medium_channel"/>
+            android:layout_height="match_parent"
+            tools:listitem="@layout/view_play_widget_card_medium_channel" />
     </com.tokopedia.abstraction.base.view.widget.SwipeToRefresh>
 </com.tokopedia.play_common.view.RoundedConstraintLayout>
