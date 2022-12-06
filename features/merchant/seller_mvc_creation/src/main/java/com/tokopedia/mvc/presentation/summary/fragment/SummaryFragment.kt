@@ -20,14 +20,37 @@ import com.tokopedia.mvc.databinding.SmvcVoucherDetailVoucherInfoSectionBinding
 import com.tokopedia.mvc.databinding.SmvcVoucherDetailVoucherSettingSectionBinding
 import com.tokopedia.mvc.databinding.SmvcVoucherDetailVoucherTypeSectionBinding
 import com.tokopedia.mvc.di.component.DaggerMerchantVoucherCreationComponent
+import com.tokopedia.mvc.domain.entity.VoucherConfiguration
+import com.tokopedia.mvc.domain.entity.enums.PageMode
 import com.tokopedia.mvc.presentation.summary.viewmodel.SummaryViewModel
+import com.tokopedia.mvc.util.constant.BundleConstant
 import com.tokopedia.unifycomponents.toPx
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
 class SummaryFragment: BaseDaggerFragment() {
 
+    companion object {
+        @JvmStatic
+        fun newInstance(
+            pageMode: PageMode?,
+            voucherId: String?,
+            voucherConfiguration: VoucherConfiguration?,
+        ): SummaryFragment {
+            return SummaryFragment().apply {
+                arguments = Bundle().apply {
+                    putParcelable(BundleConstant.BUNDLE_KEY_PAGE_MODE, pageMode)
+                    putParcelable(BundleConstant.BUNDLE_KEY_VOUCHER_CONFIGURATION, voucherConfiguration)
+                    putString(BundleConstant.BUNDLE_VOUCHER_ID, voucherId)
+                }
+            }
+        }
+    }
+
     private var binding by autoClearedNullable<SmvcFragmentSummaryBinding>()
+    private val pageMode by lazy { arguments?.getParcelable(BundleConstant.BUNDLE_KEY_PAGE_MODE) as? PageMode }
+    private val configuration by lazy { arguments?.getParcelable(BundleConstant.BUNDLE_KEY_VOUCHER_CONFIGURATION) as? VoucherConfiguration }
+    private val voucherId by lazy { arguments?.getString(BundleConstant.BUNDLE_VOUCHER_ID) }
 
     @Inject
     lateinit var viewModel: SummaryViewModel
@@ -53,6 +76,9 @@ class SummaryFragment: BaseDaggerFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         applyUnifyBackgroundColor()
+        pageMode
+        configuration
+        voucherId
         binding?.setupView()
         setupObservables()
         viewModel.aaa()
