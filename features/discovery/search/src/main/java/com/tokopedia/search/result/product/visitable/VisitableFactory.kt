@@ -32,9 +32,10 @@ import com.tokopedia.search.result.product.tdn.TopAdsImageViewPresenterDelegate
 import com.tokopedia.topads.sdk.domain.model.CpmData
 import com.tokopedia.topads.sdk.domain.model.CpmModel
 import com.tokopedia.topads.sdk.utils.TopAdsHeadlineHelper
+import timber.log.Timber
 import javax.inject.Inject
 
-class VisitableGenerator @Inject constructor(
+class VisitableFactory @Inject constructor(
     private val suggestionPresenter: SuggestionPresenter,
     performanceMonitoringProvider: PerformanceMonitoringProvider,
     private val topAdsHeadlineHelper : TopAdsHeadlineHelper,
@@ -43,15 +44,15 @@ class VisitableGenerator @Inject constructor(
     private val bannerDelegate: BannerPresenterDelegate,
     private val broadMatchDelegate: BroadMatchPresenterDelegate,
     private val topAdsImageViewPresenterDelegate: TopAdsImageViewPresenterDelegate,
-    paginationImpl: PaginationImpl
-): Pagination by paginationImpl {
+    private val pagination: Pagination
+) {
 
     private var isGlobalNavWidgetAvailable = false
     private var isShowHeadlineAdsBasedOnGlobalNav = false
     private val performanceMonitoring: PageLoadTimePerformanceInterface? =
         performanceMonitoringProvider.get()
 
-    fun createFirstPageVisitableList(data: VisitableGeneratorData): List<Visitable<*>> {
+    fun createFirstPageVisitableList(data: VisitableFactoryData): List<Visitable<*>> {
         val visitableList = mutableListOf<Visitable<*>>()
         val productDataView = data.productDataView
 
@@ -371,10 +372,7 @@ class VisitableGenerator @Inject constructor(
             productList,
             action = { index, topAdsImageView -> list.add(index, topAdsImageView) },
             { exception ->
-//                val paramString = UrlParamUtils.generateUrlParamString(
-//                    searchParameter as Map<String?, Any>
-//                )
-//                view.logWarning(paramString, exception)
+                Timber.w(exception)
             },
         )
     }
@@ -384,7 +382,7 @@ class VisitableGenerator @Inject constructor(
         isLocalSearch: Boolean,
         globalSearchApplink: String,
     ) {
-        if (isLastPage() && isLocalSearch) {
+        if (pagination.isLastPage() && isLocalSearch) {
             val searchInTokopediaDataView = SearchInTokopediaDataView(globalSearchApplink)
             list.add(searchInTokopediaDataView)
         }
@@ -416,7 +414,7 @@ class VisitableGenerator @Inject constructor(
         }
     }
 
-    fun createLoadMoreVisitableList(data: VisitableGeneratorData): List<Visitable<*>> {
+    fun createLoadMoreVisitableList(data: VisitableFactoryData): List<Visitable<*>> {
         val visitableList = mutableListOf<Visitable<*>>()
 
         addProductList(visitableList, data.productList)

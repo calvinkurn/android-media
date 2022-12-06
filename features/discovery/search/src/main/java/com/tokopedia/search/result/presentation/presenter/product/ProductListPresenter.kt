@@ -80,8 +80,8 @@ import com.tokopedia.search.result.product.safesearch.SafeSearchPresenter
 import com.tokopedia.search.result.product.samesessionrecommendation.SameSessionRecommendationPresenterDelegate
 import com.tokopedia.search.result.product.suggestion.SuggestionPresenter
 import com.tokopedia.search.result.product.ticker.TickerPresenter
-import com.tokopedia.search.result.product.visitable.VisitableGenerator
-import com.tokopedia.search.result.product.visitable.VisitableGeneratorData
+import com.tokopedia.search.result.product.visitable.VisitableFactory
+import com.tokopedia.search.result.product.visitable.VisitableFactoryData
 import com.tokopedia.search.result.product.wishlist.WishlistPresenter
 import com.tokopedia.search.result.product.wishlist.WishlistPresenterDelegate
 import com.tokopedia.search.utils.SchedulersProvider
@@ -147,7 +147,7 @@ class ProductListPresenter @Inject constructor(
     wishlistPresenterDelegate: WishlistPresenterDelegate,
     dynamicFilterModelProvider: DynamicFilterModelProvider,
     bottomSheetFilterPresenter: BottomSheetFilterPresenter,
-    private val visitableGenerator: VisitableGenerator,
+    private val visitableFactory: VisitableFactory,
 ): BaseDaggerPresenter<ProductListSectionContract.View>(),
     ProductListSectionContract.Presenter,
     Pagination by paginationImpl,
@@ -366,7 +366,7 @@ class ProductListPresenter @Inject constructor(
     }
 
     private fun getViewToProcessEmptyResultDuringLoadMore() {
-        val list = visitableGenerator.createEmptyResultDuringLoadMoreVisitableList(
+        val list = visitableFactory.createEmptyResultDuringLoadMoreVisitableList(
             responseCode,
             productList,
             isLocalSearch(),
@@ -404,8 +404,8 @@ class ProductListPresenter @Inject constructor(
         ).toMutableList()
         productList.addAll(loadMoreProductList)
 
-        return visitableGenerator.createLoadMoreVisitableList(
-            VisitableGeneratorData(
+        return visitableFactory.createLoadMoreVisitableList(
+            VisitableFactoryData(
                 productDataView,
                 pageTitle,
                 getIsGlobalNavWidgetAvailable(productDataView),
@@ -682,7 +682,7 @@ class ProductListPresenter @Inject constructor(
     private fun getViewToHandleViolation(
         productDataView: ProductDataView,
     ) {
-        val violationProductsVisitableList = visitableGenerator.createViolationVisitableList(
+        val violationProductsVisitableList = visitableFactory.createViolationVisitableList(
                 productDataView,
                 getGlobalNavViewModel(productDataView),
             )
@@ -695,7 +695,7 @@ class ProductListPresenter @Inject constructor(
         clearData()
         view.removeLoading()
         view.setProductList(
-            visitableGenerator.constructEmptyStateProductList(
+            visitableFactory.constructEmptyStateProductList(
                 getGlobalNavViewModel(productDataView),
                 createEmptyStateDataView(),
             )
@@ -848,8 +848,8 @@ class ProductListPresenter @Inject constructor(
             searchProductModel.isShowButtonAtc,
         ).toMutableList()
 
-        val visitableList = visitableGenerator.createFirstPageVisitableList(
-            VisitableGeneratorData(
+        val visitableList = visitableFactory.createFirstPageVisitableList(
+            VisitableFactoryData(
                 productDataView,
                 pageTitle,
                 getIsGlobalNavWidgetAvailable(productDataView),
