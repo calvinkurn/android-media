@@ -20,6 +20,7 @@ import com.google.firebase.iid.FirebaseInstanceId;
 import com.google.firebase.iid.InstanceIdResult;
 import com.tkpd.library.utils.legacy.AnalyticsLog;
 import com.tkpd.library.utils.legacy.SessionAnalytics;
+import com.tokochat.tokochat_config_common.util.TokoChatConnection;
 import com.tokopedia.abstraction.AbstractionRouter;
 import com.tokopedia.abstraction.common.utils.TKPDMapParam;
 import com.tokopedia.analytics.mapper.TkpdAppsFlyerMapper;
@@ -189,6 +190,7 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
         initCMDependencies();
         initDataStoreMigration();
         initSeamlessLoginWorker();
+        initTokoChatConnection();
         return true;
     }
 
@@ -297,6 +299,11 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
     private void forceLogout() {
         TrackApp.getInstance().getMoEngage().logoutEvent();
         userSession.logoutSession();
+        removeTokoChat();
+    }
+
+    private void removeTokoChat() {
+        TokoChatConnection.INSTANCE.disconnect();
     }
 
     @Override
@@ -598,5 +605,9 @@ public abstract class ConsumerRouterApplication extends MainApplication implemen
                 PreferenceManager.getDefaultSharedPreferences(context),
                 userSession
         );
+    }
+
+    private void initTokoChatConnection() {
+        TokoChatConnection.INSTANCE.init(getApplicationContext());
     }
 }

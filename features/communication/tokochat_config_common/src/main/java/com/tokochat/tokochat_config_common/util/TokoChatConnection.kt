@@ -24,7 +24,7 @@ object TokoChatConnection {
     var courierConnection: CourierConnection? = null
 
     @Volatile
-    private var initializationStatus: Boolean = false
+    private var hasBeenInitialized: Boolean = false
 
     fun init(context: Context) {
         // Initialize AndroidThreeTen for Conversation SDK
@@ -32,11 +32,10 @@ object TokoChatConnection {
 
         injectTokoChatConfigComponent(context)
 
-        // If user does not login, return
-        if (!UserSession(context).isLoggedIn) return
-
-        // If rollence turned off, return
-        if (!isTokoChatActive()) return
+        // If user does not login or
+        // If rollence turned off or seller app or
+        // has been initialized, return
+        if (!UserSession(context).isLoggedIn || !isTokoChatActive() || hasBeenInitialized) return
 
         // Initialize Courier Connection
         courierConnection = tokoChatConfigComponent?.getCourierConnection()
@@ -46,7 +45,7 @@ object TokoChatConnection {
         }
 
         // Set initialization status to success
-        initializationStatus = true
+        hasBeenInitialized = true
     }
 
     private fun injectTokoChatConfigComponent(context: Context) {
@@ -59,8 +58,8 @@ object TokoChatConnection {
 
     fun disconnect() {
         try {
-            // If rollence turned off, return
-            if (!isTokoChatActive() || !initializationStatus) return
+            // If rollence turned off or not initialized, return
+            if (!isTokoChatActive() || !hasBeenInitialized) return
 
             courierConnection?.handleAppEvent(AppLogout)
             GlobalScope.launch {
@@ -83,9 +82,5 @@ object TokoChatConnection {
         } catch (e: Throwable) {
             false
         }
-    }
-
-    fun hasBeenInitialized(): Boolean {
-        return initializationStatus
     }
 }

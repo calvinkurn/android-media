@@ -20,6 +20,7 @@ import androidx.lifecycle.ViewModelProviders
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
+import com.tokochat.tokochat_config_common.util.TokoChatConnection
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.activity.BaseSimpleActivity
 import com.tokopedia.abstraction.common.di.component.HasComponent
@@ -189,7 +190,7 @@ class LogoutActivity : BaseSimpleActivity(), HasComponent<LogoutComponent> {
 
     private fun clearData() {
         hideLoading()
-        removeTokoChat()
+        TokoChatConnection.disconnect()
         clearStickyLogin()
         logoutGoogleAccountIfExist()
         TrackApp.getInstance().moEngage.logoutEvent()
