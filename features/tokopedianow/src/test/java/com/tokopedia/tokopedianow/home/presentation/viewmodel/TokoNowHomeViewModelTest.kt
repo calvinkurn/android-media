@@ -4238,13 +4238,12 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
          * create data test
          */
         val dy = 10
-        val headerBackgroundHeight = 30
         val expectedResult = -dy.toFloat()
 
         /**
          * get translation y of header
          */
-        val translationY = viewModel.getTranslationYHeaderBackground(dy, headerBackgroundHeight)
+        val translationY = viewModel.getTranslationYHeaderBackground(dy)
 
         /**
          * verify the data test
@@ -4258,39 +4257,15 @@ class TokoNowHomeViewModelTest: TokoNowHomeViewModelTestFixture() {
          * create data test
          */
         val dy = -10
-        val headerBackgroundHeight = 30
         val expectedResult = 0f
 
         /**
          * get translation y of header
          */
-        viewModel.getTranslationYHeaderBackground(dy, headerBackgroundHeight)
-        viewModel.getTranslationYHeaderBackground(dy, headerBackgroundHeight)
-        viewModel.getTranslationYHeaderBackground(dy, headerBackgroundHeight)
-        val translationY = viewModel.getTranslationYHeaderBackground(dy, headerBackgroundHeight)
-
-        /**
-         * verify the data test
-         */
-        assertEquals(expectedResult, translationY)
-    }
-
-    @Test
-    fun `when getTranslationYHeaderBackground should get the opposite of header height`() {
-        /**
-         * create data test
-         */
-        val dy = 10
-        val headerBackgroundHeight = 30
-        val expectedResult = -headerBackgroundHeight.toFloat()
-
-        /**
-         * get translation y of header
-         */
-        viewModel.getTranslationYHeaderBackground(dy, headerBackgroundHeight)
-        viewModel.getTranslationYHeaderBackground(dy, headerBackgroundHeight)
-        viewModel.getTranslationYHeaderBackground(dy, headerBackgroundHeight)
-        val translationY = viewModel.getTranslationYHeaderBackground(dy, headerBackgroundHeight)
+        viewModel.getTranslationYHeaderBackground(dy)
+        viewModel.getTranslationYHeaderBackground(dy)
+        viewModel.getTranslationYHeaderBackground(dy)
+        val translationY = viewModel.getTranslationYHeaderBackground(dy)
 
         /**
          * verify the data test

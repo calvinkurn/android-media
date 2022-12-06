@@ -1104,15 +1104,12 @@ class TokoNowHomeViewModel @Inject constructor(
         }) { /* nothing to do */ }
     }
 
-    fun getTranslationYHeaderBackground(dy: Int, headerBackgroundHeight: Int): Float {
+    fun getTranslationYHeaderBackground(dy: Int): Float {
         headerYCoordinate += dy
         return if (-headerYCoordinate > DEFAULT_HEADER_Y_COORDINATE) {
             headerYCoordinate = DEFAULT_HEADER_Y_COORDINATE
             headerYCoordinate
-        } else if (-headerYCoordinate <= -headerBackgroundHeight) {
-            headerYCoordinate = headerBackgroundHeight.toFloat()
-            -headerYCoordinate
-        } else  {
+        }  else  {
             -headerYCoordinate
         }
     }

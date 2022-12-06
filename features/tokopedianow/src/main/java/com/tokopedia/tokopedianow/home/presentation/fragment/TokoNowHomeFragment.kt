@@ -890,10 +890,7 @@ class TokoNowHomeFragment: Fragment(),
     }
 
     private fun evaluateHeaderBackgroundOnScroll(recyclerView: RecyclerView, dy: Int) {
-        ivHeaderBackground?.translationY =  viewModelTokoNow.getTranslationYHeaderBackground(
-            dy = dy,
-            headerBackgroundHeight = ivHeaderBackground?.height.orZero()
-        )
+        ivHeaderBackground?.translationY =  viewModelTokoNow.getTranslationYHeaderBackground(dy)
         if (recyclerView.canScrollVertically(WHILE_SCROLLING_VERTICALLY)) {
             navToolbar?.showShadow(lineShadow = true)
         } else {

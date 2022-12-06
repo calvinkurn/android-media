@@ -17,8 +17,6 @@ import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.data.getMiniCartItemProduct
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.network.exception.ResponseErrorException
-import com.tokopedia.recommendation_widget_common.data.RecommendationEntity
-import com.tokopedia.recommendation_widget_common.extension.mappingToRecommendationModel
 import com.tokopedia.tokopedianow.searchcategory.AddToCartNonVariantTestHelper.Companion.AddToCartTestObject.addToCartQty
 import com.tokopedia.tokopedianow.searchcategory.AddToCartNonVariantTestHelper.Companion.AddToCartTestObject.addToCartSuccessModel
 import com.tokopedia.tokopedianow.searchcategory.AddToCartNonVariantTestHelper.Companion.AddToCartTestObject.cartId
@@ -115,14 +113,24 @@ class AddToCartNonVariantTestHelper(
     }
 
     fun `Then assert cart message event`(
-            expectedSuccessMessage: String = "",
-            expectedErrorMessage: String = "",
+        expectedSuccessMessage: String = ""
     ) {
         val successMessageLiveData = baseViewModel.successAddToCartMessageLiveData.value ?: ""
         assertThat(successMessageLiveData, shouldBe(expectedSuccessMessage))
+    }
 
+    fun `Then assert cart failed message event`(
+        expectedErrorMessage: String = ""
+    ) {
         val errorMessageLiveData = baseViewModel.errorATCMessageLiveData.value ?: ""
         assertThat(errorMessageLiveData, shouldBe(expectedErrorMessage))
+    }
+
+    fun `Then assert remove from cart message event`(
+        expectedSuccessMessage: String = ""
+    ) {
+        val successMessageLiveData = baseViewModel.successRemoveFromCartMessageLiveData.value ?: ""
+        assertThat(successMessageLiveData, shouldBe(expectedSuccessMessage))
     }
 
     fun `Then assert update toolbar notification true`() {
@@ -176,7 +184,7 @@ class AddToCartNonVariantTestHelper(
         val productId = productItemDataViewToATC.productCardModel.productId
         val shopId = productItemDataViewToATC.shop.id
         `Then assert add to cart request params`(productId, shopId, addToCartQty)
-        `Then assert cart message event`(expectedErrorMessage = responseErrorException.message!!)
+        `Then assert cart failed message event`(responseErrorException.message!!)
         `Then assert product item quantity`(productItemDataViewToATC, 0)
         `Then verify mini cart is refreshed`(0)
         `Then assert route to login page event is null`()
@@ -299,7 +307,8 @@ class AddToCartNonVariantTestHelper(
             expectedRefreshMiniCartCount: Int = 2,
     ) {
         `Then assert update cart params`(updateQuantityParam, cartIdParam)
-        `Then assert cart message event`("", expectedCartErrorMessage)
+        `Then assert cart failed message event`(expectedCartErrorMessage)
+        `Then assert cart message event`("")
         `Then assert product item quantity`(productInVisitable, expectedProductQuantity)
         `Then assert add to cart use case is not called`()
         `Then verify mini cart is refreshed`(expectedRefreshMiniCartCount)
@@ -490,7 +499,8 @@ class AddToCartNonVariantTestHelper(
             expectedRefreshMiniCartCount: Int = 2,
     ) {
         `Then assert delete cart params`(cartIdParam)
-        `Then assert cart message event`(expectedSuccessDeleteCartMessage, expectedFailedDeleteCartMessage)
+        `Then assert remove from cart message event`(expectedSuccessDeleteCartMessage)
+        `Then assert cart failed message event`(expectedFailedDeleteCartMessage)
         `Then assert product item quantity`(productInVisitable, expectedQuantity)
         `Then assert add to cart use case is not called`()
         `Then assert update cart use case is not called`()
@@ -589,21 +599,9 @@ class AddToCartNonVariantTestHelper(
                     data = DeleteCartData(success = 1, message = listOf(deleteCartMessage))
             )
         }
-
-        object RecommendationATCTestObject {
-            private val recommendationEntity get() =
-                    "recom/recom-carousel.json".jsonToObject<RecommendationEntity>()
-
-            val recommendationWidgetList get() = recommendationEntity
-                    .productRecommendationWidget
-                    .data
-                    .mappingToRecommendationModel()
-        }
     }
 
     interface Callback {
         fun `Given first page API will be successful`()
-
-        fun `Given first page API can show recommendation`()
     }
 }

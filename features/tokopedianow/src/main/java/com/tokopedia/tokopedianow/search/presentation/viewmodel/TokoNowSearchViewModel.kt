@@ -6,19 +6,17 @@ import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
 import com.tokopedia.discovery.common.constants.SearchApiConst
 import com.tokopedia.filter.common.data.DynamicFilterModel
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.tokopedianow.common.constant.ServiceType.NOW_15M
 import com.tokopedia.tokopedianow.common.domain.usecase.SetUserPreferenceUseCase
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardCarouselItemUiModel
+import com.tokopedia.tokopedianow.search.domain.mapper.CategoryJumperMapper.createCategoryJumperDataView
 import com.tokopedia.tokopedianow.search.domain.mapper.SearchBroadMatchMapper.createBroadMatchDataView
-import com.tokopedia.tokopedianow.search.domain.model.SearchCategoryJumperModel.JumperData
 import com.tokopedia.tokopedianow.search.domain.model.SearchCategoryJumperModel.SearchCategoryJumperData
 import com.tokopedia.tokopedianow.search.domain.model.SearchModel
 import com.tokopedia.tokopedianow.search.presentation.model.BroadMatchDataView
 import com.tokopedia.tokopedianow.search.presentation.model.CTATokopediaNowHomeDataView
-import com.tokopedia.tokopedianow.search.presentation.model.CategoryJumperDataView
 import com.tokopedia.tokopedianow.search.presentation.model.SuggestionDataView
 import com.tokopedia.tokopedianow.search.presentation.typefactory.SearchTypeFactory
 import com.tokopedia.tokopedianow.search.utils.SEARCH_FIRST_PAGE_USE_CASE
@@ -72,12 +70,10 @@ class TokoNowSearchViewModel @Inject constructor (
         userSession,
 ) {
 
-    private val addToCartBroadMatchTrackingMutableLiveData =
-        SingleLiveEvent<Triple<Int, String, TokoNowProductCardCarouselItemUiModel>>()
-    val addToCartBroadMatchTrackingLiveData: LiveData<Triple<Int, String, TokoNowProductCardCarouselItemUiModel>> =
-        addToCartBroadMatchTrackingMutableLiveData
+    private val addToCartBroadMatchTrackingMutableLiveData = SingleLiveEvent<Triple<Int, String, TokoNowProductCardCarouselItemUiModel>>()
+    val addToCartBroadMatchTrackingLiveData: LiveData<Triple<Int, String, TokoNowProductCardCarouselItemUiModel>> = addToCartBroadMatchTrackingMutableLiveData
 
-    val query = queryParamMap[SearchApiConst.Q] ?: ""
+    val query = queryParamMap[SearchApiConst.Q].orEmpty()
 
     private var responseCode = ""
     private var suggestionModel: AceSearchProductModel.Suggestion? = null
@@ -95,6 +91,68 @@ class TokoNowSearchViewModel @Inject constructor (
                 createRequestParams()
         )
     }
+
+    override fun createTitleDataView(headerDataView: HeaderDataView): TitleDataView {
+        val titleType = if (query.isEmpty()) AllProductTitle else SearchTitle
+        val hasSeeAllCategoryButton = query.isEmpty()
+
+        return TitleDataView(
+            titleType = titleType,
+            hasSeeAllCategoryButton = hasSeeAllCategoryButton,
+            chooseAddressData = chooseAddressData
+        )
+    }
+
+    override fun postProcessHeaderList(headerList: MutableList<Visitable<*>>) {
+        if (!shouldShowSuggestion()) return
+
+        processSuggestionModel { suggestionDataView ->
+            val suggestionDataViewIndex = determineSuggestionDataViewIndex(headerList)
+
+            headerList.add(suggestionDataViewIndex, suggestionDataView)
+        }
+    }
+
+    override fun createVisitableListWithEmptyProduct() {
+        if (isShowBroadMatch())
+            createVisitableListWithEmptyProductBroadmatch()
+        else
+            super.createVisitableListWithEmptyProduct()
+    }
+
+    override fun getKeywordForGeneralSearchTracking() = query
+
+    override fun executeLoadMore() {
+        getSearchLoadMorePageUseCase.cancelJobs()
+        getSearchLoadMorePageUseCase.execute(
+            ::onGetSearchLoadMorePageSuccess,
+            ::onGetSearchLoadMorePageError,
+            createRequestParams(),
+        )
+    }
+
+    override fun createFooterVisitableList(): List<Visitable<SearchTypeFactory>> {
+        val broadMatchVisitableList = createBroadMatchVisitableList()
+        println(chooseAddressData)
+        return broadMatchVisitableList + if (serviceType == NOW_15M) {
+            listOf(
+                createCategoryJumperDataView(
+                    searchCategoryJumper = searchCategoryJumper,
+                    chooseAddressData = chooseAddressData
+                )
+            )
+        } else {
+            listOf(
+                createCategoryJumperDataView(
+                    searchCategoryJumper = searchCategoryJumper,
+                    chooseAddressData = chooseAddressData
+                ),
+                CTATokopediaNowHomeDataView(),
+            )
+        }
+    }
+
+    override fun getRecomKeywords() = listOf(query)
 
     private fun onGetSearchFirstPageSuccess(searchModel: SearchModel) {
         val searchProduct = searchModel.searchProduct
@@ -118,28 +176,6 @@ class TokoNowSearchViewModel @Inject constructor (
         )
 
         onGetFirstPageSuccess(headerDataView, contentDataView, searchProduct)
-    }
-
-    override fun createTitleDataView(headerDataView: HeaderDataView): TitleDataView {
-        val titleType = if (query.isEmpty()) AllProductTitle else SearchTitle
-        val hasSeeAllCategoryButton = query.isEmpty()
-
-        return TitleDataView(
-                titleType = titleType,
-                hasSeeAllCategoryButton = hasSeeAllCategoryButton,
-                serviceType = chooseAddressData?.service_type.orEmpty(),
-                is15mAvailable = chooseAddressData?.warehouses?.find { it.service_type == NOW_15M }?.warehouse_id.orZero() != 0L
-        )
-    }
-
-    override fun postProcessHeaderList(headerList: MutableList<Visitable<*>>) {
-        if (!shouldShowSuggestion()) return
-
-        processSuggestionModel { suggestionDataView ->
-            val suggestionDataViewIndex = determineSuggestionDataViewIndex(headerList)
-
-            headerList.add(suggestionDataViewIndex, suggestionDataView)
-        }
     }
 
     private fun shouldShowSuggestion() = showSuggestionResponseCodeList.contains(responseCode)
@@ -168,21 +204,6 @@ class TokoNowSearchViewModel @Inject constructor (
         return quickFilterIndex + 1
     }
 
-    override fun createFooterVisitableList(): List<Visitable<SearchTypeFactory>> {
-        val broadMatchVisitableList = createBroadMatchVisitableList()
-
-        return broadMatchVisitableList + if (chooseAddressData?.service_type == NOW_15M) {
-            listOf(
-                createCategoryJumperDataView(),
-            )
-        } else {
-            listOf(
-                createCategoryJumperDataView(),
-                CTATokopediaNowHomeDataView(),
-            )
-        }
-    }
-
     private fun createBroadMatchVisitableList(): List<Visitable<SearchTypeFactory>> {
         val broadMatchVisitableList = mutableListOf<Visitable<SearchTypeFactory>>()
 
@@ -203,7 +224,9 @@ class TokoNowSearchViewModel @Inject constructor (
         showBroadMatchResponseCodeList.contains(responseCode)
 
     private fun processBroadMatch(action: (BroadMatchDataView) -> Unit) {
-        related?.otherRelatedList?.forEach { otherRelated ->
+        val relatedModel = related ?: return
+
+        relatedModel.otherRelatedList.forEach { otherRelated ->
             val broadMatchDataView = createBroadMatchDataView(
                 otherRelated = otherRelated,
                 cartService = cartService
@@ -213,47 +236,9 @@ class TokoNowSearchViewModel @Inject constructor (
         related = null
     }
 
-    private fun createCategoryJumperDataView(): CategoryJumperDataView {
-        val categoryJumperItemList =
-                searchCategoryJumper
-                        ?.getJumperItemList()
-                        ?.map(this::mapToCategoryJumperItem)
-                        ?: listOf()
-
-        return CategoryJumperDataView(
-                title = searchCategoryJumper?.getTitle() ?: "",
-                itemList = categoryJumperItemList,
-                serviceType = chooseAddressData?.service_type.orEmpty()
-        )
-    }
-
-    private fun mapToCategoryJumperItem(jumperData: JumperData) =
-            CategoryJumperDataView.Item(
-                    title = jumperData.title,
-                    applink = jumperData.applink,
-            )
-
-    override fun createVisitableListWithEmptyProduct() {
-        if (isShowBroadMatch())
-            createVisitableListWithEmptyProductBroadmatch()
-        else
-            super.createVisitableListWithEmptyProduct()
-    }
-
     private fun createVisitableListWithEmptyProductBroadmatch() {
         visitableList.add(chooseAddressDataView)
         visitableList.addAll(createBroadMatchVisitableList())
-    }
-
-    override fun getKeywordForGeneralSearchTracking() = query
-
-    override fun executeLoadMore() {
-        getSearchLoadMorePageUseCase.cancelJobs()
-        getSearchLoadMorePageUseCase.execute(
-                ::onGetSearchLoadMorePageSuccess,
-                ::onGetSearchLoadMorePageError,
-                createRequestParams(),
-        )
     }
 
     private fun onGetSearchLoadMorePageSuccess(searchModel: SearchModel) {
@@ -261,8 +246,14 @@ class TokoNowSearchViewModel @Inject constructor (
         onGetLoadMorePageSuccess(contentDataView)
     }
 
-    private fun onGetSearchLoadMorePageError(throwable: Throwable) {
+    private fun onGetSearchLoadMorePageError(throwable: Throwable) { /* nothing to do */ }
 
+    private fun sendAddToCartBroadMatchItemTracking(
+        quantity: Int,
+        addToCartDataModel: AddToCartDataModel,
+        broadMatchItem: TokoNowProductCardCarouselItemUiModel,
+    ) {
+        addToCartBroadMatchTrackingMutableLiveData.value = Triple(quantity, addToCartDataModel.data.cartId, broadMatchItem)
     }
 
     fun onViewATCBroadMatchItem(
@@ -299,19 +290,8 @@ class TokoNowSearchViewModel @Inject constructor (
         )
     }
 
-    private fun sendAddToCartBroadMatchItemTracking(
-        quantity: Int,
-        addToCartDataModel: AddToCartDataModel,
-        broadMatchItem: TokoNowProductCardCarouselItemUiModel,
-    ) {
-        addToCartBroadMatchTrackingMutableLiveData.value =
-            Triple(quantity, addToCartDataModel.data.cartId, broadMatchItem)
-    }
-
     companion object {
         private val showBroadMatchResponseCodeList = listOf("4", "5")
         private val showSuggestionResponseCodeList = listOf("3", "6", "7")
     }
-
-    override fun getRecomKeywords() = listOf(query)
 }

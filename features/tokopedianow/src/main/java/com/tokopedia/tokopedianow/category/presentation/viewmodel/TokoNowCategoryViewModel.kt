@@ -8,7 +8,6 @@ import com.tokopedia.filter.common.data.DynamicFilterModel
 import com.tokopedia.filter.newdynamicfilter.helper.FilterHelper
 import com.tokopedia.filter.newdynamicfilter.helper.OptionHelper
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
-import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.localizationchooseaddress.domain.usecase.GetChosenAddressWarehouseLocUseCase
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
@@ -31,7 +30,6 @@ import com.tokopedia.tokopedianow.category.utils.TOKONOW_CATEGORY_L2
 import com.tokopedia.tokopedianow.category.utils.TOKONOW_CATEGORY_QUERY_PARAM_MAP
 import com.tokopedia.tokopedianow.category.utils.TOKONOW_CATEGORY_SERVICE_TYPE
 import com.tokopedia.tokopedianow.categorylist.domain.usecase.GetCategoryListUseCase
-import com.tokopedia.tokopedianow.common.constant.ServiceType
 import com.tokopedia.tokopedianow.common.constant.TokoNowLayoutState
 import com.tokopedia.tokopedianow.common.domain.usecase.SetUserPreferenceUseCase
 import com.tokopedia.tokopedianow.common.model.TokoNowCategoryGridUiModel
@@ -172,8 +170,7 @@ class TokoNowCategoryViewModel @Inject constructor (
         return TitleDataView(
             titleType = CategoryTitle(headerDataView.title),
             hasSeeAllCategoryButton = true,
-            serviceType = chooseAddressData?.service_type.orEmpty(),
-            is15mAvailable = chooseAddressData?.warehouses?.find { it.service_type == ServiceType.NOW_15M }?.warehouse_id.orZero() != 0L
+            chooseAddressData = chooseAddressData
         )
     }
 

@@ -120,7 +120,6 @@ class UpdateCartTestHelper(
         val miniCartItemsVariant = miniCartItems.values.mapNotNull {
             if (it is MiniCartItem.MiniCartItemParentProduct) it else null
         }
-//        val miniCartItemsVariantGroup = miniCartItemsVariant.groupBy { it.productParentId }
 
         miniCartItemsVariant.forEach { miniCartItemGroup ->
             val totalQuantity = miniCartItemGroup.totalQuantity
@@ -155,15 +154,13 @@ class UpdateCartTestHelper(
             if (visitable is ProductItemDataView) {
                 miniCartItems.values.forEach { miniCartItem ->
                     if (miniCartItem is MiniCartItem.MiniCartItemProduct) {
-                        val isNonVariant = miniCartItem.productParentId == "0"
-                                && visitable.productCardModel.productId == miniCartItem.productId
-
-                        val isVariant = miniCartItem.productParentId != "0"
-                                && miniCartItem.productParentId == visitable.parentId
+                        val isNonVariant = miniCartItem.productParentId == "0" || miniCartItem.productParentId == "" && visitable.productCardModel.productId == miniCartItem.productId
+                        val isVariant = !(miniCartItem.productParentId == "0" || miniCartItem.productParentId == "") && miniCartItem.productParentId == visitable.parentId
 
                         if (isNonVariant)
                             expectedUpdatedIndices.add(index)
-                        else if (isVariant)
+
+                        if (!isVariant)
                             expectedUpdatedIndices.add(index)
                     }
                 }
