@@ -8,6 +8,8 @@ import android.widget.AutoCompleteTextView
 import androidx.lifecycle.ViewModelProvider
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.datepicker.LocaleUtils
+import com.tokopedia.kotlin.extensions.view.hide
+import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.kotlin.extensions.view.toBlankOrString
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
 import com.tokopedia.mvc.R
@@ -50,6 +52,7 @@ class VoucherEditPeriodBottomSheet : BottomSheetUnify() {
     private var startMinute: Int = 0
     private var endHour: Int = 0
     private var endMinute: Int = 0
+    private var tickerVisibility: Boolean = false
     private var onSuccessListener: () -> Unit = {}
     private var onFailListener: (String) -> Unit = {}
 
@@ -140,7 +143,7 @@ class VoucherEditPeriodBottomSheet : BottomSheetUnify() {
         }
 
         viewModel.updateVoucherPeriodStateLiveData.observe(viewLifecycleOwner) { result ->
-            when(result) {
+            when (result) {
                 is Success -> {
                     onSuccessListener()
                 }
@@ -208,6 +211,12 @@ class VoucherEditPeriodBottomSheet : BottomSheetUnify() {
                         disableText(this)
                     }
                 }
+
+                if (tickerVisibility) {
+                    informationTicker.show()
+                } else {
+                    informationTicker.hide()
+                }
             }
         }
 
@@ -234,11 +243,12 @@ class VoucherEditPeriodBottomSheet : BottomSheetUnify() {
 
     companion object {
         @JvmStatic
-        fun newInstance(voucher: Voucher, onSuccessListener: ()-> Unit = {}, onFailListener: (String) -> Unit = {}): VoucherEditPeriodBottomSheet {
+        fun newInstance(voucher: Voucher, onSuccessListener: () -> Unit = {}, onFailListener: (String) -> Unit = {}, tickerVisibility: Boolean = false): VoucherEditPeriodBottomSheet {
             return VoucherEditPeriodBottomSheet().apply {
                 this.voucher = voucher
                 this.onSuccessListener = onSuccessListener
                 this.onFailListener = onFailListener
+                this.tickerVisibility = tickerVisibility
             }
         }
 
