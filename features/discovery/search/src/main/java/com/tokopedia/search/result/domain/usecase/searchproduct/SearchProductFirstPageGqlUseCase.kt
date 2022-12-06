@@ -312,6 +312,7 @@ class SearchProductFirstPageGqlUseCase(
                         options {
                             title
                             subtitle
+                            icon_subtitle
                             url
                             applink
                             banner_image_url
@@ -367,6 +368,13 @@ class SearchProductFirstPageGqlUseCase(
                                 bundle_id
                                 parent_id
                                 min_order
+                                stockbar {
+                                    stock
+                                    original_stock
+                                    percentage_value
+                                    value
+                                    color
+                                }
                             }
                             card_button {
                                 title

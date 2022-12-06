@@ -220,6 +220,7 @@ import com.tokopedia.utils.view.DarkModeUtil.isDarkMode
 import com.tokopedia.utils.view.binding.viewBinding
 import java.io.File
 import java.net.URLEncoder
+import java.util.*
 import javax.inject.Inject
 
 class NewShopPageFragment :
@@ -1053,7 +1054,7 @@ class NewShopPageFragment :
                     }
                     shopRef = getQueryParameter(QUERY_SHOP_REF) ?: ""
                     shopAttribution = getQueryParameter(QUERY_SHOP_ATTRIBUTION) ?: ""
-                    setAffiliateData(this)
+                    checkAffiliateAppLink(this)
                     getMarketingServiceQueryParamData(this)
                 }
                 handlePlayBroadcastExtra(this@run)
@@ -1088,17 +1089,26 @@ class NewShopPageFragment :
         shopLandingPageInitAffiliateCookie()
     }
 
+    private fun checkAffiliateAppLink(uri: Uri) {
+        val isAppLinkContainAffiliateUuid = uri.queryParameterNames.contains(QUERY_AFFILIATE_UUID)
+        if(isAppLinkContainAffiliateUuid) {
+            setAffiliateData(uri)
+        }
+    }
+
     private fun getMarketingServiceQueryParamData(data: Uri) {
         campaignId = data.getQueryParameter(QUERY_CAMPAIGN_ID).orEmpty()
         variantId = data.getQueryParameter(QUERY_VARIANT_ID).orEmpty()
     }
 
     private fun setAffiliateData(uri: Uri) {
+        val affiliateTrackerId = UUID.randomUUID().toString()
         val affiliateChannel = uri.getQueryParameter(QUERY_AFFILIATE_CHANNEL).orEmpty()
         shopViewModel?.saveAffiliateChannel(affiliateChannel)
         affiliateData = ShopAffiliateData(
             uri.getQueryParameter(QUERY_AFFILIATE_UUID).orEmpty(),
-            affiliateChannel
+            affiliateChannel,
+            affiliateTrackerId
         )
     }
 
@@ -1676,7 +1686,7 @@ class NewShopPageFragment :
         val selectedTabName = getSelectedTabName()
         if (selectedTabName.isNotEmpty()) {
             if (!isMyShop) {
-                shopPageTracking?.sendScreenShopPage(shopId, isLogin, selectedTabName, campaignId, variantId)
+                shopPageTracking?.sendScreenShopPage(shopId, isLogin, selectedTabName, campaignId, variantId, affiliateData)
                 shopPageTracking?.sendBranchScreenShop(userId)
             }
         }
@@ -3139,14 +3149,14 @@ class NewShopPageFragment :
                     setComposition(result)
                     playAnimation()
                     this.addAnimatorListener(object : Animator.AnimatorListener {
-                        override fun onAnimationStart(p0: Animator?) {}
+                        override fun onAnimationStart(p0: Animator) {}
 
-                        override fun onAnimationEnd(p0: Animator?) {
+                        override fun onAnimationEnd(p0: Animator) {
                             hide()
                         }
 
-                        override fun onAnimationCancel(p0: Animator?) {}
-                        override fun onAnimationRepeat(p0: Animator?) {}
+                        override fun onAnimationCancel(p0: Animator) {}
+                        override fun onAnimationRepeat(p0: Animator) {}
                     })
                 }
             }
@@ -3170,7 +3180,10 @@ class NewShopPageFragment :
     }
 
     fun createPdpAffiliateLink(basePdpAppLink: String): String {
-        return affiliateCookieHelper.createAffiliateLink(basePdpAppLink)
+        return affiliateCookieHelper.createAffiliateLink(
+            basePdpAppLink,
+            affiliateData?.affiliateTrackerId.orEmpty()
+        )
     }
 
     fun createAffiliateCookieAtcProduct(

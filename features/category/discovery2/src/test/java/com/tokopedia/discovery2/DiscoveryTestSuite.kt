@@ -1,6 +1,8 @@
 package com.tokopedia.discovery2
 
 import com.tokopedia.discovery2.discoverymapper.DiscoveryDataMapperTest
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.ContentCard.ContentCardItemModelTest
+import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.ContentCard.ContentCardModelTest
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.DefaultComponentViewModelTest
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.anchortabs.AnchorTabsItemViewModelTest
 import com.tokopedia.discovery2.viewcontrollers.adapter.discoverycomponents.anchortabs.AnchorTabsViewModelTest
@@ -149,6 +151,8 @@ import org.junit.runners.Suite
     DefaultComponentViewModelTest::class,
     ProductCardSprintSaleCarouselViewModelTest::class,
     ThematicHeaderViewModelTest::class,
+    ContentCardModelTest::class,
+    ContentCardItemModelTest::class,
 )
 
 

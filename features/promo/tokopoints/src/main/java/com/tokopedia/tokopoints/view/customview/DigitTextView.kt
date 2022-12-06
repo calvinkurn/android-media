@@ -39,8 +39,8 @@ class DigitTextView : FrameLayout {
         nextTextView?.animate()?.translationY(height.toFloat())
             ?.setDuration(ANIMATION_DURATION.toLong())
             ?.setListener(object : Animator.AnimatorListener {
-                override fun onAnimationStart(animation: Animator?) {}
-                override fun onAnimationEnd(animation: Animator?) {
+                override fun onAnimationStart(animation: Animator) {}
+                override fun onAnimationEnd(animation: Animator) {
                     currentTextView?.text = desiredValue
                     currentTextView?.translationY = 0f
                     if (repeatTwice != 2) {
@@ -49,8 +49,8 @@ class DigitTextView : FrameLayout {
                     }
                 }
 
-                override fun onAnimationCancel(animation: Animator?) {}
-                override fun onAnimationRepeat(animation: Animator?) {}
+                override fun onAnimationCancel(animation: Animator) {}
+                override fun onAnimationRepeat(animation: Animator) {}
             })?.start()
     }
     companion object {
