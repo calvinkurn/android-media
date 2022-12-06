@@ -45,11 +45,6 @@ object MediaUploaderNetwork {
                     ))
                 }
             }
-            .addInterceptor(Interceptor { chain ->
-                // testing only, need to exclude Authorization due to end point validation
-                val request = chain.request().newBuilder().removeHeader("Authorization").build()
-                chain.proceed(request)
-            })
     }
 
     fun retrofitBuilder(): Retrofit.Builder {
