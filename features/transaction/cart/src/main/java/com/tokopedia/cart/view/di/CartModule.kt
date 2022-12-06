@@ -9,10 +9,12 @@ import com.tokopedia.cart.domain.usecase.FollowShopUseCase
 import com.tokopedia.graphql.coroutines.data.Interactor
 import com.tokopedia.graphql.coroutines.domain.repository.GraphqlRepository
 import com.tokopedia.purchase_platform.common.analytics.CheckoutAnalyticsCart
+import com.tokopedia.purchase_platform.common.analytics.EPharmacyAnalytics
 import com.tokopedia.purchase_platform.common.di.PurchasePlatformBaseModule
 import com.tokopedia.purchase_platform.common.schedulers.DefaultSchedulers
 import com.tokopedia.purchase_platform.common.schedulers.ExecutorSchedulers
 import com.tokopedia.recommendation_widget_common.di.RecommendationModule
+import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.wishlistcommon.domain.AddToWishlistV2UseCase
 import com.tokopedia.wishlistcommon.domain.DeleteWishlistV2UseCase
 import com.tokopedia.wishlistcommon.domain.GetWishlistV2UseCase
@@ -99,4 +101,9 @@ class CartModule {
         return GraphqlHelper.loadRawString(context.resources, com.tokopedia.shop.common.R.raw.gql_mutation_favorite_shop)
     }
 
+    @Provides
+    @CartScope
+    fun provideEPharmacyAnalytics(userSession: UserSessionInterface): EPharmacyAnalytics {
+        return EPharmacyAnalytics(userSession.userId)
+    }
 }

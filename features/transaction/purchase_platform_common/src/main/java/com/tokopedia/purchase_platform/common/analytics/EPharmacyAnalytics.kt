@@ -24,11 +24,13 @@ class EPharmacyAnalytics constructor(val userId: String) : TransactionAnalytics(
     interface Category {
         companion object {
             const val EPharmacyCategory = "courier selection"
+            const val CART = "cart"
         }
     }
 
     interface Actions {
         companion object {
+            const val CLICK_INFO_CHAT_DOKTER = "click info chat dokter"
             const val CLICK_UPLOAD_PRESCRIPTION_WIDGET = "click upload prescription widget"
             const val OPEN_SCREEN_EPHARMACY_CHECKOUT_PAGE_ABANDON = "epharmacy checkout page abandon"
             const val CLICK_KELUAR_IN_ABANDON_PAGE = "click keluar in abandon page"
@@ -38,11 +40,25 @@ class EPharmacyAnalytics constructor(val userId: String) : TransactionAnalytics(
 
     interface TrackerId {
         companion object {
+            const val CLICK_INFO_CHAT_DOKTER = "37939"
             const val CLICK_UPLOAD_PRESCRIPTION_TRACKER_ID = "33117"
             const val OPEN_SCREEN_EPHARMACY_CHECKOUT_PAGE_ABANDON = "38029"
             const val CLICK_KELUAR_IN_ABANDON_PAGE = "38030"
             const val CLICK_LANJUT_BAYAR_IN_ABANDON_PAGE = "38031"
         }
+    }
+
+    fun clickInfoChatDokter(enablerName: String, shopId: String, cartId: List<String>) {
+        val gtmData = getGtmData(
+            Events.CLICK_PP,
+            Category.CART,
+            Actions.CLICK_INFO_CHAT_DOKTER,
+            "$enablerName - $shopId - ${cartId.joinToString(",")}"
+        )
+        gtmData[KEY_BUSINESS_UNIT] = VALUE_BUSINESS_UNIT
+        gtmData[KEY_CURRENT_SITE] = VALUE_CURRENT_SITE
+        gtmData[KEY_TRACKER_ID] = TrackerId.CLICK_INFO_CHAT_DOKTER
+        sendGeneralEvent(gtmData)
     }
 
     fun sendPrescriptionWidgetClick(cartId: String) {
