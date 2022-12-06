@@ -211,7 +211,7 @@ class ShopHomeNplCampaignViewHolder(
                     if (DeviceScreenInfo.isTablet(context)) {
                         setImageUrlTileMode(bannerUrl)
                     } else {
-                        setImageUrl(bannerUrl)
+                        setImageUrl(bannerUrl, isOverrideScaleType = false)
                     }
             } catch (e: Exception) { }
         }
