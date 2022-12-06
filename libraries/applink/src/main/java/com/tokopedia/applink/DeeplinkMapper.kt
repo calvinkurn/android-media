@@ -678,8 +678,7 @@ object DeeplinkMapper {
                 DeeplinkMapperMerchant.isSellerMvcListAppLink(deeplink) -> DeeplinkMapperMerchant.getRegisteredNavigationForSellerMvcList()
                 DeeplinkMapperMerchant.isSellerMvcListActiveAppLink(deeplink) -> DeeplinkMapperMerchant.getRegisteredNavigationForSellerMvcListActive()
                 DeeplinkMapperMerchant.isSellerMvcListHistoryAppLink(deeplink) -> DeeplinkMapperMerchant.getRegisteredNavigationForSellerMvcListHistory()
-                DeeplinkMapperMerchant.isSellerMvcShopCreateAppLink(deeplink) -> DeeplinkMapperMerchant.getRegisteredNavigationForSellerMvcShopCreate()
-                DeeplinkMapperMerchant.isSellerMvcProductCreateAppLink(deeplink) -> DeeplinkMapperMerchant.getRegisteredNavigationForSellerMvcProductCreate(deeplink)
+                DeeplinkMapperMerchant.isSellerMvcCreate(deeplink) -> DeeplinkMapperMerchant.getRegisteredNavigationForSellerMvcCreate(deeplink)
                 DeeplinkMapperMerchant.isSellerMvcDetailAppLink(deeplink) -> DeeplinkMapperMerchant.getRegisteredNavigationForSellerMvcDetail(deeplink)
                 //For Tokomember applinks with params
                 trimmedDeeplink.startsWith(ApplinkConst.Tokomember.MAIN_PATH) -> getDynamicDeeplinkForTokomember(trimmedDeeplink)
