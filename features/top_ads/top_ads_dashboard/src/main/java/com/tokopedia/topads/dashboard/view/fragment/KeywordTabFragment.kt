@@ -71,7 +71,7 @@ class KeywordTabFragment : BaseDaggerFragment() {
     private var deleteCancel = false
     private var singleAction = false
     private var currentPageNum = 1
-    private val groupId by lazy(LazyThreadSafetyMode.NONE) { arguments?.getString(GROUP_ID) ?: "" }
+    private val groupId by lazy(LazyThreadSafetyMode.NONE) { arguments?.getString(GROUP_ID) ?: "0" }
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
@@ -264,7 +264,7 @@ class KeywordTabFragment : BaseDaggerFragment() {
     private fun fetchData() {
         val resources = context?.resources ?: return
         viewModel.getCountProductKeyword(resources,
-            listOf(arguments?.getString(GROUP_ID) ?: ""), ::successCount)
+            listOf(arguments?.getString(GROUP_ID) ?: "0"), ::successCount)
         currentPageNum = 1
         loader?.visibility = View.VISIBLE
         adapter.items.clear()

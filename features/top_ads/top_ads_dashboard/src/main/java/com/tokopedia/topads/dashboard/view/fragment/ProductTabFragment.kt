@@ -186,7 +186,7 @@ class ProductTabFragment : BaseDaggerFragment() {
         val startDate = getDateCallBack?.getStartDate() ?: ""
         val endDate = getDateCallBack?.getEndDate() ?: ""
         viewModel.getGroupProductData(page,
-            arguments?.getString(TopAdsDashboardConstant.GROUP_ID) ?: "",
+            arguments?.getString(TopAdsDashboardConstant.GROUP_ID) ?: "0",
             searchBar?.searchBarTextField?.text.toString(),
             groupFilterSheet.getSelectedSortId(), groupFilterSheet.getSelectedStatusId(),
             startDate, endDate, groupFilterSheet.getSelectedAdPlacementType(),
@@ -368,7 +368,7 @@ class ProductTabFragment : BaseDaggerFragment() {
         val startDate = getDateCallBack?.getStartDate() ?: ""
         val endDate = getDateCallBack?.getEndDate() ?: ""
         viewModel.getGroupProductData(1,
-            arguments?.getString(TopAdsDashboardConstant.GROUP_ID) ?: "",
+            arguments?.getString(TopAdsDashboardConstant.GROUP_ID) ?: "0",
             searchBar?.searchBarTextField?.text.toString(),
             groupFilterSheet.getSelectedSortId(), groupFilterSheet.getSelectedStatusId(),
             startDate, endDate, groupFilterSheet.getSelectedAdPlacementType(),

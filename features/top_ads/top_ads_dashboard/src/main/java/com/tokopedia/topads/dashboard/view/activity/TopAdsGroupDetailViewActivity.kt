@@ -134,7 +134,7 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
 
     private var dataStatistic: DataStatistic? = null
     private var selectedStatisticType: Int = 0
-    private var groupId: String? = ""
+    private var groupId: String? = "0"
     private var priceSpent: String? = "0"
     private var groupStatus: String? = ""
     private var groupName: String? = ""
@@ -526,7 +526,7 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
 
     fun getBidForKeywords(list: MutableList<String>) {
         val suggestions = java.util.ArrayList<DataSuggestions>()
-        suggestions.add(DataSuggestions("", listOf(groupId ?: "")))
+        suggestions.add(DataSuggestions("", listOf(groupId ?: "0")))
         viewModel.getBidInfo(suggestions, GROUP_DETAIL_PAGE, this::onSuccessSuggestion)
     }
 
@@ -627,11 +627,11 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
         setResult(Activity.RESULT_OK)
         when {
             isChecked -> {
-                viewModel.setGroupAction(ACTION_ACTIVATE, listOf(groupId ?: ""), resources)
+                viewModel.setGroupAction(ACTION_ACTIVATE, listOf(groupId ?: "0"), resources)
                 TopAdsCreateAnalytics.topAdsCreateAnalytics.sendTopAdsGroupDetailEvent(
                     CLICK_TOGGLE_ON, "")
             }
-            else -> viewModel.setGroupAction(ACTION_DEACTIVATE, listOf(groupId ?: ""), resources)
+            else -> viewModel.setGroupAction(ACTION_DEACTIVATE, listOf(groupId ?: "0"), resources)
         }
     }
 
