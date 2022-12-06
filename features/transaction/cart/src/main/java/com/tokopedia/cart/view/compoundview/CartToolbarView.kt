@@ -47,19 +47,19 @@ class CartToolbarView : Toolbar, CartToolbar {
         binding.btnWishlist.gone()
         binding.btnWishlistLottie.show()
         binding.btnWishlistLottie.addAnimatorListener(object : Animator.AnimatorListener {
-            override fun onAnimationRepeat(animator: Animator?) {}
+            override fun onAnimationRepeat(animator: Animator) {}
 
-            override fun onAnimationEnd(animator: Animator?) {
+            override fun onAnimationEnd(animator: Animator) {
                 binding.btnWishlistLottie.gone()
                 binding.btnWishlist.show()
             }
 
-            override fun onAnimationCancel(animator: Animator?) {
+            override fun onAnimationCancel(animator: Animator) {
                 binding.btnWishlistLottie.gone()
                 binding.btnWishlist.show()
             }
 
-            override fun onAnimationStart(animator: Animator?) {}
+            override fun onAnimationStart(animator: Animator) {}
         })
         if (!binding.btnWishlistLottie.isAnimating) {
             binding.btnWishlistLottie.playAnimation()

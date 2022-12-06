@@ -899,6 +899,23 @@ open class ShopPageHomeFragment :
         observeDeleteCartLiveData()
         observeUpdatedShopHomeWidgetQuantityData()
         observeShopAtcTrackerLiveData()
+        observeIsCreateAffiliateCookieAtcProduct()
+    }
+
+    private fun observeIsCreateAffiliateCookieAtcProduct() {
+        viewModel?.createAffiliateCookieAtcProduct?.observe(viewLifecycleOwner) {
+            it?.let {
+                createAffiliateCookieAtcProduct(it)
+            }
+        }
+    }
+
+    private fun createAffiliateCookieAtcProduct(affiliateAtcProductModel: AffiliateAtcProductModel) {
+        (activity as? ShopPageSharedListener)?.createAffiliateCookieAtcProduct(
+            affiliateAtcProductModel.productId,
+            affiliateAtcProductModel.isVariant,
+            affiliateAtcProductModel.stockQty
+        )
     }
 
     private fun observeShopAtcTrackerLiveData() {
@@ -906,6 +923,7 @@ open class ShopPageHomeFragment :
             when (it.atcType) {
                 ShopPageAtcTracker.AtcType.ADD -> {
                     sendClickAddToCartTracker(it)
+
                 }
                 ShopPageAtcTracker.AtcType.UPDATE_ADD, ShopPageAtcTracker.AtcType.UPDATE_REMOVE -> {
                     sendUpdateCartProductQuantityTracker(it)
@@ -1464,6 +1482,14 @@ open class ShopPageHomeFragment :
             val widgetMvcLayout = listWidgetLayoutToLoad.firstOrNull { isWidgetMvc(it) }?.apply {
                 listWidgetLayoutToLoad.remove(this)
             }
+            // exclude product bundle widget from widgets to load
+            viewModel?.let { viewModel ->
+                listWidgetLayoutToLoad.forEach {
+                    if (viewModel.isWidgetBundle(it)) {
+                        listWidgetLayoutToLoad.remove(it)
+                    }
+                }
+            }
             getWidgetContentData(listWidgetLayoutToLoad)
             widgetPlayLayout?.let {
                 getPlayWidgetData()
@@ -1685,7 +1711,6 @@ open class ShopPageHomeFragment :
             bundlePosition = bundlePosition,
             clickedProduct = selectedProduct
         )
-        goToPDP(selectedProduct.productAppLink)
     }
 
     override fun onTrackSingleVariantChange(selectedProduct: ShopHomeBundleProductUiModel, selectedSingleBundle: ShopHomeProductBundleDetailUiModel, bundleName: String) {
@@ -1746,7 +1771,6 @@ open class ShopPageHomeFragment :
             clickedProduct = selectedProduct,
             selectedPackage = selectedSingleBundle.minOrderWording
         )
-        goToPDP(selectedProduct.productAppLink)
     }
 
     override fun addMultipleBundleToCart(
