@@ -35,6 +35,7 @@ import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
 import com.tokopedia.play.widget.ui.widget.medium.adapter.PlayWidgetChannelMediumAdapter
 import com.tokopedia.play.widget.ui.widget.medium.adapter.PlayWidgetMediumViewHolder
 import com.tokopedia.play_common.model.result.ResultState
+import com.tokopedia.unifycomponents.Toaster
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 import kotlin.math.roundToInt
@@ -155,7 +156,7 @@ class PlayExploreWidgetFragment @Inject constructor(
                 chipsAdapter.setItemsAndAnimateChanges(getChipsShimmering)
             }
             is ResultState.Fail -> {
-                //show toaster}
+                Toaster.build(requireView(), state.error.message.orEmpty(), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
             }
         }
     }
@@ -169,7 +170,7 @@ class PlayExploreWidgetFragment @Inject constructor(
                 widgetAdapter.setItemsAndAnimateChanges(getWidgetShimmering)
             }
             is ResultState.Fail -> {
-                //show toaster}
+                Toaster.build(requireView(), state.error.message.orEmpty(), Toaster.LENGTH_LONG, Toaster.TYPE_ERROR).show()
             }
         }
     }
