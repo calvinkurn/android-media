@@ -21,9 +21,10 @@ object DateTimeUtils {
     const val TIME_STAMP_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'"
     const val TIME_STAMP_MILLISECONDS_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSSSS'Z'"
     const val FULL_DAY_FORMAT = "EEE, dd MMM yyyy, HH:mm"
+    const val DASH_DATE_FORMAT = "yyyy-MM-dd"
     const val DATE_FORMAT = "dd MMM yyyy"
     private const val EXTRA_DAYS = 30
-    private const val PREVIOUS_EXTRA_DAYS = -30
+    const val PREVIOUS_EXTRA_DAYS = -30
 
     fun Context.getToday() = GregorianCalendar(LocaleUtils.getCurrentLocale(this))
 
@@ -70,7 +71,6 @@ fun Date.formatTo(
 ): String {
     return try {
         val outputFormat = SimpleDateFormat(desiredOutputFormat, locale)
-        //   outputFormat.timeZone = timeZone
         val output = outputFormat.format(this)
         output
     } catch (e: Exception) {
