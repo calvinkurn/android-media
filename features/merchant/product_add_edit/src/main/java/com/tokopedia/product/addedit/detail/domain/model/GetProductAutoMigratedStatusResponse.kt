@@ -3,7 +3,7 @@ package com.tokopedia.product.addedit.detail.domain.model
 import com.google.gson.annotations.SerializedName
 
 data class GetProductAutoMigratedStatusResponse(
-    @SerializedName("productMigrateStatus")
+    @SerializedName("isProductAutomigrated")
     val isProductAutoMigrated: IsProductAutoMigrated = IsProductAutoMigrated()
 )
 

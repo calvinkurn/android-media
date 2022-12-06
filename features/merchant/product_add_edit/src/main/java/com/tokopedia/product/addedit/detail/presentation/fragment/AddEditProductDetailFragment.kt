@@ -372,8 +372,8 @@ class AddEditProductDetailFragment :
         setupBackPressed()
 
         // check product auto migrated status
-        val productId = viewModel.productInputModel.productId.toString()
-        if (productId.isNotEmpty()) { getProductAutoMigratedStatus(productId) }
+        val productId = viewModel.productInputModel.productId
+        if (!productId.isZero()) { getProductAutoMigratedStatus(productId.toString()) }
 
         subscribeToProductNameInputStatus()
         subscribeToProductNameRecommendation()
