@@ -10,10 +10,11 @@ data class VoucherConfiguration(
     val benefitIdr: Long = 0,
     val benefitMax: Long = 0,
     val benefitPercent: Int = 0,
-    val benefitType : BenefitType = BenefitType.NOMINAL,
+    val benefitType: BenefitType = BenefitType.NOMINAL,
     val promoType: PromoType = PromoType.FREE_SHIPPING,
     val isVoucherProduct: Boolean = false,
     val isVoucherPublic: Boolean = false,
+    val voucherName: String = "",
     val minPurchase: Long = 0,
-    val productIds: List<Long> = emptyList(),
+    val productIds: List<Long> = emptyList()
 ) : Parcelable

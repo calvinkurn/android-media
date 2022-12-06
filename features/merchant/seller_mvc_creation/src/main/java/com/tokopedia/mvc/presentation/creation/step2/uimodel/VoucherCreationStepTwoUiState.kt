@@ -8,5 +8,9 @@ data class VoucherCreationStepTwoUiState(
     val originalPageMode: PageMode = PageMode.CREATE,
     val pageMode: PageMode = PageMode.CREATE,
     val voucherConfiguration: VoucherConfiguration = VoucherConfiguration(),
+    val isVoucherNameError: Boolean = false,
+    val voucherNameErrorMsg: String = "",
     val error: Throwable? = null
-)
+) {
+    fun isInputValid(): Boolean = !isVoucherNameError
+}

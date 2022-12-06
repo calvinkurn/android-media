@@ -28,9 +28,14 @@ class VoucherCreationStepTwoViewModel @Inject constructor(
 
     fun processEvent(event: VoucherCreationStepTwoEvent) {
         when (event) {
-            is VoucherCreationStepTwoEvent.InitVoucherConfiguration -> initVoucherConfiguration(event.voucherConfiguration)
+            is VoucherCreationStepTwoEvent.InitVoucherConfiguration -> initVoucherConfiguration(
+                event.voucherConfiguration
+            )
             is VoucherCreationStepTwoEvent.ChooseVoucherTarget -> handleVoucherTargetSelection(event.isPublic)
             is VoucherCreationStepTwoEvent.TapBackButton -> handleBackToPreviousStep(currentState.voucherConfiguration)
+            is VoucherCreationStepTwoEvent.ValidateVoucherNameInput -> handleVoucherNameValidation(
+                event.voucherName
+            )
         }
     }
 
@@ -61,6 +66,36 @@ class VoucherCreationStepTwoViewModel @Inject constructor(
                     isVoucherPublic = isPublic
                 )
             )
+        }
+    }
+
+    private fun handleVoucherNameValidation(voucherName: String) {
+        when {
+            voucherName.count() < 5 -> {
+                _uiState.update {
+                    it.copy(
+                        isVoucherNameError = true,
+                        voucherNameErrorMsg = "Minimal 5 karakter."
+                    )
+                }
+            }
+            voucherName.isEmpty() -> {
+                _uiState.update {
+                    it.copy(
+                        isVoucherNameError = true,
+                        voucherNameErrorMsg = "Kamu belum mengisi informasi ini."
+                    )
+                }
+            }
+            else -> {
+                _uiState.update {
+                    it.copy(
+                        isVoucherNameError = false,
+                        voucherNameErrorMsg = "",
+                        voucherConfiguration = it.voucherConfiguration.copy(voucherName = voucherName)
+                    )
+                }
+            }
         }
     }
 }

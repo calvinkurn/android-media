@@ -1,14 +1,15 @@
 package com.tokopedia.mvc.presentation.creation.step2
 
-import androidx.lifecycle.ViewModelProvider
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
+import com.tokopedia.campaign.utils.extension.doOnTextChanged
 import com.tokopedia.mvc.R
 import com.tokopedia.mvc.databinding.SmvcFragmentVoucherCreationStepTwoBinding
 import com.tokopedia.mvc.databinding.SmvcVoucherCreationStepTwoVoucherCodeSectionBinding
@@ -54,13 +55,13 @@ class VoucherCreationStepTwoFragment : BaseDaggerFragment() {
     private var voucherCodeSectionBinding by autoClearedNullable<SmvcVoucherCreationStepTwoVoucherCodeSectionBinding>()
     private var voucherPeriodSectionBinding by autoClearedNullable<SmvcVoucherCreationStepTwoVoucherPeriodSectionBinding>()
 
-    //viewModel
+    // viewModel
     @Inject
     lateinit var viewModelFactory: ViewModelFactory
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(VoucherCreationStepTwoViewModel::class.java) }
 
-    //data
+    // data
     private val pageMode by lazy { arguments?.getParcelable(BundleConstant.BUNDLE_KEY_PAGE_MODE) as? PageMode }
     private val voucherConfiguration by lazy {
         arguments?.getParcelable(BundleConstant.BUNDLE_KEY_VOUCHER_CONFIGURATION) as? VoucherConfiguration
@@ -78,7 +79,8 @@ class VoucherCreationStepTwoFragment : BaseDaggerFragment() {
     }
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
+        inflater: LayoutInflater,
+        container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         binding = SmvcFragmentVoucherCreationStepTwoBinding.inflate(inflater, container, false)
@@ -111,6 +113,7 @@ class VoucherCreationStepTwoFragment : BaseDaggerFragment() {
 
     private fun handleUiState(state: VoucherCreationStepTwoUiState) {
         renderVoucherTargetSelection(state.voucherConfiguration.isVoucherPublic)
+        renderVoucherNameValidation(state.isVoucherNameError, state.voucherNameErrorMsg)
     }
 
     private fun handleAction(action: VoucherCreationStepTwoAction) {
@@ -140,6 +143,7 @@ class VoucherCreationStepTwoFragment : BaseDaggerFragment() {
         }
         setupHeader()
         setupVoucherTargetSection()
+        setupVoucherNameSection()
     }
 
     private fun setupHeader() {
@@ -160,10 +164,11 @@ class VoucherCreationStepTwoFragment : BaseDaggerFragment() {
             VoucherCreationStepOneActivity.start(requireContext(), voucherConfiguration)
             activity?.finish()
         } else {
-            //TODO: navigate back to summary page
+            // TODO: navigate back to summary page
         }
     }
 
+    // Voucher target section
     private fun setupVoucherTargetSection() {
         binding?.run {
             if (viewVoucherTarget.parent != null) {
@@ -214,6 +219,32 @@ class VoucherCreationStepTwoFragment : BaseDaggerFragment() {
         voucherTargetSectionBinding?.run {
             viewVoucherTargetPublic.isActive = false
             viewVoucherTargetPrivate.isActive = true
+        }
+    }
+
+    // Voucher name section
+    private fun setupVoucherNameSection() {
+        binding?.run {
+            if (viewVoucherName.parent != null) {
+                viewVoucherName.inflate()
+            }
+        }
+
+        voucherNameSectionBinding?.run {
+            tfVoucherName.editText.setText(voucherConfiguration.voucherName)
+            tfVoucherName.editText.doOnTextChanged { text ->
+                viewModel.processEvent(VoucherCreationStepTwoEvent.ValidateVoucherNameInput(text))
+            }
+        }
+    }
+
+    private fun renderVoucherNameValidation(
+        isVoucherNameError: Boolean,
+        voucherNameErrorMsg: String
+    ) {
+        voucherNameSectionBinding?.run {
+            tfVoucherName.isInputError = isVoucherNameError
+            tfVoucherName.setMessage(voucherNameErrorMsg)
         }
     }
 }
