@@ -7,10 +7,6 @@ import com.tokopedia.play.view.uimodel.ChipWidgetUiModel
  * @author by astidhiyaa on 02/12/22
  */
 
-/**
- * Chips Only
- */
-
 class ChipsWidgetAdapter(private val chipsListener: ChipsViewHolder.Listener) : BaseDiffUtilAdapter<ChipWidgetUiModel>() {
     init {
         delegatesManager.addDelegate(ChipsWidgetAdapterDelegate.Chips(chipsListener))

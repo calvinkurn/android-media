@@ -2672,17 +2672,24 @@ class PlayViewModel @AssistedInject constructor(
     private fun fetchWidgets() {
         viewModelScope.launchCatchError(block = {
             val data = getWidgets()
-            _exploreWidget.update { it.copy(items = data) }
-            val chips = data.filterIsInstance<TabMenuUiModel>().firstOrNull()?.items.orEmpty()
-            if(data.isSubSlotAvailable && chips.isNotEmpty()) {
-                updateWidgetParam(group = chips.first().group, sourceType = chips.first().sourceType, sourceId = chips.first().sourceId)
-                val widgets = _exploreWidget.value.items.union(getWidgets()).toList()
-                _exploreWidget.update {
+            val chips = data.getChips.items
+
+            _exploreWidget.update {
+                it.copy(
+                    chips = chips
+                )
+            }
+
+            if (!data.isSubSlotAvailable && chips.isEmpty())  return@launchCatchError
+
+            updateWidgetParam(group = chips.first().group, sourceType = chips.first().sourceType, sourceId = chips.first().sourceId)
+            val widgets = getWidgets()
+            _exploreWidget.update {
+                val newList = it.widgets.union(widgets).toList()
                     it.copy(
-                        param = it.param.copy(cursor = widgets.filterIsInstance<PageConfig>().firstOrNull()?.cursor.orEmpty()),
-                        items = widgets
+                        param = it.param.copy(cursor = widgets.getConfig.cursor),
+                        widgets = newList.getChannelBlocks,
                     )
-                }
             }
         }) {}
     }
@@ -2691,14 +2698,16 @@ class PlayViewModel @AssistedInject constructor(
      * Next Page or Chips Clicked
      */
     private fun onActionWidget(isNextPage : Boolean = false) {
-        if(!_exploreWidget.value.items.hasNextPage && isNextPage) return
+        if(!_exploreWidget.value.widgets.hasNextPage && isNextPage) return
         viewModelScope.launch {
             val widgets = getWidgets()
+
             _exploreWidget.update {
-                val newList = if (isNextPage) it.items.union(widgets).toList() else it.items.filterIsInstance<TabMenuUiModel>().union(widgets).toList()
+                val newList = it.widgets.union(widgets).toList()
+
                 it.copy(
-                    items = newList,
-                    param = it.param.copy(cursor = widgets.filterIsInstance<PageConfig>().firstOrNull()?.cursor.orEmpty())
+                    widgets = newList.getChannelBlocks,
+                    param = it.param.copy(cursor = widgets.getConfig.cursor)
                 )
             }
         }
@@ -2718,14 +2727,10 @@ class PlayViewModel @AssistedInject constructor(
                     sourceId = sourceId,
                     cursor = cursor
                 ),
-                items =it.items.map{
-                    if(it is TabMenuUiModel) it.copy(
-                        items = it.items.map { chip->
-                            if (group == chip.group) chip.copy(isSelected = true)
-                            else chip.copy(isSelected = false)
-                        }
-                    )
-                    else it
+                chips =  it.chips.map {
+                    chip ->
+                    if (group == chip.group) chip.copy(isSelected = true)
+                    else chip.copy(isSelected = false)
                 }
             )
         }

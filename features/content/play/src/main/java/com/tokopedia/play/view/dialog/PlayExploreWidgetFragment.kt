@@ -11,24 +11,28 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
-import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.content.common.util.Router
 import com.tokopedia.kotlin.extensions.view.getScreenHeight
 import com.tokopedia.kotlin.extensions.view.getScreenWidth
 import com.tokopedia.play.databinding.FragmentPlayExploreWidgetBinding
-import com.tokopedia.play.ui.explorewidget.WidgetAdapter
-import com.tokopedia.play.ui.explorewidget.WidgetItemViewHolder
+import com.tokopedia.play.ui.explorewidget.ChipsViewHolder
+import com.tokopedia.play.ui.explorewidget.ChipsWidgetAdapter
 import com.tokopedia.play.util.isChanged
 import com.tokopedia.play.util.withCache
 import com.tokopedia.play.view.fragment.PlayFragment
 import com.tokopedia.play.view.fragment.PlayUserInteractionFragment
 import com.tokopedia.play.view.uimodel.ChipWidgetUiModel
-import com.tokopedia.play.view.uimodel.WidgetUiModel
+import com.tokopedia.play.view.uimodel.WidgetItemUiModel
 import com.tokopedia.play.view.uimodel.action.ClickChipWidget
 import com.tokopedia.play.view.uimodel.action.NextPageWidgets
+import com.tokopedia.play.view.uimodel.getChannelBlock
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
+import com.tokopedia.play.widget.ui.widget.medium.adapter.PlayWidgetMedAdapter
+import com.tokopedia.play.widget.ui.widget.medium.adapter.PlayWidgetMediumViewHolder
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 import kotlin.math.roundToInt
@@ -41,8 +45,8 @@ import com.tokopedia.play.R as playR
 class PlayExploreWidgetFragment @Inject constructor(
     private val router: Router,
 ) : DialogFragment(),
-    WidgetItemViewHolder.Chip.Listener,
-    WidgetItemViewHolder.Medium.Listener {
+    ChipsViewHolder.Listener,
+    PlayWidgetMediumViewHolder.Channel.Listener {
 
     private var _binding: FragmentPlayExploreWidgetBinding? = null
     private val binding: FragmentPlayExploreWidgetBinding get() = _binding!!
@@ -57,10 +61,10 @@ class PlayExploreWidgetFragment @Inject constructor(
 
     private lateinit var viewModel: PlayViewModel
 
-    private val widgetAdapter = WidgetAdapter(this, this)
+    private val widgetAdapter = PlayWidgetMedAdapter(cardChannelListener = this)
 
     private val layoutManager by lazy(LazyThreadSafetyMode.NONE) {
-        LinearLayoutManager(binding.rvWidgets.context, RecyclerView.VERTICAL, false)
+        GridLayoutManager(binding.rvWidgets.context, 2)
     }
 
     private val scrollListener = object : RecyclerView.OnScrollListener() {
@@ -70,6 +74,8 @@ class PlayExploreWidgetFragment @Inject constructor(
             }
         }
     }
+
+    private val chipsAdapter = ChipsWidgetAdapter(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -108,6 +114,8 @@ class PlayExploreWidgetFragment @Inject constructor(
     }
 
     private fun setupList() {
+        binding.rvChips.adapter = chipsAdapter
+
         binding.rvWidgets.adapter = widgetAdapter
         binding.rvWidgets.layoutManager = layoutManager
         binding.rvWidgets.addOnScrollListener(scrollListener)
@@ -118,14 +126,21 @@ class PlayExploreWidgetFragment @Inject constructor(
             viewModel.uiState.withCache().collectLatest {
                 val cachedState = it
 
-                if (cachedState.isChanged { it.exploreWidget.data.items })
-                    renderWidgets(cachedState.value.exploreWidget.data.items)
+                if(cachedState.isChanged { it.exploreWidget.data.chips })
+                    renderChips(cachedState.value.exploreWidget.data.chips)
+
+                if (cachedState.isChanged { it.exploreWidget.data.widgets })
+                    renderWidgets(cachedState.value.exploreWidget.data.widgets.getChannelBlock)
             }
         }
     }
 
-    private fun renderWidgets(list: List<WidgetUiModel>) {
-        widgetAdapter.setItemsAndAnimateChanges(list)
+    private fun renderChips(chips: List<ChipWidgetUiModel>) {
+        chipsAdapter.setItemsAndAnimateChanges(chips)
+    }
+
+    private fun renderWidgets(widget: WidgetItemUiModel) {
+        widgetAdapter.setItemsAndAnimateChanges(widget.item.items)
     }
 
     override fun onResume() {
@@ -154,9 +169,29 @@ class PlayExploreWidgetFragment @Inject constructor(
         viewModel.submitAction(ClickChipWidget(item))
     }
 
-    override fun onWidgetClicked(item: PlayWidgetChannelUiModel) {
+    /**
+     * Card Widget
+     */
+    override fun onChannelClicked(view: View, item: PlayWidgetChannelUiModel, position: Int) {
         router.route(requireContext(), item.appLink)
     }
+
+    override fun onChannelImpressed(view: View, item: PlayWidgetChannelUiModel, position: Int) {
+    }
+
+    override fun onMenuActionButtonClicked(
+        view: View,
+        item: PlayWidgetChannelUiModel,
+        position: Int
+    ) {
+        //No op
+    }
+
+    override fun onToggleReminderChannelClicked(
+        item: PlayWidgetChannelUiModel,
+        reminderType: PlayWidgetReminderType,
+        position: Int
+    ) {}
 
     companion object {
         private const val TAG = "PlayExploreWidgetFragment"

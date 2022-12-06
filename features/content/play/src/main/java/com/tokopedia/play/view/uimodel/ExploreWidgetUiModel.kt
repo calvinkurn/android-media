@@ -9,7 +9,6 @@ data class ExploreWidgetUiModel(
     val param: WidgetParamUiModel,
     val chips: List<ChipWidgetUiModel>,
     val widgets: List<WidgetItemUiModel>,
-    val items: List<WidgetUiModel>,
 ) {
     companion object {
         val Empty: ExploreWidgetUiModel
@@ -17,7 +16,6 @@ data class ExploreWidgetUiModel(
                 chips = emptyList(),
                 param = WidgetParamUiModel.Empty,
                 widgets = emptyList(),
-                items = emptyList(),
             )
     }
 }
@@ -47,16 +45,31 @@ data class ChipWidgetUiModel(
 sealed class WidgetUiModel
     data class TabMenuUiModel(
         val items: List<ChipWidgetUiModel>,
-    ) : WidgetUiModel()
+    ) : WidgetUiModel() {
+        companion object {
+            val Empty : TabMenuUiModel
+                get() = TabMenuUiModel(items = emptyList())
+        }
+    }
 
     data class WidgetItemUiModel(
         val item: PlayWidgetUiModel,
-    ) : WidgetUiModel()
+    ) : WidgetUiModel() {
+        companion object {
+            val Empty : WidgetItemUiModel
+                get() = WidgetItemUiModel(item = PlayWidgetUiModel.Empty)
+        }
+    }
 
     object SubSlotUiModel : WidgetUiModel()
 
-    data class PageConfig(val cursor: String, val isAutoPlay: Boolean) : WidgetUiModel()
-
+    data class PageConfig(val cursor: String, val isAutoPlay: Boolean) :
+        WidgetUiModel() {
+        companion object {
+            val Empty : PageConfig
+                get() = PageConfig(cursor = "", isAutoPlay = false)
+        }
+    }
 
 val List<WidgetUiModel>.isSubSlotAvailable : Boolean
     get() {
@@ -70,5 +83,25 @@ val List<WidgetUiModel>.hasNextPage : Boolean
         return this.any {
             if (it is PageConfig) it.cursor.isNotBlank() else false
         }
+    }
+
+val List<WidgetUiModel>.getChannelBlock : WidgetItemUiModel
+    get() {
+        return this.filterIsInstance<WidgetItemUiModel>().firstOrNull() ?: WidgetItemUiModel.Empty
+    }
+
+val List<WidgetUiModel>.getChannelBlocks : List<WidgetItemUiModel>
+    get() {
+        return this.filterIsInstance<WidgetItemUiModel>()
+    }
+
+val List<WidgetUiModel>.getChips : TabMenuUiModel
+    get() {
+        return this.filterIsInstance<TabMenuUiModel>().firstOrNull() ?: TabMenuUiModel.Empty
+    }
+
+val List<WidgetUiModel>.getConfig : PageConfig
+    get() {
+        return this.filterIsInstance<PageConfig>().firstOrNull() ?: PageConfig.Empty
     }
 
