@@ -3,10 +3,11 @@ package com.tokopedia.mvc.presentation.creation.step1
 import com.tokopedia.abstraction.base.view.viewmodel.BaseViewModel
 import com.tokopedia.abstraction.common.dispatcher.CoroutineDispatchers
 import com.tokopedia.kotlin.extensions.coroutines.launchCatchError
+import com.tokopedia.mvc.domain.entity.VoucherConfiguration
 import com.tokopedia.mvc.domain.entity.enums.PageMode
 import com.tokopedia.mvc.domain.entity.enums.VoucherAction
 import com.tokopedia.mvc.domain.usecase.GetInitiateVoucherPageUseCase
-import com.tokopedia.mvc.presentation.creation.step1.uimodel.VoucherCreationEvent
+import com.tokopedia.mvc.presentation.creation.step1.uimodel.VoucherCreationStepOneEvent
 import com.tokopedia.mvc.presentation.creation.step1.uimodel.VoucherCreationStepOneAction
 import com.tokopedia.mvc.presentation.creation.step1.uimodel.VoucherCreationStepOneUiState
 import kotlinx.coroutines.flow.*
@@ -30,11 +31,23 @@ class VoucherCreationStepOneViewModel @Inject constructor(
     private val currentState: VoucherCreationStepOneUiState
         get() = _uiState.value
 
-    fun processEvent(event: VoucherCreationEvent) {
+    fun processEvent(event: VoucherCreationStepOneEvent) {
         when (event) {
-            is VoucherCreationEvent.ChooseVoucherType -> {
+            is VoucherCreationStepOneEvent.InitVoucherConfiguration -> {
+                initVoucherConfiguration(event.voucherConfiguration)
+            }
+            is VoucherCreationStepOneEvent.ChooseVoucherType -> {
                 handleVoucherTypeSelection(event.pageMode, event.isVoucherProduct)
             }
+            is VoucherCreationStepOneEvent.NavigateToNextStep -> {
+                navigateToNextStep()
+            }
+        }
+    }
+
+    private fun initVoucherConfiguration(voucherConfiguration: VoucherConfiguration) {
+        _uiState.update {
+            it.copy(isLoading = false, voucherConfiguration = voucherConfiguration)
         }
     }
 
@@ -66,7 +79,11 @@ class VoucherCreationStepOneViewModel @Inject constructor(
                     }
                 } else {
                     _uiState.update { it.copy(isLoading = false) }
-                    _uiAction.tryEmit(VoucherCreationStepOneAction.ShowIneligibleState(isVoucherProduct))
+                    _uiAction.tryEmit(
+                        VoucherCreationStepOneAction.ShowIneligibleState(
+                            isVoucherProduct
+                        )
+                    )
                 }
 
             },
@@ -74,6 +91,15 @@ class VoucherCreationStepOneViewModel @Inject constructor(
                 _uiState.update { it.copy(isLoading = false, error = error) }
                 _uiAction.tryEmit(VoucherCreationStepOneAction.ShowError(error))
             }
+        )
+    }
+
+    private fun navigateToNextStep() {
+        _uiAction.tryEmit(
+            VoucherCreationStepOneAction.NavigateToNextStep(
+                currentState.pageMode,
+                currentState.voucherConfiguration
+            )
         )
     }
 }

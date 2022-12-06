@@ -1,9 +1,9 @@
-package com.tokopedia.mvc.presentation.creation.step1.uimodel
+package com.tokopedia.mvc.presentation.creation.step2.uimodel
 
 import com.tokopedia.mvc.domain.entity.VoucherConfiguration
 import com.tokopedia.mvc.domain.entity.enums.PageMode
 
-data class VoucherCreationStepOneUiState(
+data class VoucherCreationStepTwoUiState(
     val isLoading: Boolean = true,
     val originalPageMode: PageMode = PageMode.CREATE,
     val pageMode: PageMode = PageMode.CREATE,

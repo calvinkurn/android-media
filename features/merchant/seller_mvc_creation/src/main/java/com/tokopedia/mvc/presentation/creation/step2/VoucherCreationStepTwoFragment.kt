@@ -5,6 +5,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.lifecycleScope
 import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.abstraction.base.view.fragment.BaseDaggerFragment
 import com.tokopedia.abstraction.base.view.viewmodel.ViewModelFactory
@@ -15,13 +16,35 @@ import com.tokopedia.mvc.databinding.SmvcVoucherCreationStepTwoVoucherNameSectio
 import com.tokopedia.mvc.databinding.SmvcVoucherCreationStepTwoVoucherPeriodSectionBinding
 import com.tokopedia.mvc.databinding.SmvcVoucherCreationStepTwoVoucherTargetSectionBinding
 import com.tokopedia.mvc.di.component.DaggerMerchantVoucherCreationComponent
+import com.tokopedia.mvc.domain.entity.VoucherConfiguration
+import com.tokopedia.mvc.domain.entity.enums.PageMode
+import com.tokopedia.mvc.presentation.creation.step1.VoucherCreationStepOneActivity
+import com.tokopedia.mvc.presentation.creation.step2.uimodel.VoucherCreationStepTwoAction
+import com.tokopedia.mvc.presentation.creation.step2.uimodel.VoucherCreationStepTwoEvent
+import com.tokopedia.mvc.presentation.creation.step2.uimodel.VoucherCreationStepTwoUiState
+import com.tokopedia.mvc.util.constant.BundleConstant
+import com.tokopedia.mvc.util.constant.ImageUrlConstant
 import com.tokopedia.utils.lifecycle.autoClearedNullable
+import kotlinx.coroutines.flow.collect
 import javax.inject.Inject
 
 class VoucherCreationStepTwoFragment : BaseDaggerFragment() {
 
     companion object {
-        fun newInstance() = VoucherCreationStepTwoFragment()
+        fun newInstance(
+            pageMode: PageMode,
+            voucherConfiguration: VoucherConfiguration
+        ): VoucherCreationStepTwoFragment {
+            return VoucherCreationStepTwoFragment().apply {
+                arguments = Bundle().apply {
+                    putParcelable(BundleConstant.BUNDLE_KEY_PAGE_MODE, pageMode)
+                    putParcelable(
+                        BundleConstant.BUNDLE_KEY_VOUCHER_CONFIGURATION,
+                        voucherConfiguration
+                    )
+                }
+            }
+        }
     }
 
     // binding
@@ -36,6 +59,13 @@ class VoucherCreationStepTwoFragment : BaseDaggerFragment() {
     lateinit var viewModelFactory: ViewModelFactory
     private val viewModelProvider by lazy { ViewModelProvider(this, viewModelFactory) }
     private val viewModel by lazy { viewModelProvider.get(VoucherCreationStepTwoViewModel::class.java) }
+
+    //data
+    private val pageMode by lazy { arguments?.getParcelable(BundleConstant.BUNDLE_KEY_PAGE_MODE) as? PageMode }
+    private val voucherConfiguration by lazy {
+        arguments?.getParcelable(BundleConstant.BUNDLE_KEY_VOUCHER_CONFIGURATION) as? VoucherConfiguration
+            ?: VoucherConfiguration()
+    }
 
     override fun getScreenName(): String =
         VoucherCreationStepTwoFragment::class.java.canonicalName.orEmpty()
@@ -57,5 +87,133 @@ class VoucherCreationStepTwoFragment : BaseDaggerFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        viewModel.processEvent(
+            VoucherCreationStepTwoEvent.InitVoucherConfiguration(
+                voucherConfiguration
+            )
+        )
+        setupView()
+        observeUiState()
+        observeUiAction()
+    }
+
+    private fun observeUiState() {
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            viewModel.uiState.collect { state -> handleUiState(state) }
+        }
+    }
+
+    private fun observeUiAction() {
+        viewLifecycleOwner.lifecycleScope.launchWhenStarted {
+            viewModel.uiAction.collect { action -> handleAction(action) }
+        }
+    }
+
+    private fun handleUiState(state: VoucherCreationStepTwoUiState) {
+        renderVoucherTargetSelection(state.voucherConfiguration.isVoucherPublic)
+    }
+
+    private fun handleAction(action: VoucherCreationStepTwoAction) {
+        when (action) {
+            is VoucherCreationStepTwoAction.BackToPreviousStep -> backToPreviousStep(action.voucherConfiguration)
+        }
+    }
+
+    private fun setupView() {
+        binding?.run {
+            viewVoucherTarget.setOnInflateListener { _, view ->
+                voucherTargetSectionBinding =
+                    SmvcVoucherCreationStepTwoVoucherTargetSectionBinding.bind(view)
+            }
+            viewVoucherName.setOnInflateListener { _, view ->
+                voucherNameSectionBinding =
+                    SmvcVoucherCreationStepTwoVoucherNameSectionBinding.bind(view)
+            }
+            viewVoucherCode.setOnInflateListener { _, view ->
+                voucherCodeSectionBinding =
+                    SmvcVoucherCreationStepTwoVoucherCodeSectionBinding.bind(view)
+            }
+            viewVoucherActivePeriod.setOnInflateListener { _, view ->
+                voucherPeriodSectionBinding =
+                    SmvcVoucherCreationStepTwoVoucherPeriodSectionBinding.bind(view)
+            }
+        }
+        setupHeader()
+        setupVoucherTargetSection()
+    }
+
+    private fun setupHeader() {
+        binding?.header?.apply {
+            headerSubTitle = if (voucherConfiguration.isVoucherProduct) {
+                getString(R.string.smvc_creation_step_two_out_of_four_sub_title_label)
+            } else {
+                getString(R.string.smvc_creation_step_two_out_of_three_sub_title_label)
+            }
+            setNavigationOnClickListener {
+                viewModel.processEvent(VoucherCreationStepTwoEvent.TapBackButton)
+            }
+        }
+    }
+
+    private fun backToPreviousStep(voucherConfiguration: VoucherConfiguration) {
+        if (pageMode == PageMode.CREATE) {
+            VoucherCreationStepOneActivity.start(requireContext(), voucherConfiguration)
+            activity?.finish()
+        } else {
+            //TODO: navigate back to summary page
+        }
+    }
+
+    private fun setupVoucherTargetSection() {
+        binding?.run {
+            if (viewVoucherTarget.parent != null) {
+                viewVoucherTarget.inflate()
+            }
+        }
+        setupVoucherTargetSelection()
+    }
+
+    private fun setupVoucherTargetSelection() {
+        setVoucherTarget(voucherConfiguration.isVoucherPublic)
+        voucherTargetSectionBinding?.run {
+            viewVoucherTargetPublic.apply {
+                imgVoucherTarget?.setImageUrl(ImageUrlConstant.IMAGE_URL_PUBLIC_VOUCHER)
+                cardParent?.setOnClickListener {
+                    setVoucherTarget(true)
+                }
+            }
+            viewVoucherTargetPrivate.apply {
+                imgVoucherTarget?.setImageUrl(ImageUrlConstant.IMAGE_URL_PRIVATE_VOUCHER)
+                cardParent?.setOnClickListener {
+                    setVoucherTarget(false)
+                }
+            }
+        }
+    }
+
+    private fun setVoucherTarget(isPublic: Boolean) {
+        viewModel.processEvent(VoucherCreationStepTwoEvent.ChooseVoucherTarget(isPublic))
+    }
+
+    private fun renderVoucherTargetSelection(isPublic: Boolean) {
+        if (isPublic) {
+            setVoucherPublicSelected()
+        } else {
+            setVoucherPrivateSelected()
+        }
+    }
+
+    private fun setVoucherPublicSelected() {
+        voucherTargetSectionBinding?.run {
+            viewVoucherTargetPublic.isActive = true
+            viewVoucherTargetPrivate.isActive = false
+        }
+    }
+
+    private fun setVoucherPrivateSelected() {
+        voucherTargetSectionBinding?.run {
+            viewVoucherTargetPublic.isActive = false
+            viewVoucherTargetPrivate.isActive = true
+        }
     }
 }

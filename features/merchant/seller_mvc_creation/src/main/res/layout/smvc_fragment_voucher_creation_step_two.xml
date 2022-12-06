@@ -14,9 +14,11 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:unify_header_title="@string/smvc_informasi_kupon_label"
         app:unify_header_is_show_shadow="false" />
 
     <androidx.core.widget.NestedScrollView
+        android:id="@+id/nsv_content"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
