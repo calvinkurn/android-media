@@ -13,6 +13,9 @@ import com.tokopedia.basemvvm.viewmodel.BaseViewModel
 import com.tokopedia.cartcommon.data.request.updatecart.UpdateCartRequest
 import com.tokopedia.cartcommon.domain.usecase.DeleteCartUseCase
 import com.tokopedia.cartcommon.domain.usecase.UpdateCartUseCase
+import com.tokopedia.common_sdk_affiliate_toko.model.AffiliatePageDetail
+import com.tokopedia.common_sdk_affiliate_toko.model.AffiliateSdkPageSource
+import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
 import com.tokopedia.discovery.common.model.ProductCardOptionsModel
 import com.tokopedia.discovery2.CONSTANT_0
 import com.tokopedia.discovery2.CONSTANT_11
@@ -33,8 +36,10 @@ import com.tokopedia.discovery2.usecase.discoveryPageUseCase.DiscoveryDataUseCas
 import com.tokopedia.discovery2.usecase.discoveryPageUseCase.DiscoveryInjectCouponDataUseCase
 import com.tokopedia.discovery2.usecase.quickcouponusecase.QuickCouponUseCase
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.ACTIVE_TAB
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.AFFILIATE_UNIQUE_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.CAMPAIGN_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.CATEGORY_ID
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.CHANNEL
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.COMPONENT_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.DYNAMIC_SUBTITLE
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.EMBED_CATEGORY
@@ -84,7 +89,8 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
                                              private val deleteCartUseCase: DeleteCartUseCase,
                                              private val userSession: UserSessionInterface,
                                              private val trackingQueue: TrackingQueue,
-                                             private val pageLoadTimePerformanceInterface: PageLoadTimePerformanceInterface?) : BaseViewModel(), CoroutineScope {
+                                             private val pageLoadTimePerformanceInterface: PageLoadTimePerformanceInterface?,
+                                             private var affiliateCookieHelper : AffiliateCookieHelper) : BaseViewModel(), CoroutineScope {
 
     private val discoveryPageInfo = MutableLiveData<Result<PageInfo>>()
     private val discoveryFabLiveData = MutableLiveData<Result<ComponentsItem>>()
@@ -122,7 +128,7 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
     var pageType: String = ""
     var pagePath: String = ""
     var campaignCode: String = ""
-    var chooseAddressVisibilityLiveData = MutableLiveData<Boolean>()
+    private var chooseAddressVisibilityLiveData = MutableLiveData<Boolean>()
     var isAffiliateInitialized = false
     private var bottomTabNavDataComponent : ComponentsItem?  = null
 
@@ -139,7 +145,7 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
         get() = Dispatchers.Main + SupervisorJob()
 
 
-    fun getMiniCartItem(productId: String): MiniCartItem.MiniCartItemProduct? {
+    private fun getMiniCartItem(productId: String): MiniCartItem.MiniCartItemProduct? {
         val items = miniCartSimplifiedData?.miniCartItems.orEmpty()
         return items.getMiniCartItemProduct(productId)
     }
@@ -176,6 +182,7 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
         addToCartUseCase.setParams(addToCartRequestParams)
         addToCartUseCase.execute({
             _miniCartAdd.postValue(Success(DiscoveryAddToCartDataModel(it, discoATCRequestParams)))
+            handleATCAffiliate()
         }, {
             _miniCartAdd.postValue(Fail(it))
             _miniCartOperationFailed.postValue(
@@ -185,6 +192,21 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
                 )
             )
         })
+    }
+
+    private fun handleATCAffiliate() {
+        launchCatchError(
+            block = {
+                if (isAffiliateInitialized) {
+//                          Todo:: Call for DirectATC case.
+//                val pageDetail = AffiliatePageDetail(source = AffiliateSdkPageSource.Discovery())
+//                affiliateCookieHelper.initCookie(affiliatePageDetail = pageDetail)
+                }
+            },
+            onError = {
+
+            }
+        )
     }
 
     private fun updateItemCart(
@@ -383,7 +405,10 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
                 TARGET_TITLE_ID to intentUri.getQueryParameter(TARGET_TITLE_ID),
                 CAMPAIGN_ID to intentUri.getQueryParameter(CAMPAIGN_ID),
                 VARIANT_ID to intentUri.getQueryParameter(VARIANT_ID),
-                SHOP_ID to intentUri.getQueryParameter(SHOP_ID)
+                SHOP_ID to intentUri.getQueryParameter(SHOP_ID),
+                AFFILIATE_UNIQUE_ID to intentUri.getQueryParameter(AFFILIATE_UNIQUE_ID),
+                CHANNEL to intentUri.getQueryParameter(CHANNEL),
+
                 )
     }
 
@@ -411,7 +436,9 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
                 TARGET_TITLE_ID to bundle?.getString(TARGET_TITLE_ID,""),
                 CAMPAIGN_ID to bundle?.getString(CAMPAIGN_ID,""),
                 VARIANT_ID to bundle?.getString(VARIANT_ID,""),
-                SHOP_ID to bundle?.getString(SHOP_ID,"")
+                SHOP_ID to bundle?.getString(SHOP_ID,""),
+                AFFILIATE_UNIQUE_ID to bundle?.getString(AFFILIATE_UNIQUE_ID, ""),
+                CHANNEL to bundle?.getString(CHANNEL, ""),
         )
     }
 
@@ -505,5 +532,36 @@ class DiscoveryViewModel @Inject constructor(private val discoveryDataUseCase: D
                     discoveryDataUseCase.clearPage(pageIdentifier)
                 }
             }
+    }
+
+    //      Todo:: Where will get the values for this function and what will be the default values ??
+    fun initAffiliateSDK() {
+        isAffiliateInitialized = true
+        var affiliateUID = ""
+        var affiliateChannel = ""
+        discoComponentQuery?.let {
+            affiliateUID = it[AFFILIATE_UNIQUE_ID] ?: ""
+            affiliateChannel = it[CHANNEL] ?: ""
+        }
+//            What is required for pageName
+        val pageDetail = AffiliatePageDetail(source = AffiliateSdkPageSource.Discovery())
+//            Is uuid required ?? Ask Hilman
+        launchCatchError(block = {
+            affiliateCookieHelper.initCookie(
+                affiliateUUID = affiliateUID,
+                affiliateChannel = affiliateChannel,
+                affiliatePageDetail = pageDetail
+            )
+        }, onError = {
+//            What to do in case of error.
+        }
+        )
+    }
+
+    fun createAffiliateLink(applink: String): String {
+        return if (isAffiliateInitialized)
+            affiliateCookieHelper.createAffiliateLink(applink)
+        else
+            applink
     }
 }

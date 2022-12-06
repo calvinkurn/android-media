@@ -33,7 +33,6 @@ import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.ADD_PHONE
 import com.tokopedia.coachmark.CoachMark2
 import com.tokopedia.coachmark.CoachMark2Item
-import com.tokopedia.common_sdk_affiliate_toko.utils.AffiliateCookieHelper
 import com.tokopedia.discovery.common.manager.AdultManager
 import com.tokopedia.discovery.common.manager.ProductCardOptionsResult
 import com.tokopedia.discovery.common.manager.ProductCardOptionsWishlistCallback
@@ -50,8 +49,10 @@ import com.tokopedia.discovery2.datamapper.getSectionPositionMap
 import com.tokopedia.discovery2.datamapper.setCartData
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.ACTIVE_TAB
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.AFFILIATE_UNIQUE_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.CAMPAIGN_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.CATEGORY_ID
+import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.CHANNEL
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.COMPONENT_ID
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.DYNAMIC_SUBTITLE
 import com.tokopedia.discovery2.viewcontrollers.activity.DiscoveryActivity.Companion.EMBED_CATEGORY
@@ -129,7 +130,6 @@ import com.tokopedia.usecase.coroutines.Success
 import com.tokopedia.user.session.UserSession
 import java.net.SocketTimeoutException
 import java.net.UnknownHostException
-import javax.inject.Inject
 import com.tokopedia.unifyprinciples.R as RUnify
 
 
@@ -178,9 +178,6 @@ class DiscoveryFragment :
     private var miniCartData:MiniCartSimplifiedData? = null
     private var miniCartInitialized:Boolean = false
     private var userPressed: Boolean = false
-
-    @JvmField @Inject
-    var affiliateCookieHelper : AffiliateCookieHelper? = null
 
     private val analytics: BaseDiscoveryAnalytics by lazy {
         (context as DiscoveryActivity).getAnalytics()
@@ -238,6 +235,8 @@ class DiscoveryFragment :
                 bundle.putString(CAMPAIGN_ID, queryParameterMap[CAMPAIGN_ID])
                 bundle.putString(VARIANT_ID, queryParameterMap[VARIANT_ID])
                 bundle.putString(SHOP_ID, queryParameterMap[SHOP_ID])
+                bundle.putString(AFFILIATE_UNIQUE_ID, queryParameterMap[AFFILIATE_UNIQUE_ID])
+                bundle.putString(CHANNEL, queryParameterMap[CHANNEL])
             }
         }
     }
@@ -760,11 +759,9 @@ class DiscoveryFragment :
     }
 
     private fun setupAffiliate() {
-//      Todo:: Where will get the values for this function and what will be the default values ??
         if (pageInfoHolder?.isAffiliate == true && !discoveryViewModel.isAffiliateInitialized) {
-            discoveryViewModel.isAffiliateInitialized = true
             isAffiliateInitialized = true
-//            affiliateCookieHelper?.initCookie()
+            discoveryViewModel.initAffiliateSDK()
         }
     }
 
@@ -1835,6 +1832,10 @@ class DiscoveryFragment :
             mAnchorHeaderView.removeAllViews()
         }
         stickyHeaderShowing = true
+    }
+
+    fun createAffiliateLink(applink: String): String {
+        return discoveryViewModel.createAffiliateLink(applink)
     }
 
 }

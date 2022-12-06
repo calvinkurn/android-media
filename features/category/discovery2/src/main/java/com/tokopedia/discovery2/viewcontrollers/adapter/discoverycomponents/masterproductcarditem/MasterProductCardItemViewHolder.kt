@@ -227,10 +227,11 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
             productCardView -> {
                 masterProductCardItemViewModel.sendTopAdsClick()
                 var applink = dataItem?.applinks ?: ""
+//                Todo:: Route call through viewModel
 //               Todo:: Add trackerId, will there be any issue with randomized trackerID.
                 if ((fragment as DiscoveryFragment).isAffiliateInitialized)
                     applink =
-                        fragment.affiliateCookieHelper?.createAffiliateLink(applink) ?: applink
+                        fragment.createAffiliateLink(applink)
                 masterProductCardItemViewModel.navigate(fragment.context, applink)
                 sendClickEvent()
             }
@@ -279,11 +280,7 @@ class MasterProductCardItemViewHolder(itemView: View, val fragment: Fragment) :
             masterProductCardItemViewModel.getProductDataItem()?.let { productItem ->
                 productItem.productId?.let { productId ->
                     if (productId.isNotEmpty()) {
-                        if ((fragment as DiscoveryFragment).isAffiliateInitialized) {
-//                          Todo:: Call for DirectATC case.
-//                            fragment.affiliateCookieHelper?.initCookie()
-                        }
-                        fragment.addOrUpdateItemCart(
+                        (fragment as DiscoveryFragment).addOrUpdateItemCart(
                             DiscoATCRequestParams(
                                 parentPosition = masterProductCardItemViewModel.getParentPositionForCarousel(),
                                 position = masterProductCardItemViewModel.position,
