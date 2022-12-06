@@ -2703,7 +2703,7 @@ class PlayViewModel @AssistedInject constructor(
             val widgets = getWidgets()
 
             _exploreWidget.update {
-                val newList = it.widgets.union(widgets).toList()
+                val newList = if (isNextPage) it.widgets.union(widgets).toList() else widgets
 
                 it.copy(
                     widgets = newList.getChannelBlocks,
