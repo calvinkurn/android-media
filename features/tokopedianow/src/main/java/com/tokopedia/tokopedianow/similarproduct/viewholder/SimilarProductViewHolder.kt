@@ -11,6 +11,7 @@ import com.tokopedia.kotlin.extensions.view.orZero
 import com.tokopedia.kotlin.extensions.view.show
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.databinding.ItemTokopedianowRecipeProductBinding
+import com.tokopedia.tokopedianow.similarproduct.analytic.SimilarProductAnalytics
 import com.tokopedia.tokopedianow.similarproduct.model.SimilarProductUiModel
 import com.tokopedia.unifycomponents.QuantityEditorUnify
 import com.tokopedia.unifycomponents.UnifyButton
@@ -18,7 +19,8 @@ import com.tokopedia.utils.view.binding.viewBinding
 
 class SimilarProductViewHolder(
     itemView: View,
-    private val listener: SimilarProductListener?
+    private val listener: SimilarProductListener?,
+    private val analytics: SimilarProductAnalytics?
     ) : AbstractViewHolder<SimilarProductUiModel>(itemView) {
 
     companion object {
@@ -86,6 +88,7 @@ class SimilarProductViewHolder(
                 isEnabled = true
 
                 setOnClickListener {
+                    analytics?.trackClickAddToCart(product)
                     listener?.addItemToCart(
                         productId = product.id,
                         shopId = product.shopId,
@@ -137,6 +140,7 @@ class SimilarProductViewHolder(
 
     private fun setOnClickListener(product: SimilarProductUiModel) {
         binding?.root?.setOnClickListener {
+            analytics?.trackClickProduct(product)
             goToProductDetailPage(product)
         }
     }

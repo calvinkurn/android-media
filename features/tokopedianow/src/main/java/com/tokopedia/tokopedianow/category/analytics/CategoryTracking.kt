@@ -153,8 +153,7 @@ object CategoryTracking {
         const val CLICK_ATC_ON_PAST_PURCHASE_WIDGET = "click atc on past purchase widget"
         const val CLICK_VIEW_ALL_ON_TOKONOW_CLP_RECOMMENDATION = "click view all on tokonow clp recommendation"
 
-        const val EVENT_ACTION_IMPRESSION_BOTTOMSHEET = "impression product serupa bottomsheet"
-        const val EVENT_ACTION_IMPRESSION_PRODUCT_BOTTOMSHEET = "product impression at bottomsheet"
+        const val EVENT_ACTION_IMPRESSION_BOTTOMSHEET = "impression product oos bottomsheet"
         const val EVENT_ACTION_CLICK_SIMILAR_PRODUCT_BTN = "click produk serupa on product card"
         const val EVENT_ACTION_CLICK_ADD_TO_CART = "add to cart product oos bottomsheet"
         const val EVENT_ACTION_CLICK_CLOSE_BOTTOMSHEET = "click close bottomsheet"

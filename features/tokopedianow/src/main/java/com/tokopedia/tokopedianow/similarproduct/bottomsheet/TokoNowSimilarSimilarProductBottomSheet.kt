@@ -67,6 +67,7 @@ class TokoNowSimilarSimilarProductBottomSheet : BottomSheetUnify(), SimilarProdu
         SimilarProductAdapter(
             SimilarProductAdapterTypeFactory(
                 productListener = productListener,
+                this
             )
         )
     }
