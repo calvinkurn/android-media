@@ -17,6 +17,7 @@ import com.tokopedia.play.broadcaster.type.StockAvailable
 import com.tokopedia.play.broadcaster.ui.model.*
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageEditStatus
 import com.tokopedia.play.broadcaster.ui.model.pinnedmessage.PinnedMessageUiModel
+import com.tokopedia.play.broadcaster.ui.model.tag.PlayTagUiModel
 import com.tokopedia.play.broadcaster.view.state.CoverSetupState
 import com.tokopedia.play.broadcaster.view.state.SetupDataState
 import com.tokopedia.play_common.model.dto.interactive.GameUiModel
@@ -230,6 +231,21 @@ class UiModelBuilder {
                     enable = tncBuyer
                 ),
             )
+        }
+    }
+
+    fun buildTags(
+        size: Int = 5
+    ): Set<PlayTagUiModel> {
+        return mutableSetOf<PlayTagUiModel>().apply {
+            for(i in 0 until size) {
+                add(
+                    PlayTagUiModel(
+                        tag = "Tag $i",
+                        isChosen = false,
+                    )
+                )
+            }
         }
     }
 }
