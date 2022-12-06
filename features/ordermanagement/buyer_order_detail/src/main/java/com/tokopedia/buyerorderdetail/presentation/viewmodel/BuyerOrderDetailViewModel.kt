@@ -165,8 +165,8 @@ class BuyerOrderDetailViewModel @Inject constructor(
             )
             _finishOrderResult.value = (Success(finishOrderUseCase.get().execute(param)))
         }, onError = {
-            _finishOrderResult.value = (Fail(it))
-        })
+                _finishOrderResult.value = (Fail(it))
+            })
     }
 
     fun addSingleToCart(product: ProductListUiModel.ProductUiModel) {
@@ -176,11 +176,13 @@ class BuyerOrderDetailViewModel @Inject constructor(
                     put(product.productId, AddToCartSingleRequestState.Requesting)
                 }
             }
-            (product to atcUseCase.get().execute(
-                userSession.get().userId,
-                atcMultiQuery.get(),
-                arrayListOf(product.mapToAddToCartParam())
-            )).let { result ->
+            (
+                product to atcUseCase.get().execute(
+                    userSession.get().userId,
+                    atcMultiQuery.get(),
+                    arrayListOf(product.mapToAddToCartParam())
+                )
+                ).let { result ->
                 singleAtcRequestStates.update {
                     it.toMutableMap().apply {
                         put(product.productId, AddToCartSingleRequestState.Success(result))
@@ -189,22 +191,24 @@ class BuyerOrderDetailViewModel @Inject constructor(
                 _singleAtcResult.value = result
             }
         }, onError = { throwable ->
-            singleAtcRequestStates.update {
-                it.toMutableMap().apply {
-                    put(product.productId, AddToCartSingleRequestState.Error(throwable))
+                singleAtcRequestStates.update {
+                    it.toMutableMap().apply {
+                        put(product.productId, AddToCartSingleRequestState.Error(throwable))
+                    }
                 }
-            }
-            _singleAtcResult.value = (product to Fail(throwable))
-        })
+                _singleAtcResult.value = (product to Fail(throwable))
+            })
     }
 
     fun addMultipleToCart() {
         viewModelScope.launchCatchError(block = {
             val productListUiState = productListUiState.value
             if (productListUiState is ProductListUiState.HasData) {
-                val params = ArrayList(productListUiState.data.productList.map {
-                    it.mapToAddToCartParam()
-                })
+                val params = ArrayList(
+                    productListUiState.data.getAllProduct().map {
+                        it.mapToAddToCartParam()
+                    }
+                )
                 _multiAtcResult.value = mapMultiATCResult(
                     atcUseCase.get().execute(userSession.get().userId, atcMultiQuery.get(), params)
                 )
@@ -214,8 +218,8 @@ class BuyerOrderDetailViewModel @Inject constructor(
                 )
             }
         }, onError = {
-            _multiAtcResult.value = MultiATCState.Fail(throwable = it)
-        })
+                _multiAtcResult.value = MultiATCState.Fail(throwable = it)
+            })
     }
 
     fun collapseProductList() {
@@ -230,42 +234,54 @@ class BuyerOrderDetailViewModel @Inject constructor(
         val actionButtonsUiState = actionButtonsUiState.value
         return if (actionButtonsUiState is ActionButtonsUiState.HasData) {
             actionButtonsUiState.data.secondaryActionButtons
-        } else emptyList()
+        } else {
+            emptyList()
+        }
     }
 
     fun getProducts(): List<ProductListUiModel.ProductUiModel> {
         val productListUiState = productListUiState.value
         return if (productListUiState is ProductListUiState.HasData) {
             productListUiState.data.productList
-        } else emptyList()
+        } else {
+            emptyList()
+        }
     }
 
     fun getOrderId(): String {
         val orderStatusUiState = orderStatusUiState.value
         return if (orderStatusUiState is OrderStatusUiState.HasData) {
             orderStatusUiState.data.orderStatusHeaderUiModel.orderId
-        } else "0"
+        } else {
+            "0"
+        }
     }
 
     fun getShopId(): String {
         val productListUiState = productListUiState.value
         return if (productListUiState is ProductListUiState.HasData) {
             productListUiState.data.productListHeaderUiModel.shopId
-        } else "0"
+        } else {
+            "0"
+        }
     }
 
     fun getShopName(): String {
         val productListUiState = productListUiState.value
         return if (productListUiState is ProductListUiState.HasData) {
             productListUiState.data.productListHeaderUiModel.shopName
-        } else ""
+        } else {
+            ""
+        }
     }
 
     fun getShopType(): Int {
         val productListUiState = productListUiState.value
         return if (productListUiState is ProductListUiState.HasData) {
             productListUiState.data.productListHeaderUiModel.shopType
-        } else 0
+        } else {
+            0
+        }
     }
 
     fun getCategoryId(): List<Int> {
@@ -281,7 +297,9 @@ class BuyerOrderDetailViewModel @Inject constructor(
                 }
             }
             categoryIdMap.toList()
-        } else emptyList()
+        } else {
+            emptyList()
+        }
     }
 
     fun getUserId(): String {
@@ -292,7 +310,9 @@ class BuyerOrderDetailViewModel @Inject constructor(
         val orderStatusUiState = orderStatusUiState.value
         return if (orderStatusUiState is OrderStatusUiState.HasData) {
             orderStatusUiState.data.orderStatusHeaderUiModel.orderStatusId
-        } else "0"
+        } else {
+            "0"
+        }
     }
 
     private fun <T> Flow<T>.toStateFlow(initialValue: T) = stateIn(
@@ -312,7 +332,7 @@ class BuyerOrderDetailViewModel @Inject constructor(
     }
 
     private fun mapActionButtonsUiState(
-        getBuyerOrderDetailDataRequestState: GetBuyerOrderDetailDataRequestState,
+        getBuyerOrderDetailDataRequestState: GetBuyerOrderDetailDataRequestState
     ): ActionButtonsUiState {
         return ActionButtonsUiStateMapper.map(
             getBuyerOrderDetailDataRequestState,
@@ -321,7 +341,7 @@ class BuyerOrderDetailViewModel @Inject constructor(
     }
 
     private fun mapOrderStatusUiState(
-        getBuyerOrderDetailDataRequestState: GetBuyerOrderDetailDataRequestState,
+        getBuyerOrderDetailDataRequestState: GetBuyerOrderDetailDataRequestState
     ): OrderStatusUiState {
         return OrderStatusUiStateMapper.map(
             getBuyerOrderDetailDataRequestState,
@@ -330,7 +350,7 @@ class BuyerOrderDetailViewModel @Inject constructor(
     }
 
     private fun mapPaymentInfoUiState(
-        getBuyerOrderDetailDataRequestState: GetBuyerOrderDetailDataRequestState,
+        getBuyerOrderDetailDataRequestState: GetBuyerOrderDetailDataRequestState
     ): PaymentInfoUiState {
         return PaymentInfoUiStateMapper.map(
             getBuyerOrderDetailDataRequestState,
@@ -353,7 +373,7 @@ class BuyerOrderDetailViewModel @Inject constructor(
     }
 
     private fun mapShipmentInfoUiState(
-        getBuyerOrderDetailDataRequestState: GetBuyerOrderDetailDataRequestState,
+        getBuyerOrderDetailDataRequestState: GetBuyerOrderDetailDataRequestState
     ): ShipmentInfoUiState {
         return ShipmentInfoUiStateMapper.map(
             getBuyerOrderDetailDataRequestState,
@@ -364,7 +384,7 @@ class BuyerOrderDetailViewModel @Inject constructor(
     }
 
     private fun mapPGRecommendationWidgetUiState(
-        getBuyerOrderDetailDataRequestState: GetBuyerOrderDetailDataRequestState,
+        getBuyerOrderDetailDataRequestState: GetBuyerOrderDetailDataRequestState
     ): PGRecommendationWidgetUiState {
         return PGRecommendationWidgetUiStateMapper.map(
             getBuyerOrderDetailDataRequestState,
@@ -373,7 +393,7 @@ class BuyerOrderDetailViewModel @Inject constructor(
     }
 
     private fun mapOrderResolutionTicketStatusUiState(
-        getBuyerOrderDetailDataRequestState: GetBuyerOrderDetailDataRequestState,
+        getBuyerOrderDetailDataRequestState: GetBuyerOrderDetailDataRequestState
     ): OrderResolutionTicketStatusUiState {
         return OrderResolutionTicketStatusUiStateMapper.map(
             getBuyerOrderDetailDataRequestState,
@@ -382,7 +402,7 @@ class BuyerOrderDetailViewModel @Inject constructor(
     }
 
     private fun mapOrderInsuranceUiState(
-        getBuyerOrderDetailDataRequestState: GetBuyerOrderDetailDataRequestState,
+        getBuyerOrderDetailDataRequestState: GetBuyerOrderDetailDataRequestState
     ): OrderInsuranceUiState {
         return OrderInsuranceUiStateMapper.map(
             getBuyerOrderDetailDataRequestState,
@@ -416,7 +436,9 @@ class BuyerOrderDetailViewModel @Inject constructor(
         val statusId = getOrderStatusId()
         return if (statusId.toIntOrZero() < BuyerOrderDetailOrderStatusCode.ORDER_DELIVERED) {
             BuyerOrderDetailMiscConstant.ACTION_FINISH_ORDER
-        } else ""
+        } else {
+            ""
+        }
     }
 
     private fun ProductListUiModel.ProductUiModel.mapToAddToCartParam(): AddToCartMultiParam {
