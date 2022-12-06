@@ -996,7 +996,8 @@ class PlayViewModel @AssistedInject constructor(
             OpenCart -> openWithLogin(ApplinkConstInternalMarketplace.CART, REQUEST_CODE_LOGIN_CART)
             FetchWidgets -> fetchWidgets()
             is ClickChipWidget -> handleClickChip(action.item)
-            is NextPageWidgets -> onActionWidget(isNextPage = true)
+            NextPageWidgets -> onActionWidget(isNextPage = true)
+            RefreshWidget -> onActionWidget(isRefresh = true)
         }
     }
 
@@ -2697,7 +2698,7 @@ class PlayViewModel @AssistedInject constructor(
     /**
      * Next Page or Chips Clicked
      */
-    private fun onActionWidget(isNextPage : Boolean = false) {
+    private fun onActionWidget(isNextPage : Boolean = false, isRefresh : Boolean = false) {
         if(!_exploreWidget.value.widgets.hasNextPage && isNextPage) return
         viewModelScope.launch {
             val widgets = getWidgets()
@@ -2707,7 +2708,7 @@ class PlayViewModel @AssistedInject constructor(
 
                 it.copy(
                     widgets = newList.getChannelBlocks,
-                    param = it.param.copy(cursor = widgets.getConfig.cursor)
+                    param = it.param.copy(cursor = if(!isRefresh) widgets.getConfig.cursor else "")
                 )
             }
         }

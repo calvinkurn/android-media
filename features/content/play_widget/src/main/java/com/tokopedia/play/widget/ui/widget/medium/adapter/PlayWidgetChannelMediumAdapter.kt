@@ -6,7 +6,7 @@ import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 /**
  * @author by astidhiyaa on 05/12/22
  */
-class PlayWidgetMedAdapter(
+class PlayWidgetChannelMediumAdapter(
     cardChannelListener: PlayWidgetMediumViewHolder.Channel.Listener,
 ) : BaseDiffUtilAdapter<Any>() {
 

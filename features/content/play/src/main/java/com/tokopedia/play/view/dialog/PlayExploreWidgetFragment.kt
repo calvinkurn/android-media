@@ -27,11 +27,12 @@ import com.tokopedia.play.view.uimodel.ChipWidgetUiModel
 import com.tokopedia.play.view.uimodel.WidgetItemUiModel
 import com.tokopedia.play.view.uimodel.action.ClickChipWidget
 import com.tokopedia.play.view.uimodel.action.NextPageWidgets
+import com.tokopedia.play.view.uimodel.action.RefreshWidget
 import com.tokopedia.play.view.uimodel.getChannelBlock
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
-import com.tokopedia.play.widget.ui.widget.medium.adapter.PlayWidgetMedAdapter
+import com.tokopedia.play.widget.ui.widget.medium.adapter.PlayWidgetChannelMediumAdapter
 import com.tokopedia.play.widget.ui.widget.medium.adapter.PlayWidgetMediumViewHolder
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
@@ -61,7 +62,7 @@ class PlayExploreWidgetFragment @Inject constructor(
 
     private lateinit var viewModel: PlayViewModel
 
-    private val widgetAdapter = PlayWidgetMedAdapter(cardChannelListener = this)
+    private val widgetAdapter = PlayWidgetChannelMediumAdapter(cardChannelListener = this)
 
     private val layoutManager by lazy(LazyThreadSafetyMode.NONE) {
         GridLayoutManager(binding.rvWidgets.context, 2)
@@ -119,6 +120,10 @@ class PlayExploreWidgetFragment @Inject constructor(
         binding.rvWidgets.adapter = widgetAdapter
         binding.rvWidgets.layoutManager = layoutManager
         binding.rvWidgets.addOnScrollListener(scrollListener)
+
+        binding.srExploreWidget.setOnRefreshListener {
+            viewModel.submitAction(RefreshWidget)
+        }
     }
 
     private fun observeState() {
