@@ -44,6 +44,7 @@ class HomePopularKeywordRepository @Inject constructor(
     }
 
     override suspend fun getRemoteData(bundle: Bundle): HomeWidget.PopularKeywordQuery {
+        setParams()
         return executeOnBackground()
     }
 
