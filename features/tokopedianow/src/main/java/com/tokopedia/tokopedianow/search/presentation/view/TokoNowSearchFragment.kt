@@ -49,6 +49,7 @@ import com.tokopedia.tokopedianow.searchcategory.presentation.listener.SwitcherW
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
 import com.tokopedia.tokopedianow.searchcategory.presentation.view.BaseSearchCategoryFragment
 import com.tokopedia.tokopedianow.searchcategory.utils.TOKONOW
+import com.tokopedia.tokopedianow.searchcategory.presentation.listener.SimilarProductCallback
 import com.tokopedia.tokopedianow.similarproduct.model.SimilarProductUiModel
 import javax.inject.Inject
 
@@ -148,7 +149,7 @@ class TokoNowSearchFragment :
             quickFilterListener = this,
             categoryFilterListener = this,
             productItemListener = this,
-            similarProductListener = this,
+            similarProductListener = createSimilarProductCallback(false),
             switcherWidgetListener = this,
             tokoNowEmptyStateNoResultListener = this,
             suggestionListener = this,
@@ -247,49 +248,6 @@ class TokoNowSearchFragment :
         showToaster(descriptionToaster, type, ctaToaster) {
             ctaClickListener?.invoke()
         }
-    }
-
-    override fun trackClickSimilarProductBtn(productId: String) {
-        SearchTracking.trackClickSimilarProductBtn(getViewModel().warehouseId, productId, userSession.userId.toString())
-    }
-
-    override fun trackImpressionBottomSheet(
-        userId: String,
-        warehouseId: String,
-        productId: String,
-        similarProducts: ArrayList<SimilarProductUiModel>
-    ) {
-        SearchTracking.trackImpressionBottomSheet(warehouseId, productId, similarProducts, userId)
-    }
-
-    override fun trackClickProduct(
-        userId: String,
-        warehouseId: String,
-        productId: String,
-        similarProducts: ArrayList<SimilarProductUiModel>
-    ) {
-        SearchTracking.trackClickProduct(warehouseId, productId, similarProducts, userId)
-    }
-
-    override fun trackClickAddToCart(
-        userId: String,
-        warehouseId: String,
-        product: SimilarProductUiModel,
-        similarProducts: ArrayList<SimilarProductUiModel>
-    ) {
-        SearchTracking.trackClickAddToCart(userId, warehouseId, product, similarProducts)
-    }
-
-    override fun trackClickCloseBottomsheet(
-        warehouseId: String,
-        productId: String,
-        similarProducts: ArrayList<SimilarProductUiModel>
-    ) {
-        SearchTracking.trackClickCloseBottomsheet(warehouseId, productId, similarProducts, userSession.userId.toString())
-    }
-
-    override fun trackImpressionEmptyState(warehouseId: String, productId: String) {
-        SearchTracking.trackImpressionEmptyState(warehouseId, productId, userSession.userId.toString())
     }
 
     private fun getQueryParamWithoutExcludes(): Map<String, String> {

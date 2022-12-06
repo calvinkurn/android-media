@@ -93,7 +93,7 @@ import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ProductIt
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ProductRecommendationCallback
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.ProductRecommendationOocCallback
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.QuickFilterListener
-import com.tokopedia.tokopedianow.searchcategory.presentation.listener.SimilarProductListener
+import com.tokopedia.tokopedianow.searchcategory.presentation.listener.SimilarProductCallback
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.SwitcherWidgetListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.listener.TitleListener
 import com.tokopedia.tokopedianow.searchcategory.presentation.model.ProductItemDataView
@@ -124,7 +124,6 @@ abstract class BaseSearchCategoryFragment:
     CategoryChooserBottomSheet.Callback,
     MiniCartWidgetListener,
     ProductItemListener,
-    SimilarProductListener,
     SwitcherWidgetListener,
     TokoNowEmptyStateNoResultListener,
     TokoNowProductCardListener
@@ -1093,7 +1092,7 @@ abstract class BaseSearchCategoryFragment:
         })
     }
 
-    open fun createProductRecommendationOocCallback() = ProductRecommendationOocCallback(
+    protected open fun createProductRecommendationOocCallback() = ProductRecommendationOocCallback(
         lifecycle = viewLifecycleOwner.lifecycle,
         userSession = userSession,
         trackingQueue = trackingQueue,
@@ -1107,7 +1106,7 @@ abstract class BaseSearchCategoryFragment:
         },
     )
 
-    open fun createProductRecommendationCallback() = ProductRecommendationCallback(
+    protected open fun createProductRecommendationCallback() = ProductRecommendationCallback(
         productRecommendationViewModel = productRecommendationViewModel,
         baseSearchCategoryViewModel = getViewModel(),
         activity = activity,
@@ -1121,4 +1120,12 @@ abstract class BaseSearchCategoryFragment:
             getListValue(false, recommendationItem)
         },
     )
+
+    protected open fun createSimilarProductCallback(isCategoryPage: Boolean) : SimilarProductCallback {
+        return SimilarProductCallback(
+            warehouseId = getViewModel().warehouseId,
+            userId = userSession.userId.toString(),
+            isCategoryPage = isCategoryPage
+        )
+    }
 }

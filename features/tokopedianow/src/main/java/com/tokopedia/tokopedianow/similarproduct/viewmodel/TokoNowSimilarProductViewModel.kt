@@ -13,11 +13,11 @@ import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.domain.usecase.GetMiniCartListSimplifiedUseCase
 import com.tokopedia.tokopedianow.common.base.viewmodel.BaseTokoNowViewModel
 import com.tokopedia.tokopedianow.common.util.TokoNowLocalAddress
-import com.tokopedia.tokopedianow.recipedetail.presentation.mapper.RecipeSimilarProductMapper.updateDeletedProductQuantity
-import com.tokopedia.tokopedianow.recipedetail.presentation.mapper.RecipeSimilarProductMapper.updateProductQuantity
 import com.tokopedia.tokopedianow.searchcategory.utils.ChooseAddressWrapper
 import com.tokopedia.tokopedianow.similarproduct.domain.model.ProductRecommendationResponse.ProductRecommendationWidgetSingle.Data.RecommendationItem
 import com.tokopedia.tokopedianow.similarproduct.domain.usecase.GetSimilarProductUseCase
+import com.tokopedia.tokopedianow.similarproduct.mapper.SimilarProductMapper.updateDeletedProductQuantity
+import com.tokopedia.tokopedianow.similarproduct.mapper.SimilarProductMapper.updateProductQuantity
 import com.tokopedia.tokopedianow.similarproduct.model.SimilarProductUiModel
 import com.tokopedia.user.session.UserSessionInterface
 import javax.inject.Inject

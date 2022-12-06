@@ -20,7 +20,7 @@ import com.tokopedia.minicart.common.domain.usecase.MiniCartSource
 import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
 import com.tokopedia.tokopedianow.R
 import com.tokopedia.tokopedianow.databinding.BottomsheetTokopedianowSimilarProductsBinding
-import com.tokopedia.tokopedianow.searchcategory.presentation.listener.SimilarProductListener
+import com.tokopedia.tokopedianow.similarproduct.listener.SimilarProductListener
 import com.tokopedia.tokopedianow.searchcategory.utils.ChooseAddressWrapper
 import com.tokopedia.tokopedianow.similarproduct.adapter.SimilarProductAdapter
 import com.tokopedia.tokopedianow.similarproduct.adapter.SimilarProductAdapterTypeFactory
@@ -99,6 +99,40 @@ class TokoNowSimilarProductBottomSheet : BottomSheetUnify(), SimilarProductAnaly
         activity?.finish()
     }
 
+    override fun trackClickProduct(
+        product: SimilarProductUiModel
+    ) {
+        listener?.trackClickProduct(userSession.userId.toString(), chooseAddressWrapper.getChooseAddressData().warehouse_id, product.id, items as ArrayList<SimilarProductUiModel>)
+    }
+
+    override fun trackClickAddToCart(
+        product: SimilarProductUiModel
+    ) {
+        listener?.trackClickAddToCart(userSession.userId.toString(), chooseAddressWrapper.getChooseAddressData().warehouse_id, product, items as ArrayList<SimilarProductUiModel>)
+    }
+
+    private fun configureBottomSheet() {
+        clearContentPadding = true
+        showCloseIcon = true
+        isHideable = true
+        showKnob = true
+        setCloseClickListener {
+            listener?.trackClickCloseBottomsheet(chooseAddressWrapper.getChooseAddressData().warehouse_id, triggerProductId, items as ArrayList<SimilarProductUiModel>)
+            dismiss()
+        }
+    }
+
+    private fun setupRecyclerView() {
+        binding?.recyclerView?.apply {
+            adapter = this@TokoNowSimilarProductBottomSheet.adapter
+            layoutManager = LinearLayoutManager(context)
+        }
+    }
+
+    private fun submitList(value: List<Visitable<*>>) {
+        adapter.submitList(value)
+    }
+
     fun showToaster(
         message: String,
         duration: Int = Toaster.LENGTH_SHORT,
@@ -128,29 +162,6 @@ class TokoNowSimilarProductBottomSheet : BottomSheetUnify(), SimilarProductAnaly
         show(fm, TAG)
     }
 
-    private fun configureBottomSheet() {
-        clearContentPadding = true
-        showCloseIcon = true
-        isHideable = true
-        showKnob = true
-        setCloseClickListener {
-            listener?.trackClickCloseBottomsheet(chooseAddressWrapper.getChooseAddressData().warehouse_id, triggerProductId, items as ArrayList<SimilarProductUiModel>)
-            dismiss()
-        }
-    }
-
-    private fun setupRecyclerView() {
-        binding?.recyclerView?.apply {
-            adapter = this@TokoNowSimilarProductBottomSheet.adapter
-            layoutManager = LinearLayoutManager(context)
-        }
-        submitList(items)
-    }
-
-    private fun submitList(value: List<Visitable<*>>) {
-        adapter.submitList(value)
-    }
-
     fun showEmptyProductListUi(){
         binding?.viewFlipper?.displayedChild = 1
     }
@@ -174,7 +185,6 @@ class TokoNowSimilarProductBottomSheet : BottomSheetUnify(), SimilarProductAnaly
                 pageName = pageName,
                 source = source
             )
-//            miniCartWidget?.show()
         } else {
             hideMiniCart()
         }
@@ -217,34 +227,6 @@ class TokoNowSimilarProductBottomSheet : BottomSheetUnify(), SimilarProductAnaly
         return binding?.miniCart?.height.orZero() - space16
     }
 
-    fun changeQuantity(quantity:Int, position: Int){
-        val item = (items[position] as SimilarProductUiModel)
-        item.quantity = quantity
-        adapter.notifyItemChanged(position)
-    }
-
-    fun updateList(indexList: ArrayList<Int>) {
-        indexList.forEach {
-            adapter.notifyItemChanged(it)
-        }
-    }
-
-    override fun trackClickProduct(
-        product: SimilarProductUiModel
-    ) {
-        listener?.trackClickProduct(userSession.userId.toString(), chooseAddressWrapper.getChooseAddressData().warehouse_id, product.id, items as ArrayList<SimilarProductUiModel>)
-    }
-
-    override fun trackClickAddToCart(
-        product: SimilarProductUiModel
-    ) {
-        listener?.trackClickAddToCart(userSession.userId.toString(), chooseAddressWrapper.getChooseAddressData().warehouse_id, product, items as ArrayList<SimilarProductUiModel>)
-    }
-
-    fun setListener(listener: SimilarProductListener?){
-        this.listener = listener
-    }
-
     private fun injectDependencies() {
         DaggerSimilarProductComponent.builder()
             .baseAppComponent((requireContext().applicationContext as BaseMainApplication).baseAppComponent)
@@ -252,8 +234,18 @@ class TokoNowSimilarProductBottomSheet : BottomSheetUnify(), SimilarProductAnaly
             .inject(this)
     }
 
+    fun changeQuantity(quantity:Int, position: Int){
+        val item = (items[position] as SimilarProductUiModel)
+        val newItems = items.toMutableList()
+        newItems[position] = item.copy(quantity = quantity)
+        items = newItems
+    }
+
+    fun setListener(listener: SimilarProductListener?){
+        this.listener = listener
+    }
+
     fun openMiniCartBottomsheet(fragment: Fragment){
         binding?.miniCart?.showMiniCartListBottomSheet(fragment)
     }
-
 }

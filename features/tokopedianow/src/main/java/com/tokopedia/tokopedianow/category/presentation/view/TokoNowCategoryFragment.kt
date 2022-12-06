@@ -182,7 +182,7 @@ class TokoNowCategoryFragment:
             quickFilterListener = this,
             categoryFilterListener = this,
             productItemListener = this,
-            similarProductListener = this,
+            similarProductListener = createSimilarProductCallback(true),
             switcherWidgetListener = this,
             tokoNowEmptyStateNoResultListener = this,
             categoryAisleListener = this,
@@ -228,49 +228,6 @@ class TokoNowCategoryFragment:
                 getUserId(),
                 getViewModel().categoryIdTracking,
         )
-    }
-
-    override fun trackClickSimilarProductBtn(productId: String) {
-        CategoryTracking.trackClickSimilarProductBtn(getViewModel().warehouseId, productId, userSession.userId.toString())
-    }
-
-    override fun trackImpressionBottomSheet(
-        userId: String,
-        warehouseId: String,
-        productId: String,
-        similarProducts: ArrayList<SimilarProductUiModel>,
-    ) {
-        CategoryTracking.trackImpressionBottomSheet(warehouseId, productId, similarProducts, userId)
-    }
-
-    override fun trackClickProduct(
-        userId: String,
-        warehouseId: String,
-        productId: String,
-        similarProducts: ArrayList<SimilarProductUiModel>
-    ) {
-        CategoryTracking.trackClickProduct(warehouseId, productId, similarProducts, userId)
-    }
-
-    override fun trackClickAddToCart(
-        userId: String,
-        warehouseId: String,
-        product: SimilarProductUiModel,
-        similarProducts: ArrayList<SimilarProductUiModel>
-    ) {
-        CategoryTracking.trackClickAddToCart(userId, warehouseId, product, similarProducts)
-    }
-
-    override fun trackClickCloseBottomsheet(
-        warehouseId: String,
-        productId: String,
-        similarProducts: ArrayList<SimilarProductUiModel>
-    ) {
-        CategoryTracking.trackClickCloseBottomsheet(warehouseId, productId, similarProducts, userSession.userId.toString())
-    }
-
-    override fun trackImpressionEmptyState(warehouseId: String, productId: String) {
-        CategoryTracking.trackImpressionEmptyState(warehouseId, productId, userSession.userId.toString())
     }
 
     override fun onWishlistButtonClicked(

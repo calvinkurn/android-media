@@ -12,13 +12,13 @@ import com.tokopedia.abstraction.base.app.BaseMainApplication
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.atc_common.domain.model.response.AddToCartDataModel
+import com.tokopedia.cartcommon.data.response.updatecart.UpdateCartV2Data
 import com.tokopedia.kotlin.extensions.view.observe
 import com.tokopedia.kotlin.extensions.view.toIntOrZero
-import com.tokopedia.minicart.common.domain.data.MiniCartItem
 import com.tokopedia.minicart.common.domain.data.MiniCartSimplifiedData
 import com.tokopedia.minicart.common.widget.MiniCartWidgetListener
 import com.tokopedia.tokopedianow.R
-import com.tokopedia.tokopedianow.searchcategory.presentation.listener.SimilarProductListener
+import com.tokopedia.tokopedianow.similarproduct.listener.SimilarProductListener
 import com.tokopedia.tokopedianow.searchcategory.utils.ChooseAddressWrapper
 import com.tokopedia.tokopedianow.similarproduct.activity.TokoNowSimilarProductActivity.Companion.EXTRA_SIMILAR_PRODUCT_ID
 import com.tokopedia.tokopedianow.similarproduct.bottomsheet.TokoNowSimilarProductBottomSheet
@@ -38,6 +38,7 @@ class TokoNowSimilarProductFragment : Fragment(), SimilarProductViewHolder.Simil
 
     companion object {
         private const val REQUEST_CODE_LOGIN = 101
+        private const val QUANTITY_ZERO = 0
 
         fun newInstance(products: String?): TokoNowSimilarProductFragment {
             return TokoNowSimilarProductFragment().apply {
@@ -47,9 +48,6 @@ class TokoNowSimilarProductFragment : Fragment(), SimilarProductViewHolder.Simil
             }
         }
     }
-
-    private val QUANTITY_ZERO = 0
-    private val EMPTY_LIST_INDEX = -1
     private var listener: SimilarProductListener? = null
 
     @Inject
@@ -146,8 +144,8 @@ class TokoNowSimilarProductFragment : Fragment(), SimilarProductViewHolder.Simil
     }
 
     private fun observeLiveData() {
-        viewModel.similarProductList.observe(viewLifecycleOwner, { list ->
-            if(list.isNotEmpty()) {
+        viewModel.similarProductList.observe(viewLifecycleOwner) { list ->
+            if (list.isNotEmpty()) {
                 //map this list to similar ui model list
                 list?.forEachIndexed { index, recommendationItem ->
                     run {
@@ -160,14 +158,14 @@ class TokoNowSimilarProductFragment : Fragment(), SimilarProductViewHolder.Simil
                     }
                 }
                 viewModel.onViewCreated(productList)
-            }
-            else{
+            } else {
                 // show no products ui
                 bottomSheet?.showEmptyProductListUi()
             }
             trackImpression()
 
-        })
+        }
+
         observe(viewModel.visitableItems) {
             bottomSheet?.items = it
         }
@@ -187,32 +185,16 @@ class TokoNowSimilarProductFragment : Fragment(), SimilarProductViewHolder.Simil
         }
 
         observe(viewModel.updateCartItem) {
-            if (it is Fail) {
-                showErrorToaster(it)
-            }
-            else{
-                val shopId = viewModel.getShopId().toString()
-                bottomSheet?.updateMiniCart(shopId)
+            when (it) {
+                is Success -> onSuccessUpdateCartItem(it.data)
+                is Fail -> showErrorToaster(it)
             }
         }
 
         observe(viewModel.miniCart) {
             when(it) {
                 is Success -> {
-                    val data = it.data
-                    val indexList = arrayListOf<Int>()
-                    data.miniCartItems.values.forEach {
-                        if(it is MiniCartItem.MiniCartItemProduct){
-                            val cartProduct = it
-                            val index = productList.indexOfFirst { it.id == cartProduct.productId }
-                            if(index != EMPTY_LIST_INDEX){
-                                indexList.add(index)
-                                productList[index].quantity = cartProduct.quantity
-                            }
-                        }
-                    }
-                    bottomSheet?.updateList(indexList)
-                    bottomSheet?.showMiniCart(data, viewModel.getShopId(), this)
+                    bottomSheet?.showMiniCart(it.data, viewModel.getShopId(), this)
                 }
                 is Fail -> {
                     bottomSheet?.hideMiniCart()
@@ -238,6 +220,18 @@ class TokoNowSimilarProductFragment : Fragment(), SimilarProductViewHolder.Simil
         }
         bottomSheet?.changeQuantity(QUANTITY_ZERO, position)
         getMiniCart()
+    }
+
+    private fun onSuccessUpdateCartItem(data : Triple<String, UpdateCartV2Data, Int>) {
+        val shopId = viewModel.getShopId().toString()
+        bottomSheet?.updateMiniCart(shopId)
+
+        val productId = data.first
+        val quantity = data.third
+        val position = productList.indexOfFirst {
+            it.id == productId
+        }
+        bottomSheet?.changeQuantity(quantity, position)
     }
 
     private fun showErrorToaster(error: Fail) {

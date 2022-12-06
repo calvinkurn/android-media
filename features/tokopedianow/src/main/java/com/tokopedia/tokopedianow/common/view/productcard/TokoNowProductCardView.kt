@@ -31,7 +31,7 @@ import com.tokopedia.tokopedianow.common.util.ViewUtil.getDpFromDimen
 import com.tokopedia.tokopedianow.common.util.ViewUtil.safeParseColor
 import com.tokopedia.tokopedianow.common.util.doOnPreDraw
 import com.tokopedia.tokopedianow.databinding.LayoutTokopedianowProductCardViewBinding
-import com.tokopedia.tokopedianow.searchcategory.presentation.listener.SimilarProductListener
+import com.tokopedia.tokopedianow.similarproduct.listener.SimilarProductListener
 import com.tokopedia.tokopedianow.similarproduct.activity.TokoNowSimilarProductActivity
 import com.tokopedia.unifycomponents.Label
 import com.tokopedia.unifycomponents.ProgressBarUnify
