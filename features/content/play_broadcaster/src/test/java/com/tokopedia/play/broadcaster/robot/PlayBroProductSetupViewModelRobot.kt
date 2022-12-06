@@ -32,7 +32,6 @@ internal class PlayBroProductSetupViewModelRobot(
     handle: SavedStateHandle = SavedStateHandle(),
     isEligibleForPin: Boolean = false,
     channelRepo: PlayBroadcastRepository = mockk(relaxed = true),
-    hydraConfigStore: HydraConfigStore = mockk(relaxed = true),
     userSession: UserSessionInterface = mockk(relaxed = true),
     private val dispatchers: CoroutineTestDispatchers = CoroutineTestDispatchers,
 ) : Closeable {
