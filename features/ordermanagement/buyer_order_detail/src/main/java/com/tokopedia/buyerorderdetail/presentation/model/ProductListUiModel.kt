@@ -13,6 +13,11 @@ data class ProductListUiModel(
     val addonsListUiModel: AddonsListUiModel?,
     val productListToggleUiModel: ProductListToggleUiModel?
 ) {
+
+    fun getAllProduct(): List<ProductUiModel> {
+        return productList.plus(productBundlingList.map { it.bundleItemList }.flatten())
+    }
+
     data class ProductListHeaderUiModel(
         val shopBadgeUrl: String,
         val shopId: String,
