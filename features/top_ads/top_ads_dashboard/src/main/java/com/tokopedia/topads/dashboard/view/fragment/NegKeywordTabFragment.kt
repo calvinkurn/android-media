@@ -225,7 +225,7 @@ class NegKeywordTabFragment : BaseDaggerFragment() {
                 delay(TOASTER_DURATION)
                 if (activity != null && isAdded) {
                     if (!deleteCancel) {
-                        viewModel.setKeywordActionForGroup(groupId ?: "", actionActivate, getAdIds(), resources, ::onSuccessAction)
+                        viewModel.setKeywordActionForGroup(groupId ?: "0", actionActivate, getAdIds(), resources, ::onSuccessAction)
                         activity?.setResult(Activity.RESULT_OK)
                     }
                     deleteCancel = false
@@ -233,7 +233,7 @@ class NegKeywordTabFragment : BaseDaggerFragment() {
                 }
             }
         } else {
-            viewModel.setKeywordActionForGroup(groupId ?: "", actionActivate, getAdIds(), resources, ::onSuccessAction)
+            viewModel.setKeywordActionForGroup(groupId ?: "0", actionActivate, getAdIds(), resources, ::onSuccessAction)
         }
     }
 

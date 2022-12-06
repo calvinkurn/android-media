@@ -460,7 +460,7 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
     }
 
     private fun loadData() {
-        viewModel.getGroupInfo(resources, groupId ?: "", GROUP_DETAIL_PAGE, ::onSuccessGroupInfo)
+        viewModel.getGroupInfo(resources, groupId ?: "0", GROUP_DETAIL_PAGE, ::onSuccessGroupInfo)
         viewModel.getTopAdsStatistic(startDate!!, endDate!!, selectedStatisticType, ::onSuccesGetStatisticsInfo,
             groupId ?: "", placementType)
     }
@@ -587,7 +587,7 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
     private fun loadStatisticsData() {
         if (startDate == null || endDate == null) return
         viewModel.getTopAdsStatistic(startDate!!, endDate!!, selectedStatisticType, ::onSuccesGetStatisticsInfo,
-            groupId ?: "", placementType)
+            groupId ?: "0", placementType)
     }
 
     private fun onSuccesGetStatisticsInfo(dataStatistic: DataStatistic) {
