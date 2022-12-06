@@ -45,6 +45,8 @@ import com.tokopedia.mvc.presentation.bottomsheet.OtherPeriodBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.displayvoucher.DisplayVoucherBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.editperiod.VoucherEditPeriodBottomSheet
 import com.tokopedia.mvc.presentation.bottomsheet.moremenu.MoreMenuBottomSheet
+import com.tokopedia.mvc.presentation.bottomsheet.voucherperiod.DateStartEndData
+import com.tokopedia.mvc.presentation.bottomsheet.voucherperiod.VoucherPeriodBottomSheet
 import com.tokopedia.mvc.presentation.list.adapter.VoucherAdapterListener
 import com.tokopedia.mvc.presentation.list.adapter.VouchersAdapter
 import com.tokopedia.mvc.presentation.list.constant.PageState
@@ -74,6 +76,7 @@ class MvcListFragment: BaseDaggerFragment(), HasPaginatedList by HasPaginatedLis
     private var moreMenuBottomSheet: MoreMenuBottomSheet? = null
     private var voucherEditPeriodBottomSheet: VoucherEditPeriodBottomSheet? = null
     private var displayVoucherBottomSheet: DisplayVoucherBottomSheet? = null
+    private var voucherPeriodBottomSheet: VoucherPeriodBottomSheet? = null
 
     @Inject
     lateinit var viewModel: MvcListViewModel
@@ -128,6 +131,8 @@ class MvcListFragment: BaseDaggerFragment(), HasPaginatedList by HasPaginatedLis
                 showEditPeriodBottomSheet(voucher)
             }
             is MoreMenuUiModel.Edit -> {
+                //TODO change this , using for testing
+                showVoucherPeriodBottomSheet()
             }
             is MoreMenuUiModel.Clipboard -> {
             }
@@ -148,6 +153,26 @@ class MvcListFragment: BaseDaggerFragment(), HasPaginatedList by HasPaginatedLis
             }
             else -> {
             }
+        }
+    }
+
+    //DUMMY DATA . USED FOR TESTING > REMOVE THEM
+    private fun showVoucherPeriodBottomSheet() {
+        val list = mutableListOf<DateStartEndData>(
+            DateStartEndData("2022-05-10", "2022-05-20", "00:30", "05:30"),
+            DateStartEndData("2022-06-10", "2022-06-20", "01:30", "06:30"),
+            DateStartEndData("2022-07-10", "2022-07-20", "02:30", "05:30"),
+            DateStartEndData("2022-08-10", "2022-08-20", "03:30", "07:30"),
+            DateStartEndData("2022-09-10", "2022-09-20", "04:30", "08:30"),
+            DateStartEndData("2022-10-10", "2022-10-20", "05:30", "09:30")
+        )
+        activity?.let {
+            voucherPeriodBottomSheet =
+                VoucherPeriodBottomSheet.newInstance(
+                    title = context?.resources?.getString(R.string.voucher_bs_period_title_1)
+                        .toBlankOrString(), dateList = list
+                )
+            voucherPeriodBottomSheet?.show(childFragmentManager, "")
         }
     }
 
