@@ -16,6 +16,7 @@ import com.tokopedia.play.broadcaster.util.assertEqualTo
 import com.tokopedia.play.broadcaster.util.assertTrue
 import com.tokopedia.play.broadcaster.util.assertType
 import com.tokopedia.play_common.types.PlayChannelStatusType
+import com.tokopedia.play_common.util.error.DefaultErrorThrowable
 import com.tokopedia.unit.test.rule.CoroutineTestRule
 import io.mockk.*
 import org.junit.Before
