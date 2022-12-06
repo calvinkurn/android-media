@@ -462,7 +462,7 @@ class TopAdsGroupDetailViewActivity : TopAdsBaseDetailActivity(), HasComponent<T
     private fun loadData() {
         viewModel.getGroupInfo(resources, groupId ?: "0", GROUP_DETAIL_PAGE, ::onSuccessGroupInfo)
         viewModel.getTopAdsStatistic(startDate!!, endDate!!, selectedStatisticType, ::onSuccesGetStatisticsInfo,
-            groupId ?: "", placementType)
+            groupId ?: "0", placementType)
     }
 
     private fun onSuccessGroupInfo(data: GroupInfoResponse.TopAdsGetPromoGroup.Data) {
