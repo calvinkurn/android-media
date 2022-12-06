@@ -23,7 +23,7 @@ ext {
     protobufLiteVersion = '3.19.1'
     googleTinkVersion = '1.6.1'
     exifInterfaceVersion = '1.2.0'
-    androidxCoreVersion = '1.6.0'
+    androidxCoreVersion = '1.8.0'
     supportLegacyLibraryVersion = '1.0.0'
     playServiceVersion = '11.0.4'
     coroutineVersion = '1.5.1'
@@ -34,7 +34,8 @@ ext {
     glideVersion = '4.9.0'
     viewPager2 = '1.0.0'
     deeplinkDispatchVersion = '4.1.0'
-    espressoVersion = "3.1.0"
+    espressoVersion = "3.4.0"
+    accessibilityTestFrameworkVersion = "4.0.0"
     runnerVersion = "1.4.0"
     rulesVersion = "1.4.0"
     apolloVersion = '0.3.0'
@@ -116,8 +117,8 @@ ext {
 
     unifyIconVersion = '0.0.4'
     unifyIconsVersion = '1.0.23.2'
-    unifyPrinciplesVersion = '1.4.1.2'
-    unifyComponentsVersion = '1.2.18.1'
+    unifyPrinciplesVersion = '1.4.2'
+    unifyComponentsVersion = '1.2.19.1'
     unifyCoachMarkVersion = '1.2.17.2'
     unifyCalendarVersion = '1.2.1.2'
     unifyBannerVersion = '1.0.6.2'
@@ -129,11 +130,11 @@ ext {
     unifyEmptyStateVersion = '1.0.13.2'
     unifyGlobalErrorVersion = '1.0.18.2'
     unifyHeaderVersion = '1.1.13'
-    unifySortFilterVersion = '1.1.4.2'
+    unifySortFilterVersion = '1.1.5'
     unifyIconNotificationVersion = '1.0.2.2'
     unifyCarouselVersion = '1.0.10.2'
     unifyListVersion = '1.0.10.2'
-    unifyAccordionVersion = '1.1.7.2'
+    unifyAccordionVersion = '1.1.8'
     unifyTotalAmountVersion = '1.0.7.2'
     unifyExplorePromoVersion = '1.0.3.2'
     unifyImageGalleryVersion = '1.0.5.2'
@@ -249,7 +250,7 @@ ext {
             chips                 : 'com.beloo.widget:ChipsLayoutManager:0.3.7@aar',
             roundCornerProgressBar: 'com.akexorcist:RoundCornerProgressBar:2.0.3',
             lottie                : "com.airbnb.android:lottie:$lottieVersion",
-            hansel                : "io.hansel.preprocessor:preprocessor:9.3.0",
+            hansel                : "io.hansel.preprocessor:preprocessor:9.3.1",
             protobuf              : "com.google.protobuf:protobuf-gradle-plugin:0.8.12",
             autopatchbase         : "com.tokopedia.patch:core:1.0.0",
             apacheLang            : "org.apache.commons:commons-lang3:3.0",
@@ -263,6 +264,7 @@ ext {
             guava24               : 'com.google.guava:guava:24.1-jre',
             incap                 : "net.ltgt.gradle.incap:incap:0.2",
             incapProcessor        : "net.ltgt.gradle.incap:incap-processor:0.2",
+            coreKtx               : "androidx.core:core-ktx:$androidxCoreVersion",
             navigationSafeArgs    : "androidx.navigation:navigation-safe-args-gradle-plugin:$navigationVersion",
             navigationFragmentKtx : "androidx.navigation:navigation-fragment-ktx:$navigationVersion",
             navigationUiKtx       : "androidx.navigation:navigation-ui-ktx:$navigationVersion",
@@ -313,7 +315,8 @@ ext {
             jjwtJson              : "io.jsonwebtoken:jjwt-orgjson:0.11.2",
             gojekSSO              : "com.gojek.android:icp-identity-login-sso:$gojekSSOVersion",
             dynamicAnimation      : "androidx.dynamicanimation:dynamicanimation:1.0.0",
-            playIntegrityApi      : "com.google.android.play:integrity:$playIntegrityVersion"
+            playIntegrityApi      : "com.google.android.play:integrity:$playIntegrityVersion",
+            modifaceMakeUpKit     : "com.tokopedia.modiface:mfemakeupkit:0.0.18@aar"
     ]
 
     testDependencies = [

@@ -13,40 +13,40 @@
 
         <com.tokopedia.reputation.common.view.AnimatedStarsCreateReviewView
             android:id="@+id/anim_1_create_review"
-            android:layout_width="@dimen/layout_lvl6"
-            android:layout_height="@dimen/layout_lvl6"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:layout_gravity="center"
-            android:layout_marginEnd="@dimen/layout_lvl1"
-            android:layout_marginRight="@dimen/layout_lvl1" />
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp" />
 
         <com.tokopedia.reputation.common.view.AnimatedStarsCreateReviewView
             android:id="@+id/anim_2_create_review"
-            android:layout_width="@dimen/layout_lvl6"
-            android:layout_height="@dimen/layout_lvl6"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:layout_gravity="center"
-            android:layout_marginEnd="@dimen/layout_lvl1"
-            android:layout_marginRight="@dimen/layout_lvl1" />
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp" />
 
         <com.tokopedia.reputation.common.view.AnimatedStarsCreateReviewView
             android:id="@+id/anim_3_create_review"
-            android:layout_width="@dimen/layout_lvl6"
-            android:layout_height="@dimen/layout_lvl6"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:layout_gravity="center"
-            android:layout_marginEnd="@dimen/layout_lvl1"
-            android:layout_marginRight="@dimen/layout_lvl1" />
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp" />
 
         <com.tokopedia.reputation.common.view.AnimatedStarsCreateReviewView
             android:id="@+id/anim_4_create_review"
-            android:layout_width="@dimen/layout_lvl6"
-            android:layout_height="@dimen/layout_lvl6"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:layout_gravity="center"
-            android:layout_marginEnd="@dimen/layout_lvl1"
-            android:layout_marginRight="@dimen/layout_lvl1" />
+            android:layout_marginEnd="8dp"
+            android:layout_marginRight="8dp" />
 
         <com.tokopedia.reputation.common.view.AnimatedStarsCreateReviewView
             android:id="@+id/anim_5_create_review"
-            android:layout_width="@dimen/layout_lvl6"
-            android:layout_height="@dimen/layout_lvl6"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
             android:layout_gravity="center" />
 
     </LinearLayout>

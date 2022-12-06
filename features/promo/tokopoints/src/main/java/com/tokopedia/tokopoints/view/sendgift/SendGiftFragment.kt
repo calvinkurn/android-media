@@ -47,6 +47,12 @@ class SendGiftFragment : BottomSheetDialogFragment(), SendGiftContract.View, Vie
     private val mViewModel: SendGiftViewModel by lazy { ViewModelProviders.of(this, factory)[SendGiftViewModel::class.java] }
     private var pageLoadTimePerformanceMonitoring: PageLoadTimePerformanceInterface? = null
 
+    override val activityContext: Context
+        get() = requireActivity()
+
+    override val appContext: Context
+        get() = requireActivity()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         startPerformanceMonitoring()
         super.onCreate(savedInstanceState)
@@ -74,8 +80,8 @@ class SendGiftFragment : BottomSheetDialogFragment(), SendGiftContract.View, Vie
         mBtnSendNow = view.findViewById(com.tokopedia.tokopoints.R.id.button_send_now)
         val ivCancelInitial = getView()!!.findViewById<ImageView>(com.tokopedia.tokopoints.R.id.iv_cancel)
         val ivCancelPreConfirm = getView()!!.findViewById<ImageView>(com.tokopedia.tokopoints.R.id.iv_cancel_preconfirmation)
-        ivCancelInitial.setOnClickListener { view1: View? -> dismiss() }
-        ivCancelPreConfirm.setOnClickListener { view1: View? -> dismiss() }
+        ivCancelInitial.setOnClickListener { dismiss() }
+        ivCancelPreConfirm.setOnClickListener {  dismiss() }
         mWrapperEmail?.textFieldInput?.addTextChangedListener(this)
         mWrapperNote?.textFieldInput?.addTextChangedListener(this)
         mBtnSendGift?.setOnClickListener(View.OnClickListener { view: View -> onClick(view) })
@@ -96,7 +102,7 @@ class SendGiftFragment : BottomSheetDialogFragment(), SendGiftContract.View, Vie
                 is Loading -> showLoading()
                 is ErrorMessage -> {
                     hideLoading()
-                    if (!it.data.isEmpty()) {
+                    if (it.data.isNotEmpty()) {
                         onErrorPreValidate(it.data)
                     }
                 }
@@ -216,7 +222,7 @@ class SendGiftFragment : BottomSheetDialogFragment(), SendGiftContract.View, Vie
         textTitle.text = couponTitle
         textPoint.text = couponPoint
         textEmail.text = mWrapperEmail?.textFieldInput?.text?.toString()
-        if (!mWrapperNote?.textFieldInput.toString().trim { it <= ' ' }.isEmpty()) {
+        if (mWrapperNote?.textFieldInput.toString().trim { it <= ' ' }.isNotEmpty()) {
             textNotes.text = "\"" + mWrapperNote?.textFieldInput?.text.toString().trim { it <= ' ' } + "\""
         }
     }
@@ -228,13 +234,6 @@ class SendGiftFragment : BottomSheetDialogFragment(), SendGiftContract.View, Vie
 
     override fun onSuccess() {}
     override fun onError(error: String) {}
-    override fun getAppContext(): Context {
-        return activity!!
-    }
-
-    override fun getActivityContext(): Context {
-        return activity!!
-    }
 
     override fun showPopup(title: String, message: String, success: Int) {
         val constraintLayout: ConstraintLayout = view!!.findViewById(com.tokopedia.tokopoints.R.id.pre_confirmation_parent_container)
@@ -246,7 +245,7 @@ class SendGiftFragment : BottomSheetDialogFragment(), SendGiftContract.View, Vie
             val tvTitle = viewSentSuccess.findViewById<TextView>(com.tokopedia.tokopoints.R.id.tv_title)
             val tvContent = viewSentSuccess.findViewById<TextView>(com.tokopedia.tokopoints.R.id.content)
             val btnSuccess = viewSentSuccess.findViewById<TextView>(com.tokopedia.tokopoints.R.id.btn_sentSuccess)
-            btnSuccess.setOnClickListener { view: View? -> activity!!.finish() }
+            btnSuccess.setOnClickListener {  requireActivity().finish() }
             tvTitle.text = title
             tvContent.text = message
             adb.setView(viewSentSuccess)
@@ -255,8 +254,8 @@ class SendGiftFragment : BottomSheetDialogFragment(), SendGiftContract.View, Vie
             val tvContent = viewSentFail.findViewById<TextView>(com.tokopedia.tokopoints.R.id.content)
             val tvRoute = viewSentFail.findViewById<TextView>(com.tokopedia.tokopoints.R.id.tv_route)
             val btnFailed = viewSentFail.findViewById<TextView>(com.tokopedia.tokopoints.R.id.btn_sentFail)
-            btnFailed.setOnClickListener { view: View? -> activity!!.finish() }
-            tvRoute.setOnClickListener { view: View? -> RouteManager.route(this.context, ApplinkConst.TOKOPEDIA_REWARD) }
+            btnFailed.setOnClickListener {  requireActivity().finish() }
+            tvRoute.setOnClickListener {  RouteManager.route(this.context, ApplinkConst.TOKOPEDIA_REWARD) }
             tvTitle.text = title
             tvContent.text = message
             adb.setView(viewSentFail)

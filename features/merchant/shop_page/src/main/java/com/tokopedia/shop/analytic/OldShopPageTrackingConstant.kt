@@ -6,7 +6,7 @@ package com.tokopedia.shop.analytic
 object OldShopPageTrackingConstant {
     const val FEATURED_PRODUCT = "Produk Unggulan"
 
-    //event
+    // event
     const val CLICK_SHOP_PAGE = "clickShopPage"
     const val VIEW_SHOP_PAGE = "viewShopPage"
     const val PROMO_VIEW = "promoView"
@@ -18,14 +18,14 @@ object OldShopPageTrackingConstant {
     const val SELLER_REMOVED_FROM_FAVORITE = "Seller_Removed_From_Favorite"
     const val CLICK_MEMBERSHIP_EVENT = "clickShopPage"
 
-    //category
+    // category
     const val SHOP_PAGE_SELLER = "shop page - seller"
     const val SHOP_PAGE_BUYER = "shop page - buyer"
     const val SHOP_PAGE = "shop page"
     const val TOP_NAV = "top nav - %s"
     const val MEMBERSHIP_SHOP_PAGE = "membership - shop page"
 
-    //ACTION
+    // ACTION
     const val TOP_SECTION = "top section"
     const val INFO = "info"
     const val MERCHANT_VOUCHER_CODE = "merchant voucher code"
@@ -49,7 +49,7 @@ object OldShopPageTrackingConstant {
     const val SHOP_SEARCH_PRODUCT_CLICK_GLOBAL_SEARCH = "click - global autocomplete"
     const val SHOP_SEARCH_PRODUCT_CLICK_PRODUCT_AUTOCOMPLETE = "click - global autocomplete"
 
-    //label
+    // label
     const val CLICK_TAB = "click tab"
     const val CLICK_SHARE_BUTTON = "click share button"
     const val CLICK_CART_BUTTON = "click cart button"
@@ -91,7 +91,7 @@ object OldShopPageTrackingConstant {
     const val MEMBERSHIP_COUPON_CLAIM = "click klaim kupon"
     const val MEMBERSHIP_COUPON_CHECK = "click cek kupon saya"
 
-    //key
+    // key
     const val EVENT = "event"
     const val EVENT_CATEGORY = "eventCategory"
     const val EVENT_ACTION = "eventAction"
@@ -138,14 +138,14 @@ object OldShopPageTrackingConstant {
     const val URL_SLUG = "url_slug"
     const val IS_OFFICIAL_STORE = "is_official_store"
 
-    //SCREEN/PAGES
+    // SCREEN/PAGES
     const val SCREEN_SHOP_PAGE = "Shop Page"
     const val SCREEN_SEARCH_BAR = "Search Bar"
 
-    //value
+    // value
     const val VALUE_PRODUCT = "Product"
 
-    //page_url
+    // page_url
     const val ETALASE_SHOPNAME = "etalase-%s"
     const val SRP_SHOPNAME = "srp-%s"
 }

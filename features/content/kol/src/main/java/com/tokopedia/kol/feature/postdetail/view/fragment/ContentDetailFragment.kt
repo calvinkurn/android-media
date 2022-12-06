@@ -472,6 +472,11 @@ class ContentDetailFragment : BaseDaggerFragment(), ContentDetailPostViewHolder.
                         getString(com.tokopedia.feedcomponent.R.string.feed_component_unfollow_success_toast),
                         Toaster.TYPE_NORMAL
                     )
+                } else  {
+                    showToast(
+                        getString(com.tokopedia.feedcomponent.R.string.feed_component_follow_success_toast),
+                        Toaster.TYPE_NORMAL
+                    )
                 }
 
                 if (feedXCardData.followers.isFollowed)

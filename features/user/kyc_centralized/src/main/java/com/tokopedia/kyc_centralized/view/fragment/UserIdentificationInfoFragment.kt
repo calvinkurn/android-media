@@ -13,6 +13,10 @@ import com.tokopedia.abstraction.common.utils.snackbar.NetworkErrorHelper
 import com.tokopedia.applink.ApplinkConst
 import com.tokopedia.applink.RouteManager
 import com.tokopedia.applink.internal.ApplinkConstInternalGlobal
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.PARAM_KYC_TYPE
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.PARAM_PROJECT_ID
+import com.tokopedia.applink.internal.ApplinkConstInternalUserPlatform.PARAM_REDIRECT_URL
 import com.tokopedia.globalerror.GlobalError.Companion.PAGE_NOT_FOUND
 import com.tokopedia.kotlin.extensions.view.hide
 import com.tokopedia.kotlin.extensions.view.orZero
@@ -43,7 +47,8 @@ import javax.inject.Inject
 /**
  * @author by alvinatin on 02/11/18.
  */
-class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationInfoActivity.Listener {
+class UserIdentificationInfoFragment : BaseDaggerFragment(),
+    UserIdentificationInfoActivity.Listener {
 
     private var viewBinding by autoClearedNullable<FragmentUserIdentificationInfoBinding>()
     private var isSourceSeller = false
@@ -57,10 +62,19 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
 
     @Inject
     lateinit var viewModelFactory: ViewModelProvider.Factory
-    private val viewModelFragmentProvider by lazy { ViewModelProvider(requireActivity(), viewModelFactory) }
+    private val viewModelFragmentProvider by lazy {
+        ViewModelProvider(
+            requireActivity(),
+            viewModelFactory
+        )
+    }
     private val viewModel by lazy { viewModelFragmentProvider.get(UserIdentificationViewModel::class.java) }
 
-    override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View? {
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
         viewBinding = FragmentUserIdentificationInfoBinding.inflate(inflater, container, false)
         return viewBinding?.root
     }
@@ -68,10 +82,10 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (arguments != null) {
-            isSourceSeller = arguments?.getBoolean(KYCConstant.EXTRA_IS_SOURCE_SELLER)?: false
-            projectId = arguments?.getInt(ApplinkConstInternalGlobal.PARAM_PROJECT_ID, KYCConstant.KYC_PROJECT_ID)?: KYCConstant.KYC_PROJECT_ID
-            redirectUrl = arguments?.getString(ApplinkConstInternalGlobal.PARAM_REDIRECT_URL).orEmpty()
-            kycType = arguments?.getString(ApplinkConstInternalGlobal.PARAM_KYC_TYPE).orEmpty()
+            isSourceSeller = arguments?.getBoolean(KYCConstant.EXTRA_IS_SOURCE_SELLER) ?: false
+            projectId = arguments?.getInt(PARAM_PROJECT_ID) ?: KYCConstant.KYC_PROJECT_ID
+            redirectUrl = arguments?.getString(PARAM_REDIRECT_URL).orEmpty()
+            kycType = arguments?.getString(PARAM_KYC_TYPE).orEmpty()
         }
         if (isSourceSeller) {
             goToFormActivity()
@@ -100,10 +114,10 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
 
     private fun initObserver(view: View) {
         viewModel.userProjectInfo.observe(viewLifecycleOwner, Observer {
-            when(it) {
+            when (it) {
                 is Success -> {
                     allowedSelfie = it.data.kycProjectInfo?.isSelfie == true
-                    if( it.data.kycProjectInfo?.status == KycStatus.BLACKLISTED.code ||
+                    if (it.data.kycProjectInfo?.status == KycStatus.BLACKLISTED.code ||
                         it.data.kycProjectInfo?.statusName?.isEmpty() == true
                     ) {
                         onUserBlacklist()
@@ -111,10 +125,13 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
                         onSuccessGetUserProjectInfo(
                             view,
                             it.data.kycProjectInfo?.status.orZero(),
-                            it.data.kycProjectInfo?.reasonList.orEmpty())
+                            it.data.kycProjectInfo?.reasonList.orEmpty()
+                        )
                     }
                 }
-                is Fail -> { onErrorGetUserProjectInfo(it.throwable) }
+                is Fail -> {
+                    onErrorGetUserProjectInfo(it.throwable)
+                }
             }
         })
     }
@@ -147,9 +164,14 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
             KycStatus.NOT_VERIFIED -> showStatusNotVerified(view)
             KycStatus.DEFAULT -> toggleNotFoundView(true)
             else -> onErrorGetUserProjectInfo(
-                    Throwable(String.format(Locale.getDefault(), "%s (%s)",
-                            getString(R.string.user_identification_default_request_error_unknown),
-                            KYCConstant.ERROR_STATUS_UNKNOWN)))
+                Throwable(
+                    String.format(
+                        Locale.getDefault(), "%s (%s)",
+                        getString(R.string.user_identification_default_request_error_unknown),
+                        KYCConstant.ERROR_STATUS_UNKNOWN
+                    )
+                )
+            )
         }
     }
 
@@ -248,7 +270,7 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
     }
 
     private fun showRejectedReason(reasons: List<String>) {
-        when(reasons.size) {
+        when (reasons.size) {
             REJECTED_REASON_SIZE_ONE -> {
                 viewBinding?.icX1?.show()
                 viewBinding?.txtReason1?.apply {
@@ -373,7 +395,7 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
             when (status) {
                 KycStatus.PENDING -> analytics?.eventClickOnButtonPendingPage()
                 KycStatus.BLACKLISTED -> analytics?.eventClickOnButtonBlacklistPage()
-                else -> { }
+                else -> {}
             }
             activity?.finish()
         }
@@ -382,12 +404,12 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
     private fun goToFormActivity() {
         if (activity != null) {
             val intent = RouteManager.getIntent(
-                    activity,
-                    ApplinkConstInternalGlobal.USER_IDENTIFICATION_FORM,
-                    projectId.toString(),
-                    redirectUrl
+                activity,
+                ApplinkConstInternalUserPlatform.KYC_FORM,
+                projectId.toString(),
+                redirectUrl
             )
-            intent.putExtra(ApplinkConstInternalGlobal.PARAM_KYC_TYPE, kycType)
+            intent.putExtra(PARAM_KYC_TYPE, kycType)
             intent.putExtra(ALLOW_SELFIE_FLOW_EXTRA, allowedSelfie)
             startActivityForResult(intent, FLAG_ACTIVITY_KYC_FORM)
         }
@@ -432,13 +454,18 @@ class UserIdentificationInfoFragment : BaseDaggerFragment(), UserIdentificationI
         private const val REJECTED_REASON_SIZE_FOUR = 4
 
         const val ALLOW_SELFIE_FLOW_EXTRA = "allow_selfie_flow"
-        fun createInstance(isSourceSeller: Boolean, projectid: Int, kycType: String = "", redirectUrl: String?): UserIdentificationInfoFragment {
+        fun createInstance(
+            isSourceSeller: Boolean,
+            projectid: Int,
+            kycType: String = "",
+            redirectUrl: String?
+        ): UserIdentificationInfoFragment {
             return UserIdentificationInfoFragment().apply {
                 arguments = Bundle().apply {
                     putBoolean(KYCConstant.EXTRA_IS_SOURCE_SELLER, isSourceSeller)
-                    putInt(ApplinkConstInternalGlobal.PARAM_PROJECT_ID, projectid)
-                    putString(ApplinkConstInternalGlobal.PARAM_REDIRECT_URL, redirectUrl)
-                    putString(ApplinkConstInternalGlobal.PARAM_KYC_TYPE, kycType)
+                    putInt(PARAM_PROJECT_ID, projectid)
+                    putString(PARAM_REDIRECT_URL, redirectUrl)
+                    putString(PARAM_KYC_TYPE, kycType)
                 }
             }
         }
