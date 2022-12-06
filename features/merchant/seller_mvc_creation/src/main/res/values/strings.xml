@@ -22,8 +22,8 @@
     <string name="smvc_change_location">Ganti lokasi?</string>
     <string name="smvc_confirm_change_location">Ganti Lokasi</string>
     <string name="smvc_change_location_description">Produk yang sudah kamu pilih akan tereset jika kamu ganti lokasi</string>
-    <string name="smvc_empty_state_no_product_title">Oops, produk nggak ditemukan</string>
-    <string name="smvc_empty_state_no_product_description">Coba gunakan kata kunci lain atau filter yang berbeda, ya.</string>
+    <string name="smvc_empty_state_search_result_title">Oops, produk nggak ditemukan</string>
+    <string name="smvc_empty_state_search_result_description">Coba gunakan kata kunci lain atau filter yang berbeda, ya.</string>
     <string name="smvc_no_showcase">Tokomu belum punya etalase</string>
     <string name="smvc_no_showcase_description">Etalase yang tampil di sini adalah etalase yang dibuat sendiri.</string>
 
@@ -63,6 +63,9 @@
     <string name="smvc_delete_variant">Hapus Varian?</string>
     <string name="smvc_proceed_delete">Ya, Hapus</string>
     <string name="smvc_update_product">Ubah Produk</string>
+    <string name="smvc_variant_list">Daftar Varian</string>
+    <string name="smvc_empty_state_no_product_title">Oops, kamu tidak punya produk</string>
+    <string name="smvc_empty_state_no_product_description">Buat produk pertamamu dulu di halaman Tambah Produk, ya.</string>
 
     <!--Voucher List-->
     <string name="smvc_voucherlist_page_title">Daftar Kupon</string>
@@ -111,7 +114,6 @@
     <string name="smvc_placeholder_share_component_outgoing_title">Kupon Produk dari %s</string>
     <string name="smvc_share_component_outgoing_text_description">Yuk, belanja dan pakai Kupon Produknya sekarang!</string>
     <string name="smvc_placeholder_share_component_text_description">Dapatkan Kupon Produk %s di \@Tokopedia hingga %s pukul %s WIB hanya untukmu!</string>
-    <!-- <string name="smvc_placeholder_product_price">%s - %s</string>-->
     <string name="smvc_placeholder_share_component_outgoing_title_product_voucher">Kupon Produk dari %s</string>
     <string name="smvc_placeholder_share_component_outgoing_title_shop_voucher">Voucher Toko dari %s</string>
 
@@ -210,4 +212,18 @@
     <string name="smvc_voucherlist_empty_data_search_title_text">Kupon yang kamu cari nggak ditemukan</string>
     <string name="smvc_voucherlist_empty_data_search_description_text">Coba ulangi pencarian dengan kata kunci atau filter lain, ya.</string>
 
+    <!--Download Voucher-->
+    <string name="smvc_download_voucher_image">Download voucher image</string>
+    <string name="smvc_download_voucher">Download Kupon</string>
+    <string name="smvc_select_voucher_image_ratio">Pilih ukuran kupon</string>
+    <string name="smvc_download_voucher_description">Download kupon dengan ukuran yang sesuai dengan kebutuhanmu dari 3 ukuran berikut:</string>
+    <string name="smvc_placeholder_download_voucher_image_success">Kupon %s berhasil di-download</string>
+    <string name="smvc_download_voucher_image_failed">Download kupon gagal, cek koneksi internetmu dulu, ya.</string>
+    <string name="smvc_storage_permission_enabled_needed">Anda tidak memberikan izin akses untuk Media Penyimpanan.</string>
+    <string name="smvc_square">Square</string>
+    <string name="smvc_square_description">Untuk post Instagram, Facebook.</string>
+    <string name="smvc_vertical">Vertikal</string>
+    <string name="smvc_vertical_description">Untuk post Instagram Story.</string>
+    <string name="smvc_horizontal">Horizontal</string>
+    <string name="smvc_horizontal_description">Untuk banner toko</string>
 </resources>
