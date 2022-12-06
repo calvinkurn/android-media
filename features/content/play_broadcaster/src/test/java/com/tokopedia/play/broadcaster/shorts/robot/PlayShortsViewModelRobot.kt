@@ -44,6 +44,9 @@ class PlayShortsViewModelRobot(
     val isFormFilled: Boolean
         get() = viewModel.isFormFilled
 
+    val isAllowChangeAccount: Boolean
+        get() = viewModel.isAllowChangeAccount
+
     val tncList: List<TermsAndConditionUiModel>
         get() = viewModel.tncList
 

@@ -61,6 +61,7 @@ class PlayShortsConfigViewModelTest {
 
             state.accountList.assertEmpty()
             state.config.assertEqualTo(PlayShortsConfigUiModel.Empty)
+            state.selectedAccount.assertEqualTo(ContentAccountUiModel.Empty)
             events.last().assertType<PlayShortsUiEvent.AccountNotEligible>()
         }
     }
@@ -80,6 +81,7 @@ class PlayShortsConfigViewModelTest {
             }
 
             state.config.assertEqualTo(mockConfigAllowed)
+            state.selectedAccount.assertEqualTo(mockAccountShop)
         }
     }
 
@@ -99,6 +101,7 @@ class PlayShortsConfigViewModelTest {
 
             it.tncList.assertEqualTo(mockConfigAllowed.tncList)
             state.config.assertEqualTo(PlayShortsConfigUiModel.Empty.copy(tncList = mockConfigAllowed.tncList))
+            state.selectedAccount.assertEqualTo(ContentAccountUiModel.Empty)
             events.last().assertType<PlayShortsUiEvent.SellerNotEligible>()
         }
     }
@@ -118,6 +121,7 @@ class PlayShortsConfigViewModelTest {
 
             it.tncList.assertEqualTo(mockConfigAllowed.tncList)
             state.config.assertEqualTo(PlayShortsConfigUiModel.Empty.copy(tncList = mockConfigAllowed.tncList))
+            state.selectedAccount.assertEqualTo(ContentAccountUiModel.Empty)
             events.last().assertType<PlayShortsUiEvent.SellerNotEligible>()
         }
     }
@@ -137,6 +141,7 @@ class PlayShortsConfigViewModelTest {
             }
 
             state.config.assertEqualTo(mockConfigAllowed)
+            state.selectedAccount.assertEqualTo(mockAccountUser)
         }
     }
 
@@ -155,6 +160,7 @@ class PlayShortsConfigViewModelTest {
 
             it.tncList.assertEqualTo(mockConfigAllowed.tncList)
             state.config.assertEqualTo(PlayShortsConfigUiModel.Empty.copy(tncList = mockConfigAllowed.tncList))
+            state.selectedAccount.assertEqualTo(ContentAccountUiModel.Empty)
             assertEventOnboarding(events.last()) { hasUsername ->
                 hasUsername.assertFalse()
             }
@@ -176,6 +182,7 @@ class PlayShortsConfigViewModelTest {
 
             it.tncList.assertEqualTo(mockConfigAllowed.tncList)
             state.config.assertEqualTo(PlayShortsConfigUiModel.Empty.copy(tncList = mockConfigAllowed.tncList))
+            state.selectedAccount.assertEqualTo(ContentAccountUiModel.Empty)
             assertEventOnboarding(events.last()) { hasUsername ->
                 hasUsername.assertTrue()
             }
@@ -197,6 +204,7 @@ class PlayShortsConfigViewModelTest {
 
             it.tncList.assertEqualTo(mockConfigAllowed.tncList)
             state.config.assertEqualTo(PlayShortsConfigUiModel.Empty.copy(tncList = mockConfigAllowed.tncList))
+            state.selectedAccount.assertEqualTo(ContentAccountUiModel.Empty)
             events.last().assertType<PlayShortsUiEvent.AccountNotEligible>()
         }
     }
@@ -218,6 +226,7 @@ class PlayShortsConfigViewModelTest {
             }
 
             state.config.assertEqualTo(mockConfigAllowedNoDraft.copy(shortsId = mockShortsId))
+            state.selectedAccount.assertEqualTo(mockAccountShop)
         }
     }
 
@@ -232,11 +241,12 @@ class PlayShortsConfigViewModelTest {
             repo = mockRepo,
             accountManager = mockAccountManager
         ).use {
-            val events = it.recordEvent {
+            val (state, events) = it.recordStateAndEvent {
                 submitAction(PlayShortsAction.PreparePage(preferredAccountType = ""))
             }
 
             events.last().assertType<PlayShortsUiEvent.ErrorPreparingPage>()
+            state.selectedAccount.assertEqualTo(ContentAccountUiModel.Empty)
         }
     }
 
