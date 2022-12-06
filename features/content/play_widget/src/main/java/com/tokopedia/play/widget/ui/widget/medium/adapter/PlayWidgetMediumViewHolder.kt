@@ -6,13 +6,11 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.tokopedia.kotlin.extensions.view.addOnImpressionListener
 import com.tokopedia.play.widget.R
-import com.tokopedia.play.widget.ui.model.PlayWidgetBackgroundUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetBannerUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
-import com.tokopedia.play.widget.ui.type.PlayWidgetPromoType
-import com.tokopedia.play.widget.ui.widget.medium.PlayWidgetCardMediumChannelView
 import com.tokopedia.play.widget.ui.widget.medium.PlayWidgetCardMediumBannerView
+import com.tokopedia.play.widget.ui.widget.medium.PlayWidgetCardMediumChannelView
 import com.tokopedia.play.widget.ui.widget.medium.PlayWidgetCardMediumTranscodeView
 import com.tokopedia.play.widget.ui.widget.medium.model.PlayWidgetOverlayUiModel
 

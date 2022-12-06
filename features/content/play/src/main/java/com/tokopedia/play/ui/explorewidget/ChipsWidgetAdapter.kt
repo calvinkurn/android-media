@@ -2,20 +2,32 @@ package com.tokopedia.play.ui.explorewidget
 
 import com.tokopedia.adapterdelegate.BaseDiffUtilAdapter
 import com.tokopedia.play.view.uimodel.ChipWidgetUiModel
+import com.tokopedia.play.view.uimodel.ChipWidgetsUiModel
 
 /**
  * @author by astidhiyaa on 02/12/22
  */
 
-class ChipsWidgetAdapter(private val chipsListener: ChipsViewHolder.Listener) : BaseDiffUtilAdapter<ChipWidgetUiModel>() {
+class ChipsWidgetAdapter internal constructor(chipsListener: ChipsViewHolder.Chips.Listener) :
+    BaseDiffUtilAdapter<ChipWidgetsUiModel>() {
     init {
         delegatesManager.addDelegate(ChipsWidgetAdapterDelegate.Chips(chipsListener))
-    }
-    override fun areItemsTheSame(oldItem: ChipWidgetUiModel, newItem: ChipWidgetUiModel): Boolean {
-        return oldItem.group == newItem.group
+        delegatesManager.addDelegate(ChipsWidgetAdapterDelegate.Shimmering())
     }
 
-    override fun areContentsTheSame(oldItem: ChipWidgetUiModel, newItem: ChipWidgetUiModel): Boolean {
+    override fun areItemsTheSame(
+        oldItem: ChipWidgetsUiModel,
+        newItem: ChipWidgetsUiModel
+    ): Boolean {
+        return if (oldItem is ChipWidgetUiModel && newItem is ChipWidgetUiModel)
+            oldItem.group == newItem.group else
+            oldItem == newItem
+    }
+
+    override fun areContentsTheSame(
+        oldItem: ChipWidgetsUiModel,
+        newItem: ChipWidgetsUiModel
+    ): Boolean {
         return oldItem == newItem
     }
 }

@@ -997,7 +997,7 @@ class PlayViewModel @AssistedInject constructor(
             FetchWidgets -> fetchWidgets()
             is ClickChipWidget -> handleClickChip(action.item)
             NextPageWidgets -> onActionWidget(isNextPage = true)
-            RefreshWidget -> onActionWidget(isRefresh = true)
+            RefreshWidget -> fetchWidgets()
         }
     }
 
@@ -2672,17 +2672,15 @@ class PlayViewModel @AssistedInject constructor(
 
     private fun fetchWidgets() {
         viewModelScope.launchCatchError(block = {
+            _exploreWidget.update { it.copy(state = ResultState.Loading) }
             val data = getWidgets()
             val chips = data.getChips.items
 
             _exploreWidget.update {
-                it.copy(
-                    chips = chips
-                )
+                it.copy(chips = chips)
             }
 
             if (!data.isSubSlotAvailable && chips.isEmpty())  return@launchCatchError
-
             updateWidgetParam(group = chips.first().group, sourceType = chips.first().sourceType, sourceId = chips.first().sourceId)
             val widgets = getWidgets()
             _exploreWidget.update {
@@ -2692,15 +2690,20 @@ class PlayViewModel @AssistedInject constructor(
                         widgets = newList.getChannelBlocks,
                     )
             }
-        }) {}
+            _exploreWidget.update { it.copy(state = ResultState.Success) }
+        }) { exception ->
+            _exploreWidget.update { it.copy(state = ResultState.Fail(exception)) }
+        }
     }
 
     /**
      * Next Page or Chips Clicked
      */
-    private fun onActionWidget(isNextPage : Boolean = false, isRefresh : Boolean = false) {
+    private fun onActionWidget(isNextPage : Boolean = false) {
         if(!_exploreWidget.value.widgets.hasNextPage && isNextPage) return
-        viewModelScope.launch {
+        viewModelScope.launchCatchError( block = {
+            _exploreWidget.update { it.copy(state = ResultState.Loading) }
+
             val widgets = getWidgets()
 
             _exploreWidget.update {
@@ -2708,9 +2711,13 @@ class PlayViewModel @AssistedInject constructor(
 
                 it.copy(
                     widgets = newList.getChannelBlocks,
-                    param = it.param.copy(cursor = if(!isRefresh) widgets.getConfig.cursor else "")
+                    param = it.param.copy(cursor = widgets.getConfig.cursor)
                 )
             }
+
+            _exploreWidget.update { it.copy(state = ResultState.Success) }
+        }){
+                exception -> _exploreWidget.update { it.copy(state = ResultState.Fail(exception)) }
         }
     }
 

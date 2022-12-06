@@ -4,6 +4,8 @@ import android.view.View
 import android.view.ViewGroup
 import com.tokopedia.adapterdelegate.BaseAdapterDelegate
 import com.tokopedia.adapterdelegate.TypedAdapterDelegate
+import com.tokopedia.play.widget.ui.adapter.viewholder.placeholder.PlayWidgetCardPlaceholderViewHolder
+import com.tokopedia.play.widget.ui.model.PlayCardShimmering
 import com.tokopedia.play_common.R as commonR
 import com.tokopedia.play.widget.ui.model.PlayWidgetBannerUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
@@ -121,6 +123,25 @@ internal class PlayWidgetMediumAdapterDelegate private constructor() {
             return PlayWidgetMediumViewHolder.Transcode.create(
                 parent,
                 cardTranscodeListener
+            )
+        }
+    }
+
+    internal class Shimmering : TypedAdapterDelegate<PlayCardShimmering, Any, PlayWidgetCardPlaceholderViewHolder>(PlayWidgetCardPlaceholderViewHolder.layout) {
+        override fun onBindViewHolder(
+            item: PlayCardShimmering,
+            holder: PlayWidgetCardPlaceholderViewHolder
+        ) {
+            holder.bind()
+            holder.setType(PlayWidgetCardPlaceholderViewHolder.Type.MEDIUM)
+        }
+
+        override fun onCreateViewHolder(
+            parent: ViewGroup,
+            basicView: View
+        ): PlayWidgetCardPlaceholderViewHolder {
+            return PlayWidgetCardPlaceholderViewHolder(
+                basicView
             )
         }
     }

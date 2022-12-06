@@ -1,6 +1,9 @@
 package com.tokopedia.play.view.uimodel
 
+import com.tokopedia.play.widget.ui.model.PlayCardShimmering
+import com.tokopedia.play.widget.ui.model.PlayWidgetItemUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetUiModel
+import com.tokopedia.play_common.model.result.ResultState
 
 /**
  * @author by astidhiyaa on 28/11/22
@@ -9,6 +12,7 @@ data class ExploreWidgetUiModel(
     val param: WidgetParamUiModel,
     val chips: List<ChipWidgetUiModel>,
     val widgets: List<WidgetItemUiModel>,
+    val state: ResultState,
 ) {
     companion object {
         val Empty: ExploreWidgetUiModel
@@ -16,6 +20,7 @@ data class ExploreWidgetUiModel(
                 chips = emptyList(),
                 param = WidgetParamUiModel.Empty,
                 widgets = emptyList(),
+                state = ResultState.Success,
             )
     }
 }
@@ -34,13 +39,15 @@ data class WidgetParamUiModel(
     }
 }
 
+sealed class ChipWidgetsUiModel
 data class ChipWidgetUiModel(
     val isSelected: Boolean = false,
     val group: String,
     val sourceType: String,
     val sourceId: String,
     val text: String,
-)
+) : ChipWidgetsUiModel()
+object ChipsShimmering : ChipWidgetsUiModel()
 
 sealed class WidgetUiModel
     data class TabMenuUiModel(
@@ -105,3 +112,16 @@ val List<WidgetUiModel>.getConfig : PageConfig
         return this.filterIsInstance<PageConfig>().firstOrNull() ?: PageConfig.Empty
     }
 
+internal val getWidgetShimmering : List<PlayWidgetItemUiModel>
+    get() {
+        return List(6){
+            PlayCardShimmering
+        }
+    }
+
+internal val getChipsShimmering : List<ChipsShimmering>
+    get() {
+        return List(6){
+            ChipsShimmering
+        }
+    }

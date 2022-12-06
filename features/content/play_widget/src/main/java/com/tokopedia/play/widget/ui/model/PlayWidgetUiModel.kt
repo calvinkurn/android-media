@@ -81,3 +81,5 @@ data class PlayWidgetTotalView(
     val totalViewFmt: String,
     val isVisible: Boolean,
 )
+
+object PlayCardShimmering: PlayWidgetItemUiModel()

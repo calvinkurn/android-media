@@ -13,6 +13,7 @@ class PlayWidgetChannelMediumAdapter(
     init {
         delegatesManager
             .addDelegate(PlayWidgetMediumAdapterDelegate.Channel(cardChannelListener))
+            .addDelegate(PlayWidgetMediumAdapterDelegate.Shimmering())
     }
 
     override fun areItemsTheSame(

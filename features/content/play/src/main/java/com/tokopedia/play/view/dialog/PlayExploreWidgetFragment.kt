@@ -23,17 +23,18 @@ import com.tokopedia.play.util.isChanged
 import com.tokopedia.play.util.withCache
 import com.tokopedia.play.view.fragment.PlayFragment
 import com.tokopedia.play.view.fragment.PlayUserInteractionFragment
-import com.tokopedia.play.view.uimodel.ChipWidgetUiModel
-import com.tokopedia.play.view.uimodel.WidgetItemUiModel
+import com.tokopedia.play.view.uimodel.*
 import com.tokopedia.play.view.uimodel.action.ClickChipWidget
 import com.tokopedia.play.view.uimodel.action.NextPageWidgets
 import com.tokopedia.play.view.uimodel.action.RefreshWidget
-import com.tokopedia.play.view.uimodel.getChannelBlock
+import com.tokopedia.play.view.uimodel.getChipsShimmering
+import com.tokopedia.play.view.uimodel.getWidgetShimmering
 import com.tokopedia.play.view.viewmodel.PlayViewModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
 import com.tokopedia.play.widget.ui.widget.medium.adapter.PlayWidgetChannelMediumAdapter
 import com.tokopedia.play.widget.ui.widget.medium.adapter.PlayWidgetMediumViewHolder
+import com.tokopedia.play_common.model.result.ResultState
 import kotlinx.coroutines.flow.collectLatest
 import javax.inject.Inject
 import kotlin.math.roundToInt
@@ -46,7 +47,7 @@ import com.tokopedia.play.R as playR
 class PlayExploreWidgetFragment @Inject constructor(
     private val router: Router,
 ) : DialogFragment(),
-    ChipsViewHolder.Listener,
+    ChipsViewHolder.Chips.Listener,
     PlayWidgetMediumViewHolder.Channel.Listener {
 
     private var _binding: FragmentPlayExploreWidgetBinding? = null
@@ -65,8 +66,7 @@ class PlayExploreWidgetFragment @Inject constructor(
     private val widgetAdapter = PlayWidgetChannelMediumAdapter(cardChannelListener = this)
 
     private val layoutManager by lazy(LazyThreadSafetyMode.NONE) {
-        GridLayoutManager(binding.rvWidgets.context, 2)
-    }
+        GridLayoutManager(binding.rvWidgets.context, SPAN_CHANNEL)    }
 
     private val scrollListener = object : RecyclerView.OnScrollListener() {
         override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
@@ -131,21 +131,47 @@ class PlayExploreWidgetFragment @Inject constructor(
             viewModel.uiState.withCache().collectLatest {
                 val cachedState = it
 
-                if(cachedState.isChanged { it.exploreWidget.data.chips })
-                    renderChips(cachedState.value.exploreWidget.data.chips)
+                if(cachedState.isChanged {
+                        it.exploreWidget.data.chips
+                        it.exploreWidget.data.state
+                })
+                    renderChips(cachedState.value.exploreWidget.data.state, cachedState.value.exploreWidget.data.chips)
 
-                if (cachedState.isChanged { it.exploreWidget.data.widgets })
-                    renderWidgets(cachedState.value.exploreWidget.data.widgets.getChannelBlock)
+                if (cachedState.isChanged {
+                        it.exploreWidget.data.widgets
+                        it.exploreWidget.data.state
+                    })
+                    renderWidgets(cachedState.value.exploreWidget.data.state, cachedState.value.exploreWidget.data.widgets.getChannelBlock)
             }
         }
     }
 
-    private fun renderChips(chips: List<ChipWidgetUiModel>) {
-        chipsAdapter.setItemsAndAnimateChanges(chips)
+    private fun renderChips(state: ResultState, chips: List<ChipWidgetUiModel>) {
+        when (state) {
+            ResultState.Success -> {
+                chipsAdapter.setItemsAndAnimateChanges(chips)
+            }
+            ResultState.Loading -> {
+                chipsAdapter.setItemsAndAnimateChanges(getChipsShimmering)
+            }
+            is ResultState.Fail -> {
+                //show toaster}
+            }
+        }
     }
 
-    private fun renderWidgets(widget: WidgetItemUiModel) {
-        widgetAdapter.setItemsAndAnimateChanges(widget.item.items)
+    private fun renderWidgets(state: ResultState, widget: WidgetItemUiModel) {
+        when (state) {
+            ResultState.Success -> {
+                widgetAdapter.setItemsAndAnimateChanges(widget.item.items)
+            }
+            ResultState.Loading -> {
+                widgetAdapter.setItemsAndAnimateChanges(getWidgetShimmering)
+            }
+            is ResultState.Fail -> {
+                //show toaster}
+            }
+        }
     }
 
     override fun onResume() {
@@ -200,6 +226,8 @@ class PlayExploreWidgetFragment @Inject constructor(
 
     companion object {
         private const val TAG = "PlayExploreWidgetFragment"
+
+        private const val SPAN_CHANNEL = 2
 
         fun get(fragmentManager: FragmentManager): PlayExploreWidgetFragment? {
             return fragmentManager.findFragmentByTag(TAG) as? PlayExploreWidgetFragment
