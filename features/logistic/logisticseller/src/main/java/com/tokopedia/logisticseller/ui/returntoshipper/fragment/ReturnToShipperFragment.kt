@@ -24,7 +24,7 @@ import com.tokopedia.logisticseller.data.response.GetGeneralInfoRtsResponse
 import com.tokopedia.logisticseller.databinding.FragmentReturnToShipperBinding
 import com.tokopedia.logisticseller.di.returntoshipper.DaggerReturnToShipperComponent
 import com.tokopedia.logisticseller.di.returntoshipper.ReturnToShipperComponent
-import com.tokopedia.logisticseller.ui.returntoshipper.dialog.ReturtToShipperDialog
+import com.tokopedia.logisticseller.ui.returntoshipper.dialog.ReturnToShipperDialog
 import com.tokopedia.logisticseller.ui.returntoshipper.uimodel.ReturnToShipperState
 import com.tokopedia.logisticseller.ui.returntoshipper.viewmodel.ReturnToShipperViewModel
 import com.tokopedia.unifycomponents.Toaster
@@ -93,15 +93,16 @@ class ReturnToShipperFragment : BaseDaggerFragment() {
                         doFinishActivity()
                     }
                 }
-                is ReturnToShipperState.ShowLoading -> binding?.loaderRts?.isVisible =
-                    it.isShowLoading
+                is ReturnToShipperState.ShowLoading ->
+                    binding?.loaderRts?.isVisible =
+                        it.isShowLoading
             }
         }
     }
 
-    private fun openRTSConfirmationDialog(data: GetGeneralInfoRtsResponse.GeneralInfoRtsData) {
+    private fun openRTSConfirmationDialog(data: GetGeneralInfoRtsResponse.GetGeneralInfoRts.GeneralInfoRtsData) {
         activity?.apply {
-            ReturtToShipperDialog(this).apply {
+            ReturnToShipperDialog(this).apply {
                 showRtsConfirmationDialog(
                     data = data.setUrlImage(),
                     onPrimaryCTAClickListener = {
@@ -125,7 +126,7 @@ class ReturnToShipperFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun GetGeneralInfoRtsResponse.GeneralInfoRtsData.setUrlImage(): GetGeneralInfoRtsResponse.GeneralInfoRtsData {
+    private fun GetGeneralInfoRtsResponse.GetGeneralInfoRts.GeneralInfoRtsData.setUrlImage(): GetGeneralInfoRtsResponse.GetGeneralInfoRts.GeneralInfoRtsData {
         return this.apply {
             image.apply {
                 accessToken = userSession.accessToken
@@ -143,7 +144,7 @@ class ReturnToShipperFragment : BaseDaggerFragment() {
 
     private fun showSuccessDialog() {
         activity?.apply {
-            ReturtToShipperDialog(this).apply {
+            ReturnToShipperDialog(this).apply {
                 showRtsSuccessDialog {
                     doFinishActivity(Activity.RESULT_OK)
                 }
@@ -153,7 +154,7 @@ class ReturnToShipperFragment : BaseDaggerFragment() {
 
     private fun showFailedRtsDialog() {
         activity?.apply {
-            ReturtToShipperDialog(this).apply {
+            ReturnToShipperDialog(this).apply {
                 showRtsFailedDialog {
                     doFinishActivity(Activity.RESULT_FIRST_USER)
                 }

@@ -15,7 +15,7 @@ class GetGeneralInfoRtsUseCase @Inject constructor(
 ) : CoroutineUseCase<GeneralInfoRtsParam, GetGeneralInfoRtsResponse>(dispatcher.io) {
 
     override fun graphqlQuery(): String {
-        return RETRY_AVAILABILITY_QUERY
+        return GET_GENERAL_INFO_QUERY
     }
 
     override suspend fun execute(params: GeneralInfoRtsParam): GetGeneralInfoRtsResponse {
@@ -23,7 +23,7 @@ class GetGeneralInfoRtsUseCase @Inject constructor(
     }
 
     companion object {
-        const val RETRY_AVAILABILITY_QUERY = """
+        const val GET_GENERAL_INFO_QUERY = """
           query getGeneralInformation(${'$'}input:MpLogisticGetGeneralInformationInputs!){
             getGeneralInformation(input: ${'$'}input) {
               data {

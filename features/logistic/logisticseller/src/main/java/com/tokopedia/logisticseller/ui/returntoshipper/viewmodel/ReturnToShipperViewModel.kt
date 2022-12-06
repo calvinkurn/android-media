@@ -21,8 +21,8 @@ class ReturnToShipperViewModel @Inject constructor(
     private val requestGeneralInfoRtsUseCase: RequestGeneralInfoRtsUseCase
 ) : BaseViewModel(dispatcher.main) {
     private val _confirmationRtsState =
-        MutableLiveData<ReturnToShipperState<GetGeneralInfoRtsResponse.GeneralInfoRtsData>>()
-    val confirmationRtsState: LiveData<ReturnToShipperState<GetGeneralInfoRtsResponse.GeneralInfoRtsData>>
+        MutableLiveData<ReturnToShipperState<GetGeneralInfoRtsResponse.GetGeneralInfoRts.GeneralInfoRtsData>>()
+    val confirmationRtsState: LiveData<ReturnToShipperState<GetGeneralInfoRtsResponse.GetGeneralInfoRts.GeneralInfoRtsData>>
         get() = _confirmationRtsState
 
     fun getGeneralInformation(orderId: String) {
@@ -36,7 +36,7 @@ class ReturnToShipperViewModel @Inject constructor(
                             action = GeneralInfoRtsParam.ACTION_RTS_CONFIRMATION
                         )
                     )
-                )
+                ).data
                 _confirmationRtsState.value = ReturnToShipperState.ShowLoading(false)
 
                 if (response.isSuccess && response.data != null) {
@@ -69,7 +69,7 @@ class ReturnToShipperViewModel @Inject constructor(
                             action = action
                         )
                     )
-                )
+                ).data
 
                 if (isActionConfirmation) {
                     _confirmationRtsState.value = ReturnToShipperState.ShowLoading(false)

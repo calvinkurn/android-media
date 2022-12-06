@@ -15,7 +15,7 @@ class RequestGeneralInfoRtsUseCase @Inject constructor(
 ) : CoroutineUseCase<GeneralInfoRtsParam, ReqGeneralInfoRtsResponse>(dispatcher.io) {
 
     override fun graphqlQuery(): String {
-        return REQUEST_GENERAL_INFORMATION_QUERY
+        return INSERT_ACTION_GENERAL_INFO_QUERY
     }
 
     override suspend fun execute(params: GeneralInfoRtsParam): ReqGeneralInfoRtsResponse {
@@ -23,7 +23,7 @@ class RequestGeneralInfoRtsUseCase @Inject constructor(
     }
 
     companion object {
-        const val REQUEST_GENERAL_INFORMATION_QUERY = """
+        const val INSERT_ACTION_GENERAL_INFO_QUERY = """
           mutation mpLogisticInsertActionGeneralInformation(${'$'}input:MpLogisticInsertActionGeneralInformationInput!){
             mpLogisticInsertActionGeneralInformation(input: ${'$'}input) {
               status

@@ -5,16 +5,16 @@ import com.tokopedia.device.info.DeviceScreenInfo
 import com.tokopedia.dialog.DialogUnify
 import com.tokopedia.kotlin.extensions.view.getScreenWidth
 import com.tokopedia.logisticCommon.util.LogisticImageDeliveryHelper.loadImagePod
-import com.tokopedia.logisticseller.data.response.GetGeneralInfoRtsResponse
 import com.tokopedia.logisticseller.R
+import com.tokopedia.logisticseller.data.response.GetGeneralInfoRtsResponse
 
-class ReturtToShipperDialog(private val context: Context) {
+class ReturnToShipperDialog(private val context: Context) {
 
     fun showRtsConfirmationDialog(
-        data: GetGeneralInfoRtsResponse.GeneralInfoRtsData,
+        data: GetGeneralInfoRtsResponse.GetGeneralInfoRts.GeneralInfoRtsData,
         onPrimaryCTAClickListener: (() -> Unit),
         onSecondaryCTAClickListener: (() -> Unit),
-        onDismissListener: (() -> Unit),
+        onDismissListener: (() -> Unit)
     ) {
         showDialog(
             title = data.title,
@@ -37,7 +37,7 @@ class ReturtToShipperDialog(private val context: Context) {
     }
 
     fun showRtsSuccessDialog(
-        onDismissListener: (() -> Unit),
+        onDismissListener: (() -> Unit)
     ) {
         showDialog(
             title = context.getString(R.string.title_rts_success_dialog),
@@ -56,7 +56,7 @@ class ReturtToShipperDialog(private val context: Context) {
     }
 
     fun showRtsFailedDialog(
-        onDismissListener: (() -> Unit),
+        onDismissListener: (() -> Unit)
     ) {
         showDialog(
             title = context.getString(R.string.title_rts_failed_dialog),
@@ -84,7 +84,7 @@ class ReturtToShipperDialog(private val context: Context) {
         onPrimaryCTAClickListener: (() -> Unit)? = null,
         onSecondaryCTAClickListener: (() -> Unit)? = null,
         onDismissListener: (() -> Unit)? = null,
-        imageData: GetGeneralInfoRtsResponse.Image? = null,
+        imageData: GetGeneralInfoRtsResponse.GetGeneralInfoRts.Image? = null,
         imageIcon: Int = 0
     ) {
         var isFromCTAClickListener = false
