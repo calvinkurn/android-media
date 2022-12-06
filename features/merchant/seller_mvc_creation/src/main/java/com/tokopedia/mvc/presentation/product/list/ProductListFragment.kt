@@ -32,7 +32,6 @@ import com.tokopedia.mvc.domain.entity.SelectedProduct
 import com.tokopedia.mvc.domain.entity.VoucherConfiguration
 import com.tokopedia.mvc.domain.entity.enums.PageMode
 import com.tokopedia.mvc.presentation.product.add.AddProductActivity
-import com.tokopedia.mvc.presentation.product.add.AddProductFragment
 import com.tokopedia.mvc.presentation.product.list.adapter.ProductListAdapter
 import com.tokopedia.mvc.presentation.product.list.uimodel.ProductListEffect
 import com.tokopedia.mvc.presentation.product.list.uimodel.ProductListEvent
@@ -88,7 +87,7 @@ class ProductListFragment : BaseDaggerFragment() {
     private val viewModel by lazy { viewModelProvider.get(ProductListViewModel::class.java) }
 
 
-    override fun getScreenName(): String = AddProductFragment::class.java.canonicalName.orEmpty()
+    override fun getScreenName(): String = ProductListFragment::class.java.canonicalName.orEmpty()
 
     override fun initInjector() {
         DaggerMerchantVoucherCreationComponent.builder()
@@ -228,7 +227,7 @@ class ProductListFragment : BaseDaggerFragment() {
         renderTopSection(uiState.pageMode, uiState.products.count(), uiState.maxProductSelection)
         renderLoadingState(uiState.isLoading)
         renderList(uiState.products)
-        renderEmptyState(uiState.products.count(), uiState.isLoading, uiState.pageMode)
+        renderEmptyState(uiState.products.count(), uiState.isLoading, uiState.pageMode, uiState.originalPageMode)
         renderProductCounter(uiState.products.count(), uiState.selectedProductsIds.count(), uiState.pageMode)
         renderBulkDeleteIcon(uiState.selectedProductsIds.count())
         renderSelectAllCheckbox(uiState.products.count(), uiState.selectedProductsIds.count(), uiState.pageMode)
@@ -303,12 +302,23 @@ class ProductListFragment : BaseDaggerFragment() {
         }
     }
 
-    private fun renderEmptyState(productCount: Int, isLoading: Boolean, pageMode: PageMode) {
+    private fun renderEmptyState(
+        productCount: Int,
+        isLoading: Boolean,
+        pageMode: PageMode,
+        originalPageMode: PageMode
+    ) {
         val isCreateMode = pageMode == PageMode.CREATE
 
         binding?.run {
             emptyState.isVisible = productCount.isZero() && !isLoading
-            emptyState.emptyStateCTAID.setOnClickListener { activity?.finish() }
+            emptyState.emptyStateCTAID.setOnClickListener {
+                if (originalPageMode == PageMode.EDIT) {
+                    redirectToAddProductPage()
+                } else {
+                    backToPreviousPage()
+                }
+            }
 
             when {
                 !isCreateMode -> cardUnify2.gone()
@@ -446,5 +456,18 @@ class ProductListFragment : BaseDaggerFragment() {
     ) {
         //TODO: Navigate to voucher preview page
     }
+
+    private fun backToPreviousPage() {
+        activity?.finish()
+    }
+
+    private fun redirectToAddProductPage() {
+        val intent = AddProductActivity.buildEditModeIntent(
+            activity ?: return,
+            voucherConfiguration ?: return
+        )
+        startActivityForResult(intent, NumberConstant.REQUEST_CODE_ADD_PRODUCT_TO_SELECTION)
+    }
+
 }
 
