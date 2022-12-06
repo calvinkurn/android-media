@@ -12,12 +12,12 @@ import com.tokopedia.tokopedianow.common.constant.ServiceType.NOW_15M
 import com.tokopedia.tokopedianow.common.domain.usecase.SetUserPreferenceUseCase
 import com.tokopedia.tokopedianow.common.model.TokoNowProductCardCarouselItemUiModel
 import com.tokopedia.tokopedianow.search.domain.mapper.CategoryJumperMapper.createCategoryJumperDataView
-import com.tokopedia.tokopedianow.search.domain.mapper.SearchBroadMatchMapper.createBroadMatchDataView
+import com.tokopedia.tokopedianow.search.domain.mapper.VisitableMapper.addBroadMatchDataView
+import com.tokopedia.tokopedianow.search.domain.mapper.VisitableMapper.addSuggestionDataView
+import com.tokopedia.tokopedianow.search.domain.mapper.VisitableMapper.updateSuggestionDataView
 import com.tokopedia.tokopedianow.search.domain.model.SearchCategoryJumperModel.SearchCategoryJumperData
 import com.tokopedia.tokopedianow.search.domain.model.SearchModel
-import com.tokopedia.tokopedianow.search.presentation.model.BroadMatchDataView
 import com.tokopedia.tokopedianow.search.presentation.model.CTATokopediaNowHomeDataView
-import com.tokopedia.tokopedianow.search.presentation.model.SuggestionDataView
 import com.tokopedia.tokopedianow.search.presentation.typefactory.SearchTypeFactory
 import com.tokopedia.tokopedianow.search.utils.SEARCH_FIRST_PAGE_USE_CASE
 import com.tokopedia.tokopedianow.search.utils.SEARCH_LOAD_MORE_PAGE_USE_CASE
@@ -69,16 +69,19 @@ class TokoNowSearchViewModel @Inject constructor (
         abTestPlatformWrapper,
         userSession,
 ) {
+    companion object {
+        private val showBroadMatchResponseCodeList = listOf("4", "5")
+        private val showSuggestionResponseCodeList = listOf("3", "6", "7")
+    }
 
-    private val addToCartBroadMatchTrackingMutableLiveData = SingleLiveEvent<Triple<Int, String, TokoNowProductCardCarouselItemUiModel>>()
-    val addToCartBroadMatchTrackingLiveData: LiveData<Triple<Int, String, TokoNowProductCardCarouselItemUiModel>> = addToCartBroadMatchTrackingMutableLiveData
-
-    val query = queryParamMap[SearchApiConst.Q].orEmpty()
-
-    private var responseCode = ""
+    private val addToCartBroadMatchTrackingMutableLiveData: SingleLiveEvent<Triple<Int, String, TokoNowProductCardCarouselItemUiModel>> = SingleLiveEvent()
+    private var responseCode: String = ""
     private var suggestionModel: AceSearchProductModel.Suggestion? = null
     private var searchCategoryJumper: SearchCategoryJumperData? = null
     private var related: AceSearchProductModel.Related? = null
+
+    val addToCartBroadMatchTrackingLiveData: LiveData<Triple<Int, String, TokoNowProductCardCarouselItemUiModel>> = addToCartBroadMatchTrackingMutableLiveData
+    val query = queryParamMap[SearchApiConst.Q].orEmpty()
 
     override val tokonowSource: String
         get() = TOKONOW
@@ -106,11 +109,9 @@ class TokoNowSearchViewModel @Inject constructor (
     override fun postProcessHeaderList(headerList: MutableList<Visitable<*>>) {
         if (!shouldShowSuggestion()) return
 
-        processSuggestionModel { suggestionDataView ->
-            val suggestionDataViewIndex = determineSuggestionDataViewIndex(headerList)
+        val suggestionDataViewIndex = determineSuggestionDataViewIndex(headerList)
 
-            headerList.add(suggestionDataViewIndex, suggestionDataView)
-        }
+        headerList.updateSuggestionDataView(suggestionModel, suggestionDataViewIndex)
     }
 
     override fun createVisitableListWithEmptyProduct() {
@@ -133,7 +134,6 @@ class TokoNowSearchViewModel @Inject constructor (
 
     override fun createFooterVisitableList(): List<Visitable<SearchTypeFactory>> {
         val broadMatchVisitableList = createBroadMatchVisitableList()
-        println(chooseAddressData)
         return broadMatchVisitableList + if (serviceType == NOW_15M) {
             listOf(
                 createCategoryJumperDataView(
@@ -180,24 +180,6 @@ class TokoNowSearchViewModel @Inject constructor (
 
     private fun shouldShowSuggestion() = showSuggestionResponseCodeList.contains(responseCode)
 
-    private fun processSuggestionModel(action: (SuggestionDataView) -> Unit) {
-        val suggestionModel = suggestionModel ?: return
-
-        if (suggestionModel.text.isNotEmpty()) {
-            val suggestionDataView = createSuggestionDataView(suggestionModel)
-            action(suggestionDataView)
-        }
-
-        this.suggestionModel = null
-    }
-
-    private fun createSuggestionDataView(suggestionModel: AceSearchProductModel.Suggestion) =
-        SuggestionDataView(
-            text = suggestionModel.text,
-            query = suggestionModel.query,
-            suggestion = suggestionModel.suggestion,
-        )
-
     private fun determineSuggestionDataViewIndex(headerList: List<Visitable<*>>): Int {
         val quickFilterIndex = headerList.indexOfFirst { it is QuickFilterDataView }
 
@@ -209,32 +191,19 @@ class TokoNowSearchViewModel @Inject constructor (
 
         if (!isShowBroadMatch()) return broadMatchVisitableList
 
-        processSuggestionModel { suggestionDataView ->
-            broadMatchVisitableList.add(suggestionDataView)
-        }
-
-        processBroadMatch { broadMatchDataView ->
-            broadMatchVisitableList.add(broadMatchDataView)
-        }
+        broadMatchVisitableList.addSuggestionDataView(
+            suggestionModel = suggestionModel
+        )
+        broadMatchVisitableList.addBroadMatchDataView(
+            related = related,
+            cartService = cartService
+        )
 
         return broadMatchVisitableList
     }
 
     private fun isShowBroadMatch() =
         showBroadMatchResponseCodeList.contains(responseCode)
-
-    private fun processBroadMatch(action: (BroadMatchDataView) -> Unit) {
-        val relatedModel = related ?: return
-
-        relatedModel.otherRelatedList.forEach { otherRelated ->
-            val broadMatchDataView = createBroadMatchDataView(
-                otherRelated = otherRelated,
-                cartService = cartService
-            )
-            action(broadMatchDataView)
-        }
-        related = null
-    }
 
     private fun createVisitableListWithEmptyProductBroadmatch() {
         visitableList.add(chooseAddressDataView)
@@ -288,10 +257,5 @@ class TokoNowSearchViewModel @Inject constructor (
                 handleAddToCartEventNonLogin(broadMatchIndex)
             },
         )
-    }
-
-    companion object {
-        private val showBroadMatchResponseCodeList = listOf("4", "5")
-        private val showSuggestionResponseCodeList = listOf("3", "6", "7")
     }
 }

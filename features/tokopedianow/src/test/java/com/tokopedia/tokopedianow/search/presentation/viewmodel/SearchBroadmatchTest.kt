@@ -31,16 +31,6 @@ class SearchBroadmatchTest: SearchTestFixtures() {
         `Then assert broadmatch for no result`(searchModel)
     }
 
-    @Test
-    fun `show broad match no result 2`() {
-        val searchModel = "search/broadmatch/broadmatch-no-suggestion-no-other-related.json".jsonToObject<SearchModel>()
-        `Given get search first page use case will be successful`(searchModel)
-
-        `When view created`()
-//
-//        `Then assert broadmatch for no result`(searchModel)
-    }
-
     private fun `Then assert broadmatch for no result`(searchModel: SearchModel) {
         val visitableList = tokoNowSearchViewModel.visitableListLiveData.value!!
 
