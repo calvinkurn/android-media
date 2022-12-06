@@ -1,5 +1,6 @@
 package com.tokopedia.play.broadcaster.model
 
+import android.net.Uri
 import com.google.gson.Gson
 import com.tokopedia.content.common.types.ContentCommonUserType.TYPE_SHOP
 import com.tokopedia.content.common.types.ContentCommonUserType.TYPE_USER
@@ -22,6 +23,7 @@ import com.tokopedia.play.broadcaster.view.state.CoverSetupState
 import com.tokopedia.play.broadcaster.view.state.SetupDataState
 import com.tokopedia.play_common.model.dto.interactive.GameUiModel
 import com.tokopedia.play_common.model.ui.QuizChoicesUiModel
+import io.mockk.mockk
 import java.io.File
 import java.util.*
 
@@ -233,6 +235,16 @@ class UiModelBuilder {
             )
         }
     }
+
+    fun buildCoverSetupStateUploaded(
+        localImage: Uri? = mockk(relaxed = true),
+        coverImage: Uri = mockk(relaxed = true),
+        coverSource: CoverSource = mockk(relaxed = true),
+    ) = CoverSetupState.Cropped.Uploaded(
+        localImage = localImage,
+        coverImage = coverImage,
+        coverSource = coverSource,
+    )
 
     fun buildTags(
         size: Int = 5

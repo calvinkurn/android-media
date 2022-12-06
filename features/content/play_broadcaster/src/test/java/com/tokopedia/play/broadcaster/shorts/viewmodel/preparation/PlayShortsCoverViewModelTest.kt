@@ -1,6 +1,7 @@
 package com.tokopedia.play.broadcaster.shorts.viewmodel.preparation
 
 import android.net.Uri
+import com.tokopedia.play.broadcaster.model.UiModelBuilder
 import com.tokopedia.play.broadcaster.shorts.robot.PlayShortsViewModelRobot
 import com.tokopedia.play.broadcaster.shorts.ui.model.action.PlayShortsAction
 import com.tokopedia.play.broadcaster.shorts.ui.model.state.PlayShortsCoverFormUiState
@@ -20,7 +21,8 @@ class PlayShortsCoverViewModelTest {
 
     private val mockCoverImage: Uri = mockk(relaxed = true)
 
-    private val mockCover = CoverSetupState.Cropped.Uploaded(
+    private val uiModelBuilder = UiModelBuilder()
+    private val mockCover = uiModelBuilder.buildCoverSetupStateUploaded(
         localImage = null,
         coverImage = mockCoverImage,
         coverSource = CoverSource.Product(id = "123"),

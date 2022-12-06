@@ -37,6 +37,12 @@ class PlayShortsViewModelRobot(
         playShortsUploader = playShortsUploader,
     )
 
+    val isAllMandatoryMenuChecked: Boolean
+        get() = viewModel.isAllMandatoryMenuChecked
+
+    val isFormFilled: Boolean
+        get() = viewModel.isFormFilled
+
     fun setUp(fn: PlayShortsViewModelRobot.() -> Unit): PlayShortsViewModelRobot {
         fn()
         return this
