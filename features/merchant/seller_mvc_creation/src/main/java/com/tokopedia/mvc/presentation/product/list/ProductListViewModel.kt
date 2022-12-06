@@ -246,7 +246,8 @@ class ProductListViewModel @Inject constructor(
                 ProductListEffect.ShowVariantBottomSheet(
                     parentProduct.isSelected,
                     selectedProduct,
-                    selectedVariantIds
+                    selectedVariantIds,
+                    currentState.pageMode
                 )
             )
         }

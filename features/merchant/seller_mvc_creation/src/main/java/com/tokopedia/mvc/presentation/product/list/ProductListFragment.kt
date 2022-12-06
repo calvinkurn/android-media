@@ -208,7 +208,7 @@ class ProductListFragment : BaseDaggerFragment() {
 
     private fun handleEffect(effect: ProductListEffect) {
         when (effect) {
-            is ProductListEffect.ShowVariantBottomSheet -> displayVariantBottomSheet(effect.isParentProductSelected, effect.selectedProduct, effect.originalVariantIds, pageMode ?: return)
+            is ProductListEffect.ShowVariantBottomSheet -> displayVariantBottomSheet(effect.isParentProductSelected, effect.selectedProduct, effect.originalVariantIds, effect.pageMode)
             is ProductListEffect.ShowBulkDeleteProductConfirmationDialog -> showBulkDeleteProductConfirmationDialog(effect.toDeleteProductCount)
             is ProductListEffect.ShowDeleteProductConfirmationDialog -> showDeleteProductConfirmationDialog(effect.productId)
             is ProductListEffect.BulkDeleteProductSuccess -> binding?.cardUnify2.showToaster(message = getString(
@@ -364,14 +364,25 @@ class ProductListFragment : BaseDaggerFragment() {
     ) {
         val isVariantCheckable = pageMode == PageMode.CREATE
         val isVariantDeletable = pageMode == PageMode.CREATE
+        val enableBulkDeleteProduct = pageMode == PageMode.CREATE
+        val bottomSheetTitle = if (pageMode == PageMode.CREATE) {
+            getString(R.string.smvc_select_variant)
+        } else {
+            getString(R.string.smvc_variant_list)
+        }
+        val showPrimaryButton = pageMode == PageMode.CREATE
 
         val bottomSheet = ReviewVariantBottomSheet.newInstance(
             isParentProductSelected,
             selectedProduct,
             originalVariantIds,
             isVariantCheckable,
-            isVariantDeletable
+            isVariantDeletable,
+            enableBulkDeleteProduct,
+            bottomSheetTitle,
+            showPrimaryButton
         )
+
         bottomSheet.setOnSelectButtonClick { selectedVariantIds ->
             viewModel.processEvent(ProductListEvent.VariantUpdated(selectedProduct.parentProductId, selectedVariantIds))
         }

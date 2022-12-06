@@ -42,7 +42,7 @@
     <string name="smvc_placeholder_selected_category_count">%d Kategori</string>
     <string name="smvc_placeholder_selected_showcase_count">%d Etalase</string>
     <string name="smvc_placeholder_selected_variant_count">Pilih (%d)</string>
-    <string name="smvc_placholder_stock">Stok: %d</string>
+    <string name="smvc_placeholder_stock">Stok: %s</string>
 
     <!--Product List page-->
     <string name="smvc_product_list">Daftar Produk</string>
