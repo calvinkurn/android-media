@@ -43,6 +43,7 @@ import com.tokopedia.localizationchooseaddress.util.ChooseAddressUtils
 import com.tokopedia.logisticCommon.data.constant.LogisticConstant
 import com.tokopedia.logisticCommon.data.constant.ManageAddressSource
 import com.tokopedia.logisticCommon.data.entity.geolocation.autocomplete.LocationPass
+import com.tokopedia.logisticCommon.util.MapsAvailabilityHelper
 import com.tokopedia.media.loader.loadImage
 import com.tokopedia.network.utils.ErrorHandler
 import com.tokopedia.purchase_platform.common.constant.CheckoutConstant
@@ -677,13 +678,17 @@ class TokoFoodPurchaseFragment :
     }
 
     private fun navigateToSetPinpoint(locationPass: LocationPass) {
-        val intent = RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.GEOLOCATION)
-        val bundle = Bundle().apply {
-            putParcelable(LogisticConstant.EXTRA_EXISTING_LOCATION, locationPass)
-            putBoolean(LogisticConstant.EXTRA_IS_FROM_MARKETPLACE_CART, true)
+        view?.let {
+            MapsAvailabilityHelper.onMapsAvailableState(it) {
+                val intent = RouteManager.getIntent(activity, ApplinkConstInternalMarketplace.GEOLOCATION)
+                val bundle = Bundle().apply {
+                    putParcelable(LogisticConstant.EXTRA_EXISTING_LOCATION, locationPass)
+                    putBoolean(LogisticConstant.EXTRA_IS_FROM_MARKETPLACE_CART, true)
+                }
+                intent.putExtras(bundle)
+                startActivityForResult(intent, REQUEST_CODE_SET_PINPOINT)
+            }
         }
-        intent.putExtras(bundle)
-        startActivityForResult(intent, REQUEST_CODE_SET_PINPOINT)
     }
 
     private fun showBulkDeleteConfirmationDialog(productCount: Int) {

@@ -4,27 +4,26 @@
     android:layout_height="match_parent"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical"
-    android:layout_marginLeft="@dimen/margin_vs"
-    android:paddingBottom="@dimen/padding_small">
+    android:layout_marginStart="5dp"
+    android:paddingBottom="10dp">
 
     <ImageView
         android:id="@+id/image_upload"
-        android:layout_width="@dimen/img_thumb_m"
-        android:layout_height="@dimen/img_thumb_m"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
         android:padding="2dp"
         android:scaleType="centerCrop"
-        android:layout_marginTop="@dimen/padding_small"
-        app:srcCompat="@drawable/addproduct"
-        android:contentDescription="@string/contact_us_image_uploader"/>
+        android:contentDescription="@string/contact_us_image_uploader"
+        android:layout_marginTop="10dp"
+        app:srcCompat="@drawable/addproduct" />
 
     <ImageView
         android:id="@+id/delete_but"
-        android:layout_width="@dimen/padding_med"
-        android:layout_height="@dimen/padding_med"
+        android:layout_width="20dp"
+        android:layout_height="20dp"
         android:padding="2dp"
-        android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        android:layout_toRightOf="@id/image_upload"
+        android:layout_toEndOf="@id/image_upload"
         app:srcCompat="@drawable/navigation_cancel"
         android:contentDescription="@string/contact_us_image_uploader_delete_button"/>
 
