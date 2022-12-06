@@ -1,6 +1,7 @@
 package com.tokopedia.play.broadcaster.shorts.robot
 
 import androidx.lifecycle.viewModelScope
+import com.tokopedia.content.common.ui.model.TermsAndConditionUiModel
 import com.tokopedia.play.broadcaster.robot.PlayBroProductSetupViewModelRobot
 import com.tokopedia.play.broadcaster.setup.product.model.PlayBroProductChooserEvent
 import com.tokopedia.play.broadcaster.setup.product.model.ProductChooserUiState
@@ -42,6 +43,9 @@ class PlayShortsViewModelRobot(
 
     val isFormFilled: Boolean
         get() = viewModel.isFormFilled
+
+    val tncList: List<TermsAndConditionUiModel>
+        get() = viewModel.tncList
 
     fun setUp(fn: PlayShortsViewModelRobot.() -> Unit): PlayShortsViewModelRobot {
         fn()

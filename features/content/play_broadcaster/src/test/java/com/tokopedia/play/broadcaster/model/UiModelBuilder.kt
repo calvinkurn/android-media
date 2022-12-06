@@ -11,6 +11,7 @@ import com.tokopedia.play.broadcaster.domain.model.CreateLiveStreamChannelRespon
 import com.tokopedia.play.broadcaster.domain.model.GetLiveFollowersResponse
 import com.tokopedia.play.broadcaster.domain.model.GetLiveStatisticsResponse
 import com.tokopedia.play.broadcaster.domain.model.GetProductsByEtalaseResponse
+import com.tokopedia.play.broadcaster.shorts.ui.model.PlayShortsConfigUiModel
 import com.tokopedia.play.broadcaster.type.PriceUnknown
 import com.tokopedia.play.broadcaster.type.ProductPrice
 import com.tokopedia.play.broadcaster.type.ProductStock
@@ -260,4 +261,24 @@ class UiModelBuilder {
             }
         }
     }
+
+    fun buildTncList(
+        size: Int = 3,
+    ) = List(size) {
+        TermsAndConditionUiModel(desc = "Desc $it")
+    }
+
+    fun buildShortsConfig(
+        shortsId: String = "123",
+        shortsAllowed: Boolean = true,
+        tncList: List<TermsAndConditionUiModel> = buildTncList(),
+        maxTitleCharacter: Int = 24,
+        maxTaggedProduct: Int = 30,
+    ) = PlayShortsConfigUiModel(
+        shortsId = shortsId,
+        shortsAllowed = shortsAllowed,
+        tncList = tncList,
+        maxTitleCharacter = maxTitleCharacter,
+        maxTaggedProduct = maxTaggedProduct
+    )
 }
