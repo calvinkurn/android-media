@@ -131,30 +131,15 @@ class ProductListFragment : BaseDaggerFragment() {
     }
 
     private fun setupToolbar() {
-        val showSubtitle = pageMode == PageMode.CREATE
         binding?.header?.actionTextView?.setOnClickListener {
             viewModel.processEvent(ProductListEvent.TapCtaChangeProduct)
         }
-        binding?.header?.subheaderView?.isVisible = showSubtitle
-        binding?.header?.setNavigationOnClickListener {
-            activity?.finish()
-        }
+        binding?.header?.setNavigationOnClickListener { backToPreviousPage() }
     }
 
     private fun setupClickListener() {
         binding?.tpgCtaAddProduct?.setOnClickListener {
-            if (pageMode == PageMode.EDIT) {
-                val intent = AddProductActivity.buildEditModeIntent(
-                    activity ?: return@setOnClickListener,
-                    voucherConfiguration ?: return@setOnClickListener
-                )
-                startActivityForResult(intent, NumberConstant.REQUEST_CODE_ADD_PRODUCT_TO_SELECTION)
-            }
-
-            if (pageMode == PageMode.CREATE) {
-                activity?.finish()
-            }
-
+            viewModel.processEvent(ProductListEvent.TapCtaAddProduct)
         }
 
         binding?.iconBulkDelete?.setOnClickListener {
@@ -218,34 +203,39 @@ class ProductListFragment : BaseDaggerFragment() {
             is ProductListEffect.ProceedToVoucherPreviewPage -> navigateToVoucherPreviewPage(effect.voucherConfiguration, effect.selectedProducts, effect.selectedParentProductImageUrls)
             is ProductListEffect.SendResultToCallerPage -> sendResultToCallerActivity(effect.selectedProducts)
             is ProductListEffect.ShowError -> binding?.cardUnify2?.showToasterError(effect.error)
+            ProductListEffect.BackToPreviousPage -> backToPreviousPage()
+            is ProductListEffect.RedirectToAddProductPage -> redirectToAddProductPage(effect.voucherConfiguration)
         }
     }
 
 
     private fun handleUiState(uiState: ProductListUiState) {
-        renderToolbar(uiState.pageMode)
-        renderTopSection(uiState.pageMode, uiState.products.count(), uiState.maxProductSelection)
+        renderToolbar(uiState.originalPageMode, uiState.currentPageMode)
+        renderTopSection(uiState.currentPageMode, uiState.products.count(), uiState.maxProductSelection)
         renderLoadingState(uiState.isLoading)
         renderList(uiState.products)
-        renderEmptyState(uiState.products.count(), uiState.isLoading, uiState.pageMode, uiState.originalPageMode)
-        renderProductCounter(uiState.products.count(), uiState.selectedProductsIds.count(), uiState.pageMode)
+        renderEmptyState(uiState.products.count(), uiState.isLoading, uiState.currentPageMode, uiState.originalPageMode, uiState.voucherConfiguration)
+        renderProductCounter(uiState.products.count(), uiState.selectedProductsIds.count(), uiState.currentPageMode)
         renderBulkDeleteIcon(uiState.selectedProductsIds.count())
-        renderSelectAllCheckbox(uiState.products.count(), uiState.selectedProductsIds.count(), uiState.pageMode)
-        renderButton()
+        renderSelectAllCheckbox(uiState.products.count(), uiState.selectedProductsIds.count(), uiState.currentPageMode)
+        renderButton(uiState.originalPageMode)
     }
 
-    private fun renderToolbar(pageMode: PageMode) {
-        if (pageMode == PageMode.CREATE) {
+    private fun renderToolbar(originalPageMode: PageMode, currentPageMode: PageMode) {
+        if (currentPageMode == PageMode.CREATE) {
             binding?.header?.actionTextView?.gone()
         } else {
             binding?.header?.actionTextView?.visible()
             binding?.header?.actionText = getString(R.string.smvc_update_product)
             binding?.header?.subheaderView?.gone()
         }
+
+        val showSubtitle = originalPageMode == PageMode.CREATE
+        binding?.header?.subheaderView?.isVisible = showSubtitle
     }
 
-    private fun renderButton() {
-        binding?.btnContinue?.text = if (pageMode == PageMode.CREATE) {
+    private fun renderButton(originalPageMode: PageMode) {
+        binding?.btnContinue?.text = if (originalPageMode == PageMode.CREATE) {
             getString(R.string.smvc_continue)
         } else {
             getString(R.string.smvc_save)
@@ -306,7 +296,8 @@ class ProductListFragment : BaseDaggerFragment() {
         productCount: Int,
         isLoading: Boolean,
         pageMode: PageMode,
-        originalPageMode: PageMode
+        originalPageMode: PageMode,
+        voucherConfiguration: VoucherConfiguration
     ) {
         val isCreateMode = pageMode == PageMode.CREATE
 
@@ -314,7 +305,7 @@ class ProductListFragment : BaseDaggerFragment() {
             emptyState.isVisible = productCount.isZero() && !isLoading
             emptyState.emptyStateCTAID.setOnClickListener {
                 if (originalPageMode == PageMode.EDIT) {
-                    redirectToAddProductPage()
+                    redirectToAddProductPage(voucherConfiguration)
                 } else {
                     backToPreviousPage()
                 }
@@ -461,10 +452,10 @@ class ProductListFragment : BaseDaggerFragment() {
         activity?.finish()
     }
 
-    private fun redirectToAddProductPage() {
+    private fun redirectToAddProductPage(voucherConfiguration: VoucherConfiguration) {
         val intent = AddProductActivity.buildEditModeIntent(
             activity ?: return,
-            voucherConfiguration ?: return
+            voucherConfiguration
         )
         startActivityForResult(intent, NumberConstant.REQUEST_CODE_ADD_PRODUCT_TO_SELECTION)
     }

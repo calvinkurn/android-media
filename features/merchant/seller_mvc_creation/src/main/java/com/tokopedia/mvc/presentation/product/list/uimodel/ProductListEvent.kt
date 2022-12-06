@@ -27,4 +27,5 @@ sealed class ProductListEvent {
         val selectedVariantIds: Set<Long>
     ) : ProductListEvent()
     object TapCtaChangeProduct : ProductListEvent()
+    object TapCtaAddProduct: ProductListEvent()
 }

@@ -10,7 +10,7 @@ import com.tokopedia.mvc.domain.entity.enums.VoucherTargetBuyer
 data class ProductListUiState(
     val isLoading: Boolean = true,
     val originalPageMode: PageMode = PageMode.CREATE,
-    val pageMode: PageMode = PageMode.CREATE,
+    val currentPageMode: PageMode = PageMode.CREATE,
     val voucherConfiguration: VoucherConfiguration = VoucherConfiguration(
         benefitIdr = 0,
         benefitMax = 0,

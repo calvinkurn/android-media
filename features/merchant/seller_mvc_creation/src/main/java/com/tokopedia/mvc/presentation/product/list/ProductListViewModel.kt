@@ -61,9 +61,9 @@ class ProductListViewModel @Inject constructor(
             ProductListEvent.ApplyBulkDeleteProduct -> handleBulkDeleteProducts()
             ProductListEvent.TapCtaChangeProduct -> handleSwitchPageMode()
             is ProductListEvent.AddNewProductToSelection -> handleAddNewProductToSelection(event.newProducts)
+            ProductListEvent.TapCtaAddProduct -> handleCtaAddNewProduct()
         }
     }
-
 
     private fun getProductsAndProductsMetadata(
         pageMode: PageMode,
@@ -111,7 +111,7 @@ class ProductListViewModel @Inject constructor(
                         isLoading = false,
                         products = updatedProducts,
                         originalPageMode = pageMode,
-                        pageMode = pageMode,
+                        currentPageMode = pageMode,
                         maxProductSelection = metadata.maxProduct,
                         voucherConfiguration = voucherConfiguration
                     )
@@ -247,7 +247,7 @@ class ProductListViewModel @Inject constructor(
                     parentProduct.isSelected,
                     selectedProduct,
                     selectedVariantIds,
-                    currentState.pageMode
+                    currentState.currentPageMode
                 )
             )
         }
@@ -342,7 +342,7 @@ class ProductListViewModel @Inject constructor(
             val modifiedProducts = currentState.products.map {
                 it.copy(enableCheckbox = true, isDeletable = true)
             }
-            _uiState.update { it.copy(products = modifiedProducts, pageMode = PageMode.CREATE) }
+            _uiState.update { it.copy(products = modifiedProducts, currentPageMode = PageMode.CREATE) }
         }
     }
 
@@ -357,4 +357,15 @@ class ProductListViewModel @Inject constructor(
     private fun List<Product>.selectedProductsOnly(): Set<Long> {
         return filter { it.isSelected }.map { it.id }.toSet()
     }
+
+
+    private fun handleCtaAddNewProduct() {
+        val originalPageMode = currentState.originalPageMode
+        if (originalPageMode == PageMode.EDIT) {
+            _uiEffect.tryEmit(ProductListEffect.RedirectToAddProductPage(currentState.voucherConfiguration))
+        } else {
+            _uiEffect.tryEmit(ProductListEffect.BackToPreviousPage)
+        }
+    }
+
 }
