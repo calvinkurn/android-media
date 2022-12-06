@@ -65,8 +65,11 @@ import com.tokopedia.universal_sharing.view.bottomsheet.ClipboardHandler
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
-class MvcListFragment: BaseDaggerFragment(), HasPaginatedList by HasPaginatedListImpl(),
-    VoucherAdapterListener, FilterVoucherStatusBottomSheet.FilterVoucherStatusBottomSheetListener,
+class MvcListFragment :
+    BaseDaggerFragment(),
+    HasPaginatedList by HasPaginatedListImpl(),
+    VoucherAdapterListener,
+    FilterVoucherStatusBottomSheet.FilterVoucherStatusBottomSheetListener,
     FilterVoucherBottomSheet.FilterVoucherBottomSheetListener,
     OtherPeriodBottomSheet.OtherPeriodBottomSheetListener {
 
@@ -131,7 +134,7 @@ class MvcListFragment: BaseDaggerFragment(), HasPaginatedList by HasPaginatedLis
                 showEditPeriodBottomSheet(voucher)
             }
             is MoreMenuUiModel.Edit -> {
-                //TODO change this , using for testing
+                // TODO change this , using for testing
                 showVoucherPeriodBottomSheet()
             }
             is MoreMenuUiModel.Clipboard -> {
@@ -156,21 +159,22 @@ class MvcListFragment: BaseDaggerFragment(), HasPaginatedList by HasPaginatedLis
         }
     }
 
-    //DUMMY DATA . USED FOR TESTING > REMOVE THEM
+    // DUMMY DATA . USED FOR TESTING > REMOVE THEM
     private fun showVoucherPeriodBottomSheet() {
         val list = mutableListOf<DateStartEndData>(
             DateStartEndData("2022-05-10", "2022-05-20", "00:30", "05:30"),
-            DateStartEndData("2022-06-10", "2022-06-20", "01:30", "06:30"),
-            DateStartEndData("2022-07-10", "2022-07-20", "02:30", "05:30"),
-            DateStartEndData("2022-08-10", "2022-08-20", "03:30", "07:30"),
-            DateStartEndData("2022-09-10", "2022-09-20", "04:30", "08:30"),
-            DateStartEndData("2022-10-10", "2022-10-20", "05:30", "09:30")
+            DateStartEndData("2022-06-11", "2022-06-21", "01:30", "06:30"),
+            DateStartEndData("2022-07-12", "2022-07-22", "02:30", "05:30"),
+            DateStartEndData("2022-08-13", "2022-08-23", "03:30", "07:30"),
+            DateStartEndData("2022-09-14", "2022-09-24", "04:30", "08:30"),
+            DateStartEndData("2022-10-15", "2022-10-25", "05:30", "09:30")
         )
         activity?.let {
             voucherPeriodBottomSheet =
                 VoucherPeriodBottomSheet.newInstance(
                     title = context?.resources?.getString(R.string.voucher_bs_period_title_1)
-                        .toBlankOrString(), dateList = list
+                        .toBlankOrString(),
+                    dateList = list
                 )
             voucherPeriodBottomSheet?.show(childFragmentManager, "")
         }
@@ -188,7 +192,7 @@ class MvcListFragment: BaseDaggerFragment(), HasPaginatedList by HasPaginatedLis
         }
     }
 
-    private var onSuccessUpdateVoucherPeriod: () -> Unit  = {
+    private var onSuccessUpdateVoucherPeriod: () -> Unit = {
         loadInitialDataList()
         view?.run {
             Toaster.build(
@@ -221,7 +225,7 @@ class MvcListFragment: BaseDaggerFragment(), HasPaginatedList by HasPaginatedLis
     }
 
     override fun onVoucherListCopyCodeClicked(voucher: Voucher) {
-        activity?.let { ClipboardHandler().copyToClipboard (it, voucher.code) }
+        activity?.let { ClipboardHandler().copyToClipboard(it, voucher.code) }
         binding?.footer?.root.showToaster(getString(R.string.smvc_voucherlist_copy_to_clipboard_message))
     }
 
@@ -247,7 +251,7 @@ class MvcListFragment: BaseDaggerFragment(), HasPaginatedList by HasPaginatedLis
     }
 
     override fun onOtherPeriodMoreMenuClicked(voucher: Voucher) {
-   //     MoreMenuVoucherBottomSheet().show(childFragmentManager, "")
+        //     MoreMenuVoucherBottomSheet().show(childFragmentManager, "")
     }
 
     private fun setupObservables() {
@@ -347,7 +351,8 @@ class MvcListFragment: BaseDaggerFragment(), HasPaginatedList by HasPaginatedLis
             pageSize = PAGE_SIZE,
             onLoadNextPage = {
                 // TODO: Implement loading
-            }, onLoadNextPageFinished = {
+            },
+            onLoadNextPageFinished = {
                 // TODO: Implement loading
             }
         )
@@ -420,7 +425,7 @@ class MvcListFragment: BaseDaggerFragment(), HasPaginatedList by HasPaginatedLis
     }
 
     private fun redirectToCreateVoucherPage() {
-        //For sample only. Will redirect to add product page.
+        // For sample only. Will redirect to add product page.
         val voucherConfiguration = VoucherConfiguration(
             benefitIdr = 25_000,
             benefitMax = 500_000,
@@ -442,6 +447,6 @@ class MvcListFragment: BaseDaggerFragment(), HasPaginatedList by HasPaginatedLis
     }
 
     private fun redirectToQuotaVoucherPage() {
-        //TODO: create redirection here
+        // TODO: create redirection here
     }
 }

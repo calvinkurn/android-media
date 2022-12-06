@@ -3,10 +3,14 @@ package com.tokopedia.mvc.presentation.bottomsheet.voucherperiod.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.tokopedia.campaign.utils.extension.toDate
 import com.tokopedia.mvc.databinding.SmvcItemPeriodListBinding
 import com.tokopedia.mvc.presentation.bottomsheet.voucherperiod.DateStartEndData
+import com.tokopedia.mvc.util.DateTimeUtils.DASH_DATE_FORMAT
+import com.tokopedia.mvc.util.DateTimeUtils.DATE_FORMAT
+import com.tokopedia.mvc.util.formatTo
 
-class VoucherPeriodBottomSheetAdapter:
+class VoucherPeriodBottomSheetAdapter :
     RecyclerView.Adapter<VoucherPeriodBottomSheetAdapter.VoucherPeriodBottomSheetViewHolder>() {
 
     private val dateList = mutableListOf<DateStartEndData>()
@@ -18,7 +22,11 @@ class VoucherPeriodBottomSheetAdapter:
         }
 
         fun DateStartEndData.formatTextToDisplayDate(): String {
-            return "${dateStart}, $hourStart - ${dateEnd}, $hourEnd"
+            return "${dateStart.formatDateToDisplayDate()}, $hourStart - ${dateEnd.formatDateToDisplayDate()}, $hourEnd"
+        }
+
+        fun String.formatDateToDisplayDate(): String {
+            return this.toDate(DASH_DATE_FORMAT).formatTo(DATE_FORMAT)
         }
     }
 
@@ -42,5 +50,4 @@ class VoucherPeriodBottomSheetAdapter:
         this.dateList.clear()
         this.dateList.addAll(list)
     }
-
 }

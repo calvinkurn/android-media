@@ -21,42 +21,16 @@ object DateTimeUtils {
     const val TIME_STAMP_FORMAT = "yyyy-MM-dd'T'HH:mm:ss'Z'"
     const val TIME_STAMP_MILLISECONDS_FORMAT = "yyyy-MM-dd'T'HH:mm:ss.SSSSSS'Z'"
     const val FULL_DAY_FORMAT = "EEE, dd MMM yyyy, HH:mm"
-
-    const val DASH_DATE_FORMAT = "yyyy-MM-dd"
     const val DATE_FORMAT = "dd MMM yyyy"
-    const val DATE_FORMAT_DAY_MONTH = "dd MMM"
-    const val HOUR_FORMAT = "HH:mm"
-
-    const val EXTRA_HOUR = 3
-    const val EXTRA_MINUTE = 30
-    const val EXTRA_DAYS = 30
-    const val PREVIOUS_EXTRA_DAYS = -30
-
-    private const val DISPLAYED_DATE_FORMAT = "dd MMM yyyy"
-    private const val RAW_DATE_FORMAT = "yyyy-MM-dd"
+    private const val EXTRA_DAYS = 30
+    private const val PREVIOUS_EXTRA_DAYS = -30
 
     fun Context.getToday() = GregorianCalendar(LocaleUtils.getCurrentLocale(this))
 
     /**
-     * Minimum start time should be 30 days before current time
+     * Minimum end time should be 30 days before time
      */
-    fun Context.getMinStartDate() =
-        getToday().apply {
-            add(Calendar.DATE, -30)
-        }
-
-    /**
-     * Maximum start date should 30 days after current time
-     */
-    fun Context.getMaxStartDate() =
-        getToday().apply {
-            add(Calendar.DATE, EXTRA_DAYS)
-        }
-
-    /**
-     * Minimum end time should be 30 days before ending time
-     */
-    fun getMinDate(startCalendar: GregorianCalendar?) : GregorianCalendar? =
+    fun getMinDate(startCalendar: GregorianCalendar?): GregorianCalendar? =
         startCalendar?.let { startDate ->
             GregorianCalendar().apply {
                 time = startDate.time
@@ -65,7 +39,7 @@ object DateTimeUtils {
         }
 
     /**
-     * Maximum end date should be 30 days after ending date
+     * Maximum end date should be 30 days after date
      */
     fun getMaxDate(startCalendar: GregorianCalendar?): GregorianCalendar? =
         startCalendar?.let { startDate ->
@@ -74,7 +48,6 @@ object DateTimeUtils {
                 add(Calendar.DATE, EXTRA_DAYS)
             }
         }
-
 }
 
 fun String.convertUnsafeDateTime(): Date {
