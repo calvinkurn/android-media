@@ -51,9 +51,9 @@ class ShippingDurationOccBottomSheet : ShippingDurationAdapterListener {
     override fun onShippingDurationChoosen(shippingCourierUiModelList: List<ShippingCourierUiModel>, cartPosition: Int, serviceData: ServiceData) {
         var flagNeedToSetPinpoint = false
         var selectedServiceId = 0
-        var selectedShippingCourierUiModel = shippingCourierUiModelList[0]
+        var selectedShippingCourierUiModel = shippingCourierUiModelList.firstOrNull { it.productData.error?.errorMessage?.isEmpty() ?: true } ?: shippingCourierUiModelList.first()
         for (shippingCourierUiModel in shippingCourierUiModelList) {
-            val recommend = isRecommend(shippingCourierUiModel,serviceData)
+            val recommend = isRecommend(shippingCourierUiModel, serviceData)
             if (recommend) {
                 selectedShippingCourierUiModel = shippingCourierUiModel
             }
@@ -71,7 +71,7 @@ class ShippingDurationOccBottomSheet : ShippingDurationAdapterListener {
         return if (serviceData.selectedShipperProductId > 0) {
             shippingCourierUiModel.productData.shipperProductId == serviceData.selectedShipperProductId
         } else {
-            shippingCourierUiModel.productData.isRecommend && !shippingCourierUiModel.productData.isUiRatesHidden
+            shippingCourierUiModel.productData.isRecommend && !shippingCourierUiModel.productData.isUiRatesHidden && (shippingCourierUiModel.productData.error?.errorMessage?.isEmpty() ?: true)
         }
     }
 
