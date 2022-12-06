@@ -68,7 +68,8 @@ class PlayExploreWidgetFragment @Inject constructor(
     private val widgetAdapter = PlayWidgetChannelMediumAdapter(cardChannelListener = this)
 
     private val layoutManager by lazy(LazyThreadSafetyMode.NONE) {
-        GridLayoutManager(binding.rvWidgets.context, SPAN_CHANNEL)    }
+        GridLayoutManager(binding.rvWidgets.context, SPAN_CHANNEL)
+    }
 
     private val scrollListener = object : RecyclerView.OnScrollListener() {
         override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
@@ -137,31 +138,45 @@ class PlayExploreWidgetFragment @Inject constructor(
             viewModel.uiState.withCache().collectLatest {
                 val cachedState = it
 
-                if(cachedState.isChanged {
+                if (cachedState.isChanged {
                         it.exploreWidget.data.chips
                         it.exploreWidget.data.state
-                })
-                    renderChips(cachedState.value.exploreWidget.data.state, cachedState.value.exploreWidget.data.chips)
+                    })
+                    renderChips(
+                        cachedState.value.exploreWidget.data.state,
+                        cachedState.prevValue?.exploreWidget?.data?.chips,
+                        cachedState.value.exploreWidget.data.chips
+                    )
 
                 if (cachedState.isChanged {
                         it.exploreWidget.data.widgets
                         it.exploreWidget.data.state
                     })
-                    renderWidgets(cachedState.value.exploreWidget.data.state, cachedState.value.exploreWidget.data.widgets.getChannelBlock)
+                    renderWidgets(
+                        cachedState.value.exploreWidget.data.state,
+                        cachedState.value.exploreWidget.data.widgets.getChannelBlock
+                    )
             }
         }
     }
 
-    private fun renderChips(state: ResultState, chips: List<ChipWidgetUiModel>) {
+    private fun renderChips(state: ResultState, prev: List<ChipWidgetUiModel>?, chips: List<ChipWidgetUiModel>) {
         when (state) {
             ResultState.Success -> {
                 chipsAdapter.setItemsAndAnimateChanges(chips)
             }
             ResultState.Loading -> {
+                if(prev == chips) return
                 chipsAdapter.setItemsAndAnimateChanges(getChipsShimmering)
             }
             is ResultState.Fail -> {
-                Toaster.build(view = requireView(), text = state.error.message.orEmpty(), actionText = getString(playR.string.title_try_again), duration = Toaster.LENGTH_LONG, type = Toaster.TYPE_ERROR, clickListener = {viewModel.submitAction(RefreshWidget)}).show()
+                Toaster.build(
+                    view = requireView(),
+                    text = state.error.message.orEmpty(),
+                    actionText = getString(playR.string.title_try_again),
+                    duration = Toaster.LENGTH_LONG,
+                    type = Toaster.TYPE_ERROR,
+                    clickListener = { viewModel.submitAction(RefreshWidget) }).show()
             }
         }
     }
@@ -175,7 +190,13 @@ class PlayExploreWidgetFragment @Inject constructor(
                 widgetAdapter.setItemsAndAnimateChanges(getWidgetShimmering)
             }
             is ResultState.Fail -> {
-                Toaster.build(view = requireView(), text = state.error.message.orEmpty(), actionText = getString(playR.string.title_try_again), duration = Toaster.LENGTH_LONG, type = Toaster.TYPE_ERROR, clickListener = {viewModel.submitAction(RefreshWidget)}).show()
+                Toaster.build(
+                    view = requireView(),
+                    text = state.error.message.orEmpty(),
+                    actionText = getString(playR.string.title_try_again),
+                    duration = Toaster.LENGTH_LONG,
+                    type = Toaster.TYPE_ERROR,
+                    clickListener = { viewModel.submitAction(RefreshWidget) }).show()
             }
         }
     }
@@ -228,7 +249,8 @@ class PlayExploreWidgetFragment @Inject constructor(
         item: PlayWidgetChannelUiModel,
         reminderType: PlayWidgetReminderType,
         position: Int
-    ) {}
+    ) {
+    }
 
     companion object {
         private const val TAG = "PlayExploreWidgetFragment"
