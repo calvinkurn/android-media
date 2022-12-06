@@ -47,12 +47,12 @@ class EPharmacyReminderBsViewModelTest {
             )
         )
         val headerData = mockk<EPharmacyHeader>()
-        val screenData = EPharmacyReminderScreenResponse.SubmitEpharmacyUserReminderData.ReminderScreenData(true, "")
-        val responseData = EPharmacyReminderScreenResponse.SubmitEpharmacyUserReminderData(headerData, screenData)
+        val screenData = EPharmacyReminderScreenResponse.SubmitEPharmacyUserReminderData.ReminderScreenData(true, "")
+        val responseData = EPharmacyReminderScreenResponse.SubmitEPharmacyUserReminderData(headerData, screenData)
+        val response = EPharmacyReminderScreenResponse(responseData)
         coEvery {
             ePharmacyReminderScreenUseCase(params)
-        } returns responseData
-
+        } returns response
         viewModel.setForReminder(params)
 
         TestCase.assertEquals(viewModel.reminderLiveData.value != null, true)
@@ -68,10 +68,11 @@ class EPharmacyReminderBsViewModelTest {
                 )
             )
         )
-        val responseData = EPharmacyReminderScreenResponse.SubmitEpharmacyUserReminderData(null, null)
+        val responseData = EPharmacyReminderScreenResponse.SubmitEPharmacyUserReminderData(null, null)
+        val response = EPharmacyReminderScreenResponse(responseData)
         coEvery {
             ePharmacyReminderScreenUseCase(params)
-        } returns responseData
+        } returns response
 
         viewModel.setForReminder(params)
 

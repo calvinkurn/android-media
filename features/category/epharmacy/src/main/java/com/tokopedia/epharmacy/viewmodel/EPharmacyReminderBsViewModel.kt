@@ -19,14 +19,14 @@ class EPharmacyReminderBsViewModel @Inject constructor(
     @CoroutineBackgroundDispatcher private val dispatcherBackground: CoroutineDispatcher
 ) : BaseViewModel(dispatcherBackground) {
 
-    private val _reminderLiveData = MutableLiveData<Result<EPharmacyReminderScreenResponse.SubmitEpharmacyUserReminderData>>()
-    val reminderLiveData: LiveData<Result<EPharmacyReminderScreenResponse.SubmitEpharmacyUserReminderData>> = _reminderLiveData
+    private val _reminderLiveData = MutableLiveData<Result<EPharmacyReminderScreenResponse.SubmitEPharmacyUserReminderData>>()
+    val reminderLiveData: LiveData<Result<EPharmacyReminderScreenResponse.SubmitEPharmacyUserReminderData>> = _reminderLiveData
 
     fun setForReminder(params: EPharmacyReminderScreenParam) {
         launchCatchError(block = {
             val result = getEPharmacyReminderScreenUseCase(params)
-            if (result.data?.isSuccess != null) {
-                _reminderLiveData.postValue(Success(result))
+            if (result.submitEpharmacyUserReminderData?.data?.isSuccess != null) {
+                _reminderLiveData.postValue(Success(result.submitEpharmacyUserReminderData))
             } else {
                 _reminderLiveData.postValue(Fail(Throwable()))
             }

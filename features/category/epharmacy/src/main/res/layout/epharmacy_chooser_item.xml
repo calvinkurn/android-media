@@ -41,7 +41,6 @@
         tools:text="Atau kamu juga bisa Beli Langsung biar lebih cepat prosesnya."
         app:layout_constraintTop_toBottomOf="@id/heading_title"
         app:layout_constraintStart_toStartOf="@id/heading_title"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/chevron"/>
 
     <com.tokopedia.unifycomponents.DividerUnify

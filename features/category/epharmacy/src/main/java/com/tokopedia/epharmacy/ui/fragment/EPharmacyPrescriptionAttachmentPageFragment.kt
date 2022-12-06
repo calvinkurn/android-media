@@ -209,6 +209,7 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
         ePharmacyPrescriptionAttachmentViewModel.buttonLiveData.observe(viewLifecycleOwner) { papCTA ->
             ePharmacyDoneButton?.show()
             papCTA?.let { cta ->
+                //TODO
                 EPharmacyMiniConsultationAnalytics.viewAttachPrescriptionResult("", "", "", "", "", "")
                 ePharmacyDoneButton?.text = cta.title
                 when (cta.state) {
@@ -318,6 +319,7 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
                 }
             }
         }
+        //TODO
         EPharmacyMiniConsultationAnalytics.userViewAttachPrescriptionPage(
             userSession.isLoggedIn,
             userSession.userId,
@@ -431,13 +433,14 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
             model.prescriptionCTA,
             model.tokoConsultationId
         )
+        //TODO
         EPharmacyMiniConsultationAnalytics.clickAttachPrescriptionButton(
             "",
             "",
             "",
             "",
             "",
-            ""
+            model.epharmacyGroupId
         )
     }
 
@@ -494,6 +497,8 @@ class EPharmacyPrescriptionAttachmentPageFragment : BaseDaggerFragment(), EPharm
 
     private fun startMiniConsultation(groupId: String?) {
         if (!groupId.isNullOrBlank()) {
+            // TODO
+            EPharmacyMiniConsultationAnalytics.viewMiniConsultationPage(userSession.isLoggedIn,"","","","")
             ePharmacyPrescriptionAttachmentViewModel.initiateConsultation(
                 InitiateConsultationParam(
                     InitiateConsultationParam.InitiateConsultationParamInput(groupId)

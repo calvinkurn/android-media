@@ -76,12 +76,12 @@ class EPharmacyPrescriptionAttachmentViewModel @Inject constructor(
     private fun onAvailablePrepareProductGroup(ePharmacyPrepareProductsGroupResponse: EPharmacyPrepareProductsGroupResponse) {
         ePharmacyPrepareProductsGroupResponseData = ePharmacyPrepareProductsGroupResponse
         ePharmacyPrepareProductsGroupResponse.let { data ->
-            if (data.detailData?.groupsData?.epharmacyGroups?.isEmpty() == true) {
-                onFailPrepareProductGroup(IllegalStateException("Data invalid"))
-            } else {
+            if (data.detailData?.groupsData?.epharmacyGroups?.isNotEmpty() == true) {
                 _productGroupLiveData.postValue(Success(mapGroupsDataIntoDataModel(data)))
                 _buttonLiveData.postValue(ePharmacyPrepareProductsGroupResponse.detailData?.groupsData?.papPrimaryCTA)
                 showToastData(ePharmacyPrepareProductsGroupResponse.detailData?.groupsData?.toaster)
+            } else {
+                onFailPrepareProductGroup(IllegalStateException("Data invalid"))
             }
         }
     }
@@ -100,6 +100,8 @@ class EPharmacyPrescriptionAttachmentViewModel @Inject constructor(
     private fun onSuccessGetConsultationDetails(response: EPharmacyConsultationDetailsResponse) {
         response.getEpharmacyConsultationDetails?.let { data ->
             _consultationDetails.value = Success(data)
+        } ?: kotlin.run {
+            onFailGetConsultationDetails(Throwable("Data Invalid"))
         }
     }
 

@@ -38,6 +38,12 @@ class EPharmacyPrescriptionAttachmentViewModelTest {
     private val fetchFailedErrorMessage = "Fetch Failed"
     private val mockThrowable = Throwable(message = fetchFailedErrorMessage)
 
+    val epharmacyProduct = mockk<EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo.Product>(relaxed = true)
+    val epharmacyProductsInfo = EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup.ProductsInfo("", arrayListOf(epharmacyProduct),"","","","","")
+    val epharmacyGroup = EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup(null,null,null,null,null,null,arrayListOf(epharmacyProductsInfo),null)
+    val responseGroup = EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData("Hi ", "rqwrq", arrayListOf(epharmacyGroup), null, null)
+    val responseData = EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData(responseGroup)
+
     @Before
     fun setUp() {
         viewModel = EPharmacyPrescriptionAttachmentViewModel(
@@ -50,9 +56,6 @@ class EPharmacyPrescriptionAttachmentViewModelTest {
 
     @Test
     fun getGroupsSuccessTest() {
-        val epharmacyGroup = mockk<EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData.EpharmacyGroup>(relaxed = true)
-        val responseGroup = EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData("", "", arrayListOf(epharmacyGroup), null, null)
-        val responseData = EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData(responseGroup)
         val response = EPharmacyPrepareProductsGroupResponse(responseData)
         coEvery {
             ePharmacyPrepareProductsGroupUseCase.getEPharmacyPrepareProductsGroup(any(), any())
@@ -65,7 +68,8 @@ class EPharmacyPrescriptionAttachmentViewModelTest {
 
     @Test
     fun `get groups fetch success but condition fail`() {
-        val response = mockk<EPharmacyPrepareProductsGroupResponse>(relaxed = true)
+        val responseGroup = EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData.GroupData("Hi", "rqwrq", null , null, null)
+        val response = EPharmacyPrepareProductsGroupResponse(EPharmacyPrepareProductsGroupResponse.EPharmacyPrepareProductsGroupData(responseGroup))
         coEvery {
             ePharmacyPrepareProductsGroupUseCase.getEPharmacyPrepareProductsGroup(any(), any())
         } coAnswers {
@@ -100,7 +104,7 @@ class EPharmacyPrescriptionAttachmentViewModelTest {
         coEvery {
             ePharmacyInitiateConsultationUseCase.initiateConsultation(any(), any(), any())
         } coAnswers {
-            firstArg<(EPharmacyInitiateConsultationResponse) -> Unit>().invoke(response)
+            firstArg<(String,EPharmacyInitiateConsultationResponse) -> Unit>().invoke("",response)
         }
         viewModel.initiateConsultation(InitiateConsultationParam(InitiateConsultationParam.InitiateConsultationParamInput("123")))
         assert(viewModel.initiateConsultation.value is Success)
@@ -112,7 +116,7 @@ class EPharmacyPrescriptionAttachmentViewModelTest {
         coEvery {
             ePharmacyInitiateConsultationUseCase.initiateConsultation(any(), any(), any())
         } coAnswers {
-            firstArg<(EPharmacyInitiateConsultationResponse) -> Unit>().invoke(response)
+            firstArg<(String,EPharmacyInitiateConsultationResponse) -> Unit>().invoke("",response)
         }
         viewModel.initiateConsultation(InitiateConsultationParam(InitiateConsultationParam.InitiateConsultationParamInput("123")))
         Assert.assertEquals(
@@ -149,17 +153,17 @@ class EPharmacyPrescriptionAttachmentViewModelTest {
         assert(viewModel.consultationDetails.value is Success)
     }
 
-//    @Test
-//    fun `get consultation details fetch failed throws exception`() {
-//        coEvery {
-//            ePharmacyGetConsultationDetailsUseCase.getConsultationDetails(any(), any(),"")
-//        } coAnswers {
-//            secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
-//        }
-//        viewModel.getConsultationDetails("324")
-//        Assert.assertEquals(
-//            (viewModel.consultationDetails.value as Fail).throwable,
-//            mockThrowable
-//        )
-//    }
+    @Test
+    fun `get consultation details fetch failed throws exception`() {
+        coEvery {
+            ePharmacyGetConsultationDetailsUseCase.getConsultationDetails(any(), any(),any())
+        } coAnswers {
+            secondArg<(Throwable) -> Unit>().invoke(mockThrowable)
+        }
+        viewModel.getConsultationDetails("324")
+        Assert.assertEquals(
+            (viewModel.consultationDetails.value as Fail).throwable,
+            mockThrowable
+        )
+    }
 }

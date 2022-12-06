@@ -289,14 +289,17 @@ class UploadPrescriptionViewModelTest {
 
     @Test
     fun addSelectedPrescriptionImagesEmptyFail(){
-        viewModel.addSelectedPrescriptionImages(arrayListOf("",""))
+        viewModel.addSelectedPrescriptionImages(arrayListOf("afasfsfas","asfasfasfsa"))
+        val arrayResponse = arrayListOf<EPharmacyPrescriptionUploadResponse.EPharmacyPrescriptionData>()
+        arrayResponse.add(mockk())
+        arrayResponse.add(mockk())
         coEvery {
-            uploadPrescriptionUseCase.executeOnBackground(0, "")
+            uploadPrescriptionUseCase.executeOnBackground(0, "fsfasfasfasf")
         } coAnswers {
             HashMap<Type, RestResponse>().apply {
-                put(EPharmacyPrescriptionUploadResponse::class.java, RestResponse(mockk<EPharmacyPrescriptionUploadResponse>(relaxed = true),1,false))
+                put(EPharmacyPrescriptionUploadResponse::class.java, RestResponse(EPharmacyPrescriptionUploadResponse(arrayResponse,"", mockk()),1,false))
             }
         }
-        coVerify(exactly = 0) {  uploadPrescriptionUseCase.executeOnBackground(0,"") }
+        coVerify(exactly = 0) {  uploadPrescriptionUseCase.executeOnBackground(0,"fsfasfasfasf") }
     }
 }

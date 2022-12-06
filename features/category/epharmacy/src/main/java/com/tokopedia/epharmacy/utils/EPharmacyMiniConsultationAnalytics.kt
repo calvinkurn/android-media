@@ -23,8 +23,8 @@ object EPharmacyMiniConsultationAnalytics {
         enablers: String,
         buttonPosition: String,
         totalShop: String,
-        shopId: String,
-        ePharmacyGroupId: String
+        shopId: String?,
+        ePharmacyGroupId: String?
     ) {
         Tracker.Builder()
             .setEvent(EventKeys.CLICK_PG)

@@ -4,9 +4,9 @@ import com.google.gson.annotations.SerializedName
 
 data class EPharmacyReminderScreenResponse(
     @SerializedName("submitEpharmacyUserReminder")
-    val submitEpharmacyUserReminderData: SubmitEpharmacyUserReminderData? = null
+    val submitEpharmacyUserReminderData: SubmitEPharmacyUserReminderData? = null
 ) {
-    data class SubmitEpharmacyUserReminderData(
+    data class SubmitEPharmacyUserReminderData(
         @SerializedName("header")
         val header: EPharmacyHeader? = null,
         @SerializedName("data")

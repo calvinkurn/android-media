@@ -13,10 +13,10 @@ import javax.inject.Inject
 class EPharmacyReminderScreenUseCase @Inject constructor(
     @ApplicationContext private val repository: GraphqlRepository,
     dispatchers: CoroutineDispatchers
-) : CoroutineUseCase<EPharmacyReminderScreenParam, EPharmacyReminderScreenResponse.SubmitEpharmacyUserReminderData
+) : CoroutineUseCase<EPharmacyReminderScreenParam, EPharmacyReminderScreenResponse
     >(dispatchers.io) {
 
-    override suspend fun execute(params: EPharmacyReminderScreenParam): EPharmacyReminderScreenResponse.SubmitEpharmacyUserReminderData {
+    override suspend fun execute(params: EPharmacyReminderScreenParam): EPharmacyReminderScreenResponse {
         return repository.request(GQL_EPHARMACY_REMINDER_SCREEN_QUERY, createRequestParams(params))
     }
 

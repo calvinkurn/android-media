@@ -121,6 +121,7 @@ class EPharmacyReminderScreenBottomSheet : BottomSheetUnify() {
                     }
                 }
             }
+            dismiss()
         }
     }
 
@@ -178,7 +179,7 @@ class EPharmacyReminderScreenBottomSheet : BottomSheetUnify() {
     }
 
     private fun showToast(toasterType: Int = Toaster.TYPE_NORMAL, message: String) {
-        view?.let { it ->
+        binding?.root?.let { it ->
             Toaster.build(it, message, Toaster.LENGTH_LONG, toasterType).show()
         }
     }
