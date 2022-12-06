@@ -27,6 +27,7 @@ class SimilarProductViewHolder(
         val LAYOUT = R.layout.item_tokopedianow_recipe_product
     }
 
+    private val QUANTITY_ZERO = 0
     private val context by lazy { itemView.context }
 
     private var binding: ItemTokopedianowRecipeProductBinding? by viewBinding()
@@ -78,7 +79,7 @@ class SimilarProductViewHolder(
 
     private fun renderProductButton(product: SimilarProductUiModel) {
         binding?.btnProductCta?.apply {
-            if (product.stock == 0) {
+            if (product.stock == QUANTITY_ZERO) {
                 text = context.getString(R.string.tokopedianow_stock_empty_text)
                 buttonVariant = UnifyButton.Variant.FILLED
                 isEnabled = false
@@ -104,7 +105,7 @@ class SimilarProductViewHolder(
             val stock = product.stock
             val quantity = product.quantity
 
-            if (stock > 0 && quantity > 0) {
+            if (stock > QUANTITY_ZERO && quantity > QUANTITY_ZERO) {
                 btnDeleteCart.show()
                 btnProductCta.hide()
                 quantityEditor.show()

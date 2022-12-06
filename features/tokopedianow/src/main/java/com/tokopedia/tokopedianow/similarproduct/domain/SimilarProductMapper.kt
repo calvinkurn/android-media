@@ -5,8 +5,9 @@ import com.tokopedia.tokopedianow.similarproduct.domain.model.ProductRecommendat
 import com.tokopedia.tokopedianow.similarproduct.model.SimilarProductUiModel
 
 object SimilarProductMapper {
+    const val POSITION_OFFSET = 1
     fun mapToProductUiModel(index: Int, product: RecommendationItem): SimilarProductUiModel? {
-        val position = index + 1
+        val position = index + POSITION_OFFSET
         return product.stock?.let { stock ->
             product.price?.let { price ->
                 product.imageUrl?.let { imageUrl ->
@@ -17,11 +18,11 @@ object SimilarProductMapper {
                             shopName = product.shop?.name.toString(),
                             name = product.name.toString(),
                             stock = stock,
-                            minOrder = product.wholesalePrice?.firstOrNull()?.quantityMin?:1,
+                            minOrder = product.wholesalePrice?.firstOrNull()?.quantityMin?: POSITION_OFFSET,
                             maxOrder = product.wholesalePrice?.firstOrNull()?.quantityMax?:stock,
                             priceFmt = price,
                             imageUrl = imageUrl,
-                            slashedPrice = product.slashedPrice?:"",
+                            slashedPrice = product.slashedPrice.orEmpty(),
                             discountPercentage = NumberFormatter.formatFloatToString(product.discountPercentage),
                             categoryId = product.departmentId.toString(),
                             categoryName = categoryName,

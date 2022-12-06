@@ -34,15 +34,15 @@ import com.tokopedia.user.session.UserSessionInterface
 import com.tokopedia.utils.lifecycle.autoClearedNullable
 import javax.inject.Inject
 
-class TokoNowSimilarSimilarProductBottomSheet : BottomSheetUnify(), SimilarProductAnalytics {
+class TokoNowSimilarProductBottomSheet : BottomSheetUnify(), SimilarProductAnalytics {
 
     companion object {
 
-        fun newInstance(): TokoNowSimilarSimilarProductBottomSheet {
-            return TokoNowSimilarSimilarProductBottomSheet()
+        fun newInstance(): TokoNowSimilarProductBottomSheet {
+            return TokoNowSimilarProductBottomSheet()
         }
 
-        private val TAG: String = TokoNowSimilarSimilarProductBottomSheet::class.java.simpleName
+        private val TAG: String = TokoNowSimilarProductBottomSheet::class.java.simpleName
     }
 
     var triggerProductId = ""
@@ -141,7 +141,7 @@ class TokoNowSimilarSimilarProductBottomSheet : BottomSheetUnify(), SimilarProdu
 
     private fun setupRecyclerView() {
         binding?.recyclerView?.apply {
-            adapter = this@TokoNowSimilarSimilarProductBottomSheet.adapter
+            adapter = this@TokoNowSimilarProductBottomSheet.adapter
             layoutManager = LinearLayoutManager(context)
         }
         submitList(items)

@@ -41,32 +41,18 @@ class TokoNowSimilarProductViewModel @Inject constructor(
     userSession,
     dispatchers
 ) {
+    private val _visitableItems = MutableLiveData<List<Visitable<*>>>()
+    private val _similarProductList = MutableLiveData<List<RecommendationItem?>>()
+    private val layoutItemList = mutableListOf<Visitable<*>>()
 
     val visitableItems: LiveData<List<Visitable<*>>>
         get() = _visitableItems
-
-    private val _visitableItems = MutableLiveData<List<Visitable<*>>>()
-
     val similarProductList: LiveData<List<RecommendationItem?>>
         get() = _similarProductList
-
-    private val _similarProductList = MutableLiveData<List<RecommendationItem?>>()
-
-    private val layoutItemList = mutableListOf<Visitable<*>>()
 
     override fun setMiniCartData(miniCartData: MiniCartSimplifiedData) {
         super.setMiniCartData(miniCartData)
         updateProductQuantity(miniCartData)
-    }
-
-    fun onViewCreated(productList: List<SimilarProductUiModel>) {
-        layoutItemList.addAll(productList)
-
-        miniCartData?.let {
-            setMiniCartData(it)
-        }
-
-        _visitableItems.postValue(layoutItemList)
     }
 
     private fun updateProductQuantity(miniCartData: MiniCartSimplifiedData) {
@@ -75,15 +61,6 @@ class TokoNowSimilarProductViewModel @Inject constructor(
             layoutItemList.updateDeletedProductQuantity(miniCartData)
             _visitableItems.postValue(layoutItemList)
         }) {}
-    }
-    fun getSimilarProductList(userId: Int, productIds: String){
-        launchCatchError( block = {
-            chooseAddressWrapper.getChooseAddressData()
-            val response = getSimilarProductUseCase.execute(userId, productIds, appendChooseAddressParams())
-            _similarProductList.postValue(response.productRecommendationWidgetSingle?.data?.recommendation)
-        }, onError = {
-        })
-
     }
 
     private fun appendChooseAddressParams(): MutableMap<String, Any> {
@@ -106,5 +83,25 @@ class TokoNowSimilarProductViewModel @Inject constructor(
             tokonowQueryParam[SearchApiConst.USER_WAREHOUSE_IDs] = chooseAddressData.warehouse_id
 
         return tokonowQueryParam
+    }
+
+    fun onViewCreated(productList: List<SimilarProductUiModel>) {
+        layoutItemList.addAll(productList)
+
+        miniCartData?.let {
+            setMiniCartData(it)
+        }
+
+        _visitableItems.postValue(layoutItemList)
+    }
+
+    fun getSimilarProductList(userId: Int, productIds: String){
+        launchCatchError( block = {
+            chooseAddressWrapper.getChooseAddressData()
+            val response = getSimilarProductUseCase.execute(userId, productIds, appendChooseAddressParams())
+            _similarProductList.postValue(response.productRecommendationWidgetSingle?.data?.recommendation)
+        }, onError = {
+        })
+
     }
 }
