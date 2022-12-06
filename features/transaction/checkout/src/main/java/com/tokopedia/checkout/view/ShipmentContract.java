@@ -196,6 +196,8 @@ public interface ShipmentContract {
         void updateUploadPrescription(UploadPrescriptionUiModel uploadPrescriptionUiModel);
 
         void onNoValidCheckoutItem();
+
+        void showCoachMarkEpharmacy(ArrayList<String> epharmacyGroupIds);
     }
 
     interface AnalyticsActionListener {

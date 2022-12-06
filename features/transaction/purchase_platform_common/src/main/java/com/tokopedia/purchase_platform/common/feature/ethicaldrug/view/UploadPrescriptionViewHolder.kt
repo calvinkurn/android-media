@@ -55,6 +55,7 @@ class UploadPrescriptionViewHolder(
                 binding.uploadDescriptionText.show()
             } else {
                 binding.uploadPrescriptionText.text = uploadPrescriptionUiModel.uploadImageText
+                binding.uploadDescriptionText.text = ""
                 binding.uploadDescriptionText.hide()
             }
         } else {
@@ -67,7 +68,11 @@ class UploadPrescriptionViewHolder(
             binding.uploadDescriptionText.show()
         }
         binding.uploadPrescriptionLayout.setOnClickListener {
-            listener.uploadPrescriptionAction(uploadPrescriptionUiModel)
+            listener.uploadPrescriptionAction(
+                uploadPrescriptionUiModel,
+                getButtonText(),
+                getButtonNotes()
+            )
         }
 
         if (uploadPrescriptionUiModel.isError) {
@@ -100,5 +105,13 @@ class UploadPrescriptionViewHolder(
         } else {
             binding.occDivider.gone()
         }
+    }
+
+    fun getButtonText(): String {
+        return binding.uploadPrescriptionText.text.toString()
+    }
+
+    fun getButtonNotes(): String {
+        return binding.uploadDescriptionText.text.toString()
     }
 }

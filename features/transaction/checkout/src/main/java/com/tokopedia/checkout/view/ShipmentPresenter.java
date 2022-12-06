@@ -2605,6 +2605,7 @@ public class ShipmentPresenter extends BaseDaggerPresenter<ShipmentContract.View
                 uploadPrescriptionUiModel.setUploadedImageCount(totalPrescription);
                 uploadPrescriptionUiModel.setHasInvalidPrescription(hasInvalidPrescription);
                 getView().updateUploadPrescription(uploadPrescriptionUiModel);
+                getView().showCoachMarkEpharmacy(uploadPrescriptionUiModel.getEpharmacyGroupIds());
             }
         }
     }
