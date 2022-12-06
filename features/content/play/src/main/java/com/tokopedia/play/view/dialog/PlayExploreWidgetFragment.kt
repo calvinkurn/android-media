@@ -28,6 +28,7 @@ import com.tokopedia.play.view.uimodel.*
 import com.tokopedia.play.view.uimodel.action.ClickChipWidget
 import com.tokopedia.play.view.uimodel.action.NextPageWidgets
 import com.tokopedia.play.view.uimodel.action.RefreshWidget
+import com.tokopedia.play.view.uimodel.action.UpdateReminder
 import com.tokopedia.play.view.uimodel.getChipsShimmering
 import com.tokopedia.play.view.uimodel.getWidgetShimmering
 import com.tokopedia.play.view.viewmodel.PlayViewModel
@@ -250,6 +251,7 @@ class PlayExploreWidgetFragment @Inject constructor(
         reminderType: PlayWidgetReminderType,
         position: Int
     ) {
+        viewModel.submitAction(UpdateReminder(item.channelId, reminderType))
     }
 
     companion object {

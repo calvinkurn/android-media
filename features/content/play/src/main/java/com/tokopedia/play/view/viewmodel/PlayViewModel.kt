@@ -57,6 +57,8 @@ import com.tokopedia.play.view.uimodel.recom.tagitem.TagItemUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.VariantUiModel
 import com.tokopedia.play.view.uimodel.recom.types.PlayStatusType
 import com.tokopedia.play.view.uimodel.state.*
+import com.tokopedia.play.widget.ui.model.PlayWidgetChannelUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
 import com.tokopedia.play_common.domain.model.interactive.GiveawayResponse
 import com.tokopedia.play_common.domain.model.interactive.QuizResponse
 import com.tokopedia.play_common.model.PlayBufferControl
@@ -997,6 +999,7 @@ class PlayViewModel @AssistedInject constructor(
             is ClickChipWidget -> handleClickChip(action.item)
             NextPageWidgets -> onActionWidget(isNextPage = true)
             RefreshWidget -> fetchWidgets()
+            is UpdateReminder -> updateReminderWidget(action.channelId, action.reminderType)
         }
     }
 
@@ -2753,6 +2756,28 @@ class PlayViewModel @AssistedInject constructor(
         )
     }
 
+    private fun updateReminderWidget(channelId : String, reminderType: PlayWidgetReminderType) =
+        authenticated {
+            viewModelScope.launchCatchError(block = {
+                val result = repo.updateReminder(channelId, reminderType)
+                if (result){
+                    _exploreWidget.update {
+                        it.copy(widgets = it.widgets.map {
+                            it.copy(item = it.item.copy(items = it.item.items.map { widget ->
+                                if(widget is PlayWidgetChannelUiModel && widget.channelId == channelId)
+                                    widget.copy(reminderType = reminderType)
+                                else widget
+                            }))
+                        })
+                    }
+                } else {
+                    throw MessageErrorException()
+                }
+            }) {
+                _uiEvent.emit(ShowErrorEvent(it))
+            }
+        }
+
 
     private fun CoroutineScope.launch(
         jobId: String = "",
@@ -2790,7 +2815,6 @@ class PlayViewModel @AssistedInject constructor(
         private const val REQUEST_CODE_LOGIN_FOLLOW = 571
         private const val REQUEST_CODE_LOGIN_FOLLOW_INTERACTIVE = 572
         private const val REQUEST_CODE_LOGIN_LIKE = 573
-        private const val REQUEST_CODE_LOGIN_UPCO_REMINDER = 574
         private const val REQUEST_CODE_USER_REPORT = 575
         private const val REQUEST_CODE_LOGIN_PLAY_INTERACTIVE = 576
         private const val REQUEST_CODE_LOGIN_PLAY_TOKONOW = 577

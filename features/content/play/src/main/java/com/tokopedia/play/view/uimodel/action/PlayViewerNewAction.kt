@@ -3,6 +3,7 @@ package com.tokopedia.play.view.uimodel.action
 import com.tokopedia.play.view.uimodel.ChipWidgetUiModel
 import com.tokopedia.play.view.uimodel.PlayProductUiModel
 import com.tokopedia.play.view.uimodel.recom.tagitem.ProductSectionUiModel
+import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
 import com.tokopedia.play_common.model.ui.QuizChoicesUiModel
 import com.tokopedia.product.detail.common.data.model.variant.uimodel.VariantOptionWithAttribute
 import com.tokopedia.universal_sharing.view.model.ShareModel
@@ -107,3 +108,4 @@ object FetchWidgets: PlayViewerNewAction()
 data class ClickChipWidget(val item: ChipWidgetUiModel) : PlayViewerNewAction()
 object NextPageWidgets : PlayViewerNewAction()
 object RefreshWidget : PlayViewerNewAction()
+data class UpdateReminder(val channelId : String, val reminderType: PlayWidgetReminderType) : PlayViewerNewAction()

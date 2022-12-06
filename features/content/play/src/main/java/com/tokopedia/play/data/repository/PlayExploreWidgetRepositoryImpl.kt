@@ -5,6 +5,7 @@ import com.tokopedia.content.common.usecase.GetPlayWidgetSlotUseCase
 import com.tokopedia.play.domain.repository.PlayExploreWidgetRepository
 import com.tokopedia.play.view.uimodel.WidgetUiModel
 import com.tokopedia.play.view.uimodel.mapper.PlayExploreWidgetMapper
+import com.tokopedia.play.widget.ui.mapper.PlayWidgetUiMapper
 import com.tokopedia.play.widget.ui.model.PlayWidgetReminderType
 import com.tokopedia.play.widget.util.PlayWidgetTools
 import kotlinx.coroutines.withContext
@@ -17,6 +18,7 @@ class PlayExploreWidgetRepositoryImpl @Inject constructor(
     private val playWidgetTools: PlayWidgetTools,
     private val getPlayWidgetSlotUseCase: GetPlayWidgetSlotUseCase,
     private val mapper: PlayExploreWidgetMapper,
+    private val reminderMapper: PlayWidgetUiMapper,
     private val dispatcher: CoroutineDispatchers
 ) : PlayExploreWidgetRepository {
 
@@ -36,7 +38,15 @@ class PlayExploreWidgetRepositoryImpl @Inject constructor(
         )
     }
 
-    override suspend fun updateReminder(channelId: String, type: PlayWidgetReminderType) {
-        playWidgetTools.updateToggleReminder(channelId = channelId, reminderType = type)
+    override suspend fun updateReminder(
+        channelId: String,
+        type: PlayWidgetReminderType
+    ): Boolean {
+        val result = playWidgetTools.updateToggleReminder(
+            channelId = channelId,
+            reminderType = type,
+            coroutineContext = dispatcher.io
+        )
+        return reminderMapper.mapWidgetToggleReminder(result)
     }
 }
