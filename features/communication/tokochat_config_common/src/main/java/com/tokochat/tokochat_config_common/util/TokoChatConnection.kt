@@ -53,6 +53,7 @@ object TokoChatConnection {
             tokoChatConfigComponent = DaggerTokoChatConfigComponent.builder()
                 .tokoChatConfigContextModule(TokoChatConfigContextModule(context.applicationContext))
                 .build()
+            tokoChatConfigComponent?.inject(this)
         }
     }
 
