@@ -3464,12 +3464,14 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
                                 }
                                 uploadPrescriptionUiModel.setError(true);
                                 onNeedUpdateViewItem(i);
-                                ePharmacyAnalytics.clickPilihPembayaran(
-                                        ((UploadPrescriptionViewHolder) viewHolder).getButtonNotes(),
-                                        uploadPrescriptionUiModel.getEpharmacyGroupIds(),
-                                        false,
-                                        toasterMessage
-                                );
+                                if (uploadPrescriptionUiModel.getConsultationFlow()) {
+                                    ePharmacyAnalytics.clickPilihPembayaran(
+                                            ((UploadPrescriptionViewHolder) viewHolder).getButtonNotes(),
+                                            uploadPrescriptionUiModel.getEpharmacyGroupIds(),
+                                            false,
+                                            toasterMessage
+                                    );
+                                }
                             }
                         }
                     }
@@ -4006,14 +4008,16 @@ public class ShipmentFragment extends BaseCheckoutFragment implements ShipmentCo
         for (int i = shipmentDataList.size() - 1; i >= 0; i--) {
             if (shipmentDataList.get(i) instanceof UploadPrescriptionUiModel) {
                 UploadPrescriptionUiModel uploadPrescriptionUiModel = (UploadPrescriptionUiModel) shipmentDataList.get(i);
-                RecyclerView.ViewHolder viewHolder = rvShipment.findViewHolderForAdapterPosition(i);
-                if (viewHolder instanceof UploadPrescriptionViewHolder) {
-                    ePharmacyAnalytics.clickPilihPembayaran(
-                            ((UploadPrescriptionViewHolder) viewHolder).getButtonNotes(),
-                            uploadPrescriptionUiModel.getEpharmacyGroupIds(),
-                            false,
-                            "success"
-                    );
+                if (uploadPrescriptionUiModel.getConsultationFlow()) {
+                    RecyclerView.ViewHolder viewHolder = rvShipment.findViewHolderForAdapterPosition(i);
+                    if (viewHolder instanceof UploadPrescriptionViewHolder) {
+                        ePharmacyAnalytics.clickPilihPembayaran(
+                                ((UploadPrescriptionViewHolder) viewHolder).getButtonNotes(),
+                                uploadPrescriptionUiModel.getEpharmacyGroupIds(),
+                                false,
+                                "success"
+                        );
+                    }
                 }
             }
         }
