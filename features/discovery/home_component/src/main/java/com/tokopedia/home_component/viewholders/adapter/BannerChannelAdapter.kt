@@ -24,13 +24,13 @@ class BannerChannelAdapter(
     private var itemList: List<BannerItemModel>,
     private val bannerItemListener: BannerItemListener,
     private val cardInteraction: Boolean = false,
-    private val isUsingInfiniteScroll: Boolean = false,
+    private val isUsingInfiniteScroll: Boolean = false
 ) : RecyclerView.Adapter<BannerChannelImageViewHolder>() {
     private var imageRatio = ""
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): BannerChannelImageViewHolder {
         val viewHolder = BannerChannelImageViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.layout_banner_channel_item, parent, false), bannerItemListener)
-        viewHolder.cardUnify.animateOnPress = if(cardInteraction) CardUnify2.ANIMATE_OVERLAY_BOUNCE else CardUnify2.ANIMATE_OVERLAY
+        viewHolder.cardUnify.animateOnPress = if (cardInteraction) CardUnify2.ANIMATE_OVERLAY_BOUNCE else CardUnify2.ANIMATE_OVERLAY
         return viewHolder
     }
 
@@ -44,18 +44,18 @@ class BannerChannelAdapter(
     }
 
     override fun onBindViewHolder(holder: BannerChannelImageViewHolder, position: Int) {
-        if(position != -1) {
+        if (position != -1) {
             holder.bind(itemList[position % itemList.size], imageRatio)
         }
     }
 
     override fun getItemCount(): Int {
-        return if(isUsingInfiniteScroll && itemList.size > 1) Integer.MAX_VALUE else itemList.size
+        return if (isUsingInfiniteScroll && itemList.size > 1) Integer.MAX_VALUE else itemList.size
     }
 }
 
-class BannerChannelImageViewHolder(itemView: View, val listener: BannerItemListener): RecyclerView.ViewHolder(itemView) {
-    companion object{
+class BannerChannelImageViewHolder(itemView: View, val listener: BannerItemListener) : RecyclerView.ViewHolder(itemView) {
+    companion object {
         private const val FPM_HOMEPAGE_BANNER = "banner_component_channel"
     }
 
@@ -66,12 +66,11 @@ class BannerChannelImageViewHolder(itemView: View, val listener: BannerItemListe
         itemView.findViewById<ShimmeringImageView>(R.id.image_banner_homepage).loadImage(item.url)
         itemView.setOnTouchListener { _, motionEvent ->
             cardUnify.onTouchEvent(motionEvent)
-            when(motionEvent.action) {
+            when (motionEvent.action) {
                 MotionEvent.ACTION_DOWN -> {
                     listener.onLongPress()
                 }
-                MotionEvent.ACTION_UP,
-                MotionEvent.ACTION_CANCEL -> {
+                MotionEvent.ACTION_UP -> {
                     listener.onRelease()
                 }
             }
@@ -99,4 +98,4 @@ interface BannerItemListener {
     fun onRelease() { }
 }
 
-data class BannerItemModel(val id: Int, val url: String): ImpressHolder()
+data class BannerItemModel(val id: Int, val url: String) : ImpressHolder()
