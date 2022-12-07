@@ -35,8 +35,8 @@ data class FetchInfoWidgetDataModel(
     val dataSign: String = String.EMPTY,
     @SerializedName("subType")
     val subType: Long = Int.ZERO.toLong(),
-    @SerializedName("showWidget")
-    val showWidget: Boolean = false
+    @SerializedName("state")
+    val state: String = String.EMPTY,
 )
 
 data class InfoWidgetButtonModel(

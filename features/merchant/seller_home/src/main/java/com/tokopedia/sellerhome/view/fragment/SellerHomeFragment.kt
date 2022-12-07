@@ -1815,7 +1815,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
     }
 
     private fun observeWidgetDismissalStatus() {
-        observe(sellerHomeViewModel.submitWidgetDismissal) {
+        viewLifecycleOwner.observe(sellerHomeViewModel.submitWidgetDismissal) {
             when (it) {
                 is Success -> setSubmitDismissalSuccess(it.data)
                 is Fail -> it.throwable.showErrorToaster()
@@ -1848,6 +1848,7 @@ class SellerHomeFragment : BaseListFragment<BaseWidgetUiModel<*>, WidgetAdapterF
                         imgSahNewSellerLeft.visible()
                     })
                 }
+
                 imgSahNewSellerRight.loadImage(SellerHomeConst.Images.IMG_NEW_SELLER_RIGHT) {
                     useCache(true)
                     listener(onSuccess = { _, _ ->
