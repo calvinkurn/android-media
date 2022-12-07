@@ -9,6 +9,7 @@ const val TOKO_FOOD_ORDER_STATUS_QUERY = """
                   title
                   subtitle
                   iconName
+                  enableChatButton
                 }
                 additionalTickerInfo {
                   level
@@ -17,6 +18,15 @@ const val TOKO_FOOD_ORDER_STATUS_QUERY = """
                 eta {
                   label
                   time
+                }
+                driverDetails {
+                  name
+                  photoUrl
+                  licensePlateNumber
+                  karma {
+                    icon
+                    message
+                  }
                 }
                 invoice {
                   invoiceNumber
@@ -37,6 +47,7 @@ const val TOKO_FOOD_ORDER_DETAIL_QUERY = """
               title
               subtitle
               iconName
+              enableChatButton
             }
             eta {
               label

@@ -12,8 +12,8 @@
             "city_id": "78431",
             "city_name": "Kota Makassar",
             "priority": "1",
-            "icon_web": "https://ecs7.tokopedia.net/dealsweb/ic_landmark.png",
-            "icon_app": "https://ecs7.tokopedia.net/dealsweb/ic_landmark.png",
+            "icon_web": "https://images.tokopedia.net/dealsweb/ic_landmark.png",
+            "icon_app": "https://images.tokopedia.net/dealsweb/ic_landmark.png",
             "image_web": "",
             "image_app": "",
             "location_type": {
@@ -22,12 +22,12 @@
               "display_name": "Landmark",
               "search_radius": "500m",
               "outer_radius": "250m",
-              "icon": "https://ecs7.tokopedia.net/dealsweb/ic_landmark.png",
+              "icon": "https://images.tokopedia.net/dealsweb/ic_landmark.png",
               "type_id": "0",
               "status": 1,
               "custom_text_1": "-1",
-              "icon_web": "https://ecs7.tokopedia.net/dealsweb/ic_landmark.png",
-              "icon_app": "https://ecs7.tokopedia.net/dealsweb/ic_landmark.png"
+              "icon_web": "https://images.tokopedia.net/dealsweb/ic_landmark.png",
+              "icon_app": "https://images.tokopedia.net/dealsweb/ic_landmark.png"
             }
           },
           {
@@ -39,8 +39,8 @@
             "city_id": "78434",
             "city_name": "Kota Denpasar",
             "priority": "1",
-            "icon_web": "https://ecs7.tokopedia.net/dealsweb/ic_landmark.png",
-            "icon_app": "https://ecs7.tokopedia.net/dealsweb/ic_landmark.png",
+            "icon_web": "https://images.tokopedia.net/dealsweb/ic_landmark.png",
+            "icon_app": "https://images.tokopedia.net/dealsweb/ic_landmark.png",
             "image_web": "",
             "image_app": "",
             "location_type": {
@@ -49,12 +49,12 @@
               "display_name": "Landmark",
               "search_radius": "500m",
               "outer_radius": "250m",
-              "icon": "https://ecs7.tokopedia.net/dealsweb/ic_landmark.png",
+              "icon": "https://images.tokopedia.net/dealsweb/ic_landmark.png",
               "type_id": "0",
               "status": 1,
               "custom_text_1": "-1",
-              "icon_web": "https://ecs7.tokopedia.net/dealsweb/ic_landmark.png",
-              "icon_app": "https://ecs7.tokopedia.net/dealsweb/ic_landmark.png"
+              "icon_web": "https://images.tokopedia.net/dealsweb/ic_landmark.png",
+              "icon_app": "https://images.tokopedia.net/dealsweb/ic_landmark.png"
             }
           },
           {
@@ -66,8 +66,8 @@
             "city_id": "78434",
             "city_name": "Kota Denpasar",
             "priority": "1",
-            "icon_web": "https://ecs7.tokopedia.net/dealsweb/ic_landmark.png",
-            "icon_app": "https://ecs7.tokopedia.net/dealsweb/ic_landmark.png",
+            "icon_web": "https://images.tokopedia.net/dealsweb/ic_landmark.png",
+            "icon_app": "https://images.tokopedia.net/dealsweb/ic_landmark.png",
             "image_web": "",
             "image_app": "",
             "location_type": {
@@ -76,12 +76,12 @@
               "display_name": "Landmark",
               "search_radius": "500m",
               "outer_radius": "250m",
-              "icon": "https://ecs7.tokopedia.net/dealsweb/ic_landmark.png",
+              "icon": "https://images.tokopedia.net/dealsweb/ic_landmark.png",
               "type_id": "0",
               "status": 1,
               "custom_text_1": "-1",
-              "icon_web": "https://ecs7.tokopedia.net/dealsweb/ic_landmark.png",
-              "icon_app": "https://ecs7.tokopedia.net/dealsweb/ic_landmark.png"
+              "icon_web": "https://images.tokopedia.net/dealsweb/ic_landmark.png",
+              "icon_app": "https://images.tokopedia.net/dealsweb/ic_landmark.png"
             }
           },
           {
@@ -93,8 +93,8 @@
             "city_id": "78358",
             "city_name": "Kabupaten Badung",
             "priority": "1",
-            "icon_web": "https://ecs7.tokopedia.net/dealsweb/ic_landmark.png",
-            "icon_app": "https://ecs7.tokopedia.net/dealsweb/ic_landmark.png",
+            "icon_web": "https://images.tokopedia.net/dealsweb/ic_landmark.png",
+            "icon_app": "https://images.tokopedia.net/dealsweb/ic_landmark.png",
             "image_web": "",
             "image_app": "",
             "location_type": {
@@ -103,12 +103,12 @@
               "display_name": "Landmark",
               "search_radius": "500m",
               "outer_radius": "250m",
-              "icon": "https://ecs7.tokopedia.net/dealsweb/ic_landmark.png",
+              "icon": "https://images.tokopedia.net/dealsweb/ic_landmark.png",
               "type_id": "0",
               "status": 1,
               "custom_text_1": "-1",
-              "icon_web": "https://ecs7.tokopedia.net/dealsweb/ic_landmark.png",
-              "icon_app": "https://ecs7.tokopedia.net/dealsweb/ic_landmark.png"
+              "icon_web": "https://images.tokopedia.net/dealsweb/ic_landmark.png",
+              "icon_app": "https://images.tokopedia.net/dealsweb/ic_landmark.png"
             }
           }
         ],

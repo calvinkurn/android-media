@@ -44,6 +44,7 @@ interface TagItemBuilder {
         isTokoNow: Boolean = false,
         isPinned: Boolean = false,
         isRilisanSpesial: Boolean = false,
+        buttons: List<ProductButtonUiModel> = emptyList(),
     ): PlayProductUiModel.Product
 
     fun buildMerchantVoucher(
@@ -77,6 +78,12 @@ interface TagItemBuilder {
             ProductSectionUiModel.Section.BackgroundUiModel(gradients = emptyList(), imageUrl = ""),
         reminderStatus: PlayUpcomingBellStatus = PlayUpcomingBellStatus.Unknown,
     ): ProductSectionUiModel.Section.ConfigUiModel
+
+    fun buildButton(
+        text: String = "",
+        color: ProductButtonColor = ProductButtonColor.PRIMARY_BUTTON,
+        type: ProductButtonType = ProductButtonType.ATC,
+    ) : ProductButtonUiModel
 
     companion object {
         private const val DEFAULT_CAMPAIGN_ID = 3L

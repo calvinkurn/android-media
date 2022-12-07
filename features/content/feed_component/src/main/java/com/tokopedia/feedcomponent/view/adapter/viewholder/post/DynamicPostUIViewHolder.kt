@@ -37,13 +37,13 @@ import com.tokopedia.feedcomponent.view.adapter.viewholder.post.poll.PollAdapter
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.video.VideoViewHolder
 import com.tokopedia.feedcomponent.view.adapter.viewholder.post.youtube.YoutubeViewHolder
 import com.tokopedia.feedcomponent.view.viewmodel.DynamicPostUiModel
-import com.tokopedia.feedcomponent.view.viewmodel.post.BasePostViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.post.BasePostModel
 import com.tokopedia.feedcomponent.view.viewmodel.post.TrackingPostModel
-import com.tokopedia.feedcomponent.view.viewmodel.post.image.ImagePostViewModel
-import com.tokopedia.feedcomponent.view.viewmodel.post.video.VideoViewModel
-import com.tokopedia.feedcomponent.view.viewmodel.posttag.BasePostTagViewModel
-import com.tokopedia.feedcomponent.view.viewmodel.posttag.ProductPostTagViewModel
-import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingViewModel
+import com.tokopedia.feedcomponent.view.viewmodel.post.image.ImagePostModel
+import com.tokopedia.feedcomponent.view.viewmodel.post.video.VideoModel
+import com.tokopedia.feedcomponent.view.viewmodel.posttag.BasePostTagModel
+import com.tokopedia.feedcomponent.view.viewmodel.posttag.ProductPostTagModel
+import com.tokopedia.feedcomponent.view.viewmodel.track.TrackingModel
 import com.tokopedia.feedcomponent.view.widget.CardTitleView
 import com.tokopedia.feedcomponent.view.widget.FeedMultipleImageView
 import com.tokopedia.kotlin.extensions.view.*
@@ -369,8 +369,8 @@ open class DynamicPostUIViewHolder(v: View,
             itemView.tabLayout.visibility =  View.GONE
         }
     }
-    private fun mapPostContent(feedXCard: FeedXCard): MutableList<BasePostViewModel> {
-        val list: MutableList<BasePostViewModel> = ArrayList()
+    private fun mapPostContent(feedXCard: FeedXCard): MutableList<BasePostModel> {
+        val list: MutableList<BasePostModel> = ArrayList()
         for (media in feedXCard.media) {
             when (media.type) {
                 CONTENT_IMAGE -> list.add(mapPostImage(media))
@@ -389,8 +389,8 @@ open class DynamicPostUIViewHolder(v: View,
 
         return list
     }
-    private fun mapASGCPostContent(feedXCard: FeedXCard): MutableList<BasePostViewModel> {
-        val list: MutableList<BasePostViewModel> = ArrayList()
+    private fun mapASGCPostContent(feedXCard: FeedXCard): MutableList<BasePostModel> {
+        val list: MutableList<BasePostModel> = ArrayList()
         for (product in feedXCard.products) {
             val mediaFromProduct = FeedXMedia(id = product.id,type = TYPE_IMAGE,appLink = product.appLink, mediaUrl = product.coverURL, webLink = product.webLink)
             list.add(mapPostImage(mediaFromProduct))
@@ -398,15 +398,15 @@ open class DynamicPostUIViewHolder(v: View,
 
         return list
     }
-    private fun mapPostImage(media: FeedXMedia): ImagePostViewModel {
-        return ImagePostViewModel(
+    private fun mapPostImage(media: FeedXMedia): ImagePostModel {
+        return ImagePostModel(
                image= media.mediaUrl,
                 redirectLink = media.webLink
         )
     }
 
-    private fun mapPostVideo(media: FeedXMedia): VideoViewModel {
-        return VideoViewModel(
+    private fun mapPostVideo(media: FeedXMedia): VideoModel {
+        return VideoModel(
                 media.id,
                 media.coverUrl,
                 media.mediaUrl,
@@ -570,11 +570,11 @@ open class DynamicPostUIViewHolder(v: View,
         return postTag.totalItems != 0 || postTag.items.isNotEmpty()
     }
 
-    private fun mapPostTag(postTagItemList: List<FeedXProduct>, feedType: String, postId: String, positionInFeed: Int, authorType: String): MutableList<BasePostTagViewModel> {
+    private fun mapPostTag(postTagItemList: List<FeedXProduct>, feedType: String, postId: String, positionInFeed: Int, authorType: String): MutableList<BasePostTagModel> {
         val needToRezise = postTagItemList.size > 1
-        val itemList: MutableList<BasePostTagViewModel> = ArrayList()
+        val itemList: MutableList<BasePostTagModel> = ArrayList()
         for (postTagItem in postTagItemList) {
-                    val item = ProductPostTagViewModel(
+                    val item = ProductPostTagModel(
                             postTagItem.id,
                             postTagItem.name,
                             postTagItem.priceFmt,
@@ -615,7 +615,7 @@ open class DynamicPostUIViewHolder(v: View,
 
     }
 
-    private fun bindTracking(impressHolder: ImpressHolder, trackList: MutableList<TrackingViewModel>) {
+    private fun bindTracking(impressHolder: ImpressHolder, trackList: MutableList<TrackingModel>) {
         itemView.addOnImpressionListener(impressHolder) {
             listener.onAffiliateTrackClicked(trackList, false)
         }

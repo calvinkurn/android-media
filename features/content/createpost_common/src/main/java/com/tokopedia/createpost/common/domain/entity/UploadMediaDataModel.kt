@@ -1,6 +1,6 @@
 package com.tokopedia.createpost.common.domain.entity
 
-import com.tokopedia.affiliatecommon.data.pojo.submitpost.request.SubmitPostMedium
+import com.tokopedia.createpost.common.domain.entity.request.SubmitPostMedium
 
 /**
  * Created By : Jonathan Darwin on October 13, 2022
