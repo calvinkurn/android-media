@@ -279,7 +279,7 @@ class PlayActivity : BaseActivity(),
                 }
             }
 
-            if(it.state !is PageResultState.Upcoming) {
+            if(it.state is PageResultState.Success) {
                 fragmentUpcomingView.safeRelease()
                 swipeContainerView.setChannelIds(it.currentValue)
             }
